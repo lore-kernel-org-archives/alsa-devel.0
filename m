@@ -1,8 +1,7 @@
 From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH v3 2/5] ASoC: mt6797: add structure define and clock control
- function for 6797
-Date: Wed, 25 Apr 2018 10:48:49 +0800
-Message-ID: <20180425024852.9882-3-kaichieh.chuang@mediatek.com>
+Subject: [PATCH v3 1/5] ASoC: add mt6351 codec driver
+Date: Wed, 25 Apr 2018 10:48:48 +0800
+Message-ID: <20180425024852.9882-2-kaichieh.chuang@mediatek.com>
 References: <20180425024852.9882-1-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,1150 +21,1721 @@ To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
 Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, chipeng.chang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds the MediaTek MT6351 codec driver.
+MT6351 communicate with SoC through MediaTek PMIC wrapper.
+MT6351 use MediaTek proprietary audio interface.
+
 Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 ---
- sound/soc/mediatek/mt6797/mt6797-afe-clk.c         | 132 ++++
- sound/soc/mediatek/mt6797/mt6797-afe-clk.h         |  25 +
- sound/soc/mediatek/mt6797/mt6797-afe-common.h      |  57 ++
- sound/soc/mediatek/mt6797/mt6797-interconnection.h |  41 +
- sound/soc/mediatek/mt6797/mt6797-reg.h             | 846 +++++++++++++++++++++
- 5 files changed, 1101 insertions(+)
- create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-clk.c
- create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-clk.h
- create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-common.h
- create mode 100644 sound/soc/mediatek/mt6797/mt6797-interconnection.h
- create mode 100644 sound/soc/mediatek/mt6797/mt6797-reg.h
+ Documentation/devicetree/bindings/sound/mt6351.txt |   16 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/mt6351.c                          | 1516 ++++++++++++++++++++
+ sound/soc/codecs/mt6351.h                          |  108 ++
+ 5 files changed, 1646 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6351.txt
+ create mode 100644 sound/soc/codecs/mt6351.c
+ create mode 100644 sound/soc/codecs/mt6351.h
 
-diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-clk.c b/sound/soc/mediatek/mt6797/mt6797-afe-clk.c
+diff --git a/Documentation/devicetree/bindings/sound/mt6351.txt b/Documentation/devicetree/bindings/sound/mt6351.txt
 new file mode 100644
-index 000000000000..f401440b5f70
+index 000000000000..7fb2cb99245e
 --- /dev/null
-+++ b/sound/soc/mediatek/mt6797/mt6797-afe-clk.c
-@@ -0,0 +1,132 @@
++++ b/Documentation/devicetree/bindings/sound/mt6351.txt
+@@ -0,0 +1,16 @@
++Mediatek MT6351 Audio Codec
++
++The communication between MT6351 and SoC is through Mediatek PMIC wrapper.
++For more detail, please visit Mediatek PMIC wrapper documentation.
++
++Must be a child node of PMIC wrapper.
++
++Required properties:
++
++- compatible : "mediatek,mt6351-sound".
++
++Example:
++
++mt6351_snd {
++	compatible = "mediatek,mt6351-sound";
++};
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 9548f63ca531..b05c37944cf9 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -106,6 +106,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_MAX9877 if I2C
+ 	select SND_SOC_MC13783 if MFD_MC13XXX
+ 	select SND_SOC_ML26124 if I2C
++	select SND_SOC_MT6351 if MTK_PMIC_WRAP
+ 	select SND_SOC_NAU8540 if I2C
+ 	select SND_SOC_NAU8810 if I2C
+ 	select SND_SOC_NAU8824 if I2C
+@@ -1247,6 +1248,9 @@ config SND_SOC_MC13783
+ config SND_SOC_ML26124
+ 	tristate
+ 
++config SND_SOC_MT6351
++	tristate "MediaTek MT6351 Codec"
++
+ config SND_SOC_NAU8540
+        tristate "Nuvoton Technology Corporation NAU85L40 CODEC"
+        depends on I2C
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index e849d1495308..d3d7a4cee57b 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -102,6 +102,7 @@ snd-soc-mc13783-objs := mc13783.o
+ snd-soc-ml26124-objs := ml26124.o
+ snd-soc-msm8916-analog-objs := msm8916-wcd-analog.o
+ snd-soc-msm8916-digital-objs := msm8916-wcd-digital.o
++snd-soc-mt6351-objs := mt6351.o
+ snd-soc-nau8540-objs := nau8540.o
+ snd-soc-nau8810-objs := nau8810.o
+ snd-soc-nau8824-objs := nau8824.o
+@@ -355,6 +356,7 @@ obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
+ obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
+ obj-$(CONFIG_SND_SOC_MSM8916_WCD_ANALOG) +=snd-soc-msm8916-analog.o
+ obj-$(CONFIG_SND_SOC_MSM8916_WCD_DIGITAL) +=snd-soc-msm8916-digital.o
++obj-$(CONFIG_SND_SOC_MT6351)	+= snd-soc-mt6351.o
+ obj-$(CONFIG_SND_SOC_NAU8540)   += snd-soc-nau8540.o
+ obj-$(CONFIG_SND_SOC_NAU8810)   += snd-soc-nau8810.o
+ obj-$(CONFIG_SND_SOC_NAU8824)   += snd-soc-nau8824.o
+diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
+new file mode 100644
+index 000000000000..144383b118a1
+--- /dev/null
++++ b/sound/soc/codecs/mt6351.c
+@@ -0,0 +1,1516 @@
 +/*
-+ * mt6797-afe-clk.c  --  Mediatek 6797 afe clock ctrl
++ * mt6351.c  --  mt6351 ALSA SoC audio codec driver
 + *
 + * Copyright (c) 2018 MediaTek Inc.
 + * Author: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 + *
 + * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
-+#include <linux/clk.h>
++#include <linux/dma-mapping.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/module.h>
++#include <linux/of_device.h>
++#include <linux/delay.h>
 +
-+#include "mt6797-afe-common.h"
-+#include "mt6797-afe-clk.h"
++#include <sound/core.h>
++#include <sound/pcm.h>
++#include <sound/soc.h>
++#include <sound/tlv.h>
++
++#include "mt6351.h"
++
++/* MT6351_TOP_CLKSQ */
++#define RG_CLKSQ_EN_AUD_BIT (0)
++
++/* MT6351_TOP_CKPDN_CON0 */
++#define RG_AUDNCP_CK_PDN_BIT (12)
++#define RG_AUDIF_CK_PDN_BIT (13)
++#define RG_AUD_CK_PDN_BIT (14)
++#define RG_ZCD13M_CK_PDN_BIT (15)
++
++/* MT6351_AUDDEC_ANA_CON0 */
++#define RG_AUDDACLPWRUP_VAUDP32_BIT (0)
++#define RG_AUDDACRPWRUP_VAUDP32_BIT (1)
++#define RG_AUD_DAC_PWR_UP_VA32_BIT (2)
++#define RG_AUD_DAC_PWL_UP_VA32_BIT (3)
++
++#define RG_AUDHSPWRUP_VAUDP32_BIT (4)
++
++#define RG_AUDHPLPWRUP_VAUDP32_BIT (5)
++#define RG_AUDHPRPWRUP_VAUDP32_BIT (6)
++
++#define RG_AUDHSMUXINPUTSEL_VAUDP32_SFT (7)
++#define RG_AUDHSMUXINPUTSEL_VAUDP32_MASK (0x3)
++
++#define RG_AUDHPLMUXINPUTSEL_VAUDP32_SFT (9)
++#define RG_AUDHPLMUXINPUTSEL_VAUDP32_MASK (0x3)
++
++#define RG_AUDHPRMUXINPUTSEL_VAUDP32_SFT (11)
++#define RG_AUDHPRMUXINPUTSEL_VAUDP32_MASK (0x3)
++
++#define RG_AUDHSSCDISABLE_VAUDP32 (13)
++#define RG_AUDHPLSCDISABLE_VAUDP32_BIT (14)
++#define RG_AUDHPRSCDISABLE_VAUDP32_BIT (15)
++
++/* MT6351_AUDDEC_ANA_CON1 */
++#define RG_HSOUTPUTSTBENH_VAUDP32_BIT (8)
++
++/* MT6351_AUDDEC_ANA_CON3 */
++#define RG_AUDLOLPWRUP_VAUDP32_BIT (2)
++
++#define RG_AUDLOLMUXINPUTSEL_VAUDP32_SFT (3)
++#define RG_AUDLOLMUXINPUTSEL_VAUDP32_MASK (0x3)
++
++#define RG_AUDLOLSCDISABLE_VAUDP32_BIT (5)
++#define RG_LOOUTPUTSTBENH_VAUDP32_BIT (9)
++
++/* MT6351_AUDDEC_ANA_CON6 */
++#define RG_ABIDEC_RSVD0_VAUDP32_HPL_BIT (8)
++#define RG_ABIDEC_RSVD0_VAUDP32_HPR_BIT (9)
++#define RG_ABIDEC_RSVD0_VAUDP32_HS_BIT (10)
++#define RG_ABIDEC_RSVD0_VAUDP32_LOL_BIT (11)
++
++/* MT6351_AUDDEC_ANA_CON9 */
++#define RG_AUDIBIASPWRDN_VAUDP32_BIT (8)
++#define RG_RSTB_DECODER_VA32_BIT (9)
++#define RG_AUDGLB_PWRDN_VA32_BIT (12)
++
++#define RG_LCLDO_DEC_EN_VA32_BIT (13)
++#define RG_LCLDO_DEC_REMOTE_SENSE_VA18_BIT (15)
++/* MT6351_AUDDEC_ANA_CON10 */
++#define RG_NVREG_EN_VAUDP32_BIT (8)
++
++#define RG_AUDGLB_LP2_VOW_EN_VA32 10
++
++/* MT6351_AFE_UL_DL_CON0 */
++#define RG_AFE_ON_BIT (0)
++
++/* MT6351_AFE_DL_SRC2_CON0_L */
++#define RG_DL_2_SRC_ON_TMP_CTL_PRE_BIT (0)
++
++/* MT6351_AFE_UL_SRC_CON0_L */
++#define UL_SRC_ON_TMP_CTL (0)
++
++/* MT6351_AFE_TOP_CON0 */
++#define RG_DL_SINE_ON_SFT (0)
++#define RG_DL_SINE_ON_MASK (0x1)
++
++#define RG_UL_SINE_ON_SFT (1)
++#define RG_UL_SINE_ON_MASK (0x1)
++
++/* MT6351_AUDIO_TOP_CON0 */
++#define AUD_TOP_PDN_RESERVED_BIT 0
++#define AUD_TOP_PWR_CLK_DIS_CTL_BIT 2
++#define AUD_TOP_PDN_ADC_CTL_BIT 5
++#define AUD_TOP_PDN_DAC_CTL_BIT 6
++#define AUD_TOP_PDN_AFE_CTL_BIT 7
++
++/* MT6351_AFE_SGEN_CFG0 */
++#define SGEN_C_MUTE_SW_CTL_BIT 6
++#define SGEN_C_DAC_EN_CTL_BIT 7
++
++/* MT6351_AFE_NCP_CFG0 */
++#define RG_NCP_ON_BIT 0
++
++/* MT6351_LDO_VUSB33_CON0 */
++#define RG_VUSB33_EN 1
++#define RG_VUSB33_ON_CTRL 3
++
++/* MT6351_LDO_VA18_CON0 */
++#define RG_VA18_EN 1
++#define RG_VA18_ON_CTRL 3
++
++/* MT6351_AUDENC_ANA_CON0 */
++#define RG_AUDPREAMPLON 0
++#define RG_AUDPREAMPLDCCEN 1
++#define RG_AUDPREAMPLDCPRECHARGE 2
++
++#define RG_AUDPREAMPLINPUTSEL_SFT (4)
++#define RG_AUDPREAMPLINPUTSEL_MASK (0x3)
++
++#define RG_AUDADCLPWRUP 12
++
++#define RG_AUDADCLINPUTSEL_SFT (13)
++#define RG_AUDADCLINPUTSEL_MASK (0x3)
++
++/* MT6351_AUDENC_ANA_CON1 */
++#define RG_AUDPREAMPRON 0
++#define RG_AUDPREAMPRDCCEN 1
++#define RG_AUDPREAMPRDCPRECHARGE 2
++
++#define RG_AUDPREAMPRINPUTSEL_SFT (4)
++#define RG_AUDPREAMPRINPUTSEL_MASK (0x3)
++
++#define RG_AUDADCRPWRUP 12
++
++#define RG_AUDADCRINPUTSEL_SFT (13)
++#define RG_AUDADCRINPUTSEL_MASK (0x3)
++
++/* MT6351_AUDENC_ANA_CON3 */
++#define RG_AUDADCCLKRSTB 6
++
++/* MT6351_AUDENC_ANA_CON9 */
++#define RG_AUDPWDBMICBIAS0 0
++#define RG_AUDMICBIAS0VREF 4
++#define RG_AUDMICBIAS0LOWPEN 7
++
++#define RG_AUDPWDBMICBIAS2 8
++#define RG_AUDMICBIAS2VREF 12
++#define RG_AUDMICBIAS2LOWPEN 15
++
++/* MT6351_AUDENC_ANA_CON10 */
++#define RG_AUDPWDBMICBIAS1 0
++#define RG_AUDMICBIAS1DCSW1NEN 2
++#define RG_AUDMICBIAS1VREF 4
++#define RG_AUDMICBIAS1LOWPEN 7
 +
 +enum {
-+	CLK_INFRA_SYS_AUD,
-+	CLK_INFRA_SYS_AUD_26M,
-+	CLK_TOP_MUX_AUD,
-+	CLK_TOP_MUX_AUD_BUS,
-+	CLK_TOP_SYSPLL3_D4,
-+	CLK_TOP_SYSPLL1_D4,
-+	CLK_CLK26M,
-+	CLK_NUM
++	AUDIO_ANALOG_VOLUME_HSOUTL,
++	AUDIO_ANALOG_VOLUME_HSOUTR,
++	AUDIO_ANALOG_VOLUME_HPOUTL,
++	AUDIO_ANALOG_VOLUME_HPOUTR,
++	AUDIO_ANALOG_VOLUME_LINEOUTL,
++	AUDIO_ANALOG_VOLUME_LINEOUTR,
++	AUDIO_ANALOG_VOLUME_MICAMP1,
++	AUDIO_ANALOG_VOLUME_MICAMP2,
++	AUDIO_ANALOG_VOLUME_TYPE_MAX
 +};
 +
-+static const char *aud_clks[CLK_NUM] = {
-+	[CLK_INFRA_SYS_AUD] = "infra_sys_audio_clk",
-+	[CLK_INFRA_SYS_AUD_26M] = "infra_sys_audio_26m",
-+	[CLK_TOP_MUX_AUD] = "top_mux_audio",
-+	[CLK_TOP_MUX_AUD_BUS] = "top_mux_aud_intbus",
-+	[CLK_TOP_SYSPLL3_D4] = "top_sys_pll3_d4",
-+	[CLK_TOP_SYSPLL1_D4] = "top_sys_pll1_d4",
-+	[CLK_CLK26M] = "top_clk26m_clk",
++/* Supply subseq */
++enum {
++	SUPPLY_SUBSEQ_SETTING,
++	SUPPLY_SUBSEQ_ENABLE,
++	SUPPLY_SUBSEQ_MICBIAS,
 +};
 +
-+int mt6797_init_clock(struct mtk_base_afe *afe)
++#define REG_STRIDE 2
++
++struct mt6351_priv {
++	struct device *dev;
++	struct regmap *regmap;
++
++	unsigned int dl_rate;
++	unsigned int ul_rate;
++
++	int ana_gain[AUDIO_ANALOG_VOLUME_TYPE_MAX];
++
++	int hp_en_counter;
++};
++
++static void set_hp_gain_zero(struct snd_soc_codec *codec)
 +{
-+	struct mt6797_afe_private *afe_priv = afe->platform_priv;
-+	int i;
++	snd_soc_update_bits(codec, MT6351_ZCD_CON2, 0x1f << 7, 0x8 << 7);
++	snd_soc_update_bits(codec, MT6351_ZCD_CON2, 0x1f << 0, 0x8 << 0);
++}
 +
-+	afe_priv->clk = devm_kcalloc(afe->dev, CLK_NUM, sizeof(*afe_priv->clk),
-+				     GFP_KERNEL);
-+	if (!afe_priv->clk)
++static unsigned int get_cap_reg_val(struct snd_soc_codec *codec,
++				    unsigned int rate)
++{
++	switch (rate) {
++	case 8000:
++		return 0;
++	case 16000:
++		return 1;
++	case 32000:
++		return 2;
++	case 48000:
++		return 3;
++	case 96000:
++		return 4;
++	case 192000:
++		return 5;
++	default:
++		dev_warn(codec->dev, "%s(), error rate %d, return 3",
++			 __func__, rate);
++		return 3;
++	}
++}
++
++static unsigned int get_play_reg_val(struct snd_soc_codec *codec,
++				     unsigned int rate)
++{
++	switch (rate) {
++	case 8000:
++		return 0;
++	case 11025:
++		return 1;
++	case 12000:
++		return 2;
++	case 16000:
++		return 3;
++	case 22050:
++		return 4;
++	case 24000:
++		return 5;
++	case 32000:
++		return 6;
++	case 44100:
++		return 7;
++	case 48000:
++	case 96000:
++	case 192000:
++		return 8;
++	default:
++		dev_warn(codec->dev, "%s(), error rate %d, return 8",
++			 __func__, rate);
++		return 8;
++	}
++}
++
++static int mt6351_codec_dai_hw_params(struct snd_pcm_substream *substream,
++				      struct snd_pcm_hw_params *params,
++				      struct snd_soc_dai *dai)
++{
++	struct snd_soc_codec *codec = dai->codec;
++	struct mt6351_priv *priv = snd_soc_codec_get_drvdata(codec);
++	unsigned int rate = params_rate(params);
++
++	dev_dbg(priv->dev, "%s(), substream->stream %d, rate %d\n",
++		__func__, substream->stream, rate);
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		priv->dl_rate = rate;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		priv->ul_rate = rate;
++
++	return 0;
++}
++
++static const struct snd_soc_dai_ops mt6351_codec_dai_ops = {
++	.hw_params = mt6351_codec_dai_hw_params,
++};
++
++#define MT6351_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |\
++			SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_FMTBIT_U16_BE |\
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |\
++			SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_FMTBIT_U24_BE |\
++			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE |\
++			SNDRV_PCM_FMTBIT_U32_LE | SNDRV_PCM_FMTBIT_U32_BE)
++
++static struct snd_soc_dai_driver mt6351_dai_driver[] = {
++	{
++		.name = "mt6351-snd-codec-aif1",
++		.playback = {
++			.stream_name = "AIF1 Playback",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000_48000 |
++				 SNDRV_PCM_RATE_96000 |
++				 SNDRV_PCM_RATE_192000,
++			.formats = MT6351_FORMATS,
++		},
++		.capture = {
++			.stream_name = "AIF1 Capture",
++			.channels_min = 1,
++			.channels_max = 2,
++			.rates = SNDRV_PCM_RATE_8000 |
++				 SNDRV_PCM_RATE_16000 |
++				 SNDRV_PCM_RATE_32000 |
++				 SNDRV_PCM_RATE_48000 |
++				 SNDRV_PCM_RATE_96000 |
++				 SNDRV_PCM_RATE_192000,
++			.formats = MT6351_FORMATS,
++		},
++		.ops = &mt6351_codec_dai_ops,
++	},
++};
++
++enum {
++	HP_GAIN_SET_ZERO,
++	HP_GAIN_RESTORE,
++};
++
++static void hp_gain_ramp_set(struct snd_soc_codec *codec, int hp_gain_ctl)
++{
++	struct mt6351_priv *priv = snd_soc_codec_get_drvdata(codec);
++	int idx, old_idx, offset, reg_idx;
++
++	if (hp_gain_ctl == HP_GAIN_SET_ZERO) {
++		idx = 8;	/* 0dB */
++		old_idx = priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL];
++	} else {
++		idx = priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL];
++		old_idx = 8;	/* 0dB */
++	}
++	dev_dbg(priv->dev, "%s(), idx %d, old_idx %d\n",
++		__func__, idx, old_idx);
++
++	if (idx > old_idx)
++		offset = idx - old_idx;
++	else
++		offset = old_idx - idx;
++
++	reg_idx = old_idx;
++
++	while (offset > 0) {
++		reg_idx = idx > old_idx ? reg_idx + 1 : reg_idx - 1;
++
++		/* check valid range, and set value */
++		if ((reg_idx >= 0 && reg_idx <= 0x12) || reg_idx == 0x1f) {
++			snd_soc_update_bits(codec,
++					    MT6351_ZCD_CON2,
++					    0xf9f,
++					    (reg_idx << 7) | reg_idx);
++			usleep_range(100, 120);
++		}
++		offset--;
++	}
++}
++
++static void hp_zcd_enable(struct snd_soc_codec *codec)
++{
++	/* Enable ZCD, for minimize pop noise */
++	/* when adjust gain during HP buffer on */
++	snd_soc_update_bits(codec, MT6351_ZCD_CON0, 0x7 << 8, 0x1 << 8);
++	snd_soc_update_bits(codec, MT6351_ZCD_CON0, 0x1 << 7, 0x0 << 7);
++
++	/* timeout, 1=5ms, 0=30ms */
++	snd_soc_update_bits(codec, MT6351_ZCD_CON0, 0x1 << 6, 0x1 << 6);
++
++	snd_soc_update_bits(codec, MT6351_ZCD_CON0, 0x3 << 4, 0x0 << 4);
++	snd_soc_update_bits(codec, MT6351_ZCD_CON0, 0x7 << 1, 0x5 << 1);
++	snd_soc_update_bits(codec, MT6351_ZCD_CON0, 0x1 << 0, 0x1 << 0);
++}
++
++static void hp_zcd_disable(struct snd_soc_codec *codec)
++{
++	snd_soc_update_bits(codec, MT6351_ZCD_CON0, 0xffff, 0x0000);
++}
++
++/* dl pga gain */
++static const DECLARE_TLV_DB_SCALE(playback_tlv, -10, 100, 0);
++
++static const struct snd_kcontrol_new mt6351_snd_controls[] = {
++	SOC_DOUBLE_TLV("Headphone Volume",
++		       MT6351_ZCD_CON2, 0, 7, 0x12, 1,
++		       playback_tlv),
++	SOC_DOUBLE_TLV("Lineout Volume",
++		       MT6351_ZCD_CON1, 0, 7, 0x12, 1,
++		       playback_tlv),
++	SOC_SINGLE_TLV("Handset Volume",
++		       MT6351_ZCD_CON3, 0, 0x12, 1,
++		       playback_tlv),
++};
++
++/* ul pga gain */
++static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 600, 0);
++
++static const struct snd_kcontrol_new mt6351_snd_ul_controls[] = {
++	SOC_DOUBLE_R_TLV("PGA Volume",
++			 MT6351_AUDENC_ANA_CON0, MT6351_AUDENC_ANA_CON1,
++			 8, 4, 0,
++			 pga_tlv),
++};
++
++/* MUX */
++
++/* LOL MUX */
++static const char *const lo_in_mux_map[] = {
++	"Open", "Mute", "Playback", "Test Mode",
++};
++
++static int lo_in_mux_map_value[] = {
++	0x0, 0x1, 0x2, 0x3,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(lo_in_mux_map_enum,
++				  MT6351_AUDDEC_ANA_CON3,
++				  RG_AUDLOLMUXINPUTSEL_VAUDP32_SFT,
++				  RG_AUDLOLMUXINPUTSEL_VAUDP32_MASK,
++				  lo_in_mux_map,
++				  lo_in_mux_map_value);
++
++static const struct snd_kcontrol_new lo_in_mux_control =
++	SOC_DAPM_ENUM("In Select", lo_in_mux_map_enum);
++
++/*HP MUX */
++static const char *const hp_in_mux_map[] = {
++	"Open", "LoudSPK Playback", "Audio Playback", "Test Mode",
++};
++
++static int hp_in_mux_map_value[] = {
++	0x0, 0x1, 0x2, 0x3,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(hpl_in_mux_map_enum,
++				  MT6351_AUDDEC_ANA_CON0,
++				  RG_AUDHPLMUXINPUTSEL_VAUDP32_SFT,
++				  RG_AUDHPLMUXINPUTSEL_VAUDP32_MASK,
++				  hp_in_mux_map,
++				  hp_in_mux_map_value);
++
++static const struct snd_kcontrol_new hpl_in_mux_control =
++	SOC_DAPM_ENUM("HPL Select", hpl_in_mux_map_enum);
++
++static SOC_VALUE_ENUM_SINGLE_DECL(hpr_in_mux_map_enum,
++				  MT6351_AUDDEC_ANA_CON0,
++				  RG_AUDHPRMUXINPUTSEL_VAUDP32_SFT,
++				  RG_AUDHPRMUXINPUTSEL_VAUDP32_MASK,
++				  hp_in_mux_map,
++				  hp_in_mux_map_value);
++
++static const struct snd_kcontrol_new hpr_in_mux_control =
++	SOC_DAPM_ENUM("HPR Select", hpr_in_mux_map_enum);
++
++/* RCV MUX */
++static const char *const rcv_in_mux_map[] = {
++	"Open", "Mute", "Voice Playback", "Test Mode",
++};
++
++static int rcv_in_mux_map_value[] = {
++	0x0, 0x1, 0x2, 0x3,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(rcv_in_mux_map_enum,
++				  MT6351_AUDDEC_ANA_CON0,
++				  RG_AUDHSMUXINPUTSEL_VAUDP32_SFT,
++				  RG_AUDHSMUXINPUTSEL_VAUDP32_MASK,
++				  rcv_in_mux_map,
++				  rcv_in_mux_map_value);
++
++static const struct snd_kcontrol_new rcv_in_mux_control =
++	SOC_DAPM_ENUM("RCV Select", rcv_in_mux_map_enum);
++
++/* DAC In MUX */
++static const char *const dac_in_mux_map[] = {
++	"Normal Path", "Sgen",
++};
++
++static int dac_in_mux_map_value[] = {
++	0x0, 0x1,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(dac_in_mux_map_enum,
++				  MT6351_AFE_TOP_CON0,
++				  RG_DL_SINE_ON_SFT,
++				  RG_DL_SINE_ON_MASK,
++				  dac_in_mux_map,
++				  dac_in_mux_map_value);
++
++static const struct snd_kcontrol_new dac_in_mux_control =
++	SOC_DAPM_ENUM("DAC Select", dac_in_mux_map_enum);
++
++/* AIF Out MUX */
++static SOC_VALUE_ENUM_SINGLE_DECL(aif_out_mux_map_enum,
++				  MT6351_AFE_TOP_CON0,
++				  RG_UL_SINE_ON_SFT,
++				  RG_UL_SINE_ON_MASK,
++				  dac_in_mux_map,
++				  dac_in_mux_map_value);
++
++static const struct snd_kcontrol_new aif_out_mux_control =
++	SOC_DAPM_ENUM("AIF Out Select", aif_out_mux_map_enum);
++
++/* ADC L MUX */
++static const char *const adc_left_mux_map[] = {
++	"Idle", "AIN0", "Left Preamplifier", "Idle_1",
++};
++
++static int adc_left_mux_map_value[] = {
++	0x0, 0x1, 0x2, 0x3,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(adc_left_mux_map_enum,
++				  MT6351_AUDENC_ANA_CON0,
++				  RG_AUDADCLINPUTSEL_SFT,
++				  RG_AUDADCLINPUTSEL_MASK,
++				  adc_left_mux_map,
++				  adc_left_mux_map_value);
++
++static const struct snd_kcontrol_new adc_left_mux_control =
++	SOC_DAPM_ENUM("ADC L Select", adc_left_mux_map_enum);
++
++/* ADC R MUX */
++static const char *const adc_right_mux_map[] = {
++	"Idle", "AIN0", "Right Preamplifier", "Idle_1",
++};
++
++static int adc_right_mux_map_value[] = {
++	0x0, 0x1, 0x2, 0x3,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(adc_right_mux_map_enum,
++				  MT6351_AUDENC_ANA_CON1,
++				  RG_AUDADCRINPUTSEL_SFT,
++				  RG_AUDADCRINPUTSEL_MASK,
++				  adc_right_mux_map,
++				  adc_right_mux_map_value);
++
++static const struct snd_kcontrol_new adc_right_mux_control =
++	SOC_DAPM_ENUM("ADC R Select", adc_right_mux_map_enum);
++
++/* PGA L MUX */
++static const char *const pga_left_mux_map[] = {
++	"None", "AIN0", "AIN1", "AIN2",
++};
++
++static int pga_left_mux_map_value[] = {
++	0x0, 0x1, 0x2, 0x3,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(pga_left_mux_map_enum,
++				  MT6351_AUDENC_ANA_CON0,
++				  RG_AUDPREAMPLINPUTSEL_SFT,
++				  RG_AUDPREAMPLINPUTSEL_MASK,
++				  pga_left_mux_map,
++				  pga_left_mux_map_value);
++
++static const struct snd_kcontrol_new pga_left_mux_control =
++	SOC_DAPM_ENUM("PGA L Select", pga_left_mux_map_enum);
++
++/* PGA R MUX */
++static const char *const pga_right_mux_map[] = {
++	"None", "AIN0", "AIN3", "AIN2",
++};
++
++static int pga_right_mux_map_value[] = {
++	0x0, 0x1, 0x2, 0x3,
++};
++
++static SOC_VALUE_ENUM_SINGLE_DECL(pga_right_mux_map_enum,
++				  MT6351_AUDENC_ANA_CON1,
++				  RG_AUDPREAMPRINPUTSEL_SFT,
++				  RG_AUDPREAMPRINPUTSEL_MASK,
++				  pga_right_mux_map,
++				  pga_right_mux_map_value);
++
++static const struct snd_kcontrol_new pga_right_mux_control =
++	SOC_DAPM_ENUM("PGA R Select", pga_right_mux_map_enum);
++
++static int mt_reg_set_clr_event(struct snd_soc_dapm_widget *w,
++				struct snd_kcontrol *kcontrol,
++				int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_POST_PMU:
++		if (w->on_val) {
++			/* SET REG */
++			snd_soc_update_bits(codec, w->reg + REG_STRIDE,
++					    0x1 << w->shift,
++					    0x1 << w->shift);
++		} else {
++			/* CLR REG */
++			snd_soc_update_bits(codec, w->reg + REG_STRIDE * 2,
++					    0x1 << w->shift,
++					    0x1 << w->shift);
++		}
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		if (w->off_val) {
++			/* SET REG */
++			snd_soc_update_bits(codec, w->reg + REG_STRIDE,
++					    0x1 << w->shift,
++					    0x1 << w->shift);
++		} else {
++			/* CLR REG */
++			snd_soc_update_bits(codec, w->reg + REG_STRIDE * 2,
++					    0x1 << w->shift,
++					    0x1 << w->shift);
++		}
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int mt_ncp_event(struct snd_soc_dapm_widget *w,
++			struct snd_kcontrol *kcontrol,
++			int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec, MT6351_AFE_NCP_CFG1,
++				    0xffff, 0x1515);
++		/* NCP: ck1 and ck2 clock frequecy adjust configure */
++		snd_soc_update_bits(codec, MT6351_AFE_NCP_CFG0,
++				    0xfffe, 0x8C00);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		usleep_range(250, 270);
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int mt_sgen_event(struct snd_soc_dapm_widget *w,
++			 struct snd_kcontrol *kcontrol,
++			 int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		snd_soc_update_bits(codec, MT6351_AFE_SGEN_CFG0,
++				    0xffef, 0x0008);
++		snd_soc_update_bits(codec, MT6351_AFE_SGEN_CFG1,
++				    0xffff, 0x0101);
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int mt_aif_in_event(struct snd_soc_dapm_widget *w,
++			   struct snd_kcontrol *kcontrol,
++			   int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct mt6351_priv *priv = snd_soc_codec_get_drvdata(codec);
++
++	dev_dbg(priv->dev, "%s(), event 0x%x, rate %d\n",
++		__func__, event, priv->dl_rate);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* sdm audio fifo clock power on */
++		snd_soc_update_bits(codec, MT6351_AFUNC_AUD_CON2,
++				    0xffff, 0x0006);
++		/* scrambler clock on enable */
++		snd_soc_update_bits(codec, MT6351_AFUNC_AUD_CON0,
++				    0xffff, 0xC3A1);
++		/* sdm power on */
++		snd_soc_update_bits(codec, MT6351_AFUNC_AUD_CON2,
++				    0xffff, 0x0003);
++		/* sdm fifo enable */
++		snd_soc_update_bits(codec, MT6351_AFUNC_AUD_CON2,
++				    0xffff, 0x000B);
++		/* set attenuation gain */
++		snd_soc_update_bits(codec, MT6351_AFE_DL_SDM_CON1,
++				    0xffff, 0x001E);
++
++		snd_soc_update_bits(codec, MT6351_AFE_PMIC_NEWIF_CFG0, 0xffff,
++			(get_play_reg_val(codec, priv->dl_rate) << 12) |
++			0x330);
++		snd_soc_update_bits(codec, MT6351_AFE_DL_SRC2_CON0_H, 0xffff,
++			(get_play_reg_val(codec, priv->dl_rate) << 12) |
++			0x300);
++		snd_soc_update_bits(codec, MT6351_AFE_PMIC_NEWIF_CFG2,
++				    0x8000, 0x8000);
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int mt_hp_event(struct snd_soc_dapm_widget *w,
++		       struct snd_kcontrol *kcontrol,
++		       int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct mt6351_priv *priv = snd_soc_codec_get_drvdata(codec);
++	int reg;
++
++	dev_dbg(priv->dev, "%s(), event 0x%x, hp_en_counter %d\n",
++		__func__, event, priv->hp_en_counter);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		priv->hp_en_counter++;
++		if (priv->hp_en_counter > 1)
++			break;	/* already enabled, do nothing */
++		else if (priv->hp_en_counter <= 0)
++			dev_err(priv->dev, "%s(), hp_en_counter %d <= 0\n",
++				__func__,
++				priv->hp_en_counter);
++
++		hp_zcd_disable(codec);
++
++		/* from yoyo HQA script */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON6,
++				    0x0700, 0x0700);
++
++		/* save target gain to restore after hardware open complete */
++		reg = snd_soc_read(codec, MT6351_ZCD_CON2);
++		priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL] = reg & 0x1f;
++		priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTR] = (reg >> 7) & 0x1f;
++
++		/* Set HPR/HPL gain as minimum (~ -40dB) */
++		snd_soc_update_bits(codec, MT6351_ZCD_CON2, 0xffff, 0x0F9F);
++		/* Set HS gain as minimum (~ -40dB) */
++		snd_soc_update_bits(codec, MT6351_ZCD_CON3, 0xffff, 0x001F);
++		/* De_OSC of HP */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON2,
++				    0x0001, 0x0001);
++		/* enable output STBENH */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON1,
++				    0xffff, 0x2000);
++		/* De_OSC of voice, enable output STBENH */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON1,
++				    0xffff, 0x2100);
++		/* Enable voice driver */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON0,
++				    0x0010, 0xE090);
++		/* Enable pre-charge buffer  */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON1,
++				    0xffff, 0x2140);
++
++		usleep_range(50, 60);
++
++		/* Apply digital DC compensation value to DAC */
++		set_hp_gain_zero(codec);
++
++		/* Enable HPR/HPL */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON1,
++				    0xffff, 0x2100);
++		/* Disable pre-charge buffer */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON1,
++				    0xffff, 0x2000);
++		/* Disable De_OSC of voice */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON0,
++				    0x0010, 0xF4EF);
++		/* Disable voice buffer */
++
++		/* from yoyo HQ */
++		snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON6,
++				    0x0700, 0x0300);
++
++		/* Enable ZCD, for minimize pop noise */
++		/* when adjust gain during HP buffer on */
++		hp_zcd_enable(codec);
++
++		/* apply volume setting */
++		hp_gain_ramp_set(codec, HP_GAIN_RESTORE);
++
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		priv->hp_en_counter--;
++		if (priv->hp_en_counter > 0)
++			break;	/* still being used, don't close */
++		else if (priv->hp_en_counter < 0)
++			dev_err(priv->dev, "%s(), hp_en_counter %d <= 0\n",
++				__func__,
++				priv->hp_en_counter);
++
++		/* Disable AUD_ZCD */
++		hp_zcd_disable(codec);
++
++		/* Set HPR/HPL gain as -1dB, step by step */
++		hp_gain_ramp_set(codec, HP_GAIN_SET_ZERO);
++
++		set_hp_gain_zero(codec);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		if (priv->hp_en_counter > 0)
++			break;	/* still being used, don't close */
++		else if (priv->hp_en_counter < 0)
++			dev_err(priv->dev, "%s(), hp_en_counter %d <= 0\n",
++				__func__,
++				priv->hp_en_counter);
++
++		/* reset*/
++		snd_soc_update_bits(codec,
++				    MT6351_AUDDEC_ANA_CON6,
++				    0x0700,
++				    0x0000);
++		/* De_OSC of HP */
++		snd_soc_update_bits(codec,
++				    MT6351_AUDDEC_ANA_CON2,
++				    0x0001,
++				    0x0000);
++
++		/* apply volume setting */
++		hp_gain_ramp_set(codec, HP_GAIN_RESTORE);
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int mt_aif_out_event(struct snd_soc_dapm_widget *w,
++			    struct snd_kcontrol *kcontrol,
++			    int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++	struct mt6351_priv *priv = snd_soc_codec_get_drvdata(codec);
++
++	dev_dbg(priv->dev, "%s(), event 0x%x, rate %d\n",
++		__func__, event, priv->ul_rate);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* dcclk_div=11'b00100000011, dcclk_ref_ck_sel=2'b00 */
++		snd_soc_update_bits(codec, MT6351_AFE_DCCLK_CFG0,
++				    0xffff, 0x2062);
++		/* dcclk_pdn=1'b0 */
++		snd_soc_update_bits(codec, MT6351_AFE_DCCLK_CFG0,
++				    0xffff, 0x2060);
++		/* dcclk_gen_on=1'b1 */
++		snd_soc_update_bits(codec, MT6351_AFE_DCCLK_CFG0,
++				    0xffff, 0x2061);
++
++		/* UL sample rate and mode configure */
++		snd_soc_update_bits(codec, MT6351_AFE_UL_SRC_CON0_H,
++				    0x000E,
++				    get_cap_reg_val(codec, priv->ul_rate) << 1);
++
++		/* fixed 260k path for 8/16/32/48 */
++		if (priv->ul_rate <= 48000) {
++			/* anc ul path src on */
++			snd_soc_update_bits(codec,
++					    MT6351_AFE_HPANC_CFG0,
++					    0x1 << 1,
++					    0x1 << 1);
++			/* ANC clk pdn release */
++			snd_soc_update_bits(codec,
++					    MT6351_AFE_HPANC_CFG0,
++					    0x1 << 0,
++					    0x0 << 0);
++		}
++		break;
++	case SND_SOC_DAPM_PRE_PMD:
++		/* fixed 260k path for 8/16/32/48 */
++		if (priv->ul_rate <= 48000) {
++			/* anc ul path src on */
++			snd_soc_update_bits(codec,
++					    MT6351_AFE_HPANC_CFG0,
++					    0x1 << 1,
++					    0x0 << 1);
++			/* ANC clk pdn release */
++			snd_soc_update_bits(codec,
++					    MT6351_AFE_HPANC_CFG0,
++					    0x1 << 0,
++					    0x1 << 0);
++		}
++		break;
++	default:
++		break;
++	}
++
++	return 0;
++}
++
++static int mt_adc_clkgen_event(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol,
++			       int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Audio ADC clock gen. mode: 00_divided by 2 (Normal) */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON3,
++				    0x3 << 4, 0x0);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		/* ADC CLK from: 00_13MHz from CLKSQ (Default) */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON3,
++				    0x3 << 2, 0x0);
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++static int mt_pga_left_event(struct snd_soc_dapm_widget *w,
++			     struct snd_kcontrol *kcontrol,
++			     int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Audio L PGA precharge on */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON0,
++				    0x3 << RG_AUDPREAMPLDCPRECHARGE,
++				    0x1 << RG_AUDPREAMPLDCPRECHARGE);
++		/* Audio L PGA mode: 1_DCC */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON0,
++				    0x3 << RG_AUDPREAMPLDCCEN,
++				    0x1 << RG_AUDPREAMPLDCCEN);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		usleep_range(100, 120);
++		/* Audio L PGA precharge off */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON0,
++				    0x3 << RG_AUDPREAMPLDCPRECHARGE,
++				    0x0 << RG_AUDPREAMPLDCPRECHARGE);
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++static int mt_pga_right_event(struct snd_soc_dapm_widget *w,
++			      struct snd_kcontrol *kcontrol,
++			      int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* Audio R PGA precharge on */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON1,
++				    0x3 << RG_AUDPREAMPRDCPRECHARGE,
++				    0x1 << RG_AUDPREAMPRDCPRECHARGE);
++		/* Audio R PGA mode: 1_DCC */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON1,
++				    0x3 << RG_AUDPREAMPRDCCEN,
++				    0x1 << RG_AUDPREAMPRDCCEN);
++		break;
++	case SND_SOC_DAPM_POST_PMU:
++		usleep_range(100, 120);
++		/* Audio R PGA precharge off */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON1,
++				    0x3 << RG_AUDPREAMPRDCPRECHARGE,
++				    0x0 << RG_AUDPREAMPRDCPRECHARGE);
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++static int mt_mic_bias_0_event(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol,
++			       int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* MIC Bias 0 LowPower: 0_Normal */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON9,
++				    0x3 << RG_AUDMICBIAS0LOWPEN, 0x0);
++		/* MISBIAS0 = 1P9V */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON9,
++				    0x7 << RG_AUDMICBIAS0VREF,
++				    0x2 << RG_AUDMICBIAS0VREF);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/* MISBIAS0 = 1P97 */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON9,
++				    0x7 << RG_AUDMICBIAS0VREF,
++				    0x0 << RG_AUDMICBIAS0VREF);
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++static int mt_mic_bias_1_event(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol,
++			       int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* MIC Bias 1 LowPower: 0_Normal */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON10,
++				    0x3 << RG_AUDMICBIAS1LOWPEN, 0x0);
++		/* MISBIAS1 = 2P7V */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON10,
++				    0x7 << RG_AUDMICBIAS1VREF,
++				    0x7 << RG_AUDMICBIAS1VREF);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/* MISBIAS1 = 1P7V */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON10,
++				    0x7 << RG_AUDMICBIAS1VREF,
++				    0x0 << RG_AUDMICBIAS1VREF);
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++static int mt_mic_bias_2_event(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kcontrol,
++			       int event)
++{
++	struct snd_soc_codec *codec = snd_soc_dapm_to_codec(w->dapm);
++
++	switch (event) {
++	case SND_SOC_DAPM_PRE_PMU:
++		/* MIC Bias 2 LowPower: 0_Normal */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON9,
++				    0x3 << RG_AUDMICBIAS2LOWPEN, 0x0);
++		/* MISBIAS2 = 1P9V */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON9,
++				    0x7 << RG_AUDMICBIAS2VREF,
++				    0x2 << RG_AUDMICBIAS2VREF);
++		break;
++	case SND_SOC_DAPM_POST_PMD:
++		/* MISBIAS2 = 1P97 */
++		snd_soc_update_bits(codec, MT6351_AUDENC_ANA_CON9,
++				    0x7 << RG_AUDMICBIAS2VREF,
++				    0x0 << RG_AUDMICBIAS2VREF);
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
++
++/* DAPM Kcontrols */
++static const struct snd_kcontrol_new mt_lineout_control =
++	SOC_DAPM_SINGLE("Switch", MT6351_AUDDEC_ANA_CON3,
++			RG_AUDLOLPWRUP_VAUDP32_BIT, 1, 0);
++
++/* DAPM Widgets */
++static const struct snd_soc_dapm_widget mt6351_dapm_widgets[] = {
++	/* Digital Clock */
++	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_AFE_CTL", MT6351_AUDIO_TOP_CON0,
++			    AUD_TOP_PDN_AFE_CTL_BIT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_DAC_CTL", MT6351_AUDIO_TOP_CON0,
++			    AUD_TOP_PDN_DAC_CTL_BIT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_ADC_CTL", MT6351_AUDIO_TOP_CON0,
++			    AUD_TOP_PDN_ADC_CTL_BIT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_PWR_CLK", MT6351_AUDIO_TOP_CON0,
++			    AUD_TOP_PWR_CLK_DIS_CTL_BIT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_PDN_RESERVED", MT6351_AUDIO_TOP_CON0,
++			    AUD_TOP_PDN_RESERVED_BIT, 1, NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY("NCP", MT6351_AFE_NCP_CFG0,
++			    RG_NCP_ON_BIT, 0,
++			    mt_ncp_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
++
++	SND_SOC_DAPM_SUPPLY("DL Digital Clock", SND_SOC_NOPM,
++			    0, 0, NULL, 0),
++
++	/* Global Supply*/
++	SND_SOC_DAPM_SUPPLY("AUDGLB", MT6351_AUDDEC_ANA_CON9,
++			    RG_AUDGLB_PWRDN_VA32_BIT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("CLKSQ Audio", MT6351_TOP_CLKSQ,
++			    RG_CLKSQ_EN_AUD_BIT, 0,
++			    mt_reg_set_clr_event,
++			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++	SND_SOC_DAPM_SUPPLY("ZCD13M_CK", MT6351_TOP_CKPDN_CON0,
++			    RG_ZCD13M_CK_PDN_BIT, 1,
++			    mt_reg_set_clr_event,
++			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++	SND_SOC_DAPM_SUPPLY("AUD_CK", MT6351_TOP_CKPDN_CON0,
++			    RG_AUD_CK_PDN_BIT, 1,
++			    mt_reg_set_clr_event,
++			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++	SND_SOC_DAPM_SUPPLY("AUDIF_CK", MT6351_TOP_CKPDN_CON0,
++			    RG_AUDIF_CK_PDN_BIT, 1,
++			    mt_reg_set_clr_event,
++			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++	SND_SOC_DAPM_SUPPLY("AUDNCP_CK", MT6351_TOP_CKPDN_CON0,
++			    RG_AUDNCP_CK_PDN_BIT, 1,
++			    mt_reg_set_clr_event,
++			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
++
++	SND_SOC_DAPM_SUPPLY("AFE_ON", MT6351_AFE_UL_DL_CON0, RG_AFE_ON_BIT, 0,
++			    NULL, 0),
++
++	/* AIF Rx*/
++	SND_SOC_DAPM_AIF_IN_E("AIF_RX", "AIF1 Playback", 0,
++			      MT6351_AFE_DL_SRC2_CON0_L,
++			      RG_DL_2_SRC_ON_TMP_CTL_PRE_BIT, 0,
++			      mt_aif_in_event, SND_SOC_DAPM_PRE_PMU),
++
++	/* DL Supply */
++	SND_SOC_DAPM_SUPPLY("DL Power Supply", SND_SOC_NOPM,
++			    0, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("NV Regulator", MT6351_AUDDEC_ANA_CON10,
++			    RG_NVREG_EN_VAUDP32_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("AUD_CLK", MT6351_AUDDEC_ANA_CON9,
++			    RG_RSTB_DECODER_VA32_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("IBIST", MT6351_AUDDEC_ANA_CON9,
++			    RG_AUDIBIASPWRDN_VAUDP32_BIT, 1, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("LDO", MT6351_AUDDEC_ANA_CON9,
++			    RG_LCLDO_DEC_EN_VA32_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("LDO_REMOTE_SENSE", MT6351_AUDDEC_ANA_CON9,
++			    RG_LCLDO_DEC_REMOTE_SENSE_VA18_BIT, 0, NULL, 0),
++
++	/* DAC */
++	SND_SOC_DAPM_MUX("DAC In Mux", SND_SOC_NOPM, 0, 0, &dac_in_mux_control),
++
++	SND_SOC_DAPM_DAC("DACL", NULL, MT6351_AUDDEC_ANA_CON0,
++			 RG_AUDDACLPWRUP_VAUDP32_BIT, 0),
++	SND_SOC_DAPM_SUPPLY("DACL_BIASGEN", MT6351_AUDDEC_ANA_CON0,
++			    RG_AUD_DAC_PWL_UP_VA32_BIT, 0, NULL, 0),
++
++	SND_SOC_DAPM_DAC("DACR", NULL, MT6351_AUDDEC_ANA_CON0,
++			 RG_AUDDACRPWRUP_VAUDP32_BIT, 0),
++	SND_SOC_DAPM_SUPPLY("DACR_BIASGEN", MT6351_AUDDEC_ANA_CON0,
++			    RG_AUD_DAC_PWR_UP_VA32_BIT, 0, NULL, 0),
++	/* LOL */
++	SND_SOC_DAPM_MUX("LOL Mux", SND_SOC_NOPM, 0, 0, &lo_in_mux_control),
++
++	SND_SOC_DAPM_SUPPLY("LO Stability Enh", MT6351_AUDDEC_ANA_CON3,
++			    RG_LOOUTPUTSTBENH_VAUDP32_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("LOL Bias Gen", MT6351_AUDDEC_ANA_CON6,
++			    RG_ABIDEC_RSVD0_VAUDP32_LOL_BIT, 0, NULL, 0),
++
++	SND_SOC_DAPM_OUT_DRV("LOL Buffer", MT6351_AUDDEC_ANA_CON3,
++			     RG_AUDLOLPWRUP_VAUDP32_BIT, 0, NULL, 0),
++
++	/* Headphone */
++	SND_SOC_DAPM_MUX("HPL Mux", SND_SOC_NOPM, 0, 0, &hpl_in_mux_control),
++	SND_SOC_DAPM_MUX("HPR Mux", SND_SOC_NOPM, 0, 0, &hpr_in_mux_control),
++
++	SND_SOC_DAPM_OUT_DRV_E("HPL Power", MT6351_AUDDEC_ANA_CON0,
++			       RG_AUDHPLPWRUP_VAUDP32_BIT, 0, NULL, 0,
++			       mt_hp_event,
++			       SND_SOC_DAPM_PRE_PMU |
++			       SND_SOC_DAPM_PRE_PMD |
++			       SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_OUT_DRV_E("HPR Power", MT6351_AUDDEC_ANA_CON0,
++			       RG_AUDHPRPWRUP_VAUDP32_BIT, 0, NULL, 0,
++			       mt_hp_event,
++			       SND_SOC_DAPM_PRE_PMU |
++			       SND_SOC_DAPM_PRE_PMD |
++			       SND_SOC_DAPM_POST_PMD),
++
++	/* Receiver */
++	SND_SOC_DAPM_MUX("RCV Mux", SND_SOC_NOPM, 0, 0, &rcv_in_mux_control),
++
++	SND_SOC_DAPM_SUPPLY("RCV Stability Enh", MT6351_AUDDEC_ANA_CON1,
++			    RG_HSOUTPUTSTBENH_VAUDP32_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("RCV Bias Gen", MT6351_AUDDEC_ANA_CON6,
++			    RG_ABIDEC_RSVD0_VAUDP32_HS_BIT, 0, NULL, 0),
++
++	SND_SOC_DAPM_OUT_DRV("RCV Buffer", MT6351_AUDDEC_ANA_CON0,
++			     RG_AUDHSPWRUP_VAUDP32_BIT, 0, NULL, 0),
++
++	/* Outputs */
++	SND_SOC_DAPM_OUTPUT("Receiver"),
++	SND_SOC_DAPM_OUTPUT("Headphone L"),
++	SND_SOC_DAPM_OUTPUT("Headphone R"),
++	SND_SOC_DAPM_OUTPUT("LINEOUT L"),
++
++	/* SGEN */
++	SND_SOC_DAPM_SUPPLY("SGEN DL Enable", MT6351_AFE_SGEN_CFG0,
++			    SGEN_C_DAC_EN_CTL_BIT, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY("SGEN MUTE", MT6351_AFE_SGEN_CFG0,
++			    SGEN_C_MUTE_SW_CTL_BIT, 1,
++			    mt_sgen_event, SND_SOC_DAPM_PRE_PMU),
++	SND_SOC_DAPM_SUPPLY("SGEN DL SRC", MT6351_AFE_DL_SRC2_CON0_L,
++			    RG_DL_2_SRC_ON_TMP_CTL_PRE_BIT, 0, NULL, 0),
++
++	SND_SOC_DAPM_INPUT("SGEN DL"),
++
++	/* Uplinks */
++	SND_SOC_DAPM_AIF_OUT_E("AIF1TX", "AIF1 Capture", 0,
++			       MT6351_AFE_UL_SRC_CON0_L,
++			       UL_SRC_ON_TMP_CTL, 0,
++			       mt_aif_out_event,
++			       SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
++
++	SND_SOC_DAPM_SUPPLY_S("VUSB33_LDO", SUPPLY_SUBSEQ_ENABLE,
++			      MT6351_LDO_VUSB33_CON0, RG_VUSB33_EN, 0,
++			      NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("VUSB33_LDO_CTRL", SUPPLY_SUBSEQ_SETTING,
++			      MT6351_LDO_VUSB33_CON0, RG_VUSB33_ON_CTRL, 1,
++			      NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY_S("VA18_LDO", SUPPLY_SUBSEQ_ENABLE,
++			      MT6351_LDO_VA18_CON0, RG_VA18_EN, 0, NULL, 0),
++	SND_SOC_DAPM_SUPPLY_S("VA18_LDO_CTRL", SUPPLY_SUBSEQ_SETTING,
++			      MT6351_LDO_VA18_CON0, RG_VA18_ON_CTRL, 1,
++			      NULL, 0),
++
++	SND_SOC_DAPM_SUPPLY_S("ADC CLKGEN", SUPPLY_SUBSEQ_ENABLE,
++			      MT6351_AUDENC_ANA_CON3, RG_AUDADCCLKRSTB, 0,
++			      mt_adc_clkgen_event,
++			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
++
++	/* Uplinks MUX */
++	SND_SOC_DAPM_MUX("AIF Out Mux", SND_SOC_NOPM, 0, 0,
++			 &aif_out_mux_control),
++
++	SND_SOC_DAPM_MUX("ADC L Mux", SND_SOC_NOPM, 0, 0,
++			 &adc_left_mux_control),
++	SND_SOC_DAPM_MUX("ADC R Mux", SND_SOC_NOPM, 0, 0,
++			 &adc_right_mux_control),
++
++	SND_SOC_DAPM_ADC("ADC L", NULL,
++			 MT6351_AUDENC_ANA_CON0, RG_AUDADCLPWRUP, 0),
++	SND_SOC_DAPM_ADC("ADC R", NULL,
++			 MT6351_AUDENC_ANA_CON1, RG_AUDADCRPWRUP, 0),
++
++	SND_SOC_DAPM_MUX("PGA L Mux", SND_SOC_NOPM, 0, 0,
++			 &pga_left_mux_control),
++	SND_SOC_DAPM_MUX("PGA R Mux", SND_SOC_NOPM, 0, 0,
++			 &pga_right_mux_control),
++
++	SND_SOC_DAPM_PGA_E("PGA L", MT6351_AUDENC_ANA_CON0, RG_AUDPREAMPLON, 0,
++			   NULL, 0,
++			   mt_pga_left_event,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
++	SND_SOC_DAPM_PGA_E("PGA R", MT6351_AUDENC_ANA_CON1, RG_AUDPREAMPRON, 0,
++			   NULL, 0,
++			   mt_pga_right_event,
++			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
++
++	/* main mic mic bias */
++	SND_SOC_DAPM_SUPPLY_S("Mic Bias 0", SUPPLY_SUBSEQ_MICBIAS,
++			      MT6351_AUDENC_ANA_CON9, RG_AUDPWDBMICBIAS0, 0,
++			      mt_mic_bias_0_event,
++			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	/* ref mic mic bias */
++	SND_SOC_DAPM_SUPPLY_S("Mic Bias 2", SUPPLY_SUBSEQ_MICBIAS,
++			      MT6351_AUDENC_ANA_CON9, RG_AUDPWDBMICBIAS2, 0,
++			      mt_mic_bias_2_event,
++			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	/* headset mic1/2 mic bias */
++	SND_SOC_DAPM_SUPPLY_S("Mic Bias 1", SUPPLY_SUBSEQ_MICBIAS,
++			      MT6351_AUDENC_ANA_CON10, RG_AUDPWDBMICBIAS1, 0,
++			      mt_mic_bias_1_event,
++			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++	SND_SOC_DAPM_SUPPLY_S("Mic Bias 1 DCC pull high", SUPPLY_SUBSEQ_MICBIAS,
++			      MT6351_AUDENC_ANA_CON10,
++			      RG_AUDMICBIAS1DCSW1NEN, 0,
++			      NULL, 0),
++
++	/* UL input */
++	SND_SOC_DAPM_INPUT("AIN0"),
++	SND_SOC_DAPM_INPUT("AIN1"),
++	SND_SOC_DAPM_INPUT("AIN2"),
++	SND_SOC_DAPM_INPUT("AIN3"),
++};
++
++static const struct snd_soc_dapm_route mt6351_dapm_routes[] = {
++	/* Capture */
++	{"AIF1TX", NULL, "AIF Out Mux"},
++	{"AIF1TX", NULL, "VUSB33_LDO"},
++	{"VUSB33_LDO", NULL, "VUSB33_LDO_CTRL"},
++	{"AIF1TX", NULL, "VA18_LDO"},
++	{"VA18_LDO", NULL, "VA18_LDO_CTRL"},
++
++	{"AIF1TX", NULL, "AUDGLB"},
++	{"AIF1TX", NULL, "CLKSQ Audio"},
++
++	{"AIF1TX", NULL, "AFE_ON"},
++
++	{"AIF1TX", NULL, "AUDIO_TOP_AFE_CTL"},
++	{"AIF1TX", NULL, "AUDIO_TOP_ADC_CTL"},
++	{"AIF1TX", NULL, "AUDIO_TOP_PWR_CLK"},
++	{"AIF1TX", NULL, "AUDIO_TOP_PDN_RESERVED"},
++
++	{"AIF Out Mux", "Normal Path", "ADC L"},
++	{"AIF Out Mux", "Normal Path", "ADC R"},
++
++	{"ADC L", NULL, "ADC L Mux"},
++	{"ADC L", NULL, "AUD_CK"},
++	{"ADC L", NULL, "AUDIF_CK"},
++	{"ADC L", NULL, "ADC CLKGEN"},
++	{"ADC R", NULL, "ADC R Mux"},
++	{"ADC R", NULL, "AUD_CK"},
++	{"ADC R", NULL, "AUDIF_CK"},
++	{"ADC R", NULL, "ADC CLKGEN"},
++
++	{"ADC L Mux", "AIN0", "AIN0"},
++	{"ADC L Mux", "Left Preamplifier", "PGA L"},
++
++	{"ADC R Mux", "AIN0", "AIN0"},
++	{"ADC R Mux", "Right Preamplifier", "PGA R"},
++
++	{"PGA L", NULL, "PGA L Mux"},
++	{"PGA R", NULL, "PGA R Mux"},
++
++	{"PGA L Mux", "AIN0", "AIN0"},
++	{"PGA L Mux", "AIN1", "AIN1"},
++	{"PGA L Mux", "AIN2", "AIN2"},
++
++	{"PGA R Mux", "AIN0", "AIN0"},
++	{"PGA R Mux", "AIN3", "AIN3"},
++	{"PGA R Mux", "AIN2", "AIN2"},
++
++	{"AIN0", NULL, "Mic Bias 0"},
++	{"AIN2", NULL, "Mic Bias 2"},
++
++	{"AIN1", NULL, "Mic Bias 1"},
++	{"AIN1", NULL, "Mic Bias 1 DCC pull high"},
++
++	/* DL Supply */
++	{"DL Power Supply", NULL, "AUDGLB"},
++	{"DL Power Supply", NULL, "CLKSQ Audio"},
++	{"DL Power Supply", NULL, "ZCD13M_CK"},
++	{"DL Power Supply", NULL, "AUD_CK"},
++	{"DL Power Supply", NULL, "AUDIF_CK"},
++	{"DL Power Supply", NULL, "AUDNCP_CK"},
++
++	{"DL Power Supply", NULL, "NV Regulator"},
++	{"DL Power Supply", NULL, "AUD_CLK"},
++	{"DL Power Supply", NULL, "IBIST"},
++	{"DL Power Supply", NULL, "LDO"},
++	{"LDO", NULL, "LDO_REMOTE_SENSE"},
++
++	/* DL Digital Supply */
++	{"DL Digital Clock", NULL, "AUDIO_TOP_AFE_CTL"},
++	{"DL Digital Clock", NULL, "AUDIO_TOP_DAC_CTL"},
++	{"DL Digital Clock", NULL, "AUDIO_TOP_PWR_CLK"},
++	{"DL Digital Clock", NULL, "AUDIO_TOP_PDN_RESERVED"},
++	{"DL Digital Clock", NULL, "NCP"},
++	{"DL Digital Clock", NULL, "AFE_ON"},
++
++	{"AIF_RX", NULL, "DL Digital Clock"},
++
++	/* DL Path */
++	{"DAC In Mux", "Normal Path", "AIF_RX"},
++
++	{"DAC In Mux", "Sgen", "SGEN DL"},
++	{"SGEN DL", NULL, "SGEN DL SRC"},
++	{"SGEN DL", NULL, "SGEN MUTE"},
++	{"SGEN DL", NULL, "SGEN DL Enable"},
++	{"SGEN DL", NULL, "DL Digital Clock"},
++
++	{"DACL", NULL, "DAC In Mux"},
++	{"DACL", NULL, "DL Power Supply"},
++	{"DACL", NULL, "DACL_BIASGEN"},
++
++	{"DACR", NULL, "DAC In Mux"},
++	{"DACR", NULL, "DL Power Supply"},
++	{"DACR", NULL, "DACR_BIASGEN"},
++
++	{"LOL Mux", "Playback", "DACL"},
++
++	{"LOL Buffer", NULL, "LOL Mux"},
++	{"LOL Buffer", NULL, "LO Stability Enh"},
++	{"LOL Buffer", NULL, "LOL Bias Gen"},
++
++	{"LINEOUT L", NULL, "LOL Buffer"},
++
++	/* Headphone Path */
++	{"HPL Mux", "Audio Playback", "DACL"},
++	{"HPR Mux", "Audio Playback", "DACR"},
++
++	{"HPL Mux", "LoudSPK Playback", "DACL"},
++	{"HPR Mux", "LoudSPK Playback", "DACR"},
++
++	{"HPL Power", NULL, "HPL Mux"},
++	{"HPR Power", NULL, "HPR Mux"},
++
++	{"Headphone L", NULL, "HPL Power"},
++	{"Headphone R", NULL, "HPR Power"},
++
++	/* Receiver Path */
++	{"RCV Mux", "Voice Playback", "DACL"},
++
++	{"RCV Buffer", NULL, "RCV Mux"},
++	{"RCV Buffer", NULL, "RCV Stability Enh"},
++	{"RCV Buffer", NULL, "RCV Bias Gen"},
++
++	{"Receiver", NULL, "RCV Buffer"},
++};
++
++static int mt6351_codec_init_reg(struct snd_soc_codec *codec)
++{
++	int ret = 0;
++
++	/* Disable CLKSQ 26MHz */
++	snd_soc_update_bits(codec, MT6351_TOP_CLKSQ, 0x0001, 0x0);
++	/* disable AUDGLB */
++	snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON9, 0x1000, 0x1000);
++	/* Turn off AUDNCP_CLKDIV engine clock,Turn off AUD 26M */
++	snd_soc_update_bits(codec, MT6351_TOP_CKPDN_CON0_SET, 0x3800, 0x3800);
++	/* Disable HeadphoneL/HeadphoneR/voice short circuit protection */
++	snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON0, 0xe000, 0xe000);
++	/* [5] = 1, disable LO buffer left short circuit protection */
++	snd_soc_update_bits(codec, MT6351_AUDDEC_ANA_CON3, 0x20, 0x20);
++	/* Reverse the PMIC clock*/
++	snd_soc_update_bits(codec, MT6351_AFE_PMIC_NEWIF_CFG2, 0x8000, 0x8000);
++	return ret;
++}
++
++static int mt6351_codec_probe(struct snd_soc_codec *codec)
++{
++	struct mt6351_priv *priv = snd_soc_codec_get_drvdata(codec);
++
++	snd_soc_component_init_regmap(&codec->component, priv->regmap);
++
++	/* add codec controls */
++	snd_soc_add_codec_controls(codec,
++				   mt6351_snd_controls,
++				   ARRAY_SIZE(mt6351_snd_controls));
++
++	snd_soc_add_codec_controls(codec,
++				   mt6351_snd_ul_controls,
++				   ARRAY_SIZE(mt6351_snd_ul_controls));
++
++	mt6351_codec_init_reg(codec);
++	return 0;
++}
++
++static struct snd_soc_codec_driver mt6351_soc_codec_driver = {
++	.probe = mt6351_codec_probe,
++
++	.component_driver = {
++		.dapm_widgets = mt6351_dapm_widgets,
++		.num_dapm_widgets = ARRAY_SIZE(mt6351_dapm_widgets),
++		.dapm_routes = mt6351_dapm_routes,
++		.num_dapm_routes = ARRAY_SIZE(mt6351_dapm_routes),
++	},
++};
++
++static int mt6351_codec_driver_probe(struct platform_device *pdev)
++{
++	struct mt6351_priv *priv;
++
++	priv = devm_kzalloc(&pdev->dev,
++			    sizeof(struct mt6351_priv),
++			    GFP_KERNEL);
++	if (!priv)
 +		return -ENOMEM;
 +
-+	for (i = 0; i < CLK_NUM; i++) {
-+		afe_priv->clk[i] = devm_clk_get(afe->dev, aud_clks[i]);
-+		if (IS_ERR(afe_priv->clk[i])) {
-+			dev_err(afe->dev, "%s(), devm_clk_get %s fail, ret %ld\n",
-+				__func__, aud_clks[i],
-+				PTR_ERR(afe_priv->clk[i]));
-+			return PTR_ERR(afe_priv->clk[i]);
-+		}
-+	}
++	dev_set_drvdata(&pdev->dev, priv);
 +
-+	return 0;
++	priv->dev = &pdev->dev;
++
++	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	if (IS_ERR(priv->regmap))
++		return PTR_ERR(priv->regmap);
++
++	dev_dbg(priv->dev, "%s(), dev name %s\n",
++		__func__, dev_name(&pdev->dev));
++
++	return snd_soc_register_codec(&pdev->dev,
++				      &mt6351_soc_codec_driver,
++				      mt6351_dai_driver,
++				      ARRAY_SIZE(mt6351_dai_driver));
 +}
 +
-+int mt6797_afe_enable_clock(struct mtk_base_afe *afe)
++static int mt6351_codec_driver_remove(struct platform_device *pdev)
 +{
-+	struct mt6797_afe_private *afe_priv = afe->platform_priv;
-+	int ret;
-+
-+	ret = clk_prepare_enable(afe_priv->clk[CLK_INFRA_SYS_AUD]);
-+	if (ret) {
-+		dev_err(afe->dev, "%s(), clk_prepare_enable %s fail %d\n",
-+			__func__, aud_clks[CLK_INFRA_SYS_AUD], ret);
-+		goto CLK_INFRA_SYS_AUDIO_ERR;
-+	}
-+
-+	ret = clk_prepare_enable(afe_priv->clk[CLK_INFRA_SYS_AUD_26M]);
-+	if (ret) {
-+		dev_err(afe->dev, "%s(), clk_prepare_enable %s fail %d\n",
-+			__func__, aud_clks[CLK_INFRA_SYS_AUD_26M], ret);
-+		goto CLK_INFRA_SYS_AUD_26M_ERR;
-+	}
-+
-+	ret = clk_prepare_enable(afe_priv->clk[CLK_TOP_MUX_AUD]);
-+	if (ret) {
-+		dev_err(afe->dev, "%s(), clk_prepare_enable %s fail %d\n",
-+			__func__, aud_clks[CLK_TOP_MUX_AUD], ret);
-+		goto CLK_MUX_AUDIO_ERR;
-+	}
-+
-+	ret = clk_set_parent(afe_priv->clk[CLK_TOP_MUX_AUD],
-+			     afe_priv->clk[CLK_CLK26M]);
-+	if (ret) {
-+		dev_err(afe->dev, "%s(), clk_set_parent %s-%s fail %d\n",
-+			__func__, aud_clks[CLK_TOP_MUX_AUD],
-+			aud_clks[CLK_CLK26M], ret);
-+		goto CLK_MUX_AUDIO_ERR;
-+	}
-+
-+	ret = clk_prepare_enable(afe_priv->clk[CLK_TOP_MUX_AUD_BUS]);
-+	if (ret) {
-+		dev_err(afe->dev, "%s(), clk_prepare_enable %s fail %d\n",
-+			__func__, aud_clks[CLK_TOP_MUX_AUD_BUS], ret);
-+		goto CLK_MUX_AUDIO_INTBUS_ERR;
-+	}
-+
-+	return ret;
-+
-+CLK_MUX_AUDIO_INTBUS_ERR:
-+	clk_disable_unprepare(afe_priv->clk[CLK_TOP_MUX_AUD_BUS]);
-+CLK_MUX_AUDIO_ERR:
-+	clk_disable_unprepare(afe_priv->clk[CLK_TOP_MUX_AUD]);
-+CLK_INFRA_SYS_AUD_26M_ERR:
-+	clk_disable_unprepare(afe_priv->clk[CLK_INFRA_SYS_AUD_26M]);
-+CLK_INFRA_SYS_AUDIO_ERR:
-+	clk_disable_unprepare(afe_priv->clk[CLK_INFRA_SYS_AUD]);
-+
++	snd_soc_unregister_codec(&pdev->dev);
 +	return 0;
 +}
 +
-+int mt6797_afe_disable_clock(struct mtk_base_afe *afe)
-+{
-+	struct mt6797_afe_private *afe_priv = afe->platform_priv;
++static const struct of_device_id mt6351_of_match[] = {
++	{.compatible = "mediatek,mt6351-sound",},
++	{}
++};
 +
-+	clk_disable_unprepare(afe_priv->clk[CLK_TOP_MUX_AUD_BUS]);
-+	clk_disable_unprepare(afe_priv->clk[CLK_TOP_MUX_AUD]);
-+	clk_disable_unprepare(afe_priv->clk[CLK_INFRA_SYS_AUD_26M]);
-+	clk_disable_unprepare(afe_priv->clk[CLK_INFRA_SYS_AUD]);
++static struct platform_driver mt6351_codec_driver = {
++	.driver = {
++		.name = "mt6351-sound",
++		.of_match_table = mt6351_of_match,
++	},
++	.probe = mt6351_codec_driver_probe,
++	.remove = mt6351_codec_driver_remove,
++};
 +
-+	return 0;
-+}
-diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-clk.h b/sound/soc/mediatek/mt6797/mt6797-afe-clk.h
++module_platform_driver(mt6351_codec_driver)
++
++/* Module information */
++MODULE_DESCRIPTION("MT6351 ALSA SoC codec driver");
++MODULE_AUTHOR("KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/codecs/mt6351.h b/sound/soc/codecs/mt6351.h
 new file mode 100644
-index 000000000000..43d979402f31
+index 000000000000..0365d24f6a3a
 --- /dev/null
-+++ b/sound/soc/mediatek/mt6797/mt6797-afe-clk.h
-@@ -0,0 +1,25 @@
++++ b/sound/soc/codecs/mt6351.h
+@@ -0,0 +1,108 @@
 +/*
-+ * mt6797-afe-clk.h  --  Mediatek 6797 afe clock ctrl definition
++ * mt6351.h  --  mt6351 ALSA SoC audio codec driver
 + *
 + * Copyright (c) 2018 MediaTek Inc.
 + * Author: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 + *
 + * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
 + */
 +
-+#ifndef _MT6797_AFE_CLK_H_
-+#define _MT6797_AFE_CLK_H_
++#ifndef __MT6351_H__
++#define __MT6351_H__
 +
-+struct mtk_base_afe;
++#define MT6351_AFE_UL_DL_CON0               (0x2000 + 0x0000)
++#define MT6351_AFE_DL_SRC2_CON0_H           (0x2000 + 0x0002)
++#define MT6351_AFE_DL_SRC2_CON0_L           (0x2000 + 0x0004)
++#define MT6351_AFE_DL_SDM_CON0              (0x2000 + 0x0006)
++#define MT6351_AFE_DL_SDM_CON1              (0x2000 + 0x0008)
++#define MT6351_AFE_UL_SRC_CON0_H            (0x2000 + 0x000a)
++#define MT6351_AFE_UL_SRC_CON0_L            (0x2000 + 0x000c)
++#define MT6351_AFE_UL_SRC_CON1_H            (0x2000 + 0x000e)
++#define MT6351_AFE_UL_SRC_CON1_L            (0x2000 + 0x0010)
++#define MT6351_AFE_TOP_CON0                 (0x2000 + 0x0012)
++#define MT6351_AUDIO_TOP_CON0               (0x2000 + 0x0014)
++#define MT6351_AFE_DL_SRC_MON0              (0x2000 + 0x0016)
++#define MT6351_AFE_DL_SDM_TEST0             (0x2000 + 0x0018)
++#define MT6351_AFE_MON_DEBUG0               (0x2000 + 0x001a)
++#define MT6351_AFUNC_AUD_CON0               (0x2000 + 0x001c)
++#define MT6351_AFUNC_AUD_CON1               (0x2000 + 0x001e)
++#define MT6351_AFUNC_AUD_CON2               (0x2000 + 0x0020)
++#define MT6351_AFUNC_AUD_CON3               (0x2000 + 0x0022)
++#define MT6351_AFUNC_AUD_CON4               (0x2000 + 0x0024)
++#define MT6351_AFUNC_AUD_MON0               (0x2000 + 0x0026)
++#define MT6351_AFUNC_AUD_MON1               (0x2000 + 0x0028)
++#define MT6351_AFE_UP8X_FIFO_CFG0           (0x2000 + 0x002c)
++#define MT6351_AFE_UP8X_FIFO_LOG_MON0       (0x2000 + 0x002e)
++#define MT6351_AFE_UP8X_FIFO_LOG_MON1       (0x2000 + 0x0030)
++#define MT6351_AFE_DL_DC_COMP_CFG0          (0x2000 + 0x0032)
++#define MT6351_AFE_DL_DC_COMP_CFG1          (0x2000 + 0x0034)
++#define MT6351_AFE_DL_DC_COMP_CFG2          (0x2000 + 0x0036)
++#define MT6351_AFE_PMIC_NEWIF_CFG0          (0x2000 + 0x0038)
++#define MT6351_AFE_PMIC_NEWIF_CFG1          (0x2000 + 0x003a)
++#define MT6351_AFE_PMIC_NEWIF_CFG2          (0x2000 + 0x003c)
++#define MT6351_AFE_PMIC_NEWIF_CFG3          (0x2000 + 0x003e)
++#define MT6351_AFE_SGEN_CFG0                (0x2000 + 0x0040)
++#define MT6351_AFE_SGEN_CFG1                (0x2000 + 0x0042)
++#define MT6351_AFE_ADDA2_UP8X_FIFO_LOG_MON0 (0x2000 + 0x004c)
++#define MT6351_AFE_ADDA2_UP8X_FIFO_LOG_MON1 (0x2000 + 0x004e)
++#define MT6351_AFE_ADDA2_PMIC_NEWIF_CFG0    (0x2000 + 0x0050)
++#define MT6351_AFE_ADDA2_PMIC_NEWIF_CFG1    (0x2000 + 0x0052)
++#define MT6351_AFE_ADDA2_PMIC_NEWIF_CFG2    (0x2000 + 0x0054)
++#define MT6351_AFE_DCCLK_CFG0               (0x2000 + 0x0090)
++#define MT6351_AFE_DCCLK_CFG1               (0x2000 + 0x0092)
++#define MT6351_AFE_HPANC_CFG0               (0x2000 + 0x0094)
++#define MT6351_AFE_NCP_CFG0                 (0x2000 + 0x0096)
++#define MT6351_AFE_NCP_CFG1                 (0x2000 + 0x0098)
 +
-+int mt6797_init_clock(struct mtk_base_afe *afe);
-+int mt6797_afe_enable_clock(struct mtk_base_afe *afe);
-+int mt6797_afe_disable_clock(struct mtk_base_afe *afe);
-+#endif
-diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-common.h b/sound/soc/mediatek/mt6797/mt6797-afe-common.h
-new file mode 100644
-index 000000000000..3509f53360e2
---- /dev/null
-+++ b/sound/soc/mediatek/mt6797/mt6797-afe-common.h
-@@ -0,0 +1,57 @@
-+/*
-+ * mt6797-afe-common.h  --  Mediatek 6797 audio driver definitions
-+ *
-+ * Copyright (c) 2018 MediaTek Inc.
-+ * Author: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
++#define MT6351_TOP_CKPDN_CON0      0x023A
++#define MT6351_TOP_CKPDN_CON0_SET  0x023C
++#define MT6351_TOP_CKPDN_CON0_CLR  0x023E
 +
-+#ifndef _MT_6797_AFE_COMMON_H_
-+#define _MT_6797_AFE_COMMON_H_
++#define MT6351_TOP_CLKSQ           0x029A
++#define MT6351_TOP_CLKSQ_SET       0x029C
++#define MT6351_TOP_CLKSQ_CLR       0x029E
 +
-+#include <sound/soc.h>
-+#include <linux/regmap.h>
-+#include "../common/mtk-base-afe.h"
++#define MT6351_ZCD_CON0            0x0800
++#define MT6351_ZCD_CON1            0x0802
++#define MT6351_ZCD_CON2            0x0804
++#define MT6351_ZCD_CON3            0x0806
++#define MT6351_ZCD_CON4            0x0808
++#define MT6351_ZCD_CON5            0x080A
 +
-+enum {
-+	MT6797_MEMIF_DL1,
-+	MT6797_MEMIF_DL2,
-+	MT6797_MEMIF_DL3,
-+	MT6797_MEMIF_VUL,
-+	MT6797_MEMIF_AWB,
-+	MT6797_MEMIF_VUL12,
-+	MT6797_MEMIF_DAI,
-+	MT6797_MEMIF_MOD_DAI,
-+	MT6797_MEMIF_NUM,
-+	MT6797_DAI_ADDA = MT6797_MEMIF_NUM,
-+	MT6797_DAI_NUM,
-+};
++#define MT6351_LDO_VA18_CON0       0x0A00
++#define MT6351_LDO_VA18_CON1       0x0A02
++#define MT6351_LDO_VUSB33_CON0     0x0A16
++#define MT6351_LDO_VUSB33_CON1     0x0A18
 +
-+enum {
-+	MT6797_IRQ_1,
-+	MT6797_IRQ_2,
-+	MT6797_IRQ_3,
-+	MT6797_IRQ_4,
-+	MT6797_IRQ_7,
-+	MT6797_IRQ_NUM,
-+};
++#define MT6351_AUDDEC_ANA_CON0     0x0CF2
++#define MT6351_AUDDEC_ANA_CON1     0x0CF4
++#define MT6351_AUDDEC_ANA_CON2     0x0CF6
++#define MT6351_AUDDEC_ANA_CON3     0x0CF8
++#define MT6351_AUDDEC_ANA_CON4     0x0CFA
++#define MT6351_AUDDEC_ANA_CON5     0x0CFC
++#define MT6351_AUDDEC_ANA_CON6     0x0CFE
++#define MT6351_AUDDEC_ANA_CON7     0x0D00
++#define MT6351_AUDDEC_ANA_CON8     0x0D02
++#define MT6351_AUDDEC_ANA_CON9     0x0D04
++#define MT6351_AUDDEC_ANA_CON10    0x0D06
 +
-+struct clk;
-+
-+struct mt6797_afe_private {
-+	struct clk **clk;
-+};
-+
-+unsigned int mt6797_general_rate_transform(struct device *dev,
-+					   unsigned int rate);
-+unsigned int mt6797_rate_transform(struct device *dev,
-+				   unsigned int rate, int aud_blk);
-+#endif
-diff --git a/sound/soc/mediatek/mt6797/mt6797-interconnection.h b/sound/soc/mediatek/mt6797/mt6797-interconnection.h
-new file mode 100644
-index 000000000000..78774cd19383
---- /dev/null
-+++ b/sound/soc/mediatek/mt6797/mt6797-interconnection.h
-@@ -0,0 +1,41 @@
-+/*
-+ * Mediatek MT6797 audio driver interconnection definition
-+ *
-+ * Copyright (c) 2018 MediaTek Inc.
-+ * Author: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#ifndef _MT6797_INTERCONNECTION_H_
-+#define _MT6797_INTERCONNECTION_H_
-+
-+#define I_I2S0_CH1 0
-+#define I_I2S0_CH2 1
-+#define I_ADDA_UL_CH1 3
-+#define I_ADDA_UL_CH2 4
-+#define I_DL1_CH1 5
-+#define I_DL1_CH2 6
-+#define I_DL2_CH1 7
-+#define I_DL2_CH2 8
-+#define I_PCM_1_CAP_CH1 9
-+#define I_GAIN1_OUT_CH1 10
-+#define I_GAIN1_OUT_CH2 11
-+#define I_GAIN2_OUT_CH1 12
-+#define I_GAIN2_OUT_CH2 13
-+#define I_PCM_2_CAP_CH1 14
-+#define I_PCM_2_CAP_CH2 21
-+#define I_PCM_1_CAP_CH2 22
-+#define I_DL3_CH1 23
-+#define I_DL3_CH2 24
-+#define I_I2S2_CH1 25
-+#define I_I2S2_CH2 26
-+
-+#endif
-diff --git a/sound/soc/mediatek/mt6797/mt6797-reg.h b/sound/soc/mediatek/mt6797/mt6797-reg.h
-new file mode 100644
-index 000000000000..3330f73fc8bb
---- /dev/null
-+++ b/sound/soc/mediatek/mt6797/mt6797-reg.h
-@@ -0,0 +1,846 @@
-+/*
-+ * mt6797-reg.h  --  Mediatek 6797 audio driver reg definition
-+ *
-+ * Copyright (c) 2018 MediaTek Inc.
-+ * Author: Garlic Tseng <garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 and
-+ * only version 2 as published by the Free Software Foundation.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU General Public License for more details.
-+ */
-+
-+#ifndef _MT6797_REG_H_
-+#define _MT6797_REG_H_
-+
-+#define AUDIO_TOP_CON0            0x0000
-+#define AUDIO_TOP_CON1            0x0004
-+#define AUDIO_TOP_CON3            0x000c
-+#define AFE_DAC_CON0              0x0010
-+#define AFE_DAC_CON1              0x0014
-+#define AFE_I2S_CON               0x0018
-+#define AFE_DAIBT_CON0            0x001c
-+#define AFE_CONN0                 0x0020
-+#define AFE_CONN1                 0x0024
-+#define AFE_CONN2                 0x0028
-+#define AFE_CONN3                 0x002c
-+#define AFE_CONN4                 0x0030
-+#define AFE_I2S_CON1              0x0034
-+#define AFE_I2S_CON2              0x0038
-+#define AFE_MRGIF_CON             0x003c
-+#define AFE_DL1_BASE              0x0040
-+#define AFE_DL1_CUR               0x0044
-+#define AFE_DL1_END               0x0048
-+#define AFE_I2S_CON3              0x004c
-+#define AFE_DL2_BASE              0x0050
-+#define AFE_DL2_CUR               0x0054
-+#define AFE_DL2_END               0x0058
-+#define AFE_CONN5                 0x005c
-+#define AFE_CONN_24BIT            0x006c
-+#define AFE_AWB_BASE              0x0070
-+#define AFE_AWB_END               0x0078
-+#define AFE_AWB_CUR               0x007c
-+#define AFE_VUL_BASE              0x0080
-+#define AFE_VUL_END               0x0088
-+#define AFE_VUL_CUR               0x008c
-+#define AFE_DAI_BASE              0x0090
-+#define AFE_DAI_END               0x0098
-+#define AFE_DAI_CUR               0x009c
-+#define AFE_CONN6                 0x00bc
-+#define AFE_MEMIF_MSB             0x00cc
-+#define AFE_MEMIF_MON0            0x00d0
-+#define AFE_MEMIF_MON1            0x00d4
-+#define AFE_MEMIF_MON2            0x00d8
-+#define AFE_MEMIF_MON4            0x00e0
-+#define AFE_ADDA_DL_SRC2_CON0     0x0108
-+#define AFE_ADDA_DL_SRC2_CON1     0x010c
-+#define AFE_ADDA_UL_SRC_CON0      0x0114
-+#define AFE_ADDA_UL_SRC_CON1      0x0118
-+#define AFE_ADDA_TOP_CON0         0x0120
-+#define AFE_ADDA_UL_DL_CON0       0x0124
-+#define AFE_ADDA_SRC_DEBUG        0x012c
-+#define AFE_ADDA_SRC_DEBUG_MON0   0x0130
-+#define AFE_ADDA_SRC_DEBUG_MON1   0x0134
-+#define AFE_ADDA_NEWIF_CFG0       0x0138
-+#define AFE_ADDA_NEWIF_CFG1       0x013c
-+#define AFE_ADDA_NEWIF_CFG2       0x0140
-+#define AFE_DMA_CTL               0x0150
-+#define AFE_DMA_MON0              0x0154
-+#define AFE_DMA_MON1              0x0158
-+#define AFE_SIDETONE_DEBUG        0x01d0
-+#define AFE_SIDETONE_MON          0x01d4
-+#define AFE_SIDETONE_CON0         0x01e0
-+#define AFE_SIDETONE_COEFF        0x01e4
-+#define AFE_SIDETONE_CON1         0x01e8
-+#define AFE_SIDETONE_GAIN         0x01ec
-+#define AFE_SGEN_CON0             0x01f0
-+#define AFE_SINEGEN_CON_TDM       0x01fc
-+#define AFE_TOP_CON0              0x0200
-+#define AFE_ADDA_PREDIS_CON0      0x0260
-+#define AFE_ADDA_PREDIS_CON1      0x0264
-+#define AFE_MRGIF_MON0            0x0270
-+#define AFE_MRGIF_MON1            0x0274
-+#define AFE_MRGIF_MON2            0x0278
-+#define AFE_I2S_MON               0x027c
-+#define AFE_MOD_DAI_BASE          0x0330
-+#define AFE_MOD_DAI_END           0x0338
-+#define AFE_MOD_DAI_CUR           0x033c
-+#define AFE_VUL_D2_BASE           0x0350
-+#define AFE_VUL_D2_END            0x0358
-+#define AFE_VUL_D2_CUR            0x035c
-+#define AFE_DL3_BASE              0x0360
-+#define AFE_DL3_CUR               0x0364
-+#define AFE_DL3_END               0x0368
-+#define AFE_HDMI_OUT_CON0         0x0370
-+#define AFE_HDMI_BASE             0x0374
-+#define AFE_HDMI_CUR              0x0378
-+#define AFE_HDMI_END              0x037c
-+#define AFE_HDMI_CONN0            0x0390
-+#define AFE_IRQ3_MCU_CNT_MON      0x0398
-+#define AFE_IRQ4_MCU_CNT_MON      0x039c
-+#define AFE_IRQ_MCU_CON           0x03a0
-+#define AFE_IRQ_MCU_STATUS        0x03a4
-+#define AFE_IRQ_MCU_CLR           0x03a8
-+#define AFE_IRQ_MCU_CNT1          0x03ac
-+#define AFE_IRQ_MCU_CNT2          0x03b0
-+#define AFE_IRQ_MCU_EN            0x03b4
-+#define AFE_IRQ_MCU_MON2          0x03b8
-+#define AFE_IRQ_MCU_CNT5          0x03bc
-+#define AFE_IRQ1_MCU_CNT_MON      0x03c0
-+#define AFE_IRQ2_MCU_CNT_MON      0x03c4
-+#define AFE_IRQ1_MCU_EN_CNT_MON   0x03c8
-+#define AFE_IRQ5_MCU_CNT_MON      0x03cc
-+#define AFE_MEMIF_MINLEN          0x03d0
-+#define AFE_MEMIF_MAXLEN          0x03d4
-+#define AFE_MEMIF_PBUF_SIZE       0x03d8
-+#define AFE_IRQ_MCU_CNT7          0x03dc
-+#define AFE_IRQ7_MCU_CNT_MON      0x03e0
-+#define AFE_IRQ_MCU_CNT3          0x03e4
-+#define AFE_IRQ_MCU_CNT4          0x03e8
-+#define AFE_APLL1_TUNER_CFG       0x03f0
-+#define AFE_APLL2_TUNER_CFG       0x03f4
-+#define AFE_MEMIF_HD_MODE         0x03f8
-+#define AFE_MEMIF_HDALIGN         0x03fc
-+#define AFE_GAIN1_CON0            0x0410
-+#define AFE_GAIN1_CON1            0x0414
-+#define AFE_GAIN1_CON2            0x0418
-+#define AFE_GAIN1_CON3            0x041c
-+#define AFE_CONN7                 0x0420
-+#define AFE_GAIN1_CUR             0x0424
-+#define AFE_GAIN2_CON0            0x0428
-+#define AFE_GAIN2_CON1            0x042c
-+#define AFE_GAIN2_CON2            0x0430
-+#define AFE_GAIN2_CON3            0x0434
-+#define AFE_CONN8                 0x0438
-+#define AFE_GAIN2_CUR             0x043c
-+#define AFE_CONN9                 0x0440
-+#define AFE_CONN10                0x0444
-+#define AFE_CONN11                0x0448
-+#define AFE_CONN12                0x044c
-+#define AFE_CONN13                0x0450
-+#define AFE_CONN14                0x0454
-+#define AFE_CONN15                0x0458
-+#define AFE_CONN16                0x045c
-+#define AFE_CONN17                0x0460
-+#define AFE_CONN18                0x0464
-+#define AFE_CONN19                0x0468
-+#define AFE_CONN20                0x046c
-+#define AFE_CONN21                0x0470
-+#define AFE_CONN22                0x0474
-+#define AFE_CONN23                0x0478
-+#define AFE_CONN24                0x047c
-+#define AFE_CONN_RS               0x0494
-+#define AFE_CONN_DI               0x0498
-+#define AFE_CONN25                0x04b0
-+#define AFE_CONN26                0x04b4
-+#define AFE_CONN27                0x04b8
-+#define AFE_CONN28                0x04bc
-+#define AFE_CONN29                0x04c0
-+#define AFE_SRAM_DELSEL_CON0      0x04f0
-+#define AFE_SRAM_DELSEL_CON1      0x04f4
-+#define AFE_ASRC_CON0             0x0500
-+#define AFE_ASRC_CON1             0x0504
-+#define AFE_ASRC_CON2             0x0508
-+#define AFE_ASRC_CON3             0x050c
-+#define AFE_ASRC_CON4             0x0510
-+#define AFE_ASRC_CON5             0x0514
-+#define AFE_ASRC_CON6             0x0518
-+#define AFE_ASRC_CON7             0x051c
-+#define AFE_ASRC_CON8             0x0520
-+#define AFE_ASRC_CON9             0x0524
-+#define AFE_ASRC_CON10            0x0528
-+#define AFE_ASRC_CON11            0x052c
-+#define PCM_INTF_CON1             0x0530
-+#define PCM_INTF_CON2             0x0538
-+#define PCM2_INTF_CON             0x053c
-+#define AFE_TDM_CON1              0x0548
-+#define AFE_TDM_CON2              0x054c
-+#define AFE_ASRC_CON13            0x0550
-+#define AFE_ASRC_CON14            0x0554
-+#define AFE_ASRC_CON15            0x0558
-+#define AFE_ASRC_CON16            0x055c
-+#define AFE_ASRC_CON17            0x0560
-+#define AFE_ASRC_CON18            0x0564
-+#define AFE_ASRC_CON19            0x0568
-+#define AFE_ASRC_CON20            0x056c
-+#define AFE_ASRC_CON21            0x0570
-+#define CLK_AUDDIV_0              0x05a0
-+#define CLK_AUDDIV_1              0x05a4
-+#define CLK_AUDDIV_2              0x05a8
-+#define CLK_AUDDIV_3              0x05ac
-+#define AUDIO_TOP_DBG_CON         0x05c8
-+#define AUDIO_TOP_DBG_MON0        0x05cc
-+#define AUDIO_TOP_DBG_MON1        0x05d0
-+#define AUDIO_TOP_DBG_MON2        0x05d4
-+#define AFE_ADDA2_TOP_CON0        0x0600
-+#define AFE_ASRC4_CON0            0x06c0
-+#define AFE_ASRC4_CON1            0x06c4
-+#define AFE_ASRC4_CON2            0x06c8
-+#define AFE_ASRC4_CON3            0x06cc
-+#define AFE_ASRC4_CON4            0x06d0
-+#define AFE_ASRC4_CON5            0x06d4
-+#define AFE_ASRC4_CON6            0x06d8
-+#define AFE_ASRC4_CON7            0x06dc
-+#define AFE_ASRC4_CON8            0x06e0
-+#define AFE_ASRC4_CON9            0x06e4
-+#define AFE_ASRC4_CON10           0x06e8
-+#define AFE_ASRC4_CON11           0x06ec
-+#define AFE_ASRC4_CON12           0x06f0
-+#define AFE_ASRC4_CON13           0x06f4
-+#define AFE_ASRC4_CON14           0x06f8
-+#define AFE_ASRC2_CON0            0x0700
-+#define AFE_ASRC2_CON1            0x0704
-+#define AFE_ASRC2_CON2            0x0708
-+#define AFE_ASRC2_CON3            0x070c
-+#define AFE_ASRC2_CON4            0x0710
-+#define AFE_ASRC2_CON5            0x0714
-+#define AFE_ASRC2_CON6            0x0718
-+#define AFE_ASRC2_CON7            0x071c
-+#define AFE_ASRC2_CON8            0x0720
-+#define AFE_ASRC2_CON9            0x0724
-+#define AFE_ASRC2_CON10           0x0728
-+#define AFE_ASRC2_CON11           0x072c
-+#define AFE_ASRC2_CON12           0x0730
-+#define AFE_ASRC2_CON13           0x0734
-+#define AFE_ASRC2_CON14           0x0738
-+#define AFE_ASRC3_CON0            0x0740
-+#define AFE_ASRC3_CON1            0x0744
-+#define AFE_ASRC3_CON2            0x0748
-+#define AFE_ASRC3_CON3            0x074c
-+#define AFE_ASRC3_CON4            0x0750
-+#define AFE_ASRC3_CON5            0x0754
-+#define AFE_ASRC3_CON6            0x0758
-+#define AFE_ASRC3_CON7            0x075c
-+#define AFE_ASRC3_CON8            0x0760
-+#define AFE_ASRC3_CON9            0x0764
-+#define AFE_ASRC3_CON10           0x0768
-+#define AFE_ASRC3_CON11           0x076c
-+#define AFE_ASRC3_CON12           0x0770
-+#define AFE_ASRC3_CON13           0x0774
-+#define AFE_ASRC3_CON14           0x0778
-+#define AFE_GENERAL_REG0          0x0800
-+#define AFE_GENERAL_REG1          0x0804
-+#define AFE_GENERAL_REG2          0x0808
-+#define AFE_GENERAL_REG3          0x080c
-+#define AFE_GENERAL_REG4          0x0810
-+#define AFE_GENERAL_REG5          0x0814
-+#define AFE_GENERAL_REG6          0x0818
-+#define AFE_GENERAL_REG7          0x081c
-+#define AFE_GENERAL_REG8          0x0820
-+#define AFE_GENERAL_REG9          0x0824
-+#define AFE_GENERAL_REG10         0x0828
-+#define AFE_GENERAL_REG11         0x082c
-+#define AFE_GENERAL_REG12         0x0830
-+#define AFE_GENERAL_REG13         0x0834
-+#define AFE_GENERAL_REG14         0x0838
-+#define AFE_GENERAL_REG15         0x083c
-+#define AFE_CBIP_CFG0             0x0840
-+#define AFE_CBIP_MON0             0x0844
-+#define AFE_CBIP_SLV_MUX_MON0     0x0848
-+#define AFE_CBIP_SLV_DECODER_MON0 0x084c
-+
-+#define AFE_MAX_REGISTER AFE_CBIP_SLV_DECODER_MON0
-+#define AFE_IRQ_STATUS_BITS 0x5f
-+
-+/* AUDIO_TOP_CON0 */
-+#define AHB_IDLE_EN_INT_SFT                                 30
-+#define AHB_IDLE_EN_INT_MASK                                0x1
-+#define AHB_IDLE_EN_INT_MASK_SFT                            (0x1 << 30)
-+#define AHB_IDLE_EN_EXT_SFT                                 29
-+#define AHB_IDLE_EN_EXT_MASK                                0x1
-+#define AHB_IDLE_EN_EXT_MASK_SFT                            (0x1 << 29)
-+#define PDN_TML_SFT                                         27
-+#define PDN_TML_MASK                                        0x1
-+#define PDN_TML_MASK_SFT                                    (0x1 << 27)
-+#define PDN_DAC_PREDIS_SFT                                  26
-+#define PDN_DAC_PREDIS_MASK                                 0x1
-+#define PDN_DAC_PREDIS_MASK_SFT                             (0x1 << 26)
-+#define PDN_DAC_SFT                                         25
-+#define PDN_DAC_MASK                                        0x1
-+#define PDN_DAC_MASK_SFT                                    (0x1 << 25)
-+#define PDN_ADC_SFT                                         24
-+#define PDN_ADC_MASK                                        0x1
-+#define PDN_ADC_MASK_SFT                                    (0x1 << 24)
-+#define PDN_TDM_CK_SFT                                      20
-+#define PDN_TDM_CK_MASK                                     0x1
-+#define PDN_TDM_CK_MASK_SFT                                 (0x1 << 20)
-+#define PDN_APLL_TUNER_SFT                                  19
-+#define PDN_APLL_TUNER_MASK                                 0x1
-+#define PDN_APLL_TUNER_MASK_SFT                             (0x1 << 19)
-+#define PDN_APLL2_TUNER_SFT                                 18
-+#define PDN_APLL2_TUNER_MASK                                0x1
-+#define PDN_APLL2_TUNER_MASK_SFT                            (0x1 << 18)
-+#define APB3_SEL_SFT                                        14
-+#define APB3_SEL_MASK                                       0x1
-+#define APB3_SEL_MASK_SFT                                   (0x1 << 14)
-+#define APB_R2T_SFT                                         13
-+#define APB_R2T_MASK                                        0x1
-+#define APB_R2T_MASK_SFT                                    (0x1 << 13)
-+#define APB_W2T_SFT                                         12
-+#define APB_W2T_MASK                                        0x1
-+#define APB_W2T_MASK_SFT                                    (0x1 << 12)
-+#define PDN_24M_SFT                                         9
-+#define PDN_24M_MASK                                        0x1
-+#define PDN_24M_MASK_SFT                                    (0x1 << 9)
-+#define PDN_22M_SFT                                         8
-+#define PDN_22M_MASK                                        0x1
-+#define PDN_22M_MASK_SFT                                    (0x1 << 8)
-+#define PDN_ADDA4_ADC_SFT                                   7
-+#define PDN_ADDA4_ADC_MASK                                  0x1
-+#define PDN_ADDA4_ADC_MASK_SFT                              (0x1 << 7)
-+#define PDN_I2S_SFT                                         6
-+#define PDN_I2S_MASK                                        0x1
-+#define PDN_I2S_MASK_SFT                                    (0x1 << 6)
-+#define PDN_AFE_SFT                                         2
-+#define PDN_AFE_MASK                                        0x1
-+#define PDN_AFE_MASK_SFT                                    (0x1 << 2)
-+
-+/* AUDIO_TOP_CON1 */
-+#define PDN_ADC_HIRES_TML_SFT                               17
-+#define PDN_ADC_HIRES_TML_MASK                              0x1
-+#define PDN_ADC_HIRES_TML_MASK_SFT                          (0x1 << 17)
-+#define PDN_ADC_HIRES_SFT                                   16
-+#define PDN_ADC_HIRES_MASK                                  0x1
-+#define PDN_ADC_HIRES_MASK_SFT                              (0x1 << 16)
-+#define I2S4_BCLK_SW_CG_SFT                                 7
-+#define I2S4_BCLK_SW_CG_MASK                                0x1
-+#define I2S4_BCLK_SW_CG_MASK_SFT                            (0x1 << 7)
-+#define I2S3_BCLK_SW_CG_SFT                                 6
-+#define I2S3_BCLK_SW_CG_MASK                                0x1
-+#define I2S3_BCLK_SW_CG_MASK_SFT                            (0x1 << 6)
-+#define I2S2_BCLK_SW_CG_SFT                                 5
-+#define I2S2_BCLK_SW_CG_MASK                                0x1
-+#define I2S2_BCLK_SW_CG_MASK_SFT                            (0x1 << 5)
-+#define I2S1_BCLK_SW_CG_SFT                                 4
-+#define I2S1_BCLK_SW_CG_MASK                                0x1
-+#define I2S1_BCLK_SW_CG_MASK_SFT                            (0x1 << 4)
-+#define I2S_SOFT_RST2_SFT                                   2
-+#define I2S_SOFT_RST2_MASK                                  0x1
-+#define I2S_SOFT_RST2_MASK_SFT                              (0x1 << 2)
-+#define I2S_SOFT_RST_SFT                                    1
-+#define I2S_SOFT_RST_MASK                                   0x1
-+#define I2S_SOFT_RST_MASK_SFT                               (0x1 << 1)
-+
-+/* AFE_DAC_CON0 */
-+#define AFE_AWB_RETM_SFT                                    31
-+#define AFE_AWB_RETM_MASK                                   0x1
-+#define AFE_AWB_RETM_MASK_SFT                               (0x1 << 31)
-+#define AFE_DL1_DATA2_RETM_SFT                              30
-+#define AFE_DL1_DATA2_RETM_MASK                             0x1
-+#define AFE_DL1_DATA2_RETM_MASK_SFT                         (0x1 << 30)
-+#define AFE_DL2_RETM_SFT                                    29
-+#define AFE_DL2_RETM_MASK                                   0x1
-+#define AFE_DL2_RETM_MASK_SFT                               (0x1 << 29)
-+#define AFE_DL1_RETM_SFT                                    28
-+#define AFE_DL1_RETM_MASK                                   0x1
-+#define AFE_DL1_RETM_MASK_SFT                               (0x1 << 28)
-+#define AFE_ON_RETM_SFT                                     27
-+#define AFE_ON_RETM_MASK                                    0x1
-+#define AFE_ON_RETM_MASK_SFT                                (0x1 << 27)
-+#define MOD_DAI_DUP_WR_SFT                                  26
-+#define MOD_DAI_DUP_WR_MASK                                 0x1
-+#define MOD_DAI_DUP_WR_MASK_SFT                             (0x1 << 26)
-+#define DAI_MODE_SFT                                        24
-+#define DAI_MODE_MASK                                       0x3
-+#define DAI_MODE_MASK_SFT                                   (0x3 << 24)
-+#define VUL_DATA2_MODE_SFT                                  20
-+#define VUL_DATA2_MODE_MASK                                 0xf
-+#define VUL_DATA2_MODE_MASK_SFT                             (0xf << 20)
-+#define DL1_DATA2_MODE_SFT                                  16
-+#define DL1_DATA2_MODE_MASK                                 0xf
-+#define DL1_DATA2_MODE_MASK_SFT                             (0xf << 16)
-+#define DL3_MODE_SFT                                        12
-+#define DL3_MODE_MASK                                       0xf
-+#define DL3_MODE_MASK_SFT                                   (0xf << 12)
-+#define VUL_DATA2_R_MONO_SFT                                11
-+#define VUL_DATA2_R_MONO_MASK                               0x1
-+#define VUL_DATA2_R_MONO_MASK_SFT                           (0x1 << 11)
-+#define VUL_DATA2_DATA_SFT                                  10
-+#define VUL_DATA2_DATA_MASK                                 0x1
-+#define VUL_DATA2_DATA_MASK_SFT                             (0x1 << 10)
-+#define VUL_DATA2_ON_SFT                                    9
-+#define VUL_DATA2_ON_MASK                                   0x1
-+#define VUL_DATA2_ON_MASK_SFT                               (0x1 << 9)
-+#define DL1_DATA2_ON_SFT                                    8
-+#define DL1_DATA2_ON_MASK                                   0x1
-+#define DL1_DATA2_ON_MASK_SFT                               (0x1 << 8)
-+#define MOD_DAI_ON_SFT                                      7
-+#define MOD_DAI_ON_MASK                                     0x1
-+#define MOD_DAI_ON_MASK_SFT                                 (0x1 << 7)
-+#define AWB_ON_SFT                                          6
-+#define AWB_ON_MASK                                         0x1
-+#define AWB_ON_MASK_SFT                                     (0x1 << 6)
-+#define DL3_ON_SFT                                          5
-+#define DL3_ON_MASK                                         0x1
-+#define DL3_ON_MASK_SFT                                     (0x1 << 5)
-+#define DAI_ON_SFT                                          4
-+#define DAI_ON_MASK                                         0x1
-+#define DAI_ON_MASK_SFT                                     (0x1 << 4)
-+#define VUL_ON_SFT                                          3
-+#define VUL_ON_MASK                                         0x1
-+#define VUL_ON_MASK_SFT                                     (0x1 << 3)
-+#define DL2_ON_SFT                                          2
-+#define DL2_ON_MASK                                         0x1
-+#define DL2_ON_MASK_SFT                                     (0x1 << 2)
-+#define DL1_ON_SFT                                          1
-+#define DL1_ON_MASK                                         0x1
-+#define DL1_ON_MASK_SFT                                     (0x1 << 1)
-+#define AFE_ON_SFT                                          0
-+#define AFE_ON_MASK                                         0x1
-+#define AFE_ON_MASK_SFT                                     (0x1 << 0)
-+
-+/* AFE_DAC_CON1 */
-+#define MOD_DAI_MODE_SFT                                    30
-+#define MOD_DAI_MODE_MASK                                   0x3
-+#define MOD_DAI_MODE_MASK_SFT                               (0x3 << 30)
-+#define DAI_DUP_WR_SFT                                      29
-+#define DAI_DUP_WR_MASK                                     0x1
-+#define DAI_DUP_WR_MASK_SFT                                 (0x1 << 29)
-+#define VUL_R_MONO_SFT                                      28
-+#define VUL_R_MONO_MASK                                     0x1
-+#define VUL_R_MONO_MASK_SFT                                 (0x1 << 28)
-+#define VUL_DATA_SFT                                        27
-+#define VUL_DATA_MASK                                       0x1
-+#define VUL_DATA_MASK_SFT                                   (0x1 << 27)
-+#define AXI_2X1_CG_DISABLE_SFT                              26
-+#define AXI_2X1_CG_DISABLE_MASK                             0x1
-+#define AXI_2X1_CG_DISABLE_MASK_SFT                         (0x1 << 26)
-+#define AWB_R_MONO_SFT                                      25
-+#define AWB_R_MONO_MASK                                     0x1
-+#define AWB_R_MONO_MASK_SFT                                 (0x1 << 25)
-+#define AWB_DATA_SFT                                        24
-+#define AWB_DATA_MASK                                       0x1
-+#define AWB_DATA_MASK_SFT                                   (0x1 << 24)
-+#define DL3_DATA_SFT                                        23
-+#define DL3_DATA_MASK                                       0x1
-+#define DL3_DATA_MASK_SFT                                   (0x1 << 23)
-+#define DL2_DATA_SFT                                        22
-+#define DL2_DATA_MASK                                       0x1
-+#define DL2_DATA_MASK_SFT                                   (0x1 << 22)
-+#define DL1_DATA_SFT                                        21
-+#define DL1_DATA_MASK                                       0x1
-+#define DL1_DATA_MASK_SFT                                   (0x1 << 21)
-+#define DL1_DATA2_DATA_SFT                                  20
-+#define DL1_DATA2_DATA_MASK                                 0x1
-+#define DL1_DATA2_DATA_MASK_SFT                             (0x1 << 20)
-+#define VUL_MODE_SFT                                        16
-+#define VUL_MODE_MASK                                       0xf
-+#define VUL_MODE_MASK_SFT                                   (0xf << 16)
-+#define AWB_MODE_SFT                                        12
-+#define AWB_MODE_MASK                                       0xf
-+#define AWB_MODE_MASK_SFT                                   (0xf << 12)
-+#define I2S_MODE_SFT                                        8
-+#define I2S_MODE_MASK                                       0xf
-+#define I2S_MODE_MASK_SFT                                   (0xf << 8)
-+#define DL2_MODE_SFT                                        4
-+#define DL2_MODE_MASK                                       0xf
-+#define DL2_MODE_MASK_SFT                                   (0xf << 4)
-+#define DL1_MODE_SFT                                        0
-+#define DL1_MODE_MASK                                       0xf
-+#define DL1_MODE_MASK_SFT                                   (0xf << 0)
-+
-+/* AFE_ADDA_DL_SRC2_CON0 */
-+#define DL_2_INPUT_MODE_CTL_SFT                             28
-+#define DL_2_INPUT_MODE_CTL_MASK                            0xf
-+#define DL_2_INPUT_MODE_CTL_MASK_SFT                        (0xf << 28)
-+#define DL_2_CH1_SATURATION_EN_CTL_SFT                      27
-+#define DL_2_CH1_SATURATION_EN_CTL_MASK                     0x1
-+#define DL_2_CH1_SATURATION_EN_CTL_MASK_SFT                 (0x1 << 27)
-+#define DL_2_CH2_SATURATION_EN_CTL_SFT                      26
-+#define DL_2_CH2_SATURATION_EN_CTL_MASK                     0x1
-+#define DL_2_CH2_SATURATION_EN_CTL_MASK_SFT                 (0x1 << 26)
-+#define DL_2_OUTPUT_SEL_CTL_SFT                             24
-+#define DL_2_OUTPUT_SEL_CTL_MASK                            0x3
-+#define DL_2_OUTPUT_SEL_CTL_MASK_SFT                        (0x3 << 24)
-+#define DL_2_FADEIN_0START_EN_SFT                           16
-+#define DL_2_FADEIN_0START_EN_MASK                          0x3
-+#define DL_2_FADEIN_0START_EN_MASK_SFT                      (0x3 << 16)
-+#define DL_DISABLE_HW_CG_CTL_SFT                            15
-+#define DL_DISABLE_HW_CG_CTL_MASK                           0x1
-+#define DL_DISABLE_HW_CG_CTL_MASK_SFT                       (0x1 << 15)
-+#define C_DATA_EN_SEL_CTL_PRE_SFT                           14
-+#define C_DATA_EN_SEL_CTL_PRE_MASK                          0x1
-+#define C_DATA_EN_SEL_CTL_PRE_MASK_SFT                      (0x1 << 14)
-+#define DL_2_SIDE_TONE_ON_CTL_PRE_SFT                       13
-+#define DL_2_SIDE_TONE_ON_CTL_PRE_MASK                      0x1
-+#define DL_2_SIDE_TONE_ON_CTL_PRE_MASK_SFT                  (0x1 << 13)
-+#define DL_2_MUTE_CH1_OFF_CTL_PRE_SFT                       12
-+#define DL_2_MUTE_CH1_OFF_CTL_PRE_MASK                      0x1
-+#define DL_2_MUTE_CH1_OFF_CTL_PRE_MASK_SFT                  (0x1 << 12)
-+#define DL_2_MUTE_CH2_OFF_CTL_PRE_SFT                       11
-+#define DL_2_MUTE_CH2_OFF_CTL_PRE_MASK                      0x1
-+#define DL_2_MUTE_CH2_OFF_CTL_PRE_MASK_SFT                  (0x1 << 11)
-+#define DL2_ARAMPSP_CTL_PRE_SFT                             9
-+#define DL2_ARAMPSP_CTL_PRE_MASK                            0x3
-+#define DL2_ARAMPSP_CTL_PRE_MASK_SFT                        (0x3 << 9)
-+#define DL_2_IIRMODE_CTL_PRE_SFT                            6
-+#define DL_2_IIRMODE_CTL_PRE_MASK                           0x7
-+#define DL_2_IIRMODE_CTL_PRE_MASK_SFT                       (0x7 << 6)
-+#define DL_2_VOICE_MODE_CTL_PRE_SFT                         5
-+#define DL_2_VOICE_MODE_CTL_PRE_MASK                        0x1
-+#define DL_2_VOICE_MODE_CTL_PRE_MASK_SFT                    (0x1 << 5)
-+#define D2_2_MUTE_CH1_ON_CTL_PRE_SFT                        4
-+#define D2_2_MUTE_CH1_ON_CTL_PRE_MASK                       0x1
-+#define D2_2_MUTE_CH1_ON_CTL_PRE_MASK_SFT                   (0x1 << 4)
-+#define D2_2_MUTE_CH2_ON_CTL_PRE_SFT                        3
-+#define D2_2_MUTE_CH2_ON_CTL_PRE_MASK                       0x1
-+#define D2_2_MUTE_CH2_ON_CTL_PRE_MASK_SFT                   (0x1 << 3)
-+#define DL_2_IIR_ON_CTL_PRE_SFT                             2
-+#define DL_2_IIR_ON_CTL_PRE_MASK                            0x1
-+#define DL_2_IIR_ON_CTL_PRE_MASK_SFT                        (0x1 << 2)
-+#define DL_2_GAIN_ON_CTL_PRE_SFT                            1
-+#define DL_2_GAIN_ON_CTL_PRE_MASK                           0x1
-+#define DL_2_GAIN_ON_CTL_PRE_MASK_SFT                       (0x1 << 1)
-+#define DL_2_SRC_ON_TMP_CTL_PRE_SFT                         0
-+#define DL_2_SRC_ON_TMP_CTL_PRE_MASK                        0x1
-+#define DL_2_SRC_ON_TMP_CTL_PRE_MASK_SFT                    (0x1 << 0)
-+
-+/* AFE_ADDA_DL_SRC2_CON1 */
-+#define DL_2_GAIN_CTL_PRE_SFT                               16
-+#define DL_2_GAIN_CTL_PRE_MASK                              0xffff
-+#define DL_2_GAIN_CTL_PRE_MASK_SFT                          (0xffff << 16)
-+#define DL_2_GAIN_MODE_CTL_SFT                              0
-+#define DL_2_GAIN_MODE_CTL_MASK                             0x1
-+#define DL_2_GAIN_MODE_CTL_MASK_SFT                         (0x1 << 0)
-+
-+/* AFE_ADDA_UL_SRC_CON0 */
-+#define C_COMB_OUT_SIN_GEN_CTL_SFT                          31
-+#define C_COMB_OUT_SIN_GEN_CTL_MASK                         0x1
-+#define C_COMB_OUT_SIN_GEN_CTL_MASK_SFT                     (0x1 << 31)
-+#define C_BASEBAND_SIN_GEN_CTL_SFT                          30
-+#define C_BASEBAND_SIN_GEN_CTL_MASK                         0x1
-+#define C_BASEBAND_SIN_GEN_CTL_MASK_SFT                     (0x1 << 30)
-+#define C_DIGMIC_PHASE_SEL_CH1_CTL_SFT                      27
-+#define C_DIGMIC_PHASE_SEL_CH1_CTL_MASK                     0x7
-+#define C_DIGMIC_PHASE_SEL_CH1_CTL_MASK_SFT                 (0x7 << 27)
-+#define C_DIGMIC_PHASE_SEL_CH2_CTL_SFT                      24
-+#define C_DIGMIC_PHASE_SEL_CH2_CTL_MASK                     0x7
-+#define C_DIGMIC_PHASE_SEL_CH2_CTL_MASK_SFT                 (0x7 << 24)
-+#define C_TWO_DIGITAL_MIC_CTL_SFT                           23
-+#define C_TWO_DIGITAL_MIC_CTL_MASK                          0x1
-+#define C_TWO_DIGITAL_MIC_CTL_MASK_SFT                      (0x1 << 23)
-+#define UL_MODE_3P25M_CH2_CTL_SFT                           22
-+#define UL_MODE_3P25M_CH2_CTL_MASK                          0x1
-+#define UL_MODE_3P25M_CH2_CTL_MASK_SFT                      (0x1 << 22)
-+#define UL_MODE_3P25M_CH1_CTL_SFT                           21
-+#define UL_MODE_3P25M_CH1_CTL_MASK                          0x1
-+#define UL_MODE_3P25M_CH1_CTL_MASK_SFT                      (0x1 << 21)
-+#define UL_SRC_USE_CIC_OUT_CTL_SFT                          20
-+#define UL_SRC_USE_CIC_OUT_CTL_MASK                         0x1
-+#define UL_SRC_USE_CIC_OUT_CTL_MASK_SFT                     (0x1 << 20)
-+#define UL_VOICE_MODE_CH1_CH2_CTL_SFT                       17
-+#define UL_VOICE_MODE_CH1_CH2_CTL_MASK                      0x7
-+#define UL_VOICE_MODE_CH1_CH2_CTL_MASK_SFT                  (0x7 << 17)
-+#define DMIC_LOW_POWER_MODE_CTL_SFT                         14
-+#define DMIC_LOW_POWER_MODE_CTL_MASK                        0x3
-+#define DMIC_LOW_POWER_MODE_CTL_MASK_SFT                    (0x3 << 14)
-+#define DMIC_48K_SEL_CTL_SFT                                13
-+#define DMIC_48K_SEL_CTL_MASK                               0x1
-+#define DMIC_48K_SEL_CTL_MASK_SFT                           (0x1 << 13)
-+#define UL_DISABLE_HW_CG_CTL_SFT                            12
-+#define UL_DISABLE_HW_CG_CTL_MASK                           0x1
-+#define UL_DISABLE_HW_CG_CTL_MASK_SFT                       (0x1 << 12)
-+#define UL_IIR_ON_TMP_CTL_SFT                               10
-+#define UL_IIR_ON_TMP_CTL_MASK                              0x1
-+#define UL_IIR_ON_TMP_CTL_MASK_SFT                          (0x1 << 10)
-+#define UL_IIRMODE_CTL_SFT                                  7
-+#define UL_IIRMODE_CTL_MASK                                 0x7
-+#define UL_IIRMODE_CTL_MASK_SFT                             (0x7 << 7)
-+#define DIGMIC_3P25M_1P625M_SEL_CTL_SFT                     5
-+#define DIGMIC_3P25M_1P625M_SEL_CTL_MASK                    0x1
-+#define DIGMIC_3P25M_1P625M_SEL_CTL_MASK_SFT                (0x1 << 5)
-+#define AGC_260K_SEL_CH2_CTL_SFT                            4
-+#define AGC_260K_SEL_CH2_CTL_MASK                           0x1
-+#define AGC_260K_SEL_CH2_CTL_MASK_SFT                       (0x1 << 4)
-+#define AGC_260K_SEL_CH1_CTL_SFT                            3
-+#define AGC_260K_SEL_CH1_CTL_MASK                           0x1
-+#define AGC_260K_SEL_CH1_CTL_MASK_SFT                       (0x1 << 3)
-+#define UL_LOOP_BACK_MODE_CTL_SFT                           2
-+#define UL_LOOP_BACK_MODE_CTL_MASK                          0x1
-+#define UL_LOOP_BACK_MODE_CTL_MASK_SFT                      (0x1 << 2)
-+#define UL_SDM_3_LEVEL_CTL_SFT                              1
-+#define UL_SDM_3_LEVEL_CTL_MASK                             0x1
-+#define UL_SDM_3_LEVEL_CTL_MASK_SFT                         (0x1 << 1)
-+#define UL_SRC_ON_TMP_CTL_SFT                               0
-+#define UL_SRC_ON_TMP_CTL_MASK                              0x1
-+#define UL_SRC_ON_TMP_CTL_MASK_SFT                          (0x1 << 0)
-+
-+/* AFE_ADDA_UL_SRC_CON1 */
-+#define C_SDM_RESET_CTL_SFT                                 31
-+#define C_SDM_RESET_CTL_MASK                                0x1
-+#define C_SDM_RESET_CTL_MASK_SFT                            (0x1 << 31)
-+#define ADITHON_CTL_SFT                                     30
-+#define ADITHON_CTL_MASK                                    0x1
-+#define ADITHON_CTL_MASK_SFT                                (0x1 << 30)
-+#define ADITHVAL_CTL_SFT                                    28
-+#define ADITHVAL_CTL_MASK                                   0x3
-+#define ADITHVAL_CTL_MASK_SFT                               (0x3 << 28)
-+#define C_DAC_EN_CTL_SFT                                    27
-+#define C_DAC_EN_CTL_MASK                                   0x1
-+#define C_DAC_EN_CTL_MASK_SFT                               (0x1 << 27)
-+#define C_MUTE_SW_CTL_SFT                                   26
-+#define C_MUTE_SW_CTL_MASK                                  0x1
-+#define C_MUTE_SW_CTL_MASK_SFT                              (0x1 << 26)
-+#define ASDM_SRC_SEL_CTL_SFT                                25
-+#define ASDM_SRC_SEL_CTL_MASK                               0x1
-+#define ASDM_SRC_SEL_CTL_MASK_SFT                           (0x1 << 25)
-+#define C_AMP_DIV_CH2_CTL_SFT                               21
-+#define C_AMP_DIV_CH2_CTL_MASK                              0x7
-+#define C_AMP_DIV_CH2_CTL_MASK_SFT                          (0x7 << 21)
-+#define C_FREQ_DIV_CH2_CTL_SFT                              16
-+#define C_FREQ_DIV_CH2_CTL_MASK                             0x1f
-+#define C_FREQ_DIV_CH2_CTL_MASK_SFT                         (0x1f << 16)
-+#define C_SINE_MODE_CH2_CTL_SFT                             12
-+#define C_SINE_MODE_CH2_CTL_MASK                            0xf
-+#define C_SINE_MODE_CH2_CTL_MASK_SFT                        (0xf << 12)
-+#define C_AMP_DIV_CH1_CTL_SFT                               9
-+#define C_AMP_DIV_CH1_CTL_MASK                              0x7
-+#define C_AMP_DIV_CH1_CTL_MASK_SFT                          (0x7 << 9)
-+#define C_FREQ_DIV_CH1_CTL_SFT                              4
-+#define C_FREQ_DIV_CH1_CTL_MASK                             0x1f
-+#define C_FREQ_DIV_CH1_CTL_MASK_SFT                         (0x1f << 4)
-+#define C_SINE_MODE_CH1_CTL_SFT                             0
-+#define C_SINE_MODE_CH1_CTL_MASK                            0xf
-+#define C_SINE_MODE_CH1_CTL_MASK_SFT                        (0xf << 0)
-+
-+/* AFE_ADDA_TOP_CON0 */
-+#define C_LOOP_BACK_MODE_CTL_SFT                            12
-+#define C_LOOP_BACK_MODE_CTL_MASK                           0xf
-+#define C_LOOP_BACK_MODE_CTL_MASK_SFT                       (0xf << 12)
-+#define C_EXT_ADC_CTL_SFT                                   0
-+#define C_EXT_ADC_CTL_MASK                                  0x1
-+#define C_EXT_ADC_CTL_MASK_SFT                              (0x1 << 0)
-+
-+/* AFE_ADDA_UL_DL_CON0 */
-+#define AFE_UL_DL_CON0_RESERVED_SFT                         1
-+#define AFE_UL_DL_CON0_RESERVED_MASK                        0x3fff
-+#define AFE_UL_DL_CON0_RESERVED_MASK_SFT                    (0x3fff << 1)
-+#define ADDA_AFE_ON_SFT                                     0
-+#define ADDA_AFE_ON_MASK                                    0x1
-+#define ADDA_AFE_ON_MASK_SFT                                (0x1 << 0)
-+
-+/* AFE_IRQ_MCU_CON */
-+#define IRQ7_MCU_MODE_SFT                                   24
-+#define IRQ7_MCU_MODE_MASK                                  0xf
-+#define IRQ7_MCU_MODE_MASK_SFT                              (0xf << 24)
-+#define IRQ4_MCU_MODE_SFT                                   20
-+#define IRQ4_MCU_MODE_MASK                                  0xf
-+#define IRQ4_MCU_MODE_MASK_SFT                              (0xf << 20)
-+#define IRQ3_MCU_MODE_SFT                                   16
-+#define IRQ3_MCU_MODE_MASK                                  0xf
-+#define IRQ3_MCU_MODE_MASK_SFT                              (0xf << 16)
-+#define IRQ7_MCU_ON_SFT                                     14
-+#define IRQ7_MCU_ON_MASK                                    0x1
-+#define IRQ7_MCU_ON_MASK_SFT                                (0x1 << 14)
-+#define IRQ5_MCU_ON_SFT                                     12
-+#define IRQ5_MCU_ON_MASK                                    0x1
-+#define IRQ5_MCU_ON_MASK_SFT                                (0x1 << 12)
-+#define IRQ2_MCU_MODE_SFT                                   8
-+#define IRQ2_MCU_MODE_MASK                                  0xf
-+#define IRQ2_MCU_MODE_MASK_SFT                              (0xf << 8)
-+#define IRQ1_MCU_MODE_SFT                                   4
-+#define IRQ1_MCU_MODE_MASK                                  0xf
-+#define IRQ1_MCU_MODE_MASK_SFT                              (0xf << 4)
-+#define IRQ4_MCU_ON_SFT                                     3
-+#define IRQ4_MCU_ON_MASK                                    0x1
-+#define IRQ4_MCU_ON_MASK_SFT                                (0x1 << 3)
-+#define IRQ3_MCU_ON_SFT                                     2
-+#define IRQ3_MCU_ON_MASK                                    0x1
-+#define IRQ3_MCU_ON_MASK_SFT                                (0x1 << 2)
-+#define IRQ2_MCU_ON_SFT                                     1
-+#define IRQ2_MCU_ON_MASK                                    0x1
-+#define IRQ2_MCU_ON_MASK_SFT                                (0x1 << 1)
-+#define IRQ1_MCU_ON_SFT                                     0
-+#define IRQ1_MCU_ON_MASK                                    0x1
-+#define IRQ1_MCU_ON_MASK_SFT                                (0x1 << 0)
-+
-+/* AFE_IRQ_MCU_EN */
-+#define AFE_IRQ_CM4_EN_SFT                                  16
-+#define AFE_IRQ_CM4_EN_MASK                                 0x7f
-+#define AFE_IRQ_CM4_EN_MASK_SFT                             (0x7f << 16)
-+#define AFE_IRQ_MD32_EN_SFT                                 8
-+#define AFE_IRQ_MD32_EN_MASK                                0x7f
-+#define AFE_IRQ_MD32_EN_MASK_SFT                            (0x7f << 8)
-+#define AFE_IRQ_MCU_EN_SFT                                  0
-+#define AFE_IRQ_MCU_EN_MASK                                 0x7f
-+#define AFE_IRQ_MCU_EN_MASK_SFT                             (0x7f << 0)
-+
-+/* AFE_IRQ_MCU_CLR */
-+#define IRQ7_MCU_CLR_SFT                                    6
-+#define IRQ7_MCU_CLR_MASK                                   0x1
-+#define IRQ7_MCU_CLR_MASK_SFT                               (0x1 << 6)
-+#define IRQ5_MCU_CLR_SFT                                    4
-+#define IRQ5_MCU_CLR_MASK                                   0x1
-+#define IRQ5_MCU_CLR_MASK_SFT                               (0x1 << 4)
-+#define IRQ4_MCU_CLR_SFT                                    3
-+#define IRQ4_MCU_CLR_MASK                                   0x1
-+#define IRQ4_MCU_CLR_MASK_SFT                               (0x1 << 3)
-+#define IRQ3_MCU_CLR_SFT                                    2
-+#define IRQ3_MCU_CLR_MASK                                   0x1
-+#define IRQ3_MCU_CLR_MASK_SFT                               (0x1 << 2)
-+#define IRQ2_MCU_CLR_SFT                                    1
-+#define IRQ2_MCU_CLR_MASK                                   0x1
-+#define IRQ2_MCU_CLR_MASK_SFT                               (0x1 << 1)
-+#define IRQ1_MCU_CLR_SFT                                    0
-+#define IRQ1_MCU_CLR_MASK                                   0x1
-+#define IRQ1_MCU_CLR_MASK_SFT                               (0x1 << 0)
-+
-+/* AFE_IRQ_MCU_CNT1 */
-+#define AFE_IRQ_MCU_CNT1_SFT                                0
-+#define AFE_IRQ_MCU_CNT1_MASK                               0x3ffff
-+#define AFE_IRQ_MCU_CNT1_MASK_SFT                           (0x3ffff << 0)
-+
-+/* AFE_IRQ_MCU_CNT2 */
-+#define AFE_IRQ_MCU_CNT2_SFT                                0
-+#define AFE_IRQ_MCU_CNT2_MASK                               0x3ffff
-+#define AFE_IRQ_MCU_CNT2_MASK_SFT                           (0x3ffff << 0)
-+
-+/* AFE_IRQ_MCU_CNT3 */
-+#define AFE_IRQ_MCU_CNT3_SFT                                0
-+#define AFE_IRQ_MCU_CNT3_MASK                               0x3ffff
-+#define AFE_IRQ_MCU_CNT3_MASK_SFT                           (0x3ffff << 0)
-+
-+/* AFE_IRQ_MCU_CNT4 */
-+#define AFE_IRQ_MCU_CNT4_SFT                                0
-+#define AFE_IRQ_MCU_CNT4_MASK                               0x3ffff
-+#define AFE_IRQ_MCU_CNT4_MASK_SFT                           (0x3ffff << 0)
-+
-+/* AFE_IRQ_MCU_CNT5 */
-+#define AFE_IRQ_MCU_CNT5_SFT                                0
-+#define AFE_IRQ_MCU_CNT5_MASK                               0x3ffff
-+#define AFE_IRQ_MCU_CNT5_MASK_SFT                           (0x3ffff << 0)
-+
-+/* AFE_IRQ_MCU_CNT7 */
-+#define AFE_IRQ_MCU_CNT7_SFT                                0
-+#define AFE_IRQ_MCU_CNT7_MASK                               0x3ffff
-+#define AFE_IRQ_MCU_CNT7_MASK_SFT                           (0x3ffff << 0)
-+
-+/* AFE_MEMIF_MSB */
-+#define CPU_COMPACT_MODE_SFT                                23
-+#define CPU_COMPACT_MODE_MASK                               0x1
-+#define CPU_COMPACT_MODE_MASK_SFT                           (0x1 << 23)
-+#define CPU_HD_ALIGN_SFT                                    22
-+#define CPU_HD_ALIGN_MASK                                   0x1
-+#define CPU_HD_ALIGN_MASK_SFT                               (0x1 << 22)
-+
-+/* AFE_MEMIF_HD_MODE */
-+#define HDMI_HD_SFT                                         20
-+#define HDMI_HD_MASK                                        0x3
-+#define HDMI_HD_MASK_SFT                                    (0x3 << 20)
-+#define MOD_DAI_HD_SFT                                      18
-+#define MOD_DAI_HD_MASK                                     0x3
-+#define MOD_DAI_HD_MASK_SFT                                 (0x3 << 18)
-+#define DAI_HD_SFT                                          16
-+#define DAI_HD_MASK                                         0x3
-+#define DAI_HD_MASK_SFT                                     (0x3 << 16)
-+#define VUL_DATA2_HD_SFT                                    12
-+#define VUL_DATA2_HD_MASK                                   0x3
-+#define VUL_DATA2_HD_MASK_SFT                               (0x3 << 12)
-+#define VUL_HD_SFT                                          10
-+#define VUL_HD_MASK                                         0x3
-+#define VUL_HD_MASK_SFT                                     (0x3 << 10)
-+#define AWB_HD_SFT                                          8
-+#define AWB_HD_MASK                                         0x3
-+#define AWB_HD_MASK_SFT                                     (0x3 << 8)
-+#define DL3_HD_SFT                                          6
-+#define DL3_HD_MASK                                         0x3
-+#define DL3_HD_MASK_SFT                                     (0x3 << 6)
-+#define DL2_HD_SFT                                          4
-+#define DL2_HD_MASK                                         0x3
-+#define DL2_HD_MASK_SFT                                     (0x3 << 4)
-+#define DL1_DATA2_HD_SFT                                    2
-+#define DL1_DATA2_HD_MASK                                   0x3
-+#define DL1_DATA2_HD_MASK_SFT                               (0x3 << 2)
-+#define DL1_HD_SFT                                          0
-+#define DL1_HD_MASK                                         0x3
-+#define DL1_HD_MASK_SFT                                     (0x3 << 0)
-+
-+/* AFE_MEMIF_HDALIGN */
-+#define HDMI_NORMAL_MODE_SFT                                26
-+#define HDMI_NORMAL_MODE_MASK                               0x1
-+#define HDMI_NORMAL_MODE_MASK_SFT                           (0x1 << 26)
-+#define MOD_DAI_NORMAL_MODE_SFT                             25
-+#define MOD_DAI_NORMAL_MODE_MASK                            0x1
-+#define MOD_DAI_NORMAL_MODE_MASK_SFT                        (0x1 << 25)
-+#define DAI_NORMAL_MODE_SFT                                 24
-+#define DAI_NORMAL_MODE_MASK                                0x1
-+#define DAI_NORMAL_MODE_MASK_SFT                            (0x1 << 24)
-+#define VUL_DATA2_NORMAL_MODE_SFT                           22
-+#define VUL_DATA2_NORMAL_MODE_MASK                          0x1
-+#define VUL_DATA2_NORMAL_MODE_MASK_SFT                      (0x1 << 22)
-+#define VUL_NORMAL_MODE_SFT                                 21
-+#define VUL_NORMAL_MODE_MASK                                0x1
-+#define VUL_NORMAL_MODE_MASK_SFT                            (0x1 << 21)
-+#define AWB_NORMAL_MODE_SFT                                 20
-+#define AWB_NORMAL_MODE_MASK                                0x1
-+#define AWB_NORMAL_MODE_MASK_SFT                            (0x1 << 20)
-+#define DL3_NORMAL_MODE_SFT                                 19
-+#define DL3_NORMAL_MODE_MASK                                0x1
-+#define DL3_NORMAL_MODE_MASK_SFT                            (0x1 << 19)
-+#define DL2_NORMAL_MODE_SFT                                 18
-+#define DL2_NORMAL_MODE_MASK                                0x1
-+#define DL2_NORMAL_MODE_MASK_SFT                            (0x1 << 18)
-+#define DL1_DATA2_NORMAL_MODE_SFT                           17
-+#define DL1_DATA2_NORMAL_MODE_MASK                          0x1
-+#define DL1_DATA2_NORMAL_MODE_MASK_SFT                      (0x1 << 17)
-+#define DL1_NORMAL_MODE_SFT                                 16
-+#define DL1_NORMAL_MODE_MASK                                0x1
-+#define DL1_NORMAL_MODE_MASK_SFT                            (0x1 << 16)
-+#define HDMI_HD_ALIGN_SFT                                   10
-+#define HDMI_HD_ALIGN_MASK                                  0x1
-+#define HDMI_HD_ALIGN_MASK_SFT                              (0x1 << 10)
-+#define MOD_DAI_HD_ALIGN_SFT                                9
-+#define MOD_DAI_HD_ALIGN_MASK                               0x1
-+#define MOD_DAI_HD_ALIGN_MASK_SFT                           (0x1 << 9)
-+#define DAI_ALIGN_SFT                                       8
-+#define DAI_ALIGN_MASK                                      0x1
-+#define DAI_ALIGN_MASK_SFT                                  (0x1 << 8)
-+#define VUL2_HD_ALIGN_SFT                                   7
-+#define VUL2_HD_ALIGN_MASK                                  0x1
-+#define VUL2_HD_ALIGN_MASK_SFT                              (0x1 << 7)
-+#define VUL_DATA2_HD_ALIGN_SFT                              6
-+#define VUL_DATA2_HD_ALIGN_MASK                             0x1
-+#define VUL_DATA2_HD_ALIGN_MASK_SFT                         (0x1 << 6)
-+#define VUL_HD_ALIGN_SFT                                    5
-+#define VUL_HD_ALIGN_MASK                                   0x1
-+#define VUL_HD_ALIGN_MASK_SFT                               (0x1 << 5)
-+#define AWB_HD_ALIGN_SFT                                    4
-+#define AWB_HD_ALIGN_MASK                                   0x1
-+#define AWB_HD_ALIGN_MASK_SFT                               (0x1 << 4)
-+#define DL3_HD_ALIGN_SFT                                    3
-+#define DL3_HD_ALIGN_MASK                                   0x1
-+#define DL3_HD_ALIGN_MASK_SFT                               (0x1 << 3)
-+#define DL2_HD_ALIGN_SFT                                    2
-+#define DL2_HD_ALIGN_MASK                                   0x1
-+#define DL2_HD_ALIGN_MASK_SFT                               (0x1 << 2)
-+#define DL1_DATA2_HD_ALIGN_SFT                              1
-+#define DL1_DATA2_HD_ALIGN_MASK                             0x1
-+#define DL1_DATA2_HD_ALIGN_MASK_SFT                         (0x1 << 1)
-+#define DL1_HD_ALIGN_SFT                                    0
-+#define DL1_HD_ALIGN_MASK                                   0x1
-+#define DL1_HD_ALIGN_MASK_SFT                               (0x1 << 0)
++#define MT6351_AUDENC_ANA_CON0     0x0D08
++#define MT6351_AUDENC_ANA_CON1     0x0D0A
++#define MT6351_AUDENC_ANA_CON2     0x0D0C
++#define MT6351_AUDENC_ANA_CON3     0x0D0E
++#define MT6351_AUDENC_ANA_CON4     0x0D10
++#define MT6351_AUDENC_ANA_CON5     0x0D12
++#define MT6351_AUDENC_ANA_CON6     0x0D14
++#define MT6351_AUDENC_ANA_CON7     0x0D16
++#define MT6351_AUDENC_ANA_CON8     0x0D18
++#define MT6351_AUDENC_ANA_CON9     0x0D1A
++#define MT6351_AUDENC_ANA_CON10    0x0D1C
++#define MT6351_AUDENC_ANA_CON11    0x0D1E
++#define MT6351_AUDENC_ANA_CON12    0x0D20
++#define MT6351_AUDENC_ANA_CON13    0x0D22
++#define MT6351_AUDENC_ANA_CON14    0x0D24
++#define MT6351_AUDENC_ANA_CON15    0x0D26
++#define MT6351_AUDENC_ANA_CON16    0x0D28
 +#endif
 -- 
 2.12.5
