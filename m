@@ -1,68 +1,75 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 0/8] Fix year 2038 issue for sound subsystem
-Date: Wed, 25 Apr 2018 09:23:58 +0200
-Message-ID: <1b6a0710-7bc1-08d1-49a5-f1bed7bf3f84@perex.cz>
-References: <cover.1524570852.git.baolin.wang@linaro.org>
- <66b26dc6-9139-80cc-0b49-28ff68169b5c@perex.cz>
- <CAK8P3a0SKAAJMUDOJBjHKCnvprqOTjTnX9Ju3W_q1avzdU7EnA@mail.gmail.com>
+From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: [PATCH v4 0/5] ASoC: mediatek: add support for mt6797
+	SoC
+Date: Wed, 25 Apr 2018 15:25:17 +0800
+Message-ID: <20180425072522.14167-1-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAK8P3a0SKAAJMUDOJBjHKCnvprqOTjTnX9Ju3W_q1avzdU7EnA@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@kernel.org>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, subhransu.s.prusty@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id 59303267035
+ for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 09:30:05 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-Dne 24.4.2018 v 15:37 Arnd Bergmann napsal(a):
-> On Tue, Apr 24, 2018 at 3:29 PM, Jaroslav Kysela <perex@perex.cz> wrote:
->> Dne 24.4.2018 v 14:06 Baolin Wang napsal(a):
->>> Since many structures will use timespec type variables to record time stamp
->>> in uapi/asound.h, which are not year 2038 safe on 32bit system. This patchset
->>> tries to introduce new structures removing timespec type to compatible native
->>> mode and compat mode.
->>>
->>> Moreover this patchset also converts the internal structrures to use timespec64
->>> type and related APIs.
->>
->> Thanks for your patchset. A few comments:
->>
->> It might be more nice to reuse the existing structures and put
->> timespec64 to the reserved field and duplicate information (with the
->> 32-bit wrapping for the old fields). It means that we do not need new
->> ioctls and old libraries will be fine.
-> 
-> The current approach is intended to make any user space work
-> without source-level changes, i.e. you can still build an old alsa-lib
-> package against a new glibc as long as you have the latest kernel
-> headers (which the glibc requires for using 64-bit time_t).
-> 
-> If we try to extend the structures in a different way, that requires
-> user space changes, and existing source code would silently
-> break on a future glibc.
-> IMHO changing the source-level interface should only be done
-> as a last resort for y2038.
+This patch adds basic support for Mediatek AFE for MT6797 SoC.
 
-We have almost everything hidden in the alsa-lib code for the
-applications and there is the protocol versioning, so we can detect the
-changes easily and handle the new fields in the library. As you noted,
-the current code will be fine until 2038 even with my proposed change
-(which is more easy to be implemented in the kernel - less bloat) and
-there are 20 years to update alsa-lib remaining for the 32-bit systems.
+Change since the previous patch set:
+* mt6797, return IRQ_NONE when receive unexpected irq signal.
+* mt6351, gain control use tlv
+* mt6351, set regmap to component by snd_soc_component_init_regmap
+* mt6351, playback_tlv, starts from -10 dB
 
-Only the binary compatibility for the older binaries should be taken
-into account.
+KaiChieh Chuang (5):
+  ASoC: add mt6351 codec driver
+  ASoC: mt6797: add structure define and	clock control function
+    for 6797
+  ASoC: mt6797: add mt6797 platform driver
+  ASoC: add mt6797-mt6351 driver and	config option
+  ASoC: mediatek: add documents for mt6797
 
-Also, you expect that tv_nsec will be changed to the 's64' type. Do you
-have that confirmed from the glibc developers? From the current
-specification, the tv_nsec type is 'long'. It may cause some binary
-compatibility issues, too.
-
-				Thanks,
-					Jaroslav
+ Documentation/devicetree/bindings/sound/mt6351.txt |   16 +
+ .../devicetree/bindings/sound/mt6797-afe-pcm.txt   |   42 +
+ .../devicetree/bindings/sound/mt6797-mt6351.txt    |   14 +
+ sound/soc/codecs/Kconfig                           |    4 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/mt6351.c                          | 1516 ++++++++++++++++++++
+ sound/soc/codecs/mt6351.h                          |  108 ++
+ sound/soc/mediatek/Kconfig                         |   20 +
+ sound/soc/mediatek/Makefile                        |    1 +
+ sound/soc/mediatek/mt6797/Makefile                 |   19 +
+ sound/soc/mediatek/mt6797/mt6797-afe-clk.c         |  132 ++
+ sound/soc/mediatek/mt6797/mt6797-afe-clk.h         |   25 +
+ sound/soc/mediatek/mt6797/mt6797-afe-common.h      |   57 +
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c         | 1241 ++++++++++++++++
+ sound/soc/mediatek/mt6797/mt6797-interconnection.h |   41 +
+ sound/soc/mediatek/mt6797/mt6797-mt6351.c          |  186 +++
+ sound/soc/mediatek/mt6797/mt6797-reg.h             |  846 +++++++++++
+ 17 files changed, 4270 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6351.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6797-afe-pcm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6797-mt6351.txt
+ create mode 100644 sound/soc/codecs/mt6351.c
+ create mode 100644 sound/soc/codecs/mt6351.h
+ create mode 100644 sound/soc/mediatek/mt6797/Makefile
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-clk.c
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-clk.h
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-common.h
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-interconnection.h
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-mt6351.c
+ create mode 100644 sound/soc/mediatek/mt6797/mt6797-reg.h
 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.12.5
