@@ -1,99 +1,68 @@
-From: mac.chiang@intel.com
-Subject: [PATCH] ASoC: Intel: board: add BE DAI link for WoV
-Date: Tue, 24 Apr 2018 19:15:52 +0800
-Message-ID: <1524568552-25273-1-git-send-email-mac.chiang@intel.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH 0/8] Fix year 2038 issue for sound subsystem
+Date: Wed, 25 Apr 2018 09:23:58 +0200
+Message-ID: <1b6a0710-7bc1-08d1-49a5-f1bed7bf3f84@perex.cz>
+References: <cover.1524570852.git.baolin.wang@linaro.org>
+ <66b26dc6-9139-80cc-0b49-28ff68169b5c@perex.cz>
+ <CAK8P3a0SKAAJMUDOJBjHKCnvprqOTjTnX9Ju3W_q1avzdU7EnA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id 15CDC266CA1
- for <alsa-devel@alsa-project.org>; Tue, 24 Apr 2018 13:13:16 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: vinod.koul@intel.com, naveen.m@intel.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAK8P3a0SKAAJMUDOJBjHKCnvprqOTjTnX9Ju3W_q1avzdU7EnA@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Baolin Wang <baolin.wang@linaro.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@kernel.org>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, subhransu.s.prusty@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mac Chiang <mac.chiang@intel.com>
+Dne 24.4.2018 v 15:37 Arnd Bergmann napsal(a):
+> On Tue, Apr 24, 2018 at 3:29 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+>> Dne 24.4.2018 v 14:06 Baolin Wang napsal(a):
+>>> Since many structures will use timespec type variables to record time stamp
+>>> in uapi/asound.h, which are not year 2038 safe on 32bit system. This patchset
+>>> tries to introduce new structures removing timespec type to compatible native
+>>> mode and compat mode.
+>>>
+>>> Moreover this patchset also converts the internal structrures to use timespec64
+>>> type and related APIs.
+>>
+>> Thanks for your patchset. A few comments:
+>>
+>> It might be more nice to reuse the existing structures and put
+>> timespec64 to the reserved field and duplicate information (with the
+>> 32-bit wrapping for the old fields). It means that we do not need new
+>> ioctls and old libraries will be fine.
+> 
+> The current approach is intended to make any user space work
+> without source-level changes, i.e. you can still build an old alsa-lib
+> package against a new glibc as long as you have the latest kernel
+> headers (which the glibc requires for using 64-bit time_t).
+> 
+> If we try to extend the structures in a different way, that requires
+> user space changes, and existing source code would silently
+> break on a future glibc.
+> IMHO changing the source-level interface should only be done
+> as a last resort for y2038.
 
-create dai link in kbl_da7219_max98357a driver for wake on voice functionality.
+We have almost everything hidden in the alsa-lib code for the
+applications and there is the protocol versioning, so we can detect the
+changes easily and handle the new fields in the library. As you noted,
+the current code will be fine until 2038 even with my proposed change
+(which is more easy to be implemented in the kernel - less bloat) and
+there are 20 years to update alsa-lib remaining for the 32-bit systems.
 
-changes picked from broonie's tree
-commit 0c7941a63a0f ("ASoC: Intel: Skylake: Use refcap device for mono recording")
-commit 2154be362c90 ("ASoc: Intel: boards: Add WOV as sink for nau88l25_ssm4567 machine")
+Only the binary compatibility for the older binaries should be taken
+into account.
 
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
----
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 35 +++++++++++++++++++++++++++
- 1 file changed, 35 insertions(+)
+Also, you expect that tv_nsec will be changed to the 's64' type. Do you
+have that confirmed from the glibc developers? From the current
+specification, the tv_nsec type is 'long'. It may cause some binary
+compatibility issues, too.
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index e84baaf..c332a32 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -45,6 +45,7 @@ struct kbl_codec_private {
- enum {
- 	KBL_DPCM_AUDIO_PB = 0,
- 	KBL_DPCM_AUDIO_CP,
-+	KBL_DPCM_AUDIO_REF_CP,
- 	KBL_DPCM_AUDIO_DMIC_CP,
- 	KBL_DPCM_AUDIO_HDMI1_PB,
- 	KBL_DPCM_AUDIO_HDMI2_PB,
-@@ -349,6 +350,27 @@ static const unsigned int ch_mono[] = {
- 	1,
- };
- 
-+static const struct snd_pcm_hw_constraint_list constraints_refcap = {
-+	.count = ARRAY_SIZE(ch_mono),
-+	.list  = ch_mono,
-+};
-+
-+static int kabylake_refcap_startup(struct snd_pcm_substream *substream)
-+{
-+	substream->runtime->hw.channels_max = 1;
-+	snd_pcm_hw_constraint_list(substream->runtime, 0,
-+					SNDRV_PCM_HW_PARAM_CHANNELS,
-+					&constraints_refcap);
-+
-+	return snd_pcm_hw_constraint_list(substream->runtime, 0,
-+				SNDRV_PCM_HW_PARAM_RATE,
-+				&constraints_16000);
-+}
-+
-+static struct snd_soc_ops skylaye_refcap_ops = {
-+	.startup = kabylake_refcap_startup,
-+};
-+
- /* kabylake digital audio interface glue - connects codec <--> CPU */
- static struct snd_soc_dai_link kabylake_dais[] = {
- 	/* Front End DAI links */
-@@ -380,6 +402,19 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_capture = 1,
- 	},
-+	[KBL_DPCM_AUDIO_REF_CP] = {
-+		.name = "Kbl Audio Reference cap",
-+		.stream_name = "Wake on Voice",
-+		.cpu_dai_name = "Reference Pin",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.platform_name = "0000:00:1f.3",
-+		.init = NULL,
-+		.dpcm_capture = 1,
-+		.nonatomic = 1,
-+		.dynamic = 1,
-+		.ops = &skylaye_refcap_ops,
-+	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
- 		.stream_name = "dmiccap",
+				Thanks,
+					Jaroslav
+
 -- 
-2.7.4
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
