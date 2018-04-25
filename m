@@ -1,15 +1,16 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v5 10/13] soundwire: cdns: Add port routines
-Date: Wed, 25 Apr 2018 15:09:20 +0530
-Message-ID: <1524649163-12088-11-git-send-email-vkoul@kernel.org>
+Subject: [PATCH v5 12/13] soundwire: intel: Add stream
+	initialization
+Date: Wed, 25 Apr 2018 15:09:22 +0530
+Message-ID: <1524649163-12088-13-git-send-email-vkoul@kernel.org>
 References: <1524649163-12088-1-git-send-email-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 09DDF267793
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 11:35:12 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BA5DB26779A
+ for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 11:35:18 +0200 (CEST)
 In-Reply-To: <1524649163-12088-1-git-send-email-vkoul@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,435 +25,215 @@ To: Greg KH <gregkh@linuxfoundation.org>
 Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add support for Cadence port management and implement
-master port ops.
+Add Intel stream init routines which initialize the Physical
+Data Interface (PDI), Audio Link Hub (ALH) and Audio shim.
+Also add bank switch routines.
 
+Signed-off-by: Hardik T Shah <hardik.t.shah@intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/soundwire/cadence_master.c | 244 +++++++++++++++++++++++++++++++++++++
- drivers/soundwire/cadence_master.h | 100 +++++++++++++++
- drivers/soundwire/intel.c          |   1 +
- 3 files changed, 345 insertions(+)
+ drivers/soundwire/intel.c | 156 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 156 insertions(+)
 
-diff --git a/drivers/soundwire/cadence_master.c b/drivers/soundwire/cadence_master.c
-index b0c09efd8f83..4db73ad8c985 100644
---- a/drivers/soundwire/cadence_master.c
-+++ b/drivers/soundwire/cadence_master.c
-@@ -669,6 +669,121 @@ int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns)
- }
- EXPORT_SYMBOL(sdw_cdns_enable_interrupt);
- 
-+static int cdns_allocate_pdi(struct sdw_cdns *cdns,
-+			struct sdw_cdns_pdi **stream,
-+			u32 num, u32 pdi_offset)
-+{
-+	struct sdw_cdns_pdi *pdi;
-+	int i;
-+
-+	if (!num)
-+		return 0;
-+
-+	pdi = devm_kcalloc(cdns->dev, num, sizeof(*pdi), GFP_KERNEL);
-+	if (!pdi)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < num; i++) {
-+		pdi[i].num = i + pdi_offset;
-+		pdi[i].assigned = false;
-+	}
-+
-+	*stream = pdi;
-+	return 0;
-+}
-+
-+/**
-+ * sdw_cdns_pdi_init() - PDI initialization routine
-+ *
-+ * @cdns: Cadence instance
-+ * @config: Stream configurations
-+ */
-+int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
-+			struct sdw_cdns_stream_config config)
-+{
-+	struct sdw_cdns_streams *stream;
-+	int offset, i, ret;
-+
-+	cdns->pcm.num_bd = config.pcm_bd;
-+	cdns->pcm.num_in = config.pcm_in;
-+	cdns->pcm.num_out = config.pcm_out;
-+	cdns->pdm.num_bd = config.pdm_bd;
-+	cdns->pdm.num_in = config.pdm_in;
-+	cdns->pdm.num_out = config.pdm_out;
-+
-+	/* Allocate PDIs for PCMs */
-+	stream = &cdns->pcm;
-+
-+	/* First two PDIs are reserved for bulk transfers */
-+	stream->num_bd -= CDNS_PCM_PDI_OFFSET;
-+	offset = CDNS_PCM_PDI_OFFSET;
-+
-+	ret = cdns_allocate_pdi(cdns, &stream->bd,
-+				stream->num_bd, offset);
-+	if (ret)
-+		return ret;
-+
-+	offset += stream->num_bd;
-+
-+	ret = cdns_allocate_pdi(cdns, &stream->in,
-+				stream->num_in, offset);
-+	if (ret)
-+		return ret;
-+
-+
-+	offset += stream->num_in;
-+
-+	ret = cdns_allocate_pdi(cdns, &stream->out,
-+				stream->num_out, offset);
-+	if (ret)
-+		return ret;
-+
-+	/* Update total number of PCM PDIs */
-+	stream->num_pdi = stream->num_bd + stream->num_in + stream->num_out;
-+	cdns->num_ports = stream->num_pdi;
-+
-+	/* Allocate PDIs for PDMs */
-+	stream = &cdns->pdm;
-+	offset = CDNS_PDM_PDI_OFFSET;
-+	ret = cdns_allocate_pdi(cdns, &stream->bd,
-+				stream->num_bd, offset);
-+	if (ret)
-+		return ret;
-+
-+	offset += stream->num_bd;
-+
-+	ret = cdns_allocate_pdi(cdns, &stream->in,
-+				stream->num_in, offset);
-+	if (ret)
-+		return ret;
-+
-+	offset += stream->num_in;
-+
-+	ret = cdns_allocate_pdi(cdns, &stream->out,
-+				stream->num_out, offset);
-+	if (ret)
-+		return ret;
-+
-+	/* Update total number of PDM PDIs */
-+	stream->num_pdi = stream->num_bd + stream->num_in + stream->num_out;
-+	cdns->num_ports += stream->num_pdi;
-+
-+	cdns->ports = devm_kcalloc(cdns->dev, cdns->num_ports,
-+				sizeof(*cdns->ports), GFP_KERNEL);
-+	if (!cdns->ports) {
-+		ret = -ENOMEM;
-+		return ret;
-+	}
-+
-+	for (i = 0; i < cdns->num_ports; i++) {
-+		cdns->ports[i].assigned = false;
-+		cdns->ports[i].num = i + 1; /* Port 0 reserved for bulk */
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(sdw_cdns_pdi_init);
-+
- /**
-  * sdw_cdns_init() - Cadence initialization
-  * @cdns: Cadence instance
-@@ -730,6 +845,134 @@ int sdw_cdns_init(struct sdw_cdns *cdns)
- }
- EXPORT_SYMBOL(sdw_cdns_init);
- 
-+int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	int mcp_clkctrl_off, mcp_clkctrl;
-+	int divider;
-+
-+	if (!params->curr_dr_freq) {
-+		dev_err(cdns->dev, "NULL curr_dr_freq");
-+		return -EINVAL;
-+	}
-+
-+	divider	= (params->max_dr_freq / params->curr_dr_freq) - 1;
-+
-+	if (params->next_bank)
-+		mcp_clkctrl_off = CDNS_MCP_CLK_CTRL1;
-+	else
-+		mcp_clkctrl_off = CDNS_MCP_CLK_CTRL0;
-+
-+	mcp_clkctrl = cdns_readl(cdns, mcp_clkctrl_off);
-+	mcp_clkctrl |= divider;
-+	cdns_writel(cdns, mcp_clkctrl_off, mcp_clkctrl);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(cdns_bus_conf);
-+
-+static int cdns_port_params(struct sdw_bus *bus,
-+		struct sdw_port_params *p_params, unsigned int bank)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	int dpn_config = 0, dpn_config_off;
-+
-+	if (bank)
-+		dpn_config_off = CDNS_DPN_B1_CONFIG(p_params->num);
-+	else
-+		dpn_config_off = CDNS_DPN_B0_CONFIG(p_params->num);
-+
-+	dpn_config = cdns_readl(cdns, dpn_config_off);
-+
-+	dpn_config |= ((p_params->bps - 1) <<
-+				SDW_REG_SHIFT(CDNS_DPN_CONFIG_WL));
-+	dpn_config |= (p_params->flow_mode <<
-+				SDW_REG_SHIFT(CDNS_DPN_CONFIG_PORT_FLOW));
-+	dpn_config |= (p_params->data_mode <<
-+				SDW_REG_SHIFT(CDNS_DPN_CONFIG_PORT_DAT));
-+
-+	cdns_writel(cdns, dpn_config_off, dpn_config);
-+
-+	return 0;
-+}
-+
-+static int cdns_transport_params(struct sdw_bus *bus,
-+			struct sdw_transport_params *t_params,
-+			enum sdw_reg_bank bank)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	int dpn_offsetctrl = 0, dpn_offsetctrl_off;
-+	int dpn_config = 0, dpn_config_off;
-+	int dpn_hctrl = 0, dpn_hctrl_off;
-+	int num = t_params->port_num;
-+	int dpn_samplectrl_off;
-+
-+	/*
-+	 * Note: Only full data port is supported on the Master side for
-+	 * both PCM and PDM ports.
-+	 */
-+
-+	if (bank) {
-+		dpn_config_off = CDNS_DPN_B1_CONFIG(num);
-+		dpn_samplectrl_off = CDNS_DPN_B1_SAMPLE_CTRL(num);
-+		dpn_hctrl_off = CDNS_DPN_B1_HCTRL(num);
-+		dpn_offsetctrl_off = CDNS_DPN_B1_OFFSET_CTRL(num);
-+	} else {
-+		dpn_config_off = CDNS_DPN_B0_CONFIG(num);
-+		dpn_samplectrl_off = CDNS_DPN_B0_SAMPLE_CTRL(num);
-+		dpn_hctrl_off = CDNS_DPN_B0_HCTRL(num);
-+		dpn_offsetctrl_off = CDNS_DPN_B0_OFFSET_CTRL(num);
-+	}
-+
-+	dpn_config = cdns_readl(cdns, dpn_config_off);
-+
-+	dpn_config |= (t_params->blk_grp_ctrl <<
-+				SDW_REG_SHIFT(CDNS_DPN_CONFIG_BGC));
-+	dpn_config |= (t_params->blk_pkg_mode <<
-+				SDW_REG_SHIFT(CDNS_DPN_CONFIG_BPM));
-+	cdns_writel(cdns, dpn_config_off, dpn_config);
-+
-+	dpn_offsetctrl |= (t_params->offset1 <<
-+				SDW_REG_SHIFT(CDNS_DPN_OFFSET_CTRL_1));
-+	dpn_offsetctrl |= (t_params->offset2 <<
-+				SDW_REG_SHIFT(CDNS_DPN_OFFSET_CTRL_2));
-+	cdns_writel(cdns, dpn_offsetctrl_off,  dpn_offsetctrl);
-+
-+	dpn_hctrl |= (t_params->hstart <<
-+				SDW_REG_SHIFT(CDNS_DPN_HCTRL_HSTART));
-+	dpn_hctrl |= (t_params->hstop << SDW_REG_SHIFT(CDNS_DPN_HCTRL_HSTOP));
-+	dpn_hctrl |= (t_params->lane_ctrl <<
-+				SDW_REG_SHIFT(CDNS_DPN_HCTRL_LCTRL));
-+
-+	cdns_writel(cdns, dpn_hctrl_off, dpn_hctrl);
-+	cdns_writel(cdns, dpn_samplectrl_off, (t_params->sample_interval - 1));
-+
-+	return 0;
-+}
-+
-+static int cdns_port_enable(struct sdw_bus *bus,
-+		struct sdw_enable_ch *enable_ch, unsigned int bank)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	int dpn_chnen_off, ch_mask;
-+
-+	if (bank)
-+		dpn_chnen_off = CDNS_DPN_B1_CH_EN(enable_ch->port_num);
-+	else
-+		dpn_chnen_off = CDNS_DPN_B0_CH_EN(enable_ch->port_num);
-+
-+	ch_mask = enable_ch->ch_mask * enable_ch->enable;
-+	cdns_writel(cdns, dpn_chnen_off, ch_mask);
-+
-+	return 0;
-+}
-+
-+static const struct sdw_master_port_ops cdns_port_ops = {
-+	.dpn_set_port_params = cdns_port_params,
-+	.dpn_set_port_transport_params = cdns_transport_params,
-+	.dpn_port_enable_ch = cdns_port_enable,
-+};
-+
- /**
-  * sdw_cdns_probe() - Cadence probe routine
-  * @cdns: Cadence instance
-@@ -737,6 +980,7 @@ EXPORT_SYMBOL(sdw_cdns_init);
- int sdw_cdns_probe(struct sdw_cdns *cdns)
- {
- 	init_completion(&cdns->tx_complete);
-+	cdns->bus.port_ops = &cdns_port_ops;
- 
- 	return 0;
- }
-diff --git a/drivers/soundwire/cadence_master.h b/drivers/soundwire/cadence_master.h
-index 3ec74fa5f4f9..98a17f57918f 100644
---- a/drivers/soundwire/cadence_master.h
-+++ b/drivers/soundwire/cadence_master.h
-@@ -5,6 +5,92 @@
- #define __SDW_CADENCE_H
- 
- /**
-+ * struct sdw_cdns_pdi: PDI (Physical Data Interface) instance
-+ *
-+ * @assigned: pdi assigned
-+ * @num: pdi number
-+ * @intel_alh_id: link identifier
-+ * @l_ch_num: low channel for PDI
-+ * @h_ch_num: high channel for PDI
-+ * @ch_count: total channel count for PDI
-+ * @dir: data direction
-+ * @type: stream type, PDM or PCM
-+ */
-+struct sdw_cdns_pdi {
-+	bool assigned;
-+	int num;
-+	int intel_alh_id;
-+	int l_ch_num;
-+	int h_ch_num;
-+	int ch_count;
-+	enum sdw_data_direction dir;
-+	enum sdw_stream_type type;
-+};
-+
-+/**
-+ * struct sdw_cdns_port: Cadence port structure
-+ *
-+ * @num: port number
-+ * @assigned: port assigned
-+ * @ch: channel count
-+ * @direction: data port direction
-+ * @pdi: pdi for this port
-+ */
-+struct sdw_cdns_port {
-+	unsigned int num;
-+	bool assigned;
-+	unsigned int ch;
-+	enum sdw_data_direction direction;
-+	struct sdw_cdns_pdi *pdi;
-+};
-+
-+/**
-+ * struct sdw_cdns_streams: Cadence stream data structure
-+ *
-+ * @num_bd: number of bidirectional streams
-+ * @num_in: number of input streams
-+ * @num_out: number of output streams
-+ * @num_ch_bd: number of bidirectional stream channels
-+ * @num_ch_bd: number of input stream channels
-+ * @num_ch_bd: number of output stream channels
-+ * @num_pdi: total number of PDIs
-+ * @bd: bidirectional streams
-+ * @in: input streams
-+ * @out: output streams
-+ */
-+struct sdw_cdns_streams {
-+	unsigned int num_bd;
-+	unsigned int num_in;
-+	unsigned int num_out;
-+	unsigned int num_ch_bd;
-+	unsigned int num_ch_in;
-+	unsigned int num_ch_out;
-+	unsigned int num_pdi;
-+	struct sdw_cdns_pdi *bd;
-+	struct sdw_cdns_pdi *in;
-+	struct sdw_cdns_pdi *out;
-+};
-+
-+/**
-+ * struct sdw_cdns_stream_config: stream configuration
-+ *
-+ * @pcm_bd: number of bidirectional PCM streams supported
-+ * @pcm_in: number of input PCM streams supported
-+ * @pcm_out: number of output PCM streams supported
-+ * @pdm_bd: number of bidirectional PDM streams supported
-+ * @pdm_in: number of input PDM streams supported
-+ * @pdm_out: number of output PDM streams supported
-+ */
-+struct sdw_cdns_stream_config {
-+	unsigned int pcm_bd;
-+	unsigned int pcm_in;
-+	unsigned int pcm_out;
-+	unsigned int pdm_bd;
-+	unsigned int pdm_in;
-+	unsigned int pdm_out;
-+};
-+
-+/**
-  * struct sdw_cdns - Cadence driver context
-  * @dev: Linux device
-  * @bus: Bus handle
-@@ -12,6 +98,10 @@
-  * @response_buf: SoundWire response buffer
-  * @tx_complete: Tx completion
-  * @defer: Defer pointer
-+ * @ports: Data ports
-+ * @num_ports: Total number of data ports
-+ * @pcm: PCM streams
-+ * @pdm: PDM streams
-  * @registers: Cadence registers
-  * @link_up: Link status
-  * @msg_count: Messages sent on bus
-@@ -25,6 +115,12 @@ struct sdw_cdns {
- 	struct completion tx_complete;
- 	struct sdw_defer *defer;
- 
-+	struct sdw_cdns_port *ports;
-+	int num_ports;
-+
-+	struct sdw_cdns_streams pcm;
-+	struct sdw_cdns_streams pdm;
-+
- 	void __iomem *registers;
- 
- 	bool link_up;
-@@ -42,6 +138,8 @@ irqreturn_t sdw_cdns_irq(int irq, void *dev_id);
- irqreturn_t sdw_cdns_thread(int irq, void *dev_id);
- 
- int sdw_cdns_init(struct sdw_cdns *cdns);
-+int sdw_cdns_pdi_init(struct sdw_cdns *cdns,
-+			struct sdw_cdns_stream_config config);
- int sdw_cdns_enable_interrupt(struct sdw_cdns *cdns);
- 
- enum sdw_command_response
-@@ -53,4 +151,6 @@ cdns_xfer_msg_defer(struct sdw_bus *bus,
- 
- enum sdw_command_response
- cdns_reset_page_addr(struct sdw_bus *bus, unsigned int dev_num);
-+
-+int cdns_bus_conf(struct sdw_bus *bus, struct sdw_bus_params *params);
- #endif /* __SDW_CADENCE_H */
 diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index aa0c60133de5..a64f87a08cfd 100644
+index a64f87a08cfd..279cbd51cdfa 100644
 --- a/drivers/soundwire/intel.c
 +++ b/drivers/soundwire/intel.c
-@@ -257,6 +257,7 @@ static struct sdw_master_ops sdw_intel_ops = {
- 	.xfer_msg = cdns_xfer_msg,
- 	.xfer_msg_defer = cdns_xfer_msg_defer,
- 	.reset_page_addr = cdns_reset_page_addr,
-+	.set_bus_conf = cdns_bus_conf,
- };
+@@ -9,6 +9,8 @@
+ #include <linux/delay.h>
+ #include <linux/interrupt.h>
+ #include <linux/platform_device.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
+ #include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
+ #include <linux/soundwire/sdw_intel.h>
+@@ -234,6 +236,150 @@ static int intel_shim_init(struct sdw_intel *sdw)
+ 	return ret;
+ }
  
- /*
++/*
++ * PDI routines
++ */
++static void intel_pdi_init(struct sdw_intel *sdw,
++			struct sdw_cdns_stream_config *config)
++{
++	void __iomem *shim = sdw->res->shim;
++	unsigned int link_id = sdw->instance;
++	int pcm_cap, pdm_cap;
++
++	/* PCM Stream Capability */
++	pcm_cap = intel_readw(shim, SDW_SHIM_PCMSCAP(link_id));
++
++	config->pcm_bd = (pcm_cap & SDW_SHIM_PCMSCAP_BSS) >>
++					SDW_REG_SHIFT(SDW_SHIM_PCMSCAP_BSS);
++	config->pcm_in = (pcm_cap & SDW_SHIM_PCMSCAP_ISS) >>
++					SDW_REG_SHIFT(SDW_SHIM_PCMSCAP_ISS);
++	config->pcm_out = (pcm_cap & SDW_SHIM_PCMSCAP_OSS) >>
++					SDW_REG_SHIFT(SDW_SHIM_PCMSCAP_OSS);
++
++	/* PDM Stream Capability */
++	pdm_cap = intel_readw(shim, SDW_SHIM_PDMSCAP(link_id));
++
++	config->pdm_bd = (pdm_cap & SDW_SHIM_PDMSCAP_BSS) >>
++					SDW_REG_SHIFT(SDW_SHIM_PDMSCAP_BSS);
++	config->pdm_in = (pdm_cap & SDW_SHIM_PDMSCAP_ISS) >>
++					SDW_REG_SHIFT(SDW_SHIM_PDMSCAP_ISS);
++	config->pdm_out = (pdm_cap & SDW_SHIM_PDMSCAP_OSS) >>
++					SDW_REG_SHIFT(SDW_SHIM_PDMSCAP_OSS);
++}
++
++static int
++intel_pdi_get_ch_cap(struct sdw_intel *sdw, unsigned int pdi_num, bool pcm)
++{
++	void __iomem *shim = sdw->res->shim;
++	unsigned int link_id = sdw->instance;
++	int count;
++
++	if (pcm) {
++
++		count = intel_readw(shim, SDW_SHIM_PCMSYCHC(link_id, pdi_num));
++	} else {
++		count = intel_readw(shim, SDW_SHIM_PDMSCAP(link_id));
++		count = ((count & SDW_SHIM_PDMSCAP_CPSS) >>
++					SDW_REG_SHIFT(SDW_SHIM_PDMSCAP_CPSS));
++	}
++
++	/* zero based values for channel count in register */
++	count++;
++
++	return count;
++}
++
++static int intel_pdi_get_ch_update(struct sdw_intel *sdw,
++				struct sdw_cdns_pdi *pdi,
++				unsigned int num_pdi,
++				unsigned int *num_ch, bool pcm)
++{
++	int i, ch_count = 0;
++
++	for (i = 0; i < num_pdi; i++) {
++		pdi->ch_count = intel_pdi_get_ch_cap(sdw, pdi->num, pcm);
++		ch_count += pdi->ch_count;
++		pdi++;
++	}
++
++	*num_ch = ch_count;
++	return 0;
++}
++
++static int intel_pdi_stream_ch_update(struct sdw_intel *sdw,
++				struct sdw_cdns_streams *stream, bool pcm)
++{
++	intel_pdi_get_ch_update(sdw, stream->bd, stream->num_bd,
++			&stream->num_ch_bd, pcm);
++
++	intel_pdi_get_ch_update(sdw, stream->in, stream->num_in,
++			&stream->num_ch_in, pcm);
++
++	intel_pdi_get_ch_update(sdw, stream->out, stream->num_out,
++			&stream->num_ch_out, pcm);
++
++	return 0;
++}
++
++static int intel_pdi_ch_update(struct sdw_intel *sdw)
++{
++	/* First update PCM streams followed by PDM streams */
++	intel_pdi_stream_ch_update(sdw, &sdw->cdns.pcm, true);
++	intel_pdi_stream_ch_update(sdw, &sdw->cdns.pdm, false);
++
++	return 0;
++}
++
++static void
++intel_pdi_shim_configure(struct sdw_intel *sdw, struct sdw_cdns_pdi *pdi)
++{
++	void __iomem *shim = sdw->res->shim;
++	unsigned int link_id = sdw->instance;
++	int pdi_conf = 0;
++
++	pdi->intel_alh_id = (link_id * 16) + pdi->num + 5;
++
++	/*
++	 * Program stream parameters to stream SHIM register
++	 * This is applicable for PCM stream only.
++	 */
++	if (pdi->type != SDW_STREAM_PCM)
++		return;
++
++	if (pdi->dir == SDW_DATA_DIR_RX)
++		pdi_conf |= SDW_SHIM_PCMSYCM_DIR;
++	else
++		pdi_conf &= ~(SDW_SHIM_PCMSYCM_DIR);
++
++	pdi_conf |= (pdi->intel_alh_id <<
++			SDW_REG_SHIFT(SDW_SHIM_PCMSYCM_STREAM));
++	pdi_conf |= (pdi->l_ch_num << SDW_REG_SHIFT(SDW_SHIM_PCMSYCM_LCHN));
++	pdi_conf |= (pdi->h_ch_num << SDW_REG_SHIFT(SDW_SHIM_PCMSYCM_HCHN));
++
++	intel_writew(shim, SDW_SHIM_PCMSYCHM(link_id, pdi->num), pdi_conf);
++}
++
++static void
++intel_pdi_alh_configure(struct sdw_intel *sdw, struct sdw_cdns_pdi *pdi)
++{
++	void __iomem *alh = sdw->res->alh;
++	unsigned int link_id = sdw->instance;
++	unsigned int conf;
++
++	pdi->intel_alh_id = (link_id * 16) + pdi->num + 5;
++
++	/* Program Stream config ALH register */
++	conf = intel_readl(alh, SDW_ALH_STRMZCFG(pdi->intel_alh_id));
++
++	conf |= (SDW_ALH_STRMZCFG_DMAT_VAL <<
++			SDW_REG_SHIFT(SDW_ALH_STRMZCFG_DMAT));
++
++	conf |= ((pdi->ch_count - 1) <<
++			SDW_REG_SHIFT(SDW_ALH_STRMZCFG_CHN));
++
++	intel_writel(alh, SDW_ALH_STRMZCFG(pdi->intel_alh_id), conf);
++}
++
+ static int intel_prop_read(struct sdw_bus *bus)
+ {
+ 	/* Initialize with default handler to read all DisCo properties */
+@@ -265,6 +411,7 @@ static struct sdw_master_ops sdw_intel_ops = {
+  */
+ static int intel_probe(struct platform_device *pdev)
+ {
++	struct sdw_cdns_stream_config config;
+ 	struct sdw_intel *sdw;
+ 	int ret;
+ 
+@@ -287,6 +434,9 @@ static int intel_probe(struct platform_device *pdev)
+ 	sdw_intel_ops.read_prop = intel_prop_read;
+ 	sdw->cdns.bus.ops = &sdw_intel_ops;
+ 
++	sdw_intel_ops.read_prop = intel_prop_read;
++	sdw->cdns.bus.ops = &sdw_intel_ops;
++
+ 	platform_set_drvdata(pdev, sdw);
+ 
+ 	ret = sdw_add_bus_master(&sdw->cdns.bus);
+@@ -304,9 +454,15 @@ static int intel_probe(struct platform_device *pdev)
+ 		goto err_init;
+ 
+ 	ret = sdw_cdns_enable_interrupt(&sdw->cdns);
++
++	/* Read the PDI config and initialize cadence PDI */
++	intel_pdi_init(sdw, &config);
++	ret = sdw_cdns_pdi_init(&sdw->cdns, config);
+ 	if (ret)
+ 		goto err_init;
+ 
++	intel_pdi_ch_update(sdw);
++
+ 	/* Acquire IRQ */
+ 	ret = request_threaded_irq(sdw->res->irq, sdw_cdns_irq,
+ 			sdw_cdns_thread, IRQF_SHARED, KBUILD_MODNAME,
 -- 
 2.7.4
