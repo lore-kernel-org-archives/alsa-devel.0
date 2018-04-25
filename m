@@ -1,76 +1,133 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 2/5] ASoC: mt6797: add structure define
- and clock control function for 6797
-Date: Wed, 25 Apr 2018 18:52:41 +0100
-Message-ID: <20180425175241.GJ24769@sirena.org.uk>
-References: <20180425072522.14167-1-kaichieh.chuang@mediatek.com>
- <20180425072522.14167-3-kaichieh.chuang@mediatek.com>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: add documents for mt6797" to the asoc tree
+Date: Wed, 25 Apr 2018 18:52:57 +0100
+Message-ID: <E1fBObB-0004jb-Gy@debutante>
+References: <20180413090242.4211-6-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4827768900183323979=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9665D267035
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 19:52:47 +0200 (CEST)
-In-Reply-To: <20180425072522.14167-3-kaichieh.chuang@mediatek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, chipeng.chang@mediatek.com, wsd_upstream@mediatek.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20180413090242.4211-6-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, chipeng.chang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4827768900183323979==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="LQAwcd5tHl0Qlnzi"
-Content-Disposition: inline
+   ASoC: mediatek: add documents for mt6797
 
+has been applied to the asoc tree at
 
---LQAwcd5tHl0Qlnzi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Apr 25, 2018 at 03:25:19PM +0800, KaiChieh Chuang wrote:
-> Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-> ---
->  sound/soc/mediatek/mt6797/mt6797-afe-clk.c         | 132 ++++
->  sound/soc/mediatek/mt6797/mt6797-afe-clk.h         |  25 +
->  sound/soc/mediatek/mt6797/mt6797-afe-common.h      |  57 ++
->  sound/soc/mediatek/mt6797/mt6797-interconnection.h |  41 +
->  sound/soc/mediatek/mt6797/mt6797-reg.h             | 846 +++++++++++++++++++++
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I've applied this and the following patch but they do need updates for
-SPDX - please submit followup patches doing that.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---LQAwcd5tHl0Qlnzi
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrgwGkACgkQJNaLcl1U
-h9AfIwf+K+qMOgUJWH/xj2XXYaRyn+Lqn/CxLQDOK79VBcy/2kMyOf45YWsKRcUc
-EpVDISIpn6PVlxbn1Gwl1n2aE5ST0X/O6TuTwkKOFpXDmV+3rDi2EgRQr7Lw1D+k
-VhDruQSOR8w6XuFINSH5sQVa28E/M9/iftvB/lNbnfLByXhehZ9RKSF8u9JVgF/Q
-M1sGSfs5DZert3niW2YAxHaRhoDWaB1RQavjtY8mgKIf4162OWkYgL5TIxXgqCvB
-9oEibdC19gFLnHWDMwWOKCFvTFfhqbSe5N45RuG1uoSxV2N61sqCHsOdUaxxpY6s
-EmzG9XnfqMe80jN8NxeBp8Iv5R0dlw==
-=xQTL
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---LQAwcd5tHl0Qlnzi--
+>From 22d9f80904b4510296c133db15f8d3291292023b Mon Sep 17 00:00:00 2001
+From: Kai Chieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Date: Wed, 25 Apr 2018 15:25:22 +0800
+Subject: [PATCH] ASoC: mediatek: add documents for mt6797
 
---===============4827768900183323979==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+---
+ .../bindings/sound/mt6797-afe-pcm.txt         | 42 +++++++++++++++++++
+ .../bindings/sound/mt6797-mt6351.txt          | 14 +++++++
+ 2 files changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6797-afe-pcm.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/mt6797-mt6351.txt
 
-
---===============4827768900183323979==--
+diff --git a/Documentation/devicetree/bindings/sound/mt6797-afe-pcm.txt b/Documentation/devicetree/bindings/sound/mt6797-afe-pcm.txt
+new file mode 100644
+index 000000000000..0ae29de15bfd
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt6797-afe-pcm.txt
+@@ -0,0 +1,42 @@
++Mediatek AFE PCM controller for mt6797
++
++Required properties:
++- compatible = "mediatek,mt6797-audio";
++- reg: register location and size
++- interrupts: should contain AFE interrupt
++- power-domains: should define the power domain
++- clocks: Must contain an entry for each entry in clock-names
++- clock-names: should have these clock names:
++		"infra_sys_audio_clk",
++		"infra_sys_audio_26m",
++		"mtkaif_26m_clk",
++		"top_mux_audio",
++		"top_mux_aud_intbus",
++		"top_sys_pll3_d4",
++		"top_sys_pll1_d4",
++		"top_clk26m_clk";
++
++Example:
++
++	afe: mt6797-afe-pcm@11220000  {
++		compatible = "mediatek,mt6797-audio";
++		reg = <0 0x11220000 0 0x1000>;
++		interrupts = <GIC_SPI 151 IRQ_TYPE_LEVEL_LOW>;
++		power-domains = <&scpsys MT6797_POWER_DOMAIN_AUDIO>;
++		clocks = <&infrasys CLK_INFRA_AUDIO>,
++			 <&infrasys CLK_INFRA_AUDIO_26M>,
++			 <&infrasys CLK_INFRA_AUDIO_26M_PAD_TOP>,
++			 <&topckgen CLK_TOP_MUX_AUDIO>,
++			 <&topckgen CLK_TOP_MUX_AUD_INTBUS>,
++			 <&topckgen CLK_TOP_SYSPLL3_D4>,
++			 <&topckgen CLK_TOP_SYSPLL1_D4>,
++			 <&clk26m>;
++		clock-names = "infra_sys_audio_clk",
++			      "infra_sys_audio_26m",
++			      "mtkaif_26m_clk",
++			      "top_mux_audio",
++			      "top_mux_aud_intbus",
++			      "top_sys_pll3_d4",
++			      "top_sys_pll1_d4",
++			      "top_clk26m_clk";
++	};
+diff --git a/Documentation/devicetree/bindings/sound/mt6797-mt6351.txt b/Documentation/devicetree/bindings/sound/mt6797-mt6351.txt
+new file mode 100644
+index 000000000000..1d95a8840f19
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/mt6797-mt6351.txt
+@@ -0,0 +1,14 @@
++MT6797 with MT6351 CODEC
++
++Required properties:
++- compatible: "mediatek,mt6797-mt6351-sound"
++- mediatek,platform: the phandle of MT6797 ASoC platform
++- mediatek,audio-codec: the phandles of MT6351 codec
++
++Example:
++
++	sound {
++		compatible = "mediatek,mt6797-mt6351-sound";
++		mediatek,audio-codec = <&mt6351_snd>;
++		mediatek,platform = <&afe>;
++	};
+-- 
+2.17.0
