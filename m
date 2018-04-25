@@ -1,94 +1,95 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 21/23] ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings
-Date: Wed, 25 Apr 2018 10:04:54 -0500
-Message-ID: <CAL_JsqJXpei5vFUKwrQGaV4q3Twkg=SKF=Cx_my7KaLmOc42NQ@mail.gmail.com>
-References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
- <20180418153157.1960-22-srinivas.kandagatla@linaro.org> <20180424162517.msxscjfg36xc22mo@rob-hp-laptop>
- <655a593b-021c-3bf2-35c2-eb77cb0a4b95@linaro.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v4 08/13] ASoC: Add SoundWire stream
+ programming interface
+Date: Wed, 25 Apr 2018 10:08:20 -0500
+Message-ID: <95778758-bcea-8c08-6e6d-27ea558e6b73@linux.intel.com>
+References: <1524049146-8725-1-git-send-email-vinod.koul@intel.com>
+ <1524049146-8725-9-git-send-email-vinod.koul@intel.com>
+ <79c978d0-0ded-ddcb-5405-18b657c062d7@linux.intel.com>
+ <20180421155804.GN6014@localhost>
+ <d9b2a2dd-5f60-3916-a759-540d3cfa34ff@linux.intel.com>
+ <20180424090633.GD6014@localhost>
+ <a439fa96-0338-ad73-8203-4a2f875d44cb@linux.intel.com>
+ <20180425024923.GG6014@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <655a593b-021c-3bf2-35c2-eb77cb0a4b95@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, David Brown <david.brown@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id C068C26772B
+ for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 17:08:23 +0200 (CEST)
+In-Reply-To: <20180425024923.GG6014@localhost>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 24, 2018 at 11:49 AM, Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
-> Thanks for the review.
->
->
-> On 24/04/18 17:25, Rob Herring wrote:
->>
->> On Wed, Apr 18, 2018 at 04:31:55PM +0100, srinivas.kandagatla@linaro.org
->> wrote:
+On 4/24/18 9:49 PM, Vinod Koul wrote:
+> On Tue, Apr 24, 2018 at 06:40:54PM -0500, Pierre-Louis Bossart wrote:
+>> On 4/24/18 4:06 AM, Vinod Koul wrote:
+>>> On Mon, Apr 23, 2018 at 08:33:08AM -0500, Pierre-Louis Bossart wrote:
+>>>> On 4/21/18 10:58 AM, Vinod Koul wrote:
+>>>>> On Sat, Apr 21, 2018 at 06:59:49AM -0700, Pierre-Louis Bossart wrote:
+>>>>>>
+>>>>>>> +/**
+>>>>>>> + * snd_soc_dai_set_sdw_stream() - Configures a DAI for SDW stream operation
+>>>>>>> + * @dai: DAI
+>>>>>>> + * @stream: STREAM
+>>>>>>> + * @direction: Stream direction(Playback/Capture)
+>>>>>>> + * SoundWire subsystem doesn't have a notion of direction and we reuse
+>>>>>>> + * the ASoC stream direction to configure sink/source ports.
+>>>>>>> + * Playback maps to source on the TX and sink on Rx. Vice-versa for Capture.
+>>>>>>
+>>>>>> this is just confusing...
+>>>>>>
+>>>>>> This should be something like
+>>>>>> "use Playback for source ports and Capture for sink ports".
+>>>>>
+>>>>> Source port on ...? This is also confusing to me!
+>>>>>
+>>>>> For playback there are two ports, one on transmitter aka
+>>>>> TX and one on receiver aka RX. For Tx we use source port, and Rx uses sink
+>>>>> ports. I should probably add port to make people really figure out we are
+>>>>> talking about ports!
+>>>>>
+>>>>> So:
+>>>>>
+>>>>> Playback maps to source port on the TX and sink port on Rx. Vice-versa for Capture.
+>>>>>
+>>>>> Do you agree to above statement?
+>>>>
+>>>> No. Source port and TX are redundant definitions, and your wording isn't
+>>>> clear: is the PLAYBACK/CAPTURE qualifier for the stream or the DAI used by
+>>>> the stream?
 >>>
->>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>
->>> Add devicetree bindings documentation file for Qualcomm apq8096 sound
->>> card.
->>>
->>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>> ---
->>>   .../devicetree/bindings/sound/qcom,apq8096.txt     | 76
->>> ++++++++++++++++++++++
->>>   1 file changed, 76 insertions(+)
->>>   create mode 100644
->>> Documentation/devicetree/bindings/sound/qcom,apq8096.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
->>> b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
->>> new file mode 100644
->>> index 000000000000..37e23d926b95
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
->>> @@ -0,0 +1,76 @@
->>> +* Qualcomm Technologies APQ8096 ASoC sound card driver
->>> +
->>> +This binding describes the APQ8096 sound card, which uses qdsp for
->>> audio.
->>> +
->>> +- compatible:
->>> +       Usage: required
->>> +       Value type: <stringlist>
->>> +       Definition: must be "qcom,apq8096-sndcard"
->>> +
->>> +- qcom,audio-routing:
->>> +       Usage: Optional
->>> +       Value type: <stringlist>
->>> +       Definition:  A list of the connections between audio components.
->>> +                 Each entry is a pair of strings, the first being the
->>> +                 connection's sink, the second being the connection's
->>> +                 source. Valid names could be power supplies, MicBias
->>> +                 of codec and the jacks on the board:
+>>> Yes they are redundant, will update. PLAYBACK/CAPTURE qualifier is for stream.
 >>
+>> Let me try again.
+>> let's say in point-to-point mode you have dai1 as the source and dai2 as the
+>> sink.
 >>
->> Please list out valid values here.
->
->
-> I can list the values for the HDMI playback use-case, but the list would
-> grow as we start adding wcd9335 codec support.
-
-If you don't have the values, then how does one validate a DT is correct?
-
-Honestly, a single property like this seems insufficient to describe
-audio routing.
-
->>> +
->>> += dailinks
->>> +Each subnode of sndcard represents either a dailink, and subnodes of
->>> each
->>> +dailinks would be cpu/codec/platform dais.
->>> +
->>> +- link-name:
+>> Which sequence are the higher layers supposed to use:
 >>
+>> a.
 >>
->> Not a standard property, but I guess that sneaked in with the 8016
->> binding...
->
-> Yes, I followed 8016 bindings.
->
-> Am happy to prefix this with qcom if that makes more sense.
+>> snd_soc_dai_set_sdw_stream(dai1, stream, PLAYBACK);
+>> snd_soc_dai_set_sdw_stream(dai2, stream, PLAYBACK);
+>>
+>> b.
+>>
+>> snd_soc_dai_set_sdw_stream(dai1, stream, PLAYBACK);
+>> snd_soc_dai_set_sdw_stream(dai2, stream, CAPTURE);
+> 
+> I believe this.
 
-I'd just leave it to be consistent.
+For clarity, did you mean b) ?
+If yes, Playback == Source and Capture == sink.
