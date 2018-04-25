@@ -1,82 +1,94 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Skip jack and others for
-	non-existing PCM streams
-Date: Wed, 25 Apr 2018 16:41:21 +0200
-Message-ID: <20180425144121.17600-1-tiwai@suse.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 21/23] ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings
+Date: Wed, 25 Apr 2018 10:04:54 -0500
+Message-ID: <CAL_JsqJXpei5vFUKwrQGaV4q3Twkg=SKF=Cx_my7KaLmOc42NQ@mail.gmail.com>
+References: <20180418153157.1960-1-srinivas.kandagatla@linaro.org>
+ <20180418153157.1960-22-srinivas.kandagatla@linaro.org> <20180424162517.msxscjfg36xc22mo@rob-hp-laptop>
+ <655a593b-021c-3bf2-35c2-eb77cb0a4b95@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5700B267766
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 16:41:25 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 4E3DAAD98
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 14:41:25 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <655a593b-021c-3bf2-35c2-eb77cb0a4b95@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, David Brown <david.brown@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-When CONFIG_SND_DYNAMIC_MINORS isn't set, there are only limited
-number of devices available, and HD-audio, especially with HDMI/DP
-codec, will fail to create more than two devices.
+On Tue, Apr 24, 2018 at 11:49 AM, Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+> Thanks for the review.
+>
+>
+> On 24/04/18 17:25, Rob Herring wrote:
+>>
+>> On Wed, Apr 18, 2018 at 04:31:55PM +0100, srinivas.kandagatla@linaro.org
+>> wrote:
+>>>
+>>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>
+>>> Add devicetree bindings documentation file for Qualcomm apq8096 sound
+>>> card.
+>>>
+>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>> ---
+>>>   .../devicetree/bindings/sound/qcom,apq8096.txt     | 76
+>>> ++++++++++++++++++++++
+>>>   1 file changed, 76 insertions(+)
+>>>   create mode 100644
+>>> Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+>>> b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+>>> new file mode 100644
+>>> index 000000000000..37e23d926b95
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+>>> @@ -0,0 +1,76 @@
+>>> +* Qualcomm Technologies APQ8096 ASoC sound card driver
+>>> +
+>>> +This binding describes the APQ8096 sound card, which uses qdsp for
+>>> audio.
+>>> +
+>>> +- compatible:
+>>> +       Usage: required
+>>> +       Value type: <stringlist>
+>>> +       Definition: must be "qcom,apq8096-sndcard"
+>>> +
+>>> +- qcom,audio-routing:
+>>> +       Usage: Optional
+>>> +       Value type: <stringlist>
+>>> +       Definition:  A list of the connections between audio components.
+>>> +                 Each entry is a pair of strings, the first being the
+>>> +                 connection's sink, the second being the connection's
+>>> +                 source. Valid names could be power supplies, MicBias
+>>> +                 of codec and the jacks on the board:
+>>
+>>
+>> Please list out valid values here.
+>
+>
+> I can list the values for the HDMI playback use-case, but the list would
+> grow as we start adding wcd9335 codec support.
 
-The driver warns about the lack of such devices and skips the PCM
-device creations, but the HDMI driver still tries to create the
-corresponding JACK, SPDIF and ELD controls even for the non-existing
-PCM substreams.  This results in confusion on user-space, and even may
-break the operation.
+If you don't have the values, then how does one validate a DT is correct?
 
-Similarly, Intel HDMI/DP codec builds the ELD notification from i915
-graphics driver, and this may be broken if a notification is sent for
-the non-existing PCM stream.
+Honestly, a single property like this seems insufficient to describe
+audio routing.
 
-This patch adds the check of the existence of the assigned PCM
-substream in the both scenarios above, and skips the further operation
-if the PCM substream is not assigned.
+>>> +
+>>> += dailinks
+>>> +Each subnode of sndcard represents either a dailink, and subnodes of
+>>> each
+>>> +dailinks would be cpu/codec/platform dais.
+>>> +
+>>> +- link-name:
+>>
+>>
+>> Not a standard property, but I guess that sneaked in with the 8016
+>> binding...
+>
+> Yes, I followed 8016 bindings.
+>
+> Am happy to prefix this with qcom if that makes more sense.
 
-Fixes: 9152085defb6 ("ALSA: hda - add DP MST audio support")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_hdmi.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index b4f1b6e88305..7d7eb1354eee 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -1383,6 +1383,8 @@ static void hdmi_pcm_setup_pin(struct hdmi_spec *spec,
- 		pcm = get_pcm_rec(spec, per_pin->pcm_idx);
- 	else
- 		return;
-+	if (!pcm->pcm)
-+		return;
- 	if (!test_bit(per_pin->pcm_idx, &spec->pcm_in_use))
- 		return;
- 
-@@ -2151,8 +2153,13 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
- 	int dev, err;
- 	int pin_idx, pcm_idx;
- 
--
- 	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
-+		if (!get_pcm_rec(spec, pcm_idx)->pcm) {
-+			/* no PCM: mark this for skipping permanently */
-+			set_bit(pcm_idx, &spec->pcm_bitmap);
-+			continue;
-+		}
-+
- 		err = generic_hdmi_build_jack(codec, pcm_idx);
- 		if (err < 0)
- 			return err;
--- 
-2.16.3
+I'd just leave it to be consistent.
