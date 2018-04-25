@@ -1,18 +1,18 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: ASoC: BCM2835-I2S: TDM slots / slot mask ignored
-Date: Wed, 25 Apr 2018 09:00:34 -0500
-Message-ID: <20180425140031.GA3423@t7-ThinkPad-E560>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Skip jack and others for
+	non-existing PCM streams
+Date: Wed, 25 Apr 2018 16:41:21 +0200
+Message-ID: <20180425144121.17600-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
- [209.85.218.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 13287267766
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 16:00:44 +0200 (CEST)
-Received: by mail-oi0-f45.google.com with SMTP id e80-v6so13497546oig.11
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 07:00:44 -0700 (PDT)
-Content-Disposition: inline
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5700B267766
+ for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 16:41:25 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 4E3DAAD98
+ for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 14:41:25 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: florian.meier@koalo.de
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+When CONFIG_SND_DYNAMIC_MINORS isn't set, there are only limited
+number of devices available, and HD-audio, especially with HDMI/DP
+codec, will fail to create more than two devices.
 
-I am testing a codec driver interfaced to the Raspberry Pi in TDM mode
-and on the logic analyzer I see that the I2S controller is shifting out
-data in slots 2 - 7 when playing 2 channel audio. The codec is master 
-and only works at 256 x fs, so after the frame sync slots 0 and 1 
-transfer as they should but after that data continues to be shifted out.
-It is my understanding that the remaining bits should be zero padded.
+The driver warns about the lack of such devices and skips the PCM
+device creations, but the HDMI driver still tries to create the
+corresponding JACK, SPDIF and ELD controls even for the non-existing
+PCM substreams.  This results in confusion on user-space, and even may
+break the operation.
 
-On a similar note I see that the I2S bcm2835-i2s driver only supports 2
-slots, but it seems it can also do 8. For example if I take an 8 channel
-audio source file(NOTE: I had to hack the file to look like 2 channels
-so hw_params didn't return an error) and play it I hear the first two 
-channels fine and in the part that I am writing the dirver for I can 
-easily route the other slots to additional DACs and get those to play
-as well.
+Similarly, Intel HDMI/DP codec builds the ELD notification from i915
+graphics driver, and this may be broken if a notification is sent for
+the non-existing PCM stream.
 
-So I guess I am wondering about two things:
+This patch adds the check of the existence of the assigned PCM
+substream in the both scenarios above, and skips the further operation
+if the PCM substream is not assigned.
 
-1. In the first case why does my 2 channel audio get shifted out on all
-8 slots? It seems if configured for 2 it should only shift data in the
-first two and wait for the next fsync before starting to shift again.
+Fixes: 9152085defb6 ("ALSA: hda - add DP MST audio support")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_hdmi.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-2. Why does the driver obly support 2 channels when it seems the
-hardware is capable of more?
-
-I figure there is something about this controller that made this tricky
-or impossible, but I am still curious about it.
-
-Regards,
-
-Steven
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index b4f1b6e88305..7d7eb1354eee 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -1383,6 +1383,8 @@ static void hdmi_pcm_setup_pin(struct hdmi_spec *spec,
+ 		pcm = get_pcm_rec(spec, per_pin->pcm_idx);
+ 	else
+ 		return;
++	if (!pcm->pcm)
++		return;
+ 	if (!test_bit(per_pin->pcm_idx, &spec->pcm_in_use))
+ 		return;
+ 
+@@ -2151,8 +2153,13 @@ static int generic_hdmi_build_controls(struct hda_codec *codec)
+ 	int dev, err;
+ 	int pin_idx, pcm_idx;
+ 
+-
+ 	for (pcm_idx = 0; pcm_idx < spec->pcm_used; pcm_idx++) {
++		if (!get_pcm_rec(spec, pcm_idx)->pcm) {
++			/* no PCM: mark this for skipping permanently */
++			set_bit(pcm_idx, &spec->pcm_bitmap);
++			continue;
++		}
++
+ 		err = generic_hdmi_build_jack(codec, pcm_idx);
+ 		if (err < 0)
+ 			return err;
+-- 
+2.16.3
