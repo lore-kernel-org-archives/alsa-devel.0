@@ -1,16 +1,14 @@
-From: Kailang <kailang@realtek.com>
-Subject: change the location for one of two front mics for
-	Lenovo ThinkCentre
-Date: Wed, 25 Apr 2018 09:20:07 +0000
-Message-ID: <6FAB7C47BCF00940BB0999A99BE3547A184126CA@RTITMBSV02.realtek.com.tw>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH v5 00/13] soundwire: Add stream support
+Date: Wed, 25 Apr 2018 15:09:10 +0530
+Message-ID: <1524649163-12088-1-git-send-email-vkoul@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="_002_6FAB7C47BCF00940BB0999A99BE3547A184126CARTITMBSV02realt_"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FC0C266CA1
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 11:20:15 +0200 (CEST)
-Content-Language: zh-TW
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 37ED0266CA1
+ for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 11:34:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,65 +18,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Takashi Iwai (tiwai@suse.de)" <tiwai@suse.de>
-Cc: " (alsa-devel@alsa-project.org)" <alsa-devel@alsa-project.org>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A184126CARTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+This series adds support in SoundWire subsystem for:
+ - Documentation for stream support
+ - stream management
+ - data port management
+ - DAI ops in cadence and Intel drivers
+ - ASoC API to propagate SDW stream
 
-Hi Takashi,
+Updated in v5:
+ - Add todo for device-device changes in future and some comment updates
+   based on feedback from Pierre
 
-Lenovo ThinkCentre machine had two front mics.
-we change the location for one of them.
+Updates in v4:
+ - Add more comments for sdw_release_master_stream()
+ - Make sure ports are freed upon sdw_stream_remove_slave()
+ - Clarify snd_soc_dai_set_sdw_stream() and setting of NULL upon release.
 
-Relation commit: f33f79f3d0e5caf04dd889cd7cf636261970f009
+Updates in v3:
+ - Remove stream state transition checks and redefine stream states
+ - Update bansk switch routines
+ - Other nitpicks pointed out by Pierre.
 
-BR,
-Kailang
+Updates in v2:
+  - Make ASoC API inlined
+  - Make stream states as states and not action
+  - Update the direction enum
+  - Fix some typos and comment updates
 
+Sanyog Kale (7):
+  Documentation: soundwire: Add more documentation
+  soundwire: Add support for SoundWire stream management
+  soundwire: Add support for port management
+  soundwire: Add Master and Slave port programming
+  soundwire: Add helpers for ports operations
+  soundwire: Add bank switch routine
+  soundwire: Add stream configuration APIs
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A184126CARTITMBSV02realt_
-Content-Type: application/octet-stream;
-	name="0000-lenovo-change-location-for-mic.patch"
-Content-Description: 0000-lenovo-change-location-for-mic.patch
-Content-Disposition: attachment;
-	filename="0000-lenovo-change-location-for-mic.patch"; size=1327;
-	creation-date="Wed, 25 Apr 2018 09:16:30 GMT";
-	modification-date="Wed, 25 Apr 2018 09:15:52 GMT"
-Content-Transfer-Encoding: base64
+Shreyas NC (2):
+  ASoC: Add SoundWire stream programming interface
+  soundwire: Remove cdns_master_ops
 
-RnJvbSA5OTMzYzM5NjhjODlmYjFhNWQzNzI0NDJmNzA0ZjYzMTM1ODVjYTliIE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBLYWlsYW5nIFlhbmcgPGthaWxhbmdAcmVhbHRlay5jb20+CkRh
-dGU6IFdlZCwgMjUgQXByIDIwMTggMTc6MDc6MjcgKzA4MDAKU3ViamVjdDogW1BBVENIXSBBTFNB
-OiBoZGEvcmVhbHRlayAtIGNoYW5nZSB0aGUgbG9jYXRpb24gZm9yIG9uZSBvZiB0d28gZnJvbnQK
-IG1pY3MKCk9uIHRoaXMgTGVub3ZvIFRoaW5rQ2VudHJlIG1hY2hpbmUuIFRoZXJlIGFyZSB0d28g
-ZnJvbnQgbWljcywKd2UgY2hhbmdlIHRoZSBsb2NhdGlvbiBmb3Igb25lIG9mIHRoZW0uCgpSZWxh
-dGlvbjogZjMzZjc5ZjNkMGU1Y2FmMDRkZDg4OWNkN2NmNjM2MjYxOTcwZjAwOQoKU2lnbmVkLW9m
-Zi1ieTogS2FpbGFuZyBZYW5nIDxrYWlsYW5nQHJlYWx0ZWsuY29tPgoKZGlmZiAtLWdpdCBhL3Nv
-dW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVr
-LmMKaW5kZXggYzBjNDA0My4uMzUxZWExOSAxMDA2NDQKLS0tIGEvc291bmQvcGNpL2hkYS9wYXRj
-aF9yZWFsdGVrLmMKKysrIGIvc291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMKQEAgLTY1NzUs
-NiArNjU3NSw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3BjaV9xdWlyayBhbGMyNjlfZml4
-dXBfdGJsW10gPSB7CiAJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4MzBiYiwgIlRoaW5rQ2VudHJl
-IEFJTyIsIEFMQzIzM19GSVhVUF9MRU5PVk9fTElORTJfTUlDX0hPVEtFWSksCiAJU05EX1BDSV9R
-VUlSSygweDE3YWEsIDB4MzBlMiwgIlRoaW5rQ2VudHJlIEFJTyIsIEFMQzIzM19GSVhVUF9MRU5P
-Vk9fTElORTJfTUlDX0hPVEtFWSksCiAJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4MzEwYywgIlRo
-aW5rQ2VudHJlIFN0YXRpb24iLCBBTEMyOTRfRklYVVBfTEVOT1ZPX01JQ19MT0NBVElPTiksCisJ
-U05EX1BDSV9RVUlSSygweDE3YWEsIDB4MzEyZiwgIlRoaW5rQ2VudHJlIFN0YXRpb24iLCBBTEMy
-OTRfRklYVVBfTEVOT1ZPX01JQ19MT0NBVElPTiksCiAJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4
-MzEzOCwgIlRoaW5rQ2VudHJlIFN0YXRpb24iLCBBTEMyOTRfRklYVVBfTEVOT1ZPX01JQ19MT0NB
-VElPTiksCiAJU05EX1BDSV9RVUlSSygweDE3YWEsIDB4MzEzYywgIlRoaW5rQ2VudHJlIFN0YXRp
-b24iLCBBTEMyOTRfRklYVVBfTEVOT1ZPX01JQ19MT0NBVElPTiksCiAJU05EX1BDSV9RVUlSSygw
-eDE3YWEsIDB4MzExMiwgIlRoaW5rQ2VudHJlIEFJTyIsIEFMQzIzM19GSVhVUF9MRU5PVk9fTElO
-RTJfTUlDX0hPVEtFWSksCg==
+Vinod Koul (4):
+  soundwire: cdns: Add port routines
+  soundwire: cdns: Add stream routines
+  soundwire: intel: Add stream initialization
+  soundwire: intel: Add audio DAI ops
 
---_002_6FAB7C47BCF00940BB0999A99BE3547A184126CARTITMBSV02realt_
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+ .../driver-api/soundwire/error_handling.rst        |   65 +
+ Documentation/driver-api/soundwire/index.rst       |    3 +
+ Documentation/driver-api/soundwire/locking.rst     |  106 ++
+ Documentation/driver-api/soundwire/stream.rst      |  372 +++++
+ drivers/soundwire/Kconfig                          |    2 +-
+ drivers/soundwire/Makefile                         |    2 +-
+ drivers/soundwire/bus.c                            |   43 +
+ drivers/soundwire/bus.h                            |   72 +
+ drivers/soundwire/cadence_master.c                 |  453 +++++-
+ drivers/soundwire/cadence_master.h                 |  151 ++
+ drivers/soundwire/intel.c                          |  528 ++++++-
+ drivers/soundwire/intel.h                          |    4 +
+ drivers/soundwire/intel_init.c                     |    3 +
+ drivers/soundwire/stream.c                         | 1490 ++++++++++++++++++++
+ include/linux/soundwire/sdw.h                      |  332 ++++-
+ include/linux/soundwire/sdw_intel.h                |   14 +
+ include/sound/soc-dai.h                            |   23 +
+ 17 files changed, 3649 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/driver-api/soundwire/error_handling.rst
+ create mode 100644 Documentation/driver-api/soundwire/locking.rst
+ create mode 100644 Documentation/driver-api/soundwire/stream.rst
+ create mode 100644 drivers/soundwire/stream.c
 
-
---_002_6FAB7C47BCF00940BB0999A99BE3547A184126CARTITMBSV02realt_--
+-- 
+2.7.4
