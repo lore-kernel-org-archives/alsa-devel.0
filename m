@@ -1,110 +1,44 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [PATCH v2 3/5] ALSA: xen-front: Implement Xen
- event channel handling
-Date: Wed, 25 Apr 2018 12:04:35 +0300
-Message-ID: <72af8fdb-586f-6c5c-72af-071682ceab7d@gmail.com>
-References: <20180416062453.24743-1-andr2000@gmail.com>
- <20180416062453.24743-4-andr2000@gmail.com> <s5ho9i8sn25.wl-tiwai@suse.de>
- <af277f77-5b22-58e3-4ea6-cde34e3181d3@gmail.com>
- <s5hlgdcsmdm.wl-tiwai@suse.de>
- <f37a8eb9-8733-eae9-4c3e-312d864592fc@gmail.com>
- <s5h604gsl44.wl-tiwai@suse.de>
- <a8d3c2d2-25ec-0dc1-c26c-20eb6fbb4e3e@gmail.com>
- <04e313e5-4fdb-9f7b-43e3-f1551f582db2@gmail.com>
- <s5hpo2nveu8.wl-tiwai@suse.de>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH 2/8] dmaengine: shdmac: Change platform check to
+ CONFIG_ARCH_RENESAS
+Date: Wed, 25 Apr 2018 14:48:58 +0530
+Message-ID: <20180425091858.GN6014@localhost>
+References: <1524230914-10175-1-git-send-email-geert+renesas@glider.be>
+ <1524230914-10175-3-git-send-email-geert+renesas@glider.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f44.google.com (mail-lf0-f44.google.com
- [209.85.215.44])
- by alsa0.perex.cz (Postfix) with ESMTP id A40A426722C
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 11:04:38 +0200 (CEST)
-Received: by mail-lf0-f44.google.com with SMTP id o123-v6so21772207lfe.8
- for <alsa-devel@alsa-project.org>; Wed, 25 Apr 2018 02:04:38 -0700 (PDT)
-In-Reply-To: <s5hpo2nveu8.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Juergen Gross <jgross@suse.com>, alsa-devel@alsa-project.org, konrad.wilk@oracle.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org, boris.ostrovsky@oracle.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+Content-Disposition: inline
+In-Reply-To: <1524230914-10175-3-git-send-email-geert+renesas@glider.be>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, devel@driverdev.osuosl.org, Mauro Carvalho Chehab <mchehab@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, Russell King <linux@armlinux.org.uk>, linux-media@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>, Dan Williams <dan.j.williams@intel.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, Simon Horman <horms@verge.net.au>, netdev@vger.kernel.org, dmaengine@vger.kern
 List-Id: alsa-devel@alsa-project.org
 
-T24gMDQvMjUvMjAxOCAxMjowMiBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFdlZCwgMjUg
-QXByIDIwMTggMTA6MjY6MzQgKzAyMDAsCj4gT2xla3NhbmRyIEFuZHJ1c2hjaGVua28gd3JvdGU6
-Cj4+IE9uIDA0LzI0LzIwMTggMDc6MjMgUE0sIE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3Rl
-Ogo+Pj4gT24gMDQvMjQvMjAxOCAwNjowMiBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+IE9u
-IFR1ZSwgMjQgQXByIDIwMTggMTY6NTg6NDMgKzAyMDAsCj4+Pj4gT2xla3NhbmRyIEFuZHJ1c2hj
-aGVua28gd3JvdGU6Cj4+Pj4+IE9uIDA0LzI0LzIwMTggMDU6MzUgUE0sIFRha2FzaGkgSXdhaSB3
-cm90ZToKPj4+Pj4+IE9uIFR1ZSwgMjQgQXByIDIwMTggMTY6Mjk6MTUgKzAyMDAsCj4+Pj4+PiBP
-bGVrc2FuZHIgQW5kcnVzaGNoZW5rbyB3cm90ZToKPj4+Pj4+PiBPbiAwNC8yNC8yMDE4IDA1OjIw
-IFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+Pj4+Pj4+IE9uIE1vbiwgMTYgQXByIDIwMTggMDg6
-MjQ6NTEgKzAyMDAsCj4+Pj4+Pj4+IE9sZWtzYW5kciBBbmRydXNoY2hlbmtvIHdyb3RlOgo+Pj4+
-Pj4+Pj4gK3N0YXRpYyBpcnFyZXR1cm5fdCBldnRjaG5sX2ludGVycnVwdF9yZXEoaW50IGlycSwg
-dm9pZCAqZGV2X2lkKQo+Pj4+Pj4+Pj4gK3sKPj4+Pj4+Pj4+ICvCoMKgwqAgc3RydWN0IHhlbl9z
-bmRfZnJvbnRfZXZ0Y2hubCAqY2hhbm5lbCA9IGRldl9pZDsKPj4+Pj4+Pj4+ICvCoMKgwqAgc3Ry
-dWN0IHhlbl9zbmRfZnJvbnRfaW5mbyAqZnJvbnRfaW5mbyA9IGNoYW5uZWwtPmZyb250X2luZm87
-Cj4+Pj4+Pj4+PiArwqDCoMKgIHN0cnVjdCB4ZW5zbmRfcmVzcCAqcmVzcDsKPj4+Pj4+Pj4+ICvC
-oMKgwqAgUklOR19JRFggaSwgcnA7Cj4+Pj4+Pj4+PiArwqDCoMKgIHVuc2lnbmVkIGxvbmcgZmxh
-Z3M7Cj4+Pj4+Pj4+PiArCj4+Pj4+Pj4+PiArwqDCoMKgIGlmICh1bmxpa2VseShjaGFubmVsLT5z
-dGF0ZSAhPSBFVlRDSE5MX1NUQVRFX0NPTk5FQ1RFRCkpCj4+Pj4+Pj4+PiArwqDCoMKgwqDCoMKg
-wqAgcmV0dXJuIElSUV9IQU5ETEVEOwo+Pj4+Pj4+Pj4gKwo+Pj4+Pj4+Pj4gK8KgwqDCoCBzcGlu
-X2xvY2tfaXJxc2F2ZSgmZnJvbnRfaW5mby0+aW9fbG9jaywgZmxhZ3MpOwo+Pj4+Pj4+Pj4gKwo+
-Pj4+Pj4+Pj4gK2FnYWluOgo+Pj4+Pj4+Pj4gK8KgwqDCoCBycCA9IGNoYW5uZWwtPnUucmVxLnJp
-bmcuc3JpbmctPnJzcF9wcm9kOwo+Pj4+Pj4+Pj4gK8KgwqDCoCAvKiBlbnN1cmUgd2Ugc2VlIHF1
-ZXVlZCByZXNwb25zZXMgdXAgdG8gcnAgKi8KPj4+Pj4+Pj4+ICvCoMKgwqAgcm1iKCk7Cj4+Pj4+
-Pj4+PiArCj4+Pj4+Pj4+PiArwqDCoMKgIGZvciAoaSA9IGNoYW5uZWwtPnUucmVxLnJpbmcucnNw
-X2NvbnM7IGkgIT0gcnA7IGkrKykgewo+Pj4+Pj4+PiBJJ20gbm90IGZhbWlsaWFyIHdpdGggWGVu
-IHN0dWZmIGluIGdlbmVyYWwsIGJ1dCB0aHJvdWdoIGEgcXVpY2sKPj4+Pj4+Pj4gZ2xhbmNlLCB0
-aGlzIGtpbmQgb2YgY29kZSB3b3JyaWVzIG1lIGEgYml0Lgo+Pj4+Pj4+Pgo+Pj4+Pj4+PiBJZiBj
-aGFubmVsLT51LnJlcS5yaW5nLnJzcF9jb25zIGhhcyBhIGJvZ3VzIG51bWJlciwgdGhpcyBtYXkK
-Pj4+Pj4+Pj4gbGVhZCB0byBhCj4+Pj4+Pj4+IHZlcnkgbG9uZyBsb29wLCBubz/CoCBCZXR0ZXIg
-dG8gaGF2ZSBhIHNhbml0eSBjaGVjayBvZiB0aGUgcmluZwo+Pj4+Pj4+PiBidWZmZXIKPj4+Pj4+
-Pj4gc2l6ZS4KPj4+Pj4+PiBJbiB0aGlzIGxvb3AgSSBoYXZlOgo+Pj4+Pj4+IHJlc3AgPSBSSU5H
-X0dFVF9SRVNQT05TRSgmY2hhbm5lbC0+dS5yZXEucmluZywgaSk7Cj4+Pj4+Pj4gYW5kIHRoZSBS
-SU5HX0dFVF9SRVNQT05TRSBtYWNybyBpcyBkZXNpZ25lZCBpbiB0aGUgd2F5IHRoYXQKPj4+Pj4+
-PiBpdCB3cmFwcyBhcm91bmQgd2hlbiAqaSogaW4gdGhlIHF1ZXN0aW9uIGdldHMgYmlnZ2VyIHRo
-YW4KPj4+Pj4+PiB0aGUgcmluZyBzaXplOgo+Pj4+Pj4+Cj4+Pj4+Pj4gI2RlZmluZSBSSU5HX0dF
-VF9SRVFVRVNUKF9yLCBfaWR4KcKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgXAo+
-Pj4+Pj4+ICDCoCDCoMKgwqAgKCYoKF9yKS0+c3JpbmctPnJpbmdbKChfaWR4KSAmIChSSU5HX1NJ
-WkUoX3IpIC0gMSkpXS5yZXEpKQo+Pj4+Pj4+Cj4+Pj4+Pj4gU28sIGV2ZW4gaWYgdGhlIGNvdW50
-ZXIgaGFzIGEgYm9ndXMgbnVtYmVyIGl0IHdpbGwgbm90IGxhc3QgbG9uZwo+Pj4+Pj4gSG0sIHRo
-aXMgcHJldmVudHMgZnJvbSBhY2Nlc3Npbmcgb3V0c2lkZSB0aGUgcmluZyBidWZmZXIsIGJ1dCBk
-b2VzIGl0Cj4+Pj4+PiBjaGFuZ2UgdGhlIGxvb3AgYmVoYXZpb3I/Cj4+Pj4+IG5vLCBpdCBkb2Vz
-bid0Cj4+Pj4+PiBTdXBwb3NlIGNoYW5uZWwtPnUucmVxLnJpbmdfcnNwX2NvbnMgPSAxLCBhbmQg
-cnAgPSAwLCB0aGUgbG9vcCBiZWxvdwo+Pj4+Pj4gd291bGQgc3RpbGwgY29uc3VtZSB0aGUgd2hv
-bGUgMzJiaXQgY291bnRzLCBubz8KPj4+Pj4+Cj4+Pj4+PiAgwqDCoMKgwqBmb3IgKGkgPSBjaGFu
-bmVsLT51LnJlcS5yaW5nLnJzcF9jb25zOyBpICE9IHJwOyBpKyspIHsKPj4+Pj4+ICDCoMKgwqDC
-oMKgwqDCoCByZXNwID0gUklOR19HRVRfUkVTUE9OU0UoJmNoYW5uZWwtPnUucmVxLnJpbmcsIGkp
-Owo+Pj4+Pj4gIMKgwqDCoMKgwqDCoMKgIC4uLgo+Pj4+Pj4gIMKgwqDCoMKgfQo+Pj4+PiBZb3Ug
-YXJlIHJpZ2h0IGhlcmUgYW5kIHRoZSBjb21tZW50IGlzIHRvdGFsbHkgdmFsaWQuCj4+Pj4+IEkn
-bGwgcHV0IGFuIGFkZGl0aW9uYWwgY2hlY2sgbGlrZSBoZXJlIFsxXSBhbmQgaGVyZSBbMl0KPj4+
-Pj4gV2lsbCB0aGlzIGFkZHJlc3MgeW91ciBjb21tZW50Pwo+Pj4+IFllcCwgdGhpcyBraW5kIG9m
-IHNhbml0eSBjaGVja3Mgc2hvdWxkIHdvcmsuCj4+Pj4KPj4+IEdyZWF0LCB3aWxsIGltcGxlbWVu
-dCB0aGUgY2hlY2tzIHRoaXMgd2F5IHRoZW4KPj4gV2VsbCwgYWZ0ZXIgdGhpbmtpbmcgYSBiaXQg
-bW9yZSBvbiB0aGF0IGFuZCBjaGF0dGluZyBvbiAjeGVuZGV2ZWwgSVJDCj4+IHdpdGggSnVlcmdl
-biAoaGUgaXMgb24gQ0MgbGlzdCksIGl0IHNlZW1zIHRoYXQgdGhlIHdheSB0aGUgY29kZSBpcyBu
-b3cKPj4gaXQgaXMgYWxsIGZpbmUgd2l0aG91dCB0aGUgY2hlY2tzOiB0aGUgYXNzdW1wdGlvbiBo
-ZXJlIGlzIHRoYXQKPj4gdGhlIGJhY2tlbmQgaXMgdHJ1c3RlZCB0byBhbHdheXMgd3JpdGUgc2Fu
-ZSB2YWx1ZXMgdG8gdGhlIHJpbmcgY291bnRlcnMsCj4+IHRodXMgbm8gb3ZlcmZsb3cgY2hlY2tz
-IG9uIGZyb250ZW5kIHNpZGUgYXJlIHJlcXVpcmVkLgo+PiBFdmVuIGlmIEkgaW1wbGVtZW50IHRo
-ZSBjaGVja3MgdGhlbiBJIGhhdmUgbm8gbWVhbnMgdG8gcmVjb3ZlciwgYnV0Cj4+IGp1c3QgcHJp
-bnQKPj4gYW4gZXJyb3IgbWVzc2FnZSBhbmQgYmFpbCBvdXQgbm90IGhhbmRsaW5nIGFueSByZXNw
-b25zZXMuCj4+IFRoaXMgaXMgcHJvYmFibHkgd2h5IHRoZSBjaGVja3MgWzFdIGFuZCBbMl0gYXJl
-IG9ubHkgaW1wbGVtZW50ZWQgZm9yIHRoZQo+PiBiYWNrZW5kIHNpZGUgYW5kIHRoZXJlIGFyZSBu
-byBzdWNoIG1hY3JvcyBmb3IgdGhlIGZyb250ZW5kIHNpZGUuCj4+Cj4+IFRha2FzaGksIHBsZWFz
-ZSBsZXQgbWUga25vdyBpZiB0aGUgYWJvdmUgc291bmRzIHJlYXNvbmFibGUgYW5kCj4+IGFkZHJl
-c3NlcyB5b3VyIGNvbW1lbnRzLgo+IElmIGl0J3MgZ3VhcmFudGVlZCB0byB3b3JrLCB0aGF0J3Mg
-T0suCj4gQnV0IG1heWJlIGl0J3Mgd29ydGggdG8gY29tbWVudCBmb3IgcmVhZGVycy4Kb2ssIHdp
-bGwgcHV0IGEgY29tbWVudCBvbiB0aGF0Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpClRoYW5rIHlv
-dSwKT2xla3NhbmRyCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+On Fri, Apr 20, 2018 at 03:28:28PM +0200, Geert Uytterhoeven wrote:
+> Since commit 9b5ba0df4ea4f940 ("ARM: shmobile: Introduce ARCH_RENESAS")
+> is CONFIG_ARCH_RENESAS a more appropriate platform check than the legacy
+> CONFIG_ARCH_SHMOBILE, hence use the former.
+> 
+> Renesas SuperH SH-Mobile SoCs are still covered by the CONFIG_CPU_SH4
+> check, just like before support for Renesas ARM SoCs was added.
+> 
+> Instead of blindly changing all the #ifdefs, switch the main code block
+> in sh_dmae_probe() to IS_ENABLED(), as this allows to remove all the
+> remaining #ifdefs.
+> 
+> This will allow to drop ARCH_SHMOBILE on ARM in the near future.
+
+Applied, thanks
+
+-- 
+~Vinod
