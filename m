@@ -1,37 +1,62 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: fix error path to destroy initialized stream data
-Date: Thu, 26 Apr 2018 22:00:29 +0900
-Message-ID: <20180426130029.4440-1-o-takashi@sakamocchi.jp>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 5/5] ASoC: omap: Remove OMAP_MUX dependency
+ from Nokia N810 audio support
+Date: Thu, 26 Apr 2018 16:01:51 +0300
+Message-ID: <ee48f54c-9096-fe46-163b-c826b509b73d@ti.com>
+References: <20180426115115.13744-1-peter.ujfalusi@ti.com>
+ <20180426115115.13744-6-peter.ujfalusi@ti.com>
+ <20180426125437.GG21755@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id E4E7A26782E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 15:01:24 +0200 (CEST)
+In-Reply-To: <20180426125437.GG21755@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, aaro.koskinen@iki.fi, tony@atomide.com, Liam Girdwood <lgirdwood@gmail.com>, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
 List-Id: alsa-devel@alsa-project.org
 
-In error path of snd_dice_stream_init_duplex(), stream data for incoming
-packet can be left to be initialized.
+Mark,
 
-This commit fixes it.
+On 2018-04-26 15:54, Mark Brown wrote:
+> On Thu, Apr 26, 2018 at 02:51:15PM +0300, Peter Ujfalusi wrote:
+>> From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+>>
+>> Commit e9f5f1e45608 ("ARM: OMAP2+: Remove legacy mux code") removed
+>> CONFIG_OMAP_MUX making impossible to build Nokia N810 audio support. Rem=
+ove
+>> this dependency so we can do at least build tests.
+>>
+>> Fixes: e9f5f1e45608 ("ARM: OMAP2+: Remove legacy mux code")
+>> Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+>> ---
+> =
 
-Fixes: 436b5abe2224 ('ALSA: dice: handle whole available isochronous streams')
-Cc: <stable@vger.kernel.org> # v4.6+
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-stream.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> You're missing your signoff here.
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 8573289c381e..928a255bfc35 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -435,7 +435,7 @@ int snd_dice_stream_init_duplex(struct snd_dice *dice)
- 		err = init_stream(dice, AMDTP_IN_STREAM, i);
- 		if (err < 0) {
- 			for (; i >= 0; i--)
--				destroy_stream(dice, AMDTP_OUT_STREAM, i);
-+				destroy_stream(dice, AMDTP_IN_STREAM, i);
- 			goto end;
- 		}
- 	}
--- 
-2.14.1
+I have not changed the patch itself, just picked it from the list to
+include to the series. Afaik in this case my signoff is not needed.
+
+Can you add my (or I can resend the series):
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+or
+Reviewed-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+or
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+
+- P=E9ter
+
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
