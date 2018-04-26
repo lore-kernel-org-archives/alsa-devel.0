@@ -1,22 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 5/5] ASoC: omap: Remove OMAP_MUX dependency
- from Nokia N810 audio support
-Date: Thu, 26 Apr 2018 14:08:02 +0100
-Message-ID: <20180426130802.GI21755@sirena.org.uk>
-References: <20180426115115.13744-1-peter.ujfalusi@ti.com>
- <20180426115115.13744-6-peter.ujfalusi@ti.com>
- <20180426125437.GG21755@sirena.org.uk>
- <ee48f54c-9096-fe46-163b-c826b509b73d@ti.com>
- <20180426130325.GH21755@sirena.org.uk>
- <28dfaac0-7176-c7f9-25d2-ee16ef03e69d@ti.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH v6 00/13] soundwire: Add stream support
+Date: Thu, 26 Apr 2018 18:49:56 +0530
+Message-ID: <1524748809-21860-1-git-send-email-vkoul@kernel.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1629693052091562118=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FD3F2677F1
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 15:08:05 +0200 (CEST)
-In-Reply-To: <28dfaac0-7176-c7f9-25d2-ee16ef03e69d@ti.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1819226779A
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 15:15:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,56 +18,87 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, aaro.koskinen@iki.fi, tony@atomide.com, Liam Girdwood <lgirdwood@gmail.com>, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This series adds support in SoundWire subsystem for:
+ - Documentation for stream support
+ - stream management
+ - data port management
+ - DAI ops in cadence and Intel drivers
+ - ASoC API to propagate SDW stream
 
---===============1629693052091562118==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nEsDIrWrg+hrB7l1"
-Content-Disposition: inline
+Updates in v6:
+ - Fix return error as pointed by Sanyog
+ - Update stream state enum documentation as pointed by Pierre and few other
+   nits
 
+Updated in v5:
+ - Add todo for device-device changes in future and some comment updates
+   based on feedback from Pierre
 
---nEsDIrWrg+hrB7l1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Updates in v4:
+ - Add more comments for sdw_release_master_stream()
+ - Make sure ports are freed upon sdw_stream_remove_slave()
+ - Clarify snd_soc_dai_set_sdw_stream() and setting of NULL upon release.
 
-On Thu, Apr 26, 2018 at 04:06:51PM +0300, Peter Ujfalusi wrote:
-> On 2018-04-26 16:03, Mark Brown wrote:
+Updates in v3:
+ - Remove stream state transition checks and redefine stream states
+ - Update bansk switch routines
+ - Other nitpicks pointed out by Pierre.
 
-> > No, you need to add your signoff for *anything* you're submitting.  It's
-> > about tracking the path the patch takes to mainline.
+Updates in v2:
+  - Make ASoC API inlined
+  - Make stream states as states and not action
+  - Update the direction enum
+  - Fix some typos and comment updates
 
-> OK. I left it off because recently there were replies from other
-> maintainers saying otherwise (no need to singoff of unmodified patches
-> from others).
-> I agree that adding the signoff is the correct way.
+*** SUBJECT HERE ***
 
-Oh dear, who was saying that - might cause lawyers to get upset...
+*** BLURB HERE ***
 
---nEsDIrWrg+hrB7l1
-Content-Type: application/pgp-signature; name="signature.asc"
+Sanyog Kale (7):
+  Documentation: soundwire: Add more documentation
+  soundwire: Add support for SoundWire stream management
+  soundwire: Add support for port management
+  soundwire: Add Master and Slave port programming
+  soundwire: Add helpers for ports operations
+  soundwire: Add bank switch routine
+  soundwire: Add stream configuration APIs
 
------BEGIN PGP SIGNATURE-----
+Shreyas NC (2):
+  ASoC: Add SoundWire stream programming interface
+  soundwire: Remove cdns_master_ops
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrhzzEACgkQJNaLcl1U
-h9D9Ggf/XmcH4X5mvT55A/eeU8oDaqIKJ9XP6IFRaHAScWdUMS9Xx5TclbaoDL7/
-i5As6/5zpGvI+Ys1oVFyJAPRM8KPDATRpI9virGyrhN2ATsO6UXG63vBt/bCw0tR
-0apT9FF7PHVoiYq/xs5AQdiUuh4tN5h4VbhPZYEnWbM2QhTg8r4CrAIoaL59NWEv
-K9lU31r5uacvp4ehirLywhoWCxHMBPjFD/6a8jMl8i46fMy0zgjXDH7e+XIOh9YC
-7VORnTooDQYUrrdujNelaQS1ReIVNybgxqUMiXDNCtj55YVCWywSZ5cYKp/4eKCE
-qWwD5EoiaaOOix+ezhQHqZWOChnygw==
-=FyBr
------END PGP SIGNATURE-----
+Vinod Koul (4):
+  soundwire: cdns: Add port routines
+  soundwire: cdns: Add stream routines
+  soundwire: intel: Add stream initialization
+  soundwire: intel: Add audio DAI ops
 
---nEsDIrWrg+hrB7l1--
+ .../driver-api/soundwire/error_handling.rst        |   65 +
+ Documentation/driver-api/soundwire/index.rst       |    3 +
+ Documentation/driver-api/soundwire/locking.rst     |  106 ++
+ Documentation/driver-api/soundwire/stream.rst      |  372 +++++
+ drivers/soundwire/Kconfig                          |    2 +-
+ drivers/soundwire/Makefile                         |    2 +-
+ drivers/soundwire/bus.c                            |   43 +
+ drivers/soundwire/bus.h                            |   72 +
+ drivers/soundwire/cadence_master.c                 |  451 +++++-
+ drivers/soundwire/cadence_master.h                 |  151 ++
+ drivers/soundwire/intel.c                          |  525 ++++++-
+ drivers/soundwire/intel.h                          |    4 +
+ drivers/soundwire/intel_init.c                     |    3 +
+ drivers/soundwire/stream.c                         | 1479 ++++++++++++++++++++
+ include/linux/soundwire/sdw.h                      |  332 ++++-
+ include/linux/soundwire/sdw_intel.h                |   14 +
+ include/sound/soc-dai.h                            |   23 +
+ 17 files changed, 3633 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/driver-api/soundwire/error_handling.rst
+ create mode 100644 Documentation/driver-api/soundwire/locking.rst
+ create mode 100644 Documentation/driver-api/soundwire/stream.rst
+ create mode 100644 drivers/soundwire/stream.c
 
---===============1629693052091562118==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1629693052091562118==--
+-- 
+2.7.4
