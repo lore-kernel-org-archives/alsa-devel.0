@@ -1,75 +1,212 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 01/11] ASoC: amd: rename audio_substream_data variable
-Date: Thu, 26 Apr 2018 16:45:47 +0530
-Message-ID: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 02/11] ASoC: amd: dma config parameters changes
+Date: Thu, 26 Apr 2018 16:45:48 +0530
+Message-ID: <1524741374-13523-2-git-send-email-Vijendar.Mukunda@amd.com>
+References: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Jason Clinton <jclinton@chromium.org>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>, Jason Clinton <jclinton@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-In order to make audio_substream_data structure variable
-consistent throughout the code, changed the name from
-audio_config to rtd wherever applicable.
+Added dma configuration parameters to rtd structure.
+Moved dma configuration parameters intialization to
+hw_params callback.
+Removed hard coding in prepare and trigger callbacks.
 
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 ---
- sound/soc/amd/acp-pcm-dma.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 97 +++++++++++++++++----------------------------
+ sound/soc/amd/acp.h         |  5 +++
+ 2 files changed, 41 insertions(+), 61 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 5ffe2ef..9c026c4 100644
+index 9c026c4..f18ed9a 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -317,13 +317,13 @@ static void acp_pte_config(void __iomem *acp_mmio, struct page *pg,
- }
- 
- static void config_acp_dma(void __iomem *acp_mmio,
--			   struct audio_substream_data *audio_config,
-+			   struct audio_substream_data *rtd,
+@@ -321,19 +321,12 @@ static void config_acp_dma(void __iomem *acp_mmio,
  			   u32 asic_type)
  {
  	u32 pte_offset, sram_bank;
- 	u16 ch1, ch2, destination, dma_dscr_idx;
+-	u16 ch1, ch2, destination, dma_dscr_idx;
  
--	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
+ 	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
  		pte_offset = ACP_PLAYBACK_PTE_OFFSET;
- 		ch1 = SYSRAM_TO_ACP_CH_NUM;
- 		ch2 = ACP_TO_I2S_DMA_CH_NUM;
-@@ -344,25 +344,25 @@ static void config_acp_dma(void __iomem *acp_mmio,
- 		destination = FROM_ACP_I2S_1;
+-		ch1 = SYSRAM_TO_ACP_CH_NUM;
+-		ch2 = ACP_TO_I2S_DMA_CH_NUM;
+ 		sram_bank = ACP_SHARED_RAM_BANK_1_ADDRESS;
+-		destination = TO_ACP_I2S_1;
+-
+ 	} else {
+ 		pte_offset = ACP_CAPTURE_PTE_OFFSET;
+-		ch1 = SYSRAM_TO_ACP_CH_NUM;
+-		ch2 = ACP_TO_I2S_DMA_CH_NUM;
+ 		switch (asic_type) {
+ 		case CHIP_STONEY:
+ 			sram_bank = ACP_SHARED_RAM_BANK_3_ADDRESS;
+@@ -341,30 +334,19 @@ static void config_acp_dma(void __iomem *acp_mmio,
+ 		default:
+ 			sram_bank = ACP_SHARED_RAM_BANK_5_ADDRESS;
+ 		}
+-		destination = FROM_ACP_I2S_1;
  	}
- 
--	acp_pte_config(acp_mmio, audio_config->pg, audio_config->num_of_pages,
-+	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
+-
+ 	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
  		       pte_offset);
--	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
- 		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
- 	else
- 		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
- 
+-	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
+-	else
+-		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
+-
  	/* Configure System memory <-> ACP SRAM DMA descriptors */
--	set_acp_sysmem_dma_descriptors(acp_mmio, audio_config->size,
--				       audio_config->direction, pte_offset, ch1,
-+	set_acp_sysmem_dma_descriptors(acp_mmio, rtd->size,
-+				       rtd->direction, pte_offset, ch1,
- 				       sram_bank, dma_dscr_idx, asic_type);
- 
--	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK)
-+	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
- 		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH13;
- 	else
- 		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH15;
+ 	set_acp_sysmem_dma_descriptors(acp_mmio, rtd->size,
+-				       rtd->direction, pte_offset, ch1,
+-				       sram_bank, dma_dscr_idx, asic_type);
+-
+-	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
+-		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH13;
+-	else
+-		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH15;
++				       rtd->direction, pte_offset,
++				       rtd->ch1, sram_bank,
++				       rtd->dma_dscr_idx_1, asic_type);
  	/* Configure ACP SRAM <-> I2S DMA descriptors */
--	set_acp_to_i2s_dma_descriptors(acp_mmio, audio_config->size,
--				       audio_config->direction, sram_bank,
-+	set_acp_to_i2s_dma_descriptors(acp_mmio, rtd->size,
-+				       rtd->direction, sram_bank,
- 				       destination, ch2, dma_dscr_idx,
- 				       asic_type);
+ 	set_acp_to_i2s_dma_descriptors(acp_mmio, rtd->size,
+ 				       rtd->direction, sram_bank,
+-				       destination, ch2, dma_dscr_idx,
+-				       asic_type);
++				       rtd->destination, rtd->ch2,
++				       rtd->dma_dscr_idx_2, asic_type);
  }
+ 
+ /* Start a given DMA channel transfer */
+@@ -804,6 +786,21 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 		acp_reg_write(val, adata->acp_mmio,
+ 			      mmACP_I2S_16BIT_RESOLUTION_EN);
+ 	}
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		rtd->ch1 = SYSRAM_TO_ACP_CH_NUM;
++		rtd->ch2 = ACP_TO_I2S_DMA_CH_NUM;
++		rtd->destination = TO_ACP_I2S_1;
++		rtd->dma_dscr_idx_1 = PLAYBACK_START_DMA_DESCR_CH12;
++		rtd->dma_dscr_idx_2 = PLAYBACK_START_DMA_DESCR_CH13;
++	} else {
++		rtd->ch1 = SYSRAM_TO_ACP_CH_NUM;
++		rtd->ch2 = ACP_TO_I2S_DMA_CH_NUM;
++		rtd->destination = FROM_ACP_I2S_1;
++		rtd->dma_dscr_idx_1 = CAPTURE_START_DMA_DESCR_CH14;
++		rtd->dma_dscr_idx_2 = CAPTURE_START_DMA_DESCR_CH15;
++	}
++
+ 	size = params_buffer_bytes(params);
+ 	status = snd_pcm_lib_malloc_pages(substream, size);
+ 	if (status < 0)
+@@ -898,21 +895,15 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+ 
+ 	if (!rtd)
+ 		return -EINVAL;
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		config_acp_dma_channel(rtd->acp_mmio, SYSRAM_TO_ACP_CH_NUM,
+-				       PLAYBACK_START_DMA_DESCR_CH12,
+-				       NUM_DSCRS_PER_CHANNEL, 0);
+-		config_acp_dma_channel(rtd->acp_mmio, ACP_TO_I2S_DMA_CH_NUM,
+-				       PLAYBACK_START_DMA_DESCR_CH13,
+-				       NUM_DSCRS_PER_CHANNEL, 0);
+-	} else {
+-		config_acp_dma_channel(rtd->acp_mmio, ACP_TO_SYSRAM_CH_NUM,
+-				       CAPTURE_START_DMA_DESCR_CH14,
+-				       NUM_DSCRS_PER_CHANNEL, 0);
+-		config_acp_dma_channel(rtd->acp_mmio, I2S_TO_ACP_DMA_CH_NUM,
+-				       CAPTURE_START_DMA_DESCR_CH15,
+-				       NUM_DSCRS_PER_CHANNEL, 0);
+-	}
++
++	config_acp_dma_channel(rtd->acp_mmio,
++			       rtd->ch1,
++			       rtd->dma_dscr_idx_1,
++			       NUM_DSCRS_PER_CHANNEL, 0);
++	config_acp_dma_channel(rtd->acp_mmio,
++			       rtd->ch2,
++			       rtd->dma_dscr_idx_2,
++			       NUM_DSCRS_PER_CHANNEL, 0);
+ 	return 0;
+ }
+ 
+@@ -939,10 +930,9 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			if (rtd->i2ssp_renderbytescount == 0)
+ 				rtd->i2ssp_renderbytescount = bytescount;
+-			acp_dma_start(rtd->acp_mmio,
+-				      SYSRAM_TO_ACP_CH_NUM, false);
++			acp_dma_start(rtd->acp_mmio, rtd->ch1, false);
+ 			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
+-						BIT(SYSRAM_TO_ACP_CH_NUM)) {
++				BIT(rtd->ch1)) {
+ 				if (!loops--) {
+ 					dev_err(component->dev,
+ 						"acp dma start timeout\n");
+@@ -950,38 +940,23 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 				}
+ 				cpu_relax();
+ 			}
+-
+-			acp_dma_start(rtd->acp_mmio,
+-				      ACP_TO_I2S_DMA_CH_NUM, true);
+-
+ 		} else {
+ 			if (rtd->i2ssp_capturebytescount == 0)
+ 				rtd->i2ssp_capturebytescount = bytescount;
+-			acp_dma_start(rtd->acp_mmio,
+-				      I2S_TO_ACP_DMA_CH_NUM, true);
+ 		}
++		acp_dma_start(rtd->acp_mmio, rtd->ch2, true);
+ 		ret = 0;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+-		/*
+-		 * Need to stop only circular DMA channels :
+-		 * ACP_TO_I2S_DMA_CH_NUM / I2S_TO_ACP_DMA_CH_NUM. Non-circular
+-		 * channels will stopped automatically after its transfer
+-		 * completes : SYSRAM_TO_ACP_CH_NUM / ACP_TO_SYSRAM_CH_NUM
+-		 */
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-			ret = acp_dma_stop(rtd->acp_mmio,
+-					   SYSRAM_TO_ACP_CH_NUM);
+-			ret = acp_dma_stop(rtd->acp_mmio,
+-					   ACP_TO_I2S_DMA_CH_NUM);
++			acp_dma_stop(rtd->acp_mmio, rtd->ch1);
++			ret =  acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+ 			rtd->i2ssp_renderbytescount = 0;
+ 		} else {
+-			ret = acp_dma_stop(rtd->acp_mmio,
+-					   I2S_TO_ACP_DMA_CH_NUM);
+-			ret = acp_dma_stop(rtd->acp_mmio,
+-					   ACP_TO_SYSRAM_CH_NUM);
++			acp_dma_stop(rtd->acp_mmio, rtd->ch2);
++			ret = acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+ 			rtd->i2ssp_capturebytescount = 0;
+ 		}
+ 		break;
+diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+index 0e6089b..5e25428 100644
+--- a/sound/soc/amd/acp.h
++++ b/sound/soc/amd/acp.h
+@@ -85,6 +85,11 @@ struct audio_substream_data {
+ 	unsigned int order;
+ 	u16 num_of_pages;
+ 	u16 direction;
++	u16 ch1;
++	u16 ch2;
++	u16 destination;
++	u16 dma_dscr_idx_1;
++	u16 dma_dscr_idx_2;
+ 	uint64_t size;
+ 	u64 i2ssp_renderbytescount;
+ 	u64 i2ssp_capturebytescount;
 -- 
 2.7.4
