@@ -1,15 +1,17 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH 0/4] ALSA: Fix year 2038 issue for sound
-	subsystem, alternative
-Date: Thu, 26 Apr 2018 14:44:18 +0200
-Message-ID: <20180426124422.2921744-1-arnd@arndb.de>
+Subject: [PATCH 2/4] ALSA: Avoid using timespec for struct
+	snd_ctl_elem_value
+Date: Thu, 26 Apr 2018 14:44:20 +0200
+Message-ID: <20180426124422.2921744-3-arnd@arndb.de>
+References: <20180426124422.2921744-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.130])
- by alsa0.perex.cz (Postfix) with ESMTP id 31BEC2677F6
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 14:45:16 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CFEE2677F6
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 14:45:19 +0200 (CEST)
+In-Reply-To: <20180426124422.2921744-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +25,42 @@ To: y2038@lists.linaro.org, linux-kernel@vger.kernel.org
 Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Baolin Wang <baolin.wang@linaro.org>, tiwai@suse.com, lgirdwood@gmail.com, o-takashi@sakamocchi.jp, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I've tried the suggestion from Jaroslaw, doing a minimal change to the
-UAPI headers to keep the existing binary interface. As he predicted,
-this is a much simpler set of kernel changes, but we will pay for that
-with added complexity in alsa-lib.
+From: Baolin Wang <baolin.wang@linaro.org>
 
-The first two patches in this series are taken from Baolin's patch
-set, with a small bugfix folded in to avoid a compile-time regression.
+The struct snd_ctl_elem_value will use 'timespec' type variables to record
+timestamp, which is not year 2038 safe on 32bits system.
 
-The other two patches are to redefine the UAPI and to deprecate
-the support for CLOCK_REALTIME time stamps, which we can no longer
-allow with user space that we expect to survive beyond 2038.
+Since there are no drivers will implemented the tstamp member of the
+struct snd_ctl_elem_value, and also the stucture size will not be changed
+if we change timespec to s64 for tstamp member of struct snd_ctl_elem_value.
 
-Overall, I'd still be happier with Baolin's approach since it allows
-us to keep compatiblity with CLOCK_REALTIME users and requires
-fewer changes in user space, but this would work as well.
+>From Takashi's comments, "In the library, applications are not expected
+to access to this structure directly. The applications get opaque pointer
+to the structure and must use any control APIs to operate it. Actually the
+library produce no API to handle 'struct snd_ctl_elem_value.tstamp'. This
+means that we can drop this member from alsa-lib without decline of
+functionality." Thus we can simply remove the tstamp member to avoid using
+the type which is not year 2038 safe on 32bits system.
 
-	Arnd
+Signed-off-by: Baolin Wang <baolin.wang@linaro.org>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ include/uapi/sound/asound.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: tiwai@suse.com
-Cc: lgirdwood@gmail.com
-Cc: broonie@kernel.org
-Cc: o-takashi@sakamocchi.jp
-Cc: y2038@lists.linaro.org
-Cc: alsa-devel@alsa-project.org
-Cc: linux-kernel@vger.kernel.org
-Cc: Baolin Wang <baolin.wang@linaro.org>
-
-Arnd Bergmann (2):
-  ALSA: replace timespec types in uapi headers
-  ALSA: Deprecate CLOCK_REALTIME timestamps
-
-Baolin Wang (2):
-  ALSA: Replace timespec with timespec64
-  ALSA: Avoid using timespec for struct snd_ctl_elem_value
-
- include/sound/asound.h            |  8 +++++
- include/sound/pcm.h               | 22 +++++++-----
- include/sound/timer.h             |  4 +--
- include/uapi/sound/asound.h       | 53 +++++++++++++++++++++--------
- sound/core/Kconfig                | 11 ++++++
- sound/core/compat.h               | 11 ++++++
- sound/core/pcm.c                  |  3 ++
- sound/core/pcm_compat.c           | 70 ++++++++++++++++++++++-----------------
- sound/core/pcm_lib.c              | 36 ++++++++++++--------
- sound/core/pcm_native.c           | 25 ++++++++++----
- sound/core/rawmidi_compat.c       | 12 +++----
- sound/core/timer.c                | 28 ++++++++--------
- sound/core/timer_compat.c         |  4 ++-
- sound/pci/hda/hda_controller.c    | 14 +++++---
- sound/soc/intel/skylake/skl-pcm.c |  4 +--
- 15 files changed, 203 insertions(+), 102 deletions(-)
- create mode 100644 sound/core/compat.h
-
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index ed0a120d4f08..1231f0a943f1 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -954,8 +954,7 @@ struct snd_ctl_elem_value {
+ 		} bytes;
+ 		struct snd_aes_iec958 iec958;
+ 	} value;		/* RO */
+-	struct timespec tstamp;
+-	unsigned char reserved[128-sizeof(struct timespec)];
++	unsigned char reserved[128];
+ };
+ 
+ struct snd_ctl_tlv {
 -- 
 2.9.0
