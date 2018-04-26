@@ -1,21 +1,22 @@
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: Re: [PATCH v2 0/4] ALSA: usb: UAC3 new features.
-Date: Thu, 26 Apr 2018 12:26:10 +0300
-Message-ID: <CAB=otbSyFftwzq9YXvyFWOcKZQch+Hd0XVWugPzJ3O2nb3hYZQ@mail.gmail.com>
-References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
- <20180424172445.31928-1-jorge.sanjuan@codethink.co.uk>
- <s5hy3hcwkhy.wl-tiwai@suse.de>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 0/7] ASoC: omap: Deprecate omap-pcm for
+ sdma-pcm
+Date: Thu, 26 Apr 2018 12:46:31 +0300
+Message-ID: <584e42b9-cb88-e83c-df16-703e4b421e81@ti.com>
+References: <20180425061837.14145-1-peter.ujfalusi@ti.com>
+ <20180425101044.GA17531@bitmer.com> <20180425135012.GW5671@atomide.com>
+ <f2033207-f750-42fb-649f-095591f90026@ti.com>
+ <20180425165621.GZ5671@atomide.com>
+ <3590e559-f782-2359-5495-db3c26a651f3@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f68.google.com (mail-oi0-f68.google.com
- [209.85.218.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 9ED5C26722C
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 11:26:12 +0200 (CEST)
-Received: by mail-oi0-f68.google.com with SMTP id n65-v6so23484248oig.6
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 02:26:12 -0700 (PDT)
-In-Reply-To: <s5hy3hcwkhy.wl-tiwai@suse.de>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id 504DE26722C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 11:46:04 +0200 (CEST)
+In-Reply-To: <3590e559-f782-2359-5495-db3c26a651f3@ti.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,96 +26,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Tony Lindgren <tony@atomide.com>
+Cc: alsa-devel@alsa-project.org, aaro.koskinen@iki.fi, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 24, 2018 at 9:02 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 24 Apr 2018 19:24:41 +0200,
-> Jorge Sanjuan wrote:
->>
->> v2 fixes:
->>  - If/else statements braces style fixes.
->>  - Add wrapping function to mixer unit code.
->>  - Make connectors control kctl struct const.
->>  - Little endian to cpu conversion in several places.
->>  - Sing off and add Fixes tag to fixup commit.
->>  - Remove flex-array for a struct that is used statically.
->>
->> Now that the UAC3 patch [1] has made it to linux-next I have some extra
->> features to make a UAC3 device fully work in Linux. Including Jack
->> insertion control that I have put on top of this other patch [2] for
->> UAC2. Also adding support for the UAC3 Mixer Unit which is most likely
->> to appear in most headset type devices.
-
-Thanks for adding these improvements!
-
->
-> These patches look reasonable, I'm OK to merge.  But I'll wait for
-> Ruslan's comments (or at best with test results).
-
-I reviewed first 3 patches and will review jack detection patch later,
-and I'm going to test this patchset in a next few days.
-
->
->> UAC3 devices also require to have a Basic Audio Device (BADD) in a separate
->> config for which both Ruslan Bilovol and myself have submited different
->> approaches[3][4] but I don't know what the final merge will be. Once there
->> is official support for BADD, we'll need to test it with an actual UAC3
->> device to confirm it all wokrs.
->
-> Could you guys try to get agreement which approach should we take?
->
-> I have no big preference.  Currently Ruslan's patch series look
-> easier, just because its addition is a bit smaller, though.
-
-The BADD devices are quite simple, so direct initialization internal ALSA
-structures looks easy and straightforward, comparing to generation of
-missing descriptors.
-I'm currently improving the patch series so it will look even more
-smaller and easier, let's see how it goes
-
-Thanks,
-Ruslan
-
->
->
-> Thanks!
->
-> Takashi
->
->> All this features are tested with an actual UAC3 device that is still in
->> development. For this patch series, only the legacy config (#1. UAC1/UAC2)
->> and the UAC3 config have been tested. The BADD config is only tested using
->> and updated verison of [4].
->>
->> [1]: https://patchwork.kernel.org/patch/10298179/
->> [2]: https://patchwork.kernel.org/patch/10305847/
->> [3]: https://patchwork.kernel.org/patch/10340851/
->> [4]: https://www.spinics.net/lists/alsa-devel/msg71617.html
->>
->> Based on linux-next tag: next-20180420
->>
->> Jorge Sanjuan (3):
->>   ALSA: usb-audio: UAC3. Add support for mixer unit.
->>   ALSA: usb-audio: Use Class Specific EP for UAC3 devices.
->>   ALSA: usb-audio: UAC3 Add support for connector insertion.
->>
->> Michael Drake (1):
->>   ALSA: usb-audio: ADC3: Fix channel mapping conversion for ADC3.
->>
->>  include/linux/usb/audio-v2.h   |   7 ++
->>  include/linux/usb/audio-v3.h   |  14 +++
->>  include/uapi/linux/usb/audio.h |  13 ++-
->>  sound/usb/mixer.c              | 195 +++++++++++++++++++++++++++++++++++++----
->>  sound/usb/stream.c             |  11 ++-
->>  5 files changed, 217 insertions(+), 23 deletions(-)
->>
->> --
->> 2.11.0
->>
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+CgpPbiAyMDE4LTA0LTI1IDIxOjE4LCBQZXRlciBVamZhbHVzaSB3cm90ZToKPiBPbiAwNC8yNS8y
+MDE4IDA3OjU2IFBNLCBUb255IExpbmRncmVuIHdyb3RlOgo+PiAqIFBldGVyIFVqZmFsdXNpIDxw
+ZXRlci51amZhbHVzaUB0aS5jb20+IFsxODA0MjUgMTY6MDZdOgo+Pj4gT24gMDQvMjUvMjAxOCAw
+NDo1MCBQTSwgVG9ueSBMaW5kZ3JlbiB3cm90ZToKPj4+PiAqIEphcmtrbyBOaWt1bGEgPGphcmtr
+by5uaWt1bGFAYml0bWVyLmNvbT4gWzE4MDQyNSAwMzo1Nl06Cj4+Pj4+IFdoYXQgSSBub3RpY2Vk
+IHNvbWUgdGltZSBhZ28gb24gTjgxMCBidXQgbm90IHRpbWUgdG8gZml4IGl0IHRoYXQgT01BUCBt
+dXgKPj4+Pj4gY2hhbmdlIGRyb3BwZWQgbXV4aW5nIGF1ZGlvIE1jQlNQIHBpbnMuIFRob3NlIHBp
+bnMgYXJlIG11eGVkIGJ5IHJlc2V0IG9yCj4+Pj4+IGJvb3Rsb2FkZXIgdG8gYW5vdGhlciBmdW5j
+dGlvbi4KPj4+Pj4KPj4+Pj4gUHJvYmFibHkgYSBmZXcgbGluZXMgdG8gYXJjaC9hcm0vYm9vdC9k
+dHMvb21hcDI0MjAtbjgxMC5kdHMgZXRjLgo+Pj4+Cj4+Pj4gSG1tIGRvIHlvdSBoYXZlIGEgbGlu
+ayBvciBjb21taXQgaWQgdG8gYSBwYXRjaCB0aGF0IGRvZXMgdGhlIG11eGluZwo+Pj4+IHRvIHNl
+ZSB3aGljaCBwaW5zIG5lZWQgdG8gYmUgbXV4ZWQ/Cj4+Pgo+Pj4gRldJVyBJIGhhdmUgdGhpcyBh
+dCB0aGUgbW9tZW50Ogo+Pj4gaHR0cHM6Ly9wYXN0ZWJpbi5jb20vV05UOXduRDUKPj4+Cj4+PiBJ
+IHNlZSB0aGF0IHRoZSBjYXJkIGlzIHRoZXJlLCBidXQgSSdtIGZpZ2h0aW5nIGJ1aWxkcm9vdCB0
+byBoYXZlIG5mcwo+Pj4gZmlsZXN5c3RlbSB3aXRoIGFwbGF5IDpvCj4+Pgo+Pj4gVGhlcmUgYXJl
+IGZldyB0aGluZ3MgZ29pbmcgdG8gYmUgbmVlZGVkIHRvIGdldCB0aGluZ3MgaW4gYSBzaGFwZSwg
+bGlrZQo+Pj4gY29udmVydGluZyB0aGUgc291bmQvc29jL29tYXAvbjgxMC5jIHRvIHBsYXRmb3Jt
+IGRyaXZlciB0byBiZSBwcm9iZWQgdmlhIERULgo+Pj4gUHJvcGVyIGJpbmRpbmdzIGZvciB0aGUg
+Y2FyZCwKPj4+IHN1cHBvcnQgZm9yIG1jbGsgaGFuZGxpbmcgaW4gYWljM3ggY29kZWMgZHJpdmVy
+IChuODEwIGlzIGhhY2tpbmlnIHRoYXQgaW4gdGhlCj4+PiBtYWNoaW5lIGRyaXZlcikKPj4+Cj4+
+PiBJbiB0aGVvcnkgYXVkaW8gX3Nob3VsZF8gd29yayB3aXRoIHRoZSBEVCBjaGFuZ2VzIGFuZCB0
+aGUgZml4dXAgaW4gdGhlIG44MTAuYy4uLgo+Pj4KPj4+IFNob3VsZC4uLgo+Pgo+PiBDb29sLiBU
+aGUgcGluY3RybCBmaXhlcyBhdCBsZWFzdCBtYWtlIHNlbnNlIHRvIG1lLCB0aGF0IGNvdWxkIGJl
+Cj4+IGEgc2VwYXJhdGUgcGF0Y2ggbWF5YmUgd2l0aCBGaXhlczogNWE4N2NkZTQ5MGUxICgiQVJN
+OiBPTUFQMis6IFJlbW92ZQo+PiBsZWdhY3kgYm9vdGluZyBzdXBwb3J0IGZvciBuOHgwIikgYXMg
+cG9pbnRlZCBvdXQgYnkgSmFya2tvLgo+IAo+IFRoZSB0d28gR1BJTyBmb3IgdGhlIGhlYWRwaG9u
+ZSBhbmQgc3BlYWtlciBhbXAgbWlnaHQgYWxzbyBuZWVkIHBpbmN0cmwgZW50cnkuCj4gCj4gVGhl
+IGNsb2NrIHN5c19jbGtvdXQyIHJlcGFyZW50aW5nIGFuZCByYXRlIHNldHRpbmcgaXMgZG9uZSB3
+aXRoIHRoZQo+IGFzc2lnbmVkLWNsb2NrIHN0dWZmLgo+IAo+IEFzIEkgbWVudGlvbmVkIHRoZSBv
+bmx5IHRoaW5nIHRoYXQgd2Ugd2lsbCBuZWVkIGlzIHRoZSBtY2xrIGhhbmRsaW5nIGluIHRoZQo+
+IGNvZGVjIGRyaXZlci4KPiAKPiBNb3N0IGxpa2VseSB3ZSBjb3VsZCBoYXZlIGEgc2VyaWVzIGRl
+YWxpbmcgd2l0aCBEVCBvbmx5LCB0aGVuIHJld3JpdGUgdGhlIG44MTAuYy4KPiAKPiBUaGUgb25s
+eSB0aGluZyBtaWdodCBjYXVzZSBpc3N1ZSBpcyB0aGF0IGlmIHRoZSBhaWMzeCBkcml2ZXIgc3Rh
+cnRzIHRvIGhhbmRsZQo+IHRoZSBzeXNfY2xrb3V0MiAobWNsaykgYW5kIHRoZSBuODEwLmMgYWxz
+byB3YW50cyB0byBncmFiIGl0IGFuZCBjb250cm9sIGl0Li4uCj4gVGhhdCBtaWdodCBicmVhayBh
+bG9uZyB0aGUgd2F5LgoKVGhlIHNkbWEtcGNtIGlzIHdvcmtpbmcgZmluZSBvbiBvbWFwMiBhcyB3
+ZWxsLCBhdWRpbyBwbGF5YmFjayBhbmQKcmVjb3JkaW5nIGlzIHdvcmtpbmcgb24gbjgxMCBoZXJl
+LgoKPiAKPj4KPj4gUmVnYXJkcywKPj4KPj4gVG9ueQo+Pgo+IAo+IAoKLSBQw6l0ZXIKClRleGFz
+IEluc3RydW1lbnRzIEZpbmxhbmQgT3ksIFBvcmtrYWxhbmthdHUgMjIsIDAwMTgwIEhlbHNpbmtp
+LgpZLXR1bm51cy9CdXNpbmVzcyBJRDogMDYxNTUyMS00LiBLb3RpcGFpa2thL0RvbWljaWxlOiBI
+ZWxzaW5raQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDov
+L21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
