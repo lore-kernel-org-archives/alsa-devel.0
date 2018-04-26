@@ -1,75 +1,180 @@
-From: Baolin Wang <baolin.wang@linaro.org>
-Subject: Re: [PATCH 1/8] ALSA: Replace timespec with timespec64
-Date: Thu, 26 Apr 2018 16:41:14 +0800
-Message-ID: <CAMz4kuL-3m-jPGV1ZdsadXyWxnu+jNMccCtzbcKGcpN33gnaxg@mail.gmail.com>
-References: <7373ade7cb5a8d6a5fca07e78cf992ba7372bd7f.1524570852.git.baolin.wang@linaro.org>
- <201804261345.1lsWsCDl%fengguang.wu@intel.com>
- <CAK8P3a2TpW8rDw9YrWsJRkyawi+VkqaZQR6_WCSRpn96W6UbEg@mail.gmail.com>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH 4/8] ALSA: Avoid using timespec for struct snd_pcm_status
+Date: Thu, 26 Apr 2018 17:20:53 +0800
+Message-ID: <201804261703.caDB8Qo5%fengguang.wu@intel.com>
+References: <7809a25514e8f7f72a276d19414346b2e4100945.1524570852.git.baolin.wang@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
- [209.85.218.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EA1326722C
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 10:41:15 +0200 (CEST)
-Received: by mail-oi0-f66.google.com with SMTP id f63-v6so23402153oic.4
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 01:41:15 -0700 (PDT)
-In-Reply-To: <CAK8P3a2TpW8rDw9YrWsJRkyawi+VkqaZQR6_WCSRpn96W6UbEg@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, jeeja.kp@intel.com, SF Markus Elfring <elfring@users.sourceforge.net>, kbuild test robot <lkp@intel.com>, Vinod Koul <vinod.koul@intel.com>, Takashi Iwai <tiwai@suse.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Ingo Molnar <mingo@kernel.org>, gudishax.kranthikumar@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, subhransu.s.prusty@intel.com, Dan Carpenter <dan.carpenter@oracle.com>, hardik.t.shah@intel.com, Fabian Frederick <fabf@skynet.be>, Mark Brown <broonie@kernel.org>, Naveen M <naveen.m@intel.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kbuild-all@01.org, Bhumika Goyal <bhumirks@gmail.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <7809a25514e8f7f72a276d19414346b2e4100945.1524570852.git.baolin.wang@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: kbuild-all@01.org, perex@perex.cz, tiwai@suse.com, arnd@arndb.de, baolin.wang@linaro.org, lgirdwood@gmail.com, broonie@kernel.org, o-takashi@sakamocchi.jp, mingo@kernel.org, elfring@users.sourceforge.net, dan.carpenter@oracle.com, jeeja.kp@intel.com, vinod.koul@intel.com, guneshwor.o.singh@intel.com, subhransu.s.prusty@intel.com, bhumirks@gmail.com, gudishax.kranthikumar@intel.com, naveen.m@intel.com, hardik.t.shah@intel.com, arvind.yadav.cs@gmail.com, fabf@skynet.be, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 26 April 2018 at 16:30, Arnd Bergmann <arnd@arndb.de> wrote:
-> On Thu, Apr 26, 2018 at 10:15 AM, kbuild test robot <lkp@intel.com> wrote:
->> Hi Baolin,
->>
->> I love your patch! Yet something to improve:
->>
->> [auto build test ERROR on v4.17-rc2]
->> [also build test ERROR on next-20180424]
->> [cannot apply to sound/for-next asoc/for-next arm-soc/for-next]
->> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
->>
->> url:    https://github.com/0day-ci/linux/commits/Baolin-Wang/Fix-year-2038-issue-for-sound-subsystem/20180426-010145
->> config: sh-ecovec24_defconfig (attached as .config)
->> compiler: sh4-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
->> reproduce:
->>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->>         chmod +x ~/bin/make.cross
->>         # save the attached .config to linux build tree
->>         make.cross ARCH=sh
->>
->> Note: the linux-review/Baolin-Wang/Fix-year-2038-issue-for-sound-subsystem/20180426-010145 HEAD 53cdcc389f07bdd923be240cdb746a97de063301 builds fine.
->>       It only hurts bisectibility.
->>
->> All errors (new ones prefixed by >>):
->>
->>    sound/core/pcm_lib.c: In function 'update_audio_tstamp':
->>>> sound/core/pcm_lib.c:256:54: error: passing argument 2 of 'timespec_equal' from incompatible pointer type [-Werror=incompatible-pointer-types]
->>      if (!timespec_equal(&runtime->status->audio_tstamp, audio_tstamp)) {
->>                                                          ^~~~~~~~~~~~
->
->
-> Probably a mistake during rebasing: patch 8/8 fixes this, but it should be done
-> right here by moving the open-coded comparison into the first patch:
->
-> -       if (!timespec_equal(&runtime->status->audio_tstamp, audio_tstamp)) {
-> +       if (runtime->status->audio_tstamp.tv_sec != audio_tstamp->tv_sec ||
-> +           runtime->status->audio_tstamp.tv_nsec != audio_tstamp->tv_nsec) {
->
+Hi Baolin,
 
-Sorry, it's my mistake. Yes, I can fix this issue like what you showed.
+I love your patch! Perhaps something to improve:
 
--- 
-Baolin.wang
-Best Regards
+[auto build test WARNING on v4.17-rc2]
+[cannot apply to sound/for-next asoc/for-next arm-soc/for-next next-20180426]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Baolin-Wang/Fix-year-2038-issue-for-sound-subsystem/20180426-010145
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+   sound/core/pcm_native.c:561:51: sparse: incorrect type in assignment (different base types) @@    expected restricted snd_pcm_state_t [usertype] state @@    got t [usertype] state @@
+   sound/core/pcm_native.c:561:51:    expected restricted snd_pcm_state_t [usertype] state
+   sound/core/pcm_native.c:561:51:    got int [signed] state
+   sound/core/pcm_native.c:726:38: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:726:38:    expected int [signed] state
+   sound/core/pcm_native.c:726:38:    got restricted snd_pcm_state_t [usertype] <noident>
+   sound/core/pcm_native.c:738:38: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:738:38:    expected int [signed] state
+   sound/core/pcm_native.c:738:38:    got restricted snd_pcm_state_t [usertype] <noident>
+   sound/core/pcm_native.c:787:38: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:787:38:    expected int [signed] state
+   sound/core/pcm_native.c:787:38:    got restricted snd_pcm_state_t [usertype] <noident>
+>> sound/core/pcm_native.c:995:34: sparse: incorrect type in initializer (different base types) @@    expected signed int [signed] [usertype] [explicitly-signed] state @@    got restricted ssigned int [signed] [usertype] [explicitly-signed] state @@
+   sound/core/pcm_native.c:995:34:    expected signed int [signed] [usertype] [explicitly-signed] state
+   sound/core/pcm_native.c:995:34:    got restricted snd_pcm_state_t [addressable] [assigned] [usertype] state
+>> sound/core/pcm_native.c:1006:44: sparse: incorrect type in initializer (different base types) @@    expected signed int [signed] [usertype] [explicitly-signed] suspended_state @@    got restricted ssigned int [signed] [usertype] [explicitly-signed] suspended_state @@
+   sound/core/pcm_native.c:1006:44:    expected signed int [signed] [usertype] [explicitly-signed] suspended_state
+   sound/core/pcm_native.c:1006:44:    got restricted snd_pcm_state_t [addressable] [assigned] [usertype] suspended_state
+   sound/core/pcm_native.c:1259:32: sparse: incorrect type in assignment (different base types) @@    expected restricted snd_pcm_state_t [usertype] state @@    got t [usertype] state @@
+   sound/core/pcm_native.c:1259:32:    expected restricted snd_pcm_state_t [usertype] state
+   sound/core/pcm_native.c:1259:32:    got int [signed] state
+   sound/core/pcm_native.c:1283:31: sparse: incorrect type in argument 3 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:1283:31:    expected int [signed] state
+   sound/core/pcm_native.c:1283:31:    got restricted snd_pcm_state_t [usertype] <noident>
+   sound/core/pcm_native.c:1290:40: sparse: incorrect type in argument 3 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:1290:40:    expected int [signed] state
+   sound/core/pcm_native.c:1290:40:    got restricted snd_pcm_state_t [usertype] <noident>
+   sound/core/pcm_native.c:1316:28: sparse: restricted snd_pcm_state_t degrades to integer
+   sound/core/pcm_native.c:1318:40: sparse: incorrect type in assignment (different base types) @@    expected restricted snd_pcm_state_t [usertype] state @@    got t [usertype] state @@
+   sound/core/pcm_native.c:1318:40:    expected restricted snd_pcm_state_t [usertype] state
+   sound/core/pcm_native.c:1318:40:    got int [signed] state
+   sound/core/pcm_native.c:1342:64: sparse: incorrect type in argument 3 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:1342:64:    expected int [signed] state
+   sound/core/pcm_native.c:1342:64:    got restricted snd_pcm_state_t [usertype] state
+   sound/core/pcm_native.c:1358:38: sparse: incorrect type in argument 3 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:1358:38:    expected int [signed] state
+   sound/core/pcm_native.c:1358:38:    got restricted snd_pcm_state_t [usertype] <noident>
+   sound/core/pcm_native.c:1717:38: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:1717:38:    expected int [signed] state
+   sound/core/pcm_native.c:1717:38:    got restricted snd_pcm_state_t [usertype] <noident>
+   sound/core/pcm_native.c:1783:61: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:1783:61:    expected int [signed] state
+   sound/core/pcm_native.c:1783:61:    got restricted snd_pcm_state_t [usertype] <noident>
+   sound/core/pcm_native.c:1784:63: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
+   sound/core/pcm_native.c:1784:63:    expected int [signed] state
+   sound/core/pcm_native.c:1784:63:    got restricted snd_pcm_state_t [usertype] <noident>
+   sound/core/pcm_native.c:1801:76: sparse: incorrect type in initializer (different base types) @@    expected int [signed] new_state @@    got restricted snint [signed] new_state @@
+   sound/core/pcm_native.c:1801:76:    expected int [signed] new_state
+   sound/core/pcm_native.c:1801:76:    got restricted snd_pcm_state_t
+   sound/core/pcm_native.c:1904:40: sparse: expression using sizeof(void)
+   sound/core/pcm_native.c:1904:40: sparse: expression using sizeof(void)
+   sound/core/pcm_native.c:2122:26: sparse: restricted snd_pcm_format_t degrades to integer
+   sound/core/pcm_native.c:2126:54: sparse: incorrect type in argument 1 (different base types) @@    expected restricted snd_pcm_format_t [usertype] format @@    got ricted snd_pcm_format_t [usertype] format @@
+   sound/core/pcm_native.c:2126:54:    expected restricted snd_pcm_format_t [usertype] format
+   sound/core/pcm_native.c:2126:54:    got unsigned int [unsigned] [assigned] k
+   sound/core/pcm_native.c:2144:26: sparse: restricted snd_pcm_format_t degrades to integer
+   sound/core/pcm_native.c:2148:54: sparse: incorrect type in argument 1 (different base types) @@    expected restricted snd_pcm_format_t [usertype] format @@    got ricted snd_pcm_format_t [usertype] format @@
+   sound/core/pcm_native.c:2148:54:    expected restricted snd_pcm_format_t [usertype] format
+   sound/core/pcm_native.c:2148:54:    got unsigned int [unsigned] [assigned] k
+   sound/core/pcm_native.c:2328:30: sparse: restricted snd_pcm_access_t degrades to integer
+   sound/core/pcm_native.c:2330:30: sparse: restricted snd_pcm_access_t degrades to integer
+   sound/core/pcm_native.c:2333:38: sparse: restricted snd_pcm_access_t degrades to integer
+   sound/core/pcm_native.c:2335:38: sparse: restricted snd_pcm_access_t degrades to integer
+   sound/core/pcm_native.c:2337:38: sparse: restricted snd_pcm_access_t degrades to integer
+   sound/core/pcm_native.c:2347:86: sparse: restricted snd_pcm_subformat_t degrades to integer
+   include/sound/pcm.h:1093:47: sparse: cast removes address space of expression
+   include/sound/pcm.h:1100:47: sparse: cast removes address space of expression
+   include/sound/pcm.h:1100:47: sparse: cast removes address space of expression
+   include/sound/pcm.h:1093:47: sparse: cast removes address space of expression
+   sound/core/pcm_compat.c:241:32: sparse: incorrect type in initializer (different base types) @@    expected signed int [signed] [usertype] [explicitly-signed] state @@    got restricted ssigned int [signed] [usertype] [explicitly-signed] state @@
+   sound/core/pcm_compat.c:241:32:    expected signed int [signed] [usertype] [explicitly-signed] state
+   sound/core/pcm_compat.c:241:32:    got restricted snd_pcm_state_t [addressable] [assigned] [usertype] state
+   sound/core/pcm_compat.c:252:42: sparse: incorrect type in initializer (different base types) @@    expected signed int [signed] [usertype] [explicitly-signed] suspended_state @@    got restricted ssigned int [signed] [usertype] [explicitly-signed] suspended_state @@
+   sound/core/pcm_compat.c:252:42:    expected signed int [signed] [usertype] [explicitly-signed] suspended_state
+   sound/core/pcm_compat.c:252:42:    got restricted snd_pcm_state_t [addressable] [assigned] [usertype] suspended_state
+   include/sound/pcm.h:1093:47: sparse: cast removes address space of expression
+   include/sound/pcm.h:1100:47: sparse: cast removes address space of expression
+   sound/core/pcm_compat.c:480:13: sparse: incorrect type in assignment (different base types) @@    expected signed int [signed] [explicitly-signed] __pu_val @@    got restrictesigned int [signed] [explicitly-signed] __pu_val @@
+   sound/core/pcm_compat.c:480:13:    expected signed int [signed] [explicitly-signed] __pu_val
+   sound/core/pcm_compat.c:480:13:    got restricted snd_pcm_state_t [assigned] [usertype] state
+   sound/core/pcm_compat.c:483:13: sparse: incorrect type in assignment (different base types) @@    expected signed int [signed] [explicitly-signed] __pu_val @@    got restrictesigned int [signed] [explicitly-signed] __pu_val @@
+   sound/core/pcm_compat.c:483:13:    expected signed int [signed] [explicitly-signed] __pu_val
+   sound/core/pcm_compat.c:483:13:    got restricted snd_pcm_state_t [assigned] [usertype] suspended_state
+   sound/core/pcm_compat.c:569:13: sparse: incorrect type in assignment (different base types) @@    expected signed int [signed] [explicitly-signed] __pu_val @@    got restrictesigned int [signed] [explicitly-signed] __pu_val @@
+   sound/core/pcm_compat.c:569:13:    expected signed int [signed] [explicitly-signed] __pu_val
+   sound/core/pcm_compat.c:569:13:    got restricted snd_pcm_state_t [assigned] [usertype] state
+   sound/core/pcm_compat.c:572:13: sparse: incorrect type in assignment (different base types) @@    expected signed int [signed] [explicitly-signed] __pu_val @@    got restrictesigned int [signed] [explicitly-signed] __pu_val @@
+   sound/core/pcm_compat.c:572:13:    expected signed int [signed] [explicitly-signed] __pu_val
+   sound/core/pcm_compat.c:572:13:    got restricted snd_pcm_state_t [assigned] [usertype] suspended_state
+   sound/core/pcm_native.c:112:9: sparse: context imbalance in 'snd_pcm_stream_lock' - different lock contexts for basic block
+   sound/core/pcm_native.c:134:28: sparse: context imbalance in 'snd_pcm_stream_unlock' - unexpected unlock
+   sound/core/pcm_native.c:1130:52: sparse: context imbalance in 'snd_pcm_action_group' - unexpected unlock
+
+vim +995 sound/core/pcm_native.c
+
+   971	
+   972	static int snd_pcm_status_user32(struct snd_pcm_substream *substream,
+   973					 struct snd_pcm_status32 __user * _status,
+   974					 bool ext)
+   975	{
+   976		struct snd_pcm_status64 status64;
+   977		struct snd_pcm_status32 status32;
+   978		int res;
+   979	
+   980		memset(&status64, 0, sizeof(status64));
+   981		memset(&status32, 0, sizeof(status32));
+   982		/*
+   983		 * with extension, parameters are read/write,
+   984		 * get audio_tstamp_data from user,
+   985		 * ignore rest of status structure
+   986		 */
+   987		if (ext && get_user(status64.audio_tstamp_data,
+   988				    (u32 __user *)(&_status->audio_tstamp_data)))
+   989			return -EFAULT;
+   990		res = snd_pcm_status64(substream, &status64);
+   991		if (res < 0)
+   992			return res;
+   993	
+   994		status32 = (struct snd_pcm_status32) {
+ > 995			.state = status64.state,
+   996			.trigger_tstamp_sec = status64.trigger_tstamp_sec,
+   997			.trigger_tstamp_nsec = status64.trigger_tstamp_nsec,
+   998			.tstamp_sec = status64.tstamp_sec,
+   999			.tstamp_nsec = status64.tstamp_nsec,
+  1000			.appl_ptr = status64.appl_ptr,
+  1001			.hw_ptr = status64.hw_ptr,
+  1002			.delay = status64.delay,
+  1003			.avail = status64.avail,
+  1004			.avail_max = status64.avail_max,
+  1005			.overrange = status64.overrange,
+> 1006			.suspended_state = status64.suspended_state,
+  1007			.audio_tstamp_data = status64.audio_tstamp_data,
+  1008			.audio_tstamp_sec = status64.audio_tstamp_sec,
+  1009			.audio_tstamp_nsec = status64.audio_tstamp_nsec,
+  1010			.driver_tstamp_sec = status64.audio_tstamp_sec,
+  1011			.driver_tstamp_nsec = status64.audio_tstamp_nsec,
+  1012			.audio_tstamp_accuracy = status64.audio_tstamp_accuracy,
+  1013		};
+  1014	
+  1015		if (copy_to_user(_status, &status32, sizeof(status32)))
+  1016			return -EFAULT;
+  1017	
+  1018		return 0;
+  1019	}
+  1020	
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
