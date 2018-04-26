@@ -1,17 +1,17 @@
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 3/4] ASoC: compress: Add helper functions for
-	component trigger/set_params
-Date: Thu, 26 Apr 2018 17:30:06 +0100
-Message-ID: <20180426163007.5632-3-ckeepax@opensource.cirrus.com>
+Subject: [PATCH 2/4] ASoC: compress: Clarify the intent of
+	current compressed ops handling
+Date: Thu, 26 Apr 2018 17:30:05 +0100
+Message-ID: <20180426163007.5632-2-ckeepax@opensource.cirrus.com>
 References: <20180426163007.5632-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C8FD22677FD
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 18:30:14 +0200 (CEST)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id A72C3267862
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 18:30:21 +0200 (CEST)
 In-Reply-To: <20180426163007.5632-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,204 +26,324 @@ To: broonie@kernel.org
 Cc: vinod.koul@intel.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-The trigger and set_params callbacks are called from 3 and 2 separate
-loops respectively, tidy up the code a little by factoring these out
-into helper functions.
+It is proposed that the model adopted for compressed component
+support currently should be that multiple components are supported
+on a compressed DAI but that they must provide a unified set of
+capabilities. So for example having multiple components involved in
+the decode is fine but the core will not presently attempt to make
+smart decisions like offloading MP3 to this component and AAC another.
+
+To implement this it is suggested that callbacks configuring the state
+of the components (trigger, set_params, ack and set_metadata) should be
+called on all components and required to succeed on all components
+before being considered to have succeeded. However for callbacks that
+return information from the driver (copy, get_metadata, pointer,
+get_codec_caps, get_caps and get_params) it is expected that either
+there is only a single provider on the link or that all components
+will return identical results.
+
+Essentially this matches the current implementation of the code and
+only small clean ups are undertaken here.
+
+For callbacks configuring the state of the components simplify the
+code a little and make intention clearer by aborting as soon as an
+error is encountered. The operation has already failed and there is
+nothing to be gained from processing the additional callbacks.
+
+For callbacks returning information from the driver only look for the
+first callback provided, currently the code will call every callback
+only returning the information provided by the last. Again this makes
+the currently supported feature set a little more clear.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
- sound/soc/soc-compress.c | 116 ++++++++++++++++++++++-------------------------
- 1 file changed, 54 insertions(+), 62 deletions(-)
+ sound/soc/soc-compress.c | 105 +++++++++++++++++++++--------------------------
+ 1 file changed, 47 insertions(+), 58 deletions(-)
 
 diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index b411143f21ccc..3d107652b7ca3 100644
+index 62875c6a93a14..b411143f21ccc 100644
 --- a/sound/soc/soc-compress.c
 +++ b/sound/soc/soc-compress.c
-@@ -355,17 +355,13 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
- 	return 0;
- }
- 
--static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
-+static int soc_compr_components_trigger(struct snd_compr_stream *cstream,
-+					int cmd)
- {
--
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_component *component;
+@@ -363,7 +363,7 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
  	struct snd_soc_rtdcom_list *rtdcom;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	int ret = 0;
--
--	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-+	int ret;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret = 0;
  
- 	for_each_rtdcom(rtd, rtdcom) {
- 		component = rtdcom->component;
-@@ -376,9 +372,25 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
  
- 		ret = component->driver->compr_ops->trigger(cstream, cmd);
- 		if (ret < 0)
--			goto out;
-+			return ret;
+@@ -374,12 +374,10 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 		    !component->driver->compr_ops->trigger)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->trigger(cstream, cmd);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->trigger(cstream, cmd);
++		if (ret < 0)
++			goto out;
  	}
+-	if (ret < 0)
+-		goto out;
  
-+	return 0;
-+}
-+
-+static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	int ret;
-+
-+	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
-+
-+	ret = soc_compr_components_trigger(cstream, cmd);
-+	if (ret < 0)
-+		goto out;
-+
  	if (cpu_dai->driver->cops && cpu_dai->driver->cops->trigger)
  		cpu_dai->driver->cops->trigger(cstream, cmd, cpu_dai);
- 
-@@ -399,27 +411,12 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
- static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
- {
- 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
--	struct snd_soc_component *component;
--	struct snd_soc_rtdcom_list *rtdcom;
+@@ -404,7 +402,7 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
  	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
- 	int ret, stream;
+-	int ret = 0, __ret, stream;
++	int ret, stream;
  
  	if (cmd == SND_COMPR_TRIGGER_PARTIAL_DRAIN ||
--		cmd == SND_COMPR_TRIGGER_DRAIN) {
--
--		for_each_rtdcom(fe, rtdcom) {
--			component = rtdcom->component;
--
--			if (!component->driver->compr_ops ||
--			    !component->driver->compr_ops->trigger)
--				continue;
--
--			ret = component->driver->compr_ops->trigger(cstream, cmd);
--			if (ret < 0)
--				return ret;
--		}
--		return ret;
--	}
-+	    cmd == SND_COMPR_TRIGGER_DRAIN)
-+		return soc_compr_components_trigger(cstream, cmd);
+ 		cmd == SND_COMPR_TRIGGER_DRAIN) {
+@@ -416,9 +414,9 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ 			    !component->driver->compr_ops->trigger)
+ 				continue;
  
- 	if (cstream->direction == SND_COMPRESS_PLAYBACK)
- 		stream = SNDRV_PCM_STREAM_PLAYBACK;
-@@ -435,17 +432,9 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
- 			goto out;
+-			__ret = component->driver->compr_ops->trigger(cstream, cmd);
+-			if (__ret < 0)
+-				ret = __ret;
++			ret = component->driver->compr_ops->trigger(cstream, cmd);
++			if (ret < 0)
++				return ret;
+ 		}
+ 		return ret;
  	}
+@@ -444,12 +442,10 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ 		    !component->driver->compr_ops->trigger)
+ 			continue;
  
--	for_each_rtdcom(fe, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->compr_ops ||
--		    !component->driver->compr_ops->trigger)
--			continue;
--
--		ret = component->driver->compr_ops->trigger(cstream, cmd);
--		if (ret < 0)
--			goto out;
--	}
-+	ret = soc_compr_components_trigger(cstream, cmd);
-+	if (ret < 0)
-+		goto out;
+-		__ret = component->driver->compr_ops->trigger(cstream, cmd);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->trigger(cstream, cmd);
++		if (ret < 0)
++			goto out;
+ 	}
+-	if (ret < 0)
+-		goto out;
  
  	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
  
-@@ -472,12 +461,33 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
- 	return ret;
- }
- 
--static int soc_compr_set_params(struct snd_compr_stream *cstream,
--					struct snd_compr_params *params)
-+static int soc_compr_components_set_params(struct snd_compr_stream *cstream,
-+					   struct snd_compr_params *params)
- {
- 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+@@ -483,7 +479,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
  	struct snd_soc_component *component;
  	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
 +	int ret;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		if (!component->driver->compr_ops ||
-+		    !component->driver->compr_ops->set_params)
-+			continue;
-+
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -507,12 +503,10 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->set_params)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->set_params(cstream, params);
+-		if (__ret < 0)
+-			ret = __ret;
 +		ret = component->driver->compr_ops->set_params(cstream, params);
 +		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int soc_compr_set_params(struct snd_compr_stream *cstream,
-+				struct snd_compr_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	int ret;
- 
-@@ -496,17 +506,9 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
- 			goto err;
++			goto err;
  	}
- 
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->compr_ops ||
--		    !component->driver->compr_ops->set_params)
--			continue;
--
--		ret = component->driver->compr_ops->set_params(cstream, params);
--		if (ret < 0)
--			goto err;
--	}
-+	ret = soc_compr_components_set_params(cstream, params);
-+	if (ret < 0)
-+		goto err;
+-	if (ret < 0)
+-		goto err;
  
  	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->set_params) {
  		ret = rtd->dai_link->compr_ops->set_params(cstream);
-@@ -540,8 +542,6 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
- 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
- 	struct snd_pcm_substream *fe_substream =
- 		 fe->pcm->streams[cstream->direction].substream;
--	struct snd_soc_component *component;
--	struct snd_soc_rtdcom_list *rtdcom;
+@@ -533,7 +527,7 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 
+ 	cancel_delayed_work_sync(&rtd->delayed_work);
+ 
+-	return ret;
++	return 0;
+ 
+ err:
+ 	mutex_unlock(&rtd->pcm_mutex);
+@@ -549,7 +543,7 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
  	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
- 	int ret, stream;
+-	int ret = 0, __ret, stream;
++	int ret, stream;
  
-@@ -558,17 +558,9 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
- 			goto out;
+ 	if (cstream->direction == SND_COMPRESS_PLAYBACK)
+ 		stream = SNDRV_PCM_STREAM_PLAYBACK;
+@@ -571,12 +565,10 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->set_params)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->set_params(cstream, params);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->set_params(cstream, params);
++		if (ret < 0)
++			goto out;
  	}
- 
--	for_each_rtdcom(fe, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->compr_ops ||
--		    !component->driver->compr_ops->set_params)
--			continue;
--
--		ret = component->driver->compr_ops->set_params(cstream, params);
--		if (ret < 0)
--			goto out;
--	}
-+	ret = soc_compr_components_set_params(cstream, params);
-+	if (ret < 0)
-+		goto out;
+-	if (ret < 0)
+-		goto out;
  
  	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->set_params) {
  		ret = fe->dai_link->compr_ops->set_params(cstream);
+@@ -618,7 +610,7 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -635,9 +627,8 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->get_params)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->get_params(cstream, params);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->get_params(cstream, params);
++		break;
+ 	}
+ 
+ err:
+@@ -651,7 +642,7 @@ static int soc_compr_get_caps(struct snd_compr_stream *cstream,
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -662,9 +653,8 @@ static int soc_compr_get_caps(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->get_caps)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->get_caps(cstream, caps);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->get_caps(cstream, caps);
++		break;
+ 	}
+ 
+ 	mutex_unlock(&rtd->pcm_mutex);
+@@ -677,7 +667,7 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -688,9 +678,9 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->get_codec_caps)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->get_codec_caps(cstream, codec);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->get_codec_caps(cstream,
++								   codec);
++		break;
+ 	}
+ 
+ 	mutex_unlock(&rtd->pcm_mutex);
+@@ -703,7 +693,7 @@ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+@@ -720,9 +710,9 @@ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+ 		    !component->driver->compr_ops->ack)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->ack(cstream, bytes);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->ack(cstream, bytes);
++		if (ret < 0)
++			goto err;
+ 	}
+ 
+ err:
+@@ -736,7 +726,7 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+-	int ret = 0, __ret;
++	int ret = 0;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+@@ -751,9 +741,8 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->pointer)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->pointer(cstream, tstamp);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->pointer(cstream, tstamp);
++		break;
+ 	}
+ 
+ 	mutex_unlock(&rtd->pcm_mutex);
+@@ -792,7 +781,7 @@ static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret;
+ 
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->set_metadata) {
+ 		ret = cpu_dai->driver->cops->set_metadata(cstream, metadata, cpu_dai);
+@@ -807,12 +796,13 @@ static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->set_metadata)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->set_metadata(cstream, metadata);
+-		if (__ret < 0)
+-			ret = __ret;
++		ret = component->driver->compr_ops->set_metadata(cstream,
++								 metadata);
++		if (ret < 0)
++			return ret;
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
+@@ -822,7 +812,7 @@ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int ret = 0, __ret;
++	int ret;
+ 
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->get_metadata) {
+ 		ret = cpu_dai->driver->cops->get_metadata(cstream, metadata, cpu_dai);
+@@ -837,12 +827,11 @@ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
+ 		    !component->driver->compr_ops->get_metadata)
+ 			continue;
+ 
+-		__ret = component->driver->compr_ops->get_metadata(cstream, metadata);
+-		if (__ret < 0)
+-			ret = __ret;
++		return component->driver->compr_ops->get_metadata(cstream,
++								  metadata);
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ /* ASoC Compress operations */
 -- 
 2.11.0
