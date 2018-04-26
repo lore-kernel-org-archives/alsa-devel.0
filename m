@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Use u32 variable type when
-	using regmap_read()" to the asoc tree
-Date: Thu, 26 Apr 2018 15:18:57 +0100
-Message-ID: <E1fBhjd-0003xH-8L@debutante>
-References: <1524696832-7684-1-git-send-email-festevam@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1249526779A
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 16:19:01 +0200 (CEST)
-In-Reply-To: <1524696832-7684-1-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
+Subject: Applied "ASoC: amd: rename audio_substream_data variable" to the asoc tree
+Date: Thu, 26 Apr 2018 15:19:06 +0100
+Message-ID: <E1fBhjm-0003zD-9F@debutante>
+References: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mukunda@sirena.org.uk
+Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Jason Clinton <jclinton@chromium.org>Mark Brown <broonie@kernel.org>Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Use u32 variable type when using regmap_read()
+   ASoC: amd: rename audio_substream_data variable
 
 has been applied to the asoc tree at
 
@@ -53,52 +37,73 @@ to this mail.
 Thanks,
 Mark
 
->From 671f8204b12fae98dcc6fc5a5703a5c62cbea187 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Wed, 25 Apr 2018 19:53:52 -0300
-Subject: [PATCH] ASoC: fsl_ssi: Use u32 variable type when using regmap_read()
+>From 8349b7f53da03a46c08cb6c33833df68837b61e0 Mon Sep 17 00:00:00 2001
+From: "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
+Date: Thu, 26 Apr 2018 16:45:47 +0530
+Subject: [PATCH] ASoC: amd: rename audio_substream_data variable
 
-Convert the sisr and sisr2 variable types to u32 to avoid the following
-sparse warnings:
+In order to make audio_substream_data structure variable
+consistent throughout the code, changed the name from
+audio_config to rtd wherever applicable.
 
-sound/soc/fsl/fsl_ssi.c:391:42: warning: incorrect type in argument 3 (different base types)
-sound/soc/fsl/fsl_ssi.c:391:42:    expected unsigned int *val
-sound/soc/fsl/fsl_ssi.c:391:42:    got restricted __be32 *<noident>
-sound/soc/fsl/fsl_ssi.c:393:17: warning: restricted __be32 degrades to integer
-sound/soc/fsl/fsl_ssi.c:393:15: warning: incorrect type in assignment (different base types)
-sound/soc/fsl/fsl_ssi.c:393:15:    expected restricted __be32 [usertype] sisr2
-sound/soc/fsl/fsl_ssi.c:393:15:    got unsigned int
-sound/soc/fsl/fsl_ssi.c:396:50: warning: incorrect type in argument 3 (different base types)
-sound/soc/fsl/fsl_ssi.c:396:50:    expected unsigned int [unsigned] val
-sound/soc/fsl/fsl_ssi.c:396:50:    got restricted __be32 [usertype] sisr2
-sound/soc/fsl/fsl_ssi.c:398:42: warning: incorrect type in argument 2 (different base types)
-sound/soc/fsl/fsl_ssi.c:398:42:    expected unsigned int [unsigned] [usertype] sisr
-sound/soc/fsl/fsl_ssi.c:398:42:    got restricted __be32 [addressable] [usertype] sisr
-
-In other places where regmap_read() is used a u32 variable is passed
-to store the register read value, so do the same here as well.
-
-regmap API already takes care of endianness, so the usage of u32 is safe.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 89df2d9f63d7..1544166631e3 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -385,8 +385,7 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 5ffe2efc6363..9c026c4d26d4 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -317,13 +317,13 @@ static void acp_pte_config(void __iomem *acp_mmio, struct page *pg,
+ }
+ 
+ static void config_acp_dma(void __iomem *acp_mmio,
+-			   struct audio_substream_data *audio_config,
++			   struct audio_substream_data *rtd,
+ 			   u32 asic_type)
  {
- 	struct fsl_ssi *ssi = dev_id;
- 	struct regmap *regs = ssi->regs;
--	__be32 sisr;
--	__be32 sisr2;
-+	u32 sisr, sisr2;
+ 	u32 pte_offset, sram_bank;
+ 	u16 ch1, ch2, destination, dma_dscr_idx;
  
- 	regmap_read(regs, REG_SSI_SISR, &sisr);
+-	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		pte_offset = ACP_PLAYBACK_PTE_OFFSET;
+ 		ch1 = SYSRAM_TO_ACP_CH_NUM;
+ 		ch2 = ACP_TO_I2S_DMA_CH_NUM;
+@@ -344,25 +344,25 @@ static void config_acp_dma(void __iomem *acp_mmio,
+ 		destination = FROM_ACP_I2S_1;
+ 	}
  
+-	acp_pte_config(acp_mmio, audio_config->pg, audio_config->num_of_pages,
++	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
+ 		       pte_offset);
+-	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK)
++	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
+ 		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
+ 	else
+ 		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
+ 
+ 	/* Configure System memory <-> ACP SRAM DMA descriptors */
+-	set_acp_sysmem_dma_descriptors(acp_mmio, audio_config->size,
+-				       audio_config->direction, pte_offset, ch1,
++	set_acp_sysmem_dma_descriptors(acp_mmio, rtd->size,
++				       rtd->direction, pte_offset, ch1,
+ 				       sram_bank, dma_dscr_idx, asic_type);
+ 
+-	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK)
++	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
+ 		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH13;
+ 	else
+ 		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH15;
+ 	/* Configure ACP SRAM <-> I2S DMA descriptors */
+-	set_acp_to_i2s_dma_descriptors(acp_mmio, audio_config->size,
+-				       audio_config->direction, sram_bank,
++	set_acp_to_i2s_dma_descriptors(acp_mmio, rtd->size,
++				       rtd->direction, sram_bank,
+ 				       destination, ch2, dma_dscr_idx,
+ 				       asic_type);
+ }
 -- 
 2.17.0
