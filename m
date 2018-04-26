@@ -1,16 +1,15 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v6 05/13] soundwire: Add helpers for ports
-	operations
-Date: Thu, 26 Apr 2018 18:50:01 +0530
-Message-ID: <1524748809-21860-6-git-send-email-vkoul@kernel.org>
+Subject: [PATCH v6 06/13] soundwire: Add bank switch routine
+Date: Thu, 26 Apr 2018 18:50:02 +0530
+Message-ID: <1524748809-21860-7-git-send-email-vkoul@kernel.org>
 References: <1524748809-21860-1-git-send-email-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id A28E4267875
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 15:15:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5830C26782F
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 15:15:54 +0200 (CEST)
 In-Reply-To: <1524748809-21860-1-git-send-email-vkoul@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,342 +26,264 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Sanyog Kale <sanyog.r.kale@intel.com>
 
-Add helpers to configure, prepare, enable, disable and
-de-prepare ports.
+SoundWire supports two registers banks. So, program the alternate bank
+with new configuration and then performs bank switch.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/soundwire/bus.c       |  26 ++++
- drivers/soundwire/bus.h       |   2 +
- drivers/soundwire/stream.c    | 271 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw.h |  54 +++++++++
- 4 files changed, 353 insertions(+)
+ drivers/soundwire/bus.c       |   7 ++
+ drivers/soundwire/bus.h       |   5 ++
+ drivers/soundwire/stream.c    | 202 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw.h |  48 ++++++++++
+ 4 files changed, 262 insertions(+)
 
 diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
-index abf046f6b188..b8c93f0ac0a0 100644
+index b8c93f0ac0a0..084bf71b2b87 100644
 --- a/drivers/soundwire/bus.c
 +++ b/drivers/soundwire/bus.c
-@@ -577,6 +577,32 @@ static void sdw_modify_slave_status(struct sdw_slave *slave,
- 	mutex_unlock(&slave->bus->bus_lock);
- }
+@@ -78,6 +78,13 @@ int sdw_add_bus_master(struct sdw_bus *bus)
+ 		return ret;
+ 	}
  
-+int sdw_configure_dpn_intr(struct sdw_slave *slave,
-+			int port, bool enable, int mask)
-+{
-+	u32 addr;
-+	int ret;
-+	u8 val = 0;
++	/*
++	 * Default active bank will be 0 as out of reset the Slaves have
++	 * to start with bank 0 (Table 40 of Spec)
++	 */
++	bus->params.curr_bank = SDW_BANK0;
++	bus->params.next_bank = SDW_BANK1;
 +
-+	addr = SDW_DPN_INTMASK(port);
-+
-+	/* Set/Clear port ready interrupt mask */
-+	if (enable) {
-+		val |= mask;
-+		val |= SDW_DPN_INT_PORT_READY;
-+	} else {
-+		val &= ~(mask);
-+		val &= ~SDW_DPN_INT_PORT_READY;
-+	}
-+
-+	ret = sdw_update(slave, addr, (mask | SDW_DPN_INT_PORT_READY), val);
-+	if (ret < 0)
-+		dev_err(slave->bus->dev,
-+				"SDW_DPN_INTMASK write failed:%d", val);
-+
-+	return ret;
-+}
-+
- static int sdw_initialize_slave(struct sdw_slave *slave)
- {
- 	struct sdw_slave_prop *prop = &slave->prop;
+ 	return 0;
+ }
+ EXPORT_SYMBOL(sdw_add_bus_master);
 diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 133268ab8086..07da6c4b10c4 100644
+index 07da6c4b10c4..3b15c4e25a3a 100644
 --- a/drivers/soundwire/bus.h
 +++ b/drivers/soundwire/bus.h
-@@ -109,6 +109,8 @@ struct sdw_master_runtime {
- struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
- 				enum sdw_data_direction direction,
- 				unsigned int port_num);
-+int sdw_configure_dpn_intr(struct sdw_slave *slave, int port,
-+					bool enable, int mask);
+@@ -45,6 +45,11 @@ struct sdw_msg {
+ 	bool page;
+ };
  
- int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg);
- int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
++#define SDW_DOUBLE_RATE_FACTOR		2
++
++extern int rows[SDW_FRAME_ROWS];
++extern int cols[SDW_FRAME_COLS];
++
+ /**
+  * sdw_port_runtime: Runtime port parameters for Master or Slave
+  *
 diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index ea6ee96b02d2..7acb4c59f208 100644
+index 7acb4c59f208..bcc922062e35 100644
 --- a/drivers/soundwire/stream.c
 +++ b/drivers/soundwire/stream.c
-@@ -244,6 +244,277 @@ static int sdw_program_port_params(struct sdw_master_runtime *m_rt)
+@@ -15,6 +15,43 @@
+ #include <linux/soundwire/sdw.h>
+ #include "bus.h"
+ 
++/*
++ * Array of supported rows and columns as per MIPI SoundWire Specification 1.1
++ *
++ * The rows are arranged as per the array index value programmed
++ * in register. The index 15 has dummy value 0 in order to fill hole.
++ */
++int rows[SDW_FRAME_ROWS] = {48, 50, 60, 64, 75, 80, 125, 147,
++			96, 100, 120, 128, 150, 160, 250, 0,
++			192, 200, 240, 256, 72, 144, 90, 180};
++
++int cols[SDW_FRAME_COLS] = {2, 4, 6, 8, 10, 12, 14, 16};
++
++static int sdw_find_col_index(int col)
++{
++	int i;
++
++	for (i = 0; i < SDW_FRAME_COLS; i++) {
++		if (cols[i] == col)
++			return i;
++	}
++
++	pr_warn("Requested column not found, selecting lowest column no: 2\n");
++	return 0;
++}
++
++static int sdw_find_row_index(int row)
++{
++	int i;
++
++	for (i = 0; i < SDW_FRAME_ROWS; i++) {
++		if (rows[i] == row)
++			return i;
++	}
++
++	pr_warn("Requested row not found, selecting lowest row no: 48\n");
++	return 0;
++}
+ static int _sdw_program_slave_port_params(struct sdw_bus *bus,
+ 				struct sdw_slave *slave,
+ 				struct sdw_transport_params *t_params,
+@@ -515,6 +552,171 @@ static int sdw_prep_deprep_ports(struct sdw_master_runtime *m_rt, bool prep)
  }
  
  /**
-+ * sdw_enable_disable_slave_ports: Enable/disable slave data port
-+ *
-+ * @bus: bus instance
-+ * @s_rt: slave runtime
-+ * @p_rt: port runtime
-+ * @en: enable or disable operation
-+ *
-+ * This function only sets the enable/disable bits in the relevant bank, the
-+ * actual enable/disable is done with a bank switch
-+ */
-+static int sdw_enable_disable_slave_ports(struct sdw_bus *bus,
-+				struct sdw_slave_runtime *s_rt,
-+				struct sdw_port_runtime *p_rt, bool en)
-+{
-+	struct sdw_transport_params *t_params = &p_rt->transport_params;
-+	u32 addr;
-+	int ret;
-+
-+	if (bus->params.next_bank)
-+		addr = SDW_DPN_CHANNELEN_B1(p_rt->num);
-+	else
-+		addr = SDW_DPN_CHANNELEN_B0(p_rt->num);
-+
-+	/*
-+	 * Since bus doesn't support sharing a port across two streams,
-+	 * it is safe to reset this register
-+	 */
-+	if (en)
-+		ret = sdw_update(s_rt->slave, addr, 0xFF, p_rt->ch_mask);
-+	else
-+		ret = sdw_update(s_rt->slave, addr, 0xFF, 0x0);
-+
-+	if (ret < 0)
-+		dev_err(&s_rt->slave->dev,
-+			"Slave chn_en reg write failed:%d port:%d",
-+			ret, t_params->port_num);
-+
-+	return ret;
-+}
-+
-+static int sdw_enable_disable_master_ports(struct sdw_master_runtime *m_rt,
-+			struct sdw_port_runtime *p_rt, bool en)
-+{
-+	struct sdw_transport_params *t_params = &p_rt->transport_params;
-+	struct sdw_bus *bus = m_rt->bus;
-+	struct sdw_enable_ch enable_ch;
-+	int ret = 0;
-+
-+	enable_ch.port_num = p_rt->num;
-+	enable_ch.ch_mask = p_rt->ch_mask;
-+	enable_ch.enable = en;
-+
-+	/* Perform Master port channel(s) enable/disable */
-+	if (bus->port_ops->dpn_port_enable_ch) {
-+		ret = bus->port_ops->dpn_port_enable_ch(bus,
-+				&enable_ch, bus->params.next_bank);
-+		if (ret < 0) {
-+			dev_err(bus->dev,
-+				"Master chn_en write failed:%d port:%d",
-+				ret, t_params->port_num);
-+			return ret;
-+		}
-+	} else {
-+		dev_err(bus->dev,
-+			"dpn_port_enable_ch not supported, %s failed\n",
-+			en ? "enable" : "disable");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+
-+/**
-+ * sdw_enable_disable_ports() - Enable/disable port(s) for Master and
-+ * Slave(s)
-+ *
-+ * @m_rt: Master stream runtime
-+ * @en: mode (enable/disable)
-+ */
-+static int sdw_enable_disable_ports(struct sdw_master_runtime *m_rt, bool en)
-+{
-+	struct sdw_port_runtime *s_port, *m_port;
-+	struct sdw_slave_runtime *s_rt = NULL;
-+	int ret = 0;
-+
-+	/* Enable/Disable Slave port(s) */
-+	list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
-+		list_for_each_entry(s_port, &s_rt->port_list, port_node) {
-+			ret = sdw_enable_disable_slave_ports(m_rt->bus, s_rt,
-+							s_port, en);
-+			if (ret < 0)
-+				return ret;
-+		}
-+	}
-+
-+	/* Enable/Disable Master port(s) */
-+	list_for_each_entry(m_port, &m_rt->port_list, port_node) {
-+		ret = sdw_enable_disable_master_ports(m_rt, m_port, en);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+static int sdw_do_port_prep(struct sdw_slave_runtime *s_rt,
-+		struct sdw_prepare_ch prep_ch, enum sdw_port_prep_ops cmd)
-+{
-+	const struct sdw_slave_ops *ops = s_rt->slave->ops;
-+	int ret;
-+
-+	if (ops->port_prep) {
-+		ret = ops->port_prep(s_rt->slave, &prep_ch, cmd);
-+		if (ret < 0) {
-+			dev_err(&s_rt->slave->dev,
-+				"Slave Port Prep cmd %d failed: %d", cmd, ret);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+static int sdw_prep_deprep_slave_ports(struct sdw_bus *bus,
-+			struct sdw_slave_runtime *s_rt,
-+			struct sdw_port_runtime *p_rt, bool prep)
-+{
-+	struct completion *port_ready = NULL;
-+	struct sdw_dpn_prop *dpn_prop;
-+	struct sdw_prepare_ch prep_ch;
-+	unsigned int time_left;
-+	bool intr = false;
-+	int ret = 0, val;
-+	u32 addr;
-+
-+	prep_ch.num = p_rt->num;
-+	prep_ch.ch_mask = p_rt->ch_mask;
-+
-+	dpn_prop = sdw_get_slave_dpn_prop(s_rt->slave,
-+					s_rt->direction,
-+					prep_ch.num);
-+	if (!dpn_prop) {
-+		dev_err(bus->dev,
-+			"Slave Port:%d properties not found", prep_ch.num);
-+		return -EINVAL;
-+	}
-+
-+	prep_ch.prepare = prep;
-+
-+	prep_ch.bank = bus->params.next_bank;
-+
-+	if (dpn_prop->device_interrupts || !dpn_prop->simple_ch_prep_sm)
-+		intr = true;
-+
-+	/*
-+	 * Enable interrupt before Port prepare.
-+	 * For Port de-prepare, it is assumed that port
-+	 * was prepared earlier
-+	 */
-+	if (prep && intr) {
-+		ret = sdw_configure_dpn_intr(s_rt->slave, p_rt->num, prep,
-+						dpn_prop->device_interrupts);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	/* Inform slave about the impending port prepare */
-+	sdw_do_port_prep(s_rt, prep_ch, SDW_OPS_PORT_PRE_PREP);
-+
-+	/* Prepare Slave port implementing CP_SM */
-+	if (!dpn_prop->simple_ch_prep_sm) {
-+		addr = SDW_DPN_PREPARECTRL(p_rt->num);
-+
-+		if (prep)
-+			ret = sdw_update(s_rt->slave, addr,
-+					0xFF, p_rt->ch_mask);
-+		else
-+			ret = sdw_update(s_rt->slave, addr, 0xFF, 0x0);
-+
-+		if (ret < 0) {
-+			dev_err(&s_rt->slave->dev,
-+				"Slave prep_ctrl reg write failed");
-+			return ret;
-+		}
-+
-+		/* Wait for completion on port ready */
-+		port_ready = &s_rt->slave->port_ready[prep_ch.num];
-+		time_left = wait_for_completion_timeout(port_ready,
-+				msecs_to_jiffies(dpn_prop->ch_prep_timeout));
-+
-+		val = sdw_read(s_rt->slave, SDW_DPN_PREPARESTATUS(p_rt->num));
-+		val &= p_rt->ch_mask;
-+		if (!time_left || val) {
-+			dev_err(&s_rt->slave->dev,
-+				"Chn prep failed for port:%d", prep_ch.num);
-+			return -ETIMEDOUT;
-+		}
-+	}
-+
-+	/* Inform slaves about ports prepared */
-+	sdw_do_port_prep(s_rt, prep_ch, SDW_OPS_PORT_POST_PREP);
-+
-+	/* Disable interrupt after Port de-prepare */
-+	if (!prep && intr)
-+		ret = sdw_configure_dpn_intr(s_rt->slave, p_rt->num, prep,
-+						dpn_prop->device_interrupts);
-+
-+	return ret;
-+}
-+
-+static int sdw_prep_deprep_master_ports(struct sdw_master_runtime *m_rt,
-+				struct sdw_port_runtime *p_rt, bool prep)
-+{
-+	struct sdw_transport_params *t_params = &p_rt->transport_params;
-+	struct sdw_bus *bus = m_rt->bus;
-+	const struct sdw_master_port_ops *ops = bus->port_ops;
-+	struct sdw_prepare_ch prep_ch;
-+	int ret = 0;
-+
-+	prep_ch.num = p_rt->num;
-+	prep_ch.ch_mask = p_rt->ch_mask;
-+	prep_ch.prepare = prep; /* Prepare/De-prepare */
-+	prep_ch.bank = bus->params.next_bank;
-+
-+	/* Pre-prepare/Pre-deprepare port(s) */
-+	if (ops->dpn_port_prep) {
-+		ret = ops->dpn_port_prep(bus, &prep_ch);
-+		if (ret < 0) {
-+			dev_err(bus->dev, "Port prepare failed for port:%d",
-+					t_params->port_num);
-+			return ret;
-+		}
-+	}
-+
-+	return ret;
-+}
-+
-+/**
-+ * sdw_prep_deprep_ports() - Prepare/De-prepare port(s) for Master(s) and
-+ * Slave(s)
++ * sdw_notify_config() - Notify bus configuration
 + *
 + * @m_rt: Master runtime handle
-+ * @prep: Prepare or De-prepare
++ *
++ * This function notifies the Master(s) and Slave(s) of the
++ * new bus configuration.
 + */
-+static int sdw_prep_deprep_ports(struct sdw_master_runtime *m_rt, bool prep)
++static int sdw_notify_config(struct sdw_master_runtime *m_rt)
 +{
-+	struct sdw_slave_runtime *s_rt = NULL;
-+	struct sdw_port_runtime *p_rt;
++	struct sdw_slave_runtime *s_rt;
++	struct sdw_bus *bus = m_rt->bus;
++	struct sdw_slave *slave;
 +	int ret = 0;
 +
-+	/* Prepare/De-prepare Slave port(s) */
++	if (bus->ops->set_bus_conf) {
++		ret = bus->ops->set_bus_conf(bus, &bus->params);
++		if (ret < 0)
++			return ret;
++	}
++
 +	list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
-+		list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
-+			ret = sdw_prep_deprep_slave_ports(m_rt->bus, s_rt,
-+							p_rt, prep);
++		slave = s_rt->slave;
++
++		if (slave->ops->bus_config) {
++			ret = slave->ops->bus_config(slave, &bus->params);
 +			if (ret < 0)
-+				return ret;
++				dev_err(bus->dev, "Notify Slave: %d failed",
++								slave->dev_num);
++			return ret;
 +		}
 +	}
 +
-+	/* Prepare/De-prepare Master port(s) */
-+	list_for_each_entry(p_rt, &m_rt->port_list, port_node) {
-+		ret = sdw_prep_deprep_master_ports(m_rt, p_rt, prep);
-+		if (ret < 0)
++	return ret;
++}
++
++/**
++ * sdw_program_params() - Program transport and port parameters for Master(s)
++ * and Slave(s)
++ *
++ * @bus: SDW bus instance
++ */
++static int sdw_program_params(struct sdw_bus *bus)
++{
++	struct sdw_master_runtime *m_rt = NULL;
++	int ret = 0;
++
++	list_for_each_entry(m_rt, &bus->m_rt_list, bus_node) {
++		ret = sdw_program_port_params(m_rt);
++		if (ret < 0) {
++			dev_err(bus->dev,
++				"Program transport params failed: %d", ret);
 +			return ret;
++		}
++
++		ret = sdw_notify_config(m_rt);
++		if (ret < 0) {
++			dev_err(bus->dev, "Notify bus config failed: %d", ret);
++			return ret;
++		}
++
++		/* Enable port(s) on alternate bank for all active streams */
++		if (m_rt->stream->state != SDW_STREAM_ENABLED)
++			continue;
++
++		ret = sdw_enable_disable_ports(m_rt, true);
++		if (ret < 0) {
++			dev_err(bus->dev, "Enable channel failed: %d", ret);
++			return ret;
++		}
++	}
++
++	return ret;
++}
++
++static int sdw_bank_switch(struct sdw_bus *bus)
++{
++	int col_index, row_index;
++	struct sdw_msg *wr_msg;
++	u8 *wbuf = NULL;
++	int ret = 0;
++	u16 addr;
++
++	wr_msg = kzalloc(sizeof(*wr_msg), GFP_KERNEL);
++	if (!wr_msg)
++		return -ENOMEM;
++
++	wbuf = kzalloc(sizeof(*wbuf), GFP_KERNEL);
++	if (!wbuf) {
++		ret = -ENOMEM;
++		goto error_1;
++	}
++
++	/* Get row and column index to program register */
++	col_index = sdw_find_col_index(bus->params.col);
++	row_index = sdw_find_row_index(bus->params.row);
++	wbuf[0] = col_index | (row_index << 3);
++
++	if (bus->params.next_bank)
++		addr = SDW_SCP_FRAMECTRL_B1;
++	else
++		addr = SDW_SCP_FRAMECTRL_B0;
++
++	sdw_fill_msg(wr_msg, NULL, addr, 1, SDW_BROADCAST_DEV_NUM,
++					SDW_MSG_FLAG_WRITE, wbuf);
++	wr_msg->ssp_sync = true;
++
++	ret = sdw_transfer(bus, wr_msg);
++	if (ret < 0) {
++		dev_err(bus->dev, "Slave frame_ctrl reg write failed");
++		goto error;
++	}
++
++	kfree(wr_msg);
++	kfree(wbuf);
++	bus->defer_msg.msg = NULL;
++	bus->params.curr_bank = !bus->params.curr_bank;
++	bus->params.next_bank = !bus->params.next_bank;
++
++	return 0;
++
++error:
++	kfree(wbuf);
++error_1:
++	kfree(wr_msg);
++	return ret;
++}
++
++static int do_bank_switch(struct sdw_stream_runtime *stream)
++{
++	struct sdw_master_runtime *m_rt = stream->m_rt;
++	const struct sdw_master_ops *ops;
++	struct sdw_bus *bus = m_rt->bus;
++	int ret = 0;
++
++	ops = bus->ops;
++
++	/* Pre-bank switch */
++	if (ops->pre_bank_switch) {
++		ret = ops->pre_bank_switch(bus);
++		if (ret < 0) {
++			dev_err(bus->dev, "Pre bank switch op failed: %d", ret);
++			return ret;
++		}
++	}
++
++	/* Bank switch */
++	ret = sdw_bank_switch(bus);
++	if (ret < 0) {
++		dev_err(bus->dev, "Bank switch failed: %d", ret);
++		return ret;
++	}
++
++	/* Post-bank switch */
++	if (ops->post_bank_switch) {
++		ret = ops->post_bank_switch(bus);
++		if (ret < 0) {
++			dev_err(bus->dev,
++					"Post bank switch op failed: %d", ret);
++		}
 +	}
 +
 +	return ret;
@@ -373,104 +294,124 @@ index ea6ee96b02d2..7acb4c59f208 100644
   *
   * @stream: SoundWire stream runtime
 diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 03b55804d830..fab7de3c00f1 100644
+index fab7de3c00f1..61d671271592 100644
 --- a/include/linux/soundwire/sdw.h
 +++ b/include/linux/soundwire/sdw.h
-@@ -377,6 +377,37 @@ enum sdw_reg_bank {
+@@ -23,7 +23,17 @@ struct sdw_slave;
+ #define SDW_MASTER_DEV_NUM		14
+ 
+ #define SDW_NUM_DEV_ID_REGISTERS	6
++/* frame shape defines */
+ 
++/*
++ * Note: The maximum row define in SoundWire spec 1.1 is 23. In order to
++ * fill hole with 0, one more dummy entry is added
++ */
++#define SDW_FRAME_ROWS		24
++#define SDW_FRAME_COLS		8
++#define SDW_FRAME_ROW_COLS		(SDW_FRAME_ROWS * SDW_FRAME_COLS)
++
++#define SDW_FRAME_CTRL_BITS		48
+ #define SDW_MAX_DEVICES			11
+ 
+ #define SDW_VALID_PORT_RANGE(n)		(n <= 14 && n >= 1)
+@@ -377,6 +387,21 @@ enum sdw_reg_bank {
  };
  
  /**
-+ * struct sdw_prepare_ch: Prepare/De-prepare Data Port channel
++ * struct sdw_bus_conf: Bus configuration
 + *
-+ * @num: Port number
-+ * @ch_mask: Active channel mask
-+ * @prepare: Prepare (true) /de-prepare (false) channel
-+ * @bank: Register bank, which bank Slave/Master driver should program for
-+ * implementation defined registers. This is always updated to next_bank
-+ * value read from bus params.
-+ *
++ * @clk_freq: Clock frequency, in Hz
++ * @num_rows: Number of rows in frame
++ * @num_cols: Number of columns in frame
++ * @bank: Next register bank
 + */
-+struct sdw_prepare_ch {
-+	unsigned int num;
-+	unsigned int ch_mask;
-+	bool prepare;
++struct sdw_bus_conf {
++	unsigned int clk_freq;
++	unsigned int num_rows;
++	unsigned int num_cols;
 +	unsigned int bank;
 +};
 +
 +/**
-+ * enum sdw_port_prep_ops: Prepare operations for Data Port
-+ *
-+ * @SDW_OPS_PORT_PRE_PREP: Pre prepare operation for the Port
-+ * @SDW_OPS_PORT_PREP: Prepare operation for the Port
-+ * @SDW_OPS_PORT_POST_PREP: Post prepare operation for the Port
-+ */
-+enum sdw_port_prep_ops {
-+	SDW_OPS_PORT_PRE_PREP = 0,
-+	SDW_OPS_PORT_PREP = 1,
-+	SDW_OPS_PORT_POST_PREP = 2,
-+};
-+
-+/**
-  * struct sdw_bus_params: Structure holding bus configuration
+  * struct sdw_prepare_ch: Prepare/De-prepare Data Port channel
   *
+  * @num: Port number
+@@ -413,10 +438,20 @@ enum sdw_port_prep_ops {
   * @curr_bank: Current bank in use (BANK0/BANK1)
-@@ -395,6 +426,7 @@ struct sdw_bus_params {
+  * @next_bank: Next bank to use (BANK0/BANK1). next_bank will always be
+  * set to !curr_bank
++ * @max_dr_freq: Maximum double rate clock frequency supported, in Hz
++ * @curr_dr_freq: Current double rate clock frequency, in Hz
++ * @bandwidth: Current bandwidth
++ * @col: Active columns
++ * @row: Active rows
+  */
+ struct sdw_bus_params {
+ 	enum sdw_reg_bank curr_bank;
+ 	enum sdw_reg_bank next_bank;
++	unsigned int max_dr_freq;
++	unsigned int curr_dr_freq;
++	unsigned int bandwidth;
++	unsigned int col;
++	unsigned int row;
+ };
+ 
+ /**
+@@ -426,6 +461,7 @@ struct sdw_bus_params {
   * @interrupt_callback: Device interrupt notification (invoked in thread
   * context)
   * @update_status: Update Slave status
-+ * @port_prep: Prepare the port with parameters
++ * @bus_config: Update the bus config for Slave
+  * @port_prep: Prepare the port with parameters
   */
  struct sdw_slave_ops {
- 	int (*read_prop)(struct sdw_slave *sdw);
-@@ -402,6 +434,9 @@ struct sdw_slave_ops {
+@@ -434,6 +470,8 @@ struct sdw_slave_ops {
  			struct sdw_slave_intr_status *status);
  	int (*update_status)(struct sdw_slave *slave,
  			enum sdw_slave_status status);
-+	int (*port_prep)(struct sdw_slave *slave,
-+			struct sdw_prepare_ch *prepare_ch,
-+			enum sdw_port_prep_ops pre_ops);
- };
- 
- /**
-@@ -506,6 +541,19 @@ struct sdw_transport_params {
- };
- 
- /**
-+ * struct sdw_enable_ch: Enable/disable Data Port channel
-+ *
-+ * @num: Port number
-+ * @ch_mask: Active channel mask
-+ * @enable: Enable (true) /disable (false) channel
-+ */
-+struct sdw_enable_ch {
-+	unsigned int port_num;
-+	unsigned int ch_mask;
-+	bool enable;
-+};
-+
-+/**
-  * struct sdw_master_port_ops: Callback functions from bus to Master
-  * driver to set Master Data ports.
-  *
-@@ -513,6 +561,8 @@ struct sdw_transport_params {
-  * Mandatory callback
-  * @dpn_set_port_transport_params: Set transport parameters for the Master
-  * Port. Mandatory callback
-+ * @dpn_port_prep: Port prepare operations for the Master Data Port.
-+ * @dpn_port_enable_ch: Enable the channels of Master Port.
++	int (*bus_config)(struct sdw_slave *slave,
++			struct sdw_bus_params *params);
+ 	int (*port_prep)(struct sdw_slave *slave,
+ 			struct sdw_prepare_ch *prepare_ch,
+ 			enum sdw_port_prep_ops pre_ops);
+@@ -597,6 +635,9 @@ struct sdw_defer {
+  * @xfer_msg: Transfer message callback
+  * @xfer_msg_defer: Defer version of transfer message callback
+  * @reset_page_addr: Reset the SCP page address registers
++ * @set_bus_conf: Set the bus configuration
++ * @pre_bank_switch: Callback for pre bank switch
++ * @post_bank_switch: Callback for post bank switch
   */
- struct sdw_master_port_ops {
- 	int (*dpn_set_port_params)(struct sdw_bus *bus,
-@@ -521,6 +571,10 @@ struct sdw_master_port_ops {
- 	int (*dpn_set_port_transport_params)(struct sdw_bus *bus,
- 			struct sdw_transport_params *transport_params,
- 			enum sdw_reg_bank bank);
-+	int (*dpn_port_prep)(struct sdw_bus *bus,
-+			struct sdw_prepare_ch *prepare_ch);
-+	int (*dpn_port_enable_ch)(struct sdw_bus *bus,
-+			struct sdw_enable_ch *enable_ch, unsigned int bank);
+ struct sdw_master_ops {
+ 	int (*read_prop)(struct sdw_bus *bus);
+@@ -608,6 +649,11 @@ struct sdw_master_ops {
+ 			struct sdw_defer *defer);
+ 	enum sdw_command_response (*reset_page_addr)
+ 			(struct sdw_bus *bus, unsigned int dev_num);
++	int (*set_bus_conf)(struct sdw_bus *bus,
++			struct sdw_bus_params *params);
++	int (*pre_bank_switch)(struct sdw_bus *bus);
++	int (*post_bank_switch)(struct sdw_bus *bus);
++
  };
  
- struct sdw_msg;
+ /**
+@@ -628,6 +674,7 @@ struct sdw_master_ops {
+  * transport and port parameters
+  * @defer_msg: Defer message
+  * @clk_stop_timeout: Clock stop timeout computed
++ * @bank_switch_timeout: Bank switch timeout computed
+  */
+ struct sdw_bus {
+ 	struct device *dev;
+@@ -643,6 +690,7 @@ struct sdw_bus {
+ 	struct list_head m_rt_list;
+ 	struct sdw_defer defer_msg;
+ 	unsigned int clk_stop_timeout;
++	u32 bank_switch_timeout;
+ };
+ 
+ int sdw_add_bus_master(struct sdw_bus *bus);
 -- 
 2.7.4
