@@ -1,16 +1,16 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH v6 03/13] soundwire: Add support for port
-	management
-Date: Thu, 26 Apr 2018 18:49:59 +0530
-Message-ID: <1524748809-21860-4-git-send-email-vkoul@kernel.org>
+Subject: [PATCH v6 04/13] soundwire: Add Master and Slave port
+	programming
+Date: Thu, 26 Apr 2018 18:50:00 +0530
+Message-ID: <1524748809-21860-5-git-send-email-vkoul@kernel.org>
 References: <1524748809-21860-1-git-send-email-vkoul@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 60DF4267860
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 15:15:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DD9B826783B
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 15:15:46 +0200 (CEST)
 In-Reply-To: <1524748809-21860-1-git-send-email-vkoul@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,418 +27,391 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Sanyog Kale <sanyog.r.kale@intel.com>
 
-Add Soundwire port data structures and APIS for initialization
-and release of ports.
+Master and Slave port registers need to be programmed for each port
+used in a stream. Add the helpers for port register programming.
 
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 Signed-off-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/soundwire/bus.h       |  25 ++++++++
- drivers/soundwire/stream.c    | 144 +++++++++++++++++++++++++++++++++++++++++-
- include/linux/soundwire/sdw.h |  67 ++++++++++++++++++++
- 3 files changed, 234 insertions(+), 2 deletions(-)
+ drivers/soundwire/bus.h       |   4 +
+ drivers/soundwire/stream.c    | 262 ++++++++++++++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw.h |  47 +++++++-
+ 3 files changed, 312 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 2e5043de9a4b..39e6811e435c 100644
+index 39e6811e435c..133268ab8086 100644
 --- a/drivers/soundwire/bus.h
 +++ b/drivers/soundwire/bus.h
-@@ -46,6 +46,27 @@ struct sdw_msg {
- };
- 
- /**
-+ * sdw_port_runtime: Runtime port parameters for Master or Slave
-+ *
-+ * @num: Port number. For audio streams, valid port number ranges from
-+ * [1,14]
-+ * @ch_mask: Channel mask
-+ * @transport_params: Transport parameters
-+ * @port_params: Port parameters
-+ * @port_node: List node for Master or Slave port_list
-+ *
-+ * SoundWire spec has no mention of ports for Master interface but the
-+ * concept is logically extended.
-+ */
-+struct sdw_port_runtime {
-+	int num;
-+	int ch_mask;
-+	struct sdw_transport_params transport_params;
-+	struct sdw_port_params port_params;
-+	struct list_head port_node;
-+};
-+
-+/**
-  * sdw_slave_runtime: Runtime Stream parameters for Slave
-  *
-  * @slave: Slave handle
-@@ -53,12 +74,14 @@ struct sdw_msg {
-  * @ch_count: Number of channels handled by the Slave for
-  * this stream
-  * @m_rt_node: sdw_master_runtime list node
-+ * @port_list: List of Slave Ports configured for this stream
-  */
- struct sdw_slave_runtime {
- 	struct sdw_slave *slave;
- 	enum sdw_data_direction direction;
- 	unsigned int ch_count;
- 	struct list_head m_rt_node;
-+	struct list_head port_list;
- };
- 
- /**
-@@ -70,6 +93,7 @@ struct sdw_slave_runtime {
-  * @ch_count: Number of channels handled by the Master for
-  * this stream, can be zero.
-  * @slave_rt_list: Slave runtime list
-+ * @port_list: List of Master Ports configured for this stream, can be zero.
-  * @bus_node: sdw_bus m_rt_list node
-  */
- struct sdw_master_runtime {
-@@ -78,6 +102,7 @@ struct sdw_master_runtime {
- 	enum sdw_data_direction direction;
- 	unsigned int ch_count;
- 	struct list_head slave_rt_list;
-+	struct list_head port_list;
+@@ -106,6 +106,10 @@ struct sdw_master_runtime {
  	struct list_head bus_node;
  };
  
++struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
++				enum sdw_data_direction direction,
++				unsigned int port_num);
++
+ int sdw_transfer(struct sdw_bus *bus, struct sdw_msg *msg);
+ int sdw_transfer_defer(struct sdw_bus *bus, struct sdw_msg *msg,
+ 				struct sdw_defer *defer);
 diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 89b2550ea453..289342340262 100644
+index 289342340262..ea6ee96b02d2 100644
 --- a/drivers/soundwire/stream.c
 +++ b/drivers/soundwire/stream.c
-@@ -81,6 +81,7 @@ static struct sdw_master_runtime
- 		return NULL;
+@@ -11,9 +11,238 @@
+ #include <linux/module.h>
+ #include <linux/mod_devicetable.h>
+ #include <linux/slab.h>
++#include <linux/soundwire/sdw_registers.h>
+ #include <linux/soundwire/sdw.h>
+ #include "bus.h"
  
- 	/* Initialization of Master runtime handle */
-+	INIT_LIST_HEAD(&m_rt->port_list);
- 	INIT_LIST_HEAD(&m_rt->slave_rt_list);
- 	stream->m_rt = m_rt;
- 
-@@ -115,6 +116,7 @@ static struct sdw_slave_runtime
- 	if (!s_rt)
- 		return NULL;
- 
-+	INIT_LIST_HEAD(&s_rt->port_list);
- 	s_rt->ch_count = stream_config->ch_count;
- 	s_rt->direction = stream_config->direction;
- 	s_rt->slave = slave;
-@@ -122,6 +124,38 @@ static struct sdw_slave_runtime
- 	return s_rt;
- }
- 
-+static void sdw_master_port_release(struct sdw_bus *bus,
-+			struct sdw_master_runtime *m_rt)
++static int _sdw_program_slave_port_params(struct sdw_bus *bus,
++				struct sdw_slave *slave,
++				struct sdw_transport_params *t_params,
++				enum sdw_dpn_type type)
 +{
-+	struct sdw_port_runtime *p_rt, *_p_rt;
++	u32 addr1, addr2, addr3, addr4;
++	int ret;
++	u16 wbuf;
 +
-+	list_for_each_entry_safe(p_rt, _p_rt,
-+			&m_rt->port_list, port_node) {
-+		list_del(&p_rt->port_node);
-+		kfree(p_rt);
-+	}
-+}
-+
-+static void sdw_slave_port_release(struct sdw_bus *bus,
-+			struct sdw_slave *slave,
-+			struct sdw_stream_runtime *stream)
-+{
-+	struct sdw_port_runtime *p_rt, *_p_rt;
-+	struct sdw_master_runtime *m_rt = stream->m_rt;
-+	struct sdw_slave_runtime *s_rt;
-+
-+	list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
-+		if (s_rt->slave != slave)
-+			continue;
-+
-+		list_for_each_entry_safe(p_rt, _p_rt,
-+				&s_rt->port_list, port_node) {
-+			list_del(&p_rt->port_node);
-+			kfree(p_rt);
-+		}
-+	}
-+}
-+
- /**
-  * sdw_release_slave_stream() - Free Slave(s) runtime handle
-  *
-@@ -176,7 +210,7 @@ static void sdw_release_master_stream(struct sdw_stream_runtime *stream)
-  * @bus: SDW Bus instance
-  * @stream: SoundWire stream
-  *
-- * This removes and frees master_rt from a stream
-+ * This removes and frees port_rt and master_rt from a stream
-  */
- int sdw_stream_remove_master(struct sdw_bus *bus,
- 		struct sdw_stream_runtime *stream)
-@@ -184,6 +218,7 @@ int sdw_stream_remove_master(struct sdw_bus *bus,
- 	mutex_lock(&bus->bus_lock);
- 
- 	sdw_release_master_stream(stream);
-+	sdw_master_port_release(bus, stream->m_rt);
- 	stream->state = SDW_STREAM_RELEASED;
- 	kfree(stream->m_rt);
- 	stream->m_rt = NULL;
-@@ -200,13 +235,14 @@ EXPORT_SYMBOL(sdw_stream_remove_master);
-  * @slave: SDW Slave instance
-  * @stream: SoundWire stream
-  *
-- * This removes and frees slave_rt from a stream
-+ * This removes and frees port_rt and slave_rt from a stream
-  */
- int sdw_stream_remove_slave(struct sdw_slave *slave,
- 		struct sdw_stream_runtime *stream)
- {
- 	mutex_lock(&slave->bus->bus_lock);
- 
-+	sdw_slave_port_release(slave->bus, slave, stream);
- 	sdw_release_slave_stream(slave, stream);
- 
- 	mutex_unlock(&slave->bus->bus_lock);
-@@ -260,15 +296,107 @@ static int sdw_config_stream(struct device *dev,
- 	return 0;
- }
- 
-+static int sdw_is_valid_port_range(struct device *dev,
-+				struct sdw_port_runtime *p_rt)
-+{
-+	if (!SDW_VALID_PORT_RANGE(p_rt->num)) {
-+		dev_err(dev,
-+			"SoundWire: Invalid port number :%d", p_rt->num);
-+		return -EINVAL;
++	if (bus->params.next_bank) {
++		addr1 = SDW_DPN_OFFSETCTRL2_B1(t_params->port_num);
++		addr2 = SDW_DPN_BLOCKCTRL3_B1(t_params->port_num);
++		addr3 = SDW_DPN_SAMPLECTRL2_B1(t_params->port_num);
++		addr4 = SDW_DPN_HCTRL_B1(t_params->port_num);
++	} else {
++		addr1 = SDW_DPN_OFFSETCTRL2_B0(t_params->port_num);
++		addr2 = SDW_DPN_BLOCKCTRL3_B0(t_params->port_num);
++		addr3 = SDW_DPN_SAMPLECTRL2_B0(t_params->port_num);
++		addr4 = SDW_DPN_HCTRL_B0(t_params->port_num);
 +	}
 +
-+	return 0;
-+}
-+
-+static struct sdw_port_runtime *sdw_port_alloc(struct device *dev,
-+				struct sdw_port_config *port_config,
-+				int port_index)
-+{
-+	struct sdw_port_runtime *p_rt;
-+
-+	p_rt = kzalloc(sizeof(*p_rt), GFP_KERNEL);
-+	if (!p_rt)
-+		return NULL;
-+
-+	p_rt->ch_mask = port_config[port_index].ch_mask;
-+	p_rt->num = port_config[port_index].num;
-+
-+	return p_rt;
-+}
-+
-+static int sdw_master_port_config(struct sdw_bus *bus,
-+			struct sdw_master_runtime *m_rt,
-+			struct sdw_port_config *port_config,
-+			unsigned int num_ports)
-+{
-+	struct sdw_port_runtime *p_rt;
-+	int i;
-+
-+	/* Iterate for number of ports to perform initialization */
-+	for (i = 0; i < num_ports; i++) {
-+		p_rt = sdw_port_alloc(bus->dev, port_config, i);
-+		if (!p_rt)
-+			return -ENOMEM;
-+
-+		/*
-+		 * TODO: Check port capabilities for requested
-+		 * configuration (audio mode support)
-+		 */
-+
-+		list_add_tail(&p_rt->port_node, &m_rt->port_list);
++	/* Program DPN_OffsetCtrl2 registers */
++	ret = sdw_write(slave, addr1, t_params->offset2);
++	if (ret < 0) {
++		dev_err(bus->dev, "DPN_OffsetCtrl2 register write failed");
++		return ret;
 +	}
 +
-+	return 0;
++	/* Program DPN_BlockCtrl3 register */
++	ret = sdw_write(slave, addr2, t_params->blk_pkg_mode);
++	if (ret < 0) {
++		dev_err(bus->dev, "DPN_BlockCtrl3 register write failed");
++		return ret;
++	}
++
++	/*
++	 * Data ports are FULL, SIMPLE and REDUCED. This function handles
++	 * FULL and REDUCED only and and beyond this point only FULL is
++	 * handled, so bail out if we are not FULL data port type
++	 */
++	if (type != SDW_DPN_FULL)
++		return ret;
++
++	/* Program DPN_SampleCtrl2 register */
++	wbuf = (t_params->sample_interval - 1);
++	wbuf &= SDW_DPN_SAMPLECTRL_HIGH;
++	wbuf >>= SDW_REG_SHIFT(SDW_DPN_SAMPLECTRL_HIGH);
++
++	ret = sdw_write(slave, addr3, wbuf);
++	if (ret < 0) {
++		dev_err(bus->dev, "DPN_SampleCtrl2 register write failed");
++		return ret;
++	}
++
++	/* Program DPN_HCtrl register */
++	wbuf = t_params->hstart;
++	wbuf <<= SDW_REG_SHIFT(SDW_DPN_HCTRL_HSTART);
++	wbuf |= t_params->hstop;
++
++	ret = sdw_write(slave, addr4, wbuf);
++	if (ret < 0)
++		dev_err(bus->dev, "DPN_HCtrl register write failed");
++
++	return ret;
 +}
 +
-+static int sdw_slave_port_config(struct sdw_slave *slave,
++static int sdw_program_slave_port_params(struct sdw_bus *bus,
 +			struct sdw_slave_runtime *s_rt,
-+			struct sdw_port_config *port_config,
-+			unsigned int num_config)
++			struct sdw_port_runtime *p_rt)
 +{
-+	struct sdw_port_runtime *p_rt;
-+	int i, ret;
++	struct sdw_transport_params *t_params = &p_rt->transport_params;
++	struct sdw_port_params *p_params = &p_rt->port_params;
++	struct sdw_slave_prop *slave_prop = &s_rt->slave->prop;
++	u32 addr1, addr2, addr3, addr4, addr5, addr6;
++	struct sdw_dpn_prop *dpn_prop;
++	int ret;
++	u8 wbuf;
 +
-+	/* Iterate for number of ports to perform initialization */
-+	for (i = 0; i < num_config; i++) {
-+		p_rt = sdw_port_alloc(&slave->dev, port_config, i);
-+		if (!p_rt)
-+			return -ENOMEM;
++	dpn_prop = sdw_get_slave_dpn_prop(s_rt->slave,
++					s_rt->direction,
++					t_params->port_num);
++	if (!dpn_prop)
++		return -EINVAL;
 +
-+		/*
-+		 * TODO: Check valid port range as defined by DisCo/
-+		 * slave
-+		 */
-+		ret = sdw_is_valid_port_range(&slave->dev, p_rt);
++	addr1 = SDW_DPN_PORTCTRL(t_params->port_num);
++	addr2 = SDW_DPN_BLOCKCTRL1(t_params->port_num);
++
++	if (bus->params.next_bank) {
++		addr3 = SDW_DPN_SAMPLECTRL1_B1(t_params->port_num);
++		addr4 = SDW_DPN_OFFSETCTRL1_B1(t_params->port_num);
++		addr5 = SDW_DPN_BLOCKCTRL2_B1(t_params->port_num);
++		addr6 = SDW_DPN_LANECTRL_B1(t_params->port_num);
++
++	} else {
++		addr3 = SDW_DPN_SAMPLECTRL1_B0(t_params->port_num);
++		addr4 = SDW_DPN_OFFSETCTRL1_B0(t_params->port_num);
++		addr5 = SDW_DPN_BLOCKCTRL2_B0(t_params->port_num);
++		addr6 = SDW_DPN_LANECTRL_B0(t_params->port_num);
++	}
++
++	/* Program DPN_PortCtrl register */
++	wbuf = p_params->data_mode << SDW_REG_SHIFT(SDW_DPN_PORTCTRL_DATAMODE);
++	wbuf |= p_params->flow_mode;
++
++	ret = sdw_update(s_rt->slave, addr1, 0xF, wbuf);
++	if (ret < 0) {
++		dev_err(&s_rt->slave->dev,
++			"DPN_PortCtrl register write failed for port %d",
++			t_params->port_num);
++		return ret;
++	}
++
++	/* Program DPN_BlockCtrl1 register */
++	ret = sdw_write(s_rt->slave, addr2, (p_params->bps - 1));
++	if (ret < 0) {
++		dev_err(&s_rt->slave->dev,
++			"DPN_BlockCtrl1 register write failed for port %d",
++			t_params->port_num);
++		return ret;
++	}
++
++	/* Program DPN_SampleCtrl1 register */
++	wbuf = (t_params->sample_interval - 1) & SDW_DPN_SAMPLECTRL_LOW;
++	ret = sdw_write(s_rt->slave, addr3, wbuf);
++	if (ret < 0) {
++		dev_err(&s_rt->slave->dev,
++			"DPN_SampleCtrl1 register write failed for port %d",
++			t_params->port_num);
++		return ret;
++	}
++
++	/* Program DPN_OffsetCtrl1 registers */
++	ret = sdw_write(s_rt->slave, addr4, t_params->offset1);
++	if (ret < 0) {
++		dev_err(&s_rt->slave->dev,
++			"DPN_OffsetCtrl1 register write failed for port %d",
++			t_params->port_num);
++		return ret;
++	}
++
++	/* Program DPN_BlockCtrl2 register*/
++	if (t_params->blk_grp_ctrl_valid) {
++		ret = sdw_write(s_rt->slave, addr5, t_params->blk_grp_ctrl);
 +		if (ret < 0) {
-+			kfree(p_rt);
++			dev_err(&s_rt->slave->dev,
++				"DPN_BlockCtrl2 reg write failed for port %d",
++				t_params->port_num);
 +			return ret;
 +		}
++	}
 +
-+		/*
-+		 * TODO: Check port capabilities for requested
-+		 * configuration (audio mode support)
-+		 */
++	/* program DPN_LaneCtrl register */
++	if (slave_prop->lane_control_support) {
++		ret = sdw_write(s_rt->slave, addr6, t_params->lane_ctrl);
++		if (ret < 0) {
++			dev_err(&s_rt->slave->dev,
++				"DPN_LaneCtrl register write failed for port %d",
++				t_params->port_num);
++			return ret;
++		}
++	}
 +
-+		list_add_tail(&p_rt->port_node, &s_rt->port_list);
++	if (dpn_prop->type != SDW_DPN_SIMPLE) {
++		ret = _sdw_program_slave_port_params(bus, s_rt->slave,
++						t_params, dpn_prop->type);
++		if (ret < 0)
++			dev_err(&s_rt->slave->dev,
++				"Transport reg write failed for port: %d",
++				t_params->port_num);
++	}
++
++	return ret;
++}
++
++static int sdw_program_master_port_params(struct sdw_bus *bus,
++		struct sdw_port_runtime *p_rt)
++{
++	int ret;
++
++	/*
++	 * we need to set transport and port parameters for the port.
++	 * Transport parameters refers to the smaple interval, offsets and
++	 * hstart/stop etc of the data. Port parameters refers to word
++	 * length, flow mode etc of the port
++	 */
++	ret = bus->port_ops->dpn_set_port_transport_params(bus,
++					&p_rt->transport_params,
++					bus->params.next_bank);
++	if (ret < 0)
++		return ret;
++
++	return bus->port_ops->dpn_set_port_params(bus,
++				&p_rt->port_params,
++				bus->params.next_bank);
++}
++
++/**
++ * sdw_program_port_params() - Programs transport parameters of Master(s)
++ * and Slave(s)
++ *
++ * @m_rt: Master stream runtime
++ */
++static int sdw_program_port_params(struct sdw_master_runtime *m_rt)
++{
++	struct sdw_slave_runtime *s_rt = NULL;
++	struct sdw_bus *bus = m_rt->bus;
++	struct sdw_port_runtime *p_rt;
++	int ret = 0;
++
++	/* Program transport & port parameters for Slave(s) */
++	list_for_each_entry(s_rt, &m_rt->slave_rt_list, m_rt_node) {
++		list_for_each_entry(p_rt, &s_rt->port_list, port_node) {
++			ret = sdw_program_slave_port_params(bus, s_rt, p_rt);
++			if (ret < 0)
++				return ret;
++		}
++	}
++
++	/* Program transport & port parameters for Master(s) */
++	list_for_each_entry(p_rt, &m_rt->port_list, port_node) {
++		ret = sdw_program_master_port_params(bus, p_rt);
++		if (ret < 0)
++			return ret;
 +	}
 +
 +	return 0;
 +}
 +
  /**
-  * sdw_stream_add_master() - Allocate and add master runtime to a stream
+  * sdw_release_stream() - Free the assigned stream runtime
   *
-  * @bus: SDW Bus instance
-  * @stream_config: Stream configuration for audio stream
-+ * @port_config: Port configuration for audio stream
-+ * @num_ports: Number of ports
-  * @stream: SoundWire stream
-  */
- int sdw_stream_add_master(struct sdw_bus *bus,
- 		struct sdw_stream_config *stream_config,
-+		struct sdw_port_config *port_config,
-+		unsigned int num_ports,
- 		struct sdw_stream_runtime *stream)
- {
- 	struct sdw_master_runtime *m_rt = NULL;
-@@ -289,6 +417,10 @@ int sdw_stream_add_master(struct sdw_bus *bus,
- 	if (ret)
- 		goto stream_error;
- 
-+	ret = sdw_master_port_config(bus, m_rt, port_config, num_ports);
-+	if (ret)
-+		goto stream_error;
+@@ -498,3 +727,36 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+ 	return ret;
+ }
+ EXPORT_SYMBOL(sdw_stream_add_slave);
 +
- 	stream->state = SDW_STREAM_CONFIGURED;
- 
- stream_error:
-@@ -305,9 +437,13 @@ EXPORT_SYMBOL(sdw_stream_add_master);
-  * @slave: SDW Slave instance
-  * @stream_config: Stream configuration for audio stream
-  * @stream: SoundWire stream
-+ * @port_config: Port configuration for audio stream
-+ * @num_ports: Number of ports
-  */
- int sdw_stream_add_slave(struct sdw_slave *slave,
- 		struct sdw_stream_config *stream_config,
-+		struct sdw_port_config *port_config,
-+		unsigned int num_ports,
- 		struct sdw_stream_runtime *stream)
- {
- 	struct sdw_slave_runtime *s_rt;
-@@ -344,6 +480,10 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
- 
- 	list_add_tail(&s_rt->m_rt_node, &m_rt->slave_rt_list);
- 
-+	ret = sdw_slave_port_config(slave, s_rt, port_config, num_ports);
-+	if (ret)
-+		goto stream_error;
++/**
++ * sdw_get_slave_dpn_prop() - Get Slave port capabilities
++ *
++ * @slave: Slave handle
++ * @direction: Data direction.
++ * @port_num: Port number
++ */
++struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
++				enum sdw_data_direction direction,
++				unsigned int port_num)
++{
++	struct sdw_dpn_prop *dpn_prop;
++	u8 num_ports;
++	int i;
 +
- 	stream->state = SDW_STREAM_CONFIGURED;
- 	goto error;
- 
++	if (direction == SDW_DATA_DIR_TX) {
++		num_ports = hweight32(slave->prop.source_ports);
++		dpn_prop = slave->prop.src_dpn_prop;
++	} else {
++		num_ports = hweight32(slave->prop.sink_ports);
++		dpn_prop = slave->prop.sink_dpn_prop;
++	}
++
++	for (i = 0; i < num_ports; i++) {
++		dpn_prop = &dpn_prop[i];
++
++		if (dpn_prop->num == port_num)
++			return &dpn_prop[i];
++	}
++
++	return NULL;
++}
 diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 610a98da103e..5e06a0de508c 100644
+index 5e06a0de508c..03b55804d830 100644
 --- a/include/linux/soundwire/sdw.h
 +++ b/include/linux/soundwire/sdw.h
-@@ -26,6 +26,8 @@ struct sdw_slave;
+@@ -367,7 +367,30 @@ struct sdw_slave_intr_status {
+ };
  
- #define SDW_MAX_DEVICES			11
- 
-+#define SDW_VALID_PORT_RANGE(n)		(n <= 14 && n >= 1)
-+
  /**
-  * enum sdw_slave_status - Slave status
-  * @SDW_SLAVE_UNATTACHED: Slave is not attached with the bus.
-@@ -430,6 +432,56 @@ int sdw_handle_slave_status(struct sdw_bus *bus,
-  * SDW master structures and APIs
-  */
- 
-+/**
-+ * struct sdw_port_params: Data Port parameters
-+ *
-+ * @num: Port number
-+ * @bps: Word length of the Port
-+ * @flow_mode: Port Data flow mode
-+ * @data_mode: Test modes or normal mode
-+ *
-+ * This is used to program the Data Port based on Data Port stream
-+ * parameters.
+- * struct sdw_slave_ops - Slave driver callback ops
++ * sdw_reg_bank - SoundWire register banks
++ * @SDW_BANK0: Soundwire register bank 0
++ * @SDW_BANK1: Soundwire register bank 1
 + */
-+struct sdw_port_params {
-+	unsigned int num;
-+	unsigned int bps;
-+	unsigned int flow_mode;
-+	unsigned int data_mode;
++enum sdw_reg_bank {
++	SDW_BANK0,
++	SDW_BANK1,
 +};
 +
 +/**
-+ * struct sdw_transport_params: Data Port Transport Parameters
++ * struct sdw_bus_params: Structure holding bus configuration
 + *
-+ * @blk_grp_ctrl_valid: Port implements block group control
-+ * @num: Port number
-+ * @blk_grp_ctrl: Block group control value
-+ * @sample_interval: Sample interval
-+ * @offset1: Blockoffset of the payload data
-+ * @offset2: Blockoffset of the payload data
-+ * @hstart: Horizontal start of the payload data
-+ * @hstop: Horizontal stop of the payload data
-+ * @blk_pkg_mode: Block per channel or block per port
-+ * @lane_ctrl: Data lane Port uses for Data transfer. Currently only single
-+ * data lane is supported in bus
-+ *
-+ * This is used to program the Data Port based on Data Port transport
-+ * parameters. All these parameters are banked and can be modified
-+ * during a bank switch without any artifacts in audio stream.
++ * @curr_bank: Current bank in use (BANK0/BANK1)
++ * @next_bank: Next bank to use (BANK0/BANK1). next_bank will always be
++ * set to !curr_bank
 + */
-+struct sdw_transport_params {
-+	bool blk_grp_ctrl_valid;
-+	unsigned int port_num;
-+	unsigned int blk_grp_ctrl;
-+	unsigned int sample_interval;
-+	unsigned int offset1;
-+	unsigned int offset2;
-+	unsigned int hstart;
-+	unsigned int hstop;
-+	unsigned int blk_pkg_mode;
-+	unsigned int lane_ctrl;
++struct sdw_bus_params {
++	enum sdw_reg_bank curr_bank;
++	enum sdw_reg_bank next_bank;
++};
++
++/**
++ * struct sdw_slave_ops: Slave driver callback ops
++ *
+  * @read_prop: Read Slave properties
+  * @interrupt_callback: Device interrupt notification (invoked in thread
+  * context)
+@@ -482,6 +505,24 @@ struct sdw_transport_params {
+ 	unsigned int lane_ctrl;
+ };
+ 
++/**
++ * struct sdw_master_port_ops: Callback functions from bus to Master
++ * driver to set Master Data ports.
++ *
++ * @dpn_set_port_params: Set the Port parameters for the Master Port.
++ * Mandatory callback
++ * @dpn_set_port_transport_params: Set transport parameters for the Master
++ * Port. Mandatory callback
++ */
++struct sdw_master_port_ops {
++	int (*dpn_set_port_params)(struct sdw_bus *bus,
++			struct sdw_port_params *port_params,
++			unsigned int bank);
++	int (*dpn_set_port_transport_params)(struct sdw_bus *bus,
++			struct sdw_transport_params *transport_params,
++			enum sdw_reg_bank bank);
 +};
 +
  struct sdw_msg;
  
  /**
-@@ -498,6 +550,17 @@ int sdw_add_bus_master(struct sdw_bus *bus);
- void sdw_delete_bus_master(struct sdw_bus *bus);
- 
- /**
-+ * sdw_port_config: Master or Slave Port configuration
-+ *
-+ * @num: Port number
-+ * @ch_mask: channels mask for port
-+ */
-+struct sdw_port_config {
-+	unsigned int num;
-+	unsigned int ch_mask;
-+};
-+
-+/**
-  * sdw_stream_config: Master or Slave stream configuration
-  *
-  * @frame_rate: Audio frame rate of the stream, in Hz
-@@ -569,9 +632,13 @@ struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name);
- void sdw_release_stream(struct sdw_stream_runtime *stream);
- int sdw_stream_add_master(struct sdw_bus *bus,
- 		struct sdw_stream_config *stream_config,
-+		struct sdw_port_config *port_config,
-+		unsigned int num_ports,
- 		struct sdw_stream_runtime *stream);
- int sdw_stream_add_slave(struct sdw_slave *slave,
- 		struct sdw_stream_config *stream_config,
-+		struct sdw_port_config *port_config,
-+		unsigned int num_ports,
- 		struct sdw_stream_runtime *stream);
- int sdw_stream_remove_master(struct sdw_bus *bus,
- 		struct sdw_stream_runtime *stream);
+@@ -525,6 +566,8 @@ struct sdw_master_ops {
+  * @bus_lock: bus lock
+  * @msg_lock: message lock
+  * @ops: Master callback ops
++ * @port_ops: Master port callback ops
++ * @params: Current bus parameters
+  * @prop: Master properties
+  * @m_rt_list: List of Master instance of all stream(s) running on Bus. This
+  * is used to compute and program bus bandwidth, clock, frame shape,
+@@ -540,6 +583,8 @@ struct sdw_bus {
+ 	struct mutex bus_lock;
+ 	struct mutex msg_lock;
+ 	const struct sdw_master_ops *ops;
++	const struct sdw_master_port_ops *port_ops;
++	struct sdw_bus_params params;
+ 	struct sdw_master_prop prop;
+ 	struct list_head m_rt_list;
+ 	struct sdw_defer defer_msg;
 -- 
 2.7.4
