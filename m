@@ -1,14 +1,14 @@
 From: Vinod Koul <vkoul@kernel.org>
-Subject: [PATCH] ASoC: Update email address for Vinod
-Date: Thu, 26 Apr 2018 12:14:50 +0530
-Message-ID: <1524725090-20317-1-git-send-email-vkoul@kernel.org>
+Subject: [PATCH] tinycompress: Update email address for Vinod
+Date: Thu, 26 Apr 2018 12:17:44 +0530
+Message-ID: <1524725264-20553-1-git-send-email-vkoul@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 1AF812677B2
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 08:40:23 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6483D2677C8
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 08:43:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,32 +19,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
+Cc: Vinod Koul <vinod.koul@intel.com>, Vinod Koul <vkoul@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-VXBkYXRlIHRoZSBlbWFpbCBhZGRyZXNzIGZvciBjb21wcmVzc2VkIGF1ZGlvIG1haW50YWluZXIK
-QWxzbyB1cGRhdGUgLm1haWxtYXAuCgpTaWduZWQtb2ZmLWJ5OiBWaW5vZCBLb3VsIDx2a291bEBr
-ZXJuZWwub3JnPgotLS0KIC5tYWlsbWFwICAgIHwgMyArKysKIE1BSU5UQUlORVJTIHwgMiArLQog
-MiBmaWxlcyBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKyksIDEgZGVsZXRpb24oLSkKCmRpZmYgLS1n
-aXQgYS8ubWFpbG1hcCBiLy5tYWlsbWFwCmluZGV4IDdmYTlkNDFmYmRhZi4uMjlkZGViMWJmMDE1
-IDEwMDY0NAotLS0gYS8ubWFpbG1hcAorKysgYi8ubWFpbG1hcApAQCAtMTg2LDYgKzE4Niw5IEBA
-IFV3ZSBLbGVpbmUtS8O2bmlnIDx1a2xlaW5la0BpbmZvcm1hdGlrLnVuaS1mcmVpYnVyZy5kZT4K
-IFV3ZSBLbGVpbmUtS8O2bmlnIDx1a2xAcGVuZ3V0cm9uaXguZGU+CiBVd2UgS2xlaW5lLUvDtm5p
-ZyA8VXdlLktsZWluZS1Lb2VuaWdAZGlnaS5jb20+CiBWYWxkaXMgS2xldG5pZWtzIDxWYWxkaXMu
-S2xldG5pZWtzQHZ0LmVkdT4KK1Zpbm9kIEtvdWwgPHZrb3VsQGtlcm5lbC5vcmc+IDx2aW5vZC5r
-b3VsQGludGVsLmNvbT4KK1Zpbm9kIEtvdWwgPHZrb3VsQGtlcm5lbC5vcmc+IDx2aW5vZC5rb3Vs
-QGxpbnV4LmludGVsLmNvbT4KK1Zpbm9kIEtvdWwgPHZrb3VsQGtlcm5lbC5vcmc+IDx2a291bEBp
-bmZyYWRlYWQub3JnPgogVmlyZXNoIEt1bWFyIDx2aXJlc2hrQGtlcm5lbC5vcmc+IDx2aXJlc2gu
-a3VtYXJAc3QuY29tPgogVmlyZXNoIEt1bWFyIDx2aXJlc2hrQGtlcm5lbC5vcmc+IDx2aXJlc2gu
-bGludXhAZ21haWwuY29tPgogVmlyZXNoIEt1bWFyIDx2aXJlc2hrQGtlcm5lbC5vcmc+IDx2aXJl
-c2gua3VtYXIyQGFybS5jb20+CmRpZmYgLS1naXQgYS9NQUlOVEFJTkVSUyBiL01BSU5UQUlORVJT
-CmluZGV4IDBhMTQxMGQ1YTYyMS4uZWFlZTQ1OTE5Y2I5IDEwMDY0NAotLS0gYS9NQUlOVEFJTkVS
-UworKysgYi9NQUlOVEFJTkVSUwpAQCAtMTMwOTUsNyArMTMwOTUsNyBAQCBGOglpbmNsdWRlL3Vh
-cGkvc291bmQvCiBGOglzb3VuZC8KIAogU09VTkQgLSBDT01QUkVTU0VEIEFVRElPCi1NOglWaW5v
-ZCBLb3VsIDx2aW5vZC5rb3VsQGludGVsLmNvbT4KK006CVZpbm9kIEtvdWwgPHZrb3VsQGtlcm5l
-bC5vcmc+CiBMOglhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcgKG1vZGVyYXRlZCBmb3Igbm9u
-LXN1YnNjcmliZXJzKQogVDoJZ2l0IGdpdDovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgv
-a2VybmVsL2dpdC90aXdhaS9zb3VuZC5naXQKIFM6CVN1cHBvcnRlZAotLSAKMi43LjQKCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Signed-off-by: Vinod Koul <vinod.koul@intel.com>
+---
+ src/lib/compress.c  | 2 +-
+ src/utils/cplay.c   | 2 +-
+ src/utils/crecord.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/lib/compress.c b/src/lib/compress.c
+index 934690e39ed0..bba4fcfcc5f2 100644
+--- a/src/lib/compress.c
++++ b/src/lib/compress.c
+@@ -8,7 +8,7 @@
+  * Copyright (c) 2011-2012, Intel Corporation
+  * All rights reserved.
+  *
+- * Author: Vinod Koul <vinod.koul@linux.intel.com>
++ * Author: Vinod Koul <vkoul@kernel.org>
+  *
+  * Redistribution and use in source and binary forms, with or without
+  * modification, are permitted provided that the following conditions are met:
+diff --git a/src/utils/cplay.c b/src/utils/cplay.c
+index ea36b8771caf..87863a307b47 100644
+--- a/src/utils/cplay.c
++++ b/src/utils/cplay.c
+@@ -8,7 +8,7 @@
+  * Copyright (c) 2011-2012, Intel Corporation
+  * All rights reserved.
+  *
+- * Author: Vinod Koul <vinod.koul@linux.intel.com>
++ * Author: Vinod Koul <vkoul@kernel.org>
+  *
+  * Redistribution and use in source and binary forms, with or without
+  * modification, are permitted provided that the following conditions are met:
+diff --git a/src/utils/crecord.c b/src/utils/crecord.c
+index c55bae9f8d6e..12ad9615a580 100644
+--- a/src/utils/crecord.c
++++ b/src/utils/crecord.c
+@@ -9,7 +9,7 @@
+  * Copyright (c) 2013-2014, Wolfson Microelectronic Ltd.
+  * All rights reserved.
+  *
+- * Author: Vinod Koul <vinod.koul@linux.intel.com>
++ * Author: Vinod Koul <vkoul@kernel.org>
+  * Author: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
+  *
+  * Redistribution and use in source and binary forms, with or without
+-- 
+2.7.4
