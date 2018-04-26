@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add mt6351 codec driver" to the asoc
-	tree
-Date: Thu, 26 Apr 2018 12:46:15 +0100
-Message-ID: <E1fBfLr-0006z1-0e@debutante>
-References: <20180426024144.13974-1-kaichieh.chuang@mediatek.com>
+Subject: Applied "ASoC: Remove platform code now everything is
+	componentised" to the asoc tree
+Date: Thu, 26 Apr 2018 12:46:33 +0100
+Message-ID: <E1fBfM9-00071c-8G@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C77912676AB
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:46:27 +0200 (CEST)
-In-Reply-To: <20180426024144.13974-1-kaichieh.chuang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 99A6D26780E
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:46:36 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, broonie@kernel.org, linux-mediatek@lists.infradead.org, kaichieh.chuang@mediatek.com
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add mt6351 codec driver
+   ASoC: Remove platform code now everything is componentised
 
 has been applied to the asoc tree at
 
@@ -52,1714 +52,1467 @@ to this mail.
 Thanks,
 Mark
 
->From a74d51ba0e17ec9b6c4cc32cbf06eac32747fda2 Mon Sep 17 00:00:00 2001
-From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
-Date: Thu, 26 Apr 2018 10:41:44 +0800
-Subject: [PATCH] ASoC: add mt6351 codec driver
+>From ef050bece1b5564b2c7135ceadc0d5ffdcf152f7 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Tue, 24 Apr 2018 16:39:02 +0100
+Subject: [PATCH] ASoC: Remove platform code now everything is componentised
 
-This patch adds the MediaTek MT6351 codec driver.
-MT6351 communicate with SoC through MediaTek PMIC wrapper.
-MT6351 use MediaTek proprietary audio interface.
+As all drivers have been moved over to the new generic component
+code remove the now unused platform specific code.
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Acked-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/mt6351.txt      |   16 +
- sound/soc/codecs/Kconfig                      |    4 +
- sound/soc/codecs/Makefile                     |    2 +
- sound/soc/codecs/mt6351.c                     | 1506 +++++++++++++++++
- sound/soc/codecs/mt6351.h                     |  105 ++
- 5 files changed, 1633 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/mt6351.txt
- create mode 100644 sound/soc/codecs/mt6351.c
- create mode 100644 sound/soc/codecs/mt6351.h
+ include/sound/soc.h      | 103 +-----------------
+ sound/soc/soc-compress.c | 227 ++-------------------------------------
+ sound/soc/soc-core.c     | 214 ------------------------------------
+ sound/soc/soc-devres.c   |  35 ------
+ sound/soc/soc-io.c       |  21 ----
+ sound/soc/soc-pcm.c      | 119 +-------------------
+ 6 files changed, 12 insertions(+), 707 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mt6351.txt b/Documentation/devicetree/bindings/sound/mt6351.txt
-new file mode 100644
-index 000000000000..7fb2cb99245e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/mt6351.txt
-@@ -0,0 +1,16 @@
-+Mediatek MT6351 Audio Codec
-+
-+The communication between MT6351 and SoC is through Mediatek PMIC wrapper.
-+For more detail, please visit Mediatek PMIC wrapper documentation.
-+
-+Must be a child node of PMIC wrapper.
-+
-+Required properties:
-+
-+- compatible : "mediatek,mt6351-sound".
-+
-+Example:
-+
-+mt6351_snd {
-+	compatible = "mediatek,mt6351-sound";
-+};
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 251e67f180fe..83c51c5a4d08 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -106,6 +106,7 @@ config SND_SOC_ALL_CODECS
- 	select SND_SOC_MAX9877 if I2C
- 	select SND_SOC_MC13783 if MFD_MC13XXX
- 	select SND_SOC_ML26124 if I2C
-+	select SND_SOC_MT6351 if MTK_PMIC_WRAP
- 	select SND_SOC_NAU8540 if I2C
- 	select SND_SOC_NAU8810 if I2C
- 	select SND_SOC_NAU8824 if I2C
-@@ -1259,6 +1260,9 @@ config SND_SOC_MC13783
- config SND_SOC_ML26124
- 	tristate
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index ad266d7e9553..9ea99e5d3c8e 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -401,9 +401,7 @@ struct snd_soc_ops;
+ struct snd_soc_pcm_runtime;
+ struct snd_soc_dai;
+ struct snd_soc_dai_driver;
+-struct snd_soc_platform;
+ struct snd_soc_dai_link;
+-struct snd_soc_platform_driver;
+ struct snd_soc_codec;
+ struct snd_soc_codec_driver;
+ struct snd_soc_component;
+@@ -455,15 +453,6 @@ static inline int snd_soc_resume(struct device *dev)
+ }
+ #endif
+ int snd_soc_poweroff(struct device *dev);
+-int snd_soc_register_platform(struct device *dev,
+-		const struct snd_soc_platform_driver *platform_drv);
+-int devm_snd_soc_register_platform(struct device *dev,
+-		const struct snd_soc_platform_driver *platform_drv);
+-void snd_soc_unregister_platform(struct device *dev);
+-int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
+-		const struct snd_soc_platform_driver *platform_drv);
+-void snd_soc_remove_platform(struct snd_soc_platform *platform);
+-struct snd_soc_platform *snd_soc_lookup_platform(struct device *dev);
+ int snd_soc_register_codec(struct device *dev,
+ 		const struct snd_soc_codec_driver *codec_drv,
+ 		struct snd_soc_dai_driver *dai_drv, int num_dai);
+@@ -485,10 +474,6 @@ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+ int snd_soc_cache_init(struct snd_soc_codec *codec);
+ int snd_soc_cache_exit(struct snd_soc_codec *codec);
  
-+config SND_SOC_MT6351
-+	tristate "MediaTek MT6351 Codec"
-+
- config SND_SOC_NAU8540
-        tristate "Nuvoton Technology Corporation NAU85L40 CODEC"
-        depends on I2C
-diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
-index d3b73021a401..1ac49b9abec6 100644
---- a/sound/soc/codecs/Makefile
-+++ b/sound/soc/codecs/Makefile
-@@ -102,6 +102,7 @@ snd-soc-mc13783-objs := mc13783.o
- snd-soc-ml26124-objs := ml26124.o
- snd-soc-msm8916-analog-objs := msm8916-wcd-analog.o
- snd-soc-msm8916-digital-objs := msm8916-wcd-digital.o
-+snd-soc-mt6351-objs := mt6351.o
- snd-soc-nau8540-objs := nau8540.o
- snd-soc-nau8810-objs := nau8810.o
- snd-soc-nau8824-objs := nau8824.o
-@@ -357,6 +358,7 @@ obj-$(CONFIG_SND_SOC_MC13783)	+= snd-soc-mc13783.o
- obj-$(CONFIG_SND_SOC_ML26124)	+= snd-soc-ml26124.o
- obj-$(CONFIG_SND_SOC_MSM8916_WCD_ANALOG) +=snd-soc-msm8916-analog.o
- obj-$(CONFIG_SND_SOC_MSM8916_WCD_DIGITAL) +=snd-soc-msm8916-digital.o
-+obj-$(CONFIG_SND_SOC_MT6351)	+= snd-soc-mt6351.o
- obj-$(CONFIG_SND_SOC_NAU8540)   += snd-soc-nau8540.o
- obj-$(CONFIG_SND_SOC_NAU8810)   += snd-soc-nau8810.o
- obj-$(CONFIG_SND_SOC_NAU8824)   += snd-soc-nau8824.o
-diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
-new file mode 100644
-index 000000000000..06fd4706ae20
---- /dev/null
-+++ b/sound/soc/codecs/mt6351.c
-@@ -0,0 +1,1506 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * mt6351.c  --  mt6351 ALSA SoC audio codec driver
-+ *
-+ * Copyright (c) 2018 MediaTek Inc.
-+ * Author: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-+ */
-+
-+#include <linux/dma-mapping.h>
-+#include <linux/platform_device.h>
-+#include <linux/slab.h>
-+#include <linux/module.h>
-+#include <linux/of_device.h>
-+#include <linux/delay.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/tlv.h>
-+
-+#include "mt6351.h"
-+
-+/* MT6351_TOP_CLKSQ */
-+#define RG_CLKSQ_EN_AUD_BIT (0)
-+
-+/* MT6351_TOP_CKPDN_CON0 */
-+#define RG_AUDNCP_CK_PDN_BIT (12)
-+#define RG_AUDIF_CK_PDN_BIT (13)
-+#define RG_AUD_CK_PDN_BIT (14)
-+#define RG_ZCD13M_CK_PDN_BIT (15)
-+
-+/* MT6351_AUDDEC_ANA_CON0 */
-+#define RG_AUDDACLPWRUP_VAUDP32_BIT (0)
-+#define RG_AUDDACRPWRUP_VAUDP32_BIT (1)
-+#define RG_AUD_DAC_PWR_UP_VA32_BIT (2)
-+#define RG_AUD_DAC_PWL_UP_VA32_BIT (3)
-+
-+#define RG_AUDHSPWRUP_VAUDP32_BIT (4)
-+
-+#define RG_AUDHPLPWRUP_VAUDP32_BIT (5)
-+#define RG_AUDHPRPWRUP_VAUDP32_BIT (6)
-+
-+#define RG_AUDHSMUXINPUTSEL_VAUDP32_SFT (7)
-+#define RG_AUDHSMUXINPUTSEL_VAUDP32_MASK (0x3)
-+
-+#define RG_AUDHPLMUXINPUTSEL_VAUDP32_SFT (9)
-+#define RG_AUDHPLMUXINPUTSEL_VAUDP32_MASK (0x3)
-+
-+#define RG_AUDHPRMUXINPUTSEL_VAUDP32_SFT (11)
-+#define RG_AUDHPRMUXINPUTSEL_VAUDP32_MASK (0x3)
-+
-+#define RG_AUDHSSCDISABLE_VAUDP32 (13)
-+#define RG_AUDHPLSCDISABLE_VAUDP32_BIT (14)
-+#define RG_AUDHPRSCDISABLE_VAUDP32_BIT (15)
-+
-+/* MT6351_AUDDEC_ANA_CON1 */
-+#define RG_HSOUTPUTSTBENH_VAUDP32_BIT (8)
-+
-+/* MT6351_AUDDEC_ANA_CON3 */
-+#define RG_AUDLOLPWRUP_VAUDP32_BIT (2)
-+
-+#define RG_AUDLOLMUXINPUTSEL_VAUDP32_SFT (3)
-+#define RG_AUDLOLMUXINPUTSEL_VAUDP32_MASK (0x3)
-+
-+#define RG_AUDLOLSCDISABLE_VAUDP32_BIT (5)
-+#define RG_LOOUTPUTSTBENH_VAUDP32_BIT (9)
-+
-+/* MT6351_AUDDEC_ANA_CON6 */
-+#define RG_ABIDEC_RSVD0_VAUDP32_HPL_BIT (8)
-+#define RG_ABIDEC_RSVD0_VAUDP32_HPR_BIT (9)
-+#define RG_ABIDEC_RSVD0_VAUDP32_HS_BIT (10)
-+#define RG_ABIDEC_RSVD0_VAUDP32_LOL_BIT (11)
-+
-+/* MT6351_AUDDEC_ANA_CON9 */
-+#define RG_AUDIBIASPWRDN_VAUDP32_BIT (8)
-+#define RG_RSTB_DECODER_VA32_BIT (9)
-+#define RG_AUDGLB_PWRDN_VA32_BIT (12)
-+
-+#define RG_LCLDO_DEC_EN_VA32_BIT (13)
-+#define RG_LCLDO_DEC_REMOTE_SENSE_VA18_BIT (15)
-+/* MT6351_AUDDEC_ANA_CON10 */
-+#define RG_NVREG_EN_VAUDP32_BIT (8)
-+
-+#define RG_AUDGLB_LP2_VOW_EN_VA32 10
-+
-+/* MT6351_AFE_UL_DL_CON0 */
-+#define RG_AFE_ON_BIT (0)
-+
-+/* MT6351_AFE_DL_SRC2_CON0_L */
-+#define RG_DL_2_SRC_ON_TMP_CTL_PRE_BIT (0)
-+
-+/* MT6351_AFE_UL_SRC_CON0_L */
-+#define UL_SRC_ON_TMP_CTL (0)
-+
-+/* MT6351_AFE_TOP_CON0 */
-+#define RG_DL_SINE_ON_SFT (0)
-+#define RG_DL_SINE_ON_MASK (0x1)
-+
-+#define RG_UL_SINE_ON_SFT (1)
-+#define RG_UL_SINE_ON_MASK (0x1)
-+
-+/* MT6351_AUDIO_TOP_CON0 */
-+#define AUD_TOP_PDN_RESERVED_BIT 0
-+#define AUD_TOP_PWR_CLK_DIS_CTL_BIT 2
-+#define AUD_TOP_PDN_ADC_CTL_BIT 5
-+#define AUD_TOP_PDN_DAC_CTL_BIT 6
-+#define AUD_TOP_PDN_AFE_CTL_BIT 7
-+
-+/* MT6351_AFE_SGEN_CFG0 */
-+#define SGEN_C_MUTE_SW_CTL_BIT 6
-+#define SGEN_C_DAC_EN_CTL_BIT 7
-+
-+/* MT6351_AFE_NCP_CFG0 */
-+#define RG_NCP_ON_BIT 0
-+
-+/* MT6351_LDO_VUSB33_CON0 */
-+#define RG_VUSB33_EN 1
-+#define RG_VUSB33_ON_CTRL 3
-+
-+/* MT6351_LDO_VA18_CON0 */
-+#define RG_VA18_EN 1
-+#define RG_VA18_ON_CTRL 3
-+
-+/* MT6351_AUDENC_ANA_CON0 */
-+#define RG_AUDPREAMPLON 0
-+#define RG_AUDPREAMPLDCCEN 1
-+#define RG_AUDPREAMPLDCPRECHARGE 2
-+
-+#define RG_AUDPREAMPLINPUTSEL_SFT (4)
-+#define RG_AUDPREAMPLINPUTSEL_MASK (0x3)
-+
-+#define RG_AUDADCLPWRUP 12
-+
-+#define RG_AUDADCLINPUTSEL_SFT (13)
-+#define RG_AUDADCLINPUTSEL_MASK (0x3)
-+
-+/* MT6351_AUDENC_ANA_CON1 */
-+#define RG_AUDPREAMPRON 0
-+#define RG_AUDPREAMPRDCCEN 1
-+#define RG_AUDPREAMPRDCPRECHARGE 2
-+
-+#define RG_AUDPREAMPRINPUTSEL_SFT (4)
-+#define RG_AUDPREAMPRINPUTSEL_MASK (0x3)
-+
-+#define RG_AUDADCRPWRUP 12
-+
-+#define RG_AUDADCRINPUTSEL_SFT (13)
-+#define RG_AUDADCRINPUTSEL_MASK (0x3)
-+
-+/* MT6351_AUDENC_ANA_CON3 */
-+#define RG_AUDADCCLKRSTB 6
-+
-+/* MT6351_AUDENC_ANA_CON9 */
-+#define RG_AUDPWDBMICBIAS0 0
-+#define RG_AUDMICBIAS0VREF 4
-+#define RG_AUDMICBIAS0LOWPEN 7
-+
-+#define RG_AUDPWDBMICBIAS2 8
-+#define RG_AUDMICBIAS2VREF 12
-+#define RG_AUDMICBIAS2LOWPEN 15
-+
-+/* MT6351_AUDENC_ANA_CON10 */
-+#define RG_AUDPWDBMICBIAS1 0
-+#define RG_AUDMICBIAS1DCSW1NEN 2
-+#define RG_AUDMICBIAS1VREF 4
-+#define RG_AUDMICBIAS1LOWPEN 7
-+
-+enum {
-+	AUDIO_ANALOG_VOLUME_HSOUTL,
-+	AUDIO_ANALOG_VOLUME_HSOUTR,
-+	AUDIO_ANALOG_VOLUME_HPOUTL,
-+	AUDIO_ANALOG_VOLUME_HPOUTR,
-+	AUDIO_ANALOG_VOLUME_LINEOUTL,
-+	AUDIO_ANALOG_VOLUME_LINEOUTR,
-+	AUDIO_ANALOG_VOLUME_MICAMP1,
-+	AUDIO_ANALOG_VOLUME_MICAMP2,
-+	AUDIO_ANALOG_VOLUME_TYPE_MAX
-+};
-+
-+/* Supply subseq */
-+enum {
-+	SUPPLY_SUBSEQ_SETTING,
-+	SUPPLY_SUBSEQ_ENABLE,
-+	SUPPLY_SUBSEQ_MICBIAS,
-+};
-+
-+#define REG_STRIDE 2
-+
-+struct mt6351_priv {
-+	struct device *dev;
-+	struct regmap *regmap;
-+
-+	unsigned int dl_rate;
-+	unsigned int ul_rate;
-+
-+	int ana_gain[AUDIO_ANALOG_VOLUME_TYPE_MAX];
-+
-+	int hp_en_counter;
-+};
-+
-+static void set_hp_gain_zero(struct snd_soc_component *cmpnt)
-+{
-+	regmap_update_bits(cmpnt->regmap, MT6351_ZCD_CON2,
-+			   0x1f << 7, 0x8 << 7);
-+	regmap_update_bits(cmpnt->regmap, MT6351_ZCD_CON2,
-+			   0x1f << 0, 0x8 << 0);
-+}
-+
-+static unsigned int get_cap_reg_val(struct snd_soc_component *cmpnt,
-+				    unsigned int rate)
-+{
-+	switch (rate) {
-+	case 8000:
-+		return 0;
-+	case 16000:
-+		return 1;
-+	case 32000:
-+		return 2;
-+	case 48000:
-+		return 3;
-+	case 96000:
-+		return 4;
-+	case 192000:
-+		return 5;
-+	default:
-+		dev_warn(cmpnt->dev, "%s(), error rate %d, return 3",
-+			 __func__, rate);
-+		return 3;
-+	}
-+}
-+
-+static unsigned int get_play_reg_val(struct snd_soc_component *cmpnt,
-+				     unsigned int rate)
-+{
-+	switch (rate) {
-+	case 8000:
-+		return 0;
-+	case 11025:
-+		return 1;
-+	case 12000:
-+		return 2;
-+	case 16000:
-+		return 3;
-+	case 22050:
-+		return 4;
-+	case 24000:
-+		return 5;
-+	case 32000:
-+		return 6;
-+	case 44100:
-+		return 7;
-+	case 48000:
-+	case 96000:
-+	case 192000:
-+		return 8;
-+	default:
-+		dev_warn(cmpnt->dev, "%s(), error rate %d, return 8",
-+			 __func__, rate);
-+		return 8;
-+	}
-+}
-+
-+static int mt6351_codec_dai_hw_params(struct snd_pcm_substream *substream,
-+				      struct snd_pcm_hw_params *params,
-+				      struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *cmpnt = dai->component;
-+	struct mt6351_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-+	unsigned int rate = params_rate(params);
-+
-+	dev_dbg(priv->dev, "%s(), substream->stream %d, rate %d\n",
-+		__func__, substream->stream, rate);
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		priv->dl_rate = rate;
-+	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		priv->ul_rate = rate;
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops mt6351_codec_dai_ops = {
-+	.hw_params = mt6351_codec_dai_hw_params,
-+};
-+
-+#define MT6351_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S16_BE |\
-+			SNDRV_PCM_FMTBIT_U16_LE | SNDRV_PCM_FMTBIT_U16_BE |\
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S24_BE |\
-+			SNDRV_PCM_FMTBIT_U24_LE | SNDRV_PCM_FMTBIT_U24_BE |\
-+			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_S32_BE |\
-+			SNDRV_PCM_FMTBIT_U32_LE | SNDRV_PCM_FMTBIT_U32_BE)
-+
-+static struct snd_soc_dai_driver mt6351_dai_driver[] = {
-+	{
-+		.name = "mt6351-snd-codec-aif1",
-+		.playback = {
-+			.stream_name = "AIF1 Playback",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000_48000 |
-+				 SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = MT6351_FORMATS,
-+		},
-+		.capture = {
-+			.stream_name = "AIF1 Capture",
-+			.channels_min = 1,
-+			.channels_max = 2,
-+			.rates = SNDRV_PCM_RATE_8000 |
-+				 SNDRV_PCM_RATE_16000 |
-+				 SNDRV_PCM_RATE_32000 |
-+				 SNDRV_PCM_RATE_48000 |
-+				 SNDRV_PCM_RATE_96000 |
-+				 SNDRV_PCM_RATE_192000,
-+			.formats = MT6351_FORMATS,
-+		},
-+		.ops = &mt6351_codec_dai_ops,
-+	},
-+};
-+
-+enum {
-+	HP_GAIN_SET_ZERO,
-+	HP_GAIN_RESTORE,
-+};
-+
-+static void hp_gain_ramp_set(struct snd_soc_component *cmpnt, int hp_gain_ctl)
-+{
-+	struct mt6351_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-+	int idx, old_idx, offset, reg_idx;
-+
-+	if (hp_gain_ctl == HP_GAIN_SET_ZERO) {
-+		idx = 8;	/* 0dB */
-+		old_idx = priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL];
-+	} else {
-+		idx = priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL];
-+		old_idx = 8;	/* 0dB */
-+	}
-+	dev_dbg(priv->dev, "%s(), idx %d, old_idx %d\n",
-+		__func__, idx, old_idx);
-+
-+	if (idx > old_idx)
-+		offset = idx - old_idx;
-+	else
-+		offset = old_idx - idx;
-+
-+	reg_idx = old_idx;
-+
-+	while (offset > 0) {
-+		reg_idx = idx > old_idx ? reg_idx + 1 : reg_idx - 1;
-+
-+		/* check valid range, and set value */
-+		if ((reg_idx >= 0 && reg_idx <= 0x12) || reg_idx == 0x1f) {
-+			regmap_update_bits(cmpnt->regmap,
-+					   MT6351_ZCD_CON2,
-+					   0xf9f,
-+					   (reg_idx << 7) | reg_idx);
-+			usleep_range(100, 120);
-+		}
-+		offset--;
-+	}
-+}
-+
-+static void hp_zcd_enable(struct snd_soc_component *cmpnt)
-+{
-+	/* Enable ZCD, for minimize pop noise */
-+	/* when adjust gain during HP buffer on */
-+	regmap_update_bits(cmpnt->regmap, MT6351_ZCD_CON0, 0x7 << 8, 0x1 << 8);
-+	regmap_update_bits(cmpnt->regmap, MT6351_ZCD_CON0, 0x1 << 7, 0x0 << 7);
-+
-+	/* timeout, 1=5ms, 0=30ms */
-+	regmap_update_bits(cmpnt->regmap, MT6351_ZCD_CON0, 0x1 << 6, 0x1 << 6);
-+
-+	regmap_update_bits(cmpnt->regmap, MT6351_ZCD_CON0, 0x3 << 4, 0x0 << 4);
-+	regmap_update_bits(cmpnt->regmap, MT6351_ZCD_CON0, 0x7 << 1, 0x5 << 1);
-+	regmap_update_bits(cmpnt->regmap, MT6351_ZCD_CON0, 0x1 << 0, 0x1 << 0);
-+}
-+
-+static void hp_zcd_disable(struct snd_soc_component *cmpnt)
-+{
-+	regmap_write(cmpnt->regmap, MT6351_ZCD_CON0, 0x0000);
-+}
-+
-+static const DECLARE_TLV_DB_SCALE(playback_tlv, -1000, 100, 0);
-+static const DECLARE_TLV_DB_SCALE(pga_tlv, 0, 600, 0);
-+
-+static const struct snd_kcontrol_new mt6351_snd_controls[] = {
-+	/* dl pga gain */
-+	SOC_DOUBLE_TLV("Headphone Volume",
-+		       MT6351_ZCD_CON2, 0, 7, 0x12, 1,
-+		       playback_tlv),
-+	SOC_DOUBLE_TLV("Lineout Volume",
-+		       MT6351_ZCD_CON1, 0, 7, 0x12, 1,
-+		       playback_tlv),
-+	SOC_SINGLE_TLV("Handset Volume",
-+		       MT6351_ZCD_CON3, 0, 0x12, 1,
-+		       playback_tlv),
-+       /* ul pga gain */
-+	SOC_DOUBLE_R_TLV("PGA Volume",
-+			 MT6351_AUDENC_ANA_CON0, MT6351_AUDENC_ANA_CON1,
-+			 8, 4, 0,
-+			 pga_tlv),
-+};
-+
-+/* MUX */
-+
-+/* LOL MUX */
-+static const char *const lo_in_mux_map[] = {
-+	"Open", "Mute", "Playback", "Test Mode",
-+};
-+
-+static int lo_in_mux_map_value[] = {
-+	0x0, 0x1, 0x2, 0x3,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(lo_in_mux_map_enum,
-+				  MT6351_AUDDEC_ANA_CON3,
-+				  RG_AUDLOLMUXINPUTSEL_VAUDP32_SFT,
-+				  RG_AUDLOLMUXINPUTSEL_VAUDP32_MASK,
-+				  lo_in_mux_map,
-+				  lo_in_mux_map_value);
-+
-+static const struct snd_kcontrol_new lo_in_mux_control =
-+	SOC_DAPM_ENUM("In Select", lo_in_mux_map_enum);
-+
-+/*HP MUX */
-+static const char *const hp_in_mux_map[] = {
-+	"Open", "LoudSPK Playback", "Audio Playback", "Test Mode",
-+};
-+
-+static int hp_in_mux_map_value[] = {
-+	0x0, 0x1, 0x2, 0x3,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(hpl_in_mux_map_enum,
-+				  MT6351_AUDDEC_ANA_CON0,
-+				  RG_AUDHPLMUXINPUTSEL_VAUDP32_SFT,
-+				  RG_AUDHPLMUXINPUTSEL_VAUDP32_MASK,
-+				  hp_in_mux_map,
-+				  hp_in_mux_map_value);
-+
-+static const struct snd_kcontrol_new hpl_in_mux_control =
-+	SOC_DAPM_ENUM("HPL Select", hpl_in_mux_map_enum);
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(hpr_in_mux_map_enum,
-+				  MT6351_AUDDEC_ANA_CON0,
-+				  RG_AUDHPRMUXINPUTSEL_VAUDP32_SFT,
-+				  RG_AUDHPRMUXINPUTSEL_VAUDP32_MASK,
-+				  hp_in_mux_map,
-+				  hp_in_mux_map_value);
-+
-+static const struct snd_kcontrol_new hpr_in_mux_control =
-+	SOC_DAPM_ENUM("HPR Select", hpr_in_mux_map_enum);
-+
-+/* RCV MUX */
-+static const char *const rcv_in_mux_map[] = {
-+	"Open", "Mute", "Voice Playback", "Test Mode",
-+};
-+
-+static int rcv_in_mux_map_value[] = {
-+	0x0, 0x1, 0x2, 0x3,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(rcv_in_mux_map_enum,
-+				  MT6351_AUDDEC_ANA_CON0,
-+				  RG_AUDHSMUXINPUTSEL_VAUDP32_SFT,
-+				  RG_AUDHSMUXINPUTSEL_VAUDP32_MASK,
-+				  rcv_in_mux_map,
-+				  rcv_in_mux_map_value);
-+
-+static const struct snd_kcontrol_new rcv_in_mux_control =
-+	SOC_DAPM_ENUM("RCV Select", rcv_in_mux_map_enum);
-+
-+/* DAC In MUX */
-+static const char *const dac_in_mux_map[] = {
-+	"Normal Path", "Sgen",
-+};
-+
-+static int dac_in_mux_map_value[] = {
-+	0x0, 0x1,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(dac_in_mux_map_enum,
-+				  MT6351_AFE_TOP_CON0,
-+				  RG_DL_SINE_ON_SFT,
-+				  RG_DL_SINE_ON_MASK,
-+				  dac_in_mux_map,
-+				  dac_in_mux_map_value);
-+
-+static const struct snd_kcontrol_new dac_in_mux_control =
-+	SOC_DAPM_ENUM("DAC Select", dac_in_mux_map_enum);
-+
-+/* AIF Out MUX */
-+static SOC_VALUE_ENUM_SINGLE_DECL(aif_out_mux_map_enum,
-+				  MT6351_AFE_TOP_CON0,
-+				  RG_UL_SINE_ON_SFT,
-+				  RG_UL_SINE_ON_MASK,
-+				  dac_in_mux_map,
-+				  dac_in_mux_map_value);
-+
-+static const struct snd_kcontrol_new aif_out_mux_control =
-+	SOC_DAPM_ENUM("AIF Out Select", aif_out_mux_map_enum);
-+
-+/* ADC L MUX */
-+static const char *const adc_left_mux_map[] = {
-+	"Idle", "AIN0", "Left Preamplifier", "Idle_1",
-+};
-+
-+static int adc_left_mux_map_value[] = {
-+	0x0, 0x1, 0x2, 0x3,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(adc_left_mux_map_enum,
-+				  MT6351_AUDENC_ANA_CON0,
-+				  RG_AUDADCLINPUTSEL_SFT,
-+				  RG_AUDADCLINPUTSEL_MASK,
-+				  adc_left_mux_map,
-+				  adc_left_mux_map_value);
-+
-+static const struct snd_kcontrol_new adc_left_mux_control =
-+	SOC_DAPM_ENUM("ADC L Select", adc_left_mux_map_enum);
-+
-+/* ADC R MUX */
-+static const char *const adc_right_mux_map[] = {
-+	"Idle", "AIN0", "Right Preamplifier", "Idle_1",
-+};
-+
-+static int adc_right_mux_map_value[] = {
-+	0x0, 0x1, 0x2, 0x3,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(adc_right_mux_map_enum,
-+				  MT6351_AUDENC_ANA_CON1,
-+				  RG_AUDADCRINPUTSEL_SFT,
-+				  RG_AUDADCRINPUTSEL_MASK,
-+				  adc_right_mux_map,
-+				  adc_right_mux_map_value);
-+
-+static const struct snd_kcontrol_new adc_right_mux_control =
-+	SOC_DAPM_ENUM("ADC R Select", adc_right_mux_map_enum);
-+
-+/* PGA L MUX */
-+static const char *const pga_left_mux_map[] = {
-+	"None", "AIN0", "AIN1", "AIN2",
-+};
-+
-+static int pga_left_mux_map_value[] = {
-+	0x0, 0x1, 0x2, 0x3,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(pga_left_mux_map_enum,
-+				  MT6351_AUDENC_ANA_CON0,
-+				  RG_AUDPREAMPLINPUTSEL_SFT,
-+				  RG_AUDPREAMPLINPUTSEL_MASK,
-+				  pga_left_mux_map,
-+				  pga_left_mux_map_value);
-+
-+static const struct snd_kcontrol_new pga_left_mux_control =
-+	SOC_DAPM_ENUM("PGA L Select", pga_left_mux_map_enum);
-+
-+/* PGA R MUX */
-+static const char *const pga_right_mux_map[] = {
-+	"None", "AIN0", "AIN3", "AIN2",
-+};
-+
-+static int pga_right_mux_map_value[] = {
-+	0x0, 0x1, 0x2, 0x3,
-+};
-+
-+static SOC_VALUE_ENUM_SINGLE_DECL(pga_right_mux_map_enum,
-+				  MT6351_AUDENC_ANA_CON1,
-+				  RG_AUDPREAMPRINPUTSEL_SFT,
-+				  RG_AUDPREAMPRINPUTSEL_MASK,
-+				  pga_right_mux_map,
-+				  pga_right_mux_map_value);
-+
-+static const struct snd_kcontrol_new pga_right_mux_control =
-+	SOC_DAPM_ENUM("PGA R Select", pga_right_mux_map_enum);
-+
-+static int mt_reg_set_clr_event(struct snd_soc_dapm_widget *w,
-+				struct snd_kcontrol *kcontrol,
-+				int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_POST_PMU:
-+		if (w->on_val) {
-+			/* SET REG */
-+			regmap_update_bits(cmpnt->regmap,
-+					   w->reg + REG_STRIDE,
-+					   0x1 << w->shift,
-+					   0x1 << w->shift);
-+		} else {
-+			/* CLR REG */
-+			regmap_update_bits(cmpnt->regmap,
-+					   w->reg + REG_STRIDE * 2,
-+					   0x1 << w->shift,
-+					   0x1 << w->shift);
-+		}
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		if (w->off_val) {
-+			/* SET REG */
-+			regmap_update_bits(cmpnt->regmap,
-+					   w->reg + REG_STRIDE,
-+					   0x1 << w->shift,
-+					   0x1 << w->shift);
-+		} else {
-+			/* CLR REG */
-+			regmap_update_bits(cmpnt->regmap,
-+					   w->reg + REG_STRIDE * 2,
-+					   0x1 << w->shift,
-+					   0x1 << w->shift);
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt_ncp_event(struct snd_soc_dapm_widget *w,
-+			struct snd_kcontrol *kcontrol,
-+			int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_NCP_CFG1,
-+				   0xffff, 0x1515);
-+		/* NCP: ck1 and ck2 clock frequecy adjust configure */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_NCP_CFG0,
-+				   0xfffe, 0x8C00);
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		usleep_range(250, 270);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt_sgen_event(struct snd_soc_dapm_widget *w,
-+			 struct snd_kcontrol *kcontrol,
-+			 int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_SGEN_CFG0,
-+				   0xffef, 0x0008);
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_SGEN_CFG1,
-+				   0xffff, 0x0101);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt_aif_in_event(struct snd_soc_dapm_widget *w,
-+			   struct snd_kcontrol *kcontrol,
-+			   int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+	struct mt6351_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-+
-+	dev_dbg(priv->dev, "%s(), event 0x%x, rate %d\n",
-+		__func__, event, priv->dl_rate);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* sdm audio fifo clock power on */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFUNC_AUD_CON2,
-+				   0xffff, 0x0006);
-+		/* scrambler clock on enable */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFUNC_AUD_CON0,
-+				   0xffff, 0xC3A1);
-+		/* sdm power on */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFUNC_AUD_CON2,
-+				   0xffff, 0x0003);
-+		/* sdm fifo enable */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFUNC_AUD_CON2,
-+				   0xffff, 0x000B);
-+		/* set attenuation gain */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_DL_SDM_CON1,
-+				   0xffff, 0x001E);
-+
-+		regmap_write(cmpnt->regmap, MT6351_AFE_PMIC_NEWIF_CFG0,
-+			     (get_play_reg_val(cmpnt, priv->dl_rate) << 12) |
-+			     0x330);
-+		regmap_write(cmpnt->regmap, MT6351_AFE_DL_SRC2_CON0_H,
-+			     (get_play_reg_val(cmpnt, priv->dl_rate) << 12) |
-+			     0x300);
-+
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_PMIC_NEWIF_CFG2,
-+				   0x8000, 0x8000);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt_hp_event(struct snd_soc_dapm_widget *w,
-+		       struct snd_kcontrol *kcontrol,
-+		       int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+	struct mt6351_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-+	int reg;
-+
-+	dev_dbg(priv->dev, "%s(), event 0x%x, hp_en_counter %d\n",
-+		__func__, event, priv->hp_en_counter);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		priv->hp_en_counter++;
-+		if (priv->hp_en_counter > 1)
-+			break;	/* already enabled, do nothing */
-+		else if (priv->hp_en_counter <= 0)
-+			dev_err(priv->dev, "%s(), hp_en_counter %d <= 0\n",
-+				__func__,
-+				priv->hp_en_counter);
-+
-+		hp_zcd_disable(cmpnt);
-+
-+		/* from yoyo HQA script */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON6,
-+				   0x0700, 0x0700);
-+
-+		/* save target gain to restore after hardware open complete */
-+		regmap_read(cmpnt->regmap, MT6351_ZCD_CON2, &reg);
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTL] = reg & 0x1f;
-+		priv->ana_gain[AUDIO_ANALOG_VOLUME_HPOUTR] = (reg >> 7) & 0x1f;
-+
-+		/* Set HPR/HPL gain as minimum (~ -40dB) */
-+		regmap_update_bits(cmpnt->regmap,
-+				   MT6351_ZCD_CON2, 0xffff, 0x0F9F);
-+		/* Set HS gain as minimum (~ -40dB) */
-+		regmap_update_bits(cmpnt->regmap,
-+				   MT6351_ZCD_CON3, 0xffff, 0x001F);
-+		/* De_OSC of HP */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON2,
-+				   0x0001, 0x0001);
-+		/* enable output STBENH */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON1,
-+				   0xffff, 0x2000);
-+		/* De_OSC of voice, enable output STBENH */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON1,
-+				   0xffff, 0x2100);
-+		/* Enable voice driver */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON0,
-+				   0x0010, 0xE090);
-+		/* Enable pre-charge buffer  */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON1,
-+				   0xffff, 0x2140);
-+
-+		usleep_range(50, 60);
-+
-+		/* Apply digital DC compensation value to DAC */
-+		set_hp_gain_zero(cmpnt);
-+
-+		/* Enable HPR/HPL */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON1,
-+				   0xffff, 0x2100);
-+		/* Disable pre-charge buffer */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON1,
-+				   0xffff, 0x2000);
-+		/* Disable De_OSC of voice */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON0,
-+				   0x0010, 0xF4EF);
-+		/* Disable voice buffer */
-+
-+		/* from yoyo HQ */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON6,
-+				   0x0700, 0x0300);
-+
-+		/* Enable ZCD, for minimize pop noise */
-+		/* when adjust gain during HP buffer on */
-+		hp_zcd_enable(cmpnt);
-+
-+		/* apply volume setting */
-+		hp_gain_ramp_set(cmpnt, HP_GAIN_RESTORE);
-+
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		priv->hp_en_counter--;
-+		if (priv->hp_en_counter > 0)
-+			break;	/* still being used, don't close */
-+		else if (priv->hp_en_counter < 0)
-+			dev_err(priv->dev, "%s(), hp_en_counter %d <= 0\n",
-+				__func__,
-+				priv->hp_en_counter);
-+
-+		/* Disable AUD_ZCD */
-+		hp_zcd_disable(cmpnt);
-+
-+		/* Set HPR/HPL gain as -1dB, step by step */
-+		hp_gain_ramp_set(cmpnt, HP_GAIN_SET_ZERO);
-+
-+		set_hp_gain_zero(cmpnt);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		if (priv->hp_en_counter > 0)
-+			break;	/* still being used, don't close */
-+		else if (priv->hp_en_counter < 0)
-+			dev_err(priv->dev, "%s(), hp_en_counter %d <= 0\n",
-+				__func__,
-+				priv->hp_en_counter);
-+
-+		/* reset*/
-+		regmap_update_bits(cmpnt->regmap,
-+				   MT6351_AUDDEC_ANA_CON6,
-+				   0x0700,
-+				   0x0000);
-+		/* De_OSC of HP */
-+		regmap_update_bits(cmpnt->regmap,
-+				   MT6351_AUDDEC_ANA_CON2,
-+				   0x0001,
-+				   0x0000);
-+
-+		/* apply volume setting */
-+		hp_gain_ramp_set(cmpnt, HP_GAIN_RESTORE);
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt_aif_out_event(struct snd_soc_dapm_widget *w,
-+			    struct snd_kcontrol *kcontrol,
-+			    int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+	struct mt6351_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-+
-+	dev_dbg(priv->dev, "%s(), event 0x%x, rate %d\n",
-+		__func__, event, priv->ul_rate);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* dcclk_div=11'b00100000011, dcclk_ref_ck_sel=2'b00 */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_DCCLK_CFG0,
-+				   0xffff, 0x2062);
-+		/* dcclk_pdn=1'b0 */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_DCCLK_CFG0,
-+				   0xffff, 0x2060);
-+		/* dcclk_gen_on=1'b1 */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_DCCLK_CFG0,
-+				   0xffff, 0x2061);
-+
-+		/* UL sample rate and mode configure */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AFE_UL_SRC_CON0_H,
-+				   0x000E,
-+				   get_cap_reg_val(cmpnt, priv->ul_rate) << 1);
-+
-+		/* fixed 260k path for 8/16/32/48 */
-+		if (priv->ul_rate <= 48000) {
-+			/* anc ul path src on */
-+			regmap_update_bits(cmpnt->regmap,
-+					   MT6351_AFE_HPANC_CFG0,
-+					   0x1 << 1,
-+					   0x1 << 1);
-+			/* ANC clk pdn release */
-+			regmap_update_bits(cmpnt->regmap,
-+					   MT6351_AFE_HPANC_CFG0,
-+					   0x1 << 0,
-+					   0x0 << 0);
-+		}
-+		break;
-+	case SND_SOC_DAPM_PRE_PMD:
-+		/* fixed 260k path for 8/16/32/48 */
-+		if (priv->ul_rate <= 48000) {
-+			/* anc ul path src on */
-+			regmap_update_bits(cmpnt->regmap,
-+					   MT6351_AFE_HPANC_CFG0,
-+					   0x1 << 1,
-+					   0x0 << 1);
-+			/* ANC clk pdn release */
-+			regmap_update_bits(cmpnt->regmap,
-+					   MT6351_AFE_HPANC_CFG0,
-+					   0x1 << 0,
-+					   0x1 << 0);
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static int mt_adc_clkgen_event(struct snd_soc_dapm_widget *w,
-+			       struct snd_kcontrol *kcontrol,
-+			       int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* Audio ADC clock gen. mode: 00_divided by 2 (Normal) */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON3,
-+				   0x3 << 4, 0x0);
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		/* ADC CLK from: 00_13MHz from CLKSQ (Default) */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON3,
-+				   0x3 << 2, 0x0);
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int mt_pga_left_event(struct snd_soc_dapm_widget *w,
-+			     struct snd_kcontrol *kcontrol,
-+			     int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* Audio L PGA precharge on */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON0,
-+				   0x3 << RG_AUDPREAMPLDCPRECHARGE,
-+				   0x1 << RG_AUDPREAMPLDCPRECHARGE);
-+		/* Audio L PGA mode: 1_DCC */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON0,
-+				   0x3 << RG_AUDPREAMPLDCCEN,
-+				   0x1 << RG_AUDPREAMPLDCCEN);
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		usleep_range(100, 120);
-+		/* Audio L PGA precharge off */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON0,
-+				   0x3 << RG_AUDPREAMPLDCPRECHARGE,
-+				   0x0 << RG_AUDPREAMPLDCPRECHARGE);
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int mt_pga_right_event(struct snd_soc_dapm_widget *w,
-+			      struct snd_kcontrol *kcontrol,
-+			      int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* Audio R PGA precharge on */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON1,
-+				   0x3 << RG_AUDPREAMPRDCPRECHARGE,
-+				   0x1 << RG_AUDPREAMPRDCPRECHARGE);
-+		/* Audio R PGA mode: 1_DCC */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON1,
-+				   0x3 << RG_AUDPREAMPRDCCEN,
-+				   0x1 << RG_AUDPREAMPRDCCEN);
-+		break;
-+	case SND_SOC_DAPM_POST_PMU:
-+		usleep_range(100, 120);
-+		/* Audio R PGA precharge off */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON1,
-+				   0x3 << RG_AUDPREAMPRDCPRECHARGE,
-+				   0x0 << RG_AUDPREAMPRDCPRECHARGE);
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int mt_mic_bias_0_event(struct snd_soc_dapm_widget *w,
-+			       struct snd_kcontrol *kcontrol,
-+			       int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* MIC Bias 0 LowPower: 0_Normal */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON9,
-+				   0x3 << RG_AUDMICBIAS0LOWPEN, 0x0);
-+		/* MISBIAS0 = 1P9V */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON9,
-+				   0x7 << RG_AUDMICBIAS0VREF,
-+				   0x2 << RG_AUDMICBIAS0VREF);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* MISBIAS0 = 1P97 */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON9,
-+				   0x7 << RG_AUDMICBIAS0VREF,
-+				   0x0 << RG_AUDMICBIAS0VREF);
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int mt_mic_bias_1_event(struct snd_soc_dapm_widget *w,
-+			       struct snd_kcontrol *kcontrol,
-+			       int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* MIC Bias 1 LowPower: 0_Normal */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON10,
-+				   0x3 << RG_AUDMICBIAS1LOWPEN, 0x0);
-+		/* MISBIAS1 = 2P7V */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON10,
-+				   0x7 << RG_AUDMICBIAS1VREF,
-+				   0x7 << RG_AUDMICBIAS1VREF);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* MISBIAS1 = 1P7V */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON10,
-+				   0x7 << RG_AUDMICBIAS1VREF,
-+				   0x0 << RG_AUDMICBIAS1VREF);
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+static int mt_mic_bias_2_event(struct snd_soc_dapm_widget *w,
-+			       struct snd_kcontrol *kcontrol,
-+			       int event)
-+{
-+	struct snd_soc_component *cmpnt = snd_soc_dapm_to_component(w->dapm);
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		/* MIC Bias 2 LowPower: 0_Normal */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON9,
-+				   0x3 << RG_AUDMICBIAS2LOWPEN, 0x0);
-+		/* MISBIAS2 = 1P9V */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON9,
-+				   0x7 << RG_AUDMICBIAS2VREF,
-+				   0x2 << RG_AUDMICBIAS2VREF);
-+		break;
-+	case SND_SOC_DAPM_POST_PMD:
-+		/* MISBIAS2 = 1P97 */
-+		regmap_update_bits(cmpnt->regmap, MT6351_AUDENC_ANA_CON9,
-+				   0x7 << RG_AUDMICBIAS2VREF,
-+				   0x0 << RG_AUDMICBIAS2VREF);
-+		break;
-+	default:
-+		break;
-+	}
-+	return 0;
-+}
-+
-+/* DAPM Kcontrols */
-+static const struct snd_kcontrol_new mt_lineout_control =
-+	SOC_DAPM_SINGLE("Switch", MT6351_AUDDEC_ANA_CON3,
-+			RG_AUDLOLPWRUP_VAUDP32_BIT, 1, 0);
-+
-+/* DAPM Widgets */
-+static const struct snd_soc_dapm_widget mt6351_dapm_widgets[] = {
-+	/* Digital Clock */
-+	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_AFE_CTL", MT6351_AUDIO_TOP_CON0,
-+			    AUD_TOP_PDN_AFE_CTL_BIT, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_DAC_CTL", MT6351_AUDIO_TOP_CON0,
-+			    AUD_TOP_PDN_DAC_CTL_BIT, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_ADC_CTL", MT6351_AUDIO_TOP_CON0,
-+			    AUD_TOP_PDN_ADC_CTL_BIT, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_PWR_CLK", MT6351_AUDIO_TOP_CON0,
-+			    AUD_TOP_PWR_CLK_DIS_CTL_BIT, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("AUDIO_TOP_PDN_RESERVED", MT6351_AUDIO_TOP_CON0,
-+			    AUD_TOP_PDN_RESERVED_BIT, 1, NULL, 0),
-+
-+	SND_SOC_DAPM_SUPPLY("NCP", MT6351_AFE_NCP_CFG0,
-+			    RG_NCP_ON_BIT, 0,
-+			    mt_ncp_event,
-+			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
-+
-+	SND_SOC_DAPM_SUPPLY("DL Digital Clock", SND_SOC_NOPM,
-+			    0, 0, NULL, 0),
-+
-+	/* Global Supply*/
-+	SND_SOC_DAPM_SUPPLY("AUDGLB", MT6351_AUDDEC_ANA_CON9,
-+			    RG_AUDGLB_PWRDN_VA32_BIT, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("CLKSQ Audio", MT6351_TOP_CLKSQ,
-+			    RG_CLKSQ_EN_AUD_BIT, 0,
-+			    mt_reg_set_clr_event,
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_SUPPLY("ZCD13M_CK", MT6351_TOP_CKPDN_CON0,
-+			    RG_ZCD13M_CK_PDN_BIT, 1,
-+			    mt_reg_set_clr_event,
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_SUPPLY("AUD_CK", MT6351_TOP_CKPDN_CON0,
-+			    RG_AUD_CK_PDN_BIT, 1,
-+			    mt_reg_set_clr_event,
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_SUPPLY("AUDIF_CK", MT6351_TOP_CKPDN_CON0,
-+			    RG_AUDIF_CK_PDN_BIT, 1,
-+			    mt_reg_set_clr_event,
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+	SND_SOC_DAPM_SUPPLY("AUDNCP_CK", MT6351_TOP_CKPDN_CON0,
-+			    RG_AUDNCP_CK_PDN_BIT, 1,
-+			    mt_reg_set_clr_event,
-+			    SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD),
-+
-+	SND_SOC_DAPM_SUPPLY("AFE_ON", MT6351_AFE_UL_DL_CON0, RG_AFE_ON_BIT, 0,
-+			    NULL, 0),
-+
-+	/* AIF Rx*/
-+	SND_SOC_DAPM_AIF_IN_E("AIF_RX", "AIF1 Playback", 0,
-+			      MT6351_AFE_DL_SRC2_CON0_L,
-+			      RG_DL_2_SRC_ON_TMP_CTL_PRE_BIT, 0,
-+			      mt_aif_in_event, SND_SOC_DAPM_PRE_PMU),
-+
-+	/* DL Supply */
-+	SND_SOC_DAPM_SUPPLY("DL Power Supply", SND_SOC_NOPM,
-+			    0, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("NV Regulator", MT6351_AUDDEC_ANA_CON10,
-+			    RG_NVREG_EN_VAUDP32_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("AUD_CLK", MT6351_AUDDEC_ANA_CON9,
-+			    RG_RSTB_DECODER_VA32_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("IBIST", MT6351_AUDDEC_ANA_CON9,
-+			    RG_AUDIBIASPWRDN_VAUDP32_BIT, 1, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("LDO", MT6351_AUDDEC_ANA_CON9,
-+			    RG_LCLDO_DEC_EN_VA32_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("LDO_REMOTE_SENSE", MT6351_AUDDEC_ANA_CON9,
-+			    RG_LCLDO_DEC_REMOTE_SENSE_VA18_BIT, 0, NULL, 0),
-+
-+	/* DAC */
-+	SND_SOC_DAPM_MUX("DAC In Mux", SND_SOC_NOPM, 0, 0, &dac_in_mux_control),
-+
-+	SND_SOC_DAPM_DAC("DACL", NULL, MT6351_AUDDEC_ANA_CON0,
-+			 RG_AUDDACLPWRUP_VAUDP32_BIT, 0),
-+	SND_SOC_DAPM_SUPPLY("DACL_BIASGEN", MT6351_AUDDEC_ANA_CON0,
-+			    RG_AUD_DAC_PWL_UP_VA32_BIT, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_DAC("DACR", NULL, MT6351_AUDDEC_ANA_CON0,
-+			 RG_AUDDACRPWRUP_VAUDP32_BIT, 0),
-+	SND_SOC_DAPM_SUPPLY("DACR_BIASGEN", MT6351_AUDDEC_ANA_CON0,
-+			    RG_AUD_DAC_PWR_UP_VA32_BIT, 0, NULL, 0),
-+	/* LOL */
-+	SND_SOC_DAPM_MUX("LOL Mux", SND_SOC_NOPM, 0, 0, &lo_in_mux_control),
-+
-+	SND_SOC_DAPM_SUPPLY("LO Stability Enh", MT6351_AUDDEC_ANA_CON3,
-+			    RG_LOOUTPUTSTBENH_VAUDP32_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("LOL Bias Gen", MT6351_AUDDEC_ANA_CON6,
-+			    RG_ABIDEC_RSVD0_VAUDP32_LOL_BIT, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_OUT_DRV("LOL Buffer", MT6351_AUDDEC_ANA_CON3,
-+			     RG_AUDLOLPWRUP_VAUDP32_BIT, 0, NULL, 0),
-+
-+	/* Headphone */
-+	SND_SOC_DAPM_MUX("HPL Mux", SND_SOC_NOPM, 0, 0, &hpl_in_mux_control),
-+	SND_SOC_DAPM_MUX("HPR Mux", SND_SOC_NOPM, 0, 0, &hpr_in_mux_control),
-+
-+	SND_SOC_DAPM_OUT_DRV_E("HPL Power", MT6351_AUDDEC_ANA_CON0,
-+			       RG_AUDHPLPWRUP_VAUDP32_BIT, 0, NULL, 0,
-+			       mt_hp_event,
-+			       SND_SOC_DAPM_PRE_PMU |
-+			       SND_SOC_DAPM_PRE_PMD |
-+			       SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_OUT_DRV_E("HPR Power", MT6351_AUDDEC_ANA_CON0,
-+			       RG_AUDHPRPWRUP_VAUDP32_BIT, 0, NULL, 0,
-+			       mt_hp_event,
-+			       SND_SOC_DAPM_PRE_PMU |
-+			       SND_SOC_DAPM_PRE_PMD |
-+			       SND_SOC_DAPM_POST_PMD),
-+
-+	/* Receiver */
-+	SND_SOC_DAPM_MUX("RCV Mux", SND_SOC_NOPM, 0, 0, &rcv_in_mux_control),
-+
-+	SND_SOC_DAPM_SUPPLY("RCV Stability Enh", MT6351_AUDDEC_ANA_CON1,
-+			    RG_HSOUTPUTSTBENH_VAUDP32_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("RCV Bias Gen", MT6351_AUDDEC_ANA_CON6,
-+			    RG_ABIDEC_RSVD0_VAUDP32_HS_BIT, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_OUT_DRV("RCV Buffer", MT6351_AUDDEC_ANA_CON0,
-+			     RG_AUDHSPWRUP_VAUDP32_BIT, 0, NULL, 0),
-+
-+	/* Outputs */
-+	SND_SOC_DAPM_OUTPUT("Receiver"),
-+	SND_SOC_DAPM_OUTPUT("Headphone L"),
-+	SND_SOC_DAPM_OUTPUT("Headphone R"),
-+	SND_SOC_DAPM_OUTPUT("LINEOUT L"),
-+
-+	/* SGEN */
-+	SND_SOC_DAPM_SUPPLY("SGEN DL Enable", MT6351_AFE_SGEN_CFG0,
-+			    SGEN_C_DAC_EN_CTL_BIT, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY("SGEN MUTE", MT6351_AFE_SGEN_CFG0,
-+			    SGEN_C_MUTE_SW_CTL_BIT, 1,
-+			    mt_sgen_event, SND_SOC_DAPM_PRE_PMU),
-+	SND_SOC_DAPM_SUPPLY("SGEN DL SRC", MT6351_AFE_DL_SRC2_CON0_L,
-+			    RG_DL_2_SRC_ON_TMP_CTL_PRE_BIT, 0, NULL, 0),
-+
-+	SND_SOC_DAPM_INPUT("SGEN DL"),
-+
-+	/* Uplinks */
-+	SND_SOC_DAPM_AIF_OUT_E("AIF1TX", "AIF1 Capture", 0,
-+			       MT6351_AFE_UL_SRC_CON0_L,
-+			       UL_SRC_ON_TMP_CTL, 0,
-+			       mt_aif_out_event,
-+			       SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_PRE_PMD),
-+
-+	SND_SOC_DAPM_SUPPLY_S("VUSB33_LDO", SUPPLY_SUBSEQ_ENABLE,
-+			      MT6351_LDO_VUSB33_CON0, RG_VUSB33_EN, 0,
-+			      NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("VUSB33_LDO_CTRL", SUPPLY_SUBSEQ_SETTING,
-+			      MT6351_LDO_VUSB33_CON0, RG_VUSB33_ON_CTRL, 1,
-+			      NULL, 0),
-+
-+	SND_SOC_DAPM_SUPPLY_S("VA18_LDO", SUPPLY_SUBSEQ_ENABLE,
-+			      MT6351_LDO_VA18_CON0, RG_VA18_EN, 0, NULL, 0),
-+	SND_SOC_DAPM_SUPPLY_S("VA18_LDO_CTRL", SUPPLY_SUBSEQ_SETTING,
-+			      MT6351_LDO_VA18_CON0, RG_VA18_ON_CTRL, 1,
-+			      NULL, 0),
-+
-+	SND_SOC_DAPM_SUPPLY_S("ADC CLKGEN", SUPPLY_SUBSEQ_ENABLE,
-+			      MT6351_AUDENC_ANA_CON3, RG_AUDADCCLKRSTB, 0,
-+			      mt_adc_clkgen_event,
-+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
-+
-+	/* Uplinks MUX */
-+	SND_SOC_DAPM_MUX("AIF Out Mux", SND_SOC_NOPM, 0, 0,
-+			 &aif_out_mux_control),
-+
-+	SND_SOC_DAPM_MUX("ADC L Mux", SND_SOC_NOPM, 0, 0,
-+			 &adc_left_mux_control),
-+	SND_SOC_DAPM_MUX("ADC R Mux", SND_SOC_NOPM, 0, 0,
-+			 &adc_right_mux_control),
-+
-+	SND_SOC_DAPM_ADC("ADC L", NULL,
-+			 MT6351_AUDENC_ANA_CON0, RG_AUDADCLPWRUP, 0),
-+	SND_SOC_DAPM_ADC("ADC R", NULL,
-+			 MT6351_AUDENC_ANA_CON1, RG_AUDADCRPWRUP, 0),
-+
-+	SND_SOC_DAPM_MUX("PGA L Mux", SND_SOC_NOPM, 0, 0,
-+			 &pga_left_mux_control),
-+	SND_SOC_DAPM_MUX("PGA R Mux", SND_SOC_NOPM, 0, 0,
-+			 &pga_right_mux_control),
-+
-+	SND_SOC_DAPM_PGA_E("PGA L", MT6351_AUDENC_ANA_CON0, RG_AUDPREAMPLON, 0,
-+			   NULL, 0,
-+			   mt_pga_left_event,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
-+	SND_SOC_DAPM_PGA_E("PGA R", MT6351_AUDENC_ANA_CON1, RG_AUDPREAMPRON, 0,
-+			   NULL, 0,
-+			   mt_pga_right_event,
-+			   SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMU),
-+
-+	/* main mic mic bias */
-+	SND_SOC_DAPM_SUPPLY_S("Mic Bias 0", SUPPLY_SUBSEQ_MICBIAS,
-+			      MT6351_AUDENC_ANA_CON9, RG_AUDPWDBMICBIAS0, 0,
-+			      mt_mic_bias_0_event,
-+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+	/* ref mic mic bias */
-+	SND_SOC_DAPM_SUPPLY_S("Mic Bias 2", SUPPLY_SUBSEQ_MICBIAS,
-+			      MT6351_AUDENC_ANA_CON9, RG_AUDPWDBMICBIAS2, 0,
-+			      mt_mic_bias_2_event,
-+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+	/* headset mic1/2 mic bias */
-+	SND_SOC_DAPM_SUPPLY_S("Mic Bias 1", SUPPLY_SUBSEQ_MICBIAS,
-+			      MT6351_AUDENC_ANA_CON10, RG_AUDPWDBMICBIAS1, 0,
-+			      mt_mic_bias_1_event,
-+			      SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
-+	SND_SOC_DAPM_SUPPLY_S("Mic Bias 1 DCC pull high", SUPPLY_SUBSEQ_MICBIAS,
-+			      MT6351_AUDENC_ANA_CON10,
-+			      RG_AUDMICBIAS1DCSW1NEN, 0,
-+			      NULL, 0),
-+
-+	/* UL input */
-+	SND_SOC_DAPM_INPUT("AIN0"),
-+	SND_SOC_DAPM_INPUT("AIN1"),
-+	SND_SOC_DAPM_INPUT("AIN2"),
-+	SND_SOC_DAPM_INPUT("AIN3"),
-+};
-+
-+static const struct snd_soc_dapm_route mt6351_dapm_routes[] = {
-+	/* Capture */
-+	{"AIF1TX", NULL, "AIF Out Mux"},
-+	{"AIF1TX", NULL, "VUSB33_LDO"},
-+	{"VUSB33_LDO", NULL, "VUSB33_LDO_CTRL"},
-+	{"AIF1TX", NULL, "VA18_LDO"},
-+	{"VA18_LDO", NULL, "VA18_LDO_CTRL"},
-+
-+	{"AIF1TX", NULL, "AUDGLB"},
-+	{"AIF1TX", NULL, "CLKSQ Audio"},
-+
-+	{"AIF1TX", NULL, "AFE_ON"},
-+
-+	{"AIF1TX", NULL, "AUDIO_TOP_AFE_CTL"},
-+	{"AIF1TX", NULL, "AUDIO_TOP_ADC_CTL"},
-+	{"AIF1TX", NULL, "AUDIO_TOP_PWR_CLK"},
-+	{"AIF1TX", NULL, "AUDIO_TOP_PDN_RESERVED"},
-+
-+	{"AIF Out Mux", "Normal Path", "ADC L"},
-+	{"AIF Out Mux", "Normal Path", "ADC R"},
-+
-+	{"ADC L", NULL, "ADC L Mux"},
-+	{"ADC L", NULL, "AUD_CK"},
-+	{"ADC L", NULL, "AUDIF_CK"},
-+	{"ADC L", NULL, "ADC CLKGEN"},
-+	{"ADC R", NULL, "ADC R Mux"},
-+	{"ADC R", NULL, "AUD_CK"},
-+	{"ADC R", NULL, "AUDIF_CK"},
-+	{"ADC R", NULL, "ADC CLKGEN"},
-+
-+	{"ADC L Mux", "AIN0", "AIN0"},
-+	{"ADC L Mux", "Left Preamplifier", "PGA L"},
-+
-+	{"ADC R Mux", "AIN0", "AIN0"},
-+	{"ADC R Mux", "Right Preamplifier", "PGA R"},
-+
-+	{"PGA L", NULL, "PGA L Mux"},
-+	{"PGA R", NULL, "PGA R Mux"},
-+
-+	{"PGA L Mux", "AIN0", "AIN0"},
-+	{"PGA L Mux", "AIN1", "AIN1"},
-+	{"PGA L Mux", "AIN2", "AIN2"},
-+
-+	{"PGA R Mux", "AIN0", "AIN0"},
-+	{"PGA R Mux", "AIN3", "AIN3"},
-+	{"PGA R Mux", "AIN2", "AIN2"},
-+
-+	{"AIN0", NULL, "Mic Bias 0"},
-+	{"AIN2", NULL, "Mic Bias 2"},
-+
-+	{"AIN1", NULL, "Mic Bias 1"},
-+	{"AIN1", NULL, "Mic Bias 1 DCC pull high"},
-+
-+	/* DL Supply */
-+	{"DL Power Supply", NULL, "AUDGLB"},
-+	{"DL Power Supply", NULL, "CLKSQ Audio"},
-+	{"DL Power Supply", NULL, "ZCD13M_CK"},
-+	{"DL Power Supply", NULL, "AUD_CK"},
-+	{"DL Power Supply", NULL, "AUDIF_CK"},
-+	{"DL Power Supply", NULL, "AUDNCP_CK"},
-+
-+	{"DL Power Supply", NULL, "NV Regulator"},
-+	{"DL Power Supply", NULL, "AUD_CLK"},
-+	{"DL Power Supply", NULL, "IBIST"},
-+	{"DL Power Supply", NULL, "LDO"},
-+	{"LDO", NULL, "LDO_REMOTE_SENSE"},
-+
-+	/* DL Digital Supply */
-+	{"DL Digital Clock", NULL, "AUDIO_TOP_AFE_CTL"},
-+	{"DL Digital Clock", NULL, "AUDIO_TOP_DAC_CTL"},
-+	{"DL Digital Clock", NULL, "AUDIO_TOP_PWR_CLK"},
-+	{"DL Digital Clock", NULL, "AUDIO_TOP_PDN_RESERVED"},
-+	{"DL Digital Clock", NULL, "NCP"},
-+	{"DL Digital Clock", NULL, "AFE_ON"},
-+
-+	{"AIF_RX", NULL, "DL Digital Clock"},
-+
-+	/* DL Path */
-+	{"DAC In Mux", "Normal Path", "AIF_RX"},
-+
-+	{"DAC In Mux", "Sgen", "SGEN DL"},
-+	{"SGEN DL", NULL, "SGEN DL SRC"},
-+	{"SGEN DL", NULL, "SGEN MUTE"},
-+	{"SGEN DL", NULL, "SGEN DL Enable"},
-+	{"SGEN DL", NULL, "DL Digital Clock"},
-+
-+	{"DACL", NULL, "DAC In Mux"},
-+	{"DACL", NULL, "DL Power Supply"},
-+	{"DACL", NULL, "DACL_BIASGEN"},
-+
-+	{"DACR", NULL, "DAC In Mux"},
-+	{"DACR", NULL, "DL Power Supply"},
-+	{"DACR", NULL, "DACR_BIASGEN"},
-+
-+	{"LOL Mux", "Playback", "DACL"},
-+
-+	{"LOL Buffer", NULL, "LOL Mux"},
-+	{"LOL Buffer", NULL, "LO Stability Enh"},
-+	{"LOL Buffer", NULL, "LOL Bias Gen"},
-+
-+	{"LINEOUT L", NULL, "LOL Buffer"},
-+
-+	/* Headphone Path */
-+	{"HPL Mux", "Audio Playback", "DACL"},
-+	{"HPR Mux", "Audio Playback", "DACR"},
-+
-+	{"HPL Mux", "LoudSPK Playback", "DACL"},
-+	{"HPR Mux", "LoudSPK Playback", "DACR"},
-+
-+	{"HPL Power", NULL, "HPL Mux"},
-+	{"HPR Power", NULL, "HPR Mux"},
-+
-+	{"Headphone L", NULL, "HPL Power"},
-+	{"Headphone R", NULL, "HPR Power"},
-+
-+	/* Receiver Path */
-+	{"RCV Mux", "Voice Playback", "DACL"},
-+
-+	{"RCV Buffer", NULL, "RCV Mux"},
-+	{"RCV Buffer", NULL, "RCV Stability Enh"},
-+	{"RCV Buffer", NULL, "RCV Bias Gen"},
-+
-+	{"Receiver", NULL, "RCV Buffer"},
-+};
-+
-+static int mt6351_codec_init_reg(struct snd_soc_component *cmpnt)
-+{
-+	int ret = 0;
-+
-+	/* Disable CLKSQ 26MHz */
-+	regmap_update_bits(cmpnt->regmap, MT6351_TOP_CLKSQ, 0x0001, 0x0);
-+	/* disable AUDGLB */
-+	regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON9,
-+			   0x1000, 0x1000);
-+	/* Turn off AUDNCP_CLKDIV engine clock,Turn off AUD 26M */
-+	regmap_update_bits(cmpnt->regmap, MT6351_TOP_CKPDN_CON0_SET,
-+			   0x3800, 0x3800);
-+	/* Disable HeadphoneL/HeadphoneR/voice short circuit protection */
-+	regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON0,
-+			   0xe000, 0xe000);
-+	/* [5] = 1, disable LO buffer left short circuit protection */
-+	regmap_update_bits(cmpnt->regmap, MT6351_AUDDEC_ANA_CON3,
-+			   0x20, 0x20);
-+	/* Reverse the PMIC clock*/
-+	regmap_update_bits(cmpnt->regmap, MT6351_AFE_PMIC_NEWIF_CFG2,
-+			   0x8000, 0x8000);
-+	return ret;
-+}
-+
-+static int mt6351_codec_probe(struct snd_soc_component *cmpnt)
-+{
-+	struct mt6351_priv *priv = snd_soc_component_get_drvdata(cmpnt);
-+
-+	snd_soc_component_init_regmap(cmpnt, priv->regmap);
-+
-+	mt6351_codec_init_reg(cmpnt);
-+	return 0;
-+}
-+
-+static const struct snd_soc_component_driver mt6351_soc_component_driver = {
-+	.probe = mt6351_codec_probe,
-+	.controls = mt6351_snd_controls,
-+	.num_controls = ARRAY_SIZE(mt6351_snd_controls),
-+	.dapm_widgets = mt6351_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(mt6351_dapm_widgets),
-+	.dapm_routes = mt6351_dapm_routes,
-+	.num_dapm_routes = ARRAY_SIZE(mt6351_dapm_routes),
-+};
-+
-+static int mt6351_codec_driver_probe(struct platform_device *pdev)
-+{
-+	struct mt6351_priv *priv;
-+
-+	priv = devm_kzalloc(&pdev->dev,
-+			    sizeof(struct mt6351_priv),
-+			    GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(&pdev->dev, priv);
-+
-+	priv->dev = &pdev->dev;
-+
-+	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (IS_ERR(priv->regmap))
-+		return PTR_ERR(priv->regmap);
-+
-+	dev_dbg(priv->dev, "%s(), dev name %s\n",
-+		__func__, dev_name(&pdev->dev));
-+
-+	return devm_snd_soc_register_component(&pdev->dev,
-+					       &mt6351_soc_component_driver,
-+					       mt6351_dai_driver,
-+					       ARRAY_SIZE(mt6351_dai_driver));
-+}
-+
-+static const struct of_device_id mt6351_of_match[] = {
-+	{.compatible = "mediatek,mt6351-sound",},
-+	{}
-+};
-+
-+static struct platform_driver mt6351_codec_driver = {
-+	.driver = {
-+		.name = "mt6351-sound",
-+		.of_match_table = mt6351_of_match,
-+	},
-+	.probe = mt6351_codec_driver_probe,
-+};
-+
-+module_platform_driver(mt6351_codec_driver)
-+
-+/* Module information */
-+MODULE_DESCRIPTION("MT6351 ALSA SoC codec driver");
-+MODULE_AUTHOR("KaiChieh Chuang <kaichieh.chuang@mediatek.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/codecs/mt6351.h b/sound/soc/codecs/mt6351.h
-new file mode 100644
-index 000000000000..04b2ab694ec7
---- /dev/null
-+++ b/sound/soc/codecs/mt6351.h
-@@ -0,0 +1,105 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * mt6351.h  --  mt6351 ALSA SoC audio codec driver
-+ *
-+ * Copyright (c) 2018 MediaTek Inc.
-+ * Author: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-+ */
-+
-+#ifndef __MT6351_H__
-+#define __MT6351_H__
-+
-+#define MT6351_AFE_UL_DL_CON0               (0x2000 + 0x0000)
-+#define MT6351_AFE_DL_SRC2_CON0_H           (0x2000 + 0x0002)
-+#define MT6351_AFE_DL_SRC2_CON0_L           (0x2000 + 0x0004)
-+#define MT6351_AFE_DL_SDM_CON0              (0x2000 + 0x0006)
-+#define MT6351_AFE_DL_SDM_CON1              (0x2000 + 0x0008)
-+#define MT6351_AFE_UL_SRC_CON0_H            (0x2000 + 0x000a)
-+#define MT6351_AFE_UL_SRC_CON0_L            (0x2000 + 0x000c)
-+#define MT6351_AFE_UL_SRC_CON1_H            (0x2000 + 0x000e)
-+#define MT6351_AFE_UL_SRC_CON1_L            (0x2000 + 0x0010)
-+#define MT6351_AFE_TOP_CON0                 (0x2000 + 0x0012)
-+#define MT6351_AUDIO_TOP_CON0               (0x2000 + 0x0014)
-+#define MT6351_AFE_DL_SRC_MON0              (0x2000 + 0x0016)
-+#define MT6351_AFE_DL_SDM_TEST0             (0x2000 + 0x0018)
-+#define MT6351_AFE_MON_DEBUG0               (0x2000 + 0x001a)
-+#define MT6351_AFUNC_AUD_CON0               (0x2000 + 0x001c)
-+#define MT6351_AFUNC_AUD_CON1               (0x2000 + 0x001e)
-+#define MT6351_AFUNC_AUD_CON2               (0x2000 + 0x0020)
-+#define MT6351_AFUNC_AUD_CON3               (0x2000 + 0x0022)
-+#define MT6351_AFUNC_AUD_CON4               (0x2000 + 0x0024)
-+#define MT6351_AFUNC_AUD_MON0               (0x2000 + 0x0026)
-+#define MT6351_AFUNC_AUD_MON1               (0x2000 + 0x0028)
-+#define MT6351_AFE_UP8X_FIFO_CFG0           (0x2000 + 0x002c)
-+#define MT6351_AFE_UP8X_FIFO_LOG_MON0       (0x2000 + 0x002e)
-+#define MT6351_AFE_UP8X_FIFO_LOG_MON1       (0x2000 + 0x0030)
-+#define MT6351_AFE_DL_DC_COMP_CFG0          (0x2000 + 0x0032)
-+#define MT6351_AFE_DL_DC_COMP_CFG1          (0x2000 + 0x0034)
-+#define MT6351_AFE_DL_DC_COMP_CFG2          (0x2000 + 0x0036)
-+#define MT6351_AFE_PMIC_NEWIF_CFG0          (0x2000 + 0x0038)
-+#define MT6351_AFE_PMIC_NEWIF_CFG1          (0x2000 + 0x003a)
-+#define MT6351_AFE_PMIC_NEWIF_CFG2          (0x2000 + 0x003c)
-+#define MT6351_AFE_PMIC_NEWIF_CFG3          (0x2000 + 0x003e)
-+#define MT6351_AFE_SGEN_CFG0                (0x2000 + 0x0040)
-+#define MT6351_AFE_SGEN_CFG1                (0x2000 + 0x0042)
-+#define MT6351_AFE_ADDA2_UP8X_FIFO_LOG_MON0 (0x2000 + 0x004c)
-+#define MT6351_AFE_ADDA2_UP8X_FIFO_LOG_MON1 (0x2000 + 0x004e)
-+#define MT6351_AFE_ADDA2_PMIC_NEWIF_CFG0    (0x2000 + 0x0050)
-+#define MT6351_AFE_ADDA2_PMIC_NEWIF_CFG1    (0x2000 + 0x0052)
-+#define MT6351_AFE_ADDA2_PMIC_NEWIF_CFG2    (0x2000 + 0x0054)
-+#define MT6351_AFE_DCCLK_CFG0               (0x2000 + 0x0090)
-+#define MT6351_AFE_DCCLK_CFG1               (0x2000 + 0x0092)
-+#define MT6351_AFE_HPANC_CFG0               (0x2000 + 0x0094)
-+#define MT6351_AFE_NCP_CFG0                 (0x2000 + 0x0096)
-+#define MT6351_AFE_NCP_CFG1                 (0x2000 + 0x0098)
-+
-+#define MT6351_TOP_CKPDN_CON0      0x023A
-+#define MT6351_TOP_CKPDN_CON0_SET  0x023C
-+#define MT6351_TOP_CKPDN_CON0_CLR  0x023E
-+
-+#define MT6351_TOP_CLKSQ           0x029A
-+#define MT6351_TOP_CLKSQ_SET       0x029C
-+#define MT6351_TOP_CLKSQ_CLR       0x029E
-+
-+#define MT6351_ZCD_CON0            0x0800
-+#define MT6351_ZCD_CON1            0x0802
-+#define MT6351_ZCD_CON2            0x0804
-+#define MT6351_ZCD_CON3            0x0806
-+#define MT6351_ZCD_CON4            0x0808
-+#define MT6351_ZCD_CON5            0x080A
-+
-+#define MT6351_LDO_VA18_CON0       0x0A00
-+#define MT6351_LDO_VA18_CON1       0x0A02
-+#define MT6351_LDO_VUSB33_CON0     0x0A16
-+#define MT6351_LDO_VUSB33_CON1     0x0A18
-+
-+#define MT6351_AUDDEC_ANA_CON0     0x0CF2
-+#define MT6351_AUDDEC_ANA_CON1     0x0CF4
-+#define MT6351_AUDDEC_ANA_CON2     0x0CF6
-+#define MT6351_AUDDEC_ANA_CON3     0x0CF8
-+#define MT6351_AUDDEC_ANA_CON4     0x0CFA
-+#define MT6351_AUDDEC_ANA_CON5     0x0CFC
-+#define MT6351_AUDDEC_ANA_CON6     0x0CFE
-+#define MT6351_AUDDEC_ANA_CON7     0x0D00
-+#define MT6351_AUDDEC_ANA_CON8     0x0D02
-+#define MT6351_AUDDEC_ANA_CON9     0x0D04
-+#define MT6351_AUDDEC_ANA_CON10    0x0D06
-+
-+#define MT6351_AUDENC_ANA_CON0     0x0D08
-+#define MT6351_AUDENC_ANA_CON1     0x0D0A
-+#define MT6351_AUDENC_ANA_CON2     0x0D0C
-+#define MT6351_AUDENC_ANA_CON3     0x0D0E
-+#define MT6351_AUDENC_ANA_CON4     0x0D10
-+#define MT6351_AUDENC_ANA_CON5     0x0D12
-+#define MT6351_AUDENC_ANA_CON6     0x0D14
-+#define MT6351_AUDENC_ANA_CON7     0x0D16
-+#define MT6351_AUDENC_ANA_CON8     0x0D18
-+#define MT6351_AUDENC_ANA_CON9     0x0D1A
-+#define MT6351_AUDENC_ANA_CON10    0x0D1C
-+#define MT6351_AUDENC_ANA_CON11    0x0D1E
-+#define MT6351_AUDENC_ANA_CON12    0x0D20
-+#define MT6351_AUDENC_ANA_CON13    0x0D22
-+#define MT6351_AUDENC_ANA_CON14    0x0D24
-+#define MT6351_AUDENC_ANA_CON15    0x0D26
-+#define MT6351_AUDENC_ANA_CON16    0x0D28
-+#endif
+-int snd_soc_platform_read(struct snd_soc_platform *platform,
+-					unsigned int reg);
+-int snd_soc_platform_write(struct snd_soc_platform *platform,
+-					unsigned int reg, unsigned int val);
+ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
+ #ifdef CONFIG_SND_SOC_COMPRESS
+ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
+@@ -628,8 +613,6 @@ int snd_soc_add_component_controls(struct snd_soc_component *component,
+ 	const struct snd_kcontrol_new *controls, unsigned int num_controls);
+ int snd_soc_add_codec_controls(struct snd_soc_codec *codec,
+ 	const struct snd_kcontrol_new *controls, unsigned int num_controls);
+-int snd_soc_add_platform_controls(struct snd_soc_platform *platform,
+-	const struct snd_kcontrol_new *controls, unsigned int num_controls);
+ int snd_soc_add_card_controls(struct snd_soc_card *soc_card,
+ 	const struct snd_kcontrol_new *controls, int num_controls);
+ int snd_soc_add_dai_controls(struct snd_soc_dai *dai,
+@@ -996,39 +979,12 @@ struct snd_soc_codec_driver {
+ 	bool ignore_pmdown_time;  /* Doesn't benefit from pmdown delay */
+ };
+ 
+-/* SoC platform interface */
+-struct snd_soc_platform_driver {
+-
+-	int (*probe)(struct snd_soc_platform *);
+-	int (*remove)(struct snd_soc_platform *);
+-	struct snd_soc_component_driver component_driver;
+-
+-	/* pcm creation and destruction */
+-	int (*pcm_new)(struct snd_soc_pcm_runtime *);
+-	void (*pcm_free)(struct snd_pcm *);
+-
+-	/* platform stream pcm ops */
+-	const struct snd_pcm_ops *ops;
+-
+-	/* platform stream compress ops */
+-	const struct snd_compr_ops *compr_ops;
+-};
+-
+ struct snd_soc_dai_link_component {
+ 	const char *name;
+ 	struct device_node *of_node;
+ 	const char *dai_name;
+ };
+ 
+-struct snd_soc_platform {
+-	struct device *dev;
+-	const struct snd_soc_platform_driver *driver;
+-
+-	struct list_head list;
+-
+-	struct snd_soc_component component;
+-};
+-
+ struct snd_soc_dai_link {
+ 	/* config - must be set by machine driver */
+ 	const char *name;			/* Codec name */
+@@ -1277,7 +1233,6 @@ struct snd_soc_pcm_runtime {
+ 	struct snd_pcm *pcm;
+ 	struct snd_compr *compr;
+ 	struct snd_soc_codec *codec;
+-	struct snd_soc_platform *platform; /* will be removed */
+ 	struct snd_soc_dai *codec_dai;
+ 	struct snd_soc_dai *cpu_dai;
+ 
+@@ -1358,19 +1313,6 @@ static inline struct snd_soc_codec *snd_soc_component_to_codec(
+ 	return container_of(component, struct snd_soc_codec, component);
+ }
+ 
+-/**
+- * snd_soc_component_to_platform() - Casts a component to the platform it is embedded in
+- * @component: The component to cast to a platform
+- *
+- * This function must only be used on components that are known to be platforms.
+- * Otherwise the behavior is undefined.
+- */
+-static inline struct snd_soc_platform *snd_soc_component_to_platform(
+-	struct snd_soc_component *component)
+-{
+-	return container_of(component, struct snd_soc_platform, component);
+-}
+-
+ /**
+  * snd_soc_dapm_to_component() - Casts a DAPM context to the component it is
+  *  embedded in
+@@ -1399,20 +1341,6 @@ static inline struct snd_soc_codec *snd_soc_dapm_to_codec(
+ 	return snd_soc_component_to_codec(snd_soc_dapm_to_component(dapm));
+ }
+ 
+-/**
+- * snd_soc_dapm_to_platform() - Casts a DAPM context to the platform it is
+- *  embedded in
+- * @dapm: The DAPM context to cast to the platform.
+- *
+- * This function must only be used on DAPM contexts that are known to be part of
+- * a platform (e.g. in a platform driver). Otherwise the behavior is undefined.
+- */
+-static inline struct snd_soc_platform *snd_soc_dapm_to_platform(
+-	struct snd_soc_dapm_context *dapm)
+-{
+-	return snd_soc_component_to_platform(snd_soc_dapm_to_component(dapm));
+-}
+-
+ /**
+  * snd_soc_component_get_dapm() - Returns the DAPM context associated with a
+  *  component
+@@ -1673,17 +1601,6 @@ static inline void *snd_soc_codec_get_drvdata(struct snd_soc_codec *codec)
+ 	return snd_soc_component_get_drvdata(&codec->component);
+ }
+ 
+-static inline void snd_soc_platform_set_drvdata(struct snd_soc_platform *platform,
+-		void *data)
+-{
+-	snd_soc_component_set_drvdata(&platform->component, data);
+-}
+-
+-static inline void *snd_soc_platform_get_drvdata(struct snd_soc_platform *platform)
+-{
+-	return snd_soc_component_get_drvdata(&platform->component);
+-}
+-
+ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
+ {
+ 	INIT_LIST_HEAD(&card->widgets);
+@@ -1746,9 +1663,9 @@ static inline bool snd_soc_codec_is_active(struct snd_soc_codec *codec)
+  * @kcontrol: The control for which to get the component
+  *
+  * Note: This function will work correctly if the control has been registered
+- * for a component. Either with snd_soc_add_codec_controls() or
+- * snd_soc_add_platform_controls() or via  table based setup for either a
+- * CODEC, a platform or component driver. Otherwise the behavior is undefined.
++ * for a component. With snd_soc_add_codec_controls() or via table based
++ * setup for either a CODEC or component driver. Otherwise the behavior is
++ * undefined.
+  */
+ static inline struct snd_soc_component *snd_soc_kcontrol_component(
+ 	struct snd_kcontrol *kcontrol)
+@@ -1770,20 +1687,6 @@ static inline struct snd_soc_codec *snd_soc_kcontrol_codec(
+ 	return snd_soc_component_to_codec(snd_soc_kcontrol_component(kcontrol));
+ }
+ 
+-/**
+- * snd_soc_kcontrol_platform() - Returns the platform that registered the control
+- * @kcontrol: The control for which to get the platform
+- *
+- * Note: This function will only work correctly if the control has been
+- * registered with snd_soc_add_platform_controls() or via table based setup of
+- * a snd_soc_platform_driver. Otherwise the behavior is undefined.
+- */
+-static inline struct snd_soc_platform *snd_soc_kcontrol_platform(
+-	struct snd_kcontrol *kcontrol)
+-{
+-	return snd_soc_component_to_platform(snd_soc_kcontrol_component(kcontrol));
+-}
+-
+ int snd_soc_util_init(void);
+ void snd_soc_util_exit(void);
+ 
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 948505f74229..abc00c6cc2d7 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -29,7 +29,6 @@
+ static int soc_compr_open(struct snd_compr_stream *cstream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -47,23 +46,9 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ 		}
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->open) {
+-		ret = platform->driver->compr_ops->open(cstream);
+-		if (ret < 0) {
+-			dev_err(platform->dev,
+-				"Compress ASoC: can't open platform %s: %d\n",
+-				platform->component.name, ret);
+-			goto plat_err;
+-		}
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->open)
+ 			continue;
+@@ -101,10 +86,6 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ 		if (err_comp == component)
+ 			break;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (err_comp == &platform->component))
+-			continue;
+-
+ 		if (!err_comp->driver->compr_ops ||
+ 		    !err_comp->driver->compr_ops->free)
+ 			continue;
+@@ -112,9 +93,6 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
+ 		err_comp->driver->compr_ops->free(cstream);
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->free)
+-		platform->driver->compr_ops->free(cstream);
+-plat_err:
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->shutdown)
+ 		cpu_dai->driver->cops->shutdown(cstream, cpu_dai);
+ out:
+@@ -127,7 +105,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+ 	struct snd_pcm_substream *fe_substream =
+ 		 fe->pcm->streams[cstream->direction].substream;
+-	struct snd_soc_platform *platform = fe->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+@@ -153,23 +130,9 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 		}
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->open) {
+-		ret = platform->driver->compr_ops->open(cstream);
+-		if (ret < 0) {
+-			dev_err(platform->dev,
+-				"Compress ASoC: can't open platform %s: %d\n",
+-				platform->component.name, ret);
+-			goto plat_err;
+-		}
+-	}
+-
+ 	for_each_rtdcom(fe, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->open)
+ 			continue;
+@@ -242,10 +205,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 		if (err_comp == component)
+ 			break;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (err_comp == &platform->component))
+-			continue;
+-
+ 		if (!err_comp->driver->compr_ops ||
+ 		    !err_comp->driver->compr_ops->free)
+ 			continue;
+@@ -253,9 +212,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 		err_comp->driver->compr_ops->free(cstream);
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->free)
+-		platform->driver->compr_ops->free(cstream);
+-plat_err:
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->shutdown)
+ 		cpu_dai->driver->cops->shutdown(cstream, cpu_dai);
+ out:
+@@ -296,7 +252,6 @@ static void close_delayed_work(struct work_struct *work)
+ static int soc_compr_free(struct snd_compr_stream *cstream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -326,10 +281,6 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->free)
+ 			continue;
+@@ -337,9 +288,6 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ 		component->driver->compr_ops->free(cstream);
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->free)
+-		platform->driver->compr_ops->free(cstream);
+-
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->shutdown)
+ 		cpu_dai->driver->cops->shutdown(cstream, cpu_dai);
+ 
+@@ -368,7 +316,6 @@ static int soc_compr_free(struct snd_compr_stream *cstream)
+ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+ {
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+-	struct snd_soc_platform *platform = fe->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+@@ -408,16 +355,9 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
+ 	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->shutdown)
+ 		fe->dai_link->compr_ops->shutdown(cstream);
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->free)
+-		platform->driver->compr_ops->free(cstream);
+-
+ 	for_each_rtdcom(fe, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->free)
+ 			continue;
+@@ -436,7 +376,6 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ {
+ 
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+@@ -445,19 +384,9 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->trigger) {
+-		ret = platform->driver->compr_ops->trigger(cstream, cmd);
+-		if (ret < 0)
+-			goto out;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->trigger)
+ 			continue;
+@@ -489,7 +418,6 @@ static int soc_compr_trigger(struct snd_compr_stream *cstream, int cmd)
+ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+-	struct snd_soc_platform *platform = fe->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+@@ -498,19 +426,9 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ 	if (cmd == SND_COMPR_TRIGGER_PARTIAL_DRAIN ||
+ 		cmd == SND_COMPR_TRIGGER_DRAIN) {
+ 
+-		if (platform &&
+-		    platform->driver->compr_ops &&
+-		    platform->driver->compr_ops->trigger)
+-			return platform->driver->compr_ops->trigger(cstream,
+-								    cmd);
+-
+ 		for_each_rtdcom(fe, rtdcom) {
+ 			component = rtdcom->component;
+ 
+-			/* ignore duplication for now */
+-			if (platform && (component == &platform->component))
+-				continue;
+-
+ 			if (!component->driver->compr_ops ||
+ 			    !component->driver->compr_ops->trigger)
+ 				continue;
+@@ -536,19 +454,9 @@ static int soc_compr_trigger_fe(struct snd_compr_stream *cstream, int cmd)
+ 			goto out;
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->trigger) {
+-		ret = platform->driver->compr_ops->trigger(cstream, cmd);
+-		if (ret < 0)
+-			goto out;
+-	}
+-
+ 	for_each_rtdcom(fe, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->trigger)
+ 			continue;
+@@ -589,7 +497,6 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 					struct snd_compr_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -597,11 +504,12 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+-	/* first we call set_params for the platform driver
+-	 * this should configure the soc side
+-	 * if the machine has compressed ops then we call that as well
+-	 * expectation is that platform and machine will configure everything
+-	 * for this compress path, like configuring pcm port for codec
++	/*
++	 * First we call set_params for the CPU DAI, then the component
++	 * driver this should configure the SoC side. If the machine has
++	 * compressed ops then we call that as well. The expectation is
++	 * that these callbacks will configure everything for this compress
++	 * path, like configuring a PCM port for a CODEC.
+ 	 */
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->set_params) {
+ 		ret = cpu_dai->driver->cops->set_params(cstream, params, cpu_dai);
+@@ -609,19 +517,9 @@ static int soc_compr_set_params(struct snd_compr_stream *cstream,
+ 			goto err;
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->set_params) {
+-		ret = platform->driver->compr_ops->set_params(cstream, params);
+-		if (ret < 0)
+-			goto err;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->set_params)
+ 			continue;
+@@ -665,7 +563,6 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 	struct snd_soc_pcm_runtime *fe = cstream->private_data;
+ 	struct snd_pcm_substream *fe_substream =
+ 		 fe->pcm->streams[cstream->direction].substream;
+-	struct snd_soc_platform *platform = fe->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = fe->cpu_dai;
+@@ -684,19 +581,9 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
+ 			goto out;
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->set_params) {
+-		ret = platform->driver->compr_ops->set_params(cstream, params);
+-		if (ret < 0)
+-			goto out;
+-	}
+-
+ 	for_each_rtdcom(fe, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->set_params)
+ 			continue;
+@@ -745,7 +632,6 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+ 					struct snd_codec *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -759,19 +645,9 @@ static int soc_compr_get_params(struct snd_compr_stream *cstream,
+ 			goto err;
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->get_params) {
+-		ret = platform->driver->compr_ops->get_params(cstream, params);
+-		if (ret < 0)
+-			goto err;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->get_params)
+ 			continue;
+@@ -790,26 +666,15 @@ static int soc_compr_get_caps(struct snd_compr_stream *cstream,
+ 				struct snd_compr_caps *caps)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	int ret = 0, __ret;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->get_caps) {
+-		ret = platform->driver->compr_ops->get_caps(cstream, caps);
+-		if (ret < 0)
+-			goto err;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->get_caps)
+ 			continue;
+@@ -819,7 +684,6 @@ static int soc_compr_get_caps(struct snd_compr_stream *cstream,
+ 			ret = __ret;
+ 	}
+ 
+-err:
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+ }
+@@ -828,26 +692,15 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ 				struct snd_compr_codec_caps *codec)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	int ret = 0, __ret;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->get_codec_caps) {
+-		ret = platform->driver->compr_ops->get_codec_caps(cstream, codec);
+-		if (ret < 0)
+-			goto err;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->get_codec_caps)
+ 			continue;
+@@ -857,7 +710,6 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ 			ret = __ret;
+ 	}
+ 
+-err:
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+ }
+@@ -865,7 +717,6 @@ static int soc_compr_get_codec_caps(struct snd_compr_stream *cstream,
+ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -879,19 +730,9 @@ static int soc_compr_ack(struct snd_compr_stream *cstream, size_t bytes)
+ 			goto err;
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->ack) {
+-		ret = platform->driver->compr_ops->ack(cstream, bytes);
+-		if (ret < 0)
+-			goto err;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->ack)
+ 			continue;
+@@ -910,7 +751,6 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 			struct snd_compr_tstamp *tstamp)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	int ret = 0, __ret;
+@@ -921,19 +761,9 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->pointer)
+ 		cpu_dai->driver->cops->pointer(cstream, tstamp, cpu_dai);
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->pointer) {
+-		ret = platform->driver->compr_ops->pointer(cstream, tstamp);
+-		if (ret < 0)
+-			goto err;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->pointer)
+ 			continue;
+@@ -943,7 +773,6 @@ static int soc_compr_pointer(struct snd_compr_stream *cstream,
+ 			ret = __ret;
+ 	}
+ 
+-err:
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+ }
+@@ -952,26 +781,15 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
+ 			  char __user *buf, size_t count)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	int ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->copy) {
+-		ret = platform->driver->compr_ops->copy(cstream, buf, count);
+-		if (ret < 0)
+-			goto err;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->copy)
+ 			continue;
+@@ -980,7 +798,6 @@ static int soc_compr_copy(struct snd_compr_stream *cstream,
+ 		break;
+ 	}
+ 
+-err:
+ 	mutex_unlock(&rtd->pcm_mutex);
+ 	return ret;
+ }
+@@ -989,7 +806,6 @@ static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
+ 				struct snd_compr_metadata *metadata)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -1001,19 +817,9 @@ static int soc_compr_set_metadata(struct snd_compr_stream *cstream,
+ 			return ret;
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->set_metadata) {
+-		ret = platform->driver->compr_ops->set_metadata(cstream, metadata);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->set_metadata)
+ 			continue;
+@@ -1030,7 +836,6 @@ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
+ 				struct snd_compr_metadata *metadata)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = cstream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -1042,19 +847,9 @@ static int soc_compr_get_metadata(struct snd_compr_stream *cstream,
+ 			return ret;
+ 	}
+ 
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->get_metadata) {
+-		ret = platform->driver->compr_ops->get_metadata(cstream, metadata);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->get_metadata)
+ 			continue;
+@@ -1107,7 +902,6 @@ static struct snd_compr_ops soc_compr_dyn_ops = {
+  */
+ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ {
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+@@ -1188,18 +982,9 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 		memcpy(compr->ops, &soc_compr_ops, sizeof(soc_compr_ops));
+ 	}
+ 
+-
+-	/* Add copy callback for not memory mapped DSPs */
+-	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->copy)
+-		compr->ops->copy = soc_compr_copy;
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->compr_ops ||
+ 		    !component->driver->compr_ops->copy)
+ 			continue;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index bf7ca32ab31f..052089f16ea0 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -56,7 +56,6 @@ EXPORT_SYMBOL_GPL(snd_soc_debugfs_root);
+ #endif
+ 
+ static DEFINE_MUTEX(client_mutex);
+-static LIST_HEAD(platform_list);
+ static LIST_HEAD(codec_list);
+ static LIST_HEAD(component_list);
+ 
+@@ -381,21 +380,6 @@ static int dai_list_show(struct seq_file *m, void *v)
+ }
+ DEFINE_SHOW_ATTRIBUTE(dai_list);
+ 
+-static int platform_list_show(struct seq_file *m, void *v)
+-{
+-	struct snd_soc_platform *platform;
+-
+-	mutex_lock(&client_mutex);
+-
+-	list_for_each_entry(platform, &platform_list, list)
+-		seq_printf(m, "%s\n", platform->component.name);
+-
+-	mutex_unlock(&client_mutex);
+-
+-	return 0;
+-}
+-DEFINE_SHOW_ATTRIBUTE(platform_list);
+-
+ static void soc_init_card_debugfs(struct snd_soc_card *card)
+ {
+ 	if (!snd_soc_debugfs_root)
+@@ -438,10 +422,6 @@ static void snd_soc_debugfs_init(void)
+ 	if (!debugfs_create_file("dais", 0444, snd_soc_debugfs_root, NULL,
+ 				 &dai_list_fops))
+ 		pr_warn("ASoC: Failed to create DAI list debugfs file\n");
+-
+-	if (!debugfs_create_file("platforms", 0444, snd_soc_debugfs_root, NULL,
+-				 &platform_list_fops))
+-		pr_warn("ASoC: Failed to create platform list debugfs file\n");
+ }
+ 
+ static void snd_soc_debugfs_exit(void)
+@@ -1045,7 +1025,6 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	struct snd_soc_dai_link_component cpu_dai_component;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_dai **codec_dais;
+-	struct snd_soc_platform *platform;
+ 	struct device_node *platform_of_node;
+ 	const char *platform_name;
+ 	int i;
+@@ -1113,23 +1092,6 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 		snd_soc_rtdcom_add(rtd, component);
+ 	}
+ 
+-	/* find one from the set of registered platforms */
+-	list_for_each_entry(platform, &platform_list, list) {
+-		platform_of_node = platform->dev->of_node;
+-		if (!platform_of_node && platform->dev->parent->of_node)
+-			platform_of_node = platform->dev->parent->of_node;
+-
+-		if (dai_link->platform_of_node) {
+-			if (platform_of_node != dai_link->platform_of_node)
+-				continue;
+-		} else {
+-			if (strcmp(platform->component.name, platform_name))
+-				continue;
+-		}
+-
+-		rtd->platform = platform;
+-	}
+-
+ 	soc_add_pcm_runtime(card, rtd);
+ 	return 0;
+ 
+@@ -2512,24 +2474,6 @@ int snd_soc_add_codec_controls(struct snd_soc_codec *codec,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_add_codec_controls);
+ 
+-/**
+- * snd_soc_add_platform_controls - add an array of controls to a platform.
+- * Convenience function to add a list of controls.
+- *
+- * @platform: platform to add controls to
+- * @controls: array of controls to add
+- * @num_controls: number of elements in the array
+- *
+- * Return 0 for success, else error.
+- */
+-int snd_soc_add_platform_controls(struct snd_soc_platform *platform,
+-	const struct snd_kcontrol_new *controls, unsigned int num_controls)
+-{
+-	return snd_soc_add_component_controls(&platform->component, controls,
+-		num_controls);
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_add_platform_controls);
+-
+ /**
+  * snd_soc_add_card_controls - add an array of controls to a SoC card.
+  * Convenience function to add a list of controls.
+@@ -3503,164 +3447,6 @@ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_lookup_component);
+ 
+-static int snd_soc_platform_drv_probe(struct snd_soc_component *component)
+-{
+-	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
+-
+-	return platform->driver->probe(platform);
+-}
+-
+-static void snd_soc_platform_drv_remove(struct snd_soc_component *component)
+-{
+-	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
+-
+-	platform->driver->remove(platform);
+-}
+-
+-static int snd_soc_platform_drv_pcm_new(struct snd_soc_component *component,
+-					struct snd_soc_pcm_runtime *rtd)
+-{
+-	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
+-
+-	if (platform->driver->pcm_new)
+-		return platform->driver->pcm_new(rtd);
+-
+-	return 0;
+-}
+-
+-static void snd_soc_platform_drv_pcm_free(struct snd_soc_component *component,
+-					  struct snd_pcm *pcm)
+-{
+-	struct snd_soc_platform *platform = snd_soc_component_to_platform(component);
+-
+-	if (platform->driver->pcm_free)
+-		platform->driver->pcm_free(pcm);
+-}
+-
+-/**
+- * snd_soc_add_platform - Add a platform to the ASoC core
+- * @dev: The parent device for the platform
+- * @platform: The platform to add
+- * @platform_drv: The driver for the platform
+- */
+-int snd_soc_add_platform(struct device *dev, struct snd_soc_platform *platform,
+-		const struct snd_soc_platform_driver *platform_drv)
+-{
+-	int ret;
+-
+-	ret = snd_soc_component_initialize(&platform->component,
+-			&platform_drv->component_driver, dev);
+-	if (ret)
+-		return ret;
+-
+-	platform->dev = dev;
+-	platform->driver = platform_drv;
+-
+-	if (platform_drv->probe)
+-		platform->component.probe = snd_soc_platform_drv_probe;
+-	if (platform_drv->remove)
+-		platform->component.remove = snd_soc_platform_drv_remove;
+-	if (platform_drv->pcm_new)
+-		platform->component.pcm_new = snd_soc_platform_drv_pcm_new;
+-	if (platform_drv->pcm_free)
+-		platform->component.pcm_free = snd_soc_platform_drv_pcm_free;
+-
+-#ifdef CONFIG_DEBUG_FS
+-	platform->component.debugfs_prefix = "platform";
+-#endif
+-
+-	mutex_lock(&client_mutex);
+-	snd_soc_component_add_unlocked(&platform->component);
+-	list_add(&platform->list, &platform_list);
+-	mutex_unlock(&client_mutex);
+-
+-	dev_dbg(dev, "ASoC: Registered platform '%s'\n",
+-		platform->component.name);
+-
+-	return 0;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_add_platform);
+-
+-/**
+- * snd_soc_register_platform - Register a platform with the ASoC core
+- *
+- * @dev: The device for the platform
+- * @platform_drv: The driver for the platform
+- */
+-int snd_soc_register_platform(struct device *dev,
+-		const struct snd_soc_platform_driver *platform_drv)
+-{
+-	struct snd_soc_platform *platform;
+-	int ret;
+-
+-	dev_dbg(dev, "ASoC: platform register %s\n", dev_name(dev));
+-
+-	platform = kzalloc(sizeof(struct snd_soc_platform), GFP_KERNEL);
+-	if (platform == NULL)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_add_platform(dev, platform, platform_drv);
+-	if (ret)
+-		kfree(platform);
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_register_platform);
+-
+-/**
+- * snd_soc_remove_platform - Remove a platform from the ASoC core
+- * @platform: the platform to remove
+- */
+-void snd_soc_remove_platform(struct snd_soc_platform *platform)
+-{
+-
+-	mutex_lock(&client_mutex);
+-	list_del(&platform->list);
+-	snd_soc_component_del_unlocked(&platform->component);
+-	mutex_unlock(&client_mutex);
+-
+-	dev_dbg(platform->dev, "ASoC: Unregistered platform '%s'\n",
+-		platform->component.name);
+-
+-	snd_soc_component_cleanup(&platform->component);
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_remove_platform);
+-
+-struct snd_soc_platform *snd_soc_lookup_platform(struct device *dev)
+-{
+-	struct snd_soc_platform *platform;
+-
+-	mutex_lock(&client_mutex);
+-	list_for_each_entry(platform, &platform_list, list) {
+-		if (dev == platform->dev) {
+-			mutex_unlock(&client_mutex);
+-			return platform;
+-		}
+-	}
+-	mutex_unlock(&client_mutex);
+-
+-	return NULL;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_lookup_platform);
+-
+-/**
+- * snd_soc_unregister_platform - Unregister a platform from the ASoC core
+- *
+- * @dev: platform to unregister
+- */
+-void snd_soc_unregister_platform(struct device *dev)
+-{
+-	struct snd_soc_platform *platform;
+-
+-	platform = snd_soc_lookup_platform(dev);
+-	if (!platform)
+-		return;
+-
+-	snd_soc_remove_platform(platform);
+-	kfree(platform);
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_unregister_platform);
+-
+ static int snd_soc_codec_drv_probe(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
+diff --git a/sound/soc/soc-devres.c b/sound/soc/soc-devres.c
+index a57921eeee81..7ac745df1412 100644
+--- a/sound/soc/soc-devres.c
++++ b/sound/soc/soc-devres.c
+@@ -52,41 +52,6 @@ int devm_snd_soc_register_component(struct device *dev,
+ }
+ EXPORT_SYMBOL_GPL(devm_snd_soc_register_component);
+ 
+-static void devm_platform_release(struct device *dev, void *res)
+-{
+-	snd_soc_unregister_platform(*(struct device **)res);
+-}
+-
+-/**
+- * devm_snd_soc_register_platform - resource managed platform registration
+- * @dev: Device used to manage platform
+- * @platform_drv: platform to register
+- *
+- * Register a platform driver with automatic unregistration when the device is
+- * unregistered.
+- */
+-int devm_snd_soc_register_platform(struct device *dev,
+-			const struct snd_soc_platform_driver *platform_drv)
+-{
+-	struct device **ptr;
+-	int ret;
+-
+-	ptr = devres_alloc(devm_platform_release, sizeof(*ptr), GFP_KERNEL);
+-	if (!ptr)
+-		return -ENOMEM;
+-
+-	ret = snd_soc_register_platform(dev, platform_drv);
+-	if (ret == 0) {
+-		*ptr = dev;
+-		devres_add(dev, ptr);
+-	} else {
+-		devres_free(ptr);
+-	}
+-
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(devm_snd_soc_register_platform);
+-
+ static void devm_card_release(struct device *dev, void *res)
+ {
+ 	snd_soc_unregister_card(*(struct snd_soc_card **)res);
+diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
+index d36a192fbece..c92a04bac3c5 100644
+--- a/sound/soc/soc-io.c
++++ b/sound/soc/soc-io.c
+@@ -267,24 +267,3 @@ int snd_soc_test_bits(struct snd_soc_codec *codec, unsigned int reg,
+ 	return snd_soc_component_test_bits(&codec->component, reg, mask, value);
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_test_bits);
+-
+-int snd_soc_platform_read(struct snd_soc_platform *platform,
+-					unsigned int reg)
+-{
+-	unsigned int val;
+-	int ret;
+-
+-	ret = snd_soc_component_read(&platform->component, reg, &val);
+-	if (ret < 0)
+-		return -1;
+-
+-	return val;
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_platform_read);
+-
+-int snd_soc_platform_write(struct snd_soc_platform *platform,
+-					 unsigned int reg, unsigned int val)
+-{
+-	return snd_soc_component_write(&platform->component, reg, val);
+-}
+-EXPORT_SYMBOL_GPL(snd_soc_platform_write);
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 68d9dc930096..da5a2dcb6520 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -456,13 +456,12 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ /*
+  * Called by ALSA when a PCM substream is opened, the runtime->hw record is
+  * then initialized and any private data can be allocated. This also calls
+- * startup for the cpu DAI, platform, machine and codec DAI.
++ * startup for the cpu DAI, component, machine and codec DAI.
+  */
+ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -492,23 +491,10 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		}
+ 	}
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->open) {
+-		ret = platform->driver->ops->open(substream);
+-		if (ret < 0) {
+-			dev_err(platform->dev, "ASoC: can't open platform"
+-				" %s: %d\n", platform->component.name, ret);
+-			goto platform_err;
+-		}
+-	}
+-
+ 	ret = 0;
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->open)
+ 			continue;
+@@ -634,10 +620,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->close)
+ 			continue;
+@@ -645,10 +627,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		component->driver->ops->close(substream);
+ 	}
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->close)
+-		platform->driver->ops->close(substream);
+-
+-platform_err:
+ 	if (cpu_dai->driver->ops->shutdown)
+ 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
+ out:
+@@ -701,13 +679,12 @@ static void close_delayed_work(struct work_struct *work)
+ 
+ /*
+  * Called by ALSA when a PCM substream is closed. Private data can be
+- * freed here. The cpu DAI, codec DAI, machine and platform are also
++ * freed here. The cpu DAI, codec DAI, machine and components are also
+  * shutdown.
+  */
+ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -742,16 +719,9 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 	if (rtd->dai_link->ops->shutdown)
+ 		rtd->dai_link->ops->shutdown(substream);
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->close)
+-		platform->driver->ops->close(substream);
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->close)
+ 			continue;
+@@ -805,7 +775,6 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -823,22 +792,9 @@ static int soc_pcm_prepare(struct snd_pcm_substream *substream)
+ 		}
+ 	}
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->prepare) {
+-		ret = platform->driver->ops->prepare(substream);
+-		if (ret < 0) {
+-			dev_err(platform->dev, "ASoC: platform prepare error:"
+-				" %d\n", ret);
+-			goto out;
+-		}
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->prepare)
+ 			continue;
+@@ -932,7 +888,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 				struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -994,23 +949,10 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		goto interface_err;
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->hw_params) {
+-		ret = platform->driver->ops->hw_params(substream, params);
+-		if (ret < 0) {
+-			dev_err(platform->dev, "ASoC: %s hw params failed: %d\n",
+-			       platform->component.name, ret);
+-			goto platform_err;
+-		}
+-	}
+-
+ 	ret = 0;
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->hw_params)
+ 			continue;
+@@ -1043,10 +985,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->hw_free)
+ 			continue;
+@@ -1054,10 +992,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		component->driver->ops->hw_free(substream);
+ 	}
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->hw_free)
+-		platform->driver->ops->hw_free(substream);
+-
+-platform_err:
+ 	if (cpu_dai->driver->ops->hw_free)
+ 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
+ 
+@@ -1085,7 +1019,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -1123,18 +1056,10 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 	if (rtd->dai_link->ops->hw_free)
+ 		rtd->dai_link->ops->hw_free(substream);
+ 
+-	/* free any DMA resources */
+-	if (platform && platform->driver->ops && platform->driver->ops->hw_free)
+-		platform->driver->ops->hw_free(substream);
+-
+ 	/* free any component resources */
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->hw_free)
+ 			continue;
+@@ -1159,7 +1084,6 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -1176,19 +1100,9 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		}
+ 	}
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->trigger) {
+-		ret = platform->driver->ops->trigger(substream, cmd);
+-		if (ret < 0)
+-			return ret;
+-	}
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->trigger)
+ 			continue;
+@@ -1240,13 +1154,12 @@ static int soc_pcm_bespoke_trigger(struct snd_pcm_substream *substream,
+ }
+ /*
+  * soc level wrapper for pointer callback
+- * If cpu_dai, codec_dai, platform driver has the delay callback, than
++ * If cpu_dai, codec_dai, component driver has the delay callback, then
+  * the runtime->delay will be updated accordingly.
+  */
+ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+@@ -1257,16 +1170,9 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ 	snd_pcm_sframes_t codec_delay = 0;
+ 	int i;
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->pointer)
+-		offset = platform->driver->ops->pointer(substream);
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->pointer)
+ 			continue;
+@@ -2470,20 +2376,12 @@ static int soc_pcm_ioctl(struct snd_pcm_substream *substream,
+ 		     unsigned int cmd, void *arg)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 
+-	if (platform && platform->driver->ops && platform->driver->ops->ioctl)
+-		return platform->driver->ops->ioctl(substream, cmd, arg);
+-
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+-		/* ignore duplication for now */
+-		if (platform && (component == &platform->component))
+-			continue;
+-
+ 		if (!component->driver->ops ||
+ 		    !component->driver->ops->ioctl)
+ 			continue;
+@@ -2987,7 +2885,6 @@ static int soc_rtdcom_mmap(struct snd_pcm_substream *substream,
+ /* create a new pcm */
+ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ {
+-	struct snd_soc_platform *platform = rtd->platform;
+ 	struct snd_soc_dai *codec_dai;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct snd_soc_component *component;
+@@ -3106,16 +3003,6 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 			rtd->ops.mmap		= soc_rtdcom_mmap;
+ 	}
+ 
+-	/* overwrite */
+-	if (platform && platform->driver->ops) {
+-		rtd->ops.ack		= platform->driver->ops->ack;
+-		rtd->ops.copy_user	= platform->driver->ops->copy_user;
+-		rtd->ops.copy_kernel	= platform->driver->ops->copy_kernel;
+-		rtd->ops.fill_silence	= platform->driver->ops->fill_silence;
+-		rtd->ops.page		= platform->driver->ops->page;
+-		rtd->ops.mmap		= platform->driver->ops->mmap;
+-	}
+-
+ 	if (playback)
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &rtd->ops);
+ 
 -- 
 2.17.0
