@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 02/24] soc: qcom: Add APR bus driver
-Date: Thu, 26 Apr 2018 12:39:11 +0100
-Message-ID: <20180426113911.GA21755@sirena.org.uk>
-References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
- <20180426094606.4775-3-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: add mt6351 codec driver
+Date: Thu, 26 Apr 2018 12:40:11 +0100
+Message-ID: <20180426114011.GC21755@sirena.org.uk>
+References: <20180426024144.13974-1-kaichieh.chuang@mediatek.com>
+ <1524711070.12322.23.camel@mtkswgap22>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0147266082917654543=="
+Content-Type: multipart/mixed; boundary="===============4775134009062415266=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 620862676AB
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:39:21 +0200 (CEST)
-In-Reply-To: <20180426094606.4775-3-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 497E82676AB
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:40:18 +0200 (CEST)
+In-Reply-To: <1524711070.12322.23.camel@mtkswgap22>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,58 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+To: Sean Wang <sean.wang@mediatek.com>
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, KaiChieh Chuang <kaichieh.chuang@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0147266082917654543==
+--===============4775134009062415266==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bg08WKrSYDhXBjb5"
+	protocol="application/pgp-signature"; boundary="pAwQNkOnpTn9IO2O"
 Content-Disposition: inline
 
 
---bg08WKrSYDhXBjb5
+--pAwQNkOnpTn9IO2O
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 26, 2018 at 10:45:44AM +0100, srinivas.kandagatla@linaro.org wr=
-ote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->=20
-> This patch adds support toi APR bus (Asynchronous Packet Router) driver.
-> ARP driver is made as a bus driver so that the apr devices can added remo=
-ved
+On Thu, Apr 26, 2018 at 10:51:10AM +0800, Sean Wang wrote:
+> On Thu, 2018-04-26 at 10:41 +0800, KaiChieh Chuang wrote:
+> > This patch adds the MediaTek MT6351 codec driver.
+> > MT6351 communicate with SoC through MediaTek PMIC wrapper.
+> > MT6351 use MediaTek proprietary audio interface.
 
-What is the plan for getting this patch merged?  I think the only review
-I've seen from maintainers thus far has been from Rob on the DT binding.
-It's obviously going to be a dependency for everything else.
+Please delete unneeded context from mails when replying.  Doing this
+makes it much easier to find your reply in the message, helping ensure
+it won't be missed by people scrolling through the irrelevant quoted
+material.
 
-Also just saw ARP->APR there.
-
---bg08WKrSYDhXBjb5
+--pAwQNkOnpTn9IO2O
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrhul4ACgkQJNaLcl1U
-h9CgQQf/auIda6Dzw79FRXmW5P9u1HmRvwFwIj/szesf68wOagvCtVRoYvjSDS1W
-w9GujIX0dYGRMmClXB2WN+cR6nQYhaPsOLv02wAnLkhUjT6/qm0v73Oa7n3v20hN
-okuwDTa03R2BBn7eyrBnt7iLT5PEu3oP4tsJZZL4WPb5STMVXhHLJyzv4SfSjAhM
-yACHFUEBSMIoSP+ylpv+gaBW3ibu5wY5IAouxJ23BvwADCufIBT0enFihaUsMImd
-QC6WHhQJEhIOq0lfrStSQ0UuI1e9lufN2d8GTwWf1FYQlyIl53G4fSGbZJymsLzZ
-qeWZq7sY+4eJmQL0v6cJbPr8t+Y7cQ==
-=MK0Z
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrhupsACgkQJNaLcl1U
+h9DKHQf/bdadkLrZtU8GGXgm5ZysCfwj3NT0G7NLk6kfX5KBiXas24HyNq0XGRYm
+xieTL5mLIyeOkv04zmxhuHvUAwCU61L7ldNuiraFrfRhim5XLThIppLbFQ41+0eF
+7JJbmAPq/Yxn9osxKFwCcmKDIHUiW3qAmLd/yxEoe4w74ElKV0+Owcqeewno28vZ
+cPIq+9C6EftbYuKV+44CILuPAH67HFjTdCEK8czAhwNLB/oY6Fj+oYHSWu3B40ir
+WGiro3oxE6JBRwgX8OjwedhWSr1TaEn0LsL/BBkhA4WUNBxI1eHCpgzctKBdmSUA
+reexKo4QG6XSZXzGRXzET3RvfV6Mkw==
+=1B+S
 -----END PGP SIGNATURE-----
 
---bg08WKrSYDhXBjb5--
+--pAwQNkOnpTn9IO2O--
 
---===============0147266082917654543==
+--===============4775134009062415266==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0147266082917654543==--
+--===============4775134009062415266==--
