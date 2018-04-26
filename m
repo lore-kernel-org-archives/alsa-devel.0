@@ -1,102 +1,104 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH 0/4] ALSA: Fix year 2038 issue for sound subsystem,
- alternative
-Date: Thu, 26 Apr 2018 15:30:58 +0200
-Message-ID: <6aa760e5-390a-b7ba-62f1-dc01308031fa@perex.cz>
-References: <20180426124422.2921744-1-arnd@arndb.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fsl_ssi: Use u32 variable type when
+	using regmap_read()" to the asoc tree
+Date: Thu, 26 Apr 2018 15:18:57 +0100
+Message-ID: <E1fBhjd-0003xH-8L@debutante>
+References: <1524696832-7684-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180426124422.2921744-1-arnd@arndb.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, y2038@lists.linaro.org, linux-kernel@vger.kernel.org
-Cc: tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, o-takashi@sakamocchi.jp, alsa-devel@alsa-project.org, Baolin Wang <baolin.wang@linaro.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1249526779A
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 16:19:01 +0200 (CEST)
+In-Reply-To: <1524696832-7684-1-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 26.4.2018 v 14:44 Arnd Bergmann napsal(a):
-> I've tried the suggestion from Jaroslaw, doing a minimal change to the
-> UAPI headers to keep the existing binary interface. As he predicted,
-> this is a much simpler set of kernel changes, but we will pay for that
-> with added complexity in alsa-lib.
-> 
-> The first two patches in this series are taken from Baolin's patch
-> set, with a small bugfix folded in to avoid a compile-time regression.
-> 
-> The other two patches are to redefine the UAPI and to deprecate
-> the support for CLOCK_REALTIME time stamps, which we can no longer
-> allow with user space that we expect to survive beyond 2038.
-> 
-> Overall, I'd still be happier with Baolin's approach since it allows
-> us to keep compatiblity with CLOCK_REALTIME users and requires
-> fewer changes in user space, but this would work as well.
+The patch
 
-Hi Arnd,
+   ASoC: fsl_ssi: Use u32 variable type when using regmap_read()
 
-  Thanks for your work. I proposed a bit different implementation. Example:
+has been applied to the asoc tree at
 
-struct snd_example {
-  struct snd_native_timespec tstamp;
-  ....
-  u64 tstamp_sec64; /* use the reserved[] array for this */
-};
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-  So tstamp contains the current 32-bit tv_sec/tv_nsec and the full
-64-bit value is in tstamp_sec64. In this way, we can transfer any type
-of the timespec64 values and it's backward compatible to retain the
-binary compatibility. The protocol versions should be increased to let
-the userspace know about the new 64-bit fields.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-  The timer read protocol must be updated, because the stream will
-change, so I am fine to add new ioctl (like originally proposed).
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-  The alsa-lib defines timespec only if posix defines are not set so
-glibc's time.h does not define the timespec structure - it may be improved.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-					Jaroslav
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> 
-> 	Arnd
-> 
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: tiwai@suse.com
-> Cc: lgirdwood@gmail.com
-> Cc: broonie@kernel.org
-> Cc: o-takashi@sakamocchi.jp
-> Cc: y2038@lists.linaro.org
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: Baolin Wang <baolin.wang@linaro.org>
-> 
-> Arnd Bergmann (2):
->   ALSA: replace timespec types in uapi headers
->   ALSA: Deprecate CLOCK_REALTIME timestamps
-> 
-> Baolin Wang (2):
->   ALSA: Replace timespec with timespec64
->   ALSA: Avoid using timespec for struct snd_ctl_elem_value
-> 
->  include/sound/asound.h            |  8 +++++
->  include/sound/pcm.h               | 22 +++++++-----
->  include/sound/timer.h             |  4 +--
->  include/uapi/sound/asound.h       | 53 +++++++++++++++++++++--------
->  sound/core/Kconfig                | 11 ++++++
->  sound/core/compat.h               | 11 ++++++
->  sound/core/pcm.c                  |  3 ++
->  sound/core/pcm_compat.c           | 70 ++++++++++++++++++++++-----------------
->  sound/core/pcm_lib.c              | 36 ++++++++++++--------
->  sound/core/pcm_native.c           | 25 ++++++++++----
->  sound/core/rawmidi_compat.c       | 12 +++----
->  sound/core/timer.c                | 28 ++++++++--------
->  sound/core/timer_compat.c         |  4 ++-
->  sound/pci/hda/hda_controller.c    | 14 +++++---
->  sound/soc/intel/skylake/skl-pcm.c |  4 +--
->  15 files changed, 203 insertions(+), 102 deletions(-)
->  create mode 100644 sound/core/compat.h
-> 
+Thanks,
+Mark
 
+>From 671f8204b12fae98dcc6fc5a5703a5c62cbea187 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Wed, 25 Apr 2018 19:53:52 -0300
+Subject: [PATCH] ASoC: fsl_ssi: Use u32 variable type when using regmap_read()
 
+Convert the sisr and sisr2 variable types to u32 to avoid the following
+sparse warnings:
+
+sound/soc/fsl/fsl_ssi.c:391:42: warning: incorrect type in argument 3 (different base types)
+sound/soc/fsl/fsl_ssi.c:391:42:    expected unsigned int *val
+sound/soc/fsl/fsl_ssi.c:391:42:    got restricted __be32 *<noident>
+sound/soc/fsl/fsl_ssi.c:393:17: warning: restricted __be32 degrades to integer
+sound/soc/fsl/fsl_ssi.c:393:15: warning: incorrect type in assignment (different base types)
+sound/soc/fsl/fsl_ssi.c:393:15:    expected restricted __be32 [usertype] sisr2
+sound/soc/fsl/fsl_ssi.c:393:15:    got unsigned int
+sound/soc/fsl/fsl_ssi.c:396:50: warning: incorrect type in argument 3 (different base types)
+sound/soc/fsl/fsl_ssi.c:396:50:    expected unsigned int [unsigned] val
+sound/soc/fsl/fsl_ssi.c:396:50:    got restricted __be32 [usertype] sisr2
+sound/soc/fsl/fsl_ssi.c:398:42: warning: incorrect type in argument 2 (different base types)
+sound/soc/fsl/fsl_ssi.c:398:42:    expected unsigned int [unsigned] [usertype] sisr
+sound/soc/fsl/fsl_ssi.c:398:42:    got restricted __be32 [addressable] [usertype] sisr
+
+In other places where regmap_read() is used a u32 variable is passed
+to store the register read value, so do the same here as well.
+
+regmap API already takes care of endianness, so the usage of u32 is safe.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/fsl_ssi.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 89df2d9f63d7..1544166631e3 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -385,8 +385,7 @@ static irqreturn_t fsl_ssi_isr(int irq, void *dev_id)
+ {
+ 	struct fsl_ssi *ssi = dev_id;
+ 	struct regmap *regs = ssi->regs;
+-	__be32 sisr;
+-	__be32 sisr2;
++	u32 sisr, sisr2;
+ 
+ 	regmap_read(regs, REG_SSI_SISR, &sisr);
+ 
 -- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+2.17.0
