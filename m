@@ -1,386 +1,88 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: simplify the control logic of MT2701 I2S" to the asoc tree
-Date: Thu, 26 Apr 2018 15:20:27 +0100
-Message-ID: <E1fBhl5-00048o-L5@debutante>
-References: <95304d5edf6f6673dabbcd2da1d05c3c751a7e26.1524628914.git.ryder.lee@mediatek.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 0/4] ALSA: Fix year 2038 issue for sound subsystem, alternative
+Date: Thu, 26 Apr 2018 16:32:01 +0200
+Message-ID: <CAK8P3a3hugjuOvHCKY-8Ny02Ww8RJAeCxUc4hG8SPJBxqPG0Tw@mail.gmail.com>
+References: <20180426124422.2921744-1-arnd@arndb.de> <6aa760e5-390a-b7ba-62f1-dc01308031fa@perex.cz>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <95304d5edf6f6673dabbcd2da1d05c3c751a7e26.1524628914.git.ryder.lee@mediatek.com>
+In-Reply-To: <6aa760e5-390a-b7ba-62f1-dc01308031fa@perex.cz>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Ryder Lee <ryder.lee@mediatek.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: y2038 Mailman List <y2038@lists.linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, Baolin Wang <baolin.wang@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Thu, Apr 26, 2018 at 3:30 PM, Jaroslav Kysela <perex@perex.cz> wrote:
+> Dne 26.4.2018 v 14:44 Arnd Bergmann napsal(a):
+>> I've tried the suggestion from Jaroslaw, doing a minimal change to the
+>> UAPI headers to keep the existing binary interface. As he predicted,
+>> this is a much simpler set of kernel changes, but we will pay for that
+>> with added complexity in alsa-lib.
+>>
+>> The first two patches in this series are taken from Baolin's patch
+>> set, with a small bugfix folded in to avoid a compile-time regression.
+>>
+>> The other two patches are to redefine the UAPI and to deprecate
+>> the support for CLOCK_REALTIME time stamps, which we can no longer
+>> allow with user space that we expect to survive beyond 2038.
+>>
+>> Overall, I'd still be happier with Baolin's approach since it allows
+>> us to keep compatiblity with CLOCK_REALTIME users and requires
+>> fewer changes in user space, but this would work as well.
+>
+> Hi Arnd,
+>
+>   Thanks for your work. I proposed a bit different implementation. Example:
+>
+> struct snd_example {
+>   struct snd_native_timespec tstamp;
+>   ....
+>   u64 tstamp_sec64; /* use the reserved[] array for this */
+> };
+>
+>   So tstamp contains the current 32-bit tv_sec/tv_nsec and the full
+> 64-bit value is in tstamp_sec64. In this way, we can transfer any type
+> of the timespec64 values and it's backward compatible to retain the
+> binary compatibility. The protocol versions should be increased to let
+> the userspace know about the new 64-bit fields.
 
-   ASoC: mediatek: simplify the control logic of MT2701 I2S
+Right, I went in a slightly different way since the intention was to keep
+the interface simple. I think we can either force the use of monotonic
+times or extend it to 64-bit CLOCK_REALTIME stamps, but the
+monotonic stamps seem much better for multiple reasons (i.e. skipping)
+if you want to avoid introducing new ioctls.
 
-has been applied to the asoc tree at
+The added complexity of having two timestamps in a single structure
+means we don't end up with much simpler code that what Baolin
+proposed, which mostly just moves the existing compat_ioctl()
+to the native 32-bit handler but not add anything new that requires
+library changes.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+His tread patch and my mmap patch both do add some complexity
+but then we also need some of that with your suggestions for
+tread.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+>   The timer read protocol must be updated, because the stream will
+> change, so I am fine to add new ioctl (like originally proposed).
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+With forced monotonic times, we can skip that update and keep
+using the existing stream format.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>   The alsa-lib defines timespec only if posix defines are not set so
+> glibc's time.h does not define the timespec structure - it may be improved.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Yes, we definitely need to improve that, since any application that
+relies on the timespec definition to come from alsa would otherwise
+get a structure with a 64-bit tv_sec but incorrect padding on tv_nsec
+(no padding on i386, padding on the wrong side for big-endian
+architectures).
 
-Thanks,
-Mark
+One way out would be to define snd_timestamp_t and
+snd_htimestamp_t in terms of snd_monotonic_timestamp
+from the kernel header and let it still have the traditional layout
+even for applications built with 64-bit time_t.
 
->From cf8702736032cd593f481e4c2ac38cfe6fa67799 Mon Sep 17 00:00:00 2001
-From: Ryder Lee <ryder.lee@mediatek.com>
-Date: Wed, 25 Apr 2018 12:19:55 +0800
-Subject: [PATCH] ASoC: mediatek: simplify the control logic of MT2701 I2S
+The downside is again that applications may break when they
+cast between snd_htimestamp_t and timespec pointers.
 
-This patch adjusts the mt2701_afe_i2s_ops to simplify the control
-logic of the I2S path.
-
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
-Reviewed-by: Garlic Tseng <garlic.tseng@mediatek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- .../mediatek/mt2701/mt2701-afe-clock-ctrl.c   |  39 +++---
- .../mediatek/mt2701/mt2701-afe-clock-ctrl.h   |  13 +-
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c    | 114 ++++++------------
- 3 files changed, 66 insertions(+), 100 deletions(-)
-
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-index 949fc3a1d025..565005f821d0 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.c
-@@ -3,6 +3,7 @@
-  *
-  * Copyright (c) 2016 MediaTek Inc.
-  * Author: Garlic Tseng <garlic.tseng@mediatek.com>
-+ *	   Ryder Lee <ryder.lee@mediatek.com>
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 and
-@@ -102,10 +103,10 @@ int mt2701_init_clock(struct mtk_base_afe *afe)
- 	return 0;
- }
- 
--int mt2701_afe_enable_i2s(struct mtk_base_afe *afe, int id, int dir)
-+int mt2701_afe_enable_i2s(struct mtk_base_afe *afe,
-+			  struct mt2701_i2s_path *i2s_path,
-+			  int dir)
- {
--	struct mt2701_afe_private *afe_priv = afe->platform_priv;
--	struct mt2701_i2s_path *i2s_path = &afe_priv->i2s_path[id];
- 	int ret;
- 
- 	ret = clk_prepare_enable(i2s_path->asrco_ck);
-@@ -128,11 +129,10 @@ int mt2701_afe_enable_i2s(struct mtk_base_afe *afe, int id, int dir)
- 	return ret;
- }
- 
--void mt2701_afe_disable_i2s(struct mtk_base_afe *afe, int id, int dir)
-+void mt2701_afe_disable_i2s(struct mtk_base_afe *afe,
-+			    struct mt2701_i2s_path *i2s_path,
-+			    int dir)
- {
--	struct mt2701_afe_private *afe_priv = afe->platform_priv;
--	struct mt2701_i2s_path *i2s_path = &afe_priv->i2s_path[id];
--
- 	clk_disable_unprepare(i2s_path->hop_ck[dir]);
- 	clk_disable_unprepare(i2s_path->asrco_ck);
- }
-@@ -272,27 +272,32 @@ int mt2701_afe_disable_clock(struct mtk_base_afe *afe)
- 	return 0;
- }
- 
--void mt2701_mclk_configuration(struct mtk_base_afe *afe, int id, int domain,
--			       int mclk)
-+int mt2701_mclk_configuration(struct mtk_base_afe *afe, int id)
-+
- {
- 	struct mt2701_afe_private *priv = afe->platform_priv;
- 	struct mt2701_i2s_path *i2s_path = &priv->i2s_path[id];
--	int ret;
-+	int ret = -EINVAL;
- 
- 	/* Set mclk source */
--	if (domain == 0)
-+	if (!(MT2701_PLL_DOMAIN_0_RATE % i2s_path->mclk_rate))
- 		ret = clk_set_parent(i2s_path->sel_ck,
- 				     priv->base_ck[MT2701_TOP_AUD_MCLK_SRC0]);
--	else
-+	else if (!(MT2701_PLL_DOMAIN_1_RATE % i2s_path->mclk_rate))
- 		ret = clk_set_parent(i2s_path->sel_ck,
- 				     priv->base_ck[MT2701_TOP_AUD_MCLK_SRC1]);
- 
--	if (ret)
--		dev_err(afe->dev, "failed to set domain%d mclk source %d\n",
--			domain, ret);
-+	if (ret) {
-+		dev_err(afe->dev, "failed to set mclk source\n");
-+		return ret;
-+	}
- 
- 	/* Set mclk divider */
--	ret = clk_set_rate(i2s_path->div_ck, mclk);
--	if (ret)
-+	ret = clk_set_rate(i2s_path->div_ck, i2s_path->mclk_rate);
-+	if (ret) {
- 		dev_err(afe->dev, "failed to set mclk divider %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
- }
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.h b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.h
-index 15417d9d6597..1957219cc3fe 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.h
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-clock-ctrl.h
-@@ -3,6 +3,7 @@
-  *
-  * Copyright (c) 2016 MediaTek Inc.
-  * Author: Garlic Tseng <garlic.tseng@mediatek.com>
-+ *	   Ryder Lee <ryder.lee@mediatek.com>
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 and
-@@ -18,20 +19,24 @@
- #define _MT2701_AFE_CLOCK_CTRL_H_
- 
- struct mtk_base_afe;
-+struct mt2701_i2s_path;
- 
- int mt2701_init_clock(struct mtk_base_afe *afe);
- int mt2701_afe_enable_clock(struct mtk_base_afe *afe);
- int mt2701_afe_disable_clock(struct mtk_base_afe *afe);
- 
--int mt2701_afe_enable_i2s(struct mtk_base_afe *afe, int id, int dir);
--void mt2701_afe_disable_i2s(struct mtk_base_afe *afe, int id, int dir);
-+int mt2701_afe_enable_i2s(struct mtk_base_afe *afe,
-+			  struct mt2701_i2s_path *path,
-+			  int dir);
-+void mt2701_afe_disable_i2s(struct mtk_base_afe *afe,
-+			    struct mt2701_i2s_path *path,
-+			    int dir);
- int mt2701_afe_enable_mclk(struct mtk_base_afe *afe, int id);
- void mt2701_afe_disable_mclk(struct mtk_base_afe *afe, int id);
- 
- int mt2701_enable_btmrg_clk(struct mtk_base_afe *afe);
- void mt2701_disable_btmrg_clk(struct mtk_base_afe *afe);
- 
--void mt2701_mclk_configuration(struct mtk_base_afe *afe, int id, int domain,
--			       int mclk);
-+int mt2701_mclk_configuration(struct mtk_base_afe *afe, int id);
- 
- #endif
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index 8219f5534150..2a161f4d01f6 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -3,7 +3,8 @@
-  *
-  * Copyright (c) 2016 MediaTek Inc.
-  * Author: Garlic Tseng <garlic.tseng@mediatek.com>
-- *             Ir Lian <ir.lian@mediatek.com>
-+ *	   Ir Lian <ir.lian@mediatek.com>
-+ *	   Ryder Lee <ryder.lee@mediatek.com>
-  *
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License version 2 and
-@@ -101,31 +102,15 @@ static int mt2701_afe_i2s_startup(struct snd_pcm_substream *substream,
- 	return mt2701_afe_enable_mclk(afe, i2s_num);
- }
- 
--static int mt2701_afe_i2s_path_shutdown(struct snd_pcm_substream *substream,
--					struct snd_soc_dai *dai,
--					int i2s_num,
--					int dir_invert)
-+static int mt2701_afe_i2s_path_disable(struct mtk_base_afe *afe,
-+				       struct mt2701_i2s_path *i2s_path,
-+				       int stream_dir)
- {
--	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
--	struct mt2701_afe_private *afe_priv = afe->platform_priv;
--	struct mt2701_i2s_path *i2s_path = &afe_priv->i2s_path[i2s_num];
--	const struct mt2701_i2s_data *i2s_data;
--	int stream_dir = substream->stream;
--
--	if (dir_invert)	{
--		if (stream_dir == SNDRV_PCM_STREAM_PLAYBACK)
--			stream_dir = SNDRV_PCM_STREAM_CAPTURE;
--		else
--			stream_dir = SNDRV_PCM_STREAM_PLAYBACK;
--	}
--	i2s_data = i2s_path->i2s_data[stream_dir];
-+	const struct mt2701_i2s_data *i2s_data = i2s_path->i2s_data[stream_dir];
- 
--	i2s_path->on[stream_dir]--;
--	if (i2s_path->on[stream_dir] < 0) {
--		dev_warn(afe->dev, "i2s_path->on: %d, dir: %d\n",
--			 i2s_path->on[stream_dir], stream_dir);
-+	if (--i2s_path->on[stream_dir] < 0)
- 		i2s_path->on[stream_dir] = 0;
--	}
-+
- 	if (i2s_path->on[stream_dir])
- 		return 0;
- 
-@@ -133,7 +118,7 @@ static int mt2701_afe_i2s_path_shutdown(struct snd_pcm_substream *substream,
- 	regmap_update_bits(afe->regmap, i2s_data->i2s_ctrl_reg,
- 			   ASYS_I2S_CON_I2S_EN, 0);
- 
--	mt2701_afe_disable_i2s(afe, i2s_num, stream_dir);
-+	mt2701_afe_disable_i2s(afe, i2s_path, stream_dir);
- 
- 	return 0;
- }
-@@ -154,48 +139,32 @@ static void mt2701_afe_i2s_shutdown(struct snd_pcm_substream *substream,
- 	if (i2s_path->occupied[substream->stream])
- 		i2s_path->occupied[substream->stream] = 0;
- 	else
--		goto I2S_UNSTART;
-+		goto exit;
- 
--	mt2701_afe_i2s_path_shutdown(substream, dai, i2s_num, 0);
-+	mt2701_afe_i2s_path_disable(afe, i2s_path, substream->stream);
- 
- 	/* need to disable i2s-out path when disable i2s-in */
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
--		mt2701_afe_i2s_path_shutdown(substream, dai, i2s_num, 1);
-+		mt2701_afe_i2s_path_disable(afe, i2s_path, !substream->stream);
- 
--I2S_UNSTART:
-+exit:
- 	/* disable mclk */
- 	mt2701_afe_disable_mclk(afe, i2s_num);
- }
- 
--static int mt2701_i2s_path_prepare_enable(struct snd_pcm_substream *substream,
--					  struct snd_soc_dai *dai,
--					  int i2s_num,
--					  int dir_invert)
-+static int mt2701_i2s_path_enable(struct mtk_base_afe *afe,
-+				  struct mt2701_i2s_path *i2s_path,
-+				  int stream_dir, int rate)
- {
--	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
--	struct mt2701_afe_private *afe_priv = afe->platform_priv;
--	struct mt2701_i2s_path *i2s_path = &afe_priv->i2s_path[i2s_num];
--	const struct mt2701_i2s_data *i2s_data;
--	struct snd_pcm_runtime * const runtime = substream->runtime;
-+	const struct mt2701_i2s_data *i2s_data = i2s_path->i2s_data[stream_dir];
- 	int reg, fs, w_len = 1; /* now we support bck 64bits only */
--	int stream_dir = substream->stream;
- 	unsigned int mask, val;
- 
--	if (dir_invert) {
--		if (stream_dir == SNDRV_PCM_STREAM_PLAYBACK)
--			stream_dir = SNDRV_PCM_STREAM_CAPTURE;
--		else
--			stream_dir = SNDRV_PCM_STREAM_PLAYBACK;
--	}
--	i2s_data = i2s_path->i2s_data[stream_dir];
--
- 	/* no need to enable if already done */
--	i2s_path->on[stream_dir]++;
--
--	if (i2s_path->on[stream_dir] != 1)
-+	if (++i2s_path->on[stream_dir] != 1)
- 		return 0;
- 
--	fs = mt2701_afe_i2s_fs(runtime->rate);
-+	fs = mt2701_afe_i2s_fs(rate);
- 
- 	mask = ASYS_I2S_CON_FS |
- 	       ASYS_I2S_CON_I2S_COUPLE_MODE | /* 0 */
-@@ -209,22 +178,20 @@ static int mt2701_i2s_path_prepare_enable(struct snd_pcm_substream *substream,
- 	if (stream_dir == SNDRV_PCM_STREAM_CAPTURE) {
- 		mask |= ASYS_I2S_IN_PHASE_FIX;
- 		val |= ASYS_I2S_IN_PHASE_FIX;
-+		reg = ASMI_TIMING_CON1;
-+	} else {
-+		reg = ASMO_TIMING_CON1;
- 	}
- 
- 	regmap_update_bits(afe->regmap, i2s_data->i2s_ctrl_reg, mask, val);
- 
--	if (stream_dir == SNDRV_PCM_STREAM_PLAYBACK)
--		reg = ASMO_TIMING_CON1;
--	else
--		reg = ASMI_TIMING_CON1;
--
- 	regmap_update_bits(afe->regmap, reg,
- 			   i2s_data->i2s_asrc_fs_mask
- 			   << i2s_data->i2s_asrc_fs_shift,
- 			   fs << i2s_data->i2s_asrc_fs_shift);
- 
- 	/* enable i2s */
--	mt2701_afe_enable_i2s(afe, i2s_num, stream_dir);
-+	mt2701_afe_enable_i2s(afe, i2s_path, stream_dir);
- 
- 	/* reset i2s hw status before enable */
- 	regmap_update_bits(afe->regmap, i2s_data->i2s_ctrl_reg,
-@@ -241,43 +208,32 @@ static int mt2701_i2s_path_prepare_enable(struct snd_pcm_substream *substream,
- static int mt2701_afe_i2s_prepare(struct snd_pcm_substream *substream,
- 				  struct snd_soc_dai *dai)
- {
--	int clk_domain;
- 	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
- 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
--	int i2s_num = mt2701_dai_num_to_i2s(afe, dai->id);
-+	int ret, i2s_num = mt2701_dai_num_to_i2s(afe, dai->id);
- 	struct mt2701_i2s_path *i2s_path;
--	int mclk_rate;
- 
- 	if (i2s_num < 0)
- 		return i2s_num;
- 
- 	i2s_path = &afe_priv->i2s_path[i2s_num];
--	mclk_rate = i2s_path->mclk_rate;
- 
- 	if (i2s_path->occupied[substream->stream])
- 		return -EBUSY;
-+
-+	ret = mt2701_mclk_configuration(afe, i2s_num);
-+	if (ret)
-+		return ret;
-+
- 	i2s_path->occupied[substream->stream] = 1;
- 
--	if (MT2701_PLL_DOMAIN_0_RATE % mclk_rate == 0) {
--		clk_domain = 0;
--	} else if (MT2701_PLL_DOMAIN_1_RATE % mclk_rate == 0) {
--		clk_domain = 1;
--	} else {
--		dev_err(dai->dev, "%s() bad mclk rate %d\n",
--			__func__, mclk_rate);
--		return -EINVAL;
--	}
--	mt2701_mclk_configuration(afe, i2s_num, clk_domain, mclk_rate);
-+	/* need to enable i2s-out path when enable i2s-in */
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		mt2701_i2s_path_enable(afe, i2s_path, !substream->stream,
-+				       substream->runtime->rate);
- 
--	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--		mt2701_i2s_path_prepare_enable(substream, dai, i2s_num, 0);
--	} else {
--		/* need to enable i2s-out path when enable i2s-in */
--		/* prepare for another direction "out" */
--		mt2701_i2s_path_prepare_enable(substream, dai, i2s_num, 1);
--		/* prepare for "in" */
--		mt2701_i2s_path_prepare_enable(substream, dai, i2s_num, 0);
--	}
-+	mt2701_i2s_path_enable(afe, i2s_path, substream->stream,
-+			       substream->runtime->rate);
- 
- 	return 0;
- }
--- 
-2.17.0
+         Arnd
