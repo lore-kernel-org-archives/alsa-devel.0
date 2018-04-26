@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Fix bugs of freeing soc
-	topology" to the asoc tree
-Date: Thu, 26 Apr 2018 12:51:04 +0100
-Message-ID: <E1fBfQW-0007RR-AL@debutante>
-References: <20180314204722.14144-1-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: amd: acp-da7219-max98357: Make symbol
+	da7219_dai_clk static" to the asoc tree
+Date: Thu, 26 Apr 2018 12:51:34 +0100
+Message-ID: <E1fBfR0-0007TU-4J@debutante>
+References: <20180313110353.GA117792@lkp-ib04>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2851226787F
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:51:06 +0200 (CEST)
-In-Reply-To: <20180314204722.14144-1-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B6C82267836
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:51:44 +0200 (CEST)
+In-Reply-To: <20180313110353.GA117792@lkp-ib04>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yan Wang <yan.wang@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, lgirdwood@gmail.com, akshu.agrawal@amd.com, broonie@kernel.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Fix bugs of freeing soc topology
+   ASoC: amd: acp-da7219-max98357: Make symbol da7219_dai_clk static
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From feb12f0cd8d7b1e8df2e6fce19fc9a026a468cc2 Mon Sep 17 00:00:00 2001
-From: Yan Wang <yan.wang@linux.intel.com>
-Date: Mon, 26 Mar 2018 16:48:00 +0100
-Subject: [PATCH] ASoC: topology: Fix bugs of freeing soc topology
+>From dc29f581fa9d5567c3a01ecfdd7f16b2e613c7fb Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Thu, 29 Mar 2018 02:14:03 +0000
+Subject: [PATCH] ASoC: amd: acp-da7219-max98357: Make symbol da7219_dai_clk
+ static
 
-In snd_soc_tplg_component_remove(), it should compare index and
-not dobj->index with SND_SOC_TPLG_INDEX_ALL for removing all
-topology objects.
+Fixes the following sparse warning:
 
-Signed-off-by: Yan Wang <yan.wang@linux.intel.com>
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+sound/soc/amd/acp-da7219-max98357a.c:46:12: warning:
+ symbol 'da7219_dai_clk' was not declared. Should it be static?
+
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-topology.c | 2 +-
+ sound/soc/amd/acp-da7219-max98357a.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 942c6e5eb4b7..5598e891b2b3 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2580,7 +2580,7 @@ int snd_soc_tplg_component_remove(struct snd_soc_component *comp, u32 index)
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index b205c782e494..f41560ecbcd1 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -43,7 +43,7 @@
+ #define DUAL_CHANNEL		2
  
- 			/* match index */
- 			if (dobj->index != index &&
--				dobj->index != SND_SOC_TPLG_INDEX_ALL)
-+				index != SND_SOC_TPLG_INDEX_ALL)
- 				continue;
+ static struct snd_soc_jack cz_jack;
+-struct clk *da7219_dai_clk;
++static struct clk *da7219_dai_clk;
  
- 			switch (dobj->type) {
+ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ {
 -- 
 2.17.0
