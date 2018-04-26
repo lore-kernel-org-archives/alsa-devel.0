@@ -1,180 +1,120 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH 4/8] ALSA: Avoid using timespec for struct snd_pcm_status
-Date: Thu, 26 Apr 2018 17:20:53 +0800
-Message-ID: <201804261703.caDB8Qo5%fengguang.wu@intel.com>
-References: <7809a25514e8f7f72a276d19414346b2e4100945.1524570852.git.baolin.wang@linaro.org>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH v2 0/4] ALSA: usb: UAC3 new features.
+Date: Thu, 26 Apr 2018 12:26:10 +0300
+Message-ID: <CAB=otbSyFftwzq9YXvyFWOcKZQch+Hd0XVWugPzJ3O2nb3hYZQ@mail.gmail.com>
+References: <20180420170327.31569-1-jorge.sanjuan@codethink.co.uk>
+ <20180424172445.31928-1-jorge.sanjuan@codethink.co.uk>
+ <s5hy3hcwkhy.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <7809a25514e8f7f72a276d19414346b2e4100945.1524570852.git.baolin.wang@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: kbuild-all@01.org, perex@perex.cz, tiwai@suse.com, arnd@arndb.de, baolin.wang@linaro.org, lgirdwood@gmail.com, broonie@kernel.org, o-takashi@sakamocchi.jp, mingo@kernel.org, elfring@users.sourceforge.net, dan.carpenter@oracle.com, jeeja.kp@intel.com, vinod.koul@intel.com, guneshwor.o.singh@intel.com, subhransu.s.prusty@intel.com, bhumirks@gmail.com, gudishax.kranthikumar@intel.com, naveen.m@intel.com, hardik.t.shah@intel.com, arvind.yadav.cs@gmail.com, fabf@skynet.be, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f68.google.com (mail-oi0-f68.google.com
+ [209.85.218.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9ED5C26722C
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 11:26:12 +0200 (CEST)
+Received: by mail-oi0-f68.google.com with SMTP id n65-v6so23484248oig.6
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 02:26:12 -0700 (PDT)
+In-Reply-To: <s5hy3hcwkhy.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Baolin,
+On Tue, Apr 24, 2018 at 9:02 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Tue, 24 Apr 2018 19:24:41 +0200,
+> Jorge Sanjuan wrote:
+>>
+>> v2 fixes:
+>>  - If/else statements braces style fixes.
+>>  - Add wrapping function to mixer unit code.
+>>  - Make connectors control kctl struct const.
+>>  - Little endian to cpu conversion in several places.
+>>  - Sing off and add Fixes tag to fixup commit.
+>>  - Remove flex-array for a struct that is used statically.
+>>
+>> Now that the UAC3 patch [1] has made it to linux-next I have some extra
+>> features to make a UAC3 device fully work in Linux. Including Jack
+>> insertion control that I have put on top of this other patch [2] for
+>> UAC2. Also adding support for the UAC3 Mixer Unit which is most likely
+>> to appear in most headset type devices.
 
-I love your patch! Perhaps something to improve:
+Thanks for adding these improvements!
 
-[auto build test WARNING on v4.17-rc2]
-[cannot apply to sound/for-next asoc/for-next arm-soc/for-next next-20180426]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+>
+> These patches look reasonable, I'm OK to merge.  But I'll wait for
+> Ruslan's comments (or at best with test results).
 
-url:    https://github.com/0day-ci/linux/commits/Baolin-Wang/Fix-year-2038-issue-for-sound-subsystem/20180426-010145
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+I reviewed first 3 patches and will review jack detection patch later,
+and I'm going to test this patchset in a next few days.
 
+>
+>> UAC3 devices also require to have a Basic Audio Device (BADD) in a separate
+>> config for which both Ruslan Bilovol and myself have submited different
+>> approaches[3][4] but I don't know what the final merge will be. Once there
+>> is official support for BADD, we'll need to test it with an actual UAC3
+>> device to confirm it all wokrs.
+>
+> Could you guys try to get agreement which approach should we take?
+>
+> I have no big preference.  Currently Ruslan's patch series look
+> easier, just because its addition is a bit smaller, though.
 
-sparse warnings: (new ones prefixed by >>)
+The BADD devices are quite simple, so direct initialization internal ALSA
+structures looks easy and straightforward, comparing to generation of
+missing descriptors.
+I'm currently improving the patch series so it will look even more
+smaller and easier, let's see how it goes
 
-   sound/core/pcm_native.c:561:51: sparse: incorrect type in assignment (different base types) @@    expected restricted snd_pcm_state_t [usertype] state @@    got t [usertype] state @@
-   sound/core/pcm_native.c:561:51:    expected restricted snd_pcm_state_t [usertype] state
-   sound/core/pcm_native.c:561:51:    got int [signed] state
-   sound/core/pcm_native.c:726:38: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:726:38:    expected int [signed] state
-   sound/core/pcm_native.c:726:38:    got restricted snd_pcm_state_t [usertype] <noident>
-   sound/core/pcm_native.c:738:38: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:738:38:    expected int [signed] state
-   sound/core/pcm_native.c:738:38:    got restricted snd_pcm_state_t [usertype] <noident>
-   sound/core/pcm_native.c:787:38: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:787:38:    expected int [signed] state
-   sound/core/pcm_native.c:787:38:    got restricted snd_pcm_state_t [usertype] <noident>
->> sound/core/pcm_native.c:995:34: sparse: incorrect type in initializer (different base types) @@    expected signed int [signed] [usertype] [explicitly-signed] state @@    got restricted ssigned int [signed] [usertype] [explicitly-signed] state @@
-   sound/core/pcm_native.c:995:34:    expected signed int [signed] [usertype] [explicitly-signed] state
-   sound/core/pcm_native.c:995:34:    got restricted snd_pcm_state_t [addressable] [assigned] [usertype] state
->> sound/core/pcm_native.c:1006:44: sparse: incorrect type in initializer (different base types) @@    expected signed int [signed] [usertype] [explicitly-signed] suspended_state @@    got restricted ssigned int [signed] [usertype] [explicitly-signed] suspended_state @@
-   sound/core/pcm_native.c:1006:44:    expected signed int [signed] [usertype] [explicitly-signed] suspended_state
-   sound/core/pcm_native.c:1006:44:    got restricted snd_pcm_state_t [addressable] [assigned] [usertype] suspended_state
-   sound/core/pcm_native.c:1259:32: sparse: incorrect type in assignment (different base types) @@    expected restricted snd_pcm_state_t [usertype] state @@    got t [usertype] state @@
-   sound/core/pcm_native.c:1259:32:    expected restricted snd_pcm_state_t [usertype] state
-   sound/core/pcm_native.c:1259:32:    got int [signed] state
-   sound/core/pcm_native.c:1283:31: sparse: incorrect type in argument 3 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:1283:31:    expected int [signed] state
-   sound/core/pcm_native.c:1283:31:    got restricted snd_pcm_state_t [usertype] <noident>
-   sound/core/pcm_native.c:1290:40: sparse: incorrect type in argument 3 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:1290:40:    expected int [signed] state
-   sound/core/pcm_native.c:1290:40:    got restricted snd_pcm_state_t [usertype] <noident>
-   sound/core/pcm_native.c:1316:28: sparse: restricted snd_pcm_state_t degrades to integer
-   sound/core/pcm_native.c:1318:40: sparse: incorrect type in assignment (different base types) @@    expected restricted snd_pcm_state_t [usertype] state @@    got t [usertype] state @@
-   sound/core/pcm_native.c:1318:40:    expected restricted snd_pcm_state_t [usertype] state
-   sound/core/pcm_native.c:1318:40:    got int [signed] state
-   sound/core/pcm_native.c:1342:64: sparse: incorrect type in argument 3 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:1342:64:    expected int [signed] state
-   sound/core/pcm_native.c:1342:64:    got restricted snd_pcm_state_t [usertype] state
-   sound/core/pcm_native.c:1358:38: sparse: incorrect type in argument 3 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:1358:38:    expected int [signed] state
-   sound/core/pcm_native.c:1358:38:    got restricted snd_pcm_state_t [usertype] <noident>
-   sound/core/pcm_native.c:1717:38: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:1717:38:    expected int [signed] state
-   sound/core/pcm_native.c:1717:38:    got restricted snd_pcm_state_t [usertype] <noident>
-   sound/core/pcm_native.c:1783:61: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:1783:61:    expected int [signed] state
-   sound/core/pcm_native.c:1783:61:    got restricted snd_pcm_state_t [usertype] <noident>
-   sound/core/pcm_native.c:1784:63: sparse: incorrect type in argument 2 (different base types) @@    expected int [signed] state @@    got restricted snd_pcm_state_int [signed] state @@
-   sound/core/pcm_native.c:1784:63:    expected int [signed] state
-   sound/core/pcm_native.c:1784:63:    got restricted snd_pcm_state_t [usertype] <noident>
-   sound/core/pcm_native.c:1801:76: sparse: incorrect type in initializer (different base types) @@    expected int [signed] new_state @@    got restricted snint [signed] new_state @@
-   sound/core/pcm_native.c:1801:76:    expected int [signed] new_state
-   sound/core/pcm_native.c:1801:76:    got restricted snd_pcm_state_t
-   sound/core/pcm_native.c:1904:40: sparse: expression using sizeof(void)
-   sound/core/pcm_native.c:1904:40: sparse: expression using sizeof(void)
-   sound/core/pcm_native.c:2122:26: sparse: restricted snd_pcm_format_t degrades to integer
-   sound/core/pcm_native.c:2126:54: sparse: incorrect type in argument 1 (different base types) @@    expected restricted snd_pcm_format_t [usertype] format @@    got ricted snd_pcm_format_t [usertype] format @@
-   sound/core/pcm_native.c:2126:54:    expected restricted snd_pcm_format_t [usertype] format
-   sound/core/pcm_native.c:2126:54:    got unsigned int [unsigned] [assigned] k
-   sound/core/pcm_native.c:2144:26: sparse: restricted snd_pcm_format_t degrades to integer
-   sound/core/pcm_native.c:2148:54: sparse: incorrect type in argument 1 (different base types) @@    expected restricted snd_pcm_format_t [usertype] format @@    got ricted snd_pcm_format_t [usertype] format @@
-   sound/core/pcm_native.c:2148:54:    expected restricted snd_pcm_format_t [usertype] format
-   sound/core/pcm_native.c:2148:54:    got unsigned int [unsigned] [assigned] k
-   sound/core/pcm_native.c:2328:30: sparse: restricted snd_pcm_access_t degrades to integer
-   sound/core/pcm_native.c:2330:30: sparse: restricted snd_pcm_access_t degrades to integer
-   sound/core/pcm_native.c:2333:38: sparse: restricted snd_pcm_access_t degrades to integer
-   sound/core/pcm_native.c:2335:38: sparse: restricted snd_pcm_access_t degrades to integer
-   sound/core/pcm_native.c:2337:38: sparse: restricted snd_pcm_access_t degrades to integer
-   sound/core/pcm_native.c:2347:86: sparse: restricted snd_pcm_subformat_t degrades to integer
-   include/sound/pcm.h:1093:47: sparse: cast removes address space of expression
-   include/sound/pcm.h:1100:47: sparse: cast removes address space of expression
-   include/sound/pcm.h:1100:47: sparse: cast removes address space of expression
-   include/sound/pcm.h:1093:47: sparse: cast removes address space of expression
-   sound/core/pcm_compat.c:241:32: sparse: incorrect type in initializer (different base types) @@    expected signed int [signed] [usertype] [explicitly-signed] state @@    got restricted ssigned int [signed] [usertype] [explicitly-signed] state @@
-   sound/core/pcm_compat.c:241:32:    expected signed int [signed] [usertype] [explicitly-signed] state
-   sound/core/pcm_compat.c:241:32:    got restricted snd_pcm_state_t [addressable] [assigned] [usertype] state
-   sound/core/pcm_compat.c:252:42: sparse: incorrect type in initializer (different base types) @@    expected signed int [signed] [usertype] [explicitly-signed] suspended_state @@    got restricted ssigned int [signed] [usertype] [explicitly-signed] suspended_state @@
-   sound/core/pcm_compat.c:252:42:    expected signed int [signed] [usertype] [explicitly-signed] suspended_state
-   sound/core/pcm_compat.c:252:42:    got restricted snd_pcm_state_t [addressable] [assigned] [usertype] suspended_state
-   include/sound/pcm.h:1093:47: sparse: cast removes address space of expression
-   include/sound/pcm.h:1100:47: sparse: cast removes address space of expression
-   sound/core/pcm_compat.c:480:13: sparse: incorrect type in assignment (different base types) @@    expected signed int [signed] [explicitly-signed] __pu_val @@    got restrictesigned int [signed] [explicitly-signed] __pu_val @@
-   sound/core/pcm_compat.c:480:13:    expected signed int [signed] [explicitly-signed] __pu_val
-   sound/core/pcm_compat.c:480:13:    got restricted snd_pcm_state_t [assigned] [usertype] state
-   sound/core/pcm_compat.c:483:13: sparse: incorrect type in assignment (different base types) @@    expected signed int [signed] [explicitly-signed] __pu_val @@    got restrictesigned int [signed] [explicitly-signed] __pu_val @@
-   sound/core/pcm_compat.c:483:13:    expected signed int [signed] [explicitly-signed] __pu_val
-   sound/core/pcm_compat.c:483:13:    got restricted snd_pcm_state_t [assigned] [usertype] suspended_state
-   sound/core/pcm_compat.c:569:13: sparse: incorrect type in assignment (different base types) @@    expected signed int [signed] [explicitly-signed] __pu_val @@    got restrictesigned int [signed] [explicitly-signed] __pu_val @@
-   sound/core/pcm_compat.c:569:13:    expected signed int [signed] [explicitly-signed] __pu_val
-   sound/core/pcm_compat.c:569:13:    got restricted snd_pcm_state_t [assigned] [usertype] state
-   sound/core/pcm_compat.c:572:13: sparse: incorrect type in assignment (different base types) @@    expected signed int [signed] [explicitly-signed] __pu_val @@    got restrictesigned int [signed] [explicitly-signed] __pu_val @@
-   sound/core/pcm_compat.c:572:13:    expected signed int [signed] [explicitly-signed] __pu_val
-   sound/core/pcm_compat.c:572:13:    got restricted snd_pcm_state_t [assigned] [usertype] suspended_state
-   sound/core/pcm_native.c:112:9: sparse: context imbalance in 'snd_pcm_stream_lock' - different lock contexts for basic block
-   sound/core/pcm_native.c:134:28: sparse: context imbalance in 'snd_pcm_stream_unlock' - unexpected unlock
-   sound/core/pcm_native.c:1130:52: sparse: context imbalance in 'snd_pcm_action_group' - unexpected unlock
+Thanks,
+Ruslan
 
-vim +995 sound/core/pcm_native.c
-
-   971	
-   972	static int snd_pcm_status_user32(struct snd_pcm_substream *substream,
-   973					 struct snd_pcm_status32 __user * _status,
-   974					 bool ext)
-   975	{
-   976		struct snd_pcm_status64 status64;
-   977		struct snd_pcm_status32 status32;
-   978		int res;
-   979	
-   980		memset(&status64, 0, sizeof(status64));
-   981		memset(&status32, 0, sizeof(status32));
-   982		/*
-   983		 * with extension, parameters are read/write,
-   984		 * get audio_tstamp_data from user,
-   985		 * ignore rest of status structure
-   986		 */
-   987		if (ext && get_user(status64.audio_tstamp_data,
-   988				    (u32 __user *)(&_status->audio_tstamp_data)))
-   989			return -EFAULT;
-   990		res = snd_pcm_status64(substream, &status64);
-   991		if (res < 0)
-   992			return res;
-   993	
-   994		status32 = (struct snd_pcm_status32) {
- > 995			.state = status64.state,
-   996			.trigger_tstamp_sec = status64.trigger_tstamp_sec,
-   997			.trigger_tstamp_nsec = status64.trigger_tstamp_nsec,
-   998			.tstamp_sec = status64.tstamp_sec,
-   999			.tstamp_nsec = status64.tstamp_nsec,
-  1000			.appl_ptr = status64.appl_ptr,
-  1001			.hw_ptr = status64.hw_ptr,
-  1002			.delay = status64.delay,
-  1003			.avail = status64.avail,
-  1004			.avail_max = status64.avail_max,
-  1005			.overrange = status64.overrange,
-> 1006			.suspended_state = status64.suspended_state,
-  1007			.audio_tstamp_data = status64.audio_tstamp_data,
-  1008			.audio_tstamp_sec = status64.audio_tstamp_sec,
-  1009			.audio_tstamp_nsec = status64.audio_tstamp_nsec,
-  1010			.driver_tstamp_sec = status64.audio_tstamp_sec,
-  1011			.driver_tstamp_nsec = status64.audio_tstamp_nsec,
-  1012			.audio_tstamp_accuracy = status64.audio_tstamp_accuracy,
-  1013		};
-  1014	
-  1015		if (copy_to_user(_status, &status32, sizeof(status32)))
-  1016			return -EFAULT;
-  1017	
-  1018		return 0;
-  1019	}
-  1020	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+>
+>
+> Thanks!
+>
+> Takashi
+>
+>> All this features are tested with an actual UAC3 device that is still in
+>> development. For this patch series, only the legacy config (#1. UAC1/UAC2)
+>> and the UAC3 config have been tested. The BADD config is only tested using
+>> and updated verison of [4].
+>>
+>> [1]: https://patchwork.kernel.org/patch/10298179/
+>> [2]: https://patchwork.kernel.org/patch/10305847/
+>> [3]: https://patchwork.kernel.org/patch/10340851/
+>> [4]: https://www.spinics.net/lists/alsa-devel/msg71617.html
+>>
+>> Based on linux-next tag: next-20180420
+>>
+>> Jorge Sanjuan (3):
+>>   ALSA: usb-audio: UAC3. Add support for mixer unit.
+>>   ALSA: usb-audio: Use Class Specific EP for UAC3 devices.
+>>   ALSA: usb-audio: UAC3 Add support for connector insertion.
+>>
+>> Michael Drake (1):
+>>   ALSA: usb-audio: ADC3: Fix channel mapping conversion for ADC3.
+>>
+>>  include/linux/usb/audio-v2.h   |   7 ++
+>>  include/linux/usb/audio-v3.h   |  14 +++
+>>  include/uapi/linux/usb/audio.h |  13 ++-
+>>  sound/usb/mixer.c              | 195 +++++++++++++++++++++++++++++++++++++----
+>>  sound/usb/stream.c             |  11 ++-
+>>  5 files changed, 217 insertions(+), 23 deletions(-)
+>>
+>> --
+>> 2.11.0
+>>
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
