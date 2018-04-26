@@ -1,104 +1,49 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 8/8] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
-Date: Thu, 26 Apr 2018 17:14:59 +0200
-Message-ID: <CAK8P3a24UW4FTJ=Ak7vB++uQZhLj+0LTqgbwpxpHbDVL+8HsLA@mail.gmail.com>
-References: <cover.1524570852.git.baolin.wang@linaro.org> <e7d7ed852943b5a35c5d494071f522465620371b.1524570852.git.baolin.wang@linaro.org>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/4] ASoC: compress: Only assign
+	compr->ops->copy once
+Date: Thu, 26 Apr 2018 17:30:04 +0100
+Message-ID: <20180426163007.5632-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e7d7ed852943b5a35c5d494071f522465620371b.1524570852.git.baolin.wang@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Baolin Wang <baolin.wang@linaro.org>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@kernel.org>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, subhransu.s.prusty@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id C676726779A
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 18:30:14 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: vinod.koul@intel.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Apr 24, 2018 at 2:06 PM, Baolin Wang <baolin.wang@linaro.org> wrote:
+There are only one set of ops on the compressed stream so no need to
+reassign the copy callback repeatedly, stop after copy is seen to be
+necessary.
 
-> -struct snd_pcm_mmap_status {
-> +/*
-> + * For mmap operations, we need the 64-bit layout, both for compat mode,
-> + * and for y2038 compatibility. For 64-bit applications, the two definitions
-> + * are identical, so we keep the traditional version.
-> + */
-> +#ifdef __SND_STRUCT_TIME64
-> +#define __snd_pcm_mmap_status64                snd_pcm_mmap_status
-> +#define __snd_pcm_mmap_control64       snd_pcm_mmap_control
-> +#define __snd_pcm_sync_ptr64           snd_pcm_sync_ptr
-> +#else
-> +#define __snd_pcm_mmap_status          snd_pcm_mmap_status
-> +#define __snd_pcm_mmap_control         snd_pcm_mmap_control
-> +#define __snd_pcm_sync_ptr             snd_pcm_sync_ptr
-> +#endif
-> +
-> +struct __snd_pcm_mmap_status {
->         snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_XXXX */
->         int pad1;                       /* Needed for 64 bit alignment */
->         snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/soc-compress.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-One more thing here: this definition is slightly suboptimal because in
-an alsa-lib that gets built with 64-bit time_t, we end up with an unusable
-__snd_pcm_mmap_status structure (__snd_pcm_mmap_status64 works
-fine, and that would be the normal thing to use). Just in case we want
-to be able to build an alsa-lib that is capable of running both on
-new kernels with 64-bit time_t interfaces exposed to applications and
-also on old kernels that don't have the new ioctls, we probably want
-another fixup merged in:
-
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index 18fbdcb2c7b6..638c717d3eb9 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -496,19 +496,30 @@ struct snd_pcm_status {
- #define __snd_pcm_mmap_status64                snd_pcm_mmap_status
- #define __snd_pcm_mmap_control64       snd_pcm_mmap_control
- #define __snd_pcm_sync_ptr64           snd_pcm_sync_ptr
-+#define __snd_timespec64               timespec
-+struct __snd_timespec {
-+       __s32 tv_sec;
-+       __s32 tv_nsec;
-+};
- #else
- #define __snd_pcm_mmap_status          snd_pcm_mmap_status
- #define __snd_pcm_mmap_control         snd_pcm_mmap_control
- #define __snd_pcm_sync_ptr             snd_pcm_sync_ptr
-+#define __snd_timespec                 timespec
-+struct __snd_timespec64 {
-+       __s64 tv_sec;
-+       __s64 tv_nsec;
-+};
-+
- #endif
-
- struct __snd_pcm_mmap_status {
-        snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_XXXX */
-        int pad1;                       /* Needed for 64 bit alignment */
-        snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
--       struct timespec tstamp;         /* Timestamp */
-+       struct __snd_timespec tstamp;   /* Timestamp */
-        snd_pcm_state_t suspended_state; /* RO: suspended stream state */
--       struct timespec audio_tstamp;   /* from sample counter or wall clock */
-+       struct __snd_timespec audio_tstamp; /* from sample counter or
-wall clock */
- };
-
- struct __snd_pcm_mmap_control {
-@@ -532,11 +543,6 @@ struct __snd_pcm_sync_ptr {
-        } c;
- };
-
--struct __snd_timespec64 {
--       __s64 tv_sec;
--       __s64 tv_nsec;
--};
--
- #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN :
-defined(__BIG_ENDIAN)
- typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
- typedef char __pad_after_uframe[0];
-
-With this change, alsa-lib can either access whichever structure
-matches the glibc 'timespec' definition, or it can ask for
-__struct __snd_pcm_mmap_status and struct __snd_pcm_mmap_status64
-explicitly, regardless of the time_t definition.
-
-         Arnd
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index ba56f87f96d4c..62875c6a93a14 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -973,6 +973,7 @@ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
+ 			continue;
+ 
+ 		compr->ops->copy = soc_compr_copy;
++		break;
+ 	}
+ 
+ 
+-- 
+2.11.0
