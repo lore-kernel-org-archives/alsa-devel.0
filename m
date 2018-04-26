@@ -1,480 +1,303 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v6 08/24] ASoC: qdsp6: q6core: Add q6core driver
-Date: Thu, 26 Apr 2018 10:45:50 +0100
-Message-ID: <20180426094606.4775-9-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v6 23/24] ASoC: qcom: apq8096: Add db820c machine driver
+Date: Thu, 26 Apr 2018 10:46:05 +0100
+Message-ID: <20180426094606.4775-24-srinivas.kandagatla@linaro.org>
 References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
- [209.85.128.194])
- by alsa0.perex.cz (Postfix) with ESMTP id AF041267803
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 11:49:40 +0200 (CEST)
-Received: by mail-wr0-f194.google.com with SMTP id o15-v6so56100005wro.11
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 02:49:40 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
+Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds support to core apr service, which is used to query
-status of other static and dynamic services on the dsp.
+This patch adds support to DB820c machine driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- sound/soc/qcom/Kconfig        |   4 +
- sound/soc/qcom/qdsp6/Makefile |   1 +
- sound/soc/qcom/qdsp6/q6core.c | 380 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6core.h |  15 ++
- 4 files changed, 400 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6core.c
- create mode 100644 sound/soc/qcom/qdsp6/q6core.h
+ sound/soc/qcom/Kconfig   |   9 ++
+ sound/soc/qcom/Makefile  |   2 +
+ sound/soc/qcom/apq8096.c | 238 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 249 insertions(+)
+ create mode 100644 sound/soc/qcom/apq8096.c
 
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 8247ade16dbe..dd90d8bbf77e 100644
+index a424430af391..87a66c9aa414 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -47,10 +47,14 @@ config SND_SOC_APQ8016_SBC
- config SND_SOC_QDSP6_COMMON
- 	tristate
- 
-+config SND_SOC_QDSP6_CORE
-+	tristate
-+
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
- 	depends on QCOM_APR && HAS_DMA
- 	select SND_SOC_QDSP6_COMMON
-+	select SND_SOC_QDSP6_CORE
- 	help
- 	 To add support for MSM QDSP6 Soc Audio.
+@@ -84,3 +84,12 @@ config SND_SOC_QDSP6
  	 This will enable sound soc platform specific
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index accebdb49306..03b8e89c9731 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1 +1,2 @@
- obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
-+obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
-diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
+ 	 audio drivers. This includes q6asm, q6adm,
+ 	 q6afe interfaces to DSP using apr.
++
++config SND_SOC_MSM8996
++	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
++	depends on QCOM_APR
++	select SND_SOC_QDSP6
++	help
++          Support for Qualcomm Technologies LPASS audio block in
++          APQ8096 SoC-based systems.
++          Say Y if you want to use audio device on this SoCs
+diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+index 0276717917c0..206945bb9ba1 100644
+--- a/sound/soc/qcom/Makefile
++++ b/sound/soc/qcom/Makefile
+@@ -13,9 +13,11 @@ obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
+ # Machine
+ snd-soc-storm-objs := storm.o
+ snd-soc-apq8016-sbc-objs := apq8016_sbc.o
++snd-soc-apq8096-objs := apq8096.o
+ 
+ obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+ obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
++obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
+ 
+ #DSP lib
+ obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
+diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
 new file mode 100644
-index 000000000000..b2d6352fc0b7
+index 000000000000..73abf862db94
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6core.c
-@@ -0,0 +1,380 @@
++++ b/sound/soc/qcom/apq8096.c
+@@ -0,0 +1,238 @@
 +// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
 +// Copyright (c) 2018, Linaro Limited
 +
-+#include <linux/slab.h>
-+#include <linux/wait.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/sched.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/jiffies.h>
-+#include <linux/wait.h>
 +#include <linux/soc/qcom/apr.h>
-+#include "q6core.h"
-+#include "q6dsp-errno.h"
++#include <linux/module.h>
++#include <linux/component.h>
++#include <linux/platform_device.h>
++#include <linux/of_device.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
 +
-+#define ADSP_STATE_READY_TIMEOUT_MS    3000
-+#define Q6_READY_TIMEOUT_MS 100
-+#define AVCS_CMD_ADSP_EVENT_GET_STATE		0x0001290C
-+#define AVCS_CMDRSP_ADSP_EVENT_GET_STATE	0x0001290D
-+#define AVCS_GET_VERSIONS       0x00012905
-+#define AVCS_GET_VERSIONS_RSP   0x00012906
-+#define AVCS_CMD_GET_FWK_VERSION	0x001292c
-+#define AVCS_CMDRSP_GET_FWK_VERSION	0x001292d
-+
-+struct avcs_svc_info {
-+	uint32_t service_id;
-+	uint32_t version;
-+} __packed;
-+
-+struct avcs_cmdrsp_get_version {
-+	uint32_t build_id;
-+	uint32_t num_services;
-+	struct avcs_svc_info svc_api_info[];
-+} __packed;
-+
-+/* for ADSP2.8 and above */
-+struct avcs_svc_api_info {
-+	uint32_t service_id;
-+	uint32_t api_version;
-+	uint32_t api_branch_version;
-+} __packed;
-+
-+struct avcs_cmdrsp_get_fwk_version {
-+	uint32_t build_major_version;
-+	uint32_t build_minor_version;
-+	uint32_t build_branch_version;
-+	uint32_t build_subbranch_version;
-+	uint32_t num_services;
-+	struct avcs_svc_api_info svc_api_info[];
-+} __packed;
-+
-+struct q6core {
-+	struct apr_device *adev;
-+	wait_queue_head_t wait;
-+	uint32_t avcs_state;
-+	struct mutex lock;
-+	bool resp_received;
-+	uint32_t num_services;
-+	struct avcs_cmdrsp_get_fwk_version *fwk_version;
-+	struct avcs_cmdrsp_get_version *svc_version;
-+	bool fwk_version_supported;
-+	bool get_state_supported;
-+	bool get_version_supported;
-+	bool is_version_requested;
-+};
-+
-+static struct q6core *g_core;
-+
-+static int q6core_callback(struct apr_device *adev,
-+			 struct apr_client_message *data)
++static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++				      struct snd_pcm_hw_params *params)
 +{
-+	struct q6core *core = dev_get_drvdata(&adev->dev);
-+	struct aprv2_ibasic_rsp_result_t *result;
++	struct snd_interval *rate = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_CHANNELS);
 +
-+	result = data->payload;
-+	switch (data->opcode) {
-+	case APR_BASIC_RSP_RESULT:{
-+		result = data->payload;
-+		switch (result->opcode) {
-+		case AVCS_GET_VERSIONS:
-+			if (result->status == ADSP_EUNSUPPORTED)
-+				core->get_version_supported = false;
-+			core->resp_received = true;
-+			break;
-+		case AVCS_CMD_GET_FWK_VERSION:
-+			if (result->status == ADSP_EUNSUPPORTED)
-+				core->fwk_version_supported = false;
-+			core->resp_received = true;
-+			break;
-+		case AVCS_CMD_ADSP_EVENT_GET_STATE:
-+			if (result->status == ADSP_EUNSUPPORTED)
-+				core->get_state_supported = false;
-+			core->resp_received = true;
-+			break;
-+		}
-+		break;
-+	}
-+	case AVCS_CMDRSP_GET_FWK_VERSION: {
-+		struct avcs_cmdrsp_get_fwk_version *fwk;
-+		int bytes;
-+
-+		fwk = data->payload;
-+		core->fwk_version_supported = true;
-+		bytes = sizeof(*fwk) + fwk->num_services *
-+				sizeof(fwk->svc_api_info[0]);
-+
-+		core->fwk_version = kzalloc(bytes, GFP_ATOMIC);
-+		if (!core->fwk_version)
-+			return -ENOMEM;
-+
-+		memcpy(core->fwk_version, data->payload, bytes);
-+
-+		core->resp_received = true;
-+
-+		break;
-+	}
-+	case AVCS_GET_VERSIONS_RSP: {
-+		struct avcs_cmdrsp_get_version *v;
-+		int len;
-+
-+		v = data->payload;
-+		core->get_version_supported = true;
-+
-+		len = sizeof(*v) + v->num_services * sizeof(v->svc_api_info[0]);
-+
-+		core->svc_version = kzalloc(len, GFP_ATOMIC);
-+		if (!core->svc_version)
-+			return -ENOMEM;
-+
-+		memcpy(core->svc_version, data->payload, len);
-+
-+		core->resp_received = true;
-+
-+		break;
-+	}
-+	case AVCS_CMDRSP_ADSP_EVENT_GET_STATE:
-+		core->get_state_supported = true;
-+		core->avcs_state = result->opcode;
-+
-+		core->resp_received = true;
-+		break;
-+	default:
-+		dev_err(&adev->dev, "Message id from adsp core svc: 0x%x\n",
-+			data->opcode);
-+		break;
-+	}
-+
-+	if (core->resp_received)
-+		wake_up(&core->wait);
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
 +
 +	return 0;
 +}
 +
-+static int q6core_get_fwk_versions(struct q6core *core)
++static int apq8096_sbc_parse_of(struct snd_soc_card *card)
 +{
-+	struct apr_device *adev = core->adev;
-+	struct apr_hdr hdr = {0};
-+	int rc;
++	struct device_node *np, *codec, *platform, *cpu, *node;
++	struct device *dev = card->dev;
++	struct snd_soc_dai_link *link;
++	int ret, num_links;
 +
-+	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
-+	hdr.pkt_size = APR_HDR_SIZE;
-+	hdr.opcode = AVCS_CMD_GET_FWK_VERSION;
-+
-+	rc = apr_send_pkt(adev, &hdr);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = wait_event_timeout(core->wait, (core->resp_received),
-+				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
-+	if (rc > 0 && core->resp_received) {
-+		core->resp_received = false;
-+
-+		if (!core->fwk_version_supported)
-+			return -ENOTSUPP;
-+		else
-+			return 0;
++	ret = snd_soc_of_parse_card_name(card, "qcom,model");
++	if (ret) {
++		dev_err(dev, "Error parsing card name: %d\n", ret);
++		return ret;
 +	}
 +
++	node = dev->of_node;
 +
-+	return rc;
-+}
-+
-+static int q6core_get_svc_versions(struct q6core *core)
-+{
-+	struct apr_device *adev = core->adev;
-+	struct apr_hdr hdr = {0};
-+	int rc;
-+
-+	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
-+	hdr.pkt_size = APR_HDR_SIZE;
-+	hdr.opcode = AVCS_GET_VERSIONS;
-+
-+	rc = apr_send_pkt(adev, &hdr);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = wait_event_timeout(core->wait, (core->resp_received),
-+				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
-+	if (rc > 0 && core->resp_received) {
-+		core->resp_received = false;
-+		return 0;
++	/* DAPM routes */
++	if (of_property_read_bool(node, "qcom,audio-routing")) {
++		ret = snd_soc_of_parse_audio_routing(card,
++					"qcom,audio-routing");
++		if (ret)
++			return ret;
 +	}
 +
-+	return rc;
-+}
++	/* Populate links */
++	num_links = of_get_child_count(node);
 +
-+static bool __q6core_is_adsp_ready(struct q6core *core)
-+{
-+	struct apr_device *adev = core->adev;
-+	struct apr_hdr hdr = {0};
-+	int rc;
-+
-+	core->get_state_supported = false;
-+
-+	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
-+	hdr.pkt_size = APR_HDR_SIZE;
-+	hdr.opcode = AVCS_CMD_ADSP_EVENT_GET_STATE;
-+
-+	rc = apr_send_pkt(adev, &hdr);
-+	if (rc < 0)
-+		return false;
-+
-+	rc = wait_event_timeout(core->wait, (core->resp_received),
-+				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
-+	if (rc > 0 && core->resp_received) {
-+		core->resp_received = false;
-+
-+		if (core->avcs_state == 0x1)
-+			return true;
-+	}
-+
-+	/* assume that the adsp is up if we not support this command */
-+	if (!core->get_state_supported)
-+		return true;
-+
-+	return false;
-+}
-+
-+/**
-+ * q6core_get_svc_api_info() - Get version number of a service.
-+ *
-+ * @svc_id: service id of the service.
-+ * @info: Valid struct pointer to fill svc api information.
-+ *
-+ * Return: zero on success and error code on failure or unsupported
-+ */
-+int q6core_get_svc_api_info(int svc_id, struct q6core_svc_api_info *ainfo)
-+{
-+	int i;
-+	int ret = -ENOTSUPP;
-+
-+	if (!g_core || !ainfo)
-+		return 0;
-+
-+	mutex_lock(&g_core->lock);
-+	if (!g_core->is_version_requested) {
-+		if (q6core_get_fwk_versions(g_core) == -ENOTSUPP)
-+			q6core_get_svc_versions(g_core);
-+		g_core->is_version_requested = true;
-+	}
-+
-+	if (g_core->fwk_version_supported) {
-+		for (i = 0; i < g_core->fwk_version->num_services; i++) {
-+			struct avcs_svc_api_info *info;
-+
-+			info = &g_core->fwk_version->svc_api_info[i];
-+			if (svc_id != info->service_id)
-+				continue;
-+
-+			ainfo->api_version = info->api_version;
-+			ainfo->api_branch_version = info->api_branch_version;
-+			ret = 0;
-+			break;
-+		}
-+	} else if (g_core->get_version_supported) {
-+		for (i = 0; i < g_core->svc_version->num_services; i++) {
-+			struct avcs_svc_info *info;
-+
-+			info = &g_core->svc_version->svc_api_info[i];
-+			if (svc_id != info->service_id)
-+				continue;
-+
-+			ainfo->api_version = info->version;
-+			ainfo->api_branch_version = 0;
-+			ret = 0;
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&g_core->lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(q6core_get_svc_api_info);
-+
-+/**
-+ * q6core_is_adsp_ready() - Get status of adsp
-+ *
-+ * Return: Will be an true if adsp is ready and false if not.
-+ */
-+bool q6core_is_adsp_ready(void)
-+{
-+	unsigned long  timeout;
-+	bool ret = false;
-+
-+	if (!g_core)
-+		return false;
-+
-+	mutex_lock(&g_core->lock);
-+	timeout = jiffies + msecs_to_jiffies(ADSP_STATE_READY_TIMEOUT_MS);
-+	for (;;) {
-+		if (__q6core_is_adsp_ready(g_core)) {
-+			ret = true;
-+			break;
-+		}
-+
-+		if (!time_after(timeout, jiffies)) {
-+			ret = false;
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&g_core->lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(q6core_is_adsp_ready);
-+
-+static int q6core_probe(struct apr_device *adev)
-+{
-+	g_core = kzalloc(sizeof(*g_core), GFP_KERNEL);
-+	if (!g_core)
++	/* Allocate the DAI link array */
++	card->dai_link = kcalloc(num_links, sizeof(*link), GFP_KERNEL);
++	if (!card->dai_link)
 +		return -ENOMEM;
 +
-+	dev_set_drvdata(&adev->dev, g_core);
++	card->num_links	= num_links;
++	link = card->dai_link;
 +
-+	mutex_init(&g_core->lock);
-+	g_core->adev = adev;
-+	init_waitqueue_head(&g_core->wait);
-+	return 0;
++	for_each_child_of_node(node, np) {
++		cpu = of_get_child_by_name(np, "cpu");
++		platform = of_get_child_by_name(np, "platform");
++		codec = of_get_child_by_name(np, "codec");
++
++		if (!cpu) {
++			dev_err(dev, "Can't find cpu DT node\n");
++			return -EINVAL;
++		}
++
++		link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
++		if (!link->cpu_of_node) {
++			dev_err(card->dev, "error getting cpu phandle\n");
++			return -EINVAL;
++		}
++
++		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
++		if (ret) {
++			dev_err(card->dev, "error getting cpu dai name\n");
++			return ret;
++		}
++
++		if (codec && platform) {
++			link->platform_of_node = of_parse_phandle(platform,
++								  "sound-dai",
++								   0);
++			if (!link->platform_of_node) {
++				dev_err(card->dev, "platform dai not found\n");
++				return -EINVAL;
++			}
++
++			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
++			if (ret < 0) {
++				dev_err(card->dev, "codec dai not found\n");
++				return ret;
++			}
++			link->no_pcm = 1;
++			link->ignore_suspend = 1;
++			link->ignore_pmdown_time = 1;
++			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
++		} else {
++			link->platform_of_node = link->cpu_of_node;
++			link->codec_dai_name = "snd-soc-dummy-dai";
++			link->codec_name = "snd-soc-dummy";
++			link->dynamic = 1;
++		}
++
++		ret = of_property_read_string(np, "link-name", &link->name);
++		if (ret) {
++			dev_err(card->dev, "error getting codec dai_link name\n");
++			return ret;
++		}
++
++		link->dpcm_playback = 1;
++		link->dpcm_capture = 1;
++		link->stream_name = link->name;
++		link++;
++	}
++
++	return ret;
 +}
 +
-+static int q6core_exit(struct apr_device *adev)
++static int apq8096_bind(struct device *dev)
 +{
-+	struct q6core *core = dev_get_drvdata(&adev->dev);
++	struct snd_soc_card *card;
++	int ret;
 +
-+	if (core->fwk_version_supported)
-+		kfree(core->fwk_version);
-+	if (core->get_version_supported)
-+		kfree(core->svc_version);
++	card = kzalloc(sizeof(*card), GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
 +
-+	kfree(core);
-+	g_core = NULL;
++	component_bind_all(dev, card);
++	card->dev = dev;
++	ret = apq8096_sbc_parse_of(card);
++	if (ret) {
++		dev_err(dev, "Error parsing OF data\n");
++		component_unbind_all(dev, card);
++		return ret;
++	}
++
++	return snd_soc_register_card(card);
++}
++
++static void apq8096_unbind(struct device *dev)
++{
++	struct snd_soc_card *card = dev_get_drvdata(dev);
++
++	component_unbind_all(dev, card);
++	snd_soc_unregister_card(card);
++	kfree(card->dai_link);
++	kfree(card);
++}
++
++static const struct component_master_ops apq8096_ops = {
++	.bind = apq8096_bind,
++	.unbind = apq8096_unbind,
++};
++
++static int apq8016_compare_of(struct device *dev, void *data)
++{
++	return dev->of_node == data;
++}
++
++static void apq8016_release_of(struct device *dev, void *data)
++{
++	of_node_put(data);
++}
++
++static int add_audio_components(struct device *dev,
++				struct component_match **matchptr)
++{
++	struct device_node *np, *platform, *cpu, *node, *dai_node;
++
++	node = dev->of_node;
++
++	for_each_child_of_node(node, np) {
++		cpu = of_get_child_by_name(np, "cpu");
++		if (cpu) {
++			dai_node = of_parse_phandle(cpu, "sound-dai", 0);
++			of_node_get(dai_node);
++			component_match_add_release(dev, matchptr,
++						    apq8016_release_of,
++						    apq8016_compare_of,
++						    dai_node);
++		}
++
++		platform = of_get_child_by_name(np, "platform");
++		if (platform) {
++			dai_node = of_parse_phandle(platform, "sound-dai", 0);
++			component_match_add_release(dev, matchptr,
++						    apq8016_release_of,
++						    apq8016_compare_of,
++						    dai_node);
++		}
++	}
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id q6core_device_id[]  = {
-+	{ .compatible = "qcom,q6core" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6core_device_id);
++static int apq8096_platform_probe(struct platform_device *pdev)
++{
++	struct component_match *match = NULL;
++	int ret;
 +
-+static struct apr_driver qcom_q6core_driver = {
-+	.probe = q6core_probe,
-+	.remove = q6core_exit,
-+	.callback = q6core_callback,
++	ret = add_audio_components(&pdev->dev, &match);
++	if (ret)
++		return ret;
++
++	return component_master_add_with_match(&pdev->dev, &apq8096_ops, match);
++}
++
++static int apq8096_platform_remove(struct platform_device *pdev)
++{
++	component_master_del(&pdev->dev, &apq8096_ops);
++
++	return 0;
++}
++
++static const struct of_device_id msm_snd_apq8096_dt_match[] = {
++	{.compatible = "qcom,apq8096-sndcard"},
++	{}
++};
++
++MODULE_DEVICE_TABLE(of, msm_snd_apq8096_dt_match);
++
++static struct platform_driver msm_snd_apq8096_driver = {
++	.probe  = apq8096_platform_probe,
++	.remove = apq8096_platform_remove,
 +	.driver = {
-+		.name = "qcom-q6core",
-+		.of_match_table = of_match_ptr(q6core_device_id),
++		.name = "msm-snd-apq8096",
++		.owner = THIS_MODULE,
++		.of_match_table = msm_snd_apq8096_dt_match,
 +	},
 +};
-+
-+module_apr_driver(qcom_q6core_driver);
-+MODULE_DESCRIPTION("q6 core");
++module_platform_driver(msm_snd_apq8096_driver);
++MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
++MODULE_DESCRIPTION("APQ8096 ASoC Machine Driver");
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6core.h b/sound/soc/qcom/qdsp6/q6core.h
-new file mode 100644
-index 000000000000..4105b1d730be
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6core.h
-@@ -0,0 +1,15 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __Q6CORE_H__
-+#define __Q6CORE_H__
-+
-+struct q6core_svc_api_info {
-+	uint32_t service_id;
-+	uint32_t api_version;
-+	uint32_t api_branch_version;
-+};
-+
-+bool q6core_is_adsp_ready(void);
-+int q6core_get_svc_api_info(int svc_id, struct q6core_svc_api_info *ainfo);
-+
-+#endif /* __Q6CORE_H__ */
 -- 
 2.16.2
