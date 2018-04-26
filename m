@@ -1,88 +1,104 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH 0/4] ALSA: Fix year 2038 issue for sound subsystem, alternative
-Date: Thu, 26 Apr 2018 16:32:01 +0200
-Message-ID: <CAK8P3a3hugjuOvHCKY-8Ny02Ww8RJAeCxUc4hG8SPJBxqPG0Tw@mail.gmail.com>
-References: <20180426124422.2921744-1-arnd@arndb.de> <6aa760e5-390a-b7ba-62f1-dc01308031fa@perex.cz>
+Subject: Re: [PATCH 8/8] ALSA: add new 32-bit layout for snd_pcm_mmap_status/control
+Date: Thu, 26 Apr 2018 17:14:59 +0200
+Message-ID: <CAK8P3a24UW4FTJ=Ak7vB++uQZhLj+0LTqgbwpxpHbDVL+8HsLA@mail.gmail.com>
+References: <cover.1524570852.git.baolin.wang@linaro.org> <e7d7ed852943b5a35c5d494071f522465620371b.1524570852.git.baolin.wang@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <6aa760e5-390a-b7ba-62f1-dc01308031fa@perex.cz>
+In-Reply-To: <e7d7ed852943b5a35c5d494071f522465620371b.1524570852.git.baolin.wang@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: y2038 Mailman List <y2038@lists.linaro.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org, Baolin Wang <baolin.wang@linaro.org>
+To: Baolin Wang <baolin.wang@linaro.org>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Ingo Molnar <mingo@kernel.org>, SF Markus Elfring <elfring@users.sourceforge.net>, Dan Carpenter <dan.carpenter@oracle.com>, jeeja.kp@intel.com, Vinod Koul <vinod.koul@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, subhransu.s.prusty@intel.com, Bhumika Goyal <bhumirks@gmail.com>, gudishax.kranthikumar@intel.com, Naveen M <naveen.m@intel.com>, hardik.t.shah@intel.com, Arvind Yadav <arvind.yadav.cs@gmail.com>, Fabian Frederick <fabf@skynet.be>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 26, 2018 at 3:30 PM, Jaroslav Kysela <perex@perex.cz> wrote:
-> Dne 26.4.2018 v 14:44 Arnd Bergmann napsal(a):
->> I've tried the suggestion from Jaroslaw, doing a minimal change to the
->> UAPI headers to keep the existing binary interface. As he predicted,
->> this is a much simpler set of kernel changes, but we will pay for that
->> with added complexity in alsa-lib.
->>
->> The first two patches in this series are taken from Baolin's patch
->> set, with a small bugfix folded in to avoid a compile-time regression.
->>
->> The other two patches are to redefine the UAPI and to deprecate
->> the support for CLOCK_REALTIME time stamps, which we can no longer
->> allow with user space that we expect to survive beyond 2038.
->>
->> Overall, I'd still be happier with Baolin's approach since it allows
->> us to keep compatiblity with CLOCK_REALTIME users and requires
->> fewer changes in user space, but this would work as well.
->
-> Hi Arnd,
->
->   Thanks for your work. I proposed a bit different implementation. Example:
->
-> struct snd_example {
->   struct snd_native_timespec tstamp;
->   ....
->   u64 tstamp_sec64; /* use the reserved[] array for this */
-> };
->
->   So tstamp contains the current 32-bit tv_sec/tv_nsec and the full
-> 64-bit value is in tstamp_sec64. In this way, we can transfer any type
-> of the timespec64 values and it's backward compatible to retain the
-> binary compatibility. The protocol versions should be increased to let
-> the userspace know about the new 64-bit fields.
+On Tue, Apr 24, 2018 at 2:06 PM, Baolin Wang <baolin.wang@linaro.org> wrote:
 
-Right, I went in a slightly different way since the intention was to keep
-the interface simple. I think we can either force the use of monotonic
-times or extend it to 64-bit CLOCK_REALTIME stamps, but the
-monotonic stamps seem much better for multiple reasons (i.e. skipping)
-if you want to avoid introducing new ioctls.
+> -struct snd_pcm_mmap_status {
+> +/*
+> + * For mmap operations, we need the 64-bit layout, both for compat mode,
+> + * and for y2038 compatibility. For 64-bit applications, the two definitions
+> + * are identical, so we keep the traditional version.
+> + */
+> +#ifdef __SND_STRUCT_TIME64
+> +#define __snd_pcm_mmap_status64                snd_pcm_mmap_status
+> +#define __snd_pcm_mmap_control64       snd_pcm_mmap_control
+> +#define __snd_pcm_sync_ptr64           snd_pcm_sync_ptr
+> +#else
+> +#define __snd_pcm_mmap_status          snd_pcm_mmap_status
+> +#define __snd_pcm_mmap_control         snd_pcm_mmap_control
+> +#define __snd_pcm_sync_ptr             snd_pcm_sync_ptr
+> +#endif
+> +
+> +struct __snd_pcm_mmap_status {
+>         snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_XXXX */
+>         int pad1;                       /* Needed for 64 bit alignment */
+>         snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
 
-The added complexity of having two timestamps in a single structure
-means we don't end up with much simpler code that what Baolin
-proposed, which mostly just moves the existing compat_ioctl()
-to the native 32-bit handler but not add anything new that requires
-library changes.
+One more thing here: this definition is slightly suboptimal because in
+an alsa-lib that gets built with 64-bit time_t, we end up with an unusable
+__snd_pcm_mmap_status structure (__snd_pcm_mmap_status64 works
+fine, and that would be the normal thing to use). Just in case we want
+to be able to build an alsa-lib that is capable of running both on
+new kernels with 64-bit time_t interfaces exposed to applications and
+also on old kernels that don't have the new ioctls, we probably want
+another fixup merged in:
 
-His tread patch and my mmap patch both do add some complexity
-but then we also need some of that with your suggestions for
-tread.
+diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
+index 18fbdcb2c7b6..638c717d3eb9 100644
+--- a/include/uapi/sound/asound.h
++++ b/include/uapi/sound/asound.h
+@@ -496,19 +496,30 @@ struct snd_pcm_status {
+ #define __snd_pcm_mmap_status64                snd_pcm_mmap_status
+ #define __snd_pcm_mmap_control64       snd_pcm_mmap_control
+ #define __snd_pcm_sync_ptr64           snd_pcm_sync_ptr
++#define __snd_timespec64               timespec
++struct __snd_timespec {
++       __s32 tv_sec;
++       __s32 tv_nsec;
++};
+ #else
+ #define __snd_pcm_mmap_status          snd_pcm_mmap_status
+ #define __snd_pcm_mmap_control         snd_pcm_mmap_control
+ #define __snd_pcm_sync_ptr             snd_pcm_sync_ptr
++#define __snd_timespec                 timespec
++struct __snd_timespec64 {
++       __s64 tv_sec;
++       __s64 tv_nsec;
++};
++
+ #endif
 
->   The timer read protocol must be updated, because the stream will
-> change, so I am fine to add new ioctl (like originally proposed).
+ struct __snd_pcm_mmap_status {
+        snd_pcm_state_t state;          /* RO: state - SNDRV_PCM_STATE_XXXX */
+        int pad1;                       /* Needed for 64 bit alignment */
+        snd_pcm_uframes_t hw_ptr;       /* RO: hw ptr (0...boundary-1) */
+-       struct timespec tstamp;         /* Timestamp */
++       struct __snd_timespec tstamp;   /* Timestamp */
+        snd_pcm_state_t suspended_state; /* RO: suspended stream state */
+-       struct timespec audio_tstamp;   /* from sample counter or wall clock */
++       struct __snd_timespec audio_tstamp; /* from sample counter or
+wall clock */
+ };
 
-With forced monotonic times, we can skip that update and keep
-using the existing stream format.
+ struct __snd_pcm_mmap_control {
+@@ -532,11 +543,6 @@ struct __snd_pcm_sync_ptr {
+        } c;
+ };
 
->   The alsa-lib defines timespec only if posix defines are not set so
-> glibc's time.h does not define the timespec structure - it may be improved.
+-struct __snd_timespec64 {
+-       __s64 tv_sec;
+-       __s64 tv_nsec;
+-};
+-
+ #if defined(__BYTE_ORDER) ? __BYTE_ORDER == __BIG_ENDIAN :
+defined(__BIG_ENDIAN)
+ typedef char __pad_before_uframe[sizeof(__u64) - sizeof(snd_pcm_uframes_t)];
+ typedef char __pad_after_uframe[0];
 
-Yes, we definitely need to improve that, since any application that
-relies on the timespec definition to come from alsa would otherwise
-get a structure with a 64-bit tv_sec but incorrect padding on tv_nsec
-(no padding on i386, padding on the wrong side for big-endian
-architectures).
-
-One way out would be to define snd_timestamp_t and
-snd_htimestamp_t in terms of snd_monotonic_timestamp
-from the kernel header and let it still have the traditional layout
-even for applications built with 64-bit time_t.
-
-The downside is again that applications may break when they
-cast between snd_htimestamp_t and timespec pointers.
+With this change, alsa-lib can either access whichever structure
+matches the glibc 'timespec' definition, or it can ask for
+__struct __snd_pcm_mmap_status and struct __snd_pcm_mmap_status64
+explicitly, regardless of the time_t definition.
 
          Arnd
