@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: compress: Only call free for components
-	which have been opened" to the asoc tree
-Date: Thu, 26 Apr 2018 12:53:28 +0100
-Message-ID: <E1fBfSq-0007g6-K2@debutante>
-References: <20180424153903.7693-1-ckeepax@opensource.cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B66B4267836
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:53:33 +0200 (CEST)
-In-Reply-To: <20180424153903.7693-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, vinod.koul@intel.com, patches@opensource.cirrus.com, lgirdwood@gmail.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
+Subject: Applied "ASoC: mediatek: use snd_soc_dai_get_drvdata() to get the private data" to the asoc tree
+Date: Thu, 26 Apr 2018 12:53:45 +0100
+Message-ID: <E1fBfT7-0007jR-Fn@debutante>
+References: <07e845c2e7eb06c5f284d1bae3acbccba42e48fa.1524628914.git.ryder.lee@mediatek.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <07e845c2e7eb06c5f284d1bae3acbccba42e48fa.1524628914.git.ryder.lee@mediatek.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Ryder Lee <ryder.lee@mediatek.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: compress: Only call free for components which have been opened
+   ASoC: mediatek: use snd_soc_dai_get_drvdata() to get the private data
 
 has been applied to the asoc tree at
 
@@ -53,150 +37,448 @@ to this mail.
 Thanks,
 Mark
 
->From 572e6c8dd174bc6fc7ba5d9b6935e9ec8d2660f5 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 24 Apr 2018 16:39:01 +0100
-Subject: [PATCH] ASoC: compress: Only call free for components which have been
- opened
+>From e4b31b816c472ba5907b01a6f6a1626c1e8d51ef Mon Sep 17 00:00:00 2001
+From: Ryder Lee <ryder.lee@mediatek.com>
+Date: Wed, 25 Apr 2018 12:19:54 +0800
+Subject: [PATCH] ASoC: mediatek: use snd_soc_dai_get_drvdata() to get the
+ private data
 
-The core should only call free on a component if said component has
-already had open called on it. This is not presently the case and most
-compressed drivers in the kernel assume it will be. This causes null
-pointer dereferences in the drivers as they attempt clean up for stuff
-that was never put in place.
+Reduce the boilerplate code to retrieve the private data.
+No functional change intended.
 
-This is fixed by aborting calling open callbacks once a failure is
-encountered and then during clean up only iterating through the
-component list to that point.
-
-This is a fairly quick fix to the issue, to allow backporting. There
-is more refactoring to follow to tidy the code up a little.
-
-Fixes: 9e7e3738ab0e ("ASoC: snd_soc_component_driver has snd_compr_ops")
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Acked-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+Reviewed-by: Garlic Tseng <garlic.tseng@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-compress.c | 52 +++++++++++++++++++++-------------------
- 1 file changed, 28 insertions(+), 24 deletions(-)
+ sound/soc/mediatek/common/mtk-afe-fe-dai.c | 20 ++---
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 86 ++++++++--------------
+ sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 28 ++-----
+ 3 files changed, 46 insertions(+), 88 deletions(-)
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index 82402688bd8e..948505f74229 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -33,7 +33,7 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	int ret = 0, __ret;
-+	int ret;
+diff --git a/sound/soc/mediatek/common/mtk-afe-fe-dai.c b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+index c91e5f4cd902..ac61ff3ccbe4 100644
+--- a/sound/soc/mediatek/common/mtk-afe-fe-dai.c
++++ b/sound/soc/mediatek/common/mtk-afe-fe-dai.c
+@@ -44,8 +44,7 @@ int mtk_afe_fe_startup(struct snd_pcm_substream *substream,
+ 		       struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int memif_num = rtd->cpu_dai->id;
+ 	struct mtk_base_afe_memif *memif = &afe->memif[memif_num];
+@@ -107,8 +106,7 @@ void mtk_afe_fe_shutdown(struct snd_pcm_substream *substream,
+ 			 struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
+ 	int irq_id;
  
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+@@ -131,8 +129,7 @@ int mtk_afe_fe_hw_params(struct snd_pcm_substream *substream,
+ 			 struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
+ 	int msb_at_bit33 = 0;
+ 	int ret, fs = 0;
+@@ -196,8 +193,7 @@ int mtk_afe_fe_trigger(struct snd_pcm_substream *substream, int cmd,
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime * const runtime = substream->runtime;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
+ 	struct mtk_base_afe_irq *irqs = &afe->irqs[memif->irq_usage];
+ 	const struct mtk_base_irq_data *irq_data = irqs->irq_data;
+@@ -260,8 +256,7 @@ int mtk_afe_fe_prepare(struct snd_pcm_substream *substream,
+ 		       struct snd_soc_dai *dai)
+ {
+ 	struct snd_soc_pcm_runtime *rtd  = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif = &afe->memif[rtd->cpu_dai->id];
+ 	int hd_audio = 0;
  
-@@ -68,16 +68,15 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
- 		    !component->driver->compr_ops->open)
- 			continue;
+@@ -333,7 +328,7 @@ EXPORT_SYMBOL_GPL(mtk_dynamic_irq_release);
  
--		__ret = component->driver->compr_ops->open(cstream);
--		if (__ret < 0) {
-+		ret = component->driver->compr_ops->open(cstream);
-+		if (ret < 0) {
- 			dev_err(component->dev,
- 				"Compress ASoC: can't open platform %s: %d\n",
--				component->name, __ret);
--			ret = __ret;
-+				component->name, ret);
-+			goto machine_err;
+ int mtk_afe_dai_suspend(struct snd_soc_dai *dai)
+ {
+-	struct mtk_base_afe *afe = dev_get_drvdata(dai->dev);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct device *dev = afe->dev;
+ 	struct regmap *regmap = afe->regmap;
+ 	int i;
+@@ -358,7 +353,7 @@ EXPORT_SYMBOL_GPL(mtk_afe_dai_suspend);
+ 
+ int mtk_afe_dai_resume(struct snd_soc_dai *dai)
+ {
+-	struct mtk_base_afe *afe = dev_get_drvdata(dai->dev);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct device *dev = afe->dev;
+ 	struct regmap *regmap = afe->regmap;
+ 	int i = 0;
+@@ -383,4 +378,3 @@ EXPORT_SYMBOL_GPL(mtk_afe_dai_resume);
+ MODULE_DESCRIPTION("Mediatek simple fe dai operator");
+ MODULE_AUTHOR("Garlic Tseng <garlic.tseng@mediatek.com>");
+ MODULE_LICENSE("GPL v2");
+-
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index 73cce33fa439..8219f5534150 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -92,9 +92,7 @@ static int mt2701_afe_i2s_fs(unsigned int sample_rate)
+ static int mt2701_afe_i2s_startup(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	int i2s_num = mt2701_dai_num_to_i2s(afe, dai->id);
+ 
+ 	if (i2s_num < 0)
+@@ -108,9 +106,7 @@ static int mt2701_afe_i2s_path_shutdown(struct snd_pcm_substream *substream,
+ 					int i2s_num,
+ 					int dir_invert)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
+ 	struct mt2701_i2s_path *i2s_path = &afe_priv->i2s_path[i2s_num];
+ 	const struct mt2701_i2s_data *i2s_data;
+@@ -145,9 +141,7 @@ static int mt2701_afe_i2s_path_shutdown(struct snd_pcm_substream *substream,
+ static void mt2701_afe_i2s_shutdown(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
+ 	int i2s_num = mt2701_dai_num_to_i2s(afe, dai->id);
+ 	struct mt2701_i2s_path *i2s_path;
+@@ -178,16 +172,14 @@ static int mt2701_i2s_path_prepare_enable(struct snd_pcm_substream *substream,
+ 					  int i2s_num,
+ 					  int dir_invert)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
+ 	struct mt2701_i2s_path *i2s_path = &afe_priv->i2s_path[i2s_num];
+ 	const struct mt2701_i2s_data *i2s_data;
+ 	struct snd_pcm_runtime * const runtime = substream->runtime;
+ 	int reg, fs, w_len = 1; /* now we support bck 64bits only */
+ 	int stream_dir = substream->stream;
+-	unsigned int mask = 0, val = 0;
++	unsigned int mask, val;
+ 
+ 	if (dir_invert) {
+ 		if (stream_dir == SNDRV_PCM_STREAM_PLAYBACK)
+@@ -250,9 +242,7 @@ static int mt2701_afe_i2s_prepare(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+ 	int clk_domain;
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
+ 	int i2s_num = mt2701_dai_num_to_i2s(afe, dai->id);
+ 	struct mt2701_i2s_path *i2s_path;
+@@ -295,7 +285,7 @@ static int mt2701_afe_i2s_prepare(struct snd_pcm_substream *substream,
+ static int mt2701_afe_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 				     unsigned int freq, int dir)
+ {
+-	struct mtk_base_afe *afe = dev_get_drvdata(dai->dev);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
+ 	int i2s_num = mt2701_dai_num_to_i2s(afe, dai->id);
+ 
+@@ -309,16 +299,16 @@ static int mt2701_afe_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+ 			__func__);
+ 		return -EINVAL;
+ 	}
++
+ 	afe_priv->i2s_path[i2s_num].mclk_rate = freq;
++
+ 	return 0;
+ }
+ 
+ static int mt2701_btmrg_startup(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
+ 	int ret;
+ 
+@@ -327,6 +317,7 @@ static int mt2701_btmrg_startup(struct snd_pcm_substream *substream,
+ 		return ret;
+ 
+ 	afe_priv->mrg_enable[substream->stream] = 1;
++
+ 	return 0;
+ }
+ 
+@@ -334,17 +325,14 @@ static int mt2701_btmrg_hw_params(struct snd_pcm_substream *substream,
+ 				  struct snd_pcm_hw_params *params,
+ 				  struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	int stream_fs;
+ 	u32 val, msk;
+ 
+ 	stream_fs = params_rate(params);
+ 
+-	if ((stream_fs != 8000) && (stream_fs != 16000)) {
+-		dev_err(afe->dev, "%s() btmgr not support this stream_fs %d\n",
+-			__func__, stream_fs);
++	if (stream_fs != 8000 && stream_fs != 16000) {
++		dev_err(afe->dev, "unsupported rate %d\n", stream_fs);
+ 		return -EINVAL;
+ 	}
+ 
+@@ -378,9 +366,7 @@ static int mt2701_btmrg_hw_params(struct snd_pcm_substream *substream,
+ static void mt2701_btmrg_shutdown(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt2701_afe_private *afe_priv = afe->platform_priv;
+ 
+ 	/* if the other direction stream is not occupied */
+@@ -393,28 +379,26 @@ static void mt2701_btmrg_shutdown(struct snd_pcm_substream *substream,
+ 				   AFE_MRGIF_CON_MRG_I2S_EN, 0);
+ 		mt2701_disable_btmrg_clk(afe);
+ 	}
++
+ 	afe_priv->mrg_enable[substream->stream] = 0;
+ }
+ 
+ static int mt2701_simple_fe_startup(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
+-	int stream_dir = substream->stream;
+-	int memif_num = rtd->cpu_dai->id;
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif_tmp;
++	int stream_dir = substream->stream;
+ 
+ 	/* can't run single DL & DLM at the same time */
+ 	if (stream_dir == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		memif_tmp = &afe->memif[MT2701_MEMIF_DLM];
+ 		if (memif_tmp->substream) {
+-			dev_warn(afe->dev, "%s memif is not available, stream_dir %d, memif_num %d\n",
+-				 __func__, stream_dir, memif_num);
++			dev_warn(afe->dev, "memif is not available");
+ 			return -EBUSY;
  		}
  	}
--	if (ret < 0)
--		goto machine_err;
-+	component = NULL;
- 
- 	if (rtd->dai_link->compr_ops && rtd->dai_link->compr_ops->startup) {
- 		ret = rtd->dai_link->compr_ops->startup(cstream);
-@@ -97,17 +96,20 @@ static int soc_compr_open(struct snd_compr_stream *cstream)
- 
- machine_err:
- 	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
-+		struct snd_soc_component *err_comp = rtdcom->component;
 +
-+		if (err_comp == component)
-+			break;
+ 	return mtk_afe_fe_startup(substream, dai);
+ }
  
- 		/* ignore duplication for now */
--		if (platform && (component == &platform->component))
-+		if (platform && (err_comp == &platform->component))
- 			continue;
+@@ -422,27 +406,23 @@ static int mt2701_simple_fe_hw_params(struct snd_pcm_substream *substream,
+ 				      struct snd_pcm_hw_params *params,
+ 				      struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	int stream_dir = substream->stream;
  
--		if (!component->driver->compr_ops ||
--		    !component->driver->compr_ops->free)
-+		if (!err_comp->driver->compr_ops ||
-+		    !err_comp->driver->compr_ops->free)
- 			continue;
- 
--		component->driver->compr_ops->free(cstream);
-+		err_comp->driver->compr_ops->free(cstream);
- 	}
- 
- 	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->free)
-@@ -132,7 +134,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 	struct snd_soc_dpcm *dpcm;
- 	struct snd_soc_dapm_widget_list *list;
- 	int stream;
--	int ret = 0, __ret;
-+	int ret;
- 
- 	if (cstream->direction == SND_COMPRESS_PLAYBACK)
- 		stream = SNDRV_PCM_STREAM_PLAYBACK;
-@@ -172,16 +174,15 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 		    !component->driver->compr_ops->open)
- 			continue;
- 
--		__ret = component->driver->compr_ops->open(cstream);
--		if (__ret < 0) {
-+		ret = component->driver->compr_ops->open(cstream);
-+		if (ret < 0) {
- 			dev_err(component->dev,
- 				"Compress ASoC: can't open platform %s: %d\n",
--				component->name, __ret);
--			ret = __ret;
-+				component->name, ret);
-+			goto machine_err;
- 		}
- 	}
--	if (ret < 0)
--		goto machine_err;
-+	component = NULL;
- 
- 	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->startup) {
- 		ret = fe->dai_link->compr_ops->startup(cstream);
-@@ -236,17 +237,20 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 		fe->dai_link->compr_ops->shutdown(cstream);
- machine_err:
- 	for_each_rtdcom(fe, rtdcom) {
--		component = rtdcom->component;
-+		struct snd_soc_component *err_comp = rtdcom->component;
+ 	/* single DL use PAIR_INTERLEAVE */
+-	if (stream_dir == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (stream_dir == SNDRV_PCM_STREAM_PLAYBACK)
+ 		regmap_update_bits(afe->regmap,
+ 				   AFE_MEMIF_PBUF_SIZE,
+ 				   AFE_MEMIF_PBUF_SIZE_DLM_MASK,
+ 				   AFE_MEMIF_PBUF_SIZE_PAIR_INTERLEAVE);
+-	}
 +
-+		if (err_comp == component)
-+			break;
+ 	return mtk_afe_fe_hw_params(substream, params, dai);
+ }
  
- 		/* ignore duplication for now */
--		if (platform && (component == &platform->component))
-+		if (platform && (err_comp == &platform->component))
- 			continue;
+ static int mt2701_dlm_fe_startup(struct snd_pcm_substream *substream,
+ 				 struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif_tmp;
+ 	const struct mtk_base_memif_data *memif_data;
+ 	int i;
+@@ -468,9 +448,7 @@ static int mt2701_dlm_fe_startup(struct snd_pcm_substream *substream,
+ static void mt2701_dlm_fe_shutdown(struct snd_pcm_substream *substream,
+ 				   struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	const struct mtk_base_memif_data *memif_data;
+ 	int i;
  
--		if (!component->driver->compr_ops ||
--		    !component->driver->compr_ops->free)
-+		if (!err_comp->driver->compr_ops ||
-+		    !err_comp->driver->compr_ops->free)
- 			continue;
- 
--		component->driver->compr_ops->free(cstream);
-+		err_comp->driver->compr_ops->free(cstream);
+@@ -481,6 +459,7 @@ static void mt2701_dlm_fe_shutdown(struct snd_pcm_substream *substream,
+ 				   1 << memif_data->agent_disable_shift,
+ 				   1 << memif_data->agent_disable_shift);
  	}
++
+ 	return mtk_afe_fe_shutdown(substream, dai);
+ }
  
- 	if (platform && platform->driver->compr_ops && platform->driver->compr_ops->free)
+@@ -488,9 +467,7 @@ static int mt2701_dlm_fe_hw_params(struct snd_pcm_substream *substream,
+ 				   struct snd_pcm_hw_params *params,
+ 				   struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	int channels = params_channels(params);
+ 
+ 	regmap_update_bits(afe->regmap,
+@@ -512,9 +489,7 @@ static int mt2701_dlm_fe_hw_params(struct snd_pcm_substream *substream,
+ static int mt2701_dlm_fe_trigger(struct snd_pcm_substream *substream,
+ 				 int cmd, struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mtk_base_afe_memif *memif_tmp = &afe->memif[MT2701_MEMIF_DL1];
+ 
+ 	switch (cmd) {
+@@ -547,6 +522,7 @@ static int mt2701_memif_fs(struct snd_pcm_substream *substream,
+ 		fs = mt2701_afe_i2s_fs(rate);
+ 	else
+ 		fs = (rate == 16000 ? 1 : 0);
++
+ 	return fs;
+ }
+ 
+@@ -1398,10 +1374,12 @@ static irqreturn_t mt2701_asys_isr(int irq_id, void *dev)
+ 		memif = &afe->memif[id];
+ 		if (memif->irq_usage < 0)
+ 			continue;
++
+ 		irq = &afe->irqs[memif->irq_usage];
+-		if (status & 1 << (irq->irq_data->irq_clr_shift))
++		if (status & 1 << irq->irq_data->irq_clr_shift)
+ 			snd_pcm_period_elapsed(memif->substream);
+ 	}
++
+ 	return IRQ_HANDLED;
+ }
+ 
+diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+index 65d1433a0944..22881a9e111e 100644
+--- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
++++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
+@@ -303,9 +303,7 @@ static void mt8173_afe_dais_disable_clks(struct mtk_base_afe *afe,
+ static int mt8173_afe_i2s_startup(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 
+ 	if (dai->active)
+ 		return 0;
+@@ -318,9 +316,7 @@ static int mt8173_afe_i2s_startup(struct snd_pcm_substream *substream,
+ static void mt8173_afe_i2s_shutdown(struct snd_pcm_substream *substream,
+ 				    struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 
+ 	if (dai->active)
+ 		return;
+@@ -334,10 +330,8 @@ static void mt8173_afe_i2s_shutdown(struct snd_pcm_substream *substream,
+ static int mt8173_afe_i2s_prepare(struct snd_pcm_substream *substream,
+ 				  struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime * const runtime = substream->runtime;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt8173_afe_private *afe_priv = afe->platform_priv;
+ 	int ret;
+ 
+@@ -358,9 +352,7 @@ static int mt8173_afe_i2s_prepare(struct snd_pcm_substream *substream,
+ static int mt8173_afe_hdmi_startup(struct snd_pcm_substream *substream,
+ 				   struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt8173_afe_private *afe_priv = afe->platform_priv;
+ 
+ 	if (dai->active)
+@@ -374,9 +366,7 @@ static int mt8173_afe_hdmi_startup(struct snd_pcm_substream *substream,
+ static void mt8173_afe_hdmi_shutdown(struct snd_pcm_substream *substream,
+ 				     struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt8173_afe_private *afe_priv = afe->platform_priv;
+ 
+ 	if (dai->active)
+@@ -389,10 +379,8 @@ static void mt8173_afe_hdmi_shutdown(struct snd_pcm_substream *substream,
+ static int mt8173_afe_hdmi_prepare(struct snd_pcm_substream *substream,
+ 				   struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_pcm_runtime * const runtime = substream->runtime;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 	struct mt8173_afe_private *afe_priv = afe->platform_priv;
+ 
+ 	unsigned int val;
+@@ -454,9 +442,7 @@ static int mt8173_afe_hdmi_prepare(struct snd_pcm_substream *substream,
+ static int mt8173_afe_hdmi_trigger(struct snd_pcm_substream *substream, int cmd,
+ 				   struct snd_soc_dai *dai)
+ {
+-	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+-	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++	struct mtk_base_afe *afe = snd_soc_dai_get_drvdata(dai);
+ 
+ 	dev_info(afe->dev, "%s cmd=%d %s\n", __func__, cmd, dai->name);
+ 
 -- 
 2.17.0
