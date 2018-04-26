@@ -1,8 +1,8 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: add mt6351 codec driver" to the asoc
 	tree
-Date: Thu, 26 Apr 2018 12:51:54 +0100
-Message-ID: <E1fBfRK-0007Wl-Tl@debutante>
+Date: Thu, 26 Apr 2018 12:53:00 +0100
+Message-ID: <E1fBfSO-0007ai-Q7@debutante>
 References: <20180426024144.13974-1-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,8 +10,8 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 14B1326784E
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:52:03 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 66E6F2677E4
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:53:09 +0200 (CEST)
 In-Reply-To: <20180426024144.13974-1-kaichieh.chuang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
