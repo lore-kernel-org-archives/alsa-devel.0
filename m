@@ -1,237 +1,63 @@
-From: DaeRyong Jeong <threeearcat@gmail.com>
-Subject: Unable to handle kernel paging request in snd_seq_oss_readq_puts
-Date: Thu, 26 Apr 2018 13:52:27 +0900
-Message-ID: <20180426045223.GA15307@dragonet.kaist.ac.kr>
+From: Vinod Koul <vinod.koul@intel.com>
+Subject: Re: [PATCH v5 07/13] soundwire: Add stream
+	configuration APIs
+Date: Thu, 26 Apr 2018 10:53:25 +0530
+Message-ID: <20180426052324.GS6014@localhost>
+References: <1524649163-12088-1-git-send-email-vkoul@kernel.org>
+ <1524649163-12088-8-git-send-email-vkoul@kernel.org>
+ <20180426040016.GA15388@buildpc-HP-Z230>
+ <20180426042856.GR6014@localhost>
+ <20180426043813.GB15388@buildpc-HP-Z230>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC5192677B2
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 07:18:47 +0200 (CEST)
 Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, byoungyoung@purdue.edu, kt0755@gmail.com, bammanag@purdue.edu
+In-Reply-To: <20180426043813.GB15388@buildpc-HP-Z230>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sanyog Kale <sanyog.r.kale@intel.com>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-We report the crash:
-unable to handle kernel paging request in snd_seq_oss_readq_puts
+On Thu, Apr 26, 2018 at 10:08:13AM +0530, Sanyog Kale wrote:
+> On Thu, Apr 26, 2018 at 09:58:56AM +0530, Vinod Koul wrote:
 
-This crash has been found in v4.16 using RaceFuzzer (a modified
-version of Syzkaller), which we describe more at the end of this
-report. Our analysis shows that the race occurs when invoking two
-syscalls concurrently, write$eventfd and write$sndseq.
+> > > We should have kept zero bandwidth check here because there is no need
+> > > to perform sdw_program_params when no stream is running on bus.
+> > 
+> > Looking at it I think it helps to program the calculated values, we may get
+> > a new stream even before we get a chance to suspend. And frankly at bus, we
+> > should not make any assumptions about suspend behaviour they may change with
+> > platforms and archs :)
+> 
+> Whats the use of computing & programming values when there is
+> no stream running? The computing and programming of values for new stream
+> will be done in new stream setup flow ie. in prepare, nothing needs to be
+> done here.
+> 
+> I agree we should not make any suspend behaviour assumption here.
 
-Analysis:
-We think the concurrent execution of snd_virmidi_output_trigger() and
-snd_midi_event_encode_byte() causes the crash. Since the first call site
-of snd_seq_kernel_client_dispatch() in snd_virmidi_output_trigger() is not
-protected by substream->runtime->lock, it is possible that
-snd_seq_oss_readq_puts() and snd_midi_event_encode_byte() are executed
-concurrently in the call sequences as below, and snd_seq_oss_readq_puts()
-accesses ev->data.ex.ptr before it is initialized.
+That is why programming this is required :)
 
-Thread Interleaving:
-CPU1 (snd_virmidi_output_trigger)                   CPU2(snd_midi_event_encode_byte)
+> In case of zero bandwidth, we should just change the stream state to
+> DEPREPARE and return.
 
-                                                    ev->type = SNDRV_SEQ_EVENT_SYSEX;
-if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
-    if (snd_seq_kernel_client_dispatch(vmidi->client, &vmidi->event, in_atomic(), 0) < 0)
-        ...
-        /* In snd_seq_oss_readq_puts(),
-         * data has the same value with ev->data.ext.ptr
-         * which is not initialized yet
-         */
-        rec.c[1] = *data++;
-                                                    ev->data.ext.len = dev->read;
-                                                    ev->data.ext.ptr = dev->buf;
+Yes agreed and have fixed it, perhaps you missed below:
+> > > 
+> > > Change the state to DEPREPARE and then return.
+> > 
+> > good spot will fix
 
-Call sequence:
-CPU1
-snd_rawmidi_write
-  snd_rawmidi_kernel_write1
-    snd_rawmidi_output_trigger
-      snd_virmidi_output_trigger
-        snd_seq_kernel_client_dispatch (line #178 in v4.16)
-          snd_seq_deliver_event
-            deliver_to_subscribers
-              snd_seq_deliver_single_event.constprop.14
-                snd_seq_oss_event_input
-                  snd_seq_oss_midi_input
-                    send_midi_event
-                      snd_seq_oss_readq_sysex
-                        snd_seq_dump_var_event
-                          readq_dump_sysex
-                            snd_seq_oss_readq_puts
-
-CPU2
-snd_rawmidi_write
-  snd_rawmidi_kernel_write1
-    snd_rawmidi_output_trigger
-      snd_virmidi_output_trigger
-        snd_midi_event_encode
-            snd_midi_event_encode_byte
-
-
-Crash log:
-==================================================================
-BUG: KASAN: null-ptr-deref in snd_seq_oss_readq_puts+0xc5/0x160 sound/core/seq/oss/seq_oss_readq.c:112
-Read of size 1 at addr 0000000000000049 by task syz-executor0/12892
-
-CPU: 1 PID: 12892 Comm: syz-executor0 Not tainted 4.16.0 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:17 [inline]
- dump_stack+0x171/0x227 lib/dump_stack.c:53
- kasan_report_error mm/kasan/report.c:352 [inline]
- kasan_report.cold.7+0x13b/0x2f5 mm/kasan/report.c:412
- check_memory_region_inline mm/kasan/kasan.c:260 [inline]
- __asan_load1+0x47/0x50 mm/kasan/kasan.c:695
- snd_seq_oss_readq_puts+0xc5/0x160 sound/core/seq/oss/seq_oss_readq.c:112
- readq_dump_sysex+0x3f/0x50 sound/core/seq/oss/seq_oss_readq.c:133
- snd_seq_dump_var_event+0x375/0x3a0 sound/core/seq/seq_memory.c:107
- snd_seq_oss_readq_sysex+0xec/0x100 sound/core/seq/oss/seq_oss_readq.c:146
- send_midi_event sound/core/seq/oss/seq_oss_midi.c:615 [inline]
- snd_seq_oss_midi_input+0x332/0x710 sound/core/seq/oss/seq_oss_midi.c:535
- snd_seq_oss_event_input+0xe9/0x130 sound/core/seq/oss/seq_oss_event.c:439
- snd_seq_deliver_single_event.constprop.14+0x4bd/0x5a0 sound/core/seq/seq_clientmgr.c:622
- deliver_to_subscribers sound/core/seq/seq_clientmgr.c:677 [inline]
- snd_seq_deliver_event+0x274/0x5d0 sound/core/seq/seq_clientmgr.c:812
- snd_seq_kernel_client_dispatch+0xe2/0x100 sound/core/seq/seq_clientmgr.c:2330
- snd_virmidi_output_trigger+0x156/0x420 sound/core/seq/seq_virmidi.c:178
- snd_rawmidi_output_trigger sound/core/rawmidi.c:150 [inline]
- snd_rawmidi_kernel_write1+0x383/0x410 sound/core/rawmidi.c:1288
- snd_rawmidi_write+0x241/0xa30 sound/core/rawmidi.c:1338
- __vfs_write+0xed/0x510 fs/read_write.c:480
- vfs_write+0x195/0x380 fs/read_write.c:544
- SYSC_write fs/read_write.c:589 [inline]
- SyS_write+0xd7/0x1c0 fs/read_write.c:581
- do_syscall_64+0x209/0x5d0 arch/x86/entry/common.c:287
- entry_SYSCALL_64_after_hwframe+0x42/0xb7
-RIP: 0033:0x453bb9
-RSP: 002b:00007f46902c2af8 EFLAGS: 00000212 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000007080d8 RCX: 0000000000453bb9
-RDX: 00000000000000f3 RSI: 0000000020004f0d RDI: 0000000000000006
-RBP: 0000000000005ed0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000212 R12: 00000000004ab432
-R13: 00000000ffffffff R14: 0000000000000006 R15: 0000000020004f0d
-==================================================================
-Kernel panic - not syncing: panic_on_warn set ...
-
-CPU: 1 PID: 12892 Comm: syz-executor0 Tainted: G    B            4.16.0 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
-Call Trace:
- __dump_stack lib/dump_stack.c:17 [inline]
- dump_stack+0x171/0x227 lib/dump_stack.c:53
- panic+0x1c9/0x44c kernel/panic.c:183
- kasan_end_report+0x47/0x4f mm/kasan/report.c:180
- kasan_report_error mm/kasan/report.c:359 [inline]
- kasan_report.cold.7+0xc9/0x2f5 mm/kasan/report.c:412
- check_memory_region_inline mm/kasan/kasan.c:260 [inline]
- __asan_load1+0x47/0x50 mm/kasan/kasan.c:695
- snd_seq_oss_readq_puts+0xc5/0x160 sound/core/seq/oss/seq_oss_readq.c:112
- readq_dump_sysex+0x3f/0x50 sound/core/seq/oss/seq_oss_readq.c:133
- snd_seq_dump_var_event+0x375/0x3a0 sound/core/seq/seq_memory.c:107
- snd_seq_oss_readq_sysex+0xec/0x100 sound/core/seq/oss/seq_oss_readq.c:146
- send_midi_event sound/core/seq/oss/seq_oss_midi.c:615 [inline]
- snd_seq_oss_midi_input+0x332/0x710 sound/core/seq/oss/seq_oss_midi.c:535
- snd_seq_oss_event_input+0xe9/0x130 sound/core/seq/oss/seq_oss_event.c:439
- snd_seq_deliver_single_event.constprop.14+0x4bd/0x5a0 sound/core/seq/seq_clientmgr.c:622
- deliver_to_subscribers sound/core/seq/seq_clientmgr.c:677 [inline]
- snd_seq_deliver_event+0x274/0x5d0 sound/core/seq/seq_clientmgr.c:812
- snd_seq_kernel_client_dispatch+0xe2/0x100 sound/core/seq/seq_clientmgr.c:2330
- snd_virmidi_output_trigger+0x156/0x420 sound/core/seq/seq_virmidi.c:178
- snd_rawmidi_output_trigger sound/core/rawmidi.c:150 [inline]
- snd_rawmidi_kernel_write1+0x383/0x410 sound/core/rawmidi.c:1288
- snd_rawmidi_write+0x241/0xa30 sound/core/rawmidi.c:1338
- __vfs_write+0xed/0x510 fs/read_write.c:480
- vfs_write+0x195/0x380 fs/read_write.c:544
- SYSC_write fs/read_write.c:589 [inline]
- SyS_write+0xd7/0x1c0 fs/read_write.c:581
- do_syscall_64+0x209/0x5d0 arch/x86/entry/common.c:287
- entry_SYSCALL_64_after_hwframe+0x42/0xb7
-RIP: 0033:0x453bb9
-RSP: 002b:00007f46902c2af8 EFLAGS: 00000212 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00000000007080d8 RCX: 0000000000453bb9
-RDX: 00000000000000f3 RSI: 0000000020004f0d RDI: 0000000000000006
-RBP: 0000000000005ed0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000212 R12: 00000000004ab432
-R13: 00000000ffffffff R14: 0000000000000006 R15: 0000000020004f0d
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-BUG: unable to handle kernel paging request at ffffe0000000007c
-IP: snd_seq_oss_readq_puts+0xc9/0x160 sound/core/seq/oss/seq_oss_readq.c:112
-PGD 0 P4D 0
-Oops: 0000 [#1] SMP KASAN
-Dumping ftrace buffer:
-   (ftrace buffer empty)
-Modules linked in:
-CPU: 0 PID: 30835 Comm: syz-executor0 Not tainted 4.16.0 #1
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
-RIP: 0010:snd_seq_oss_readq_puts+0xc9/0x160 sound/core/seq/oss/seq_oss_readq.c:112
-RSP: 0018:ffff880237427238 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 000000000000000e RCX: ffffffff83159785
-RDX: 1ffffc000000000f RSI: ffffffff83159775 RDI: ffff880237427269
-RBP: ffff8802374272d0 R08: ffff88022e7f63c0 R09: ffff880237427268
-R10: ffffed0046e84e4d R11: ffff88023742726f R12: ffffe0000000007c
-R13: ffffe0000000007d R14: ffff880237427268 R15: ffff8802374272a8
-FS:  00007fa616b6b700(0000) GS:ffff8800bae00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: ffffe0000000007c CR3: 00000002316cc000 CR4: 00000000000006f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7: 0000000000000600
-Call Trace:
- readq_dump_sysex+0x3f/0x50 sound/core/seq/oss/seq_oss_readq.c:133
- snd_seq_dump_var_event+0x375/0x3a0 sound/core/seq/seq_memory.c:107
- snd_seq_oss_readq_sysex+0xec/0x100 sound/core/seq/oss/seq_oss_readq.c:146
- send_midi_event sound/core/seq/oss/seq_oss_midi.c:615 [inline]
- snd_seq_oss_midi_input+0x332/0x710 sound/core/seq/oss/seq_oss_midi.c:535
- snd_seq_oss_event_input+0xe9/0x130 sound/core/seq/oss/seq_oss_event.c:439
- snd_seq_deliver_single_event.constprop.14+0x4bd/0x5a0 sound/core/seq/seq_clientmgr.c:622
- deliver_to_subscribers sound/core/seq/seq_clientmgr.c:677 [inline]
- snd_seq_deliver_event+0x274/0x5d0 sound/core/seq/seq_clientmgr.c:812
- snd_seq_kernel_client_dispatch+0xe2/0x100 sound/core/seq/seq_clientmgr.c:2330
- snd_virmidi_output_trigger+0x156/0x420 sound/core/seq/seq_virmidi.c:178
- snd_rawmidi_output_trigger sound/core/rawmidi.c:150 [inline]
- snd_rawmidi_kernel_write1+0x383/0x410 sound/core/rawmidi.c:1288
- snd_rawmidi_write+0x241/0xa30 sound/core/rawmidi.c:1338
- __vfs_write+0xed/0x510 fs/read_write.c:480
- vfs_write+0x195/0x380 fs/read_write.c:544
- SYSC_write fs/read_write.c:589 [inline]
- SyS_write+0xd7/0x1c0 fs/read_write.c:581
- do_syscall_64+0x209/0x5d0 arch/x86/entry/common.c:287
- entry_SYSCALL_64_after_hwframe+0x42/0xb7
-RIP: 0033:0x453bb9
-RSP: 002b:00007fa616b6aaf8 EFLAGS: 00000212 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000708020 RCX: 0000000000453bb9
-RDX: 0000000000000008 RSI: 0000000020002ff8 RDI: 0000000000000006
-RBP: 0000000000005ef0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000212 R12: 00000000004ad178
-R13: 00000000ffffffff R14: 0000000000000006 R15: 0000000020002ff8
-Code: 8d 7e 02 c6 45 98 05 e8 26 a1 5c fe 44 88 6d 9a eb 4a e8 7b 47 36 fe 4c 89 e7 4d 8d 6c 24 01 83 eb 01 e8 bb a0 5c fe 49 8d 7e 01 <45> 0f b6 24 24 e8 fd a0 5c fe 48 8b bd 70 ff ff ff 4c 89 f6 45
-RIP: snd_seq_oss_readq_puts+0xc9/0x160 sound/core/seq/oss/seq_oss_readq.c:112 RSP: ffff880237427238
-CR2: ffffe0000000007c
----[ end trace 029460d043170cd7 ]---
-
-
-= About RaceFuzzer
-
-RaceFuzzer is a customized version of Syzkaller, specifically tailored
-to find race condition bugs in the Linux kernel. While we leverage
-many different technique, the notable feature of RaceFuzzer is in
-leveraging a custom hypervisor (QEMU/KVM) to interleave the
-scheduling. In particular, we modified the hypervisor to intentionally
-stall a per-core execution, which is similar to supporting per-core
-breakpoint functionality. This allows RaceFuzzer to force the kernel
-to deterministically trigger racy condition (which may rarely happen
-in practice due to randomness in scheduling).
-
-RaceFuzzer's C repro always pinpoints two racy syscalls. Since C
-repro's scheduling synchronization should be performed at the user
-space, its reproducibility is limited (reproduction may take from 1
-second to 10 minutes (or even more), depending on a bug). This is
-because, while RaceFuzzer precisely interleaves the scheduling at the
-kernel's instruction level when finding this bug, C repro cannot fully
-utilize such a feature. Please disregard all code related to
-"should_hypercall" in the C repro, as this is only for our debugging
-purposes using our own hypervisor.
+-- 
+~Vinod
