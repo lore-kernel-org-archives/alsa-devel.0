@@ -1,70 +1,75 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 05/11] ALSA: dice: enable to change current
- sampling transmission frequency
-Date: Thu, 26 Apr 2018 20:01:28 +0900
-Message-ID: <f45c6f3a-e0d3-668b-3fbd-5ab2012c288f@sakamocchi.jp>
-References: <20180424234234.6063-1-o-takashi@sakamocchi.jp>
- <20180424234234.6063-6-o-takashi@sakamocchi.jp>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH 01/11] ASoC: amd: rename audio_substream_data variable
+Date: Thu, 26 Apr 2018 16:45:47 +0530
+Message-ID: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 03C942676AB
- for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 13:01:33 +0200 (CEST)
-In-Reply-To: <20180424234234.6063-6-o-takashi@sakamocchi.jp>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Jason Clinton <jclinton@chromium.org>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Apr 25 2018 08:42, Takashi Sakamoto wrote:
-> @@ -300,10 +333,9 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->   			"fail to get sampling rate\n");
->   		return err;
->   	}
-> -	if (rate == 0)
-> +
-> +	if (rate != 0)
->   		rate = curr_rate;
+In order to make audio_substream_data structure variable
+consistent throughout the code, changed the name from
+audio_config to rtd wherever applicable.
 
-Oops. I realized that the condition change is my mistake... This night I 
-repost revised version, sorry...
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+ sound/soc/amd/acp-pcm-dma.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-> -	if (rate != curr_rate)
-> -		return -EINVAL;
->   
->   	/* Judge to need to restart streams. */
->   	for (i = 0; i < MAX_STREAMS; i++) {
-> @@ -318,7 +350,7 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->   				break;
->   		}
->   	}
-> -	need_to_start = (i < MAX_STREAMS);
-> +	need_to_start = (rate != curr_rate || i < MAX_STREAMS);
->   
->   	if (need_to_start) {
->   		/* Stop transmission. */
-> @@ -327,7 +359,7 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->   		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
->   		release_resources(dice);
->   
-> -		err = ensure_phase_lock(dice);
-> +		err = ensure_phase_lock(dice, rate);
->   		if (err < 0) {
->   			dev_err(&dice->unit->device,
->   				"fail to ensure phase lock\n");
-> 
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 5ffe2ef..9c026c4 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -317,13 +317,13 @@ static void acp_pte_config(void __iomem *acp_mmio, struct page *pg,
+ }
+ 
+ static void config_acp_dma(void __iomem *acp_mmio,
+-			   struct audio_substream_data *audio_config,
++			   struct audio_substream_data *rtd,
+ 			   u32 asic_type)
+ {
+ 	u32 pte_offset, sram_bank;
+ 	u16 ch1, ch2, destination, dma_dscr_idx;
+ 
+-	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK) {
++	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		pte_offset = ACP_PLAYBACK_PTE_OFFSET;
+ 		ch1 = SYSRAM_TO_ACP_CH_NUM;
+ 		ch2 = ACP_TO_I2S_DMA_CH_NUM;
+@@ -344,25 +344,25 @@ static void config_acp_dma(void __iomem *acp_mmio,
+ 		destination = FROM_ACP_I2S_1;
+ 	}
+ 
+-	acp_pte_config(acp_mmio, audio_config->pg, audio_config->num_of_pages,
++	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
+ 		       pte_offset);
+-	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK)
++	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
+ 		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
+ 	else
+ 		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
+ 
+ 	/* Configure System memory <-> ACP SRAM DMA descriptors */
+-	set_acp_sysmem_dma_descriptors(acp_mmio, audio_config->size,
+-				       audio_config->direction, pte_offset, ch1,
++	set_acp_sysmem_dma_descriptors(acp_mmio, rtd->size,
++				       rtd->direction, pte_offset, ch1,
+ 				       sram_bank, dma_dscr_idx, asic_type);
+ 
+-	if (audio_config->direction == SNDRV_PCM_STREAM_PLAYBACK)
++	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
+ 		dma_dscr_idx = PLAYBACK_START_DMA_DESCR_CH13;
+ 	else
+ 		dma_dscr_idx = CAPTURE_START_DMA_DESCR_CH15;
+ 	/* Configure ACP SRAM <-> I2S DMA descriptors */
+-	set_acp_to_i2s_dma_descriptors(acp_mmio, audio_config->size,
+-				       audio_config->direction, sram_bank,
++	set_acp_to_i2s_dma_descriptors(acp_mmio, rtd->size,
++				       rtd->direction, sram_bank,
+ 				       destination, ch2, dma_dscr_idx,
+ 				       asic_type);
+ }
+-- 
+2.7.4
