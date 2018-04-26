@@ -1,239 +1,480 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v6 10/24] ASoC: qdsp6: qdafe: Add SLIMBus port Support
-Date: Thu, 26 Apr 2018 10:45:52 +0100
-Message-ID: <20180426094606.4775-11-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v6 08/24] ASoC: qdsp6: q6core: Add q6core driver
+Date: Thu, 26 Apr 2018 10:45:50 +0100
+Message-ID: <20180426094606.4775-9-srinivas.kandagatla@linaro.org>
 References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id AF041267803
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 11:49:40 +0200 (CEST)
+Received: by mail-wr0-f194.google.com with SMTP id o15-v6so56100005wro.11
+ for <alsa-devel@alsa-project.org>; Thu, 26 Apr 2018 02:49:40 -0700 (PDT)
 In-Reply-To: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org
-Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-This patch adds support to 6 SLIMBus AFE ports, which are used as
-backend dais.
+This patch adds support to core apr service, which is used to query
+status of other static and dynamic services on the dsp.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- sound/soc/qcom/qdsp6/q6afe.c | 129 +++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6afe.h |  14 +++++
- 2 files changed, 143 insertions(+)
+ sound/soc/qcom/Kconfig        |   4 +
+ sound/soc/qcom/qdsp6/Makefile |   1 +
+ sound/soc/qcom/qdsp6/q6core.c | 380 ++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6core.h |  15 ++
+ 4 files changed, 400 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6core.h
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 31a4e2683e35..d8ba2d5dc724 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -26,9 +26,45 @@
- #define AFE_PARAM_ID_HDMI_CONFIG	0x00010210
- #define AFE_MODULE_AUDIO_DEV_INTERFACE	0x0001020C
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 8247ade16dbe..dd90d8bbf77e 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -47,10 +47,14 @@ config SND_SOC_APQ8016_SBC
+ config SND_SOC_QDSP6_COMMON
+ 	tristate
  
-+#define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
++config SND_SOC_QDSP6_CORE
++	tristate
 +
-+#define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
+ 	depends on QCOM_APR && HAS_DMA
+ 	select SND_SOC_QDSP6_COMMON
++	select SND_SOC_QDSP6_CORE
+ 	help
+ 	 To add support for MSM QDSP6 Soc Audio.
+ 	 This will enable sound soc platform specific
+diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
+index accebdb49306..03b8e89c9731 100644
+--- a/sound/soc/qcom/qdsp6/Makefile
++++ b/sound/soc/qcom/qdsp6/Makefile
+@@ -1 +1,2 @@
+ obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
++obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
+diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
+new file mode 100644
+index 000000000000..b2d6352fc0b7
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6core.c
+@@ -0,0 +1,380 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
++// Copyright (c) 2018, Linaro Limited
 +
- /* Port IDs */
- #define AFE_API_VERSION_HDMI_CONFIG	0x1
- #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
++#include <linux/slab.h>
++#include <linux/wait.h>
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/sched.h>
++#include <linux/of.h>
++#include <linux/of_platform.h>
++#include <linux/jiffies.h>
++#include <linux/wait.h>
++#include <linux/soc/qcom/apr.h>
++#include "q6core.h"
++#include "q6dsp-errno.h"
 +
-+#define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
++#define ADSP_STATE_READY_TIMEOUT_MS    3000
++#define Q6_READY_TIMEOUT_MS 100
++#define AVCS_CMD_ADSP_EVENT_GET_STATE		0x0001290C
++#define AVCS_CMDRSP_ADSP_EVENT_GET_STATE	0x0001290D
++#define AVCS_GET_VERSIONS       0x00012905
++#define AVCS_GET_VERSIONS_RSP   0x00012906
++#define AVCS_CMD_GET_FWK_VERSION	0x001292c
++#define AVCS_CMDRSP_GET_FWK_VERSION	0x001292d
 +
-+/* SLIMbus Rx port on channel 0. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX      0x4000
-+/* SLIMbus Tx port on channel 0. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_TX      0x4001
-+/* SLIMbus Rx port on channel 1. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX      0x4002
-+/* SLIMbus Tx port on channel 1. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_TX      0x4003
-+/* SLIMbus Rx port on channel 2. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX      0x4004
-+/* SLIMbus Tx port on channel 2. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_TX      0x4005
-+/* SLIMbus Rx port on channel 3. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX      0x4006
-+/* SLIMbus Tx port on channel 3. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_TX      0x4007
-+/* SLIMbus Rx port on channel 4. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX      0x4008
-+/* SLIMbus Tx port on channel 4. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_TX      0x4009
-+/* SLIMbus Rx port on channel 5. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX      0x400a
-+/* SLIMbus Tx port on channel 5. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_TX      0x400b
-+/* SLIMbus Rx port on channel 6. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX      0x400c
-+/* SLIMbus Tx port on channel 6. */
-+#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_TX      0x400d
-+
- #define TIMEOUT_MS 1000
- #define AFE_CMD_RESP_AVAIL	0
- #define AFE_CMD_RESP_NONE	1
-@@ -81,8 +117,53 @@ struct afe_param_id_hdmi_multi_chan_audio_cfg {
- 	u16 reserved;
- } __packed;
- 
-+struct afe_param_id_slimbus_cfg {
-+	u32                  sb_cfg_minor_version;
-+/* Minor version used for tracking the version of the SLIMBUS
-+ * configuration interface.
-+ * Supported values: #AFE_API_VERSION_SLIMBUS_CONFIG
-+ */
-+
-+	u16                  slimbus_dev_id;
-+/* SLIMbus hardware device ID, which is required to handle
-+ * multiple SLIMbus hardware blocks.
-+ * Supported values: - #AFE_SLIMBUS_DEVICE_1 - #AFE_SLIMBUS_DEVICE_2
-+ */
-+	u16                  bit_width;
-+/* Bit width of the sample.
-+ * Supported values: 16, 24
-+ */
-+	u16                  data_format;
-+/* Data format supported by the SLIMbus hardware. The default is
-+ * 0 (#AFE_SB_DATA_FORMAT_NOT_INDICATED), which indicates the
-+ * hardware does not perform any format conversions before the data
-+ * transfer.
-+ */
-+	u16                  num_channels;
-+/* Number of channels.
-+ * Supported values: 1 to #AFE_PORT_MAX_AUDIO_CHAN_CNT
-+ */
-+	u8  shared_ch_mapping[AFE_PORT_MAX_AUDIO_CHAN_CNT];
-+/* Mapping of shared channel IDs (128 to 255) to which the
-+ * master port is to be connected.
-+ * Shared_channel_mapping[i] represents the shared channel assigned
-+ * for audio channel i in multichannel audio data.
-+ */
-+	u32              sample_rate;
-+/* Sampling rate of the port.
-+ * Supported values:
-+ * - #AFE_PORT_SAMPLE_RATE_8K
-+ * - #AFE_PORT_SAMPLE_RATE_16K
-+ * - #AFE_PORT_SAMPLE_RATE_48K
-+ * - #AFE_PORT_SAMPLE_RATE_96K
-+ * - #AFE_PORT_SAMPLE_RATE_192K
-+ */
++struct avcs_svc_info {
++	uint32_t service_id;
++	uint32_t version;
 +} __packed;
 +
++struct avcs_cmdrsp_get_version {
++	uint32_t build_id;
++	uint32_t num_services;
++	struct avcs_svc_info svc_api_info[];
++} __packed;
 +
- union afe_port_config {
- 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
-+	struct afe_param_id_slimbus_cfg           slim_cfg;
- } __packed;
- 
- struct q6afe_port {
-@@ -118,6 +199,20 @@ struct afe_port_map {
- 
- static struct afe_port_map port_maps[AFE_PORT_MAX] = {
- 	[HDMI_RX] = { AFE_PORT_ID_MULTICHAN_HDMI_RX, HDMI_RX, 1, 1},
-+	[SLIMBUS_0_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX,
-+				SLIMBUS_0_RX, 1, 1},
-+	[SLIMBUS_1_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX,
-+				SLIMBUS_1_RX, 1, 1},
-+	[SLIMBUS_2_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX,
-+				SLIMBUS_2_RX, 1, 1},
-+	[SLIMBUS_3_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX,
-+				SLIMBUS_3_RX, 1, 1},
-+	[SLIMBUS_4_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX,
-+				SLIMBUS_4_RX, 1, 1},
-+	[SLIMBUS_5_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX,
-+				SLIMBUS_5_RX, 1, 1},
-+	[SLIMBUS_6_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX,
-+				SLIMBUS_6_RX, 1, 1},
- };
- 
- static struct q6afe_port *afe_find_port(struct q6afe *afe, int token)
-@@ -311,6 +406,31 @@ int q6afe_port_stop(struct q6afe_port *port)
- }
- EXPORT_SYMBOL_GPL(q6afe_port_stop);
- 
-+/**
-+ * q6afe_slim_port_prepare() - Prepare slim afe port.
-+ *
-+ * @port: Instance of afe port
-+ * @cfg: SLIM configuration for the afe port
-+ *
-+ */
-+void q6afe_slim_port_prepare(struct q6afe_port *port,
-+			     struct q6afe_slim_cfg *cfg)
-+{
-+	union afe_port_config *pcfg = &port->port_cfg;
++/* for ADSP2.8 and above */
++struct avcs_svc_api_info {
++	uint32_t service_id;
++	uint32_t api_version;
++	uint32_t api_branch_version;
++} __packed;
 +
-+	pcfg->slim_cfg.sb_cfg_minor_version = AFE_API_VERSION_SLIMBUS_CONFIG;
-+	pcfg->slim_cfg.sample_rate = cfg->sample_rate;
-+	pcfg->slim_cfg.bit_width = cfg->bit_width;
-+	pcfg->slim_cfg.num_channels = cfg->num_channels;
-+	pcfg->slim_cfg.data_format = cfg->data_format;
-+	pcfg->slim_cfg.shared_ch_mapping[0] = cfg->ch_mapping[0];
-+	pcfg->slim_cfg.shared_ch_mapping[1] = cfg->ch_mapping[1];
-+	pcfg->slim_cfg.shared_ch_mapping[2] = cfg->ch_mapping[2];
-+	pcfg->slim_cfg.shared_ch_mapping[3] = cfg->ch_mapping[3];
++struct avcs_cmdrsp_get_fwk_version {
++	uint32_t build_major_version;
++	uint32_t build_minor_version;
++	uint32_t build_branch_version;
++	uint32_t build_subbranch_version;
++	uint32_t num_services;
++	struct avcs_svc_api_info svc_api_info[];
++} __packed;
 +
-+}
-+EXPORT_SYMBOL_GPL(q6afe_slim_port_prepare);
-+
- /**
-  * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
-  *
-@@ -404,6 +524,15 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
- 	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
- 		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
- 		break;
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX:
-+	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX:
-+		cfg_type = AFE_PARAM_ID_SLIMBUS_CONFIG;
-+		break;
- 	default:
- 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
- 		return ERR_PTR(-EINVAL);
-diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-index 3bd991a7c42d..5659966c6b1e 100644
---- a/sound/soc/qcom/qdsp6/q6afe.h
-+++ b/sound/soc/qcom/qdsp6/q6afe.h
-@@ -11,6 +11,9 @@
- #define MSM_AFE_PORT_TYPE_TX 1
- #define AFE_MAX_PORTS AFE_PORT_MAX
- 
-+#define AFE_MAX_CHAN_COUNT	8
-+#define AFE_PORT_MAX_AUDIO_CHAN_CNT	0x8
-+
- struct q6afe_hdmi_cfg {
- 	u16                  datatype;
- 	u16                  channel_allocation;
-@@ -18,8 +21,17 @@ struct q6afe_hdmi_cfg {
- 	u16                  bit_width;
- };
- 
-+struct q6afe_slim_cfg {
-+	u32	sample_rate;
-+	u16	bit_width;
-+	u16	data_format;
-+	u16	num_channels;
-+	u8	ch_mapping[AFE_MAX_CHAN_COUNT];
++struct q6core {
++	struct apr_device *adev;
++	wait_queue_head_t wait;
++	uint32_t avcs_state;
++	struct mutex lock;
++	bool resp_received;
++	uint32_t num_services;
++	struct avcs_cmdrsp_get_fwk_version *fwk_version;
++	struct avcs_cmdrsp_get_version *svc_version;
++	bool fwk_version_supported;
++	bool get_state_supported;
++	bool get_version_supported;
++	bool is_version_requested;
 +};
 +
- struct q6afe_port_config {
- 	struct q6afe_hdmi_cfg hdmi;
-+	struct q6afe_slim_cfg slim;
- };
- 
- struct q6afe_port;
-@@ -31,5 +43,7 @@ void q6afe_port_put(struct q6afe_port *port);
- int q6afe_get_port_id(int index);
- void q6afe_hdmi_port_prepare(struct q6afe_port *port,
- 			    struct q6afe_hdmi_cfg *cfg);
-+void q6afe_slim_port_prepare(struct q6afe_port *port,
-+			  struct q6afe_slim_cfg *cfg);
- 
- #endif /* __Q6AFE_H__ */
++static struct q6core *g_core;
++
++static int q6core_callback(struct apr_device *adev,
++			 struct apr_client_message *data)
++{
++	struct q6core *core = dev_get_drvdata(&adev->dev);
++	struct aprv2_ibasic_rsp_result_t *result;
++
++	result = data->payload;
++	switch (data->opcode) {
++	case APR_BASIC_RSP_RESULT:{
++		result = data->payload;
++		switch (result->opcode) {
++		case AVCS_GET_VERSIONS:
++			if (result->status == ADSP_EUNSUPPORTED)
++				core->get_version_supported = false;
++			core->resp_received = true;
++			break;
++		case AVCS_CMD_GET_FWK_VERSION:
++			if (result->status == ADSP_EUNSUPPORTED)
++				core->fwk_version_supported = false;
++			core->resp_received = true;
++			break;
++		case AVCS_CMD_ADSP_EVENT_GET_STATE:
++			if (result->status == ADSP_EUNSUPPORTED)
++				core->get_state_supported = false;
++			core->resp_received = true;
++			break;
++		}
++		break;
++	}
++	case AVCS_CMDRSP_GET_FWK_VERSION: {
++		struct avcs_cmdrsp_get_fwk_version *fwk;
++		int bytes;
++
++		fwk = data->payload;
++		core->fwk_version_supported = true;
++		bytes = sizeof(*fwk) + fwk->num_services *
++				sizeof(fwk->svc_api_info[0]);
++
++		core->fwk_version = kzalloc(bytes, GFP_ATOMIC);
++		if (!core->fwk_version)
++			return -ENOMEM;
++
++		memcpy(core->fwk_version, data->payload, bytes);
++
++		core->resp_received = true;
++
++		break;
++	}
++	case AVCS_GET_VERSIONS_RSP: {
++		struct avcs_cmdrsp_get_version *v;
++		int len;
++
++		v = data->payload;
++		core->get_version_supported = true;
++
++		len = sizeof(*v) + v->num_services * sizeof(v->svc_api_info[0]);
++
++		core->svc_version = kzalloc(len, GFP_ATOMIC);
++		if (!core->svc_version)
++			return -ENOMEM;
++
++		memcpy(core->svc_version, data->payload, len);
++
++		core->resp_received = true;
++
++		break;
++	}
++	case AVCS_CMDRSP_ADSP_EVENT_GET_STATE:
++		core->get_state_supported = true;
++		core->avcs_state = result->opcode;
++
++		core->resp_received = true;
++		break;
++	default:
++		dev_err(&adev->dev, "Message id from adsp core svc: 0x%x\n",
++			data->opcode);
++		break;
++	}
++
++	if (core->resp_received)
++		wake_up(&core->wait);
++
++	return 0;
++}
++
++static int q6core_get_fwk_versions(struct q6core *core)
++{
++	struct apr_device *adev = core->adev;
++	struct apr_hdr hdr = {0};
++	int rc;
++
++	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
++	hdr.pkt_size = APR_HDR_SIZE;
++	hdr.opcode = AVCS_CMD_GET_FWK_VERSION;
++
++	rc = apr_send_pkt(adev, &hdr);
++	if (rc < 0)
++		return rc;
++
++	rc = wait_event_timeout(core->wait, (core->resp_received),
++				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
++	if (rc > 0 && core->resp_received) {
++		core->resp_received = false;
++
++		if (!core->fwk_version_supported)
++			return -ENOTSUPP;
++		else
++			return 0;
++	}
++
++
++	return rc;
++}
++
++static int q6core_get_svc_versions(struct q6core *core)
++{
++	struct apr_device *adev = core->adev;
++	struct apr_hdr hdr = {0};
++	int rc;
++
++	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
++	hdr.pkt_size = APR_HDR_SIZE;
++	hdr.opcode = AVCS_GET_VERSIONS;
++
++	rc = apr_send_pkt(adev, &hdr);
++	if (rc < 0)
++		return rc;
++
++	rc = wait_event_timeout(core->wait, (core->resp_received),
++				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
++	if (rc > 0 && core->resp_received) {
++		core->resp_received = false;
++		return 0;
++	}
++
++	return rc;
++}
++
++static bool __q6core_is_adsp_ready(struct q6core *core)
++{
++	struct apr_device *adev = core->adev;
++	struct apr_hdr hdr = {0};
++	int rc;
++
++	core->get_state_supported = false;
++
++	hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
++	hdr.pkt_size = APR_HDR_SIZE;
++	hdr.opcode = AVCS_CMD_ADSP_EVENT_GET_STATE;
++
++	rc = apr_send_pkt(adev, &hdr);
++	if (rc < 0)
++		return false;
++
++	rc = wait_event_timeout(core->wait, (core->resp_received),
++				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
++	if (rc > 0 && core->resp_received) {
++		core->resp_received = false;
++
++		if (core->avcs_state == 0x1)
++			return true;
++	}
++
++	/* assume that the adsp is up if we not support this command */
++	if (!core->get_state_supported)
++		return true;
++
++	return false;
++}
++
++/**
++ * q6core_get_svc_api_info() - Get version number of a service.
++ *
++ * @svc_id: service id of the service.
++ * @info: Valid struct pointer to fill svc api information.
++ *
++ * Return: zero on success and error code on failure or unsupported
++ */
++int q6core_get_svc_api_info(int svc_id, struct q6core_svc_api_info *ainfo)
++{
++	int i;
++	int ret = -ENOTSUPP;
++
++	if (!g_core || !ainfo)
++		return 0;
++
++	mutex_lock(&g_core->lock);
++	if (!g_core->is_version_requested) {
++		if (q6core_get_fwk_versions(g_core) == -ENOTSUPP)
++			q6core_get_svc_versions(g_core);
++		g_core->is_version_requested = true;
++	}
++
++	if (g_core->fwk_version_supported) {
++		for (i = 0; i < g_core->fwk_version->num_services; i++) {
++			struct avcs_svc_api_info *info;
++
++			info = &g_core->fwk_version->svc_api_info[i];
++			if (svc_id != info->service_id)
++				continue;
++
++			ainfo->api_version = info->api_version;
++			ainfo->api_branch_version = info->api_branch_version;
++			ret = 0;
++			break;
++		}
++	} else if (g_core->get_version_supported) {
++		for (i = 0; i < g_core->svc_version->num_services; i++) {
++			struct avcs_svc_info *info;
++
++			info = &g_core->svc_version->svc_api_info[i];
++			if (svc_id != info->service_id)
++				continue;
++
++			ainfo->api_version = info->version;
++			ainfo->api_branch_version = 0;
++			ret = 0;
++			break;
++		}
++	}
++
++	mutex_unlock(&g_core->lock);
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(q6core_get_svc_api_info);
++
++/**
++ * q6core_is_adsp_ready() - Get status of adsp
++ *
++ * Return: Will be an true if adsp is ready and false if not.
++ */
++bool q6core_is_adsp_ready(void)
++{
++	unsigned long  timeout;
++	bool ret = false;
++
++	if (!g_core)
++		return false;
++
++	mutex_lock(&g_core->lock);
++	timeout = jiffies + msecs_to_jiffies(ADSP_STATE_READY_TIMEOUT_MS);
++	for (;;) {
++		if (__q6core_is_adsp_ready(g_core)) {
++			ret = true;
++			break;
++		}
++
++		if (!time_after(timeout, jiffies)) {
++			ret = false;
++			break;
++		}
++	}
++
++	mutex_unlock(&g_core->lock);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(q6core_is_adsp_ready);
++
++static int q6core_probe(struct apr_device *adev)
++{
++	g_core = kzalloc(sizeof(*g_core), GFP_KERNEL);
++	if (!g_core)
++		return -ENOMEM;
++
++	dev_set_drvdata(&adev->dev, g_core);
++
++	mutex_init(&g_core->lock);
++	g_core->adev = adev;
++	init_waitqueue_head(&g_core->wait);
++	return 0;
++}
++
++static int q6core_exit(struct apr_device *adev)
++{
++	struct q6core *core = dev_get_drvdata(&adev->dev);
++
++	if (core->fwk_version_supported)
++		kfree(core->fwk_version);
++	if (core->get_version_supported)
++		kfree(core->svc_version);
++
++	kfree(core);
++	g_core = NULL;
++
++	return 0;
++}
++
++static const struct of_device_id q6core_device_id[]  = {
++	{ .compatible = "qcom,q6core" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, q6core_device_id);
++
++static struct apr_driver qcom_q6core_driver = {
++	.probe = q6core_probe,
++	.remove = q6core_exit,
++	.callback = q6core_callback,
++	.driver = {
++		.name = "qcom-q6core",
++		.of_match_table = of_match_ptr(q6core_device_id),
++	},
++};
++
++module_apr_driver(qcom_q6core_driver);
++MODULE_DESCRIPTION("q6 core");
++MODULE_LICENSE("GPL v2");
+diff --git a/sound/soc/qcom/qdsp6/q6core.h b/sound/soc/qcom/qdsp6/q6core.h
+new file mode 100644
+index 000000000000..4105b1d730be
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6core.h
+@@ -0,0 +1,15 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __Q6CORE_H__
++#define __Q6CORE_H__
++
++struct q6core_svc_api_info {
++	uint32_t service_id;
++	uint32_t api_version;
++	uint32_t api_branch_version;
++};
++
++bool q6core_is_adsp_ready(void);
++int q6core_get_svc_api_info(int svc_id, struct q6core_svc_api_info *ainfo);
++
++#endif /* __Q6CORE_H__ */
 -- 
 2.16.2
