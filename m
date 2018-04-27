@@ -1,22 +1,15 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 2/3] ASoC: tas6424: Add support for the
-	mute pin
-Date: Fri, 27 Apr 2018 15:15:05 -0500
-Message-ID: <20180427201505.3wseaug6v2uak5mf@rob-hp-laptop>
-References: <1524837349-16350-1-git-send-email-jjhiblot@ti.com>
- <1524837349-16350-3-git-send-email-jjhiblot@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: Intel: cht-bsw-rt5672: allow for
+	topology-defined codec-dai setup
+Date: Fri, 27 Apr 2018 16:36:00 -0500
+Message-ID: <20180427213600.22634-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f65.google.com (mail-oi0-f65.google.com
- [209.85.218.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C542267412
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 22:15:07 +0200 (CEST)
-Received: by mail-oi0-f65.google.com with SMTP id p62-v6so2651671oie.10
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 13:15:06 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <1524837349-16350-3-git-send-email-jjhiblot@ti.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 40478267412
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 23:36:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,18 +19,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, afd@ti.com, broonie@kernel.org, dannenberg@ti.com
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 27, 2018 at 03:55:48PM +0200, Jean-Jacques Hiblot wrote:
-> mute can be connected to GPIO. In that case we have to drive it to the
-> correct value
-> 
-> Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
-> ---
->  .../devicetree/bindings/sound/ti,tas6424.txt       |  1 +
->  sound/soc/codecs/tas6424.c                         | 37 +++++++++++++++++++++-
->  2 files changed, 37 insertions(+), 1 deletion(-)
+Hard-coded setups conflict with topology defined ones. Move this code to
+codec_fixup so that SOF can override codec dai settings, e.g. to only use
+2 channels.
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 30 +++++++++++++++++++++---------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index c14a52d2f714..49cf30cb471b 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -189,13 +189,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	if (devm_acpi_dev_add_driver_gpios(codec->dev, cht_rt5672_gpios))
+ 		dev_warn(runtime->dev, "Unable to add GPIO mapping table\n");
+ 
+-	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
+-	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
+-	if (ret < 0) {
+-		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
+-		return ret;
+-	}
+-
+ 	/* Select codec ASRC clock source to track I2S1 clock, because codec
+ 	 * is in slave mode and 100fs I2S format (BCLK = 100 * LRCLK) cannot
+ 	 * be supported by RT5672. Otherwise, ASRC will be disabled and cause
+@@ -252,6 +245,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
++	int ret;
+ 
+ 	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
+ 	rate->min = rate->max = 48000;
+@@ -259,6 +253,26 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 
+ 	/* set SSP2 to 24-bit */
+ 	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
++
++	/*
++	 * Default mode for SSP configuration is TDM 4 slot
++	 */
++	ret = snd_soc_dai_set_fmt(rtd->codec_dai,
++				  SND_SOC_DAIFMT_DSP_B |
++				  SND_SOC_DAIFMT_IB_NF |
++				  SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set format to TDM %d\n", ret);
++		return ret;
++	}
++
++	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
++	ret = snd_soc_dai_set_tdm_slot(rtd->codec_dai, 0xF, 0xF, 4, 24);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
++		return ret;
++	}
++
+ 	return 0;
+ }
+ 
+@@ -315,8 +329,6 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 		.nonatomic = true,
+ 		.codec_dai_name = "rt5670-aif1",
+ 		.codec_name = "i2c-10EC5670:00",
+-		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
+-					| SND_SOC_DAIFMT_CBS_CFS,
+ 		.init = cht_codec_init,
+ 		.be_hw_params_fixup = cht_codec_fixup,
+ 		.dpcm_playback = 1,
+-- 
+2.14.1
