@@ -1,12 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: preallocate pages use platform device" to the asoc tree
-Date: Fri, 27 Apr 2018 11:59:16 +0100
-Message-ID: <E1fC15w-0003si-GB@debutante>
+From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Subject: Applied "ASoC: mediatek: preallocate pages use platform device" to
+ the asoc tree
+Date: Fri, 27 Apr 2018 11:59:24 +0100
+Message-ID: <E1fC164-0003ui-Ea@debutante>
 References: <20180427021135.16002-1-kaichieh.chuang@mediatek.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180427021135.16002-1-kaichieh.chuang@mediatek.com>
-Sender: stable-owner@vger.kernel.org
-Cc: KaiChieh Chuang <kaichieh.chuang@mediatek.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, ryder.lee@mediatek.com, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, Hidalgo.Huang@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.comkaichieh.chuang@mediatek.comalsa-devel@alsa-project.org
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <20180427021135.16002-1-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, chipeng.chang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, Hidalgo.Huang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, PC.Liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
@@ -36,26 +48,25 @@ to this mail.
 Thanks,
 Mark
 
->From 5845e6155d8f4a4a9bae2d4c1d1bb4a4d9a925c2 Mon Sep 17 00:00:00 2001
-From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
+>From 58edf3255ca3025444c016241611453585453089 Mon Sep 17 00:00:00 2001
+From: Kai Chieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 Date: Fri, 27 Apr 2018 10:11:35 +0800
 Subject: [PATCH] ASoC: mediatek: preallocate pages use platform device
 
 preallocate pages should use platform device,
 since we set dma mask for platform device.
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 ---
  sound/soc/mediatek/common/mtk-afe-platform-driver.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-index 53215b52e4f2..f8a06709f76d 100644
+index 404fbe19e1a3..d046ea8e543b 100644
 --- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
 +++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-@@ -64,14 +64,14 @@ static const struct snd_pcm_ops mtk_afe_pcm_ops = {
+@@ -56,14 +56,14 @@ static const struct snd_pcm_ops mtk_afe_pcm_ops = {
  static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
  {
  	size_t size;
