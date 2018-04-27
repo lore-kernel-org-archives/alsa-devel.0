@@ -1,168 +1,117 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 05/11] ALSA: dice: enable to change current
- sampling transmission frequency
-Date: Fri, 27 Apr 2018 07:49:02 +0900
-Message-ID: <34669225-8fdf-4021-b0e2-9596f815d1f6@sakamocchi.jp>
-References: <20180424234234.6063-1-o-takashi@sakamocchi.jp>
- <20180424234234.6063-6-o-takashi@sakamocchi.jp>
+From: DaeRyong Jeong <threeearcat@gmail.com>
+Subject: Re: Unable to handle kernel paging request in snd_seq_oss_readq_puts
+Date: Fri, 27 Apr 2018 10:48:59 +0900
+Message-ID: <20180427014858.GA23026@dragonet.kaist.ac.kr>
+References: <20180426045223.GA15307@dragonet.kaist.ac.kr>
+ <s5h1sf2v3l2.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 8B559267860
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 00:49:07 +0200 (CEST)
-In-Reply-To: <20180424234234.6063-6-o-takashi@sakamocchi.jp>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <s5h1sf2v3l2.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: perex@perex.cz, alsa-devel@alsa-project.org, kt0755@gmail.com, bammanag@purdue.edu, byoungyoung@purdue.edu, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Apr 25 2018 08:42, Takashi Sakamoto wrote:
-> This is a preparation for userspace applications to change current sampling
-> transmission frequency via ALSA PCM interface.
+On Thu, Apr 26, 2018 at 09:17:45AM +0200, Takashi Iwai wrote:
+> On Thu, 26 Apr 2018 06:52:27 +0200,
+> DaeRyong Jeong wrote:
+> > 
+> > We report the crash:
+> > unable to handle kernel paging request in snd_seq_oss_readq_puts
+> > 
+> > This crash has been found in v4.16 using RaceFuzzer (a modified
+> > version of Syzkaller), which we describe more at the end of this
+> > report. Our analysis shows that the race occurs when invoking two
+> > syscalls concurrently, write$eventfd and write$sndseq.
+> > 
+> > Analysis:
+> > We think the concurrent execution of snd_virmidi_output_trigger() and
+> > snd_midi_event_encode_byte() causes the crash. Since the first call site
+> > of snd_seq_kernel_client_dispatch() in snd_virmidi_output_trigger() is not
+> > protected by substream->runtime->lock, it is possible that
+> > snd_seq_oss_readq_puts() and snd_midi_event_encode_byte() are executed
+> > concurrently in the call sequences as below, and snd_seq_oss_readq_puts()
+> > accesses ev->data.ex.ptr before it is initialized.
 > 
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Thanks for the bug report and analysis.
+> 
+> I guess that it's not about initialization but rather other way
+> round.  The first task sends the pending event with SYSEX that
+> contains the buffer pointer in the event packet.  Meanwhile, the
+> second task now starts processing the MIDI stream and overwrites this
+> event packet.  So the data address that is being processed is
+> overwritten, and it leads to the crash.
+> 
+> Below is the fix patch.  It's totally untested, and I'd love to hear
+> if this really works.  Could you give it a try?
+> 
+> 
+> thanks,
+> 
+> Takashi
+> 
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: seq: Fix races at MIDI encoding in
+>  snd_virmidi_output_trigger()
+> 
+> The sequencer virmidi code has an open race at its output trigger
+> callback: namely, virmidi keeps only one event packet for processing
+> while it doesn't protect for concurrent output trigger calls.
+> 
+> snd_virmidi_output_trigger() tries to process the previously
+> unfinished event before starting encoding the given MIDI stream, but
+> this is done without any lock.  Meanwhile, if another rawmidi stream
+> starts the output trigger, this proceeds further, and overwrites the
+> event package that is being processed in another thread.  This
+> eventually corrupts and may lead to the invalid memory access if the
+> event type is like SYSEX.
+> 
+> The fix is just to move the spinlock to cover both the pending event
+> and the new stream.
+> 
+> The bug was spotted by a new fuzzer, RaceFuzzer.
+> 
+> BugLink: http://lkml.kernel.org/r/20180426045223.GA15307@dragonet.kaist.ac.kr
+> Reported-by: DaeRyong Jeong <threeearcat@gmail.com>
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 > ---
->   sound/firewire/dice/dice-stream.c | 44 +++++++++++++++++++++++++++++++++------
->   1 file changed, 38 insertions(+), 6 deletions(-)
+>  sound/core/seq/seq_virmidi.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-> index e22896aaf346..92f3c345fa59 100644
-> --- a/sound/firewire/dice/dice-stream.c
-> +++ b/sound/firewire/dice/dice-stream.c
-> @@ -52,19 +52,32 @@ int snd_dice_stream_get_rate_mode(struct snd_dice *dice, unsigned int rate,
->    * This operation has an effect to synchronize GLOBAL_STATUS/GLOBAL_SAMPLE_RATE
->    * to GLOBAL_STATUS. Especially, just after powering on, these are different.
->    */
-> -static int ensure_phase_lock(struct snd_dice *dice)
-> +static int ensure_phase_lock(struct snd_dice *dice, unsigned int rate)
->   {
->   	__be32 reg, nominal;
-> +	u32 data;
-> +	int i;
->   	int err;
->   
->   	err = snd_dice_transaction_read_global(dice, GLOBAL_CLOCK_SELECT,
->   					       &reg, sizeof(reg));
->   	if (err < 0)
->   		return err;
-> +	data = be32_to_cpu(reg);
-> +
-> +	data &= ~CLOCK_RATE_MASK;
-> +	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
-> +		if (snd_dice_rates[i] == rate)
-> +			break;
-> +	}
-> +	if (i == ARRAY_SIZE(snd_dice_rates))
-> +		return -EINVAL;
-> +	data |= i << CLOCK_RATE_SHIFT;
->   
->   	if (completion_done(&dice->clock_accepted))
->   		reinit_completion(&dice->clock_accepted);
->   
-> +	reg = cpu_to_be32(data);
->   	err = snd_dice_transaction_write_global(dice, GLOBAL_CLOCK_SELECT,
->   						&reg, sizeof(reg));
->   	if (err < 0)
-> @@ -210,6 +223,7 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
->   			 unsigned int rate, struct reg_params *params)
->   {
->   	__be32 reg[2];
-> +	unsigned int mode;
->   	unsigned int i, pcm_chs, midi_ports;
->   	struct amdtp_stream *streams;
->   	struct fw_iso_resources *resources;
-> @@ -224,12 +238,23 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
->   		resources = dice->rx_resources;
->   	}
->   
-> +	err = snd_dice_stream_get_rate_mode(dice, rate, &mode);
-> +	if (err < 0)
-> +		return err;
-> +
->   	for (i = 0; i < params->count; i++) {
-> +		unsigned int pcm_cache;
-> +		unsigned int midi_cache;
-> +
->   		if (dir == AMDTP_IN_STREAM) {
-> +			pcm_cache = dice->tx_channels[i][mode];
-> +			midi_cache = dice->tx_midi_ports[i];
->   			err = snd_dice_transaction_read_tx(dice,
->   					params->size * i + TX_NUMBER_AUDIO,
->   					reg, sizeof(reg));
->   		} else {
-> +			pcm_cache = dice->rx_channels[i][mode];
-> +			midi_cache = dice->rx_midi_ports[i];
->   			err = snd_dice_transaction_read_rx(dice,
->   					params->size * i + RX_NUMBER_AUDIO,
->   					reg, sizeof(reg));
-> @@ -239,6 +264,14 @@ static int start_streams(struct snd_dice *dice, enum amdtp_stream_direction dir,
->   		pcm_chs = be32_to_cpu(reg[0]);
->   		midi_ports = be32_to_cpu(reg[1]);
->   
-> +		/* These are important for developer of this driver. */
-> +		if (pcm_chs != pcm_cache || midi_ports != midi_cache) {
-> +			dev_info(&dice->unit->device,
-> +				 "cache mismatch: pcm: %u:%u, midi: %u:%u\n",
-> +				 pcm_chs, pcm_cache, midi_ports, midi_cache);
-> +			return -EPROTO;
-> +		}
-> +
->   		err = keep_resources(dice, dir, i, rate, pcm_chs, midi_ports);
->   		if (err < 0)
->   			return err;
-> @@ -300,10 +333,9 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->   			"fail to get sampling rate\n");
->   		return err;
->   	}
-> -	if (rate == 0)
-> +
-> +	if (rate != 0)
->   		rate = curr_rate;
-> -	if (rate != curr_rate)
-> -		return -EINVAL;
->   
->   	/* Judge to need to restart streams. */
->   	for (i = 0; i < MAX_STREAMS; i++) {
-> @@ -318,7 +350,7 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->   				break;
->   		}
->   	}
-> -	need_to_start = (i < MAX_STREAMS);
-> +	need_to_start = (rate != curr_rate || i < MAX_STREAMS);
->   
->   	if (need_to_start) {
->   		/* Stop transmission. */
-> @@ -327,7 +359,7 @@ int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate)
->   		stop_streams(dice, AMDTP_OUT_STREAM, &rx_params);
->   		release_resources(dice);
->   
-> -		err = ensure_phase_lock(dice);
-> +		err = ensure_phase_lock(dice, rate);
->   		if (err < 0) {
->   			dev_err(&dice->unit->device,
->   				"fail to ensure phase lock\n");
+> diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
+> index f48a4cd24ffc..289ae6bb81d9 100644
+> --- a/sound/core/seq/seq_virmidi.c
+> +++ b/sound/core/seq/seq_virmidi.c
+> @@ -174,12 +174,12 @@ static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream,
+>  			}
+>  			return;
+>  		}
+> +		spin_lock_irqsave(&substream->runtime->lock, flags);
+>  		if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
+>  			if (snd_seq_kernel_client_dispatch(vmidi->client, &vmidi->event, in_atomic(), 0) < 0)
+> -				return;
+> +				goto out;
+>  			vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
+>  		}
+> -		spin_lock_irqsave(&substream->runtime->lock, flags);
+>  		while (1) {
+>  			count = __snd_rawmidi_transmit_peek(substream, buf, sizeof(buf));
+>  			if (count <= 0)
+> -- 
+> 2.16.3
+> 
 
-Additionally, I realized this patch includes a bug that 'tx_params' and 
-'rx_params' are reused after changing state of sampling transmission 
-frequency in target unit. After the change, stream formats are changed 
-and content of the 'tx_params' and 'rx_params' can differ...
+I'm really sorry to say this. Since we are implementing our fuzzer and 
+our reproducer is not complete, we don't have a reproducer for this bug.
+We manually analyzed the crash using the crash log to spot where the race
+occurs.
+The patch looks good for me who don't understand the ALSA subsystem, but
+we can't test the patch.
 
-I'll post revised patchset in this weekend.
+I'm sorry.
 
-
-Thanks
-
-Takashi Sakamoto
+Daeryong Jeong
