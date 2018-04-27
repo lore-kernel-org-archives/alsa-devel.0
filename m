@@ -1,29 +1,34 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mediatek: preallocate pages use platform device" to
- the asoc tree
-Date: Fri, 27 Apr 2018 11:59:24 +0100
-Message-ID: <E1fC164-0003ui-Ea@debutante>
-References: <20180427021135.16002-1-kaichieh.chuang@mediatek.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: omap: Remove OMAP_MUX dependency from
+	Nokia N810 audio support" to the asoc tree
+Date: Fri, 27 Apr 2018 11:59:30 +0100
+Message-ID: <E1fC16A-0003wv-UI@debutante>
+References: <20180425180100.15104-1-jarkko.nikula@bitmer.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20180427021135.16002-1-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, chipeng.chang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, Hidalgo.Huang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, PC.Liao-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 42C052678E3
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 12:59:37 +0200 (CEST)
+In-Reply-To: <20180425180100.15104-1-jarkko.nikula@bitmer.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, tony@atomide.com, Liam Girdwood <lgirdwood@gmail.com>, aaro.koskinen@iki.f, peter.ujfalusi@ti.com, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: preallocate pages use platform device
+   ASoC: omap: Remove OMAP_MUX dependency from Nokia N810 audio support
 
 has been applied to the asoc tree at
 
@@ -48,40 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 58edf3255ca3025444c016241611453585453089 Mon Sep 17 00:00:00 2001
-From: Kai Chieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Fri, 27 Apr 2018 10:11:35 +0800
-Subject: [PATCH] ASoC: mediatek: preallocate pages use platform device
+>From 6534e3ab4b15369a1af63940c91b31b92be45d4f Mon Sep 17 00:00:00 2001
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Date: Fri, 27 Apr 2018 11:17:15 +0300
+Subject: [PATCH] ASoC: omap: Remove OMAP_MUX dependency from Nokia N810 audio
+ support
 
-preallocate pages should use platform device,
-since we set dma mask for platform device.
+Commit e9f5f1e45608 ("ARM: OMAP2+: Remove legacy mux code") removed
+CONFIG_OMAP_MUX making impossible to build Nokia N810 audio support. Remove
+this dependency so we can do at least build tests.
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Fixes: e9f5f1e45608 ("ARM: OMAP2+: Remove legacy mux code")
+Signed-off-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/common/mtk-afe-platform-driver.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/omap/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-index 404fbe19e1a3..d046ea8e543b 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-@@ -56,14 +56,14 @@ static const struct snd_pcm_ops mtk_afe_pcm_ops = {
- static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	size_t size;
--	struct snd_card *card = rtd->card->snd_card;
- 	struct snd_pcm *pcm = rtd->pcm;
- 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
- 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
- 
- 	size = afe->mtk_afe_hardware->buffer_bytes_max;
- 	return snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
--						     card->dev, size, size);
-+						     rtd->platform->dev,
-+						     size, size);
- }
- 
- static void mtk_afe_pcm_free(struct snd_pcm *pcm)
+diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
+index f5451c78ede5..9d20c9b94477 100644
+--- a/sound/soc/omap/Kconfig
++++ b/sound/soc/omap/Kconfig
+@@ -30,7 +30,6 @@ config SND_OMAP_SOC_HDMI_AUDIO
+ config SND_OMAP_SOC_N810
+ 	tristate "SoC Audio support for Nokia N810"
+ 	depends on SND_OMAP_SOC && MACH_NOKIA_N810 && I2C
+-	depends on OMAP_MUX
+ 	select SND_OMAP_SOC_MCBSP
+ 	select SND_SOC_TLV320AIC3X
+ 	help
 -- 
 2.17.0
