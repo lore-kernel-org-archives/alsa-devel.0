@@ -1,93 +1,100 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: Allow codec_conf DT lookups to
-	match parent of_node" to the asoc tree
-Date: Fri, 27 Apr 2018 19:24:43 +0100
-Message-ID: <E1fC831-0004KN-1w@debutante>
-References: <20180427125436.11892-1-ckeepax@opensource.cirrus.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 04/24] ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
+Date: Fri, 27 Apr 2018 13:32:13 -0500
+Message-ID: <CAL_JsqLLqr87F53rbR+DU9Qj9=9SWWrw45TWZaG6f_gnYfPNgw@mail.gmail.com>
+References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
+ <20180426094606.4775-5-srinivas.kandagatla@linaro.org> <20180427141323.2ykh676xpdf7b6bl@rob-hp-laptop>
+ <dd30b0ed-d958-9bf8-13cf-55d100b645ab@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 945422675DB
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 20:24:46 +0200 (CEST)
-In-Reply-To: <20180427125436.11892-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <dd30b0ed-d958-9bf8-13cf-55d100b645ab@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Banajit Goswami <bgoswami@codeaurora.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, David Brown <david.brown@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Apr 27, 2018 at 9:58 AM, Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+> Thanks for the review.
+>
+>
+> On 27/04/18 15:13, Rob Herring wrote:
+>>
+>> On Thu, Apr 26, 2018 at 10:45:46AM +0100, srinivas.kandagatla@linaro.org
+>> wrote:
+>>>
+>>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>
+>>> This patch add DT bindings for AFE (Audio Frontend) DSP module.
+>>>
+>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
+>>> ---
+>>>   .../devicetree/bindings/sound/qcom,q6afe.txt       | 88
+>>> ++++++++++++++++++++++
+>>>   include/dt-bindings/sound/qcom,q6afe.h             | 31 ++++++++
+>>>   2 files changed, 119 insertions(+)
+>>>   create mode 100644
+>>> Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+>>>   create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+>>> b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+>>> new file mode 100644
+>>> index 000000000000..05208a63dd3c
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+>>> @@ -0,0 +1,88 @@
+>>> +Qualcomm Audio Front End (Q6AFE) binding
+>>> +
+>>> +AFE is one of the APR audio service on Q6DSP
+>>> +Please refer to qcom,apr.txt for details of the common apr service
+>>> bindings
+>>> +used by all apr services.
+>>> +
+>>> +- but must contain the following property:
+>>> +
+>>> +- compatible:
+>>> +       Usage: required
+>>> +       Value type: <stringlist>
+>>> +       Definition: must be "qcom,q6afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
+>>> +                 Or "qcom,q6afe" where the version number can be queried
+>>> +                 from DSP.
+>>> +                 example "qcom,q6afe"
+>>
+>>
+>> reg too.
+>
+>
+> I did not want to repeat what is already mandated for apr children in
+> qcom,apr.txt
+> So skipped repeating reg property in here.
 
-   ASoC: core: Allow codec_conf DT lookups to match parent of_node
+Okay.
 
-has been applied to the asoc tree at
+>>> +
+>>> += AFE DAIs (Digial Audio Interface)
+>>> +"dais" subnode of the AFE node represents dai specific configuration
+>>> +
+>>> +- #sound-dai-cells
+>>> +       Usage: required
+>>> +       Value type: <u32>
+>>> +       Definition: Must be 1
+>>> +
+>>> +- reg
+>>
+>>
+>> It's not clear here these are in a grandchild node.
+>>
+> Every afe port/dai has some board specifics, to allow that we need dai
+> specific child nodes.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Yes, but what I mean is #sound-dai-cells is a property of the dais
+node, but reg and qcom,sd-lines are properties of child nodes under
+the dais node. It is evident in the example, but not without the
+example.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Also, anywhere with reg needs #address-cells and #size-cells in the parent node.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b24c539b4dc58f7d6283b8d06e240ac87d4966d7 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Fri, 27 Apr 2018 13:54:36 +0100
-Subject: [PATCH] ASoC: core: Allow codec_conf DT lookups to match parent
- of_node
-
-For devices implemented as a MFD it is common to only have a single node
-in devicetree representing the whole device. As such when looking up
-codec_conf mappings we should match against both the devices of_node and
-the devices parent's of_node, as is already done for DAIs and platform
-components.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-core.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 052089f16ea0..4b068ccf4e13 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1383,7 +1383,12 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
- 
- 	for (i = 0; i < card->num_configs; i++) {
- 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
--		if (map->of_node && component->dev->of_node != map->of_node)
-+		struct device_node *component_of_node = component->dev->of_node;
-+
-+		if (!component_of_node && component->dev->parent)
-+			component_of_node = component->dev->parent->of_node;
-+
-+		if (map->of_node && component_of_node != map->of_node)
- 			continue;
- 		if (map->dev_name && strcmp(component->name, map->dev_name))
- 			continue;
--- 
-2.17.0
+Rob
