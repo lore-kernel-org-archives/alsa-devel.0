@@ -1,55 +1,92 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: rt5645 Jack detect code on an Asus T100HA not being
- able to distinguish between headphones vs headset ?
-Date: Fri, 27 Apr 2018 16:19:24 +0200
-Message-ID: <2cab6fb3-f5b0-948a-8d4f-2e42768d84e8@redhat.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v6 04/24] ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
+Date: Fri, 27 Apr 2018 15:58:02 +0100
+Message-ID: <dd30b0ed-d958-9bf8-13cf-55d100b645ab@linaro.org>
+References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
+ <20180426094606.4775-5-srinivas.kandagatla@linaro.org>
+ <20180427141323.2ykh676xpdf7b6bl@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f169.google.com (mail-wr0-f169.google.com
- [209.85.128.169])
- by alsa0.perex.cz (Postfix) with ESMTP id 107D12677FD
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 16:19:26 +0200 (CEST)
-Received: by mail-wr0-f169.google.com with SMTP id g21-v6so1950190wrb.8
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 07:19:26 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180427141323.2ykh676xpdf7b6bl@rob-hp-laptop>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Bard,
+Thanks for the review.
 
-I'm having some trouble with the rt5645.c codec code not
-being able to distinguish between headphones vs headset
-on an Asus T100HA laptop. It recognizes everything as
-headphones.  This statement in the jack-detect code:
+On 27/04/18 15:13, Rob Herring wrote:
+> On Thu, Apr 26, 2018 at 10:45:46AM +0100, srinivas.kandagatla@linaro.org wrote:
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> This patch add DT bindings for AFE (Audio Frontend) DSP module.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
+>> ---
+>>   .../devicetree/bindings/sound/qcom,q6afe.txt       | 88 ++++++++++++++++++++++
+>>   include/dt-bindings/sound/qcom,q6afe.h             | 31 ++++++++
+>>   2 files changed, 119 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+>>   create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
+>>
+>> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+>> new file mode 100644
+>> index 000000000000..05208a63dd3c
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+>> @@ -0,0 +1,88 @@
+>> +Qualcomm Audio Front End (Q6AFE) binding
+>> +
+>> +AFE is one of the APR audio service on Q6DSP
+>> +Please refer to qcom,apr.txt for details of the common apr service bindings
+>> +used by all apr services.
+>> +
+>> +- but must contain the following property:
+>> +
+>> +- compatible:
+>> +	Usage: required
+>> +	Value type: <stringlist>
+>> +	Definition: must be "qcom,q6afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
+>> +		  Or "qcom,q6afe" where the version number can be queried
+>> +		  from DSP.
+>> +		  example "qcom,q6afe"
+> 
+> reg too.
 
-                 dev_dbg(component->dev, "val = %d\n", val);
+I did not want to repeat what is already mandated for apr children in 
+qcom,apr.txt
+So skipped repeating reg property in here.
 
-Always prints 4 for the value, no matter what I plug in.
+> 
+>> +
+>> += AFE DAIs (Digial Audio Interface)
+>> +"dais" subnode of the AFE node represents dai specific configuration
+>> +
+>> +- #sound-dai-cells
+>> +	Usage: required
+>> +	Value type: <u32>
+>> +	Definition: Must be 1
+>> +
+>> +- reg
+> 
+> It's not clear here these are in a grandchild node.
+> 
+Every afe port/dai has some board specifics, to allow that we need dai 
+specific child nodes.
 
-Also the headset microphone input does not work, not
-even if I select it manually.
+>> +	Usage: required
+>> +	Value type: <u32>
+>> +	Definition: Must be dai id
+>> +
+>> +- qcom,sd-lines
+>> +	Usage: required for mi2s interface
+>> +	Value type: <prop-encoded-array>
+>> +	Definition: Must be list of serial data lines used by this dai.
+>> +	should be one or more of the 1-4 sd lines.
 
-The ACPI id for the device is 10EC3270, and I opened the
-tablet and the marking on the codec says: ALC3270,
-so I guess we may need some special handling for the
-jack-detect (and headset microphone input) on this
-variant, can you help?
 
-I checked and the jack connector does seem to be of
-the TRRS type.
-
-Regards,
-
-Hans
+--srini
