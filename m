@@ -1,97 +1,48 @@
-From: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Subject: [PATCH v2 3/3] ASoC: tas6424: Allow disabling auto diagnostics for faster power-on
-Date: Fri, 27 Apr 2018 15:55:49 +0200
-Message-ID: <1524837349-16350-4-git-send-email-jjhiblot@ti.com>
-References: <1524837349-16350-1-git-send-email-jjhiblot@ti.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v6 01/24] soc: qcom dt-bindings: Add APR
+	bus bindings
+Date: Fri, 27 Apr 2018 09:07:38 -0500
+Message-ID: <20180427140738.lpoi7ow7bgzjrumf@rob-hp-laptop>
+References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
+ <20180426094606.4775-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1524837349-16350-1-git-send-email-jjhiblot@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com
-Cc: dannenberg@ti.com, afd@ti.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Jean-Jacques Hiblot <jjhiblot@ti.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ot0-f195.google.com (mail-ot0-f195.google.com
+ [74.125.82.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 378622677FD
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 16:07:40 +0200 (CEST)
+Received: by mail-ot0-f195.google.com with SMTP id 77-v6so2158146otd.4
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 07:07:40 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180426094606.4775-2-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: srinivas.kandagatla@linaro.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The TAS6424 incorporates both DC-load and AC-load diagnostics which are
-used to determine the status of the load. The DC diagnostics runs when any
-channel is directed to leave the Hi-Z state and enter the MUTE or PLAY
-state.
-The DC diagnostics are turned on by default but, if a fast startup without
-diagnostics is required, the diagnostics can be disabled using a dedicated
-ALSA control.
+On Thu, Apr 26, 2018 at 10:45:43AM +0100, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> 
+> This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
+> bus driver. This bus is used for communicating with DSP which provides
+> audio and various other services to cpu.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/soc/qcom/qcom,apr.txt      | 84 ++++++++++++++++++++++
+>  include/dt-bindings/soc/qcom,apr.h                 | 28 ++++++++
+>  2 files changed, 112 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
+>  create mode 100644 include/dt-bindings/soc/qcom,apr.h
 
-Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
----
- sound/soc/codecs/tas6424.c | 19 +++++++++++++++++--
- sound/soc/codecs/tas6424.h |  4 ++++
- 2 files changed, 21 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
-index 89fd0c1..8eb4842 100644
---- a/sound/soc/codecs/tas6424.c
-+++ b/sound/soc/codecs/tas6424.c
-@@ -55,6 +55,13 @@ struct tas6424_data {
-  */
- static DECLARE_TLV_DB_SCALE(dac_tlv, -10350, 50, 0);
- 
-+
-+static const char * const diags_enum_texts[] = {"OFF", "ON"};
-+static unsigned int diags_enum_values[] = {1, 0};
-+SOC_VALUE_ENUM_SINGLE_DECL(diags_enum, TAS6424_DC_DIAG_CTRL1,
-+			   TAS6424_LDGBYPASS_SHIFT, TAS6424_LDGBYPASS_MASK,
-+			   diags_enum_texts, diags_enum_values);
-+
- static const struct snd_kcontrol_new tas6424_snd_controls[] = {
- 	SOC_SINGLE_TLV("Speaker Driver CH1 Playback Volume",
- 		       TAS6424_CH1_VOL_CTRL, 0, 0xff, 0, dac_tlv),
-@@ -64,6 +71,7 @@ static const struct snd_kcontrol_new tas6424_snd_controls[] = {
- 		       TAS6424_CH3_VOL_CTRL, 0, 0xff, 0, dac_tlv),
- 	SOC_SINGLE_TLV("Speaker Driver CH4 Playback Volume",
- 		       TAS6424_CH4_VOL_CTRL, 0, 0xff, 0, dac_tlv),
-+	SOC_ENUM("Auto Diagnostics", diags_enum),
- };
- 
- static int tas6424_dac_event(struct snd_soc_dapm_widget *w,
-@@ -297,6 +305,11 @@ static int tas6424_power_on(struct snd_soc_component *component)
- 	struct tas6424_data *tas6424 = snd_soc_component_get_drvdata(component);
- 	int ret;
- 	u8 chan_states;
-+	int no_auto_diags = 0;
-+	unsigned int reg_val;
-+
-+	if (!regmap_read(tas6424->regmap, TAS6424_DC_DIAG_CTRL1, &reg_val))
-+		no_auto_diags = reg_val & TAS6424_LDGBYPASS_MASK;
- 
- 	ret = regulator_bulk_enable(ARRAY_SIZE(tas6424->supplies),
- 				    tas6424->supplies);
-@@ -327,9 +340,11 @@ static int tas6424_power_on(struct snd_soc_component *component)
- 	snd_soc_component_write(component, TAS6424_CH_STATE_CTRL, chan_states);
- 
- 	/* any time we come out of HIZ, the output channels automatically run DC
--	 * load diagnostics, wait here until this completes
-+	 * load diagnostics if autodiagnotics are enabled. wait here until this
-+	 * completes.
- 	 */
--	msleep(230);
-+	if (!no_auto_diags)
-+		msleep(230);
- 
- 	return 0;
- }
-diff --git a/sound/soc/codecs/tas6424.h b/sound/soc/codecs/tas6424.h
-index 4305883..b5958c4 100644
---- a/sound/soc/codecs/tas6424.h
-+++ b/sound/soc/codecs/tas6424.h
-@@ -111,6 +111,10 @@
- 					 TAS6424_CH3_STATE_DIAG | \
- 					 TAS6424_CH4_STATE_DIAG)
- 
-+/* TAS6424_DC_DIAG_CTRL1 */
-+#define TAS6424_LDGBYPASS_SHIFT		0
-+#define TAS6424_LDGBYPASS_MASK		BIT(TAS6424_LDGBYPASS_SHIFT)
-+
- /* TAS6424_GLOB_FAULT1_REG */
- #define TAS6424_FAULT_CLOCK		BIT(4)
- #define TAS6424_FAULT_PVDD_OV		BIT(3)
--- 
-2.7.4
+Reviewed-by: Rob Herring <robh@kernel.org>
