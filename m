@@ -1,76 +1,76 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ASoC: mt6797: switch to SPDX
-	license tag
-Date: Fri, 27 Apr 2018 11:55:10 +0100
-Message-ID: <20180427105510.GC6872@sirena.org.uk>
-References: <20180427015445.4334-1-kaichieh.chuang@mediatek.com>
- <20180427015445.4334-2-kaichieh.chuang@mediatek.com>
- <20180427104121.GB6872@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7171324934001120235=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DE1B1267860
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 12:55:14 +0200 (CEST)
-In-Reply-To: <20180427104121.GB6872@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, ryder.lee@mediatek.com, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org
+Subject: Applied "ASoC: mediatek: preallocate pages use platform device" to the asoc tree
+Date: Fri, 27 Apr 2018 11:59:16 +0100
+Message-ID: <E1fC15w-0003si-GB@debutante>
+References: <20180427021135.16002-1-kaichieh.chuang@mediatek.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180427021135.16002-1-kaichieh.chuang@mediatek.com>
+Sender: stable-owner@vger.kernel.org
+Cc: KaiChieh Chuang <kaichieh.chuang@mediatek.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, alsa-devel@alsa-project.org, ryder.lee@mediatek.com, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, Hidalgo.Huang@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.comkaichieh.chuang@mediatek.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7171324934001120235==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/Uq4LBwYP4y1W6pO"
-Content-Disposition: inline
+   ASoC: mediatek: preallocate pages use platform device
 
+has been applied to the asoc tree at
 
---/Uq4LBwYP4y1W6pO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Apr 27, 2018 at 11:41:21AM +0100, Mark Brown wrote:
-> On Fri, Apr 27, 2018 at 09:54:44AM +0800, KaiChieh Chuang wrote:
->=20
-> >  sound/soc/mediatek/mt6797/mt6797-afe-clk.c         | 21 ++++++--------=
--------
->=20
-> This file doesn't seem to be in -next?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Sorry, figured this out.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---/Uq4LBwYP4y1W6pO
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrjAY0ACgkQJNaLcl1U
-h9C9ugf+KRGwZOAyQZlbv2xsvMW1HqzDpYNQUpHc+bs8NQgt+tqOIJBZNDweKI/n
-+fUO2Xkp+CQOE+5NA509lVKZbTzkj2Mg3TRlg0W9YOPEc7/NuFoiBJD88tH6tXxw
-j7qaC0onGvfvr1pKZQpiJNCfKBgjKHJ0JENNCJqWwcv8G496OLNE66WSEvRAaKqM
-QEq/XSCn27b1ANBqzYVmfUhCrA6ASNF6G9Wkd1/XclcGl3d4PymaxSCR80BoU+8b
-J/24nW+0wMM4wIfjRqLWhfszUWI0IZfNshkusmdc9NiG9VaQNWdczlhhhQPRD8nE
-9oLHUuHGYUuREZITSzpZ5I1S9Y4sEw==
-=2jX4
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---/Uq4LBwYP4y1W6pO--
+>From 5845e6155d8f4a4a9bae2d4c1d1bb4a4d9a925c2 Mon Sep 17 00:00:00 2001
+From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
+Date: Fri, 27 Apr 2018 10:11:35 +0800
+Subject: [PATCH] ASoC: mediatek: preallocate pages use platform device
 
---===============7171324934001120235==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+preallocate pages should use platform device,
+since we set dma mask for platform device.
 
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/mediatek/common/mtk-afe-platform-driver.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---===============7171324934001120235==--
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+index 53215b52e4f2..f8a06709f76d 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+@@ -64,14 +64,14 @@ static const struct snd_pcm_ops mtk_afe_pcm_ops = {
+ static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	size_t size;
+-	struct snd_card *card = rtd->card->snd_card;
+ 	struct snd_pcm *pcm = rtd->pcm;
+ 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(rtd, AFE_PCM_NAME);
+ 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
+ 
+ 	size = afe->mtk_afe_hardware->buffer_bytes_max;
+ 	return snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-						     card->dev, size, size);
++						     rtd->platform->dev,
++						     size, size);
+ }
+ 
+ static void mtk_afe_pcm_free(struct snd_pcm *pcm)
+-- 
+2.17.0
