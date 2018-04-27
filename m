@@ -1,75 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 02/24] soc: qcom: Add APR bus driver
-Date: Fri, 27 Apr 2018 12:06:12 +0100
-Message-ID: <20180427110612.GD6872@sirena.org.uk>
-References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
- <20180426094606.4775-3-srinivas.kandagatla@linaro.org>
- <20180426113911.GA21755@sirena.org.uk>
- <20180426211740.GC25699@hector.attlocal.net>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6025764011509479448=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A04A02678B0
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 13:06:19 +0200 (CEST)
-In-Reply-To: <20180426211740.GC25699@hector.attlocal.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Gross <andy.gross@linaro.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, srinivas.kandagatla@linaro.org, spatakok@qti.qualcomm.com, linux-arm-kernel@lists.infradead.org
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH] ASoC: dai playback and capture active  may be greater than 1
+Date: Fri, 27 Apr 2018 13:31:51 +0200
+Message-ID: <20180427113151.19299-1-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Mark Greer <mgreer@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
+At the moment playback_active and capture_active are using only 1 bit so
+the maximum active count is 1.
 
---===============6025764011509479448==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="fXStkuK2IQBfcDe+"
-Content-Disposition: inline
+However, snd_soc_runtime_activate() may be called several time on the
+same dai. This happens when a dai is part of several dai_links. It is
+often the case for "snd-soc-dummy-dai".
 
+This is a problem if snd_soc_runtime_activate() is called an even number
+of times on a dai. In this case the active count overflow back to 0. As
+consequence, ASoC functions, such as soc_dpcm_runtime_update(), won't run
+correctly.
 
---fXStkuK2IQBfcDe+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Storing these usage counts on plain 'unsigned int' solves the problem.
 
-On Thu, Apr 26, 2018 at 04:17:40PM -0500, Andy Gross wrote:
+Fixes: f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
 
-> I just acked this, so it'd be great if you took it along with the others.  If
-> you don't want to do that, I can just pull it in with my pull requests.
+Hi,
 
-> Up to you,
+I found this problem while working on ASoC support for a new platform.
+During a playback, using DPCM, if I changed the backend dai, nothing
+happened, old backend path is not pruned, new backend path is not added.
 
-That's fine, I'm happy to take it - I just wanted to work out what was
-going on.
+Here is how it goes:
+1 FE and 2 BE, all 3 using snd-soc-dummy-dai for the codec_dai (ATM).
 
---fXStkuK2IQBfcDe+
-Content-Type: application/pgp-signature; name="signature.asc"
+On playback start:
+ - BE #1 activates and increments snd-soc-dummy-dai's playback_active
+ - FE activates and increments snd-soc-dummy-dai's playback_active
 
------BEGIN PGP SIGNATURE-----
+The playback works but snd-soc-dummy-dai's playback_active value is now 0.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrjBCMACgkQJNaLcl1U
-h9AaSgf9F1GOLrMf39dFFBWFnDM7HginCwTVyqz9rxLCJbOd1cU/32DztQembUnH
-haj5X7AC14see7qqLNMfL3t0UAjFkqYVIyapxHTfWTSCyjWUDqWbwSF1Nn+7SkYN
-giikT0zMJugfrvEUdRnY35AObZLKpEjQM4XlJ8Wf710pMoQ2/voosVXwZUhvyWa7
-Z80OzB/kaHPLlXoMWaKLBj+kHkkhWsgsP38Ppby6KawEUJWExVuDmCvwmJoVrDWC
-kYEjpSEeR2mfT0eMkBWvhtAkOtXTMM324EfUbbIFo7DSUASLgUFRP74b//SWjHJP
-B1BY7wyfwZ9Ma0mFkkHDTWL4NzY0Pg==
-=aRHi
------END PGP SIGNATURE-----
+Through a mux kcontrol, change BE client of FE, from BE #1 to BE #2.
+ -> trigger soc_dpcm_runtime_update().
+    -> checks fe's codec_dai playback_active which is zero so playback
+    path processing is skipped, keeping the old invalid path.
 
---fXStkuK2IQBfcDe+--
+ * No change since initial RFC [0], just droppped the RFC prefix.
 
---===============6025764011509479448==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+[0]: https://lkml.kernel.org/r/20180419140612.11049-1-jbrunet@baylibre.com
 
+ include/sound/soc-dai.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---===============6025764011509479448==--
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 8ad11669e4d8..35ebb0be5114 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -294,8 +294,8 @@ struct snd_soc_dai {
+ 	struct snd_soc_dai_driver *driver;
+ 
+ 	/* DAI runtime info */
+-	unsigned int capture_active:1;		/* stream is in use */
+-	unsigned int playback_active:1;		/* stream is in use */
++	unsigned int capture_active;		/* stream usage count */
++	unsigned int playback_active;		/* stream usage count */
+ 	unsigned int probed:1;
+ 
+ 	unsigned int active;
+-- 
+2.14.3
