@@ -1,100 +1,50 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6 04/24] ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
-Date: Fri, 27 Apr 2018 13:32:13 -0500
-Message-ID: <CAL_JsqLLqr87F53rbR+DU9Qj9=9SWWrw45TWZaG6f_gnYfPNgw@mail.gmail.com>
-References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
- <20180426094606.4775-5-srinivas.kandagatla@linaro.org> <20180427141323.2ykh676xpdf7b6bl@rob-hp-laptop>
- <dd30b0ed-d958-9bf8-13cf-55d100b645ab@linaro.org>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: cs46xx: fix spelling mistake: "amplifer"
+	-> "amplifier"
+Date: Fri, 27 Apr 2018 20:02:45 +0100
+Message-ID: <20180427190245.16861-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <dd30b0ed-d958-9bf8-13cf-55d100b645ab@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Andy Gross <andy.gross@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Banajit Goswami <bgoswami@codeaurora.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, David Brown <david.brown@linaro.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E9ED267412
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 21:02:51 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 27, 2018 at 9:58 AM, Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
-> Thanks for the review.
->
->
-> On 27/04/18 15:13, Rob Herring wrote:
->>
->> On Thu, Apr 26, 2018 at 10:45:46AM +0100, srinivas.kandagatla@linaro.org
->> wrote:
->>>
->>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>
->>> This patch add DT bindings for AFE (Audio Frontend) DSP module.
->>>
->>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
->>> ---
->>>   .../devicetree/bindings/sound/qcom,q6afe.txt       | 88
->>> ++++++++++++++++++++++
->>>   include/dt-bindings/sound/qcom,q6afe.h             | 31 ++++++++
->>>   2 files changed, 119 insertions(+)
->>>   create mode 100644
->>> Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->>>   create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
->>>
->>> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->>> b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->>> new file mode 100644
->>> index 000000000000..05208a63dd3c
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->>> @@ -0,0 +1,88 @@
->>> +Qualcomm Audio Front End (Q6AFE) binding
->>> +
->>> +AFE is one of the APR audio service on Q6DSP
->>> +Please refer to qcom,apr.txt for details of the common apr service
->>> bindings
->>> +used by all apr services.
->>> +
->>> +- but must contain the following property:
->>> +
->>> +- compatible:
->>> +       Usage: required
->>> +       Value type: <stringlist>
->>> +       Definition: must be "qcom,q6afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
->>> +                 Or "qcom,q6afe" where the version number can be queried
->>> +                 from DSP.
->>> +                 example "qcom,q6afe"
->>
->>
->> reg too.
->
->
-> I did not want to repeat what is already mandated for apr children in
-> qcom,apr.txt
-> So skipped repeating reg property in here.
+From: Colin Ian King <colin.king@canonical.com>
 
-Okay.
+Trivial fix to spelling mistake in module parameter description text
 
->>> +
->>> += AFE DAIs (Digial Audio Interface)
->>> +"dais" subnode of the AFE node represents dai specific configuration
->>> +
->>> +- #sound-dai-cells
->>> +       Usage: required
->>> +       Value type: <u32>
->>> +       Definition: Must be 1
->>> +
->>> +- reg
->>
->>
->> It's not clear here these are in a grandchild node.
->>
-> Every afe port/dai has some board specifics, to allow that we need dai
-> specific child nodes.
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/pci/cs46xx/cs46xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Yes, but what I mean is #sound-dai-cells is a property of the dais
-node, but reg and qcom,sd-lines are properties of child nodes under
-the dais node. It is evident in the example, but not without the
-example.
-
-Also, anywhere with reg needs #address-cells and #size-cells in the parent node.
-
-Rob
+diff --git a/sound/pci/cs46xx/cs46xx.c b/sound/pci/cs46xx/cs46xx.c
+index 655fbea1692c..4910d3f46d4b 100644
+--- a/sound/pci/cs46xx/cs46xx.c
++++ b/sound/pci/cs46xx/cs46xx.c
+@@ -58,7 +58,7 @@ MODULE_PARM_DESC(id, "ID string for the CS46xx soundcard.");
+ module_param_array(enable, bool, NULL, 0444);
+ MODULE_PARM_DESC(enable, "Enable CS46xx soundcard.");
+ module_param_array(external_amp, bool, NULL, 0444);
+-MODULE_PARM_DESC(external_amp, "Force to enable external amplifer.");
++MODULE_PARM_DESC(external_amp, "Force to enable external amplifier.");
+ module_param_array(thinkpad, bool, NULL, 0444);
+ MODULE_PARM_DESC(thinkpad, "Force to enable Thinkpad's CLKRUN control.");
+ module_param_array(mmap_valid, bool, NULL, 0444);
+-- 
+2.17.0
