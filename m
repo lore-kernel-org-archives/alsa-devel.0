@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas6424: Add support for the mute pin" to the asoc tree
-Date: Fri, 27 Apr 2018 19:24:15 +0100
-Message-ID: <E1fC82Z-0004Hf-PP@debutante>
-References: <1524837349-16350-3-git-send-email-jjhiblot@ti.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1524837349-16350-3-git-send-email-jjhiblot@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, afd@ti.com, dannenberg@ti.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: core: Allow codec_conf DT lookups to
+	match parent of_node" to the asoc tree
+Date: Fri, 27 Apr 2018 19:24:43 +0100
+Message-ID: <E1fC831-0004KN-1w@debutante>
+References: <20180427125436.11892-1-ckeepax@opensource.cirrus.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 945422675DB
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 20:24:46 +0200 (CEST)
+In-Reply-To: <20180427125436.11892-1-ckeepax@opensource.cirrus.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas6424: Add support for the mute pin
+   ASoC: core: Allow codec_conf DT lookups to match parent of_node
 
 has been applied to the asoc tree at
 
@@ -37,112 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From e969a6d222c9da87c6b5978674788faf5c58a07d Mon Sep 17 00:00:00 2001
-From: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Date: Fri, 27 Apr 2018 15:55:48 +0200
-Subject: [PATCH] ASoC: tas6424: Add support for the mute pin
+>From b24c539b4dc58f7d6283b8d06e240ac87d4966d7 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Fri, 27 Apr 2018 13:54:36 +0100
+Subject: [PATCH] ASoC: core: Allow codec_conf DT lookups to match parent
+ of_node
 
-mute can be connected to GPIO. In that case we have to drive it to the
-correct value
+For devices implemented as a MFD it is common to only have a single node
+in devicetree representing the whole device. As such when looking up
+codec_conf mappings we should match against both the devices of_node and
+the devices parent's of_node, as is already done for DAIs and platform
+components.
 
-Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/ti,tas6424.txt  |  1 +
- sound/soc/codecs/tas6424.c                    | 37 ++++++++++++++++++-
- 2 files changed, 37 insertions(+), 1 deletion(-)
+ sound/soc/soc-core.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/ti,tas6424.txt b/Documentation/devicetree/bindings/sound/ti,tas6424.txt
-index df71e414dc5b..eacb54f34188 100644
---- a/Documentation/devicetree/bindings/sound/ti,tas6424.txt
-+++ b/Documentation/devicetree/bindings/sound/ti,tas6424.txt
-@@ -7,6 +7,7 @@ Required properties:
- 	- reg: I2C slave address
- 	- sound-dai-cells: must be equal to 0
- 	- standby-gpios: GPIO used to shut the TAS6424 down.
-+	- mute-gpios: GPIO used to mute all the outputs
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 052089f16ea0..4b068ccf4e13 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1383,7 +1383,12 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
  
- Example:
- 
-diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
-index 5abb17f8d3dd..89fd0c1b3903 100644
---- a/sound/soc/codecs/tas6424.c
-+++ b/sound/soc/codecs/tas6424.c
-@@ -45,6 +45,7 @@ struct tas6424_data {
- 	unsigned int last_fault2;
- 	unsigned int last_warn;
- 	struct gpio_desc *standby_gpio;
-+	struct gpio_desc *mute_gpio;
- };
- 
- /*
-@@ -251,10 +252,16 @@ static int tas6424_set_dai_tdm_slot(struct snd_soc_dai *dai,
- static int tas6424_mute(struct snd_soc_dai *dai, int mute)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct tas6424_data *tas6424 = snd_soc_component_get_drvdata(component);
- 	unsigned int val;
- 
- 	dev_dbg(component->dev, "%s() mute=%d\n", __func__, mute);
- 
-+	if (tas6424->mute_gpio) {
-+		gpiod_set_value_cansleep(tas6424->mute_gpio, mute);
-+		return 0;
-+	}
+ 	for (i = 0; i < card->num_configs; i++) {
+ 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
+-		if (map->of_node && component->dev->of_node != map->of_node)
++		struct device_node *component_of_node = component->dev->of_node;
 +
- 	if (mute)
- 		val = TAS6424_ALL_STATE_MUTE;
- 	else
-@@ -289,6 +296,7 @@ static int tas6424_power_on(struct snd_soc_component *component)
- {
- 	struct tas6424_data *tas6424 = snd_soc_component_get_drvdata(component);
- 	int ret;
-+	u8 chan_states;
- 
- 	ret = regulator_bulk_enable(ARRAY_SIZE(tas6424->supplies),
- 				    tas6424->supplies);
-@@ -305,7 +313,18 @@ static int tas6424_power_on(struct snd_soc_component *component)
- 		return ret;
- 	}
- 
--	snd_soc_component_write(component, TAS6424_CH_STATE_CTRL, TAS6424_ALL_STATE_MUTE);
-+	if (tas6424->mute_gpio) {
-+		gpiod_set_value_cansleep(tas6424->mute_gpio, 0);
-+		/*
-+		 * channels are muted via the mute pin.  Don't also mute
-+		 * them via the registers so that subsequent register
-+		 * access is not necessary to un-mute the channels
-+		 */
-+		chan_states = TAS6424_ALL_STATE_PLAY;
-+	} else {
-+		chan_states = TAS6424_ALL_STATE_MUTE;
-+	}
-+	snd_soc_component_write(component, TAS6424_CH_STATE_CTRL, chan_states);
- 
- 	/* any time we come out of HIZ, the output channels automatically run DC
- 	 * load diagnostics, wait here until this completes
-@@ -645,6 +664,22 @@ static int tas6424_i2c_probe(struct i2c_client *client,
- 		tas6424->standby_gpio = NULL;
- 	}
- 
-+	/*
-+	 * Get control of the mute pin and set it HIGH in order to start with
-+	 * all the output muted.
-+	 * Note: The actual pin polarity is taken care of in the GPIO lib
-+	 * according the polarity specified in the DTS.
-+	 */
-+	tas6424->mute_gpio = devm_gpiod_get_optional(dev, "mute",
-+						      GPIOD_OUT_HIGH);
-+	if (IS_ERR(tas6424->mute_gpio)) {
-+		if (PTR_ERR(tas6424->mute_gpio) == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+		dev_info(dev, "failed to get nmute GPIO: %ld\n",
-+			PTR_ERR(tas6424->mute_gpio));
-+		tas6424->mute_gpio = NULL;
-+	}
++		if (!component_of_node && component->dev->parent)
++			component_of_node = component->dev->parent->of_node;
 +
- 	for (i = 0; i < ARRAY_SIZE(tas6424->supplies); i++)
- 		tas6424->supplies[i].supply = tas6424_supply_names[i];
- 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(tas6424->supplies),
++		if (map->of_node && component_of_node != map->of_node)
+ 			continue;
+ 		if (map->dev_name && strcmp(component->name, map->dev_name))
+ 			continue;
 -- 
 2.17.0
