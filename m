@@ -1,210 +1,122 @@
-From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH v3 1/4] ALSA: usb-audio: UAC3. Add support for
-	mixer unit.
-Date: Fri, 27 Apr 2018 18:06:49 +0100
-Message-ID: <20180427170649.27334-1-jorge.sanjuan@codethink.co.uk>
-References: <20180424172445.31928-2-jorge.sanjuan@codethink.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 87BCC267860
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 19:07:01 +0200 (CEST)
-In-Reply-To: <20180424172445.31928-2-jorge.sanjuan@codethink.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com
-Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, ruslan.bilovol@gmail.com
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: tas6424: Add support for the standby pin" to the asoc tree
+Date: Fri, 27 Apr 2018 19:24:19 +0100
+Message-ID: <E1fC82d-0004JA-E2@debutante>
+References: <1524837349-16350-2-git-send-email-jjhiblot@ti.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1524837349-16350-2-git-send-email-jjhiblot@ti.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, perex@perex.cz, tiwai@suse.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, afd@ti.com, dannenberg@ti.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This adds support for the MIXER UNIT in UAC3. All the information
-is obtained from the (HIGH CAPABILITY) Cluster's header. We don't
-read the rest of the logical cluster to obtain the channel config
-as that wont make any difference in the current mixer behaviour.
+The patch
 
-The name of the mixer unit is not yet requested as there is not
-support for the UAC3 Class Specific String requests.
+   ASoC: tas6424: Add support for the standby pin
 
-Tested in an UAC3 device working as a HEADSET with a basic mixer
-unit (same as the one in the BADD spec) with no controls.
+has been applied to the asoc tree at
 
-Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From e3976aa6fb409aea3cea812f6a0beebb545e5996 Mon Sep 17 00:00:00 2001
+From: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Date: Fri, 27 Apr 2018 15:55:47 +0200
+Subject: [PATCH] ASoC: tas6424: Add support for the standby pin
+
+The standby pin can be connected to a GPIO. In that case we have to drive
+it to the correct values for the TAS6424 to operate properly.
+
+Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/uapi/linux/usb/audio.h | 19 +++++++--
- sound/usb/mixer.c              | 88 ++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 97 insertions(+), 10 deletions(-)
+ .../devicetree/bindings/sound/ti,tas6424.txt  |  1 +
+ sound/soc/codecs/tas6424.c                    | 22 +++++++++++++++++++
+ 2 files changed, 23 insertions(+)
 
-diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
-index 3a78e7145689..13d98e6e0db1 100644
---- a/include/uapi/linux/usb/audio.h
-+++ b/include/uapi/linux/usb/audio.h
-@@ -285,9 +285,22 @@ static inline __u8 uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor
- static inline __u8 *uac_mixer_unit_bmControls(struct uac_mixer_unit_descriptor *desc,
- 					      int protocol)
- {
--	return (protocol == UAC_VERSION_1) ?
--		&desc->baSourceID[desc->bNrInPins + 4] :
--		&desc->baSourceID[desc->bNrInPins + 6];
-+	switch (protocol) {
-+	case UAC_VERSION_1:
-+		return &desc->baSourceID[desc->bNrInPins + 4];
-+	case UAC_VERSION_2:
-+		return &desc->baSourceID[desc->bNrInPins + 6];
-+	case UAC_VERSION_3:
-+		return &desc->baSourceID[desc->bNrInPins + 2];
-+	default:
-+		return NULL;
-+	}
-+}
-+
-+static inline __u16 uac3_mixer_unit_wClusterDescrID(struct uac_mixer_unit_descriptor *desc)
-+{
-+	return (desc->baSourceID[desc->bNrInPins + 1] << 8) |
-+		desc->baSourceID[desc->bNrInPins];
- }
+diff --git a/Documentation/devicetree/bindings/sound/ti,tas6424.txt b/Documentation/devicetree/bindings/sound/ti,tas6424.txt
+index 1c4ada0eef4e..df71e414dc5b 100644
+--- a/Documentation/devicetree/bindings/sound/ti,tas6424.txt
++++ b/Documentation/devicetree/bindings/sound/ti,tas6424.txt
+@@ -6,6 +6,7 @@ Required properties:
+ 	- compatible: "ti,tas6424" - TAS6424
+ 	- reg: I2C slave address
+ 	- sound-dai-cells: must be equal to 0
++	- standby-gpios: GPIO used to shut the TAS6424 down.
  
- static inline __u8 uac_mixer_unit_iMixer(struct uac_mixer_unit_descriptor *desc)
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 301ad61ed426..3503f4840ec3 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -719,6 +719,66 @@ static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm
- }
+ Example:
+ 
+diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
+index 4f3a16c520a2..5abb17f8d3dd 100644
+--- a/sound/soc/codecs/tas6424.c
++++ b/sound/soc/codecs/tas6424.c
+@@ -16,6 +16,7 @@
+ #include <linux/slab.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/delay.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -43,6 +44,7 @@ struct tas6424_data {
+ 	unsigned int last_fault1;
+ 	unsigned int last_fault2;
+ 	unsigned int last_warn;
++	struct gpio_desc *standby_gpio;
+ };
  
  /*
-+ * Get logical cluster information for UAC3 devices.
-+ */
-+static int get_cluster_channels_v3(struct mixer_build *state, unsigned int cluster_id)
-+{
-+	struct uac3_cluster_header_descriptor c_header;
-+	int err;
-+
-+	err = snd_usb_ctl_msg(state->chip->dev,
-+			usb_rcvctrlpipe(state->chip->dev, 0),
-+			UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
-+			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-+			cluster_id,
-+			snd_usb_ctrl_intf(state->chip),
-+			&c_header, sizeof(c_header));
-+	if (err < 0)
-+		goto error;
-+	if (err != sizeof(c_header)) {
-+		err = -EIO;
-+		goto error;
-+	}
-+
-+	return c_header.bNrChannels;
-+
-+error:
-+	usb_audio_err(state->chip, "cannot request logical cluster ID: %d (err: %d)\n", cluster_id, err);
-+	return err;
-+}
-+
-+/*
-+ * Get number of channels for a Mixer Unit.
-+ */
-+static int uac_mixer_unit_get_channels(struct mixer_build *state,
-+				       struct uac_mixer_unit_descriptor *desc)
-+{
-+	int mu_channels;
-+
-+	if (desc->bLength < 11)
-+		return -EINVAL;
-+	if (!desc->bNrInPins)
-+		return -EINVAL;
-+
-+	switch (state->mixer->protocol) {
-+	case UAC_VERSION_1:
-+	case UAC_VERSION_2:
-+	default:
-+		mu_channels = uac_mixer_unit_bNrChannels(desc);
-+		break;
-+	case UAC_VERSION_3:
-+		mu_channels = get_cluster_channels_v3(state,
-+				uac3_mixer_unit_wClusterDescrID(desc));
-+		break;
-+	}
-+
-+	if (!mu_channels)
-+		return -EINVAL;
-+
-+	return mu_channels;
-+}
-+
-+/*
-  * parse the source unit recursively until it reaches to a terminal
-  * or a branched unit.
-  */
-@@ -865,6 +925,18 @@ static int check_input_term(struct mixer_build *state, int id,
- 				term->name = le16_to_cpu(d->wClockSourceStr);
- 				return 0;
- 			}
-+			case UAC3_MIXER_UNIT: {
-+				struct uac_mixer_unit_descriptor *d = p1;
-+
-+				err = uac_mixer_unit_get_channels(state, d);
-+				if (err < 0)
-+					return err;
-+
-+				term->channels = err;
-+				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+
-+				return 0;
-+			}
- 			default:
- 				return -ENODEV;
- 			}
-@@ -1797,11 +1869,10 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid,
-  */
- static void build_mixer_unit_ctl(struct mixer_build *state,
- 				 struct uac_mixer_unit_descriptor *desc,
--				 int in_pin, int in_ch, int unitid,
--				 struct usb_audio_term *iterm)
-+				 int in_pin, int in_ch, int num_outs,
-+				 int unitid, struct usb_audio_term *iterm)
- {
- 	struct usb_mixer_elem_info *cval;
--	unsigned int num_outs = uac_mixer_unit_bNrChannels(desc);
- 	unsigned int i, len;
- 	struct snd_kcontrol *kctl;
- 	const struct usbmix_name_map *map;
-@@ -1878,14 +1949,17 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
- 	int input_pins, num_ins, num_outs;
- 	int pin, ich, err;
- 
--	if (desc->bLength < 11 || !(input_pins = desc->bNrInPins) ||
--	    !(num_outs = uac_mixer_unit_bNrChannels(desc))) {
-+	err = uac_mixer_unit_get_channels(state, desc);
-+	if (err < 0) {
- 		usb_audio_err(state->chip,
- 			      "invalid MIXER UNIT descriptor %d\n",
- 			      unitid);
--		return -EINVAL;
-+		return err;
+@@ -627,6 +629,22 @@ static int tas6424_i2c_probe(struct i2c_client *client,
+ 		return ret;
  	}
  
-+	num_outs = err;
-+	input_pins = desc->bNrInPins;
++	/*
++	 * Get control of the standby pin and set it LOW to take the codec
++	 * out of the stand-by mode.
++	 * Note: The actual pin polarity is taken care of in the GPIO lib
++	 * according the polarity specified in the DTS.
++	 */
++	tas6424->standby_gpio = devm_gpiod_get_optional(dev, "standby",
++						      GPIOD_OUT_LOW);
++	if (IS_ERR(tas6424->standby_gpio)) {
++		if (PTR_ERR(tas6424->standby_gpio) == -EPROBE_DEFER)
++			return -EPROBE_DEFER;
++		dev_info(dev, "failed to get standby GPIO: %ld\n",
++			PTR_ERR(tas6424->standby_gpio));
++		tas6424->standby_gpio = NULL;
++	}
 +
- 	num_ins = 0;
- 	ich = 0;
- 	for (pin = 0; pin < input_pins; pin++) {
-@@ -1912,7 +1986,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
- 				}
- 			}
- 			if (ich_has_controls)
--				build_mixer_unit_ctl(state, desc, pin, ich,
-+				build_mixer_unit_ctl(state, desc, pin, ich, num_outs,
- 						     unitid, &iterm);
- 		}
- 	}
+ 	for (i = 0; i < ARRAY_SIZE(tas6424->supplies); i++)
+ 		tas6424->supplies[i].supply = tas6424_supply_names[i];
+ 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(tas6424->supplies),
+@@ -671,6 +689,10 @@ static int tas6424_i2c_remove(struct i2c_client *client)
+ 
+ 	cancel_delayed_work_sync(&tas6424->fault_check_work);
+ 
++	/* put the codec in stand-by */
++	if (tas6424->standby_gpio)
++		gpiod_set_value_cansleep(tas6424->standby_gpio, 1);
++
+ 	ret = regulator_bulk_disable(ARRAY_SIZE(tas6424->supplies),
+ 				     tas6424->supplies);
+ 	if (ret < 0) {
 -- 
-2.11.0
+2.17.0
