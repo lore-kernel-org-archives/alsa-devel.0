@@ -1,22 +1,19 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v6 22/24] ASoC: qdsp6: dt-bindings: Add
- apq8096 machine bindings
-Date: Fri, 27 Apr 2018 09:18:42 -0500
-Message-ID: <20180427141842.fdwhbmexf6ppfnvj@rob-hp-laptop>
-References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
- <20180426094606.4775-23-srinivas.kandagatla@linaro.org>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: rt5645 Jack detect code on an Asus T100HA not being
+ able to distinguish between headphones vs headset ?
+Date: Fri, 27 Apr 2018 16:19:24 +0200
+Message-ID: <2cab6fb3-f5b0-948a-8d4f-2e42768d84e8@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
- [74.125.82.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 052222677FD
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 16:18:44 +0200 (CEST)
-Received: by mail-ot0-f193.google.com with SMTP id t1-v6so2184638oth.8
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 07:18:44 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20180426094606.4775-23-srinivas.kandagatla@linaro.org>
+Received: from mail-wr0-f169.google.com (mail-wr0-f169.google.com
+ [209.85.128.169])
+ by alsa0.perex.cz (Postfix) with ESMTP id 107D12677FD
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 16:19:26 +0200 (CEST)
+Received: by mail-wr0-f169.google.com with SMTP id g21-v6so1950190wrb.8
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 07:19:26 -0700 (PDT)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,19 +23,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: srinivas.kandagatla@linaro.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 26, 2018 at 10:46:04AM +0100, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> 
-> Add devicetree bindings documentation file for Qualcomm apq8096 sound card.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  .../devicetree/bindings/sound/qcom,apq8096.txt     | 109 +++++++++++++++++++++
->  1 file changed, 109 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+Hi Bard,
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I'm having some trouble with the rt5645.c codec code not
+being able to distinguish between headphones vs headset
+on an Asus T100HA laptop. It recognizes everything as
+headphones.  This statement in the jack-detect code:
+
+                 dev_dbg(component->dev, "val = %d\n", val);
+
+Always prints 4 for the value, no matter what I plug in.
+
+Also the headset microphone input does not work, not
+even if I select it manually.
+
+The ACPI id for the device is 10EC3270, and I opened the
+tablet and the marking on the codec says: ALC3270,
+so I guess we may need some special handling for the
+jack-detect (and headset microphone input) on this
+variant, can you help?
+
+I checked and the jack connector does seem to be of
+the TRRS type.
+
+Regards,
+
+Hans
