@@ -1,20 +1,18 @@
-From: Sean Wang <sean.wang@mediatek.com>
-Subject: Re: [PATCH v2 1/2] ASoC: mt6797: switch to SPDX
-	license tag
-Date: Fri, 27 Apr 2018 17:28:15 +0800
-Message-ID: <1524821295.12322.210.camel@mtkswgap22>
-References: <20180427015445.4334-1-kaichieh.chuang@mediatek.com>
- <20180427015445.4334-2-kaichieh.chuang@mediatek.com>
- <b4b51172-0de3-b866-ecaa-310adc32ee98@gmail.com>
- <1524821008.12322.208.camel@mtkswgap22>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH 1/3] ASoC: tlv320dac33: Use gpio_is_valid()
+Date: Fri, 27 Apr 2018 12:33:29 +0300
+Message-ID: <c96ee82d-6b8f-2836-bbdc-57191f894056@ti.com>
+References: <cover.1524819051.git.arvind.yadav.cs@gmail.com>
+ <b61f3ee038bc0f577e60256c71a68bea783d0a13.1524819052.git.arvind.yadav.cs@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 33753267860
- for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 11:28:22 +0200 (CEST)
-In-Reply-To: <1524821008.12322.208.camel@mtkswgap22>
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id C14CB267860
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 11:33:01 +0200 (CEST)
+In-Reply-To: <b61f3ee038bc0f577e60256c71a68bea783d0a13.1524819052.git.arvind.yadav.cs@gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,108 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Brugger <matthias.bgg@gmail.com>
-Cc: alsa-devel@alsa-project.org, ryder.lee@mediatek.com, chipeng.chang@mediatek.com, wsd_upstream@mediatek.com, garlic.tseng@mediatek.com, broonie@kernel.org, linux-mediatek@lists.infradead.org, KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+To: Arvind Yadav <arvind.yadav.cs@gmail.com>, jikos@kernel.org, benjamin.tissoires@redhat.com, jkosina@suse.cz
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2018-04-27 at 17:23 +0800, Sean Wang wrote:
-> Ryder and Garlic are not actual authors.
-> 
-> There are totally copy-n-paste errors on Author fields when KaiChieh is
-> making the 1st version.
-> 
-> also can see
-> 
-> http://lists.infradead.org/pipermail/linux-mediatek/2018-April/013036.html
-> 
-> http://lists.infradead.org/pipermail/linux-mediatek/2018-April/013036.html
-> 
-
-Correct double link posted, they should be
-http://lists.infradead.org/pipermail/linux-mediatek/2018-April/013035.html
-http://lists.infradead.org/pipermail/linux-mediatek/2018-April/013036.html
-
-
-> 
-> On Fri, 2018-04-27 at 11:15 +0200, Matthias Brugger wrote:
-> > 
-> > On 04/27/2018 03:54 AM, KaiChieh Chuang wrote:
-> > > Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-> > > ---
-> > >  sound/soc/mediatek/mt6797/Makefile                 | 13 +------------
-> > >  sound/soc/mediatek/mt6797/mt6797-afe-clk.c         | 21 ++++++---------------
-> > >  sound/soc/mediatek/mt6797/mt6797-afe-clk.h         | 10 +---------
-> > >  sound/soc/mediatek/mt6797/mt6797-afe-common.h      | 10 +---------
-> > >  sound/soc/mediatek/mt6797/mt6797-afe-pcm.c         | 21 ++++++---------------
-> > >  sound/soc/mediatek/mt6797/mt6797-interconnection.h | 10 +---------
-> > >  sound/soc/mediatek/mt6797/mt6797-mt6351.c          | 21 ++++++---------------
-> > >  sound/soc/mediatek/mt6797/mt6797-reg.h             | 12 ++----------
-> > >  8 files changed, 24 insertions(+), 94 deletions(-)
-> > > 
-> > 
-> > [...]
-> > 
-> > > diff --git a/sound/soc/mediatek/mt6797/mt6797-mt6351.c b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
-> > > index d42a9d9fbf3e..9e5866d6819a 100644
-> > > --- a/sound/soc/mediatek/mt6797/mt6797-mt6351.c
-> > > +++ b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
-> > > @@ -1,18 +1,9 @@
-> > > -/*
-> > > - * mt6797-mt6351.c  --  MT6797 MT6351 ALSA SoC machine driver
-> > > - *
-> > > - * Copyright (c) 2018 MediaTek Inc.
-> > > - * Author: Ryder Lee <ryder.lee@mediatek.com>
-> > > - *
-> > > - * This program is free software; you can redistribute it and/or modify
-> > > - * it under the terms of the GNU General Public License version 2 and
-> > > - * only version 2 as published by the Free Software Foundation.
-> > > - *
-> > > - * This program is distributed in the hope that it will be useful,
-> > > - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > > - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > > - * GNU General Public License for more details.
-> > > - */
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +//
-> > > +// mt6797-mt6351.c  --  MT6797 MT6351 ALSA SoC machine driver
-> > > +//
-> > > +// Copyright (c) 2018 MediaTek Inc.
-> > > +// Author: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-> > 
-> > As we said in the last version, you should not delete Ryder from the author list.
-> > 
-> > >  
-> > >  #include <linux/module.h>
-> > >  #include <sound/soc.h>
-> > > diff --git a/sound/soc/mediatek/mt6797/mt6797-reg.h b/sound/soc/mediatek/mt6797/mt6797-reg.h
-> > > index 3330f73fc8bb..ffb55367f59f 100644
-> > > --- a/sound/soc/mediatek/mt6797/mt6797-reg.h
-> > > +++ b/sound/soc/mediatek/mt6797/mt6797-reg.h
-> > > @@ -1,17 +1,9 @@
-> > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > >  /*
-> > >   * mt6797-reg.h  --  Mediatek 6797 audio driver reg definition
-> > >   *
-> > >   * Copyright (c) 2018 MediaTek Inc.
-> > > - * Author: Garlic Tseng <garlic.tseng@mediatek.com>
-> > > - *
-> > > - * This program is free software; you can redistribute it and/or modify
-> > > - * it under the terms of the GNU General Public License version 2 and
-> > > - * only version 2 as published by the Free Software Foundation.
-> > > - *
-> > > - * This program is distributed in the hope that it will be useful,
-> > > - * but WITHOUT ANY WARRANTY; without even the implied warranty of
-> > > - * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> > > - * GNU General Public License for more details.
-> > > + * Author: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-> > 
-> > Same here, Garlic is an author as well, don't delete him from the comment.
-> > 
-> > Regards,
-> > Matthias
-> > 
-> > _______________________________________________
-> > Linux-mediatek mailing list
-> > Linux-mediatek@lists.infradead.org
-> > http://lists.infradead.org/mailman/listinfo/linux-mediatek
-> 
+CgpPbiAyMDE4LTA0LTI3IDExOjU2LCBBcnZpbmQgWWFkYXYgd3JvdGU6Cj4gUmVwbGFjZSB0aGUg
+bWFudWFsIHZhbGlkaXR5IGNoZWNrcyBmb3IgdGhlIEdQSU8gd2l0aCB0aGUKPiBncGlvX2lzX3Zh
+bGlkKCkuCgpBY2tlZC1ieTogUGV0ZXIgVWpmYWx1c2kgPHBldGVyLnVqZmFsdXNpQHRpLmNvbT4K
+Cj4gU2lnbmVkLW9mZi1ieTogQXJ2aW5kIFlhZGF2IDxhcnZpbmQueWFkYXYuY3NAZ21haWwuY29t
+Pgo+IC0tLQo+ICBzb3VuZC9zb2MvY29kZWNzL3RsdjMyMGRhYzMzLmMgfCAxMCArKysrKy0tLS0t
+Cj4gIDEgZmlsZSBjaGFuZ2VkLCA1IGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pCj4gCj4g
+ZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvdGx2MzIwZGFjMzMuYyBiL3NvdW5kL3NvYy9j
+b2RlY3MvdGx2MzIwZGFjMzMuYwo+IGluZGV4IGE5NTdlYWUuLmMyM2I5ZGIgMTAwNjQ0Cj4gLS0t
+IGEvc291bmQvc29jL2NvZGVjcy90bHYzMjBkYWMzMy5jCj4gKysrIGIvc291bmQvc29jL2NvZGVj
+cy90bHYzMjBkYWMzMy5jCj4gQEAgLTM5NywxMyArMzk3LDEzIEBAIHN0YXRpYyBpbnQgZGFjMzNf
+aGFyZF9wb3dlcihzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCwgaW50IHBvd2Vy
+KQo+ICAJCQkJZ290byBleGl0Owo+ICAJCX0KPiAgCj4gLQkJaWYgKGRhYzMzLT5wb3dlcl9ncGlv
+ID49IDApCj4gKwkJaWYgKGdwaW9faXNfdmFsaWQoZGFjMzMtPnBvd2VyX2dwaW8pKQo+ICAJCQln
+cGlvX3NldF92YWx1ZShkYWMzMy0+cG93ZXJfZ3BpbywgMSk7Cj4gIAo+ICAJCWRhYzMzLT5jaGlw
+X3Bvd2VyID0gMTsKPiAgCX0gZWxzZSB7Cj4gIAkJZGFjMzNfc29mdF9wb3dlcihjb21wb25lbnQs
+IDApOwo+IC0JCWlmIChkYWMzMy0+cG93ZXJfZ3BpbyA+PSAwKQo+ICsJCWlmIChncGlvX2lzX3Zh
+bGlkKGRhYzMzLT5wb3dlcl9ncGlvKSkKPiAgCQkJZ3Bpb19zZXRfdmFsdWUoZGFjMzMtPnBvd2Vy
+X2dwaW8sIDApOwo+ICAKPiAgCQlyZXQgPSByZWd1bGF0b3JfYnVsa19kaXNhYmxlKEFSUkFZX1NJ
+WkUoZGFjMzMtPnN1cHBsaWVzKSwKPiBAQCAtMTUxOSw3ICsxNTE5LDcgQEAgc3RhdGljIGludCBk
+YWMzM19pMmNfcHJvYmUoc3RydWN0IGkyY19jbGllbnQgKmNsaWVudCwKPiAgCWRhYzMzLT5maWZv
+X21vZGUgPSBEQUMzM19GSUZPX0JZUEFTUzsKPiAgCj4gIAkvKiBDaGVjayBpZiB0aGUgcmVzZXQg
+R1BJTyBudW1iZXIgaXMgdmFsaWQgYW5kIHJlcXVlc3QgaXQgKi8KPiAtCWlmIChkYWMzMy0+cG93
+ZXJfZ3BpbyA+PSAwKSB7Cj4gKwlpZiAoZ3Bpb19pc192YWxpZChkYWMzMy0+cG93ZXJfZ3Bpbykp
+IHsKPiAgCQlyZXQgPSBncGlvX3JlcXVlc3QoZGFjMzMtPnBvd2VyX2dwaW8sICJ0bHYzMjBkYWMz
+MyByZXNldCIpOwo+ICAJCWlmIChyZXQgPCAwKSB7Cj4gIAkJCWRldl9lcnIoJmNsaWVudC0+ZGV2
+LAo+IEBAIC0xNTQ4LDcgKzE1NDgsNyBAQCBzdGF0aWMgaW50IGRhYzMzX2kyY19wcm9iZShzdHJ1
+Y3QgaTJjX2NsaWVudCAqY2xpZW50LAo+ICAKPiAgCXJldHVybiByZXQ7Cj4gIGVycl9nZXQ6Cj4g
+LQlpZiAoZGFjMzMtPnBvd2VyX2dwaW8gPj0gMCkKPiArCWlmIChncGlvX2lzX3ZhbGlkKGRhYzMz
+LT5wb3dlcl9ncGlvKSkKPiAgCQlncGlvX2ZyZWUoZGFjMzMtPnBvd2VyX2dwaW8pOwo+ICBlcnJf
+Z3BpbzoKPiAgCXJldHVybiByZXQ7Cj4gQEAgLTE1NjEsNyArMTU2MSw3IEBAIHN0YXRpYyBpbnQg
+ZGFjMzNfaTJjX3JlbW92ZShzdHJ1Y3QgaTJjX2NsaWVudCAqY2xpZW50KQo+ICAJaWYgKHVubGlr
+ZWx5KGRhYzMzLT5jaGlwX3Bvd2VyKSkKPiAgCQlkYWMzM19oYXJkX3Bvd2VyKGRhYzMzLT5jb21w
+b25lbnQsIDApOwo+ICAKPiAtCWlmIChkYWMzMy0+cG93ZXJfZ3BpbyA+PSAwKQo+ICsJaWYgKGdw
+aW9faXNfdmFsaWQoZGFjMzMtPnBvd2VyX2dwaW8pKQo+ICAJCWdwaW9fZnJlZShkYWMzMy0+cG93
+ZXJfZ3Bpbyk7Cj4gIAo+ICAJcmV0dXJuIDA7Cj4gCgotIFDDqXRlcgoKVGV4YXMgSW5zdHJ1bWVu
+dHMgRmlubGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwgMDAxODAgSGVsc2lua2kuClktdHVubnVz
+L0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
