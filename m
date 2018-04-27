@@ -1,28 +1,18 @@
-From: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Subject: Applied "ASoC: mt6351 switch to SPDX license tag" to the asoc tree
-Date: Fri, 27 Apr 2018 11:53:31 +0100
-Message-ID: <E1fC10N-0003OC-SE@debutante>
-References: <20180427015445.4334-3-kaichieh.chuang@mediatek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <20180427015445.4334-3-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, ryder.lee-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, chipeng.chang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: uniphier: remove boilerplate from lisence comment" to the asoc tree
+Date: Fri, 27 Apr 2018 11:53:38 +0100
+Message-ID: <E1fC10U-0003Q0-5e@debutante>
+References: <20180427052734.3506-1-suzuki.katsuhiro@socionext.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180427052734.3506-1-suzuki.katsuhiro@socionext.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mt6351 switch to SPDX license tag
+   ASoC: uniphier: remove boilerplate from lisence comment
 
 has been applied to the asoc tree at
 
@@ -47,36 +37,193 @@ to this mail.
 Thanks,
 Mark
 
->From 3c76fbc316fb41ff731b91de3a1e860d92478eeb Mon Sep 17 00:00:00 2001
-From: Kai Chieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Date: Fri, 27 Apr 2018 09:54:45 +0800
-Subject: [PATCH] ASoC: mt6351 switch to SPDX license tag
+>From e19f77ee0e8ade56564dad07f904b75dd5c37e31 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Fri, 27 Apr 2018 14:27:34 +0900
+Subject: [PATCH] ASoC: uniphier: remove boilerplate from lisence comment
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Signed-off-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+This patch removes boilerplate of GPLv2, use only SPDX identifier as
+same as other recently ASoC DAI drivers.
+
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/mt6351.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+ sound/soc/uniphier/aio-compress.c | 13 -------------
+ sound/soc/uniphier/aio-core.c     | 13 -------------
+ sound/soc/uniphier/aio-cpu.c      | 13 -------------
+ sound/soc/uniphier/aio-dma.c      | 13 -------------
+ sound/soc/uniphier/aio-ld11.c     | 13 -------------
+ sound/soc/uniphier/aio-reg.h      | 13 -------------
+ sound/soc/uniphier/aio.h          | 13 -------------
+ 7 files changed, 91 deletions(-)
 
-diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
-index 06fd4706ae20..e739f078fec5 100644
---- a/sound/soc/codecs/mt6351.c
-+++ b/sound/soc/codecs/mt6351.c
-@@ -1,10 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
--/*
-- * mt6351.c  --  mt6351 ALSA SoC audio codec driver
-- *
-- * Copyright (c) 2018 MediaTek Inc.
-- * Author: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-- */
-+//
-+// mt6351.c  --  mt6351 ALSA SoC audio codec driver
-+//
-+// Copyright (c) 2018 MediaTek Inc.
-+// Author: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+diff --git a/sound/soc/uniphier/aio-compress.c b/sound/soc/uniphier/aio-compress.c
+index 4c1027aa615e..17f773ac5ca1 100644
+--- a/sound/soc/uniphier/aio-compress.c
++++ b/sound/soc/uniphier/aio-compress.c
+@@ -3,19 +3,6 @@
+ // Socionext UniPhier AIO Compress Audio driver.
+ //
+ // Copyright (c) 2017-2018 Socionext Inc.
+-//
+-// This program is free software; you can redistribute it and/or
+-// modify it under the terms of the GNU General Public License
+-// as published by the Free Software Foundation; version 2
+-// of the License.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program; if not, see <http://www.gnu.org/licenses/>.
+ 
+ #include <linux/bitfield.h>
+ #include <linux/circ_buf.h>
+diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
+index 6d50042a4571..e37b80921abb 100644
+--- a/sound/soc/uniphier/aio-core.c
++++ b/sound/soc/uniphier/aio-core.c
+@@ -3,19 +3,6 @@
+ // Socionext UniPhier AIO ALSA common driver.
+ //
+ // Copyright (c) 2016-2018 Socionext Inc.
+-//
+-// This program is free software; you can redistribute it and/or
+-// modify it under the terms of the GNU General Public License
+-// as published by the Free Software Foundation; version 2
+-// of the License.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program; if not, see <http://www.gnu.org/licenses/>.
+ 
+ #include <linux/bitfield.h>
+ #include <linux/errno.h>
+diff --git a/sound/soc/uniphier/aio-cpu.c b/sound/soc/uniphier/aio-cpu.c
+index 1e5eb8e6f8c7..00b6441bf195 100644
+--- a/sound/soc/uniphier/aio-cpu.c
++++ b/sound/soc/uniphier/aio-cpu.c
+@@ -3,19 +3,6 @@
+ // Socionext UniPhier AIO ALSA CPU DAI driver.
+ //
+ // Copyright (c) 2016-2018 Socionext Inc.
+-//
+-// This program is free software; you can redistribute it and/or
+-// modify it under the terms of the GNU General Public License
+-// as published by the Free Software Foundation; version 2
+-// of the License.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program; if not, see <http://www.gnu.org/licenses/>.
+ 
+ #include <linux/clk.h>
+ #include <linux/errno.h>
+diff --git a/sound/soc/uniphier/aio-dma.c b/sound/soc/uniphier/aio-dma.c
+index ef7bafa8e171..4ec6b65bfb44 100644
+--- a/sound/soc/uniphier/aio-dma.c
++++ b/sound/soc/uniphier/aio-dma.c
+@@ -3,19 +3,6 @@
+ // Socionext UniPhier AIO DMA driver.
+ //
+ // Copyright (c) 2016-2018 Socionext Inc.
+-//
+-// This program is free software; you can redistribute it and/or
+-// modify it under the terms of the GNU General Public License
+-// as published by the Free Software Foundation; version 2
+-// of the License.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program; if not, see <http://www.gnu.org/licenses/>.
  
  #include <linux/dma-mapping.h>
- #include <linux/platform_device.h>
+ #include <linux/errno.h>
+diff --git a/sound/soc/uniphier/aio-ld11.c b/sound/soc/uniphier/aio-ld11.c
+index 4c4dd3dd4dee..ab04d3331be9 100644
+--- a/sound/soc/uniphier/aio-ld11.c
++++ b/sound/soc/uniphier/aio-ld11.c
+@@ -3,19 +3,6 @@
+ // Socionext UniPhier AIO ALSA driver for LD11/LD20.
+ //
+ // Copyright (c) 2016-2018 Socionext Inc.
+-//
+-// This program is free software; you can redistribute it and/or
+-// modify it under the terms of the GNU General Public License
+-// as published by the Free Software Foundation; version 2
+-// of the License.
+-//
+-// This program is distributed in the hope that it will be useful,
+-// but WITHOUT ANY WARRANTY; without even the implied warranty of
+-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+-// GNU General Public License for more details.
+-//
+-// You should have received a copy of the GNU General Public License
+-// along with this program; if not, see <http://www.gnu.org/licenses/>.
+ 
+ #include <linux/module.h>
+ 
+diff --git a/sound/soc/uniphier/aio-reg.h b/sound/soc/uniphier/aio-reg.h
+index 136d3563cf44..511ea3c01847 100644
+--- a/sound/soc/uniphier/aio-reg.h
++++ b/sound/soc/uniphier/aio-reg.h
+@@ -3,19 +3,6 @@
+  * Socionext UniPhier AIO ALSA driver.
+  *
+  * Copyright (c) 2016-2018 Socionext Inc.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * as published by the Free Software Foundation; version 2
+- * of the License.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #ifndef SND_UNIPHIER_AIO_REG_H__
+diff --git a/sound/soc/uniphier/aio.h b/sound/soc/uniphier/aio.h
+index 8cab4a553a97..52670126084f 100644
+--- a/sound/soc/uniphier/aio.h
++++ b/sound/soc/uniphier/aio.h
+@@ -3,19 +3,6 @@
+  * Socionext UniPhier AIO ALSA driver.
+  *
+  * Copyright (c) 2016-2018 Socionext Inc.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License
+- * as published by the Free Software Foundation; version 2
+- * of the License.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
+- *
+- * You should have received a copy of the GNU General Public License
+- * along with this program; if not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #ifndef SND_UNIPHIER_AIO_H__
 -- 
 2.17.0
