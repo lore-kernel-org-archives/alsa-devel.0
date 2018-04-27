@@ -1,92 +1,54 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v6 04/24] ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
-Date: Fri, 27 Apr 2018 15:58:02 +0100
-Message-ID: <dd30b0ed-d958-9bf8-13cf-55d100b645ab@linaro.org>
-References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
- <20180426094606.4775-5-srinivas.kandagatla@linaro.org>
- <20180427141323.2ykh676xpdf7b6bl@rob-hp-laptop>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Fix incorrect usage of
+	IS_REACHABLE()
+Date: Fri, 27 Apr 2018 17:20:36 +0200
+Message-ID: <20180427152036.21265-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180427141323.2ykh676xpdf7b6bl@rob-hp-laptop>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79CC926728A
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 17:20:39 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id D6B95AE0F
+ for <alsa-devel@alsa-project.org>; Fri, 27 Apr 2018 15:20:38 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review.
+The commit c469652bb5e8 ("ALSA: hda - Use IS_REACHABLE() for
+dependency on input") simplified the dependencies with IS_REACHABLE()
+macro, but it broke due to its incorrect usage: it should have been
+IS_REACHABLE(CONFIG_INPUT) instead of IS_REACHABLE(INPUT).
 
-On 27/04/18 15:13, Rob Herring wrote:
-> On Thu, Apr 26, 2018 at 10:45:46AM +0100, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> This patch add DT bindings for AFE (Audio Frontend) DSP module.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
->> ---
->>   .../devicetree/bindings/sound/qcom,q6afe.txt       | 88 ++++++++++++++++++++++
->>   include/dt-bindings/sound/qcom,q6afe.h             | 31 ++++++++
->>   2 files changed, 119 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->>   create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->> new file mode 100644
->> index 000000000000..05208a63dd3c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->> @@ -0,0 +1,88 @@
->> +Qualcomm Audio Front End (Q6AFE) binding
->> +
->> +AFE is one of the APR audio service on Q6DSP
->> +Please refer to qcom,apr.txt for details of the common apr service bindings
->> +used by all apr services.
->> +
->> +- but must contain the following property:
->> +
->> +- compatible:
->> +	Usage: required
->> +	Value type: <stringlist>
->> +	Definition: must be "qcom,q6afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
->> +		  Or "qcom,q6afe" where the version number can be queried
->> +		  from DSP.
->> +		  example "qcom,q6afe"
-> 
-> reg too.
+Fixes: c469652bb5e8 ("ALSA: hda - Use IS_REACHABLE() for dependency on input")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I did not want to repeat what is already mandated for apr children in 
-qcom,apr.txt
-So skipped repeating reg property in here.
-
-> 
->> +
->> += AFE DAIs (Digial Audio Interface)
->> +"dais" subnode of the AFE node represents dai specific configuration
->> +
->> +- #sound-dai-cells
->> +	Usage: required
->> +	Value type: <u32>
->> +	Definition: Must be 1
->> +
->> +- reg
-> 
-> It's not clear here these are in a grandchild node.
-> 
-Every afe port/dai has some board specifics, to allow that we need dai 
-specific child nodes.
-
->> +	Usage: required
->> +	Value type: <u32>
->> +	Definition: Must be dai id
->> +
->> +- qcom,sd-lines
->> +	Usage: required for mi2s interface
->> +	Value type: <prop-encoded-array>
->> +	Definition: Must be list of serial data lines used by this dai.
->> +	should be one or more of the 1-4 sd lines.
-
-
---srini
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 8c238e51bb5a..2dd34dd77447 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3832,7 +3832,7 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
+ 	}
+ }
+ 
+-#if IS_REACHABLE(INPUT)
++#if IS_REACHABLE(CONFIG_INPUT)
+ static void gpio2_mic_hotkey_event(struct hda_codec *codec,
+ 				   struct hda_jack_callback *event)
+ {
+-- 
+2.16.3
