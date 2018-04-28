@@ -1,21 +1,14 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v6 02/24] soc: qcom: Add APR bus driver
-Date: Sat, 28 Apr 2018 12:12:51 +0100
-Message-ID: <a5304418-1ce3-32b2-577d-0aab9160b7b0@linaro.org>
-References: <20180426094606.4775-1-srinivas.kandagatla@linaro.org>
- <20180426094606.4775-3-srinivas.kandagatla@linaro.org>
- <20180428045155.GA491@tuxbook-pro>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 0/5] conf/ucm: chtrt5645: Various updates
+Date: Sat, 28 Apr 2018 21:51:55 +0200
+Message-ID: <20180428195200.11722-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 44CF32675CF
- for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 13:12:54 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id j5so7043400wme.5
- for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 04:12:54 -0700 (PDT)
-In-Reply-To: <20180428045155.GA491@tuxbook-pro>
-Content-Language: en-US
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5F60F266C1C
+ for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 21:52:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,304 +18,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Bjorn for the review comments.
+Hi All,
 
-On 28/04/18 05:51, Bjorn Andersson wrote:
-> On Thu 26 Apr 02:45 PDT 2018, Srinivas Kandagatla wrote:
->> diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
-> [..]
->> +int apr_send_pkt(struct apr_device *adev, void *buf)
-> 
-> Sorry, but I think we have discussed this before?
-> 
-Yes, I did mention that I would give it a try and see, This change was 
-pretty intrusive when I last looked at this.
+Here is a series of chtrt5645 UCM updates, the first 2 patches bring in
+some fixes for the generic config from: https://github.com/plbossart/UCM
 
-I agree with you on asymmetry! I will change this and add struc apr_pkt 
-which would apr_hdr followed by payload. This should also work for 
-callback as well.
+The 3th patch adds some analog mic input fixes, together these 3
+patches bring the generic chtrt5645 config in sync with the newer
+chtrt5645-mono-speaker-analog-mic config, but then for stereo speakers.
 
-> "buf" isn't some random buffer to be sent, it is a apr_hdr followed by
-> some data. As such I think you should make this type struct apr_hdr *,
-> or if you think that doesn't imply there's payload make a type apr_pkt
-> that has a payload[] at the end.
-> 
-> It will make it obvious for both future readers and the compiler what
-> kind of data we're passing here.
-> 
-> 
-> This comment also applies to functions calling functions that calls
-> apr_send_pkt() as they too lug around a void *.
-> 
->> +{
->> +	struct apr *apr = dev_get_drvdata(adev->dev.parent);
->> +	struct apr_hdr *hdr;
->> +	unsigned long flags;
->> +	int ret;
->> +
->> +	spin_lock_irqsave(&adev->lock, flags);
->> +
->> +	hdr = (struct apr_hdr *)buf;
->> +	hdr->src_domain = APR_DOMAIN_APPS;
->> +	hdr->src_svc = adev->svc_id;
->> +	hdr->dest_domain = adev->domain_id;
->> +	hdr->dest_svc = adev->svc_id;
->> +
->> +	ret = rpmsg_trysend(apr->ch, buf, hdr->pkt_size);
->> +	if (ret) {
->> +		dev_err(&adev->dev, "Unable to send APR pkt %d\n",
->> +			hdr->pkt_size);
-> 
-> Afaict all callers of this function will print an error message,
-> sometimes on more than one level in the stack. And if some code path
-> does retry sending you will get a printout for each attempt, even though
-> the caller is fine with it.
-> 
-> I would recommend unlocking the spinlock and then do:
+The 4th and the 5th patch add long-name using board/model specific
+configs for the Asus T100HA and Lenovo Miix 320, these use a digital
+mic connected to the DMIC1 resp. DMIC2. input.
 
-I can do that !!
+The generic chtrt5645 config has been tested on a Lenovo Miix 310 and a
+Kazam Vision tablet, both of which feature stereo speakers and an analog
+microphone.
 
-> 
-> 	return ret ? : hdr->pkt_size;
-> 
->> +	} else {
->> +		ret = hdr->pkt_size;
->> +	}
->> +
->> +	spin_unlock_irqrestore(&adev->lock, flags);
->> +
->> +	return ret;
->> +}
->> +EXPORT_SYMBOL_GPL(apr_send_pkt);
->> +
+The Asus T100HA and Lenovo Miix 320 configs have been tested on the
+resp. models they apply to.
 
->> +
->> +static int apr_callback(struct rpmsg_device *rpdev, void *buf,
->> +				  int len, void *priv, u32 addr)
->> +{
->> +	struct apr *apr = dev_get_drvdata(&rpdev->dev);
->> +	struct apr_client_message data;
->> +	struct apr_device *p, *c_svc = NULL;
->> +	struct apr_driver *adrv = NULL;
->> +	struct apr_hdr *hdr;
->> +	unsigned long flags;
->> +	uint16_t hdr_size;
->> +	uint16_t msg_type;
->> +	uint16_t ver;
->> +	uint16_t svc;
->> +
->> +	if (len <= APR_HDR_SIZE) {
->> +		dev_err(apr->dev, "APR: Improper apr pkt received:%p %d\n",
->> +			buf, len);
->> +		return -EINVAL;
->> +	}
->> +
->> +	hdr = buf;
->> +	ver = APR_HDR_FIELD_VER(hdr->hdr_field);
->> +	if (ver > APR_PKT_VER + 1)
->> +		return -EINVAL;
->> +
->> +	hdr_size = APR_HDR_FIELD_SIZE_BYTES(hdr->hdr_field);
->> +	if (hdr_size < APR_HDR_SIZE) {
->> +		dev_err(apr->dev, "APR: Wrong hdr size:%d\n", hdr_size);
->> +		return -EINVAL;
->> +	}
->> +
->> +	if (hdr->pkt_size < APR_HDR_SIZE) {
-> 
-> I think it would be nice to make sure that hdr->pkt_size is < len as
-> well, to reject messages that larger than the incoming buffer.
-> 
-> The pkt_size should be in the ballpark of len, could this check be
-> changed to hdr->pkt_size != len?
+Regards,
 
-Yep, It makes sense, I can add that check here.
-
-> 
->> +		dev_err(apr->dev, "APR: Wrong paket size\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	msg_type = APR_HDR_FIELD_MT(hdr->hdr_field);
->> +	if (msg_type >= APR_MSG_TYPE_MAX && msg_type != APR_BASIC_RSP_RESULT) {
->> +		dev_err(apr->dev, "APR: Wrong message type: %d\n", msg_type);
->> +		return -EINVAL;
->> +	}
->> +
->> +	if (hdr->src_domain >= APR_DOMAIN_MAX ||
->> +			hdr->dest_domain >= APR_DOMAIN_MAX ||
->> +			hdr->src_svc >= APR_SVC_MAX ||
->> +			hdr->dest_svc >= APR_SVC_MAX) {
->> +		dev_err(apr->dev, "APR: Wrong APR header\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	svc = hdr->dest_svc;
->> +	spin_lock_irqsave(&apr->svcs_lock, flags);
->> +	list_for_each_entry(p, &apr->svcs, node) {
-> 
-> Rather than doing a O(n) search for the svc with svc_id you could use a
-> idr or a radix_tree to keep the id -> svc mapping.
-
-Am not 100% sure idr is correct thing here, as the svc_ids are static 
-and the list we are talking here in worst case would be max of 13 
-entires, in audio case it is just 4 services.
-I think using radix_tree would be over do.
-
-> 
->> +		if (svc == p->svc_id) {
->> +			c_svc = p;
->> +			if (c_svc->dev.driver)
->> +				adrv = to_apr_driver(c_svc->dev.driver);
->> +			break;
->> +		}
->> +	}
->> +	spin_unlock_irqrestore(&apr->svcs_lock, flags);
->> +
->> +	if (!adrv) {
->> +		dev_err(apr->dev, "APR: service is not registered\n");
->> +		return -EINVAL;
->> +	}
->> +
->> +	data.payload_size = hdr->pkt_size - hdr_size;
->> +	data.opcode = hdr->opcode;
->> +	data.src_port = hdr->src_port;
->> +	data.dest_port = hdr->dest_port;
->> +	data.token = hdr->token;
->> +	data.msg_type = msg_type;
->> +
->> +	if (data.payload_size > 0)
->> +		data.payload = buf + hdr_size;
->> +
-> 
-> Making a verbatim copy of parts of the hdr and then passing that to the
-> APR devices creates an asymmetry in the send/callback API, without a
-> whole lot of benefits. I would prefer that you introduce the apr_pkt, as
-> described above, and once you have validated the size et al and found
-> the service you just pass it along.
-Okay, this would be a big rework, I will do it in next version.
-
-> 
->> +	adrv->callback(c_svc, &data);
->> +
->> +	return 0;
->> +}
-> [..]
->> +static int apr_uevent(struct device *dev, struct kobj_uevent_env *env)
->> +{
->> +	struct apr_device *adev = to_apr_device(dev);
->> +	int ret;
->> +
->> +	ret = of_device_uevent_modalias(dev, env);
->> +	if (ret != -ENODEV)
->> +		return ret;
->> +
->> +	return add_uevent_var(env, "MODALIAS= apr:%s", adev->name);
-> 
-> No space between '=' and "apr".
->
-Yep.
-
->> +}
->> +
->> +struct bus_type aprbus = {
->> +	.name		= "aprbus",
-> 
-> Most busses doesn't have "bus" in the name.
-> 
-Yep, just "apr" make sense.
-
->> +	.match		= apr_device_match,
->> +	.probe		= apr_device_probe,
->> +	.uevent		= apr_uevent,
->> +	.remove		= apr_device_remove,
->> +};
->> +EXPORT_SYMBOL_GPL(aprbus);
->> +
->> +static int apr_add_device(struct device *dev, struct device_node *np,
->> +			  const struct apr_device_id *id)
->> +{
->> +	struct apr *apr = dev_get_drvdata(dev);
->> +	struct apr_device *adev = NULL;
->> +
->> +	adev = kzalloc(sizeof(*adev), GFP_KERNEL);
->> +	if (!adev)
->> +		return -ENOMEM;
->> +
->> +	spin_lock_init(&adev->lock);
->> +
->> +	adev->svc_id = id->svc_id;
->> +	adev->domain_id = id->domain_id;
->> +	adev->version = id->svc_version;
->> +	if (np)
->> +		strncpy(adev->name, np->name, APR_NAME_SIZE);
->> +	else
->> +		strncpy(adev->name, id->name, APR_NAME_SIZE);
->> +
->> +	dev_set_name(&adev->dev, "aprsvc:%s:%x:%x", adev->name,
->> +		     id->domain_id, id->svc_id);
->> +
->> +	adev->dev.bus = &aprbus;
->> +	adev->dev.parent = dev;
->> +	adev->dev.of_node = np;
->> +	adev->dev.release = apr_dev_release;
->> +	adev->dev.driver = NULL;
->> +
->> +	spin_lock(&apr->svcs_lock);
->> +	list_add_tail(&adev->node, &apr->svcs);
->> +	spin_unlock(&apr->svcs_lock);
->> +
->> +	dev_info(dev, "Adding APR dev: %s\n", dev_name(&adev->dev));
->> +
->> +	return device_register(&adev->dev);
-> 
-> If this fails you must call put_device(&adev->dev);
-> 
-Agree!!
->> +}
->> +
->> +static void of_register_apr_devices(struct device *dev)
->> +{
->> +	struct apr *apr = dev_get_drvdata(dev);
->> +	struct device_node *node;
->> +
->> +	for_each_child_of_node(dev->of_node, node) {
->> +		struct apr_device_id id = { {0} };
->> +
->> +		if (of_property_read_u32(node, "reg", &id.svc_id))
->> +			continue;
->> +
->> +		id.domain_id = apr->dest_domain_id;
->> +
->> +		if (apr_add_device(dev, node, &id))
->> +			dev_err(dev, "Failed to add arp %d svc\n", id.svc_id);
->> +	}
->> +}
-> [..]
->> +
->> +static int __init apr_init(void)
->> +{
->> +	int ret;
->> +
->> +	ret = bus_register(&aprbus);
->> +	if (!ret)
->> +		ret = register_rpmsg_driver(&apr_driver);
-> 
-> bus_unregister() if ret here.
-> 
-Yep.
-
-Thanks,
-srini
->> +
->> +	return ret;
->> +}
->> +
-> 
-> Regards,
-> Bjorn
-> 
+Hans
