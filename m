@@ -1,58 +1,59 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 2/2] ASoC: rt5645: Add platform-data for Lenovo
-	Ideapad Mixx 320
-Date: Sat, 28 Apr 2018 22:25:03 +0200
-Message-ID: <20180428202503.18645-2-hdegoede@redhat.com>
-References: <20180428202503.18645-1-hdegoede@redhat.com>
+From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Subject: [PATCH 0/5] ASoC: cirrus: Series of fixes for ep93xx-i2s
+Date: Sat, 28 Apr 2018 22:51:37 +0200
+Message-ID: <20180428205142.31921-1-alexander.sverdlin@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 475CD2671EA
- for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 22:25:09 +0200 (CEST)
-In-Reply-To: <20180428202503.18645-1-hdegoede@redhat.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Ryan Mallon <rmallon@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Russell King <linux@armlinux.org.uk>, Jaroslav Kysela <perex@perex.cz>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The Lenovo Ideapad Mixx 320 has a digital mic connected to DMIC2
-add a DMI based quirk pointing to the intel_braswell_platform_data
-for devices with a mic on DMIC2.
+This series is a result of long-running debugging of rarely screwed I2S
+stream out of EP9302 chip. Logic analyser shows that the stream is shifted
+by one byte (out of 32 bits per sample) which leads to noise intead of
+original stream.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/codecs/rt5645.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+DMA is verified to work fine (no underrun). The issue is only reproducible
+under high load (CPU or AMBA bus -- not yet clear). This stream corruption
+happens at the same time I2S controller reports internal FIFO underrun
+(even though according to documentation, it should handle an underrun
+gracefully).
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 70f351c61d41..712384581ebf 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3749,6 +3749,15 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		},
- 		.driver_data = (void *)&lenovo_ideapad_miix_310_pdata,
- 	},
-+	{
-+		.ident = "Lenovo Ideapad Miix 320",
-+		.matches = {
-+		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "80XF"),
-+		  DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Lenovo MIIX 320-10ICR"),
-+		},
-+		.driver_data = (void *)&intel_braswell_platform_data,
-+	},
- 	{ }
- };
- 
+First two patches are fixing unrelated issues in I2S driver found during
+debugging of the stream shift. Third one is simplification of the driver
+to prepare for workaround.
+
+Both controller configuration options for TX FIFO underrun handling were
+tested, both do not work reliable. Hence, this ugly watchdog in the last
+patch.
+
+The whole series is tested on a board similar to EDB9302 (identical in
+sound part).
+
+Alexander Sverdlin (5):
+  ASoC: cirrus: i2s: Fix LRCLK configuration
+  ASoC: cirrus: i2s: Fix {TX|RX}LinCtrlData setup
+  ASoC: cirrus: i2s: Stop enabling I2S2 and I2S3 FIFOs
+  ARM: ep93xx: i2s: Add IRQ to platform device resources
+  ASoC: cirrus: i2s: IRQ-based stream watchdog
+
+ arch/arm/mach-ep93xx/core.c    |   1 +
+ sound/soc/cirrus/Kconfig       |  17 +++++++
+ sound/soc/cirrus/edb93xx.c     |   2 +-
+ sound/soc/cirrus/ep93xx-i2s.c  | 106 +++++++++++++++++++++++++++++++++--------
+ sound/soc/cirrus/snappercl15.c |   2 +-
+ 5 files changed, 106 insertions(+), 22 deletions(-)
+
 -- 
-2.17.0
+2.16.2
