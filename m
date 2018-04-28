@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 4/5] conf/ucm: chtrt5645: At config for the
-	Asus T100HA
-Date: Sat, 28 Apr 2018 21:51:59 +0200
-Message-ID: <20180428195200.11722-5-hdegoede@redhat.com>
+Subject: [PATCH 5/5] conf/ucm: chtrt5645: At config for the
+	Lenovo Ideapad Miix 320
+Date: Sat, 28 Apr 2018 21:52:00 +0200
+Message-ID: <20180428195200.11722-6-hdegoede@redhat.com>
 References: <20180428195200.11722-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 53146266C1C
- for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 21:52:07 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 34F262671EA
+ for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 21:52:08 +0200 (CEST)
 In-Reply-To: <20180428195200.11722-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,52 +25,42 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Asus T100HA uses a digital mic rather then an analog one, add
-long-name config specific for the T100HA, which is a copy of the standard
+The Lenovo Ideapad Miix 320 uses a digital mic connected to the DMIC2 input
+(unlike the Asus T100HA which has it connected to the DMIC1 input), add a
+long-name config specific for the Miix 320, which is a copy of the standard
 chtrt5645 config with the internal analog mic section replaced with one
-for the digital mic found on the Asus T100HA.
+for a digital mic connected to the DMIC2 input.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
  configure.ac                                  |   1 +
- ...USTeKCOMPUTERINC.-T100HAN-1.0-T100HAN.conf |   5 +
- .../HiFi.conf                                 | 348 ++++++++++++++++++
+ .../HiFi.conf                                 | 350 ++++++++++++++++++
+ ...-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf |   5 +
  .../Makefile.am                               |   4 +
  src/conf/ucm/Makefile.am                      |   1 +
- 5 files changed, 359 insertions(+)
- create mode 100644 src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN.conf
- create mode 100644 src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf
- create mode 100644 src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/Makefile.am
+ 5 files changed, 361 insertions(+)
+ create mode 100644 src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf
+ create mode 100644 src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+ create mode 100644 src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/Makefile.am
 
 diff --git a/configure.ac b/configure.ac
-index 5bc1994f..94baf055 100644
+index 94baf055..3ee989eb 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -717,6 +717,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/cards/Makefile \
- 	  src/conf/pcm/Makefile \
- 	  src/conf/ucm/Makefile \
-+	  src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/Makefile \
- 	  src/conf/ucm/broadwell-rt286/Makefile \
- 	  src/conf/ucm/broxton-rt298/Makefile \
- 	  src/conf/ucm/bytcr-rt5651/Makefile \
-diff --git a/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN.conf b/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN.conf
+@@ -729,6 +729,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/gpd-win-pocket-rt5645/Makefile \
+ 	  src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile \
+ 	  src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile \
++	  src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/Makefile \
+ 	  src/conf/ucm/PandaBoard/Makefile \
+ 	  src/conf/ucm/PandaBoardES/Makefile \
+ 	  src/conf/ucm/PAZ00/Makefile \
+diff --git a/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf b/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf
 new file mode 100644
-index 00000000..5afe5f0b
+index 00000000..8cc9c7f2
 --- /dev/null
-+++ b/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN.conf
-@@ -0,0 +1,5 @@
-+Comment "Intel SoC Audio Device"
-+SectionUseCase."HiFi" {
-+	File "../ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf"
-+	Comment "Default"
-+}
-diff --git a/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf b/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf
-new file mode 100644
-index 00000000..78bf9823
---- /dev/null
-+++ b/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/HiFi.conf
-@@ -0,0 +1,348 @@
++++ b/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf
+@@ -0,0 +1,350 @@
 +SectionVerb {
 +	# ALSA PCM
 +	Value {
@@ -350,8 +340,10 @@ index 00000000..78bf9823
 +
 +		cset "name='Int Mic Switch' on"
 +
-+		cset "name='Stereo1 DMIC Mux' DMIC1"
++		cset "name='Stereo1 DMIC Mux' DMIC2"
 +		cset "name='Stereo1 ADC2 Mux' DMIC"
++		cset "name='Mono DMIC L Mux' DMIC2"
++		cset "name='Mono DMIC R Mux' DMIC2"
 +		cset "name='Mono ADC L2 Mux' DMIC"
 +		cset "name='Mono ADC R2 Mux' DMIC"
 +
@@ -419,25 +411,38 @@ index 00000000..78bf9823
 +
 +	]
 +}
-diff --git a/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/Makefile.am b/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/Makefile.am
+diff --git a/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf b/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
 new file mode 100644
-index 00000000..dd8b372a
+index 00000000..50bda000
 --- /dev/null
-+++ b/src/conf/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN/Makefile.am
++++ b/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf
+@@ -0,0 +1,5 @@
++Comment "Intel SoC Audio Device"
++SectionUseCase."HiFi" {
++	File "../LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/HiFi.conf"
++	Comment "Default"
++}
+diff --git a/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/Makefile.am b/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/Makefile.am
+new file mode 100644
+index 00000000..18963c21
+--- /dev/null
++++ b/src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/Makefile.am
 @@ -0,0 +1,4 @@
 +alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN
-+ucm_DATA = ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN.conf HiFi.conf
++ucmdir = $(alsaconfigdir)/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216
++ucm_DATA = LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216.conf HiFi.conf
 +EXTRA_DIST = $(ucm_DATA)
 diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index 3b4f13a8..e496ca89 100644
+index e496ca89..02df25f0 100644
 --- a/src/conf/ucm/Makefile.am
 +++ b/src/conf/ucm/Makefile.am
-@@ -1,4 +1,5 @@
- SUBDIRS=\
-+ASUSTeKCOMPUTERINC.-T100HAN-1.0-T100HAN \
- broadwell-rt286 \
- broxton-rt298 \
- bytcr-rt5651 \
+@@ -11,6 +11,7 @@ GoogleNyan \
+ gpd-win-pocket-rt5645 \
+ HDAudio-Gigabyte-ALC1220DualCodecs \
+ HDAudio-Lenovo-DualCodecs \
++LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216 \
+ PandaBoard \
+ PandaBoardES \
+ PAZ00 \
 -- 
 2.17.0
