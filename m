@@ -1,11 +1,11 @@
 From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Subject: [PATCH 1/5] ASoC: cirrus: i2s: Fix LRCLK configuration
-Date: Sat, 28 Apr 2018 22:51:38 +0200
-Message-ID: <20180428205142.31921-2-alexander.sverdlin@gmail.com>
+Subject: [PATCH 2/5] ASoC: cirrus: i2s: Fix {TX|RX}LinCtrlData setup
+Date: Sat, 28 Apr 2018 22:51:39 +0200
+Message-ID: <20180428205142.31921-3-alexander.sverdlin@gmail.com>
 References: <20180428205142.31921-1-alexander.sverdlin@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <20180428205142.31921-1-alexander.sverdlin@gmail.com>
 List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
@@ -21,78 +21,54 @@ To: alsa-devel@alsa-project.org
 Cc: Ryan Mallon <rmallon@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The bit responsible for LRCLK polarity is i2s_tlrs (0), not i2s_trel (2)
-(refer to "EP93xx User's Guide").
-
-Previously card drivers which specified SND_SOC_DAIFMT_NB_IF actually got
-SND_SOC_DAIFMT_NB_NF, an adaptation is necessary to retain the old
-behavior.
-
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
----
- sound/soc/cirrus/edb93xx.c     | 2 +-
- sound/soc/cirrus/ep93xx-i2s.c  | 8 ++++----
- sound/soc/cirrus/snappercl15.c | 2 +-
- 3 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
-index c53bd6f2c2d7..3d011abaa266 100644
---- a/sound/soc/cirrus/edb93xx.c
-+++ b/sound/soc/cirrus/edb93xx.c
-@@ -67,7 +67,7 @@ static struct snd_soc_dai_link edb93xx_dai = {
- 	.cpu_dai_name	= "ep93xx-i2s",
- 	.codec_name	= "spi0.0",
- 	.codec_dai_name	= "cs4271-hifi",
--	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
-+	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			  SND_SOC_DAIFMT_CBS_CFS,
- 	.ops		= &edb93xx_ops,
- };
-diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-index 934f8aefdd90..38c240c97041 100644
---- a/sound/soc/cirrus/ep93xx-i2s.c
-+++ b/sound/soc/cirrus/ep93xx-i2s.c
-@@ -213,24 +213,24 @@ static int ep93xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
- 	case SND_SOC_DAIFMT_NB_NF:
- 		/* Negative bit clock, lrclk low on left word */
--		clk_cfg &= ~(EP93XX_I2S_CLKCFG_CKP | EP93XX_I2S_CLKCFG_REL);
-+		clk_cfg &= ~(EP93XX_I2S_CLKCFG_CKP | EP93XX_I2S_CLKCFG_LRS);
- 		break;
- 
- 	case SND_SOC_DAIFMT_NB_IF:
- 		/* Negative bit clock, lrclk low on right word */
- 		clk_cfg &= ~EP93XX_I2S_CLKCFG_CKP;
--		clk_cfg |= EP93XX_I2S_CLKCFG_REL;
-+		clk_cfg |= EP93XX_I2S_CLKCFG_LRS;
- 		break;
- 
- 	case SND_SOC_DAIFMT_IB_NF:
- 		/* Positive bit clock, lrclk low on left word */
- 		clk_cfg |= EP93XX_I2S_CLKCFG_CKP;
--		clk_cfg &= ~EP93XX_I2S_CLKCFG_REL;
-+		clk_cfg &= ~EP93XX_I2S_CLKCFG_LRS;
- 		break;
- 
- 	case SND_SOC_DAIFMT_IB_IF:
- 		/* Positive bit clock, lrclk low on right word */
--		clk_cfg |= EP93XX_I2S_CLKCFG_CKP | EP93XX_I2S_CLKCFG_REL;
-+		clk_cfg |= EP93XX_I2S_CLKCFG_CKP | EP93XX_I2S_CLKCFG_LRS;
- 		break;
- 	}
- 
-diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
-index 2334ec19e7eb..11ff7b2672b2 100644
---- a/sound/soc/cirrus/snappercl15.c
-+++ b/sound/soc/cirrus/snappercl15.c
-@@ -72,7 +72,7 @@ static struct snd_soc_dai_link snappercl15_dai = {
- 	.codec_dai_name	= "tlv320aic23-hifi",
- 	.codec_name	= "tlv320aic23-codec.0-001a",
- 	.platform_name	= "ep93xx-i2s",
--	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
-+	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
- 			  SND_SOC_DAIFMT_CBS_CFS,
- 	.ops		= &snappercl15_ops,
- };
--- 
-2.16.2
+QWNjb3JkaW5nIHRvICJFUDkzeHggVXNlcuKAmXMgR3VpZGUiLCBJMlNUWExpbkN0cmxEYXRhIGFu
+ZCBJMlNSWExpbkN0cmxEYXRhCnJlZ2lzdGVycyBhY3R1YWxseSBoYXZlIGRpZmZlcmVudCBmb3Jt
+YXQuIFRoZSBvbmx5IGN1cnJlbnRseSB1c2VkIGJpdAooTGVmdF9SaWdodF9KdXN0aWZ5KSBoYXMg
+ZGlmZmVyZW50IHBvc2l0aW9uLiBGaXggdGhpcyBhbmQgc2ltcGxpZnkgdGhlCndob2xlIHNldHVw
+IHRha2luZyBpbnRvIGFjY291bnQgdGhlIGZhY3QgdGhhdCBib3RoIHJlZ2lzdGVycyBoYXZlIHpl
+cm8KZGVmYXVsdCB2YWx1ZS4KClRoZSBwcmFjdGljYWwgZWZmZWN0IG9mIHRoZSBhYm92ZSBpcyBy
+ZXBhaXJlZCBTTkRfU09DX0RBSUZNVF9SSUdIVF9KCnN1cHBvcnQgKGN1cnJlbnRseSB1bnVzZWQp
+LgoKU2lnbmVkLW9mZi1ieTogQWxleGFuZGVyIFN2ZXJkbGluIDxhbGV4YW5kZXIuc3ZlcmRsaW5A
+Z21haWwuY29tPgotLS0KIHNvdW5kL3NvYy9jaXJydXMvZXA5M3h4LWkycy5jIHwgMTggKysrKysr
+KysrKy0tLS0tLS0tCiAxIGZpbGUgY2hhbmdlZCwgMTAgaW5zZXJ0aW9ucygrKSwgOCBkZWxldGlv
+bnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY2lycnVzL2VwOTN4eC1pMnMuYyBiL3NvdW5k
+L3NvYy9jaXJydXMvZXA5M3h4LWkycy5jCmluZGV4IDM4YzI0MGM5NzA0MS4uMGRjMzg1MmM0NjIx
+IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvY2lycnVzL2VwOTN4eC1pMnMuYworKysgYi9zb3VuZC9z
+b2MvY2lycnVzL2VwOTN4eC1pMnMuYwpAQCAtNTEsNyArNTEsOSBAQAogI2RlZmluZSBFUDkzWFhf
+STJTX1dSRExFTl8yNAkJKDEgPDwgMCkKICNkZWZpbmUgRVA5M1hYX0kyU19XUkRMRU5fMzIJCSgy
+IDw8IDApCiAKLSNkZWZpbmUgRVA5M1hYX0kyU19MSU5DVFJMREFUQV9SX0pVU1QJKDEgPDwgMikg
+LyogUmlnaHQganVzdGlmeSAqLworI2RlZmluZSBFUDkzWFhfSTJTX1JYTElOQ1RSTERBVEFfUl9K
+VVNUCUJJVCgxKSAvKiBSaWdodCBqdXN0aWZ5ICovCisKKyNkZWZpbmUgRVA5M1hYX0kyU19UWExJ
+TkNUUkxEQVRBX1JfSlVTVAlCSVQoMikgLyogUmlnaHQganVzdGlmeSAqLwogCiAjZGVmaW5lIEVQ
+OTNYWF9JMlNfQ0xLQ0ZHX0xSUwkJKDEgPDwgMCkgLyogbHJjbGsgcG9sYXJpdHkgKi8KICNkZWZp
+bmUgRVA5M1hYX0kyU19DTEtDRkdfQ0tQCQkoMSA8PCAxKSAvKiBCaXQgY2xvY2sgcG9sYXJpdHkg
+Ki8KQEAgLTE3MCwyNSArMTcyLDI1IEBAIHN0YXRpYyBpbnQgZXA5M3h4X2kyc19zZXRfZGFpX2Zt
+dChzdHJ1Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWksCiAJCQkJICB1bnNpZ25lZCBpbnQgZm10KQog
+ewogCXN0cnVjdCBlcDkzeHhfaTJzX2luZm8gKmluZm8gPSBzbmRfc29jX2RhaV9nZXRfZHJ2ZGF0
+YShjcHVfZGFpKTsKLQl1bnNpZ25lZCBpbnQgY2xrX2NmZywgbGluX2N0cmw7CisJdW5zaWduZWQg
+aW50IGNsa19jZmc7CisJdW5zaWduZWQgaW50IHR4bGluX2N0cmwgPSAwOworCXVuc2lnbmVkIGlu
+dCByeGxpbl9jdHJsID0gMDsKIAogCWNsa19jZmcgID0gZXA5M3h4X2kyc19yZWFkX3JlZyhpbmZv
+LCBFUDkzWFhfSTJTX1JYQ0xLQ0ZHKTsKLQlsaW5fY3RybCA9IGVwOTN4eF9pMnNfcmVhZF9yZWco
+aW5mbywgRVA5M1hYX0kyU19SWExJTkNUUkxEQVRBKTsKIAogCXN3aXRjaCAoZm10ICYgU05EX1NP
+Q19EQUlGTVRfRk9STUFUX01BU0spIHsKIAljYXNlIFNORF9TT0NfREFJRk1UX0kyUzoKIAkJY2xr
+X2NmZyB8PSBFUDkzWFhfSTJTX0NMS0NGR19SRUw7Ci0JCWxpbl9jdHJsICY9IH5FUDkzWFhfSTJT
+X0xJTkNUUkxEQVRBX1JfSlVTVDsKIAkJYnJlYWs7CiAKIAljYXNlIFNORF9TT0NfREFJRk1UX0xF
+RlRfSjoKIAkJY2xrX2NmZyAmPSB+RVA5M1hYX0kyU19DTEtDRkdfUkVMOwotCQlsaW5fY3RybCAm
+PSB+RVA5M1hYX0kyU19MSU5DVFJMREFUQV9SX0pVU1Q7CiAJCWJyZWFrOwogCiAJY2FzZSBTTkRf
+U09DX0RBSUZNVF9SSUdIVF9KOgogCQljbGtfY2ZnICY9IH5FUDkzWFhfSTJTX0NMS0NGR19SRUw7
+Ci0JCWxpbl9jdHJsIHw9IEVQOTNYWF9JMlNfTElOQ1RSTERBVEFfUl9KVVNUOworCQlyeGxpbl9j
+dHJsIHw9IEVQOTNYWF9JMlNfUlhMSU5DVFJMREFUQV9SX0pVU1Q7CisJCXR4bGluX2N0cmwgfD0g
+RVA5M1hYX0kyU19UWExJTkNUUkxEQVRBX1JfSlVTVDsKIAkJYnJlYWs7CiAKIAlkZWZhdWx0OgpA
+QCAtMjM3LDggKzIzOSw4IEBAIHN0YXRpYyBpbnQgZXA5M3h4X2kyc19zZXRfZGFpX2ZtdChzdHJ1
+Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWksCiAJLyogV3JpdGUgbmV3IHJlZ2lzdGVyIHZhbHVlcyAq
+LwogCWVwOTN4eF9pMnNfd3JpdGVfcmVnKGluZm8sIEVQOTNYWF9JMlNfUlhDTEtDRkcsIGNsa19j
+ZmcpOwogCWVwOTN4eF9pMnNfd3JpdGVfcmVnKGluZm8sIEVQOTNYWF9JMlNfVFhDTEtDRkcsIGNs
+a19jZmcpOwotCWVwOTN4eF9pMnNfd3JpdGVfcmVnKGluZm8sIEVQOTNYWF9JMlNfUlhMSU5DVFJM
+REFUQSwgbGluX2N0cmwpOwotCWVwOTN4eF9pMnNfd3JpdGVfcmVnKGluZm8sIEVQOTNYWF9JMlNf
+VFhMSU5DVFJMREFUQSwgbGluX2N0cmwpOworCWVwOTN4eF9pMnNfd3JpdGVfcmVnKGluZm8sIEVQ
+OTNYWF9JMlNfUlhMSU5DVFJMREFUQSwgcnhsaW5fY3RybCk7CisJZXA5M3h4X2kyc193cml0ZV9y
+ZWcoaW5mbywgRVA5M1hYX0kyU19UWExJTkNUUkxEQVRBLCB0eGxpbl9jdHJsKTsKIAlyZXR1cm4g
+MDsKIH0KIAotLSAKMi4xNi4yCgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX18KbGludXgtYXJtLWtlcm5lbCBtYWlsaW5nIGxpc3QKbGludXgtYXJtLWtlcm5l
+bEBsaXN0cy5pbmZyYWRlYWQub3JnCmh0dHA6Ly9saXN0cy5pbmZyYWRlYWQub3JnL21haWxtYW4v
+bGlzdGluZm8vbGludXgtYXJtLWtlcm5lbAo=
