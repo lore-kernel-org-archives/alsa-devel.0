@@ -1,18 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 11/13] ALSA: dice: use stream formats to add
-	MIDI substreams
-Date: Sun, 29 Apr 2018 15:50:30 +0900
-Message-ID: <20180429065032.13869-12-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 12/13] ALSA: dice: use cache for PCM
+	constraints and rules
+Date: Sun, 29 Apr 2018 15:50:31 +0900
+Message-ID: <20180429065032.13869-13-o-takashi@sakamocchi.jp>
 References: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 010AE267621
- for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:24 +0200 (CEST)
-Received: by mail-pg0-f67.google.com with SMTP id i194-v6so4313852pgd.0
- for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:24 -0700 (PDT)
+Received: from mail-pf0-f195.google.com (mail-pf0-f195.google.com
+ [209.85.192.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1943326764A
+ for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:26 +0200 (CEST)
+Received: by mail-pf0-f195.google.com with SMTP id f189so4446074pfa.7
+ for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:26 -0700 (PDT)
 In-Reply-To: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,54 +29,309 @@ Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 In former commits, proxy structure gets members for cache of stream
-formats. The cache can be used to count the number of MIDI substreams
-to add.
+formats. The cache allows to apply correct constraints and rules to
+runtime of PCM substream. They allows userspace applications to change
+current sampling transmission frequency.
 
-This commit uses the cache for this purpose.
+This commit uses the cacher for the PCM constraints and rules.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-midi.c | 23 +++++++----------------
- 1 file changed, 7 insertions(+), 16 deletions(-)
+ sound/firewire/dice/dice-pcm.c | 224 ++++++++++++++++++++++++++++++-----------
+ 1 file changed, 167 insertions(+), 57 deletions(-)
 
-diff --git a/sound/firewire/dice/dice-midi.c b/sound/firewire/dice/dice-midi.c
-index 8ff6da3c51f7..84eca8a51a02 100644
---- a/sound/firewire/dice/dice-midi.c
-+++ b/sound/firewire/dice/dice-midi.c
-@@ -101,27 +101,18 @@ int snd_dice_create_midi(struct snd_dice *dice)
- 		.close		= midi_close,
- 		.trigger	= midi_playback_trigger,
- 	};
+diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
+index 7cb9e9713ac3..d0c323e16a39 100644
+--- a/sound/firewire/dice/dice-pcm.c
++++ b/sound/firewire/dice/dice-pcm.c
+@@ -9,43 +9,112 @@
+ 
+ #include "dice.h"
+ 
++static int dice_rate_constraint(struct snd_pcm_hw_params *params,
++				struct snd_pcm_hw_rule *rule)
++{
++	struct snd_pcm_substream *substream = rule->private;
++	struct snd_dice *dice = substream->private_data;
++	unsigned int index = substream->pcm->device;
++
++	const struct snd_interval *c =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval *r =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval rates = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int *pcm_channels;
++	unsigned int i, rate, mode;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		pcm_channels = dice->tx_pcm_chs[index];
++	else
++		pcm_channels = dice->rx_pcm_chs[index];
++
++	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
++		rate = snd_dice_rates[i];
++		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
++			continue;
++
++		if (!snd_interval_test(c, pcm_channels[mode]))
++			continue;
++
++		rates.min = min(rates.min, rate);
++		rates.max = max(rates.max, rate);
++	}
++
++	return snd_interval_refine(r, &rates);
++}
++
++static int dice_channels_constraint(struct snd_pcm_hw_params *params,
++				    struct snd_pcm_hw_rule *rule)
++{
++	struct snd_pcm_substream *substream = rule->private;
++	struct snd_dice *dice = substream->private_data;
++	unsigned int index = substream->pcm->device;
++
++	const struct snd_interval *r =
++		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *c =
++		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_interval channels = {
++		.min = UINT_MAX, .max = 0, .integer = 1
++	};
++	unsigned int *pcm_channels;
++	unsigned int i, rate, mode;
++
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		pcm_channels = dice->tx_pcm_chs[index];
++	else
++		pcm_channels = dice->rx_pcm_chs[index];
++
++	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
++		rate = snd_dice_rates[i];
++		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
++			continue;
++
++		if (!snd_interval_test(r, rate))
++			continue;
++
++		channels.min = min(channels.min, pcm_channels[mode]);
++		channels.max = max(channels.max, pcm_channels[mode]);
++	}
++
++	return snd_interval_refine(c, &channels);
++}
++
+ static int limit_channels_and_rates(struct snd_dice *dice,
+ 				    struct snd_pcm_runtime *runtime,
+ 				    enum amdtp_stream_direction dir,
+-				    unsigned int index, unsigned int size)
++				    unsigned int index)
+ {
+ 	struct snd_pcm_hardware *hw = &runtime->hw;
+-	struct amdtp_stream *stream;
+-	unsigned int rate;
 -	__be32 reg;
- 	struct snd_rawmidi *rmidi;
- 	struct snd_rawmidi_str *str;
- 	unsigned int midi_in_ports, midi_out_ports;
-+	int i;
+-	int err;
+-
+-	/*
+-	 * Retrieve current Multi Bit Linear Audio data channel and limit to
+-	 * it.
+-	 */
+-	if (dir == AMDTP_IN_STREAM) {
+-		stream = &dice->tx_stream[index];
+-		err = snd_dice_transaction_read_tx(dice,
+-				size * index + TX_NUMBER_AUDIO,
+-				&reg, sizeof(reg));
+-	} else {
+-		stream = &dice->rx_stream[index];
+-		err = snd_dice_transaction_read_rx(dice,
+-				size * index + RX_NUMBER_AUDIO,
+-				&reg, sizeof(reg));
++	unsigned int *pcm_channels;
++	unsigned int i;
++
++	if (dir == AMDTP_IN_STREAM)
++		pcm_channels = dice->tx_pcm_chs[index];
++	else
++		pcm_channels = dice->rx_pcm_chs[index];
++
++	hw->channels_min = UINT_MAX;
++	hw->channels_max = 0;
++
++	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
++		unsigned int rate, mode, channels;
++
++		rate = snd_dice_rates[i];
++		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
++			continue;
++		hw->rates |= snd_pcm_rate_to_rate_bit(rate);
++
++		channels = pcm_channels[mode];
++		if (channels == 0)
++			continue;
++		hw->channels_min = min(hw->channels_min, channels);
++		hw->channels_max = max(hw->channels_max, channels);
+ 	}
+-	if (err < 0)
+-		return err;
+-
+-	hw->channels_min = hw->channels_max = be32_to_cpu(reg);
+-
+-	/* Retrieve current sampling transfer frequency and limit to it. */
+-	err = snd_dice_transaction_get_rate(dice, &rate);
+-	if (err < 0)
+-		return err;
+ 
+-	hw->rates = snd_pcm_rate_to_rate_bit(rate);
+ 	snd_pcm_limit_hw_rates(runtime);
+ 
+ 	return 0;
+@@ -56,36 +125,34 @@ static int init_hw_info(struct snd_dice *dice,
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_pcm_hardware *hw = &runtime->hw;
++	unsigned int index = substream->pcm->device;
+ 	enum amdtp_stream_direction dir;
+ 	struct amdtp_stream *stream;
+-	__be32 reg[2];
+-	unsigned int count, size;
  	int err;
  
--	/*
--	 * Use the number of MIDI conformant data channel at current sampling
--	 * transfer frequency.
--	 */
--	err = snd_dice_transaction_read_tx(dice, TX_NUMBER_MIDI,
--					   &reg, sizeof(reg));
--	if (err < 0)
--		return err;
--	midi_in_ports = be32_to_cpu(reg);
--
--	err = snd_dice_transaction_read_rx(dice, RX_NUMBER_MIDI,
--					   &reg, sizeof(reg));
--	if (err < 0)
--		return err;
--	midi_out_ports = be32_to_cpu(reg);
-+	midi_in_ports = 0;
-+	midi_out_ports = 0;
-+	for (i = 0; i < MAX_STREAMS; ++i) {
-+		midi_in_ports = max(midi_in_ports, dice->tx_midi_ports[i]);
-+		midi_out_ports = max(midi_out_ports, dice->rx_midi_ports[i]);
-+	}
+ 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
+ 		hw->formats = AM824_IN_PCM_FORMAT_BITS;
+ 		dir = AMDTP_IN_STREAM;
+-		stream = &dice->tx_stream[substream->pcm->device];
+-		err = snd_dice_transaction_read_tx(dice, TX_NUMBER, reg,
+-						   sizeof(reg));
++		stream = &dice->tx_stream[index];
+ 	} else {
+ 		hw->formats = AM824_OUT_PCM_FORMAT_BITS;
+ 		dir = AMDTP_OUT_STREAM;
+-		stream = &dice->rx_stream[substream->pcm->device];
+-		err = snd_dice_transaction_read_rx(dice, RX_NUMBER, reg,
+-						   sizeof(reg));
++		stream = &dice->rx_stream[index];
+ 	}
  
- 	if (midi_in_ports + midi_out_ports == 0)
- 		return 0;
++	err = limit_channels_and_rates(dice, substream->runtime, dir,
++				       index);
+ 	if (err < 0)
+ 		return err;
+ 
+-	count = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
+-	if (substream->pcm->device >= count)
+-		return -ENXIO;
+-
+-	size = be32_to_cpu(reg[1]) * 4;
+-	err = limit_channels_and_rates(dice, substream->runtime, dir,
+-				       substream->pcm->device, size);
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
++				  dice_rate_constraint, substream,
++				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
++	if (err < 0)
++		return err;
++	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++				  dice_channels_constraint, substream,
++				  SNDRV_PCM_HW_PARAM_RATE, -1);
+ 	if (err < 0)
+ 		return err;
+ 
+@@ -95,6 +162,8 @@ static int init_hw_info(struct snd_dice *dice,
+ static int pcm_open(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_dice *dice = substream->private_data;
++	unsigned int source;
++	bool internal;
+ 	int err;
+ 
+ 	err = snd_dice_stream_lock_try(dice);
+@@ -105,6 +174,43 @@ static int pcm_open(struct snd_pcm_substream *substream)
+ 	if (err < 0)
+ 		goto err_locked;
+ 
++	err = snd_dice_transaction_get_clock_source(dice, &source);
++	if (err < 0)
++		goto err_locked;
++	switch (source) {
++	case CLOCK_SOURCE_AES1:
++	case CLOCK_SOURCE_AES2:
++	case CLOCK_SOURCE_AES3:
++	case CLOCK_SOURCE_AES4:
++	case CLOCK_SOURCE_AES_ANY:
++	case CLOCK_SOURCE_ADAT:
++	case CLOCK_SOURCE_TDIF:
++	case CLOCK_SOURCE_WC:
++		internal = false;
++		break;
++	default:
++		internal = true;
++		break;
++	}
++
++	/*
++	 * When source of clock is not internal or any PCM streams are running,
++	 * available sampling rate is limited at current sampling rate.
++	 */
++	if (!internal ||
++	    amdtp_stream_pcm_running(&dice->tx_stream[0]) ||
++	    amdtp_stream_pcm_running(&dice->tx_stream[1]) ||
++	    amdtp_stream_pcm_running(&dice->rx_stream[0]) ||
++	    amdtp_stream_pcm_running(&dice->rx_stream[1])) {
++		unsigned int rate;
++
++		err = snd_dice_transaction_get_rate(dice, &rate);
++		if (err < 0)
++			goto err_locked;
++		substream->runtime->hw.rate_min = rate;
++		substream->runtime->hw.rate_max = rate;
++	}
++
+ 	snd_pcm_set_sync(substream);
+ end:
+ 	return err;
+@@ -318,7 +424,6 @@ int snd_dice_create_pcm(struct snd_dice *dice)
+ 		.page      = snd_pcm_lib_get_vmalloc_page,
+ 		.mmap      = snd_pcm_lib_mmap_vmalloc,
+ 	};
+-	__be32 reg;
+ 	struct snd_pcm *pcm;
+ 	unsigned int i, max_capture, max_playback, capture, playback;
+ 	int err;
+@@ -327,18 +432,23 @@ int snd_dice_create_pcm(struct snd_dice *dice)
+ 	if (dice->force_two_pcms) {
+ 		max_capture = max_playback = 2;
+ 	} else {
++		int j;
+ 		max_capture = max_playback = 0;
+-		err = snd_dice_transaction_read_tx(dice, TX_NUMBER, &reg,
+-						   sizeof(reg));
+-		if (err < 0)
+-			return err;
+-		max_capture = min_t(unsigned int, be32_to_cpu(reg), MAX_STREAMS);
+-
+-		err = snd_dice_transaction_read_rx(dice, RX_NUMBER, &reg,
+-						   sizeof(reg));
+-		if (err < 0)
+-			return err;
+-		max_playback = min_t(unsigned int, be32_to_cpu(reg), MAX_STREAMS);
++		for (i = 0; i < MAX_STREAMS; ++i) {
++			for (j = 0; j < 3; ++j) {
++				if (dice->tx_pcm_chs[i][j] > 0) {
++					++max_capture;
++					break;
++				}
++			}
++
++			for (j = 0; j < 3; ++j) {
++				if (dice->rx_pcm_chs[i][j] > 0) {
++					++max_playback;
++					break;
++				}
++			}
++		}
+ 	}
+ 
+ 	for (i = 0; i < MAX_STREAMS; i++) {
 -- 
 2.14.1
