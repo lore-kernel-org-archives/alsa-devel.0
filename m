@@ -1,142 +1,116 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: fix kernel NULL pointer dereference due to invalid calculation for array index
-Date: Sun, 29 Apr 2018 15:01:46 +0900
-Message-ID: <20180429060146.18807-1-o-takashi@sakamocchi.jp>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
+Subject: [PATCH v2 00/13] ALSA: dice: use cache of stream
+	formats to generate PCM rules/constraints
+Date: Sun, 29 Apr 2018 15:50:19 +0900
+Message-ID: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
+ [209.85.192.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93570266D71
+ for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:02 +0200 (CEST)
+Received: by mail-pf0-f193.google.com with SMTP id e9so455490pfi.4
+ for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:02 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net, stable@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-At a commit f91c9d7610a ('ALSA: firewire-lib: cache maximum length of
-payload to reduce function calls'), maximum size of payload for tx
-isochronous packet is cached to reduce the number of function calls.
+Hi,
 
-This cache was programmed to updated at a first callback of ohci1394 IR
-context. However, the maximum size is required to queueing packets before
-starting the isochronous context.
+This patchset updates my previous one:
 
-As a result, the cached value is reused to queue packets in next time to
-starting the isochronous context. Then the cache is updated in a first
-callback of the isochronous context. This can cause kernel NULL pointer
-dereference in a below call graph:
+[alsa-devel] [PATCH 00/11] ALSA: dice: use cache of stream formats to generate PCM rules/constraints
+http://mailman.alsa-project.org/pipermail/alsa-devel/2018-April/134983.html
 
-(sound/firewire/amdtp-stream.c)
-amdtp_stream_start()
-->queue_in_packet()
-  ->queue_packet()
-    (drivers/firewire/core-iso.c)
-    ->fw_iso_context_queue()
-      ->struct fw_card_driver.queue_iso()
-      (drivers/firewire/ohci.c)
-      = ohci_queue_iso()
-        ->queue_iso_packet_per_buffer()
-          buffer->pages[page]
+Once, ALSA dice driver cached stream formats to generate PCM
+constraints/rules. The cache is created by changing current
+sampling transmission frequency step by step directly at unit
+probing process. This feature was dropped because it changes
+state of clock on target device thus it's against users'
+expectation[1].
 
-The issued dereference occurs in a case that:
- - target unit supports different stream formats for sampling transmission
-   frequency.
- - maximum length of payload for tx stream in a first trial is bigger
-   than the length in a second trial.
+However this is not necessarily convenient because reconfiguration
+of sampling rate is not available.
 
-In this case, correct number of pages are allocated for DMA and the 'pages'
-array has enough elements, while index of the element is wrongly calculated
-according to the old value of length of payload in a call of
-'queue_in_packet()'. Then it causes the issue.
+TC Applied Technologies (TCAT) has extended protocol for DICE
+interface, a.k.a EAP (Extended Application Protocol). In this
+extension, drivers can retrieve information of stream formats
+without changing state of target unit. Fortunately, this protocol
+is supported widely by many models.
 
-This commit fixes the critical bug. This affects all of drivers in ALSA
-firewire stack in Linux kernel v4.12 or later.
+This patchset regain the cache to generate PCM constraints/rules
+by using this protocol. Userspace applications can reconfigure
+sampling rate via ALSA PCM interface.
 
-[12665.302360] BUG: unable to handle kernel NULL pointer dereference at 0000000000000030
-[12665.302415] IP: ohci_queue_iso+0x47c/0x800 [firewire_ohci]
-[12665.302439] PGD 0
-[12665.302440] P4D 0
-[12665.302450]
-[12665.302470] Oops: 0000 [#1] SMP PTI
-[12665.302487] Modules linked in: ...
-[12665.303096] CPU: 1 PID: 12760 Comm: jackd Tainted: P           OE   4.13.0-38-generic #43-Ubuntu
-[12665.303154] Hardware name:                  /DH77DF, BIOS KCH7710H.86A.0069.2012.0224.1825 02/24/2012
-[12665.303215] task: ffff9ce87da2ae80 task.stack: ffffb5b8823d0000
-[12665.303258] RIP: 0010:ohci_queue_iso+0x47c/0x800 [firewire_ohci]
-[12665.303301] RSP: 0018:ffffb5b8823d3ab8 EFLAGS: 00010086
-[12665.303337] RAX: ffff9ce4f4876930 RBX: 0000000000000008 RCX: ffff9ce88a3955e0
-[12665.303384] RDX: 0000000000000000 RSI: 0000000034877f00 RDI: 0000000000000000
-[12665.303427] RBP: ffffb5b8823d3b68 R08: ffff9ce8ccb390a0 R09: ffff9ce877639ab0
-[12665.303475] R10: 0000000000000108 R11: 0000000000000000 R12: 0000000000000003
-[12665.303513] R13: 0000000000000000 R14: ffff9ce4f4876950 R15: 0000000000000000
-[12665.303554] FS:  00007f2ec467f8c0(0000) GS:ffff9ce8df280000(0000) knlGS:0000000000000000
-[12665.303600] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[12665.303633] CR2: 0000000000000030 CR3: 00000002dcf90004 CR4: 00000000000606e0
-[12665.303674] Call Trace:
-[12665.303698]  fw_iso_context_queue+0x18/0x20 [firewire_core]
-[12665.303735]  queue_packet+0x88/0xe0 [snd_firewire_lib]
-[12665.303770]  amdtp_stream_start+0x19b/0x270 [snd_firewire_lib]
-[12665.303811]  start_streams+0x276/0x3c0 [snd_dice]
-[12665.303840]  snd_dice_stream_start_duplex+0x1bf/0x480 [snd_dice]
-[12665.303882]  ? vma_gap_callbacks_rotate+0x1e/0x30
-[12665.303914]  ? __rb_insert_augmented+0xab/0x240
-[12665.303936]  capture_prepare+0x3c/0x70 [snd_dice]
-[12665.303961]  snd_pcm_do_prepare+0x1d/0x30 [snd_pcm]
-[12665.303985]  snd_pcm_action_single+0x3b/0x90 [snd_pcm]
-[12665.304009]  snd_pcm_action_nonatomic+0x68/0x70 [snd_pcm]
-[12665.304035]  snd_pcm_prepare+0x68/0x90 [snd_pcm]
-[12665.304058]  snd_pcm_common_ioctl1+0x4c0/0x940 [snd_pcm]
-[12665.304083]  snd_pcm_capture_ioctl1+0x19b/0x250 [snd_pcm]
-[12665.304108]  snd_pcm_capture_ioctl+0x27/0x40 [snd_pcm]
-[12665.304131]  do_vfs_ioctl+0xa8/0x630
-[12665.304148]  ? entry_SYSCALL_64_after_hwframe+0xe9/0x139
-[12665.304172]  ? entry_SYSCALL_64_after_hwframe+0xe2/0x139
-[12665.304195]  ? entry_SYSCALL_64_after_hwframe+0xdb/0x139
-[12665.304218]  ? entry_SYSCALL_64_after_hwframe+0xd4/0x139
-[12665.304242]  ? entry_SYSCALL_64_after_hwframe+0xcd/0x139
-[12665.304265]  ? entry_SYSCALL_64_after_hwframe+0xc6/0x139
-[12665.304288]  ? entry_SYSCALL_64_after_hwframe+0xbf/0x139
-[12665.304312]  ? entry_SYSCALL_64_after_hwframe+0xb8/0x139
-[12665.304335]  ? entry_SYSCALL_64_after_hwframe+0xb1/0x139
-[12665.304358]  SyS_ioctl+0x79/0x90
-[12665.304374]  ? entry_SYSCALL_64_after_hwframe+0x72/0x139
-[12665.304397]  entry_SYSCALL_64_fastpath+0x24/0xab
-[12665.304417] RIP: 0033:0x7f2ec3750ef7
-[12665.304433] RSP: 002b:00007fff99e31388 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-[12665.304465] RAX: ffffffffffffffda RBX: 00007fff99e312f0 RCX: 00007f2ec3750ef7
-[12665.304494] RDX: 0000000000000000 RSI: 0000000000004140 RDI: 0000000000000007
-[12665.304522] RBP: 0000556ebc63fd60 R08: 0000556ebc640560 R09: 0000000000000000
-[12665.304553] R10: 0000000000000001 R11: 0000000000000246 R12: 0000556ebc63fcf0
-[12665.304584] R13: 0000000000000000 R14: 0000000000000007 R15: 0000000000000000
-[12665.304612] Code: 01 00 00 44 89 eb 45 31 ed 45 31 db 66 41 89 1e 66 41 89 5e 0c 66 45 89 5e 0e 49 8b 49 08 49 63 d4 4d 85 c0 49 63 ff 48 8b 14 d1 <48> 8b 72 30 41 8d 14 37 41 89 56 04 48 63 d3 0f 84 ce 00 00 00
-[12665.304713] RIP: ohci_queue_iso+0x47c/0x800 [firewire_ohci] RSP: ffffb5b8823d3ab8
-[12665.304743] CR2: 0000000000000030
-[12665.317701] ---[ end trace 9d55b056dd52a19f ]---
+For units which doesn't support the extension, available set of
+sampling rate is still restricted at current sampling transmission
+frequency. This is also inconvenient and this patchset introduces a
+solution.
 
-Fixes: f91c9d7610a ('ALSA: firewire-lib: cache maximum length of payload to reduce function calls')
-Cc: <stable@vger.kernel.org> # v4.12+
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/amdtp-stream.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Structure for unit entry (struct ieee1394_device_id) has a member
+for unit-specific data. This patchset uses it for callback function
+to handle hard-coded stream format. In this time, I adopt this way
+for some known models produced by TC Electronic and Alesis. If users
+find their models still have restrictions in a point of available
+sampling transmission frequency, it's preferable to work for this
+way.
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 4a1dc145327b..cb9acfe60f6a 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -773,8 +773,6 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
- 	u32 cycle;
- 	unsigned int packets;
- 
--	s->max_payload_length = amdtp_stream_get_max_payload(s);
--
- 	/*
- 	 * For in-stream, first packet has come.
- 	 * For out-stream, prepared to transmit first packet
-@@ -879,6 +877,9 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
- 
- 	amdtp_stream_update(s);
- 
-+	if (s->direction == AMDTP_IN_STREAM)
-+		s->max_payload_length = amdtp_stream_get_max_payload(s);
-+
- 	if (s->flags & CIP_NO_HEADER)
- 		s->tag = TAG_NO_CIP_HEADER;
- 	else
+Changes from v1:
+ - rename members for the channel cache.
+ - add minor refactoring.
+ - fix a bug that sampling transmission frequency is not changed via
+   ALSA PCM interface.
+ - fix a bug that current stream formats are reused after changing
+   sampling transmission frequency.
+
+[1] [alsa-devel] [PATCH 0/6 v2] ALSA: dice: constrain PCM substreams to current sampling transfer frequency
+http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104065.html
+[2] [alsa-devel] [PATCH] ALSA: dice: fix OUI for TC group
+http://mailman.alsa-project.org/pipermail/alsa-devel/2018-April/134804.html
+
+Takashi Sakamoto (13):
+  ALSA: dice: add cache of stream formats
+  ALSA: dice: add 'firewire' directory for proc nodes
+  ALSA: dice: add proc node for stream formation
+  ALSA: dice: cache stream formats at current mode of sampling
+    transmission frequency
+  ALSA: dice: add parameters of stream formats for models produced by TC
+    Electronic
+  ALSA: dice: add parameters of stream formats for models produced by
+    Alesis
+  ALSA: dice: use extended protocol to detect available stream formats
+  ALSA: dice: use cache of stream format to check running stream
+  ALSA: dice: add a helper function to restart all of available streams
+  ALSA: dice: enable to change current sampling transmission frequency
+  ALSA: dice: use stream formats to add MIDI substreams
+  ALSA: dice: use cache for PCM constraints and rules
+  ALSA: dice: remove local frag of force_two_pcms
+
+ sound/firewire/dice/Makefile            |   3 +-
+ sound/firewire/dice/dice-alesis.c       |  48 ++++++
+ sound/firewire/dice/dice-extension.c    | 172 ++++++++++++++++++++
+ sound/firewire/dice/dice-midi.c         |  23 +--
+ sound/firewire/dice/dice-pcm.c          | 230 ++++++++++++++++++---------
+ sound/firewire/dice/dice-proc.c         |  70 +++++++-
+ sound/firewire/dice/dice-stream.c       | 273 ++++++++++++++++++++++++--------
+ sound/firewire/dice/dice-tcelectronic.c | 100 ++++++++++++
+ sound/firewire/dice/dice.c              | 139 ++++++++++------
+ sound/firewire/dice/dice.h              |  17 +-
+ 10 files changed, 867 insertions(+), 208 deletions(-)
+ create mode 100644 sound/firewire/dice/dice-alesis.c
+ create mode 100644 sound/firewire/dice/dice-extension.c
+ create mode 100644 sound/firewire/dice/dice-tcelectronic.c
+
 -- 
 2.14.1
