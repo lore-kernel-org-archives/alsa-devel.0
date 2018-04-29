@@ -1,18 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 00/13] ALSA: dice: use cache of stream
-	formats to generate PCM rules/constraints
-Date: Sun, 29 Apr 2018 15:50:19 +0900
-Message-ID: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 01/13] ALSA: dice: add cache of stream
+	formats
+Date: Sun, 29 Apr 2018 15:50:20 +0900
+Message-ID: <20180429065032.13869-2-o-takashi@sakamocchi.jp>
+References: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
- [209.85.192.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 93570266D71
- for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:02 +0200 (CEST)
-Received: by mail-pf0-f193.google.com with SMTP id e9so455490pfi.4
- for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:02 -0700 (PDT)
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 28A8B266EB0
+ for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:04 +0200 (CEST)
+Received: by mail-pf0-f194.google.com with SMTP id j11so4437337pff.10
+ for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:03 -0700 (PDT)
+In-Reply-To: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,91 +28,38 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+A previous commit 6f688268b3f4 ('ALSA: dice: purge generating channel
+cache') purged cache of stream formats. DICE interface originally has
+no feature to assist drivers to retrieve available formats for all of
+supported sampling transmission frequencies, without changing the
+frequency actually.
 
-This patchset updates my previous one:
+For later release of Dice ASICs such as TCD2210, Dice interface has
+extended protocol and can support the feature. This assists drivers
+to retrieve available stream formats.
 
-[alsa-devel] [PATCH 00/11] ALSA: dice: use cache of stream formats to generate PCM rules/constraints
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-April/134983.html
+This commit is a first step to regain the cache to generate PCM rules
+for all of supported sampling transmission frequencies.
 
-Once, ALSA dice driver cached stream formats to generate PCM
-constraints/rules. The cache is created by changing current
-sampling transmission frequency step by step directly at unit
-probing process. This feature was dropped because it changes
-state of clock on target device thus it's against users'
-expectation[1].
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-However this is not necessarily convenient because reconfiguration
-of sampling rate is not available.
-
-TC Applied Technologies (TCAT) has extended protocol for DICE
-interface, a.k.a EAP (Extended Application Protocol). In this
-extension, drivers can retrieve information of stream formats
-without changing state of target unit. Fortunately, this protocol
-is supported widely by many models.
-
-This patchset regain the cache to generate PCM constraints/rules
-by using this protocol. Userspace applications can reconfigure
-sampling rate via ALSA PCM interface.
-
-For units which doesn't support the extension, available set of
-sampling rate is still restricted at current sampling transmission
-frequency. This is also inconvenient and this patchset introduces a
-solution.
-
-Structure for unit entry (struct ieee1394_device_id) has a member
-for unit-specific data. This patchset uses it for callback function
-to handle hard-coded stream format. In this time, I adopt this way
-for some known models produced by TC Electronic and Alesis. If users
-find their models still have restrictions in a point of available
-sampling transmission frequency, it's preferable to work for this
-way.
-
-Changes from v1:
- - rename members for the channel cache.
- - add minor refactoring.
- - fix a bug that sampling transmission frequency is not changed via
-   ALSA PCM interface.
- - fix a bug that current stream formats are reused after changing
-   sampling transmission frequency.
-
-[1] [alsa-devel] [PATCH 0/6 v2] ALSA: dice: constrain PCM substreams to current sampling transfer frequency
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-February/104065.html
-[2] [alsa-devel] [PATCH] ALSA: dice: fix OUI for TC group
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-April/134804.html
-
-Takashi Sakamoto (13):
-  ALSA: dice: add cache of stream formats
-  ALSA: dice: add 'firewire' directory for proc nodes
-  ALSA: dice: add proc node for stream formation
-  ALSA: dice: cache stream formats at current mode of sampling
-    transmission frequency
-  ALSA: dice: add parameters of stream formats for models produced by TC
-    Electronic
-  ALSA: dice: add parameters of stream formats for models produced by
-    Alesis
-  ALSA: dice: use extended protocol to detect available stream formats
-  ALSA: dice: use cache of stream format to check running stream
-  ALSA: dice: add a helper function to restart all of available streams
-  ALSA: dice: enable to change current sampling transmission frequency
-  ALSA: dice: use stream formats to add MIDI substreams
-  ALSA: dice: use cache for PCM constraints and rules
-  ALSA: dice: remove local frag of force_two_pcms
-
- sound/firewire/dice/Makefile            |   3 +-
- sound/firewire/dice/dice-alesis.c       |  48 ++++++
- sound/firewire/dice/dice-extension.c    | 172 ++++++++++++++++++++
- sound/firewire/dice/dice-midi.c         |  23 +--
- sound/firewire/dice/dice-pcm.c          | 230 ++++++++++++++++++---------
- sound/firewire/dice/dice-proc.c         |  70 +++++++-
- sound/firewire/dice/dice-stream.c       | 273 ++++++++++++++++++++++++--------
- sound/firewire/dice/dice-tcelectronic.c | 100 ++++++++++++
- sound/firewire/dice/dice.c              | 139 ++++++++++------
- sound/firewire/dice/dice.h              |  17 +-
- 10 files changed, 867 insertions(+), 208 deletions(-)
- create mode 100644 sound/firewire/dice/dice-alesis.c
- create mode 100644 sound/firewire/dice/dice-extension.c
- create mode 100644 sound/firewire/dice/dice-tcelectronic.c
-
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index da00e75e09d4..8112927999a1 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -80,6 +80,10 @@ struct snd_dice {
+ 	unsigned int rsrv_offset;
+ 
+ 	unsigned int clock_caps;
++	unsigned int tx_pcm_chs[MAX_STREAMS][3];
++	unsigned int rx_pcm_chs[MAX_STREAMS][3];
++	unsigned int tx_midi_ports[MAX_STREAMS];
++	unsigned int rx_midi_ports[MAX_STREAMS];
+ 
+ 	struct fw_address_handler notification_handler;
+ 	int owner_generation;
 -- 
 2.14.1
