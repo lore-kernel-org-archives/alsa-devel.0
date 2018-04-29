@@ -1,19 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 06/13] ALSA: dice: add parameters of stream
-	formats for models produced by Alesis
-Date: Sun, 29 Apr 2018 15:50:25 +0900
-Message-ID: <20180429065032.13869-7-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 05/13] ALSA: dice: add parameters of stream
+	formats for models produced by TC Electronic
+Date: Sun, 29 Apr 2018 15:50:24 +0900
+Message-ID: <20180429065032.13869-6-o-takashi@sakamocchi.jp>
 References: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
- [209.85.192.194])
- by alsa0.perex.cz (Postfix) with ESMTP id B5099267623
- for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:14 +0200 (CEST)
-Received: by mail-pf0-f194.google.com with SMTP id j11so4437519pff.10
- for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:14 -0700 (PDT)
+Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 387C4267625
+ for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:12 +0200 (CEST)
+Received: by mail-pg0-f68.google.com with SMTP id n9-v6so4310139pgq.5
+ for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:12 -0700 (PDT)
 In-Reply-To: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,7 +27,7 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Alesis shipped some models with DICE ASICs. All of them just support
+TC Electronic shipped some models with DICE ASICs. All of them just support
 DICE original protocol and drivers can't retrieve all of available stream
 formats without changing status of sampling transmission frequency
 actually.
@@ -37,131 +36,277 @@ This commit puts some hard-coded parameters for the models. When detecting
 the models, the corresponding parameters are copied as cache of stream
 formats.
 
-I note that each of pair of iO14/iO26 and MultiMix 8/12/16 has the same
-model ID on their configuration ROM. The MultiMix 8/12/16 just support
-one mode for sampling transmission frequency and ALSA dice driver already
-handles them correctly. The iO14/iO26 support three modes and need
-hard-coded parameters. To distinguish these two models, this commit let
-the driver to retrieve current stream formats and compare it to known
-parameters, then decide it.
-
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/Makefile      |  3 ++-
- sound/firewire/dice/dice-alesis.c | 48 +++++++++++++++++++++++++++++++++++++++
- sound/firewire/dice/dice.c        | 11 +++++++++
- sound/firewire/dice/dice.h        |  1 +
- 4 files changed, 62 insertions(+), 1 deletion(-)
- create mode 100644 sound/firewire/dice/dice-alesis.c
+ sound/firewire/dice/Makefile            |   2 +-
+ sound/firewire/dice/dice-tcelectronic.c | 100 ++++++++++++++++++++++++++++++++
+ sound/firewire/dice/dice.c              |  76 +++++++++++++++++++++---
+ sound/firewire/dice/dice.h              |   6 ++
+ 4 files changed, 174 insertions(+), 10 deletions(-)
+ create mode 100644 sound/firewire/dice/dice-tcelectronic.c
 
 diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
-index 5ffaa366a88c..5cfe618f45ef 100644
+index 55b4be9b0034..5ffaa366a88c 100644
 --- a/sound/firewire/dice/Makefile
 +++ b/sound/firewire/dice/Makefile
-@@ -1,3 +1,4 @@
+@@ -1,3 +1,3 @@
  snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-midi.o \
--		 dice-pcm.o dice-hwdep.o dice.o dice-tcelectronic.o
-+		 dice-pcm.o dice-hwdep.o dice.o dice-tcelectronic.o \
-+		 dice-alesis.o
+-		 dice-pcm.o dice-hwdep.o dice.o
++		 dice-pcm.o dice-hwdep.o dice.o dice-tcelectronic.o
  obj-$(CONFIG_SND_DICE) += snd-dice.o
-diff --git a/sound/firewire/dice/dice-alesis.c b/sound/firewire/dice/dice-alesis.c
+diff --git a/sound/firewire/dice/dice-tcelectronic.c b/sound/firewire/dice/dice-tcelectronic.c
 new file mode 100644
-index 000000000000..2dd554653618
+index 000000000000..d40542ff8a42
 --- /dev/null
-+++ b/sound/firewire/dice/dice-alesis.c
-@@ -0,0 +1,48 @@
++++ b/sound/firewire/dice/dice-tcelectronic.c
+@@ -0,0 +1,100 @@
 +// SPDX-License-Identifier: GPL-2.0
 +/*
-+ * dice-alesis.c - a part of driver for DICE based devices
++ * dice-tc_electronic.c - a part of driver for DICE based devices
 + *
 + * Copyright (c) 2018 Takashi Sakamoto
 + */
 +
 +#include "dice.h"
 +
-+static const unsigned int alesis_io14_tx_pcm_chs[MAX_STREAMS][3] = {
-+	{6, 6, 4},	/* Tx0 = Analog + S/PDIF. */
-+	{8, 4, 0},	/* Tx1 = ADAT1. */
++struct dice_tc_spec {
++	unsigned int tx_pcm_chs[MAX_STREAMS][3];
++	unsigned int rx_pcm_chs[MAX_STREAMS][3];
++	bool has_midi;
 +};
 +
-+static const unsigned int alesis_io26_tx_pcm_chs[MAX_STREAMS][3] = {
-+	{10, 10, 8},	/* Tx0 = Analog + S/PDIF. */
-+	{16, 8, 0},	/* Tx1 = ADAT1 + ADAT2. */
++static const struct dice_tc_spec desktop_konnekt6 = {
++	.tx_pcm_chs = {{6, 6, 2}, {0, 0, 0} },
++	.rx_pcm_chs = {{6, 6, 4}, {0, 0, 0} },
++	.has_midi = false,
 +};
 +
-+int snd_dice_detect_alesis_formats(struct snd_dice *dice)
++static const struct dice_tc_spec impact_twin = {
++	.tx_pcm_chs = {{14, 10, 6}, {0, 0, 0} },
++	.rx_pcm_chs = {{14, 10, 6}, {0, 0, 0} },
++	.has_midi = true,
++};
++
++static const struct dice_tc_spec konnekt_8 = {
++	.tx_pcm_chs = {{4, 4, 3}, {0, 0, 0} },
++	.rx_pcm_chs = {{4, 4, 3}, {0, 0, 0} },
++	.has_midi = true,
++};
++
++static const struct dice_tc_spec konnekt_24d = {
++	.tx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
++	.rx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
++	.has_midi = true,
++};
++
++static const struct dice_tc_spec konnekt_live = {
++	.tx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
++	.rx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
++	.has_midi = true,
++};
++
++static const struct dice_tc_spec studio_konnekt_48 = {
++	.tx_pcm_chs = {{16, 16, 16}, {16, 16, 0} },
++	.rx_pcm_chs = {{16, 16, 16}, {16, 16, 0} },
++	.has_midi = true,
++};
++
++int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice)
 +{
-+	__be32 reg;
-+	u32 data;
++	static const struct {
++		u32 model_id;
++		const struct dice_tc_spec *spec;
++	} *entry, entries[] = {
++		{0x00000020, &konnekt_24d},
++		{0x00000021, &konnekt_8},
++		{0x00000022, &studio_konnekt_48},
++		{0x00000023, &konnekt_live},
++		{0x00000024, &desktop_konnekt6},
++		{0x00000027, &impact_twin},
++	};
++	struct fw_csr_iterator it;
++	int key, val, model_id;
 +	int i;
-+	int err;
 +
-+	err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO, &reg,
-+					   sizeof(reg));
-+	if (err < 0)
-+		return err;
-+	data = be32_to_cpu(reg);
-+
-+	if (data == 4 || data == 6) {
-+		memcpy(dice->tx_pcm_chs, alesis_io14_tx_pcm_chs,
-+		       MAX_STREAMS * 3 * sizeof(unsigned int));
-+	} else {
-+		memcpy(dice->rx_pcm_chs, alesis_io26_tx_pcm_chs,
-+		       MAX_STREAMS * 3 * sizeof(unsigned int));
++	model_id = 0;
++	fw_csr_iterator_init(&it, dice->unit->directory);
++	while (fw_csr_iterator_next(&it, &key, &val)) {
++		if (key == CSR_MODEL) {
++			model_id = val;
++			break;
++		}
 +	}
 +
-+	for (i = 0; i < 3; ++i)
-+		dice->rx_pcm_chs[0][i] = 8;
++	entry = NULL;
++	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
++		entry = entries + i;
++		if (entry->model_id == model_id)
++			break;
++	}
++	if (!entry)
++		return -ENODEV;
 +
-+	dice->tx_midi_ports[0] = 1;
-+	dice->rx_midi_ports[0] = 1;
++	memcpy(dice->tx_pcm_chs, entry->spec->tx_pcm_chs,
++	       MAX_STREAMS * 3 * sizeof(unsigned int));
++	memcpy(dice->rx_pcm_chs, entry->spec->rx_pcm_chs,
++	       MAX_STREAMS * 3 * sizeof(unsigned int));
++
++	for (i = 0; i < MAX_STREAMS; ++i) {
++		if (entry->spec->has_midi) {
++			dice->tx_midi_ports[i] = 1;
++			dice->rx_midi_ports[i] = 1;
++		}
++	}
 +
 +	return 0;
 +}
 diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index ea112506cc66..cbd1a07e70b9 100644
+index 002f3f3cbc6a..ea112506cc66 100644
 --- a/sound/firewire/dice/dice.c
 +++ b/sound/firewire/dice/dice.c
-@@ -15,11 +15,14 @@ MODULE_LICENSE("GPL v2");
- #define OUI_LOUD		0x000ff2
- #define OUI_FOCUSRITE		0x00130e
- #define OUI_TCELECTRONIC	0x000166
-+#define OUI_ALESIS		0x000595
+@@ -199,7 +199,7 @@ static void do_registration(struct work_struct *work)
  
- #define DICE_CATEGORY_ID	0x04
- #define WEISS_CATEGORY_ID	0x00
- #define LOUD_CATEGORY_ID	0x10
+ 	dice_card_strings(dice);
  
-+#define MODEL_ALESIS_IO_BOTH	0x000001
+-	err = snd_dice_stream_detect_current_formats(dice);
++	err = dice->detect_formats(dice);
+ 	if (err < 0)
+ 		goto error;
+ 
+@@ -243,14 +243,17 @@ static void do_registration(struct work_struct *work)
+ 		 "Sound card registration failed: %d\n", err);
+ }
+ 
+-static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
++static int dice_probe(struct fw_unit *unit,
++		      const struct ieee1394_device_id *entry)
+ {
+ 	struct snd_dice *dice;
+ 	int err;
+ 
+-	err = check_dice_category(unit);
+-	if (err < 0)
+-		return -ENODEV;
++	if (!entry->driver_data) {
++		err = check_dice_category(unit);
++		if (err < 0)
++			return -ENODEV;
++	}
+ 
+ 	/* Allocate this independent of sound card instance. */
+ 	dice = kzalloc(sizeof(struct snd_dice), GFP_KERNEL);
+@@ -260,6 +263,13 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 	dice->unit = fw_unit_get(unit);
+ 	dev_set_drvdata(&unit->device, dice);
+ 
++	if (!entry->driver_data) {
++		dice->detect_formats = snd_dice_stream_detect_current_formats;
++	} else {
++		dice->detect_formats =
++				(snd_dice_detect_formats_t)entry->driver_data;
++	}
 +
- /*
-  * Some models support several isochronous channels, while these streams are not
-  * always available. In this case, add the model name to this list.
-@@ -382,6 +385,14 @@ static const struct ieee1394_device_id dice_id_table[] = {
- 		.model_id	= 0x000027,
- 		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
+ 	spin_lock_init(&dice->lock);
+ 	mutex_init(&dice->mutex);
+ 	init_completion(&dice->clock_accepted);
+@@ -317,10 +327,6 @@ static void dice_bus_reset(struct fw_unit *unit)
+ #define DICE_INTERFACE	0x000001
+ 
+ static const struct ieee1394_device_id dice_id_table[] = {
+-	{
+-		.match_flags = IEEE1394_MATCH_VERSION,
+-		.version     = DICE_INTERFACE,
+-	},
+ 	/* M-Audio Profire 610/2626 has a different value in version field. */
+ 	{
+ 		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
+@@ -328,6 +334,58 @@ static const struct ieee1394_device_id dice_id_table[] = {
+ 		.vendor_id	= 0x000d6c,
+ 		.specifier_id	= 0x000d6c,
  	},
-+	/* Alesis iO14/iO26. */
++	/* TC Electronic Konnekt 24D. */
 +	{
 +		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
 +				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= OUI_ALESIS,
-+		.model_id	= MODEL_ALESIS_IO_BOTH,
-+		.driver_data = (kernel_ulong_t)snd_dice_detect_alesis_formats,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000020,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
 +	},
- 	{
- 		.match_flags = IEEE1394_MATCH_VERSION,
- 		.version     = DICE_INTERFACE,
++	/* TC Electronic Konnekt 8. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000021,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Studio Konnekt 48. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000022,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Konnekt Live. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000023,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Desktop Konnekt 6. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000024,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Impact Twin. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000027,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	{
++		.match_flags = IEEE1394_MATCH_VERSION,
++		.version     = DICE_INTERFACE,
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(ieee1394, dice_id_table);
 diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index c31a4ebc5b51..bb89dad5f127 100644
+index 593d998a661a..c31a4ebc5b51 100644
 --- a/sound/firewire/dice/dice.h
 +++ b/sound/firewire/dice/dice.h
-@@ -219,5 +219,6 @@ void snd_dice_create_proc(struct snd_dice *dice);
+@@ -63,6 +63,9 @@
+  */
+ #define MAX_STREAMS	2
+ 
++struct snd_dice;
++typedef int (*snd_dice_detect_formats_t)(struct snd_dice *dice);
++
+ struct snd_dice {
+ 	struct snd_card *card;
+ 	struct fw_unit *unit;
+@@ -84,6 +87,7 @@ struct snd_dice {
+ 	unsigned int rx_pcm_chs[MAX_STREAMS][3];
+ 	unsigned int tx_midi_ports[MAX_STREAMS];
+ 	unsigned int rx_midi_ports[MAX_STREAMS];
++	snd_dice_detect_formats_t detect_formats;
+ 
+ 	struct fw_address_handler notification_handler;
+ 	int owner_generation;
+@@ -214,4 +218,6 @@ void snd_dice_create_proc(struct snd_dice *dice);
+ 
  int snd_dice_create_midi(struct snd_dice *dice);
  
- int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice);
-+int snd_dice_detect_alesis_formats(struct snd_dice *dice);
- 
++int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice);
++
  #endif
 -- 
 2.14.1
