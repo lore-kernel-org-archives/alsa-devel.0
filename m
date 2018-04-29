@@ -1,18 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v2 04/13] ALSA: dice: cache stream formats at
-	current mode of sampling transmission frequency
-Date: Sun, 29 Apr 2018 15:50:23 +0900
-Message-ID: <20180429065032.13869-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH v2 06/13] ALSA: dice: add parameters of stream
+	formats for models produced by Alesis
+Date: Sun, 29 Apr 2018 15:50:25 +0900
+Message-ID: <20180429065032.13869-7-o-takashi@sakamocchi.jp>
 References: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 09952266F44
- for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:10 +0200 (CEST)
-Received: by mail-pg0-f66.google.com with SMTP id a13-v6so4312061pgu.4
- for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:10 -0700 (PDT)
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5099267623
+ for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 08:51:14 +0200 (CEST)
+Received: by mail-pf0-f194.google.com with SMTP id j11so4437519pff.10
+ for <alsa-devel@alsa-project.org>; Sat, 28 Apr 2018 23:51:14 -0700 (PDT)
 In-Reply-To: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,144 +28,140 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In former commits, proxy structure get members for cache of stream
-formats. This commit fills the cache with stream formats at current mode
-of sampling transmission frequency.
+Alesis shipped some models with DICE ASICs. All of them just support
+DICE original protocol and drivers can't retrieve all of available stream
+formats without changing status of sampling transmission frequency
+actually.
+
+This commit puts some hard-coded parameters for the models. When detecting
+the models, the corresponding parameters are copied as cache of stream
+formats.
+
+I note that each of pair of iO14/iO26 and MultiMix 8/12/16 has the same
+model ID on their configuration ROM. The MultiMix 8/12/16 just support
+one mode for sampling transmission frequency and ALSA dice driver already
+handles them correctly. The iO14/iO26 support three modes and need
+hard-coded parameters. To distinguish these two models, this commit let
+the driver to retrieve current stream formats and compare it to known
+parameters, then decide it.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-stream.c | 76 +++++++++++++++++++++++++++++++++++++++
- sound/firewire/dice/dice.c        |  4 +++
- sound/firewire/dice/dice.h        |  3 ++
- 3 files changed, 83 insertions(+)
+ sound/firewire/dice/Makefile      |  3 ++-
+ sound/firewire/dice/dice-alesis.c | 48 +++++++++++++++++++++++++++++++++++++++
+ sound/firewire/dice/dice.c        | 11 +++++++++
+ sound/firewire/dice/dice.h        |  1 +
+ 4 files changed, 62 insertions(+), 1 deletion(-)
+ create mode 100644 sound/firewire/dice/dice-alesis.c
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 928a255bfc35..2a9f0cd994a5 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -30,6 +30,24 @@ const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
- 	[6] = 192000,
- };
- 
-+int snd_dice_stream_get_rate_mode(struct snd_dice *dice, unsigned int rate,
-+				  unsigned int *mode)
+diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
+index 5ffaa366a88c..5cfe618f45ef 100644
+--- a/sound/firewire/dice/Makefile
++++ b/sound/firewire/dice/Makefile
+@@ -1,3 +1,4 @@
+ snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-midi.o \
+-		 dice-pcm.o dice-hwdep.o dice.o dice-tcelectronic.o
++		 dice-pcm.o dice-hwdep.o dice.o dice-tcelectronic.o \
++		 dice-alesis.o
+ obj-$(CONFIG_SND_DICE) += snd-dice.o
+diff --git a/sound/firewire/dice/dice-alesis.c b/sound/firewire/dice/dice-alesis.c
+new file mode 100644
+index 000000000000..2dd554653618
+--- /dev/null
++++ b/sound/firewire/dice/dice-alesis.c
+@@ -0,0 +1,48 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dice-alesis.c - a part of driver for DICE based devices
++ *
++ * Copyright (c) 2018 Takashi Sakamoto
++ */
++
++#include "dice.h"
++
++static const unsigned int alesis_io14_tx_pcm_chs[MAX_STREAMS][3] = {
++	{6, 6, 4},	/* Tx0 = Analog + S/PDIF. */
++	{8, 4, 0},	/* Tx1 = ADAT1. */
++};
++
++static const unsigned int alesis_io26_tx_pcm_chs[MAX_STREAMS][3] = {
++	{10, 10, 8},	/* Tx0 = Analog + S/PDIF. */
++	{16, 8, 0},	/* Tx1 = ADAT1 + ADAT2. */
++};
++
++int snd_dice_detect_alesis_formats(struct snd_dice *dice)
 +{
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); i++) {
-+		if (!(dice->clock_caps & BIT(i)))
-+			continue;
-+		if (snd_dice_rates[i] != rate)
-+			continue;
-+
-+		*mode = (i - 1) / 2;
-+		return 0;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- /*
-  * This operation has an effect to synchronize GLOBAL_STATUS/GLOBAL_SAMPLE_RATE
-  * to GLOBAL_STATUS. Especially, just after powering on, these are different.
-@@ -484,6 +502,64 @@ void snd_dice_stream_update_duplex(struct snd_dice *dice)
- 	}
- }
- 
-+int snd_dice_stream_detect_current_formats(struct snd_dice *dice)
-+{
-+	unsigned int rate;
-+	unsigned int mode;
-+	__be32 reg[2];
-+	struct reg_params tx_params, rx_params;
++	__be32 reg;
++	u32 data;
 +	int i;
 +	int err;
 +
-+	/*
-+	 * Available stream format is restricted at current mode of sampling
-+	 * clock.
-+	 */
-+	err = snd_dice_transaction_get_rate(dice, &rate);
++	err = snd_dice_transaction_read_tx(dice, TX_NUMBER_AUDIO, &reg,
++					   sizeof(reg));
 +	if (err < 0)
 +		return err;
++	data = be32_to_cpu(reg);
 +
-+	err = snd_dice_stream_get_rate_mode(dice, rate, &mode);
-+	if (err < 0)
-+		return err;
-+
-+	/*
-+	 * Just after owning the unit (GLOBAL_OWNER), the unit can return
-+	 * invalid stream formats. Selecting clock parameters have an effect
-+	 * for the unit to refine it.
-+	 */
-+	err = ensure_phase_lock(dice);
-+	if (err < 0)
-+		return err;
-+
-+	err = get_register_params(dice, &tx_params, &rx_params);
-+	if (err < 0)
-+		return err;
-+
-+	for (i = 0; i < tx_params.count; ++i) {
-+		err = snd_dice_transaction_read_tx(dice,
-+				tx_params.size * i + TX_NUMBER_AUDIO,
-+				reg, sizeof(reg));
-+		if (err < 0)
-+			return err;
-+		dice->tx_pcm_chs[i][mode] = be32_to_cpu(reg[0]);
-+		dice->tx_midi_ports[i] = max_t(unsigned int,
-+				be32_to_cpu(reg[1]), dice->tx_midi_ports[i]);
++	if (data == 4 || data == 6) {
++		memcpy(dice->tx_pcm_chs, alesis_io14_tx_pcm_chs,
++		       MAX_STREAMS * 3 * sizeof(unsigned int));
++	} else {
++		memcpy(dice->rx_pcm_chs, alesis_io26_tx_pcm_chs,
++		       MAX_STREAMS * 3 * sizeof(unsigned int));
 +	}
-+	for (i = 0; i < rx_params.count; ++i) {
-+		err = snd_dice_transaction_read_rx(dice,
-+				rx_params.size * i + RX_NUMBER_AUDIO,
-+				reg, sizeof(reg));
-+		if (err < 0)
-+			return err;
-+		dice->rx_pcm_chs[i][mode] = be32_to_cpu(reg[0]);
-+		dice->rx_midi_ports[i] = max_t(unsigned int,
-+				be32_to_cpu(reg[1]), dice->rx_midi_ports[i]);
-+	}
++
++	for (i = 0; i < 3; ++i)
++		dice->rx_pcm_chs[0][i] = 8;
++
++	dice->tx_midi_ports[0] = 1;
++	dice->rx_midi_ports[0] = 1;
 +
 +	return 0;
 +}
-+
- static void dice_lock_changed(struct snd_dice *dice)
- {
- 	dice->dev_lock_changed = true;
 diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 96bb01b6b751..002f3f3cbc6a 100644
+index ea112506cc66..cbd1a07e70b9 100644
 --- a/sound/firewire/dice/dice.c
 +++ b/sound/firewire/dice/dice.c
-@@ -199,6 +199,10 @@ static void do_registration(struct work_struct *work)
+@@ -15,11 +15,14 @@ MODULE_LICENSE("GPL v2");
+ #define OUI_LOUD		0x000ff2
+ #define OUI_FOCUSRITE		0x00130e
+ #define OUI_TCELECTRONIC	0x000166
++#define OUI_ALESIS		0x000595
  
- 	dice_card_strings(dice);
+ #define DICE_CATEGORY_ID	0x04
+ #define WEISS_CATEGORY_ID	0x00
+ #define LOUD_CATEGORY_ID	0x10
  
-+	err = snd_dice_stream_detect_current_formats(dice);
-+	if (err < 0)
-+		goto error;
++#define MODEL_ALESIS_IO_BOTH	0x000001
 +
- 	err = snd_dice_stream_init_duplex(dice);
- 	if (err < 0)
- 		goto error;
+ /*
+  * Some models support several isochronous channels, while these streams are not
+  * always available. In this case, add the model name to this list.
+@@ -382,6 +385,14 @@ static const struct ieee1394_device_id dice_id_table[] = {
+ 		.model_id	= 0x000027,
+ 		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
+ 	},
++	/* Alesis iO14/iO26. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_ALESIS,
++		.model_id	= MODEL_ALESIS_IO_BOTH,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_alesis_formats,
++	},
+ 	{
+ 		.match_flags = IEEE1394_MATCH_VERSION,
+ 		.version     = DICE_INTERFACE,
 diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index 8112927999a1..593d998a661a 100644
+index c31a4ebc5b51..bb89dad5f127 100644
 --- a/sound/firewire/dice/dice.h
 +++ b/sound/firewire/dice/dice.h
-@@ -194,11 +194,14 @@ void snd_dice_transaction_destroy(struct snd_dice *dice);
- #define SND_DICE_RATES_COUNT	7
- extern const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT];
+@@ -219,5 +219,6 @@ void snd_dice_create_proc(struct snd_dice *dice);
+ int snd_dice_create_midi(struct snd_dice *dice);
  
-+int snd_dice_stream_get_rate_mode(struct snd_dice *dice, unsigned int rate,
-+				  unsigned int *mode);
- int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate);
- void snd_dice_stream_stop_duplex(struct snd_dice *dice);
- int snd_dice_stream_init_duplex(struct snd_dice *dice);
- void snd_dice_stream_destroy_duplex(struct snd_dice *dice);
- void snd_dice_stream_update_duplex(struct snd_dice *dice);
-+int snd_dice_stream_detect_current_formats(struct snd_dice *dice);
+ int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice);
++int snd_dice_detect_alesis_formats(struct snd_dice *dice);
  
- int snd_dice_stream_lock_try(struct snd_dice *dice);
- void snd_dice_stream_lock_release(struct snd_dice *dice);
+ #endif
 -- 
 2.14.1
