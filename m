@@ -1,131 +1,142 @@
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Subject: [PATCH 5/5] ASoC: cirrus: i2s: IRQ-based stream watchdog
-Date: Sat, 28 Apr 2018 22:51:42 +0200
-Message-ID: <20180428205142.31921-6-alexander.sverdlin@gmail.com>
-References: <20180428205142.31921-1-alexander.sverdlin@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <20180428205142.31921-1-alexander.sverdlin@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: alsa-devel@alsa-project.org
-Cc: Ryan Mallon <rmallon@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Alexander Sverdlin <alexander.sverdlin@gmail.com>, linux-arm-kernel@lists.infradead.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: dice: fix kernel NULL pointer dereference due to invalid calculation for array index
+Date: Sun, 29 Apr 2018 15:01:46 +0900
+Message-ID: <20180429060146.18807-1-o-takashi@sakamocchi.jp>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-STJTIGNvbnRyb2xsZXIgb24gRVA5M3h4IHNlZW1zIHRvIGhhdmUgdW5kb2N1bWVudGVkIEhXIGlz
-c3VlLiBBY2NvcmRpbmcgdG8KIkVQOTN4eCBVc2Vy4oCZcyBHdWlkZSIsIGNvbnRyb2xsZXIgY2Fu
-IGhhbmRsZSB1bmRlcmZsb3cgYW5kIGVpdGhlciB0cmFuc21pdApsYXN0IHNhbXBsZSBvciB6ZXJv
-ZXMgaW4gc3VjaCBjYXNlIHVudGlsIEZJRk8gaXMgZmlsbGVkIGFnYWluLiBJbiByZWFsaXR5CnVu
-ZGVmbG93IGNvbmRpdGlvbnMgc2VlbSB0byBjb25mdXNlIGludGVybmFsIHN0YXRlIG1hY2hpbmUg
-ZnJvbSB0aW1lIHRvCnRpbWUgYW5kIHRoZSB3aG9sZSBzdHJlYW0gZ2V0cyBzaGlmdGVkIGJ5IG9u
-ZSBieXRlIChhcyBjYXB0dXJlZCBieSBsb2dpYwphbmFseXNlciBvbiB0aGUgSTJTIG91dHB1dHMp
-LiBPbmUgY291bGQgb25seSBoZWFyIG5vaXNlIGluc3RlYWQgb2Ygb3JpZ2luYWwKc3RyZWFtIGFu
-ZCB0aGlzIGNvbnRpbnVlcyB1bnRpbCB0aGUgRklGTyBpcyBkaXNhYmxlZCBhbmQgZW5hYmxlZCBh
-Z2Fpbi4KCldvcmsgdGhpcyBhcm91bmQgYnkgd2F0Y2hpbmcgdW5kZXJmbG93IGludGVycnVwdCBh
-bmQgcmVzZXR0aW5nIEkyUyBUWApjaGFubmVsICsgZmlsbCBGSUZPIHdpdGggemVybyBzYW1wbGVz
-IHVudGlsIERNQSBjYXRjaGVzIHVwIGFnYWluLiBUaGlzIGlzCmEgbmFzdHkgd29ya2Fyb3VuZCwg
-YnV0IGl0IHdvcmtzLiBIZW5jZSwgS2NvbmZpZyBvcHRpb24gdG8gZGlzYWJsZSBpdCBpbgpjYXNl
-IG9mIHByb2JsZW1zLgoKU2lnbmVkLW9mZi1ieTogQWxleGFuZGVyIFN2ZXJkbGluIDxhbGV4YW5k
-ZXIuc3ZlcmRsaW5AZ21haWwuY29tPgotLS0KIHNvdW5kL3NvYy9jaXJydXMvS2NvbmZpZyAgICAg
-IHwgMTcgKysrKysrKysrKysKIHNvdW5kL3NvYy9jaXJydXMvZXA5M3h4LWkycy5jIHwgNjggKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMiBmaWxlcyBjaGFuZ2Vk
-LCA4NSBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0IGEvc291bmQvc29jL2NpcnJ1cy9LY29uZmln
-IGIvc291bmQvc29jL2NpcnJ1cy9LY29uZmlnCmluZGV4IGM3Y2Q2MGYwMDllOS4uZTA5MTk5MTI0
-YzM2IDEwMDY0NAotLS0gYS9zb3VuZC9zb2MvY2lycnVzL0tjb25maWcKKysrIGIvc291bmQvc29j
-L2NpcnJ1cy9LY29uZmlnCkBAIC05LDYgKzksMjMgQEAgY29uZmlnIFNORF9FUDkzWFhfU09DCiBj
-b25maWcgU05EX0VQOTNYWF9TT0NfSTJTCiAJdHJpc3RhdGUKIAoraWYgU05EX0VQOTNYWF9TT0Nf
-STJTCisKK2NvbmZpZyBTTkRfRVA5M1hYX1NPQ19JMlNfV0FUQ0hET0cKKwlib29sICJJUlEgYmFz
-ZWQgdW5kZXJmbG93IHdhdGNoZG9nIHdvcmthcm91bmQiCisJZGVmYXVsdCB5CisJaGVscAorCSAg
-STJTIGNvbnRyb2xsZXIgb24gRVA5M3h4IHNlZW1zIHRvIGhhdmUgdW5kb2N1bWVudGVkIEhXIGlz
-c3VlLgorCSAgVW5kZXJmbG93IG9mIGludGVybmFsIEkyUyBjb250cm9sbGVyIEZJRk8gY291bGQg
-Y29uZnVzZSB0aGUKKwkgIHN0YXRlIG1hY2hpbmUgYW5kIHRoZSB3aG9sZSBzdHJlYW0gY2FuIGJl
-IHNoaWZ0ZWQgYnkgb25lIGJ5dGUKKwkgIHVudGlsIEkyUyBpcyBkaXNhYmxlZC4gVGhpcyBvcHRp
-b24gZW5hYmxlcyBJUlEgYmFzZWQgd2F0Y2hkb2cKKwkgIHdoaWNoIGRpc2FibGVzIGFuZCByZS1l
-bmFibGVzIEkyUyBpbiBjYXNlIG9mIHVuZGVyZmxvdyBhbmQKKwkgIGZpbGxzIEZJRk8gd2l0aCB6
-ZXJvZXMuCisKKwkgIElmIHlvdSBhcmUgdW5zdXJlIGhvdyB0byBhbnN3ZXIgdGhpcyBxdWVzdGlv
-biwgYW5zd2VyIFkuCisKK2VuZGlmICMgaWYgU05EX0VQOTNYWF9TT0NfSTJTCisKIGNvbmZpZyBT
-TkRfRVA5M1hYX1NPQ19BQzk3CiAJdHJpc3RhdGUKIAlzZWxlY3QgQUM5N19CVVMKZGlmZiAtLWdp
-dCBhL3NvdW5kL3NvYy9jaXJydXMvZXA5M3h4LWkycy5jIGIvc291bmQvc29jL2NpcnJ1cy9lcDkz
-eHgtaTJzLmMKaW5kZXggNDJjYzZkMjJiYWFjLi4wOTE4YzVkYTU3NWEgMTAwNjQ0Ci0tLSBhL3Nv
-dW5kL3NvYy9jaXJydXMvZXA5M3h4LWkycy5jCisrKyBiL3NvdW5kL3NvYy9jaXJydXMvZXA5M3h4
-LWkycy5jCkBAIC0zNSw4ICszNSwxMiBAQAogCiAjZGVmaW5lIEVQOTNYWF9JMlNfVFhDTEtDRkcJ
-CTB4MDAKICNkZWZpbmUgRVA5M1hYX0kyU19SWENMS0NGRwkJMHgwNAorI2RlZmluZSBFUDkzWFhf
-STJTX0dMU1RTCQkweDA4CiAjZGVmaW5lIEVQOTNYWF9JMlNfR0xDVFJMCQkweDBDCiAKKyNkZWZp
-bmUgRVA5M1hYX0kyU19JMlNUWDBMRlQJCTB4MTAKKyNkZWZpbmUgRVA5M1hYX0kyU19JMlNUWDBS
-VAkJMHgxNAorCiAjZGVmaW5lIEVQOTNYWF9JMlNfVFhMSU5DVFJMREFUQQkweDI4CiAjZGVmaW5l
-IEVQOTNYWF9JMlNfVFhDVFJMCQkweDJDCiAjZGVmaW5lIEVQOTNYWF9JMlNfVFhXUkRMRU4JCTB4
-MzAKQEAgLTU1LDEyICs1OSwyMiBAQAogCiAjZGVmaW5lIEVQOTNYWF9JMlNfVFhMSU5DVFJMREFU
-QV9SX0pVU1QJQklUKDIpIC8qIFJpZ2h0IGp1c3RpZnkgKi8KIAorLyoKKyAqIFRyYW5zbWl0IGVt
-cHR5IGludGVycnVwdCBsZXZlbCBzZWxlY3Q6CisgKiAwIC0gR2VuZXJhdGUgaW50ZXJydXB0IHdo
-ZW4gRklGTyBpcyBoYWxmIGVtcHR5CisgKiAxIC0gR2VuZXJhdGUgaW50ZXJydXB0IHdoZW4gRklG
-TyBpcyBlbXB0eQorICovCisjZGVmaW5lIEVQOTNYWF9JMlNfVFhDVFJMX1RYRU1QVFlfTFZMCUJJ
-VCgwKQorI2RlZmluZSBFUDkzWFhfSTJTX1RYQ1RSTF9UWFVGSUUJQklUKDEpIC8qIFRyYW5zbWl0
-IGludGVycnVwdCBlbmFibGUgKi8KKwogI2RlZmluZSBFUDkzWFhfSTJTX0NMS0NGR19MUlMJCSgx
-IDw8IDApIC8qIGxyY2xrIHBvbGFyaXR5ICovCiAjZGVmaW5lIEVQOTNYWF9JMlNfQ0xLQ0ZHX0NL
-UAkJKDEgPDwgMSkgLyogQml0IGNsb2NrIHBvbGFyaXR5ICovCiAjZGVmaW5lIEVQOTNYWF9JMlNf
-Q0xLQ0ZHX1JFTAkJKDEgPDwgMikgLyogRmlyc3QgYml0IHRyYW5zaXRpb24gKi8KICNkZWZpbmUg
-RVA5M1hYX0kyU19DTEtDRkdfTUFTVEVSCSgxIDw8IDMpIC8qIE1hc3RlciBtb2RlICovCiAjZGVm
-aW5lIEVQOTNYWF9JMlNfQ0xLQ0ZHX05CQ0cJCSgxIDw8IDQpIC8qIE5vdCBiaXQgY2xvY2sgZ2F0
-aW5nICovCiAKKyNkZWZpbmUgRVA5M1hYX0kyU19HTFNUU19UWDBfRklGT19GVUxMCUJJVCgxMikK
-Kwogc3RydWN0IGVwOTN4eF9pMnNfaW5mbyB7CiAJc3RydWN0IGNsawkJCSptY2xrOwogCXN0cnVj
-dCBjbGsJCQkqc2NsazsKQEAgLTExNiwxMiArMTMwLDI0IEBAIHN0YXRpYyB2b2lkIGVwOTN4eF9p
-MnNfZW5hYmxlKHN0cnVjdCBlcDkzeHhfaTJzX2luZm8gKmluZm8sIGludCBzdHJlYW0pCiAJZWxz
-ZQogCQliYXNlX3JlZyA9IEVQOTNYWF9JMlNfUlgwRU47CiAJZXA5M3h4X2kyc193cml0ZV9yZWco
-aW5mbywgYmFzZV9yZWcsIDEpOworCisJLyogRW5hYmxlIFRYIElSUXMgKEZJRk8gZW1wdHkgb3Ig
-dW5kZXJmbG93KSAqLworCWlmIChJU19FTkFCTEVEKENPTkZJR19TTkRfRVA5M1hYX1NPQ19JMlNf
-V0FUQ0hET0cpICYmCisJICAgIHN0cmVhbSA9PSBTTkRSVl9QQ01fU1RSRUFNX1BMQVlCQUNLKQor
-CQllcDkzeHhfaTJzX3dyaXRlX3JlZyhpbmZvLCBFUDkzWFhfSTJTX1RYQ1RSTCwKKwkJCQkgICAg
-IEVQOTNYWF9JMlNfVFhDVFJMX1RYRU1QVFlfTFZMIHwKKwkJCQkgICAgIEVQOTNYWF9JMlNfVFhD
-VFJMX1RYVUZJRSk7CiB9CiAKIHN0YXRpYyB2b2lkIGVwOTN4eF9pMnNfZGlzYWJsZShzdHJ1Y3Qg
-ZXA5M3h4X2kyc19pbmZvICppbmZvLCBpbnQgc3RyZWFtKQogewogCXVuc2lnbmVkIGJhc2VfcmVn
-OwogCisJLyogRGlzYWJsZSBJUlFzICovCisJaWYgKElTX0VOQUJMRUQoQ09ORklHX1NORF9FUDkz
-WFhfU09DX0kyU19XQVRDSERPRykgJiYKKwkgICAgc3RyZWFtID09IFNORFJWX1BDTV9TVFJFQU1f
-UExBWUJBQ0spCisJCWVwOTN4eF9pMnNfd3JpdGVfcmVnKGluZm8sIEVQOTNYWF9JMlNfVFhDVFJM
-LCAwKTsKKwogCS8qIERpc2FibGUgZmlmbyAqLwogCWlmIChzdHJlYW0gPT0gU05EUlZfUENNX1NU
-UkVBTV9QTEFZQkFDSykKIAkJYmFzZV9yZWcgPSBFUDkzWFhfSTJTX1RYMEVOOwpAQCAtMTQxLDYg
-KzE2NywzNyBAQCBzdGF0aWMgdm9pZCBlcDkzeHhfaTJzX2Rpc2FibGUoc3RydWN0IGVwOTN4eF9p
-MnNfaW5mbyAqaW5mbywgaW50IHN0cmVhbSkKIAl9CiB9CiAKKy8qCisgKiBBY2NvcmRpbmcgdG8g
-ZG9jdW1lbnRhdGlvbiBJMlMgY29udHJvbGxlciBjYW4gaGFuZGxlIHVuZGVyZmxvdyBjb25kaXRp
-b25zCisgKiBqdXN0IGZpbmUsIGJ1dCBpbiByZWFsaXR5IHRoZSBzdGF0ZSBtYWNoaW5lIGlzIHNv
-bWV0aW1lcyBjb25mdXNlZCBzbyB0aGF0CisgKiB0aGUgd2hvbGUgc3RyZWFtIGlzIHNoaWZ0ZWQg
-Ynkgb25lIGJ5dGUuIFRoZSB3YXRjaGRvZyBiZWxvdyBkaXNhYmxlcyB0aGUgVFgKKyAqIEZJRk8s
-IGZpbGxzIHRoZSBidWZmZXIgd2l0aCB6ZXJvZXMgYW5kIHJlLWVuYWJsZXMgdGhlIEZJRk8uIFN0
-YXRlIG1hY2hpbmUKKyAqIGlzIGJlaW5nIHJlc2V0IGFuZCBieSBmaWxsaW5nIHRoZSBidWZmZXIg
-d2UgZ2V0IHNvbWUgdGltZSBiZWZvcmUgbmV4dAorICogdW5kZXJmbG93IGhhcHBlbnMuCisgKi8K
-K3N0YXRpYyBpcnFyZXR1cm5fdCBlcDkzeHhfaTJzX2ludGVycnVwdChpbnQgaXJxLCB2b2lkICpk
-ZXZfaWQpCit7CisJc3RydWN0IGVwOTN4eF9pMnNfaW5mbyAqaW5mbyA9IGRldl9pZDsKKworCS8q
-IERpc2FibGUgRklGTyAqLworCWVwOTN4eF9pMnNfd3JpdGVfcmVnKGluZm8sIEVQOTNYWF9JMlNf
-VFgwRU4sIDApOworCS8qCisJICogRmlsbCBUWCBGSUZPIHdpdGggemVyb2VzLCB0aGlzIHdheSB3
-ZSBjYW4gZGVmZXIgbmV4dCBJUlFzIGFzIG11Y2ggYXMKKwkgKiBwb3NzaWJsZSBhbmQgZ2V0IG1v
-cmUgdGltZSBmb3IgRE1BIHRvIGNhdGNoIHVwLiBBY3R1YWxseSB0aGVyZSBhcmUKKwkgKiBvbmx5
-IDggc2FtcGxlcyBpbiB0aGlzIEZJRk8sIHNvIGV2ZW4gb24gOGtIeiBtYXhpbXVtIGRlZmVycmFs
-IGhlcmUgaXMKKwkgKiAxbXMuCisJICovCisJd2hpbGUgKCEoZXA5M3h4X2kyc19yZWFkX3JlZyhp
-bmZvLCBFUDkzWFhfSTJTX0dMU1RTKSAmCisJCSBFUDkzWFhfSTJTX0dMU1RTX1RYMF9GSUZPX0ZV
-TEwpKSB7CisJCWVwOTN4eF9pMnNfd3JpdGVfcmVnKGluZm8sIEVQOTNYWF9JMlNfSTJTVFgwTEZU
-LCAwKTsKKwkJZXA5M3h4X2kyc193cml0ZV9yZWcoaW5mbywgRVA5M1hYX0kyU19JMlNUWDBSVCwg
-MCk7CisJfQorCS8qIFJlLWVuYWJsZSBGSUZPICovCisJZXA5M3h4X2kyc193cml0ZV9yZWcoaW5m
-bywgRVA5M1hYX0kyU19UWDBFTiwgMSk7CisKKwlyZXR1cm4gSVJRX0hBTkRMRUQ7Cit9CisKIHN0
-YXRpYyBpbnQgZXA5M3h4X2kyc19kYWlfcHJvYmUoc3RydWN0IHNuZF9zb2NfZGFpICpkYWkpCiB7
-CiAJc3RydWN0IGVwOTN4eF9pMnNfaW5mbyAqaW5mbyA9IHNuZF9zb2NfZGFpX2dldF9kcnZkYXRh
-KGRhaSk7CkBAIC0zOTAsNiArNDQ3LDE3IEBAIHN0YXRpYyBpbnQgZXA5M3h4X2kyc19wcm9iZShz
-dHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQogCWlmIChJU19FUlIoaW5mby0+cmVncykpCiAJ
-CXJldHVybiBQVFJfRVJSKGluZm8tPnJlZ3MpOwogCisJaWYgKElTX0VOQUJMRUQoQ09ORklHX1NO
-RF9FUDkzWFhfU09DX0kyU19XQVRDSERPRykpIHsKKwkJaW50IGlycSA9IHBsYXRmb3JtX2dldF9p
-cnEocGRldiwgMCk7CisJCWlmIChpcnEgPD0gMCkKKwkJCXJldHVybiBpcnEgPCAwID8gaXJxIDog
-LUVOT0RFVjsKKworCQllcnIgPSBkZXZtX3JlcXVlc3RfaXJxKCZwZGV2LT5kZXYsIGlycSwgZXA5
-M3h4X2kyc19pbnRlcnJ1cHQsIDAsCisJCQkJICAgICAgIHBkZXYtPm5hbWUsIGluZm8pOworCQlp
-ZiAoZXJyKQorCQkJcmV0dXJuIGVycjsKKwl9CisKIAlpbmZvLT5tY2xrID0gY2xrX2dldCgmcGRl
-di0+ZGV2LCAibWNsayIpOwogCWlmIChJU19FUlIoaW5mby0+bWNsaykpIHsKIAkJZXJyID0gUFRS
-X0VSUihpbmZvLT5tY2xrKTsKLS0gCjIuMTYuMgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fCmxpbnV4LWFybS1rZXJuZWwgbWFpbGluZyBsaXN0CmxpbnV4
-LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFkZWFkLm9yZwpodHRwOi8vbGlzdHMuaW5mcmFkZWFkLm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2xpbnV4LWFybS1rZXJuZWwK
+At a commit f91c9d7610a ('ALSA: firewire-lib: cache maximum length of
+payload to reduce function calls'), maximum size of payload for tx
+isochronous packet is cached to reduce the number of function calls.
+
+This cache was programmed to updated at a first callback of ohci1394 IR
+context. However, the maximum size is required to queueing packets before
+starting the isochronous context.
+
+As a result, the cached value is reused to queue packets in next time to
+starting the isochronous context. Then the cache is updated in a first
+callback of the isochronous context. This can cause kernel NULL pointer
+dereference in a below call graph:
+
+(sound/firewire/amdtp-stream.c)
+amdtp_stream_start()
+->queue_in_packet()
+  ->queue_packet()
+    (drivers/firewire/core-iso.c)
+    ->fw_iso_context_queue()
+      ->struct fw_card_driver.queue_iso()
+      (drivers/firewire/ohci.c)
+      = ohci_queue_iso()
+        ->queue_iso_packet_per_buffer()
+          buffer->pages[page]
+
+The issued dereference occurs in a case that:
+ - target unit supports different stream formats for sampling transmission
+   frequency.
+ - maximum length of payload for tx stream in a first trial is bigger
+   than the length in a second trial.
+
+In this case, correct number of pages are allocated for DMA and the 'pages'
+array has enough elements, while index of the element is wrongly calculated
+according to the old value of length of payload in a call of
+'queue_in_packet()'. Then it causes the issue.
+
+This commit fixes the critical bug. This affects all of drivers in ALSA
+firewire stack in Linux kernel v4.12 or later.
+
+[12665.302360] BUG: unable to handle kernel NULL pointer dereference at 0000000000000030
+[12665.302415] IP: ohci_queue_iso+0x47c/0x800 [firewire_ohci]
+[12665.302439] PGD 0
+[12665.302440] P4D 0
+[12665.302450]
+[12665.302470] Oops: 0000 [#1] SMP PTI
+[12665.302487] Modules linked in: ...
+[12665.303096] CPU: 1 PID: 12760 Comm: jackd Tainted: P           OE   4.13.0-38-generic #43-Ubuntu
+[12665.303154] Hardware name:                  /DH77DF, BIOS KCH7710H.86A.0069.2012.0224.1825 02/24/2012
+[12665.303215] task: ffff9ce87da2ae80 task.stack: ffffb5b8823d0000
+[12665.303258] RIP: 0010:ohci_queue_iso+0x47c/0x800 [firewire_ohci]
+[12665.303301] RSP: 0018:ffffb5b8823d3ab8 EFLAGS: 00010086
+[12665.303337] RAX: ffff9ce4f4876930 RBX: 0000000000000008 RCX: ffff9ce88a3955e0
+[12665.303384] RDX: 0000000000000000 RSI: 0000000034877f00 RDI: 0000000000000000
+[12665.303427] RBP: ffffb5b8823d3b68 R08: ffff9ce8ccb390a0 R09: ffff9ce877639ab0
+[12665.303475] R10: 0000000000000108 R11: 0000000000000000 R12: 0000000000000003
+[12665.303513] R13: 0000000000000000 R14: ffff9ce4f4876950 R15: 0000000000000000
+[12665.303554] FS:  00007f2ec467f8c0(0000) GS:ffff9ce8df280000(0000) knlGS:0000000000000000
+[12665.303600] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[12665.303633] CR2: 0000000000000030 CR3: 00000002dcf90004 CR4: 00000000000606e0
+[12665.303674] Call Trace:
+[12665.303698]  fw_iso_context_queue+0x18/0x20 [firewire_core]
+[12665.303735]  queue_packet+0x88/0xe0 [snd_firewire_lib]
+[12665.303770]  amdtp_stream_start+0x19b/0x270 [snd_firewire_lib]
+[12665.303811]  start_streams+0x276/0x3c0 [snd_dice]
+[12665.303840]  snd_dice_stream_start_duplex+0x1bf/0x480 [snd_dice]
+[12665.303882]  ? vma_gap_callbacks_rotate+0x1e/0x30
+[12665.303914]  ? __rb_insert_augmented+0xab/0x240
+[12665.303936]  capture_prepare+0x3c/0x70 [snd_dice]
+[12665.303961]  snd_pcm_do_prepare+0x1d/0x30 [snd_pcm]
+[12665.303985]  snd_pcm_action_single+0x3b/0x90 [snd_pcm]
+[12665.304009]  snd_pcm_action_nonatomic+0x68/0x70 [snd_pcm]
+[12665.304035]  snd_pcm_prepare+0x68/0x90 [snd_pcm]
+[12665.304058]  snd_pcm_common_ioctl1+0x4c0/0x940 [snd_pcm]
+[12665.304083]  snd_pcm_capture_ioctl1+0x19b/0x250 [snd_pcm]
+[12665.304108]  snd_pcm_capture_ioctl+0x27/0x40 [snd_pcm]
+[12665.304131]  do_vfs_ioctl+0xa8/0x630
+[12665.304148]  ? entry_SYSCALL_64_after_hwframe+0xe9/0x139
+[12665.304172]  ? entry_SYSCALL_64_after_hwframe+0xe2/0x139
+[12665.304195]  ? entry_SYSCALL_64_after_hwframe+0xdb/0x139
+[12665.304218]  ? entry_SYSCALL_64_after_hwframe+0xd4/0x139
+[12665.304242]  ? entry_SYSCALL_64_after_hwframe+0xcd/0x139
+[12665.304265]  ? entry_SYSCALL_64_after_hwframe+0xc6/0x139
+[12665.304288]  ? entry_SYSCALL_64_after_hwframe+0xbf/0x139
+[12665.304312]  ? entry_SYSCALL_64_after_hwframe+0xb8/0x139
+[12665.304335]  ? entry_SYSCALL_64_after_hwframe+0xb1/0x139
+[12665.304358]  SyS_ioctl+0x79/0x90
+[12665.304374]  ? entry_SYSCALL_64_after_hwframe+0x72/0x139
+[12665.304397]  entry_SYSCALL_64_fastpath+0x24/0xab
+[12665.304417] RIP: 0033:0x7f2ec3750ef7
+[12665.304433] RSP: 002b:00007fff99e31388 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+[12665.304465] RAX: ffffffffffffffda RBX: 00007fff99e312f0 RCX: 00007f2ec3750ef7
+[12665.304494] RDX: 0000000000000000 RSI: 0000000000004140 RDI: 0000000000000007
+[12665.304522] RBP: 0000556ebc63fd60 R08: 0000556ebc640560 R09: 0000000000000000
+[12665.304553] R10: 0000000000000001 R11: 0000000000000246 R12: 0000556ebc63fcf0
+[12665.304584] R13: 0000000000000000 R14: 0000000000000007 R15: 0000000000000000
+[12665.304612] Code: 01 00 00 44 89 eb 45 31 ed 45 31 db 66 41 89 1e 66 41 89 5e 0c 66 45 89 5e 0e 49 8b 49 08 49 63 d4 4d 85 c0 49 63 ff 48 8b 14 d1 <48> 8b 72 30 41 8d 14 37 41 89 56 04 48 63 d3 0f 84 ce 00 00 00
+[12665.304713] RIP: ohci_queue_iso+0x47c/0x800 [firewire_ohci] RSP: ffffb5b8823d3ab8
+[12665.304743] CR2: 0000000000000030
+[12665.317701] ---[ end trace 9d55b056dd52a19f ]---
+
+Fixes: f91c9d7610a ('ALSA: firewire-lib: cache maximum length of payload to reduce function calls')
+Cc: <stable@vger.kernel.org> # v4.12+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index 4a1dc145327b..cb9acfe60f6a 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -773,8 +773,6 @@ static void amdtp_stream_first_callback(struct fw_iso_context *context,
+ 	u32 cycle;
+ 	unsigned int packets;
+ 
+-	s->max_payload_length = amdtp_stream_get_max_payload(s);
+-
+ 	/*
+ 	 * For in-stream, first packet has come.
+ 	 * For out-stream, prepared to transmit first packet
+@@ -879,6 +877,9 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+ 
+ 	amdtp_stream_update(s);
+ 
++	if (s->direction == AMDTP_IN_STREAM)
++		s->max_payload_length = amdtp_stream_get_max_payload(s);
++
+ 	if (s->flags & CIP_NO_HEADER)
+ 		s->tag = TAG_NO_CIP_HEADER;
+ 	else
+-- 
+2.14.1
