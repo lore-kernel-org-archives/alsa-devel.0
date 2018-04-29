@@ -1,21 +1,21 @@
 From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH 09/11] ASoC: AMD: Fix clocks in CZ DA7219
-	machine driver
-Date: Sun, 29 Apr 2018 21:51:48 +0000
-Message-ID: <CAGS+omB2=AhpbRZmF=q0_1LfOM5W8T-qEL5jF3KYmkjR0i5rVQ@mail.gmail.com>
+Subject: Re: [PATCH 10/11] ASoC: AMD: Add const to snd_soc_ops
+	instances
+Date: Sun, 29 Apr 2018 21:52:20 +0000
+Message-ID: <CAGS+omDEcX_FdemOsJjmFON9WBYODBRrJZwDKXcQ_ksTJmzkRA@mail.gmail.com>
 References: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1524741374-13523-9-git-send-email-Vijendar.Mukunda@amd.com>
+ <1524741374-13523-10-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f66.google.com (mail-vk0-f66.google.com
- [209.85.213.66])
- by alsa0.perex.cz (Postfix) with ESMTP id C6F02266EBE
- for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 23:52:00 +0200 (CEST)
-Received: by mail-vk0-f66.google.com with SMTP id t63-v6so4085061vkb.1
- for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 14:52:00 -0700 (PDT)
-In-Reply-To: <1524741374-13523-9-git-send-email-Vijendar.Mukunda@amd.com>
+Received: from mail-ua0-f196.google.com (mail-ua0-f196.google.com
+ [209.85.217.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82A19266EBE
+ for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 23:52:31 +0200 (CEST)
+Received: by mail-ua0-f196.google.com with SMTP id a2so3899516uak.2
+ for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 14:52:31 -0700 (PDT)
+In-Reply-To: <1524741374-13523-10-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,15 +29,12 @@ To: Vijendar.Mukunda@amd.com
 Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, tiwai@suse.com, Mark Brown <broonie@kernel.org>, weiyongjun1@huawei.com, alexander.deucher@amd.com, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 26, 2018 at 5:17 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+On Thu, Apr 26, 2018 at 5:18 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 wrote:
 
 > From: Akshu Agrawal <akshu.agrawal@amd.com>
 
-> System clock on the platform is 25Mhz and not 24Mhz.
-
-> PLL_OUT for da7219 codec to use DA7219_PLL_FREQ_OUT_98304
-> as it is for 48KHz SR.
+> Marking snd_soc_ops instances const
 
 > Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 > Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
@@ -45,33 +42,35 @@ wrote:
 Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 
 > ---
->   sound/soc/amd/acp-da7219-max98357a.c | 5 ++---
->   1 file changed, 2 insertions(+), 3 deletions(-)
+>   sound/soc/amd/acp-da7219-max98357a.c | 6 +++---
+>   1 file changed, 3 insertions(+), 3 deletions(-)
 
 > diff --git a/sound/soc/amd/acp-da7219-max98357a.c
 b/sound/soc/amd/acp-da7219-max98357a.c
-> index 6495eed..fa5ad5b 100644
+> index fa5ad5b..133139d 100644
 > --- a/sound/soc/amd/acp-da7219-max98357a.c
 > +++ b/sound/soc/amd/acp-da7219-max98357a.c
-> @@ -39,8 +39,7 @@
->   #include "../codecs/da7219.h"
->   #include "../codecs/da7219-aad.h"
+> @@ -171,17 +171,17 @@ static void cz_dmic_shutdown(struct
+snd_pcm_substream *substream)
+>          da7219_clk_disable();
+>   }
 
-> -#define CZ_PLAT_CLK 24000000
-> -#define MCLK_RATE 24576000
-> +#define CZ_PLAT_CLK 25000000
->   #define DUAL_CHANNEL           2
+> -static struct snd_soc_ops cz_da7219_cap_ops = {
+> +static const struct snd_soc_ops cz_da7219_cap_ops = {
+>          .startup = cz_da7219_startup,
+>          .shutdown = cz_da7219_shutdown,
+>   };
 
->   static struct snd_soc_jack cz_jack;
-> @@ -63,7 +62,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime
-*rtd)
->          }
+> -static struct snd_soc_ops cz_max_play_ops = {
+> +static const struct snd_soc_ops cz_max_play_ops = {
+>          .startup = cz_max_startup,
+>          .shutdown = cz_max_shutdown,
+>   };
 
->          ret = snd_soc_dai_set_pll(codec_dai, 0, DA7219_SYSCLK_PLL,
-> -                                 CZ_PLAT_CLK, MCLK_RATE);
-> +                                 CZ_PLAT_CLK, DA7219_PLL_FREQ_OUT_98304);
->          if (ret < 0) {
->                  dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
->                  return ret;
+> -static struct snd_soc_ops cz_dmic_cap_ops = {
+> +static const struct snd_soc_ops cz_dmic_cap_ops = {
+>          .startup = cz_dmic_startup,
+>          .shutdown = cz_dmic_shutdown,
+>   };
 > --
 > 2.7.4
