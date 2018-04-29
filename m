@@ -1,141 +1,114 @@
 From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH 03/11] ASoC: amd: added byte count register offset
- variables to rtd
-Date: Sun, 29 Apr 2018 21:39:21 +0000
-Message-ID: <CAGS+omCN5Xk71FQMJztzi6orNLShr9E4g61atYpbqtcOtcHLjg@mail.gmail.com>
-References: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com> <1524741374-13523-3-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: Re: [PATCH 04/11] ASoC: amd: removed separate byte count variables
+ for playback and capture
+Date: Sun, 29 Apr 2018 21:41:33 +0000
+Message-ID: <CAGS+omA4DNm7HZZUpRBJfhhY-GYGaQRU1KWBb-CTuO7qGwTXCw@mail.gmail.com>
+References: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com> <1524741374-13523-4-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1524741374-13523-3-git-send-email-Vijendar.Mukunda@amd.com>
+In-Reply-To: <1524741374-13523-4-git-send-email-Vijendar.Mukunda@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Vijendar.Mukunda@amd.com
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, alexander.deucher@amd.com, jclinton@chromium.org, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>, kstewart@linuxfoundation.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, alexander.deucher@amd.com, jclinton@chromium.org, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>, pombredanne@nexb.com, kstewart@linuxfoundation.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi Vijendar,
 
-
-On Thu, Apr 26, 2018 at 5:14 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+On Thu, Apr 26, 2018 at 5:15 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 wrote:
 
-> Added byte count register offset variables to audio_substream_data
-> structure. Modified dma pointer callback.
+> Removed separate byte count variables for playback and capture.
 
 > Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-
-Please fix the small indentation nits, otherwise this one is:
 
 Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 
 > ---
->   sound/soc/amd/acp-pcm-dma.c | 36 +++++++++++++++---------------------
->   sound/soc/amd/acp.h         |  2 ++
->   2 files changed, 17 insertions(+), 21 deletions(-)
+>   sound/soc/amd/acp-pcm-dma.c | 19 +++++--------------
+>   sound/soc/amd/acp.h         |  3 +--
+>   2 files changed, 6 insertions(+), 16 deletions(-)
 
 > diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-> index f18ed9a..019f696 100644
+> index 019f696..5f34be1 100644
 > --- a/sound/soc/amd/acp-pcm-dma.c
 > +++ b/sound/soc/amd/acp-pcm-dma.c
-> @@ -793,12 +793,18 @@ static int acp_dma_hw_params(struct
-snd_pcm_substream *substream,
->                  rtd->destination = TO_ACP_I2S_1;
->                  rtd->dma_dscr_idx_1 = PLAYBACK_START_DMA_DESCR_CH12;
->                  rtd->dma_dscr_idx_2 = PLAYBACK_START_DMA_DESCR_CH13;
-> +               rtd->byte_cnt_high_reg_offset =
-> +               mmACP_I2S_TRANSMIT_BYTE_CNT_HIGH;
-
-Indent relative to line above with 2 tabs.
-
-> +               rtd->byte_cnt_low_reg_offset =
-mmACP_I2S_TRANSMIT_BYTE_CNT_LOW;
->          } else {
->                  rtd->ch1 = SYSRAM_TO_ACP_CH_NUM;
->                  rtd->ch2 = ACP_TO_I2S_DMA_CH_NUM;
->                  rtd->destination = FROM_ACP_I2S_1;
->                  rtd->dma_dscr_idx_1 = CAPTURE_START_DMA_DESCR_CH14;
->                  rtd->dma_dscr_idx_2 = CAPTURE_START_DMA_DESCR_CH15;
-> +               rtd->byte_cnt_high_reg_offset =
-> +               mmACP_I2S_RECEIVED_BYTE_CNT_HIGH;
-
-here too.
-
-> +               rtd->byte_cnt_low_reg_offset =
-mmACP_I2S_RECEIVED_BYTE_CNT_LOW;
->          }
-
->          size = params_buffer_bytes(params);
-> @@ -834,26 +840,15 @@ static int acp_dma_hw_free(struct snd_pcm_substream
-*substream)
->          return snd_pcm_lib_free_pages(substream);
->   }
-
-> -static u64 acp_get_byte_count(void __iomem *acp_mmio, int stream)
-> +static u64 acp_get_byte_count(struct audio_substream_data *rtd)
->   {
-> -       union acp_dma_count playback_dma_count;
-> -       union acp_dma_count capture_dma_count;
-> -       u64 bytescount = 0;
-> +       union acp_dma_count byte_count;
-
-> -       if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> -               playback_dma_count.bcount.high = acp_reg_read(acp_mmio,
-> -                                       mmACP_I2S_TRANSMIT_BYTE_CNT_HIGH);
-> -               playback_dma_count.bcount.low  = acp_reg_read(acp_mmio,
-> -                                       mmACP_I2S_TRANSMIT_BYTE_CNT_LOW);
-> -               bytescount = playback_dma_count.bytescount;
-> -       } else {
-> -               capture_dma_count.bcount.high = acp_reg_read(acp_mmio,
-> -                                       mmACP_I2S_RECEIVED_BYTE_CNT_HIGH);
-> -               capture_dma_count.bcount.low  = acp_reg_read(acp_mmio,
-> -                                       mmACP_I2S_RECEIVED_BYTE_CNT_LOW);
-> -               bytescount = capture_dma_count.bytescount;
-> -       }
-> -       return bytescount;
-> +       byte_count.bcount.high = acp_reg_read(rtd->acp_mmio,
-> +
-rtd->byte_cnt_high_reg_offset);
-> +       byte_count.bcount.low  = acp_reg_read(rtd->acp_mmio,
-> +
-rtd->byte_cnt_low_reg_offset);
-> +       return byte_count.bytescount;
->   }
-
->   static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream
-*substream)
-> @@ -869,7 +864,7 @@ static snd_pcm_uframes_t acp_dma_pointer(struct
+> @@ -866,13 +866,8 @@ static snd_pcm_uframes_t acp_dma_pointer(struct
 snd_pcm_substream *substream)
->                  return -EINVAL;
-
 >          buffersize = frames_to_bytes(runtime, runtime->buffer_size);
-> -       bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
-> +       bytescount = acp_get_byte_count(rtd);
+>          bytescount = acp_get_byte_count(rtd);
 
->          if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->                  if (bytescount > rtd->i2ssp_renderbytescount)
-> @@ -925,8 +920,7 @@ static int acp_dma_trigger(struct snd_pcm_substream
+> -       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+> -               if (bytescount > rtd->i2ssp_renderbytescount)
+> -                       bytescount = bytescount -
+rtd->i2ssp_renderbytescount;
+> -       } else {
+> -               if (bytescount > rtd->i2ssp_capturebytescount)
+> -                       bytescount = bytescount -
+rtd->i2ssp_capturebytescount;
+> -       }
+> +       if (bytescount > rtd->bytescount)
+> +               bytescount = bytescount - rtd->bytescount;
+
+nit, this could be:
+bytescount -= rtd->bytescount;
+
+>          pos = do_div(bytescount, buffersize);
+>          return bytes_to_frames(runtime, pos);
+>   }
+> @@ -921,9 +916,9 @@ static int acp_dma_trigger(struct snd_pcm_substream
 *substream, int cmd)
->          case SNDRV_PCM_TRIGGER_START:
 >          case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 >          case SNDRV_PCM_TRIGGER_RESUME:
-> -               bytescount = acp_get_byte_count(rtd->acp_mmio,
-> -                                               substream->stream);
-> +               bytescount = acp_get_byte_count(rtd);
+>                  bytescount = acp_get_byte_count(rtd);
+> +               if (rtd->bytescount == 0)
+> +                       rtd->bytescount = bytescount;
 >                  if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->                          if (rtd->i2ssp_renderbytescount == 0)
->                                  rtd->i2ssp_renderbytescount = bytescount;
+> -                       if (rtd->i2ssp_renderbytescount == 0)
+> -                               rtd->i2ssp_renderbytescount = bytescount;
+>                          acp_dma_start(rtd->acp_mmio, rtd->ch1, false);
+>                          while (acp_reg_read(rtd->acp_mmio,
+mmACP_DMA_CH_STS) &
+>                                  BIT(rtd->ch1)) {
+> @@ -934,9 +929,6 @@ static int acp_dma_trigger(struct snd_pcm_substream
+*substream, int cmd)
+>                                  }
+>                                  cpu_relax();
+>                          }
+> -               } else {
+> -                       if (rtd->i2ssp_capturebytescount == 0)
+> -                               rtd->i2ssp_capturebytescount = bytescount;
+>                  }
+>                  acp_dma_start(rtd->acp_mmio, rtd->ch2, true);
+>                  ret = 0;
+> @@ -947,12 +939,11 @@ static int acp_dma_trigger(struct snd_pcm_substream
+*substream, int cmd)
+>                  if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>                          acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+>                          ret =  acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+> -                       rtd->i2ssp_renderbytescount = 0;
+>                  } else {
+>                          acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+>                          ret = acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+> -                       rtd->i2ssp_capturebytescount = 0;
+>                  }
+> +               rtd->bytescount = 0;
+>                  break;
+>          default:
+>                  ret = -EINVAL;
 > diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-> index 5e25428..3b076c6 100644
+> index 3b076c6..82470bc 100644
 > --- a/sound/soc/amd/acp.h
 > +++ b/sound/soc/amd/acp.h
-> @@ -90,6 +90,8 @@ struct audio_substream_data {
->          u16 destination;
->          u16 dma_dscr_idx_1;
->          u16 dma_dscr_idx_2;
-> +       u32 byte_cnt_high_reg_offset;
-> +       u32 byte_cnt_low_reg_offset;
+> @@ -93,8 +93,7 @@ struct audio_substream_data {
+>          u32 byte_cnt_high_reg_offset;
+>          u32 byte_cnt_low_reg_offset;
 >          uint64_t size;
->          u64 i2ssp_renderbytescount;
->          u64 i2ssp_capturebytescount;
+> -       u64 i2ssp_renderbytescount;
+> -       u64 i2ssp_capturebytescount;
+> +       u64 bytescount;
+>          void __iomem *acp_mmio;
+>   };
+
 > --
 > 2.7.4
