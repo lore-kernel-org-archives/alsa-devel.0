@@ -1,16 +1,18 @@
 From: Akshu Agrawal <akshu.agrawal@amd.com>
 Subject: [PATCH] ASoC: da7219: read fmw property to get mclk
 	for non-dts systems
-Date: Mon, 30 Apr 2018 15:01:54 +0800
-Message-ID: <1525071715-17796-1-git-send-email-akshu.agrawal@amd.com>
+Date: Mon, 30 Apr 2018 15:01:55 +0800
+Message-ID: <1525071715-17796-2-git-send-email-akshu.agrawal@amd.com>
+References: <1525071715-17796-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com
- (mail-bn3nam01on0087.outbound.protection.outlook.com [104.47.33.87])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C724266EB0
- for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 09:04:07 +0200 (CEST)
+Received: from NAM03-DM3-obe.outbound.protection.outlook.com
+ (mail-dm3nam03on0052.outbound.protection.outlook.com [104.47.41.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id E2D5F266EB0
+ for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 09:04:11 +0200 (CEST)
+In-Reply-To: <1525071715-17796-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
