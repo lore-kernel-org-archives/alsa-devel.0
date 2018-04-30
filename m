@@ -1,18 +1,18 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH 3/4] ASoC: fsl_esai: Switch to SPDX identifier
-Date: Mon, 30 Apr 2018 20:55:17 -0300
-Message-ID: <1525132518-27663-3-git-send-email-festevam@gmail.com>
+Subject: [PATCH 4/4] ASoC: fsl_spdif: Switch to SPDX identifier
+Date: Mon, 30 Apr 2018 20:55:18 -0300
+Message-ID: <1525132518-27663-4-git-send-email-festevam@gmail.com>
 References: <1525132518-27663-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
- [209.85.220.195])
- by alsa0.perex.cz (Postfix) with ESMTP id B75E7267669
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 01:55:22 +0200 (CEST)
-Received: by mail-qk0-f195.google.com with SMTP id z8so7920393qki.11
- for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 16:55:22 -0700 (PDT)
+Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
+ [209.85.216.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5927C267673
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 01:55:24 +0200 (CEST)
+Received: by mail-qt0-f193.google.com with SMTP id f1-v6so13032854qtj.6
+ for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 16:55:24 -0700 (PDT)
 In-Reply-To: <1525132518-27663-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,50 +34,61 @@ management.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/soc/fsl/fsl_esai.c | 14 +++++---------
- sound/soc/fsl/fsl_esai.h |  5 +----
- 2 files changed, 6 insertions(+), 13 deletions(-)
+ sound/soc/fsl/fsl_spdif.c | 24 ++++++++++--------------
+ sound/soc/fsl/fsl_spdif.h |  5 +----
+ 2 files changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index d79e99e..8f43110 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -1,12 +1,8 @@
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 4f7469c..9b59d87 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1,17 +1,13 @@
 -/*
-- * Freescale ESAI ALSA SoC Digital Audio Interface (DAI) driver
+- * Freescale S/PDIF ALSA SoC Digital Audio Interface (DAI) driver
 - *
-- * Copyright (C) 2014 Freescale Semiconductor, Inc.
+- * Copyright (C) 2013 Freescale Semiconductor, Inc.
+- *
+- * Based on stmp3xxx_spdif_dai.c
+- * Vladimir Barinov <vbarinov@embeddedalley.com>
+- * Copyright 2008 SigmaTel, Inc
+- * Copyright 2008 Embedded Alley Solutions, Inc
 - *
 - * This file is licensed under the terms of the GNU General Public License
-- * version 2. This program is licensed "as is" without any warranty of any
+- * version 2.  This program  is licensed "as is" without any warranty of any
 - * kind, whether express or implied.
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// Freescale ESAI ALSA SoC Digital Audio Interface (DAI) driver
++// Freescale S/PDIF ALSA SoC Digital Audio Interface (DAI) driver
 +//
-+// Copyright (C) 2014 Freescale Semiconductor, Inc.
++// Copyright (C) 2013 Freescale Semiconductor, Inc.
++//
++// Based on stmp3xxx_spdif_dai.c
++// Vladimir Barinov <vbarinov@embeddedalley.com>
++// Copyright 2008 SigmaTel, Inc
++// Copyright 2008 Embedded Alley Solutions, Inc
  
+ #include <linux/bitrev.h>
  #include <linux/clk.h>
- #include <linux/dmaengine.h>
-diff --git a/sound/soc/fsl/fsl_esai.h b/sound/soc/fsl/fsl_esai.h
-index 5e793bb..f873588 100644
---- a/sound/soc/fsl/fsl_esai.h
-+++ b/sound/soc/fsl/fsl_esai.h
-@@ -1,13 +1,10 @@
+diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
+index 00bd351..7666dab 100644
+--- a/sound/soc/fsl/fsl_spdif.h
++++ b/sound/soc/fsl/fsl_spdif.h
+@@ -1,3 +1,4 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
  /*
-  * fsl_esai.h - ALSA ESAI interface for the Freescale i.MX SoC
+  * fsl_spdif.h - ALSA S/PDIF interface for the Freescale i.MX SoC
   *
-  * Copyright (C) 2014 Freescale Semiconductor, Inc.
-  *
-  * Author: Nicolin Chen <Guangyu.Chen@freescale.com>
+@@ -8,10 +9,6 @@
+  * Based on fsl_ssi.h
+  * Author: Timur Tabi <timur@freescale.com>
+  * Copyright 2007-2008 Freescale Semiconductor, Inc.
 - *
 - * This file is licensed under the terms of the GNU General Public License
-- * version 2. This program is licensed "as is" without any warranty of any
+- * version 2.  This program  is licensed "as is" without any warranty of any
 - * kind, whether express or implied.
   */
  
- #ifndef _FSL_ESAI_DAI_H
+ #ifndef _FSL_SPDIF_DAI_H
 -- 
 2.7.4
