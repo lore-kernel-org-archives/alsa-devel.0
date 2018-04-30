@@ -1,21 +1,15 @@
-From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH 10/11] ASoC: AMD: Add const to snd_soc_ops
-	instances
-Date: Sun, 29 Apr 2018 21:52:20 +0000
-Message-ID: <CAGS+omDEcX_FdemOsJjmFON9WBYODBRrJZwDKXcQ_ksTJmzkRA@mail.gmail.com>
-References: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1524741374-13523-10-git-send-email-Vijendar.Mukunda@amd.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v2 0/7] ASoC: omap: Deprecate omap-pcm for
+	sdma-pcm
+Date: Mon, 30 Apr 2018 09:57:41 +0300
+Message-ID: <20180430065748.3393-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f196.google.com (mail-ua0-f196.google.com
- [209.85.217.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 82A19266EBE
- for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 23:52:31 +0200 (CEST)
-Received: by mail-ua0-f196.google.com with SMTP id a2so3899516uak.2
- for <alsa-devel@alsa-project.org>; Sun, 29 Apr 2018 14:52:31 -0700 (PDT)
-In-Reply-To: <1524741374-13523-10-git-send-email-Vijendar.Mukunda@amd.com>
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2920266EBE
+ for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 08:57:17 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +19,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vijendar.Mukunda@amd.com
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, tiwai@suse.com, Mark Brown <broonie@kernel.org>, weiyongjun1@huawei.com, alexander.deucher@amd.com, Akshu Agrawal <akshu.agrawal@amd.com>
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, aaro.koskinen@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 26, 2018 at 5:18 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-wrote:
+Hi,
 
-> From: Akshu Agrawal <akshu.agrawal@amd.com>
+Changes since v1:
+- Rebased on the n810 patches (Kconfig conflict)
+- Delete the omap-pcm as the last step instead of keeping the .c/.h file.
+  If there is a need it can be resurrected with a simple revert.
+- I left out the Acked-by from Jarkko for the last patch since I have changed it
 
-> Marking snd_soc_ops instances const
+omap-pcm served us well over the years, but there is no reason to keep it around
+as we can rely on generic dmaengine_pcm code without the need to maintain custom
+code.
 
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+The series has been tested on:
+omap2 n810, omap3 beagle-xm, omap4 PandaES, omap4 Blaze (SDP),
+am57xx beagle-x15, dra7 evm.
 
-Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
+McBSP, McASP, McPDM, DMIC and HDMI audio was tested and I have found no issue
+with them.
 
-> ---
->   sound/soc/amd/acp-da7219-max98357a.c | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
+I was not able to test on OMAP1 for various reasons, but mainly because the
+Nokia 770 audio is not supported in mainline...
 
-> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
-b/sound/soc/amd/acp-da7219-max98357a.c
-> index fa5ad5b..133139d 100644
-> --- a/sound/soc/amd/acp-da7219-max98357a.c
-> +++ b/sound/soc/amd/acp-da7219-max98357a.c
-> @@ -171,17 +171,17 @@ static void cz_dmic_shutdown(struct
-snd_pcm_substream *substream)
->          da7219_clk_disable();
->   }
+Regards,
+Peter
+---
+Peter Ujfalusi (7):
+  ASoC: omap: Introduce the generic_dmaengine_pcm based sdma-pcm
+  ASoC: davinci-mcasp: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap-hdmi-audio: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap-dmic: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap-mcpdm: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap-mcbsp: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap: Delete the obsolete omap-pcm
 
-> -static struct snd_soc_ops cz_da7219_cap_ops = {
-> +static const struct snd_soc_ops cz_da7219_cap_ops = {
->          .startup = cz_da7219_startup,
->          .shutdown = cz_da7219_shutdown,
->   };
+ include/sound/omap-pcm.h          |  30 ----
+ sound/soc/davinci/Kconfig         |   2 +-
+ sound/soc/davinci/davinci-mcasp.c |   8 +-
+ sound/soc/omap/Kconfig            |  33 ++--
+ sound/soc/omap/Makefile           |   4 +-
+ sound/soc/omap/omap-dmic.c        |   4 +-
+ sound/soc/omap/omap-hdmi-audio.c  |   5 +-
+ sound/soc/omap/omap-mcbsp.c       |   4 +-
+ sound/soc/omap/omap-mcpdm.c       |   4 +-
+ sound/soc/omap/omap-pcm.c         | 262 ------------------------------
+ sound/soc/omap/sdma-pcm.c         |  68 ++++++++
+ sound/soc/omap/sdma-pcm.h         |  21 +++
+ 12 files changed, 124 insertions(+), 321 deletions(-)
+ delete mode 100644 include/sound/omap-pcm.h
+ delete mode 100644 sound/soc/omap/omap-pcm.c
+ create mode 100644 sound/soc/omap/sdma-pcm.c
+ create mode 100644 sound/soc/omap/sdma-pcm.h
 
-> -static struct snd_soc_ops cz_max_play_ops = {
-> +static const struct snd_soc_ops cz_max_play_ops = {
->          .startup = cz_max_startup,
->          .shutdown = cz_max_shutdown,
->   };
+-- 
+Peter
 
-> -static struct snd_soc_ops cz_dmic_cap_ops = {
-> +static const struct snd_soc_ops cz_dmic_cap_ops = {
->          .startup = cz_dmic_startup,
->          .shutdown = cz_dmic_shutdown,
->   };
-> --
-> 2.7.4
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
