@@ -1,85 +1,94 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: RE: [PATCH v2] ASoC: da7219: read fmw property to get mclk for
- non-dts systems
-Date: Mon, 30 Apr 2018 19:05:19 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1E93BC@SW-EX-MBX01.diasemi.com>
-References: <1525080203-18947-1-git-send-email-akshu.agrawal@amd.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Subject: Re: Applied "ASoC: mediatek: preallocate pages use
+ platform device" to the asoc tree
+Date: Mon, 30 Apr 2018 21:44:08 +0200
+Message-ID: <20180430194408.synwtzoawrdrudx7@kozik-lap>
+References: <E1fC164-0003ui-Ea@debutante>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525080203-18947-1-git-send-email-akshu.agrawal@amd.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: "djkurtz@chromium.org" <djkurtz@chromium.org>, "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <Support.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 558EB26735E
+ for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 21:44:10 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id a67so7441217wmf.3
+ for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 12:44:10 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <E1fC164-0003ui-Ea@debutante>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, ryder.lee@mediatek.com, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, Hidalgo.Huang@mediatek.com, linux-mediatek@lists.infradead.org, PC.Liao@mediatek.com, Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 30 April 2018 10:23, Akshu Agrawal wrote:
-
-> Non-dts based systems can use ACPI DSDT to pass on the mclk
-> to da7219.
-> This enables da7219 mclk to be linked to system clock.
-> Enable/Disable of the mclk is already handled in the codec so
-> platform drivers don't have to explicitly do handling of mclk.
-
-There is already a means via DT to specify the MCLK for a device using the
-generic clock DT bindings, and this driver already uses that. Should ACPI not
-have something similar to that which is generic, rather than adding device
-specific bindings/properties to achieve the same? There will be other drivers
-that will want to do the same.
-
->
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> ---
-> v2: Fixed kbuild error
->  include/sound/da7219.h    | 2 ++
->  sound/soc/codecs/da7219.c | 7 ++++++-
->  2 files changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
-> index 1bfcb16..df7ddf4 100644
-> --- a/include/sound/da7219.h
-> +++ b/include/sound/da7219.h
-> @@ -38,6 +38,8 @@ struct da7219_pdata {
->
->  	const char *dai_clks_name;
->
-> +	const char *mclk_name;
-> +
->  	/* Mic */
->  	enum da7219_micbias_voltage micbias_lvl;
->  	enum da7219_mic_amp_in_sel mic_amp_in_sel;
-> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-> index 980a6a8..aed68a4 100644
-> --- a/sound/soc/codecs/da7219.c
-> +++ b/sound/soc/codecs/da7219.c
-> @@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct
-> snd_soc_component *compone
->  		dev_warn(dev, "Using default clk name: %s\n",
->  			 pdata->dai_clks_name);
->
-> +	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
-> +
->  	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
->  		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
->  	else
-> @@ -1905,7 +1907,10 @@ static int da7219_probe(struct snd_soc_component
-> *component)
->  	da7219_handle_pdata(component);
->
->  	/* Check if MCLK provided */
-> -	da7219->mclk = devm_clk_get(component->dev, "mclk");
-> +	if (da7219->pdata->mclk_name)
-> +		da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
-
-By doing this you would need an associated 'clk_put()' whereas the devm call
-avoids this.
-
-> +	if (!da7219->mclk)
-> +		da7219->mclk = devm_clk_get(component->dev, "mclk");
->  	if (IS_ERR(da7219->mclk)) {
->  		if (PTR_ERR(da7219->mclk) != -ENOENT) {
->  			ret = PTR_ERR(da7219->mclk);
-> --
-> 1.9.1
+T24gRnJpLCBBcHIgMjcsIDIwMTggYXQgMTE6NTk6MjRBTSArMDEwMCwgTWFyayBCcm93biB3cm90
+ZToKPiBUaGUgcGF0Y2gKPiAKPiAgICBBU29DOiBtZWRpYXRlazogcHJlYWxsb2NhdGUgcGFnZXMg
+dXNlIHBsYXRmb3JtIGRldmljZQo+IAo+IGhhcyBiZWVuIGFwcGxpZWQgdG8gdGhlIGFzb2MgdHJl
+ZSBhdAo+IAo+ICAgIGh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwv
+Z2l0L2Jyb29uaWUvc291bmQuZ2l0IAo+IAo+IEFsbCBiZWluZyB3ZWxsIHRoaXMgbWVhbnMgdGhh
+dCBpdCB3aWxsIGJlIGludGVncmF0ZWQgaW50byB0aGUgbGludXgtbmV4dAo+IHRyZWUgKHVzdWFs
+bHkgc29tZXRpbWUgaW4gdGhlIG5leHQgMjQgaG91cnMpIGFuZCBzZW50IHRvIExpbnVzIGR1cmlu
+Zwo+IHRoZSBuZXh0IG1lcmdlIHdpbmRvdyAob3Igc29vbmVyIGlmIGl0IGlzIGEgYnVnIGZpeCks
+IGhvd2V2ZXIgaWYKPiBwcm9ibGVtcyBhcmUgZGlzY292ZXJlZCB0aGVuIHRoZSBwYXRjaCBtYXkg
+YmUgZHJvcHBlZCBvciByZXZlcnRlZC4gIAo+IAo+IFlvdSBtYXkgZ2V0IGZ1cnRoZXIgZS1tYWls
+cyByZXN1bHRpbmcgZnJvbSBhdXRvbWF0ZWQgb3IgbWFudWFsIHRlc3RpbmcKPiBhbmQgcmV2aWV3
+IG9mIHRoZSB0cmVlLCBwbGVhc2UgZW5nYWdlIHdpdGggcGVvcGxlIHJlcG9ydGluZyBwcm9ibGVt
+cyBhbmQKPiBzZW5kIGZvbGxvd3VwIHBhdGNoZXMgYWRkcmVzc2luZyBhbnkgaXNzdWVzIHRoYXQg
+YXJlIHJlcG9ydGVkIGlmIG5lZWRlZC4KPiAKPiBJZiBhbnkgdXBkYXRlcyBhcmUgcmVxdWlyZWQg
+b3IgeW91IGFyZSBzdWJtaXR0aW5nIGZ1cnRoZXIgY2hhbmdlcyB0aGV5Cj4gc2hvdWxkIGJlIHNl
+bnQgYXMgaW5jcmVtZW50YWwgdXBkYXRlcyBhZ2FpbnN0IGN1cnJlbnQgZ2l0LCBleGlzdGluZwo+
+IHBhdGNoZXMgd2lsbCBub3QgYmUgcmVwbGFjZWQuCj4gCj4gUGxlYXNlIGFkZCBhbnkgcmVsZXZh
+bnQgbGlzdHMgYW5kIG1haW50YWluZXJzIHRvIHRoZSBDQ3Mgd2hlbiByZXBseWluZwo+IHRvIHRo
+aXMgbWFpbC4KPiAKPiBUaGFua3MsCj4gTWFyawo+IAo+ID5Gcm9tIDU4ZWRmMzI1NWNhMzAyNTQ0
+NGMwMTYyNDE2MTE0NTM1ODU0NTMwODkgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxCj4gRnJvbTog
+S2FpIENoaWVoIENodWFuZyA8a2FpY2hpZWguY2h1YW5nQG1lZGlhdGVrLmNvbT4KPiBEYXRlOiBG
+cmksIDI3IEFwciAyMDE4IDEwOjExOjM1ICswODAwCj4gU3ViamVjdDogW1BBVENIXSBBU29DOiBt
+ZWRpYXRlazogcHJlYWxsb2NhdGUgcGFnZXMgdXNlIHBsYXRmb3JtIGRldmljZQo+IAo+IHByZWFs
+bG9jYXRlIHBhZ2VzIHNob3VsZCB1c2UgcGxhdGZvcm0gZGV2aWNlLAo+IHNpbmNlIHdlIHNldCBk
+bWEgbWFzayBmb3IgcGxhdGZvcm0gZGV2aWNlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEthaUNoaWVo
+IENodWFuZyA8a2FpY2hpZWguY2h1YW5nQG1lZGlhdGVrLmNvbT4KPiBTaWduZWQtb2ZmLWJ5OiBN
+YXJrIEJyb3duIDxicm9vbmllQGtlcm5lbC5vcmc+Cj4gLS0tCj4gIHNvdW5kL3NvYy9tZWRpYXRl
+ay9jb21tb24vbXRrLWFmZS1wbGF0Zm9ybS1kcml2ZXIuYyB8IDQgKystLQo+ICAxIGZpbGUgY2hh
+bmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQoKSGksCgpJdCBsb29rcyBsaWtl
+IHRoaXMgcGF0Y2ggYnJlYWtzIGNvbXBpbGF0aW9uIG9mIGFsbHllc2NvbmZpZyBvbiBBUk0KbmV4
+dC0yMDE4MDQzMDoKCiAgICAgIENDICAgICAgc291bmQvc29jL21lZGlhdGVrL2NvbW1vbi9tdGst
+YWZlLXBsYXRmb3JtLWRyaXZlci5vCiAgICAuLi9zb3VuZC9zb2MvbWVkaWF0ZWsvY29tbW9uL210
+ay1hZmUtcGxhdGZvcm0tZHJpdmVyLmM6IEluIGZ1bmN0aW9uIOKAmG10a19hZmVfcGNtX25ld+KA
+mToKICAgIC4uL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1wbGF0Zm9ybS1kcml2
+ZXIuYzo2NToxNTogZXJyb3I6IOKAmHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1l4oCZIGhhcyBu
+byBtZW1iZXIgbmFtZWQg4oCYcGxhdGZvcm3igJkKICAgICAgICAgICAgICAgIHJ0ZC0+cGxhdGZv
+cm0tPmRldiwKICAgICAgICAgICAgICAgICAgIF4KICAgIC4uL3NvdW5kL3NvYy9tZWRpYXRlay9j
+b21tb24vbXRrLWFmZS1wbGF0Zm9ybS1kcml2ZXIuYzo2NzoxOiB3YXJuaW5nOiBjb250cm9sIHJl
+YWNoZXMgZW5kIG9mIG5vbi12b2lkIGZ1bmN0aW9uIFstV3JldHVybi10eXBlXQogICAgIH0KICAg
+ICBeCiAgICAuLi9zY3JpcHRzL01ha2VmaWxlLmJ1aWxkOjMxMjogcmVjaXBlIGZvciB0YXJnZXQg
+J3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1wbGF0Zm9ybS1kcml2ZXIubycgZmFp
+bGVkCiAgICBtYWtlWzVdOiAqKiogW3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1w
+bGF0Zm9ybS1kcml2ZXIub10gRXJyb3IgMQoKUmV2ZXJ0aW5nIGl0IGhlbHBzLgoKQmVzdCByZWdh
+cmRzLApLcnp5c3p0b2YKCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24v
+bXRrLWFmZS1wbGF0Zm9ybS1kcml2ZXIuYyBiL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRr
+LWFmZS1wbGF0Zm9ybS1kcml2ZXIuYwo+IGluZGV4IDQwNGZiZTE5ZTFhMy4uZDA0NmVhOGU1NDNi
+IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1wbGF0Zm9y
+bS1kcml2ZXIuYwo+ICsrKyBiL3NvdW5kL3NvYy9tZWRpYXRlay9jb21tb24vbXRrLWFmZS1wbGF0
+Zm9ybS1kcml2ZXIuYwo+IEBAIC01NiwxNCArNTYsMTQgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBz
+bmRfcGNtX29wcyBtdGtfYWZlX3BjbV9vcHMgPSB7Cj4gIHN0YXRpYyBpbnQgbXRrX2FmZV9wY21f
+bmV3KHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lICpydGQpCj4gIHsKPiAgCXNpemVfdCBzaXpl
+Owo+IC0Jc3RydWN0IHNuZF9jYXJkICpjYXJkID0gcnRkLT5jYXJkLT5zbmRfY2FyZDsKPiAgCXN0
+cnVjdCBzbmRfcGNtICpwY20gPSBydGQtPnBjbTsKPiAgCXN0cnVjdCBzbmRfc29jX2NvbXBvbmVu
+dCAqY29tcG9uZW50ID0gc25kX3NvY19ydGRjb21fbG9va3VwKHJ0ZCwgQUZFX1BDTV9OQU1FKTsK
+PiAgCXN0cnVjdCBtdGtfYmFzZV9hZmUgKmFmZSA9IHNuZF9zb2NfY29tcG9uZW50X2dldF9kcnZk
+YXRhKGNvbXBvbmVudCk7Cj4gIAo+ICAJc2l6ZSA9IGFmZS0+bXRrX2FmZV9oYXJkd2FyZS0+YnVm
+ZmVyX2J5dGVzX21heDsKPiAgCXJldHVybiBzbmRfcGNtX2xpYl9wcmVhbGxvY2F0ZV9wYWdlc19m
+b3JfYWxsKHBjbSwgU05EUlZfRE1BX1RZUEVfREVWLAo+IC0JCQkJCQkgICAgIGNhcmQtPmRldiwg
+c2l6ZSwgc2l6ZSk7Cj4gKwkJCQkJCSAgICAgcnRkLT5wbGF0Zm9ybS0+ZGV2LAo+ICsJCQkJCQkg
+ICAgIHNpemUsIHNpemUpOwo+ICB9Cj4gIAo+ICBzdGF0aWMgdm9pZCBtdGtfYWZlX3BjbV9mcmVl
+KHN0cnVjdCBzbmRfcGNtICpwY20pCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
