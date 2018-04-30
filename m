@@ -1,80 +1,54 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2] ASoC: da7219: read fmw property to get
- mclk for non-dts systems
-Date: Mon, 30 Apr 2018 11:24:33 -0500
-Message-ID: <cb0df61c-596b-b23c-fc34-52ac4b7830e8@linux.intel.com>
-References: <1525080203-18947-1-git-send-email-akshu.agrawal@amd.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v3 3/3] ASoC: Add Multi CPU DAI support in
+ DAPM
+Date: Mon, 30 Apr 2018 17:24:56 +0100
+Message-ID: <20180430162456.34232lvulubgp5ky@localhost.localdomain>
+References: <1524131359-24387-1-git-send-email-vinod.koul@intel.com>
+ <1524131359-24387-4-git-send-email-vinod.koul@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525080203-18947-1-git-send-email-akshu.agrawal@amd.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com, Adam.Thomson.Opensource@diasemi.com
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id B01EC26732A
+ for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 18:25:00 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1524131359-24387-4-git-send-email-vinod.koul@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 4/30/18 4:23 AM, Akshu Agrawal wrote:
-> Non-dts based systems can use ACPI DSDT to pass on the mclk
-> to da7219.
-> This enables da7219 mclk to be linked to system clock.
-> Enable/Disable of the mclk is already handled in the codec so
-> platform drivers don't have to explicitly do handling of mclk.
+On Thu, Apr 19, 2018 at 03:19:19PM +0530, Vinod Koul wrote:
+> From: Shreyas NC <shreyas.nc@intel.com>
 > 
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+> Extend the multi CPU support in DAPM functions to check for
+> valid widgets and connected widgets.
+> 
+> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+> Signed-off-by: Vinod Koul <vinod.koul@intel.com>
 > ---
-> v2: Fixed kbuild error
->   include/sound/da7219.h    | 2 ++
->   sound/soc/codecs/da7219.c | 7 ++++++-
->   2 files changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
-> index 1bfcb16..df7ddf4 100644
-> --- a/include/sound/da7219.h
-> +++ b/include/sound/da7219.h
-> @@ -38,6 +38,8 @@ struct da7219_pdata {
->   
->   	const char *dai_clks_name;
->   
-> +	const char *mclk_name;
-> +
->   	/* Mic */
->   	enum da7219_micbias_voltage micbias_lvl;
->   	enum da7219_mic_amp_in_sel mic_amp_in_sel;
-> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-> index 980a6a8..aed68a4 100644
-> --- a/sound/soc/codecs/da7219.c
-> +++ b/sound/soc/codecs/da7219.c
-> @@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
->   		dev_warn(dev, "Using default clk name: %s\n",
->   			 pdata->dai_clks_name);
->   
-> +	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
-> +
->   	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
->   		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
->   	else
-> @@ -1905,7 +1907,10 @@ static int da7219_probe(struct snd_soc_component *component)
->   	da7219_handle_pdata(component);
->   
->   	/* Check if MCLK provided */
-> -	da7219->mclk = devm_clk_get(component->dev, "mclk");
-> +	if (da7219->pdata->mclk_name)
-> +		da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
-> +	if (!da7219->mclk)
-> +		da7219->mclk = devm_clk_get(component->dev, "mclk");
+> +static void dapm_add_valid_dai_widget(struct snd_soc_card *card,
+> +					struct snd_soc_pcm_runtime *rtd,
+> +					struct snd_soc_dai *codec_dai,
+> +					struct snd_soc_dai *cpu_dai)
 
-this looks weird, why are you using different clk functions depending on 
-the existence of a _DSD property? Why not just change the name and keep 
-the same flow, e.g something like
+This function name still feels a little funny since the function
+doesn't add any widgets. It adds paths if there are valid
+widgets. Perhaps dapm_add_valid_dai_path?
 
-if(!da7219->pdata->mclk_name)
-	da7219->pdata->mclk_name = "mclk";
-da7219->mclk = devm_clk_get(component->dev, da7219->pdata->mclk_name);
+But I don't feel super strongly about it, so:
 
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
->   	if (IS_ERR(da7219->mclk)) {
->   		if (PTR_ERR(da7219->mclk) != -ENOENT) {
->   			ret = PTR_ERR(da7219->mclk);
-> 
+Thanks,
+Charles
