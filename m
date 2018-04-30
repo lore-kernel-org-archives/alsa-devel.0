@@ -1,17 +1,16 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 6/7] ASoC: omap-mcbsp: Convert to use the
-	sdma-pcm instead of omap-pcm
-Date: Mon, 30 Apr 2018 09:57:47 +0300
-Message-ID: <20180430065748.3393-7-peter.ujfalusi@ti.com>
-References: <20180430065748.3393-1-peter.ujfalusi@ti.com>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [PATCH] ASoC: da7219: read fmw property to get mclk
+	for non-dts systems
+Date: Mon, 30 Apr 2018 15:01:54 +0800
+Message-ID: <1525071715-17796-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
- by alsa0.perex.cz (Postfix) with ESMTP id A1ED7267679
- for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 08:57:30 +0200 (CEST)
-In-Reply-To: <20180430065748.3393-1-peter.ujfalusi@ti.com>
+Received: from NAM01-BN3-obe.outbound.protection.outlook.com
+ (mail-bn3nam01on0087.outbound.protection.outlook.com [104.47.33.87])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C724266EB0
+ for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 09:04:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,123 +20,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, aaro.koskinen@iki.fi
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com, Adam.Thomson.Opensource@diasemi.com, akshu.agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-Use the new platform driver.
+Non-dts based systems can use ACPI DSDT to pass on the mclk
+to da7219.
+This enables da7219 mclk to be linked to system clock.
+Enable/Disable of the mclk is already handled in the codec so
+platform drivers don't have to explicitly do handling of mclk.
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 ---
- sound/soc/omap/Kconfig      | 16 ++++++++--------
- sound/soc/omap/omap-mcbsp.c |  4 ++--
- 2 files changed, 10 insertions(+), 10 deletions(-)
+ include/sound/da7219.h    | 2 ++
+ sound/soc/codecs/da7219.c | 7 ++++++-
+ 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 6a60a8926ecf..4ee7f9e25d71 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -18,7 +18,7 @@ config SND_OMAP_SOC_DMIC
+diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+index 1bfcb16..df7ddf4 100644
+--- a/include/sound/da7219.h
++++ b/include/sound/da7219.h
+@@ -38,6 +38,8 @@ struct da7219_pdata {
  
- config SND_OMAP_SOC_MCBSP
- 	tristate "TI Multichannel Buffered Serial Port (McBSP) support"
--	depends on SND_OMAP_SOC
-+	depends on SND_SDMA_SOC
- 	help
- 	  Say Y or M here if you want to have support for McBSP IP found in
- 	  Texas Instruments OMAP1/2/3/4/5 SoCs.
-@@ -47,7 +47,7 @@ config SND_OMAP_SOC_HDMI_AUDIO
+ 	const char *dai_clks_name;
  
- config SND_OMAP_SOC_N810
- 	tristate "SoC Audio support for Nokia N810"
--	depends on SND_OMAP_SOC && MACH_NOKIA_N810 && I2C
-+	depends on SND_SDMA_SOC && MACH_NOKIA_N810 && I2C
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC3X
- 	help
-@@ -55,7 +55,7 @@ config SND_OMAP_SOC_N810
++	const char *mclk_name;
++
+ 	/* Mic */
+ 	enum da7219_micbias_voltage micbias_lvl;
+ 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 980a6a8..47ffb35 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
+ 		dev_warn(dev, "Using default clk name: %s\n",
+ 			 pdata->dai_clks_name);
  
- config SND_OMAP_SOC_RX51
- 	tristate "SoC Audio support for Nokia N900 (RX-51)"
--	depends on SND_OMAP_SOC && ARM && I2C
-+	depends on SND_SDMA_SOC && ARM && I2C
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC3X
- 	select SND_SOC_TPA6130A2
-@@ -66,7 +66,7 @@ config SND_OMAP_SOC_RX51
++	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
++
+ 	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
+ 		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
+ 	else
+@@ -1905,7 +1907,10 @@ static int da7219_probe(struct snd_soc_component *component)
+ 	da7219_handle_pdata(component);
  
- config SND_OMAP_SOC_AMS_DELTA
- 	tristate "SoC Audio support for Amstrad E3 (Delta) videophone"
--	depends on SND_OMAP_SOC && MACH_AMS_DELTA && TTY
-+	depends on SND_SDMA_SOC && MACH_AMS_DELTA && TTY
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_CX20442
- 	help
-@@ -85,7 +85,7 @@ config SND_OMAP_SOC_AMS_DELTA
- 
- config SND_OMAP_SOC_OSK5912
- 	tristate "SoC Audio support for omap osk5912"
--	depends on SND_OMAP_SOC && MACH_OMAP_OSK && I2C
-+	depends on SND_SDMA_SOC && MACH_OMAP_OSK && I2C
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC23_I2C
- 	help
-@@ -93,7 +93,7 @@ config SND_OMAP_SOC_OSK5912
- 
- config SND_OMAP_SOC_AM3517EVM
- 	tristate "SoC Audio support for OMAP3517 / AM3517 EVM"
--	depends on SND_OMAP_SOC && MACH_OMAP3517EVM && I2C
-+	depends on SND_SDMA_SOC && MACH_OMAP3517EVM && I2C
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC23_I2C
- 	help
-@@ -102,7 +102,7 @@ config SND_OMAP_SOC_AM3517EVM
- 
- config SND_OMAP_SOC_OMAP_TWL4030
- 	tristate "SoC Audio support for TI SoC based boards with twl4030 codec"
--	depends on TWL4030_CORE && SND_OMAP_SOC
-+	depends on TWL4030_CORE && SND_SDMA_SOC
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TWL4030
- 	help
-@@ -135,7 +135,7 @@ config SND_OMAP_SOC_OMAP_ABE_TWL6040
- 
- config SND_OMAP_SOC_OMAP3_PANDORA
- 	tristate "SoC Audio support for OMAP3 Pandora"
--	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_PANDORA
-+	depends on TWL4030_CORE && SND_SDMA_SOC && MACH_OMAP3_PANDORA
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TWL4030
- 	help
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 6b40bdbef336..d0ebb6b9bfac 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -34,11 +34,11 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
--#include <sound/omap-pcm.h>
- 
- #include <linux/platform_data/asoc-ti-mcbsp.h>
- #include "mcbsp.h"
- #include "omap-mcbsp.h"
-+#include "sdma-pcm.h"
- 
- #define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_96000)
- 
-@@ -868,7 +868,7 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	return omap_pcm_platform_register(&pdev->dev);
-+	return sdma_pcm_platform_register(&pdev->dev, NULL, NULL);
- }
- 
- static int asoc_mcbsp_remove(struct platform_device *pdev)
+ 	/* Check if MCLK provided */
+-	da7219->mclk = devm_clk_get(component->dev, "mclk");
++	if (da7219->pdata->mclk_name)
++		da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
++	if (!da7219->mclk)
++		da7219->mclk = devm_clk_get(codec->dev, "mclk");
+ 	if (IS_ERR(da7219->mclk)) {
+ 		if (PTR_ERR(da7219->mclk) != -ENOENT) {
+ 			ret = PTR_ERR(da7219->mclk);
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+1.9.1
