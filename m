@@ -1,79 +1,152 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH] ASoC: da7219: read fmw property to get mclk
-	for non-dts systems
-Date: Mon, 30 Apr 2018 15:01:55 +0800
-Message-ID: <1525071715-17796-2-git-send-email-akshu.agrawal@amd.com>
-References: <1525071715-17796-1-git-send-email-akshu.agrawal@amd.com>
+From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
+Subject: Re: [PATCH 03/11] ASoC: amd: added byte count register offset
+ variables to rtd
+Date: Mon, 30 Apr 2018 12:54:20 +0530
+Message-ID: <fbc27437-769a-2340-a348-1c21977ab158@amd.com>
+References: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <1524741374-13523-3-git-send-email-Vijendar.Mukunda@amd.com>
+ <CAGS+omCN5Xk71FQMJztzi6orNLShr9E4g61atYpbqtcOtcHLjg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM03-DM3-obe.outbound.protection.outlook.com
- (mail-dm3nam03on0052.outbound.protection.outlook.com [104.47.41.52])
- by alsa0.perex.cz (Postfix) with ESMTP id E2D5F266EB0
- for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 09:04:11 +0200 (CEST)
-In-Reply-To: <1525071715-17796-1-git-send-email-akshu.agrawal@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com, Adam.Thomson.Opensource@diasemi.com, akshu.agrawal@amd.com
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAGS+omCN5Xk71FQMJztzi6orNLShr9E4g61atYpbqtcOtcHLjg@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Kurtz <djkurtz@chromium.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, alexander.deucher@amd.com, jclinton@chromium.org, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>, kstewart@linuxfoundation.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Non-dts based systems can use ACPI DSDT to pass on the mclk
-to da7219.
-This enables da7219 mclk to be linked to system clock.
-Enable/Disable of the mclk is already handled in the codec so
-platform drivers don't have to explicitly do handling of mclk.
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
- include/sound/da7219.h    | 2 ++
- sound/soc/codecs/da7219.c | 7 ++++++-
- 2 files changed, 8 insertions(+), 1 deletion(-)
 
-diff --git a/include/sound/da7219.h b/include/sound/da7219.h
-index 1bfcb16..df7ddf4 100644
---- a/include/sound/da7219.h
-+++ b/include/sound/da7219.h
-@@ -38,6 +38,8 @@ struct da7219_pdata {
- 
- 	const char *dai_clks_name;
- 
-+	const char *mclk_name;
-+
- 	/* Mic */
- 	enum da7219_micbias_voltage micbias_lvl;
- 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 980a6a8..47ffb35 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
- 		dev_warn(dev, "Using default clk name: %s\n",
- 			 pdata->dai_clks_name);
- 
-+	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
-+
- 	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
- 		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
- 	else
-@@ -1905,7 +1907,10 @@ static int da7219_probe(struct snd_soc_component *component)
- 	da7219_handle_pdata(component);
- 
- 	/* Check if MCLK provided */
--	da7219->mclk = devm_clk_get(component->dev, "mclk");
-+	if (da7219->pdata->mclk_name)
-+		da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
-+	if (!da7219->mclk)
-+		da7219->mclk = devm_clk_get(codec->dev, "mclk");
- 	if (IS_ERR(da7219->mclk)) {
- 		if (PTR_ERR(da7219->mclk) != -ENOENT) {
- 			ret = PTR_ERR(da7219->mclk);
--- 
-1.9.1
+On Monday 30 April 2018 03:09 AM, Daniel Kurtz wrote:
+> Hi Vijendar,
+> 
+> 
+> On Thu, Apr 26, 2018 at 5:14 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> wrote:
+> 
+>> Added byte count register offset variables to audio_substream_data
+>> structure. Modified dma pointer callback.
+> 
+>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> 
+> Please fix the small indentation nits, otherwise this one is:
+> 
+> Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
+> 
+>> ---
+>>    sound/soc/amd/acp-pcm-dma.c | 36 +++++++++++++++---------------------
+>>    sound/soc/amd/acp.h         |  2 ++
+>>    2 files changed, 17 insertions(+), 21 deletions(-)
+> 
+>> diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+>> index f18ed9a..019f696 100644
+>> --- a/sound/soc/amd/acp-pcm-dma.c
+>> +++ b/sound/soc/amd/acp-pcm-dma.c
+>> @@ -793,12 +793,18 @@ static int acp_dma_hw_params(struct
+> snd_pcm_substream *substream,
+>>                   rtd->destination = TO_ACP_I2S_1;
+>>                   rtd->dma_dscr_idx_1 = PLAYBACK_START_DMA_DESCR_CH12;
+>>                   rtd->dma_dscr_idx_2 = PLAYBACK_START_DMA_DESCR_CH13;
+>> +               rtd->byte_cnt_high_reg_offset =
+>> +               mmACP_I2S_TRANSMIT_BYTE_CNT_HIGH;
+> 
+> Indent relative to line above with 2 tabs.
+
+we will fix it and will post fresh patch.
+> 
+>> +               rtd->byte_cnt_low_reg_offset =
+> mmACP_I2S_TRANSMIT_BYTE_CNT_LOW;
+>>           } else {
+>>                   rtd->ch1 = SYSRAM_TO_ACP_CH_NUM;
+>>                   rtd->ch2 = ACP_TO_I2S_DMA_CH_NUM;
+>>                   rtd->destination = FROM_ACP_I2S_1;
+>>                   rtd->dma_dscr_idx_1 = CAPTURE_START_DMA_DESCR_CH14;
+>>                   rtd->dma_dscr_idx_2 = CAPTURE_START_DMA_DESCR_CH15;
+>> +               rtd->byte_cnt_high_reg_offset =
+>> +               mmACP_I2S_RECEIVED_BYTE_CNT_HIGH;
+> 
+> here too.
+
+we will fix it and will post fresh patch.
+> 
+>> +               rtd->byte_cnt_low_reg_offset =
+> mmACP_I2S_RECEIVED_BYTE_CNT_LOW;
+>>           }
+> 
+>>           size = params_buffer_bytes(params);
+>> @@ -834,26 +840,15 @@ static int acp_dma_hw_free(struct snd_pcm_substream
+> *substream)
+>>           return snd_pcm_lib_free_pages(substream);
+>>    }
+> 
+>> -static u64 acp_get_byte_count(void __iomem *acp_mmio, int stream)
+>> +static u64 acp_get_byte_count(struct audio_substream_data *rtd)
+>>    {
+>> -       union acp_dma_count playback_dma_count;
+>> -       union acp_dma_count capture_dma_count;
+>> -       u64 bytescount = 0;
+>> +       union acp_dma_count byte_count;
+> 
+>> -       if (stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>> -               playback_dma_count.bcount.high = acp_reg_read(acp_mmio,
+>> -                                       mmACP_I2S_TRANSMIT_BYTE_CNT_HIGH);
+>> -               playback_dma_count.bcount.low  = acp_reg_read(acp_mmio,
+>> -                                       mmACP_I2S_TRANSMIT_BYTE_CNT_LOW);
+>> -               bytescount = playback_dma_count.bytescount;
+>> -       } else {
+>> -               capture_dma_count.bcount.high = acp_reg_read(acp_mmio,
+>> -                                       mmACP_I2S_RECEIVED_BYTE_CNT_HIGH);
+>> -               capture_dma_count.bcount.low  = acp_reg_read(acp_mmio,
+>> -                                       mmACP_I2S_RECEIVED_BYTE_CNT_LOW);
+>> -               bytescount = capture_dma_count.bytescount;
+>> -       }
+>> -       return bytescount;
+>> +       byte_count.bcount.high = acp_reg_read(rtd->acp_mmio,
+>> +
+> rtd->byte_cnt_high_reg_offset);
+>> +       byte_count.bcount.low  = acp_reg_read(rtd->acp_mmio,
+>> +
+> rtd->byte_cnt_low_reg_offset);
+>> +       return byte_count.bytescount;
+>>    }
+> 
+>>    static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream
+> *substream)
+>> @@ -869,7 +864,7 @@ static snd_pcm_uframes_t acp_dma_pointer(struct
+> snd_pcm_substream *substream)
+>>                   return -EINVAL;
+> 
+>>           buffersize = frames_to_bytes(runtime, runtime->buffer_size);
+>> -       bytescount = acp_get_byte_count(rtd->acp_mmio, substream->stream);
+>> +       bytescount = acp_get_byte_count(rtd);
+> 
+>>           if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>>                   if (bytescount > rtd->i2ssp_renderbytescount)
+>> @@ -925,8 +920,7 @@ static int acp_dma_trigger(struct snd_pcm_substream
+> *substream, int cmd)
+>>           case SNDRV_PCM_TRIGGER_START:
+>>           case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+>>           case SNDRV_PCM_TRIGGER_RESUME:
+>> -               bytescount = acp_get_byte_count(rtd->acp_mmio,
+>> -                                               substream->stream);
+>> +               bytescount = acp_get_byte_count(rtd);
+>>                   if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+>>                           if (rtd->i2ssp_renderbytescount == 0)
+>>                                   rtd->i2ssp_renderbytescount = bytescount;
+>> diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+>> index 5e25428..3b076c6 100644
+>> --- a/sound/soc/amd/acp.h
+>> +++ b/sound/soc/amd/acp.h
+>> @@ -90,6 +90,8 @@ struct audio_substream_data {
+>>           u16 destination;
+>>           u16 dma_dscr_idx_1;
+>>           u16 dma_dscr_idx_2;
+>> +       u32 byte_cnt_high_reg_offset;
+>> +       u32 byte_cnt_low_reg_offset;
+>>           uint64_t size;
+>>           u64 i2ssp_renderbytescount;
+>>           u64 i2ssp_capturebytescount;
+>> --
+>> 2.7.4
