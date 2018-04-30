@@ -1,135 +1,194 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH 04/11] ASoC: amd: removed separate byte
- count variables for playback and capture
-Date: Mon, 30 Apr 2018 12:55:43 +0530
-Message-ID: <e8f39d50-360e-cd66-aba7-8fd1aade6f49@amd.com>
-References: <1524741374-13523-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1524741374-13523-4-git-send-email-Vijendar.Mukunda@amd.com>
- <CAGS+omA4DNm7HZZUpRBJfhhY-GYGaQRU1KWBb-CTuO7qGwTXCw@mail.gmail.com>
+From: DaeRyong Jeong <threeearcat@gmail.com>
+Subject: KASAN: use-after-free in loopback_active_get
+Date: Mon, 30 Apr 2018 16:53:14 +0900
+Message-ID: <20180430075310.GA1070@dragonet.kaist.ac.kr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-BN3-obe.outbound.protection.outlook.com
- (mail-bn3nam01on0052.outbound.protection.outlook.com [104.47.33.52])
- by alsa0.perex.cz (Postfix) with ESMTP id C4007266EB0
- for <alsa-devel@alsa-project.org>; Mon, 30 Apr 2018 09:23:09 +0200 (CEST)
-In-Reply-To: <CAGS+omA4DNm7HZZUpRBJfhhY-GYGaQRU1KWBb-CTuO7qGwTXCw@mail.gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Kurtz <djkurtz@chromium.org>
-Cc: kstewart@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>, jclinton@chromium.org, Mark Brown <broonie@kernel.org>, pombredanne@nexb.com, alexander.deucher@amd.com, Guenter Roeck <linux@roeck-us.net>, Akshu Agrawal <akshu.agrawal@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, byoungyoung@purdue.edu, kt0755@gmail.com, bammanag@purdue.edu
 List-Id: alsa-devel@alsa-project.org
 
+We report the crash:
+KASAN: use-after-free in loopback_active_get
+
+This crash has been found in v4.17-rc1 using RaceFuzzer (a modified
+version of Syzkaller), which we describe more at the end of this report.
+Our analysis shows that the race occurs when invoking two syscalls concurrently,
+ioctl$SNDRV_CTL_IOCTL_ELEM_READ and syz_open_dev$audion.
+
+kernel config:
+https://kiwi.cs.purdue.ed/static/race-fuzzer/KASAN_use-after-free_in_loopback_active_get.config
+
+Analysis:
+
+When there is a race between sound/drivers/aloop.c:895
+(loopback_active_get) and sound/drivers/aloop.c:678 (free_cable), the
+retrieved cable pointer in loopback_active_get() may point to the
+freed memory region. When loopback_active_get() dereferences this
+pointer, use-after-free occurs.
+
+Possible CPU execution:
+
+CPU0						CPU1
+loopback_active_get()                           free_cable()
+----                                            ----
+struct loopback_cable *cable = ...
+                                                loopback->cables[substream->number][dev] = NULL;
+                                                kfree(cable);
+cable->running <-- Use-after-free
 
 
-On Monday 30 April 2018 03:11 AM, Daniel Kurtz wrote:
-> Hi Vijendar,
-> 
-> On Thu, Apr 26, 2018 at 5:15 AM Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> wrote:
-> 
->> Removed separate byte count variables for playback and capture.
-> 
->> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> 
-> Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
-> 
->> ---
->>    sound/soc/amd/acp-pcm-dma.c | 19 +++++--------------
->>    sound/soc/amd/acp.h         |  3 +--
->>    2 files changed, 6 insertions(+), 16 deletions(-)
-> 
->> diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
->> index 019f696..5f34be1 100644
->> --- a/sound/soc/amd/acp-pcm-dma.c
->> +++ b/sound/soc/amd/acp-pcm-dma.c
->> @@ -866,13 +866,8 @@ static snd_pcm_uframes_t acp_dma_pointer(struct
-> snd_pcm_substream *substream)
->>           buffersize = frames_to_bytes(runtime, runtime->buffer_size);
->>           bytescount = acp_get_byte_count(rtd);
-> 
->> -       if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->> -               if (bytescount > rtd->i2ssp_renderbytescount)
->> -                       bytescount = bytescount -
-> rtd->i2ssp_renderbytescount;
->> -       } else {
->> -               if (bytescount > rtd->i2ssp_capturebytescount)
->> -                       bytescount = bytescount -
-> rtd->i2ssp_capturebytescount;
->> -       }
->> +       if (bytescount > rtd->bytescount)
->> +               bytescount = bytescount - rtd->bytescount;
-> 
-> nit, this could be:
-> bytescount -= rtd->bytescount;
+Call Sequence:
+CPU0
+loopback_active_get
+  snd_ctl_elem_read
+    snd_ctl_elem_read_user
+      snd_ctl_ioctl
 
-we will fix it and will share fresh patch.
-> 
->>           pos = do_div(bytescount, buffersize);
->>           return bytes_to_frames(runtime, pos);
->>    }
->> @@ -921,9 +916,9 @@ static int acp_dma_trigger(struct snd_pcm_substream
-> *substream, int cmd)
->>           case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
->>           case SNDRV_PCM_TRIGGER_RESUME:
->>                   bytescount = acp_get_byte_count(rtd);
->> +               if (rtd->bytescount == 0)
->> +                       rtd->bytescount = bytescount;
->>                   if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->> -                       if (rtd->i2ssp_renderbytescount == 0)
->> -                               rtd->i2ssp_renderbytescount = bytescount;
->>                           acp_dma_start(rtd->acp_mmio, rtd->ch1, false);
->>                           while (acp_reg_read(rtd->acp_mmio,
-> mmACP_DMA_CH_STS) &
->>                                   BIT(rtd->ch1)) {
->> @@ -934,9 +929,6 @@ static int acp_dma_trigger(struct snd_pcm_substream
-> *substream, int cmd)
->>                                   }
->>                                   cpu_relax();
->>                           }
->> -               } else {
->> -                       if (rtd->i2ssp_capturebytescount == 0)
->> -                               rtd->i2ssp_capturebytescount = bytescount;
->>                   }
->>                   acp_dma_start(rtd->acp_mmio, rtd->ch2, true);
->>                   ret = 0;
->> @@ -947,12 +939,11 @@ static int acp_dma_trigger(struct snd_pcm_substream
-> *substream, int cmd)
->>                   if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
->>                           acp_dma_stop(rtd->acp_mmio, rtd->ch1);
->>                           ret =  acp_dma_stop(rtd->acp_mmio, rtd->ch2);
->> -                       rtd->i2ssp_renderbytescount = 0;
->>                   } else {
->>                           acp_dma_stop(rtd->acp_mmio, rtd->ch2);
->>                           ret = acp_dma_stop(rtd->acp_mmio, rtd->ch1);
->> -                       rtd->i2ssp_capturebytescount = 0;
->>                   }
->> +               rtd->bytescount = 0;
->>                   break;
->>           default:
->>                   ret = -EINVAL;
->> diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
->> index 3b076c6..82470bc 100644
->> --- a/sound/soc/amd/acp.h
->> +++ b/sound/soc/amd/acp.h
->> @@ -93,8 +93,7 @@ struct audio_substream_data {
->>           u32 byte_cnt_high_reg_offset;
->>           u32 byte_cnt_low_reg_offset;
->>           uint64_t size;
->> -       u64 i2ssp_renderbytescount;
->> -       u64 i2ssp_capturebytescount;
->> +       u64 bytescount;
->>           void __iomem *acp_mmio;
->>    };
-> 
->> --
->> 2.7.4
+CPU1
+free_cable
+  loopback_close
+    snd_pcm_release_substream
+      snd_pcm_release_substream
+        snd_pcm_oss_release_file
+          snd_pcm_oss_release_file
+            snd_pcm_oss_release
+
+
+We observed that snd_pcm_oss_release() is called during the open("/dev/audio1")
+syscall. In our configuration, the function do_dentry_open() returns -EINVAL
+since below if statement is evaluated as true.
+if ((f->f_flags & O_DIRECT)
+	(!f->f_mapping->a_ops || !f->f_mapping->a_ops->direct_IO))
+Therefore, fput() is called and snd_pcm_oss_release() is called as a pending
+work before returning to the user space. But we suspect that the insufficient
+locking between snd_ctl_ioctl() and snd_pcm_oss_release(), not the vfs_layer,
+is the cause of the crash.
+
+--------
+Read of size 4 at addr ffff88023aa4899c by task syz-executor0/27703
+
+CPU: 0 PID: 27703 Comm: syz-executor0 Not tainted 4.17.0-rc1 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x182/0x24c lib/dump_stack.c:113
+ print_address_description+0x6c/0x20b mm/kasan/report.c:256
+ kasan_report_error mm/kasan/report.c:354 [inline]
+ kasan_report.cold.7+0xac/0x2f5 mm/kasan/report.c:412
+ check_memory_region_inline mm/kasan/kasan.c:260 [inline]
+ __asan_load4+0x78/0x80 mm/kasan/kasan.c:698
+ loopback_active_get+0x71/0xb0 sound/drivers/aloop.c:900
+ snd_ctl_elem_read+0x14e/0x190 sound/core/control.c:896
+ snd_ctl_elem_read_user sound/core/control.c:914 [inline]
+ snd_ctl_ioctl+0xaf7/0xce0 sound/core/control.c:1560
+ vfs_ioctl fs/ioctl.c:46 [inline]
+ file_ioctl fs/ioctl.c:500 [inline]
+ do_vfs_ioctl+0x179/0xf40 fs/ioctl.c:684
+ ksys_ioctl+0xa9/0xd0 fs/ioctl.c:701
+ __do_sys_ioctl fs/ioctl.c:708 [inline]
+ __se_sys_ioctl fs/ioctl.c:706 [inline]
+ __x64_sys_ioctl+0x43/0x50 fs/ioctl.c:706
+ do_syscall_64+0x17a/0x530 arch/x86/entry/common.c:287
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x453bc9
+RSP: 002b:00007fc5fba5eaf8 EFLAGS: 00000212 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 0000000000708020 RCX: 0000000000453bc9
+RDX: 0000000020003b38 RSI: 00000000c4c85512 RDI: 0000000000000005
+RBP: 00000000000025a0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000212 R12: 00000000004aed78
+R13: 00000000ffffffff R14: 0000000000000005 R15: 00000000c4c85512
+
+Allocated by task 27704:
+ save_stack+0x43/0xd0 mm/kasan/kasan.c:448
+ set_track mm/kasan/kasan.c:460 [inline]
+ kasan_kmalloc+0xc4/0xe0 mm/kasan/kasan.c:553
+ kmem_cache_alloc_trace+0x152/0x780 mm/slab.c:3620
+ kmalloc include/linux/slab.h:512 [inline]
+ kzalloc include/linux/slab.h:701 [inline]
+ loopback_open+0x4d2/0x720 sound/drivers/aloop.c:704
+ snd_pcm_open_substream+0x174/0x250 sound/core/pcm_native.c:2391
+ snd_pcm_oss_open_file sound/core/oss/pcm_oss.c:2423 [inline]
+ snd_pcm_oss_open+0x799/0xfc0 sound/core/oss/pcm_oss.c:2505
+ soundcore_open+0x2db/0x3e0 sound/sound_core.c:597
+ chrdev_open+0x1c6/0x450 fs/char_dev.c:417
+ do_dentry_open+0x520/0x7c0 fs/open.c:784
+ vfs_open+0xc5/0x120 fs/open.c:906
+ do_last fs/namei.c:3365 [inline]
+ path_openat+0x1133/0x31a0 fs/namei.c:3501
+ do_filp_open+0x15a/0x1e0 fs/namei.c:3535
+ do_sys_open+0x464/0x540 fs/open.c:1093
+ __do_sys_open fs/open.c:1111 [inline]
+ __se_sys_open fs/open.c:1106 [inline]
+ __x64_sys_open+0x4c/0x60 fs/open.c:1106
+ do_syscall_64+0x17a/0x530 arch/x86/entry/common.c:287
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 27704:
+ save_stack+0x43/0xd0 mm/kasan/kasan.c:448
+ set_track mm/kasan/kasan.c:460 [inline]
+ __kasan_slab_free+0x11a/0x170 mm/kasan/kasan.c:521
+ kasan_slab_free+0xe/0x10 mm/kasan/kasan.c:528
+ __cache_free mm/slab.c:3498 [inline]
+ kfree+0xd9/0x260 mm/slab.c:3813
+ free_cable+0x148/0x160 sound/drivers/aloop.c:679
+ loopback_close+0x63/0x80 sound/drivers/aloop.c:766
+ snd_pcm_release_substream.part.46+0x10e/0x1b0 sound/core/pcm_native.c:2357
+ snd_pcm_release_substream+0x49/0x60 sound/core/pcm_native.c:2349
+ snd_pcm_oss_release_file.part.23+0x50/0x70 sound/core/oss/pcm_oss.c:2382
+ snd_pcm_oss_release_file sound/core/oss/pcm_oss.c:2377 [inline]
+ snd_pcm_oss_release+0xa9/0x160 sound/core/oss/pcm_oss.c:2562
+ __fput+0x246/0x4f0 fs/file_table.c:209
+ ____fput+0x15/0x20 fs/file_table.c:243
+ task_work_run+0x1b6/0x220 kernel/task_work.c:113
+ tracehook_notify_resume include/linux/tracehook.h:191 [inline]
+ exit_to_usermode_loop+0x28d/0x290 arch/x86/entry/common.c:166
+ prepare_exit_to_usermode arch/x86/entry/common.c:196 [inline]
+ syscall_return_slowpath arch/x86/entry/common.c:265 [inline]
+ do_syscall_64+0x51a/0x530 arch/x86/entry/common.c:290
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+The buggy address belongs to the object at ffff88023aa48900
+ which belongs to the cache kmalloc-192 of size 192
+The buggy address is located 156 bytes inside of
+ 192-byte region [ffff88023aa48900, ffff88023aa489c0)
+The buggy address belongs to the page:
+page:ffffea0008ea9200 count:1 mapcount:0 mapping:ffff88023aa48000 index:0x0
+flags: 0x6fffc0000000100(slab)
+raw: 06fffc0000000100 ffff88023aa48000 0000000000000000 0000000100000010
+raw: ffffea0008eceb60 ffffea0008d95960 ffff8800b6800040 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+ ffff88023aa48880: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+ ffff88023aa48900: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+>ffff88023aa48980: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+                            ^
+ ffff88023aa48a00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+ ffff88023aa48a80: fb fb fb fb fb fb fb fb fc fc fc fc fc fc fc fc
+==================================================================
+
+= About RaceFuzzer
+
+RaceFuzzer is a customized version of Syzkaller, specifically tailored
+to find race condition bugs in the Linux kernel. While we leverage
+many different technique, the notable feature of RaceFuzzer is in
+leveraging a custom hypervisor (QEMU/KVM) to interleave the
+scheduling. In particular, we modified the hypervisor to intentionally
+stall a per-core execution, which is similar to supporting per-core
+breakpoint functionality. This allows RaceFuzzer to force the kernel
+to deterministically trigger racy condition (which may rarely happen
+in practice due to randomness in scheduling).
+
+RaceFuzzer's C repro always pinpoints two racy syscalls. Since C
+repro's scheduling synchronization should be performed at the user
+space, its reproducibility is limited (reproduction may take from 1
+second to 10 minutes (or even more), depending on a bug). This is
+because, while RaceFuzzer precisely interleaves the scheduling at the
+kernel's instruction level when finding this bug, C repro cannot fully
+utilize such a feature. Please disregard all code related to
+"should_hypercall" in the C repro, as this is only for our debugging
+purposes using our own hypervisor.
