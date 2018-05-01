@@ -1,663 +1,691 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v7 09/24] ASoC: qdsp6: q6afe: Add q6afe driver
-Date: Tue,  1 May 2018 13:08:05 +0100
-Message-ID: <20180501120820.11016-10-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v7 21/24] ASoC: qdsp6: q6asm: Add q6asm dai driver
+Date: Tue,  1 May 2018 13:08:17 +0100
+Message-ID: <20180501120820.11016-22-srinivas.kandagatla@linaro.org>
 References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 903F22676BD
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 14:10:37 +0200 (CEST)
-Received: by mail-wr0-f195.google.com with SMTP id v15-v6so10646972wrm.10
- for <alsa-devel@alsa-project.org>; Tue, 01 May 2018 05:10:37 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
+Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support to Q6AFE (Audio Front End) module on Q6DSP.
-
-AFE module sits right at the other end of cpu where the codec/audio
-devices are connected.
-
-AFE provides abstraced interfaces to both hardware and virtual devices.
-Each AFE tx/rx port can be configured to connect to one of the hardware
-devices like codec, hdmi, slimbus, i2s and so on. AFE services include
-starting, stopping, and if needed, any configurations of the ports.
+This patch adds support to q6asm dai driver which configures Q6ASM streams
+to pass pcm data.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- sound/soc/qcom/Kconfig        |   4 +
- sound/soc/qcom/qdsp6/Makefile |   1 +
- sound/soc/qcom/qdsp6/q6afe.c  | 536 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6afe.h  |  35 +++
- 4 files changed, 576 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6afe.c
- create mode 100644 sound/soc/qcom/qdsp6/q6afe.h
+ sound/soc/qcom/Kconfig           |   4 +
+ sound/soc/qcom/qdsp6/Makefile    |   1 +
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 628 +++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 633 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/q6asm-dai.c
 
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 37ee0d958145..bb0a2afb0563 100644
+index d3523a30d942..85bb7dd11fd9 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -47,11 +47,15 @@ config SND_SOC_QDSP6_COMMON
- config SND_SOC_QDSP6_CORE
+@@ -62,6 +62,9 @@ config SND_SOC_QDSP6_ROUTING
+ config SND_SOC_QDSP6_ASM
  	tristate
  
-+config SND_SOC_QDSP6_AFE
++config SND_SOC_QDSP6_ASM_DAI
 +	tristate
 +
  config SND_SOC_QDSP6
  	tristate "SoC ALSA audio driver for QDSP6"
  	depends on QCOM_APR && HAS_DMA
- 	select SND_SOC_QDSP6_COMMON
- 	select SND_SOC_QDSP6_CORE
-+	select SND_SOC_QDSP6_AFE
+@@ -72,6 +75,7 @@ config SND_SOC_QDSP6
+ 	select SND_SOC_QDSP6_ADM
+ 	select SND_SOC_QDSP6_ROUTING
+ 	select SND_SOC_QDSP6_ASM
++	select SND_SOC_QDSP6_ASM_DAI
  	help
  	 To add support for MSM QDSP6 Soc Audio.
  	 This will enable sound soc platform specific
 diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 03b8e89c9731..7ff666bd10ca 100644
+index bada1aa303c2..c33b3cacbea1 100644
 --- a/sound/soc/qcom/qdsp6/Makefile
 +++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1,2 +1,3 @@
- obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
- obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
-+obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -5,3 +5,4 @@ obj-$(CONFIG_SND_SOC_QDSP6_AFE_DAI) += q6afe-dai.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ROUTING) += q6routing.o
+ obj-$(CONFIG_SND_SOC_QDSP6_ASM) += q6asm.o
++obj-$(CONFIG_SND_SOC_QDSP6_ASM_DAI) += q6asm-dai.o
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
 new file mode 100644
-index 000000000000..635c51126dc3
+index 000000000000..b39eb8c97457
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -0,0 +1,536 @@
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -0,0 +1,628 @@
 +// SPDX-License-Identifier: GPL-2.0
 +// Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
 +// Copyright (c) 2018, Linaro Limited
 +
-+#include <linux/slab.h>
-+#include <linux/kernel.h>
-+#include <linux/uaccess.h>
-+#include <linux/wait.h>
-+#include <linux/jiffies.h>
-+#include <linux/sched.h>
++#include <linux/init.h>
++#include <linux/err.h>
 +#include <linux/module.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/spinlock.h>
-+#include <linux/delay.h>
-+#include <linux/soc/qcom/apr.h>
++#include <linux/platform_device.h>
++#include <linux/slab.h>
++#include <linux/component.h>
++#include <sound/soc.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <asm/dma.h>
++#include <linux/dma-mapping.h>
++#include <linux/of_device.h>
++#include <sound/pcm_params.h>
++#include "q6asm.h"
++#include "q6routing.h"
 +#include "q6dsp-errno.h"
-+#include "q6core.h"
-+#include "q6afe.h"
 +
-+/* AFE CMDs */
-+#define AFE_PORT_CMD_DEVICE_START	0x000100E5
-+#define AFE_PORT_CMD_DEVICE_STOP	0x000100E6
-+#define AFE_PORT_CMD_SET_PARAM_V2	0x000100EF
-+#define AFE_SVC_CMD_SET_PARAM		0x000100f3
-+#define AFE_PORT_CMDRSP_GET_PARAM_V2	0x00010106
-+#define AFE_PARAM_ID_HDMI_CONFIG	0x00010210
-+#define AFE_MODULE_AUDIO_DEV_INTERFACE	0x0001020C
++#define DRV_NAME	"q6asm-fe-dai"
 +
-+/* Port IDs */
-+#define AFE_API_VERSION_HDMI_CONFIG	0x1
-+#define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
-+#define TIMEOUT_MS 1000
-+#define AFE_CMD_RESP_AVAIL	0
-+#define AFE_CMD_RESP_NONE	1
++#define PLAYBACK_MIN_NUM_PERIODS    2
++#define PLAYBACK_MAX_NUM_PERIODS   8
++#define PLAYBACK_MAX_PERIOD_SIZE    65536
++#define PLAYBACK_MIN_PERIOD_SIZE    128
++#define CAPTURE_MIN_NUM_PERIODS     2
++#define CAPTURE_MAX_NUM_PERIODS     8
++#define CAPTURE_MAX_PERIOD_SIZE     4096
++#define CAPTURE_MIN_PERIOD_SIZE     320
++#define SID_MASK_DEFAULT	0xF
 +
-+struct q6afe {
-+	struct apr_device *apr;
-+	struct device *dev;
-+	struct q6core_svc_api_info ainfo;
-+	struct mutex lock;
-+	struct list_head port_list;
-+	spinlock_t port_list_lock;
-+	struct list_head node;
-+	struct platform_device *pdev_dais;
++enum stream_state {
++	Q6ASM_STREAM_IDLE = 0,
++	Q6ASM_STREAM_STOPPED,
++	Q6ASM_STREAM_RUNNING,
 +};
 +
-+struct afe_port_cmd_device_start {
-+	u16 port_id;
-+	u16 reserved;
-+} __packed;
-+
-+struct afe_port_cmd_device_stop {
-+	u16 port_id;
-+	u16 reserved;
-+/* Reserved for 32-bit alignment. This field must be set to 0.*/
-+} __packed;
-+
-+struct afe_port_param_data_v2 {
-+	u32 module_id;
-+	u32 param_id;
-+	u16 param_size;
-+	u16 reserved;
-+} __packed;
-+
-+struct afe_port_cmd_set_param_v2 {
-+	u16 port_id;
-+	u16 payload_size;
-+	u32 payload_address_lsw;
-+	u32 payload_address_msw;
-+	u32 mem_map_handle;
-+} __packed;
-+
-+struct afe_param_id_hdmi_multi_chan_audio_cfg {
-+	u32 hdmi_cfg_minor_version;
-+	u16 datatype;
-+	u16 channel_allocation;
-+	u32 sample_rate;
-+	u16 bit_width;
-+	u16 reserved;
-+} __packed;
-+
-+union afe_port_config {
-+	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
-+} __packed;
-+
-+struct q6afe_port {
-+	wait_queue_head_t wait;
-+	union afe_port_config port_cfg;
-+	struct aprv2_ibasic_rsp_result_t result;
-+	int token;
-+	int id;
-+	int cfg_type;
-+	struct q6afe *afe;
-+	struct list_head	node;
++struct q6asm_dai_rtd {
++	struct snd_pcm_substream *substream;
++	phys_addr_t phys;
++	unsigned int pcm_size;
++	unsigned int pcm_count;
++	unsigned int pcm_irq_pos;       /* IRQ position */
++	unsigned int periods;
++	uint16_t bits_per_sample;
++	uint16_t source; /* Encoding source bit mask */
++	struct audio_client *audio_client;
++	uint16_t session_id;
++	enum stream_state state;
 +};
 +
-+struct afe_audioif_config_command {
-+	struct apr_hdr hdr;
-+	struct afe_port_cmd_set_param_v2 param;
-+	struct afe_port_param_data_v2 pdata;
-+	union afe_port_config pcfg;
-+} __packed;
-+
-+struct afe_port_map {
-+	int port_id;
-+	int token;
-+	int is_rx;
-+	int is_dig_pcm;
++struct q6asm_dai_data {
++	long long int sid;
 +};
 +
-+/**
-+ * Mapping between Virtual Port IDs to DSP AFE Port ID
-+ * On B Family SoCs DSP Port IDs are consistent across multiple SoCs
-+ * on A Family SoCs DSP port IDs are same as virtual Port IDs.
-+ **/
-+
-+static struct afe_port_map port_maps[AFE_PORT_MAX] = {
-+	[HDMI_RX] = { AFE_PORT_ID_MULTICHAN_HDMI_RX, HDMI_RX, 1, 1},
++static struct snd_pcm_hardware q6asm_dai_hardware_capture = {
++	.info =                 (SNDRV_PCM_INFO_MMAP |
++				SNDRV_PCM_INFO_BLOCK_TRANSFER |
++				SNDRV_PCM_INFO_MMAP_VALID |
++				SNDRV_PCM_INFO_INTERLEAVED |
++				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
++	.formats =              (SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE),
++	.rates =                SNDRV_PCM_RATE_8000_48000,
++	.rate_min =             8000,
++	.rate_max =             48000,
++	.channels_min =         1,
++	.channels_max =         4,
++	.buffer_bytes_max =     CAPTURE_MAX_NUM_PERIODS *
++				CAPTURE_MAX_PERIOD_SIZE,
++	.period_bytes_min =	CAPTURE_MIN_PERIOD_SIZE,
++	.period_bytes_max =     CAPTURE_MAX_PERIOD_SIZE,
++	.periods_min =          CAPTURE_MIN_NUM_PERIODS,
++	.periods_max =          CAPTURE_MAX_NUM_PERIODS,
++	.fifo_size =            0,
 +};
 +
-+static struct q6afe_port *afe_find_port(struct q6afe *afe, int token)
-+{
-+	struct q6afe_port *p = NULL;
-+	struct q6afe_port *ret = NULL;
-+	unsigned long flags;
++static struct snd_pcm_hardware q6asm_dai_hardware_playback = {
++	.info =                 (SNDRV_PCM_INFO_MMAP |
++				SNDRV_PCM_INFO_BLOCK_TRANSFER |
++				SNDRV_PCM_INFO_MMAP_VALID |
++				SNDRV_PCM_INFO_INTERLEAVED |
++				SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME),
++	.formats =              (SNDRV_PCM_FMTBIT_S16_LE |
++				SNDRV_PCM_FMTBIT_S24_LE),
++	.rates =                SNDRV_PCM_RATE_8000_192000,
++	.rate_min =             8000,
++	.rate_max =             192000,
++	.channels_min =         1,
++	.channels_max =         8,
++	.buffer_bytes_max =     (PLAYBACK_MAX_NUM_PERIODS *
++				PLAYBACK_MAX_PERIOD_SIZE),
++	.period_bytes_min =	PLAYBACK_MIN_PERIOD_SIZE,
++	.period_bytes_max =     PLAYBACK_MAX_PERIOD_SIZE,
++	.periods_min =          PLAYBACK_MIN_NUM_PERIODS,
++	.periods_max =          PLAYBACK_MAX_NUM_PERIODS,
++	.fifo_size =            0,
++};
 +
-+	spin_lock_irqsave(&afe->port_list_lock, flags);
-+	list_for_each_entry(p, &afe->port_list, node)
-+		if (p->token == token) {
-+			ret = p;
-+			break;
-+		}
-+
-+	spin_unlock_irqrestore(&afe->port_list_lock, flags);
-+	return ret;
-+}
-+
-+static int q6afe_callback(struct apr_device *adev, struct apr_resp_pkt *data)
-+{
-+	struct q6afe *afe = dev_get_drvdata(&adev->dev);
-+	struct aprv2_ibasic_rsp_result_t *res;
-+	struct apr_hdr *hdr = &data->hdr;
-+	struct q6afe_port *port;
-+
-+	if (!data->payload_size)
-+		return 0;
-+
-+	res = data->payload;
-+	switch (hdr->opcode) {
-+	case APR_BASIC_RSP_RESULT: {
-+		if (res->status) {
-+			dev_err(afe->dev, "cmd = 0x%x returned error = 0x%x\n",
-+				res->opcode, res->status);
-+		}
-+		switch (res->opcode) {
-+		case AFE_PORT_CMD_SET_PARAM_V2:
-+		case AFE_PORT_CMD_DEVICE_STOP:
-+		case AFE_PORT_CMD_DEVICE_START:
-+		case AFE_SVC_CMD_SET_PARAM:
-+			port = afe_find_port(afe, hdr->token);
-+			if (port) {
-+				port->result = *res;
-+				wake_up(&port->wait);
-+			}
-+			break;
-+		default:
-+			dev_err(afe->dev, "Unknown cmd 0x%x\n",	res->opcode);
-+			break;
-+		}
++#define Q6ASM_FEDAI_DRIVER(num) { \
++		.playback = {						\
++			.stream_name = "MultiMedia"#num" Playback",	\
++			.rates = (SNDRV_PCM_RATE_8000_192000|		\
++					SNDRV_PCM_RATE_KNOT),		\
++			.formats = (SNDRV_PCM_FMTBIT_S16_LE |		\
++					SNDRV_PCM_FMTBIT_S24_LE),	\
++			.channels_min = 1,				\
++			.channels_max = 8,				\
++			.rate_min =     8000,				\
++			.rate_max =	192000,				\
++		},							\
++		.capture = {						\
++			.stream_name = "MultiMedia"#num" Capture",	\
++			.rates = (SNDRV_PCM_RATE_8000_48000|		\
++					SNDRV_PCM_RATE_KNOT),		\
++			.formats = (SNDRV_PCM_FMTBIT_S16_LE |		\
++				    SNDRV_PCM_FMTBIT_S24_LE),		\
++			.channels_min = 1,				\
++			.channels_max = 4,				\
++			.rate_min =     8000,				\
++			.rate_max =	48000,				\
++		},							\
++		.name = "MultiMedia"#num,				\
++		.probe = fe_dai_probe,					\
++		.id = MSM_FRONTEND_DAI_MULTIMEDIA##num,			\
 +	}
++
++/* Conventional and unconventional sample rate supported */
++static unsigned int supported_sample_rates[] = {
++	8000, 11025, 12000, 16000, 22050, 24000, 32000, 44100, 48000,
++	88200, 96000, 176400, 192000
++};
++
++static struct snd_pcm_hw_constraint_list constraints_sample_rates = {
++	.count = ARRAY_SIZE(supported_sample_rates),
++	.list = supported_sample_rates,
++	.mask = 0,
++};
++
++static void event_handler(uint32_t opcode, uint32_t token,
++			  uint32_t *payload, void *priv)
++{
++	struct q6asm_dai_rtd *prtd = priv;
++	struct snd_pcm_substream *substream = prtd->substream;
++
++	switch (opcode) {
++	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
++		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++			q6asm_write_async(prtd->audio_client,
++				   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
++		break;
++	case ASM_CLIENT_EVENT_CMD_EOS_DONE:
++		prtd->state = Q6ASM_STREAM_STOPPED;
++		break;
++	case ASM_CLIENT_EVENT_DATA_WRITE_DONE: {
++		prtd->pcm_irq_pos += prtd->pcm_count;
++		snd_pcm_period_elapsed(substream);
++		if (prtd->state == Q6ASM_STREAM_RUNNING)
++			q6asm_write_async(prtd->audio_client,
++					   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
++
++		break;
++		}
++	case ASM_CLIENT_EVENT_DATA_READ_DONE:
++		prtd->pcm_irq_pos += prtd->pcm_count;
++		snd_pcm_period_elapsed(substream);
++		if (prtd->state == Q6ASM_STREAM_RUNNING)
++			q6asm_read(prtd->audio_client);
++
 +		break;
 +	default:
 +		break;
 +	}
-+
-+	return 0;
 +}
 +
-+/**
-+ * q6afe_get_port_id() - Get port id from a given port index
-+ *
-+ * @index: port index
-+ *
-+ * Return: Will be an negative on error or valid port_id on success
-+ */
-+int q6afe_get_port_id(int index)
++static int q6asm_dai_prepare(struct snd_pcm_substream *substream)
 +{
-+	if (index < 0 || index > AFE_PORT_MAX)
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct q6asm_dai_rtd *prtd = runtime->private_data;
++	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
++	struct q6asm_dai_data *pdata;
++	int ret, i;
++
++	pdata = snd_soc_component_get_drvdata(c);
++	if (!pdata)
 +		return -EINVAL;
 +
-+	return port_maps[index].port_id;
-+}
-+EXPORT_SYMBOL_GPL(q6afe_get_port_id);
++	if (!prtd || !prtd->audio_client) {
++		pr_err("%s: private data null or audio client freed\n",
++			__func__);
++		return -EINVAL;
++	}
 +
-+static int afe_apr_send_pkt(struct q6afe *afe, struct apr_pkt *pkt,
-+			    struct q6afe_port *port)
-+{
-+	wait_queue_head_t *wait = &port->wait;
-+	struct apr_hdr *hdr = &pkt->hdr;
-+	int ret;
++	prtd->pcm_count = snd_pcm_lib_period_bytes(substream);
++	prtd->pcm_irq_pos = 0;
++	/* rate and channels are sent to audio driver */
++	if (prtd->state) {
++		/* clear the previous setup if any  */
++		q6asm_cmd(prtd->audio_client, CMD_CLOSE);
++		q6asm_unmap_memory_regions(substream->stream,
++					   prtd->audio_client);
++		q6routing_stream_close(soc_prtd->dai_link->id,
++					 substream->stream);
++	}
 +
-+	mutex_lock(&afe->lock);
-+	port->result.opcode = 0;
-+	port->result.status = 0;
++	ret = q6asm_map_memory_regions(substream->stream, prtd->audio_client,
++				       prtd->phys,
++				       (prtd->pcm_size / prtd->periods),
++				       prtd->periods);
 +
-+	ret = apr_send_pkt(afe->apr, pkt);
 +	if (ret < 0) {
-+		dev_err(afe->dev, "packet not transmitted (%d)\n", ret);
-+		ret = -EINVAL;
-+		goto err;
-+	}
-+
-+	ret = wait_event_timeout(*wait, (port->result.opcode == hdr->opcode),
-+				 msecs_to_jiffies(TIMEOUT_MS));
-+	if (!ret) {
-+		ret = -ETIMEDOUT;
-+	} else if (port->result.status > 0) {
-+		dev_err(afe->dev, "DSP returned error[%x]\n",
-+			port->result.status);
-+		ret = -EINVAL;
-+	} else {
-+		ret = 0;
-+	}
-+
-+err:
-+	mutex_unlock(&afe->lock);
-+
-+	return ret;
-+}
-+
-+static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
-+				   int param_id, int psize)
-+{
-+	struct afe_port_cmd_set_param_v2 *param;
-+	struct afe_port_param_data_v2 *pdata;
-+	struct q6afe *afe = port->afe;
-+	struct apr_pkt *pkt;
-+	u16 port_id = port->id;
-+	int ret, pkt_size;
-+	void *p, *pl;
-+
-+	pkt_size = APR_HDR_SIZE + sizeof(*param) + sizeof(*pdata) + psize;
-+	p = kzalloc(pkt_size, GFP_KERNEL);
-+	if (!p)
++		pr_err("Audio Start: Buffer Allocation failed rc = %d\n",
++							ret);
 +		return -ENOMEM;
-+
-+	pkt = p;
-+	param = p + APR_HDR_SIZE;
-+	pdata = p + APR_HDR_SIZE + sizeof(*param);
-+	pl = p + APR_HDR_SIZE + sizeof(*param) + sizeof(*pdata);
-+	memcpy(pl, data, psize);
-+
-+	pkt->hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+					   APR_HDR_LEN(APR_HDR_SIZE),
-+					   APR_PKT_VER);
-+	pkt->hdr.pkt_size = pkt_size;
-+	pkt->hdr.src_port = 0;
-+	pkt->hdr.dest_port = 0;
-+	pkt->hdr.token = port->token;
-+	pkt->hdr.opcode = AFE_PORT_CMD_SET_PARAM_V2;
-+
-+	param->port_id = port_id;
-+	param->payload_size = sizeof(*pdata) + psize;
-+	param->payload_address_lsw = 0x00;
-+	param->payload_address_msw = 0x00;
-+	param->mem_map_handle = 0x00;
-+	pdata->module_id = AFE_MODULE_AUDIO_DEV_INTERFACE;
-+	pdata->param_id = param_id;
-+	pdata->param_size = psize;
-+
-+	ret = afe_apr_send_pkt(afe, pkt, port);
-+	if (ret)
-+		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
-+		       port_id, ret);
-+
-+	kfree(pkt);
-+	return ret;
-+}
-+
-+/**
-+ * q6afe_port_stop() - Stop a afe port
-+ *
-+ * @port: Instance of port to stop
-+ *
-+ * Return: Will be an negative on packet size on success.
-+ */
-+int q6afe_port_stop(struct q6afe_port *port)
-+{
-+	struct afe_port_cmd_device_stop *stop;
-+	struct q6afe *afe = port->afe;
-+	struct apr_pkt *pkt;
-+	int port_id = port->id;
-+	int ret = 0;
-+	int index, pkt_size;
-+	void *p;
-+
-+	port_id = port->id;
-+	index = port->token;
-+	if (index < 0 || index > AFE_PORT_MAX) {
-+		dev_err(afe->dev, "AFE port index[%d] invalid!\n", index);
-+		return -EINVAL;
 +	}
 +
-+	pkt_size = APR_HDR_SIZE + sizeof(*stop);
-+	p = kzalloc(pkt_size, GFP_KERNEL);
-+	if (!p)
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		ret = q6asm_open_write(prtd->audio_client, FORMAT_LINEAR_PCM,
++				       prtd->bits_per_sample);
++	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		ret = q6asm_open_read(prtd->audio_client, FORMAT_LINEAR_PCM,
++				       prtd->bits_per_sample);
++	}
++
++	if (ret < 0) {
++		pr_err("%s: q6asm_open_write failed\n", __func__);
++		q6asm_audio_client_free(prtd->audio_client);
++		prtd->audio_client = NULL;
 +		return -ENOMEM;
++	}
 +
-+	pkt = p;
-+	stop = p + APR_HDR_SIZE;
-+
-+	pkt->hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+					   APR_HDR_LEN(APR_HDR_SIZE),
-+					   APR_PKT_VER);
-+	pkt->hdr.pkt_size = pkt_size;
-+	pkt->hdr.src_port = 0;
-+	pkt->hdr.dest_port = 0;
-+	pkt->hdr.token = index;
-+	pkt->hdr.opcode = AFE_PORT_CMD_DEVICE_STOP;
-+	stop->port_id = port_id;
-+	stop->reserved = 0;
-+
-+	ret = afe_apr_send_pkt(afe, pkt, port);
-+	if (ret)
-+		dev_err(afe->dev, "AFE close failed %d\n", ret);
-+
-+	kfree(pkt);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(q6afe_port_stop);
-+
-+/**
-+ * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
-+ *
-+ * @port: Instance of afe port
-+ * @cfg: HDMI configuration for the afe port
-+ *
-+ */
-+void q6afe_hdmi_port_prepare(struct q6afe_port *port,
-+			     struct q6afe_hdmi_cfg *cfg)
-+{
-+	union afe_port_config *pcfg = &port->port_cfg;
-+
-+	pcfg->hdmi_multi_ch.hdmi_cfg_minor_version =
-+					AFE_API_VERSION_HDMI_CONFIG;
-+	pcfg->hdmi_multi_ch.datatype = cfg->datatype;
-+	pcfg->hdmi_multi_ch.channel_allocation = cfg->channel_allocation;
-+	pcfg->hdmi_multi_ch.sample_rate = cfg->sample_rate;
-+	pcfg->hdmi_multi_ch.bit_width = cfg->bit_width;
-+}
-+EXPORT_SYMBOL_GPL(q6afe_hdmi_port_prepare);
-+
-+/**
-+ * q6afe_port_start() - Start a afe port
-+ *
-+ * @port: Instance of port to start
-+ *
-+ * Return: Will be an negative on packet size on success.
-+ */
-+int q6afe_port_start(struct q6afe_port *port)
-+{
-+	struct afe_port_cmd_device_start *start;
-+	struct q6afe *afe = port->afe;
-+	int port_id = port->id;
-+	int ret, param_id = port->cfg_type;
-+	struct apr_pkt *pkt;
-+	int pkt_size;
-+	void *p;
-+
-+	ret  = q6afe_port_set_param_v2(port, &port->port_cfg, param_id,
-+				       sizeof(port->port_cfg));
++	prtd->session_id = q6asm_get_session_id(prtd->audio_client);
++	ret = q6routing_stream_open(soc_prtd->dai_link->id, LEGACY_PCM_MODE,
++			      prtd->session_id, substream->stream);
 +	if (ret) {
-+		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
-+			port_id, ret);
++		pr_err("%s: stream reg failed ret:%d\n", __func__, ret);
 +		return ret;
 +	}
 +
-+	pkt_size = APR_HDR_SIZE + sizeof(*start);
-+	p = kzalloc(pkt_size, GFP_KERNEL);
-+	if (!p)
-+		return -ENOMEM;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		ret = q6asm_media_format_block_multi_ch_pcm(
++				prtd->audio_client, runtime->rate,
++				runtime->channels, NULL,
++				prtd->bits_per_sample);
++	} else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		ret = q6asm_enc_cfg_blk_pcm_format_support(prtd->audio_client,
++					runtime->rate, runtime->channels,
++					prtd->bits_per_sample);
 +
-+	pkt = p;
-+	start = p + APR_HDR_SIZE;
++		/* Queue the buffers */
++		for (i = 0; i < runtime->periods; i++)
++			q6asm_read(prtd->audio_client);
 +
-+	pkt->hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+					    APR_HDR_LEN(APR_HDR_SIZE),
-+					    APR_PKT_VER);
-+	pkt->hdr.pkt_size = pkt_size;
-+	pkt->hdr.src_port = 0;
-+	pkt->hdr.dest_port = 0;
-+	pkt->hdr.token = port->token;
-+	pkt->hdr.opcode = AFE_PORT_CMD_DEVICE_START;
-+
-+	start->port_id = port_id;
-+
-+	ret = afe_apr_send_pkt(afe, pkt, port);
-+	if (ret)
-+		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
-+			port_id, ret);
-+
-+	kfree(pkt);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(q6afe_port_start);
-+
-+/**
-+ * q6afe_port_get_from_id() - Get port instance from a port id
-+ *
-+ * @dev: Pointer to afe child device.
-+ * @id: port id
-+ *
-+ * Return: Will be an error pointer on error or a valid afe port
-+ * on success.
-+ */
-+struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
-+{
-+	int port_id;
-+	struct q6afe *afe = dev_get_drvdata(dev->parent);
-+	struct q6afe_port *port;
-+	unsigned long flags;
-+	int cfg_type;
-+
-+	if (id < 0 || id > AFE_PORT_MAX) {
-+		dev_err(dev, "AFE port token[%d] invalid!\n", id);
-+		return ERR_PTR(-EINVAL);
 +	}
++	if (ret < 0)
++		pr_info("%s: CMD Format block failed\n", __func__);
 +
-+	port_id = port_maps[id].port_id;
++	prtd->state = Q6ASM_STREAM_RUNNING;
 +
-+	switch (port_id) {
-+	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
-+		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
++	return 0;
++}
++
++static int q6asm_dai_trigger(struct snd_pcm_substream *substream, int cmd)
++{
++	int ret = 0;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct q6asm_dai_rtd *prtd = runtime->private_data;
++
++	switch (cmd) {
++	case SNDRV_PCM_TRIGGER_START:
++	case SNDRV_PCM_TRIGGER_RESUME:
++	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
++		ret = q6asm_run_nowait(prtd->audio_client, 0, 0, 0);
++		break;
++	case SNDRV_PCM_TRIGGER_STOP:
++		prtd->state = Q6ASM_STREAM_STOPPED;
++		ret = q6asm_cmd_nowait(prtd->audio_client, CMD_EOS);
++		break;
++	case SNDRV_PCM_TRIGGER_SUSPEND:
++	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
++		ret = q6asm_cmd_nowait(prtd->audio_client, CMD_PAUSE);
 +		break;
 +	default:
-+		dev_err(dev, "Invalid port id 0x%x\n", port_id);
-+		return ERR_PTR(-EINVAL);
++		ret = -EINVAL;
++		break;
 +	}
 +
-+	port = kzalloc(sizeof(*port), GFP_KERNEL);
-+	if (!port)
-+		return ERR_PTR(-ENOMEM);
-+
-+	init_waitqueue_head(&port->wait);
-+
-+	port->token = id;
-+	port->id = port_id;
-+	port->afe = afe;
-+	port->cfg_type = cfg_type;
-+
-+	spin_lock_irqsave(&afe->port_list_lock, flags);
-+	list_add_tail(&port->node, &afe->port_list);
-+	spin_unlock_irqrestore(&afe->port_list_lock, flags);
-+
-+	return port;
-+
++	return ret;
 +}
-+EXPORT_SYMBOL_GPL(q6afe_port_get_from_id);
 +
-+/**
-+ * q6afe_port_put() - Release port reference
-+ *
-+ * @port: Instance of port to put
-+ */
-+void q6afe_port_put(struct q6afe_port *port)
++static int q6asm_dai_open(struct snd_pcm_substream *substream)
 +{
-+	struct q6afe *afe = port->afe;
-+	unsigned long flags;
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = soc_prtd->cpu_dai;
++	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
++	struct q6asm_dai_rtd *prtd;
++	struct q6asm_dai_data *pdata;
++	struct device *dev = c->dev;
++	int ret = 0;
++	int stream_id;
 +
-+	spin_lock_irqsave(&afe->port_list_lock, flags);
-+	list_del(&port->node);
-+	spin_unlock_irqrestore(&afe->port_list_lock, flags);
-+	kfree(port);
-+}
-+EXPORT_SYMBOL_GPL(q6afe_port_put);
++	stream_id = cpu_dai->driver->id;
 +
-+static int q6afe_probe(struct apr_device *adev)
-+{
-+	struct q6afe *afe;
-+	struct device *dev = &adev->dev;
-+	struct device_node *dais_np;
++	pdata = snd_soc_component_get_drvdata(c);
++	if (!pdata) {
++		pr_err("Drv data not found ..\n");
++		return -EINVAL;
++	}
 +
-+	afe = devm_kzalloc(dev, sizeof(*afe), GFP_KERNEL);
-+	if (!afe)
++	prtd = kzalloc(sizeof(struct q6asm_dai_rtd), GFP_KERNEL);
++	if (prtd == NULL)
 +		return -ENOMEM;
 +
-+	q6core_get_svc_api_info(adev->svc_id, &afe->ainfo);
-+	afe->apr = adev;
-+	mutex_init(&afe->lock);
-+	afe->dev = dev;
-+	INIT_LIST_HEAD(&afe->port_list);
-+	spin_lock_init(&afe->port_list_lock);
++	prtd->substream = substream;
++	prtd->audio_client = q6asm_audio_client_alloc(dev,
++				(q6asm_cb)event_handler, prtd, stream_id,
++				LEGACY_PCM_MODE);
++	if (!prtd->audio_client) {
++		pr_info("%s: Could not allocate memory\n", __func__);
++		kfree(prtd);
++		return -ENOMEM;
++	}
 +
-+	dev_set_drvdata(dev, afe);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		runtime->hw = q6asm_dai_hardware_playback;
++	else if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
++		runtime->hw = q6asm_dai_hardware_capture;
 +
-+	dais_np = of_get_child_by_name(dev->of_node, "dais");
-+	if (dais_np) {
-+		afe->pdev_dais = of_platform_device_create(dais_np,
-+							   "q6afe-dai", dev);
-+		of_node_put(dais_np);
++	ret = snd_pcm_hw_constraint_list(runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE,
++				&constraints_sample_rates);
++	if (ret < 0)
++		pr_info("snd_pcm_hw_constraint_list failed\n");
++	/* Ensure that buffer size is a multiple of period size */
++	ret = snd_pcm_hw_constraint_integer(runtime,
++					    SNDRV_PCM_HW_PARAM_PERIODS);
++	if (ret < 0)
++		pr_info("snd_pcm_hw_constraint_integer failed\n");
++
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		ret = snd_pcm_hw_constraint_minmax(runtime,
++			SNDRV_PCM_HW_PARAM_BUFFER_BYTES,
++			PLAYBACK_MIN_NUM_PERIODS * PLAYBACK_MIN_PERIOD_SIZE,
++			PLAYBACK_MAX_NUM_PERIODS * PLAYBACK_MAX_PERIOD_SIZE);
++		if (ret < 0) {
++			pr_err("constraint for buffer bytes min max ret = %d\n",
++									ret);
++		}
++	}
++
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
++		SNDRV_PCM_HW_PARAM_PERIOD_BYTES, 32);
++	if (ret < 0) {
++		pr_err("constraint for period bytes step ret = %d\n",
++								ret);
++	}
++	ret = snd_pcm_hw_constraint_step(runtime, 0,
++		SNDRV_PCM_HW_PARAM_BUFFER_BYTES, 32);
++	if (ret < 0) {
++		pr_err("constraint for buffer bytes step ret = %d\n",
++								ret);
++	}
++
++	runtime->private_data = prtd;
++
++	snd_soc_set_runtime_hwparams(substream, &q6asm_dai_hardware_playback);
++
++	runtime->dma_bytes = q6asm_dai_hardware_playback.buffer_bytes_max;
++
++
++	if (pdata->sid < 0)
++		prtd->phys = substream->dma_buffer.addr;
++	else
++		prtd->phys = substream->dma_buffer.addr | (pdata->sid << 32);
++
++	snd_pcm_set_runtime_buffer(substream, &substream->dma_buffer);
++
++	return 0;
++}
++
++static int q6asm_dai_close(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct q6asm_dai_rtd *prtd = runtime->private_data;
++
++	if (prtd->audio_client) {
++		q6asm_cmd(prtd->audio_client, CMD_CLOSE);
++		q6asm_unmap_memory_regions(substream->stream,
++					   prtd->audio_client);
++		q6asm_audio_client_free(prtd->audio_client);
++		prtd->audio_client = NULL;
++	}
++	q6routing_stream_close(soc_prtd->dai_link->id,
++						substream->stream);
++	kfree(prtd);
++	return 0;
++}
++
++static snd_pcm_uframes_t q6asm_dai_pointer(struct snd_pcm_substream *substream)
++{
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct q6asm_dai_rtd *prtd = runtime->private_data;
++
++	if (prtd->pcm_irq_pos >= prtd->pcm_size)
++		prtd->pcm_irq_pos = 0;
++
++	return bytes_to_frames(runtime, (prtd->pcm_irq_pos));
++}
++
++static int q6asm_dai_mmap(struct snd_pcm_substream *substream,
++				struct vm_area_struct *vma)
++{
++
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct snd_soc_pcm_runtime *soc_prtd = substream->private_data;
++	struct snd_soc_component *c = snd_soc_rtdcom_lookup(soc_prtd, DRV_NAME);
++	struct device *dev = c->dev;
++
++	return dma_mmap_coherent(dev, vma,
++			runtime->dma_area, runtime->dma_addr,
++			runtime->dma_bytes);
++}
++
++static int q6asm_dai_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++	struct q6asm_dai_rtd *prtd = runtime->private_data;
++
++	prtd->pcm_size = params_buffer_bytes(params);
++	prtd->periods = params_periods(params);
++
++	switch (params_format(params)) {
++	case SNDRV_PCM_FORMAT_S16_LE:
++		prtd->bits_per_sample = 16;
++		break;
++	case SNDRV_PCM_FORMAT_S24_LE:
++		prtd->bits_per_sample = 24;
++		break;
 +	}
 +
 +	return 0;
 +}
 +
-+static int q6afe_remove(struct apr_device *adev)
-+{
-+	struct q6afe *afe = dev_get_drvdata(&adev->dev);
++static struct snd_pcm_ops q6asm_dai_ops = {
++	.open           = q6asm_dai_open,
++	.hw_params	= q6asm_dai_hw_params,
++	.close          = q6asm_dai_close,
++	.ioctl          = snd_pcm_lib_ioctl,
++	.prepare        = q6asm_dai_prepare,
++	.trigger        = q6asm_dai_trigger,
++	.pointer        = q6asm_dai_pointer,
++	.mmap		= q6asm_dai_mmap,
++};
 +
-+	if (afe->pdev_dais)
-+		of_platform_device_destroy(&afe->pdev_dais->dev, NULL);
++static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_pcm_substream *psubstream, *csubstream;
++	struct snd_soc_component *c = snd_soc_rtdcom_lookup(rtd, DRV_NAME);
++	struct q6asm_dai_data *pdata;
++	struct snd_pcm *pcm = rtd->pcm;
++	struct device *dev;
++	int size, ret;
++
++	dev = c->dev;
++	pdata = snd_soc_component_get_drvdata(c);
++
++	size = q6asm_dai_hardware_playback.buffer_bytes_max;
++
++	psubstream = pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream;
++	if (psubstream) {
++		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, dev, size,
++					  &psubstream->dma_buffer);
++		if (ret) {
++			dev_err(dev, "Cannot allocate buffer(s)\n");
++			return ret;
++		}
++	}
++
++	csubstream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
++	if (csubstream) {
++		ret = snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, dev, size,
++					  &csubstream->dma_buffer);
++		if (ret) {
++			dev_err(dev, "Cannot allocate buffer(s)\n");
++			if (psubstream)
++				snd_dma_free_pages(&psubstream->dma_buffer);
++			return ret;
++		}
++	}
++
++	return ret;
++}
++
++static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
++{
++	struct snd_pcm_substream *substream;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(pcm->streams); i++) {
++		substream = pcm->streams[i].substream;
++		if (substream) {
++			snd_dma_free_pages(&substream->dma_buffer);
++			substream->dma_buffer.area = NULL;
++			substream->dma_buffer.addr = 0;
++		}
++	}
++}
++
++static const struct snd_soc_dapm_route afe_pcm_routes[] = {
++	{"MM_DL1",  NULL, "MultiMedia1 Playback" },
++	{"MM_DL2",  NULL, "MultiMedia2 Playback" },
++	{"MM_DL3",  NULL, "MultiMedia3 Playback" },
++	{"MM_DL4",  NULL, "MultiMedia4 Playback" },
++	{"MM_DL5",  NULL, "MultiMedia5 Playback" },
++	{"MM_DL6",  NULL, "MultiMedia6 Playback" },
++	{"MM_DL7",  NULL, "MultiMedia7 Playback" },
++	{"MM_DL7",  NULL, "MultiMedia8 Playback" },
++	{"MultiMedia1 Capture", NULL, "MM_UL1"},
++	{"MultiMedia2 Capture", NULL, "MM_UL2"},
++	{"MultiMedia3 Capture", NULL, "MM_UL3"},
++	{"MultiMedia4 Capture", NULL, "MM_UL4"},
++	{"MultiMedia5 Capture", NULL, "MM_UL5"},
++	{"MultiMedia6 Capture", NULL, "MM_UL6"},
++	{"MultiMedia7 Capture", NULL, "MM_UL7"},
++	{"MultiMedia8 Capture", NULL, "MM_UL8"},
++
++};
++
++static int fe_dai_probe(struct snd_soc_dai *dai)
++{
++	struct snd_soc_dapm_context *dapm;
++
++	dapm = snd_soc_component_get_dapm(dai->component);
++	snd_soc_dapm_add_routes(dapm, afe_pcm_routes,
++				ARRAY_SIZE(afe_pcm_routes));
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id q6afe_device_id[]  = {
-+	{ .compatible = "qcom,q6afe" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6afe_device_id);
 +
-+static struct apr_driver qcom_q6afe_driver = {
-+	.probe = q6afe_probe,
-+	.remove = q6afe_remove,
-+	.callback = q6afe_callback,
++static const struct snd_soc_component_driver q6asm_fe_dai_component = {
++	.name		= DRV_NAME,
++	.ops		= &q6asm_dai_ops,
++	.pcm_new	= q6asm_dai_pcm_new,
++	.pcm_free	= q6asm_dai_pcm_free,
++
++};
++
++static struct snd_soc_dai_driver q6asm_fe_dais[] = {
++	Q6ASM_FEDAI_DRIVER(1),
++	Q6ASM_FEDAI_DRIVER(2),
++	Q6ASM_FEDAI_DRIVER(3),
++	Q6ASM_FEDAI_DRIVER(4),
++	Q6ASM_FEDAI_DRIVER(5),
++	Q6ASM_FEDAI_DRIVER(6),
++	Q6ASM_FEDAI_DRIVER(7),
++	Q6ASM_FEDAI_DRIVER(8),
++};
++
++static int q6asm_dai_bind(struct device *dev, struct device *master, void *data)
++{
++	struct device_node *node = dev->of_node;
++	struct of_phandle_args args;
++	struct q6asm_dai_data *pdata;
++	int rc;
++
++	pdata = kzalloc(sizeof(struct q6asm_dai_data), GFP_KERNEL);
++	if (!pdata)
++		return -ENOMEM;
++
++	rc = of_parse_phandle_with_fixed_args(node, "iommus", 1, 0, &args);
++	if (rc < 0)
++		pdata->sid = -1;
++	else
++		pdata->sid = args.args[0] & SID_MASK_DEFAULT;
++
++	dev_set_drvdata(dev, pdata);
++
++	return snd_soc_register_component(dev, &q6asm_fe_dai_component,
++					q6asm_fe_dais,
++					ARRAY_SIZE(q6asm_fe_dais));
++}
++static void q6asm_dai_unbind(struct device *dev, struct device *master,
++			     void *data)
++{
++	struct q6asm_dai_data *pdata = dev_get_drvdata(dev);
++
++	snd_soc_unregister_component(dev);
++
++	kfree(pdata);
++
++}
++
++static const struct component_ops q6asm_dai_comp_ops = {
++	.bind   = q6asm_dai_bind,
++	.unbind = q6asm_dai_unbind,
++};
++
++static int q6asm_dai_probe(struct platform_device *pdev)
++{
++	return component_add(&pdev->dev, &q6asm_dai_comp_ops);
++}
++
++static int q6asm_dai_dev_remove(struct platform_device *pdev)
++{
++	component_del(&pdev->dev, &q6asm_dai_comp_ops);
++	return 0;
++}
++
++static struct platform_driver q6asm_dai_platform_driver = {
 +	.driver = {
-+		.name = "qcom-q6afe",
-+		.of_match_table = of_match_ptr(q6afe_device_id),
-+
++		.name = "q6asm-dai",
 +	},
++	.probe = q6asm_dai_probe,
++	.remove = q6asm_dai_dev_remove,
 +};
++module_platform_driver(q6asm_dai_platform_driver);
 +
-+module_apr_driver(qcom_q6afe_driver);
-+MODULE_DESCRIPTION("Q6 Audio Front End");
++MODULE_DESCRIPTION("Q6ASM dai driver");
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-new file mode 100644
-index 000000000000..3bd991a7c42d
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6afe.h
-@@ -0,0 +1,35 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+
-+#ifndef __Q6AFE_H__
-+#define __Q6AFE_H__
-+
-+#include <dt-bindings/sound/qcom,q6afe.h>
-+
-+#define AFE_PORT_MAX		48
-+
-+#define MSM_AFE_PORT_TYPE_RX 0
-+#define MSM_AFE_PORT_TYPE_TX 1
-+#define AFE_MAX_PORTS AFE_PORT_MAX
-+
-+struct q6afe_hdmi_cfg {
-+	u16                  datatype;
-+	u16                  channel_allocation;
-+	u32                  sample_rate;
-+	u16                  bit_width;
-+};
-+
-+struct q6afe_port_config {
-+	struct q6afe_hdmi_cfg hdmi;
-+};
-+
-+struct q6afe_port;
-+
-+struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id);
-+int q6afe_port_start(struct q6afe_port *port);
-+int q6afe_port_stop(struct q6afe_port *port);
-+void q6afe_port_put(struct q6afe_port *port);
-+int q6afe_get_port_id(int index);
-+void q6afe_hdmi_port_prepare(struct q6afe_port *port,
-+			    struct q6afe_hdmi_cfg *cfg);
-+
-+#endif /* __Q6AFE_H__ */
 -- 
 2.16.2
