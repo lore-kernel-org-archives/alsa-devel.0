@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/3] ASoc: TAS6424: Add support for mute, standby,
- and faster power on
-Date: Wed, 2 May 2018 05:42:40 +0900
-Message-ID: <20180501204239.GC2714@sirena.org.uk>
+Subject: Re: [PATCH v3 3/3] ASoC: tas6424: Allow disabling auto
+ diagnostics for faster power-on
+Date: Wed, 2 May 2018 05:43:34 +0900
+Message-ID: <20180501204334.GD2714@sirena.org.uk>
 References: <1525077018-15863-1-git-send-email-jjhiblot@ti.com>
+ <1525077018-15863-4-git-send-email-jjhiblot@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1158229332812794907=="
+Content-Type: multipart/mixed; boundary="===============3000034683114810374=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 33DDB266C1C
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 22:42:49 +0200 (CEST)
-In-Reply-To: <1525077018-15863-1-git-send-email-jjhiblot@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5E8EC266C1C
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 22:43:39 +0200 (CEST)
+In-Reply-To: <1525077018-15863-4-git-send-email-jjhiblot@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +27,46 @@ Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.or
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1158229332812794907==
+--===============3000034683114810374==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="QRj9sO5tAVLaXnSD"
+	protocol="application/pgp-signature"; boundary="wULyF7TL5taEdwHz"
 Content-Disposition: inline
 
 
---QRj9sO5tAVLaXnSD
+--wULyF7TL5taEdwHz
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Mon, Apr 30, 2018 at 10:30:15AM +0200, Jean-Jacques Hiblot wrote:
-> mute and standby pins are available on the codec. If they are connected, they
-> should be managed by the driver, instead of relying on gpio hogs or on the
-> initial state of the GPIOs.
+On Mon, Apr 30, 2018 at 10:30:18AM +0200, Jean-Jacques Hiblot wrote:
 
-Please do not submit new versions of already applied patches, please
-submit incremental updates to the existing code.  Modifying existing
-commits creates problems for other users building on top of those
-commits so it's best practice to only change pubished git commits if
-absolutely essential.
+> +	SOC_SINGLE_STROBE("Auto Diagnostics switch", TAS6424_DC_DIAG_CTRL1,
+> +			  TAS6424_LDGBYPASS_SHIFT, 1),
 
---QRj9sO5tAVLaXnSD
+This should be "Auto Diagnostics Switch" with a capital on the Switch.
+Otherwise this looks good!
+
+--wULyF7TL5taEdwHz
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlro0T8ACgkQJNaLcl1U
-h9Ad/Qf/emHR5/nYvWAYhMpBMTXLXgR75j75hZWawgl1qYSox9lMkg7whJUj1aEr
-tclFJY8ur33dFsJf5qoozovVfA3ZahUDQ87uniegKZ1bWnHR5DSJl23ioF5yRCjP
-+xPZOvtrm13GUzUQWzbcfajnrY77HhHiNJmf7xrRdsyQfk0Chb8/VyQqe0NQ5lgw
-gvg/F4eEBHhK1PSbKGmzHfInaN+56bxujDHaXwqJirOq+NuziCdx1CNgQOobvs8h
-2cG08PsgGCIa88kYHhQq/dBDLd4qOoyYV65VtlCRtN4xuD7kjW1+SmF61ZDySF1K
-b+vBQsu7xFGtXRpqrIusLJHVPYVQCQ==
-=Yom0
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlro0XUACgkQJNaLcl1U
+h9AMVQf/S1qlSoIDTPu+x4kDJz0jWfL9QIuRRefE1IknLjIvgUF89vQxe9JXmsE8
+7S7jpISlPBktDaqieBQs5JDETcHJb7HTHeCLiGNJ0JEXtsVHbotpbfpLbL6W0Jnd
+Zcr/Be27wRc6LhOHUceomVmjKy3zb1+PtEj8F2RqTtisQNtGEDgVdwFwNsf9Et7h
+hZ8zf3ww69ceTVrzjtQ3YOs8sUDZXL6ncC53pwZhWTzoFZwcdYlhwZyO7yfRPkAP
+JdkozvfpVBmRuUZEZZV6nUSVQt2oW4OWjFjab29DkiQAXfwZncubDVX6MKXy7Yi+
+Iu5HN/dzjKxoWeMRxNZv89UZv2rCRA==
+=cyd3
 -----END PGP SIGNATURE-----
 
---QRj9sO5tAVLaXnSD--
+--wULyF7TL5taEdwHz--
 
---===============1158229332812794907==
+--===============3000034683114810374==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1158229332812794907==--
+--===============3000034683114810374==--
