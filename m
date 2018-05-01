@@ -1,138 +1,361 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v7 22/24] ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings
-Date: Tue,  1 May 2018 13:08:18 +0100
-Message-ID: <20180501120820.11016-23-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v7 11/24] ASoC: qdsp6: q6afe: Add support to
+	MI2S ports
+Date: Tue,  1 May 2018 13:08:07 +0100
+Message-ID: <20180501120820.11016-12-srinivas.kandagatla@linaro.org>
 References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id A92F22676C3
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 14:10:40 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id f6so17483966wmc.4
+ for <alsa-devel@alsa-project.org>; Tue, 01 May 2018 05:10:40 -0700 (PDT)
 In-Reply-To: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org
-Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree bindings documentation file for Qualcomm apq8096 sound card.
+This patch adds support to 4 MI2S ports on LPASS.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- .../devicetree/bindings/sound/qcom,apq8096.txt     | 109 +++++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+ sound/soc/qcom/qdsp6/q6afe.c | 224 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h |  13 +++
+ 2 files changed, 237 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-new file mode 100644
-index 000000000000..aa54e49fc8a2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-@@ -0,0 +1,109 @@
-+* Qualcomm Technologies APQ8096 ASoC sound card driver
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index be55b3ab045f..ceb18aaa5af4 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -14,6 +14,10 @@
+ #include <linux/spinlock.h>
+ #include <linux/delay.h>
+ #include <linux/soc/qcom/apr.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
+ #include "q6dsp-errno.h"
+ #include "q6core.h"
+ #include "q6afe.h"
+@@ -30,6 +34,32 @@
+ #define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
+ 
+ #define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
++#define AFE_PARAM_ID_I2S_CONFIG	0x0001020D
 +
-+This binding describes the APQ8096 sound card, which uses qdsp for audio.
++/* I2S config specific */
++#define AFE_API_VERSION_I2S_CONFIG	0x1
++#define AFE_PORT_I2S_SD0		0x1
++#define AFE_PORT_I2S_SD1		0x2
++#define AFE_PORT_I2S_SD2		0x3
++#define AFE_PORT_I2S_SD3		0x4
++#define AFE_PORT_I2S_SD0_MASK		BIT(0x1)
++#define AFE_PORT_I2S_SD1_MASK		BIT(0x2)
++#define AFE_PORT_I2S_SD2_MASK		BIT(0x3)
++#define AFE_PORT_I2S_SD3_MASK		BIT(0x4)
++#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(2, 1)
++#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(4, 3)
++#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(3, 1)
++#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(4, 1)
++#define AFE_PORT_I2S_QUAD01		0x5
++#define AFE_PORT_I2S_QUAD23		0x6
++#define AFE_PORT_I2S_6CHS		0x7
++#define AFE_PORT_I2S_8CHS		0x8
++#define AFE_PORT_I2S_MONO		0x0
++#define AFE_PORT_I2S_STEREO		0x1
++#define AFE_PORT_CONFIG_I2S_WS_SRC_EXTERNAL	0x0
++#define AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL	0x1
++#define AFE_LINEAR_PCM_DATA				0x0
 +
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,apq8096-sndcard"
+ 
+ /* Port IDs */
+ #define AFE_API_VERSION_HDMI_CONFIG	0x1
+@@ -65,6 +95,19 @@
+ #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX      0x400c
+ /* SLIMbus Tx port on channel 6. */
+ #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_TX      0x400d
++#define AFE_PORT_ID_PRIMARY_MI2S_RX         0x1000
++#define AFE_PORT_ID_PRIMARY_MI2S_TX         0x1001
++#define AFE_PORT_ID_SECONDARY_MI2S_RX       0x1002
++#define AFE_PORT_ID_SECONDARY_MI2S_TX       0x1003
++#define AFE_PORT_ID_TERTIARY_MI2S_RX        0x1004
++#define AFE_PORT_ID_TERTIARY_MI2S_TX        0x1005
++#define AFE_PORT_ID_QUATERNARY_MI2S_RX      0x1006
++#define AFE_PORT_ID_QUATERNARY_MI2S_TX      0x1007
 +
-+- qcom,audio-routing:
-+	Usage: Optional
-+	Value type: <stringlist>
-+	Definition:  A list of the connections between audio components.
-+		  Each entry is a pair of strings, the first being the
-+		  connection's sink, the second being the connection's
-+		  source. Valid names could be power supplies, MicBias
-+		  of codec and the jacks on the board:
-+		  Valid names include:
++#define Q6AFE_LPASS_MODE_CLK1_VALID 1
++#define Q6AFE_LPASS_MODE_CLK2_VALID 2
++#define Q6AFE_LPASS_CLK_SRC_INTERNAL 1
++#define Q6AFE_LPASS_CLK_ROOT_DEFAULT 0
+ 
+ #define TIMEOUT_MS 1000
+ #define AFE_CMD_RESP_AVAIL	0
+@@ -159,10 +202,21 @@ struct afe_param_id_slimbus_cfg {
+  */
+ } __packed;
+ 
++struct afe_param_id_i2s_cfg {
++	u32	i2s_cfg_minor_version;
++	u16	bit_width;
++	u16	channel_mode;
++	u16	mono_stereo;
++	u16	ws_src;
++	u32	sample_rate;
++	u16	data_format;
++	u16	reserved;
++} __packed;
+ 
+ union afe_port_config {
+ 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
+ 	struct afe_param_id_slimbus_cfg           slim_cfg;
++	struct afe_param_id_i2s_cfg	i2s_cfg;
+ } __packed;
+ 
+ struct q6afe_port {
+@@ -210,6 +264,22 @@ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
+ 				SLIMBUS_4_RX, 1, 1},
+ 	[SLIMBUS_5_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX,
+ 				SLIMBUS_5_RX, 1, 1},
++	[QUATERNARY_MI2S_RX] = { AFE_PORT_ID_QUATERNARY_MI2S_RX,
++				QUATERNARY_MI2S_RX, 1, 1},
++	[QUATERNARY_MI2S_TX] = { AFE_PORT_ID_QUATERNARY_MI2S_TX,
++				QUATERNARY_MI2S_TX, 0, 1},
++	[SECONDARY_MI2S_RX] = { AFE_PORT_ID_SECONDARY_MI2S_RX,
++				SECONDARY_MI2S_RX, 1, 1},
++	[SECONDARY_MI2S_TX] = { AFE_PORT_ID_SECONDARY_MI2S_TX,
++				SECONDARY_MI2S_TX, 0, 1},
++	[TERTIARY_MI2S_RX] = { AFE_PORT_ID_TERTIARY_MI2S_RX,
++				TERTIARY_MI2S_RX, 1, 1},
++	[TERTIARY_MI2S_TX] = { AFE_PORT_ID_TERTIARY_MI2S_TX,
++				TERTIARY_MI2S_TX, 0, 1},
++	[PRIMARY_MI2S_RX] = { AFE_PORT_ID_PRIMARY_MI2S_RX,
++				PRIMARY_MI2S_RX, 1, 1},
++	[PRIMARY_MI2S_TX] = { AFE_PORT_ID_PRIMARY_MI2S_TX,
++				PRIMARY_MI2S_RX, 0, 1},
+ 	[SLIMBUS_6_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX,
+ 				SLIMBUS_6_RX, 1, 1},
+ };
+@@ -471,6 +541,149 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+ }
+ EXPORT_SYMBOL_GPL(q6afe_hdmi_port_prepare);
+ 
++/**
++ * q6afe_i2s_port_prepare() - Prepare i2s afe port.
++ *
++ * @port: Instance of afe port
++ * @cfg: I2S configuration for the afe port
++ * Return: Will be an negative on error and zero on success.
++ */
++int q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg)
++{
++	union afe_port_config *pcfg = &port->port_cfg;
++	struct device *dev = port->afe->dev;
++	int num_sd_lines;
 +
-+		Board Connectors:
-+			"Headphone Left"
-+			"Headphone Right"
-+			"Earphone"
-+			"Line Out1"
-+			"Line Out2"
-+			"Line Out3"
-+			"Line Out4"
-+			"Analog Mic1"
-+			"Analog Mic2"
-+			"Analog Mic3"
-+			"Analog Mic4"
-+			"Analog Mic5"
-+			"Analog Mic6"
-+			"Digital Mic2"
-+			"Digital Mic3"
++	pcfg->i2s_cfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
++	pcfg->i2s_cfg.sample_rate = cfg->sample_rate;
++	pcfg->i2s_cfg.bit_width = cfg->bit_width;
++	pcfg->i2s_cfg.data_format = AFE_LINEAR_PCM_DATA;
 +
-+		Audio pins and MicBias on WCD9335 Codec:
-+			"MIC_BIAS1
-+			"MIC_BIAS2"
-+			"MIC_BIAS3"
-+			"MIC_BIAS4"
-+			"AMIC1"
-+			"AMIC2"
-+			"AMIC3"
-+			"AMIC4"
-+			"AMIC5"
-+			"AMIC6"
-+			"AMIC6"
-+			"DMIC1"
-+			"DMIC2"
-+			"DMIC3"
-+= dailinks
-+Each subnode of sndcard represents either a dailink, and subnodes of each
-+dailinks would be cpu/codec/platform dais.
++	switch (cfg->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
++	case SND_SOC_DAIFMT_CBS_CFS:
++		pcfg->i2s_cfg.ws_src = AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL;
++		break;
++	case SND_SOC_DAIFMT_CBM_CFM:
++		/* CPU is slave */
++		pcfg->i2s_cfg.ws_src = AFE_PORT_CONFIG_I2S_WS_SRC_EXTERNAL;
++		break;
++	default:
++		break;
++	}
 +
-+- link-name:
-+	Usage: required
-+	Value type: <string>
-+	Definition: User friendly name for dai link
++	num_sd_lines = hweight_long(cfg->sd_line_mask);
 +
-+= CPU, PLATFORM, CODEC dais subnodes
-+- cpu:
-+	Usage: required
-+	Value type: <subnode>
-+	Definition: cpu dai sub-node
++	switch (num_sd_lines) {
++	case 0:
++		dev_err(dev, "no line is assigned\n");
++		return -EINVAL;
++	case 1:
++		switch (cfg->sd_line_mask) {
++		case AFE_PORT_I2S_SD0_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD0;
++			break;
++		case AFE_PORT_I2S_SD1_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD1;
++			break;
++		case AFE_PORT_I2S_SD2_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD2;
++			break;
++		case AFE_PORT_I2S_SD3_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD3;
++			break;
++		default:
++			dev_err(dev, "Invalid SD lines\n");
++			return -EINVAL;
++		}
++		break;
++	case 2:
++		switch (cfg->sd_line_mask) {
++		case AFE_PORT_I2S_SD0_1_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_QUAD01;
++			break;
++		case AFE_PORT_I2S_SD2_3_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_QUAD23;
++			break;
++		default:
++			dev_err(dev, "Invalid SD lines\n");
++			return -EINVAL;
++		}
++		break;
++	case 3:
++		switch (cfg->sd_line_mask) {
++		case AFE_PORT_I2S_SD0_1_2_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_6CHS;
++			break;
++		default:
++			dev_err(dev, "Invalid SD lines\n");
++			return -EINVAL;
++		}
++		break;
++	case 4:
++		switch (cfg->sd_line_mask) {
++		case AFE_PORT_I2S_SD0_1_2_3_MASK:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_8CHS;
 +
-+- codec:
-+	Usage: Optional
-+	Value type: <subnode>
-+	Definition: codec dai sub-node
++			break;
++		default:
++			dev_err(dev, "Invalid SD lines\n");
++			return -EINVAL;
++		}
++		break;
++	default:
++		dev_err(dev, "Invalid SD lines\n");
++		return -EINVAL;
++	}
 +
-+- platform:
-+	Usage: Optional
-+	Value type: <subnode>
-+	Definition: platform dai sub-node
++	switch (cfg->num_channels) {
++	case 1:
++	case 2:
++		switch (pcfg->i2s_cfg.channel_mode) {
++		case AFE_PORT_I2S_QUAD01:
++		case AFE_PORT_I2S_6CHS:
++		case AFE_PORT_I2S_8CHS:
++			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD0;
++			break;
++		case AFE_PORT_I2S_QUAD23:
++				pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD2;
++			break;
++		}
 +
-+- sound-dai:
-+	Usage: required
-+	Value type: <phandle with arguments>
-+	Definition: dai phandle/s and port of CPU/CODEC/PLATFORM node.
++		if (cfg->num_channels == 2)
++			pcfg->i2s_cfg.mono_stereo = AFE_PORT_I2S_STEREO;
++		else
++			pcfg->i2s_cfg.mono_stereo = AFE_PORT_I2S_MONO;
 +
-+Example:
++		break;
++	case 3:
++	case 4:
++		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_QUAD01) {
++			dev_err(dev, "Invalid Channel mode\n");
++			return -EINVAL;
++		}
++		break;
++	case 5:
++	case 6:
++		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_6CHS) {
++			dev_err(dev, "Invalid Channel mode\n");
++			return -EINVAL;
++		}
++		break;
++	case 7:
++	case 8:
++		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_8CHS) {
++			dev_err(dev, "Invalid Channel mode\n");
++			return -EINVAL;
++		}
++		break;
++	default:
++		break;
++	}
 +
-+audio {
-+	compatible = "qcom,apq8096-sndcard";
-+	qcom,model = "DB820c";
++	return 0;
++}
++EXPORT_SYMBOL_GPL(q6afe_i2s_port_prepare);
 +
-+	mm1-dai-link {
-+		link-name = "MultiMedia1";
-+		cpu {
-+			sound-dai = <&q6asmdai MSM_FRONTEND_DAI_MULTIMEDIA1>;
-+		};
-+	};
+ /**
+  * q6afe_port_start() - Start a afe port
+  *
+@@ -562,6 +775,17 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ 	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX:
+ 		cfg_type = AFE_PARAM_ID_SLIMBUS_CONFIG;
+ 		break;
 +
-+	hdmi-dai-link {
-+		link-name = "HDMI Playback";
-+		cpu {
-+			sound-dai = <&q6afe HDMI_RX>;
-+		};
++	case AFE_PORT_ID_PRIMARY_MI2S_RX:
++	case AFE_PORT_ID_PRIMARY_MI2S_TX:
++	case AFE_PORT_ID_SECONDARY_MI2S_RX:
++	case AFE_PORT_ID_SECONDARY_MI2S_TX:
++	case AFE_PORT_ID_TERTIARY_MI2S_RX:
++	case AFE_PORT_ID_TERTIARY_MI2S_TX:
++	case AFE_PORT_ID_QUATERNARY_MI2S_RX:
++	case AFE_PORT_ID_QUATERNARY_MI2S_TX:
++		cfg_type = AFE_PARAM_ID_I2S_CONFIG;
++		break;
+ 	default:
+ 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
+ 		return ERR_PTR(-EINVAL);
+diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
+index 5659966c6b1e..3cb3bb4985a9 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.h
++++ b/sound/soc/qcom/qdsp6/q6afe.h
+@@ -11,6 +11,8 @@
+ #define MSM_AFE_PORT_TYPE_TX 1
+ #define AFE_MAX_PORTS AFE_PORT_MAX
+ 
++#define Q6AFE_MAX_MI2S_LINES	4
 +
-+		platform {
-+			sound-dai = <&q6adm>;
-+		};
-+
-+		codec {
-+			sound-dai = <&hdmi 0>;
-+		};
-+	};
+ #define AFE_MAX_CHAN_COUNT	8
+ #define AFE_PORT_MAX_AUDIO_CHAN_CNT	0x8
+ 
+@@ -29,9 +31,19 @@ struct q6afe_slim_cfg {
+ 	u8	ch_mapping[AFE_MAX_CHAN_COUNT];
+ };
+ 
++struct q6afe_i2s_cfg {
++	u32	sample_rate;
++	u16	bit_width;
++	u16	data_format;
++	u16	num_channels;
++	u32	sd_line_mask;
++	int fmt;
 +};
++
+ struct q6afe_port_config {
+ 	struct q6afe_hdmi_cfg hdmi;
+ 	struct q6afe_slim_cfg slim;
++	struct q6afe_i2s_cfg i2s_cfg;
+ };
+ 
+ struct q6afe_port;
+@@ -45,5 +57,6 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+ 			    struct q6afe_hdmi_cfg *cfg);
+ void q6afe_slim_port_prepare(struct q6afe_port *port,
+ 			  struct q6afe_slim_cfg *cfg);
++int q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg);
+ 
+ #endif /* __Q6AFE_H__ */
 -- 
 2.16.2
