@@ -1,37 +1,137 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ASoC: amd: fix spelling mistake: "failer" -> "failure"
-Date: Tue,  1 May 2018 09:20:01 +0100
-Message-ID: <20180501082001.21904-1-colin.king@canonical.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH v2 04/13] ALSA: dice: cache stream formats
+ at current mode of sampling transmission frequency
+Date: Tue, 1 May 2018 18:14:56 +0900
+Message-ID: <8da82564-af71-0ae0-bc33-84d028ba4fac@sakamocchi.jp>
+References: <20180429065032.13869-1-o-takashi@sakamocchi.jp>
+ <20180429065032.13869-5-o-takashi@sakamocchi.jp>
+ <s5h7eooenmy.wl-tiwai@suse.de>
+ <2a3d530a-5a03-0760-21b5-6e74fd2503e5@sakamocchi.jp>
+ <s5ho9hzvpa4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp-proxy003.phy.lolipop.jp (smtp-proxy003.phy.lolipop.jp
+ [157.7.104.44]) by alsa0.perex.cz (Postfix) with ESMTP id 30843267674
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 11:15:02 +0200 (CEST)
+In-Reply-To: <s5ho9hzvpa4.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi,
 
-Trivial fix to spelling mistake in dev_err error message
+On May 1 2018 15:54, Takashi Iwai wrote:
+> On Tue, 01 May 2018 05:02:09 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Hi,
+>>
+>> On May 1 2018 00:10, Takashi Iwai wrote:
+>>> On Sun, 29 Apr 2018 08:50:23 +0200,
+>>> Takashi Sakamoto wrote:
+>>>>
+>>>> In former commits, proxy structure get members for cache of stream
+>>>> formats. This commit fills the cache with stream formats at current mode
+>>>> of sampling transmission frequency.
+>>>>
+>>>> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+>>>> ---
+>>>>    sound/firewire/dice/dice-stream.c | 76 +++++++++++++++++++++++++++++++++++++++
+>>>>    sound/firewire/dice/dice.c        |  4 +++
+>>>>    sound/firewire/dice/dice.h        |  3 ++
+>>>>    3 files changed, 83 insertions(+)
+>>>>
+>>>> diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
+>>>> index 928a255bfc35..2a9f0cd994a5 100644
+>>>> --- a/sound/firewire/dice/dice-stream.c
+>>>> +++ b/sound/firewire/dice/dice-stream.c
+>>>> @@ -30,6 +30,24 @@ const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
+>>>>    	[6] = 192000,
+>>>>    };
+>>>>    +int snd_dice_stream_get_rate_mode(struct snd_dice *dice,
+>>>> unsigned int rate,
+>>>> +				  unsigned int *mode)
+>>>> +{
+>>>> +	int i;
+>>>> +
+>>>> +	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); i++) {
+>>>> +		if (!(dice->clock_caps & BIT(i)))
+>>>> +			continue;
+>>>> +		if (snd_dice_rates[i] != rate)
+>>>> +			continue;
+>>>> +
+>>>> +		*mode = (i - 1) / 2;
+>>>
+>>> What if i=0?  It'll be a negative value?
+>>
+>> Yes. But division by 2 to -1 results in 0 because in C language
+>> specification 'truncate toward zero'[1] is applied to discard
+>> fractional part. Then, the result is assigned to value of 'unsigned int'
+>> type. As a result:
+>>
+>> 0: 32000/44100/48000
+>> 1: 88200/96000
+>> 2: 176400/192000
+>>
+>> This is what I expect.
+>>
+>> [1] footnote for '6.5.5 Multiplicative operators' clause in ISO/IEC 9899.
+> 
+> This is too tricky.  The result would change dramatically when i were
+> declared as unsigned.
+> 
+> And I can think of someone trying to change it unsigned because of the
+> comparison against ARRAY_SIZE() (we've got gcc warnings for that in
+> the past).
+> 
+> Please make either it more robust or put a proper comment.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/amd/acp-pcm-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hm. Any comment includes ambiguity, so I prefer the robust
+representation with more consumption of .rodata section.
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 9c026c4d26d4..2b9a020e0b3e 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1014,7 +1014,7 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- 	}
- 	if (ret < 0)
- 		dev_err(component->dev,
--			"buffer preallocation failer error:%d\n", ret);
-+			"buffer preallocation failure error:%d\n", ret);
- 	return ret;
- }
- 
--- 
-2.17.0
+```
+int snd_dice_stream_get_rate_mode(struct snd_dice *dice, unsigned int rate,
+                                   enum snd_dice_rate_mode *mode)
+{
+	/* Corresponding to each entry in snd_dice_rates. */
+         static const enum snd_dice_rate_mode modes[] = {
+                 [0]     = SND_DICE_RATE_MODE_LOW,
+                 [1]     = SND_DICE_RATE_MODE_LOW,
+                 [2]     = SND_DICE_RATE_MODE_LOW,
+                 [3]     = SND_DICE_RATE_MODE_MIDDLE,
+                 [4]     = SND_DICE_RATE_MODE_MIDDLE,
+                 [5]     = SND_DICE_RATE_MODE_HIGH,
+                 [6]     = SND_DICE_RATE_MODE_HIGH,
+         };
+         int i;
+
+         for (i = 0; i < ARRAY_SIZE(snd_dice_rates); i++) {
+                 if (!(dice->clock_caps & BIT(i)))
+                         continue;
+                 if (snd_dice_rates[i] != rate)
+                         continue;
+
+                 *mode = modes[i];
+                 return 0;
+         }
+
+         return -EINVAL;
+}
+```
+
+
+Thanks
+
+Takashi Sakamoto
