@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: add the .probe() callback in
-	mt2701_afe_pcm_dai_component" to the asoc tree
-Date: Tue,  1 May 2018 22:08:36 +0100 (BST)
-Message-ID: <20180501210836.ED3D144007A@finisterre.ee.mobilebroadband>
-References: <2bcfa1a389ff00a00204c2ddf3a94882195fd19d.1525090110.git.ryder.lee@mediatek.com>
+Subject: Applied "ASoC: Intel: cht-bsw-rt5672: allow for
+	topology-defined codec-dai setup" to the asoc tree
+Date: Tue,  1 May 2018 22:08:55 +0100 (BST)
+Message-ID: <20180501210855.C1AA144007A@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D2D5266F44
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:08:45 +0200 (CEST)
-In-Reply-To: <2bcfa1a389ff00a00204c2ddf3a94882195fd19d.1525090110.git.ryder.lee@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8405F267650
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:09:00 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ryder Lee <ryder.lee@mediatek.com>
-Cc: alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: add the .probe() callback in mt2701_afe_pcm_dai_component
+   ASoC: Intel: cht-bsw-rt5672: allow for topology-defined codec-dai setup
 
 has been applied to the asoc tree at
 
@@ -53,81 +52,84 @@ to this mail.
 Thanks,
 Mark
 
->From 10abdc7c149a058c74be803f33c9ffb1080ad07e Mon Sep 17 00:00:00 2001
-From: Ryder Lee <ryder.lee@mediatek.com>
-Date: Mon, 30 Apr 2018 20:15:31 +0800
-Subject: [PATCH] ASoC: mediatek: add the .probe() callback in
- mt2701_afe_pcm_dai_component
+>From bf14adcc4ddd101088237179bee6daa19bac1669 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Fri, 27 Apr 2018 16:36:00 -0500
+Subject: [PATCH] ASoC: Intel: cht-bsw-rt5672: allow for topology-defined
+ codec-dai setup
 
-For the sake of uniformity, this patch adds a callback mt2701_afe_pcm_probe()
-in mt2701_afe_pcm_dai_component to retrieve the regmap - the canonical way to
-obtain the pointer..
+Hard-coded setups conflict with topology defined ones. Move this code to
+codec_fixup so that SOF can override codec dai settings, e.g. to only use
+2 channels.
 
-Doing so, we could switch to use devm_snd_soc_register_component() to register
-the component driver.
-
-Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Acked-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 31 ++++++++++------------
- 1 file changed, 14 insertions(+), 17 deletions(-)
+ sound/soc/intel/boards/cht_bsw_rt5672.c | 30 +++++++++++++++++--------
+ 1 file changed, 21 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-index d6eeb4c36fcc..828d11c30c6a 100644
---- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-+++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
-@@ -958,7 +958,17 @@ static const struct snd_soc_dapm_route mt2701_afe_pcm_routes[] = {
- 	{ "O31", "I35 Switch", "I35" },
- };
+diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
+index e68ec32720a4..e5aa13058dd7 100644
+--- a/sound/soc/intel/boards/cht_bsw_rt5672.c
++++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
+@@ -189,13 +189,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	if (devm_acpi_dev_add_driver_gpios(component->dev, cht_rt5672_gpios))
+ 		dev_warn(runtime->dev, "Unable to add GPIO mapping table\n");
  
-+static int mt2701_afe_pcm_probe(struct snd_soc_component *component)
-+{
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
+-	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
+-	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
+-	if (ret < 0) {
+-		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
+-		return ret;
+-	}
+-
+ 	/* Select codec ASRC clock source to track I2S1 clock, because codec
+ 	 * is in slave mode and 100fs I2S format (BCLK = 100 * LRCLK) cannot
+ 	 * be supported by RT5672. Otherwise, ASRC will be disabled and cause
+@@ -252,6 +245,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 			SNDRV_PCM_HW_PARAM_RATE);
+ 	struct snd_interval *channels = hw_param_interval(params,
+ 						SNDRV_PCM_HW_PARAM_CHANNELS);
++	int ret;
+ 
+ 	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
+ 	rate->min = rate->max = 48000;
+@@ -259,6 +253,26 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
+ 
+ 	/* set SSP2 to 24-bit */
+ 	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
 +
-+	snd_soc_component_init_regmap(component, afe->regmap);
++	/*
++	 * Default mode for SSP configuration is TDM 4 slot
++	 */
++	ret = snd_soc_dai_set_fmt(rtd->codec_dai,
++				  SND_SOC_DAIFMT_DSP_B |
++				  SND_SOC_DAIFMT_IB_NF |
++				  SND_SOC_DAIFMT_CBS_CFS);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set format to TDM %d\n", ret);
++		return ret;
++	}
 +
-+	return 0;
-+}
++	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
++	ret = snd_soc_dai_set_tdm_slot(rtd->codec_dai, 0xF, 0xF, 4, 24);
++	if (ret < 0) {
++		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
++		return ret;
++	}
 +
- static const struct snd_soc_component_driver mt2701_afe_pcm_dai_component = {
-+	.probe = mt2701_afe_pcm_probe,
- 	.name = "mt2701-afe-pcm-dai",
- 	.dapm_widgets = mt2701_afe_pcm_widgets,
- 	.num_dapm_widgets = ARRAY_SIZE(mt2701_afe_pcm_widgets),
-@@ -1316,22 +1326,6 @@ static int mt2701_afe_runtime_resume(struct device *dev)
- 	return mt2701_afe_enable_clock(afe);
+ 	return 0;
  }
  
--static int mt2701_afe_add_component(struct mtk_base_afe *afe)
--{
--	struct snd_soc_component *component;
--
--	component = kzalloc(sizeof(*component), GFP_KERNEL);
--	if (!component)
--		return -ENOMEM;
--
--	component->regmap = afe->regmap;
--
--	return snd_soc_add_component(afe->dev, component,
--				     &mt2701_afe_pcm_dai_component,
--				     mt2701_afe_pcm_dais,
--				     ARRAY_SIZE(mt2701_afe_pcm_dais));
--}
--
- static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- {
- 	struct mtk_base_afe *afe;
-@@ -1442,7 +1436,10 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
- 		goto err_platform;
- 	}
- 
--	ret = mt2701_afe_add_component(afe);
-+	ret = devm_snd_soc_register_component(&pdev->dev,
-+					 &mt2701_afe_pcm_dai_component,
-+					 mt2701_afe_pcm_dais,
-+					 ARRAY_SIZE(mt2701_afe_pcm_dais));
- 	if (ret) {
- 		dev_warn(dev, "err_dai_component\n");
- 		goto err_platform;
+@@ -315,8 +329,6 @@ static struct snd_soc_dai_link cht_dailink[] = {
+ 		.nonatomic = true,
+ 		.codec_dai_name = "rt5670-aif1",
+ 		.codec_name = "i2c-10EC5670:00",
+-		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
+-					| SND_SOC_DAIFMT_CBS_CFS,
+ 		.init = cht_codec_init,
+ 		.be_hw_params_fixup = cht_codec_fixup,
+ 		.dpcm_playback = 1,
 -- 
 2.17.0
