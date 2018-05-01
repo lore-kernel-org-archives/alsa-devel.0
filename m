@@ -1,51 +1,82 @@
-From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 09/10] ASoC: AMD: Add const to snd_soc_ops instances
-Date: Wed, 2 May 2018 02:20:03 +0530
-Message-ID: <1525207810-1305-9-git-send-email-Vijendar.Mukunda@amd.com>
-References: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: dai playback and capture active may be greater than 1" to the asoc tree
+Date: Tue,  1 May 2018 22:07:18 +0100 (BST)
+Message-ID: <20180501210718.47E4B44007A@finisterre.ee.mobilebroadband>
+References: <20180419140612.11049-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
+In-Reply-To: <20180419140612.11049-1-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Daniel Kurtz <djkurtz@chromium.org>, Wei Yongjun <weiyongjun1@huawei.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Akshu Agrawal <akshu.agrawal@amd.com>
+The patch
 
-Marking snd_soc_ops instances const
+   ASoC: dai playback and capture active may be greater than 1
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 40c57963789d451c26269e3bc9f9e803060fd9af Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Fri, 27 Apr 2018 13:31:51 +0200
+Subject: [PATCH] ASoC: dai playback and capture active may be greater than 1
+
+At the moment playback_active and capture_active are using only 1 bit so
+the maximum active count is 1.
+
+However, snd_soc_runtime_activate() may be called several time on the
+same dai. This happens when a dai is part of several dai_links. It is
+often the case for "snd-soc-dummy-dai".
+
+This is a problem if snd_soc_runtime_activate() is called an even number
+of times on a dai. In this case the active count overflow back to 0. As
+consequence, ASoC functions, such as soc_dpcm_runtime_update(), won't run
+correctly.
+
+Storing these usage counts on plain 'unsigned int' solves the problem.
+
+Fixes: f0fba2ad1b6b ("ASoC: multi-component - ASoC Multi-Component Support")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ include/sound/soc-dai.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index fa5ad5b..133139d 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -171,17 +171,17 @@ static void cz_dmic_shutdown(struct snd_pcm_substream *substream)
- 	da7219_clk_disable();
- }
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index 8ad11669e4d8..35ebb0be5114 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -294,8 +294,8 @@ struct snd_soc_dai {
+ 	struct snd_soc_dai_driver *driver;
  
--static struct snd_soc_ops cz_da7219_cap_ops = {
-+static const struct snd_soc_ops cz_da7219_cap_ops = {
- 	.startup = cz_da7219_startup,
- 	.shutdown = cz_da7219_shutdown,
- };
+ 	/* DAI runtime info */
+-	unsigned int capture_active:1;		/* stream is in use */
+-	unsigned int playback_active:1;		/* stream is in use */
++	unsigned int capture_active;		/* stream usage count */
++	unsigned int playback_active;		/* stream usage count */
+ 	unsigned int probed:1;
  
--static struct snd_soc_ops cz_max_play_ops = {
-+static const struct snd_soc_ops cz_max_play_ops = {
- 	.startup = cz_max_startup,
- 	.shutdown = cz_max_shutdown,
- };
- 
--static struct snd_soc_ops cz_dmic_cap_ops = {
-+static const struct snd_soc_ops cz_dmic_cap_ops = {
- 	.startup = cz_dmic_startup,
- 	.shutdown = cz_dmic_shutdown,
- };
+ 	unsigned int active;
 -- 
-2.7.4
+2.17.0
