@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v7 13/24] ASoC: qdsp6: q6adm: Add q6adm driver
-Date: Tue,  1 May 2018 13:08:09 +0100
-Message-ID: <20180501120820.11016-14-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v7 23/24] ASoC: qcom: apq8096: Add db820c machine driver
+Date: Tue,  1 May 2018 13:08:19 +0100
+Message-ID: <20180501120820.11016-24-srinivas.kandagatla@linaro.org>
 References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
@@ -10,728 +10,292 @@ To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, al
 Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support to Q6ADM (Audio Device Manager) module in
-q6dsp. ADM performs routing between audio streams and AFE ports.
-It does Rate matching for streams going to devices driven by
-different clocks, it handles volume ramping, Mixing with channel
-and bit-width. ADM creates and destroys dynamic COPP services
-for device-related audio processing as needed.
-
-This patch adds basic support to ADM.
+This patch adds support to DB820c machine driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 ---
- sound/soc/qcom/Kconfig        |   4 +
- sound/soc/qcom/qdsp6/Makefile |   1 +
- sound/soc/qcom/qdsp6/q6adm.c  | 636 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6adm.h  |  25 ++
- 4 files changed, 666 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6adm.c
- create mode 100644 sound/soc/qcom/qdsp6/q6adm.h
+ sound/soc/qcom/Kconfig   |   9 ++
+ sound/soc/qcom/Makefile  |   2 +
+ sound/soc/qcom/apq8096.c | 238 +++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 249 insertions(+)
+ create mode 100644 sound/soc/qcom/apq8096.c
 
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index bb0a2afb0563..971127edbc23 100644
+index 85bb7dd11fd9..87838fa27997 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -50,12 +50,16 @@ config SND_SOC_QDSP6_CORE
- config SND_SOC_QDSP6_AFE
- 	tristate
- 
-+config SND_SOC_QDSP6_ADM
-+	tristate
-+
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
- 	depends on QCOM_APR && HAS_DMA
- 	select SND_SOC_QDSP6_COMMON
- 	select SND_SOC_QDSP6_CORE
- 	select SND_SOC_QDSP6_AFE
-+	select SND_SOC_QDSP6_ADM
- 	help
- 	 To add support for MSM QDSP6 Soc Audio.
+@@ -81,3 +81,12 @@ config SND_SOC_QDSP6
  	 This will enable sound soc platform specific
-diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index 7ff666bd10ca..95cdb3a12694 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1,3 +1,4 @@
- obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
- obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
- obj-$(CONFIG_SND_SOC_QDSP6_AFE) += q6afe.o
-+obj-$(CONFIG_SND_SOC_QDSP6_ADM) += q6adm.o
-diff --git a/sound/soc/qcom/qdsp6/q6adm.c b/sound/soc/qcom/qdsp6/q6adm.c
+ 	 audio drivers. This includes q6asm, q6adm,
+ 	 q6afe interfaces to DSP using apr.
++
++config SND_SOC_MSM8996
++	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
++	depends on QCOM_APR
++	select SND_SOC_QDSP6
++	help
++          Support for Qualcomm Technologies LPASS audio block in
++          APQ8096 SoC-based systems.
++          Say Y if you want to use audio device on this SoCs
+diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+index 0276717917c0..206945bb9ba1 100644
+--- a/sound/soc/qcom/Makefile
++++ b/sound/soc/qcom/Makefile
+@@ -13,9 +13,11 @@ obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
+ # Machine
+ snd-soc-storm-objs := storm.o
+ snd-soc-apq8016-sbc-objs := apq8016_sbc.o
++snd-soc-apq8096-objs := apq8096.o
+ 
+ obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+ obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
++obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
+ 
+ #DSP lib
+ obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
+diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
 new file mode 100644
-index 000000000000..16f4178901bd
+index 000000000000..73abf862db94
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6adm.c
-@@ -0,0 +1,636 @@
++++ b/sound/soc/qcom/apq8096.c
+@@ -0,0 +1,238 @@
 +// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
 +// Copyright (c) 2018, Linaro Limited
 +
-+#include <linux/slab.h>
-+#include <linux/wait.h>
-+#include <linux/kernel.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/sched.h>
-+#include <linux/jiffies.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/kref.h>
-+#include <linux/wait.h>
 +#include <linux/soc/qcom/apr.h>
++#include <linux/module.h>
++#include <linux/component.h>
 +#include <linux/platform_device.h>
-+#include <sound/asound.h>
-+#include "q6adm.h"
-+#include "q6afe.h"
-+#include "q6core.h"
-+#include "q6dsp-errno.h"
-+#include "q6dsp-common.h"
++#include <linux/of_device.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
 +
-+#define ADM_CMD_DEVICE_OPEN_V5		0x00010326
-+#define ADM_CMDRSP_DEVICE_OPEN_V5	0x00010329
-+#define ADM_CMD_DEVICE_CLOSE_V5		0x00010327
-+#define ADM_CMD_MATRIX_MAP_ROUTINGS_V5	0x00010325
-+
-+#define TIMEOUT_MS 1000
-+#define RESET_COPP_ID 99
-+#define INVALID_COPP_ID 0xFF
-+/* Definition for a legacy device session. */
-+#define ADM_LEGACY_DEVICE_SESSION	0
-+#define ADM_MATRIX_ID_AUDIO_RX		0
-+#define ADM_MATRIX_ID_AUDIO_TX		1
-+
-+struct q6copp {
-+	int afe_port;
-+	int copp_idx;
-+	int id;
-+	int topology;
-+	int mode;
-+	int rate;
-+	int bit_width;
-+	int channels;
-+	int app_type;
-+	int acdb_id;
-+
-+	struct aprv2_ibasic_rsp_result_t result;
-+	struct kref refcount;
-+	wait_queue_head_t wait;
-+	struct list_head node;
-+	struct q6adm *adm;
-+};
-+
-+struct q6adm {
-+	struct apr_device *apr;
-+	struct device *dev;
-+	struct q6core_svc_api_info ainfo;
-+	unsigned long copp_bitmap[AFE_MAX_PORTS];
-+	struct list_head copps_list;
-+	spinlock_t copps_list_lock;
-+	struct aprv2_ibasic_rsp_result_t result;
-+	struct mutex lock;
-+	wait_queue_head_t matrix_map_wait;
-+	struct platform_device *pdev_routing;
-+};
-+
-+struct q6adm_cmd_device_open_v5 {
-+	u16 flags;
-+	u16 mode_of_operation;
-+	u16 endpoint_id_1;
-+	u16 endpoint_id_2;
-+	u32 topology_id;
-+	u16 dev_num_channel;
-+	u16 bit_width;
-+	u32 sample_rate;
-+	u8 dev_channel_mapping[8];
-+} __packed;
-+
-+struct q6adm_cmd_matrix_map_routings_v5 {
-+	u32 matrix_id;
-+	u32 num_sessions;
-+} __packed;
-+
-+struct q6adm_session_map_node_v5 {
-+	u16 session_id;
-+	u16 num_copps;
-+} __packed;
-+
-+static struct q6copp *adm_find_copp(struct q6adm *adm, int port_idx,
-+				  int copp_idx)
++static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++				      struct snd_pcm_hw_params *params)
 +{
-+	struct q6copp *c = NULL;
-+	struct q6copp *ret = NULL;
-+	unsigned long flags;
++	struct snd_interval *rate = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_CHANNELS);
 +
-+	spin_lock_irqsave(&adm->copps_list_lock, flags);
-+	list_for_each_entry(c, &adm->copps_list, node) {
-+		if ((port_idx == c->afe_port) && (copp_idx == c->copp_idx)) {
-+			ret = c;
-+			break;
-+		}
-+	}
-+
-+	spin_unlock_irqrestore(&adm->copps_list_lock, flags);
-+
-+	return ret;
-+
-+}
-+
-+static int q6adm_callback(struct apr_device *adev, struct apr_resp_pkt *data)
-+{
-+	struct aprv2_ibasic_rsp_result_t *result = data->payload;
-+	int port_idx, copp_idx;
-+	struct apr_hdr *hdr = &data->hdr;
-+	struct q6copp *copp;
-+	struct q6adm *adm = dev_get_drvdata(&adev->dev);
-+
-+	if (!data->payload_size)
-+		return 0;
-+
-+
-+	copp_idx = (hdr->token) & 0XFF;
-+	port_idx = ((hdr->token) >> 16) & 0xFF;
-+	if (port_idx < 0 || port_idx >= AFE_MAX_PORTS) {
-+		dev_err(&adev->dev, "Invalid port idx %d token %d\n",
-+		       port_idx, hdr->token);
-+		return 0;
-+	}
-+	if (copp_idx < 0 || copp_idx >= MAX_COPPS_PER_PORT) {
-+		dev_err(&adev->dev, "Invalid copp idx %d token %d\n",
-+			copp_idx, hdr->token);
-+		return 0;
-+	}
-+
-+	switch (hdr->opcode) {
-+	case APR_BASIC_RSP_RESULT: {
-+		if (result->status != 0) {
-+			dev_err(&adev->dev, "cmd = 0x%x return error = 0x%x\n",
-+				result->opcode, result->status);
-+		}
-+		switch (result->opcode) {
-+		case ADM_CMD_DEVICE_OPEN_V5:
-+		case ADM_CMD_DEVICE_CLOSE_V5:
-+			copp = adm_find_copp(adm, port_idx, copp_idx);
-+			if (!copp)
-+				return 0;
-+
-+			copp->result = *result;
-+			wake_up(&copp->wait);
-+			break;
-+		case ADM_CMD_MATRIX_MAP_ROUTINGS_V5:
-+			adm->result = *result;
-+			wake_up(&adm->matrix_map_wait);
-+			break;
-+
-+		default:
-+			dev_err(&adev->dev, "Unknown Cmd: 0x%x\n",
-+				result->opcode);
-+			break;
-+		}
-+		return 0;
-+	}
-+	case ADM_CMDRSP_DEVICE_OPEN_V5: {
-+		struct adm_cmd_rsp_device_open_v5 {
-+			u32 status;
-+			u16 copp_id;
-+			u16 reserved;
-+		} __packed * open = data->payload;
-+
-+		open = data->payload;
-+		copp = adm_find_copp(adm, port_idx, copp_idx);
-+		if (!copp)
-+			return 0;
-+
-+		if (open->copp_id == INVALID_COPP_ID) {
-+			dev_err(&adev->dev, "Invalid coppid rxed %d\n",
-+				open->copp_id);
-+			copp->result.status = ADSP_EBADPARAM;
-+			wake_up(&copp->wait);
-+			break;
-+		}
-+		copp->result.opcode = hdr->opcode;
-+		copp->id = open->copp_id;
-+		wake_up(&copp->wait);
-+	}
-+	break;
-+	default:
-+		dev_err(&adev->dev, "Unknown cmd:0x%x\n",
-+		       hdr->opcode);
-+		break;
-+	}
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
 +
 +	return 0;
 +}
 +
-+static struct q6copp *adm_alloc_copp(struct q6adm *adm, int port_idx)
++static int apq8096_sbc_parse_of(struct snd_soc_card *card)
 +{
-+	struct q6copp *c;
-+	int idx;
++	struct device_node *np, *codec, *platform, *cpu, *node;
++	struct device *dev = card->dev;
++	struct snd_soc_dai_link *link;
++	int ret, num_links;
 +
-+	idx = find_first_zero_bit(&adm->copp_bitmap[port_idx],
-+				  MAX_COPPS_PER_PORT);
-+
-+	if (idx > MAX_COPPS_PER_PORT)
-+		return ERR_PTR(-EBUSY);
-+
-+	c = kzalloc(sizeof(*c), GFP_KERNEL);
-+	if (!c)
-+		return ERR_PTR(-ENOMEM);
-+
-+	set_bit(idx, &adm->copp_bitmap[port_idx]);
-+	c->copp_idx = idx;
-+	c->afe_port = port_idx;
-+	c->adm = adm;
-+
-+	init_waitqueue_head(&c->wait);
-+
-+	return c;
-+}
-+
-+static int q6adm_apr_send_copp_pkt(struct q6adm *adm, struct q6copp *copp,
-+				   struct apr_pkt *pkt, uint32_t rsp_opcode)
-+{
-+	struct device *dev = adm->dev;
-+	uint32_t opcode = pkt->hdr.opcode;
-+	int ret;
-+
-+	mutex_lock(&adm->lock);
-+	copp->result.opcode = 0;
-+	copp->result.status = 0;
-+	ret = apr_send_pkt(adm->apr, pkt);
-+	if (ret < 0) {
-+		dev_err(dev, "Failed to send APR packet\n");
-+		ret = -EINVAL;
-+		goto err;
++	ret = snd_soc_of_parse_card_name(card, "qcom,model");
++	if (ret) {
++		dev_err(dev, "Error parsing card name: %d\n", ret);
++		return ret;
 +	}
 +
-+	/* Wait for the callback with copp id */
-+	if (rsp_opcode)
-+		ret = wait_event_timeout(copp->wait,
-+					 (copp->result.opcode == opcode) ||
-+					 (copp->result.opcode == rsp_opcode),
-+					 msecs_to_jiffies(TIMEOUT_MS));
-+	else
-+		ret = wait_event_timeout(copp->wait,
-+					 (copp->result.opcode == opcode),
-+					 msecs_to_jiffies(TIMEOUT_MS));
++	node = dev->of_node;
 +
-+	if (!ret) {
-+		dev_err(dev, "ADM copp cmd timedout\n");
-+		ret = -EINVAL;
-+	} else if (copp->result.status > 0) {
-+		dev_err(dev, "DSP returned error[%d]\n",
-+			copp->result.status);
-+		ret = -EINVAL;
-+	}
-+
-+err:
-+	mutex_unlock(&adm->lock);
-+	return ret;
-+}
-+
-+static int q6adm_device_close(struct q6adm *adm, struct q6copp *copp,
-+			      int port_id, int copp_idx)
-+{
-+	struct apr_pkt close;
-+
-+	close.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+					APR_HDR_LEN(APR_HDR_SIZE),
-+					APR_PKT_VER);
-+	close.hdr.pkt_size = sizeof(close);
-+	close.hdr.src_port = port_id;
-+	close.hdr.dest_port = copp->id;
-+	close.hdr.token = port_id << 16 | copp_idx;
-+	close.hdr.opcode = ADM_CMD_DEVICE_CLOSE_V5;
-+
-+	return q6adm_apr_send_copp_pkt(adm, copp, &close, 0);
-+}
-+
-+static void adm_free_copp(struct kref *ref)
-+{
-+	struct q6copp *c = container_of(ref, struct q6copp, refcount);
-+	struct q6adm *adm = c->adm;
-+	int port_idx = c->afe_port;
-+	int copp_idx = c->copp_idx;
-+	unsigned long flags;
-+	int ret;
-+
-+	ret = q6adm_device_close(adm, c, port_idx, copp_idx);
-+	if (ret < 0)
-+		dev_err(adm->dev, "Failed to close copp %d\n", ret);
-+
-+	clear_bit(c->copp_idx, &adm->copp_bitmap[port_idx]);
-+	spin_lock_irqsave(&adm->copps_list_lock, flags);
-+	list_del(&c->node);
-+	spin_unlock_irqrestore(&adm->copps_list_lock, flags);
-+	kfree(c);
-+}
-+
-+static struct q6copp *adm_find_matching_copp(struct q6adm *adm,
-+					   int port_id, int topology,
-+					   int mode, int rate, int channel_mode,
-+					   int bit_width, int app_type)
-+{
-+	unsigned long flags;
-+	struct q6copp *c;
-+
-+	spin_lock_irqsave(&adm->copps_list_lock, flags);
-+
-+	list_for_each_entry(c, &adm->copps_list, node) {
-+		if ((port_id == c->afe_port) && (topology == c->topology) &&
-+		    (mode == c->mode) && (rate == c->rate) &&
-+		    (bit_width == c->bit_width) && (app_type == c->app_type)) {
-+			spin_unlock_irqrestore(&adm->copps_list_lock, flags);
-+			kref_get(&c->refcount);
-+			return c;
-+		}
-+	}
-+	spin_unlock_irqrestore(&adm->copps_list_lock, flags);
-+
-+	c = adm_alloc_copp(adm, port_id);
-+	if (IS_ERR_OR_NULL(c))
-+		return ERR_CAST(c);
-+
-+	kref_init(&c->refcount);
-+	c->topology = topology;
-+	c->mode = mode;
-+	c->rate = rate;
-+	c->channels = channel_mode;
-+	c->bit_width = bit_width;
-+	c->app_type = app_type;
-+
-+	spin_lock_irqsave(&adm->copps_list_lock, flags);
-+	list_add_tail(&c->node, &adm->copps_list);
-+	spin_unlock_irqrestore(&adm->copps_list_lock, flags);
-+
-+	return c;
-+
-+}
-+
-+static int q6adm_device_open(struct q6adm *adm, struct q6copp *copp,
-+			     int port_id, int path, int topology,
-+			     int channel_mode, int bit_width, int rate)
-+{
-+	struct q6adm_cmd_device_open_v5 *open;
-+	int afe_port = q6afe_get_port_id(port_id);
-+	struct apr_pkt *pkt;
-+	void *p;
-+	int ret, pkt_size;
-+
-+	pkt_size = APR_HDR_SIZE + sizeof(*open);
-+	p = kzalloc(pkt_size, GFP_KERNEL);
-+	if (!p)
-+		return -ENOMEM;
-+
-+	pkt = p;
-+	open = p + APR_HDR_SIZE;
-+	pkt->hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+					   APR_HDR_LEN(APR_HDR_SIZE),
-+					   APR_PKT_VER);
-+	pkt->hdr.pkt_size = pkt_size;
-+	pkt->hdr.src_port = afe_port;
-+	pkt->hdr.dest_port = afe_port;
-+	pkt->hdr.token = port_id << 16 | copp->copp_idx;
-+	pkt->hdr.opcode = ADM_CMD_DEVICE_OPEN_V5;
-+	open->flags = ADM_LEGACY_DEVICE_SESSION;
-+	open->mode_of_operation = path;
-+	open->endpoint_id_1 = afe_port;
-+	open->topology_id = topology;
-+	open->dev_num_channel = channel_mode & 0x00FF;
-+	open->bit_width = bit_width;
-+	open->sample_rate = rate;
-+
-+	ret = q6dsp_map_channels(&open->dev_channel_mapping[0],
-+				 channel_mode);
-+	if (ret)
-+		goto err;
-+
-+	ret = q6adm_apr_send_copp_pkt(adm, copp, pkt,
-+				      ADM_CMDRSP_DEVICE_OPEN_V5);
-+
-+err:
-+	kfree(pkt);
-+	return ret;
-+}
-+
-+/**
-+ * q6adm_open() - open adm and grab a free copp
-+ *
-+ * @dev: Pointer to adm child device.
-+ * @port_id: port id
-+ * @path: playback or capture path.
-+ * @rate: rate at which copp is required.
-+ * @channel_mode: channel mode
-+ * @topology: adm topology id
-+ * @perf_mode: performace mode.
-+ * @bit_width: audio sample bit width
-+ * @app_type: Application type.
-+ * @acdb_id: ACDB id
-+ *
-+ * Return: Will be an negative on error or a valid copp index on success.
-+ */
-+int q6adm_open(struct device *dev, int port_id, int path, int rate,
-+	       int channel_mode, int topology, int perf_mode,
-+	       uint16_t bit_width, int app_type, int acdb_id)
-+{
-+	struct q6adm *adm = dev_get_drvdata(dev->parent);
-+	struct q6copp *copp;
-+	int ret = 0;
-+
-+	if (port_id < 0) {
-+		dev_err(dev, "Invalid port_id 0x%x\n", port_id);
-+		return -EINVAL;
-+	}
-+
-+	copp = adm_find_matching_copp(adm, port_id, topology, perf_mode,
-+				      rate, channel_mode, bit_width, app_type);
-+	if (kref_read(&copp->refcount) == 1) {
-+		/* not initialized yet */
-+		ret = q6adm_device_open(adm, copp, port_id, path, topology,
-+				  channel_mode, bit_width, rate);
-+		if (ret < 0)
++	/* DAPM routes */
++	if (of_property_read_bool(node, "qcom,audio-routing")) {
++		ret = snd_soc_of_parse_audio_routing(card,
++					"qcom,audio-routing");
++		if (ret)
 +			return ret;
 +	}
 +
-+	return copp->copp_idx;
-+}
-+EXPORT_SYMBOL_GPL(q6adm_open);
++	/* Populate links */
++	num_links = of_get_child_count(node);
 +
-+/**
-+ * q6adm_matrix_map() - Map asm streams and afe ports using payload
-+ *
-+ * @dev: Pointer to adm child device.
-+ * @path: playback or capture path.
-+ * @payload_map: map between session id and afe ports.
-+ * @perf_mode: Performace mode.
-+ *
-+ * Return: Will be an negative on error or a zero on success.
-+ */
-+int q6adm_matrix_map(struct device *dev, int path,
-+		     struct route_payload payload_map, int perf_mode)
-+{
-+	struct q6adm *adm = dev_get_drvdata(dev->parent);
-+	struct q6adm_cmd_matrix_map_routings_v5 *route;
-+	struct q6adm_session_map_node_v5 *node;
-+	struct apr_pkt *pkt;
-+	uint16_t *copps_list;
-+	int pkt_size, ret, i, copp_idx;
-+	void *matrix_map = NULL;
-+	struct q6copp *copp;
-+
-+	/* Assumes port_ids have already been validated during adm_open */
-+	pkt_size = (APR_HDR_SIZE + sizeof(*route) +  sizeof(*node) +
-+		    (sizeof(uint32_t) * payload_map.num_copps));
-+
-+	matrix_map = kzalloc(pkt_size, GFP_KERNEL);
-+	if (!matrix_map)
++	/* Allocate the DAI link array */
++	card->dai_link = kcalloc(num_links, sizeof(*link), GFP_KERNEL);
++	if (!card->dai_link)
 +		return -ENOMEM;
 +
-+	pkt = matrix_map;
-+	route = matrix_map + APR_HDR_SIZE;
-+	node = matrix_map + APR_HDR_SIZE + sizeof(*route);
-+	copps_list = matrix_map + APR_HDR_SIZE + sizeof(*route) + sizeof(*node);
++	card->num_links	= num_links;
++	link = card->dai_link;
 +
-+	pkt->hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+					   APR_HDR_LEN(APR_HDR_SIZE),
-+					   APR_PKT_VER);
-+	pkt->hdr.pkt_size = pkt_size;
-+	pkt->hdr.token = 0;
-+	pkt->hdr.opcode = ADM_CMD_MATRIX_MAP_ROUTINGS_V5;
-+	route->num_sessions = 1;
++	for_each_child_of_node(node, np) {
++		cpu = of_get_child_by_name(np, "cpu");
++		platform = of_get_child_by_name(np, "platform");
++		codec = of_get_child_by_name(np, "codec");
 +
-+	switch (path) {
-+	case ADM_PATH_PLAYBACK:
-+		route->matrix_id = ADM_MATRIX_ID_AUDIO_RX;
-+		break;
-+	case ADM_PATH_LIVE_REC:
-+		route->matrix_id = ADM_MATRIX_ID_AUDIO_TX;
-+		break;
-+	default:
-+		dev_err(dev, "Wrong path set[%d]\n", path);
-+		break;
-+	}
-+
-+	node->session_id = payload_map.session_id;
-+	node->num_copps = payload_map.num_copps;
-+
-+	for (i = 0; i < payload_map.num_copps; i++) {
-+		int port_idx = payload_map.port_id[i];
-+
-+		if (port_idx < 0) {
-+			dev_err(dev, "Invalid port_id 0x%x\n",
-+				payload_map.port_id[i]);
-+			kfree(pkt);
-+			return -EINVAL;
-+		}
-+		copp_idx = payload_map.copp_idx[i];
-+
-+		copp = adm_find_copp(adm, port_idx, copp_idx);
-+		if (!copp) {
-+			kfree(pkt);
++		if (!cpu) {
++			dev_err(dev, "Can't find cpu DT node\n");
 +			return -EINVAL;
 +		}
 +
-+		copps_list[i] = copp->id;
++		link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
++		if (!link->cpu_of_node) {
++			dev_err(card->dev, "error getting cpu phandle\n");
++			return -EINVAL;
++		}
++
++		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
++		if (ret) {
++			dev_err(card->dev, "error getting cpu dai name\n");
++			return ret;
++		}
++
++		if (codec && platform) {
++			link->platform_of_node = of_parse_phandle(platform,
++								  "sound-dai",
++								   0);
++			if (!link->platform_of_node) {
++				dev_err(card->dev, "platform dai not found\n");
++				return -EINVAL;
++			}
++
++			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
++			if (ret < 0) {
++				dev_err(card->dev, "codec dai not found\n");
++				return ret;
++			}
++			link->no_pcm = 1;
++			link->ignore_suspend = 1;
++			link->ignore_pmdown_time = 1;
++			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
++		} else {
++			link->platform_of_node = link->cpu_of_node;
++			link->codec_dai_name = "snd-soc-dummy-dai";
++			link->codec_name = "snd-soc-dummy";
++			link->dynamic = 1;
++		}
++
++		ret = of_property_read_string(np, "link-name", &link->name);
++		if (ret) {
++			dev_err(card->dev, "error getting codec dai_link name\n");
++			return ret;
++		}
++
++		link->dpcm_playback = 1;
++		link->dpcm_capture = 1;
++		link->stream_name = link->name;
++		link++;
 +	}
 +
-+	mutex_lock(&adm->lock);
-+	adm->result.status = 0;
-+	adm->result.opcode = 0;
-+
-+	ret = apr_send_pkt(adm->apr, pkt);
-+	if (ret < 0) {
-+		dev_err(dev, "routing for syream %d failed ret %d\n",
-+		       payload_map.session_id, ret);
-+		goto fail_cmd;
-+	}
-+	ret = wait_event_timeout(adm->matrix_map_wait,
-+				 adm->result.opcode == pkt->hdr.opcode,
-+				 msecs_to_jiffies(TIMEOUT_MS));
-+	if (!ret) {
-+		dev_err(dev, "routing for stream %d failed\n",
-+		       payload_map.session_id);
-+		ret = -ETIMEDOUT;
-+		goto fail_cmd;
-+	} else if (adm->result.status > 0) {
-+		dev_err(dev, "DSP returned error[%d]\n",
-+			adm->result.status);
-+		ret = -EINVAL;
-+		goto fail_cmd;
-+	}
-+
-+fail_cmd:
-+	mutex_unlock(&adm->lock);
-+	kfree(pkt);
 +	return ret;
 +}
-+EXPORT_SYMBOL_GPL(q6adm_matrix_map);
 +
-+/**
-+ * q6adm_close() - Close adm copp
-+ *
-+ * @dev: Pointer to adm child device.
-+ * @port_id: afe port id.
-+ * @perf_mode: perf_mode mode
-+ * @copp_idx: copp index to close
-+ *
-+ * Return: Will be an negative on error or a zero on success.
-+ */
-+int q6adm_close(struct device *dev, int port_id, int perf_mode, int copp_idx)
++static int apq8096_bind(struct device *dev)
 +{
-+	struct q6adm *adm = dev_get_drvdata(dev->parent);
-+	struct q6copp *copp;
++	struct snd_soc_card *card;
++	int ret;
 +
-+	if (port_id < 0) {
-+		dev_err(dev, "Invalid port_id 0x%x\n", port_id);
-+		return -EINVAL;
-+	}
-+
-+	if ((copp_idx < 0) || (copp_idx >= MAX_COPPS_PER_PORT)) {
-+		dev_err(dev, "Invalid copp idx: %d\n", copp_idx);
-+		return -EINVAL;
-+	}
-+
-+	copp = adm_find_copp(adm, port_id, copp_idx);
-+	if (!copp)
-+		return -EINVAL;
-+
-+	kref_put(&copp->refcount, adm_free_copp);
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(q6adm_close);
-+
-+static int q6adm_probe(struct apr_device *adev)
-+{
-+	struct device *dev = &adev->dev;
-+	struct device_node *dais_np;
-+	struct q6adm *adm;
-+
-+	adm = devm_kzalloc(&adev->dev, sizeof(*adm), GFP_KERNEL);
-+	if (!adm)
++	card = kzalloc(sizeof(*card), GFP_KERNEL);
++	if (!card)
 +		return -ENOMEM;
 +
-+	adm->apr = adev;
-+	dev_set_drvdata(&adev->dev, adm);
-+	adm->dev = dev;
-+	q6core_get_svc_api_info(adev->svc_id, &adm->ainfo);
-+	mutex_init(&adm->lock);
-+	init_waitqueue_head(&adm->matrix_map_wait);
++	component_bind_all(dev, card);
++	card->dev = dev;
++	ret = apq8096_sbc_parse_of(card);
++	if (ret) {
++		dev_err(dev, "Error parsing OF data\n");
++		component_unbind_all(dev, card);
++		return ret;
++	}
 +
-+	INIT_LIST_HEAD(&adm->copps_list);
-+	spin_lock_init(&adm->copps_list_lock);
++	return snd_soc_register_card(card);
++}
 +
-+	dais_np = of_get_child_by_name(dev->of_node, "routing");
-+	if (dais_np) {
-+		adm->pdev_routing = of_platform_device_create(dais_np,
-+							   "q6routing", dev);
-+		of_node_put(dais_np);
++static void apq8096_unbind(struct device *dev)
++{
++	struct snd_soc_card *card = dev_get_drvdata(dev);
++
++	component_unbind_all(dev, card);
++	snd_soc_unregister_card(card);
++	kfree(card->dai_link);
++	kfree(card);
++}
++
++static const struct component_master_ops apq8096_ops = {
++	.bind = apq8096_bind,
++	.unbind = apq8096_unbind,
++};
++
++static int apq8016_compare_of(struct device *dev, void *data)
++{
++	return dev->of_node == data;
++}
++
++static void apq8016_release_of(struct device *dev, void *data)
++{
++	of_node_put(data);
++}
++
++static int add_audio_components(struct device *dev,
++				struct component_match **matchptr)
++{
++	struct device_node *np, *platform, *cpu, *node, *dai_node;
++
++	node = dev->of_node;
++
++	for_each_child_of_node(node, np) {
++		cpu = of_get_child_by_name(np, "cpu");
++		if (cpu) {
++			dai_node = of_parse_phandle(cpu, "sound-dai", 0);
++			of_node_get(dai_node);
++			component_match_add_release(dev, matchptr,
++						    apq8016_release_of,
++						    apq8016_compare_of,
++						    dai_node);
++		}
++
++		platform = of_get_child_by_name(np, "platform");
++		if (platform) {
++			dai_node = of_parse_phandle(platform, "sound-dai", 0);
++			component_match_add_release(dev, matchptr,
++						    apq8016_release_of,
++						    apq8016_compare_of,
++						    dai_node);
++		}
 +	}
 +
 +	return 0;
 +}
 +
-+static int q6adm_remove(struct apr_device *adev)
++static int apq8096_platform_probe(struct platform_device *pdev)
 +{
-+	struct q6adm *adm = dev_get_drvdata(&adev->dev);
++	struct component_match *match = NULL;
++	int ret;
 +
-+	if (adm->pdev_routing)
-+		of_platform_device_destroy(&adm->pdev_routing->dev, NULL);
++	ret = add_audio_components(&pdev->dev, &match);
++	if (ret)
++		return ret;
++
++	return component_master_add_with_match(&pdev->dev, &apq8096_ops, match);
++}
++
++static int apq8096_platform_remove(struct platform_device *pdev)
++{
++	component_master_del(&pdev->dev, &apq8096_ops);
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id q6adm_device_id[]  = {
-+	{ .compatible = "qcom,q6adm" },
-+	{},
++static const struct of_device_id msm_snd_apq8096_dt_match[] = {
++	{.compatible = "qcom,apq8096-sndcard"},
++	{}
 +};
-+MODULE_DEVICE_TABLE(of, q6adm_device_id);
 +
-+static struct apr_driver qcom_q6adm_driver = {
-+	.probe = q6adm_probe,
-+	.remove = q6adm_remove,
-+	.callback = q6adm_callback,
++MODULE_DEVICE_TABLE(of, msm_snd_apq8096_dt_match);
++
++static struct platform_driver msm_snd_apq8096_driver = {
++	.probe  = apq8096_platform_probe,
++	.remove = apq8096_platform_remove,
 +	.driver = {
-+		.name = "qcom-q6adm",
-+		.of_match_table = of_match_ptr(q6adm_device_id),
++		.name = "msm-snd-apq8096",
++		.owner = THIS_MODULE,
++		.of_match_table = msm_snd_apq8096_dt_match,
 +	},
 +};
-+
-+module_apr_driver(qcom_q6adm_driver);
-+MODULE_DESCRIPTION("Q6 Audio Device Manager");
++module_platform_driver(msm_snd_apq8096_driver);
++MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
++MODULE_DESCRIPTION("APQ8096 ASoC Machine Driver");
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6adm.h b/sound/soc/qcom/qdsp6/q6adm.h
-new file mode 100644
-index 000000000000..d7c13970ee18
---- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6adm.h
-@@ -0,0 +1,25 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __Q6_ADM_V2_H__
-+#define __Q6_ADM_V2_H__
-+
-+#define ADM_PATH_PLAYBACK	0x1
-+#define ADM_PATH_LIVE_REC	0x2
-+#define MAX_COPPS_PER_PORT	8
-+#define NULL_COPP_TOPOLOGY	0x00010312
-+
-+/* multiple copp per stream. */
-+struct route_payload {
-+	int num_copps;
-+	int session_id;
-+	int copp_idx[MAX_COPPS_PER_PORT];
-+	int port_id[MAX_COPPS_PER_PORT];
-+};
-+
-+int q6adm_open(struct device *dev, int port_id, int path, int rate,
-+	       int channel_mode, int topology, int perf_mode,
-+	       uint16_t bit_width, int app_type, int acdb_id);
-+int q6adm_close(struct device *dev, int port, int topology, int perf_mode);
-+int q6adm_matrix_map(struct device *dev, int path,
-+		     struct route_payload payload_map, int perf_mode);
-+
-+#endif /* __Q6_ADM_V2_H__ */
 -- 
 2.16.2
