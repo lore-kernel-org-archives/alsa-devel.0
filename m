@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cirrus: i2s: Fix {TX|RX}LinCtrlData
-	setup" to the asoc tree
-Date: Tue,  1 May 2018 22:07:40 +0100 (BST)
-Message-ID: <20180501210740.739C144007A@finisterre.ee.mobilebroadband>
-References: <20180428205142.31921-3-alexander.sverdlin@gmail.com>
+Subject: Applied "ASoC: cirrus: i2s: Fix LRCLK configuration"
+	to the asoc tree
+Date: Tue,  1 May 2018 22:07:53 +0100 (BST)
+Message-ID: <20180501210753.DB47444007A@finisterre.ee.mobilebroadband>
+References: <20180428205142.31921-2-alexander.sverdlin@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1574457840242232783=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E39F1266F4E
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:07:45 +0200 (CEST)
-In-Reply-To: <20180428205142.31921-3-alexander.sverdlin@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2411B266F4E
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:07:59 +0200 (CEST)
+In-Reply-To: <20180428205142.31921-2-alexander.sverdlin@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,12 +26,9 @@ To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
---===============1574457840242232783==
-Content-Type: text/plain
-
 The patch
 
-   ASoC: cirrus: i2s: Fix {TX|RX}LinCtrlData setup
+   ASoC: cirrus: i2s: Fix LRCLK configuration
 
 has been applied to the asoc tree at
 
@@ -55,96 +53,85 @@ to this mail.
 Thanks,
 Mark
 
->From 5d302ed3cc80564fb835bed5fdba1e1250ecc9e5 Mon Sep 17 00:00:00 2001
+>From 2d534113be9a2aa532a1ae127a57e83558aed358 Mon Sep 17 00:00:00 2001
 From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Date: Sat, 28 Apr 2018 22:51:39 +0200
-Subject: [PATCH] ASoC: cirrus: i2s: Fix {TX|RX}LinCtrlData setup
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Date: Sat, 28 Apr 2018 22:51:38 +0200
+Subject: [PATCH] ASoC: cirrus: i2s: Fix LRCLK configuration
 
-According to "EP93xx User’s Guide", I2STXLinCtrlData and I2SRXLinCtrlData
-registers actually have different format. The only currently used bit
-(Left_Right_Justify) has different position. Fix this and simplify the
-whole setup taking into account the fact that both registers have zero
-default value.
+The bit responsible for LRCLK polarity is i2s_tlrs (0), not i2s_trel (2)
+(refer to "EP93xx User's Guide").
 
-The practical effect of the above is repaired SND_SOC_DAIFMT_RIGHT_J
-support (currently unused).
+Previously card drivers which specified SND_SOC_DAIFMT_NB_IF actually got
+SND_SOC_DAIFMT_NB_NF, an adaptation is necessary to retain the old
+behavior.
 
 Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 Cc: stable@vger.kernel.org
 ---
- sound/soc/cirrus/ep93xx-i2s.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ sound/soc/cirrus/edb93xx.c     | 2 +-
+ sound/soc/cirrus/ep93xx-i2s.c  | 8 ++++----
+ sound/soc/cirrus/snappercl15.c | 2 +-
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
+diff --git a/sound/soc/cirrus/edb93xx.c b/sound/soc/cirrus/edb93xx.c
+index c53bd6f2c2d7..3d011abaa266 100644
+--- a/sound/soc/cirrus/edb93xx.c
++++ b/sound/soc/cirrus/edb93xx.c
+@@ -67,7 +67,7 @@ static struct snd_soc_dai_link edb93xx_dai = {
+ 	.cpu_dai_name	= "ep93xx-i2s",
+ 	.codec_name	= "spi0.0",
+ 	.codec_dai_name	= "cs4271-hifi",
+-	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
++	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			  SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops		= &edb93xx_ops,
+ };
 diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-index 38c240c97041..0dc3852c4621 100644
+index 934f8aefdd90..38c240c97041 100644
 --- a/sound/soc/cirrus/ep93xx-i2s.c
 +++ b/sound/soc/cirrus/ep93xx-i2s.c
-@@ -51,7 +51,9 @@
- #define EP93XX_I2S_WRDLEN_24		(1 << 0)
- #define EP93XX_I2S_WRDLEN_32		(2 << 0)
- 
--#define EP93XX_I2S_LINCTRLDATA_R_JUST	(1 << 2) /* Right justify */
-+#define EP93XX_I2S_RXLINCTRLDATA_R_JUST	BIT(1) /* Right justify */
-+
-+#define EP93XX_I2S_TXLINCTRLDATA_R_JUST	BIT(2) /* Right justify */
- 
- #define EP93XX_I2S_CLKCFG_LRS		(1 << 0) /* lrclk polarity */
- #define EP93XX_I2S_CLKCFG_CKP		(1 << 1) /* Bit clock polarity */
-@@ -170,25 +172,25 @@ static int ep93xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 				  unsigned int fmt)
- {
- 	struct ep93xx_i2s_info *info = snd_soc_dai_get_drvdata(cpu_dai);
--	unsigned int clk_cfg, lin_ctrl;
-+	unsigned int clk_cfg;
-+	unsigned int txlin_ctrl = 0;
-+	unsigned int rxlin_ctrl = 0;
- 
- 	clk_cfg  = ep93xx_i2s_read_reg(info, EP93XX_I2S_RXCLKCFG);
--	lin_ctrl = ep93xx_i2s_read_reg(info, EP93XX_I2S_RXLINCTRLDATA);
- 
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_I2S:
- 		clk_cfg |= EP93XX_I2S_CLKCFG_REL;
--		lin_ctrl &= ~EP93XX_I2S_LINCTRLDATA_R_JUST;
+@@ -213,24 +213,24 @@ static int ep93xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 	switch (fmt & SND_SOC_DAIFMT_INV_MASK) {
+ 	case SND_SOC_DAIFMT_NB_NF:
+ 		/* Negative bit clock, lrclk low on left word */
+-		clk_cfg &= ~(EP93XX_I2S_CLKCFG_CKP | EP93XX_I2S_CLKCFG_REL);
++		clk_cfg &= ~(EP93XX_I2S_CLKCFG_CKP | EP93XX_I2S_CLKCFG_LRS);
  		break;
  
- 	case SND_SOC_DAIFMT_LEFT_J:
- 		clk_cfg &= ~EP93XX_I2S_CLKCFG_REL;
--		lin_ctrl &= ~EP93XX_I2S_LINCTRLDATA_R_JUST;
+ 	case SND_SOC_DAIFMT_NB_IF:
+ 		/* Negative bit clock, lrclk low on right word */
+ 		clk_cfg &= ~EP93XX_I2S_CLKCFG_CKP;
+-		clk_cfg |= EP93XX_I2S_CLKCFG_REL;
++		clk_cfg |= EP93XX_I2S_CLKCFG_LRS;
  		break;
  
- 	case SND_SOC_DAIFMT_RIGHT_J:
- 		clk_cfg &= ~EP93XX_I2S_CLKCFG_REL;
--		lin_ctrl |= EP93XX_I2S_LINCTRLDATA_R_JUST;
-+		rxlin_ctrl |= EP93XX_I2S_RXLINCTRLDATA_R_JUST;
-+		txlin_ctrl |= EP93XX_I2S_TXLINCTRLDATA_R_JUST;
+ 	case SND_SOC_DAIFMT_IB_NF:
+ 		/* Positive bit clock, lrclk low on left word */
+ 		clk_cfg |= EP93XX_I2S_CLKCFG_CKP;
+-		clk_cfg &= ~EP93XX_I2S_CLKCFG_REL;
++		clk_cfg &= ~EP93XX_I2S_CLKCFG_LRS;
  		break;
  
- 	default:
-@@ -237,8 +239,8 @@ static int ep93xx_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 	/* Write new register values */
- 	ep93xx_i2s_write_reg(info, EP93XX_I2S_RXCLKCFG, clk_cfg);
- 	ep93xx_i2s_write_reg(info, EP93XX_I2S_TXCLKCFG, clk_cfg);
--	ep93xx_i2s_write_reg(info, EP93XX_I2S_RXLINCTRLDATA, lin_ctrl);
--	ep93xx_i2s_write_reg(info, EP93XX_I2S_TXLINCTRLDATA, lin_ctrl);
-+	ep93xx_i2s_write_reg(info, EP93XX_I2S_RXLINCTRLDATA, rxlin_ctrl);
-+	ep93xx_i2s_write_reg(info, EP93XX_I2S_TXLINCTRLDATA, txlin_ctrl);
- 	return 0;
- }
+ 	case SND_SOC_DAIFMT_IB_IF:
+ 		/* Positive bit clock, lrclk low on right word */
+-		clk_cfg |= EP93XX_I2S_CLKCFG_CKP | EP93XX_I2S_CLKCFG_REL;
++		clk_cfg |= EP93XX_I2S_CLKCFG_CKP | EP93XX_I2S_CLKCFG_LRS;
+ 		break;
+ 	}
  
+diff --git a/sound/soc/cirrus/snappercl15.c b/sound/soc/cirrus/snappercl15.c
+index 2334ec19e7eb..11ff7b2672b2 100644
+--- a/sound/soc/cirrus/snappercl15.c
++++ b/sound/soc/cirrus/snappercl15.c
+@@ -72,7 +72,7 @@ static struct snd_soc_dai_link snappercl15_dai = {
+ 	.codec_dai_name	= "tlv320aic23-hifi",
+ 	.codec_name	= "tlv320aic23-codec.0-001a",
+ 	.platform_name	= "ep93xx-i2s",
+-	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_IF |
++	.dai_fmt	= SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
+ 			  SND_SOC_DAIFMT_CBS_CFS,
+ 	.ops		= &snappercl15_ops,
+ };
 -- 
 2.17.0
-
-
---===============1574457840242232783==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1574457840242232783==--
