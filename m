@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht-bsw-rt5672: allow for
-	topology-defined codec-dai setup" to the asoc tree
-Date: Tue,  1 May 2018 22:08:55 +0100 (BST)
-Message-ID: <20180501210855.C1AA144007A@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: mediatek: avoid using snd_soc_platform"
+	to the asoc tree
+Date: Tue,  1 May 2018 22:08:58 +0100 (BST)
+Message-ID: <20180501210858.BD1D044007C@finisterre.ee.mobilebroadband>
+References: <1524892886-25343-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8405F267650
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:09:00 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 18657267663
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:09:02 +0200 (CEST)
+In-Reply-To: <1524892886-25343-1-git-send-email-kaichieh.chuang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, wsd_upstream@mediatek.com, garlic.tseng@mediatek.com, broonie@kernel.org, linux-mediatek@lists.infradead.org, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht-bsw-rt5672: allow for topology-defined codec-dai setup
+   ASoC: mediatek: avoid using snd_soc_platform
 
 has been applied to the asoc tree at
 
@@ -52,84 +52,31 @@ to this mail.
 Thanks,
 Mark
 
->From bf14adcc4ddd101088237179bee6daa19bac1669 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Fri, 27 Apr 2018 16:36:00 -0500
-Subject: [PATCH] ASoC: Intel: cht-bsw-rt5672: allow for topology-defined
- codec-dai setup
+>From 9a67d11e34cc21afe2cbddaa8f50d2a5da098d6e Mon Sep 17 00:00:00 2001
+From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
+Date: Sat, 28 Apr 2018 13:21:26 +0800
+Subject: [PATCH] ASoC: mediatek: avoid using snd_soc_platform
 
-Hard-coded setups conflict with topology defined ones. Move this code to
-codec_fixup so that SOF can override codec dai settings, e.g. to only use
-2 channels.
+avoid using snd_soc_platform, which is removed after 4.18
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 30 +++++++++++++++++--------
- 1 file changed, 21 insertions(+), 9 deletions(-)
+ sound/soc/mediatek/common/mtk-afe-platform-driver.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index e68ec32720a4..e5aa13058dd7 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -189,13 +189,6 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	if (devm_acpi_dev_add_driver_gpios(component->dev, cht_rt5672_gpios))
- 		dev_warn(runtime->dev, "Unable to add GPIO mapping table\n");
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+index d046ea8e543b..8966ee138387 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+@@ -62,7 +62,7 @@ static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
  
--	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
--	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xF, 0xF, 4, 24);
--	if (ret < 0) {
--		dev_err(runtime->dev, "can't set codec TDM slot %d\n", ret);
--		return ret;
--	}
--
- 	/* Select codec ASRC clock source to track I2S1 clock, because codec
- 	 * is in slave mode and 100fs I2S format (BCLK = 100 * LRCLK) cannot
- 	 * be supported by RT5672. Otherwise, ASRC will be disabled and cause
-@@ -252,6 +245,7 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 			SNDRV_PCM_HW_PARAM_RATE);
- 	struct snd_interval *channels = hw_param_interval(params,
- 						SNDRV_PCM_HW_PARAM_CHANNELS);
-+	int ret;
- 
- 	/* The DSP will covert the FE rate to 48k, stereo, 24bits */
- 	rate->min = rate->max = 48000;
-@@ -259,6 +253,26 @@ static int cht_codec_fixup(struct snd_soc_pcm_runtime *rtd,
- 
- 	/* set SSP2 to 24-bit */
- 	params_set_format(params, SNDRV_PCM_FORMAT_S24_LE);
-+
-+	/*
-+	 * Default mode for SSP configuration is TDM 4 slot
-+	 */
-+	ret = snd_soc_dai_set_fmt(rtd->codec_dai,
-+				  SND_SOC_DAIFMT_DSP_B |
-+				  SND_SOC_DAIFMT_IB_NF |
-+				  SND_SOC_DAIFMT_CBS_CFS);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set format to TDM %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* TDM 4 slots 24 bit, set Rx & Tx bitmask to 4 active slots */
-+	ret = snd_soc_dai_set_tdm_slot(rtd->codec_dai, 0xF, 0xF, 4, 24);
-+	if (ret < 0) {
-+		dev_err(rtd->dev, "can't set codec TDM slot %d\n", ret);
-+		return ret;
-+	}
-+
- 	return 0;
+ 	size = afe->mtk_afe_hardware->buffer_bytes_max;
+ 	return snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
+-						     rtd->platform->dev,
++						     afe->dev,
+ 						     size, size);
  }
  
-@@ -315,8 +329,6 @@ static struct snd_soc_dai_link cht_dailink[] = {
- 		.nonatomic = true,
- 		.codec_dai_name = "rt5670-aif1",
- 		.codec_name = "i2c-10EC5670:00",
--		.dai_fmt = SND_SOC_DAIFMT_DSP_B | SND_SOC_DAIFMT_IB_NF
--					| SND_SOC_DAIFMT_CBS_CFS,
- 		.init = cht_codec_init,
- 		.be_hw_params_fixup = cht_codec_fixup,
- 		.dpcm_playback = 1,
 -- 
 2.17.0
