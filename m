@@ -1,100 +1,76 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Subject: Re: [PATCH v2] ASoC: da7219: read fmw property to get mclk for
- non-dts systems
-Date: Tue, 1 May 2018 20:10:58 +0530
-Message-ID: <f541727a-ff8b-8945-898d-3d331f2762f2@amd.com>
-References: <1525080203-18947-1-git-send-email-akshu.agrawal@amd.com>
- <2E89032DDAA8B9408CB92943514A0337014C1E93BC@SW-EX-MBX01.diasemi.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] ASoC: add documents for mt6351
+Date: Tue, 1 May 2018 09:42:36 -0500
+Message-ID: <20180501144236.GA26497@rob-hp-laptop>
+References: <20180426030732.5887-1-kaichieh.chuang@mediatek.com>
+ <20180426030732.5887-2-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337014C1E93BC@SW-EX-MBX01.diasemi.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: "djkurtz@chromium.org" <djkurtz@chromium.org>, "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>, Support Opensource <Support.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi0-f67.google.com (mail-oi0-f67.google.com
+ [209.85.218.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id E7305266EBC
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 16:42:38 +0200 (CEST)
+Received: by mail-oi0-f67.google.com with SMTP id p62-v6so10219930oie.10
+ for <alsa-devel@alsa-project.org>; Tue, 01 May 2018 07:42:38 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180426030732.5887-2-kaichieh.chuang@mediatek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, ryder.lee@mediatek.com, wsd_upstream@mediatek.com, chipeng.chang@mediatek.com, garlic.tseng@mediatek.com, broonie@kernel.org, linux-mediatek@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Apr 26, 2018 at 11:07:31AM +0800, KaiChieh Chuang wrote:
+> Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
 
+Needs a commit msg and 'binding' would be more informative than 
+'documents' in the subject.
 
-On 5/1/2018 12:35 AM, Adam Thomson wrote:
-> On 30 April 2018 10:23, Akshu Agrawal wrote:
+> ---
+>  Documentation/devicetree/bindings/sound/mt6351.txt | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/mt6351.txt
 > 
->> Non-dts based systems can use ACPI DSDT to pass on the mclk
->> to da7219.
->> This enables da7219 mclk to be linked to system clock.
->> Enable/Disable of the mclk is already handled in the codec so
->> platform drivers don't have to explicitly do handling of mclk.
+> diff --git a/Documentation/devicetree/bindings/sound/mt6351.txt b/Documentation/devicetree/bindings/sound/mt6351.txt
+> new file mode 100644
+> index 000000000000..7fb2cb99245e
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/mt6351.txt
+> @@ -0,0 +1,16 @@
+> +Mediatek MT6351 Audio Codec
+> +
+> +The communication between MT6351 and SoC is through Mediatek PMIC wrapper.
+> +For more detail, please visit Mediatek PMIC wrapper documentation.
+
+Add the path to the doc file.
+
+What's a wrapper? Is this a block within the PMIC or ?
+
+> +
+> +Must be a child node of PMIC wrapper.
+> +
+> +Required properties:
+> +
+> +- compatible : "mediatek,mt6351-sound".
+> +
+> +Example:
+> +
+> +mt6351_snd {
+> +	compatible = "mediatek,mt6351-sound";
+> +};
+> -- 
+> 2.12.5
 > 
-> There is already a means via DT to specify the MCLK for a device using the
-> generic clock DT bindings, and this driver already uses that. Should ACPI not
-> have something similar to that which is generic, rather than adding device
-> specific bindings/properties to achieve the same? There will be other drivers
-> that will want to do the same.
-> 
-
-IMO for all non-dts based ACPI systems, DSDT would be the best and 
-simplest way to link system clock to mclk. Currently, machine audio 
-drivers handles the clock and this can be avoided by having this property.
-
->>
->> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
->> ---
->> v2: Fixed kbuild error
->>   include/sound/da7219.h    | 2 ++
->>   sound/soc/codecs/da7219.c | 7 ++++++-
->>   2 files changed, 8 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
->> index 1bfcb16..df7ddf4 100644
->> --- a/include/sound/da7219.h
->> +++ b/include/sound/da7219.h
->> @@ -38,6 +38,8 @@ struct da7219_pdata {
->>
->>   	const char *dai_clks_name;
->>
->> +	const char *mclk_name;
->> +
->>   	/* Mic */
->>   	enum da7219_micbias_voltage micbias_lvl;
->>   	enum da7219_mic_amp_in_sel mic_amp_in_sel;
->> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
->> index 980a6a8..aed68a4 100644
->> --- a/sound/soc/codecs/da7219.c
->> +++ b/sound/soc/codecs/da7219.c
->> @@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct
->> snd_soc_component *compone
->>   		dev_warn(dev, "Using default clk name: %s\n",
->>   			 pdata->dai_clks_name);
->>
->> +	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
->> +
->>   	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
->>   		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
->>   	else
->> @@ -1905,7 +1907,10 @@ static int da7219_probe(struct snd_soc_component
->> *component)
->>   	da7219_handle_pdata(component);
->>
->>   	/* Check if MCLK provided */
->> -	da7219->mclk = devm_clk_get(component->dev, "mclk");
->> +	if (da7219->pdata->mclk_name)
->> +		da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
-> 
-> By doing this you would need an associated 'clk_put()' whereas the devm call
-> avoids this.
->
-
-Agreed, would add a corresponding clk_put call.
-
-Thanks,
-Akshu
-
->> +	if (!da7219->mclk)
->> +		da7219->mclk = devm_clk_get(component->dev, "mclk");
->>   	if (IS_ERR(da7219->mclk)) {
->>   		if (PTR_ERR(da7219->mclk) != -ENOENT) {
->>   			ret = PTR_ERR(da7219->mclk);
->> --
->> 1.9.1
+> --
+> To unsubscribe from this list: send the line "unsubscribe devicetree" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
