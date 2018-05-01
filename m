@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: amd: fix spelling mistake: "failer" ->
-	"failure"" to the asoc tree
-Date: Tue,  1 May 2018 22:08:10 +0100 (BST)
-Message-ID: <20180501210810.A6CD044007A@finisterre.ee.mobilebroadband>
-References: <20180501082001.21904-1-colin.king@canonical.com>
+Subject: Applied "ASoC: mediatek: add the .probe() callback in
+	mt2701_afe_pcm_dai_component" to the asoc tree
+Date: Tue,  1 May 2018 22:08:36 +0100 (BST)
+Message-ID: <20180501210836.ED3D144007A@finisterre.ee.mobilebroadband>
+References: <2bcfa1a389ff00a00204c2ddf3a94882195fd19d.1525090110.git.ryder.lee@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 10134267625
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:08:15 +0200 (CEST)
-In-Reply-To: <20180501082001.21904-1-colin.king@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D2D5266F44
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:08:45 +0200 (CEST)
+In-Reply-To: <2bcfa1a389ff00a00204c2ddf3a94882195fd19d.1525090110.git.ryder.lee@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Alex Deucher <alexander.deucher@amd.com>
+To: Ryder Lee <ryder.lee@mediatek.com>
+Cc: alsa-devel@alsa-project.org, Garlic Tseng <garlic.tseng@mediatek.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: amd: fix spelling mistake: "failer" -> "failure"
+   ASoC: mediatek: add the .probe() callback in mt2701_afe_pcm_dai_component
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,81 @@ to this mail.
 Thanks,
 Mark
 
->From 9e6a469ec7dabc73043522d21e634583d91cb567 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Tue, 1 May 2018 09:20:01 +0100
-Subject: [PATCH] ASoC: amd: fix spelling mistake: "failer" -> "failure"
+>From 10abdc7c149a058c74be803f33c9ffb1080ad07e Mon Sep 17 00:00:00 2001
+From: Ryder Lee <ryder.lee@mediatek.com>
+Date: Mon, 30 Apr 2018 20:15:31 +0800
+Subject: [PATCH] ASoC: mediatek: add the .probe() callback in
+ mt2701_afe_pcm_dai_component
 
-Trivial fix to spelling mistake in dev_err error message
+For the sake of uniformity, this patch adds a callback mt2701_afe_pcm_probe()
+in mt2701_afe_pcm_dai_component to retrieve the regmap - the canonical way to
+obtain the pointer..
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Doing so, we could switch to use devm_snd_soc_register_component() to register
+the component driver.
+
+Signed-off-by: Ryder Lee <ryder.lee@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/mediatek/mt2701/mt2701-afe-pcm.c | 31 ++++++++++------------
+ 1 file changed, 14 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 9c026c4d26d4..2b9a020e0b3e 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1014,7 +1014,7 @@ static int acp_dma_new(struct snd_soc_pcm_runtime *rtd)
- 	}
- 	if (ret < 0)
- 		dev_err(component->dev,
--			"buffer preallocation failer error:%d\n", ret);
-+			"buffer preallocation failure error:%d\n", ret);
- 	return ret;
+diff --git a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+index d6eeb4c36fcc..828d11c30c6a 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
++++ b/sound/soc/mediatek/mt2701/mt2701-afe-pcm.c
+@@ -958,7 +958,17 @@ static const struct snd_soc_dapm_route mt2701_afe_pcm_routes[] = {
+ 	{ "O31", "I35 Switch", "I35" },
+ };
+ 
++static int mt2701_afe_pcm_probe(struct snd_soc_component *component)
++{
++	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
++
++	snd_soc_component_init_regmap(component, afe->regmap);
++
++	return 0;
++}
++
+ static const struct snd_soc_component_driver mt2701_afe_pcm_dai_component = {
++	.probe = mt2701_afe_pcm_probe,
+ 	.name = "mt2701-afe-pcm-dai",
+ 	.dapm_widgets = mt2701_afe_pcm_widgets,
+ 	.num_dapm_widgets = ARRAY_SIZE(mt2701_afe_pcm_widgets),
+@@ -1316,22 +1326,6 @@ static int mt2701_afe_runtime_resume(struct device *dev)
+ 	return mt2701_afe_enable_clock(afe);
  }
  
+-static int mt2701_afe_add_component(struct mtk_base_afe *afe)
+-{
+-	struct snd_soc_component *component;
+-
+-	component = kzalloc(sizeof(*component), GFP_KERNEL);
+-	if (!component)
+-		return -ENOMEM;
+-
+-	component->regmap = afe->regmap;
+-
+-	return snd_soc_add_component(afe->dev, component,
+-				     &mt2701_afe_pcm_dai_component,
+-				     mt2701_afe_pcm_dais,
+-				     ARRAY_SIZE(mt2701_afe_pcm_dais));
+-}
+-
+ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ {
+ 	struct mtk_base_afe *afe;
+@@ -1442,7 +1436,10 @@ static int mt2701_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		goto err_platform;
+ 	}
+ 
+-	ret = mt2701_afe_add_component(afe);
++	ret = devm_snd_soc_register_component(&pdev->dev,
++					 &mt2701_afe_pcm_dai_component,
++					 mt2701_afe_pcm_dais,
++					 ARRAY_SIZE(mt2701_afe_pcm_dais));
+ 	if (ret) {
+ 		dev_warn(dev, "err_dai_component\n");
+ 		goto err_platform;
 -- 
 2.17.0
