@@ -1,17 +1,17 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Rationale for BYTCR defaults in the kernel's
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Rationale for BYTCR defaults in the kernel's
  bytcr_rt5640 machine driver ?
-Date: Tue, 1 May 2018 21:21:25 +0200
-Message-ID: <0b04e03f-7147-fb27-22c3-e81a8cbf3a8f@redhat.com>
+Date: Tue, 1 May 2018 15:29:15 -0500
+Message-ID: <de590ce5-82ca-4b51-6189-e198d541ce55@linux.intel.com>
+References: <0b04e03f-7147-fb27-22c3-e81a8cbf3a8f@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f54.google.com (mail-wm0-f54.google.com [74.125.82.54])
- by alsa0.perex.cz (Postfix) with ESMTP id AE353266C1C
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 21:21:27 +0200 (CEST)
-Received: by mail-wm0-f54.google.com with SMTP id t11so19164528wmt.0
- for <alsa-devel@alsa-project.org>; Tue, 01 May 2018 12:21:27 -0700 (PDT)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 29186266C1C
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 22:29:19 +0200 (CEST)
+In-Reply-To: <0b04e03f-7147-fb27-22c3-e81a8cbf3a8f@redhat.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,44 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Pierre-Louis,
-
-I'm finally wrapping up my rt5640 jack-detect work, as
-such I'm currently testing speaker + headphones + internal mic +
-headset-mic + jack-detect functionality on the 10 different
-x86 devices with a rt5640 codec which I've gathered.
-
-2 of them stand out in that they use the BYTCR SoC, but don't
-have the ACPI table for detecting if SSP0 AIF1 or AIF2
-should be used. Currently the driver defaults to AIF2
-in this case.
-
-As the somewhat wildcard-ish DMI quirk for boards where
-the sys_vendor is "Insyde" (which applies to a lot of
-generic designs) shows:
-
-         {
-                 .callback = byt_rt5640_quirk_cb,
-                 .matches = {
-                         DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
-                 },
-                 .driver_data = (void *)(BYT_RT5640_IN3_MAP |
-                                         BYT_RT5640_MCLK_EN |
-                                         BYT_RT5640_SSP0_AIF1),
-
-         },
-
-AIF1 seems to be a better default both models without
-the ACPI table which I've here, a HP pavilion X2 and a
-Toshiba Click Mini L9W-B need a quirk to use AIF1.
-
-So I was wondering if there was a specific rationale for the
-AIF2 default and if it would not be better to change the default
-to AIF1 (which will unfortunately bring a chance of regressions) ?
-
-Regards,
-
-Hans
+CgpPbiAwNS8wMS8yMDE4IDAyOjIxIFBNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+IEhpIFBpZXJy
+ZS1Mb3VpcywKPgo+IEknbSBmaW5hbGx5IHdyYXBwaW5nIHVwIG15IHJ0NTY0MCBqYWNrLWRldGVj
+dCB3b3JrLCBhcwo+IHN1Y2ggSSdtIGN1cnJlbnRseSB0ZXN0aW5nIHNwZWFrZXIgKyBoZWFkcGhv
+bmVzICsgaW50ZXJuYWwgbWljICsKPiBoZWFkc2V0LW1pYyArIGphY2stZGV0ZWN0IGZ1bmN0aW9u
+YWxpdHkgb24gdGhlIDEwIGRpZmZlcmVudAo+IHg4NiBkZXZpY2VzIHdpdGggYSBydDU2NDAgY29k
+ZWMgd2hpY2ggSSd2ZSBnYXRoZXJlZC4KPgo+IDIgb2YgdGhlbSBzdGFuZCBvdXQgaW4gdGhhdCB0
+aGV5IHVzZSB0aGUgQllUQ1IgU29DLCBidXQgZG9uJ3QKPiBoYXZlIHRoZSBBQ1BJIHRhYmxlIGZv
+ciBkZXRlY3RpbmcgaWYgU1NQMCBBSUYxIG9yIEFJRjIKPiBzaG91bGQgYmUgdXNlZC4gQ3VycmVu
+dGx5IHRoZSBkcml2ZXIgZGVmYXVsdHMgdG8gQUlGMgo+IGluIHRoaXMgY2FzZS4KPgo+IEFzIHRo
+ZSBzb21ld2hhdCB3aWxkY2FyZC1pc2ggRE1JIHF1aXJrIGZvciBib2FyZHMgd2hlcmUKPiB0aGUg
+c3lzX3ZlbmRvciBpcyAiSW5zeWRlIiAod2hpY2ggYXBwbGllcyB0byBhIGxvdCBvZgo+IGdlbmVy
+aWMgZGVzaWducykgc2hvd3M6Cj4KPiDCoMKgwqDCoMKgwqDCoCB7Cj4gwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIC5jYWxsYmFjayA9IGJ5dF9ydDU2NDBfcXVpcmtfY2IsCj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5tYXRjaGVzID0gewo+IMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgRE1JX01BVENIKERNSV9TWVNfVkVORE9SLCAi
+SW5zeWRlIiksCj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0sCj4gwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5kcml2ZXJfZGF0YSA9ICh2b2lkICopKEJZVF9SVDU2NDBf
+SU4zX01BUCB8Cj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBfTUNMS19FTiB8Cj4g
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBfU1NQMF9BSUYxKSwKPgo+IMKgwqDCoMKg
+wqDCoMKgIH0sCj4KPiBBSUYxIHNlZW1zIHRvIGJlIGEgYmV0dGVyIGRlZmF1bHQgYm90aCBtb2Rl
+bHMgd2l0aG91dAo+IHRoZSBBQ1BJIHRhYmxlIHdoaWNoIEkndmUgaGVyZSwgYSBIUCBwYXZpbGlv
+biBYMiBhbmQgYQo+IFRvc2hpYmEgQ2xpY2sgTWluaSBMOVctQiBuZWVkIGEgcXVpcmsgdG8gdXNl
+IEFJRjEuCj4KPiBTbyBJIHdhcyB3b25kZXJpbmcgaWYgdGhlcmUgd2FzIGEgc3BlY2lmaWMgcmF0
+aW9uYWxlIGZvciB0aGUKPiBBSUYyIGRlZmF1bHQgYW5kIGlmIGl0IHdvdWxkIG5vdCBiZSBiZXR0
+ZXIgdG8gY2hhbmdlIHRoZSBkZWZhdWx0Cj4gdG8gQUlGMSAod2hpY2ggd2lsbCB1bmZvcnR1bmF0
+ZWx5IGJyaW5nIGEgY2hhbmNlIG9mIHJlZ3Jlc3Npb25zKSA/Cgp5ZXMgdGhlcmUgd2FzIGEgcmF0
+aW9uYWxlOiBhbGwgdGhlIGluaXRpYWwgQmF5dHJhaWwgZGVzaWducyBoYWQgCmNvbm5lY3Rpb25z
+IGJldHdlZW4gU1NQMi1BSUYxIGFuZCBTU1AwLUFJRjIuIElJUkMgdGhpcyB3YXMgYmVjYXVzZSB0
+aGVyZSAKd2FzIGEgZGVzaXJlIHRvIHN1cHBvcnQgNDQuMWtIeiBvbiBvbmUgU1NQIGFuZCA0OGtI
+eiBvbiB0aGUgb3RoZXIuClNvIHdoZW4gQllULUNSIHdhcyBkZWZpbmVkIHdpdGggU1NQMiByZW1v
+dmVkLCBtb3N0IGRlc2lnbnMga2VwdCB0aGUgCmV4aXN0aW5nIFNTUDAtQUlGMiBsaW5rLCBleGNl
+cHQgb2YgY291cnNlIHdoZW4gdGhleSBkaWRuJ3QuLi4KCkkgZG9uJ3QgaGF2ZSBhIG1hZ2ljIHNv
+bHV0aW9uIGhlcmUsIHdoZW4gdGhlIEJJT1MgZG9lc24ndCBwcm92aWRlIAppbmZvcm1hdGlvbiBp
+dCdzIGRpZmZpY3VsdCB0byBtYWtlIGFuIGVkdWNhdGVkIGd1ZXNzLiBJZiB5b3UgaGF2ZSAKc3Rh
+dGlzdGljYWwgZXZpZGVuY2UgdGhhdCBtb3JlIGRldmljZXMgd2l0aG91dCB0aGUgQklPUyBpbmZv
+cm1hdGlvbiBhcmUgCmJhc2VkIG9uIEFJRjIgSSBkb24ndCBtaW5kIGNoYW5naW5nIGl0LCBhbHRl
+cm5hdGl2ZWx5IHdlIGNvdWxkIGtlZXAgdGhlIApkZWZhdWx0IGFuZCB3aGVuIHRoaW5ncyBkb24n
+dCB3b3JrIHVzZXJzIGNhbiBzdGlsbCB1c2UgYSBtb2R1bGUgCnBhcmFtZXRlciB0byBvdmVycmlk
+ZSB0aGUgZGVmYXVsdCBhbmQgZ2V0IEFJRjEgdG8gd29yawoKCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
+ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
+aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
