@@ -1,45 +1,92 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v7 04/24] ASoC: qdsp6: dt-bindings: Add
-	q6afe dt bindings
-Date: Tue, 1 May 2018 07:37:18 -0500
-Message-ID: <20180501123718.GA25915@rob-hp-laptop>
-References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
- <20180501120820.11016-5-srinivas.kandagatla@linaro.org>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [alsa-devel] [PATCH v2] ASoC: da7219: read fmw property to get
+ mclk for non-dts systems
+Date: Tue, 1 May 2018 20:01:24 +0530
+Message-ID: <43c7939d-e30b-27eb-59e4-c0e16248dad1@amd.com>
+References: <1525080203-18947-1-git-send-email-akshu.agrawal@amd.com>
+ <cb0df61c-596b-b23c-fc34-52ac4b7830e8@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f195.google.com (mail-ot0-f195.google.com
- [74.125.82.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 853F926735E
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 14:37:20 +0200 (CEST)
-Received: by mail-ot0-f195.google.com with SMTP id h8-v6so12782255otb.2
- for <alsa-devel@alsa-project.org>; Tue, 01 May 2018 05:37:20 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20180501120820.11016-5-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <cb0df61c-596b-b23c-fc34-52ac4b7830e8@linux.intel.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com, Adam.Thomson.Opensource@diasemi.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 01, 2018 at 01:08:00PM +0100, Srinivas Kandagatla wrote:
-> This patch add DT bindings for AFE (Audio Frontend) DSP module.
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
-> ---
->  .../devicetree/bindings/sound/qcom,q6afe.txt       | 104 +++++++++++++++++++++
->  include/dt-bindings/sound/qcom,q6afe.h             |  31 ++++++
->  2 files changed, 135 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
->  create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+
+On 4/30/2018 9:54 PM, Pierre-Louis Bossart wrote:
+> On 4/30/18 4:23 AM, Akshu Agrawal wrote:
+>> Non-dts based systems can use ACPI DSDT to pass on the mclk
+>> to da7219.
+>> This enables da7219 mclk to be linked to system clock.
+>> Enable/Disable of the mclk is already handled in the codec so
+>> platform drivers don't have to explicitly do handling of mclk.
+>>
+>> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+>> ---
+>> v2: Fixed kbuild error
+>>   include/sound/da7219.h    | 2 ++
+>>   sound/soc/codecs/da7219.c | 7 ++++++-
+>>   2 files changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+>> index 1bfcb16..df7ddf4 100644
+>> --- a/include/sound/da7219.h
+>> +++ b/include/sound/da7219.h
+>> @@ -38,6 +38,8 @@ struct da7219_pdata {
+>>       const char *dai_clks_name;
+>> +    const char *mclk_name;
+>> +
+>>       /* Mic */
+>>       enum da7219_micbias_voltage micbias_lvl;
+>>       enum da7219_mic_amp_in_sel mic_amp_in_sel;
+>> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+>> index 980a6a8..aed68a4 100644
+>> --- a/sound/soc/codecs/da7219.c
+>> +++ b/sound/soc/codecs/da7219.c
+>> @@ -1624,6 +1624,8 @@ static struct da7219_pdata 
+>> *da7219_fw_to_pdata(struct snd_soc_component *compone
+>>           dev_warn(dev, "Using default clk name: %s\n",
+>>                pdata->dai_clks_name);
+>> +    device_property_read_string(dev, "dlg,mclk-name", 
+>> &pdata->mclk_name);
+>> +
+>>       if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) 
+>> >= 0)
+>>           pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
+>>       else
+>> @@ -1905,7 +1907,10 @@ static int da7219_probe(struct 
+>> snd_soc_component *component)
+>>       da7219_handle_pdata(component);
+>>       /* Check if MCLK provided */
+>> -    da7219->mclk = devm_clk_get(component->dev, "mclk");
+>> +    if (da7219->pdata->mclk_name)
+>> +        da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
+>> +    if (!da7219->mclk)
+>> +        da7219->mclk = devm_clk_get(component->dev, "mclk");
+> 
+> this looks weird, why are you using different clk functions depending on 
+> the existence of a _DSD property? Why not just change the name and keep 
+> the same flow, e.g something like
+> 
+> if(!da7219->pdata->mclk_name)
+>      da7219->pdata->mclk_name = "mclk";
+> da7219->mclk = devm_clk_get(component->dev, da7219->pdata->mclk_name);
+> 
+> 
+
+We can't use devm_clk_get as the value of dev argument has to be NULL, 
+which can not be used with devm_clk_get.
+System clock which are linked to mclk are registered by a separate ACPI 
+device. And this exposing of DSD property is for all those platforms 
+which are non-dts based.
+
+>>       if (IS_ERR(da7219->mclk)) {
+>>           if (PTR_ERR(da7219->mclk) != -ENOENT) {
+>>               ret = PTR_ERR(da7219->mclk);
+>>
+> 
