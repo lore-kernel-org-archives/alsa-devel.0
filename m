@@ -1,119 +1,67 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 07/10] ASoC: AMD: Move clk enable from hw_params/free to startup/shutdown
-Date: Wed, 2 May 2018 02:20:01 +0530
-Message-ID: <1525207810-1305-7-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 08/10] ASoC: AMD: Fix clocks in CZ DA7219
+	machine driver
+Date: Wed, 2 May 2018 02:20:02 +0530
+Message-ID: <1525207810-1305-8-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1nam01on0068.outbound.protection.outlook.com [104.47.32.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52035266F44
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 22:51:17 +0200 (CEST)
 In-Reply-To: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Alex Deucher <alexander.deucher@amd.com>, Daniel Kurtz <djkurtz@chromium.org>, Wei Yongjun <weiyongjun1@huawei.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Daniel Kurtz <djkurtz@chromium.org>, Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, "Agrawal,
+ Akshu" <Akshu.Agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
 From: Akshu Agrawal <akshu.agrawal@amd.com>
 
-hw_param can be called multiple times and thus we can have
-more clk enable. The clk may not get diabled due to refcounting.
-startup/shutdown ensures single clk enable/disable call.
+System clock on the platform is 25Mhz and not 24Mhz.
+
+PLL_OUT for da7219 codec to use DA7219_PLL_FREQ_OUT_98304
+as it is for 48KHz SR.
 
 Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 49 +++++++++++++++++++++++++-----------
- 1 file changed, 35 insertions(+), 14 deletions(-)
+ sound/soc/amd/acp-da7219-max98357a.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 215b06b..6495eed 100644
+index 6495eed..fa5ad5b 100644
 --- a/sound/soc/amd/acp-da7219-max98357a.c
 +++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -91,8 +91,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 	return 0;
- }
+@@ -39,8 +39,7 @@
+ #include "../codecs/da7219.h"
+ #include "../codecs/da7219-aad.h"
  
--static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *params)
-+static int da7219_clk_enable(struct snd_pcm_substream *substream)
- {
- 	int ret = 0;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -106,11 +105,9 @@ static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
+-#define CZ_PLAT_CLK 24000000
+-#define MCLK_RATE 24576000
++#define CZ_PLAT_CLK 25000000
+ #define DUAL_CHANNEL		2
  
--static int cz_da7219_hw_free(struct snd_pcm_substream *substream)
-+static void da7219_clk_disable(void)
- {
- 	clk_disable_unprepare(da7219_dai_clk);
--
--	return 0;
- }
+ static struct snd_soc_jack cz_jack;
+@@ -63,7 +62,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+ 	}
  
- static const unsigned int channels[] = {
-@@ -133,7 +130,7 @@ static const struct snd_pcm_hw_constraint_list constraints_channels = {
- 	.mask = 0,
- };
- 
--static int cz_fe_startup(struct snd_pcm_substream *substream)
-+static int cz_da7219_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
-@@ -147,23 +144,47 @@ static int cz_fe_startup(struct snd_pcm_substream *substream)
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				   &constraints_rates);
- 
--	return 0;
-+	return da7219_clk_enable(substream);
-+}
-+
-+static void cz_da7219_shutdown(struct snd_pcm_substream *substream)
-+{
-+	da7219_clk_disable();
-+}
-+
-+static int cz_max_startup(struct snd_pcm_substream *substream)
-+{
-+	return da7219_clk_enable(substream);
-+}
-+
-+static void cz_max_shutdown(struct snd_pcm_substream *substream)
-+{
-+	da7219_clk_disable();
-+}
-+
-+static int cz_dmic_startup(struct snd_pcm_substream *substream)
-+{
-+	return da7219_clk_enable(substream);
-+}
-+
-+static void cz_dmic_shutdown(struct snd_pcm_substream *substream)
-+{
-+	da7219_clk_disable();
- }
- 
- static struct snd_soc_ops cz_da7219_cap_ops = {
--	.hw_params = cz_da7219_hw_params,
--	.hw_free = cz_da7219_hw_free,
--	.startup = cz_fe_startup,
-+	.startup = cz_da7219_startup,
-+	.shutdown = cz_da7219_shutdown,
- };
- 
- static struct snd_soc_ops cz_max_play_ops = {
--	.hw_params = cz_da7219_hw_params,
--	.hw_free = cz_da7219_hw_free,
-+	.startup = cz_max_startup,
-+	.shutdown = cz_max_shutdown,
- };
- 
- static struct snd_soc_ops cz_dmic_cap_ops = {
--	.hw_params = cz_da7219_hw_params,
--	.hw_free = cz_da7219_hw_free,
-+	.startup = cz_dmic_startup,
-+	.shutdown = cz_dmic_shutdown,
- };
- 
- static struct snd_soc_dai_link cz_dai_7219_98357[] = {
+ 	ret = snd_soc_dai_set_pll(codec_dai, 0, DA7219_SYSCLK_PLL,
+-				  CZ_PLAT_CLK, MCLK_RATE);
++				  CZ_PLAT_CLK, DA7219_PLL_FREQ_OUT_98304);
+ 	if (ret < 0) {
+ 		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
+ 		return ret;
 -- 
 2.7.4
