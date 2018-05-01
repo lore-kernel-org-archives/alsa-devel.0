@@ -1,21 +1,17 @@
 From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/4] ASoC: fsl_ssi: Switch to SPDX
-	identifier
-Date: Tue, 1 May 2018 09:14:47 -0300
-Message-ID: <CAOMZO5Dr6+Z9SFWsRS4FH9HhXUUR+dNdJ-k_ELjLM2_a+orYEg@mail.gmail.com>
-References: <1525132518-27663-1-git-send-email-festevam@gmail.com>
- <83529f99-dfa0-25d3-fa2c-fd69a74c3ead@tabi.org>
+Subject: [PATCH v2 1/4] ASoC: fsl_ssi: Switch to SPDX identifier
+Date: Tue,  1 May 2018 09:20:40 -0300
+Message-ID: <1525177243-31009-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
- [209.85.218.51])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D66226735E
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 14:14:49 +0200 (CEST)
-Received: by mail-oi0-f51.google.com with SMTP id b130-v6so9901946oif.12
- for <alsa-devel@alsa-project.org>; Tue, 01 May 2018 05:14:49 -0700 (PDT)
-In-Reply-To: <83529f99-dfa0-25d3-fa2c-fd69a74c3ead@tabi.org>
+Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
+ [209.85.216.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6DA226735E
+ for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 14:21:07 +0200 (CEST)
+Received: by mail-qt0-f196.google.com with SMTP id j42-v6so14318713qtj.12
+ for <alsa-devel@alsa-project.org>; Tue, 01 May 2018 05:21:07 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,26 +21,134 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Timur Tabi <timur@tabi.org>
-Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: broonie@kernel.org
+Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Apr 30, 2018 at 11:06 PM, Timur Tabi <timur@tabi.org> wrote:
-> On 4/30/18 6:55 PM, Fabio Estevam wrote:
->>
->> +// SPDX-License-Identifier: GPL-2.0
->> +//
->
->
-> I thought only the SPDX header is supposed to use // and the rest of the
-> comment should still be /* */.
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-I think Mark's preference is to switch all the initial comments to // style.
+Adopt the SPDX license identifier headers to ease license compliance
+management.
 
->
->> - * Copyright 2007-2008 Freescale Semiconductor, Inc.
->
->
-> I don't think you're supposed to remove copyright statements.
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+Changes since v1:
+- Retain the copyright statements in fsl_ssi.h (Timur)
 
-You are right. It was not done on purpose. Will send a v2. Thanks
+ sound/soc/fsl/fsl_ssi.c     | 57 +++++++++++++++++++++------------------------
+ sound/soc/fsl/fsl_ssi.h     |  6 ++---
+ sound/soc/fsl/fsl_ssi_dbg.c | 18 ++++++--------
+ 3 files changed, 35 insertions(+), 46 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
+index 1544166..0a64822 100644
+--- a/sound/soc/fsl/fsl_ssi.c
++++ b/sound/soc/fsl/fsl_ssi.c
+@@ -1,34 +1,29 @@
+-/*
+- * Freescale SSI ALSA SoC Digital Audio Interface (DAI) driver
+- *
+- * Author: Timur Tabi <timur@freescale.com>
+- *
+- * Copyright 2007-2010 Freescale Semiconductor, Inc.
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+- *
+- *
+- * Some notes why imx-pcm-fiq is used instead of DMA on some boards:
+- *
+- * The i.MX SSI core has some nasty limitations in AC97 mode. While most
+- * sane processor vendors have a FIFO per AC97 slot, the i.MX has only
+- * one FIFO which combines all valid receive slots. We cannot even select
+- * which slots we want to receive. The WM9712 with which this driver
+- * was developed with always sends GPIO status data in slot 12 which
+- * we receive in our (PCM-) data stream. The only chance we have is to
+- * manually skip this data in the FIQ handler. With sampling rates different
+- * from 48000Hz not every frame has valid receive data, so the ratio
+- * between pcm data and GPIO status data changes. Our FIQ handler is not
+- * able to handle this, hence this driver only works with 48000Hz sampling
+- * rate.
+- * Reading and writing AC97 registers is another challenge. The core
+- * provides us status bits when the read register is updated with *another*
+- * value. When we read the same register two times (and the register still
+- * contains the same value) these status bits are not set. We work
+- * around this by not polling these bits but only wait a fixed delay.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// Freescale SSI ALSA SoC Digital Audio Interface (DAI) driver
++//
++// Author: Timur Tabi <timur@freescale.com>
++//
++// Copyright 2007-2010 Freescale Semiconductor, Inc.
++//
++// Some notes why imx-pcm-fiq is used instead of DMA on some boards:
++//
++// The i.MX SSI core has some nasty limitations in AC97 mode. While most
++// sane processor vendors have a FIFO per AC97 slot, the i.MX has only
++// one FIFO which combines all valid receive slots. We cannot even select
++// which slots we want to receive. The WM9712 with which this driver
++// was developed with always sends GPIO status data in slot 12 which
++// we receive in our (PCM-) data stream. The only chance we have is to
++// manually skip this data in the FIQ handler. With sampling rates different
++// from 48000Hz not every frame has valid receive data, so the ratio
++// between pcm data and GPIO status data changes. Our FIQ handler is not
++// able to handle this, hence this driver only works with 48000Hz sampling
++// rate.
++// Reading and writing AC97 registers is another challenge. The core
++// provides us status bits when the read register is updated with *another*
++// value. When we read the same register two times (and the register still
++// contains the same value) these status bits are not set. We work
++// around this by not polling these bits but only wait a fixed delay.
+ 
+ #include <linux/init.h>
+ #include <linux/io.h>
+diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
+index 18f8dd5..0bdda60 100644
+--- a/sound/soc/fsl/fsl_ssi.h
++++ b/sound/soc/fsl/fsl_ssi.h
+@@ -1,12 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ /*
+  * fsl_ssi.h - ALSA SSI interface for the Freescale MPC8610 and i.MX SoC
+  *
+  * Author: Timur Tabi <timur@freescale.com>
+  *
+- * Copyright 2007-2008 Freescale Semiconductor, Inc.  This file is licensed
+- * under the terms of the GNU General Public License version 2.  This
+- * program is licensed "as is" without any warranty of any kind, whether
+- * express or implied.
++ * Copyright 2007-2008 Freescale Semiconductor, Inc.
+  */
+ 
+ #ifndef _MPC8610_I2S_H
+diff --git a/sound/soc/fsl/fsl_ssi_dbg.c b/sound/soc/fsl/fsl_ssi_dbg.c
+index 7aac63e..1bacfa2 100644
+--- a/sound/soc/fsl/fsl_ssi_dbg.c
++++ b/sound/soc/fsl/fsl_ssi_dbg.c
+@@ -1,14 +1,10 @@
+-/*
+- * Freescale SSI ALSA SoC Digital Audio Interface (DAI) debugging functions
+- *
+- * Copyright 2014 Markus Pargmann <mpa@pengutronix.de>, Pengutronix
+- *
+- * Splitted from fsl_ssi.c
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// Freescale SSI ALSA SoC Digital Audio Interface (DAI) debugging functions
++//
++// Copyright 2014 Markus Pargmann <mpa@pengutronix.de>, Pengutronix
++//
++// Split from fsl_ssi.c
+ 
+ #include <linux/debugfs.h>
+ #include <linux/device.h>
+-- 
+2.7.4
