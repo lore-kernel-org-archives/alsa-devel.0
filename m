@@ -1,91 +1,104 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: doc: replace codec to component" to the
-	asoc tree
-Date: Tue,  1 May 2018 22:09:33 +0100 (BST)
-Message-ID: <20180501210933.0AEE044007A@finisterre.ee.mobilebroadband>
-References: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+From: syzbot <syzbot+1dac3a4f6bc9c1c675d4@syzkaller.appspotmail.com>
+Subject: WARNING in __snd_pcm_lib_xfer
+Date: Tue, 01 May 2018 19:12:02 -0700
+Message-ID: <000000000000d3fc4d056b2f9ca2@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 469D4266F4E
- for <alsa-devel@alsa-project.org>; Tue,  1 May 2018 23:09:37 +0200 (CEST)
-In-Reply-To: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hello,
 
-   ASoC: doc: replace codec to component
+syzbot found the following crash on:
 
-has been applied to the asoc tree at
+HEAD commit:    fff75eb2a08c Merge tag 'errseq-v4.17' of  
+git://git.kernel.o...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?id=6530078334779392
+kernel config:   
+https://syzkaller.appspot.com/x/.config?id=6493557782959164711
+dashboard link: https://syzkaller.appspot.com/bug?extid=1dac3a4f6bc9c1c675d4
+compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
+userspace arch: i386
+syzkaller  
+repro:https://syzkaller.appspot.com/x/repro.syz?id=5691583680741376
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+1dac3a4f6bc9c1c675d4@syzkaller.appspotmail.com
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+random: sshd: uninitialized urandom read (32 bytes read)
+random: sshd: uninitialized urandom read (32 bytes read)
+random: sshd: uninitialized urandom read (32 bytes read)
+random: sshd: uninitialized urandom read (32 bytes read)
+IPVS: ftp: loaded support on port[0] = 21
+WARNING: CPU: 1 PID: 4520 at sound/core/pcm_lib.c:2057 pcm_sanity_check  
+sound/core/pcm_lib.c:2057 [inline]
+WARNING: CPU: 1 PID: 4520 at sound/core/pcm_lib.c:2057  
+__snd_pcm_lib_xfer+0x7c3/0x1d10 sound/core/pcm_lib.c:2122
+Kernel panic - not syncing: panic_on_warn set ...
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+CPU: 1 PID: 4520 Comm: syz-executor0 Not tainted 4.17.0-rc3+ #52
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x1b9/0x294 lib/dump_stack.c:113
+  panic+0x22f/0x4de kernel/panic.c:184
+  __warn.cold.8+0x163/0x1b3 kernel/panic.c:536
+  report_bug+0x252/0x2d0 lib/bug.c:186
+  fixup_bug arch/x86/kernel/traps.c:178 [inline]
+  do_error_trap+0x1de/0x490 arch/x86/kernel/traps.c:296
+  do_invalid_op+0x1b/0x20 arch/x86/kernel/traps.c:315
+  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:992
+RIP: 0010:pcm_sanity_check sound/core/pcm_lib.c:2057 [inline]
+RIP: 0010:__snd_pcm_lib_xfer+0x7c3/0x1d10 sound/core/pcm_lib.c:2122
+RSP: 0018:ffff8801d97b7898 EFLAGS: 00010293
+RAX: ffff8801ad00e0c0 RBX: ffff8801d965e100 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: ffffffff85c3d333 RDI: ffff8801d965e418
+RBP: ffff8801d97b7b38 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000003 R11: 0000000000000000 R12: ffffffff884945c0
+R13: 0000000000000000 R14: ffff8801d965e100 R15: ffff8801cdd2c940
+  snd_pcm_lib_readv include/sound/pcm.h:1113 [inline]
+  snd_pcm_ioctl_xfern_compat+0x266/0x330 sound/core/pcm_compat.c:448
+  snd_pcm_ioctl_compat+0xc96/0x1c90 sound/core/pcm_compat.c:716
+  __do_compat_sys_ioctl fs/compat_ioctl.c:1461 [inline]
+  __se_compat_sys_ioctl fs/compat_ioctl.c:1407 [inline]
+  __ia32_compat_sys_ioctl+0x221/0x640 fs/compat_ioctl.c:1407
+  do_syscall_32_irqs_on arch/x86/entry/common.c:323 [inline]
+  do_fast_syscall_32+0x345/0xf9b arch/x86/entry/common.c:394
+  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
+RIP: 0023:0xf7f51cb9
+RSP: 002b:00000000ffafd6ac EFLAGS: 00000282 ORIG_RAX: 0000000000000036
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000800c4153
+RDX: 0000000020000040 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+Dumping ftrace buffer:
+    (ftrace buffer empty)
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a3ac7727f3a226b0569431de62a4e9bb4c770b2b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Mar 2018 02:14:22 +0000
-Subject: [PATCH] ASoC: doc: replace codec to component
-
-Now we can replace Codec to Component. Let's do it.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/sound/soc/codec.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
-index f87612b94812..58f625fe3d39 100644
---- a/Documentation/sound/soc/codec.rst
-+++ b/Documentation/sound/soc/codec.rst
-@@ -179,12 +179,12 @@ i.e.
- 
-   static int wm8974_mute(struct snd_soc_dai *dai, int mute)
-   {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 mute_reg = snd_soc_read(codec, WM8974_DAC) & 0xffbf;
-+	struct snd_soc_component *component = dai->component;
-+	u16 mute_reg = snd_soc_component_read32(component, WM8974_DAC) & 0xffbf;
- 
- 	if (mute)
--		snd_soc_write(codec, WM8974_DAC, mute_reg | 0x40);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg | 0x40);
- 	else
--		snd_soc_write(codec, WM8974_DAC, mute_reg);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg);
- 	return 0;
-   }
--- 
-2.17.0
+syzbot will keep track of this bug report.
+If you forgot to add the Reported-by tag, once the fix for this bug is  
+merged
+into any tree, please reply to this email with:
+#syz fix: exact-commit-title
+If you want to test a patch for this bug, please reply with:
+#syz test: git://repo/address.git branch
+and provide the patch inline or as an attachment.
+To mark this as a duplicate of another syzbot report, please reply with:
+#syz dup: exact-subject-of-another-report
+If it's a one-off invalid bug report, please reply with:
+#syz invalid
+Note: if the crash happens again, it will cause creation of a new bug  
+report.
+Note: all commands must start from beginning of the line in the email body.
