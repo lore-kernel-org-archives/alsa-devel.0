@@ -1,104 +1,70 @@
-From: syzbot <syzbot+1dac3a4f6bc9c1c675d4@syzkaller.appspotmail.com>
-Subject: WARNING in __snd_pcm_lib_xfer
-Date: Tue, 01 May 2018 19:12:02 -0700
-Message-ID: <000000000000d3fc4d056b2f9ca2@google.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [alsa-lib][PATCH 1/2] ucm: adding the folder of
+	card_long_name when finding verb conf file
+Date: Wed,  2 May 2018 14:08:05 +0800
+Message-ID: <1525241286-16498-1-git-send-email-hui.wang@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, o-takashi@sakamocchi.jp, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54AEB2673A6
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 08:08:16 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: hui.wang@canonical.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The board configuration file and verb conf file are allowed to be
+in the folder named of card_long_name, so when finding the verb conf
+file, we need to check if it is in the folder of card_long_name or
+card_name.
 
-syzbot found the following crash on:
-
-HEAD commit:    fff75eb2a08c Merge tag 'errseq-v4.17' of  
-git://git.kernel.o...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?id=6530078334779392
-kernel config:   
-https://syzkaller.appspot.com/x/.config?id=6493557782959164711
-dashboard link: https://syzkaller.appspot.com/bug?extid=1dac3a4f6bc9c1c675d4
-compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
-userspace arch: i386
-syzkaller  
-repro:https://syzkaller.appspot.com/x/repro.syz?id=5691583680741376
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+1dac3a4f6bc9c1c675d4@syzkaller.appspotmail.com
-
-random: sshd: uninitialized urandom read (32 bytes read)
-random: sshd: uninitialized urandom read (32 bytes read)
-random: sshd: uninitialized urandom read (32 bytes read)
-random: sshd: uninitialized urandom read (32 bytes read)
-IPVS: ftp: loaded support on port[0] = 21
-WARNING: CPU: 1 PID: 4520 at sound/core/pcm_lib.c:2057 pcm_sanity_check  
-sound/core/pcm_lib.c:2057 [inline]
-WARNING: CPU: 1 PID: 4520 at sound/core/pcm_lib.c:2057  
-__snd_pcm_lib_xfer+0x7c3/0x1d10 sound/core/pcm_lib.c:2122
-Kernel panic - not syncing: panic_on_warn set ...
-
-CPU: 1 PID: 4520 Comm: syz-executor0 Not tainted 4.17.0-rc3+ #52
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x1b9/0x294 lib/dump_stack.c:113
-  panic+0x22f/0x4de kernel/panic.c:184
-  __warn.cold.8+0x163/0x1b3 kernel/panic.c:536
-  report_bug+0x252/0x2d0 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:178 [inline]
-  do_error_trap+0x1de/0x490 arch/x86/kernel/traps.c:296
-  do_invalid_op+0x1b/0x20 arch/x86/kernel/traps.c:315
-  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:992
-RIP: 0010:pcm_sanity_check sound/core/pcm_lib.c:2057 [inline]
-RIP: 0010:__snd_pcm_lib_xfer+0x7c3/0x1d10 sound/core/pcm_lib.c:2122
-RSP: 0018:ffff8801d97b7898 EFLAGS: 00010293
-RAX: ffff8801ad00e0c0 RBX: ffff8801d965e100 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: ffffffff85c3d333 RDI: ffff8801d965e418
-RBP: ffff8801d97b7b38 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000003 R11: 0000000000000000 R12: ffffffff884945c0
-R13: 0000000000000000 R14: ffff8801d965e100 R15: ffff8801cdd2c940
-  snd_pcm_lib_readv include/sound/pcm.h:1113 [inline]
-  snd_pcm_ioctl_xfern_compat+0x266/0x330 sound/core/pcm_compat.c:448
-  snd_pcm_ioctl_compat+0xc96/0x1c90 sound/core/pcm_compat.c:716
-  __do_compat_sys_ioctl fs/compat_ioctl.c:1461 [inline]
-  __se_compat_sys_ioctl fs/compat_ioctl.c:1407 [inline]
-  __ia32_compat_sys_ioctl+0x221/0x640 fs/compat_ioctl.c:1407
-  do_syscall_32_irqs_on arch/x86/entry/common.c:323 [inline]
-  do_fast_syscall_32+0x345/0xf9b arch/x86/entry/common.c:394
-  entry_SYSENTER_compat+0x70/0x7f arch/x86/entry/entry_64_compat.S:139
-RIP: 0023:0xf7f51cb9
-RSP: 002b:00000000ffafd6ac EFLAGS: 00000282 ORIG_RAX: 0000000000000036
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 00000000800c4153
-RDX: 0000000020000040 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-Dumping ftrace buffer:
-    (ftrace buffer empty)
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ src/ucm/parser.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-syzbot will keep track of this bug report.
-If you forgot to add the Reported-by tag, once the fix for this bug is  
-merged
-into any tree, please reply to this email with:
-#syz fix: exact-commit-title
-If you want to test a patch for this bug, please reply with:
-#syz test: git://repo/address.git branch
-and provide the patch inline or as an attachment.
-To mark this as a duplicate of another syzbot report, please reply with:
-#syz dup: exact-subject-of-another-report
-If it's a one-off invalid bug report, please reply with:
-#syz invalid
-Note: if the crash happens again, it will cause creation of a new bug  
-report.
-Note: all commands must start from beginning of the line in the email body.
+diff --git a/src/ucm/parser.c b/src/ucm/parser.c
+index 2d76152..219edb9 100644
+--- a/src/ucm/parser.c
++++ b/src/ucm/parser.c
+@@ -1056,6 +1056,7 @@ static int parse_verb_file(snd_use_case_mgr_t *uc_mgr,
+ 	char filename[MAX_FILE];
+ 	char *env = getenv(ALSA_CONFIG_UCM_VAR);
+ 	int err;
++	char *folder_name;
+ 
+ 	/* allocate verb */
+ 	verb = calloc(1, sizeof(struct use_case_verb));
+@@ -1082,12 +1083,17 @@ static int parse_verb_file(snd_use_case_mgr_t *uc_mgr,
+ 	}
+ 
+ 	/* open Verb file for reading */
++	if (!strncmp(uc_mgr->conf_file_name, uc_mgr->card_long_name, MAX_CARD_LONG_NAME))
++		folder_name = uc_mgr->card_long_name;
++	else
++		folder_name = uc_mgr->card_name;
++
+ 	if (env)
+ 		snprintf(filename, sizeof(filename), "%s/%s/%s",
+-			 env, uc_mgr->card_name, file);
++			 env, folder_name, file);
+ 	else
+ 		snprintf(filename, sizeof(filename), "%s/ucm/%s/%s",
+-			 snd_config_topdir(), uc_mgr->card_name, file);
++			 snd_config_topdir(), folder_name, file);
+ 	filename[sizeof(filename)-1] = '\0';
+ 	
+ 	err = uc_mgr_config_load(filename, &cfg);
+-- 
+2.7.4
