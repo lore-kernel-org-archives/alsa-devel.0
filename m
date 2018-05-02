@@ -1,19 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v3 04/13] ALSA: dice: cache stream formats at
-	current mode of sampling transmission frequency
-Date: Wed,  2 May 2018 19:16:42 +0900
-Message-ID: <20180502101651.26173-5-o-takashi@sakamocchi.jp>
+Subject: [PATCH v3 05/13] ALSA: dice: add parameters of stream
+	formats for models produced by TC Electronic
+Date: Wed,  2 May 2018 19:16:43 +0900
+Message-ID: <20180502101651.26173-6-o-takashi@sakamocchi.jp>
 References: <20180502101651.26173-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
- [209.85.192.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 83EBF267668
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 12:17:30 +0200 (CEST)
-Received: by mail-pf0-f194.google.com with SMTP id e9so7401494pfi.4
- for <alsa-devel@alsa-project.org>; Wed, 02 May 2018 03:17:30 -0700 (PDT)
+Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB8AE2675DF
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 12:17:32 +0200 (CEST)
+Received: by mail-pg0-f66.google.com with SMTP id j11-v6so10302207pgf.2
+ for <alsa-devel@alsa-project.org>; Wed, 02 May 2018 03:17:32 -0700 (PDT)
 In-Reply-To: <20180502101651.26173-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,154 +27,286 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In former commits, proxy structure get members for cache of stream
-formats. This commit fills the cache with stream formats at current mode
-of sampling transmission frequency.
+TC Electronic shipped some models with DICE ASICs. All of them just support
+DICE original protocol and drivers can't retrieve all of available stream
+formats without changing status of sampling transmission frequency
+actually.
+
+This commit puts some hard-coded parameters for the models. When detecting
+the models, the corresponding parameters are copied as cache of stream
+formats.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-stream.c | 86 +++++++++++++++++++++++++++++++++++++++
- sound/firewire/dice/dice.c        |  4 ++
- sound/firewire/dice/dice.h        |  3 ++
- 3 files changed, 93 insertions(+)
+ sound/firewire/dice/Makefile            |   2 +-
+ sound/firewire/dice/dice-tcelectronic.c | 100 ++++++++++++++++++++++++++++++++
+ sound/firewire/dice/dice.c              |  76 +++++++++++++++++++++---
+ sound/firewire/dice/dice.h              |   6 ++
+ 4 files changed, 174 insertions(+), 10 deletions(-)
+ create mode 100644 sound/firewire/dice/dice-tcelectronic.c
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 928a255bfc35..f8bfe287bd02 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -30,6 +30,34 @@ const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT] = {
- 	[6] = 192000,
- };
- 
-+int snd_dice_stream_get_rate_mode(struct snd_dice *dice, unsigned int rate,
-+				  enum snd_dice_rate_mode *mode)
+diff --git a/sound/firewire/dice/Makefile b/sound/firewire/dice/Makefile
+index 55b4be9b0034..5ffaa366a88c 100644
+--- a/sound/firewire/dice/Makefile
++++ b/sound/firewire/dice/Makefile
+@@ -1,3 +1,3 @@
+ snd-dice-objs := dice-transaction.o dice-stream.o dice-proc.o dice-midi.o \
+-		 dice-pcm.o dice-hwdep.o dice.o
++		 dice-pcm.o dice-hwdep.o dice.o dice-tcelectronic.o
+ obj-$(CONFIG_SND_DICE) += snd-dice.o
+diff --git a/sound/firewire/dice/dice-tcelectronic.c b/sound/firewire/dice/dice-tcelectronic.c
+new file mode 100644
+index 000000000000..af8203b9d1a6
+--- /dev/null
++++ b/sound/firewire/dice/dice-tcelectronic.c
+@@ -0,0 +1,100 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * dice-tc_electronic.c - a part of driver for DICE based devices
++ *
++ * Copyright (c) 2018 Takashi Sakamoto
++ */
++
++#include "dice.h"
++
++struct dice_tc_spec {
++	unsigned int tx_pcm_chs[MAX_STREAMS][SND_DICE_RATE_MODE_COUNT];
++	unsigned int rx_pcm_chs[MAX_STREAMS][SND_DICE_RATE_MODE_COUNT];
++	bool has_midi;
++};
++
++static const struct dice_tc_spec desktop_konnekt6 = {
++	.tx_pcm_chs = {{6, 6, 2}, {0, 0, 0} },
++	.rx_pcm_chs = {{6, 6, 4}, {0, 0, 0} },
++	.has_midi = false,
++};
++
++static const struct dice_tc_spec impact_twin = {
++	.tx_pcm_chs = {{14, 10, 6}, {0, 0, 0} },
++	.rx_pcm_chs = {{14, 10, 6}, {0, 0, 0} },
++	.has_midi = true,
++};
++
++static const struct dice_tc_spec konnekt_8 = {
++	.tx_pcm_chs = {{4, 4, 3}, {0, 0, 0} },
++	.rx_pcm_chs = {{4, 4, 3}, {0, 0, 0} },
++	.has_midi = true,
++};
++
++static const struct dice_tc_spec konnekt_24d = {
++	.tx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
++	.rx_pcm_chs = {{16, 16, 6}, {0, 0, 0} },
++	.has_midi = true,
++};
++
++static const struct dice_tc_spec konnekt_live = {
++	.tx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
++	.rx_pcm_chs = {{16, 16, 16}, {0, 0, 0} },
++	.has_midi = true,
++};
++
++static const struct dice_tc_spec studio_konnekt_48 = {
++	.tx_pcm_chs = {{16, 16, 16}, {16, 16, 0} },
++	.rx_pcm_chs = {{16, 16, 16}, {16, 16, 0} },
++	.has_midi = true,
++};
++
++int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice)
 +{
-+	/* Corresponding to each entry in snd_dice_rates. */
-+	static const enum snd_dice_rate_mode modes[] = {
-+		[0] = SND_DICE_RATE_MODE_LOW,
-+		[1] = SND_DICE_RATE_MODE_LOW,
-+		[2] = SND_DICE_RATE_MODE_LOW,
-+		[3] = SND_DICE_RATE_MODE_MIDDLE,
-+		[4] = SND_DICE_RATE_MODE_MIDDLE,
-+		[5] = SND_DICE_RATE_MODE_HIGH,
-+		[6] = SND_DICE_RATE_MODE_HIGH,
++	static const struct {
++		u32 model_id;
++		const struct dice_tc_spec *spec;
++	} *entry, entries[] = {
++		{0x00000020, &konnekt_24d},
++		{0x00000021, &konnekt_8},
++		{0x00000022, &studio_konnekt_48},
++		{0x00000023, &konnekt_live},
++		{0x00000024, &desktop_konnekt6},
++		{0x00000027, &impact_twin},
 +	};
++	struct fw_csr_iterator it;
++	int key, val, model_id;
 +	int i;
 +
-+	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); i++) {
-+		if (!(dice->clock_caps & BIT(i)))
-+			continue;
-+		if (snd_dice_rates[i] != rate)
-+			continue;
-+
-+		*mode = modes[i];
-+		return 0;
++	model_id = 0;
++	fw_csr_iterator_init(&it, dice->unit->directory);
++	while (fw_csr_iterator_next(&it, &key, &val)) {
++		if (key == CSR_MODEL) {
++			model_id = val;
++			break;
++		}
 +	}
 +
-+	return -EINVAL;
-+}
-+
- /*
-  * This operation has an effect to synchronize GLOBAL_STATUS/GLOBAL_SAMPLE_RATE
-  * to GLOBAL_STATUS. Especially, just after powering on, these are different.
-@@ -484,6 +512,64 @@ void snd_dice_stream_update_duplex(struct snd_dice *dice)
- 	}
- }
- 
-+int snd_dice_stream_detect_current_formats(struct snd_dice *dice)
-+{
-+	unsigned int rate;
-+	enum snd_dice_rate_mode mode;
-+	__be32 reg[2];
-+	struct reg_params tx_params, rx_params;
-+	int i;
-+	int err;
-+
-+	/*
-+	 * Available stream format is restricted at current mode of sampling
-+	 * clock.
-+	 */
-+	err = snd_dice_transaction_get_rate(dice, &rate);
-+	if (err < 0)
-+		return err;
-+
-+	err = snd_dice_stream_get_rate_mode(dice, rate, &mode);
-+	if (err < 0)
-+		return err;
-+
-+	/*
-+	 * Just after owning the unit (GLOBAL_OWNER), the unit can return
-+	 * invalid stream formats. Selecting clock parameters have an effect
-+	 * for the unit to refine it.
-+	 */
-+	err = ensure_phase_lock(dice);
-+	if (err < 0)
-+		return err;
-+
-+	err = get_register_params(dice, &tx_params, &rx_params);
-+	if (err < 0)
-+		return err;
-+
-+	for (i = 0; i < tx_params.count; ++i) {
-+		err = snd_dice_transaction_read_tx(dice,
-+				tx_params.size * i + TX_NUMBER_AUDIO,
-+				reg, sizeof(reg));
-+		if (err < 0)
-+			return err;
-+		dice->tx_pcm_chs[i][mode] = be32_to_cpu(reg[0]);
-+		dice->tx_midi_ports[i] = max_t(unsigned int,
-+				be32_to_cpu(reg[1]), dice->tx_midi_ports[i]);
++	entry = NULL;
++	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
++		entry = entries + i;
++		if (entry->model_id == model_id)
++			break;
 +	}
-+	for (i = 0; i < rx_params.count; ++i) {
-+		err = snd_dice_transaction_read_rx(dice,
-+				rx_params.size * i + RX_NUMBER_AUDIO,
-+				reg, sizeof(reg));
-+		if (err < 0)
-+			return err;
-+		dice->rx_pcm_chs[i][mode] = be32_to_cpu(reg[0]);
-+		dice->rx_midi_ports[i] = max_t(unsigned int,
-+				be32_to_cpu(reg[1]), dice->rx_midi_ports[i]);
++	if (!entry)
++		return -ENODEV;
++
++	memcpy(dice->tx_pcm_chs, entry->spec->tx_pcm_chs,
++	       MAX_STREAMS * SND_DICE_RATE_MODE_COUNT * sizeof(unsigned int));
++	memcpy(dice->rx_pcm_chs, entry->spec->rx_pcm_chs,
++	       MAX_STREAMS * SND_DICE_RATE_MODE_COUNT * sizeof(unsigned int));
++
++	for (i = 0; i < MAX_STREAMS; ++i) {
++		if (entry->spec->has_midi) {
++			dice->tx_midi_ports[i] = 1;
++			dice->rx_midi_ports[i] = 1;
++		}
 +	}
 +
 +	return 0;
 +}
-+
- static void dice_lock_changed(struct snd_dice *dice)
- {
- 	dice->dev_lock_changed = true;
 diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 96bb01b6b751..002f3f3cbc6a 100644
+index 002f3f3cbc6a..ea112506cc66 100644
 --- a/sound/firewire/dice/dice.c
 +++ b/sound/firewire/dice/dice.c
-@@ -199,6 +199,10 @@ static void do_registration(struct work_struct *work)
+@@ -199,7 +199,7 @@ static void do_registration(struct work_struct *work)
  
  	dice_card_strings(dice);
  
-+	err = snd_dice_stream_detect_current_formats(dice);
-+	if (err < 0)
-+		goto error;
-+
- 	err = snd_dice_stream_init_duplex(dice);
+-	err = snd_dice_stream_detect_current_formats(dice);
++	err = dice->detect_formats(dice);
  	if (err < 0)
  		goto error;
+ 
+@@ -243,14 +243,17 @@ static void do_registration(struct work_struct *work)
+ 		 "Sound card registration failed: %d\n", err);
+ }
+ 
+-static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
++static int dice_probe(struct fw_unit *unit,
++		      const struct ieee1394_device_id *entry)
+ {
+ 	struct snd_dice *dice;
+ 	int err;
+ 
+-	err = check_dice_category(unit);
+-	if (err < 0)
+-		return -ENODEV;
++	if (!entry->driver_data) {
++		err = check_dice_category(unit);
++		if (err < 0)
++			return -ENODEV;
++	}
+ 
+ 	/* Allocate this independent of sound card instance. */
+ 	dice = kzalloc(sizeof(struct snd_dice), GFP_KERNEL);
+@@ -260,6 +263,13 @@ static int dice_probe(struct fw_unit *unit, const struct ieee1394_device_id *id)
+ 	dice->unit = fw_unit_get(unit);
+ 	dev_set_drvdata(&unit->device, dice);
+ 
++	if (!entry->driver_data) {
++		dice->detect_formats = snd_dice_stream_detect_current_formats;
++	} else {
++		dice->detect_formats =
++				(snd_dice_detect_formats_t)entry->driver_data;
++	}
++
+ 	spin_lock_init(&dice->lock);
+ 	mutex_init(&dice->mutex);
+ 	init_completion(&dice->clock_accepted);
+@@ -317,10 +327,6 @@ static void dice_bus_reset(struct fw_unit *unit)
+ #define DICE_INTERFACE	0x000001
+ 
+ static const struct ieee1394_device_id dice_id_table[] = {
+-	{
+-		.match_flags = IEEE1394_MATCH_VERSION,
+-		.version     = DICE_INTERFACE,
+-	},
+ 	/* M-Audio Profire 610/2626 has a different value in version field. */
+ 	{
+ 		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
+@@ -328,6 +334,58 @@ static const struct ieee1394_device_id dice_id_table[] = {
+ 		.vendor_id	= 0x000d6c,
+ 		.specifier_id	= 0x000d6c,
+ 	},
++	/* TC Electronic Konnekt 24D. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000020,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Konnekt 8. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000021,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Studio Konnekt 48. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000022,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Konnekt Live. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000023,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Desktop Konnekt 6. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000024,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	/* TC Electronic Impact Twin. */
++	{
++		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
++				  IEEE1394_MATCH_MODEL_ID,
++		.vendor_id	= OUI_TCELECTRONIC,
++		.model_id	= 0x000027,
++		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
++	},
++	{
++		.match_flags = IEEE1394_MATCH_VERSION,
++		.version     = DICE_INTERFACE,
++	},
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(ieee1394, dice_id_table);
 diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index 8f68976930c5..0c044f28b9e7 100644
+index 0c044f28b9e7..a4987dce9e0a 100644
 --- a/sound/firewire/dice/dice.h
 +++ b/sound/firewire/dice/dice.h
-@@ -201,11 +201,14 @@ void snd_dice_transaction_destroy(struct snd_dice *dice);
- #define SND_DICE_RATES_COUNT	7
- extern const unsigned int snd_dice_rates[SND_DICE_RATES_COUNT];
+@@ -70,6 +70,9 @@ enum snd_dice_rate_mode {
+ 	SND_DICE_RATE_MODE_COUNT,
+ };
  
-+int snd_dice_stream_get_rate_mode(struct snd_dice *dice, unsigned int rate,
-+				  enum snd_dice_rate_mode *mode);
- int snd_dice_stream_start_duplex(struct snd_dice *dice, unsigned int rate);
- void snd_dice_stream_stop_duplex(struct snd_dice *dice);
- int snd_dice_stream_init_duplex(struct snd_dice *dice);
- void snd_dice_stream_destroy_duplex(struct snd_dice *dice);
- void snd_dice_stream_update_duplex(struct snd_dice *dice);
-+int snd_dice_stream_detect_current_formats(struct snd_dice *dice);
++struct snd_dice;
++typedef int (*snd_dice_detect_formats_t)(struct snd_dice *dice);
++
+ struct snd_dice {
+ 	struct snd_card *card;
+ 	struct fw_unit *unit;
+@@ -91,6 +94,7 @@ struct snd_dice {
+ 	unsigned int rx_pcm_chs[MAX_STREAMS][SND_DICE_RATE_MODE_COUNT];
+ 	unsigned int tx_midi_ports[MAX_STREAMS];
+ 	unsigned int rx_midi_ports[MAX_STREAMS];
++	snd_dice_detect_formats_t detect_formats;
  
- int snd_dice_stream_lock_try(struct snd_dice *dice);
- void snd_dice_stream_lock_release(struct snd_dice *dice);
+ 	struct fw_address_handler notification_handler;
+ 	int owner_generation;
+@@ -221,4 +225,6 @@ void snd_dice_create_proc(struct snd_dice *dice);
+ 
+ int snd_dice_create_midi(struct snd_dice *dice);
+ 
++int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice);
++
+ #endif
 -- 
 2.14.1
