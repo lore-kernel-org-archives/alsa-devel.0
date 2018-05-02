@@ -1,66 +1,114 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [alsa-devel] [PATCH v4 3/3] ALSA: hda: Disabled unused audio
- controller for Dell platforms with Switchable Graphics
-Date: Wed, 2 May 2018 09:44:55 +0200
-Message-ID: <20180502074455.GA17650@wunner.de>
-References: <20180420094432.13133-1-kai.heng.feng@canonical.com>
- <20180420094432.13133-3-kai.heng.feng@canonical.com>
- <s5hbmeew01d.wl-tiwai@suse.de>
- <E5D0F76C-0A83-4D2C-81F7-BD5768C0A7DC@canonical.com>
- <20180423080844.yh6ndicpu6mwy336@pali>
- <FF30493D-012C-41E8-B379-85138E1EDE05@canonical.com>
- <20180424211347.GA18258@wunner.de>
- <A9269F25-2239-4E3C-A3B3-FFDD69A90DD0@canonical.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [PATCH v2 0/5] ALSA: xen-front: Add Xen para-virtualized frontend
+ driver
+Date: Wed, 2 May 2018 10:59:49 +0300
+Message-ID: <632c83d7-feb7-bc36-bf4d-22145dfeccb0@gmail.com>
+References: <20180416062453.24743-1-andr2000@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <A9269F25-2239-4E3C-A3B3-FFDD69A90DD0@canonical.com>
+In-Reply-To: <20180416062453.24743-1-andr2000@gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Kai Heng Feng <kai.heng.feng@canonical.com>
-Cc: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Takashi Iwai <tiwai@suse.de>, mjg59@srcf.ucam.org, dvhart@infradead.org, andy@infradead.org, Mario Limonciello <mario.limonciello@dell.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
+To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
+Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Apr 26, 2018 at 03:52:08PM +0800, Kai Heng Feng wrote:
-> > On Apr 25, 2018, at 5:13 AM, Lukas Wunner <lukas@wunner.de> wrote:
-> > On Mon, Apr 23, 2018 at 04:18:35PM +0800, Kai Heng Feng wrote:
-> > > That's because the audio device got runtime suspended by the graphics.
-> > >
-> > > In this case, if we really want to use the the discrete audio,
-> > > then we also need to wake up the graphics.
-> > > The discrete audio is totally useless when SG is enabled,
-> > > so my approach is just to disable it.
-> >
-> > I don't quite follow, that should be fixed by commit 07f4f97d7b4b
-> > ("vga_switcheroo: Use device link for HDA controller") which landed
-> > in v4.17-rc1.
-> 
-> Looks like I hit a new bug: the discrete GFX and its audio controller
-> never enters to D3.
-> The GFX can enter to D3 with my prosed patch.
+Gentle reminder...
 
-Can you find out why?  Does the HDA controller have a codec as child
-device that doesn't runtime suspend, perhaps because it failed to
-initialize correctly?  If a codec device fails to runtime suspend,
-the HDA controller (as parent) and by extension the GPU (via the
-device link) are also kept runtime active.
+I think that Xen side comments are already there and still I miss
 
-Do you see anything in dmesg when the AMD HDA controller probes?
-If you look in /sys/bus/pci/devices/0000:01:00.1/power/, does the
-HDA controller have active kids and what is its usage count?
+some input from ALSA community on patch #5.
+
+Thank you,
+
+Oleksandr
 
 
-> > My understanding was that with SG enabled, the external DP/HDMI ports
-> > are muxed to the Intel GPU, so audio can only be streamed to external
-> > displays by the Intel HDA, not by the HDA integrated into the discrete
-> > AMD/Nvidia GPU.  Audio streamed to the latter would essentially end up
-> > in a blackhole.  And preventing the user from seeing such useless audio
-> > devices was the sole purpose of this commit.  Am I missing something?
-> 
-> Yes this is the intention.
-
-Could you add this information to the commit message then?
-
-Thanks,
-
-Lukas
+On 04/16/2018 09:24 AM, Oleksandr Andrushchenko wrote:
+> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+>
+> Please note: this patch series depends on [3].
+>
+> This patch series adds support for Xen [1] para-virtualized
+> sound frontend driver. It implements the protocol from
+> include/xen/interface/io/sndif.h with the following limitations:
+> - mute/unmute is not supported
+> - get/set volume is not supported
+> Volume control is not supported for the reason that most of the
+> use-cases (at the moment) are based on scenarious where
+> unprivileged OS (e.g. Android, AGL etc) use software mixers.
+>
+> Both capture and playback are supported.
+>
+> Corresponding backend, implemented as a user-space application, can be
+> found at [2].
+>
+> Thank you,
+> Oleksandr
+>
+> Changes since v1:
+> *****************
+>
+> 1. Moved driver from sound/drivers to sound/xen
+>
+> 2. Coding style changes to better meet Linux Kernel
+>
+> 3. Added explicit back and front synchronization
+>     In order to provide explicit synchronization between backend and
+>     frontend the following changes are introduced in the protocol:
+>      - add new ring buffer for sending asynchronous events from
+>        backend to frontend to report number of bytes played by the
+>        frontend (XENSND_EVT_CUR_POS)
+>      - introduce trigger events for playback control: start/stop/pause/resume
+>      - add "req-" prefix to event-channel and ring-ref to unify naming
+>        of the Xen event channels for requests and events
+>
+> 4. Added explicit back and front parameter negotiation
+>     In order to provide explicit stream parameter negotiation between
+>     backend and frontend the following changes are introduced in the protocol:
+>     add XENSND_OP_HW_PARAM_QUERY request to read/update
+>     configuration space for the parameters given: request passes
+>     desired parameter's intervals/masks and the response to this request
+>     returns allowed min/max intervals/masks to be used.
+>
+> [1] https://xenproject.org/
+> [2] https://github.com/xen-troops/snd_be
+> [3] https://lkml.org/lkml/2018/4/12/522
+>
+> Oleksandr Andrushchenko (5):
+>    ALSA: xen-front: Introduce Xen para-virtualized sound frontend driver
+>    ALSA: xen-front: Read sound driver configuration from Xen store
+>    ALSA: xen-front: Implement Xen event channel handling
+>    ALSA: xen-front: Implement handling of shared buffers
+>    ALSA: xen-front: Implement ALSA virtual sound driver
+>
+>   sound/Kconfig                     |   2 +
+>   sound/Makefile                    |   2 +-
+>   sound/xen/Kconfig                 |  10 +
+>   sound/xen/Makefile                |   9 +
+>   sound/xen/xen_snd_front.c         | 410 +++++++++++++++++++
+>   sound/xen/xen_snd_front.h         |  57 +++
+>   sound/xen/xen_snd_front_alsa.c    | 830 ++++++++++++++++++++++++++++++++++++++
+>   sound/xen/xen_snd_front_alsa.h    |  23 ++
+>   sound/xen/xen_snd_front_cfg.c     | 517 ++++++++++++++++++++++++
+>   sound/xen/xen_snd_front_cfg.h     |  46 +++
+>   sound/xen/xen_snd_front_evtchnl.c | 478 ++++++++++++++++++++++
+>   sound/xen/xen_snd_front_evtchnl.h |  92 +++++
+>   sound/xen/xen_snd_front_shbuf.c   | 193 +++++++++
+>   sound/xen/xen_snd_front_shbuf.h   |  36 ++
+>   14 files changed, 2704 insertions(+), 1 deletion(-)
+>   create mode 100644 sound/xen/Kconfig
+>   create mode 100644 sound/xen/Makefile
+>   create mode 100644 sound/xen/xen_snd_front.c
+>   create mode 100644 sound/xen/xen_snd_front.h
+>   create mode 100644 sound/xen/xen_snd_front_alsa.c
+>   create mode 100644 sound/xen/xen_snd_front_alsa.h
+>   create mode 100644 sound/xen/xen_snd_front_cfg.c
+>   create mode 100644 sound/xen/xen_snd_front_cfg.h
+>   create mode 100644 sound/xen/xen_snd_front_evtchnl.c
+>   create mode 100644 sound/xen/xen_snd_front_evtchnl.h
+>   create mode 100644 sound/xen/xen_snd_front_shbuf.c
+>   create mode 100644 sound/xen/xen_snd_front_shbuf.h
+>
