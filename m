@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/6] ALSA: usb-audio: Avoid superfluous
-	usb_set_interface() calls
-Date: Wed,  2 May 2018 16:11:12 +0200
-Message-ID: <20180502141116.31966-3-tiwai@suse.de>
+Subject: [PATCH 1/6] ALSA: usb-audio: Initialize Dell Dock
+	playback volumes
+Date: Wed,  2 May 2018 16:11:11 +0200
+Message-ID: <20180502141116.31966-2-tiwai@suse.de>
 References: <20180502141116.31966-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F799266F4E
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 16:11:21 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7B594AEFA
+ by alsa0.perex.cz (Postfix) with ESMTP id 578B72671C0
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 16:11:20 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7A54BAEF4
  for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 14:11:19 +0000 (UTC)
 In-Reply-To: <20180502141116.31966-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,57 +27,108 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a preliminary change for the upcoming quirk implementation.
+In the early commit adcdd0d5a1cb ("ALSA: usb-audio: Skip volume
+controls triggers hangup on Dell USB Dock"), we add the mixer quirks
+for Dell dock to skip two mixer FU's for playback.  This supposed that
+the device has always the proper initial volume, but it doesn't seem
+always correct.
 
-Currently USB-audio driver tries to call usb_set_interface() whenever
-the format change with interface/altset modification happens.  In this
-patch, the check is replaced with the comparison of cur_altsetting and
-the targeted altsetting pointer, so that the driver may skip the
-unnecessary function calls.
+This patch adds the explicit initialization of the volumes to the
+fixed 0dB at the device probe time.  Also, such a fixup is needed
+after the resume, so a new function is hooked to the resume callback
+as well.
 
+Bugzilla: http://bugzilla.suse.com/show_bug.cgi?id=1089467
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/pcm.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ sound/usb/mixer.c        |  2 ++
+ sound/usb/mixer_quirks.c | 34 ++++++++++++++++++++++++++++++++++
+ sound/usb/mixer_quirks.h |  4 ++++
+ 3 files changed, 40 insertions(+)
 
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index ad39b3cca247..ae7d8a0a0a0a 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -499,7 +499,7 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 	iface = usb_ifnum_to_if(dev, fmt->iface);
- 	if (WARN_ON(!iface))
- 		return -EINVAL;
--	alts = &iface->altsetting[fmt->altset_idx];
-+	alts = usb_altnum_to_altsetting(iface, fmt->altsetting);
- 	altsd = get_iface_desc(alts);
- 	if (WARN_ON(altsd->bAlternateSetting != fmt->altsetting))
- 		return -EINVAL;
-@@ -521,9 +521,7 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
- 	}
- 
- 	/* set interface */
--	if (subs->interface != fmt->iface ||
--	    subs->altset_idx != fmt->altset_idx) {
--
-+	if (iface->cur_altsetting != alts) {
- 		err = snd_usb_select_mode_quirk(subs, fmt);
- 		if (err < 0)
- 			return -EIO;
-@@ -537,12 +535,11 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 344d7b069d59..76fabc4b72b5 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2948,6 +2948,8 @@ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
  		}
- 		dev_dbg(&dev->dev, "setting usb interface %d:%d\n",
- 			fmt->iface, fmt->altsetting);
--		subs->interface = fmt->iface;
--		subs->altset_idx = fmt->altset_idx;
--
- 		snd_usb_set_interface_quirk(dev);
  	}
  
-+	subs->interface = fmt->iface;
-+	subs->altset_idx = fmt->altset_idx;
- 	subs->data_endpoint = snd_usb_add_endpoint(subs->stream->chip,
- 						   alts, fmt->endpoint, subs->direction,
- 						   SND_USB_ENDPOINT_TYPE_DATA);
++	snd_usb_mixer_resume_quirk(mixer);
++
+ 	return snd_usb_mixer_activate(mixer);
+ }
+ #endif
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 56537a156580..4377374affd3 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1799,6 +1799,26 @@ static int snd_soundblaster_e1_switch_create(struct usb_mixer_interface *mixer)
+ 					  NULL);
+ }
+ 
++static void dell_dock_init_vol(struct snd_usb_audio *chip, int ch, int id)
++{
++	u16 buf = 0;
++
++	snd_usb_ctl_msg(chip->dev, usb_sndctrlpipe(chip->dev, 0), UAC_SET_CUR,
++			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
++			ch, snd_usb_ctrl_intf(chip) | (id << 8),
++			&buf, 2);
++}
++
++static int dell_dock_mixer_init(struct usb_mixer_interface *mixer)
++{
++	/* fix to 0dB playback volumes */
++	dell_dock_init_vol(mixer->chip, 1, 16);
++	dell_dock_init_vol(mixer->chip, 2, 16);
++	dell_dock_init_vol(mixer->chip, 1, 19);
++	dell_dock_init_vol(mixer->chip, 2, 19);
++	return 0;
++}
++
+ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ {
+ 	int err = 0;
+@@ -1884,11 +1904,25 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 	case USB_ID(0x041e, 0x323b): /* Creative Sound Blaster E1 */
+ 		err = snd_soundblaster_e1_switch_create(mixer);
+ 		break;
++	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
++		err = dell_dock_mixer_init(mixer);
++		break;
+ 	}
+ 
+ 	return err;
+ }
+ 
++#ifdef CONFIG_PM
++void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer)
++{
++	switch (mixer->chip->usb_id) {
++	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
++		dell_dock_mixer_init(mixer);
++		break;
++	}
++}
++#endif
++
+ void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
+ 				    int unitid)
+ {
+diff --git a/sound/usb/mixer_quirks.h b/sound/usb/mixer_quirks.h
+index b5abd328a361..52be26db558f 100644
+--- a/sound/usb/mixer_quirks.h
++++ b/sound/usb/mixer_quirks.h
+@@ -14,5 +14,9 @@ void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
+ 				  struct usb_mixer_elem_info *cval, int unitid,
+ 				  struct snd_kcontrol *kctl);
+ 
++#ifdef CONFIG_PM
++void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer);
++#endif
++
+ #endif /* SND_USB_MIXER_QUIRKS_H */
+ 
 -- 
 2.16.3
