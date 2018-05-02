@@ -1,132 +1,66 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Initialize Dell Dock playback
-	volumes
-Date: Wed,  2 May 2018 09:18:48 +0200
-Message-ID: <20180502071848.4708-1-tiwai@suse.de>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [alsa-devel] [PATCH v4 3/3] ALSA: hda: Disabled unused audio
+ controller for Dell platforms with Switchable Graphics
+Date: Wed, 2 May 2018 09:44:55 +0200
+Message-ID: <20180502074455.GA17650@wunner.de>
+References: <20180420094432.13133-1-kai.heng.feng@canonical.com>
+ <20180420094432.13133-3-kai.heng.feng@canonical.com>
+ <s5hbmeew01d.wl-tiwai@suse.de>
+ <E5D0F76C-0A83-4D2C-81F7-BD5768C0A7DC@canonical.com>
+ <20180423080844.yh6ndicpu6mwy336@pali>
+ <FF30493D-012C-41E8-B379-85138E1EDE05@canonical.com>
+ <20180424211347.GA18258@wunner.de>
+ <A9269F25-2239-4E3C-A3B3-FFDD69A90DD0@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 80FF326762C
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 09:18:49 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 50815ADCB
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 07:18:49 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <A9269F25-2239-4E3C-A3B3-FFDD69A90DD0@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kai Heng Feng <kai.heng.feng@canonical.com>
+Cc: Pali =?iso-8859-1?Q?Roh=E1r?= <pali.rohar@gmail.com>, Takashi Iwai <tiwai@suse.de>, mjg59@srcf.ucam.org, dvhart@infradead.org, andy@infradead.org, Mario Limonciello <mario.limonciello@dell.com>, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, platform-driver-x86@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In the early commit adcdd0d5a1cb ("ALSA: usb-audio: Skip volume
-controls triggers hangup on Dell USB Dock"), we add the mixer quirks
-for Dell dock to skip two mixer FU's for playback.  This supposed that
-the device has always the proper initial volume, but it doesn't seem
-always correct.
+On Thu, Apr 26, 2018 at 03:52:08PM +0800, Kai Heng Feng wrote:
+> > On Apr 25, 2018, at 5:13 AM, Lukas Wunner <lukas@wunner.de> wrote:
+> > On Mon, Apr 23, 2018 at 04:18:35PM +0800, Kai Heng Feng wrote:
+> > > That's because the audio device got runtime suspended by the graphics.
+> > >
+> > > In this case, if we really want to use the the discrete audio,
+> > > then we also need to wake up the graphics.
+> > > The discrete audio is totally useless when SG is enabled,
+> > > so my approach is just to disable it.
+> >
+> > I don't quite follow, that should be fixed by commit 07f4f97d7b4b
+> > ("vga_switcheroo: Use device link for HDA controller") which landed
+> > in v4.17-rc1.
+> 
+> Looks like I hit a new bug: the discrete GFX and its audio controller
+> never enters to D3.
+> The GFX can enter to D3 with my prosed patch.
 
-This patch adds the explicit initialization of the volumes to the
-fixed 0dB at the device probe time.  Also, such a fixup is needed
-after the resume, so a new function is hooked to the resume callback
-as well.
+Can you find out why?  Does the HDA controller have a codec as child
+device that doesn't runtime suspend, perhaps because it failed to
+initialize correctly?  If a codec device fails to runtime suspend,
+the HDA controller (as parent) and by extension the GPU (via the
+device link) are also kept runtime active.
 
-Bugzilla: http://bugzilla.suse.com/show_bug.cgi?id=1089467
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/mixer.c        |  2 ++
- sound/usb/mixer_quirks.c | 34 ++++++++++++++++++++++++++++++++++
- sound/usb/mixer_quirks.h |  4 ++++
- 3 files changed, 40 insertions(+)
+Do you see anything in dmesg when the AMD HDA controller probes?
+If you look in /sys/bus/pci/devices/0000:01:00.1/power/, does the
+HDA controller have active kids and what is its usage count?
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 344d7b069d59..76fabc4b72b5 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -2948,6 +2948,8 @@ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
- 		}
- 	}
- 
-+	snd_usb_mixer_resume_quirk(mixer);
-+
- 	return snd_usb_mixer_activate(mixer);
- }
- #endif
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 56537a156580..4377374affd3 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -1799,6 +1799,26 @@ static int snd_soundblaster_e1_switch_create(struct usb_mixer_interface *mixer)
- 					  NULL);
- }
- 
-+static void dell_dock_init_vol(struct snd_usb_audio *chip, int ch, int id)
-+{
-+	u16 buf = 0;
-+
-+	snd_usb_ctl_msg(chip->dev, usb_sndctrlpipe(chip->dev, 0), UAC_SET_CUR,
-+			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
-+			ch, snd_usb_ctrl_intf(chip) | (id << 8),
-+			&buf, 2);
-+}
-+
-+static int dell_dock_mixer_init(struct usb_mixer_interface *mixer)
-+{
-+	/* fix to 0dB playback volumes */
-+	dell_dock_init_vol(mixer->chip, 1, 16);
-+	dell_dock_init_vol(mixer->chip, 2, 16);
-+	dell_dock_init_vol(mixer->chip, 1, 19);
-+	dell_dock_init_vol(mixer->chip, 2, 19);
-+	return 0;
-+}
-+
- int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- {
- 	int err = 0;
-@@ -1884,11 +1904,25 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 	case USB_ID(0x041e, 0x323b): /* Creative Sound Blaster E1 */
- 		err = snd_soundblaster_e1_switch_create(mixer);
- 		break;
-+	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
-+		err = dell_dock_mixer_init(mixer);
-+		break;
- 	}
- 
- 	return err;
- }
- 
-+#ifdef CONFIG_PM
-+void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer)
-+{
-+	switch (mixer->chip->usb_id) {
-+	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
-+		dell_dock_mixer_init(mixer);
-+		break;
-+	}
-+}
-+#endif
-+
- void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
- 				    int unitid)
- {
-diff --git a/sound/usb/mixer_quirks.h b/sound/usb/mixer_quirks.h
-index b5abd328a361..52be26db558f 100644
---- a/sound/usb/mixer_quirks.h
-+++ b/sound/usb/mixer_quirks.h
-@@ -14,5 +14,9 @@ void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
- 				  struct usb_mixer_elem_info *cval, int unitid,
- 				  struct snd_kcontrol *kctl);
- 
-+#ifdef CONFIG_PM
-+void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer);
-+#endif
-+
- #endif /* SND_USB_MIXER_QUIRKS_H */
- 
--- 
-2.16.3
+
+> > My understanding was that with SG enabled, the external DP/HDMI ports
+> > are muxed to the Intel GPU, so audio can only be streamed to external
+> > displays by the Intel HDA, not by the HDA integrated into the discrete
+> > AMD/Nvidia GPU.  Audio streamed to the latter would essentially end up
+> > in a blackhole.  And preventing the user from seeing such useless audio
+> > devices was the sole purpose of this commit.  Am I missing something?
+> 
+> Yes this is the intention.
+
+Could you add this information to the commit message then?
+
+Thanks,
+
+Lukas
