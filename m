@@ -1,16 +1,18 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: Intel: bytcr_rt565: fix missing
-	assignment to ret_val
-Date: Wed,  2 May 2018 15:29:45 +0100
-Message-ID: <20180502142945.31637-1-colin.king@canonical.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH alsa-lib] conf/ucm: Add a UCM profile for Dell
+	WD15 Dock USB-audio
+Date: Wed,  2 May 2018 16:54:31 +0200
+Message-ID: <20180502145431.4192-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EBE2266F44
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 16:29:54 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFD07266F46
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 16:54:35 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id E80C5AC4E
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 14:54:31 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,43 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+USB-audio device on Dell WD15 docking station provides two individual
+PCM streams, one for headphone and another for line out.  A UCM
+profile gives the proper roles for these.
 
-Currently, the check that ret_val is not -ENOENT is always true and
-the quirk bit BYT_RY5651_MCLK_EN is never being cleared because ret_val
-is always zero at this point from a previous assignment earlier on.
-I believe that ret_val should actually be assigned to the return from
-devm_clk_get() as this can return -ENOENT (from a deeper call to
-clk_get_sys) and that was the original intention to check this.
-
-Detected by CoverityScan, CID#1460228 ("Logically dead code")
-
-Fixes: 02c0a3b3047f ("ASoC: Intel: bytcr_rt5651: add MCLK, quirks and cleanups")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 3c7d93520c52..469e2695d121 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -856,9 +856,10 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
- 		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
- 		if (IS_ERR(priv->mclk)) {
-+			ret_val = PTR_ERR(priv->mclk);
- 			dev_err(&pdev->dev,
--				"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
--				PTR_ERR(priv->mclk));
-+				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
-+				ret_val);
- 			/*
- 			 * Fall back to bit clock usage for -ENOENT (clock not
- 			 * available likely due to missing dependencies), bail
+This is the alsa-lib part to correspond to the recent Dell WD15 dock
+patchset.
+
+ src/conf/ucm/Dell-WD15-Dock/Dell-WD15-Dock.conf |  5 +++++
+ src/conf/ucm/Dell-WD15-Dock/HiFi.conf           | 26 +++++++++++++++++++++++++
+ src/conf/ucm/Dell-WD15-Dock/Makefile.am         |  4 ++++
+ src/conf/ucm/Makefile.am                        |  1 +
+ 4 files changed, 36 insertions(+)
+ create mode 100644 src/conf/ucm/Dell-WD15-Dock/Dell-WD15-Dock.conf
+ create mode 100644 src/conf/ucm/Dell-WD15-Dock/HiFi.conf
+ create mode 100644 src/conf/ucm/Dell-WD15-Dock/Makefile.am
+
+diff --git a/src/conf/ucm/Dell-WD15-Dock/Dell-WD15-Dock.conf b/src/conf/ucm/Dell-WD15-Dock/Dell-WD15-Dock.conf
+new file mode 100644
+index 000000000000..f4f0a8d97e73
+--- /dev/null
++++ b/src/conf/ucm/Dell-WD15-Dock/Dell-WD15-Dock.conf
+@@ -0,0 +1,5 @@
++Comment "USB-audio on Dell WD15 docking station"
++SectionUseCase."HiFi" {
++	File "HiFi.conf"
++	Comment "Default"
++}
+diff --git a/src/conf/ucm/Dell-WD15-Dock/HiFi.conf b/src/conf/ucm/Dell-WD15-Dock/HiFi.conf
+new file mode 100644
+index 000000000000..b07f34400086
+--- /dev/null
++++ b/src/conf/ucm/Dell-WD15-Dock/HiFi.conf
+@@ -0,0 +1,26 @@
++SectionDevice."Headphone" {
++	Comment "Headphone"
++
++	Value {
++		PlaybackChannels "2"
++		PlaybackPCM "hw:WD15Dock,0"
++	}
++}
++
++SectionDevice."LineOut" {
++	Comment "Line Out"
++
++	Value {
++		PlaybackChannels "2"
++		PlaybackPCM "hw:WD15Dock,1"
++	}
++}
++
++SectionDevice."Mic" {
++	Comment "Microphone"
++
++	Value {
++		CaptureChannels "2"
++		CapturePCM "hw:WD15Dock,0"
++	}
++}
+diff --git a/src/conf/ucm/Dell-WD15-Dock/Makefile.am b/src/conf/ucm/Dell-WD15-Dock/Makefile.am
+new file mode 100644
+index 000000000000..7ab58730dc26
+--- /dev/null
++++ b/src/conf/ucm/Dell-WD15-Dock/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/Dell-WD15-Dock
++ucm_DATA = Dell-WD15-Dock.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index 02df25f01b25..38fc6b252bcb 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -7,6 +7,7 @@ chtrt5645 \
+ chtrt5645-mono-speaker-analog-mic \
+ DAISY-I2S \
+ DB410c \
++Dell-WD15-Dock \
+ GoogleNyan \
+ gpd-win-pocket-rt5645 \
+ HDAudio-Gigabyte-ALC1220DualCodecs \
 -- 
-2.17.0
+2.16.3
