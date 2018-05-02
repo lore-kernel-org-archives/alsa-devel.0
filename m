@@ -1,18 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/6] usb-audio: quirks for Dell WD15 dock and
-	some extensions
-Date: Wed,  2 May 2018 16:11:10 +0200
-Message-ID: <20180502141116.31966-1-tiwai@suse.de>
+Subject: [PATCH 3/6] ALSA: usb-audio: Add keep_iface flag
+Date: Wed,  2 May 2018 16:11:13 +0200
+Message-ID: <20180502141116.31966-4-tiwai@suse.de>
+References: <20180502141116.31966-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CB4B266C1C
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F91F266F4E
  for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 16:11:20 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 75A61AEEF
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 7D046AF06
  for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 14:11:19 +0000 (UTC)
+In-Reply-To: <20180502141116.31966-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,47 +26,74 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Introduce a new flag to struct snd_usb_audio for allowing the device
+to skip usb_set_interface() calls at changing or closing the stream.
+As of this patch, the flag is nowhere set, so it's just a place
+holder.  The dynamic switching will be added in the following patch.
 
-here is a patch set for adding quirks and some new extensions for Dell
-WD15 dock.  The first patch is the resend of the previous post, and
-the rest are new.
+A background information for this change:
 
-Basically it adds a new "Keep Interface" control for the card to skip
-resetting the USB interface per stream manipulation.  It helps for
-reducing the long pause before each start of stream on Dell WD15
-dock.  OTOH, this was confirmed to be harmless on some dock early
-firmware version, so we can't set it statically in the driver.
-So, instead, the feature is exposed as a control element so that user
-can flip dynamically.  This feature may be useful for other USB audio
-devices as well.
+Dell WD15 dock with Realtek chip gives a very long pause at each time
+the driver changes the altset, which eventually happens at every PCM
+stream open/close and parameter change.  As the long pause happens in
+each usb_set_interface() call, there is nothing we can do as long as
+it's called.  The workaround is to reduce calling it as much as
+possible, and this flag indicates that behavior.
 
-Another extension is to allow the quirk entry to override the card
-longname field.  This is needed to give a proper UCM profile.
-WD15 dock provides two streams, one for the headphone and another for
-the line out.  It's a good example for using a UCM profile.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/pcm.c      | 17 ++++++++++-------
+ sound/usb/usbaudio.h |  3 +++
+ 2 files changed, 13 insertions(+), 7 deletions(-)
 
-
-Takashi
-
-===
-
-Takashi Iwai (6):
-  ALSA: usb-audio: Initialize Dell Dock playback volumes
-  ALSA: usb-audio: Avoid superfluous usb_set_interface() calls
-  ALSA: usb-audio: Add keep_iface flag
-  ALSA: usb-audio: Add "Keep Interface" control
-  ALSA: usb-audio: Allow to override the longname string
-  ALSA: usb-audio: Give proper vendor/product name for Dell WD15 Dock
-
- sound/usb/card.c         | 146 ++++++++++++++++++++++++++++-------------------
- sound/usb/mixer.c        |  47 +++++++++++++++
- sound/usb/mixer_quirks.c |  34 +++++++++++
- sound/usb/mixer_quirks.h |   4 ++
- sound/usb/pcm.c          |  28 ++++-----
- sound/usb/quirks-table.h |  10 ++++
- sound/usb/usbaudio.h     |   4 ++
- 7 files changed, 200 insertions(+), 73 deletions(-)
-
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index ae7d8a0a0a0a..dc2dfec9effd 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -509,12 +509,14 @@ static int set_format(struct snd_usb_substream *subs, struct audioformat *fmt)
+ 
+ 	/* close the old interface */
+ 	if (subs->interface >= 0 && subs->interface != fmt->iface) {
+-		err = usb_set_interface(subs->dev, subs->interface, 0);
+-		if (err < 0) {
+-			dev_err(&dev->dev,
+-				"%d:%d: return to setting 0 failed (%d)\n",
+-				fmt->iface, fmt->altsetting, err);
+-			return -EIO;
++		if (!subs->stream->chip->keep_iface) {
++			err = usb_set_interface(subs->dev, subs->interface, 0);
++			if (err < 0) {
++				dev_err(&dev->dev,
++					"%d:%d: return to setting 0 failed (%d)\n",
++					fmt->iface, fmt->altsetting, err);
++				return -EIO;
++			}
+ 		}
+ 		subs->interface = -1;
+ 		subs->altset_idx = 0;
+@@ -1253,7 +1255,8 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream, int direction)
+ 
+ 	stop_endpoints(subs, true);
+ 
+-	if (subs->interface >= 0 &&
++	if (!as->chip->keep_iface &&
++	    subs->interface >= 0 &&
+ 	    !snd_usb_lock_shutdown(subs->stream->chip)) {
+ 		usb_set_interface(subs->dev, subs->interface, 0);
+ 		subs->interface = -1;
+diff --git a/sound/usb/usbaudio.h b/sound/usb/usbaudio.h
+index 4d5c89a7ba2b..32f4a5425536 100644
+--- a/sound/usb/usbaudio.h
++++ b/sound/usb/usbaudio.h
+@@ -59,6 +59,9 @@ struct snd_usb_audio {
+ 
+ 	int setup;			/* from the 'device_setup' module param */
+ 	bool autoclock;			/* from the 'autoclock' module param */
++	bool keep_iface;		/* keep interface/altset after closing
++					 * or parameter change
++					 */
+ 
+ 	struct usb_host_interface *ctrl_intf;	/* the audio control interface */
+ };
 -- 
 2.16.3
