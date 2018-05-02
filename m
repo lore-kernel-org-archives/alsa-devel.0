@@ -1,20 +1,16 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/6] ALSA: usb-audio: Initialize Dell Dock
-	playback volumes
-Date: Wed,  2 May 2018 16:11:11 +0200
-Message-ID: <20180502141116.31966-2-tiwai@suse.de>
-References: <20180502141116.31966-1-tiwai@suse.de>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: Intel: bytcr_rt565: fix missing
+	assignment to ret_val
+Date: Wed,  2 May 2018 15:29:45 +0100
+Message-ID: <20180502142945.31637-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 578B72671C0
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 16:11:20 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 7A54BAEF4
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 14:11:19 +0000 (UTC)
-In-Reply-To: <20180502141116.31966-1-tiwai@suse.de>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EBE2266F44
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 16:29:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,111 +20,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In the early commit adcdd0d5a1cb ("ALSA: usb-audio: Skip volume
-controls triggers hangup on Dell USB Dock"), we add the mixer quirks
-for Dell dock to skip two mixer FU's for playback.  This supposed that
-the device has always the proper initial volume, but it doesn't seem
-always correct.
+From: Colin Ian King <colin.king@canonical.com>
 
-This patch adds the explicit initialization of the volumes to the
-fixed 0dB at the device probe time.  Also, such a fixup is needed
-after the resume, so a new function is hooked to the resume callback
-as well.
+Currently, the check that ret_val is not -ENOENT is always true and
+the quirk bit BYT_RY5651_MCLK_EN is never being cleared because ret_val
+is always zero at this point from a previous assignment earlier on.
+I believe that ret_val should actually be assigned to the return from
+devm_clk_get() as this can return -ENOENT (from a deeper call to
+clk_get_sys) and that was the original intention to check this.
 
-Bugzilla: http://bugzilla.suse.com/show_bug.cgi?id=1089467
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Detected by CoverityScan, CID#1460228 ("Logically dead code")
+
+Fixes: 02c0a3b3047f ("ASoC: Intel: bytcr_rt5651: add MCLK, quirks and cleanups")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/usb/mixer.c        |  2 ++
- sound/usb/mixer_quirks.c | 34 ++++++++++++++++++++++++++++++++++
- sound/usb/mixer_quirks.h |  4 ++++
- 3 files changed, 40 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5651.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 344d7b069d59..76fabc4b72b5 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -2948,6 +2948,8 @@ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
- 		}
- 	}
- 
-+	snd_usb_mixer_resume_quirk(mixer);
-+
- 	return snd_usb_mixer_activate(mixer);
- }
- #endif
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index 56537a156580..4377374affd3 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -1799,6 +1799,26 @@ static int snd_soundblaster_e1_switch_create(struct usb_mixer_interface *mixer)
- 					  NULL);
- }
- 
-+static void dell_dock_init_vol(struct snd_usb_audio *chip, int ch, int id)
-+{
-+	u16 buf = 0;
-+
-+	snd_usb_ctl_msg(chip->dev, usb_sndctrlpipe(chip->dev, 0), UAC_SET_CUR,
-+			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
-+			ch, snd_usb_ctrl_intf(chip) | (id << 8),
-+			&buf, 2);
-+}
-+
-+static int dell_dock_mixer_init(struct usb_mixer_interface *mixer)
-+{
-+	/* fix to 0dB playback volumes */
-+	dell_dock_init_vol(mixer->chip, 1, 16);
-+	dell_dock_init_vol(mixer->chip, 2, 16);
-+	dell_dock_init_vol(mixer->chip, 1, 19);
-+	dell_dock_init_vol(mixer->chip, 2, 19);
-+	return 0;
-+}
-+
- int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- {
- 	int err = 0;
-@@ -1884,11 +1904,25 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 	case USB_ID(0x041e, 0x323b): /* Creative Sound Blaster E1 */
- 		err = snd_soundblaster_e1_switch_create(mixer);
- 		break;
-+	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
-+		err = dell_dock_mixer_init(mixer);
-+		break;
- 	}
- 
- 	return err;
- }
- 
-+#ifdef CONFIG_PM
-+void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer)
-+{
-+	switch (mixer->chip->usb_id) {
-+	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
-+		dell_dock_mixer_init(mixer);
-+		break;
-+	}
-+}
-+#endif
-+
- void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
- 				    int unitid)
- {
-diff --git a/sound/usb/mixer_quirks.h b/sound/usb/mixer_quirks.h
-index b5abd328a361..52be26db558f 100644
---- a/sound/usb/mixer_quirks.h
-+++ b/sound/usb/mixer_quirks.h
-@@ -14,5 +14,9 @@ void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
- 				  struct usb_mixer_elem_info *cval, int unitid,
- 				  struct snd_kcontrol *kctl);
- 
-+#ifdef CONFIG_PM
-+void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer);
-+#endif
-+
- #endif /* SND_USB_MIXER_QUIRKS_H */
- 
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 3c7d93520c52..469e2695d121 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -856,9 +856,10 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+ 		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
+ 		if (IS_ERR(priv->mclk)) {
++			ret_val = PTR_ERR(priv->mclk);
+ 			dev_err(&pdev->dev,
+-				"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
+-				PTR_ERR(priv->mclk));
++				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
++				ret_val);
+ 			/*
+ 			 * Fall back to bit clock usage for -ENOENT (clock not
+ 			 * available likely due to missing dependencies), bail
 -- 
-2.16.3
+2.17.0
