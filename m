@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Enforce CONFIG_SND_DYNAMIC_MINORS
-	for HDMI/DP codec
-Date: Wed,  2 May 2018 09:18:31 +0200
-Message-ID: <20180502071831.4653-1-tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Initialize Dell Dock playback
+	volumes
+Date: Wed,  2 May 2018 09:18:48 +0200
+Message-ID: <20180502071848.4708-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 808FC266EBE
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 09:18:32 +0200 (CEST)
-Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 1729AADDC
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 07:18:32 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id 80FF326762C
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 09:18:49 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 50815ADCB
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 07:18:49 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,38 +25,108 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The DP-MST support requires more PCM streams than usual, hence
-CONFIG_SND_DYNAMIC_MINORS is almost mandatory.  Currently the driver
-just warns and continues even if streams are missing, but it doesn't
-seem to enough convince users to switch to the modern setup.
+In the early commit adcdd0d5a1cb ("ALSA: usb-audio: Skip volume
+controls triggers hangup on Dell USB Dock"), we add the mixer quirks
+for Dell dock to skip two mixer FU's for playback.  This supposed that
+the device has always the proper initial volume, but it doesn't seem
+always correct.
 
-This patch adds the enforced selection of CONFIG_SND_DYNAMIC_MINORS
-from CONFIG_SND_HDA_CODEC_HDMI for covering that.
+This patch adds the explicit initialization of the volumes to the
+fixed 0dB at the device probe time.  Also, such a fixup is needed
+after the resume, so a new function is hooked to the resume callback
+as well.
 
+Bugzilla: http://bugzilla.suse.com/show_bug.cgi?id=1089467
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/usb/mixer.c        |  2 ++
+ sound/usb/mixer_quirks.c | 34 ++++++++++++++++++++++++++++++++++
+ sound/usb/mixer_quirks.h |  4 ++++
+ 3 files changed, 40 insertions(+)
 
-diff --git a/sound/pci/hda/Kconfig b/sound/pci/hda/Kconfig
-index f7a492c382d9..4235907b7858 100644
---- a/sound/pci/hda/Kconfig
-+++ b/sound/pci/hda/Kconfig
-@@ -127,11 +127,15 @@ comment "Set to Y if you want auto-loading the codec driver"
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 344d7b069d59..76fabc4b72b5 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2948,6 +2948,8 @@ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
+ 		}
+ 	}
  
- config SND_HDA_CODEC_HDMI
- 	tristate "Build HDMI/DisplayPort HD-audio codec support"
-+	select SND_DYNAMIC_MINORS
- 	help
- 	  Say Y or M here to include HDMI and DisplayPort HD-audio codec
- 	  support in snd-hda-intel driver.  This includes all AMD/ATI,
- 	  Intel and Nvidia HDMI/DisplayPort codecs.
- 
-+	  Note that this option mandatorily enables CONFIG_SND_DYNAMIC_MINORS
-+	  to assure the multiple streams for DP-MST support.
++	snd_usb_mixer_resume_quirk(mixer);
 +
- comment "Set to Y if you want auto-loading the codec driver"
- 	depends on SND_HDA=y && SND_HDA_CODEC_HDMI=m
+ 	return snd_usb_mixer_activate(mixer);
+ }
+ #endif
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 56537a156580..4377374affd3 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1799,6 +1799,26 @@ static int snd_soundblaster_e1_switch_create(struct usb_mixer_interface *mixer)
+ 					  NULL);
+ }
+ 
++static void dell_dock_init_vol(struct snd_usb_audio *chip, int ch, int id)
++{
++	u16 buf = 0;
++
++	snd_usb_ctl_msg(chip->dev, usb_sndctrlpipe(chip->dev, 0), UAC_SET_CUR,
++			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_OUT,
++			ch, snd_usb_ctrl_intf(chip) | (id << 8),
++			&buf, 2);
++}
++
++static int dell_dock_mixer_init(struct usb_mixer_interface *mixer)
++{
++	/* fix to 0dB playback volumes */
++	dell_dock_init_vol(mixer->chip, 1, 16);
++	dell_dock_init_vol(mixer->chip, 2, 16);
++	dell_dock_init_vol(mixer->chip, 1, 19);
++	dell_dock_init_vol(mixer->chip, 2, 19);
++	return 0;
++}
++
+ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ {
+ 	int err = 0;
+@@ -1884,11 +1904,25 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 	case USB_ID(0x041e, 0x323b): /* Creative Sound Blaster E1 */
+ 		err = snd_soundblaster_e1_switch_create(mixer);
+ 		break;
++	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
++		err = dell_dock_mixer_init(mixer);
++		break;
+ 	}
+ 
+ 	return err;
+ }
+ 
++#ifdef CONFIG_PM
++void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer)
++{
++	switch (mixer->chip->usb_id) {
++	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
++		dell_dock_mixer_init(mixer);
++		break;
++	}
++}
++#endif
++
+ void snd_usb_mixer_rc_memory_change(struct usb_mixer_interface *mixer,
+ 				    int unitid)
+ {
+diff --git a/sound/usb/mixer_quirks.h b/sound/usb/mixer_quirks.h
+index b5abd328a361..52be26db558f 100644
+--- a/sound/usb/mixer_quirks.h
++++ b/sound/usb/mixer_quirks.h
+@@ -14,5 +14,9 @@ void snd_usb_mixer_fu_apply_quirk(struct usb_mixer_interface *mixer,
+ 				  struct usb_mixer_elem_info *cval, int unitid,
+ 				  struct snd_kcontrol *kctl);
+ 
++#ifdef CONFIG_PM
++void snd_usb_mixer_resume_quirk(struct usb_mixer_interface *mixer);
++#endif
++
+ #endif /* SND_USB_MIXER_QUIRKS_H */
  
 -- 
 2.16.3
