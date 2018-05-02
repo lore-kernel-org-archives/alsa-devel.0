@@ -1,13 +1,13 @@
 From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v14 2/8] ASoC: sun4i-codec: Add Mic1 Boost
- Volume, Mic2 Boost Volume
-Date: Wed,  2 May 2018 23:07:54 +0200
-Message-ID: <20180502210800.1971-3-dannym@scratchpost.org>
+Subject: [PATCH v14 3/8] ASoC: sun4i-codec: Merge
+ sun4i_codec_left_mixer_controls and sun4i_codec_right_mixer_controls into sun4i_codec_mixer_controls
+Date: Wed,  2 May 2018 23:07:55 +0200
+Message-ID: <20180502210800.1971-4-dannym@scratchpost.org>
 References: <20180502210800.1971-1-dannym@scratchpost.org>
 Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBSGRVDLQKGQEMJRPG4I-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBSWRVDLQKGQEN7GXSHQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 In-Reply-To: <20180502210800.1971-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
@@ -19,140 +19,75 @@ List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39
 To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>, Andrea Bondavalli <andrea.bondavalli74-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Add Mic1 Boost Volume and Mic2 Boost Volume for Allwinner A10 and Allwinner
-A20.  Also add support for extra controls to the sun4i_codec_quirks because
-the A10 and A20 have Mic1 Boost Volume at different places (likewise for
-Mic2 Boost Volume).
+Since it's now possible to have a DAPM mixer control with multiple channels,
+use it to cut down the total number of controls.
+
+Keep "Left Mixer Left DAC Playback Switch" and "Right Mixer Right DAC Playback
+Switch" name & layout the same as before for compatibility.
 
 Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 66 ++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 56 insertions(+), 10 deletions(-)
+ sound/soc/sunxi/sun4i-codec.c | 32 ++++++++++++++++----------------
+ 1 file changed, 16 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 060a40b45ab0..4af286f44a67 100644
+index 4af286f44a67..b62af407967f 100644
 --- a/sound/soc/sunxi/sun4i-codec.c
 +++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -95,6 +95,8 @@
- #define SUN4I_CODEC_ADC_ACTL_PREG1EN			(29)
- #define SUN4I_CODEC_ADC_ACTL_PREG2EN			(28)
- #define SUN4I_CODEC_ADC_ACTL_VMICEN			(27)
-+#define SUN4I_CODEC_ADC_ACTL_PREG1			(25)
-+#define SUN4I_CODEC_ADC_ACTL_PREG2			(23)
- #define SUN4I_CODEC_ADC_ACTL_VADCG			(20)
- #define SUN4I_CODEC_ADC_ACTL_ADCIS			(17)
- #define SUN4I_CODEC_ADC_ACTL_PA_EN			(4)
-@@ -111,6 +113,9 @@
- /* Microphone controls (sun7i only) */
- #define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
- 
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1		(29)
-+#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2		(26)
-+
- /*
-  * sun6i specific registers
-  *
-@@ -676,6 +681,12 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
- static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
- static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale, -450, 150,
- 			    0);
-+static DECLARE_TLV_DB_RANGE(sun4i_codec_micin_preamp_gain_scale,
-+			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-+			    1, 7, TLV_DB_SCALE_ITEM(3500, 300, 0));
-+static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
-+			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
-+			    1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0));
- 
- static const struct snd_kcontrol_new sun4i_codec_controls[] = {
- 	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
-@@ -686,6 +697,24 @@ static const struct snd_kcontrol_new sun4i_codec_controls[] = {
- 		       sun4i_codec_micin_loopback_gain_scale),
+@@ -715,15 +715,15 @@ static const struct snd_kcontrol_new sun7i_codec_extra_controls[] = {
+ 		       sun7i_codec_micin_preamp_gain_scale),
  };
  
-+static const struct snd_kcontrol_new sun4i_codec_extra_controls[] = {
-+	SOC_SINGLE_TLV("Mic1 Boost Volume", SUN4I_CODEC_ADC_ACTL,
-+		       SUN4I_CODEC_ADC_ACTL_PREG1, 3, 0,
-+		       sun4i_codec_micin_preamp_gain_scale),
-+	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN4I_CODEC_ADC_ACTL,
-+		       SUN4I_CODEC_ADC_ACTL_PREG2, 3, 0,
-+		       sun4i_codec_micin_preamp_gain_scale),
-+};
-+
-+static const struct snd_kcontrol_new sun7i_codec_extra_controls[] = {
-+	SOC_SINGLE_TLV("Mic1 Boost Volume", SUN7I_CODEC_AC_MIC_PHONE_CAL,
-+		       SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1, 7, 0,
-+		       sun7i_codec_micin_preamp_gain_scale),
-+	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN7I_CODEC_AC_MIC_PHONE_CAL,
-+		       SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2, 7, 0,
-+		       sun7i_codec_micin_preamp_gain_scale),
-+};
-+
- static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
- 	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
- 			SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
-@@ -807,7 +836,30 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
- 	{ "Mic2", NULL, "VMIC" },
- };
- 
-+struct sun4i_codec_quirks {
-+	const struct regmap_config *regmap_config;
-+	const struct snd_soc_component_driver *codec;
-+	struct snd_soc_card * (*create_card)(struct device *dev);
-+	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
-+	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
-+	unsigned int reg_adc_rxdata;	/* RX FIFO offset for DMA config */
-+	bool has_reset;
-+	const struct snd_kcontrol_new *controls;
-+	unsigned int num_controls;
-+};
-+
-+static int sun4i_codec_component_driver_probe(struct snd_soc_component *codec)
-+{
-+	const struct sun4i_codec_quirks *quirks;
-+
-+	quirks = of_device_get_match_data(codec->dev);
-+	return snd_soc_add_component_controls(codec,
-+					      quirks->controls,
-+					      quirks->num_controls);
-+}
-+
- static const struct snd_soc_component_driver sun4i_codec_codec = {
-+	.probe			= sun4i_codec_component_driver_probe,
- 	.controls		= sun4i_codec_controls,
- 	.num_controls		= ARRAY_SIZE(sun4i_codec_controls),
- 	.dapm_widgets		= sun4i_codec_codec_dapm_widgets,
-@@ -1469,16 +1521,6 @@ static const struct regmap_config sun8i_v3s_codec_regmap_config = {
- 	.max_register	= SUN8I_H3_CODEC_ADC_DBG,
- };
- 
--struct sun4i_codec_quirks {
--	const struct regmap_config *regmap_config;
--	const struct snd_soc_component_driver *codec;
--	struct snd_soc_card * (*create_card)(struct device *dev);
--	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
--	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
--	unsigned int reg_adc_rxdata;	/* RX FIFO offset for DMA config */
--	bool has_reset;
+-static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+-			SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
 -};
 -
- static const struct sun4i_codec_quirks sun4i_codec_quirks = {
- 	.regmap_config	= &sun4i_codec_regmap_config,
- 	.codec		= &sun4i_codec_codec,
-@@ -1486,6 +1528,8 @@ static const struct sun4i_codec_quirks sun4i_codec_quirks = {
- 	.reg_adc_fifoc	= REG_FIELD(SUN4I_CODEC_ADC_FIFOC, 0, 31),
- 	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
- 	.reg_adc_rxdata	= SUN4I_CODEC_ADC_RXDATA,
-+	.controls	= sun4i_codec_extra_controls,
-+	.num_controls	= ARRAY_SIZE(sun4i_codec_extra_controls),
+-static const struct snd_kcontrol_new sun4i_codec_right_mixer_controls[] = {
+-	SOC_DAPM_SINGLE("Right DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+-			SUN4I_CODEC_DAC_ACTL_RDACRMIXS, 1, 0),
+-	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
++static const struct snd_kcontrol_new sun4i_codec_mixer_controls[] = {
++	SOC_DAPM_SINGLE("Left Mixer Left DAC Playback Switch",
++			SUN4I_CODEC_DAC_ACTL, SUN4I_CODEC_DAC_ACTL_LDACLMIXS,
++			1, 0),
++	SOC_DAPM_SINGLE("Right Mixer Right DAC Playback Switch",
++			SUN4I_CODEC_DAC_ACTL, SUN4I_CODEC_DAC_ACTL_RDACRMIXS,
++			1, 0),
++	SOC_DAPM_SINGLE("Right Mixer Left DAC Playback Switch",
++			SUN4I_CODEC_DAC_ACTL,
+ 			SUN4I_CODEC_DAC_ACTL_LDACRMIXS, 1, 0),
  };
  
- static const struct sun4i_codec_quirks sun6i_a31_codec_quirks = {
-@@ -1505,6 +1549,8 @@ static const struct sun4i_codec_quirks sun7i_codec_quirks = {
- 	.reg_adc_fifoc	= REG_FIELD(SUN4I_CODEC_ADC_FIFOC, 0, 31),
- 	.reg_dac_txdata	= SUN4I_CODEC_DAC_TXDATA,
- 	.reg_adc_rxdata	= SUN4I_CODEC_ADC_RXDATA,
-+	.controls	= sun7i_codec_extra_controls,
-+	.num_controls	= ARRAY_SIZE(sun7i_codec_extra_controls),
- };
+@@ -759,11 +759,11 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
  
- static const struct sun4i_codec_quirks sun8i_a23_codec_quirks = {
+ 	/* Mixers */
+ 	SND_SOC_DAPM_MIXER("Left Mixer", SND_SOC_NOPM, 0, 0,
+-			   sun4i_codec_left_mixer_controls,
+-			   ARRAY_SIZE(sun4i_codec_left_mixer_controls)),
++			   sun4i_codec_mixer_controls,
++			   ARRAY_SIZE(sun4i_codec_mixer_controls)),
+ 	SND_SOC_DAPM_MIXER("Right Mixer", SND_SOC_NOPM, 0, 0,
+-			   sun4i_codec_right_mixer_controls,
+-			   ARRAY_SIZE(sun4i_codec_right_mixer_controls)),
++			   sun4i_codec_mixer_controls,
++			   ARRAY_SIZE(sun4i_codec_mixer_controls)),
+ 
+ 	/* Global Mixer Enable */
+ 	SND_SOC_DAPM_SUPPLY("Mixer Enable", SUN4I_CODEC_DAC_ACTL,
+@@ -805,12 +805,12 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+ 
+ 	/* Right Mixer Routes */
+ 	{ "Right Mixer", NULL, "Mixer Enable" },
+-	{ "Right Mixer", "Left DAC Playback Switch", "Left DAC" },
+-	{ "Right Mixer", "Right DAC Playback Switch", "Right DAC" },
++	{ "Right Mixer", "Right Mixer Left DAC Playback Switch", "Left DAC" },
++	{ "Right Mixer", "Right Mixer Right DAC Playback Switch", "Right DAC" },
+ 
+ 	/* Left Mixer Routes */
+ 	{ "Left Mixer", NULL, "Mixer Enable" },
+-	{ "Left Mixer", "Left DAC Playback Switch", "Left DAC" },
++	{ "Left Mixer", "Left Mixer Left DAC Playback Switch", "Left DAC" },
+ 
+ 	/* Power Amplifier Routes */
+ 	{ "Power Amplifier", "Mixer Playback Switch", "Left Mixer" },
