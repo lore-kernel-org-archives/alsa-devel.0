@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH v3 12/13] ALSA: dice: use cache for PCM
-	constraints and rules
-Date: Wed,  2 May 2018 19:16:50 +0900
-Message-ID: <20180502101651.26173-13-o-takashi@sakamocchi.jp>
+Subject: [PATCH v3 13/13] ALSA: dice: remove local frag of
+	force_two_pcms
+Date: Wed,  2 May 2018 19:16:51 +0900
+Message-ID: <20180502101651.26173-14-o-takashi@sakamocchi.jp>
 References: <20180502101651.26173-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
- [209.85.192.193])
- by alsa0.perex.cz (Postfix) with ESMTP id D1590266F44
- for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 12:17:46 +0200 (CEST)
-Received: by mail-pf0-f193.google.com with SMTP id w129so5970306pfd.3
- for <alsa-devel@alsa-project.org>; Wed, 02 May 2018 03:17:46 -0700 (PDT)
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBE9A2676CE
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 12:17:48 +0200 (CEST)
+Received: by mail-pf0-f194.google.com with SMTP id f189so11393304pfa.7
+ for <alsa-devel@alsa-project.org>; Wed, 02 May 2018 03:17:48 -0700 (PDT)
 In-Reply-To: <20180502101651.26173-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,313 +28,158 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In former commits, proxy structure gets members for cache of stream
-formats. The cache allows to apply correct constraints and rules to
-runtime of PCM substream. They allows userspace applications to change
-current sampling transmission frequency.
+At present, to add PCM substreams for each of available tx/rx streams,
+this driver uses a condition based on model-name. This is not enough
+to support unknown models.
 
-This commit uses the cacher for the PCM constraints and rules.
+In former commits, this driver gains cache of stream formats. For models
+which support protocol extension, all of available steam formats are
+cached. For known models, hard-coded stream formats are used to generate
+the cache. For unknown models, stream formats at current mode of sampling
+transmission frequency is cached.
+
+Anyway, at least, the cached formats are used to expose constrains of PCM
+substreams for userspace applications. Thus, The cached data can be also
+used to add PCM substreams themselves, instead of the name-based
+conditions.
+
+This commit obsoletes local frag of force_two_pcms.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/dice/dice-pcm.c | 227 ++++++++++++++++++++++++++++++-----------
- 1 file changed, 170 insertions(+), 57 deletions(-)
+ sound/firewire/dice/dice-pcm.c | 38 ++++++++------------------------------
+ sound/firewire/dice/dice.c     | 38 --------------------------------------
+ sound/firewire/dice/dice.h     |  2 --
+ 3 files changed, 8 insertions(+), 70 deletions(-)
 
 diff --git a/sound/firewire/dice/dice-pcm.c b/sound/firewire/dice/dice-pcm.c
-index 7cb9e9713ac3..08a173170d52 100644
+index 08a173170d52..80351b29fe0d 100644
 --- a/sound/firewire/dice/dice-pcm.c
 +++ b/sound/firewire/dice/dice-pcm.c
-@@ -9,43 +9,115 @@
- 
- #include "dice.h"
- 
-+static int dice_rate_constraint(struct snd_pcm_hw_params *params,
-+				struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_pcm_substream *substream = rule->private;
-+	struct snd_dice *dice = substream->private_data;
-+	unsigned int index = substream->pcm->device;
-+
-+	const struct snd_interval *c =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval *r =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval rates = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+	unsigned int *pcm_channels;
-+	enum snd_dice_rate_mode mode;
-+	unsigned int i, rate;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		pcm_channels = dice->tx_pcm_chs[index];
-+	else
-+		pcm_channels = dice->rx_pcm_chs[index];
-+
-+	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
-+		rate = snd_dice_rates[i];
-+		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
-+			continue;
-+
-+		if (!snd_interval_test(c, pcm_channels[mode]))
-+			continue;
-+
-+		rates.min = min(rates.min, rate);
-+		rates.max = max(rates.max, rate);
-+	}
-+
-+	return snd_interval_refine(r, &rates);
-+}
-+
-+static int dice_channels_constraint(struct snd_pcm_hw_params *params,
-+				    struct snd_pcm_hw_rule *rule)
-+{
-+	struct snd_pcm_substream *substream = rule->private;
-+	struct snd_dice *dice = substream->private_data;
-+	unsigned int index = substream->pcm->device;
-+
-+	const struct snd_interval *r =
-+		hw_param_interval_c(params, SNDRV_PCM_HW_PARAM_RATE);
-+	struct snd_interval *c =
-+		hw_param_interval(params, SNDRV_PCM_HW_PARAM_CHANNELS);
-+	struct snd_interval channels = {
-+		.min = UINT_MAX, .max = 0, .integer = 1
-+	};
-+	unsigned int *pcm_channels;
-+	enum snd_dice_rate_mode mode;
-+	unsigned int i, rate;
-+
-+	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-+		pcm_channels = dice->tx_pcm_chs[index];
-+	else
-+		pcm_channels = dice->rx_pcm_chs[index];
-+
-+	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
-+		rate = snd_dice_rates[i];
-+		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
-+			continue;
-+
-+		if (!snd_interval_test(r, rate))
-+			continue;
-+
-+		channels.min = min(channels.min, pcm_channels[mode]);
-+		channels.max = max(channels.max, pcm_channels[mode]);
-+	}
-+
-+	return snd_interval_refine(c, &channels);
-+}
-+
- static int limit_channels_and_rates(struct snd_dice *dice,
- 				    struct snd_pcm_runtime *runtime,
- 				    enum amdtp_stream_direction dir,
--				    unsigned int index, unsigned int size)
-+				    unsigned int index)
- {
- 	struct snd_pcm_hardware *hw = &runtime->hw;
--	struct amdtp_stream *stream;
--	unsigned int rate;
--	__be32 reg;
--	int err;
--
--	/*
--	 * Retrieve current Multi Bit Linear Audio data channel and limit to
--	 * it.
--	 */
--	if (dir == AMDTP_IN_STREAM) {
--		stream = &dice->tx_stream[index];
--		err = snd_dice_transaction_read_tx(dice,
--				size * index + TX_NUMBER_AUDIO,
--				&reg, sizeof(reg));
--	} else {
--		stream = &dice->rx_stream[index];
--		err = snd_dice_transaction_read_rx(dice,
--				size * index + RX_NUMBER_AUDIO,
--				&reg, sizeof(reg));
-+	unsigned int *pcm_channels;
-+	unsigned int i;
-+
-+	if (dir == AMDTP_IN_STREAM)
-+		pcm_channels = dice->tx_pcm_chs[index];
-+	else
-+		pcm_channels = dice->rx_pcm_chs[index];
-+
-+	hw->channels_min = UINT_MAX;
-+	hw->channels_max = 0;
-+
-+	for (i = 0; i < ARRAY_SIZE(snd_dice_rates); ++i) {
-+		enum snd_dice_rate_mode mode;
-+		unsigned int rate, channels;
-+
-+		rate = snd_dice_rates[i];
-+		if (snd_dice_stream_get_rate_mode(dice, rate, &mode) < 0)
-+			continue;
-+		hw->rates |= snd_pcm_rate_to_rate_bit(rate);
-+
-+		channels = pcm_channels[mode];
-+		if (channels == 0)
-+			continue;
-+		hw->channels_min = min(hw->channels_min, channels);
-+		hw->channels_max = max(hw->channels_max, channels);
- 	}
--	if (err < 0)
--		return err;
--
--	hw->channels_min = hw->channels_max = be32_to_cpu(reg);
--
--	/* Retrieve current sampling transfer frequency and limit to it. */
--	err = snd_dice_transaction_get_rate(dice, &rate);
--	if (err < 0)
--		return err;
- 
--	hw->rates = snd_pcm_rate_to_rate_bit(rate);
- 	snd_pcm_limit_hw_rates(runtime);
- 
- 	return 0;
-@@ -56,36 +128,34 @@ static int init_hw_info(struct snd_dice *dice,
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct snd_pcm_hardware *hw = &runtime->hw;
-+	unsigned int index = substream->pcm->device;
- 	enum amdtp_stream_direction dir;
- 	struct amdtp_stream *stream;
--	__be32 reg[2];
--	unsigned int count, size;
- 	int err;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		hw->formats = AM824_IN_PCM_FORMAT_BITS;
- 		dir = AMDTP_IN_STREAM;
--		stream = &dice->tx_stream[substream->pcm->device];
--		err = snd_dice_transaction_read_tx(dice, TX_NUMBER, reg,
--						   sizeof(reg));
-+		stream = &dice->tx_stream[index];
- 	} else {
- 		hw->formats = AM824_OUT_PCM_FORMAT_BITS;
- 		dir = AMDTP_OUT_STREAM;
--		stream = &dice->rx_stream[substream->pcm->device];
--		err = snd_dice_transaction_read_rx(dice, RX_NUMBER, reg,
--						   sizeof(reg));
-+		stream = &dice->rx_stream[index];
- 	}
- 
-+	err = limit_channels_and_rates(dice, substream->runtime, dir,
-+				       index);
- 	if (err < 0)
- 		return err;
- 
--	count = min_t(unsigned int, be32_to_cpu(reg[0]), MAX_STREAMS);
--	if (substream->pcm->device >= count)
--		return -ENXIO;
--
--	size = be32_to_cpu(reg[1]) * 4;
--	err = limit_channels_and_rates(dice, substream->runtime, dir,
--				       substream->pcm->device, size);
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
-+				  dice_rate_constraint, substream,
-+				  SNDRV_PCM_HW_PARAM_CHANNELS, -1);
-+	if (err < 0)
-+		return err;
-+	err = snd_pcm_hw_rule_add(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
-+				  dice_channels_constraint, substream,
-+				  SNDRV_PCM_HW_PARAM_RATE, -1);
- 	if (err < 0)
- 		return err;
- 
-@@ -95,6 +165,8 @@ static int init_hw_info(struct snd_dice *dice,
- static int pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_dice *dice = substream->private_data;
-+	unsigned int source;
-+	bool internal;
- 	int err;
- 
- 	err = snd_dice_stream_lock_try(dice);
-@@ -105,6 +177,43 @@ static int pcm_open(struct snd_pcm_substream *substream)
- 	if (err < 0)
- 		goto err_locked;
- 
-+	err = snd_dice_transaction_get_clock_source(dice, &source);
-+	if (err < 0)
-+		goto err_locked;
-+	switch (source) {
-+	case CLOCK_SOURCE_AES1:
-+	case CLOCK_SOURCE_AES2:
-+	case CLOCK_SOURCE_AES3:
-+	case CLOCK_SOURCE_AES4:
-+	case CLOCK_SOURCE_AES_ANY:
-+	case CLOCK_SOURCE_ADAT:
-+	case CLOCK_SOURCE_TDIF:
-+	case CLOCK_SOURCE_WC:
-+		internal = false;
-+		break;
-+	default:
-+		internal = true;
-+		break;
-+	}
-+
-+	/*
-+	 * When source of clock is not internal or any PCM streams are running,
-+	 * available sampling rate is limited at current sampling rate.
-+	 */
-+	if (!internal ||
-+	    amdtp_stream_pcm_running(&dice->tx_stream[0]) ||
-+	    amdtp_stream_pcm_running(&dice->tx_stream[1]) ||
-+	    amdtp_stream_pcm_running(&dice->rx_stream[0]) ||
-+	    amdtp_stream_pcm_running(&dice->rx_stream[1])) {
-+		unsigned int rate;
-+
-+		err = snd_dice_transaction_get_rate(dice, &rate);
-+		if (err < 0)
-+			goto err_locked;
-+		substream->runtime->hw.rate_min = rate;
-+		substream->runtime->hw.rate_max = rate;
-+	}
-+
- 	snd_pcm_set_sync(substream);
- end:
- 	return err;
-@@ -318,7 +427,6 @@ int snd_dice_create_pcm(struct snd_dice *dice)
- 		.page      = snd_pcm_lib_get_vmalloc_page,
+@@ -428,40 +428,18 @@ int snd_dice_create_pcm(struct snd_dice *dice)
  		.mmap      = snd_pcm_lib_mmap_vmalloc,
  	};
--	__be32 reg;
  	struct snd_pcm *pcm;
- 	unsigned int i, max_capture, max_playback, capture, playback;
+-	unsigned int i, max_capture, max_playback, capture, playback;
++	unsigned int capture, playback;
++	int i, j;
  	int err;
-@@ -327,18 +435,23 @@ int snd_dice_create_pcm(struct snd_dice *dice)
- 	if (dice->force_two_pcms) {
- 		max_capture = max_playback = 2;
- 	} else {
-+		int j;
- 		max_capture = max_playback = 0;
--		err = snd_dice_transaction_read_tx(dice, TX_NUMBER, &reg,
--						   sizeof(reg));
--		if (err < 0)
--			return err;
--		max_capture = min_t(unsigned int, be32_to_cpu(reg), MAX_STREAMS);
+ 
+-	/* Check whether PCM substreams are required. */
+-	if (dice->force_two_pcms) {
+-		max_capture = max_playback = 2;
+-	} else {
+-		int j;
+-		max_capture = max_playback = 0;
+-		for (i = 0; i < MAX_STREAMS; ++i) {
+-			for (j = 0; j < SND_DICE_RATE_MODE_COUNT; ++j) {
+-				if (dice->tx_pcm_chs[i][j] > 0) {
+-					++max_capture;
+-					break;
+-				}
+-			}
 -
--		err = snd_dice_transaction_read_rx(dice, RX_NUMBER, &reg,
--						   sizeof(reg));
--		if (err < 0)
--			return err;
--		max_playback = min_t(unsigned int, be32_to_cpu(reg), MAX_STREAMS);
-+		for (i = 0; i < MAX_STREAMS; ++i) {
-+			for (j = 0; j < SND_DICE_RATE_MODE_COUNT; ++j) {
-+				if (dice->tx_pcm_chs[i][j] > 0) {
-+					++max_capture;
-+					break;
-+				}
-+			}
-+
-+			for (j = 0; j < SND_DICE_RATE_MODE_COUNT; ++j) {
-+				if (dice->rx_pcm_chs[i][j] > 0) {
-+					++max_playback;
-+					break;
-+				}
-+			}
+-			for (j = 0; j < SND_DICE_RATE_MODE_COUNT; ++j) {
+-				if (dice->rx_pcm_chs[i][j] > 0) {
+-					++max_playback;
+-					break;
+-				}
+-			}
+-		}
+-	}
+-
+ 	for (i = 0; i < MAX_STREAMS; i++) {
+ 		capture = playback = 0;
+-		if (i < max_capture)
+-			capture = 1;
+-		if (i < max_playback)
+-			playback = 1;
+-		if (capture == 0 && playback == 0)
+-			break;
++		for (j = 0; j < SND_DICE_RATE_MODE_COUNT; ++j) {
++			if (dice->tx_pcm_chs[i][j] > 0)
++				capture = 1;
++			if (dice->rx_pcm_chs[i][j] > 0)
++				playback = 1;
 +		}
+ 
+ 		err = snd_pcm_new(dice->card, "DICE", i, playback, capture,
+ 				  &pcm);
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index 6d55a62ec89e..40f7a32e4893 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -24,36 +24,6 @@ MODULE_LICENSE("GPL v2");
+ 
+ #define MODEL_ALESIS_IO_BOTH	0x000001
+ 
+-/*
+- * Some models support several isochronous channels, while these streams are not
+- * always available. In this case, add the model name to this list.
+- */
+-static bool force_two_pcm_support(struct fw_unit *unit)
+-{
+-	static const char *const models[] = {
+-		/* TC Electronic models. */
+-		"StudioKonnekt48",
+-		/* Focusrite models. */
+-		"SAFFIRE_PRO_40",
+-		"LIQUID_SAFFIRE_56",
+-		"SAFFIRE_PRO_40_1",
+-	};
+-	char model[32];
+-	unsigned int i;
+-	int err;
+-
+-	err = fw_csr_string(unit->directory, CSR_MODEL, model, sizeof(model));
+-	if (err < 0)
+-		return false;
+-
+-	for (i = 0; i < ARRAY_SIZE(models); i++) {
+-		if (strcmp(models[i], model) == 0)
+-			break;
+-	}
+-
+-	return i < ARRAY_SIZE(models);
+-}
+-
+ static int check_dice_category(struct fw_unit *unit)
+ {
+ 	struct fw_device *device = fw_parent_device(unit);
+@@ -79,11 +49,6 @@ static int check_dice_category(struct fw_unit *unit)
+ 		}
  	}
  
- 	for (i = 0; i < MAX_STREAMS; i++) {
+-	if (vendor == OUI_FOCUSRITE || vendor == OUI_TCELECTRONIC) {
+-		if (force_two_pcm_support(unit))
+-			return 0;
+-	}
+-
+ 	if (vendor == OUI_WEISS)
+ 		category = WEISS_CATEGORY_ID;
+ 	else if (vendor == OUI_LOUD)
+@@ -190,9 +155,6 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		return;
+ 
+-	if (force_two_pcm_support(dice->unit))
+-		dice->force_two_pcms = true;
+-
+ 	err = snd_dice_transaction_init(dice);
+ 	if (err < 0)
+ 		goto error;
+diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
+index 4465a5925641..505b79fea6d9 100644
+--- a/sound/firewire/dice/dice.h
++++ b/sound/firewire/dice/dice.h
+@@ -113,8 +113,6 @@ struct snd_dice {
+ 	bool global_enabled;
+ 	struct completion clock_accepted;
+ 	unsigned int substreams_counter;
+-
+-	bool force_two_pcms;
+ };
+ 
+ enum snd_dice_addr_type {
 -- 
 2.14.1
