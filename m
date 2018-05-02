@@ -1,114 +1,197 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [PATCH v2 0/5] ALSA: xen-front: Add Xen para-virtualized frontend
- driver
-Date: Wed, 2 May 2018 10:59:49 +0300
-Message-ID: <632c83d7-feb7-bc36-bf4d-22145dfeccb0@gmail.com>
-References: <20180416062453.24743-1-andr2000@gmail.com>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: Re: [PATCH v3 2/3] ASoC: Add Multi CPU DAI support for
+ PCM ops
+Date: Wed, 2 May 2018 14:45:11 +0530
+Message-ID: <20180502091511.GA30461@snc-desk>
+References: <1524131359-24387-1-git-send-email-vinod.koul@intel.com>
+ <1524131359-24387-3-git-send-email-vinod.koul@intel.com>
+ <20180430162236.xapskcplyphwbloe@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180416062453.24743-1-andr2000@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
-Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6991266F44
+ for <alsa-devel@alsa-project.org>; Wed,  2 May 2018 11:17:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180430162236.xapskcplyphwbloe@localhost.localdomain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Vinod Koul <vinod.koul@intel.com>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, patches.audio@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Gentle reminder...
+On Mon, Apr 30, 2018 at 05:22:36PM +0100, Charles Keepax wrote:
+> > @@ -361,7 +386,16 @@ static void soc_pcm_apply_msb(struct snd_pcm_substream *substream)
+> >  			}
+> >  			bits = max(codec_dai->driver->playback.sig_bits, bits);
+> >  		}
+> > -		cpu_bits = cpu_dai->driver->playback.sig_bits;
+> > +
+> > +		for (i = 0; i < rtd->num_cpu_dai; i++) {
+> > +			cpu_dai = rtd->cpu_dais[i];
+> > +			if (cpu_dai->driver->playback.sig_bits == 0) {
+> > +				cpu_bits = 0;
+> > +				break;
+> > +			}
+> > +
+> > +			cpu_bits = max(cpu_dai->driver->playback.sig_bits, bits);
+> 
+> Do you want cpu_bits at the end here? You are not going to get
+> the max of the cpu_bits here, you will end up with the max of the
+> CODEC bits and the last CPU bits?
+> 
 
-I think that Xen side comments are already there and still I miss
+You are right, will fix this :)
 
-some input from ALSA community on patch #5.
+> > @@ -427,30 +464,47 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+> >  		rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
+> >  	}
+> >  
+> > -	/*
+> > -	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
+> > -	 * connected to a single CPU DAI, use CPU DAI's directly and let
+> > -	 * channel allocation be fixed up later
+> > -	 */
+> > -	if (rtd->num_codecs > 1) {
+> > -		chan_min = cpu_stream->channels_min;
+> > -		chan_max = cpu_stream->channels_max;
+> > -	}
+> > +	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> > +		cpu_dai_drv = rtd->cpu_dais[i]->driver;
+> >  
+> > -	hw->channels_min = max(chan_min, cpu_stream->channels_min);
+> > -	hw->channels_max = min(chan_max, cpu_stream->channels_max);
+> > -	if (hw->formats)
+> > -		hw->formats &= formats & cpu_stream->formats;
+> > -	else
+> > -		hw->formats = formats & cpu_stream->formats;
+> > -	hw->rates = snd_pcm_rate_mask_intersect(rates, cpu_stream->rates);
+> > +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> > +			cpu_stream = &cpu_dai_drv->playback;
+> > +		else
+> > +			cpu_stream = &cpu_dai_drv->capture;
+> >  
+> > -	snd_pcm_limit_hw_rates(runtime);
+> > +		/*
+> > +		 * chan min/max cannot be enforced if there are multiple
+> > +		 * CODEC DAIs connected to a single CPU DAI, use CPU DAI's
+> > +		 * directly and let channel allocation be fixed up later
+> > +		 */
+> > +		if (rtd->num_codecs > 1 && rtd->num_cpu_dai == 1) {
+> > +			chan_min = cpu_stream->channels_min;
+> > +			chan_max = cpu_stream->channels_max;
+> > +		}
+> 
+> This still doesn't quite look like, I am not seeing how the
+> multiple CPU DAI and single CPU DAI cases differ with respect to
+> whether we should ignore the CODEC channel settings?
+> 
 
-Thank you,
+Ok
 
-Oleksandr
+> > +
+> > +		hw->channels_min = max(hw->channels_min, chan_min);
+> > +		hw->channels_min = max(hw->channels_min,
+> > +					cpu_stream->channels_min);
+> > +		hw->channels_max = min(hw->channels_max,
+> > +					cpu_stream->channels_max);
+> > +		hw->channels_max = min(hw->channels_max,
+> > +					cpu_stream->channels_max);
+> > +
+> > +		if (hw->formats)
+> > +			hw->formats &= formats & cpu_stream->formats;
+> 
+> Minor nit.
+> 
+> This feels a little funny now, since we are anding each CPU
+> formats with the CODEC formats, and then anding them into the
+> result.
+> 
+> Feels like we should just and in the CODEC format once.
 
+Yes, makes sense. Thanks :)
 
-On 04/16/2018 09:24 AM, Oleksandr Andrushchenko wrote:
-> From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
->
-> Please note: this patch series depends on [3].
->
-> This patch series adds support for Xen [1] para-virtualized
-> sound frontend driver. It implements the protocol from
-> include/xen/interface/io/sndif.h with the following limitations:
-> - mute/unmute is not supported
-> - get/set volume is not supported
-> Volume control is not supported for the reason that most of the
-> use-cases (at the moment) are based on scenarious where
-> unprivileged OS (e.g. Android, AGL etc) use software mixers.
->
-> Both capture and playback are supported.
->
-> Corresponding backend, implemented as a user-space application, can be
-> found at [2].
->
-> Thank you,
-> Oleksandr
->
-> Changes since v1:
-> *****************
->
-> 1. Moved driver from sound/drivers to sound/xen
->
-> 2. Coding style changes to better meet Linux Kernel
->
-> 3. Added explicit back and front synchronization
->     In order to provide explicit synchronization between backend and
->     frontend the following changes are introduced in the protocol:
->      - add new ring buffer for sending asynchronous events from
->        backend to frontend to report number of bytes played by the
->        frontend (XENSND_EVT_CUR_POS)
->      - introduce trigger events for playback control: start/stop/pause/resume
->      - add "req-" prefix to event-channel and ring-ref to unify naming
->        of the Xen event channels for requests and events
->
-> 4. Added explicit back and front parameter negotiation
->     In order to provide explicit stream parameter negotiation between
->     backend and frontend the following changes are introduced in the protocol:
->     add XENSND_OP_HW_PARAM_QUERY request to read/update
->     configuration space for the parameters given: request passes
->     desired parameter's intervals/masks and the response to this request
->     returns allowed min/max intervals/masks to be used.
->
-> [1] https://xenproject.org/
-> [2] https://github.com/xen-troops/snd_be
-> [3] https://lkml.org/lkml/2018/4/12/522
->
-> Oleksandr Andrushchenko (5):
->    ALSA: xen-front: Introduce Xen para-virtualized sound frontend driver
->    ALSA: xen-front: Read sound driver configuration from Xen store
->    ALSA: xen-front: Implement Xen event channel handling
->    ALSA: xen-front: Implement handling of shared buffers
->    ALSA: xen-front: Implement ALSA virtual sound driver
->
->   sound/Kconfig                     |   2 +
->   sound/Makefile                    |   2 +-
->   sound/xen/Kconfig                 |  10 +
->   sound/xen/Makefile                |   9 +
->   sound/xen/xen_snd_front.c         | 410 +++++++++++++++++++
->   sound/xen/xen_snd_front.h         |  57 +++
->   sound/xen/xen_snd_front_alsa.c    | 830 ++++++++++++++++++++++++++++++++++++++
->   sound/xen/xen_snd_front_alsa.h    |  23 ++
->   sound/xen/xen_snd_front_cfg.c     | 517 ++++++++++++++++++++++++
->   sound/xen/xen_snd_front_cfg.h     |  46 +++
->   sound/xen/xen_snd_front_evtchnl.c | 478 ++++++++++++++++++++++
->   sound/xen/xen_snd_front_evtchnl.h |  92 +++++
->   sound/xen/xen_snd_front_shbuf.c   | 193 +++++++++
->   sound/xen/xen_snd_front_shbuf.h   |  36 ++
->   14 files changed, 2704 insertions(+), 1 deletion(-)
->   create mode 100644 sound/xen/Kconfig
->   create mode 100644 sound/xen/Makefile
->   create mode 100644 sound/xen/xen_snd_front.c
->   create mode 100644 sound/xen/xen_snd_front.h
->   create mode 100644 sound/xen/xen_snd_front_alsa.c
->   create mode 100644 sound/xen/xen_snd_front_alsa.h
->   create mode 100644 sound/xen/xen_snd_front_cfg.c
->   create mode 100644 sound/xen/xen_snd_front_cfg.h
->   create mode 100644 sound/xen/xen_snd_front_evtchnl.c
->   create mode 100644 sound/xen/xen_snd_front_evtchnl.h
->   create mode 100644 sound/xen/xen_snd_front_shbuf.c
->   create mode 100644 sound/xen/xen_snd_front_shbuf.h
->
+> 
+> > +		else
+> > +			hw->formats = formats & cpu_stream->formats;
+> 
+> > +
+> > +		hw->rates = snd_pcm_rate_mask_intersect(rates,
+> > +						cpu_stream->rates);
+> 
+> I think this is broken since the rates will end up and the
+> intersection of the last CPU DAI rates and the CODEC rates, not
+> an intersection of all the CPU rates.
+> 
+
+Ok, will fix this :)
+I have had a tough time in handling this function :(
+
+> > @@ -602,7 +668,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+> >  	}
+> >  
+> >  	pr_debug("ASoC: %s <-> %s info:\n",
+> > -			codec_dai_name, cpu_dai->name);
+> > +			codec_dai_name, cpu_dai_name);
+> >  	pr_debug("ASoC: rate mask 0x%x\n", runtime->hw.rates);
+> >  	pr_debug("ASoC: min ch %d max ch %d\n", runtime->hw.channels_min,
+> >  		 runtime->hw.channels_max);
+> > @@ -649,9 +715,13 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+> >  		platform->driver->ops->close(substream);
+> >  
+> >  platform_err:
+> > -	if (cpu_dai->driver->ops->shutdown)
+> > -		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
+> > -out:
+> > +	j = rtd->num_cpu_dai;
+> > +	while (--j >= 0) {
+> > +		cpu_dai = rtd->cpu_dais[j];
+> > +		if (cpu_dai->driver->ops->shutdown)
+> > +			cpu_dai->driver->ops->shutdown(substream, cpu_dai);
+> > +	}
+> > +
+> 
+> This will call shutdown for DAIs that never had startup called on
+> them, probably better to avoid that.
+> 
+
+Ok, will fix this.
+
+> > @@ -1070,12 +1168,18 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+> >  		platform->driver->ops->hw_free(substream);
+> >  
+> >  platform_err:
+> > -	if (cpu_dai->driver->ops->hw_free)
+> > -		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
+> > +	j = rtd->num_cpu_dai;
+> >  
+> >  interface_err:
+> >  	i = rtd->num_codecs;
+> >  
+> > +	while (--j >= 0) {
+> > +		cpu_dai = rtd->cpu_dais[j];
+> > +
+> > +		if (cpu_dai->driver->ops && cpu_dai->driver->ops->hw_free)
+> > +			cpu_dai->driver->ops->hw_free(substream, cpu_dai);
+> > +	}
+> > +
+> 
+> Minor nit might be nicer to add this before the i = since that
+> kinda relates to the code underneath.
+> 
+
+Sure, that aids readability. I will check if we can do that at other places
+as well :)
+
+Thanks for the review!
+
+--Shreyas
+-- 
