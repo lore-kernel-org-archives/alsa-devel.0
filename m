@@ -1,71 +1,44 @@
-From: Xristos Boul <sirmihawk@gmail.com>
-Subject: [BUG - REPORT] ALC892 not working
-Date: Thu, 3 May 2018 12:42:40 +0300
-Message-ID: <CAKuPMuRk3HYQhxkONN5duQotHUQen2VF8riSeA90NSmj_8HXcQ@mail.gmail.com>
+From: Joerg Roedel <joro-zLv9SwRftAIdnm+yROfE0A@public.gmane.org>
+Subject: Re: [PATCH v3 09/20] iommu: Remove depends on HAS_DMA in case of
+	platform dependency
+Date: Thu, 3 May 2018 15:02:44 +0200
+Message-ID: <20180503130244.ifal7n4tyxvekjnj@8bytes.org>
+References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+	<1523987360-18760-10-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f50.google.com (mail-oi0-f50.google.com
- [209.85.218.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CC9B266F46
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 11:42:41 +0200 (CEST)
-Received: by mail-oi0-f50.google.com with SMTP id k5-v6so8709818oiw.0
- for <alsa-devel@alsa-project.org>; Thu, 03 May 2018 02:42:41 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <1523987360-18760-10-git-send-email-geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Cc: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fpga-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-remoteproc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, Bjorn Andersson <bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>, Boris Brezillon <boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>, Richard Weinberger <richard-/L3Ra7n9ekc@public.gmane.org>, Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Marek Vasut <marek.vasut-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Matias Bjorling <mb-VR7NuqX4VJ8tq7phqP6ubQ@public.gmane.org>, linux-media-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Ohad Ben-Cohen <ohad-Ix1uc/W3ht7QT0dZR+AlfA@public.gmane.org>, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, Alan Tull <atull-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
+On Tue, Apr 17, 2018 at 07:49:09PM +0200, Geert Uytterhoeven wrote:
+> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
+> In most cases this other symbol is an architecture or platform specific
+> symbol, or PCI.
+> 
+> Generic symbols and drivers without platform dependencies keep their
+> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+> cannot work anyway.
+> 
+> This simplifies the dependencies, and allows to improve compile-testing.
+> 
+> Signed-off-by: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+> Reviewed-by: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> Acked-by: Robin Murphy <robin.murphy-5wv7dgnIgG8@public.gmane.org>
+> Acked-by: Joerg Roedel <jroedel-l3A5Bk7waGM@public.gmane.org>
 
-I'm having a problem with my line-out port not being working properly.
-Specifically it can't play audio when the 'alsamixer' auto-mute mode is
-enabled, so sound is coming only from the headphones.However, when
-auto-mute is disabled the sound is coming from both ports simultaneously.
-
-I'm using the Asus Z170-A mobo with ALC892 codec, OS: Arch
-
-I ran alsa-info.sh on both cases and i saw that the Pin-Complex 0x14 had
-'Pin-ctls: OUT' when  auto-mute was disabled whereas when auto-mute was
-enabled it was 'Pin-ctls: 0x00' (as it currenly is).
-
-So i ran HDA-analyzer tool and changed that widget setting to 'OUT' and
-obviously i produced the same behaviour like when i disabled 'auto-mute'
-(again sound coming from both ports) and also in all cases PulseAudio lists
-the 'Line-out' port as 'unplugged'.
-
-Also 2 more things:
-
-1st: In BIOS when i changed the driver for the Front panel from 'HD-Audio'
-to 'AC97' and the ports worked correctly, however no 'auto-mute' mode was
-available so i had to mute the ports manually when i plugged/unplugged the
-headphones for e.x
-
-I tried uninstalling PulseAudio to see if it was the case but the problem
-persisted so i think it really is some codec problem since i also have a
-similar problem in Windows OS.
-
-2nd: When i unplugged the Front-panel connection from the mobo the port
-played correctly. So is it maybe a mixer problem or something related?
-
-Finally i tried every 'model' parameter from HD-Audio-Models.txt for ALC892
-but got nothing.
-
-In any case i'm attaching the current alsa-info.sh. If you would like i
-could also send alsa-info.sh for all those cases above.
-
-I don't think i'm alone in this issue but i would greatly appreciate the
-help!
-
-Thanks in advance.
-
-Link to alsa-info.txt ->
-http://www.alsa-project.org/db/?f=1020241a74addd837a3625d3f1c6be374996aa71
+Applied, thanks.
