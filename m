@@ -1,21 +1,16 @@
-From: "Pan, Xiuli" <xiuli.pan@linux.intel.com>
-Subject: Re: [PATCH alsa-lib] conf/ucm: Add a UCM profile for
- Dell WD15 Dock USB-audio
-Date: Thu, 3 May 2018 15:45:28 +0800
-Message-ID: <568403fb-66b1-abd9-176a-0314552db260@linux.intel.com>
-References: <20180502145431.4192-1-tiwai@suse.de>
- <s5ha7tinl2b.wl-tiwai@suse.de>
- <7a8c0202-87e7-69af-ab4e-05398a749432@linux.intel.com>
- <s5hmuxhdytx.wl-tiwai@suse.de>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [PATCH v3] ASoC: da7219: read fmw property to get mclk
+	for non-dts systems
+Date: Thu,  3 May 2018 15:58:33 +0800
+Message-ID: <1525334313-28661-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 95E1B266F46
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 09:45:30 +0200 (CEST)
-In-Reply-To: <s5hmuxhdytx.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com
+ (mail-sn1nam01on0081.outbound.protection.outlook.com [104.47.32.81])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2F11826722C
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 10:00:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,42 +20,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com, Adam.Thomson.Opensource@diasemi.com, akshu.agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
+Non-dts based systems can use ACPI DSDT to pass on the mclk
+to da7219.
+This enables da7219 mclk to be linked to system clock.
+Enable/Disable of the mclk is already handled in the codec so
+platform drivers don't have to explicitly do handling of mclk.
 
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+v2: Fixed kbuild error
+v3: Add corresponding clk_put for clk_get
+ include/sound/da7219.h    |  2 ++
+ sound/soc/codecs/da7219.c | 10 +++++++++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
 
-On 5/3/2018 14:42, Takashi Iwai wrote:
-> On Thu, 03 May 2018 07:20:53 +0200,
-> Pan, Xiuli wrote:
->>
->>
->> On 5/2/2018 23:17, Takashi Iwai wrote:
->>> On Wed, 02 May 2018 16:54:31 +0200,
->>> Takashi Iwai wrote:
->>>> USB-audio device on Dell WD15 docking station provides two individual
->>>> PCM streams, one for headphone and another for line out.  A UCM
->>>> profile gives the proper roles for these.
->>>>
->>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>> The change in configure.ac was missing.  Below is the corrected one.
->>> Sorry for the mess.
->> The V1 patch seems to be merged in the master branch.
->> I send a patch to fix the build error based on your V2 version patch.
-> I seem to have forgotten to refresh the git repo.  Grrr.
-> Since it took too long, I applied the incremental fix commit instead
-> of rebase, exactly same as what you sent.
-Thanks for the fixing.
-The master could compile now.
-
-Thanks
-Xiuli
->
-> thanks,
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+index 1bfcb16..df7ddf4 100644
+--- a/include/sound/da7219.h
++++ b/include/sound/da7219.h
+@@ -38,6 +38,8 @@ struct da7219_pdata {
+ 
+ 	const char *dai_clks_name;
+ 
++	const char *mclk_name;
++
+ 	/* Mic */
+ 	enum da7219_micbias_voltage micbias_lvl;
+ 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 980a6a8..ecd46fc 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
+ 		dev_warn(dev, "Using default clk name: %s\n",
+ 			 pdata->dai_clks_name);
+ 
++	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
++
+ 	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
+ 		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
+ 	else
+@@ -1905,7 +1907,10 @@ static int da7219_probe(struct snd_soc_component *component)
+ 	da7219_handle_pdata(component);
+ 
+ 	/* Check if MCLK provided */
+-	da7219->mclk = devm_clk_get(component->dev, "mclk");
++	if (da7219->pdata->mclk_name)
++		da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
++	if (!da7219->mclk)
++		da7219->mclk = devm_clk_get(component->dev, "mclk");
+ 	if (IS_ERR(da7219->mclk)) {
+ 		if (PTR_ERR(da7219->mclk) != -ENOENT) {
+ 			ret = PTR_ERR(da7219->mclk);
+@@ -1971,6 +1976,9 @@ static void da7219_remove(struct snd_soc_component *component)
+ 		clkdev_drop(da7219->dai_clks_lookup);
+ #endif
+ 
++	if (da7219->pdata->mclk_name)
++		clk_put(da7219->mclk);
++
+ 	/* Supplies */
+ 	regulator_bulk_disable(DA7219_NUM_SUPPLIES, da7219->supplies);
+ }
+-- 
+1.9.1
