@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_ssi: Switch to SPDX identifier" to
-	the asoc tree
-Date: Thu,  3 May 2018 02:32:25 +0100 (BST)
-Message-ID: <20180503013225.9386A44007A@finisterre.ee.mobilebroadband>
-References: <1525177243-31009-1-git-send-email-festevam@gmail.com>
+Subject: Applied "ASoC: Intel: bytcr_rt565: fix missing
+	assignment to ret_val" to the asoc tree
+Date: Thu,  3 May 2018 02:32:46 +0100 (BST)
+Message-ID: <20180503013246.84A6744007A@finisterre.ee.mobilebroadband>
+References: <20180502142945.31637-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B8D222675FC
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 03:32:29 +0200 (CEST)
-In-Reply-To: <1525177243-31009-1-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A999A266C1C
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 03:32:56 +0200 (CEST)
+In-Reply-To: <20180502142945.31637-1-colin.king@canonical.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_ssi: Switch to SPDX identifier
+   ASoC: Intel: bytcr_rt565: fix missing assignment to ret_val
 
 has been applied to the asoc tree at
 
@@ -53,131 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 0eb6048f7a978f446367550974f3d1cb4b47262c Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Tue, 1 May 2018 09:20:40 -0300
-Subject: [PATCH] ASoC: fsl_ssi: Switch to SPDX identifier
+>From de5afce2a22ef7f92e9e8583a3bdbc10e448cddf Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Wed, 2 May 2018 15:29:45 +0100
+Subject: [PATCH] ASoC: Intel: bytcr_rt565: fix missing assignment to ret_val
 
-Adopt the SPDX license identifier headers to ease license compliance
-management.
+Currently, the check that ret_val is not -ENOENT is always true and
+the quirk bit BYT_RY5651_MCLK_EN is never being cleared because ret_val
+is always zero at this point from a previous assignment earlier on.
+I believe that ret_val should actually be assigned to the return from
+devm_clk_get() as this can return -ENOENT (from a deeper call to
+clk_get_sys) and that was the original intention to check this.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Detected by CoverityScan, CID#1460228 ("Logically dead code")
+
+Fixes: 02c0a3b3047f ("ASoC: Intel: bytcr_rt5651: add MCLK, quirks and cleanups")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_ssi.c     | 57 +++++++++++++++++--------------------
- sound/soc/fsl/fsl_ssi.h     |  6 ++--
- sound/soc/fsl/fsl_ssi_dbg.c | 18 +++++-------
- 3 files changed, 35 insertions(+), 46 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_ssi.c b/sound/soc/fsl/fsl_ssi.c
-index 1544166631e3..0a648229e643 100644
---- a/sound/soc/fsl/fsl_ssi.c
-+++ b/sound/soc/fsl/fsl_ssi.c
-@@ -1,34 +1,29 @@
--/*
-- * Freescale SSI ALSA SoC Digital Audio Interface (DAI) driver
-- *
-- * Author: Timur Tabi <timur@freescale.com>
-- *
-- * Copyright 2007-2010 Freescale Semiconductor, Inc.
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2.  This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
-- *
-- *
-- * Some notes why imx-pcm-fiq is used instead of DMA on some boards:
-- *
-- * The i.MX SSI core has some nasty limitations in AC97 mode. While most
-- * sane processor vendors have a FIFO per AC97 slot, the i.MX has only
-- * one FIFO which combines all valid receive slots. We cannot even select
-- * which slots we want to receive. The WM9712 with which this driver
-- * was developed with always sends GPIO status data in slot 12 which
-- * we receive in our (PCM-) data stream. The only chance we have is to
-- * manually skip this data in the FIQ handler. With sampling rates different
-- * from 48000Hz not every frame has valid receive data, so the ratio
-- * between pcm data and GPIO status data changes. Our FIQ handler is not
-- * able to handle this, hence this driver only works with 48000Hz sampling
-- * rate.
-- * Reading and writing AC97 registers is another challenge. The core
-- * provides us status bits when the read register is updated with *another*
-- * value. When we read the same register two times (and the register still
-- * contains the same value) these status bits are not set. We work
-- * around this by not polling these bits but only wait a fixed delay.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Freescale SSI ALSA SoC Digital Audio Interface (DAI) driver
-+//
-+// Author: Timur Tabi <timur@freescale.com>
-+//
-+// Copyright 2007-2010 Freescale Semiconductor, Inc.
-+//
-+// Some notes why imx-pcm-fiq is used instead of DMA on some boards:
-+//
-+// The i.MX SSI core has some nasty limitations in AC97 mode. While most
-+// sane processor vendors have a FIFO per AC97 slot, the i.MX has only
-+// one FIFO which combines all valid receive slots. We cannot even select
-+// which slots we want to receive. The WM9712 with which this driver
-+// was developed with always sends GPIO status data in slot 12 which
-+// we receive in our (PCM-) data stream. The only chance we have is to
-+// manually skip this data in the FIQ handler. With sampling rates different
-+// from 48000Hz not every frame has valid receive data, so the ratio
-+// between pcm data and GPIO status data changes. Our FIQ handler is not
-+// able to handle this, hence this driver only works with 48000Hz sampling
-+// rate.
-+// Reading and writing AC97 registers is another challenge. The core
-+// provides us status bits when the read register is updated with *another*
-+// value. When we read the same register two times (and the register still
-+// contains the same value) these status bits are not set. We work
-+// around this by not polling these bits but only wait a fixed delay.
- 
- #include <linux/init.h>
- #include <linux/io.h>
-diff --git a/sound/soc/fsl/fsl_ssi.h b/sound/soc/fsl/fsl_ssi.h
-index 18f8dd5209d5..0bdda608d414 100644
---- a/sound/soc/fsl/fsl_ssi.h
-+++ b/sound/soc/fsl/fsl_ssi.h
-@@ -1,12 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * fsl_ssi.h - ALSA SSI interface for the Freescale MPC8610 and i.MX SoC
-  *
-  * Author: Timur Tabi <timur@freescale.com>
-  *
-- * Copyright 2007-2008 Freescale Semiconductor, Inc.  This file is licensed
-- * under the terms of the GNU General Public License version 2.  This
-- * program is licensed "as is" without any warranty of any kind, whether
-- * express or implied.
-+ * Copyright 2007-2008 Freescale Semiconductor, Inc.
-  */
- 
- #ifndef _MPC8610_I2S_H
-diff --git a/sound/soc/fsl/fsl_ssi_dbg.c b/sound/soc/fsl/fsl_ssi_dbg.c
-index 7aac63e2c561..1bacfa24ba7f 100644
---- a/sound/soc/fsl/fsl_ssi_dbg.c
-+++ b/sound/soc/fsl/fsl_ssi_dbg.c
-@@ -1,14 +1,10 @@
--/*
-- * Freescale SSI ALSA SoC Digital Audio Interface (DAI) debugging functions
-- *
-- * Copyright 2014 Markus Pargmann <mpa@pengutronix.de>, Pengutronix
-- *
-- * Splitted from fsl_ssi.c
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2.  This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Freescale SSI ALSA SoC Digital Audio Interface (DAI) debugging functions
-+//
-+// Copyright 2014 Markus Pargmann <mpa@pengutronix.de>, Pengutronix
-+//
-+// Split from fsl_ssi.c
- 
- #include <linux/debugfs.h>
- #include <linux/device.h>
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 1b1997f1d60c..bf59c7caf1d9 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -856,9 +856,10 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
+ 		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
+ 		if (IS_ERR(priv->mclk)) {
++			ret_val = PTR_ERR(priv->mclk);
+ 			dev_err(&pdev->dev,
+-				"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
+-				PTR_ERR(priv->mclk));
++				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
++				ret_val);
+ 			/*
+ 			 * Fall back to bit clock usage for -ENOENT (clock not
+ 			 * available likely due to missing dependencies), bail
 -- 
 2.17.0
