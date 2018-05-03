@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt565: fix missing
-	assignment to ret_val" to the asoc tree
-Date: Thu,  3 May 2018 02:32:46 +0100 (BST)
-Message-ID: <20180503013246.84A6744007A@finisterre.ee.mobilebroadband>
-References: <20180502142945.31637-1-colin.king@canonical.com>
+Subject: Re: [PATCH v2] ASoC: da7219: read fmw property to get
+ mclk for non-dts systems
+Date: Thu, 3 May 2018 10:39:19 +0900
+Message-ID: <20180503013919.GN2714@sirena.org.uk>
+References: <1525080203-18947-1-git-send-email-akshu.agrawal@amd.com>
+ <2E89032DDAA8B9408CB92943514A0337014C1E93BC@SW-EX-MBX01.diasemi.com>
+ <20180501205006.GE2714@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337014C1E9782@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7270691707633314716=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A999A266C1C
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 03:32:56 +0200 (CEST)
-In-Reply-To: <20180502142945.31637-1-colin.king@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C4C33266C1C
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 03:39:26 +0200 (CEST)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337014C1E9782@SW-EX-MBX01.diasemi.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +24,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: Intel: bytcr_rt565: fix missing assignment to ret_val
+--===============7270691707633314716==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="MSd2ShuMixI0uVaZ"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--MSd2ShuMixI0uVaZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, May 02, 2018 at 10:13:55AM +0000, Adam Thomson wrote:
+> On 01 May 2018 21:50, Mark Brown wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > There's a lot of things that ACPI *should* do but doesn't - it's a bit
+> > of a shambles how ACPI standards get defined and what's there is not
+> > really intended to handle systems like these semi-embedded ones.  One of
+> > the big gaps in ACPI is that it has no handling at all of clocks, that's
+> > supposed to be done transparently by firmware in the ACPI model.  What a
+> > lot of the embedded Intel people have been doing is coopting the DT
+> > bindings wholesale for ACPI systems but that has problems when you get
+> > into areas which should be handled in some way on ACPI systems like
+> > power and unfortunately clocks are kind of power adjacent so might be a
+> > bit sketchy here.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> Yes I was aware that previously that was the case, although have not followed
+> this for a while. It just feels here that we should aim for something more
+> generic rather than a device specific property/binding, if possible, as that
+> feels messy to me and I'm sure other drivers could take advantage of this as
+> well. I've not looked at the clock code in too much detail though, at least with
+> regards to this area, so not sure how feasible that is.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> As a suggestion for ACPI would it be possible to re-use the 'clock-names'
+> property and add something in the framework to handle this?
 
-Thanks,
-Mark
+I completely agree that ACPI should have handling for clocks but it
+really feels like something that should be done as a proper spec rather
+than just ad hoc by Linux like the x86 embedded people often do - it's
+too close to the power management stuff that ACPI definitely does
+handle.
 
->From de5afce2a22ef7f92e9e8583a3bdbc10e448cddf Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 2 May 2018 15:29:45 +0100
-Subject: [PATCH] ASoC: Intel: bytcr_rt565: fix missing assignment to ret_val
+--MSd2ShuMixI0uVaZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Currently, the check that ret_val is not -ENOENT is always true and
-the quirk bit BYT_RY5651_MCLK_EN is never being cleared because ret_val
-is always zero at this point from a previous assignment earlier on.
-I believe that ret_val should actually be assigned to the return from
-devm_clk_get() as this can return -ENOENT (from a deeper call to
-clk_get_sys) and that was the original intention to check this.
+-----BEGIN PGP SIGNATURE-----
 
-Detected by CoverityScan, CID#1460228 ("Logically dead code")
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrqaEYACgkQJNaLcl1U
+h9DjEwf/akcOq3FX7OJHawOodNuod6nfkVvTE5kWue1W5AVdzCXlsTknOiOkIn1z
+pEPHEJ1G56wzcFt4ezga+5DkIYnB1RNzxCdC0noLuFEQNSegwJ7oskOQUaAwRTgd
+2FlNUEi2pmEpP7A4bU6EonrIkhrC1zN5MHgmh4VjfBXpbVKEPvbxeTMDr1X8b2I2
+sXXGMNDAn76mlG0xiEskLThHEpqyAFbxjBQIIBGmbgpjRIJJWg87WXT/0aLTBAEn
+WzUK8iaNFiPeIqYNFH3drHquTqSHwZyXdhZwifT6m2hpK+UfHXTcEQNtf+6jbkEF
+D1KA6ISg0/rcMVBzr40DQpx1qvCunA==
+=nEHY
+-----END PGP SIGNATURE-----
 
-Fixes: 02c0a3b3047f ("ASoC: Intel: bytcr_rt5651: add MCLK, quirks and cleanups")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/bytcr_rt5651.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+--MSd2ShuMixI0uVaZ--
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 1b1997f1d60c..bf59c7caf1d9 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -856,9 +856,10 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	if (byt_rt5651_quirk & BYT_RT5651_MCLK_EN) {
- 		priv->mclk = devm_clk_get(&pdev->dev, "pmc_plt_clk_3");
- 		if (IS_ERR(priv->mclk)) {
-+			ret_val = PTR_ERR(priv->mclk);
- 			dev_err(&pdev->dev,
--				"Failed to get MCLK from pmc_plt_clk_3: %ld\n",
--				PTR_ERR(priv->mclk));
-+				"Failed to get MCLK from pmc_plt_clk_3: %d\n",
-+				ret_val);
- 			/*
- 			 * Fall back to bit clock usage for -ENOENT (clock not
- 			 * available likely due to missing dependencies), bail
--- 
-2.17.0
+--===============7270691707633314716==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7270691707633314716==--
