@@ -1,88 +1,143 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: Rationale for BYTCR defaults in the kernel's
- bytcr_rt5640 machine driver ?
-Date: Thu, 3 May 2018 11:26:13 -0500
-Message-ID: <d0ffe4b0-9436-0731-35dc-57fcc8205c93@linux.intel.com>
-References: <0b04e03f-7147-fb27-22c3-e81a8cbf3a8f@redhat.com>
- <de590ce5-82ca-4b51-6189-e198d541ce55@linux.intel.com>
- <64f761ed-dcc9-2e47-c5f9-a108803a873a@redhat.com>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: Re: [PATCH V3 10/10] ASoC: amd: dma driver changes for bt i2s instance
+Date: Thu, 03 May 2018 16:40:47 +0000
+Message-ID: <CAGS+omDKpPwyUMYwm-ai5cr+m=JLh+yjYq_oDfyRBppqc8DPDg@mail.gmail.com>
+References: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <1525207810-1305-10-git-send-email-Vijendar.Mukunda@amd.com>
+ <CAGS+omC=fZsFvSaxqFWEo0Pkj1Rcqhixy_oN7PWry9F0L_9c-Q@mail.gmail.com> <06a8f6f4-3bc0-656e-9c55-84f88727d6fb@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F528267235
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 18:26:16 +0200 (CEST)
-In-Reply-To: <64f761ed-dcc9-2e47-c5f9-a108803a873a@redhat.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <06a8f6f4-3bc0-656e-9c55-84f88727d6fb@amd.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: vijendar.mukunda@amd.com
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, Akshu Agrawal <Akshu.Agrawal@amd.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alexander.deucher@amd.com, weiyongjun1@huawei.com, jclinton@chromium.org, Guenter Roeck <linux@roeck-us.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gNS8zLzE4IDM6MTMgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4gSGksCj4gCj4gT24gMDEt
-MDUtMTggMjI6MjksIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Pgo+Pgo+PiBPbiAwNS8w
-MS8yMDE4IDAyOjIxIFBNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+Pj4gSGkgUGllcnJlLUxvdWlz
-LAo+Pj4KPj4+IEknbSBmaW5hbGx5IHdyYXBwaW5nIHVwIG15IHJ0NTY0MCBqYWNrLWRldGVjdCB3
-b3JrLCBhcwo+Pj4gc3VjaCBJJ20gY3VycmVudGx5IHRlc3Rpbmcgc3BlYWtlciArIGhlYWRwaG9u
-ZXMgKyBpbnRlcm5hbCBtaWMgKwo+Pj4gaGVhZHNldC1taWMgKyBqYWNrLWRldGVjdCBmdW5jdGlv
-bmFsaXR5IG9uIHRoZSAxMCBkaWZmZXJlbnQKPj4+IHg4NiBkZXZpY2VzIHdpdGggYSBydDU2NDAg
-Y29kZWMgd2hpY2ggSSd2ZSBnYXRoZXJlZC4KPj4+Cj4+PiAyIG9mIHRoZW0gc3RhbmQgb3V0IGlu
-IHRoYXQgdGhleSB1c2UgdGhlIEJZVENSIFNvQywgYnV0IGRvbid0Cj4+PiBoYXZlIHRoZSBBQ1BJ
-IHRhYmxlIGZvciBkZXRlY3RpbmcgaWYgU1NQMCBBSUYxIG9yIEFJRjIKPj4+IHNob3VsZCBiZSB1
-c2VkLiBDdXJyZW50bHkgdGhlIGRyaXZlciBkZWZhdWx0cyB0byBBSUYyCj4+PiBpbiB0aGlzIGNh
-c2UuCj4+Pgo+Pj4gQXMgdGhlIHNvbWV3aGF0IHdpbGRjYXJkLWlzaCBETUkgcXVpcmsgZm9yIGJv
-YXJkcyB3aGVyZQo+Pj4gdGhlIHN5c192ZW5kb3IgaXMgIkluc3lkZSIgKHdoaWNoIGFwcGxpZXMg
-dG8gYSBsb3Qgb2YKPj4+IGdlbmVyaWMgZGVzaWducykgc2hvd3M6Cj4+Pgo+Pj4gwqDCoMKgwqDC
-oMKgwqAgewo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5jYWxsYmFjayA9IGJ5
-dF9ydDU2NDBfcXVpcmtfY2IsCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLm1h
-dGNoZXMgPSB7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIERNSV9NQVRDSChETUlfU1lTX1ZFTkRPUiwgIkluc3lkZSIpLAo+Pj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIH0sCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-LmRyaXZlcl9kYXRhID0gKHZvaWQgKikoQllUX1JUNTY0MF9JTjNfTUFQIHwKPj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX01DTEtfRU4gfAo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIEJZVF9SVDU2NDBfU1NQMF9BSUYxKSwKPj4+Cj4+PiDCoMKgwqDCoMKgwqDCoCB9LAo+Pj4K
-Pj4+IEFJRjEgc2VlbXMgdG8gYmUgYSBiZXR0ZXIgZGVmYXVsdCBib3RoIG1vZGVscyB3aXRob3V0
-Cj4+PiB0aGUgQUNQSSB0YWJsZSB3aGljaCBJJ3ZlIGhlcmUsIGEgSFAgcGF2aWxpb24gWDIgYW5k
-IGEKPj4+IFRvc2hpYmEgQ2xpY2sgTWluaSBMOVctQiBuZWVkIGEgcXVpcmsgdG8gdXNlIEFJRjEu
-Cj4+Pgo+Pj4gU28gSSB3YXMgd29uZGVyaW5nIGlmIHRoZXJlIHdhcyBhIHNwZWNpZmljIHJhdGlv
-bmFsZSBmb3IgdGhlCj4+PiBBSUYyIGRlZmF1bHQgYW5kIGlmIGl0IHdvdWxkIG5vdCBiZSBiZXR0
-ZXIgdG8gY2hhbmdlIHRoZSBkZWZhdWx0Cj4+PiB0byBBSUYxICh3aGljaCB3aWxsIHVuZm9ydHVu
-YXRlbHkgYnJpbmcgYSBjaGFuY2Ugb2YgcmVncmVzc2lvbnMpID8KPj4KPj4geWVzIHRoZXJlIHdh
-cyBhIHJhdGlvbmFsZTogYWxsIHRoZSBpbml0aWFsIEJheXRyYWlsIGRlc2lnbnMgaGFkIAo+PiBj
-b25uZWN0aW9ucyBiZXR3ZWVuIFNTUDItQUlGMSBhbmQgU1NQMC1BSUYyLiBJSVJDIHRoaXMgd2Fz
-IGJlY2F1c2UgCj4+IHRoZXJlIHdhcyBhIGRlc2lyZSB0byBzdXBwb3J0IDQ0LjFrSHogb24gb25l
-IFNTUCBhbmQgNDhrSHogb24gdGhlIG90aGVyLgo+PiBTbyB3aGVuIEJZVC1DUiB3YXMgZGVmaW5l
-ZCB3aXRoIFNTUDIgcmVtb3ZlZCwgbW9zdCBkZXNpZ25zIGtlcHQgdGhlIAo+PiBleGlzdGluZyBT
-U1AwLUFJRjIgbGluaywgZXhjZXB0IG9mIGNvdXJzZSB3aGVuIHRoZXkgZGlkbid0Li4uCj4+Cj4+
-IEkgZG9uJ3QgaGF2ZSBhIG1hZ2ljIHNvbHV0aW9uIGhlcmUsIHdoZW4gdGhlIEJJT1MgZG9lc24n
-dCBwcm92aWRlIAo+PiBpbmZvcm1hdGlvbiBpdCdzIGRpZmZpY3VsdCB0byBtYWtlIGFuIGVkdWNh
-dGVkIGd1ZXNzLiBJZiB5b3UgaGF2ZSAKPj4gc3RhdGlzdGljYWwgZXZpZGVuY2UgdGhhdCBtb3Jl
-IGRldmljZXMgd2l0aG91dCB0aGUgQklPUyBpbmZvcm1hdGlvbiAKPj4gYXJlIGJhc2VkIG9uIEFJ
-RjIgSSBkb24ndCBtaW5kIGNoYW5naW5nIGl0LCBhbHRlcm5hdGl2ZWx5IHdlIGNvdWxkIAo+PiBr
-ZWVwIHRoZSBkZWZhdWx0IGFuZCB3aGVuIHRoaW5ncyBkb24ndCB3b3JrIHVzZXJzIGNhbiBzdGls
-bCB1c2UgYSAKPj4gbW9kdWxlIHBhcmFtZXRlciB0byBvdmVycmlkZSB0aGUgZGVmYXVsdCBhbmQg
-Z2V0IEFJRjEgdG8gd29yawo+IAo+IFRoYW5rcyBmb3IgdGhlIGluZm8uIEdpdmVuIHRoYXQgdGhl
-cmUgd2FzIGEgZ29vZCByZWFzb24gZm9yIHRoZSBkZWZhdWx0LCB3ZQo+IHNob3VsZCBwcm9iYWJs
-eSBqdXN0IGtlZXAgaXQgYXMgaXMuCj4gCj4gSXQgbG9va3MgbGlrZSBJJ20gZ29pbmcgdG8gbmVl
-ZCBhIGxvdCBvZiBxdWlya3MgYW55d2F5cyBmb3IgdGhlIGphY2stZGV0ZWN0Cj4gc3R1ZmYgYXMg
-d2VsbCBhcyBmb3Igc2VsZWN0aW5nIHRoZSByaWdodCBpbnB1dCBmb3IgdGhlIGludGVybmFsIG1p
-Yy4KPiAKPiBJdCBzZWVtcyB0aGF0IHRoZXJlIGFyZSBubyBjb3JyZWN0IGRlZmF1bHRzIGhlcmUs
-IEkndmUgYW4gYXByb3ggNTAvNTAlCj4gc3BsaXQgZm9yIEpEMUlONFAgdnMgSkQySU40TiBhbmQg
-YWxzIGEgNDUvNDUvMTAlIHNwbGl0IGZvciB1c2luZwo+IElOMS9JTjMvRE1JQzEgZm9yIHRoZSBp
-bnRlcm5hbCBtaWMuIFNvIGl0IGxvb2tzIGxpa2UgaXQgaXMgc2ltcGx5IGdvaW5nCj4gdG8gYmUg
-MSBETUkgcXVpcmsgcGVyIG1vZGVsIDp8CgpJIGFtIGFmcmFpZCB5b3UgYXJlIHJpZ2h0LiBoYXJk
-d2FyZSBmb2xrcyBtYWtlIHVzZSBvZiBldmVyeSBwb3NzaWJsZSAKY29tYmluYXRpb24gb2YgKEFJ
-RiwgbWljIGludGVyZmFjZSwgSkQgbWV0aG9kLCBidXR0b24gcHJlc3MgbWV0aG9kKQoKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
-aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
-cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Thu, May 3, 2018 at 1:33 AM Mukunda,Vijendar <vijendar.mukunda@amd.com>
+wrote:
+
+
+
+> On Thursday 03 May 2018 11:13 AM, Daniel Kurtz wrote:
+> > Some checkpatch nits below...
+> >
+> > On Tue, May 1, 2018 at 2:53 PM Vijendar Mukunda <
+Vijendar.Mukunda@amd.com>
+> > wrote:
+> >
+> >> With in ACP, There are three I2S controllers can be
+> >> configured/enabled ( I2S SP, I2S MICSP, I2S BT).
+> >> Default enabled I2S controller instance is I2S SP.
+> >> This patch provides required changes to support I2S BT
+> >> controller Instance.
+> >
+> >> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> >> ---
+> >> v1->v2: defined i2s instance macros in acp header file
+> >> v2->v3: sqaushed previous patch series and spilt changes
+> >>            into multiple patches (acp dma driver code cleanup
+> >>            patches and bt i2s instance specific changes)
+> >>     sound/soc/amd/acp-da7219-max98357a.c |  23 ++++
+> >>     sound/soc/amd/acp-pcm-dma.c          | 256
+> > +++++++++++++++++++++++++++--------
+> >>     sound/soc/amd/acp.h                  |  40 ++++++
+> >>     3 files changed, 262 insertions(+), 57 deletions(-)
+> >
+> >> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
+> > b/sound/soc/amd/acp-da7219-max98357a.c
+> >> index 133139d..b3184ab 100644
+> >> --- a/sound/soc/amd/acp-da7219-max98357a.c
+> >> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+> >> @@ -36,6 +36,7 @@
+> >>     #include <linux/input.h>
+> >>     #include <linux/acpi.h>
+> >
+> >> +#include "acp.h"
+> >>     #include "../codecs/da7219.h"
+> >>     #include "../codecs/da7219-aad.h"
+> >
+> >> @@ -44,6 +45,7 @@
+> >
+> >>     static struct snd_soc_jack cz_jack;
+> >>     static struct clk *da7219_dai_clk;
+> >> +extern int bt_pad_enable;
+> >
+> > WARNING: externs should be avoided in .c files
+
+> We don't have .h file for machine driver and It can be ignored for
+> one variable.
+> >
+> >
+> >>     static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+> >>     {
+> >> @@ -132,6 +134,9 @@ static const struct snd_pcm_hw_constraint_list
+> > constraints_channels = {
+> >>     static int cz_da7219_startup(struct snd_pcm_substream *substream)
+> >>     {
+> >>            struct snd_pcm_runtime *runtime = substream->runtime;
+> >> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> >> +       struct snd_soc_card *card = rtd->card;
+> >> +       struct acp_platform_info *machine =
+> > snd_soc_card_get_drvdata(card);
+> >
+> >>            /*
+> >>             * On this platform for PCM device we support stereo
+> >> @@ -143,6 +148,7 @@ static int cz_da7219_startup(struct
+snd_pcm_substream
+> > *substream)
+> >>            snd_pcm_hw_constraint_list(runtime, 0,
+SNDRV_PCM_HW_PARAM_RATE,
+> >>                                       &constraints_rates);
+> >
+> >> +       machine->i2s_instance = I2S_BT_INSTANCE;
+> >
+> > I'm not a big fan of this approach, but I don't know any other way to
+tell
+> > a single "platform" driver (acp-pcm-dma) which of two channels (ST/BT)
+to
+> > use via the pcm_open() callback.
+> >
+> > Mark, can you recommend any other way of doing this?
+
+> Hi Dan,
+
+> There have been couple of approaches worked upon this earlier.
+> 1) To compare cpu dai name to get the I2S instance value in
+> acp_dma_open() call.
+
+> But, Mark suggested not to implement this approach as we are comparing
+> dynamically generated cpu dai names.
+
+> 2) We added i2s_instance parameter as platform data to dwc driver.
+> By querying dwc driver platform data in acp dma driver, current i2s
+> instance was programmed in acp_dma_open ().
+
+> But Mark's latest comment was to implement platform specific changes in
+> machine driver. Machine driver and Dma driver should exchange the data
+> regarding this. We accepted this and current approach is based on the
+> same comment.
+> Below is the reference.
+> https://lkml.org/lkml/2018/4/18/597
+
+Yes, I saw Mark's previous comment, but what we are trying to implement
+here is the SoC specific binding between i2s channel and acp-dma channel.
+This is a feature of the SoC, not of the i2s controller, but also not a
+feature of the audio configuration on the board.  For these SoCs, the link
+between DMA registers & I2S-channel is hard-coded.  The machine driver is
+already specifying which i2s channel to use when it configures, for
+example, '.cpu_dai_name = "designware-i2s.2.auto"'.  The i2s channel
+selection already implies a particular DMA configuration.  It seems
+redundant to create this separate out-of-band infrastructure to make the
+machine driver also tell its platform driver '.platform_name =
+"acp_audio_dma.0.auto"' which i2s channel it is using.
+
+Perhaps the acp-pcm-dma.c should register two different platform drivers,
+and let the machine driver pick the appropriate one (ie,
+acp_audio_dma.0.auto or acp_audio_dma.1.auto) depending on which i2s port
+it needs?  Then each of these would have its own
+snd_soc_platform_driver->ops->open() that could setup
+snd_pcm_runtime->private_data appropriately?  Or is there another standard
+way to have a single snd_soc_platform_driver handle multiple channels?
+
+-Dan
