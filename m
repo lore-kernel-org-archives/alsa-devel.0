@@ -1,65 +1,130 @@
-From: noman pouigt <variksla@gmail.com>
-Subject: Buffer size calculation based on period size
-Date: Thu, 3 May 2018 13:17:08 -0700
-Message-ID: <CAES_P+_d1Di+P_cs3PU6Kqw=6i1WCNf00SB=KXgzVvei4_zmLA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f171.google.com (mail-pf0-f171.google.com
- [209.85.192.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 97084267235
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 22:17:10 +0200 (CEST)
-Received: by mail-pf0-f171.google.com with SMTP id f20so6810965pfn.0
- for <alsa-devel@alsa-project.org>; Thu, 03 May 2018 13:17:10 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, ckeepax@opensource.cirrus.com, Lars-Peter Clausen <lars@metafoo.de>
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: [PATCH 1/9] R3Di and SBZ quirk entires + alt firmware loading
+Date: Thu,  3 May 2018 17:42:42 -0400
+Message-ID: <1525383771-11105-1-git-send-email-conmanx360@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I am at my wits end trying to figure out how
-period_size is being calculated in pcm_native
-layer based on period_size and period_count
-being set by the userspace.
+This patch adds PCI quirk ID's for the Sound Blaster Z and Recon3Di.
+Only the currently tested ID's have been added.
 
-I am using tinycap to capture the audio and
-setting below settings:
-bitwidth =  16
-rate =  16000
-channel =  1
-period_size =  320
-period_count = 2
+This patch also adds the ability to load alternative firmwares for each
+card, the firmwares can be obtained from within the Windows driver.
+The Recon3Di uses "ctefx-r3di.bin" and the Sound Blaster Z uses
+"ctefx-sbz.bin". If the alternative firmware for the given quirk is not
+found, the original ctefx.bin will be used. This has been confirmed to
+work for both the R3Di and the SBZ.
 
-I am wondering how is below
-period_size and buffer_size calculated?
+This patch also makes the character array *dirstr a const.
 
-Shouldn't period_size of 320 bytes and
-period_count of 2 fail?
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+---
+ sound/pci/hda/patch_ca0132.c | 55 ++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 51 insertions(+), 4 deletions(-)
 
-cat sub0/hw_params
-
-access: RW_INTERLEAVED
-format: S16_LE
-subformat: STD
-channels: 1
-rate: 16000 (16000/1)
-period_size: 2042
-buffer_size: 4084
-
-
-And this is my settings in pcm_hardware structure:
-static struct snd_pcm_hardware s1000_pcm_hw = {
-.buffer_bytes_max = 1024*1024,
-.period_bytes_min = 4084,
-.period_bytes_max = (1024*1024)/2,
-.periods_min =      2,
-.periods_max =      32,
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 768ea86..9a0286e 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -72,12 +72,16 @@
+ #define SCP_GET    1
+ 
+ #define EFX_FILE   "ctefx.bin"
++#define SBZ_EFX_FILE   "ctefx-sbz.bin"
++#define R3DI_EFX_FILE  "ctefx-r3di.bin"
+ 
+ #ifdef CONFIG_SND_HDA_CODEC_CA0132_DSP
+ MODULE_FIRMWARE(EFX_FILE);
++MODULE_FIRMWARE(SBZ_EFX_FILE);
++MODULE_FIRMWARE(R3DI_EFX_FILE);
+ #endif
+ 
+-static char *dirstr[2] = { "Playback", "Capture" };
++static const char *dirstr[2] = { "Playback", "Capture" };
+ 
+ enum {
+ 	SPEAKER_OUT,
+@@ -734,6 +738,7 @@ struct ca0132_spec {
+ 	unsigned int scp_resp_header;
+ 	unsigned int scp_resp_data[4];
+ 	unsigned int scp_resp_count;
++	bool alt_firmware_present;
+ 
+ 	/* mixer and effects related */
+ 	unsigned char dmic_ctl;
+@@ -762,6 +767,8 @@ struct ca0132_spec {
+ enum {
+ 	QUIRK_NONE,
+ 	QUIRK_ALIENWARE,
++	QUIRK_SBZ,
++	QUIRK_R3DI,
  };
+ 
+ static const struct hda_pintbl alienware_pincfgs[] = {
+@@ -782,6 +789,10 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
+ 	SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
+ 	SND_PCI_QUIRK(0x1028, 0x0708, "Alienware 15 R2 2016", QUIRK_ALIENWARE),
++	SND_PCI_QUIRK(0x1102, 0x0010, "Sound Blaster Z", QUIRK_SBZ),
++	SND_PCI_QUIRK(0x1102, 0x0023, "Sound Blaster Z", QUIRK_SBZ),
++	SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
++	SND_PCI_QUIRK(0x1458, 0xA036, "Recon3Di", QUIRK_R3DI),
+ 	{}
+ };
+ 
+@@ -4370,11 +4381,47 @@ static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
+ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ {
+ 	bool dsp_loaded = false;
++	struct ca0132_spec *spec = codec->spec;
+ 	const struct dsp_image_seg *dsp_os_image;
+ 	const struct firmware *fw_entry;
+-
+-	if (request_firmware(&fw_entry, EFX_FILE, codec->card->dev) != 0)
+-		return false;
++	/*
++	 * Alternate firmwares for different variants. The Recon3Di apparently
++	 * can use the default firmware, but I'll leave the option in case
++	 * it needs it again.
++	 */
++	switch (spec->quirk) {
++	case QUIRK_SBZ:
++		if (request_firmware(&fw_entry, SBZ_EFX_FILE,
++					codec->card->dev) != 0) {
++			codec_dbg(codec, "SBZ alt firmware not detected. ");
++			spec->alt_firmware_present = false;
++		} else {
++			codec_dbg(codec, "Sound Blaster Z firmware selected.");
++			spec->alt_firmware_present = true;
++		}
++		break;
++	case QUIRK_R3DI:
++		if (request_firmware(&fw_entry, R3DI_EFX_FILE,
++					codec->card->dev) != 0) {
++			codec_dbg(codec, "Recon3Di alt firmware not detected.");
++			spec->alt_firmware_present = false;
++		} else {
++			codec_dbg(codec, "Recon3Di firmware selected.");
++			spec->alt_firmware_present = true;
++		}
++		break;
++	default:
++		spec->alt_firmware_present = false;
++		break;
++	}
++	/* Use default ctefx.bin if no alt firmware is detected, or if none
++	 * exists for your particular codec.
++	 */
++	if (spec->alt_firmware_present == false) {
++		codec_dbg(codec, "Default firmware selected.");
++		if (request_firmware(&fw_entry, EFX_FILE,
++					codec->card->dev) != 0)
++			return false;
++	}
+ 
+ 	dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
+ 	if (dspload_image(codec, dsp_os_image, 0, 0, true, 0)) {
+-- 
+2.7.4
