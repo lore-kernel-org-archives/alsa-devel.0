@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: nau8810: change the target of
-	MIC BIAS supply
-Date: Fri, 4 May 2018 08:10:47 +0900
-Message-ID: <20180503231047.GB13402@sirena.org.uk>
-References: <1525315602-3620-1-git-send-email-KCHSU0@nuvoton.com>
- <1525315602-3620-2-git-send-email-KCHSU0@nuvoton.com>
+Subject: Applied "ASoC: tas6424: Allow disabling auto
+	diagnostics for faster power-on" to the asoc tree
+Date: Fri,  4 May 2018 00:18:48 +0100 (BST)
+Message-ID: <20180503231848.2B7AD44007A@finisterre.ee.mobilebroadband>
+References: <1525332987-5266-1-git-send-email-jjhiblot@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3854486625340522159=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E3497266F44
- for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 01:11:07 +0200 (CEST)
-In-Reply-To: <1525315602-3620-2-git-send-email-KCHSU0@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D0DAE266F44
+ for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 01:18:55 +0200 (CEST)
+In-Reply-To: <1525332987-5266-1-git-send-email-jjhiblot@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: John Hsu <KCHSU0@nuvoton.com>
-Cc: alsa-devel@alsa-project.org, CFYU0@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, YCPENG7@nuvoton.com
+To: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, broonie@kernel.org, afd@ti.com, dannenberg@ti.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============3854486625340522159==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="KFztAG8eRSV9hGtP"
-Content-Disposition: inline
+   ASoC: tas6424: Allow disabling auto diagnostics for faster power-on
 
+has been applied to the asoc tree at
 
---KFztAG8eRSV9hGtP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, May 03, 2018 at 10:46:42AM +0800, John Hsu wrote:
-> The MICBAIS will not supply if there is only one path from MICP to
-> input boost stage. The driver fixes the issue by changing the supply
-> target to input boost stage mixer.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Does the input boost stage actually use the MICBIAS supply directly?
-More usually a microphone bias would supply the microphone rather than
-anything on the chip itself.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---KFztAG8eRSV9hGtP
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrrlvYACgkQJNaLcl1U
-h9DiHAf+J8T2ozrzbqNGTLWUM8TW/NHUonBf9Yq3/NR7e/zIp1ZISjua3s5vWPEO
-S35KpfuUWbrRPCF+f+Nkf6aJvOpcPtlTi8MvV+iGzTyYRmBpNpnl2vaXnh0TyVq0
-CNR1aGFNFyL2VEiANgwvMSibgKlcm/OK5I7zNM6Fa1K+fGoxC/eYDNOFa5OjYbOy
-4luFZcLbtAzhtXVNCLT+H0L487M2EvCA5ptH1ZHnPNM4PcxtBrTNm3QdaQM2L3nB
-wTQoojim2jH27IJ5sYFJP5kZND5M7rF+3udGnaL93AQctMjDJP/6qfKtdvey5edK
-IcoKloUkwSID2yq6k5CuZ/1/FNeBqg==
-=RDds
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---KFztAG8eRSV9hGtP--
+>From 396888772ab738eca923d13fd3d55733091c5daf Mon Sep 17 00:00:00 2001
+From: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Date: Thu, 3 May 2018 09:36:27 +0200
+Subject: [PATCH] ASoC: tas6424: Allow disabling auto diagnostics for faster
+ power-on
 
---===============3854486625340522159==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+The TAS6424 incorporates both DC-load and AC-load diagnostics which are
+used to determine the status of the load. The DC diagnostics runs when any
+channel is directed to leave the Hi-Z state and enter the MUTE or PLAY
+state.
+The DC diagnostics are turned on by default but, if a fast startup without
+diagnostics is required, the diagnostics can be disabled using a dedicated
+ALSA control.
 
+Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/tas6424.c | 13 +++++++++++--
+ sound/soc/codecs/tas6424.h |  4 ++++
+ 2 files changed, 15 insertions(+), 2 deletions(-)
 
---===============3854486625340522159==--
+diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
+index 89fd0c1b3903..14999b999fd3 100644
+--- a/sound/soc/codecs/tas6424.c
++++ b/sound/soc/codecs/tas6424.c
+@@ -64,6 +64,8 @@ static const struct snd_kcontrol_new tas6424_snd_controls[] = {
+ 		       TAS6424_CH3_VOL_CTRL, 0, 0xff, 0, dac_tlv),
+ 	SOC_SINGLE_TLV("Speaker Driver CH4 Playback Volume",
+ 		       TAS6424_CH4_VOL_CTRL, 0, 0xff, 0, dac_tlv),
++	SOC_SINGLE_STROBE("Auto Diagnostics Switch", TAS6424_DC_DIAG_CTRL1,
++			  TAS6424_LDGBYPASS_SHIFT, 1),
+ };
+ 
+ static int tas6424_dac_event(struct snd_soc_dapm_widget *w,
+@@ -297,6 +299,11 @@ static int tas6424_power_on(struct snd_soc_component *component)
+ 	struct tas6424_data *tas6424 = snd_soc_component_get_drvdata(component);
+ 	int ret;
+ 	u8 chan_states;
++	int no_auto_diags = 0;
++	unsigned int reg_val;
++
++	if (!regmap_read(tas6424->regmap, TAS6424_DC_DIAG_CTRL1, &reg_val))
++		no_auto_diags = reg_val & TAS6424_LDGBYPASS_MASK;
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(tas6424->supplies),
+ 				    tas6424->supplies);
+@@ -327,9 +334,11 @@ static int tas6424_power_on(struct snd_soc_component *component)
+ 	snd_soc_component_write(component, TAS6424_CH_STATE_CTRL, chan_states);
+ 
+ 	/* any time we come out of HIZ, the output channels automatically run DC
+-	 * load diagnostics, wait here until this completes
++	 * load diagnostics if autodiagnotics are enabled. wait here until this
++	 * completes.
+ 	 */
+-	msleep(230);
++	if (!no_auto_diags)
++		msleep(230);
+ 
+ 	return 0;
+ }
+diff --git a/sound/soc/codecs/tas6424.h b/sound/soc/codecs/tas6424.h
+index 430588328a06..b5958c45ed0e 100644
+--- a/sound/soc/codecs/tas6424.h
++++ b/sound/soc/codecs/tas6424.h
+@@ -111,6 +111,10 @@
+ 					 TAS6424_CH3_STATE_DIAG | \
+ 					 TAS6424_CH4_STATE_DIAG)
+ 
++/* TAS6424_DC_DIAG_CTRL1 */
++#define TAS6424_LDGBYPASS_SHIFT		0
++#define TAS6424_LDGBYPASS_MASK		BIT(TAS6424_LDGBYPASS_SHIFT)
++
+ /* TAS6424_GLOB_FAULT1_REG */
+ #define TAS6424_FAULT_CLOCK		BIT(4)
+ #define TAS6424_FAULT_PVDD_OV		BIT(3)
+-- 
+2.17.0
