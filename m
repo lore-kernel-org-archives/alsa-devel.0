@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas6424: Allow disabling auto
-	diagnostics for faster power-on" to the asoc tree
-Date: Fri,  4 May 2018 00:18:48 +0100 (BST)
-Message-ID: <20180503231848.2B7AD44007A@finisterre.ee.mobilebroadband>
-References: <1525332987-5266-1-git-send-email-jjhiblot@ti.com>
+Subject: Applied "ASoC: nau8810: change input PGA mixer stage"
+	to the asoc tree
+Date: Fri,  4 May 2018 00:18:57 +0100 (BST)
+Message-ID: <20180503231857.5160B44007A@finisterre.ee.mobilebroadband>
+References: <1525315602-3620-1-git-send-email-KCHSU0@nuvoton.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D0DAE266F44
- for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 01:18:55 +0200 (CEST)
-In-Reply-To: <1525332987-5266-1-git-send-email-jjhiblot@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DFDCA267412
+ for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 01:19:01 +0200 (CEST)
+In-Reply-To: <1525315602-3620-1-git-send-email-KCHSU0@nuvoton.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, broonie@kernel.org, afd@ti.com, dannenberg@ti.com
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, CFYU0@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, broonie@kernel.org, CTLIN0@nuvoton.com, YCPENG7@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas6424: Allow disabling auto diagnostics for faster power-on
+   ASoC: nau8810: change input PGA mixer stage
 
 has been applied to the asoc tree at
 
@@ -53,80 +53,72 @@ to this mail.
 Thanks,
 Mark
 
->From 396888772ab738eca923d13fd3d55733091c5daf Mon Sep 17 00:00:00 2001
-From: Jean-Jacques Hiblot <jjhiblot@ti.com>
-Date: Thu, 3 May 2018 09:36:27 +0200
-Subject: [PATCH] ASoC: tas6424: Allow disabling auto diagnostics for faster
- power-on
+>From a7ea9385d41716f8dd5f69b4a5deaf836d67d968 Mon Sep 17 00:00:00 2001
+From: John Hsu <KCHSU0@nuvoton.com>
+Date: Thu, 3 May 2018 10:46:41 +0800
+Subject: [PATCH] ASoC: nau8810: change input PGA mixer stage
 
-The TAS6424 incorporates both DC-load and AC-load diagnostics which are
-used to determine the status of the load. The DC diagnostics runs when any
-channel is directed to leave the Hi-Z state and enter the MUTE or PLAY
-state.
-The DC diagnostics are turned on by default but, if a fast startup without
-diagnostics is required, the diagnostics can be disabled using a dedicated
-ALSA control.
+Organize the paths of the mixer, "Input Boost Stage", including
+the routes of the mixer. The control is not used correctly before.
+Besides, the driver changes the name of the mixer controls.
 
-Signed-off-by: Jean-Jacques Hiblot <jjhiblot@ti.com>
+Signed-off-by: John Hsu <KCHSU0@nuvoton.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas6424.c | 13 +++++++++++--
- sound/soc/codecs/tas6424.h |  4 ++++
- 2 files changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/codecs/nau8810.c | 19 ++++++++-----------
+ 1 file changed, 8 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
-index 89fd0c1b3903..14999b999fd3 100644
---- a/sound/soc/codecs/tas6424.c
-+++ b/sound/soc/codecs/tas6424.c
-@@ -64,6 +64,8 @@ static const struct snd_kcontrol_new tas6424_snd_controls[] = {
- 		       TAS6424_CH3_VOL_CTRL, 0, 0xff, 0, dac_tlv),
- 	SOC_SINGLE_TLV("Speaker Driver CH4 Playback Volume",
- 		       TAS6424_CH4_VOL_CTRL, 0, 0xff, 0, dac_tlv),
-+	SOC_SINGLE_STROBE("Auto Diagnostics Switch", TAS6424_DC_DIAG_CTRL1,
-+			  TAS6424_LDGBYPASS_SHIFT, 1),
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index ca2ba1c7bb9a..bfd74b86c9d2 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -373,9 +373,11 @@ static const struct snd_kcontrol_new nau8810_mono_mixer_controls[] = {
  };
  
- static int tas6424_dac_event(struct snd_soc_dapm_widget *w,
-@@ -297,6 +299,11 @@ static int tas6424_power_on(struct snd_soc_component *component)
- 	struct tas6424_data *tas6424 = snd_soc_component_get_drvdata(component);
- 	int ret;
- 	u8 chan_states;
-+	int no_auto_diags = 0;
-+	unsigned int reg_val;
-+
-+	if (!regmap_read(tas6424->regmap, TAS6424_DC_DIAG_CTRL1, &reg_val))
-+		no_auto_diags = reg_val & TAS6424_LDGBYPASS_MASK;
+ /* PGA Mute */
+-static const struct snd_kcontrol_new nau8810_inpga_mute[] = {
++static const struct snd_kcontrol_new nau8810_pgaboost_mixer_controls[] = {
+ 	SOC_DAPM_SINGLE("PGA Mute Switch", NAU8810_REG_PGAGAIN,
+-		NAU8810_PGAMT_SFT, 1, 0),
++		NAU8810_PGAMT_SFT, 1, 1),
++	SOC_DAPM_SINGLE("PMIC PGA Switch", NAU8810_REG_ADCBOOST,
++		NAU8810_PMICBSTGAIN_SFT, 0x7, 0),
+ };
  
- 	ret = regulator_bulk_enable(ARRAY_SIZE(tas6424->supplies),
- 				    tas6424->supplies);
-@@ -327,9 +334,11 @@ static int tas6424_power_on(struct snd_soc_component *component)
- 	snd_soc_component_write(component, TAS6424_CH_STATE_CTRL, chan_states);
+ /* Input PGA */
+@@ -386,11 +388,6 @@ static const struct snd_kcontrol_new nau8810_inpga[] = {
+ 		NAU8810_PMICPGA_SFT, 1, 0),
+ };
  
- 	/* any time we come out of HIZ, the output channels automatically run DC
--	 * load diagnostics, wait here until this completes
-+	 * load diagnostics if autodiagnotics are enabled. wait here until this
-+	 * completes.
- 	 */
--	msleep(230);
-+	if (!no_auto_diags)
-+		msleep(230);
+-/* Mic Input boost vol */
+-static const struct snd_kcontrol_new nau8810_mic_boost_controls =
+-	SOC_DAPM_SINGLE("Mic Volume", NAU8810_REG_ADCBOOST,
+-		NAU8810_PMICBSTGAIN_SFT, 0x7, 0);
+-
+ /* Loopback Switch */
+ static const struct snd_kcontrol_new nau8810_loopback =
+ 	SOC_DAPM_SINGLE("Switch", NAU8810_REG_COMP,
+@@ -429,8 +426,8 @@ static const struct snd_soc_dapm_widget nau8810_dapm_widgets[] = {
+ 		NAU8810_PGA_EN_SFT, 0, nau8810_inpga,
+ 		ARRAY_SIZE(nau8810_inpga)),
+ 	SND_SOC_DAPM_MIXER("Input Boost Stage", NAU8810_REG_POWER2,
+-		NAU8810_BST_EN_SFT, 0, nau8810_inpga_mute,
+-		ARRAY_SIZE(nau8810_inpga_mute)),
++		NAU8810_BST_EN_SFT, 0, nau8810_pgaboost_mixer_controls,
++		ARRAY_SIZE(nau8810_pgaboost_mixer_controls)),
  
- 	return 0;
- }
-diff --git a/sound/soc/codecs/tas6424.h b/sound/soc/codecs/tas6424.h
-index 430588328a06..b5958c45ed0e 100644
---- a/sound/soc/codecs/tas6424.h
-+++ b/sound/soc/codecs/tas6424.h
-@@ -111,6 +111,10 @@
- 					 TAS6424_CH3_STATE_DIAG | \
- 					 TAS6424_CH4_STATE_DIAG)
+ 	SND_SOC_DAPM_SUPPLY("Mic Bias", NAU8810_REG_POWER1,
+ 		NAU8810_MICBIAS_EN_SFT, 0, NULL, 0),
+@@ -469,8 +466,8 @@ static const struct snd_soc_dapm_route nau8810_dapm_routes[] = {
+ 	/* Input Boost Stage */
+ 	{"ADC", NULL, "Input Boost Stage"},
+ 	{"ADC", NULL, "PLL", check_mclk_select_pll},
+-	{"Input Boost Stage", NULL, "Input PGA"},
+-	{"Input Boost Stage", NULL, "MICP"},
++	{"Input Boost Stage", "PGA Mute Switch", "Input PGA"},
++	{"Input Boost Stage", "PMIC PGA Switch", "MICP"},
  
-+/* TAS6424_DC_DIAG_CTRL1 */
-+#define TAS6424_LDGBYPASS_SHIFT		0
-+#define TAS6424_LDGBYPASS_MASK		BIT(TAS6424_LDGBYPASS_SHIFT)
-+
- /* TAS6424_GLOB_FAULT1_REG */
- #define TAS6424_FAULT_CLOCK		BIT(4)
- #define TAS6424_FAULT_PVDD_OV		BIT(3)
+ 	/* Input PGA */
+ 	{"Input PGA", NULL, "Mic Bias"},
 -- 
 2.17.0
