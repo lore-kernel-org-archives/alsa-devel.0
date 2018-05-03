@@ -1,143 +1,175 @@
-From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH V3 10/10] ASoC: amd: dma driver changes for bt i2s instance
-Date: Thu, 03 May 2018 16:40:47 +0000
-Message-ID: <CAGS+omDKpPwyUMYwm-ai5cr+m=JLh+yjYq_oDfyRBppqc8DPDg@mail.gmail.com>
-References: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1525207810-1305-10-git-send-email-Vijendar.Mukunda@amd.com>
- <CAGS+omC=fZsFvSaxqFWEo0Pkj1Rcqhixy_oN7PWry9F0L_9c-Q@mail.gmail.com> <06a8f6f4-3bc0-656e-9c55-84f88727d6fb@amd.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Clean up mixer element list
+	traverse
+Date: Thu,  3 May 2018 20:23:27 +0200
+Message-ID: <20180503182327.27869-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <06a8f6f4-3bc0-656e-9c55-84f88727d6fb@amd.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: vijendar.mukunda@amd.com
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, Akshu Agrawal <Akshu.Agrawal@amd.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alexander.deucher@amd.com, weiyongjun1@huawei.com, jclinton@chromium.org, Guenter Roeck <linux@roeck-us.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id CBF00266C1C
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 20:23:32 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 425A4AF60
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 18:23:31 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 3, 2018 at 1:33 AM Mukunda,Vijendar <vijendar.mukunda@amd.com>
-wrote:
+Introduce a new macro for iterating over mixer element list for
+avoiding the open codes in many places.  Also the open-coded
+container_of() and the forced cast to struct usb_mixer_elem_info are
+replaced with another simple macro, too.
 
+No functional changes but just readability improvement.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/usb/mixer.c          | 20 +++++++++-----------
+ sound/usb/mixer.h          |  6 ++++++
+ sound/usb/mixer_quirks.c   |  2 +-
+ sound/usb/mixer_scarlett.c |  6 ++----
+ 4 files changed, 18 insertions(+), 16 deletions(-)
 
-> On Thursday 03 May 2018 11:13 AM, Daniel Kurtz wrote:
-> > Some checkpatch nits below...
-> >
-> > On Tue, May 1, 2018 at 2:53 PM Vijendar Mukunda <
-Vijendar.Mukunda@amd.com>
-> > wrote:
-> >
-> >> With in ACP, There are three I2S controllers can be
-> >> configured/enabled ( I2S SP, I2S MICSP, I2S BT).
-> >> Default enabled I2S controller instance is I2S SP.
-> >> This patch provides required changes to support I2S BT
-> >> controller Instance.
-> >
-> >> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> >> ---
-> >> v1->v2: defined i2s instance macros in acp header file
-> >> v2->v3: sqaushed previous patch series and spilt changes
-> >>            into multiple patches (acp dma driver code cleanup
-> >>            patches and bt i2s instance specific changes)
-> >>     sound/soc/amd/acp-da7219-max98357a.c |  23 ++++
-> >>     sound/soc/amd/acp-pcm-dma.c          | 256
-> > +++++++++++++++++++++++++++--------
-> >>     sound/soc/amd/acp.h                  |  40 ++++++
-> >>     3 files changed, 262 insertions(+), 57 deletions(-)
-> >
-> >> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
-> > b/sound/soc/amd/acp-da7219-max98357a.c
-> >> index 133139d..b3184ab 100644
-> >> --- a/sound/soc/amd/acp-da7219-max98357a.c
-> >> +++ b/sound/soc/amd/acp-da7219-max98357a.c
-> >> @@ -36,6 +36,7 @@
-> >>     #include <linux/input.h>
-> >>     #include <linux/acpi.h>
-> >
-> >> +#include "acp.h"
-> >>     #include "../codecs/da7219.h"
-> >>     #include "../codecs/da7219-aad.h"
-> >
-> >> @@ -44,6 +45,7 @@
-> >
-> >>     static struct snd_soc_jack cz_jack;
-> >>     static struct clk *da7219_dai_clk;
-> >> +extern int bt_pad_enable;
-> >
-> > WARNING: externs should be avoided in .c files
-
-> We don't have .h file for machine driver and It can be ignored for
-> one variable.
-> >
-> >
-> >>     static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
-> >>     {
-> >> @@ -132,6 +134,9 @@ static const struct snd_pcm_hw_constraint_list
-> > constraints_channels = {
-> >>     static int cz_da7219_startup(struct snd_pcm_substream *substream)
-> >>     {
-> >>            struct snd_pcm_runtime *runtime = substream->runtime;
-> >> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> >> +       struct snd_soc_card *card = rtd->card;
-> >> +       struct acp_platform_info *machine =
-> > snd_soc_card_get_drvdata(card);
-> >
-> >>            /*
-> >>             * On this platform for PCM device we support stereo
-> >> @@ -143,6 +148,7 @@ static int cz_da7219_startup(struct
-snd_pcm_substream
-> > *substream)
-> >>            snd_pcm_hw_constraint_list(runtime, 0,
-SNDRV_PCM_HW_PARAM_RATE,
-> >>                                       &constraints_rates);
-> >
-> >> +       machine->i2s_instance = I2S_BT_INSTANCE;
-> >
-> > I'm not a big fan of this approach, but I don't know any other way to
-tell
-> > a single "platform" driver (acp-pcm-dma) which of two channels (ST/BT)
-to
-> > use via the pcm_open() callback.
-> >
-> > Mark, can you recommend any other way of doing this?
-
-> Hi Dan,
-
-> There have been couple of approaches worked upon this earlier.
-> 1) To compare cpu dai name to get the I2S instance value in
-> acp_dma_open() call.
-
-> But, Mark suggested not to implement this approach as we are comparing
-> dynamically generated cpu dai names.
-
-> 2) We added i2s_instance parameter as platform data to dwc driver.
-> By querying dwc driver platform data in acp dma driver, current i2s
-> instance was programmed in acp_dma_open ().
-
-> But Mark's latest comment was to implement platform specific changes in
-> machine driver. Machine driver and Dma driver should exchange the data
-> regarding this. We accepted this and current approach is based on the
-> same comment.
-> Below is the reference.
-> https://lkml.org/lkml/2018/4/18/597
-
-Yes, I saw Mark's previous comment, but what we are trying to implement
-here is the SoC specific binding between i2s channel and acp-dma channel.
-This is a feature of the SoC, not of the i2s controller, but also not a
-feature of the audio configuration on the board.  For these SoCs, the link
-between DMA registers & I2S-channel is hard-coded.  The machine driver is
-already specifying which i2s channel to use when it configures, for
-example, '.cpu_dai_name = "designware-i2s.2.auto"'.  The i2s channel
-selection already implies a particular DMA configuration.  It seems
-redundant to create this separate out-of-band infrastructure to make the
-machine driver also tell its platform driver '.platform_name =
-"acp_audio_dma.0.auto"' which i2s channel it is using.
-
-Perhaps the acp-pcm-dma.c should register two different platform drivers,
-and let the machine driver pick the appropriate one (ie,
-acp_audio_dma.0.auto or acp_audio_dma.1.auto) depending on which i2s port
-it needs?  Then each of these would have its own
-snd_soc_platform_driver->ops->open() that could setup
-snd_pcm_runtime->private_data appropriately?  Or is there another standard
-way to have a single snd_soc_platform_driver handle multiple channels?
-
--Dan
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index bb203b3684fc..265258b0e74c 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -2598,9 +2598,9 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
+ {
+ 	struct usb_mixer_elem_list *list;
+ 
+-	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem) {
++	for_each_mixer_elem(list, mixer, unitid) {
+ 		struct usb_mixer_elem_info *info =
+-			(struct usb_mixer_elem_info *)list;
++			mixer_elem_list_to_info(list);
+ 		/* invalidate cache, so the value is read from the device */
+ 		info->cached = 0;
+ 		snd_ctl_notify(mixer->chip->card, SNDRV_CTL_EVENT_MASK_VALUE,
+@@ -2611,7 +2611,7 @@ void snd_usb_mixer_notify_id(struct usb_mixer_interface *mixer, int unitid)
+ static void snd_usb_mixer_dump_cval(struct snd_info_buffer *buffer,
+ 				    struct usb_mixer_elem_list *list)
+ {
+-	struct usb_mixer_elem_info *cval = (struct usb_mixer_elem_info *)list;
++	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
+ 	static char *val_types[] = {"BOOLEAN", "INV_BOOLEAN",
+ 				    "S8", "U8", "S16", "U16"};
+ 	snd_iprintf(buffer, "    Info: id=%i, control=%i, cmask=0x%x, "
+@@ -2637,8 +2637,7 @@ static void snd_usb_mixer_proc_read(struct snd_info_entry *entry,
+ 				mixer->ignore_ctl_error);
+ 		snd_iprintf(buffer, "Card: %s\n", chip->card->longname);
+ 		for (unitid = 0; unitid < MAX_ID_ELEMS; unitid++) {
+-			for (list = mixer->id_elems[unitid]; list;
+-			     list = list->next_id_elem) {
++			for_each_mixer_elem(list, mixer, unitid) {
+ 				snd_iprintf(buffer, "  Unit: %i\n", list->id);
+ 				if (list->kctl)
+ 					snd_iprintf(buffer,
+@@ -2668,19 +2667,19 @@ static void snd_usb_mixer_interrupt_v2(struct usb_mixer_interface *mixer,
+ 		return;
+ 	}
+ 
+-	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem)
++	for_each_mixer_elem(list, mixer, unitid)
+ 		count++;
+ 
+ 	if (count == 0)
+ 		return;
+ 
+-	for (list = mixer->id_elems[unitid]; list; list = list->next_id_elem) {
++	for_each_mixer_elem(list, mixer, unitid) {
+ 		struct usb_mixer_elem_info *info;
+ 
+ 		if (!list->kctl)
+ 			continue;
+ 
+-		info = (struct usb_mixer_elem_info *)list;
++		info = mixer_elem_list_to_info(list);
+ 		if (count > 1 && info->control != control)
+ 			continue;
+ 
+@@ -2946,7 +2945,7 @@ int snd_usb_mixer_suspend(struct usb_mixer_interface *mixer)
+ 
+ static int restore_mixer_value(struct usb_mixer_elem_list *list)
+ {
+-	struct usb_mixer_elem_info *cval = (struct usb_mixer_elem_info *)list;
++	struct usb_mixer_elem_info *cval = mixer_elem_list_to_info(list);
+ 	int c, err, idx;
+ 
+ 	if (cval->cmask) {
+@@ -2982,8 +2981,7 @@ int snd_usb_mixer_resume(struct usb_mixer_interface *mixer, bool reset_resume)
+ 	if (reset_resume) {
+ 		/* restore cached mixer values */
+ 		for (id = 0; id < MAX_ID_ELEMS; id++) {
+-			for (list = mixer->id_elems[id]; list;
+-			     list = list->next_id_elem) {
++			for_each_mixer_elem(list, mixer, id) {
+ 				if (list->resume) {
+ 					err = list->resume(list);
+ 					if (err < 0)
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index ba27f7ade670..e02653465e29 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -53,6 +53,12 @@ struct usb_mixer_elem_list {
+ 	usb_mixer_elem_resume_func_t resume;
+ };
+ 
++/* iterate over mixer element list of the given unit id */
++#define for_each_mixer_elem(list, mixer, id)	\
++	for ((list) = (mixer)->id_elems[id]; (list); (list) = (list)->next_id_elem)
++#define mixer_elem_list_to_info(list) \
++	container_of(list, struct usb_mixer_elem_info, head)
++
+ struct usb_mixer_elem_info {
+ 	struct usb_mixer_elem_list head;
+ 	unsigned int control;	/* CS or ICN (high byte) */
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 4377374affd3..1b94387e18b6 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1172,7 +1172,7 @@ void snd_emuusb_set_samplerate(struct snd_usb_audio *chip,
+ 	int unitid = 12; /* SamleRate ExtensionUnit ID */
+ 
+ 	list_for_each_entry(mixer, &chip->mixer_list, list) {
+-		cval = (struct usb_mixer_elem_info *)mixer->id_elems[unitid];
++		cval = mixer_elem_list_to_info(mixer->id_elems[unitid]);
+ 		if (cval) {
+ 			snd_usb_mixer_set_ctl_value(cval, UAC_SET_CUR,
+ 						    cval->control << 8,
+diff --git a/sound/usb/mixer_scarlett.c b/sound/usb/mixer_scarlett.c
+index c33e2378089d..4aeb9488a0c9 100644
+--- a/sound/usb/mixer_scarlett.c
++++ b/sound/usb/mixer_scarlett.c
+@@ -287,8 +287,7 @@ static int scarlett_ctl_switch_put(struct snd_kcontrol *kctl,
+ 
+ static int scarlett_ctl_resume(struct usb_mixer_elem_list *list)
+ {
+-	struct usb_mixer_elem_info *elem =
+-		container_of(list, struct usb_mixer_elem_info, head);
++	struct usb_mixer_elem_info *elem = mixer_elem_list_to_info(list);
+ 	int i;
+ 
+ 	for (i = 0; i < elem->channels; i++)
+@@ -447,8 +446,7 @@ static int scarlett_ctl_enum_put(struct snd_kcontrol *kctl,
+ 
+ static int scarlett_ctl_enum_resume(struct usb_mixer_elem_list *list)
+ {
+-	struct usb_mixer_elem_info *elem =
+-		container_of(list, struct usb_mixer_elem_info, head);
++	struct usb_mixer_elem_info *elem = mixer_elem_list_to_info(list);
+ 
+ 	if (elem->cached)
+ 		snd_usb_set_cur_mix_value(elem, 0, 0, *elem->cache_val);
+-- 
+2.16.3
