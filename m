@@ -1,16 +1,21 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH v3] ASoC: da7219: read fmw property to get mclk
-	for non-dts systems
-Date: Thu,  3 May 2018 15:58:33 +0800
-Message-ID: <1525334313-28661-1-git-send-email-akshu.agrawal@amd.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: Rationale for BYTCR defaults in the kernel's
+ bytcr_rt5640 machine driver ?
+Date: Thu, 3 May 2018 10:13:01 +0200
+Message-ID: <64f761ed-dcc9-2e47-c5f9-a108803a873a@redhat.com>
+References: <0b04e03f-7147-fb27-22c3-e81a8cbf3a8f@redhat.com>
+ <de590ce5-82ca-4b51-6189-e198d541ce55@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM01-SN1-obe.outbound.protection.outlook.com
- (mail-sn1nam01on0081.outbound.protection.outlook.com [104.47.32.81])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F11826722C
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 10:00:54 +0200 (CEST)
+Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39AF4266F50
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 10:13:02 +0200 (CEST)
+Received: by mail-wm0-f41.google.com with SMTP id i3so28550200wmf.3
+ for <alsa-devel@alsa-project.org>; Thu, 03 May 2018 01:13:02 -0700 (PDT)
+In-Reply-To: <de590ce5-82ca-4b51-6189-e198d541ce55@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,70 +25,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com, Adam.Thomson.Opensource@diasemi.com, akshu.agrawal@amd.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Non-dts based systems can use ACPI DSDT to pass on the mclk
-to da7219.
-This enables da7219 mclk to be linked to system clock.
-Enable/Disable of the mclk is already handled in the codec so
-platform drivers don't have to explicitly do handling of mclk.
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
-v2: Fixed kbuild error
-v3: Add corresponding clk_put for clk_get
- include/sound/da7219.h    |  2 ++
- sound/soc/codecs/da7219.c | 10 +++++++++-
- 2 files changed, 11 insertions(+), 1 deletion(-)
-
-diff --git a/include/sound/da7219.h b/include/sound/da7219.h
-index 1bfcb16..df7ddf4 100644
---- a/include/sound/da7219.h
-+++ b/include/sound/da7219.h
-@@ -38,6 +38,8 @@ struct da7219_pdata {
- 
- 	const char *dai_clks_name;
- 
-+	const char *mclk_name;
-+
- 	/* Mic */
- 	enum da7219_micbias_voltage micbias_lvl;
- 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 980a6a8..ecd46fc 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
- 		dev_warn(dev, "Using default clk name: %s\n",
- 			 pdata->dai_clks_name);
- 
-+	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
-+
- 	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
- 		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
- 	else
-@@ -1905,7 +1907,10 @@ static int da7219_probe(struct snd_soc_component *component)
- 	da7219_handle_pdata(component);
- 
- 	/* Check if MCLK provided */
--	da7219->mclk = devm_clk_get(component->dev, "mclk");
-+	if (da7219->pdata->mclk_name)
-+		da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
-+	if (!da7219->mclk)
-+		da7219->mclk = devm_clk_get(component->dev, "mclk");
- 	if (IS_ERR(da7219->mclk)) {
- 		if (PTR_ERR(da7219->mclk) != -ENOENT) {
- 			ret = PTR_ERR(da7219->mclk);
-@@ -1971,6 +1976,9 @@ static void da7219_remove(struct snd_soc_component *component)
- 		clkdev_drop(da7219->dai_clks_lookup);
- #endif
- 
-+	if (da7219->pdata->mclk_name)
-+		clk_put(da7219->mclk);
-+
- 	/* Supplies */
- 	regulator_bulk_disable(DA7219_NUM_SUPPLIES, da7219->supplies);
- }
--- 
-1.9.1
+SGksCgpPbiAwMS0wNS0xOCAyMjoyOSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4g
+Cj4gT24gMDUvMDEvMjAxOCAwMjoyMSBQTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4gSGkgUGll
+cnJlLUxvdWlzLAo+Pgo+PiBJJ20gZmluYWxseSB3cmFwcGluZyB1cCBteSBydDU2NDAgamFjay1k
+ZXRlY3Qgd29yaywgYXMKPj4gc3VjaCBJJ20gY3VycmVudGx5IHRlc3Rpbmcgc3BlYWtlciArIGhl
+YWRwaG9uZXMgKyBpbnRlcm5hbCBtaWMgKwo+PiBoZWFkc2V0LW1pYyArIGphY2stZGV0ZWN0IGZ1
+bmN0aW9uYWxpdHkgb24gdGhlIDEwIGRpZmZlcmVudAo+PiB4ODYgZGV2aWNlcyB3aXRoIGEgcnQ1
+NjQwIGNvZGVjIHdoaWNoIEkndmUgZ2F0aGVyZWQuCj4+Cj4+IDIgb2YgdGhlbSBzdGFuZCBvdXQg
+aW4gdGhhdCB0aGV5IHVzZSB0aGUgQllUQ1IgU29DLCBidXQgZG9uJ3QKPj4gaGF2ZSB0aGUgQUNQ
+SSB0YWJsZSBmb3IgZGV0ZWN0aW5nIGlmIFNTUDAgQUlGMSBvciBBSUYyCj4+IHNob3VsZCBiZSB1
+c2VkLiBDdXJyZW50bHkgdGhlIGRyaXZlciBkZWZhdWx0cyB0byBBSUYyCj4+IGluIHRoaXMgY2Fz
+ZS4KPj4KPj4gQXMgdGhlIHNvbWV3aGF0IHdpbGRjYXJkLWlzaCBETUkgcXVpcmsgZm9yIGJvYXJk
+cyB3aGVyZQo+PiB0aGUgc3lzX3ZlbmRvciBpcyAiSW5zeWRlIiAod2hpY2ggYXBwbGllcyB0byBh
+IGxvdCBvZgo+PiBnZW5lcmljIGRlc2lnbnMpIHNob3dzOgo+Pgo+PiDCoMKgwqDCoMKgwqDCoCB7
+Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAuY2FsbGJhY2sgPSBieXRfcnQ1NjQw
+X3F1aXJrX2NiLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLm1hdGNoZXMgPSB7
+Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgRE1JX01B
+VENIKERNSV9TWVNfVkVORE9SLCAiSW5zeWRlIiksCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCB9LAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLmRyaXZlcl9kYXRh
+ID0gKHZvaWQgKikoQllUX1JUNTY0MF9JTjNfTUFQIHwKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IEJZVF9SVDU2NDBfTUNMS19FTiB8Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQw
+X1NTUDBfQUlGMSksCj4+Cj4+IMKgwqDCoMKgwqDCoMKgIH0sCj4+Cj4+IEFJRjEgc2VlbXMgdG8g
+YmUgYSBiZXR0ZXIgZGVmYXVsdCBib3RoIG1vZGVscyB3aXRob3V0Cj4+IHRoZSBBQ1BJIHRhYmxl
+IHdoaWNoIEkndmUgaGVyZSwgYSBIUCBwYXZpbGlvbiBYMiBhbmQgYQo+PiBUb3NoaWJhIENsaWNr
+IE1pbmkgTDlXLUIgbmVlZCBhIHF1aXJrIHRvIHVzZSBBSUYxLgo+Pgo+PiBTbyBJIHdhcyB3b25k
+ZXJpbmcgaWYgdGhlcmUgd2FzIGEgc3BlY2lmaWMgcmF0aW9uYWxlIGZvciB0aGUKPj4gQUlGMiBk
+ZWZhdWx0IGFuZCBpZiBpdCB3b3VsZCBub3QgYmUgYmV0dGVyIHRvIGNoYW5nZSB0aGUgZGVmYXVs
+dAo+PiB0byBBSUYxICh3aGljaCB3aWxsIHVuZm9ydHVuYXRlbHkgYnJpbmcgYSBjaGFuY2Ugb2Yg
+cmVncmVzc2lvbnMpID8KPiAKPiB5ZXMgdGhlcmUgd2FzIGEgcmF0aW9uYWxlOiBhbGwgdGhlIGlu
+aXRpYWwgQmF5dHJhaWwgZGVzaWducyBoYWQgY29ubmVjdGlvbnMgYmV0d2VlbiBTU1AyLUFJRjEg
+YW5kIFNTUDAtQUlGMi4gSUlSQyB0aGlzIHdhcyBiZWNhdXNlIHRoZXJlIHdhcyBhIGRlc2lyZSB0
+byBzdXBwb3J0IDQ0LjFrSHogb24gb25lIFNTUCBhbmQgNDhrSHogb24gdGhlIG90aGVyLgo+IFNv
+IHdoZW4gQllULUNSIHdhcyBkZWZpbmVkIHdpdGggU1NQMiByZW1vdmVkLCBtb3N0IGRlc2lnbnMg
+a2VwdCB0aGUgZXhpc3RpbmcgU1NQMC1BSUYyIGxpbmssIGV4Y2VwdCBvZiBjb3Vyc2Ugd2hlbiB0
+aGV5IGRpZG4ndC4uLgo+IAo+IEkgZG9uJ3QgaGF2ZSBhIG1hZ2ljIHNvbHV0aW9uIGhlcmUsIHdo
+ZW4gdGhlIEJJT1MgZG9lc24ndCBwcm92aWRlIGluZm9ybWF0aW9uIGl0J3MgZGlmZmljdWx0IHRv
+IG1ha2UgYW4gZWR1Y2F0ZWQgZ3Vlc3MuIElmIHlvdSBoYXZlIHN0YXRpc3RpY2FsIGV2aWRlbmNl
+IHRoYXQgbW9yZSBkZXZpY2VzIHdpdGhvdXQgdGhlIEJJT1MgaW5mb3JtYXRpb24gYXJlIGJhc2Vk
+IG9uIEFJRjIgSSBkb24ndCBtaW5kIGNoYW5naW5nIGl0LCBhbHRlcm5hdGl2ZWx5IHdlIGNvdWxk
+IGtlZXAgdGhlIGRlZmF1bHQgYW5kIHdoZW4gdGhpbmdzIGRvbid0IHdvcmsgdXNlcnMgY2FuIHN0
+aWxsIHVzZSBhIG1vZHVsZSBwYXJhbWV0ZXIgdG8gb3ZlcnJpZGUgdGhlIGRlZmF1bHQgYW5kIGdl
+dCBBSUYxIHRvIHdvcmsKClRoYW5rcyBmb3IgdGhlIGluZm8uIEdpdmVuIHRoYXQgdGhlcmUgd2Fz
+IGEgZ29vZCByZWFzb24gZm9yIHRoZSBkZWZhdWx0LCB3ZQpzaG91bGQgcHJvYmFibHkganVzdCBr
+ZWVwIGl0IGFzIGlzLgoKSXQgbG9va3MgbGlrZSBJJ20gZ29pbmcgdG8gbmVlZCBhIGxvdCBvZiBx
+dWlya3MgYW55d2F5cyBmb3IgdGhlIGphY2stZGV0ZWN0CnN0dWZmIGFzIHdlbGwgYXMgZm9yIHNl
+bGVjdGluZyB0aGUgcmlnaHQgaW5wdXQgZm9yIHRoZSBpbnRlcm5hbCBtaWMuCgpJdCBzZWVtcyB0
+aGF0IHRoZXJlIGFyZSBubyBjb3JyZWN0IGRlZmF1bHRzIGhlcmUsIEkndmUgYW4gYXByb3ggNTAv
+NTAlCnNwbGl0IGZvciBKRDFJTjRQIHZzIEpEMklONE4gYW5kIGFscyBhIDQ1LzQ1LzEwJSBzcGxp
+dCBmb3IgdXNpbmcKSU4xL0lOMy9ETUlDMSBmb3IgdGhlIGludGVybmFsIG1pYy4gU28gaXQgbG9v
+a3MgbGlrZSBpdCBpcyBzaW1wbHkgZ29pbmcKdG8gYmUgMSBETUkgcXVpcmsgcGVyIG1vZGVsIDp8
+CgpSZWdhcmRzLAoKSGFucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
+cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
+ZGV2ZWwK
