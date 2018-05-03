@@ -1,18 +1,18 @@
 From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v14 1/8] ASoC: sun4i-codec: Add MIC2
- Pre-Amplifier, Mic2, Mic Playback Volume
-Date: Thu, 3 May 2018 16:30:15 +0200
-Message-ID: <20180503143015.txtwdbt5icpeq4u5@flea>
+Subject: Re: [PATCH v14 2/8] ASoC: sun4i-codec: Add Mic1 Boost
+ Volume, Mic2 Boost Volume
+Date: Thu, 3 May 2018 16:33:19 +0200
+Message-ID: <20180503143319.4vyh2y5sluatssnv@flea>
 References: <20180502210800.1971-1-dannym@scratchpost.org>
- <20180502210800.1971-2-dannym@scratchpost.org>
+ <20180502210800.1971-3-dannym@scratchpost.org>
 Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="6kf2zepmquszwjys"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBB6FZVTLQKGQE25Q2BTI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="vviupd6fljapnitc"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBMN3VTLQKGQEKXM5QKY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20180502210800.1971-2-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+In-Reply-To: <20180502210800.1971-3-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -24,59 +24,117 @@ Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 List-Id: alsa-devel@alsa-project.org
 
 
---6kf2zepmquszwjys
+--vviupd6fljapnitc
 Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 
-On Wed, May 02, 2018 at 11:07:53PM +0200, Danny Milosavljevic wrote:
-> Add MIC2 Pre-Amplifier, Mic2 input and Mic Playback Volume for Allwinner A10
-> and Allwinner A20.
+On Wed, May 02, 2018 at 11:07:54PM +0200, Danny Milosavljevic wrote:
+> Add Mic1 Boost Volume and Mic2 Boost Volume for Allwinner A10 and Allwinner
+> A20.  Also add support for extra controls to the sun4i_codec_quirks because
+> the A10 and A20 have Mic1 Boost Volume at different places (likewise for
+> Mic2 Boost Volume).
 
-That's a general remark for all your commits here, but you should have
-more context in your commit logs, for example to define what is the
-usual use case for these microphones, if the playback volume applies
-to all mic at once, or just a fraction of them, etc.
+A good rule of thumb is that when you have "also" in your commit log,
+you should do another patch instead doing that instead.
 
+> 
 > Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 > ---
->  sound/soc/sunxi/sun4i-codec.c | 15 +++++++++++++++
->  1 file changed, 15 insertions(+)
+>  sound/soc/sunxi/sun4i-codec.c | 66 ++++++++++++++++++++++++++++++++++++-------
+>  1 file changed, 56 insertions(+), 10 deletions(-)
 > 
 > diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-> index 9a3cb7704810..060a40b45ab0 100644
+> index 060a40b45ab0..4af286f44a67 100644
 > --- a/sound/soc/sunxi/sun4i-codec.c
 > +++ b/sound/soc/sunxi/sun4i-codec.c
-> @@ -64,6 +64,7 @@
->  #define SUN4I_CODEC_DAC_ACTL_DACAENR			(31)
->  #define SUN4I_CODEC_DAC_ACTL_DACAENL			(30)
->  #define SUN4I_CODEC_DAC_ACTL_MIXEN			(29)
-> +#define SUN4I_CODEC_DAC_ACTL_MICG			(20)
->  #define SUN4I_CODEC_DAC_ACTL_LDACLMIXS			(15)
->  #define SUN4I_CODEC_DAC_ACTL_RDACRMIXS			(14)
->  #define SUN4I_CODEC_DAC_ACTL_LDACRMIXS			(13)
-> @@ -673,11 +674,16 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
->  			SUN4I_CODEC_DAC_ACTL_PA_MUTE, 1, 0);
+> @@ -95,6 +95,8 @@
+>  #define SUN4I_CODEC_ADC_ACTL_PREG1EN			(29)
+>  #define SUN4I_CODEC_ADC_ACTL_PREG2EN			(28)
+>  #define SUN4I_CODEC_ADC_ACTL_VMICEN			(27)
+> +#define SUN4I_CODEC_ADC_ACTL_PREG1			(25)
+> +#define SUN4I_CODEC_ADC_ACTL_PREG2			(23)
+>  #define SUN4I_CODEC_ADC_ACTL_VADCG			(20)
+>  #define SUN4I_CODEC_ADC_ACTL_ADCIS			(17)
+>  #define SUN4I_CODEC_ADC_ACTL_PA_EN			(4)
+> @@ -111,6 +113,9 @@
+>  /* Microphone controls (sun7i only) */
+>  #define SUN7I_CODEC_AC_MIC_PHONE_CAL		(0x3c)
 >  
+> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1		(29)
+> +#define SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2		(26)
+> +
+>  /*
+>   * sun6i specific registers
+>   *
+> @@ -676,6 +681,12 @@ static const struct snd_kcontrol_new sun4i_codec_pa_mute =
 >  static DECLARE_TLV_DB_SCALE(sun4i_codec_pa_volume_scale, -6300, 100, 1);
-> +static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale, -450, 150,
-> +			    0);
+>  static DECLARE_TLV_DB_SCALE(sun4i_codec_micin_loopback_gain_scale, -450, 150,
+>  			    0);
+> +static DECLARE_TLV_DB_RANGE(sun4i_codec_micin_preamp_gain_scale,
+> +			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
+> +			    1, 7, TLV_DB_SCALE_ITEM(3500, 300, 0));
+> +static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
+> +			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
+> +			    1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0));
 >  
 >  static const struct snd_kcontrol_new sun4i_codec_controls[] = {
 >  	SOC_SINGLE_TLV("Power Amplifier Volume", SUN4I_CODEC_DAC_ACTL,
->  		       SUN4I_CODEC_DAC_ACTL_PA_VOL, 0x3F, 0,
->  		       sun4i_codec_pa_volume_scale),
-> +	SOC_SINGLE_TLV("Mic Playback Volume", SUN4I_CODEC_DAC_ACTL,
-> +		       SUN4I_CODEC_DAC_ACTL_MICG, 7, 0,
-> +		       sun4i_codec_micin_loopback_gain_scale),
+> @@ -686,6 +697,24 @@ static const struct snd_kcontrol_new sun4i_codec_controls[] = {
+>  		       sun4i_codec_micin_loopback_gain_scale),
+>  };
+>  
+> +static const struct snd_kcontrol_new sun4i_codec_extra_controls[] = {
+> +	SOC_SINGLE_TLV("Mic1 Boost Volume", SUN4I_CODEC_ADC_ACTL,
+> +		       SUN4I_CODEC_ADC_ACTL_PREG1, 3, 0,
+> +		       sun4i_codec_micin_preamp_gain_scale),
+> +	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN4I_CODEC_ADC_ACTL,
+> +		       SUN4I_CODEC_ADC_ACTL_PREG2, 3, 0,
+> +		       sun4i_codec_micin_preamp_gain_scale),
+> +};
+> +
+> +static const struct snd_kcontrol_new sun7i_codec_extra_controls[] = {
+> +	SOC_SINGLE_TLV("Mic1 Boost Volume", SUN7I_CODEC_AC_MIC_PHONE_CAL,
+> +		       SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG1, 7, 0,
+> +		       sun7i_codec_micin_preamp_gain_scale),
+> +	SOC_SINGLE_TLV("Mic2 Boost Volume", SUN7I_CODEC_AC_MIC_PHONE_CAL,
+> +		       SUN7I_CODEC_AC_MIC_PHONE_CAL_PREG2, 7, 0,
+> +		       sun7i_codec_micin_preamp_gain_scale),
+> +};
+> +
+>  static const struct snd_kcontrol_new sun4i_codec_left_mixer_controls[] = {
+>  	SOC_DAPM_SINGLE("Left DAC Playback Switch", SUN4I_CODEC_DAC_ACTL,
+>  			SUN4I_CODEC_DAC_ACTL_LDACLMIXS, 1, 0),
+> @@ -807,7 +836,30 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
+>  	{ "Mic2", NULL, "VMIC" },
+>  };
+>  
+> +struct sun4i_codec_quirks {
+> +	const struct regmap_config *regmap_config;
+> +	const struct snd_soc_component_driver *codec;
+> +	struct snd_soc_card * (*create_card)(struct device *dev);
+> +	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
+> +	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
+> +	unsigned int reg_adc_rxdata;	/* RX FIFO offset for DMA config */
+> +	bool has_reset;
+> +	const struct snd_kcontrol_new *controls;
+> +	unsigned int num_controls;
+> +};
+> +
+> +static int sun4i_codec_component_driver_probe(struct snd_soc_component *codec)
+> +{
+> +	const struct sun4i_codec_quirks *quirks;
+> +
+> +	quirks = of_device_get_match_data(codec->dev);
+> +	return snd_soc_add_component_controls(codec,
+> +					      quirks->controls,
+> +					      quirks->num_controls);
 
-This should probably go in a separate patch, it isn't directly related
-to the rest of the patch.
+Why not just extending the sun4i_codec_controls to add it, and create
+a duplicate one for the A20?
 
-Looks good otherwise, thanks!
-Maxime
 
 -- 
 Maxime Ripard, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
---6kf2zepmquszwjys--
+--vviupd6fljapnitc--
