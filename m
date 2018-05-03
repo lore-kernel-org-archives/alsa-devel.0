@@ -1,76 +1,88 @@
-From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v14 8/8] ASoC: sun4i-codec: Add Left Capture
- Select, Right Capture Select
-Date: Thu, 3 May 2018 16:54:08 +0200
-Message-ID: <20180503145408.yymk2ndt4sm2yt4i@flea>
-References: <20180502210800.1971-1-dannym@scratchpost.org>
- <20180502210800.1971-9-dannym@scratchpost.org>
-Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: Rationale for BYTCR defaults in the kernel's
+ bytcr_rt5640 machine driver ?
+Date: Thu, 3 May 2018 11:26:13 -0500
+Message-ID: <d0ffe4b0-9436-0731-35dc-57fcc8205c93@linux.intel.com>
+References: <0b04e03f-7147-fb27-22c3-e81a8cbf3a8f@redhat.com>
+ <de590ce5-82ca-4b51-6189-e198d541ce55@linux.intel.com>
+ <64f761ed-dcc9-2e47-c5f9-a108803a873a@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="odizj5wdfscxpmbv"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBNWFVTLQKGQEEVUIFDQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20180502210800.1971-9-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Andrea Bondavalli <andrea.bondavalli74-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F528267235
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 18:26:16 +0200 (CEST)
+In-Reply-To: <64f761ed-dcc9-2e47-c5f9-a108803a873a@redhat.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---odizj5wdfscxpmbv
-Content-Type: text/plain; charset="UTF-8"
-Content-Disposition: inline
-
-Hi,
-
-On Wed, May 02, 2018 at 11:08:00PM +0200, Danny Milosavljevic wrote:
-> Add Left Capture Select and Right Capture Select for Allwinner A10 and
-> Allwinner A20.
-> 
-> Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-> ---
->  sound/soc/sunxi/sun4i-codec.c | 50 +++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 50 insertions(+)
-> 
-> diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-> index 45dcb80a1da9..1a4ba3bae5da 100644
-> --- a/sound/soc/sunxi/sun4i-codec.c
-> +++ b/sound/soc/sunxi/sun4i-codec.c
-> @@ -706,6 +706,25 @@ static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
->  			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
->  			    1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0));
->  
-> +static const char * const sun4i_codec_capture_source[] = {
-> +	"Line",
-> +	"FM",
-> +	"Mic1",
-> +	"Mic2",
-> +	"Mic1,Mic2",
-> +	"Mic1+Mic2",
-> +	"Output Mixer",
-> +	"Line,Mic1",
-> +};
-
-Shouldn't that be defined in a more generic way? As far as I know,
-there's no way to tell what the difference between "Mic1,Mic2" and
-"Mic1+Mic2" would be from the userspace.
-
-I guess the larger issue is that you'd need to have controls that are
-common to both channels (ie that would change the routing of both
-mixers), but aren't sharing the same controls structure since the
-label would be different.
-
-Maxime
-
--- 
-Maxime Ripard, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
---odizj5wdfscxpmbv--
+T24gNS8zLzE4IDM6MTMgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4gSGksCj4gCj4gT24gMDEt
+MDUtMTggMjI6MjksIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Pgo+Pgo+PiBPbiAwNS8w
+MS8yMDE4IDAyOjIxIFBNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+Pj4gSGkgUGllcnJlLUxvdWlz
+LAo+Pj4KPj4+IEknbSBmaW5hbGx5IHdyYXBwaW5nIHVwIG15IHJ0NTY0MCBqYWNrLWRldGVjdCB3
+b3JrLCBhcwo+Pj4gc3VjaCBJJ20gY3VycmVudGx5IHRlc3Rpbmcgc3BlYWtlciArIGhlYWRwaG9u
+ZXMgKyBpbnRlcm5hbCBtaWMgKwo+Pj4gaGVhZHNldC1taWMgKyBqYWNrLWRldGVjdCBmdW5jdGlv
+bmFsaXR5IG9uIHRoZSAxMCBkaWZmZXJlbnQKPj4+IHg4NiBkZXZpY2VzIHdpdGggYSBydDU2NDAg
+Y29kZWMgd2hpY2ggSSd2ZSBnYXRoZXJlZC4KPj4+Cj4+PiAyIG9mIHRoZW0gc3RhbmQgb3V0IGlu
+IHRoYXQgdGhleSB1c2UgdGhlIEJZVENSIFNvQywgYnV0IGRvbid0Cj4+PiBoYXZlIHRoZSBBQ1BJ
+IHRhYmxlIGZvciBkZXRlY3RpbmcgaWYgU1NQMCBBSUYxIG9yIEFJRjIKPj4+IHNob3VsZCBiZSB1
+c2VkLiBDdXJyZW50bHkgdGhlIGRyaXZlciBkZWZhdWx0cyB0byBBSUYyCj4+PiBpbiB0aGlzIGNh
+c2UuCj4+Pgo+Pj4gQXMgdGhlIHNvbWV3aGF0IHdpbGRjYXJkLWlzaCBETUkgcXVpcmsgZm9yIGJv
+YXJkcyB3aGVyZQo+Pj4gdGhlIHN5c192ZW5kb3IgaXMgIkluc3lkZSIgKHdoaWNoIGFwcGxpZXMg
+dG8gYSBsb3Qgb2YKPj4+IGdlbmVyaWMgZGVzaWducykgc2hvd3M6Cj4+Pgo+Pj4gwqDCoMKgwqDC
+oMKgwqAgewo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIC5jYWxsYmFjayA9IGJ5
+dF9ydDU2NDBfcXVpcmtfY2IsCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLm1h
+dGNoZXMgPSB7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIERNSV9NQVRDSChETUlfU1lTX1ZFTkRPUiwgIkluc3lkZSIpLAo+Pj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIH0sCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+LmRyaXZlcl9kYXRhID0gKHZvaWQgKikoQllUX1JUNTY0MF9JTjNfTUFQIHwKPj4+IMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX01DTEtfRU4gfAo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIEJZVF9SVDU2NDBfU1NQMF9BSUYxKSwKPj4+Cj4+PiDCoMKgwqDCoMKgwqDCoCB9LAo+Pj4K
+Pj4+IEFJRjEgc2VlbXMgdG8gYmUgYSBiZXR0ZXIgZGVmYXVsdCBib3RoIG1vZGVscyB3aXRob3V0
+Cj4+PiB0aGUgQUNQSSB0YWJsZSB3aGljaCBJJ3ZlIGhlcmUsIGEgSFAgcGF2aWxpb24gWDIgYW5k
+IGEKPj4+IFRvc2hpYmEgQ2xpY2sgTWluaSBMOVctQiBuZWVkIGEgcXVpcmsgdG8gdXNlIEFJRjEu
+Cj4+Pgo+Pj4gU28gSSB3YXMgd29uZGVyaW5nIGlmIHRoZXJlIHdhcyBhIHNwZWNpZmljIHJhdGlv
+bmFsZSBmb3IgdGhlCj4+PiBBSUYyIGRlZmF1bHQgYW5kIGlmIGl0IHdvdWxkIG5vdCBiZSBiZXR0
+ZXIgdG8gY2hhbmdlIHRoZSBkZWZhdWx0Cj4+PiB0byBBSUYxICh3aGljaCB3aWxsIHVuZm9ydHVu
+YXRlbHkgYnJpbmcgYSBjaGFuY2Ugb2YgcmVncmVzc2lvbnMpID8KPj4KPj4geWVzIHRoZXJlIHdh
+cyBhIHJhdGlvbmFsZTogYWxsIHRoZSBpbml0aWFsIEJheXRyYWlsIGRlc2lnbnMgaGFkIAo+PiBj
+b25uZWN0aW9ucyBiZXR3ZWVuIFNTUDItQUlGMSBhbmQgU1NQMC1BSUYyLiBJSVJDIHRoaXMgd2Fz
+IGJlY2F1c2UgCj4+IHRoZXJlIHdhcyBhIGRlc2lyZSB0byBzdXBwb3J0IDQ0LjFrSHogb24gb25l
+IFNTUCBhbmQgNDhrSHogb24gdGhlIG90aGVyLgo+PiBTbyB3aGVuIEJZVC1DUiB3YXMgZGVmaW5l
+ZCB3aXRoIFNTUDIgcmVtb3ZlZCwgbW9zdCBkZXNpZ25zIGtlcHQgdGhlIAo+PiBleGlzdGluZyBT
+U1AwLUFJRjIgbGluaywgZXhjZXB0IG9mIGNvdXJzZSB3aGVuIHRoZXkgZGlkbid0Li4uCj4+Cj4+
+IEkgZG9uJ3QgaGF2ZSBhIG1hZ2ljIHNvbHV0aW9uIGhlcmUsIHdoZW4gdGhlIEJJT1MgZG9lc24n
+dCBwcm92aWRlIAo+PiBpbmZvcm1hdGlvbiBpdCdzIGRpZmZpY3VsdCB0byBtYWtlIGFuIGVkdWNh
+dGVkIGd1ZXNzLiBJZiB5b3UgaGF2ZSAKPj4gc3RhdGlzdGljYWwgZXZpZGVuY2UgdGhhdCBtb3Jl
+IGRldmljZXMgd2l0aG91dCB0aGUgQklPUyBpbmZvcm1hdGlvbiAKPj4gYXJlIGJhc2VkIG9uIEFJ
+RjIgSSBkb24ndCBtaW5kIGNoYW5naW5nIGl0LCBhbHRlcm5hdGl2ZWx5IHdlIGNvdWxkIAo+PiBr
+ZWVwIHRoZSBkZWZhdWx0IGFuZCB3aGVuIHRoaW5ncyBkb24ndCB3b3JrIHVzZXJzIGNhbiBzdGls
+bCB1c2UgYSAKPj4gbW9kdWxlIHBhcmFtZXRlciB0byBvdmVycmlkZSB0aGUgZGVmYXVsdCBhbmQg
+Z2V0IEFJRjEgdG8gd29yawo+IAo+IFRoYW5rcyBmb3IgdGhlIGluZm8uIEdpdmVuIHRoYXQgdGhl
+cmUgd2FzIGEgZ29vZCByZWFzb24gZm9yIHRoZSBkZWZhdWx0LCB3ZQo+IHNob3VsZCBwcm9iYWJs
+eSBqdXN0IGtlZXAgaXQgYXMgaXMuCj4gCj4gSXQgbG9va3MgbGlrZSBJJ20gZ29pbmcgdG8gbmVl
+ZCBhIGxvdCBvZiBxdWlya3MgYW55d2F5cyBmb3IgdGhlIGphY2stZGV0ZWN0Cj4gc3R1ZmYgYXMg
+d2VsbCBhcyBmb3Igc2VsZWN0aW5nIHRoZSByaWdodCBpbnB1dCBmb3IgdGhlIGludGVybmFsIG1p
+Yy4KPiAKPiBJdCBzZWVtcyB0aGF0IHRoZXJlIGFyZSBubyBjb3JyZWN0IGRlZmF1bHRzIGhlcmUs
+IEkndmUgYW4gYXByb3ggNTAvNTAlCj4gc3BsaXQgZm9yIEpEMUlONFAgdnMgSkQySU40TiBhbmQg
+YWxzIGEgNDUvNDUvMTAlIHNwbGl0IGZvciB1c2luZwo+IElOMS9JTjMvRE1JQzEgZm9yIHRoZSBp
+bnRlcm5hbCBtaWMuIFNvIGl0IGxvb2tzIGxpa2UgaXQgaXMgc2ltcGx5IGdvaW5nCj4gdG8gYmUg
+MSBETUkgcXVpcmsgcGVyIG1vZGVsIDp8CgpJIGFtIGFmcmFpZCB5b3UgYXJlIHJpZ2h0LiBoYXJk
+d2FyZSBmb2xrcyBtYWtlIHVzZSBvZiBldmVyeSBwb3NzaWJsZSAKY29tYmluYXRpb24gb2YgKEFJ
+RiwgbWljIGludGVyZmFjZSwgSkQgbWV0aG9kLCBidXR0b24gcHJlc3MgbWV0aG9kKQoKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
