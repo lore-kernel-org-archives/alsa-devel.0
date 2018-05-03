@@ -1,104 +1,124 @@
-From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Subject: [PATCH v14 8/8] ASoC: sun4i-codec: Add Left Capture
- Select, Right Capture Select
-Date: Wed,  2 May 2018 23:08:00 +0200
-Message-ID: <20180502210800.1971-9-dannym@scratchpost.org>
-References: <20180502210800.1971-1-dannym@scratchpost.org>
-Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: fsl_spdif: Switch to SPDX identifier"
+	to the asoc tree
+Date: Thu,  3 May 2018 02:31:43 +0100 (BST)
+Message-ID: <20180503013143.455F944007A@finisterre.ee.mobilebroadband>
+References: <1525132518-27663-4-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBCPKHTHNWIPBBVWRVDLQKGQEIFCIXMY-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-In-Reply-To: <20180502210800.1971-1-dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>, Andrea Bondavalli <andrea.bondavalli74-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A1E5266C1C
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 03:31:48 +0200 (CEST)
+In-Reply-To: <1525132518-27663-4-git-send-email-festevam@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@tabi.org
 List-Id: alsa-devel@alsa-project.org
 
-Add Left Capture Select and Right Capture Select for Allwinner A10 and
-Allwinner A20.
+The patch
 
-Signed-off-by: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+   ASoC: fsl_spdif: Switch to SPDX identifier
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 165a30e4315e14c0e30e54b6e3c977198b98195d Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Tue, 1 May 2018 09:20:43 -0300
+Subject: [PATCH] ASoC: fsl_spdif: Switch to SPDX identifier
+
+Adopt the SPDX license identifier headers to ease license compliance
+management.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sunxi/sun4i-codec.c | 50 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 50 insertions(+)
+ sound/soc/fsl/fsl_spdif.c | 24 ++++++++++--------------
+ sound/soc/fsl/fsl_spdif.h |  5 +----
+ 2 files changed, 11 insertions(+), 18 deletions(-)
 
-diff --git a/sound/soc/sunxi/sun4i-codec.c b/sound/soc/sunxi/sun4i-codec.c
-index 45dcb80a1da9..1a4ba3bae5da 100644
---- a/sound/soc/sunxi/sun4i-codec.c
-+++ b/sound/soc/sunxi/sun4i-codec.c
-@@ -706,6 +706,25 @@ static DECLARE_TLV_DB_RANGE(sun7i_codec_micin_preamp_gain_scale,
- 			    0, 0, TLV_DB_SCALE_ITEM(0, 0, 0),
- 			    1, 7, TLV_DB_SCALE_ITEM(2400, 300, 0));
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 4f7469c1864c..9b59d87b61bf 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1,17 +1,13 @@
+-/*
+- * Freescale S/PDIF ALSA SoC Digital Audio Interface (DAI) driver
+- *
+- * Copyright (C) 2013 Freescale Semiconductor, Inc.
+- *
+- * Based on stmp3xxx_spdif_dai.c
+- * Vladimir Barinov <vbarinov@embeddedalley.com>
+- * Copyright 2008 SigmaTel, Inc
+- * Copyright 2008 Embedded Alley Solutions, Inc
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program  is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// Freescale S/PDIF ALSA SoC Digital Audio Interface (DAI) driver
++//
++// Copyright (C) 2013 Freescale Semiconductor, Inc.
++//
++// Based on stmp3xxx_spdif_dai.c
++// Vladimir Barinov <vbarinov@embeddedalley.com>
++// Copyright 2008 SigmaTel, Inc
++// Copyright 2008 Embedded Alley Solutions, Inc
  
-+static const char * const sun4i_codec_capture_source[] = {
-+	"Line",
-+	"FM",
-+	"Mic1",
-+	"Mic2",
-+	"Mic1,Mic2",
-+	"Mic1+Mic2",
-+	"Output Mixer",
-+	"Line,Mic1",
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(sun4i_codec_enum_capture_source,
-+			    SUN4I_CODEC_ADC_ACTL,
-+			    SUN4I_CODEC_ADC_ACTL_ADCIS,
-+			    sun4i_codec_capture_source);
-+
-+static const struct snd_kcontrol_new sun4i_codec_capture_source_controls =
-+	SOC_DAPM_ENUM("Capture Source", sun4i_codec_enum_capture_source);
-+
- static const char * const sun4i_codec_difflinein_source[] = {
- 	"Stereo",
- 	"Differential",
-@@ -841,6 +860,10 @@ static const struct snd_soc_dapm_widget sun4i_codec_codec_dapm_widgets[] = {
- 			    &sun4i_codec_pa_mute),
+ #include <linux/bitrev.h>
+ #include <linux/clk.h>
+diff --git a/sound/soc/fsl/fsl_spdif.h b/sound/soc/fsl/fsl_spdif.h
+index 00bd3514c610..7666dabaccfd 100644
+--- a/sound/soc/fsl/fsl_spdif.h
++++ b/sound/soc/fsl/fsl_spdif.h
+@@ -1,3 +1,4 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ /*
+  * fsl_spdif.h - ALSA S/PDIF interface for the Freescale i.MX SoC
+  *
+@@ -8,10 +9,6 @@
+  * Based on fsl_ssi.h
+  * Author: Timur Tabi <timur@freescale.com>
+  * Copyright 2007-2008 Freescale Semiconductor, Inc.
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program  is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+  */
  
- 	/* MUX */
-+	SND_SOC_DAPM_MUX("Left Capture Select", SND_SOC_NOPM, 0, 0,
-+			 &sun4i_codec_capture_source_controls),
-+	SND_SOC_DAPM_MUX("Right Capture Select", SND_SOC_NOPM, 0, 0,
-+			 &sun4i_codec_capture_source_controls),
- 	SND_SOC_DAPM_MUX("Differential Line Source", SND_SOC_NOPM,
- 			 0, 0,
- 			 &sun4i_codec_difflinein_source_controls),
-@@ -908,6 +931,33 @@ static const struct snd_soc_dapm_route sun4i_codec_codec_dapm_routes[] = {
- 	/* LNRDF Routes */
- 	{ "Differential Line Source", "Differential", "Line Left" },
- 	{ "Differential Line Source", "Differential", "Line Right" },
-+
-+	/* Right ADC Input Routes */
-+	{ "Right Capture Select", "Line", "Line Right" },
-+	{ "Right Capture Select", "Line", "Differential Line Capture Switch" },
-+	{ "Right Capture Select", "FM", "FM Right" },
-+	{ "Right Capture Select", "Mic1", "MIC1 Pre-Amplifier" },
-+	{ "Right Capture Select", "Mic2", "MIC2 Pre-Amplifier" },
-+	{ "Right Capture Select", "Mic1,Mic2", "MIC2 Pre-Amplifier" },
-+	{ "Right Capture Select", "Mic1+Mic2", "MIC2 Pre-Amplifier" },
-+	{ "Right Capture Select", "Mic1+Mic2", "MIC1 Pre-Amplifier" },
-+	{ "Right Capture Select", "Output Mixer", "Right Mixer" },
-+	{ "Right Capture Select", "Line,Mic1", "MIC1 Pre-Amplifier" },
-+	{ "Right ADC", NULL, "Right Capture Select" },
-+
-+	/* Left ADC Input Routes */
-+	{ "Left Capture Select", "Line", "Line Left" },
-+	{ "Left Capture Select", "Line", "Differential Line Capture Switch" },
-+	{ "Left Capture Select", "FM", "FM Left" },
-+	{ "Left Capture Select", "Mic1", "MIC1 Pre-Amplifier" },
-+	{ "Left Capture Select", "Mic2", "MIC2 Pre-Amplifier" },
-+	{ "Left Capture Select", "Mic1,Mic2", "MIC1 Pre-Amplifier" },
-+	{ "Left Capture Select", "Mic1+Mic2", "MIC1 Pre-Amplifier" },
-+	{ "Left Capture Select", "Mic1+Mic2", "MIC2 Pre-Amplifier" },
-+	{ "Left Capture Select", "Output Mixer", "Left Mixer" },
-+	{ "Left Capture Select", "Line,Mic1", "Line Left" },
-+	{ "Left Capture Select", "Line,Mic1", "Differential Line Capture Switch" },
-+	{ "Left ADC", NULL, "Left Capture Select" },
- };
- 
- struct sun4i_codec_quirks {
+ #ifndef _FSL_SPDIF_DAI_H
+-- 
+2.17.0
