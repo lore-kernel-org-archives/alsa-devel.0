@@ -1,20 +1,22 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: Rationale for BYTCR defaults in the kernel's
- bytcr_rt5640 machine driver ?
-Date: Thu, 3 May 2018 10:13:01 +0200
-Message-ID: <64f761ed-dcc9-2e47-c5f9-a108803a873a@redhat.com>
-References: <0b04e03f-7147-fb27-22c3-e81a8cbf3a8f@redhat.com>
- <de590ce5-82ca-4b51-6189-e198d541ce55@linux.intel.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH v2] ASoC: da7219: read fmw property to get
+ mclk for non-dts systems
+Date: Thu, 3 May 2018 08:20:25 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1E9A89@SW-EX-MBX01.diasemi.com>
+References: <1525080203-18947-1-git-send-email-akshu.agrawal@amd.com>
+ <2E89032DDAA8B9408CB92943514A0337014C1E93BC@SW-EX-MBX01.diasemi.com>
+ <20180501205006.GE2714@sirena.org.uk>
+ <2E89032DDAA8B9408CB92943514A0337014C1E9782@SW-EX-MBX01.diasemi.com>
+ <20180503013919.GN2714@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 39AF4266F50
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 10:13:02 +0200 (CEST)
-Received: by mail-wm0-f41.google.com with SMTP id i3so28550200wmf.3
- for <alsa-devel@alsa-project.org>; Thu, 03 May 2018 01:13:02 -0700 (PDT)
-In-Reply-To: <de590ce5-82ca-4b51-6189-e198d541ce55@linux.intel.com>
+Received: from mail1.bemta5.messagelabs.com (mail1.bemta5.messagelabs.com
+ [195.245.231.145])
+ by alsa0.perex.cz (Postfix) with ESMTP id 94E20266F50
+ for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 10:20:28 +0200 (CEST)
+In-Reply-To: <20180503013919.GN2714@sirena.org.uk>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,61 +27,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Takashi Iwai <tiwai@suse.com>, "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAwMS0wNS0xOCAyMjoyOSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4g
-Cj4gT24gMDUvMDEvMjAxOCAwMjoyMSBQTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4gSGkgUGll
-cnJlLUxvdWlzLAo+Pgo+PiBJJ20gZmluYWxseSB3cmFwcGluZyB1cCBteSBydDU2NDAgamFjay1k
-ZXRlY3Qgd29yaywgYXMKPj4gc3VjaCBJJ20gY3VycmVudGx5IHRlc3Rpbmcgc3BlYWtlciArIGhl
-YWRwaG9uZXMgKyBpbnRlcm5hbCBtaWMgKwo+PiBoZWFkc2V0LW1pYyArIGphY2stZGV0ZWN0IGZ1
-bmN0aW9uYWxpdHkgb24gdGhlIDEwIGRpZmZlcmVudAo+PiB4ODYgZGV2aWNlcyB3aXRoIGEgcnQ1
-NjQwIGNvZGVjIHdoaWNoIEkndmUgZ2F0aGVyZWQuCj4+Cj4+IDIgb2YgdGhlbSBzdGFuZCBvdXQg
-aW4gdGhhdCB0aGV5IHVzZSB0aGUgQllUQ1IgU29DLCBidXQgZG9uJ3QKPj4gaGF2ZSB0aGUgQUNQ
-SSB0YWJsZSBmb3IgZGV0ZWN0aW5nIGlmIFNTUDAgQUlGMSBvciBBSUYyCj4+IHNob3VsZCBiZSB1
-c2VkLiBDdXJyZW50bHkgdGhlIGRyaXZlciBkZWZhdWx0cyB0byBBSUYyCj4+IGluIHRoaXMgY2Fz
-ZS4KPj4KPj4gQXMgdGhlIHNvbWV3aGF0IHdpbGRjYXJkLWlzaCBETUkgcXVpcmsgZm9yIGJvYXJk
-cyB3aGVyZQo+PiB0aGUgc3lzX3ZlbmRvciBpcyAiSW5zeWRlIiAod2hpY2ggYXBwbGllcyB0byBh
-IGxvdCBvZgo+PiBnZW5lcmljIGRlc2lnbnMpIHNob3dzOgo+Pgo+PiDCoMKgwqDCoMKgwqDCoCB7
-Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAuY2FsbGJhY2sgPSBieXRfcnQ1NjQw
-X3F1aXJrX2NiLAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLm1hdGNoZXMgPSB7
-Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgRE1JX01B
-VENIKERNSV9TWVNfVkVORE9SLCAiSW5zeWRlIiksCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoCB9LAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgLmRyaXZlcl9kYXRh
-ID0gKHZvaWQgKikoQllUX1JUNTY0MF9JTjNfTUFQIHwKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IEJZVF9SVDU2NDBfTUNMS19FTiB8Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQw
-X1NTUDBfQUlGMSksCj4+Cj4+IMKgwqDCoMKgwqDCoMKgIH0sCj4+Cj4+IEFJRjEgc2VlbXMgdG8g
-YmUgYSBiZXR0ZXIgZGVmYXVsdCBib3RoIG1vZGVscyB3aXRob3V0Cj4+IHRoZSBBQ1BJIHRhYmxl
-IHdoaWNoIEkndmUgaGVyZSwgYSBIUCBwYXZpbGlvbiBYMiBhbmQgYQo+PiBUb3NoaWJhIENsaWNr
-IE1pbmkgTDlXLUIgbmVlZCBhIHF1aXJrIHRvIHVzZSBBSUYxLgo+Pgo+PiBTbyBJIHdhcyB3b25k
-ZXJpbmcgaWYgdGhlcmUgd2FzIGEgc3BlY2lmaWMgcmF0aW9uYWxlIGZvciB0aGUKPj4gQUlGMiBk
-ZWZhdWx0IGFuZCBpZiBpdCB3b3VsZCBub3QgYmUgYmV0dGVyIHRvIGNoYW5nZSB0aGUgZGVmYXVs
-dAo+PiB0byBBSUYxICh3aGljaCB3aWxsIHVuZm9ydHVuYXRlbHkgYnJpbmcgYSBjaGFuY2Ugb2Yg
-cmVncmVzc2lvbnMpID8KPiAKPiB5ZXMgdGhlcmUgd2FzIGEgcmF0aW9uYWxlOiBhbGwgdGhlIGlu
-aXRpYWwgQmF5dHJhaWwgZGVzaWducyBoYWQgY29ubmVjdGlvbnMgYmV0d2VlbiBTU1AyLUFJRjEg
-YW5kIFNTUDAtQUlGMi4gSUlSQyB0aGlzIHdhcyBiZWNhdXNlIHRoZXJlIHdhcyBhIGRlc2lyZSB0
-byBzdXBwb3J0IDQ0LjFrSHogb24gb25lIFNTUCBhbmQgNDhrSHogb24gdGhlIG90aGVyLgo+IFNv
-IHdoZW4gQllULUNSIHdhcyBkZWZpbmVkIHdpdGggU1NQMiByZW1vdmVkLCBtb3N0IGRlc2lnbnMg
-a2VwdCB0aGUgZXhpc3RpbmcgU1NQMC1BSUYyIGxpbmssIGV4Y2VwdCBvZiBjb3Vyc2Ugd2hlbiB0
-aGV5IGRpZG4ndC4uLgo+IAo+IEkgZG9uJ3QgaGF2ZSBhIG1hZ2ljIHNvbHV0aW9uIGhlcmUsIHdo
-ZW4gdGhlIEJJT1MgZG9lc24ndCBwcm92aWRlIGluZm9ybWF0aW9uIGl0J3MgZGlmZmljdWx0IHRv
-IG1ha2UgYW4gZWR1Y2F0ZWQgZ3Vlc3MuIElmIHlvdSBoYXZlIHN0YXRpc3RpY2FsIGV2aWRlbmNl
-IHRoYXQgbW9yZSBkZXZpY2VzIHdpdGhvdXQgdGhlIEJJT1MgaW5mb3JtYXRpb24gYXJlIGJhc2Vk
-IG9uIEFJRjIgSSBkb24ndCBtaW5kIGNoYW5naW5nIGl0LCBhbHRlcm5hdGl2ZWx5IHdlIGNvdWxk
-IGtlZXAgdGhlIGRlZmF1bHQgYW5kIHdoZW4gdGhpbmdzIGRvbid0IHdvcmsgdXNlcnMgY2FuIHN0
-aWxsIHVzZSBhIG1vZHVsZSBwYXJhbWV0ZXIgdG8gb3ZlcnJpZGUgdGhlIGRlZmF1bHQgYW5kIGdl
-dCBBSUYxIHRvIHdvcmsKClRoYW5rcyBmb3IgdGhlIGluZm8uIEdpdmVuIHRoYXQgdGhlcmUgd2Fz
-IGEgZ29vZCByZWFzb24gZm9yIHRoZSBkZWZhdWx0LCB3ZQpzaG91bGQgcHJvYmFibHkganVzdCBr
-ZWVwIGl0IGFzIGlzLgoKSXQgbG9va3MgbGlrZSBJJ20gZ29pbmcgdG8gbmVlZCBhIGxvdCBvZiBx
-dWlya3MgYW55d2F5cyBmb3IgdGhlIGphY2stZGV0ZWN0CnN0dWZmIGFzIHdlbGwgYXMgZm9yIHNl
-bGVjdGluZyB0aGUgcmlnaHQgaW5wdXQgZm9yIHRoZSBpbnRlcm5hbCBtaWMuCgpJdCBzZWVtcyB0
-aGF0IHRoZXJlIGFyZSBubyBjb3JyZWN0IGRlZmF1bHRzIGhlcmUsIEkndmUgYW4gYXByb3ggNTAv
-NTAlCnNwbGl0IGZvciBKRDFJTjRQIHZzIEpEMklONE4gYW5kIGFscyBhIDQ1LzQ1LzEwJSBzcGxp
-dCBmb3IgdXNpbmcKSU4xL0lOMy9ETUlDMSBmb3IgdGhlIGludGVybmFsIG1pYy4gU28gaXQgbG9v
-a3MgbGlrZSBpdCBpcyBzaW1wbHkgZ29pbmcKdG8gYmUgMSBETUkgcXVpcmsgcGVyIG1vZGVsIDp8
-CgpSZWdhcmRzLAoKSGFucwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2Et
-ZGV2ZWwK
+On 03 May 2018 02:39, Mark Brown wrote:
+
+> On Wed, May 02, 2018 at 10:13:55AM +0000, Adam Thomson wrote:
+> > On 01 May 2018 21:50, Mark Brown wrote:
+> 
+> > > There's a lot of things that ACPI *should* do but doesn't - it's a bit
+> > > of a shambles how ACPI standards get defined and what's there is not
+> > > really intended to handle systems like these semi-embedded ones.  One of
+> > > the big gaps in ACPI is that it has no handling at all of clocks, that's
+> > > supposed to be done transparently by firmware in the ACPI model.  What a
+> > > lot of the embedded Intel people have been doing is coopting the DT
+> > > bindings wholesale for ACPI systems but that has problems when you get
+> > > into areas which should be handled in some way on ACPI systems like
+> > > power and unfortunately clocks are kind of power adjacent so might be a
+> > > bit sketchy here.
+> 
+> > Yes I was aware that previously that was the case, although have not followed
+> > this for a while. It just feels here that we should aim for something more
+> > generic rather than a device specific property/binding, if possible, as that
+> > feels messy to me and I'm sure other drivers could take advantage of this as
+> > well. I've not looked at the clock code in too much detail though, at least with
+> > regards to this area, so not sure how feasible that is.
+> 
+> > As a suggestion for ACPI would it be possible to re-use the 'clock-names'
+> > property and add something in the framework to handle this?
+> 
+> I completely agree that ACPI should have handling for clocks but it
+> really feels like something that should be done as a proper spec rather
+> than just ad hoc by Linux like the x86 embedded people often do - it's
+> too close to the power management stuff that ACPI definitely does
+> handle.
+
+Yep, agreed. Be nice if someone could do that rather than us having workarounds.
