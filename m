@@ -1,130 +1,184 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 1/9] R3Di and SBZ quirk entires + alt firmware loading
-Date: Thu,  3 May 2018 17:42:42 -0400
-Message-ID: <1525383771-11105-1-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 2/9] Add pincfg for SBZ + R3Di, add fp hp auto-detect
+Date: Thu,  3 May 2018 17:42:43 -0400
+Message-ID: <1525383771-11105-2-git-send-email-conmanx360@gmail.com>
+References: <1525383771-11105-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1525383771-11105-1-git-send-email-conmanx360@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds PCI quirk ID's for the Sound Blaster Z and Recon3Di.
-Only the currently tested ID's have been added.
+This patch adds an unsolicited response tag for the front headphone
+panel which uses the same hp_callback as the rear headphone detection.
 
-This patch also adds the ability to load alternative firmwares for each
-card, the firmwares can be obtained from within the Windows driver.
-The Recon3Di uses "ctefx-r3di.bin" and the Sound Blaster Z uses
-"ctefx-sbz.bin". If the alternative firmware for the given quirk is not
-found, the original ctefx.bin will be used. This has been confirmed to
-work for both the R3Di and the SBZ.
-
-This patch also makes the character array *dirstr a const.
+This patch also adds pincfgs for the R3Di and SBZ which were taken from
+the Windows driver. The pins are also defined in the function
+ca0132_config. Both the R3Di and SBZ are also given a max out channel
+value of 6 to handle 5.1 surround sound in later patches.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 55 ++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 51 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 111 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 108 insertions(+), 3 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 768ea86..9a0286e 100644
+index 9a0286e..9347c9d 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -72,12 +72,16 @@
- #define SCP_GET    1
+@@ -723,6 +723,7 @@ struct ca0132_spec {
+ 	hda_nid_t shared_mic_nid;
+ 	hda_nid_t shared_out_nid;
+ 	hda_nid_t unsol_tag_hp;
++	hda_nid_t unsol_tag_front_hp; /* for desktop ca0132 codecs */
+ 	hda_nid_t unsol_tag_amic1;
  
- #define EFX_FILE   "ctefx.bin"
-+#define SBZ_EFX_FILE   "ctefx-sbz.bin"
-+#define R3DI_EFX_FILE  "ctefx-r3di.bin"
- 
- #ifdef CONFIG_SND_HDA_CODEC_CA0132_DSP
- MODULE_FIRMWARE(EFX_FILE);
-+MODULE_FIRMWARE(SBZ_EFX_FILE);
-+MODULE_FIRMWARE(R3DI_EFX_FILE);
- #endif
- 
--static char *dirstr[2] = { "Playback", "Capture" };
-+static const char *dirstr[2] = { "Playback", "Capture" };
- 
- enum {
- 	SPEAKER_OUT,
-@@ -734,6 +738,7 @@ struct ca0132_spec {
- 	unsigned int scp_resp_header;
- 	unsigned int scp_resp_data[4];
- 	unsigned int scp_resp_count;
-+	bool alt_firmware_present;
- 
- 	/* mixer and effects related */
- 	unsigned char dmic_ctl;
-@@ -762,6 +767,8 @@ struct ca0132_spec {
- enum {
- 	QUIRK_NONE,
- 	QUIRK_ALIENWARE,
-+	QUIRK_SBZ,
-+	QUIRK_R3DI,
- };
- 
- static const struct hda_pintbl alienware_pincfgs[] = {
-@@ -782,6 +789,10 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
- 	SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
- 	SND_PCI_QUIRK(0x1028, 0x0708, "Alienware 15 R2 2016", QUIRK_ALIENWARE),
-+	SND_PCI_QUIRK(0x1102, 0x0010, "Sound Blaster Z", QUIRK_SBZ),
-+	SND_PCI_QUIRK(0x1102, 0x0023, "Sound Blaster Z", QUIRK_SBZ),
-+	SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
-+	SND_PCI_QUIRK(0x1458, 0xA036, "Recon3Di", QUIRK_R3DI),
+ 	/* chip access */
+@@ -785,6 +786,36 @@ static const struct hda_pintbl alienware_pincfgs[] = {
  	{}
  };
  
-@@ -4370,11 +4381,47 @@ static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
- static bool ca0132_download_dsp_images(struct hda_codec *codec)
- {
- 	bool dsp_loaded = false;
-+	struct ca0132_spec *spec = codec->spec;
- 	const struct dsp_image_seg *dsp_os_image;
- 	const struct firmware *fw_entry;
--
--	if (request_firmware(&fw_entry, EFX_FILE, codec->card->dev) != 0)
--		return false;
-+	/*
-+	 * Alternate firmwares for different variants. The Recon3Di apparently
-+	 * can use the default firmware, but I'll leave the option in case
-+	 * it needs it again.
-+	 */
++/* Sound Blaster Z pin configs taken from Windows Driver */
++static const struct hda_pintbl sbz_pincfgs[] = {
++	{ 0x0b, 0x01017010 }, /* Port G -- Lineout FRONT L/R */
++	{ 0x0c, 0x014510f0 }, /* SPDIF Out 1 */
++	{ 0x0d, 0x014510f0 }, /* Digital Out */
++	{ 0x0e, 0x01c510f0 }, /* SPDIF In */
++	{ 0x0f, 0x0221701f }, /* Port A -- BackPanel HP */
++	{ 0x10, 0x01017012 }, /* Port D -- Center/LFE or FP Hp */
++	{ 0x11, 0x01017014 }, /* Port B -- LineMicIn2 / Rear L/R */
++	{ 0x12, 0x01a170f0 }, /* Port C -- LineIn1 */
++	{ 0x13, 0x908700f0 }, /* What U Hear In*/
++	{ 0x18, 0x50d000f0 }, /* N/A */
++	{}
++};
++
++/* Recon3D integrated pin configs taken from Windows Driver */
++static const struct hda_pintbl r3di_pincfgs[] = {
++	{ 0x0b, 0x01014110 }, /* Port G -- Lineout FRONT L/R */
++	{ 0x0c, 0x014510f0 }, /* SPDIF Out 1 */
++	{ 0x0d, 0x014510f0 }, /* Digital Out */
++	{ 0x0e, 0x41c520f0 }, /* SPDIF In */
++	{ 0x0f, 0x0221401f }, /* Port A -- BackPanel HP */
++	{ 0x10, 0x01016011 }, /* Port D -- Center/LFE or FP Hp */
++	{ 0x11, 0x01011014 }, /* Port B -- LineMicIn2 / Rear L/R */
++	{ 0x12, 0x02a090f0 }, /* Port C -- LineIn1 */
++	{ 0x13, 0x908700f0 }, /* What U Hear In*/
++	{ 0x18, 0x500000f0 }, /* N/A */
++	{}
++};
++
+ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
+ 	SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
+@@ -4501,6 +4532,10 @@ static void ca0132_init_unsol(struct hda_codec *codec)
+ 					    amic_callback);
+ 	snd_hda_jack_detect_enable_callback(codec, UNSOL_TAG_DSP,
+ 					    ca0132_process_dsp_response);
++	/* Front headphone jack detection */
++	if (spec->quirk == QUIRK_SBZ || spec->quirk == QUIRK_R3DI)
++		snd_hda_jack_detect_enable_callback(codec,
++			spec->unsol_tag_front_hp, hp_callback);
+ }
+ 
+ /*
+@@ -4682,9 +4717,14 @@ static void ca0132_config(struct hda_codec *codec)
+ 
+ 	spec->multiout.dac_nids = spec->dacs;
+ 	spec->multiout.num_dacs = 3;
+-	spec->multiout.max_channels = 2;
+ 
+-	if (spec->quirk == QUIRK_ALIENWARE) {
++	if (spec->quirk == QUIRK_NONE || spec->quirk == QUIRK_ALIENWARE)
++		spec->multiout.max_channels = 2;
++	else
++		spec->multiout.max_channels = 6;
++
 +	switch (spec->quirk) {
++	case QUIRK_ALIENWARE:
+ 		codec_dbg(codec, "ca0132_config: QUIRK_ALIENWARE applied.\n");
+ 		snd_hda_apply_pincfgs(codec, alienware_pincfgs);
+ 
+@@ -4704,7 +4744,71 @@ static void ca0132_config(struct hda_codec *codec)
+ 		spec->input_pins[2] = 0x13;
+ 		spec->shared_mic_nid = 0x7;
+ 		spec->unsol_tag_amic1 = 0x11;
+-	} else {
++		break;
 +	case QUIRK_SBZ:
-+		if (request_firmware(&fw_entry, SBZ_EFX_FILE,
-+					codec->card->dev) != 0) {
-+			codec_dbg(codec, "SBZ alt firmware not detected. ");
-+			spec->alt_firmware_present = false;
-+		} else {
-+			codec_dbg(codec, "Sound Blaster Z firmware selected.");
-+			spec->alt_firmware_present = true;
-+		}
++		codec_dbg(codec, "ca0132_config: QUIRK_SBZ applied.\n");
++		snd_hda_apply_pincfgs(codec, sbz_pincfgs);
++
++		spec->num_outputs = 2;
++		spec->out_pins[0] = 0x0B; /* Line out */
++		spec->out_pins[1] = 0x0F; /* Rear headphone out */
++		spec->out_pins[2] = 0x10; /* Front Headphone / Center/LFE*/
++		spec->out_pins[3] = 0x11; /* Rear surround */
++		spec->shared_out_nid = 0x2;
++		spec->unsol_tag_hp = spec->out_pins[1];
++		spec->unsol_tag_front_hp = spec->out_pins[2];
++
++		spec->adcs[0] = 0x7; /* Rear Mic / Line-in */
++		spec->adcs[1] = 0x8; /* Front Mic, but only if no DSP */
++		spec->adcs[2] = 0xa; /* what u hear */
++
++		spec->num_inputs = 2;
++		spec->input_pins[0] = 0x12; /* Rear Mic / Line-in */
++		spec->input_pins[1] = 0x13; /* What U Hear */
++		spec->shared_mic_nid = 0x7;
++		spec->unsol_tag_amic1 = spec->input_pins[0];
++
++		/* SPDIF I/O */
++		spec->dig_out = 0x05;
++		spec->multiout.dig_out_nid = spec->dig_out;
++		cfg->dig_out_pins[0] = 0x0c;
++		cfg->dig_outs = 1;
++		cfg->dig_out_type[0] = HDA_PCM_TYPE_SPDIF;
++		spec->dig_in = 0x09;
++		cfg->dig_in_pin = 0x0e;
++		cfg->dig_in_type = HDA_PCM_TYPE_SPDIF;
 +		break;
 +	case QUIRK_R3DI:
-+		if (request_firmware(&fw_entry, R3DI_EFX_FILE,
-+					codec->card->dev) != 0) {
-+			codec_dbg(codec, "Recon3Di alt firmware not detected.");
-+			spec->alt_firmware_present = false;
-+		} else {
-+			codec_dbg(codec, "Recon3Di firmware selected.");
-+			spec->alt_firmware_present = true;
-+		}
++		codec_dbg(codec, "ca0132_config: QUIRK_R3DI applied.\n");
++		snd_hda_apply_pincfgs(codec, r3di_pincfgs);
++
++		spec->num_outputs = 2;
++		spec->out_pins[0] = 0x0B; /* Line out */
++		spec->out_pins[1] = 0x0F; /* Rear headphone out */
++		spec->out_pins[2] = 0x10; /* Front Headphone / Center/LFE*/
++		spec->out_pins[3] = 0x11; /* Rear surround */
++		spec->shared_out_nid = 0x2;
++		spec->unsol_tag_hp = spec->out_pins[1];
++		spec->unsol_tag_front_hp = spec->out_pins[2];
++
++		spec->adcs[0] = 0x07; /* Rear Mic / Line-in */
++		spec->adcs[1] = 0x08; /* Front Mic, but only if no DSP */
++		spec->adcs[2] = 0x0a; /* what u hear */
++
++		spec->num_inputs = 2;
++		spec->input_pins[0] = 0x12; /* Rear Mic / Line-in */
++		spec->input_pins[1] = 0x13; /* What U Hear */
++		spec->shared_mic_nid = 0x7;
++		spec->unsol_tag_amic1 = spec->input_pins[0];
++
++		/* SPDIF I/O */
++		spec->dig_out = 0x05;
++		spec->multiout.dig_out_nid = spec->dig_out;
++		cfg->dig_out_pins[0] = 0x0c;
++		cfg->dig_outs = 1;
++		cfg->dig_out_type[0] = HDA_PCM_TYPE_SPDIF;
 +		break;
 +	default:
-+		spec->alt_firmware_present = false;
+ 		spec->num_outputs = 2;
+ 		spec->out_pins[0] = 0x0b; /* speaker out */
+ 		spec->out_pins[1] = 0x10; /* headphone out */
+@@ -4731,6 +4835,7 @@ static void ca0132_config(struct hda_codec *codec)
+ 		spec->dig_in = 0x09;
+ 		cfg->dig_in_pin = 0x0e;
+ 		cfg->dig_in_type = HDA_PCM_TYPE_SPDIF;
 +		break;
-+	}
-+	/* Use default ctefx.bin if no alt firmware is detected, or if none
-+	 * exists for your particular codec.
-+	 */
-+	if (spec->alt_firmware_present == false) {
-+		codec_dbg(codec, "Default firmware selected.");
-+		if (request_firmware(&fw_entry, EFX_FILE,
-+					codec->card->dev) != 0)
-+			return false;
-+	}
+ 	}
+ }
  
- 	dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
- 	if (dspload_image(codec, dsp_os_image, 0, 0, true, 0)) {
 -- 
 2.7.4
