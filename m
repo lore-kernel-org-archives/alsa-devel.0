@@ -1,104 +1,275 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 3/9] Add PCI region2 iomap for SBZ
-Date: Thu,  3 May 2018 17:42:44 -0400
-Message-ID: <1525383771-11105-3-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 7/9] Add DSP Volume set and New mixers for SBZ + R3Di
+Date: Thu,  3 May 2018 17:42:48 -0400
+Message-ID: <1525383771-11105-7-git-send-email-conmanx360@gmail.com>
 References: <1525383771-11105-1-git-send-email-conmanx360@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f67.google.com (mail-it0-f67.google.com
- [209.85.214.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 220D22673A6
- for <alsa-devel@alsa-project.org>; Thu,  3 May 2018 23:43:17 +0200 (CEST)
-Received: by mail-it0-f67.google.com with SMTP id j186-v6so1098673ita.5
- for <alsa-devel@alsa-project.org>; Thu, 03 May 2018 14:43:17 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1525383771-11105-1-git-send-email-conmanx360@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, Connor McAdams <conmanx360@gmail.com>, o-takashi@sakamocchi.jp
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds iomapping for the region2 section of memory on the SBZ.
-This memory region is used in later patches for setting inputs and
-outputs. If the mapping fails, the quirk is changed back to QUIRK_NONE
-to avoid attempts to write to uninitialized memory.
-
-It also adds a new exit sequence to unmap the iomem for the SBZ.
+Adds lookup table for floating point decibel volume, and new functions
+to allow for setting the decibel level on the DSP.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 30 ++++++++++++++++++++++++++++--
- 1 file changed, 28 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 198 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 197 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 9347c9d..2f7f964 100644
+index 60b0a14..9d19a275 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -29,6 +29,9 @@
- #include <linux/firmware.h>
- #include <linux/kernel.h>
- #include <sound/core.h>
-+#include <linux/types.h>
-+#include <linux/io.h>
-+#include <linux/pci.h>
- #include "hda_codec.h"
- #include "hda_local.h"
- #include "hda_auto_parser.h"
-@@ -760,6 +763,11 @@ struct ca0132_spec {
- #ifdef ENABLE_TUNING_CONTROLS
- 	long cur_ctl_vals[TUNING_CTLS_COUNT];
- #endif
-+	/*
-+	 * Sound Blaster Z PCI region 2 iomem, used for input and output
-+	 * switching, and other unknown commands.
-+	 */
-+	void __iomem *mem_base;
+@@ -537,6 +537,31 @@ static struct ca0132_alt_out_set alt_out_presets[] = {
+ 	}
  };
  
++/*
++ * DSP volume setting structs. Req 1 is left volume, req 2 is right volume,
++ * and I don't know what the third req is, but it's always zero. I assume it's
++ * some sort of update or set command to tell the DSP there's new volume info.
++ */
++#define DSP_VOL_OUT 0
++#define DSP_VOL_IN  1
++
++struct ct_dsp_volume_ctl {
++	hda_nid_t vnid;
++	int mid; /* module ID*/
++	unsigned int reqs[3]; /* scp req ID */
++};
++
++static struct ct_dsp_volume_ctl ca0132_alt_vol_ctls[] = {
++	{ .vnid = VNID_SPK,
++	  .mid = 0x32,
++	  .reqs = {3, 4, 2}
++	},
++	{ .vnid = VNID_MIC,
++	  .mid = 0x37,
++	  .reqs = {2, 3, 1}
++	}
++};
++
+ enum hda_cmd_vendor_io {
+ 	/* for DspIO node */
+ 	VENDOR_DSPIO_SCP_WRITE_DATA_LOW      = 0x000,
+@@ -3246,6 +3271,19 @@ static unsigned int ca0132_capture_pcm_delay(struct hda_pcm_stream *info,
+ 	  .tlv = { .c = ca0132_volume_tlv }, \
+ 	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
+ 
++#define CA0132_ALT_CODEC_VOL_MONO(xname, nid, channel, dir) \
++	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	  .name = xname, \
++	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
++	  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE | \
++			SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
++			SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
++	  .info = snd_hda_mixer_amp_volume_info, \
++	  .get = snd_hda_mixer_amp_volume_get, \
++	  .put = ca0132_alt_volume_put, \
++	  .tlv = { .c = snd_hda_mixer_amp_tlv }, \
++	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
++
+ #define CA0132_CODEC_MUTE_MONO(xname, nid, channel, dir) \
+ 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
+ 	  .name = xname, \
+@@ -3258,9 +3296,40 @@ static unsigned int ca0132_capture_pcm_delay(struct hda_pcm_stream *info,
+ /* stereo */
+ #define CA0132_CODEC_VOL(xname, nid, dir) \
+ 	CA0132_CODEC_VOL_MONO(xname, nid, 3, dir)
++#define CA0132_ALT_CODEC_VOL(xname, nid, dir) \
++	CA0132_ALT_CODEC_VOL_MONO(xname, nid, 3, dir)
+ #define CA0132_CODEC_MUTE(xname, nid, dir) \
+ 	CA0132_CODEC_MUTE_MONO(xname, nid, 3, dir)
+ 
++/* lookup tables */
++/*
++ * Lookup table with decibel values for the DSP. When volume is changed in
++ * Windows, the DSP is also sent the dB value in floating point. In Windows,
++ * these values have decimal points, probably because the Windows driver
++ * actually uses floating point. We can't here, so I made a lookup table of
++ * values -90 to 9. -90 is the lowest decibel value for both the ADC's and the
++ * DAC's, and 9 is the maximum.
++ */
++static const unsigned int float_vol_db_lookup[] = {
++0xC2B40000, 0xC2B20000, 0xC2B00000, 0xC2AE0000, 0xC2AC0000, 0xC2AA0000,
++0xC2A80000, 0xC2A60000, 0xC2A40000, 0xC2A20000, 0xC2A00000, 0xC29E0000,
++0xC29C0000, 0xC29A0000, 0xC2980000, 0xC2960000, 0xC2940000, 0xC2920000,
++0xC2900000, 0xC28E0000, 0xC28C0000, 0xC28A0000, 0xC2880000, 0xC2860000,
++0xC2840000, 0xC2820000, 0xC2800000, 0xC27C0000, 0xC2780000, 0xC2740000,
++0xC2700000, 0xC26C0000, 0xC2680000, 0xC2640000, 0xC2600000, 0xC25C0000,
++0xC2580000, 0xC2540000, 0xC2500000, 0xC24C0000, 0xC2480000, 0xC2440000,
++0xC2400000, 0xC23C0000, 0xC2380000, 0xC2340000, 0xC2300000, 0xC22C0000,
++0xC2280000, 0xC2240000, 0xC2200000, 0xC21C0000, 0xC2180000, 0xC2140000,
++0xC2100000, 0xC20C0000, 0xC2080000, 0xC2040000, 0xC2000000, 0xC1F80000,
++0xC1F00000, 0xC1E80000, 0xC1E00000, 0xC1D80000, 0xC1D00000, 0xC1C80000,
++0xC1C00000, 0xC1B80000, 0xC1B00000, 0xC1A80000, 0xC1A00000, 0xC1980000,
++0xC1900000, 0xC1880000, 0xC1800000, 0xC1700000, 0xC1600000, 0xC1500000,
++0xC1400000, 0xC1300000, 0xC1200000, 0xC1100000, 0xC1000000, 0xC0E00000,
++0xC0C00000, 0xC0A00000, 0xC0800000, 0xC0400000, 0xC0000000, 0xBF800000,
++0x00000000, 0x3F800000, 0x40000000, 0x40400000, 0x40800000, 0x40A00000,
++0x40C00000, 0x40E00000, 0x41000000, 0x41100000
++};
++
+ /* The following are for tuning of products */
+ #ifdef ENABLE_TUNING_CONTROLS
+ 
+@@ -4627,6 +4696,41 @@ static int ca0132_switch_put(struct snd_kcontrol *kcontrol,
  /*
-@@ -4691,8 +4699,17 @@ static void ca0132_free(struct hda_codec *codec)
+  * Volume related
+  */
++/*
++ * Sets the internal DSP decibel level to match the DAC for output, and the
++ * ADC for input. Currently only the SBZ sets dsp capture volume level, and
++ * all alternative codecs set DSP playback volume.
++ */
++static void ca0132_alt_dsp_volume_put(struct hda_codec *codec, hda_nid_t nid)
++{
++	struct ca0132_spec *spec = codec->spec;
++	unsigned int dsp_dir;
++	unsigned int lookup_val;
++
++	if (nid == VNID_SPK)
++		dsp_dir = DSP_VOL_OUT;
++	else
++		dsp_dir = DSP_VOL_IN;
++
++	lookup_val = spec->vnode_lvol[nid - VNODE_START_NID];
++
++	dspio_set_uint_param(codec,
++		ca0132_alt_vol_ctls[dsp_dir].mid,
++		ca0132_alt_vol_ctls[dsp_dir].reqs[0],
++		float_vol_db_lookup[lookup_val]);
++
++	lookup_val = spec->vnode_rvol[nid - VNODE_START_NID];
++
++	dspio_set_uint_param(codec,
++		ca0132_alt_vol_ctls[dsp_dir].mid,
++		ca0132_alt_vol_ctls[dsp_dir].reqs[1],
++		float_vol_db_lookup[lookup_val]);
++
++	dspio_set_uint_param(codec,
++		ca0132_alt_vol_ctls[dsp_dir].mid,
++		ca0132_alt_vol_ctls[dsp_dir].reqs[2], FLOAT_ZERO);
++}
++
+ static int ca0132_volume_info(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_info *uinfo)
+ {
+@@ -4728,6 +4832,51 @@ static int ca0132_volume_put(struct snd_kcontrol *kcontrol,
+ 	return changed;
+ }
  
- 	cancel_delayed_work_sync(&spec->unsol_hp_work);
- 	snd_hda_power_up(codec);
--	snd_hda_sequence_write(codec, spec->base_exit_verbs);
--	ca0132_exit_chip(codec);
-+	switch (spec->quirk) {
-+	case QUIRK_SBZ:
-+		iounmap(spec->mem_base);
-+		snd_hda_sequence_write(codec, spec->base_exit_verbs);
-+		ca0132_exit_chip(codec);
++/*
++ * This function is the same as the one above, because using an if statement
++ * inside of the above volume control for the DSP volume would cause too much
++ * lag. This is a lot more smooth.
++ */
++static int ca0132_alt_volume_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct ca0132_spec *spec = codec->spec;
++	hda_nid_t nid = get_amp_nid(kcontrol);
++	int ch = get_amp_channels(kcontrol);
++	long *valp = ucontrol->value.integer.value;
++	hda_nid_t vnid = 0;
++	int changed = 1;
++
++	switch (nid) {
++	case 0x02:
++		vnid = VNID_SPK;
 +		break;
-+	default:
-+		snd_hda_sequence_write(codec, spec->base_exit_verbs);
-+		ca0132_exit_chip(codec);
++	case 0x07:
++		vnid = VNID_MIC;
 +		break;
 +	}
- 	snd_hda_power_down(codec);
- 	kfree(spec->spec_init_verbs);
- 	kfree(codec->spec);
-@@ -4909,6 +4926,15 @@ static int patch_ca0132(struct hda_codec *codec)
- 	else
- 		spec->quirk = QUIRK_NONE;
- 
-+	/* Setup BAR Region 2 for Sound Blaster Z */
-+	if (spec->quirk == QUIRK_SBZ) {
-+		spec->mem_base = pci_iomap(codec->bus->pci, 2, 0xC20);
-+		if (spec->mem_base == NULL) {
-+			codec_dbg(codec, "pci_iomap failed!");
-+			codec_dbg(codec, "perhaps this is not an SBZ?");
-+			spec->quirk = QUIRK_NONE;
-+		}
++
++	/* store the left and right volume */
++	if (ch & 1) {
++		spec->vnode_lvol[vnid - VNODE_START_NID] = *valp;
++		valp++;
 +	}
++	if (ch & 2) {
++		spec->vnode_rvol[vnid - VNODE_START_NID] = *valp;
++		valp++;
++	}
++
++	snd_hda_power_up(codec);
++	ca0132_alt_dsp_volume_put(codec, vnid);
++	mutex_lock(&codec->control_mutex);
++	changed = snd_hda_mixer_amp_volume_put(kcontrol, ucontrol);
++	mutex_unlock(&codec->control_mutex);
++	snd_hda_power_down(codec);
++
++	return changed;
++}
++
+ static int ca0132_volume_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 			     unsigned int size, unsigned int __user *tlv)
+ {
+@@ -4847,6 +4996,39 @@ static struct snd_kcontrol_new ca0132_mixer[] = {
+ 	{ } /* end */
+ };
+ 
++/*
++ * SBZ specific control mixer. Removes auto-detect for mic, and adds surround
++ * controls. Also sets both the Front Playback and Capture Volume controls to
++ * alt so they set the DSP's decibel level.
++ */
++static struct snd_kcontrol_new sbz_mixer[] = {
++	CA0132_ALT_CODEC_VOL("Front Playback Volume", 0x02, HDA_OUTPUT),
++	CA0132_CODEC_MUTE("Front Playback Switch", VNID_SPK, HDA_OUTPUT),
++	CA0132_ALT_CODEC_VOL("Capture Volume", 0x07, HDA_INPUT),
++	CA0132_CODEC_MUTE("Capture Switch", VNID_MIC, HDA_INPUT),
++	HDA_CODEC_VOLUME("What U Hear Capture Volume", 0x0a, 0, HDA_INPUT),
++	HDA_CODEC_MUTE("What U Hear Capture Switch", 0x0a, 0, HDA_INPUT),
++	CA0132_CODEC_MUTE_MONO("HP/Speaker Auto Detect Playback Switch",
++			       VNID_HP_ASEL, 1, HDA_OUTPUT),
++	{ } /* end */
++};
++
++/*
++ * Same as the Sound Blaster Z, except doesn't use the alt volume for capture
++ * because it doesn't set decibel levels for the DSP for capture.
++ */
++static struct snd_kcontrol_new r3di_mixer[] = {
++	CA0132_ALT_CODEC_VOL("Front Playback Volume", 0x02, HDA_OUTPUT),
++	CA0132_CODEC_MUTE("Front Playback Switch", VNID_SPK, HDA_OUTPUT),
++	CA0132_CODEC_VOL("Capture Volume", VNID_MIC, HDA_INPUT),
++	CA0132_CODEC_MUTE("Capture Switch", VNID_MIC, HDA_INPUT),
++	HDA_CODEC_VOLUME("What U Hear Capture Volume", 0x0a, 0, HDA_INPUT),
++	HDA_CODEC_MUTE("What U Hear Capture Switch", 0x0a, 0, HDA_INPUT),
++	CA0132_CODEC_MUTE_MONO("HP/Speaker Auto Detect Playback Switch",
++			       VNID_HP_ASEL, 1, HDA_OUTPUT),
++	{ } /* end */
++};
++
+ static int ca0132_build_controls(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+@@ -6557,7 +6739,21 @@ static int patch_ca0132(struct hda_codec *codec)
+ 
  	spec->dsp_state = DSP_DOWNLOAD_INIT;
  	spec->num_mixers = 1;
- 	spec->mixers[0] = ca0132_mixer;
+-	spec->mixers[0] = ca0132_mixer;
++
++	/* Set which mixers each quirk uses. */
++	switch (spec->quirk) {
++	case QUIRK_SBZ:
++		spec->mixers[0] = sbz_mixer;
++		snd_hda_codec_set_name(codec, "Sound Blaster Z");
++		break;
++	case QUIRK_R3DI:
++		spec->mixers[0] = r3di_mixer;
++		snd_hda_codec_set_name(codec, "Recon3Di");
++		break;
++	default:
++		spec->mixers[0] = ca0132_mixer;
++		break;
++	}
+ 
+ 	/* Setup whether or not to use alt functions */
+ 	switch (spec->quirk) {
 -- 
 2.7.4
