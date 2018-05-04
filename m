@@ -1,67 +1,93 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/9] R3Di and SBZ quirk entires + alt
-	firmware loading
-Date: Fri, 4 May 2018 17:25:58 +0900
-Message-ID: <2d719f92-805a-77bb-dd3e-34c3e1e26940@sakamocchi.jp>
-References: <1525407594-25644-1-git-send-email-conmanx360@gmail.com>
- <CAM8Agx0s1Rg5bGCXP5gQftcfsqbQoCvZtNyg4fmUpNaJsix=-A@mail.gmail.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: RE: [PATCH v3] ASoC: da7219: read fmw property to get mclk for
+ non-dts systems
+Date: Fri, 4 May 2018 09:15:42 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1EA102@SW-EX-MBX01.diasemi.com>
+References: <1525334313-28661-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 6C051267235
- for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 10:26:12 +0200 (CEST)
-In-Reply-To: <CAM8Agx0s1Rg5bGCXP5gQftcfsqbQoCvZtNyg4fmUpNaJsix=-A@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1525334313-28661-1-git-send-email-akshu.agrawal@amd.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Connor McAdams <conmanx360@gmail.com>
-Cc: =?UTF-8?Q?J=c3=a9r=c3=a9my_Lefaure?= <jeremy.lefaure@lse.epita.fr>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: "djkurtz@chromium.org" <djkurtz@chromium.org>, "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Support Opensource <Support.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On 03 May 2018 08:59, Akshu Agrawal wrote:
 
-On May 04 2018 13:30, Connor McAdams wrote:
-> Sorry for sending these twice, I made a formatting mistake in the
-> first series, and they would not apply properly. Hopefully these do
-> not show up as spam because of this.
+> Non-dts based systems can use ACPI DSDT to pass on the mclk
+> to da7219.
+> This enables da7219 mclk to be linked to system clock.
+> Enable/Disable of the mclk is already handled in the codec so
+> platform drivers don't have to explicitly do handling of mclk.
 > 
-> I went through and fixed them all individually and re-committed them,
-> but kept the same commit messages. I still have a lot to learn.
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+> ---
+> v2: Fixed kbuild error
+> v3: Add corresponding clk_put for clk_get
+>  include/sound/da7219.h    |  2 ++
+>  sound/soc/codecs/da7219.c | 10 +++++++++-
+>  2 files changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+> index 1bfcb16..df7ddf4 100644
+> --- a/include/sound/da7219.h
+> +++ b/include/sound/da7219.h
+> @@ -38,6 +38,8 @@ struct da7219_pdata {
+> 
+>  	const char *dai_clks_name;
+> 
+> +	const char *mclk_name;
+> +
+>  	/* Mic */
+>  	enum da7219_micbias_voltage micbias_lvl;
+>  	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+> index 980a6a8..ecd46fc 100644
+> --- a/sound/soc/codecs/da7219.c
+> +++ b/sound/soc/codecs/da7219.c
+> @@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct
+> snd_soc_component *compone
+>  		dev_warn(dev, "Using default clk name: %s\n",
+>  			 pdata->dai_clks_name);
+> 
+> +	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
+> +
 
-For this case, please use '--subject-prefix' option for 
-git-format-patch. Like:
+Personally am still not keen on this. To me the use of a device_property_*
+function suggests the same property resides in both DT and ACPI, but here we're
+only using this for the ACPI case. DT has no want or need for this. I still feel
+we should look at something more generic in the clock framework, although I do
+agree with Mark that this should be properly specced.
 
-$ git format-patch --subject-prefix='PATCH v2'
-
-
-Additionally, it's preferable to add 'ALSA: hda/ca0132: ' prefix for 
-each patch. Like:
-
-'ALSA: hda/ca0132: R3Di and SBZ quirk entires + alt firmware loading'
-
-
-Furthermore, when posting several patches as a one series, it's 
-preferable to post cover letter as well. Like:
-
-$ git format-patch --cover-letter
-0000-cover-letter.patch
-...
-
-Of course, it's better to write enough information in the cover letter. 
-For its content, please refer to cover letters by the other developers 
-in alsa-devel archive.
-http://mailman.alsa-project.org/pipermail/alsa-devel/
-
-
-Thanks
-
-Takashi Sakamoto
+>  	if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
+>  		pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
+>  	else
+> @@ -1905,7 +1907,10 @@ static int da7219_probe(struct snd_soc_component
+> *component)
+>  	da7219_handle_pdata(component);
+> 
+>  	/* Check if MCLK provided */
+> -	da7219->mclk = devm_clk_get(component->dev, "mclk");
+> +	if (da7219->pdata->mclk_name)
+> +		da7219->mclk = clk_get(NULL, da7219->pdata->mclk_name);
+> +	if (!da7219->mclk)
+> +		da7219->mclk = devm_clk_get(component->dev, "mclk");
+>  	if (IS_ERR(da7219->mclk)) {
+>  		if (PTR_ERR(da7219->mclk) != -ENOENT) {
+>  			ret = PTR_ERR(da7219->mclk);
+> @@ -1971,6 +1976,9 @@ static void da7219_remove(struct snd_soc_component
+> *component)
+>  		clkdev_drop(da7219->dai_clks_lookup);
+>  #endif
+> 
+> +	if (da7219->pdata->mclk_name)
+> +		clk_put(da7219->mclk);
+> +
+>  	/* Supplies */
+>  	regulator_bulk_disable(DA7219_NUM_SUPPLIES, da7219->supplies);
+>  }
+> --
+> 1.9.1
