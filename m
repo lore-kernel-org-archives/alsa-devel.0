@@ -1,17 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: support transmission mode at
-	176.4/192.0 kHz for M-Audio 610/2626
-Date: Fri,  4 May 2018 18:57:17 +0900
-Message-ID: <20180504095717.25036-1-o-takashi@sakamocchi.jp>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 2/4] ASoC: compress: Clarify the intent of
+ current compressed ops handling
+Date: Fri, 4 May 2018 12:59:22 +0100
+Message-ID: <20180504115922.GK20410@imbe.wolfsonmicro.main>
+References: <20180426163007.5632-1-ckeepax@opensource.cirrus.com>
+ <20180426163007.5632-2-ckeepax@opensource.cirrus.com>
+ <20180503162714.GX6014@localhost>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 0806A266C1C
- for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 11:58:49 +0200 (CEST)
-Received: by mail-pg0-f66.google.com with SMTP id g20-v6so8451408pgv.1
- for <alsa-devel@alsa-project.org>; Fri, 04 May 2018 02:58:49 -0700 (PDT)
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id B8E64267235
+ for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 13:59:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180503162714.GX6014@localhost>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,82 +25,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+To: Vinod Koul <vinod.koul@intel.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, patches@opensource.cirrus.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-At highest sampling transmission frequency, ALSA dice driver
-detects jumbo payload in tx packets from M-Audio 610/2626.
+On Thu, May 03, 2018 at 09:57:14PM +0530, Vinod Koul wrote:
+> On Thu, Apr 26, 2018 at 05:30:05PM +0100, Charles Keepax wrote:
+> > It is proposed that the model adopted for compressed component
+> > support currently should be that multiple components are supported
+> > on a compressed DAI but that they must provide a unified set of
+> > capabilities. So for example having multiple components involved in
+> > the decode is fine but the core will not presently attempt to make
+> > smart decisions like offloading MP3 to this component and AAC another.
+> 
+> Well this is supposed to be entirely a userspace call, we just present
+> devices with capabilities and the usespace decides... Btw capabilities are
+> supposed to be dynamic.
 
-$ dmesg
-snd_dice fw1.0: Detect jumbo payload: 0388 0348
+My intention was to not suggest otherwise. The only point I
+was really making is that if there are multiple components on
+the link the core won't make attempt to amalgamate output from
+those components, but we will inform all components of activity
+on the DAI.
 
-Usual dice devices have a quirk called as dual-wire incompliant to
-IEC 61883-6 at highest sampling transmission frequency. On the other hand,
-M-Audio 610/2626 is compliant. This is a reason of the detection of jumbo
-payload.
+> Looking at the code again now, I realized that we are treating compress like
+> PCM. It makes little sense to me to have multiple components for a
+> compressed device, does that model on your systems..?
 
-This commit adds support compliant transmission mode. For these devices,
-tx packets are correctly handled by this driver, while rx packets can't
-make these devices generate sound, unfortunately. The other factor affects
-it.
+So that was very much my initial reaction as well [1], and
+certainly for our devices it only really makes sense to have a
+single component handle the compressed ops. Hence why I initially
+started with basically just returning the first component with
+compressed ops.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-stream.c | 6 +++++-
- sound/firewire/dice/dice.c        | 9 +++++++++
- sound/firewire/dice/dice.h        | 2 ++
- 3 files changed, 16 insertions(+), 1 deletion(-)
+That said however, thinking about it more I do think there are
+pretty reasonable systems that have multiple components on a
+compressed DAI. For example I could imagine a system where you
+have a DSP on both the AP and CODEC ends of the DAI link and
+they split the decode doing some work on each. In that case
+one would want calls like open and set_params to go to both
+components.
 
-diff --git a/sound/firewire/dice/dice-stream.c b/sound/firewire/dice/dice-stream.c
-index 422a1ab1ddf5..e3dbe357b4fa 100644
---- a/sound/firewire/dice/dice-stream.c
-+++ b/sound/firewire/dice/dice-stream.c
-@@ -204,7 +204,11 @@ static int keep_resources(struct snd_dice *dice,
- 	 * For this quirk, blocking mode is required and PCM buffer size should
- 	 * be aligned to SYT_INTERVAL.
- 	 */
--	double_pcm_frames = rate > 96000;
-+	if (rate < 176400 || dice->no_dualwire)
-+		double_pcm_frames = false;
-+	else
-+		double_pcm_frames = true;
-+
- 	if (double_pcm_frames) {
- 		rate /= 2;
- 		pcm_chs *= 2;
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index 40f7a32e4893..8baad7704bf0 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -236,6 +236,15 @@ static int dice_probe(struct fw_unit *unit,
- 				(snd_dice_detect_formats_t)entry->driver_data;
- 	}
- 
-+	/*
-+	 * M-Audio units are compliant to IEC 61883-6 at high sampling
-+	 * transmission frequency thus don't support 'dualwire' quirk. These
-+	 * units have 0x0100d1 in its version field in config ROM, against
-+	 * the value of DICE_INTERFACE.
-+	 */
-+	if (entry->vendor_id == OUI_MAUDIO)
-+		dice->no_dualwire = true;
-+
- 	spin_lock_init(&dice->lock);
- 	mutex_init(&dice->mutex);
- 	init_completion(&dice->clock_accepted);
-diff --git a/sound/firewire/dice/dice.h b/sound/firewire/dice/dice.h
-index 505b79fea6d9..66e7a277ab68 100644
---- a/sound/firewire/dice/dice.h
-+++ b/sound/firewire/dice/dice.h
-@@ -113,6 +113,8 @@ struct snd_dice {
- 	bool global_enabled;
- 	struct completion clock_accepted;
- 	unsigned int substreams_counter;
-+
-+	bool no_dualwire;
- };
- 
- enum snd_dice_addr_type {
--- 
-2.14.1
+As you say separate decode engines probably belong on separate
+DAIs and that kinda is what led me to the current series. It
+should implement enough to enable basic multi-component use-cases
+but makes it more clear that we are not supporting multiplexing
+multiple offloads onto a single DAI at the moment.
+
+Thanks,
+Charles
+
+[1] https://patchwork.kernel.org/patch/10182603/
