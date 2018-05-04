@@ -1,147 +1,446 @@
 From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: [PATCH v2 5/7] ALSA: usb: mixer: make string parsing independent of mixer_build state
-Date: Fri,  4 May 2018 04:24:02 +0300
-Message-ID: <1525397044-15080-6-git-send-email-ruslan.bilovol@gmail.com>
+Subject: [PATCH v2 2/7] ALSA: usb: stream: refactor uac1/2
+	audio interface parsing
+Date: Fri,  4 May 2018 04:23:59 +0300
+Message-ID: <1525397044-15080-3-git-send-email-ruslan.bilovol@gmail.com>
 References: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f67.google.com (mail-lf0-f67.google.com
+ [209.85.215.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id EF109266F44
+ for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 03:24:52 +0200 (CEST)
+Received: by mail-lf0-f67.google.com with SMTP id m18-v6so28661393lfb.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 May 2018 18:24:52 -0700 (PDT)
 In-Reply-To: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.com>
-Cc: Jorge <jorge.sanjuan@codethink.co.uk>, Andrew Chant <achant@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Jorge <jorge.sanjuan@codethink.co.uk>, alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-Functions like snd_usb_copy_string_desc() or
-get_term_name() don't actually need mixer_build
-state but can use snd_usb_audio structure instead
-to get usb device.
+Offload snd_usb_parse_audio_interface() function
+which became quite long after adding UAC3 spec support.
 
-This patch has no functional change but prepares
-to future UAC3 BADD profiles support which don't
-have class-specific descriptors so won't have
-mixer_build state.
+Move class-specific parts of uac1/2 parsing to separate
+function which now produce audioformat structure that
+is ready to be fed to snd_usb_add_audio_stream().
+
+This also broke Blue Microphones workaround (which
+relies on audioformat decoded from previous altsetting)
+into two parts: prepare quirk flag analyzing previous
+altsetting then use it with current altsetting.
 
 Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 ---
- sound/usb/mixer.c | 30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+ sound/usb/stream.c | 333 +++++++++++++++++++++++++++++------------------------
+ 1 file changed, 185 insertions(+), 148 deletions(-)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index bb203b3..e280354 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -201,10 +201,10 @@ static void *find_audio_control_unit(struct mixer_build *state,
- /*
-  * copy a string with the given id
-  */
--static int snd_usb_copy_string_desc(struct mixer_build *state,
-+static int snd_usb_copy_string_desc(struct snd_usb_audio *chip,
- 				    int index, char *buf, int maxlen)
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 8ec0a52..3369226 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -656,6 +656,156 @@ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+ 	return fp;
+ }
+ 
++static struct audioformat *
++snd_usb_get_audioformat_uac12(struct snd_usb_audio *chip,
++			      struct usb_host_interface *alts,
++			      int protocol, int iface_no, int altset_idx,
++			      int altno, int stream, int bm_quirk)
++{
++	struct usb_device *dev = chip->dev;
++	struct uac_format_type_i_continuous_descriptor *fmt;
++	unsigned int num_channels = 0, chconfig = 0;
++	struct audioformat *fp;
++	int clock = 0;
++	u64 format;
++
++	/* get audio formats */
++	if (protocol == UAC_VERSION_1) {
++		struct uac1_as_header_descriptor *as =
++			snd_usb_find_csint_desc(alts->extra, alts->extralen,
++						NULL, UAC_AS_GENERAL);
++		struct uac_input_terminal_descriptor *iterm;
++
++		if (!as) {
++			dev_err(&dev->dev,
++				"%u:%d : UAC_AS_GENERAL descriptor not found\n",
++				iface_no, altno);
++			return NULL;
++		}
++
++		if (as->bLength < sizeof(*as)) {
++			dev_err(&dev->dev,
++				"%u:%d : invalid UAC_AS_GENERAL desc\n",
++				iface_no, altno);
++			return NULL;
++		}
++
++		format = le16_to_cpu(as->wFormatTag); /* remember the format value */
++
++		iterm = snd_usb_find_input_terminal_descriptor(chip->ctrl_intf,
++							     as->bTerminalLink);
++		if (iterm) {
++			num_channels = iterm->bNrChannels;
++			chconfig = le16_to_cpu(iterm->wChannelConfig);
++		}
++	} else { /* UAC_VERSION_2 */
++		struct uac2_input_terminal_descriptor *input_term;
++		struct uac2_output_terminal_descriptor *output_term;
++		struct uac2_as_header_descriptor *as =
++			snd_usb_find_csint_desc(alts->extra, alts->extralen,
++						NULL, UAC_AS_GENERAL);
++
++		if (!as) {
++			dev_err(&dev->dev,
++				"%u:%d : UAC_AS_GENERAL descriptor not found\n",
++				iface_no, altno);
++			return NULL;
++		}
++
++		if (as->bLength < sizeof(*as)) {
++			dev_err(&dev->dev,
++				"%u:%d : invalid UAC_AS_GENERAL desc\n",
++				iface_no, altno);
++			return NULL;
++		}
++
++		num_channels = as->bNrChannels;
++		format = le32_to_cpu(as->bmFormats);
++		chconfig = le32_to_cpu(as->bmChannelConfig);
++
++		/*
++		 * lookup the terminal associated to this interface
++		 * to extract the clock
++		 */
++		input_term = snd_usb_find_input_terminal_descriptor(chip->ctrl_intf,
++								    as->bTerminalLink);
++		if (input_term) {
++			clock = input_term->bCSourceID;
++			if (!chconfig && (num_channels == input_term->bNrChannels))
++				chconfig = le32_to_cpu(input_term->bmChannelConfig);
++			goto found_clock;
++		}
++
++		output_term = snd_usb_find_output_terminal_descriptor(chip->ctrl_intf,
++								      as->bTerminalLink);
++		if (output_term) {
++			clock = output_term->bCSourceID;
++			goto found_clock;
++		}
++
++		dev_err(&dev->dev,
++			"%u:%d : bogus bTerminalLink %d\n",
++			iface_no, altno, as->bTerminalLink);
++		return NULL;
++	}
++
++found_clock:
++	/* get format type */
++	fmt = snd_usb_find_csint_desc(alts->extra, alts->extralen,
++				      NULL, UAC_FORMAT_TYPE);
++	if (!fmt) {
++		dev_err(&dev->dev,
++			"%u:%d : no UAC_FORMAT_TYPE desc\n",
++			iface_no, altno);
++		return NULL;
++	}
++	if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8))
++			|| ((protocol == UAC_VERSION_2) &&
++					(fmt->bLength < 6))) {
++		dev_err(&dev->dev,
++			"%u:%d : invalid UAC_FORMAT_TYPE desc\n",
++			iface_no, altno);
++		return NULL;
++	}
++
++	/*
++	 * Blue Microphones workaround: The last altsetting is
++	 * identical with the previous one, except for a larger
++	 * packet size, but is actually a mislabeled two-channel
++	 * setting; ignore it.
++	 *
++	 * Part 2: analyze quirk flag and format
++	 */
++	if (bm_quirk && fmt->bNrChannels == 1 && fmt->bSubframeSize == 2)
++		return NULL;
++
++	fp = audio_format_alloc_init(chip, alts, protocol, iface_no,
++				     altset_idx, altno, num_channels, clock);
++	if (!fp)
++		return ERR_PTR(-ENOMEM);
++
++	fp->attributes = parse_uac_endpoint_attributes(chip, alts, protocol,
++						       iface_no);
++
++	/* some quirks for attributes here */
++	snd_usb_audioformat_attributes_quirk(chip, fp, stream);
++
++	/* ok, let's parse further... */
++	if (snd_usb_parse_audio_format(chip, fp, format,
++					fmt, stream) < 0) {
++		kfree(fp->rate_table);
++		kfree(fp);
++		return NULL;
++	}
++
++	/* Create chmap */
++	if (fp->channels != num_channels)
++		chconfig = 0;
++
++	fp->chmap = convert_chmap(fp->channels, chconfig, protocol);
++
++	return fp;
++}
+ 
+ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
  {
--	int len = usb_string(state->chip->dev, index, buf, maxlen - 1);
-+	int len = usb_string(chip->dev, index, buf, maxlen - 1);
+@@ -663,14 +813,13 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 	struct usb_interface *iface;
+ 	struct usb_host_interface *alts;
+ 	struct usb_interface_descriptor *altsd;
++	struct uac3_as_header_descriptor *as = NULL;
+ 	int i, altno, err, stream;
+ 	u64 format = 0;
+ 	unsigned int num_channels = 0;
+ 	struct audioformat *fp = NULL;
+ 	int num, protocol, clock = 0;
+-	struct uac_format_type_i_continuous_descriptor *fmt = NULL;
+ 	struct snd_pcm_chmap_elem *chmap_v3 = NULL;
+-	unsigned int chconfig;
  
- 	if (len < 0)
- 		return 0;
-@@ -658,14 +658,14 @@ int snd_usb_mixer_add_control(struct usb_mixer_elem_list *list,
- 	{ 0 },
- };
+ 	dev = chip->dev;
  
--static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm,
-+static int get_term_name(struct snd_usb_audio *chip, struct usb_audio_term *iterm,
- 			 unsigned char *name, int maxlen, int term_only)
- {
- 	struct iterm_name_combo *names;
- 	int len;
+@@ -719,98 +868,41 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 		    protocol <= 2)
+ 			protocol = UAC_VERSION_1;
  
- 	if (iterm->name) {
--		len = snd_usb_copy_string_desc(state, iterm->name,
-+		len = snd_usb_copy_string_desc(chip, iterm->name,
- 						name, maxlen);
- 		if (len)
- 			return len;
-@@ -1407,7 +1407,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 	len = check_mapped_name(map, kctl->id.name, sizeof(kctl->id.name));
- 	mapped_name = len != 0;
- 	if (!len && nameid)
--		len = snd_usb_copy_string_desc(state, nameid,
-+		len = snd_usb_copy_string_desc(state->chip, nameid,
- 				kctl->id.name, sizeof(kctl->id.name));
+-		chconfig = 0;
+-		/* get audio formats */
+ 		switch (protocol) {
+ 		default:
+ 			dev_dbg(&dev->dev, "%u:%d: unknown interface protocol %#02x, assuming v1\n",
+ 				iface_no, altno, protocol);
+ 			protocol = UAC_VERSION_1;
+ 			/* fall through */
+-
+-		case UAC_VERSION_1: {
+-			struct uac1_as_header_descriptor *as =
+-				snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, UAC_AS_GENERAL);
+-			struct uac_input_terminal_descriptor *iterm;
+-
+-			if (!as) {
+-				dev_err(&dev->dev,
+-					"%u:%d : UAC_AS_GENERAL descriptor not found\n",
+-					iface_no, altno);
+-				continue;
+-			}
+-
+-			if (as->bLength < sizeof(*as)) {
+-				dev_err(&dev->dev,
+-					"%u:%d : invalid UAC_AS_GENERAL desc\n",
+-					iface_no, altno);
+-				continue;
+-			}
+-
+-			format = le16_to_cpu(as->wFormatTag); /* remember the format value */
+-
+-			iterm = snd_usb_find_input_terminal_descriptor(chip->ctrl_intf,
+-								       as->bTerminalLink);
+-			if (iterm) {
+-				num_channels = iterm->bNrChannels;
+-				chconfig = le16_to_cpu(iterm->wChannelConfig);
+-			}
+-
+-			break;
+-		}
+-
++		case UAC_VERSION_1:
++			/* fall through */
+ 		case UAC_VERSION_2: {
+-			struct uac2_input_terminal_descriptor *input_term;
+-			struct uac2_output_terminal_descriptor *output_term;
+-			struct uac2_as_header_descriptor *as =
+-				snd_usb_find_csint_desc(alts->extra, alts->extralen, NULL, UAC_AS_GENERAL);
+-
+-			if (!as) {
+-				dev_err(&dev->dev,
+-					"%u:%d : UAC_AS_GENERAL descriptor not found\n",
+-					iface_no, altno);
+-				continue;
+-			}
+-
+-			if (as->bLength < sizeof(*as)) {
+-				dev_err(&dev->dev,
+-					"%u:%d : invalid UAC_AS_GENERAL desc\n",
+-					iface_no, altno);
+-				continue;
+-			}
++			int bm_quirk = 0;
  
- 	switch (control) {
-@@ -1422,10 +1422,10 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
- 		 * - otherwise, anonymous name.
- 		 */
- 		if (!len) {
--			len = get_term_name(state, iterm, kctl->id.name,
-+			len = get_term_name(state->chip, iterm, kctl->id.name,
- 					    sizeof(kctl->id.name), 1);
- 			if (!len)
--				len = get_term_name(state, &state->oterm,
-+				len = get_term_name(state->chip, &state->oterm,
- 						    kctl->id.name,
- 						    sizeof(kctl->id.name), 1);
- 			if (!len)
-@@ -1498,7 +1498,7 @@ static void get_connector_control_name(struct mixer_build *state,
- 				       struct usb_audio_term *term,
- 				       bool is_input, char *name, int name_size)
- {
--	int name_len = get_term_name(state, term, name, name_size, 0);
-+	int name_len = get_term_name(state->chip, term, name, name_size, 0);
+-			num_channels = as->bNrChannels;
+-			format = le32_to_cpu(as->bmFormats);
+-			chconfig = le32_to_cpu(as->bmChannelConfig);
+-
+-			/* lookup the terminal associated to this interface
+-			 * to extract the clock */
+-			input_term = snd_usb_find_input_terminal_descriptor(chip->ctrl_intf,
+-									    as->bTerminalLink);
+-			if (input_term) {
+-				clock = input_term->bCSourceID;
+-				if (!chconfig && (num_channels == input_term->bNrChannels))
+-					chconfig = le32_to_cpu(input_term->bmChannelConfig);
+-				break;
+-			}
+-
+-			output_term = snd_usb_find_output_terminal_descriptor(chip->ctrl_intf,
+-									      as->bTerminalLink);
+-			if (output_term) {
+-				clock = output_term->bCSourceID;
+-				break;
+-			}
++			/*
++			 * Blue Microphones workaround: The last altsetting is
++			 * identical with the previous one, except for a larger
++			 * packet size, but is actually a mislabeled two-channel
++			 * setting; ignore it.
++			 *
++			 * Part 1: prepare quirk flag
++			 */
++			if (altno == 2 && num == 3 &&
++			    fp && fp->altsetting == 1 && fp->channels == 1 &&
++			    fp->formats == SNDRV_PCM_FMTBIT_S16_LE &&
++			    protocol == UAC_VERSION_1 &&
++			    le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize) ==
++							fp->maxpacksize * 2)
++				bm_quirk = 1;
  
- 	if (name_len == 0)
- 		strlcpy(name, "Unknown", name_size);
-@@ -1597,7 +1597,7 @@ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
- 	}
+-			dev_err(&dev->dev,
+-				"%u:%d : bogus bTerminalLink %d\n",
+-				iface_no, altno, as->bTerminalLink);
+-			continue;
++			fp = snd_usb_get_audioformat_uac12(chip, alts, protocol,
++							   iface_no, i, altno,
++							   stream, bm_quirk);
++			break;
+ 		}
+-
+ 		case UAC_VERSION_3: {
+ 			struct uac3_input_terminal_descriptor *input_term;
+ 			struct uac3_output_terminal_descriptor *output_term;
+-			struct uac3_as_header_descriptor *as;
+ 			struct uac3_cluster_header_descriptor *cluster;
+ 			struct uac3_hc_descriptor_header hc_header;
+ 			u16 cluster_id, wLength;
+@@ -923,40 +1015,12 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 		}
  
- 	kctl->private_free = snd_usb_mixer_elem_free;
--	ret = snd_usb_copy_string_desc(state, hdr->iClockSource,
-+	ret = snd_usb_copy_string_desc(state->chip, hdr->iClockSource,
- 				       name, sizeof(name));
- 	if (ret > 0)
- 		snprintf(kctl->id.name, sizeof(kctl->id.name),
-@@ -1840,7 +1840,7 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
+ 		if (protocol == UAC_VERSION_1 || protocol == UAC_VERSION_2) {
+-			/* get format type */
+-			fmt = snd_usb_find_csint_desc(alts->extra,
+-						      alts->extralen,
+-						      NULL, UAC_FORMAT_TYPE);
+-			if (!fmt) {
+-				dev_err(&dev->dev,
+-					"%u:%d : no UAC_FORMAT_TYPE desc\n",
+-					iface_no, altno);
+-				continue;
+-			}
+-			if (((protocol == UAC_VERSION_1) && (fmt->bLength < 8))
+-					|| ((protocol == UAC_VERSION_2) &&
+-							(fmt->bLength < 6))) {
+-				dev_err(&dev->dev,
+-					"%u:%d : invalid UAC_FORMAT_TYPE desc\n",
+-					iface_no, altno);
++			if (!fp)
+ 				continue;
+-			}
++			else if (IS_ERR(fp))
++				return PTR_ERR(fp);
  
- 	len = check_mapped_name(map, kctl->id.name, sizeof(kctl->id.name));
- 	if (!len)
--		len = get_term_name(state, iterm, kctl->id.name,
-+		len = get_term_name(state->chip, iterm, kctl->id.name,
- 				    sizeof(kctl->id.name), 0);
- 	if (!len)
- 		len = sprintf(kctl->id.name, "Mixer Source %d", in_ch + 1);
-@@ -2154,7 +2154,8 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
- 			nameid = uac_processing_unit_iProcessing(desc, state->mixer->protocol);
- 			len = 0;
- 			if (nameid)
--				len = snd_usb_copy_string_desc(state, nameid,
-+				len = snd_usb_copy_string_desc(state->chip,
-+							       nameid,
- 							       kctl->id.name,
- 							       sizeof(kctl->id.name));
- 			if (!len)
-@@ -2350,7 +2351,8 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
- 		len = check_mapped_selector_name(state, unitid, i, namelist[i],
- 						 MAX_ITEM_NAME_LEN);
- 		if (! len && check_input_term(state, desc->baSourceID[i], &iterm) >= 0)
--			len = get_term_name(state, &iterm, namelist[i], MAX_ITEM_NAME_LEN, 0);
-+			len = get_term_name(state->chip, &iterm, namelist[i],
-+					    MAX_ITEM_NAME_LEN, 0);
- 		if (! len)
- 			sprintf(namelist[i], "Input %u", i);
- 	}
-@@ -2372,12 +2374,12 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
- 		/* if iSelector is given, use it */
- 		nameid = uac_selector_unit_iSelector(desc);
- 		if (nameid)
--			len = snd_usb_copy_string_desc(state, nameid,
-+			len = snd_usb_copy_string_desc(state->chip, nameid,
- 						       kctl->id.name,
- 						       sizeof(kctl->id.name));
- 		/* ... or pick up the terminal name at next */
- 		if (!len)
--			len = get_term_name(state, &state->oterm,
-+			len = get_term_name(state->chip, &state->oterm,
- 				    kctl->id.name, sizeof(kctl->id.name), 0);
- 		/* ... or use the fixed string "USB" as the last resort */
- 		if (!len)
+-			/*
+-			 * Blue Microphones workaround: The last altsetting is
+-			 * identical with the previous one, except for a larger
+-			 * packet size, but is actually a mislabeled two-channel
+-			 * setting; ignore it.
+-			 */
+-			if (fmt->bNrChannels == 1 &&
+-			    fmt->bSubframeSize == 2 &&
+-			    altno == 2 && num == 3 &&
+-			    fp && fp->altsetting == 1 && fp->channels == 1 &&
+-			    fp->formats == SNDRV_PCM_FMTBIT_S16_LE &&
+-			    protocol == UAC_VERSION_1 &&
+-			    le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize) ==
+-							fp->maxpacksize * 2)
+-				continue;
++			goto skip_uac3;
+ 		}
+ 
+ 		fp = audio_format_alloc_init(chip, alts, protocol, iface_no, i,
+@@ -967,45 +1031,18 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 		fp->attributes = parse_uac_endpoint_attributes(chip, alts,
+ 							       protocol,
+ 							       iface_no);
+-
+-		/* some quirks for attributes here */
+-		snd_usb_audioformat_attributes_quirk(chip, fp, stream);
++		fp->chmap = chmap_v3;
+ 
+ 		/* ok, let's parse further... */
+-		if (protocol == UAC_VERSION_1 || protocol == UAC_VERSION_2) {
+-			if (snd_usb_parse_audio_format(chip, fp, format,
+-							fmt, stream) < 0) {
+-				kfree(fp->rate_table);
+-				kfree(fp);
+-				fp = NULL;
+-				continue;
+-			}
+-		} else {
+-			struct uac3_as_header_descriptor *as;
+-
+-			as = snd_usb_find_csint_desc(alts->extra,
+-						     alts->extralen,
+-						     NULL, UAC_AS_GENERAL);
+-
+-			if (snd_usb_parse_audio_format_v3(chip, fp, as,
+-								stream) < 0) {
+-				kfree(fp->rate_table);
+-				kfree(fp);
+-				fp = NULL;
+-				continue;
+-			}
++		if (snd_usb_parse_audio_format_v3(chip, fp, as,
++							stream) < 0) {
++			kfree(fp->rate_table);
++			kfree(fp);
++			fp = NULL;
++			continue;
+ 		}
+ 
+-		/* Create chmap */
+-		if (fp->channels != num_channels)
+-			chconfig = 0;
+-
+-		if (protocol == UAC_VERSION_3)
+-			fp->chmap = chmap_v3;
+-		else
+-			fp->chmap = convert_chmap(fp->channels, chconfig,
+-						  protocol);
+-
++skip_uac3:
+ 		dev_dbg(&dev->dev, "%u:%d: add audio endpoint %#x\n", iface_no, altno, fp->endpoint);
+ 		err = snd_usb_add_audio_stream(chip, stream, fp);
+ 		if (err < 0) {
 -- 
 1.9.1
