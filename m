@@ -1,19 +1,17 @@
-From: Jay Foster <jay@systech.com>
-Subject: Re: Aplay Fails When Reading From stdin
-Date: Fri, 4 May 2018 12:57:35 -0700
-Message-ID: <399d9244-ae31-84c0-d587-bc62707a873f@systech.com>
-References: <8c51a51a-cfa0-e1a7-0682-8f3c13ddc2a7@systech.com>
- <s5h7eojb3u4.wl-tiwai@suse.de>
-Reply-To: jay@systech.com
+From: noman pouigt <variksla@gmail.com>
+Subject: Re: Buffer size calculation based on period size
+Date: Fri, 4 May 2018 13:56:12 -0700
+Message-ID: <CAES_P+_0BFY870-rOW97HRWtW7oa9BeEGNg_T98JiZ5yfTbH_Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
- [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id 221C3266F44
- for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 21:57:43 +0200 (CEST)
-In-Reply-To: <s5h7eojb3u4.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail-pf0-f182.google.com (mail-pf0-f182.google.com
+ [209.85.192.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id A4A02266F44
+ for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 22:56:15 +0200 (CEST)
+Received: by mail-pf0-f182.google.com with SMTP id v63so18321022pfk.8
+ for <alsa-devel@alsa-project.org>; Fri, 04 May 2018 13:56:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +21,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: clemens@ladisch.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+>>noman pouigt wrote:
+> I am using tinycap to capture the audio and
+> setting below settings:
+> bitwidth =  16
+> rate =  16000
+> channel =  1
+> period_size =  320
+> period_count = 2
+>
+> I am wondering how is below
+> period_size and buffer_size calculated?
+>
+> Shouldn't period_size of 320 bytes and
+> period_count of 2 fail?
 
+>From the tinyalsa source code:
 
-On 5/4/2018 12:47 PM, Takashi Iwai wrote:
-> On Fri, 04 May 2018 19:51:05 +0200,
-> Jay Foster wrote:
->> I recently updated may alsa from 1.1.4.1 to 1.1.6.  I now noticed that
->> aplay does not work properly (the same as 1.1.4.1) when reading the
->> sound file data from stdin.  This might have something to do with the
->> recent change with reading the sound file header.
->>
->> With the previous version of aplay, aplay would report:
->>
->> Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 22050 Hz, Mono
->>
->> With 1.1.6, aplay reports:
->>
->> Playing raw data 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
->>
->> This results in static/noise output.  If I explicitly add the '-f
->> S16_LE -r 22050' options to aplay, then it does play correctly.
->>
->> Is this a known bug and is there a fix?
-> It works fine on my system.
->
-> % aplay test.wav
-> Playing WAVE 'test.wav' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
->
-> % aplay < ~/test/test.wav
-> Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 44100 Hz, Stereo
->
-> % aplay --version
-> aplay: version 1.1.6 by Jaroslav Kysela <perex@perex.cz>
->
->
-> Takashi
->
->
-Well, it does not work for me:
+>>param_set_min(&params, SNDRV_PCM_HW_PARAM_PERIOD_SIZE, config->period_size);
 
-cat bird-calls.wav | /usr/bin/aplay -Dplughw:0 --
-Playing raw data 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
-^CAborted by signal Interrupt...
-aplay: pcm_write:2051: write error: Interrupted system call
+>>So it uses either the supplied value, or if that is too small, the
+smallest allowed value.
 
-aplay -Dplughw:0 bird-calls.wav
-Playing WAVE 'bird-calls.wav' : Signed 16 bit Little Endian, Rate 44100 
-Hz, Stereo
+Probably I was not clear; Why ALSA picked period_size
+of 2042 bytes when the minimum period bytes specified
+is 4084?
 
-Looks like aplay may now have problems reading from stdin if stdin is a 
-pipe.
+Reason for this question is probably my wrong understanding.
+AFAIK:
+period_bytes_min specified in hw_params means the minimum
+bytes after which audio driver can expect an interrupt.
+So, total buffer size should be multiple of period_bytes_min
+or multiple of user provided period size if it is greater than
+period_bytes_min.
 
-Jay
+So, if the above understanding is right then buffer size
+should have been 4084*2 (number of periods asked by user).
+
+Ultimately the question is how period size is calculated given
+min_period_bytes, max_period_bytes, buffer_bytes_max from
+pcm_hardware and user supplied period size and period count?
+
+I tried looking into the code but looks like there is lot of macro
+magic going on in pcm native layer.
+
+> cat sub0/hw_params
+>
+> access: RW_INTERLEAVED
+> format: S16_LE
+> subformat: STD
+> channels: 1
+> rate: 16000 (16000/1)
+> period_size: 2042
+> buffer_size: 4084
+
+>>The actual values of period_size and period_count are returned by
+>>pcm_open().
