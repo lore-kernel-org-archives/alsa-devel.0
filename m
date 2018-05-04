@@ -1,217 +1,51 @@
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: Re: [PATCH v3 1/4] ALSA: usb-audio: UAC3. Add support for mixer unit.
-Date: Fri, 4 May 2018 03:57:32 +0300
-Message-ID: <CAB=otbRKf57D52VRZgE=4XCLYaT9xE7eNsyLrBqmaghgB7LCfQ@mail.gmail.com>
-References: <20180424172445.31928-2-jorge.sanjuan@codethink.co.uk> <20180427170649.27334-1-jorge.sanjuan@codethink.co.uk>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH 2/2] ASoC: nau8810: change the target of
+	MIC BIAS supply
+Date: Fri, 4 May 2018 09:10:32 +0800
+Message-ID: <5AEBB308.6020006@nuvoton.com>
+References: <1525315602-3620-1-git-send-email-KCHSU0@nuvoton.com>
+ <1525315602-3620-2-git-send-email-KCHSU0@nuvoton.com>
+ <20180503231047.GB13402@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180427170649.27334-1-jorge.sanjuan@codethink.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id A337C266F44
+ for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 03:10:40 +0200 (CEST)
+In-Reply-To: <20180503231047.GB13402@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, CFYU0@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, YCPENG7@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Apr 27, 2018 at 8:06 PM, Jorge Sanjuan
-<jorge.sanjuan@codethink.co.uk> wrote:
-> This adds support for the MIXER UNIT in UAC3. All the information
-> is obtained from the (HIGH CAPABILITY) Cluster's header. We don't
-> read the rest of the logical cluster to obtain the channel config
-> as that wont make any difference in the current mixer behaviour.
+On 5/4/2018 7:10 AM, Mark Brown wrote:
+> On Thu, May 03, 2018 at 10:46:42AM +0800, John Hsu wrote:
+>> The MICBAIS will not supply if there is only one path from MICP to
+>> input boost stage. The driver fixes the issue by changing the supply
+>> target to input boost stage mixer.
 >
-> The name of the mixer unit is not yet requested as there is not
-> support for the UAC3 Class Specific String requests.
->
-> Tested in an UAC3 device working as a HEADSET with a basic mixer
-> unit (same as the one in the BADD spec) with no controls.
+> Does the input boost stage actually use the MICBIAS supply directly?
+> More usually a microphone bias would supply the microphone rather than
+> anything on the chip itself.
 
-So, after deeper looking into the code and after testing this patch,
-in your usecase (mixer with no controls) you'll never execute
-build_mixer_unit_ctl(), correct? So did you try to just fix issues with
-incorrect parsing of mixer unit descriptor?
+The input boost stage has a mixer of two input sources. The normal case
+is that MIC goes to input PGA, then to input boot stage. The case is
+the original design of the driver. But there is another path that MIC
+goes input boot stage directly. The case is less happened but has chance.
+Ex. The single-end MIC goes to input boot stage. Therefore, we move
+the target of MICBIAS to input boost stage which can supply power for
+both cases.
 
->
-> Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-> ---
->  include/uapi/linux/usb/audio.h | 19 +++++++--
->  sound/usb/mixer.c              | 88 ++++++++++++++++++++++++++++++++++++++----
->  2 files changed, 97 insertions(+), 10 deletions(-)
->
-> diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
-> index 3a78e7145689..13d98e6e0db1 100644
-> --- a/include/uapi/linux/usb/audio.h
-> +++ b/include/uapi/linux/usb/audio.h
-> @@ -285,9 +285,22 @@ static inline __u8 uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor
->  static inline __u8 *uac_mixer_unit_bmControls(struct uac_mixer_unit_descriptor *desc,
->                                               int protocol)
->  {
-> -       return (protocol == UAC_VERSION_1) ?
-> -               &desc->baSourceID[desc->bNrInPins + 4] :
-> -               &desc->baSourceID[desc->bNrInPins + 6];
-> +       switch (protocol) {
-> +       case UAC_VERSION_1:
-> +               return &desc->baSourceID[desc->bNrInPins + 4];
-> +       case UAC_VERSION_2:
-> +               return &desc->baSourceID[desc->bNrInPins + 6];
-> +       case UAC_VERSION_3:
-> +               return &desc->baSourceID[desc->bNrInPins + 2];
-> +       default:
-> +               return NULL;
-> +       }
-> +}
-> +
-> +static inline __u16 uac3_mixer_unit_wClusterDescrID(struct uac_mixer_unit_descriptor *desc)
-> +{
-> +       return (desc->baSourceID[desc->bNrInPins + 1] << 8) |
-> +               desc->baSourceID[desc->bNrInPins];
->  }
->
->  static inline __u8 uac_mixer_unit_iMixer(struct uac_mixer_unit_descriptor *desc)
-> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-> index 301ad61ed426..3503f4840ec3 100644
-> --- a/sound/usb/mixer.c
-> +++ b/sound/usb/mixer.c
-> @@ -719,6 +719,66 @@ static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm
->  }
->
->  /*
-> + * Get logical cluster information for UAC3 devices.
-> + */
-> +static int get_cluster_channels_v3(struct mixer_build *state, unsigned int cluster_id)
-> +{
-> +       struct uac3_cluster_header_descriptor c_header;
-> +       int err;
-> +
-> +       err = snd_usb_ctl_msg(state->chip->dev,
-> +                       usb_rcvctrlpipe(state->chip->dev, 0),
-> +                       UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
-> +                       USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
-> +                       cluster_id,
-> +                       snd_usb_ctrl_intf(state->chip),
-> +                       &c_header, sizeof(c_header));
-> +       if (err < 0)
-> +               goto error;
-> +       if (err != sizeof(c_header)) {
-> +               err = -EIO;
-> +               goto error;
-> +       }
-> +
-> +       return c_header.bNrChannels;
-> +
-> +error:
-> +       usb_audio_err(state->chip, "cannot request logical cluster ID: %d (err: %d)\n", cluster_id, err);
-> +       return err;
-> +}
-> +
-> +/*
-> + * Get number of channels for a Mixer Unit.
-> + */
-> +static int uac_mixer_unit_get_channels(struct mixer_build *state,
-> +                                      struct uac_mixer_unit_descriptor *desc)
-> +{
-> +       int mu_channels;
-> +
-> +       if (desc->bLength < 11)
-> +               return -EINVAL;
-> +       if (!desc->bNrInPins)
-> +               return -EINVAL;
-> +
-> +       switch (state->mixer->protocol) {
-> +       case UAC_VERSION_1:
-> +       case UAC_VERSION_2:
-> +       default:
-> +               mu_channels = uac_mixer_unit_bNrChannels(desc);
-> +               break;
-> +       case UAC_VERSION_3:
-> +               mu_channels = get_cluster_channels_v3(state,
-> +                               uac3_mixer_unit_wClusterDescrID(desc));
-> +               break;
-> +       }
-> +
-> +       if (!mu_channels)
-> +               return -EINVAL;
-> +
-> +       return mu_channels;
-> +}
-> +
-> +/*
->   * parse the source unit recursively until it reaches to a terminal
->   * or a branched unit.
->   */
-> @@ -865,6 +925,18 @@ static int check_input_term(struct mixer_build *state, int id,
->                                 term->name = le16_to_cpu(d->wClockSourceStr);
->                                 return 0;
->                         }
-> +                       case UAC3_MIXER_UNIT: {
-> +                               struct uac_mixer_unit_descriptor *d = p1;
-> +
-> +                               err = uac_mixer_unit_get_channels(state, d);
-> +                               if (err < 0)
-> +                                       return err;
-> +
-> +                               term->channels = err;
-> +                               term->type = d->bDescriptorSubtype << 16; /* virtual type */
-> +
-> +                               return 0;
-> +                       }
->                         default:
->                                 return -ENODEV;
->                         }
-> @@ -1797,11 +1869,10 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid,
->   */
->  static void build_mixer_unit_ctl(struct mixer_build *state,
->                                  struct uac_mixer_unit_descriptor *desc,
-> -                                int in_pin, int in_ch, int unitid,
-> -                                struct usb_audio_term *iterm)
-> +                                int in_pin, int in_ch, int num_outs,
-> +                                int unitid, struct usb_audio_term *iterm)
->  {
->         struct usb_mixer_elem_info *cval;
-> -       unsigned int num_outs = uac_mixer_unit_bNrChannels(desc);
->         unsigned int i, len;
->         struct snd_kcontrol *kctl;
->         const struct usbmix_name_map *map;
-> @@ -1878,14 +1949,17 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
->         int input_pins, num_ins, num_outs;
->         int pin, ich, err;
->
-> -       if (desc->bLength < 11 || !(input_pins = desc->bNrInPins) ||
-> -           !(num_outs = uac_mixer_unit_bNrChannels(desc))) {
-> +       err = uac_mixer_unit_get_channels(state, desc);
-> +       if (err < 0) {
->                 usb_audio_err(state->chip,
->                               "invalid MIXER UNIT descriptor %d\n",
->                               unitid);
-> -               return -EINVAL;
-> +               return err;
->         }
->
-> +       num_outs = err;
-> +       input_pins = desc->bNrInPins;
-> +
->         num_ins = 0;
->         ich = 0;
->         for (pin = 0; pin < input_pins; pin++) {
-> @@ -1912,7 +1986,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
->                                 }
->                         }
->                         if (ich_has_controls)
-> -                               build_mixer_unit_ctl(state, desc, pin, ich,
-> +                               build_mixer_unit_ctl(state, desc, pin, ich, num_outs,
->                                                      unitid, &iterm);
 
-So with current sources we will never reach this place. In your
-usecase (mixer with no
-controls) it obviously won't go inside.
-However, I created a mixer with controls but still
-build_mixer_unit_ctl() isn't executed.
-This is because UAC3 input terminal parsing always returns 0 channels, this is
-what still needs to be implemented (see comment "REVISIT: UAC3 IT doesn't
-have channels/cfg" in check_input_term)
 
-Beside of that, other part of this patch seems to work as expected, at least
-uac_mixer_unit_get_channels() gives correct results - I checked it for
-two-channels config, that is different comparing to BADD.
-
-Thanks,
-Ruslan
+===========================================================================================
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
