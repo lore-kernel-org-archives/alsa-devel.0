@@ -1,178 +1,78 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Subject: Re: [PATCH V3 10/10] ASoC: amd: dma driver changes for bt i2s
- instance
-Date: Fri, 4 May 2018 10:04:37 +0530
-Message-ID: <78cec135-3ae1-4d4b-4b19-b7fe1577294d@amd.com>
-References: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1525207810-1305-10-git-send-email-Vijendar.Mukunda@amd.com>
- <CAGS+omC=fZsFvSaxqFWEo0Pkj1Rcqhixy_oN7PWry9F0L_9c-Q@mail.gmail.com>
- <06a8f6f4-3bc0-656e-9c55-84f88727d6fb@amd.com>
- <CAGS+omDKpPwyUMYwm-ai5cr+m=JLh+yjYq_oDfyRBppqc8DPDg@mail.gmail.com>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [alsa-devel] [PATCH v7 16/24] ASoC: qdsp6: q6asm: Add support to
+ audio stream apis
+Date: Fri, 4 May 2018 12:41:56 +0530
+Message-ID: <f3b3d90b-6504-328e-c9f4-a3b3f085d9dc@codeaurora.org>
+References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
+ <20180501120820.11016-17-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAGS+omDKpPwyUMYwm-ai5cr+m=JLh+yjYq_oDfyRBppqc8DPDg@mail.gmail.com>
+In-Reply-To: <20180501120820.11016-17-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Daniel Kurtz <djkurtz@chromium.org>, vijendar.mukunda@amd.com
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alexander.deucher@amd.com, weiyongjun1@huawei.com, jclinton@chromium.org, Guenter Roeck <linux@roeck-us.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 5/3/2018 10:10 PM, Daniel Kurtz wrote:
-> On Thu, May 3, 2018 at 1:33 AM Mukunda,Vijendar <vijendar.mukunda@amd.com>
-> wrote:
-> 
-> 
-> 
->> On Thursday 03 May 2018 11:13 AM, Daniel Kurtz wrote:
->>> Some checkpatch nits below...
->>>
->>> On Tue, May 1, 2018 at 2:53 PM Vijendar Mukunda <
-> Vijendar.Mukunda@amd.com>
->>> wrote:
->>>
->>>> With in ACP, There are three I2S controllers can be
->>>> configured/enabled ( I2S SP, I2S MICSP, I2S BT).
->>>> Default enabled I2S controller instance is I2S SP.
->>>> This patch provides required changes to support I2S BT
->>>> controller Instance.
->>>
->>>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
->>>> ---
->>>> v1->v2: defined i2s instance macros in acp header file
->>>> v2->v3: sqaushed previous patch series and spilt changes
->>>>             into multiple patches (acp dma driver code cleanup
->>>>             patches and bt i2s instance specific changes)
->>>>      sound/soc/amd/acp-da7219-max98357a.c |  23 ++++
->>>>      sound/soc/amd/acp-pcm-dma.c          | 256
->>> +++++++++++++++++++++++++++--------
->>>>      sound/soc/amd/acp.h                  |  40 ++++++
->>>>      3 files changed, 262 insertions(+), 57 deletions(-)
->>>
->>>> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
->>> b/sound/soc/amd/acp-da7219-max98357a.c
->>>> index 133139d..b3184ab 100644
->>>> --- a/sound/soc/amd/acp-da7219-max98357a.c
->>>> +++ b/sound/soc/amd/acp-da7219-max98357a.c
->>>> @@ -36,6 +36,7 @@
->>>>      #include <linux/input.h>
->>>>      #include <linux/acpi.h>
->>>
->>>> +#include "acp.h"
->>>>      #include "../codecs/da7219.h"
->>>>      #include "../codecs/da7219-aad.h"
->>>
->>>> @@ -44,6 +45,7 @@
->>>
->>>>      static struct snd_soc_jack cz_jack;
->>>>      static struct clk *da7219_dai_clk;
->>>> +extern int bt_pad_enable;
->>>
->>> WARNING: externs should be avoided in .c files
-> 
->> We don't have .h file for machine driver and It can be ignored for
->> one variable.
->>>
->>>
->>>>      static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
->>>>      {
->>>> @@ -132,6 +134,9 @@ static const struct snd_pcm_hw_constraint_list
->>> constraints_channels = {
->>>>      static int cz_da7219_startup(struct snd_pcm_substream *substream)
->>>>      {
->>>>             struct snd_pcm_runtime *runtime = substream->runtime;
->>>> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
->>>> +       struct snd_soc_card *card = rtd->card;
->>>> +       struct acp_platform_info *machine =
->>> snd_soc_card_get_drvdata(card);
->>>
->>>>             /*
->>>>              * On this platform for PCM device we support stereo
->>>> @@ -143,6 +148,7 @@ static int cz_da7219_startup(struct
-> snd_pcm_substream
->>> *substream)
->>>>             snd_pcm_hw_constraint_list(runtime, 0,
-> SNDRV_PCM_HW_PARAM_RATE,
->>>>                                        &constraints_rates);
->>>
->>>> +       machine->i2s_instance = I2S_BT_INSTANCE;
->>>
->>> I'm not a big fan of this approach, but I don't know any other way to
-> tell
->>> a single "platform" driver (acp-pcm-dma) which of two channels (ST/BT)
-> to
->>> use via the pcm_open() callback.
->>>
->>> Mark, can you recommend any other way of doing this?
-> 
->> Hi Dan,
-> 
->> There have been couple of approaches worked upon this earlier.
->> 1) To compare cpu dai name to get the I2S instance value in
->> acp_dma_open() call.
-> 
->> But, Mark suggested not to implement this approach as we are comparing
->> dynamically generated cpu dai names.
-> 
->> 2) We added i2s_instance parameter as platform data to dwc driver.
->> By querying dwc driver platform data in acp dma driver, current i2s
->> instance was programmed in acp_dma_open ().
-> 
->> But Mark's latest comment was to implement platform specific changes in
->> machine driver. Machine driver and Dma driver should exchange the data
->> regarding this. We accepted this and current approach is based on the
->> same comment.
->> Below is the reference.
->> https://lkml.org/lkml/2018/4/18/597
-> 
-> Yes, I saw Mark's previous comment, but what we are trying to implement
-> here is the SoC specific binding between i2s channel and acp-dma channel.
-> This is a feature of the SoC, not of the i2s controller, but also not a
-> feature of the audio configuration on the board.
-The binding of channel and dma is soc specific but codec to channel is 
-board specific.
-These linkages can change from one board to another. Machine driver is 
-specific to a board (grunt here) and dma driver being common for various 
-boards (but specific to a platform like ST/CZ here). Tomorrow there can 
-be some other board with x codec linked to BT and y to SP.
-Hence, machine driver should send this board specific link information 
-to dma driver for it to dma on the correct channel as per the board.
-   For these SoCs, the link
-> between DMA registers & I2S-channel is hard-coded.  The machine driver is
-> already specifying which i2s channel to use when it configures, for
-> example, '.cpu_dai_name = "designware-i2s.2.auto"'.  The i2s channel
-> selection already implies a particular DMA configuration.  It seems
-> redundant to create this separate out-of-band infrastructure to make the
-> machine driver also tell its platform driver '.platform_name =
-> "acp_audio_dma.0.auto"' which i2s channel it is using.
-> 
-
-We could have decided on the basis of "cpu_dai_name" but the decision 
-would have been based on dynamically generated name. Though maybe 
-redundant in nature, but machine driver is just sending info to dma 
-driver that this codec is playing so play on this instance.
-
-> Perhaps the acp-pcm-dma.c should register two different platform drivers,
-> and let the machine driver pick the appropriate one (ie,
-> acp_audio_dma.0.auto or acp_audio_dma.1.auto) depending on which i2s port
-> it needs?  Then each of these would have its own
-> snd_soc_platform_driver->ops->open() that could setup
-> snd_pcm_runtime->private_data appropriately?
-
-I guess it would be overkill to have 2 platform drivers one for each 
-instance but actually for a single platform.
-
-   Or is there another standard
-> way to have a single snd_soc_platform_driver handle multiple channels?
-> 
-
-Don't know if there is a standard but would be interesting to know how 
-other platforms handle multiple instances.
-
+On 5/1/2018 5:38 PM, Srinivas Kandagatla wrote:
+> +static int __q6asm_run(struct audio_client *ac, uint32_t flags,
+> +	      uint32_t msw_ts, uint32_t lsw_ts, bool wait)
+> +{
+> +	struct asm_session_cmd_run_v2 *run;
+> +	struct apr_pkt *pkt;
+> +	int pkt_size, rc;
+> +	void *p;
+> +
+> +	pkt_size = APR_HDR_SIZE + sizeof(*run);
+> +	p = kzalloc(pkt_size, GFP_KERNEL);
+Should be GFP_ATOMIC as this API is also called from interrupt context
+> +	if (!p)
+> +		return -ENOMEM;
+> +
+[..]
+> +int q6asm_read(struct audio_client *ac)
+> +{
+> +	struct asm_data_cmd_read_v2 *read;
+> +	struct audio_port_data *port;
+> +	struct audio_buffer *ab;
+> +	struct apr_pkt *pkt;
+> +	int pkt_size;
+> +	int rc = 0;
+> +	void *p;
+> +
+> +	if (!(ac->io_mode & ASM_SYNC_IO_MODE))
+> +		return 0;
+> +
+> +	pkt_size = APR_HDR_SIZE + sizeof(*read);
+> +	p = kzalloc(pkt_size, GFP_KERNEL);
+same here. GFP_ATOMIC
+> +	if (!p)
+> +		return -ENOMEM;
+[..]
+> +int q6asm_write_async(struct audio_client *ac, uint32_t len, uint32_t msw_ts,
+> +		       uint32_t lsw_ts, uint32_t flags)
+> +{
+> +	struct asm_data_cmd_write_v2 *write;
+> +	struct audio_port_data *port;
+> +	struct audio_buffer *ab;
+> +	struct apr_pkt *pkt;
+> +	int pkt_size;
+> +	int rc = 0;
+> +	void *p;
+> +
+> +	pkt_size = APR_HDR_SIZE + sizeof(*write);
+> +	p = kzalloc(pkt_size, GFP_KERNEL);
+GFP_ATOMIC
+> +	if (!p)
+> +		return -ENOMEM;
+>
 Thanks,
-Akshu
-> -Dan
-> 
+Rohit
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
