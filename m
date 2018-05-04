@@ -1,7 +1,7 @@
 From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: [PATCH v2 4/7] ALSA: usb: Only get AudioControl header for UAC1 class.
-Date: Fri,  4 May 2018 04:24:01 +0300
-Message-ID: <1525397044-15080-5-git-send-email-ruslan.bilovol@gmail.com>
+Subject: [PATCH v2 5/7] ALSA: usb: mixer: make string parsing independent of mixer_build state
+Date: Fri,  4 May 2018 04:24:02 +0300
+Message-ID: <1525397044-15080-6-git-send-email-ruslan.bilovol@gmail.com>
 References: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
@@ -10,83 +10,138 @@ To: Takashi Iwai <tiwai@suse.com>
 Cc: Jorge <jorge.sanjuan@codethink.co.uk>, Andrew Chant <achant@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Functions like snd_usb_copy_string_desc() or
+get_term_name() don't actually need mixer_build
+state but can use snd_usb_audio structure instead
+to get usb device.
 
-The control header needs to be read from buffer at this point only
-in the case of UAC1 protocol. Move it inside the switch case as other
-protocols such as the Basic Audio Device spec will have an empty buffer
-that is latter filled as inferred.
+This patch has no functional change but prepares
+to future UAC3 BADD profiles support which don't
+have class-specific descriptors so won't have
+mixer_build state.
 
-Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-[Ruslan: updated with recently added sanity checks]
 Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
 ---
- sound/usb/card.c | 39 +++++++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ sound/usb/mixer.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 36c289b..0d7a5d7 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -221,32 +221,13 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
- 	struct usb_device *dev = chip->dev;
- 	struct usb_host_interface *host_iface;
- 	struct usb_interface_descriptor *altsd;
--	void *control_header;
- 	int i, protocol;
--	int rest_bytes;
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index bb203b3..e280354 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -201,10 +201,10 @@ static void *find_audio_control_unit(struct mixer_build *state,
+ /*
+  * copy a string with the given id
+  */
+-static int snd_usb_copy_string_desc(struct mixer_build *state,
++static int snd_usb_copy_string_desc(struct snd_usb_audio *chip,
+ 				    int index, char *buf, int maxlen)
+ {
+-	int len = usb_string(state->chip->dev, index, buf, maxlen - 1);
++	int len = usb_string(chip->dev, index, buf, maxlen - 1);
  
- 	/* find audiocontrol interface */
- 	host_iface = &usb_ifnum_to_if(dev, ctrlif)->altsetting[0];
--	control_header = snd_usb_find_csint_desc(host_iface->extra,
--						 host_iface->extralen,
--						 NULL, UAC_HEADER);
- 	altsd = get_iface_desc(host_iface);
- 	protocol = altsd->bInterfaceProtocol;
+ 	if (len < 0)
+ 		return 0;
+@@ -658,14 +658,14 @@ int snd_usb_mixer_add_control(struct usb_mixer_elem_list *list,
+ 	{ 0 },
+ };
  
--	if (!control_header) {
--		dev_err(&dev->dev, "cannot find UAC_HEADER\n");
--		return -EINVAL;
--	}
--
--	rest_bytes = (void *)(host_iface->extra + host_iface->extralen) -
--		control_header;
--
--	/* just to be sure -- this shouldn't hit at all */
--	if (rest_bytes <= 0) {
--		dev_err(&dev->dev, "invalid control header\n");
--		return -EINVAL;
--	}
--
- 	switch (protocol) {
- 	default:
- 		dev_warn(&dev->dev,
-@@ -255,7 +236,25 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
- 		/* fall through */
+-static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm,
++static int get_term_name(struct snd_usb_audio *chip, struct usb_audio_term *iterm,
+ 			 unsigned char *name, int maxlen, int term_only)
+ {
+ 	struct iterm_name_combo *names;
+ 	int len;
  
- 	case UAC_VERSION_1: {
--		struct uac1_ac_header_descriptor *h1 = control_header;
-+		struct uac1_ac_header_descriptor *h1;
-+		int rest_bytes;
-+
-+		h1 = snd_usb_find_csint_desc(host_iface->extra,
-+							 host_iface->extralen,
-+							 NULL, UAC_HEADER);
-+		if (!h1) {
-+			dev_err(&dev->dev, "cannot find UAC_HEADER\n");
-+			return -EINVAL;
-+		}
-+
-+		rest_bytes = (void *)(host_iface->extra +
-+				host_iface->extralen) - (void *)h1;
-+
-+		/* just to be sure -- this shouldn't hit at all */
-+		if (rest_bytes <= 0) {
-+			dev_err(&dev->dev, "invalid control header\n");
-+			return -EINVAL;
-+		}
+ 	if (iterm->name) {
+-		len = snd_usb_copy_string_desc(state, iterm->name,
++		len = snd_usb_copy_string_desc(chip, iterm->name,
+ 						name, maxlen);
+ 		if (len)
+ 			return len;
+@@ -1407,7 +1407,7 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 	len = check_mapped_name(map, kctl->id.name, sizeof(kctl->id.name));
+ 	mapped_name = len != 0;
+ 	if (!len && nameid)
+-		len = snd_usb_copy_string_desc(state, nameid,
++		len = snd_usb_copy_string_desc(state->chip, nameid,
+ 				kctl->id.name, sizeof(kctl->id.name));
  
- 		if (rest_bytes < sizeof(*h1)) {
- 			dev_err(&dev->dev, "too short v1 buffer descriptor\n");
+ 	switch (control) {
+@@ -1422,10 +1422,10 @@ static void build_feature_ctl(struct mixer_build *state, void *raw_desc,
+ 		 * - otherwise, anonymous name.
+ 		 */
+ 		if (!len) {
+-			len = get_term_name(state, iterm, kctl->id.name,
++			len = get_term_name(state->chip, iterm, kctl->id.name,
+ 					    sizeof(kctl->id.name), 1);
+ 			if (!len)
+-				len = get_term_name(state, &state->oterm,
++				len = get_term_name(state->chip, &state->oterm,
+ 						    kctl->id.name,
+ 						    sizeof(kctl->id.name), 1);
+ 			if (!len)
+@@ -1498,7 +1498,7 @@ static void get_connector_control_name(struct mixer_build *state,
+ 				       struct usb_audio_term *term,
+ 				       bool is_input, char *name, int name_size)
+ {
+-	int name_len = get_term_name(state, term, name, name_size, 0);
++	int name_len = get_term_name(state->chip, term, name, name_size, 0);
+ 
+ 	if (name_len == 0)
+ 		strlcpy(name, "Unknown", name_size);
+@@ -1597,7 +1597,7 @@ static int parse_clock_source_unit(struct mixer_build *state, int unitid,
+ 	}
+ 
+ 	kctl->private_free = snd_usb_mixer_elem_free;
+-	ret = snd_usb_copy_string_desc(state, hdr->iClockSource,
++	ret = snd_usb_copy_string_desc(state->chip, hdr->iClockSource,
+ 				       name, sizeof(name));
+ 	if (ret > 0)
+ 		snprintf(kctl->id.name, sizeof(kctl->id.name),
+@@ -1840,7 +1840,7 @@ static void build_mixer_unit_ctl(struct mixer_build *state,
+ 
+ 	len = check_mapped_name(map, kctl->id.name, sizeof(kctl->id.name));
+ 	if (!len)
+-		len = get_term_name(state, iterm, kctl->id.name,
++		len = get_term_name(state->chip, iterm, kctl->id.name,
+ 				    sizeof(kctl->id.name), 0);
+ 	if (!len)
+ 		len = sprintf(kctl->id.name, "Mixer Source %d", in_ch + 1);
+@@ -2154,7 +2154,8 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 			nameid = uac_processing_unit_iProcessing(desc, state->mixer->protocol);
+ 			len = 0;
+ 			if (nameid)
+-				len = snd_usb_copy_string_desc(state, nameid,
++				len = snd_usb_copy_string_desc(state->chip,
++							       nameid,
+ 							       kctl->id.name,
+ 							       sizeof(kctl->id.name));
+ 			if (!len)
+@@ -2350,7 +2351,8 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 		len = check_mapped_selector_name(state, unitid, i, namelist[i],
+ 						 MAX_ITEM_NAME_LEN);
+ 		if (! len && check_input_term(state, desc->baSourceID[i], &iterm) >= 0)
+-			len = get_term_name(state, &iterm, namelist[i], MAX_ITEM_NAME_LEN, 0);
++			len = get_term_name(state->chip, &iterm, namelist[i],
++					    MAX_ITEM_NAME_LEN, 0);
+ 		if (! len)
+ 			sprintf(namelist[i], "Input %u", i);
+ 	}
+@@ -2372,12 +2374,12 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 		/* if iSelector is given, use it */
+ 		nameid = uac_selector_unit_iSelector(desc);
+ 		if (nameid)
+-			len = snd_usb_copy_string_desc(state, nameid,
++			len = snd_usb_copy_string_desc(state->chip, nameid,
+ 						       kctl->id.name,
+ 						       sizeof(kctl->id.name));
+ 		/* ... or pick up the terminal name at next */
+ 		if (!len)
+-			len = get_term_name(state, &state->oterm,
++			len = get_term_name(state->chip, &state->oterm,
+ 				    kctl->id.name, sizeof(kctl->id.name), 0);
+ 		/* ... or use the fixed string "USB" as the last resort */
+ 		if (!len)
 -- 
 1.9.1
