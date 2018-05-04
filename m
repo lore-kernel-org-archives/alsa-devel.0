@@ -1,55 +1,149 @@
-From: Banajit Goswami <bgoswami@codeaurora.org>
-Subject: Re: [PATCH v7 07/24] ASoC: qdsp6: q6common: Add qdsp6
- helper functions
-Date: Thu, 3 May 2018 18:35:10 -0700
-Message-ID: <28f86f87-b28e-bec8-1a74-a218afeac0cc@codeaurora.org>
-References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
- <20180501120820.11016-8-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id 4579A266F44
- for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 03:35:13 +0200 (CEST)
-In-Reply-To: <20180501120820.11016-8-srinivas.kandagatla@linaro.org>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: [PATCH 1/9] R3Di and SBZ quirk entires + alt firmware loading
+Date: Fri,  4 May 2018 00:19:44 -0400
+Message-ID: <1525407594-25644-1-git-send-email-conmanx360@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds PCI quirk ID's for the Sound Blaster Z and Recon3Di.
+Only the currently tested ID's have been added.
 
-On 5/1/2018 5:08 AM, Srinivas Kandagatla wrote:
-> This patch adds some common helper functions like translating dsp error
-> to linux error codes and channel mappings etc.
->
-> These functions are used in all the following qdsp6 drivers.
->
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
-> ---
->   sound/soc/qcom/Kconfig              | 13 ++++++++
->   sound/soc/qcom/Makefile             |  3 ++
->   sound/soc/qcom/qdsp6/Makefile       |  1 +
->   sound/soc/qcom/qdsp6/q6dsp-common.c | 66 +++++++++++++++++++++++++++++++++++++
->   sound/soc/qcom/qdsp6/q6dsp-common.h | 24 ++++++++++++++
->   sound/soc/qcom/qdsp6/q6dsp-errno.h  | 51 ++++++++++++++++++++++++++++
->   6 files changed, 158 insertions(+)
->   create mode 100644 sound/soc/qcom/qdsp6/Makefile
->   create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.c
->   create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.h
->   create mode 100644 sound/soc/qcom/qdsp6/q6dsp-errno.h
-Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
+This patch also adds the ability to load alternative firmwares for each
+card, the firmwares can be obtained from within the Windows driver.
+The Recon3Di uses "ctefx-r3di.bin" and the Sound Blaster Z uses
+"ctefx-sbz.bin". If the alternative firmware for the given quirk is not
+found, the original ctefx.bin will be used. This has been confirmed to
+work for both the R3Di and the SBZ.
 
+This patch also makes the character array *dirstr a const.
+
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+---
+ sound/pci/hda/patch_ca0132.c | 61 +++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 55 insertions(+), 6 deletions(-)
+
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 768ea86..8346100 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -72,12 +72,16 @@
+ #define SCP_GET    1
+ 
+ #define EFX_FILE   "ctefx.bin"
++#define SBZ_EFX_FILE   "ctefx-sbz.bin"
++#define R3DI_EFX_FILE  "ctefx-r3di.bin"
+ 
+ #ifdef CONFIG_SND_HDA_CODEC_CA0132_DSP
+ MODULE_FIRMWARE(EFX_FILE);
++MODULE_FIRMWARE(SBZ_EFX_FILE);
++MODULE_FIRMWARE(R3DI_EFX_FILE);
+ #endif
+ 
+-static char *dirstr[2] = { "Playback", "Capture" };
++static const char *dirstr[2] = { "Playback", "Capture" };
+ 
+ enum {
+ 	SPEAKER_OUT,
+@@ -734,6 +738,7 @@ struct ca0132_spec {
+ 	unsigned int scp_resp_header;
+ 	unsigned int scp_resp_data[4];
+ 	unsigned int scp_resp_count;
++	bool alt_firmware_present;
+ 
+ 	/* mixer and effects related */
+ 	unsigned char dmic_ctl;
+@@ -762,6 +767,8 @@ struct ca0132_spec {
+ enum {
+ 	QUIRK_NONE,
+ 	QUIRK_ALIENWARE,
++	QUIRK_SBZ,
++	QUIRK_R3DI,
+ };
+ 
+ static const struct hda_pintbl alienware_pincfgs[] = {
+@@ -782,6 +789,10 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
+ 	SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
+ 	SND_PCI_QUIRK(0x1028, 0x0708, "Alienware 15 R2 2016", QUIRK_ALIENWARE),
++	SND_PCI_QUIRK(0x1102, 0x0010, "Sound Blaster Z", QUIRK_SBZ),
++	SND_PCI_QUIRK(0x1102, 0x0023, "Sound Blaster Z", QUIRK_SBZ),
++	SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
++	SND_PCI_QUIRK(0x1458, 0xA036, "Recon3Di", QUIRK_R3DI),
+ 	{}
+ };
+ 
+@@ -3207,7 +3218,7 @@ static int ca0132_select_out(struct hda_codec *codec)
+ 				    pin_ctl & ~PIN_HP);
+ 		/* enable speaker node */
+ 		pin_ctl = snd_hda_codec_read(codec, spec->out_pins[0], 0,
+-					     AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
++				AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
+ 		snd_hda_set_pin_ctl(codec, spec->out_pins[0],
+ 				    pin_ctl | PIN_OUT);
+ 	} else {
+@@ -4370,11 +4381,49 @@ static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
+ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ {
+ 	bool dsp_loaded = false;
++	struct ca0132_spec *spec = codec->spec;
+ 	const struct dsp_image_seg *dsp_os_image;
+ 	const struct firmware *fw_entry;
+-
+-	if (request_firmware(&fw_entry, EFX_FILE, codec->card->dev) != 0)
+-		return false;
++	/*
++	 * Alternate firmwares for different variants. The Recon3Di apparently
++	 * can use the default firmware, but I'll leave the option in case
++	 * it needs it again.
++	 */
++	switch (spec->quirk) {
++	case QUIRK_SBZ:
++		if (request_firmware(&fw_entry, SBZ_EFX_FILE,
++					codec->card->dev) != 0) {
++			codec_dbg(codec, "SBZ alt firmware not detected. ");
++			spec->alt_firmware_present = false;
++		} else {
++			codec_dbg(codec, "Sound Blaster Z firmware selected.");
++			spec->alt_firmware_present = true;
++		}
++		break;
++	case QUIRK_R3DI:
++		if (request_firmware(&fw_entry, R3DI_EFX_FILE,
++					codec->card->dev) != 0) {
++			codec_dbg(codec, "Recon3Di alt firmware not detected.");
++			spec->alt_firmware_present = false;
++		} else {
++			codec_dbg(codec, "Recon3Di firmware selected.");
++			spec->alt_firmware_present = true;
++		}
++		break;
++	default:
++		spec->alt_firmware_present = false;
++		break;
++	}
++	/*
++	 * Use default ctefx.bin if no alt firmware is detected, or if none
++	 * exists for your particular codec.
++	 */
++	if (!spec->alt_firmware_present) {
++		codec_dbg(codec, "Default firmware selected.");
++		if (request_firmware(&fw_entry, EFX_FILE,
++					codec->card->dev) != 0)
++			return false;
++	}
+ 
+ 	dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
+ 	if (dspload_image(codec, dsp_os_image, 0, 0, true, 0)) {
+@@ -4476,7 +4525,7 @@ static struct hda_verb ca0132_base_exit_verbs[] = {
+ 	{}
+ };
+ 
+-/* Other verbs tables.  Sends after DSP download. */
++/* Other verbs tables. Sends after DSP download. */
+ static struct hda_verb ca0132_init_verbs0[] = {
+ 	/* chip init verbs */
+ 	{0x15, 0x70D, 0xF0},
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.7.4
