@@ -1,105 +1,346 @@
 From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: [PATCH v2 0/7] USB Audio Device Class 3.0 BADD
-	profiles support
-Date: Fri,  4 May 2018 04:23:57 +0300
-Message-ID: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
- [209.85.215.68])
- by alsa0.perex.cz (Postfix) with ESMTP id E0E38266F44
- for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 03:24:49 +0200 (CEST)
-Received: by mail-lf0-f68.google.com with SMTP id m18-v6so28661266lfb.0
- for <alsa-devel@alsa-project.org>; Thu, 03 May 2018 18:24:49 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH v2 3/7] ALSA: usb: stream: refactor uac3 audio interface parsing
+Date: Fri,  4 May 2018 04:24:00 +0300
+Message-ID: <1525397044-15080-4-git-send-email-ruslan.bilovol@gmail.com>
+References: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Takashi Iwai <tiwai@suse.com>
-Cc: Jorge <jorge.sanjuan@codethink.co.uk>, alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Jorge <jorge.sanjuan@codethink.co.uk>, Andrew Chant <achant@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patchset adds BADD profiles support from the USB Audio
-Device Class 3.0 spec [1].
+Offload snd_usb_parse_audio_interface() function
+which became quite long after adding UAC3 spec support.
 
-BADD profile support is defined as mandatory feature of
-UAC3-compliant device, it should be implemented as a separate
-USB configuration.
+Move class-specific parts of uac3 parsing to separate
+function which now produce audioformat structure that
+is ready to be fed to snd_usb_add_audio_stream().
 
-Notable issue with BADD configuration is that it misses
-class-specific descriptors (and it's mandatory as per spec),
-so host should guess them from BADD profile number and
-parameters of endpoints (type, number of endpoints and
-max packet size)
+Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+---
+ sound/usb/stream.c | 289 +++++++++++++++++++++++++++--------------------------
+ 1 file changed, 146 insertions(+), 143 deletions(-)
 
-This patchset adds support of all known/existing BADD profiles
-from the UAC3 specification.
-
-First 5 patches are refactoring and improvements, and last 2
-patches actually implement UAC3 BADD profiles support.
-
-It's an alternative implementation comparing to [2],
-and doesn't build usb descriptors on the host but instead
-initializes alsa-usb structures with known parameters,
-so we don't need to keep whole class-specific descriptors
-in the driver since we anyway need to have BADD-specific
-logic.
-
-I've picked one Jorge's UAC1 patch-improvement and
-updated it to v4.17 wich contais recently introduced
-header's sanity checks.
-
-Remaining part is to add interrupt endpoint support
-so we will be able to detect jack insertion in
-the Headset Adapter profile.
-
-This has been tested on ARM and x86-64 machines with
-custom UAC3 gadget which I'll post later to linux-usb
-
-Comments and testing are welcome.
-
-v2:
-  - split refactoring patch to more atomic and bisectable
-    changes as suggested by Takashi
-  - renamed "Side Tone"->"Sidetone" as suggested by Andrew
-  - revorked main BADD patch to have table lookup for
-    checking BADD channels validity and to reduce identation
-    as suggested by Takashi
-  - also removed code duplication in BADD patch by reusing
-    common part of build_feature_ctl() func
-
-v1: http://mailman.alsa-project.org/pipermail/alsa-devel/2018-April/134412.html
-
-
-[1] http://www.usb.org/developers/docs/devclass_docs/USB_Audio_v3.0.zip
-[2] https://www.spinics.net/lists/alsa-devel/msg71614.html
-
-Jorge Sanjuan (1):
-  ALSA: usb: Only get AudioControl header for UAC1 class.
-
-Ruslan Bilovol (6):
-  ALSA: usb: stream: move audioformat alloc/init into separate function
-  ALSA: usb: stream: refactor uac1/2 audio interface parsing
-  ALSA: usb: stream: refactor uac3 audio interface parsing
-  ALSA: usb: mixer: make string parsing independent of mixer_build state
-  include: usb: audio-v3: add BADD-specific values
-  ALSA: usb: add UAC3 BADD profiles support
-
- include/linux/usb/audio-v3.h |  26 ++
- sound/usb/card.c             |  53 ++--
- sound/usb/clock.c            |   9 +-
- sound/usb/mixer.c            | 351 +++++++++++++++++++---
- sound/usb/mixer_maps.c       |  65 ++++
- sound/usb/stream.c           | 687 +++++++++++++++++++++++++------------------
- sound/usb/usbaudio.h         |   2 +
- 7 files changed, 849 insertions(+), 344 deletions(-)
-
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 3369226..764be07 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -807,19 +807,154 @@ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+ 	return fp;
+ }
+ 
++static struct audioformat *
++snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
++			     struct usb_host_interface *alts,
++			     int iface_no, int altset_idx,
++			     int altno, int stream)
++{
++	struct usb_device *dev = chip->dev;
++	struct uac3_input_terminal_descriptor *input_term;
++	struct uac3_output_terminal_descriptor *output_term;
++	struct uac3_cluster_header_descriptor *cluster;
++	struct uac3_as_header_descriptor *as;
++	struct uac3_hc_descriptor_header hc_header;
++	struct snd_pcm_chmap_elem *chmap;
++	unsigned int num_channels;
++	struct audioformat *fp;
++	u16 cluster_id, wLength;
++	int clock = 0;
++	int err;
++
++	as = snd_usb_find_csint_desc(alts->extra, alts->extralen,
++				     NULL, UAC_AS_GENERAL);
++	if (!as) {
++		dev_err(&dev->dev,
++			"%u:%d : UAC_AS_GENERAL descriptor not found\n",
++			iface_no, altno);
++		return NULL;
++	}
++
++	if (as->bLength < sizeof(*as)) {
++		dev_err(&dev->dev,
++			"%u:%d : invalid UAC_AS_GENERAL desc\n",
++			iface_no, altno);
++		return NULL;
++	}
++
++	cluster_id = le16_to_cpu(as->wClusterDescrID);
++	if (!cluster_id) {
++		dev_err(&dev->dev,
++			"%u:%d : no cluster descriptor\n",
++			iface_no, altno);
++		return NULL;
++	}
++
++	/*
++	 * Get number of channels and channel map through
++	 * High Capability Cluster Descriptor
++	 *
++	 * First step: get High Capability header and
++	 * read size of Cluster Descriptor
++	 */
++	err = snd_usb_ctl_msg(chip->dev,
++			usb_rcvctrlpipe(chip->dev, 0),
++			UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
++			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
++			cluster_id,
++			snd_usb_ctrl_intf(chip),
++			&hc_header, sizeof(hc_header));
++	if (err < 0)
++		return ERR_PTR(err);
++	else if (err != sizeof(hc_header)) {
++		dev_err(&dev->dev,
++			"%u:%d : can't get High Capability descriptor\n",
++			iface_no, altno);
++		return ERR_PTR(-EIO);
++	}
++
++	/*
++	 * Second step: allocate needed amount of memory
++	 * and request Cluster Descriptor
++	 */
++	wLength = le16_to_cpu(hc_header.wLength);
++	cluster = kzalloc(wLength, GFP_KERNEL);
++	if (!cluster)
++		return ERR_PTR(-ENOMEM);
++	err = snd_usb_ctl_msg(chip->dev,
++			usb_rcvctrlpipe(chip->dev, 0),
++			UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
++			USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
++			cluster_id,
++			snd_usb_ctrl_intf(chip),
++			cluster, wLength);
++	if (err < 0) {
++		kfree(cluster);
++		return ERR_PTR(err);
++	} else if (err != wLength) {
++		dev_err(&dev->dev,
++			"%u:%d : can't get Cluster Descriptor\n",
++			iface_no, altno);
++		kfree(cluster);
++		return ERR_PTR(-EIO);
++	}
++
++	num_channels = cluster->bNrChannels;
++	chmap = convert_chmap_v3(cluster);
++	kfree(cluster);
++
++	/*
++	 * lookup the terminal associated to this interface
++	 * to extract the clock
++	 */
++	input_term = snd_usb_find_input_terminal_descriptor(chip->ctrl_intf,
++							    as->bTerminalLink);
++	if (input_term) {
++		clock = input_term->bCSourceID;
++		goto found_clock;
++	}
++
++	output_term = snd_usb_find_output_terminal_descriptor(chip->ctrl_intf,
++							     as->bTerminalLink);
++	if (output_term) {
++		clock = output_term->bCSourceID;
++		goto found_clock;
++	}
++
++	dev_err(&dev->dev, "%u:%d : bogus bTerminalLink %d\n",
++			iface_no, altno, as->bTerminalLink);
++	return NULL;
++
++found_clock:
++	fp = audio_format_alloc_init(chip, alts, UAC_VERSION_3, iface_no,
++				     altset_idx, altno, num_channels, clock);
++	if (!fp)
++		return ERR_PTR(-ENOMEM);
++
++	fp->attributes = parse_uac_endpoint_attributes(chip, alts,
++						       UAC_VERSION_3,
++						       iface_no);
++	fp->chmap = chmap;
++
++	/* ok, let's parse further... */
++	if (snd_usb_parse_audio_format_v3(chip, fp, as, stream) < 0) {
++		kfree(fp->rate_table);
++		kfree(fp);
++		return NULL;
++	}
++
++	return fp;
++}
++
+ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ {
+ 	struct usb_device *dev;
+ 	struct usb_interface *iface;
+ 	struct usb_host_interface *alts;
+ 	struct usb_interface_descriptor *altsd;
+-	struct uac3_as_header_descriptor *as = NULL;
+ 	int i, altno, err, stream;
+-	u64 format = 0;
+-	unsigned int num_channels = 0;
+ 	struct audioformat *fp = NULL;
+-	int num, protocol, clock = 0;
+-	struct snd_pcm_chmap_elem *chmap_v3 = NULL;
++	int num, protocol;
+ 
+ 	dev = chip->dev;
+ 
+@@ -900,149 +1035,17 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
+ 							   stream, bm_quirk);
+ 			break;
+ 		}
+-		case UAC_VERSION_3: {
+-			struct uac3_input_terminal_descriptor *input_term;
+-			struct uac3_output_terminal_descriptor *output_term;
+-			struct uac3_cluster_header_descriptor *cluster;
+-			struct uac3_hc_descriptor_header hc_header;
+-			u16 cluster_id, wLength;
+-
+-			as = snd_usb_find_csint_desc(alts->extra,
+-							alts->extralen,
+-							NULL, UAC_AS_GENERAL);
+-
+-			if (!as) {
+-				dev_err(&dev->dev,
+-					"%u:%d : UAC_AS_GENERAL descriptor not found\n",
+-					iface_no, altno);
+-				continue;
+-			}
+-
+-			if (as->bLength < sizeof(*as)) {
+-				dev_err(&dev->dev,
+-					"%u:%d : invalid UAC_AS_GENERAL desc\n",
+-					iface_no, altno);
+-				continue;
+-			}
+-
+-			cluster_id = le16_to_cpu(as->wClusterDescrID);
+-			if (!cluster_id) {
+-				dev_err(&dev->dev,
+-					"%u:%d : no cluster descriptor\n",
+-					iface_no, altno);
+-				continue;
+-			}
+-
+-			/*
+-			 * Get number of channels and channel map through
+-			 * High Capability Cluster Descriptor
+-			 *
+-			 * First step: get High Capability header and
+-			 * read size of Cluster Descriptor
+-			 */
+-			err = snd_usb_ctl_msg(chip->dev,
+-					usb_rcvctrlpipe(chip->dev, 0),
+-					UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+-					USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+-					cluster_id,
+-					snd_usb_ctrl_intf(chip),
+-					&hc_header, sizeof(hc_header));
+-			if (err < 0)
+-				return err;
+-			else if (err != sizeof(hc_header)) {
+-				dev_err(&dev->dev,
+-					"%u:%d : can't get High Capability descriptor\n",
+-					iface_no, altno);
+-				return -EIO;
+-			}
+-
+-			/*
+-			 * Second step: allocate needed amount of memory
+-			 * and request Cluster Descriptor
+-			 */
+-			wLength = le16_to_cpu(hc_header.wLength);
+-			cluster = kzalloc(wLength, GFP_KERNEL);
+-			if (!cluster)
+-				return -ENOMEM;
+-			err = snd_usb_ctl_msg(chip->dev,
+-					usb_rcvctrlpipe(chip->dev, 0),
+-					UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+-					USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+-					cluster_id,
+-					snd_usb_ctrl_intf(chip),
+-					cluster, wLength);
+-			if (err < 0) {
+-				kfree(cluster);
+-				return err;
+-			} else if (err != wLength) {
+-				dev_err(&dev->dev,
+-					"%u:%d : can't get Cluster Descriptor\n",
+-					iface_no, altno);
+-				kfree(cluster);
+-				return -EIO;
+-			}
+-
+-			num_channels = cluster->bNrChannels;
+-			chmap_v3 = convert_chmap_v3(cluster);
+-
+-			kfree(cluster);
+-
+-			format = le64_to_cpu(as->bmFormats);
+-
+-			/* lookup the terminal associated to this interface
+-			 * to extract the clock */
+-			input_term = snd_usb_find_input_terminal_descriptor(
+-							chip->ctrl_intf,
+-							as->bTerminalLink);
+-
+-			if (input_term) {
+-				clock = input_term->bCSourceID;
+-				break;
+-			}
+-
+-			output_term = snd_usb_find_output_terminal_descriptor(chip->ctrl_intf,
+-									      as->bTerminalLink);
+-			if (output_term) {
+-				clock = output_term->bCSourceID;
+-				break;
+-			}
+-
+-			dev_err(&dev->dev,
+-				"%u:%d : bogus bTerminalLink %d\n",
+-				iface_no, altno, as->bTerminalLink);
+-			continue;
+-		}
+-		}
+-
+-		if (protocol == UAC_VERSION_1 || protocol == UAC_VERSION_2) {
+-			if (!fp)
+-				continue;
+-			else if (IS_ERR(fp))
+-				return PTR_ERR(fp);
+-
+-			goto skip_uac3;
++		case UAC_VERSION_3:
++			fp = snd_usb_get_audioformat_uac3(chip, alts,
++						iface_no, i, altno, stream);
++			break;
+ 		}
+ 
+-		fp = audio_format_alloc_init(chip, alts, protocol, iface_no, i,
+-					     altno, num_channels, clock);
+ 		if (!fp)
+-			return -ENOMEM;
+-
+-		fp->attributes = parse_uac_endpoint_attributes(chip, alts,
+-							       protocol,
+-							       iface_no);
+-		fp->chmap = chmap_v3;
+-
+-		/* ok, let's parse further... */
+-		if (snd_usb_parse_audio_format_v3(chip, fp, as,
+-							stream) < 0) {
+-			kfree(fp->rate_table);
+-			kfree(fp);
+-			fp = NULL;
+ 			continue;
+-		}
++		else if (IS_ERR(fp))
++			return PTR_ERR(fp);
+ 
+-skip_uac3:
+ 		dev_dbg(&dev->dev, "%u:%d: add audio endpoint %#x\n", iface_no, altno, fp->endpoint);
+ 		err = snd_usb_add_audio_stream(chip, stream, fp);
+ 		if (err < 0) {
 -- 
 1.9.1
