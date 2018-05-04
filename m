@@ -1,103 +1,105 @@
 From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: [PATCH v2 1/7] ALSA: usb: stream: move audioformat alloc/init into separate function
-Date: Fri,  4 May 2018 04:23:58 +0300
-Message-ID: <1525397044-15080-2-git-send-email-ruslan.bilovol@gmail.com>
-References: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v2 0/7] USB Audio Device Class 3.0 BADD
+	profiles support
+Date: Fri,  4 May 2018 04:23:57 +0300
+Message-ID: <1525397044-15080-1-git-send-email-ruslan.bilovol@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
+ [209.85.215.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id E0E38266F44
+ for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 03:24:49 +0200 (CEST)
+Received: by mail-lf0-f68.google.com with SMTP id m18-v6so28661266lfb.0
+ for <alsa-devel@alsa-project.org>; Thu, 03 May 2018 18:24:49 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.com>
-Cc: Jorge <jorge.sanjuan@codethink.co.uk>, Andrew Chant <achant@google.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Jorge <jorge.sanjuan@codethink.co.uk>, alsa-devel@alsa-project.org, Andrew Chant <achant@google.com>, linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 List-Id: alsa-devel@alsa-project.org
 
-Offload snd_usb_parse_audio_interface() function which
-became quite long after adding UAC3 spec support.
+This patchset adds BADD profiles support from the USB Audio
+Device Class 3.0 spec [1].
 
-Move audioformat allocation and initialization
-into separate function, this will make easier
-future refactoring.
-Attributes left in the original func because it'll
-be used for UAC3 BADD profiles suport in the future
+BADD profile support is defined as mandatory feature of
+UAC3-compliant device, it should be implemented as a separate
+USB configuration.
 
-There is no functional change.
+Notable issue with BADD configuration is that it misses
+class-specific descriptors (and it's mandatory as per spec),
+so host should guess them from BADD profile number and
+parameters of endpoints (type, number of endpoints and
+max packet size)
 
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
----
- sound/usb/stream.c | 52 ++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 36 insertions(+), 16 deletions(-)
+This patchset adds support of all known/existing BADD profiles
+from the UAC3 specification.
 
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 956be9f..8ec0a52 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -626,6 +626,37 @@ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
- 	return NULL;
- }
- 
-+static struct audioformat *
-+audio_format_alloc_init(struct snd_usb_audio *chip,
-+		       struct usb_host_interface *alts,
-+		       int protocol, int iface_no, int altset_idx,
-+		       int altno, int num_channels, int clock)
-+{
-+	struct audioformat *fp;
-+
-+	fp = kzalloc(sizeof(*fp), GFP_KERNEL);
-+	if (!fp)
-+		return NULL;
-+
-+	fp->iface = iface_no;
-+	fp->altsetting = altno;
-+	fp->altset_idx = altset_idx;
-+	fp->endpoint = get_endpoint(alts, 0)->bEndpointAddress;
-+	fp->ep_attr = get_endpoint(alts, 0)->bmAttributes;
-+	fp->datainterval = snd_usb_parse_datainterval(chip, alts);
-+	fp->protocol = protocol;
-+	fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
-+	fp->channels = num_channels;
-+	if (snd_usb_get_speed(chip->dev) == USB_SPEED_HIGH)
-+		fp->maxpacksize = (((fp->maxpacksize >> 11) & 3) + 1)
-+				* (fp->maxpacksize & 0x7ff);
-+	fp->clock = clock;
-+	INIT_LIST_HEAD(&fp->list);
-+
-+	return fp;
-+}
-+
-+
- int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- {
- 	struct usb_device *dev;
-@@ -928,25 +959,14 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 				continue;
- 		}
- 
--		fp = kzalloc(sizeof(*fp), GFP_KERNEL);
-+		fp = audio_format_alloc_init(chip, alts, protocol, iface_no, i,
-+					     altno, num_channels, clock);
- 		if (!fp)
- 			return -ENOMEM;
- 
--		fp->iface = iface_no;
--		fp->altsetting = altno;
--		fp->altset_idx = i;
--		fp->endpoint = get_endpoint(alts, 0)->bEndpointAddress;
--		fp->ep_attr = get_endpoint(alts, 0)->bmAttributes;
--		fp->datainterval = snd_usb_parse_datainterval(chip, alts);
--		fp->protocol = protocol;
--		fp->maxpacksize = le16_to_cpu(get_endpoint(alts, 0)->wMaxPacketSize);
--		fp->channels = num_channels;
--		if (snd_usb_get_speed(dev) == USB_SPEED_HIGH)
--			fp->maxpacksize = (((fp->maxpacksize >> 11) & 3) + 1)
--					* (fp->maxpacksize & 0x7ff);
--		fp->attributes = parse_uac_endpoint_attributes(chip, alts, protocol, iface_no);
--		fp->clock = clock;
--		INIT_LIST_HEAD(&fp->list);
-+		fp->attributes = parse_uac_endpoint_attributes(chip, alts,
-+							       protocol,
-+							       iface_no);
- 
- 		/* some quirks for attributes here */
- 		snd_usb_audioformat_attributes_quirk(chip, fp, stream);
+First 5 patches are refactoring and improvements, and last 2
+patches actually implement UAC3 BADD profiles support.
+
+It's an alternative implementation comparing to [2],
+and doesn't build usb descriptors on the host but instead
+initializes alsa-usb structures with known parameters,
+so we don't need to keep whole class-specific descriptors
+in the driver since we anyway need to have BADD-specific
+logic.
+
+I've picked one Jorge's UAC1 patch-improvement and
+updated it to v4.17 wich contais recently introduced
+header's sanity checks.
+
+Remaining part is to add interrupt endpoint support
+so we will be able to detect jack insertion in
+the Headset Adapter profile.
+
+This has been tested on ARM and x86-64 machines with
+custom UAC3 gadget which I'll post later to linux-usb
+
+Comments and testing are welcome.
+
+v2:
+  - split refactoring patch to more atomic and bisectable
+    changes as suggested by Takashi
+  - renamed "Side Tone"->"Sidetone" as suggested by Andrew
+  - revorked main BADD patch to have table lookup for
+    checking BADD channels validity and to reduce identation
+    as suggested by Takashi
+  - also removed code duplication in BADD patch by reusing
+    common part of build_feature_ctl() func
+
+v1: http://mailman.alsa-project.org/pipermail/alsa-devel/2018-April/134412.html
+
+
+[1] http://www.usb.org/developers/docs/devclass_docs/USB_Audio_v3.0.zip
+[2] https://www.spinics.net/lists/alsa-devel/msg71614.html
+
+Jorge Sanjuan (1):
+  ALSA: usb: Only get AudioControl header for UAC1 class.
+
+Ruslan Bilovol (6):
+  ALSA: usb: stream: move audioformat alloc/init into separate function
+  ALSA: usb: stream: refactor uac1/2 audio interface parsing
+  ALSA: usb: stream: refactor uac3 audio interface parsing
+  ALSA: usb: mixer: make string parsing independent of mixer_build state
+  include: usb: audio-v3: add BADD-specific values
+  ALSA: usb: add UAC3 BADD profiles support
+
+ include/linux/usb/audio-v3.h |  26 ++
+ sound/usb/card.c             |  53 ++--
+ sound/usb/clock.c            |   9 +-
+ sound/usb/mixer.c            | 351 +++++++++++++++++++---
+ sound/usb/mixer_maps.c       |  65 ++++
+ sound/usb/stream.c           | 687 +++++++++++++++++++++++++------------------
+ sound/usb/usbaudio.h         |   2 +
+ 7 files changed, 849 insertions(+), 344 deletions(-)
+
 -- 
 1.9.1
