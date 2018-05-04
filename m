@@ -1,166 +1,178 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH 1/9] R3Di and SBZ quirk entires + alt firmware loading
-Date: Fri, 4 May 2018 00:30:14 -0400
-Message-ID: <CAM8Agx0s1Rg5bGCXP5gQftcfsqbQoCvZtNyg4fmUpNaJsix=-A@mail.gmail.com>
-References: <1525407594-25644-1-git-send-email-conmanx360@gmail.com>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH V3 10/10] ASoC: amd: dma driver changes for bt i2s
+ instance
+Date: Fri, 4 May 2018 10:04:37 +0530
+Message-ID: <78cec135-3ae1-4d4b-4b19-b7fe1577294d@amd.com>
+References: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <1525207810-1305-10-git-send-email-Vijendar.Mukunda@amd.com>
+ <CAGS+omC=fZsFvSaxqFWEo0Pkj1Rcqhixy_oN7PWry9F0L_9c-Q@mail.gmail.com>
+ <06a8f6f4-3bc0-656e-9c55-84f88727d6fb@amd.com>
+ <CAGS+omDKpPwyUMYwm-ai5cr+m=JLh+yjYq_oDfyRBppqc8DPDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525407594-25644-1-git-send-email-conmanx360@gmail.com>
+In-Reply-To: <CAGS+omDKpPwyUMYwm-ai5cr+m=JLh+yjYq_oDfyRBppqc8DPDg@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Connor McAdams <conmanx360@gmail.com>
-Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?B?SsOpcsOpbXkgTGVmYXVyZQ==?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Daniel Kurtz <djkurtz@chromium.org>, vijendar.mukunda@amd.com
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, alexander.deucher@amd.com, weiyongjun1@huawei.com, jclinton@chromium.org, Guenter Roeck <linux@roeck-us.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for sending these twice, I made a formatting mistake in the
-first series, and they would not apply properly. Hopefully these do
-not show up as spam because of this.
 
-I went through and fixed them all individually and re-committed them,
-but kept the same commit messages. I still have a lot to learn.
+
+On 5/3/2018 10:10 PM, Daniel Kurtz wrote:
+> On Thu, May 3, 2018 at 1:33 AM Mukunda,Vijendar <vijendar.mukunda@amd.com>
+> wrote:
+> 
+> 
+> 
+>> On Thursday 03 May 2018 11:13 AM, Daniel Kurtz wrote:
+>>> Some checkpatch nits below...
+>>>
+>>> On Tue, May 1, 2018 at 2:53 PM Vijendar Mukunda <
+> Vijendar.Mukunda@amd.com>
+>>> wrote:
+>>>
+>>>> With in ACP, There are three I2S controllers can be
+>>>> configured/enabled ( I2S SP, I2S MICSP, I2S BT).
+>>>> Default enabled I2S controller instance is I2S SP.
+>>>> This patch provides required changes to support I2S BT
+>>>> controller Instance.
+>>>
+>>>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+>>>> ---
+>>>> v1->v2: defined i2s instance macros in acp header file
+>>>> v2->v3: sqaushed previous patch series and spilt changes
+>>>>             into multiple patches (acp dma driver code cleanup
+>>>>             patches and bt i2s instance specific changes)
+>>>>      sound/soc/amd/acp-da7219-max98357a.c |  23 ++++
+>>>>      sound/soc/amd/acp-pcm-dma.c          | 256
+>>> +++++++++++++++++++++++++++--------
+>>>>      sound/soc/amd/acp.h                  |  40 ++++++
+>>>>      3 files changed, 262 insertions(+), 57 deletions(-)
+>>>
+>>>> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
+>>> b/sound/soc/amd/acp-da7219-max98357a.c
+>>>> index 133139d..b3184ab 100644
+>>>> --- a/sound/soc/amd/acp-da7219-max98357a.c
+>>>> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+>>>> @@ -36,6 +36,7 @@
+>>>>      #include <linux/input.h>
+>>>>      #include <linux/acpi.h>
+>>>
+>>>> +#include "acp.h"
+>>>>      #include "../codecs/da7219.h"
+>>>>      #include "../codecs/da7219-aad.h"
+>>>
+>>>> @@ -44,6 +45,7 @@
+>>>
+>>>>      static struct snd_soc_jack cz_jack;
+>>>>      static struct clk *da7219_dai_clk;
+>>>> +extern int bt_pad_enable;
+>>>
+>>> WARNING: externs should be avoided in .c files
+> 
+>> We don't have .h file for machine driver and It can be ignored for
+>> one variable.
+>>>
+>>>
+>>>>      static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+>>>>      {
+>>>> @@ -132,6 +134,9 @@ static const struct snd_pcm_hw_constraint_list
+>>> constraints_channels = {
+>>>>      static int cz_da7219_startup(struct snd_pcm_substream *substream)
+>>>>      {
+>>>>             struct snd_pcm_runtime *runtime = substream->runtime;
+>>>> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>>>> +       struct snd_soc_card *card = rtd->card;
+>>>> +       struct acp_platform_info *machine =
+>>> snd_soc_card_get_drvdata(card);
+>>>
+>>>>             /*
+>>>>              * On this platform for PCM device we support stereo
+>>>> @@ -143,6 +148,7 @@ static int cz_da7219_startup(struct
+> snd_pcm_substream
+>>> *substream)
+>>>>             snd_pcm_hw_constraint_list(runtime, 0,
+> SNDRV_PCM_HW_PARAM_RATE,
+>>>>                                        &constraints_rates);
+>>>
+>>>> +       machine->i2s_instance = I2S_BT_INSTANCE;
+>>>
+>>> I'm not a big fan of this approach, but I don't know any other way to
+> tell
+>>> a single "platform" driver (acp-pcm-dma) which of two channels (ST/BT)
+> to
+>>> use via the pcm_open() callback.
+>>>
+>>> Mark, can you recommend any other way of doing this?
+> 
+>> Hi Dan,
+> 
+>> There have been couple of approaches worked upon this earlier.
+>> 1) To compare cpu dai name to get the I2S instance value in
+>> acp_dma_open() call.
+> 
+>> But, Mark suggested not to implement this approach as we are comparing
+>> dynamically generated cpu dai names.
+> 
+>> 2) We added i2s_instance parameter as platform data to dwc driver.
+>> By querying dwc driver platform data in acp dma driver, current i2s
+>> instance was programmed in acp_dma_open ().
+> 
+>> But Mark's latest comment was to implement platform specific changes in
+>> machine driver. Machine driver and Dma driver should exchange the data
+>> regarding this. We accepted this and current approach is based on the
+>> same comment.
+>> Below is the reference.
+>> https://lkml.org/lkml/2018/4/18/597
+> 
+> Yes, I saw Mark's previous comment, but what we are trying to implement
+> here is the SoC specific binding between i2s channel and acp-dma channel.
+> This is a feature of the SoC, not of the i2s controller, but also not a
+> feature of the audio configuration on the board.
+The binding of channel and dma is soc specific but codec to channel is 
+board specific.
+These linkages can change from one board to another. Machine driver is 
+specific to a board (grunt here) and dma driver being common for various 
+boards (but specific to a platform like ST/CZ here). Tomorrow there can 
+be some other board with x codec linked to BT and y to SP.
+Hence, machine driver should send this board specific link information 
+to dma driver for it to dma on the correct channel as per the board.
+   For these SoCs, the link
+> between DMA registers & I2S-channel is hard-coded.  The machine driver is
+> already specifying which i2s channel to use when it configures, for
+> example, '.cpu_dai_name = "designware-i2s.2.auto"'.  The i2s channel
+> selection already implies a particular DMA configuration.  It seems
+> redundant to create this separate out-of-band infrastructure to make the
+> machine driver also tell its platform driver '.platform_name =
+> "acp_audio_dma.0.auto"' which i2s channel it is using.
+> 
+
+We could have decided on the basis of "cpu_dai_name" but the decision 
+would have been based on dynamically generated name. Though maybe 
+redundant in nature, but machine driver is just sending info to dma 
+driver that this codec is playing so play on this instance.
+
+> Perhaps the acp-pcm-dma.c should register two different platform drivers,
+> and let the machine driver pick the appropriate one (ie,
+> acp_audio_dma.0.auto or acp_audio_dma.1.auto) depending on which i2s port
+> it needs?  Then each of these would have its own
+> snd_soc_platform_driver->ops->open() that could setup
+> snd_pcm_runtime->private_data appropriately?
+
+I guess it would be overkill to have 2 platform drivers one for each 
+instance but actually for a single platform.
+
+   Or is there another standard
+> way to have a single snd_soc_platform_driver handle multiple channels?
+> 
+
+Don't know if there is a standard but would be interesting to know how 
+other platforms handle multiple instances.
 
 Thanks,
-Connor
-
-On Fri, May 4, 2018 at 12:19 AM, Connor McAdams <conmanx360@gmail.com> wrote:
-> This patch adds PCI quirk ID's for the Sound Blaster Z and Recon3Di.
-> Only the currently tested ID's have been added.
->
-> This patch also adds the ability to load alternative firmwares for each
-> card, the firmwares can be obtained from within the Windows driver.
-> The Recon3Di uses "ctefx-r3di.bin" and the Sound Blaster Z uses
-> "ctefx-sbz.bin". If the alternative firmware for the given quirk is not
-> found, the original ctefx.bin will be used. This has been confirmed to
-> work for both the R3Di and the SBZ.
->
-> This patch also makes the character array *dirstr a const.
->
-> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
-> ---
->  sound/pci/hda/patch_ca0132.c | 61 +++++++++++++++++++++++++++++++++++++++-----
->  1 file changed, 55 insertions(+), 6 deletions(-)
->
-> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-> index 768ea86..8346100 100644
-> --- a/sound/pci/hda/patch_ca0132.c
-> +++ b/sound/pci/hda/patch_ca0132.c
-> @@ -72,12 +72,16 @@
->  #define SCP_GET    1
->
->  #define EFX_FILE   "ctefx.bin"
-> +#define SBZ_EFX_FILE   "ctefx-sbz.bin"
-> +#define R3DI_EFX_FILE  "ctefx-r3di.bin"
->
->  #ifdef CONFIG_SND_HDA_CODEC_CA0132_DSP
->  MODULE_FIRMWARE(EFX_FILE);
-> +MODULE_FIRMWARE(SBZ_EFX_FILE);
-> +MODULE_FIRMWARE(R3DI_EFX_FILE);
->  #endif
->
-> -static char *dirstr[2] = { "Playback", "Capture" };
-> +static const char *dirstr[2] = { "Playback", "Capture" };
->
->  enum {
->         SPEAKER_OUT,
-> @@ -734,6 +738,7 @@ struct ca0132_spec {
->         unsigned int scp_resp_header;
->         unsigned int scp_resp_data[4];
->         unsigned int scp_resp_count;
-> +       bool alt_firmware_present;
->
->         /* mixer and effects related */
->         unsigned char dmic_ctl;
-> @@ -762,6 +767,8 @@ struct ca0132_spec {
->  enum {
->         QUIRK_NONE,
->         QUIRK_ALIENWARE,
-> +       QUIRK_SBZ,
-> +       QUIRK_R3DI,
->  };
->
->  static const struct hda_pintbl alienware_pincfgs[] = {
-> @@ -782,6 +789,10 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
->         SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
->         SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
->         SND_PCI_QUIRK(0x1028, 0x0708, "Alienware 15 R2 2016", QUIRK_ALIENWARE),
-> +       SND_PCI_QUIRK(0x1102, 0x0010, "Sound Blaster Z", QUIRK_SBZ),
-> +       SND_PCI_QUIRK(0x1102, 0x0023, "Sound Blaster Z", QUIRK_SBZ),
-> +       SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
-> +       SND_PCI_QUIRK(0x1458, 0xA036, "Recon3Di", QUIRK_R3DI),
->         {}
->  };
->
-> @@ -3207,7 +3218,7 @@ static int ca0132_select_out(struct hda_codec *codec)
->                                     pin_ctl & ~PIN_HP);
->                 /* enable speaker node */
->                 pin_ctl = snd_hda_codec_read(codec, spec->out_pins[0], 0,
-> -                                            AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-> +                               AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
->                 snd_hda_set_pin_ctl(codec, spec->out_pins[0],
->                                     pin_ctl | PIN_OUT);
->         } else {
-> @@ -4370,11 +4381,49 @@ static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
->  static bool ca0132_download_dsp_images(struct hda_codec *codec)
->  {
->         bool dsp_loaded = false;
-> +       struct ca0132_spec *spec = codec->spec;
->         const struct dsp_image_seg *dsp_os_image;
->         const struct firmware *fw_entry;
-> -
-> -       if (request_firmware(&fw_entry, EFX_FILE, codec->card->dev) != 0)
-> -               return false;
-> +       /*
-> +        * Alternate firmwares for different variants. The Recon3Di apparently
-> +        * can use the default firmware, but I'll leave the option in case
-> +        * it needs it again.
-> +        */
-> +       switch (spec->quirk) {
-> +       case QUIRK_SBZ:
-> +               if (request_firmware(&fw_entry, SBZ_EFX_FILE,
-> +                                       codec->card->dev) != 0) {
-> +                       codec_dbg(codec, "SBZ alt firmware not detected. ");
-> +                       spec->alt_firmware_present = false;
-> +               } else {
-> +                       codec_dbg(codec, "Sound Blaster Z firmware selected.");
-> +                       spec->alt_firmware_present = true;
-> +               }
-> +               break;
-> +       case QUIRK_R3DI:
-> +               if (request_firmware(&fw_entry, R3DI_EFX_FILE,
-> +                                       codec->card->dev) != 0) {
-> +                       codec_dbg(codec, "Recon3Di alt firmware not detected.");
-> +                       spec->alt_firmware_present = false;
-> +               } else {
-> +                       codec_dbg(codec, "Recon3Di firmware selected.");
-> +                       spec->alt_firmware_present = true;
-> +               }
-> +               break;
-> +       default:
-> +               spec->alt_firmware_present = false;
-> +               break;
-> +       }
-> +       /*
-> +        * Use default ctefx.bin if no alt firmware is detected, or if none
-> +        * exists for your particular codec.
-> +        */
-> +       if (!spec->alt_firmware_present) {
-> +               codec_dbg(codec, "Default firmware selected.");
-> +               if (request_firmware(&fw_entry, EFX_FILE,
-> +                                       codec->card->dev) != 0)
-> +                       return false;
-> +       }
->
->         dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
->         if (dspload_image(codec, dsp_os_image, 0, 0, true, 0)) {
-> @@ -4476,7 +4525,7 @@ static struct hda_verb ca0132_base_exit_verbs[] = {
->         {}
->  };
->
-> -/* Other verbs tables.  Sends after DSP download. */
-> +/* Other verbs tables. Sends after DSP download. */
->  static struct hda_verb ca0132_init_verbs0[] = {
->         /* chip init verbs */
->         {0x15, 0x70D, 0xF0},
-> --
-> 2.7.4
->
+Akshu
+> -Dan
+> 
