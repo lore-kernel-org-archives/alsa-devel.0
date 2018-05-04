@@ -1,44 +1,62 @@
-From: Jay Foster <jay@systech.com>
-Subject: Aplay Fails When Reading From stdin
-Date: Fri, 4 May 2018 10:51:05 -0700
-Message-ID: <8c51a51a-cfa0-e1a7-0682-8f3c13ddc2a7@systech.com>
-Reply-To: jay@systech.com
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: Re: [PATCH v3][RESEND] media: i2c: tda1997: replace codec to
+ component
+Date: Fri, 4 May 2018 15:58:27 -0300
+Message-ID: <20180504155827.3a192297@vento.lan>
+References: <87in8ibrql.wl%kuninori.morimoto.gx@renesas.com>
+        <CAJ+vNU0mykhkMNNrN=Zsrj0_pv=XAkGiiQkXehQ4EWBkMDAv7w@mail.gmail.com>
+        <20180423165213.GL19834@sirena.org.uk>
+        <CAJ+vNU35TfSLRYnkEYMkMQVC9r+XHt_pa-=+s4Dro3b-VNGULA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
- [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id A00C6266C1C
- for <alsa-devel@alsa-project.org>; Fri,  4 May 2018 19:51:15 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAJ+vNU35TfSLRYnkEYMkMQVC9r+XHt_pa-=+s4Dro3b-VNGULA@mail.gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Tim Harvey <tharvey@gateworks.com>, Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, linux-media <linux-media@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-I recently updated may alsa from 1.1.4.1 to 1.1.6.  I now noticed that 
-aplay does not work properly (the same as 1.1.4.1) when reading the 
-sound file data from stdin.  This might have something to do with the 
-recent change with reading the sound file header.
+Em Mon, 23 Apr 2018 13:59:32 -0700
+Tim Harvey <tharvey@gateworks.com> escreveu:
 
-With the previous version of aplay, aplay would report:
+> On Mon, Apr 23, 2018 at 9:52 AM, Mark Brown <broonie@kernel.org> wrote:
+> > On Mon, Apr 23, 2018 at 09:44:17AM -0700, Tim Harvey wrote:
+> >  
+> >> Could you add some detail to the commit explaining why we need to
+> >> replace codec to component? I don't really know what that means.
+> >> Please refer to a commit if the ASoC API is changing in some way we
+> >> need to catch up with.  
+> >
+> > This is a big transition in the ASoC API which is nearing completion -
+> > this driver is one of the last users of the CODEC struct, we've (well,
+> > mainly Morimoto-san) been migrating things away from it to the more
+> > general purpose component.  There's no one commit to point at really as
+> > the two have coexisted for a while and we won't be able to finally
+> > remove the CODEC struct until all the drivers have transitioned away.  
+> 
+> Mark,
+> 
+> Ok - thanks for the explanation!
+> 
+> Kuninori,
+> 
+> Sorry this took so long to get to. Tested on a GW5404
+> 
+> Tested-by: Tim Harvey <tharvey@gateworks.com>
+> Acked-by: Tim Harvey <tharvey@gateworks.com>
 
-Playing WAVE 'stdin' : Signed 16 bit Little Endian, Rate 22050 Hz, Mono
+In order to keep it together with the patches doing the removal of
+the old API, it is probably better to apply this via ALSA tree:
 
-With 1.1.6, aplay reports:
+Acked-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
-Playing raw data 'stdin' : Unsigned 8 bit, Rate 8000 Hz, Mono
+> 
+> Regards,
+> 
+> Tim
 
-This results in static/noise output.  If I explicitly add the '-f S16_LE 
--r 22050' options to aplay, then it does play correctly.
 
-Is this a known bug and is there a fix?
 
-Jay
+Thanks,
+Mauro
