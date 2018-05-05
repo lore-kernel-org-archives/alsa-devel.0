@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs42xx8: Make the node name generic" to
-	the asoc tree
-Date: Sat,  5 May 2018 02:43:42 +0100 (BST)
-Message-ID: <20180505014342.6C1DD44007A@finisterre.ee.mobilebroadband>
-References: <1525461123-16686-4-git-send-email-festevam@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 376A026728A
- for <alsa-devel@alsa-project.org>; Sat,  5 May 2018 03:43:46 +0200 (CEST)
-In-Reply-To: <1525461123-16686-4-git-send-email-festevam@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, robh+dt@kernel.org
+Subject: Applied "ASoC: cs35l35: Add use_single_rw to regmap config" to the asoc tree
+Date: Sat,  5 May 2018 02:44:04 +0100 (BST)
+Message-ID: <20180505014404.DC8D444007A@finisterre.ee.mobilebroadband>
+References: <d4041f11-1d80-47cd-9b06-cc3966d7bacd@EX4.ad.cirrus.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <d4041f11-1d80-47cd-9b06-cc3966d7bacd@EX4.ad.cirrus.com>
+Sender: stable-owner@vger.kernel.org
+To: Paul Handrigan <Paul.Handrigan@cirrus.com>
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, alsa-devel@alsa-project.org, brian.austin@cirrus.combroonie@kernel.org, lgirdwood@gmail.com, charles.keepax@cirrus.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs42xx8: Make the node name generic
+   ASoC: cs35l35: Add use_single_rw to regmap config
 
 has been applied to the asoc tree at
 
@@ -53,36 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 6a8f1a282348a47bcbb6c5418a86d271d1fb0ad2 Mon Sep 17 00:00:00 2001
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Fri, 4 May 2018 16:12:03 -0300
-Subject: [PATCH] ASoC: cs42xx8: Make the node name generic
+>From 6a6ad7face95af0b9e6aaf1eb2261eb70240b89b Mon Sep 17 00:00:00 2001
+From: Paul Handrigan <Paul.Handrigan@cirrus.com>
+Date: Fri, 4 May 2018 16:37:41 -0500
+Subject: [PATCH] ASoC: cs35l35: Add use_single_rw to regmap config
 
-According to Devicetree Specification v0.2 document:
+Add the use_single_rw flag to regmap config since the
+device does not support bulk transactions over i2c.
 
-"The name of a node should be somewhat generic, reflecting the function
-of the device and not its precise programming model."
-
-Do as suggested in the binding example.
-
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- Documentation/devicetree/bindings/sound/cs42xx8.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs35l35.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs42xx8.txt b/Documentation/devicetree/bindings/sound/cs42xx8.txt
-index f631fbca6284..8619a156d038 100644
---- a/Documentation/devicetree/bindings/sound/cs42xx8.txt
-+++ b/Documentation/devicetree/bindings/sound/cs42xx8.txt
-@@ -16,7 +16,7 @@ Required properties:
+diff --git a/sound/soc/codecs/cs35l35.c b/sound/soc/codecs/cs35l35.c
+index a4a2cb171bdf..bd6226bde45f 100644
+--- a/sound/soc/codecs/cs35l35.c
++++ b/sound/soc/codecs/cs35l35.c
+@@ -1105,6 +1105,7 @@ static struct regmap_config cs35l35_regmap = {
+ 	.readable_reg = cs35l35_readable_register,
+ 	.precious_reg = cs35l35_precious_register,
+ 	.cache_type = REGCACHE_RBTREE,
++	.use_single_rw = true,
+ };
  
- Example:
- 
--codec: cs42888@48 {
-+cs42888: codec@48 {
- 	compatible = "cirrus,cs42888";
- 	reg = <0x48>;
- 	clocks = <&codec_mclk 0>;
+ static irqreturn_t cs35l35_irq(int irq, void *data)
 -- 
 2.17.0
