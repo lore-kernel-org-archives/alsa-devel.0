@@ -1,138 +1,71 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "media: i2c: tda1997: replace codec to component" to the asoc tree
-Date: Sat,  5 May 2018 02:50:49 +0100 (BST)
-Message-ID: <20180505015049.5225644007A@finisterre.ee.mobilebroadband>
-References: <87in94lwmq.wl%kuninori.morimoto.gx@renesas.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87in94lwmq.wl%kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Tim Harvey <tharvey@gateworks.com>Tim Harvey <tharvey@gateworks.com>, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>Tim Harvey <tharvey@gateworks.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, linux-kernel@vger.kernel.org, linux-media@vger.kernel.orgalsa-devel@alsa-project.org
+From: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Subject: Re: [PATCH v14 3/8] ASoC: sun4i-codec: Merge
+ sun4i_codec_left_mixer_controls and sun4i_codec_right_mixer_controls into sun4i_codec_mixer_controls
+Date: Sat, 5 May 2018 08:51:43 +0200
+Message-ID: <20180505085056.6c6011ca@scratchpost.org>
+References: <20180502210800.1971-1-dannym@scratchpost.org>
+	<20180502210800.1971-4-dannym@scratchpost.org>
+	<20180503144618.oojhvmey44dtg5fa@flea>
+Reply-To: dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ boundary="Sig_/Vzt_SN1Zr8bWNbQ9ZXq_W+0"; protocol="application/pgp-signature"
+Return-path: <linux-sunxi+bncBCPKHTHNWIPBBCFJWXLQKGQEQY5AYNA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <20180503144618.oojhvmey44dtg5fa@flea>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Andrea Bondavalli <andrea.bondavalli74-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+--Sig_/Vzt_SN1Zr8bWNbQ9ZXq_W+0
+Content-Type: text/plain; charset="UTF-8"
 
-   media: i2c: tda1997: replace codec to component
+Hi Maxime,
 
-has been applied to the asoc tree at
+On Thu, 3 May 2018 16:46:19 +0200
+Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> Doesn't that mean that the controls will be shared between the right
+> and left mixers now, which wasn't the case before?
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Yes.  However Chen-Yu said that except for debugfs that cannot be
+observed by user space anyway.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+It's nice to have the NEW controls have multiple channels, which is what
+this does.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+>And also, wouldn't
+> the controls be called "Left Mixer Left Mixer Left DAC Playback
+> Switch" (for the first one) now?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+No.  I checked using "amixer" - the names look fine,
+"Left Mixer Left DAC Playback Switch".
 
-Thanks,
-Mark
+With the patch series, amixer says:
 
->From 2d8102cc9a27577ffa4335aaaed4a26060688de2 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 23 Apr 2018 02:10:26 +0000
-Subject: [PATCH] media: i2c: tda1997: replace codec to component
-
-Now we can replace Codec to Component. Let's do it.
-
-Note:
-	xxx_codec_xxx()		->	xxx_component_xxx()
-	.idle_bias_off = 0	->	.idle_bias_on = 1
-	.ignore_pmdown_time = 0	->	.use_pmdown_time = 1
-	-			->	.endianness = 1
-	-			->	.non_legacy_dai_naming = 1
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Tim Harvey <tharvey@gateworks.com>
-Acked-by: Tim Harvey <tharvey@gateworks.com>
-Acked-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/media/i2c/tda1997x.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/media/i2c/tda1997x.c b/drivers/media/i2c/tda1997x.c
-index 3021913c28fa..33d7fcf541fc 100644
---- a/drivers/media/i2c/tda1997x.c
-+++ b/drivers/media/i2c/tda1997x.c
-@@ -2444,7 +2444,7 @@ static int tda1997x_pcm_startup(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct tda1997x_state *state = snd_soc_dai_get_drvdata(dai);
--	struct snd_soc_codec *codec = dai->codec;
-+	struct snd_soc_component *component = dai->component;
- 	struct snd_pcm_runtime *rtd = substream->runtime;
- 	int rate, err;
- 
-@@ -2452,11 +2452,11 @@ static int tda1997x_pcm_startup(struct snd_pcm_substream *substream,
- 	err = snd_pcm_hw_constraint_minmax(rtd, SNDRV_PCM_HW_PARAM_RATE,
- 					   rate, rate);
- 	if (err < 0) {
--		dev_err(codec->dev, "failed to constrain samplerate to %dHz\n",
-+		dev_err(component->dev, "failed to constrain samplerate to %dHz\n",
- 			rate);
- 		return err;
- 	}
--	dev_info(codec->dev, "set samplerate constraint to %dHz\n", rate);
-+	dev_info(component->dev, "set samplerate constraint to %dHz\n", rate);
- 
- 	return 0;
- }
-@@ -2479,20 +2479,22 @@ static struct snd_soc_dai_driver tda1997x_audio_dai = {
- 	.ops = &tda1997x_dai_ops,
- };
- 
--static int tda1997x_codec_probe(struct snd_soc_codec *codec)
-+static int tda1997x_codec_probe(struct snd_soc_component *component)
- {
- 	return 0;
- }
- 
--static int tda1997x_codec_remove(struct snd_soc_codec *codec)
-+static void tda1997x_codec_remove(struct snd_soc_component *component)
- {
--	return 0;
- }
- 
--static struct snd_soc_codec_driver tda1997x_codec_driver = {
--	.probe = tda1997x_codec_probe,
--	.remove = tda1997x_codec_remove,
--	.reg_word_size = sizeof(u16),
-+static struct snd_soc_component_driver tda1997x_codec_driver = {
-+	.probe			= tda1997x_codec_probe,
-+	.remove			= tda1997x_codec_remove,
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
- };
- 
- static int tda1997x_probe(struct i2c_client *client,
-@@ -2737,7 +2739,7 @@ static int tda1997x_probe(struct i2c_client *client,
- 		else
- 			formats = SNDRV_PCM_FMTBIT_S16_LE;
- 		tda1997x_audio_dai.capture.formats = formats;
--		ret = snd_soc_register_codec(&state->client->dev,
-+		ret = devm_snd_soc_register_component(&state->client->dev,
- 					     &tda1997x_codec_driver,
- 					     &tda1997x_audio_dai, 1);
- 		if (ret) {
-@@ -2782,7 +2784,6 @@ static int tda1997x_remove(struct i2c_client *client)
- 	struct tda1997x_platform_data *pdata = &state->pdata;
- 
- 	if (pdata->audout_format) {
--		snd_soc_unregister_codec(&client->dev);
- 		mutex_destroy(&state->audio_lock);
- 	}
- 
--- 
-2.17.0
+numid=10,iface=MIXER,name='FM Playback Switch'
+numid=6,iface=MIXER,name='FM Playback Volume'
+numid=5,iface=MIXER,name='Line Boost Volume'
+numid=9,iface=MIXER,name='Line Playback Switch'
+numid=4,iface=MIXER,name='Line Playback Volume'
+numid=1,iface=MIXER,name='Mic1 Boost Volume'
+numid=11,iface=MIXER,name='Mic1 Playback Switch'
+numid=2,iface=MIXER,name='Mic2 Boost Volume'
+numid=12,iface=MIXER,name='Mic2 Playback Switch'
+numid=7,iface=MIXER,name='Mic Playback Volume'
+numid=18,iface=MIXER,name='Capture Source'
+numid=19,iface=MIXER,name='Differential Line Source'
+numid=8,iface=MIXER,name='Left Mixer Left DAC Playback Switch'
+numid=15,iface=MIXER,name='Power Amplifier DAC Playback Switch'
+numid=16,iface=MIXER,name='Power Amplifier Mixer Playback Switch'
+numid=17,iface=MIXER,name='Power Amplifier Mute Switch'
+numid=3,iface=MIXER,name='Power Amplifier Volume'
+numid=14,iface=MIXER,name='Right Mixer Left DAC Playback Switch'
+numid=13,iface=MIXER,name='Right Mixer Right DAC Playback Switch'
+--Sig_/Vzt_SN1Zr8bWNbQ9ZXq_W+0--
