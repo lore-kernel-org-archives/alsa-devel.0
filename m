@@ -1,19 +1,19 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH v3 3/9] ALSA: hda/ca0132: Add PCI region2 iomap
-	for SBZ
-Date: Sat,  5 May 2018 15:03:14 -0400
-Message-ID: <1525547001-17588-4-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH v3 8/9] ALSA: hda/ca0132: add
+	ca0132_alt_set_vipsource
+Date: Sat,  5 May 2018 15:03:19 -0400
+Message-ID: <1525547001-17588-9-git-send-email-conmanx360@gmail.com>
 References: <1525547001-17588-1-git-send-email-conmanx360@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f195.google.com (mail-io0-f195.google.com
- [209.85.223.195])
- by alsa0.perex.cz (Postfix) with ESMTP id D3B3E2675F1
- for <alsa-devel@alsa-project.org>; Sat,  5 May 2018 21:04:11 +0200 (CEST)
-Received: by mail-io0-f195.google.com with SMTP id d11-v6so29283055iof.11
- for <alsa-devel@alsa-project.org>; Sat, 05 May 2018 12:04:11 -0700 (PDT)
+Received: from mail-io0-f194.google.com (mail-io0-f194.google.com
+ [209.85.223.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id B857D267642
+ for <alsa-devel@alsa-project.org>; Sat,  5 May 2018 21:04:21 +0200 (CEST)
+Received: by mail-io0-f194.google.com with SMTP id e78-v6so29345141iod.0
+ for <alsa-devel@alsa-project.org>; Sat, 05 May 2018 12:04:21 -0700 (PDT)
 In-Reply-To: <1525547001-17588-1-git-send-email-conmanx360@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,68 +27,110 @@ Sender: alsa-devel-bounces@alsa-project.org
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, Connor McAdams <conmanx360@gmail.com>, o-takashi@sakamocchi.jp
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds iomapping for the region2 section of memory on the SBZ.
-This memory region is used in later patches for setting inputs and
-outputs. If the mapping fails, the quirk is changed back to QUIRK_NONE
-to avoid attempts to write to uninitialized memory.
-
-It also adds a new exit sequence to unmap the iomem for the SBZ.
+Add function to set vipsource on cards that use_alt_controls. Different
+sequence. Also, add cvoice_switch_set at end of ca0132_select_in so that
+when switching between inputs cvoice state is maintained.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ sound/pci/hda/patch_ca0132.c | 71 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 70 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 02238fe..78d2c26 100644
+index c7822d6..c1753b2 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -29,6 +29,9 @@
- #include <linux/firmware.h>
- #include <linux/kernel.h>
- #include <sound/core.h>
-+#include <linux/types.h>
-+#include <linux/io.h>
-+#include <linux/pci.h>
- #include "hda_codec.h"
- #include "hda_local.h"
- #include "hda_auto_parser.h"
-@@ -760,6 +763,11 @@ struct ca0132_spec {
- #ifdef ENABLE_TUNING_CONTROLS
- 	long cur_ctl_vals[TUNING_CTLS_COUNT];
- #endif
-+	/*
-+	 * Sound Blaster Z PCI region 2 iomem, used for input and output
-+	 * switching, and other unknown commands.
-+	 */
-+	void __iomem *mem_base;
- };
- 
- /*
-@@ -4696,6 +4704,8 @@ static void ca0132_free(struct hda_codec *codec)
- 	snd_hda_sequence_write(codec, spec->base_exit_verbs);
- 	ca0132_exit_chip(codec);
- 	snd_hda_power_down(codec);
-+	if (spec->mem_base)
-+		iounmap(spec->mem_base);
- 	kfree(spec->spec_init_verbs);
- 	kfree(codec->spec);
+@@ -3978,6 +3978,71 @@ static int ca0132_set_vipsource(struct hda_codec *codec, int val)
+ 	return 1;
  }
-@@ -4911,6 +4921,15 @@ static int patch_ca0132(struct hda_codec *codec)
- 	else
- 		spec->quirk = QUIRK_NONE;
  
-+	/* Setup BAR Region 2 for Sound Blaster Z */
-+	if (spec->quirk == QUIRK_SBZ) {
-+		spec->mem_base = pci_iomap(codec->bus->pci, 2, 0xC20);
-+		if (spec->mem_base == NULL) {
-+			codec_warn(codec, "pci_iomap failed!");
-+			codec_info(codec, "perhaps this is not an SBZ?");
-+			spec->quirk = QUIRK_NONE;
++static int ca0132_alt_set_vipsource(struct hda_codec *codec, int val)
++{
++	struct ca0132_spec *spec = codec->spec;
++	unsigned int tmp;
++
++	if (spec->dsp_state != DSP_DOWNLOADED)
++		return 0;
++
++	codec_dbg(codec, "%s\n", __func__);
++
++	chipio_set_stream_control(codec, 0x03, 0);
++	chipio_set_stream_control(codec, 0x04, 0);
++
++	/* if CrystalVoice is off, vipsource should be 0 */
++	if (!spec->effects_switch[CRYSTAL_VOICE - EFFECT_START_NID] ||
++	    (val == 0) || spec->in_enum_val == REAR_LINE_IN) {
++		codec_dbg(codec, "%s: off.", __func__);
++		chipio_set_control_param(codec, CONTROL_PARAM_VIP_SOURCE, 0);
++
++		tmp = FLOAT_ZERO;
++		dspio_set_uint_param(codec, 0x80, 0x05, tmp);
++
++		chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_96_000);
++		chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_96_000);
++		if (spec->quirk == QUIRK_R3DI)
++			chipio_set_conn_rate(codec, 0x0F, SR_96_000);
++
++
++		if (spec->in_enum_val == REAR_LINE_IN)
++			tmp = FLOAT_ZERO;
++		else {
++			if (spec->quirk == QUIRK_SBZ)
++				tmp = FLOAT_THREE;
++			else
++				tmp = FLOAT_ONE;
 +		}
++
++		dspio_set_uint_param(codec, 0x80, 0x00, tmp);
++
++	} else {
++		codec_dbg(codec, "%s: on.", __func__);
++		chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_16_000);
++		chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_16_000);
++		if (spec->quirk == QUIRK_R3DI)
++			chipio_set_conn_rate(codec, 0x0F, SR_16_000);
++
++		if (spec->effects_switch[VOICE_FOCUS - EFFECT_START_NID])
++			tmp = FLOAT_TWO;
++		else
++			tmp = FLOAT_ONE;
++		dspio_set_uint_param(codec, 0x80, 0x00, tmp);
++
++		tmp = FLOAT_ONE;
++		dspio_set_uint_param(codec, 0x80, 0x05, tmp);
++
++		msleep(20);
++		chipio_set_control_param(codec, CONTROL_PARAM_VIP_SOURCE, val);
 +	}
- 	spec->dsp_state = DSP_DOWNLOAD_INIT;
- 	spec->num_mixers = 1;
- 	spec->mixers[0] = ca0132_mixer;
++
++	chipio_set_stream_control(codec, 0x03, 1);
++	chipio_set_stream_control(codec, 0x04, 1);
++
++	return 1;
++}
++
+ /*
+  * Select the active microphone.
+  * If autodetect is enabled, mic will be selected based on jack detection.
+@@ -4140,6 +4205,7 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 		}
+ 		break;
+ 	}
++	ca0132_cvoice_switch_set(codec);
+ 
+ 	snd_hda_power_down_pm(codec);
+ 	return 0;
+@@ -4353,7 +4419,10 @@ static int ca0132_cvoice_switch_set(struct hda_codec *codec)
+ 
+ 	/* set correct vipsource */
+ 	oldval = stop_mic1(codec);
+-	ret |= ca0132_set_vipsource(codec, 1);
++	if (spec->use_alt_functions)
++		ret |= ca0132_alt_set_vipsource(codec, 1);
++	else
++		ret |= ca0132_set_vipsource(codec, 1);
+ 	resume_mic1(codec, oldval);
+ 	return ret;
+ }
 -- 
 2.7.4
