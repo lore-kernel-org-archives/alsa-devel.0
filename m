@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/7] ASoC: omap: Deprecate omap-pcm for
-	sdma-pcm
-Date: Sat, 5 May 2018 10:38:33 +0900
-Message-ID: <20180505013833.GL13402@sirena.org.uk>
-References: <20180430111958.31289-1-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: cs42xx8: Make the node name generic" to
+	the asoc tree
+Date: Sat,  5 May 2018 02:43:42 +0100 (BST)
+Message-ID: <20180505014342.6C1DD44007A@finisterre.ee.mobilebroadband>
+References: <1525461123-16686-4-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4222430745853049318=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 69D1F2675CD
- for <alsa-devel@alsa-project.org>; Sat,  5 May 2018 03:38:38 +0200 (CEST)
-In-Reply-To: <20180430111958.31289-1-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 376A026728A
+ for <alsa-devel@alsa-project.org>; Sat,  5 May 2018 03:43:46 +0200 (CEST)
+In-Reply-To: <1525461123-16686-4-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com, aaro.koskinen@iki.fi
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4222430745853049318==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="q6mBvMCt6oafMx9a"
-Content-Disposition: inline
+   ASoC: cs42xx8: Make the node name generic
 
+has been applied to the asoc tree at
 
---q6mBvMCt6oafMx9a
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Apr 30, 2018 at 02:19:51PM +0300, Peter Ujfalusi wrote:
-> Hi,
->=20
-> Changes since v2:
-> - Return -ENODEV from sdma_pcm_platform_register() in case !CONFIG_SND_SD=
-MA_SOC
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This doesn't seem to apply against current code, please check and
-resend.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---q6mBvMCt6oafMx9a
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrtCxgACgkQJNaLcl1U
-h9B9DAf6A7kDHBQVuObvtKUCK1lynrQAueqQ5wVFfplRtch9h0CkQ+XtoxrcI0sC
-NzUyCW7O/2TM+DVn59ezzMfwxo+6WtkWCMJU4jWqwBmmInu7t4Qja4MDe1Gzh800
-dQhxK8FNf4NKqIFaXd+Mbt92TTJ3ALY2T/RP+HTMLWJd7E6Vnge6apZHVg/ehdMU
-CKLw6LPVJTD4CwioQuWzBy8Mqpw/35hMB9GqRHias0F9KYriigq3CKSl2x5owb3C
-oy9ZYlbintFKR2TUZmJ+4hGXJ2r5YlkdotPaiaJpK5xqoTr5uSJy4tX3geAGkRY3
-DFYXEhaqrxOiV/MhN7V/WcNAUHkGbg==
-=Rs6O
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---q6mBvMCt6oafMx9a--
+>From 6a8f1a282348a47bcbb6c5418a86d271d1fb0ad2 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Fri, 4 May 2018 16:12:03 -0300
+Subject: [PATCH] ASoC: cs42xx8: Make the node name generic
 
---===============4222430745853049318==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+According to Devicetree Specification v0.2 document:
 
+"The name of a node should be somewhat generic, reflecting the function
+of the device and not its precise programming model."
 
---===============4222430745853049318==--
+Do as suggested in the binding example.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/cs42xx8.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/cs42xx8.txt b/Documentation/devicetree/bindings/sound/cs42xx8.txt
+index f631fbca6284..8619a156d038 100644
+--- a/Documentation/devicetree/bindings/sound/cs42xx8.txt
++++ b/Documentation/devicetree/bindings/sound/cs42xx8.txt
+@@ -16,7 +16,7 @@ Required properties:
+ 
+ Example:
+ 
+-codec: cs42888@48 {
++cs42888: codec@48 {
+ 	compatible = "cirrus,cs42888";
+ 	reg = <0x48>;
+ 	clocks = <&codec_mclk 0>;
+-- 
+2.17.0
