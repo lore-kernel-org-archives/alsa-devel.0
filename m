@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8960: Make the node name generic" to
+Subject: Applied "ASoC: wm8962: Make the node name generic" to
 	the asoc tree
-Date: Sat,  5 May 2018 02:43:55 +0100 (BST)
-Message-ID: <20180505014355.3F91644007A@finisterre.ee.mobilebroadband>
-References: <1525461123-16686-3-git-send-email-festevam@gmail.com>
+Date: Sat,  5 May 2018 02:43:58 +0100 (BST)
+Message-ID: <20180505014358.9D65344007A@finisterre.ee.mobilebroadband>
+References: <1525461123-16686-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 977F826728A
- for <alsa-devel@alsa-project.org>; Sat,  5 May 2018 03:43:58 +0200 (CEST)
-In-Reply-To: <1525461123-16686-3-git-send-email-festevam@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BCA6E2675DA
+ for <alsa-devel@alsa-project.org>; Sat,  5 May 2018 03:44:01 +0200 (CEST)
+In-Reply-To: <1525461123-16686-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8960: Make the node name generic
+   ASoC: wm8962: Make the node name generic
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 1dbec1f0f086bbcf811f34cf56af6ff749d10b59 Mon Sep 17 00:00:00 2001
+>From d2b4d003239ec8b2c48900b777130aaa6e9caed4 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Fri, 4 May 2018 16:12:02 -0300
-Subject: [PATCH] ASoC: wm8960: Make the node name generic
+Date: Fri, 4 May 2018 16:12:01 -0300
+Subject: [PATCH] ASoC: wm8962: Make the node name generic
 
 According to Devicetree Specification v0.2 document:
 
@@ -68,20 +68,20 @@ Do as suggested in the binding example.
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/wm8960.txt | 2 +-
+ Documentation/devicetree/bindings/sound/wm8962.txt | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/wm8960.txt b/Documentation/devicetree/bindings/sound/wm8960.txt
-index 2deb8a3da9c5..6d29ac3750ee 100644
---- a/Documentation/devicetree/bindings/sound/wm8960.txt
-+++ b/Documentation/devicetree/bindings/sound/wm8960.txt
-@@ -23,7 +23,7 @@ Optional properties:
+diff --git a/Documentation/devicetree/bindings/sound/wm8962.txt b/Documentation/devicetree/bindings/sound/wm8962.txt
+index 7f82b59ec8f9..dcfa9a3369fd 100644
+--- a/Documentation/devicetree/bindings/sound/wm8962.txt
++++ b/Documentation/devicetree/bindings/sound/wm8962.txt
+@@ -24,7 +24,7 @@ Optional properties:
  
  Example:
  
--codec: wm8960@1a {
-+wm8960: codec@1a {
- 	compatible = "wlf,wm8960";
+-codec: wm8962@1a {
++wm8962: codec@1a {
+ 	compatible = "wlf,wm8962";
  	reg = <0x1a>;
  
 -- 
