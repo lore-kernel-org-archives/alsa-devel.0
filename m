@@ -1,88 +1,97 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v3 6/9] ALSA: hda/ca0132: add alt_select_in/out for R3Di +
- SBZ
-Date: Mon, 7 May 2018 12:01:38 +0900
-Message-ID: <7d0154fa-2a98-4e3e-12ae-ff0472c6eb91@sakamocchi.jp>
-References: <1525547001-17588-1-git-send-email-conmanx360@gmail.com>
- <1525547001-17588-7-git-send-email-conmanx360@gmail.com>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH v3] ASoC: da7219: read fmw property to get
+ mclk for non-dts systems
+Date: Mon, 7 May 2018 10:20:10 +0530
+Message-ID: <e17e2c9e-923d-fea6-26be-5f14c99a45cb@amd.com>
+References: <1525334313-28661-1-git-send-email-akshu.agrawal@amd.com>
+ <2E89032DDAA8B9408CB92943514A0337014C1EA102@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525547001-17588-7-git-send-email-conmanx360@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com
+ (mail-cys01nam02on0052.outbound.protection.outlook.com [104.47.37.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34C6A26728A
+ for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 06:50:32 +0200 (CEST)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337014C1EA102@SW-EX-MBX01.diasemi.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Connor McAdams <conmanx360@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?Q?J=c3=a9r=c3=a9my_Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On May 6 2018 04:03, Connor McAdams wrote:
-> Add functions ca0132_alt_select_out and ca0132_alt_select_in for
-> switching outputs and inputs for r3di and sbz. Also, add enumerated
-> controls for selecting output and input source.
+
+On 5/4/2018 2:45 PM, Adam Thomson wrote:
+> On 03 May 2018 08:59, Akshu Agrawal wrote:
 > 
-> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
-> ---
->   sound/pci/hda/patch_ca0132.c | 597 +++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 572 insertions(+), 25 deletions(-)
+>> Non-dts based systems can use ACPI DSDT to pass on the mclk
+>> to da7219.
+>> This enables da7219 mclk to be linked to system clock.
+>> Enable/Disable of the mclk is already handled in the codec so
+>> platform drivers don't have to explicitly do handling of mclk.
+>>
+>> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+>> ---
+>> v2: Fixed kbuild error
+>> v3: Add corresponding clk_put for clk_get
+>>  include/sound/da7219.h    |  2 ++
+>>  sound/soc/codecs/da7219.c | 10 +++++++++-
+>>  2 files changed, 11 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+>> index 1bfcb16..df7ddf4 100644
+>> --- a/include/sound/da7219.h
+>> +++ b/include/sound/da7219.h
+>> @@ -38,6 +38,8 @@ struct da7219_pdata {
+>>
+>>  	const char *dai_clks_name;
+>>
+>> +	const char *mclk_name;
+>> +
+>>  	/* Mic */
+>>  	enum da7219_micbias_voltage micbias_lvl;
+>>  	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+>> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+>> index 980a6a8..ecd46fc 100644
+>> --- a/sound/soc/codecs/da7219.c
+>> +++ b/sound/soc/codecs/da7219.c
+>> @@ -1624,6 +1624,8 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct
+>> snd_soc_component *compone
+>>  		dev_warn(dev, "Using default clk name: %s\n",
+>>  			 pdata->dai_clks_name);
+>>
+>> +	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
+>> +
 > 
-> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-> index bb0feaa..36cc2a1 100644
-> --- a/sound/pci/hda/patch_ca0132.c
-> +++ b/sound/pci/hda/patch_ca0132.c
-> @@ -480,6 +494,49 @@ static struct ct_voicefx_preset ca0132_voicefx_presets[] = {
->   	}
->   };
->   
-> +/* DSP command sequences for ca0132_alt_select_out */
-> +#define ALT_OUT_SET_MAX_COMMANDS 9 /* Max number of commands in sequence */
-> +struct ca0132_alt_out_set {
-> +	char *name; /*preset name*/
-> +	unsigned char commands;
-> +	unsigned int mids[ALT_OUT_SET_MAX_COMMANDS];
-> +	unsigned int reqs[ALT_OUT_SET_MAX_COMMANDS];
-> +	unsigned int vals[ALT_OUT_SET_MAX_COMMANDS];
-> +};
-> +
-> +static struct ca0132_alt_out_set alt_out_presets[] = {
-> +	{ .name = "Line Out",
-> +	  .commands = 7,
-> +	  .mids = { 0x96, 0x96, 0x96, 0x8F,
-> +		    0x96, 0x96, 0x96 },
-> +	  .reqs = { 0x19, 0x17, 0x18, 0x01,
-> +		    0x1F, 0x15, 0x3A },
-> +	  .vals = { 0x3F000000, 0x42A00000, 0x00000000,
-> +		    0x00000000, 0x00000000, 0x00000000,
-> +		    0x00000000 }
-> +	},
-> +	{ .name = "Headphone",
-> +	  .commands = 7,
-> +	  .mids = { 0x96, 0x96, 0x96, 0x8F,
-> +		    0x96, 0x96, 0x96 },
-> +	  .reqs = { 0x19, 0x17, 0x18, 0x01,
-> +		    0x1F, 0x15, 0x3A },
-> +	  .vals = { 0x3F000000, 0x42A00000, 0x00000000,
-> +		    0x00000000, 0x00000000, 0x00000000,
-> +		    0x00000000 }
-> +	},
-> +	{ .name = "Surround",
-> +	  .commands = 8,
-> +	  .mids = { 0x96, 0x8F, 0x96, 0x96,
-> +		    0x96, 0x96, 0x96, 0x96 },
-> +	  .reqs = { 0x18, 0x01, 0x1F, 0x15,
-> +		    0x3A, 0x1A, 0x1B, 0x1C },
-> +	  .vals = { 0x00000000, 0x00000000, 0x00000000,
-> +		    0x00000000, 0x00000000, 0x00000000,
-> +		    0x00000000, 0x00000000 }
-> +	}
-> +};
-> +
+> Personally am still not keen on this. To me the use of a device_property_*
+> function suggests the same property resides in both DT and ACPI, but here we're
+> only using this for the ACPI case. DT has no want or need for this. I still feel
+> we should look at something more generic in the clock framework, although I do
+> agree with Mark that this should be properly specced.
+> 
 
-It's better to add 'const' qualifier.
+I am not an expert in field of ACPI, IMO forming a Spec and changing
+ACPI to have DT like clock framework is good to have but a bigger change
+which should be taken up later.
 
+The current code of handling of mclk in the driver is usable only by DT.
+The device_property (though ACPI specific) makes this code, a common
+code for DT and ACPI based devices.
 
-Regards
+https://www.kernel.org/doc/Documentation/acpi/DSD-properties-rules.txt
+"....Still, for the sake of code re-use, it may make sense to provide as
+much of the configuration data as possible in the form of device
+properties and complement that with an ACPI-specific mechanism suitable
+for the use case at hand......"
 
-Takashi Sakamoto
+Thanks,
+Akshu
