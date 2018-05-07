@@ -1,25 +1,20 @@
-From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH V3 10/10] ASoC: amd: dma driver changes for
-	bt i2s instance
-Date: Mon, 07 May 2018 06:44:04 +0000
-Message-ID: <CAGS+omAhYrBAH1pgtGif=AZavXz=Ft-OWG16ooNZk5CqNihttQ@mail.gmail.com>
-References: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1525207810-1305-10-git-send-email-Vijendar.Mukunda@amd.com>
- <CAGS+omC=fZsFvSaxqFWEo0Pkj1Rcqhixy_oN7PWry9F0L_9c-Q@mail.gmail.com>
- <06a8f6f4-3bc0-656e-9c55-84f88727d6fb@amd.com>
- <CAGS+omDKpPwyUMYwm-ai5cr+m=JLh+yjYq_oDfyRBppqc8DPDg@mail.gmail.com>
- <78cec135-3ae1-4d4b-4b19-b7fe1577294d@amd.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH 2/2] ASoC: nau8810: change the target of
+	MIC BIAS supply
+Date: Mon, 7 May 2018 14:57:28 +0800
+Message-ID: <5AEFF8D8.5090003@nuvoton.com>
+References: <1525315602-3620-1-git-send-email-KCHSU0@nuvoton.com>
+ <1525315602-3620-2-git-send-email-KCHSU0@nuvoton.com>
+ <20180503231047.GB13402@sirena.org.uk> <5AEBB308.6020006@nuvoton.com>
+ <20180505010110.GI13402@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk0-f65.google.com (mail-vk0-f65.google.com
- [209.85.213.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 092ED267634
- for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 08:44:16 +0200 (CEST)
-Received: by mail-vk0-f65.google.com with SMTP id v194-v6so342153vkd.7
- for <alsa-devel@alsa-project.org>; Sun, 06 May 2018 23:44:16 -0700 (PDT)
-In-Reply-To: <78cec135-3ae1-4d4b-4b19-b7fe1577294d@amd.com>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D37C267634
+ for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 08:57:35 +0200 (CEST)
+In-Reply-To: <20180505010110.GI13402@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,182 +24,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <Akshu.Agrawal@amd.com>
-Cc: Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, tiwai@suse.com, jclinton@chromium.org, Mark Brown <broonie@kernel.org>, weiyongjun1@huawei.com, vijendar.mukunda@amd.com, alexander.deucher@amd.com, Guenter Roeck <linux@roeck-us.net>
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, CFYU0@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, YCPENG7@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 3, 2018 at 10:35 PM Agrawal, Akshu <Akshu.Agrawal@amd.com>
-wrote:
+On 5/5/2018 9:01 AM, Mark Brown wrote:
+> On Fri, May 04, 2018 at 09:10:32AM +0800, John Hsu wrote:
+>> On 5/4/2018 7:10 AM, Mark Brown wrote:
+>>> On Thu, May 03, 2018 at 10:46:42AM +0800, John Hsu wrote:
+>>>> The MICBAIS will not supply if there is only one path from MICP to
+>>>> input boost stage. The driver fixes the issue by changing the supply
+>>>> target to input boost stage mixer.
+>
+>>> Does the input boost stage actually use the MICBIAS supply directly?
+>>> More usually a microphone bias would supply the microphone rather than
+>>> anything on the chip itself.
+>
+>> The input boost stage has a mixer of two input sources. The normal case
+>> is that MIC goes to input PGA, then to input boot stage. The case is
+>> the original design of the driver. But there is another path that MIC
+>> goes input boot stage directly. The case is less happened but has chance.
+>> Ex. The single-end MIC goes to input boot stage. Therefore, we move
+>> the target of MICBIAS to input boost stage which can supply power for
+>> both cases.
+>
+> That's not really answering the question - the issue is that the micbias
+> is normally connected to the microphone and supplies that, it's not
+> normally connected to anything in the CODEC itself.  You're talking
+> about the path for the signal from the microphone which isn't the same
+> thing as the power to the microphone.  The system could have external
+> micbiases or use the input for something that isn't actually a
+> microphone for example.
+
+Yes, you are right. In the driver, we suppose that the input of codec
+is microphone always. Therefore, we make the micbias on to provide the
+power of microphone automatically if any input path is enabled.
+What advice do you have to deal with micbias? Thank you.
 
 
 
-> On 5/3/2018 10:10 PM, Daniel Kurtz wrote:
-> > On Thu, May 3, 2018 at 1:33 AM Mukunda,Vijendar <
-vijendar.mukunda@amd.com>
-> > wrote:
-> >
-> >
-> >
-> >> On Thursday 03 May 2018 11:13 AM, Daniel Kurtz wrote:
-> >>> Some checkpatch nits below...
-> >>>
-> >>> On Tue, May 1, 2018 at 2:53 PM Vijendar Mukunda <
-> > Vijendar.Mukunda@amd.com>
-> >>> wrote:
-> >>>
-> >>>> With in ACP, There are three I2S controllers can be
-> >>>> configured/enabled ( I2S SP, I2S MICSP, I2S BT).
-> >>>> Default enabled I2S controller instance is I2S SP.
-> >>>> This patch provides required changes to support I2S BT
-> >>>> controller Instance.
-> >>>
-> >>>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> >>>> ---
-> >>>> v1->v2: defined i2s instance macros in acp header file
-> >>>> v2->v3: sqaushed previous patch series and spilt changes
-> >>>>             into multiple patches (acp dma driver code cleanup
-> >>>>             patches and bt i2s instance specific changes)
-> >>>>      sound/soc/amd/acp-da7219-max98357a.c |  23 ++++
-> >>>>      sound/soc/amd/acp-pcm-dma.c          | 256
-> >>> +++++++++++++++++++++++++++--------
-> >>>>      sound/soc/amd/acp.h                  |  40 ++++++
-> >>>>      3 files changed, 262 insertions(+), 57 deletions(-)
-> >>>
-> >>>> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
-> >>> b/sound/soc/amd/acp-da7219-max98357a.c
-> >>>> index 133139d..b3184ab 100644
-> >>>> --- a/sound/soc/amd/acp-da7219-max98357a.c
-> >>>> +++ b/sound/soc/amd/acp-da7219-max98357a.c
-> >>>> @@ -36,6 +36,7 @@
-> >>>>      #include <linux/input.h>
-> >>>>      #include <linux/acpi.h>
-> >>>
-> >>>> +#include "acp.h"
-> >>>>      #include "../codecs/da7219.h"
-> >>>>      #include "../codecs/da7219-aad.h"
-> >>>
-> >>>> @@ -44,6 +45,7 @@
-> >>>
-> >>>>      static struct snd_soc_jack cz_jack;
-> >>>>      static struct clk *da7219_dai_clk;
-> >>>> +extern int bt_pad_enable;
-> >>>
-> >>> WARNING: externs should be avoided in .c files
-> >
-> >> We don't have .h file for machine driver and It can be ignored for
-> >> one variable.
-> >>>
-> >>>
-> >>>>      static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
-> >>>>      {
-> >>>> @@ -132,6 +134,9 @@ static const struct snd_pcm_hw_constraint_list
-> >>> constraints_channels = {
-> >>>>      static int cz_da7219_startup(struct snd_pcm_substream
-*substream)
-> >>>>      {
-> >>>>             struct snd_pcm_runtime *runtime = substream->runtime;
-> >>>> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> >>>> +       struct snd_soc_card *card = rtd->card;
-> >>>> +       struct acp_platform_info *machine =
-> >>> snd_soc_card_get_drvdata(card);
-> >>>
-> >>>>             /*
-> >>>>              * On this platform for PCM device we support stereo
-> >>>> @@ -143,6 +148,7 @@ static int cz_da7219_startup(struct
-> > snd_pcm_substream
-> >>> *substream)
-> >>>>             snd_pcm_hw_constraint_list(runtime, 0,
-> > SNDRV_PCM_HW_PARAM_RATE,
-> >>>>                                        &constraints_rates);
-> >>>
-> >>>> +       machine->i2s_instance = I2S_BT_INSTANCE;
-> >>>
-> >>> I'm not a big fan of this approach, but I don't know any other way to
-> > tell
-> >>> a single "platform" driver (acp-pcm-dma) which of two channels (ST/BT)
-> > to
-> >>> use via the pcm_open() callback.
-> >>>
-> >>> Mark, can you recommend any other way of doing this?
-> >
-> >> Hi Dan,
-> >
-> >> There have been couple of approaches worked upon this earlier.
-> >> 1) To compare cpu dai name to get the I2S instance value in
-> >> acp_dma_open() call.
-> >
-> >> But, Mark suggested not to implement this approach as we are comparing
-> >> dynamically generated cpu dai names.
-> >
-> >> 2) We added i2s_instance parameter as platform data to dwc driver.
-> >> By querying dwc driver platform data in acp dma driver, current i2s
-> >> instance was programmed in acp_dma_open ().
-> >
-> >> But Mark's latest comment was to implement platform specific changes in
-> >> machine driver. Machine driver and Dma driver should exchange the data
-> >> regarding this. We accepted this and current approach is based on the
-> >> same comment.
-> >> Below is the reference.
-> >> https://lkml.org/lkml/2018/4/18/597
-> >
-> > Yes, I saw Mark's previous comment, but what we are trying to implement
-> > here is the SoC specific binding between i2s channel and acp-dma
-channel.
-> > This is a feature of the SoC, not of the i2s controller, but also not a
-> > feature of the audio configuration on the board.
-> The binding of channel and dma is soc specific but codec to channel is
-> board specific.
-> These linkages can change from one board to another. Machine driver is
-> specific to a board (grunt here) and dma driver being common for various
-> boards (but specific to a platform like ST/CZ here). Tomorrow there can
-> be some other board with x codec linked to BT and y to SP.
-> Hence, machine driver should send this board specific link information
-> to dma driver for it to dma on the correct channel as per the board.
->     For these SoCs, the link
-> > between DMA registers & I2S-channel is hard-coded.  The machine driver
-is
-> > already specifying which i2s channel to use when it configures, for
-> > example, '.cpu_dai_name = "designware-i2s.2.auto"'.  The i2s channel
-> > selection already implies a particular DMA configuration.  It seems
-> > redundant to create this separate out-of-band infrastructure to make the
-> > machine driver also tell its platform driver '.platform_name =
-> > "acp_audio_dma.0.auto"' which i2s channel it is using.
-> >
-
-> We could have decided on the basis of "cpu_dai_name" but the decision
-> would have been based on dynamically generated name. Though maybe
-> redundant in nature, but machine driver is just sending info to dma
-> driver that this codec is playing so play on this instance.
-
-> > Perhaps the acp-pcm-dma.c should register two different platform
-drivers,
-> > and let the machine driver pick the appropriate one (ie,
-> > acp_audio_dma.0.auto or acp_audio_dma.1.auto) depending on which i2s
-port
-> > it needs?  Then each of these would have its own
-> > snd_soc_platform_driver->ops->open() that could setup
-> > snd_pcm_runtime->private_data appropriately?
-
-> I guess it would be overkill to have 2 platform drivers one for each
-> instance but actually for a single platform.
-
->     Or is there another standard
-> > way to have a single snd_soc_platform_driver handle multiple channels?
-> >
-
-> Don't know if there is a standard but would be interesting to know how
-> other platforms handle multiple instances.
-
-
-Hmm, there may be another way that we don't see yet, but in any case, I see
-no harm in merging this patch set as is.
-So, for the series, feel free to add:
-
-Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
-
-
-
-> Thanks,
-> Akshu
-> > -Dan
-> >
+===========================================================================================
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
