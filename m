@@ -1,96 +1,204 @@
 From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: Re: [PATCH v3] ASoC: da7219: read fmw property to get mclk for
- non-dts systems
-Date: Mon, 07 May 2018 06:39:44 +0000
-Message-ID: <CAGS+omATdiURdKFTZAeCW=7R0kB7z8vW-Wj05j_-RoJhAq=FHg@mail.gmail.com>
-References: <1525334313-28661-1-git-send-email-akshu.agrawal@amd.com>
- <2E89032DDAA8B9408CB92943514A0337014C1EA102@SW-EX-MBX01.diasemi.com> <e17e2c9e-923d-fea6-26be-5f14c99a45cb@amd.com>
+Subject: Re: [PATCH V3 10/10] ASoC: amd: dma driver changes for
+	bt i2s instance
+Date: Mon, 07 May 2018 06:44:04 +0000
+Message-ID: <CAGS+omAhYrBAH1pgtGif=AZavXz=Ft-OWG16ooNZk5CqNihttQ@mail.gmail.com>
+References: <1525207810-1305-1-git-send-email-Vijendar.Mukunda@amd.com>
+ <1525207810-1305-10-git-send-email-Vijendar.Mukunda@amd.com>
+ <CAGS+omC=fZsFvSaxqFWEo0Pkj1Rcqhixy_oN7PWry9F0L_9c-Q@mail.gmail.com>
+ <06a8f6f4-3bc0-656e-9c55-84f88727d6fb@amd.com>
+ <CAGS+omDKpPwyUMYwm-ai5cr+m=JLh+yjYq_oDfyRBppqc8DPDg@mail.gmail.com>
+ <78cec135-3ae1-4d4b-4b19-b7fe1577294d@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e17e2c9e-923d-fea6-26be-5f14c99a45cb@amd.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-vk0-f65.google.com (mail-vk0-f65.google.com
+ [209.85.213.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 092ED267634
+ for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 08:44:16 +0200 (CEST)
+Received: by mail-vk0-f65.google.com with SMTP id v194-v6so342153vkd.7
+ for <alsa-devel@alsa-project.org>; Sun, 06 May 2018 23:44:16 -0700 (PDT)
+In-Reply-To: <78cec135-3ae1-4d4b-4b19-b7fe1577294d@amd.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Akshu Agrawal <Akshu.Agrawal@amd.com>
-Cc: Adam.Thomson.Opensource@diasemi.com, Alexander.Deucher@amd.com, Support.Opensource@diasemi.com, perex@perex.cz, tiwai@suse.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, tiwai@suse.com, jclinton@chromium.org, Mark Brown <broonie@kernel.org>, weiyongjun1@huawei.com, vijendar.mukunda@amd.com, alexander.deucher@amd.com, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 6, 2018 at 10:50 PM Agrawal, Akshu <Akshu.Agrawal@amd.com>
+On Thu, May 3, 2018 at 10:35 PM Agrawal, Akshu <Akshu.Agrawal@amd.com>
 wrote:
 
 
 
-> On 5/4/2018 2:45 PM, Adam Thomson wrote:
-> > On 03 May 2018 08:59, Akshu Agrawal wrote:
+> On 5/3/2018 10:10 PM, Daniel Kurtz wrote:
+> > On Thu, May 3, 2018 at 1:33 AM Mukunda,Vijendar <
+vijendar.mukunda@amd.com>
+> > wrote:
 > >
-> >> Non-dts based systems can use ACPI DSDT to pass on the mclk
-> >> to da7219.
-> >> This enables da7219 mclk to be linked to system clock.
-> >> Enable/Disable of the mclk is already handled in the codec so
-> >> platform drivers don't have to explicitly do handling of mclk.
-> >>
-> >> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> >> ---
-> >> v2: Fixed kbuild error
-> >> v3: Add corresponding clk_put for clk_get
-> >>  include/sound/da7219.h    |  2 ++
-> >>  sound/soc/codecs/da7219.c | 10 +++++++++-
-> >>  2 files changed, 11 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
-> >> index 1bfcb16..df7ddf4 100644
-> >> --- a/include/sound/da7219.h
-> >> +++ b/include/sound/da7219.h
-> >> @@ -38,6 +38,8 @@ struct da7219_pdata {
-> >>
-> >>      const char *dai_clks_name;
-> >>
-> >> +    const char *mclk_name;
-> >> +
-> >>      /* Mic */
-> >>      enum da7219_micbias_voltage micbias_lvl;
-> >>      enum da7219_mic_amp_in_sel mic_amp_in_sel;
-> >> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-> >> index 980a6a8..ecd46fc 100644
-> >> --- a/sound/soc/codecs/da7219.c
-> >> +++ b/sound/soc/codecs/da7219.c
-> >> @@ -1624,6 +1624,8 @@ static struct da7219_pdata
-*da7219_fw_to_pdata(struct
-> >> snd_soc_component *compone
-> >>              dev_warn(dev, "Using default clk name: %s\n",
-> >>                       pdata->dai_clks_name);
-> >>
-> >> +    device_property_read_string(dev, "dlg,mclk-name",
-&pdata->mclk_name);
-> >> +
 > >
-> > Personally am still not keen on this. To me the use of a
-device_property_*
-> > function suggests the same property resides in both DT and ACPI, but
-here we're
-> > only using this for the ACPI case. DT has no want or need for this. I
-still feel
-> > we should look at something more generic in the clock framework,
-although I do
-> > agree with Mark that this should be properly specced.
+> >
+> >> On Thursday 03 May 2018 11:13 AM, Daniel Kurtz wrote:
+> >>> Some checkpatch nits below...
+> >>>
+> >>> On Tue, May 1, 2018 at 2:53 PM Vijendar Mukunda <
+> > Vijendar.Mukunda@amd.com>
+> >>> wrote:
+> >>>
+> >>>> With in ACP, There are three I2S controllers can be
+> >>>> configured/enabled ( I2S SP, I2S MICSP, I2S BT).
+> >>>> Default enabled I2S controller instance is I2S SP.
+> >>>> This patch provides required changes to support I2S BT
+> >>>> controller Instance.
+> >>>
+> >>>> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+> >>>> ---
+> >>>> v1->v2: defined i2s instance macros in acp header file
+> >>>> v2->v3: sqaushed previous patch series and spilt changes
+> >>>>             into multiple patches (acp dma driver code cleanup
+> >>>>             patches and bt i2s instance specific changes)
+> >>>>      sound/soc/amd/acp-da7219-max98357a.c |  23 ++++
+> >>>>      sound/soc/amd/acp-pcm-dma.c          | 256
+> >>> +++++++++++++++++++++++++++--------
+> >>>>      sound/soc/amd/acp.h                  |  40 ++++++
+> >>>>      3 files changed, 262 insertions(+), 57 deletions(-)
+> >>>
+> >>>> diff --git a/sound/soc/amd/acp-da7219-max98357a.c
+> >>> b/sound/soc/amd/acp-da7219-max98357a.c
+> >>>> index 133139d..b3184ab 100644
+> >>>> --- a/sound/soc/amd/acp-da7219-max98357a.c
+> >>>> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+> >>>> @@ -36,6 +36,7 @@
+> >>>>      #include <linux/input.h>
+> >>>>      #include <linux/acpi.h>
+> >>>
+> >>>> +#include "acp.h"
+> >>>>      #include "../codecs/da7219.h"
+> >>>>      #include "../codecs/da7219-aad.h"
+> >>>
+> >>>> @@ -44,6 +45,7 @@
+> >>>
+> >>>>      static struct snd_soc_jack cz_jack;
+> >>>>      static struct clk *da7219_dai_clk;
+> >>>> +extern int bt_pad_enable;
+> >>>
+> >>> WARNING: externs should be avoided in .c files
+> >
+> >> We don't have .h file for machine driver and It can be ignored for
+> >> one variable.
+> >>>
+> >>>
+> >>>>      static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+> >>>>      {
+> >>>> @@ -132,6 +134,9 @@ static const struct snd_pcm_hw_constraint_list
+> >>> constraints_channels = {
+> >>>>      static int cz_da7219_startup(struct snd_pcm_substream
+*substream)
+> >>>>      {
+> >>>>             struct snd_pcm_runtime *runtime = substream->runtime;
+> >>>> +       struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> >>>> +       struct snd_soc_card *card = rtd->card;
+> >>>> +       struct acp_platform_info *machine =
+> >>> snd_soc_card_get_drvdata(card);
+> >>>
+> >>>>             /*
+> >>>>              * On this platform for PCM device we support stereo
+> >>>> @@ -143,6 +148,7 @@ static int cz_da7219_startup(struct
+> > snd_pcm_substream
+> >>> *substream)
+> >>>>             snd_pcm_hw_constraint_list(runtime, 0,
+> > SNDRV_PCM_HW_PARAM_RATE,
+> >>>>                                        &constraints_rates);
+> >>>
+> >>>> +       machine->i2s_instance = I2S_BT_INSTANCE;
+> >>>
+> >>> I'm not a big fan of this approach, but I don't know any other way to
+> > tell
+> >>> a single "platform" driver (acp-pcm-dma) which of two channels (ST/BT)
+> > to
+> >>> use via the pcm_open() callback.
+> >>>
+> >>> Mark, can you recommend any other way of doing this?
+> >
+> >> Hi Dan,
+> >
+> >> There have been couple of approaches worked upon this earlier.
+> >> 1) To compare cpu dai name to get the I2S instance value in
+> >> acp_dma_open() call.
+> >
+> >> But, Mark suggested not to implement this approach as we are comparing
+> >> dynamically generated cpu dai names.
+> >
+> >> 2) We added i2s_instance parameter as platform data to dwc driver.
+> >> By querying dwc driver platform data in acp dma driver, current i2s
+> >> instance was programmed in acp_dma_open ().
+> >
+> >> But Mark's latest comment was to implement platform specific changes in
+> >> machine driver. Machine driver and Dma driver should exchange the data
+> >> regarding this. We accepted this and current approach is based on the
+> >> same comment.
+> >> Below is the reference.
+> >> https://lkml.org/lkml/2018/4/18/597
+> >
+> > Yes, I saw Mark's previous comment, but what we are trying to implement
+> > here is the SoC specific binding between i2s channel and acp-dma
+channel.
+> > This is a feature of the SoC, not of the i2s controller, but also not a
+> > feature of the audio configuration on the board.
+> The binding of channel and dma is soc specific but codec to channel is
+> board specific.
+> These linkages can change from one board to another. Machine driver is
+> specific to a board (grunt here) and dma driver being common for various
+> boards (but specific to a platform like ST/CZ here). Tomorrow there can
+> be some other board with x codec linked to BT and y to SP.
+> Hence, machine driver should send this board specific link information
+> to dma driver for it to dma on the correct channel as per the board.
+>     For these SoCs, the link
+> > between DMA registers & I2S-channel is hard-coded.  The machine driver
+is
+> > already specifying which i2s channel to use when it configures, for
+> > example, '.cpu_dai_name = "designware-i2s.2.auto"'.  The i2s channel
+> > selection already implies a particular DMA configuration.  It seems
+> > redundant to create this separate out-of-band infrastructure to make the
+> > machine driver also tell its platform driver '.platform_name =
+> > "acp_audio_dma.0.auto"' which i2s channel it is using.
 > >
 
-> I am not an expert in field of ACPI, IMO forming a Spec and changing
-> ACPI to have DT like clock framework is good to have but a bigger change
-> which should be taken up later.
+> We could have decided on the basis of "cpu_dai_name" but the decision
+> would have been based on dynamically generated name. Though maybe
+> redundant in nature, but machine driver is just sending info to dma
+> driver that this codec is playing so play on this instance.
 
-> The current code of handling of mclk in the driver is usable only by DT.
-> The device_property (though ACPI specific) makes this code, a common
-> code for DT and ACPI based devices.
+> > Perhaps the acp-pcm-dma.c should register two different platform
+drivers,
+> > and let the machine driver pick the appropriate one (ie,
+> > acp_audio_dma.0.auto or acp_audio_dma.1.auto) depending on which i2s
+port
+> > it needs?  Then each of these would have its own
+> > snd_soc_platform_driver->ops->open() that could setup
+> > snd_pcm_runtime->private_data appropriately?
 
-> https://www.kernel.org/doc/Documentation/acpi/DSD-properties-rules.txt
-> "....Still, for the sake of code re-use, it may make sense to provide as
-> much of the configuration data as possible in the form of device
-> properties and complement that with an ACPI-specific mechanism suitable
-> for the use case at hand......"
+> I guess it would be overkill to have 2 platform drivers one for each
+> instance but actually for a single platform.
 
-This sounds like a pretty reasonable justification for addressing the issue
-using DSD to me.
-For what its worth, you can add:
+>     Or is there another standard
+> > way to have a single snd_soc_platform_driver handle multiple channels?
+> >
+
+> Don't know if there is a standard but would be interesting to know how
+> other platforms handle multiple instances.
+
+
+Hmm, there may be another way that we don't see yet, but in any case, I see
+no harm in merging this patch set as is.
+So, for the series, feel free to add:
 
 Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 
@@ -98,3 +206,5 @@ Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 
 > Thanks,
 > Akshu
+> > -Dan
+> >
