@@ -1,89 +1,88 @@
-From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: [PATCH v3 12/20] media: Remove depends on HAS_DMA in case of
-	platform dependency
-Date: Mon, 7 May 2018 09:21:47 +0200
-Message-ID: <CAMuHMdXp8u9O7Yt3W+WxuOOadYOM+_28DLOMfktwgy_WqML_0A@mail.gmail.com>
-References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
-	<1523987360-18760-13-git-send-email-geert@linux-m68k.org>
-	<20180505094743.4d201ba0@vento.lan>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: [PATCH v4 0/7] ASoC: omap: Deprecate omap-pcm for
+	sdma-pcm
+Date: Mon, 7 May 2018 11:49:53 +0300
+Message-ID: <20180507085000.6414-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <20180505094743.4d201ba0-ch4gOOMV7nf/PtFMR13I2A@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Mauro Carvalho Chehab <mchehab+samsung-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fpga-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" <linux-remoteproc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Bjorn Andersson <bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, netdev <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MTD Maling List <linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Linux I2C <linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>, Boris Brezillon <boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>, Richard Weinberger <richard-/L3Ra7n9ekc@public.gmane.org>, Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Marek Vasut <marek.vasut-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "open list:SERIAL DRIVERS" <linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Matias Bjorling <mb@light>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelnx193.ext.ti.com (lelnx193.ext.ti.com [198.47.27.77])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0E9F267634
+ for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 10:49:24 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
+Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, aaro.koskinen@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mauro,
+Hi,
 
-On Sat, May 5, 2018 at 2:47 PM, Mauro Carvalho Chehab
-<mchehab+samsung-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> Em Tue, 17 Apr 2018 19:49:12 +0200
-> Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org> escreveu:
->
->> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
->> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
->
-> Applying a patch like that is hard, as there are lots of churn at
-> the code. That's against latest media upstream:
+Changes since v3:
+- Rebased to make sure it applies cleanly (I had one local Kconfig patch)
 
-[...]
+Changes since v2:
+- Return -ENODEV from sdma_pcm_platform_register() in case !CONFIG_SND_SDMA_SOC
 
-I can rebase. What's your preferred target? media-next?
+Changes since v1:
+- Rebased on the n810 patches (Kconfig conflict)
+- Delete the omap-pcm as the last step instead of keeping the .c/.h file.
+  If there is a need it can be resurrected with a simple revert.
+- I left out the Acked-by from Jarkko for the last patch since I have changed it
 
->> In most cases this other symbol is an architecture or platform specific
->> symbol, or PCI.
->>
->> Generic symbols and drivers without platform dependencies keep their
->> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
->> cannot work anyway.
->
-> Actually, depends on HAS_DMA was introduced on media because builds
-> were failing otherwise. We started adding it before the addition
-> of COMPILE_TEST.
+omap-pcm served us well over the years, but there is no reason to keep it around
+as we can rely on generic dmaengine_pcm code without the need to maintain custom
+code.
 
-Indeed. Before the 5 commits below, a missing dependency on HAS_DMA
-would cause the build to fail for NO_DMA platforms.
+The series has been tested on:
+omap2 n810, omap3 beagle-xm, omap4 PandaES, omap4 Blaze (SDP),
+am57xx beagle-x15, dra7 evm.
 
-    f29ab49b5388b2f8 dma-mapping: Convert NO_DMA get_dma_ops() into a real dummy
-    ab642e952f80c66c dma-coherent: Add NO_DMA dummies for managed DMA API
-    c1ce6c2beea38171 mm: Add NO_DMA dummies for DMA pool API
-    bff739b6559e2fce scsi: Add NO_DMA dummies for SCSI DMA mapping API
-    1f674e16f9ce6eb2 usb: gadget: Add NO_DMA dummies for DMA mapping API
+McBSP, McASP, McPDM, DMIC and HDMI audio was tested and I have found no issue
+with them.
 
-> Can we just remove all HAS_DMA Kconfig dependencies as a hole from the
-> entire media subsystem, with something like:
->
->         $ for i in $(find drivers/media -name Kconfig) $(find drivers/staging/media -name Kconfig); do sed '/depends on HAS_DMA/d;s/ && HAS_DMA//g' -i $i; done
->
-> Or would it cause build issues?
+I was not able to test on OMAP1 for various reasons, but mainly because the
+Nokia 770 audio is not supported in mainline...
 
-It should not cause build issues, but it would enable lots of drivers that
-need DMA platform support on platforms where they wouldn't work, making the
-life of distro configurators harder.
+Regards,
+Peter
+---
+Peter Ujfalusi (7):
+  ASoC: omap: Introduce the generic_dmaengine_pcm based sdma-pcm
+  ASoC: davinci-mcasp: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap-hdmi-audio: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap-dmic: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap-mcpdm: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap-mcbsp: Convert to use the sdma-pcm instead of omap-pcm
+  ASoC: omap: Delete the obsolete omap-pcm
 
-That's why my series removes HAS_DMA only for symbols that have a platform
-dependency.
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
+ include/sound/omap-pcm.h          |  30 ----
+ sound/soc/davinci/Kconfig         |   2 +-
+ sound/soc/davinci/davinci-mcasp.c |   8 +-
+ sound/soc/omap/Kconfig            |  27 +--
+ sound/soc/omap/Makefile           |   4 +-
+ sound/soc/omap/omap-dmic.c        |   4 +-
+ sound/soc/omap/omap-hdmi-audio.c  |   5 +-
+ sound/soc/omap/omap-mcbsp.c       |   4 +-
+ sound/soc/omap/omap-mcpdm.c       |   4 +-
+ sound/soc/omap/omap-pcm.c         | 262 ------------------------------
+ sound/soc/omap/sdma-pcm.c         |  68 ++++++++
+ sound/soc/omap/sdma-pcm.h         |  21 +++
+ 12 files changed, 121 insertions(+), 318 deletions(-)
+ delete mode 100644 include/sound/omap-pcm.h
+ delete mode 100644 sound/soc/omap/omap-pcm.c
+ create mode 100644 sound/soc/omap/sdma-pcm.c
+ create mode 100644 sound/soc/omap/sdma-pcm.h
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+Peter
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
