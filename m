@@ -1,67 +1,89 @@
-From: John Hsu <KCHSU0@nuvoton.com>
-Subject: Re: [PATCH 2/2] ASoC: nau8810: change the target of
-	MIC BIAS supply
-Date: Mon, 7 May 2018 14:57:28 +0800
-Message-ID: <5AEFF8D8.5090003@nuvoton.com>
-References: <1525315602-3620-1-git-send-email-KCHSU0@nuvoton.com>
- <1525315602-3620-2-git-send-email-KCHSU0@nuvoton.com>
- <20180503231047.GB13402@sirena.org.uk> <5AEBB308.6020006@nuvoton.com>
- <20180505010110.GI13402@sirena.org.uk>
+From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Subject: Re: [PATCH v3 12/20] media: Remove depends on HAS_DMA in case of
+	platform dependency
+Date: Mon, 7 May 2018 09:21:47 +0200
+Message-ID: <CAMuHMdXp8u9O7Yt3W+WxuOOadYOM+_28DLOMfktwgy_WqML_0A@mail.gmail.com>
+References: <1523987360-18760-1-git-send-email-geert@linux-m68k.org>
+	<1523987360-18760-13-git-send-email-geert@linux-m68k.org>
+	<20180505094743.4d201ba0@vento.lan>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D37C267634
- for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 08:57:35 +0200 (CEST)
-In-Reply-To: <20180505010110.GI13402@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, CFYU0@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, YCPENG7@nuvoton.com
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <20180505094743.4d201ba0-ch4gOOMV7nf/PtFMR13I2A@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Mauro Carvalho Chehab <mchehab+samsung-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Ulf Hansson <ulf.hansson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Wolfram Sang <wsa-z923LK4zBo2bacvFa/9K2g@public.gmane.org>, linux-iio-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-fpga-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" <linux-remoteproc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Bjorn Andersson <bjorn.andersson-QSEj5FYQhm4dnm+yROfE0A@public.gmane.org>, Eric Anholt <eric-WhKQ6XTQaPysTnJN9+BGXg@public.gmane.org>, netdev <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, MTD Maling List <linux-mtd-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>, Linux I2C <linux-i2c-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, linux1394-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, Christoph Hellwig <hch-jcswGhMUV9g@public.gmane.org>, Stefan Wahren <stefan.wahren-eS4NqCHxEME@public.gmane.org>, Boris Brezillon <boris.brezillon-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>, Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>, Richard Weinberger <richard-/L3Ra7n9ekc@public.gmane.org>, Jassi Brar <jassisinghbrar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Marek Vasut <marek.vasut-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "open list:SERIAL DRIVERS" <linux-serial-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Matias Bjorling <mb@light>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/5/2018 9:01 AM, Mark Brown wrote:
-> On Fri, May 04, 2018 at 09:10:32AM +0800, John Hsu wrote:
->> On 5/4/2018 7:10 AM, Mark Brown wrote:
->>> On Thu, May 03, 2018 at 10:46:42AM +0800, John Hsu wrote:
->>>> The MICBAIS will not supply if there is only one path from MICP to
->>>> input boost stage. The driver fixes the issue by changing the supply
->>>> target to input boost stage mixer.
+Hi Mauro,
+
+On Sat, May 5, 2018 at 2:47 PM, Mauro Carvalho Chehab
+<mchehab+samsung-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> Em Tue, 17 Apr 2018 19:49:12 +0200
+> Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org> escreveu:
 >
->>> Does the input boost stage actually use the MICBIAS supply directly?
->>> More usually a microphone bias would supply the microphone rather than
->>> anything on the chip itself.
+>> Remove dependencies on HAS_DMA where a Kconfig symbol depends on another
+>> symbol that implies HAS_DMA, and, optionally, on "|| COMPILE_TEST".
 >
->> The input boost stage has a mixer of two input sources. The normal case
->> is that MIC goes to input PGA, then to input boot stage. The case is
->> the original design of the driver. But there is another path that MIC
->> goes input boot stage directly. The case is less happened but has chance.
->> Ex. The single-end MIC goes to input boot stage. Therefore, we move
->> the target of MICBIAS to input boost stage which can supply power for
->> both cases.
+> Applying a patch like that is hard, as there are lots of churn at
+> the code. That's against latest media upstream:
+
+[...]
+
+I can rebase. What's your preferred target? media-next?
+
+>> In most cases this other symbol is an architecture or platform specific
+>> symbol, or PCI.
+>>
+>> Generic symbols and drivers without platform dependencies keep their
+>> dependencies on HAS_DMA, to prevent compiling subsystems or drivers that
+>> cannot work anyway.
 >
-> That's not really answering the question - the issue is that the micbias
-> is normally connected to the microphone and supplies that, it's not
-> normally connected to anything in the CODEC itself.  You're talking
-> about the path for the signal from the microphone which isn't the same
-> thing as the power to the microphone.  The system could have external
-> micbiases or use the input for something that isn't actually a
-> microphone for example.
+> Actually, depends on HAS_DMA was introduced on media because builds
+> were failing otherwise. We started adding it before the addition
+> of COMPILE_TEST.
 
-Yes, you are right. In the driver, we suppose that the input of codec
-is microphone always. Therefore, we make the micbias on to provide the
-power of microphone automatically if any input path is enabled.
-What advice do you have to deal with micbias? Thank you.
+Indeed. Before the 5 commits below, a missing dependency on HAS_DMA
+would cause the build to fail for NO_DMA platforms.
 
+    f29ab49b5388b2f8 dma-mapping: Convert NO_DMA get_dma_ops() into a real dummy
+    ab642e952f80c66c dma-coherent: Add NO_DMA dummies for managed DMA API
+    c1ce6c2beea38171 mm: Add NO_DMA dummies for DMA pool API
+    bff739b6559e2fce scsi: Add NO_DMA dummies for SCSI DMA mapping API
+    1f674e16f9ce6eb2 usb: gadget: Add NO_DMA dummies for DMA mapping API
 
+> Can we just remove all HAS_DMA Kconfig dependencies as a hole from the
+> entire media subsystem, with something like:
+>
+>         $ for i in $(find drivers/media -name Kconfig) $(find drivers/staging/media -name Kconfig); do sed '/depends on HAS_DMA/d;s/ && HAS_DMA//g' -i $i; done
+>
+> Or would it cause build issues?
 
-===========================================================================================
-The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
+It should not cause build issues, but it would enable lots of drivers that
+need DMA platform support on platforms where they wouldn't work, making the
+life of distro configurators harder.
+
+That's why my series removes HAS_DMA only for symbols that have a platform
+dependency.
+
+Thanks!
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
