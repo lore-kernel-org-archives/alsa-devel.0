@@ -1,58 +1,45 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH v3 5/9] ALSA: hda/ca0132: add/change helper functions for
- R3Di and SBZ
-Date: Mon, 7 May 2018 09:55:15 -0400
-Message-ID: <CAM8Agx3QjC79su82yP+4btKQyFsyU-f_QESXqLnZAXAMetkZmQ@mail.gmail.com>
-References: <1525547001-17588-1-git-send-email-conmanx360@gmail.com>
- <1525547001-17588-6-git-send-email-conmanx360@gmail.com> <9918d3d1-d843-6142-ca95-91ee0bde3d6b@sakamocchi.jp>
+From: Jeremy Soller <jeremy@system76.com>
+Subject: [PATCH] Clevo P950ER ALC1220 Fixup
+Date: Mon, 07 May 2018 09:28:45 -0600
+Message-ID: <1525706925.3365083.1363584480.0D4473BE@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <9918d3d1-d843-6142-ca95-91ee0bde3d6b@sakamocchi.jp>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?B?SsOpcsOpbXkgTGVmYXVyZQ==?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
+ [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id 0444026762A
+ for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 17:28:47 +0200 (CEST)
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+ by mailout.nyi.internal (Postfix) with ESMTP id 0D5D42191E
+ for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 11:28:46 -0400 (EDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Just to make sure, do you mean that I need to add more comments to the
-SBZ and R3Di changes, or are they good as is?
+This adds support for the P950ER, which has the same required fixup as the P950HR, but has a different PCI ID.
 
-Thanks,
-Connor.
+Signed-off-by: Jeremy Soller <jeremy@system76.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-On Sun, May 6, 2018 at 10:29 PM, Takashi Sakamoto
-<o-takashi@sakamocchi.jp> wrote:
-> Hi,
->
-> On May 6 2018 04:03, Connor McAdams wrote:
->>
->> Edit core functions to support the Sound Blaster Z and Recon3Di for
->> startup and loading of the DSP, as well as setting effects.
->>
->> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
->> ---
->>   sound/pci/hda/patch_ca0132.c | 1064
->> ++++++++++++++++++++++++++++++++++++++++--
->>   1 file changed, 1018 insertions(+), 46 deletions(-)
->
->
-> In my opinion, this patch is too large. This patch can be split into
-> several parts:
->
->  * Changes for signature of 'dspio_scp()' to get 'src_id'
->   * dspio_scp()
->   * dspio_set_param()
->   * dspio_set_uint_param()
->   * dspio_alloc_dma_chan()
->   * dspio_free_dma_chan()
->  * Changes for SBZ only
->  * Changes for R3Di only
->
-> Could you please prepare for these three patches from this large patch in
-> your next chance? Especially, you can describe enough information to the
-> latter two patches as patch comment.
->
->
-> Thanks
->
-> Takashi Sakamoto
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 2dd34dd77447..01a6643fc7d4 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2363,6 +2363,7 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
+        SND_PCI_QUIRK_VENDOR(0x1462, "MSI", ALC882_FIXUP_GPIO3),
+        SND_PCI_QUIRK(0x147b, 0x107a, "Abit AW9D-MAX", ALC882_FIXUP_ABIT_AW9D_MAX),
+        SND_PCI_QUIRK(0x1558, 0x9501, "Clevo P950HR", ALC1220_FIXUP_CLEVO_P950),
++       SND_PCI_QUIRK(0x1558, 0x95e2, "Clevo P950ER", ALC1220_FIXUP_CLEVO_P950),
+        SND_PCI_QUIRK_VENDOR(0x1558, "Clevo laptop", ALC882_FIXUP_EAPD),
+        SND_PCI_QUIRK(0x161f, 0x2054, "Medion laptop", ALC883_FIXUP_EAPD),
+        SND_PCI_QUIRK(0x17aa, 0x3a0d, "Lenovo Y530", ALC882_FIXUP_LENOVO_Y530),
