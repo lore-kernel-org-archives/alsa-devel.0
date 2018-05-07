@@ -1,50 +1,49 @@
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Subject: [PATCH -next] ASoC: fix return value check in
-	mt6351_codec_driver_probe()
-Date: Mon, 7 May 2018 01:39:45 +0000
-Message-ID: <1525657185-73163-1-git-send-email-weiyongjun1@huawei.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH v3 5/9] ALSA: hda/ca0132: add/change helper functions for
+ R3Di and SBZ
+Date: Mon, 7 May 2018 11:29:38 +0900
+Message-ID: <9918d3d1-d843-6142-ca95-91ee0bde3d6b@sakamocchi.jp>
+References: <1525547001-17588-1-git-send-email-conmanx360@gmail.com>
+ <1525547001-17588-6-git-send-email-conmanx360@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from huawei.com (szxga05-in.huawei.com [45.249.212.191])
- by alsa0.perex.cz (Postfix) with ESMTP id 1BDDB267338
- for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 03:31:55 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias
- Brugger <matthias.bgg@gmail.com>, Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
-Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, Wei Yongjun <weiyongjun1@huawei.com>, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1525547001-17588-6-git-send-email-conmanx360@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Connor McAdams <conmanx360@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?Q?J=c3=a9r=c3=a9my_Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In case of error, the function dev_get_regmap() returns NULL pointer not
-ERR_PTR(). The IS_ERR() test in the return value check should be
-replaced with NULL test.
+Hi,
 
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
----
- sound/soc/codecs/mt6351.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On May 6 2018 04:03, Connor McAdams wrote:
+> Edit core functions to support the Sound Blaster Z and Recon3Di for
+> startup and loading of the DSP, as well as setting effects.
+> 
+> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+> ---
+>   sound/pci/hda/patch_ca0132.c | 1064 ++++++++++++++++++++++++++++++++++++++++--
+>   1 file changed, 1018 insertions(+), 46 deletions(-)
 
-diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
-index e739f07..f73dcd7 100644
---- a/sound/soc/codecs/mt6351.c
-+++ b/sound/soc/codecs/mt6351.c
-@@ -1472,8 +1472,8 @@ static int mt6351_codec_driver_probe(struct platform_device *pdev)
- 	priv->dev = &pdev->dev;
- 
- 	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
--	if (IS_ERR(priv->regmap))
--		return PTR_ERR(priv->regmap);
-+	if (!priv->regmap)
-+		return -ENODEV;
- 
- 	dev_dbg(priv->dev, "%s(), dev name %s\n",
- 		__func__, dev_name(&pdev->dev));
+In my opinion, this patch is too large. This patch can be split into
+several parts:
+
+  * Changes for signature of 'dspio_scp()' to get 'src_id'
+   * dspio_scp()
+   * dspio_set_param()
+   * dspio_set_uint_param()
+   * dspio_alloc_dma_chan()
+   * dspio_free_dma_chan()
+  * Changes for SBZ only
+  * Changes for R3Di only
+
+Could you please prepare for these three patches from this large patch 
+in your next chance? Especially, you can describe enough information to 
+the latter two patches as patch comment.
+
+
+Thanks
+
+Takashi Sakamoto
