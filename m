@@ -1,21 +1,15 @@
-From: Jay Foster <jay@systech.com>
-Subject: Re: Aplay Fails When Reading From stdin
-Date: Mon, 7 May 2018 08:37:44 -0700
-Message-ID: <95e41d1c-1143-320e-0c95-d8d67bd485a1@systech.com>
-References: <8c51a51a-cfa0-e1a7-0682-8f3c13ddc2a7@systech.com>
- <s5h7eojb3u4.wl-tiwai@suse.de>
- <399d9244-ae31-84c0-d587-bc62707a873f@systech.com>
- <s5h4ljmbnnj.wl-tiwai@suse.de>
-Reply-To: jay@systech.com
+From: Federico Cuello <fedux@fedux.com.ar>
+Subject: [PATCH] ALSA: usb: mixer: volume quirk for
+	CM102-A+/102S+
+Date: Mon, 07 May 2018 18:42:17 +0200
+Message-ID: <2cb2aefe3a828eb137e9d336f95199e1@fedux.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rcloudmail.hostconnection.net (rcloudmail.hostconnection.net
- [38.96.19.98]) by alsa0.perex.cz (Postfix) with ESMTP id 151352671C0
- for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 17:37:53 +0200 (CEST)
-In-Reply-To: <s5h4ljmbnnj.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mail.fedux.com.ar (mail.fedux.com.ar [167.99.131.221])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5DA1F26765E
+ for <alsa-devel@alsa-project.org>; Mon,  7 May 2018 18:42:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,109 +20,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Federico Cuello <fedux@fedux.com.ar>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiA1LzQvMjAxOCAxMTo1MSBQTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIEZyaSwgMDQg
-TWF5IDIwMTggMjE6NTc6MzUgKzAyMDAsCj4gSmF5IEZvc3RlciB3cm90ZToKPj4KPj4KPj4gT24g
-NS80LzIwMTggMTI6NDcgUE0sIFRha2FzaGkgSXdhaSB3cm90ZToKPj4+IE9uIEZyaSwgMDQgTWF5
-IDIwMTggMTk6NTE6MDUgKzAyMDAsCj4+PiBKYXkgRm9zdGVyIHdyb3RlOgo+Pj4+IEkgcmVjZW50
-bHkgdXBkYXRlZCBtYXkgYWxzYSBmcm9tIDEuMS40LjEgdG8gMS4xLjYuICBJIG5vdyBub3RpY2Vk
-IHRoYXQKPj4+PiBhcGxheSBkb2VzIG5vdCB3b3JrIHByb3Blcmx5ICh0aGUgc2FtZSBhcyAxLjEu
-NC4xKSB3aGVuIHJlYWRpbmcgdGhlCj4+Pj4gc291bmQgZmlsZSBkYXRhIGZyb20gc3RkaW4uICBU
-aGlzIG1pZ2h0IGhhdmUgc29tZXRoaW5nIHRvIGRvIHdpdGggdGhlCj4+Pj4gcmVjZW50IGNoYW5n
-ZSB3aXRoIHJlYWRpbmcgdGhlIHNvdW5kIGZpbGUgaGVhZGVyLgo+Pj4+Cj4+Pj4gV2l0aCB0aGUg
-cHJldmlvdXMgdmVyc2lvbiBvZiBhcGxheSwgYXBsYXkgd291bGQgcmVwb3J0Ogo+Pj4+Cj4+Pj4g
-UGxheWluZyBXQVZFICdzdGRpbicgOiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sIFJhdGUg
-MjIwNTAgSHosIE1vbm8KPj4+Pgo+Pj4+IFdpdGggMS4xLjYsIGFwbGF5IHJlcG9ydHM6Cj4+Pj4K
-Pj4+PiBQbGF5aW5nIHJhdyBkYXRhICdzdGRpbicgOiBVbnNpZ25lZCA4IGJpdCwgUmF0ZSA4MDAw
-IEh6LCBNb25vCj4+Pj4KPj4+PiBUaGlzIHJlc3VsdHMgaW4gc3RhdGljL25vaXNlIG91dHB1dC4g
-IElmIEkgZXhwbGljaXRseSBhZGQgdGhlICctZgo+Pj4+IFMxNl9MRSAtciAyMjA1MCcgb3B0aW9u
-cyB0byBhcGxheSwgdGhlbiBpdCBkb2VzIHBsYXkgY29ycmVjdGx5Lgo+Pj4+Cj4+Pj4gSXMgdGhp
-cyBhIGtub3duIGJ1ZyBhbmQgaXMgdGhlcmUgYSBmaXg/Cj4+PiBJdCB3b3JrcyBmaW5lIG9uIG15
-IHN5c3RlbS4KPj4+Cj4+PiAlIGFwbGF5IHRlc3Qud2F2Cj4+PiBQbGF5aW5nIFdBVkUgJ3Rlc3Qu
-d2F2JyA6IFNpZ25lZCAxNiBiaXQgTGl0dGxlIEVuZGlhbiwgUmF0ZSA0NDEwMCBIeiwgU3RlcmVv
-Cj4+Pgo+Pj4gJSBhcGxheSA8IH4vdGVzdC90ZXN0Lndhdgo+Pj4gUGxheWluZyBXQVZFICdzdGRp
-bicgOiBTaWduZWQgMTYgYml0IExpdHRsZSBFbmRpYW4sIFJhdGUgNDQxMDAgSHosIFN0ZXJlbwo+
-Pj4KPj4+ICUgYXBsYXkgLS12ZXJzaW9uCj4+PiBhcGxheTogdmVyc2lvbiAxLjEuNiBieSBKYXJv
-c2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6Pgo+Pj4KPj4+Cj4+PiBUYWthc2hpCj4+Pgo+Pj4K
-Pj4gV2VsbCwgaXQgZG9lcyBub3Qgd29yayBmb3IgbWU6Cj4+Cj4+IGNhdCBiaXJkLWNhbGxzLndh
-diB8IC91c3IvYmluL2FwbGF5IC1EcGx1Z2h3OjAgLS0KPj4gUGxheWluZyByYXcgZGF0YSAnc3Rk
-aW4nIDogVW5zaWduZWQgOCBiaXQsIFJhdGUgODAwMCBIeiwgTW9ubwo+PiBeQ0Fib3J0ZWQgYnkg
-c2lnbmFsIEludGVycnVwdC4uLgo+PiBhcGxheTogcGNtX3dyaXRlOjIwNTE6IHdyaXRlIGVycm9y
-OiBJbnRlcnJ1cHRlZCBzeXN0ZW0gY2FsbAo+Pgo+PiBhcGxheSAtRHBsdWdodzowIGJpcmQtY2Fs
-bHMud2F2Cj4+IFBsYXlpbmcgV0FWRSAnYmlyZC1jYWxscy53YXYnIDogU2lnbmVkIDE2IGJpdCBM
-aXR0bGUgRW5kaWFuLCBSYXRlCj4+IDQ0MTAwIEh6LCBTdGVyZW8KPj4KPj4gTG9va3MgbGlrZSBh
-cGxheSBtYXkgbm93IGhhdmUgcHJvYmxlbXMgcmVhZGluZyBmcm9tIHN0ZGluIGlmIHN0ZGluIGlz
-Cj4+IGEgcGlwZS4KPiBPSywgbm93IEkgc2VlIGl0LiAgSXQncyBpbiB0aGUgc2FmZXR5IGNoZWNr
-IG9mIGZpbGUgc3RhdC4KPiBUaGUgZml4IHBhdGNoIGlzIGJlbG93Lgo+Cj4KPiB0aGFua3MsCj4K
-PiBUYWthc2hpCj4KPiAtLS0KPiBkaWZmIC0tZ2l0IGEvYXBsYXkvYXBsYXkuYyBiL2FwbGF5L2Fw
-bGF5LmMKPiBpbmRleCBiYmQ3ZmZmYTA0ZmMuLjJhODUxYTczYmE2ZSAxMDA2NDQKPiAtLS0gYS9h
-cGxheS9hcGxheS5jCj4gKysrIGIvYXBsYXkvYXBsYXkuYwo+IEBAIC0yODA4LDcgKzI4MDgsNyBA
-QCBzdGF0aWMgdm9pZCBwbGF5YmFja19nbyhpbnQgZmQsIHNpemVfdCBsb2FkZWQsIG9mZjY0X3Qg
-Y291bnQsIGludCBydHlwZSwgY2hhciAqbgo+ICAgCXNuZF9wY21fbm9uYmxvY2soaGFuZGxlLCBu
-b25ibG9jayk7Cj4gICB9Cj4gICAKPiAtc3RhdGljIGludCByZWFkX2hlYWRlcihpbnQgKmxvYWRl
-ZCwgaW50IGhlYWRlcl9zaXplKQo+ICtzdGF0aWMgaW50IHJlYWRfaGVhZGVyKGludCAqbG9hZGVk
-LCBpbnQgaGVhZGVyX3NpemUsIGludCBpc19zdGRpbikKPiAgIHsKPiAgIAlpbnQgcmV0Owo+ICAg
-CXN0cnVjdCBzdGF0IGJ1ZjsKPiBAQCAtMjgyMSw3ICsyODIxLDcgQEAgc3RhdGljIGludCByZWFk
-X2hlYWRlcihpbnQgKmxvYWRlZCwgaW50IGhlYWRlcl9zaXplKQo+ICAgCj4gICAJLyogZG9uJ3Qg
-YmUgYWR2ZW50dXJvdXMsIGdldCBvdXQgaWYgZmlsZSBzaXplIGlzIHNtYWxsZXIgdGhhbgo+ICAg
-CSAqIHJlcXVlc3RlZCBoZWFkZXIgc2l6ZSAqLwo+IC0JaWYgKGJ1Zi5zdF9zaXplIDwgaGVhZGVy
-X3NpemUpCj4gKwlpZiAoIWlzX3N0ZGluICYmIGJ1Zi5zdF9zaXplIDwgaGVhZGVyX3NpemUpCj4g
-ICAJCXJldHVybiAtMTsKPiAgIAo+ICAgCWlmICgqbG9hZGVkIDwgaGVhZGVyX3NpemUpIHsKPiBA
-QCAtMjgzNiw5ICsyODM2LDkgQEAgc3RhdGljIGludCByZWFkX2hlYWRlcihpbnQgKmxvYWRlZCwg
-aW50IGhlYWRlcl9zaXplKQo+ICAgCXJldHVybiAwOwo+ICAgfQo+ICAgCj4gLXN0YXRpYyBpbnQg
-cGxheWJhY2tfYXUoY2hhciAqbmFtZSwgaW50ICpsb2FkZWQpCj4gK3N0YXRpYyBpbnQgcGxheWJh
-Y2tfYXUoY2hhciAqbmFtZSwgaW50ICpsb2FkZWQsIGludCBpc19zdGRpbikKPiAgIHsKPiAtCWlm
-IChyZWFkX2hlYWRlcihsb2FkZWQsIHNpemVvZihBdUhlYWRlcikpIDwgMCkKPiArCWlmIChyZWFk
-X2hlYWRlcihsb2FkZWQsIHNpemVvZihBdUhlYWRlciksIGlzX3N0ZGluKSA8IDApCj4gICAJCXJl
-dHVybiAtMTsKPiAgIAo+ICAgCWlmICh0ZXN0X2F1KGZkLCBhdWRpb2J1ZikgPCAwKQo+IEBAIC0y
-ODUxLDExICsyODUxLDExIEBAIHN0YXRpYyBpbnQgcGxheWJhY2tfYXUoY2hhciAqbmFtZSwgaW50
-ICpsb2FkZWQpCj4gICAJcmV0dXJuIDA7Cj4gICB9Cj4gICAKPiAtc3RhdGljIGludCBwbGF5YmFj
-a192b2MoY2hhciAqbmFtZSwgaW50ICpsb2FkZWQpCj4gK3N0YXRpYyBpbnQgcGxheWJhY2tfdm9j
-KGNoYXIgKm5hbWUsIGludCAqbG9hZGVkLCBpbnQgaXNfc3RkaW4pCj4gICB7Cj4gICAJaW50IG9m
-czsKPiAgIAo+IC0JaWYgKHJlYWRfaGVhZGVyKGxvYWRlZCwgc2l6ZW9mKFZvY0hlYWRlcikpIDwg
-MCkKPiArCWlmIChyZWFkX2hlYWRlcihsb2FkZWQsIHNpemVvZihWb2NIZWFkZXIpLCBpc19zdGRp
-bikgPCAwKQo+ICAgCQlyZXR1cm4gLTE7Cj4gICAKPiAgIAlpZiAoKG9mcyA9IHRlc3Rfdm9jZmls
-ZShhdWRpb2J1ZikpIDwgMCkKPiBAQCAtMjg2NywxMSArMjg2NywxMSBAQCBzdGF0aWMgaW50IHBs
-YXliYWNrX3ZvYyhjaGFyICpuYW1lLCBpbnQgKmxvYWRlZCkKPiAgIAlyZXR1cm4gMDsKPiAgIH0K
-PiAgIAo+IC1zdGF0aWMgaW50IHBsYXliYWNrX3dhdmUoY2hhciAqbmFtZSwgaW50ICpsb2FkZWQp
-Cj4gK3N0YXRpYyBpbnQgcGxheWJhY2tfd2F2ZShjaGFyICpuYW1lLCBpbnQgKmxvYWRlZCwgaW50
-IGlzX3N0ZGluKQo+ICAgewo+ICAgCXNzaXplX3QgZHRhd2F2ZTsKPiAgIAo+IC0JaWYgKHJlYWRf
-aGVhZGVyKGxvYWRlZCwgc2l6ZW9mKFdhdmVIZWFkZXIpKSA8IDApCj4gKwlpZiAocmVhZF9oZWFk
-ZXIobG9hZGVkLCBzaXplb2YoV2F2ZUhlYWRlciksIGlzX3N0ZGluKSA8IDApCj4gICAJCXJldHVy
-biAtMTsKPiAgIAo+ICAgCWlmICgoZHRhd2F2ZSA9IHRlc3Rfd2F2ZWZpbGUoZmQsIGF1ZGlvYnVm
-LCAqbG9hZGVkKSkgPCAwKQo+IEBAIC0yODgzLDcgKzI4ODMsNyBAQCBzdGF0aWMgaW50IHBsYXli
-YWNrX3dhdmUoY2hhciAqbmFtZSwgaW50ICpsb2FkZWQpCj4gICAJcmV0dXJuIDA7Cj4gICB9Cj4g
-ICAKPiAtc3RhdGljIGludCBwbGF5YmFja19yYXcoY2hhciAqbmFtZSwgaW50ICpsb2FkZWQpCj4g
-K3N0YXRpYyBpbnQgcGxheWJhY2tfcmF3KGNoYXIgKm5hbWUsIGludCAqbG9hZGVkLCBpbnQgaXNf
-c3RkaW4pCj4gICB7Cj4gICAJaW5pdF9yYXdfZGF0YSgpOwo+ICAgCXBicmVjX2NvdW50ID0gY2Fs
-Y19jb3VudCgpOwo+IEBAIC0yODk5LDEzICsyODk5LDE2IEBAIHN0YXRpYyBpbnQgcGxheWJhY2tf
-cmF3KGNoYXIgKm5hbWUsIGludCAqbG9hZGVkKQo+ICAgc3RhdGljIHZvaWQgcGxheWJhY2soY2hh
-ciAqbmFtZSkKPiAgIHsKPiAgIAlpbnQgbG9hZGVkID0gMDsKPiArCWludCBpc19zdGRpbjsKPiAg
-IAo+ICAgCXBicmVjX2NvdW50ID0gTExPTkdfTUFYOwo+ICAgCWZkY291bnQgPSAwOwo+ICAgCWlm
-ICghbmFtZSB8fCAhc3RyY21wKG5hbWUsICItIikpIHsKPiArCQlpc19zdGRpbiA9IDE7Cj4gICAJ
-CWZkID0gZmlsZW5vKHN0ZGluKTsKPiAgIAkJbmFtZSA9ICJzdGRpbiI7Cj4gICAJfSBlbHNlIHsK
-PiArCQlpc19zdGRpbiA9IDA7Cj4gICAJCWluaXRfc3RkaW4oKTsKPiAgIAkJaWYgKChmZCA9IG9w
-ZW4obmFtZSwgT19SRE9OTFksIDApKSA9PSAtMSkgewo+ICAgCQkJcGVycm9yKG5hbWUpOwo+IEBA
-IC0yOTE1LDIzICsyOTE4LDIzIEBAIHN0YXRpYyB2b2lkIHBsYXliYWNrKGNoYXIgKm5hbWUpCj4g
-ICAKPiAgIAlzd2l0Y2goZmlsZV90eXBlKSB7Cj4gICAJY2FzZSBGT1JNQVRfQVU6Cj4gLQkJcGxh
-eWJhY2tfYXUobmFtZSwgJmxvYWRlZCk7Cj4gKwkJcGxheWJhY2tfYXUobmFtZSwgJmxvYWRlZCwg
-aXNfc3RkaW4pOwo+ICAgCQlicmVhazsKPiAgIAljYXNlIEZPUk1BVF9WT0M6Cj4gLQkJcGxheWJh
-Y2tfdm9jKG5hbWUsICZsb2FkZWQpOwo+ICsJCXBsYXliYWNrX3ZvYyhuYW1lLCAmbG9hZGVkLCBp
-c19zdGRpbik7Cj4gICAJCWJyZWFrOwo+ICAgCWNhc2UgRk9STUFUX1dBVkU6Cj4gLQkJcGxheWJh
-Y2tfd2F2ZShuYW1lLCAmbG9hZGVkKTsKPiArCQlwbGF5YmFja193YXZlKG5hbWUsICZsb2FkZWQs
-IGlzX3N0ZGluKTsKPiAgIAkJYnJlYWs7Cj4gICAJY2FzZSBGT1JNQVRfUkFXOgo+IC0JCXBsYXli
-YWNrX3JhdyhuYW1lLCAmbG9hZGVkKTsKPiArCQlwbGF5YmFja19yYXcobmFtZSwgJmxvYWRlZCwg
-aXNfc3RkaW4pOwo+ICAgCQlicmVhazsKPiAgIAlkZWZhdWx0Ogo+ICAgCQkvKiBwYXJzZSB0aGUg
-ZmlsZSBoZWFkZXIgKi8KPiAtCQlpZiAocGxheWJhY2tfYXUobmFtZSwgJmxvYWRlZCkgPCAwICYm
-Cj4gLQkJICAgIHBsYXliYWNrX3ZvYyhuYW1lLCAmbG9hZGVkKSA8IDAgJiYKPiAtCQkgICAgcGxh
-eWJhY2tfd2F2ZShuYW1lLCAmbG9hZGVkKSA8IDApCj4gLQkJCXBsYXliYWNrX3JhdyhuYW1lLCAm
-bG9hZGVkKTsgLyogc2hvdWxkIGJlIHJhdyBkYXRhICovCj4gKwkJaWYgKHBsYXliYWNrX2F1KG5h
-bWUsICZsb2FkZWQsIGlzX3N0ZGluKSA8IDAgJiYKPiArCQkgICAgcGxheWJhY2tfdm9jKG5hbWUs
-ICZsb2FkZWQsIGlzX3N0ZGluKSA8IDAgJiYKPiArCQkgICAgcGxheWJhY2tfd2F2ZShuYW1lLCAm
-bG9hZGVkLCBpc19zdGRpbikgPCAwKQo+ICsJCQlwbGF5YmFja19yYXcobmFtZSwgJmxvYWRlZCwg
-aXNfc3RkaW4pOyAvKiBzaG91bGQgYmUgcmF3IGRhdGEgKi8KPiAgIAkJYnJlYWs7Cj4gICAgICAg
-ICAgIH0KPiAgIAo+Cj4KVGhhbmtzLsKgIFRoYXQgd29ya3MuCkpheQoKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Currently it's not possible to set volume lower than 26% (it just 
+mutes).
+
+Also fixes this warning:
+
+   Warning! Unlikely big volume range (=9472), cval->res is probably 
+wrong.
+   [13] FU [PCM Playback Volume] ch = 2, val = -9473/-1/1
+
+, and volume works fine for full range.
+---
+  sound/usb/mixer.c | 8 ++++++++
+  1 file changed, 8 insertions(+)
+
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 344d7b069d59..bb5ab7a7dfa5 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -967,6 +967,14 @@ static void volume_control_quirks(struct 
+usb_mixer_elem_info *cval,
+  		}
+  		break;
+
++	case USB_ID(0x0d8c, 0x0103):
++		if (!strcmp(kctl->id.name, "PCM Playback Volume")) {
++			usb_audio_info(chip,
++				 "set volume quirk for CM102-A+/102S+\n");
++			cval->min = -256;
++		}
++		break;
++
+  	case USB_ID(0x0471, 0x0101):
+  	case USB_ID(0x0471, 0x0104):
+  	case USB_ID(0x0471, 0x0105):
+-- 
+2.17.0
