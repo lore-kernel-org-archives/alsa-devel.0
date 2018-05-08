@@ -1,15 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 07/19] ASoC: rt5640: Add button press support
-Date: Tue,  8 May 2018 17:35:52 +0200
-Message-ID: <20180508153604.23711-8-hdegoede@redhat.com>
+Subject: [PATCH 08/19] ASoC: Intel: bytcr_rt5640: Configure
+	PLL1 before using it
+Date: Tue,  8 May 2018 17:35:53 +0200
+Message-ID: <20180508153604.23711-9-hdegoede@redhat.com>
 References: <20180508153604.23711-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 893662676A9
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 55C0F267700
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:20 +0200 (CEST)
 In-Reply-To: <20180508153604.23711-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,257 +25,143 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard L
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable button press detection for headsets by using the ovcd IRQ to get
-notified of button presses.
+When platform_clock_control() first selects PLL1 as sysclk the PLL_CTRL
+registers have not been setup yet and we effectively have an invalid clock
+configuration until byt_rt5640_aif1_hw_params() gets called.
+
+Add a new byt_rt5640_prepare_and_enable_pll1() helper and use that from
+both platform_clock_control() and byt_rt5640_aif1_hw_params() to fix this.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/codecs/rt5640.c | 157 ++++++++++++++++++++++++++++++++++++--
- sound/soc/codecs/rt5640.h |   9 ++-
- 2 files changed, 159 insertions(+), 7 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 100 +++++++++++++-------------
+ 1 file changed, 49 insertions(+), 51 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 8e306f509601..8bf8d360c25f 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -2119,6 +2119,24 @@ static void rt5640_disable_micbias1_for_ovcd(struct snd_soc_component *component
- 	snd_soc_dapm_mutex_unlock(dapm);
- }
- 
-+static void rt5640_enable_micbias1_ovcd_irq(struct snd_soc_component *component)
-+{
-+	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
-+
-+	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
-+		RT5640_IRQ_MB1_OC_MASK, RT5640_IRQ_MB1_OC_NOR);
-+	rt5640->ovcd_irq_enabled = true;
-+}
-+
-+static void rt5640_disable_micbias1_ovcd_irq(struct snd_soc_component *component)
-+{
-+	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
-+
-+	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
-+		RT5640_IRQ_MB1_OC_MASK, RT5640_IRQ_MB1_OC_BP);
-+	rt5640->ovcd_irq_enabled = false;
-+}
-+
- static void rt5640_clear_micbias1_ovcd(struct snd_soc_component *component)
- {
- 	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
-@@ -2149,10 +2167,80 @@ static bool rt5640_jack_inserted(struct snd_soc_component *component)
- 		return (val & RT5640_JD_STATUS);
- }
- 
--/* Jack detect timings */
-+/* Jack detect and button-press timings */
- #define JACK_SETTLE_TIME	100 /* milli seconds */
- #define JACK_DETECT_COUNT	5
- #define JACK_DETECT_MAXCOUNT	20  /* Aprox. 2 seconds worth of tries */
-+#define JACK_UNPLUG_TIME	80  /* milli seconds */
-+#define BP_POLL_TIME		10  /* milli seconds */
-+#define BP_POLL_MAXCOUNT	200 /* assume something is wrong after this */
-+#define BP_THRESHOLD		3
-+
-+static void rt5640_start_button_press_work(struct snd_soc_component *component)
-+{
-+	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
-+
-+	rt5640->poll_count = 0;
-+	rt5640->press_count = 0;
-+	rt5640->release_count = 0;
-+	rt5640->pressed = false;
-+	rt5640->press_reported = false;
-+	rt5640_clear_micbias1_ovcd(component);
-+	schedule_delayed_work(&rt5640->bp_work, msecs_to_jiffies(BP_POLL_TIME));
-+}
-+
-+static void rt5640_button_press_work(struct work_struct *work)
-+{
-+	struct rt5640_priv *rt5640 =
-+		container_of(work, struct rt5640_priv, bp_work.work);
-+	struct snd_soc_component *component = rt5640->component;
-+
-+	/* Check the jack was not removed underneath us */
-+	if (!rt5640_jack_inserted(component))
-+		return;
-+
-+	if (rt5640_micbias1_ovcd(component)) {
-+		rt5640->release_count = 0;
-+		rt5640->press_count++;
-+		/* Remember till after JACK_UNPLUG_TIME wait */
-+		if (rt5640->press_count >= BP_THRESHOLD)
-+			rt5640->pressed = true;
-+		rt5640_clear_micbias1_ovcd(component);
-+	} else {
-+		rt5640->press_count = 0;
-+		rt5640->release_count++;
-+	}
-+
-+	/*
-+	 * The pins get temporarily shorted on jack unplug, so we poll for
-+	 * at least JACK_UNPLUG_TIME milli-seconds before reporting a press.
-+	 */
-+	rt5640->poll_count++;
-+	if (rt5640->poll_count < (JACK_UNPLUG_TIME / BP_POLL_TIME)) {
-+		schedule_delayed_work(&rt5640->bp_work,
-+				      msecs_to_jiffies(BP_POLL_TIME));
-+		return;
-+	}
-+
-+	if (rt5640->pressed && !rt5640->press_reported) {
-+		dev_dbg(component->dev, "headset button press\n");
-+		snd_soc_jack_report(rt5640->jack, SND_JACK_BTN_0,
-+				    SND_JACK_BTN_0);
-+		rt5640->press_reported = true;
-+	}
-+
-+	if (rt5640->release_count >= BP_THRESHOLD) {
-+		if (rt5640->press_reported) {
-+			dev_dbg(component->dev, "headset button release\n");
-+			snd_soc_jack_report(rt5640->jack, 0, SND_JACK_BTN_0);
-+		}
-+		/* Re-enable OVCD IRQ to detect next press */
-+		rt5640_enable_micbias1_ovcd_irq(component);
-+		return; /* Stop polling */
-+	}
-+
-+	schedule_delayed_work(&rt5640->bp_work, msecs_to_jiffies(BP_POLL_TIME));
-+}
- 
- static int rt5640_detect_headset(struct snd_soc_component *component)
- {
-@@ -2209,17 +2297,51 @@ static void rt5640_jack_work(struct work_struct *work)
- 	if (!rt5640_jack_inserted(component)) {
- 		/* Jack removed, or spurious IRQ? */
- 		if (rt5640->jack->status & SND_JACK_HEADPHONE) {
--			snd_soc_jack_report(rt5640->jack, 0, SND_JACK_HEADSET);
-+			if (rt5640->jack->status & SND_JACK_MICROPHONE) {
-+				cancel_delayed_work_sync(&rt5640->bp_work);
-+				rt5640_disable_micbias1_ovcd_irq(component);
-+				rt5640_disable_micbias1_for_ovcd(component);
-+			}
-+			snd_soc_jack_report(rt5640->jack, 0,
-+					    SND_JACK_HEADSET | SND_JACK_BTN_0);
- 			dev_dbg(component->dev, "jack unplugged\n");
- 		}
- 	} else if (!(rt5640->jack->status & SND_JACK_HEADPHONE)) {
- 		/* Jack inserted */
-+		WARN_ON(rt5640->ovcd_irq_enabled);
- 		rt5640_enable_micbias1_for_ovcd(component);
- 		status = rt5640_detect_headset(component);
--		rt5640_disable_micbias1_for_ovcd(component);
--
-+		if (status == SND_JACK_HEADSET) {
-+			/* Enable ovcd IRQ for button press detect. */
-+			rt5640_enable_micbias1_ovcd_irq(component);
-+		} else {
-+			/* No more need for overcurrent detect. */
-+			rt5640_disable_micbias1_for_ovcd(component);
-+		}
- 		dev_dbg(component->dev, "detect status %#02x\n", status);
- 		snd_soc_jack_report(rt5640->jack, status, SND_JACK_HEADSET);
-+	} else if (rt5640->ovcd_irq_enabled && rt5640_micbias1_ovcd(component)) {
-+		dev_dbg(component->dev, "OVCD IRQ\n");
-+
-+		/*
-+		 * The ovcd IRQ keeps firing while the button is pressed, so
-+		 * we disable it and start polling the button until released.
-+		 *
-+		 * The disable will make the IRQ pin 0 again and since we get
-+		 * IRQs on both edges (so as to detect both jack plugin and
-+		 * unplug) this means we will immediately get another IRQ.
-+		 * The ovcd_irq_enabled check above makes the 2ND IRQ a NOP.
-+		 */
-+		rt5640_disable_micbias1_ovcd_irq(component);
-+		rt5640_start_button_press_work(component);
-+
-+		/*
-+		 * If the jack-detect IRQ flag goes high (unplug) after our
-+		 * above rt5640_jack_inserted() check and before we have
-+		 * disabled the OVCD IRQ, the IRQ pin will stay high and as
-+		 * we react to edges, we miss the unplug event -> recheck.
-+		 */
-+		queue_work(system_long_wq, &rt5640->jack_work);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 84ce98ebd00e..0f587d394b06 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -141,6 +141,52 @@ static void log_quirks(struct device *dev)
  	}
  }
  
-@@ -2238,6 +2360,7 @@ static void rt5640_cancel_work(void *data)
- 	struct rt5640_priv *rt5640 = data;
- 
- 	cancel_work_sync(&rt5640->jack_work);
-+	cancel_delayed_work_sync(&rt5640->bp_work);
- }
- 
- static void rt5640_enable_jack_detect(struct snd_soc_component *component,
-@@ -2282,10 +2405,25 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
- 	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
- 		RT5640_MB1_OC_STKY_MASK, RT5640_MB1_OC_STKY_EN);
- 
--	snd_soc_component_write(component, RT5640_IRQ_CTRL1,
--				RT5640_IRQ_JD_NOR);
-+	/*
-+	 * All IRQs get or-ed together, so we need the jack IRQ to report 0
-+	 * when a jack is inserted so that the OVCD IRQ then toggles the IRQ
-+	 * pin 0/1 instead of it being stuck to 1. So we invert the JD polarity
-+	 * on systems where the hardware does not already do this.
-+	 */
-+	if (rt5640->jd_inverted)
-+		snd_soc_component_write(component, RT5640_IRQ_CTRL1,
-+					RT5640_IRQ_JD_NOR);
-+	else
-+		snd_soc_component_write(component, RT5640_IRQ_CTRL1,
-+					RT5640_IRQ_JD_NOR | RT5640_JD_P_INV);
- 
- 	rt5640->jack = jack;
-+	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
-+		rt5640_enable_micbias1_for_ovcd(component);
-+		rt5640_enable_micbias1_ovcd_irq(component);
++static int byt_rt5640_prepare_and_enable_pll1(struct snd_soc_dai *codec_dai,
++					      int rate)
++{
++	int ret;
++
++	/* Configure the PLL before selecting it */
++	if (!(byt_rt5640_quirk & BYT_RT5640_MCLK_EN)) {
++		/* use bitclock as PLL input */
++		if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
++		    (byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
++			/* 2x16 bit slots on SSP0 */
++			ret = snd_soc_dai_set_pll(codec_dai, 0,
++						  RT5640_PLL1_S_BCLK1,
++						  rate * 32, rate * 512);
++		} else {
++			/* 2x15 bit slots on SSP2 */
++			ret = snd_soc_dai_set_pll(codec_dai, 0,
++						  RT5640_PLL1_S_BCLK1,
++						  rate * 50, rate * 512);
++		}
++	} else {
++		if (byt_rt5640_quirk & BYT_RT5640_MCLK_25MHZ) {
++			ret = snd_soc_dai_set_pll(codec_dai, 0,
++						  RT5640_PLL1_S_MCLK,
++						  25000000, rate * 512);
++		} else {
++			ret = snd_soc_dai_set_pll(codec_dai, 0,
++						  RT5640_PLL1_S_MCLK,
++						  19200000, rate * 512);
++		}
 +	}
 +
- 	enable_irq(rt5640->irq);
- 	/* sync initial jack state */
- 	queue_work(system_long_wq, &rt5640->jack_work);
-@@ -2298,6 +2436,12 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
- 	disable_irq(rt5640->irq);
- 	rt5640_cancel_work(rt5640);
- 
-+	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
-+		rt5640_disable_micbias1_ovcd_irq(component);
-+		rt5640_disable_micbias1_for_ovcd(component);
-+		snd_soc_jack_report(rt5640->jack, 0, SND_JACK_BTN_0);
++	if (ret < 0) {
++		dev_err(codec_dai->codec->dev, "can't set pll: %d\n", ret);
++		return ret;
 +	}
 +
- 	rt5640->jack = NULL;
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
++				     rate * 512, SND_SOC_CLOCK_IN);
++	if (ret < 0) {
++		dev_err(codec_dai->codec->dev, "can't set clock %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
+ 
+ #define BYT_CODEC_DAI1	"rt5640-aif1"
+ #define BYT_CODEC_DAI2	"rt5640-aif2"
+@@ -173,9 +219,7 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 				return ret;
+ 			}
+ 		}
+-		ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
+-					     48000 * 512,
+-					     SND_SOC_CLOCK_IN);
++		ret = byt_rt5640_prepare_and_enable_pll1(codec_dai, 48000);
+ 	} else {
+ 		/*
+ 		 * Set codec clock source to internal clock before
+@@ -299,55 +343,9 @@ static int byt_rt5640_aif1_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+-	int ret;
+-
+-	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
+-				     params_rate(params) * 512,
+-				     SND_SOC_CLOCK_IN);
+-
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "can't set codec clock %d\n", ret);
+-		return ret;
+-	}
++	struct snd_soc_dai *dai = rtd->codec_dai;
+ 
+-	if (!(byt_rt5640_quirk & BYT_RT5640_MCLK_EN)) {
+-		/* use bitclock as PLL input */
+-		if ((byt_rt5640_quirk & BYT_RT5640_SSP0_AIF1) ||
+-			(byt_rt5640_quirk & BYT_RT5640_SSP0_AIF2)) {
+-
+-			/* 2x16 bit slots on SSP0 */
+-			ret = snd_soc_dai_set_pll(codec_dai, 0,
+-						RT5640_PLL1_S_BCLK1,
+-						params_rate(params) * 32,
+-						params_rate(params) * 512);
+-		} else {
+-			/* 2x15 bit slots on SSP2 */
+-			ret = snd_soc_dai_set_pll(codec_dai, 0,
+-						RT5640_PLL1_S_BCLK1,
+-						params_rate(params) * 50,
+-						params_rate(params) * 512);
+-		}
+-	} else {
+-		if (byt_rt5640_quirk & BYT_RT5640_MCLK_25MHZ) {
+-			ret = snd_soc_dai_set_pll(codec_dai, 0,
+-						RT5640_PLL1_S_MCLK,
+-						25000000,
+-						params_rate(params) * 512);
+-		} else {
+-			ret = snd_soc_dai_set_pll(codec_dai, 0,
+-						RT5640_PLL1_S_MCLK,
+-						19200000,
+-						params_rate(params) * 512);
+-		}
+-	}
+-
+-	if (ret < 0) {
+-		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
+-		return ret;
+-	}
+-
+-	return 0;
++	return byt_rt5640_prepare_and_enable_pll1(dai, params_rate(params));
  }
  
-@@ -2677,6 +2821,7 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
- 
- 	rt5640->hp_mute = 1;
- 	rt5640->irq = i2c->irq;
-+	INIT_DELAYED_WORK(&rt5640->bp_work, rt5640_button_press_work);
- 	INIT_WORK(&rt5640->jack_work, rt5640_jack_work);
- 
- 	/* Make sure work is stopped on probe-error / remove */
-diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
-index 9d08471734b3..e29e3e7d61b0 100644
---- a/sound/soc/codecs/rt5640.h
-+++ b/sound/soc/codecs/rt5640.h
-@@ -2139,7 +2139,14 @@ struct rt5640_priv {
- 	bool hp_mute;
- 	bool asrc_en;
- 
--	/* Jack detect data */
-+	/* Jack and button detect data */
-+	bool ovcd_irq_enabled;
-+	bool pressed;
-+	bool press_reported;
-+	int press_count;
-+	int release_count;
-+	int poll_count;
-+	struct delayed_work bp_work;
- 	struct work_struct jack_work;
- 	struct snd_soc_jack *jack;
- 	unsigned int jd_src;
+ static int byt_rt5640_quirk_cb(const struct dmi_system_id *id)
 -- 
 2.17.0
