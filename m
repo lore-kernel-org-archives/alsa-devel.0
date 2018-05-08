@@ -1,15 +1,24 @@
-From: Federico Cuello <fedux@fedux.com.ar>
-Subject: [PATCH] ALSA: usb: mixer: volume quirk for
-	CM102-A+/102S+
-Date: Sun,  6 May 2018 13:37:18 +0200
-Message-ID: <20180506113718.4007-1-fedux@fedux.com.ar>
+From: Vinod Koul <vinod.koul@linaro.org>
+Subject: Re: [PATCH 2/4] ASoC: compress: Clarify the intent of
+ current compressed ops handling
+Date: Tue, 8 May 2018 14:03:19 +0530
+Message-ID: <20180508083319.GA4519@vkoul-mobl>
+References: <20180426163007.5632-1-ckeepax@opensource.cirrus.com>
+ <20180426163007.5632-2-ckeepax@opensource.cirrus.com>
+ <20180503162714.GX6014@localhost>
+ <20180504115922.GK20410@imbe.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.fedux.com.ar (mail.fedux.com.ar [167.99.131.221])
- by alsa0.perex.cz (Postfix) with ESMTP id A479B266F46
- for <alsa-devel@alsa-project.org>; Sun,  6 May 2018 13:37:22 +0200 (CEST)
+Received: from mail-pl0-f67.google.com (mail-pl0-f67.google.com
+ [209.85.160.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 66D6A2671C0
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 10:33:24 +0200 (CEST)
+Received: by mail-pl0-f67.google.com with SMTP id 59-v6so1795022plc.13
+ for <alsa-devel@alsa-project.org>; Tue, 08 May 2018 01:33:24 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180504115922.GK20410@imbe.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,40 +28,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Federico Cuello <fedux@fedux.com.ar>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, Vinod Koul <vinod.koul@intel.com>, patches@opensource.cirrus.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently it's not possible to set volume lower than 26% (it just mutes).
+On 04-05-18, 12:59, Charles Keepax wrote:
+> On Thu, May 03, 2018 at 09:57:14PM +0530, Vinod Koul wrote:
+> > On Thu, Apr 26, 2018 at 05:30:05PM +0100, Charles Keepax wrote:
+> > > It is proposed that the model adopted for compressed component
+> > > support currently should be that multiple components are supported
+> > > on a compressed DAI but that they must provide a unified set of
+> > > capabilities. So for example having multiple components involved in
+> > > the decode is fine but the core will not presently attempt to make
+> > > smart decisions like offloading MP3 to this component and AAC another.
+> > 
+> > Well this is supposed to be entirely a userspace call, we just present
+> > devices with capabilities and the usespace decides... Btw capabilities are
+> > supposed to be dynamic.
+> 
+> My intention was to not suggest otherwise. The only point I
+> was really making is that if there are multiple components on
+> the link the core won't make attempt to amalgamate output from
+> those components, but we will inform all components of activity
+> on the DAI.
+> 
+> > Looking at the code again now, I realized that we are treating compress like
+> > PCM. It makes little sense to me to have multiple components for a
+> > compressed device, does that model on your systems..?
+> 
+> So that was very much my initial reaction as well [1], and
+> certainly for our devices it only really makes sense to have a
+> single component handle the compressed ops. Hence why I initially
+> started with basically just returning the first component with
+> compressed ops.
+> 
+> That said however, thinking about it more I do think there are
+> pretty reasonable systems that have multiple components on a
+> compressed DAI. For example I could imagine a system where you
+> have a DSP on both the AP and CODEC ends of the DAI link and
+> they split the decode doing some work on each. In that case
+> one would want calls like open and set_params to go to both
+> components.
 
-Also fixes this warning:
+Am not sure if we can split the decode into multiple DSPs like
+this :) Yes one can do processing and one can decode if both have
+the capability but I don't forsee that being split, so not sure
+if we need it!!!
 
-  Warning! Unlikely big volume range (=9472), cval->res is probably wrong.
-  [13] FU [PCM Playback Volume] ch = 2, val = -9473/-1/1
+> As you say separate decode engines probably belong on separate
+> DAIs and that kinda is what led me to the current series. It
+> should implement enough to enable basic multi-component use-cases
+> but makes it more clear that we are not supporting multiplexing
+> multiple offloads onto a single DAI at the moment.
+> 
+> Thanks,
+> Charles
+> 
+> [1] https://patchwork.kernel.org/patch/10182603/
 
-, and volume works fine for full range.
----
- sound/usb/mixer.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 344d7b069d59..bb5ab7a7dfa5 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -967,6 +967,14 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
- 		}
- 		break;
- 
-+	case USB_ID(0x0d8c, 0x0103):
-+		if (!strcmp(kctl->id.name, "PCM Playback Volume")) {
-+			usb_audio_info(chip,
-+				 "set volume quirk for CM102-A+/102S+\n");
-+			cval->min = -256;
-+		}
-+		break;
-+
- 	case USB_ID(0x0471, 0x0101):
- 	case USB_ID(0x0471, 0x0104):
- 	case USB_ID(0x0471, 0x0105):
 -- 
-2.17.0
+~Vinod
