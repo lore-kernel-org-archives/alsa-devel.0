@@ -1,24 +1,26 @@
 From: Vinod Koul <vinod.koul@linaro.org>
 Subject: Re: [PATCH 2/4] ASoC: compress: Clarify the intent of
  current compressed ops handling
-Date: Tue, 8 May 2018 14:03:19 +0530
-Message-ID: <20180508083319.GA4519@vkoul-mobl>
+Date: Tue, 8 May 2018 17:34:53 +0530
+Message-ID: <20180508120453.GA22536@vkoul-mobl>
 References: <20180426163007.5632-1-ckeepax@opensource.cirrus.com>
  <20180426163007.5632-2-ckeepax@opensource.cirrus.com>
  <20180503162714.GX6014@localhost>
  <20180504115922.GK20410@imbe.wolfsonmicro.main>
+ <20180508083319.GA4519@vkoul-mobl>
+ <20180508105253.GM20410@imbe.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f67.google.com (mail-pl0-f67.google.com
- [209.85.160.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 66D6A2671C0
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 10:33:24 +0200 (CEST)
-Received: by mail-pl0-f67.google.com with SMTP id 59-v6so1795022plc.13
- for <alsa-devel@alsa-project.org>; Tue, 08 May 2018 01:33:24 -0700 (PDT)
+Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
+ [209.85.160.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 176F9266F69
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 14:04:57 +0200 (CEST)
+Received: by mail-pl0-f66.google.com with SMTP id a39-v6so2112826pla.10
+ for <alsa-devel@alsa-project.org>; Tue, 08 May 2018 05:04:57 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20180504115922.GK20410@imbe.wolfsonmicro.main>
+In-Reply-To: <20180508105253.GM20410@imbe.wolfsonmicro.main>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,59 +34,58 @@ To: Charles Keepax <ckeepax@opensource.cirrus.com>
 Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, Vinod Koul <vinod.koul@intel.com>, patches@opensource.cirrus.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 04-05-18, 12:59, Charles Keepax wrote:
-> On Thu, May 03, 2018 at 09:57:14PM +0530, Vinod Koul wrote:
-> > On Thu, Apr 26, 2018 at 05:30:05PM +0100, Charles Keepax wrote:
-> > > It is proposed that the model adopted for compressed component
-> > > support currently should be that multiple components are supported
-> > > on a compressed DAI but that they must provide a unified set of
-> > > capabilities. So for example having multiple components involved in
-> > > the decode is fine but the core will not presently attempt to make
-> > > smart decisions like offloading MP3 to this component and AAC another.
+On 08-05-18, 11:52, Charles Keepax wrote:
+> On Tue, May 08, 2018 at 02:03:19PM +0530, Vinod Koul wrote:
+> > On 04-05-18, 12:59, Charles Keepax wrote:
+> > > On Thu, May 03, 2018 at 09:57:14PM +0530, Vinod Koul wrote:
+> > > > On Thu, Apr 26, 2018 at 05:30:05PM +0100, Charles Keepax wrote:
+> > > That said however, thinking about it more I do think there are
+> > > pretty reasonable systems that have multiple components on a
+> > > compressed DAI. For example I could imagine a system where you
+> > > have a DSP on both the AP and CODEC ends of the DAI link and
+> > > they split the decode doing some work on each. In that case
+> > > one would want calls like open and set_params to go to both
+> > > components.
 > > 
-> > Well this is supposed to be entirely a userspace call, we just present
-> > devices with capabilities and the usespace decides... Btw capabilities are
-> > supposed to be dynamic.
+> > Am not sure if we can split the decode into multiple DSPs like
+> > this :) Yes one can do processing and one can decode if both have
+> > the capability but I don't forsee that being split, so not sure
+> > if we need it!!!
+> >
 > 
-> My intention was to not suggest otherwise. The only point I
-> was really making is that if there are multiple components on
-> the link the core won't make attempt to amalgamate output from
-> those components, but we will inform all components of activity
-> on the DAI.
-> 
-> > Looking at the code again now, I realized that we are treating compress like
-> > PCM. It makes little sense to me to have multiple components for a
-> > compressed device, does that model on your systems..?
-> 
-> So that was very much my initial reaction as well [1], and
-> certainly for our devices it only really makes sense to have a
-> single component handle the compressed ops. Hence why I initially
-> started with basically just returning the first component with
-> compressed ops.
-> 
-> That said however, thinking about it more I do think there are
-> pretty reasonable systems that have multiple components on a
-> compressed DAI. For example I could imagine a system where you
-> have a DSP on both the AP and CODEC ends of the DAI link and
-> they split the decode doing some work on each. In that case
-> one would want calls like open and set_params to go to both
-> components.
+> I think you definitely could split the decode across multiple
+> DSPs like that, we have had processing split across multiple
+> cores for various things on the CODECs. That said "Need it"
+> is very strong, I would say such a system is plausible but
+> not something I am aware anyone is actually building right now.
 
-Am not sure if we can split the decode into multiple DSPs like
-this :) Yes one can do processing and one can decode if both have
-the capability but I don't forsee that being split, so not sure
-if we need it!!!
+well processing is different, we are dealing with PCM data.
+Decode is one shot, you get PCM output and then can do whatever
+you want with it.
 
-> As you say separate decode engines probably belong on separate
-> DAIs and that kinda is what led me to the current series. It
-> should implement enough to enable basic multi-component use-cases
-> but makes it more clear that we are not supporting multiplexing
-> multiple offloads onto a single DAI at the moment.
+If decode is split what is the output format ;-)
+
+> I guess my thinking was that the system is basically already
+> supporting multiple components so it seemed like a step
+> backwards to rip it out given there are plausible systems were
+> it might be useful. And this patch is really just tidying up
+> the already submitted code a little rather than changing the
+> functionality in any substancial way.
+> 
+> That said if you feel strongly about it, I certainly don't
+> need the support in the foreseeable future. I am happy to
+> go back to something similar to my earlier patch that just
+> locates the first device with compressed ops and calls the
+> ops on that?  Although it might still be worth merging this
+> one as an intermediate tidy up in that case.
+
+Going back would be better, I leave it upto Mark on how he wants
+to do this, either way am fine if end goal is met :)
+
 > 
 > Thanks,
 > Charles
-> 
-> [1] https://patchwork.kernel.org/patch/10182603/
 
+-- 
 -- 
 ~Vinod
