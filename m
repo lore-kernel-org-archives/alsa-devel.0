@@ -1,169 +1,396 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH v4 01/13] ALSA: hda/ca0132: R3Di and SBZ quirk
-	entires + alt firmware loading
-Date: Mon,  7 May 2018 22:31:09 -0400
-Message-ID: <1525746683-18535-2-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH v4 05/13] ALSA: hda/ca0132: add extra init functions for r3di + sbz
+Date: Mon,  7 May 2018 22:31:13 -0400
+Message-ID: <1525746683-18535-6-git-send-email-conmanx360@gmail.com>
 References: <1525746683-18535-1-git-send-email-conmanx360@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
- [209.85.214.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 7364B267646
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 04:32:04 +0200 (CEST)
-Received: by mail-it0-f66.google.com with SMTP id q72-v6so4348033itc.0
- for <alsa-devel@alsa-project.org>; Mon, 07 May 2018 19:32:04 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1525746683-18535-1-git-send-email-conmanx360@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, Connor McAdams <conmanx360@gmail.com>, o-takashi@sakamocchi.jp
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds PCI quirk ID's for the Sound Blaster Z and Recon3Di.
-Only the currently tested ID's have been added.
+This patch adds extra init functions for the Sound Blaster Z and
+Recon3Di. It also adds more checks to make sure that the DSP isn't
+downloaded twice on startup, by checking if the dsp_state is already set
+to DSP_DOWNLOADED. It also adds the ability to re-download the DSP on a
+resume.
 
-This patch also adds the ability to load alternative firmwares for each
-card, the firmwares can be obtained from within the Windows driver.
-The Recon3Di uses "ctefx-r3di.bin" and the Sound Blaster Z uses
-"ctefx-sbz.bin". If the alternative firmware for the given quirk is not
-found, the original ctefx.bin will be used. This has been confirmed to
-work for both the R3Di and the SBZ.
+It also changes the init verbs table to apply to all codecs, and takes
+the two specific end verbs and puts them into a separate function in
+ca0132_init instead.
 
-This patch also makes the character array *dirstr a const.
+GPIO functions are also added.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 61 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 55 insertions(+), 6 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 273 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 265 insertions(+), 8 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 768ea86..8346100 100644
+index 5cda7a5..5002311 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -72,12 +72,16 @@
- #define SCP_GET    1
+@@ -710,6 +710,7 @@ struct ca0132_spec {
+ 	const struct hda_verb *base_init_verbs;
+ 	const struct hda_verb *base_exit_verbs;
+ 	const struct hda_verb *chip_init_verbs;
++	const struct hda_verb *sbz_init_verbs;
+ 	struct hda_verb *spec_init_verbs;
+ 	struct auto_pin_cfg autocfg;
  
- #define EFX_FILE   "ctefx.bin"
-+#define SBZ_EFX_FILE   "ctefx-sbz.bin"
-+#define R3DI_EFX_FILE  "ctefx-r3di.bin"
- 
- #ifdef CONFIG_SND_HDA_CODEC_CA0132_DSP
- MODULE_FIRMWARE(EFX_FILE);
-+MODULE_FIRMWARE(SBZ_EFX_FILE);
-+MODULE_FIRMWARE(R3DI_EFX_FILE);
- #endif
- 
--static char *dirstr[2] = { "Playback", "Capture" };
-+static const char *dirstr[2] = { "Playback", "Capture" };
- 
- enum {
- 	SPEAKER_OUT,
-@@ -734,6 +738,7 @@ struct ca0132_spec {
- 	unsigned int scp_resp_header;
+@@ -743,6 +744,7 @@ struct ca0132_spec {
  	unsigned int scp_resp_data[4];
  	unsigned int scp_resp_count;
-+	bool alt_firmware_present;
+ 	bool alt_firmware_present;
++	bool dsp_reload;
  
  	/* mixer and effects related */
  	unsigned char dmic_ctl;
-@@ -762,6 +767,8 @@ struct ca0132_spec {
- enum {
- 	QUIRK_NONE,
- 	QUIRK_ALIENWARE,
-+	QUIRK_SBZ,
-+	QUIRK_R3DI,
- };
+@@ -2740,6 +2742,59 @@ static bool dspload_wait_loaded(struct hda_codec *codec)
+ }
  
- static const struct hda_pintbl alienware_pincfgs[] = {
-@@ -782,6 +789,10 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
- 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
- 	SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
- 	SND_PCI_QUIRK(0x1028, 0x0708, "Alienware 15 R2 2016", QUIRK_ALIENWARE),
-+	SND_PCI_QUIRK(0x1102, 0x0010, "Sound Blaster Z", QUIRK_SBZ),
-+	SND_PCI_QUIRK(0x1102, 0x0023, "Sound Blaster Z", QUIRK_SBZ),
-+	SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
-+	SND_PCI_QUIRK(0x1458, 0xA036, "Recon3Di", QUIRK_R3DI),
- 	{}
- };
- 
-@@ -3207,7 +3218,7 @@ static int ca0132_select_out(struct hda_codec *codec)
- 				    pin_ctl & ~PIN_HP);
- 		/* enable speaker node */
- 		pin_ctl = snd_hda_codec_read(codec, spec->out_pins[0], 0,
--					     AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
-+				AC_VERB_GET_PIN_WIDGET_CONTROL, 0);
- 		snd_hda_set_pin_ctl(codec, spec->out_pins[0],
- 				    pin_ctl | PIN_OUT);
- 	} else {
-@@ -4370,11 +4381,49 @@ static void ca0132_set_dsp_msr(struct hda_codec *codec, bool is96k)
- static bool ca0132_download_dsp_images(struct hda_codec *codec)
- {
- 	bool dsp_loaded = false;
+ /*
++ * Setup GPIO for the other variants of Core3D.
++ */
++
++/*
++ * Sets up the GPIO pins so that they are discoverable. If this isn't done,
++ * the card shows as having no GPIO pins.
++ */
++static void ca0132_gpio_init(struct hda_codec *codec)
++{
 +	struct ca0132_spec *spec = codec->spec;
- 	const struct dsp_image_seg *dsp_os_image;
- 	const struct firmware *fw_entry;
--
--	if (request_firmware(&fw_entry, EFX_FILE, codec->card->dev) != 0)
--		return false;
-+	/*
-+	 * Alternate firmwares for different variants. The Recon3Di apparently
-+	 * can use the default firmware, but I'll leave the option in case
-+	 * it needs it again.
-+	 */
++
 +	switch (spec->quirk) {
 +	case QUIRK_SBZ:
-+		if (request_firmware(&fw_entry, SBZ_EFX_FILE,
-+					codec->card->dev) != 0) {
-+			codec_dbg(codec, "SBZ alt firmware not detected. ");
-+			spec->alt_firmware_present = false;
-+		} else {
-+			codec_dbg(codec, "Sound Blaster Z firmware selected.");
-+			spec->alt_firmware_present = true;
-+		}
++		snd_hda_codec_write(codec, 0x01, 0, 0x793, 0x00);
++		snd_hda_codec_write(codec, 0x01, 0, 0x794, 0x53);
++		snd_hda_codec_write(codec, 0x01, 0, 0x790, 0x23);
 +		break;
 +	case QUIRK_R3DI:
-+		if (request_firmware(&fw_entry, R3DI_EFX_FILE,
-+					codec->card->dev) != 0) {
-+			codec_dbg(codec, "Recon3Di alt firmware not detected.");
-+			spec->alt_firmware_present = false;
-+		} else {
-+			codec_dbg(codec, "Recon3Di firmware selected.");
-+			spec->alt_firmware_present = true;
-+		}
-+		break;
-+	default:
-+		spec->alt_firmware_present = false;
++		snd_hda_codec_write(codec, 0x01, 0, 0x793, 0x00);
++		snd_hda_codec_write(codec, 0x01, 0, 0x794, 0x5B);
 +		break;
 +	}
-+	/*
-+	 * Use default ctefx.bin if no alt firmware is detected, or if none
-+	 * exists for your particular codec.
-+	 */
-+	if (!spec->alt_firmware_present) {
-+		codec_dbg(codec, "Default firmware selected.");
-+		if (request_firmware(&fw_entry, EFX_FILE,
-+					codec->card->dev) != 0)
-+			return false;
++
++}
++
++/* Sets the GPIO for audio output. */
++static void ca0132_gpio_setup(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	switch (spec->quirk) {
++	case QUIRK_SBZ:
++		snd_hda_codec_write(codec, 0x01, 0,
++				AC_VERB_SET_GPIO_DIRECTION, 0x07);
++		snd_hda_codec_write(codec, 0x01, 0,
++				AC_VERB_SET_GPIO_MASK, 0x07);
++		snd_hda_codec_write(codec, 0x01, 0,
++				AC_VERB_SET_GPIO_DATA, 0x04);
++		snd_hda_codec_write(codec, 0x01, 0,
++				AC_VERB_SET_GPIO_DATA, 0x06);
++		break;
++	case QUIRK_R3DI:
++		snd_hda_codec_write(codec, 0x01, 0,
++				AC_VERB_SET_GPIO_DIRECTION, 0x1E);
++		snd_hda_codec_write(codec, 0x01, 0,
++				AC_VERB_SET_GPIO_MASK, 0x1F);
++		snd_hda_codec_write(codec, 0x01, 0,
++				AC_VERB_SET_GPIO_DATA, 0x0C);
++		break;
++	}
++}
++
++/*
+  * PCM callbacks
+  */
+ static int ca0132_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
+@@ -4490,11 +4545,14 @@ static void ca0132_download_dsp(struct hda_codec *codec)
+ 		return; /* don't retry failures */
+ 
+ 	chipio_enable_clocks(codec);
+-	spec->dsp_state = DSP_DOWNLOADING;
+-	if (!ca0132_download_dsp_images(codec))
+-		spec->dsp_state = DSP_DOWNLOAD_FAILED;
+-	else
+-		spec->dsp_state = DSP_DOWNLOADED;
++	if (spec->dsp_state != DSP_DOWNLOADED) {
++		spec->dsp_state = DSP_DOWNLOADING;
++
++		if (!ca0132_download_dsp_images(codec))
++			spec->dsp_state = DSP_DOWNLOAD_FAILED;
++		else
++			spec->dsp_state = DSP_DOWNLOADED;
 +	}
  
- 	dsp_os_image = (struct dsp_image_seg *)(fw_entry->data);
- 	if (dspload_image(codec, dsp_os_image, 0, 0, true, 0)) {
-@@ -4476,7 +4525,7 @@ static struct hda_verb ca0132_base_exit_verbs[] = {
- 	{}
+ 	if (spec->dsp_state == DSP_DOWNLOADED)
+ 		ca0132_set_dsp_msr(codec, true);
+@@ -4569,6 +4627,7 @@ static struct hda_verb ca0132_base_exit_verbs[] = {
  };
  
--/* Other verbs tables.  Sends after DSP download. */
-+/* Other verbs tables. Sends after DSP download. */
+ /* Other verbs tables. Sends after DSP download. */
++
  static struct hda_verb ca0132_init_verbs0[] = {
  	/* chip init verbs */
  	{0x15, 0x70D, 0xF0},
+@@ -4598,8 +4657,27 @@ static struct hda_verb ca0132_init_verbs0[] = {
+ 	{0x15, 0x546, 0xC9},
+ 	{0x15, 0x53B, 0xCE},
+ 	{0x15, 0x5E8, 0xC9},
+-	{0x15, 0x717, 0x0D},
+-	{0x15, 0x718, 0x20},
++	{}
++};
++
++/* Extra init verbs for SBZ */
++static struct hda_verb sbz_init_verbs[] = {
++	{0x15, 0x70D, 0x20},
++	{0x15, 0x70E, 0x19},
++	{0x15, 0x707, 0x00},
++	{0x15, 0x539, 0xCE},
++	{0x15, 0x546, 0xC9},
++	{0x15, 0x70D, 0xB7},
++	{0x15, 0x70E, 0x09},
++	{0x15, 0x707, 0x10},
++	{0x15, 0x70D, 0xAF},
++	{0x15, 0x70E, 0x09},
++	{0x15, 0x707, 0x01},
++	{0x15, 0x707, 0x05},
++	{0x15, 0x70D, 0x73},
++	{0x15, 0x70E, 0x09},
++	{0x15, 0x707, 0x14},
++	{0x15, 0x6FF, 0xC4},
+ 	{}
+ };
+ 
+@@ -4758,16 +4836,166 @@ static void ca0132_exit_chip(struct hda_codec *codec)
+ 		dsp_reset(codec);
+ }
+ 
++/*
++ * This is for the extra volume verbs 0x797 (left) and 0x798 (right). These add
++ * extra precision for decibel values. If you had the dB value in floating point
++ * you would take the value after the decimal point, multiply by 64, and divide
++ * by 2. So for 8.59, it's (59 * 64) / 100. Useful if someone wanted to
++ * implement fixed point or floating point dB volumes. For now, I'll set them
++ * to 0 just incase a value has lingered from a boot into Windows.
++ */
++static void ca0132_alt_vol_setup(struct hda_codec *codec)
++{
++	snd_hda_codec_write(codec, 0x02, 0, 0x797, 0x00);
++	snd_hda_codec_write(codec, 0x02, 0, 0x798, 0x00);
++	snd_hda_codec_write(codec, 0x03, 0, 0x797, 0x00);
++	snd_hda_codec_write(codec, 0x03, 0, 0x798, 0x00);
++	snd_hda_codec_write(codec, 0x04, 0, 0x797, 0x00);
++	snd_hda_codec_write(codec, 0x04, 0, 0x798, 0x00);
++	snd_hda_codec_write(codec, 0x07, 0, 0x797, 0x00);
++	snd_hda_codec_write(codec, 0x07, 0, 0x798, 0x00);
++}
++
++/*
++ * Extra commands that don't really fit anywhere else.
++ */
++static void sbz_pre_dsp_setup(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	writel(0x00820680, spec->mem_base + 0x01C);
++	writel(0x00820680, spec->mem_base + 0x01C);
++
++	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfc);
++	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfd);
++	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfe);
++	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xff);
++
++	chipio_write(codec, 0x18b0a4, 0x000000c2);
++
++	snd_hda_codec_write(codec, 0x11, 0,
++			AC_VERB_SET_PIN_WIDGET_CONTROL, 0x44);
++}
++
++/*
++ * Extra commands that don't really fit anywhere else.
++ */
++static void r3di_pre_dsp_setup(struct hda_codec *codec)
++{
++	chipio_write(codec, 0x18b0a4, 0x000000c2);
++
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x1E);
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_8051_ADDRESS_HIGH, 0x1C);
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_8051_DATA_WRITE, 0x5B);
++
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x20);
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_8051_ADDRESS_HIGH, 0x19);
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_8051_DATA_WRITE, 0x00);
++	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_8051_DATA_WRITE, 0x40);
++
++	snd_hda_codec_write(codec, 0x11, 0,
++			AC_VERB_SET_PIN_WIDGET_CONTROL, 0x04);
++}
++
++
++/*
++ * These are sent before the DSP is downloaded. Not sure
++ * what they do, or if they're necessary. Could possibly
++ * be removed. Figure they're better to leave in.
++ */
++static void sbz_region2_startup(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	writel(0x00000000, spec->mem_base + 0x400);
++	writel(0x00000000, spec->mem_base + 0x408);
++	writel(0x00000000, spec->mem_base + 0x40C);
++	writel(0x00880680, spec->mem_base + 0x01C);
++	writel(0x00000083, spec->mem_base + 0xC0C);
++	writel(0x00000030, spec->mem_base + 0xC00);
++	writel(0x00000000, spec->mem_base + 0xC04);
++	writel(0x00000003, spec->mem_base + 0xC0C);
++	writel(0x00000003, spec->mem_base + 0xC0C);
++	writel(0x00000003, spec->mem_base + 0xC0C);
++	writel(0x00000003, spec->mem_base + 0xC0C);
++	writel(0x000000C1, spec->mem_base + 0xC08);
++	writel(0x000000F1, spec->mem_base + 0xC08);
++	writel(0x00000001, spec->mem_base + 0xC08);
++	writel(0x000000C7, spec->mem_base + 0xC08);
++	writel(0x000000C1, spec->mem_base + 0xC08);
++	writel(0x00000080, spec->mem_base + 0xC04);
++}
++
++/*
++ * Extra init functions for alternative ca0132 codecs. Done
++ * here so they don't clutter up the main ca0132_init function
++ * anymore than they have to.
++ */
++static void ca0132_alt_init(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	ca0132_alt_vol_setup(codec);
++
++	switch (spec->quirk) {
++	case QUIRK_SBZ:
++		codec_dbg(codec, "SBZ alt_init");
++		ca0132_gpio_init(codec);
++		sbz_pre_dsp_setup(codec);
++		snd_hda_sequence_write(codec, spec->chip_init_verbs);
++		snd_hda_sequence_write(codec, spec->sbz_init_verbs);
++		break;
++	case QUIRK_R3DI:
++		codec_dbg(codec, "R3DI alt_init");
++		ca0132_gpio_init(codec);
++		ca0132_gpio_setup(codec);
++		r3di_pre_dsp_setup(codec);
++		snd_hda_sequence_write(codec, spec->chip_init_verbs);
++		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0, 0x6FF, 0xC4);
++		break;
++	}
++}
++
+ static int ca0132_init(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+ 	struct auto_pin_cfg *cfg = &spec->autocfg;
+ 	int i;
++	bool dsp_loaded;
++
++	/*
++	 * If the DSP is already downloaded, and init has been entered again,
++	 * there's only two reasons for it. One, the codec has awaken from a
++	 * suspended state, and in that case dspload_is_loaded will return
++	 * false, and the init will be ran again. The other reason it gets
++	 * re entered is on startup for some reason it triggers a suspend and
++	 * resume state. In this case, it will check if the DSP is downloaded,
++	 * and not run the init function again. For codecs using alt_functions,
++	 * it will check if the DSP is loaded properly.
++	 */
++	if (spec->dsp_state == DSP_DOWNLOADED) {
++		dsp_loaded = dspload_is_loaded(codec);
++		if (!dsp_loaded) {
++			spec->dsp_reload = true;
++			spec->dsp_state = DSP_DOWNLOAD_INIT;
++		} else
++			return 0;
++	}
+ 
+ 	if (spec->dsp_state != DSP_DOWNLOAD_FAILED)
+ 		spec->dsp_state = DSP_DOWNLOAD_INIT;
+ 	spec->curr_chip_addx = INVALID_CHIP_ADDRESS;
+ 
++	if (spec->quirk == QUIRK_SBZ)
++		sbz_region2_startup(codec);
++
+ 	snd_hda_power_up_pm(codec);
+ 
+ 	ca0132_init_unsol(codec);
+@@ -4775,8 +5003,16 @@ static int ca0132_init(struct hda_codec *codec)
+ 	ca0132_init_params(codec);
+ 	ca0132_init_flags(codec);
+ 	snd_hda_sequence_write(codec, spec->base_init_verbs);
++
++	if (spec->quirk != QUIRK_NONE)
++		ca0132_alt_init(codec);
++
+ 	ca0132_download_dsp(codec);
+ 	ca0132_refresh_widget_caps(codec);
++
++	if (spec->quirk == QUIRK_SBZ)
++		writew(0x0107, spec->mem_base + 0x320);
++
+ 	ca0132_setup_defaults(codec);
+ 	ca0132_init_analog_mic2(codec);
+ 	ca0132_init_dmic(codec);
+@@ -4791,7 +5027,17 @@ static int ca0132_init(struct hda_codec *codec)
+ 
+ 	init_input(codec, cfg->dig_in_pin, spec->dig_in);
+ 
+-	snd_hda_sequence_write(codec, spec->chip_init_verbs);
++	if (spec->quirk == QUIRK_ALIENWARE || spec->quirk == QUIRK_NONE) {
++		snd_hda_sequence_write(codec, spec->chip_init_verbs);
++		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_PARAM_EX_ID_SET, 0x0D);
++		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
++			    VENDOR_CHIPIO_PARAM_EX_VALUE_SET, 0x20);
++	}
++
++	if (spec->quirk == QUIRK_SBZ)
++		ca0132_gpio_setup(codec);
++
+ 	snd_hda_sequence_write(codec, spec->spec_init_verbs);
+ 
+ 	ca0132_select_out(codec);
+@@ -4799,6 +5045,15 @@ static int ca0132_init(struct hda_codec *codec)
+ 
+ 	snd_hda_jack_report_sync(codec);
+ 
++	/*
++	 * Re set the PlayEnhancement switch on a resume event, because the
++	 * controls will not be reloaded.
++	 */
++	if (spec->dsp_reload) {
++		spec->dsp_reload = false;
++		ca0132_pe_switch_set(codec);
++	}
++
+ 	snd_hda_power_down_pm(codec);
+ 
+ 	return 0;
+@@ -4985,6 +5240,8 @@ static int ca0132_prepare_verbs(struct hda_codec *codec)
+ 	struct ca0132_spec *spec = codec->spec;
+ 
+ 	spec->chip_init_verbs = ca0132_init_verbs0;
++	if (spec->quirk == QUIRK_SBZ)
++		spec->sbz_init_verbs = sbz_init_verbs;
+ 	spec->spec_init_verbs = kzalloc(sizeof(struct hda_verb) * NUM_SPEC_VERBS, GFP_KERNEL);
+ 	if (!spec->spec_init_verbs)
+ 		return -ENOMEM;
 -- 
 2.7.4
