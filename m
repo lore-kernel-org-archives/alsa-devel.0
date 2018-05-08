@@ -1,109 +1,237 @@
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH] ASoC: uniphier: evea: use DAPM to change source of line-in
-Date: Tue,  8 May 2018 17:45:09 +0900
-Message-ID: <20180508084509.21616-1-suzuki.katsuhiro@socionext.com>
+From: Jorge <jorge.sanjuan@codethink.co.uk>
+Subject: Re: [PATCH v3 1/4] ALSA: usb-audio: UAC3. Add support for mixer unit.
+Date: Tue, 8 May 2018 10:43:03 +0100
+Message-ID: <52c0eb21-0a69-7a2b-da8a-2d33ad4e11d2@codethink.co.uk>
+References: <20180424172445.31928-2-jorge.sanjuan@codethink.co.uk>
+ <20180427170649.27334-1-jorge.sanjuan@codethink.co.uk>
+ <CAB=otbRKf57D52VRZgE=4XCLYaT9xE7eNsyLrBqmaghgB7LCfQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAB=otbRKf57D52VRZgE=4XCLYaT9xE7eNsyLrBqmaghgB7LCfQ@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+To: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch replaces mixer switch to DAPM one for changing audio source
-of line-in.
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
----
- sound/soc/uniphier/evea.c | 55 +++++++++++++++++++++++----------------
- 1 file changed, 33 insertions(+), 22 deletions(-)
 
-diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
-index 73fd6730095c..f9c10165fbc1 100644
---- a/sound/soc/uniphier/evea.c
-+++ b/sound/soc/uniphier/evea.c
-@@ -54,8 +54,21 @@ struct evea_priv {
- 	int switch_hp;
- };
- 
-+static const char * const linsw1_sel1_text[] = {
-+	"LIN1", "LIN2", "LIN3"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(linsw1_sel1_enum,
-+	ALINSW1, ALINSW1_SEL1_SHIFT,
-+	linsw1_sel1_text);
-+
-+static const struct snd_kcontrol_new linesw1_mux[] = {
-+	SOC_DAPM_ENUM("Line In 1 Source", linsw1_sel1_enum),
-+};
-+
- static const struct snd_soc_dapm_widget evea_widgets[] = {
--	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_ADC("ADC", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_MUX("Line In 1 Mux", SND_SOC_NOPM, 0, 0, linesw1_mux),
- 	SND_SOC_DAPM_INPUT("LIN1_LP"),
- 	SND_SOC_DAPM_INPUT("LIN1_RP"),
- 	SND_SOC_DAPM_INPUT("LIN2_LP"),
-@@ -63,7 +76,9 @@ static const struct snd_soc_dapm_widget evea_widgets[] = {
- 	SND_SOC_DAPM_INPUT("LIN3_LP"),
- 	SND_SOC_DAPM_INPUT("LIN3_RP"),
- 
--	SND_SOC_DAPM_DAC("DAC", "Playback", SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC HP", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC LO1", NULL, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_DAC("DAC LO2", NULL, SND_SOC_NOPM, 0, 0),
- 	SND_SOC_DAPM_OUTPUT("HP1_L"),
- 	SND_SOC_DAPM_OUTPUT("HP1_R"),
- 	SND_SOC_DAPM_OUTPUT("LO2_L"),
-@@ -71,17 +86,22 @@ static const struct snd_soc_dapm_widget evea_widgets[] = {
- };
- 
- static const struct snd_soc_dapm_route evea_routes[] = {
--	{ "ADC", NULL, "LIN1_LP" },
--	{ "ADC", NULL, "LIN1_RP" },
--	{ "ADC", NULL, "LIN2_LP" },
--	{ "ADC", NULL, "LIN2_RP" },
--	{ "ADC", NULL, "LIN3_LP" },
--	{ "ADC", NULL, "LIN3_RP" },
--
--	{ "HP1_L", NULL, "DAC" },
--	{ "HP1_R", NULL, "DAC" },
--	{ "LO2_L", NULL, "DAC" },
--	{ "LO2_R", NULL, "DAC" },
-+	{ "Line In 1", NULL, "ADC" },
-+	{ "ADC", NULL, "Line In 1 Mux" },
-+	{ "Line In 1 Mux", "LIN1", "LIN1_LP" },
-+	{ "Line In 1 Mux", "LIN1", "LIN1_RP" },
-+	{ "Line In 1 Mux", "LIN2", "LIN2_LP" },
-+	{ "Line In 1 Mux", "LIN2", "LIN2_RP" },
-+	{ "Line In 1 Mux", "LIN3", "LIN3_LP" },
-+	{ "Line In 1 Mux", "LIN3", "LIN3_RP" },
-+
-+	{ "DAC HP", NULL, "Headphone 1" },
-+	{ "DAC LO1", NULL, "Line Out 1" },
-+	{ "DAC LO2", NULL, "Line Out 2" },
-+	{ "HP1_L", NULL, "DAC HP" },
-+	{ "HP1_R", NULL, "DAC HP" },
-+	{ "LO2_L", NULL, "DAC LO2" },
-+	{ "LO2_R", NULL, "DAC LO2" },
- };
- 
- static void evea_set_power_state_on(struct evea_priv *evea)
-@@ -280,16 +300,7 @@ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
- 	return evea_update_switch_hp(evea);
- }
- 
--static const char * const linsw1_sel1_text[] = {
--	"LIN1", "LIN2", "LIN3"
--};
--
--static SOC_ENUM_SINGLE_DECL(linsw1_sel1_enum,
--	ALINSW1, ALINSW1_SEL1_SHIFT,
--	linsw1_sel1_text);
--
- static const struct snd_kcontrol_new evea_controls[] = {
--	SOC_ENUM("Line Capture Source", linsw1_sel1_enum),
- 	SOC_SINGLE_BOOL_EXT("Line Capture Switch", 0,
- 			    evea_get_switch_lin, evea_set_switch_lin),
- 	SOC_SINGLE_BOOL_EXT("Line Playback Switch", 0,
--- 
-2.17.0
+On 04/05/18 01:57, Ruslan Bilovol wrote:
+> On Fri, Apr 27, 2018 at 8:06 PM, Jorge Sanjuan
+> <jorge.sanjuan@codethink.co.uk> wrote:
+>> This adds support for the MIXER UNIT in UAC3. All the information
+>> is obtained from the (HIGH CAPABILITY) Cluster's header. We don't
+>> read the rest of the logical cluster to obtain the channel config
+>> as that wont make any difference in the current mixer behaviour.
+>>
+>> The name of the mixer unit is not yet requested as there is not
+>> support for the UAC3 Class Specific String requests.
+>>
+>> Tested in an UAC3 device working as a HEADSET with a basic mixer
+>> unit (same as the one in the BADD spec) with no controls.
+> 
+> So, after deeper looking into the code and after testing this patch,
+> in your usecase (mixer with no controls) you'll never execute
+> build_mixer_unit_ctl(), correct? So did you try to just fix issues with
+> incorrect parsing of mixer unit descriptor?
+> 
+>>
+>> Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+>> ---
+>>   include/uapi/linux/usb/audio.h | 19 +++++++--
+>>   sound/usb/mixer.c              | 88 ++++++++++++++++++++++++++++++++++++++----
+>>   2 files changed, 97 insertions(+), 10 deletions(-)
+>>
+>> diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
+>> index 3a78e7145689..13d98e6e0db1 100644
+>> --- a/include/uapi/linux/usb/audio.h
+>> +++ b/include/uapi/linux/usb/audio.h
+>> @@ -285,9 +285,22 @@ static inline __u8 uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor
+>>   static inline __u8 *uac_mixer_unit_bmControls(struct uac_mixer_unit_descriptor *desc,
+>>                                                int protocol)
+>>   {
+>> -       return (protocol == UAC_VERSION_1) ?
+>> -               &desc->baSourceID[desc->bNrInPins + 4] :
+>> -               &desc->baSourceID[desc->bNrInPins + 6];
+>> +       switch (protocol) {
+>> +       case UAC_VERSION_1:
+>> +               return &desc->baSourceID[desc->bNrInPins + 4];
+>> +       case UAC_VERSION_2:
+>> +               return &desc->baSourceID[desc->bNrInPins + 6];
+>> +       case UAC_VERSION_3:
+>> +               return &desc->baSourceID[desc->bNrInPins + 2];
+>> +       default:
+>> +               return NULL;
+>> +       }
+>> +}
+>> +
+>> +static inline __u16 uac3_mixer_unit_wClusterDescrID(struct uac_mixer_unit_descriptor *desc)
+>> +{
+>> +       return (desc->baSourceID[desc->bNrInPins + 1] << 8) |
+>> +               desc->baSourceID[desc->bNrInPins];
+>>   }
+>>
+>>   static inline __u8 uac_mixer_unit_iMixer(struct uac_mixer_unit_descriptor *desc)
+>> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+>> index 301ad61ed426..3503f4840ec3 100644
+>> --- a/sound/usb/mixer.c
+>> +++ b/sound/usb/mixer.c
+>> @@ -719,6 +719,66 @@ static int get_term_name(struct mixer_build *state, struct usb_audio_term *iterm
+>>   }
+>>
+>>   /*
+>> + * Get logical cluster information for UAC3 devices.
+>> + */
+>> +static int get_cluster_channels_v3(struct mixer_build *state, unsigned int cluster_id)
+>> +{
+>> +       struct uac3_cluster_header_descriptor c_header;
+>> +       int err;
+>> +
+>> +       err = snd_usb_ctl_msg(state->chip->dev,
+>> +                       usb_rcvctrlpipe(state->chip->dev, 0),
+>> +                       UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+>> +                       USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+>> +                       cluster_id,
+>> +                       snd_usb_ctrl_intf(state->chip),
+>> +                       &c_header, sizeof(c_header));
+>> +       if (err < 0)
+>> +               goto error;
+>> +       if (err != sizeof(c_header)) {
+>> +               err = -EIO;
+>> +               goto error;
+>> +       }
+>> +
+>> +       return c_header.bNrChannels;
+>> +
+>> +error:
+>> +       usb_audio_err(state->chip, "cannot request logical cluster ID: %d (err: %d)\n", cluster_id, err);
+>> +       return err;
+>> +}
+>> +
+>> +/*
+>> + * Get number of channels for a Mixer Unit.
+>> + */
+>> +static int uac_mixer_unit_get_channels(struct mixer_build *state,
+>> +                                      struct uac_mixer_unit_descriptor *desc)
+>> +{
+>> +       int mu_channels;
+>> +
+>> +       if (desc->bLength < 11)
+>> +               return -EINVAL;
+>> +       if (!desc->bNrInPins)
+>> +               return -EINVAL;
+>> +
+>> +       switch (state->mixer->protocol) {
+>> +       case UAC_VERSION_1:
+>> +       case UAC_VERSION_2:
+>> +       default:
+>> +               mu_channels = uac_mixer_unit_bNrChannels(desc);
+>> +               break;
+>> +       case UAC_VERSION_3:
+>> +               mu_channels = get_cluster_channels_v3(state,
+>> +                               uac3_mixer_unit_wClusterDescrID(desc));
+>> +               break;
+>> +       }
+>> +
+>> +       if (!mu_channels)
+>> +               return -EINVAL;
+>> +
+>> +       return mu_channels;
+>> +}
+>> +
+>> +/*
+>>    * parse the source unit recursively until it reaches to a terminal
+>>    * or a branched unit.
+>>    */
+>> @@ -865,6 +925,18 @@ static int check_input_term(struct mixer_build *state, int id,
+>>                                  term->name = le16_to_cpu(d->wClockSourceStr);
+>>                                  return 0;
+>>                          }
+>> +                       case UAC3_MIXER_UNIT: {
+>> +                               struct uac_mixer_unit_descriptor *d = p1;
+>> +
+>> +                               err = uac_mixer_unit_get_channels(state, d);
+>> +                               if (err < 0)
+>> +                                       return err;
+>> +
+>> +                               term->channels = err;
+>> +                               term->type = d->bDescriptorSubtype << 16; /* virtual type */
+>> +
+>> +                               return 0;
+>> +                       }
+>>                          default:
+>>                                  return -ENODEV;
+>>                          }
+>> @@ -1797,11 +1869,10 @@ static int parse_audio_feature_unit(struct mixer_build *state, int unitid,
+>>    */
+>>   static void build_mixer_unit_ctl(struct mixer_build *state,
+>>                                   struct uac_mixer_unit_descriptor *desc,
+>> -                                int in_pin, int in_ch, int unitid,
+>> -                                struct usb_audio_term *iterm)
+>> +                                int in_pin, int in_ch, int num_outs,
+>> +                                int unitid, struct usb_audio_term *iterm)
+>>   {
+>>          struct usb_mixer_elem_info *cval;
+>> -       unsigned int num_outs = uac_mixer_unit_bNrChannels(desc);
+>>          unsigned int i, len;
+>>          struct snd_kcontrol *kctl;
+>>          const struct usbmix_name_map *map;
+>> @@ -1878,14 +1949,17 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
+>>          int input_pins, num_ins, num_outs;
+>>          int pin, ich, err;
+>>
+>> -       if (desc->bLength < 11 || !(input_pins = desc->bNrInPins) ||
+>> -           !(num_outs = uac_mixer_unit_bNrChannels(desc))) {
+>> +       err = uac_mixer_unit_get_channels(state, desc);
+>> +       if (err < 0) {
+>>                  usb_audio_err(state->chip,
+>>                                "invalid MIXER UNIT descriptor %d\n",
+>>                                unitid);
+>> -               return -EINVAL;
+>> +               return err;
+>>          }
+>>
+>> +       num_outs = err;
+>> +       input_pins = desc->bNrInPins;
+>> +
+>>          num_ins = 0;
+>>          ich = 0;
+>>          for (pin = 0; pin < input_pins; pin++) {
+>> @@ -1912,7 +1986,7 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
+>>                                  }
+>>                          }
+>>                          if (ich_has_controls)
+>> -                               build_mixer_unit_ctl(state, desc, pin, ich,
+>> +                               build_mixer_unit_ctl(state, desc, pin, ich, num_outs,
+>>                                                       unitid, &iterm);
+> 
+> So with current sources we will never reach this place. In your
+> usecase (mixer with no
+> controls) it obviously won't go inside.
+> However, I created a mixer with controls but still
+> build_mixer_unit_ctl() isn't executed.
+> This is because UAC3 input terminal parsing always returns 0 channels, this is
+> what still needs to be implemented (see comment "REVISIT: UAC3 IT doesn't
+> have channels/cfg" in check_input_term)
+
+Thanks for testing this!
+
+I missed that one with the number of input channels. Regarding the 
+"REVISIT: UAC3 IT doesn't have channels/cfg" comment, we can easily fix 
+that using the helper function I added in this patch for reading the 
+logical cluster's number of channels `get_cluster_channels_v3`. The 
+channel config bitmap I don't see it being used at all so parsing 
+iterm.channels should be enough. Any thoughts?
+
+- Jorge
+
+> 
+> Beside of that, other part of this patch seems to work as expected, at least
+> uac_mixer_unit_get_channels() gives correct results - I checked it for
+> two-channels config, that is different comparing to BADD.
+> 
+> Thanks,
+> Ruslan
+> 
