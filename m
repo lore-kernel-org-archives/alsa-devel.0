@@ -1,17 +1,23 @@
-From: Shreyas NC <shreyas.nc@intel.com>
-Subject: [PATCH v4 3/3] ASoC: Add multiple CPU DAI support in
-	DAPM
-Date: Tue,  8 May 2018 16:15:35 +0530
-Message-ID: <1525776335-26259-4-git-send-email-shreyas.nc@intel.com>
-References: <1525776335-26259-1-git-send-email-shreyas.nc@intel.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 2/4] ASoC: compress: Clarify the intent of
+ current compressed ops handling
+Date: Tue, 8 May 2018 11:52:53 +0100
+Message-ID: <20180508105253.GM20410@imbe.wolfsonmicro.main>
+References: <20180426163007.5632-1-ckeepax@opensource.cirrus.com>
+ <20180426163007.5632-2-ckeepax@opensource.cirrus.com>
+ <20180503162714.GX6014@localhost>
+ <20180504115922.GK20410@imbe.wolfsonmicro.main>
+ <20180508083319.GA4519@vkoul-mobl>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id CDEDE2676C6
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 12:48:23 +0200 (CEST)
-In-Reply-To: <1525776335-26259-1-git-send-email-shreyas.nc@intel.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C341266F69
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 12:53:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180508083319.GA4519@vkoul-mobl>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,119 +27,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: ckeepax@opensource.cirrus.com, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, Shreyas NC <shreyas.nc@intel.com>
+To: Vinod Koul <vinod.koul@linaro.org>
+Cc: alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, Vinod Koul <vinod.koul@intel.com>, patches@opensource.cirrus.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-DAPM handles DAIs during soc_dapm_stream_event() and during addition
-and creation of DAI widgets i.e., dapm_add_valid_dai_widget() and
-dapm_connect_dai_link_widgets().
+On Tue, May 08, 2018 at 02:03:19PM +0530, Vinod Koul wrote:
+> On 04-05-18, 12:59, Charles Keepax wrote:
+> > On Thu, May 03, 2018 at 09:57:14PM +0530, Vinod Koul wrote:
+> > > On Thu, Apr 26, 2018 at 05:30:05PM +0100, Charles Keepax wrote:
+> > That said however, thinking about it more I do think there are
+> > pretty reasonable systems that have multiple components on a
+> > compressed DAI. For example I could imagine a system where you
+> > have a DSP on both the AP and CODEC ends of the DAI link and
+> > they split the decode doing some work on each. In that case
+> > one would want calls like open and set_params to go to both
+> > components.
+> 
+> Am not sure if we can split the decode into multiple DSPs like
+> this :) Yes one can do processing and one can decode if both have
+> the capability but I don't forsee that being split, so not sure
+> if we need it!!!
+>
 
-Extend these functions to handle multiple cpu dai.
+I think you definitely could split the decode across multiple
+DSPs like that, we have had processing split across multiple
+cores for various things on the CODECs. That said "Need it"
+is very strong, I would say such a system is plausible but
+not something I am aware anyone is actually building right now.
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
----
- sound/soc/soc-dapm.c | 71 ++++++++++++++++++++++++++++++++++------------------
- 1 file changed, 46 insertions(+), 25 deletions(-)
+I guess my thinking was that the system is basically already
+supporting multiple components so it seemed like a step
+backwards to rip it out given there are plausible systems were
+it might be useful. And this patch is really just tidying up
+the already submitted code a little rather than changing the
+functionality in any substancial way.
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 2d97091..79f5f61 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -4108,38 +4108,57 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
- 	return 0;
- }
- 
--static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
--					  struct snd_soc_pcm_runtime *rtd)
-+static void dapm_add_valid_dai_widget(struct snd_soc_card *card,
-+					struct snd_soc_pcm_runtime *rtd,
-+					struct snd_soc_dai *codec_dai,
-+					struct snd_soc_dai *cpu_dai)
- {
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dapm_widget *sink, *source;
--	int i;
- 
--	for (i = 0; i < rtd->num_codecs; i++) {
--		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-+	/* connect BE DAI playback if widgets are valid */
-+	if (codec_dai->playback_widget && cpu_dai->playback_widget) {
-+		source = cpu_dai->playback_widget;
-+		sink = codec_dai->playback_widget;
-+		dev_err(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-+				cpu_dai->component->name,
-+				source->name,
-+				codec_dai->component->name,
-+				sink->name);
-+
-+		snd_soc_dapm_add_path(&card->dapm, source, sink,
-+				NULL, NULL);
-+	}
- 
--		/* connect BE DAI playback if widgets are valid */
--		if (codec_dai->playback_widget && cpu_dai->playback_widget) {
--			source = cpu_dai->playback_widget;
--			sink = codec_dai->playback_widget;
--			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
--				cpu_dai->component->name, source->name,
--				codec_dai->component->name, sink->name);
-+	/* connect BE DAI capture if widgets are valid */
-+	if (codec_dai->capture_widget && cpu_dai->capture_widget) {
-+		source = codec_dai->capture_widget;
-+		sink = cpu_dai->capture_widget;
-+		dev_err(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-+				codec_dai->component->name,
-+				source->name,
-+				cpu_dai->component->name,
-+				sink->name);
- 
--			snd_soc_dapm_add_path(&card->dapm, source, sink,
-+		snd_soc_dapm_add_path(&card->dapm, source, sink,
- 				NULL, NULL);
--		}
-+	}
-+
-+}
- 
--		/* connect BE DAI capture if widgets are valid */
--		if (codec_dai->capture_widget && cpu_dai->capture_widget) {
--			source = codec_dai->capture_widget;
--			sink = cpu_dai->capture_widget;
--			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
--				codec_dai->component->name, source->name,
--				cpu_dai->component->name, sink->name);
-+static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
-+					  struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *cpu_dai;
-+	int i, j;
- 
--			snd_soc_dapm_add_path(&card->dapm, source, sink,
--				NULL, NULL);
-+	for (i = 0; i < rtd->num_codecs; i++) {
-+		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-+
-+		for (j = 0; j < rtd->num_cpu_dai; j++) {
-+			cpu_dai = rtd->cpu_dais[j];
-+
-+			dapm_add_valid_dai_widget(card, rtd,
-+						codec_dai, cpu_dai);
- 		}
- 	}
- }
-@@ -4206,7 +4225,9 @@ static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
- {
- 	int i;
- 
--	soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
-+	for (i = 0; i < rtd->num_cpu_dai; i++)
-+		soc_dapm_dai_stream_event(rtd->cpu_dais[i], stream, event);
-+
- 	for (i = 0; i < rtd->num_codecs; i++)
- 		soc_dapm_dai_stream_event(rtd->codec_dais[i], stream, event);
- 
--- 
-2.7.4
+That said if you feel strongly about it, I certainly don't
+need the support in the foreseeable future. I am happy to
+go back to something similar to my earlier patch that just
+locates the first device with compressed ops and calls the
+ops on that?  Although it might still be worth merging this
+one as an intermediate tidy up in that case.
+
+Thanks,
+Charles
