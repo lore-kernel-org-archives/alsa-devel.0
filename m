@@ -1,15 +1,17 @@
-From: Federico Cuello <fedux@fedux.com.ar>
-Subject: [PATCH] ALSA: usb: mixer: volume quirk for
-	CM102-A+/102S+
-Date: Wed,  9 May 2018 00:13:38 +0200
-Message-ID: <20180508221338.6229-1-fedux@fedux.com.ar>
+From: Alberto Aguirre <albaguirre@gmail.com>
+Subject: [PATCH] ALSA: usb-audio: add boot quirk for Axe-Fx III
+Date: Tue,  8 May 2018 17:14:13 -0500
+Message-ID: <20180508221413.20104-1-albaguirre@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.fedux.com.ar (mail.fedux.com.ar [167.99.131.221])
- by alsa0.perex.cz (Postfix) with ESMTP id A042D2676AA
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 00:13:44 +0200 (CEST)
+Received: from mail-ot0-f194.google.com (mail-ot0-f194.google.com
+ [74.125.82.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE01B2676EC
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 00:14:18 +0200 (CEST)
+Received: by mail-ot0-f194.google.com with SMTP id l22-v6so37954697otj.0
+ for <alsa-devel@alsa-project.org>; Tue, 08 May 2018 15:14:18 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,41 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Federico Cuello <fedux@fedux.com.ar>
+Cc: Alberto Aguirre <albaguirre@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently it's not possible to set volume lower than 26% (it just mutes).
+Wait for Axe-Fx III to fully bootup before initializing card.
 
-Also fixes this warning:
-
-  Warning! Unlikely big volume range (=9472), cval->res is probably wrong.
-  [13] FU [PCM Playback Volume] ch = 2, val = -9473/-1/1
-
-, and volume works fine for full range.
-
-Signed-off-by: Federico Cuello <fedux@fedux.com.ar>
+Signed-off-by: Alberto Aguirre <albaguirre@gmail.com>
 ---
- sound/usb/mixer.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/usb/quirks.c | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 344d7b069d59..bb5ab7a7dfa5 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -967,6 +967,14 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
- 		}
- 		break;
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 5681767cc0d5..f4b69173682c 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -851,6 +851,36 @@ static int snd_usb_mbox2_boot_quirk(struct usb_device *dev)
+ 	return 0; /* Successful boot */
+ }
  
-+	case USB_ID(0x0d8c, 0x0103):
-+		if (!strcmp(kctl->id.name, "PCM Playback Volume")) {
-+			usb_audio_info(chip,
-+				 "set volume quirk for CM102-A+/102S+\n");
-+			cval->min = -256;
-+		}
-+		break;
++static int snd_usb_axefx3_boot_quirk(struct usb_device *dev)
++{
++	int err;
 +
- 	case USB_ID(0x0471, 0x0101):
- 	case USB_ID(0x0471, 0x0104):
- 	case USB_ID(0x0471, 0x0105):
++	dev_dbg(&dev->dev, "Waiting for Axe-Fx III to boot up...\n");
++
++	/* If the Axe-Fx III has not fully booted, it will timeout when trying
++	 * to enable the audio streaming interface. A more generous timeout is
++	 * used here to detect when the Axe-Fx III has finished booting as the
++	 * set interface message will be acked once it has
++	 */
++	err = usb_control_msg(dev, usb_sndctrlpipe(dev, 0),
++				USB_REQ_SET_INTERFACE, USB_RECIP_INTERFACE,
++				1, 1, NULL, 0, 120000);
++	if (err < 0) {
++		dev_err(&dev->dev,
++			"failed waiting for Axe-Fx III to boot: %d\n", err);
++		return err;
++	}
++
++	dev_dbg(&dev->dev, "Axe-Fx III is now ready\n");
++
++	err = usb_set_interface(dev, 1, 0);
++	if (err < 0)
++		dev_dbg(&dev->dev,
++			"error stopping Axe-Fx III interface: %d\n", err);
++
++	return 0;
++}
++
+ /*
+  * Setup quirks
+  */
+@@ -1026,6 +1056,8 @@ int snd_usb_apply_boot_quirk(struct usb_device *dev,
+ 		return snd_usb_fasttrackpro_boot_quirk(dev);
+ 	case USB_ID(0x047f, 0xc010): /* Plantronics Gamecom 780 */
+ 		return snd_usb_gamecon780_boot_quirk(dev);
++	case USB_ID(0x2466, 0x8010): /* Fractal Audio Axe-Fx 3 */
++		return snd_usb_axefx3_boot_quirk(dev);
+ 	}
+ 
+ 	return 0;
 -- 
 2.17.0
