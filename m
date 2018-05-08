@@ -1,212 +1,128 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH v5 04/13] ALSA: hda/ca0132: Add extra exit
-	functions for R3Di and SBZ
-Date: Tue,  8 May 2018 13:20:04 -0400
-Message-ID: <1525800015-2920-5-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH v5 12/13] ALSA: hda/ca0132: add ca0132_alt_set_vipsource
+Date: Tue,  8 May 2018 13:20:12 -0400
+Message-ID: <1525800015-2920-13-git-send-email-conmanx360@gmail.com>
 References: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f195.google.com (mail-io0-f195.google.com
- [209.85.223.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 2A4B92676AA
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 19:20:53 +0200 (CEST)
-Received: by mail-io0-f195.google.com with SMTP id z4-v6so39355444iof.5
- for <alsa-devel@alsa-project.org>; Tue, 08 May 2018 10:20:53 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, Connor McAdams <conmanx360@gmail.com>, o-takashi@sakamocchi.jp
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds extra functions for shutdown on the Sound Blaster Z and
-Recon3Di. The Recon3Di only has one specific functions, which sets the
-GPIO data pins to 0 to prevent a popping noise.
-
-The Sound Blaster Z exit sequence was taken from Windows. Without this
-exit function, the card will not reload properly unless the PC has been
-shutdown to clear the onboard memory. There are commented out functions
-currently in the sbz_exit_chip function that are added in a later patch.
-
-Also, a reboot notify function has been added, to make sure these
-functions are ran before a reboot. This helps when using the card
-through VFIO in a virtual machine, to make sure the card reloads the DSP
-properly.
+Add function to set vipsource on cards that use_alt_controls. Different
+sequence. Also, add cvoice_switch_set at end of ca0132_select_in so that
+when switching between inputs cvoice state is maintained.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 131 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 129 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 74 +++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 73 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 78d2c26..5cda7a5 100644
+index 311df61..9ab96ae 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -4641,6 +4641,115 @@ static void ca0132_init_chip(struct hda_codec *codec)
- #endif
+@@ -3934,6 +3934,9 @@ static void ca0132_unsol_hp_delayed(struct work_struct *work)
+ static void ca0132_set_dmic(struct hda_codec *codec, int enable);
+ static int ca0132_mic_boost_set(struct hda_codec *codec, long val);
+ static int ca0132_effects_set(struct hda_codec *codec, hda_nid_t nid, long val);
++static void resume_mic1(struct hda_codec *codec, unsigned int oldval);
++static int stop_mic1(struct hda_codec *codec);
++static int ca0132_cvoice_switch_set(struct hda_codec *codec);
+ 
+ /*
+  * Select the active VIP source
+@@ -3976,6 +3979,71 @@ static int ca0132_set_vipsource(struct hda_codec *codec, int val)
+ 	return 1;
  }
  
-+/*
-+ * Recon3Di exit specific commands.
-+ */
-+/* prevents popping noise on shutdown */
-+static void r3di_gpio_shutdown(struct hda_codec *codec)
-+{
-+	snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA, 0x00);
-+}
-+
-+/*
-+ * Sound Blaster Z exit specific commands.
-+ */
-+static void sbz_region2_exit(struct hda_codec *codec)
++static int ca0132_alt_set_vipsource(struct hda_codec *codec, int val)
 +{
 +	struct ca0132_spec *spec = codec->spec;
-+	unsigned int i;
++	unsigned int tmp;
 +
-+	for (i = 0; i < 4; i++)
-+		writeb(0x0, spec->mem_base + 0x100);
-+	for (i = 0; i < 8; i++)
-+		writeb(0xb3, spec->mem_base + 0x304);
-+	/*
-+	 * I believe these are GPIO, with the right most hex digit being the
-+	 * gpio pin, and the second digit being on or off. We see this more in
-+	 * the input/output select functions.
-+	 */
-+	writew(0x0000, spec->mem_base + 0x320);
-+	writew(0x0001, spec->mem_base + 0x320);
-+	writew(0x0104, spec->mem_base + 0x320);
-+	writew(0x0005, spec->mem_base + 0x320);
-+	writew(0x0007, spec->mem_base + 0x320);
-+}
++	if (spec->dsp_state != DSP_DOWNLOADED)
++		return 0;
 +
-+static void sbz_set_pin_ctl_default(struct hda_codec *codec)
-+{
-+	hda_nid_t pins[5] = {0x0B, 0x0C, 0x0E, 0x12, 0x13};
-+	unsigned int i;
++	codec_dbg(codec, "%s\n", __func__);
 +
-+	snd_hda_codec_write(codec, 0x11, 0,
-+			AC_VERB_SET_PIN_WIDGET_CONTROL, 0x40);
++	chipio_set_stream_control(codec, 0x03, 0);
++	chipio_set_stream_control(codec, 0x04, 0);
 +
-+	for (i = 0; i < 5; i++)
-+		snd_hda_codec_write(codec, pins[i], 0,
-+				AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00);
-+}
++	/* if CrystalVoice is off, vipsource should be 0 */
++	if (!spec->effects_switch[CRYSTAL_VOICE - EFFECT_START_NID] ||
++	    (val == 0) || spec->in_enum_val == REAR_LINE_IN) {
++		codec_dbg(codec, "%s: off.", __func__);
++		chipio_set_control_param(codec, CONTROL_PARAM_VIP_SOURCE, 0);
 +
-+static void sbz_clear_unsolicited(struct hda_codec *codec)
-+{
-+	hda_nid_t pins[7] = {0x0B, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13};
-+	unsigned int i;
++		tmp = FLOAT_ZERO;
++		dspio_set_uint_param(codec, 0x80, 0x05, tmp);
 +
-+	for (i = 0; i < 7; i++) {
-+		snd_hda_codec_write(codec, pins[i], 0,
-+				AC_VERB_SET_UNSOLICITED_ENABLE, 0x00);
++		chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_96_000);
++		chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_96_000);
++		if (spec->quirk == QUIRK_R3DI)
++			chipio_set_conn_rate(codec, 0x0F, SR_96_000);
++
++
++		if (spec->in_enum_val == REAR_LINE_IN)
++			tmp = FLOAT_ZERO;
++		else {
++			if (spec->quirk == QUIRK_SBZ)
++				tmp = FLOAT_THREE;
++			else
++				tmp = FLOAT_ONE;
++		}
++
++		dspio_set_uint_param(codec, 0x80, 0x00, tmp);
++
++	} else {
++		codec_dbg(codec, "%s: on.", __func__);
++		chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_16_000);
++		chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_16_000);
++		if (spec->quirk == QUIRK_R3DI)
++			chipio_set_conn_rate(codec, 0x0F, SR_16_000);
++
++		if (spec->effects_switch[VOICE_FOCUS - EFFECT_START_NID])
++			tmp = FLOAT_TWO;
++		else
++			tmp = FLOAT_ONE;
++		dspio_set_uint_param(codec, 0x80, 0x00, tmp);
++
++		tmp = FLOAT_ONE;
++		dspio_set_uint_param(codec, 0x80, 0x05, tmp);
++
++		msleep(20);
++		chipio_set_control_param(codec, CONTROL_PARAM_VIP_SOURCE, val);
 +	}
++
++	chipio_set_stream_control(codec, 0x03, 1);
++	chipio_set_stream_control(codec, 0x04, 1);
++
++	return 1;
 +}
 +
-+/* On shutdown, sends commands in sets of three */
-+static void sbz_gpio_shutdown_commands(struct hda_codec *codec, int dir,
-+							int mask, int data)
-+{
-+	if (dir >= 0)
-+		snd_hda_codec_write(codec, 0x01, 0,
-+				AC_VERB_SET_GPIO_DIRECTION, dir);
-+	if (mask >= 0)
-+		snd_hda_codec_write(codec, 0x01, 0,
-+				AC_VERB_SET_GPIO_MASK, mask);
-+
-+	if (data >= 0)
-+		snd_hda_codec_write(codec, 0x01, 0,
-+				AC_VERB_SET_GPIO_DATA, data);
-+}
-+
-+static void sbz_exit_chip(struct hda_codec *codec)
-+{
-+
-+	/* Mess with GPIO */
-+	sbz_gpio_shutdown_commands(codec, 0x07, 0x07, -1);
-+	sbz_gpio_shutdown_commands(codec, 0x07, 0x07, 0x05);
-+	sbz_gpio_shutdown_commands(codec, 0x07, 0x07, 0x01);
-+
-+
-+	chipio_set_conn_rate(codec, 0x41, SR_192_000);
-+	chipio_set_conn_rate(codec, 0x91, SR_192_000);
-+
-+	chipio_write(codec, 0x18a020, 0x00000083);
-+
-+	sbz_gpio_shutdown_commands(codec, 0x07, 0x07, 0x03);
-+	sbz_gpio_shutdown_commands(codec, 0x07, 0x07, 0x07);
-+	sbz_gpio_shutdown_commands(codec, 0x07, 0x07, 0x06);
-+
-+
-+	chipio_set_control_param(codec, 0x0D, 0x24);
-+
-+	sbz_clear_unsolicited(codec);
-+	sbz_set_pin_ctl_default(codec);
-+
-+	snd_hda_codec_write(codec, 0x0B, 0,
-+		AC_VERB_SET_EAPD_BTLENABLE, 0x00);
-+
-+	if (dspload_is_loaded(codec))
-+		dsp_reset(codec);
-+
-+	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
-+		VENDOR_CHIPIO_CT_EXTENSIONS_ENABLE, 0x00);
-+
-+	sbz_region2_exit(codec);
-+}
-+
- static void ca0132_exit_chip(struct hda_codec *codec)
- {
- 	/* put any chip cleanup stuffs here. */
-@@ -4701,8 +4810,20 @@ static void ca0132_free(struct hda_codec *codec)
+ /*
+  * Select the active microphone.
+  * If autodetect is enabled, mic will be selected based on jack detection.
+@@ -4138,6 +4206,7 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 		}
+ 		break;
+ 	}
++	ca0132_cvoice_switch_set(codec);
  
- 	cancel_delayed_work_sync(&spec->unsol_hp_work);
- 	snd_hda_power_up(codec);
--	snd_hda_sequence_write(codec, spec->base_exit_verbs);
--	ca0132_exit_chip(codec);
-+	switch (spec->quirk) {
-+	case QUIRK_SBZ:
-+		sbz_exit_chip(codec);
-+		break;
-+	case QUIRK_R3DI:
-+		r3di_gpio_shutdown(codec);
-+		snd_hda_sequence_write(codec, spec->base_exit_verbs);
-+		ca0132_exit_chip(codec);
-+		break;
-+	default:
-+		snd_hda_sequence_write(codec, spec->base_exit_verbs);
-+		ca0132_exit_chip(codec);
-+		break;
-+	}
- 	snd_hda_power_down(codec);
- 	if (spec->mem_base)
- 		iounmap(spec->mem_base);
-@@ -4710,12 +4831,18 @@ static void ca0132_free(struct hda_codec *codec)
- 	kfree(codec->spec);
+ 	snd_hda_power_down_pm(codec);
+ 	return 0;
+@@ -4351,7 +4420,10 @@ static int ca0132_cvoice_switch_set(struct hda_codec *codec)
+ 
+ 	/* set correct vipsource */
+ 	oldval = stop_mic1(codec);
+-	ret |= ca0132_set_vipsource(codec, 1);
++	if (spec->use_alt_functions)
++		ret |= ca0132_alt_set_vipsource(codec, 1);
++	else
++		ret |= ca0132_set_vipsource(codec, 1);
+ 	resume_mic1(codec, oldval);
+ 	return ret;
  }
- 
-+static void ca0132_reboot_notify(struct hda_codec *codec)
-+{
-+	codec->patch_ops.free(codec);
-+}
-+
- static const struct hda_codec_ops ca0132_patch_ops = {
- 	.build_controls = ca0132_build_controls,
- 	.build_pcms = ca0132_build_pcms,
- 	.init = ca0132_init,
- 	.free = ca0132_free,
- 	.unsol_event = snd_hda_jack_unsol_event,
-+	.reboot_notify = ca0132_reboot_notify,
- };
- 
- static void ca0132_config(struct hda_codec *codec)
 -- 
 2.7.4
