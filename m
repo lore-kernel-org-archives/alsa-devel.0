@@ -1,241 +1,280 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH v5 08/13] ALSA: hda/ca0132: Add dsp setup +
-	gpio functions for r3di
-Date: Tue,  8 May 2018 13:20:08 -0400
-Message-ID: <1525800015-2920-9-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH v5 11/13] ALSA: hda/ca0132: Add DSP Volume set and New mixers for SBZ + R3Di
+Date: Tue,  8 May 2018 13:20:11 -0400
+Message-ID: <1525800015-2920-12-git-send-email-conmanx360@gmail.com>
 References: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f195.google.com (mail-io0-f195.google.com
- [209.85.223.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 8C8E82676F2
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 19:21:02 +0200 (CEST)
-Received: by mail-io0-f195.google.com with SMTP id e78-v6so39394661iod.0
- for <alsa-devel@alsa-project.org>; Tue, 08 May 2018 10:21:02 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, Connor McAdams <conmanx360@gmail.com>, o-takashi@sakamocchi.jp
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Adds dsp setup functions for Recon3Di as well as the GPIO functions
-specific to it.
+Adds lookup table for floating point decibel volume, and new functions
+to allow for setting the decibel level on the DSP.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 149 ++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 148 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_ca0132.c | 203 ++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 202 insertions(+), 1 deletion(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 37609bd..7a9d505 100644
+index 2a42faf..311df61 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -2904,6 +2904,76 @@ static void ca0132_gpio_setup(struct hda_codec *codec)
- }
+@@ -537,6 +537,31 @@ static const struct ca0132_alt_out_set alt_out_presets[] = {
+ 	}
+ };
  
- /*
-+ * GPIO control functions for the Recon3D integrated.
++/*
++ * DSP volume setting structs. Req 1 is left volume, req 2 is right volume,
++ * and I don't know what the third req is, but it's always zero. I assume it's
++ * some sort of update or set command to tell the DSP there's new volume info.
 + */
++#define DSP_VOL_OUT 0
++#define DSP_VOL_IN  1
 +
-+enum r3di_gpio_bit {
-+	/* Bit 1 - Switch between front/rear mic. 0 = rear, 1 = front */
-+	R3DI_MIC_SELECT_BIT = 1,
-+	/* Bit 2 - Switch between headphone/line out. 0 = Headphone, 1 = Line */
-+	R3DI_OUT_SELECT_BIT = 2,
-+	/*
-+	 * I dunno what this actually does, but it stays on until the dsp
-+	 * is downloaded.
-+	 */
-+	R3DI_GPIO_DSP_DOWNLOADING = 3,
-+	/*
-+	 * Same as above, no clue what it does, but it comes on after the dsp
-+	 * is downloaded.
-+	 */
-+	R3DI_GPIO_DSP_DOWNLOADED = 4
++struct ct_dsp_volume_ctl {
++	hda_nid_t vnid;
++	int mid; /* module ID*/
++	unsigned int reqs[3]; /* scp req ID */
 +};
 +
-+enum r3di_mic_select {
-+	/* Set GPIO bit 1 to 0 for rear mic */
-+	R3DI_REAR_MIC = 0,
-+	/* Set GPIO bit 1 to 1 for front microphone*/
-+	R3DI_FRONT_MIC = 1
-+};
-+
-+enum r3di_out_select {
-+	/* Set GPIO bit 2 to 0 for headphone */
-+	R3DI_HEADPHONE_OUT = 0,
-+	/* Set GPIO bit 2 to 1 for speaker */
-+	R3DI_LINE_OUT = 1
-+};
-+enum r3di_dsp_status {
-+	/* Set GPIO bit 3 to 1 until DSP is downloaded */
-+	R3DI_DSP_DOWNLOADING = 0,
-+	/* Set GPIO bit 4 to 1 once DSP is downloaded */
-+	R3DI_DSP_DOWNLOADED = 1
-+};
-+
-+static void r3di_gpio_dsp_status_set(struct hda_codec *codec,
-+		enum r3di_dsp_status dsp_status)
-+{
-+	unsigned int cur_gpio;
-+
-+	/* Get the current GPIO Data setup */
-+	cur_gpio = snd_hda_codec_read(codec, 0x01, 0, AC_VERB_GET_GPIO_DATA, 0);
-+
-+	switch (dsp_status) {
-+	case R3DI_DSP_DOWNLOADING:
-+		cur_gpio |= (1 << R3DI_GPIO_DSP_DOWNLOADING);
-+		snd_hda_codec_write(codec, codec->core.afg, 0,
-+				AC_VERB_SET_GPIO_DATA, cur_gpio);
-+		break;
-+	case R3DI_DSP_DOWNLOADED:
-+		/* Set DOWNLOADING bit to 0. */
-+		cur_gpio &= ~(1 << R3DI_GPIO_DSP_DOWNLOADING);
-+
-+		snd_hda_codec_write(codec, codec->core.afg, 0,
-+				AC_VERB_SET_GPIO_DATA, cur_gpio);
-+
-+		cur_gpio |= (1 << R3DI_GPIO_DSP_DOWNLOADED);
-+		break;
++static struct ct_dsp_volume_ctl ca0132_alt_vol_ctls[] = {
++	{ .vnid = VNID_SPK,
++	  .mid = 0x32,
++	  .reqs = {3, 4, 2}
++	},
++	{ .vnid = VNID_MIC,
++	  .mid = 0x37,
++	  .reqs = {2, 3, 1}
 +	}
++};
 +
-+	snd_hda_codec_write(codec, codec->core.afg, 0,
-+			    AC_VERB_SET_GPIO_DATA, cur_gpio);
-+}
-+
-+/*
-  * PCM callbacks
-  */
- static int ca0132_playback_pcm_prepare(struct hda_pcm_stream *hinfo,
-@@ -4539,6 +4609,30 @@ static void ca0132_refresh_widget_caps(struct hda_codec *codec)
- }
+ enum hda_cmd_vendor_io {
+ 	/* for DspIO node */
+ 	VENDOR_DSPIO_SCP_WRITE_DATA_LOW      = 0x000,
+@@ -3248,6 +3273,24 @@ static unsigned int ca0132_capture_pcm_delay(struct hda_pcm_stream *info,
+ 	  .tlv = { .c = ca0132_volume_tlv }, \
+ 	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
  
- /*
-+ * Recon3Di r3di_setup_defaults sub functions.
-+ */
-+
-+static void r3di_dsp_initial_mic_setup(struct hda_codec *codec)
-+{
-+	unsigned int tmp;
-+
-+	/* Mic 1 Setup */
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_96_000);
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_96_000);
-+	/* This ConnPointID is unique to Recon3Di. Haven't seen it elsewhere */
-+	chipio_set_conn_rate(codec, 0x0F, SR_96_000);
-+	tmp = FLOAT_ONE;
-+	dspio_set_uint_param(codec, 0x80, 0x00, tmp);
-+
-+	/* Mic 2 Setup, even though it isn't connected on SBZ */
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICIN2, SR_96_000);
-+	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2, SR_96_000);
-+	chipio_set_conn_rate(codec, 0x0F, SR_96_000);
-+	tmp = FLOAT_ZERO;
-+	dspio_set_uint_param(codec, 0x80, 0x01, tmp);
-+}
-+
 +/*
-  * Initialize Sound Blaster Z analog microphones.
-  */
- static void sbz_init_analog_mics(struct hda_codec *codec)
-@@ -4700,6 +4794,50 @@ static void ca0132_setup_defaults(struct hda_codec *codec)
- }
- 
- /*
-+ * Setup default parameters for Recon3Di DSP.
++ * Creates a mixer control that uses defaults of HDA_CODEC_VOL except for the
++ * volume put, which is used for setting the DSP volume. This was done because
++ * the ca0132 functions were taking too much time and causing lag.
 + */
++#define CA0132_ALT_CODEC_VOL_MONO(xname, nid, channel, dir) \
++	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
++	  .name = xname, \
++	  .subdevice = HDA_SUBDEV_AMP_FLAG, \
++	  .access = SNDRV_CTL_ELEM_ACCESS_READWRITE | \
++			SNDRV_CTL_ELEM_ACCESS_TLV_READ | \
++			SNDRV_CTL_ELEM_ACCESS_TLV_CALLBACK, \
++	  .info = snd_hda_mixer_amp_volume_info, \
++	  .get = snd_hda_mixer_amp_volume_get, \
++	  .put = ca0132_alt_volume_put, \
++	  .tlv = { .c = snd_hda_mixer_amp_tlv }, \
++	  .private_value = HDA_COMPOSE_AMP_VAL(nid, channel, 0, dir) }
 +
-+static void r3di_setup_defaults(struct hda_codec *codec)
+ #define CA0132_CODEC_MUTE_MONO(xname, nid, channel, dir) \
+ 	{ .iface = SNDRV_CTL_ELEM_IFACE_MIXER, \
+ 	  .name = xname, \
+@@ -3260,9 +3303,40 @@ static unsigned int ca0132_capture_pcm_delay(struct hda_pcm_stream *info,
+ /* stereo */
+ #define CA0132_CODEC_VOL(xname, nid, dir) \
+ 	CA0132_CODEC_VOL_MONO(xname, nid, 3, dir)
++#define CA0132_ALT_CODEC_VOL(xname, nid, dir) \
++	CA0132_ALT_CODEC_VOL_MONO(xname, nid, 3, dir)
+ #define CA0132_CODEC_MUTE(xname, nid, dir) \
+ 	CA0132_CODEC_MUTE_MONO(xname, nid, 3, dir)
+ 
++/* lookup tables */
++/*
++ * Lookup table with decibel values for the DSP. When volume is changed in
++ * Windows, the DSP is also sent the dB value in floating point. In Windows,
++ * these values have decimal points, probably because the Windows driver
++ * actually uses floating point. We can't here, so I made a lookup table of
++ * values -90 to 9. -90 is the lowest decibel value for both the ADC's and the
++ * DAC's, and 9 is the maximum.
++ */
++static const unsigned int float_vol_db_lookup[] = {
++0xC2B40000, 0xC2B20000, 0xC2B00000, 0xC2AE0000, 0xC2AC0000, 0xC2AA0000,
++0xC2A80000, 0xC2A60000, 0xC2A40000, 0xC2A20000, 0xC2A00000, 0xC29E0000,
++0xC29C0000, 0xC29A0000, 0xC2980000, 0xC2960000, 0xC2940000, 0xC2920000,
++0xC2900000, 0xC28E0000, 0xC28C0000, 0xC28A0000, 0xC2880000, 0xC2860000,
++0xC2840000, 0xC2820000, 0xC2800000, 0xC27C0000, 0xC2780000, 0xC2740000,
++0xC2700000, 0xC26C0000, 0xC2680000, 0xC2640000, 0xC2600000, 0xC25C0000,
++0xC2580000, 0xC2540000, 0xC2500000, 0xC24C0000, 0xC2480000, 0xC2440000,
++0xC2400000, 0xC23C0000, 0xC2380000, 0xC2340000, 0xC2300000, 0xC22C0000,
++0xC2280000, 0xC2240000, 0xC2200000, 0xC21C0000, 0xC2180000, 0xC2140000,
++0xC2100000, 0xC20C0000, 0xC2080000, 0xC2040000, 0xC2000000, 0xC1F80000,
++0xC1F00000, 0xC1E80000, 0xC1E00000, 0xC1D80000, 0xC1D00000, 0xC1C80000,
++0xC1C00000, 0xC1B80000, 0xC1B00000, 0xC1A80000, 0xC1A00000, 0xC1980000,
++0xC1900000, 0xC1880000, 0xC1800000, 0xC1700000, 0xC1600000, 0xC1500000,
++0xC1400000, 0xC1300000, 0xC1200000, 0xC1100000, 0xC1000000, 0xC0E00000,
++0xC0C00000, 0xC0A00000, 0xC0800000, 0xC0400000, 0xC0000000, 0xBF800000,
++0x00000000, 0x3F800000, 0x40000000, 0x40400000, 0x40800000, 0x40A00000,
++0x40C00000, 0x40E00000, 0x41000000, 0x41100000
++};
++
+ /* The following are for tuning of products */
+ #ifdef ENABLE_TUNING_CONTROLS
+ 
+@@ -4629,6 +4703,41 @@ static int ca0132_switch_put(struct snd_kcontrol *kcontrol,
+ /*
+  * Volume related
+  */
++/*
++ * Sets the internal DSP decibel level to match the DAC for output, and the
++ * ADC for input. Currently only the SBZ sets dsp capture volume level, and
++ * all alternative codecs set DSP playback volume.
++ */
++static void ca0132_alt_dsp_volume_put(struct hda_codec *codec, hda_nid_t nid)
 +{
 +	struct ca0132_spec *spec = codec->spec;
-+	unsigned int tmp;
-+	int num_fx;
-+	int idx, i;
++	unsigned int dsp_dir;
++	unsigned int lookup_val;
 +
-+	if (spec->dsp_state != DSP_DOWNLOADED)
-+		return;
++	if (nid == VNID_SPK)
++		dsp_dir = DSP_VOL_OUT;
++	else
++		dsp_dir = DSP_VOL_IN;
 +
++	lookup_val = spec->vnode_lvol[nid - VNODE_START_NID];
 +
-+	r3di_dsp_initial_mic_setup(codec);
++	dspio_set_uint_param(codec,
++		ca0132_alt_vol_ctls[dsp_dir].mid,
++		ca0132_alt_vol_ctls[dsp_dir].reqs[0],
++		float_vol_db_lookup[lookup_val]);
 +
-+	/*remove DSP headroom*/
-+	tmp = FLOAT_ZERO;
-+	dspio_set_uint_param(codec, 0x96, 0x3C, tmp);
++	lookup_val = spec->vnode_rvol[nid - VNODE_START_NID];
 +
-+	/* set WUH source */
-+	tmp = FLOAT_TWO;
-+	dspio_set_uint_param(codec, 0x31, 0x00, tmp);
-+	chipio_set_conn_rate(codec, MEM_CONNID_WUH, SR_48_000);
++	dspio_set_uint_param(codec,
++		ca0132_alt_vol_ctls[dsp_dir].mid,
++		ca0132_alt_vol_ctls[dsp_dir].reqs[1],
++		float_vol_db_lookup[lookup_val]);
 +
-+	/* Set speaker source? */
-+	dspio_set_uint_param(codec, 0x32, 0x00, tmp);
-+
-+	r3di_gpio_dsp_status_set(codec, R3DI_DSP_DOWNLOADED);
-+
-+	/* Setup effect defaults */
-+	num_fx = OUT_EFFECTS_COUNT + IN_EFFECTS_COUNT + 1;
-+	for (idx = 0; idx < num_fx; idx++) {
-+		for (i = 0; i <= ca0132_effects[idx].params; i++) {
-+			dspio_set_uint_param(codec,
-+					ca0132_effects[idx].mid,
-+					ca0132_effects[idx].reqs[i],
-+					ca0132_effects[idx].def_vals[i]);
-+		}
-+	}
-+
++	dspio_set_uint_param(codec,
++		ca0132_alt_vol_ctls[dsp_dir].mid,
++		ca0132_alt_vol_ctls[dsp_dir].reqs[2], FLOAT_ZERO);
 +}
 +
+ static int ca0132_volume_info(struct snd_kcontrol *kcontrol,
+ 			      struct snd_ctl_elem_info *uinfo)
+ {
+@@ -4730,6 +4839,51 @@ static int ca0132_volume_put(struct snd_kcontrol *kcontrol,
+ 	return changed;
+ }
+ 
 +/*
-  * Setup default parameters for the Sound Blaster Z DSP. A lot more going on
-  * than the Chromebook setup.
-  */
-@@ -5397,6 +5535,7 @@ static void ca0132_alt_init(struct hda_codec *codec)
- 		codec_dbg(codec, "R3DI alt_init");
- 		ca0132_gpio_init(codec);
- 		ca0132_gpio_setup(codec);
-+		r3di_gpio_dsp_status_set(codec, R3DI_DSP_DOWNLOADING);
- 		r3di_pre_dsp_setup(codec);
- 		snd_hda_sequence_write(codec, spec->chip_init_verbs);
- 		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0, 0x6FF, 0xC4);
-@@ -5445,21 +5584,29 @@ static int ca0132_init(struct hda_codec *codec)
- 	ca0132_init_unsol(codec);
- 	ca0132_init_params(codec);
- 	ca0132_init_flags(codec);
++ * This function is the same as the one above, because using an if statement
++ * inside of the above volume control for the DSP volume would cause too much
++ * lag. This is a lot more smooth.
++ */
++static int ca0132_alt_volume_put(struct snd_kcontrol *kcontrol,
++				struct snd_ctl_elem_value *ucontrol)
++{
++	struct hda_codec *codec = snd_kcontrol_chip(kcontrol);
++	struct ca0132_spec *spec = codec->spec;
++	hda_nid_t nid = get_amp_nid(kcontrol);
++	int ch = get_amp_channels(kcontrol);
++	long *valp = ucontrol->value.integer.value;
++	hda_nid_t vnid = 0;
++	int changed = 1;
 +
- 	snd_hda_sequence_write(codec, spec->base_init_verbs);
- 
- 	if (spec->quirk != QUIRK_NONE)
- 		ca0132_alt_init(codec);
- 
- 	ca0132_download_dsp(codec);
++	switch (nid) {
++	case 0x02:
++		vnid = VNID_SPK;
++		break;
++	case 0x07:
++		vnid = VNID_MIC;
++		break;
++	}
 +
- 	ca0132_refresh_widget_caps(codec);
++	/* store the left and right volume */
++	if (ch & 1) {
++		spec->vnode_lvol[vnid - VNODE_START_NID] = *valp;
++		valp++;
++	}
++	if (ch & 2) {
++		spec->vnode_rvol[vnid - VNODE_START_NID] = *valp;
++		valp++;
++	}
++
++	snd_hda_power_up(codec);
++	ca0132_alt_dsp_volume_put(codec, vnid);
++	mutex_lock(&codec->control_mutex);
++	changed = snd_hda_mixer_amp_volume_put(kcontrol, ucontrol);
++	mutex_unlock(&codec->control_mutex);
++	snd_hda_power_down(codec);
++
++	return changed;
++}
++
+ static int ca0132_volume_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ 			     unsigned int size, unsigned int __user *tlv)
+ {
+@@ -4849,6 +5003,39 @@ static struct snd_kcontrol_new ca0132_mixer[] = {
+ 	{ } /* end */
+ };
  
- 	if (spec->quirk == QUIRK_SBZ)
- 		writew(0x0107, spec->mem_base + 0x320);
++/*
++ * SBZ specific control mixer. Removes auto-detect for mic, and adds surround
++ * controls. Also sets both the Front Playback and Capture Volume controls to
++ * alt so they set the DSP's decibel level.
++ */
++static struct snd_kcontrol_new sbz_mixer[] = {
++	CA0132_ALT_CODEC_VOL("Front Playback Volume", 0x02, HDA_OUTPUT),
++	CA0132_CODEC_MUTE("Front Playback Switch", VNID_SPK, HDA_OUTPUT),
++	CA0132_ALT_CODEC_VOL("Capture Volume", 0x07, HDA_INPUT),
++	CA0132_CODEC_MUTE("Capture Switch", VNID_MIC, HDA_INPUT),
++	HDA_CODEC_VOLUME("What U Hear Capture Volume", 0x0a, 0, HDA_INPUT),
++	HDA_CODEC_MUTE("What U Hear Capture Switch", 0x0a, 0, HDA_INPUT),
++	CA0132_CODEC_MUTE_MONO("HP/Speaker Auto Detect Playback Switch",
++				VNID_HP_ASEL, 1, HDA_OUTPUT),
++	{ } /* end */
++};
++
++/*
++ * Same as the Sound Blaster Z, except doesn't use the alt volume for capture
++ * because it doesn't set decibel levels for the DSP for capture.
++ */
++static struct snd_kcontrol_new r3di_mixer[] = {
++	CA0132_ALT_CODEC_VOL("Front Playback Volume", 0x02, HDA_OUTPUT),
++	CA0132_CODEC_MUTE("Front Playback Switch", VNID_SPK, HDA_OUTPUT),
++	CA0132_CODEC_VOL("Capture Volume", VNID_MIC, HDA_INPUT),
++	CA0132_CODEC_MUTE("Capture Switch", VNID_MIC, HDA_INPUT),
++	HDA_CODEC_VOLUME("What U Hear Capture Volume", 0x0a, 0, HDA_INPUT),
++	HDA_CODEC_MUTE("What U Hear Capture Switch", 0x0a, 0, HDA_INPUT),
++	CA0132_CODEC_MUTE_MONO("HP/Speaker Auto Detect Playback Switch",
++				VNID_HP_ASEL, 1, HDA_OUTPUT),
++	{ } /* end */
++};
++
+ static int ca0132_build_controls(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+@@ -6562,7 +6749,21 @@ static int patch_ca0132(struct hda_codec *codec)
  
--	if (spec->quirk != QUIRK_SBZ) {
+ 	spec->dsp_state = DSP_DOWNLOAD_INIT;
+ 	spec->num_mixers = 1;
+-	spec->mixers[0] = ca0132_mixer;
++
++	/* Set which mixers each quirk uses. */
 +	switch (spec->quirk) {
++	case QUIRK_SBZ:
++		spec->mixers[0] = sbz_mixer;
++		snd_hda_codec_set_name(codec, "Sound Blaster Z");
++		break;
 +	case QUIRK_R3DI:
-+		r3di_setup_defaults(codec);
++		spec->mixers[0] = r3di_mixer;
++		snd_hda_codec_set_name(codec, "Recon3Di");
 +		break;
-+	case QUIRK_NONE:
-+	case QUIRK_ALIENWARE:
- 		ca0132_setup_defaults(codec);
- 		ca0132_init_analog_mic2(codec);
- 		ca0132_init_dmic(codec);
++	default:
++		spec->mixers[0] = ca0132_mixer;
 +		break;
- 	}
++	}
  
- 	for (i = 0; i < spec->num_outputs; i++)
+ 	/* Setup whether or not to use alt functions */
+ 	switch (spec->quirk) {
 -- 
 2.7.4
