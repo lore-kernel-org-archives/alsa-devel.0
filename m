@@ -1,70 +1,109 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH] ALSA: hda: Add Lenovo C50 All in one to
- the power_save blacklist
-Date: Tue, 8 May 2018 09:30:53 +0200
-Message-ID: <3c1b30ca-b688-dfcb-3994-5d79a7ed9b96@redhat.com>
-References: <20180508072746.10798-1-hdegoede@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 403C1267677
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 09:30:55 +0200 (CEST)
-Received: by mail-wr0-f195.google.com with SMTP id i14-v6so27992427wre.2
- for <alsa-devel@alsa-project.org>; Tue, 08 May 2018 00:30:55 -0700 (PDT)
-In-Reply-To: <20180508072746.10798-1-hdegoede@redhat.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Subject: [PATCH] ASoC: uniphier: evea: use DAPM to change source of line-in
+Date: Tue,  8 May 2018 17:45:09 +0900
+Message-ID: <20180508084509.21616-1-suzuki.katsuhiro@socionext.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch replaces mixer switch to DAPM one for changing audio source
+of line-in.
 
-On 08-05-18 09:27, Hans de Goede wrote:
-> Power-saving is causing loud plops on the Lenovo C50 All in one, add it
-> to the blacklist.
-> 
-> BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1572975
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+---
+ sound/soc/uniphier/evea.c | 55 +++++++++++++++++++++++----------------
+ 1 file changed, 33 insertions(+), 22 deletions(-)
 
-Note I just realized this will not apply cleanly, I've 3 patches in my
-local tree adding power_save quirks and I'm still waiting for feedback
-on the 2 others. I did not realize this one depended on the others.
-
-I will send out the entire series when I've test results on the
-other 2 models.
-
-Regards,
-
-Hans
-
-
-> ---
->   sound/pci/hda/hda_intel.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 0981c3c64d87..9a16af179503 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2214,6 +2214,8 @@ static struct snd_pci_quirk power_save_blacklist[] = {
->   	SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
->   	/* https://bugzilla.kernel.org/show_bug.cgi?id=199607 */
->   	SND_PCI_QUIRK(0x8086, 0x2057, "Intel NUC5i7RYB", 0),
-> +	/* https://bugzilla.redhat.com/show_bug.cgi?id=1572975 */
-> +	SND_PCI_QUIRK(0x17aa, 0x36a7, "Lenovo C50 All in one", 0),
->   	/* https://bugzilla.kernel.org/show_bug.cgi?id=198611 */
->   	SND_PCI_QUIRK(0x17aa, 0x2227, "Lenovo X1 Carbon 3rd Gen", 0),
->   	{}
-> 
+diff --git a/sound/soc/uniphier/evea.c b/sound/soc/uniphier/evea.c
+index 73fd6730095c..f9c10165fbc1 100644
+--- a/sound/soc/uniphier/evea.c
++++ b/sound/soc/uniphier/evea.c
+@@ -54,8 +54,21 @@ struct evea_priv {
+ 	int switch_hp;
+ };
+ 
++static const char * const linsw1_sel1_text[] = {
++	"LIN1", "LIN2", "LIN3"
++};
++
++static SOC_ENUM_SINGLE_DECL(linsw1_sel1_enum,
++	ALINSW1, ALINSW1_SEL1_SHIFT,
++	linsw1_sel1_text);
++
++static const struct snd_kcontrol_new linesw1_mux[] = {
++	SOC_DAPM_ENUM("Line In 1 Source", linsw1_sel1_enum),
++};
++
+ static const struct snd_soc_dapm_widget evea_widgets[] = {
+-	SND_SOC_DAPM_ADC("ADC", "Capture", SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_ADC("ADC", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_MUX("Line In 1 Mux", SND_SOC_NOPM, 0, 0, linesw1_mux),
+ 	SND_SOC_DAPM_INPUT("LIN1_LP"),
+ 	SND_SOC_DAPM_INPUT("LIN1_RP"),
+ 	SND_SOC_DAPM_INPUT("LIN2_LP"),
+@@ -63,7 +76,9 @@ static const struct snd_soc_dapm_widget evea_widgets[] = {
+ 	SND_SOC_DAPM_INPUT("LIN3_LP"),
+ 	SND_SOC_DAPM_INPUT("LIN3_RP"),
+ 
+-	SND_SOC_DAPM_DAC("DAC", "Playback", SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("DAC HP", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("DAC LO1", NULL, SND_SOC_NOPM, 0, 0),
++	SND_SOC_DAPM_DAC("DAC LO2", NULL, SND_SOC_NOPM, 0, 0),
+ 	SND_SOC_DAPM_OUTPUT("HP1_L"),
+ 	SND_SOC_DAPM_OUTPUT("HP1_R"),
+ 	SND_SOC_DAPM_OUTPUT("LO2_L"),
+@@ -71,17 +86,22 @@ static const struct snd_soc_dapm_widget evea_widgets[] = {
+ };
+ 
+ static const struct snd_soc_dapm_route evea_routes[] = {
+-	{ "ADC", NULL, "LIN1_LP" },
+-	{ "ADC", NULL, "LIN1_RP" },
+-	{ "ADC", NULL, "LIN2_LP" },
+-	{ "ADC", NULL, "LIN2_RP" },
+-	{ "ADC", NULL, "LIN3_LP" },
+-	{ "ADC", NULL, "LIN3_RP" },
+-
+-	{ "HP1_L", NULL, "DAC" },
+-	{ "HP1_R", NULL, "DAC" },
+-	{ "LO2_L", NULL, "DAC" },
+-	{ "LO2_R", NULL, "DAC" },
++	{ "Line In 1", NULL, "ADC" },
++	{ "ADC", NULL, "Line In 1 Mux" },
++	{ "Line In 1 Mux", "LIN1", "LIN1_LP" },
++	{ "Line In 1 Mux", "LIN1", "LIN1_RP" },
++	{ "Line In 1 Mux", "LIN2", "LIN2_LP" },
++	{ "Line In 1 Mux", "LIN2", "LIN2_RP" },
++	{ "Line In 1 Mux", "LIN3", "LIN3_LP" },
++	{ "Line In 1 Mux", "LIN3", "LIN3_RP" },
++
++	{ "DAC HP", NULL, "Headphone 1" },
++	{ "DAC LO1", NULL, "Line Out 1" },
++	{ "DAC LO2", NULL, "Line Out 2" },
++	{ "HP1_L", NULL, "DAC HP" },
++	{ "HP1_R", NULL, "DAC HP" },
++	{ "LO2_L", NULL, "DAC LO2" },
++	{ "LO2_R", NULL, "DAC LO2" },
+ };
+ 
+ static void evea_set_power_state_on(struct evea_priv *evea)
+@@ -280,16 +300,7 @@ static int evea_set_switch_hp(struct snd_kcontrol *kcontrol,
+ 	return evea_update_switch_hp(evea);
+ }
+ 
+-static const char * const linsw1_sel1_text[] = {
+-	"LIN1", "LIN2", "LIN3"
+-};
+-
+-static SOC_ENUM_SINGLE_DECL(linsw1_sel1_enum,
+-	ALINSW1, ALINSW1_SEL1_SHIFT,
+-	linsw1_sel1_text);
+-
+ static const struct snd_kcontrol_new evea_controls[] = {
+-	SOC_ENUM("Line Capture Source", linsw1_sel1_enum),
+ 	SOC_SINGLE_BOOL_EXT("Line Capture Switch", 0,
+ 			    evea_get_switch_lin, evea_set_switch_lin),
+ 	SOC_SINGLE_BOOL_EXT("Line Playback Switch", 0,
+-- 
+2.17.0
