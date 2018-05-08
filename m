@@ -1,85 +1,119 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 19/19] ASoC: Intel: bytcr_rt5640: Set card
-	long_name based on quirks
-Date: Tue,  8 May 2018 17:36:04 +0200
-Message-ID: <20180508153604.23711-20-hdegoede@redhat.com>
-References: <20180508153604.23711-1-hdegoede@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 1327B26773C
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:37 +0200 (CEST)
-In-Reply-To: <20180508153604.23711-1-hdegoede@redhat.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: [PATCH v5 00/13] ALSA: hda/ca0132: Patch Series for Recon3Di and Sound Blaster Z Support
+Date: Tue,  8 May 2018 13:20:00 -0400
+Message-ID: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Many X86 devices using a BYT SoC + RT5640 codec are cheap devices with
-generic DMI strings, causing snd_soc_set_dmi_name() to fail to set a
-long_name, making it impossible for userspace to have a correct UCM
-profile which only uses inputs / outputs which are actually hooked up
-on the device.
+This patchset adds support for the Sound Blaster Z and the Recon3Di.
 
-Our quirks already specify which input the internal mic is connected to
-and if a single (mono) speaker is used or if the device has stereo
-speakers.
+In order to figure out how to get these cards to work, I made a program called
+QemuHDADump[1], which uses the trace function of qemu to see interactions with
+the memory mapped pci BAR space of the card being used in the virtual machine.
+With this, I obtain the CORB buffer location to get the command verbs, and then
+dump them each time the buffer rolls over. This program may be useful for fixing
+other HDA related driver issues where there is no documentation for the device.
 
-This commit sets a long_name based on the quirks so that userspace can
-have UCM profiles doing the right thing based on the long_name.
+So far, I have been able to get all features supported on the Sound Blaster Z
+and the Recon3Di. All output and input effects work, all inputs and outputs
+work, and just about anything else I can think of. I have also added new
+controls in order to select the new inputs and outputs, as well as controls to
+change the effect levels and presets.
 
-Note that if we ever encounter the need for a special UCM profile for
-some device we can add a quirk to set a specific long_name for the
-device,
+I have also added the ability to use firmware taken from the Windows drivers of
+both the Sound Blaster Z and Recon3Di. I am trying to get into contact with
+Creative to get permission to redistribute these along with the current
+file included with the Chromebook, but they have not been very responsive.
+Luckily, the cards work with the Chromebook firmware just fine, although I
+believe there has to be a reason they have different firmware in Windows. I
+will not link to the firmwares here, but if you look up my thread on Creative
+Labs forums, you will find the link to download the firmwares there.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+I am willing to help get the other non-working cards such as the ZxR and the
+newer AE-5 working too, but I will need someone willing to run QemuHDADump in a
+virtual machine in order to get the commands.
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index cfc520200214..9a1204dcdbc6 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -929,6 +929,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
- static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
- static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
-+static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
- 
- static int byt_rt5640_suspend(struct snd_soc_card *card)
- {
-@@ -1000,6 +1001,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- {
-+	const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
- 	const struct dmi_system_id *dmi_id;
- 	struct byt_rt5640_private *priv;
- 	struct snd_soc_acpi_mach *mach;
-@@ -1163,6 +1165,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
-+		 "bytcr-rt5640-%s-spk-%s-mic",
-+		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
-+			"mono" : "stereo",
-+		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
-+	byt_rt5640_card.long_name = byt_rt5640_long_name;
-+
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
- 
- 	if (ret_val) {
+So, in summary:
+-This patchset makes the cards work better than they did before (they really
+ didn't work before)
+
+-This patchset leaves the original chromebook related stuff alone.
+
+Thanks.
+
+[1] https://github.com/Conmanx360/QemuHDADump
+
+Bugs:
+-------------------------------------------------------------------------------
+Recon3Di: (Reported by Mariusz Ceier)
+*******************
+-Occasionally switching between rear and front mic breaks the input until
+ computer is shutdown or put to sleep.
+
+-Surround Sound works, but is inconsistent. Sometimes, just updating the volume
+ fixes it, and sometimes, it requires a restart.
+
+Sound Blaster Z:
+*******************
+-none that I'm aware of.
+
+
+Version changes:
+-------------------------------------------------------------------------------
+v1:
+*******************
+-Massive patch formatting failure, please ignore v1.
+
+v2:
+*******************
+-Fixed patch formatting failure.
+
+v3:
+*******************
+-Fixed mem_base unmap, instead of checking for QUIRK_SBZ on exit, have it check
+ if the area is mapped, and if it is, unmap it. Also make it unmap after all
+ other commands are finished.
+
+-Change notification of failure to map mem_base from codec_dbg to codec_warn,
+ and use codec_info to tell the user that their card might have been incorrectly
+ identified as a Sound Blaster Z.
+
+-Remove commented out commands in sbz_exit_chip function, only reintroduce them
+ when their functions are defined.
+
+v4:
+*******************
+-Split patch into smaller pieces.
+
+-Added const to alt_out_presets array.
+
+-Fixed command that was commented out and only put it in when
+ it was actually used.
+
+v5:
+*******************
+-Fixed issue identified by kbuild test robot, where patch 12 didn't compile
+ individually.
+
+Connor McAdams (13):
+  ALSA: hda/ca0132: R3Di and SBZ quirk entires + alt firmware loading
+  ALSA: hda/ca0132: Add pincfg for SBZ + R3Di, add fp hp auto-detect
+  ALSA: hda/ca0132: Add PCI region2 iomap for SBZ
+  ALSA: hda/ca0132: Add extra exit functions for R3Di and SBZ
+  ALSA: hda/ca0132: add extra init functions for r3di + sbz
+  ALSA: hda/ca0132: update core functions for sbz + r3di
+  ALSA: hda/ca0132: add dsp setup related commands for the sbz
+  ALSA: hda/ca0132: Add dsp setup + gpio functions for r3di
+  ALSA: hda/ca0132: add the ability to set src_id on scp commands
+  ALSA: hda/ca0132: add alt_select_in/out for R3Di + SBZ
+  ALSA: hda/ca0132: Add DSP Volume set and New mixers for SBZ + R3Di
+  ALSA: hda/ca0132: add ca0132_alt_set_vipsource
+  ALSA: hda/ca0132: Add new control changes for SBZ + R3Di
+
+ sound/pci/hda/patch_ca0132.c | 3057 ++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 2941 insertions(+), 116 deletions(-)
+
 -- 
-2.17.0
+2.7.4
