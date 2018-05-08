@@ -1,188 +1,202 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH v5 09/13] ALSA: hda/ca0132: add the ability to set src_id on scp commands
-Date: Tue,  8 May 2018 13:20:09 -0400
-Message-ID: <1525800015-2920-10-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH v5 02/13] ALSA: hda/ca0132: Add pincfg for SBZ
+	+ R3Di, add fp hp auto-detect
+Date: Tue,  8 May 2018 13:20:02 -0400
+Message-ID: <1525800015-2920-3-git-send-email-conmanx360@gmail.com>
 References: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-io0-f193.google.com (mail-io0-f193.google.com
+ [209.85.223.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9828C2676AA
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 19:20:49 +0200 (CEST)
+Received: by mail-io0-f193.google.com with SMTP id c9-v6so32986010iob.12
+ for <alsa-devel@alsa-project.org>; Tue, 08 May 2018 10:20:48 -0700 (PDT)
 In-Reply-To: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: o-takashi@sakamocchi.jp, Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, =?UTF-8?q?J=C3=A9r=C3=A9my=20Lefaure?= <jeremy.lefaure@lse.epita.fr>, Connor McAdams <conmanx360@gmail.com>, o-takashi@sakamocchi.jp
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the ability to change the src_id on scp commands, which
-is used in the dsp setup of the Recon3Di and the Sound Blaster Z. It
-also makes sure to maintain backwards compatibility with the older
-dspio_set_uint_param function, and sets it's src to the default 0x20.
+This patch adds an unsolicited response tag for the front headphone
+panel which uses the same hp_callback as the rear headphone detection.
+
+This patch also adds pincfgs for the R3Di and SBZ which were taken from
+the Windows driver. The pins are also defined in the function
+ca0132_config. Both the R3Di and SBZ are also given a max out channel
+value of 6 to handle 5.1 surround sound in later patches.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 86 +++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 74 insertions(+), 12 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 111 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 108 insertions(+), 3 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 7a9d505..878bbf7 100644
+index 8346100..02238fe 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -1579,8 +1579,8 @@ static int dspio_send_scp_message(struct hda_codec *codec,
-  * Returns zero or a negative error code.
-  */
- static int dspio_scp(struct hda_codec *codec,
--		int mod_id, int req, int dir, void *data, unsigned int len,
--		void *reply, unsigned int *reply_len)
-+		int mod_id, int src_id, int req, int dir, const void *data,
-+		unsigned int len, void *reply, unsigned int *reply_len)
- {
- 	int status = 0;
- 	struct scp_msg scp_send, scp_reply;
-@@ -1604,7 +1604,7 @@ static int dspio_scp(struct hda_codec *codec,
- 		return -EINVAL;
- 	}
+@@ -723,6 +723,7 @@ struct ca0132_spec {
+ 	hda_nid_t shared_mic_nid;
+ 	hda_nid_t shared_out_nid;
+ 	hda_nid_t unsol_tag_hp;
++	hda_nid_t unsol_tag_front_hp; /* for desktop ca0132 codecs */
+ 	hda_nid_t unsol_tag_amic1;
  
--	scp_send.hdr = make_scp_header(mod_id, 0x20, (dir == SCP_GET), req,
-+	scp_send.hdr = make_scp_header(mod_id, src_id, (dir == SCP_GET), req,
- 				       0, 0, 0, len/sizeof(unsigned int));
- 	if (data != NULL && len > 0) {
- 		len = min((unsigned int)(sizeof(scp_send.data)), len);
-@@ -1661,15 +1661,24 @@ static int dspio_scp(struct hda_codec *codec,
-  * Set DSP parameters
-  */
- static int dspio_set_param(struct hda_codec *codec, int mod_id,
--			int req, void *data, unsigned int len)
-+			int src_id, int req, const void *data, unsigned int len)
- {
--	return dspio_scp(codec, mod_id, req, SCP_SET, data, len, NULL, NULL);
-+	return dspio_scp(codec, mod_id, src_id, req, SCP_SET, data, len, NULL,
-+			NULL);
- }
+ 	/* chip access */
+@@ -785,6 +786,36 @@ static const struct hda_pintbl alienware_pincfgs[] = {
+ 	{}
+ };
  
- static int dspio_set_uint_param(struct hda_codec *codec, int mod_id,
--			int req, unsigned int data)
-+			int req, const unsigned int data)
- {
--	return dspio_set_param(codec, mod_id, req, &data, sizeof(unsigned int));
-+	return dspio_set_param(codec, mod_id, 0x20, req, &data,
-+			sizeof(unsigned int));
-+}
++/* Sound Blaster Z pin configs taken from Windows Driver */
++static const struct hda_pintbl sbz_pincfgs[] = {
++	{ 0x0b, 0x01017010 }, /* Port G -- Lineout FRONT L/R */
++	{ 0x0c, 0x014510f0 }, /* SPDIF Out 1 */
++	{ 0x0d, 0x014510f0 }, /* Digital Out */
++	{ 0x0e, 0x01c510f0 }, /* SPDIF In */
++	{ 0x0f, 0x0221701f }, /* Port A -- BackPanel HP */
++	{ 0x10, 0x01017012 }, /* Port D -- Center/LFE or FP Hp */
++	{ 0x11, 0x01017014 }, /* Port B -- LineMicIn2 / Rear L/R */
++	{ 0x12, 0x01a170f0 }, /* Port C -- LineIn1 */
++	{ 0x13, 0x908700f0 }, /* What U Hear In*/
++	{ 0x18, 0x50d000f0 }, /* N/A */
++	{}
++};
 +
-+static int dspio_set_uint_param_no_source(struct hda_codec *codec, int mod_id,
-+			int req, const unsigned int data)
-+{
-+	return dspio_set_param(codec, mod_id, 0x00, req, &data,
-+			sizeof(unsigned int));
++/* Recon3D integrated pin configs taken from Windows Driver */
++static const struct hda_pintbl r3di_pincfgs[] = {
++	{ 0x0b, 0x01014110 }, /* Port G -- Lineout FRONT L/R */
++	{ 0x0c, 0x014510f0 }, /* SPDIF Out 1 */
++	{ 0x0d, 0x014510f0 }, /* Digital Out */
++	{ 0x0e, 0x41c520f0 }, /* SPDIF In */
++	{ 0x0f, 0x0221401f }, /* Port A -- BackPanel HP */
++	{ 0x10, 0x01016011 }, /* Port D -- Center/LFE or FP Hp */
++	{ 0x11, 0x01011014 }, /* Port B -- LineMicIn2 / Rear L/R */
++	{ 0x12, 0x02a090f0 }, /* Port C -- LineIn1 */
++	{ 0x13, 0x908700f0 }, /* What U Hear In*/
++	{ 0x18, 0x500000f0 }, /* N/A */
++	{}
++};
++
+ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
+ 	SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
+@@ -4503,6 +4534,10 @@ static void ca0132_init_unsol(struct hda_codec *codec)
+ 					    amic_callback);
+ 	snd_hda_jack_detect_enable_callback(codec, UNSOL_TAG_DSP,
+ 					    ca0132_process_dsp_response);
++	/* Front headphone jack detection */
++	if (spec->quirk == QUIRK_SBZ || spec->quirk == QUIRK_R3DI)
++		snd_hda_jack_detect_enable_callback(codec,
++			spec->unsol_tag_front_hp, hp_callback);
  }
  
  /*
-@@ -1681,8 +1690,9 @@ static int dspio_alloc_dma_chan(struct hda_codec *codec, unsigned int *dma_chan)
- 	unsigned int size = sizeof(dma_chan);
+@@ -4684,9 +4719,14 @@ static void ca0132_config(struct hda_codec *codec)
  
- 	codec_dbg(codec, "     dspio_alloc_dma_chan() -- begin\n");
--	status = dspio_scp(codec, MASTERCONTROL, MASTERCONTROL_ALLOC_DMA_CHAN,
--			SCP_GET, NULL, 0, dma_chan, &size);
-+	status = dspio_scp(codec, MASTERCONTROL, 0x20,
-+			MASTERCONTROL_ALLOC_DMA_CHAN, SCP_GET, NULL, 0,
-+			dma_chan, &size);
+ 	spec->multiout.dac_nids = spec->dacs;
+ 	spec->multiout.num_dacs = 3;
+-	spec->multiout.max_channels = 2;
  
- 	if (status < 0) {
- 		codec_dbg(codec, "dspio_alloc_dma_chan: SCP Failed\n");
-@@ -1711,8 +1721,9 @@ static int dspio_free_dma_chan(struct hda_codec *codec, unsigned int dma_chan)
- 	codec_dbg(codec, "     dspio_free_dma_chan() -- begin\n");
- 	codec_dbg(codec, "dspio_free_dma_chan: chan=%d\n", dma_chan);
+-	if (spec->quirk == QUIRK_ALIENWARE) {
++	if (spec->quirk == QUIRK_NONE || spec->quirk == QUIRK_ALIENWARE)
++		spec->multiout.max_channels = 2;
++	else
++		spec->multiout.max_channels = 6;
++
++	switch (spec->quirk) {
++	case QUIRK_ALIENWARE:
+ 		codec_dbg(codec, "ca0132_config: QUIRK_ALIENWARE applied.\n");
+ 		snd_hda_apply_pincfgs(codec, alienware_pincfgs);
  
--	status = dspio_scp(codec, MASTERCONTROL, MASTERCONTROL_ALLOC_DMA_CHAN,
--			   SCP_SET, &dma_chan, sizeof(dma_chan), NULL, &dummy);
-+	status = dspio_scp(codec, MASTERCONTROL, 0x20,
-+			MASTERCONTROL_ALLOC_DMA_CHAN, SCP_SET, &dma_chan,
-+			sizeof(dma_chan), NULL, &dummy);
- 
- 	if (status < 0) {
- 		codec_dbg(codec, "dspio_free_dma_chan: SCP Failed\n");
-@@ -3226,7 +3237,7 @@ static int tuning_ctl_set(struct hda_codec *codec, hda_nid_t nid,
- 			break;
- 
- 	snd_hda_power_up(codec);
--	dspio_set_param(codec, ca0132_tuning_ctls[i].mid,
-+	dspio_set_param(codec, ca0132_tuning_ctls[i].mid, 0x20,
- 			ca0132_tuning_ctls[i].req,
- 			&(lookup[idx]), sizeof(unsigned int));
- 	snd_hda_power_down(codec);
-@@ -4612,6 +4623,27 @@ static void ca0132_refresh_widget_caps(struct hda_codec *codec)
-  * Recon3Di r3di_setup_defaults sub functions.
-  */
- 
-+static void r3di_dsp_scp_startup(struct hda_codec *codec)
-+{
-+	unsigned int tmp;
+@@ -4706,7 +4746,71 @@ static void ca0132_config(struct hda_codec *codec)
+ 		spec->input_pins[2] = 0x13;
+ 		spec->shared_mic_nid = 0x7;
+ 		spec->unsol_tag_amic1 = 0x11;
+-	} else {
++		break;
++	case QUIRK_SBZ:
++		codec_dbg(codec, "%s: QUIRK_SBZ applied.\n", __func__);
++		snd_hda_apply_pincfgs(codec, sbz_pincfgs);
 +
-+	tmp = 0x00000000;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
++		spec->num_outputs = 2;
++		spec->out_pins[0] = 0x0B; /* Line out */
++		spec->out_pins[1] = 0x0F; /* Rear headphone out */
++		spec->out_pins[2] = 0x10; /* Front Headphone / Center/LFE*/
++		spec->out_pins[3] = 0x11; /* Rear surround */
++		spec->shared_out_nid = 0x2;
++		spec->unsol_tag_hp = spec->out_pins[1];
++		spec->unsol_tag_front_hp = spec->out_pins[2];
 +
-+	tmp = 0x00000001;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
++		spec->adcs[0] = 0x7; /* Rear Mic / Line-in */
++		spec->adcs[1] = 0x8; /* Front Mic, but only if no DSP */
++		spec->adcs[2] = 0xa; /* what u hear */
 +
-+	tmp = 0x00000004;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		spec->num_inputs = 2;
++		spec->input_pins[0] = 0x12; /* Rear Mic / Line-in */
++		spec->input_pins[1] = 0x13; /* What U Hear */
++		spec->shared_mic_nid = 0x7;
++		spec->unsol_tag_amic1 = spec->input_pins[0];
 +
-+	tmp = 0x00000005;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		/* SPDIF I/O */
++		spec->dig_out = 0x05;
++		spec->multiout.dig_out_nid = spec->dig_out;
++		cfg->dig_out_pins[0] = 0x0c;
++		cfg->dig_outs = 1;
++		cfg->dig_out_type[0] = HDA_PCM_TYPE_SPDIF;
++		spec->dig_in = 0x09;
++		cfg->dig_in_pin = 0x0e;
++		cfg->dig_in_type = HDA_PCM_TYPE_SPDIF;
++		break;
++	case QUIRK_R3DI:
++		codec_dbg(codec, "%s: QUIRK_R3DI applied.\n", __func__);
++		snd_hda_apply_pincfgs(codec, r3di_pincfgs);
 +
-+	tmp = 0x00000000;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		spec->num_outputs = 2;
++		spec->out_pins[0] = 0x0B; /* Line out */
++		spec->out_pins[1] = 0x0F; /* Rear headphone out */
++		spec->out_pins[2] = 0x10; /* Front Headphone / Center/LFE*/
++		spec->out_pins[3] = 0x11; /* Rear surround */
++		spec->shared_out_nid = 0x2;
++		spec->unsol_tag_hp = spec->out_pins[1];
++		spec->unsol_tag_front_hp = spec->out_pins[2];
 +
-+}
++		spec->adcs[0] = 0x07; /* Rear Mic / Line-in */
++		spec->adcs[1] = 0x08; /* Front Mic, but only if no DSP */
++		spec->adcs[2] = 0x0a; /* what u hear */
 +
- static void r3di_dsp_initial_mic_setup(struct hda_codec *codec)
- {
- 	unsigned int tmp;
-@@ -4729,6 +4761,34 @@ static void sbz_chipio_startup_data(struct hda_codec *codec)
- 	mutex_unlock(&spec->chipio_mutex);
++		spec->num_inputs = 2;
++		spec->input_pins[0] = 0x12; /* Rear Mic / Line-in */
++		spec->input_pins[1] = 0x13; /* What U Hear */
++		spec->shared_mic_nid = 0x7;
++		spec->unsol_tag_amic1 = spec->input_pins[0];
++
++		/* SPDIF I/O */
++		spec->dig_out = 0x05;
++		spec->multiout.dig_out_nid = spec->dig_out;
++		cfg->dig_out_pins[0] = 0x0c;
++		cfg->dig_outs = 1;
++		cfg->dig_out_type[0] = HDA_PCM_TYPE_SPDIF;
++		break;
++	default:
+ 		spec->num_outputs = 2;
+ 		spec->out_pins[0] = 0x0b; /* speaker out */
+ 		spec->out_pins[1] = 0x10; /* headphone out */
+@@ -4733,6 +4837,7 @@ static void ca0132_config(struct hda_codec *codec)
+ 		spec->dig_in = 0x09;
+ 		cfg->dig_in_pin = 0x0e;
+ 		cfg->dig_in_type = HDA_PCM_TYPE_SPDIF;
++		break;
+ 	}
  }
- 
-+/*
-+ * Sound Blaster Z uses these after DSP is loaded. Weird SCP commands
-+ * without a 0x20 source like normal.
-+ */
-+static void sbz_dsp_scp_startup(struct hda_codec *codec)
-+{
-+	unsigned int tmp;
-+
-+	tmp = 0x00000003;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+
-+	tmp = 0x00000000;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
-+
-+	tmp = 0x00000001;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
-+
-+	tmp = 0x00000004;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+
-+	tmp = 0x00000005;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+
-+	tmp = 0x00000000;
-+	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+
-+}
-+
- static void sbz_dsp_initial_mic_setup(struct hda_codec *codec)
- {
- 	unsigned int tmp;
-@@ -4807,6 +4867,7 @@ static void r3di_setup_defaults(struct hda_codec *codec)
- 	if (spec->dsp_state != DSP_DOWNLOADED)
- 		return;
- 
-+	r3di_dsp_scp_startup(codec);
- 
- 	r3di_dsp_initial_mic_setup(codec);
- 
-@@ -4851,6 +4912,7 @@ static void sbz_setup_defaults(struct hda_codec *codec)
- 	if (spec->dsp_state != DSP_DOWNLOADED)
- 		return;
- 
-+	sbz_dsp_scp_startup(codec);
- 
- 	sbz_init_analog_mics(codec);
  
 -- 
 2.7.4
