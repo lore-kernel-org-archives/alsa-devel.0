@@ -1,15 +1,15 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 06/19] ASoC: rt5640: Add jack-detect support
-Date: Tue,  8 May 2018 17:35:51 +0200
-Message-ID: <20180508153604.23711-7-hdegoede@redhat.com>
+Subject: [PATCH 07/19] ASoC: rt5640: Add button press support
+Date: Tue,  8 May 2018 17:35:52 +0200
+Message-ID: <20180508153604.23711-8-hdegoede@redhat.com>
 References: <20180508153604.23711-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CB612676CC
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:17 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 893662676A9
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:18 +0200 (CEST)
 In-Reply-To: <20180508153604.23711-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,251 +24,257 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard L
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-QWRkIGphY2stZGV0ZWN0IHN1cHBvcnQsIGxvb3NlbHkgYmFzZWQgb24gZWFybGllciB3b3JrIG9u
-IHRoaXMgYnk6CgpQaWVycmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGlu
-dXguaW50ZWwuY29tPgpGcmFuY2lzY28gbWVuZGV6IDxmcmFuY2lzY28ubWVuZGV6QGludGVsLmNv
-bT4KCk5vdGUgZ2V0dGluZyB0aGUgT1ZDRCB0byB3b3JrIHJlbGlhYmxlIHdhcyBzb3J0IG9mIGZp
-bmlja3ksIHNvIHRoZXJlIGFyZQpxdWl0ZSBhIGZldyBjb21tZW50cyBvbiB0aGlzIHRvIGhvcGVm
-dWxseSBhdm9pZCBwZW9wbGUgYnJlYWtpbmcgaXQgaW4gdGhlCmZ1dHVyZS4KClRoaXMgKGFuZCB0
-aGUgZm9sbG93LXVwIGJ1dHRvbiBwcmVzcyBzdXBwb3J0KSBoYXMgYmVlbiB0ZXN0ZWQgb24gdGhl
-CmZvbGxvd2luZyBkZXZpY2VzOgoKQWNlciBJY29uaWEgVGFiIDggVzEtODEwCkFzdXMgVDEwMENI
-SQpBc3VzIFQxMDBUQQpBc3VzIFQyMDBUQQpBeHhvIFdUMTAxMQpDaHV3aSBWaTgKRGVsbCBWZW51
-ZSA4IFBybyA1ODMwCkhQIFBhdmlsaW9uIFgyIDEwLW4wMDBuZApIUCBTdHJlYW0gNwpJLlQuIFdv
-cmtzIFRXODkxCkxhbWluYSBJODI3MApNU0kgUzEwMApQZWFxIEMxMDEwClBpcG8gVzQKUG9WIE1v
-YmlpVEFCLVA4MDBXICh2Mi4wKQpUb3NoaWJhIENsaWNrIE1pbmkgTDlXLUIKCkJ1Z0xpbms6IGh0
-dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTk2Mzc3ClNpZ25lZC1v
-ZmYtYnk6IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJlZGhhdC5jb20+Ci0tLQogc291bmQvc29j
-L2NvZGVjcy9ydDU2NDAuYyB8IDI4NiArKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
-KysrKwogc291bmQvc29jL2NvZGVjcy9ydDU2NDAuaCB8ICAzNiArKysrLQogMiBmaWxlcyBjaGFu
-Z2VkLCAzMTggaW5zZXJ0aW9ucygrKSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3Vu
-ZC9zb2MvY29kZWNzL3J0NTY0MC5jIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NDAuYwppbmRleCBk
-N2M3YjIwN2YzY2MuLjhlMzA2ZjUwOTYwMSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9y
-dDU2NDAuYworKysgYi9zb3VuZC9zb2MvY29kZWNzL3J0NTY0MC5jCkBAIC0yNCw2ICsyNCw3IEBA
-CiAjaW5jbHVkZSA8bGludXgvc3BpL3NwaS5oPgogI2luY2x1ZGUgPGxpbnV4L2FjcGkuaD4KICNp
-bmNsdWRlIDxzb3VuZC9jb3JlLmg+CisjaW5jbHVkZSA8c291bmQvamFjay5oPgogI2luY2x1ZGUg
-PHNvdW5kL3BjbS5oPgogI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KICNpbmNsdWRlIDxz
-b3VuZC9zb2MuaD4KQEAgLTIwOTMsNiArMjA5NCwyMjQgQEAgaW50IHJ0NTY0MF9zZWxfYXNyY19j
-bGtfc3JjKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50LAogfQogRVhQT1JUX1NZ
-TUJPTF9HUEwocnQ1NjQwX3NlbF9hc3JjX2Nsa19zcmMpOwogCitzdGF0aWMgdm9pZCBydDU2NDBf
-ZW5hYmxlX21pY2JpYXMxX2Zvcl9vdmNkKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9u
-ZW50KQoreworCXN0cnVjdCBzbmRfc29jX2RhcG1fY29udGV4dCAqZGFwbSA9IHNuZF9zb2NfY29t
-cG9uZW50X2dldF9kYXBtKGNvbXBvbmVudCk7CisKKwlzbmRfc29jX2RhcG1fbXV0ZXhfbG9jayhk
-YXBtKTsKKwlzbmRfc29jX2RhcG1fZm9yY2VfZW5hYmxlX3Bpbl91bmxvY2tlZChkYXBtLCAiTERP
-MiIpOworCXNuZF9zb2NfZGFwbV9mb3JjZV9lbmFibGVfcGluX3VubG9ja2VkKGRhcG0sICJNSUNC
-SUFTMSIpOworCS8qIE9WQ0QgaXMgdW5yZWxpYWJsZSB3aGVuIHVzZWQgd2l0aCBSQ0NMSyBhcyBz
-eXNjbGstc291cmNlICovCisJc25kX3NvY19kYXBtX2ZvcmNlX2VuYWJsZV9waW5fdW5sb2NrZWQo
-ZGFwbSwgIlBsYXRmb3JtIENsb2NrIik7CisJc25kX3NvY19kYXBtX3N5bmNfdW5sb2NrZWQoZGFw
-bSk7CisJc25kX3NvY19kYXBtX211dGV4X3VubG9jayhkYXBtKTsKK30KKworc3RhdGljIHZvaWQg
-cnQ1NjQwX2Rpc2FibGVfbWljYmlhczFfZm9yX292Y2Qoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50
-ICpjb21wb25lbnQpCit7CisJc3RydWN0IHNuZF9zb2NfZGFwbV9jb250ZXh0ICpkYXBtID0gc25k
-X3NvY19jb21wb25lbnRfZ2V0X2RhcG0oY29tcG9uZW50KTsKKworCXNuZF9zb2NfZGFwbV9tdXRl
-eF9sb2NrKGRhcG0pOworCXNuZF9zb2NfZGFwbV9kaXNhYmxlX3Bpbl91bmxvY2tlZChkYXBtLCAi
-UGxhdGZvcm0gQ2xvY2siKTsKKwlzbmRfc29jX2RhcG1fZGlzYWJsZV9waW5fdW5sb2NrZWQoZGFw
-bSwgIk1JQ0JJQVMxIik7CisJc25kX3NvY19kYXBtX2Rpc2FibGVfcGluX3VubG9ja2VkKGRhcG0s
-ICJMRE8yIik7CisJc25kX3NvY19kYXBtX3N5bmNfdW5sb2NrZWQoZGFwbSk7CisJc25kX3NvY19k
-YXBtX211dGV4X3VubG9jayhkYXBtKTsKK30KKworc3RhdGljIHZvaWQgcnQ1NjQwX2NsZWFyX21p
-Y2JpYXMxX292Y2Qoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21wb25lbnQpCit7CisJc25k
-X3NvY19jb21wb25lbnRfdXBkYXRlX2JpdHMoY29tcG9uZW50LCBSVDU2NDBfSVJRX0NUUkwyLAor
-CQlSVDU2NDBfTUIxX09DX1NUQVRVUywgMCk7Cit9CisKK3N0YXRpYyBib29sIHJ0NTY0MF9taWNi
-aWFzMV9vdmNkKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50KQoreworCWludCB2
-YWw7CisKKwl2YWwgPSBzbmRfc29jX2NvbXBvbmVudF9yZWFkMzIoY29tcG9uZW50LCBSVDU2NDBf
-SVJRX0NUUkwyKTsKKwlkZXZfZGJnKGNvbXBvbmVudC0+ZGV2LCAiaXJxIGN0cmwyICUjMDR4XG4i
-LCB2YWwpOworCisJcmV0dXJuICh2YWwgJiBSVDU2NDBfTUIxX09DX1NUQVRVUyk7Cit9CisKK3N0
-YXRpYyBib29sIHJ0NTY0MF9qYWNrX2luc2VydGVkKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAq
-Y29tcG9uZW50KQoreworCXN0cnVjdCBydDU2NDBfcHJpdiAqcnQ1NjQwID0gc25kX3NvY19jb21w
-b25lbnRfZ2V0X2RydmRhdGEoY29tcG9uZW50KTsKKwlpbnQgdmFsOworCisJdmFsID0gc25kX3Nv
-Y19jb21wb25lbnRfcmVhZDMyKGNvbXBvbmVudCwgUlQ1NjQwX0lOVF9JUlFfU1QpOworCWRldl9k
-YmcoY29tcG9uZW50LT5kZXYsICJpcnEgc3RhdHVzICUjMDR4XG4iLCB2YWwpOworCisJaWYgKHJ0
-NTY0MC0+amRfaW52ZXJ0ZWQpCisJCXJldHVybiAhKHZhbCAmIFJUNTY0MF9KRF9TVEFUVVMpOwor
-CWVsc2UKKwkJcmV0dXJuICh2YWwgJiBSVDU2NDBfSkRfU1RBVFVTKTsKK30KKworLyogSmFjayBk
-ZXRlY3QgdGltaW5ncyAqLworI2RlZmluZSBKQUNLX1NFVFRMRV9USU1FCTEwMCAvKiBtaWxsaSBz
-ZWNvbmRzICovCisjZGVmaW5lIEpBQ0tfREVURUNUX0NPVU5UCTUKKyNkZWZpbmUgSkFDS19ERVRF
-Q1RfTUFYQ09VTlQJMjAgIC8qIEFwcm94LiAyIHNlY29uZHMgd29ydGggb2YgdHJpZXMgKi8KKwor
-c3RhdGljIGludCBydDU2NDBfZGV0ZWN0X2hlYWRzZXQoc3RydWN0IHNuZF9zb2NfY29tcG9uZW50
-ICpjb21wb25lbnQpCit7CisJaW50IGksIGhlYWRzZXRfY291bnQgPSAwLCBoZWFkcGhvbmVfY291
-bnQgPSAwOworCisJLyoKKwkgKiBXZSBnZXQgdGhlIGluc2VydGlvbiBldmVudCBiZWZvcmUgdGhl
-IGphY2sgaXMgZnVsbHkgaW5zZXJ0ZWQgYXQgd2hpY2gKKwkgKiBwb2ludCB0aGUgc2Vjb25kIHJp
-bmcgb24gYSBUUlJTIGNvbm5lY3RvciBtYXkgc2hvcnQgdGhlIDJuZCByaW5nIGFuZAorCSAqIHNs
-ZWV2ZSBjb250YWN0cywgYWxzbyB0aGUgb3ZlcmN1cnJlbnQgZGV0ZWN0aW9uIGlzIG5vdCBlbnRp
-cmVseQorCSAqIHJlbGlhYmxlLiBTbyB3ZSB0cnkgc2V2ZXJhbCB0aW1lcyB3aXRoIGEgd2FpdCBp
-biBiZXR3ZWVuIHVudGlsIHdlCisJICogZGV0ZWN0IHRoZSBzYW1lIHR5cGUgSkFDS19ERVRFQ1Rf
-Q09VTlQgdGltZXMgaW4gYSByb3cuCisJICovCisJZm9yIChpID0gMDsgaSA8IEpBQ0tfREVURUNU
-X01BWENPVU5UOyBpKyspIHsKKwkJLyogQ2xlYXIgYW55IHByZXZpb3VzIG92ZXItY3VycmVudCBz
-dGF0dXMgZmxhZyAqLworCQlydDU2NDBfY2xlYXJfbWljYmlhczFfb3ZjZChjb21wb25lbnQpOwor
-CisJCW1zbGVlcChKQUNLX1NFVFRMRV9USU1FKTsKKworCQkvKiBDaGVjayB0aGUgamFjayBpcyBz
-dGlsbCBjb25uZWN0ZWQgYmVmb3JlIGNoZWNraW5nIG92Y2QgKi8KKwkJaWYgKCFydDU2NDBfamFj
-a19pbnNlcnRlZChjb21wb25lbnQpKQorCQkJcmV0dXJuIDA7CisKKwkJaWYgKHJ0NTY0MF9taWNi
-aWFzMV9vdmNkKGNvbXBvbmVudCkpIHsKKwkJCS8qCisJCQkgKiBPdmVyIGN1cnJlbnQgZGV0ZWN0
-ZWQsIHRoZXJlIGlzIGEgc2hvcnQgYmV0d2VlbiB0aGUKKwkJCSAqIDJuZCByaW5nIGNvbnRhY3Qg
-YW5kIHRoZSBncm91bmQsIHNvIGEgVFJTIGNvbm5lY3RvcgorCQkJICogd2l0aG91dCBhIG1pYyBj
-b250YWN0IGFuZCB0aHVzIHBsYWluIGhlYWRwaG9uZXMuCisJCQkgKi8KKwkJCWRldl9kYmcoY29t
-cG9uZW50LT5kZXYsICJqYWNrIG1pYy1nbmQgc2hvcnRlZFxuIik7CisJCQloZWFkc2V0X2NvdW50
-ID0gMDsKKwkJCWhlYWRwaG9uZV9jb3VudCsrOworCQkJaWYgKGhlYWRwaG9uZV9jb3VudCA9PSBK
-QUNLX0RFVEVDVF9DT1VOVCkKKwkJCQlyZXR1cm4gU05EX0pBQ0tfSEVBRFBIT05FOworCQl9IGVs
-c2UgeworCQkJZGV2X2RiZyhjb21wb25lbnQtPmRldiwgImphY2sgbWljLWduZCBvcGVuXG4iKTsK
-KwkJCWhlYWRwaG9uZV9jb3VudCA9IDA7CisJCQloZWFkc2V0X2NvdW50Kys7CisJCQlpZiAoaGVh
-ZHNldF9jb3VudCA9PSBKQUNLX0RFVEVDVF9DT1VOVCkKKwkJCQlyZXR1cm4gU05EX0pBQ0tfSEVB
-RFNFVDsKKwkJfQorCX0KKworCWRldl9lcnIoY29tcG9uZW50LT5kZXYsICJFcnJvciBkZXRlY3Rp
-bmcgaGVhZHNldCB2cyBoZWFkcGhvbmVzLCBiYWQgY29udGFjdD8sIGFzc3VtaW5nIGhlYWRwaG9u
-ZXNcbiIpOworCXJldHVybiBTTkRfSkFDS19IRUFEUEhPTkU7Cit9CisKK3N0YXRpYyB2b2lkIHJ0
-NTY0MF9qYWNrX3dvcmsoc3RydWN0IHdvcmtfc3RydWN0ICp3b3JrKQoreworCXN0cnVjdCBydDU2
-NDBfcHJpdiAqcnQ1NjQwID0KKwkJY29udGFpbmVyX29mKHdvcmssIHN0cnVjdCBydDU2NDBfcHJp
-diwgamFja193b3JrKTsKKwlzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCA9IHJ0
-NTY0MC0+Y29tcG9uZW50OworCWludCBzdGF0dXM7CisKKwlpZiAoIXJ0NTY0MF9qYWNrX2luc2Vy
-dGVkKGNvbXBvbmVudCkpIHsKKwkJLyogSmFjayByZW1vdmVkLCBvciBzcHVyaW91cyBJUlE/ICov
-CisJCWlmIChydDU2NDAtPmphY2stPnN0YXR1cyAmIFNORF9KQUNLX0hFQURQSE9ORSkgeworCQkJ
-c25kX3NvY19qYWNrX3JlcG9ydChydDU2NDAtPmphY2ssIDAsIFNORF9KQUNLX0hFQURTRVQpOwor
-CQkJZGV2X2RiZyhjb21wb25lbnQtPmRldiwgImphY2sgdW5wbHVnZ2VkXG4iKTsKKwkJfQorCX0g
-ZWxzZSBpZiAoIShydDU2NDAtPmphY2stPnN0YXR1cyAmIFNORF9KQUNLX0hFQURQSE9ORSkpIHsK
-KwkJLyogSmFjayBpbnNlcnRlZCAqLworCQlydDU2NDBfZW5hYmxlX21pY2JpYXMxX2Zvcl9vdmNk
-KGNvbXBvbmVudCk7CisJCXN0YXR1cyA9IHJ0NTY0MF9kZXRlY3RfaGVhZHNldChjb21wb25lbnQp
-OworCQlydDU2NDBfZGlzYWJsZV9taWNiaWFzMV9mb3Jfb3ZjZChjb21wb25lbnQpOworCisJCWRl
-dl9kYmcoY29tcG9uZW50LT5kZXYsICJkZXRlY3Qgc3RhdHVzICUjMDJ4XG4iLCBzdGF0dXMpOwor
-CQlzbmRfc29jX2phY2tfcmVwb3J0KHJ0NTY0MC0+amFjaywgc3RhdHVzLCBTTkRfSkFDS19IRUFE
-U0VUKTsKKwl9Cit9CisKK3N0YXRpYyBpcnFyZXR1cm5fdCBydDU2NDBfaXJxKGludCBpcnEsIHZv
-aWQgKmRhdGEpCit7CisJc3RydWN0IHJ0NTY0MF9wcml2ICpydDU2NDAgPSBkYXRhOworCisJaWYg
-KHJ0NTY0MC0+amFjaykKKwkJcXVldWVfd29yayhzeXN0ZW1fbG9uZ193cSwgJnJ0NTY0MC0+amFj
-a193b3JrKTsKKworCXJldHVybiBJUlFfSEFORExFRDsKK30KKworc3RhdGljIHZvaWQgcnQ1NjQw
-X2NhbmNlbF93b3JrKHZvaWQgKmRhdGEpCit7CisJc3RydWN0IHJ0NTY0MF9wcml2ICpydDU2NDAg
-PSBkYXRhOworCisJY2FuY2VsX3dvcmtfc3luYygmcnQ1NjQwLT5qYWNrX3dvcmspOworfQorCitz
-dGF0aWMgdm9pZCBydDU2NDBfZW5hYmxlX2phY2tfZGV0ZWN0KHN0cnVjdCBzbmRfc29jX2NvbXBv
-bmVudCAqY29tcG9uZW50LAorCQkJCSAgICAgIHN0cnVjdCBzbmRfc29jX2phY2sgKmphY2spCit7
-CisJc3RydWN0IHJ0NTY0MF9wcml2ICpydDU2NDAgPSBzbmRfc29jX2NvbXBvbmVudF9nZXRfZHJ2
-ZGF0YShjb21wb25lbnQpOworCisJLyogU2VsZWN0IEpELXNvdXJjZSAqLworCXNuZF9zb2NfY29t
-cG9uZW50X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwgUlQ1NjQwX0pEX0NUUkwsCisJCVJUNTY0MF9K
-RF9NQVNLLCBydDU2NDAtPmpkX3NyYyk7CisKKwkvKiBTZWxlY3RpbmcgR1BJTzAxIGFzIGFuIGlu
-dGVycnVwdCAqLworCXNuZF9zb2NfY29tcG9uZW50X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwgUlQ1
-NjQwX0dQSU9fQ1RSTDEsCisJCVJUNTY0MF9HUDFfUElOX01BU0ssIFJUNTY0MF9HUDFfUElOX0lS
-USk7CisKKwkvKiBTZXQgR1BJTzEgb3V0cHV0ICovCisJc25kX3NvY19jb21wb25lbnRfdXBkYXRl
-X2JpdHMoY29tcG9uZW50LCBSVDU2NDBfR1BJT19DVFJMMywKKwkJUlQ1NjQwX0dQMV9QRl9NQVNL
-LCBSVDU2NDBfR1AxX1BGX09VVCk7CisKKwkvKiBFbmFibGluZyBqZDIgaW4gZ2VuZXJhbCBjb250
-cm9sIDEgKi8KKwlzbmRfc29jX2NvbXBvbmVudF93cml0ZShjb21wb25lbnQsIFJUNTY0MF9EVU1N
-WTEsIDB4M2Y0MSk7CisKKwkvKiBFbmFibGluZyBqZDIgaW4gZ2VuZXJhbCBjb250cm9sIDIgKi8K
-KwlzbmRfc29jX2NvbXBvbmVudF93cml0ZShjb21wb25lbnQsIFJUNTY0MF9EVU1NWTIsIDB4NDAw
-MSk7CisKKwlzbmRfc29jX2NvbXBvbmVudF93cml0ZShjb21wb25lbnQsIFJUNTY0MF9QUl9CQVNF
-ICsgUlQ1NjQwX0JJQVNfQ1VSNCwKKwkJMHhhODAwIHwgcnQ1NjQwLT5vdmNkX3NmKTsKKworCXNu
-ZF9zb2NfY29tcG9uZW50X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwgUlQ1NjQwX01JQ0JJQVMsCisJ
-CVJUNTY0MF9NSUMxX09WVEhfTUFTSyB8IFJUNTY0MF9NSUMxX09WQ0RfTUFTSywKKwkJcnQ1NjQw
-LT5vdmNkX3RoIHwgUlQ1NjQwX01JQzFfT1ZDRF9FTik7CisKKwkvKgorCSAqIFRoZSBvdmVyLWN1
-cnJlbnQtZGV0ZWN0IGlzIG9ubHkgcmVsaWFibGUgaW4gZGV0ZWN0aW5nIHRoZSBhYnNlbmNlCisJ
-ICogb2Ygb3Zlci1jdXJyZW50LCB3aGVuIHRoZSBtaWMtY29udGFjdCBpbiB0aGUgamFjayBpcyBz
-aG9ydC1jaXJjdWl0ZWQsCisJICogdGhlIGhhcmR3YXJlIHBlcmlvZGljYWxseSByZXRyaWVzIGlm
-IGl0IGNhbiBhcHBseSB0aGUgYmlhcy1jdXJyZW50CisJICogbGVhZGluZyB0byB0aGUgb3ZjZCBz
-dGF0dXMgZmxpcC1mbG9wcGluZyAxLTAtMSB3aXRoIGl0IGJlaW5nIDAgYWJvdXQKKwkgKiAxMCUg
-b2YgdGhlIHRpbWUsIGFzIHdlIHBvbGwgdGhlIG92Y2Qgc3RhdHVzIGJpdCB3ZSBtaWdodCBoaXQg
-dGhhdAorCSAqIDEwJSwgc28gd2UgZW5hYmxlIHN0aWNreSBtb2RlIGFuZCB3aGVuIGNoZWNraW5n
-IE9WQ0Qgd2UgY2xlYXIgdGhlCisJICogc3RhdHVzLCBtc2xlZXAoKSBhIGJpdCBhbmQgdGhlbiBj
-aGVjayB0byBnZXQgYSByZWxpYWJsZSByZWFkaW5nLgorCSAqLworCXNuZF9zb2NfY29tcG9uZW50
-X3VwZGF0ZV9iaXRzKGNvbXBvbmVudCwgUlQ1NjQwX0lSUV9DVFJMMiwKKwkJUlQ1NjQwX01CMV9P
-Q19TVEtZX01BU0ssIFJUNTY0MF9NQjFfT0NfU1RLWV9FTik7CisKKwlzbmRfc29jX2NvbXBvbmVu
-dF93cml0ZShjb21wb25lbnQsIFJUNTY0MF9JUlFfQ1RSTDEsCisJCQkJUlQ1NjQwX0lSUV9KRF9O
-T1IpOworCisJcnQ1NjQwLT5qYWNrID0gamFjazsKKwllbmFibGVfaXJxKHJ0NTY0MC0+aXJxKTsK
-KwkvKiBzeW5jIGluaXRpYWwgamFjayBzdGF0ZSAqLworCXF1ZXVlX3dvcmsoc3lzdGVtX2xvbmdf
-d3EsICZydDU2NDAtPmphY2tfd29yayk7Cit9CisKK3N0YXRpYyB2b2lkIHJ0NTY0MF9kaXNhYmxl
-X2phY2tfZGV0ZWN0KHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50KQoreworCXN0
-cnVjdCBydDU2NDBfcHJpdiAqcnQ1NjQwID0gc25kX3NvY19jb21wb25lbnRfZ2V0X2RydmRhdGEo
-Y29tcG9uZW50KTsKKworCWRpc2FibGVfaXJxKHJ0NTY0MC0+aXJxKTsKKwlydDU2NDBfY2FuY2Vs
-X3dvcmsocnQ1NjQwKTsKKworCXJ0NTY0MC0+amFjayA9IE5VTEw7Cit9CisKK3N0YXRpYyBpbnQg
-cnQ1NjQwX3NldF9qYWNrKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50LAorCQkJ
-ICAgc3RydWN0IHNuZF9zb2NfamFjayAqamFjaywgdm9pZCAqZGF0YSkKK3sKKwlpZiAoamFjaykK
-KwkJcnQ1NjQwX2VuYWJsZV9qYWNrX2RldGVjdChjb21wb25lbnQsIGphY2spOworCWVsc2UKKwkJ
-cnQ1NjQwX2Rpc2FibGVfamFja19kZXRlY3QoY29tcG9uZW50KTsKKworCXJldHVybiAwOworfQor
-CiBzdGF0aWMgaW50IHJ0NTY0MF9wcm9iZShzdHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBv
-bmVudCkKIHsKIAlzdHJ1Y3Qgc25kX3NvY19kYXBtX2NvbnRleHQgKmRhcG0gPSBzbmRfc29jX2Nv
-bXBvbmVudF9nZXRfZGFwbShjb21wb25lbnQpOwpAQCAtMjE3Niw2ICsyMzk1LDUzIEBAIHN0YXRp
-YyBpbnQgcnQ1NjQwX3Byb2JlKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50KQog
-CWlmIChkbWljX2VuKQogCQlydDU2NDBfZG1pY19lbmFibGUoY29tcG9uZW50LCBkbWljMV9kYXRh
-X3BpbiwgZG1pYzJfZGF0YV9waW4pOwogCisJaWYgKGRldmljZV9wcm9wZXJ0eV9yZWFkX3UzMihj
-b21wb25lbnQtPmRldiwKKwkJCQkgICAgICJyZWFsdGVrLGphY2stZGV0ZWN0LXNvdXJjZSIsICZ2
-YWwpID09IDApIHsKKwkJaWYgKHZhbCA8PSBSVDU2NDBfSkRfU1JDX0dQSU80KQorCQkJcnQ1NjQw
-LT5qZF9zcmMgPSB2YWwgPDwgUlQ1NjQwX0pEX1NGVDsKKwkJZWxzZQorCQkJZGV2X3dhcm4oY29t
-cG9uZW50LT5kZXYsICJXYXJuaW5nOiBJbnZhbGlkIGphY2stZGV0ZWN0LXNvdXJjZSB2YWx1ZTog
-JWQsIGxlYXZpbmcgamFjay1kZXRlY3QgZGlzYWJsZWRcbiIsCisJCQkJIHZhbCk7CisJfQorCisJ
-aWYgKCFkZXZpY2VfcHJvcGVydHlfcmVhZF9ib29sKGNvbXBvbmVudC0+ZGV2LCAicmVhbHRlayxq
-YWNrLWRldGVjdC1ub3QtaW52ZXJ0ZWQiKSkKKwkJcnQ1NjQwLT5qZF9pbnZlcnRlZCA9IHRydWU7
-CisKKwkvKgorCSAqIFRlc3Rpbmcgb24gdmFyaW91cyBib2FyZHMgaGFzIHNob3duIHRoYXQgZ29v
-ZCBkZWZhdWx0cyBmb3IgdGhlIE9WQ0QKKwkgKiB0aHJlc2hvbGQgYW5kIHNjYWxlLWZhY3RvciBh
-cmUgMjAwMMK1QSBhbmQgMC43NS4gRm9yIGFuIGVmZmVjdGl2ZQorCSAqIGxpbWl0IG9mIDE1MDDC
-tUEsIHRoaXMgc2VlbXMgdG8gYmUgbW9yZSByZWxpYWJsZSB0aGVuIDE1MDDCtUEgYW5kIDEuMC4K
-KwkgKi8KKwlydDU2NDAtPm92Y2RfdGggPSBSVDU2NDBfTUlDMV9PVlRIXzIwMDBVQTsKKwlydDU2
-NDAtPm92Y2Rfc2YgPSBSVDU2NDBfTUlDX09WQ0RfU0ZfMFA3NTsKKworCWlmIChkZXZpY2VfcHJv
-cGVydHlfcmVhZF91MzIoY29tcG9uZW50LT5kZXYsCisJCQkicmVhbHRlayxvdmVyLWN1cnJlbnQt
-dGhyZXNob2xkLW1pY3JvYW1wIiwgJnZhbCkgPT0gMCkgeworCQlzd2l0Y2ggKHZhbCkgeworCQlj
-YXNlIDYwMDoKKwkJCXJ0NTY0MC0+b3ZjZF90aCA9IFJUNTY0MF9NSUMxX09WVEhfNjAwVUE7CisJ
-CQlicmVhazsKKwkJY2FzZSAxNTAwOgorCQkJcnQ1NjQwLT5vdmNkX3RoID0gUlQ1NjQwX01JQzFf
-T1ZUSF8xNTAwVUE7CisJCQlicmVhazsKKwkJY2FzZSAyMDAwOgorCQkJcnQ1NjQwLT5vdmNkX3Ro
-ID0gUlQ1NjQwX01JQzFfT1ZUSF8yMDAwVUE7CisJCQlicmVhazsKKwkJZGVmYXVsdDoKKwkJCWRl
-dl93YXJuKGNvbXBvbmVudC0+ZGV2LCAiV2FybmluZzogSW52YWxpZCBvdmVyLWN1cnJlbnQtdGhy
-ZXNob2xkLW1pY3JvYW1wIHZhbHVlOiAlZCwgZGVmYXVsdGluZyB0byAyMDAwdUFcbiIsCisJCQkJ
-IHZhbCk7CisJCX0KKwl9CisKKwlpZiAoZGV2aWNlX3Byb3BlcnR5X3JlYWRfdTMyKGNvbXBvbmVu
-dC0+ZGV2LAorCQkJInJlYWx0ZWssb3Zlci1jdXJyZW50LXNjYWxlLWZhY3RvciIsICZ2YWwpID09
-IDApIHsKKwkJaWYgKHZhbCA8PSBSVDU2NDBfT1ZDRF9TRl8xUDUpCisJCQlydDU2NDAtPm92Y2Rf
-c2YgPSB2YWwgPDwgUlQ1NjQwX01JQ19PVkNEX1NGX1NGVDsKKwkJZWxzZQorCQkJZGV2X3dhcm4o
-Y29tcG9uZW50LT5kZXYsICJXYXJuaW5nOiBJbnZhbGlkIG92ZXItY3VycmVudC1zY2FsZS1mYWN0
-b3IgdmFsdWU6ICVkLCBkZWZhdWx0aW5nIHRvIDAuNzVcbiIsCisJCQkJIHZhbCk7CisJfQorCiAJ
-cmV0dXJuIDA7CiB9CiAKQEAgLTIyNzYsNiArMjU0Miw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qg
-c25kX3NvY19jb21wb25lbnRfZHJpdmVyIHNvY19jb21wb25lbnRfZGV2X3J0NTY0MCA9IHsKIAku
-c3VzcGVuZAkJPSBydDU2NDBfc3VzcGVuZCwKIAkucmVzdW1lCQkJPSBydDU2NDBfcmVzdW1lLAog
-CS5zZXRfYmlhc19sZXZlbAkJPSBydDU2NDBfc2V0X2JpYXNfbGV2ZWwsCisJLnNldF9qYWNrCQk9
-IHJ0NTY0MF9zZXRfamFjaywKIAkuY29udHJvbHMJCT0gcnQ1NjQwX3NuZF9jb250cm9scywKIAku
-bnVtX2NvbnRyb2xzCQk9IEFSUkFZX1NJWkUocnQ1NjQwX3NuZF9jb250cm9scyksCiAJLmRhcG1f
-d2lkZ2V0cwkJPSBydDU2NDBfZGFwbV93aWRnZXRzLApAQCAtMjQwOSw2ICsyNjc2LDI1IEBAIHN0
-YXRpYyBpbnQgcnQ1NjQwX2kyY19wcm9iZShzdHJ1Y3QgaTJjX2NsaWVudCAqaTJjLAogCQkJCVJU
-NTY0MF9NQ0xLX0RFVCwgUlQ1NjQwX01DTEtfREVUKTsKIAogCXJ0NTY0MC0+aHBfbXV0ZSA9IDE7
-CisJcnQ1NjQwLT5pcnEgPSBpMmMtPmlycTsKKwlJTklUX1dPUksoJnJ0NTY0MC0+amFja193b3Jr
-LCBydDU2NDBfamFja193b3JrKTsKKworCS8qIE1ha2Ugc3VyZSB3b3JrIGlzIHN0b3BwZWQgb24g
-cHJvYmUtZXJyb3IgLyByZW1vdmUgKi8KKwlyZXQgPSBkZXZtX2FkZF9hY3Rpb25fb3JfcmVzZXQo
-JmkyYy0+ZGV2LCBydDU2NDBfY2FuY2VsX3dvcmssIHJ0NTY0MCk7CisJaWYgKHJldCkKKwkJcmV0
-dXJuIHJldDsKKworCXJldCA9IGRldm1fcmVxdWVzdF9pcnEoJmkyYy0+ZGV2LCBydDU2NDAtPmly
-cSwgcnQ1NjQwX2lycSwKKwkJCSAgICAgICBJUlFGX1RSSUdHRVJfUklTSU5HIHwgSVJRRl9UUklH
-R0VSX0ZBTExJTkcKKwkJCSAgICAgICB8IElSUUZfT05FU0hPVCwgInJ0NTY0MCIsIHJ0NTY0MCk7
-CisJaWYgKHJldCA9PSAwKSB7CisJCS8qIEdldHMgcmUtZW5hYmxlZCBieSBydDU2NDBfc2V0X2ph
-Y2soKSAqLworCQlkaXNhYmxlX2lycShydDU2NDAtPmlycSk7CisJfSBlbHNlIHsKKwkJZGV2X3dh
-cm4oJmkyYy0+ZGV2LCAiRmFpbGVkIHRvIHJlZ3Vlc3QgSVJRICVkOiAlZFxuIiwKKwkJCSBydDU2
-NDAtPmlycSwgcmV0KTsKKwkJcnQ1NjQwLT5pcnEgPSAtRU5YSU87CisJfQogCiAJcmV0dXJuIGRl
-dm1fc25kX3NvY19yZWdpc3Rlcl9jb21wb25lbnQoJmkyYy0+ZGV2LAogCQkJCSAgICAgICZzb2Nf
-Y29tcG9uZW50X2Rldl9ydDU2NDAsCmRpZmYgLS1naXQgYS9zb3VuZC9zb2MvY29kZWNzL3J0NTY0
-MC5oIGIvc291bmQvc29jL2NvZGVjcy9ydDU2NDAuaAppbmRleCAyZGI2NTg2ZjVhYjQuLjlkMDg0
-NzE3MzRiMyAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9ydDU2NDAuaAorKysgYi9zb3Vu
-ZC9zb2MvY29kZWNzL3J0NTY0MC5oCkBAIC0xMyw2ICsxMyw4IEBACiAjZGVmaW5lIF9SVDU2NDBf
-SAogCiAjaW5jbHVkZSA8bGludXgvY2xrLmg+CisjaW5jbHVkZSA8bGludXgvd29ya3F1ZXVlLmg+
-CisjaW5jbHVkZSA8ZHQtYmluZGluZ3Mvc291bmQvcnQ1NjQwLmg+CiAKIC8qIEluZm8gKi8KICNk
-ZWZpbmUgUlQ1NjQwX1JFU0VUCQkJCTB4MDAKQEAgLTE0NSw2ICsxNDcsNyBAQAogCiAKIC8qIElu
-ZGV4IG9mIENvZGVjIFByaXZhdGUgUmVnaXN0ZXIgZGVmaW5pdGlvbiAqLworI2RlZmluZSBSVDU2
-NDBfQklBU19DVVI0CQkJMHgxNQogI2RlZmluZSBSVDU2NDBfQ0hQVU1QX0lOVF9SRUcxCQkJMHgy
-NAogI2RlZmluZSBSVDU2NDBfTUFNUF9JTlRfUkVHMgkJCTB4MzcKICNkZWZpbmUgUlQ1NjQwXzNE
-X1NQSwkJCQkweDYzCkBAIC0xNjA2LDEwICsxNjA5LDE3IEBACiAjZGVmaW5lIFJUNTY0MF9NQjJf
-T0NfUF9TRlQJCQk2CiAjZGVmaW5lIFJUNTY0MF9NQjJfT0NfUF9OT1IJCQkoMHgwIDw8IDYpCiAj
-ZGVmaW5lIFJUNTY0MF9NQjJfT0NfUF9JTlYJCQkoMHgxIDw8IDYpCi0jZGVmaW5lIFJUNTY0MF9N
-QjFfT0NfQ0xSCQkJKDB4MSA8PCAzKQotI2RlZmluZSBSVDU2NDBfTUIxX09DX0NMUl9TRlQJCQkz
-Ci0jZGVmaW5lIFJUNTY0MF9NQjJfT0NfQ0xSCQkJKDB4MSA8PCAyKQotI2RlZmluZSBSVDU2NDBf
-TUIyX09DX0NMUl9TRlQJCQkyCisjZGVmaW5lIFJUNTY0MF9NQjFfT0NfU1RBVFVTCQkJKDB4MSA8
-PCAzKQorI2RlZmluZSBSVDU2NDBfTUIxX09DX1NUQVRVU19TRlQJCTMKKyNkZWZpbmUgUlQ1NjQw
-X01CMl9PQ19TVEFUVVMJCQkoMHgxIDw8IDIpCisjZGVmaW5lIFJUNTY0MF9NQjJfT0NfU1RBVFVT
-X1NGVAkJMgorCisvKiBHUElPIGFuZCBJbnRlcm5hbCBTdGF0dXMgKDB4YmYpICovCisjZGVmaW5l
-IFJUNTY0MF9HUElPMV9TVEFUVVMJCQkoMHgxIDw8IDgpCisjZGVmaW5lIFJUNTY0MF9HUElPMl9T
-VEFUVVMJCQkoMHgxIDw8IDcpCisjZGVmaW5lIFJUNTY0MF9KRF9TVEFUVVMJCQkoMHgxIDw8IDQp
-CisjZGVmaW5lIFJUNTY0MF9PVlRfU1RBVFVTCQkJKDB4MSA8PCAzKQorI2RlZmluZSBSVDU2NDBf
-Q0xTX0RfT1ZDRF9TVEFUVVMJCSgweDEgPDwgMCkKIAogLyogR1BJTyBDb250cm9sIDEgKDB4YzAp
-ICovCiAjZGVmaW5lIFJUNTY0MF9HUDFfUElOX01BU0sJCQkoMHgxIDw8IDE1KQpAQCAtMTk3Nyw2
-ICsxOTg3LDE1IEBACiAjZGVmaW5lIFJUNTY0MF9NQ0xLX0RFVAkJCQkoMHgxIDw8IDExKQogCiAv
-KiBDb2RlYyBQcml2YXRlIFJlZ2lzdGVyIGRlZmluaXRpb24gKi8KKworLyogTUlDIE92ZXIgY3Vy
-cmVudCB0aHJlc2hvbGQgc2NhbGUgZmFjdG9yICgweDE1KSAqLworI2RlZmluZSBSVDU2NDBfTUlD
-X09WQ0RfU0ZfTUFTSwkJCSgweDMgPDwgOCkKKyNkZWZpbmUgUlQ1NjQwX01JQ19PVkNEX1NGX1NG
-VAkJCTgKKyNkZWZpbmUgUlQ1NjQwX01JQ19PVkNEX1NGXzBQNQkJCSgweDAgPDwgOCkKKyNkZWZp
-bmUgUlQ1NjQwX01JQ19PVkNEX1NGXzBQNzUJCQkoMHgxIDw8IDgpCisjZGVmaW5lIFJUNTY0MF9N
-SUNfT1ZDRF9TRl8xUDAJCQkoMHgyIDw8IDgpCisjZGVmaW5lIFJUNTY0MF9NSUNfT1ZDRF9TRl8x
-UDUJCQkoMHgzIDw8IDgpCisKIC8qIDNEIFNwZWFrZXIgQ29udHJvbCAoMHg2MykgKi8KICNkZWZp
-bmUgUlQ1NjQwXzNEX1NQS19NQVNLCQkJKDB4MSA8PCAxNSkKICNkZWZpbmUgUlQ1NjQwXzNEX1NQ
-S19TRlQJCQkxNQpAQCAtMjEwNiw2ICsyMTI1LDcgQEAgc3RydWN0IHJ0NTY0MF9wcml2IHsKIAlz
-dHJ1Y3QgY2xrICptY2xrOwogCiAJaW50IGxkbzFfZW47IC8qIEdQSU8gZm9yIExETzFfRU4gKi8K
-KwlpbnQgaXJxOwogCWludCBzeXNjbGs7CiAJaW50IHN5c2Nsa19zcmM7CiAJaW50IGxyY2tbUlQ1
-NjQwX0FJRlNdOwpAQCAtMjExOCw2ICsyMTM4LDE0IEBAIHN0cnVjdCBydDU2NDBfcHJpdiB7CiAK
-IAlib29sIGhwX211dGU7CiAJYm9vbCBhc3JjX2VuOworCisJLyogSmFjayBkZXRlY3QgZGF0YSAq
-LworCXN0cnVjdCB3b3JrX3N0cnVjdCBqYWNrX3dvcms7CisJc3RydWN0IHNuZF9zb2NfamFjayAq
-amFjazsKKwl1bnNpZ25lZCBpbnQgamRfc3JjOworCWJvb2wgamRfaW52ZXJ0ZWQ7CisJdW5zaWdu
-ZWQgaW50IG92Y2RfdGg7CisJdW5zaWduZWQgaW50IG92Y2Rfc2Y7CiB9OwogCiBpbnQgcnQ1NjQw
-X2RtaWNfZW5hYmxlKHN0cnVjdCBzbmRfc29jX2NvbXBvbmVudCAqY29tcG9uZW50LAotLSAKMi4x
-Ny4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
-LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
-aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Enable button press detection for headsets by using the ovcd IRQ to get
+notified of button presses.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/codecs/rt5640.c | 157 ++++++++++++++++++++++++++++++++++++--
+ sound/soc/codecs/rt5640.h |   9 ++-
+ 2 files changed, 159 insertions(+), 7 deletions(-)
+
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 8e306f509601..8bf8d360c25f 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -2119,6 +2119,24 @@ static void rt5640_disable_micbias1_for_ovcd(struct snd_soc_component *component
+ 	snd_soc_dapm_mutex_unlock(dapm);
+ }
+ 
++static void rt5640_enable_micbias1_ovcd_irq(struct snd_soc_component *component)
++{
++	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
++
++	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
++		RT5640_IRQ_MB1_OC_MASK, RT5640_IRQ_MB1_OC_NOR);
++	rt5640->ovcd_irq_enabled = true;
++}
++
++static void rt5640_disable_micbias1_ovcd_irq(struct snd_soc_component *component)
++{
++	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
++
++	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
++		RT5640_IRQ_MB1_OC_MASK, RT5640_IRQ_MB1_OC_BP);
++	rt5640->ovcd_irq_enabled = false;
++}
++
+ static void rt5640_clear_micbias1_ovcd(struct snd_soc_component *component)
+ {
+ 	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
+@@ -2149,10 +2167,80 @@ static bool rt5640_jack_inserted(struct snd_soc_component *component)
+ 		return (val & RT5640_JD_STATUS);
+ }
+ 
+-/* Jack detect timings */
++/* Jack detect and button-press timings */
+ #define JACK_SETTLE_TIME	100 /* milli seconds */
+ #define JACK_DETECT_COUNT	5
+ #define JACK_DETECT_MAXCOUNT	20  /* Aprox. 2 seconds worth of tries */
++#define JACK_UNPLUG_TIME	80  /* milli seconds */
++#define BP_POLL_TIME		10  /* milli seconds */
++#define BP_POLL_MAXCOUNT	200 /* assume something is wrong after this */
++#define BP_THRESHOLD		3
++
++static void rt5640_start_button_press_work(struct snd_soc_component *component)
++{
++	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
++
++	rt5640->poll_count = 0;
++	rt5640->press_count = 0;
++	rt5640->release_count = 0;
++	rt5640->pressed = false;
++	rt5640->press_reported = false;
++	rt5640_clear_micbias1_ovcd(component);
++	schedule_delayed_work(&rt5640->bp_work, msecs_to_jiffies(BP_POLL_TIME));
++}
++
++static void rt5640_button_press_work(struct work_struct *work)
++{
++	struct rt5640_priv *rt5640 =
++		container_of(work, struct rt5640_priv, bp_work.work);
++	struct snd_soc_component *component = rt5640->component;
++
++	/* Check the jack was not removed underneath us */
++	if (!rt5640_jack_inserted(component))
++		return;
++
++	if (rt5640_micbias1_ovcd(component)) {
++		rt5640->release_count = 0;
++		rt5640->press_count++;
++		/* Remember till after JACK_UNPLUG_TIME wait */
++		if (rt5640->press_count >= BP_THRESHOLD)
++			rt5640->pressed = true;
++		rt5640_clear_micbias1_ovcd(component);
++	} else {
++		rt5640->press_count = 0;
++		rt5640->release_count++;
++	}
++
++	/*
++	 * The pins get temporarily shorted on jack unplug, so we poll for
++	 * at least JACK_UNPLUG_TIME milli-seconds before reporting a press.
++	 */
++	rt5640->poll_count++;
++	if (rt5640->poll_count < (JACK_UNPLUG_TIME / BP_POLL_TIME)) {
++		schedule_delayed_work(&rt5640->bp_work,
++				      msecs_to_jiffies(BP_POLL_TIME));
++		return;
++	}
++
++	if (rt5640->pressed && !rt5640->press_reported) {
++		dev_dbg(component->dev, "headset button press\n");
++		snd_soc_jack_report(rt5640->jack, SND_JACK_BTN_0,
++				    SND_JACK_BTN_0);
++		rt5640->press_reported = true;
++	}
++
++	if (rt5640->release_count >= BP_THRESHOLD) {
++		if (rt5640->press_reported) {
++			dev_dbg(component->dev, "headset button release\n");
++			snd_soc_jack_report(rt5640->jack, 0, SND_JACK_BTN_0);
++		}
++		/* Re-enable OVCD IRQ to detect next press */
++		rt5640_enable_micbias1_ovcd_irq(component);
++		return; /* Stop polling */
++	}
++
++	schedule_delayed_work(&rt5640->bp_work, msecs_to_jiffies(BP_POLL_TIME));
++}
+ 
+ static int rt5640_detect_headset(struct snd_soc_component *component)
+ {
+@@ -2209,17 +2297,51 @@ static void rt5640_jack_work(struct work_struct *work)
+ 	if (!rt5640_jack_inserted(component)) {
+ 		/* Jack removed, or spurious IRQ? */
+ 		if (rt5640->jack->status & SND_JACK_HEADPHONE) {
+-			snd_soc_jack_report(rt5640->jack, 0, SND_JACK_HEADSET);
++			if (rt5640->jack->status & SND_JACK_MICROPHONE) {
++				cancel_delayed_work_sync(&rt5640->bp_work);
++				rt5640_disable_micbias1_ovcd_irq(component);
++				rt5640_disable_micbias1_for_ovcd(component);
++			}
++			snd_soc_jack_report(rt5640->jack, 0,
++					    SND_JACK_HEADSET | SND_JACK_BTN_0);
+ 			dev_dbg(component->dev, "jack unplugged\n");
+ 		}
+ 	} else if (!(rt5640->jack->status & SND_JACK_HEADPHONE)) {
+ 		/* Jack inserted */
++		WARN_ON(rt5640->ovcd_irq_enabled);
+ 		rt5640_enable_micbias1_for_ovcd(component);
+ 		status = rt5640_detect_headset(component);
+-		rt5640_disable_micbias1_for_ovcd(component);
+-
++		if (status == SND_JACK_HEADSET) {
++			/* Enable ovcd IRQ for button press detect. */
++			rt5640_enable_micbias1_ovcd_irq(component);
++		} else {
++			/* No more need for overcurrent detect. */
++			rt5640_disable_micbias1_for_ovcd(component);
++		}
+ 		dev_dbg(component->dev, "detect status %#02x\n", status);
+ 		snd_soc_jack_report(rt5640->jack, status, SND_JACK_HEADSET);
++	} else if (rt5640->ovcd_irq_enabled && rt5640_micbias1_ovcd(component)) {
++		dev_dbg(component->dev, "OVCD IRQ\n");
++
++		/*
++		 * The ovcd IRQ keeps firing while the button is pressed, so
++		 * we disable it and start polling the button until released.
++		 *
++		 * The disable will make the IRQ pin 0 again and since we get
++		 * IRQs on both edges (so as to detect both jack plugin and
++		 * unplug) this means we will immediately get another IRQ.
++		 * The ovcd_irq_enabled check above makes the 2ND IRQ a NOP.
++		 */
++		rt5640_disable_micbias1_ovcd_irq(component);
++		rt5640_start_button_press_work(component);
++
++		/*
++		 * If the jack-detect IRQ flag goes high (unplug) after our
++		 * above rt5640_jack_inserted() check and before we have
++		 * disabled the OVCD IRQ, the IRQ pin will stay high and as
++		 * we react to edges, we miss the unplug event -> recheck.
++		 */
++		queue_work(system_long_wq, &rt5640->jack_work);
+ 	}
+ }
+ 
+@@ -2238,6 +2360,7 @@ static void rt5640_cancel_work(void *data)
+ 	struct rt5640_priv *rt5640 = data;
+ 
+ 	cancel_work_sync(&rt5640->jack_work);
++	cancel_delayed_work_sync(&rt5640->bp_work);
+ }
+ 
+ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+@@ -2282,10 +2405,25 @@ static void rt5640_enable_jack_detect(struct snd_soc_component *component,
+ 	snd_soc_component_update_bits(component, RT5640_IRQ_CTRL2,
+ 		RT5640_MB1_OC_STKY_MASK, RT5640_MB1_OC_STKY_EN);
+ 
+-	snd_soc_component_write(component, RT5640_IRQ_CTRL1,
+-				RT5640_IRQ_JD_NOR);
++	/*
++	 * All IRQs get or-ed together, so we need the jack IRQ to report 0
++	 * when a jack is inserted so that the OVCD IRQ then toggles the IRQ
++	 * pin 0/1 instead of it being stuck to 1. So we invert the JD polarity
++	 * on systems where the hardware does not already do this.
++	 */
++	if (rt5640->jd_inverted)
++		snd_soc_component_write(component, RT5640_IRQ_CTRL1,
++					RT5640_IRQ_JD_NOR);
++	else
++		snd_soc_component_write(component, RT5640_IRQ_CTRL1,
++					RT5640_IRQ_JD_NOR | RT5640_JD_P_INV);
+ 
+ 	rt5640->jack = jack;
++	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
++		rt5640_enable_micbias1_for_ovcd(component);
++		rt5640_enable_micbias1_ovcd_irq(component);
++	}
++
+ 	enable_irq(rt5640->irq);
+ 	/* sync initial jack state */
+ 	queue_work(system_long_wq, &rt5640->jack_work);
+@@ -2298,6 +2436,12 @@ static void rt5640_disable_jack_detect(struct snd_soc_component *component)
+ 	disable_irq(rt5640->irq);
+ 	rt5640_cancel_work(rt5640);
+ 
++	if (rt5640->jack->status & SND_JACK_MICROPHONE) {
++		rt5640_disable_micbias1_ovcd_irq(component);
++		rt5640_disable_micbias1_for_ovcd(component);
++		snd_soc_jack_report(rt5640->jack, 0, SND_JACK_BTN_0);
++	}
++
+ 	rt5640->jack = NULL;
+ }
+ 
+@@ -2677,6 +2821,7 @@ static int rt5640_i2c_probe(struct i2c_client *i2c,
+ 
+ 	rt5640->hp_mute = 1;
+ 	rt5640->irq = i2c->irq;
++	INIT_DELAYED_WORK(&rt5640->bp_work, rt5640_button_press_work);
+ 	INIT_WORK(&rt5640->jack_work, rt5640_jack_work);
+ 
+ 	/* Make sure work is stopped on probe-error / remove */
+diff --git a/sound/soc/codecs/rt5640.h b/sound/soc/codecs/rt5640.h
+index 9d08471734b3..e29e3e7d61b0 100644
+--- a/sound/soc/codecs/rt5640.h
++++ b/sound/soc/codecs/rt5640.h
+@@ -2139,7 +2139,14 @@ struct rt5640_priv {
+ 	bool hp_mute;
+ 	bool asrc_en;
+ 
+-	/* Jack detect data */
++	/* Jack and button detect data */
++	bool ovcd_irq_enabled;
++	bool pressed;
++	bool press_reported;
++	int press_count;
++	int release_count;
++	int poll_count;
++	struct delayed_work bp_work;
+ 	struct work_struct jack_work;
+ 	struct snd_soc_jack *jack;
+ 	unsigned int jd_src;
+-- 
+2.17.0
