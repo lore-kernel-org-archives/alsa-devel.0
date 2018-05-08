@@ -1,18 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 00/19] ASoC: rt5640: Add jack-detect and
- button-press support
-Date: Tue, 8 May 2018 13:42:00 -0500
-Message-ID: <8ae99162-5f77-b5a1-bfe4-802f55a2d5ae@linux.intel.com>
-References: <20180508153604.23711-1-hdegoede@redhat.com>
+From: Federico Cuello <fedux@fedux.com.ar>
+Subject: [PATCH] ALSA: usb: mixer: volume quirk for
+	CM102-A+/102S+
+Date: Wed,  9 May 2018 00:13:38 +0200
+Message-ID: <20180508221338.6229-1-fedux@fedux.com.ar>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id DFB632676AA
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 20:42:02 +0200 (CEST)
-In-Reply-To: <20180508153604.23711-1-hdegoede@redhat.com>
-Content-Language: en-US
+Received: from mail.fedux.com.ar (mail.fedux.com.ar [167.99.131.221])
+ by alsa0.perex.cz (Postfix) with ESMTP id A042D2676AA
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 00:13:44 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +19,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org
+Cc: Federico Cuello <fedux@fedux.com.ar>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/8/18 10:35 AM, Hans de Goede wrote:
-> Hi All,
-> 
-> This series has been long in the making, but it is finally ready now.
-> This series adds jack-detect support for rt5640 using devices.
-> 
-> This is modelled after the recent rt5651 codec- and bytcr-rt5651 machine-
-> driver jack-detect changes (which were actually based on a WIP version of
-> this series).
-> 
-> As discussed on the list already unfortunately there are no really good
-> defaults which work everywhere, so patch 18 adds quirks for 10 devices,
-> I've decided to do this in one go rather then split this into 10 patches.
+Currently it's not possible to set volume lower than 26% (it just mutes).
 
-Impressive work, thanks!
+Also fixes this warning:
 
-patches 8..18
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+  Warning! Unlikely big volume range (=9472), cval->res is probably wrong.
+  [13] FU [PCM Playback Volume] ch = 2, val = -9473/-1/1
 
+, and volume works fine for full range.
 
-> Patch 19 makes the bytcr-rt5640 set a longname based on the speaker and
-> input-map quirks, so that userspace can pick a correct UCM profile based
-> on the longname with working jack-detect based input / output switching.
-> I've matching patches adding UCM profiles for this to alsa-lib here:
-> https://github.com/jwrdegoede/alsa-lib/commits/master
-> I'm waiting with submitting those upstream until patch 19 is accepted
-> for merging.
+Signed-off-by: Federico Cuello <fedux@fedux.com.ar>
+---
+ sound/usb/mixer.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-That last patch is a bit controversial. I am not sure this is the right 
-direction to add a new profile for every combination of quirks. At the 
-very least, we should have a mechanism to include basic parts (and I 
-think UCM already has a concept of include). Or better one UCM file that 
-combines all possible combinations and disables some parts based on 
-quirk information fetched during initialization.
-
-> 
-> Regards,
-> 
-> Hans
-> 
+diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+index 344d7b069d59..bb5ab7a7dfa5 100644
+--- a/sound/usb/mixer.c
++++ b/sound/usb/mixer.c
+@@ -967,6 +967,14 @@ static void volume_control_quirks(struct usb_mixer_elem_info *cval,
+ 		}
+ 		break;
+ 
++	case USB_ID(0x0d8c, 0x0103):
++		if (!strcmp(kctl->id.name, "PCM Playback Volume")) {
++			usb_audio_info(chip,
++				 "set volume quirk for CM102-A+/102S+\n");
++			cval->min = -256;
++		}
++		break;
++
+ 	case USB_ID(0x0471, 0x0101):
+ 	case USB_ID(0x0471, 0x0104):
+ 	case USB_ID(0x0471, 0x0105):
+-- 
+2.17.0
