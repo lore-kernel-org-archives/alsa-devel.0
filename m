@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 01/19] ASoC: rt5640: Remove is_sys_clk_from_pll,
-	it has ordering issues
-Date: Tue,  8 May 2018 17:35:46 +0200
-Message-ID: <20180508153604.23711-2-hdegoede@redhat.com>
+Subject: [PATCH 02/19] ASoC: rt5640: Add devicetree-bindings
+	for dmic, jack-detect
+Date: Tue,  8 May 2018 17:35:47 +0200
+Message-ID: <20180508153604.23711-3-hdegoede@redhat.com>
 References: <20180508153604.23711-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 080AD2676AA
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:09 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B1A02676A9
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:11 +0200 (CEST)
 In-Reply-To: <20180508153604.23711-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,135 +25,59 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard L
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-is_sys_clk_from_pll() is used as a snd_soc_dapm_route.connected callback,
-checking RT5640_GBL_CLK to determine if the sys-clk is PLL1 and thus the
-PWR_PLL bit in reg PWR_ANLG2 must be set.
-
-RT5640_GBL_CLK is changed by rt5640_set_dai_sysclk(), which gets called by
-the pre_pmu / post_pmd functions of the "Platform Clock" dapm-supply.
-
-This creates an ordering issue, during a dapm transition first all
-connected() callbacks are called to build a list of supplies to enable
-and then the complete list is walked to enable the supplies. Since the
-connected() check happens before enabling any supplies,
-is_sys_clk_from_pll() ends up deciding if the PWR_PLL bit should be set
-based on the state the "Platform Clock" supply had *before* the transition.
-This sometimes results in PWR_PLL being off, even though *after* the
-transition PLL1 is configured as sys-clk.
-
-This commit removes is_sys_clk_from_pll() instead simply setting / clearing
-PWR_PLL in rt5640_set_dai_sysclk() based on the selected sys-clk, which
-fixes this and as a bonus results in a nice cleanup.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/codecs/rt5640.c | 29 ++++-------------------------
- 1 file changed, 4 insertions(+), 25 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
-index 05567426f211..140bad07429e 100644
---- a/sound/soc/codecs/rt5640.c
-+++ b/sound/soc/codecs/rt5640.c
-@@ -476,20 +476,6 @@ static int set_dmic_clk(struct snd_soc_dapm_widget *w,
- 	return idx;
- }
- 
--static int is_sys_clk_from_pll(struct snd_soc_dapm_widget *source,
--			 struct snd_soc_dapm_widget *sink)
--{
--	struct snd_soc_component *component = snd_soc_dapm_to_component(source->dapm);
--	unsigned int val;
--
--	val = snd_soc_component_read32(component, RT5640_GLB_CLK);
--	val &= RT5640_SCLK_SRC_MASK;
--	if (val == RT5640_SCLK_SRC_PLL1)
--		return 1;
--	else
--		return 0;
--}
--
- static int is_using_asrc(struct snd_soc_dapm_widget *source,
- 			 struct snd_soc_dapm_widget *sink)
- {
-@@ -1071,9 +1057,6 @@ static int rt5640_hp_post_event(struct snd_soc_dapm_widget *w,
- }
- 
- static const struct snd_soc_dapm_widget rt5640_dapm_widgets[] = {
--	SND_SOC_DAPM_SUPPLY("PLL1", RT5640_PWR_ANLG2,
--			RT5640_PWR_PLL_BIT, 0, NULL, 0),
--
- 	/* ASRC */
- 	SND_SOC_DAPM_SUPPLY_S("Stereo Filter ASRC", 1, RT5640_ASRC_1,
- 			 15, 0, NULL, 0),
-@@ -1427,22 +1410,18 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
- 	{"Stereo ADC MIXL", "ADC1 Switch", "Stereo ADC L1 Mux"},
- 	{"Stereo ADC MIXL", "ADC2 Switch", "Stereo ADC L2 Mux"},
- 	{"Stereo ADC MIXL", NULL, "Stereo Filter"},
--	{"Stereo Filter", NULL, "PLL1", is_sys_clk_from_pll},
- 
- 	{"Stereo ADC MIXR", "ADC1 Switch", "Stereo ADC R1 Mux"},
- 	{"Stereo ADC MIXR", "ADC2 Switch", "Stereo ADC R2 Mux"},
- 	{"Stereo ADC MIXR", NULL, "Stereo Filter"},
--	{"Stereo Filter", NULL, "PLL1", is_sys_clk_from_pll},
- 
- 	{"Mono ADC MIXL", "ADC1 Switch", "Mono ADC L1 Mux"},
- 	{"Mono ADC MIXL", "ADC2 Switch", "Mono ADC L2 Mux"},
- 	{"Mono ADC MIXL", NULL, "Mono Left Filter"},
--	{"Mono Left Filter", NULL, "PLL1", is_sys_clk_from_pll},
- 
- 	{"Mono ADC MIXR", "ADC1 Switch", "Mono ADC R1 Mux"},
- 	{"Mono ADC MIXR", "ADC2 Switch", "Mono ADC R2 Mux"},
- 	{"Mono ADC MIXR", NULL, "Mono Right Filter"},
--	{"Mono Right Filter", NULL, "PLL1", is_sys_clk_from_pll},
- 
- 	{"IF2 ADC L", NULL, "Mono ADC MIXL"},
- 	{"IF2 ADC R", NULL, "Mono ADC MIXR"},
-@@ -1512,10 +1491,8 @@ static const struct snd_soc_dapm_route rt5640_dapm_routes[] = {
- 	{"DIG MIXR", "DAC R1 Switch", "DAC MIXR"},
- 
- 	{"DAC L1", NULL, "Stereo DAC MIXL"},
--	{"DAC L1", NULL, "PLL1", is_sys_clk_from_pll},
- 	{"DAC L1", NULL, "DAC L1 Power"},
- 	{"DAC R1", NULL, "Stereo DAC MIXR"},
--	{"DAC R1", NULL, "PLL1", is_sys_clk_from_pll},
- 	{"DAC R1", NULL, "DAC R1 Power"},
- 
- 	{"SPK MIXL", "REC MIXL Switch", "RECMIXL"},
-@@ -1622,10 +1599,8 @@ static const struct snd_soc_dapm_route rt5640_specific_dapm_routes[] = {
- 	{"DIG MIXL", "DAC L2 Switch", "DAC L2 Mux"},
- 
- 	{"DAC L2", NULL, "Mono DAC MIXL"},
--	{"DAC L2", NULL, "PLL1", is_sys_clk_from_pll},
- 	{"DAC L2", NULL, "DAC L2 Power"},
- 	{"DAC R2", NULL, "Mono DAC MIXR"},
--	{"DAC R2", NULL, "PLL1", is_sys_clk_from_pll},
- 	{"DAC R2", NULL, "DAC R2 Power"},
- 
- 	{"SPK MIXL", "DAC L2 Switch", "DAC L2"},
-@@ -1861,6 +1836,7 @@ static int rt5640_set_dai_sysclk(struct snd_soc_dai *dai,
- 	struct snd_soc_component *component = dai->component;
- 	struct rt5640_priv *rt5640 = snd_soc_component_get_drvdata(component);
- 	unsigned int reg_val = 0;
-+	unsigned int pll_bit = 0;
- 
- 	if (freq == rt5640->sysclk && clk_id == rt5640->sysclk_src)
- 		return 0;
-@@ -1871,6 +1847,7 @@ static int rt5640_set_dai_sysclk(struct snd_soc_dai *dai,
- 		break;
- 	case RT5640_SCLK_S_PLL1:
- 		reg_val |= RT5640_SCLK_SRC_PLL1;
-+		pll_bit |= RT5640_PWR_PLL;
- 		break;
- 	case RT5640_SCLK_S_RCCLK:
- 		reg_val |= RT5640_SCLK_SRC_RCCLK;
-@@ -1879,6 +1856,8 @@ static int rt5640_set_dai_sysclk(struct snd_soc_dai *dai,
- 		dev_err(component->dev, "Invalid clock id (%d)\n", clk_id);
- 		return -EINVAL;
- 	}
-+	snd_soc_component_update_bits(component, RT5640_PWR_ANLG2,
-+		RT5640_PWR_PLL, pll_bit);
- 	snd_soc_component_update_bits(component, RT5640_GLB_CLK,
- 		RT5640_SCLK_SRC_MASK, reg_val);
- 	rt5640->sysclk = freq;
--- 
-2.17.0
+QWRkIGRldmljZXRyZWUtYmluZGluZ3MgZm9yIHRoZSBkbWljLCBqYWNrLWRldGVjdCBzb3VyY2Ug
+YW5kIG92ZXJjdXJyZW50LQpkZXRlY3QgdGhyZXNob2xkIHNldHRpbmdzLgoKVGhlIGRtaWMgYmlu
+ZGluZ3MgbWlycm9yIHRoZSBleGlzdGluZyBiaW5kaW5ncyBmb3IgdGhlIHJ0NTY0NS4KVGhlIGpk
+LXNyYyBhbmQgb3ZjZCBiaW5kaW5ncyBtaXJyb3IgdGhlIGV4aXN0aW5nIGJpbmRpbmdzIGZvciB0
+aGUgcnQ1NjUxLgoKQ2MgZGV2aWNldHJlZUB2Z2VyLmtlcm5lbC5vcmcKU2lnbmVkLW9mZi1ieTog
+SGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KLS0tCiAuLi4vZGV2aWNldHJlZS9i
+aW5kaW5ncy9zb3VuZC9ydDU2NDAudHh0ICAgICAgfCAzNSArKysrKysrKysrKysrKysrKysrCiBp
+bmNsdWRlL2R0LWJpbmRpbmdzL3NvdW5kL3J0NTY0MC5oICAgICAgICAgICAgfCAyNSArKysrKysr
+KysrKysrCiAyIGZpbGVzIGNoYW5nZWQsIDYwIGluc2VydGlvbnMoKykKIGNyZWF0ZSBtb2RlIDEw
+MDY0NCBpbmNsdWRlL2R0LWJpbmRpbmdzL3NvdW5kL3J0NTY0MC5oCgpkaWZmIC0tZ2l0IGEvRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3J0NTY0MC50eHQgYi9Eb2N1bWVu
+dGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvcnQ1NjQwLnR4dAppbmRleCA1N2ZlNjQ2
+NDMwNTAuLmU0MGU0ODkzZWVkOCAxMDA2NDQKLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL3NvdW5kL3J0NTY0MC50eHQKKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL3NvdW5kL3J0NTY0MC50eHQKQEAgLTIyLDYgKzIyLDQxIEBAIE9wdGlvbmFsIHBy
+b3BlcnRpZXM6CiAKIC0gcmVhbHRlayxsZG8xLWVuLWdwaW9zIDogVGhlIEdQSU8gdGhhdCBjb250
+cm9scyB0aGUgQ09ERUMncyBMRE8xX0VOIHBpbi4KIAorLSByZWFsdGVrLGRtaWMxLWRhdGEtcGlu
+CisgIDA6IGRtaWMxIGlzIG5vdCB1c2VkCisgIDE6IHVzaW5nIElOMVAgcGluIGFzIGRtaWMxIGRh
+dGEgcGluCisgIDI6IHVzaW5nIEdQSU8zIHBpbiBhcyBkbWljMSBkYXRhIHBpbgorCistIHJlYWx0
+ZWssZG1pYzItZGF0YS1waW4KKyAgMDogZG1pYzIgaXMgbm90IHVzZWQKKyAgMTogdXNpbmcgSU4x
+TiBwaW4gYXMgZG1pYzIgZGF0YSBwaW4KKyAgMjogdXNpbmcgR1BJTzQgcGluIGFzIGRtaWMyIGRh
+dGEgcGluCisKKy0gcmVhbHRlayxqYWNrLWRldGVjdC1zb3VyY2UKKyAgdTMyLiBWYWxpZCB2YWx1
+ZXM6CisgIDA6IGphY2stZGV0ZWN0IGlzIG5vdCB1c2VkCisgIDE6IFVzZSBHUElPMSBmb3IgamFj
+ay1kZXRlY3QKKyAgMjogVXNlIEpEMV9JTjRQIGZvciBqYWNrLWRldGVjdAorICAzOiBVc2UgSkQy
+X0lONE4gZm9yIGphY2stZGV0ZWN0CisgIDQ6IFVzZSBHUElPMiBmb3IgamFjay1kZXRlY3QKKyAg
+NTogVXNlIEdQSU8zIGZvciBqYWNrLWRldGVjdAorICA2OiBVc2UgR1BJTzQgZm9yIGphY2stZGV0
+ZWN0CisKKy0gcmVhbHRlayxqYWNrLWRldGVjdC1ub3QtaW52ZXJ0ZWQKKyAgYm9vbC4gTm9ybWFs
+IGphY2stZGV0ZWN0IHN3aXRjaGVzIGdpdmUgYW4gaW52ZXJ0ZWQgc2lnbmFsLCBzZXQgdGhpcyBi
+b29sCisgIGluIHRoZSByYXJlIGNhc2UgeW91J3ZlIGEgamFjay1kZXRlY3Qgc3dpdGNoIHdoaWNo
+IGlzIG5vdCBpbnZlcnRlZC4KKworLSByZWFsdGVrLG92ZXItY3VycmVudC10aHJlc2hvbGQtbWlj
+cm9hbXAKKyAgdTMyLCBtaWNiaWFzIG92ZXItY3VycmVudCBkZXRlY3Rpb24gdGhyZXNob2xkIGlu
+IMK1QSwgdmFsaWQgdmFsdWVzIGFyZQorICA2MDAsIDE1MDAgYW5kIDIwMDDCtUEuCisKKy0gcmVh
+bHRlayxvdmVyLWN1cnJlbnQtc2NhbGUtZmFjdG9yCisgIHUzMiwgbWljYmlhcyBvdmVyLWN1cnJl
+bnQgZGV0ZWN0aW9uIHNjYWxlLWZhY3RvciwgdmFsaWQgdmFsdWVzIGFyZToKKyAgMDogU2NhbGUg
+Y3VycmVudCBieSAwLjUKKyAgMTogU2NhbGUgY3VycmVudCBieSAwLjc1CisgIDI6IFNjYWxlIGN1
+cnJlbnQgYnkgMS4wCisgIDM6IFNjYWxlIGN1cnJlbnQgYnkgMS41CisKIFBpbnMgb24gdGhlIGRl
+dmljZSAoZm9yIGxpbmtpbmcgaW50byBhdWRpbyByb3V0ZXMpIGZvciBSVDU2MzkvUlQ1NjQwOgog
+CiAgICogRE1JQzEKZGlmZiAtLWdpdCBhL2luY2x1ZGUvZHQtYmluZGluZ3Mvc291bmQvcnQ1NjQw
+LmggYi9pbmNsdWRlL2R0LWJpbmRpbmdzL3NvdW5kL3J0NTY0MC5oCm5ldyBmaWxlIG1vZGUgMTAw
+NjQ0CmluZGV4IDAwMDAwMDAwMDAwMC4uMTU0YzliNDQxNGYyCi0tLSAvZGV2L251bGwKKysrIGIv
+aW5jbHVkZS9kdC1iaW5kaW5ncy9zb3VuZC9ydDU2NDAuaApAQCAtMCwwICsxLDI1IEBACisvKiBT
+UERYLUxpY2Vuc2UtSWRlbnRpZmllcjogR1BMLTIuMCAqLworI2lmbmRlZiBfX0RUX1JUNTY0MF9I
+CisjZGVmaW5lIF9fRFRfUlQ1NjQwX0gKKworI2RlZmluZSBSVDU2NDBfRE1JQzFfREFUQV9QSU5f
+Tk9ORQkwCisjZGVmaW5lIFJUNTY0MF9ETUlDMV9EQVRBX1BJTl9JTjFQCTEKKyNkZWZpbmUgUlQ1
+NjQwX0RNSUMxX0RBVEFfUElOX0dQSU8zCTIKKworI2RlZmluZSBSVDU2NDBfRE1JQzJfREFUQV9Q
+SU5fTk9ORQkwCisjZGVmaW5lIFJUNTY0MF9ETUlDMl9EQVRBX1BJTl9JTjFOCTEKKyNkZWZpbmUg
+UlQ1NjQwX0RNSUMyX0RBVEFfUElOX0dQSU80CTIKKworI2RlZmluZSBSVDU2NDBfSkRfU1JDX0dQ
+SU8xCQkxCisjZGVmaW5lIFJUNTY0MF9KRF9TUkNfSkQxX0lONFAJCTIKKyNkZWZpbmUgUlQ1NjQw
+X0pEX1NSQ19KRDJfSU40TgkJMworI2RlZmluZSBSVDU2NDBfSkRfU1JDX0dQSU8yCQk0CisjZGVm
+aW5lIFJUNTY0MF9KRF9TUkNfR1BJTzMJCTUKKyNkZWZpbmUgUlQ1NjQwX0pEX1NSQ19HUElPNAkJ
+NgorCisjZGVmaW5lIFJUNTY0MF9PVkNEX1NGXzBQNQkJMAorI2RlZmluZSBSVDU2NDBfT1ZDRF9T
+Rl8wUDc1CQkxCisjZGVmaW5lIFJUNTY0MF9PVkNEX1NGXzFQMAkJMgorI2RlZmluZSBSVDU2NDBf
+T1ZDRF9TRl8xUDUJCTMKKworI2VuZGlmIC8qIF9fRFRfUlQ1NjQwX0ggKi8KLS0gCjIuMTcuMAoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
