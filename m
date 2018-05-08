@@ -1,7 +1,7 @@
 From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Subject: [PATCH 08/10] ASoC: AMD: Fix clocks in CZ DA7219 machine driver
-Date: Tue, 8 May 2018 10:17:51 +0530
-Message-ID: <1525754888-14124-8-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: [PATCH 09/10] ASoC: AMD: Add const to snd_soc_ops instances
+Date: Tue, 8 May 2018 10:17:52 +0530
+Message-ID: <1525754888-14124-9-git-send-email-Vijendar.Mukunda@amd.com>
 References: <1525754888-14124-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -13,40 +13,39 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Akshu Agrawal <akshu.agrawal@amd.com>
 
-System clock on the platform is 25Mhz and not 24Mhz.
-
-PLL_OUT for da7219 codec to use DA7219_PLL_FREQ_OUT_98304
-as it is for 48KHz SR.
+Marking snd_soc_ops instances const
 
 Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ sound/soc/amd/acp-da7219-max98357a.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 6495eed..fa5ad5b 100644
+index fa5ad5b..133139d 100644
 --- a/sound/soc/amd/acp-da7219-max98357a.c
 +++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -39,8 +39,7 @@
- #include "../codecs/da7219.h"
- #include "../codecs/da7219-aad.h"
+@@ -171,17 +171,17 @@ static void cz_dmic_shutdown(struct snd_pcm_substream *substream)
+ 	da7219_clk_disable();
+ }
  
--#define CZ_PLAT_CLK 24000000
--#define MCLK_RATE 24576000
-+#define CZ_PLAT_CLK 25000000
- #define DUAL_CHANNEL		2
+-static struct snd_soc_ops cz_da7219_cap_ops = {
++static const struct snd_soc_ops cz_da7219_cap_ops = {
+ 	.startup = cz_da7219_startup,
+ 	.shutdown = cz_da7219_shutdown,
+ };
  
- static struct snd_soc_jack cz_jack;
-@@ -63,7 +62,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
- 	}
+-static struct snd_soc_ops cz_max_play_ops = {
++static const struct snd_soc_ops cz_max_play_ops = {
+ 	.startup = cz_max_startup,
+ 	.shutdown = cz_max_shutdown,
+ };
  
- 	ret = snd_soc_dai_set_pll(codec_dai, 0, DA7219_SYSCLK_PLL,
--				  CZ_PLAT_CLK, MCLK_RATE);
-+				  CZ_PLAT_CLK, DA7219_PLL_FREQ_OUT_98304);
- 	if (ret < 0) {
- 		dev_err(rtd->dev, "can't set codec pll: %d\n", ret);
- 		return ret;
+-static struct snd_soc_ops cz_dmic_cap_ops = {
++static const struct snd_soc_ops cz_dmic_cap_ops = {
+ 	.startup = cz_dmic_startup,
+ 	.shutdown = cz_dmic_shutdown,
+ };
 -- 
 2.7.4
