@@ -1,18 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 19/19] ASoC: Intel: bytcr_rt5640: Set card
- long_name based on quirks
-Date: Tue, 8 May 2018 13:35:59 -0500
-Message-ID: <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
+Subject: Re: [PATCH 00/19] ASoC: rt5640: Add jack-detect and
+ button-press support
+Date: Tue, 8 May 2018 13:42:00 -0500
+Message-ID: <8ae99162-5f77-b5a1-bfe4-802f55a2d5ae@linux.intel.com>
 References: <20180508153604.23711-1-hdegoede@redhat.com>
- <20180508153604.23711-20-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id D8C242676CC
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 20:36:03 +0200 (CEST)
-In-Reply-To: <20180508153604.23711-20-hdegoede@redhat.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id DFB632676AA
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 20:42:02 +0200 (CEST)
+In-Reply-To: <20180508153604.23711-1-hdegoede@redhat.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,70 +26,43 @@ To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>, Ma
 Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/8/18 10:36 AM, Hans de Goede wrote:
-> Many X86 devices using a BYT SoC + RT5640 codec are cheap devices with
-> generic DMI strings, causing snd_soc_set_dmi_name() to fail to set a
-> long_name, making it impossible for userspace to have a correct UCM
-> profile which only uses inputs / outputs which are actually hooked up
-> on the device.
+On 5/8/18 10:35 AM, Hans de Goede wrote:
+> Hi All,
 > 
-> Our quirks already specify which input the internal mic is connected to
-> and if a single (mono) speaker is used or if the device has stereo
-> speakers.
+> This series has been long in the making, but it is finally ready now.
+> This series adds jack-detect support for rt5640 using devices.
 > 
-> This commit sets a long_name based on the quirks so that userspace can
-> have UCM profiles doing the right thing based on the long_name.
+> This is modelled after the recent rt5651 codec- and bytcr-rt5651 machine-
+> driver jack-detect changes (which were actually based on a WIP version of
+> this series).
+> 
+> As discussed on the list already unfortunately there are no really good
+> defaults which work everywhere, so patch 18 adds quirks for 10 devices,
+> I've decided to do this in one go rather then split this into 10 patches.
 
-Isn't this going to be complicated to manage for UCM? Just with this 
-patch alone, you'd need 8 UCM files to cover all the combinations. 16 if 
-you add the 'sof-' prefix.
+Impressive work, thanks!
 
-seems like UCM should become more 'dynamic' and get quirk information 
-somehow (sysfs?) to enable/disable endpoints rather than rely on name 
-encoding to select the right profile?
+patches 8..18
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+
+> Patch 19 makes the bytcr-rt5640 set a longname based on the speaker and
+> input-map quirks, so that userspace can pick a correct UCM profile based
+> on the longname with working jack-detect based input / output switching.
+> I've matching patches adding UCM profiles for this to alsa-lib here:
+> https://github.com/jwrdegoede/alsa-lib/commits/master
+> I'm waiting with submitting those upstream until patch 19 is accepted
+> for merging.
+
+That last patch is a bit controversial. I am not sure this is the right 
+direction to add a new profile for every combination of quirks. At the 
+very least, we should have a mechanism to include basic parts (and I 
+think UCM already has a concept of include). Or better one UCM file that 
+combines all possible combinations and disables some parts based on 
+quirk information fetched during initialization.
 
 > 
-> Note that if we ever encounter the need for a special UCM profile for
-> some device we can add a quirk to set a specific long_name for the
-> device,
+> Regards,
 > 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
->   1 file changed, 9 insertions(+)
-> 
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index cfc520200214..9a1204dcdbc6 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -929,6 +929,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
->   static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
->   static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
->   static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
-> +static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
->   
->   static int byt_rt5640_suspend(struct snd_soc_card *card)
->   {
-> @@ -1000,6 +1001,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
->   
->   static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
->   {
-> +	const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
->   	const struct dmi_system_id *dmi_id;
->   	struct byt_rt5640_private *priv;
->   	struct snd_soc_acpi_mach *mach;
-> @@ -1163,6 +1165,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
->   		}
->   	}
->   
-> +	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
-> +		 "bytcr-rt5640-%s-spk-%s-mic",
-> +		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
-> +			"mono" : "stereo",
-> +		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
-> +	byt_rt5640_card.long_name = byt_rt5640_long_name;
-> +
->   	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
->   
->   	if (ret_val) {
+> Hans
 > 
