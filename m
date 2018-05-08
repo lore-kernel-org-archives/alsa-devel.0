@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 13/19] ASoC: Intel: bytcr_rt5640: Change BYTCR
-	default input to IN3
-Date: Tue,  8 May 2018 17:35:58 +0200
-Message-ID: <20180508153604.23711-14-hdegoede@redhat.com>
+Subject: [PATCH 14/19] ASoC: Intel: bytcr_rt5640: Unify BYTCR
+	input defaults
+Date: Tue,  8 May 2018 17:35:59 +0200
+Message-ID: <20180508153604.23711-15-hdegoede@redhat.com>
 References: <20180508153604.23711-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 73376267715
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:28 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D4264267727
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 17:36:29 +0200 (CEST)
 In-Reply-To: <20180508153604.23711-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,30 +25,63 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard L
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Out of the 11 BYTCR devices which I have access to for testing,
-7 use IN3 for the internal mic and only 1 uses IN1 for the internal mic,
-the other 3 use DMIC1.
+Currently we've 2 places with BYTCR defaults: 1. The generic catch-all
+DMI_SYS_VENDOR=="Insyde" DMI quirk which selects SSP0-AIF1 for generic
+Insyde BYTCR tablets without the ACPI channel package; and 2. the
+defaults in the if (is_bytcr) {} code block.
 
-So IN3 clearly is a better default, using IN3 as default avoids the need
-to add DMI quirks for some of these devices.
+Currently these are not identical, both select IN3 as the internal mic
+output, but the "Insyde" DMI quirk leaves out the DIFF_MIC quirk. The
+DIFF_MIC quirk should be enabled by default, because enabling diff. input
+helps a lot for devices with a differential mic, where as it is a nop on
+devices with a normal mic.
+
+This commit adds the DIFF_MIC quirk to the "Insyde" DMI quirk path, by
+adding a new BYTCR_INPUT_DEFAULTS define and using that in both code paths
+which set BYTCR defaults.
+
+Having a single place where the BYTCR input defaults are defined also
+allows defining jack-detect defaults in a single place in a follow-up
+commit.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 6be4e8972010..bc0b85ec0b16 100644
+index bc0b85ec0b16..0ec3aac62a07 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -975,7 +975,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+@@ -82,6 +82,10 @@ enum {
+ #define BYT_RT5640_MCLK_EN		BIT(22)
+ #define BYT_RT5640_MCLK_25MHZ		BIT(23)
+ 
++#define BYTCR_INPUT_DEFAULTS				\
++	(BYT_RT5640_IN3_MAP |				\
++	 BYT_RT5640_DIFF_MIC)
++
+ /* in-diff or dmic-pin + jdsrc + ovcd-th + -sf + jd-inv + terminating entry */
+ #define MAX_NO_PROPS 6
+ 
+@@ -475,7 +479,7 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
+ 		},
+-		.driver_data = (void *)(BYT_RT5640_IN3_MAP |
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
+ 					BYT_RT5640_MCLK_EN |
+ 					BYT_RT5640_SSP0_AIF1),
+ 
+@@ -975,8 +979,7 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  		}
  
  		/* change defaults for Baytrail-CR capture */
--		byt_rt5640_quirk |= BYT_RT5640_IN1_MAP;
-+		byt_rt5640_quirk |= BYT_RT5640_IN3_MAP;
- 		byt_rt5640_quirk |= BYT_RT5640_DIFF_MIC;
+-		byt_rt5640_quirk |= BYT_RT5640_IN3_MAP;
+-		byt_rt5640_quirk |= BYT_RT5640_DIFF_MIC;
++		byt_rt5640_quirk |= BYTCR_INPUT_DEFAULTS;
  	} else {
  		byt_rt5640_quirk |= BYT_RT5640_DMIC1_MAP;
+ 	}
 -- 
 2.17.0
