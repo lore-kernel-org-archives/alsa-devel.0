@@ -1,15 +1,15 @@
 From: Shrikant Dharwadkar <shrikant.dharwadkar@intel.com>
-Subject: [PATCH] ALSA: hda - Enable additional HD-Audio codec
+Subject: [PATCH v2] ALSA: hda - Add missing HD-Audio codec
 	information
-Date: Tue,  8 May 2018 11:12:55 +0530
-Message-ID: <1525758175-31387-1-git-send-email-shrikant.dharwadkar@intel.com>
+Date: Tue,  8 May 2018 11:55:26 +0530
+Message-ID: <1525760726-31788-1-git-send-email-shrikant.dharwadkar@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 734F6266F0F
- for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 07:43:08 +0200 (CEST)
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8391F266F0F
+ for <alsa-devel@alsa-project.org>; Tue,  8 May 2018 08:25:33 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,9 +23,10 @@ To: ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>
 Cc: Patches Audio <patches.audio@intel.com>, Shrikant Dharwadkar <shrikant.dharwadkar@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Enable additional HD-Audio codec information to be parsed
-using alsa-info script to generate codec information
-with CONFIG_SND_SOC enabled
+This adds missing HD-Audio codec information such as GPIO info,
+power controls, volume capabilities from HDA spec. These additional
+info can be useful in debugging issues. Following are the info that
+are being added:
 
 Function group nodes
 -Add power state controls
