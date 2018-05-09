@@ -1,68 +1,261 @@
-From: Andrea Parri <parri.andrea@gmail.com>
-Subject: Re: [PATCH v2 09/11] docs: Fix some broken references
-Date: Wed, 9 May 2018 23:27:28 +0200
-Message-ID: <20180509212728.GA4178@andrea>
-References: <20180509152045.722f0c51@vento.lan>
- <Pine.LNX.4.44L0.1805091509100.1391-100000@iolanthe.rowland.org>
- <20180509164153.5b9ab9db@vento.lan>
+From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Subject: Re: [PATCH v3 1/4] ALSA: usb-audio: UAC3. Add support for mixer unit.
+Date: Thu, 10 May 2018 01:11:13 +0300
+Message-ID: <CAB=otbRqvHPsqbgqV2_Z9c3nf73AFNrcNhV_se_Hn26TbYHfww@mail.gmail.com>
+References: <20180424172445.31928-2-jorge.sanjuan@codethink.co.uk>
+ <20180427170649.27334-1-jorge.sanjuan@codethink.co.uk> <CAB=otbRKf57D52VRZgE=4XCLYaT9xE7eNsyLrBqmaghgB7LCfQ@mail.gmail.com>
+ <52c0eb21-0a69-7a2b-da8a-2d33ad4e11d2@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <xen-devel-bounces@lists.xenproject.org>
-Content-Disposition: inline
-In-Reply-To: <20180509164153.5b9ab9db@vento.lan>
-List-Unsubscribe: <https://lists.xenproject.org/mailman/options/xen-devel>,
- <mailto:xen-devel-request@lists.xenproject.org?subject=unsubscribe>
-List-Post: <mailto:xen-devel@lists.xenproject.org>
-List-Help: <mailto:xen-devel-request@lists.xenproject.org?subject=help>
-List-Subscribe: <https://lists.xenproject.org/mailman/listinfo/xen-devel>,
- <mailto:xen-devel-request@lists.xenproject.org?subject=subscribe>
-Errors-To: xen-devel-bounces@lists.xenproject.org
-Sender: "Xen-devel" <xen-devel-bounces@lists.xenproject.org>
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Linus Walleij <linus.walleij@linaro.org>, Will Deacon <will.deacon@arm.com>, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Eric Paris <eparis@parisplace.org>, linux-clk@vger.kernel.org, James Morris <jmorris@namei.org>, Alan Stern <stern@rowland.harvard.edu>, xen-devel@lists.xenproject.org, Boqun Feng <boqun.feng@gmail.com>, Nicholas Piggin <npiggin@gmail.com>, Sean Paul <seanpaul@chromium.org>, Thomas Gleixner <tglx@linutronix.de>, Antoine Jacquet <royale@zerezo.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>, linux-crypto@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Linux Doc Mailing List <linux-doc@vger.kernel.org>, David Airlie <airlied@linux.ie>, Gustavo Padovan <gustavo@pa>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <52c0eb21-0a69-7a2b-da8a-2d33ad4e11d2@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jorge <jorge.sanjuan@codethink.co.uk>
+Cc: Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCBNYXkgMDksIDIwMTggYXQgMDQ6NDE6NTNQTSAtMDMwMCwgTWF1cm8gQ2FydmFsaG8g
-Q2hlaGFiIHdyb3RlOgo+IEVtIFdlZCwgOSBNYXkgMjAxOCAxNToxMTowNyAtMDQwMCAoRURUKQo+
-IEFsYW4gU3Rlcm4gPHN0ZXJuQHJvd2xhbmQuaGFydmFyZC5lZHU+IGVzY3JldmV1Ogo+IAo+ID4g
-T24gV2VkLCA5IE1heSAyMDE4LCBNYXVybyBDYXJ2YWxobyBDaGVoYWIgd3JvdGU6Cj4gPiAKPiA+
-ID4gRW0gV2VkLCA5IE1heSAyMDE4IDE5OjE1OjAxICswMjAwCj4gPiA+IEFuZHJlYSBQYXJyaSA8
-cGFycmkuYW5kcmVhQGdtYWlsLmNvbT4gZXNjcmV2ZXU6ICAKPiA+IAo+ID4gPiA+ID4gIHRvb2xz
-L21lbW9yeS1tb2RlbC9SRUFETUUgICAgICAgICAgICAgICAgICAgICB8IDEwICsrKysrLS0tLS0g
-ICAgCj4gPiA+ID4gCj4gPiA+ID4gQXMgbWVudGlvbmVkIGluIHRoZSBwcmV2aW91cyB0aHJlYWQs
-IEkgYW0gZm9yIGtlZXBpbmcgdGhlIGN1cnJlbnQKPiA+ID4gPiByZWZlcmVuY2VzOiB0aGUgUkVB
-TURFIGlzIGxpc3RpbmcgdGhlIGRvYyBmaWxlcywgYXMgd2VsbCBhcyBvdGhlcgo+ID4gPiA+IGZp
-bGVzIGluIHRvb2xzL21lbW9yeS1tb2RlbC8sIHJlbGF0aXZlbHkgdG8gdGhhdCBkaXJlY3Rvcnku
-ICAKPiA+ID4gCj4gPiA+IFllYWgsIGF0IGxlYXN0IHRoaXMgaHVuayBkZXNlcnZlcyBzb21lIHJl
-d29yaywgYXMgbm93IHNvbWUKPiA+ID4gcmVmZXJlbmNlcyBhcmUgRG9jdW1lbnRhdGlvbi8uLi4v
-Zm9vLCB3aGlsZSBvdGhlcnMgYXJlIGp1c3QKPiA+ID4gYmFyLgo+ID4gPiAKPiA+ID4gQXMgb24g
-KGFsbW9zdCkgYWxsIG90aGVyIHBsYWNlcyAoZXhjZXB0IGZvciB0b29scy9tZW1vcnktbW9kZWwv
-UkVBRE1FKSwKPiA+ID4gdGhlIHJlZmVyZW5jZXMgYXJlIGFsd2F5cyBmcm9tIHRoZSBtYWluIGRp
-cmVjdG9yeSwgSSB3b3VsZCBtYWtlIGFsbAo+ID4gPiBwYXRjaGVzIHRoZXJlIGFsc28gcmVsYXRp
-dmUgdG8gbWFpbiBkaXIuIElmIHlvdSdyZSBhZnJhaWQgb2YKPiA+ID4gbm90IGJlaW5nIHRvbyBj
-bGVhcmVyLCB3ZSBjb3VsZCBwcmVmaXggYWxsIG9mIHRoZW0gd2l0aCBzb21ldGhpbmcKPiA+ID4g
-bGlrZToKPiA+ID4gCj4gPiA+IAkke0xJTlVYfS90b29scy9tZW1vcnktbW9kZWwvLi4uCj4gPiA+
-IAo+ID4gPiBqdXN0IGxpa2Ugc29tZSBEVCBiaW5kaW5nIGZpbGVzIGRvOgo+ID4gPiAKPiA+ID4g
-CURvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hdWRpby1ncmFwaC1jYXJk
-LnR4dDpzZWUgJHtMSU5VWH0vRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2dyYXBo
-LnR4dAo+ID4gPiAKPiA+ID4gQSBib251cyBvZiBkb2luZyB0aGF0IGlzIHRoYXQgdGhlIGJyb2tl
-biByZWZlcmVuY2UgZGV0ZWN0IHNjcmlwdCBjYW4KPiA+ID4ga2VlcCBwYXJzaW5nIGl0IHdpdGhv
-dXQgY2hhbmdlcyAod2VsbCwgaXQgd291bGRuJ3QgYmUgaGFyZCB0byBtYWtlCj4gPiA+IGl0IGFs
-c28gYWNjZXB0IGEgcmVsYXRpdmUgZmlsZSwgYnV0IGRvaW5nIHRoYXQganVzdCBkdWUgdG8gCj4g
-PiA+IHRvb2xzL21lbW9yeS1tb2RlbC9SRUFETUUgc2VlbXMgb3ZlcmtpbGwpLgo+ID4gPiAKPiA+
-ID4gQW5vdGhlciBhZHZhbnRhZ2UgaXMgdGhhdCBpdCB3b3VsZCBhbGxvdyB0byBlYXNpbHkgYWRk
-IHJlZmVyZW5jZXMKPiA+ID4gdGhlcmUgZnJvbSB0aGUgbWFpbiBrZXJuZWwgRG9jdW1lbnRhdGlv
-biwgaWYgbmVlZGVkIGluIHRoZSBmdXR1cmUsCj4gPiA+IHdpdGhvdXQgbWVzc2luZyB3aXRoIGxv
-Y2FsIHggbm9uLWxvY2FsIHJlbGF0aXZlIG5hbWVzcGFjZS4gIAo+ID4gCj4gPiBIb3cgYWJvdXQg
-Y2hhbmdpbmcgdGhlIHJlbGF0aXZlIHJlZmVyZW5jZXMgc28gdGhhdCBzb21ldGhpbmcgbGlrZQo+
-ID4gRG9jdW1lbnRhdGlvbi9yZWNpcGVzLnR4dCBiZWNvbWVzIC4vRG9jdW1lbnRhdGlvbi9yZWNp
-cGVzLnR4dD8KPiAKPiBTb3VuZHMgYSBnb29kIGlkZWEgdG8gbWUuIEFuZHJlYT8KCkNvdW50ZXJp
-bnR1aXRpdmUgOy0pICBEb2N1bWVudGF0aW9uL2FiYy50eHQgdnMuIC4vRG9jdW1lbnRhdGlvbi9h
-YmMudHh0CkJ1dCBsZXQgbWUgc2xlZXAgb3ZlciB0aGlzIDstKSAgZm9yIHRoZSB0aW1lIGJlaW5n
-LCBJIHJlbmV3IG15IHZvdGUgZm9yCiJqdXN0IGRvbid0IGNvbW1pdCB0aGVzZSBjaGFuZ2VzIChh
-bmQga2VlcCBjaGVja2luZyBhdXRvbWF0ZWQgY2hhbmdlcykiLgoKICBBbmRyZWEKCgo+IAo+IFRo
-YW5rcywKPiBNYXVybwoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KWGVuLWRldmVsIG1haWxpbmcgbGlzdApYZW4tZGV2ZWxAbGlzdHMueGVucHJvamVjdC5v
-cmcKaHR0cHM6Ly9saXN0cy54ZW5wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL3hlbi1kZXZl
-bA==
+On Tue, May 8, 2018 at 12:43 PM, Jorge <jorge.sanjuan@codethink.co.uk> wrote:
+>
+>
+> On 04/05/18 01:57, Ruslan Bilovol wrote:
+>>
+>> On Fri, Apr 27, 2018 at 8:06 PM, Jorge Sanjuan
+>> <jorge.sanjuan@codethink.co.uk> wrote:
+>>>
+>>> This adds support for the MIXER UNIT in UAC3. All the information
+>>> is obtained from the (HIGH CAPABILITY) Cluster's header. We don't
+>>> read the rest of the logical cluster to obtain the channel config
+>>> as that wont make any difference in the current mixer behaviour.
+>>>
+>>> The name of the mixer unit is not yet requested as there is not
+>>> support for the UAC3 Class Specific String requests.
+>>>
+>>> Tested in an UAC3 device working as a HEADSET with a basic mixer
+>>> unit (same as the one in the BADD spec) with no controls.
+>>
+>>
+>> So, after deeper looking into the code and after testing this patch,
+>> in your usecase (mixer with no controls) you'll never execute
+>> build_mixer_unit_ctl(), correct? So did you try to just fix issues with
+>> incorrect parsing of mixer unit descriptor?
+>>
+>>>
+>>> Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+>>> ---
+>>>   include/uapi/linux/usb/audio.h | 19 +++++++--
+>>>   sound/usb/mixer.c              | 88
+>>> ++++++++++++++++++++++++++++++++++++++----
+>>>   2 files changed, 97 insertions(+), 10 deletions(-)
+>>>
+>>> diff --git a/include/uapi/linux/usb/audio.h
+>>> b/include/uapi/linux/usb/audio.h
+>>> index 3a78e7145689..13d98e6e0db1 100644
+>>> --- a/include/uapi/linux/usb/audio.h
+>>> +++ b/include/uapi/linux/usb/audio.h
+>>> @@ -285,9 +285,22 @@ static inline __u8
+>>> uac_mixer_unit_iChannelNames(struct uac_mixer_unit_descriptor
+>>>   static inline __u8 *uac_mixer_unit_bmControls(struct
+>>> uac_mixer_unit_descriptor *desc,
+>>>                                                int protocol)
+>>>   {
+>>> -       return (protocol == UAC_VERSION_1) ?
+>>> -               &desc->baSourceID[desc->bNrInPins + 4] :
+>>> -               &desc->baSourceID[desc->bNrInPins + 6];
+>>> +       switch (protocol) {
+>>> +       case UAC_VERSION_1:
+>>> +               return &desc->baSourceID[desc->bNrInPins + 4];
+>>> +       case UAC_VERSION_2:
+>>> +               return &desc->baSourceID[desc->bNrInPins + 6];
+>>> +       case UAC_VERSION_3:
+>>> +               return &desc->baSourceID[desc->bNrInPins + 2];
+>>> +       default:
+>>> +               return NULL;
+>>> +       }
+>>> +}
+>>> +
+>>> +static inline __u16 uac3_mixer_unit_wClusterDescrID(struct
+>>> uac_mixer_unit_descriptor *desc)
+>>> +{
+>>> +       return (desc->baSourceID[desc->bNrInPins + 1] << 8) |
+>>> +               desc->baSourceID[desc->bNrInPins];
+>>>   }
+>>>
+>>>   static inline __u8 uac_mixer_unit_iMixer(struct
+>>> uac_mixer_unit_descriptor *desc)
+>>> diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
+>>> index 301ad61ed426..3503f4840ec3 100644
+>>> --- a/sound/usb/mixer.c
+>>> +++ b/sound/usb/mixer.c
+>>> @@ -719,6 +719,66 @@ static int get_term_name(struct mixer_build *state,
+>>> struct usb_audio_term *iterm
+>>>   }
+>>>
+>>>   /*
+>>> + * Get logical cluster information for UAC3 devices.
+>>> + */
+>>> +static int get_cluster_channels_v3(struct mixer_build *state, unsigned
+>>> int cluster_id)
+>>> +{
+>>> +       struct uac3_cluster_header_descriptor c_header;
+>>> +       int err;
+>>> +
+>>> +       err = snd_usb_ctl_msg(state->chip->dev,
+>>> +                       usb_rcvctrlpipe(state->chip->dev, 0),
+>>> +                       UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+>>> +                       USB_RECIP_INTERFACE | USB_TYPE_CLASS |
+>>> USB_DIR_IN,
+>>> +                       cluster_id,
+>>> +                       snd_usb_ctrl_intf(state->chip),
+>>> +                       &c_header, sizeof(c_header));
+>>> +       if (err < 0)
+>>> +               goto error;
+>>> +       if (err != sizeof(c_header)) {
+>>> +               err = -EIO;
+>>> +               goto error;
+>>> +       }
+>>> +
+>>> +       return c_header.bNrChannels;
+>>> +
+>>> +error:
+>>> +       usb_audio_err(state->chip, "cannot request logical cluster ID: %d
+>>> (err: %d)\n", cluster_id, err);
+>>> +       return err;
+>>> +}
+>>> +
+>>> +/*
+>>> + * Get number of channels for a Mixer Unit.
+>>> + */
+>>> +static int uac_mixer_unit_get_channels(struct mixer_build *state,
+>>> +                                      struct uac_mixer_unit_descriptor
+>>> *desc)
+>>> +{
+>>> +       int mu_channels;
+>>> +
+>>> +       if (desc->bLength < 11)
+>>> +               return -EINVAL;
+>>> +       if (!desc->bNrInPins)
+>>> +               return -EINVAL;
+>>> +
+>>> +       switch (state->mixer->protocol) {
+>>> +       case UAC_VERSION_1:
+>>> +       case UAC_VERSION_2:
+>>> +       default:
+>>> +               mu_channels = uac_mixer_unit_bNrChannels(desc);
+>>> +               break;
+>>> +       case UAC_VERSION_3:
+>>> +               mu_channels = get_cluster_channels_v3(state,
+>>> +                               uac3_mixer_unit_wClusterDescrID(desc));
+>>> +               break;
+>>> +       }
+>>> +
+>>> +       if (!mu_channels)
+>>> +               return -EINVAL;
+>>> +
+>>> +       return mu_channels;
+>>> +}
+>>> +
+>>> +/*
+>>>    * parse the source unit recursively until it reaches to a terminal
+>>>    * or a branched unit.
+>>>    */
+>>> @@ -865,6 +925,18 @@ static int check_input_term(struct mixer_build
+>>> *state, int id,
+>>>                                  term->name =
+>>> le16_to_cpu(d->wClockSourceStr);
+>>>                                  return 0;
+>>>                          }
+>>> +                       case UAC3_MIXER_UNIT: {
+>>> +                               struct uac_mixer_unit_descriptor *d = p1;
+>>> +
+>>> +                               err = uac_mixer_unit_get_channels(state,
+>>> d);
+>>> +                               if (err < 0)
+>>> +                                       return err;
+>>> +
+>>> +                               term->channels = err;
+>>> +                               term->type = d->bDescriptorSubtype << 16;
+>>> /* virtual type */
+>>> +
+>>> +                               return 0;
+>>> +                       }
+>>>                          default:
+>>>                                  return -ENODEV;
+>>>                          }
+>>> @@ -1797,11 +1869,10 @@ static int parse_audio_feature_unit(struct
+>>> mixer_build *state, int unitid,
+>>>    */
+>>>   static void build_mixer_unit_ctl(struct mixer_build *state,
+>>>                                   struct uac_mixer_unit_descriptor *desc,
+>>> -                                int in_pin, int in_ch, int unitid,
+>>> -                                struct usb_audio_term *iterm)
+>>> +                                int in_pin, int in_ch, int num_outs,
+>>> +                                int unitid, struct usb_audio_term
+>>> *iterm)
+>>>   {
+>>>          struct usb_mixer_elem_info *cval;
+>>> -       unsigned int num_outs = uac_mixer_unit_bNrChannels(desc);
+>>>          unsigned int i, len;
+>>>          struct snd_kcontrol *kctl;
+>>>          const struct usbmix_name_map *map;
+>>> @@ -1878,14 +1949,17 @@ static int parse_audio_mixer_unit(struct
+>>> mixer_build *state, int unitid,
+>>>          int input_pins, num_ins, num_outs;
+>>>          int pin, ich, err;
+>>>
+>>> -       if (desc->bLength < 11 || !(input_pins = desc->bNrInPins) ||
+>>> -           !(num_outs = uac_mixer_unit_bNrChannels(desc))) {
+>>> +       err = uac_mixer_unit_get_channels(state, desc);
+>>> +       if (err < 0) {
+>>>                  usb_audio_err(state->chip,
+>>>                                "invalid MIXER UNIT descriptor %d\n",
+>>>                                unitid);
+>>> -               return -EINVAL;
+>>> +               return err;
+>>>          }
+>>>
+>>> +       num_outs = err;
+>>> +       input_pins = desc->bNrInPins;
+>>> +
+>>>          num_ins = 0;
+>>>          ich = 0;
+>>>          for (pin = 0; pin < input_pins; pin++) {
+>>> @@ -1912,7 +1986,7 @@ static int parse_audio_mixer_unit(struct
+>>> mixer_build *state, int unitid,
+>>>                                  }
+>>>                          }
+>>>                          if (ich_has_controls)
+>>> -                               build_mixer_unit_ctl(state, desc, pin,
+>>> ich,
+>>> +                               build_mixer_unit_ctl(state, desc, pin,
+>>> ich, num_outs,
+>>>                                                       unitid, &iterm);
+>>
+>>
+>> So with current sources we will never reach this place. In your
+>> usecase (mixer with no
+>> controls) it obviously won't go inside.
+>> However, I created a mixer with controls but still
+>> build_mixer_unit_ctl() isn't executed.
+>> This is because UAC3 input terminal parsing always returns 0 channels,
+>> this is
+>> what still needs to be implemented (see comment "REVISIT: UAC3 IT doesn't
+>> have channels/cfg" in check_input_term)
+>
+>
+> Thanks for testing this!
+>
+> I missed that one with the number of input channels. Regarding the "REVISIT:
+> UAC3 IT doesn't have channels/cfg" comment, we can easily fix that using the
+> helper function I added in this patch for reading the logical cluster's
+> number of channels `get_cluster_channels_v3`. The channel config bitmap I
+> don't see it being used at all so parsing iterm.channels should be enough.
+> Any thoughts?
+>
+
+I looked into the sources, it seems you are right, we need only number of
+channels to proceed with mixer unit created.
+
+I can hack your patch and test it in a few days, or feel free to send v4
+
+Thanks,
+Ruslan
