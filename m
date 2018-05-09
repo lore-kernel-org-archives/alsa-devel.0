@@ -1,55 +1,45 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: nau8824: fix spelling mistake:
-	"semaphone" -> "semaphore"
-Date: Tue,  8 May 2018 23:41:55 +0100
-Message-ID: <20180508224155.26486-1-colin.king@canonical.com>
+From: Banajit Goswami <bgoswami@codeaurora.org>
+Subject: Re: [PATCH v7 09/24] ASoC: qdsp6: q6afe: Add q6afe driver
+Date: Tue, 8 May 2018 19:40:48 -0700
+Message-ID: <d7aed12f-78d4-8528-bfab-3fc87a94e557@codeaurora.org>
+References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
+ <20180501120820.11016-10-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 487212676AA
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 00:42:05 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, John Hsu <KCHSU0@nuvoton.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180501120820.11016-10-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
+Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
 
-Trivial fix to spelling mistake in dev_warn messages
+On 5/1/2018 5:08 AM, Srinivas Kandagatla wrote:
+> This patch adds support to Q6AFE (Audio Front End) module on Q6DSP.
+>
+> AFE module sits right at the other end of cpu where the codec/audio
+> devices are connected.
+>
+> AFE provides abstraced interfaces to both hardware and virtual devices.
+> Each AFE tx/rx port can be configured to connect to one of the hardware
+> devices like codec, hdmi, slimbus, i2s and so on. AFE services include
+> starting, stopping, and if needed, any configurations of the ports.
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
+> ---
+>   sound/soc/qcom/Kconfig        |   4 +
+>   sound/soc/qcom/qdsp6/Makefile |   1 +
+>   sound/soc/qcom/qdsp6/q6afe.c  | 536 ++++++++++++++++++++++++++++++++++++++++++
+>   sound/soc/qcom/qdsp6/q6afe.h  |  35 +++
+>   4 files changed, 576 insertions(+)
+>   create mode 100644 sound/soc/qcom/qdsp6/q6afe.c
+>   create mode 100644 sound/soc/qcom/qdsp6/q6afe.h
+>
+Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/nau8824.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index 76502c090654..6bd14453f06e 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -205,11 +205,11 @@ static int nau8824_sema_acquire(struct nau8824 *nau8824, long timeout)
- 	if (timeout) {
- 		ret = down_timeout(&nau8824->jd_sem, timeout);
- 		if (ret < 0)
--			dev_warn(nau8824->dev, "Acquire semaphone timeout\n");
-+			dev_warn(nau8824->dev, "Acquire semaphore timeout\n");
- 	} else {
- 		ret = down_interruptible(&nau8824->jd_sem);
- 		if (ret < 0)
--			dev_warn(nau8824->dev, "Acquire semaphone fail\n");
-+			dev_warn(nau8824->dev, "Acquire semaphore fail\n");
- 	}
- 
- 	return ret;
 -- 
-2.17.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
