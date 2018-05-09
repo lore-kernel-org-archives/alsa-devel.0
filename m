@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove
-	snd_soc_component_add_unlocked()" to the asoc tree
-Date: Wed,  9 May 2018 10:42:11 +0100 (BST)
-Message-ID: <20180509094211.3D92244007A@finisterre.ee.mobilebroadband>
-References: <878t8urg1e.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: remove legacy_dai_naming from
+	snd_soc_register_dais()" to the asoc tree
+Date: Wed,  9 May 2018 10:41:54 +0100 (BST)
+Message-ID: <20180509094154.BAC9944007A@finisterre.ee.mobilebroadband>
+References: <87tvukb7ra.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 92EF526775E
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:29:03 +0200 (CEST)
-In-Reply-To: <878t8urg1e.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B1F04267742
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:29:04 +0200 (CEST)
+In-Reply-To: <87tvukb7ra.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove snd_soc_component_add_unlocked()
+   ASoC: soc-core: remove legacy_dai_naming from snd_soc_register_dais()
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,55 @@ to this mail.
 Thanks,
 Mark
 
->From 359c71eeacbdd93d7870035af9a830140798fc67 Mon Sep 17 00:00:00 2001
+>From 0e7b25c673ec916dee8d927fc8de5806d900cba8 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 8 May 2018 03:22:11 +0000
-Subject: [PATCH] ASoC: soc-core: remove snd_soc_component_add_unlocked()
+Date: Tue, 8 May 2018 03:23:01 +0000
+Subject: [PATCH] ASoC: soc-core: remove legacy_dai_naming from
+ snd_soc_register_dais()
 
-There is no user to call snd_soc_component_add_unlocked() anymore.
-Let's merge snd_soc_component_add_unlocked() and
-snd_soc_component_add().
+We can get legacy dai name flag from component driver.
+Thus, there is no need to have its parameter on snd_soc_register_dais().
+Let's remove unneeded parameter
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/soc-core.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index f22ef347eead..2d3abb3f1231 100644
+index 2d3abb3f1231..3d56f1fe5914 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2958,8 +2958,10 @@ EXPORT_SYMBOL_GPL(snd_soc_component_exit_regmap);
- 
- #endif
- 
--static void snd_soc_component_add_unlocked(struct snd_soc_component *component)
-+static void snd_soc_component_add(struct snd_soc_component *component)
+@@ -2783,8 +2783,7 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
+  *                     parent's name.
+  */
+ static int snd_soc_register_dais(struct snd_soc_component *component,
+-	struct snd_soc_dai_driver *dai_drv, size_t count,
+-	bool legacy_dai_naming)
++				 struct snd_soc_dai_driver *dai_drv, size_t count)
  {
-+	mutex_lock(&client_mutex);
-+
- 	if (!component->driver->write && !component->driver->read) {
- 		if (!component->regmap)
- 			component->regmap = dev_get_regmap(component->dev, NULL);
-@@ -2969,12 +2971,7 @@ static void snd_soc_component_add_unlocked(struct snd_soc_component *component)
+ 	struct device *dev = component->dev;
+ 	struct snd_soc_dai *dai;
+@@ -2796,7 +2795,7 @@ static int snd_soc_register_dais(struct snd_soc_component *component,
+ 	for (i = 0; i < count; i++) {
  
- 	list_add(&component->list, &component_list);
- 	INIT_LIST_HEAD(&component->dobj_list);
--}
+ 		dai = soc_add_dai(component, dai_drv + i,
+-				count == 1 && legacy_dai_naming);
++				  count == 1 && !component->driver->non_legacy_dai_naming);
+ 		if (dai == NULL) {
+ 			ret = -ENOMEM;
+ 			goto err;
+@@ -3046,8 +3045,7 @@ int snd_soc_add_component(struct device *dev,
+ 		}
+ 	}
  
--static void snd_soc_component_add(struct snd_soc_component *component)
--{
--	mutex_lock(&client_mutex);
--	snd_soc_component_add_unlocked(component);
- 	mutex_unlock(&client_mutex);
- }
- 
+-	ret = snd_soc_register_dais(component, dai_drv, num_dai,
+-				    !component_driver->non_legacy_dai_naming);
++	ret = snd_soc_register_dais(component, dai_drv, num_dai);
+ 	if (ret < 0) {
+ 		dev_err(dev, "ASoC: Failed to register DAIs: %d\n", ret);
+ 		goto err_cleanup;
 -- 
 2.17.0
