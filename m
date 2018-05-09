@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add component_list_show()" to the asoc
-	tree
-Date: Wed,  9 May 2018 10:44:06 +0100 (BST)
-Message-ID: <20180509094406.6E64A44007A@finisterre.ee.mobilebroadband>
-References: <87d0y6rg3g.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: convert platform explanation to
+	component" to the asoc tree
+Date: Wed,  9 May 2018 10:43:40 +0100 (BST)
+Message-ID: <20180509094340.23F6E44007C@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 202C2267738
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:29:00 +0200 (CEST)
-In-Reply-To: <87d0y6rg3g.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4027E267757
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:29:01 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add component_list_show()
+   ASoC: convert platform explanation to component
 
 has been applied to the asoc tree at
 
@@ -53,59 +52,70 @@ to this mail.
 Thanks,
 Mark
 
->From db795f9b924eaf9c86ff6ba025d7ae2f3457ef05 Mon Sep 17 00:00:00 2001
+>From d9f29e9ebe6ec7193c160ac3d38d5d1d6b55adda Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 8 May 2018 03:21:00 +0000
-Subject: [PATCH] ASoC: add component_list_show()
+Date: Tue, 8 May 2018 03:21:24 +0000
+Subject: [PATCH] ASoC: convert platform explanation to component
 
 commit ef050bece1b55 ("ASoC: Remove platform code now everything is
-componentised") removed platform code, then platform_list_show() was
-removed, too. But we want to keep it as component_list_show.
-This patch add it.
+componentised") removed platform code, but it didn't care
+about platform documentation.
+This patch convert platform explanation to component
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ Documentation/sound/soc/platform.rst | 30 ++++++++++++----------------
+ 1 file changed, 13 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index a4cb141b8f38..f22ef347eead 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -190,6 +190,21 @@ static int dai_list_show(struct seq_file *m, void *v)
- }
- DEFINE_SHOW_ATTRIBUTE(dai_list);
+diff --git a/Documentation/sound/soc/platform.rst b/Documentation/sound/soc/platform.rst
+index d5574904d981..cc817078daa6 100644
+--- a/Documentation/sound/soc/platform.rst
++++ b/Documentation/sound/soc/platform.rst
+@@ -23,30 +23,26 @@ The platform DMA driver optionally supports the following ALSA operations:-
+   };
  
-+static int component_list_show(struct seq_file *m, void *v)
-+{
-+	struct snd_soc_component *component;
-+
-+	mutex_lock(&client_mutex);
-+
-+	list_for_each_entry(component, &component_list, list)
-+		seq_printf(m, "%s\n", component->name);
-+
-+	mutex_unlock(&client_mutex);
-+
-+	return 0;
-+}
-+DEFINE_SHOW_ATTRIBUTE(component_list);
-+
- static void soc_init_card_debugfs(struct snd_soc_card *card)
- {
- 	if (!snd_soc_debugfs_root)
-@@ -228,6 +243,10 @@ static void snd_soc_debugfs_init(void)
- 	if (!debugfs_create_file("dais", 0444, snd_soc_debugfs_root, NULL,
- 				 &dai_list_fops))
- 		pr_warn("ASoC: Failed to create DAI list debugfs file\n");
-+
-+	if (!debugfs_create_file("components", 0444, snd_soc_debugfs_root, NULL,
-+				 &component_list_fops))
-+		pr_warn("ASoC: Failed to create component list debugfs file\n");
- }
+ The platform driver exports its DMA functionality via struct
+-snd_soc_platform_driver:-
++snd_soc_component_driver:-
+ ::
  
- static void snd_soc_debugfs_exit(void)
+-  struct snd_soc_platform_driver {
+-	char *name;
++  struct snd_soc_component_driver {
++	const char *name;
+ 
+-	int (*probe)(struct platform_device *pdev);
+-	int (*remove)(struct platform_device *pdev);
+-	int (*suspend)(struct platform_device *pdev, struct snd_soc_cpu_dai *cpu_dai);
+-	int (*resume)(struct platform_device *pdev, struct snd_soc_cpu_dai *cpu_dai);
++	...
++	int (*probe)(struct snd_soc_component *);
++	void (*remove)(struct snd_soc_component *);
++	int (*suspend)(struct snd_soc_component *);
++	int (*resume)(struct snd_soc_component *);
+ 
+ 	/* pcm creation and destruction */
+-	int (*pcm_new)(struct snd_card *, struct snd_soc_codec_dai *, struct snd_pcm *);
++	int (*pcm_new)(struct snd_soc_pcm_runtime *);
+ 	void (*pcm_free)(struct snd_pcm *);
+ 
+-	/*
+-	 * For platform caused delay reporting.
+-	 * Optional.
+-	 */
+-	snd_pcm_sframes_t (*delay)(struct snd_pcm_substream *,
+-		struct snd_soc_dai *);
+-
+-	/* platform stream ops */
+-	struct snd_pcm_ops *pcm_ops;
++	...
++	const struct snd_pcm_ops *ops;
++	const struct snd_compr_ops *compr_ops;
++	...
+   };
+ 
+ Please refer to the ALSA driver documentation for details of audio DMA.
 -- 
 2.17.0
