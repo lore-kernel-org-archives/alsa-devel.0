@@ -1,17 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 1/3] ASoC: pcm_native: Use
-	'snd_pcm_format_t' type
-Date: Thu, 10 May 2018 02:42:59 +0900
-Message-ID: <3471ba47-20d7-e4bf-b8ed-2d6970f174b6@sakamocchi.jp>
-References: <1525621665-11022-1-git-send-email-festevam@gmail.com>
+Subject: Re: [PATCH v3] ALSA: core api: define offsets for TLV
+	items
+Date: Thu, 10 May 2018 03:06:46 +0900
+Message-ID: <16c25e6a-20f2-e390-a7ba-1cb9129dc0bc@sakamocchi.jp>
+References: <20180507210431.4332-1-ranjani.sridharan@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
- [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id E633626762C
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 19:43:05 +0200 (CEST)
-In-Reply-To: <1525621665-11022-1-git-send-email-festevam@gmail.com>
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 51BC726773B
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 20:06:49 +0200 (CEST)
+In-Reply-To: <20180507210431.4332-1-ranjani.sridharan@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,45 +22,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <festevam@gmail.com>, broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org
+To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On May 7 2018 00:47, Fabio Estevam wrote:
-> From: Fabio Estevam <fabio.estevam@nxp.com>
+On May 8 2018 06:04, Ranjani Sridharan wrote:
+> Currently, there are no pre-defined accessors for the elements
+> in topology TLV data. In the absence of such offsets, the
+> tlv data will have to be decoded using hardwired offset
+> numbers 0-N depending on the type of TLV. This patch defines
+> accessor offsets for the type, length, min and mute/step items
+> in TLV data for DB_SCALE type tlv's. These will be used by drivers to
+> decode the TLV data while loading topology thereby improving
+> code readability. The type and len offsets are common for all TLV
+> types. The min and step/mute offsets are specific to DB_SCALE tlv type.
 > 
-> 'snd_pcm_format_t' type is better suited for iterating through the
-> SNDRV_PCM_FORMAT members.
-> 
-> Also, use SNDRV_PCM_FORMAT_FIRST for the first element.
-> 
-> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 > ---
->   sound/core/pcm_native.c | 8 ++++----
->   1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> Notes:
+>      v3: fix prefix for offset definitions
+> 
+>   include/uapi/sound/tlv.h | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/include/uapi/sound/tlv.h b/include/uapi/sound/tlv.h
+> index be5371f09a62..13f425c2abbd 100644
+> --- a/include/uapi/sound/tlv.h
+> +++ b/include/uapi/sound/tlv.h
+> @@ -98,4 +98,12 @@
+>   
+>   #define SNDRV_CTL_TLVD_DB_GAIN_MUTE	-9999999
+>   
+> +/* Accessor offsets for TLV data items */
+> +#define SNDRV_CTL_TLVO_TYPE		0
+> +#define SNDRV_CTL_TLVO_LEN		1
+> +
+> +/* Accessor offsets for min, mute and step items in dB scale type TLV */
+> +#define SNDRV_CTL_TLVO_DB_SCALE_MIN		2
+> +#define SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP	3
+> +
+>   #endif
 
-You use 'ASoC' prefix in titile of this patch, but...
+You added these macros in the end of this file. In my opinion, this is 
+inconvenient for future when adding more macros for new types. It's
+better to place the additional macro to places convenient to find
+relevant lines such that:
+  - 'SNDRV_CTL_TLVO_TYPE' and 'SNDRV_CTL_TLVO_LEN' following
+    to comments about layout of TLV data.
+  - 'SNDRV_CTL_TLVO_DB_SCALE_MIN' and
+    'SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP' following to
+    'SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP'.
 
-$ git log --oneline sound/core/pcm_native.c
-...
-41412fe92118 ALSA: pcm: Change return type to vm_fault_t
-f853dcaae2f5 ALSA: core: Report audio_tstamp in snd_pcm_sync_ptr
-912e4c332037 ALSA: pcm: Return negative delays from SNDRV_PCM_IOCTL_DELAY.
-c99c5a3bb575 ALSA: pcm: Unify delay calculation in snd_pcm_status() and 
-snd_pcm_delay()
-6448fcba2a7f ALSA: pcm: Unify playback and capture poll callbacks
-763e5067aac9 ALSA: pcm: Clean up with snd_pcm_avail() and 
-snd_pcm_hw_avail() helpers
-...
+diff --git a/include/uapi/sound/tlv.h b/include/uapi/sound/tlv.h
+index be5371f09a62..b5f45b13077e 100644
+--- a/include/uapi/sound/tlv.h
++++ b/include/uapi/sound/tlv.h
+@@ -37,6 +37,9 @@
+   *        block_length = (length + (sizeof(unsigned int) - 1)) &
+   *                       ~(sizeof(unsigned int) - 1)) ....
+   */
++#define SNDRV_CTL_TLVO_TYPE            0
++#define SNDRV_CTL_TLVO_LEN             1
++
+  #define SNDRV_CTL_TLVD_ITEM(type, ...) \
+         (type), SNDRV_CTL_TLVD_LENGTH(__VA_ARGS__), __VA_ARGS__
+  #define SNDRV_CTL_TLVD_LENGTH(...) \
+@@ -61,6 +64,9 @@
+                 SNDRV_CTL_TLVD_DB_SCALE_ITEM(min, step, mute) \
+         }
 
-It's better to use 'ALSA' prefix with 'pcm' or 'core' tag because your 
-change is outside of ALSA SoC part and can affects whole PCM related 
-stuffs. Furthermore, you need to post it to a maintainer of this 
-subsystem as long as you'd like to request the maintainer to apply it.
++#define SNDRV_CTL_TLVO_DB_SCALE_MIN            2
++#define SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP  3
++
+  /* dB scale specified with min/max values instead of step */
+  #define SNDRV_CTL_TLVD_DB_MINMAX_ITEM(min_dB, max_dB) \
+         SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_DB_MINMAX, (min_dB), (max_dB))
+
+I have another concern that 'O' is hard to distinguish from 'D' as a
+quick glance and can easily leads developers and reviewers to
+misread 'SNDRV_CTL_TLVD_XXX' and 'SNDRV_CTL_TLVO_XXX'. Of cource, I
+know that you intend to use 'O' to express 'offset' and it's logically
+valid. My concern is just for visual.
 
 
-Thanks
+Regards
 
 Takashi Sakamoto
