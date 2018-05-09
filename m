@@ -1,185 +1,390 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v8 04/24] ASoC: qdsp6: dt-bindings: Add q6afe dt bindings
-Date: Wed,  9 May 2018 13:56:15 +0100
-Message-ID: <20180509125635.5653-5-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v8 12/24] ASoC: qdsp6: q6afe: Add support to MI2S sysclks
+Date: Wed,  9 May 2018 13:56:23 +0100
+Message-ID: <20180509125635.5653-13-srinivas.kandagatla@linaro.org>
 References: <20180509125635.5653-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180509125635.5653-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, perex@perex.cz, linux-kernel@vger.kernel.org
+Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch add DT bindings for AFE (Audio Frontend) DSP module.
+This patch adds support to LPASS Bit clock, LPASS Digital
+core clock and OSR clock. These clocks are required for both
+MI2S and PCM setup.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 Reviewed-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- .../devicetree/bindings/sound/qcom,q6afe.txt       | 104 +++++++++++++++++++++
- include/dt-bindings/sound/qcom,q6afe.h             |  31 ++++++
- 2 files changed, 135 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,q6afe.txt
- create mode 100644 include/dt-bindings/sound/qcom,q6afe.h
+ sound/soc/qcom/qdsp6/q6afe.c | 164 +++++++++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h | 131 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 295 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-new file mode 100644
-index 000000000000..14335a08b963
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-@@ -0,0 +1,104 @@
-+Qualcomm Audio Front End (Q6AFE) binding
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 6808b7bae5d5..11525a25db13 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -33,6 +33,9 @@
+ 
+ #define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
+ 
++#define AFE_PARAM_ID_LPAIF_CLK_CONFIG	0x00010238
++#define AFE_PARAM_ID_INT_DIGITAL_CDC_CLK_CONFIG	0x00010239
 +
-+AFE is one of the APR audio service on Q6DSP
-+Please refer to qcom,apr.txt for details of the common apr service bindings
-+used by all apr services. Must contain the following properties.
+ #define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
+ #define AFE_PARAM_ID_I2S_CONFIG	0x0001020D
+ 
+@@ -66,6 +69,11 @@
+ #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
+ 
+ #define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
++/* Clock set API version */
++#define AFE_API_VERSION_CLOCK_SET 1
++#define Q6AFE_LPASS_CLK_CONFIG_API_VERSION	0x1
++#define AFE_MODULE_CLOCK_SET		0x0001028F
++#define AFE_PARAM_ID_CLOCK_SET		0x00010290
+ 
+ /* SLIMbus Rx port on channel 0. */
+ #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX      0x4000
+@@ -142,6 +150,13 @@ struct afe_port_param_data_v2 {
+ 	u16 reserved;
+ } __packed;
+ 
++struct afe_svc_cmd_set_param {
++	uint32_t payload_size;
++	uint32_t payload_address_lsw;
++	uint32_t payload_address_msw;
++	uint32_t mem_map_handle;
++} __packed;
 +
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,q6afe-v<MAJOR-NUMBER>.<MINOR-NUMBER>"
-+		  Or "qcom,q6afe" where the version number can be queried
-+		  from DSP.
-+		  example "qcom,q6afe"
+ struct afe_port_cmd_set_param_v2 {
+ 	u16 port_id;
+ 	u16 payload_size;
+@@ -202,6 +217,23 @@ struct afe_param_id_slimbus_cfg {
+  */
+ } __packed;
+ 
++struct afe_clk_cfg {
++	u32                  i2s_cfg_minor_version;
++	u32                  clk_val1;
++	u32                  clk_val2;
++	u16                  clk_src;
++	u16                  clk_root;
++	u16                  clk_set_mode;
++	u16                  reserved;
++} __packed;
 +
-+= AFE DAIs (Digial Audio Interface)
-+"dais" subnode of the AFE node. It represents afe dais, each afe dai is a
-+subnode of "dais" representing board specific dai setup.
-+"dais" node should have following properties followed by dai children.
++struct afe_digital_clk_cfg {
++	u32                  i2s_cfg_minor_version;
++	u32                  clk_val;
++	u16                  clk_root;
++	u16                  reserved;
++} __packed;
 +
-+- #sound-dai-cells
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Must be 1
+ struct afe_param_id_i2s_cfg {
+ 	u32	i2s_cfg_minor_version;
+ 	u16	bit_width;
+@@ -219,6 +251,16 @@ union afe_port_config {
+ 	struct afe_param_id_i2s_cfg	i2s_cfg;
+ } __packed;
+ 
 +
-+- #address-cells
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Must be 1
-+
-+- #size-cells
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Must be 0
-+
-+== AFE DAI is subnode of "dais" and represent a dai, it includes board specific
-+configuration of each dai. Must contain the following properties.
-+
-+- reg
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Must be dai id
-+
-+- qcom,sd-lines
-+	Usage: required for mi2s interface
-+	Value type: <prop-encoded-array>
-+	Definition: Must be list of serial data lines used by this dai.
-+	should be one or more of the 1-4 sd lines.
-+
-+= EXAMPLE
-+
-+q6afe@4 {
-+	compatible = "qcom,q6afe";
-+	reg = <APR_SVC_AFE>;
-+
-+	dais {
-+		#sound-dai-cells = <1>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		hdmi@1 {
-+			reg = <1>;
-+		};
-+
-+		prim-mi2s-rx@16 {
-+			reg = <16>;
-+			qcom,sd-lines = <1 3>;
-+		};
-+
-+		prim-mi2s-tx@17 {
-+			reg = <17>;
-+			qcom,sd-lines = <2>;
-+		};
-+
-+		sec-mi2s-rx@18 {
-+			reg = <18>;
-+			qcom,sd-lines = <1 4>;
-+		};
-+
-+		sec-mi2s-tx@19 {
-+			reg = <19>;
-+			qcom,sd-lines = <2>;
-+		};
-+
-+		tert-mi2s-rx@20 {
-+			reg = <20>;
-+			qcom,sd-lines = <2 4>;
-+		};
-+
-+		tert-mi2s-tx@21 {
-+			reg = <21>;
-+			qcom,sd-lines = <1>;
-+		};
-+
-+		quat-mi2s-rx@22 {
-+			reg = <22>;
-+			qcom,sd-lines = <1>;
-+		};
-+
-+		quat-mi2s-tx@23 {
-+			reg = <23>;
-+			qcom,sd-lines = <2>;
-+		};
-+	};
++struct afe_clk_set {
++	uint32_t clk_set_minor_version;
++	uint32_t clk_id;
++	uint32_t clk_freq_in_hz;
++	uint16_t clk_attri;
++	uint16_t clk_root;
++	uint32_t enable;
 +};
-diff --git a/include/dt-bindings/sound/qcom,q6afe.h b/include/dt-bindings/sound/qcom,q6afe.h
-new file mode 100644
-index 000000000000..e162045f5dc9
---- /dev/null
-+++ b/include/dt-bindings/sound/qcom,q6afe.h
-@@ -0,0 +1,31 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_BINDINGS_Q6_AFE_H__
-+#define __DT_BINDINGS_Q6_AFE_H__
 +
-+/* Audio Front End (AFE) virtual ports IDs */
-+#define HDMI_RX		1
-+#define SLIMBUS_0_RX    2
-+#define SLIMBUS_0_TX    3
-+#define SLIMBUS_1_RX    4
-+#define SLIMBUS_1_TX    5
-+#define SLIMBUS_2_RX    6
-+#define SLIMBUS_2_TX    7
-+#define SLIMBUS_3_RX    8
-+#define SLIMBUS_3_TX    9
-+#define SLIMBUS_4_RX    10
-+#define SLIMBUS_4_TX    11
-+#define SLIMBUS_5_RX    12
-+#define SLIMBUS_5_TX    13
-+#define SLIMBUS_6_RX    14
-+#define SLIMBUS_6_TX    15
-+#define PRIMARY_MI2S_RX		16
-+#define PRIMARY_MI2S_TX		17
-+#define SECONDARY_MI2S_RX	18
-+#define SECONDARY_MI2S_TX	19
-+#define TERTIARY_MI2S_RX	20
-+#define TERTIARY_MI2S_TX	21
-+#define QUATERNARY_MI2S_RX	22
-+#define QUATERNARY_MI2S_TX	23
+ struct q6afe_port {
+ 	wait_queue_head_t wait;
+ 	union afe_port_config port_cfg;
+@@ -387,6 +429,54 @@ static int afe_apr_send_pkt(struct q6afe *afe, struct apr_pkt *pkt,
+ 	return ret;
+ }
+ 
++static int q6afe_port_set_param(struct q6afe_port *port, void *data,
++				int param_id, int module_id, int psize)
++{
++	struct afe_svc_cmd_set_param *param;
++	struct afe_port_param_data_v2 *pdata;
++	struct q6afe *afe = port->afe;
++	struct apr_pkt *pkt;
++	u16 port_id = port->id;
++	int ret, pkt_size;
++	void *p, *pl;
 +
-+#endif /* __DT_BINDINGS_Q6_AFE_H__ */
++	pkt_size = APR_HDR_SIZE + sizeof(*param) + sizeof(*pdata) + psize;
++	p = kzalloc(pkt_size, GFP_KERNEL);
++	if (!p)
++		return -ENOMEM;
 +
++	pkt = p;
++	param = p + APR_HDR_SIZE;
++	pdata = p + APR_HDR_SIZE + sizeof(*param);
++	pl = p + APR_HDR_SIZE + sizeof(*param) + sizeof(*pdata);
++	memcpy(pl, data, psize);
++
++	pkt->hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
++					   APR_HDR_LEN(APR_HDR_SIZE),
++					   APR_PKT_VER);
++	pkt->hdr.pkt_size = pkt_size;
++	pkt->hdr.src_port = 0;
++	pkt->hdr.dest_port = 0;
++	pkt->hdr.token = port->token;
++	pkt->hdr.opcode = AFE_SVC_CMD_SET_PARAM;
++
++	param->payload_size = sizeof(*pdata) + psize;
++	param->payload_address_lsw = 0x00;
++	param->payload_address_msw = 0x00;
++	param->mem_map_handle = 0x00;
++	pdata->module_id = module_id;
++	pdata->param_id = param_id;
++	pdata->param_size = psize;
++
++	ret = afe_apr_send_pkt(afe, pkt, port);
++	if (ret)
++		dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
++		       port_id, ret);
++
++	kfree(pkt);
++	return ret;
++}
++
+ static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
+ 				   int param_id, int psize)
+ {
+@@ -436,6 +526,80 @@ static int q6afe_port_set_param_v2(struct q6afe_port *port, void *data,
+ 	return ret;
+ }
+ 
++static int q6afe_set_lpass_clock(struct q6afe_port *port,
++				 struct afe_clk_cfg *cfg)
++{
++	return q6afe_port_set_param_v2(port, cfg,
++				       AFE_PARAM_ID_LPAIF_CLK_CONFIG,
++				       sizeof(*cfg));
++}
++
++static int q6afe_set_lpass_clock_v2(struct q6afe_port *port,
++				 struct afe_clk_set *cfg)
++{
++	return q6afe_port_set_param(port, cfg, AFE_PARAM_ID_CLOCK_SET,
++				    AFE_MODULE_CLOCK_SET, sizeof(*cfg));
++}
++
++static int q6afe_set_digital_codec_core_clock(struct q6afe_port *port,
++					      struct afe_digital_clk_cfg *cfg)
++{
++	return q6afe_port_set_param_v2(port, cfg,
++				       AFE_PARAM_ID_INT_DIGITAL_CDC_CLK_CONFIG,
++				       sizeof(*cfg));
++}
++
++int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
++			  int clk_src, int clk_root,
++			  unsigned int freq, int dir)
++{
++	struct afe_clk_cfg ccfg = {0,};
++	struct afe_clk_set cset = {0,};
++	struct afe_digital_clk_cfg dcfg = {0,};
++	int ret;
++
++	switch (clk_id) {
++	case LPAIF_DIG_CLK:
++		dcfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
++		dcfg.clk_val = freq;
++		dcfg.clk_root = clk_root;
++		ret = q6afe_set_digital_codec_core_clock(port, &dcfg);
++		break;
++	case LPAIF_BIT_CLK:
++		ccfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
++		ccfg.clk_val1 = freq;
++		ccfg.clk_src = clk_src;
++		ccfg.clk_root = clk_root;
++		ccfg.clk_set_mode = Q6AFE_LPASS_MODE_CLK1_VALID;
++		ret = q6afe_set_lpass_clock(port, &ccfg);
++		break;
++
++	case LPAIF_OSR_CLK:
++		ccfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
++		ccfg.clk_val2 = freq;
++		ccfg.clk_src = clk_src;
++		ccfg.clk_root = clk_root;
++		ccfg.clk_set_mode = Q6AFE_LPASS_MODE_CLK2_VALID;
++		ret = q6afe_set_lpass_clock(port, &ccfg);
++		break;
++	case Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT ... Q6AFE_LPASS_CLK_ID_INT_MCLK_1:
++		cset.clk_set_minor_version = AFE_API_VERSION_CLOCK_SET;
++		cset.clk_id = clk_id;
++		cset.clk_freq_in_hz = freq;
++		cset.clk_attri = clk_src;
++		cset.clk_root = clk_root;
++		cset.enable = !!freq;
++		ret = q6afe_set_lpass_clock_v2(port, &cset);
++		break;
++	default:
++		ret = -EINVAL;
++		break;
++	}
++
++	return ret;
++}
++EXPORT_SYMBOL_GPL(q6afe_port_set_sysclk);
++
+ /**
+  * q6afe_port_stop() - Stop a afe port
+  *
+diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
+index 3cb3bb4985a9..5ca54a9bdfd5 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.h
++++ b/sound/soc/qcom/qdsp6/q6afe.h
+@@ -16,6 +16,134 @@
+ #define AFE_MAX_CHAN_COUNT	8
+ #define AFE_PORT_MAX_AUDIO_CHAN_CNT	0x8
+ 
++#define Q6AFE_LPASS_CLK_SRC_INTERNAL 1
++#define Q6AFE_LPASS_CLK_ROOT_DEFAULT 0
++
++#define LPAIF_DIG_CLK	1
++#define LPAIF_BIT_CLK	2
++#define LPAIF_OSR_CLK	3
++
++/* Clock ID for Primary I2S IBIT */
++#define Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT                          0x100
++/* Clock ID for Primary I2S EBIT */
++#define Q6AFE_LPASS_CLK_ID_PRI_MI2S_EBIT                          0x101
++/* Clock ID for Secondary I2S IBIT */
++#define Q6AFE_LPASS_CLK_ID_SEC_MI2S_IBIT                          0x102
++/* Clock ID for Secondary I2S EBIT */
++#define Q6AFE_LPASS_CLK_ID_SEC_MI2S_EBIT                          0x103
++/* Clock ID for Tertiary I2S IBIT */
++#define Q6AFE_LPASS_CLK_ID_TER_MI2S_IBIT                          0x104
++/* Clock ID for Tertiary I2S EBIT */
++#define Q6AFE_LPASS_CLK_ID_TER_MI2S_EBIT                          0x105
++/* Clock ID for Quartnery I2S IBIT */
++#define Q6AFE_LPASS_CLK_ID_QUAD_MI2S_IBIT                         0x106
++/* Clock ID for Quartnery I2S EBIT */
++#define Q6AFE_LPASS_CLK_ID_QUAD_MI2S_EBIT                         0x107
++/* Clock ID for Speaker I2S IBIT */
++#define Q6AFE_LPASS_CLK_ID_SPEAKER_I2S_IBIT                       0x108
++/* Clock ID for Speaker I2S EBIT */
++#define Q6AFE_LPASS_CLK_ID_SPEAKER_I2S_EBIT                       0x109
++/* Clock ID for Speaker I2S OSR */
++#define Q6AFE_LPASS_CLK_ID_SPEAKER_I2S_OSR                        0x10A
++
++/* Clock ID for QUINARY  I2S IBIT */
++#define Q6AFE_LPASS_CLK_ID_QUI_MI2S_IBIT			0x10B
++/* Clock ID for QUINARY  I2S EBIT */
++#define Q6AFE_LPASS_CLK_ID_QUI_MI2S_EBIT			0x10C
++/* Clock ID for SENARY  I2S IBIT */
++#define Q6AFE_LPASS_CLK_ID_SEN_MI2S_IBIT			0x10D
++/* Clock ID for SENARY  I2S EBIT */
++#define Q6AFE_LPASS_CLK_ID_SEN_MI2S_EBIT			0x10E
++/* Clock ID for INT0 I2S IBIT  */
++#define Q6AFE_LPASS_CLK_ID_INT0_MI2S_IBIT                       0x10F
++/* Clock ID for INT1 I2S IBIT  */
++#define Q6AFE_LPASS_CLK_ID_INT1_MI2S_IBIT                       0x110
++/* Clock ID for INT2 I2S IBIT  */
++#define Q6AFE_LPASS_CLK_ID_INT2_MI2S_IBIT                       0x111
++/* Clock ID for INT3 I2S IBIT  */
++#define Q6AFE_LPASS_CLK_ID_INT3_MI2S_IBIT                       0x112
++/* Clock ID for INT4 I2S IBIT  */
++#define Q6AFE_LPASS_CLK_ID_INT4_MI2S_IBIT                       0x113
++/* Clock ID for INT5 I2S IBIT  */
++#define Q6AFE_LPASS_CLK_ID_INT5_MI2S_IBIT                       0x114
++/* Clock ID for INT6 I2S IBIT  */
++#define Q6AFE_LPASS_CLK_ID_INT6_MI2S_IBIT                       0x115
++
++/* Clock ID for QUINARY MI2S OSR CLK  */
++#define Q6AFE_LPASS_CLK_ID_QUI_MI2S_OSR                         0x116
++
++/* Clock ID for Primary PCM IBIT */
++#define Q6AFE_LPASS_CLK_ID_PRI_PCM_IBIT                           0x200
++/* Clock ID for Primary PCM EBIT */
++#define Q6AFE_LPASS_CLK_ID_PRI_PCM_EBIT                           0x201
++/* Clock ID for Secondary PCM IBIT */
++#define Q6AFE_LPASS_CLK_ID_SEC_PCM_IBIT                           0x202
++/* Clock ID for Secondary PCM EBIT */
++#define Q6AFE_LPASS_CLK_ID_SEC_PCM_EBIT                           0x203
++/* Clock ID for Tertiary PCM IBIT */
++#define Q6AFE_LPASS_CLK_ID_TER_PCM_IBIT                           0x204
++/* Clock ID for Tertiary PCM EBIT */
++#define Q6AFE_LPASS_CLK_ID_TER_PCM_EBIT                           0x205
++/* Clock ID for Quartery PCM IBIT */
++#define Q6AFE_LPASS_CLK_ID_QUAD_PCM_IBIT                          0x206
++/* Clock ID for Quartery PCM EBIT */
++#define Q6AFE_LPASS_CLK_ID_QUAD_PCM_EBIT                          0x207
++/* Clock ID for Quinary PCM IBIT */
++#define Q6AFE_LPASS_CLK_ID_QUIN_PCM_IBIT                          0x208
++/* Clock ID for Quinary PCM EBIT */
++#define Q6AFE_LPASS_CLK_ID_QUIN_PCM_EBIT                          0x209
++/* Clock ID for QUINARY PCM OSR  */
++#define Q6AFE_LPASS_CLK_ID_QUI_PCM_OSR                            0x20A
++
++/** Clock ID for Primary TDM IBIT */
++#define Q6AFE_LPASS_CLK_ID_PRI_TDM_IBIT                           0x200
++/** Clock ID for Primary TDM EBIT */
++#define Q6AFE_LPASS_CLK_ID_PRI_TDM_EBIT                           0x201
++/** Clock ID for Secondary TDM IBIT */
++#define Q6AFE_LPASS_CLK_ID_SEC_TDM_IBIT                           0x202
++/** Clock ID for Secondary TDM EBIT */
++#define Q6AFE_LPASS_CLK_ID_SEC_TDM_EBIT                           0x203
++/** Clock ID for Tertiary TDM IBIT */
++#define Q6AFE_LPASS_CLK_ID_TER_TDM_IBIT                           0x204
++/** Clock ID for Tertiary TDM EBIT */
++#define Q6AFE_LPASS_CLK_ID_TER_TDM_EBIT                           0x205
++/** Clock ID for Quartery TDM IBIT */
++#define Q6AFE_LPASS_CLK_ID_QUAD_TDM_IBIT                          0x206
++/** Clock ID for Quartery TDM EBIT */
++#define Q6AFE_LPASS_CLK_ID_QUAD_TDM_EBIT                          0x207
++/** Clock ID for Quinary TDM IBIT */
++#define Q6AFE_LPASS_CLK_ID_QUIN_TDM_IBIT                          0x208
++/** Clock ID for Quinary TDM EBIT */
++#define Q6AFE_LPASS_CLK_ID_QUIN_TDM_EBIT                          0x209
++/** Clock ID for Quinary TDM OSR */
++#define Q6AFE_LPASS_CLK_ID_QUIN_TDM_OSR                           0x20A
++
++/* Clock ID for MCLK1 */
++#define Q6AFE_LPASS_CLK_ID_MCLK_1                                 0x300
++/* Clock ID for MCLK2 */
++#define Q6AFE_LPASS_CLK_ID_MCLK_2                                 0x301
++/* Clock ID for MCLK3 */
++#define Q6AFE_LPASS_CLK_ID_MCLK_3                                 0x302
++/* Clock ID for MCLK4 */
++#define Q6AFE_LPASS_CLK_ID_MCLK_4                                 0x304
++/* Clock ID for Internal Digital Codec Core */
++#define Q6AFE_LPASS_CLK_ID_INTERNAL_DIGITAL_CODEC_CORE            0x303
++/* Clock ID for INT MCLK0 */
++#define Q6AFE_LPASS_CLK_ID_INT_MCLK_0                             0x305
++/* Clock ID for INT MCLK1 */
++#define Q6AFE_LPASS_CLK_ID_INT_MCLK_1                             0x306
++
++/* Clock attribute for invalid use (reserved for internal usage) */
++#define Q6AFE_LPASS_CLK_ATTRIBUTE_INVALID		0x0
++/* Clock attribute for no couple case */
++#define Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_NO		0x1
++/* Clock attribute for dividend couple case */
++#define Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_DIVIDEND	0x2
++/* Clock attribute for divisor couple case */
++#define Q6AFE_LPASS_CLK_ATTRIBUTE_COUPLE_DIVISOR	0x3
++/* Clock attribute for invert and no couple case */
++#define Q6AFE_LPASS_CLK_ATTRIBUTE_INVERT_COUPLE_NO	0x4
++
+ struct q6afe_hdmi_cfg {
+ 	u16                  datatype;
+ 	u16                  channel_allocation;
+@@ -59,4 +187,7 @@ void q6afe_slim_port_prepare(struct q6afe_port *port,
+ 			  struct q6afe_slim_cfg *cfg);
+ int q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg);
+ 
++int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
++			  int clk_src, int clk_root,
++			  unsigned int freq, int dir);
+ #endif /* __Q6AFE_H__ */
 -- 
 2.16.2
