@@ -1,57 +1,60 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH v4 0/7] ASoC: omap: Deprecate omap-pcm for
-	sdma-pcm
-Date: Wed, 9 May 2018 12:36:53 +0300
-Message-ID: <1419d845-39a8-f755-4faa-119eba427fc0@ti.com>
-References: <20180507085000.6414-1-peter.ujfalusi@ti.com>
- <20180509082640.GR13402@sirena.org.uk>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: Re: [PATCH v2 09/11] docs: Fix some broken references
+Date: Wed, 9 May 2018 16:41:53 -0300
+Message-ID: <20180509164153.5b9ab9db@vento.lan>
+References: <20180509152045.722f0c51@vento.lan>
+ <Pine.LNX.4.44L0.1805091509100.1391-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id E1DB9267735
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 21:24:04 +0200 (CEST)
-In-Reply-To: <20180509082640.GR13402@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com, aaro.koskinen@iki.fi
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <Pine.LNX.4.44L0.1805091509100.1391-100000@iolanthe.rowland.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Eric Paris <eparis@parisplace.org>, linux-clk@vger.kernel.org, James Morris <jmorris@namei.org>, xen-devel@lists.xenproject.org, Boqun Feng <boqun.feng@gmail.com>, Nicholas Piggin <npiggin@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Antoine Jacquet <royale@zerezo.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>, linux-crypto@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Linux Doc Mailing List <linux-doc@vger.kernel.org>, David Airlie <airlied@linux.ie>, Max Filippov <jcmvbkbc@gmail.com>, Harry Wei <harryxiyou@gmail.com>, selinux@tycho.nsa.gov, Paul Moore <paul@paul-moore.com>, Anil
 List-Id: alsa-devel@alsa-project.org
 
-Mark,
-
-On 2018-05-09 11:26, Mark Brown wrote:
-> On Mon, May 07, 2018 at 11:49:53AM +0300, Peter Ujfalusi wrote:
->> Hi,
->>
->> Changes since v3:
->> - Rebased to make sure it applies cleanly (I had one local Kconfig patch)
-> =
-
-> What have you rebased against?  It's still not applying patch 2 cleanly
-> (indeed due to a change in snd/soc/davinci/Kconfig which my git doesn't
-> have any SHA1s for, plus some conflicts in davinci-mcasp.c).
-> =
-
-
-Hrm, true, I do have Kconfig change in davinci/Kconfig (sanitizing the
-prompt)
-
-and a local changes for mcasp driver itself.
-
-I'll resend the mcasp patch and the last patch (to remove the omap-pcm).
-
-Sorry,
-- P=E9ter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+RW0gV2VkLCA5IE1heSAyMDE4IDE1OjExOjA3IC0wNDAwIChFRFQpCkFsYW4gU3Rlcm4gPHN0ZXJu
+QHJvd2xhbmQuaGFydmFyZC5lZHU+IGVzY3JldmV1OgoKPiBPbiBXZWQsIDkgTWF5IDIwMTgsIE1h
+dXJvIENhcnZhbGhvIENoZWhhYiB3cm90ZToKPiAKPiA+IEVtIFdlZCwgOSBNYXkgMjAxOCAxOTox
+NTowMSArMDIwMAo+ID4gQW5kcmVhIFBhcnJpIDxwYXJyaS5hbmRyZWFAZ21haWwuY29tPiBlc2Ny
+ZXZldTogIAo+IAo+ID4gPiA+ICB0b29scy9tZW1vcnktbW9kZWwvUkVBRE1FICAgICAgICAgICAg
+ICAgICAgICAgfCAxMCArKysrKy0tLS0tICAgIAo+ID4gPiAKPiA+ID4gQXMgbWVudGlvbmVkIGlu
+IHRoZSBwcmV2aW91cyB0aHJlYWQsIEkgYW0gZm9yIGtlZXBpbmcgdGhlIGN1cnJlbnQKPiA+ID4g
+cmVmZXJlbmNlczogdGhlIFJFQU1ERSBpcyBsaXN0aW5nIHRoZSBkb2MgZmlsZXMsIGFzIHdlbGwg
+YXMgb3RoZXIKPiA+ID4gZmlsZXMgaW4gdG9vbHMvbWVtb3J5LW1vZGVsLywgcmVsYXRpdmVseSB0
+byB0aGF0IGRpcmVjdG9yeS4gIAo+ID4gCj4gPiBZZWFoLCBhdCBsZWFzdCB0aGlzIGh1bmsgZGVz
+ZXJ2ZXMgc29tZSByZXdvcmssIGFzIG5vdyBzb21lCj4gPiByZWZlcmVuY2VzIGFyZSBEb2N1bWVu
+dGF0aW9uLy4uLi9mb28sIHdoaWxlIG90aGVycyBhcmUganVzdAo+ID4gYmFyLgo+ID4gCj4gPiBB
+cyBvbiAoYWxtb3N0KSBhbGwgb3RoZXIgcGxhY2VzIChleGNlcHQgZm9yIHRvb2xzL21lbW9yeS1t
+b2RlbC9SRUFETUUpLAo+ID4gdGhlIHJlZmVyZW5jZXMgYXJlIGFsd2F5cyBmcm9tIHRoZSBtYWlu
+IGRpcmVjdG9yeSwgSSB3b3VsZCBtYWtlIGFsbAo+ID4gcGF0Y2hlcyB0aGVyZSBhbHNvIHJlbGF0
+aXZlIHRvIG1haW4gZGlyLiBJZiB5b3UncmUgYWZyYWlkIG9mCj4gPiBub3QgYmVpbmcgdG9vIGNs
+ZWFyZXIsIHdlIGNvdWxkIHByZWZpeCBhbGwgb2YgdGhlbSB3aXRoIHNvbWV0aGluZwo+ID4gbGlr
+ZToKPiA+IAo+ID4gCSR7TElOVVh9L3Rvb2xzL21lbW9yeS1tb2RlbC8uLi4KPiA+IAo+ID4ganVz
+dCBsaWtlIHNvbWUgRFQgYmluZGluZyBmaWxlcyBkbzoKPiA+IAo+ID4gCURvY3VtZW50YXRpb24v
+ZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9hdWRpby1ncmFwaC1jYXJkLnR4dDpzZWUgJHtMSU5V
+WH0vRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2dyYXBoLnR4dAo+ID4gCj4gPiBB
+IGJvbnVzIG9mIGRvaW5nIHRoYXQgaXMgdGhhdCB0aGUgYnJva2VuIHJlZmVyZW5jZSBkZXRlY3Qg
+c2NyaXB0IGNhbgo+ID4ga2VlcCBwYXJzaW5nIGl0IHdpdGhvdXQgY2hhbmdlcyAod2VsbCwgaXQg
+d291bGRuJ3QgYmUgaGFyZCB0byBtYWtlCj4gPiBpdCBhbHNvIGFjY2VwdCBhIHJlbGF0aXZlIGZp
+bGUsIGJ1dCBkb2luZyB0aGF0IGp1c3QgZHVlIHRvIAo+ID4gdG9vbHMvbWVtb3J5LW1vZGVsL1JF
+QURNRSBzZWVtcyBvdmVya2lsbCkuCj4gPiAKPiA+IEFub3RoZXIgYWR2YW50YWdlIGlzIHRoYXQg
+aXQgd291bGQgYWxsb3cgdG8gZWFzaWx5IGFkZCByZWZlcmVuY2VzCj4gPiB0aGVyZSBmcm9tIHRo
+ZSBtYWluIGtlcm5lbCBEb2N1bWVudGF0aW9uLCBpZiBuZWVkZWQgaW4gdGhlIGZ1dHVyZSwKPiA+
+IHdpdGhvdXQgbWVzc2luZyB3aXRoIGxvY2FsIHggbm9uLWxvY2FsIHJlbGF0aXZlIG5hbWVzcGFj
+ZS4gIAo+IAo+IEhvdyBhYm91dCBjaGFuZ2luZyB0aGUgcmVsYXRpdmUgcmVmZXJlbmNlcyBzbyB0
+aGF0IHNvbWV0aGluZyBsaWtlCj4gRG9jdW1lbnRhdGlvbi9yZWNpcGVzLnR4dCBiZWNvbWVzIC4v
+RG9jdW1lbnRhdGlvbi9yZWNpcGVzLnR4dD8KClNvdW5kcyBhIGdvb2QgaWRlYSB0byBtZS4gQW5k
+cmVhPwoKVGhhbmtzLApNYXVybwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVz
+a3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9k
+cmktZGV2ZWwK
