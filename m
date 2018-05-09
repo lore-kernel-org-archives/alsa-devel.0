@@ -1,461 +1,244 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v8 08/24] ASoC: qdsp6: q6core: Add q6core driver
-Date: Wed,  9 May 2018 13:56:19 +0100
-Message-ID: <20180509125635.5653-9-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v8 07/24] ASoC: qdsp6: q6common: Add qdsp6 helper functions
+Date: Wed,  9 May 2018 13:56:18 +0100
+Message-ID: <20180509125635.5653-8-srinivas.kandagatla@linaro.org>
 References: <20180509125635.5653-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <20180509125635.5653-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org
-Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, perex@perex.cz, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support to core apr service, which is used to query
-status of other static and dynamic services on the dsp.
+This patch adds some common helper functions like translating dsp error
+to linux error codes and channel mappings etc.
+
+These functions are used in all the following qdsp6 drivers.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
+Reviewed-by: Banajit Goswami <bgoswami@codeaurora.org>
 ---
- sound/soc/qcom/Kconfig        |   4 +
- sound/soc/qcom/qdsp6/Makefile |   1 +
- sound/soc/qcom/qdsp6/q6core.c | 380 ++++++++++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6core.h |  15 ++
- 4 files changed, 400 insertions(+)
- create mode 100644 sound/soc/qcom/qdsp6/q6core.c
- create mode 100644 sound/soc/qcom/qdsp6/q6core.h
+ sound/soc/qcom/Kconfig              | 13 ++++++++
+ sound/soc/qcom/Makefile             |  3 ++
+ sound/soc/qcom/qdsp6/Makefile       |  1 +
+ sound/soc/qcom/qdsp6/q6dsp-common.c | 66 +++++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6dsp-common.h | 24 ++++++++++++++
+ sound/soc/qcom/qdsp6/q6dsp-errno.h  | 51 ++++++++++++++++++++++++++++
+ 6 files changed, 158 insertions(+)
+ create mode 100644 sound/soc/qcom/qdsp6/Makefile
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.c
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-common.h
+ create mode 100644 sound/soc/qcom/qdsp6/q6dsp-errno.h
 
 diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index b44a9fcd7ed3..37ee0d958145 100644
+index 3cc252e55468..b44a9fcd7ed3 100644
 --- a/sound/soc/qcom/Kconfig
 +++ b/sound/soc/qcom/Kconfig
-@@ -44,10 +44,14 @@ config SND_SOC_APQ8016_SBC
- config SND_SOC_QDSP6_COMMON
- 	tristate
- 
-+config SND_SOC_QDSP6_CORE
+@@ -40,3 +40,16 @@ config SND_SOC_APQ8016_SBC
+           Support for Qualcomm Technologies LPASS audio block in
+           APQ8016 SOC-based systems.
+           Say Y if you want to use audio devices on MI2S.
++
++config SND_SOC_QDSP6_COMMON
 +	tristate
 +
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
- 	depends on QCOM_APR && HAS_DMA
- 	select SND_SOC_QDSP6_COMMON
-+	select SND_SOC_QDSP6_CORE
- 	help
- 	 To add support for MSM QDSP6 Soc Audio.
- 	 This will enable sound soc platform specific
++config SND_SOC_QDSP6
++	tristate "SoC ALSA audio driver for QDSP6"
++	depends on QCOM_APR && HAS_DMA
++	select SND_SOC_QDSP6_COMMON
++	help
++	 To add support for MSM QDSP6 Soc Audio.
++	 This will enable sound soc platform specific
++	 audio drivers. This includes q6asm, q6adm,
++	 q6afe interfaces to DSP using apr.
+diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+index d5280355c24f..0276717917c0 100644
+--- a/sound/soc/qcom/Makefile
++++ b/sound/soc/qcom/Makefile
+@@ -16,3 +16,6 @@ snd-soc-apq8016-sbc-objs := apq8016_sbc.o
+ 
+ obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+ obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
++
++#DSP lib
++obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
 diff --git a/sound/soc/qcom/qdsp6/Makefile b/sound/soc/qcom/qdsp6/Makefile
-index accebdb49306..03b8e89c9731 100644
---- a/sound/soc/qcom/qdsp6/Makefile
-+++ b/sound/soc/qcom/qdsp6/Makefile
-@@ -1 +1,2 @@
- obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
-+obj-$(CONFIG_SND_SOC_QDSP6_CORE) += q6core.o
-diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
 new file mode 100644
-index 000000000000..06f03a5fe9bd
+index 000000000000..accebdb49306
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6core.c
-@@ -0,0 +1,380 @@
++++ b/sound/soc/qcom/qdsp6/Makefile
+@@ -0,0 +1 @@
++obj-$(CONFIG_SND_SOC_QDSP6_COMMON) += q6dsp-common.o
+diff --git a/sound/soc/qcom/qdsp6/q6dsp-common.c b/sound/soc/qcom/qdsp6/q6dsp-common.c
+new file mode 100644
+index 000000000000..d393003492c7
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6dsp-common.c
+@@ -0,0 +1,66 @@
 +// SPDX-License-Identifier: GPL-2.0
 +// Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
 +// Copyright (c) 2018, Linaro Limited
 +
-+#include <linux/slab.h>
-+#include <linux/wait.h>
++#include "q6dsp-common.h"
 +#include <linux/kernel.h>
 +#include <linux/module.h>
-+#include <linux/sched.h>
-+#include <linux/of.h>
-+#include <linux/of_platform.h>
-+#include <linux/jiffies.h>
-+#include <linux/wait.h>
-+#include <linux/soc/qcom/apr.h>
-+#include "q6core.h"
-+#include "q6dsp-errno.h"
++#include <linux/string.h>
++#include <linux/errno.h>
 +
-+#define ADSP_STATE_READY_TIMEOUT_MS    3000
-+#define Q6_READY_TIMEOUT_MS 100
-+#define AVCS_CMD_ADSP_EVENT_GET_STATE		0x0001290C
-+#define AVCS_CMDRSP_ADSP_EVENT_GET_STATE	0x0001290D
-+#define AVCS_GET_VERSIONS       0x00012905
-+#define AVCS_GET_VERSIONS_RSP   0x00012906
-+#define AVCS_CMD_GET_FWK_VERSION	0x001292c
-+#define AVCS_CMDRSP_GET_FWK_VERSION	0x001292d
-+
-+struct avcs_svc_info {
-+	uint32_t service_id;
-+	uint32_t version;
-+} __packed;
-+
-+struct avcs_cmdrsp_get_version {
-+	uint32_t build_id;
-+	uint32_t num_services;
-+	struct avcs_svc_info svc_api_info[];
-+} __packed;
-+
-+/* for ADSP2.8 and above */
-+struct avcs_svc_api_info {
-+	uint32_t service_id;
-+	uint32_t api_version;
-+	uint32_t api_branch_version;
-+} __packed;
-+
-+struct avcs_cmdrsp_get_fwk_version {
-+	uint32_t build_major_version;
-+	uint32_t build_minor_version;
-+	uint32_t build_branch_version;
-+	uint32_t build_subbranch_version;
-+	uint32_t num_services;
-+	struct avcs_svc_api_info svc_api_info[];
-+} __packed;
-+
-+struct q6core {
-+	struct apr_device *adev;
-+	wait_queue_head_t wait;
-+	uint32_t avcs_state;
-+	struct mutex lock;
-+	bool resp_received;
-+	uint32_t num_services;
-+	struct avcs_cmdrsp_get_fwk_version *fwk_version;
-+	struct avcs_cmdrsp_get_version *svc_version;
-+	bool fwk_version_supported;
-+	bool get_state_supported;
-+	bool get_version_supported;
-+	bool is_version_requested;
-+};
-+
-+static struct q6core *g_core;
-+
-+static int q6core_callback(struct apr_device *adev, struct apr_resp_pkt *data)
++int q6dsp_map_channels(u8 ch_map[PCM_MAX_NUM_CHANNEL], int ch)
 +{
-+	struct q6core *core = dev_get_drvdata(&adev->dev);
-+	struct aprv2_ibasic_rsp_result_t *result;
-+	struct apr_hdr *hdr = &data->hdr;
++	memset(ch_map, 0, PCM_MAX_NUM_CHANNEL);
 +
-+	result = data->payload;
-+	switch (hdr->opcode) {
-+	case APR_BASIC_RSP_RESULT:{
-+		result = data->payload;
-+		switch (result->opcode) {
-+		case AVCS_GET_VERSIONS:
-+			if (result->status == ADSP_EUNSUPPORTED)
-+				core->get_version_supported = false;
-+			core->resp_received = true;
-+			break;
-+		case AVCS_CMD_GET_FWK_VERSION:
-+			if (result->status == ADSP_EUNSUPPORTED)
-+				core->fwk_version_supported = false;
-+			core->resp_received = true;
-+			break;
-+		case AVCS_CMD_ADSP_EVENT_GET_STATE:
-+			if (result->status == ADSP_EUNSUPPORTED)
-+				core->get_state_supported = false;
-+			core->resp_received = true;
-+			break;
-+		}
++	switch (ch) {
++	case 1:
++		ch_map[0] = PCM_CHANNEL_FC;
 +		break;
-+	}
-+	case AVCS_CMDRSP_GET_FWK_VERSION: {
-+		struct avcs_cmdrsp_get_fwk_version *fwk;
-+		int bytes;
-+
-+		fwk = data->payload;
-+		bytes = sizeof(*fwk) + fwk->num_services *
-+				sizeof(fwk->svc_api_info[0]);
-+
-+		core->fwk_version = kzalloc(bytes, GFP_ATOMIC);
-+		if (!core->fwk_version)
-+			return -ENOMEM;
-+
-+		memcpy(core->fwk_version, data->payload, bytes);
-+
-+		core->fwk_version_supported = true;
-+		core->resp_received = true;
-+
++	case 2:
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
 +		break;
-+	}
-+	case AVCS_GET_VERSIONS_RSP: {
-+		struct avcs_cmdrsp_get_version *v;
-+		int len;
-+
-+		v = data->payload;
-+
-+		len = sizeof(*v) + v->num_services * sizeof(v->svc_api_info[0]);
-+
-+		core->svc_version = kzalloc(len, GFP_ATOMIC);
-+		if (!core->svc_version)
-+			return -ENOMEM;
-+
-+		memcpy(core->svc_version, data->payload, len);
-+
-+		core->get_version_supported = true;
-+		core->resp_received = true;
-+
++	case 3:
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_FC;
 +		break;
-+	}
-+	case AVCS_CMDRSP_ADSP_EVENT_GET_STATE:
-+		core->get_state_supported = true;
-+		core->avcs_state = result->opcode;
-+
-+		core->resp_received = true;
++	case 4:
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LS;
++		ch_map[3] = PCM_CHANNEL_RS;
++		break;
++	case 5:
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_FC;
++		ch_map[3] = PCM_CHANNEL_LS;
++		ch_map[4] = PCM_CHANNEL_RS;
++		break;
++	case 6:
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LFE;
++		ch_map[3] = PCM_CHANNEL_FC;
++		ch_map[4] = PCM_CHANNEL_LS;
++		ch_map[5] = PCM_CHANNEL_RS;
++		break;
++	case 8:
++		ch_map[0] = PCM_CHANNEL_FL;
++		ch_map[1] = PCM_CHANNEL_FR;
++		ch_map[2] = PCM_CHANNEL_LFE;
++		ch_map[3] = PCM_CHANNEL_FC;
++		ch_map[4] = PCM_CHANNEL_LS;
++		ch_map[5] = PCM_CHANNEL_RS;
++		ch_map[6] = PCM_CHANNEL_LB;
++		ch_map[7] = PCM_CHANNEL_RB;
 +		break;
 +	default:
-+		dev_err(&adev->dev, "Message id from adsp core svc: 0x%x\n",
-+			hdr->opcode);
-+		break;
++		return -EINVAL;
 +	}
-+
-+	if (core->resp_received)
-+		wake_up(&core->wait);
 +
 +	return 0;
 +}
-+
-+static int q6core_get_fwk_versions(struct q6core *core)
-+{
-+	struct apr_device *adev = core->adev;
-+	struct apr_pkt pkt;
-+	int rc;
-+
-+	pkt.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
-+	pkt.hdr.pkt_size = APR_HDR_SIZE;
-+	pkt.hdr.opcode = AVCS_CMD_GET_FWK_VERSION;
-+
-+	rc = apr_send_pkt(adev, &pkt);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = wait_event_timeout(core->wait, (core->resp_received),
-+				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
-+	if (rc > 0 && core->resp_received) {
-+		core->resp_received = false;
-+
-+		if (!core->fwk_version_supported)
-+			return -ENOTSUPP;
-+		else
-+			return 0;
-+	}
-+
-+
-+	return rc;
-+}
-+
-+static int q6core_get_svc_versions(struct q6core *core)
-+{
-+	struct apr_device *adev = core->adev;
-+	struct apr_pkt pkt;
-+	int rc;
-+
-+	pkt.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
-+	pkt.hdr.pkt_size = APR_HDR_SIZE;
-+	pkt.hdr.opcode = AVCS_GET_VERSIONS;
-+
-+	rc = apr_send_pkt(adev, &pkt);
-+	if (rc < 0)
-+		return rc;
-+
-+	rc = wait_event_timeout(core->wait, (core->resp_received),
-+				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
-+	if (rc > 0 && core->resp_received) {
-+		core->resp_received = false;
-+		return 0;
-+	}
-+
-+	return rc;
-+}
-+
-+static bool __q6core_is_adsp_ready(struct q6core *core)
-+{
-+	struct apr_device *adev = core->adev;
-+	struct apr_pkt pkt;
-+	int rc;
-+
-+	core->get_state_supported = false;
-+
-+	pkt.hdr.hdr_field = APR_HDR_FIELD(APR_MSG_TYPE_SEQ_CMD,
-+				      APR_HDR_LEN(APR_HDR_SIZE), APR_PKT_VER);
-+	pkt.hdr.pkt_size = APR_HDR_SIZE;
-+	pkt.hdr.opcode = AVCS_CMD_ADSP_EVENT_GET_STATE;
-+
-+	rc = apr_send_pkt(adev, &pkt);
-+	if (rc < 0)
-+		return false;
-+
-+	rc = wait_event_timeout(core->wait, (core->resp_received),
-+				msecs_to_jiffies(Q6_READY_TIMEOUT_MS));
-+	if (rc > 0 && core->resp_received) {
-+		core->resp_received = false;
-+
-+		if (core->avcs_state)
-+			return true;
-+	}
-+
-+	/* assume that the adsp is up if we not support this command */
-+	if (!core->get_state_supported)
-+		return true;
-+
-+	return false;
-+}
-+
-+/**
-+ * q6core_get_svc_api_info() - Get version number of a service.
-+ *
-+ * @svc_id: service id of the service.
-+ * @ainfo: Valid struct pointer to fill svc api information.
-+ *
-+ * Return: zero on success and error code on failure or unsupported
-+ */
-+int q6core_get_svc_api_info(int svc_id, struct q6core_svc_api_info *ainfo)
-+{
-+	int i;
-+	int ret = -ENOTSUPP;
-+
-+	if (!g_core || !ainfo)
-+		return 0;
-+
-+	mutex_lock(&g_core->lock);
-+	if (!g_core->is_version_requested) {
-+		if (q6core_get_fwk_versions(g_core) == -ENOTSUPP)
-+			q6core_get_svc_versions(g_core);
-+		g_core->is_version_requested = true;
-+	}
-+
-+	if (g_core->fwk_version_supported) {
-+		for (i = 0; i < g_core->fwk_version->num_services; i++) {
-+			struct avcs_svc_api_info *info;
-+
-+			info = &g_core->fwk_version->svc_api_info[i];
-+			if (svc_id != info->service_id)
-+				continue;
-+
-+			ainfo->api_version = info->api_version;
-+			ainfo->api_branch_version = info->api_branch_version;
-+			ret = 0;
-+			break;
-+		}
-+	} else if (g_core->get_version_supported) {
-+		for (i = 0; i < g_core->svc_version->num_services; i++) {
-+			struct avcs_svc_info *info;
-+
-+			info = &g_core->svc_version->svc_api_info[i];
-+			if (svc_id != info->service_id)
-+				continue;
-+
-+			ainfo->api_version = info->version;
-+			ainfo->api_branch_version = 0;
-+			ret = 0;
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&g_core->lock);
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(q6core_get_svc_api_info);
-+
-+/**
-+ * q6core_is_adsp_ready() - Get status of adsp
-+ *
-+ * Return: Will be an true if adsp is ready and false if not.
-+ */
-+bool q6core_is_adsp_ready(void)
-+{
-+	unsigned long  timeout;
-+	bool ret = false;
-+
-+	if (!g_core)
-+		return false;
-+
-+	mutex_lock(&g_core->lock);
-+	timeout = jiffies + msecs_to_jiffies(ADSP_STATE_READY_TIMEOUT_MS);
-+	for (;;) {
-+		if (__q6core_is_adsp_ready(g_core)) {
-+			ret = true;
-+			break;
-+		}
-+
-+		if (!time_after(timeout, jiffies)) {
-+			ret = false;
-+			break;
-+		}
-+	}
-+
-+	mutex_unlock(&g_core->lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(q6core_is_adsp_ready);
-+
-+static int q6core_probe(struct apr_device *adev)
-+{
-+	g_core = kzalloc(sizeof(*g_core), GFP_KERNEL);
-+	if (!g_core)
-+		return -ENOMEM;
-+
-+	dev_set_drvdata(&adev->dev, g_core);
-+
-+	mutex_init(&g_core->lock);
-+	g_core->adev = adev;
-+	init_waitqueue_head(&g_core->wait);
-+	return 0;
-+}
-+
-+static int q6core_exit(struct apr_device *adev)
-+{
-+	struct q6core *core = dev_get_drvdata(&adev->dev);
-+
-+	if (core->fwk_version_supported)
-+		kfree(core->fwk_version);
-+	if (core->get_version_supported)
-+		kfree(core->svc_version);
-+
-+	g_core = NULL;
-+	kfree(core);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id q6core_device_id[]  = {
-+	{ .compatible = "qcom,q6core" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6core_device_id);
-+
-+static struct apr_driver qcom_q6core_driver = {
-+	.probe = q6core_probe,
-+	.remove = q6core_exit,
-+	.callback = q6core_callback,
-+	.driver = {
-+		.name = "qcom-q6core",
-+		.of_match_table = of_match_ptr(q6core_device_id),
-+	},
-+};
-+
-+module_apr_driver(qcom_q6core_driver);
-+MODULE_DESCRIPTION("q6 core");
++EXPORT_SYMBOL_GPL(q6dsp_map_channels);
 +MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/qcom/qdsp6/q6core.h b/sound/soc/qcom/qdsp6/q6core.h
+diff --git a/sound/soc/qcom/qdsp6/q6dsp-common.h b/sound/soc/qcom/qdsp6/q6dsp-common.h
 new file mode 100644
-index 000000000000..4105b1d730be
+index 000000000000..01094d108b8a
 --- /dev/null
-+++ b/sound/soc/qcom/qdsp6/q6core.h
-@@ -0,0 +1,15 @@
++++ b/sound/soc/qcom/qdsp6/q6dsp-common.h
+@@ -0,0 +1,24 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +
-+#ifndef __Q6CORE_H__
-+#define __Q6CORE_H__
++#ifndef __Q6DSP_COMMON_H__
++#define __Q6DSP_COMMON_H__
 +
-+struct q6core_svc_api_info {
-+	uint32_t service_id;
-+	uint32_t api_version;
-+	uint32_t api_branch_version;
-+};
++#include <linux/kernel.h>
 +
-+bool q6core_is_adsp_ready(void);
-+int q6core_get_svc_api_info(int svc_id, struct q6core_svc_api_info *ainfo);
++#define PCM_MAX_NUM_CHANNEL  8
++#define PCM_CHANNEL_NULL 0
 +
-+#endif /* __Q6CORE_H__ */
++#define PCM_CHANNEL_FL    1	/* Front left channel. */
++#define PCM_CHANNEL_FR    2	/* Front right channel. */
++#define PCM_CHANNEL_FC    3	/* Front center channel. */
++#define PCM_CHANNEL_LS   4	/* Left surround channel. */
++#define PCM_CHANNEL_RS   5	/* Right surround channel. */
++#define PCM_CHANNEL_LFE  6	/* Low frequency effect channel. */
++#define PCM_CHANNEL_CS   7	/* Center surround channel; Rear center ch */
++#define PCM_CHANNEL_LB   8	/* Left back channel; Rear left channel. */
++#define PCM_CHANNEL_RB   9	/* Right back channel; Rear right channel. */
++#define PCM_CHANNELS   10	/* Top surround channel. */
++
++int q6dsp_map_channels(u8 ch_map[PCM_MAX_NUM_CHANNEL], int ch);
++
++#endif /* __Q6DSP_COMMON_H__ */
+diff --git a/sound/soc/qcom/qdsp6/q6dsp-errno.h b/sound/soc/qcom/qdsp6/q6dsp-errno.h
+new file mode 100644
+index 000000000000..1ec00ff8c1d2
+--- /dev/null
++++ b/sound/soc/qcom/qdsp6/q6dsp-errno.h
+@@ -0,0 +1,51 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++
++#ifndef __Q6DSP_ERR_NO_H__
++#define __Q6DSP_ERR_NO_H__
++#include <linux/kernel.h>
++
++/* Success. The operation completed with no errors. */
++#define ADSP_EOK          0x00000000
++/* General failure. */
++#define ADSP_EFAILED      0x00000001
++/* Bad operation parameter. */
++#define ADSP_EBADPARAM    0x00000002
++/* Unsupported routine or operation. */
++#define ADSP_EUNSUPPORTED 0x00000003
++/* Unsupported version. */
++#define ADSP_EVERSION     0x00000004
++/* Unexpected problem encountered. */
++#define ADSP_EUNEXPECTED  0x00000005
++/* Unhandled problem occurred. */
++#define ADSP_EPANIC       0x00000006
++/* Unable to allocate resource. */
++#define ADSP_ENORESOURCE  0x00000007
++/* Invalid handle. */
++#define ADSP_EHANDLE      0x00000008
++/* Operation is already processed. */
++#define ADSP_EALREADY     0x00000009
++/* Operation is not ready to be processed. */
++#define ADSP_ENOTREADY    0x0000000A
++/* Operation is pending completion. */
++#define ADSP_EPENDING     0x0000000B
++/* Operation could not be accepted or processed. */
++#define ADSP_EBUSY        0x0000000C
++/* Operation aborted due to an error. */
++#define ADSP_EABORTED     0x0000000D
++/* Operation preempted by a higher priority. */
++#define ADSP_EPREEMPTED   0x0000000E
++/* Operation requests intervention to complete. */
++#define ADSP_ECONTINUE    0x0000000F
++/* Operation requests immediate intervention to complete. */
++#define ADSP_EIMMEDIATE   0x00000010
++/* Operation is not implemented. */
++#define ADSP_ENOTIMPL     0x00000011
++/* Operation needs more data or resources. */
++#define ADSP_ENEEDMORE    0x00000012
++/* Operation does not have memory. */
++#define ADSP_ENOMEMORY    0x00000014
++/* Item does not exist. */
++#define ADSP_ENOTEXIST    0x00000015
++/* Max count for adsp error code sent to HLOS*/
++
++#endif /*__Q6DSP_ERR_NO_H__ */
 -- 
 2.16.2
