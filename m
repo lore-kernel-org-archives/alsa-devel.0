@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v6 08/13] ASoC: Add SoundWire stream
-	programming interface
-Date: Wed, 9 May 2018 17:55:34 +0900
-Message-ID: <20180509085534.GX13402@sirena.org.uk>
-References: <1524748809-21860-1-git-send-email-vkoul@kernel.org>
- <1524748809-21860-9-git-send-email-vkoul@kernel.org>
+Subject: Re: [PATCH 2/3] ASoC: davinci-mcasp: Use
+	'snd_pcm_format_t' type
+Date: Wed, 9 May 2018 17:34:12 +0900
+Message-ID: <20180509083412.GT13402@sirena.org.uk>
+References: <1525621665-11022-1-git-send-email-festevam@gmail.com>
+ <1525621665-11022-2-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8179953383448413011=="
+Content-Type: multipart/mixed; boundary="===============4282295334805558625=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 75CB22677A3
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:29:18 +0200 (CEST)
-In-Reply-To: <1524748809-21860-9-git-send-email-vkoul@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id D79712676F2
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:29:21 +0200 (CEST)
+In-Reply-To: <1525621665-11022-2-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Shreyas NC <shreyas.nc@intel.com>
+To: Fabio Estevam <festevam@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8179953383448413011==
+--===============4282295334805558625==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="reSNjdE3Iylkp4B8"
+	protocol="application/pgp-signature"; boundary="GPT5DIEyVHz5yXBV"
 Content-Disposition: inline
 
 
---reSNjdE3Iylkp4B8
+--GPT5DIEyVHz5yXBV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Apr 26, 2018 at 06:50:04PM +0530, Vinod Koul wrote:
-> From: Shreyas NC <shreyas.nc@intel.com>
+On Sun, May 06, 2018 at 12:47:44PM -0300, Fabio Estevam wrote:
+> From: Fabio Estevam <fabio.estevam@nxp.com>
 >=20
-> SoundWire stream needs to be propagated to all the DAIs(cpu, codec).
-> So, add a snd_soc_dai_set_sdw_stream() API for the same.
+> 'snd_pcm_format_t' type is better suited for iterating through the
+> SNDRV_PCM_FORMAT members.
+>=20
+> Also, use SNDRV_PCM_FORMAT_FIRST for the first element.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Adding Peter.
 
---reSNjdE3Iylkp4B8
+>=20
+> Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+> ---
+>  sound/soc/davinci/davinci-mcasp.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinc=
+i-mcasp.c
+> index 03ba218..bde2252 100644
+> --- a/sound/soc/davinci/davinci-mcasp.c
+> +++ b/sound/soc/davinci/davinci-mcasp.c
+> @@ -1214,11 +1214,12 @@ static int davinci_mcasp_hw_rule_format(struct sn=
+d_pcm_hw_params *params,
+>  	struct snd_mask nfmt;
+>  	int rate =3D params_rate(params);
+>  	int slots =3D rd->mcasp->tdm_slots;
+> -	int i, count =3D 0;
+> +	snd_pcm_format_t i;
+> +	int count =3D 0;
+> =20
+>  	snd_mask_none(&nfmt);
+> =20
+> -	for (i =3D 0; i <=3D SNDRV_PCM_FORMAT_LAST; i++) {
+> +	for (i =3D SNDRV_PCM_FORMAT_FIRST; i <=3D SNDRV_PCM_FORMAT_LAST; i++) {
+>  		if (snd_mask_test(fmt, i)) {
+>  			uint sbits =3D snd_pcm_format_width(i);
+>  			int ppm;
+> --=20
+> 2.7.4
+>=20
+
+--GPT5DIEyVHz5yXBV
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlryt4YACgkQJNaLcl1U
-h9Dxqgf8Dt1rZ5wRzorOiGCqwScjTghcWtoGODYVpMO0JzOSj/7AYZ3o4ONrG46h
-BkWUAj97qm2YUrJdZU2bdKJPwBQg/hb7i6I/nWIVreWsHzqiN4DZ5p3jtjo1ZFFY
-ltq4vQ9fKAoqfdbG7mLGzrTb+DY5shW5vdidiOOnRAR+h2+0XLHBtX810fA7PVxo
-W5a90Acvwhe0xCa8bPqRdvszBpKBeQENYJ8qrI9aR/ZB4VTb/JURjURanAcLw3PO
-T1XkUeZNe6nKMQuycEu0dkypuPfMlH7pF+1cRyuF0IIBMoukh8+jJemPsoi1gumB
-6ESOehQMsppuPh/VI6cqVuuRjX7OoQ==
-=331f
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlrysoMACgkQJNaLcl1U
+h9DMBwf+PlLWsKWNZkEr1x5KYnrPkOFd+MYz6In/0zDUorMgXctda/88+Vm069Il
+putZU3TZ0QxK3UPrGJKtVwD17ZJdVQOrDkOJuHNOMRYZDnP6eyhoixmzrh738JWw
+o9CKRiK+HJnQAFSwnT4CdIA4HbGb9jMzWsKBGNl1wzwT47QSFpqX9sTLs0n7YBp4
+oxX1k9kRiy3cJXS5fdWuSfxAbDvtnJ7VuyEfgS3ZmRoNKpRNWY9ux+LPza1UokrT
+8fx7m+Es3gR2Wjw8hIhUjmRRZI6dlq8RI3PiYuUXaLoKLy+aLC6t9pyc6g3ZWcVO
+gK6a1v7kU4EeqaRWWyEMVU85iSiJPg==
+=cpj5
 -----END PGP SIGNATURE-----
 
---reSNjdE3Iylkp4B8--
+--GPT5DIEyVHz5yXBV--
 
---===============8179953383448413011==
+--===============4282295334805558625==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8179953383448413011==--
+--===============4282295334805558625==--
