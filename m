@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap-mcbsp: Convert to use the sdma-pcm
-	instead of omap-pcm" to the asoc tree
-Date: Wed,  9 May 2018 09:53:56 +0100 (BST)
-Message-ID: <20180509085356.B8D6844007A@finisterre.ee.mobilebroadband>
-References: <20180507085000.6414-7-peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v6 08/13] ASoC: Add SoundWire stream
+	programming interface
+Date: Wed, 9 May 2018 17:55:34 +0900
+Message-ID: <20180509085534.GX13402@sirena.org.uk>
+References: <1524748809-21860-1-git-send-email-vkoul@kernel.org>
+ <1524748809-21860-9-git-send-email-vkoul@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8179953383448413011=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9906826778D
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:29:19 +0200 (CEST)
-In-Reply-To: <20180507085000.6414-7-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 75CB22677A3
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:29:18 +0200 (CEST)
+In-Reply-To: <1524748809-21860-9-git-send-email-vkoul@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,145 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: alsa-devel@alsa-project.org, aaro.koskinen@iki.fi, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, jarkko.nikula@bitmer.com
+To: Vinod Koul <vkoul@kernel.org>
+Cc: ALSA <alsa-devel@alsa-project.org>, tiwai@suse.de, Greg KH <gregkh@linuxfoundation.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, patches.audio@intel.com, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: omap-mcbsp: Convert to use the sdma-pcm instead of omap-pcm
+--===============8179953383448413011==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="reSNjdE3Iylkp4B8"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--reSNjdE3Iylkp4B8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Thu, Apr 26, 2018 at 06:50:04PM +0530, Vinod Koul wrote:
+> From: Shreyas NC <shreyas.nc@intel.com>
+>=20
+> SoundWire stream needs to be propagated to all the DAIs(cpu, codec).
+> So, add a snd_soc_dai_set_sdw_stream() API for the same.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Acked-by: Mark Brown <broonie@kernel.org>
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--reSNjdE3Iylkp4B8
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlryt4YACgkQJNaLcl1U
+h9Dxqgf8Dt1rZ5wRzorOiGCqwScjTghcWtoGODYVpMO0JzOSj/7AYZ3o4ONrG46h
+BkWUAj97qm2YUrJdZU2bdKJPwBQg/hb7i6I/nWIVreWsHzqiN4DZ5p3jtjo1ZFFY
+ltq4vQ9fKAoqfdbG7mLGzrTb+DY5shW5vdidiOOnRAR+h2+0XLHBtX810fA7PVxo
+W5a90Acvwhe0xCa8bPqRdvszBpKBeQENYJ8qrI9aR/ZB4VTb/JURjURanAcLw3PO
+T1XkUeZNe6nKMQuycEu0dkypuPfMlH7pF+1cRyuF0IIBMoukh8+jJemPsoi1gumB
+6ESOehQMsppuPh/VI6cqVuuRjX7OoQ==
+=331f
+-----END PGP SIGNATURE-----
 
->From 53126d737116c7e86aa6d979e6379d842c84c871 Mon Sep 17 00:00:00 2001
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Mon, 7 May 2018 11:49:59 +0300
-Subject: [PATCH] ASoC: omap-mcbsp: Convert to use the sdma-pcm instead of
- omap-pcm
+--reSNjdE3Iylkp4B8--
 
-Use the new platform driver.
+--===============8179953383448413011==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/omap/Kconfig      | 14 +++++++-------
- sound/soc/omap/omap-mcbsp.c |  4 ++--
- 2 files changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/omap/Kconfig b/sound/soc/omap/Kconfig
-index 9d20c9b94477..10a9ed6b1fd7 100644
---- a/sound/soc/omap/Kconfig
-+++ b/sound/soc/omap/Kconfig
-@@ -29,7 +29,7 @@ config SND_OMAP_SOC_HDMI_AUDIO
- 
- config SND_OMAP_SOC_N810
- 	tristate "SoC Audio support for Nokia N810"
--	depends on SND_OMAP_SOC && MACH_NOKIA_N810 && I2C
-+	depends on SND_SDMA_SOC && MACH_NOKIA_N810 && I2C
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC3X
- 	help
-@@ -37,7 +37,7 @@ config SND_OMAP_SOC_N810
- 
- config SND_OMAP_SOC_RX51
- 	tristate "SoC Audio support for Nokia N900 (RX-51)"
--	depends on SND_OMAP_SOC && ARM && I2C
-+	depends on SND_SDMA_SOC && ARM && I2C
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC3X
- 	select SND_SOC_TPA6130A2
-@@ -48,7 +48,7 @@ config SND_OMAP_SOC_RX51
- 
- config SND_OMAP_SOC_AMS_DELTA
- 	tristate "SoC Audio support for Amstrad E3 (Delta) videophone"
--	depends on SND_OMAP_SOC && MACH_AMS_DELTA && TTY
-+	depends on SND_SDMA_SOC && MACH_AMS_DELTA && TTY
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_CX20442
- 	help
-@@ -67,7 +67,7 @@ config SND_OMAP_SOC_AMS_DELTA
- 
- config SND_OMAP_SOC_OSK5912
- 	tristate "SoC Audio support for omap osk5912"
--	depends on SND_OMAP_SOC && MACH_OMAP_OSK && I2C
-+	depends on SND_SDMA_SOC && MACH_OMAP_OSK && I2C
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC23_I2C
- 	help
-@@ -75,7 +75,7 @@ config SND_OMAP_SOC_OSK5912
- 
- config SND_OMAP_SOC_AM3517EVM
- 	tristate "SoC Audio support for OMAP3517 / AM3517 EVM"
--	depends on SND_OMAP_SOC && MACH_OMAP3517EVM && I2C
-+	depends on SND_SDMA_SOC && MACH_OMAP3517EVM && I2C
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TLV320AIC23_I2C
- 	help
-@@ -84,7 +84,7 @@ config SND_OMAP_SOC_AM3517EVM
- 
- config SND_OMAP_SOC_OMAP_TWL4030
- 	tristate "SoC Audio support for TI SoC based boards with twl4030 codec"
--	depends on TWL4030_CORE && SND_OMAP_SOC
-+	depends on TWL4030_CORE && SND_SDMA_SOC
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TWL4030
- 	help
-@@ -117,7 +117,7 @@ config SND_OMAP_SOC_OMAP_ABE_TWL6040
- 
- config SND_OMAP_SOC_OMAP3_PANDORA
- 	tristate "SoC Audio support for OMAP3 Pandora"
--	depends on TWL4030_CORE && SND_OMAP_SOC && MACH_OMAP3_PANDORA
-+	depends on TWL4030_CORE && SND_SDMA_SOC && MACH_OMAP3_PANDORA
- 	select SND_OMAP_SOC_MCBSP
- 	select SND_SOC_TWL4030
- 	help
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index 6b40bdbef336..d0ebb6b9bfac 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -34,11 +34,11 @@
- #include <sound/initval.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
--#include <sound/omap-pcm.h>
- 
- #include <linux/platform_data/asoc-ti-mcbsp.h>
- #include "mcbsp.h"
- #include "omap-mcbsp.h"
-+#include "sdma-pcm.h"
- 
- #define OMAP_MCBSP_RATES	(SNDRV_PCM_RATE_8000_96000)
- 
-@@ -868,7 +868,7 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
--	return omap_pcm_platform_register(&pdev->dev);
-+	return sdma_pcm_platform_register(&pdev->dev, NULL, NULL);
- }
- 
- static int asoc_mcbsp_remove(struct platform_device *pdev)
--- 
-2.17.0
+--===============8179953383448413011==--
