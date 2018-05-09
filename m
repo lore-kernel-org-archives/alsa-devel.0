@@ -1,16 +1,19 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH] ASoC: AMD: Change codec to channel link as per
-	hardware redesign
-Date: Wed,  9 May 2018 12:26:26 +0800
-Message-ID: <1525840011-14077-1-git-send-email-akshu.agrawal@amd.com>
+From: Banajit Goswami <bgoswami@codeaurora.org>
+Subject: Re: [PATCH v7 12/24] ASoC: qdsp6: q6afe: Add support
+	to MI2S sysclks
+Date: Tue, 8 May 2018 21:29:50 -0700
+Message-ID: <5e4cd4a7-c375-4b92-f28b-f34900a828a8@codeaurora.org>
+References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
+ <20180501120820.11016-13-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com
- (mail-bl2nam02on0083.outbound.protection.outlook.com [104.47.38.83])
- by alsa0.perex.cz (Postfix) with ESMTP id 3DF95266F0F
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 06:29:45 +0200 (CEST)
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B8A126770B
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 06:29:53 +0200 (CEST)
+In-Reply-To: <20180501120820.11016-13-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,103 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com, akshu.agrawal@amd.com
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a correction to match acutal hardware configuration.
-The hardware configuration looks like:
-I2S_BT -> SPK(Max) + DMIC(Adau)
-I2S_SP -> DA7219 Headset
 
-No actual products have been shipped with previous configuration.
+On 5/1/2018 5:08 AM, Srinivas Kandagatla wrote:
+> This patch adds support to LPASS Bit clock, LPASS Digital
+> core clock and OSR clock. These clocks are required for both
+> MI2S and PCM setup.
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
+> ---
+>   sound/soc/qcom/qdsp6/q6afe.c | 171 +++++++++++++++++++++++++++++++++++++++++--
+>   sound/soc/qcom/qdsp6/q6afe.h | 131 +++++++++++++++++++++++++++++++++
+>   2 files changed, 295 insertions(+), 7 deletions(-)
+>
+>
+Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
-This patch is dependent on [V4,10/10] ASoC: amd: dma driver changes for bt i2s instance
-https://patchwork.kernel.org/patch/10385381/
-
- sound/soc/amd/acp-da7219-max98357a.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index ccddc66..566bd26 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -148,7 +148,7 @@ static int cz_da7219_startup(struct snd_pcm_substream *substream)
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				   &constraints_rates);
- 
--	machine->i2s_instance = I2S_BT_INSTANCE;
-+	machine->i2s_instance = I2S_SP_INSTANCE;
- 	return da7219_clk_enable(substream);
- }
- 
-@@ -163,7 +163,7 @@ static int cz_max_startup(struct snd_pcm_substream *substream)
- 	struct snd_soc_card *card = rtd->card;
- 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
- 
--	machine->i2s_instance = I2S_SP_INSTANCE;
-+	machine->i2s_instance = I2S_BT_INSTANCE;
- 	return da7219_clk_enable(substream);
- }
- 
-@@ -178,7 +178,7 @@ static int cz_dmic_startup(struct snd_pcm_substream *substream)
- 	struct snd_soc_card *card = rtd->card;
- 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
- 
--	machine->i2s_instance = I2S_SP_INSTANCE;
-+	machine->i2s_instance = I2S_BT_INSTANCE;
- 	return da7219_clk_enable(substream);
- }
- 
-@@ -204,16 +204,27 @@ static void cz_dmic_shutdown(struct snd_pcm_substream *substream)
- 
- static struct snd_soc_dai_link cz_dai_7219_98357[] = {
- 	{
--		.name = "amd-da7219-play-cap",
--		.stream_name = "Playback and Capture",
-+		.name = "amd-da7219-play",
-+		.stream_name = "Playback",
- 		.platform_name = "acp_audio_dma.0.auto",
--		.cpu_dai_name = "designware-i2s.3.auto",
-+		.cpu_dai_name = "designware-i2s.1.auto",
- 		.codec_dai_name = "da7219-hifi",
- 		.codec_name = "i2c-DLGS7219:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.init = cz_da7219_init,
- 		.dpcm_playback = 1,
-+		.ops = &cz_da7219_cap_ops,
-+	},
-+	{
-+		.name = "amd-da7219-cap",
-+		.stream_name = "Capture",
-+		.platform_name = "acp_audio_dma.0.auto",
-+		.cpu_dai_name = "designware-i2s.2.auto",
-+		.codec_dai_name = "da7219-hifi",
-+		.codec_name = "i2c-DLGS7219:00",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-+				| SND_SOC_DAIFMT_CBM_CFM,
- 		.dpcm_capture = 1,
- 		.ops = &cz_da7219_cap_ops,
- 	},
-@@ -221,7 +232,7 @@ static void cz_dmic_shutdown(struct snd_pcm_substream *substream)
- 		.name = "amd-max98357-play",
- 		.stream_name = "HiFi Playback",
- 		.platform_name = "acp_audio_dma.0.auto",
--		.cpu_dai_name = "designware-i2s.1.auto",
-+		.cpu_dai_name = "designware-i2s.3.auto",
- 		.codec_dai_name = "HiFi",
- 		.codec_name = "MX98357A:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-@@ -233,7 +244,7 @@ static void cz_dmic_shutdown(struct snd_pcm_substream *substream)
- 		.name = "dmic",
- 		.stream_name = "DMIC Capture",
- 		.platform_name = "acp_audio_dma.0.auto",
--		.cpu_dai_name = "designware-i2s.2.auto",
-+		.cpu_dai_name = "designware-i2s.3.auto",
- 		.codec_dai_name = "adau7002-hifi",
- 		.codec_name = "ADAU7002:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
 -- 
-1.9.1
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
