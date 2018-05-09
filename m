@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove codec reg_cache" to the asoc tree
-Date: Wed,  9 May 2018 10:45:08 +0100 (BST)
-Message-ID: <20180509094508.C914944007A@finisterre.ee.mobilebroadband>
-References: <87in7yrg7c.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: remove unneeded .pcm_new/free" to the
+	asoc tree
+Date: Wed,  9 May 2018 10:44:27 +0100 (BST)
+Message-ID: <20180509094427.DC26044007C@finisterre.ee.mobilebroadband>
+References: <87fu32rg5c.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 75A1C2676F2
- for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:28:55 +0200 (CEST)
-In-Reply-To: <87in7yrg7c.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C1582267742
+ for <alsa-devel@alsa-project.org>; Wed,  9 May 2018 18:28:57 +0200 (CEST)
+In-Reply-To: <87fu32rg5c.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: remove codec reg_cache
+   ASoC: remove unneeded .pcm_new/free
 
 has been applied to the asoc tree at
 
@@ -52,432 +53,101 @@ to this mail.
 Thanks,
 Mark
 
->From d1021c88526273644a711d481fd1117a67b6ae20 Mon Sep 17 00:00:00 2001
+>From 11fb14f8c5b8f016ea0dae2237854331071cad42 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 8 May 2018 03:18:38 +0000
-Subject: [PATCH] ASoC: remove codec reg_cache
+Date: Tue, 8 May 2018 03:19:49 +0000
+Subject: [PATCH] ASoC: remove unneeded .pcm_new/free
 
-Codec reg_cache is legacy feature, almost all driver are now using
-common regmap, and very few driver had been used this legacy feature.
-Because of this background, it is now implemented on each
-driver internally now.
-So now, no one is using codec reg_cache. Let's remove it.
+commit ef050bece1b55 ("ASoC: Remove platform code now everything is
+componentised") removed platform code, but it didn't remove
+.pcm_new/free which existed only for platform.
+This patch remove these
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Reviewed-by: Charles Keepax <ckeepax@opensource.wolfsonmicro.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h   |  13 ---
- sound/soc/Makefile    |   2 +-
- sound/soc/soc-cache.c |  53 -----------
- sound/soc/soc-core.c  | 207 ------------------------------------------
- 4 files changed, 1 insertion(+), 274 deletions(-)
- delete mode 100644 sound/soc/soc-cache.c
+ include/sound/soc.h  |  2 --
+ sound/soc/soc-core.c | 18 ------------------
+ sound/soc/soc-pcm.c  |  8 ++++----
+ 3 files changed, 4 insertions(+), 24 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 0e1cb847f8f8..7233d3a206b2 100644
+index 309bb70bcb1e..131185563532 100644
 --- a/include/sound/soc.h
 +++ b/include/sound/soc.h
-@@ -471,8 +471,6 @@ int devm_snd_soc_register_component(struct device *dev,
- void snd_soc_unregister_component(struct device *dev);
- struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
- 						   const char *driver_name);
--int snd_soc_cache_init(struct snd_soc_codec *codec);
--int snd_soc_cache_exit(struct snd_soc_codec *codec);
+@@ -886,8 +886,6 @@ struct snd_soc_component {
+ 	void (*remove)(struct snd_soc_component *);
+ 	int (*suspend)(struct snd_soc_component *);
+ 	int (*resume)(struct snd_soc_component *);
+-	int (*pcm_new)(struct snd_soc_component *, struct snd_soc_pcm_runtime *);
+-	void (*pcm_free)(struct snd_soc_component *, struct snd_pcm *);
  
- int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
- #ifdef CONFIG_SND_SOC_COMPRESS
-@@ -904,7 +902,6 @@ struct snd_soc_component {
- 	int (*init)(struct snd_soc_component *component);
- 
- #ifdef CONFIG_DEBUG_FS
--	void (*init_debugfs)(struct snd_soc_component *component);
- 	const char *debugfs_prefix;
- #endif
- };
-@@ -928,12 +925,6 @@ struct snd_soc_codec {
- 
- 	struct list_head list;
- 
--	/* runtime */
--	unsigned int cache_init:1; /* codec cache has been initialized */
--
--	/* codec IO */
--	void *reg_cache;
--
- 	/* component */
- 	struct snd_soc_component component;
- };
-@@ -960,10 +951,6 @@ struct snd_soc_codec_driver {
- 	struct regmap *(*get_regmap)(struct device *);
- 	unsigned int (*read)(struct snd_soc_codec *, unsigned int);
- 	int (*write)(struct snd_soc_codec *, unsigned int, unsigned int);
--	unsigned int reg_cache_size;
--	short reg_cache_step;
--	short reg_word_size;
--	const void *reg_cache_default;
- 
- 	/* codec bias level */
- 	int (*set_bias_level)(struct snd_soc_codec *,
-diff --git a/sound/soc/Makefile b/sound/soc/Makefile
-index 8d92492183d2..06389a5385d7 100644
---- a/sound/soc/Makefile
-+++ b/sound/soc/Makefile
-@@ -1,5 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0
--snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-cache.o soc-utils.o
-+snd-soc-core-objs := soc-core.o soc-dapm.o soc-jack.o soc-utils.o
- snd-soc-core-objs += soc-pcm.o soc-io.o soc-devres.o soc-ops.o
- snd-soc-core-$(CONFIG_SND_SOC_COMPRESS) += soc-compress.o
- 
-diff --git a/sound/soc/soc-cache.c b/sound/soc/soc-cache.c
-deleted file mode 100644
-index 07f43356f963..000000000000
---- a/sound/soc/soc-cache.c
-+++ /dev/null
-@@ -1,53 +0,0 @@
--/*
-- * soc-cache.c  --  ASoC register cache helpers
-- *
-- * Copyright 2009 Wolfson Microelectronics PLC.
-- *
-- * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
--
--#include <sound/soc.h>
--#include <linux/export.h>
--#include <linux/slab.h>
--
--int snd_soc_cache_init(struct snd_soc_codec *codec)
--{
--	const struct snd_soc_codec_driver *codec_drv = codec->driver;
--	size_t reg_size;
--
--	reg_size = codec_drv->reg_cache_size * codec_drv->reg_word_size;
--
--	if (!reg_size)
--		return 0;
--
--	dev_dbg(codec->dev, "ASoC: Initializing cache for %s codec\n",
--				codec->component.name);
--
--	if (codec_drv->reg_cache_default)
--		codec->reg_cache = kmemdup(codec_drv->reg_cache_default,
--					   reg_size, GFP_KERNEL);
--	else
--		codec->reg_cache = kzalloc(reg_size, GFP_KERNEL);
--	if (!codec->reg_cache)
--		return -ENOMEM;
--
--	return 0;
--}
--
--/*
-- * NOTE: keep in mind that this function might be called
-- * multiple times.
-- */
--int snd_soc_cache_exit(struct snd_soc_codec *codec)
--{
--	dev_dbg(codec->dev, "ASoC: Destroying cache for %s codec\n",
--			codec->component.name);
--	kfree(codec->reg_cache);
--	codec->reg_cache = NULL;
--	return 0;
--}
+ 	int (*set_sysclk)(struct snd_soc_component *component,
+ 			  int clk_id, int source, unsigned int freq, int dir);
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4b068ccf4e13..96081160fd24 100644
+index e5af15aa1c28..3b78868969d5 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -82,98 +82,6 @@ static const char * const dmi_blacklist[] = {
- 	NULL,	/* terminator */
- };
+@@ -2943,22 +2943,6 @@ static int snd_soc_component_stream_event(struct snd_soc_dapm_context *dapm,
+ 	return component->driver->stream_event(component, event);
+ }
  
--/* returns the minimum number of bytes needed to represent
-- * a particular given value */
--static int min_bytes_needed(unsigned long val)
+-static int snd_soc_component_drv_pcm_new(struct snd_soc_component *component,
+-					struct snd_soc_pcm_runtime *rtd)
 -{
--	int c = 0;
--	int i;
+-	if (component->driver->pcm_new)
+-		return component->driver->pcm_new(rtd);
 -
--	for (i = (sizeof val * 8) - 1; i >= 0; --i, ++c)
--		if (val & (1UL << i))
--			break;
--	c = (sizeof val * 8) - c;
--	if (!c || (c % 8))
--		c = (c + 8) / 8;
--	else
--		c /= 8;
--	return c;
--}
--
--/* fill buf which is 'len' bytes with a formatted
-- * string of the form 'reg: value\n' */
--static int format_register_str(struct snd_soc_codec *codec,
--			       unsigned int reg, char *buf, size_t len)
--{
--	int wordsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
--	int regsize = codec->driver->reg_word_size * 2;
--	int ret;
--
--	/* +2 for ': ' and + 1 for '\n' */
--	if (wordsize + regsize + 2 + 1 != len)
--		return -EINVAL;
--
--	sprintf(buf, "%.*x: ", wordsize, reg);
--	buf += wordsize + 2;
--
--	ret = snd_soc_read(codec, reg);
--	if (ret < 0)
--		memset(buf, 'X', regsize);
--	else
--		sprintf(buf, "%.*x", regsize, ret);
--	buf[regsize] = '\n';
--	/* no NUL-termination needed */
 -	return 0;
 -}
 -
--/* codec register dump */
--static ssize_t soc_codec_reg_show(struct snd_soc_codec *codec, char *buf,
--				  size_t count, loff_t pos)
+-static void snd_soc_component_drv_pcm_free(struct snd_soc_component *component,
+-					  struct snd_pcm *pcm)
 -{
--	int i, step = 1;
--	int wordsize, regsize;
--	int len;
--	size_t total = 0;
--	loff_t p = 0;
--
--	wordsize = min_bytes_needed(codec->driver->reg_cache_size) * 2;
--	regsize = codec->driver->reg_word_size * 2;
--
--	len = wordsize + regsize + 2 + 1;
--
--	if (!codec->driver->reg_cache_size)
--		return 0;
--
--	if (codec->driver->reg_cache_step)
--		step = codec->driver->reg_cache_step;
--
--	for (i = 0; i < codec->driver->reg_cache_size; i += step) {
--		/* only support larger than PAGE_SIZE bytes debugfs
--		 * entries for the default case */
--		if (p >= pos) {
--			if (total + len >= count - 1)
--				break;
--			format_register_str(codec, i, buf + total, len);
--			total += len;
--		}
--		p += len;
--	}
--
--	total = min(total, count - 1);
--
--	return total;
+-	if (component->driver->pcm_free)
+-		component->driver->pcm_free(pcm);
 -}
 -
--static ssize_t codec_reg_show(struct device *dev,
--	struct device_attribute *attr, char *buf)
--{
--	struct snd_soc_pcm_runtime *rtd = dev_get_drvdata(dev);
--
--	return soc_codec_reg_show(rtd->codec, buf, PAGE_SIZE, 0);
--}
--
--static DEVICE_ATTR_RO(codec_reg);
--
- static ssize_t pmdown_time_show(struct device *dev,
- 				struct device_attribute *attr, char *buf)
+ static int snd_soc_component_set_bias_level(struct snd_soc_dapm_context *dapm,
+ 					enum snd_soc_bias_level level)
  {
-@@ -199,7 +107,6 @@ static ssize_t pmdown_time_set(struct device *dev,
- static DEVICE_ATTR(pmdown_time, 0644, pmdown_time_show, pmdown_time_set);
+@@ -2987,8 +2971,6 @@ static int snd_soc_component_initialize(struct snd_soc_component *component,
+ 	component->set_sysclk = component->driver->set_sysclk;
+ 	component->set_pll = component->driver->set_pll;
+ 	component->set_jack = component->driver->set_jack;
+-	component->pcm_new = snd_soc_component_drv_pcm_new;
+-	component->pcm_free = snd_soc_component_drv_pcm_free;
  
- static struct attribute *soc_dev_attrs[] = {
--	&dev_attr_codec_reg.attr,
- 	&dev_attr_pmdown_time.attr,
- 	NULL
- };
-@@ -232,71 +139,6 @@ static const struct attribute_group *soc_dev_attr_groups[] = {
- };
+ 	dapm = snd_soc_component_get_dapm(component);
+ 	dapm->dev = dev;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index da5a2dcb6520..3f6375499102 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2745,8 +2745,8 @@ static void soc_pcm_private_free(struct snd_pcm *pcm)
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
  
- #ifdef CONFIG_DEBUG_FS
--static ssize_t codec_reg_read_file(struct file *file, char __user *user_buf,
--				   size_t count, loff_t *ppos)
--{
--	ssize_t ret;
--	struct snd_soc_codec *codec = file->private_data;
--	char *buf;
--
--	if (*ppos < 0 || !count)
--		return -EINVAL;
--
--	buf = kmalloc(count, GFP_KERNEL);
--	if (!buf)
--		return -ENOMEM;
--
--	ret = soc_codec_reg_show(codec, buf, count, *ppos);
--	if (ret >= 0) {
--		if (copy_to_user(user_buf, buf, ret)) {
--			kfree(buf);
--			return -EFAULT;
--		}
--		*ppos += ret;
--	}
--
--	kfree(buf);
--	return ret;
--}
--
--static ssize_t codec_reg_write_file(struct file *file,
--		const char __user *user_buf, size_t count, loff_t *ppos)
--{
--	char buf[32];
--	size_t buf_size;
--	char *start = buf;
--	unsigned long reg, value;
--	struct snd_soc_codec *codec = file->private_data;
--	int ret;
--
--	buf_size = min(count, (sizeof(buf)-1));
--	if (copy_from_user(buf, user_buf, buf_size))
--		return -EFAULT;
--	buf[buf_size] = 0;
--
--	while (*start == ' ')
--		start++;
--	reg = simple_strtoul(start, &start, 16);
--	while (*start == ' ')
--		start++;
--	ret = kstrtoul(start, 16, &value);
--	if (ret)
--		return ret;
--
--	/* Userspace has been fiddling around behind the kernel's back */
--	add_taint(TAINT_USER, LOCKDEP_NOW_UNRELIABLE);
--
--	snd_soc_write(codec, reg, value);
--	return buf_size;
--}
--
--static const struct file_operations codec_reg_fops = {
--	.open = simple_open,
--	.read = codec_reg_read_file,
--	.write = codec_reg_write_file,
--	.llseek = default_llseek,
--};
--
- static void soc_init_component_debugfs(struct snd_soc_component *component)
- {
- 	if (!component->card->debugfs_card_root)
-@@ -325,9 +167,6 @@ static void soc_init_component_debugfs(struct snd_soc_component *component)
- 
- 	snd_soc_dapm_debugfs_init(snd_soc_component_get_dapm(component),
- 		component->debugfs_root);
--
--	if (component->init_debugfs)
--		component->init_debugfs(component);
- }
- 
- static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
-@@ -335,19 +174,6 @@ static void soc_cleanup_component_debugfs(struct snd_soc_component *component)
- 	debugfs_remove_recursive(component->debugfs_root);
- }
- 
--static void soc_init_codec_debugfs(struct snd_soc_component *component)
--{
--	struct snd_soc_codec *codec = snd_soc_component_to_codec(component);
--	struct dentry *debugfs_reg;
--
--	debugfs_reg = debugfs_create_file("codec_reg", 0644,
--					  codec->component.debugfs_root,
--					  codec, &codec_reg_fops);
--	if (!debugfs_reg)
--		dev_warn(codec->dev,
--			"ASoC: Failed to create codec register debugfs file\n");
--}
--
- static int codec_list_show(struct seq_file *m, void *v)
- {
- 	struct snd_soc_codec *codec;
-@@ -431,8 +257,6 @@ static void snd_soc_debugfs_exit(void)
- 
- #else
- 
--#define soc_init_codec_debugfs NULL
--
- static inline void soc_init_component_debugfs(
- 	struct snd_soc_component *component)
- {
-@@ -1805,24 +1629,6 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
+-		if (component->pcm_free)
+-			component->pcm_free(component, pcm);
++		if (component->driver->pcm_free)
++			component->driver->pcm_free(pcm);
  	}
  }
  
--static int snd_soc_init_codec_cache(struct snd_soc_codec *codec)
--{
--	int ret;
--
--	if (codec->cache_init)
--		return 0;
--
--	ret = snd_soc_cache_init(codec);
--	if (ret < 0) {
--		dev_err(codec->dev,
--			"ASoC: Failed to set cache compression type: %d\n",
--			ret);
--		return ret;
--	}
--	codec->cache_init = 1;
--	return 0;
--}
--
- /**
-  * snd_soc_runtime_set_dai_fmt() - Change DAI link format for a ASoC runtime
-  * @rtd: The runtime for which the DAI link format should be changed
-@@ -2045,7 +1851,6 @@ EXPORT_SYMBOL_GPL(snd_soc_set_dmi_name);
+@@ -3012,10 +3012,10 @@ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num)
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
  
- static int snd_soc_instantiate_card(struct snd_soc_card *card)
- {
--	struct snd_soc_codec *codec;
- 	struct snd_soc_pcm_runtime *rtd;
- 	struct snd_soc_dai_link *dai_link;
- 	int ret, i, order;
-@@ -2071,15 +1876,6 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 	for (i = 0; i < card->num_links; i++)
- 		snd_soc_add_dai_link(card, card->dai_link+i);
+-		if (!component->pcm_new)
++		if (!component->driver->pcm_new)
+ 			continue;
  
--	/* initialize the register cache for each available codec */
--	list_for_each_entry(codec, &codec_list, list) {
--		if (codec->cache_init)
--			continue;
--		ret = snd_soc_init_codec_cache(codec);
--		if (ret < 0)
--			goto base_error;
--	}
--
- 	/* card bind complete so register a sound card */
- 	ret = snd_card_new(card->dev, SNDRV_DEFAULT_IDX1, SNDRV_DEFAULT_STR1,
- 			card->owner, 0, &card->snd_card);
-@@ -3591,10 +3387,8 @@ int snd_soc_register_codec(struct device *dev,
- 		dapm->set_bias_level = snd_soc_codec_set_bias_level;
- 	codec->dev = dev;
- 	codec->driver = codec_drv;
--	codec->component.val_bytes = codec_drv->reg_word_size;
- 
- #ifdef CONFIG_DEBUG_FS
--	codec->component.init_debugfs = soc_init_codec_debugfs;
- 	codec->component.debugfs_prefix = "codec";
- #endif
- 
-@@ -3658,7 +3452,6 @@ void snd_soc_unregister_codec(struct device *dev)
- 			codec->component.name);
- 
- 	snd_soc_component_cleanup(&codec->component);
--	snd_soc_cache_exit(codec);
- 	kfree(codec);
- }
- EXPORT_SYMBOL_GPL(snd_soc_unregister_codec);
+-		ret = component->pcm_new(component, rtd);
++		ret = component->driver->pcm_new(rtd);
+ 		if (ret < 0) {
+ 			dev_err(component->dev,
+ 				"ASoC: pcm constructor failed: %d\n",
 -- 
 2.17.0
