@@ -1,71 +1,174 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix return value check in mt6351_codec_driver_probe()" to the asoc tree
-Date: Wed,  9 May 2018 10:11:50 +0100 (BST)
-Message-ID: <20180509091150.77D5C44007A@finisterre.ee.mobilebroadband>
-References: <1525657185-73163-1-git-send-email-weiyongjun1@huawei.com>
+From: Banajit Goswami <bgoswami@codeaurora.org>
+Subject: Re: [PATCH v7 23/24] ASoC: qcom: apq8096: Add db820c machine driver
+Date: Wed, 9 May 2018 02:15:18 -0700
+Message-ID: <c52fc35d-95a6-6675-6c6e-32a0d5f486d4@codeaurora.org>
+References: <20180501120820.11016-1-srinivas.kandagatla@linaro.org>
+ <20180501120820.11016-24-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525657185-73163-1-git-send-email-weiyongjun1@huawei.com>
+In-Reply-To: <20180501120820.11016-24-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Wei Yongjun <weiyongjun1@huawei.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Matthias Brugger <matthias.bgg@gmail.com>, Kai Chieh Chuang <kaichieh.chuang@mediatek.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, andy.gross@linaro.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
+Cc: gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: fix return value check in mt6351_codec_driver_probe()
+On 5/1/2018 5:08 AM, Srinivas Kandagatla wrote:
+> This patch adds support to DB820c machine driver.
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   sound/soc/qcom/Kconfig   |   9 ++
+>   sound/soc/qcom/Makefile  |   2 +
+>   sound/soc/qcom/apq8096.c | 238 +++++++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 249 insertions(+)
+>   create mode 100644 sound/soc/qcom/apq8096.c
+<snip>
 
-has been applied to the asoc tree at
+> +
+> +static int apq8096_sbc_parse_of(struct snd_soc_card *card)
+> +{
+> +	struct device_node *np, *codec, *platform, *cpu, *node;
+> +	struct device *dev = card->dev;
+> +	struct snd_soc_dai_link *link;
+> +	int ret, num_links;
+> +
+> +	ret = snd_soc_of_parse_card_name(card, "qcom,model");
+> +	if (ret) {
+> +		dev_err(dev, "Error parsing card name: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	node = dev->of_node;
+> +
+> +	/* DAPM routes */
+> +	if (of_property_read_bool(node, "qcom,audio-routing")) {
+> +		ret = snd_soc_of_parse_audio_routing(card,
+> +					"qcom,audio-routing");
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+> +	/* Populate links */
+> +	num_links = of_get_child_count(node);
+> +
+> +	/* Allocate the DAI link array */
+> +	card->dai_link = kcalloc(num_links, sizeof(*link), GFP_KERNEL);
+> +	if (!card->dai_link)
+> +		return -ENOMEM;
+> +
+> +	card->num_links	= num_links;
+> +	link = card->dai_link;
+> +
+> +	for_each_child_of_node(node, np) {
+> +		cpu = of_get_child_by_name(np, "cpu");
+> +		platform = of_get_child_by_name(np, "platform");
+> +		codec = of_get_child_by_name(np, "codec");
+> +
+> +		if (!cpu) {
+> +			dev_err(dev, "Can't find cpu DT node\n");
+clean up missing to kfree(card->dai_link)?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+> +			return -EINVAL;
+> +		}
+> +
+> +		link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
+> +		if (!link->cpu_of_node) {
+> +			dev_err(card->dev, "error getting cpu phandle\n");
+ditto
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+> +			return -EINVAL;
+> +		}
+> +
+> +		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
+> +		if (ret) {
+> +			dev_err(card->dev, "error getting cpu dai name\n");
+ditto
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> +			return ret;
+> +		}
+> +
+> +		if (codec && platform) {
+> +			link->platform_of_node = of_parse_phandle(platform,
+> +								  "sound-dai",
+> +								   0);
+> +			if (!link->platform_of_node) {
+> +				dev_err(card->dev, "platform dai not found\n");
+ditto
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> +				return -EINVAL;
+> +			}
+> +
+> +			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
+> +			if (ret < 0) {
+> +				dev_err(card->dev, "codec dai not found\n");
+ditto
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> +				return ret;
+> +			}
+> +			link->no_pcm = 1;
+> +			link->ignore_suspend = 1;
+ignore_suspend will also need to be set for FE DAIs?
 
-Thanks,
-Mark
+> +			link->ignore_pmdown_time = 1;
+> +			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
+> +		} else {
+> +			link->platform_of_node = link->cpu_of_node;
+> +			link->codec_dai_name = "snd-soc-dummy-dai";
+> +			link->codec_name = "snd-soc-dummy";
+> +			link->dynamic = 1;
+> +		}
+> +
+> +		ret = of_property_read_string(np, "link-name", &link->name);
+> +		if (ret) {
+> +			dev_err(card->dev, "error getting codec dai_link name\n");
+clean up
 
->From aaa730ca3f88f535dc12e2f0ff575f70f516841b Mon Sep 17 00:00:00 2001
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Date: Mon, 7 May 2018 01:39:45 +0000
-Subject: [PATCH] ASoC: fix return value check in mt6351_codec_driver_probe()
+> +			return ret;
+> +		}
+> +
+> +		link->dpcm_playback = 1;
+> +		link->dpcm_capture = 1;
+> +		link->stream_name = link->name;
+> +		link++;
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int apq8096_bind(struct device *dev)
+> +{
+> +	struct snd_soc_card *card;
+> +	int ret;
+> +
+> +	card = kzalloc(sizeof(*card), GFP_KERNEL);
+> +	if (!card)
+> +		return -ENOMEM;
+> +
+> +	component_bind_all(dev, card);
+> +	card->dev = dev;
+> +	ret = apq8096_sbc_parse_of(card);
+> +	if (ret) {
+> +		dev_err(dev, "Error parsing OF data\n");
+> +		component_unbind_all(dev, card);
+> +		return ret;
+> +	}
+> +
+> +	return snd_soc_register_card(card);
+> +}
+> +
+> +static void apq8096_unbind(struct device *dev)
+> +{
+> +	struct snd_soc_card *card = dev_get_drvdata(dev);
+> +
+> +	component_unbind_all(dev, card);
+> +	snd_soc_unregister_card(card);
+Should sound card not be unregistered first, before calling 
+component_unbind_all()?
 
-In case of error, the function dev_get_regmap() returns NULL pointer not
-ERR_PTR(). The IS_ERR() test in the return value check should be
-replaced with NULL test.
-
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/mt6351.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
-index e739f078fec5..f73dcd753584 100644
---- a/sound/soc/codecs/mt6351.c
-+++ b/sound/soc/codecs/mt6351.c
-@@ -1472,8 +1472,8 @@ static int mt6351_codec_driver_probe(struct platform_device *pdev)
- 	priv->dev = &pdev->dev;
- 
- 	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
--	if (IS_ERR(priv->regmap))
--		return PTR_ERR(priv->regmap);
-+	if (!priv->regmap)
-+		return -ENODEV;
- 
- 	dev_dbg(priv->dev, "%s(), dev name %s\n",
- 		__func__, dev_name(&pdev->dev));
 -- 
-2.17.0
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
