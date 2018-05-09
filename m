@@ -1,18 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8824: fix spelling mistake: "semaphone" -> "semaphore"" to the asoc tree
-Date: Wed,  9 May 2018 10:32:20 +0100 (BST)
-Message-ID: <20180509093220.B2DF944007A@finisterre.ee.mobilebroadband>
-References: <20180508224155.26486-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180508224155.26486-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, John Hsu <KCHSU0@nuvoton.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: fix return value check in mt6351_codec_driver_probe()"
+ to the asoc tree
+Date: Wed,  9 May 2018 10:32:38 +0100 (BST)
+Message-ID: <20180509093238.98F9244007A@finisterre.ee.mobilebroadband>
+References: <1525657185-73163-1-git-send-email-weiyongjun1@huawei.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1525657185-73163-1-git-send-email-weiyongjun1@huawei.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, Jaroslav Kysela <perex@perex.cz>, linux-arm-kernel@lists.infradead.org, Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nau8824: fix spelling mistake: "semaphone" -> "semaphore"
+   ASoC: fix return value check in mt6351_codec_driver_probe()
 
 has been applied to the asoc tree at
 
@@ -37,37 +49,35 @@ to this mail.
 Thanks,
 Mark
 
->From 2ce7eb258999e5c510a1f828123e61df2ece2dd7 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Tue, 8 May 2018 23:41:55 +0100
-Subject: [PATCH] ASoC: nau8824: fix spelling mistake: "semaphone" ->
- "semaphore"
+>From aaa730ca3f88f535dc12e2f0ff575f70f516841b Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Mon, 7 May 2018 01:39:45 +0000
+Subject: [PATCH] ASoC: fix return value check in mt6351_codec_driver_probe()
 
-Trivial fix to spelling mistake in dev_warn messages
+In case of error, the function dev_get_regmap() returns NULL pointer not
+ERR_PTR(). The IS_ERR() test in the return value check should be
+replaced with NULL test.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8824.c | 4 ++--
+ sound/soc/codecs/mt6351.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-index 76502c090654..6bd14453f06e 100644
---- a/sound/soc/codecs/nau8824.c
-+++ b/sound/soc/codecs/nau8824.c
-@@ -205,11 +205,11 @@ static int nau8824_sema_acquire(struct nau8824 *nau8824, long timeout)
- 	if (timeout) {
- 		ret = down_timeout(&nau8824->jd_sem, timeout);
- 		if (ret < 0)
--			dev_warn(nau8824->dev, "Acquire semaphone timeout\n");
-+			dev_warn(nau8824->dev, "Acquire semaphore timeout\n");
- 	} else {
- 		ret = down_interruptible(&nau8824->jd_sem);
- 		if (ret < 0)
--			dev_warn(nau8824->dev, "Acquire semaphone fail\n");
-+			dev_warn(nau8824->dev, "Acquire semaphore fail\n");
- 	}
+diff --git a/sound/soc/codecs/mt6351.c b/sound/soc/codecs/mt6351.c
+index e739f078fec5..f73dcd753584 100644
+--- a/sound/soc/codecs/mt6351.c
++++ b/sound/soc/codecs/mt6351.c
+@@ -1472,8 +1472,8 @@ static int mt6351_codec_driver_probe(struct platform_device *pdev)
+ 	priv->dev = &pdev->dev;
  
- 	return ret;
+ 	priv->regmap = dev_get_regmap(pdev->dev.parent, NULL);
+-	if (IS_ERR(priv->regmap))
+-		return PTR_ERR(priv->regmap);
++	if (!priv->regmap)
++		return -ENODEV;
+ 
+ 	dev_dbg(priv->dev, "%s(), dev name %s\n",
+ 		__func__, dev_name(&pdev->dev));
 -- 
 2.17.0
