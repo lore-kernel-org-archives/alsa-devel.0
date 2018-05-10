@@ -1,123 +1,231 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 19/19] ASoC: Intel: bytcr_rt5640: Set card
- long_name based on quirks
-Date: Thu, 10 May 2018 12:27:33 +0200
-Message-ID: <4f678986-9ca5-eeb3-d6ed-528f3fe1d013@redhat.com>
-References: <20180508153604.23711-1-hdegoede@redhat.com>
- <20180508153604.23711-20-hdegoede@redhat.com>
- <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Subject: [PATCH] ASoC: amd: modified dma pointer callback implementation
+Date: Thu, 10 May 2018 16:11:45 +0530
+Message-ID: <1525948925-27483-1-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 301CB2676A9
- for <alsa-devel@alsa-project.org>; Thu, 10 May 2018 12:27:35 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id a137-v6so26854411wme.1
- for <alsa-devel@alsa-project.org>; Thu, 10 May 2018 03:27:35 -0700 (PDT)
-In-Reply-To: <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>, Daniel Kurtz <djkurtz@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAwOC0wNS0xOCAyMDozNSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24g
-NS84LzE4IDEwOjM2IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+PiBNYW55IFg4NiBkZXZpY2Vz
-IHVzaW5nIGEgQllUIFNvQyArIFJUNTY0MCBjb2RlYyBhcmUgY2hlYXAgZGV2aWNlcyB3aXRoCj4+
-IGdlbmVyaWMgRE1JIHN0cmluZ3MsIGNhdXNpbmcgc25kX3NvY19zZXRfZG1pX25hbWUoKSB0byBm
-YWlsIHRvIHNldCBhCj4+IGxvbmdfbmFtZSwgbWFraW5nIGl0IGltcG9zc2libGUgZm9yIHVzZXJz
-cGFjZSB0byBoYXZlIGEgY29ycmVjdCBVQ00KPj4gcHJvZmlsZSB3aGljaCBvbmx5IHVzZXMgaW5w
-dXRzIC8gb3V0cHV0cyB3aGljaCBhcmUgYWN0dWFsbHkgaG9va2VkIHVwCj4+IG9uIHRoZSBkZXZp
-Y2UuCj4+Cj4+IE91ciBxdWlya3MgYWxyZWFkeSBzcGVjaWZ5IHdoaWNoIGlucHV0IHRoZSBpbnRl
-cm5hbCBtaWMgaXMgY29ubmVjdGVkIHRvCj4+IGFuZCBpZiBhIHNpbmdsZSAobW9ubykgc3BlYWtl
-ciBpcyB1c2VkIG9yIGlmIHRoZSBkZXZpY2UgaGFzIHN0ZXJlbwo+PiBzcGVha2Vycy4KPj4KPj4g
-VGhpcyBjb21taXQgc2V0cyBhIGxvbmdfbmFtZSBiYXNlZCBvbiB0aGUgcXVpcmtzIHNvIHRoYXQg
-dXNlcnNwYWNlIGNhbgo+PiBoYXZlIFVDTSBwcm9maWxlcyBkb2luZyB0aGUgcmlnaHQgdGhpbmcg
-YmFzZWQgb24gdGhlIGxvbmdfbmFtZS4KPiAKPiBJc24ndCB0aGlzIGdvaW5nIHRvIGJlIGNvbXBs
-aWNhdGVkIHRvIG1hbmFnZSBmb3IgVUNNPyBKdXN0IHdpdGggdGhpcyBwYXRjaCBhbG9uZSwgeW91
-J2QgbmVlZCA4IFVDTSBmaWxlcyB0byBjb3ZlciBhbGwgdGhlIGNvbWJpbmF0aW9ucy4gMTYgaWYg
-eW91IGFkZCB0aGUgJ3NvZi0nIHByZWZpeC4KPiAKPiBzZWVtcyBsaWtlIFVDTSBzaG91bGQgYmVj
-b21lIG1vcmUgJ2R5bmFtaWMnIGFuZCBnZXQgcXVpcmsgaW5mb3JtYXRpb24gc29tZWhvdyAoc3lz
-ZnM/KSB0byBlbmFibGUvZGlzYWJsZSBlbmRwb2ludHMgcmF0aGVyIHRoYW4gcmVseSBvbiBuYW1l
-IGVuY29kaW5nIHRvIHNlbGVjdCB0aGUgcmlnaHQgcHJvZmlsZT8KCkkgYWdyZWUgdGhhdCB0aGlz
-IGlzIG5vdCBpZGVhbCwgYnV0IHRoaXMgaXMgYW4gaW1wcm92ZW1lbnQgZnJvbSB0aGUKY3VycmVu
-dCBzdGF0ZSB3aGVyZSB3ZSB3b3VsZCBuZWVkIDEgVUNNIHByb2ZpbGUgcGVyIGJvYXJkCihhc3N1
-bWluZyB2YWxpZCBETUkgZGF0YSBhbmQgdGh1cyBhIHByb3BlciBsb25nLW5hbWUgYmVpbmcgc2V0
-KSwKNiBwcm9maWxlcyAoZG1pYzIgaXMgbm90IHVzZWQgYW55d2hlcmUgc29mYXIpIGlzIGEgd2hv
-bGUgbG90IGVhc2llcgp0byBtYW5hZ2UgdGhlbiAxIHByb2ZpbGUgcGVyIGJvYXJkLiBTbyBhcyBz
-YWlkIEkgYmVsaWV2ZSB0aGlzIGlzCmEgc3RlcCBpbiB0aGUgcmlnaHQgZGlyZWN0aW9uLgoKQW5k
-IGxvb2tpbmcgYXQgdGhlIGZvcmVzZWVhYmxlIGZ1dHVyZSBJIHNpbXBseSBkb24ndCBzZWUgYW55
-IG9mIHVzCmhhdmluZyB0aGUgdGltZSB0byBpbXBsZW1lbnQgYW4gaWRlYWwgc29sdXRpb24gZm9y
-IHRoaXMuIEkgd291bGQKcmVhbGx5IGxpa2UgZm9yIGVuZCB1c2VycyB0byBiZSBhYmxlIHRvIHJ1
-biB0aGUgbGF0ZXN0IHVwc3RyZWFtCmtlcm5lbCArIGFsc2EtbGliIGFuZCBoYXZlIHRoaW5ncyBq
-dXN0IHdvcmssIGJlZm9yZSB0aGlzIGhhcmR3YXJlCmJlY29tZXMgb2Jzb2xldGUuIEkga25vdyB0
-aGF0IG5vLW9uZSBoYXZpbmcgdGltZSB0byB3b3JrIG9uIHJld29ya2luZwpVQ00gdG8gbWFrZSBp
-dCBtb3JlIGR5bmFtaWMgaXMgbm90IHRoZSBiZXN0IG9mIGFyZ3VtZW50cyBidXQgaXQKaXMgc29t
-ZXRoaW5nIHRvIHRha2UgaW50byBjb25zaWRlcmF0aW9uLgoKVGhpbmtpbmcgbW9yZSBhYm91dCB0
-aGlzIG9uIHRoZSBhbHNhLWxpYiAvIFVDTSBwcm9maWxlIHNpZGUgd2UKY291bGQgaGF2ZSBzb21l
-dGhpbmcgbGlrZSB0aGlzOgoKL3Vzci9zaGFyZS9hbHNhL3VjbS9ieXRjci1ydDU2NDAtbW9uby1z
-cGstaW4xLW1pYy9ieXRjci1ydDU2NDAtbW9uby1zcGstaW4xLW1pYy5jb25mOgoKU2VjdGlvblVz
-ZUNhc2UuIkhpRmkiIHsKICAgICAgICAgRmlsZSAiLi4vYnl0Y3ItcnQ1NjQwL0dlbmVyaWMuY29u
-ZiIKCUZpbGUgIi4uL2J5dGNyLXJ0NTY0MC9Nb25vU3BlYWtlci5jb25mIgoJRmlsZSAiLi4vYnl0
-Y3ItcnQ1NjQwL0luMU1pYy5jb25mIgogICAgICAgICBDb21tZW50ICJQbGF5IEhpRmkgcXVhbGl0
-eSBNdXNpYyIKfQoKU2VjdGlvbkRlZmF1bHRzIFsKICAgICAgICAgY2RldiAiaHc6Ynl0Y3JydDU2
-NDAiCl0KClRoZSBvbmx5IHByb2JsZW0gSSBjYW4gc2VlIHdpdGggdGhhdCBpcyB0aGF0IHRoZSAi
-Q29uZmxpY3RpbmdEZXZpY2UiCnNlY3Rpb25zIGZvciB0aGUgdmFyaW91cyBpbnB1dHMgLyBvdXRw
-dXRzIHRoZW4gd291bGQgcmVmZXIgdG8gbm90CnByZXNlbnQgU2VjdGlvbkRldmljZSBzZWN0aW9u
-cy4gSSBoYXZlIG5vdCB0ZXN0ZWQgdGhpcyBzdWdnZXN0aW9uIHlldCwKYnV0IEknbSB3aWxsaW5n
-IHRvIHdyaXRlIGFuIGFsc2EtbGliIHBhdGNoIHRvIGlnbm9yZSBub24gcHJlc2VudApDb25mbGlj
-dGluZ0RldmljZSByZWZlcmVuY2VzLCB0byBtYWtlIG15IHN1Z2dlc3Rpb24gd29yay4KCkkgdGhp
-bmsgZG9pbmcgdGhpbmdzIHRoaXMgd2F5LCB0aHVzIGF2b2lkaW5nIHRoZSBuZWVkIHRvIGNvcHkg
-YW5kCnBhc3RlIGEgd2hvbGUgbG90IG9mIFVDTSBjb2RlIGZvciB0aGUgNiBwcm9maWxlcyBpdCB3
-aWxsIG5vdCBiZQphIHByb2JsZW0gdG8gbWFpbnRhaW4gNiBwcm9maWxlcywgYXMgd2UncmUgcmVh
-bGx5IGp1c3QgbWFpbnRhaW5pbmcKNiBjb25maWcgc25pcHBldHMgc3VjaCBhcyB0aGUgYWJvdmUg
-ZXhhbXBsZSBhbmQgb25seSBvbmUgY29tcGxldGUKcHJvZmlsZS4KCldvdWxkIHRoZSBzb2x1dGlv
-biBJIG91dGxpbmVkIGFib3ZlIGJlIGFjY2VwdGFibGUgdG8geW91PwoKUmVnYXJkcywKCkhhbnMK
-CgoKCgo+PiBOb3RlIHRoYXQgaWYgd2UgZXZlciBlbmNvdW50ZXIgdGhlIG5lZWQgZm9yIGEgc3Bl
-Y2lhbCBVQ00gcHJvZmlsZSBmb3IKPj4gc29tZSBkZXZpY2Ugd2UgY2FuIGFkZCBhIHF1aXJrIHRv
-IHNldCBhIHNwZWNpZmljIGxvbmdfbmFtZSBmb3IgdGhlCj4+IGRldmljZSwKPj4KPj4gU2lnbmVk
-LW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KPj4gLS0tCj4+IMKg
-IHNvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQwLmMgfCA5ICsrKysrKysrKwo+PiDC
-oCAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1naXQgYS9zb3Vu
-ZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jIGIvc291bmQvc29jL2ludGVsL2JvYXJk
-cy9ieXRjcl9ydDU2NDAuYwo+PiBpbmRleCBjZmM1MjAyMDAyMTQuLjlhMTIwNGRjZGJjNiAxMDA2
-NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYwo+PiArKysg
-Yi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jCj4+IEBAIC05MjksNiArOTI5
-LDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIGJ5dF9ydDU2NDBfZGFpc1tdID0g
-ewo+PiDCoCBzdGF0aWMgY2hhciBieXRfcnQ1NjQwX2NvZGVjX25hbWVbU05EX0FDUElfSTJDX0lE
-X0xFTl07Cj4+IMKgIHN0YXRpYyBjaGFyIGJ5dF9ydDU2NDBfY29kZWNfYWlmX25hbWVbMTJdOyAv
-KsKgID0gInJ0NTY0MC1haWZbMXwyXSIgKi8KPj4gwqAgc3RhdGljIGNoYXIgYnl0X3J0NTY0MF9j
-cHVfZGFpX25hbWVbMTBdOyAvKsKgID0gInNzcFswfDJdLXBvcnQiICovCj4+ICtzdGF0aWMgY2hh
-ciBieXRfcnQ1NjQwX2xvbmdfbmFtZVs0MF07IC8qID0gImJ5dGNyLXJ0NTY0MC0qLXNway0qLW1p
-YyIgKi8KPj4gwqAgc3RhdGljIGludCBieXRfcnQ1NjQwX3N1c3BlbmQoc3RydWN0IHNuZF9zb2Nf
-Y2FyZCAqY2FyZCkKPj4gwqAgewo+PiBAQCAtMTAwMCw2ICsxMDAxLDcgQEAgc3RydWN0IGFjcGlf
-Y2hhbl9wYWNrYWdlIHvCoMKgIC8qIEFDUElDQSBzZWVtcyB0byByZXF1aXJlIDY0IGJpdCBpbnRl
-Z2VycyAqLwo+PiDCoCBzdGF0aWMgaW50IHNuZF9ieXRfcnQ1NjQwX21jX3Byb2JlKHN0cnVjdCBw
-bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+IMKgIHsKPj4gK8KgwqDCoCBjb25zdCBjaGFyICogY29u
-c3QgbWFwX25hbWVbXSA9IHsgImRtaWMxIiwgImRtaWMyIiwgImluMSIsICJpbjMiIH07Cj4+IMKg
-wqDCoMKgwqAgY29uc3Qgc3RydWN0IGRtaV9zeXN0ZW1faWQgKmRtaV9pZDsKPj4gwqDCoMKgwqDC
-oCBzdHJ1Y3QgYnl0X3J0NTY0MF9wcml2YXRlICpwcml2Owo+PiDCoMKgwqDCoMKgIHN0cnVjdCBz
-bmRfc29jX2FjcGlfbWFjaCAqbWFjaDsKPj4gQEAgLTExNjMsNiArMTE2NSwxMyBAQCBzdGF0aWMg
-aW50IHNuZF9ieXRfcnQ1NjQwX21jX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
-Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+IMKgwqDCoMKgwqAgfQo+PiArwqDCoMKgIHNucHJp
-bnRmKGJ5dF9ydDU2NDBfbG9uZ19uYW1lLCBzaXplb2YoYnl0X3J0NTY0MF9sb25nX25hbWUpLAo+
-PiArwqDCoMKgwqDCoMKgwqDCoCAiYnl0Y3ItcnQ1NjQwLSVzLXNway0lcy1taWMiLAo+PiArwqDC
-oMKgwqDCoMKgwqDCoCAoYnl0X3J0NTY0MF9xdWlyayAmIEJZVF9SVDU2NDBfTU9OT19TUEVBS0VS
-KSA/Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJtb25vIiA6ICJzdGVyZW8iLAo+PiArwqDC
-oMKgwqDCoMKgwqDCoCBtYXBfbmFtZVtCWVRfUlQ1NjQwX01BUChieXRfcnQ1NjQwX3F1aXJrKV0p
-Owo+PiArwqDCoMKgIGJ5dF9ydDU2NDBfY2FyZC5sb25nX25hbWUgPSBieXRfcnQ1NjQwX2xvbmdf
-bmFtZTsKPj4gKwo+PiDCoMKgwqDCoMKgIHJldF92YWwgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJf
-Y2FyZCgmcGRldi0+ZGV2LCAmYnl0X3J0NTY0MF9jYXJkKTsKPj4gwqDCoMKgwqDCoCBpZiAocmV0
-X3ZhbCkgewo+Pgo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+Modified dma pointer callback implementation.
+hw ptr calculated based on System Memory to
+ACP SRAM dma channel transfer count in case of playback.
+Increased min period size for playback to 4096 to avoid underruns.
+In case of capture, hw ptr calculated based on dma transfer
+count for ACP SRAM to System Memory Dma channel.
+
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+---
+This patch is dependent on [V4,10/10] ASoC: amd: dma driver changes for bt i2s instance
+https://patchwork.kernel.org/patch/10385381/
+
+ sound/soc/amd/acp-pcm-dma.c | 94 ++++++++++++++++++++++++++-------------------
+ sound/soc/amd/acp.h         | 11 ------
+ 2 files changed, 55 insertions(+), 50 deletions(-)
+
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 906eb77..969c46c 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -28,7 +28,7 @@
+ #define PLAYBACK_MIN_NUM_PERIODS    2
+ #define PLAYBACK_MAX_NUM_PERIODS    2
+ #define PLAYBACK_MAX_PERIOD_SIZE    16384
+-#define PLAYBACK_MIN_PERIOD_SIZE    1024
++#define PLAYBACK_MIN_PERIOD_SIZE    4096
+ #define CAPTURE_MIN_NUM_PERIODS     2
+ #define CAPTURE_MAX_NUM_PERIODS     2
+ #define CAPTURE_MAX_PERIOD_SIZE     16384
+@@ -854,10 +854,6 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 			rtd->destination = TO_BLUETOOTH;
+ 			rtd->dma_dscr_idx_1 = PLAYBACK_START_DMA_DESCR_CH8;
+ 			rtd->dma_dscr_idx_2 = PLAYBACK_START_DMA_DESCR_CH9;
+-			rtd->byte_cnt_high_reg_offset =
+-					mmACP_I2S_BT_TRANSMIT_BYTE_CNT_HIGH;
+-			rtd->byte_cnt_low_reg_offset =
+-					mmACP_I2S_BT_TRANSMIT_BYTE_CNT_LOW;
+ 			adata->play_i2sbt_stream = substream;
+ 			break;
+ 		case I2S_SP_INSTANCE:
+@@ -875,10 +871,6 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 			rtd->destination = TO_ACP_I2S_1;
+ 			rtd->dma_dscr_idx_1 = PLAYBACK_START_DMA_DESCR_CH12;
+ 			rtd->dma_dscr_idx_2 = PLAYBACK_START_DMA_DESCR_CH13;
+-			rtd->byte_cnt_high_reg_offset =
+-					mmACP_I2S_TRANSMIT_BYTE_CNT_HIGH;
+-			rtd->byte_cnt_low_reg_offset =
+-					mmACP_I2S_TRANSMIT_BYTE_CNT_LOW;
+ 			adata->play_i2ssp_stream = substream;
+ 		}
+ 	} else {
+@@ -891,10 +883,6 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 			rtd->destination = FROM_BLUETOOTH;
+ 			rtd->dma_dscr_idx_1 = CAPTURE_START_DMA_DESCR_CH10;
+ 			rtd->dma_dscr_idx_2 = CAPTURE_START_DMA_DESCR_CH11;
+-			rtd->byte_cnt_high_reg_offset =
+-					mmACP_I2S_BT_RECEIVE_BYTE_CNT_HIGH;
+-			rtd->byte_cnt_low_reg_offset =
+-					mmACP_I2S_BT_RECEIVE_BYTE_CNT_LOW;
+ 			adata->capture_i2sbt_stream = substream;
+ 			break;
+ 		case I2S_SP_INSTANCE:
+@@ -914,10 +902,6 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 			rtd->destination = FROM_ACP_I2S_1;
+ 			rtd->dma_dscr_idx_1 = CAPTURE_START_DMA_DESCR_CH14;
+ 			rtd->dma_dscr_idx_2 = CAPTURE_START_DMA_DESCR_CH15;
+-			rtd->byte_cnt_high_reg_offset =
+-					mmACP_I2S_RECEIVED_BYTE_CNT_HIGH;
+-			rtd->byte_cnt_low_reg_offset =
+-					mmACP_I2S_RECEIVED_BYTE_CNT_LOW;
+ 			adata->capture_i2ssp_stream = substream;
+ 		}
+ 	}
+@@ -955,22 +939,14 @@ static int acp_dma_hw_free(struct snd_pcm_substream *substream)
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+-static u64 acp_get_byte_count(struct audio_substream_data *rtd)
+-{
+-	union acp_dma_count byte_count;
+-
+-	byte_count.bcount.high = acp_reg_read(rtd->acp_mmio,
+-					      rtd->byte_cnt_high_reg_offset);
+-	byte_count.bcount.low  = acp_reg_read(rtd->acp_mmio,
+-					      rtd->byte_cnt_low_reg_offset);
+-	return byte_count.bytescount;
+-}
+-
+ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ {
+ 	u32 buffersize;
+ 	u32 pos = 0;
+-	u64 bytescount = 0;
++	u32 dma_count = 0;
++	u32 mul = 0;
++	u16 dscr;
++	u32 dma_config, period_bytes;
+ 
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audio_substream_data *rtd = runtime->private_data;
+@@ -979,11 +955,56 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 		return -EINVAL;
+ 
+ 	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
+-	bytescount = acp_get_byte_count(rtd);
+-
+-	if (bytescount > rtd->bytescount)
+-		bytescount -= rtd->bytescount;
+-	pos = do_div(bytescount, buffersize);
++	period_bytes = frames_to_bytes(runtime, runtime->period_size);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			dscr = acp_reg_read(rtd->acp_mmio,
++					    mmACP_DMA_CUR_DSCR_8);
++			dma_count = acp_reg_read(rtd->acp_mmio,
++						 mmACP_DMA_CUR_TRANS_CNT_8);
++			if (dscr == PLAYBACK_END_DMA_DESCR_CH8)
++				mul = 1;
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			dscr = acp_reg_read(rtd->acp_mmio,
++					mmACP_DMA_CUR_DSCR_12);
++			dma_count = acp_reg_read(rtd->acp_mmio,
++						 mmACP_DMA_CUR_TRANS_CNT_12);
++			if (dscr == PLAYBACK_END_DMA_DESCR_CH12)
++				mul = 1;
++			break;
++		}
++	} else {
++		switch (rtd->i2s_instance) {
++		case I2S_BT_INSTANCE:
++			dma_config = acp_reg_read(rtd->acp_mmio,
++						mmACP_DMA_CNTL_10);
++			if (dma_config != 0) {
++				dscr = acp_reg_read(rtd->acp_mmio,
++						    mmACP_DMA_CUR_DSCR_10);
++				dma_count = acp_reg_read(rtd->acp_mmio,
++							 mmACP_DMA_CUR_TRANS_CNT_10);
++				if (dscr == CAPTURE_END_DMA_DESCR_CH10)
++					mul = 1;
++			}
++			break;
++		case I2S_SP_INSTANCE:
++		default:
++			dma_config = acp_reg_read(rtd->acp_mmio,
++						  mmACP_DMA_CNTL_14);
++			if (dma_config != 0) {
++				dscr = acp_reg_read(rtd->acp_mmio,
++						    mmACP_DMA_CUR_DSCR_14);
++				dma_count = acp_reg_read(rtd->acp_mmio,
++							 mmACP_DMA_CUR_TRANS_CNT_14);
++				if (dscr == CAPTURE_END_DMA_DESCR_CH14)
++					mul = 1;
++			}
++		}
++	}
++	pos = ((mul * period_bytes) + dma_count) % buffersize;
+ 	return bytes_to_frames(runtime, pos);
+ }
+ 
+@@ -1016,7 +1037,6 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	int ret;
+ 	u32 loops = 4000;
+-	u64 bytescount = 0;
+ 
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_soc_pcm_runtime *prtd = substream->private_data;
+@@ -1030,9 +1050,6 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		bytescount = acp_get_byte_count(rtd);
+-		if (rtd->bytescount == 0)
+-			rtd->bytescount = bytescount;
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			acp_dma_start(rtd->acp_mmio, rtd->ch1, false);
+ 			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
+@@ -1066,7 +1083,6 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 			acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+ 			ret = acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+ 		}
+-		rtd->bytescount = 0;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+index 9cd3e96..b6d52ef 100644
+--- a/sound/soc/amd/acp.h
++++ b/sound/soc/amd/acp.h
+@@ -133,10 +133,7 @@ struct audio_substream_data {
+ 	u16 dma_dscr_idx_2;
+ 	u32 pte_offset;
+ 	u32 sram_bank;
+-	u32 byte_cnt_high_reg_offset;
+-	u32 byte_cnt_low_reg_offset;
+ 	uint64_t size;
+-	u64 bytescount;
+ 	void __iomem *acp_mmio;
+ };
+ 
+@@ -157,14 +154,6 @@ struct acp_platform_info {
+ 	u16 i2s_instance;
+ };
+ 
+-union acp_dma_count {
+-	struct {
+-	u32 low;
+-	u32 high;
+-	} bcount;
+-	u64 bytescount;
+-};
+-
+ enum {
+ 	ACP_TILE_P1 = 0,
+ 	ACP_TILE_P2,
+-- 
+2.7.4
