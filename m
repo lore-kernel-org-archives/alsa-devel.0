@@ -1,17 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v4] ALSA: core api: define offsets for TLV
-	items
-Date: Thu, 10 May 2018 10:48:17 +0900
-Message-ID: <d4a676fc-606d-b12b-8664-012590e1ab54@sakamocchi.jp>
-References: <20180510005304.27903-1-ranjani.sridharan@linux.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 19/19] ASoC: Intel: bytcr_rt5640: Set card
+ long_name based on quirks
+Date: Thu, 10 May 2018 12:27:33 +0200
+Message-ID: <4f678986-9ca5-eeb3-d6ed-528f3fe1d013@redhat.com>
+References: <20180508153604.23711-1-hdegoede@redhat.com>
+ <20180508153604.23711-20-hdegoede@redhat.com>
+ <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
- [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id CDFCF266F44
- for <alsa-devel@alsa-project.org>; Thu, 10 May 2018 03:48:20 +0200 (CEST)
-In-Reply-To: <20180510005304.27903-1-ranjani.sridharan@linux.intel.com>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 301CB2676A9
+ for <alsa-devel@alsa-project.org>; Thu, 10 May 2018 12:27:35 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id a137-v6so26854411wme.1
+ for <alsa-devel@alsa-project.org>; Thu, 10 May 2018 03:27:35 -0700 (PDT)
+In-Reply-To: <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,78 +26,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: liam.r.girdwood@linux.intel.com, pierre-louis.bossart@linux.intel.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On May 10 2018 09:53, Ranjani Sridharan wrote:
-> Currently, there are no pre-defined accessors for the elements
-> in topology TLV data. In the absence of such offsets, the
-> tlv data will have to be decoded using hardwired offset
-> numbers 0-N depending on the type of TLV. This patch defines
-> accessor offsets for the type, length, min and mute/step items
-> in TLV data for DB_SCALE type tlv's. These will be used by drivers to
-> decode the TLV data while loading topology thereby improving
-> code readability. The type and len offsets are common for all TLV
-> types. The min and step/mute offsets are specific to DB_SCALE tlv type.
-> 
-> Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-> ---
-> 
-> Notes:
->      v4: change placement of tlv accessor offsets
-> 
->   include/uapi/sound/tlv.h | 8 ++++++++
->   1 file changed, 8 insertions(+)
-
-On May 10 2018 09:40, Ranjani Sridharan wrote:
- >>
- >> I have another concern that 'O' is hard to distinguish from 'D' as a
- >> quick glance and can easily leads developers and reviewers to
- >> misread 'SNDRV_CTL_TLVD_XXX' and 'SNDRV_CTL_TLVO_XXX'. Of cource, I
- >> know that you intend to use 'O' to express 'offset' and it's
- >> logically
- >> valid. My concern is just for visual.
- > I've left the prefix SNDRV_CTL_TLVO for lack of a better one and
- > adding OFFSET in the prefix would make the names very long. Hope that
- > is OK.
-
-I agree with it.
-
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-> diff --git a/include/uapi/sound/tlv.h b/include/uapi/sound/tlv.h
-> index be5371f09a62..e3437e96519a 100644
-> --- a/include/uapi/sound/tlv.h
-> +++ b/include/uapi/sound/tlv.h
-> @@ -42,6 +42,10 @@
->   #define SNDRV_CTL_TLVD_LENGTH(...) \
->   	((unsigned int)sizeof((const unsigned int[]) { __VA_ARGS__ }))
->   
-> +/* Accessor offsets for TLV data items */
-> +#define SNDRV_CTL_TLVO_TYPE		0
-> +#define SNDRV_CTL_TLVO_LEN		1
-> +
->   #define SNDRV_CTL_TLVD_CONTAINER_ITEM(...) \
->   	SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_CONTAINER, __VA_ARGS__)
->   #define SNDRV_CTL_TLVD_DECLARE_CONTAINER(name, ...) \
-> @@ -61,6 +65,10 @@
->   		SNDRV_CTL_TLVD_DB_SCALE_ITEM(min, step, mute) \
->   	}
->   
-> +/* Accessor offsets for min, mute and step items in dB scale type TLV */
-> +#define SNDRV_CTL_TLVO_DB_SCALE_MIN		2
-> +#define SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP	3
-> +
->   /* dB scale specified with min/max values instead of step */
->   #define SNDRV_CTL_TLVD_DB_MINMAX_ITEM(min_dB, max_dB) \
->   	SNDRV_CTL_TLVD_ITEM(SNDRV_CTL_TLVT_DB_MINMAX, (min_dB), (max_dB))
-
-Later, I'll post patchset for alsa-lib to add these macros, but it'll be 
-done after subsystem maintainer is back from his absence.
-
-
-Thanks
-
-
-Takashi Sakamoto
+SGksCgpPbiAwOC0wNS0xOCAyMDozNSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24g
+NS84LzE4IDEwOjM2IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+PiBNYW55IFg4NiBkZXZpY2Vz
+IHVzaW5nIGEgQllUIFNvQyArIFJUNTY0MCBjb2RlYyBhcmUgY2hlYXAgZGV2aWNlcyB3aXRoCj4+
+IGdlbmVyaWMgRE1JIHN0cmluZ3MsIGNhdXNpbmcgc25kX3NvY19zZXRfZG1pX25hbWUoKSB0byBm
+YWlsIHRvIHNldCBhCj4+IGxvbmdfbmFtZSwgbWFraW5nIGl0IGltcG9zc2libGUgZm9yIHVzZXJz
+cGFjZSB0byBoYXZlIGEgY29ycmVjdCBVQ00KPj4gcHJvZmlsZSB3aGljaCBvbmx5IHVzZXMgaW5w
+dXRzIC8gb3V0cHV0cyB3aGljaCBhcmUgYWN0dWFsbHkgaG9va2VkIHVwCj4+IG9uIHRoZSBkZXZp
+Y2UuCj4+Cj4+IE91ciBxdWlya3MgYWxyZWFkeSBzcGVjaWZ5IHdoaWNoIGlucHV0IHRoZSBpbnRl
+cm5hbCBtaWMgaXMgY29ubmVjdGVkIHRvCj4+IGFuZCBpZiBhIHNpbmdsZSAobW9ubykgc3BlYWtl
+ciBpcyB1c2VkIG9yIGlmIHRoZSBkZXZpY2UgaGFzIHN0ZXJlbwo+PiBzcGVha2Vycy4KPj4KPj4g
+VGhpcyBjb21taXQgc2V0cyBhIGxvbmdfbmFtZSBiYXNlZCBvbiB0aGUgcXVpcmtzIHNvIHRoYXQg
+dXNlcnNwYWNlIGNhbgo+PiBoYXZlIFVDTSBwcm9maWxlcyBkb2luZyB0aGUgcmlnaHQgdGhpbmcg
+YmFzZWQgb24gdGhlIGxvbmdfbmFtZS4KPiAKPiBJc24ndCB0aGlzIGdvaW5nIHRvIGJlIGNvbXBs
+aWNhdGVkIHRvIG1hbmFnZSBmb3IgVUNNPyBKdXN0IHdpdGggdGhpcyBwYXRjaCBhbG9uZSwgeW91
+J2QgbmVlZCA4IFVDTSBmaWxlcyB0byBjb3ZlciBhbGwgdGhlIGNvbWJpbmF0aW9ucy4gMTYgaWYg
+eW91IGFkZCB0aGUgJ3NvZi0nIHByZWZpeC4KPiAKPiBzZWVtcyBsaWtlIFVDTSBzaG91bGQgYmVj
+b21lIG1vcmUgJ2R5bmFtaWMnIGFuZCBnZXQgcXVpcmsgaW5mb3JtYXRpb24gc29tZWhvdyAoc3lz
+ZnM/KSB0byBlbmFibGUvZGlzYWJsZSBlbmRwb2ludHMgcmF0aGVyIHRoYW4gcmVseSBvbiBuYW1l
+IGVuY29kaW5nIHRvIHNlbGVjdCB0aGUgcmlnaHQgcHJvZmlsZT8KCkkgYWdyZWUgdGhhdCB0aGlz
+IGlzIG5vdCBpZGVhbCwgYnV0IHRoaXMgaXMgYW4gaW1wcm92ZW1lbnQgZnJvbSB0aGUKY3VycmVu
+dCBzdGF0ZSB3aGVyZSB3ZSB3b3VsZCBuZWVkIDEgVUNNIHByb2ZpbGUgcGVyIGJvYXJkCihhc3N1
+bWluZyB2YWxpZCBETUkgZGF0YSBhbmQgdGh1cyBhIHByb3BlciBsb25nLW5hbWUgYmVpbmcgc2V0
+KSwKNiBwcm9maWxlcyAoZG1pYzIgaXMgbm90IHVzZWQgYW55d2hlcmUgc29mYXIpIGlzIGEgd2hv
+bGUgbG90IGVhc2llcgp0byBtYW5hZ2UgdGhlbiAxIHByb2ZpbGUgcGVyIGJvYXJkLiBTbyBhcyBz
+YWlkIEkgYmVsaWV2ZSB0aGlzIGlzCmEgc3RlcCBpbiB0aGUgcmlnaHQgZGlyZWN0aW9uLgoKQW5k
+IGxvb2tpbmcgYXQgdGhlIGZvcmVzZWVhYmxlIGZ1dHVyZSBJIHNpbXBseSBkb24ndCBzZWUgYW55
+IG9mIHVzCmhhdmluZyB0aGUgdGltZSB0byBpbXBsZW1lbnQgYW4gaWRlYWwgc29sdXRpb24gZm9y
+IHRoaXMuIEkgd291bGQKcmVhbGx5IGxpa2UgZm9yIGVuZCB1c2VycyB0byBiZSBhYmxlIHRvIHJ1
+biB0aGUgbGF0ZXN0IHVwc3RyZWFtCmtlcm5lbCArIGFsc2EtbGliIGFuZCBoYXZlIHRoaW5ncyBq
+dXN0IHdvcmssIGJlZm9yZSB0aGlzIGhhcmR3YXJlCmJlY29tZXMgb2Jzb2xldGUuIEkga25vdyB0
+aGF0IG5vLW9uZSBoYXZpbmcgdGltZSB0byB3b3JrIG9uIHJld29ya2luZwpVQ00gdG8gbWFrZSBp
+dCBtb3JlIGR5bmFtaWMgaXMgbm90IHRoZSBiZXN0IG9mIGFyZ3VtZW50cyBidXQgaXQKaXMgc29t
+ZXRoaW5nIHRvIHRha2UgaW50byBjb25zaWRlcmF0aW9uLgoKVGhpbmtpbmcgbW9yZSBhYm91dCB0
+aGlzIG9uIHRoZSBhbHNhLWxpYiAvIFVDTSBwcm9maWxlIHNpZGUgd2UKY291bGQgaGF2ZSBzb21l
+dGhpbmcgbGlrZSB0aGlzOgoKL3Vzci9zaGFyZS9hbHNhL3VjbS9ieXRjci1ydDU2NDAtbW9uby1z
+cGstaW4xLW1pYy9ieXRjci1ydDU2NDAtbW9uby1zcGstaW4xLW1pYy5jb25mOgoKU2VjdGlvblVz
+ZUNhc2UuIkhpRmkiIHsKICAgICAgICAgRmlsZSAiLi4vYnl0Y3ItcnQ1NjQwL0dlbmVyaWMuY29u
+ZiIKCUZpbGUgIi4uL2J5dGNyLXJ0NTY0MC9Nb25vU3BlYWtlci5jb25mIgoJRmlsZSAiLi4vYnl0
+Y3ItcnQ1NjQwL0luMU1pYy5jb25mIgogICAgICAgICBDb21tZW50ICJQbGF5IEhpRmkgcXVhbGl0
+eSBNdXNpYyIKfQoKU2VjdGlvbkRlZmF1bHRzIFsKICAgICAgICAgY2RldiAiaHc6Ynl0Y3JydDU2
+NDAiCl0KClRoZSBvbmx5IHByb2JsZW0gSSBjYW4gc2VlIHdpdGggdGhhdCBpcyB0aGF0IHRoZSAi
+Q29uZmxpY3RpbmdEZXZpY2UiCnNlY3Rpb25zIGZvciB0aGUgdmFyaW91cyBpbnB1dHMgLyBvdXRw
+dXRzIHRoZW4gd291bGQgcmVmZXIgdG8gbm90CnByZXNlbnQgU2VjdGlvbkRldmljZSBzZWN0aW9u
+cy4gSSBoYXZlIG5vdCB0ZXN0ZWQgdGhpcyBzdWdnZXN0aW9uIHlldCwKYnV0IEknbSB3aWxsaW5n
+IHRvIHdyaXRlIGFuIGFsc2EtbGliIHBhdGNoIHRvIGlnbm9yZSBub24gcHJlc2VudApDb25mbGlj
+dGluZ0RldmljZSByZWZlcmVuY2VzLCB0byBtYWtlIG15IHN1Z2dlc3Rpb24gd29yay4KCkkgdGhp
+bmsgZG9pbmcgdGhpbmdzIHRoaXMgd2F5LCB0aHVzIGF2b2lkaW5nIHRoZSBuZWVkIHRvIGNvcHkg
+YW5kCnBhc3RlIGEgd2hvbGUgbG90IG9mIFVDTSBjb2RlIGZvciB0aGUgNiBwcm9maWxlcyBpdCB3
+aWxsIG5vdCBiZQphIHByb2JsZW0gdG8gbWFpbnRhaW4gNiBwcm9maWxlcywgYXMgd2UncmUgcmVh
+bGx5IGp1c3QgbWFpbnRhaW5pbmcKNiBjb25maWcgc25pcHBldHMgc3VjaCBhcyB0aGUgYWJvdmUg
+ZXhhbXBsZSBhbmQgb25seSBvbmUgY29tcGxldGUKcHJvZmlsZS4KCldvdWxkIHRoZSBzb2x1dGlv
+biBJIG91dGxpbmVkIGFib3ZlIGJlIGFjY2VwdGFibGUgdG8geW91PwoKUmVnYXJkcywKCkhhbnMK
+CgoKCgo+PiBOb3RlIHRoYXQgaWYgd2UgZXZlciBlbmNvdW50ZXIgdGhlIG5lZWQgZm9yIGEgc3Bl
+Y2lhbCBVQ00gcHJvZmlsZSBmb3IKPj4gc29tZSBkZXZpY2Ugd2UgY2FuIGFkZCBhIHF1aXJrIHRv
+IHNldCBhIHNwZWNpZmljIGxvbmdfbmFtZSBmb3IgdGhlCj4+IGRldmljZSwKPj4KPj4gU2lnbmVk
+LW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KPj4gLS0tCj4+IMKg
+IHNvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQwLmMgfCA5ICsrKysrKysrKwo+PiDC
+oCAxIGZpbGUgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspCj4+Cj4+IGRpZmYgLS1naXQgYS9zb3Vu
+ZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jIGIvc291bmQvc29jL2ludGVsL2JvYXJk
+cy9ieXRjcl9ydDU2NDAuYwo+PiBpbmRleCBjZmM1MjAyMDAyMTQuLjlhMTIwNGRjZGJjNiAxMDA2
+NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYwo+PiArKysg
+Yi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jCj4+IEBAIC05MjksNiArOTI5
+LDcgQEAgc3RhdGljIHN0cnVjdCBzbmRfc29jX2RhaV9saW5rIGJ5dF9ydDU2NDBfZGFpc1tdID0g
+ewo+PiDCoCBzdGF0aWMgY2hhciBieXRfcnQ1NjQwX2NvZGVjX25hbWVbU05EX0FDUElfSTJDX0lE
+X0xFTl07Cj4+IMKgIHN0YXRpYyBjaGFyIGJ5dF9ydDU2NDBfY29kZWNfYWlmX25hbWVbMTJdOyAv
+KsKgID0gInJ0NTY0MC1haWZbMXwyXSIgKi8KPj4gwqAgc3RhdGljIGNoYXIgYnl0X3J0NTY0MF9j
+cHVfZGFpX25hbWVbMTBdOyAvKsKgID0gInNzcFswfDJdLXBvcnQiICovCj4+ICtzdGF0aWMgY2hh
+ciBieXRfcnQ1NjQwX2xvbmdfbmFtZVs0MF07IC8qID0gImJ5dGNyLXJ0NTY0MC0qLXNway0qLW1p
+YyIgKi8KPj4gwqAgc3RhdGljIGludCBieXRfcnQ1NjQwX3N1c3BlbmQoc3RydWN0IHNuZF9zb2Nf
+Y2FyZCAqY2FyZCkKPj4gwqAgewo+PiBAQCAtMTAwMCw2ICsxMDAxLDcgQEAgc3RydWN0IGFjcGlf
+Y2hhbl9wYWNrYWdlIHvCoMKgIC8qIEFDUElDQSBzZWVtcyB0byByZXF1aXJlIDY0IGJpdCBpbnRl
+Z2VycyAqLwo+PiDCoCBzdGF0aWMgaW50IHNuZF9ieXRfcnQ1NjQwX21jX3Byb2JlKHN0cnVjdCBw
+bGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+IMKgIHsKPj4gK8KgwqDCoCBjb25zdCBjaGFyICogY29u
+c3QgbWFwX25hbWVbXSA9IHsgImRtaWMxIiwgImRtaWMyIiwgImluMSIsICJpbjMiIH07Cj4+IMKg
+wqDCoMKgwqAgY29uc3Qgc3RydWN0IGRtaV9zeXN0ZW1faWQgKmRtaV9pZDsKPj4gwqDCoMKgwqDC
+oCBzdHJ1Y3QgYnl0X3J0NTY0MF9wcml2YXRlICpwcml2Owo+PiDCoMKgwqDCoMKgIHN0cnVjdCBz
+bmRfc29jX2FjcGlfbWFjaCAqbWFjaDsKPj4gQEAgLTExNjMsNiArMTE2NSwxMyBAQCBzdGF0aWMg
+aW50IHNuZF9ieXRfcnQ1NjQwX21jX3Byb2JlKHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYp
+Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+IMKgwqDCoMKgwqAgfQo+PiArwqDCoMKgIHNucHJp
+bnRmKGJ5dF9ydDU2NDBfbG9uZ19uYW1lLCBzaXplb2YoYnl0X3J0NTY0MF9sb25nX25hbWUpLAo+
+PiArwqDCoMKgwqDCoMKgwqDCoCAiYnl0Y3ItcnQ1NjQwLSVzLXNway0lcy1taWMiLAo+PiArwqDC
+oMKgwqDCoMKgwqDCoCAoYnl0X3J0NTY0MF9xdWlyayAmIEJZVF9SVDU2NDBfTU9OT19TUEVBS0VS
+KSA/Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJtb25vIiA6ICJzdGVyZW8iLAo+PiArwqDC
+oMKgwqDCoMKgwqDCoCBtYXBfbmFtZVtCWVRfUlQ1NjQwX01BUChieXRfcnQ1NjQwX3F1aXJrKV0p
+Owo+PiArwqDCoMKgIGJ5dF9ydDU2NDBfY2FyZC5sb25nX25hbWUgPSBieXRfcnQ1NjQwX2xvbmdf
+bmFtZTsKPj4gKwo+PiDCoMKgwqDCoMKgIHJldF92YWwgPSBkZXZtX3NuZF9zb2NfcmVnaXN0ZXJf
+Y2FyZCgmcGRldi0+ZGV2LCAmYnl0X3J0NTY0MF9jYXJkKTsKPj4gwqDCoMKgwqDCoCBpZiAocmV0
+X3ZhbCkgewo+Pgo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
