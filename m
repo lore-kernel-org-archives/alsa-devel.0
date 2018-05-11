@@ -1,15 +1,16 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH 0/2] ASoC: omap: sdma-pcm: modpost warning fix
-	and include cleanup
-Date: Fri, 11 May 2018 15:20:53 +0300
-Message-ID: <20180511122055.14206-1-peter.ujfalusi@ti.com>
+Subject: [PATCH 1/2] ASoC: omap: sdma-pcm: Fix modpost warning
+Date: Fri, 11 May 2018 15:20:54 +0300
+Message-ID: <20180511122055.14206-2-peter.ujfalusi@ti.com>
+References: <20180511122055.14206-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id A6C80267281
- for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 14:20:16 +0200 (CEST)
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id AB3702677CE
+ for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 14:20:19 +0200 (CEST)
+In-Reply-To: <20180511122055.14206-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,35 +24,38 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko
 Cc: tony@atomide.com, alsa-devel@alsa-project.org, aaro.koskinen@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-Since the sdma-pcm can be built as module it must have MODULE_LICENSE defined,
-whcih I have missed:
-
-After merging the sound-asoc tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
-
 WARNING: modpost: missing MODULE_LICENSE() in sound/soc/omap/snd-soc-sdma.o
 see include/linux/module.h for more information
 WARNING: modpost: missing MODULE_LICENSE() in sound/soc/omap/snd-soc-sdma.o
 see include/linux/module.h for more information
 
-Introduced by commit
+Add the missing MODULE_LICENSE.
 
-  dde637f2daf1 ("ASoC: omap: Introduce the generic_dmaengine_pcm based sdma-pcm")
-
-The second patch is kust a small adjustement for the include files.
-
-Regards,
-Peter
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 ---
-Peter Ujfalusi (2):
-  ASoC: omap: sdma-pcm: Fix modpost warning
-  ASoC: omap: sdma-pcm: Correction for the include files
+ sound/soc/omap/sdma-pcm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
- sound/soc/omap/sdma-pcm.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
+diff --git a/sound/soc/omap/sdma-pcm.c b/sound/soc/omap/sdma-pcm.c
+index f7b2b5b69d27..403b90e2c89b 100644
+--- a/sound/soc/omap/sdma-pcm.c
++++ b/sound/soc/omap/sdma-pcm.c
+@@ -4,6 +4,7 @@
+  *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
+  */
+ 
++#include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -66,3 +67,7 @@ int sdma_pcm_platform_register(struct device *dev,
+ 	return devm_snd_dmaengine_pcm_register(dev, config, flags);
+ }
+ EXPORT_SYMBOL_GPL(sdma_pcm_platform_register);
++
++MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
++MODULE_DESCRIPTION("sDMA PCM ASoC platform driver");
++MODULE_LICENSE("GPL");
 -- 
 Peter
 
