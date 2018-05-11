@@ -1,179 +1,139 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 19/19] ASoC: Intel: bytcr_rt5640: Set card
- long_name based on quirks
-Date: Thu, 10 May 2018 20:01:24 +0200
-Message-ID: <86f6bb1e-21af-a2e4-76c4-c0446c3b32e8@redhat.com>
-References: <20180508153604.23711-1-hdegoede@redhat.com>
- <20180508153604.23711-20-hdegoede@redhat.com>
- <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
- <4f678986-9ca5-eeb3-d6ed-528f3fe1d013@redhat.com>
- <84e7b889-7b42-47dc-bdf8-d01ac88a9e55@linux.intel.com>
- <1fd841b6-1e05-2cd9-8b0e-44524503a3fa@redhat.com>
- <19cd9f01-222c-ae6a-6244-d703ac646310@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH v5 00/13] ALSA: hda/ca0132: Patch Series for Recon3Di and
+ Sound Blaster Z Support
+Date: Fri, 11 May 2018 10:27:59 +0900
+Message-ID: <95282579-08c1-bf71-e303-9fa8efb1873f@sakamocchi.jp>
+References: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DBA8267781
- for <alsa-devel@alsa-project.org>; Thu, 10 May 2018 20:01:26 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id a137-v6so28349166wme.1
- for <alsa-devel@alsa-project.org>; Thu, 10 May 2018 11:01:26 -0700 (PDT)
-In-Reply-To: <19cd9f01-222c-ae6a-6244-d703ac646310@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Connor McAdams <conmanx360@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?Q?J=c3=a9r=c3=a9my_Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAxMC0wNS0xOCAxOTo0NiwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24g
-NS8xMC8xOCAxMDo0OCBBTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4gSGksCj4+Cj4+IE9uIDEw
-LTA1LTE4IDE3OjAwLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4+IE9uIDUvMTAvMTgg
-NToyNyBBTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4+PiBIaSwKPj4+Pgo+Pj4+IE9uIDA4LTA1
-LTE4IDIwOjM1LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4+Pj4gT24gNS84LzE4IDEw
-OjM2IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+Pj4+Pj4gTWFueSBYODYgZGV2aWNlcyB1c2lu
-ZyBhIEJZVCBTb0MgKyBSVDU2NDAgY29kZWMgYXJlIGNoZWFwIGRldmljZXMgd2l0aAo+Pj4+Pj4g
-Z2VuZXJpYyBETUkgc3RyaW5ncywgY2F1c2luZyBzbmRfc29jX3NldF9kbWlfbmFtZSgpIHRvIGZh
-aWwgdG8gc2V0IGEKPj4+Pj4+IGxvbmdfbmFtZSwgbWFraW5nIGl0IGltcG9zc2libGUgZm9yIHVz
-ZXJzcGFjZSB0byBoYXZlIGEgY29ycmVjdCBVQ00KPj4+Pj4+IHByb2ZpbGUgd2hpY2ggb25seSB1
-c2VzIGlucHV0cyAvIG91dHB1dHMgd2hpY2ggYXJlIGFjdHVhbGx5IGhvb2tlZCB1cAo+Pj4+Pj4g
-b24gdGhlIGRldmljZS4KPj4+Pj4+Cj4+Pj4+PiBPdXIgcXVpcmtzIGFscmVhZHkgc3BlY2lmeSB3
-aGljaCBpbnB1dCB0aGUgaW50ZXJuYWwgbWljIGlzIGNvbm5lY3RlZCB0bwo+Pj4+Pj4gYW5kIGlm
-IGEgc2luZ2xlIChtb25vKSBzcGVha2VyIGlzIHVzZWQgb3IgaWYgdGhlIGRldmljZSBoYXMgc3Rl
-cmVvCj4+Pj4+PiBzcGVha2Vycy4KPj4+Pj4+Cj4+Pj4+PiBUaGlzIGNvbW1pdCBzZXRzIGEgbG9u
-Z19uYW1lIGJhc2VkIG9uIHRoZSBxdWlya3Mgc28gdGhhdCB1c2Vyc3BhY2UgY2FuCj4+Pj4+PiBo
-YXZlIFVDTSBwcm9maWxlcyBkb2luZyB0aGUgcmlnaHQgdGhpbmcgYmFzZWQgb24gdGhlIGxvbmdf
-bmFtZS4KPj4+Pj4KPj4+Pj4gSXNuJ3QgdGhpcyBnb2luZyB0byBiZSBjb21wbGljYXRlZCB0byBt
-YW5hZ2UgZm9yIFVDTT8gSnVzdCB3aXRoIHRoaXMgcGF0Y2ggYWxvbmUsIHlvdSdkIG5lZWQgOCBV
-Q00gZmlsZXMgdG8gY292ZXIgYWxsIHRoZSBjb21iaW5hdGlvbnMuIDE2IGlmIHlvdSBhZGQgdGhl
-ICdzb2YtJyBwcmVmaXguCj4+Pj4+Cj4+Pj4+IHNlZW1zIGxpa2UgVUNNIHNob3VsZCBiZWNvbWUg
-bW9yZSAnZHluYW1pYycgYW5kIGdldCBxdWlyayBpbmZvcm1hdGlvbiBzb21laG93IChzeXNmcz8p
-IHRvIGVuYWJsZS9kaXNhYmxlIGVuZHBvaW50cyByYXRoZXIgdGhhbiByZWx5IG9uIG5hbWUgZW5j
-b2RpbmcgdG8gc2VsZWN0IHRoZSByaWdodCBwcm9maWxlPwo+Pj4+Cj4+Pj4gSSBhZ3JlZSB0aGF0
-IHRoaXMgaXMgbm90IGlkZWFsLCBidXQgdGhpcyBpcyBhbiBpbXByb3ZlbWVudCBmcm9tIHRoZQo+
-Pj4+IGN1cnJlbnQgc3RhdGUgd2hlcmUgd2Ugd291bGQgbmVlZCAxIFVDTSBwcm9maWxlIHBlciBi
-b2FyZAo+Pj4+IChhc3N1bWluZyB2YWxpZCBETUkgZGF0YSBhbmQgdGh1cyBhIHByb3BlciBsb25n
-LW5hbWUgYmVpbmcgc2V0KSwKPj4+PiA2IHByb2ZpbGVzIChkbWljMiBpcyBub3QgdXNlZCBhbnl3
-aGVyZSBzb2ZhcikgaXMgYSB3aG9sZSBsb3QgZWFzaWVyCj4+Pj4gdG8gbWFuYWdlIHRoZW4gMSBw
-cm9maWxlIHBlciBib2FyZC4gU28gYXMgc2FpZCBJIGJlbGlldmUgdGhpcyBpcwo+Pj4+IGEgc3Rl
-cCBpbiB0aGUgcmlnaHQgZGlyZWN0aW9uLgo+Pj4+Cj4+Pj4gQW5kIGxvb2tpbmcgYXQgdGhlIGZv
-cmVzZWVhYmxlIGZ1dHVyZSBJIHNpbXBseSBkb24ndCBzZWUgYW55IG9mIHVzCj4+Pj4gaGF2aW5n
-IHRoZSB0aW1lIHRvIGltcGxlbWVudCBhbiBpZGVhbCBzb2x1dGlvbiBmb3IgdGhpcy4gSSB3b3Vs
-ZAo+Pj4+IHJlYWxseSBsaWtlIGZvciBlbmQgdXNlcnMgdG8gYmUgYWJsZSB0byBydW4gdGhlIGxh
-dGVzdCB1cHN0cmVhbQo+Pj4+IGtlcm5lbCArIGFsc2EtbGliIGFuZCBoYXZlIHRoaW5ncyBqdXN0
-IHdvcmssIGJlZm9yZSB0aGlzIGhhcmR3YXJlCj4+Pj4gYmVjb21lcyBvYnNvbGV0ZS4gSSBrbm93
-IHRoYXQgbm8tb25lIGhhdmluZyB0aW1lIHRvIHdvcmsgb24gcmV3b3JraW5nCj4+Pj4gVUNNIHRv
-IG1ha2UgaXQgbW9yZSBkeW5hbWljIGlzIG5vdCB0aGUgYmVzdCBvZiBhcmd1bWVudHMgYnV0IGl0
-Cj4+Pj4gaXMgc29tZXRoaW5nIHRvIHRha2UgaW50byBjb25zaWRlcmF0aW9uLgo+Pj4+Cj4+Pj4g
-VGhpbmtpbmcgbW9yZSBhYm91dCB0aGlzIG9uIHRoZSBhbHNhLWxpYiAvIFVDTSBwcm9maWxlIHNp
-ZGUgd2UKPj4+PiBjb3VsZCBoYXZlIHNvbWV0aGluZyBsaWtlIHRoaXM6Cj4+Pj4KPj4+PiAvdXNy
-L3NoYXJlL2Fsc2EvdWNtL2J5dGNyLXJ0NTY0MC1tb25vLXNway1pbjEtbWljL2J5dGNyLXJ0NTY0
-MC1tb25vLXNway1pbjEtbWljLmNvbmY6Cj4+Pj4KPj4+PiBTZWN0aW9uVXNlQ2FzZS4iSGlGaSIg
-ewo+Pj4+IMKgwqDCoMKgwqDCoMKgwqAgRmlsZSAiLi4vYnl0Y3ItcnQ1NjQwL0dlbmVyaWMuY29u
-ZiIKPj4+PiDCoMKgwqDCoMKgRmlsZSAiLi4vYnl0Y3ItcnQ1NjQwL01vbm9TcGVha2VyLmNvbmYi
-Cj4+Pj4gwqDCoMKgwqDCoEZpbGUgIi4uL2J5dGNyLXJ0NTY0MC9JbjFNaWMuY29uZiIKPj4+PiDC
-oMKgwqDCoMKgwqDCoMKgIENvbW1lbnQgIlBsYXkgSGlGaSBxdWFsaXR5IE11c2ljIgo+Pj4+IH0K
-Pj4+Pgo+Pj4+IFNlY3Rpb25EZWZhdWx0cyBbCj4+Pj4gwqDCoMKgwqDCoMKgwqDCoCBjZGV2ICJo
-dzpieXRjcnJ0NTY0MCIKPj4+PiBdCj4+Pj4KPj4+PiBUaGUgb25seSBwcm9ibGVtIEkgY2FuIHNl
-ZSB3aXRoIHRoYXQgaXMgdGhhdCB0aGUgIkNvbmZsaWN0aW5nRGV2aWNlIgo+Pj4+IHNlY3Rpb25z
-IGZvciB0aGUgdmFyaW91cyBpbnB1dHMgLyBvdXRwdXRzIHRoZW4gd291bGQgcmVmZXIgdG8gbm90
-Cj4+Pj4gcHJlc2VudCBTZWN0aW9uRGV2aWNlIHNlY3Rpb25zLiBJIGhhdmUgbm90IHRlc3RlZCB0
-aGlzIHN1Z2dlc3Rpb24geWV0LAo+Pj4+IGJ1dCBJJ20gd2lsbGluZyB0byB3cml0ZSBhbiBhbHNh
-LWxpYiBwYXRjaCB0byBpZ25vcmUgbm9uIHByZXNlbnQKPj4+PiBDb25mbGljdGluZ0RldmljZSBy
-ZWZlcmVuY2VzLCB0byBtYWtlIG15IHN1Z2dlc3Rpb24gd29yay4KPj4+Pgo+Pj4+IEkgdGhpbmsg
-ZG9pbmcgdGhpbmdzIHRoaXMgd2F5LCB0aHVzIGF2b2lkaW5nIHRoZSBuZWVkIHRvIGNvcHkgYW5k
-Cj4+Pj4gcGFzdGUgYSB3aG9sZSBsb3Qgb2YgVUNNIGNvZGUgZm9yIHRoZSA2IHByb2ZpbGVzIGl0
-IHdpbGwgbm90IGJlCj4+Pj4gYSBwcm9ibGVtIHRvIG1haW50YWluIDYgcHJvZmlsZXMsIGFzIHdl
-J3JlIHJlYWxseSBqdXN0IG1haW50YWluaW5nCj4+Pj4gNiBjb25maWcgc25pcHBldHMgc3VjaCBh
-cyB0aGUgYWJvdmUgZXhhbXBsZSBhbmQgb25seSBvbmUgY29tcGxldGUKPj4+PiBwcm9maWxlLgo+
-Pj4+Cj4+Pj4gV291bGQgdGhlIHNvbHV0aW9uIEkgb3V0bGluZWQgYWJvdmUgYmUgYWNjZXB0YWJs
-ZSB0byB5b3U/Cj4+Pgo+Pj4gVGhlIGluY2x1ZGVzIGFuZCBkaXNhYmxpbmcgY29uZmxpY3Rpbmcg
-ZGV2aWNlcyB0aGF0IGFyZW4ndCBwcmVzZW50IG1ha2Ugc2Vuc2UuIEkgaGF2ZSBhbm90aGVyIGlz
-c3VlIHRob3VnaDogZm9yIFNPRiBpbnRlZ3JhdGlvbiBJIGFscmVhZHkgcHJlcGFyZWQgYSBzZXQg
-b2YgZmlsZXMsIHdoaWNoIGFyZSBtb3N0bHkgaWRlbnRpY2FsIHRvIHRoZSByZWd1bGFyIG9uZXMg
-ZXhjZXB0IHRoYXQgdGhlIHBsYXRmb3JtLXNpZGUgbWl4ZXIgY29udHJvbHMgYXJlIHJlbW92ZWQg
-KG9yIGRpZmZlcmVudCkgYW5kIHRoZSBuYW1lIG9mIHRoZSBjYXJkL2RldmljZSBpcyBkaWZmZXJl
-bnQgKHNvZi0gcHJlZml4KS4gU2VlIG9uIGdpdGh1Yi4KPj4KPj4gSG1tLCBpdCBtaWdodCBtYWtl
-IHNlbnNlIHRvIHNwbGl0IHRoZSBpbmNsdWRlcyBpbiBwbGF0Zm9ybSBhbmQgY29kZWMgaW5jbHVk
-ZXMsIHNvCj4+IHRvIHBpY2sgbXkgZXhhbXBsZSBhZ2FpbiB3ZSB3b3VsZCBnZXQ6Cj4+Cj4+IC91
-c3Ivc2hhcmUvYWxzYS91Y20vYnl0Y3ItcnQ1NjQwLW1vbm8tc3BrLWluMS1taWMvYnl0Y3ItcnQ1
-NjQwLW1vbm8tc3BrLWluMS1taWMuY29uZjoKPj4KPj4gU2VjdGlvblVzZUNhc2UuIkhpRmkiIHsK
-Pj4gwqDCoMKgwqAgU2VjdGlvblZlcmIgewo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgRW5hYmxlU2Vx
-dWVuY2UgWwo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjZGV2ICJodzpieXRjcnJ0NTY0
-MCIKPj4KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgRmlsZSAiLi4vYnl0Y3ItcnQ1NjQw
-L0VuYWJsZVNlcS5jb25mIiAjIFRoaXMgY29udGFpbnMgdGhlIHBsYXRmb3JtIG1peGVyIHNldHRp
-bmdzCj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEZpbGUgIi4uL3J0NTY0MC9FbmFibGVT
-ZXEuY29uZiIKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIF0KPj4KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
-IERpc2FibGVTZXF1ZW5jZSBbCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBdCj4+Cj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoCBWYWx1ZSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFBsYXliYWNr
-UENNICJodzpieXRjcnJ0NTY0MCIKPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQ2FwdHVy
-ZVBDTSAiaHc6Ynl0Y3JydDU2NDAiCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+IMKgwqDCoMKg
-wqDCoCB9Cj4+Cj4+IMKgwqDCoMKgwqDCoCBGaWxlICIuLi9ydDU2NDAvSGVhZHNldC5jb25mIgo+
-PiDCoMKgwqDCoMKgwqAgRmlsZSAiLi4vcnQ1NjQwL01vbm9TcGVha2VyLmNvbmYiCj4+IMKgwqDC
-oMKgwqDCoCBGaWxlICIuLi9ydDU2NDAvSW4xTWljLmNvbmYiCj4+IMKgwqDCoMKgwqDCoCBDb21t
-ZW50ICJQbGF5IEhpRmkgcXVhbGl0eSBNdXNpYyIKPj4gfQo+Pgo+PiBTZWN0aW9uRGVmYXVsdHMg
-Wwo+PiDCoMKgwqDCoMKgwqAgY2RldiAiaHc6Ynl0Y3JydDU2NDAiCj4+IF0KPj4KPj4gQW5kIHRo
-ZW4gZm9yIHNvZiB5b3Ugd291bGQganVzdCBuZWVkIHRvCj4+IG9mZmVyIGEgc29mLXJ0NTY0MC9F
-bmFibGVTZXEuY29uZiwgb3IKPj4gbWF5YmUgZXZlbiBsZWF2ZSBpdCBvdXQgY29tcGxldGVseS4K
-Pj4KPj4gQW5kIHdlIG1pZ2h0IGFsc28gYmUgYWJsZSB0byBtZXJnZSB0aGUgcGxhdGZvcm0KPj4g
-ZW5hYmxlIHNlcXVlbmNlcyBpbnRvIGEgZ2VuZXJpYzoKPj4KPj4gYnl0Y3IvRW5hYmxlU2VxLmNv
-bmYKPj4KPj4gSSB0aGluayB0aGF0IHdpbGwgYXQgbGVhc3QgZmx5IGZvciBieXRjci1ydDU2NDAg
-YW5kCj4+IGJ1dGNyLXJ0NTY1MSwgbGVhZGluZyB1cyBiZWluZyBhYmxlIHRvIHJlbW92ZSBtb3Jl
-Cj4+IGR1cGxpY2F0ZWQgVUNNIGNvbmZpZy4KPj4KPj4gSG93IGRvZXMgdGhpcyBzb3VuZD8KPiAK
-PiBzcGxpdHRpbmcgcGxhdGZvcm0gYW5kIGNvZGVjIHNpZGVzIGlzIGEgZ29vZCBpZGVhIChhbmQg
-c29tZXRoaW5nIHRoYXQgd2FzIGRvbmUgYnkgcmVtb3ZpbmcgYWxsIHBsYXRmb3JtIG1peGVyIHNl
-dHRpbmdzIGZyb20gdGhlIEhpRmkgZmlsZXMpCj4gCj4gdGhlIHByb2JsZW0gcmVtYWlucyB0aGF0
-IHdlIGhhdmUgYWxsIHRoZXNlIGNkZXYgc3RyaW5ncyB0aGF0IGFyZSBoYXJkLWNvZGVjIHdpdGgg
-YSBjYXJkIG5hbWUuIFNhbWUgd2hlbiB0aGUgbWF0Y2ggaGFwcGVucyBiYXNlZCBvbiBhIERNSSBz
-dHJpbmcsIGhvdyB3b3VsZCBJIGtub3cgd2hpY2ggb2YgdGhlIHBsYXRmb3JtIHNldHRpbmdzIHRv
-IGFwcGx5IHdpdGhvdXQgcXVlcnlpbmcgd2hhdCB0aGUgcGxhdGZvcm0gZHJpdmVyIGlzPwoKV2Vs
-bCB0aGUgRE1JIHN0cmluZyB3b3VsZCB1bmlxdWVseSBpZGVudGlmeSBhIGNlcnRhaW4gbW9kZWwg
-ZGV2aWNlLAp3aGVuIHdlIHdyaXRlIHRoZSBVQ00gZmlsZSB3ZSBzaG91bGQga25vdyB3aGF0IHRo
-ZSBwbGF0Zm9ybSArIGNvZGVjCmZvciB0aGF0IGRldmljZSBpcyBhbmQgd2UgY2FuIHNpbXBseSBo
-YXJkY29kZSB0aGVtLCBsaWtlIGluCm15IGV4YW1wbGUgYWJvdmUuCgpCdXQgbWF5YmUgSSdtIG1p
-c3VuZGVyc3RhbmRpbmcgeW91PwoKUmVnYXJkcywKCkhhbnMKCgoKCj4+Pj4+PiAtLS0KPj4+Pj4+
-IMKgIHNvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjQwLmMgfCA5ICsrKysrKysrKwo+
-Pj4+Pj4gwqAgMSBmaWxlIGNoYW5nZWQsIDkgaW5zZXJ0aW9ucygrKQo+Pj4+Pj4KPj4+Pj4+IGRp
-ZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jIGIvc291bmQv
-c29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYwo+Pj4+Pj4gaW5kZXggY2ZjNTIwMjAwMjE0
-Li45YTEyMDRkY2RiYzYgMTAwNjQ0Cj4+Pj4+PiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRz
-L2J5dGNyX3J0NTY0MC5jCj4+Pj4+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNy
-X3J0NTY0MC5jCj4+Pj4+PiBAQCAtOTI5LDYgKzkyOSw3IEBAIHN0YXRpYyBzdHJ1Y3Qgc25kX3Nv
-Y19kYWlfbGluayBieXRfcnQ1NjQwX2RhaXNbXSA9IHsKPj4+Pj4+IMKgIHN0YXRpYyBjaGFyIGJ5
-dF9ydDU2NDBfY29kZWNfbmFtZVtTTkRfQUNQSV9JMkNfSURfTEVOXTsKPj4+Pj4+IMKgIHN0YXRp
-YyBjaGFyIGJ5dF9ydDU2NDBfY29kZWNfYWlmX25hbWVbMTJdOyAvKsKgID0gInJ0NTY0MC1haWZb
-MXwyXSIgKi8KPj4+Pj4+IMKgIHN0YXRpYyBjaGFyIGJ5dF9ydDU2NDBfY3B1X2RhaV9uYW1lWzEw
-XTsgLyrCoCA9ICJzc3BbMHwyXS1wb3J0IiAqLwo+Pj4+Pj4gK3N0YXRpYyBjaGFyIGJ5dF9ydDU2
-NDBfbG9uZ19uYW1lWzQwXTsgLyogPSAiYnl0Y3ItcnQ1NjQwLSotc3BrLSotbWljIiAqLwo+Pj4+
-Pj4gwqAgc3RhdGljIGludCBieXRfcnQ1NjQwX3N1c3BlbmQoc3RydWN0IHNuZF9zb2NfY2FyZCAq
-Y2FyZCkKPj4+Pj4+IMKgIHsKPj4+Pj4+IEBAIC0xMDAwLDYgKzEwMDEsNyBAQCBzdHJ1Y3QgYWNw
-aV9jaGFuX3BhY2thZ2Uge8KgwqAgLyogQUNQSUNBIHNlZW1zIHRvIHJlcXVpcmUgNjQgYml0IGlu
-dGVnZXJzICovCj4+Pj4+PiDCoCBzdGF0aWMgaW50IHNuZF9ieXRfcnQ1NjQwX21jX3Byb2JlKHN0
-cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+Pj4+PiDCoCB7Cj4+Pj4+PiArwqDCoMKgIGNv
-bnN0IGNoYXIgKiBjb25zdCBtYXBfbmFtZVtdID0geyAiZG1pYzEiLCAiZG1pYzIiLCAiaW4xIiwg
-ImluMyIgfTsKPj4+Pj4+IMKgwqDCoMKgwqAgY29uc3Qgc3RydWN0IGRtaV9zeXN0ZW1faWQgKmRt
-aV9pZDsKPj4+Pj4+IMKgwqDCoMKgwqAgc3RydWN0IGJ5dF9ydDU2NDBfcHJpdmF0ZSAqcHJpdjsK
-Pj4+Pj4+IMKgwqDCoMKgwqAgc3RydWN0IHNuZF9zb2NfYWNwaV9tYWNoICptYWNoOwo+Pj4+Pj4g
-QEAgLTExNjMsNiArMTE2NSwxMyBAQCBzdGF0aWMgaW50IHNuZF9ieXRfcnQ1NjQwX21jX3Byb2Jl
-KHN0cnVjdCBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAg
-fQo+Pj4+Pj4gwqDCoMKgwqDCoCB9Cj4+Pj4+PiArwqDCoMKgIHNucHJpbnRmKGJ5dF9ydDU2NDBf
-bG9uZ19uYW1lLCBzaXplb2YoYnl0X3J0NTY0MF9sb25nX25hbWUpLAo+Pj4+Pj4gK8KgwqDCoMKg
-wqDCoMKgwqAgImJ5dGNyLXJ0NTY0MC0lcy1zcGstJXMtbWljIiwKPj4+Pj4+ICvCoMKgwqDCoMKg
-wqDCoMKgIChieXRfcnQ1NjQwX3F1aXJrICYgQllUX1JUNTY0MF9NT05PX1NQRUFLRVIpID8KPj4+
-Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgICJtb25vIiA6ICJzdGVyZW8iLAo+Pj4+Pj4gK8Kg
-wqDCoMKgwqDCoMKgwqAgbWFwX25hbWVbQllUX1JUNTY0MF9NQVAoYnl0X3J0NTY0MF9xdWlyayld
-KTsKPj4+Pj4+ICvCoMKgwqAgYnl0X3J0NTY0MF9jYXJkLmxvbmdfbmFtZSA9IGJ5dF9ydDU2NDBf
-bG9uZ19uYW1lOwo+Pj4+Pj4gKwo+Pj4+Pj4gwqDCoMKgwqDCoCByZXRfdmFsID0gZGV2bV9zbmRf
-c29jX3JlZ2lzdGVyX2NhcmQoJnBkZXYtPmRldiwgJmJ5dF9ydDU2NDBfY2FyZCk7Cj4+Pj4+PiDC
-oMKgwqDCoMKgIGlmIChyZXRfdmFsKSB7Cj4+Pj4+Pgo+Pj4+Pgo+Pj4KPiAKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxp
-c3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
-dC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+On May 9 2018 02:20, Connor McAdams wrote:
+> This patchset adds support for the Sound Blaster Z and the Recon3Di.
+> 
+> In order to figure out how to get these cards to work, I made a program called
+> QemuHDADump[1], which uses the trace function of qemu to see interactions with
+> the memory mapped pci BAR space of the card being used in the virtual machine.
+> With this, I obtain the CORB buffer location to get the command verbs, and then
+> dump them each time the buffer rolls over. This program may be useful for fixing
+> other HDA related driver issues where there is no documentation for the device.
+> 
+> So far, I have been able to get all features supported on the Sound Blaster Z
+> and the Recon3Di. All output and input effects work, all inputs and outputs
+> work, and just about anything else I can think of. I have also added new
+> controls in order to select the new inputs and outputs, as well as controls to
+> change the effect levels and presets.
+> 
+> I have also added the ability to use firmware taken from the Windows drivers of
+> both the Sound Blaster Z and Recon3Di. I am trying to get into contact with
+> Creative to get permission to redistribute these along with the current
+> file included with the Chromebook, but they have not been very responsive.
+> Luckily, the cards work with the Chromebook firmware just fine, although I
+> believe there has to be a reason they have different firmware in Windows. I
+> will not link to the firmwares here, but if you look up my thread on Creative
+> Labs forums, you will find the link to download the firmwares there.
+> 
+> I am willing to help get the other non-working cards such as the ZxR and the
+> newer AE-5 working too, but I will need someone willing to run QemuHDADump in a
+> virtual machine in order to get the commands.
+> 
+> So, in summary:
+> -This patchset makes the cards work better than they did before (they really
+>   didn't work before)
+> 
+> -This patchset leaves the original chromebook related stuff alone.
+> 
+> Thanks.
+> 
+> [1] https://github.com/Conmanx360/QemuHDADump
+> 
+> Bugs:
+> -------------------------------------------------------------------------------
+> Recon3Di: (Reported by Mariusz Ceier)
+> *******************
+> -Occasionally switching between rear and front mic breaks the input until
+>   computer is shutdown or put to sleep.
+> 
+> -Surround Sound works, but is inconsistent. Sometimes, just updating the volume
+>   fixes it, and sometimes, it requires a restart.
+> 
+> Sound Blaster Z:
+> *******************
+> -none that I'm aware of.
+> 
+> 
+> Version changes:
+> -------------------------------------------------------------------------------
+> v1:
+> *******************
+> -Massive patch formatting failure, please ignore v1.
+> 
+> v2:
+> *******************
+> -Fixed patch formatting failure.
+> 
+> v3:
+> *******************
+> -Fixed mem_base unmap, instead of checking for QUIRK_SBZ on exit, have it check
+>   if the area is mapped, and if it is, unmap it. Also make it unmap after all
+>   other commands are finished.
+> 
+> -Change notification of failure to map mem_base from codec_dbg to codec_warn,
+>   and use codec_info to tell the user that their card might have been incorrectly
+>   identified as a Sound Blaster Z.
+> 
+> -Remove commented out commands in sbz_exit_chip function, only reintroduce them
+>   when their functions are defined.
+> 
+> v4:
+> *******************
+> -Split patch into smaller pieces.
+> 
+> -Added const to alt_out_presets array.
+> 
+> -Fixed command that was commented out and only put it in when
+>   it was actually used.
+> 
+> v5:
+> *******************
+> -Fixed issue identified by kbuild test robot, where patch 12 didn't compile
+>   individually.
+> 
+> Connor McAdams (13):
+>    ALSA: hda/ca0132: R3Di and SBZ quirk entires + alt firmware loading
+>    ALSA: hda/ca0132: Add pincfg for SBZ + R3Di, add fp hp auto-detect
+>    ALSA: hda/ca0132: Add PCI region2 iomap for SBZ
+>    ALSA: hda/ca0132: Add extra exit functions for R3Di and SBZ
+>    ALSA: hda/ca0132: add extra init functions for r3di + sbz
+>    ALSA: hda/ca0132: update core functions for sbz + r3di
+>    ALSA: hda/ca0132: add dsp setup related commands for the sbz
+>    ALSA: hda/ca0132: Add dsp setup + gpio functions for r3di
+>    ALSA: hda/ca0132: add the ability to set src_id on scp commands
+>    ALSA: hda/ca0132: add alt_select_in/out for R3Di + SBZ
+>    ALSA: hda/ca0132: Add DSP Volume set and New mixers for SBZ + R3Di
+>    ALSA: hda/ca0132: add ca0132_alt_set_vipsource
+>    ALSA: hda/ca0132: Add new control changes for SBZ + R3Di
+> 
+>   sound/pci/hda/patch_ca0132.c | 3057 ++++++++++++++++++++++++++++++++++++++++--
+>   1 file changed, 2941 insertions(+), 116 deletions(-)
+
+I reviewed the above patches.
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+There're some points to improve such like read-only memory objects, and 
+I'll post some patches for them after merging this patchset.
+
+
+Thanks
+
+Takashi Sakamoto
