@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "soc: qcom dt-bindings: Add APR bus bindings"
-	to the asoc tree
-Date: Fri, 11 May 2018 04:19:30 +0100 (BST)
-Message-ID: <20180511031930.419CC44007A@finisterre.ee.mobilebroadband>
-References: <20180426094606.4775-2-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: amd: removed separate byte count
+	variables for playback and capture" to the asoc tree
+Date: Fri, 11 May 2018 04:19:49 +0100 (BST)
+Message-ID: <20180511031949.8371744007A@finisterre.ee.mobilebroadband>
+References: <1525207810-1305-3-git-send-email-Vijendar.Mukunda@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A304267677
- for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 05:19:36 +0200 (CEST)
-In-Reply-To: <20180426094606.4775-2-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AF8D2677F2
+ for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 05:20:04 +0200 (CEST)
+In-Reply-To: <1525207810-1305-3-git-send-email-Vijendar.Mukunda@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, david.brown@linaro.org, broonie@kernel.org, gregkh@linuxfoundation.org, andy.gross@linaro.org, linux-arm-kernel@lists.infradead.org
+To: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jason Clinton <jclinton@chromium.org>, Mark Brown <broonie@kernel.org>, Philippe Ombredanne <pombredanne@nexb.com>, Alex Deucher <alexander.deucher@amd.com>, Thomas Gleixner <tglx@linutronix.de>, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   soc: qcom dt-bindings: Add APR bus bindings
+   ASoC: amd: removed separate byte count variables for playback and capture
 
 has been applied to the asoc tree at
 
@@ -53,150 +53,91 @@ to this mail.
 Thanks,
 Mark
 
->From 8675e8d3d1b413dc0e6165d2ce09de4335f7f57a Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Wed, 9 May 2018 13:56:12 +0100
-Subject: [PATCH] soc: qcom dt-bindings: Add APR bus bindings
+>From 9af8937e5589693f888e855b052dde5c45fb4a1f Mon Sep 17 00:00:00 2001
+From: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Date: Tue, 8 May 2018 10:17:46 +0530
+Subject: [PATCH] ASoC: amd: removed separate byte count variables for playback
+ and capture
 
-This patch add dt bindings for Qualcomm APR (Asynchronous Packet Router)
-bus driver. This bus is used for communicating with DSP which provides
-audio and various other services to cpu.
+Removed separate byte count variables for playback and capture.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-Reviewed-by: Banajit Goswami <bgoswami@codeaurora.org>
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
+Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/soc/qcom/qcom,apr.txt | 84 +++++++++++++++++++
- include/dt-bindings/soc/qcom,apr.h            | 28 +++++++
- 2 files changed, 112 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
- create mode 100644 include/dt-bindings/soc/qcom,apr.h
+ sound/soc/amd/acp-pcm-dma.c | 19 +++++--------------
+ sound/soc/amd/acp.h         |  3 +--
+ 2 files changed, 6 insertions(+), 16 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-new file mode 100644
-index 000000000000..bcc612cc7423
---- /dev/null
-+++ b/Documentation/devicetree/bindings/soc/qcom/qcom,apr.txt
-@@ -0,0 +1,84 @@
-+Qualcomm APR (Asynchronous Packet Router) binding
-+
-+This binding describes the Qualcomm APR. APR is a IPC protocol for
-+communication between Application processor and QDSP. APR is mainly
-+used for audio/voice services on the QDSP.
-+
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,apr-v<VERSION-NUMBER>", example "qcom,apr-v2"
-+
-+- reg
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Destination processor ID.
-+	Possible values are :
-+			1 - APR simulator
-+			2 - PC
-+			3 - MODEM
-+			4 - ADSP
-+			5 - APPS
-+			6 - MODEM2
-+			7 - APPS2
-+
-+= APR SERVICES
-+Each subnode of the APR node represents service tied to this apr. The name
-+of the nodes are not important. The properties of these nodes are defined
-+by the individual bindings for the specific service
-+- All APR services MUST contain the following property:
-+
-+- reg
-+	Usage: required
-+	Value type: <u32>
-+	Definition: APR Service ID
-+	Possible values are :
-+			3 - DSP Core Service
-+			4 - Audio Front End Service.
-+			5 - Voice Stream Manager Service.
-+			6 - Voice processing manager.
-+			7 - Audio Stream Manager Service.
-+			8 - Audio Device Manager Service.
-+			9 - Multimode voice manager.
-+			10 - Core voice stream.
-+			11 - Core voice processor.
-+			12 - Ultrasound stream manager.
-+			13 - Listen stream manager.
-+
-+= EXAMPLE
-+The following example represents a QDSP based sound card on a MSM8996 device
-+which uses apr as communication between Apps and QDSP.
-+
-+	apr@4 {
-+		compatible = "qcom,apr-v2";
-+		reg = <APR_DOMAIN_ADSP>;
-+
-+		q6core@3 {
-+			compatible = "qcom,q6core";
-+			reg = <APR_SVC_ADSP_CORE>;
-+		};
-+
-+		q6afe@4 {
-+			compatible = "qcom,q6afe";
-+			reg = <APR_SVC_AFE>;
-+
-+			dais {
-+				#sound-dai-cells = <1>;
-+				hdmi@1 {
-+					reg = <1>;
-+				};
-+			};
-+		};
-+
-+		q6asm@7 {
-+			compatible = "qcom,q6asm";
-+			reg = <APR_SVC_ASM>;
-+			...
-+		};
-+
-+		q6adm@8 {
-+			compatible = "qcom,q6adm";
-+			reg = <APR_SVC_ADM>;
-+			...
-+		};
-+	};
-diff --git a/include/dt-bindings/soc/qcom,apr.h b/include/dt-bindings/soc/qcom,apr.h
-new file mode 100644
-index 000000000000..006362400c0f
---- /dev/null
-+++ b/include/dt-bindings/soc/qcom,apr.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#ifndef __DT_BINDINGS_QCOM_APR_H
-+#define __DT_BINDINGS_QCOM_APR_H
-+
-+/* Domain IDs */
-+#define APR_DOMAIN_SIM		0x1
-+#define APR_DOMAIN_PC		0x2
-+#define APR_DOMAIN_MODEM	0x3
-+#define APR_DOMAIN_ADSP		0x4
-+#define APR_DOMAIN_APPS		0x5
-+#define APR_DOMAIN_MAX		0x6
-+
-+/* ADSP service IDs */
-+#define APR_SVC_ADSP_CORE	0x3
-+#define APR_SVC_AFE		0x4
-+#define APR_SVC_VSM		0x5
-+#define APR_SVC_VPM		0x6
-+#define APR_SVC_ASM		0x7
-+#define APR_SVC_ADM		0x8
-+#define APR_SVC_ADSP_MVM	0x09
-+#define APR_SVC_ADSP_CVS	0x0A
-+#define APR_SVC_ADSP_CVP	0x0B
-+#define APR_SVC_USM		0x0C
-+#define APR_SVC_LSM		0x0D
-+#define APR_SVC_VIDC		0x16
-+#define APR_SVC_MAX		0x17
-+
-+#endif /* __DT_BINDINGS_QCOM_APR_H */
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 3dc3de1040a4..e6d59f47ed00 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -866,13 +866,8 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
+ 	bytescount = acp_get_byte_count(rtd);
+ 
+-	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-		if (bytescount > rtd->i2ssp_renderbytescount)
+-			bytescount = bytescount - rtd->i2ssp_renderbytescount;
+-	} else {
+-		if (bytescount > rtd->i2ssp_capturebytescount)
+-			bytescount = bytescount - rtd->i2ssp_capturebytescount;
+-	}
++	if (bytescount > rtd->bytescount)
++		bytescount -= rtd->bytescount;
+ 	pos = do_div(bytescount, buffersize);
+ 	return bytes_to_frames(runtime, pos);
+ }
+@@ -921,9 +916,9 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+ 		bytescount = acp_get_byte_count(rtd);
++		if (rtd->bytescount == 0)
++			rtd->bytescount = bytescount;
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-			if (rtd->i2ssp_renderbytescount == 0)
+-				rtd->i2ssp_renderbytescount = bytescount;
+ 			acp_dma_start(rtd->acp_mmio, rtd->ch1, false);
+ 			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
+ 				BIT(rtd->ch1)) {
+@@ -934,9 +929,6 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 				}
+ 				cpu_relax();
+ 			}
+-		} else {
+-			if (rtd->i2ssp_capturebytescount == 0)
+-				rtd->i2ssp_capturebytescount = bytescount;
+ 		}
+ 		acp_dma_start(rtd->acp_mmio, rtd->ch2, true);
+ 		ret = 0;
+@@ -955,12 +947,11 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+ 			ret =  acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+-			rtd->i2ssp_renderbytescount = 0;
+ 		} else {
+ 			acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+ 			ret = acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+-			rtd->i2ssp_capturebytescount = 0;
+ 		}
++		rtd->bytescount = 0;
+ 		break;
+ 	default:
+ 		ret = -EINVAL;
+diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+index 3b076c6a0ae2..82470bc710f0 100644
+--- a/sound/soc/amd/acp.h
++++ b/sound/soc/amd/acp.h
+@@ -93,8 +93,7 @@ struct audio_substream_data {
+ 	u32 byte_cnt_high_reg_offset;
+ 	u32 byte_cnt_low_reg_offset;
+ 	uint64_t size;
+-	u64 i2ssp_renderbytescount;
+-	u64 i2ssp_capturebytescount;
++	u64 bytescount;
+ 	void __iomem *acp_mmio;
+ };
+ 
 -- 
 2.17.0
