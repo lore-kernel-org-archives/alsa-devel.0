@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cirrus: i2s: Stop enabling I2S2 and
-	I2S3 FIFOs" to the asoc tree
-Date: Fri, 11 May 2018 03:37:34 +0100 (BST)
-Message-ID: <20180511023735.0546244007A@finisterre.ee.mobilebroadband>
-References: <20180428205142.31921-4-alexander.sverdlin@gmail.com>
+Subject: Applied "ASoC: rt5645: Add platform-data for Lenovo
+	Ideapad Mixx 320" to the asoc tree
+Date: Fri, 11 May 2018 03:37:55 +0100 (BST)
+Message-ID: <20180511023755.C6BBF44007A@finisterre.ee.mobilebroadband>
+References: <20180428202503.18645-2-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6455F267281
- for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 04:37:52 +0200 (CEST)
-In-Reply-To: <20180428205142.31921-4-alexander.sverdlin@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F4352677B2
+ for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 04:38:01 +0200 (CEST)
+In-Reply-To: <20180428202503.18645-2-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Cc: alsa-devel@alsa-project.org, Ryan Mallon <rmallon@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Hartley Sweeten <hsweeten@visionengravers.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cirrus: i2s: Stop enabling I2S2 and I2S3 FIFOs
+   ASoC: rt5645: Add platform-data for Lenovo Ideapad Mixx 320
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From cc27062b3eee3beb2e3830641b23ba9a52a8a04a Mon Sep 17 00:00:00 2001
-From: Alexander Sverdlin <alexander.sverdlin@gmail.com>
-Date: Sat, 28 Apr 2018 22:51:40 +0200
-Subject: [PATCH] ASoC: cirrus: i2s: Stop enabling I2S2 and I2S3 FIFOs
+>From 25c8b5500760839e503ac44954392cda79c69efc Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sat, 28 Apr 2018 22:25:03 +0200
+Subject: [PATCH] ASoC: rt5645: Add platform-data for Lenovo Ideapad Mixx 320
 
-The driver never supported more than 2 channels because of
-ep93xx_i2s_dma_data[] supporting only 1 DMA channel in each
-direction.
-Stop enabling two unused I2S controller FIFOs, this will simplify
-future interrupt support.
+The Lenovo Ideapad Mixx 320 has a digital mic connected to DMIC2
+add a DMI based quirk pointing to the intel_braswell_platform_data
+for devices with a mic on DMIC2.
 
-Signed-off-by: Alexander Sverdlin <alexander.sverdlin@gmail.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/cirrus/ep93xx-i2s.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ sound/soc/codecs/rt5645.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/cirrus/ep93xx-i2s.c b/sound/soc/cirrus/ep93xx-i2s.c
-index 0dc3852c4621..42cc6d22baac 100644
---- a/sound/soc/cirrus/ep93xx-i2s.c
-+++ b/sound/soc/cirrus/ep93xx-i2s.c
-@@ -98,7 +98,6 @@ static inline unsigned ep93xx_i2s_read_reg(struct ep93xx_i2s_info *info,
- static void ep93xx_i2s_enable(struct ep93xx_i2s_info *info, int stream)
- {
- 	unsigned base_reg;
--	int i;
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 70f351c61d41..712384581ebf 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -3749,6 +3749,15 @@ static const struct dmi_system_id dmi_platform_data[] = {
+ 		},
+ 		.driver_data = (void *)&lenovo_ideapad_miix_310_pdata,
+ 	},
++	{
++		.ident = "Lenovo Ideapad Miix 320",
++		.matches = {
++		  DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++		  DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "80XF"),
++		  DMI_EXACT_MATCH(DMI_PRODUCT_VERSION, "Lenovo MIIX 320-10ICR"),
++		},
++		.driver_data = (void *)&intel_braswell_platform_data,
++	},
+ 	{ }
+ };
  
- 	if ((ep93xx_i2s_read_reg(info, EP93XX_I2S_TX0EN) & 0x1) == 0 &&
- 	    (ep93xx_i2s_read_reg(info, EP93XX_I2S_RX0EN) & 0x1) == 0) {
-@@ -111,27 +110,24 @@ static void ep93xx_i2s_enable(struct ep93xx_i2s_info *info, int stream)
- 		ep93xx_i2s_write_reg(info, EP93XX_I2S_GLCTRL, 1);
- 	}
- 
--	/* Enable fifos */
-+	/* Enable fifo */
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		base_reg = EP93XX_I2S_TX0EN;
- 	else
- 		base_reg = EP93XX_I2S_RX0EN;
--	for (i = 0; i < 3; i++)
--		ep93xx_i2s_write_reg(info, base_reg + (i * 4), 1);
-+	ep93xx_i2s_write_reg(info, base_reg, 1);
- }
- 
- static void ep93xx_i2s_disable(struct ep93xx_i2s_info *info, int stream)
- {
- 	unsigned base_reg;
--	int i;
- 
--	/* Disable fifos */
-+	/* Disable fifo */
- 	if (stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		base_reg = EP93XX_I2S_TX0EN;
- 	else
- 		base_reg = EP93XX_I2S_RX0EN;
--	for (i = 0; i < 3; i++)
--		ep93xx_i2s_write_reg(info, base_reg + (i * 4), 0);
-+	ep93xx_i2s_write_reg(info, base_reg, 0);
- 
- 	if ((ep93xx_i2s_read_reg(info, EP93XX_I2S_TX0EN) & 0x1) == 0 &&
- 	    (ep93xx_i2s_read_reg(info, EP93XX_I2S_RX0EN) & 0x1) == 0) {
 -- 
 2.17.0
