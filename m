@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 08/10] ASoC: Intel: bytcr_rt5640: Use
-	dmi_first_match() for DMI quirk handling
-Date: Fri, 11 May 2018 15:29:26 +0200
-Message-ID: <20180511132928.7669-9-hdegoede@redhat.com>
+Subject: [PATCH v2 10/10] ASoC: Intel: bytcr_rt5640: Set card
+	long_name based on quirks
+Date: Fri, 11 May 2018 15:29:28 +0200
+Message-ID: <20180511132928.7669-11-hdegoede@redhat.com>
 References: <20180511132928.7669-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B044267806
- for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 15:29:43 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A1768267806
+ for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 15:29:46 +0200 (CEST)
 In-Reply-To: <20180511132928.7669-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,110 +25,61 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard L
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use dmi_first_match() instead of dmi_check_system() + callbacks, this
-avoid the need to initialize dmi_system_id.callback for each
-byt_rt5640_quirk_table entry.
+Many X86 devices using a BYT SoC + RT5640 codec are cheap devices with
+generic DMI strings, causing snd_soc_set_dmi_name() to fail to set a
+long_name, making it impossible for userspace to have a correct UCM
+profile which only uses inputs / outputs which are actually hooked up
+on the device.
+
+Our quirks already specify which input the internal mic is connected to
+and if a single (mono) speaker is used or if the device has stereo
+speakers.
+
+This commit sets a long_name based on the quirks so that userspace can
+have UCM profiles doing the right thing based on the long_name.
+
+Note that if we ever encounter the need for a special UCM profile for
+some device we can add a quirk to set a specific long_name for the
+device,
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 25e1a3691f68..be7f584853c4 100644
+index de80ffa8b4fc..828be866fb00 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -395,16 +395,9 @@ static int byt_rt5640_aif1_hw_params(struct snd_pcm_substream *substream,
- 	return byt_rt5640_prepare_and_enable_pll1(dai, params_rate(params));
- }
+@@ -946,6 +946,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
++static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
  
--static int byt_rt5640_quirk_cb(const struct dmi_system_id *id)
--{
--	byt_rt5640_quirk = (unsigned long)id->driver_data;
--	return 1;
--}
--
- /* Please keep this list alphabetically sorted */
- static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 	{
--		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
-@@ -415,7 +408,6 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 
- 	},
- 	{
--		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TA"),
-@@ -427,7 +419,6 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_MCLK_EN),
- 	},
- 	{
--		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "T100TAF"),
-@@ -439,7 +430,6 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_MCLK_EN),
- 	},
- 	{
--		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
- 			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard Max B3 PLATFORM"),
-@@ -447,7 +437,6 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP),
- 	},
- 	{
--		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Venue 8 Pro 5830"),
-@@ -460,7 +449,6 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_MCLK_EN),
- 	},
- 	{
--		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Hewlett-Packard"),
- 			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "HP ElitePad 1000 G2"),
-@@ -469,7 +457,6 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_MCLK_EN),
- 	},
- 	{
--		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_BOARD_VENDOR, "TECLAST"),
- 			DMI_MATCH(DMI_BOARD_NAME, "tPAD"),
-@@ -479,7 +466,6 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1),
- 	},
- 	{	/* Catch-all for generic Insyde tablets, must be last */
--		.callback = byt_rt5640_quirk_cb,
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
- 		},
-@@ -890,6 +876,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ static int byt_rt5640_suspend(struct snd_soc_card *card)
+ {
+@@ -1017,6 +1018,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
  
  static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  {
-+	const struct dmi_system_id *dmi_id;
++	const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
+ 	const struct dmi_system_id *dmi_id;
  	struct byt_rt5640_private *priv;
  	struct snd_soc_acpi_mach *mach;
- 	const char *i2c_name = NULL;
-@@ -992,7 +979,9 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+@@ -1180,6 +1182,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ 		}
  	}
  
- 	/* check quirks before creating card */
--	dmi_check_system(byt_rt5640_quirk_table);
-+	dmi_id = dmi_first_match(byt_rt5640_quirk_table);
-+	if (dmi_id)
-+		byt_rt5640_quirk = (unsigned long)dmi_id->driver_data;
- 	if (quirk_override) {
- 		dev_info(&pdev->dev, "Overriding quirk 0x%x => 0x%x\n",
- 			 (unsigned int)byt_rt5640_quirk, quirk_override);
++	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
++		 "bytcr-rt5640-%s-spk-%s-mic",
++		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
++			"mono" : "stereo",
++		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
++	byt_rt5640_card.long_name = byt_rt5640_long_name;
++
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
+ 
+ 	if (ret_val) {
 -- 
 2.17.0
