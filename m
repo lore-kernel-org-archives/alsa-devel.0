@@ -1,139 +1,81 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH v5 00/13] ALSA: hda/ca0132: Patch Series for Recon3Di and
- Sound Blaster Z Support
-Date: Fri, 11 May 2018 10:27:59 +0900
-Message-ID: <95282579-08c1-bf71-e303-9fa8efb1873f@sakamocchi.jp>
-References: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: nau8810: change the target of
+	MIC BIAS supply
+Date: Fri, 11 May 2018 11:23:41 +0900
+Message-ID: <20180511022341.GG949@sirena.org.uk>
+References: <1525315602-3620-1-git-send-email-KCHSU0@nuvoton.com>
+ <1525315602-3620-2-git-send-email-KCHSU0@nuvoton.com>
+ <20180503231047.GB13402@sirena.org.uk>
+ <5AEBB308.6020006@nuvoton.com>
+ <20180505010110.GI13402@sirena.org.uk>
+ <5AEFF8D8.5090003@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525800015-2920-1-git-send-email-conmanx360@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Connor McAdams <conmanx360@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, =?UTF-8?Q?J=c3=a9r=c3=a9my_Lefaure?= <jeremy.lefaure@lse.epita.fr>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============7271056212785854608=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FC22267790
+ for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 04:23:47 +0200 (CEST)
+In-Reply-To: <5AEFF8D8.5090003@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: John Hsu <KCHSU0@nuvoton.com>
+Cc: alsa-devel@alsa-project.org, CFYU0@nuvoton.com, WTLI@nuvoton.com, lgirdwood@gmail.com, YHCHuang@nuvoton.com, CTLIN0@nuvoton.com, YCPENG7@nuvoton.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-On May 9 2018 02:20, Connor McAdams wrote:
-> This patchset adds support for the Sound Blaster Z and the Recon3Di.
-> 
-> In order to figure out how to get these cards to work, I made a program called
-> QemuHDADump[1], which uses the trace function of qemu to see interactions with
-> the memory mapped pci BAR space of the card being used in the virtual machine.
-> With this, I obtain the CORB buffer location to get the command verbs, and then
-> dump them each time the buffer rolls over. This program may be useful for fixing
-> other HDA related driver issues where there is no documentation for the device.
-> 
-> So far, I have been able to get all features supported on the Sound Blaster Z
-> and the Recon3Di. All output and input effects work, all inputs and outputs
-> work, and just about anything else I can think of. I have also added new
-> controls in order to select the new inputs and outputs, as well as controls to
-> change the effect levels and presets.
-> 
-> I have also added the ability to use firmware taken from the Windows drivers of
-> both the Sound Blaster Z and Recon3Di. I am trying to get into contact with
-> Creative to get permission to redistribute these along with the current
-> file included with the Chromebook, but they have not been very responsive.
-> Luckily, the cards work with the Chromebook firmware just fine, although I
-> believe there has to be a reason they have different firmware in Windows. I
-> will not link to the firmwares here, but if you look up my thread on Creative
-> Labs forums, you will find the link to download the firmwares there.
-> 
-> I am willing to help get the other non-working cards such as the ZxR and the
-> newer AE-5 working too, but I will need someone willing to run QemuHDADump in a
-> virtual machine in order to get the commands.
-> 
-> So, in summary:
-> -This patchset makes the cards work better than they did before (they really
->   didn't work before)
-> 
-> -This patchset leaves the original chromebook related stuff alone.
-> 
-> Thanks.
-> 
-> [1] https://github.com/Conmanx360/QemuHDADump
-> 
-> Bugs:
-> -------------------------------------------------------------------------------
-> Recon3Di: (Reported by Mariusz Ceier)
-> *******************
-> -Occasionally switching between rear and front mic breaks the input until
->   computer is shutdown or put to sleep.
-> 
-> -Surround Sound works, but is inconsistent. Sometimes, just updating the volume
->   fixes it, and sometimes, it requires a restart.
-> 
-> Sound Blaster Z:
-> *******************
-> -none that I'm aware of.
-> 
-> 
-> Version changes:
-> -------------------------------------------------------------------------------
-> v1:
-> *******************
-> -Massive patch formatting failure, please ignore v1.
-> 
-> v2:
-> *******************
-> -Fixed patch formatting failure.
-> 
-> v3:
-> *******************
-> -Fixed mem_base unmap, instead of checking for QUIRK_SBZ on exit, have it check
->   if the area is mapped, and if it is, unmap it. Also make it unmap after all
->   other commands are finished.
-> 
-> -Change notification of failure to map mem_base from codec_dbg to codec_warn,
->   and use codec_info to tell the user that their card might have been incorrectly
->   identified as a Sound Blaster Z.
-> 
-> -Remove commented out commands in sbz_exit_chip function, only reintroduce them
->   when their functions are defined.
-> 
-> v4:
-> *******************
-> -Split patch into smaller pieces.
-> 
-> -Added const to alt_out_presets array.
-> 
-> -Fixed command that was commented out and only put it in when
->   it was actually used.
-> 
-> v5:
-> *******************
-> -Fixed issue identified by kbuild test robot, where patch 12 didn't compile
->   individually.
-> 
-> Connor McAdams (13):
->    ALSA: hda/ca0132: R3Di and SBZ quirk entires + alt firmware loading
->    ALSA: hda/ca0132: Add pincfg for SBZ + R3Di, add fp hp auto-detect
->    ALSA: hda/ca0132: Add PCI region2 iomap for SBZ
->    ALSA: hda/ca0132: Add extra exit functions for R3Di and SBZ
->    ALSA: hda/ca0132: add extra init functions for r3di + sbz
->    ALSA: hda/ca0132: update core functions for sbz + r3di
->    ALSA: hda/ca0132: add dsp setup related commands for the sbz
->    ALSA: hda/ca0132: Add dsp setup + gpio functions for r3di
->    ALSA: hda/ca0132: add the ability to set src_id on scp commands
->    ALSA: hda/ca0132: add alt_select_in/out for R3Di + SBZ
->    ALSA: hda/ca0132: Add DSP Volume set and New mixers for SBZ + R3Di
->    ALSA: hda/ca0132: add ca0132_alt_set_vipsource
->    ALSA: hda/ca0132: Add new control changes for SBZ + R3Di
-> 
->   sound/pci/hda/patch_ca0132.c | 3057 ++++++++++++++++++++++++++++++++++++++++--
->   1 file changed, 2941 insertions(+), 116 deletions(-)
-
-I reviewed the above patches.
-
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-There're some points to improve such like read-only memory objects, and 
-I'll post some patches for them after merging this patchset.
+--===============7271056212785854608==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="JbKQpFqZXJ2T76Sg"
+Content-Disposition: inline
 
 
-Thanks
+--JbKQpFqZXJ2T76Sg
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Takashi Sakamoto
+On Mon, May 07, 2018 at 02:57:28PM +0800, John Hsu wrote:
+
+> Yes, you are right. In the driver, we suppose that the input of codec
+> is microphone always. Therefore, we make the micbias on to provide the
+> power of microphone automatically if any input path is enabled.
+> What advice do you have to deal with micbias? Thank you.
+
+Like I say you should just provide the MICBIAS pin and leave it up to
+the machine drivers to connect it to whatever microphones it is being
+used with.  This means deleting the route from the driver and (in order
+to avoid breaking them) adding the relevant route to any machine drivers
+that are in mainline already.
+
+--JbKQpFqZXJ2T76Sg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlr0/qwACgkQJNaLcl1U
+h9Ay8wf9EpyU64WXbVNyZNVjMct91WPLDrRKl1wGJmkmL9Deas6oN+oXL8EKrTxp
+g7vx1/3XpJObetlvK+CYxTVWxCpKQhUEGnc5Cj2pkvYs1t/QYd4bmIZacdOZkrKi
+ObUgQjSTjbmIoV7urediSQBcUB9H5/6J8E5wD1DQOyWNobsomJRFN049d1Vg+815
+m8WHCZKFEC43fQEzvjwBSdwQ3YhwZ6ppQUPEYdapwxqA2KqrWP4lASXWWHeDIhMn
+5oEHhU+bk5pwEkevUaTAeMXknSRQSJAX/ZnSFZFVfxHq3T8tPEqRuu6QVebr7gfv
+/Zpd2NI8mM9wzSbR9RUMn7yYINreRA==
+=AQf7
+-----END PGP SIGNATURE-----
+
+--JbKQpFqZXJ2T76Sg--
+
+--===============7271056212785854608==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7271056212785854608==--
