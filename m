@@ -1,16 +1,15 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: zx-i2s: fix spelling mistake: "timeing"
-	-> "timing"" to the asoc tree
-Date: Fri, 11 May 2018 03:55:15 +0100 (BST)
-Message-ID: <20180511025516.0816E440084@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: rt5640: Add devicetree-bindings for
+	dmic, jack-detect" to the asoc tree
+Date: Fri, 11 May 2018 03:53:18 +0100 (BST)
+Message-ID: <20180511025318.B315A44007E@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2819095765984933592=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DB12267281
- for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 04:55:21 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 59049267281
+ for <alsa-devel@alsa-project.org>; Fri, 11 May 2018 05:01:21 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +20,16 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jun Nie <jun.nie@linaro.org>, Baoyou Xie <baoyou.xie@linaro.org>, Shawn Guo <shawnguo@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
+
+--===============2819095765984933592==
+Content-Type: text/plain
 
 The patch
 
-   ASoC: zx-i2s: fix spelling mistake: "timeing" -> "timing"
+   ASoC: rt5640: Add devicetree-bindings for dmic, jack-detect
 
 has been applied to the asoc tree at
 
@@ -52,31 +54,112 @@ to this mail.
 Thanks,
 Mark
 
->From d165b5a86fcad715aea1f164186224fe0c2f57f3 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Thu, 10 May 2018 15:58:38 +0100
-Subject: [PATCH] ASoC: zx-i2s: fix spelling mistake: "timeing" -> "timing"
+>From e9e7a3bdcdf41efe9137dcf225b021e0b6fd2dc3 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Tue, 8 May 2018 17:35:47 +0200
+Subject: [PATCH] ASoC: rt5640: Add devicetree-bindings for dmic, jack-detect
 
-Trivial fix to spelling mistake in dev_err message text
+Add devicetree-bindings for the dmic, jack-detect source and overcurrent-
+detect threshold settings.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+The dmic bindings mirror the existing bindings for the rt5645.
+The jd-src and ovcd bindings mirror the existing bindings for the rt5651.
+
+Cc devicetree@vger.kernel.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/zte/zx-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/rt5640.txt      | 35 +++++++++++++++++++
+ include/dt-bindings/sound/rt5640.h            | 25 +++++++++++++
+ 2 files changed, 60 insertions(+)
+ create mode 100644 include/dt-bindings/sound/rt5640.h
 
-diff --git a/sound/soc/zte/zx-i2s.c b/sound/soc/zte/zx-i2s.c
-index 9a0565937d1f..b6b056c607fa 100644
---- a/sound/soc/zte/zx-i2s.c
-+++ b/sound/soc/zte/zx-i2s.c
-@@ -197,7 +197,7 @@ static int zx_i2s_set_fmt(struct snd_soc_dai *cpu_dai, unsigned int fmt)
- 		val |= (ZX_I2S_TIMING_I2S | ZX_I2S_TIMING_LSB_JUSTIF);
- 		break;
- 	default:
--		dev_err(cpu_dai->dev, "Unknown i2s timeing\n");
-+		dev_err(cpu_dai->dev, "Unknown i2s timing\n");
- 		return -EINVAL;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/rt5640.txt b/Documentation/devicetree/bindings/sound/rt5640.txt
+index 57fe64643050..e40e4893eed8 100644
+--- a/Documentation/devicetree/bindings/sound/rt5640.txt
++++ b/Documentation/devicetree/bindings/sound/rt5640.txt
+@@ -22,6 +22,41 @@ Optional properties:
  
+ - realtek,ldo1-en-gpios : The GPIO that controls the CODEC's LDO1_EN pin.
+ 
++- realtek,dmic1-data-pin
++  0: dmic1 is not used
++  1: using IN1P pin as dmic1 data pin
++  2: using GPIO3 pin as dmic1 data pin
++
++- realtek,dmic2-data-pin
++  0: dmic2 is not used
++  1: using IN1N pin as dmic2 data pin
++  2: using GPIO4 pin as dmic2 data pin
++
++- realtek,jack-detect-source
++  u32. Valid values:
++  0: jack-detect is not used
++  1: Use GPIO1 for jack-detect
++  2: Use JD1_IN4P for jack-detect
++  3: Use JD2_IN4N for jack-detect
++  4: Use GPIO2 for jack-detect
++  5: Use GPIO3 for jack-detect
++  6: Use GPIO4 for jack-detect
++
++- realtek,jack-detect-not-inverted
++  bool. Normal jack-detect switches give an inverted signal, set this bool
++  in the rare case you've a jack-detect switch which is not inverted.
++
++- realtek,over-current-threshold-microamp
++  u32, micbias over-current detection threshold in µA, valid values are
++  600, 1500 and 2000µA.
++
++- realtek,over-current-scale-factor
++  u32, micbias over-current detection scale-factor, valid values are:
++  0: Scale current by 0.5
++  1: Scale current by 0.75
++  2: Scale current by 1.0
++  3: Scale current by 1.5
++
+ Pins on the device (for linking into audio routes) for RT5639/RT5640:
+ 
+   * DMIC1
+diff --git a/include/dt-bindings/sound/rt5640.h b/include/dt-bindings/sound/rt5640.h
+new file mode 100644
+index 000000000000..154c9b4414f2
+--- /dev/null
++++ b/include/dt-bindings/sound/rt5640.h
+@@ -0,0 +1,25 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __DT_RT5640_H
++#define __DT_RT5640_H
++
++#define RT5640_DMIC1_DATA_PIN_NONE	0
++#define RT5640_DMIC1_DATA_PIN_IN1P	1
++#define RT5640_DMIC1_DATA_PIN_GPIO3	2
++
++#define RT5640_DMIC2_DATA_PIN_NONE	0
++#define RT5640_DMIC2_DATA_PIN_IN1N	1
++#define RT5640_DMIC2_DATA_PIN_GPIO4	2
++
++#define RT5640_JD_SRC_GPIO1		1
++#define RT5640_JD_SRC_JD1_IN4P		2
++#define RT5640_JD_SRC_JD2_IN4N		3
++#define RT5640_JD_SRC_GPIO2		4
++#define RT5640_JD_SRC_GPIO3		5
++#define RT5640_JD_SRC_GPIO4		6
++
++#define RT5640_OVCD_SF_0P5		0
++#define RT5640_OVCD_SF_0P75		1
++#define RT5640_OVCD_SF_1P0		2
++#define RT5640_OVCD_SF_1P5		3
++
++#endif /* __DT_RT5640_H */
 -- 
 2.17.0
+
+
+--===============2819095765984933592==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2819095765984933592==--
