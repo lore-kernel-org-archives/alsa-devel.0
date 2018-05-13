@@ -1,17 +1,29 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 10/10] ASoC: Intel: bytcr_rt5640: Set card
-	long_name based on quirks
-Date: Sun, 13 May 2018 09:24:35 +0200
-Message-ID: <20180513072435.3358-11-hdegoede@redhat.com>
-References: <20180513072435.3358-1-hdegoede@redhat.com>
+Subject: Re: [PATCH 19/19] ASoC: Intel: bytcr_rt5640: Set card
+ long_name based on quirks
+Date: Sun, 13 May 2018 09:28:55 +0200
+Message-ID: <8bca11aa-98fb-6682-f995-2f2169e35103@redhat.com>
+References: <20180508153604.23711-1-hdegoede@redhat.com>
+ <20180508153604.23711-20-hdegoede@redhat.com>
+ <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
+ <4f678986-9ca5-eeb3-d6ed-528f3fe1d013@redhat.com>
+ <84e7b889-7b42-47dc-bdf8-d01ac88a9e55@linux.intel.com>
+ <1fd841b6-1e05-2cd9-8b0e-44524503a3fa@redhat.com>
+ <19cd9f01-222c-ae6a-6244-d703ac646310@linux.intel.com>
+ <86f6bb1e-21af-a2e4-76c4-c0446c3b32e8@redhat.com>
+ <ea5529dc-9af7-2195-3419-10ab3ad7c9e2@linux.intel.com>
+ <s5hsh6w81xu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 99804267677
- for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 09:25:17 +0200 (CEST)
-In-Reply-To: <20180513072435.3358-1-hdegoede@redhat.com>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 27520267661
+ for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 09:28:58 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id t11-v6so8491455wmt.0
+ for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 00:28:58 -0700 (PDT)
+In-Reply-To: <s5hsh6w81xu.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +33,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+To: Takashi Iwai <tiwai@suse.de>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Many X86 devices using a BYT SoC + RT5640 codec are cheap devices with
-generic DMI strings, causing snd_soc_set_dmi_name() to fail to set a
-long_name, making it impossible for userspace to have a correct UCM
-profile which only uses inputs / outputs which are actually hooked up
-on the device.
+Hi,
 
-Our quirks already specify which input the internal mic is connected to
-and if a single (mono) speaker is used or if the device has stereo
-speakers.
+On 05/13/2018 09:11 AM, Takashi Iwai wrote:
+> On Sat, 12 May 2018 23:21:58 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>>>>
+>>>> splitting platform and codec sides is a good idea (and something
+>>>> that was done by removing all platform mixer settings from the HiFi
+>>>> files)
+>>>>
+>>>> the problem remains that we have all these cdev strings that are
+>>>> hard-codec with a card name. Same when the match happens based on a
+>>>> DMI string, how would I know which of the platform settings to
+>>>> apply without querying what the platform driver is?
+>>>
+>>> Well the DMI string would uniquely identify a certain model device,
+>>> when we write the UCM file we should know what the platform + codec
+>>> for that device is and we can simply hardcode them, like in
+>>> my example above.
+>>>
+>>> But maybe I'm misunderstanding you?
+>>
+>> For the same DMI device, you could either enable the existing
+>> intel/sst or SOF drivers. How would we handle UCM configs then? The
+>> DMI name would need to be augmented with a prefix, or we use
+>> *something* to add the references to SOF in the platform include and
+>> ALSA device string.
+> 
+> You've already added the flavor suffix to snd_soc_set_dmi_name(), so
+> they'll be unique, no?
 
-This commit sets a long_name based on the quirks so that userspace can
-have UCM profiles doing the right thing based on the long_name.
+Yes I was going to suggest doing something like that, but if we
+already have that even better.
 
-Note that if we ever encounter the need for a special UCM profile for
-some device we can add a quirk to set a specific long_name for the
-device,
+Note that the patch setting the longname based on the quirks
+overrides (pre-empts really) snd_soc_set_dmi_name() and does
+include  bytcr_rt5640 prefix, so this patch should make sure
+that there is no name conflict between the sof and bytcr
+machine drivers UCM profiles.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+As mentioned in the commit message this pre-emption means we
+loose the ability to have an UCM profile optimized for a
+specific device, but we can work around this if necessary
+with a flag which sets to not do set the quirk based
+long-name on some models (if the need ever arises for this).
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 686d00405493..b0eec0a9b7b9 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -950,6 +950,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
- static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
- static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
- static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
-+static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
- 
- static int byt_rt5640_suspend(struct snd_soc_card *card)
- {
-@@ -1021,6 +1022,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- {
-+	const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
- 	const struct dmi_system_id *dmi_id;
- 	struct byt_rt5640_private *priv;
- 	struct snd_soc_acpi_mach *mach;
-@@ -1184,6 +1186,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
-+		 "bytcr-rt5640-%s-spk-%s-mic",
-+		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
-+			"mono" : "stereo",
-+		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
-+	byt_rt5640_card.long_name = byt_rt5640_long_name;
-+
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
- 
- 	if (ret_val) {
--- 
-2.17.0
+Regards,
+
+Hans
