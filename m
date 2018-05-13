@@ -1,16 +1,17 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH -next] ASoC: omap: add sdma-pcm.c MODULE_LICENSE
-Date: Sat, 12 May 2018 18:41:51 -0700
-Message-ID: <2bf2991a-da55-00a4-bc39-a0ee61bad4d0@infradead.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 00/10] ASoC: rt5640: Add jack-detect and
+ button-press support
+Date: Sun, 13 May 2018 11:29:56 +0900
+Message-ID: <20180513022956.GB17611@sirena.org.uk>
+References: <20180511132928.7669-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7562715089062212108=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bombadil.infradead.org (bombadil.infradead.org
- [198.137.202.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 171A4266F88
- for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 03:42:05 +0200 (CEST)
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43B60266F88
+ for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 04:30:11 +0200 (CEST)
+In-Reply-To: <20180511132928.7669-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,40 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: LKML <linux-kernel@vger.kernel.org>, linux-omap@vger.kernel.org, moderated for non-subscribers <alsa-devel@alsa-project.org>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
 
-ASoC: omap: add sdma-pcm.c MODULE_LICENSE
+--===============7562715089062212108==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kORqDWCi7qDJ0mEj"
+Content-Disposition: inline
 
-Fixes this build warning:
 
-WARNING: modpost: missing MODULE_LICENSE() in sound/soc/omap/snd-soc-sdma.o
+--kORqDWCi7qDJ0mEj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
----
- sound/soc/omap/sdma-pcm.c |    3 +++
- 1 file changed, 3 insertions(+)
+On Fri, May 11, 2018 at 03:29:18PM +0200, Hans de Goede wrote:
+> Hi Mark, et. al.,
+>=20
+> Here is v2 of the remaining patches from my rt5640 jack-detect series.
+>=20
+> As requested this is rebased on your sound/for-next branch, so this should
+> apply cleanly now.
 
---- linux-next-20180510.orig/sound/soc/omap/sdma-pcm.c
-+++ linux-next-20180510/sound/soc/omap/sdma-pcm.c
-@@ -9,6 +9,7 @@
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
-+#include <linux/module.h>
- #include <linux/omap-dma.h>
- 
- #include "sdma-pcm.h"
-@@ -66,3 +67,5 @@ int sdma_pcm_platform_register(struct de
- 	return devm_snd_dmaengine_pcm_register(dev, config, flags);
- }
- EXPORT_SYMBOL_GPL(sdma_pcm_platform_register);
-+
-+MODULE_LICENSE("GPL v2");
+That's not what git is telling me:
+
+Applying: ASoC: Intel: bytcr_rt5640: Use device properties for setting up d=
+mic
+error: patch failed: sound/soc/intel/boards/bytcr_rt5640.c:556
+error: sound/soc/intel/boards/bytcr_rt5640.c: patch does not apply
+Patch failed at 0001 ASoC: Intel: bytcr_rt5640: Use device properties for s=
+etting up dmic
+Use 'git am --show-current-patch' to see the failed patch
+When you have resolved this problem, run "git am --continue".
+If you prefer to skip this patch, run "git am --skip" instead.
+To restore the original branch and stop patching, run "git am --abort".
+
+If I try with -3 it tells me that it doesn't even know the SHA1s which
+suggests you have something else in your tree?
+
+--kORqDWCi7qDJ0mEj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlr3oyQACgkQJNaLcl1U
+h9BZCgf/SD6Gu4SLeygPM6qIdcuH27tcIajVnHBPHaB4VvGYB/g43R30iltGAYKy
+kmBe5f0GCG/eSgVGuLyVW2iCxKxsSfAkabq1V7Jj7yLfcl/8Gc0j9cawf3wn1VzP
+TZc3IK2NgP/6G8KZr5mUPwBtmSJMbz0y+B/Ht6cxWg4lWtVYJEFptly59VMNwdNJ
+EGXNaZfL9W9V+CW+pH7c+a7CPimN78nv2EaVsib53/x3P36rvsnXPDo/ed+vF+xZ
+GLLVxmIRyAvMnp6O4W1/poHjE0FHm3i1yPgvspRyMsu4r960v55MZ942kJybplbG
+g8HCpdBxiq8tTNPTj69zeQEncqBIpA==
+=hrOL
+-----END PGP SIGNATURE-----
+
+--kORqDWCi7qDJ0mEj--
+
+--===============7562715089062212108==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7562715089062212108==--
