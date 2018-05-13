@@ -1,19 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 3/4] ALSA: hda: use position offset macro of
+Subject: [PATCH 4/4] ALSA: isight: use position offset macro of
 	TLV data
-Date: Mon, 14 May 2018 07:09:52 +0900
-Message-ID: <20180513220953.15118-4-o-takashi@sakamocchi.jp>
+Date: Mon, 14 May 2018 07:09:53 +0900
+Message-ID: <20180513220953.15118-5-o-takashi@sakamocchi.jp>
 References: <20180513220953.15118-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f65.google.com (mail-pl0-f65.google.com
- [209.85.160.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 695EC26769E
- for <alsa-devel@alsa-project.org>; Mon, 14 May 2018 00:10:31 +0200 (CEST)
-Received: by mail-pl0-f65.google.com with SMTP id az12-v6so6199254plb.8
- for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 15:10:30 -0700 (PDT)
+Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id C78A726769E
+ for <alsa-devel@alsa-project.org>; Mon, 14 May 2018 00:10:32 +0200 (CEST)
+Received: by mail-pg0-f68.google.com with SMTP id l2-v6so4621970pgc.7
+ for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 15:10:32 -0700 (PDT)
 In-Reply-To: <20180513220953.15118-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,78 +32,37 @@ of TLV data. This commit applies a code optimization.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/pci/hda/hda_codec.c   | 22 +++++++++++-----------
- sound/pci/hda/hda_generic.c |  2 +-
- 2 files changed, 12 insertions(+), 12 deletions(-)
+ sound/firewire/isight.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 63f177d975fd..08151f3c0b13 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -1493,10 +1493,10 @@ static void get_ctl_amp_tlv(struct snd_kcontrol *kcontrol, unsigned int *tlv)
- 	val1 = ((int)val1) * ((int)val2);
- 	if (min_mute || (caps & AC_AMPCAP_MIN_MUTE))
- 		val2 |= TLV_DB_SCALE_MUTE;
--	tlv[0] = SNDRV_CTL_TLVT_DB_SCALE;
--	tlv[1] = 2 * sizeof(unsigned int);
--	tlv[2] = val1;
--	tlv[3] = val2;
-+	tlv[SNDRV_CTL_TLVO_TYPE] = SNDRV_CTL_TLVT_DB_SCALE;
-+	tlv[SNDRV_CTL_TLVO_LEN] = 2 * sizeof(unsigned int);
-+	tlv[SNDRV_CTL_TLVO_DB_SCALE_MIN] = val1;
-+	tlv[SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP] = val2;
- }
+diff --git a/sound/firewire/isight.c b/sound/firewire/isight.c
+index 46092fa3ff9b..3919e186a30b 100644
+--- a/sound/firewire/isight.c
++++ b/sound/firewire/isight.c
+@@ -569,18 +569,20 @@ static int isight_create_mixer(struct isight *isight)
+ 		return err;
+ 	isight->gain_max = be32_to_cpu(value);
  
- /**
-@@ -1544,10 +1544,10 @@ void snd_hda_set_vmaster_tlv(struct hda_codec *codec, hda_nid_t nid, int dir,
- 	nums = (caps & AC_AMPCAP_NUM_STEPS) >> AC_AMPCAP_NUM_STEPS_SHIFT;
- 	step = (caps & AC_AMPCAP_STEP_SIZE) >> AC_AMPCAP_STEP_SIZE_SHIFT;
- 	step = (step + 1) * 25;
--	tlv[0] = SNDRV_CTL_TLVT_DB_SCALE;
--	tlv[1] = 2 * sizeof(unsigned int);
--	tlv[2] = -nums * step;
--	tlv[3] = step;
-+	tlv[SNDRV_CTL_TLVO_TYPE] = SNDRV_CTL_TLVT_DB_SCALE;
-+	tlv[SNDRV_CTL_TLVO_LEN] = 2 * sizeof(unsigned int);
-+	tlv[SNDRV_CTL_TLVO_DB_SCALE_MIN] = -nums * step;
-+	tlv[SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP] = step;
- }
- EXPORT_SYMBOL_GPL(snd_hda_set_vmaster_tlv);
+-	isight->gain_tlv[0] = SNDRV_CTL_TLVT_DB_MINMAX;
+-	isight->gain_tlv[1] = 2 * sizeof(unsigned int);
++	isight->gain_tlv[SNDRV_CTL_TLVO_TYPE] = SNDRV_CTL_TLVT_DB_MINMAX;
++	isight->gain_tlv[SNDRV_CTL_TLVO_LEN] = 2 * sizeof(unsigned int);
  
-@@ -1845,10 +1845,10 @@ static int init_slave_0dB(struct snd_kcontrol *slave,
- 	} else if (kctl->vd[0].access & SNDRV_CTL_ELEM_ACCESS_TLV_READ)
- 		tlv = kctl->tlv.p;
+ 	err = reg_read(isight, REG_GAIN_DB_START, &value);
+ 	if (err < 0)
+ 		return err;
+-	isight->gain_tlv[2] = (s32)be32_to_cpu(value) * 100;
++	isight->gain_tlv[SNDRV_CTL_TLVO_DB_MINMAX_MIN] =
++						(s32)be32_to_cpu(value) * 100;
  
--	if (!tlv || tlv[0] != SNDRV_CTL_TLVT_DB_SCALE)
-+	if (!tlv || tlv[SNDRV_CTL_TLVO_TYPE] != SNDRV_CTL_TLVT_DB_SCALE)
- 		return 0;
+ 	err = reg_read(isight, REG_GAIN_DB_END, &value);
+ 	if (err < 0)
+ 		return err;
+-	isight->gain_tlv[3] = (s32)be32_to_cpu(value) * 100;
++	isight->gain_tlv[SNDRV_CTL_TLVO_DB_MINMAX_MAX] =
++						(s32)be32_to_cpu(value) * 100;
  
--	step = tlv[3];
-+	step = tlv[SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP];
- 	step &= ~TLV_DB_SCALE_MUTE;
- 	if (!step)
- 		return 0;
-@@ -1860,7 +1860,7 @@ static int init_slave_0dB(struct snd_kcontrol *slave,
- 	}
- 
- 	arg->step = step;
--	val = -tlv[2] / step;
-+	val = -tlv[SNDRV_CTL_TLVO_DB_SCALE_MIN] / step;
- 	if (val > 0) {
- 		put_kctl_with_value(slave, val);
- 		return val;
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 51030f040745..db773e219aaa 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -2065,7 +2065,7 @@ static int parse_output_paths(struct hda_codec *codec)
- 			snd_hda_set_vmaster_tlv(codec, spec->vmaster_nid,
- 						HDA_OUTPUT, spec->vmaster_tlv);
- 			if (spec->dac_min_mute)
--				spec->vmaster_tlv[3] |= TLV_DB_SCALE_MUTE;
-+				spec->vmaster_tlv[SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP] |= TLV_DB_SCALE_MUTE;
- 		}
- 	}
- 
+ 	ctl = snd_ctl_new1(&gain_control, isight);
+ 	if (ctl)
 -- 
 2.14.1
