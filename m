@@ -1,24 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 19/19] ASoC: Intel: bytcr_rt5640: Set card
- long_name based on quirks
-Date: Sat, 12 May 2018 16:21:58 -0500
-Message-ID: <ea5529dc-9af7-2195-3419-10ab3ad7c9e2@linux.intel.com>
-References: <20180508153604.23711-1-hdegoede@redhat.com>
- <20180508153604.23711-20-hdegoede@redhat.com>
- <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
- <4f678986-9ca5-eeb3-d6ed-528f3fe1d013@redhat.com>
- <84e7b889-7b42-47dc-bdf8-d01ac88a9e55@linux.intel.com>
- <1fd841b6-1e05-2cd9-8b0e-44524503a3fa@redhat.com>
- <19cd9f01-222c-ae6a-6244-d703ac646310@linux.intel.com>
- <86f6bb1e-21af-a2e4-76c4-c0446c3b32e8@redhat.com>
+From: Randy Dunlap <rdunlap@infradead.org>
+Subject: [PATCH -next] ASoC: omap: add sdma-pcm.c MODULE_LICENSE
+Date: Sat, 12 May 2018 18:41:51 -0700
+Message-ID: <2bf2991a-da55-00a4-bc39-a0ee61bad4d0@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id D52EC267616
- for <alsa-devel@alsa-project.org>; Sat, 12 May 2018 23:22:02 +0200 (CEST)
-In-Reply-To: <86f6bb1e-21af-a2e4-76c4-c0446c3b32e8@redhat.com>
+Received: from bombadil.infradead.org (bombadil.infradead.org
+ [198.137.202.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 171A4266F88
+ for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 03:42:05 +0200 (CEST)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,127 +20,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+To: LKML <linux-kernel@vger.kernel.org>, linux-omap@vger.kernel.org, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNS8xMC8yMDE4IDAxOjAxIFBNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+IEhpLAo+Cj4g
-T24gMTAtMDUtMTggMTk6NDYsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+PiBPbiA1LzEw
-LzE4IDEwOjQ4IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+Pj4gSGksCj4+Pgo+Pj4gT24gMTAt
-MDUtMTggMTc6MDAsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+Pj4+IE9uIDUvMTAvMTgg
-NToyNyBBTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4+Pj4gSGksCj4+Pj4+Cj4+Pj4+IE9uIDA4
-LTA1LTE4IDIwOjM1LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4+Pj4+IE9uIDUvOC8x
-OCAxMDozNiBBTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4+Pj4+PiBNYW55IFg4NiBkZXZpY2Vz
-IHVzaW5nIGEgQllUIFNvQyArIFJUNTY0MCBjb2RlYyBhcmUgY2hlYXAgCj4+Pj4+Pj4gZGV2aWNl
-cyB3aXRoCj4+Pj4+Pj4gZ2VuZXJpYyBETUkgc3RyaW5ncywgY2F1c2luZyBzbmRfc29jX3NldF9k
-bWlfbmFtZSgpIHRvIGZhaWwgdG8gCj4+Pj4+Pj4gc2V0IGEKPj4+Pj4+PiBsb25nX25hbWUsIG1h
-a2luZyBpdCBpbXBvc3NpYmxlIGZvciB1c2Vyc3BhY2UgdG8gaGF2ZSBhIGNvcnJlY3QgVUNNCj4+
-Pj4+Pj4gcHJvZmlsZSB3aGljaCBvbmx5IHVzZXMgaW5wdXRzIC8gb3V0cHV0cyB3aGljaCBhcmUg
-YWN0dWFsbHkgCj4+Pj4+Pj4gaG9va2VkIHVwCj4+Pj4+Pj4gb24gdGhlIGRldmljZS4KPj4+Pj4+
-Pgo+Pj4+Pj4+IE91ciBxdWlya3MgYWxyZWFkeSBzcGVjaWZ5IHdoaWNoIGlucHV0IHRoZSBpbnRl
-cm5hbCBtaWMgaXMgCj4+Pj4+Pj4gY29ubmVjdGVkIHRvCj4+Pj4+Pj4gYW5kIGlmIGEgc2luZ2xl
-IChtb25vKSBzcGVha2VyIGlzIHVzZWQgb3IgaWYgdGhlIGRldmljZSBoYXMgc3RlcmVvCj4+Pj4+
-Pj4gc3BlYWtlcnMuCj4+Pj4+Pj4KPj4+Pj4+PiBUaGlzIGNvbW1pdCBzZXRzIGEgbG9uZ19uYW1l
-IGJhc2VkIG9uIHRoZSBxdWlya3Mgc28gdGhhdCAKPj4+Pj4+PiB1c2Vyc3BhY2UgY2FuCj4+Pj4+
-Pj4gaGF2ZSBVQ00gcHJvZmlsZXMgZG9pbmcgdGhlIHJpZ2h0IHRoaW5nIGJhc2VkIG9uIHRoZSBs
-b25nX25hbWUuCj4+Pj4+Pgo+Pj4+Pj4gSXNuJ3QgdGhpcyBnb2luZyB0byBiZSBjb21wbGljYXRl
-ZCB0byBtYW5hZ2UgZm9yIFVDTT8gSnVzdCB3aXRoIAo+Pj4+Pj4gdGhpcyBwYXRjaCBhbG9uZSwg
-eW91J2QgbmVlZCA4IFVDTSBmaWxlcyB0byBjb3ZlciBhbGwgdGhlIAo+Pj4+Pj4gY29tYmluYXRp
-b25zLiAxNiBpZiB5b3UgYWRkIHRoZSAnc29mLScgcHJlZml4Lgo+Pj4+Pj4KPj4+Pj4+IHNlZW1z
-IGxpa2UgVUNNIHNob3VsZCBiZWNvbWUgbW9yZSAnZHluYW1pYycgYW5kIGdldCBxdWlyayAKPj4+
-Pj4+IGluZm9ybWF0aW9uIHNvbWVob3cgKHN5c2ZzPykgdG8gZW5hYmxlL2Rpc2FibGUgZW5kcG9p
-bnRzIHJhdGhlciAKPj4+Pj4+IHRoYW4gcmVseSBvbiBuYW1lIGVuY29kaW5nIHRvIHNlbGVjdCB0
-aGUgcmlnaHQgcHJvZmlsZT8KPj4+Pj4KPj4+Pj4gSSBhZ3JlZSB0aGF0IHRoaXMgaXMgbm90IGlk
-ZWFsLCBidXQgdGhpcyBpcyBhbiBpbXByb3ZlbWVudCBmcm9tIHRoZQo+Pj4+PiBjdXJyZW50IHN0
-YXRlIHdoZXJlIHdlIHdvdWxkIG5lZWQgMSBVQ00gcHJvZmlsZSBwZXIgYm9hcmQKPj4+Pj4gKGFz
-c3VtaW5nIHZhbGlkIERNSSBkYXRhIGFuZCB0aHVzIGEgcHJvcGVyIGxvbmctbmFtZSBiZWluZyBz
-ZXQpLAo+Pj4+PiA2IHByb2ZpbGVzIChkbWljMiBpcyBub3QgdXNlZCBhbnl3aGVyZSBzb2Zhcikg
-aXMgYSB3aG9sZSBsb3QgZWFzaWVyCj4+Pj4+IHRvIG1hbmFnZSB0aGVuIDEgcHJvZmlsZSBwZXIg
-Ym9hcmQuIFNvIGFzIHNhaWQgSSBiZWxpZXZlIHRoaXMgaXMKPj4+Pj4gYSBzdGVwIGluIHRoZSBy
-aWdodCBkaXJlY3Rpb24uCj4+Pj4+Cj4+Pj4+IEFuZCBsb29raW5nIGF0IHRoZSBmb3Jlc2VlYWJs
-ZSBmdXR1cmUgSSBzaW1wbHkgZG9uJ3Qgc2VlIGFueSBvZiB1cwo+Pj4+PiBoYXZpbmcgdGhlIHRp
-bWUgdG8gaW1wbGVtZW50IGFuIGlkZWFsIHNvbHV0aW9uIGZvciB0aGlzLiBJIHdvdWxkCj4+Pj4+
-IHJlYWxseSBsaWtlIGZvciBlbmQgdXNlcnMgdG8gYmUgYWJsZSB0byBydW4gdGhlIGxhdGVzdCB1
-cHN0cmVhbQo+Pj4+PiBrZXJuZWwgKyBhbHNhLWxpYiBhbmQgaGF2ZSB0aGluZ3MganVzdCB3b3Jr
-LCBiZWZvcmUgdGhpcyBoYXJkd2FyZQo+Pj4+PiBiZWNvbWVzIG9ic29sZXRlLiBJIGtub3cgdGhh
-dCBuby1vbmUgaGF2aW5nIHRpbWUgdG8gd29yayBvbiByZXdvcmtpbmcKPj4+Pj4gVUNNIHRvIG1h
-a2UgaXQgbW9yZSBkeW5hbWljIGlzIG5vdCB0aGUgYmVzdCBvZiBhcmd1bWVudHMgYnV0IGl0Cj4+
-Pj4+IGlzIHNvbWV0aGluZyB0byB0YWtlIGludG8gY29uc2lkZXJhdGlvbi4KPj4+Pj4KPj4+Pj4g
-VGhpbmtpbmcgbW9yZSBhYm91dCB0aGlzIG9uIHRoZSBhbHNhLWxpYiAvIFVDTSBwcm9maWxlIHNp
-ZGUgd2UKPj4+Pj4gY291bGQgaGF2ZSBzb21ldGhpbmcgbGlrZSB0aGlzOgo+Pj4+Pgo+Pj4+PiAv
-dXNyL3NoYXJlL2Fsc2EvdWNtL2J5dGNyLXJ0NTY0MC1tb25vLXNway1pbjEtbWljL2J5dGNyLXJ0
-NTY0MC1tb25vLXNway1pbjEtbWljLmNvbmY6IAo+Pj4+Pgo+Pj4+Pgo+Pj4+PiBTZWN0aW9uVXNl
-Q2FzZS4iSGlGaSIgewo+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgIEZpbGUgIi4uL2J5dGNyLXJ0NTY0
-MC9HZW5lcmljLmNvbmYiCj4+Pj4+IMKgwqDCoMKgwqBGaWxlICIuLi9ieXRjci1ydDU2NDAvTW9u
-b1NwZWFrZXIuY29uZiIKPj4+Pj4gwqDCoMKgwqDCoEZpbGUgIi4uL2J5dGNyLXJ0NTY0MC9JbjFN
-aWMuY29uZiIKPj4+Pj4gwqDCoMKgwqDCoMKgwqDCoCBDb21tZW50ICJQbGF5IEhpRmkgcXVhbGl0
-eSBNdXNpYyIKPj4+Pj4gfQo+Pj4+Pgo+Pj4+PiBTZWN0aW9uRGVmYXVsdHMgWwo+Pj4+PiDCoMKg
-wqDCoMKgwqDCoMKgIGNkZXYgImh3OmJ5dGNycnQ1NjQwIgo+Pj4+PiBdCj4+Pj4+Cj4+Pj4+IFRo
-ZSBvbmx5IHByb2JsZW0gSSBjYW4gc2VlIHdpdGggdGhhdCBpcyB0aGF0IHRoZSAiQ29uZmxpY3Rp
-bmdEZXZpY2UiCj4+Pj4+IHNlY3Rpb25zIGZvciB0aGUgdmFyaW91cyBpbnB1dHMgLyBvdXRwdXRz
-IHRoZW4gd291bGQgcmVmZXIgdG8gbm90Cj4+Pj4+IHByZXNlbnQgU2VjdGlvbkRldmljZSBzZWN0
-aW9ucy4gSSBoYXZlIG5vdCB0ZXN0ZWQgdGhpcyBzdWdnZXN0aW9uIAo+Pj4+PiB5ZXQsCj4+Pj4+
-IGJ1dCBJJ20gd2lsbGluZyB0byB3cml0ZSBhbiBhbHNhLWxpYiBwYXRjaCB0byBpZ25vcmUgbm9u
-IHByZXNlbnQKPj4+Pj4gQ29uZmxpY3RpbmdEZXZpY2UgcmVmZXJlbmNlcywgdG8gbWFrZSBteSBz
-dWdnZXN0aW9uIHdvcmsuCj4+Pj4+Cj4+Pj4+IEkgdGhpbmsgZG9pbmcgdGhpbmdzIHRoaXMgd2F5
-LCB0aHVzIGF2b2lkaW5nIHRoZSBuZWVkIHRvIGNvcHkgYW5kCj4+Pj4+IHBhc3RlIGEgd2hvbGUg
-bG90IG9mIFVDTSBjb2RlIGZvciB0aGUgNiBwcm9maWxlcyBpdCB3aWxsIG5vdCBiZQo+Pj4+PiBh
-IHByb2JsZW0gdG8gbWFpbnRhaW4gNiBwcm9maWxlcywgYXMgd2UncmUgcmVhbGx5IGp1c3QgbWFp
-bnRhaW5pbmcKPj4+Pj4gNiBjb25maWcgc25pcHBldHMgc3VjaCBhcyB0aGUgYWJvdmUgZXhhbXBs
-ZSBhbmQgb25seSBvbmUgY29tcGxldGUKPj4+Pj4gcHJvZmlsZS4KPj4+Pj4KPj4+Pj4gV291bGQg
-dGhlIHNvbHV0aW9uIEkgb3V0bGluZWQgYWJvdmUgYmUgYWNjZXB0YWJsZSB0byB5b3U/Cj4+Pj4K
-Pj4+PiBUaGUgaW5jbHVkZXMgYW5kIGRpc2FibGluZyBjb25mbGljdGluZyBkZXZpY2VzIHRoYXQg
-YXJlbid0IHByZXNlbnQgCj4+Pj4gbWFrZSBzZW5zZS4gSSBoYXZlIGFub3RoZXIgaXNzdWUgdGhv
-dWdoOiBmb3IgU09GIGludGVncmF0aW9uIEkgCj4+Pj4gYWxyZWFkeSBwcmVwYXJlZCBhIHNldCBv
-ZiBmaWxlcywgd2hpY2ggYXJlIG1vc3RseSBpZGVudGljYWwgdG8gdGhlIAo+Pj4+IHJlZ3VsYXIg
-b25lcyBleGNlcHQgdGhhdCB0aGUgcGxhdGZvcm0tc2lkZSBtaXhlciBjb250cm9scyBhcmUgCj4+
-Pj4gcmVtb3ZlZCAob3IgZGlmZmVyZW50KSBhbmQgdGhlIG5hbWUgb2YgdGhlIGNhcmQvZGV2aWNl
-IGlzIGRpZmZlcmVudCAKPj4+PiAoc29mLSBwcmVmaXgpLiBTZWUgb24gZ2l0aHViLgo+Pj4KPj4+
-IEhtbSwgaXQgbWlnaHQgbWFrZSBzZW5zZSB0byBzcGxpdCB0aGUgaW5jbHVkZXMgaW4gcGxhdGZv
-cm0gYW5kIGNvZGVjIAo+Pj4gaW5jbHVkZXMsIHNvCj4+PiB0byBwaWNrIG15IGV4YW1wbGUgYWdh
-aW4gd2Ugd291bGQgZ2V0Ogo+Pj4KPj4+IC91c3Ivc2hhcmUvYWxzYS91Y20vYnl0Y3ItcnQ1NjQw
-LW1vbm8tc3BrLWluMS1taWMvYnl0Y3ItcnQ1NjQwLW1vbm8tc3BrLWluMS1taWMuY29uZjogCj4+
-Pgo+Pj4KPj4+IFNlY3Rpb25Vc2VDYXNlLiJIaUZpIiB7Cj4+PiDCoMKgwqDCoCBTZWN0aW9uVmVy
-YiB7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgRW5hYmxlU2VxdWVuY2UgWwo+Pj4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgY2RldiAiaHc6Ynl0Y3JydDU2NDAiCj4+Pgo+Pj4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgRmlsZSAiLi4vYnl0Y3ItcnQ1NjQwL0VuYWJsZVNlcS5jb25mIiAj
-IFRoaXMgY29udGFpbnMgCj4+PiB0aGUgcGxhdGZvcm0gbWl4ZXIgc2V0dGluZ3MKPj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIEZpbGUgIi4uL3J0NTY0MC9FbmFibGVTZXEuY29uZiIKPj4+
-IMKgwqDCoMKgwqDCoMKgwqDCoCBdCj4+Pgo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIERpc2FibGVT
-ZXF1ZW5jZSBbCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqAgXQo+Pj4KPj4+IMKgwqDCoMKgwqDCoMKg
-wqDCoCBWYWx1ZSB7Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBQbGF5YmFja1BDTSAi
-aHc6Ynl0Y3JydDU2NDAiCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBDYXB0dXJlUENN
-ICJodzpieXRjcnJ0NTY0MCIKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoCB9Cj4+PiDCoMKgwqDCoMKg
-wqAgfQo+Pj4KPj4+IMKgwqDCoMKgwqDCoCBGaWxlICIuLi9ydDU2NDAvSGVhZHNldC5jb25mIgo+
-Pj4gwqDCoMKgwqDCoMKgIEZpbGUgIi4uL3J0NTY0MC9Nb25vU3BlYWtlci5jb25mIgo+Pj4gwqDC
-oMKgwqDCoMKgIEZpbGUgIi4uL3J0NTY0MC9JbjFNaWMuY29uZiIKPj4+IMKgwqDCoMKgwqDCoCBD
-b21tZW50ICJQbGF5IEhpRmkgcXVhbGl0eSBNdXNpYyIKPj4+IH0KPj4+Cj4+PiBTZWN0aW9uRGVm
-YXVsdHMgWwo+Pj4gwqDCoMKgwqDCoMKgIGNkZXYgImh3OmJ5dGNycnQ1NjQwIgo+Pj4gXQo+Pj4K
-Pj4+IEFuZCB0aGVuIGZvciBzb2YgeW91IHdvdWxkIGp1c3QgbmVlZCB0bwo+Pj4gb2ZmZXIgYSBz
-b2YtcnQ1NjQwL0VuYWJsZVNlcS5jb25mLCBvcgo+Pj4gbWF5YmUgZXZlbiBsZWF2ZSBpdCBvdXQg
-Y29tcGxldGVseS4KPj4+Cj4+PiBBbmQgd2UgbWlnaHQgYWxzbyBiZSBhYmxlIHRvIG1lcmdlIHRo
-ZSBwbGF0Zm9ybQo+Pj4gZW5hYmxlIHNlcXVlbmNlcyBpbnRvIGEgZ2VuZXJpYzoKPj4+Cj4+PiBi
-eXRjci9FbmFibGVTZXEuY29uZgo+Pj4KPj4+IEkgdGhpbmsgdGhhdCB3aWxsIGF0IGxlYXN0IGZs
-eSBmb3IgYnl0Y3ItcnQ1NjQwIGFuZAo+Pj4gYnV0Y3ItcnQ1NjUxLCBsZWFkaW5nIHVzIGJlaW5n
-IGFibGUgdG8gcmVtb3ZlIG1vcmUKPj4+IGR1cGxpY2F0ZWQgVUNNIGNvbmZpZy4KPj4+Cj4+PiBI
-b3cgZG9lcyB0aGlzIHNvdW5kPwo+Pgo+PiBzcGxpdHRpbmcgcGxhdGZvcm0gYW5kIGNvZGVjIHNp
-ZGVzIGlzIGEgZ29vZCBpZGVhIChhbmQgc29tZXRoaW5nIHRoYXQgCj4+IHdhcyBkb25lIGJ5IHJl
-bW92aW5nIGFsbCBwbGF0Zm9ybSBtaXhlciBzZXR0aW5ncyBmcm9tIHRoZSBIaUZpIGZpbGVzKQo+
-Pgo+PiB0aGUgcHJvYmxlbSByZW1haW5zIHRoYXQgd2UgaGF2ZSBhbGwgdGhlc2UgY2RldiBzdHJp
-bmdzIHRoYXQgYXJlIAo+PiBoYXJkLWNvZGVjIHdpdGggYSBjYXJkIG5hbWUuIFNhbWUgd2hlbiB0
-aGUgbWF0Y2ggaGFwcGVucyBiYXNlZCBvbiBhIAo+PiBETUkgc3RyaW5nLCBob3cgd291bGQgSSBr
-bm93IHdoaWNoIG9mIHRoZSBwbGF0Zm9ybSBzZXR0aW5ncyB0byBhcHBseSAKPj4gd2l0aG91dCBx
-dWVyeWluZyB3aGF0IHRoZSBwbGF0Zm9ybSBkcml2ZXIgaXM/Cj4KPiBXZWxsIHRoZSBETUkgc3Ry
-aW5nIHdvdWxkIHVuaXF1ZWx5IGlkZW50aWZ5IGEgY2VydGFpbiBtb2RlbCBkZXZpY2UsCj4gd2hl
-biB3ZSB3cml0ZSB0aGUgVUNNIGZpbGUgd2Ugc2hvdWxkIGtub3cgd2hhdCB0aGUgcGxhdGZvcm0g
-KyBjb2RlYwo+IGZvciB0aGF0IGRldmljZSBpcyBhbmQgd2UgY2FuIHNpbXBseSBoYXJkY29kZSB0
-aGVtLCBsaWtlIGluCj4gbXkgZXhhbXBsZSBhYm92ZS4KPgo+IEJ1dCBtYXliZSBJJ20gbWlzdW5k
-ZXJzdGFuZGluZyB5b3U/CgpGb3IgdGhlIHNhbWUgRE1JIGRldmljZSwgeW91IGNvdWxkIGVpdGhl
-ciBlbmFibGUgdGhlIGV4aXN0aW5nIGludGVsL3NzdCAKb3IgU09GIGRyaXZlcnMuIEhvdyB3b3Vs
-ZCB3ZSBoYW5kbGUgVUNNIGNvbmZpZ3MgdGhlbj8gVGhlIERNSSBuYW1lIHdvdWxkIApuZWVkIHRv
-IGJlIGF1Z21lbnRlZCB3aXRoIGEgcHJlZml4LCBvciB3ZSB1c2UgKnNvbWV0aGluZyogdG8gYWRk
-IHRoZSAKcmVmZXJlbmNlcyB0byBTT0YgaW4gdGhlIHBsYXRmb3JtIGluY2x1ZGUgYW5kIEFMU0Eg
-ZGV2aWNlIHN0cmluZy4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+From: Randy Dunlap <rdunlap@infradead.org>
+
+ASoC: omap: add sdma-pcm.c MODULE_LICENSE
+
+Fixes this build warning:
+
+WARNING: modpost: missing MODULE_LICENSE() in sound/soc/omap/snd-soc-sdma.o
+
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/omap/sdma-pcm.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+--- linux-next-20180510.orig/sound/soc/omap/sdma-pcm.c
++++ linux-next-20180510/sound/soc/omap/sdma-pcm.c
+@@ -9,6 +9,7 @@
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+ #include <sound/dmaengine_pcm.h>
++#include <linux/module.h>
+ #include <linux/omap-dma.h>
+ 
+ #include "sdma-pcm.h"
+@@ -66,3 +67,5 @@ int sdma_pcm_platform_register(struct de
+ 	return devm_snd_dmaengine_pcm_register(dev, config, flags);
+ }
+ EXPORT_SYMBOL_GPL(sdma_pcm_platform_register);
++
++MODULE_LICENSE("GPL v2");
