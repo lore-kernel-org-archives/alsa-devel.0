@@ -1,67 +1,67 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hisilicon: fix spelling mistake: "uknown" -> "unknown"" to the asoc tree
-Date: Sun, 13 May 2018 03:32:04 +0100 (BST)
-Message-ID: <20180513023204.CCAB944007C@finisterre.ee.mobilebroadband>
-References: <20180511132818.16728-1-colin.king@canonical.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180511132818.16728-1-colin.king@canonical.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2 00/10] ASoC: rt5640: Add jack-detect and
+ button-press support
+Date: Sun, 13 May 2018 06:48:21 +0200
+Message-ID: <87c76437-459c-0c24-f629-d296bb18fec1@redhat.com>
+References: <20180511132928.7669-1-hdegoede@redhat.com>
+ <20180513022956.GB17611@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC6F3266F88
+ for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 06:48:23 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id a137-v6so7511474wme.1
+ for <alsa-devel@alsa-project.org>; Sat, 12 May 2018 21:48:23 -0700 (PDT)
+In-Reply-To: <20180513022956.GB17611@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi,
 
-   ASoC: hisilicon: fix spelling mistake: "uknown" -> "unknown"
+On 05/13/2018 04:29 AM, Mark Brown wrote:
+> On Fri, May 11, 2018 at 03:29:18PM +0200, Hans de Goede wrote:
+>> Hi Mark, et. al.,
+>>
+>> Here is v2 of the remaining patches from my rt5640 jack-detect series.
+>>
+>> As requested this is rebased on your sound/for-next branch, so this should
+>> apply cleanly now.
+> 
+> That's not what git is telling me:
+> 
+> Applying: ASoC: Intel: bytcr_rt5640: Use device properties for setting up dmic
+> error: patch failed: sound/soc/intel/boards/bytcr_rt5640.c:556
+> error: sound/soc/intel/boards/bytcr_rt5640.c: patch does not apply
+> Patch failed at 0001 ASoC: Intel: bytcr_rt5640: Use device properties for setting up dmic
+> Use 'git am --show-current-patch' to see the failed patch
+> When you have resolved this problem, run "git am --continue".
+> If you prefer to skip this patch, run "git am --skip" instead.
+> To restore the original branch and stop patching, run "git am --abort".
+> 
+> If I try with -3 it tells me that it doesn't even know the SHA1s which
+> suggests you have something else in your tree?
 
-has been applied to the asoc tree at
+Yes, I still have the "ASoC: Intel: bytcr_rt5640: Drop unwanted ignore_suspend settings"
+patch, for which we never really finished the discussion.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+I will drop that for now and send a v3 which should apply cleanly, sorry about this.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+As for the ignore_suspend patch I will run some tests to make sure that things
+work ok without it and then just drop it permanently.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Regards,
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 2b8eae795580ca13ce6f035cac599f6a85c81bbf Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 11 May 2018 14:28:18 +0100
-Subject: [PATCH] ASoC: hisilicon: fix spelling mistake: "uknown" -> "unknown"
-
-Trivial fix to spelling mistake in dev_err message text
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/hisilicon/hi6210-i2s.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index 07a57209e055..53344a3b7a60 100644
---- a/sound/soc/hisilicon/hi6210-i2s.c
-+++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -498,7 +498,7 @@ static int hi6210_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
- 			hi6210_i2s_txctrl(cpu_dai, 0);
- 		break;
- 	default:
--		dev_err(cpu_dai->dev, "uknown cmd\n");
-+		dev_err(cpu_dai->dev, "unknown cmd\n");
- 		return -EINVAL;
- 	}
- 	return 0;
--- 
-2.17.0
+Hans
