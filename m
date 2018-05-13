@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v3 06/10] ASoC: Intel: bytcr_rt5640: Add
-	default jack-detect settings
-Date: Sun, 13 May 2018 09:24:31 +0200
-Message-ID: <20180513072435.3358-7-hdegoede@redhat.com>
+Subject: [PATCH v3 07/10] ASoC: Intel: bytcr_rt5640: Sort DMI
+	quirk list alphabetically
+Date: Sun, 13 May 2018 09:24:32 +0200
+Message-ID: <20180513072435.3358-8-hdegoede@redhat.com>
 References: <20180513072435.3358-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FD63267677
- for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 09:25:04 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 38B8C2676D1
+ for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 09:25:07 +0200 (CEST)
 In-Reply-To: <20180513072435.3358-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,43 +25,87 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard L
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Out of the 11 BYTCR devices which I have access to for testing, 6 use
-JD1IN4P for jack-detect, 2 use JD1IN4P non-inverted and the other 3 use
-JD2IN4N, the ones not using JD1IN4P are all also special in other ways and
-need a DMI quirk regardless.
-
-All 5 BYT (non CR) devices which I have access to use JD2IN4N.
+As we add more quirks it is useful to have some sort of order in the
+quirk list, sort it alphabetically.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 41 ++++++++++++++-------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 355c241470b5..b00f21ed4357 100644
+index b00f21ed4357..965721663749 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -84,6 +84,9 @@ enum {
+@@ -401,7 +401,19 @@ static int byt_rt5640_quirk_cb(const struct dmi_system_id *id)
+ 	return 1;
+ }
  
- #define BYTCR_INPUT_DEFAULTS				\
- 	(BYT_RT5640_IN3_MAP |				\
-+	 BYT_RT5640_JD_SRC_JD1_IN4P |			\
-+	 BYT_RT5640_OVCD_TH_2000UA |			\
-+	 BYT_RT5640_OVCD_SF_0P75 |			\
- 	 BYT_RT5640_DIFF_MIC)
- 
- /* in-diff or dmic-pin + jdsrc + ovcd-th + -sf + jd-inv + terminating entry */
-@@ -985,7 +988,10 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
- 		/* change defaults for Baytrail-CR capture */
- 		byt_rt5640_quirk |= BYTCR_INPUT_DEFAULTS;
- 	} else {
--		byt_rt5640_quirk |= BYT_RT5640_DMIC1_MAP;
-+		byt_rt5640_quirk |= BYT_RT5640_DMIC1_MAP |
-+				    BYT_RT5640_JD_SRC_JD2_IN4N |
-+				    BYT_RT5640_OVCD_TH_2000UA |
-+				    BYT_RT5640_OVCD_SF_0P75;
- 	}
- 
- 	/* check quirks before creating card */
++/* Please keep this list alphabetically sorted */
+ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
++	{
++		.callback = byt_rt5640_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++						 BYT_RT5640_MCLK_EN |
++						 BYT_RT5640_SSP0_AIF1),
++
++	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+ 		.matches = {
+@@ -426,6 +438,14 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF2 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		.callback = byt_rt5640_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard Max B3 PLATFORM"),
++		},
++		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP),
++	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+ 		.matches = {
+@@ -448,14 +468,6 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
+-	{
+-		.callback = byt_rt5640_quirk_cb,
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Minnowboard Max B3 PLATFORM"),
+-		},
+-		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP),
+-	},
+ 	{
+ 		.callback = byt_rt5640_quirk_cb,
+ 		.matches = {
+@@ -466,18 +478,7 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_MCLK_EN |
+ 					BYT_RT5640_SSP0_AIF1),
+ 	},
+-	{
+-		.callback = byt_rt5640_quirk_cb,
+-		.matches = {
+-			DMI_MATCH(DMI_SYS_VENDOR, "Acer"),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "Aspire SW5-012"),
+-		},
+-		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
+-						 BYT_RT5640_MCLK_EN |
+-						 BYT_RT5640_SSP0_AIF1),
+-
+-	},
+-	{
++	{	/* Catch-all for generic Insyde tablets, must be last */
+ 		.callback = byt_rt5640_quirk_cb,
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Insyde"),
 -- 
 2.17.0
