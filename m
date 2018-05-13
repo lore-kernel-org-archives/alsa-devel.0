@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: Fix compile error"
-	to the asoc tree
-Date: Sun, 13 May 2018 03:32:01 +0100 (BST)
-Message-ID: <20180513023201.D8E8F44007A@finisterre.ee.mobilebroadband>
-References: <20180511095216.11203-1-hdegoede@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 50D53266F88
- for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 04:32:07 +0200 (CEST)
-In-Reply-To: <20180511095216.11203-1-hdegoede@redhat.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Subject: Applied "ASoC: hisilicon: fix spelling mistake: "uknown" -> "unknown"" to the asoc tree
+Date: Sun, 13 May 2018 03:32:04 +0100 (BST)
+Message-ID: <20180513023204.CCAB944007C@finisterre.ee.mobilebroadband>
+References: <20180511132818.16728-1-colin.king@canonical.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180511132818.16728-1-colin.king@canonical.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: Fix compile error
+   ASoC: hisilicon: fix spelling mistake: "uknown" -> "unknown"
 
 has been applied to the asoc tree at
 
@@ -53,40 +37,31 @@ to this mail.
 Thanks,
 Mark
 
->From a3a956a6dddec7ce83bf861c11b479da1057980f Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Fri, 11 May 2018 11:52:16 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Fix compile error
+>From 2b8eae795580ca13ce6f035cac599f6a85c81bbf Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Fri, 11 May 2018 14:28:18 +0100
+Subject: [PATCH] ASoC: hisilicon: fix spelling mistake: "uknown" -> "unknown"
 
-Fix the compile error introduced by: "ASoC: Intel: bytcr_rt5640:
-Configure PLL1 before using it".
+Trivial fix to spelling mistake in dev_err message text
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/hisilicon/hi6210-i2s.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 404aa7355912..fe46f3b2aecc 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -178,14 +178,14 @@ static int byt_rt5640_prepare_and_enable_pll1(struct snd_soc_dai *codec_dai,
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index 07a57209e055..53344a3b7a60 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -498,7 +498,7 @@ static int hi6210_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 			hi6210_i2s_txctrl(cpu_dai, 0);
+ 		break;
+ 	default:
+-		dev_err(cpu_dai->dev, "uknown cmd\n");
++		dev_err(cpu_dai->dev, "unknown cmd\n");
+ 		return -EINVAL;
  	}
- 
- 	if (ret < 0) {
--		dev_err(codec_dai->codec->dev, "can't set pll: %d\n", ret);
-+		dev_err(codec_dai->component->dev, "can't set pll: %d\n", ret);
- 		return ret;
- 	}
- 
- 	ret = snd_soc_dai_set_sysclk(codec_dai, RT5640_SCLK_S_PLL1,
- 				     rate * 512, SND_SOC_CLOCK_IN);
- 	if (ret < 0) {
--		dev_err(codec_dai->codec->dev, "can't set clock %d\n", ret);
-+		dev_err(codec_dai->component->dev, "can't set clock %d\n", ret);
- 		return ret;
- 	}
- 
+ 	return 0;
 -- 
 2.17.0
