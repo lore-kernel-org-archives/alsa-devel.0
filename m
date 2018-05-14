@@ -1,114 +1,101 @@
-From: Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH v2 09/11] docs: Fix some broken references
-Date: Mon, 14 May 2018 22:31:26 +0900
-Message-ID: <20180514223126.8d738475fbb53fba9ff199d9@kernel.org>
-References: <cover.1525870886.git.mchehab+samsung@kernel.org>
- <e959f23d6f6905ee606fadfda13e2bb37deed017.1525870886.git.mchehab+samsung@kernel.org>
+From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH v14 2/8] ASoC: sun4i-codec: Add Mic1 Boost
+ Volume, Mic2 Boost Volume
+Date: Mon, 14 May 2018 16:05:30 +0200
+Message-ID: <20180514140530.bnedijfm6hvnpyq4@flea>
+References: <20180502210800.1971-1-dannym@scratchpost.org>
+ <20180502210800.1971-3-dannym@scratchpost.org>
+ <20180503143319.4vyh2y5sluatssnv@flea>
+ <20180505090513.7e3f02c2@scratchpost.org>
+Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <e959f23d6f6905ee606fadfda13e2bb37deed017.1525870886.git.mchehab+samsung@kernel.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>, dri-devel@lists.freedesktop.org, Jaroslav Kysela <perex@perex.cz>, Eric Paris <eparis@parisplace.org>, linux-clk@vger.kernel.org, James Morris <jmorris@namei.org>, Alan Stern <stern@rowland.harvard.edu>, xen-devel@lists.xenproject.org, Boqun Feng <boqun.feng@gmail.com>, Nicholas Piggin <npiggin@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Antoine Jacquet <royale@zerezo.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>, linux-crypto@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>, alsa-devel@alsa-project.org, Linux Doc Mailing List <linux-doc@vger.kernel.org>, David Airlie <airlied@linux.ie>, Max Filippov <jcmvbkbc@gmail.com>, Harry Wei <harryxiyou@gmail.com>, selinux@tycho.nsa.gov, Paul
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="a6p7tq4lwuvkohwp"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBNNP43LQKGQEXWKBAEI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Disposition: inline
+In-Reply-To: <20180505090513.7e3f02c2-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Andrea Bondavalli <andrea.bondavalli74-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAgOSBNYXkgMjAxOCAxMDoxODo1MiAtMDMwMApNYXVybyBDYXJ2YWxobyBDaGVoYWIg
-PG1jaGVoYWIrc2Ftc3VuZ0BrZXJuZWwub3JnPiB3cm90ZToKCj4gQXMgd2UgbW92ZSBzdHVmZiBh
-cm91bmQsIHNvbWUgZG9jIHJlZmVyZW5jZXMgYXJlIGJyb2tlbi4gRml4IHNvbWUgb2YKPiB0aGVt
-IHZpYSB0aGlzIHNjcmlwdDoKPiAJLi9zY3JpcHRzL2RvY3VtZW50YXRpb24tZmlsZS1yZWYtY2hl
-Y2sgLS1maXgtcnN0Cj4gCj4gTWFudWFsbHkgY2hlY2tlZCBpZiB0aGUgcHJvZHVjZWQgcmVzdWx0
-IGlzIHZhbGlkLCByZW1vdmluZyBhIGZldwo+IGZhbHNlLXBvc2l0aXZlcy4KClRoZSBwYXJ0IG9m
-IGtwcm9iZXMgYW5kIHRyYWNlX2twcm9iZSBjaGFuZ2VzIGxvb2sgZ29vZCB0byBtZSA6KQoKQWNr
-ZWQtYnk6IE1hc2FtaSBIaXJhbWF0c3UgPG1oaXJhbWF0QGtlcm5lbC5vcmc+CgpUaGFuayB5b3Us
-Cgo+IAo+IFNpZ25lZC1vZmYtYnk6IE1hdXJvIENhcnZhbGhvIENoZWhhYiA8bWNoZWhhYitzYW1z
-dW5nQGtlcm5lbC5vcmc+Cj4gLS0tCj4gIC4uLi9hZG1pbi1ndWlkZS9rZXJuZWwtcGFyYW1ldGVy
-cy50eHQgICAgICAgICB8ICA0ICsrLS0KPiAgLi4uL2JpbmRpbmdzL2lucHV0L3JvdGFyeS1lbmNv
-ZGVyLnR4dCAgICAgICAgIHwgIDIgKy0KPiAgRG9jdW1lbnRhdGlvbi9kcml2ZXItYXBpL2dwaW8v
-Y29uc3VtZXIucnN0ICAgIHwgIDIgKy0KPiAgRG9jdW1lbnRhdGlvbi9rcHJvYmVzLnR4dCAgICAg
-ICAgICAgICAgICAgICAgIHwgIDQgKystLQo+ICBEb2N1bWVudGF0aW9uL3RyYWNlL2NvcmVzaWdo
-dC50eHQgICAgICAgICAgICAgfCAgMiArLQo+ICBEb2N1bWVudGF0aW9uL3RyYWNlL2V2ZW50cy5y
-c3QgICAgICAgICAgICAgICAgfCAgMiArLQo+ICBEb2N1bWVudGF0aW9uL3RyYWNlL2Z0cmFjZS11
-c2VzLnJzdCAgICAgICAgICAgfCAgMiArLQo+ICBEb2N1bWVudGF0aW9uL3RyYWNlL2hpc3RvZ3Jh
-bS50eHQgICAgICAgICAgICAgfCAgMiArLQo+ICBEb2N1bWVudGF0aW9uL3RyYWNlL2ludGVsX3Ro
-LnJzdCAgICAgICAgICAgICAgfCAgMiArLQo+ICBEb2N1bWVudGF0aW9uL3RyYWNlL3RyYWNlcG9p
-bnQtYW5hbHlzaXMucnN0ICAgfCAgNiArKystLS0KPiAgRG9jdW1lbnRhdGlvbi90cmFuc2xhdGlv
-bnMvamFfSlAvaG93dG8ucnN0ICAgIHwgIDQgKystLQo+ICAuLi4vdHJhbnNsYXRpb25zL3poX0NO
-L21hZ2ljLW51bWJlci50eHQgICAgICAgfCAgNCArKy0tCj4gIC4uLi96aF9DTi92aWRlbzRsaW51
-eC9vbWFwM2lzcC50eHQgICAgICAgICAgICB8ICA0ICsrLS0KPiAgTUFJTlRBSU5FUlMgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgMjAgKysrKysrKysrLS0tLS0tLS0tLQo+ICBh
-cmNoL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQo+ICBh
-cmNoL2FybS9pbmNsdWRlL2FzbS9jYWNoZWZsdXNoLmggICAgICAgICAgICAgfCAgMiArLQo+ICBh
-cmNoL2FybTY0L2luY2x1ZGUvYXNtL2NhY2hlZmx1c2guaCAgICAgICAgICAgfCAgMiArLQo+ICBh
-cmNoL21pY3JvYmxhemUvaW5jbHVkZS9hc20vY2FjaGVmbHVzaC5oICAgICAgfCAgMiArLQo+ICBh
-cmNoL3VtL0tjb25maWcudW0gICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgMiArLQo+ICBh
-cmNoL3VuaWNvcmUzMi9pbmNsdWRlL2FzbS9jYWNoZWZsdXNoLmggICAgICAgfCAgMiArLQo+ICBh
-cmNoL3g4Ni9lbnRyeS92c3lzY2FsbC92c3lzY2FsbF82NC5jICAgICAgICAgfCAgMiArLQo+ICBh
-cmNoL3h0ZW5zYS9pbmNsdWRlL2FzbS9jYWNoZWZsdXNoLmggICAgICAgICAgfCAgNCArKy0tCj4g
-IGJsb2NrL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCj4g
-IGNlcnRzL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCj4g
-IGNyeXB0by9hc3ltbWV0cmljX2tleXMvYXN5bW1ldHJpY190eXBlLmMgICAgICB8ICAyICstCj4g
-IGNyeXB0by9hc3ltbWV0cmljX2tleXMvc2lnbmF0dXJlLmMgICAgICAgICAgICB8ICAyICstCj4g
-IGRyaXZlcnMvY2hhci9LY29uZmlnICAgICAgICAgICAgICAgICAgICAgICAgICB8ICAyICstCj4g
-IGRyaXZlcnMvY2xrL2Nsay5jICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8ICA0ICsrLS0K
-PiAgZHJpdmVycy9jbGsvaW5nZW5pYy9jZ3UuaCAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0K
-PiAgZHJpdmVycy9ncHUvdmdhL0tjb25maWcgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0K
-PiAgZHJpdmVycy9ncHUvdmdhL3ZnYWFyYi5jICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0K
-PiAgZHJpdmVycy9pbnB1dC9qb3lzdGljay9LY29uZmlnICAgICAgICAgICAgICAgIHwgMTAgKysr
-KystLS0tLQo+ICBkcml2ZXJzL2lucHV0L2pveXN0aWNrL2lmb3JjZS9LY29uZmlnICAgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL2lucHV0L2pveXN0aWNrL3dhbGtlcmEwNzAxLmMgICAgICAgICAg
-fCAgMiArLQo+ICBkcml2ZXJzL2lucHV0L21pc2MvS2NvbmZpZyAgICAgICAgICAgICAgICAgICAg
-fCAgNCArKy0tCj4gIGRyaXZlcnMvaW5wdXQvbWlzYy9yb3RhcnlfZW5jb2Rlci5jICAgICAgICAg
-ICB8ICAyICstCj4gIGRyaXZlcnMvaW5wdXQvbW91c2UvS2NvbmZpZyAgICAgICAgICAgICAgICAg
-ICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL2lucHV0L21vdXNlL2FscHMuYyAgICAgICAgICAgICAg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL2lucHV0L3RvdWNoc2NyZWVuL3dtOTd4eC1jb3JlLmMg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL2xpZ2h0bnZtL3BibGstcmIuYyAgICAgICAgICAgICAg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL21kL2JjYWNoZS9LY29uZmlnICAgICAgICAgICAgICAg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL21kL2JjYWNoZS9idHJlZS5jICAgICAgICAgICAgICAg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL21kL2JjYWNoZS9leHRlbnRzLmMgICAgICAgICAgICAg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL21lZGlhL2R2Yi1jb3JlL2R2Yl9yaW5nYnVmZmVyLmMg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL21lZGlhL3BjaS9tZXllL0tjb25maWcgICAgICAgICAg
-ICAgICAgfCAgMiArLQo+ICBkcml2ZXJzL21lZGlhL3BsYXRmb3JtL3B4YV9jYW1lcmEuYyAgICAg
-ICAgICAgfCAgNCArKy0tCj4gIC4uLi9zb2NfY2FtZXJhL3NoX21vYmlsZV9jZXVfY2FtZXJhLmMg
-ICAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvbWVkaWEvcmFkaW8vS2NvbmZpZyAgICAgICAgICAg
-ICAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvbWVkaWEvcmFkaW8vc2k0NzB4L0tjb25maWcgICAg
-ICAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvbWVkaWEvdXNiL2R2Yi11c2ItdjIvbG1lZG0wNC5j
-ICAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvbWVkaWEvdXNiL3pyMzY0eHgvS2NvbmZpZyAgICAg
-ICAgICAgICB8ICAyICstCj4gIGRyaXZlcnMvcGFycG9ydC9LY29uZmlnICAgICAgICAgICAgICAg
-ICAgICAgICB8ICA2ICsrKy0tLQo+ICBkcml2ZXJzL3N0YWdpbmcvbWVkaWEvYmNtMjA0OC9UT0RP
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL2tleXMvYXN5bW1ldHJpYy1zdWJ0eXBlLmgg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL2tleXMvYXN5bW1ldHJpYy10eXBlLmggICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL2xpbnV4L2Fzc29jX2FycmF5LmggICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL2xpbnV4L2Fzc29jX2FycmF5X3ByaXYuaCAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL2xpbnV4L2NpcmNfYnVmLmggICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL2xpbnV4L2Z0cmFjZS5oICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL2xpbnV4L3JjdWxpc3RfbnVsbHMuaCAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL3VhcGkvbGludXgvcHJjdGwuaCAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBpbmNsdWRlL3hlbi9pbnRlcmZhY2UvaW8va2JkaWYuaCAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBrZXJuZWwvY2dyb3VwL2NwdXNldC5jICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAgMiArLQo+ICBrZXJuZWwvdHJhY2UvS2NvbmZpZyAgICAgICAgICAgICAg
-ICAgICAgICAgICAgfCAxNiArKysrKysrLS0tLS0tLS0KPiAgbGliL0tjb25maWcgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgc2VjdXJpdHkvc2VsaW51eC9ob29r
-cy5jICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgc291bmQvY29yZS9LY29uZmlnICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDQgKystLQo+ICBzb3VuZC9kcml2ZXJzL0tjb25m
-aWcgICAgICAgICAgICAgICAgICAgICAgICAgfCAgNCArKy0tCj4gIHNvdW5kL3BjaS9LY29uZmln
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IDEwICsrKysrLS0tLS0KPiAgdG9vbHMvaW5j
-bHVkZS91YXBpL2xpbnV4L3ByY3RsLmggICAgICAgICAgICAgIHwgIDIgKy0KPiAgdG9vbHMvbGli
-L2FwaS9mcy9mcy5jICAgICAgICAgICAgICAgICAgICAgICAgIHwgIDIgKy0KPiAgdG9vbHMvbWVt
-b3J5LW1vZGVsL1JFQURNRSAgICAgICAgICAgICAgICAgICAgIHwgMTAgKysrKystLS0tLQo+ICB0
-b29scy9wZXJmL3V0aWwvYnBmLXByb2xvZ3VlLmMgICAgICAgICAgICAgICAgfCAgMiArLQo+ICAu
-Li4vY29uZmlnL2N1c3RvbS10aW1lbGluZS1mdW5jdGlvbnMuY2ZnICAgICAgfCAgNCArKy0tCj4g
-IDc0IGZpbGVzIGNoYW5nZWQsIDEyMCBpbnNlcnRpb25zKCspLCAxMjAgZGVsZXRpb25zKC0pCj4g
-CgoKLS0gCk1hc2FtaSBIaXJhbWF0c3UgPG1oaXJhbWF0QGtlcm5lbC5vcmc+Cl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxp
-c3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNr
-dG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--a6p7tq4lwuvkohwp
+Content-Type: text/plain; charset="UTF-8"
+Content-Disposition: inline
+
+On Sat, May 05, 2018 at 09:05:13AM +0200, Danny Milosavljevic wrote:
+> Hi Maxime,
+> 
+> On Thu, 3 May 2018 16:33:19 +0200
+> Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
+> 
+> > > +struct sun4i_codec_quirks {
+> > > +	const struct regmap_config *regmap_config;
+> > > +	const struct snd_soc_component_driver *codec;
+> > > +	struct snd_soc_card * (*create_card)(struct device *dev);
+> > > +	struct reg_field reg_adc_fifoc;	/* used for regmap_field */
+> > > +	unsigned int reg_dac_txdata;	/* TX FIFO offset for DMA config */
+> > > +	unsigned int reg_adc_rxdata;	/* RX FIFO offset for DMA config */
+> > > +	bool has_reset;
+> > > +	const struct snd_kcontrol_new *controls;
+> > > +	unsigned int num_controls;
+> > > +};
+> > > +
+> > > +static int sun4i_codec_component_driver_probe(struct snd_soc_component *codec)
+> > > +{
+> > > +	const struct sun4i_codec_quirks *quirks;
+> > > +
+> > > +	quirks = of_device_get_match_data(codec->dev);
+> > > +	return snd_soc_add_component_controls(codec,
+> > > +					      quirks->controls,
+> > > +					      quirks->num_controls);  
+> > 
+> > Why not just extending the sun4i_codec_controls to add it, and create
+> > a duplicate one for the A20?
+> 
+> Because sun4i_codec_controls has five controls shared between A10 and A20,
+> and only two not shared.
+>
+> And if we extended sun4i_codec_controls, we'd also have to duplicate
+> sun4i_codec_codec in order to use sun4i_codec_controls vs. sun7i_codec_controls,
+> which really contains exactly the same data otherwise.
+
+What I don't really like is that with this patch we have two variants
+of the same mechanism: one to add the controls that are mostly shared,
+and one to add the controls that are not shared, without any clear
+definition of when you should add a new control to one list or the
+other.
+
+So far, we had one mechanism, it was easy to understand and to know
+what to do about it. And the code was simple as well.
+
+> The quirks here are just for two controls, Mic1 Boost Volume and
+> Mic2 Boost Volume, and there not even for the names or anything -
+> just for some reason the register moved away.
+> 
+> The simplest way was to add it to the quirks - which already have a
+> variant selection etc.
+
+Actually, I think that having to do add a new control explicitly to an
+A10 and an A20 list is a feature if the two controls set aren't
+exactly the same. It makes you explicitly think about what you're
+doing, and hopefully double check if it is actually shared or not,
+instead of exposing a control because one didn't pay attention that it
+was shared.
+
+Chen-Yu, any opinion on this?
+
+Maxime
+
+-- 
+Maxime Ripard, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
+--a6p7tq4lwuvkohwp--
