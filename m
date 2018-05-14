@@ -1,19 +1,17 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: [PATCH 4/4] ALSA: isight: use position offset
- macro of TLV data
-Date: Mon, 14 May 2018 08:32:30 +0200
-Message-ID: <d48600a6-2a2a-ca9e-9cb8-8f1f8171270f@ladisch.de>
-References: <20180513220953.15118-1-o-takashi@sakamocchi.jp>
- <20180513220953.15118-5-o-takashi@sakamocchi.jp>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH -next] ASoC: omap: add sdma-pcm.c
+	MODULE_LICENSE
+Date: Mon, 14 May 2018 09:45:52 +0300
+Message-ID: <05c6b697-c2ca-85f2-afd6-d234bc9c1560@ti.com>
+References: <2bf2991a-da55-00a4-bc39-a0ee61bad4d0@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- by alsa0.perex.cz (Postfix) with ESMTP id B88F0266DF0
- for <alsa-devel@alsa-project.org>; Mon, 14 May 2018 08:31:40 +0200 (CEST)
-In-Reply-To: <20180513220953.15118-5-o-takashi@sakamocchi.jp>
+Received: from fllnx209.ext.ti.com (fllnx209.ext.ti.com [198.47.19.16])
+ by alsa0.perex.cz (Postfix) with ESMTP id AFF48266CCE
+ for <alsa-devel@alsa-project.org>; Mon, 14 May 2018 08:45:11 +0200 (CEST)
+In-Reply-To: <2bf2991a-da55-00a4-bc39-a0ee61bad4d0@infradead.org>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,48 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Randy Dunlap <rdunlap@infradead.org>, LKML <linux-kernel@vger.kernel.org>, linux-omap@vger.kernel.org, moderated for non-subscribers <alsa-devel@alsa-project.org>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Andrew Morton <akpm@linux-foundation.org>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto wrote:
-> A series of SNDRV_CTL_TLVO_XXX macro was introduced for position offset
-> of TLV data. This commit applies a code optimization.
->
-> Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-Acked-by: Clemens Ladisch <clemens@ladisch.de>
-
-> ---
->  sound/firewire/isight.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/sound/firewire/isight.c b/sound/firewire/isight.c
-> index 46092fa3ff9b..3919e186a30b 100644
-> --- a/sound/firewire/isight.c
-> +++ b/sound/firewire/isight.c
-> @@ -569,18 +569,20 @@ static int isight_create_mixer(struct isight *isight)
->  		return err;
->  	isight->gain_max = be32_to_cpu(value);
->
-> -	isight->gain_tlv[0] = SNDRV_CTL_TLVT_DB_MINMAX;
-> -	isight->gain_tlv[1] = 2 * sizeof(unsigned int);
-> +	isight->gain_tlv[SNDRV_CTL_TLVO_TYPE] = SNDRV_CTL_TLVT_DB_MINMAX;
-> +	isight->gain_tlv[SNDRV_CTL_TLVO_LEN] = 2 * sizeof(unsigned int);
->
->  	err = reg_read(isight, REG_GAIN_DB_START, &value);
->  	if (err < 0)
->  		return err;
-> -	isight->gain_tlv[2] = (s32)be32_to_cpu(value) * 100;
-> +	isight->gain_tlv[SNDRV_CTL_TLVO_DB_MINMAX_MIN] =
-> +						(s32)be32_to_cpu(value) * 100;
->
->  	err = reg_read(isight, REG_GAIN_DB_END, &value);
->  	if (err < 0)
->  		return err;
-> -	isight->gain_tlv[3] = (s32)be32_to_cpu(value) * 100;
-> +	isight->gain_tlv[SNDRV_CTL_TLVO_DB_MINMAX_MAX] =
-> +						(s32)be32_to_cpu(value) * 100;
->
->  	ctl = snd_ctl_new1(&gain_control, isight);
->  	if (ctl)
+SGksCgpPbiAyMDE4LTA1LTEzIDA0OjQxLCBSYW5keSBEdW5sYXAgd3JvdGU6Cj4gRnJvbTogUmFu
+ZHkgRHVubGFwIDxyZHVubGFwQGluZnJhZGVhZC5vcmc+Cj4gCj4gQVNvQzogb21hcDogYWRkIHNk
+bWEtcGNtLmMgTU9EVUxFX0xJQ0VOU0UKPiAKPiBGaXhlcyB0aGlzIGJ1aWxkIHdhcm5pbmc6Cj4g
+Cj4gV0FSTklORzogbW9kcG9zdDogbWlzc2luZyBNT0RVTEVfTElDRU5TRSgpIGluIHNvdW5kL3Nv
+Yy9vbWFwL3NuZC1zb2Mtc2RtYS5vCgpJIGhhdmUgYWxyZWFkeSBzdWJtaXR0ZWQgYSBmaXg6Cmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxOC1N
+YXkvMTM1OTQwLmh0bWwKCj4gCj4gU2lnbmVkLW9mZi1ieTogUmFuZHkgRHVubGFwIDxyZHVubGFw
+QGluZnJhZGVhZC5vcmc+Cj4gQ2M6IFBldGVyIFVqZmFsdXNpIDxwZXRlci51amZhbHVzaUB0aS5j
+b20+Cj4gQ2M6IEphcmtrbyBOaWt1bGEgPGphcmtrby5uaWt1bGFAYml0bWVyLmNvbT4KPiBDYzog
+TGlhbSBHaXJkd29vZCA8bGdpcmR3b29kQGdtYWlsLmNvbT4KPiBDYzogTWFyayBCcm93biA8YnJv
+b25pZUBrZXJuZWwub3JnPgo+IC0tLQo+ICBzb3VuZC9zb2Mvb21hcC9zZG1hLXBjbS5jIHwgICAg
+MyArKysKPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0aW9ucygrKQo+IAo+IC0tLSBsaW51eC1u
+ZXh0LTIwMTgwNTEwLm9yaWcvc291bmQvc29jL29tYXAvc2RtYS1wY20uYwo+ICsrKyBsaW51eC1u
+ZXh0LTIwMTgwNTEwL3NvdW5kL3NvYy9vbWFwL3NkbWEtcGNtLmMKPiBAQCAtOSw2ICs5LDcgQEAK
+PiAgI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KPiAgI2luY2x1ZGUgPHNvdW5kL3NvYy5o
+Pgo+ICAjaW5jbHVkZSA8c291bmQvZG1hZW5naW5lX3BjbS5oPgo+ICsjaW5jbHVkZSA8bGludXgv
+bW9kdWxlLmg+Cj4gICNpbmNsdWRlIDxsaW51eC9vbWFwLWRtYS5oPgo+ICAKPiAgI2luY2x1ZGUg
+InNkbWEtcGNtLmgiCj4gQEAgLTY2LDMgKzY3LDUgQEAgaW50IHNkbWFfcGNtX3BsYXRmb3JtX3Jl
+Z2lzdGVyKHN0cnVjdCBkZQo+ICAJcmV0dXJuIGRldm1fc25kX2RtYWVuZ2luZV9wY21fcmVnaXN0
+ZXIoZGV2LCBjb25maWcsIGZsYWdzKTsKPiAgfQo+ICBFWFBPUlRfU1lNQk9MX0dQTChzZG1hX3Bj
+bV9wbGF0Zm9ybV9yZWdpc3Rlcik7Cj4gKwo+ICtNT0RVTEVfTElDRU5TRSgiR1BMIHYyIik7Cj4g
+CgotIFDDqXRlcgoKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBPeSwgUG9ya2thbGFua2F0dSAy
+MiwgMDAxODAgSGVsc2lua2kuClktdHVubnVzL0J1c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlw
+YWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
