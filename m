@@ -1,19 +1,18 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 4/4] ALSA: isight: use position offset macro of
-	TLV data
-Date: Mon, 14 May 2018 07:09:53 +0900
-Message-ID: <20180513220953.15118-5-o-takashi@sakamocchi.jp>
-References: <20180513220953.15118-1-o-takashi@sakamocchi.jp>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: [PATCH v3 0/6] ALSA: xen-front: Add Xen
+	para-virtualized frontend driver
+Date: Mon, 14 May 2018 09:27:36 +0300
+Message-ID: <20180514062742.25879-1-andr2000@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
- by alsa0.perex.cz (Postfix) with ESMTP id C78A726769E
- for <alsa-devel@alsa-project.org>; Mon, 14 May 2018 00:10:32 +0200 (CEST)
-Received: by mail-pg0-f68.google.com with SMTP id l2-v6so4621970pgc.7
- for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 15:10:32 -0700 (PDT)
-In-Reply-To: <20180513220953.15118-1-o-takashi@sakamocchi.jp>
+Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
+ [209.85.215.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id C3E5D266CCE
+ for <alsa-devel@alsa-project.org>; Mon, 14 May 2018 08:27:51 +0200 (CEST)
+Received: by mail-lf0-f68.google.com with SMTP id 16-v6so6580499lfs.13
+ for <alsa-devel@alsa-project.org>; Sun, 13 May 2018 23:27:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,46 +22,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
+Cc: andr2000@gmail.com, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 List-Id: alsa-devel@alsa-project.org
 
-A series of SNDRV_CTL_TLVO_XXX macro was introduced for position offset
-of TLV data. This commit applies a code optimization.
+From: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/isight.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Please note: this patch series depends on [3].
 
-diff --git a/sound/firewire/isight.c b/sound/firewire/isight.c
-index 46092fa3ff9b..3919e186a30b 100644
---- a/sound/firewire/isight.c
-+++ b/sound/firewire/isight.c
-@@ -569,18 +569,20 @@ static int isight_create_mixer(struct isight *isight)
- 		return err;
- 	isight->gain_max = be32_to_cpu(value);
- 
--	isight->gain_tlv[0] = SNDRV_CTL_TLVT_DB_MINMAX;
--	isight->gain_tlv[1] = 2 * sizeof(unsigned int);
-+	isight->gain_tlv[SNDRV_CTL_TLVO_TYPE] = SNDRV_CTL_TLVT_DB_MINMAX;
-+	isight->gain_tlv[SNDRV_CTL_TLVO_LEN] = 2 * sizeof(unsigned int);
- 
- 	err = reg_read(isight, REG_GAIN_DB_START, &value);
- 	if (err < 0)
- 		return err;
--	isight->gain_tlv[2] = (s32)be32_to_cpu(value) * 100;
-+	isight->gain_tlv[SNDRV_CTL_TLVO_DB_MINMAX_MIN] =
-+						(s32)be32_to_cpu(value) * 100;
- 
- 	err = reg_read(isight, REG_GAIN_DB_END, &value);
- 	if (err < 0)
- 		return err;
--	isight->gain_tlv[3] = (s32)be32_to_cpu(value) * 100;
-+	isight->gain_tlv[SNDRV_CTL_TLVO_DB_MINMAX_MAX] =
-+						(s32)be32_to_cpu(value) * 100;
- 
- 	ctl = snd_ctl_new1(&gain_control, isight);
- 	if (ctl)
+This patch series adds support for Xen [1] para-virtualized
+sound frontend driver. It implements the protocol from
+include/xen/interface/io/sndif.h with the following limitations:
+- mute/unmute is not supported
+- get/set volume is not supported
+Volume control is not supported for the reason that most of the
+use-cases (at the moment) are based on scenarious where
+unprivileged OS (e.g. Android, AGL etc) use software mixers.
+
+Both capture and playback are supported.
+
+Corresponding backend, implemented as a user-space application, can be
+found at [2].
+
+Thank you,
+Oleksandr
+
+Changes since v2:
+*****************
+
+1. Kconfig: select SND_PCM instead of depends
+2. Changed spinlock to mutex for protecting the rings since
+   all the interrupts are threaded. Make those per event channel,
+   not a single global one. This also addresses Juergen's comment
+   on calling xen_snd_front_alsa_handle_cur_pos.
+3. Fixed page leak on error while allocating an event channel
+4. Fixed comments to start from a capital letter
+5. Performed XEN_PAGE_SIZE != PAGE_SIZE check after xen_domain
+   and xen_has_pv_devices checks
+6. Changed driver specific structures names not to mislead with ALSA
+   structs
+7. Added comments on ring counters and overflows
+8. Added MAINTAINERS entry
+
+Changes since v1:
+*****************
+
+1. Moved driver from sound/drivers to sound/xen
+
+2. Coding style changes to better meet Linux Kernel
+
+3. Added explicit back and front synchronization
+   In order to provide explicit synchronization between backend and
+   frontend the following changes are introduced in the protocol:
+    - add new ring buffer for sending asynchronous events from
+      backend to frontend to report number of bytes played by the
+      frontend (XENSND_EVT_CUR_POS)
+    - introduce trigger events for playback control: start/stop/pause/resume
+    - add "req-" prefix to event-channel and ring-ref to unify naming
+      of the Xen event channels for requests and events
+
+4. Added explicit back and front parameter negotiation
+   In order to provide explicit stream parameter negotiation between
+   backend and frontend the following changes are introduced in the protocol:
+   add XENSND_OP_HW_PARAM_QUERY request to read/update
+   configuration space for the parameters given: request passes
+   desired parameter's intervals/masks and the response to this request
+   returns allowed min/max intervals/masks to be used.
+
+[1] https://xenproject.org/
+[2] https://github.com/xen-troops/snd_be
+[3] https://lkml.org/lkml/2018/4/12/522
+
+Oleksandr Andrushchenko (6):
+  ALSA: xen-front: Introduce Xen para-virtualized sound frontend driver
+  ALSA: xen-front: Read sound driver configuration from Xen store
+  ALSA: xen-front: Implement Xen event channel handling
+  ALSA: xen-front: Implement handling of shared buffers
+  ALSA: xen-front: Implement ALSA virtual sound driver
+  MAINTAINERS: Add ALSA: xen-front: maintainer entry
+
+ MAINTAINERS                       |   7 +
+ sound/Kconfig                     |   2 +
+ sound/Makefile                    |   2 +-
+ sound/xen/Kconfig                 |  10 +
+ sound/xen/Makefile                |   9 +
+ sound/xen/xen_snd_front.c         | 397 +++++++++++++++
+ sound/xen/xen_snd_front.h         |  54 ++
+ sound/xen/xen_snd_front_alsa.c    | 821 ++++++++++++++++++++++++++++++
+ sound/xen/xen_snd_front_alsa.h    |  23 +
+ sound/xen/xen_snd_front_cfg.c     | 517 +++++++++++++++++++
+ sound/xen/xen_snd_front_cfg.h     |  46 ++
+ sound/xen/xen_snd_front_evtchnl.c | 496 ++++++++++++++++++
+ sound/xen/xen_snd_front_evtchnl.h |  95 ++++
+ sound/xen/xen_snd_front_shbuf.c   | 193 +++++++
+ sound/xen/xen_snd_front_shbuf.h   |  36 ++
+ 15 files changed, 2707 insertions(+), 1 deletion(-)
+ create mode 100644 sound/xen/Kconfig
+ create mode 100644 sound/xen/Makefile
+ create mode 100644 sound/xen/xen_snd_front.c
+ create mode 100644 sound/xen/xen_snd_front.h
+ create mode 100644 sound/xen/xen_snd_front_alsa.c
+ create mode 100644 sound/xen/xen_snd_front_alsa.h
+ create mode 100644 sound/xen/xen_snd_front_cfg.c
+ create mode 100644 sound/xen/xen_snd_front_cfg.h
+ create mode 100644 sound/xen/xen_snd_front_evtchnl.c
+ create mode 100644 sound/xen/xen_snd_front_evtchnl.h
+ create mode 100644 sound/xen/xen_snd_front_shbuf.c
+ create mode 100644 sound/xen/xen_snd_front_shbuf.h
+
 -- 
-2.14.1
+2.17.0
