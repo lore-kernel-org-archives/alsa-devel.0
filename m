@@ -1,80 +1,45 @@
-From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v14 8/8] ASoC: sun4i-codec: Add Left Capture
- Select, Right Capture Select
-Date: Mon, 14 May 2018 16:11:26 +0200
-Message-ID: <20180514141126.mv7iso2d4xrfnsax@flea>
-References: <20180502210800.1971-1-dannym@scratchpost.org>
- <20180502210800.1971-9-dannym@scratchpost.org>
- <20180503145408.yymk2ndt4sm2yt4i@flea>
- <20180505124050.66f74999@scratchpost.org>
-Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
+From: Jeremy Soller <jeremy@system76.com>
+Subject: Re: [PATCH] Clevo P950ER ALC1220 Fixup
+Date: Mon, 14 May 2018 08:58:19 -0600
+Message-ID: <1526309899.1884893.1371486536.4DBFCEDA@webmail.messagingengine.com>
+References: <1525706925.3365083.1363584480.0D4473BE@webmail.messagingengine.com>
+ <s5hin7r7av3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="udenmhxour2wcgz2"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBGNS43LQKGQENSDQ7CQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
-Content-Disposition: inline
-In-Reply-To: <20180505124050.66f74999-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: Danny Milosavljevic <dannym-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
-Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Andrea Bondavalli <andrea.bondavalli74-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Fabio Estevam <fabio.estevam-3arQi8VN3Tc@public.gmane.org>, Icenowy Zheng <icenowy-ymACFijhrKM@public.gmane.org>, Philipp Zabel <p.zabel-bIcnvbaLZ9MEGnE8C9+IrQ@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com
+ [66.111.4.26]) by alsa0.perex.cz (Postfix) with ESMTP id 54362266F0F
+ for <alsa-devel@alsa-project.org>; Mon, 14 May 2018 16:58:20 +0200 (CEST)
+In-Reply-To: <s5hin7r7av3.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---udenmhxour2wcgz2
-Content-Type: text/plain; charset="UTF-8"
-Content-Disposition: inline
-
-On Sat, May 05, 2018 at 12:40:50PM +0200, Danny Milosavljevic wrote:
-> Hi Maxime,
-> 
-> On Thu, 3 May 2018 16:54:08 +0200
-> Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
-> 
-> > > +static const char * const sun4i_codec_capture_source[] = {
-> > > +	"Line",
-> > > +	"FM",
-> > > +	"Mic1",
-> > > +	"Mic2",
-> > > +	"Mic1,Mic2",
-> > > +	"Mic1+Mic2",
-> > > +	"Output Mixer",
-> > > +	"Line,Mic1",
-> > > +};  
-> > 
-> > Shouldn't that be defined in a more generic way? As far as I know,
-> > there's no way to tell what the difference between "Mic1,Mic2" and
-> > "Mic1+Mic2" would be from the userspace.
-> 
-> Sounds good - but how?
-> 
-> Here, "Mic1,Mic2" means the left channel captured is Mic1 and the right
-> channel captured is Mic2.
-> 
-> On the other hand, "Mic1+Mic2" means that the signals from Mic1 and
-> Mic2 are added together and that is captured (both as left and as right).
-> 
-> "Mic1" means both the left channel and the right channel captured is
-> from Mic1.  Likewise "Mic2".
-
-Right, and my point isn't that it is difficult to understand or
-remember once you get it, but that it's difficult to get it in the
-first place, and that this convention is solely based on the one used
-in the datasheet, which is an abstraction violation in itself.
-
-I guess that's really up to Mark here, but one solution would be to
-allow to couple the controls explicitly instead of relying solely on
-the fact that they share the same controls array pointer.
-
-Maxime
+Thanks very much!
 
 -- 
-Maxime Ripard, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
---udenmhxour2wcgz2--
+  Jeremy Soller
+  jeremy@system76.com
+
+On Sun, May 13, 2018, at 10:56 AM, Takashi Iwai wrote:
+> On Mon, 07 May 2018 17:28:45 +0200,
+> Jeremy Soller wrote:
+> > 
+> > This adds support for the P950ER, which has the same required fixup as the P950HR, but has a different PCI ID.
+> > 
+> > Signed-off-by: Jeremy Soller <jeremy@system76.com>
+> 
+> Applied, thanks.
+> 
+> 
+> Takashi
