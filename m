@@ -1,20 +1,20 @@
 From: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>
-Subject: Re: [PATCH v14 3/8] ASoC: sun4i-codec: Merge
- sun4i_codec_left_mixer_controls and sun4i_codec_right_mixer_controls into sun4i_codec_mixer_controls
-Date: Mon, 14 May 2018 16:06:40 +0200
-Message-ID: <20180514140640.oig6hqbh5utvzhmd@flea>
+Subject: Re: [PATCH v14 8/8] ASoC: sun4i-codec: Add Left Capture
+ Select, Right Capture Select
+Date: Mon, 14 May 2018 16:11:26 +0200
+Message-ID: <20180514141126.mv7iso2d4xrfnsax@flea>
 References: <20180502210800.1971-1-dannym@scratchpost.org>
- <20180502210800.1971-4-dannym@scratchpost.org>
- <20180503144618.oojhvmey44dtg5fa@flea>
- <20180505085056.6c6011ca@scratchpost.org>
+ <20180502210800.1971-9-dannym@scratchpost.org>
+ <20180503145408.yymk2ndt4sm2yt4i@flea>
+ <20180505124050.66f74999@scratchpost.org>
 Reply-To: maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="nskfsqj542gg4f7l"
-Return-path: <linux-sunxi+bncBDSJBYGBRIMBBAVQ43LQKGQEYLUB7KI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+	protocol="application/pgp-signature"; boundary="udenmhxour2wcgz2"
+Return-path: <linux-sunxi+bncBDSJBYGBRIMBBGNS43LQKGQENSDQ7CQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
 Content-Disposition: inline
-In-Reply-To: <20180505085056.6c6011ca-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
+In-Reply-To: <20180505124050.66f74999-bxPqe3T81XXwRsdMLXbzog@public.gmane.org>
 List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Archive: <https://groups.google.com/group/linux-sunxi
@@ -26,55 +26,50 @@ Cc: Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Mark Brow
 List-Id: alsa-devel@alsa-project.org
 
 
---nskfsqj542gg4f7l
+--udenmhxour2wcgz2
 Content-Type: text/plain; charset="UTF-8"
 Content-Disposition: inline
 
-On Sat, May 05, 2018 at 08:51:43AM +0200, Danny Milosavljevic wrote:
+On Sat, May 05, 2018 at 12:40:50PM +0200, Danny Milosavljevic wrote:
 > Hi Maxime,
 > 
-> On Thu, 3 May 2018 16:46:19 +0200
+> On Thu, 3 May 2018 16:54:08 +0200
 > Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org> wrote:
 > 
-> > Doesn't that mean that the controls will be shared between the right
-> > and left mixers now, which wasn't the case before?
+> > > +static const char * const sun4i_codec_capture_source[] = {
+> > > +	"Line",
+> > > +	"FM",
+> > > +	"Mic1",
+> > > +	"Mic2",
+> > > +	"Mic1,Mic2",
+> > > +	"Mic1+Mic2",
+> > > +	"Output Mixer",
+> > > +	"Line,Mic1",
+> > > +};  
+> > 
+> > Shouldn't that be defined in a more generic way? As far as I know,
+> > there's no way to tell what the difference between "Mic1,Mic2" and
+> > "Mic1+Mic2" would be from the userspace.
 > 
-> Yes.  However Chen-Yu said that except for debugfs that cannot be
-> observed by user space anyway.
+> Sounds good - but how?
 > 
-> It's nice to have the NEW controls have multiple channels, which is what
-> this does.
+> Here, "Mic1,Mic2" means the left channel captured is Mic1 and the right
+> channel captured is Mic2.
 > 
-> >And also, wouldn't
-> > the controls be called "Left Mixer Left Mixer Left DAC Playback
-> > Switch" (for the first one) now?
+> On the other hand, "Mic1+Mic2" means that the signals from Mic1 and
+> Mic2 are added together and that is captured (both as left and as right).
 > 
-> No.  I checked using "amixer" - the names look fine,
-> "Left Mixer Left DAC Playback Switch".
-> 
-> With the patch series, amixer says:
-> 
-> numid=10,iface=MIXER,name='FM Playback Switch'
-> numid=6,iface=MIXER,name='FM Playback Volume'
-> numid=5,iface=MIXER,name='Line Boost Volume'
-> numid=9,iface=MIXER,name='Line Playback Switch'
-> numid=4,iface=MIXER,name='Line Playback Volume'
-> numid=1,iface=MIXER,name='Mic1 Boost Volume'
-> numid=11,iface=MIXER,name='Mic1 Playback Switch'
-> numid=2,iface=MIXER,name='Mic2 Boost Volume'
-> numid=12,iface=MIXER,name='Mic2 Playback Switch'
-> numid=7,iface=MIXER,name='Mic Playback Volume'
-> numid=18,iface=MIXER,name='Capture Source'
-> numid=19,iface=MIXER,name='Differential Line Source'
-> numid=8,iface=MIXER,name='Left Mixer Left DAC Playback Switch'
-> numid=15,iface=MIXER,name='Power Amplifier DAC Playback Switch'
-> numid=16,iface=MIXER,name='Power Amplifier Mixer Playback Switch'
-> numid=17,iface=MIXER,name='Power Amplifier Mute Switch'
-> numid=3,iface=MIXER,name='Power Amplifier Volume'
-> numid=14,iface=MIXER,name='Right Mixer Left DAC Playback Switch'
-> numid=13,iface=MIXER,name='Right Mixer Right DAC Playback Switch'
+> "Mic1" means both the left channel and the right channel captured is
+> from Mic1.  Likewise "Mic2".
 
-Great then :)
+Right, and my point isn't that it is difficult to understand or
+remember once you get it, but that it's difficult to get it in the
+first place, and that this convention is solely based on the one used
+in the datasheet, which is an abstraction violation in itself.
+
+I guess that's really up to Mark here, but one solution would be to
+allow to couple the controls explicitly instead of relying solely on
+the fact that they share the same controls array pointer.
 
 Maxime
 
@@ -82,4 +77,4 @@ Maxime
 Maxime Ripard, Bootlin (formerly Free Electrons)
 Embedded Linux and Kernel engineering
 https://bootlin.com
---nskfsqj542gg4f7l--
+--udenmhxour2wcgz2--
