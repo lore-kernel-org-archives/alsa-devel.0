@@ -1,18 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH 3/6] hcontrol: use position offset
-	macro of TLV data
-Date: Tue, 15 May 2018 21:36:36 +0900
-Message-ID: <20180515123639.18255-4-o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH 5/6] pcm: softvol: use position
+	offset macro of TLV data
+Date: Tue, 15 May 2018 21:36:38 +0900
+Message-ID: <20180515123639.18255-6-o-takashi@sakamocchi.jp>
 References: <20180515123639.18255-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f67.google.com (mail-pg0-f67.google.com [74.125.83.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C813266EDF
- for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 14:37:19 +0200 (CEST)
-Received: by mail-pg0-f67.google.com with SMTP id z70-v6so6976845pgz.3
- for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 05:37:19 -0700 (PDT)
+Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
+ [209.85.160.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEBE62672BA
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 14:37:23 +0200 (CEST)
+Received: by mail-pl0-f66.google.com with SMTP id i5-v6so9360245plt.2
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 05:37:23 -0700 (PDT)
 In-Reply-To: <20180515123639.18255-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,29 +33,36 @@ of TLV data. This commit applies a code optimization.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/control/hcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ src/pcm/pcm_softvol.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-diff --git a/src/control/hcontrol.c b/src/control/hcontrol.c
-index 7e775248..0cac8956 100644
---- a/src/control/hcontrol.c
-+++ b/src/control/hcontrol.c
-@@ -870,7 +870,7 @@ int snd_hctl_elem_tlv_write(snd_hctl_elem_t *elem, const unsigned int *tlv)
- {
- 	assert(elem);
- 	assert(tlv);
--	assert(tlv[1] >= 4);
-+	assert(tlv[SNDRV_CTL_TLVO_LEN] >= 4);
- 	return snd_ctl_elem_tlv_write(elem->hctl->ctl, &elem->id, tlv);
- }
+diff --git a/src/pcm/pcm_softvol.c b/src/pcm/pcm_softvol.c
+index 0eaeacef..f08208f8 100644
+--- a/src/pcm/pcm_softvol.c
++++ b/src/pcm/pcm_softvol.c
+@@ -31,6 +31,8 @@
+ #include "pcm_local.h"
+ #include "pcm_plugin.h"
  
-@@ -886,7 +886,7 @@ int snd_hctl_elem_tlv_command(snd_hctl_elem_t *elem, const unsigned int *tlv)
++#include <sound/tlv.h>
++
+ #ifndef PIC
+ /* entry for static linking */
+ const char *_snd_module_pcm_softvol = "";
+@@ -708,10 +710,11 @@ static void snd_pcm_softvol_dump(snd_pcm_t *pcm, snd_output_t *out)
+ static int add_tlv_info(snd_pcm_softvol_t *svol, snd_ctl_elem_info_t *cinfo)
  {
- 	assert(elem);
- 	assert(tlv);
--	assert(tlv[1] >= 4);
-+	assert(tlv[SNDRV_CTL_TLVO_LEN] >= 4);
- 	return snd_ctl_elem_tlv_command(elem->hctl->ctl, &elem->id, tlv);
+ 	unsigned int tlv[4];
+-	tlv[0] = SND_CTL_TLVT_DB_SCALE;
+-	tlv[1] = 2 * sizeof(int);
+-	tlv[2] = (int)(svol->min_dB * 100);
+-	tlv[3] = (int)((svol->max_dB - svol->min_dB) * 100 / svol->max_val);
++	tlv[SNDRV_CTL_TLVO_TYPE] = SND_CTL_TLVT_DB_SCALE;
++	tlv[SNDRV_CTL_TLVO_LEN] = 2 * sizeof(int);
++	tlv[SNDRV_CTL_TLVO_DB_SCALE_MIN] = (int)(svol->min_dB * 100);
++	tlv[SNDRV_CTL_TLVO_DB_SCALE_MUTE_AND_STEP] =
++		(int)((svol->max_dB - svol->min_dB) * 100 / svol->max_val);
+ 	return snd_ctl_elem_tlv_write(svol->ctl, &cinfo->id, tlv);
  }
  
 -- 
