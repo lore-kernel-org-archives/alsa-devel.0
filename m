@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/4] ALSA: hda/ca0132: constify read-only
-	members of string array
-Date: Tue, 15 May 2018 22:12:58 +0900
-Message-ID: <20180515131300.24315-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/4] ALSA: hda/ca0132: merge strings just for
+	printk
+Date: Tue, 15 May 2018 22:12:59 +0900
+Message-ID: <20180515131300.24315-4-o-takashi@sakamocchi.jp>
 References: <20180515131300.24315-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f67.google.com (mail-pl0-f67.google.com
- [209.85.160.67])
- by alsa0.perex.cz (Postfix) with ESMTP id F2A59267021
- for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 15:13:34 +0200 (CEST)
-Received: by mail-pl0-f67.google.com with SMTP id c41-v6so30663plj.10
- for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 06:13:34 -0700 (PDT)
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3A14C2671C0
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 15:13:36 +0200 (CEST)
+Received: by mail-pf0-f196.google.com with SMTP id w129-v6so37143pfd.3
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 06:13:36 -0700 (PDT)
 In-Reply-To: <20180515131300.24315-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,46 +28,51 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, conmanx360@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-This module has some strings just for printk therefore they can be
-read-only.
+This module has some function-local strings just for printk therefore
+it can be merged into format string.
 
 This commit applies this optimization.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/pci/hda/patch_ca0132.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index d18022d72e83..8295bd06af66 100644
+index 8295bd06af66..08a08dd16eab 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -90,7 +90,7 @@ MODULE_FIRMWARE(SBZ_EFX_FILE);
- MODULE_FIRMWARE(R3DI_EFX_FILE);
- #endif
+@@ -5506,13 +5506,12 @@ static int ca0132_volume_tlv(struct snd_kcontrol *kcontrol, int op_flag,
+ static int ca0132_alt_add_effect_slider(struct hda_codec *codec, hda_nid_t nid,
+ 					const char *pfx, int dir)
+ {
+-	char *fx = "FX:";
+ 	char namestr[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	int type = dir ? HDA_INPUT : HDA_OUTPUT;
+ 	struct snd_kcontrol_new knew =
+ 		HDA_CODEC_VOLUME_MONO(namestr, nid, 1, 0, type);
  
--static const char *dirstr[2] = { "Playback", "Capture" };
-+static const char *const dirstr[2] = { "Playback", "Capture" };
+-	sprintf(namestr, "%s %s %s Volume", fx, pfx, dirstr[dir]);
++	sprintf(namestr, "FX: %s %s Volume", pfx, dirstr[dir]);
  
- #define NUM_OF_OUTPUTS 3
- enum {
-@@ -105,7 +105,7 @@ enum {
- };
+ 	knew.tlv.c = 0;
+ 	knew.tlv.p = 0;
+@@ -5544,7 +5543,6 @@ static int add_fx_switch(struct hda_codec *codec, hda_nid_t nid,
+ 			 const char *pfx, int dir)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+-	char *fx = "FX:";
+ 	char namestr[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+ 	int type = dir ? HDA_INPUT : HDA_OUTPUT;
+ 	struct snd_kcontrol_new knew =
+@@ -5553,7 +5551,7 @@ static int add_fx_switch(struct hda_codec *codec, hda_nid_t nid,
+ 	 * prefix to OutFX or InFX enable controls.
+ 	 */
+ 	if ((spec->use_alt_controls) && (nid <= IN_EFFECT_END_NID))
+-		sprintf(namestr, "%s %s %s Switch", fx, pfx, dirstr[dir]);
++		sprintf(namestr, "FX: %s %s Switch", pfx, dirstr[dir]);
+ 	else
+ 		sprintf(namestr, "%s %s Switch", pfx, dirstr[dir]);
  
- /* Strings for Input Source Enum Control */
--static const char *in_src_str[3] = {"Rear Mic", "Line", "Front Mic" };
-+static const char *const in_src_str[3] = {"Rear Mic", "Line", "Front Mic" };
- #define IN_SRC_NUM_OF_INPUTS 3
- enum {
- 	REAR_MIC,
-@@ -4992,7 +4992,7 @@ static int ca0132_alt_output_select_put(struct snd_kcontrol *kcontrol,
-  * and night, disregard the slider value and have uneditable values.
-  */
- #define NUM_OF_SVM_SETTINGS 3
--static const char *out_svm_set_enum_str[3] = {"Normal", "Loud", "Night" };
-+static const char *const out_svm_set_enum_str[3] = {"Normal", "Loud", "Night" };
- 
- static int ca0132_alt_svm_setting_info(struct snd_kcontrol *kcontrol,
- 				 struct snd_ctl_elem_info *uinfo)
 -- 
 2.14.1
