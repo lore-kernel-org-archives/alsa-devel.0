@@ -1,131 +1,56 @@
-From: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Subject: Re: [PATCH V2 04/10] ASoC: amd: pte offset related dma driver changes
-Date: Tue, 15 May 2018 15:22:46 +0530
-Message-ID: <c8d87b3b-6f8e-c125-4a8b-f47a6f920eb8@amd.com>
-References: <1525754888-14124-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1525754888-14124-4-git-send-email-Vijendar.Mukunda@amd.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH 0/6] control: optimization for
+	position offset macro of TLV data
+Date: Tue, 15 May 2018 21:36:33 +0900
+Message-ID: <20180515123639.18255-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525754888-14124-4-git-send-email-Vijendar.Mukunda@amd.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>, Daniel Kurtz <djkurtz@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id BBB61266F4E
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 14:37:14 +0200 (CEST)
+Received: by mail-pg0-f66.google.com with SMTP id a13-v6so6974972pgu.4
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 05:37:14 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-Hi Mark,
+In development period for Linux v4.18, a series of SNDRV_CTL_TLVO_XXX
+macro was introduced to kernel stuffs for position offset of TLV data.
 
-You have merged 1-3 patch series. Still patch no 4 to 10 remaining.
-Could you please take them.
+This patchset backports the macros to this library as well as adds code
+optimization with them.
 
-Thanks,
-Vijendar
-On Tuesday 08 May 2018 10:17 AM, Vijendar Mukunda wrote:
-> Added pte offset variable in audio_substream_data structure.
-> Added Stoney related PTE offset macros in acp header file.
-> Modified hw_params callback to assign the pte offset value
-> based on asic_type.
-> PTE Offset macros used to calculate no of PTE entries
-> need to be programmed when memory allocated for audio buffer.
-> Depending upon allocated audio buffer size, PTE offset values
-> will change.
-> Compared to CZ, Stoney has SRAM memory limitation i.e 48k
-> It is required to define separate PTE Offset macros for
-> Stoney.
-> 
-> Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-> Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
-> ---
-> v1->v2: Modified commit message
->   sound/soc/amd/acp-pcm-dma.c | 26 +++++++++++++++++++-------
->   sound/soc/amd/acp.h         |  5 +++++
->   2 files changed, 24 insertions(+), 7 deletions(-)
-> 
-> diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-> index 862c1cf..39597fb 100644
-> --- a/sound/soc/amd/acp-pcm-dma.c
-> +++ b/sound/soc/amd/acp-pcm-dma.c
-> @@ -320,13 +320,11 @@ static void config_acp_dma(void __iomem *acp_mmio,
->   			   struct audio_substream_data *rtd,
->   			   u32 asic_type)
->   {
-> -	u32 pte_offset, sram_bank;
-> +	u32 sram_bank;
->   
-> -	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
-> -		pte_offset = ACP_PLAYBACK_PTE_OFFSET;
-> +	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK)
->   		sram_bank = ACP_SHARED_RAM_BANK_1_ADDRESS;
-> -	} else {
-> -		pte_offset = ACP_CAPTURE_PTE_OFFSET;
-> +	else {
->   		switch (asic_type) {
->   		case CHIP_STONEY:
->   			sram_bank = ACP_SHARED_RAM_BANK_3_ADDRESS;
-> @@ -336,10 +334,10 @@ static void config_acp_dma(void __iomem *acp_mmio,
->   		}
->   	}
->   	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
-> -		       pte_offset);
-> +		       rtd->pte_offset);
->   	/* Configure System memory <-> ACP SRAM DMA descriptors */
->   	set_acp_sysmem_dma_descriptors(acp_mmio, rtd->size,
-> -				       rtd->direction, pte_offset,
-> +				       rtd->direction, rtd->pte_offset,
->   				       rtd->ch1, sram_bank,
->   				       rtd->dma_dscr_idx_1, asic_type);
->   	/* Configure ACP SRAM <-> I2S DMA descriptors */
-> @@ -788,6 +786,13 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
->   	}
->   
->   	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
-> +		switch (adata->asic_type) {
-> +		case CHIP_STONEY:
-> +			rtd->pte_offset = ACP_ST_PLAYBACK_PTE_OFFSET;
-> +			break;
-> +		default:
-> +			rtd->pte_offset = ACP_PLAYBACK_PTE_OFFSET;
-> +		}
->   		rtd->ch1 = SYSRAM_TO_ACP_CH_NUM;
->   		rtd->ch2 = ACP_TO_I2S_DMA_CH_NUM;
->   		rtd->destination = TO_ACP_I2S_1;
-> @@ -797,6 +802,13 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
->   				mmACP_I2S_TRANSMIT_BYTE_CNT_HIGH;
->   		rtd->byte_cnt_low_reg_offset = mmACP_I2S_TRANSMIT_BYTE_CNT_LOW;
->   	} else {
-> +		switch (adata->asic_type) {
-> +		case CHIP_STONEY:
-> +			rtd->pte_offset = ACP_ST_CAPTURE_PTE_OFFSET;
-> +			break;
-> +		default:
-> +			rtd->pte_offset = ACP_CAPTURE_PTE_OFFSET;
-> +		}
->   		rtd->ch1 = ACP_TO_SYSRAM_CH_NUM;
->   		rtd->ch2 = I2S_TO_ACP_DMA_CH_NUM;
->   		rtd->destination = FROM_ACP_I2S_1;
-> diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
-> index 82470bc..2f48d1d 100644
-> --- a/sound/soc/amd/acp.h
-> +++ b/sound/soc/amd/acp.h
-> @@ -10,6 +10,10 @@
->   #define ACP_PLAYBACK_PTE_OFFSET			10
->   #define ACP_CAPTURE_PTE_OFFSET			0
->   
-> +/* Playback and Capture Offset for Stoney */
-> +#define ACP_ST_PLAYBACK_PTE_OFFSET	0x04
-> +#define ACP_ST_CAPTURE_PTE_OFFSET	0x00
-> +
->   #define ACP_GARLIC_CNTL_DEFAULT			0x00000FB4
->   #define ACP_ONION_CNTL_DEFAULT			0x00000FB4
->   
-> @@ -90,6 +94,7 @@ struct audio_substream_data {
->   	u16 destination;
->   	u16 dma_dscr_idx_1;
->   	u16 dma_dscr_idx_2;
-> +	u32 pte_offset;
->   	u32 byte_cnt_high_reg_offset;
->   	u32 byte_cnt_low_reg_offset;
->   	uint64_t size;
-> 
+Takashi Sakamoto (6):
+  control: add a series of macro for offset of several types of TLV
+  control: use position offset macro of TLV data
+  hcontrol: use position offset macro of TLV data
+  pcm: hw: use position offset macro of TLV data
+  pcm: softvol: use position offset macro of TLV data
+  test: use position offset macro of TLV data
+
+ include/sound/tlv.h         | 16 ++++++++++
+ src/control/control.c       | 12 ++++----
+ src/control/control_hw.c    |  6 ++--
+ src/control/control_local.h |  1 +
+ src/control/hcontrol.c      |  4 +--
+ src/control/tlv.c           | 72 ++++++++++++++++++++++++---------------------
+ src/pcm/pcm_hw.c            | 10 ++++---
+ src/pcm/pcm_softvol.c       | 11 ++++---
+ test/user-ctl-element-set.c |  2 +-
+ 9 files changed, 83 insertions(+), 51 deletions(-)
+
+-- 
+2.14.1
