@@ -1,15 +1,15 @@
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: [PATCH v2 0/2] ASoC: omap: sdma-pcm: modpost warning
 	fix and include cleanup
-Date: Tue, 15 May 2018 09:42:09 +0300
-Message-ID: <20180515064211.24784-1-peter.ujfalusi@ti.com>
+Date: Tue, 15 May 2018 09:43:33 +0300
+Message-ID: <20180515064335.20565-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
- by alsa0.perex.cz (Postfix) with ESMTP id B33B5266F46
- for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 08:41:30 +0200 (CEST)
+Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43AC0266F46
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 08:42:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -57,12 +57,11 @@ Regards,
 Peter
 ---
 Peter Ujfalusi (2):
-  firmware: ti_sci: Correct the timeout type in ti_sci_do_xfer()
   ASoC: omap: sdma-pcm: Fix modpost warning
+  ASoC: omap: sdma-pcm: Correction for the include files
 
- drivers/firmware/ti_sci.c | 2 +-
- sound/soc/omap/sdma-pcm.c | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/omap/sdma-pcm.c | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
 -- 
 Peter
