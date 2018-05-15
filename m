@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-lib][PATCH 4/6] pcm: hw: use position offset
-	macro of TLV data
-Date: Tue, 15 May 2018 21:36:37 +0900
-Message-ID: <20180515123639.18255-5-o-takashi@sakamocchi.jp>
+Subject: [alsa-lib][PATCH 6/6] test: use position offset macro
+	of TLV data
+Date: Tue, 15 May 2018 21:36:39 +0900
+Message-ID: <20180515123639.18255-7-o-takashi@sakamocchi.jp>
 References: <20180515123639.18255-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
- [209.85.192.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C7D1926707F
- for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 14:37:21 +0200 (CEST)
-Received: by mail-pf0-f193.google.com with SMTP id c10-v6so7667373pfi.12
- for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 05:37:21 -0700 (PDT)
+Received: from mail-pl0-f68.google.com (mail-pl0-f68.google.com
+ [209.85.160.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id A73EB26707F
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 14:37:25 +0200 (CEST)
+Received: by mail-pl0-f68.google.com with SMTP id i5-v6so9360287plt.2
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 05:37:25 -0700 (PDT)
 In-Reply-To: <20180515123639.18255-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,43 +33,21 @@ of TLV data. This commit applies a code optimization.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- src/pcm/pcm_hw.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ test/user-ctl-element-set.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/src/pcm/pcm_hw.c b/src/pcm/pcm_hw.c
-index 65b198c5..a728b23b 100644
---- a/src/pcm/pcm_hw.c
-+++ b/src/pcm/pcm_hw.c
-@@ -1199,6 +1199,7 @@ snd_pcm_query_chmaps_from_hw(int card, int dev, int subdev,
- 	snd_ctl_t *ctl;
- 	snd_ctl_elem_id_t id = {0};
- 	unsigned int tlv[2048], *start;
-+	unsigned int type;
- 	snd_pcm_chmap_query_t **map;
- 	int i, ret, nums;
+diff --git a/test/user-ctl-element-set.c b/test/user-ctl-element-set.c
+index e94152b9..fee130e2 100644
+--- a/test/user-ctl-element-set.c
++++ b/test/user-ctl-element-set.c
+@@ -660,7 +660,7 @@ static int check_tlv(struct elem_set_trial *trial)
+ 	if (err < 0)
+ 		return err;
  
-@@ -1223,9 +1224,10 @@ snd_pcm_query_chmaps_from_hw(int card, int dev, int subdev,
- 	/* FIXME: the parser below assumes that the TLV only contains
- 	 * chmap-related blocks
- 	 */
--	if (tlv[0] != SND_CTL_TLVT_CONTAINER) {
--		if (!is_chmap_type(tlv[0])) {
--			SYSMSG("Invalid TLV type %d\n", tlv[0]);
-+	type = tlv[SNDRV_CTL_TLVO_TYPE];
-+	if (type != SND_CTL_TLVT_CONTAINER) {
-+		if (!is_chmap_type(type)) {
-+			SYSMSG("Invalid TLV type %d\n", type);
- 			return NULL;
- 		}
- 		start = tlv;
-@@ -1234,7 +1236,7 @@ snd_pcm_query_chmaps_from_hw(int card, int dev, int subdev,
- 		unsigned int *p;
- 		int size;
- 		start = tlv + 2;
--		size = tlv[1];
-+		size = tlv[SNDRV_CTL_TLVO_LEN];
- 		nums = 0;
- 		for (p = start; size > 0; ) {
- 			if (!is_chmap_type(p[0])) {
+-	len = tlv[1] + sizeof(unsigned int) * 2;
++	len = tlv[SNDRV_CTL_TLVO_LEN] + sizeof(unsigned int) * 2;
+ 	curr = malloc(len);
+ 	if (curr == NULL) {
+ 		free(tlv);
 -- 
 2.14.1
