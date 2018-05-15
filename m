@@ -1,17 +1,14 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH v2 2/2] ASoC: omap: sdma-pcm: Correction for
-	the include files
-Date: Tue, 15 May 2018 09:43:35 +0300
-Message-ID: <20180515064335.20565-3-peter.ujfalusi@ti.com>
-References: <20180515064335.20565-1-peter.ujfalusi@ti.com>
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: [PATCH 0/4] ALSA: hda: Bug fixes
+Date: Tue, 15 May 2018 12:10:52 +0530
+Message-ID: <1526366456-20470-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllnx210.ext.ti.com (fllnx210.ext.ti.com [198.47.19.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 272092671C0
- for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 08:42:55 +0200 (CEST)
-In-Reply-To: <20180515064335.20565-1-peter.ujfalusi@ti.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id E5416266F46
+ for <alsa-devel@alsa-project.org>; Tue, 15 May 2018 08:51:18 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,44 +18,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, jarkko.nikula@bitmer.com
-Cc: tony@atomide.com, alsa-devel@alsa-project.org, aaro.koskinen@iki.fi
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The sdma-pcm does not need any information from omap-dma.h, it only needs
-to include the omap-dmaengine.h - for the omap_dma_filter_fn, but that
-might not be needed at all as OMAP1 was converted to dma_slave_map, but
-I can not test OMAP1.
+The series contains few bug fixes and debug updates
 
-Add the linux/device.h include as well for devm_kzalloc()
+Pardha Saradhi K (4):
+  ALSA: hda: Make sure DMA is stopped by reading back the RUN bit
+  ALSA: hda: Make sure DMA is started by reading back the RUN bit
+  ALSA: hda: Log HDA Hardware related errors
+  ALSA: hda: check if stream is stopped in snd_hdac_stream_clear
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- sound/soc/omap/sdma-pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/hda/hdac_stream.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
 
-diff --git a/sound/soc/omap/sdma-pcm.c b/sound/soc/omap/sdma-pcm.c
-index 3e52ccb2ae26..21a9c2499d48 100644
---- a/sound/soc/omap/sdma-pcm.c
-+++ b/sound/soc/omap/sdma-pcm.c
-@@ -4,13 +4,14 @@
-  *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
-  */
- 
-+#include <linux/device.h>
- #include <linux/module.h>
- #include <sound/core.h>
- #include <sound/pcm.h>
- #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
--#include <linux/omap-dma.h>
-+#include <linux/omap-dmaengine.h>
- 
- #include "sdma-pcm.h"
- 
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+2.7.4
