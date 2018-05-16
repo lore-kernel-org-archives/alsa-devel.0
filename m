@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/7] slimbus: core: rearrange slim_eaddr structure
-Date: Wed, 16 May 2018 12:36:37 +0100
-Message-ID: <20180516113642.28136-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 5/7] slimbus: messaging: remove multiple calls to pm_runtime_mark_last_busy
+Date: Wed, 16 May 2018 12:36:40 +0100
+Message-ID: <20180516113642.28136-6-srinivas.kandagatla@linaro.org>
 References: <20180516113642.28136-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180516113642.28136-1-srinivas.kandagatla@linaro.org>
@@ -10,40 +10,28 @@ To: gregkh@linuxfoundation.org
 Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Rearrange struct slim_eaddr so that the structure is packed correctly
-to be able to send in SLIMBus messages.
+There seems to be a multiple calls to pm_runtime_mark_last_busy(),
+which looks like a typo.
+Fix this by properly adding pm_runtime_put_autosuspend to put controller
+in auto suspend state.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- include/linux/slimbus.h | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ drivers/slimbus/messaging.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/linux/slimbus.h b/include/linux/slimbus.h
-index efa36a852dc3..63801bcc5e60 100644
---- a/include/linux/slimbus.h
-+++ b/include/linux/slimbus.h
-@@ -14,16 +14,16 @@ extern struct bus_type slimbus_bus;
- 
- /**
-  * struct slim_eaddr - Enumeration address for a SLIMbus device
-- * @manf_id: Manufacturer Id for the device
-- * @prod_code: Product code
-- * @dev_index: Device index
-  * @instance: Instance value
-+ * @dev_index: Device index
-+ * @prod_code: Product code
-+ * @manf_id: Manufacturer Id for the device
-  */
- struct slim_eaddr {
--	u16 manf_id;
--	u16 prod_code;
--	u8 dev_index;
- 	u8 instance;
-+	u8 dev_index;
-+	u16 prod_code;
-+	u16 manf_id;
- } __packed;
- 
- /**
+diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
+index 5a2ff01b394c..1c57b631031a 100644
+--- a/drivers/slimbus/messaging.c
++++ b/drivers/slimbus/messaging.c
+@@ -139,7 +139,7 @@ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
+ 		 * if there was error during this transaction
+ 		 */
+ 		pm_runtime_mark_last_busy(ctrl->dev);
+-		pm_runtime_mark_last_busy(ctrl->dev);
++		pm_runtime_put_autosuspend(ctrl->dev);
+ 	}
+ 	return ret;
+ }
 -- 
 2.16.2
