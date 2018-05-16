@@ -1,52 +1,35 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: usb-audio: Apply rate limit to warning
-	messages in URB complete callback
-Date: Wed, 16 May 2018 20:09:31 +0200
-Message-ID: <20180516180931.18241-1-tiwai@suse.de>
+From: Linux Audio Conference <lac-dDzkXPnfpdzhj6bIAHgUAw@public.gmane.org>
+Subject: [LAD] LAC2018 schedule and registration online!
+Date: Wed, 16 May 2018 21:28:29 +0200
+Message-ID: <b78dde435050b2cb3a2951c94687b6b6@linuxaudio.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id DD5D3266DF0
- for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 20:09:33 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 04560AEFC
- for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 18:09:32 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxaudio.org/options/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.linuxaudio.org/archives/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Sender: "Linux-audio-dev" <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+To: ak-discourse-Xt5XgHjqiBV35pIdRWVIsoQuADTiUCJX@public.gmane.org, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, arch-proaudio-xIg/pKzrS1/r4zxUK+PbzEB+6BGkLq7r@public.gmane.org, ardour-users-xIg/pKzrS1/8zbv/31uILQ@public.gmane.org, AUDITORY-BuSCI54nZwbge92OmsKjeg@public.gmane.org, concat-request-LCblRkk4dqw2DXo14h/pbQ@public.gmane.org, discuss-dDzkXPnfpdzh/9mkAUqHvP8+0UxHXcjY@public.gmane.org, gstreamer-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, jack-devel-jWNxllRMWAzQjzbLk4vjdkB+6BGkLq7r@public.gmane.org, lilypond-user-mXXj517/zsQ@public.gmane.org, fluid-dev-qX2TKyscuCcdnm+yROfE0A@public.gmane.org, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, linux-audio-user-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org, devel-vW3e5ont9aGpWSFFY9EUNw@public.gmane.org, musical.research-LCblRkk4dqw2DXo14h/pbQ@public.gmane.org, musicspeech-LCblRkk4dqw2DXo14h/pbQ@public.gmane.org, community-LxvIY2IrFAw@public.gmane.org, openmusic-LCblRkk4dqw2DXo14h/pbQ@public.gmane.org, Pd-ot-bPLUlx9x7XgCs4phFeLyEw@public.gmane.org, sc-users-lSHO60Uw44Cwa9SdKMSz+Q@public.gmane.org, SOUNDSCAPEUK-fDUS8cNZx2jrfANEuwkQdg@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-retire_capture_urb() may print warning messages when the given URB
-doesn't align, and this may flood the system log easily.
-Put the rate limit to the message for avoiding it.
-
-Bugzilla: https://bugzilla.suse.com/show_bug.cgi?id=1093485
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/usb/pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index dc2dfec9effd..20bed1c7a312 100644
---- a/sound/usb/pcm.c
-+++ b/sound/usb/pcm.c
-@@ -1303,7 +1303,7 @@ static void retire_capture_urb(struct snd_usb_substream *subs,
- 		if (bytes % (runtime->sample_bits >> 3) != 0) {
- 			int oldbytes = bytes;
- 			bytes = frames * stride;
--			dev_warn(&subs->dev->dev,
-+			dev_warn_ratelimited(&subs->dev->dev,
- 				 "Corrected urb data len. %d->%d\n",
- 							oldbytes, bytes);
- 		}
--- 
-2.16.3
+RGVhciBhbGwsCgp3ZSdyZSBoYXBweSB0byBhbm5vdW5jZSAoYW5kIHlvdSBtaWdodCBoYXZlIG5v
+dGljZWQgYWxyZWFkeSksCnRoYXQgdGhlIHNjaGVkdWxlIGZvciBMaW51eCBBdWRpbyBDb25mZXJl
+bmNlIDIwMTggaXMgbGl2ZSEKaHR0cHM6Ly9sYWMubGludXhhdWRpby5vcmcvMjAxOC9wYWdlcy9z
+Y2hlZHVsZQoKUGxlYXNlIG5vdGUsIHRoYXQgaXQgd2lsbCBzdGlsbCBiZSBzdWJqZWN0IHRvIHNs
+aWdodCBjaGFuZ2VzIQoKV2UgaGF2ZSBwcmVwYXJlZCBhIHJlZ2lzdHJhdGlvbiBmb3JtIGZvciBh
+dHRlbmRlZXM6Cmh0dHBzOi8vd3d3LmFrLnR1LWJlcmxpbi5kZS9pbmRleC5waHA/aWQ9MTk1NzU4
+ClBsZWFzZSBzaWduIHVwIGF0IHlvdXIgZWFybGllc3QgY29udmVuaWVuY2UgdG8gbGV0IHVzIGtu
+b3csCmlmIHlvdSdyZSBwYXJ0IG9mIHRoZSBjb25mZXJlbmNlLgoKQWxzbywgd2UnZCBsaWtlIHRv
+IGRyYXcgc3BlY2lhbCBhdHRlbnRpb24gdG8gdGhpcyB5ZWFyJ3Mga2V5bm90ZSwKd2hpY2ggd2ls
+bCBiZSBoZWxkIGJ5IEdpYW5mcmFuY28gQ2VjY29saW5pIG9mIE1PRCBEZXZpY2VzOgpodHRwczov
+L2xhYy5saW51eGF1ZGlvLm9yZy8yMDE4L3BhZ2VzL2V2ZW50LzEwMi8KCkxvb2tpbmcgZm9yd2Fy
+ZCB0byBzZWVpbmcgeW91IGluIEJlcmxpbiwKCi0tIApMaW51eCBBdWRpbyBDb25mZXJlbmNlIHRl
+YW0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgt
+YXVkaW8tZGV2IG1haWxpbmcgbGlzdApMaW51eC1hdWRpby1kZXZAbGlzdHMubGludXhhdWRpby5v
+cmcKaHR0cHM6Ly9saXN0cy5saW51eGF1ZGlvLm9yZy9saXN0aW5mby9saW51eC1hdWRpby1kZXYK
