@@ -1,21 +1,15 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH v3] ASoC: da7219: read fmw property to get
- mclk for non-dts systems
-Date: Wed, 16 May 2018 09:37:46 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1ED3D3@SW-EX-MBX01.diasemi.com>
-References: <1525334313-28661-1-git-send-email-akshu.agrawal@amd.com>
- <2E89032DDAA8B9408CB92943514A0337014C1EA102@SW-EX-MBX01.diasemi.com>
- <e17e2c9e-923d-fea6-26be-5f14c99a45cb@amd.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ALSA: usb: add UAC3 BADD profiles support
+Date: Wed, 16 May 2018 14:32:54 +0300
+Message-ID: <20180516113253.GA29128@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta25.messagelabs.com (mail1.bemta25.messagelabs.com
- [195.245.230.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 4184926707F
- for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 11:37:48 +0200 (CEST)
-In-Reply-To: <e17e2c9e-923d-fea6-26be-5f14c99a45cb@amd.com>
-Content-Language: en-US
+Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
+ by alsa0.perex.cz (Postfix) with ESMTP id C65BE266F44
+ for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 13:33:04 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,85 +19,178 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <Support.Opensource@diasemi.com>, open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Alexander.Deucher@amd.com" <Alexander.Deucher@amd.com>
+To: ruslan.bilovol@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 07 May 2018 05:50, Agrawal, Akshu wrote:
+[ Your patch didn't really introduce the bug, it just made it visible
+  to static checkers.  - dan ]
 
-Apologies for the delay in response. Please see comments below.
+Hello Ruslan Bilovol,
 
-> On 5/4/2018 2:45 PM, Adam Thomson wrote:
-> > On 03 May 2018 08:59, Akshu Agrawal wrote:
-> >
-> >> Non-dts based systems can use ACPI DSDT to pass on the mclk
-> >> to da7219.
-> >> This enables da7219 mclk to be linked to system clock.
-> >> Enable/Disable of the mclk is already handled in the codec so
-> >> platform drivers don't have to explicitly do handling of mclk.
-> >>
-> >> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> >> ---
-> >> v2: Fixed kbuild error
-> >> v3: Add corresponding clk_put for clk_get
-> >>  include/sound/da7219.h    |  2 ++
-> >>  sound/soc/codecs/da7219.c | 10 +++++++++-
-> >>  2 files changed, 11 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
-> >> index 1bfcb16..df7ddf4 100644
-> >> --- a/include/sound/da7219.h
-> >> +++ b/include/sound/da7219.h
-> >> @@ -38,6 +38,8 @@ struct da7219_pdata {
-> >>
-> >>  	const char *dai_clks_name;
-> >>
-> >> +	const char *mclk_name;
-> >> +
-> >>  	/* Mic */
-> >>  	enum da7219_micbias_voltage micbias_lvl;
-> >>  	enum da7219_mic_amp_in_sel mic_amp_in_sel;
-> >> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-> >> index 980a6a8..ecd46fc 100644
-> >> --- a/sound/soc/codecs/da7219.c
-> >> +++ b/sound/soc/codecs/da7219.c
-> >> @@ -1624,6 +1624,8 @@ static struct da7219_pdata
-> *da7219_fw_to_pdata(struct
-> >> snd_soc_component *compone
-> >>  		dev_warn(dev, "Using default clk name: %s\n",
-> >>  			 pdata->dai_clks_name);
-> >>
-> >> +	device_property_read_string(dev, "dlg,mclk-name", &pdata->mclk_name);
-> >> +
-> >
-> > Personally am still not keen on this. To me the use of a device_property_*
-> > function suggests the same property resides in both DT and ACPI, but here we're
-> > only using this for the ACPI case. DT has no want or need for this. I still feel
-> > we should look at something more generic in the clock framework, although I do
-> > agree with Mark that this should be properly specced.
-> >
-> 
-> I am not an expert in field of ACPI, IMO forming a Spec and changing
-> ACPI to have DT like clock framework is good to have but a bigger change
-> which should be taken up later.
+The patch 17156f23e93c: "ALSA: usb: add UAC3 BADD profiles support"
+from May 4, 2018, leads to the following static checker warning:
 
-That's fair enough, but I wonder who will take that on. Really would be
-beneficial to have something generic on the ACPI side.
- 
-> The current code of handling of mclk in the driver is usable only by DT.
-> The device_property (though ACPI specific) makes this code, a common
-> code for DT and ACPI based devices.
-> 
-> https://www.kernel.org/doc/Documentation/acpi/DSD-properties-rules.txt
-> "....Still, for the sake of code re-use, it may make sense to provide as
-> much of the configuration data as possible in the form of device
-> properties and complement that with an ACPI-specific mechanism suitable
-> for the use case at hand......"
+	sound/usb/stream.c:984 snd_usb_get_audioformat_uac3()
+	warn: possible memory leak of 'chmap'
 
-Given that on the DT side there's the expectation that the generic 'clock-names'
-property might be provided to the driver, could we not reuse that rather than
-introducing 'dlg,mclk-name' and diverging DT and ACPI properties?
+sound/usb/stream.c
+   864  
+   865                  chmap = kzalloc(sizeof(*chmap), GFP_KERNEL);
+   866                  if (!chmap)
+   867                          return ERR_PTR(-ENOMEM);
+   868  
+   869                  if (num_channels == 1) {
+   870                          chmap->map[0] = SNDRV_CHMAP_MONO;
+   871                  } else {
+   872                          chmap->map[0] = SNDRV_CHMAP_FL;
+   873                          chmap->map[1] = SNDRV_CHMAP_FR;
+   874                  }
+   875  
+   876                  chmap->channels = num_channels;
+   877                  clock = UAC3_BADD_CS_ID9;
+   878                  goto found_clock;
+   879          }
+   880  
+   881          as = snd_usb_find_csint_desc(alts->extra, alts->extralen,
+   882                                       NULL, UAC_AS_GENERAL);
+   883          if (!as) {
+   884                  dev_err(&dev->dev,
+   885                          "%u:%d : UAC_AS_GENERAL descriptor not found\n",
+   886                          iface_no, altno);
+   887                  return NULL;
+   888          }
+   889  
+   890          if (as->bLength < sizeof(*as)) {
+   891                  dev_err(&dev->dev,
+   892                          "%u:%d : invalid UAC_AS_GENERAL desc\n",
+   893                          iface_no, altno);
+   894                  return NULL;
+   895          }
+   896  
+   897          cluster_id = le16_to_cpu(as->wClusterDescrID);
+   898          if (!cluster_id) {
+   899                  dev_err(&dev->dev,
+   900                          "%u:%d : no cluster descriptor\n",
+   901                          iface_no, altno);
+   902                  return NULL;
+   903          }
+   904  
+   905          /*
+   906           * Get number of channels and channel map through
+   907           * High Capability Cluster Descriptor
+   908           *
+   909           * First step: get High Capability header and
+   910           * read size of Cluster Descriptor
+   911           */
+   912          err = snd_usb_ctl_msg(chip->dev,
+   913                          usb_rcvctrlpipe(chip->dev, 0),
+   914                          UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+   915                          USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+   916                          cluster_id,
+   917                          snd_usb_ctrl_intf(chip),
+   918                          &hc_header, sizeof(hc_header));
+   919          if (err < 0)
+   920                  return ERR_PTR(err);
+   921          else if (err != sizeof(hc_header)) {
+   922                  dev_err(&dev->dev,
+   923                          "%u:%d : can't get High Capability descriptor\n",
+   924                          iface_no, altno);
+   925                  return ERR_PTR(-EIO);
+   926          }
+   927  
+   928          /*
+   929           * Second step: allocate needed amount of memory
+   930           * and request Cluster Descriptor
+   931           */
+   932          wLength = le16_to_cpu(hc_header.wLength);
+   933          cluster = kzalloc(wLength, GFP_KERNEL);
+   934          if (!cluster)
+   935                  return ERR_PTR(-ENOMEM);
+   936          err = snd_usb_ctl_msg(chip->dev,
+   937                          usb_rcvctrlpipe(chip->dev, 0),
+   938                          UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+   939                          USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+   940                          cluster_id,
+   941                          snd_usb_ctrl_intf(chip),
+   942                          cluster, wLength);
+   943          if (err < 0) {
+   944                  kfree(cluster);
+   945                  return ERR_PTR(err);
+   946          } else if (err != wLength) {
+   947                  dev_err(&dev->dev,
+   948                          "%u:%d : can't get Cluster Descriptor\n",
+   949                          iface_no, altno);
+   950                  kfree(cluster);
+   951                  return ERR_PTR(-EIO);
+   952          }
+   953  
+   954          num_channels = cluster->bNrChannels;
+   955          chmap = convert_chmap_v3(cluster);
+   956          kfree(cluster);
+   957  
+   958          /*
+   959           * lookup the terminal associated to this interface
+   960           * to extract the clock
+   961           */
+   962          input_term = snd_usb_find_input_terminal_descriptor(chip->ctrl_intf,
+   963                                                              as->bTerminalLink);
+   964          if (input_term) {
+   965                  clock = input_term->bCSourceID;
+   966                  goto found_clock;
+   967          }
+   968  
+   969          output_term = snd_usb_find_output_terminal_descriptor(chip->ctrl_intf,
+   970                                                               as->bTerminalLink);
+   971          if (output_term) {
+   972                  clock = output_term->bCSourceID;
+   973                  goto found_clock;
+   974          }
+   975  
+   976          dev_err(&dev->dev, "%u:%d : bogus bTerminalLink %d\n",
+   977                          iface_no, altno, as->bTerminalLink);
+   978          return NULL;
+   979  
+   980  found_clock:
+   981          fp = audio_format_alloc_init(chip, alts, UAC_VERSION_3, iface_no,
+   982                                       altset_idx, altno, num_channels, clock);
+   983          if (!fp)
+   984                  return ERR_PTR(-ENOMEM);
 
-> 
-> Thanks,
-> Akshu
+We should free "chmap" before returning.
+
+   985  
+   986          fp->chmap = chmap;
+   987  
+   988          if (badd_profile >= UAC3_FUNCTION_SUBCLASS_GENERIC_IO) {
+   989                  fp->attributes = 0; /* No attributes */
+   990  
+   991                  fp->fmt_type = UAC_FORMAT_TYPE_I;
+   992                  fp->formats = badd_formats;
+   993  
+   994                  fp->nr_rates = 0;       /* SNDRV_PCM_RATE_CONTINUOUS */
+   995                  fp->rate_min = UAC3_BADD_SAMPLING_RATE;
+   996                  fp->rate_max = UAC3_BADD_SAMPLING_RATE;
+   997                  fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
+   998  
+   999          } else {
+  1000                  fp->attributes = parse_uac_endpoint_attributes(chip, alts,
+  1001                                                                 UAC_VERSION_3,
+  1002                                                                 iface_no);
+  1003                  /* ok, let's parse further... */
+  1004                  if (snd_usb_parse_audio_format_v3(chip, fp, as, stream) < 0) {
+  1005                          kfree(fp->rate_table);
+  1006                          kfree(fp);
+  1007                          return NULL;
+
+And here as well?  I don't know.
+
+  1008                  }
+  1009          }
+  1010  
+  1011          return fp;
+  1012  }
+
+
+regards,
+dan carpenter
