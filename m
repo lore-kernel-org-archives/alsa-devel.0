@@ -1,18 +1,17 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 3/7] slimbus: core: add need_tid flag to
-	slim_msg_txn
-Date: Wed, 16 May 2018 12:36:38 +0100
-Message-ID: <20180516113642.28136-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 4/7] slimbus: messaging: pass correct wbuf
+Date: Wed, 16 May 2018 12:36:39 +0100
+Message-ID: <20180516113642.28136-5-srinivas.kandagatla@linaro.org>
 References: <20180516113642.28136-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f196.google.com (mail-wr0-f196.google.com
- [209.85.128.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 34DDF266F44
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 46858266F44
  for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 13:39:11 +0200 (CEST)
-Received: by mail-wr0-f196.google.com with SMTP id v15-v6so554363wrm.10
+Received: by mail-wr0-f193.google.com with SMTP id y15-v6so550943wrg.11
  for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 04:39:11 -0700 (PDT)
 In-Reply-To: <20180516113642.28136-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -28,26 +27,26 @@ To: gregkh@linuxfoundation.org
 Cc: alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add need_tid flag to txn, this flag can be set before start of transcation.
-Having this flag would avoid calling slim_tid_txn() multiple times on the
-same txn. Also it is handy for controller drivers too.
+There seems to be a typo while filling msg for slim_write, wbuf is
+set to NULL instead of rbuf.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/slimbus.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/slimbus/messaging.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
-index 79f8e05d92dd..c0450f469e07 100644
---- a/drivers/slimbus/slimbus.h
-+++ b/drivers/slimbus/slimbus.h
-@@ -113,6 +113,7 @@ struct slim_msg_txn {
- 	u8			la;
- 	struct slim_val_inf	*msg;
- 	struct	completion	*comp;
-+	bool			need_tid;
- };
+diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
+index 457ea1f8db30..5a2ff01b394c 100644
+--- a/drivers/slimbus/messaging.c
++++ b/drivers/slimbus/messaging.c
+@@ -307,7 +307,7 @@ int slim_write(struct slim_device *sdev, u32 addr, size_t count, u8 *val)
+ {
+ 	struct slim_val_inf msg;
  
- /* Frequently used message transaction structures */
+-	slim_fill_msg(&msg, addr, count,  val, NULL);
++	slim_fill_msg(&msg, addr, count,  NULL, val);
+ 
+ 	return slim_xfer_msg(sdev, &msg, SLIM_MSG_MC_CHANGE_VALUE);
+ }
 -- 
 2.16.2
