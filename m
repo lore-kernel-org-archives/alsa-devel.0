@@ -1,15 +1,25 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: timer: Simplify timer hw resolution
-	calls
-Date: Thu, 17 May 2018 00:10:47 +0200
-Message-ID: <20180516221048.32221-1-tiwai@suse.de>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: Is add uevent of controlC still a reliable
+	synchronization point?
+Date: Thu, 17 May 2018 07:28:30 +0800
+Message-ID: <CA+Px+wXvAhmHgiVKZP_tSdxANZK7dWNZba91RXdPPZsps-EcaQ@mail.gmail.com>
+References: <CA+Px+wXj-Pyak6dfrBA3VbZE-L_X-B2+s+yajeZRHSJQ1cSYiQ@mail.gmail.com>
+ <s5htvr8bwbq.wl-tiwai@suse.de>
+ <CA+Px+wXm57FaLj259NYZcKEmVJ5WoHtYrp7qa6-QfGci4C+c1w@mail.gmail.com>
+ <s5h7eo4b22f.wl-tiwai@suse.de> <s5h1secaz0a.wl-tiwai@suse.de>
+ <CA+Px+wVz2DB=14UDXUExixqM_Jo1yjGvGGcaniS3Euu6WfXZ6A@mail.gmail.com>
+ <s5hbmdfn1j0.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 52441267332
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 00:10:53 +0200 (CEST)
+Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
+ [209.85.218.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3889B267332
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 01:28:43 +0200 (CEST)
+Received: by mail-oi0-f66.google.com with SMTP id 11-v6so2326487ois.8
+ for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 16:28:43 -0700 (PDT)
+In-Reply-To: <s5hbmdfn1j0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,93 +29,185 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Ben Hutchings <ben.hutchings@codethink.co.uk>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-There multiple open-codes to get the hardware timer resolution.
-Make a local helper function snd_timer_hw_resolution() and call it
-from all relevant places.
+We have tested the patch and make sure it fixes the bug we met.  In the
+meantime, we also tested on the change of snd_device_free_all() by simply
+count the number for each type of devices.  The number is correct.  And
+free() of ctl device is later than all other types (except LOWLEVEL) as our
+expectation.
 
-There is no functional change by this, just a preliminary work for the
-following timer resolution hardening patch.
+Please use the tag: "Tested-by: Tzung-Bi Shih <tzungbi@google.com>"
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/timer.c | 33 ++++++++++++++-------------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
+Thanks so much.
+On Wed, May 16, 2018 at 10:00 PM Takashi Iwai <tiwai@suse.de> wrote:
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index dc87728c5b74..23b941df9c43 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -427,6 +427,14 @@ int snd_timer_close(struct snd_timer_instance *timeri)
- }
- EXPORT_SYMBOL(snd_timer_close);
- 
-+static unsigned long snd_timer_hw_resolution(struct snd_timer *timer)
-+{
-+	if (timer->hw.c_resolution)
-+		return timer->hw.c_resolution(timer);
-+	else
-+		return timer->hw.resolution;
-+}
-+
- unsigned long snd_timer_resolution(struct snd_timer_instance *timeri)
- {
- 	struct snd_timer * timer;
-@@ -434,11 +442,8 @@ unsigned long snd_timer_resolution(struct snd_timer_instance *timeri)
- 	if (timeri == NULL)
- 		return 0;
- 	timer = timeri->timer;
--	if (timer) {
--		if (timer->hw.c_resolution)
--			return timer->hw.c_resolution(timer);
--		return timer->hw.resolution;
--	}
-+	if (timer)
-+		return snd_timer_hw_resolution(timer);
- 	return 0;
- }
- EXPORT_SYMBOL(snd_timer_resolution);
-@@ -771,10 +776,7 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
- 	spin_lock_irqsave(&timer->lock, flags);
- 
- 	/* remember the current resolution */
--	if (timer->hw.c_resolution)
--		resolution = timer->hw.c_resolution(timer);
--	else
--		resolution = timer->hw.resolution;
-+	resolution = snd_timer_hw_resolution(timer);
- 
- 	/* loop for all active instances
- 	 * Here we cannot use list_for_each_entry because the active_list of a
-@@ -1014,12 +1016,8 @@ void snd_timer_notify(struct snd_timer *timer, int event, struct timespec *tstam
- 	spin_lock_irqsave(&timer->lock, flags);
- 	if (event == SNDRV_TIMER_EVENT_MSTART ||
- 	    event == SNDRV_TIMER_EVENT_MCONTINUE ||
--	    event == SNDRV_TIMER_EVENT_MRESUME) {
--		if (timer->hw.c_resolution)
--			resolution = timer->hw.c_resolution(timer);
--		else
--			resolution = timer->hw.resolution;
--	}
-+	    event == SNDRV_TIMER_EVENT_MRESUME)
-+		resolution = snd_timer_hw_resolution(timer);
- 	list_for_each_entry(ti, &timer->active_list_head, active_list) {
- 		if (ti->ccallback)
- 			ti->ccallback(ti, event, tstamp, resolution);
-@@ -1656,10 +1654,7 @@ static int snd_timer_user_gstatus(struct file *file,
- 	mutex_lock(&register_mutex);
- 	t = snd_timer_find(&tid);
- 	if (t != NULL) {
--		if (t->hw.c_resolution)
--			gstatus.resolution = t->hw.c_resolution(t);
--		else
--			gstatus.resolution = t->hw.resolution;
-+		gstatus.resolution = snd_timer_hw_resolution(t);
- 		if (t->hw.precise_resolution) {
- 			t->hw.precise_resolution(t, &gstatus.resolution_num,
- 						 &gstatus.resolution_den);
--- 
-2.16.3
+> On Wed, 16 May 2018 15:43:19 +0200,
+> Tzung-Bi Shih wrote:
+> >
+> > I think we have two objectives.
+> >
+> > 1. when initializing, make ctl to be the last one
+> > 2. when deinitializing, eventually free the resource
+> >
+> > We have made 1. work by changing the enum.  For 2., we don't really care
+> > about the order as long as the resource has eventually released.  If the
+> > "free" part is a little bit cumbersome, is it possible to use a
+reference
+> > count somewhere (e.g. struct snd_device) to make sure they will not
+> > double-free?  So that we can keep snd_device_free_all() simple.
+
+> That'd be ideal from the device management POV, but it will give too
+> much overhead in the current code base, as we'll need to add a
+> refcount to each ctl element object, for example.  And it'd make the
+> other parts far more complex in the end.  We write in C, and it's no
+> golden language for this kind of stuff, as you know :)
+
+> So, for keeping the rest as simple as possible, just tweaking the
+> release order should be simpler, IMO.
+
+
+> thanks,
+
+> Takashi
+
+> > I have no idea whether it is feasible or not, just a rough idea.
+> > On Wed, May 16, 2018 at 2:35 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > On Wed, 16 May 2018 07:29:44 +0200,
+> > > Takashi Iwai wrote:
+> > > >
+> > > > On Wed, 16 May 2018 00:22:40 +0200,
+> > > > Tzung-Bi Shih wrote:
+> > > > >
+> > > > > We noticed the issue because in some rarely case the code will be
+> > executed
+> > > > > by worker of workqueue (i.e. deferral probe since v3.4) instead of
+> > udevd.
+> > > > > As a result, applications rely on the change uevent of sound card
+> > (fired
+> > > > > from 78-sound-card.rules) will be signaled prematurely.  The
+> > applications
+> > > > > assume when they receive the signal, everything of the sound card
+> > should be
+> > > > > ready.  But in the case, they are still initializing.
+> > > > >
+> > > > > We have tried to change the order of SNDRV_DEV_CONTROL to the last
+> > one to
+> > > > > fix the bug we met and it was doing great.  So if there will not
+> > bring any
+> > > > > side effect, it should be fine to apply the patch.
+> > > >
+> > > > The register and disconnect should be OK, as they are merely the
+parts
+> > > > to expose to and hide from user-space.
+> > > >
+> > > > > By the way, out of curiosity, prior to the commit 289ca025ee1d, it
+> > seems
+> > > > > the list is merely a FIFO.  How to ensure control device is the
+last
+> > one to
+> > > > > register at that time?
+> > > >
+> > > > It's just the fact that snd_ctl_new() is called inside the
+> > > > snd_card_new(), i.e. it's the very first one to be added.
+> >
+> > > On the second thought, calling the free for control at the very last
+> > > isn't always good.  A ctl element might have a reference to a card
+> > > "chip" object that was allocated as lowlevel device object, and often
+> > > it refers in the private_free call, too.  So, at best, we should
+> > > release the control before the lowlevel.
+> >
+> > > A revised patch is below.  Give it a try.
+> >
+> >
+> > > thanks,
+> >
+> > > Takashi
+> >
+> > > -- 8< --
+> > > From: Takashi Iwai <tiwai@suse.de>
+> > > Subject: [PATCH] ALSA: core: Assure control device to be registered at
+> > last
+> >
+> > > The commit 289ca025ee1d ("ALSA: Use priority list for managing device
+> > > list") changed the way to register/disconnect/free devices via a
+> > > single priority list.  This helped to make behavior consistent, but it
+> > > also changed a slight behavior change: namely, the control device is
+> > > registered earlier than others, while it was supposed to be the very
+> > > last one.
+> >
+> > > I've put SNDRV_DEV_CONTROL in the current position as the release of
+> > > ctl elements often conflict with the private ctl elements some PCM or
+> > > other components may create, which often leads to a double-free.
+> > > But, the order of register and disconnect should be indeed fixed as
+> > > expected in the early days: the control device gets registered at
+> > > last, and disconnected at first.
+> >
+> > > This patch changes the priority list order to move SNDRV_DEV_CONTROL
+> > > as the last guy to assure the register / disconnect order.  Meanwhile,
+> > > for keeping the messy resource release order, manually treat the
+> > > control and lowlevel devices as last freed one.
+> >
+> > > Additional note:
+> > > The lowlevel device is the device where a card driver creates at
+> > > probe.  And, we still keep the release order control -> lowlevel, as
+> > > there might  be link from a control element back to a lowlevel object.
+> >
+> > > Fixes: 289ca025ee1d ("ALSA: Use priority list for managing device
+list")
+> > > Reported-by: Tzung-Bi Shih <tzungbi@google.com>
+> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > ---
+> > >    include/sound/core.h | 2 +-
+> > >    sound/core/device.c  | 9 +++++++++
+> > >    2 files changed, 10 insertions(+), 1 deletion(-)
+> >
+> > > diff --git a/include/sound/core.h b/include/sound/core.h
+> > > index 5f181b875c2f..36a5934cf4b1 100644
+> > > --- a/include/sound/core.h
+> > > +++ b/include/sound/core.h
+> > > @@ -51,7 +51,6 @@ struct completion;
+> > >     */
+> > >    enum snd_device_type {
+> > >           SNDRV_DEV_LOWLEVEL,
+> > > -       SNDRV_DEV_CONTROL,
+> > >           SNDRV_DEV_INFO,
+> > >           SNDRV_DEV_BUS,
+> > >           SNDRV_DEV_CODEC,
+> > > @@ -62,6 +61,7 @@ enum snd_device_type {
+> > >           SNDRV_DEV_SEQUENCER,
+> > >           SNDRV_DEV_HWDEP,
+> > >           SNDRV_DEV_JACK,
+> > > +       SNDRV_DEV_CONTROL,      /* NOTE: this must be the last one */
+> > >    };
+> >
+> > >    enum snd_device_state {
+> > > diff --git a/sound/core/device.c b/sound/core/device.c
+> > > index cb0e46f66cc9..535102d564e3 100644
+> > > --- a/sound/core/device.c
+> > > +++ b/sound/core/device.c
+> > > @@ -240,6 +240,15 @@ void snd_device_free_all(struct snd_card *card)
+> >
+> > >           if (snd_BUG_ON(!card))
+> > >                   return;
+> > > +       list_for_each_entry_safe_reverse(dev, next, &card->devices,
+list)
+> > {
+> > > +               /* exception: free ctl and lowlevel stuff later */
+> > > +               if (dev->type == SNDRV_DEV_CONTROL ||
+> > > +                   dev->type == SNDRV_DEV_LOWLEVEL)
+> > > +                       continue;
+> > > +               __snd_device_free(dev);
+> > > +       }
+> > > +
+> > > +       /* free all */
+> > >           list_for_each_entry_safe_reverse(dev, next, &card->devices,
+list)
+> > >                   __snd_device_free(dev);
+> > >    }
+> > > --
+> > > 2.16.3
+> >
