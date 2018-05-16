@@ -1,20 +1,23 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v4 2/3] ASoC: Add multiple CPU DAI support
-	for PCM ops
-Date: Wed, 16 May 2018 13:55:39 +0100
-Message-ID: <20180516125539.GA20410@imbe.wolfsonmicro.main>
-References: <1525776335-26259-1-git-send-email-shreyas.nc@intel.com>
- <1525776335-26259-3-git-send-email-shreyas.nc@intel.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: Re: Is add uevent of controlC still a reliable
+	synchronization point?
+Date: Wed, 16 May 2018 21:43:19 +0800
+Message-ID: <CA+Px+wVz2DB=14UDXUExixqM_Jo1yjGvGGcaniS3Euu6WfXZ6A@mail.gmail.com>
+References: <CA+Px+wXj-Pyak6dfrBA3VbZE-L_X-B2+s+yajeZRHSJQ1cSYiQ@mail.gmail.com>
+ <s5htvr8bwbq.wl-tiwai@suse.de>
+ <CA+Px+wXm57FaLj259NYZcKEmVJ5WoHtYrp7qa6-QfGci4C+c1w@mail.gmail.com>
+ <s5h7eo4b22f.wl-tiwai@suse.de> <s5h1secaz0a.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F62F266F44
- for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 14:55:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1525776335-26259-3-git-send-email-shreyas.nc@intel.com>
+Received: from mail-oi0-f67.google.com (mail-oi0-f67.google.com
+ [209.85.218.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id C57C0266F44
+ for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 15:43:32 +0200 (CEST)
+Received: by mail-oi0-f67.google.com with SMTP id a6-v6so739758oia.2
+ for <alsa-devel@alsa-project.org>; Wed, 16 May 2018 06:43:32 -0700 (PDT)
+In-Reply-To: <s5h1secaz0a.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,156 +27,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>
-Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Vinod Koul <vkoul@kernel.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, Dylan Reid <dgreid@google.com>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, May 08, 2018 at 04:15:34PM +0530, Shreyas NC wrote:
-> Add support in PCM operations to invoke multiple cpu dais as we do
-> for multiple codec dais. Also the symmetry calculations are updated to
-> reflect multiple cpu dais.
-> 
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+I think we have two objectives.
+
+1. when initializing, make ctl to be the last one
+2. when deinitializing, eventually free the resource
+
+We have made 1. work by changing the enum.  For 2., we don't really care
+about the order as long as the resource has eventually released.  If the
+"free" part is a little bit cumbersome, is it possible to use a reference
+count somewhere (e.g. struct snd_device) to make sure they will not
+double-free?  So that we can keep snd_device_free_all() simple.
+
+I have no idea whether it is feasible or not, just a rough idea.
+On Wed, May 16, 2018 at 2:35 PM Takashi Iwai <tiwai@suse.de> wrote:
+
+> On Wed, 16 May 2018 07:29:44 +0200,
+> Takashi Iwai wrote:
+> >
+> > On Wed, 16 May 2018 00:22:40 +0200,
+> > Tzung-Bi Shih wrote:
+> > >
+> > > We noticed the issue because in some rarely case the code will be
+executed
+> > > by worker of workqueue (i.e. deferral probe since v3.4) instead of
+udevd.
+> > > As a result, applications rely on the change uevent of sound card
+(fired
+> > > from 78-sound-card.rules) will be signaled prematurely.  The
+applications
+> > > assume when they receive the signal, everything of the sound card
+should be
+> > > ready.  But in the case, they are still initializing.
+> > >
+> > > We have tried to change the order of SNDRV_DEV_CONTROL to the last
+one to
+> > > fix the bug we met and it was doing great.  So if there will not
+bring any
+> > > side effect, it should be fine to apply the patch.
+> >
+> > The register and disconnect should be OK, as they are merely the parts
+> > to expose to and hide from user-space.
+> >
+> > > By the way, out of curiosity, prior to the commit 289ca025ee1d, it
+seems
+> > > the list is merely a FIFO.  How to ensure control device is the last
+one to
+> > > register at that time?
+> >
+> > It's just the fact that snd_ctl_new() is called inside the
+> > snd_card_new(), i.e. it's the very first one to be added.
+
+> On the second thought, calling the free for control at the very last
+> isn't always good.  A ctl element might have a reference to a card
+> "chip" object that was allocated as lowlevel device object, and often
+> it refers in the private_free call, too.  So, at best, we should
+> release the control before the lowlevel.
+
+> A revised patch is below.  Give it a try.
+
+
+> thanks,
+
+> Takashi
+
+> -- 8< --
+> From: Takashi Iwai <tiwai@suse.de>
+> Subject: [PATCH] ALSA: core: Assure control device to be registered at
+last
+
+> The commit 289ca025ee1d ("ALSA: Use priority list for managing device
+> list") changed the way to register/disconnect/free devices via a
+> single priority list.  This helped to make behavior consistent, but it
+> also changed a slight behavior change: namely, the control device is
+> registered earlier than others, while it was supposed to be the very
+> last one.
+
+> I've put SNDRV_DEV_CONTROL in the current position as the release of
+> ctl elements often conflict with the private ctl elements some PCM or
+> other components may create, which often leads to a double-free.
+> But, the order of register and disconnect should be indeed fixed as
+> expected in the early days: the control device gets registered at
+> last, and disconnected at first.
+
+> This patch changes the priority list order to move SNDRV_DEV_CONTROL
+> as the last guy to assure the register / disconnect order.  Meanwhile,
+> for keeping the messy resource release order, manually treat the
+> control and lowlevel devices as last freed one.
+
+> Additional note:
+> The lowlevel device is the device where a card driver creates at
+> probe.  And, we still keep the release order control -> lowlevel, as
+> there might  be link from a control element back to a lowlevel object.
+
+> Fixes: 289ca025ee1d ("ALSA: Use priority list for managing device list")
+> Reported-by: Tzung-Bi Shih <tzungbi@google.com>
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
 > ---
->  sound/soc/soc-pcm.c | 487 +++++++++++++++++++++++++++++++++++-----------------
->  1 file changed, 326 insertions(+), 161 deletions(-)
+>    include/sound/core.h | 2 +-
+>    sound/core/device.c  | 9 +++++++++
+>    2 files changed, 10 insertions(+), 1 deletion(-)
 
-Getting down to the last few comments from me :-)
+> diff --git a/include/sound/core.h b/include/sound/core.h
+> index 5f181b875c2f..36a5934cf4b1 100644
+> --- a/include/sound/core.h
+> +++ b/include/sound/core.h
+> @@ -51,7 +51,6 @@ struct completion;
+>     */
+>    enum snd_device_type {
+>           SNDRV_DEV_LOWLEVEL,
+> -       SNDRV_DEV_CONTROL,
+>           SNDRV_DEV_INFO,
+>           SNDRV_DEV_BUS,
+>           SNDRV_DEV_CODEC,
+> @@ -62,6 +61,7 @@ enum snd_device_type {
+>           SNDRV_DEV_SEQUENCER,
+>           SNDRV_DEV_HWDEP,
+>           SNDRV_DEV_JACK,
+> +       SNDRV_DEV_CONTROL,      /* NOTE: this must be the last one */
+>    };
 
-> @@ -313,13 +333,18 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
->  static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
->  {
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct snd_soc_dai_driver *cpu_driver = rtd->cpu_dai->driver;
->  	struct snd_soc_dai_link *link = rtd->dai_link;
-> -	unsigned int symmetry, i;
-> +	unsigned int symmetry = 0, i;
+>    enum snd_device_state {
+> diff --git a/sound/core/device.c b/sound/core/device.c
+> index cb0e46f66cc9..535102d564e3 100644
+> --- a/sound/core/device.c
+> +++ b/sound/core/device.c
+> @@ -240,6 +240,15 @@ void snd_device_free_all(struct snd_card *card)
 
-No need to init this to zero you are explicitly setting it
-straight after.
-
->  
-> -	symmetry = cpu_driver->symmetric_rates || link->symmetric_rates ||
-> -		cpu_driver->symmetric_channels || link->symmetric_channels ||
-> -		cpu_driver->symmetric_samplebits || link->symmetric_samplebits;
-> +	symmetry = link->symmetric_rates || link->symmetric_channels ||
-> +			link->symmetric_samplebits;
-
-> @@ -427,30 +466,55 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
->  		rates = snd_pcm_rate_mask_intersect(codec_stream->rates, rates);
->  	}
->  
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		cpu_dai_drv = rtd->cpu_dais[i]->driver;
+>           if (snd_BUG_ON(!card))
+>                   return;
+> +       list_for_each_entry_safe_reverse(dev, next, &card->devices, list)
+{
+> +               /* exception: free ctl and lowlevel stuff later */
+> +               if (dev->type == SNDRV_DEV_CONTROL ||
+> +                   dev->type == SNDRV_DEV_LOWLEVEL)
+> +                       continue;
+> +               __snd_device_free(dev);
+> +       }
 > +
-> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +			cpu_stream = &cpu_dai_drv->playback;
-> +		else
-> +			cpu_stream = &cpu_dai_drv->capture;
-> +
-> +		cpu_chan_min = max(hw->channels_min,
-> +					cpu_stream->channels_min);
-> +		cpu_chan_max = min(hw->channels_max,
-> +					cpu_stream->channels_max);
-
-At the end of the loop cpu_chan_min and cpu_chan_max will only
-have considered the channels_min/max from the last cpu DAI, is
-that the behaviour you wanted?
-
-> +
-> +		if (hw->formats)
-> +			hw->formats &= cpu_stream->formats;
-> +		else
-> +			hw->formats = cpu_stream->formats;
-> +
-> +		cpu_rates = snd_pcm_rate_mask_intersect(cpu_rates,
-> +						cpu_stream->rates);
-> +
-> +		cpu_rate_min = max(hw->rate_min, cpu_stream->rate_min);
-> +		cpu_rate_max = min_not_zero(hw->rate_max, cpu_stream->rate_max);
-
-Same here with cpu_rate_min and cpu_rate_max all the first n-1 CPU
-DAIs are ignored and only the last DAI is considered.
-
-> @@ -1162,7 +1292,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->  	struct snd_soc_component *component;
->  	struct snd_soc_rtdcom_list *rtdcom;
-> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-> +	struct snd_soc_dai *cpu_dai;
->  	struct snd_soc_dai *codec_dai;
->  	struct snd_pcm_runtime *runtime = substream->runtime;
->  	snd_pcm_uframes_t offset = 0;
-> @@ -1182,8 +1312,12 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->  		break;
->  	}
->  
-> -	if (cpu_dai->driver->ops->delay)
-> -		delay += cpu_dai->driver->ops->delay(substream, cpu_dai);
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		cpu_dai = rtd->cpu_dais[i];
-> +		if (cpu_dai->driver->ops->delay)
-> +			delay += cpu_dai->driver->ops->delay(substream,
-> +								cpu_dai);
-> +	}
-
-Should we be adding these delays? Wouldn't it be better to use
-the max CPU DAI delay as we do for the CODECs, or is there a
-reason these are additive?
-
->  
->  	for (i = 0; i < rtd->num_codecs; i++) {
->  		codec_dai = rtd->codec_dais[i];
-> @@ -1306,12 +1440,16 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
->  			if (!be->dai_link->no_pcm)
->  				continue;
->  
-> -			dev_dbg(card->dev, "ASoC: try BE : %s\n",
-> -				be->cpu_dai->playback_widget ?
-> -				be->cpu_dai->playback_widget->name : "(not set)");
-> +			for (i = 0; i < be->num_cpu_dai; i++) {
-> +				struct snd_soc_dai *cpu_dai = be->cpu_dais[i];
-> +
-> +				dev_dbg(card->dev, "ASoC: try BE : %s\n",
-> +					cpu_dai->playback_widget ?
-> +					cpu_dai->playback_widget->name : "(not set)");
->  
-> -			if (be->cpu_dai->playback_widget == widget)
-> -				return be;
-> +				if (cpu_dai->playback_widget == widget)
-> +					return be;
-> +			}
->  
->  			for (i = 0; i < be->num_codecs; i++) {
->  				struct snd_soc_dai *dai = be->codec_dais[i];
-> @@ -1326,12 +1464,16 @@ static struct snd_soc_pcm_runtime *dpcm_get_be(struct snd_soc_card *card,
->  			if (!be->dai_link->no_pcm)
->  				continue;
->  
-> -			dev_dbg(card->dev, "ASoC: try BE %s\n",
-> -				be->cpu_dai->capture_widget ?
-> -				be->cpu_dai->capture_widget->name : "(not set)");
-> +			for (i = 0; i < be->num_cpu_dai; i++) {
-> +				struct snd_soc_dai *cpu_dai = be->cpu_dais[i];
->  
-> -			if (be->cpu_dai->capture_widget == widget)
-> -				return be;
-> +				dev_dbg(card->dev, "ASoC: try BE %s\n",
-> +					cpu_dai->capture_widget ?
-> +					cpu_dai->capture_widget->name : "(not set)");
-> +
-> +				if (cpu_dai->capture_widget == widget)
-> +					return be;
-> +			}
->  
->  			for (i = 0; i < be->num_codecs; i++) {
->  				struct snd_soc_dai *dai = be->codec_dais[i];
-
-I still think you need to get Liam or someone to review this DPCM
-stuff. Multi-CPU DAIs feels like it could be a tricky thing to
-merge with DPCM and I am not sure I am confident enough in me
-reviewing it right.
-
-Thanks,
-Charles
+> +       /* free all */
+>           list_for_each_entry_safe_reverse(dev, next, &card->devices, list)
+>                   __snd_device_free(dev);
+>    }
+> --
+> 2.16.3
