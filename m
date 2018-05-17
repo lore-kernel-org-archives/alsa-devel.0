@@ -1,19 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH V2 04/10] ASoC: amd: pte offset related dma
-	driver changes
-Date: Thu, 17 May 2018 15:16:37 +0900
-Message-ID: <20180517061637.GK20254@sirena.org.uk>
-References: <1525754888-14124-1-git-send-email-Vijendar.Mukunda@amd.com>
- <1525754888-14124-4-git-send-email-Vijendar.Mukunda@amd.com>
- <c8d87b3b-6f8e-c125-4a8b-f47a6f920eb8@amd.com>
+Subject: Re: [PATCH] ASoC: Intel: Boards: Add CNL RT274 I2S
+ machine driver
+Date: Thu, 17 May 2018 15:37:25 +0900
+Message-ID: <20180517063725.GM20254@sirena.org.uk>
+References: <20171127124437.8441-1-guneshwor.o.singh@intel.com>
+ <5bdd77e1-fb83-0626-c377-a457294ca38d@linux.intel.com>
+ <20171128162415.GV3187@localhost>
+ <f0425e26-a13d-d0ed-4191-f5973cb14231@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5877904282974576997=="
+Content-Type: multipart/mixed; boundary="===============0130162947231589882=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 76D562671C0
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:37:18 +0200 (CEST)
-In-Reply-To: <c8d87b3b-6f8e-c125-4a8b-f47a6f920eb8@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 91469267630
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:37:26 +0200 (CEST)
+In-Reply-To: <f0425e26-a13d-d0ed-4191-f5973cb14231@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,58 +24,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Mukunda,Vijendar" <vijendar.mukunda@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, Daniel Kurtz <djkurtz@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5877904282974576997==
+--===============0130162947231589882==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YQEH9CATo+4lan7A"
+	protocol="application/pgp-signature"; boundary="0+35XlDF45POFHfm"
 Content-Disposition: inline
 
 
---YQEH9CATo+4lan7A
+--0+35XlDF45POFHfm
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, May 15, 2018 at 03:22:46PM +0530, Mukunda,Vijendar wrote:
+On Tue, Nov 28, 2017 at 10:44:50AM -0600, Pierre-Louis Bossart wrote:
+> On 11/28/2017 10:24 AM, Vinod Koul wrote:
 
-> You have merged 1-3 patch series. Still patch no 4 to 10 remaining.
-> Could you please take them.
+> > Since you are still working on the fixes, I guess this can sneak in before.
+> > The machine drivers are typically low hanging in terms on complexity so we
+> > can merge this first followed by the rework you are doing. I think that part
+> > will still take a bit to stabilize and cleanup.
 
-Please don't send content free pings and please allow a reasonable time
-for review.  People get busy, go on holiday, attend conferences and so=20
-on so unless there is some reason for urgency (like critical bug fixes)
-please allow at least a couple of weeks for review.  If there have been
-review comments then people may be waiting for those to be addressed.
-Sending content free pings just adds to the mail volume (if they are
-seen at all) and if something has gone wrong you'll have to resend the
-patches anyway.
+> the update goes out this afternoon, working on it, does this patch really
+> need to 'sneak in'?
 
---YQEH9CATo+4lan7A
+This seems to have got buried with all the Kconfig fixes and reworks?  I
+was expecting a resend based on those given this discussion but that
+didn't seem to ever happen.
+
+--0+35XlDF45POFHfm
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlr9HkQACgkQJNaLcl1U
-h9CWVAf/V4dJxgRpHrqUTscwyP6exn07dZqCAG4Gz/WiOMZvaC6G+j6uLYquRaJT
-Q3tRcBtbG4CTTXHBWPz2BOeUXMT9lccypenmJ9kHCgwoCIuMylotzi1yd+aORoJD
-Wv5pZDIJSUZ+0iTUqQEBN6YedkV+7eZsYdW8J1yYI1g7HnQKz2uukqFWemBS96zD
-xcn5/PjzVN+ZHPa2aNLvs6MNadsCjtWkiJq+dbAEUDZ+Ign9BRe9JHvIJMfDYi3c
-GEsf7cx12bVzAWWfD1p3UnjYeN6T2sfEwRS8FUIdo97PQfXKz24sjCyuazqESrVQ
-TDo8/vFJgNLVkNITDUoJPhRceGT5Dw==
-=Tziv
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlr9IyQACgkQJNaLcl1U
+h9BkhAf+JDDxXCt8Hlk1IwmN4E591nup7sJeNF1tO0/7BTQjuzK17MYjpG3O5Bnr
+3t7sjssPTQkJLLezl7EhzSN/9ztNVyMMq45162squXVj6lVasWzcI+rGsKIOFxOA
+VBkEfAc6+GzREO/5ETwVq16O/pNWtLlXEjom/WOgdEjyqCvkWY3sfNPhdCkq3g0w
+6OEHl0waC+//REWGV0/HQF1LPNCV2iyzyjwcH6ZROGx5wMLUVZ7lB+kg3lNGt1rv
+4KyE9LU8Dn0NF1v6rQqRxFM85KZWsxxCVSgOZlnkxlNqUZUzc1hl6ZEjr1zDlpwu
+016GNqrvMwAiWomEV2/6IEbeUO6DGQ==
+=828o
 -----END PGP SIGNATURE-----
 
---YQEH9CATo+4lan7A--
+--0+35XlDF45POFHfm--
 
---===============5877904282974576997==
+--===============0130162947231589882==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5877904282974576997==--
+--===============0130162947231589882==--
