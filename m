@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap: sdma-pcm: Correction for the
-	include files" to the asoc tree
-Date: Thu, 17 May 2018 17:40:40 +0100 (BST)
-Message-ID: <20180517164040.E644D44007E@finisterre.ee.mobilebroadband>
-References: <20180511122055.14206-3-peter.ujfalusi@ti.com>
+Subject: Applied "ASoC: omap: sdma-pcm: Fix modpost warning" to
+	the asoc tree
+Date: Thu, 17 May 2018 17:40:55 +0100 (BST)
+Message-ID: <20180517164055.4415644007E@finisterre.ee.mobilebroadband>
+References: <20180515064335.20565-2-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F4282676AB
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:40:44 +0200 (CEST)
-In-Reply-To: <20180511122055.14206-3-peter.ujfalusi@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 61F3A2676B8
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:40:58 +0200 (CEST)
+In-Reply-To: <20180515064335.20565-2-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap: sdma-pcm: Correction for the include files
+   ASoC: omap: sdma-pcm: Fix modpost warning
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 1cc0fe247958e5ae359e42e4d3cae1cf4f3c8136 Mon Sep 17 00:00:00 2001
+>From 7bf8ad175a1c535e31c9966984a65d12f5ff8629 Mon Sep 17 00:00:00 2001
 From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Date: Tue, 15 May 2018 09:43:35 +0300
-Subject: [PATCH] ASoC: omap: sdma-pcm: Correction for the include files
+Date: Tue, 15 May 2018 09:43:34 +0300
+Subject: [PATCH] ASoC: omap: sdma-pcm: Fix modpost warning
 
-The sdma-pcm does not need any information from omap-dma.h, it only needs
-to include the omap-dmaengine.h - for the omap_dma_filter_fn, but that
-might not be needed at all as OMAP1 was converted to dma_slave_map, but
-I can not test OMAP1.
+WARNING: modpost: missing MODULE_LICENSE() in sound/soc/omap/snd-soc-sdma.o
+see include/linux/module.h for more information
+WARNING: modpost: missing MODULE_LICENSE() in sound/soc/omap/snd-soc-sdma.o
+see include/linux/module.h for more information
 
-Add the linux/device.h include as well for devm_kzalloc()
+Add the missing MODULE_LICENSE.
 
+This patch also going to solve:
+snd_soc_sdma: Unknown symbol devm_kmalloc (err 0)
+snd_soc_sdma: Unknown symbol omap_dma_filter_fn (err 0)
+snd_soc_sdma: Unknown symbol snd_dmaengine_pcm_prepare_slave_config (err 0)
+snd_soc_sdma: Unknown symbol devm_snd_dmaengine_pcm_register (err 0)
+
+Reported-by: Tony Lindgren <tony@atomide.com>
 Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/sdma-pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/omap/sdma-pcm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/sound/soc/omap/sdma-pcm.c b/sound/soc/omap/sdma-pcm.c
-index 3e52ccb2ae26..21a9c2499d48 100644
+index f7b2b5b69d27..3e52ccb2ae26 100644
 --- a/sound/soc/omap/sdma-pcm.c
 +++ b/sound/soc/omap/sdma-pcm.c
-@@ -4,13 +4,14 @@
+@@ -4,6 +4,7 @@
   *  Author: Peter Ujfalusi <peter.ujfalusi@ti.com>
   */
  
-+#include <linux/device.h>
- #include <linux/module.h>
++#include <linux/module.h>
  #include <sound/core.h>
  #include <sound/pcm.h>
  #include <sound/pcm_params.h>
- #include <sound/soc.h>
- #include <sound/dmaengine_pcm.h>
--#include <linux/omap-dma.h>
-+#include <linux/omap-dmaengine.h>
- 
- #include "sdma-pcm.h"
- 
+@@ -66,3 +67,7 @@ int sdma_pcm_platform_register(struct device *dev,
+ 	return devm_snd_dmaengine_pcm_register(dev, config, flags);
+ }
+ EXPORT_SYMBOL_GPL(sdma_pcm_platform_register);
++
++MODULE_AUTHOR("Peter Ujfalusi <peter.ujfalusi@ti.com>");
++MODULE_DESCRIPTION("sDMA PCM ASoC platform driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.17.0
