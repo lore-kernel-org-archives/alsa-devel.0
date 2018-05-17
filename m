@@ -1,113 +1,45 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 1/3] ALSA: timer: Simplify timer hw
-	resolution calls
-Date: Thu, 17 May 2018 10:49:09 +0200
-Message-ID: <20180517084911.11868-2-tiwai@suse.de>
-References: <20180517084911.11868-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 74B24266DF0
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 10:49:16 +0200 (CEST)
-In-Reply-To: <20180517084911.11868-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Ben Hutchings <ben.hutchings@codethink.co.uk>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 0/8] slimbus: fixes and some helpers
+Date: Thu, 17 May 2018 09:58:42 +0100
+Message-ID: <20180517085850.14276-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: gregkh@linuxfoundation.org
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-There multiple open-codes to get the hardware timer resolution.
-Make a local helper function snd_timer_hw_resolution() and call it
-from all relevant places.
+Hi Greg,
 
-There is no functional change by this, just a preliminary work for the
-following timer resolution hardening patch.
+Here is set of patches for slimbus, there are 6 fixes and
+two helper functions.
+Most of these issues were found while testing QCOM NGD SLIMBus
+controller with WCD9335 codec.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/timer.c | 33 ++++++++++++++-------------------
- 1 file changed, 14 insertions(+), 19 deletions(-)
 
-diff --git a/sound/core/timer.c b/sound/core/timer.c
-index dc87728c5b74..23b941df9c43 100644
---- a/sound/core/timer.c
-+++ b/sound/core/timer.c
-@@ -427,6 +427,14 @@ int snd_timer_close(struct snd_timer_instance *timeri)
- }
- EXPORT_SYMBOL(snd_timer_close);
- 
-+static unsigned long snd_timer_hw_resolution(struct snd_timer *timer)
-+{
-+	if (timer->hw.c_resolution)
-+		return timer->hw.c_resolution(timer);
-+	else
-+		return timer->hw.resolution;
-+}
-+
- unsigned long snd_timer_resolution(struct snd_timer_instance *timeri)
- {
- 	struct snd_timer * timer;
-@@ -434,11 +442,8 @@ unsigned long snd_timer_resolution(struct snd_timer_instance *timeri)
- 	if (timeri == NULL)
- 		return 0;
- 	timer = timeri->timer;
--	if (timer) {
--		if (timer->hw.c_resolution)
--			return timer->hw.c_resolution(timer);
--		return timer->hw.resolution;
--	}
-+	if (timer)
-+		return snd_timer_hw_resolution(timer);
- 	return 0;
- }
- EXPORT_SYMBOL(snd_timer_resolution);
-@@ -771,10 +776,7 @@ void snd_timer_interrupt(struct snd_timer * timer, unsigned long ticks_left)
- 	spin_lock_irqsave(&timer->lock, flags);
- 
- 	/* remember the current resolution */
--	if (timer->hw.c_resolution)
--		resolution = timer->hw.c_resolution(timer);
--	else
--		resolution = timer->hw.resolution;
-+	resolution = snd_timer_hw_resolution(timer);
- 
- 	/* loop for all active instances
- 	 * Here we cannot use list_for_each_entry because the active_list of a
-@@ -1014,12 +1016,8 @@ void snd_timer_notify(struct snd_timer *timer, int event, struct timespec *tstam
- 	spin_lock_irqsave(&timer->lock, flags);
- 	if (event == SNDRV_TIMER_EVENT_MSTART ||
- 	    event == SNDRV_TIMER_EVENT_MCONTINUE ||
--	    event == SNDRV_TIMER_EVENT_MRESUME) {
--		if (timer->hw.c_resolution)
--			resolution = timer->hw.c_resolution(timer);
--		else
--			resolution = timer->hw.resolution;
--	}
-+	    event == SNDRV_TIMER_EVENT_MRESUME)
-+		resolution = snd_timer_hw_resolution(timer);
- 	list_for_each_entry(ti, &timer->active_list_head, active_list) {
- 		if (ti->ccallback)
- 			ti->ccallback(ti, event, tstamp, resolution);
-@@ -1656,10 +1654,7 @@ static int snd_timer_user_gstatus(struct file *file,
- 	mutex_lock(&register_mutex);
- 	t = snd_timer_find(&tid);
- 	if (t != NULL) {
--		if (t->hw.c_resolution)
--			gstatus.resolution = t->hw.c_resolution(t);
--		else
--			gstatus.resolution = t->hw.resolution;
-+		gstatus.resolution = snd_timer_hw_resolution(t);
- 		if (t->hw.precise_resolution) {
- 			t->hw.precise_resolution(t, &gstatus.resolution_num,
- 						 &gstatus.resolution_den);
+Changes since v1 (https://lkml.org/lkml/2018/5/16/436):
+- add need_tid to documentation reported by 0 day test.
+- remove redundant kconfig for qcom slim controller.
+
+thanks,
+Srini
+
+Srinivas Kandagatla (8):
+  slimbus: core: add of_slim_device_get() helper
+  slimbus: core: rearrange slim_eaddr structure
+  slimbus: core: add need_tid flag to slim_msg_txn
+  slimbus: messaging: pass correct wbuf
+  slimbus: messaging: remove multiple calls to pm_runtime_mark_last_busy
+  slimbus: messaging: add slim_prepare_txn() helper function
+  slimbus: messaging: initialize completion correctly
+  slimbus: qcom: remove redundant depends in Kconfig
+
+ drivers/slimbus/Kconfig     |  1 -
+ drivers/slimbus/core.c      | 39 +++++++++++++++++++
+ drivers/slimbus/messaging.c | 92 ++++++++++++++++++++++++++++++---------------
+ drivers/slimbus/qcom-ctrl.c |  7 +++-
+ drivers/slimbus/slimbus.h   |  4 ++
+ include/linux/slimbus.h     | 14 ++++---
+ 6 files changed, 119 insertions(+), 38 deletions(-)
+
 -- 
-2.16.3
+2.16.2
