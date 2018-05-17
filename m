@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5670: improve PLL function's
-	stability" to the asoc tree
-Date: Thu, 17 May 2018 18:12:51 +0100 (BST)
-Message-ID: <20180517171251.C40DA44007C@finisterre.ee.mobilebroadband>
-References: <1526536448-1603-1-git-send-email-bardliao@realtek.com>
+Subject: Applied "ASoC: ssm2305: Add amplifier driver" to the
+	asoc tree
+Date: Thu, 17 May 2018 18:12:53 +0100 (BST)
+Message-ID: <20180517171253.BAC7F44007C@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DAC62675CD
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 19:12:55 +0200 (CEST)
-In-Reply-To: <1526536448-1603-1-git-send-email-bardliao@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CBCD42675CD
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 19:12:57 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5670: improve PLL function's stability
+   ASoC: ssm2305: Add amplifier driver
 
 has been applied to the asoc tree at
 
@@ -53,31 +52,203 @@ to this mail.
 Thanks,
 Mark
 
->From 81dd1c5dcf510a2104b3468e9c4884f85ef1f644 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Thu, 17 May 2018 13:54:08 +0800
-Subject: [PATCH] ASoC: rt5670: improve PLL function's stability
+>From 74f24d8728ef12276d58e3d73283cc1d76db7507 Mon Sep 17 00:00:00 2001
+From: Marco Felsch <m.felsch@pengutronix.de>
+Date: Thu, 17 May 2018 15:55:18 +0200
+Subject: [PATCH] ASoC: ssm2305: Add amplifier driver
 
-Set PR-38 register to 0x1fe1 will make PLL function more stable.
+The ssm2305 is a simple Class-D audio amplifier. A application can
+turn on/off the device by a gpio. It's also possible to hardwire the
+shutdown pin.
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
+Tested on a i.MX6 based custom board.
+
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/adi,ssm2305.txt |  14 +++
+ sound/soc/codecs/Kconfig                      |   7 ++
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/ssm2305.c                    | 104 ++++++++++++++++++
+ 4 files changed, 127 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/adi,ssm2305.txt
+ create mode 100644 sound/soc/codecs/ssm2305.c
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index dc7df337d5f8..732ef928b25d 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -71,7 +71,7 @@ static const struct regmap_range_cfg rt5670_ranges[] = {
+diff --git a/Documentation/devicetree/bindings/sound/adi,ssm2305.txt b/Documentation/devicetree/bindings/sound/adi,ssm2305.txt
+new file mode 100644
+index 000000000000..a9c9d83c8a30
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/adi,ssm2305.txt
+@@ -0,0 +1,14 @@
++Analog Devices SSM2305 Speaker Amplifier
++========================================
++
++Required properties:
++  - compatible : "adi,ssm2305"
++  - shutdown-gpios : The gpio connected to the shutdown pin.
++                     The gpio signal is ACTIVE_LOW.
++
++Example:
++
++ssm2305: analog-amplifier {
++	compatible = "adi,ssm2305";
++	shutdown-gpios = <&gpio3 20 GPIO_ACTIVE_LOW>;
++};
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 83c51c5a4d08..a3e7c44c6586 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -145,6 +145,7 @@ config SND_SOC_ALL_CODECS
+ 	select SND_SOC_SI476X if MFD_SI476X_CORE
+ 	select SND_SOC_SIRF_AUDIO_CODEC
+ 	select SND_SOC_SPDIF
++	select SND_SOC_SSM2305
+ 	select SND_SOC_SSM2518 if I2C
+ 	select SND_SOC_SSM2602_SPI if SPI_MASTER
+ 	select SND_SOC_SSM2602_I2C if I2C
+@@ -896,6 +897,12 @@ config SND_SOC_SIRF_AUDIO_CODEC
+ config SND_SOC_SPDIF
+ 	tristate "S/PDIF CODEC"
  
- static const struct reg_sequence init_list[] = {
- 	{ RT5670_PR_BASE + 0x14, 0x9a8a },
--	{ RT5670_PR_BASE + 0x38, 0x3ba1 },
-+	{ RT5670_PR_BASE + 0x38, 0x1fe1 },
- 	{ RT5670_PR_BASE + 0x3d, 0x3640 },
- 	{ 0x8a, 0x0123 },
- };
++config SND_SOC_SSM2305
++	tristate "Analog Devices SSM2305 Class-D Amplifier"
++	help
++	  Enable support for Analog Devices SSM2305 filterless
++	  high-efficiency mono Class-D audio power amplifiers.
++
+ config SND_SOC_SSM2518
+ 	tristate
+ 
+diff --git a/sound/soc/codecs/Makefile b/sound/soc/codecs/Makefile
+index 1ac49b9abec6..4c85f3391705 100644
+--- a/sound/soc/codecs/Makefile
++++ b/sound/soc/codecs/Makefile
+@@ -156,6 +156,7 @@ snd-soc-si476x-objs := si476x.o
+ snd-soc-sirf-audio-codec-objs := sirf-audio-codec.o
+ snd-soc-spdif-tx-objs := spdif_transmitter.o
+ snd-soc-spdif-rx-objs := spdif_receiver.o
++snd-soc-ssm2305-objs := ssm2305.o
+ snd-soc-ssm2518-objs := ssm2518.o
+ snd-soc-ssm2602-objs := ssm2602.o
+ snd-soc-ssm2602-spi-objs := ssm2602-spi.o
+@@ -410,6 +411,7 @@ obj-$(CONFIG_SND_SOC_SIGMADSP_REGMAP)	+= snd-soc-sigmadsp-regmap.o
+ obj-$(CONFIG_SND_SOC_SI476X)	+= snd-soc-si476x.o
+ obj-$(CONFIG_SND_SOC_SPDIF)	+= snd-soc-spdif-rx.o snd-soc-spdif-tx.o
+ obj-$(CONFIG_SND_SOC_SIRF_AUDIO_CODEC) += sirf-audio-codec.o
++obj-$(CONFIG_SND_SOC_SSM2305)	+= snd-soc-ssm2305.o
+ obj-$(CONFIG_SND_SOC_SSM2518)	+= snd-soc-ssm2518.o
+ obj-$(CONFIG_SND_SOC_SSM2602)	+= snd-soc-ssm2602.o
+ obj-$(CONFIG_SND_SOC_SSM2602_SPI)	+= snd-soc-ssm2602-spi.o
+diff --git a/sound/soc/codecs/ssm2305.c b/sound/soc/codecs/ssm2305.c
+new file mode 100644
+index 000000000000..39d8b01cd852
+--- /dev/null
++++ b/sound/soc/codecs/ssm2305.c
+@@ -0,0 +1,104 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Analog Devices SSM2305 Amplifier Driver
++ *
++ * Copyright (C) 2018 Pengutronix, Marco Felsch <kernel@pengutronix.de>
++ */
++
++#include <linux/gpio/consumer.h>
++#include <linux/module.h>
++#include <sound/soc.h>
++
++#define DRV_NAME "ssm2305"
++
++struct ssm2305 {
++	/* shutdown gpio  */
++	struct gpio_desc *gpiod_shutdown;
++};
++
++static int ssm2305_power_event(struct snd_soc_dapm_widget *w,
++			       struct snd_kcontrol *kctrl, int event)
++{
++	struct snd_soc_component *c = snd_soc_dapm_to_component(w->dapm);
++	struct ssm2305 *data = snd_soc_component_get_drvdata(c);
++
++	gpiod_set_value_cansleep(data->gpiod_shutdown,
++				 SND_SOC_DAPM_EVENT_ON(event));
++
++	return 0;
++}
++
++static const struct snd_soc_dapm_widget ssm2305_dapm_widgets[] = {
++	/* Stereo input/output */
++	SND_SOC_DAPM_INPUT("L_IN"),
++	SND_SOC_DAPM_INPUT("R_IN"),
++	SND_SOC_DAPM_OUTPUT("L_OUT"),
++	SND_SOC_DAPM_OUTPUT("R_OUT"),
++
++	SND_SOC_DAPM_SUPPLY("Power", SND_SOC_NOPM, 0, 0, ssm2305_power_event,
++			    SND_SOC_DAPM_PRE_PMU | SND_SOC_DAPM_POST_PMD),
++};
++
++static const struct snd_soc_dapm_route ssm2305_dapm_routes[] = {
++	{ "L_OUT", NULL, "L_IN" },
++	{ "R_OUT", NULL, "R_IN" },
++	{ "L_IN", NULL, "Power" },
++	{ "R_IN", NULL, "Power" },
++};
++
++static const struct snd_soc_component_driver ssm2305_component_driver = {
++	.dapm_widgets		= ssm2305_dapm_widgets,
++	.num_dapm_widgets	= ARRAY_SIZE(ssm2305_dapm_widgets),
++	.dapm_routes		= ssm2305_dapm_routes,
++	.num_dapm_routes	= ARRAY_SIZE(ssm2305_dapm_routes),
++};
++
++static int ssm2305_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct ssm2305 *priv;
++	int err;
++
++	/* Allocate the private data */
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, priv);
++
++	/* Get shutdown gpio */
++	priv->gpiod_shutdown = devm_gpiod_get(dev, "shutdown",
++					      GPIOD_OUT_LOW);
++	if (IS_ERR(priv->gpiod_shutdown)) {
++		err = PTR_ERR(priv->gpiod_shutdown);
++		if (err != -EPROBE_DEFER)
++			dev_err(dev, "Failed to get 'shutdown' gpio: %d\n",
++				err);
++		return err;
++	}
++
++	return devm_snd_soc_register_component(dev, &ssm2305_component_driver,
++					       NULL, 0);
++}
++
++#ifdef CONFIG_OF
++static const struct of_device_id ssm2305_of_match[] = {
++	{ .compatible = "adi,ssm2305", },
++	{ }
++};
++MODULE_DEVICE_TABLE(of, ssm2305_of_match);
++#endif
++
++static struct platform_driver ssm2305_driver = {
++	.driver = {
++		.name = DRV_NAME,
++		.of_match_table = of_match_ptr(ssm2305_of_match),
++	},
++	.probe = ssm2305_probe,
++};
++
++module_platform_driver(ssm2305_driver);
++
++MODULE_DESCRIPTION("ASoC SSM2305 amplifier driver");
++MODULE_AUTHOR("Marco Felsch <m.felsch@pengutronix.de>");
++MODULE_LICENSE("GPL v2");
 -- 
 2.17.0
