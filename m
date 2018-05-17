@@ -1,17 +1,17 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
+From: Lars-Peter Clausen <lars@metafoo.de>
 Subject: Re: [PATCH] ASoC: ssm2305: Add amplifier driver
-Date: Thu, 17 May 2018 11:42:10 +0200
-Message-ID: <1526550130.2971.3.camel@pengutronix.de>
+Date: Thu, 17 May 2018 12:52:02 +0200
+Message-ID: <472f8866-755a-7484-dddb-16bed933acfe@metafoo.de>
 References: <20180517092245.16036-1-m.felsch@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [85.220.165.71])
- by alsa0.perex.cz (Postfix) with ESMTP id 0F73F266F88
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 11:42:21 +0200 (CEST)
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 705DB266F88
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 12:52:07 +0200 (CEST)
 In-Reply-To: <20180517092245.16036-1-m.felsch@pengutronix.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,11 +21,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marco Felsch <m.felsch@pengutronix.de>, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com
+To: Marco Felsch <m.felsch@pengutronix.de>, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2018-05-17 at 11:22 +0200, Marco Felsch wrote:
+On 05/17/2018 11:22 AM, Marco Felsch wrote:
 > The ssm2305 is a simple Class-D audio amplifier. A application can
 > turn on/off the device by a gpio. It's also possible to hardwire the
 > shutdown pin.
@@ -33,6 +33,11 @@ On Thu, 2018-05-17 at 11:22 +0200, Marco Felsch wrote:
 > Tested on a i.MX6 based custom board.
 > 
 > Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+
+Hi,
+
+Thanks for the patch. Looks mostly good, some comments inline.
+
 > ---
 >  .../devicetree/bindings/sound/adi,ssm2305.txt |  15 +++
 >  sound/soc/codecs/Kconfig                      |   7 ++
@@ -57,9 +62,52 @@ On Thu, 2018-05-17 at 11:22 +0200, Marco Felsch wrote:
 > +Optional properties:
 > +  - ssm2305,shutdown-gpio : the gpio connected to the shutdown pin
 
-This should be called shutdown-gpios (plural, no vendor prefix) for
-consistency. Also, since the shutdown GPIO on SSM2305 is active low,
-this should be documented here.
+I think policy is to use only the -gpios suffix for new bindings.
 
-regards
-Philipp
+> +
+> +Example:
+> +
+> +ssm2305: analog-amplifier {
+> +	compatible = "adi,ssm2305";
+> +	ssm2305,shutdown-gpio = <&gpio3 20 GPIO_ACTIVE_LOW>;
+> +};
+[...]
+> +
+> +static int ssm2305_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct ssm2305 *priv;
+> +	int err;
+> +
+> +	/* Allocate the private data */
+> +	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	platform_set_drvdata(pdev, priv);
+> +
+> +	/* Shutdown gpio is optional */
+
+If it is really optional you should use gpiod_get_optional. But I wonder
+what is the point of the driver if the GPIO is not present?
+
+> +	priv->gpiod_shutdown = devm_gpiod_get(dev, "ssm2305,shutdown",
+> +					      GPIOD_OUT_LOW);
+> +	if (IS_ERR(priv->gpiod_shutdown)) {
+> +		err = PTR_ERR(priv->gpiod_shutdown);
+> +		if (err != -EPROBE_DEFER)
+> +			dev_warn(dev, "Failed to get 'shutdown' gpio: %d\n",
+> +				 err);
+
+Should err be returned here?
+
+> +	}
+> +
+> +	dev_info(dev, "probed\n");
+
+That's a bit too much noise, imagine every driver did this.
+
+> +
+> +	return devm_snd_soc_register_component(dev, &ssm2305_component_driver,
+> +					       NULL, 0);
+> +}
