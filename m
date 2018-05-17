@@ -1,18 +1,14 @@
-From: Ruslan Bilovol <ruslan.bilovol@gmail.com>
-Subject: [PATCH] ALSA: usb: stream: fix potential memory leak
-	during uac3 interface parsing
-Date: Fri, 18 May 2018 01:08:59 +0300
-Message-ID: <1526594939-21084-1-git-send-email-ruslan.bilovol@gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: pcm512x: Add ACPI support
+Date: Thu, 17 May 2018 17:53:26 -0500
+Message-ID: <20180517225326.30881-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f67.google.com (mail-lf0-f67.google.com
- [209.85.215.67])
- by alsa0.perex.cz (Postfix) with ESMTP id BF27E266F44
- for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 00:10:07 +0200 (CEST)
-Received: by mail-lf0-f67.google.com with SMTP id h9-v6so11031699lfi.0
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 15:10:07 -0700 (PDT)
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64472266F44
+ for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 00:53:37 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,48 +18,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, Keyon Jie <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-UAC3 channel map is created during interface parsing,
-and in some cases was not freed in failure paths.
+HID is assumed to be made of TI PCI ID (0x104C) + part number, so all
+four 104C5121, 104C5122, 104C5141 104C5142 are valid.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Ruslan Bilovol <ruslan.bilovol@gmail.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/usb/stream.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ sound/soc/codecs/pcm512x-i2c.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
 
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index bce3152..d16e1c2 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -982,13 +982,16 @@ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
+diff --git a/sound/soc/codecs/pcm512x-i2c.c b/sound/soc/codecs/pcm512x-i2c.c
+index 5f9c069569d5..0fe5ced841a3 100644
+--- a/sound/soc/codecs/pcm512x-i2c.c
++++ b/sound/soc/codecs/pcm512x-i2c.c
+@@ -17,6 +17,7 @@
+ #include <linux/init.h>
+ #include <linux/module.h>
+ #include <linux/i2c.h>
++#include <linux/acpi.h>
  
- 	dev_err(&dev->dev, "%u:%d : bogus bTerminalLink %d\n",
- 			iface_no, altno, as->bTerminalLink);
-+	kfree(chmap);
- 	return NULL;
+ #include "pcm512x.h"
  
- found_clock:
- 	fp = audio_format_alloc_init(chip, alts, UAC_VERSION_3, iface_no,
- 				     altset_idx, altno, num_channels, clock);
--	if (!fp)
-+	if (!fp) {
-+		kfree(chmap);
- 		return ERR_PTR(-ENOMEM);
-+	}
+@@ -52,6 +53,7 @@ static const struct i2c_device_id pcm512x_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, pcm512x_i2c_id);
  
- 	fp->chmap = chmap;
++#if defined(CONFIG_OF)
+ static const struct of_device_id pcm512x_of_match[] = {
+ 	{ .compatible = "ti,pcm5121", },
+ 	{ .compatible = "ti,pcm5122", },
+@@ -60,6 +62,18 @@ static const struct of_device_id pcm512x_of_match[] = {
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, pcm512x_of_match);
++#endif
++
++#ifdef CONFIG_ACPI
++static const struct acpi_device_id pcm512x_acpi_match[] = {
++	{ "104C5121", 0 },
++	{ "104C5122", 0 },
++	{ "104C5141", 0 },
++	{ "104C5142", 0 },
++	{ },
++};
++MODULE_DEVICE_TABLE(acpi, pcm512x_acpi_match);
++#endif
  
-@@ -1009,6 +1012,7 @@ static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
- 							       iface_no);
- 		/* ok, let's parse further... */
- 		if (snd_usb_parse_audio_format_v3(chip, fp, as, stream) < 0) {
-+			kfree(fp->chmap);
- 			kfree(fp->rate_table);
- 			kfree(fp);
- 			return NULL;
+ static struct i2c_driver pcm512x_i2c_driver = {
+ 	.probe 		= pcm512x_i2c_probe,
+@@ -67,7 +81,8 @@ static struct i2c_driver pcm512x_i2c_driver = {
+ 	.id_table	= pcm512x_i2c_id,
+ 	.driver		= {
+ 		.name	= "pcm512x",
+-		.of_match_table = pcm512x_of_match,
++		.of_match_table = of_match_ptr(pcm512x_of_match),
++		.acpi_match_table = ACPI_PTR(pcm512x_acpi_match),
+ 		.pm     = &pcm512x_pm_ops,
+ 	},
+ };
 -- 
-1.9.1
+2.14.1
