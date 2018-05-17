@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "MAINTAINERS: update sound/soc/intel
-	maintainers" to the asoc tree
-Date: Thu, 17 May 2018 17:40:57 +0100 (BST)
-Message-ID: <20180517164057.EA3AA44007E@finisterre.ee.mobilebroadband>
-References: <20180516194901.8128-1-pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH 43/45] sound/soc/zte: remove duplicate
+	includes
+Date: Thu, 17 May 2018 15:38:06 +0900
+Message-ID: <20180517063806.GN20254@sirena.org.uk>
+References: <1512930723-5037-1-git-send-email-pravin.shedge4linux@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============0697180888584178966=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AF8B22676C7
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:41:09 +0200 (CEST)
-In-Reply-To: <20180516194901.8128-1-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CFC8A2671C0
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:44:54 +0200 (CEST)
+In-Reply-To: <1512930723-5037-1-git-send-email-pravin.shedge4linux@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,75 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Linus Walleij <linus.walleij@linaro.org>, Randy Dunlap <rdunlap@infradead.org>, Keyon Jie <yang.jie@linux.intel.com>, open list <linux-kernel@vger.kernel.org>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Andrew Morton <akpm@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>
+To: Pravin Shedge <pravin.shedge4linux@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, jun.nie@linaro.org, baoyou.xie@linaro.org, shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   MAINTAINERS: update sound/soc/intel maintainers
+--===============0697180888584178966==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="s8J8qjRpxLkp1Gun"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--s8J8qjRpxLkp1Gun
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Dec 11, 2017 at 12:02:03AM +0530, Pravin Shedge wrote:
+> These duplicate includes have been found with scripts/checkincludes.pl but
+> they have been removed manually to avoid removing false positives.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--s8J8qjRpxLkp1Gun
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlr9I04ACgkQJNaLcl1U
+h9ARbwf+P2Oq3YquIZNXfw6884eu6+lDJUqPTUX0v8jSNNaMD65j8Z0dgLZrwSiA
+LxlvM6f5Y+Tym+YmVibhKn2PaZ9MQBO90cvsccAiKEYx++L+ngyR9xmVtic4FFHD
+XhpEW3/PRKcDn5vRJTm4xbbmdtpsKl1p95oslh9hMqNOXN36ylBwYbinZYNkovPc
+ouhNFVlgJ+QY+MA4FVrxUkEfa/iIsi6lDOVha6hzOAy4rzRzWjSl0yqXj0ROKQvn
+8m2ZzVZyfDSqnXuI6OuaqdkJJiga5SibKaa+mmR7wjezuc5YkaFXk5GAO48xUQev
+9HhucI1oAcImvrDZxwv2XoaR4VLEiw==
+=6Dwl
+-----END PGP SIGNATURE-----
 
->From c90ddb69d4b24bc32edf9c7bcfec85e52427d1c1 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 16 May 2018 14:48:49 -0500
-Subject: [PATCH] MAINTAINERS: update sound/soc/intel maintainers
+--s8J8qjRpxLkp1Gun--
 
-The information for Intel SoC drivers was not updated for several
-years. Add myself, Liam and Keyon (Jie) as maintainers to get notified
-of contributions and bug reports. As discussed with Mark and Takashi,
-I'll also monitor alsa-devel and ack Intel patches as necessary.
+--===============0697180888584178966==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- MAINTAINERS | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2b62e6cf6b1c..fc29793c2f67 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7004,14 +7004,13 @@ L:	linux-fbdev@vger.kernel.org
- S:	Maintained
- F:	drivers/video/fbdev/i810/
- 
--INTEL ASoC BDW/HSW DRIVERS
-+INTEL ASoC DRIVERS
-+M:	Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-+M:	Liam Girdwood <liam.r.girdwood@linux.intel.com>
- M:	Jie Yang <yang.jie@linux.intel.com>
- L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
- S:	Supported
--F:	sound/soc/intel/common/sst-dsp*
--F:	sound/soc/intel/common/sst-firmware.c
--F:	sound/soc/intel/boards/broadwell.c
--F:	sound/soc/intel/haswell/
-+F:	sound/soc/intel/
- 
- INTEL C600 SERIES SAS CONTROLLER DRIVER
- M:	Intel SCU Linux support <intel-linux-scu@intel.com>
--- 
-2.17.0
+--===============0697180888584178966==--
