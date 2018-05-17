@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: zte: remove duplicate includes" to the
-	asoc tree
-Date: Thu, 17 May 2018 17:38:43 +0100 (BST)
-Message-ID: <20180517163843.7AFDF44007E@finisterre.ee.mobilebroadband>
-References: <1512930723-5037-1-git-send-email-pravin.shedge4linux@gmail.com>
+Subject: Applied "ASoC: davinci-mcasp: Only disable inactive
+	serializer" to the asoc tree
+Date: Thu, 17 May 2018 17:38:45 +0100 (BST)
+Message-ID: <20180517163845.D21E744007E@finisterre.ee.mobilebroadband>
+References: <20180227145104.5868-2-vishalthanki@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D1F6267364
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:38:47 +0200 (CEST)
-In-Reply-To: <1512930723-5037-1-git-send-email-pravin.shedge4linux@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 622742671C0
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:38:49 +0200 (CEST)
+In-Reply-To: <20180227145104.5868-2-vishalthanki@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, pravin.shedge4linux@gmail.com, broonie@kernel.org, jun.nie@linaro.org, baoyou.xie@linaro.org, shawnguo@kernel.org, linux-arm-kernel@lists.infradead.org
+To: Vishal Thanki <vishalthanki@gmail.com>
+Cc: alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, Mark Brown <broonie@kernel.org>, christophe.jaillet@wanadoo.fr, arvind.yadav.cs@gmail.com, elfring@users.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: zte: remove duplicate includes
+   ASoC: davinci-mcasp: Only disable inactive serializer
 
 has been applied to the asoc tree at
 
@@ -52,33 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 3439a083a13981f0da276cb2aeae84bd4e437b2e Mon Sep 17 00:00:00 2001
-From: Pravin Shedge <pravin.shedge4linux@gmail.com>
-Date: Mon, 11 Dec 2017 00:02:03 +0530
-Subject: [PATCH] ASoC: zte: remove duplicate includes
+>From 096a8f835e7d19f0402386353586d285566eee06 Mon Sep 17 00:00:00 2001
+From: Vishal Thanki <vishalthanki@gmail.com>
+Date: Fri, 11 May 2018 14:33:37 +0200
+Subject: [PATCH] ASoC: davinci-mcasp: Only disable inactive serializer
 
-These duplicate includes have been found with scripts/checkincludes.pl but
-they have been removed manually to avoid removing false positives.
+As a side effect of the following commit, the active TX
+serializer may get disabled which may result in distorted
+audio output.
 
-Signed-off-by: Pravin Shedge <pravin.shedge4linux@gmail.com>
+ASoC: davinci-mcasp: Add support for multichannel playback
+(2952b27e2e463b28d5c0f04000f96b968137ca42)
+
+For example, if a 4 channel I2S playback with two TX serializers
+is activated. Later on, if a recording of 2 channels, with only 1 RX
+serializer is started, which will also disable one of the TX
+serializer because max_active_serializers is only calculated for
+RX (recording) stream. This patch fixes this issue.
+
+Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/zte/zx-i2s.c | 3 ---
- 1 file changed, 3 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/zte/zx-i2s.c b/sound/soc/zte/zx-i2s.c
-index b6b056c607fa..0d36630aa1a7 100644
---- a/sound/soc/zte/zx-i2s.c
-+++ b/sound/soc/zte/zx-i2s.c
-@@ -20,9 +20,6 @@
- #include <sound/core.h>
- #include <sound/dmaengine_pcm.h>
- #include <sound/initval.h>
--#include <sound/pcm.h>
--#include <sound/pcm_params.h>
--#include <sound/soc.h>
- 
- #define ZX_I2S_PROCESS_CTRL	0x04
- #define ZX_I2S_TIMING_CTRL	0x08
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index 79fc4aa2fa29..1f96c9dbe9c4 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -789,7 +789,7 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
+ 					rx_ser < max_active_serializers) {
+ 			mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AXR(i));
+ 			rx_ser++;
+-		} else {
++		} else if (mcasp->serial_dir[i] == INACTIVE_MODE) {
+ 			mcasp_mod_bits(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
+ 				       SRMOD_INACTIVE, SRMOD_MASK);
+ 		}
 -- 
 2.17.0
