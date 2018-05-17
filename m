@@ -1,39 +1,37 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v3] ASoC: ssm2305: Add amplifier driver
-Date: Thu, 17 May 2018 16:44:32 +0200
-Message-ID: <399c5202-143b-3c4f-5399-aa6022859ddc@metafoo.de>
-References: <20180517135518.29345-1-m.felsch@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 374A72671C0
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 16:44:37 +0200 (CEST)
-In-Reply-To: <20180517135518.29345-1-m.felsch@pengutronix.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marco Felsch <m.felsch@pengutronix.de>, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] soc: qcom: apr: fix invalid msg_type check
+Date: Thu, 17 May 2018 17:03:53 +0100
+Message-ID: <20180517160353.27561-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: agross@codeaurora.org, broonie@kernel.org
+Cc: linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/17/2018 03:55 PM, Marco Felsch wrote:
-> The ssm2305 is a simple Class-D audio amplifier. A application can
-> turn on/off the device by a gpio. It's also possible to hardwire the
-> shutdown pin.
-> 
-> Tested on a i.MX6 based custom board.
-> 
-> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Removed invalid msg_type check.
+This also fixes below static checker warning:
+apr.c:95:35: warning: comparison is always true due to limited range of
+ data type [-Wtype-limits]
+warn: always true condition '(msg_type != 69864) => (0-u16max != 69864)'
 
-Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
+Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/soc/qcom/apr.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks.
+diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
+index 97f3622da535..57af8a537332 100644
+--- a/drivers/soc/qcom/apr.c
++++ b/drivers/soc/qcom/apr.c
+@@ -92,7 +92,7 @@ static int apr_callback(struct rpmsg_device *rpdev, void *buf,
+ 	}
+ 
+ 	msg_type = APR_HDR_FIELD_MT(hdr->hdr_field);
+-	if (msg_type >= APR_MSG_TYPE_MAX && msg_type != APR_BASIC_RSP_RESULT) {
++	if (msg_type >= APR_MSG_TYPE_MAX) {
+ 		dev_err(apr->dev, "APR: Wrong message type: %d\n", msg_type);
+ 		return -EINVAL;
+ 	}
+-- 
+2.16.2
