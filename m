@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "soc: qcom: apr: fix invalid msg_type check"
-	to the asoc tree
-Date: Thu, 17 May 2018 18:12:49 +0100 (BST)
-Message-ID: <20180517171249.8B9FB44007C@finisterre.ee.mobilebroadband>
-References: <20180517160353.27561-1-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: rt5670: improve PLL function's
+	stability" to the asoc tree
+Date: Thu, 17 May 2018 18:12:51 +0100 (BST)
+Message-ID: <20180517171251.C40DA44007C@finisterre.ee.mobilebroadband>
+References: <1526536448-1603-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 21A332675CD
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 19:12:52 +0200 (CEST)
-In-Reply-To: <20180517160353.27561-1-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1DAC62675CD
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 19:12:55 +0200 (CEST)
+In-Reply-To: <1526536448-1603-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, agross@codeaurora.org, Dan Carpenter <dan.carpenter@oracle.com>
+To: Bard Liao <bardliao@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   soc: qcom: apr: fix invalid msg_type check
+   ASoC: rt5670: improve PLL function's stability
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From e744619d056e6ec5cd9db38e55511a22dc463f89 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 17 May 2018 17:03:53 +0100
-Subject: [PATCH] soc: qcom: apr: fix invalid msg_type check
+>From 81dd1c5dcf510a2104b3468e9c4884f85ef1f644 Mon Sep 17 00:00:00 2001
+From: Bard Liao <bardliao@realtek.com>
+Date: Thu, 17 May 2018 13:54:08 +0800
+Subject: [PATCH] ASoC: rt5670: improve PLL function's stability
 
-Removed invalid msg_type check.
-This also fixes below static checker warning:
-apr.c:95:35: warning: comparison is always true due to limited range of
- data type [-Wtype-limits]
-warn: always true condition '(msg_type != 69864) => (0-u16max != 69864)'
+Set PR-38 register to 0x1fe1 will make PLL function more stable.
 
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Bard Liao <bardliao@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/soc/qcom/apr.c | 2 +-
+ sound/soc/codecs/rt5670.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/soc/qcom/apr.c b/drivers/soc/qcom/apr.c
-index 97f3622da535..57af8a537332 100644
---- a/drivers/soc/qcom/apr.c
-+++ b/drivers/soc/qcom/apr.c
-@@ -92,7 +92,7 @@ static int apr_callback(struct rpmsg_device *rpdev, void *buf,
- 	}
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index dc7df337d5f8..732ef928b25d 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -71,7 +71,7 @@ static const struct regmap_range_cfg rt5670_ranges[] = {
  
- 	msg_type = APR_HDR_FIELD_MT(hdr->hdr_field);
--	if (msg_type >= APR_MSG_TYPE_MAX && msg_type != APR_BASIC_RSP_RESULT) {
-+	if (msg_type >= APR_MSG_TYPE_MAX) {
- 		dev_err(apr->dev, "APR: Wrong message type: %d\n", msg_type);
- 		return -EINVAL;
- 	}
+ static const struct reg_sequence init_list[] = {
+ 	{ RT5670_PR_BASE + 0x14, 0x9a8a },
+-	{ RT5670_PR_BASE + 0x38, 0x3ba1 },
++	{ RT5670_PR_BASE + 0x38, 0x1fe1 },
+ 	{ RT5670_PR_BASE + 0x3d, 0x3640 },
+ 	{ 0x8a, 0x0123 },
+ };
 -- 
 2.17.0
