@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-mcasp: Only disable inactive
-	serializer" to the asoc tree
-Date: Thu, 17 May 2018 17:38:45 +0100 (BST)
-Message-ID: <20180517163845.D21E744007E@finisterre.ee.mobilebroadband>
-References: <20180227145104.5868-2-vishalthanki@gmail.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: Set card long_name
+	based on quirks" to the asoc tree
+Date: Thu, 17 May 2018 17:38:53 +0100 (BST)
+Message-ID: <20180517163853.5007944007E@finisterre.ee.mobilebroadband>
+References: <20180508153604.23711-20-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 622742671C0
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:38:49 +0200 (CEST)
-In-Reply-To: <20180227145104.5868-2-vishalthanki@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B31B926766E
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 18:38:58 +0200 (CEST)
+In-Reply-To: <20180508153604.23711-20-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vishal Thanki <vishalthanki@gmail.com>
-Cc: alsa-devel@alsa-project.org, peter.ujfalusi@ti.com, Mark Brown <broonie@kernel.org>, christophe.jaillet@wanadoo.fr, arvind.yadav.cs@gmail.com, elfring@users.sourceforge.net
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-mcasp: Only disable inactive serializer
+   ASoC: Intel: bytcr_rt5640: Set card long_name based on quirks
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From 096a8f835e7d19f0402386353586d285566eee06 Mon Sep 17 00:00:00 2001
-From: Vishal Thanki <vishalthanki@gmail.com>
-Date: Fri, 11 May 2018 14:33:37 +0200
-Subject: [PATCH] ASoC: davinci-mcasp: Only disable inactive serializer
+>From 063422ca2a9de238401c3848c1b3641c07b6316c Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 13 May 2018 09:24:35 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Set card long_name based on quirks
 
-As a side effect of the following commit, the active TX
-serializer may get disabled which may result in distorted
-audio output.
+Many X86 devices using a BYT SoC + RT5640 codec are cheap devices with
+generic DMI strings, causing snd_soc_set_dmi_name() to fail to set a
+long_name, making it impossible for userspace to have a correct UCM
+profile which only uses inputs / outputs which are actually hooked up
+on the device.
 
-ASoC: davinci-mcasp: Add support for multichannel playback
-(2952b27e2e463b28d5c0f04000f96b968137ca42)
+Our quirks already specify which input the internal mic is connected to
+and if a single (mono) speaker is used or if the device has stereo
+speakers.
 
-For example, if a 4 channel I2S playback with two TX serializers
-is activated. Later on, if a recording of 2 channels, with only 1 RX
-serializer is started, which will also disable one of the TX
-serializer because max_active_serializers is only calculated for
-RX (recording) stream. This patch fixes this issue.
+This commit sets a long_name based on the quirks so that userspace can
+have UCM profiles doing the right thing based on the long_name.
 
-Signed-off-by: Vishal Thanki <vishalthanki@gmail.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Note that if we ever encounter the need for a special UCM profile for
+some device we can add a quirk to set a specific long_name for the
+device,
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 79fc4aa2fa29..1f96c9dbe9c4 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -789,7 +789,7 @@ static int mcasp_common_hw_param(struct davinci_mcasp *mcasp, int stream,
- 					rx_ser < max_active_serializers) {
- 			mcasp_clr_bits(mcasp, DAVINCI_MCASP_PDIR_REG, AXR(i));
- 			rx_ser++;
--		} else {
-+		} else if (mcasp->serial_dir[i] == INACTIVE_MODE) {
- 			mcasp_mod_bits(mcasp, DAVINCI_MCASP_XRSRCTL_REG(i),
- 				       SRMOD_INACTIVE, SRMOD_MASK);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 686d00405493..b0eec0a9b7b9 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -950,6 +950,7 @@ static struct snd_soc_dai_link byt_rt5640_dais[] = {
+ static char byt_rt5640_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5640_codec_aif_name[12]; /*  = "rt5640-aif[1|2]" */
+ static char byt_rt5640_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
++static char byt_rt5640_long_name[40]; /* = "bytcr-rt5640-*-spk-*-mic" */
+ 
+ static int byt_rt5640_suspend(struct snd_soc_card *card)
+ {
+@@ -1021,6 +1022,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ 
+ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
+ {
++	const char * const map_name[] = { "dmic1", "dmic2", "in1", "in3" };
+ 	const struct dmi_system_id *dmi_id;
+ 	struct byt_rt5640_private *priv;
+ 	struct snd_soc_acpi_mach *mach;
+@@ -1184,6 +1186,13 @@ static int snd_byt_rt5640_mc_probe(struct platform_device *pdev)
  		}
+ 	}
+ 
++	snprintf(byt_rt5640_long_name, sizeof(byt_rt5640_long_name),
++		 "bytcr-rt5640-%s-spk-%s-mic",
++		 (byt_rt5640_quirk & BYT_RT5640_MONO_SPEAKER) ?
++			"mono" : "stereo",
++		 map_name[BYT_RT5640_MAP(byt_rt5640_quirk)]);
++	byt_rt5640_card.long_name = byt_rt5640_long_name;
++
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5640_card);
+ 
+ 	if (ret_val) {
 -- 
 2.17.0
