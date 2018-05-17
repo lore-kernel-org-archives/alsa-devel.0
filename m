@@ -1,17 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2 2/3] ALSA: seq: Avoid open-code for getting
-	timer resolution
-Date: Thu, 17 May 2018 10:49:10 +0200
-Message-ID: <20180517084911.11868-3-tiwai@suse.de>
-References: <20180517084911.11868-1-tiwai@suse.de>
+Subject: [PATCH v2 0/3] ALSA: possible race fixes for timer
+	resolution callback
+Date: Thu, 17 May 2018 10:49:08 +0200
+Message-ID: <20180517084911.11868-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B09A1266DF0
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 10:49:14 +0200 (CEST)
-In-Reply-To: <20180517084911.11868-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D249267046
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 10:49:15 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,32 +23,29 @@ To: alsa-devel@alsa-project.org
 Cc: Ben Hutchings <ben.hutchings@codethink.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-Instead of open-coding for getting the timer resolution, use the
-standard snd_timer_resolution() helper.
+Hi,
 
-The original code falls back to the callback function when the
-resolution is zero, but it must be always so when the callback
-function is defined.  So this should be no functional change.
+this is a revised patchset for fixing the possible races among timer
+resolution callback and other operations.  The first two are code
+cleanups and the last one actually covers it.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/core/seq/seq_timer.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+v1->v2:
+- Fix bogus return value from snd_timer_resolution()
+- Split the change in seq_timer.c to an individual patch
 
-diff --git a/sound/core/seq/seq_timer.c b/sound/core/seq/seq_timer.c
-index 23167578231f..f587d0e27476 100644
---- a/sound/core/seq/seq_timer.c
-+++ b/sound/core/seq/seq_timer.c
-@@ -371,9 +371,7 @@ static int initialize_timer(struct snd_seq_timer *tmr)
- 
- 	tmr->ticks = 1;
- 	if (!(t->hw.flags & SNDRV_TIMER_HW_SLAVE)) {
--		unsigned long r = t->hw.resolution;
--		if (! r && t->hw.c_resolution)
--			r = t->hw.c_resolution(t);
-+		unsigned long r = snd_timer_resolution(tmr->timeri);
- 		if (r) {
- 			tmr->ticks = (unsigned int)(1000000000uL / (r * freq));
- 			if (! tmr->ticks)
+
+Takashi
+
+===
+
+Takashi Iwai (3):
+  ALSA: timer: Simplify timer hw resolution calls
+  ALSA: seq: Avoid open-code for getting timer resolution
+  ALSA: timer: Assure timer resolution access always locked
+
+ sound/core/seq/seq_timer.c |  4 +---
+ sound/core/timer.c         | 48 ++++++++++++++++++++++++----------------------
+ 2 files changed, 26 insertions(+), 26 deletions(-)
+
 -- 
 2.16.3
