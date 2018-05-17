@@ -1,74 +1,62 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3] ASoC: ssm2305: Add amplifier driver
-Date: Thu, 17 May 2018 18:08:26 +0100
-Message-ID: <20180517170826.GV20254@sirena.org.uk>
-References: <20180517135518.29345-1-m.felsch@pengutronix.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v8 09/24] ASoC: qdsp6: q6afe: Add q6afe driver
+Date: Thu, 17 May 2018 18:10:49 +0100
+Message-ID: <507b8b76-0846-a492-73e6-782b9953bc36@linaro.org>
+References: <20180509125635.5653-1-srinivas.kandagatla@linaro.org>
+ <20180509125635.5653-10-srinivas.kandagatla@linaro.org>
+ <20180517065544.GO20254@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7973636498156069458=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A5CD2671C0
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 19:08:30 +0200 (CEST)
-In-Reply-To: <20180517135518.29345-1-m.felsch@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, robh+dt@kernel.org, kernel@pengutronix.de
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180517065544.GO20254@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: andy.gross@linaro.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org, gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
+Thanks for the review.
 
---===============7973636498156069458==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="IX4edXMD7HczJcpd"
-Content-Disposition: inline
+On 17/05/18 07:55, Mark Brown wrote:
+> On Wed, May 09, 2018 at 01:56:20PM +0100, Srinivas Kandagatla wrote:
+> 
+>> +static struct q6afe_port *afe_find_port(struct q6afe *afe, int token)
+>> +{
+>> +	struct q6afe_port *p = NULL;
+>> +	struct q6afe_port *ret = NULL;
+>> +	unsigned long flags;
+>> +
+>> +	spin_lock_irqsave(&afe->port_list_lock, flags);
+>> +	list_for_each_entry(p, &afe->port_list, node)
+>> +		if (p->token == token) {
+>> +			ret = p;
+>> +			break;
+>> +		}
+>> +
+>> +	spin_unlock_irqrestore(&afe->port_list_lock, flags);
+>> +	return ret;
+> 
+> This lock only protects the list, it does nothing to ensure that the
+> port we look up is still valid by the time we return to the caller.
+> That means we won't crash during list traversal but does nothing to
+> ensure we won't crash immediately afterwards if the port is deallocated
+> just after we look it up.  What stops that happening?
 
+Each port is allocated and de-allocated in dai probe and remove calls 
+respectively.
 
---IX4edXMD7HczJcpd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Lets say... So for this case to happen the dai has to be removed (unload 
+module) at the same time when the interrupt callback happens due to 
+delayed response from previous commands.
 
-On Thu, May 17, 2018 at 03:55:18PM +0200, Marco Felsch wrote:
-
-> +++ b/sound/soc/codecs/ssm2305.c
-> @@ -0,0 +1,104 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Analog Devices SSM2305 Amplifier Driver
-
-Please submit a followup patch which makes the entire comment a C++ one
-rather than mixing them in the same comment block, it makes things look
-more intentional.
-
---IX4edXMD7HczJcpd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlr9twoACgkQJNaLcl1U
-h9AajAf/UiZ8aywvLaN3ZCWmVFKBn3bIuoD4mopj84yGqcJ6HGfqErzePPVijPQv
-5iT04Hiw6YkmDV1v1AdtgpiwLlINXIE11dP5leARFZxQEyeM3KN8IAIbewR2sCj4
-tud4b6SoBOCHm2FPssO0Ja8B3TkBjt9WvY42Xz2S8lGbXrKH8Janjw75Lj+5xOpo
-HUSKd0ttM7FahNir3uY+4Lzt2KURBLCOU7BYXCC+c4aYKyhA6V4qwG5VSLsJmABe
-aR4UqcO/zLaSk57bKO4tutnVxH5VXRwQ46DvHoyz18asd4lSoqa3alV/weI6m6dQ
-Z5Ycc83N/zv6IDKIjgqfQ27MtMM2hQ==
-=OMJm
------END PGP SIGNATURE-----
-
---IX4edXMD7HczJcpd--
-
---===============7973636498156069458==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This case would be almost impossible because all the calls to afe 
+service are synchronous with timeouts, if any of the previous calls 
+times out the respective caller would get an error, this should prevent 
+him from unloading the module in the first place.
 
 
---===============7973636498156069458==--
+thanks,
+srini
+
+> 
