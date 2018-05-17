@@ -1,16 +1,16 @@
 From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH v2] ASoC: ssm2305: Add amplifier driver
-Date: Thu, 17 May 2018 15:11:03 +0200
-Message-ID: <6c7a72fc-f086-78e5-c920-809aeb738528@metafoo.de>
-References: <20180517130047.15565-1-m.felsch@pengutronix.de>
+Subject: Re: [PATCH v3] ASoC: ssm2305: Add amplifier driver
+Date: Thu, 17 May 2018 16:44:32 +0200
+Message-ID: <399c5202-143b-3c4f-5399-aa6022859ddc@metafoo.de>
+References: <20180517135518.29345-1-m.felsch@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 80E972671C0
- for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 15:11:08 +0200 (CEST)
-In-Reply-To: <20180517130047.15565-1-m.felsch@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 374A72671C0
+ for <alsa-devel@alsa-project.org>; Thu, 17 May 2018 16:44:37 +0200 (CEST)
+In-Reply-To: <20180517135518.29345-1-m.felsch@pengutronix.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,22 +25,15 @@ To: Marco Felsch <m.felsch@pengutronix.de>, lgirdwood@gmail.com, broonie@kernel.
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On 05/17/2018 03:00 PM, Marco Felsch wrote:
-[...]
-> +	if (IS_ERR(priv->gpiod_shutdown)) {
-> +		err = PTR_ERR(priv->gpiod_shutdown);
-> +		if (err != -EPROBE_DEFER) {
-> +			dev_err(dev, "Failed to get 'shutdown' gpio: %d\n",
-> +				err);
-> +			return err;
+On 05/17/2018 03:55 PM, Marco Felsch wrote:
+> The ssm2305 is a simple Class-D audio amplifier. A application can
+> turn on/off the device by a gpio. It's also possible to hardwire the
+> shutdown pin.
+> 
+> Tested on a i.MX6 based custom board.
+> 
+> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 
-You also want to return the error in the EPROBE_DEFER case, so the driver
-tries to probe again later.
+Reviewed-by: Lars-Peter Clausen <lars@metafoo.de>
 
-> +		}
-> +	}
-> +
-> +	return devm_snd_soc_register_component(dev, &ssm2305_component_driver,
-> +					       NULL, 0);
-> +}
-[...]
+Thanks.
