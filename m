@@ -1,24 +1,17 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 19/19] ASoC: Intel: bytcr_rt5640: Set card
- long_name based on quirks
-Date: Fri, 18 May 2018 17:55:29 +0200
-Message-ID: <d86138d1-deb6-80bc-2654-f0ed251b4cfc@redhat.com>
-References: <20180508153604.23711-1-hdegoede@redhat.com>
- <20180508153604.23711-20-hdegoede@redhat.com>
- <6793d0f6-223b-2f11-17ad-d4ab839b4ac4@linux.intel.com>
- <4f678986-9ca5-eeb3-d6ed-528f3fe1d013@redhat.com>
- <84e7b889-7b42-47dc-bdf8-d01ac88a9e55@linux.intel.com>
- <1fd841b6-1e05-2cd9-8b0e-44524503a3fa@redhat.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: pcm512x: Add ACPI support
+Date: Fri, 18 May 2018 11:07:26 -0500
+Message-ID: <e4567264-1362-7a9d-7883-5b5dd8f96c5d@linux.intel.com>
+References: <20180517225326.30881-1-pierre-louis.bossart@linux.intel.com>
+ <20180518043639.GF2932@vkoul-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 48852267046
- for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 17:55:31 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id j4-v6so14999980wme.1
- for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 08:55:31 -0700 (PDT)
-In-Reply-To: <1fd841b6-1e05-2cd9-8b0e-44524503a3fa@redhat.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57E332672AF
+ for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 18:07:29 +0200 (CEST)
+In-Reply-To: <20180518043639.GF2932@vkoul-mobl>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,109 +22,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>
+To: Vinod <vkoul@kernel.org>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Keyon Jie <yang.jie@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgUGllcnJlLUxvdWlzLAoKT24gMTAtMDUtMTggMTc6NDgsIEhhbnMgZGUgR29lZGUgd3JvdGU6
-Cj4gSGksCj4gCj4gT24gMTAtMDUtMTggMTc6MDAsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3Rl
-Ogo+PiBPbiA1LzEwLzE4IDU6MjcgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4+PiBIaSwKPj4+
-Cj4+PiBPbiAwOC0wNS0xOCAyMDozNSwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4+Pj4g
-T24gNS84LzE4IDEwOjM2IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+Pj4+PiBNYW55IFg4NiBk
-ZXZpY2VzIHVzaW5nIGEgQllUIFNvQyArIFJUNTY0MCBjb2RlYyBhcmUgY2hlYXAgZGV2aWNlcyB3
-aXRoCj4+Pj4+IGdlbmVyaWMgRE1JIHN0cmluZ3MsIGNhdXNpbmcgc25kX3NvY19zZXRfZG1pX25h
-bWUoKSB0byBmYWlsIHRvIHNldCBhCj4+Pj4+IGxvbmdfbmFtZSwgbWFraW5nIGl0IGltcG9zc2li
-bGUgZm9yIHVzZXJzcGFjZSB0byBoYXZlIGEgY29ycmVjdCBVQ00KPj4+Pj4gcHJvZmlsZSB3aGlj
-aCBvbmx5IHVzZXMgaW5wdXRzIC8gb3V0cHV0cyB3aGljaCBhcmUgYWN0dWFsbHkgaG9va2VkIHVw
-Cj4+Pj4+IG9uIHRoZSBkZXZpY2UuCj4+Pj4+Cj4+Pj4+IE91ciBxdWlya3MgYWxyZWFkeSBzcGVj
-aWZ5IHdoaWNoIGlucHV0IHRoZSBpbnRlcm5hbCBtaWMgaXMgY29ubmVjdGVkIHRvCj4+Pj4+IGFu
-ZCBpZiBhIHNpbmdsZSAobW9ubykgc3BlYWtlciBpcyB1c2VkIG9yIGlmIHRoZSBkZXZpY2UgaGFz
-IHN0ZXJlbwo+Pj4+PiBzcGVha2Vycy4KPj4+Pj4KPj4+Pj4gVGhpcyBjb21taXQgc2V0cyBhIGxv
-bmdfbmFtZSBiYXNlZCBvbiB0aGUgcXVpcmtzIHNvIHRoYXQgdXNlcnNwYWNlIGNhbgo+Pj4+PiBo
-YXZlIFVDTSBwcm9maWxlcyBkb2luZyB0aGUgcmlnaHQgdGhpbmcgYmFzZWQgb24gdGhlIGxvbmdf
-bmFtZS4KPj4+Pgo+Pj4+IElzbid0IHRoaXMgZ29pbmcgdG8gYmUgY29tcGxpY2F0ZWQgdG8gbWFu
-YWdlIGZvciBVQ00/IEp1c3Qgd2l0aCB0aGlzIHBhdGNoIGFsb25lLCB5b3UnZCBuZWVkIDggVUNN
-IGZpbGVzIHRvIGNvdmVyIGFsbCB0aGUgY29tYmluYXRpb25zLiAxNiBpZiB5b3UgYWRkIHRoZSAn
-c29mLScgcHJlZml4Lgo+Pj4+Cj4+Pj4gc2VlbXMgbGlrZSBVQ00gc2hvdWxkIGJlY29tZSBtb3Jl
-ICdkeW5hbWljJyBhbmQgZ2V0IHF1aXJrIGluZm9ybWF0aW9uIHNvbWVob3cgKHN5c2ZzPykgdG8g
-ZW5hYmxlL2Rpc2FibGUgZW5kcG9pbnRzIHJhdGhlciB0aGFuIHJlbHkgb24gbmFtZSBlbmNvZGlu
-ZyB0byBzZWxlY3QgdGhlIHJpZ2h0IHByb2ZpbGU/Cj4+Pgo+Pj4gSSBhZ3JlZSB0aGF0IHRoaXMg
-aXMgbm90IGlkZWFsLCBidXQgdGhpcyBpcyBhbiBpbXByb3ZlbWVudCBmcm9tIHRoZQo+Pj4gY3Vy
-cmVudCBzdGF0ZSB3aGVyZSB3ZSB3b3VsZCBuZWVkIDEgVUNNIHByb2ZpbGUgcGVyIGJvYXJkCj4+
-PiAoYXNzdW1pbmcgdmFsaWQgRE1JIGRhdGEgYW5kIHRodXMgYSBwcm9wZXIgbG9uZy1uYW1lIGJl
-aW5nIHNldCksCj4+PiA2IHByb2ZpbGVzIChkbWljMiBpcyBub3QgdXNlZCBhbnl3aGVyZSBzb2Zh
-cikgaXMgYSB3aG9sZSBsb3QgZWFzaWVyCj4+PiB0byBtYW5hZ2UgdGhlbiAxIHByb2ZpbGUgcGVy
-IGJvYXJkLiBTbyBhcyBzYWlkIEkgYmVsaWV2ZSB0aGlzIGlzCj4+PiBhIHN0ZXAgaW4gdGhlIHJp
-Z2h0IGRpcmVjdGlvbi4KPj4+Cj4+PiBBbmQgbG9va2luZyBhdCB0aGUgZm9yZXNlZWFibGUgZnV0
-dXJlIEkgc2ltcGx5IGRvbid0IHNlZSBhbnkgb2YgdXMKPj4+IGhhdmluZyB0aGUgdGltZSB0byBp
-bXBsZW1lbnQgYW4gaWRlYWwgc29sdXRpb24gZm9yIHRoaXMuIEkgd291bGQKPj4+IHJlYWxseSBs
-aWtlIGZvciBlbmQgdXNlcnMgdG8gYmUgYWJsZSB0byBydW4gdGhlIGxhdGVzdCB1cHN0cmVhbQo+
-Pj4ga2VybmVsICsgYWxzYS1saWIgYW5kIGhhdmUgdGhpbmdzIGp1c3Qgd29yaywgYmVmb3JlIHRo
-aXMgaGFyZHdhcmUKPj4+IGJlY29tZXMgb2Jzb2xldGUuIEkga25vdyB0aGF0IG5vLW9uZSBoYXZp
-bmcgdGltZSB0byB3b3JrIG9uIHJld29ya2luZwo+Pj4gVUNNIHRvIG1ha2UgaXQgbW9yZSBkeW5h
-bWljIGlzIG5vdCB0aGUgYmVzdCBvZiBhcmd1bWVudHMgYnV0IGl0Cj4+PiBpcyBzb21ldGhpbmcg
-dG8gdGFrZSBpbnRvIGNvbnNpZGVyYXRpb24uCj4+Pgo+Pj4gVGhpbmtpbmcgbW9yZSBhYm91dCB0
-aGlzIG9uIHRoZSBhbHNhLWxpYiAvIFVDTSBwcm9maWxlIHNpZGUgd2UKPj4+IGNvdWxkIGhhdmUg
-c29tZXRoaW5nIGxpa2UgdGhpczoKPj4+Cj4+PiAvdXNyL3NoYXJlL2Fsc2EvdWNtL2J5dGNyLXJ0
-NTY0MC1tb25vLXNway1pbjEtbWljL2J5dGNyLXJ0NTY0MC1tb25vLXNway1pbjEtbWljLmNvbmY6
-Cj4+Pgo+Pj4gU2VjdGlvblVzZUNhc2UuIkhpRmkiIHsKPj4+IMKgwqDCoMKgwqDCoMKgwqAgRmls
-ZSAiLi4vYnl0Y3ItcnQ1NjQwL0dlbmVyaWMuY29uZiIKPj4+IMKgwqDCoMKgwqBGaWxlICIuLi9i
-eXRjci1ydDU2NDAvTW9ub1NwZWFrZXIuY29uZiIKPj4+IMKgwqDCoMKgwqBGaWxlICIuLi9ieXRj
-ci1ydDU2NDAvSW4xTWljLmNvbmYiCj4+PiDCoMKgwqDCoMKgwqDCoMKgIENvbW1lbnQgIlBsYXkg
-SGlGaSBxdWFsaXR5IE11c2ljIgo+Pj4gfQo+Pj4KPj4+IFNlY3Rpb25EZWZhdWx0cyBbCj4+PiDC
-oMKgwqDCoMKgwqDCoMKgIGNkZXYgImh3OmJ5dGNycnQ1NjQwIgo+Pj4gXQo+Pj4KPj4+IFRoZSBv
-bmx5IHByb2JsZW0gSSBjYW4gc2VlIHdpdGggdGhhdCBpcyB0aGF0IHRoZSAiQ29uZmxpY3RpbmdE
-ZXZpY2UiCj4+PiBzZWN0aW9ucyBmb3IgdGhlIHZhcmlvdXMgaW5wdXRzIC8gb3V0cHV0cyB0aGVu
-IHdvdWxkIHJlZmVyIHRvIG5vdAo+Pj4gcHJlc2VudCBTZWN0aW9uRGV2aWNlIHNlY3Rpb25zLiBJ
-IGhhdmUgbm90IHRlc3RlZCB0aGlzIHN1Z2dlc3Rpb24geWV0LAo+Pj4gYnV0IEknbSB3aWxsaW5n
-IHRvIHdyaXRlIGFuIGFsc2EtbGliIHBhdGNoIHRvIGlnbm9yZSBub24gcHJlc2VudAo+Pj4gQ29u
-ZmxpY3RpbmdEZXZpY2UgcmVmZXJlbmNlcywgdG8gbWFrZSBteSBzdWdnZXN0aW9uIHdvcmsuCj4+
-Pgo+Pj4gSSB0aGluayBkb2luZyB0aGluZ3MgdGhpcyB3YXksIHRodXMgYXZvaWRpbmcgdGhlIG5l
-ZWQgdG8gY29weSBhbmQKPj4+IHBhc3RlIGEgd2hvbGUgbG90IG9mIFVDTSBjb2RlIGZvciB0aGUg
-NiBwcm9maWxlcyBpdCB3aWxsIG5vdCBiZQo+Pj4gYSBwcm9ibGVtIHRvIG1haW50YWluIDYgcHJv
-ZmlsZXMsIGFzIHdlJ3JlIHJlYWxseSBqdXN0IG1haW50YWluaW5nCj4+PiA2IGNvbmZpZyBzbmlw
-cGV0cyBzdWNoIGFzIHRoZSBhYm92ZSBleGFtcGxlIGFuZCBvbmx5IG9uZSBjb21wbGV0ZQo+Pj4g
-cHJvZmlsZS4KPj4+Cj4+PiBXb3VsZCB0aGUgc29sdXRpb24gSSBvdXRsaW5lZCBhYm92ZSBiZSBh
-Y2NlcHRhYmxlIHRvIHlvdT8KPj4KPj4gVGhlIGluY2x1ZGVzIGFuZCBkaXNhYmxpbmcgY29uZmxp
-Y3RpbmcgZGV2aWNlcyB0aGF0IGFyZW4ndCBwcmVzZW50IG1ha2Ugc2Vuc2UuIEkgaGF2ZSBhbm90
-aGVyIGlzc3VlIHRob3VnaDogZm9yIFNPRiBpbnRlZ3JhdGlvbiBJIGFscmVhZHkgcHJlcGFyZWQg
-YSBzZXQgb2YgZmlsZXMsIHdoaWNoIGFyZSBtb3N0bHkgaWRlbnRpY2FsIHRvIHRoZSByZWd1bGFy
-IG9uZXMgZXhjZXB0IHRoYXQgdGhlIHBsYXRmb3JtLXNpZGUgbWl4ZXIgY29udHJvbHMgYXJlIHJl
-bW92ZWQgKG9yIGRpZmZlcmVudCkgYW5kIHRoZSBuYW1lIG9mIHRoZSBjYXJkL2RldmljZSBpcyBk
-aWZmZXJlbnQgKHNvZi0gcHJlZml4KS4gU2VlIG9uIGdpdGh1Yi4KPiAKPiBIbW0sIGl0IG1pZ2h0
-IG1ha2Ugc2Vuc2UgdG8gc3BsaXQgdGhlIGluY2x1ZGVzIGluIHBsYXRmb3JtIGFuZCBjb2RlYyBp
-bmNsdWRlcywgc28KPiB0byBwaWNrIG15IGV4YW1wbGUgYWdhaW4gd2Ugd291bGQgZ2V0Ogo+IAo+
-IC91c3Ivc2hhcmUvYWxzYS91Y20vYnl0Y3ItcnQ1NjQwLW1vbm8tc3BrLWluMS1taWMvYnl0Y3It
-cnQ1NjQwLW1vbm8tc3BrLWluMS1taWMuY29uZjoKPiAKPiBTZWN0aW9uVXNlQ2FzZS4iSGlGaSIg
-ewo+ICDCoMKgwqAgU2VjdGlvblZlcmIgewo+ICDCoMKgwqDCoMKgwqDCoMKgIEVuYWJsZVNlcXVl
-bmNlIFsKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNkZXYgImh3OmJ5dGNycnQ1NjQwIgo+
-IAo+ICDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgRmlsZSAiLi4vYnl0Y3ItcnQ1NjQwL0VuYWJs
-ZVNlcS5jb25mIiAjIFRoaXMgY29udGFpbnMgdGhlIHBsYXRmb3JtIG1peGVyIHNldHRpbmdzCj4g
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBGaWxlICIuLi9ydDU2NDAvRW5hYmxlU2VxLmNvbmYi
-Cj4gIMKgwqDCoMKgwqDCoMKgwqAgXQo+IAo+ICDCoMKgwqDCoMKgwqDCoMKgIERpc2FibGVTZXF1
-ZW5jZSBbCj4gIMKgwqDCoMKgwqDCoMKgwqAgXQo+IAo+ICDCoMKgwqDCoMKgwqDCoMKgIFZhbHVl
-IHsKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFBsYXliYWNrUENNICJodzpieXRjcnJ0NTY0
-MCIKPiAgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIENhcHR1cmVQQ00gImh3OmJ5dGNycnQ1NjQw
-Igo+ICDCoMKgwqDCoMKgwqDCoMKgIH0KPiAgwqDCoMKgwqDCoCB9Cj4gCj4gIMKgwqDCoMKgwqAg
-RmlsZSAiLi4vcnQ1NjQwL0hlYWRzZXQuY29uZiIKPiAgwqDCoMKgwqDCoCBGaWxlICIuLi9ydDU2
-NDAvTW9ub1NwZWFrZXIuY29uZiIKPiAgwqDCoMKgwqDCoCBGaWxlICIuLi9ydDU2NDAvSW4xTWlj
-LmNvbmYiCj4gIMKgwqDCoMKgwqAgQ29tbWVudCAiUGxheSBIaUZpIHF1YWxpdHkgTXVzaWMiCj4g
-fQo+IAo+IFNlY3Rpb25EZWZhdWx0cyBbCj4gIMKgwqDCoMKgwqAgY2RldiAiaHc6Ynl0Y3JydDU2
-NDAiCj4gXQo+IAo+IEFuZCB0aGVuIGZvciBzb2YgeW91IHdvdWxkIGp1c3QgbmVlZCB0bwo+IG9m
-ZmVyIGEgc29mLXJ0NTY0MC9FbmFibGVTZXEuY29uZiwgb3IKPiBtYXliZSBldmVuIGxlYXZlIGl0
-IG91dCBjb21wbGV0ZWx5Lgo+IAo+IEFuZCB3ZSBtaWdodCBhbHNvIGJlIGFibGUgdG8gbWVyZ2Ug
-dGhlIHBsYXRmb3JtCj4gZW5hYmxlIHNlcXVlbmNlcyBpbnRvIGEgZ2VuZXJpYzoKPiAKPiBieXRj
-ci9FbmFibGVTZXEuY29uZgo+IAo+IEkgdGhpbmsgdGhhdCB3aWxsIGF0IGxlYXN0IGZseSBmb3Ig
-Ynl0Y3ItcnQ1NjQwIGFuZAo+IGJ1dGNyLXJ0NTY1MSwgbGVhZGluZyB1cyBiZWluZyBhYmxlIHRv
-IHJlbW92ZSBtb3JlCj4gZHVwbGljYXRlZCBVQ00gY29uZmlnLiA+Cj4gSG93IGRvZXMgdGhpcyBz
-b3VuZD8KCkkndmUgaW1wbGVtZW50ZWQgdGhlIGFib3ZlIHNjaGVtZSwgc2VlOgpodHRwczovL2dp
-dGh1Yi5jb20vandyZGVnb2VkZS9hbHNhLWxpYi9jb21taXRzL21hc3RlcgoKVGhpcyBzZWVtcyB0
-byB3b3JrIHdlbGwgKEkgc3RpbGwgbmVlZCB0byB0ZXN0IGEKYml0IG1vcmUsIGJ1dCBzbyBmYXIg
-dGhlIGdlbmVyaWMgYW5kIG9uZSBsb25nLW5hbWUKYmFzZWQgcHJvZmlsZSB3b3JrIGZpbmUpIGFu
-ZCBNYXJrIGhhcyBtZXJnZWQgdGhlCiJBU29DOiBJbnRlbDogYnl0Y3JfcnQ1NjQwOiBTZXQgY2Fy
-ZCBsb25nX25hbWUgYmFzZWQgb24gcXVpcmtzIgpwYXRjaCBpbiBoaXMgZm9yLW5leHQgYnJhbmNo
-LCBzbyBJIHBsYW4gdG8gc3VibWl0CnRoZSBtYXRjaGluZyBhbHNhLWxpYiBwYXRjaGVzIGZyb20g
-bXkgZ2l0aHViIGZvcgp1cHN0cmVhbSBhbHNhLWxpYiBpbmNsdXNpb24gc29vbi4KClJlZ2FyZHMs
-CgpIYW5zCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+On 5/17/18 11:36 PM, Vinod wrote:
+> On 17-05-18, 17:53, Pierre-Louis Bossart wrote:
+>> HID is assumed to be made of TI PCI ID (0x104C) + part number, so all
+>> four 104C5121, 104C5122, 104C5141 104C5142 are valid.
+>>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+> 
+> ...
+> 
+>>   static struct i2c_driver pcm512x_i2c_driver = {
+>>   	.probe 		= pcm512x_i2c_probe,
+>> @@ -67,7 +81,8 @@ static struct i2c_driver pcm512x_i2c_driver = {
+>>   	.id_table	= pcm512x_i2c_id,
+>>   	.driver		= {
+>>   		.name	= "pcm512x",
+>> -		.of_match_table = pcm512x_of_match,
+>> +		.of_match_table = of_match_ptr(pcm512x_of_match),
+> 
+> this change may not be part of this and should be mentioned in the log
+> 
+> Also quick grep tells me kernel has both :(
+
+I don't get your point. This is how we've added support for ACPI for 
+every codec so far, and using those macros is the way to make sure the 
+DT case still builds and isn't impacted.
+
+> 
+>> +		.acpi_match_table = ACPI_PTR(pcm512x_acpi_match),
+>>   		.pm     = &pcm512x_pm_ops,
+>>   	},
+>>   };
+>> -- 
+>> 2.14.1
+> 
