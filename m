@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8904: fix spelling mistake:
-	"Caputure" -> "Capture"" to the asoc tree
-Date: Fri, 18 May 2018 10:22:07 +0100
-Message-ID: <E1fJbaR-0007vC-C2@debutante>
-References: <20180518090407.13560-1-colin.king@canonical.com>
+From: Marco Felsch <m.felsch@pengutronix.de>
+Subject: [PATCH] ASoC: ssm2305: fix header layout
+Date: Fri, 18 May 2018 11:55:06 +0200
+Message-ID: <20180518095506.28875-1-m.felsch@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 551DB267681
- for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 11:22:29 +0200 (CEST)
-In-Reply-To: <20180518090407.13560-1-colin.king@canonical.com>
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
+ [85.220.165.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF3E6266DF0
+ for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 11:55:12 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, lars@metafoo.de
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Make C-header and SPDX-License-Identifier header uniform.
 
-   ASoC: wm8904: fix spelling mistake: "Caputure" -> "Capture"
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ecd63313706221bb049c06c52d3f9112d9b2a4fe Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Fri, 18 May 2018 10:04:07 +0100
-Subject: [PATCH] ASoC: wm8904: fix spelling mistake: "Caputure" -> "Capture"
-
-Trivial fix to spelling mistake in SOC_ENUM literal string
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 ---
- sound/soc/codecs/wm8904.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/ssm2305.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 20fdcae06c6b..f13ef334c0d7 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -596,7 +596,7 @@ static const struct snd_kcontrol_new wm8904_adc_snd_controls[] = {
- SOC_DOUBLE_R_TLV("Digital Capture Volume", WM8904_ADC_DIGITAL_VOLUME_LEFT,
- 		 WM8904_ADC_DIGITAL_VOLUME_RIGHT, 1, 119, 0, digital_tlv),
+diff --git a/sound/soc/codecs/ssm2305.c b/sound/soc/codecs/ssm2305.c
+index 39d8b01cd852..2968959c4b75 100644
+--- a/sound/soc/codecs/ssm2305.c
++++ b/sound/soc/codecs/ssm2305.c
+@@ -1,9 +1,9 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/*
+- * Analog Devices SSM2305 Amplifier Driver
+- *
+- * Copyright (C) 2018 Pengutronix, Marco Felsch <kernel@pengutronix.de>
+- */
++//
++// Analog Devices SSM2305 Amplifier Driver
++//
++// Copyright (C) 2018 Pengutronix, Marco Felsch <kernel@pengutronix.de>
++//
  
--SOC_ENUM("Left Caputure Mode", lin_mode),
-+SOC_ENUM("Left Capture Mode", lin_mode),
- SOC_ENUM("Right Capture Mode", rin_mode),
- 
- /* No TLV since it depends on mode */
+ #include <linux/gpio/consumer.h>
+ #include <linux/module.h>
 -- 
 2.17.0
