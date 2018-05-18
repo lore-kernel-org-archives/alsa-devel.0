@@ -1,20 +1,20 @@
 From: Muni Sekhar <munisekharrms@gmail.com>
 Subject: Re: sound: latency and synchronization measurements
-Date: Fri, 18 May 2018 19:41:06 +0530
-Message-ID: <CAHhAz+gPGEt_e+Arz-DgyFP+Be5T9bvnvsDKc0ghKZa7JvwCYQ@mail.gmail.com>
+Date: Fri, 18 May 2018 19:53:46 +0530
+Message-ID: <CAHhAz+gm80xM700urQqxR1k16sAvgOT2sPOQGpnzw4NaOwhA7g@mail.gmail.com>
 References: <CAHhAz+hFFYqz2gtVnEZVyMjAO3fe4f5EtZeFO4tvO-2W-6sv7g@mail.gmail.com>
- <CA+wdrgkeeCKpJgyA6bOOap+cqKgo4UrfukQyqQ+WuhDXsnBL0g@mail.gmail.com>
+ <20180518131259.GB10497@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f176.google.com (mail-ot0-f176.google.com
- [74.125.82.176])
- by alsa0.perex.cz (Postfix) with ESMTP id EBEA5267046
- for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 16:11:08 +0200 (CEST)
-Received: by mail-ot0-f176.google.com with SMTP id 77-v6so9255426otd.4
- for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 07:11:08 -0700 (PDT)
-In-Reply-To: <CA+wdrgkeeCKpJgyA6bOOap+cqKgo4UrfukQyqQ+WuhDXsnBL0g@mail.gmail.com>
+Received: from mail-ot0-f193.google.com (mail-ot0-f193.google.com
+ [74.125.82.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id E6F40267046
+ for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 16:23:47 +0200 (CEST)
+Received: by mail-ot0-f193.google.com with SMTP id n1-v6so9289417otf.7
+ for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 07:23:47 -0700 (PDT)
+In-Reply-To: <20180518131259.GB10497@kroah.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Aris Aris <father.aris@gmail.com>
+To: Greg KH <greg@kroah.com>
 Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org, kernelnewbies <kernelnewbies@kernelnewbies.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCBNYXkgMTgsIDIwMTggYXQgNjo1MyBQTSwgQXJpcyBBcmlzIDxmYXRoZXIuYXJpc0Bn
-bWFpbC5jb20+IHdyb3RlOgo+IEhpLAo+Cj4gWW91IGNvdWxkIHRyeSBiaXRiYW5naW5nIGFueSBh
-dmFpbGlhYmxlIHBlcmlwaGVyYWwoaS5lIGdwaW8pIGZyb20gZWFjaAo+IHN5c3RlbSBhdCB0aGUg
-Y2FsbGJhY2tzIGFuZCBoYXZlIGEgbG9naWMgYW5hbHl6ZXIgbWVhc3VyaW5nIGFuZCByZXBvcnRp
-bmcKPiB0aW1lIGRlbGF5LgpUaGFuayB5b3UgdmVyeSBtdWNoIEFyaXMgZm9yIHRoaXMgaW5mb3Jt
-YXRpb24uCkkgYW0gZmFpcmx5IG5ldyB0byBzb3VuZCBzdWIgc3lzdGVtLCBJ4oCZbSBnbGFkIGlm
-IHlvdSBjYW4gcG9pbnQgbWUgb24KdGhlIGNhbGxiYWNrcy4KCkRvZXMgdGhlIHNvdW5kIGRyaXZl
-ciB3aWxsIGJlIG5vdGlmaWVkIGFwbGF5XGFyZWNvcmQgb3BlbiB2aWEK4oCcc25kX3h4eF9vcGVu
-KHN0cnVjdCBzbmRfcGNtX3N1YnN0ZWFtICpzdWJzdHJlYW0p4oCdIGNhbGxiYWNrPwpXaGljaCBj
-YWxsYmFja3Mgb2Ygc291bmQgZHJpdmVyIHdpbGwgdGVsbCB3aGVuIGl0IHJlY2VpdmVkIGZpcnN0
-IGFuZApsYXN0IGF1ZGlvIGZyYW1lc1xzYW1wbGVzPwoKCj4KPiBCZXN0IHJlZ2FyZHMsCj4KPiBB
-cmlzCj4KPiBPbiBGcmksIE1heSAxOCwgMjAxOCBhdCAzOjM3IFBNLCBNdW5pIFNla2hhciA8bXVu
-aXNla2hhcnJtc0BnbWFpbC5jb20+Cj4gd3JvdGU6Cj4+Cj4+IFsgUGxlYXNlIGtlZXAgbWUgaW4g
-Q0MgYXMgSSdtIG5vdCBzdWJzY3JpYmVkIHRvIHRoZSBsaXN0XQo+Pgo+PiBIaSBBbGwsCj4+Cj4+
-IEkgYW0gdHJ5aW5nIHRvIGNoYXJhY3Rlcml6ZSB0aGUgYXVkaW8gc3luY2hyb25pemF0aW9uIGJl
-dHdlZW4gdHdvCj4+IHN5c3RlbXMuIFRoZXJlIGlzIGEgbWVjaGFuaXNtIHRvIHJvdXRlIGF1ZGlv
-IGJldHdlZW4gdHdvIHN5c3RlbXMsIHdlCj4+IHJ1biDigJhhcGxheeKAmSBhdCBvbmUgc3lzdGVt
-IGFuZCDigJhhcmVjb3Jk4oCZIGluIG90aGVyIHN5c3RlbS4KPj4KPj4gV2UgbmVlZCB0byBtZWFz
-dXJlIHRoZSB0aW1lIGRpZmZlcmVuY2Ugd2hlbiBhdWRpbyBzYW1wbGUgaXMgb3V0IGF0IG9uZQo+
-PiBwb3J0IGFuZCBhcnJpdmluZyBhdCBhbm90aGVyIHBvcnQgaW4gZGlmZmVyZW50IHN5c3RlbS4K
-Pj4KPj4gSSBwbGFuIHRvIGFkZCBwcmludGvigJlzIGluIOKAnHN0cnVjdCBzbmRfcGNtX29wc+KA
-nSBjYWxsIGJhY2tzLCBidXQgZG9lcwo+PiB0aGVzZSBjYWxsIGJhY2tzIHRlbGxzIHdoZW4gaXQg
-cmVjZWl2ZWQgZmlyc3QgYW5kIGxhc3QgYXVkaW8KPj4gZnJhbWVzXHNhbXBsZXM/Cj4+Cj4+IE9y
-IGVsc2UgcGxlYXNlIHN1Z2dlc3QgYW55IG90aGVyIGJlc3QgbWV0aG9kLgo+Pgo+Pgo+PiAtLQo+
-PiBUaGFua3MsCj4+IFNla2hhcgo+Pgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+PiBLZXJuZWxuZXdiaWVzIG1haWxpbmcgbGlzdAo+PiBLZXJuZWxu
-ZXdiaWVzQGtlcm5lbG5ld2JpZXMub3JnCj4+IGh0dHBzOi8vbGlzdHMua2VybmVsbmV3Ymllcy5v
-cmcvbWFpbG1hbi9saXN0aW5mby9rZXJuZWxuZXdiaWVzCj4KPgoKCgotLSAKVGhhbmtzLApTZWto
-YXIKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+T24gRnJpLCBNYXkgMTgsIDIwMTggYXQgNjo0MiBQTSwgR3JlZyBLSCA8Z3JlZ0Brcm9haC5jb20+
+IHdyb3RlOgo+IE9uIEZyaSwgTWF5IDE4LCAyMDE4IGF0IDA2OjA3OjI5UE0gKzA1MzAsIE11bmkg
+U2VraGFyIHdyb3RlOgo+PiBbIFBsZWFzZSBrZWVwIG1lIGluIENDIGFzIEknbSBub3Qgc3Vic2Ny
+aWJlZCB0byB0aGUgbGlzdF0KPj4KPj4gSGkgQWxsLAo+Pgo+PiBJIGFtIHRyeWluZyB0byBjaGFy
+YWN0ZXJpemUgdGhlIGF1ZGlvIHN5bmNocm9uaXphdGlvbiBiZXR3ZWVuIHR3bwo+PiBzeXN0ZW1z
+LiBUaGVyZSBpcyBhIG1lY2hhbmlzbSB0byByb3V0ZSBhdWRpbyBiZXR3ZWVuIHR3byBzeXN0ZW1z
+LCB3ZQo+PiBydW4g4oCYYXBsYXnigJkgYXQgb25lIHN5c3RlbSBhbmQg4oCYYXJlY29yZOKAmSBp
+biBvdGhlciBzeXN0ZW0uCj4+Cj4+IFdlIG5lZWQgdG8gbWVhc3VyZSB0aGUgdGltZSBkaWZmZXJl
+bmNlIHdoZW4gYXVkaW8gc2FtcGxlIGlzIG91dCBhdCBvbmUKPj4gcG9ydCBhbmQgYXJyaXZpbmcg
+YXQgYW5vdGhlciBwb3J0IGluIGRpZmZlcmVudCBzeXN0ZW0uCj4+Cj4+IEkgcGxhbiB0byBhZGQg
+cHJpbnRr4oCZcyBpbiDigJxzdHJ1Y3Qgc25kX3BjbV9vcHPigJ0gY2FsbCBiYWNrcywgYnV0IGRv
+ZXMKPj4gdGhlc2UgY2FsbCBiYWNrcyB0ZWxscyB3aGVuIGl0IHJlY2VpdmVkIGZpcnN0IGFuZCBs
+YXN0IGF1ZGlvCj4+IGZyYW1lc1xzYW1wbGVzPwo+Pgo+PiBPciBlbHNlIHBsZWFzZSBzdWdnZXN0
+IGFueSBvdGhlciBiZXN0IG1ldGhvZC4KPgo+IEZpcnN0IG9mZiB5b3UgbmVlZCBhICJzaGFyZWQg
+dGltZXIvY2xvY2siIGJldHdlZW4gdGhlIHR3byBzeXN0ZW1zIGluCj4gb3JkZXIgdG8gaGF2ZSBh
+IGNoYW5jZSB0byBkZXRlcm1pbmUgd2hhdCBhY3R1YWxseSBoYXBwZW5zIGhlcmUuICBHb29kCj4g
+bHVjayB3aXRoIHRoYXQhICA6KQpZZXMsIHdlIGRvIGhhdmUgdGhlIHNoYXJlZCBjbG9jay4KCj4K
+PiBBbHNvLCB0aGVyZSdzIGJlZW4gdG9ucyBvZiByZXNlYXJjaCBpbiB0aGlzIGFyZWEgb3ZlciB0
+aGUgeWVhcnMsIHBsZWFzZQo+IGxvb2sgaW50byB0aGF0LCBvZGRzIGFyZSB0aGVzZSBwcm9ibGVt
+cyBoYXZlIGJlZW4gc29sdmVkIGFscmVhZHkuICBJCj4ga25vdyBvZiBzZXZlcmFsIGNvbW1lcmNp
+YWwgZGV2aWNlcyB0aGF0IGFscmVhZHkgaGFuZGxlIHRoaXMganVzdCBmaW5lLgo+CkNhbiB5b3Ug
+cG9pbnQgbWUgc29tZSBpbmZvcm1hdGlvbiBvbiB0aGlzLgoKCj4gYmVzdCBvZiBsdWNrIQo+Cj4g
+Z3JlZyBrLWgKCgoKLS0gClRoYW5rcywKU2VraGFyCl9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxA
+YWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
+bGlzdGluZm8vYWxzYS1kZXZlbAo=
