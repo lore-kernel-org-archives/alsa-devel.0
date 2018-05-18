@@ -1,139 +1,49 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v9 14/15] ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings
-Date: Fri, 18 May 2018 13:56:09 +0100
-Message-ID: <20180518125610.26200-15-srinivas.kandagatla@linaro.org>
-References: <20180518125610.26200-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180518125610.26200-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org
-Cc: robh+dt@kernel.org, gregkh@linuxfoundation.org, david.brown@linaro.org, mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Greg KH <greg@kroah.com>
+Subject: Re: sound: latency and synchronization measurements
+Date: Fri, 18 May 2018 15:12:59 +0200
+Message-ID: <20180518131259.GB10497@kroah.com>
+References: <CAHhAz+hFFYqz2gtVnEZVyMjAO3fe4f5EtZeFO4tvO-2W-6sv7g@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com
+ [66.111.4.25]) by alsa0.perex.cz (Postfix) with ESMTP id A9C0D266F88
+ for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 15:13:17 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <CAHhAz+hFFYqz2gtVnEZVyMjAO3fe4f5EtZeFO4tvO-2W-6sv7g@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Muni Sekhar <munisekharrms@gmail.com>
+Cc: alsa-devel <alsa-devel@alsa-project.org>, linux-sound@vger.kernel.org, kernelnewbies <kernelnewbies@kernelnewbies.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add devicetree bindings documentation file for Qualcomm apq8096 sound card.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Banajit Goswami <bgoswami@codeaurora.org>
----
- .../devicetree/bindings/sound/qcom,apq8096.txt     | 109 +++++++++++++++++++++
- 1 file changed, 109 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-new file mode 100644
-index 000000000000..aa54e49fc8a2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-@@ -0,0 +1,109 @@
-+* Qualcomm Technologies APQ8096 ASoC sound card driver
-+
-+This binding describes the APQ8096 sound card, which uses qdsp for audio.
-+
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,apq8096-sndcard"
-+
-+- qcom,audio-routing:
-+	Usage: Optional
-+	Value type: <stringlist>
-+	Definition:  A list of the connections between audio components.
-+		  Each entry is a pair of strings, the first being the
-+		  connection's sink, the second being the connection's
-+		  source. Valid names could be power supplies, MicBias
-+		  of codec and the jacks on the board:
-+		  Valid names include:
-+
-+		Board Connectors:
-+			"Headphone Left"
-+			"Headphone Right"
-+			"Earphone"
-+			"Line Out1"
-+			"Line Out2"
-+			"Line Out3"
-+			"Line Out4"
-+			"Analog Mic1"
-+			"Analog Mic2"
-+			"Analog Mic3"
-+			"Analog Mic4"
-+			"Analog Mic5"
-+			"Analog Mic6"
-+			"Digital Mic2"
-+			"Digital Mic3"
-+
-+		Audio pins and MicBias on WCD9335 Codec:
-+			"MIC_BIAS1
-+			"MIC_BIAS2"
-+			"MIC_BIAS3"
-+			"MIC_BIAS4"
-+			"AMIC1"
-+			"AMIC2"
-+			"AMIC3"
-+			"AMIC4"
-+			"AMIC5"
-+			"AMIC6"
-+			"AMIC6"
-+			"DMIC1"
-+			"DMIC2"
-+			"DMIC3"
-+= dailinks
-+Each subnode of sndcard represents either a dailink, and subnodes of each
-+dailinks would be cpu/codec/platform dais.
-+
-+- link-name:
-+	Usage: required
-+	Value type: <string>
-+	Definition: User friendly name for dai link
-+
-+= CPU, PLATFORM, CODEC dais subnodes
-+- cpu:
-+	Usage: required
-+	Value type: <subnode>
-+	Definition: cpu dai sub-node
-+
-+- codec:
-+	Usage: Optional
-+	Value type: <subnode>
-+	Definition: codec dai sub-node
-+
-+- platform:
-+	Usage: Optional
-+	Value type: <subnode>
-+	Definition: platform dai sub-node
-+
-+- sound-dai:
-+	Usage: required
-+	Value type: <phandle with arguments>
-+	Definition: dai phandle/s and port of CPU/CODEC/PLATFORM node.
-+
-+Example:
-+
-+audio {
-+	compatible = "qcom,apq8096-sndcard";
-+	qcom,model = "DB820c";
-+
-+	mm1-dai-link {
-+		link-name = "MultiMedia1";
-+		cpu {
-+			sound-dai = <&q6asmdai MSM_FRONTEND_DAI_MULTIMEDIA1>;
-+		};
-+	};
-+
-+	hdmi-dai-link {
-+		link-name = "HDMI Playback";
-+		cpu {
-+			sound-dai = <&q6afe HDMI_RX>;
-+		};
-+
-+		platform {
-+			sound-dai = <&q6adm>;
-+		};
-+
-+		codec {
-+			sound-dai = <&hdmi 0>;
-+		};
-+	};
-+};
--- 
-2.16.2
+T24gRnJpLCBNYXkgMTgsIDIwMTggYXQgMDY6MDc6MjlQTSArMDUzMCwgTXVuaSBTZWtoYXIgd3Jv
+dGU6Cj4gWyBQbGVhc2Uga2VlcCBtZSBpbiBDQyBhcyBJJ20gbm90IHN1YnNjcmliZWQgdG8gdGhl
+IGxpc3RdCj4gCj4gSGkgQWxsLAo+IAo+IEkgYW0gdHJ5aW5nIHRvIGNoYXJhY3Rlcml6ZSB0aGUg
+YXVkaW8gc3luY2hyb25pemF0aW9uIGJldHdlZW4gdHdvCj4gc3lzdGVtcy4gVGhlcmUgaXMgYSBt
+ZWNoYW5pc20gdG8gcm91dGUgYXVkaW8gYmV0d2VlbiB0d28gc3lzdGVtcywgd2UKPiBydW4g4oCY
+YXBsYXnigJkgYXQgb25lIHN5c3RlbSBhbmQg4oCYYXJlY29yZOKAmSBpbiBvdGhlciBzeXN0ZW0u
+Cj4gCj4gV2UgbmVlZCB0byBtZWFzdXJlIHRoZSB0aW1lIGRpZmZlcmVuY2Ugd2hlbiBhdWRpbyBz
+YW1wbGUgaXMgb3V0IGF0IG9uZQo+IHBvcnQgYW5kIGFycml2aW5nIGF0IGFub3RoZXIgcG9ydCBp
+biBkaWZmZXJlbnQgc3lzdGVtLgo+IAo+IEkgcGxhbiB0byBhZGQgcHJpbnRr4oCZcyBpbiDigJxz
+dHJ1Y3Qgc25kX3BjbV9vcHPigJ0gY2FsbCBiYWNrcywgYnV0IGRvZXMKPiB0aGVzZSBjYWxsIGJh
+Y2tzIHRlbGxzIHdoZW4gaXQgcmVjZWl2ZWQgZmlyc3QgYW5kIGxhc3QgYXVkaW8KPiBmcmFtZXNc
+c2FtcGxlcz8KPiAKPiBPciBlbHNlIHBsZWFzZSBzdWdnZXN0IGFueSBvdGhlciBiZXN0IG1ldGhv
+ZC4KCkZpcnN0IG9mZiB5b3UgbmVlZCBhICJzaGFyZWQgdGltZXIvY2xvY2siIGJldHdlZW4gdGhl
+IHR3byBzeXN0ZW1zIGluCm9yZGVyIHRvIGhhdmUgYSBjaGFuY2UgdG8gZGV0ZXJtaW5lIHdoYXQg
+YWN0dWFsbHkgaGFwcGVucyBoZXJlLiAgR29vZApsdWNrIHdpdGggdGhhdCEgIDopCgpBbHNvLCB0
+aGVyZSdzIGJlZW4gdG9ucyBvZiByZXNlYXJjaCBpbiB0aGlzIGFyZWEgb3ZlciB0aGUgeWVhcnMs
+IHBsZWFzZQpsb29rIGludG8gdGhhdCwgb2RkcyBhcmUgdGhlc2UgcHJvYmxlbXMgaGF2ZSBiZWVu
+IHNvbHZlZCBhbHJlYWR5LiAgSQprbm93IG9mIHNldmVyYWwgY29tbWVyY2lhbCBkZXZpY2VzIHRo
+YXQgYWxyZWFkeSBoYW5kbGUgdGhpcyBqdXN0IGZpbmUuCgpiZXN0IG9mIGx1Y2shCgpncmVnIGst
+aApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
