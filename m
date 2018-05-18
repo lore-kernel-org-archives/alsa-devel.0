@@ -1,41 +1,124 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO lookup table
-Date: Sat, 19 May 2018 00:21:14 +0300
-Message-ID: <CAHp75VdNUW6KoM6oupyQ80A1WVRk7vewwDt6WEZOyjrAUifqRg@mail.gmail.com>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com> <20180518210954.29044-5-jmkrzyszt@gmail.com>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH 05/15] mtd: nand: pxa3xx: remove the dmaengine compat need
+Date: Fri, 18 May 2018 23:31:02 +0200
+Message-ID: <a09d80dc-e8fd-1e9a-1878-8875ddc83134@zonque.org>
+References: <20180402142656.26815-1-robert.jarzmik@free.fr>
+ <20180402142656.26815-6-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180518210954.29044-5-jmkrzyszt@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Mark Brown <broonie@kernel.org>, Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, Linux OMAP Mailing List <linux-omap@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, linux-input <linux-input@vger.kernel.org>, "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, linux-fbdev@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Content-Type: multipart/mixed; boundary="------------39EE53F47ACFCC5932325DF0"
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20180402142656.26815-6-robert.jarzmik@free.fr>
+Content-Language: en-US
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org, Robert Jarzmik <robert.jarzmik@renault.com>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, May 19, 2018 at 12:09 AM, Janusz Krzysztofik
-<jmkrzyszt@gmail.com> wrote:
+This is a multi-part message in MIME format.
+--------------39EE53F47ACFCC5932325DF0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> +       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
-> +       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
+Hi Robert,
 
-So, is it optional or not at the end?
-If it is, why do we check for NULL?
+Thanks for this series.
 
->                 this->dev_ready = ams_delta_nand_ready;
->         } else {
->                 this->dev_ready = NULL;
->                 pr_notice("Couldn't request gpio for Delta NAND ready.\n");
+On Monday, April 02, 2018 04:26 PM, Robert Jarzmik wrote:
+> From: Robert Jarzmik <robert.jarzmik@renault.com>
+> 
+> As the pxa architecture switched towards the dmaengine slave map, the
+> old compatibility mechanism to acquire the dma requestor line number and
+> priority are not needed anymore.
+> 
+> This patch simplifies the dma resource acquisition, using the more
+> generic function dma_request_slave_channel().
+> 
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>   drivers/mtd/nand/pxa3xx_nand.c | 10 +---------
 
-dev_notice() ?
+This driver was replaced by drivers/mtd/nand/raw/marvell_nand.c 
+recently, so this patch can be dropped. I attached a version for the new 
+driver which you can pick instead.
 
->         }
 
-> +err_gpiod:
-> +       if (err == -ENODEV || err == -ENOENT)
-> +               err = -EPROBE_DEFER;
+Thanks,
+Daniel
 
-Hmm...
+--------------39EE53F47ACFCC5932325DF0
+Content-Type: text/x-patch;
+ name="0001-mtd-rawnand-marvell-remove-dmaengine-compat-code.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename*0="0001-mtd-rawnand-marvell-remove-dmaengine-compat-code.patch"
 
+>From c63bc40bdfe2d596e42919235840109a2f1b2776 Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@zonque.org>
+Date: Sat, 12 May 2018 21:50:13 +0200
+Subject: [PATCH] mtd: rawnand: marvell: remove dmaengine compat code
+
+As the pxa architecture switched towards the dmaengine slave map, the
+old compatibility mechanism to acquire the dma requestor line number and
+priority are not needed anymore.
+
+This patch simplifies the dma resource acquisition, using the more
+generic function dma_request_slave_channel().
+
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+---
+ drivers/mtd/nand/raw/marvell_nand.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
+index ebb1d141b900..30017cd7d91c 100644
+--- a/drivers/mtd/nand/raw/marvell_nand.c
++++ b/drivers/mtd/nand/raw/marvell_nand.c
+@@ -2612,8 +2612,6 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
+ 						    dev);
+ 	struct dma_slave_config config = {};
+ 	struct resource *r;
+-	dma_cap_mask_t mask;
+-	struct pxad_param param;
+ 	int ret;
+ 
+ 	if (!IS_ENABLED(CONFIG_PXA_DMA)) {
+@@ -2632,14 +2630,7 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
+ 		return -ENXIO;
+ 	}
+ 
+-	param.drcmr = r->start;
+-	param.prio = PXAD_PRIO_LOWEST;
+-	dma_cap_zero(mask);
+-	dma_cap_set(DMA_SLAVE, mask);
+-	nfc->dma_chan =
+-		dma_request_slave_channel_compat(mask, pxad_filter_fn,
+-						 &param, nfc->dev,
+-						 "data");
++	nfc->dma_chan = dma_request_slave_channel(nfc->dev, "data");
+ 	if (!nfc->dma_chan) {
+ 		dev_err(nfc->dev,
+ 			"Unable to request data DMA channel\n");
 -- 
-With Best Regards,
-Andy Shevchenko
+2.14.3
+
+
+--------------39EE53F47ACFCC5932325DF0
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+
+--------------39EE53F47ACFCC5932325DF0--
