@@ -1,59 +1,51 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: wm2200,wm5100: fix spelling mistake: "Coefficeints" -> "Coefficients"
-Date: Fri, 18 May 2018 10:13:27 +0100
-Message-ID: <20180518091327.17705-1-colin.king@canonical.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ALSA: dice: fix a bounds check in
+ snd_dice_detect_tcelectronic_formats()
+Date: Fri, 18 May 2018 12:16:07 +0300
+Message-ID: <20180518091607.GA32078@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD237266F44
+ for <alsa-devel@alsa-project.org>; Fri, 18 May 2018 11:16:21 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Clemens Ladisch <clemens@ladisch.de>
+Cc: alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The "entry" pointer is always non-NULL so this test for out of bounds
+won't work.
 
-Trivial fix to spelling mistakes in SND_SOC_BYTES literal strings
+Fixes: f1f0f330b1d0 ("ALSA: dice: add parameters of stream formats for models produced by TC Electronic")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/codecs/wm2200.c | 4 ++--
- sound/soc/codecs/wm5100.c | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index d5f4bbf27182..3663b9fd4d65 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -1155,8 +1155,8 @@ SOC_DOUBLE_R_TLV("IN3 Digital Volume", WM2200_ADC_DIGITAL_VOLUME_3L,
- SND_SOC_BYTES_MASK("EQL Coefficients", WM2200_EQL_1, 20, WM2200_EQL_ENA),
- SND_SOC_BYTES_MASK("EQR Coefficients", WM2200_EQR_1, 20, WM2200_EQR_ENA),
+diff --git a/sound/firewire/dice/dice-tcelectronic.c b/sound/firewire/dice/dice-tcelectronic.c
+index af8203b9d1a6..e134a5110c6c 100644
+--- a/sound/firewire/dice/dice-tcelectronic.c
++++ b/sound/firewire/dice/dice-tcelectronic.c
+@@ -75,13 +75,12 @@ int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice)
+ 		}
+ 	}
  
--SND_SOC_BYTES("LHPF1 Coefficeints", WM2200_HPLPF1_2, 1),
--SND_SOC_BYTES("LHPF2 Coefficeints", WM2200_HPLPF2_2, 1),
-+SND_SOC_BYTES("LHPF1 Coefficients", WM2200_HPLPF1_2, 1),
-+SND_SOC_BYTES("LHPF2 Coefficients", WM2200_HPLPF2_2, 1),
+-	entry = NULL;
+ 	for (i = 0; i < ARRAY_SIZE(entries); ++i) {
+ 		entry = entries + i;
+ 		if (entry->model_id == model_id)
+ 			break;
+ 	}
+-	if (!entry)
++	if (i == ARRAY_SIZE(entries))
+ 		return -ENODEV;
  
- SOC_SINGLE("OUT1 High Performance Switch", WM2200_DAC_DIGITAL_VOLUME_1L,
- 	   WM2200_OUT1_OSR_SHIFT, 1, 0),
-diff --git a/sound/soc/codecs/wm5100.c b/sound/soc/codecs/wm5100.c
-index 87f9a99ce978..ba89d9d711f7 100644
---- a/sound/soc/codecs/wm5100.c
-+++ b/sound/soc/codecs/wm5100.c
-@@ -573,10 +573,10 @@ SND_SOC_BYTES_MASK("EQ4 Coefficients", WM5100_EQ4_1, 20, WM5100_EQ4_ENA),
- SND_SOC_BYTES_MASK("DRC Coefficients", WM5100_DRC1_CTRL1, 5,
- 		   WM5100_DRCL_ENA | WM5100_DRCR_ENA),
- 
--SND_SOC_BYTES("LHPF1 Coefficeints", WM5100_HPLPF1_2, 1),
--SND_SOC_BYTES("LHPF2 Coefficeints", WM5100_HPLPF2_2, 1),
--SND_SOC_BYTES("LHPF3 Coefficeints", WM5100_HPLPF3_2, 1),
--SND_SOC_BYTES("LHPF4 Coefficeints", WM5100_HPLPF4_2, 1),
-+SND_SOC_BYTES("LHPF1 Coefficients", WM5100_HPLPF1_2, 1),
-+SND_SOC_BYTES("LHPF2 Coefficients", WM5100_HPLPF2_2, 1),
-+SND_SOC_BYTES("LHPF3 Coefficients", WM5100_HPLPF3_2, 1),
-+SND_SOC_BYTES("LHPF4 Coefficients", WM5100_HPLPF4_2, 1),
- 
- SOC_SINGLE("HPOUT1 High Performance Switch", WM5100_OUT_VOLUME_1L,
- 	   WM5100_OUT1_OSR_SHIFT, 1, 0),
--- 
-2.17.0
+ 	memcpy(dice->tx_pcm_chs, entry->spec->tx_pcm_chs,
