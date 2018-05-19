@@ -1,29 +1,82 @@
-From: "'Markus Mitsch' via linux-sunxi" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-Subject: [BUG] sound: soc: sunxi: sun4i-codec.c left control in
- right mixer
-Date: Sat, 19 May 2018 15:15:08 +0200
-Message-ID: <CAJnOVsnoPozDMJxjeErPE-OU6K8qipKSTPizsjOmgZo4CQcE1w@mail.gmail.com>
-Reply-To: markusmitsch86-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO
+	lookup table
+Date: Sat, 19 May 2018 21:00:38 +0300
+Message-ID: <CAHp75VcUxjubx=zOGyCjmpjCk5RBLPCaHcaOieDie9LdTCa+5g@mail.gmail.com>
+References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
+ <20180518210954.29044-5-jmkrzyszt@gmail.com>
+ <CAHp75VdNUW6KoM6oupyQ80A1WVRk7vewwDt6WEZOyjrAUifqRg@mail.gmail.com>
+ <3427199.r4OBoDP6Xz@z50>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-sunxi+bncBDSJZK6URQGRBZ6ZQDMAKGQEC6DXGBA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Archive: <https://groups.google.com/group/linux-sunxi
-List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
-List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
- <https://groups.google.com/group/linux-sunxi/subscribe>
-To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org, wens-jdAy2FN1RRM@public.gmane.org, maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f195.google.com (mail-qt0-f195.google.com
+ [209.85.216.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id A2D80267345
+ for <alsa-devel@alsa-project.org>; Sat, 19 May 2018 20:00:40 +0200 (CEST)
+Received: by mail-qt0-f195.google.com with SMTP id j42-v6so14288251qtj.12
+ for <alsa-devel@alsa-project.org>; Sat, 19 May 2018 11:00:40 -0700 (PDT)
+In-Reply-To: <3427199.r4OBoDP6Xz@z50>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: linux-fbdev@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, linux-input <linux-input@vger.kernel.org>, Linux OMAP Mailing List <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+On Sat, May 19, 2018 at 2:15 AM, Janusz Krzysztofik <jmkrzyszt@gmail.com> wrote:
+> On Friday, May 18, 2018 11:21:14 PM CEST Andy Shevchenko wrote:
+>> On Sat, May 19, 2018 at 12:09 AM, Janusz Krzysztofik
+>>
+>> <jmkrzyszt@gmail.com> wrote:
+>> > +       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
+>> > +       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
+>>
+>> So, is it optional or not at the end?
+>> If it is, why do we check for NULL?
+>
+> As far as I can understand, nand_chip->dev_ready() callback is optional.
+> That's why I decided to use the _optional variant of devm_gpiod_get(). In case
+> of ams-delta, the dev_ready() callback depends on availability of the 'rdy'
+> GPIO pin. As a consequence, I'm checking for both NULL and ERR in order to
+> decide if dev_ready() will be supported.
+>
+> I can pretty well replace it with the standard form and check for ERR only if
+> the purpose of the _optional form is different.
 
-in linux/sound/sunxi/sun4i-codec.c there is a control for the left
-channel in the section of routes for the right channel at line number
-770. I dont know if this is wanted.
+NULL check in practice discards the _optional part of gpiod_get(). So,
+either you use non-optional variant and decide how to handle an
+errors, or user _optional w/o NULL check.
 
-And, i dont know if it is related, but to get sound out of my left
-speaker i have to MUTE the "Power Amplifier Mixer" channel with
-alsamixer.
+>> > +err_gpiod:
+>> > +       if (err == -ENODEV || err == -ENOENT)
+>> > +               err = -EPROBE_DEFER;
+>>
+>> Hmm...
+>
+> Amstrad Delta uses gpio-mmio driver. Unfortunatelty that driver is not
+> availble before device init phase, unlike other crucial GPIO drivers which are
+> initialized earlier, e.g. during the postcore or at latetst the subsys phase.
+> Hence, devices which depend on GPIO pins provided by gpio-mmio must either be
+> declared late or fail softly so they get another chance of being probed
+> succesfully.
+>
+> I thought of replacing the gpio-mmio platform driver with bgpio functions it
+> exports but for now I haven't implemented it, not even shared the idea.
+>
+> Does it really hurt to return -EPROBE_DEFER if a GPIO pin can't be obtained?
 
-Regards
+I'm only concerned if it would be an infinite defer in the case when
+driver will never appear.
+But I don't remember the details.
+
+-- 
+With Best Regards,
+Andy Shevchenko
