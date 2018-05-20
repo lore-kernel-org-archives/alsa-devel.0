@@ -1,22 +1,18 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO
-	lookup table
-Date: Sat, 19 May 2018 23:55:51 +0200
-Message-ID: <5456625.lDWjtgZygK@z50>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <3427199.r4OBoDP6Xz@z50>
- <CAHp75VcUxjubx=zOGyCjmpjCk5RBLPCaHcaOieDie9LdTCa+5g@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: fsl: Mark 'big-endian' property as
+	optional
+Date: Sat, 19 May 2018 22:12:52 -0300
+Message-ID: <1526778772-6676-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 89DFB267388
- for <alsa-devel@alsa-project.org>; Sat, 19 May 2018 23:55:44 +0200 (CEST)
-Received: by mail-lf0-f66.google.com with SMTP id b18-v6so18812434lfa.9
- for <alsa-devel@alsa-project.org>; Sat, 19 May 2018 14:55:44 -0700 (PDT)
-In-Reply-To: <CAHp75VcUxjubx=zOGyCjmpjCk5RBLPCaHcaOieDie9LdTCa+5g@mail.gmail.com>
+Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
+ [209.85.216.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8ECC3267388
+ for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 03:13:00 +0200 (CEST)
+Received: by mail-qt0-f196.google.com with SMTP id d3-v6so14972925qtp.11
+ for <alsa-devel@alsa-project.org>; Sat, 19 May 2018 18:13:00 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,82 +22,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: linux-fbdev@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, linux-input <linux-input@vger.kernel.org>, Linux OMAP Mailing List <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: broonie@kernel.org
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, timur@tabi.org, nicoleotsuka@gmail.com, robh+dt@kernel.org, Fabio Estevam <fabio.estevam@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday, May 19, 2018 8:00:38 PM CEST Andy Shevchenko wrote:
-> On Sat, May 19, 2018 at 2:15 AM, Janusz Krzysztofik <jmkrzyszt@gmail.com> 
-wrote:
-> > On Friday, May 18, 2018 11:21:14 PM CEST Andy Shevchenko wrote:
-> >> On Sat, May 19, 2018 at 12:09 AM, Janusz Krzysztofik
-> >> 
-> >> <jmkrzyszt@gmail.com> wrote:
-> >> > +       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy",
-> >> > GPIOD_IN);
-> >> > +       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
-> >> 
-> >> So, is it optional or not at the end?
-> >> If it is, why do we check for NULL?
-> > 
-> > As far as I can understand, nand_chip->dev_ready() callback is optional.
-> > That's why I decided to use the _optional variant of devm_gpiod_get(). In
-> > case of ams-delta, the dev_ready() callback depends on availability of
-> > the 'rdy' GPIO pin. As a consequence, I'm checking for both NULL and ERR
-> > in order to decide if dev_ready() will be supported.
-> > 
-> > I can pretty well replace it with the standard form and check for ERR only
-> > if the purpose of the _optional form is different.
-> 
-> NULL check in practice discards the _optional part of gpiod_get(). So,
-> either you use non-optional variant and decide how to handle an
-> errors, or user _optional w/o NULL check.
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
-OK, I'm going to use something like the below while submitting v2:
+Currently the 'big-endian' property is listed as required, which is
+not correct. i.MX SoCs do not need such property, so move it under
+'Optional properties' entry instead.
 
--	gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
--	if (!IS_ERR_OR_NULL(gpiod_rdy)) {
--		this->dev_ready = ams_delta_nand_ready;
--	} else {
--		this->dev_ready = NULL;
--		pr_notice("Couldn't request gpio for Delta NAND ready.\n");
-+	priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy",
-+						  GPIOD_IN);
-+	if (IS_ERR(priv->gpiod_rdy)) {
-+		err = PTR_ERR(priv->gpiod_nwp);
-+		dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n", err);
-+		goto err_gpiod;
- 	}
+Also, fsl-sai.txt incorrectly referenced 'FTM_PWM registers', so
+change it to 'SAI registers', which is the intended description.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/fsl,asrc.txt  | 10 ++++++----
+ Documentation/devicetree/bindings/sound/fsl,esai.txt  |  2 ++
+ Documentation/devicetree/bindings/sound/fsl,spdif.txt |  2 ++
+ Documentation/devicetree/bindings/sound/fsl-sai.txt   |  8 +++++---
+ 4 files changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/fsl,asrc.txt b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+index f5a1411..1d4d9f9 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,asrc.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,asrc.txt
+@@ -31,14 +31,16 @@ Required properties:
+ 			  it. This property is optional depending on the SoC
+ 			  design.
  
-+	if (priv->gpiod_rdy)
-+		this->dev_ready = ams_delta_nand_ready;
-
-> 
-> >> > +err_gpiod:
-> >> > +       if (err == -ENODEV || err == -ENOENT)
-> >> > +               err = -EPROBE_DEFER;
-> >> 
-> >> Hmm...
-> > 
-> > Amstrad Delta uses gpio-mmio driver. Unfortunatelty that driver is not
-> > availble before device init phase, unlike other crucial GPIO drivers which
-> > are initialized earlier, e.g. during the postcore or at latetst the
-> > subsys phase. Hence, devices which depend on GPIO pins provided by
-> > gpio-mmio must either be declared late or fail softly so they get another
-> > chance of being probed succesfully.
-> > 
-> > I thought of replacing the gpio-mmio platform driver with bgpio functions
-> > it exports but for now I haven't implemented it, not even shared the
-> > idea.
-> > 
-> > Does it really hurt to return -EPROBE_DEFER if a GPIO pin can't be
-> > obtained?
-> I'm only concerned if it would be an infinite defer in the case when
-> driver will never appear.
-> But I don't remember the details.
-
-Deferred probes are handled effectively during late_initcall, no risk of 
-infinite defer, see drivers/base/dd.c for details.
-
-Thanks,
-Janusz
+-   - big-endian		: If this property is absent, the little endian mode
+-			  will be in use as default. Otherwise, the big endian
+-			  mode will be in use for all the device registers.
+-
+    - fsl,asrc-rate	: Defines a mutual sample rate used by DPCM Back Ends.
+ 
+    - fsl,asrc-width	: Defines a mutual sample width used by DPCM Back Ends.
+ 
++Optional properties:
++
++   - big-endian		: If this property is absent, the little endian mode
++			  will be in use as default. Otherwise, the big endian
++			  mode will be in use for all the device registers.
++
+ Example:
+ 
+ asrc: asrc@2034000 {
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+index cacd18b..5b99143 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+@@ -42,6 +42,8 @@ Required properties:
+ 			  means all the settings for Receiving would be
+ 			  duplicated from Transmition related registers.
+ 
++Optional properties:
++
+   - big-endian		: If this property is absent, the native endian mode
+ 			  will be in use as default, or the big endian mode
+ 			  will be in use for all the device registers.
+diff --git a/Documentation/devicetree/bindings/sound/fsl,spdif.txt b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
+index 38cfa75..8b324f8 100644
+--- a/Documentation/devicetree/bindings/sound/fsl,spdif.txt
++++ b/Documentation/devicetree/bindings/sound/fsl,spdif.txt
+@@ -33,6 +33,8 @@ Required properties:
+ 			  it. This property is optional depending on the SoC
+ 			  design.
+ 
++Optional properties:
++
+    - big-endian		: If this property is absent, the native endian mode
+ 			  will be in use as default, or the big endian mode
+ 			  will be in use for all the device registers.
+diff --git a/Documentation/devicetree/bindings/sound/fsl-sai.txt b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+index 740b467..dd9e597 100644
+--- a/Documentation/devicetree/bindings/sound/fsl-sai.txt
++++ b/Documentation/devicetree/bindings/sound/fsl-sai.txt
+@@ -28,9 +28,6 @@ Required properties:
+ 			  pinctrl-names. See ../pinctrl/pinctrl-bindings.txt
+ 			  for details of the property values.
+ 
+-  - big-endian		: Boolean property, required if all the FTM_PWM
+-			  registers are big-endian rather than little-endian.
+-
+   - lsb-first		: Configures whether the LSB or the MSB is transmitted
+ 			  first for the fifo data. If this property is absent,
+ 			  the MSB is transmitted first as default, or the LSB
+@@ -48,6 +45,11 @@ Required properties:
+ 			  receive data by following their own bit clocks and
+ 			  frame sync clocks separately.
+ 
++Optional properties:
++
++  - big-endian		: Boolean property, required if all the SAI
++			  registers are big-endian rather than little-endian.
++
+ Optional properties (for mx6ul):
+ 
+   - fsl,sai-mclk-direction-output: This is a boolean property. If present,
+-- 
+2.7.4
