@@ -1,23 +1,18 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO
-	lookup table
-Date: Sun, 20 May 2018 17:44:31 +0300
-Message-ID: <CAHp75Ved2nw1JKnXT2Jxnw4XLsby1eVJU6cfBjE2sp4LP4Kwmg@mail.gmail.com>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <3427199.r4OBoDP6Xz@z50>
- <CAHp75VcUxjubx=zOGyCjmpjCk5RBLPCaHcaOieDie9LdTCa+5g@mail.gmail.com>
- <5456625.lDWjtgZygK@z50>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: codec: realtek: Make the node name
+	generic
+Date: Sun, 20 May 2018 12:22:48 -0300
+Message-ID: <1526829768-15001-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f194.google.com (mail-qk0-f194.google.com
- [209.85.220.194])
- by alsa0.perex.cz (Postfix) with ESMTP id F0E702671D2
- for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 16:44:35 +0200 (CEST)
-Received: by mail-qk0-f194.google.com with SMTP id r28-v6so7743282qkk.4
- for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 07:44:35 -0700 (PDT)
-In-Reply-To: <5456625.lDWjtgZygK@z50>
+Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
+ [209.85.220.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B0F12671D2
+ for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 17:22:52 +0200 (CEST)
+Received: by mail-qk0-f195.google.com with SMTP id s70-v6so10050585qks.13
+ for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 08:22:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,72 +22,102 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: linux-fbdev@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, linux-input <linux-input@vger.kernel.org>, Linux OMAP Mailing List <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Sun, May 20, 2018 at 12:55 AM, Janusz Krzysztofik
-<jmkrzyszt@gmail.com> wrote:
-> On Saturday, May 19, 2018 8:00:38 PM CEST Andy Shevchenko wrote:
->> On Sat, May 19, 2018 at 2:15 AM, Janusz Krzysztofik <jmkrzyszt@gmail.com>
-> wrote:
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
->> NULL check in practice discards the _optional part of gpiod_get(). So,
->> either you use non-optional variant and decide how to handle an
->> errors, or user _optional w/o NULL check.
->
-> OK, I'm going to use something like the below while submitting v2:
->
-> -       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
-> -       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
-> -               this->dev_ready = ams_delta_nand_ready;
-> -       } else {
-> -               this->dev_ready = NULL;
-> -               pr_notice("Couldn't request gpio for Delta NAND ready.\n");
-> +       priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy",
-> +                                                 GPIOD_IN);
-> +       if (IS_ERR(priv->gpiod_rdy)) {
-> +               err = PTR_ERR(priv->gpiod_nwp);
-> +               dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n", err);
-> +               goto err_gpiod;
->         }
->
-> +       if (priv->gpiod_rdy)
-> +               this->dev_ready = ams_delta_nand_ready;
+"The name of a node should be somewhat generic, reflecting the function
+of the device and not its precise programming model."
 
-This makes sense.
+Do as suggested in the bindings examples.
 
-Though, I completely dislike "rdy" name of GPIO. Where is it documented?
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ Documentation/devicetree/bindings/sound/rt274.txt  | 2 +-
+ Documentation/devicetree/bindings/sound/rt5514.txt | 2 +-
+ Documentation/devicetree/bindings/sound/rt5616.txt | 2 +-
+ Documentation/devicetree/bindings/sound/rt5645.txt | 2 +-
+ Documentation/devicetree/bindings/sound/rt5651.txt | 2 +-
+ Documentation/devicetree/bindings/sound/rt5663.txt | 2 +-
+ 6 files changed, 6 insertions(+), 6 deletions(-)
 
->> >> > +err_gpiod:
->> >> > +       if (err == -ENODEV || err == -ENOENT)
->> >> > +               err = -EPROBE_DEFER;
->> >>
->> >> Hmm...
->> >
->> > Amstrad Delta uses gpio-mmio driver. Unfortunatelty that driver is not
->> > availble before device init phase, unlike other crucial GPIO drivers which
->> > are initialized earlier, e.g. during the postcore or at latetst the
->> > subsys phase. Hence, devices which depend on GPIO pins provided by
->> > gpio-mmio must either be declared late or fail softly so they get another
->> > chance of being probed succesfully.
->> >
->> > I thought of replacing the gpio-mmio platform driver with bgpio functions
->> > it exports but for now I haven't implemented it, not even shared the
->> > idea.
->> >
->> > Does it really hurt to return -EPROBE_DEFER if a GPIO pin can't be
->> > obtained?
->> I'm only concerned if it would be an infinite defer in the case when
->> driver will never appear.
->> But I don't remember the details.
->
-> Deferred probes are handled effectively during late_initcall, no risk of
-> infinite defer, see drivers/base/dd.c for details.
-
-Yes, but the code you provided in patch looks somehow suspicious. OK,
-I let Linus decide whtat to do with that.
-
+diff --git a/Documentation/devicetree/bindings/sound/rt274.txt b/Documentation/devicetree/bindings/sound/rt274.txt
+index e9a6178..791a1bd 100644
+--- a/Documentation/devicetree/bindings/sound/rt274.txt
++++ b/Documentation/devicetree/bindings/sound/rt274.txt
+@@ -26,7 +26,7 @@ Pins on the device (for linking into audio routes) for RT274:
+ 
+ Example:
+ 
+-codec: rt274@1c {
++rt274: codec@1c {
+ 	compatible = "realtek,rt274";
+ 	reg = <0x1c>;
+ 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
+diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
+index 4f33b0d..b25ed08 100644
+--- a/Documentation/devicetree/bindings/sound/rt5514.txt
++++ b/Documentation/devicetree/bindings/sound/rt5514.txt
+@@ -32,7 +32,7 @@ Pins on the device (for linking into audio routes) for I2C:
+ 
+ Example:
+ 
+-codec: rt5514@57 {
++rt5514: codec@57 {
+ 	compatible = "realtek,rt5514";
+ 	reg = <0x57>;
+ };
+diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Documentation/devicetree/bindings/sound/rt5616.txt
+index e410858..540a4bf 100644
+--- a/Documentation/devicetree/bindings/sound/rt5616.txt
++++ b/Documentation/devicetree/bindings/sound/rt5616.txt
+@@ -26,7 +26,7 @@ Pins on the device (for linking into audio routes) for RT5616:
+ 
+ Example:
+ 
+-codec: rt5616@1b {
++rt5616: codec@1b {
+ 	compatible = "realtek,rt5616";
+ 	reg = <0x1b>;
+ };
+diff --git a/Documentation/devicetree/bindings/sound/rt5645.txt b/Documentation/devicetree/bindings/sound/rt5645.txt
+index 7cee1f51..a03f9a8 100644
+--- a/Documentation/devicetree/bindings/sound/rt5645.txt
++++ b/Documentation/devicetree/bindings/sound/rt5645.txt
+@@ -69,4 +69,4 @@ codec: rt5650@1a {
+ 	realtek,dmic-en = "true";
+ 	realtek,en-jd-func = "true";
+ 	realtek,jd-mode = <3>;
+-};
+\ No newline at end of file
++};
+diff --git a/Documentation/devicetree/bindings/sound/rt5651.txt b/Documentation/devicetree/bindings/sound/rt5651.txt
+index b852218..a41199a 100644
+--- a/Documentation/devicetree/bindings/sound/rt5651.txt
++++ b/Documentation/devicetree/bindings/sound/rt5651.txt
+@@ -50,7 +50,7 @@ Pins on the device (for linking into audio routes) for RT5651:
+ 
+ Example:
+ 
+-codec: rt5651@1a {
++rt5651: codec@1a {
+ 	compatible = "realtek,rt5651";
+ 	reg = <0x1a>;
+ 	realtek,dmic-en = "true";
+diff --git a/Documentation/devicetree/bindings/sound/rt5663.txt b/Documentation/devicetree/bindings/sound/rt5663.txt
+index 497bcfc..2338644 100644
+--- a/Documentation/devicetree/bindings/sound/rt5663.txt
++++ b/Documentation/devicetree/bindings/sound/rt5663.txt
+@@ -47,7 +47,7 @@ Pins on the device (for linking into audio routes) for RT5663:
+ 
+ Example:
+ 
+-codec: rt5663@12 {
++rt5663: codec@12 {
+ 	compatible = "realtek,rt5663";
+ 	reg = <0x12>;
+ 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
 -- 
-With Best Regards,
-Andy Shevchenko
+2.7.4
