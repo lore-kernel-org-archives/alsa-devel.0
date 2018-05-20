@@ -1,17 +1,21 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: dice: add stream format parameters for
-	TC Electronic Digital Konnekt x32
-Date: Sun, 20 May 2018 14:40:44 +0900
-Message-ID: <20180520054044.23200-1-o-takashi@sakamocchi.jp>
+From: Nicolin Chen <nicoleotsuka@gmail.com>
+Subject: Re: [PATCH] ASoC: imx-audmux: add RXFS/RXCLK defines
+ for 6-wire connections
+Date: Sat, 19 May 2018 23:10:43 -0700
+Message-ID: <20180520060954.GA3257@Asurada-CZ80>
+References: <20180517142601.19587-1-m.felsch@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f68.google.com (mail-pg0-f68.google.com [74.125.83.68])
- by alsa0.perex.cz (Postfix) with ESMTP id F080F26705D
- for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 07:41:14 +0200 (CEST)
-Received: by mail-pg0-f68.google.com with SMTP id e21-v6so62282pgv.0
- for <alsa-devel@alsa-project.org>; Sat, 19 May 2018 22:41:14 -0700 (PDT)
+Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
+ [209.85.160.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7567C26705D
+ for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 08:10:53 +0200 (CEST)
+Received: by mail-pl0-f66.google.com with SMTP id 30-v6so6884330pld.13
+ for <alsa-devel@alsa-project.org>; Sat, 19 May 2018 23:10:53 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180517142601.19587-1-m.felsch@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,228 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: alsa-devel@alsa-project.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, timur@tabi.org, broonie@kernel.org, kernel@pengutronix.de, fabio.estevam@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-TC Electronic Digital Konnekt x32 is an application of WaveFront DiceII STD
-and doesn't support TCAT extended application protocol. For such devices,
-ALSA dice driver needs to have hard-coded parameters for stream formats.
+On Thu, May 17, 2018 at 04:26:01PM +0200, Marco Felsch wrote:
+> From: Philipp Zabel <p.zabel@pengutronix.de>
+> 
+> In asynchronous mode, a RxFS and RxClk connection needs to be made between
+> two ports. Add a define for the bit to be set in the *SEL fields.
+> 
+> Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
+> Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+> ---
+>  include/dt-bindings/sound/fsl-imx-audmux.h | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/include/dt-bindings/sound/fsl-imx-audmux.h b/include/dt-bindings/sound/fsl-imx-audmux.h
+> index 751fe1416f95..6120696abe63 100644
+> --- a/include/dt-bindings/sound/fsl-imx-audmux.h
+> +++ b/include/dt-bindings/sound/fsl-imx-audmux.h
+> @@ -25,6 +25,10 @@
+>  #define MX51_AUDMUX_PORT6		5
+>  #define MX51_AUDMUX_PORT7		6
+>  
+> +/* TFSEL/TCSEL/RFSEL/RCSEL can be sourced from Rx/Tx clocks on i.MX51/53/6Q */
 
-This commit adds stream format parameters for this model. Unfortunately, at
-sampling transmission frequencies of 88.2/96.0kHz, I confirmed that current
-ALSA dice driver doesn't drive the device appropriately due to detecting
-packet discontinuities.
+It's actually not confined to 51/53/6Q -- 21 and 35 should
+also have it according to their Reference Manuals.
 
-$ journalctl
-kernel: snd_dice fw1.0: Detect discontinuity of CIP: 90 80
-
-At the frequencies, the device transfers 16 data blocks per packet and 16
-data channels per data block, as a result one packet includes 1032 bytes
-if it's not NODATA. However, as long as I checked, the device often
-postpone packet transmission and continue with truncated payload than
-metadata in isochronous packet header. Below is a sample of sequence I got.
-
-sec cycle bytes       CIP1       CIP2
- 37  3314  1032 0x01100090 0x900449E2
- 37  3315     8 0x011000A0 0x9004FFFF
- 37  3316  1032 0x011000A0 0x900461E2
- 37  3317  1032 0x011000B0 0x900475E2
- 37  3318  1032 0x011000C0 0x900489E2
- 37  3319     8 0x011000D0 0x9004FFFF
- 37  3320  1032 0x011000D0 0x9004A1E2
- 37  3321  1032 0x011000E0 0x9004B5E2
- 37  3322  1032 0x011000F0 0x9004C9E2
- 37  3323     8 0x01100000 0x9004FFFF
- 37  3324  1032 0x01100000 0x9004E1E2
- 37  3325  1032 0x01100010 0x9004F5E2
- 37  3326  1032 0x01100020 0x900409E2
- 37  3327     8 0x01100030 0x9004FFFF
- 37  3328  1032 0x01100030 0x900421E2
- 37  3329  1032 0x01100040 0x900435E2
- 37  3330  (skip)
- 37  3331  (skip)
- 37  3332  (skip)
- 37  3333  (skip)
- 37  3334  (skip)
- 37  3335  (skip)
- 37  3336  (skip)
- 37  3337  (skip)
- 37  3338  (skip)
- 37  3339  (skip)
- 37  3340  (skip)
- 37  3341  (skip)
- 37  3342  (skip)
- 37  3343  (skip)
- 37  3344  (skip)
- 37  3345  (skip)
- 37  3346  (skip)
- 37  3347  (skip)
- 37  3348  (skip)
- 37  3349  (skip)
- 37  3350  (skip)
- 37  3351  (skip)
- 37  3352  (skip)
- 37  3353  (skip)
- 37  3354  (skip)
- 37  3355  (skip)
- 37  3356  (skip)
- 37  3357  (skip)
- 37  3358  (skip)
- 37  3359  (skip)
- 37  3360  (skip)
- 37  3361  (skip)
- 37  3362  (skip)
- 37  3363  (skip)
- 37  3364  (skip)
- 37  3365  (skip)
- 37  3366  (skip)
- 37  3367  1032 0x01100050 0x900461E1
- 37  3368  1032 0x01100060 0x900475E1
- 37  3369  1032 0x01100070 0x9004A1E1
- 37  3370  1032 0x01100080 0x9004A1E1 but content of payload is truncated.
- 37  3371  (skip)
- 37  3371  1032 0x01100080 0x9004B5E0 detect discontinuity
- 37  3372  1032 0x01100090 0x9004C9E0
- 37  3373  1032 0x011000A0 0x9004E1E0
- 37  3374  1032 0x011000B0 0x9004F5E0
- 37  3375  1032 0x011000C0 0x900409E0
- 37  3376  1032 0x011000D0 0x900421E0
- 37  3377  1032 0x011000E0 0x900435E0
- 37  3378  1032 0x011000F0 0x900449DF
- 37  3379     8 0x01100000 0x9004FFFF
- 37  3380  1032 0x01100000 0x900461DF
- 37  3381  1032 0x01100010 0x900475DF
- 37  3382  1032 0x01100020 0x900489DF
- 37  3383     8 0x01100030 0x9004FFFF
- 37  3384  1032 0x01100030 0x9004A1DF
- 37  3385  1032 0x01100040 0x9004B5DF
- 37  3386  1032 0x01100050 0x9004C9DF
- 37  3387     8 0x01100060 0x9004FFFF
-
-I cannot confirm this quirks with Windows driver. ALSA dice driver has a
-cause if assumed differences between these two drivers are ways of
-timestampling to RX packets from the drivers to the device. I've already
-reported timestamping quirk of Dice-based devices and this might bring
-this issue.
-
-[alsa-devel] Dice packet sequence quirk and ALSA firewire stack in Linux 4.6
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-May/107715.html
-
-Well, nevertheless, I enable ALSA dice driver to work at the frequencies.
-This may brings inconvenience to users but I expect developers and users
-to fix it.
-
-$ cd linux-firewire-utils/src
-$ python2 crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  040423bb  bus_info_length 4, crc_length 4, crc 9147
-404  31333934  bus_name "1394"
-408  e0ff8112  irmc 1, cmc 1, isc 1, bmc 0, pmc 0, cyc_clk_acc 255,
-               max_rec 8 (512), max_rom 1, gen 1, spd 2 (S400)
-40c  00016604  company_id 000166     |
-410  0c232c28  device_id 040c232c28  | EUI-64 000166040c232c28
-
-               root directory
-               -----------------------------------------------------------------
-414  0006b6cb  directory_length 6, crc 46795
-418  03000166  vendor
-41c  8100000a  --> descriptor leaf at 444
-420  17000030  model
-424  8100000f  --> descriptor leaf at 460
-428  0c0087c0  node capabilities per IEEE 1394
-42c  d1000001  --> unit directory at 430
-
-               unit directory at 430
-               -----------------------------------------------------------------
-430  000476c2  directory_length 4, crc 30402
-434  12000166  specifier id
-438  13000001  version
-43c  17000030  model
-440  81000010  --> descriptor leaf at 480
-
-               descriptor leaf at 444
-               -----------------------------------------------------------------
-444  0006c490  leaf_length 6, crc 50320
-448  00000000  textual descriptor
-44c  00000000  minimal ASCII
-450  54432045  "TC E"
-454  6c656374  "lect"
-458  726f6e69  "roni"
-45c  63000000  "c"
-
-               descriptor leaf at 460
-               -----------------------------------------------------------------
-460  000772b4  leaf_length 7, crc 29364
-464  00000000  textual descriptor
-468  00000000  minimal ASCII
-46c  44696769  "Digi"
-470  74616c4b  "talK"
-474  6f6e6e65  "onne"
-478  6b747833  "ktx3"
-47c  32000000  "2"
-
-               descriptor leaf at 480
-               -----------------------------------------------------------------
-480  000772b4  leaf_length 7, crc 29364
-484  00000000  textual descriptor
-488  00000000  minimal ASCII
-48c  44696769  "Digi"
-490  74616c4b  "talK"
-494  6f6e6e65  "onne"
-498  6b747833  "ktx3"
-49c  32000000  "2"
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/dice/dice-tcelectronic.c | 7 +++++++
- sound/firewire/dice/dice.c              | 8 ++++++++
- 2 files changed, 15 insertions(+)
-
-diff --git a/sound/firewire/dice/dice-tcelectronic.c b/sound/firewire/dice/dice-tcelectronic.c
-index e134a5110c6c..f9e0072deb81 100644
---- a/sound/firewire/dice/dice-tcelectronic.c
-+++ b/sound/firewire/dice/dice-tcelectronic.c
-@@ -49,6 +49,12 @@ static const struct dice_tc_spec studio_konnekt_48 = {
- 	.has_midi = true,
- };
- 
-+static const struct dice_tc_spec digital_konnekt_x32 = {
-+	.tx_pcm_chs = {{16, 16, 4}, {0, 0, 0} },
-+	.rx_pcm_chs = {{16, 16, 4}, {0, 0, 0} },
-+	.has_midi = false,
-+};
-+
- int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice)
- {
- 	static const struct {
-@@ -61,6 +67,7 @@ int snd_dice_detect_tcelectronic_formats(struct snd_dice *dice)
- 		{0x00000023, &konnekt_live},
- 		{0x00000024, &desktop_konnekt6},
- 		{0x00000027, &impact_twin},
-+		{0x00000030, &digital_konnekt_x32},
- 	};
- 	struct fw_csr_iterator it;
- 	int key, val, model_id;
-diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-index beeef62581ba..774eb2205668 100644
---- a/sound/firewire/dice/dice.c
-+++ b/sound/firewire/dice/dice.c
-@@ -358,6 +358,14 @@ static const struct ieee1394_device_id dice_id_table[] = {
- 		.model_id	= 0x000027,
- 		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
- 	},
-+	/* TC Electronic Digital Konnekt x32. */
-+	{
-+		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
-+				  IEEE1394_MATCH_MODEL_ID,
-+		.vendor_id	= OUI_TCELECTRONIC,
-+		.model_id	= 0x000030,
-+		.driver_data = (kernel_ulong_t)snd_dice_detect_tcelectronic_formats,
-+	},
- 	/* Alesis iO14/iO26. */
- 	{
- 		.match_flags	= IEEE1394_MATCH_VENDOR_ID |
--- 
-2.14.1
+> +#define IMX_AUDMUX_RXFS			0x8
+> +#define IMX_AUDMUX_RXCLK		0x8
+> +
+>  /* Register definitions for the i.MX21/27 Digital Audio Multiplexer */
+>  #define IMX_AUDMUX_V1_PCR_INMMASK(x)	((x) & 0xff)
+>  #define IMX_AUDMUX_V1_PCR_INMEN		(1 << 8)
+> -- 
+> 2.17.0
+> 
