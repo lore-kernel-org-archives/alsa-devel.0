@@ -1,18 +1,22 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: codec: realtek: Make the node name
-	generic
-Date: Sun, 20 May 2018 12:22:48 -0300
-Message-ID: <1526829768-15001-1-git-send-email-festevam@gmail.com>
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: Re: [PATCH 5/6] mtd: rawnand: ams-delta: use GPIO
+	lookup table
+Date: Sun, 20 May 2018 17:37:44 +0200
+Message-ID: <3505791.x6nWYTo8eb@z50>
+References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
+ <5456625.lDWjtgZygK@z50>
+ <CAHp75Ved2nw1JKnXT2Jxnw4XLsby1eVJU6cfBjE2sp4LP4Kwmg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
- [209.85.220.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B0F12671D2
- for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 17:22:52 +0200 (CEST)
-Received: by mail-qk0-f195.google.com with SMTP id s70-v6so10050585qks.13
- for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 08:22:51 -0700 (PDT)
+Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
+ [209.85.215.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23F41267380
+ for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 17:37:42 +0200 (CEST)
+Received: by mail-lf0-f68.google.com with SMTP id x145-v6so8424436lff.1
+ for <alsa-devel@alsa-project.org>; Sun, 20 May 2018 08:37:42 -0700 (PDT)
+In-Reply-To: <CAHp75Ved2nw1JKnXT2Jxnw4XLsby1eVJU6cfBjE2sp4LP4Kwmg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,102 +26,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: linux-fbdev@vger.kernel.org, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, "open list:MEMORY TECHNOLOGY..." <linux-mtd@lists.infradead.org>, linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>, linux-input <linux-input@vger.kernel.org>, Linux OMAP Mailing List <linux-omap@vger.kernel.org>, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@nxp.com>
+On Sunday, May 20, 2018 4:44:31 PM CEST Andy Shevchenko wrote:
+> On Sun, May 20, 2018 at 12:55 AM, Janusz Krzysztofik
+> 
+> <jmkrzyszt@gmail.com> wrote:
+> > On Saturday, May 19, 2018 8:00:38 PM CEST Andy Shevchenko wrote:
+> >> On Sat, May 19, 2018 at 2:15 AM, Janusz Krzysztofik <jmkrzyszt@gmail.com>
+> > 
+> > wrote:
+> >> NULL check in practice discards the _optional part of gpiod_get(). So,
+> >> either you use non-optional variant and decide how to handle an
+> >> errors, or user _optional w/o NULL check.
+> > 
+> > OK, I'm going to use something like the below while submitting v2:
+> > 
+> > -       gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy", GPIOD_IN);
+> > -       if (!IS_ERR_OR_NULL(gpiod_rdy)) {
+> > -               this->dev_ready = ams_delta_nand_ready;
+> > -       } else {
+> > -               this->dev_ready = NULL;
+> > -               pr_notice("Couldn't request gpio for Delta NAND
+> > ready.\n");
+> > +       priv->gpiod_rdy = devm_gpiod_get_optional(&pdev->dev, "rdy",
+> > +                                                 GPIOD_IN);
+> > +       if (IS_ERR(priv->gpiod_rdy)) {
+> > +               err = PTR_ERR(priv->gpiod_nwp);
+> > +               dev_warn(&pdev->dev, "RDY GPIO request failed (%d)\n",
+> > err); +               goto err_gpiod;
+> > 
+> >         }
+> > 
+> > +       if (priv->gpiod_rdy)
+> > +               this->dev_ready = ams_delta_nand_ready;
+> 
+> This makes sense.
+> 
+> Though, I completely dislike "rdy" name of GPIO. Where is it documented?
 
-"The name of a node should be somewhat generic, reflecting the function
-of the device and not its precise programming model."
+No documentation files for Amstrad Delta nor for its NAND driver specifically 
+exist under Documentation/. However, there exist some for generic GPIO NAND 
+driver where the pin name "rdy" is used explicitly:
+Documentation/driver-api/gpio/drivers-on-gpio.rst
+Documentation/devicetree/bindings/mtd/gpio-control-nand.txt
+You can find that mnemonic used across drivers/mtd/nand/, standalone or as a 
+suffix, including the Amstrad Delta NAND driver before the change discussed.
 
-Do as suggested in the bindings examples.
+To be honest, I don't like it much either, but I'm just using it instead of 
+inventing something new.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
- Documentation/devicetree/bindings/sound/rt274.txt  | 2 +-
- Documentation/devicetree/bindings/sound/rt5514.txt | 2 +-
- Documentation/devicetree/bindings/sound/rt5616.txt | 2 +-
- Documentation/devicetree/bindings/sound/rt5645.txt | 2 +-
- Documentation/devicetree/bindings/sound/rt5651.txt | 2 +-
- Documentation/devicetree/bindings/sound/rt5663.txt | 2 +-
- 6 files changed, 6 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/devicetree/bindings/sound/rt274.txt b/Documentation/devicetree/bindings/sound/rt274.txt
-index e9a6178..791a1bd 100644
---- a/Documentation/devicetree/bindings/sound/rt274.txt
-+++ b/Documentation/devicetree/bindings/sound/rt274.txt
-@@ -26,7 +26,7 @@ Pins on the device (for linking into audio routes) for RT274:
- 
- Example:
- 
--codec: rt274@1c {
-+rt274: codec@1c {
- 	compatible = "realtek,rt274";
- 	reg = <0x1c>;
- 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
-diff --git a/Documentation/devicetree/bindings/sound/rt5514.txt b/Documentation/devicetree/bindings/sound/rt5514.txt
-index 4f33b0d..b25ed08 100644
---- a/Documentation/devicetree/bindings/sound/rt5514.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5514.txt
-@@ -32,7 +32,7 @@ Pins on the device (for linking into audio routes) for I2C:
- 
- Example:
- 
--codec: rt5514@57 {
-+rt5514: codec@57 {
- 	compatible = "realtek,rt5514";
- 	reg = <0x57>;
- };
-diff --git a/Documentation/devicetree/bindings/sound/rt5616.txt b/Documentation/devicetree/bindings/sound/rt5616.txt
-index e410858..540a4bf 100644
---- a/Documentation/devicetree/bindings/sound/rt5616.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5616.txt
-@@ -26,7 +26,7 @@ Pins on the device (for linking into audio routes) for RT5616:
- 
- Example:
- 
--codec: rt5616@1b {
-+rt5616: codec@1b {
- 	compatible = "realtek,rt5616";
- 	reg = <0x1b>;
- };
-diff --git a/Documentation/devicetree/bindings/sound/rt5645.txt b/Documentation/devicetree/bindings/sound/rt5645.txt
-index 7cee1f51..a03f9a8 100644
---- a/Documentation/devicetree/bindings/sound/rt5645.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5645.txt
-@@ -69,4 +69,4 @@ codec: rt5650@1a {
- 	realtek,dmic-en = "true";
- 	realtek,en-jd-func = "true";
- 	realtek,jd-mode = <3>;
--};
-\ No newline at end of file
-+};
-diff --git a/Documentation/devicetree/bindings/sound/rt5651.txt b/Documentation/devicetree/bindings/sound/rt5651.txt
-index b852218..a41199a 100644
---- a/Documentation/devicetree/bindings/sound/rt5651.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5651.txt
-@@ -50,7 +50,7 @@ Pins on the device (for linking into audio routes) for RT5651:
- 
- Example:
- 
--codec: rt5651@1a {
-+rt5651: codec@1a {
- 	compatible = "realtek,rt5651";
- 	reg = <0x1a>;
- 	realtek,dmic-en = "true";
-diff --git a/Documentation/devicetree/bindings/sound/rt5663.txt b/Documentation/devicetree/bindings/sound/rt5663.txt
-index 497bcfc..2338644 100644
---- a/Documentation/devicetree/bindings/sound/rt5663.txt
-+++ b/Documentation/devicetree/bindings/sound/rt5663.txt
-@@ -47,7 +47,7 @@ Pins on the device (for linking into audio routes) for RT5663:
- 
- Example:
- 
--codec: rt5663@12 {
-+rt5663: codec@12 {
- 	compatible = "realtek,rt5663";
- 	reg = <0x12>;
- 	interrupts = <7 IRQ_TYPE_EDGE_FALLING>;
--- 
-2.7.4
+Thanks,
+Janusz
