@@ -1,51 +1,68 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 32/33] ASoC: max98095: use match_string()
-	helper
-Date: Tue, 22 May 2018 01:25:39 +0300
-Message-ID: <CAHp75Vdr08D1XreBRadRTTNFnty4rLm2i=V-uQtVKUPRvXqjYQ@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [alsa-devel] [PATCH 29/33] ALSA: oxfw: use match_string() helper
+Date: Tue, 22 May 2018 07:26:53 +0900
+Message-ID: <fc6c89ab-a8e7-72f8-3cd6-308f21e77995@sakamocchi.jp>
 References: <1526903890-35761-1-git-send-email-xieyisheng1@huawei.com>
- <1526903890-35761-33-git-send-email-xieyisheng1@huawei.com>
+ <1526903890-35761-30-git-send-email-xieyisheng1@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f193.google.com (mail-qk0-f193.google.com
- [209.85.220.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 83A33267380
- for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 00:25:41 +0200 (CEST)
-Received: by mail-qk0-f193.google.com with SMTP id b39-v6so13056618qkb.5
- for <alsa-devel@alsa-project.org>; Mon, 21 May 2018 15:25:41 -0700 (PDT)
-In-Reply-To: <1526903890-35761-33-git-send-email-xieyisheng1@huawei.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Yisheng Xie <xieyisheng1@huawei.com>
-Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1526903890-35761-30-git-send-email-xieyisheng1@huawei.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Yisheng Xie <xieyisheng1@huawei.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, May 21, 2018 at 2:58 PM, Yisheng Xie <xieyisheng1@huawei.com> wrote:
+Hi,
+
+On May 21 2018 20:58, Yisheng Xie wrote:
 > match_string() returns the index of an array for a matching string,
 > which can be used intead of open coded variant.
+> 
+> Cc: Clemens Ladisch <clemens@ladisch.de>
+> Cc: Jaroslav Kysela <perex@perex.cz>
+> Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: alsa-devel@alsa-project.org
+> Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
+> ---
+>   sound/firewire/oxfw/oxfw.c | 8 +-------
+>   1 file changed, 1 insertion(+), 7 deletions(-)
 
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-> +       int ret = match_string(bq_mode_name, ARRAY_SIZE(bq_mode_name), name);
+For my information, use_match_string() helper was firstly introduced to
+v4.6 kernel by a commit 56b060814e2d ('lib/string: introduce 
+match_string() helper').
 
-Rather split and move an assignment to the line before 'if'.
+> diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
+> index 413ab63..1e5b2c8 100644
+> --- a/sound/firewire/oxfw/oxfw.c
+> +++ b/sound/firewire/oxfw/oxfw.c
+> @@ -49,7 +49,6 @@ static bool detect_loud_models(struct fw_unit *unit)
+>   		"Tapco LINK.firewire 4x6",
+>   		"U.420"};
+>   	char model[32];
+> -	unsigned int i;
+>   	int err;
+>   
+>   	err = fw_csr_string(unit->directory, CSR_MODEL,
+> @@ -57,12 +56,7 @@ static bool detect_loud_models(struct fw_unit *unit)
+>   	if (err < 0)
+>   		return false;
+>   
+> -	for (i = 0; i < ARRAY_SIZE(models); i++) {
+> -		if (strcmp(models[i], model) == 0)
+> -			break;
+> -	}
+> -
+> -	return (i < ARRAY_SIZE(models));
+> +	return match_string(models, ARRAY_SIZE(models), model) >= 0;
+>   }
+>   
+>   static int name_card(struct snd_oxfw *oxfw)
 
->
->         /* Shouldn't happen */
+Thanks
 
-> +       if (ret < 0)
-> +               dev_err(component->dev, "Bad biquad channel name '%s'\n", name);
-> +       return ret;
->  }
-
--- 
-With Best Regards,
-Andy Shevchenko
+Takashi Sakamoto
