@@ -1,49 +1,44 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH] ASoC: Intel: cht_bsw_nau8824: Fix jack_type to
-	include SND_JACK_MICROPHONE
-Date: Mon, 21 May 2018 14:42:51 +0200
-Message-ID: <20180521124251.10535-1-hdegoede@redhat.com>
+From: "'Markus Mitsch' via linux-sunxi" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Subject: Re: [BUG] On Allwinner A20 Board Cubietruck distorted
+ SPDIF opical output
+Date: Mon, 21 May 2018 14:43:55 +0200
+Message-ID: <CAJnOVs=kK+nPOHfWzAU0q1Nzu7XLwY6HojaZLHXeW1n71YG2wg@mail.gmail.com>
+References: <CAJnOVskuR6WG5tBVNT30t+k3y4hPR6VnQ=p_QQdBe3fuTWEf_Q@mail.gmail.com>
+ <CAEKpxB=0ahGP=bnFAKDZatLLphADMig4P2Bkpkao-jzE9ORkEg@mail.gmail.com> <CAJnOVskcERpto7ztKcCDWKG9NMcgSjcM867bCgkcxG86sZ2MFw@mail.gmail.com>
+Reply-To: markusmitsch86-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 20DB026738C
- for <alsa-devel@alsa-project.org>; Mon, 21 May 2018 14:42:55 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Hans de Goede <hdegoede@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBDSJZK6URQGRBDH6RLMAKGQEGYZUDGQ-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <CAJnOVskcERpto7ztKcCDWKG9NMcgSjcM867bCgkcxG86sZ2MFw-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Markus Mitsch <markusmitsch86-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-The nau8824 codec can detect whether a headset or plain headphones is
-inserted (as well as button presses on the headset) as such the jack_type
-passed to snd_soc_card_jack_new() should include SND_JACK_MICROPHONE.
+2018-05-21 11:43 GMT+02:00 Markus Mitsch <markusmitsch86-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>:
+>>> Hello,
+>>>
+>>> i have a new problem. if i want to output sound from optical i get
+>>> distorted sound. At 44.1 khz its like an old vinly, but at 48 khz and
+>>> higher it is very bad. thanks in advance for your time.
+>
+>> Hi Markus,
+>> I haven't tested it for a while but when I did it worked as high as
+>> 96K with no issues. Does it work ok with the original cubietruck
+>> software?,
+>> CK
+>
+> Hello,
+> i am using arch linux with mainline kernel 4.16.8. parhaps i can try
+> today with official image.
+> mfg
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/cht_bsw_nau8824.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
-index 072e94b69e57..30c46977d53c 100644
---- a/sound/soc/intel/boards/cht_bsw_nau8824.c
-+++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
-@@ -120,7 +120,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
- 	 * KEY_VOLUMEUP
- 	 * KEY_VOLUMEDOWN
- 	 */
--	jack_type = SND_JACK_HEADPHONE | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+	jack_type = SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
- 		SND_JACK_BTN_2 | SND_JACK_BTN_3;
- 	ret = snd_soc_card_jack_new(runtime->card, "Headset", jack_type, jack,
- 		cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
--- 
-2.17.0
+Hi.
+So, with debian image from 2014 with 3.4.79 kernel the sound is clear
+up to 96 khz.
+mfg
