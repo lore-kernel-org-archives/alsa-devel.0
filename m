@@ -1,14 +1,14 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [alsa-devel] [PATCH 29/33] ALSA: oxfw: use match_string() helper
-Date: Tue, 22 May 2018 07:26:53 +0900
-Message-ID: <fc6c89ab-a8e7-72f8-3cd6-308f21e77995@sakamocchi.jp>
+Subject: Re: [PATCH 28/33] ALSA: dice use match_string() helper
+Date: Tue, 22 May 2018 07:31:23 +0900
+Message-ID: <856cff99-0350-368e-f6c9-d632839e6c33@sakamocchi.jp>
 References: <1526903890-35761-1-git-send-email-xieyisheng1@huawei.com>
- <1526903890-35761-30-git-send-email-xieyisheng1@huawei.com>
+ <1526903890-35761-29-git-send-email-xieyisheng1@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1526903890-35761-30-git-send-email-xieyisheng1@huawei.com>
+In-Reply-To: <1526903890-35761-29-git-send-email-xieyisheng1@huawei.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Yisheng Xie <xieyisheng1@huawei.com>, linux-kernel@vger.kernel.org
@@ -24,31 +24,29 @@ On May 21 2018 20:58, Yisheng Xie wrote:
 > Cc: Clemens Ladisch <clemens@ladisch.de>
 > Cc: Jaroslav Kysela <perex@perex.cz>
 > Cc: Takashi Iwai <tiwai@suse.com>
+> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 > Cc: alsa-devel@alsa-project.org
 > Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
 > ---
->   sound/firewire/oxfw/oxfw.c | 8 +-------
+>   sound/firewire/dice/dice.c | 8 +-------
 >   1 file changed, 1 insertion(+), 7 deletions(-)
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+I'm welcome to this change, while in the latest subsystem tree for v4.18
+the 'force_to_pcm_support()' local function was removed by my patch[1].
+Your patch can be abandon.
 
-For my information, use_match_string() helper was firstly introduced to
-v4.6 kernel by a commit 56b060814e2d ('lib/string: introduce 
-match_string() helper').
-
-> diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-> index 413ab63..1e5b2c8 100644
-> --- a/sound/firewire/oxfw/oxfw.c
-> +++ b/sound/firewire/oxfw/oxfw.c
-> @@ -49,7 +49,6 @@ static bool detect_loud_models(struct fw_unit *unit)
->   		"Tapco LINK.firewire 4x6",
->   		"U.420"};
+> diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+> index 96bb01b..0639074 100644
+> --- a/sound/firewire/dice/dice.c
+> +++ b/sound/firewire/dice/dice.c
+> @@ -35,19 +35,13 @@ static bool force_two_pcm_support(struct fw_unit *unit)
+>   		"SAFFIRE_PRO_40_1",
+>   	};
 >   	char model[32];
 > -	unsigned int i;
 >   	int err;
 >   
->   	err = fw_csr_string(unit->directory, CSR_MODEL,
-> @@ -57,12 +56,7 @@ static bool detect_loud_models(struct fw_unit *unit)
+>   	err = fw_csr_string(unit->directory, CSR_MODEL, model, sizeof(model));
 >   	if (err < 0)
 >   		return false;
 >   
@@ -57,11 +55,15 @@ match_string() helper').
 > -			break;
 > -	}
 > -
-> -	return (i < ARRAY_SIZE(models));
+> -	return i < ARRAY_SIZE(models);
 > +	return match_string(models, ARRAY_SIZE(models), model) >= 0;
 >   }
 >   
->   static int name_card(struct snd_oxfw *oxfw)
+>   static int check_dice_category(struct fw_unit *unit)
+
+[1] ALSA: dice: remove local frag of force_two_pcms
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=for-next&id=9c367c01d3d5
+
 
 Thanks
 
