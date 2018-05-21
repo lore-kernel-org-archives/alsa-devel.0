@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Move clk enable from hw_params/free to startup/shutdown" to the asoc tree
-Date: Mon, 21 May 2018 16:48:32 +0100
-Message-ID: <E1fKn32-0007IT-Qu@debutante>
-References: <1524741374-13523-8-git-send-email-Vijendar.Mukunda@amd.com>
+Subject: Applied "ASoC: amd: memory release for rtd structure" to the asoc tree
+Date: Mon, 21 May 2018 16:48:36 +0100
+Message-ID: <E1fKn36-0007Jc-EB@debutante>
+References: <1524741374-13523-7-git-send-email-Vijendar.Mukunda@amd.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1524741374-13523-8-git-send-email-Vijendar.Mukunda@amd.com>
+In-Reply-To: <1524741374-13523-7-git-send-email-Vijendar.Mukunda@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>alsa-devel@alsa-project.org
+To: Mukunda@sirena.org.uk
+Cc: Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Jason Clinton <jclinton@chromium.org>Mark Brown <broonie@kernel.org>Vijendar Mukunda <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Move clk enable from hw_params/free to startup/shutdown
+   ASoC: amd: memory release for rtd structure
 
 has been applied to the asoc tree at
 
@@ -37,115 +37,43 @@ to this mail.
 Thanks,
 Mark
 
->From e9716ff3dcd052d8640047860a78c948629c6c70 Mon Sep 17 00:00:00 2001
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Date: Tue, 8 May 2018 10:17:50 +0530
-Subject: [PATCH] ASoC: AMD: Move clk enable from hw_params/free to
- startup/shutdown
+>From cac6f59717e1084552e509172d40d5c9d278feb9 Mon Sep 17 00:00:00 2001
+From: "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
+Date: Tue, 8 May 2018 10:17:49 +0530
+Subject: [PATCH] ASoC: amd: memory release for rtd structure
 
-hw_param can be called multiple times and thus we can have
-more clk enable. The clk may not get diabled due to refcounting.
-startup/shutdown ensures single clk enable/disable call.
+rtd structure freed early may result in kernel panic in dma close
+call back. moved releasing memory for rtd structure to the end of
+dma close callback.
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 49 ++++++++++++++++++++--------
- 1 file changed, 35 insertions(+), 14 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index 215b06bf2039..6495eedc3d4c 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -91,8 +91,7 @@ static int cz_da7219_init(struct snd_soc_pcm_runtime *rtd)
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 39cd54f1b493..1c44b26ad2db 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -998,8 +998,6 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
+ 								    DRV_NAME);
+ 	struct audio_drv_data *adata = dev_get_drvdata(component->dev);
+ 
+-	kfree(rtd);
+-
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		adata->play_i2ssp_stream = NULL;
+ 		/*
+@@ -1028,7 +1026,7 @@ static int acp_dma_close(struct snd_pcm_substream *substream)
+ 	 */
+ 	if (!adata->play_i2ssp_stream && !adata->capture_i2ssp_stream)
+ 		acp_reg_write(0, adata->acp_mmio, mmACP_EXTERNAL_INTR_ENB);
+-
++	kfree(rtd);
  	return 0;
  }
  
--static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
--			     struct snd_pcm_hw_params *params)
-+static int da7219_clk_enable(struct snd_pcm_substream *substream)
- {
- 	int ret = 0;
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-@@ -106,11 +105,9 @@ static int cz_da7219_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- }
- 
--static int cz_da7219_hw_free(struct snd_pcm_substream *substream)
-+static void da7219_clk_disable(void)
- {
- 	clk_disable_unprepare(da7219_dai_clk);
--
--	return 0;
- }
- 
- static const unsigned int channels[] = {
-@@ -133,7 +130,7 @@ static const struct snd_pcm_hw_constraint_list constraints_channels = {
- 	.mask = 0,
- };
- 
--static int cz_fe_startup(struct snd_pcm_substream *substream)
-+static int cz_da7219_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 
-@@ -147,23 +144,47 @@ static int cz_fe_startup(struct snd_pcm_substream *substream)
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				   &constraints_rates);
- 
--	return 0;
-+	return da7219_clk_enable(substream);
-+}
-+
-+static void cz_da7219_shutdown(struct snd_pcm_substream *substream)
-+{
-+	da7219_clk_disable();
-+}
-+
-+static int cz_max_startup(struct snd_pcm_substream *substream)
-+{
-+	return da7219_clk_enable(substream);
-+}
-+
-+static void cz_max_shutdown(struct snd_pcm_substream *substream)
-+{
-+	da7219_clk_disable();
-+}
-+
-+static int cz_dmic_startup(struct snd_pcm_substream *substream)
-+{
-+	return da7219_clk_enable(substream);
-+}
-+
-+static void cz_dmic_shutdown(struct snd_pcm_substream *substream)
-+{
-+	da7219_clk_disable();
- }
- 
- static struct snd_soc_ops cz_da7219_cap_ops = {
--	.hw_params = cz_da7219_hw_params,
--	.hw_free = cz_da7219_hw_free,
--	.startup = cz_fe_startup,
-+	.startup = cz_da7219_startup,
-+	.shutdown = cz_da7219_shutdown,
- };
- 
- static struct snd_soc_ops cz_max_play_ops = {
--	.hw_params = cz_da7219_hw_params,
--	.hw_free = cz_da7219_hw_free,
-+	.startup = cz_max_startup,
-+	.shutdown = cz_max_shutdown,
- };
- 
- static struct snd_soc_ops cz_dmic_cap_ops = {
--	.hw_params = cz_da7219_hw_params,
--	.hw_free = cz_da7219_hw_free,
-+	.startup = cz_dmic_startup,
-+	.shutdown = cz_dmic_shutdown,
- };
- 
- static struct snd_soc_dai_link cz_dai_7219_98357[] = {
 -- 
 2.17.0
