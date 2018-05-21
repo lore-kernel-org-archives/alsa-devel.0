@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6afe: Add support to MI2S ports" to the asoc tree
-Date: Mon, 21 May 2018 16:49:25 +0100
-Message-ID: <E1fKn3t-0007PF-KN@debutante>
-References: <20180518125610.26200-4-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qdsp6: qdafe: Add SLIMBus port Support" to the asoc tree
+Date: Mon, 21 May 2018 16:49:33 +0100
+Message-ID: <E1fKn41-0007Qf-VB@debutante>
+References: <20180518125610.26200-3-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180518125610.26200-4-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20180518125610.26200-3-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, david.brown@linaro.org, robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6afe: Add support to MI2S ports
+   ASoC: qdsp6: qdafe: Add SLIMBus port Support
 
 has been applied to the asoc tree at
 
@@ -37,341 +37,234 @@ to this mail.
 Thanks,
 Mark
 
->From d3839145722bae49e3a02d65f64ce49c75d7c8e1 Mon Sep 17 00:00:00 2001
+>From 4d430d5a0e9d4d065e0447366caf48d5f580d7fb Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Fri, 18 May 2018 13:55:58 +0100
-Subject: [PATCH] ASoC: qdsp6: q6afe: Add support to MI2S ports
+Date: Fri, 18 May 2018 13:55:57 +0100
+Subject: [PATCH] ASoC: qdsp6: qdafe: Add SLIMBus port Support
 
-This patch adds support to 4 MI2S ports on LPASS.
+This patch adds support to 6 SLIMBus AFE ports, which are used as
+backend dais.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
 Reviewed-by: Banajit Goswami <bgoswami@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6afe.c | 224 +++++++++++++++++++++++++++++++++++
- sound/soc/qcom/qdsp6/q6afe.h |  13 ++
- 2 files changed, 237 insertions(+)
+ sound/soc/qcom/qdsp6/q6afe.c | 129 +++++++++++++++++++++++++++++++++++
+ sound/soc/qcom/qdsp6/q6afe.h |  14 ++++
+ 2 files changed, 143 insertions(+)
 
 diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 735c0b5eb55a..0004369b3661 100644
+index 5e0032c13aab..735c0b5eb55a 100644
 --- a/sound/soc/qcom/qdsp6/q6afe.c
 +++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -15,6 +15,10 @@
- #include <linux/spinlock.h>
- #include <linux/delay.h>
- #include <linux/soc/qcom/apr.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
- #include "q6dsp-errno.h"
- #include "q6core.h"
- #include "q6afe.h"
-@@ -31,6 +35,32 @@
- #define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
+@@ -28,9 +28,45 @@
+ #define AFE_PARAM_ID_HDMI_CONFIG	0x00010210
+ #define AFE_MODULE_AUDIO_DEV_INTERFACE	0x0001020C
  
- #define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
-+#define AFE_PARAM_ID_I2S_CONFIG	0x0001020D
++#define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
 +
-+/* I2S config specific */
-+#define AFE_API_VERSION_I2S_CONFIG	0x1
-+#define AFE_PORT_I2S_SD0		0x1
-+#define AFE_PORT_I2S_SD1		0x2
-+#define AFE_PORT_I2S_SD2		0x3
-+#define AFE_PORT_I2S_SD3		0x4
-+#define AFE_PORT_I2S_SD0_MASK		BIT(0x1)
-+#define AFE_PORT_I2S_SD1_MASK		BIT(0x2)
-+#define AFE_PORT_I2S_SD2_MASK		BIT(0x3)
-+#define AFE_PORT_I2S_SD3_MASK		BIT(0x4)
-+#define AFE_PORT_I2S_SD0_1_MASK		GENMASK(2, 1)
-+#define AFE_PORT_I2S_SD2_3_MASK		GENMASK(4, 3)
-+#define AFE_PORT_I2S_SD0_1_2_MASK	GENMASK(3, 1)
-+#define AFE_PORT_I2S_SD0_1_2_3_MASK	GENMASK(4, 1)
-+#define AFE_PORT_I2S_QUAD01		0x5
-+#define AFE_PORT_I2S_QUAD23		0x6
-+#define AFE_PORT_I2S_6CHS		0x7
-+#define AFE_PORT_I2S_8CHS		0x8
-+#define AFE_PORT_I2S_MONO		0x0
-+#define AFE_PORT_I2S_STEREO		0x1
-+#define AFE_PORT_CONFIG_I2S_WS_SRC_EXTERNAL	0x0
-+#define AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL	0x1
-+#define AFE_LINEAR_PCM_DATA				0x0
++#define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
 +
- 
  /* Port IDs */
  #define AFE_API_VERSION_HDMI_CONFIG	0x1
-@@ -66,6 +96,19 @@
- #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX      0x400c
- /* SLIMbus Tx port on channel 6. */
- #define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_TX      0x400d
-+#define AFE_PORT_ID_PRIMARY_MI2S_RX         0x1000
-+#define AFE_PORT_ID_PRIMARY_MI2S_TX         0x1001
-+#define AFE_PORT_ID_SECONDARY_MI2S_RX       0x1002
-+#define AFE_PORT_ID_SECONDARY_MI2S_TX       0x1003
-+#define AFE_PORT_ID_TERTIARY_MI2S_RX        0x1004
-+#define AFE_PORT_ID_TERTIARY_MI2S_TX        0x1005
-+#define AFE_PORT_ID_QUATERNARY_MI2S_RX      0x1006
-+#define AFE_PORT_ID_QUATERNARY_MI2S_TX      0x1007
+ #define AFE_PORT_ID_MULTICHAN_HDMI_RX	0x100E
 +
-+#define Q6AFE_LPASS_MODE_CLK1_VALID 1
-+#define Q6AFE_LPASS_MODE_CLK2_VALID 2
-+#define Q6AFE_LPASS_CLK_SRC_INTERNAL 1
-+#define Q6AFE_LPASS_CLK_ROOT_DEFAULT 0
- 
++#define AFE_API_VERSION_SLIMBUS_CONFIG 0x1
++
++/* SLIMbus Rx port on channel 0. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX      0x4000
++/* SLIMbus Tx port on channel 0. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_TX      0x4001
++/* SLIMbus Rx port on channel 1. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX      0x4002
++/* SLIMbus Tx port on channel 1. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_TX      0x4003
++/* SLIMbus Rx port on channel 2. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX      0x4004
++/* SLIMbus Tx port on channel 2. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_TX      0x4005
++/* SLIMbus Rx port on channel 3. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX      0x4006
++/* SLIMbus Tx port on channel 3. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_TX      0x4007
++/* SLIMbus Rx port on channel 4. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX      0x4008
++/* SLIMbus Tx port on channel 4. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_TX      0x4009
++/* SLIMbus Rx port on channel 5. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX      0x400a
++/* SLIMbus Tx port on channel 5. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_TX      0x400b
++/* SLIMbus Rx port on channel 6. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX      0x400c
++/* SLIMbus Tx port on channel 6. */
++#define AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_TX      0x400d
++
  #define TIMEOUT_MS 1000
  #define AFE_CMD_RESP_AVAIL	0
-@@ -159,10 +202,21 @@ struct afe_param_id_slimbus_cfg {
-  */
+ #define AFE_CMD_RESP_NONE	1
+@@ -80,8 +116,53 @@ struct afe_param_id_hdmi_multi_chan_audio_cfg {
+ 	u16 reserved;
  } __packed;
  
-+struct afe_param_id_i2s_cfg {
-+	u32	i2s_cfg_minor_version;
-+	u16	bit_width;
-+	u16	channel_mode;
-+	u16	mono_stereo;
-+	u16	ws_src;
-+	u32	sample_rate;
-+	u16	data_format;
-+	u16	reserved;
++struct afe_param_id_slimbus_cfg {
++	u32                  sb_cfg_minor_version;
++/* Minor version used for tracking the version of the SLIMBUS
++ * configuration interface.
++ * Supported values: #AFE_API_VERSION_SLIMBUS_CONFIG
++ */
++
++	u16                  slimbus_dev_id;
++/* SLIMbus hardware device ID, which is required to handle
++ * multiple SLIMbus hardware blocks.
++ * Supported values: - #AFE_SLIMBUS_DEVICE_1 - #AFE_SLIMBUS_DEVICE_2
++ */
++	u16                  bit_width;
++/* Bit width of the sample.
++ * Supported values: 16, 24
++ */
++	u16                  data_format;
++/* Data format supported by the SLIMbus hardware. The default is
++ * 0 (#AFE_SB_DATA_FORMAT_NOT_INDICATED), which indicates the
++ * hardware does not perform any format conversions before the data
++ * transfer.
++ */
++	u16                  num_channels;
++/* Number of channels.
++ * Supported values: 1 to #AFE_PORT_MAX_AUDIO_CHAN_CNT
++ */
++	u8  shared_ch_mapping[AFE_PORT_MAX_AUDIO_CHAN_CNT];
++/* Mapping of shared channel IDs (128 to 255) to which the
++ * master port is to be connected.
++ * Shared_channel_mapping[i] represents the shared channel assigned
++ * for audio channel i in multichannel audio data.
++ */
++	u32              sample_rate;
++/* Sampling rate of the port.
++ * Supported values:
++ * - #AFE_PORT_SAMPLE_RATE_8K
++ * - #AFE_PORT_SAMPLE_RATE_16K
++ * - #AFE_PORT_SAMPLE_RATE_48K
++ * - #AFE_PORT_SAMPLE_RATE_96K
++ * - #AFE_PORT_SAMPLE_RATE_192K
++ */
 +} __packed;
- 
++
++
  union afe_port_config {
  	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
- 	struct afe_param_id_slimbus_cfg           slim_cfg;
-+	struct afe_param_id_i2s_cfg	i2s_cfg;
++	struct afe_param_id_slimbus_cfg           slim_cfg;
  } __packed;
  
  struct q6afe_port {
-@@ -206,6 +260,22 @@ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
- 				SLIMBUS_5_RX, 1, 1},
- 	[SLIMBUS_6_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX,
- 				SLIMBUS_6_RX, 1, 1},
-+	[PRIMARY_MI2S_RX] = { AFE_PORT_ID_PRIMARY_MI2S_RX,
-+				PRIMARY_MI2S_RX, 1, 1},
-+	[PRIMARY_MI2S_TX] = { AFE_PORT_ID_PRIMARY_MI2S_TX,
-+				PRIMARY_MI2S_RX, 0, 1},
-+	[SECONDARY_MI2S_RX] = { AFE_PORT_ID_SECONDARY_MI2S_RX,
-+				SECONDARY_MI2S_RX, 1, 1},
-+	[SECONDARY_MI2S_TX] = { AFE_PORT_ID_SECONDARY_MI2S_TX,
-+				SECONDARY_MI2S_TX, 0, 1},
-+	[TERTIARY_MI2S_RX] = { AFE_PORT_ID_TERTIARY_MI2S_RX,
-+				TERTIARY_MI2S_RX, 1, 1},
-+	[TERTIARY_MI2S_TX] = { AFE_PORT_ID_TERTIARY_MI2S_TX,
-+				TERTIARY_MI2S_TX, 0, 1},
-+	[QUATERNARY_MI2S_RX] = { AFE_PORT_ID_QUATERNARY_MI2S_RX,
-+				QUATERNARY_MI2S_RX, 1, 1},
-+	[QUATERNARY_MI2S_TX] = { AFE_PORT_ID_QUATERNARY_MI2S_TX,
-+				QUATERNARY_MI2S_TX, 0, 1},
+@@ -111,6 +192,20 @@ struct afe_port_map {
+ 
+ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
+ 	[HDMI_RX] = { AFE_PORT_ID_MULTICHAN_HDMI_RX, HDMI_RX, 1, 1},
++	[SLIMBUS_0_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX,
++				SLIMBUS_0_RX, 1, 1},
++	[SLIMBUS_1_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX,
++				SLIMBUS_1_RX, 1, 1},
++	[SLIMBUS_2_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX,
++				SLIMBUS_2_RX, 1, 1},
++	[SLIMBUS_3_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX,
++				SLIMBUS_3_RX, 1, 1},
++	[SLIMBUS_4_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX,
++				SLIMBUS_4_RX, 1, 1},
++	[SLIMBUS_5_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX,
++				SLIMBUS_5_RX, 1, 1},
++	[SLIMBUS_6_RX] = { AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX,
++				SLIMBUS_6_RX, 1, 1},
  };
  
  static void q6afe_port_free(struct kref *ref)
-@@ -481,6 +551,149 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+@@ -340,6 +435,31 @@ int q6afe_port_stop(struct q6afe_port *port)
  }
- EXPORT_SYMBOL_GPL(q6afe_hdmi_port_prepare);
+ EXPORT_SYMBOL_GPL(q6afe_port_stop);
  
 +/**
-+ * q6afe_i2s_port_prepare() - Prepare i2s afe port.
++ * q6afe_slim_port_prepare() - Prepare slim afe port.
 + *
 + * @port: Instance of afe port
-+ * @cfg: I2S configuration for the afe port
-+ * Return: Will be an negative on error and zero on success.
++ * @cfg: SLIM configuration for the afe port
++ *
 + */
-+int q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg)
++void q6afe_slim_port_prepare(struct q6afe_port *port,
++			     struct q6afe_slim_cfg *cfg)
 +{
 +	union afe_port_config *pcfg = &port->port_cfg;
-+	struct device *dev = port->afe->dev;
-+	int num_sd_lines;
 +
-+	pcfg->i2s_cfg.i2s_cfg_minor_version = AFE_API_VERSION_I2S_CONFIG;
-+	pcfg->i2s_cfg.sample_rate = cfg->sample_rate;
-+	pcfg->i2s_cfg.bit_width = cfg->bit_width;
-+	pcfg->i2s_cfg.data_format = AFE_LINEAR_PCM_DATA;
++	pcfg->slim_cfg.sb_cfg_minor_version = AFE_API_VERSION_SLIMBUS_CONFIG;
++	pcfg->slim_cfg.sample_rate = cfg->sample_rate;
++	pcfg->slim_cfg.bit_width = cfg->bit_width;
++	pcfg->slim_cfg.num_channels = cfg->num_channels;
++	pcfg->slim_cfg.data_format = cfg->data_format;
++	pcfg->slim_cfg.shared_ch_mapping[0] = cfg->ch_mapping[0];
++	pcfg->slim_cfg.shared_ch_mapping[1] = cfg->ch_mapping[1];
++	pcfg->slim_cfg.shared_ch_mapping[2] = cfg->ch_mapping[2];
++	pcfg->slim_cfg.shared_ch_mapping[3] = cfg->ch_mapping[3];
 +
-+	switch (cfg->fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-+	case SND_SOC_DAIFMT_CBS_CFS:
-+		pcfg->i2s_cfg.ws_src = AFE_PORT_CONFIG_I2S_WS_SRC_INTERNAL;
-+		break;
-+	case SND_SOC_DAIFMT_CBM_CFM:
-+		/* CPU is slave */
-+		pcfg->i2s_cfg.ws_src = AFE_PORT_CONFIG_I2S_WS_SRC_EXTERNAL;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	num_sd_lines = hweight_long(cfg->sd_line_mask);
-+
-+	switch (num_sd_lines) {
-+	case 0:
-+		dev_err(dev, "no line is assigned\n");
-+		return -EINVAL;
-+	case 1:
-+		switch (cfg->sd_line_mask) {
-+		case AFE_PORT_I2S_SD0_MASK:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD0;
-+			break;
-+		case AFE_PORT_I2S_SD1_MASK:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD1;
-+			break;
-+		case AFE_PORT_I2S_SD2_MASK:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD2;
-+			break;
-+		case AFE_PORT_I2S_SD3_MASK:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD3;
-+			break;
-+		default:
-+			dev_err(dev, "Invalid SD lines\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	case 2:
-+		switch (cfg->sd_line_mask) {
-+		case AFE_PORT_I2S_SD0_1_MASK:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_QUAD01;
-+			break;
-+		case AFE_PORT_I2S_SD2_3_MASK:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_QUAD23;
-+			break;
-+		default:
-+			dev_err(dev, "Invalid SD lines\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	case 3:
-+		switch (cfg->sd_line_mask) {
-+		case AFE_PORT_I2S_SD0_1_2_MASK:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_6CHS;
-+			break;
-+		default:
-+			dev_err(dev, "Invalid SD lines\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	case 4:
-+		switch (cfg->sd_line_mask) {
-+		case AFE_PORT_I2S_SD0_1_2_3_MASK:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_8CHS;
-+
-+			break;
-+		default:
-+			dev_err(dev, "Invalid SD lines\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	default:
-+		dev_err(dev, "Invalid SD lines\n");
-+		return -EINVAL;
-+	}
-+
-+	switch (cfg->num_channels) {
-+	case 1:
-+	case 2:
-+		switch (pcfg->i2s_cfg.channel_mode) {
-+		case AFE_PORT_I2S_QUAD01:
-+		case AFE_PORT_I2S_6CHS:
-+		case AFE_PORT_I2S_8CHS:
-+			pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD0;
-+			break;
-+		case AFE_PORT_I2S_QUAD23:
-+				pcfg->i2s_cfg.channel_mode = AFE_PORT_I2S_SD2;
-+			break;
-+		}
-+
-+		if (cfg->num_channels == 2)
-+			pcfg->i2s_cfg.mono_stereo = AFE_PORT_I2S_STEREO;
-+		else
-+			pcfg->i2s_cfg.mono_stereo = AFE_PORT_I2S_MONO;
-+
-+		break;
-+	case 3:
-+	case 4:
-+		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_QUAD01) {
-+			dev_err(dev, "Invalid Channel mode\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	case 5:
-+	case 6:
-+		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_6CHS) {
-+			dev_err(dev, "Invalid Channel mode\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	case 7:
-+	case 8:
-+		if (pcfg->i2s_cfg.channel_mode < AFE_PORT_I2S_8CHS) {
-+			dev_err(dev, "Invalid Channel mode\n");
-+			return -EINVAL;
-+		}
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	return 0;
 +}
-+EXPORT_SYMBOL_GPL(q6afe_i2s_port_prepare);
++EXPORT_SYMBOL_GPL(q6afe_slim_port_prepare);
 +
  /**
-  * q6afe_port_start() - Start a afe port
+  * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
   *
-@@ -580,6 +793,17 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
- 	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX:
- 		cfg_type = AFE_PARAM_ID_SLIMBUS_CONFIG;
+@@ -451,6 +571,15 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ 	case AFE_PORT_ID_MULTICHAN_HDMI_RX:
+ 		cfg_type = AFE_PARAM_ID_HDMI_CONFIG;
  		break;
-+
-+	case AFE_PORT_ID_PRIMARY_MI2S_RX:
-+	case AFE_PORT_ID_PRIMARY_MI2S_TX:
-+	case AFE_PORT_ID_SECONDARY_MI2S_RX:
-+	case AFE_PORT_ID_SECONDARY_MI2S_TX:
-+	case AFE_PORT_ID_TERTIARY_MI2S_RX:
-+	case AFE_PORT_ID_TERTIARY_MI2S_TX:
-+	case AFE_PORT_ID_QUATERNARY_MI2S_RX:
-+	case AFE_PORT_ID_QUATERNARY_MI2S_TX:
-+		cfg_type = AFE_PARAM_ID_I2S_CONFIG;
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_0_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_1_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_2_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_3_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_4_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_5_RX:
++	case AFE_PORT_ID_SLIMBUS_MULTI_CHAN_6_RX:
++		cfg_type = AFE_PARAM_ID_SLIMBUS_CONFIG;
 +		break;
  	default:
  		dev_err(dev, "Invalid port id 0x%x\n", port_id);
  		return ERR_PTR(-EINVAL);
 diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-index 5659966c6b1e..3cb3bb4985a9 100644
+index 3bd991a7c42d..5659966c6b1e 100644
 --- a/sound/soc/qcom/qdsp6/q6afe.h
 +++ b/sound/soc/qcom/qdsp6/q6afe.h
-@@ -11,6 +11,8 @@
+@@ -11,6 +11,9 @@
  #define MSM_AFE_PORT_TYPE_TX 1
  #define AFE_MAX_PORTS AFE_PORT_MAX
  
-+#define Q6AFE_MAX_MI2S_LINES	4
++#define AFE_MAX_CHAN_COUNT	8
++#define AFE_PORT_MAX_AUDIO_CHAN_CNT	0x8
 +
- #define AFE_MAX_CHAN_COUNT	8
- #define AFE_PORT_MAX_AUDIO_CHAN_CNT	0x8
- 
-@@ -29,9 +31,19 @@ struct q6afe_slim_cfg {
- 	u8	ch_mapping[AFE_MAX_CHAN_COUNT];
+ struct q6afe_hdmi_cfg {
+ 	u16                  datatype;
+ 	u16                  channel_allocation;
+@@ -18,8 +21,17 @@ struct q6afe_hdmi_cfg {
+ 	u16                  bit_width;
  };
  
-+struct q6afe_i2s_cfg {
++struct q6afe_slim_cfg {
 +	u32	sample_rate;
 +	u16	bit_width;
 +	u16	data_format;
 +	u16	num_channels;
-+	u32	sd_line_mask;
-+	int fmt;
++	u8	ch_mapping[AFE_MAX_CHAN_COUNT];
 +};
 +
  struct q6afe_port_config {
  	struct q6afe_hdmi_cfg hdmi;
- 	struct q6afe_slim_cfg slim;
-+	struct q6afe_i2s_cfg i2s_cfg;
++	struct q6afe_slim_cfg slim;
  };
  
  struct q6afe_port;
-@@ -45,5 +57,6 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
+@@ -31,5 +43,7 @@ void q6afe_port_put(struct q6afe_port *port);
+ int q6afe_get_port_id(int index);
+ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
  			    struct q6afe_hdmi_cfg *cfg);
- void q6afe_slim_port_prepare(struct q6afe_port *port,
- 			  struct q6afe_slim_cfg *cfg);
-+int q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg);
++void q6afe_slim_port_prepare(struct q6afe_port *port,
++			  struct q6afe_slim_cfg *cfg);
  
  #endif /* __Q6AFE_H__ */
 -- 
