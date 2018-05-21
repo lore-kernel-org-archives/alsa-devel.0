@@ -1,164 +1,172 @@
-From: Melvin Vermeeren <mail@mel.vin>
-Subject: Re: [PATCH] ALSA: dice: add stream format parameters
-	for Mytek devices
-Date: Mon, 21 May 2018 17:09:37 +0200
-Message-ID: <6661723.mKedtcoM4l@melvin-pc>
-References: <20632004.ST2tKRhYS0@melvin-pc> <2438583.1KDy1DEBS4@melvin-pc>
- <1cef1eca-3a06-e05e-765f-dfe984091085@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5832736216881679357=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay12.mail.gandi.net (relay12.mail.gandi.net [217.70.178.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 46F9F267623
- for <alsa-devel@alsa-project.org>; Mon, 21 May 2018 17:09:44 +0200 (CEST)
-In-Reply-To: <1cef1eca-3a06-e05e-765f-dfe984091085@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings" to the asoc tree
+Date: Mon, 21 May 2018 16:47:05 +0100
+Message-ID: <E1fKn1d-00070i-Rf@debutante>
+References: <20180426094606.4775-23-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180426094606.4775-23-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>, andy.gross@linaro.orgbroonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org, mark.rutland@arm.com, devicetree@vger.kernel.org, rohkumar@qti.qualcomm.com, gregkh@linuxfoundation.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, david.brown@linaro.org, linux-arm-kernel@lists.infradead.org, spatakok@qti.qualcomm.com, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---===============5832736216881679357==
-Content-Type: multipart/signed; boundary="nextPart11951987.5gMNFgCaIX"; micalg="pgp-sha512"; protocol="application/pgp-signature"
+The patch
 
---nextPart11951987.5gMNFgCaIX
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+   ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings
 
-Hello,
+has been applied to the asoc tree at
 
-Sorry for the wait. Have been busy a bit.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Saturday, 19 May 2018 10:23:30 CEST Takashi Sakamoto wrote:
-> This is my first time to have discussion about transmission of PDM
-> sample by IEC 61883-1/6[1][2] via IEEE 1394 bus. You can see details
-> of this protocol in a document published by 1394TA[3]. For
-> implementation detail, please refer to my un-upstreamed documents[4][5].
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Thank you, these help a lot. I just did some quick reading and will read more 
-thoroughly in the coming days as time permits. Contact with Mytek is going 
-well by the way, I am expecting details from their engineer soon.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Unfortunately, at present, IEC 61883-1/6 engine in ALSA firewire stack
-> is designed for PCM samples and MIDI messages with ALSA PCM/MIDI
-> interface. I removed support 16 bit PCM sample at a commit a02cb8f8def6
-> ('ALSA: firewire: remove support for 16 bit PCM samples in playback
-> substream')[6] in this point, because as long as I know all of
-> supported models have no features to switch bit width of
-> transferred/received PCM samples and my previous implementation for
-> 16 bit sample brings zero-padding 24 bit PCM sample to the device.
-> (Drivers in ALSA firewire stack support SNDRV_PCM_FMTBIT_S32 with
-> 24 bit constraint[7].)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-The commit makes perfect sense, indeed displaying only actual hardware 
-capabilities instead of padding in the driver. Curiosity satisfied. :)
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> In my opinion, it's hard to achieve it with quick hack to the engine
-> and ALSA Dice driver. Especially for your case, one data block for
-> outgoing packet to target device should include two kind data; PCM
-> and PDM samples. I can see output from '/proc/asound/DSD/dice' in
-> your previous message[8] includes below:
-> 
-> ```
-> rx 0:
->    iso channel: 1
->    sequence start: 0
->    audio channels: 4
->    midi ports: 0
->    names: ANALOG L\ANALOG R\DSD1281\DSD1282\\
->    ac3 caps: 00000000
-> ```
-> 
-> If the 'ANALOG L/R' represent data channels for two PCM samples
-> and the 'DSD1281/2' represent data channels for two PDM samples,
-> I can assume that one data block includes two kind of samples,
-> thus two data streams of PCM/PDM samples should be multiplexed into
-> one data stream of IEC 61883-1/6 packets.
-> 
-> For this case, I need to implement ALSA dice driver to add two PCM
-> substreams in Linux system; one is for transmission of PCM samples,
-> another is for transmission of PDM samples for DoP-compliant
-> application. Unfortunately, current IEC 61883-1/6 engine in ALSA
-> firewire stack is not designed for this case.
-> 
-> As an another solution, reservation of data transmission of
-> IEC 61883-1/6 packet either data stream of PCM samples or data
-> stream of PDM samples. In this case, implementation change can be
-> smaller than multiplexing/demultiplexing these two data stream for
-> data stream of IEC 61883-1/6 packets. In this solution, from
-> userspace applications, two PCM substreams are available exclusively.
+Thanks,
+Mark
 
-As you say, what may help with implementation is that, as far as I have seen 
-on the market, all devices are either in PCM or PDM mode. Thus there indeed 
-doesn't need to be support for sending PCM and PDM at the same time. Perhaps 
-there do exist some really big units which are multiple DAC/ADC in one box 
-where some streams are PCM and others are PDM at the same time, but I have not 
-yet heard of such a device.
+>From be64027d18b163b971756af18d520cde6d21bb9f Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Fri, 18 May 2018 13:56:09 +0100
+Subject: [PATCH] ASoC: qdsp6: dt-bindings: Add apq8096 machine bindings
 
-If I understand correctly, the substreams are what show up in "aplay -l" as 
-subdevice. Such that "hw:DAC,0" and "hw:DAC,1" would open substream #0 and #1 
-respectively. From userspace point of view I think it makes sense to expose a 
-single 2-channel substream with both PCM and PDM capabilities which is then 
-used in either 2ch PCM or 2ch PDM at any time, but not 1ch PCM + 1ch PDM. This 
-is similar to how USB DoP DACs work I believe.
+Add devicetree bindings documentation file for Qualcomm apq8096 sound card.
 
-This way a playlist in music software (MPD) containing both PCM and PDM tracks 
-will work on the same output. MPD can configure "allowed formats" in the 
-output, but it will always convert PDM to PCM for all enabled outputs that do 
-not support PDM. In case of two substreams the PCM and PDM substreams will 
-then be used at the same time unless the user manually switches active input 
-before and after PDM tracks. I suspect many other userspace music software 
-have similar behaviour.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
+Reviewed-by: Banajit Goswami <bgoswami@codeaurora.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../bindings/sound/qcom,apq8096.txt           | 109 ++++++++++++++++++
+ 1 file changed, 109 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,apq8096.txt
 
-Also, I am not yet sure whether this specific DAC supports DoP over IEEE 1394. 
-Possibly there is another format in use for PDM playback over IEEE 1394. 
-Expect more details on this within the next few days.
-
-I have not yet hacked MPD to attempt to experiment with channel mappings. I 
-may still do this in the coming weeks however.
-
-Regards,
-
-Melvin Vermeeren
---nextPart11951987.5gMNFgCaIX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEETnzUjuV5O+rCrz6nRiwQnTrHuFkFAlsC4TEACgkQRiwQnTrH
-uFmOLg/8DpR6bIQsJJlgkgiTjjzyNxlOcI6VPitoczx01Ti+j4RduvjROJoLAbVt
-8VlKjcVn1VX9MB3I7eYU0w0cv7AbJ1hS3yfLnJQ2NF1gn2i0GBJJw4+OeEMaswGB
-2mjPrCz74VFnTgwa03nxp8tO0xG+x8/WHrAqZiQG7pi/EiCwUY8E1GOg8mbINS0C
-vfOnm2TfLb4eDUcQfps6p+4nbMVoTs1anawtJLBKv3DgAuo4zUfpA9RzKTha/ZOZ
-DrlvbrhPcsx2AmyedaQF0sTfT74Ull1fAwmyN+sxBAyUD5EkdNzP1rQq8IhknPno
-V6+tAq0OEtL4Mid/9DY9uAYi22xfXAywT5B8oDW/72OaM58NKR6z1s2Sk31H1GC/
-gJPm/Xj+2MagcNBA62woi+NLdFKGaO/75Myn1e9aeqRkc+T3SYXGsAswLBNBTK0u
-oashWZ/dLvCxb5s/DuA/9egO2fTkV4sMMBpv9euMeZyQBSn+in/wDs9Bpnkvf/AV
-vpJwS8kPpvpPcxzYzAoNmkrQyz4S+GKvAnuQzAhNg4dXZGBUOfl1848DKYDRia8E
-0SJAbQSpq4MVUreg12w39k2GNrQQnaiWS+Q2eVynZklmnVG4EJSqZ46/ybqYWXh3
-fGVZJuGSe3zjS7vCCXPOIbfMqPZwKdCLKdQBq1lWrw1pCyvRl4A=
-=A4Bv
------END PGP SIGNATURE-----
-
---nextPart11951987.5gMNFgCaIX--
-
-
-
-
---===============5832736216881679357==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5832736216881679357==--
+diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+new file mode 100644
+index 000000000000..aa54e49fc8a2
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
+@@ -0,0 +1,109 @@
++* Qualcomm Technologies APQ8096 ASoC sound card driver
++
++This binding describes the APQ8096 sound card, which uses qdsp for audio.
++
++- compatible:
++	Usage: required
++	Value type: <stringlist>
++	Definition: must be "qcom,apq8096-sndcard"
++
++- qcom,audio-routing:
++	Usage: Optional
++	Value type: <stringlist>
++	Definition:  A list of the connections between audio components.
++		  Each entry is a pair of strings, the first being the
++		  connection's sink, the second being the connection's
++		  source. Valid names could be power supplies, MicBias
++		  of codec and the jacks on the board:
++		  Valid names include:
++
++		Board Connectors:
++			"Headphone Left"
++			"Headphone Right"
++			"Earphone"
++			"Line Out1"
++			"Line Out2"
++			"Line Out3"
++			"Line Out4"
++			"Analog Mic1"
++			"Analog Mic2"
++			"Analog Mic3"
++			"Analog Mic4"
++			"Analog Mic5"
++			"Analog Mic6"
++			"Digital Mic2"
++			"Digital Mic3"
++
++		Audio pins and MicBias on WCD9335 Codec:
++			"MIC_BIAS1
++			"MIC_BIAS2"
++			"MIC_BIAS3"
++			"MIC_BIAS4"
++			"AMIC1"
++			"AMIC2"
++			"AMIC3"
++			"AMIC4"
++			"AMIC5"
++			"AMIC6"
++			"AMIC6"
++			"DMIC1"
++			"DMIC2"
++			"DMIC3"
++= dailinks
++Each subnode of sndcard represents either a dailink, and subnodes of each
++dailinks would be cpu/codec/platform dais.
++
++- link-name:
++	Usage: required
++	Value type: <string>
++	Definition: User friendly name for dai link
++
++= CPU, PLATFORM, CODEC dais subnodes
++- cpu:
++	Usage: required
++	Value type: <subnode>
++	Definition: cpu dai sub-node
++
++- codec:
++	Usage: Optional
++	Value type: <subnode>
++	Definition: codec dai sub-node
++
++- platform:
++	Usage: Optional
++	Value type: <subnode>
++	Definition: platform dai sub-node
++
++- sound-dai:
++	Usage: required
++	Value type: <phandle with arguments>
++	Definition: dai phandle/s and port of CPU/CODEC/PLATFORM node.
++
++Example:
++
++audio {
++	compatible = "qcom,apq8096-sndcard";
++	qcom,model = "DB820c";
++
++	mm1-dai-link {
++		link-name = "MultiMedia1";
++		cpu {
++			sound-dai = <&q6asmdai MSM_FRONTEND_DAI_MULTIMEDIA1>;
++		};
++	};
++
++	hdmi-dai-link {
++		link-name = "HDMI Playback";
++		cpu {
++			sound-dai = <&q6afe HDMI_RX>;
++		};
++
++		platform {
++			sound-dai = <&q6adm>;
++		};
++
++		codec {
++			sound-dai = <&hdmi 0>;
++		};
++	};
++};
+-- 
+2.17.0
