@@ -1,45 +1,180 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
-Date: Mon, 21 May 2018 11:05:03 +0100
-Message-ID: <20180521100503.GA24638@sirena.org.uk>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <20180518210954.29044-3-jmkrzyszt@gmail.com>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH 2/2] slimbus: ngd: Add qcom SLIMBus NGD driver
+Date: Mon, 21 May 2018 17:03:14 +0530
+Message-ID: <20180521113314.GC14654@vkoul-mobl>
+References: <20180516165118.16551-1-srinivas.kandagatla@linaro.org>
+ <20180516165118.16551-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180518210954.29044-3-jmkrzyszt@gmail.com>
+In-Reply-To: <20180516165118.16551-3-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Tony Lindgren <tony@atomide.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org, kramasub@codeaurora.org, sdharia@quicinc.com, girishm@quicinc.com, linux-kernel@vger.kernel.org, mark.rutland@arm.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 16-05-18, 17:51, Srinivas Kandagatla wrote:
+> This patch adds suppor to Qualcomm SLIMBus Non-Generic Device (NGD)
 
---envbJBWh7q8WU6mo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+/s/suppor/support
 
-On Fri, May 18, 2018 at 11:09:51PM +0200, Janusz Krzysztofik wrote:
-> Now as the Amstrad Delta board provides GPIO lookup tables, switch from
-> GPIO numbers to GPIO descriptors and use the table to locate required
-> GPIO pins.
+> +/* NGD (Non-ported Generic Device) registers */
+> +#define	NGD_CFG			0x0
+> +#define	NGD_CFG_ENABLE		BIT(0)
+> +#define	NGD_CFG_RX_MSGQ_EN	BIT(1)
+> +#define	NGD_CFG_TX_MSGQ_EN	BIT(2)
+> +#define	NGD_STATUS		0x4
+> +#define NGD_LADDR		BIT(1)
+> +#define	NGD_RX_MSGQ_CFG		0x8
+> +#define	NGD_INT_EN		0x10
+> +#define	NGD_INT_RECFG_DONE	BIT(24)
+> +#define	NGD_INT_TX_NACKED_2	BIT(25)
+> +#define	NGD_INT_MSG_BUF_CONTE	BIT(26)
+> +#define	NGD_INT_MSG_TX_INVAL	BIT(27)
+> +#define	NGD_INT_IE_VE_CHG	BIT(28)
+> +#define	NGD_INT_DEV_ERR		BIT(29)
+> +#define	NGD_INT_RX_MSG_RCVD	BIT(30)
+> +#define	NGD_INT_TX_MSG_SENT	BIT(31)
+> +#define	NGD_INT_STAT		0x14
+> +#define	NGD_INT_CLR		0x18
+> +#define DEF_NGD_INT_MASK (NGD_INT_TX_NACKED_2 | NGD_INT_MSG_BUF_CONTE | \
+> +				NGD_INT_MSG_TX_INVAL | NGD_INT_IE_VE_CHG | \
+> +				NGD_INT_DEV_ERR | NGD_INT_TX_MSG_SENT | \
+> +				NGD_INT_RX_MSG_RCVD)
+> +
+> +/* Slimbus QMI service */
+> +#define SLIMBUS_QMI_SVC_ID 0x0301
+> +#define SLIMBUS_QMI_SVC_V1 1
+> +#define SLIMBUS_QMI_INS_ID 0
+> +#define SLIMBUS_QMI_SELECT_INSTANCE_REQ_V01 0x0020
+> +#define SLIMBUS_QMI_SELECT_INSTANCE_RESP_V01 0x0020
+> +#define SLIMBUS_QMI_POWER_REQ_V01 0x0021
+> +#define SLIMBUS_QMI_POWER_RESP_V01 0x0021
+> +#define SLIMBUS_QMI_CHECK_FRAMER_STATUS_REQ 0x0022
+> +#define SLIMBUS_QMI_CHECK_FRAMER_STATUS_RESP 0x0022
+> +#define SLIMBUS_QMI_POWER_REQ_MAX_MSG_LEN 14
+> +#define SLIMBUS_QMI_POWER_RESP_MAX_MSG_LEN 7
+> +#define SLIMBUS_QMI_SELECT_INSTANCE_REQ_MAX_MSG_LEN 14
+> +#define SLIMBUS_QMI_SELECT_INSTANCE_RESP_MAX_MSG_LEN 7
+> +#define SLIMBUS_QMI_CHECK_FRAMER_STAT_RESP_MAX_MSG_LEN 7
+> +/* QMI response timeout of 500ms */
+> +#define SLIMBUS_QMI_RESP_TOUT 1000
 
-Acked-by: Mark Brown <broonie@kernel.org>
+Tabs or spaces, take your pick and use one, not both...
 
---envbJBWh7q8WU6mo
-Content-Type: application/pgp-signature; name="signature.asc"
+> +static void qcom_slim_qmi_power_resp_cb(struct qmi_handle *handle,
+> +					struct sockaddr_qrtr *sq,
+> +					struct qmi_txn *txn, const void *data)
+> +{
+> +	struct slimbus_power_resp_msg_v01 *resp;
+> +
+> +	resp = (struct slimbus_power_resp_msg_v01 *)data;
 
------BEGIN PGP SIGNATURE-----
+you dont need cast away from void
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsCmc4ACgkQJNaLcl1U
-h9DG0Af/UE7Z72qRF50Yg/UqUfLu60IQ6PX2zlv8XLEh1YdSXf0sIPdW4xsjUYKI
-B5eF5/fXlrjYYiIxMe9kNZT8jfPW7QP+lkpD07CIf2Io3+AGNHU+NuflzyEOqODX
-uJia7Umel8v7868BkFoyBpmEUVcHl8Gpo4k3e3T79PcBXvSmQusoupFWC/apcdT/
-xSKEmqpHYV5gdeiSIBBGVsb48oQ+GKlwEpsdPCGXkl63WuSg+QH5miaTIIiQyRZ8
-3q3PD70Jxv2QUvoZ6bRTStoZRk2D8PcnNauk4hJ/gKnw1FceWNNVtmAYVG7xOZwW
-bazFSdj285WRNlhe7N/Qw7x0JGBztg==
-=PRAh
------END PGP SIGNATURE-----
+> +	if (resp->resp.result != QMI_RESULT_SUCCESS_V01)
+> +		pr_err("%s: QMI power request failed 0x%x\n", __func__,
+> +				resp->resp.result);
 
---envbJBWh7q8WU6mo--
+cant we use dev_err?
+
+> +static int qcom_slim_qmi_send_power_request(struct qcom_slim_ngd_ctrl *ctrl,
+> +				struct slimbus_power_req_msg_v01 *req)
+> +{
+> +	struct slimbus_power_resp_msg_v01 resp = { { 0, 0 } };
+> +	struct qmi_txn txn;
+> +	int rc;
+> +
+> +	rc = qmi_txn_init(ctrl->qmi.handle, &txn,
+> +				slimbus_power_resp_msg_v01_ei, &resp);
+> +
+> +	rc = qmi_send_request(ctrl->qmi.handle, NULL, &txn,
+> +				SLIMBUS_QMI_POWER_REQ_V01,
+> +				SLIMBUS_QMI_POWER_REQ_MAX_MSG_LEN,
+> +				slimbus_power_req_msg_v01_ei, req);
+> +	if (rc < 0) {
+> +		dev_err(ctrl->dev, "%s: QMI send req fail %d\n", __func__, rc);
+> +		qmi_txn_cancel(&txn);
+> +	}
+> +
+> +	if (rc < 0)
+> +		return rc;
+
+why not add this is prev error check?
+
+> +static int qcom_slim_qmi_init(struct qcom_slim_ngd_ctrl *ctrl,
+> +			      bool apps_is_master)
+> +{
+> +	int rc = 0;
+
+superfluous init
+
+> +static u32 *qcom_slim_ngd_tx_msg_get(struct qcom_slim_ngd_ctrl *ctrl, int len,
+> +				     struct completion *comp)
+> +{
+> +	struct qcom_slim_ngd_dma_desc *desc;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&ctrl->tx_buf_lock, flags);
+> +
+> +	if ((ctrl->tx_tail + 1) % QCOM_SLIM_NGD_DESC_NUM == ctrl->tx_head) {
+> +		spin_unlock_irqrestore(&ctrl->tx_buf_lock, flags);
+> +		return NULL;
+> +	}
+> +	desc  = &ctrl->txdesc[ctrl->tx_tail];
+> +	desc->base = (u32 *)((u8 *)ctrl->tx_base +
+> +				(ctrl->tx_tail * SLIM_MSGQ_BUF_LEN));
+
+too many casts
+
+> +static int qcom_slim_ngd_post_rx_msgq(struct qcom_slim_ngd_ctrl *ctrl)
+> +{
+> +	struct qcom_slim_ngd_dma_desc *desc;
+> +	struct dma_slave_config conf = {
+> +		.direction = DMA_DEV_TO_MEM,
+> +	};
+> +	int ret, i;
+> +
+> +	ret = dmaengine_slave_config(ctrl->dma_rx_channel, &conf);
+
+so you are only setting direction for conf, not any other parameters? If not why
+bother setting direction
+
+> +	if (ret)
+> +		dev_err(ctrl->dev, "Error Configuring rx dma\n");
+> +
+> +	for (i = 0; i < QCOM_SLIM_NGD_DESC_NUM; i++) {
+> +		desc = &ctrl->rx_desc[i];
+> +		desc->phys = ctrl->rx_phys_base + i * SLIM_MSGQ_BUF_LEN;
+> +		desc->ctrl = ctrl;
+> +		desc->base = ctrl->rx_base + i * SLIM_MSGQ_BUF_LEN;
+> +		desc->desc = dmaengine_prep_slave_single(ctrl->dma_rx_channel,
+> +						desc->phys, SLIM_MSGQ_BUF_LEN,
+> +						DMA_DEV_TO_MEM,
+> +						DMA_PREP_INTERRUPT);
+
+why issue multiple slave_single to dmaengine, you can bundle them and issue
+dmaengine_prep_slave_sg().. 
+
+> +static int qcom_slim_ngd_qmi_svc_event_init(struct qcom_slim_ngd_qmi *qmi)
+> +{
+> +	int ret = 0;
+
+superfluous init here too
+
+> +static int qcom_slim_ngd_runtime_idle(struct device *dev)
+> +{
+> +	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(dev);
+> +
+> +	if (ctrl->state == QCOM_SLIM_NGD_CTRL_AWAKE)
+> +		ctrl->state = QCOM_SLIM_NGD_CTRL_IDLE;
+> +	pm_request_autosuspend(dev);
+> +	return -EAGAIN;
+> +}
+> +
+> +
+
+double empty lines, here
+-- 
+~Vinod
