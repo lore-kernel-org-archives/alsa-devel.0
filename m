@@ -1,70 +1,58 @@
 From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 30/33] ALSA: oxygen: use match_string() helper
-Date: Tue, 22 May 2018 01:23:22 +0300
-Message-ID: <CAHp75VfOWPjbmtE=zhmbd4wNsOjYF7ZVGkq9DeMpbtgXwa2DAA@mail.gmail.com>
-References: <1526903890-35761-1-git-send-email-xieyisheng1@huawei.com> <1526903890-35761-31-git-send-email-xieyisheng1@huawei.com>
+Subject: Re: [PATCH 31/33] ASoC: max98088: use match_string()
+	helper
+Date: Tue, 22 May 2018 01:24:41 +0300
+Message-ID: <CAHp75Vf2ZTf0w=Kg_w7CJ-9XdGqipe3UVS=E=aeRDxGt3BHM3w@mail.gmail.com>
+References: <1526903890-35761-1-git-send-email-xieyisheng1@huawei.com>
+ <1526903890-35761-32-git-send-email-xieyisheng1@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1526903890-35761-31-git-send-email-xieyisheng1@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f181.google.com (mail-qt0-f181.google.com
+ [209.85.216.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id EBCFE267380
+ for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 00:24:42 +0200 (CEST)
+Received: by mail-qt0-f181.google.com with SMTP id f5-v6so21000858qth.2
+ for <alsa-devel@alsa-project.org>; Mon, 21 May 2018 15:24:42 -0700 (PDT)
+In-Reply-To: <1526903890-35761-32-git-send-email-xieyisheng1@huawei.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Yisheng Xie <xieyisheng1@huawei.com>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Clemens Ladisch <clemens@ladisch.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>
+Cc: ALSA Development Mailing List <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 On Mon, May 21, 2018 at 2:58 PM, Yisheng Xie <xieyisheng1@huawei.com> wrote:
 > match_string() returns the index of an array for a matching string,
 > which can be used intead of open coded variant.
->
-> Cc: Clemens Ladisch <clemens@ladisch.de>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
-> ---
->  sound/pci/oxygen/oxygen_mixer.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
->
-> diff --git a/sound/pci/oxygen/oxygen_mixer.c b/sound/pci/oxygen/oxygen_mixer.c
-> index 4ca1266..fbd8f5e 100644
-> --- a/sound/pci/oxygen/oxygen_mixer.c
-> +++ b/sound/pci/oxygen/oxygen_mixer.c
-> @@ -1052,10 +1052,9 @@ static int add_controls(struct oxygen *chip,
->                 [CONTROL_CD_CAPTURE_SWITCH] = "CD Capture Switch",
->                 [CONTROL_AUX_CAPTURE_SWITCH] = "Aux Capture Switch",
->         };
-> -       unsigned int i, j;
->         struct snd_kcontrol_new template;
->         struct snd_kcontrol *ctl;
-> -       int err;
-> +       int i, j, err;
 
-What's wrong with
+>  static int max98088_get_channel(struct snd_soc_component *component, const char *name)
+>  {
 
-unsigned int i;
+> +       int ret = match_string(eq_mode_name, ARRAY_SIZE(eq_mode_name), name);
+I would rather split this and move an assignment to the line before 'if'
+
+>
+>         /* Shouldn't happen */
+
+> +       if (ret < 0)
+> +               dev_err(component->dev, "Bad EQ channel name '%s'\n", name);
+
+>         return -EINVAL;
+
+return ret;
 
 ?
 
->
->         for (i = 0; i < count; ++i) {
->                 template = controls[i];
-> @@ -1086,11 +1085,11 @@ static int add_controls(struct oxygen *chip,
->                 err = snd_ctl_add(chip->card, ctl);
->                 if (err < 0)
->                         return err;
-> -               for (j = 0; j < CONTROL_COUNT; ++j)
-> -                       if (!strcmp(ctl->id.name, known_ctl_names[j])) {
-> -                               chip->controls[j] = ctl;
-> -                               ctl->private_free = oxygen_any_ctl_free;
-> -                       }
-> +               j = match_string(known_ctl_names, CONTROL_COUNT, ctl->id.name);
-> +               if (j >= 0) {
-> +                       chip->controls[j] = ctl;
-> +                       ctl->private_free = oxygen_any_ctl_free;
-> +               }
->         }
->         return 0;
 >  }
+>
 > --
 > 1.7.12.4
 >
