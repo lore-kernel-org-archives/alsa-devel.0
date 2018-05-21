@@ -1,52 +1,38 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: intel: skylake: fix spelling mistake:
-	"Homogenous" -> "Homogeneous"
-Date: Mon, 21 May 2018 10:35:48 +0100
-Message-ID: <20180521093548.18491-1-colin.king@canonical.com>
+From: "'Markus Mitsch' via linux-sunxi" <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Subject: Re: [BUG] On Allwinner A20 Board Cubietruck distorted
+ SPDIF opical output
+Date: Mon, 21 May 2018 11:43:32 +0200
+Message-ID: <CAJnOVskcERpto7ztKcCDWKG9NMcgSjcM867bCgkcxG86sZ2MFw@mail.gmail.com>
+References: <CAJnOVskuR6WG5tBVNT30t+k3y4hPR6VnQ=p_QQdBe3fuTWEf_Q@mail.gmail.com>
+ <CAEKpxB=0ahGP=bnFAKDZatLLphADMig4P2Bkpkao-jzE9ORkEg@mail.gmail.com>
+Reply-To: markusmitsch86-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 865CD26738C
- for <alsa-devel@alsa-project.org>; Mon, 21 May 2018 11:35:57 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBDSJZK6URQGRBRNJRLMAKGQEF4K6TUA-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+In-Reply-To: <CAEKpxB=0ahGP=bnFAKDZatLLphADMig4P2Bkpkao-jzE9ORkEg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Cc: Markus Mitsch <markusmitsch86-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>, Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>, Maxime Ripard <maxime.ripard-wi1+55ScJUtKEb57/3fJTNBPR1lH4CV8@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+>> Hello,
+>>
+>> i have a new problem. if i want to output sound from optical i get
+>> distorted sound. At 44.1 khz its like an old vinly, but at 48 khz and
+>> higher it is very bad. thanks in advance for your time.
 
-Trivial fix to spelling mistake in snprintf literal string
+> Hi Markus,
+> I haven't tested it for a while but when I did it worked as high as
+> 96K with no issues. Does it work ok with the original cubietruck
+> software?,
+> CK
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/soc/intel/skylake/skl-debug.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
-index a016455a6ddb..302b40e63e6c 100644
---- a/sound/soc/intel/skylake/skl-debug.c
-+++ b/sound/soc/intel/skylake/skl-debug.c
-@@ -142,8 +142,8 @@ static ssize_t module_read(struct file *file, char __user *user_buf,
- 			mconfig->max_out_queue, ret, false);
- 
- 	ret += snprintf(buf + ret, MOD_BUF - ret,
--			"Other:\n\tDomain %d\n\tHomogenous Input %s\n\t"
--			"Homogenous Output %s\n\tIn Queue Mask %d\n\t"
-+			"Other:\n\tDomain %d\n\tHomogeneous Input %s\n\t"
-+			"Homogeneous Output %s\n\tIn Queue Mask %d\n\t"
- 			"Out Queue Mask %d\n\tDMA ID %d\n\tMem Pages %d\n\t"
- 			"Module Type %d\n\tModule State %d\n",
- 			mconfig->domain,
--- 
-2.17.0
+Hello,
+i am using arch linux with mainline kernel 4.16.8. parhaps i can try
+today with official image.
+mfg
