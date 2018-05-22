@@ -1,70 +1,56 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 28/33] ALSA: dice use match_string() helper
-Date: Tue, 22 May 2018 07:31:23 +0900
-Message-ID: <856cff99-0350-368e-f6c9-d632839e6c33@sakamocchi.jp>
-References: <1526903890-35761-1-git-send-email-xieyisheng1@huawei.com>
- <1526903890-35761-29-git-send-email-xieyisheng1@huawei.com>
+From: John Hsu <KCHSU0@nuvoton.com>
+Subject: Re: [PATCH] ASoC: Intel: cht_bsw_nau8824: Fix
+ jack_type to include SND_JACK_MICROPHONE
+Date: Tue, 22 May 2018 10:12:46 +0800
+Message-ID: <5B037C9E.4060707@nuvoton.com>
+References: <20180521124251.10535-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1526903890-35761-29-git-send-email-xieyisheng1@huawei.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Yisheng Xie <xieyisheng1@huawei.com>, linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from maillog.nuvoton.com (maillog.nuvoton.com [202.39.227.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id C71DE267628
+ for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 04:12:52 +0200 (CEST)
+In-Reply-To: <20180521124251.10535-1-hdegoede@redhat.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On May 21 2018 20:58, Yisheng Xie wrote:
-> match_string() returns the index of an array for a matching string,
-> which can be used intead of open coded variant.
-> 
-> Cc: Clemens Ladisch <clemens@ladisch.de>
-> Cc: Jaroslav Kysela <perex@perex.cz>
-> Cc: Takashi Iwai <tiwai@suse.com>
-> Cc: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> Cc: alsa-devel@alsa-project.org
-> Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
+On 5/21/2018 8:42 PM, Hans de Goede wrote:
+> The nau8824 codec can detect whether a headset or plain headphones is
+> inserted (as well as button presses on the headset) as such the jack_type
+> passed to snd_soc_card_jack_new() should include SND_JACK_MICROPHONE.
+>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > ---
->   sound/firewire/dice/dice.c | 8 +-------
->   1 file changed, 1 insertion(+), 7 deletions(-)
+>  sound/soc/intel/boards/cht_bsw_nau8824.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
+> index 072e94b69e57..30c46977d53c 100644
+> --- a/sound/soc/intel/boards/cht_bsw_nau8824.c
+> +++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
+> @@ -120,7 +120,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+>        * KEY_VOLUMEUP
+>        * KEY_VOLUMEDOWN
+>        */
+> -     jack_type = SND_JACK_HEADPHONE | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+> +     jack_type = SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+>               SND_JACK_BTN_2 | SND_JACK_BTN_3;
+>       ret = snd_soc_card_jack_new(runtime->card, "Headset", jack_type, jack,
+>               cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
 
-I'm welcome to this change, while in the latest subsystem tree for v4.18
-the 'force_to_pcm_support()' local function was removed by my patch[1].
-Your patch can be abandon.
-
-> diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
-> index 96bb01b..0639074 100644
-> --- a/sound/firewire/dice/dice.c
-> +++ b/sound/firewire/dice/dice.c
-> @@ -35,19 +35,13 @@ static bool force_two_pcm_support(struct fw_unit *unit)
->   		"SAFFIRE_PRO_40_1",
->   	};
->   	char model[32];
-> -	unsigned int i;
->   	int err;
->   
->   	err = fw_csr_string(unit->directory, CSR_MODEL, model, sizeof(model));
->   	if (err < 0)
->   		return false;
->   
-> -	for (i = 0; i < ARRAY_SIZE(models); i++) {
-> -		if (strcmp(models[i], model) == 0)
-> -			break;
-> -	}
-> -
-> -	return i < ARRAY_SIZE(models);
-> +	return match_string(models, ARRAY_SIZE(models), model) >= 0;
->   }
->   
->   static int check_dice_category(struct fw_unit *unit)
-
-[1] ALSA: dice: remove local frag of force_two_pcms
-https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/?h=for-next&id=9c367c01d3d5
+It's good for me.
 
 
-Thanks
-
-Takashi Sakamoto
+===========================================================================================
+The privileged confidential information contained in this email is intended for use only by the addressees as indicated by the original sender of this email. If you are not the addressee indicated in this email or are not responsible for delivery of the email to such a person, please kindly reply to the sender indicating this fact and delete all copies of it from your computer and network server immediately. Your cooperation is highly appreciated. It is advised that any unauthorized use of confidential information of Nuvoton is strictly prohibited; and any information in this email irrelevant to the official business of Nuvoton shall be deemed as neither given nor endorsed by Nuvoton.
