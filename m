@@ -1,15 +1,14 @@
-From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Subject: [PATCH 0/2] ASoC: dpcm: fix BE dai not hw_free and
-	shutdown
-Date: Tue, 22 May 2018 17:13:26 +0800
-Message-ID: <1526980408-1935-1-git-send-email-kaichieh.chuang@mediatek.com>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: [PATCH v5 0/3] ASoC: Add Multi CPU DAI support
+Date: Tue, 22 May 2018 16:10:20 +0530
+Message-ID: <1526985623-2606-1-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
- by alsa0.perex.cz (Postfix) with ESMTP id 8014626765E
- for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 11:13:36 +0200 (CEST)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8DEFB26765C
+ for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 12:42:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,27 +18,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
+To: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, patches.audio@intel.com, broonie@kernel.org, ckeepax@opensource.cirrus.com, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-These two patch is to solve problem found
-in the case of one BE is used by multiple FE.
+As discussed in [1], ASoC core supports multi codec DAIs
+on a DAI link. However it does not do so for CPU DAIs.
 
-The error log "ASoC: Unable to apply rate constraint"
-will happen when be_substream->runtime is use after free.
-Which is due to BE not being hw_free/shutdown correctly.
+So, add support for multi CPU DAIs on a DAI Link by adding
+multi CPU DAI in Card instantiation, suspend and resume
+functions, PCM ops, stream handling functions and DAPM.
 
-Also to resolve fe_substream->runtime is not
-constrained by BE dai symmetry property.
+[1]: https://www.spinics.net/lists/alsa-devel/msg71369.html
 
-KaiChieh Chuang (2):
-  ASoC: dpcm: fix BE dai not hw_free and shutdown
-  ASoC: dpcm: symmetry constraint on FE substream
+changes in v5:
+ - Addressed review comments from Charles in calculating delays,
+soc_pcm_init_runtime_hw() and other nits
+ - rebased on latest for-next branch
 
- include/sound/soc-dpcm.h |  2 ++
- sound/soc/soc-pcm.c      | 22 +++++++++++++++++-----
- 2 files changed, 19 insertions(+), 5 deletions(-)
+Shreyas NC (3):
+  ASoC: Add initial support for multiple CPU DAIs
+  ASoC: Add multiple CPU DAI support for PCM ops
+  ASoC: Add multiple CPU DAI support in DAPM
+
+ include/sound/soc.h  |   6 +
+ sound/soc/soc-core.c | 280 ++++++++++++++++++++---------
+ sound/soc/soc-dapm.c |  71 +++++---
+ sound/soc/soc-pcm.c  | 489 ++++++++++++++++++++++++++++++++++-----------------
+ 4 files changed, 574 insertions(+), 272 deletions(-)
 
 -- 
-1.9.1
+2.7.4
