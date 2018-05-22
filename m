@@ -1,15 +1,20 @@
-From: Wei Yongjun <weiyongjun1@huawei.com>
-Subject: [PATCH -next] slimbus: qcom: fix potential NULL
-	dereference in qcom_slim_prg_slew()
-Date: Tue, 22 May 2018 11:46:22 +0000
-Message-ID: <1526989582-139939-1-git-send-email-weiyongjun1@huawei.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/2] ALSA: hda/conexant - Add hp-mic-fix model
+	string
+Date: Tue, 22 May 2018 13:46:17 +0200
+Message-ID: <20180522114617.26483-2-tiwai@suse.de>
+References: <20180522114617.26483-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from huawei.com (unknown [45.249.212.35])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E0A926765C
- for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 13:39:10 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4532C26765C
+ for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 13:46:20 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 5159FADDC
+ for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 11:46:20 +0000 (UTC)
+In-Reply-To: <20180522114617.26483-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,42 +24,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Sagar Dharia <sdharia@codeaurora.org>
-Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, Wei Yongjun <weiyongjun1@huawei.com>, linux-kernel@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-platform_get_resource() may fail and return NULL, so we should
-better check it's return value to avoid a NULL pointer dereference
-a bit later in the code.
+Add "hp-mic-fix" model string for Conexant codecs so that user can
+test the quirk without recompiling.
 
-This is detected by Coccinelle semantic patch.
-
-@@
-expression pdev, res, n, t, e, e1, e2;
-@@
-
-res = platform_get_resource_byname(pdev, t, n);
-+ if (!res)
-+   return -EINVAL;
-... when != res == NULL
-e = devm_ioremap(e1, res->start, e2);
-
-Fixes: ad7fcbc308b0 ("slimbus: qcom: Add Qualcomm Slimbus controller driver")
-Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- drivers/slimbus/qcom-ctrl.c | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/sound/hd-audio/models.rst | 2 ++
+ sound/pci/hda/patch_conexant.c          | 1 +
+ 2 files changed, 3 insertions(+)
 
-diff --git a/drivers/slimbus/qcom-ctrl.c b/drivers/slimbus/qcom-ctrl.c
-index bb36a8f..caea3b9 100644
---- a/drivers/slimbus/qcom-ctrl.c
-+++ b/drivers/slimbus/qcom-ctrl.c
-@@ -478,6 +478,8 @@ static void qcom_slim_prg_slew(struct platform_device *pdev,
- 		/* SLEW RATE register for this SLIMbus */
- 		slew_mem = platform_get_resource_byname(pdev, IORESOURCE_MEM,
- 				"slew");
-+		if (!slew_mem)
-+			return;
- 		ctrl->slew_reg = devm_ioremap(&pdev->dev, slew_mem->start,
- 				resource_size(slew_mem));
- 		if (!ctrl->slew_reg)
+diff --git a/Documentation/sound/hd-audio/models.rst b/Documentation/sound/hd-audio/models.rst
+index 1fee5a4f6660..7c2d37571af0 100644
+--- a/Documentation/sound/hd-audio/models.rst
++++ b/Documentation/sound/hd-audio/models.rst
+@@ -263,6 +263,8 @@ hp-dock
+     HP dock support
+ mute-led-gpio
+     Mute LED control via GPIO
++hp-mic-fix
++    Fix for headset mic pin on HP boxes
+ 
+ STAC9200
+ ========
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index dad7e9d5e5a6..dbf9910c5269 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -998,6 +998,7 @@ static const struct hda_model_fixup cxt5066_fixup_models[] = {
+ 	{ .id = CXT_FIXUP_MUTE_LED_EAPD, .name = "mute-led-eapd" },
+ 	{ .id = CXT_FIXUP_HP_DOCK, .name = "hp-dock" },
+ 	{ .id = CXT_FIXUP_MUTE_LED_GPIO, .name = "mute-led-gpio" },
++	{ .id = CXT_FIXUP_HP_MIC_NO_PRESENCE, .name = "hp-mic-fix" },
+ 	{}
+ };
+ 
+-- 
+2.16.3
