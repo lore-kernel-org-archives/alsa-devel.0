@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8782: add device-tree matching table"
-	to the asoc tree
-Date: Tue, 22 May 2018 11:58:57 +0100
-Message-ID: <E1fL50L-0000SN-NE@debutante>
-References: <20180521215450.30557-1-daniel@zonque.org>
+Subject: Applied "ASoC: pxa-ssp: simplify
+	pxa_ssp_set_dai_sysclk()" to the asoc tree
+Date: Tue, 22 May 2018 11:59:07 +0100
+Message-ID: <E1fL50V-0000Ta-Mb@debutante>
+References: <20180521215017.29095-2-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EC40267660
- for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 12:58:59 +0200 (CEST)
-In-Reply-To: <20180521215450.30557-1-daniel@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id C8FA6267680
+ for <alsa-devel@alsa-project.org>; Tue, 22 May 2018 12:59:10 +0200 (CEST)
+In-Reply-To: <20180521215017.29095-2-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, robert.jarzmik@free.fr, lars@metafoo.de, haojian.zhuang@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8782: add device-tree matching table
+   ASoC: pxa-ssp: simplify pxa_ssp_set_dai_sysclk()
 
 has been applied to the asoc tree at
 
@@ -53,41 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 9e2a87746757690fe951f06b0f336329f4a1f767 Mon Sep 17 00:00:00 2001
+>From 05f38281c5e5272ff1d350ed8762b08c4f6d10fc Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
-Date: Mon, 21 May 2018 23:54:49 +0200
-Subject: [PATCH] ASoC: wm8782: add device-tree matching table
+Date: Mon, 21 May 2018 23:50:17 +0200
+Subject: [PATCH] ASoC: pxa-ssp: simplify pxa_ssp_set_dai_sysclk()
 
-This is needed when the codec is instanciated from from a device tree.
+There's no need to read the register again prior to writing it, we did
+that in the beginning of the function.
 
 Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8782.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/pxa/pxa-ssp.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8782.c b/sound/soc/codecs/wm8782.c
-index 7949703f3d04..317db9a149a7 100644
---- a/sound/soc/codecs/wm8782.c
-+++ b/sound/soc/codecs/wm8782.c
-@@ -67,9 +67,18 @@ static int wm8782_probe(struct platform_device *pdev)
- 			&soc_component_dev_wm8782, &wm8782_dai, 1);
- }
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index ffddcf117eb8..6fc986080130 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -217,10 +217,9 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ {
+ 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
+-	int val;
  
-+#ifdef CONFIG_OF
-+static const struct of_device_id wm8782_of_match[] = {
-+	{ .compatible = "wlf,wm8782", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, wm8782_of_match);
-+#endif
-+
- static struct platform_driver wm8782_codec_driver = {
- 	.driver = {
- 		.name = "wm8782",
-+		.of_match_table = of_match_ptr(wm8782_of_match),
- 	},
- 	.probe = wm8782_probe,
- };
+ 	u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0) &
+-		~(SSCR0_ECS |  SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
++		~(SSCR0_ECS | SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
+ 
+ 	dev_dbg(&ssp->pdev->dev,
+ 		"pxa_ssp_set_dai_sysclk id: %d, clk_id %d, freq %u\n",
+@@ -258,8 +257,7 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	 * on PXA2xx.  On PXA3xx it must be enabled when doing so. */
+ 	if (ssp->type != PXA3xx_SSP)
+ 		clk_disable_unprepare(ssp->clk);
+-	val = pxa_ssp_read_reg(ssp, SSCR0) | sscr0;
+-	pxa_ssp_write_reg(ssp, SSCR0, val);
++	pxa_ssp_write_reg(ssp, SSCR0, sscr0);
+ 	if (ssp->type != PXA3xx_SSP)
+ 		clk_prepare_enable(ssp->clk);
+ 
 -- 
 2.17.0
