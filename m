@@ -1,40 +1,90 @@
-From: Miquel Raynal <miquel.raynal@bootlin.com>
-Subject: Re: [PATCH v2 05/13] mtd: rawnand: marvell: remove the dmaengine
- compat need
-Date: Thu, 24 May 2018 11:30:06 +0200
-Message-ID: <20180524113006.3d5f393e@xps13>
-References: <20180524070703.11901-1-robert.jarzmik@free.fr>
-        <20180524070703.11901-6-robert.jarzmik@free.fr>
+From: mac.chiang@intel.com
+Subject: [PATCH] ASoC: Intel: kbl: Move codec sysclk config to
+	codec_init function
+Date: Wed, 23 May 2018 14:13:48 +0800
+Message-ID: <1527056028-12552-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180524070703.11901-6-robert.jarzmik@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id DA166266F44
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 08:11:04 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Robert,
+From: Mac Chiang <mac.chiang@intel.com>
 
-On Thu, 24 May 2018 09:06:55 +0200, Robert Jarzmik
-<robert.jarzmik@free.fr> wrote:
+unexpected error: PLL input clock 0 below valid range
 
-> As the pxa architecture switched towards the dmaengine slave map, the
-> old compatibility mechanism to acquire the dma requestor line number and
-> priority are not needed anymore.
-> 
-> This patch simplifies the dma resource acquisition, using the more
-> generic function dma_request_slave_channel().
-> 
-> Signed-off-by: Signed-off-by: Daniel Mack <daniel@zonque.org>
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-> ---
->  drivers/mtd/nand/raw/marvell_nand.c | 17 +----------------
->  1 file changed, 1 insertion(+), 16 deletions(-)
-> 
+backport from broonie's tree
+commit fd0f237572ad
+("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
 
-Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+The MCLK for DA7219 does not change in this platform, but is
+currently being configured everytime as part of the platform_clock
+event handler for DAPM. The upshot of this is that we have
+unnecessary calls to this function, and it also means that if
+a stream hasn't yet been started, DA7219 driver does not have the
+correct MCLK rates programmed and so the HP detection feature does
+not operate as expected.
 
-Thanks,
-Miquèl
+This patch rectifies this issue by moving the sysclk call to
+codec_init function so it's only called once at initialisation.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Acked-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+Singed-off-by: Mac Chiang <mac.chiang@intel.com>
+---
+ sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index 60e739f..88fbc6a 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -65,14 +65,6 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		return -EIO;
+ 	}
+ 
+-	/* Configure sysclk for codec */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+-				     SND_SOC_CLOCK_IN);
+-	if (ret) {
+-		dev_err(card->dev, "can't set codec sysclk configuration\n");
+-		return ret;
+-	}
+-
+ 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+ 		ret = snd_soc_dai_set_pll(codec_dai, 0,
+ 				     DA7219_SYSCLK_MCLK, 0, 0);
+@@ -169,9 +161,18 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_component *component = rtd->codec_dai->component;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_jack *jack;
+ 	int ret;
+ 
++	/* Configure sysclk for codec */
++	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 19200000,
++						SND_SOC_CLOCK_IN);
++	if (ret) {
++		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
++		return ret;
++	}
++
+ 	/*
+ 	 * Headset buttons map to the google Reference headset.
+ 	 * These can be configured by userspace.
+-- 
+2.7.4
