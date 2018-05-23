@@ -1,21 +1,14 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] slimbus: ngd: dt-bindings: Add slim
-	ngd dt bindings
-Date: Wed, 23 May 2018 19:11:45 +0100
-Message-ID: <4b83b699-59ad-b177-f360-3e76ba847892@linaro.org>
-References: <20180516165118.16551-1-srinivas.kandagatla@linaro.org>
- <20180516165118.16551-2-srinivas.kandagatla@linaro.org>
- <20180523164023.GA24671@rob-hp-laptop>
+From: Daniel Danzberger <daniel@dd-wrt.com>
+Subject: out of sync capture samples with MMAP on MIPS
+Date: Wed, 23 May 2018 20:36:37 +0200
+Message-ID: <e89758e0-b3db-c17c-71f5-e7acfbe76845@dd-wrt.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com [74.125.82.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ABA8266C1C
- for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 20:11:47 +0200 (CEST)
-Received: by mail-wm0-f44.google.com with SMTP id j4-v6so11463313wme.1
- for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 11:11:47 -0700 (PDT)
-In-Reply-To: <20180523164023.GA24671@rob-hp-laptop>
+Received: from webmail.newmedia-net.de (webmail.newmedia-net.de [185.84.6.166])
+ by alsa0.perex.cz (Postfix) with ESMTP id 08874266C1C
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 20:36:40 +0200 (CEST)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,27 +19,31 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, girishm@quicinc.com, gregkh@linuxfoundation.org, broonie@kernel.org, linux-kernel@vger.kernel.org, bgoswami@codeaurora.org, kramasub@codeaurora.org, linux-arm-msm@vger.kernel.org, sdharia@quicinc.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+I am using alsa's mmap() interface to capture audio samples on some AR71xx MIPS
+devices via USB and sometimes the sampled audio sounds very disordered.
 
+After debugging deeper into this issue I found that samples are fine in the
+kernel's vmalloc'ed buffer (runtime->dma_area). But once they get accessed from
+userspace via mmaped memory, the samples differ.
 
-On 23/05/18 17:40, Rob Herring wrote:
->> +
->> +- qcom,ngd-id
->> +	Usage: required
->> +	Value type: <u32>
->> +	Definition: ngd instance id in the controller
-> Why do you need this?
-> 
-Please ignore my comment from previous reply.
+I wrote a module + userspace program to demonstrate the issue:
+git@github.com:dddaniel/mmaptest.git
 
-There are more than one instances of ngd in this slim controller.
-We need this to make sure we are programming the correct one.
+The userspace tool reads the data a couple of times with a small delay.
+As you see below, after a couple of reads the data gets closer to look like in
+the kernel buffer:
+---
+root@OpenWrt:/# mmaptest-user
+mmap addr: 0x77a04000
+[  760.464968] mmap page 7573000 at va 87573000
+check memory ...FAIL (at byte 0)
+check memory ...FAIL (at byte 96)
+check memory ...FAIL (at byte 96)
+check memory ...FAIL (at byte 96)
+check memory ...FAIL (at byte 128)
+---
 
-We also need this instance ID during powering it up using QMI.
-
-
-thanks,
-srini
+Does someone here experienced similar issues ?
