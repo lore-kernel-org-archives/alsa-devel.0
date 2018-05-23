@@ -1,19 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC/RFT PATCH] ASoC: topology: Improve backwards
- compatibility with v4 topology files
-Date: Wed, 23 May 2018 08:42:59 -0500
-Message-ID: <521b23cd-f083-6a19-1374-fde7057c869b@linux.intel.com>
-References: <20180522165842.233949-1-groeck@google.com>
- <fb9aebba-919a-2e80-aec7-2fd44e5e1861@linux.intel.com>
- <20180523082424.GA4828@sirena.org.uk>
+Subject: Re: sound: ALSA PCM Timestamps
+Date: Wed, 23 May 2018 08:54:15 -0500
+Message-ID: <e4baa571-35db-666c-0217-5d5a90b2249f@linux.intel.com>
+References: <CAHhAz+g0tZ57xzS=FE71haZkrM4iXRS_HLe2pL0xic2y9t4CwA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 9029826765F
- for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 15:43:03 +0200 (CEST)
-In-Reply-To: <20180523082424.GA4828@sirena.org.uk>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDCC626705D
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 15:54:18 +0200 (CEST)
+In-Reply-To: <CAHhAz+g0tZ57xzS=FE71haZkrM4iXRS_HLe2pL0xic2y9t4CwA@mail.gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,32 +21,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Guenter Roeck <groeck@google.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
+To: Muni Sekhar <munisekharrms@gmail.com>, kernelnewbies <kernelnewbies@kernelnewbies.org>, linux-sound@vger.kernel.org, alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 5/23/18 3:24 AM, Mark Brown wrote:
-> On Tue, May 22, 2018 at 02:59:35PM -0500, Pierre-Louis Bossart wrote:
-> 
->> I am also not convinced by the notion that maintaining topology files is
->> only a userspace/distro issue. This would mean some distros will have access
->> to the required topology files, possibly enabling DSP processing
->> capabilities, but other will not and will not be able to enable even basic
->> playback/capture. Just like we have a basic firmware with limited
->> functionality in /lib/firmware/intel, it would make sense to require a basic
->> .conf file in alsa-lib for every upstream machine driver - along possibly
->> with a basic UCM file so that audio works no matter what distro people use.
-> 
-> The point here is that people should be able to update their kernel
-> without updating their userspace so things have to work with whatever
-> they have right now - anything that relies on shipping new firmware or
-> configuration files to userspace is a problem.
-
-Agree.
-
-My point was a bit different: distributions like Gallium start without 
-the relevant topology files and UCM settings, and we should have a 
-reference to quickly enable audio without having to borrow and modify 
-files from another distro. I faced this issue when I worked with the 
-Gallium folks to enable audio on Rambi and Cyan Chromebooks and ended-up 
-creating this reference myself.
+T24gNS8yMy8xOCA4OjAwIEFNLCBNdW5pIFNla2hhciB3cm90ZToKPiBbIFBsZWFzZSBrZWVwIG1l
+IGluIENDIGFzIEknbSBub3Qgc3Vic2NyaWJlZCB0byB0aGUgbGlzdF0KPiAKPiBIaSBBbGwsCj4g
+Cj4gVGhlcmUgYXJlIHNldmVyYWwgdGltZSBzdGFtcGluZyBmdW5jdGlvbnMgaW4gQUxTQToKPiAK
+PiAKPiBzbmRfcGNtX3N0YXR1c19nZXRfdHJpZ2dlcl90c3RhbXAKPiAKPiBzbmRfcGNtX3N0YXR1
+c19nZXRfdHJpZ2dlcl9odHN0YW1wCj4gCj4gc25kX3BjbV9zdGF0dXNfZ2V0X3RzdGFtcAo+IAo+
+IHNuZF9wY21fc3RhdHVzX2dldF9odHN0YW1wCj4gCj4gc25kX3BjbV9zdGF0dXNfZ2V0X2F1ZGlv
+X2h0c3RhbXAKPiAKPiBzbmRfcGNtX3N0YXR1c19nZXRfZHJpdmVyX2h0c3RhbXAKCnRoZSAqX3Rz
+dGFtcCBmdW5jdGlvbnMgd29yayB3aXRoIGEgJ3N0cnVjdCB0aW1ldmFsJyB3aGljaCBwcm92aWRl
+cyAKbWljcm9zZWNvbmQgcmVzb2x1dGlvbi4KVGhlICpfc3RhbXAgZnVuY3Rpb25zIHdvcmsgd2l0
+aCBhICdzdHJ1Y3QgdGltZXNwZWMnIHdoaWNoIHByb3ZpZGVzIApuYW5vc2Vjb25kIHJlc29sdXRp
+b24uCgpUaGUgdHJpZ2dlcl8qdHN0YW1wIHJldHVybnMgdGhlIHRpbWUgd2hlbiB0aGUgc3RyZWFt
+IHN0YXJ0ZWQgKHR5cGljYWxseSAKd2hlbiB0aGUgRE1BIHN0YXJ0cykuClRoZSBnZXRfdHN0YW1w
+IHJldHVybnMgdGhlIGN1cnJlbnQgdGltZXN0YW1wIG1lYXN1cmVkIHdpdGggdGhlIHJlZ3VsYXIg
+CnRpbWVrZWVwaW5nIGZ1bmN0aW9ucywgd2hpY2ggYnkgc3VidHJhY3RpbmcgdGhlIHRyaWdnZXIg
+dGltZXN0YW1wIApwcm92aWRlcyB0aGUgZWxhcHNlZCB0aW1lIHNpbmNlIHRoZSBzdGFydC4gWW91
+IGNhbiBzcGVjaWZ5IGlmIHlvdSB3YW50IAp0aGUgUkVBTFRJTUUvTU9OT1RPTklDL01PTk9UT05J
+Q19SQVcgdGltZXN0YW1wIHR5cGUsIGRlcGVuZGluZyBvbiB5b3VyIAphcHBsaWNhdGlvbi4KVGhl
+IGF1ZGlvIHRpbWVzdGFtcCByZXR1cm5zIHRoZSBjdXJyZW50IHRpbWVzdGFtcCBidXQgbWVhc3Vy
+ZWQgdXNpbmcgCmF1ZGlvLXNwZWNpZmljIGNvdW50ZXJzLiBJZiB0aGUgYXVkaW8gY2xvY2tzIGFy
+ZSBub3QgYWxpZ25lZCB3aXRoIHRoZSAKc3lzdGVtIHRpbWUgKGUuZy4gaWYgdGhleSB1c2UgZGlm
+ZmVyZW50IG9zY2lsbGF0b3JzIG9yIHRoZSBhdWRpbyBjbG9jayAKc291cmNlIGlzIGV4dGVybmFs
+KSwgdGhlcmUgd2lsbCBiZSBhIGRyaWZ0IGJldHdlZW4gYXVkaW8gdGltZXN0YW1wcyBhbmQgCnN5
+c3RlbSB0aW1lc3RhbXAuCgoKPiAKPiAKPiAKPiBJIHdvdWxkIGxpa2UgdG8gdW5kZXJzdGFuZCB3
+aGF0IHBvaW50cyBpbiB0aW1lIHRoZSByZXN1bHRpbmcgZnVuY3Rpb25zCj4gcmVwcmVzZW50IGFu
+ZCB3aGF0IGlzIHRoZSBjb3JyZXNwb25kaW5nIGtlcm5lbCBtb2RlIGNhbGxiYWNrIGZvciB0aG9z
+ZQo+IEFQSeKAmXMuCj4gCj4gCj4gSSdkIGJlIHJlYWxseSBncmF0ZWZ1bCBpZiBzb21lb25lIHRv
+b2sgdGhlIHRpbWUgdG8gaGVscCBtZSBjbGVhcmluZyBteSBkb3VidC4KPiAKPiAKPiAKCl9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
+bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
