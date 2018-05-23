@@ -1,17 +1,15 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 3/4] ALSA: hda: Add Gigabyte P55A-UD3 and
-	Z87-D3HP to the power_save blacklist
-Date: Wed, 23 May 2018 15:27:04 +0200
-Message-ID: <20180523132705.13888-3-hdegoede@redhat.com>
-References: <20180523132705.13888-1-hdegoede@redhat.com>
+From: Julian Scheel <julian@jusst.de>
+Subject: [PATCH v2 1/2] speaker-test: Support S24_3LE sample
+	format
+Date: Wed, 23 May 2018 15:42:20 +0200
+Message-ID: <20180523134221.27260-1-julian@jusst.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id D43FE267265
- for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 15:27:10 +0200 (CEST)
-In-Reply-To: <20180523132705.13888-1-hdegoede@redhat.com>
+Received: from web01.jusst.de (jusst.de [188.40.114.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5202226705D
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 15:42:31 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,36 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: Julian Scheel <julian@jusst.de>
 List-Id: alsa-devel@alsa-project.org
 
-Power-saving is causing plops on audio start/stop on Gigabyte
-P55A-UD3 and Gigabyte Z87-D3HP machines, add these to the power_save
-blacklist.
+Implement support signed 24 bit samples, packed in 3 bytes.
 
-Note these 2 boards both use 1458:a002 as subsystem ids, so they share
-a single entry.
-
-BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1525104
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Julian Scheel <julian@jusst.de>
 ---
- sound/pci/hda/hda_intel.c | 3 +++
- 1 file changed, 3 insertions(+)
+ speaker-test/speaker-test.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 744a255b50d9..c98ed35b8bdf 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2214,6 +2214,9 @@ static struct snd_pci_quirk power_save_blacklist[] = {
- 	SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
- 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1581607 */
- 	SND_PCI_QUIRK(0x1558, 0x3501, "Clevo W35xSS_370SS", 0),
-+	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
-+	/* Note the P55A-UD3 and Z87-D3HP share the subsys id for the HDA dev */
-+	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte P55A-UD3 / Z87-D3HP", 0),
- 	/* https://bugzilla.kernel.org/show_bug.cgi?id=199607 */
- 	SND_PCI_QUIRK(0x8086, 0x2057, "Intel NUC5i7RYB", 0),
- 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1520902 */
+diff --git a/speaker-test/speaker-test.c b/speaker-test/speaker-test.c
+index 65ab523..4804bcf 100644
+--- a/speaker-test/speaker-test.c
++++ b/speaker-test/speaker-test.c
+@@ -283,6 +283,8 @@ static const int	supported_formats[] = {
+   SND_PCM_FORMAT_S16_LE,
+   SND_PCM_FORMAT_S16_BE,
+   SND_PCM_FORMAT_FLOAT_LE,
++  SND_PCM_FORMAT_S24_3LE,
++  SND_PCM_FORMAT_S24_3BE,
+   SND_PCM_FORMAT_S32_LE,
+   SND_PCM_FORMAT_S32_BE,
+   -1
+@@ -325,6 +327,18 @@ static void do_generate(uint8_t *frames, int channel, int count,
+       case SND_PCM_FORMAT_FLOAT_LE:
+ 	*samp_f++ = res.f;
+         break;
++      case SND_PCM_FORMAT_S24_3LE:
++        res.i >>= 8;
++        *samp8++ = LE_INT(res.i);
++        *samp8++ = LE_INT(res.i) >> 8;
++        *samp8++ = LE_INT(res.i) >> 16;
++        break;
++      case SND_PCM_FORMAT_S24_3BE:
++        res.i >>= 8;
++        *samp8++ = BE_INT(res.i);
++        *samp8++ = BE_INT(res.i) >> 8;
++        *samp8++ = BE_INT(res.i) >> 16;
++        break;
+       case SND_PCM_FORMAT_S32_LE:
+ 	*samp32++ = LE_INT(res.i);
+         break;
 -- 
 2.17.0
