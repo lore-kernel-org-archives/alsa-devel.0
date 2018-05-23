@@ -1,49 +1,37 @@
-From: Daniel Danzberger <daniel@dd-wrt.com>
-Subject: out of sync capture samples with MMAP on MIPS
-Date: Wed, 23 May 2018 20:36:37 +0200
-Message-ID: <e89758e0-b3db-c17c-71f5-e7acfbe76845@dd-wrt.com>
+From: Tony Lindgren <tony@atomide.com>
+Subject: Re: [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
+Date: Wed, 23 May 2018 11:52:44 -0700
+Message-ID: <20180523185244.GT98604@atomide.com>
+References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
+ <20180518210954.29044-3-jmkrzyszt@gmail.com>
+ <20180521100503.GA24638@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webmail.newmedia-net.de (webmail.newmedia-net.de [185.84.6.166])
- by alsa0.perex.cz (Postfix) with ESMTP id 08874266C1C
- for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 20:36:40 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180521100503.GA24638@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Janusz Krzysztofik <jmkrzyszt@gmail.com>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org, linux-input@vger.kernel.org, linux-mtd@lists.infradead.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I am using alsa's mmap() interface to capture audio samples on some AR71xx MIPS
-devices via USB and sometimes the sampled audio sounds very disordered.
+* Mark Brown <broonie@kernel.org> [180521 10:07]:
+> On Fri, May 18, 2018 at 11:09:51PM +0200, Janusz Krzysztofik wrote:
+> > Now as the Amstrad Delta board provides GPIO lookup tables, switch from
+> > GPIO numbers to GPIO descriptors and use the table to locate required
+> > GPIO pins.
+> 
+> Acked-by: Mark Brown <broonie@kernel.org>
 
-After debugging deeper into this issue I found that samples are fine in the
-kernel's vmalloc'ed buffer (runtime->dma_area). But once they get accessed from
-userspace via mmaped memory, the samples differ.
+Thanks applying patches 1 and 3 of this series into omap-for-v4.18/soc.
+It's kind of getting late for v4.18, but let's see if we can still make
+it.
 
-I wrote a module + userspace program to demonstrate the issue:
-git@github.com:dddaniel/mmaptest.git
+Seems the others can be applied to the driver trees after no more
+comments, then once all that is done we can apply the last patch
+in this series.
 
-The userspace tool reads the data a couple of times with a small delay.
-As you see below, after a couple of reads the data gets closer to look like in
-the kernel buffer:
----
-root@OpenWrt:/# mmaptest-user
-mmap addr: 0x77a04000
-[  760.464968] mmap page 7573000 at va 87573000
-check memory ...FAIL (at byte 0)
-check memory ...FAIL (at byte 96)
-check memory ...FAIL (at byte 96)
-check memory ...FAIL (at byte 96)
-check memory ...FAIL (at byte 128)
----
+Regards,
 
-Does someone here experienced similar issues ?
+Tony
