@@ -1,62 +1,49 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [alsa-devel] [RFC/RFT PATCH] ASoC: topology: Improve backwards
+From: Guenter Roeck <groeck@google.com>
+Subject: Re: [RFC/RFT PATCH] ASoC: topology: Improve backwards
  compatibility with v4 topology files
-Date: Wed, 23 May 2018 16:52:44 +0100
-Message-ID: <20180523155243.GM4828@sirena.org.uk>
+Date: Wed, 23 May 2018 08:54:18 -0700
+Message-ID: <CABXOdTeCr-ExO9O3XAHK-DnNf5yLGO0TPkXgs60TB90jGNB2_Q@mail.gmail.com>
 References: <20180522165842.233949-1-groeck@google.com>
- <fb9aebba-919a-2e80-aec7-2fd44e5e1861@linux.intel.com>
- <20180523082424.GA4828@sirena.org.uk>
- <521b23cd-f083-6a19-1374-fde7057c869b@linux.intel.com>
- <s5hlgcapjaf.wl-tiwai@suse.de>
- <CABXOdTdGyfBdZUzG-DzGgfr0Afrh9dtgdXibQreOZm7nb4z3=w@mail.gmail.com>
+ <s5hmuwqpjdd.wl-tiwai@suse.de>
+ <20180523135609.GK4828@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="j3zO+32zXj6UcJCE"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CABXOdTdGyfBdZUzG-DzGgfr0Afrh9dtgdXibQreOZm7nb4z3=w@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <groeck@google.com>
-Cc: Takashi Iwai <tiwai@suse.de>, pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, Guenter Roeck <groeck@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, "Patel, Chintan M" <chintan.m.patel@intel.com>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yw0-f194.google.com (mail-yw0-f194.google.com
+ [209.85.161.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95D8F26707F
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 17:54:31 +0200 (CEST)
+Received: by mail-yw0-f194.google.com with SMTP id p144-v6so6847502ywg.7
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 08:54:31 -0700 (PDT)
+In-Reply-To: <20180523135609.GK4828@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Patel,
+ Chintan M" <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Wed, May 23, 2018 at 6:56 AM Mark Brown <broonie@kernel.org> wrote:
+>
+> On Wed, May 23, 2018 at 03:54:54PM +0200, Takashi Iwai wrote:
+>
+> > And I'm wondering whether we should move these definitions to uapi
+> > headers.
+>
+> Yes, we should.
 
---j3zO+32zXj6UcJCE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Are you sure ? They used to be in
+ sound/soc/intel/skylake/skl-tplg-interface.h.
+I took my clue from sound/soc/soc-topology.c, where the v4 structures are
+also
+declared locally and not in the uapi files.
 
-On Wed, May 23, 2018 at 07:49:35AM -0700, Guenter Roeck wrote:
-
-> I want to be able to swap kernel versions without having to update the root
-> file system. That doesn't work if I have to use v4 configuration files for
-> v4.4 and older kernels, and v5 configuration files for v4.9 and later
-> kernels (besides, as I mentioned, that the v5 configuration files I found
-> were all incomplete). In my opinion, thre should be exactly one
-> configuration file for a given device, and there should be no need for
-> users (or distributions) to hunt for the correct version of the file.
-
-I think it's fine for there to be new firmwares with corresponding new
-configs, and that it's fine for those to have some minimum kernel
-version requirement (though desirable to avoid it).  The firmwares could
-be enabling completely new or different features, that's one of the
-advantages of making the firmwares replaceable, and it's reasonable for
-that to result in config changes.  What's not fine is for a new kernel
-to require that you change anything about the firmware and config setup
-on your system.
-
---j3zO+32zXj6UcJCE
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsFjksACgkQJNaLcl1U
-h9DzAAf+OK2Ulc/FqxIqascYkLk/XRahUs9ncw/Pcc782Qp2Up65ImFqA7uhI/7d
-0CqXdp16ZnsTnfreKFNg0ZMgh4QSus9jluijwi+9G0BOEn4oCiMf2TSgrqh1LFiU
-CQmvtUWHIL6GEpB6Aczm148YMp1w8qAiYaYYdsxZ7zaHrvWNPtSJCUh/EVQbUv1E
-vJjgZuOhdot6bCFR/Q2Fmozid8mlj6Plo/Cj2CjALYyqMEgjnF3p69aKmWy9Ld+D
-rAOcdveVK6i5r0J76/PohCZCoq7SanadaHo49tmBpAgoiD1gVgmFdO5ztqz74p5X
-CFzVj8PCTM5XD/J1ZPtbkjAFpkX3Zw==
-=I92F
------END PGP SIGNATURE-----
-
---j3zO+32zXj6UcJCE--
+Guenter
