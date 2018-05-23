@@ -1,101 +1,376 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] slimbus: ngd: dt-bindings: Add slim
-	ngd dt bindings
-Date: Wed, 23 May 2018 21:01:43 +0100
-Message-ID: <9bf83e8b-df06-ead9-1075-8b1a387d6052@linaro.org>
-References: <20180516165118.16551-1-srinivas.kandagatla@linaro.org>
- <20180516165118.16551-2-srinivas.kandagatla@linaro.org>
- <20180523164023.GA24671@rob-hp-laptop>
- <4b83b699-59ad-b177-f360-3e76ba847892@linaro.org>
- <CAL_Jsq+YF+EFfqua_GTFU=cwf8oF3HCPCR09MWOoRCJf0-zVnQ@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC/RFT PATCH] ASoC: topology: Improve backwards
+ compatibility with v4 topology files
+Date: Wed, 23 May 2018 15:28:15 -0500
+Message-ID: <649b1c14-e440-0c89-a59c-dc663344faa3@linux.intel.com>
+References: <20180522165842.233949-1-groeck@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 81BF7266C1C
- for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 22:01:46 +0200 (CEST)
-Received: by mail-wr0-f193.google.com with SMTP id 94-v6so28637493wrf.5
- for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 13:01:46 -0700 (PDT)
-In-Reply-To: <CAL_Jsq+YF+EFfqua_GTFU=cwf8oF3HCPCR09MWOoRCJf0-zVnQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180522165842.233949-1-groeck@google.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, girishm@quicinc.com, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Mark Brown <broonie@kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Banajit Goswami <bgoswami@codeaurora.org>, Karthikeyan Ramasubramanian <kramasub@codeaurora.org>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, sdharia@quicinc.com
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <groeck@google.com>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
+On 05/22/2018 11:58 AM, Guenter Roeck wrote:
+
+> From: Guenter Roeck <groeck@chromium.org>
+>
+> Commit dc31e741db49 ("ASoC: topology: ABI - Add the types for BE
+> DAI") introduced sound topology files version 5. Initially, this
+> change made the topology code incompatible with v4 topology files.
+> Backwards compatibility with v4 configuration files was
+> subsequently added with commit 288b8da7e992 ("ASoC: topology:
+> Support topology file of ABI v4").
+>
+> Unfortunately, backwards compatibility was never fully implemented.
+>
+> First, the manifest size in (Skylake) v4 configuration files is set
+> to 0, which causes manifest_new_ver() to bail out with error messages
+> similar to the following.
+>
+> snd_soc_skl 0000:00:1f.3: ASoC: invalid manifest size
+> snd_soc_skl 0000:00:1f.3: tplg component load failed-22
+> snd_soc_skl 0000:00:1f.3: Failed to init topology!
+> snd_soc_skl 0000:00:1f.3: ASoC: failed to probe component -22
+> skl_n88l25_m98357a skl_n88l25_m98357a: ASoC: failed to instantiate card -22
+> skl_n88l25_m98357a: probe of skl_n88l25_m98357a failed with error -22
+>
+> After this problem is fixed, the following error message is seen instead.
+>
+> snd_soc_skl 0000:00:1f.3: ASoC: old version of manifest
+> snd_soc_skl 0000:00:1f.3: Invalid descriptor token 1093938482
+> snd_soc_skl 0000:00:1f.3: ASoC: failed to load widget media0_in cpr 0
+> snd_soc_skl 0000:00:1f.3: tPlg component load failed-22
+>
+> This message is seen because backwards compatibility for loading widgets
+> was never implemented.
+>
+> Both problems have been widely reported. Various attempts were made to
+> fix the problem, usually by providing v5 configuration files. However,
+> all those attempts result in incomplete ASoC configuration.
+>
+> Let's implement backward compatibility properly to solve the problem
+> for good.
+>
+> Signed-off-by: Guenter Roeck <groeck@chromium.org>
+I don't have any devices on which I can test but the code looks ok 
+compared to chromeos-3.18 (minor comments below).
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 
-On 23/05/18 20:28, Rob Herring wrote:
-> On Wed, May 23, 2018 at 1:11 PM, Srinivas Kandagatla
-> <srinivas.kandagatla@linaro.org> wrote:
->>
->>
->> On 23/05/18 17:40, Rob Herring wrote:
->>>>
->>>> +
->>>> +- qcom,ngd-id
->>>> +       Usage: required
->>>> +       Value type: <u32>
->>>> +       Definition: ngd instance id in the controller
->>>
->>> Why do you need this?
->>>
->> Please ignore my comment from previous reply.
->>
->> There are more than one instances of ngd in this slim controller.
->> We need this to make sure we are programming the correct one.
-> 
-> Doesn't the parent-child relationship of devices on the bus provide
-> that? 
-Thanks for the hint, that sounds like the actual problem here,
-If I represent the node with proper parent-child relationship like this, 
-it will remove the need of this property and would work perfectly in 
-case we want to support multiple ngds in future!
+> ---
+> Tested on Caroline (Samsung Chromebook Pro) running v4.17-rc6 plus
+> this patch, with original (v4) configuration file. Also tested on
+> several other Chromebooks with this patch on top of chromeos-4.14.
+>
+> Additional real world test coverage would be useful before moving forward.
+>
+>   sound/soc/intel/skylake/skl-topology.c | 235 +++++++++++++++++++++++++
+>   sound/soc/soc-topology.c               |   7 +-
+>   2 files changed, 240 insertions(+), 2 deletions(-)
+>
+> diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+> index 3b1dca419883..cc81e200e6b7 100644
+> --- a/sound/soc/intel/skylake/skl-topology.c
+> +++ b/sound/soc/intel/skylake/skl-topology.c
+> @@ -19,6 +19,7 @@
+>   #include <linux/slab.h>
+>   #include <linux/types.h>
+>   #include <linux/firmware.h>
+> +#include <linux/uuid.h>
+>   #include <sound/soc.h>
+>   #include <sound/soc-topology.h>
+>   #include <uapi/sound/snd_sst_tokens.h>
+> @@ -30,6 +31,79 @@
+>   #include "../common/sst-dsp.h"
+>   #include "../common/sst-dsp-priv.h"
+>   
+> +/* v4 configuration data */
+> +struct skl_dfw_v4_module_pin {
+> +	u16 module_id;
+> +	u16 instance_id;
+> +} __packed;
+> +
+> +struct skl_dfw_v4_module_fmt {
+> +	u32 channels;
+> +	u32 freq;
+> +	u32 bit_depth;
+> +	u32 valid_bit_depth;
+> +	u32 ch_cfg;
+> +	u32 interleaving_style;
+> +	u32 sample_type;
+> +	u32 ch_map;
+> +} __packed;
+> +
+> +struct skl_dfw_v4_module_caps {
+> +	u32 set_params:2;
+> +	u32 rsvd:30;
+> +	u32 param_id;
+> +	u32 caps_size;
+> +	u32 caps[HDA_SST_CFG_MAX];
+> +};
+> +
+> +struct skl_dfw_v4_pipe {
+> +	u8 pipe_id;
+> +	u8 pipe_priority;
+> +	u16 conn_type:4;
+> +	u16 rsvd:4;
+> +	u16 memory_pages:8;
+> +} __packed;
+> +
+> +struct skl_dfw_v4_module {
+> +	char uuid[SKL_UUID_STR_SZ];
+> +
+> +	u16 module_id;
+> +	u16 instance_id;
+> +	u32 max_mcps;
+> +	u32 mem_pages;
+> +	u32 obs;
+> +	u32 ibs;
+> +	u32 vbus_id;
+> +
+> +	u32 max_in_queue:8;
+> +	u32 max_out_queue:8;
+> +	u32 time_slot:8;
+> +	u32 core_id:4;
+> +	u32 rsvd1:4;
+> +
+> +	u32 module_type:8;
+> +	u32 conn_type:4;
+> +	u32 dev_type:4;
+> +	u32 hw_conn_type:4;
+> +	u32 rsvd2:12;
+> +
+> +	u32 params_fixup:8;
+> +	u32 converter:8;
+> +	u32 input_pin_type:1;
+> +	u32 output_pin_type:1;
+> +	u32 is_dynamic_in_pin:1;
+> +	u32 is_dynamic_out_pin:1;
+> +	u32 is_loadable:1;
+> +	u32 rsvd3:11;
+> +
+> +	struct skl_dfw_v4_pipe pipe;
+> +	struct skl_dfw_v4_module_fmt in_fmt[MAX_IN_QUEUE];
+> +	struct skl_dfw_v4_module_fmt out_fmt[MAX_OUT_QUEUE];
+> +	struct skl_dfw_v4_module_pin in_pin[MAX_IN_QUEUE];
+> +	struct skl_dfw_v4_module_pin out_pin[MAX_OUT_QUEUE];
+> +	struct skl_dfw_v4_module_caps caps;
+> +} __packed;
+> +
+All the structures match what I can see in sof-topology.h for chromeos-3.18.
+So far so good.
+>   #define SKL_CH_FIXUP_MASK		(1 << 0)
+>   #define SKL_RATE_FIXUP_MASK		(1 << 1)
+>   #define SKL_FMT_FIXUP_MASK		(1 << 2)
+> @@ -2724,6 +2798,160 @@ static int skl_tplg_get_desc_blocks(struct device *dev,
+>   	return -EINVAL;
+>   }
+>   
+> +/*
+> + * Add pipeline from topology binary into driver pipeline list
+> + *
+> + * If already added we return that instance
+> + * Otherwise we create a new instance and add into driver list
+> + */
+> +static int skl_tplg_add_pipe_v4(struct device *dev,
+> +				struct skl_module_cfg *mconfig, struct skl *skl,
+> +				struct skl_dfw_v4_pipe *dfw_pipe)
+> +{
+> +	struct skl_pipeline *ppl;
+> +	struct skl_pipe *pipe;
+> +	struct skl_pipe_params *params;
+> +
+> +	list_for_each_entry(ppl, &skl->ppl_list, node) {
+> +		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id) {
+> +			mconfig->pipe = ppl->pipe;
+> +			return 0;
+> +		}
+> +	}
+> +
+> +	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
+> +	if (!ppl)
+> +		return -ENOMEM;
+> +
+> +	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
+> +	if (!pipe)
+> +		return -ENOMEM;
+> +
+> +	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
+> +	if (!params)
+> +		return -ENOMEM;
+> +
+> +	pipe->ppl_id = dfw_pipe->pipe_id;
+> +	pipe->memory_pages = dfw_pipe->memory_pages;
+> +	pipe->pipe_priority = dfw_pipe->pipe_priority;
+> +	pipe->conn_type = dfw_pipe->conn_type;
+> +	pipe->state = SKL_PIPE_INVALID;
+> +	pipe->p_params = params;
+> +	INIT_LIST_HEAD(&pipe->w_list);
+> +
+> +	ppl->pipe = pipe;
+> +	list_add(&ppl->node, &skl->ppl_list);
+> +
+> +	mconfig->pipe = pipe;
+> +	mconfig->pipe->state = SKL_PIPE_INVALID;
+That last assignment does not seem necessary? pipe->state is already set 
+above.
+> +
+> +	return 0;
+> +}
+> +
+> +static void skl_fill_module_pin_info_v4(struct skl_dfw_v4_module_pin *dfw_pin,
+> +					struct skl_module_pin *m_pin,
+> +					bool is_dynamic, int max_pin)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < max_pin; i++) {
+> +		m_pin[i].id.module_id = dfw_pin[i].module_id;
+> +		m_pin[i].id.instance_id = dfw_pin[i].instance_id;
+> +		m_pin[i].in_use = false;
+> +		m_pin[i].is_dynamic = is_dynamic;
+> +		m_pin[i].pin_state = SKL_PIN_UNBIND;
+> +	}
+> +}
+> +
+> +static void skl_tplg_fill_fmt_v4(struct skl_module_pin_fmt *dst_fmt,
+> +				 struct skl_dfw_v4_module_fmt *src_fmt,
+> +				 int pins)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < pins; i++) {
+> +		dst_fmt[i].fmt.channels  = src_fmt[i].channels;
+> +		dst_fmt[i].fmt.s_freq = src_fmt[i].freq;
+> +		dst_fmt[i].fmt.bit_depth = src_fmt[i].bit_depth;
+> +		dst_fmt[i].fmt.valid_bit_depth = src_fmt[i].valid_bit_depth;
+> +		dst_fmt[i].fmt.ch_cfg = src_fmt[i].ch_cfg;
+> +		dst_fmt[i].fmt.ch_map = src_fmt[i].ch_map;
+> +		dst_fmt[i].fmt.interleaving_style =
+> +						src_fmt[i].interleaving_style;
+> +		dst_fmt[i].fmt.sample_type = src_fmt[i].sample_type;
+> +	}
+> +}
+> +
+> +static int skl_tplg_get_pvt_data_v4(struct snd_soc_tplg_dapm_widget *tplg_w,
+> +				    struct skl *skl, struct device *dev,
+> +				    struct skl_module_cfg *mconfig)
+> +{
+> +	struct skl_dfw_v4_module *dfw =
+> +				(struct skl_dfw_v4_module *)tplg_w->priv.data;
+> +	int ret;
+> +
+> +	dev_dbg(dev, "Parsing Skylake v4 widget topology data\n");
+> +
+> +	ret = guid_parse(dfw->uuid, (guid_t *)mconfig->guid);
+> +	if (ret)
+> +		return ret;
+> +	mconfig->id.module_id = -1;
+> +	mconfig->id.instance_id = dfw->instance_id;
+> +	mconfig->module->resources[0].cps = dfw->max_mcps;
+> +	mconfig->module->resources[0].ibs = dfw->ibs;
+> +	mconfig->module->resources[0].obs = dfw->obs;
+> +	mconfig->core_id = dfw->core_id;
+> +	mconfig->module->max_input_pins = dfw->max_in_queue;
+> +	mconfig->module->max_output_pins = dfw->max_out_queue;
+> +	mconfig->module->loadable = dfw->is_loadable;
+> +	skl_tplg_fill_fmt_v4(mconfig->module->formats[0].inputs, dfw->in_fmt,
+> +			     MAX_IN_QUEUE);
+> +	skl_tplg_fill_fmt_v4(mconfig->module->formats[0].outputs, dfw->out_fmt,
+> +			     MAX_OUT_QUEUE);
+Not clear to me if there is a confusion between MAX_IN_QUEUE and 
+MODULE_MAX_IN_PINS. The two values happen to be identical.
 
-slim@91c0000 {
-	compatible = "qcom,msm8996-slim";
-	reg = <0x91c0000 0x2C000>;
-	interrupts = <0 163 0>;
-	dmas = <&slimbam 3>, <&slimbam 4>;
-	dma-names = "rx", "tx";
-	#address-cells = <1>;
-	#size-cells = <1>;
-	ngd@1 {
-		reg  = <1>;
-		#address-cells = <1>;
-		#size-cells = <1>;
-		codec@1 {
-			compatible = "slim217,1a0";
-			reg  = <1 0>;
-		};	
-	};
-};
+> +
+> +	mconfig->params_fixup = dfw->params_fixup;
+> +	mconfig->converter = dfw->converter;
+> +	mconfig->m_type = dfw->module_type;
+> +	mconfig->vbus_id = dfw->vbus_id;
+> +	mconfig->module->resources[0].is_pages = dfw->mem_pages;
+> +
+> +	ret = skl_tplg_add_pipe_v4(dev, mconfig, skl, &dfw->pipe);
+> +	if (ret)
+> +		return ret;
+> +
+> +	mconfig->dev_type = dfw->dev_type;
+> +	mconfig->hw_conn_type = dfw->hw_conn_type;
+> +	mconfig->time_slot = dfw->time_slot;
+> +	mconfig->formats_config.caps_size = dfw->caps.caps_size;
 
+chromeos-3.18 has this:
+     if (dfw_config->is_loadable)
+         memcpy(mconfig->guid, dfw_config->uuid,
+                     ARRAY_SIZE(dfw_config->uuid));
 
+Is this needed here?
 
-If you mean to provide consistent numbering to userspace, then
-> that's not a DT problem (nor one that Linux plans to solve).
-> 
-No, this is not problem am trying to solve.
-
->> We also need this instance ID during powering it up using QMI.
-> 
-> Wouldn't that be a QMI ID?
-
-It is passed as parameter to SLIMBUS_QMI_SELECT_INSTANCE_REQ_V01 request.
-
-thanks,
-srini
-> 
-> Rob
-> 
+> +
+> +	mconfig->m_in_pin = devm_kzalloc(dev,
+> +				MAX_IN_QUEUE * sizeof(*mconfig->m_in_pin),
+> +				GFP_KERNEL);
+> +	if (!mconfig->m_in_pin)
+> +		return -ENOMEM;
+> +
+> +	mconfig->m_out_pin = devm_kzalloc(dev,
+> +				MAX_OUT_QUEUE * sizeof(*mconfig->m_out_pin),
+> +				GFP_KERNEL);
+> +	if (!mconfig->m_out_pin)
+> +		return -ENOMEM;
+> +
+> +	skl_fill_module_pin_info_v4(dfw->in_pin, mconfig->m_in_pin,
+> +				    dfw->is_dynamic_in_pin,
+> +				    mconfig->module->max_input_pins);
+> +	skl_fill_module_pin_info_v4(dfw->out_pin, mconfig->m_out_pin,
+> +				    dfw->is_dynamic_out_pin,
+> +				    mconfig->module->max_output_pins);
+> +
+> +	if (mconfig->formats_config.caps_size) {
+> +		dev_warn(dev, "caps size %d not supported, will be ignored\n",
+> +			 mconfig->formats_config.caps_size);
+> +		mconfig->formats_config.caps_size = 0;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   /*
+>    * Parse the private data for the token and corresponding value.
+>    * The private data can have multiple data blocks. So, a data block
+> @@ -2739,6 +2967,13 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
+>   	char *data;
+>   	int ret;
+>   
+> +	/*
+> +	 * v4 configuration files have a valid UUID at the start of
+> +	 * the widget's private data.
+> +	 */
+> +	if (uuid_is_valid((char *)tplg_w->priv.data))
+> +		return skl_tplg_get_pvt_data_v4(tplg_w, skl, dev, mconfig);
+> +
+>   	/* Read the NUM_DATA_BLOCKS descriptor */
+>   	array = (struct snd_soc_tplg_vendor_array *)tplg_w->priv.data;
+>   	ret = skl_tplg_get_desc_blocks(dev, array);
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+> index 986b8b2f90fb..d66b2e5ccd67 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -2293,8 +2293,11 @@ static int manifest_new_ver(struct soc_tplg *tplg,
+>   	*manifest = NULL;
+>   
+>   	if (src->size != sizeof(*src_v4)) {
+> -		dev_err(tplg->dev, "ASoC: invalid manifest size\n");
+> -		return -EINVAL;
+> +		dev_warn(tplg->dev, "ASoC: invalid manifest size %d\n",
+> +			 src->size);
+> +		if (src->size)
+> +			return -EINVAL;
+> +		src->size = sizeof(*src_v4);
+>   	}
+>   
+>   	dev_warn(tplg->dev, "ASoC: old version of manifest\n");
