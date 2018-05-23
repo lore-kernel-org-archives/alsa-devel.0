@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC/RFT PATCH] ASoC: topology: Improve backwards
- compatibility with v4 topology files
-Date: Wed, 23 May 2018 09:24:24 +0100
-Message-ID: <20180523082424.GA4828@sirena.org.uk>
-References: <20180522165842.233949-1-groeck@google.com>
- <fb9aebba-919a-2e80-aec7-2fd44e5e1861@linux.intel.com>
+Subject: Applied "ASoC: Intel: cht_bsw_nau8824: Fix jack_type
+	to include SND_JACK_MICROPHONE" to the asoc tree
+Date: Wed, 23 May 2018 09:38:16 +0100
+Message-ID: <E1fLPHk-0000hK-EP@debutante>
+References: <20180521124251.10535-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2027382403483973457=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C7B60266F88
- for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 10:24:36 +0200 (CEST)
-In-Reply-To: <fb9aebba-919a-2e80-aec7-2fd44e5e1861@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CCC4B266F88
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 10:38:26 +0200 (CEST)
+In-Reply-To: <20180521124251.10535-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,59 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Guenter Roeck <groeck@google.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>, Takashi Iwai <tiwai@suse.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2027382403483973457==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
-Content-Disposition: inline
+   ASoC: Intel: cht_bsw_nau8824: Fix jack_type to include SND_JACK_MICROPHONE
 
+has been applied to the asoc tree at
 
---y0ulUmNC+osPPQO6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, May 22, 2018 at 02:59:35PM -0500, Pierre-Louis Bossart wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> I am also not convinced by the notion that maintaining topology files is
-> only a userspace/distro issue. This would mean some distros will have access
-> to the required topology files, possibly enabling DSP processing
-> capabilities, but other will not and will not be able to enable even basic
-> playback/capture. Just like we have a basic firmware with limited
-> functionality in /lib/firmware/intel, it would make sense to require a basic
-> .conf file in alsa-lib for every upstream machine driver - along possibly
-> with a basic UCM file so that audio works no matter what distro people use.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-The point here is that people should be able to update their kernel
-without updating their userspace so things have to work with whatever
-they have right now - anything that relies on shipping new firmware or
-configuration files to userspace is a problem.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---y0ulUmNC+osPPQO6
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsFJTcACgkQJNaLcl1U
-h9AS4wf+NiCBQ9NPvTyXDKTk07Ae2ufTmBc4iMUvFK5il01eXr02pmf2FtRRodk0
-M9R1BVCtmPBDeruSIAbnA9x+u6SUxWwszTbDp6AL5p7oz5VjyJ9o9XBcWcvXKivy
-iB3uIommTHeY+9ESd3HBO7SI2UfZtgpVxa9pqYWpIlUyjpeAq7UwN34qbqdmuRu4
-tm8n3//+hp09MfiixFoWmOdfbNPIh8iz4sPYSzahAYZ7fYgN355eOE4yLDuZPB08
-DsXRyGBqHWD3uIaleZXIvyatKjyJI1uLpS8xb+E64ntcblwh8ph7rrf3Ojb44PCp
-6FXCx4HBw1TNTzECC11WsQ8FvZt6Cw==
-=m9Pa
------END PGP SIGNATURE-----
+>From 5aff078ac81a3be58f7a2e2be0f33bc9ce062bac Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Mon, 21 May 2018 14:42:51 +0200
+Subject: [PATCH] ASoC: Intel: cht_bsw_nau8824: Fix jack_type to include
+ SND_JACK_MICROPHONE
 
---y0ulUmNC+osPPQO6--
+The nau8824 codec can detect whether a headset or plain headphones is
+inserted (as well as button presses on the headset) as such the jack_type
+passed to snd_soc_card_jack_new() should include SND_JACK_MICROPHONE.
 
---===============2027382403483973457==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/cht_bsw_nau8824.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---===============2027382403483973457==--
+diff --git a/sound/soc/intel/boards/cht_bsw_nau8824.c b/sound/soc/intel/boards/cht_bsw_nau8824.c
+index 072e94b69e57..30c46977d53c 100644
+--- a/sound/soc/intel/boards/cht_bsw_nau8824.c
++++ b/sound/soc/intel/boards/cht_bsw_nau8824.c
+@@ -120,7 +120,7 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
+ 	 * KEY_VOLUMEUP
+ 	 * KEY_VOLUMEDOWN
+ 	 */
+-	jack_type = SND_JACK_HEADPHONE | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++	jack_type = SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
+ 		SND_JACK_BTN_2 | SND_JACK_BTN_3;
+ 	ret = snd_soc_card_jack_new(runtime->card, "Headset", jack_type, jack,
+ 		cht_bsw_jack_pins, ARRAY_SIZE(cht_bsw_jack_pins));
+-- 
+2.17.0
