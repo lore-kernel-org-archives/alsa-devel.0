@@ -1,46 +1,137 @@
-From: Guenter Roeck <groeck@google.com>
-Subject: Re: [RFC/RFT PATCH] ASoC: topology: Improve backwards compatibility
- with v4 topology files
-Date: Wed, 23 May 2018 09:29:46 -0700
-Message-ID: <CABXOdTf4GhycxC6TNyigS6YyiLXbZK=DHpP2Wzhw7405xVB3BA@mail.gmail.com>
-References: <20180522165842.233949-1-groeck@google.com> <s5hmuwqpjdd.wl-tiwai@suse.de>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/2] slimbus: ngd: dt-bindings: Add slim
+	ngd dt bindings
+Date: Wed, 23 May 2018 11:40:23 -0500
+Message-ID: <20180523164023.GA24671@rob-hp-laptop>
+References: <20180516165118.16551-1-srinivas.kandagatla@linaro.org>
+ <20180516165118.16551-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hmuwqpjdd.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Guenter Roeck <groeck@chromium.org>, "Patel, Chintan M" <chintan.m.patel@intel.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf0-f194.google.com (mail-pf0-f194.google.com
+ [209.85.192.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 989DB2671D2
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 18:40:27 +0200 (CEST)
+Received: by mail-pf0-f194.google.com with SMTP id x9-v6so10782998pfm.2
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 09:40:27 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180516165118.16551-2-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, girishm@quicinc.com, gregkh@linuxfoundation.org, broonie@kernel.org, linux-kernel@vger.kernel.org, bgoswami@codeaurora.org, kramasub@codeaurora.org, linux-arm-msm@vger.kernel.org, sdharia@quicinc.com
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, May 23, 2018 at 6:54 AM Takashi Iwai <tiwai@suse.de> wrote:
+On Wed, May 16, 2018 at 05:51:17PM +0100, Srinivas Kandagatla wrote:
+> This patch adds bindings for Qualcomm SLIMBus NGD controller found in
+> all new SoCs starting from B family.
+> SLIMBus NGD controller is a light-weight driver responsible for
+> communicating with SLIMBus slaves directly over the bus using messaging
+> interface and communicating with master component residing on ADSP for
+> bandwidth and data-channel management
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../bindings/slimbus/slim-ngd-qcom-ctrl.txt        | 70 ++++++++++++++++++++++
+>  1 file changed, 70 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt b/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
+> new file mode 100644
+> index 000000000000..c948fb098819
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
+> @@ -0,0 +1,70 @@
+> +Qualcomm SLIMBus Non Generic Device (NGD) Controller binding
+> +
+> +SLIMBus NGD controller is a light-weight driver responsible for communicating
+> +with SLIMBus slaves directly over the bus using messaging interface and
+> +communicating with master component residing on ADSP for bandwidth and
+> +data-channel management
+> +
+> +Please refer to slimbus/bus.txt for details of the common SLIMBus bindings.
+> +
+> +- compatible:
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: must be "qcom,slim-ngd"
 
-> On Tue, 22 May 2018 18:58:42 +0200,
-> Guenter Roeck wrote:
-> >
-> > +struct skl_dfw_v4_module_caps {
-> > +     u32 set_params:2;
-> > +     u32 rsvd:30;
-> > +     u32 param_id;
-> > +     u32 caps_size;
-> > +     u32 caps[HDA_SST_CFG_MAX];
-> > +};
+SoC specific compatible needed.
 
-> Missing __packed attribute?
+> +
+> +- reg:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: must specify the base address and size of the controller
+> +		    register blocks.
 
+blocks? Is there more than one? If so, how many?
 
-Yes and no. The original structure (see
-sound/soc/intel/skylake/skl-tplg-interface.h
-in v4.5.y and earlier) doesn't have the __packed attribute either. I guess
-it doesn't hurt,
-since it is all u32, so I'll add it in.
+> +
+> +- reg-names:
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: must be "ctrl"
 
-Guenter
+reg-names is pointless when there is only 1.
 
-> And I'm wondering whether we should move these definitions to uapi
-> headers.
+> +
+> +- qcom,ngd-id
+> +	Usage: required
+> +	Value type: <u32>
+> +	Definition: ngd instance id in the controller
 
+Why do you need this?
 
-> thanks,
-
-> Takashi
+> +- dmas
+> +	Usage: required
+> +	Value type: <array of phandles>
+> +	Definition: List of rx and tx dma channels
+> +
+> +- dma-names
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: must be "rx" and "tx".
+> +
+> +- interrupts:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: must list controller IRQ.
+> +
+> +#address-cells
+> +	Usage: required
+> +	Refer to slimbus/bus.txt for details of the common SLIMBus bindings.
+> +
+> +#size-cells
+> +	Usage: required
+> +	Refer to slimbus/bus.txt for details of the common SLIMBus bindings.
+> +
+> += EXAMPLE
+> +
+> +slim@91c0000 {
+> +	compatible = "qcom,slim-ngd";
+> +	reg = <0x91c0000 0x2C000>;
+> +	reg-names = "ctrl";
+> +	interrupts = <0 163 0>;
+> +	qcom,ngd-id = <1>;
+> +	dmas =	<&slimbam 3>, <&slimbam 4>;
+> +	dma-names = "rx", "tx";
+> +
+> +	#address-cells = <1>;
+> +	#size-cells = <1>;
+> +	codec@1 {
+> +		compatible = "slim217,1a0";
+> +		reg  = <1 0>;
+> +	};
+> +};
+> -- 
+> 2.16.2
+> 
