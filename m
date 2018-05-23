@@ -1,77 +1,80 @@
-From: Oleksandr Andrushchenko <andr2000@gmail.com>
-Subject: Re: [PATCH v3 5/6] ALSA: xen-front: Implement ALSA virtual sound
- driver
-Date: Wed, 23 May 2018 09:14:33 +0300
-Message-ID: <de973ded-8dba-24c3-b0a3-7b8ff30dab5f@gmail.com>
-References: <20180514062742.25879-1-andr2000@gmail.com>
- <20180514062742.25879-6-andr2000@gmail.com>
- <510b107c-c136-7748-0cfa-9de849887c61@sakamocchi.jp>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC/RFT PATCH] ASoC: topology: Improve backwards
+ compatibility with v4 topology files
+Date: Wed, 23 May 2018 09:24:24 +0100
+Message-ID: <20180523082424.GA4828@sirena.org.uk>
+References: <20180522165842.233949-1-groeck@google.com>
+ <fb9aebba-919a-2e80-aec7-2fd44e5e1861@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <510b107c-c136-7748-0cfa-9de849887c61@sakamocchi.jp>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>, xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, jgross@suse.com, boris.ostrovsky@oracle.com, konrad.wilk@oracle.com, perex@perex.cz, tiwai@suse.com
-Cc: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Content-Type: multipart/mixed; boundary="===============2027382403483973457=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C7B60266F88
+ for <alsa-devel@alsa-project.org>; Wed, 23 May 2018 10:24:36 +0200 (CEST)
+In-Reply-To: <fb9aebba-919a-2e80-aec7-2fd44e5e1861@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Guenter Roeck <groeck@google.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 05/23/2018 07:00 AM, Takashi Sakamoto wrote:
-> Hi,
->
-> On May 14 2018 15:27, Oleksandr Andrushchenko wrote:
-> > diff --git a/sound/xen/xen_snd_front_alsa.c 
-> b/sound/xen/xen_snd_front_alsa.c
-> > new file mode 100644
-> > index 000000000000..5041f83e98d2
-> > --- /dev/null
-> > +++ b/sound/xen/xen_snd_front_alsa.c
-> > ...
-> > +/*
-> > + * FIXME: The mmaped data transfer is asynchronous and there is no
-> > + * ack signal from user-space when it is done. This is the
-> > + * reason it is not implemented in the PV driver as we do need
-> > + * to know when the buffer can be transferred to the backend.
-> > + */
-> > ...
->
-> In ALSA PCM interface v2.0.14 or later, SNDRV_PCM_INFO_SYNC_APPLPTR is
-> available. This flag express that userspace applications are expected to
-> call ioctl(2) with 'SNDRV_PCM_IOCTL_SYNC_PTR' even if they oprate to
-> memory mapped page frames for PCM samples. For detail, please refer to a
-> commit 42f945970af9 ('ALSA: pcm: Add the explicit appl_ptr sync
-> support')[1].
->
-> As a supplement, please refer to below commits:
->  * 4b671f577474 ('ALSA: pcm: Add an ioctl to specify the supported
->    protocol version')[2]
->  * b602aa8eb1a0 ('ALSA: pcm: Disable only control mmap for explicit
->    appl_ptr sync')[3]
->
-> Alsa-lib v1.1.5 or later supports this flag and existent applications
-> can run transparently.
->
-> For developers, a tracepoint may be useful:
->  * fccf53881e9b ('ALSA: pcm: add 'applptr' event of tracepoint')[4]
->
-> For your information.
->
-> [1] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=42f945970af9
-> [2] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=4b671f577474
-> [3] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=b602aa8eb1a0
-> [4] 
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=fccf53881e9b
->
-Oh, this is very useful, thank you so much for such a detailed
-description. I'll take a close look at the above and see if
-Xen sound driver can benefit from this.
->
-> Regards
->
-> Takashi Sakamoto
-Thank you very much,
-Oleksandr
+
+--===============2027382403483973457==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="y0ulUmNC+osPPQO6"
+Content-Disposition: inline
+
+
+--y0ulUmNC+osPPQO6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, May 22, 2018 at 02:59:35PM -0500, Pierre-Louis Bossart wrote:
+
+> I am also not convinced by the notion that maintaining topology files is
+> only a userspace/distro issue. This would mean some distros will have access
+> to the required topology files, possibly enabling DSP processing
+> capabilities, but other will not and will not be able to enable even basic
+> playback/capture. Just like we have a basic firmware with limited
+> functionality in /lib/firmware/intel, it would make sense to require a basic
+> .conf file in alsa-lib for every upstream machine driver - along possibly
+> with a basic UCM file so that audio works no matter what distro people use.
+
+The point here is that people should be able to update their kernel
+without updating their userspace so things have to work with whatever
+they have right now - anything that relies on shipping new firmware or
+configuration files to userspace is a problem.
+
+--y0ulUmNC+osPPQO6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsFJTcACgkQJNaLcl1U
+h9AS4wf+NiCBQ9NPvTyXDKTk07Ae2ufTmBc4iMUvFK5il01eXr02pmf2FtRRodk0
+M9R1BVCtmPBDeruSIAbnA9x+u6SUxWwszTbDp6AL5p7oz5VjyJ9o9XBcWcvXKivy
+iB3uIommTHeY+9ESd3HBO7SI2UfZtgpVxa9pqYWpIlUyjpeAq7UwN34qbqdmuRu4
+tm8n3//+hp09MfiixFoWmOdfbNPIh8iz4sPYSzahAYZ7fYgN355eOE4yLDuZPB08
+DsXRyGBqHWD3uIaleZXIvyatKjyJI1uLpS8xb+E64ntcblwh8ph7rrf3Ojb44PCp
+6FXCx4HBw1TNTzECC11WsQ8FvZt6Cw==
+=m9Pa
+-----END PGP SIGNATURE-----
+
+--y0ulUmNC+osPPQO6--
+
+--===============2027382403483973457==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2027382403483973457==--
