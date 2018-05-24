@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/3] ALSA: echoaudio: Drop superfluous macro
-Date: Thu, 24 May 2018 11:25:46 +0200
-Message-ID: <20180524092546.16910-4-tiwai@suse.de>
+Subject: [PATCH 2/3] ALSA: usb-audio: Drop superfluous ifndef
+Date: Thu, 24 May 2018 11:25:45 +0200
+Message-ID: <20180524092546.16910-3-tiwai@suse.de>
 References: <20180524092546.16910-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CB1F8267380
+ by alsa0.perex.cz (Postfix) with ESMTP id CD974267623
  for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 11:25:56 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2EBD3ACDD
+Received: from relay1.suse.de (charybdis-ext.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 31B65AE92
  for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 09:25:56 +0000 (UTC)
 In-Reply-To: <20180524092546.16910-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,44 +26,36 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Drop pci_device() macro that just leads to chip->pci->dev, and pass it
-directly to request_firmware().  It was introduced for allowing the
-external alsa-driver kernel module builds.  Since it was discontinued
-years ago, we should clean it up now.
+Drop the superfluous #ifndef checks that had been put just for
+allowing building the alsa-driver kernel modules externally.
+Since the external build was discontinued years ago, let's clean up
+the old kludges.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/echoaudio/echoaudio.c | 2 +-
- sound/pci/echoaudio/echoaudio.h | 6 ------
- 2 files changed, 1 insertion(+), 7 deletions(-)
+ sound/usb/helper.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
-diff --git a/sound/pci/echoaudio/echoaudio.c b/sound/pci/echoaudio/echoaudio.c
-index 0935a5c8741f..358ef7dcf410 100644
---- a/sound/pci/echoaudio/echoaudio.c
-+++ b/sound/pci/echoaudio/echoaudio.c
-@@ -59,7 +59,7 @@ static int get_firmware(const struct firmware **fw_entry,
- 	dev_dbg(chip->card->dev,
- 		"firmware requested: %s\n", card_fw[fw_index].data);
- 	snprintf(name, sizeof(name), "ea/%s", card_fw[fw_index].data);
--	err = request_firmware(fw_entry, name, pci_device(chip));
-+	err = request_firmware(fw_entry, name, &chip->pci->dev);
- 	if (err < 0)
- 		dev_err(chip->card->dev,
- 			"get_firmware(): Firmware not available (%d)\n", err);
-diff --git a/sound/pci/echoaudio/echoaudio.h b/sound/pci/echoaudio/echoaudio.h
-index 152ce158583c..44b390a667d5 100644
---- a/sound/pci/echoaudio/echoaudio.h
-+++ b/sound/pci/echoaudio/echoaudio.h
-@@ -559,10 +559,4 @@ static inline int monitor_index(const struct echoaudio *chip, int out, int in)
- 	return out * num_busses_in(chip) + in;
- }
- 
--
--#ifndef pci_device
--#define pci_device(chip) (&chip->pci->dev)
+diff --git a/sound/usb/helper.h b/sound/usb/helper.h
+index 4463e6d6dcb3..d338bd0e0ca6 100644
+--- a/sound/usb/helper.h
++++ b/sound/usb/helper.h
+@@ -18,16 +18,12 @@ unsigned char snd_usb_parse_datainterval(struct snd_usb_audio *chip,
+  * retrieve usb_interface descriptor from the host interface
+  * (conditional for compatibility with the older API)
+  */
+-#ifndef get_iface_desc
+ #define get_iface_desc(iface)	(&(iface)->desc)
+ #define get_endpoint(alt,ep)	(&(alt)->endpoint[ep].desc)
+ #define get_ep_desc(ep)		(&(ep)->desc)
+ #define get_cfg_desc(cfg)	(&(cfg)->desc)
 -#endif
--
--
- #endif /* _ECHOAUDIO_H_ */
+ 
+-#ifndef snd_usb_get_speed
+ #define snd_usb_get_speed(dev) ((dev)->speed)
+-#endif
+ 
+ static inline int snd_usb_ctrl_intf(struct snd_usb_audio *chip)
+ {
 -- 
 2.16.3
