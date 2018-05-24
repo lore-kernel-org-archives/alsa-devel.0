@@ -1,144 +1,108 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH 05/15] mtd: nand: pxa3xx: remove the dmaengine compat need
-Date: Wed, 23 May 2018 23:54:50 +0200
-Message-ID: <5f614736-31b6-6561-69c1-177595fbb210@zonque.org>
-References: <20180402142656.26815-1-robert.jarzmik@free.fr>
- <20180402142656.26815-6-robert.jarzmik@free.fr>
- <a09d80dc-e8fd-1e9a-1878-8875ddc83134@zonque.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [RFC/RFT PATCH] ASoC: topology: Improve backwards
+ compatibility with v4 topology files
+Date: Wed, 23 May 2018 22:38:03 -0500
+Message-ID: <ed07d060-de54-1a35-25d7-a69c6cf47f7f@linux.intel.com>
+References: <20180522165842.233949-1-groeck@google.com>
+ <649b1c14-e440-0c89-a59c-dc663344faa3@linux.intel.com>
+ <CABXOdTdyWVtbWXR6O3VenwTezVLGvEfKuvH=Xz6e5D3np-ZQNw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------05E9BD108AABC677CA24E234"
-Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
-In-Reply-To: <a09d80dc-e8fd-1e9a-1878-8875ddc83134@zonque.org>
-Content-Language: en-US
-List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
-List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel/>
-List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
-List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
-List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>,
- <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
-Errors-To: driverdev-devel-bounces@linuxdriverproject.org
-Sender: "devel" <driverdev-devel-bounces@linuxdriverproject.org>
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>, Tejun Heo <tj@kernel.org>, Vinod Koul <vinod.koul@intel.com>, Mauro Carvalho Chehab <mchehab@kernel.org>, Ulf Hansson <ulf.hansson@linaro.org>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Cyrille Pitchen <cyrille.pitchen@wedev4u.fr>, Nicolas Pitre <nico@fluxnic.net>, Samuel Ortiz <samuel@sortiz.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org, Robert Jarzmik <robert.jarzmik@renault.com>, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
-List-Id: alsa-devel@alsa-project.org
-
-This is a multi-part message in MIME format.
---------------05E9BD108AABC677CA24E234
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-
-Hi Robert,
-
-Please refer to the attached patch instead of the one I sent earlier. I 
-missed to also remove the platform_get_resource(IORESOURCE_DMA) call.
-
-
-Thanks,
-Daniel
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CABXOdTdyWVtbWXR6O3VenwTezVLGvEfKuvH=Xz6e5D3np-ZQNw@mail.gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <groeck@google.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Patel, Chintan M" <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
+List-Id: alsa-devel@alsa-project.org
 
 
-On Friday, May 18, 2018 11:31 PM, Daniel Mack wrote:
-> Hi Robert,
+>>> +static int skl_tplg_get_pvt_data_v4(struct snd_soc_tplg_dapm_widget
+> *tplg_w,
+>>> +                                 struct skl *skl, struct device *dev,
+>>> +                                 struct skl_module_cfg *mconfig)
+>>> +{
+>>> +     struct skl_dfw_v4_module *dfw =
+>>> +                             (struct skl_dfw_v4_module
+> *)tplg_w->priv.data;
+>>> +     int ret;
+>>> +
+>>> +     dev_dbg(dev, "Parsing Skylake v4 widget topology data\n");
+>>> +
+>>> +     ret = guid_parse(dfw->uuid, (guid_t *)mconfig->guid);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +     mconfig->id.module_id = -1;
+>>> +     mconfig->id.instance_id = dfw->instance_id;
+>>> +     mconfig->module->resources[0].cps = dfw->max_mcps;
+>>> +     mconfig->module->resources[0].ibs = dfw->ibs;
+>>> +     mconfig->module->resources[0].obs = dfw->obs;
+>>> +     mconfig->core_id = dfw->core_id;
+>>> +     mconfig->module->max_input_pins = dfw->max_in_queue;
+>>> +     mconfig->module->max_output_pins = dfw->max_out_queue;
+>>> +     mconfig->module->loadable = dfw->is_loadable;
+>>> +     skl_tplg_fill_fmt_v4(mconfig->module->formats[0].inputs,
+> dfw->in_fmt,
+>>> +                          MAX_IN_QUEUE);
+>>> +     skl_tplg_fill_fmt_v4(mconfig->module->formats[0].outputs,
+> dfw->out_fmt,
+>>> +                          MAX_OUT_QUEUE);
+>> Not clear to me if there is a confusion between MAX_IN_QUEUE and
+>> MODULE_MAX_IN_PINS. The two values happen to be identical.
 > 
-> Thanks for this series.
 > 
-> On Monday, April 02, 2018 04:26 PM, Robert Jarzmik wrote:
->> From: Robert Jarzmik <robert.jarzmik@renault.com>
->>
->> As the pxa architecture switched towards the dmaengine slave map, the
->> old compatibility mechanism to acquire the dma requestor line number and
->> priority are not needed anymore.
->>
->> This patch simplifies the dma resource acquisition, using the more
->> generic function dma_request_slave_channel().
->>
->> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->> ---
->>    drivers/mtd/nand/pxa3xx_nand.c | 10 +---------
+> The target (mconfig->module->formats[]) size is MAX_IN_QUEUE. Upstream
+> v4.4/v4.5
+> use both defines interchangeably as far as I can see.
 > 
-> This driver was replaced by drivers/mtd/nand/raw/marvell_nand.c
-> recently, so this patch can be dropped. I attached a version for the new
-> driver which you can pick instead.
+> sound/soc/intel/skylake/skl-topology.h: struct skl_module_fmt
+> in_fmt[MODULE_MAX_IN_PINS];
+> sound/soc/intel/skylake/skl-tplg-interface.h:   struct skl_dfw_module_fmt
+> in_fmt[MAX_IN_QUEUE];
+> 
+> I could make it
+>                    min(MAX_IN_QUEUE, dfw->max_in_queue)
+> Would that be better ?
+
+Looks like your code was fine in the first place.
+> 
+>>> +
+>>> +     mconfig->params_fixup = dfw->params_fixup;
+>>> +     mconfig->converter = dfw->converter;
+>>> +     mconfig->m_type = dfw->module_type;
+>>> +     mconfig->vbus_id = dfw->vbus_id;
+>>> +     mconfig->module->resources[0].is_pages = dfw->mem_pages;
+>>> +
+>>> +     ret = skl_tplg_add_pipe_v4(dev, mconfig, skl, &dfw->pipe);
+>>> +     if (ret)
+>>> +             return ret;
+>>> +
+>>> +     mconfig->dev_type = dfw->dev_type;
+>>> +     mconfig->hw_conn_type = dfw->hw_conn_type;
+>>> +     mconfig->time_slot = dfw->time_slot;
+>>> +     mconfig->formats_config.caps_size = dfw->caps.caps_size;
+> 
+>> chromeos-3.18 has this:
+>>        if (dfw_config->is_loadable)
+>>            memcpy(mconfig->guid, dfw_config->uuid,
+>>                        ARRAY_SIZE(dfw_config->uuid));
+> 
+>> Is this needed here?
 > 
 > 
-> Thanks,
-> Daniel
+> Direct memcpy doesn't work anymore since the uuid format is different. The
+> above is replaced
+> with (unconditional)
 > 
+>           ret = guid_parse(dfw->uuid, (guid_t *)mconfig->guid);
+>           if (ret)
+>                   return ret;
+> 
+> at the beginning of skl_tplg_get_pvt_data_v4(). The new code, as far as I
+> can see, loads
+> the uuid unconditionally if it finds SND_SOC_TPLG_TUPLE_TYPE_UUID. I wanted
+> to
+> be on the safe side and decided to do the same.
 
-
---------------05E9BD108AABC677CA24E234
-Content-Type: text/x-patch;
- name="0001-mtd-rawnand-marvell-remove-dmaengine-compat-code.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-mtd-rawnand-marvell-remove-dmaengine-compat-code.patch"
-
->From 72a306157dedb21f8c3289f0f7a288fc4542bd96 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Sat, 12 May 2018 21:50:13 +0200
-Subject: [PATCH] mtd: rawnand: marvell: remove dmaengine compat code
-
-As the pxa architecture switched towards the dmaengine slave map, the
-old compatibility mechanism to acquire the dma requestor line number and
-priority are not needed anymore.
-
-This patch simplifies the dma resource acquisition, using the more
-generic function dma_request_slave_channel().
-
-Signed-off-by: Daniel Mack <daniel@zonque.org>
----
- drivers/mtd/nand/raw/marvell_nand.c | 17 +----------------
- 1 file changed, 1 insertion(+), 16 deletions(-)
-
-diff --git a/drivers/mtd/nand/raw/marvell_nand.c b/drivers/mtd/nand/raw/marvell_nand.c
-index ebb1d141b900..319fea77daf1 100644
---- a/drivers/mtd/nand/raw/marvell_nand.c
-+++ b/drivers/mtd/nand/raw/marvell_nand.c
-@@ -2612,8 +2612,6 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
- 						    dev);
- 	struct dma_slave_config config = {};
- 	struct resource *r;
--	dma_cap_mask_t mask;
--	struct pxad_param param;
- 	int ret;
- 
- 	if (!IS_ENABLED(CONFIG_PXA_DMA)) {
-@@ -2626,20 +2624,7 @@ static int marvell_nfc_init_dma(struct marvell_nfc *nfc)
- 	if (ret)
- 		return ret;
- 
--	r = platform_get_resource(pdev, IORESOURCE_DMA, 0);
--	if (!r) {
--		dev_err(nfc->dev, "No resource defined for data DMA\n");
--		return -ENXIO;
--	}
--
--	param.drcmr = r->start;
--	param.prio = PXAD_PRIO_LOWEST;
--	dma_cap_zero(mask);
--	dma_cap_set(DMA_SLAVE, mask);
--	nfc->dma_chan =
--		dma_request_slave_channel_compat(mask, pxad_filter_fn,
--						 &param, nfc->dev,
--						 "data");
-+	nfc->dma_chan = dma_request_slave_channel(nfc->dev, "data");
- 	if (!nfc->dma_chan) {
- 		dev_err(nfc->dev,
- 			"Unable to request data DMA channel\n");
--- 
-2.14.3
-
-
---------------05E9BD108AABC677CA24E234
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-_______________________________________________
-devel mailing list
-devel@linuxdriverproject.org
-http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel
-
---------------05E9BD108AABC677CA24E234--
+ok.
