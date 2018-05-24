@@ -1,16 +1,15 @@
-From: Anoush Khazeni <akhazeni@google.com>
-Subject: Submitting a patch for tinycompress v1.1.5
-Date: Thu, 24 May 2018 09:42:53 -0700
-Message-ID: <CAHk9b_cNbqi0=ajoUAdJqN30oqcNecQ_3okyOoVpFtGa+ike6w@mail.gmail.com>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH] ALSA: hda - Fix runtime PM
+Date: Thu, 24 May 2018 19:01:07 +0200
+Message-ID: <41bbf8fd990e3247026beeb4564260b6777b1062.1527181037.git.lukas@wunner.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="000000000000d5c93b056cf65778"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f173.google.com (mail-ua0-f173.google.com
- [209.85.217.173])
- by alsa0.perex.cz (Postfix) with ESMTP id ED3A0266DF0
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 18:42:56 +0200 (CEST)
-Received: by mail-ua0-f173.google.com with SMTP id h15-v6so1534812uan.11
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 09:42:56 -0700 (PDT)
+Received: from mailout1.hostsharing.net (mailout1.hostsharing.net
+ [83.223.95.204])
+ by alsa0.perex.cz (Postfix) with ESMTP id 93FE3266F44
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 19:01:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,39 +19,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>, Gunnar Krueger <taijian@posteo.de>, alsa-devel@alsa-project.org, Abhijeet Kumar <abhijeet.kumar@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---000000000000d5c93b056cf65778
-Content-Type: text/plain; charset="UTF-8"
-
-Submitting a patch to add the missing closing bracket for the extern "C"
-directive in "tinycompress.h" from release v1.1.5 tar file
-"tinycompress-1.1.5.tar.bz2"
-
---000000000000d5c93b056cf65778
-Content-Type: application/gzip; name="tinycompress.patch.tar.gz"
-Content-Disposition: attachment; filename="tinycompress.patch.tar.gz"
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_jhkrl2do0
-
-H4sIAK9c/1oAA+2Y3U7bMBTHezs/xRHcQLOkthPbaSckEBfbBZrQ9gBVmriNRfMhx5nopL37nEJh
-hcAo7WAb+UmVP+r4nCTn7+P4PLr8JKNE6oFR+SIuslLLqvLKyMRpb0dgjAVj0BNLoEeZYNSHpv8K
-RoD4VAjOOKUcMCVU0B5c7sqBx6grE2nrSnSRRt9lrh4aV2qVRXox00Vdtv1/dSdwU/4jkABqlRwF
-4TAcYkQFZEZl8ogwynkYhJR6IiSMc/Tajnb8Ee6rfrBzGyv9Ey4CHtD7+rd6WdM/EQH2e8B27kkL
-b1z/Le//vDUluAx7iaxirUqjinwTG/Z58CDYZP3nrFv/X4Zu/X/btOh/R6q/ZaX/h9Z/wvw7+g+4
-j3uAd3ur7bxx/Z8kSQWZqiqVzyCeF8tyoqP4QhqYFhrkpZE6h73TPUiUlrFR3yQ6qU1a6BF8LIrZ
-XMLZ2Sn6Wk8yZYxMYLIYweppHs+WIzwbT90K8jeyUf5/5lfh0/N/QIXVDqbM93mX/1+Cx/K/CIeC
-e5xhxkin3v+TJ+T/rc+CfpP/Ceb8jv79AHf5/0VI1HQK7udal7D23olHPOYVWs0GKo/ndSLX4mL9
-tDBtufYplyHXdbcx+45iIlxCXOID9UeMjgjxbs8UXBxijBzHeaZ7zfShi5lLbHzSERuOcLMc2knt
-p1Fgp7fBio6PwaWCvw/AaYoQbIfKDahqvJpprG06XRxURtexgVUv9GMEgz58kabWeQURpHUW5dAM
-jiZ2V2UrVZEvN2EmlTCPKgNSa9vsD5CdJrftOI1s88bQTJrxckiLseva4QcEyNlXU0jkVOUyORiP
-43JeV83vEDk/Gp9+2fRZW86+zG2cIAfBde21o7ajo6OjY1t+AsrfuScAHAAA
---000000000000d5c93b056cf65778
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---000000000000d5c93b056cf65778--
+QmVmb3JlIGNvbW1pdCAzYjViODk5Y2E2N2QgKCJBTFNBOiBoZGE6IE1ha2UgdXNlIG9mIGNvcmUg
+Y29kZWMgZnVuY3Rpb25zCnRvIHN5bmMgcG93ZXIgc3RhdGUiKSwgaGRhX3NldF9wb3dlcl9zdGF0
+ZSgpIHJldHVybmVkIHRoZSByZXNwb25zZSB0bwp0aGUgR2V0IFBvd2VyIFN0YXRlIHZlcmIsIGEg
+MzItYml0IHVuc2lnbmVkIGludGVnZXIgd2hvc2UgZXhwZWN0ZWQgdmFsdWUKaXMgMHgyMzMgYWZ0
+ZXIgdHJhbnNpdGlvbmluZyBhIGNvZGVjIHRvIEQzLCBhbmQgMHgwIGFmdGVyIHRyYW5zaXRpb25p
+bmcKaXQgdG8gRDAuCgpUaGUgcmVzcG9uc2UgdmFsdWUgaXMgc2lnbmlmaWNhbnQgYmVjYXVzZSBo
+ZGFfY29kZWNfcnVudGltZV9zdXNwZW5kKCkKZG9lcyBub3QgY2xlYXIgdGhlIGNvZGVjJ3MgYml0
+IGluIHRoZSBjb2RlY19wb3dlcmVkIGJpdG1hc2sgdW5sZXNzIHRoZQpBQ19QV1JTVF9DTEtfU1RP
+UF9PSyBiaXQgKDB4MjAwKSBpcyBzZXQgaW4gdGhlIHJlc3BvbnNlIHZhbHVlLiAgVGhhdCBpbgp0
+dXJuIHByZXZlbnRzIHRoZSBIREEgY29udHJvbGxlciBmcm9tIHJ1bnRpbWUgc3VzcGVuZGluZyBi
+ZWNhdXNlCmF6eF9ydW50aW1lX2lkbGUoKSBjaGVja3MgdGhhdCB0aGUgY29kZWNfcG93ZXJlZCBi
+aXRtYXNrIGlzIHplcm8uCgpTaW5jZSBjb21taXQgM2I1Yjg5OWNhNjdkLCBoZGFfc2V0X3Bvd2Vy
+X3N0YXRlKCkgb25seSByZXR1cm5zIDB4MCBvcgoweDEsIHRoZXJlYnkgYnJlYWtpbmcgcnVudGlt
+ZSBQTSBmb3IgYW55IEhEQSBjb250cm9sbGVyLiAgVGhhdCdzIGJlY2F1c2UKYW4gaW5saW5lIGZ1
+bmN0aW9uIGludHJvZHVjZWQgYnkgdGhlIGNvbW1pdCByZXR1cm5zIGEgYm9vbCBpbnN0ZWFkIG9m
+IGEKMzItYml0IHVuc2lnbmVkIGludC4gIFRoZSBjaGFuZ2Ugd2FzIGxpa2VseSBlcnJvbmVvdXMg
+YW5kIHJlc3VsdGVkIGZyb20KY29weWluZyBhbmQgcGFzdGluZyBzbmRfaGRhX2NoZWNrX3Bvd2Vy
+X3N0YXRlKCksIHdoaWNoIGlzIGltbWVkaWF0ZWx5CnByZWNlZGluZyB0aGUgbmV3bHkgaW50cm9k
+dWNlZCBpbmxpbmUgZnVuY3Rpb24uICBGaXggaXQuCgpMaW5rOiBodHRwczovL2J1Z3MuZnJlZWRl
+c2t0b3Aub3JnL3Nob3dfYnVnLmNnaT9pZD0xMDY1OTcKRml4ZXM6IDNiNWI4OTljYTY3ZCAoIkFM
+U0E6IGhkYTogTWFrZSB1c2Ugb2YgY29yZSBjb2RlYyBmdW5jdGlvbnMgdG8gc3luYyBwb3dlciBz
+dGF0ZSIpCkNjOiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+CkNjOiBB
+YmhpamVldCBLdW1hciA8YWJoaWplZXQua3VtYXJAaW50ZWwuY29tPgpSZXBvcnRlZC1hbmQtdGVz
+dGVkLWJ5OiBHdW5uYXIgS3LDvGdlciA8dGFpamlhbkBwb3N0ZW8uZGU+ClNpZ25lZC1vZmYtYnk6
+IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPgotLS0KIHNvdW5kL3BjaS9oZGEvaGRhX2xv
+Y2FsLmggfCA2ICsrKystLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygrKSwgMiBkZWxl
+dGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9sb2NhbC5oIGIvc291bmQv
+cGNpL2hkYS9oZGFfbG9jYWwuaAppbmRleCAzMjFlNzhiYWE2M2MuLjliZDkzNTIxNmMxOCAxMDA2
+NDQKLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfbG9jYWwuaAorKysgYi9zb3VuZC9wY2kvaGRhL2hk
+YV9sb2NhbC5oCkBAIC02MjIsOCArNjIyLDEwIEBAIHNuZF9oZGFfY2hlY2tfcG93ZXJfc3RhdGUo
+c3RydWN0IGhkYV9jb2RlYyAqY29kZWMsIGhkYV9uaWRfdCBuaWQsCiB7CiAJcmV0dXJuIHNuZF9o
+ZGFjX2NoZWNrX3Bvd2VyX3N0YXRlKCZjb2RlYy0+Y29yZSwgbmlkLCB0YXJnZXRfc3RhdGUpOwog
+fQotc3RhdGljIGlubGluZSBib29sIHNuZF9oZGFfc3luY19wb3dlcl9zdGF0ZShzdHJ1Y3QgaGRh
+X2NvZGVjICpjb2RlYywKLQkJCSAgIGhkYV9uaWRfdCBuaWQsIHVuc2lnbmVkIGludCB0YXJnZXRf
+c3RhdGUpCisKK3N0YXRpYyBpbmxpbmUgdW5zaWduZWQgaW50IHNuZF9oZGFfc3luY19wb3dlcl9z
+dGF0ZShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKKwkJCQkJCSAgICBoZGFfbmlkX3QgbmlkLAor
+CQkJCQkJICAgIHVuc2lnbmVkIGludCB0YXJnZXRfc3RhdGUpCiB7CiAJcmV0dXJuIHNuZF9oZGFj
+X3N5bmNfcG93ZXJfc3RhdGUoJmNvZGVjLT5jb3JlLCBuaWQsIHRhcmdldF9zdGF0ZSk7CiB9Ci0t
+IAoyLjE3LjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRw
+Oi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
