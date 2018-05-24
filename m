@@ -1,56 +1,40 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/3] ALSA: memalloc: Drop superfluous ifndef
-Date: Thu, 24 May 2018 11:25:44 +0200
-Message-ID: <20180524092546.16910-2-tiwai@suse.de>
-References: <20180524092546.16910-1-tiwai@suse.de>
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+Subject: Re: [PATCH v2 05/13] mtd: rawnand: marvell: remove the dmaengine
+ compat need
+Date: Thu, 24 May 2018 11:30:06 +0200
+Message-ID: <20180524113006.3d5f393e@xps13>
+References: <20180524070703.11901-1-robert.jarzmik@free.fr>
+        <20180524070703.11901-6-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CC94126738C
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 11:25:56 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 2F0ACAD2A
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 09:25:56 +0000 (UTC)
-In-Reply-To: <20180524092546.16910-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180524070703.11901-6-robert.jarzmik@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Drop the superfluous #ifndef check in memalloc.h that had been put
-just for allowing building the alsa-driver kernel modules externally.
-Since the external build was discontinued years ago, let's clean up
-the old kludges.
+Hi Robert,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/memalloc.h | 2 --
- 1 file changed, 2 deletions(-)
+On Thu, 24 May 2018 09:06:55 +0200, Robert Jarzmik
+<robert.jarzmik@free.fr> wrote:
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index 782d1df34208..9c3db3dce32b 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -34,11 +34,9 @@ struct snd_dma_device {
- 	struct device *dev;		/* generic device */
- };
- 
--#ifndef snd_dma_pci_data
- #define snd_dma_pci_data(pci)	(&(pci)->dev)
- #define snd_dma_isa_data()	NULL
- #define snd_dma_continuous_data(x)	((struct device *)(__force unsigned long)(x))
--#endif
- 
- 
- /*
--- 
-2.16.3
+> As the pxa architecture switched towards the dmaengine slave map, the
+> old compatibility mechanism to acquire the dma requestor line number and
+> priority are not needed anymore.
+> 
+> This patch simplifies the dma resource acquisition, using the more
+> generic function dma_request_slave_channel().
+> 
+> Signed-off-by: Signed-off-by: Daniel Mack <daniel@zonque.org>
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> ---
+>  drivers/mtd/nand/raw/marvell_nand.c | 17 +----------------
+>  1 file changed, 1 insertion(+), 16 deletions(-)
+> 
+
+Acked-by: Miquel Raynal <miquel.raynal@bootlin.com>
+
+Thanks,
+Miquèl
