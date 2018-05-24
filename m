@@ -1,19 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: kbl: Move codec sysclk config
- to codec_init function
-Date: Thu, 24 May 2018 15:26:36 -0500
-Message-ID: <9938d1e6-ff4f-bc6d-1d14-3b56c285bdbf@linux.intel.com>
-References: <1527056028-12552-1-git-send-email-mac.chiang@intel.com>
- <2E89032DDAA8B9408CB92943514A0337014C1EE9C6@SW-EX-MBX01.diasemi.com>
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: Re: [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
+Date: Thu, 24 May 2018 22:35:04 +0200
+Message-ID: <1875447.uBIO10iqcO@z50>
+References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
+ <20180521100503.GA24638@sirena.org.uk> <20180523185244.GT98604@atomide.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 17CE7267646
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 22:26:39 +0200 (CEST)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337014C1EE9C6@SW-EX-MBX01.diasemi.com>
-Content-Language: en-US
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id DF904267646
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 22:34:57 +0200 (CEST)
+Received: by mail-wr0-f193.google.com with SMTP id l41-v6so5433230wre.7
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 13:34:57 -0700 (PDT)
+In-Reply-To: <20180523185244.GT98604@atomide.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,88 +24,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "mac.chiang@intel.com" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Tony Lindgren <tony@atomide.com>
+Cc: linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNS8yNC8yMDE4IDA0OjQ1IEFNLCBBZGFtIFRob21zb24gd3JvdGU6Cj4gT24gMjMgTWF5
-IDIwMTggMDc6MTQsIE1hYyBDaGlhbmcgd3JvdGU6Cj4KPj4gRnJvbTogTWFjIENoaWFuZyA8bWFj
-LmNoaWFuZ0BpbnRlbC5jb20+Cj4+Cj4+IHVuZXhwZWN0ZWQgZXJyb3I6IFBMTCBpbnB1dCBjbG9j
-ayAwIGJlbG93IHZhbGlkIHJhbmdlCj4+Cj4+IGJhY2twb3J0IGZyb20gYnJvb25pZSdzIHRyZWUK
-Pj4gY29tbWl0IGZkMGYyMzc1NzJhZAo+PiAoIkFTb0M6IEludGVsOiBieHQ6IE1vdmUgY29kZWMg
-c3lzY2xrIGNvbmZpZyB0byBjb2RlY19pbml0IGZ1bmN0aW9uIikKPj4KPj4gVGhlIE1DTEsgZm9y
-IERBNzIxOSBkb2VzIG5vdCBjaGFuZ2UgaW4gdGhpcyBwbGF0Zm9ybSwgYnV0IGlzCj4+IGN1cnJl
-bnRseSBiZWluZyBjb25maWd1cmVkIGV2ZXJ5dGltZSBhcyBwYXJ0IG9mIHRoZSBwbGF0Zm9ybV9j
-bG9jawo+PiBldmVudCBoYW5kbGVyIGZvciBEQVBNLiBUaGUgdXBzaG90IG9mIHRoaXMgaXMgdGhh
-dCB3ZSBoYXZlCj4+IHVubmVjZXNzYXJ5IGNhbGxzIHRvIHRoaXMgZnVuY3Rpb24sIGFuZCBpdCBh
-bHNvIG1lYW5zIHRoYXQgaWYKPj4gYSBzdHJlYW0gaGFzbid0IHlldCBiZWVuIHN0YXJ0ZWQsIERB
-NzIxOSBkcml2ZXIgZG9lcyBub3QgaGF2ZSB0aGUKPj4gY29ycmVjdCBNQ0xLIHJhdGVzIHByb2dy
-YW1tZWQgYW5kIHNvIHRoZSBIUCBkZXRlY3Rpb24gZmVhdHVyZSBkb2VzCj4+IG5vdCBvcGVyYXRl
-IGFzIGV4cGVjdGVkLgo+Pgo+PiBUaGlzIHBhdGNoIHJlY3RpZmllcyB0aGlzIGlzc3VlIGJ5IG1v
-dmluZyB0aGUgc3lzY2xrIGNhbGwgdG8KPj4gY29kZWNfaW5pdCBmdW5jdGlvbiBzbyBpdCdzIG9u
-bHkgY2FsbGVkIG9uY2UgYXQgaW5pdGlhbGlzYXRpb24uCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEFk
-YW0gVGhvbXNvbiA8QWRhbS5UaG9tc29uLk9wZW5zb3VyY2VAZGlhc2VtaS5jb20+Cj4+IEFja2Vk
-LWJ5OiBTYXRoeWFuYXJheWFuYSBOdWplbGxhIDxzYXRoeWFuYXJheWFuYS5udWplbGxhQGludGVs
-LmNvbT4KPj4gU2luZ2VkLW9mZi1ieTogTWFjIENoaWFuZyA8bWFjLmNoaWFuZ0BpbnRlbC5jb20+
-Ck1hYywgSSBwcm92aWRlZCB5b3UgaW50ZXJuYWwgZmVlZGJhY2sgdGhhdCB5b3VyIGNvbW1pdCBt
-ZXNzYWdlIHdhcyAKbWlzbGVhZGluZy4KVGhpcyBpcyBub3QgYSAnYmFja3BvcnQnLCB0aGUgaW50
-ZW50IGhlcmUgaXMgdG8gZml4IGEgcHJvYmxlbSBvbiBLQkwgCnVzaW5nIHRoZSBzYW1lIHNvbHV0
-aW9uIGFscmVhZHkgbWVyZ2VkIGZvciBBcG9sbG9MYWtlIHdpdGggY29tbWl0IApmZDBmMjM3NTcy
-YWQgKCJBU29DOiBJbnRlbDogYnh0OiBNb3ZlIGNvZGVjIHN5c2NsayBjb25maWcgdG8gY29kZWNf
-aW5pdCAKZnVuY3Rpb24iKS4gWW91IGFsc28gd2FudCB0byBiZSBjYXJlZnVsIHdoZW4gaW5jbHVk
-aW5nIHNvbWVvbmUgZWxzZSdzIApTaWduZWQtb2ZmLWJ5IGFuZCBjaGVjayBmb3IgdHlwb3MsIGlm
-IHlvdSBydW4gY2hlY2twYXRjaC5wbCAtLXN0cmljdCAKeW91J2Qgc2VlIHRoaXM6CgpXQVJOSU5H
-OiAnZXZlcnl0aW1lJyBtYXkgYmUgbWlzc3BlbGxlZCAtIHBlcmhhcHMgJ2V2ZXJ5IHRpbWUnPwoj
-MTQ6CmN1cnJlbnRseSBiZWluZyBjb25maWd1cmVkIGV2ZXJ5dGltZSBhcyBwYXJ0IG9mIHRoZSBw
-bGF0Zm9ybV9jbG9jawoKV0FSTklORzogTm9uLXN0YW5kYXJkIHNpZ25hdHVyZTogU2luZ2VkLW9m
-Zi1ieToKIzI2OgpTaW5nZWQtb2ZmLWJ5OiBNYWMgQ2hpYW5nIDxtYWMuY2hpYW5nQGludGVsLmNv
-bT4KCkNIRUNLOiBBbGlnbm1lbnQgc2hvdWxkIG1hdGNoIG9wZW4gcGFyZW50aGVzaXMKIzU3OiBG
-SUxFOiBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2tibF9kYTcyMTlfbWF4OTgzNTdhLmM6MTcwOgor
-wqDCoMKgIHJldCA9IHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY29kZWNfZGFpLCBEQTcyMTlfQ0xL
-U1JDX01DTEssIDE5MjAwMDAwLAorwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDC
-oMKgwqAgU05EX1NPQ19DTE9DS19JTik7Cgp0b3RhbDogMCBlcnJvcnMsIDIgd2FybmluZ3MsIDEg
-Y2hlY2tzLCAzMiBsaW5lcyBjaGVja2VkCgpJbiBhZGRpdGlvbiwgYm90aCBBZGFtIGFuZCBJIG1l
-bnRpb25lZCB0aGF0IHRoZSBjbG9ja3MgYXJlIGRpZmZlcmVudCAKYmV0d2VlbiB0aGUgdHdvIHBs
-YXRmb3Jtcywgc28gdGhpcyBwYXRjaCBpcyBpbmNvcnJlY3QgYW5kIGNhbm5vdCBiZSAKYXBwbGll
-ZCBhcyBpcywgc2VlIGJlbG93LgoKPj4gLS0tCj4+ICAgc291bmQvc29jL2ludGVsL2JvYXJkcy9r
-YmxfZGE3MjE5X21heDk4MzU3YS5jIHwgMTcgKysrKysrKysrLS0tLS0tLS0KPj4gICAxIGZpbGUg
-Y2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0
-IGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9rYmxfZGE3MjE5X21heDk4MzU3YS5jCj4+IGIvc291
-bmQvc29jL2ludGVsL2JvYXJkcy9rYmxfZGE3MjE5X21heDk4MzU3YS5jCj4+IGluZGV4IDYwZTcz
-OWYuLjg4ZmJjNmEgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMva2JsX2Rh
-NzIxOV9tYXg5ODM1N2EuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2tibF9kYTcy
-MTlfbWF4OTgzNTdhLmMKPj4gQEAgLTY1LDE0ICs2NSw2IEBAIHN0YXRpYyBpbnQgcGxhdGZvcm1f
-Y2xvY2tfY29udHJvbChzdHJ1Y3QKPj4gc25kX3NvY19kYXBtX3dpZGdldCAqdywKPj4gICAJCXJl
-dHVybiAtRUlPOwo+PiAgIAl9Cj4+Cj4+IC0JLyogQ29uZmlndXJlIHN5c2NsayBmb3IgY29kZWMg
-Ki8KPj4gLQlyZXQgPSBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKGNvZGVjX2RhaSwgREE3MjE5X0NM
-S1NSQ19NQ0xLLCAyNDU3NjAwMCwKPj4gLQkJCQkgICAgIFNORF9TT0NfQ0xPQ0tfSU4pOwo+IENv
-ZGUgaGVyZSBpcyBzZXR0aW5nIHRoZSBNQ0xLIHJhdGUgZm9yIHRoZSBjb2RlYyBhcyBiZWluZyAy
-NC41NzZNSHogYnV0Li4uCj4KPj4gLQlpZiAocmV0KSB7Cj4+IC0JCWRldl9lcnIoY2FyZC0+ZGV2
-LCAiY2FuJ3Qgc2V0IGNvZGVjIHN5c2NsayBjb25maWd1cmF0aW9uXG4iKTsKPj4gLQkJcmV0dXJu
-IHJldDsKPj4gLQl9Cj4+IC0KPj4gICAJaWYgKFNORF9TT0NfREFQTV9FVkVOVF9PRkYoZXZlbnQp
-KSB7Cj4+ICAgCQlyZXQgPSBzbmRfc29jX2RhaV9zZXRfcGxsKGNvZGVjX2RhaSwgMCwKPj4gICAJ
-CQkJICAgICBEQTcyMTlfU1lTQ0xLX01DTEssIDAsIDApOwo+PiBAQCAtMTY5LDkgKzE2MSwxOCBA
-QCBzdGF0aWMgaW50IGthYnlsYWtlX2RhNzIxOV9jb2RlY19pbml0KHN0cnVjdAo+PiBzbmRfc29j
-X3BjbV9ydW50aW1lICpydGQpCj4+ICAgewo+PiAgIAlzdHJ1Y3Qga2JsX2NvZGVjX3ByaXZhdGUg
-KmN0eCA9IHNuZF9zb2NfY2FyZF9nZXRfZHJ2ZGF0YShydGQtPmNhcmQpOwo+PiAgIAlzdHJ1Y3Qg
-c25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCA9IHJ0ZC0+Y29kZWNfZGFpLT5jb21wb25lbnQ7
-Cj4+ICsJc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWkgPSBydGQtPmNvZGVjX2RhaTsKPj4g
-ICAJc3RydWN0IHNuZF9zb2NfamFjayAqamFjazsKPj4gICAJaW50IHJldDsKPj4KPj4gKwkvKiBD
-b25maWd1cmUgc3lzY2xrIGZvciBjb2RlYyAqLwo+PiArCXJldCA9IHNuZF9zb2NfZGFpX3NldF9z
-eXNjbGsoY29kZWNfZGFpLCBEQTcyMTlfQ0xLU1JDX01DTEssIDE5MjAwMDAwLAo+PiArCQkJCQkJ
-U05EX1NPQ19DTE9DS19JTik7Cj4gLi4uaGVyZSB5b3UncmUgc2V0dGluZyBNQ0xLIHJhdGUgdG8g
-YmUgMTkuMk1Iei4gSXMgdGhhdCBjb3JyZWN0PwpUaGF0IGlzIGNsZWFybHkgd3JvbmcuIExpa2Vs
-eSBhIGNvcHkvcGFzdGUgZnJvbSBieHRfZGE3MjE5X21heDk4MzU3YS5jIAppbnN0ZWFkIG9mIG1v
-dmluZyB0aGUgY29kZSB3aXRoaW4gdGhlIHNhbWUgZmlsZS4KCj4KPj4gKwlpZiAocmV0KSB7Cj4+
-ICsJCWRldl9lcnIocnRkLT5kZXYsICJjYW4ndCBzZXQgY29kZWMgc3lzY2xrIGNvbmZpZ3VyYXRp
-b25cbiIpOwo+PiArCQlyZXR1cm4gcmV0Owo+PiArCX0KPj4gKwo+PiAgIAkvKgo+PiAgIAkgKiBI
-ZWFkc2V0IGJ1dHRvbnMgbWFwIHRvIHRoZSBnb29nbGUgUmVmZXJlbmNlIGhlYWRzZXQuCj4+ICAg
-CSAqIFRoZXNlIGNhbiBiZSBjb25maWd1cmVkIGJ5IHVzZXJzcGFjZS4KPj4gLS0KPj4gMi43LjQK
-Pj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4g
-QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+
-IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
-dmVsCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
-bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Wednesday, May 23, 2018 8:52:44 PM CEST Tony Lindgren wrote:
+> * Mark Brown <broonie@kernel.org> [180521 10:07]:
+> > On Fri, May 18, 2018 at 11:09:51PM +0200, Janusz Krzysztofik wrote:
+> > > Now as the Amstrad Delta board provides GPIO lookup tables, switch from
+> > > GPIO numbers to GPIO descriptors and use the table to locate required
+> > > GPIO pins.
+> > 
+> > Acked-by: Mark Brown <broonie@kernel.org>
+> 
+
+Hi Tony,
+
+> Thanks applying patches 1 and 3 of this series into omap-for-v4.18/soc.
+> It's kind of getting late for v4.18, but let's see if we can still make
+> it.
+
+Thank you.
+
+> Seems the others can be applied to the driver trees after no more
+> comments, then once all that is done we can apply the last patch
+> in this series.
+
+I'll be submitting v2 of 5/6 (nand) very soon. 4/6 (lcd) is still waiting for 
+Tomi to respond. I hope there will be no issues with it. Howevver, regarding 
+2/6 - serio - I have to work more on that to satisfy Dmitry's comments. So 
+let's forget about 6/6 for now and I'll resubmit it again when we are ready 
+for that. Meanwhile, I'm going to submit a few more patches against the board 
+init file to complete migration to GPIO descriptors so dynamic allocation of 
+GPIO numbers to ams-delta latches will be possible.
+
+Thanks,
+Janusz
