@@ -1,84 +1,58 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC/RFT PATCH] ASoC: topology: Improve backwards compatibility
- with v4 topology files
-Date: Thu, 24 May 2018 16:11:37 +0100
-Message-ID: <20180524151137.GY4828@sirena.org.uk>
-References: <20180522165842.233949-1-groeck@google.com>
- <s5hmuwqpjdd.wl-tiwai@suse.de>
- <20180523135609.GK4828@sirena.org.uk>
- <CABXOdTeCr-ExO9O3XAHK-DnNf5yLGO0TPkXgs60TB90jGNB2_Q@mail.gmail.com>
- <20180523155811.GO4828@sirena.org.uk>
- <CABXOdTePWquSQaFQsoNTrVNmYydZLqF534zeoTfz0RfLDHSseA@mail.gmail.com>
- <20180524141842.GW4828@sirena.org.uk>
- <CABXOdTfKXqgRecs3xuxb-XRodJkK7+h5V0hqt889CsD6vkm5yA@mail.gmail.com>
+From: Anoush Khazeni <akhazeni@google.com>
+Subject: Submitting a patch for tinycompress v1.1.5
+Date: Thu, 24 May 2018 09:42:53 -0700
+Message-ID: <CAHk9b_cNbqi0=ajoUAdJqN30oqcNecQ_3okyOoVpFtGa+ike6w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OEa2bCMk+rg6xBXy"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CABXOdTfKXqgRecs3xuxb-XRodJkK7+h5V0hqt889CsD6vkm5yA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <groeck@google.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Guenter Roeck <groeck@chromium.org>, "Patel, Chintan M" <chintan.m.patel@intel.com>, Jaroslav Kysela <perex@perex.cz>, linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="000000000000d5c93b056cf65778"
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ua0-f173.google.com (mail-ua0-f173.google.com
+ [209.85.217.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id ED3A0266DF0
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 18:42:56 +0200 (CEST)
+Received: by mail-ua0-f173.google.com with SMTP id h15-v6so1534812uan.11
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 09:42:56 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+--000000000000d5c93b056cf65778
+Content-Type: text/plain; charset="UTF-8"
 
---OEa2bCMk+rg6xBXy
-Content-Type: text/plain; charset=us-ascii
+Submitting a patch to add the missing closing bracket for the extern "C"
+directive in "tinycompress.h" from release v1.1.5 tar file
+"tinycompress-1.1.5.tar.bz2"
+
+--000000000000d5c93b056cf65778
+Content-Type: application/gzip; name="tinycompress.patch.tar.gz"
+Content-Disposition: attachment; filename="tinycompress.patch.tar.gz"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_jhkrl2do0
+
+H4sIAK9c/1oAA+2Y3U7bMBTHezs/xRHcQLOkthPbaSckEBfbBZrQ9gBVmriNRfMhx5nopL37nEJh
+hcAo7WAb+UmVP+r4nCTn7+P4PLr8JKNE6oFR+SIuslLLqvLKyMRpb0dgjAVj0BNLoEeZYNSHpv8K
+RoD4VAjOOKUcMCVU0B5c7sqBx6grE2nrSnSRRt9lrh4aV2qVRXox00Vdtv1/dSdwU/4jkABqlRwF
+4TAcYkQFZEZl8ogwynkYhJR6IiSMc/Tajnb8Ee6rfrBzGyv9Ey4CHtD7+rd6WdM/EQH2e8B27kkL
+b1z/Le//vDUluAx7iaxirUqjinwTG/Z58CDYZP3nrFv/X4Zu/X/btOh/R6q/ZaX/h9Z/wvw7+g+4
+j3uAd3ur7bxx/Z8kSQWZqiqVzyCeF8tyoqP4QhqYFhrkpZE6h73TPUiUlrFR3yQ6qU1a6BF8LIrZ
+XMLZ2Sn6Wk8yZYxMYLIYweppHs+WIzwbT90K8jeyUf5/5lfh0/N/QIXVDqbM93mX/1+Cx/K/CIeC
+e5xhxkin3v+TJ+T/rc+CfpP/Ceb8jv79AHf5/0VI1HQK7udal7D23olHPOYVWs0GKo/ndSLX4mL9
+tDBtufYplyHXdbcx+45iIlxCXOID9UeMjgjxbs8UXBxijBzHeaZ7zfShi5lLbHzSERuOcLMc2knt
+p1Fgp7fBio6PwaWCvw/AaYoQbIfKDahqvJpprG06XRxURtexgVUv9GMEgz58kabWeQURpHUW5dAM
+jiZ2V2UrVZEvN2EmlTCPKgNSa9vsD5CdJrftOI1s88bQTJrxckiLseva4QcEyNlXU0jkVOUyORiP
+43JeV83vEDk/Gp9+2fRZW86+zG2cIAfBde21o7ajo6OjY1t+AsrfuScAHAAA
+--000000000000d5c93b056cf65778
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
-On Thu, May 24, 2018 at 07:55:06AM -0700, Guenter Roeck wrote:
-> On Thu, May 24, 2018 at 7:18 AM Mark Brown <broonie@kernel.org> wrote:
 
-Your mail client formatting seems to be broken, the word wrapping is
-really funky (it looks like it's breaking longer than 80 column lines in
-the middle of paragraphs rather than flowing paragraphs within 80
-columns).
-
-> > > I don't mind adding the structures to
-> > > sound/soc/intel/skylake/skl-tplg-interface.h,
-> > > but it seems a bit out of scope to tie this with moving the file to
-> > > include/uapi/sound.
-> > > I think that should be a separate discussion.
-
-> > Is there some reason not to just do it while we're looking at this?  I
-> > don't see why we wouldn't want to do this.
-
-> I don't mind doing this. However, keeping the change local and in a single
-> patch
-> would make it easier to backport, and I think that the ability to backport
-> would be
-> essential to get more than one-person test coverage. I also would have liked
-> feedback from someone at Intel, at least for the Skylake specific
-> structures.
-
-Oh, of course - I'm just saying we should do this, not that everything
-needs to be in one patch.  Obviously the code motion would be a separate
-patch.
-
-> Anyway, what file do you have in mind for the structure definitions, both
-> for the ones
-> in soc-tolopogy.c and the ones needed in skl-topology.c ? Everything into
-> asoc.h,
-> or something else ?
-
-All of those that can appear in a firmware file, I don't super care
-where they end up but possibly a separate header file or files to the
-kernel specific ones as they might get used with Windows.
-
---OEa2bCMk+rg6xBXy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsG1igACgkQJNaLcl1U
-h9BPwgf/eVjK3Vi8LMSAcq3hLEUdx7AYPevQdzCZ6kkbjU5TRNe0ioVmn4AUh7/D
-TkzhNC/FsRufNoR/MOo+Ut4+wD8r6MshEnc9tjHbSjKLS75CyCuMTbHTSHKSqx4+
-+ozYYDt++wJIa93KDs4rSKQ83deRFmkVo3EdIJkoIbYOfde3m5UQtngtXGB+YWDR
-KfwLjh61MQVD4M8gI8CzI2r8Bk0batRJaNEEB793ONqV/xjoB/ShsWrRf9YZkfLN
-3VPzmjTZt6+oDiUSHARRh4SXSTPAiYecWlh5ww7IWcjJceQoVE0A34b4HtLJoHS9
-Bplb9zSEMU1UhEQYziVkP+KzndXrrg==
-=f0A1
------END PGP SIGNATURE-----
-
---OEa2bCMk+rg6xBXy--
+--000000000000d5c93b056cf65778--
