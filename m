@@ -1,20 +1,21 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: Re: [PATCH 3/6] ASoC: ams_delta: use GPIO lookup table
-Date: Thu, 24 May 2018 22:35:04 +0200
-Message-ID: <1875447.uBIO10iqcO@z50>
-References: <20180518210954.29044-1-jmkrzyszt@gmail.com>
- <20180521100503.GA24638@sirena.org.uk> <20180523185244.GT98604@atomide.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v5 1/3] ASoC: Add initial support for
+ multiple CPU DAIs
+Date: Thu, 24 May 2018 15:45:40 -0500
+Message-ID: <613e98a3-830a-c19a-da60-91f5d546aafc@linux.intel.com>
+References: <1526985623-2606-1-git-send-email-shreyas.nc@intel.com>
+ <1526985623-2606-2-git-send-email-shreyas.nc@intel.com>
+ <471c42d3-881f-692a-8713-a6f2c4917bd7@linux.intel.com>
+ <20180524053411.GB4205@snc-desk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DF904267646
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 22:34:57 +0200 (CEST)
-Received: by mail-wr0-f193.google.com with SMTP id l41-v6so5433230wre.7
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 13:34:57 -0700 (PDT)
-In-Reply-To: <20180523185244.GT98604@atomide.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAF03267646
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 22:45:43 +0200 (CEST)
+In-Reply-To: <20180524053411.GB4205@snc-desk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,39 +25,119 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tony Lindgren <tony@atomide.com>
-Cc: linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, Aaro Koskinen <aaro.koskinen@iki.fi>, Richard Weinberger <richard@nod.at>, Mark Brown <broonie@kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Tomi Valkeinen <tomi.valkeinen@ti.com>, linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, linux-input@vger.kernel.org, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Shreyas NC <shreyas.nc@intel.com>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, May 23, 2018 8:52:44 PM CEST Tony Lindgren wrote:
-> * Mark Brown <broonie@kernel.org> [180521 10:07]:
-> > On Fri, May 18, 2018 at 11:09:51PM +0200, Janusz Krzysztofik wrote:
-> > > Now as the Amstrad Delta board provides GPIO lookup tables, switch from
-> > > GPIO numbers to GPIO descriptors and use the table to locate required
-> > > GPIO pins.
-> > 
-> > Acked-by: Mark Brown <broonie@kernel.org>
-> 
-
-Hi Tony,
-
-> Thanks applying patches 1 and 3 of this series into omap-for-v4.18/soc.
-> It's kind of getting late for v4.18, but let's see if we can still make
-> it.
-
-Thank you.
-
-> Seems the others can be applied to the driver trees after no more
-> comments, then once all that is done we can apply the last patch
-> in this series.
-
-I'll be submitting v2 of 5/6 (nand) very soon. 4/6 (lcd) is still waiting for 
-Tomi to respond. I hope there will be no issues with it. Howevver, regarding 
-2/6 - serio - I have to work more on that to satisfy Dmitry's comments. So 
-let's forget about 6/6 for now and I'll resubmit it again when we are ready 
-for that. Meanwhile, I'm going to submit a few more patches against the board 
-init file to complete migration to GPIO descriptors so dynamic allocation of 
-GPIO numbers to ams-delta latches will be possible.
-
-Thanks,
-Janusz
+CgpPbiAwNS8yNC8yMDE4IDEyOjM0IEFNLCBTaHJleWFzIE5DIHdyb3RlOgo+Pj4gQEAgLTExMjAs
+NiArMTEyMyw5IEBAIHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lIHsKPj4+ICAgCXN0cnVjdCBz
+bmRfc29jX2RhaSAqKmNvZGVjX2RhaXM7Cj4+PiAgIAl1bnNpZ25lZCBpbnQgbnVtX2NvZGVjczsK
+Pj4+ICsJc3RydWN0IHNuZF9zb2NfZGFpICoqY3B1X2RhaXM7Cj4+PiArCXVuc2lnbmVkIGludCBu
+dW1fY3B1X2RhaTsKPj4+ICsKPj4gVGhpcyBzdHJ1Y3R1cmUgaXMgYmVjb21pbmcgZGlmZmljdWx0
+IHRvIGludGVycHJldDoKPj4KPj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmNvZGVjX2Rh
+aTsKPj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWk7Cj4+Cj4+ICDCoMKgwqAg
+c3RydWN0IHNuZF9zb2NfZGFpICoqY29kZWNfZGFpczsKPj4gIMKgwqDCoCB1bnNpZ25lZCBpbnQg
+bnVtX2NvZGVjczsKPj4KPj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19kYWkgKipjcHVfZGFpczsK
+Pj4gIMKgwqDCoCB1bnNpZ25lZCBpbnQgbnVtX2NwdV9kYWk7Cj4+Cj4+IFdoYXQgaXMgdGhlIGlu
+dGVuZGVkIHVzYWdlIG9mIGNvZGVjX2RhaSB2cy4gY29kZWNfZGFpcyBhbmQgY3B1X2RhaSB2cy4K
+Pj4gY3B1X2RhaXM/Cj4gcnRkLT5jcHVfZGFpIGlzIHVzZWQgaW4gbWFueSBkcml2ZXJzIHRvIGdl
+dCBjcHVfZGFpIGZyb20gc29jX3BjbV9ydW50aW1lLgo+IFNpbWlsYXJseSBjcHVfZGFpcyBpcyBh
+ZGRkZWQgdG8gZ2V0IG11bHRpcGxlIGNwdV9kYWlzIGZyb20gcnVudGltZS4KPgo+IFRCSCwgSSBo
+YXZlIHNoYWRvd2VkIHRoZSBjb2RlY19kYWlzIGltcGxlbWVudGF0aW9uIGZvciBzYWtlIG9mCj4g
+Y29udmVuaWVuY2UgYW5kIGJlaW5nIGNvbmZvcm1hbCA6KQo+Cj4+IElmIHRoaXMgaXMgb25seSB0
+byBoYW5kbGUgdGhlIHNpbmdsZSBjb2RlY19kYWkvc2luZ2xlIGNwdV9kYWkgYXMgYW4KPj4gZXhj
+ZXB0aW9uLCBzaG91bGQgd2UgcG9ydCB0aGUgY29kZSB0byBzdXBwb3J0IG11bHRpcGxlIGNwdV9k
+YWlzL211bHRpcGxlCj4+IGNvZGVjX2RhaXM/Cj4+Cj4gQXMgbWVudGlvbmVkIGluIFsxXSAoaW4g
+Y292ZXIgbGV0dGVyKSwgdGhlcmUgYXJlIGRpc2N1c3Npb25zIHRvIHVuaWZ5IGNwdSBhbmQKPiBj
+b2RlYyBkYWlzIGFuZCB0aGlzIGlzIHRoZSBmaXJzdCBzdGVwIHRvd2FyZHMgdGhhdC4gU28sIHll
+cywgZXZlbnR1YWxseSB3ZQo+IHNob3VsZCBwb3J0IHRoZSBjb2RlIGFzIHlvdSBoYXZlIHN1Z2dl
+c3RlZCA6KQpvaywgbWF5YmUgYWRkIGEgY29tbWVudCBpbiB0aGUgY29tbWl0IG1lc3NhZ2UgdGhl
+bj8KPgo+Pj4gICAJLyogY2xvc2UgYW55IHdhaXRpbmcgc3RyZWFtcyAqLwo+Pj4gQEAgLTU1Miwx
+NiArNTY1LDIxIEBAIGludCBzbmRfc29jX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQo+Pj4g
+ICAJfQo+Pj4gICAJbGlzdF9mb3JfZWFjaF9lbnRyeShydGQsICZjYXJkLT5ydGRfbGlzdCwgbGlz
+dCkgewo+Pj4gLQkJc3RydWN0IHNuZF9zb2NfZGFpICpjcHVfZGFpID0gcnRkLT5jcHVfZGFpOwo+
+Pj4gKwkJc3RydWN0IHNuZF9zb2NfZGFpICpjcHVfZGFpOwo+Pj4gLQkJaWYgKHJ0ZC0+ZGFpX2xp
+bmstPmlnbm9yZV9zdXNwZW5kKQo+Pj4gLQkJCWNvbnRpbnVlOwo+Pj4gKwkJZm9yIChpID0gMDsg
+aSA8IHJ0ZC0+bnVtX2NwdV9kYWk7IGkrKykgewo+Pj4gKwkJCWNwdV9kYWkgPSBydGQtPmNwdV9k
+YWlzW2ldOwo+Pj4gKwo+Pj4gKwkJCWlmIChydGQtPmRhaV9saW5rLT5pZ25vcmVfc3VzcGVuZCkK
+Pj4+ICsJCQkJY29udGludWU7Cj4+IHRoaXMgdGVzdCBuZWVkcyB0byBiZSBvdXRzaWRlIG9mIHRo
+ZSBmb3IgbG9vcD8gdGhlICdjb250aW51ZScgc2hvdWxkIHJlc3VsdAo+PiBpbiBtb3ZpbmcgdG8g
+dGhlIG5leHQgZWxlbWVudCBvZiB0aGUgbGlzdCwgbm90IHRvIHRoZSBuZXh0IGNwdV9kYWkuCj4+
+IHNlZSBiZWxvdywgdGhpcyBzdGF0ZW1lbnQgaXMgaW5kZWVkIG91dHNpZGUgZm9yIHRoZSByZXN1
+bWUgcGFydC4KPiBZZXMsIHdpbGwgZml4IHRoaXMuIFRoYW5rcyA6KQpvawo+Cj4gLQkvKgo+IC0J
+ICogQXQgbGVhc3Qgb25lIG9mIENQVSBEQUkgbmFtZSBvciBDUFUgZGV2aWNlIG5hbWUvbm9kZSBt
+dXN0IGJlCj4gLQkgKiBzcGVjaWZpZWQKPiAtCSAqLwo+IC0JaWYgKCFsaW5rLT5jcHVfZGFpX25h
+bWUgJiYKPiAtCSAgICAhKGxpbmstPmNwdV9uYW1lIHx8IGxpbmstPmNwdV9vZl9ub2RlKSkgewo+
+IC0JCWRldl9lcnIoY2FyZC0+ZGV2LAo+IC0JCQkiQVNvQzogTmVpdGhlciBjcHVfZGFpX25hbWUg
+bm9yIGNwdV9uYW1lL29mX25vZGUgYXJlIHNldCBmb3IgJXNcbiIsCj4gLQkJCWxpbmstPm5hbWUp
+Owo+IC0JCXJldHVybiAtRUlOVkFMOwo+IC0JfQo+ICsJZm9yIChpID0gMDsgaSA8IGxpbmstPm51
+bV9jcHVfZGFpOyBpKyspIHsKPiArCQlpZiAobGluay0+Y3B1X2RhaVtpXS5uYW1lICYmCj4gKwkJ
+CWxpbmstPmNwdV9kYWlbaV0ub2Zfbm9kZSkgewo+ICsJCQlkZXZfZXJyKGNhcmQtPmRldiwKPiAr
+CQkJICAgICJBU29DOiBOZWl0aGVyL2JvdGggY3B1IG5hbWUvb2Zfbm9kZSBhcmUgc2V0IGZvciAl
+c1xuIiwKPiArCQkJCQlsaW5rLT5jcHVfZGFpW2ldLm5hbWUpOwo+ICsJCQlyZXR1cm4gLUVJTlZB
+TDsKPiArCQl9Cj4gKwo+ICsJCS8qCj4gKwkJICogQXQgbGVhc3Qgb25lIG9mIENQVSBEQUkgbmFt
+ZSBvciBDUFUgZGV2aWNlIG5hbWUvbm9kZSBtdXN0IGJlCj4gKwkJICogc3BlY2lmaWVkCj4gKwkJ
+ICovCj4gKwkJaWYgKCFsaW5rLT5jcHVfZGFpW2ldLmRhaV9uYW1lICYmCj4gKwkJCSEobGluay0+
+Y3B1X2RhaVtpXS5uYW1lIHx8IGxpbmstPmNwdV9kYWlbaV0ub2Zfbm9kZSkpIHsKPj4gVGhpcyBk
+b2Vzbid0IHNlZW0gdG8gYmUgdGhlIGxvZ2ljYWwgdHJhbnNsYXRpb24gb2YgdGhlIGluaXRpYWwg
+Y29uZGl0aW9uCj4+IGJhc2VkIG9uIGxpbmstPmNwdV9uYW1lIGFuZCBsaW5rLT5jcHVfb2Zfbm9k
+ZT8KPj4KPiBwYXN0aW5nIHRoZSBjb2RlIGFkZGVkIGZyb20gdGhlIGZ1bmN0aW9uIGFib3ZlIHRv
+IHNob3cgdGhlIG1hcHBpbmcgYi93IG5hbWUsCj4gb2Zfbm9kZSBhbmQgZGFpX25hbWU6Cj4KPiAJ
+CWRhaV9saW5rLT5jcHVfZGFpWzBdLm5hbWUgPSBkYWlfbGluay0+Y3B1X25hbWU7Cj4gCQlkYWlf
+bGluay0+Y3B1X2RhaVswXS5vZl9ub2RlID0gZGFpX2xpbmstPmNwdV9vZl9ub2RlOwo+IAkJZGFp
+X2xpbmstPmNwdV9kYWlbMF0uZGFpX25hbWUgPSBkYWlfbGluay0+Y3B1X2RhaV9uYW1lOwo+Cj4g
+YW5kIHRoZSBvcmlnaW5hbCBjb25kaXRpb24gd2FzOgo+IAkJaWYgKCFsaW5rLT5jcHVfZGFpX25h
+bWUgJiYKPiAJCQkhKGxpbmstPmNwdV9uYW1lIHx8IGxpbmstPmNwdV9vZl9ub2RlKSkgewo+Cj4g
+U28sIGl0IGRvZXMgbG9vayBjb3JyZWN0IHRvIG1lLCB1bmxlc3MgSSBhbSBtaXNzaW5nIHNvbWV0
+aGluZyBvYnZpb3VzIDooClRoZSBvcmlnaW5hbCBjb2RlIEkgd2FzIHJlZmVycmluZyB0byBpcyB0
+aGlzOgoKIMKgwqDCoCAvKgogwqDCoMKgIMKgKiBDUFUgZGV2aWNlIG1heSBiZSBzcGVjaWZpZWQg
+YnkgZWl0aGVyIG5hbWUgb3IgT0Ygbm9kZSwgYnV0CiDCoMKgwqAgwqAqIGNhbiBiZSBsZWZ0IHVu
+c3BlY2lmaWVkLCBhbmQgd2lsbCBiZSBtYXRjaGVkIGJhc2VkIG9uIERBSQogwqDCoMKgIMKgKiBu
+YW1lIGFsb25lLi4KIMKgwqDCoCDCoCovCiDCoMKgwqAgaWYgKGxpbmstPmNwdV9uYW1lICYmIGxp
+bmstPmNwdV9vZl9ub2RlKSB7CiDCoMKgwqAgwqDCoMKgIGRldl9lcnIoY2FyZC0+ZGV2LAogwqDC
+oMKgIMKgwqDCoCDCoMKgwqAgIkFTb0M6IE5laXRoZXIvYm90aCBjcHUgbmFtZS9vZl9ub2RlIGFy
+ZSBzZXQgZm9yICVzXG4iLAogwqDCoMKgIMKgwqDCoCDCoMKgwqAgbGluay0+bmFtZSk7CiDCoMKg
+wqAgwqDCoMKgIHJldHVybiAtRUlOVkFMOwogwqDCoMKgIH0KIMKgwqDCoCAvKgogwqDCoMKgIMKg
+KiBBdCBsZWFzdCBvbmUgb2YgQ1BVIERBSSBuYW1lIG9yIENQVSBkZXZpY2UgbmFtZS9ub2RlIG11
+c3QgYmUKIMKgwqDCoCDCoCogc3BlY2lmaWVkCiDCoMKgwqAgwqAqLwogwqDCoMKgIGlmICghbGlu
+ay0+Y3B1X2RhaV9uYW1lICYmCiDCoMKgwqAgwqDCoMKgICEobGluay0+Y3B1X25hbWUgfHwgbGlu
+ay0+Y3B1X29mX25vZGUpKSB7CiDCoMKgwqAgwqDCoMKgIGRldl9lcnIoY2FyZC0+ZGV2LAogwqDC
+oMKgIMKgwqDCoCDCoMKgwqAgIkFTb0M6IE5laXRoZXIgY3B1X2RhaV9uYW1lIG5vciBjcHVfbmFt
+ZS9vZl9ub2RlIGFyZSBzZXQgCmZvciAlc1xuIiwKIMKgwqDCoCDCoMKgwqAgwqDCoMKgIGxpbmst
+Pm5hbWUpOwogwqDCoMKgIMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKIMKgwqDCoCB9CgogwqDCoMKg
+IHJldHVybiAwOwoKVGhlIG5ldyBjb2RlIGlzIHRoaXM6CgogwqDCoMKgIGZvciAoaSA9IDA7IGkg
+PCBsaW5rLT5udW1fY3B1X2RhaTsgaSsrKSB7CiDCoMKgwqAgwqDCoMKgIGlmIChsaW5rLT5jcHVf
+ZGFpW2ldLm5hbWUgJiYKIMKgwqDCoCDCoMKgwqAgwqDCoMKgIGxpbmstPmNwdV9kYWlbaV0ub2Zf
+bm9kZSkgewogwqDCoMKgIMKgwqDCoCDCoMKgwqAgZGV2X2VycihjYXJkLT5kZXYsCiDCoMKgwqAg
+wqDCoMKgIMKgwqDCoCDCoMKgwqAgIkFTb0M6IE5laXRoZXIvYm90aCBjcHUgbmFtZS9vZl9ub2Rl
+IGFyZSBzZXQgZm9yICVzXG4iLAogwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCBs
+aW5rLT5jcHVfZGFpW2ldLm5hbWUpOwogwqDCoMKgIMKgwqDCoCDCoMKgwqAgcmV0dXJuIC1FSU5W
+QUw7CiDCoMKgwqAgwqDCoMKgIH0KCiDCoMKgwqAgwqDCoMKgIC8qCiDCoMKgwqAgwqDCoMKgIMKg
+KiBBdCBsZWFzdCBvbmUgb2YgQ1BVIERBSSBuYW1lIG9yIENQVSBkZXZpY2UgbmFtZS9ub2RlIG11
+c3QgYmUKIMKgwqDCoCDCoMKgwqAgwqAqIHNwZWNpZmllZAogwqDCoMKgIMKgwqDCoCDCoCovCiDC
+oMKgwqAgwqDCoMKgIGlmICghbGluay0+Y3B1X2RhaVtpXS5kYWlfbmFtZSAmJgogwqDCoMKgIMKg
+wqDCoCDCoMKgwqAgIShsaW5rLT5jcHVfZGFpW2ldLm5hbWUgfHwgbGluay0+Y3B1X2RhaVtpXS5v
+Zl9ub2RlKSkgewogwqDCoMKgIMKgwqDCoCDCoMKgwqAgZGV2X2VycihjYXJkLT5kZXYsCiDCoMKg
+wqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgIkFTb0M6IE5laXRoZXIgY3B1X2RhaV9uYW1lIG5vciBj
+cHVfbmFtZS9vZl9ub2RlIGFyZSAKc2V0IGZvciAlc1xuIiwKIMKgwqDCoCDCoMKgwqAgwqDCoMKg
+IMKgwqDCoCBsaW5rLT5uYW1lKTsKIMKgwqDCoCDCoMKgwqAgwqDCoMKgIHJldHVybiAtRUlOVkFM
+OwogwqDCoMKgIMKgwqDCoCB9CiDCoMKgwqAgfQoKWWVzLCBpdCdzIGVxdWl2YWxlbnQgZm9yIGk9
+PTAsIGJ1dCBpdCdzIG5vdCBjbGVhciB0byBtZSBmb3Igbm9uLXplcm8gCmluZGljZXMuIEkgZG9u
+J3QgZ2V0IGhvdy93aGVyZQpsaW5rLT5jcHVfZGFpW2ldLm5hbWUgYW5kIGxpbmstPmNwdV9kYWlb
+aV0ub2Zfbm9kZSBhcmUgaW5pdGlhbGl6ZWQgZm9yIGk+MC4KCj4+PiAtCWlmIChjcHVfZGFpLT5k
+cml2ZXItPmNvbXByZXNzX25ldykgewo+Pj4gKwlpZiAocnRkLT5jcHVfZGFpc1swXS0+ZHJpdmVy
+LT5jb21wcmVzc19uZXcpIHsKPj4+ICsJCWlmIChydGQtPm51bV9jcHVfZGFpID4gMSkKPj4+ICsJ
+CQlkZXZfd2FybihjYXJkLT5kZXYsCj4+PiArCQkJCSJBU29DOiBtdWx0aS1jcHUgY29tcHJlc3Mg
+ZGFpcyBub3Qgc3VwcG9ydGVkIik7Cj4+IE5vdCBzdXJlIHRoaXMgaXMgcmlnaHQsIHlvdSBjb3Vs
+ZCBoYXZlIGEgY2FzZSB3aGVyZSB0aGUgY29tcHJlc3MgZGFpIGlzIG5vdAo+PiBvbiB0aGUgY3B1
+X2RhaVswXT8KPiBJIGFtIG5vdCBhYmxlIHRvIGNvbXByZWhlbmQgdGhhdCB3ZSBjYW4gaGF2ZSBt
+dWx0aSBDUFUgREFJUyBpbiBhIERBSSBMaW5rCj4gd2l0aCBvbmUgb2YgdGhlIERBSSBiZWluZyBj
+b21wcmVzcyBhbmQgdGhlIG90aGVyIGJlaW5nIGEgUENNIERBSS4KPgo+IEFueSBzdWNoIHN5c3Rl
+bXMgdGhhdCB5b3UgY2FuIHRoaW5rIG9mID8KWWVzIEkgYWdyZWUsIG15IHBvaW50IHdhcyB0aGF0
+IHlvdSB0ZXN0IG9ubHkgZm9yIHRoZSBmaXJzdCBjcHVfZGFpIAooaW5kZXggMCksIGJ1dCBpZiBy
+dGQtPmNwdV9kYWlzWzFdLT5kcml2ZXJzLT5jb21wcmVzc19uZXcgaXMgbm9uIE5VTEwgCnRoZW4g
+aXQncyBhbHNvIHdyb25nLiBZb3Ugc2hvdWxkIHRlc3QgZm9yIGFsbCBjcHVfZGFpcyB0byBtYWtl
+IHN1cmUgdGhleSAKYXJlIGFsbCBQQ00uCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
