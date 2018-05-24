@@ -1,20 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v5 1/3] ASoC: Add initial support for
- multiple CPU DAIs
-Date: Thu, 24 May 2018 15:45:40 -0500
-Message-ID: <613e98a3-830a-c19a-da60-91f5d546aafc@linux.intel.com>
+Subject: Re: [PATCH v5 2/3] ASoC: Add multiple CPU DAI support
+ for PCM ops
+Date: Thu, 24 May 2018 16:29:45 -0500
+Message-ID: <a5934a1f-0f0a-98b7-40ae-d691a779acab@linux.intel.com>
 References: <1526985623-2606-1-git-send-email-shreyas.nc@intel.com>
- <1526985623-2606-2-git-send-email-shreyas.nc@intel.com>
- <471c42d3-881f-692a-8713-a6f2c4917bd7@linux.intel.com>
- <20180524053411.GB4205@snc-desk>
+ <1526985623-2606-3-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id EAF03267646
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 22:45:43 +0200 (CEST)
-In-Reply-To: <20180524053411.GB4205@snc-desk>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id D66F3267646
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 23:29:50 +0200 (CEST)
+In-Reply-To: <1526985623-2606-3-git-send-email-shreyas.nc@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,119 +23,204 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
+To: Shreyas NC <shreyas.nc@intel.com>, alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, ckeepax@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNS8yNC8yMDE4IDEyOjM0IEFNLCBTaHJleWFzIE5DIHdyb3RlOgo+Pj4gQEAgLTExMjAs
-NiArMTEyMyw5IEBAIHN0cnVjdCBzbmRfc29jX3BjbV9ydW50aW1lIHsKPj4+ICAgCXN0cnVjdCBz
-bmRfc29jX2RhaSAqKmNvZGVjX2RhaXM7Cj4+PiAgIAl1bnNpZ25lZCBpbnQgbnVtX2NvZGVjczsK
-Pj4+ICsJc3RydWN0IHNuZF9zb2NfZGFpICoqY3B1X2RhaXM7Cj4+PiArCXVuc2lnbmVkIGludCBu
-dW1fY3B1X2RhaTsKPj4+ICsKPj4gVGhpcyBzdHJ1Y3R1cmUgaXMgYmVjb21pbmcgZGlmZmljdWx0
-IHRvIGludGVycHJldDoKPj4KPj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmNvZGVjX2Rh
-aTsKPj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19kYWkgKmNwdV9kYWk7Cj4+Cj4+ICDCoMKgwqAg
-c3RydWN0IHNuZF9zb2NfZGFpICoqY29kZWNfZGFpczsKPj4gIMKgwqDCoCB1bnNpZ25lZCBpbnQg
-bnVtX2NvZGVjczsKPj4KPj4gIMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19kYWkgKipjcHVfZGFpczsK
-Pj4gIMKgwqDCoCB1bnNpZ25lZCBpbnQgbnVtX2NwdV9kYWk7Cj4+Cj4+IFdoYXQgaXMgdGhlIGlu
-dGVuZGVkIHVzYWdlIG9mIGNvZGVjX2RhaSB2cy4gY29kZWNfZGFpcyBhbmQgY3B1X2RhaSB2cy4K
-Pj4gY3B1X2RhaXM/Cj4gcnRkLT5jcHVfZGFpIGlzIHVzZWQgaW4gbWFueSBkcml2ZXJzIHRvIGdl
-dCBjcHVfZGFpIGZyb20gc29jX3BjbV9ydW50aW1lLgo+IFNpbWlsYXJseSBjcHVfZGFpcyBpcyBh
-ZGRkZWQgdG8gZ2V0IG11bHRpcGxlIGNwdV9kYWlzIGZyb20gcnVudGltZS4KPgo+IFRCSCwgSSBo
-YXZlIHNoYWRvd2VkIHRoZSBjb2RlY19kYWlzIGltcGxlbWVudGF0aW9uIGZvciBzYWtlIG9mCj4g
-Y29udmVuaWVuY2UgYW5kIGJlaW5nIGNvbmZvcm1hbCA6KQo+Cj4+IElmIHRoaXMgaXMgb25seSB0
-byBoYW5kbGUgdGhlIHNpbmdsZSBjb2RlY19kYWkvc2luZ2xlIGNwdV9kYWkgYXMgYW4KPj4gZXhj
-ZXB0aW9uLCBzaG91bGQgd2UgcG9ydCB0aGUgY29kZSB0byBzdXBwb3J0IG11bHRpcGxlIGNwdV9k
-YWlzL211bHRpcGxlCj4+IGNvZGVjX2RhaXM/Cj4+Cj4gQXMgbWVudGlvbmVkIGluIFsxXSAoaW4g
-Y292ZXIgbGV0dGVyKSwgdGhlcmUgYXJlIGRpc2N1c3Npb25zIHRvIHVuaWZ5IGNwdSBhbmQKPiBj
-b2RlYyBkYWlzIGFuZCB0aGlzIGlzIHRoZSBmaXJzdCBzdGVwIHRvd2FyZHMgdGhhdC4gU28sIHll
-cywgZXZlbnR1YWxseSB3ZQo+IHNob3VsZCBwb3J0IHRoZSBjb2RlIGFzIHlvdSBoYXZlIHN1Z2dl
-c3RlZCA6KQpvaywgbWF5YmUgYWRkIGEgY29tbWVudCBpbiB0aGUgY29tbWl0IG1lc3NhZ2UgdGhl
-bj8KPgo+Pj4gICAJLyogY2xvc2UgYW55IHdhaXRpbmcgc3RyZWFtcyAqLwo+Pj4gQEAgLTU1Miwx
-NiArNTY1LDIxIEBAIGludCBzbmRfc29jX3N1c3BlbmQoc3RydWN0IGRldmljZSAqZGV2KQo+Pj4g
-ICAJfQo+Pj4gICAJbGlzdF9mb3JfZWFjaF9lbnRyeShydGQsICZjYXJkLT5ydGRfbGlzdCwgbGlz
-dCkgewo+Pj4gLQkJc3RydWN0IHNuZF9zb2NfZGFpICpjcHVfZGFpID0gcnRkLT5jcHVfZGFpOwo+
-Pj4gKwkJc3RydWN0IHNuZF9zb2NfZGFpICpjcHVfZGFpOwo+Pj4gLQkJaWYgKHJ0ZC0+ZGFpX2xp
-bmstPmlnbm9yZV9zdXNwZW5kKQo+Pj4gLQkJCWNvbnRpbnVlOwo+Pj4gKwkJZm9yIChpID0gMDsg
-aSA8IHJ0ZC0+bnVtX2NwdV9kYWk7IGkrKykgewo+Pj4gKwkJCWNwdV9kYWkgPSBydGQtPmNwdV9k
-YWlzW2ldOwo+Pj4gKwo+Pj4gKwkJCWlmIChydGQtPmRhaV9saW5rLT5pZ25vcmVfc3VzcGVuZCkK
-Pj4+ICsJCQkJY29udGludWU7Cj4+IHRoaXMgdGVzdCBuZWVkcyB0byBiZSBvdXRzaWRlIG9mIHRo
-ZSBmb3IgbG9vcD8gdGhlICdjb250aW51ZScgc2hvdWxkIHJlc3VsdAo+PiBpbiBtb3ZpbmcgdG8g
-dGhlIG5leHQgZWxlbWVudCBvZiB0aGUgbGlzdCwgbm90IHRvIHRoZSBuZXh0IGNwdV9kYWkuCj4+
-IHNlZSBiZWxvdywgdGhpcyBzdGF0ZW1lbnQgaXMgaW5kZWVkIG91dHNpZGUgZm9yIHRoZSByZXN1
-bWUgcGFydC4KPiBZZXMsIHdpbGwgZml4IHRoaXMuIFRoYW5rcyA6KQpvawo+Cj4gLQkvKgo+IC0J
-ICogQXQgbGVhc3Qgb25lIG9mIENQVSBEQUkgbmFtZSBvciBDUFUgZGV2aWNlIG5hbWUvbm9kZSBt
-dXN0IGJlCj4gLQkgKiBzcGVjaWZpZWQKPiAtCSAqLwo+IC0JaWYgKCFsaW5rLT5jcHVfZGFpX25h
-bWUgJiYKPiAtCSAgICAhKGxpbmstPmNwdV9uYW1lIHx8IGxpbmstPmNwdV9vZl9ub2RlKSkgewo+
-IC0JCWRldl9lcnIoY2FyZC0+ZGV2LAo+IC0JCQkiQVNvQzogTmVpdGhlciBjcHVfZGFpX25hbWUg
-bm9yIGNwdV9uYW1lL29mX25vZGUgYXJlIHNldCBmb3IgJXNcbiIsCj4gLQkJCWxpbmstPm5hbWUp
-Owo+IC0JCXJldHVybiAtRUlOVkFMOwo+IC0JfQo+ICsJZm9yIChpID0gMDsgaSA8IGxpbmstPm51
-bV9jcHVfZGFpOyBpKyspIHsKPiArCQlpZiAobGluay0+Y3B1X2RhaVtpXS5uYW1lICYmCj4gKwkJ
-CWxpbmstPmNwdV9kYWlbaV0ub2Zfbm9kZSkgewo+ICsJCQlkZXZfZXJyKGNhcmQtPmRldiwKPiAr
-CQkJICAgICJBU29DOiBOZWl0aGVyL2JvdGggY3B1IG5hbWUvb2Zfbm9kZSBhcmUgc2V0IGZvciAl
-c1xuIiwKPiArCQkJCQlsaW5rLT5jcHVfZGFpW2ldLm5hbWUpOwo+ICsJCQlyZXR1cm4gLUVJTlZB
-TDsKPiArCQl9Cj4gKwo+ICsJCS8qCj4gKwkJICogQXQgbGVhc3Qgb25lIG9mIENQVSBEQUkgbmFt
-ZSBvciBDUFUgZGV2aWNlIG5hbWUvbm9kZSBtdXN0IGJlCj4gKwkJICogc3BlY2lmaWVkCj4gKwkJ
-ICovCj4gKwkJaWYgKCFsaW5rLT5jcHVfZGFpW2ldLmRhaV9uYW1lICYmCj4gKwkJCSEobGluay0+
-Y3B1X2RhaVtpXS5uYW1lIHx8IGxpbmstPmNwdV9kYWlbaV0ub2Zfbm9kZSkpIHsKPj4gVGhpcyBk
-b2Vzbid0IHNlZW0gdG8gYmUgdGhlIGxvZ2ljYWwgdHJhbnNsYXRpb24gb2YgdGhlIGluaXRpYWwg
-Y29uZGl0aW9uCj4+IGJhc2VkIG9uIGxpbmstPmNwdV9uYW1lIGFuZCBsaW5rLT5jcHVfb2Zfbm9k
-ZT8KPj4KPiBwYXN0aW5nIHRoZSBjb2RlIGFkZGVkIGZyb20gdGhlIGZ1bmN0aW9uIGFib3ZlIHRv
-IHNob3cgdGhlIG1hcHBpbmcgYi93IG5hbWUsCj4gb2Zfbm9kZSBhbmQgZGFpX25hbWU6Cj4KPiAJ
-CWRhaV9saW5rLT5jcHVfZGFpWzBdLm5hbWUgPSBkYWlfbGluay0+Y3B1X25hbWU7Cj4gCQlkYWlf
-bGluay0+Y3B1X2RhaVswXS5vZl9ub2RlID0gZGFpX2xpbmstPmNwdV9vZl9ub2RlOwo+IAkJZGFp
-X2xpbmstPmNwdV9kYWlbMF0uZGFpX25hbWUgPSBkYWlfbGluay0+Y3B1X2RhaV9uYW1lOwo+Cj4g
-YW5kIHRoZSBvcmlnaW5hbCBjb25kaXRpb24gd2FzOgo+IAkJaWYgKCFsaW5rLT5jcHVfZGFpX25h
-bWUgJiYKPiAJCQkhKGxpbmstPmNwdV9uYW1lIHx8IGxpbmstPmNwdV9vZl9ub2RlKSkgewo+Cj4g
-U28sIGl0IGRvZXMgbG9vayBjb3JyZWN0IHRvIG1lLCB1bmxlc3MgSSBhbSBtaXNzaW5nIHNvbWV0
-aGluZyBvYnZpb3VzIDooClRoZSBvcmlnaW5hbCBjb2RlIEkgd2FzIHJlZmVycmluZyB0byBpcyB0
-aGlzOgoKIMKgwqDCoCAvKgogwqDCoMKgIMKgKiBDUFUgZGV2aWNlIG1heSBiZSBzcGVjaWZpZWQg
-YnkgZWl0aGVyIG5hbWUgb3IgT0Ygbm9kZSwgYnV0CiDCoMKgwqAgwqAqIGNhbiBiZSBsZWZ0IHVu
-c3BlY2lmaWVkLCBhbmQgd2lsbCBiZSBtYXRjaGVkIGJhc2VkIG9uIERBSQogwqDCoMKgIMKgKiBu
-YW1lIGFsb25lLi4KIMKgwqDCoCDCoCovCiDCoMKgwqAgaWYgKGxpbmstPmNwdV9uYW1lICYmIGxp
-bmstPmNwdV9vZl9ub2RlKSB7CiDCoMKgwqAgwqDCoMKgIGRldl9lcnIoY2FyZC0+ZGV2LAogwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgIkFTb0M6IE5laXRoZXIvYm90aCBjcHUgbmFtZS9vZl9ub2RlIGFy
-ZSBzZXQgZm9yICVzXG4iLAogwqDCoMKgIMKgwqDCoCDCoMKgwqAgbGluay0+bmFtZSk7CiDCoMKg
-wqAgwqDCoMKgIHJldHVybiAtRUlOVkFMOwogwqDCoMKgIH0KIMKgwqDCoCAvKgogwqDCoMKgIMKg
-KiBBdCBsZWFzdCBvbmUgb2YgQ1BVIERBSSBuYW1lIG9yIENQVSBkZXZpY2UgbmFtZS9ub2RlIG11
-c3QgYmUKIMKgwqDCoCDCoCogc3BlY2lmaWVkCiDCoMKgwqAgwqAqLwogwqDCoMKgIGlmICghbGlu
-ay0+Y3B1X2RhaV9uYW1lICYmCiDCoMKgwqAgwqDCoMKgICEobGluay0+Y3B1X25hbWUgfHwgbGlu
-ay0+Y3B1X29mX25vZGUpKSB7CiDCoMKgwqAgwqDCoMKgIGRldl9lcnIoY2FyZC0+ZGV2LAogwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgIkFTb0M6IE5laXRoZXIgY3B1X2RhaV9uYW1lIG5vciBjcHVfbmFt
-ZS9vZl9ub2RlIGFyZSBzZXQgCmZvciAlc1xuIiwKIMKgwqDCoCDCoMKgwqAgwqDCoMKgIGxpbmst
-Pm5hbWUpOwogwqDCoMKgIMKgwqDCoCByZXR1cm4gLUVJTlZBTDsKIMKgwqDCoCB9CgogwqDCoMKg
-IHJldHVybiAwOwoKVGhlIG5ldyBjb2RlIGlzIHRoaXM6CgogwqDCoMKgIGZvciAoaSA9IDA7IGkg
-PCBsaW5rLT5udW1fY3B1X2RhaTsgaSsrKSB7CiDCoMKgwqAgwqDCoMKgIGlmIChsaW5rLT5jcHVf
-ZGFpW2ldLm5hbWUgJiYKIMKgwqDCoCDCoMKgwqAgwqDCoMKgIGxpbmstPmNwdV9kYWlbaV0ub2Zf
-bm9kZSkgewogwqDCoMKgIMKgwqDCoCDCoMKgwqAgZGV2X2VycihjYXJkLT5kZXYsCiDCoMKgwqAg
-wqDCoMKgIMKgwqDCoCDCoMKgwqAgIkFTb0M6IE5laXRoZXIvYm90aCBjcHUgbmFtZS9vZl9ub2Rl
-IGFyZSBzZXQgZm9yICVzXG4iLAogwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCBs
-aW5rLT5jcHVfZGFpW2ldLm5hbWUpOwogwqDCoMKgIMKgwqDCoCDCoMKgwqAgcmV0dXJuIC1FSU5W
-QUw7CiDCoMKgwqAgwqDCoMKgIH0KCiDCoMKgwqAgwqDCoMKgIC8qCiDCoMKgwqAgwqDCoMKgIMKg
-KiBBdCBsZWFzdCBvbmUgb2YgQ1BVIERBSSBuYW1lIG9yIENQVSBkZXZpY2UgbmFtZS9ub2RlIG11
-c3QgYmUKIMKgwqDCoCDCoMKgwqAgwqAqIHNwZWNpZmllZAogwqDCoMKgIMKgwqDCoCDCoCovCiDC
-oMKgwqAgwqDCoMKgIGlmICghbGluay0+Y3B1X2RhaVtpXS5kYWlfbmFtZSAmJgogwqDCoMKgIMKg
-wqDCoCDCoMKgwqAgIShsaW5rLT5jcHVfZGFpW2ldLm5hbWUgfHwgbGluay0+Y3B1X2RhaVtpXS5v
-Zl9ub2RlKSkgewogwqDCoMKgIMKgwqDCoCDCoMKgwqAgZGV2X2VycihjYXJkLT5kZXYsCiDCoMKg
-wqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgIkFTb0M6IE5laXRoZXIgY3B1X2RhaV9uYW1lIG5vciBj
-cHVfbmFtZS9vZl9ub2RlIGFyZSAKc2V0IGZvciAlc1xuIiwKIMKgwqDCoCDCoMKgwqAgwqDCoMKg
-IMKgwqDCoCBsaW5rLT5uYW1lKTsKIMKgwqDCoCDCoMKgwqAgwqDCoMKgIHJldHVybiAtRUlOVkFM
-OwogwqDCoMKgIMKgwqDCoCB9CiDCoMKgwqAgfQoKWWVzLCBpdCdzIGVxdWl2YWxlbnQgZm9yIGk9
-PTAsIGJ1dCBpdCdzIG5vdCBjbGVhciB0byBtZSBmb3Igbm9uLXplcm8gCmluZGljZXMuIEkgZG9u
-J3QgZ2V0IGhvdy93aGVyZQpsaW5rLT5jcHVfZGFpW2ldLm5hbWUgYW5kIGxpbmstPmNwdV9kYWlb
-aV0ub2Zfbm9kZSBhcmUgaW5pdGlhbGl6ZWQgZm9yIGk+MC4KCj4+PiAtCWlmIChjcHVfZGFpLT5k
-cml2ZXItPmNvbXByZXNzX25ldykgewo+Pj4gKwlpZiAocnRkLT5jcHVfZGFpc1swXS0+ZHJpdmVy
-LT5jb21wcmVzc19uZXcpIHsKPj4+ICsJCWlmIChydGQtPm51bV9jcHVfZGFpID4gMSkKPj4+ICsJ
-CQlkZXZfd2FybihjYXJkLT5kZXYsCj4+PiArCQkJCSJBU29DOiBtdWx0aS1jcHUgY29tcHJlc3Mg
-ZGFpcyBub3Qgc3VwcG9ydGVkIik7Cj4+IE5vdCBzdXJlIHRoaXMgaXMgcmlnaHQsIHlvdSBjb3Vs
-ZCBoYXZlIGEgY2FzZSB3aGVyZSB0aGUgY29tcHJlc3MgZGFpIGlzIG5vdAo+PiBvbiB0aGUgY3B1
-X2RhaVswXT8KPiBJIGFtIG5vdCBhYmxlIHRvIGNvbXByZWhlbmQgdGhhdCB3ZSBjYW4gaGF2ZSBt
-dWx0aSBDUFUgREFJUyBpbiBhIERBSSBMaW5rCj4gd2l0aCBvbmUgb2YgdGhlIERBSSBiZWluZyBj
-b21wcmVzcyBhbmQgdGhlIG90aGVyIGJlaW5nIGEgUENNIERBSS4KPgo+IEFueSBzdWNoIHN5c3Rl
-bXMgdGhhdCB5b3UgY2FuIHRoaW5rIG9mID8KWWVzIEkgYWdyZWUsIG15IHBvaW50IHdhcyB0aGF0
-IHlvdSB0ZXN0IG9ubHkgZm9yIHRoZSBmaXJzdCBjcHVfZGFpIAooaW5kZXggMCksIGJ1dCBpZiBy
-dGQtPmNwdV9kYWlzWzFdLT5kcml2ZXJzLT5jb21wcmVzc19uZXcgaXMgbm9uIE5VTEwgCnRoZW4g
-aXQncyBhbHNvIHdyb25nLiBZb3Ugc2hvdWxkIHRlc3QgZm9yIGFsbCBjcHVfZGFpcyB0byBtYWtl
-IHN1cmUgdGhleSAKYXJlIGFsbCBQQ00uCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+This one is also quite dense, I could use clarifications on how channels 
+will be handled in a multi-cpu context. I believe for the multi-codec 
+case there was an assumption of symmetry, not sure this works or is 
+required in a multi-cpu case, see below.
+>   
+> -	symmetry = cpu_dai->driver->symmetric_channels ||
+> -		rtd->dai_link->symmetric_channels;
+> +	symmetry = rtd->dai_link->symmetric_channels;
+> +
+> +	for (i = 0; i < rtd->num_cpu_dai; i++)
+> +		symmetry |= rtd->cpu_dais[i]->driver->symmetric_channels;
+>   
+>   	for (i = 0; i < rtd->num_codecs; i++)
+>   		symmetry |= rtd->codec_dais[i]->driver->symmetric_channels;
+>   
+> -	if (symmetry && cpu_dai->channels && cpu_dai->channels != channels) {
+> -		dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
+> -				cpu_dai->channels, channels);
+> -		return -EINVAL;
+> -	}
+> +	for (i = 0; i < rtd->num_cpu_dai; i++)
+> +		if (symmetry && rtd->cpu_dais[i]->channels &&
+> +				rtd->cpu_dais[i]->channels != channels) {
+> +			dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
+> +					rtd->cpu_dais[i]->channels, channels);
+> +			return -EINVAL;
+> +		}
+I am not sure I get this part - but maybe I am connecting too many dots 
+with the SoundWire 'stream' patches.
+
+This code is assuming all cpu_dais have the same number of channels, 
+defined by the hw_params.
+Is this right? In the SoundWire case, we can have one port with 2 
+channels and another with 4, for a total of 6 channels for the stream. 
+Am I missing something or how should I reconcile the concepts?
+
+making the assumption that the rates and sample_bits are identical is ok.
+
+>   
+> -	symmetry = cpu_dai->driver->symmetric_samplebits ||
+> -		rtd->dai_link->symmetric_samplebits;
+> +	symmetry = rtd->dai_link->symmetric_samplebits;
+> +
+> +	for (i = 0; i < rtd->num_cpu_dai; i++)
+> +		symmetry |= rtd->cpu_dais[i]->driver->symmetric_samplebits;
+>   
+>   	for (i = 0; i < rtd->num_codecs; i++)
+>   		symmetry |= rtd->codec_dais[i]->driver->symmetric_samplebits;
+>   
+> -	if (symmetry && cpu_dai->sample_bits && cpu_dai->sample_bits != sample_bits) {
+> -		dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
+> -				cpu_dai->sample_bits, sample_bits);
+> -		return -EINVAL;
+> -	}
+> +	for (i = 0; i < rtd->num_cpu_dai; i++)
+> +		if (symmetry && rtd->cpu_dais[i]->sample_bits &&
+> +				rtd->cpu_dais[i]->sample_bits != sample_bits) {
+> +			dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
+> +						rtd->cpu_dais[i]->sample_bits,
+> +								sample_bits);
+> +			return -EINVAL;
+> +		}
+>   
+>   	return 0;
+>   }
+> @@ -308,13 +328,18 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+>   static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
+>   {
+>   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> -	struct snd_soc_dai_driver *cpu_driver = rtd->cpu_dai->driver;
+>   	struct snd_soc_dai_link *link = rtd->dai_link;
+>   	unsigned int symmetry, i;
+>   
+> -	symmetry = cpu_driver->symmetric_rates || link->symmetric_rates ||
+> -		cpu_driver->symmetric_channels || link->symmetric_channels ||
+> -		cpu_driver->symmetric_samplebits || link->symmetric_samplebits;
+> +	symmetry = link->symmetric_rates || link->symmetric_channels ||
+> +			link->symmetric_samplebits;
+> +
+> +	/* Apply symmetery for multiple cpu dais */
+I've never seen this spelling for cemetery :-)
+
+[...]
+>   
+> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> +		cpu_dai_drv = rtd->cpu_dais[i]->driver;
+> +
+> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> +			cpu_stream = &cpu_dai_drv->playback;
+> +		else
+> +			cpu_stream = &cpu_dai_drv->capture;
+> +
+> +		cpu_chan_min = max(cpu_chan_min,
+> +					cpu_stream->channels_min);
+> +		cpu_chan_max = min(cpu_chan_max,
+> +					cpu_stream->channels_max);
+> +
+> +		if (hw->formats)
+> +			hw->formats &= cpu_stream->formats;
+> +		else
+> +			hw->formats = cpu_stream->formats;
+> +
+> +		cpu_rates = snd_pcm_rate_mask_intersect(cpu_rates,
+> +						cpu_stream->rates);
+> +
+> +		cpu_rate_min = max(cpu_rate_min, cpu_stream->rate_min);
+> +		cpu_rate_max = min_not_zero(cpu_rate_max, cpu_stream->rate_max);
+> +	}
+> +
+>   	/*
+> -	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
+> -	 * connected to a single CPU DAI, use CPU DAI's directly and let
+> -	 * channel allocation be fixed up later
+> +	 * chan min/max cannot be enforced if there are multiple
+> +	 * CODEC DAIs connected to CPU DAI(s), use CPU DAI's
+> +	 * directly and let channel allocation be fixed up later
+What does 'later' mean?
+I guess I don't quite get the channel management, same issue as my 
+feedback above.
+
+[...]
+>
+> @@ -963,11 +1070,14 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+>   	if (ret < 0)
+>   		goto component_err;
+>   
+> -	/* store the parameters for each DAIs */
+> -	cpu_dai->rate = params_rate(params);
+> -	cpu_dai->channels = params_channels(params);
+> -	cpu_dai->sample_bits =
+> -		snd_pcm_format_physical_width(params_format(params));
+> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> +		/* store the parameters for each DAIs */
+> +		cpu_dai = rtd->cpu_dais[i];
+> +		cpu_dai->rate = params_rate(params);
+> +		cpu_dai->channels = params_channels(params);
+same here, are we again making the assumption that all cpu_dais can 
+transmit the same number of channels?
+
+[...]
+>   
+> @@ -1107,10 +1229,14 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+>   			return ret;
+>   	}
+>   
+> -	if (cpu_dai->driver->ops->trigger) {
+> -		ret = cpu_dai->driver->ops->trigger(substream, cmd, cpu_dai);
+> -		if (ret < 0)
+> -			return ret;
+> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> +		cpu_dai = rtd->cpu_dais[i];
+> +		if (cpu_dai->driver->ops->trigger) {
+> +			ret = cpu_dai->driver->ops->trigger(substream,
+> +								cmd, cpu_dai);
+How do I reconcile this sequential trigger with the notion of 
+bank-switch in SoundWire? It seems we are missing a global trigger for 
+all cpu_dais who are part of the same dailink? Or am I in the weeds again?
+
+[...]
+> @@ -1157,12 +1287,13 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+>   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>   	struct snd_soc_component *component;
+>   	struct snd_soc_rtdcom_list *rtdcom;
+> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> +	struct snd_soc_dai *cpu_dai;
+>   	struct snd_soc_dai *codec_dai;
+>   	struct snd_pcm_runtime *runtime = substream->runtime;
+>   	snd_pcm_uframes_t offset = 0;
+>   	snd_pcm_sframes_t delay = 0;
+>   	snd_pcm_sframes_t codec_delay = 0;
+> +	snd_pcm_sframes_t cpu_delay = 0;
+>   	int i;
+>   
+>   	for_each_rtdcom(rtd, rtdcom) {
+> @@ -1177,8 +1308,15 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+>   		break;
+>   	}
+>   
+> -	if (cpu_dai->driver->ops->delay)
+> -		delay += cpu_dai->driver->ops->delay(substream, cpu_dai);
+> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> +		cpu_dai = rtd->cpu_dais[i];
+> +		if (cpu_dai->driver->ops->delay)
+> +			cpu_delay = max(cpu_delay,
+> +					cpu_dai->driver->ops->delay(substream,
+> +								cpu_dai));
+> +	}
+> +
+> +	delay += cpu_delay;
+Oh, this is weird. If you are checking the delay sequentially for each 
+cpu_dai, what are the odds that you get a consistent reply? I think it's 
+fundamentally different from the codec side since you will in theory be 
+able to check delays on each cpu_dai fairly quickly over IPC, whereas 
+for codecs the delay is likely to be a long-term estimate, not an 
+immediate value. In addition you would probably expect that all cpu_dais 
+are triggered at the same time and hence have the same delay, so you 
+could use the cpu_dais[0] instead of querying the values multiple times.
