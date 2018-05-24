@@ -1,15 +1,19 @@
-From: Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v2 1/3] ASoC: topology: Improve backwards
-	compatibility with v4 topology files
-Date: Thu, 24 May 2018 12:49:21 -0700
-Message-ID: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: kbl: Move codec sysclk config
+ to codec_init function
+Date: Thu, 24 May 2018 15:26:36 -0500
+Message-ID: <9938d1e6-ff4f-bc6d-1d14-3b56c285bdbf@linux.intel.com>
+References: <1527056028-12552-1-git-send-email-mac.chiang@intel.com>
+ <2E89032DDAA8B9408CB92943514A0337014C1EE9C6@SW-EX-MBX01.diasemi.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bh-25.webhostbox.net (bh-25.webhostbox.net [208.91.199.152])
- by alsa0.perex.cz (Postfix) with ESMTP id 20C5826765C
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 21:49:29 +0200 (CEST)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 17CE7267646
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 22:26:39 +0200 (CEST)
+In-Reply-To: <2E89032DDAA8B9408CB92943514A0337014C1EE9C6@SW-EX-MBX01.diasemi.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,363 +23,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
-Cc: alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "mac.chiang@intel.com" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Guenter Roeck <groeck@chromium.org>
-
-Commit dc31e741db49 ("ASoC: topology: ABI - Add the types for BE
-DAI") introduced sound topology files version 5. Initially, this
-change made the topology code incompatible with v4 topology files.
-Backwards compatibility with v4 configuration files was
-subsequently added with commit 288b8da7e992 ("ASoC: topology:
-Support topology file of ABI v4").
-
-Unfortunately, backwards compatibility was never fully implemented.
-
-First, the manifest size in (Skylake) v4 configuration files is set
-to 0, which causes manifest_new_ver() to bail out with error messages
-similar to the following.
-
-snd_soc_skl 0000:00:1f.3: ASoC: invalid manifest size
-snd_soc_skl 0000:00:1f.3: tplg component load failed-22
-snd_soc_skl 0000:00:1f.3: Failed to init topology!
-snd_soc_skl 0000:00:1f.3: ASoC: failed to probe component -22
-skl_n88l25_m98357a skl_n88l25_m98357a: ASoC: failed to instantiate card -22
-skl_n88l25_m98357a: probe of skl_n88l25_m98357a failed with error -22
-
-After this problem is fixed, the following error message is seen instead.
-
-snd_soc_skl 0000:00:1f.3: ASoC: old version of manifest
-snd_soc_skl 0000:00:1f.3: Invalid descriptor token 1093938482
-snd_soc_skl 0000:00:1f.3: ASoC: failed to load widget media0_in cpr 0
-snd_soc_skl 0000:00:1f.3: tPlg component load failed-22
-
-This message is seen because backwards compatibility for loading widgets
-was never implemented.
-
-The lack of audio support when running the upstream kernel on recent
-Chromebooks has been reported in various forums, and can be traced back
-to this problem. Attempts to fix the problem, usually by providing v5
-configuration files, were only partially successful.
-
-Let's implement backward compatibility properly to solve the problem
-for good.
-
-Signed-off-by: Guenter Roeck <groeck@chromium.org>
----
-Tested on Caroline (Samsung Chromebook Pro) and Chell (HP Chromebook 13
-G1) running v4.17-rc6 plus this patch, with original (v4) configuration
-files. Also tested on several other Chromebooks with this patch on top
-of chromeos-4.14.
-
-v2:
-- Move on from RFC/RFT to real patch
-- Move v4 structure definitions into header file
-- Add support for copying private capabilities
-- Declare skl_dfw_v4_module_caps as __packed
-- Drop duplicate assignment of mconfig->pipe->state
-
- sound/soc/intel/skylake/skl-topology.c       | 169 +++++++++++++++++++
- sound/soc/intel/skylake/skl-tplg-interface.h |  74 ++++++++
- sound/soc/soc-topology.c                     |   7 +-
- 3 files changed, 248 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 3b1dca419883..9e4c2cb88dea 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -19,6 +19,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/firmware.h>
-+#include <linux/uuid.h>
- #include <sound/soc.h>
- #include <sound/soc-topology.h>
- #include <uapi/sound/snd_sst_tokens.h>
-@@ -2724,6 +2725,167 @@ static int skl_tplg_get_desc_blocks(struct device *dev,
- 	return -EINVAL;
- }
- 
-+/* Functions to parse private data from configuration file format v4 */
-+
-+/*
-+ * Add pipeline from topology binary into driver pipeline list
-+ *
-+ * If already added we return that instance
-+ * Otherwise we create a new instance and add into driver list
-+ */
-+static int skl_tplg_add_pipe_v4(struct device *dev,
-+				struct skl_module_cfg *mconfig, struct skl *skl,
-+				struct skl_dfw_v4_pipe *dfw_pipe)
-+{
-+	struct skl_pipeline *ppl;
-+	struct skl_pipe *pipe;
-+	struct skl_pipe_params *params;
-+
-+	list_for_each_entry(ppl, &skl->ppl_list, node) {
-+		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id) {
-+			mconfig->pipe = ppl->pipe;
-+			return 0;
-+		}
-+	}
-+
-+	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
-+	if (!ppl)
-+		return -ENOMEM;
-+
-+	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
-+	if (!pipe)
-+		return -ENOMEM;
-+
-+	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
-+	if (!params)
-+		return -ENOMEM;
-+
-+	pipe->ppl_id = dfw_pipe->pipe_id;
-+	pipe->memory_pages = dfw_pipe->memory_pages;
-+	pipe->pipe_priority = dfw_pipe->pipe_priority;
-+	pipe->conn_type = dfw_pipe->conn_type;
-+	pipe->state = SKL_PIPE_INVALID;
-+	pipe->p_params = params;
-+	INIT_LIST_HEAD(&pipe->w_list);
-+
-+	ppl->pipe = pipe;
-+	list_add(&ppl->node, &skl->ppl_list);
-+
-+	mconfig->pipe = pipe;
-+
-+	return 0;
-+}
-+
-+static void skl_fill_module_pin_info_v4(struct skl_dfw_v4_module_pin *dfw_pin,
-+					struct skl_module_pin *m_pin,
-+					bool is_dynamic, int max_pin)
-+{
-+	int i;
-+
-+	for (i = 0; i < max_pin; i++) {
-+		m_pin[i].id.module_id = dfw_pin[i].module_id;
-+		m_pin[i].id.instance_id = dfw_pin[i].instance_id;
-+		m_pin[i].in_use = false;
-+		m_pin[i].is_dynamic = is_dynamic;
-+		m_pin[i].pin_state = SKL_PIN_UNBIND;
-+	}
-+}
-+
-+static void skl_tplg_fill_fmt_v4(struct skl_module_pin_fmt *dst_fmt,
-+				 struct skl_dfw_v4_module_fmt *src_fmt,
-+				 int pins)
-+{
-+	int i;
-+
-+	for (i = 0; i < pins; i++) {
-+		dst_fmt[i].fmt.channels  = src_fmt[i].channels;
-+		dst_fmt[i].fmt.s_freq = src_fmt[i].freq;
-+		dst_fmt[i].fmt.bit_depth = src_fmt[i].bit_depth;
-+		dst_fmt[i].fmt.valid_bit_depth = src_fmt[i].valid_bit_depth;
-+		dst_fmt[i].fmt.ch_cfg = src_fmt[i].ch_cfg;
-+		dst_fmt[i].fmt.ch_map = src_fmt[i].ch_map;
-+		dst_fmt[i].fmt.interleaving_style =
-+						src_fmt[i].interleaving_style;
-+		dst_fmt[i].fmt.sample_type = src_fmt[i].sample_type;
-+	}
-+}
-+
-+static int skl_tplg_get_pvt_data_v4(struct snd_soc_tplg_dapm_widget *tplg_w,
-+				    struct skl *skl, struct device *dev,
-+				    struct skl_module_cfg *mconfig)
-+{
-+	struct skl_dfw_v4_module *dfw =
-+				(struct skl_dfw_v4_module *)tplg_w->priv.data;
-+	int ret;
-+
-+	dev_dbg(dev, "Parsing Skylake v4 widget topology data\n");
-+
-+	ret = guid_parse(dfw->uuid, (guid_t *)mconfig->guid);
-+	if (ret)
-+		return ret;
-+	mconfig->id.module_id = -1;
-+	mconfig->id.instance_id = dfw->instance_id;
-+	mconfig->module->resources[0].cps = dfw->max_mcps;
-+	mconfig->module->resources[0].ibs = dfw->ibs;
-+	mconfig->module->resources[0].obs = dfw->obs;
-+	mconfig->core_id = dfw->core_id;
-+	mconfig->module->max_input_pins = dfw->max_in_queue;
-+	mconfig->module->max_output_pins = dfw->max_out_queue;
-+	mconfig->module->loadable = dfw->is_loadable;
-+	skl_tplg_fill_fmt_v4(mconfig->module->formats[0].inputs, dfw->in_fmt,
-+			     MAX_IN_QUEUE);
-+	skl_tplg_fill_fmt_v4(mconfig->module->formats[0].outputs, dfw->out_fmt,
-+			     MAX_OUT_QUEUE);
-+
-+	mconfig->params_fixup = dfw->params_fixup;
-+	mconfig->converter = dfw->converter;
-+	mconfig->m_type = dfw->module_type;
-+	mconfig->vbus_id = dfw->vbus_id;
-+	mconfig->module->resources[0].is_pages = dfw->mem_pages;
-+
-+	ret = skl_tplg_add_pipe_v4(dev, mconfig, skl, &dfw->pipe);
-+	if (ret)
-+		return ret;
-+
-+	mconfig->dev_type = dfw->dev_type;
-+	mconfig->hw_conn_type = dfw->hw_conn_type;
-+	mconfig->time_slot = dfw->time_slot;
-+	mconfig->formats_config.caps_size = dfw->caps.caps_size;
-+
-+	mconfig->m_in_pin = devm_kzalloc(dev,
-+				MAX_IN_QUEUE * sizeof(*mconfig->m_in_pin),
-+				GFP_KERNEL);
-+	if (!mconfig->m_in_pin)
-+		return -ENOMEM;
-+
-+	mconfig->m_out_pin = devm_kzalloc(dev,
-+				MAX_OUT_QUEUE * sizeof(*mconfig->m_out_pin),
-+				GFP_KERNEL);
-+	if (!mconfig->m_out_pin)
-+		return -ENOMEM;
-+
-+	skl_fill_module_pin_info_v4(dfw->in_pin, mconfig->m_in_pin,
-+				    dfw->is_dynamic_in_pin,
-+				    mconfig->module->max_input_pins);
-+	skl_fill_module_pin_info_v4(dfw->out_pin, mconfig->m_out_pin,
-+				    dfw->is_dynamic_out_pin,
-+				    mconfig->module->max_output_pins);
-+
-+	if (mconfig->formats_config.caps_size) {
-+		mconfig->formats_config.set_params = dfw->caps.set_params;
-+		mconfig->formats_config.param_id = dfw->caps.param_id;
-+		mconfig->formats_config.caps =
-+		devm_kzalloc(dev, mconfig->formats_config.caps_size,
-+			     GFP_KERNEL);
-+		if (!mconfig->formats_config.caps)
-+			return -ENOMEM;
-+		memcpy(mconfig->formats_config.caps, dfw->caps.caps,
-+		       dfw->caps.caps_size);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Parse the private data for the token and corresponding value.
-  * The private data can have multiple data blocks. So, a data block
-@@ -2739,6 +2901,13 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
- 	char *data;
- 	int ret;
- 
-+	/*
-+	 * v4 configuration files have a valid UUID at the start of
-+	 * the widget's private data.
-+	 */
-+	if (uuid_is_valid((char *)tplg_w->priv.data))
-+		return skl_tplg_get_pvt_data_v4(tplg_w, skl, dev, mconfig);
-+
- 	/* Read the NUM_DATA_BLOCKS descriptor */
- 	array = (struct snd_soc_tplg_vendor_array *)tplg_w->priv.data;
- 	ret = skl_tplg_get_desc_blocks(dev, array);
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index f8d1749a2e0c..b0e3d376594c 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -169,4 +169,78 @@ enum skl_tuple_type {
- 	SKL_TYPE_DATA
- };
- 
-+/* v4 configuration data */
-+
-+struct skl_dfw_v4_module_pin {
-+	u16 module_id;
-+	u16 instance_id;
-+} __packed;
-+
-+struct skl_dfw_v4_module_fmt {
-+	u32 channels;
-+	u32 freq;
-+	u32 bit_depth;
-+	u32 valid_bit_depth;
-+	u32 ch_cfg;
-+	u32 interleaving_style;
-+	u32 sample_type;
-+	u32 ch_map;
-+} __packed;
-+
-+struct skl_dfw_v4_module_caps {
-+	u32 set_params:2;
-+	u32 rsvd:30;
-+	u32 param_id;
-+	u32 caps_size;
-+	u32 caps[HDA_SST_CFG_MAX];
-+} __packed;
-+
-+struct skl_dfw_v4_pipe {
-+	u8 pipe_id;
-+	u8 pipe_priority;
-+	u16 conn_type:4;
-+	u16 rsvd:4;
-+	u16 memory_pages:8;
-+} __packed;
-+
-+struct skl_dfw_v4_module {
-+	char uuid[SKL_UUID_STR_SZ];
-+
-+	u16 module_id;
-+	u16 instance_id;
-+	u32 max_mcps;
-+	u32 mem_pages;
-+	u32 obs;
-+	u32 ibs;
-+	u32 vbus_id;
-+
-+	u32 max_in_queue:8;
-+	u32 max_out_queue:8;
-+	u32 time_slot:8;
-+	u32 core_id:4;
-+	u32 rsvd1:4;
-+
-+	u32 module_type:8;
-+	u32 conn_type:4;
-+	u32 dev_type:4;
-+	u32 hw_conn_type:4;
-+	u32 rsvd2:12;
-+
-+	u32 params_fixup:8;
-+	u32 converter:8;
-+	u32 input_pin_type:1;
-+	u32 output_pin_type:1;
-+	u32 is_dynamic_in_pin:1;
-+	u32 is_dynamic_out_pin:1;
-+	u32 is_loadable:1;
-+	u32 rsvd3:11;
-+
-+	struct skl_dfw_v4_pipe pipe;
-+	struct skl_dfw_v4_module_fmt in_fmt[MAX_IN_QUEUE];
-+	struct skl_dfw_v4_module_fmt out_fmt[MAX_OUT_QUEUE];
-+	struct skl_dfw_v4_module_pin in_pin[MAX_IN_QUEUE];
-+	struct skl_dfw_v4_module_pin out_pin[MAX_OUT_QUEUE];
-+	struct skl_dfw_v4_module_caps caps;
-+} __packed;
-+
- #endif
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 986b8b2f90fb..d66b2e5ccd67 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2293,8 +2293,11 @@ static int manifest_new_ver(struct soc_tplg *tplg,
- 	*manifest = NULL;
- 
- 	if (src->size != sizeof(*src_v4)) {
--		dev_err(tplg->dev, "ASoC: invalid manifest size\n");
--		return -EINVAL;
-+		dev_warn(tplg->dev, "ASoC: invalid manifest size %d\n",
-+			 src->size);
-+		if (src->size)
-+			return -EINVAL;
-+		src->size = sizeof(*src_v4);
- 	}
- 
- 	dev_warn(tplg->dev, "ASoC: old version of manifest\n");
--- 
-2.17.0.441.gb46fe60e1d-goog
+CgpPbiAwNS8yNC8yMDE4IDA0OjQ1IEFNLCBBZGFtIFRob21zb24gd3JvdGU6Cj4gT24gMjMgTWF5
+IDIwMTggMDc6MTQsIE1hYyBDaGlhbmcgd3JvdGU6Cj4KPj4gRnJvbTogTWFjIENoaWFuZyA8bWFj
+LmNoaWFuZ0BpbnRlbC5jb20+Cj4+Cj4+IHVuZXhwZWN0ZWQgZXJyb3I6IFBMTCBpbnB1dCBjbG9j
+ayAwIGJlbG93IHZhbGlkIHJhbmdlCj4+Cj4+IGJhY2twb3J0IGZyb20gYnJvb25pZSdzIHRyZWUK
+Pj4gY29tbWl0IGZkMGYyMzc1NzJhZAo+PiAoIkFTb0M6IEludGVsOiBieHQ6IE1vdmUgY29kZWMg
+c3lzY2xrIGNvbmZpZyB0byBjb2RlY19pbml0IGZ1bmN0aW9uIikKPj4KPj4gVGhlIE1DTEsgZm9y
+IERBNzIxOSBkb2VzIG5vdCBjaGFuZ2UgaW4gdGhpcyBwbGF0Zm9ybSwgYnV0IGlzCj4+IGN1cnJl
+bnRseSBiZWluZyBjb25maWd1cmVkIGV2ZXJ5dGltZSBhcyBwYXJ0IG9mIHRoZSBwbGF0Zm9ybV9j
+bG9jawo+PiBldmVudCBoYW5kbGVyIGZvciBEQVBNLiBUaGUgdXBzaG90IG9mIHRoaXMgaXMgdGhh
+dCB3ZSBoYXZlCj4+IHVubmVjZXNzYXJ5IGNhbGxzIHRvIHRoaXMgZnVuY3Rpb24sIGFuZCBpdCBh
+bHNvIG1lYW5zIHRoYXQgaWYKPj4gYSBzdHJlYW0gaGFzbid0IHlldCBiZWVuIHN0YXJ0ZWQsIERB
+NzIxOSBkcml2ZXIgZG9lcyBub3QgaGF2ZSB0aGUKPj4gY29ycmVjdCBNQ0xLIHJhdGVzIHByb2dy
+YW1tZWQgYW5kIHNvIHRoZSBIUCBkZXRlY3Rpb24gZmVhdHVyZSBkb2VzCj4+IG5vdCBvcGVyYXRl
+IGFzIGV4cGVjdGVkLgo+Pgo+PiBUaGlzIHBhdGNoIHJlY3RpZmllcyB0aGlzIGlzc3VlIGJ5IG1v
+dmluZyB0aGUgc3lzY2xrIGNhbGwgdG8KPj4gY29kZWNfaW5pdCBmdW5jdGlvbiBzbyBpdCdzIG9u
+bHkgY2FsbGVkIG9uY2UgYXQgaW5pdGlhbGlzYXRpb24uCj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEFk
+YW0gVGhvbXNvbiA8QWRhbS5UaG9tc29uLk9wZW5zb3VyY2VAZGlhc2VtaS5jb20+Cj4+IEFja2Vk
+LWJ5OiBTYXRoeWFuYXJheWFuYSBOdWplbGxhIDxzYXRoeWFuYXJheWFuYS5udWplbGxhQGludGVs
+LmNvbT4KPj4gU2luZ2VkLW9mZi1ieTogTWFjIENoaWFuZyA8bWFjLmNoaWFuZ0BpbnRlbC5jb20+
+Ck1hYywgSSBwcm92aWRlZCB5b3UgaW50ZXJuYWwgZmVlZGJhY2sgdGhhdCB5b3VyIGNvbW1pdCBt
+ZXNzYWdlIHdhcyAKbWlzbGVhZGluZy4KVGhpcyBpcyBub3QgYSAnYmFja3BvcnQnLCB0aGUgaW50
+ZW50IGhlcmUgaXMgdG8gZml4IGEgcHJvYmxlbSBvbiBLQkwgCnVzaW5nIHRoZSBzYW1lIHNvbHV0
+aW9uIGFscmVhZHkgbWVyZ2VkIGZvciBBcG9sbG9MYWtlIHdpdGggY29tbWl0IApmZDBmMjM3NTcy
+YWQgKCJBU29DOiBJbnRlbDogYnh0OiBNb3ZlIGNvZGVjIHN5c2NsayBjb25maWcgdG8gY29kZWNf
+aW5pdCAKZnVuY3Rpb24iKS4gWW91IGFsc28gd2FudCB0byBiZSBjYXJlZnVsIHdoZW4gaW5jbHVk
+aW5nIHNvbWVvbmUgZWxzZSdzIApTaWduZWQtb2ZmLWJ5IGFuZCBjaGVjayBmb3IgdHlwb3MsIGlm
+IHlvdSBydW4gY2hlY2twYXRjaC5wbCAtLXN0cmljdCAKeW91J2Qgc2VlIHRoaXM6CgpXQVJOSU5H
+OiAnZXZlcnl0aW1lJyBtYXkgYmUgbWlzc3BlbGxlZCAtIHBlcmhhcHMgJ2V2ZXJ5IHRpbWUnPwoj
+MTQ6CmN1cnJlbnRseSBiZWluZyBjb25maWd1cmVkIGV2ZXJ5dGltZSBhcyBwYXJ0IG9mIHRoZSBw
+bGF0Zm9ybV9jbG9jawoKV0FSTklORzogTm9uLXN0YW5kYXJkIHNpZ25hdHVyZTogU2luZ2VkLW9m
+Zi1ieToKIzI2OgpTaW5nZWQtb2ZmLWJ5OiBNYWMgQ2hpYW5nIDxtYWMuY2hpYW5nQGludGVsLmNv
+bT4KCkNIRUNLOiBBbGlnbm1lbnQgc2hvdWxkIG1hdGNoIG9wZW4gcGFyZW50aGVzaXMKIzU3OiBG
+SUxFOiBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2tibF9kYTcyMTlfbWF4OTgzNTdhLmM6MTcwOgor
+wqDCoMKgIHJldCA9IHNuZF9zb2NfZGFpX3NldF9zeXNjbGsoY29kZWNfZGFpLCBEQTcyMTlfQ0xL
+U1JDX01DTEssIDE5MjAwMDAwLAorwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDC
+oMKgwqAgU05EX1NPQ19DTE9DS19JTik7Cgp0b3RhbDogMCBlcnJvcnMsIDIgd2FybmluZ3MsIDEg
+Y2hlY2tzLCAzMiBsaW5lcyBjaGVja2VkCgpJbiBhZGRpdGlvbiwgYm90aCBBZGFtIGFuZCBJIG1l
+bnRpb25lZCB0aGF0IHRoZSBjbG9ja3MgYXJlIGRpZmZlcmVudCAKYmV0d2VlbiB0aGUgdHdvIHBs
+YXRmb3Jtcywgc28gdGhpcyBwYXRjaCBpcyBpbmNvcnJlY3QgYW5kIGNhbm5vdCBiZSAKYXBwbGll
+ZCBhcyBpcywgc2VlIGJlbG93LgoKPj4gLS0tCj4+ICAgc291bmQvc29jL2ludGVsL2JvYXJkcy9r
+YmxfZGE3MjE5X21heDk4MzU3YS5jIHwgMTcgKysrKysrKysrLS0tLS0tLS0KPj4gICAxIGZpbGUg
+Y2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0tZ2l0
+IGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9rYmxfZGE3MjE5X21heDk4MzU3YS5jCj4+IGIvc291
+bmQvc29jL2ludGVsL2JvYXJkcy9rYmxfZGE3MjE5X21heDk4MzU3YS5jCj4+IGluZGV4IDYwZTcz
+OWYuLjg4ZmJjNmEgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMva2JsX2Rh
+NzIxOV9tYXg5ODM1N2EuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2tibF9kYTcy
+MTlfbWF4OTgzNTdhLmMKPj4gQEAgLTY1LDE0ICs2NSw2IEBAIHN0YXRpYyBpbnQgcGxhdGZvcm1f
+Y2xvY2tfY29udHJvbChzdHJ1Y3QKPj4gc25kX3NvY19kYXBtX3dpZGdldCAqdywKPj4gICAJCXJl
+dHVybiAtRUlPOwo+PiAgIAl9Cj4+Cj4+IC0JLyogQ29uZmlndXJlIHN5c2NsayBmb3IgY29kZWMg
+Ki8KPj4gLQlyZXQgPSBzbmRfc29jX2RhaV9zZXRfc3lzY2xrKGNvZGVjX2RhaSwgREE3MjE5X0NM
+S1NSQ19NQ0xLLCAyNDU3NjAwMCwKPj4gLQkJCQkgICAgIFNORF9TT0NfQ0xPQ0tfSU4pOwo+IENv
+ZGUgaGVyZSBpcyBzZXR0aW5nIHRoZSBNQ0xLIHJhdGUgZm9yIHRoZSBjb2RlYyBhcyBiZWluZyAy
+NC41NzZNSHogYnV0Li4uCj4KPj4gLQlpZiAocmV0KSB7Cj4+IC0JCWRldl9lcnIoY2FyZC0+ZGV2
+LCAiY2FuJ3Qgc2V0IGNvZGVjIHN5c2NsayBjb25maWd1cmF0aW9uXG4iKTsKPj4gLQkJcmV0dXJu
+IHJldDsKPj4gLQl9Cj4+IC0KPj4gICAJaWYgKFNORF9TT0NfREFQTV9FVkVOVF9PRkYoZXZlbnQp
+KSB7Cj4+ICAgCQlyZXQgPSBzbmRfc29jX2RhaV9zZXRfcGxsKGNvZGVjX2RhaSwgMCwKPj4gICAJ
+CQkJICAgICBEQTcyMTlfU1lTQ0xLX01DTEssIDAsIDApOwo+PiBAQCAtMTY5LDkgKzE2MSwxOCBA
+QCBzdGF0aWMgaW50IGthYnlsYWtlX2RhNzIxOV9jb2RlY19pbml0KHN0cnVjdAo+PiBzbmRfc29j
+X3BjbV9ydW50aW1lICpydGQpCj4+ICAgewo+PiAgIAlzdHJ1Y3Qga2JsX2NvZGVjX3ByaXZhdGUg
+KmN0eCA9IHNuZF9zb2NfY2FyZF9nZXRfZHJ2ZGF0YShydGQtPmNhcmQpOwo+PiAgIAlzdHJ1Y3Qg
+c25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCA9IHJ0ZC0+Y29kZWNfZGFpLT5jb21wb25lbnQ7
+Cj4+ICsJc3RydWN0IHNuZF9zb2NfZGFpICpjb2RlY19kYWkgPSBydGQtPmNvZGVjX2RhaTsKPj4g
+ICAJc3RydWN0IHNuZF9zb2NfamFjayAqamFjazsKPj4gICAJaW50IHJldDsKPj4KPj4gKwkvKiBD
+b25maWd1cmUgc3lzY2xrIGZvciBjb2RlYyAqLwo+PiArCXJldCA9IHNuZF9zb2NfZGFpX3NldF9z
+eXNjbGsoY29kZWNfZGFpLCBEQTcyMTlfQ0xLU1JDX01DTEssIDE5MjAwMDAwLAo+PiArCQkJCQkJ
+U05EX1NPQ19DTE9DS19JTik7Cj4gLi4uaGVyZSB5b3UncmUgc2V0dGluZyBNQ0xLIHJhdGUgdG8g
+YmUgMTkuMk1Iei4gSXMgdGhhdCBjb3JyZWN0PwpUaGF0IGlzIGNsZWFybHkgd3JvbmcuIExpa2Vs
+eSBhIGNvcHkvcGFzdGUgZnJvbSBieHRfZGE3MjE5X21heDk4MzU3YS5jIAppbnN0ZWFkIG9mIG1v
+dmluZyB0aGUgY29kZSB3aXRoaW4gdGhlIHNhbWUgZmlsZS4KCj4KPj4gKwlpZiAocmV0KSB7Cj4+
+ICsJCWRldl9lcnIocnRkLT5kZXYsICJjYW4ndCBzZXQgY29kZWMgc3lzY2xrIGNvbmZpZ3VyYXRp
+b25cbiIpOwo+PiArCQlyZXR1cm4gcmV0Owo+PiArCX0KPj4gKwo+PiAgIAkvKgo+PiAgIAkgKiBI
+ZWFkc2V0IGJ1dHRvbnMgbWFwIHRvIHRoZSBnb29nbGUgUmVmZXJlbmNlIGhlYWRzZXQuCj4+ICAg
+CSAqIFRoZXNlIGNhbiBiZSBjb25maWd1cmVkIGJ5IHVzZXJzcGFjZS4KPj4gLS0KPj4gMi43LjQK
+Pj4KPj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4g
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4+
+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRl
+dmVsCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBB
+bHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+IGh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
