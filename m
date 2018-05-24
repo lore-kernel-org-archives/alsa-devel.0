@@ -1,18 +1,22 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 08/13] ASoC: pxa: remove the dmaengine
-	compat need
-Date: Thu, 24 May 2018 14:58:36 +0100
-Message-ID: <20180524135836.GR4828@sirena.org.uk>
-References: <20180524070703.11901-1-robert.jarzmik@free.fr>
- <20180524070703.11901-9-robert.jarzmik@free.fr>
+Subject: Re: [RFC/RFT PATCH] ASoC: topology: Improve backwards
+ compatibility with v4 topology files
+Date: Thu, 24 May 2018 15:18:42 +0100
+Message-ID: <20180524141842.GW4828@sirena.org.uk>
+References: <20180522165842.233949-1-groeck@google.com>
+ <s5hmuwqpjdd.wl-tiwai@suse.de>
+ <20180523135609.GK4828@sirena.org.uk>
+ <CABXOdTeCr-ExO9O3XAHK-DnNf5yLGO0TPkXgs60TB90jGNB2_Q@mail.gmail.com>
+ <20180523155811.GO4828@sirena.org.uk>
+ <CABXOdTePWquSQaFQsoNTrVNmYydZLqF534zeoTfz0RfLDHSseA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7081102325017339701=="
+Content-Type: multipart/mixed; boundary="===============8290608594914876041=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C459E26705D
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 15:59:03 +0200 (CEST)
-In-Reply-To: <20180524070703.11901-9-robert.jarzmik@free.fr>
+ by alsa0.perex.cz (Postfix) with ESMTP id 64FE8267345
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 16:18:48 +0200 (CEST)
+In-Reply-To: <CABXOdTePWquSQaFQsoNTrVNmYydZLqF534zeoTfz0RfLDHSseA@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +26,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-ide@vger.kernel.org, Richard Weinberger <richard@nod.at>, linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, netdev@vger.kernel.org, dmaengine@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Daniel Mack <daniel@zonque.org>, linux-media@vger.kernel.org
+To: Guenter Roeck <groeck@google.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Patel,
+ Chintan M" <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7081102325017339701==
+--===============8290608594914876041==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="brdEIFGMNIjz5YJG"
+	protocol="application/pgp-signature"; boundary="ItroYk2LVxvwOvi/"
 Content-Disposition: inline
 
 
---brdEIFGMNIjz5YJG
+--ItroYk2LVxvwOvi/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Thu, May 24, 2018 at 09:06:58AM +0200, Robert Jarzmik wrote:
-> As the pxa architecture switched towards the dmaengine slave map, the
-> old compatibility mechanism to acquire the dma requestor line number and
-> priority are not needed anymore.
+On Wed, May 23, 2018 at 09:17:23AM -0700, Guenter Roeck wrote:
+> On Wed, May 23, 2018 at 8:58 AM Mark Brown <broonie@kernel.org> wrote:
 
-Acked-by: Mark Brown <broonie@kernel.org>
+> > I'm saying we should move them there.  They're clearly part of the
+> > userspace ABI and therefore belong in uapi, it was a mistake to let them
+> > be elsewhere.
 
---brdEIFGMNIjz5YJG
+> They define a firmware file format. Not sure if I would call that userspace
+> ABI.
+
+It's a binary provided by userspace to the kernel, I'd say that's
+clearly an ABI.
+
+> I don't mind adding the structures to
+> sound/soc/intel/skylake/skl-tplg-interface.h,
+> but it seems a bit out of scope to tie this with moving the file to
+> include/uapi/sound.
+> I think that should be a separate discussion.
+
+Is there some reason not to just do it while we're looking at this?  I
+don't see why we wouldn't want to do this.
+
+--ItroYk2LVxvwOvi/
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsGxQsACgkQJNaLcl1U
-h9AOOQf+ICndtAhAUcJYotu2F1wfe6zK/SmwQs2RaAzNMRnQTNmdgQDHaITOBSE0
-juDyVbEzdIjDwHmu3lB6bZ+mj3MDpGeJ1DPvvi6aI+pkDH/J16XMXXTchXyo3NI0
-db1lLlmXYiTbnsVGU2bO6hMCG588Us7ZyHzt2pxD0f9LqNzy3f617uD3fSQZSzrd
-a5JyJZMHQfoIhO58gKX7fQ+JVum/7BFb2S4eFv/DZPZsU9Gy96h0viVcyImmE+ri
-qS4cfZJlV/PC7m4GYIP8V23Dl6rj8wsh7YvKUUtat6tIqGRkZtHFEo6BCQedA3Ka
-+7F7zfmpLYaC8VeKI0Fp8fxfDYF0Jg==
-=gxiC
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsGycEACgkQJNaLcl1U
+h9AdLwf/QbknuFoYVCNkUSaND4yd83yRRB4Dk8wpC2M92DJnv1h1OoiUpHN6It9L
+h4Tq5K9sK7QzJUiQZ8RN1upzl8YWg/Ar0M/op6APK+vXBliyf24bJBxa1aFXYIJ7
+pUs4MAWX5eR3Xz5BbZXTjt4gX0E7/Ur6MWlUdfLjm44q40mGtRjKAySfquWOYZ4v
+U1p5Jr3LV9sUZRH/vKGyjWlgd/5bAvxAtRRZfqdFU99bhLhl/NilEbPSMVDjh2Gv
+vCMkJj7GvlFZ2hcuCUNt3hHGQ1jgMTF3Q6UyppfxoHLyeBX84abeWxrnu3QbXrpm
+vZY4UZuXuU6yF4kWzwVkaZ7iUD9J4Q==
+=ukzP
 -----END PGP SIGNATURE-----
 
---brdEIFGMNIjz5YJG--
+--ItroYk2LVxvwOvi/--
 
---===============7081102325017339701==
+--===============8290608594914876041==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7081102325017339701==--
+--===============8290608594914876041==--
