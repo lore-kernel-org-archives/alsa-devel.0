@@ -1,18 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v5 2/3] ASoC: Add multiple CPU DAI support
- for PCM ops
-Date: Thu, 24 May 2018 16:29:45 -0500
-Message-ID: <a5934a1f-0f0a-98b7-40ae-d691a779acab@linux.intel.com>
+Subject: Re: [PATCH v5 3/3] ASoC: Add multiple CPU DAI support
+ in DAPM
+Date: Thu, 24 May 2018 16:37:43 -0500
+Message-ID: <b2738ac2-2e1c-c106-cd0d-c9761cdbe0ce@linux.intel.com>
 References: <1526985623-2606-1-git-send-email-shreyas.nc@intel.com>
- <1526985623-2606-3-git-send-email-shreyas.nc@intel.com>
+ <1526985623-2606-4-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id D66F3267646
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 23:29:50 +0200 (CEST)
-In-Reply-To: <1526985623-2606-3-git-send-email-shreyas.nc@intel.com>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 912AE267646
+ for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 23:37:46 +0200 (CEST)
+In-Reply-To: <1526985623-2606-4-git-send-email-shreyas.nc@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,200 +27,123 @@ To: Shreyas NC <shreyas.nc@intel.com>, alsa-devel@alsa-project.org
 Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, ckeepax@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-This one is also quite dense, I could use clarifications on how channels 
-will be handled in a multi-cpu context. I believe for the multi-codec 
-case there was an assumption of symmetry, not sure this works or is 
-required in a multi-cpu case, see below.
->   
-> -	symmetry = cpu_dai->driver->symmetric_channels ||
-> -		rtd->dai_link->symmetric_channels;
-> +	symmetry = rtd->dai_link->symmetric_channels;
-> +
-> +	for (i = 0; i < rtd->num_cpu_dai; i++)
-> +		symmetry |= rtd->cpu_dais[i]->driver->symmetric_channels;
->   
->   	for (i = 0; i < rtd->num_codecs; i++)
->   		symmetry |= rtd->codec_dais[i]->driver->symmetric_channels;
->   
-> -	if (symmetry && cpu_dai->channels && cpu_dai->channels != channels) {
-> -		dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
-> -				cpu_dai->channels, channels);
-> -		return -EINVAL;
-> -	}
-> +	for (i = 0; i < rtd->num_cpu_dai; i++)
-> +		if (symmetry && rtd->cpu_dais[i]->channels &&
-> +				rtd->cpu_dais[i]->channels != channels) {
-> +			dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
-> +					rtd->cpu_dais[i]->channels, channels);
-> +			return -EINVAL;
-> +		}
-I am not sure I get this part - but maybe I am connecting too many dots 
-with the SoundWire 'stream' patches.
 
-This code is assuming all cpu_dais have the same number of channels, 
-defined by the hw_params.
-Is this right? In the SoundWire case, we can have one port with 2 
-channels and another with 4, for a total of 6 channels for the stream. 
-Am I missing something or how should I reconcile the concepts?
 
-making the assumption that the rates and sample_bits are identical is ok.
+On 05/22/2018 05:40 AM, Shreyas NC wrote:
+> DAPM handles DAIs during soc_dapm_stream_event() and during addition
+> and creation of DAI widgets i.e., dapm_add_valid_dai_widget() and
+> dapm_connect_dai_link_widgets().
+>
+> Extend these functions to handle multiple cpu dai.
 
->   
-> -	symmetry = cpu_dai->driver->symmetric_samplebits ||
-> -		rtd->dai_link->symmetric_samplebits;
-> +	symmetry = rtd->dai_link->symmetric_samplebits;
-> +
-> +	for (i = 0; i < rtd->num_cpu_dai; i++)
-> +		symmetry |= rtd->cpu_dais[i]->driver->symmetric_samplebits;
->   
->   	for (i = 0; i < rtd->num_codecs; i++)
->   		symmetry |= rtd->codec_dais[i]->driver->symmetric_samplebits;
->   
-> -	if (symmetry && cpu_dai->sample_bits && cpu_dai->sample_bits != sample_bits) {
-> -		dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
-> -				cpu_dai->sample_bits, sample_bits);
-> -		return -EINVAL;
-> -	}
-> +	for (i = 0; i < rtd->num_cpu_dai; i++)
-> +		if (symmetry && rtd->cpu_dais[i]->sample_bits &&
-> +				rtd->cpu_dais[i]->sample_bits != sample_bits) {
-> +			dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
-> +						rtd->cpu_dais[i]->sample_bits,
-> +								sample_bits);
-> +			return -EINVAL;
-> +		}
->   
+nit-pick: the diffs are difficult to look at, it might be easier on the 
+reader if you first added a new helper function, then added multi 
+cpu_dais in a second patch.
+
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+>
+> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+> ---
+>   sound/soc/soc-dapm.c | 71 ++++++++++++++++++++++++++++++++++------------------
+>   1 file changed, 46 insertions(+), 25 deletions(-)
+>
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index 2d97091..79f5f61 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -4108,38 +4108,57 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
 >   	return 0;
 >   }
-> @@ -308,13 +328,18 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
->   static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
+>   
+> -static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+> -					  struct snd_soc_pcm_runtime *rtd)
+> +static void dapm_add_valid_dai_widget(struct snd_soc_card *card,
+> +					struct snd_soc_pcm_runtime *rtd,
+> +					struct snd_soc_dai *codec_dai,
+> +					struct snd_soc_dai *cpu_dai)
 >   {
->   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-> -	struct snd_soc_dai_driver *cpu_driver = rtd->cpu_dai->driver;
->   	struct snd_soc_dai_link *link = rtd->dai_link;
->   	unsigned int symmetry, i;
+> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+>   	struct snd_soc_dapm_widget *sink, *source;
+> -	int i;
 >   
-> -	symmetry = cpu_driver->symmetric_rates || link->symmetric_rates ||
-> -		cpu_driver->symmetric_channels || link->symmetric_channels ||
-> -		cpu_driver->symmetric_samplebits || link->symmetric_samplebits;
-> +	symmetry = link->symmetric_rates || link->symmetric_channels ||
-> +			link->symmetric_samplebits;
+> -	for (i = 0; i < rtd->num_codecs; i++) {
+> -		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
+> +	/* connect BE DAI playback if widgets are valid */
+> +	if (codec_dai->playback_widget && cpu_dai->playback_widget) {
+> +		source = cpu_dai->playback_widget;
+> +		sink = codec_dai->playback_widget;
+> +		dev_err(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
+> +				cpu_dai->component->name,
+> +				source->name,
+> +				codec_dai->component->name,
+> +				sink->name);
 > +
-> +	/* Apply symmetery for multiple cpu dais */
-I've never seen this spelling for cemetery :-)
-
-[...]
+> +		snd_soc_dapm_add_path(&card->dapm, source, sink,
+> +				NULL, NULL);
+> +	}
 >   
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		cpu_dai_drv = rtd->cpu_dais[i]->driver;
-> +
-> +		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-> +			cpu_stream = &cpu_dai_drv->playback;
-> +		else
-> +			cpu_stream = &cpu_dai_drv->capture;
-> +
-> +		cpu_chan_min = max(cpu_chan_min,
-> +					cpu_stream->channels_min);
-> +		cpu_chan_max = min(cpu_chan_max,
-> +					cpu_stream->channels_max);
-> +
-> +		if (hw->formats)
-> +			hw->formats &= cpu_stream->formats;
-> +		else
-> +			hw->formats = cpu_stream->formats;
-> +
-> +		cpu_rates = snd_pcm_rate_mask_intersect(cpu_rates,
-> +						cpu_stream->rates);
-> +
-> +		cpu_rate_min = max(cpu_rate_min, cpu_stream->rate_min);
-> +		cpu_rate_max = min_not_zero(cpu_rate_max, cpu_stream->rate_max);
+> -		/* connect BE DAI playback if widgets are valid */
+> -		if (codec_dai->playback_widget && cpu_dai->playback_widget) {
+> -			source = cpu_dai->playback_widget;
+> -			sink = codec_dai->playback_widget;
+> -			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
+> -				cpu_dai->component->name, source->name,
+> -				codec_dai->component->name, sink->name);
+> +	/* connect BE DAI capture if widgets are valid */
+> +	if (codec_dai->capture_widget && cpu_dai->capture_widget) {
+> +		source = codec_dai->capture_widget;
+> +		sink = cpu_dai->capture_widget;
+> +		dev_err(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
+> +				codec_dai->component->name,
+> +				source->name,
+> +				cpu_dai->component->name,
+> +				sink->name);
+>   
+> -			snd_soc_dapm_add_path(&card->dapm, source, sink,
+> +		snd_soc_dapm_add_path(&card->dapm, source, sink,
+>   				NULL, NULL);
+> -		}
 > +	}
 > +
->   	/*
-> -	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
-> -	 * connected to a single CPU DAI, use CPU DAI's directly and let
-> -	 * channel allocation be fixed up later
-> +	 * chan min/max cannot be enforced if there are multiple
-> +	 * CODEC DAIs connected to CPU DAI(s), use CPU DAI's
-> +	 * directly and let channel allocation be fixed up later
-What does 'later' mean?
-I guess I don't quite get the channel management, same issue as my 
-feedback above.
-
-[...]
->
-> @@ -963,11 +1070,14 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
->   	if (ret < 0)
->   		goto component_err;
+> +}
 >   
-> -	/* store the parameters for each DAIs */
-> -	cpu_dai->rate = params_rate(params);
-> -	cpu_dai->channels = params_channels(params);
-> -	cpu_dai->sample_bits =
-> -		snd_pcm_format_physical_width(params_format(params));
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		/* store the parameters for each DAIs */
-> +		cpu_dai = rtd->cpu_dais[i];
-> +		cpu_dai->rate = params_rate(params);
-> +		cpu_dai->channels = params_channels(params);
-same here, are we again making the assumption that all cpu_dais can 
-transmit the same number of channels?
-
-[...]
->   
-> @@ -1107,10 +1229,14 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
->   			return ret;
->   	}
->   
-> -	if (cpu_dai->driver->ops->trigger) {
-> -		ret = cpu_dai->driver->ops->trigger(substream, cmd, cpu_dai);
-> -		if (ret < 0)
-> -			return ret;
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		cpu_dai = rtd->cpu_dais[i];
-> +		if (cpu_dai->driver->ops->trigger) {
-> +			ret = cpu_dai->driver->ops->trigger(substream,
-> +								cmd, cpu_dai);
-How do I reconcile this sequential trigger with the notion of 
-bank-switch in SoundWire? It seems we are missing a global trigger for 
-all cpu_dais who are part of the same dailink? Or am I in the weeds again?
-
-[...]
-> @@ -1157,12 +1287,13 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->   	struct snd_soc_pcm_runtime *rtd = substream->private_data;
->   	struct snd_soc_component *component;
->   	struct snd_soc_rtdcom_list *rtdcom;
-> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> -		/* connect BE DAI capture if widgets are valid */
+> -		if (codec_dai->capture_widget && cpu_dai->capture_widget) {
+> -			source = codec_dai->capture_widget;
+> -			sink = cpu_dai->capture_widget;
+> -			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
+> -				codec_dai->component->name, source->name,
+> -				cpu_dai->component->name, sink->name);
+> +static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+> +					  struct snd_soc_pcm_runtime *rtd)
+> +{
 > +	struct snd_soc_dai *cpu_dai;
->   	struct snd_soc_dai *codec_dai;
->   	struct snd_pcm_runtime *runtime = substream->runtime;
->   	snd_pcm_uframes_t offset = 0;
->   	snd_pcm_sframes_t delay = 0;
->   	snd_pcm_sframes_t codec_delay = 0;
-> +	snd_pcm_sframes_t cpu_delay = 0;
+> +	int i, j;
+>   
+> -			snd_soc_dapm_add_path(&card->dapm, source, sink,
+> -				NULL, NULL);
+> +	for (i = 0; i < rtd->num_codecs; i++) {
+> +		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
+> +
+> +		for (j = 0; j < rtd->num_cpu_dai; j++) {
+> +			cpu_dai = rtd->cpu_dais[j];
+> +
+> +			dapm_add_valid_dai_widget(card, rtd,
+> +						codec_dai, cpu_dai);
+>   		}
+>   	}
+>   }
+> @@ -4206,7 +4225,9 @@ static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
+>   {
 >   	int i;
 >   
->   	for_each_rtdcom(rtd, rtdcom) {
-> @@ -1177,8 +1308,15 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->   		break;
->   	}
->   
-> -	if (cpu_dai->driver->ops->delay)
-> -		delay += cpu_dai->driver->ops->delay(substream, cpu_dai);
-> +	for (i = 0; i < rtd->num_cpu_dai; i++) {
-> +		cpu_dai = rtd->cpu_dais[i];
-> +		if (cpu_dai->driver->ops->delay)
-> +			cpu_delay = max(cpu_delay,
-> +					cpu_dai->driver->ops->delay(substream,
-> +								cpu_dai));
-> +	}
+> -	soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
+> +	for (i = 0; i < rtd->num_cpu_dai; i++)
+> +		soc_dapm_dai_stream_event(rtd->cpu_dais[i], stream, event);
 > +
-> +	delay += cpu_delay;
-Oh, this is weird. If you are checking the delay sequentially for each 
-cpu_dai, what are the odds that you get a consistent reply? I think it's 
-fundamentally different from the codec side since you will in theory be 
-able to check delays on each cpu_dai fairly quickly over IPC, whereas 
-for codecs the delay is likely to be a long-term estimate, not an 
-immediate value. In addition you would probably expect that all cpu_dais 
-are triggered at the same time and hence have the same delay, so you 
-could use the cpu_dais[0] instead of querying the values multiple times.
+>   	for (i = 0; i < rtd->num_codecs; i++)
+>   		soc_dapm_dai_stream_event(rtd->codec_dais[i], stream, event);
+>   
