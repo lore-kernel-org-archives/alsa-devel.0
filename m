@@ -1,76 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ssm2602: Fix ADC powerup sequencing
-Date: Fri, 25 May 2018 11:26:09 +0100
-Message-ID: <20180525102609.GK4828@sirena.org.uk>
-References: <20180517133009.26079-1-m.felsch@pengutronix.de>
- <CAL_JsqKhkVOYf+XEA3MYpK4JYfMrZTbHZtoXgaH=wCBRoU6cfQ@mail.gmail.com>
- <1526640409.3948.5.camel@pengutronix.de>
- <20180523165352.GA6187@rob-hp-laptop>
- <20180525094724.3f4edofopk52i3v6@pengutronix.de>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH v2 10/13] dmaengine: pxa: document pxad_param
+Date: Fri, 25 May 2018 16:29:13 +0530
+Message-ID: <20180525105913.GO26663@vkoul-mobl>
+References: <20180524070703.11901-1-robert.jarzmik@free.fr>
+ <20180524070703.11901-11-robert.jarzmik@free.fr>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7677205709529174942=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C2E93267634
- for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 12:26:13 +0200 (CEST)
-In-Reply-To: <20180525094724.3f4edofopk52i3v6@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, kernel@pengutronix.de, devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180524070703.11901-11-robert.jarzmik@free.fr>
+Sender: netdev-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On 24-05-18, 09:07, Robert Jarzmik wrote:
+> Add some documentation for the pxad_param structure, and describe the
+> contract behind the minimal required priority of a DMA channel.
 
---===============7677205709529174942==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="T5F8Mpu1Sg8jtYtl"
-Content-Disposition: inline
+Acked-by: Vinod Koul <vkoul@kernel.org>
 
-
---T5F8Mpu1Sg8jtYtl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Fri, May 25, 2018 at 11:47:24AM +0200, Marco Felsch wrote:
-
-> I found the: "ti,charge-period (sound/ti,tas5086.txt)" binding which
-> represents nearly the same but it is not common. One opportunity would be to
-> introduce a common "charge-period-us" binding and change the ti binding the
-> common binding later.
-
-Are you sure what you have is a charge period and not some stabalization
-time or something?
-
---T5F8Mpu1Sg8jtYtl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsH5MAACgkQJNaLcl1U
-h9D0nAf/TkfjY5yL0LIna/QZ2emlLPo80P6AOd37c3vruPNzXhAsEVZFQKZ8a/mT
-EVAAkRp9r1r8XWdejBGkH0XlQPcDw0/GePEFBaJDI253UVt6RznayyRtbxZ5Wa4q
-j0RyKP5Ti10Z0sko8JPrsCsP0Proc062Xih7naRrAxQVfFgdFH4nZPIfVf4kO/jW
-BT1/IVJ236jEoPSHDuRQULzGzHyLyCo1tWHcItsVgu+tnixURQlrMaAutStkHdNF
-SqXXO11EaHz+ybFyWg5BBQ4qLlTu6Rgi1LaVzcdWjZH7EtCkZuhjEzeugLW5iRr1
-YRntSvZehgGp5IE/w0HonLKxuVjLkA==
-=I6Sp
------END PGP SIGNATURE-----
-
---T5F8Mpu1Sg8jtYtl--
-
---===============7677205709529174942==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7677205709529174942==--
+-- 
+~Vinod
