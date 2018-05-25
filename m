@@ -1,20 +1,27 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: kbl: Move codec sysclk config
- to codec_init function
-Date: Fri, 25 May 2018 10:20:54 -0500
-Message-ID: <dd534468-23de-039b-da45-0c4eb8286979@linux.intel.com>
-References: <1527056028-12552-1-git-send-email-mac.chiang@intel.com>
- <1527234447-1384-1-git-send-email-mac.chiang@intel.com>
- <2E89032DDAA8B9408CB92943514A0337014C1EEDC9@SW-EX-MBX01.diasemi.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH] ASoC: ssm2602: Fix ADC powerup sequencing
+Date: Fri, 25 May 2018 10:42:18 -0500
+Message-ID: <CAL_JsqLicsBMMkWcS6bpWKKKa-CqLSfU1KyRNS=SWsv0spUYtw@mail.gmail.com>
+References: <20180517133009.26079-1-m.felsch@pengutronix.de>
+ <CAL_JsqKhkVOYf+XEA3MYpK4JYfMrZTbHZtoXgaH=wCBRoU6cfQ@mail.gmail.com>
+ <1526640409.3948.5.camel@pengutronix.de> <20180523165352.GA6187@rob-hp-laptop>
+ <20180525094724.3f4edofopk52i3v6@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 981C0267669
- for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 17:20:57 +0200 (CEST)
-In-Reply-To: <2E89032DDAA8B9408CB92943514A0337014C1EEDC9@SW-EX-MBX01.diasemi.com>
-Content-Language: en-US
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D7B126767D
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 17:42:42 +0200 (CEST)
+Received: from mail-qk0-f178.google.com (mail-qk0-f178.google.com
+ [209.85.220.178])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested)
+ by mail.kernel.org (Postfix) with ESMTPSA id 4B30420892
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 15:42:40 +0000 (UTC)
+Received: by mail-qk0-f178.google.com with SMTP id d125-v6so4385393qkb.8
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 08:42:40 -0700 (PDT)
+In-Reply-To: <20180525094724.3f4edofopk52i3v6@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,120 +31,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "mac.chiang@intel.com" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, Sascha Hauer <kernel@pengutronix.de>, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 05/25/2018 03:17 AM, Adam Thomson wrote:
-> On 25 May 2018 08:47, Mac Chiang wrote:
->
-> You really need to run 'getmaintainers.pl' on this patch. If you want a
-> maintainer to see your change, the e-mail has to be directly addressed to them
-> as well as CC'd to the mailing list, otherwise chances are they won't see it.
->
-> Also, as this is the second iteration of the patch, the title should be
-> versioned, i.e. "[PATCH v2] ..."
->
->> From: Mac Chiang <mac.chiang@intel.com>
->>
->> fix an issue on KBL which applied the merged solution from
->> broonie's tree
->> commit fd0f237572ad
->> ("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
-This is confusing cause and effect. I suggest you start with the 
-description of the APL fix:
-
-'On APL, commit fd0f237572ad
-("ASoC: Intel: bxt: Move codec sysclk config to codec_init function") 
-fixed an issue related to jack detection.'
-
-then keep the following working as is
->>
->> The MCLK for DA7219 does not change in this platform, but is
->> currently being configured everytime as part of the platform_clock
->> event handler for DAPM. The upshot of this is that we have
->> unnecessary calls to this function, and it also means that if
->> a stream hasn't yet been started, DA7219 driver does not have the
->> correct MCLK rates programmed and so the HP detection feature does
->> not operate as expected.
-add 'The same fix is needed on KBL.'
->>
->> This patch rectifies this issue by moving the sysclk call to
->> codec_init function so it's only called once at initialisation.
->>
->> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
->> Acked-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
->> Signed-off-by: Mark Brown <broonie@kernel.org>
-And remove all previous 3 lines. You can only add someone else's tag if 
-they have explicitly provided it to you or sent it to the mailing list. 
-copy-paste is not acceptable.
->> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-> As Pierre mentioned yesterday, this is not an existing patch being reapplied, so
-> you cannot assume people's 'Signed-off-by' on this. Mark certainly won't add his
-> 'Signed-off-by' tag until he merges it into his tree. Also, has Sathya actually
-> seen this actual change? If not how can you add his 'Acked-by' tag?
->
-> If you can make this patch format in-line with normal expectations, then the
-> code below looks ok to me.
-same here, the code makes sense. I will ack this patch once the commit 
-message and tags are fixed. Please submit a v3 and read [1] before doing so.
-
-[1] https://www.kernel.org/doc/html/v4.16/process/submitting-patches.html
->
->> ---
->>   sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
->>   1 file changed, 9 insertions(+), 8 deletions(-)
->>
->> diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c
->> b/sound/soc/intel/boards/kbl_da7219_max98357a.c
->> index c332a32..ad3029d 100644
->> --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
->> +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
->> @@ -66,14 +66,6 @@ static int platform_clock_control(struct
->> snd_soc_dapm_widget *w,
->>   		return -EIO;
->>   	}
->>
->> -	/* Configure sysclk for codec */
->> -	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
->> -				     SND_SOC_CLOCK_IN);
->> -	if (ret) {
->> -		dev_err(card->dev, "can't set codec sysclk configuration\n");
->> -		return ret;
->> -	}
->> -
->>   	if (SND_SOC_DAPM_EVENT_OFF(event)) {
->>   		ret = snd_soc_dai_set_pll(codec_dai, 0,
->>   				     DA7219_SYSCLK_MCLK, 0, 0);
->> @@ -170,9 +162,18 @@ static int kabylake_da7219_codec_init(struct
->> snd_soc_pcm_runtime *rtd)
->>   {
->>   	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
->>   	struct snd_soc_component *component = rtd->codec_dai->component;
->> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
->>   	struct snd_soc_jack *jack;
->>   	int ret;
->>
->> +	/* Configure sysclk for codec */
->> +	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
->> +						SND_SOC_CLOCK_IN);
->> +	if (ret) {
->> +		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
->> +		return ret;
->> +	}
->> +
->>   	/*
->>   	 * Headset buttons map to the google Reference headset.
->>   	 * These can be configured by userspace.
->> --
->> 2.7.4
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+T24gRnJpLCBNYXkgMjUsIDIwMTggYXQgNDo0NyBBTSwgTWFyY28gRmVsc2NoIDxtLmZlbHNjaEBw
+ZW5ndXRyb25peC5kZT4gd3JvdGU6Cj4gSGkgUm9iLAo+Cj4gT24gMTgtMDUtMjMgMTE6NTMsIFJv
+YiBIZXJyaW5nIHdyb3RlOgo+PiBPbiBGcmksIE1heSAxOCwgMjAxOCBhdCAxMjo0Njo0OVBNICsw
+MjAwLCBQaGlsaXBwIFphYmVsIHdyb3RlOgo+PiA+IEhpIFJvYiwKPj4gPgo+PiA+IE9uIFRodSwg
+MjAxOC0wNS0xNyBhdCAxMToxNCAtMDUwMCwgUm9iIEhlcnJpbmcgd3JvdGU6Cj4+ID4gPiBPbiBU
+aHUsIE1heSAxNywgMjAxOCBhdCA4OjMwIEFNLCBNYXJjbyBGZWxzY2ggPG0uZmVsc2NoQHBlbmd1
+dHJvbml4LmRlPiB3cm90ZToKPj4gPiA+ID4gRnJvbTogUGhpbGlwcCBaYWJlbCA8cC56YWJlbEBw
+ZW5ndXRyb25peC5kZT4KPj4gPiA+ID4KPj4gPiA+ID4gQWNjb3JkaW5nIHRvIHRoZSBzc20yNjAz
+IGRhdGEgc2hlZXQgKGNvbnRyb2wgcmVnaXN0ZXIgc2VxdWVuY2luZyksIHRoZQo+PiA+ID4gPiBk
+aWdpdGFsIGNvcmUgc2hvdWxkIGJlIGFjdGl2YXRlZCBvbmx5IGFmdGVyIGFsbCBuZWNlc3Nhcnkg
+Yml0cyBpbiB0aGUKPj4gPiA+ID4gcG93ZXIgcmVnaXN0ZXIgYXJlIGVuYWJsZWQsIGFuZCBhIGRl
+bGF5IGRldGVybWluZWQgYnkgdGhlIGRlY291cGxpbmcKPj4gPiA+ID4gY2FwYWNpdG9yIG9uIHRo
+ZSBWTUlEIHBpbiBoYXMgcGFzc2VkLiBJZiB0aGUgZGlnaXRhbCBjb3JlIGlzIGFjdGl2YXRlZAo+
+PiA+ID4gPiB0b28gZWFybHksIG9yIGV2ZW4gYmVmb3JlIHRoZSBBREMgaXMgcG93ZXJlZCB1cCwg
+YXVkaWJsZSBhcnRpZmFjdHMKPj4gPiA+ID4gYXBwZWFyIGF0IHRoZSBiZWdpbm5pbmcgb2YgdGhl
+IHJlY29yZGVkIHNpZ25hbC4KPj4gPiA+ID4KPj4gPiA+ID4gVGhlIGRpZ2l0YWwgY29yZSBpcyBh
+bHNvIG5lZWRlZCBmb3IgcGxheWJhY2ssIHNvIHdoZW4gcmVjb3JkaW5nIHN0YXJ0cwo+PiA+ID4g
+PiBpdCBtYXkgYWxyZWFkeSBiZSBlbmFibGVkLiBUaGlzIG1lYW5zIHdlIGNhbm5vdCBnZXQgdGhl
+IHBvd2VyIHNlcXVlbmNlCj4+ID4gPiA+IGNvcnJlY3Qgd2hlbiB3ZSB3YW50IHRvIGJlIGFibGUg
+dG8gc3RhcnQgcmVjb3JkaW5nIGFmdGVyIHBsYXliYWNrLgo+PiA+ID4gPgo+PiA+ID4gPiBBcyBh
+IHdvcmthcm91bmQgcHV0IHRoZSBNSUMgbXV0ZSBzd2l0Y2ggaW50byB0aGUgREFQTSByb3V0ZXMu
+IFRoaXMKPj4gPiA+ID4gd2F5IHdlIGNhbiBrZWVwIHRoZSByZWNvcmRpbmcgZGlzYWJsZWQgdW50
+aWwgdGhlIE1JQyBCaWFzIGhhcyBzZXR0bGVkCj4+ID4gPiA+IGFuZCB0aHVzIGdldCByaWQgb2Yg
+YXVkaWJsZSBhcnRpZmFjdHMuCj4+ID4gPiA+Cj4+ID4gPiA+IFRoZSBkZWxheSB3ZSBoYXZlIHRv
+IHdhaXQgZGVwZW5kcyBvbiBhIGJvYXJkIHNwZWNpZmljIGNhcGFjaXRvcgo+PiA+ID4gPiBjb25u
+ZWN0ZWQgdG8gdGhlIFZNSUQgcGlucywgc28gbWFrZSB0aGUgZGVsYXkgY29uZmlndXJhYmxlIGlu
+IHRoZSBkZXZpY2UKPj4gPiA+ID4gdHJlZS4KPj4gPiA+ID4KPj4gPiA+ID4gU2lnbmVkLW9mZi1i
+eTogUGhpbGlwcCBaYWJlbCA8cC56YWJlbEBwZW5ndXRyb25peC5kZT4KPj4gPiA+ID4gU2lnbmVk
+LW9mZi1ieTogU2FzY2hhIEhhdWVyIDxzLmhhdWVyQHBlbmd1dHJvbml4LmRlPgo+PiA+ID4gPiBT
+aWduZWQtb2ZmLWJ5OiBNYXJjbyBGZWxzY2ggPG0uZmVsc2NoQHBlbmd1dHJvbml4LmRlPgo+PiA+
+ID4gPiAtLS0KPj4gPiA+ID4gIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL2FkaSxzc20y
+NjAyLnR4dCB8ICA3ICsrKysrCj4+ID4gPiA+ICBzb3VuZC9zb2MvY29kZWNzL3NzbTI2MDIuYyAg
+ICAgICAgICAgICAgICAgICAgfCAzMCArKysrKysrKysrKysrKysrKy0tCj4+ID4gPiA+ICAyIGZp
+bGVzIGNoYW5nZWQsIDM1IGluc2VydGlvbnMoKyksIDIgZGVsZXRpb25zKC0pCj4+ID4gPiA+Cj4+
+ID4gPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291
+bmQvYWRpLHNzbTI2MDIudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3Nv
+dW5kL2FkaSxzc20yNjAyLnR4dAo+PiA+ID4gPiBpbmRleCAzYjMzMDJmZTM5OWIuLjkzMzRkNDhj
+MDQ2MiAxMDA2NDQKPj4gPiA+ID4gLS0tIGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRp
+bmdzL3NvdW5kL2FkaSxzc20yNjAyLnR4dAo+PiA+ID4gPiArKysgYi9Eb2N1bWVudGF0aW9uL2Rl
+dmljZXRyZWUvYmluZGluZ3Mvc291bmQvYWRpLHNzbTI2MDIudHh0Cj4+ID4gPiA+IEBAIC0xMSw5
+ICsxMSwxNiBAQCBSZXF1aXJlZCBwcm9wZXJ0aWVzOgo+PiA+ID4gPiAgICAtIHJlZyA6IHRoZSBJ
+MkMgYWRkcmVzcyBvZiB0aGUgZGV2aWNlIGZvciBJMkMsIHRoZSBjaGlwIHNlbGVjdAo+PiA+ID4g
+PiAgICAgICAgICAgIG51bWJlciBmb3IgU1BJLgo+PiA+ID4gPgo+PiA+ID4gPiArT3B0aW9uYWwg
+cHJvcGVydGllczoKPj4gPiA+ID4gKwo+PiA+ID4gPiArICAtIHN0YXJ0dXAtZGVsYXktdXMgOiBk
+ZWxheSBiZXR3ZWVuIHBvd2VyaW5nIG9uIGFuZCBhY3RpdmF0aW5nIHRoZSBkaWdpdGFsCj4+ID4g
+PiA+ICsgICAgICAgICAgICAgICAgICAgICAgIGNvcmUsIGRldGVybWluZWQgYnkgdGhlIGRlY291
+cGxpbmcgY2FwYWNpdG9yIEMgb24gdGhlCj4+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAg
+Vk1JRCBwaW46IGRlbGF5IFvCtXNdID0gQyBbwrVGXSAqIDI1MDAwIC8gMy41Cj4+ID4gPiA+ICsK
+Pj4gPiA+Cj4+ID4gPiBXZSBhbHJlYWR5IGhhdmUgc2ltaWxhcmx5IGRlZmluZWQgcHJvcGVydHku
+IFBsZWFzZSByZXVzZSB0aGF0LiBTZWUgbW1jCj4+ID4gPiBwd3JzZXEgYmluZGluZy4KPj4gPgo+
+PiA+IERvIHlvdSBtZWFuICdwb3N0LXBvd2VyLW9uLWRlbGF5LW1zJyBmcm9tICdtbWMtcHdzZXEt
+c2ltcGxlJz8KPj4gPiBJdCBpcyBkb2N1bWVudGVkIGFzOgo+PiA+Cj4+ID4gLSBwb3N0LXBvd2Vy
+LW9uLWRlbGF5LW1zIDogRGVsYXkgaW4gbXMgYWZ0ZXIgcG93ZXJpbmcgdGhlIGNhcmQgYW5kCj4+
+ID4gICAgICAgICBkZS1hc3NlcnRpbmcgdGhlIHJlc2V0LWdwaW9zIChpZiBhbnkpCj4+ID4KPj4g
+PiBUaGUgc3RhcnR1cCBkZWxheSBoZXJlIGlzIG5vdCBhZnRlciBwb3dlcmluZyB0aGUgd2hvbGUg
+SUMgb3IgZGVhc3NlcnRpbmcKPj4gPiByZXNldHMgYW5kIGJlZm9yZSBpdCBjYW4gYmUgdXNlZCwg
+YnV0IGFmdGVyIHBvd2VyaW5nIHVwIGEgc3BlY2lmaWMgcGFydAo+PiA+IG9mIHRoZSBjb2RlYyAo
+dGhlIEFEQykgYW5kIGJlZm9yZSB1bm11dGluZyB0aGUgTUlDIGlucHV0IHRvIHRoZSBkaWdpdGFs
+Cj4+ID4gY29yZSBkdXJpbmcgc3RhcnQgb2YgZGVjb2RpbmcuIFdpdGggdGhpcyBpbiBtaW5kLCBk
+byB5b3Ugc3RpbGwgdGhpbmsgdGhlCj4+ID4gcHJvcGVydHkgc2hvdWxkIGJlIGNhbGxlZCB0aGUg
+c2FtZSBhcyB0aGUgbW1jIGZ1bGwtY2hpcCBwb3dlcm9uIGRlbGF5Pwo+PiA+IElmIHNvLCB3b3Vs
+ZCBpdCBiZSBhY2NlcHRhYmxlIHRvIHVzZSBwb3N0LXBvd2VyLW9uLWRlbGF5LXVzIHRvIGtlZXAg
+dGhlCj4+ID4gbWljcm9zZWNvbmQgcmVzb2x1dGlvbj8KPj4KPj4gT2theSwgdGhlbiBJJ2Qgc3Vn
+Z2VzdCBzb21ldGhpbmcgYSBiaXQgbW9yZSBzcGVjaWZpYy4gUGVyaGFwcwo+PiAicHJlLXVubXV0
+ZS1kZWxheS11cyIgYW5kIGRvY3VtZW50IGluIGEgY29tbW9uIGxvY2F0aW9uLgo+Pgo+PiBSb2IK
+Pgo+IFRoZSBkZWxheSBpcyBub3QganVzdCBmb3IgdGhlIGxpbmUtaW4vbWljIHBhdGggaXQgaXMg
+YWxzbyBmb3IgdGhlIG91dAo+IHBhdGguIE1vcmUgdGVjaG5pY2FsLCBpdCBpcyBuZWVkZWQgdG8g
+Y2hhcmdlIHRoZSBkZWNvdXBsZSBjYXBhY2l0eSB3aGljaAo+IHByb3ZpZGVzIHRoZSB2b2x0YWdl
+IGJpYXMgZm9yIHRoZSBhbmFsb2cgaW5wdXQvb3V0cHV0IGZyb250ZW5kcy4KPgo+IEkgZm91bmQg
+dGhlOiAidGksY2hhcmdlLXBlcmlvZCAoc291bmQvdGksdGFzNTA4Ni50eHQpIiBiaW5kaW5nIHdo
+aWNoCj4gcmVwcmVzZW50cyBuZWFybHkgdGhlIHNhbWUgYnV0IGl0IGlzIG5vdCBjb21tb24uIE9u
+ZSBvcHBvcnR1bml0eSB3b3VsZCBiZSB0bwo+IGludHJvZHVjZSBhIGNvbW1vbiAiY2hhcmdlLXBl
+cmlvZC11cyIgYmluZGluZyBhbmQgY2hhbmdlIHRoZSB0aSBiaW5kaW5nIHRoZQo+IGNvbW1vbiBi
+aW5kaW5nIGxhdGVyLgo+Cj4gV291bGQgdGhhdCBiZSBva2F5PwoKU3VyZSwgc291bmRzIGZpbmUg
+dG8gbWUuCgpSb2IKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
+dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
+Cg==
