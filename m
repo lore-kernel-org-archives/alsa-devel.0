@@ -1,19 +1,22 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v5 3/3] ASoC: Add multiple CPU DAI support
- in DAPM
-Date: Thu, 24 May 2018 16:37:43 -0500
-Message-ID: <b2738ac2-2e1c-c106-cd0d-c9761cdbe0ce@linux.intel.com>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: Re: [PATCH v5 1/3] ASoC: Add initial support for
+ multiple CPU DAIs
+Date: Fri, 25 May 2018 07:46:17 +0530
+Message-ID: <20180525021617.GD3116@snc-desk>
 References: <1526985623-2606-1-git-send-email-shreyas.nc@intel.com>
- <1526985623-2606-4-git-send-email-shreyas.nc@intel.com>
+ <1526985623-2606-2-git-send-email-shreyas.nc@intel.com>
+ <471c42d3-881f-692a-8713-a6f2c4917bd7@linux.intel.com>
+ <20180524053411.GB4205@snc-desk>
+ <613e98a3-830a-c19a-da60-91f5d546aafc@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 912AE267646
- for <alsa-devel@alsa-project.org>; Thu, 24 May 2018 23:37:46 +0200 (CEST)
-In-Reply-To: <1526985623-2606-4-git-send-email-shreyas.nc@intel.com>
-Content-Language: en-US
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9769B267646
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 04:18:02 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <613e98a3-830a-c19a-da60-91f5d546aafc@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,127 +26,216 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>, alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org, ckeepax@opensource.cirrus.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, May 24, 2018 at 03:45:40PM -0500, Pierre-Louis Bossart wrote:
+> =
+
+> =
+
+> On 05/24/2018 12:34 AM, Shreyas NC wrote:
+> >>>@@ -1120,6 +1123,9 @@ struct snd_soc_pcm_runtime {
+> >>>  	struct snd_soc_dai **codec_dais;
+> >>>  	unsigned int num_codecs;
+> >>>+	struct snd_soc_dai **cpu_dais;
+> >>>+	unsigned int num_cpu_dai;
+> >>>+
+> >>This structure is becoming difficult to interpret:
+> >>
+> >> =A0=A0=A0 struct snd_soc_dai *codec_dai;
+> >> =A0=A0=A0 struct snd_soc_dai *cpu_dai;
+> >>
+> >> =A0=A0=A0 struct snd_soc_dai **codec_dais;
+> >> =A0=A0=A0 unsigned int num_codecs;
+> >>
+> >> =A0=A0=A0 struct snd_soc_dai **cpu_dais;
+> >> =A0=A0=A0 unsigned int num_cpu_dai;
+> >>
+> >>What is the intended usage of codec_dai vs. codec_dais and cpu_dai vs.
+> >>cpu_dais?
+> >rtd->cpu_dai is used in many drivers to get cpu_dai from soc_pcm_runtime.
+> >Similarly cpu_dais is addded to get multiple cpu_dais from runtime.
+> >
+> >TBH, I have shadowed the codec_dais implementation for sake of
+> >convenience and being conformal :)
+> >
+> >>If this is only to handle the single codec_dai/single cpu_dai as an
+> >>exception, should we port the code to support multiple cpu_dais/multiple
+> >>codec_dais?
+> >>
+> >As mentioned in [1] (in cover letter), there are discussions to unify cp=
+u and
+> >codec dais and this is the first step towards that. So, yes, eventually =
+we
+> >should port the code as you have suggested :)
+> ok, maybe add a comment in the commit message then?
+
+Ok
+
+> >
+> >-	/*
+> >-	 * At least one of CPU DAI name or CPU device name/node must be
+> >-	 * specified
+> >-	 */
+> >-	if (!link->cpu_dai_name &&
+> >-	    !(link->cpu_name || link->cpu_of_node)) {
+> >-		dev_err(card->dev,
+> >-			"ASoC: Neither cpu_dai_name nor cpu_name/of_node are set for %s\n",
+> >-			link->name);
+> >-		return -EINVAL;
+> >-	}
+> >+	for (i =3D 0; i < link->num_cpu_dai; i++) {
+> >+		if (link->cpu_dai[i].name &&
+> >+			link->cpu_dai[i].of_node) {
+> >+			dev_err(card->dev,
+> >+			    "ASoC: Neither/both cpu name/of_node are set for %s\n",
+> >+					link->cpu_dai[i].name);
+> >+			return -EINVAL;
+> >+		}
+> >+
+> >+		/*
+> >+		 * At least one of CPU DAI name or CPU device name/node must be
+> >+		 * specified
+> >+		 */
+> >+		if (!link->cpu_dai[i].dai_name &&
+> >+			!(link->cpu_dai[i].name || link->cpu_dai[i].of_node)) {
+> >>This doesn't seem to be the logical translation of the initial condition
+> >>based on link->cpu_name and link->cpu_of_node?
+> >>
+> >pasting the code added from the function above to show the mapping b/w n=
+ame,
+> >of_node and dai_name:
+> >
+> >		dai_link->cpu_dai[0].name =3D dai_link->cpu_name;
+> >		dai_link->cpu_dai[0].of_node =3D dai_link->cpu_of_node;
+> >		dai_link->cpu_dai[0].dai_name =3D dai_link->cpu_dai_name;
+> >
+> >and the original condition was:
+> >		if (!link->cpu_dai_name &&
+> >			!(link->cpu_name || link->cpu_of_node)) {
+> >
+> >So, it does look correct to me, unless I am missing something obvious :(
+> The original code I was referring to is this:
+> =
+
+> =A0=A0=A0 /*
+> =A0=A0=A0 =A0* CPU device may be specified by either name or OF node, but
+> =A0=A0=A0 =A0* can be left unspecified, and will be matched based on DAI
+> =A0=A0=A0 =A0* name alone..
+> =A0=A0=A0 =A0*/
+> =A0=A0=A0 if (link->cpu_name && link->cpu_of_node) {
+> =A0=A0=A0 =A0=A0=A0 dev_err(card->dev,
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 "ASoC: Neither/both cpu name/of_node are se=
+t for %s\n",
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->name);
+> =A0=A0=A0 =A0=A0=A0 return -EINVAL;
+> =A0=A0=A0 }
+> =A0=A0=A0 /*
+> =A0=A0=A0 =A0* At least one of CPU DAI name or CPU device name/node must =
+be
+> =A0=A0=A0 =A0* specified
+> =A0=A0=A0 =A0*/
+> =A0=A0=A0 if (!link->cpu_dai_name &&
+> =A0=A0=A0 =A0=A0=A0 !(link->cpu_name || link->cpu_of_node)) {
+> =A0=A0=A0 =A0=A0=A0 dev_err(card->dev,
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 "ASoC: Neither cpu_dai_name nor cpu_name/of=
+_node are set for
+> %s\n",
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->name);
+> =A0=A0=A0 =A0=A0=A0 return -EINVAL;
+> =A0=A0=A0 }
+> =
+
+> =A0=A0=A0 return 0;
+> =
+
+> The new code is this:
+> =
+
+> =A0=A0=A0 for (i =3D 0; i < link->num_cpu_dai; i++) {
+> =A0=A0=A0 =A0=A0=A0 if (link->cpu_dai[i].name &&
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->cpu_dai[i].of_node) {
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 dev_err(card->dev,
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 "ASoC: Neither/both cpu name/of_n=
+ode are set for %s\n",
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->cpu_dai[i].name);
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 return -EINVAL;
+> =A0=A0=A0 =A0=A0=A0 }
+> =
+
+> =A0=A0=A0 =A0=A0=A0 /*
+> =A0=A0=A0 =A0=A0=A0 =A0* At least one of CPU DAI name or CPU device name/=
+node must be
+> =A0=A0=A0 =A0=A0=A0 =A0* specified
+> =A0=A0=A0 =A0=A0=A0 =A0*/
+> =A0=A0=A0 =A0=A0=A0 if (!link->cpu_dai[i].dai_name &&
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 !(link->cpu_dai[i].name || link->cpu_dai[i]=
+.of_node)) {
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 dev_err(card->dev,
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 "ASoC: Neither cpu_dai_name nor c=
+pu_name/of_node are set for
+> %s\n",
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->name);
+> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 return -EINVAL;
+> =A0=A0=A0 =A0=A0=A0 }
+> =A0=A0=A0 }
+> =
+
+> Yes, it's equivalent for i=3D=3D0, but it's not clear to me for non-zero
+> indices. I don't get how/where
+> link->cpu_dai[i].name and link->cpu_dai[i].of_node are initialized for i>=
+0.
+> =
 
 
-On 05/22/2018 05:40 AM, Shreyas NC wrote:
-> DAPM handles DAIs during soc_dapm_stream_event() and during addition
-> and creation of DAI widgets i.e., dapm_add_valid_dai_widget() and
-> dapm_connect_dai_link_widgets().
->
-> Extend these functions to handle multiple cpu dai.
+Aaah ok, I understand your question now :)
 
-nit-pick: the diffs are difficult to look at, it might be easier on the 
-reader if you first added a new helper function, then added multi 
-cpu_dais in a second patch.
+That is added in the dai_link description in the machine driver.
 
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Like this:
 
->
-> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-> Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-> ---
->   sound/soc/soc-dapm.c | 71 ++++++++++++++++++++++++++++++++++------------------
->   1 file changed, 46 insertions(+), 25 deletions(-)
->
-> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-> index 2d97091..79f5f61 100644
-> --- a/sound/soc/soc-dapm.c
-> +++ b/sound/soc/soc-dapm.c
-> @@ -4108,38 +4108,57 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
->   	return 0;
->   }
->   
-> -static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
-> -					  struct snd_soc_pcm_runtime *rtd)
-> +static void dapm_add_valid_dai_widget(struct snd_soc_card *card,
-> +					struct snd_soc_pcm_runtime *rtd,
-> +					struct snd_soc_dai *codec_dai,
-> +					struct snd_soc_dai *cpu_dai)
->   {
-> -	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
->   	struct snd_soc_dapm_widget *sink, *source;
-> -	int i;
->   
-> -	for (i = 0; i < rtd->num_codecs; i++) {
-> -		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-> +	/* connect BE DAI playback if widgets are valid */
-> +	if (codec_dai->playback_widget && cpu_dai->playback_widget) {
-> +		source = cpu_dai->playback_widget;
-> +		sink = codec_dai->playback_widget;
-> +		dev_err(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-> +				cpu_dai->component->name,
-> +				source->name,
-> +				codec_dai->component->name,
-> +				sink->name);
-> +
-> +		snd_soc_dapm_add_path(&card->dapm, source, sink,
-> +				NULL, NULL);
-> +	}
->   
-> -		/* connect BE DAI playback if widgets are valid */
-> -		if (codec_dai->playback_widget && cpu_dai->playback_widget) {
-> -			source = cpu_dai->playback_widget;
-> -			sink = codec_dai->playback_widget;
-> -			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-> -				cpu_dai->component->name, source->name,
-> -				codec_dai->component->name, sink->name);
-> +	/* connect BE DAI capture if widgets are valid */
-> +	if (codec_dai->capture_widget && cpu_dai->capture_widget) {
-> +		source = codec_dai->capture_widget;
-> +		sink = cpu_dai->capture_widget;
-> +		dev_err(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-> +				codec_dai->component->name,
-> +				source->name,
-> +				cpu_dai->component->name,
-> +				sink->name);
->   
-> -			snd_soc_dapm_add_path(&card->dapm, source, sink,
-> +		snd_soc_dapm_add_path(&card->dapm, source, sink,
->   				NULL, NULL);
-> -		}
-> +	}
-> +
-> +}
->   
-> -		/* connect BE DAI capture if widgets are valid */
-> -		if (codec_dai->capture_widget && cpu_dai->capture_widget) {
-> -			source = codec_dai->capture_widget;
-> -			sink = cpu_dai->capture_widget;
-> -			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
-> -				codec_dai->component->name, source->name,
-> -				cpu_dai->component->name, sink->name);
-> +static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
-> +					  struct snd_soc_pcm_runtime *rtd)
-> +{
-> +	struct snd_soc_dai *cpu_dai;
-> +	int i, j;
->   
-> -			snd_soc_dapm_add_path(&card->dapm, source, sink,
-> -				NULL, NULL);
-> +	for (i = 0; i < rtd->num_codecs; i++) {
-> +		struct snd_soc_dai *codec_dai = rtd->codec_dais[i];
-> +
-> +		for (j = 0; j < rtd->num_cpu_dai; j++) {
-> +			cpu_dai = rtd->cpu_dais[j];
-> +
-> +			dapm_add_valid_dai_widget(card, rtd,
-> +						codec_dai, cpu_dai);
->   		}
->   	}
->   }
-> @@ -4206,7 +4225,9 @@ static void soc_dapm_stream_event(struct snd_soc_pcm_runtime *rtd, int stream,
->   {
->   	int i;
->   
-> -	soc_dapm_dai_stream_event(rtd->cpu_dai, stream, event);
-> +	for (i = 0; i < rtd->num_cpu_dai; i++)
-> +		soc_dapm_dai_stream_event(rtd->cpu_dais[i], stream, event);
-> +
->   	for (i = 0; i < rtd->num_codecs; i++)
->   		soc_dapm_dai_stream_event(rtd->codec_dais[i], stream, event);
->   
+static struct snd_soc_dai_link_component test_multi_cpu_component[] =3D {
+        { /* Left */
+                .name =3D "int-sdw.1",
+                .dai_name =3D "SDW1 Pin0",
+        },
+        { /* Right */
+                .name =3D "int-sdw.2",
+                .dai_name =3D "SDW2 Pin0",
+        },
+};
+
+struct snd_soc_dai_link test_dailink[] =3D {
+        	{
+                	.name =3D "SDW0-Codec",
+	                .cpu_dai =3D test_multi_cpu_component,
+        	        .num_cpu_dai =3D ARRAY_SIZE(sdw_multi_cpu_comp),
+			...
+		}
+}
+
+> >>>-	if (cpu_dai->driver->compress_new) {
+> >>>+	if (rtd->cpu_dais[0]->driver->compress_new) {
+> >>>+		if (rtd->num_cpu_dai > 1)
+> >>>+			dev_warn(card->dev,
+> >>>+				"ASoC: multi-cpu compress dais not supported");
+> >>Not sure this is right, you could have a case where the compress dai is=
+ not
+> >>on the cpu_dai[0]?
+> >I am not able to comprehend that we can have multi CPU DAIS in a DAI Link
+> >with one of the DAI being compress and the other being a PCM DAI.
+> >
+> >Any such systems that you can think of ?
+> Yes I agree, my point was that you test only for the first cpu_dai (index
+> 0), but if rtd->cpu_dais[1]->drivers->compress_new is non NULL then it's
+> also wrong. You should test for all cpu_dais to make sure they are all PC=
+M.
+> =
+
+
+Ok
+
+--Shreyas
+-- =
