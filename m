@@ -1,91 +1,42 @@
-From: Guenter Roeck <groeck@google.com>
-Subject: Re: [alsa-devel] [RFC/RFT PATCH] ASoC: topology: Improve backwards
- compatibility with v4 topology files
-Date: Fri, 25 May 2018 07:09:24 -0700
-Message-ID: <CABXOdTcrAoh_uhA=6AggUPFiGdFqwuFAHej50vK9gRMU9waUAQ@mail.gmail.com>
-References: <20180522165842.233949-1-groeck@google.com> <649b1c14-e440-0c89-a59c-dc663344faa3@linux.intel.com>
- <CABXOdTdyWVtbWXR6O3VenwTezVLGvEfKuvH=Xz6e5D3np-ZQNw@mail.gmail.com> <20180525134023.GJ3116@snc-desk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v3 0/8] slimbus: fixes and some helpers
+Date: Fri, 25 May 2018 15:36:10 +0100
+Message-ID: <20180525143618.820-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180525134023.GJ3116@snc-desk>
 Sender: linux-kernel-owner@vger.kernel.org
-To: shreyas.nc@intel.com
-Cc: pierre-louis.bossart@linux.intel.com, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Patel, Chintan M" <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, May 25, 2018 at 6:42 AM Shreyas NC <shreyas.nc@intel.com> wrote:
+Hi Greg,
 
-> > > > +struct skl_dfw_v4_pipe {
-> > > > +     u8 pipe_id;
-> > > > +     u8 pipe_priority;
-> > > > +     u16 conn_type:4;
-> > > > +     u16 rsvd:4;
-> > > > +     u16 memory_pages:8;
-> > > > +} __packed;
-> > > > +
-> > > > +struct skl_dfw_v4_module {
-> > > > +     char uuid[SKL_UUID_STR_SZ];
-> > > > +
+Here is set of patches for slimbus, there are 6 fixes and
+two helper functions.
+Most of these issues were found while testing QCOM NGD SLIMBus
+controller with WCD9335 codec.
 
-> Any reason to not have this as u8?
-> commit 09305da97c7808b900985526aa9198233f32fb37 had changed this to u8..
+Changes since v2 (https://lkml.org/lkml/2018/5/17/251)
+- removed unnecessary changes in slim_prepare_txn patch
 
-No reason. I'll fix it.
+thanks,
+Srini
 
-> <snip>
+Srinivas Kandagatla (8):
+  slimbus: core: rearrange slim_eaddr structure
+  slimbus: core: add need_tid flag to slim_msg_txn
+  slimbus: messaging: pass correct wbuf
+  slimbus: messaging: remove multiple calls to pm_runtime_mark_last_busy
+  slimbus: messaging: initialize completion correctly
+  slimbus: qcom: remove redundant depends in Kconfig
+  slimbus: messaging: add slim_prepare_txn() helper function
+  slimbus: core: add of_slim_device_get() helper
 
-> > > > +
-> > > > +     mconfig->params_fixup = dfw->params_fixup;
-> > > > +     mconfig->converter = dfw->converter;
-> > > > +     mconfig->m_type = dfw->module_type;
-> > > > +     mconfig->vbus_id = dfw->vbus_id;
-> > > > +     mconfig->module->resources[0].is_pages = dfw->mem_pages;
-> > > > +
-> > > > +     ret = skl_tplg_add_pipe_v4(dev, mconfig, skl, &dfw->pipe);
-> > > > +     if (ret)
-> > > > +             return ret;
-> > > > +
-> > > > +     mconfig->dev_type = dfw->dev_type;
-> > > > +     mconfig->hw_conn_type = dfw->hw_conn_type;
-> > > > +     mconfig->time_slot = dfw->time_slot;
-> > > > +     mconfig->formats_config.caps_size = dfw->caps.caps_size;
-> >
-> > > chromeos-3.18 has this:
-> > >       if (dfw_config->is_loadable)
-> > >           memcpy(mconfig->guid, dfw_config->uuid,
-> > >                       ARRAY_SIZE(dfw_config->uuid));
-> >
-> > > Is this needed here?
-> >
-> >
-> > Direct memcpy doesn't work anymore since the uuid format is different.
-The
-> > above is replaced
-> > with (unconditional)
-> >
-> >          ret = guid_parse(dfw->uuid, (guid_t *)mconfig->guid);
-> >          if (ret)
-> >                  return ret;
-> >
-> > at the beginning of skl_tplg_get_pvt_data_v4(). The new code, as far as
-I
-> > can see, loads
-> > the uuid unconditionally if it finds SND_SOC_TPLG_TUPLE_TYPE_UUID. I
-wanted
-> > to
-> > be on the safe side and decided to do the same.
-> >
+ drivers/slimbus/Kconfig     |  1 -
+ drivers/slimbus/core.c      | 39 ++++++++++++++++++++
+ drivers/slimbus/messaging.c | 89 ++++++++++++++++++++++++++++++---------------
+ drivers/slimbus/slimbus.h   |  4 ++
+ include/linux/slimbus.h     | 14 ++++---
+ 5 files changed, 110 insertions(+), 37 deletions(-)
 
-> In the new code, still does a memcpy(). So, I am not sure if I understand
-> why memcpy() does not work.
-
->          if (uuid_tkn->token == SKL_TKN_UUID) {
->                  memcpy(guid, &uuid_tkn->uuid, 16);
->                  return 0;
->          }
-
-The new (v5) configuration files provide the uuid as binary and no longer
-as text.
-
-Guenter
+-- 
+2.16.2
