@@ -1,70 +1,180 @@
-From: "Lin, Mengdong" <mengdong.lin@intel.com>
-Subject: RE: [alsa-devel] [RFC/RFT PATCH] ASoC: topology: Improve backwards
- compatibility with v4 topology files
-Date: Fri, 25 May 2018 09:04:55 +0000
-Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F88276C0ED@SHSMSX103.ccr.corp.intel.com>
-References: <20180522165842.233949-1-groeck@google.com>
- <s5hmuwqpjdd.wl-tiwai@suse.de> <20180523135609.GK4828@sirena.org.uk>
- <CABXOdTeCr-ExO9O3XAHK-DnNf5yLGO0TPkXgs60TB90jGNB2_Q@mail.gmail.com>
- <20180523155811.GO4828@sirena.org.uk>
- <CABXOdTePWquSQaFQsoNTrVNmYydZLqF534zeoTfz0RfLDHSseA@mail.gmail.com>
- <20180524141842.GW4828@sirena.org.uk>
- <CABXOdTfKXqgRecs3xuxb-XRodJkK7+h5V0hqt889CsD6vkm5yA@mail.gmail.com>
- <20180524151137.GY4828@sirena.org.uk>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [PATCH] ASoC: AMD: make channel 1 dma as circular
+Date: Fri, 25 May 2018 17:22:39 +0800
+Message-ID: <1527240163-9804-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180524151137.GY4828@sirena.org.uk>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Guenter Roeck <groeck@google.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, linux-kernel <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Patel, Chintan M" <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>, "Nc, Shreyas" <shreyas.nc@intel.com>
+Cc: djkurtz@chromium.org, akshu.agrawal@amd.com, Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
-> project.org] On Behalf Of Mark Brown
-> Sent: Thursday, May 24, 2018 11:12 PM
+channel 1: SYSMEM<->ACP
+channel 2: ACP<->I2S
+Instead of waiting on period interrupt of ch 2 and then starting
+dma on ch1, we make ch1 dma as circular.
+This removes dependency of period granularity on hw pointer.
+
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+ sound/soc/amd/acp-pcm-dma.c | 72 +++++++--------------------------------------
+ 1 file changed, 10 insertions(+), 62 deletions(-)
+
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index ac32dea..f1d8678 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -337,8 +337,7 @@ static void config_acp_dma(void __iomem *acp_mmio,
+ }
  
-> On Thu, May 24, 2018 at 07:55:06AM -0700, Guenter Roeck wrote:
-> > On Thu, May 24, 2018 at 7:18 AM Mark Brown <broonie@kernel.org> wrote:
-> 
-> Your mail client formatting seems to be broken, the word wrapping is really
-> funky (it looks like it's breaking longer than 80 column lines in the middle of
-> paragraphs rather than flowing paragraphs within 80 columns).
-> 
-> > > > I don't mind adding the structures to
-> > > > sound/soc/intel/skylake/skl-tplg-interface.h,
-> > > > but it seems a bit out of scope to tie this with moving the file
-> > > > to include/uapi/sound.
-> > > > I think that should be a separate discussion.
-> 
-> > > Is there some reason not to just do it while we're looking at this?
-> > > I don't see why we wouldn't want to do this.
-> 
-> > I don't mind doing this. However, keeping the change local and in a
-> > single patch would make it easier to backport, and I think that the
-> > ability to backport would be essential to get more than one-person
-> > test coverage. I also would have liked feedback from someone at Intel,
-> > at least for the Skylake specific structures.
-> 
-> Oh, of course - I'm just saying we should do this, not that everything needs to be
-> in one patch.  Obviously the code motion would be a separate patch.
-> 
-> > Anyway, what file do you have in mind for the structure definitions,
-> > both for the ones in soc-tolopogy.c and the ones needed in
-> > skl-topology.c ? Everything into asoc.h, or something else ?
-> 
-> All of those that can appear in a firmware file, I don't super care where they end
-> up but possibly a separate header file or files to the kernel specific ones as they
-> might get used with Windows.
-
-Please put the Skylake specific structures in a separate header file, not in asoc.h. 
-
-The file asoc.h is for generic topology structures which are platform independent. The topology code in alsa-lib never parses the platform specific structures.
-
-The Skylake specific structures are needed by vendor applications like Intel topology tool (ITT) to define topology for different platforms. The applications can include both asoc.h, skl-tplg-interface.h and other device specific headers.
-
-Thanks
-Mengdong
+ /* Start a given DMA channel transfer */
+-static void acp_dma_start(void __iomem *acp_mmio,
+-			  u16 ch_num, bool is_circular)
++static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
+ {
+ 	u32 dma_ctrl;
+ 
+@@ -369,11 +368,8 @@ static void acp_dma_start(void __iomem *acp_mmio,
+ 		break;
+ 	}
+ 
+-	/* enable  for ACP SRAM to/from I2S DMA channel */
+-	if (is_circular == true)
+-		dma_ctrl |= ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
+-	else
+-		dma_ctrl &= ~ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
++	/* circular for both DMA channel */
++	dma_ctrl |= ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
+ 
+ 	acp_reg_write(dma_ctrl, acp_mmio, mmACP_DMA_CNTL_0 + ch_num);
+ }
+@@ -617,7 +613,6 @@ static int acp_deinit(void __iomem *acp_mmio)
+ /* ACP DMA irq handler routine for playback, capture usecases */
+ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ {
+-	u16 dscr_idx;
+ 	u32 intr_flag, ext_intr_status;
+ 	struct audio_drv_data *irq_data;
+ 	void __iomem *acp_mmio;
+@@ -634,33 +629,13 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ 
+ 	if ((intr_flag & BIT(ACP_TO_I2S_DMA_CH_NUM)) != 0) {
+ 		valid_irq = true;
+-		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_13) ==
+-				PLAYBACK_START_DMA_DESCR_CH13)
+-			dscr_idx = PLAYBACK_END_DMA_DESCR_CH12;
+-		else
+-			dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
+-		config_acp_dma_channel(acp_mmio, SYSRAM_TO_ACP_CH_NUM, dscr_idx,
+-				       1, 0);
+-		acp_dma_start(acp_mmio, SYSRAM_TO_ACP_CH_NUM, false);
+-
+ 		snd_pcm_period_elapsed(irq_data->play_i2ssp_stream);
+-
+ 		acp_reg_write((intr_flag & BIT(ACP_TO_I2S_DMA_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
+ 
+ 	if ((intr_flag & BIT(ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM)) != 0) {
+ 		valid_irq = true;
+-		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_9) ==
+-			PLAYBACK_START_DMA_DESCR_CH9)
+-			dscr_idx = PLAYBACK_END_DMA_DESCR_CH8;
+-		else
+-			dscr_idx = PLAYBACK_START_DMA_DESCR_CH8;
+-		config_acp_dma_channel(acp_mmio,
+-				       SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM,
+-				       dscr_idx, 1, 0);
+-		acp_dma_start(acp_mmio, SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM,
+-			      false);
+ 		snd_pcm_period_elapsed(irq_data->play_i2sbt_stream);
+ 		acp_reg_write((intr_flag &
+ 			      BIT(ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM)) << 16,
+@@ -669,38 +644,20 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ 
+ 	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
+ 		valid_irq = true;
+-		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_15) ==
+-				CAPTURE_START_DMA_DESCR_CH15)
+-			dscr_idx = CAPTURE_END_DMA_DESCR_CH14;
+-		else
+-			dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
+-		config_acp_dma_channel(acp_mmio, ACP_TO_SYSRAM_CH_NUM, dscr_idx,
+-				       1, 0);
+-		acp_dma_start(acp_mmio, ACP_TO_SYSRAM_CH_NUM, false);
+-
++		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
+ 		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
+ 
+ 	if ((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) != 0) {
+ 		valid_irq = true;
+-		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
+ 		acp_reg_write((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
+ 
+ 	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
+ 		valid_irq = true;
+-		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_11) ==
+-			CAPTURE_START_DMA_DESCR_CH11)
+-			dscr_idx = CAPTURE_END_DMA_DESCR_CH10;
+-		else
+-			dscr_idx = CAPTURE_START_DMA_DESCR_CH10;
+-		config_acp_dma_channel(acp_mmio,
+-				       ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM,
+-				       dscr_idx, 1, 0);
+-		acp_dma_start(acp_mmio, ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM,
+-			      false);
++		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
+ 		acp_reg_write((intr_flag &
+ 			      BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+@@ -708,7 +665,6 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ 
+ 	if ((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) != 0) {
+ 		valid_irq = true;
+-		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
+ 		acp_reg_write((intr_flag &
+ 			      BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+@@ -1015,11 +971,9 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	int ret;
+-	u32 loops = 4000;
+ 	u64 bytescount = 0;
+ 
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+-	struct snd_soc_pcm_runtime *prtd = substream->private_data;
+ 	struct audio_substream_data *rtd = runtime->private_data;
+ 	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
+ 								    DRV_NAME);
+@@ -1034,18 +988,12 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 		if (rtd->bytescount == 0)
+ 			rtd->bytescount = bytescount;
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-			acp_dma_start(rtd->acp_mmio, rtd->ch1, false);
+-			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
+-				BIT(rtd->ch1)) {
+-				if (!loops--) {
+-					dev_err(component->dev,
+-						"acp dma start timeout\n");
+-					return -ETIMEDOUT;
+-				}
+-				cpu_relax();
+-			}
++			acp_dma_start(rtd->acp_mmio, rtd->ch1);
++			acp_dma_start(rtd->acp_mmio, rtd->ch2);
++		} else {
++			acp_dma_start(rtd->acp_mmio, rtd->ch2);
++			acp_dma_start(rtd->acp_mmio, rtd->ch1);
+ 		}
+-		acp_dma_start(rtd->acp_mmio, rtd->ch2, true);
+ 		ret = 0;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+-- 
+1.9.1
