@@ -1,22 +1,17 @@
-From: Shreyas NC <shreyas.nc@intel.com>
-Subject: Re: [PATCH v5 1/3] ASoC: Add initial support for
- multiple CPU DAIs
-Date: Fri, 25 May 2018 07:46:17 +0530
-Message-ID: <20180525021617.GD3116@snc-desk>
-References: <1526985623-2606-1-git-send-email-shreyas.nc@intel.com>
- <1526985623-2606-2-git-send-email-shreyas.nc@intel.com>
- <471c42d3-881f-692a-8713-a6f2c4917bd7@linux.intel.com>
- <20180524053411.GB4205@snc-desk>
- <613e98a3-830a-c19a-da60-91f5d546aafc@linux.intel.com>
+From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: [PATCH 3/3] ASoC: mt6797: combine DAI to register
+	component
+Date: Fri, 25 May 2018 11:17:54 +0800
+Message-ID: <1527218274-27699-3-git-send-email-kaichieh.chuang@mediatek.com>
+References: <1527218274-27699-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 9769B267646
- for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 04:18:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <613e98a3-830a-c19a-da60-91f5d546aafc@linux.intel.com>
+Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+ by alsa0.perex.cz (Postfix) with ESMTP id A1CFF267646
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 05:18:01 +0200 (CEST)
+In-Reply-To: <1527218274-27699-1-git-send-email-kaichieh.chuang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,216 +21,157 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, May 24, 2018 at 03:45:40PM -0500, Pierre-Louis Bossart wrote:
-> =
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+---
+ .../soc/mediatek/common/mtk-afe-platform-driver.c  |  6 +--
+ .../soc/mediatek/common/mtk-afe-platform-driver.h  |  6 +++
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c         | 53 ++++++++++++++++++----
+ 3 files changed, 52 insertions(+), 13 deletions(-)
 
-> =
-
-> On 05/24/2018 12:34 AM, Shreyas NC wrote:
-> >>>@@ -1120,6 +1123,9 @@ struct snd_soc_pcm_runtime {
-> >>>  	struct snd_soc_dai **codec_dais;
-> >>>  	unsigned int num_codecs;
-> >>>+	struct snd_soc_dai **cpu_dais;
-> >>>+	unsigned int num_cpu_dai;
-> >>>+
-> >>This structure is becoming difficult to interpret:
-> >>
-> >> =A0=A0=A0 struct snd_soc_dai *codec_dai;
-> >> =A0=A0=A0 struct snd_soc_dai *cpu_dai;
-> >>
-> >> =A0=A0=A0 struct snd_soc_dai **codec_dais;
-> >> =A0=A0=A0 unsigned int num_codecs;
-> >>
-> >> =A0=A0=A0 struct snd_soc_dai **cpu_dais;
-> >> =A0=A0=A0 unsigned int num_cpu_dai;
-> >>
-> >>What is the intended usage of codec_dai vs. codec_dais and cpu_dai vs.
-> >>cpu_dais?
-> >rtd->cpu_dai is used in many drivers to get cpu_dai from soc_pcm_runtime.
-> >Similarly cpu_dais is addded to get multiple cpu_dais from runtime.
-> >
-> >TBH, I have shadowed the codec_dais implementation for sake of
-> >convenience and being conformal :)
-> >
-> >>If this is only to handle the single codec_dai/single cpu_dai as an
-> >>exception, should we port the code to support multiple cpu_dais/multiple
-> >>codec_dais?
-> >>
-> >As mentioned in [1] (in cover letter), there are discussions to unify cp=
-u and
-> >codec dais and this is the first step towards that. So, yes, eventually =
-we
-> >should port the code as you have suggested :)
-> ok, maybe add a comment in the commit message then?
-
-Ok
-
-> >
-> >-	/*
-> >-	 * At least one of CPU DAI name or CPU device name/node must be
-> >-	 * specified
-> >-	 */
-> >-	if (!link->cpu_dai_name &&
-> >-	    !(link->cpu_name || link->cpu_of_node)) {
-> >-		dev_err(card->dev,
-> >-			"ASoC: Neither cpu_dai_name nor cpu_name/of_node are set for %s\n",
-> >-			link->name);
-> >-		return -EINVAL;
-> >-	}
-> >+	for (i =3D 0; i < link->num_cpu_dai; i++) {
-> >+		if (link->cpu_dai[i].name &&
-> >+			link->cpu_dai[i].of_node) {
-> >+			dev_err(card->dev,
-> >+			    "ASoC: Neither/both cpu name/of_node are set for %s\n",
-> >+					link->cpu_dai[i].name);
-> >+			return -EINVAL;
-> >+		}
-> >+
-> >+		/*
-> >+		 * At least one of CPU DAI name or CPU device name/node must be
-> >+		 * specified
-> >+		 */
-> >+		if (!link->cpu_dai[i].dai_name &&
-> >+			!(link->cpu_dai[i].name || link->cpu_dai[i].of_node)) {
-> >>This doesn't seem to be the logical translation of the initial condition
-> >>based on link->cpu_name and link->cpu_of_node?
-> >>
-> >pasting the code added from the function above to show the mapping b/w n=
-ame,
-> >of_node and dai_name:
-> >
-> >		dai_link->cpu_dai[0].name =3D dai_link->cpu_name;
-> >		dai_link->cpu_dai[0].of_node =3D dai_link->cpu_of_node;
-> >		dai_link->cpu_dai[0].dai_name =3D dai_link->cpu_dai_name;
-> >
-> >and the original condition was:
-> >		if (!link->cpu_dai_name &&
-> >			!(link->cpu_name || link->cpu_of_node)) {
-> >
-> >So, it does look correct to me, unless I am missing something obvious :(
-> The original code I was referring to is this:
-> =
-
-> =A0=A0=A0 /*
-> =A0=A0=A0 =A0* CPU device may be specified by either name or OF node, but
-> =A0=A0=A0 =A0* can be left unspecified, and will be matched based on DAI
-> =A0=A0=A0 =A0* name alone..
-> =A0=A0=A0 =A0*/
-> =A0=A0=A0 if (link->cpu_name && link->cpu_of_node) {
-> =A0=A0=A0 =A0=A0=A0 dev_err(card->dev,
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 "ASoC: Neither/both cpu name/of_node are se=
-t for %s\n",
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->name);
-> =A0=A0=A0 =A0=A0=A0 return -EINVAL;
-> =A0=A0=A0 }
-> =A0=A0=A0 /*
-> =A0=A0=A0 =A0* At least one of CPU DAI name or CPU device name/node must =
-be
-> =A0=A0=A0 =A0* specified
-> =A0=A0=A0 =A0*/
-> =A0=A0=A0 if (!link->cpu_dai_name &&
-> =A0=A0=A0 =A0=A0=A0 !(link->cpu_name || link->cpu_of_node)) {
-> =A0=A0=A0 =A0=A0=A0 dev_err(card->dev,
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 "ASoC: Neither cpu_dai_name nor cpu_name/of=
-_node are set for
-> %s\n",
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->name);
-> =A0=A0=A0 =A0=A0=A0 return -EINVAL;
-> =A0=A0=A0 }
-> =
-
-> =A0=A0=A0 return 0;
-> =
-
-> The new code is this:
-> =
-
-> =A0=A0=A0 for (i =3D 0; i < link->num_cpu_dai; i++) {
-> =A0=A0=A0 =A0=A0=A0 if (link->cpu_dai[i].name &&
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->cpu_dai[i].of_node) {
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 dev_err(card->dev,
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 "ASoC: Neither/both cpu name/of_n=
-ode are set for %s\n",
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->cpu_dai[i].name);
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 return -EINVAL;
-> =A0=A0=A0 =A0=A0=A0 }
-> =
-
-> =A0=A0=A0 =A0=A0=A0 /*
-> =A0=A0=A0 =A0=A0=A0 =A0* At least one of CPU DAI name or CPU device name/=
-node must be
-> =A0=A0=A0 =A0=A0=A0 =A0* specified
-> =A0=A0=A0 =A0=A0=A0 =A0*/
-> =A0=A0=A0 =A0=A0=A0 if (!link->cpu_dai[i].dai_name &&
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 !(link->cpu_dai[i].name || link->cpu_dai[i]=
-.of_node)) {
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 dev_err(card->dev,
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 "ASoC: Neither cpu_dai_name nor c=
-pu_name/of_node are set for
-> %s\n",
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 link->name);
-> =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 return -EINVAL;
-> =A0=A0=A0 =A0=A0=A0 }
-> =A0=A0=A0 }
-> =
-
-> Yes, it's equivalent for i=3D=3D0, but it's not clear to me for non-zero
-> indices. I don't get how/where
-> link->cpu_dai[i].name and link->cpu_dai[i].of_node are initialized for i>=
-0.
-> =
-
-
-Aaah ok, I understand your question now :)
-
-That is added in the dai_link description in the machine driver.
-
-Like this:
-
-static struct snd_soc_dai_link_component test_multi_cpu_component[] =3D {
-        { /* Left */
-                .name =3D "int-sdw.1",
-                .dai_name =3D "SDW1 Pin0",
-        },
-        { /* Right */
-                .name =3D "int-sdw.2",
-                .dai_name =3D "SDW2 Pin0",
-        },
-};
-
-struct snd_soc_dai_link test_dailink[] =3D {
-        	{
-                	.name =3D "SDW0-Codec",
-	                .cpu_dai =3D test_multi_cpu_component,
-        	        .num_cpu_dai =3D ARRAY_SIZE(sdw_multi_cpu_comp),
-			...
-		}
-}
-
-> >>>-	if (cpu_dai->driver->compress_new) {
-> >>>+	if (rtd->cpu_dais[0]->driver->compress_new) {
-> >>>+		if (rtd->num_cpu_dai > 1)
-> >>>+			dev_warn(card->dev,
-> >>>+				"ASoC: multi-cpu compress dais not supported");
-> >>Not sure this is right, you could have a case where the compress dai is=
- not
-> >>on the cpu_dai[0]?
-> >I am not able to comprehend that we can have multi CPU DAIS in a DAI Link
-> >with one of the DAI being compress and the other being a PCM DAI.
-> >
-> >Any such systems that you can think of ?
-> Yes I agree, my point was that you test only for the first cpu_dai (index
-> 0), but if rtd->cpu_dais[1]->drivers->compress_new is non NULL then it's
-> also wrong. You should test for all cpu_dais to make sure they are all PC=
-M.
-> =
-
-
-Ok
-
---Shreyas
--- =
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+index c449188..0061858 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+@@ -126,12 +126,12 @@ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
+ 	return bytes_to_frames(substream->runtime, pcm_ptr_bytes);
+ }
+ 
+-static const struct snd_pcm_ops mtk_afe_pcm_ops = {
++const struct snd_pcm_ops mtk_afe_pcm_ops = {
+ 	.ioctl = snd_pcm_lib_ioctl,
+ 	.pointer = mtk_afe_pcm_pointer,
+ };
+ 
+-static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
++int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	size_t size;
+ 	struct snd_pcm *pcm = rtd->pcm;
+@@ -144,7 +144,7 @@ static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 						     size, size);
+ }
+ 
+-static void mtk_afe_pcm_free(struct snd_pcm *pcm)
++void mtk_afe_pcm_free(struct snd_pcm *pcm)
+ {
+ 	snd_pcm_lib_preallocate_free_for_all(pcm);
+ }
+diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+index c892b7f..1286c6e 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+@@ -172,7 +172,7 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
+ 			 SNDRV_PCM_FMTBIT_S24_LE |\
+ 			 SNDRV_PCM_FMTBIT_S32_LE)
+ 
+-static struct snd_soc_dai_driver mt6797_afe_pcm_dais[] = {
++static struct snd_soc_dai_driver mt6797_memif_dai_driver[] = {
+ 	/* FE DAIs: memory intefaces to CPU */
+ 	{
+ 		.name = "DL1",
+@@ -329,7 +329,7 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
+ 				    I_ADDA_UL_CH2, 1, 0),
+ };
+ 
+-static const struct snd_soc_dapm_widget mt6797_afe_pcm_widgets[] = {
++static const struct snd_soc_dapm_widget mt6797_memif_widgets[] = {
+ 	/* memif */
+ 	SND_SOC_DAPM_MIXER("UL1_CH1", SND_SOC_NOPM, 0, 0,
+ 			   memif_ul1_ch1_mix, ARRAY_SIZE(memif_ul1_ch1_mix)),
+@@ -355,7 +355,7 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
+ 			   ARRAY_SIZE(memif_ul_mono_2_mix)),
+ };
+ 
+-static const struct snd_soc_dapm_route mt6797_afe_pcm_routes[] = {
++static const struct snd_soc_dapm_route mt6797_memif_routes[] = {
+ 	/* capture */
+ 	{"UL1", NULL, "UL1_CH1"},
+ 	{"UL1", NULL, "UL1_CH2"},
+@@ -383,10 +383,6 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
+ 
+ static const struct snd_soc_component_driver mt6797_afe_pcm_dai_component = {
+ 	.name = "mt6797-afe-pcm-dai",
+-	.dapm_widgets = mt6797_afe_pcm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(mt6797_afe_pcm_widgets),
+-	.dapm_routes = mt6797_afe_pcm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(mt6797_afe_pcm_routes),
+ };
+ 
+ static const struct mtk_base_memif_data memif_data[MT6797_MEMIF_NUM] = {
+@@ -724,6 +720,19 @@ static int mt6797_afe_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static int mt6797_afe_component_probe(struct snd_soc_component *component)
++{
++	return mtk_afe_add_sub_dai_control(component);
++}
++
++static const struct snd_soc_component_driver mt6797_afe_component = {
++	.name = AFE_PCM_NAME,
++	.ops = &mtk_afe_pcm_ops,
++	.pcm_new = mtk_afe_pcm_new,
++	.pcm_free = mtk_afe_pcm_free,
++	.probe = mt6797_afe_component_probe,
++};
++
+ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ {
+ 	struct mtk_base_afe *afe;
+@@ -801,6 +810,29 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	/* init sub_dais */
++	afe->num_sub_dais = MT6797_DAI_NUM;
++	afe->sub_dais = devm_kcalloc(dev, afe->num_sub_dais,
++				     sizeof(*afe->sub_dais),
++				     GFP_KERNEL);
++	if (!afe->sub_dais)
++		return -ENOMEM;
++
++	mt6797_dai_adda_register(afe);
++
++	afe->sub_dais[MT6797_MEMIF_DL1].dai_drivers = mt6797_memif_dai_driver;
++	afe->sub_dais[MT6797_MEMIF_DL1].num_dai_drivers =
++		ARRAY_SIZE(mt6797_memif_dai_driver);
++	afe->sub_dais[MT6797_MEMIF_DL1].dapm_widgets = mt6797_memif_widgets;
++	afe->sub_dais[MT6797_MEMIF_DL1].num_dapm_widgets =
++		ARRAY_SIZE(mt6797_memif_widgets);
++	afe->sub_dais[MT6797_MEMIF_DL1].dapm_routes = mt6797_memif_routes;
++	afe->sub_dais[MT6797_MEMIF_DL1].num_dapm_routes =
++		ARRAY_SIZE(mt6797_memif_routes);
++
++	/* init dai_driver and component_driver */
++	mtk_afe_combine_sub_dai(afe);
++
+ 	afe->mtk_afe_hardware = &mt6797_afe_hardware;
+ 	afe->memif_fs = mt6797_memif_fs;
+ 	afe->irq_fs = mt6797_irq_fs;
+@@ -815,7 +847,8 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		goto err_pm_disable;
+ 	pm_runtime_get_sync(&pdev->dev);
+ 
+-	ret = devm_snd_soc_register_component(dev, &mtk_afe_pcm_platform,
++	/* register component */
++	ret = devm_snd_soc_register_component(dev, &mt6797_afe_component,
+ 					      NULL, 0);
+ 	if (ret) {
+ 		dev_warn(dev, "err_platform\n");
+@@ -824,8 +857,8 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_snd_soc_register_component(afe->dev,
+ 				     &mt6797_afe_pcm_dai_component,
+-				     mt6797_afe_pcm_dais,
+-				     ARRAY_SIZE(mt6797_afe_pcm_dais));
++				     afe->dai_drivers,
++				     afe->num_dai_drivers);
+ 	if (ret) {
+ 		dev_warn(dev, "err_dai_component\n");
+ 		goto err_pm_disable;
+-- 
+1.9.1
