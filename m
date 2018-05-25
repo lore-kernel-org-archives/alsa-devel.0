@@ -1,195 +1,252 @@
-From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-Subject: [PATCH v2 3/3] ASoC: mt6797: combine DAI to register component
-Date: Fri, 25 May 2018 11:48:18 +0800
-Message-ID: <1527220098-9731-3-git-send-email-kaichieh.chuang@mediatek.com>
-References: <1527220098-9731-1-git-send-email-kaichieh.chuang@mediatek.com>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: Re: [PATCH v5 2/3] ASoC: Add multiple CPU DAI support
+ for PCM ops
+Date: Fri, 25 May 2018 10:16:27 +0530
+Message-ID: <20180525044627.GE3116@snc-desk>
+References: <1526985623-2606-1-git-send-email-shreyas.nc@intel.com>
+ <1526985623-2606-3-git-send-email-shreyas.nc@intel.com>
+ <a5934a1f-0f0a-98b7-40ae-d691a779acab@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-In-Reply-To: <1527220098-9731-1-git-send-email-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
-List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
- <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
-Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
-Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
-To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
-Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, garlic.tseng-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 57B2C267646
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 06:48:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <a5934a1f-0f0a-98b7-40ae-d691a779acab@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
----
- .../soc/mediatek/common/mtk-afe-platform-driver.c  |  6 +--
- .../soc/mediatek/common/mtk-afe-platform-driver.h  |  7 +++
- sound/soc/mediatek/mt6797/mt6797-afe-pcm.c         | 53 ++++++++++++++++++----
- 3 files changed, 53 insertions(+), 13 deletions(-)
+On Thu, May 24, 2018 at 04:29:45PM -0500, Pierre-Louis Bossart wrote:
+> This one is also quite dense, I could use clarifications on how channels
+> will be handled in a multi-cpu context. I believe for the multi-codec case
+> there was an assumption of symmetry, not sure this works or is required in a
+> multi-cpu case, see below.
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-index c449188..0061858 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-@@ -126,12 +126,12 @@ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
- 	return bytes_to_frames(substream->runtime, pcm_ptr_bytes);
- }
- 
--static const struct snd_pcm_ops mtk_afe_pcm_ops = {
-+const struct snd_pcm_ops mtk_afe_pcm_ops = {
- 	.ioctl = snd_pcm_lib_ioctl,
- 	.pointer = mtk_afe_pcm_pointer,
- };
- 
--static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
- {
- 	size_t size;
- 	struct snd_pcm *pcm = rtd->pcm;
-@@ -144,7 +144,7 @@ static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 						     size, size);
- }
- 
--static void mtk_afe_pcm_free(struct snd_pcm *pcm)
-+void mtk_afe_pcm_free(struct snd_pcm *pcm)
- {
- 	snd_pcm_lib_preallocate_free_for_all(pcm);
- }
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.h b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-index 0c31fa4..88df679 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-@@ -10,10 +10,17 @@
- #define _MTK_AFE_PLATFORM_DRIVER_H_
- 
- #define AFE_PCM_NAME "mtk-afe-pcm"
-+extern const struct snd_pcm_ops mtk_afe_pcm_ops;
- extern const struct snd_soc_component_driver mtk_afe_pcm_platform;
- 
- struct mtk_base_afe;
-+struct snd_pcm;
- struct snd_soc_component;
-+struct snd_soc_pcm_runtime;
-+
-+
-+int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd);
-+void mtk_afe_pcm_free(struct snd_pcm *pcm);
- 
- int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe);
- int mtk_afe_add_sub_dai_control(struct snd_soc_component *component);
-diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-index c892b7f..1286c6e 100644
---- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-+++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-@@ -172,7 +172,7 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 			 SNDRV_PCM_FMTBIT_S24_LE |\
- 			 SNDRV_PCM_FMTBIT_S32_LE)
- 
--static struct snd_soc_dai_driver mt6797_afe_pcm_dais[] = {
-+static struct snd_soc_dai_driver mt6797_memif_dai_driver[] = {
- 	/* FE DAIs: memory intefaces to CPU */
- 	{
- 		.name = "DL1",
-@@ -329,7 +329,7 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 				    I_ADDA_UL_CH2, 1, 0),
- };
- 
--static const struct snd_soc_dapm_widget mt6797_afe_pcm_widgets[] = {
-+static const struct snd_soc_dapm_widget mt6797_memif_widgets[] = {
- 	/* memif */
- 	SND_SOC_DAPM_MIXER("UL1_CH1", SND_SOC_NOPM, 0, 0,
- 			   memif_ul1_ch1_mix, ARRAY_SIZE(memif_ul1_ch1_mix)),
-@@ -355,7 +355,7 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 			   ARRAY_SIZE(memif_ul_mono_2_mix)),
- };
- 
--static const struct snd_soc_dapm_route mt6797_afe_pcm_routes[] = {
-+static const struct snd_soc_dapm_route mt6797_memif_routes[] = {
- 	/* capture */
- 	{"UL1", NULL, "UL1_CH1"},
- 	{"UL1", NULL, "UL1_CH2"},
-@@ -383,10 +383,6 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
- 
- static const struct snd_soc_component_driver mt6797_afe_pcm_dai_component = {
- 	.name = "mt6797-afe-pcm-dai",
--	.dapm_widgets = mt6797_afe_pcm_widgets,
--	.num_dapm_widgets = ARRAY_SIZE(mt6797_afe_pcm_widgets),
--	.dapm_routes = mt6797_afe_pcm_routes,
--	.num_dapm_routes = ARRAY_SIZE(mt6797_afe_pcm_routes),
- };
- 
- static const struct mtk_base_memif_data memif_data[MT6797_MEMIF_NUM] = {
-@@ -724,6 +720,19 @@ static int mt6797_afe_runtime_resume(struct device *dev)
- 	return 0;
- }
- 
-+static int mt6797_afe_component_probe(struct snd_soc_component *component)
-+{
-+	return mtk_afe_add_sub_dai_control(component);
-+}
-+
-+static const struct snd_soc_component_driver mt6797_afe_component = {
-+	.name = AFE_PCM_NAME,
-+	.ops = &mtk_afe_pcm_ops,
-+	.pcm_new = mtk_afe_pcm_new,
-+	.pcm_free = mtk_afe_pcm_free,
-+	.probe = mt6797_afe_component_probe,
-+};
-+
- static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
- {
- 	struct mtk_base_afe *afe;
-@@ -801,6 +810,29 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
-+	/* init sub_dais */
-+	afe->num_sub_dais = MT6797_DAI_NUM;
-+	afe->sub_dais = devm_kcalloc(dev, afe->num_sub_dais,
-+				     sizeof(*afe->sub_dais),
-+				     GFP_KERNEL);
-+	if (!afe->sub_dais)
-+		return -ENOMEM;
-+
-+	mt6797_dai_adda_register(afe);
-+
-+	afe->sub_dais[MT6797_MEMIF_DL1].dai_drivers = mt6797_memif_dai_driver;
-+	afe->sub_dais[MT6797_MEMIF_DL1].num_dai_drivers =
-+		ARRAY_SIZE(mt6797_memif_dai_driver);
-+	afe->sub_dais[MT6797_MEMIF_DL1].dapm_widgets = mt6797_memif_widgets;
-+	afe->sub_dais[MT6797_MEMIF_DL1].num_dapm_widgets =
-+		ARRAY_SIZE(mt6797_memif_widgets);
-+	afe->sub_dais[MT6797_MEMIF_DL1].dapm_routes = mt6797_memif_routes;
-+	afe->sub_dais[MT6797_MEMIF_DL1].num_dapm_routes =
-+		ARRAY_SIZE(mt6797_memif_routes);
-+
-+	/* init dai_driver and component_driver */
-+	mtk_afe_combine_sub_dai(afe);
-+
- 	afe->mtk_afe_hardware = &mt6797_afe_hardware;
- 	afe->memif_fs = mt6797_memif_fs;
- 	afe->irq_fs = mt6797_irq_fs;
-@@ -815,7 +847,8 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
- 		goto err_pm_disable;
- 	pm_runtime_get_sync(&pdev->dev);
- 
--	ret = devm_snd_soc_register_component(dev, &mtk_afe_pcm_platform,
-+	/* register component */
-+	ret = devm_snd_soc_register_component(dev, &mt6797_afe_component,
- 					      NULL, 0);
- 	if (ret) {
- 		dev_warn(dev, "err_platform\n");
-@@ -824,8 +857,8 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
- 
- 	ret = devm_snd_soc_register_component(afe->dev,
- 				     &mt6797_afe_pcm_dai_component,
--				     mt6797_afe_pcm_dais,
--				     ARRAY_SIZE(mt6797_afe_pcm_dais));
-+				     afe->dai_drivers,
-+				     afe->num_dai_drivers);
- 	if (ret) {
- 		dev_warn(dev, "err_dai_component\n");
- 		goto err_pm_disable;
+I am not sure if I understand symmetry correctly. Mark, can you please help us
+here ?
+
+> >-	symmetry = cpu_dai->driver->symmetric_channels ||
+> >-		rtd->dai_link->symmetric_channels;
+> >+	symmetry = rtd->dai_link->symmetric_channels;
+> >+
+> >+	for (i = 0; i < rtd->num_cpu_dai; i++)
+> >+		symmetry |= rtd->cpu_dais[i]->driver->symmetric_channels;
+> >  	for (i = 0; i < rtd->num_codecs; i++)
+> >  		symmetry |= rtd->codec_dais[i]->driver->symmetric_channels;
+> >-	if (symmetry && cpu_dai->channels && cpu_dai->channels != channels) {
+> >-		dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
+> >-				cpu_dai->channels, channels);
+> >-		return -EINVAL;
+> >-	}
+> >+	for (i = 0; i < rtd->num_cpu_dai; i++)
+> >+		if (symmetry && rtd->cpu_dais[i]->channels &&
+> >+				rtd->cpu_dais[i]->channels != channels) {
+> >+			dev_err(rtd->dev, "ASoC: unmatched channel symmetry: %d - %d\n",
+> >+					rtd->cpu_dais[i]->channels, channels);
+> >+			return -EINVAL;
+> >+		}
+> I am not sure I get this part - but maybe I am connecting too many dots with
+> the SoundWire 'stream' patches.
+> 
+> This code is assuming all cpu_dais have the same number of channels, defined
+> by the hw_params.
+
+Yes
+
+> Is this right? In the SoundWire case, we can have one port with 2 channels
+> and another with 4, for a total of 6 channels for the stream. Am I missing
+> something or how should I reconcile the concepts?
+> 
+
+In the case you have explained, the stream has 6 channels. But, from the
+machine driver we can have set channel masks on each of these DAIs
+accordingly.
+
+> making the assumption that the rates and sample_bits are identical is ok.
+> 
+> >-	symmetry = cpu_dai->driver->symmetric_samplebits ||
+> >-		rtd->dai_link->symmetric_samplebits;
+> >+	symmetry = rtd->dai_link->symmetric_samplebits;
+> >+
+> >+	for (i = 0; i < rtd->num_cpu_dai; i++)
+> >+		symmetry |= rtd->cpu_dais[i]->driver->symmetric_samplebits;
+> >  	for (i = 0; i < rtd->num_codecs; i++)
+> >  		symmetry |= rtd->codec_dais[i]->driver->symmetric_samplebits;
+> >-	if (symmetry && cpu_dai->sample_bits && cpu_dai->sample_bits != sample_bits) {
+> >-		dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
+> >-				cpu_dai->sample_bits, sample_bits);
+> >-		return -EINVAL;
+> >-	}
+> >+	for (i = 0; i < rtd->num_cpu_dai; i++)
+> >+		if (symmetry && rtd->cpu_dais[i]->sample_bits &&
+> >+				rtd->cpu_dais[i]->sample_bits != sample_bits) {
+> >+			dev_err(rtd->dev, "ASoC: unmatched sample bits symmetry: %d - %d\n",
+> >+						rtd->cpu_dais[i]->sample_bits,
+> >+								sample_bits);
+> >+			return -EINVAL;
+> >+		}
+> >  	return 0;
+> >  }
+> >@@ -308,13 +328,18 @@ static int soc_pcm_params_symmetry(struct snd_pcm_substream *substream,
+> >  static bool soc_pcm_has_symmetry(struct snd_pcm_substream *substream)
+> >  {
+> >  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> >-	struct snd_soc_dai_driver *cpu_driver = rtd->cpu_dai->driver;
+> >  	struct snd_soc_dai_link *link = rtd->dai_link;
+> >  	unsigned int symmetry, i;
+> >-	symmetry = cpu_driver->symmetric_rates || link->symmetric_rates ||
+> >-		cpu_driver->symmetric_channels || link->symmetric_channels ||
+> >-		cpu_driver->symmetric_samplebits || link->symmetric_samplebits;
+> >+	symmetry = link->symmetric_rates || link->symmetric_channels ||
+> >+			link->symmetric_samplebits;
+> >+
+> >+	/* Apply symmetery for multiple cpu dais */
+> I've never seen this spelling for cemetery :-)
+> 
+
+Never meant it to be cemetery for sure :D
+Will correct it, Thanks!
+
+> [...]
+> >+	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> >+		cpu_dai_drv = rtd->cpu_dais[i]->driver;
+> >+
+> >+		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+> >+			cpu_stream = &cpu_dai_drv->playback;
+> >+		else
+> >+			cpu_stream = &cpu_dai_drv->capture;
+> >+
+> >+		cpu_chan_min = max(cpu_chan_min,
+> >+					cpu_stream->channels_min);
+> >+		cpu_chan_max = min(cpu_chan_max,
+> >+					cpu_stream->channels_max);
+> >+
+> >+		if (hw->formats)
+> >+			hw->formats &= cpu_stream->formats;
+> >+		else
+> >+			hw->formats = cpu_stream->formats;
+> >+
+> >+		cpu_rates = snd_pcm_rate_mask_intersect(cpu_rates,
+> >+						cpu_stream->rates);
+> >+
+> >+		cpu_rate_min = max(cpu_rate_min, cpu_stream->rate_min);
+> >+		cpu_rate_max = min_not_zero(cpu_rate_max, cpu_stream->rate_max);
+> >+	}
+> >+
+> >  	/*
+> >-	 * chan min/max cannot be enforced if there are multiple CODEC DAIs
+> >-	 * connected to a single CPU DAI, use CPU DAI's directly and let
+> >-	 * channel allocation be fixed up later
+> >+	 * chan min/max cannot be enforced if there are multiple
+> >+	 * CODEC DAIs connected to CPU DAI(s), use CPU DAI's
+> >+	 * directly and let channel allocation be fixed up later
+> What does 'later' mean?
+> I guess I don't quite get the channel management, same issue as my feedback
+> above.
+> 
+
+I think 'later' here means channel allocation can then be fixed by using
+_set_channel_map(), be_hw_params_fixup()
+
+> [...]
+> >
+> >@@ -963,11 +1070,14 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+> >  	if (ret < 0)
+> >  		goto component_err;
+> >-	/* store the parameters for each DAIs */
+> >-	cpu_dai->rate = params_rate(params);
+> >-	cpu_dai->channels = params_channels(params);
+> >-	cpu_dai->sample_bits =
+> >-		snd_pcm_format_physical_width(params_format(params));
+> >+	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> >+		/* store the parameters for each DAIs */
+> >+		cpu_dai = rtd->cpu_dais[i];
+> >+		cpu_dai->rate = params_rate(params);
+> >+		cpu_dai->channels = params_channels(params);
+> same here, are we again making the assumption that all cpu_dais can transmit
+> the same number of channels?
+> 
+
+Yes. But, as explained earlier machine can then set the channels masks on
+these CPU DAIs
+
+> [...]
+> >@@ -1107,10 +1229,14 @@ static int soc_pcm_trigger(struct snd_pcm_substream *substream, int cmd)
+> >  			return ret;
+> >  	}
+> >-	if (cpu_dai->driver->ops->trigger) {
+> >-		ret = cpu_dai->driver->ops->trigger(substream, cmd, cpu_dai);
+> >-		if (ret < 0)
+> >-			return ret;
+> >+	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> >+		cpu_dai = rtd->cpu_dais[i];
+> >+		if (cpu_dai->driver->ops->trigger) {
+> >+			ret = cpu_dai->driver->ops->trigger(substream,
+> >+								cmd, cpu_dai);
+> How do I reconcile this sequential trigger with the notion of bank-switch in
+> SoundWire? It seems we are missing a global trigger for all cpu_dais who are
+> part of the same dailink? Or am I in the weeds again?
+> 
+
+Yes, there is no global trigger for all cpu_dais specifically.
+And for Soundwire, this is the reason we chose to call from machine/platform
+
+> [...]
+> >@@ -1157,12 +1287,13 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+> >  	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> >  	struct snd_soc_component *component;
+> >  	struct snd_soc_rtdcom_list *rtdcom;
+> >-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> >+	struct snd_soc_dai *cpu_dai;
+> >  	struct snd_soc_dai *codec_dai;
+> >  	struct snd_pcm_runtime *runtime = substream->runtime;
+> >  	snd_pcm_uframes_t offset = 0;
+> >  	snd_pcm_sframes_t delay = 0;
+> >  	snd_pcm_sframes_t codec_delay = 0;
+> >+	snd_pcm_sframes_t cpu_delay = 0;
+> >  	int i;
+> >  	for_each_rtdcom(rtd, rtdcom) {
+> >@@ -1177,8 +1308,15 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+> >  		break;
+> >  	}
+> >-	if (cpu_dai->driver->ops->delay)
+> >-		delay += cpu_dai->driver->ops->delay(substream, cpu_dai);
+> >+	for (i = 0; i < rtd->num_cpu_dai; i++) {
+> >+		cpu_dai = rtd->cpu_dais[i];
+> >+		if (cpu_dai->driver->ops->delay)
+> >+			cpu_delay = max(cpu_delay,
+> >+					cpu_dai->driver->ops->delay(substream,
+> >+								cpu_dai));
+> >+	}
+> >+
+> >+	delay += cpu_delay;
+> Oh, this is weird. If you are checking the delay sequentially for each
+> cpu_dai, what are the odds that you get a consistent reply? I think it's
+> fundamentally different from the codec side since you will in theory be able
+> to check delays on each cpu_dai fairly quickly over IPC, whereas for codecs
+> the delay is likely to be a long-term estimate, not an immediate value. In
+> addition you would probably expect that all cpu_dais are triggered at the
+> same time and hence have the same delay, so you could use the cpu_dais[0]
+> instead of querying the values multiple times.
+> 
+That sounds like a fair arguement to me. Just wondering if there can be a
+case of multiple CPU DAIs but you would not want them to be triggered at the
+same time.
+
+Thanks for the review!
+
+--Shreyas
+
 -- 
-1.9.1
