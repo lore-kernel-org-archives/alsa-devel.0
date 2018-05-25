@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mediatek: add sub dai to mtk_base_afe"
-	to the asoc tree
-Date: Fri, 25 May 2018 18:36:39 +0100
-Message-ID: <E1fMGdr-00082W-VF@debutante>
-References: <1527218274-27699-1-git-send-email-kaichieh.chuang@mediatek.com>
+Subject: Applied "ASoC: mt6797: combine DAI to register
+	component" to the asoc tree
+Date: Fri, 25 May 2018 18:36:32 +0100
+Message-ID: <E1fMGdk-00080b-Qu@debutante>
+References: <1527220098-9731-3-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B207F26768E
- for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 19:36:46 +0200 (CEST)
-In-Reply-To: <1527218274-27699-1-git-send-email-kaichieh.chuang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B620D267692
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 19:37:21 +0200 (CEST)
+In-Reply-To: <1527220098-9731-3-git-send-email-kaichieh.chuang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mediatek: add sub dai to mtk_base_afe
+   ASoC: mt6797: combine DAI to register component
 
 has been applied to the asoc tree at
 
@@ -52,176 +52,181 @@ to this mail.
 Thanks,
 Mark
 
->From 13be427e5df4cea08c2d48017aabe112400e1b2f Mon Sep 17 00:00:00 2001
+>From b3c702f56bf5520ddacaeec0fcacf5fa94b83fda Mon Sep 17 00:00:00 2001
 From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Date: Fri, 25 May 2018 11:48:16 +0800
-Subject: [PATCH] ASoC: mediatek: add sub dai to mtk_base_afe
-
-In MediaTek SoC chip we have multiple DAI,
-such as I2S, ADDA, PCM, etc.
-
-Organize each DAI in to one sub dai,
-with its dai driver, controls, widgets, routes.
-
-add mtk_afe_combine_sub_dai() to combine
-dai driver from each DAI.
-
-add mtk_afe_add_sub_dai_control() to register
-the control, widget, routes to component.
+Date: Fri, 25 May 2018 11:48:18 +0800
+Subject: [PATCH] ASoC: mt6797: combine DAI to register component
 
 Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../mediatek/common/mtk-afe-platform-driver.c | 78 +++++++++++++++++++
- .../mediatek/common/mtk-afe-platform-driver.h |  5 ++
- sound/soc/mediatek/common/mtk-base-afe.h      | 18 +++++
- 3 files changed, 101 insertions(+)
+ .../mediatek/common/mtk-afe-platform-driver.c |  6 +--
+ .../mediatek/common/mtk-afe-platform-driver.h |  7 +++
+ sound/soc/mediatek/mt6797/mt6797-afe-pcm.c    | 53 +++++++++++++++----
+ 3 files changed, 53 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-index 8966ee138387..c4491883090d 100644
+index c4491883090d..00618587ef1e 100644
 --- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
 +++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-@@ -13,6 +13,84 @@
- #include "mtk-afe-platform-driver.h"
- #include "mtk-base-afe.h"
+@@ -126,12 +126,12 @@ static snd_pcm_uframes_t mtk_afe_pcm_pointer
+ 	return bytes_to_frames(substream->runtime, pcm_ptr_bytes);
+ }
  
-+int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe)
-+{
-+	struct snd_soc_dai_driver *sub_dai_drivers;
-+	size_t num_dai_drivers = 0, dai_idx = 0;
-+	int i;
-+
-+	if (!afe->sub_dais) {
-+		dev_err(afe->dev, "%s(), sub_dais == NULL\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	/* calcualte total dai driver size */
-+	for (i = 0; i < afe->num_sub_dais; i++) {
-+		if (afe->sub_dais[i].dai_drivers &&
-+		    afe->sub_dais[i].num_dai_drivers != 0)
-+			num_dai_drivers += afe->sub_dais[i].num_dai_drivers;
-+	}
-+
-+	dev_info(afe->dev, "%s(), num of dai %zd\n", __func__, num_dai_drivers);
-+
-+	/* combine sub_dais */
-+	afe->num_dai_drivers = num_dai_drivers;
-+	afe->dai_drivers = devm_kcalloc(afe->dev,
-+					num_dai_drivers,
-+					sizeof(struct snd_soc_dai_driver),
-+					GFP_KERNEL);
-+	if (!afe->dai_drivers)
-+		return -ENOMEM;
-+
-+	for (i = 0; i < afe->num_sub_dais; i++) {
-+		if (afe->sub_dais[i].dai_drivers &&
-+		    afe->sub_dais[i].num_dai_drivers != 0) {
-+			sub_dai_drivers = afe->sub_dais[i].dai_drivers;
-+			/* dai driver */
-+			memcpy(&afe->dai_drivers[dai_idx],
-+			       sub_dai_drivers,
-+			       afe->sub_dais[i].num_dai_drivers *
-+			       sizeof(struct snd_soc_dai_driver));
-+			dai_idx += afe->sub_dais[i].num_dai_drivers;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
-+int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
-+{
-+	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
-+	int i;
-+
-+	if (!afe->sub_dais) {
-+		dev_err(afe->dev, "%s(), sub_dais == NULL\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	for (i = 0; i < afe->num_sub_dais; i++) {
-+		if (afe->sub_dais[i].controls)
-+			snd_soc_add_component_controls(component,
-+				afe->sub_dais[i].controls,
-+				afe->sub_dais[i].num_controls);
-+
-+		if (afe->sub_dais[i].dapm_widgets)
-+			snd_soc_dapm_new_controls(&component->dapm,
-+				afe->sub_dais[i].dapm_widgets,
-+				afe->sub_dais[i].num_dapm_widgets);
-+
-+		if (afe->sub_dais[i].dapm_routes)
-+			snd_soc_dapm_add_routes(&component->dapm,
-+				afe->sub_dais[i].dapm_routes,
-+				afe->sub_dais[i].num_dapm_routes);
-+	}
-+
-+	snd_soc_dapm_new_widgets(component->dapm.card);
-+
-+	return 0;
-+
-+}
-+
- static snd_pcm_uframes_t mtk_afe_pcm_pointer
- 			 (struct snd_pcm_substream *substream)
- {
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.h b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-index 1c81d911cf2a..0c31fa4b6f8c 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
-@@ -12,5 +12,10 @@
- #define AFE_PCM_NAME "mtk-afe-pcm"
- extern const struct snd_soc_component_driver mtk_afe_pcm_platform;
- 
-+struct mtk_base_afe;
-+struct snd_soc_component;
-+
-+int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe);
-+int mtk_afe_add_sub_dai_control(struct snd_soc_component *component);
- #endif
- 
-diff --git a/sound/soc/mediatek/common/mtk-base-afe.h b/sound/soc/mediatek/common/mtk-base-afe.h
-index c2c5a6c5751d..bcf562f029b6 100644
---- a/sound/soc/mediatek/common/mtk-base-afe.h
-+++ b/sound/soc/mediatek/common/mtk-base-afe.h
-@@ -48,6 +48,7 @@ struct mtk_base_irq_data {
- struct device;
- struct mtk_base_afe_memif;
- struct mtk_base_afe_irq;
-+struct mtk_base_afe_dai;
- struct regmap;
- struct snd_pcm_substream;
- struct snd_soc_dai;
-@@ -71,6 +72,11 @@ struct mtk_base_afe {
- 	struct mtk_base_afe_irq *irqs;
- 	int irqs_size;
- 
-+	struct mtk_base_afe_dai *sub_dais;
-+	int num_sub_dais;
-+	struct snd_soc_dai_driver *dai_drivers;
-+	unsigned int num_dai_drivers;
-+
- 	const struct snd_pcm_hardware *mtk_afe_hardware;
- 	int (*memif_fs)(struct snd_pcm_substream *substream,
- 			unsigned int rate);
-@@ -94,5 +100,17 @@ struct mtk_base_afe_irq {
- 	int irq_occupyed;
+-static const struct snd_pcm_ops mtk_afe_pcm_ops = {
++const struct snd_pcm_ops mtk_afe_pcm_ops = {
+ 	.ioctl = snd_pcm_lib_ioctl,
+ 	.pointer = mtk_afe_pcm_pointer,
  };
  
-+struct mtk_base_afe_dai {
-+	struct snd_soc_dai_driver *dai_drivers;
-+	unsigned int num_dai_drivers;
+-static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
++int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	size_t size;
+ 	struct snd_pcm *pcm = rtd->pcm;
+@@ -144,7 +144,7 @@ static int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 						     size, size);
+ }
+ 
+-static void mtk_afe_pcm_free(struct snd_pcm *pcm)
++void mtk_afe_pcm_free(struct snd_pcm *pcm)
+ {
+ 	snd_pcm_lib_preallocate_free_for_all(pcm);
+ }
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.h b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
+index 0c31fa4b6f8c..88df6797732f 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.h
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.h
+@@ -10,10 +10,17 @@
+ #define _MTK_AFE_PLATFORM_DRIVER_H_
+ 
+ #define AFE_PCM_NAME "mtk-afe-pcm"
++extern const struct snd_pcm_ops mtk_afe_pcm_ops;
+ extern const struct snd_soc_component_driver mtk_afe_pcm_platform;
+ 
+ struct mtk_base_afe;
++struct snd_pcm;
+ struct snd_soc_component;
++struct snd_soc_pcm_runtime;
 +
-+	const struct snd_kcontrol_new *controls;
-+	unsigned int num_controls;
-+	const struct snd_soc_dapm_widget *dapm_widgets;
-+	unsigned int num_dapm_widgets;
-+	const struct snd_soc_dapm_route *dapm_routes;
-+	unsigned int num_dapm_routes;
++
++int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd);
++void mtk_afe_pcm_free(struct snd_pcm *pcm);
+ 
+ int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe);
+ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component);
+diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+index c892b7fbb6a8..1286c6ee97cb 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
++++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
+@@ -172,7 +172,7 @@ static int mt6797_irq_fs(struct snd_pcm_substream *substream, unsigned int rate)
+ 			 SNDRV_PCM_FMTBIT_S24_LE |\
+ 			 SNDRV_PCM_FMTBIT_S32_LE)
+ 
+-static struct snd_soc_dai_driver mt6797_afe_pcm_dais[] = {
++static struct snd_soc_dai_driver mt6797_memif_dai_driver[] = {
+ 	/* FE DAIs: memory intefaces to CPU */
+ 	{
+ 		.name = "DL1",
+@@ -329,7 +329,7 @@ static const struct snd_kcontrol_new memif_ul_mono_2_mix[] = {
+ 				    I_ADDA_UL_CH2, 1, 0),
+ };
+ 
+-static const struct snd_soc_dapm_widget mt6797_afe_pcm_widgets[] = {
++static const struct snd_soc_dapm_widget mt6797_memif_widgets[] = {
+ 	/* memif */
+ 	SND_SOC_DAPM_MIXER("UL1_CH1", SND_SOC_NOPM, 0, 0,
+ 			   memif_ul1_ch1_mix, ARRAY_SIZE(memif_ul1_ch1_mix)),
+@@ -355,7 +355,7 @@ static const struct snd_soc_dapm_widget mt6797_afe_pcm_widgets[] = {
+ 			   ARRAY_SIZE(memif_ul_mono_2_mix)),
+ };
+ 
+-static const struct snd_soc_dapm_route mt6797_afe_pcm_routes[] = {
++static const struct snd_soc_dapm_route mt6797_memif_routes[] = {
+ 	/* capture */
+ 	{"UL1", NULL, "UL1_CH1"},
+ 	{"UL1", NULL, "UL1_CH2"},
+@@ -383,10 +383,6 @@ static const struct snd_soc_dapm_route mt6797_afe_pcm_routes[] = {
+ 
+ static const struct snd_soc_component_driver mt6797_afe_pcm_dai_component = {
+ 	.name = "mt6797-afe-pcm-dai",
+-	.dapm_widgets = mt6797_afe_pcm_widgets,
+-	.num_dapm_widgets = ARRAY_SIZE(mt6797_afe_pcm_widgets),
+-	.dapm_routes = mt6797_afe_pcm_routes,
+-	.num_dapm_routes = ARRAY_SIZE(mt6797_afe_pcm_routes),
+ };
+ 
+ static const struct mtk_base_memif_data memif_data[MT6797_MEMIF_NUM] = {
+@@ -724,6 +720,19 @@ static int mt6797_afe_runtime_resume(struct device *dev)
+ 	return 0;
+ }
+ 
++static int mt6797_afe_component_probe(struct snd_soc_component *component)
++{
++	return mtk_afe_add_sub_dai_control(component);
++}
++
++static const struct snd_soc_component_driver mt6797_afe_component = {
++	.name = AFE_PCM_NAME,
++	.ops = &mtk_afe_pcm_ops,
++	.pcm_new = mtk_afe_pcm_new,
++	.pcm_free = mtk_afe_pcm_free,
++	.probe = mt6797_afe_component_probe,
 +};
 +
- #endif
+ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ {
+ 	struct mtk_base_afe *afe;
+@@ -801,6 +810,29 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
  
++	/* init sub_dais */
++	afe->num_sub_dais = MT6797_DAI_NUM;
++	afe->sub_dais = devm_kcalloc(dev, afe->num_sub_dais,
++				     sizeof(*afe->sub_dais),
++				     GFP_KERNEL);
++	if (!afe->sub_dais)
++		return -ENOMEM;
++
++	mt6797_dai_adda_register(afe);
++
++	afe->sub_dais[MT6797_MEMIF_DL1].dai_drivers = mt6797_memif_dai_driver;
++	afe->sub_dais[MT6797_MEMIF_DL1].num_dai_drivers =
++		ARRAY_SIZE(mt6797_memif_dai_driver);
++	afe->sub_dais[MT6797_MEMIF_DL1].dapm_widgets = mt6797_memif_widgets;
++	afe->sub_dais[MT6797_MEMIF_DL1].num_dapm_widgets =
++		ARRAY_SIZE(mt6797_memif_widgets);
++	afe->sub_dais[MT6797_MEMIF_DL1].dapm_routes = mt6797_memif_routes;
++	afe->sub_dais[MT6797_MEMIF_DL1].num_dapm_routes =
++		ARRAY_SIZE(mt6797_memif_routes);
++
++	/* init dai_driver and component_driver */
++	mtk_afe_combine_sub_dai(afe);
++
+ 	afe->mtk_afe_hardware = &mt6797_afe_hardware;
+ 	afe->memif_fs = mt6797_memif_fs;
+ 	afe->irq_fs = mt6797_irq_fs;
+@@ -815,7 +847,8 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 		goto err_pm_disable;
+ 	pm_runtime_get_sync(&pdev->dev);
+ 
+-	ret = devm_snd_soc_register_component(dev, &mtk_afe_pcm_platform,
++	/* register component */
++	ret = devm_snd_soc_register_component(dev, &mt6797_afe_component,
+ 					      NULL, 0);
+ 	if (ret) {
+ 		dev_warn(dev, "err_platform\n");
+@@ -824,8 +857,8 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
+ 
+ 	ret = devm_snd_soc_register_component(afe->dev,
+ 				     &mt6797_afe_pcm_dai_component,
+-				     mt6797_afe_pcm_dais,
+-				     ARRAY_SIZE(mt6797_afe_pcm_dais));
++				     afe->dai_drivers,
++				     afe->num_dai_drivers);
+ 	if (ret) {
+ 		dev_warn(dev, "err_dai_component\n");
+ 		goto err_pm_disable;
 -- 
 2.17.0
