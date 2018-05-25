@@ -1,184 +1,81 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v3 7/8] slimbus: messaging: add slim_prepare_txn() helper function
-Date: Fri, 25 May 2018 15:36:17 +0100
-Message-ID: <20180525143618.820-8-srinivas.kandagatla@linaro.org>
-References: <20180525143618.820-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180525143618.820-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ssm2602: Fix ADC powerup sequencing
+Date: Fri, 25 May 2018 15:52:45 +0100
+Message-ID: <20180525145245.GM4828@sirena.org.uk>
+References: <20180517133009.26079-1-m.felsch@pengutronix.de>
+ <CAL_JsqKhkVOYf+XEA3MYpK4JYfMrZTbHZtoXgaH=wCBRoU6cfQ@mail.gmail.com>
+ <1526640409.3948.5.camel@pengutronix.de>
+ <20180523165352.GA6187@rob-hp-laptop>
+ <20180525094724.3f4edofopk52i3v6@pengutronix.de>
+ <20180525102609.GK4828@sirena.org.uk>
+ <20180525114253.jj6akdazsbxqkbfu@pengutronix.de>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============4514041100903265689=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24056267679
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 16:52:48 +0200 (CEST)
+In-Reply-To: <20180525114253.jj6akdazsbxqkbfu@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, kernel@pengutronix.de, devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, Philipp Zabel <p.zabel@pengutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds slim_prepare_txn() to allow controllers to prepare
-controller specific transaction. If not each controllers will duplicate
-the same code from core.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/slimbus/messaging.c | 84 ++++++++++++++++++++++++++++++---------------
- drivers/slimbus/slimbus.h   |  2 ++
- 2 files changed, 58 insertions(+), 28 deletions(-)
+--===============4514041100903265689==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Jaerp9zHWz52Eeko"
+Content-Disposition: inline
 
-diff --git a/drivers/slimbus/messaging.c b/drivers/slimbus/messaging.c
-index e3605ed1c459..cfffa1dece61 100644
---- a/drivers/slimbus/messaging.c
-+++ b/drivers/slimbus/messaging.c
-@@ -55,6 +55,46 @@ void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 len)
- }
- EXPORT_SYMBOL_GPL(slim_msg_response);
- 
-+/**
-+ * slim_prepare_txn() - Prepare a transaction
-+ *
-+ * @ctrl: Controller handle
-+ * @txn: transaction to be prepared
-+ * @done: completion for transaction if msg does not have completion
-+ * @need_tid: flag to indicate if tid is required for this txn
-+ * note, user defined commands would need tid.
-+ *
-+ * Called by controller to prepare a transaction
-+ *
-+ * Return: zero on success and error code on failures.
-+ */
-+int slim_prepare_txn(struct slim_controller *ctrl, struct slim_msg_txn *txn,
-+		     struct completion *done, bool need_tid)
-+{
-+	unsigned long flags;
-+	int ret = 0;
-+
-+	txn->need_tid = need_tid;
-+	if (!need_tid)
-+		return 0;
-+
-+	spin_lock_irqsave(&ctrl->txn_lock, flags);
-+	ret = idr_alloc(&ctrl->tid_idr, txn, 0, SLIM_MAX_TIDS, GFP_ATOMIC);
-+	if (ret < 0)
-+		goto err;
-+
-+	txn->tid = ret;
-+	if (!txn->msg->comp)
-+		txn->comp = done;
-+	else
-+		txn->comp = txn->msg->comp;
-+
-+err:
-+	spin_unlock_irqrestore(&ctrl->txn_lock, flags);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(slim_prepare_txn);
-+
- /**
-  * slim_do_transfer() - Process a SLIMbus-messaging transaction
-  *
-@@ -70,10 +110,9 @@ EXPORT_SYMBOL_GPL(slim_msg_response);
-  */
- int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
- {
--	DECLARE_COMPLETION_ONSTACK(done);
--	bool need_tid = false, clk_pause_msg = false;
-+	bool clk_pause_msg = false;
- 	unsigned long flags;
--	int ret, tid, timeout;
-+	int ret, timeout;
- 
- 	/*
- 	 * do not vote for runtime-PM if the transactions are part of clock
-@@ -94,28 +133,8 @@ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
- 		}
- 	}
- 
--	need_tid = slim_tid_txn(txn->mt, txn->mc);
--
--	if (need_tid) {
--		spin_lock_irqsave(&ctrl->txn_lock, flags);
--		tid = idr_alloc(&ctrl->tid_idr, txn, 0,
--				SLIM_MAX_TIDS, GFP_ATOMIC);
--		txn->tid = tid;
--
--		if (!txn->msg->comp)
--			txn->comp = &done;
--		else
--			txn->comp = txn->comp;
--
--		spin_unlock_irqrestore(&ctrl->txn_lock, flags);
--
--		if (tid < 0)
--			return tid;
--	}
--
- 	ret = ctrl->xfer_msg(ctrl, txn);
--
--	if (ret && need_tid && !txn->msg->comp) {
-+	if (!ret && txn->need_tid && !txn->msg->comp) {
- 		unsigned long ms = txn->rl + HZ;
- 
- 		timeout = wait_for_completion_timeout(txn->comp,
-@@ -123,7 +142,7 @@ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
- 		if (!timeout) {
- 			ret = -ETIMEDOUT;
- 			spin_lock_irqsave(&ctrl->txn_lock, flags);
--			idr_remove(&ctrl->tid_idr, tid);
-+			idr_remove(&ctrl->tid_idr, txn->tid);
- 			spin_unlock_irqrestore(&ctrl->txn_lock, flags);
- 		}
- 	}
-@@ -133,13 +152,14 @@ int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn)
- 			txn->mt, txn->mc, txn->la, ret);
- 
- slim_xfer_err:
--	if (!clk_pause_msg && (!need_tid  || ret == -ETIMEDOUT)) {
-+	if (!clk_pause_msg && (!txn->need_tid  || ret == -ETIMEDOUT)) {
- 		/*
- 		 * remove runtime-pm vote if this was TX only, or
- 		 * if there was error during this transaction
- 		 */
- 		pm_runtime_mark_last_busy(ctrl->dev);
- 		pm_runtime_put_autosuspend(ctrl->dev);
-+
- 	}
- 	return ret;
- }
-@@ -205,6 +225,8 @@ int slim_xfer_msg(struct slim_device *sbdev, struct slim_val_inf *msg,
- 	DEFINE_SLIM_LDEST_TXN(txn_stack, mc, 6, sbdev->laddr, msg);
- 	struct slim_msg_txn *txn = &txn_stack;
- 	struct slim_controller *ctrl = sbdev->ctrl;
-+	DECLARE_COMPLETION_ONSTACK(done);
-+	bool need_tid = false;
- 	int ret;
- 	u16 sl;
- 
-@@ -232,10 +254,16 @@ int slim_xfer_msg(struct slim_device *sbdev, struct slim_val_inf *msg,
- 		break;
- 	}
- 
--	if (slim_tid_txn(txn->mt, txn->mc))
-+	if (slim_tid_txn(txn->mt, txn->mc)) {
- 		txn->rl++;
-+		need_tid = true;
-+	}
- 
--	return slim_do_transfer(ctrl, txn);
-+	ret = slim_prepare_txn(ctrl, txn, &done, need_tid);
-+	if (!ret)
-+		return slim_do_transfer(ctrl, txn);
-+
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(slim_xfer_msg);
- 
-diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
-index 3ec5a85fba8e..8266e53535cb 100644
---- a/drivers/slimbus/slimbus.h
-+++ b/drivers/slimbus/slimbus.h
-@@ -242,6 +242,8 @@ int slim_unregister_controller(struct slim_controller *ctrl);
- void slim_msg_response(struct slim_controller *ctrl, u8 *reply, u8 tid, u8 l);
- int slim_do_transfer(struct slim_controller *ctrl, struct slim_msg_txn *txn);
- int slim_ctrl_clk_pause(struct slim_controller *ctrl, bool wakeup, u8 restart);
-+int slim_prepare_txn(struct slim_controller *ctrl, struct slim_msg_txn *txn,
-+		     struct completion *done, bool need_tid);
- 
- static inline bool slim_tid_txn(u8 mt, u8 mc)
- {
--- 
-2.16.2
+
+--Jaerp9zHWz52Eeko
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, May 25, 2018 at 01:42:53PM +0200, Marco Felsch wrote:
+
+> Also the formula for the delay time (t =3D C =D7 25,000/3.5) depends only=
+ on
+> the capacity size.
+
+Why not just have the user specify the capacitance of the capacitor on
+the rail which they can directly read from the schematic rather than
+forcing them to do the calcualtion?  That seems a bit clearer and more
+user friendly (plus if someone decides the spec was wrong it's easier to
+roll out fixes).
+
+--Jaerp9zHWz52Eeko
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsIIzwACgkQJNaLcl1U
+h9AMMwf5AbfhApAIwtbE6x7JfKx7Wb9e8ACw+0X+hvlLm5Lp4EcU5Q2KfXBhvh7Y
+VOs+lfHPBBXW5+R2DRc3ECsRgKrpuTlTXyF7w0ABUJgnppB+kwWLOuRgIkmpyrZH
+IJV60dG9BrdvNCNPdA1XX4AdJPPdhJbQrRw39qOgd5kI4v4EiM+ESlu1eadi8H1/
+Qxx5F6VcB/+d60RJ4BEdoSGY+cu/BXCzqRUSyzwzB2YBPKucnqp0aTF+80CZk4yM
+o7MobuMK7NQvhksItdFZklk7gQUOYz2MzMOVIEbiR23AEUvf9YFkQ9yEZwi+au+j
+lwgdr2tmhbvlAW26DWdRowNZHyYacg==
+=og3K
+-----END PGP SIGNATURE-----
+
+--Jaerp9zHWz52Eeko--
+
+--===============4514041100903265689==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4514041100903265689==--
