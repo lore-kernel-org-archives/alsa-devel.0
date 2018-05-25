@@ -1,142 +1,121 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: [PATCH v2 13/13] ARM: pxa: change SSP DMA channels allocation
-Date: Fri, 25 May 2018 09:56:13 +0200
-Message-ID: <7e50d21c-c563-156f-d5d3-cd977af0e9d0@zonque.org>
-References: <20180524070703.11901-1-robert.jarzmik@free.fr>
- <20180524070703.11901-14-robert.jarzmik@free.fr>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH] ASoC: Intel: kbl: Move codec sysclk config
+ to	codec_init function
+Date: Fri, 25 May 2018 08:17:10 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1EEDC9@SW-EX-MBX01.diasemi.com>
+References: <1527056028-12552-1-git-send-email-mac.chiang@intel.com>
+ <1527234447-1384-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180524070703.11901-14-robert.jarzmik@free.fr>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail1.bemta26.messagelabs.com (mail1.bemta26.messagelabs.com
+ [85.158.142.114])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EDF1267646
+ for <alsa-devel@alsa-project.org>; Fri, 25 May 2018 10:17:12 +0200 (CEST)
+In-Reply-To: <1527234447-1384-1-git-send-email-mac.chiang@intel.com>
 Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, dmaengine@vger.kernel.org, linux-media@vger.kernel.org, linux-mmc@vger.kernel.org, linux-mtd@lists.infradead.org, netdev@vger.kernel.org, alsa-devel@alsa-project.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "mac.chiang@intel.com" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thursday, May 24, 2018 09:07 AM, Robert Jarzmik wrote:
-> Now the dma_slave_map is available for PXA architecture, switch the SSP
-> device to it.
+On 25 May 2018 08:47, Mac Chiang wrote:
+
+You really need to run 'getmaintainers.pl' on this patch. If you want a
+maintainer to see your change, the e-mail has to be directly addressed to them
+as well as CC'd to the mailing list, otherwise chances are they won't see it.
+
+Also, as this is the second iteration of the patch, the title should be
+versioned, i.e. "[PATCH v2] ..."
+
+> From: Mac Chiang <mac.chiang@intel.com>
 > 
-> This specifically means that :
-> - for platform data based machines, the DMA requestor channels are
->    extracted from the slave map, where pxa-ssp-dai.<N> is a 1-1 match to
->    ssp.<N>, and the channels are either "rx" or "tx".
+> fix an issue on KBL which applied the merged solution from
+> broonie's tree
+> commit fd0f237572ad
+> ("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
 > 
-> - for device tree platforms, the dma node should be hooked into the
->    pxa2xx-ac97 or pxa-ssp-dai node.
+> The MCLK for DA7219 does not change in this platform, but is
+> currently being configured everytime as part of the platform_clock
+> event handler for DAPM. The upshot of this is that we have
+> unnecessary calls to this function, and it also means that if
+> a stream hasn't yet been started, DA7219 driver does not have the
+> correct MCLK rates programmed and so the HP detection feature does
+> not operate as expected.
 > 
-> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> This patch rectifies this issue by moving the sysclk call to
+> codec_init function so it's only called once at initialisation.
+> 
+> Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+> Acked-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+> Signed-off-by: Mark Brown <broonie@kernel.org>
+> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
 
-Acked-by: Daniel Mack <daniel@zonque.org>
+As Pierre mentioned yesterday, this is not an existing patch being reapplied, so
+you cannot assume people's 'Signed-off-by' on this. Mark certainly won't add his
+'Signed-off-by' tag until he merges it into his tree. Also, has Sathya actually
+seen this actual change? If not how can you add his 'Acked-by' tag?
 
-
-We should, however, merge what's left of this management glue code into 
-the users of it, so the dma related properties can be put in the right 
-devicetree node.
-
-I'll prepare a patch for that for 4.18. This is a good preparation for 
-this round though.
-
-
-Thanks,
-Daniel
-
+If you can make this patch format in-line with normal expectations, then the
+code below looks ok to me.
 
 > ---
-> Since v1: Removed channel names from platform_data
-> ---
->   arch/arm/plat-pxa/ssp.c    | 47 ----------------------------------------------
->   include/linux/pxa2xx_ssp.h |  2 --
->   sound/soc/pxa/pxa-ssp.c    |  5 ++---
->   3 files changed, 2 insertions(+), 52 deletions(-)
+>  sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
 > 
-> diff --git a/arch/arm/plat-pxa/ssp.c b/arch/arm/plat-pxa/ssp.c
-> index ba13f793fbce..ed36dcab80f1 100644
-> --- a/arch/arm/plat-pxa/ssp.c
-> +++ b/arch/arm/plat-pxa/ssp.c
-> @@ -127,53 +127,6 @@ static int pxa_ssp_probe(struct platform_device *pdev)
->   	if (IS_ERR(ssp->clk))
->   		return PTR_ERR(ssp->clk);
->   
-> -	if (dev->of_node) {
-> -		struct of_phandle_args dma_spec;
-> -		struct device_node *np = dev->of_node;
-> -		int ret;
-> -
-> -		/*
-> -		 * FIXME: we should allocate the DMA channel from this
-> -		 * context and pass the channel down to the ssp users.
-> -		 * For now, we lookup the rx and tx indices manually
-> -		 */
-> -
-> -		/* rx */
-> -		ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells",
-> -						 0, &dma_spec);
-> -
-> -		if (ret) {
-> -			dev_err(dev, "Can't parse dmas property\n");
-> -			return -ENODEV;
-> -		}
-> -		ssp->drcmr_rx = dma_spec.args[0];
-> -		of_node_put(dma_spec.np);
-> -
-> -		/* tx */
-> -		ret = of_parse_phandle_with_args(np, "dmas", "#dma-cells",
-> -						 1, &dma_spec);
-> -		if (ret) {
-> -			dev_err(dev, "Can't parse dmas property\n");
-> -			return -ENODEV;
-> -		}
-> -		ssp->drcmr_tx = dma_spec.args[0];
-> -		of_node_put(dma_spec.np);
-> -	} else {
-> -		res = platform_get_resource(pdev, IORESOURCE_DMA, 0);
-> -		if (res == NULL) {
-> -			dev_err(dev, "no SSP RX DRCMR defined\n");
-> -			return -ENODEV;
-> -		}
-> -		ssp->drcmr_rx = res->start;
-> -
-> -		res = platform_get_resource(pdev, IORESOURCE_DMA, 1);
-> -		if (res == NULL) {
-> -			dev_err(dev, "no SSP TX DRCMR defined\n");
-> -			return -ENODEV;
-> -		}
-> -		ssp->drcmr_tx = res->start;
+> diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> index c332a32..ad3029d 100644
+> --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> @@ -66,14 +66,6 @@ static int platform_clock_control(struct
+> snd_soc_dapm_widget *w,
+>  		return -EIO;
+>  	}
+> 
+> -	/* Configure sysclk for codec */
+> -	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+> -				     SND_SOC_CLOCK_IN);
+> -	if (ret) {
+> -		dev_err(card->dev, "can't set codec sysclk configuration\n");
+> -		return ret;
 > -	}
 > -
->   	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
->   	if (res == NULL) {
->   		dev_err(dev, "no memory resource defined\n");
-> diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
-> index 8461b18e4608..03a7ca46735b 100644
-> --- a/include/linux/pxa2xx_ssp.h
-> +++ b/include/linux/pxa2xx_ssp.h
-> @@ -212,8 +212,6 @@ struct ssp_device {
->   	int		type;
->   	int		use_count;
->   	int		irq;
-> -	int		drcmr_rx;
-> -	int		drcmr_tx;
->   
->   	struct device_node	*of_node;
->   };
-> diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-> index 0291c7cb64eb..e09368d89bbc 100644
-> --- a/sound/soc/pxa/pxa-ssp.c
-> +++ b/sound/soc/pxa/pxa-ssp.c
-> @@ -104,9 +104,8 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
->   	dma = kzalloc(sizeof(struct snd_dmaengine_dai_dma_data), GFP_KERNEL);
->   	if (!dma)
->   		return -ENOMEM;
-> -
-> -	dma->filter_data = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
-> -				&ssp->drcmr_tx : &ssp->drcmr_rx;
-> +	dma->chan_name = substream->stream == SNDRV_PCM_STREAM_PLAYBACK ?
-> +		"tx" : "rx";
->   
->   	snd_soc_dai_set_dma_data(cpu_dai, substream, dma);
->   
+>  	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+>  		ret = snd_soc_dai_set_pll(codec_dai, 0,
+>  				     DA7219_SYSCLK_MCLK, 0, 0);
+> @@ -170,9 +162,18 @@ static int kabylake_da7219_codec_init(struct
+> snd_soc_pcm_runtime *rtd)
+>  {
+>  	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+>  	struct snd_soc_component *component = rtd->codec_dai->component;
+> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>  	struct snd_soc_jack *jack;
+>  	int ret;
 > 
+> +	/* Configure sysclk for codec */
+> +	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+> +						SND_SOC_CLOCK_IN);
+> +	if (ret) {
+> +		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
+> +		return ret;
+> +	}
+> +
+>  	/*
+>  	 * Headset buttons map to the google Reference headset.
+>  	 * These can be configured by userspace.
+> --
+> 2.7.4
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
