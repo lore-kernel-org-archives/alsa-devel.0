@@ -1,20 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/3] ALSA: usb-audio: Avoid lowlevel device
-	object
-Date: Mon, 28 May 2018 11:58:19 +0200
-Message-ID: <20180528095821.28710-2-tiwai@suse.de>
-References: <20180528095821.28710-1-tiwai@suse.de>
+Subject: [PATCH] ALSA: usb-audio: Simplify PCM open/close
+	callbacks
+Date: Sun, 27 May 2018 14:17:24 +0200
+Message-ID: <20180527121724.12035-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2573126763F
- for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 17:53:59 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D92612676AC
+ for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 17:54:06 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 61DC5AE40
- for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 15:53:58 +0000 (UTC)
-In-Reply-To: <20180528095821.28710-1-tiwai@suse.de>
+ by mx2.suse.de (Postfix) with ESMTP id AC518AC2E
+ for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 15:54:05 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,88 +25,90 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Simplify the device management by replacing the lowlevel device object
-allocation with the card->private_data.  Nowadays there is almost no
-advantage by the lowlevel device, and with card->private_data, the
-code becomes cleaner.
+The stream direction in open and close callbacks can be retrieved from
+substream->direction, hence we don't have to stick with the unique PCM
+ops hard-coded for each direction.  Rewrite the common open/close
+callback functions.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/card.c | 28 +++++-----------------------
- 1 file changed, 5 insertions(+), 23 deletions(-)
+ sound/usb/pcm.c | 34 ++++++++--------------------------
+ 1 file changed, 8 insertions(+), 26 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index f6c3c1cd591e..615ee1e92de9 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -342,8 +342,9 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
-  *
-  */
- 
--static int snd_usb_audio_free(struct snd_usb_audio *chip)
-+static void snd_usb_audio_free(struct snd_card *card)
- {
-+	struct snd_usb_audio *chip = card->private_data;
- 	struct snd_usb_endpoint *ep, *n;
- 
- 	list_for_each_entry_safe(ep, n, &chip->ep_list, list)
-@@ -353,13 +354,6 @@ static int snd_usb_audio_free(struct snd_usb_audio *chip)
- 	if (!atomic_read(&chip->shutdown))
- 		dev_set_drvdata(&chip->dev->dev, NULL);
- 	kfree(chip);
--	return 0;
--}
--
--static int snd_usb_audio_dev_free(struct snd_device *device)
--{
--	struct snd_usb_audio *chip = device->device_data;
--	return snd_usb_audio_free(chip);
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 20bed1c7a312..d5b9c30d3bb1 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -1227,8 +1227,9 @@ static int setup_hw_info(struct snd_pcm_runtime *runtime, struct snd_usb_substre
+ 	return err;
  }
  
- static void usb_audio_make_shortname(struct usb_device *dev,
-@@ -459,9 +453,6 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	struct snd_usb_audio *chip;
- 	int err;
- 	char component[14];
--	static struct snd_device_ops ops = {
--		.dev_free =	snd_usb_audio_dev_free,
--	};
+-static int snd_usb_pcm_open(struct snd_pcm_substream *substream, int direction)
++static int snd_usb_pcm_open(struct snd_pcm_substream *substream)
+ {
++	int direction = substream->stream;
+ 	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct snd_usb_substream *subs = &as->substream[direction];
+@@ -1248,8 +1249,9 @@ static int snd_usb_pcm_open(struct snd_pcm_substream *substream, int direction)
+ 	return setup_hw_info(runtime, subs);
+ }
  
- 	*rchip = NULL;
+-static int snd_usb_pcm_close(struct snd_pcm_substream *substream, int direction)
++static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+ {
++	int direction = substream->stream;
+ 	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+ 	struct snd_usb_substream *subs = &as->substream[direction];
  
-@@ -479,18 +470,13 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	}
+@@ -1611,26 +1613,6 @@ static void retire_playback_urb(struct snd_usb_substream *subs,
+ 	spin_unlock_irqrestore(&subs->lock, flags);
+ }
  
- 	err = snd_card_new(&intf->dev, index[idx], id[idx], THIS_MODULE,
--			   0, &card);
-+			   sizeof(*chip), &card);
- 	if (err < 0) {
- 		dev_err(&dev->dev, "cannot create card instance %d\n", idx);
- 		return err;
- 	}
- 
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (! chip) {
--		snd_card_free(card);
--		return -ENOMEM;
--	}
+-static int snd_usb_playback_open(struct snd_pcm_substream *substream)
+-{
+-	return snd_usb_pcm_open(substream, SNDRV_PCM_STREAM_PLAYBACK);
+-}
 -
-+	chip = card->private_data;
- 	mutex_init(&chip->mutex);
- 	init_waitqueue_head(&chip->shutdown_wait);
- 	chip->index = idx;
-@@ -508,11 +494,7 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	INIT_LIST_HEAD(&chip->midi_list);
- 	INIT_LIST_HEAD(&chip->mixer_list);
+-static int snd_usb_playback_close(struct snd_pcm_substream *substream)
+-{
+-	return snd_usb_pcm_close(substream, SNDRV_PCM_STREAM_PLAYBACK);
+-}
+-
+-static int snd_usb_capture_open(struct snd_pcm_substream *substream)
+-{
+-	return snd_usb_pcm_open(substream, SNDRV_PCM_STREAM_CAPTURE);
+-}
+-
+-static int snd_usb_capture_close(struct snd_pcm_substream *substream)
+-{
+-	return snd_usb_pcm_close(substream, SNDRV_PCM_STREAM_CAPTURE);
+-}
+-
+ static int snd_usb_substream_playback_trigger(struct snd_pcm_substream *substream,
+ 					      int cmd)
+ {
+@@ -1692,8 +1674,8 @@ static int snd_usb_substream_capture_trigger(struct snd_pcm_substream *substream
+ }
  
--	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
--		snd_usb_audio_free(chip);
--		snd_card_free(card);
--		return err;
--	}
-+	card->private_free = snd_usb_audio_free;
+ static const struct snd_pcm_ops snd_usb_playback_ops = {
+-	.open =		snd_usb_playback_open,
+-	.close =	snd_usb_playback_close,
++	.open =		snd_usb_pcm_open,
++	.close =	snd_usb_pcm_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+ 	.hw_params =	snd_usb_hw_params,
+ 	.hw_free =	snd_usb_hw_free,
+@@ -1705,8 +1687,8 @@ static const struct snd_pcm_ops snd_usb_playback_ops = {
+ };
  
- 	strcpy(card->driver, "USB-Audio");
- 	sprintf(component, "USB%04x:%04x",
+ static const struct snd_pcm_ops snd_usb_capture_ops = {
+-	.open =		snd_usb_capture_open,
+-	.close =	snd_usb_capture_close,
++	.open =		snd_usb_pcm_open,
++	.close =	snd_usb_pcm_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+ 	.hw_params =	snd_usb_hw_params,
+ 	.hw_free =	snd_usb_hw_free,
 -- 
 2.16.3
