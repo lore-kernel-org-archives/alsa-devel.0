@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2] ALSA: usb-audio: Avoid lowlevel device
-	object
-Date: Mon, 28 May 2018 15:56:52 +0200
-Message-ID: <20180528135652.19465-1-tiwai@suse.de>
+Subject: [PATCH] ALSA: aloop: Reduced duplicated PCM ops
+	definition
+Date: Sun, 27 May 2018 14:17:12 +0200
+Message-ID: <20180527121712.11982-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B10F0267252
- for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 17:42:18 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5B5ED267252
+ for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 17:42:29 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CC52DACFC
- for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 15:42:17 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id 1E1D0AD67
+ for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 15:42:28 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,92 +25,50 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Simplify the device management by replacing the lowlevel device object
-allocation with the card->private_data.  Nowadays there is almost no
-advantage by the lowlevel device, and with card->private_data, the
-code becomes cleaner.
+The PCM ops defined for playback and capture are identical.  Just use
+the single one for both.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
-v1->v2: moved out of trivial series, fix invalid kfree()
+ sound/drivers/aloop.c | 19 +++----------------
+ 1 file changed, 3 insertions(+), 16 deletions(-)
 
- sound/usb/card.c | 30 +++++-------------------------
- 1 file changed, 5 insertions(+), 25 deletions(-)
-
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index 54c77d407a6d..c80224807e8f 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -342,8 +342,9 @@ static int snd_usb_create_streams(struct snd_usb_audio *chip, int ctrlif)
-  *
-  */
- 
--static int snd_usb_audio_free(struct snd_usb_audio *chip)
-+static void snd_usb_audio_free(struct snd_card *card)
- {
-+	struct snd_usb_audio *chip = card->private_data;
- 	struct snd_usb_endpoint *ep, *n;
- 
- 	list_for_each_entry_safe(ep, n, &chip->ep_list, list)
-@@ -352,14 +353,6 @@ static int snd_usb_audio_free(struct snd_usb_audio *chip)
- 	mutex_destroy(&chip->mutex);
- 	if (!atomic_read(&chip->shutdown))
- 		dev_set_drvdata(&chip->dev->dev, NULL);
--	kfree(chip);
--	return 0;
--}
--
--static int snd_usb_audio_dev_free(struct snd_device *device)
--{
--	struct snd_usb_audio *chip = device->device_data;
--	return snd_usb_audio_free(chip);
+diff --git a/sound/drivers/aloop.c b/sound/drivers/aloop.c
+index eab7f594ebe7..78a2fdc38531 100644
+--- a/sound/drivers/aloop.c
++++ b/sound/drivers/aloop.c
+@@ -768,20 +768,7 @@ static int loopback_close(struct snd_pcm_substream *substream)
+ 	return 0;
  }
  
- static void usb_audio_make_shortname(struct usb_device *dev,
-@@ -459,9 +452,6 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	struct snd_usb_audio *chip;
- 	int err;
- 	char component[14];
--	static struct snd_device_ops ops = {
--		.dev_free =	snd_usb_audio_dev_free,
--	};
- 
- 	*rchip = NULL;
- 
-@@ -479,18 +469,13 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	}
- 
- 	err = snd_card_new(&intf->dev, index[idx], id[idx], THIS_MODULE,
--			   0, &card);
-+			   sizeof(*chip), &card);
- 	if (err < 0) {
- 		dev_err(&dev->dev, "cannot create card instance %d\n", idx);
- 		return err;
- 	}
- 
--	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
--	if (! chip) {
--		snd_card_free(card);
--		return -ENOMEM;
--	}
+-static const struct snd_pcm_ops loopback_playback_ops = {
+-	.open =		loopback_open,
+-	.close =	loopback_close,
+-	.ioctl =	snd_pcm_lib_ioctl,
+-	.hw_params =	loopback_hw_params,
+-	.hw_free =	loopback_hw_free,
+-	.prepare =	loopback_prepare,
+-	.trigger =	loopback_trigger,
+-	.pointer =	loopback_pointer,
+-	.page =		snd_pcm_lib_get_vmalloc_page,
+-	.mmap =		snd_pcm_lib_mmap_vmalloc,
+-};
 -
-+	chip = card->private_data;
- 	mutex_init(&chip->mutex);
- 	init_waitqueue_head(&chip->shutdown_wait);
- 	chip->index = idx;
-@@ -508,12 +493,7 @@ static int snd_usb_audio_create(struct usb_interface *intf,
- 	INIT_LIST_HEAD(&chip->midi_list);
- 	INIT_LIST_HEAD(&chip->mixer_list);
+-static const struct snd_pcm_ops loopback_capture_ops = {
++static const struct snd_pcm_ops loopback_pcm_ops = {
+ 	.open =		loopback_open,
+ 	.close =	loopback_close,
+ 	.ioctl =	snd_pcm_lib_ioctl,
+@@ -804,8 +791,8 @@ static int loopback_pcm_new(struct loopback *loopback,
+ 			  substreams, substreams, &pcm);
+ 	if (err < 0)
+ 		return err;
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &loopback_playback_ops);
+-	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &loopback_capture_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &loopback_pcm_ops);
++	snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_CAPTURE, &loopback_pcm_ops);
  
--	err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops);
--	if (err < 0) {
--		snd_usb_audio_free(chip);
--		snd_card_free(card);
--		return err;
--	}
-+	card->private_free = snd_usb_audio_free;
- 
- 	strcpy(card->driver, "USB-Audio");
- 	sprintf(component, "USB%04x:%04x",
+ 	pcm->private_data = loopback;
+ 	pcm->info_flags = 0;
 -- 
 2.16.3
