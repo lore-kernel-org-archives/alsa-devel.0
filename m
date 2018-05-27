@@ -1,65 +1,55 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH][next] ALSA: xen-front: fix unsigned error
-	check on return from to_sndif_format
-Date: Sun, 27 May 2018 22:32:19 +0100
-Message-ID: <20180527213219.24182-1-colin.king@canonical.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH][next] ALSA: xen-front: remove redundant error check on
+ ret
+Date: Mon, 28 May 2018 07:42:12 +0900
+Message-ID: <ee539e2d-568e-4bfa-a4aa-4a9b39bc1bd8@sakamocchi.jp>
+References: <20180527212312.23997-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 00241267255
- for <alsa-devel@alsa-project.org>; Sun, 27 May 2018 23:32:26 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180527212312.23997-1-colin.king@canonical.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Colin King <colin.king@canonical.com>, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+Hi,
 
-The negative error return from the call to to_sndif_format is being
-assigned to an unsigned 8 bit integer and hence the check for a negative
-value is always going to be false.  Fix this by using ret as the error
-return and hence the negative error can be detected and assign
-the u8 sndif_format to ret if there is no error.
+On May 28 2018 06:23, Colin King wrote:
+> From: Colin Ian King <colin.king@canonical.com>
+> 
+> The error for a -ve value in ret is redundant as all previous
+> assignments to ret have an associated -ve check and hence it
+> is impossible for ret to be less that zero at the point of the
+> check.  Remove this redundant error check.
+> 
+> Detected by CoveritScan, CID#1469407 ("Logically Dead code")
+> 
+> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> ---
+>   sound/xen/xen_snd_front_evtchnl.c | 2 --
+>   1 file changed, 2 deletions(-)
+> 
+> diff --git a/sound/xen/xen_snd_front_evtchnl.c b/sound/xen/xen_snd_front_evtchnl.c
+> index d70a62e7f910..102d6e096cc8 100644
+> --- a/sound/xen/xen_snd_front_evtchnl.c
+> +++ b/sound/xen/xen_snd_front_evtchnl.c
+> @@ -351,8 +351,6 @@ int xen_snd_front_evtchnl_create_all(struct xen_snd_front_info *front_info,
+>   			}
+>   		}
+>   	}
+> -	if (ret < 0)
+> -		goto fail;
+>   
+>   	front_info->num_evt_pairs = num_streams;
+>   	return 0;
 
-Detected by CoverityScan, CID#1469385 ("Unsigned compared against 0")
+Yep. All branches for error path on the nested for loop have goto 
+statement, thus no need to check error outer the loop.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- sound/xen/xen_snd_front_alsa.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 
-diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
-index 5041f83e98d2..5a2bd70a2fa1 100644
---- a/sound/xen/xen_snd_front_alsa.c
-+++ b/sound/xen/xen_snd_front_alsa.c
-@@ -466,13 +466,14 @@ static int alsa_prepare(struct snd_pcm_substream *substream)
- 		u8 sndif_format;
- 		int ret;
- 
--		sndif_format = to_sndif_format(runtime->format);
--		if (sndif_format < 0) {
-+		ret = to_sndif_format(runtime->format);
-+		if (ret < 0) {
- 			dev_err(&stream->front_info->xb_dev->dev,
- 				"Unsupported sample format: %d\n",
- 				runtime->format);
--			return sndif_format;
-+			return ret;
- 		}
-+		sndif_format = ret;
- 
- 		ret = xen_snd_front_stream_prepare(&stream->evt_pair->req,
- 						   &stream->sh_buf,
--- 
-2.17.0
+
+Takashi Sakamoto
