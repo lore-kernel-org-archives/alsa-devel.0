@@ -1,7 +1,7 @@
 From: Daniel Danzberger <daniel@dd-wrt.com>
-Subject: Re: out of sync capture samples with MMAP on MIPS
-Date: Sun, 27 May 2018 11:34:07 +0200
-Message-ID: <1a67f8d2-92b9-49df-849d-e7e436b828a1@dd-wrt.com>
+Subject: out of sync capture samples with MMAP on MIPS
+Date: Sun, 27 May 2018 13:17:58 +0200
+Message-ID: <9e34bcc3-cc8f-d651-6fc1-b81583e5c5b4@dd-wrt.com>
 References: <e89758e0-b3db-c17c-71f5-e7acfbe76845@dd-wrt.com>
  <s5hsh6gnczj.wl-tiwai@suse.de>
 Mime-Version: 1.0
@@ -9,8 +9,8 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from webmail.newmedia-net.de (webmail.newmedia-net.de [185.84.6.166])
- by alsa0.perex.cz (Postfix) with ESMTP id 78615267172
- for <alsa-devel@alsa-project.org>; Sun, 27 May 2018 11:34:12 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F4E7267172
+ for <alsa-devel@alsa-project.org>; Sun, 27 May 2018 13:18:02 +0200 (CEST)
 In-Reply-To: <s5hsh6gnczj.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -34,4 +34,5 @@ coherency issue on ARM.
 > 
 > Does the patch below help?  Not sure whether it works on ARM at all,
 > as I've tested only on x86.
->Your patch works. I cannot reproduce the issue anymore. Thanks.
+
+Your patch works. I cannot reproduce the issue anymore. Thanks.
