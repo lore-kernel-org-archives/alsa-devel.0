@@ -1,187 +1,89 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [v2] ASoC: AMD: make channel 1 dma as circular
-Date: Mon, 28 May 2018 11:48:22 +0800
-Message-ID: <1527479306-12658-1-git-send-email-akshu.agrawal@amd.com>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: topology: Improve backwards
+ compatibility with v4 topology files
+Date: Mon, 28 May 2018 11:33:47 +0530
+Message-ID: <20180528060347.GA5666@vkoul-mobl>
+References: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
+ <20180525133323.GI3116@snc-desk>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180525133323.GI3116@snc-desk>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: djkurtz@chromium.org, akshu.agrawal@amd.com, Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC
-        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+To: Shreyas NC <shreyas.nc@intel.com>
+Cc: Guenter Roeck <linux@roeck-us.net>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-channel 1: SYSMEM<->ACP
-channel 2: ACP<->I2S
-Instead of waiting on period interrupt of ch 2 and then starting
-dma on ch1, we make ch1 dma as circular.
-This removes dependency of period granularity on hw pointer.
+On 25-05-18, 19:03, Shreyas NC wrote:
+> Adding Vinod to help review as well..
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
-Tested-by: Daniel Kurtz <djkurtz@chromium.org>
----
-v2: Fixed kbuild error
+Thanks Shreyas,
 
- sound/soc/amd/acp-pcm-dma.c | 74 ++++++---------------------------------------
- 1 file changed, 10 insertions(+), 64 deletions(-)
+> > Commit dc31e741db49 ("ASoC: topology: ABI - Add the types for BE
+> > DAI") introduced sound topology files version 5. Initially, this
+> > change made the topology code incompatible with v4 topology files.
+> > Backwards compatibility with v4 configuration files was
+> > subsequently added with commit 288b8da7e992 ("ASoC: topology:
+> > Support topology file of ABI v4").
+> > 
+> > Unfortunately, backwards compatibility was never fully implemented.
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index ac32dea..7720384 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -337,8 +337,7 @@ static void config_acp_dma(void __iomem *acp_mmio,
- }
- 
- /* Start a given DMA channel transfer */
--static void acp_dma_start(void __iomem *acp_mmio,
--			  u16 ch_num, bool is_circular)
-+static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
- {
- 	u32 dma_ctrl;
- 
-@@ -369,11 +368,8 @@ static void acp_dma_start(void __iomem *acp_mmio,
- 		break;
- 	}
- 
--	/* enable  for ACP SRAM to/from I2S DMA channel */
--	if (is_circular == true)
--		dma_ctrl |= ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
--	else
--		dma_ctrl &= ~ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
-+	/* circular for both DMA channel */
-+	dma_ctrl |= ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
- 
- 	acp_reg_write(dma_ctrl, acp_mmio, mmACP_DMA_CNTL_0 + ch_num);
- }
-@@ -617,7 +613,6 @@ static int acp_deinit(void __iomem *acp_mmio)
- /* ACP DMA irq handler routine for playback, capture usecases */
- static irqreturn_t dma_irq_handler(int irq, void *arg)
- {
--	u16 dscr_idx;
- 	u32 intr_flag, ext_intr_status;
- 	struct audio_drv_data *irq_data;
- 	void __iomem *acp_mmio;
-@@ -634,33 +629,13 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 
- 	if ((intr_flag & BIT(ACP_TO_I2S_DMA_CH_NUM)) != 0) {
- 		valid_irq = true;
--		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_13) ==
--				PLAYBACK_START_DMA_DESCR_CH13)
--			dscr_idx = PLAYBACK_END_DMA_DESCR_CH12;
--		else
--			dscr_idx = PLAYBACK_START_DMA_DESCR_CH12;
--		config_acp_dma_channel(acp_mmio, SYSRAM_TO_ACP_CH_NUM, dscr_idx,
--				       1, 0);
--		acp_dma_start(acp_mmio, SYSRAM_TO_ACP_CH_NUM, false);
--
- 		snd_pcm_period_elapsed(irq_data->play_i2ssp_stream);
--
- 		acp_reg_write((intr_flag & BIT(ACP_TO_I2S_DMA_CH_NUM)) << 16,
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
- 
- 	if ((intr_flag & BIT(ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM)) != 0) {
- 		valid_irq = true;
--		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_9) ==
--			PLAYBACK_START_DMA_DESCR_CH9)
--			dscr_idx = PLAYBACK_END_DMA_DESCR_CH8;
--		else
--			dscr_idx = PLAYBACK_START_DMA_DESCR_CH8;
--		config_acp_dma_channel(acp_mmio,
--				       SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM,
--				       dscr_idx, 1, 0);
--		acp_dma_start(acp_mmio, SYSRAM_TO_ACP_BT_INSTANCE_CH_NUM,
--			      false);
- 		snd_pcm_period_elapsed(irq_data->play_i2sbt_stream);
- 		acp_reg_write((intr_flag &
- 			      BIT(ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM)) << 16,
-@@ -669,38 +644,20 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 
- 	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
- 		valid_irq = true;
--		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_15) ==
--				CAPTURE_START_DMA_DESCR_CH15)
--			dscr_idx = CAPTURE_END_DMA_DESCR_CH14;
--		else
--			dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
--		config_acp_dma_channel(acp_mmio, ACP_TO_SYSRAM_CH_NUM, dscr_idx,
--				       1, 0);
--		acp_dma_start(acp_mmio, ACP_TO_SYSRAM_CH_NUM, false);
--
-+		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
- 		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) << 16,
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
- 
- 	if ((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) != 0) {
- 		valid_irq = true;
--		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
- 		acp_reg_write((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) << 16,
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
- 
- 	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
- 		valid_irq = true;
--		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_11) ==
--			CAPTURE_START_DMA_DESCR_CH11)
--			dscr_idx = CAPTURE_END_DMA_DESCR_CH10;
--		else
--			dscr_idx = CAPTURE_START_DMA_DESCR_CH10;
--		config_acp_dma_channel(acp_mmio,
--				       ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM,
--				       dscr_idx, 1, 0);
--		acp_dma_start(acp_mmio, ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM,
--			      false);
-+		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
- 		acp_reg_write((intr_flag &
- 			      BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
-@@ -708,7 +665,6 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 
- 	if ((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) != 0) {
- 		valid_irq = true;
--		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
- 		acp_reg_write((intr_flag &
- 			      BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) << 16,
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
-@@ -1015,14 +971,10 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
- static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- {
- 	int ret;
--	u32 loops = 4000;
- 	u64 bytescount = 0;
- 
- 	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct snd_soc_pcm_runtime *prtd = substream->private_data;
- 	struct audio_substream_data *rtd = runtime->private_data;
--	struct snd_soc_component *component = snd_soc_rtdcom_lookup(prtd,
--								    DRV_NAME);
- 
- 	if (!rtd)
- 		return -EINVAL;
-@@ -1034,18 +986,12 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 		if (rtd->bytescount == 0)
- 			rtd->bytescount = bytescount;
- 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--			acp_dma_start(rtd->acp_mmio, rtd->ch1, false);
--			while (acp_reg_read(rtd->acp_mmio, mmACP_DMA_CH_STS) &
--				BIT(rtd->ch1)) {
--				if (!loops--) {
--					dev_err(component->dev,
--						"acp dma start timeout\n");
--					return -ETIMEDOUT;
--				}
--				cpu_relax();
--			}
-+			acp_dma_start(rtd->acp_mmio, rtd->ch1);
-+			acp_dma_start(rtd->acp_mmio, rtd->ch2);
-+		} else {
-+			acp_dma_start(rtd->acp_mmio, rtd->ch2);
-+			acp_dma_start(rtd->acp_mmio, rtd->ch1);
- 		}
--		acp_dma_start(rtd->acp_mmio, rtd->ch2, true);
- 		ret = 0;
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
+To give the history, we implement the binary method for data. The structures
+given here were indeed ABI but we didn't move them to uapi/ as it was still in
+development and with help from Takashi we finally zoomed on Tuple method for
+describing the data and hence that was implemented and updated and alsa-lib
+files also updated.
+
+I am not sure we were able to ship any alsa release with this method due to
+complexity of running intel tool to generate binary data and patch the topology
+files.
+
+> > First, the manifest size in (Skylake) v4 configuration files is set
+> > to 0, which causes manifest_new_ver() to bail out with error messages
+> > similar to the following.
+
+So is this issue with Chrome kernel or upstream? We did ask Chrome to
+cherry-pick patches for tuple support for SKL but I guess it was late for
+release cycle for them and for SKL I dont think Chrome people took it. Yeah
+perils of upstream and production racing...
+
+> > 
+> > snd_soc_skl 0000:00:1f.3: ASoC: invalid manifest size
+> > snd_soc_skl 0000:00:1f.3: tplg component load failed-22
+> > snd_soc_skl 0000:00:1f.3: Failed to init topology!
+> > snd_soc_skl 0000:00:1f.3: ASoC: failed to probe component -22
+> > skl_n88l25_m98357a skl_n88l25_m98357a: ASoC: failed to instantiate card -22
+> > skl_n88l25_m98357a: probe of skl_n88l25_m98357a failed with error -22
+> > 
+> > After this problem is fixed, the following error message is seen instead.
+> > 
+> > snd_soc_skl 0000:00:1f.3: ASoC: old version of manifest
+> > snd_soc_skl 0000:00:1f.3: Invalid descriptor token 1093938482
+> > snd_soc_skl 0000:00:1f.3: ASoC: failed to load widget media0_in cpr 0
+> > snd_soc_skl 0000:00:1f.3: tPlg component load failed-22
+> > 
+> > This message is seen because backwards compatibility for loading widgets
+> > was never implemented.
+> > 
+> > The lack of audio support when running the upstream kernel on recent
+> > Chromebooks has been reported in various forums, and can be traced back
+> > to this problem. Attempts to fix the problem, usually by providing v5
+> > configuration files, were only partially successful.
+> > 
+> > Let's implement backward compatibility properly to solve the problem
+> > for good.
+
+Thanks for doing this, great work indeed.
+
+> > diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
+> > index f8d1749a2e0c..b0e3d376594c 100644
+> > --- a/sound/soc/intel/skylake/skl-tplg-interface.h
+> > +++ b/sound/soc/intel/skylake/skl-tplg-interface.h
+
+Don't we want to move these to upai/ as that is right place and use that in
+alsa-lib.
+
+
 -- 
-1.9.1
+~Vinod
