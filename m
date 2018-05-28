@@ -1,66 +1,63 @@
-From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
-Subject: [PATCH v2 1/2] ASoC: dpcm: fix BE dai not hw_free and
-	shutdown
-Date: Mon, 28 May 2018 10:18:18 +0800
-Message-ID: <1527473899-23079-2-git-send-email-kaichieh.chuang@mediatek.com>
+From: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+Subject: [PATCH v2 2/2] ASoC: dpcm: symmetry constraint on FE substream
+Date: Mon, 28 May 2018 10:18:19 +0800
+Message-ID: <1527473899-23079-3-git-send-email-kaichieh.chuang@mediatek.com>
 References: <1527473899-23079-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 4A0F7267255
- for <alsa-devel@alsa-project.org>; Mon, 28 May 2018 04:18:27 +0200 (CEST)
-In-Reply-To: <1527473899-23079-1-git-send-email-kaichieh.chuang@mediatek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
+Return-path: <linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+In-Reply-To: <1527473899-23079-1-git-send-email-kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-mediatek/>
+List-Post: <mailto:linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+List-Help: <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-mediatek>,
+ <mailto:linux-mediatek-request-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org?subject=subscribe>
+Sender: "Linux-mediatek" <linux-mediatek-bounces-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org>
+Errors-To: linux-mediatek-bounces+glpam-linux-mediatek=m.gmane.org-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org
+To: broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-mediatek-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, wsd_upstream-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org, kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-In case, one BE is used by two FE1/FE2
-FE1--->BE-->
-       |
-FE2----]
-when FE1/FE2 call dpcm_be_dai_hw_free() together
-the BE users will be 2 (> 1), hence cannot be hw_free
-the be state will leave at, ex. SND_SOC_DPCM_STATE_STOP
+We should set BE symmetric constraint on FE substream.
 
-later FE1/FE2 call dpcm_be_dai_shutdown(),
-will be skip due to wrong state.
-leaving the BE not being hw_free and shutdown.
+in case one BE is used by two FE1/FE2,
+the first BE runtime will use FE1's substream->runtime.
+hence the FE1's will be constrained by BE symmetry property.
 
-The BE dai will be hw_free later when calling
-dpcm_be_dai_shutdown() if still in invalid state.
+Though, second FE2 call dpcm_apply_symmetry,
+the be_substream->runtime == FE1's substream->runtime.
+The FE2's substream->runtime will not be constrained
+by BE's symmetry property.
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang-NuS5LvNUpcJWk0Htik3J/w@public.gmane.org>
 ---
- sound/soc/soc-pcm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 87c9af2..ffdbbd9 100644
+index ffdbbd9..61494f7 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1866,8 +1866,10 @@ int dpcm_be_dai_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
- 			continue;
+@@ -1779,14 +1779,15 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
  
- 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE) &&
--		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN))
--			continue;
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN)) {
-+			soc_pcm_hw_free(be_substream);
-+			be->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_FREE;
-+		}
+ 		/* Symmetry only applies if we've got an active stream. */
+ 		if (rtd->cpu_dai->active) {
+-			err = soc_pcm_apply_symmetry(be_substream, rtd->cpu_dai);
++			err = soc_pcm_apply_symmetry(fe_substream,
++						     rtd->cpu_dai);
+ 			if (err < 0)
+ 				return err;
+ 		}
  
- 		dev_dbg(be->dev, "ASoC: close BE %s\n",
- 			be->dai_link->name);
+ 		for (i = 0; i < rtd->num_codecs; i++) {
+ 			if (rtd->codec_dais[i]->active) {
+-				err = soc_pcm_apply_symmetry(be_substream,
++				err = soc_pcm_apply_symmetry(fe_substream,
+ 							     rtd->codec_dais[i]);
+ 				if (err < 0)
+ 					return err;
 -- 
 1.9.1
