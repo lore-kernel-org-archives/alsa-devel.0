@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for the
-	ARCHOS 80 Cesium 8" windows tablet" to the asoc tree
-Date: Tue, 29 May 2018 15:59:46 +0100
-Message-ID: <E1fNg6E-0006AN-Ai@debutante>
-References: <20180528202649.2406-1-hdegoede@redhat.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/realtek - Fixup for HP x360 laptops
+	with B&O speakers
+Date: Tue, 29 May 2018 21:35:21 +0200
+Message-ID: <20180529193521.26941-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E9EDE267700
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 16:59:55 +0200 (CEST)
-In-Reply-To: <20180528202649.2406-1-hdegoede@redhat.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E4CA26773F
+ for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 21:35:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +19,176 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: alsa-devel@alsa-project.org
+Cc: Tom Briden <tom@decompile.me.uk>, Kailang Yang <kailang@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+From: Tom Briden <tom@decompile.me.uk>
 
-   ASoC: Intel: bytcr_rt5640: Add quirk for the ARCHOS 80 Cesium 8" windows tablet
+Added a new helper file for these fixups due to requiring a huge number
+of coefs being set to get the top speakers to work, as well as
+setting pin 0x17 for the top speakers and the correct input source
+of 0x17 for volume control
 
-has been applied to the asoc tree at
+[ Note: this is a revised work based on Tom's fixup patch with the
+  replacement of the full COEF tables provided by Realtek.
+  Also, the fixup function has a proper HDA_FIXUP_ACT_* handling now.
+  The credit for the new COEF table goes to Kailang  -- tiwai ]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From bcf441acb414f1a238850ffdfdf07ce48c716a60 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Mon, 28 May 2018 22:26:49 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the ARCHOS 80 Cesium
- 8" windows tablet
-
-Add a quirk for the ARCHOS 80 Cesium 8" windows tablet, this device mostly
-works with the default settings, except that it has only one speaker.
-So add a quirk with the default settings + the mono-speaker flag.
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189331
+Cc: Kailang Yang <kailang@realtek.com>
+Signed-off-by: Tom Briden <tom@decompile.me.uk>
+Tested-by: Tom Briden <tom@decompile.me.uk>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+ sound/pci/hda/hp_x360_helper.c | 94 ++++++++++++++++++++++++++++++++++
+ sound/pci/hda/patch_realtek.c  | 12 ++++-
+ 2 files changed, 105 insertions(+), 1 deletion(-)
+ create mode 100644 sound/pci/hda/hp_x360_helper.c
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index b0eec0a9b7b9..33065ba294a9 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -419,6 +419,16 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 						 BYT_RT5640_SSP0_AIF1),
+diff --git a/sound/pci/hda/hp_x360_helper.c b/sound/pci/hda/hp_x360_helper.c
+new file mode 100644
+index 000000000000..39fb1c1e01dc
+--- /dev/null
++++ b/sound/pci/hda/hp_x360_helper.c
+@@ -0,0 +1,94 @@
++/* Fixes for HP X360 laptops with top B&O speakers
++ * to be included from codec driver
++ */
++
++static void alc295_fixup_hp_top_speakers(struct hda_codec *codec,
++		const struct hda_fixup *fix, int action)
++{
++	static const struct hda_pintbl pincfgs[] = {
++		{ 0x17, 0x90170110 },
++		{ }
++	};
++	static const struct coef_fw alc295_hp_speakers_coefs[] = {
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0000), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x003f), WRITE_COEF(0x28, 0x1000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0004), WRITE_COEF(0x28, 0x0600), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006a), WRITE_COEF(0x28, 0x0006), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006c), WRITE_COEF(0x28, 0xc0c0), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0008), WRITE_COEF(0x28, 0xb000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x002e), WRITE_COEF(0x28, 0x0800), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006a), WRITE_COEF(0x28, 0x00c1), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006c), WRITE_COEF(0x28, 0x0320), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0039), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x003b), WRITE_COEF(0x28, 0xffff), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x003c), WRITE_COEF(0x28, 0xffd0), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x003a), WRITE_COEF(0x28, 0x1dfe), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0080), WRITE_COEF(0x28, 0x0880), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x003a), WRITE_COEF(0x28, 0x0dfe), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0018), WRITE_COEF(0x28, 0x0219), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006a), WRITE_COEF(0x28, 0x005d), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006c), WRITE_COEF(0x28, 0x9142), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c0), WRITE_COEF(0x28, 0x01ce), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c1), WRITE_COEF(0x28, 0xed0c), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c2), WRITE_COEF(0x28, 0x1c00), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c3), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c4), WRITE_COEF(0x28, 0x0200), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c5), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c6), WRITE_COEF(0x28, 0x0399), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c7), WRITE_COEF(0x28, 0x2330), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c8), WRITE_COEF(0x28, 0x1e5d), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00c9), WRITE_COEF(0x28, 0x6eff), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00ca), WRITE_COEF(0x28, 0x01c0), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00cb), WRITE_COEF(0x28, 0xed0c), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00cc), WRITE_COEF(0x28, 0x1c00), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00cd), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00ce), WRITE_COEF(0x28, 0x0200), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00cf), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00d0), WRITE_COEF(0x28, 0x0399), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00d1), WRITE_COEF(0x28, 0x2330), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00d2), WRITE_COEF(0x28, 0x1e5d), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x00d3), WRITE_COEF(0x28, 0x6eff), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0062), WRITE_COEF(0x28, 0x8000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0063), WRITE_COEF(0x28, 0x5f5f), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0064), WRITE_COEF(0x28, 0x1000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0065), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0066), WRITE_COEF(0x28, 0x4004), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0067), WRITE_COEF(0x28, 0x0802), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0068), WRITE_COEF(0x28, 0x890f), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0069), WRITE_COEF(0x28, 0xe021), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0070), WRITE_COEF(0x28, 0x8012), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0071), WRITE_COEF(0x28, 0x3450), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0072), WRITE_COEF(0x28, 0x0123), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0073), WRITE_COEF(0x28, 0x4543), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0074), WRITE_COEF(0x28, 0x2100), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0075), WRITE_COEF(0x28, 0x4321), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0076), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0050), WRITE_COEF(0x28, 0x8200), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x003a), WRITE_COEF(0x28, 0x1dfe), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0051), WRITE_COEF(0x28, 0x0707), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0052), WRITE_COEF(0x28, 0x4090), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006a), WRITE_COEF(0x28, 0x0090), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006c), WRITE_COEF(0x28, 0x721f), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0012), WRITE_COEF(0x28, 0xebeb), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x009e), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0060), WRITE_COEF(0x28, 0x2213), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006a), WRITE_COEF(0x28, 0x0006), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x006c), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x003f), WRITE_COEF(0x28, 0x3000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0004), WRITE_COEF(0x28, 0x0500), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0040), WRITE_COEF(0x28, 0x800c), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0046), WRITE_COEF(0x28, 0xc22e), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x004b), WRITE_COEF(0x28, 0x0000), WRITE_COEF(0x29, 0xb024),
++		WRITE_COEF(0x24, 0x0012), WRITE_COEF(0x26, 0x0050), WRITE_COEF(0x28, 0x82ec), WRITE_COEF(0x29, 0xb024),
++	};
++
++	switch (action) {
++	case HDA_FIXUP_ACT_PRE_PROBE:
++		snd_hda_apply_pincfgs(codec, pincfgs);
++		alc295_fixup_disable_dac3(codec, fix, action);
++		break;
++	case HDA_FIXUP_ACT_INIT:
++		alc_process_coef_fw(codec, alc295_hp_speakers_coefs);
++		break;
++	}
++}
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 4a9ea34b11b5..240a1a43e048 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -5394,6 +5394,9 @@ static void alc274_fixup_bind_dacs(struct hda_codec *codec,
+ /* for dell wmi mic mute led */
+ #include "dell_wmi_helper.c"
  
++/* for alc295_fixup_hp_top_speakers */
++#include "hp_x360_helper.c"
++
+ enum {
+ 	ALC269_FIXUP_SONY_VAIO,
+ 	ALC275_FIXUP_SONY_VAIO_GPIO2,
+@@ -5514,6 +5517,7 @@ enum {
+ 	ALC298_FIXUP_TPT470_DOCK,
+ 	ALC255_FIXUP_DUMMY_LINEOUT_VERB,
+ 	ALC255_FIXUP_DELL_HEADSET_MIC,
++	ALC295_FIXUP_HP_X360,
+ };
+ 
+ static const struct hda_fixup alc269_fixups[] = {
+@@ -6387,6 +6391,12 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chained = true,
+ 		.chain_id = ALC269_FIXUP_HEADSET_MIC
  	},
-+	{
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ARCHOS"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "ARCHOS 80 Cesium"),
-+		},
-+		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_MONO_SPEAKER |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
++	[ALC295_FIXUP_HP_X360] = {
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc295_fixup_hp_top_speakers,
++		.chained = true,
++		.chain_id = ALC269_FIXUP_HP_MUTE_LED_MIC3
++	}
+ };
+ 
+ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+@@ -6506,7 +6516,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x2337, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
+ 	SND_PCI_QUIRK(0x103c, 0x221c, "HP EliteBook 755 G2", ALC280_FIXUP_HP_HEADSET_MIC),
+ 	SND_PCI_QUIRK(0x103c, 0x8256, "HP", ALC221_FIXUP_HP_FRONT_MIC),
+-	SND_PCI_QUIRK(0x103c, 0x827e, "HP x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
++	SND_PCI_QUIRK(0x103c, 0x827e, "HP x360", ALC295_FIXUP_HP_X360),
+ 	SND_PCI_QUIRK(0x103c, 0x82bf, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x103c, 0x82c0, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
+ 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
 -- 
 2.17.0
