@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: simple-card: set cpu dai clk in
-	hw_params
-Date: Tue, 29 May 2018 12:32:43 +0100
-Message-ID: <20180529113243.GD23509@sirena.org.uk>
+Subject: Re: [PATCH 3/3] ASoC: simple-card: add support for
+ clock divider setup
+Date: Tue, 29 May 2018 12:35:09 +0100
+Message-ID: <20180529113509.GE23509@sirena.org.uk>
 References: <20180528193503.18905-1-daniel@zonque.org>
- <20180528193503.18905-2-daniel@zonque.org>
- <20180529111632.GB23509@sirena.org.uk>
- <fd307a0e-483c-6e64-5017-ecdf98814b1d@zonque.org>
+ <20180528193503.18905-4-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8280797155420518901=="
+Content-Type: multipart/mixed; boundary="===============5657300869022295805=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1EE5F267663
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 13:32:45 +0200 (CEST)
-In-Reply-To: <fd307a0e-483c-6e64-5017-ecdf98814b1d@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BD7526766E
+ for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 13:35:11 +0200 (CEST)
+In-Reply-To: <20180528193503.18905-4-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,56 +27,49 @@ Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8280797155420518901==
+--===============5657300869022295805==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="IMjqdzrDRly81ofr"
+	protocol="application/pgp-signature"; boundary="3XA6nns4nE4KvaS/"
 Content-Disposition: inline
 
 
---IMjqdzrDRly81ofr
+--3XA6nns4nE4KvaS/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 29, 2018 at 01:17:45PM +0200, Daniel Mack wrote:
-> On Tuesday, May 29, 2018 01:16 PM, Mark Brown wrote:
-> > On Mon, May 28, 2018 at 09:35:01PM +0200, Daniel Mack wrote:
+On Mon, May 28, 2018 at 09:35:03PM +0200, Daniel Mack wrote:
+> Add support to call into snd_soc_dai_set_clkdiv() for both CPU and codec
+> DAIs from simple-card's hw_params().
 
-> > > +		if (dai_props->cpu_dai.clk)
-> > > +			clk_set_rate(dai_props->cpu_dai.clk, mclk);
+> This allows platforms to set hardware-specific values without providing an
+> own machine driver.
 
-> > We're ignoring the return value here.
+Why do we have anything that actually needs this?  The devices with a
+set_clkdiv() operation are pretty legacy at this point and most of them
+should just be figuring out the dividers for themselves anyway.
 
-> On purpose actually. Not all clocks might be settable, and in that case,
-> this is a no-op. You think we should bail or warn?
-
-If we need to set the rate and fail to set it then clearly we shouldn't
-just carry on ignoring the error.  You might want some more involved
-logic there around checking if it's actually a rate change before you
-error out, and possibly some logic to carry on with whatever the rate is
-and a reduced set of resulting sample rates.
-
---IMjqdzrDRly81ofr
+--3XA6nns4nE4KvaS/
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsNOlsACgkQJNaLcl1U
-h9AnLgf+MyL5eaczJreLHGK/oF99RzVXArQo93MxxaaDOZZiGzqs7HzS+vaYhiuo
-HWcm38wA17k7Bk9oaRtMY7mesxf2Ton2bEeUQTuJ+0vwS3Z7g2KeRnWFTBCeTsv6
-78FqLUSR4SwLrIE4E3kIP5B0MKCHQj+orJ5Eyl2HzaIXdrwrciuKn0VP6AN0CEG7
-LAliYpgoph2PJJV8RMmK6lDTqKdGHjJs/QQlYIsl+Q/rlitbclnO041v3bY296Qf
-ljQPsvCLpNwaKye621B3JwBZpdZ1bUIr4jXwcy8ZpjLIcKMlzpOyytkluq4x1Odk
-k94BTMVx6iygQ8oNlrGbnszh9uhk4A==
-=Ggpl
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsNOu0ACgkQJNaLcl1U
+h9CVCgf+NQElOfAf8cdIW/qUG99D+6vxo8t8oRpBRFJxQ3YjgR9aAZyPGdoLM1+E
+ORRFb5+kZ7AEauK8fddqgfM8tgyI0VWvXfk8B5syzipuVjOKAaL8RZM4qS/8ty0F
+5mvfxUiOg85Lxn18agn65bHH9blPxg2TYemoRkmgArTVgvvkxm4rNRn65Iztdh/n
+hdiuxVSYpEd6FRYqOqLJoOLD5sbwSwlAJdBE1XkIvr8J5ngNfwMq5yZFTlxHWRCs
+Ieu5D3zVDPPIVHx6nG1S8c8sOMnqf+qO1hOki7QYubPz06ZenpaWqSzmOk/Wz04Y
+XFORsFlp6vpa2HQDXUCuhXWFQvWCLw==
+=TcME
 -----END PGP SIGNATURE-----
 
---IMjqdzrDRly81ofr--
+--3XA6nns4nE4KvaS/--
 
---===============8280797155420518901==
+--===============5657300869022295805==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8280797155420518901==--
+--===============5657300869022295805==--
