@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: fix BE dai not hw_free and
-	shutdown" to the asoc tree
-Date: Tue, 29 May 2018 15:59:39 +0100
-Message-ID: <E1fNg67-00068C-3o@debutante>
-References: <1527473899-23079-2-git-send-email-kaichieh.chuang@mediatek.com>
+Subject: Applied "ASoC: dpcm: symmetry constraint on FE
+	substream" to the asoc tree
+Date: Tue, 29 May 2018 15:59:35 +0100
+Message-ID: <E1fNg63-000678-HT@debutante>
+References: <1526980408-1935-3-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C9997267705
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 16:59:47 +0200 (CEST)
-In-Reply-To: <1527473899-23079-2-git-send-email-kaichieh.chuang@mediatek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 42248267712
+ for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 16:59:46 +0200 (CEST)
+In-Reply-To: <1526980408-1935-3-git-send-email-kaichieh.chuang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: fix BE dai not hw_free and shutdown
+   ASoC: dpcm: symmetry constraint on FE substream
 
 has been applied to the asoc tree at
 
@@ -52,48 +52,49 @@ to this mail.
 Thanks,
 Mark
 
->From 9c0ac70ad24d76b873c1551e27790c7f6a815d5c Mon Sep 17 00:00:00 2001
+>From 99bcedbdebc57fe5d02fb470b7265f2208c2cf96 Mon Sep 17 00:00:00 2001
 From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
-Date: Mon, 28 May 2018 10:18:18 +0800
-Subject: [PATCH] ASoC: dpcm: fix BE dai not hw_free and shutdown
+Date: Mon, 28 May 2018 10:18:19 +0800
+Subject: [PATCH] ASoC: dpcm: symmetry constraint on FE substream
 
-In case, one BE is used by two FE1/FE2
-FE1--->BE-->
-       |
-FE2----]
-when FE1/FE2 call dpcm_be_dai_hw_free() together
-the BE users will be 2 (> 1), hence cannot be hw_free
-the be state will leave at, ex. SND_SOC_DPCM_STATE_STOP
+We should set BE symmetric constraint on FE substream.
 
-later FE1/FE2 call dpcm_be_dai_shutdown(),
-will be skip due to wrong state.
-leaving the BE not being hw_free and shutdown.
+in case one BE is used by two FE1/FE2,
+the first BE runtime will use FE1's substream->runtime.
+hence the FE1's will be constrained by BE symmetry property.
 
-The BE dai will be hw_free later when calling
-dpcm_be_dai_shutdown() if still in invalid state.
+Though, second FE2 call dpcm_apply_symmetry,
+the be_substream->runtime == FE1's substream->runtime.
+The FE2's substream->runtime will not be constrained
+by BE's symmetry property.
 
 Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 2df4719a84db..2d846b3dd70c 100644
+index 2d846b3dd70c..0e2b2c6c60bd 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1866,8 +1866,10 @@ int dpcm_be_dai_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
- 			continue;
+@@ -1779,14 +1779,15 @@ static int dpcm_apply_symmetry(struct snd_pcm_substream *fe_substream,
  
- 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE) &&
--		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN))
--			continue;
-+		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN)) {
-+			soc_pcm_hw_free(be_substream);
-+			be->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_FREE;
-+		}
+ 		/* Symmetry only applies if we've got an active stream. */
+ 		if (rtd->cpu_dai->active) {
+-			err = soc_pcm_apply_symmetry(be_substream, rtd->cpu_dai);
++			err = soc_pcm_apply_symmetry(fe_substream,
++						     rtd->cpu_dai);
+ 			if (err < 0)
+ 				return err;
+ 		}
  
- 		dev_dbg(be->dev, "ASoC: close BE %s\n",
- 			be->dai_link->name);
+ 		for (i = 0; i < rtd->num_codecs; i++) {
+ 			if (rtd->codec_dais[i]->active) {
+-				err = soc_pcm_apply_symmetry(be_substream,
++				err = soc_pcm_apply_symmetry(fe_substream,
+ 							     rtd->codec_dais[i]);
+ 				if (err < 0)
+ 					return err;
 -- 
 2.17.0
