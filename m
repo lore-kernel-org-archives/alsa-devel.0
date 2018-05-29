@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: qdafe: add support to tdm ports"
-	to the asoc tree
-Date: Tue, 29 May 2018 15:59:28 +0100
-Message-ID: <E1fNg5w-000645-9s@debutante>
-References: <20180529101833.30489-3-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: dpcm: fix BE dai not hw_free and
+	shutdown" to the asoc tree
+Date: Tue, 29 May 2018 15:59:39 +0100
+Message-ID: <E1fNg67-00068C-3o@debutante>
+References: <1527473899-23079-2-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 626F826772E
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 16:59:37 +0200 (CEST)
-In-Reply-To: <20180529101833.30489-3-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id C9997267705
+ for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 16:59:47 +0200 (CEST)
+In-Reply-To: <1527473899-23079-2-git-send-email-kaichieh.chuang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, rohkumar@qti.qualcomm.com, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, tiwai@suse.com, broonie@kernel.org, spatakok@qti.qualcomm.com, linux-arm-kernel@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: qdafe: add support to tdm ports
+   ASoC: dpcm: fix BE dai not hw_free and shutdown
 
 has been applied to the asoc tree at
 
@@ -53,596 +52,48 @@ to this mail.
 Thanks,
 Mark
 
->From dea1ffbeea60f57d123647c301ad3f0fe77392ee Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 29 May 2018 11:18:29 +0100
-Subject: [PATCH] ASoC: qdsp6: qdafe: add support to tdm ports
+>From 9c0ac70ad24d76b873c1551e27790c7f6a815d5c Mon Sep 17 00:00:00 2001
+From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
+Date: Mon, 28 May 2018 10:18:18 +0800
+Subject: [PATCH] ASoC: dpcm: fix BE dai not hw_free and shutdown
 
-This patch adds support to tdm ports in AFE.
+In case, one BE is used by two FE1/FE2
+FE1--->BE-->
+       |
+FE2----]
+when FE1/FE2 call dpcm_be_dai_hw_free() together
+the BE users will be 2 (> 1), hence cannot be hw_free
+the be state will leave at, ex. SND_SOC_DPCM_STATE_STOP
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+later FE1/FE2 call dpcm_be_dai_shutdown(),
+will be skip due to wrong state.
+leaving the BE not being hw_free and shutdown.
+
+The BE dai will be hw_free later when calling
+dpcm_be_dai_shutdown() if still in invalid state.
+
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6afe.c | 429 ++++++++++++++++++++++++++++++++++-
- sound/soc/qcom/qdsp6/q6afe.h |  20 +-
- 2 files changed, 447 insertions(+), 2 deletions(-)
+ sound/soc/soc-pcm.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index de0030068ecb..01f43218984b 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -31,6 +31,7 @@
- #define AFE_PORT_CMDRSP_GET_PARAM_V2	0x00010106
- #define AFE_PARAM_ID_HDMI_CONFIG	0x00010210
- #define AFE_MODULE_AUDIO_DEV_INTERFACE	0x0001020C
-+#define AFE_MODULE_TDM			0x0001028A
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 2df4719a84db..2d846b3dd70c 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1866,8 +1866,10 @@ int dpcm_be_dai_shutdown(struct snd_soc_pcm_runtime *fe, int stream)
+ 			continue;
  
- #define AFE_PARAM_ID_CDC_SLIMBUS_SLAVE_CFG 0x00010235
- 
-@@ -39,6 +40,8 @@
- 
- #define AFE_PARAM_ID_SLIMBUS_CONFIG    0x00010212
- #define AFE_PARAM_ID_I2S_CONFIG	0x0001020D
-+#define AFE_PARAM_ID_TDM_CONFIG	0x0001029D
-+#define AFE_PARAM_ID_PORT_SLOT_MAPPING_CONFIG	0x00010297
- 
- /* I2S config specific */
- #define AFE_API_VERSION_I2S_CONFIG	0x1
-@@ -113,10 +116,194 @@
- #define AFE_PORT_ID_QUATERNARY_MI2S_RX      0x1006
- #define AFE_PORT_ID_QUATERNARY_MI2S_TX      0x1007
- 
-+/* Start of the range of port IDs for TDM devices. */
-+#define AFE_PORT_ID_TDM_PORT_RANGE_START	0x9000
-+
-+/* End of the range of port IDs for TDM devices. */
-+#define AFE_PORT_ID_TDM_PORT_RANGE_END \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START+0x50-1)
-+
-+/* Size of the range of port IDs for TDM ports. */
-+#define AFE_PORT_ID_TDM_PORT_RANGE_SIZE \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_END - \
-+	AFE_PORT_ID_TDM_PORT_RANGE_START+1)
-+
-+#define AFE_PORT_ID_PRIMARY_TDM_RX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x00)
-+#define AFE_PORT_ID_PRIMARY_TDM_RX_1 \
-+	(AFE_PORT_ID_PRIMARY_TDM_RX + 0x02)
-+#define AFE_PORT_ID_PRIMARY_TDM_RX_2 \
-+	(AFE_PORT_ID_PRIMARY_TDM_RX + 0x04)
-+#define AFE_PORT_ID_PRIMARY_TDM_RX_3 \
-+	(AFE_PORT_ID_PRIMARY_TDM_RX + 0x06)
-+#define AFE_PORT_ID_PRIMARY_TDM_RX_4 \
-+	(AFE_PORT_ID_PRIMARY_TDM_RX + 0x08)
-+#define AFE_PORT_ID_PRIMARY_TDM_RX_5 \
-+	(AFE_PORT_ID_PRIMARY_TDM_RX + 0x0A)
-+#define AFE_PORT_ID_PRIMARY_TDM_RX_6 \
-+	(AFE_PORT_ID_PRIMARY_TDM_RX + 0x0C)
-+#define AFE_PORT_ID_PRIMARY_TDM_RX_7 \
-+	(AFE_PORT_ID_PRIMARY_TDM_RX + 0x0E)
-+
-+#define AFE_PORT_ID_PRIMARY_TDM_TX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x01)
-+#define AFE_PORT_ID_PRIMARY_TDM_TX_1 \
-+	(AFE_PORT_ID_PRIMARY_TDM_TX + 0x02)
-+#define AFE_PORT_ID_PRIMARY_TDM_TX_2 \
-+	(AFE_PORT_ID_PRIMARY_TDM_TX + 0x04)
-+#define AFE_PORT_ID_PRIMARY_TDM_TX_3 \
-+	(AFE_PORT_ID_PRIMARY_TDM_TX + 0x06)
-+#define AFE_PORT_ID_PRIMARY_TDM_TX_4 \
-+	(AFE_PORT_ID_PRIMARY_TDM_TX + 0x08)
-+#define AFE_PORT_ID_PRIMARY_TDM_TX_5 \
-+	(AFE_PORT_ID_PRIMARY_TDM_TX + 0x0A)
-+#define AFE_PORT_ID_PRIMARY_TDM_TX_6 \
-+	(AFE_PORT_ID_PRIMARY_TDM_TX + 0x0C)
-+#define AFE_PORT_ID_PRIMARY_TDM_TX_7 \
-+	(AFE_PORT_ID_PRIMARY_TDM_TX + 0x0E)
-+
-+#define AFE_PORT_ID_SECONDARY_TDM_RX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x10)
-+#define AFE_PORT_ID_SECONDARY_TDM_RX_1 \
-+	(AFE_PORT_ID_SECONDARY_TDM_RX + 0x02)
-+#define AFE_PORT_ID_SECONDARY_TDM_RX_2 \
-+	(AFE_PORT_ID_SECONDARY_TDM_RX + 0x04)
-+#define AFE_PORT_ID_SECONDARY_TDM_RX_3 \
-+	(AFE_PORT_ID_SECONDARY_TDM_RX + 0x06)
-+#define AFE_PORT_ID_SECONDARY_TDM_RX_4 \
-+	(AFE_PORT_ID_SECONDARY_TDM_RX + 0x08)
-+#define AFE_PORT_ID_SECONDARY_TDM_RX_5 \
-+	(AFE_PORT_ID_SECONDARY_TDM_RX + 0x0A)
-+#define AFE_PORT_ID_SECONDARY_TDM_RX_6 \
-+	(AFE_PORT_ID_SECONDARY_TDM_RX + 0x0C)
-+#define AFE_PORT_ID_SECONDARY_TDM_RX_7 \
-+	(AFE_PORT_ID_SECONDARY_TDM_RX + 0x0E)
-+
-+#define AFE_PORT_ID_SECONDARY_TDM_TX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x11)
-+#define AFE_PORT_ID_SECONDARY_TDM_TX_1 \
-+	(AFE_PORT_ID_SECONDARY_TDM_TX + 0x02)
-+#define AFE_PORT_ID_SECONDARY_TDM_TX_2 \
-+	(AFE_PORT_ID_SECONDARY_TDM_TX + 0x04)
-+#define AFE_PORT_ID_SECONDARY_TDM_TX_3 \
-+	(AFE_PORT_ID_SECONDARY_TDM_TX + 0x06)
-+#define AFE_PORT_ID_SECONDARY_TDM_TX_4 \
-+	(AFE_PORT_ID_SECONDARY_TDM_TX + 0x08)
-+#define AFE_PORT_ID_SECONDARY_TDM_TX_5 \
-+	(AFE_PORT_ID_SECONDARY_TDM_TX + 0x0A)
-+#define AFE_PORT_ID_SECONDARY_TDM_TX_6 \
-+	(AFE_PORT_ID_SECONDARY_TDM_TX + 0x0C)
-+#define AFE_PORT_ID_SECONDARY_TDM_TX_7 \
-+	(AFE_PORT_ID_SECONDARY_TDM_TX + 0x0E)
-+
-+#define AFE_PORT_ID_TERTIARY_TDM_RX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x20)
-+#define AFE_PORT_ID_TERTIARY_TDM_RX_1 \
-+	(AFE_PORT_ID_TERTIARY_TDM_RX + 0x02)
-+#define AFE_PORT_ID_TERTIARY_TDM_RX_2 \
-+	(AFE_PORT_ID_TERTIARY_TDM_RX + 0x04)
-+#define AFE_PORT_ID_TERTIARY_TDM_RX_3 \
-+	(AFE_PORT_ID_TERTIARY_TDM_RX + 0x06)
-+#define AFE_PORT_ID_TERTIARY_TDM_RX_4 \
-+	(AFE_PORT_ID_TERTIARY_TDM_RX + 0x08)
-+#define AFE_PORT_ID_TERTIARY_TDM_RX_5 \
-+	(AFE_PORT_ID_TERTIARY_TDM_RX + 0x0A)
-+#define AFE_PORT_ID_TERTIARY_TDM_RX_6 \
-+	(AFE_PORT_ID_TERTIARY_TDM_RX + 0x0C)
-+#define AFE_PORT_ID_TERTIARY_TDM_RX_7 \
-+	(AFE_PORT_ID_TERTIARY_TDM_RX + 0x0E)
-+
-+#define AFE_PORT_ID_TERTIARY_TDM_TX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x21)
-+#define AFE_PORT_ID_TERTIARY_TDM_TX_1 \
-+	(AFE_PORT_ID_TERTIARY_TDM_TX + 0x02)
-+#define AFE_PORT_ID_TERTIARY_TDM_TX_2 \
-+	(AFE_PORT_ID_TERTIARY_TDM_TX + 0x04)
-+#define AFE_PORT_ID_TERTIARY_TDM_TX_3 \
-+	(AFE_PORT_ID_TERTIARY_TDM_TX + 0x06)
-+#define AFE_PORT_ID_TERTIARY_TDM_TX_4 \
-+	(AFE_PORT_ID_TERTIARY_TDM_TX + 0x08)
-+#define AFE_PORT_ID_TERTIARY_TDM_TX_5 \
-+	(AFE_PORT_ID_TERTIARY_TDM_TX + 0x0A)
-+#define AFE_PORT_ID_TERTIARY_TDM_TX_6 \
-+	(AFE_PORT_ID_TERTIARY_TDM_TX + 0x0C)
-+#define AFE_PORT_ID_TERTIARY_TDM_TX_7 \
-+	(AFE_PORT_ID_TERTIARY_TDM_TX + 0x0E)
-+
-+#define AFE_PORT_ID_QUATERNARY_TDM_RX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x30)
-+#define AFE_PORT_ID_QUATERNARY_TDM_RX_1 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_RX + 0x02)
-+#define AFE_PORT_ID_QUATERNARY_TDM_RX_2 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_RX + 0x04)
-+#define AFE_PORT_ID_QUATERNARY_TDM_RX_3 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_RX + 0x06)
-+#define AFE_PORT_ID_QUATERNARY_TDM_RX_4 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_RX + 0x08)
-+#define AFE_PORT_ID_QUATERNARY_TDM_RX_5 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_RX + 0x0A)
-+#define AFE_PORT_ID_QUATERNARY_TDM_RX_6 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_RX + 0x0C)
-+#define AFE_PORT_ID_QUATERNARY_TDM_RX_7 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_RX + 0x0E)
-+
-+#define AFE_PORT_ID_QUATERNARY_TDM_TX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x31)
-+#define AFE_PORT_ID_QUATERNARY_TDM_TX_1 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_TX + 0x02)
-+#define AFE_PORT_ID_QUATERNARY_TDM_TX_2 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_TX + 0x04)
-+#define AFE_PORT_ID_QUATERNARY_TDM_TX_3 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_TX + 0x06)
-+#define AFE_PORT_ID_QUATERNARY_TDM_TX_4 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_TX + 0x08)
-+#define AFE_PORT_ID_QUATERNARY_TDM_TX_5 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_TX + 0x0A)
-+#define AFE_PORT_ID_QUATERNARY_TDM_TX_6 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_TX + 0x0C)
-+#define AFE_PORT_ID_QUATERNARY_TDM_TX_7 \
-+	(AFE_PORT_ID_QUATERNARY_TDM_TX + 0x0E)
-+
-+#define AFE_PORT_ID_QUINARY_TDM_RX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x40)
-+#define AFE_PORT_ID_QUINARY_TDM_RX_1 \
-+	(AFE_PORT_ID_QUINARY_TDM_RX + 0x02)
-+#define AFE_PORT_ID_QUINARY_TDM_RX_2 \
-+	(AFE_PORT_ID_QUINARY_TDM_RX + 0x04)
-+#define AFE_PORT_ID_QUINARY_TDM_RX_3 \
-+	(AFE_PORT_ID_QUINARY_TDM_RX + 0x06)
-+#define AFE_PORT_ID_QUINARY_TDM_RX_4 \
-+	(AFE_PORT_ID_QUINARY_TDM_RX + 0x08)
-+#define AFE_PORT_ID_QUINARY_TDM_RX_5 \
-+	(AFE_PORT_ID_QUINARY_TDM_RX + 0x0A)
-+#define AFE_PORT_ID_QUINARY_TDM_RX_6 \
-+	(AFE_PORT_ID_QUINARY_TDM_RX + 0x0C)
-+#define AFE_PORT_ID_QUINARY_TDM_RX_7 \
-+	(AFE_PORT_ID_QUINARY_TDM_RX + 0x0E)
-+
-+#define AFE_PORT_ID_QUINARY_TDM_TX \
-+	(AFE_PORT_ID_TDM_PORT_RANGE_START + 0x41)
-+#define AFE_PORT_ID_QUINARY_TDM_TX_1 \
-+	(AFE_PORT_ID_QUINARY_TDM_TX + 0x02)
-+#define AFE_PORT_ID_QUINARY_TDM_TX_2 \
-+	(AFE_PORT_ID_QUINARY_TDM_TX + 0x04)
-+#define AFE_PORT_ID_QUINARY_TDM_TX_3 \
-+	(AFE_PORT_ID_QUINARY_TDM_TX + 0x06)
-+#define AFE_PORT_ID_QUINARY_TDM_TX_4 \
-+	(AFE_PORT_ID_QUINARY_TDM_TX + 0x08)
-+#define AFE_PORT_ID_QUINARY_TDM_TX_5 \
-+	(AFE_PORT_ID_QUINARY_TDM_TX + 0x0A)
-+#define AFE_PORT_ID_QUINARY_TDM_TX_6 \
-+	(AFE_PORT_ID_QUINARY_TDM_TX + 0x0C)
-+#define AFE_PORT_ID_QUINARY_TDM_TX_7 \
-+	(AFE_PORT_ID_QUINARY_TDM_TX + 0x0E)
-+
- #define Q6AFE_LPASS_MODE_CLK1_VALID 1
- #define Q6AFE_LPASS_MODE_CLK2_VALID 2
- #define Q6AFE_LPASS_CLK_SRC_INTERNAL 1
- #define Q6AFE_LPASS_CLK_ROOT_DEFAULT 0
-+#define AFE_API_VERSION_TDM_CONFIG              1
-+#define AFE_API_VERSION_SLOT_MAPPING_CONFIG	1
- 
- #define TIMEOUT_MS 1000
- #define AFE_CMD_RESP_AVAIL	0
-@@ -245,10 +432,27 @@ struct afe_param_id_i2s_cfg {
- 	u16	reserved;
- } __packed;
- 
-+struct afe_param_id_tdm_cfg {
-+	u32	tdm_cfg_minor_version;
-+	u32	num_channels;
-+	u32	sample_rate;
-+	u32	bit_width;
-+	u16	data_format;
-+	u16	sync_mode;
-+	u16	sync_src;
-+	u16	nslots_per_frame;
-+	u16	ctrl_data_out_enable;
-+	u16	ctrl_invert_sync_pulse;
-+	u16	ctrl_sync_data_delay;
-+	u16	slot_width;
-+	u32	slot_mask;
-+} __packed;
-+
- union afe_port_config {
- 	struct afe_param_id_hdmi_multi_chan_audio_cfg hdmi_multi_ch;
- 	struct afe_param_id_slimbus_cfg           slim_cfg;
- 	struct afe_param_id_i2s_cfg	i2s_cfg;
-+	struct afe_param_id_tdm_cfg	tdm_cfg;
- } __packed;
- 
- 
-@@ -261,9 +465,18 @@ struct afe_clk_set {
- 	uint32_t enable;
- };
- 
-+struct afe_param_id_slot_mapping_cfg {
-+	u32	minor_version;
-+	u16	num_channels;
-+	u16	bitwidth;
-+	u32	data_align_type;
-+	u16	ch_mapping[AFE_PORT_MAX_AUDIO_CHAN_CNT];
-+} __packed;
-+
- struct q6afe_port {
- 	wait_queue_head_t wait;
- 	union afe_port_config port_cfg;
-+	struct afe_param_id_slot_mapping_cfg *scfg;
- 	struct aprv2_ibasic_rsp_result_t result;
- 	int token;
- 	int id;
-@@ -318,6 +531,166 @@ static struct afe_port_map port_maps[AFE_PORT_MAX] = {
- 				QUATERNARY_MI2S_RX, 1, 1},
- 	[QUATERNARY_MI2S_TX] = { AFE_PORT_ID_QUATERNARY_MI2S_TX,
- 				QUATERNARY_MI2S_TX, 0, 1},
-+	[PRIMARY_TDM_RX_0] =  { AFE_PORT_ID_PRIMARY_TDM_RX,
-+				PRIMARY_TDM_RX_0, 1, 1},
-+	[PRIMARY_TDM_TX_0] =  { AFE_PORT_ID_PRIMARY_TDM_TX,
-+				PRIMARY_TDM_TX_0, 0, 1},
-+	[PRIMARY_TDM_RX_1] =  { AFE_PORT_ID_PRIMARY_TDM_RX_1,
-+				PRIMARY_TDM_RX_1, 1, 1},
-+	[PRIMARY_TDM_TX_1] =  { AFE_PORT_ID_PRIMARY_TDM_TX_1,
-+				PRIMARY_TDM_TX_1, 0, 1},
-+	[PRIMARY_TDM_RX_2] =  { AFE_PORT_ID_PRIMARY_TDM_RX_2,
-+				PRIMARY_TDM_RX_2, 1, 1},
-+	[PRIMARY_TDM_TX_2] =  { AFE_PORT_ID_PRIMARY_TDM_TX_2,
-+				PRIMARY_TDM_TX_2, 0, 1},
-+	[PRIMARY_TDM_RX_3] =  { AFE_PORT_ID_PRIMARY_TDM_RX_3,
-+				PRIMARY_TDM_RX_3, 1, 1},
-+	[PRIMARY_TDM_TX_3] =  { AFE_PORT_ID_PRIMARY_TDM_TX_3,
-+				PRIMARY_TDM_TX_3, 0, 1},
-+	[PRIMARY_TDM_RX_4] =  { AFE_PORT_ID_PRIMARY_TDM_RX_4,
-+				PRIMARY_TDM_RX_4, 1, 1},
-+	[PRIMARY_TDM_TX_4] =  { AFE_PORT_ID_PRIMARY_TDM_TX_4,
-+				PRIMARY_TDM_TX_4, 0, 1},
-+	[PRIMARY_TDM_RX_5] =  { AFE_PORT_ID_PRIMARY_TDM_RX_5,
-+				PRIMARY_TDM_RX_5, 1, 1},
-+	[PRIMARY_TDM_TX_5] =  { AFE_PORT_ID_PRIMARY_TDM_TX_5,
-+				PRIMARY_TDM_TX_5, 0, 1},
-+	[PRIMARY_TDM_RX_6] =  { AFE_PORT_ID_PRIMARY_TDM_RX_6,
-+				PRIMARY_TDM_RX_6, 1, 1},
-+	[PRIMARY_TDM_TX_6] =  { AFE_PORT_ID_PRIMARY_TDM_TX_6,
-+				PRIMARY_TDM_TX_6, 0, 1},
-+	[PRIMARY_TDM_RX_7] =  { AFE_PORT_ID_PRIMARY_TDM_RX_7,
-+				PRIMARY_TDM_RX_7, 1, 1},
-+	[PRIMARY_TDM_TX_7] =  { AFE_PORT_ID_PRIMARY_TDM_TX_7,
-+				PRIMARY_TDM_TX_7, 0, 1},
-+	[SECONDARY_TDM_RX_0] =  { AFE_PORT_ID_SECONDARY_TDM_RX,
-+				SECONDARY_TDM_RX_0, 1, 1},
-+	[SECONDARY_TDM_TX_0] =  { AFE_PORT_ID_SECONDARY_TDM_TX,
-+				SECONDARY_TDM_TX_0, 0, 1},
-+	[SECONDARY_TDM_RX_1] =  { AFE_PORT_ID_SECONDARY_TDM_RX_1,
-+				SECONDARY_TDM_RX_1, 1, 1},
-+	[SECONDARY_TDM_TX_1] =  { AFE_PORT_ID_SECONDARY_TDM_TX_1,
-+				SECONDARY_TDM_TX_1, 0, 1},
-+	[SECONDARY_TDM_RX_2] =  { AFE_PORT_ID_SECONDARY_TDM_RX_2,
-+				SECONDARY_TDM_RX_2, 1, 1},
-+	[SECONDARY_TDM_TX_2] =  { AFE_PORT_ID_SECONDARY_TDM_TX_2,
-+				SECONDARY_TDM_TX_2, 0, 1},
-+	[SECONDARY_TDM_RX_3] =  { AFE_PORT_ID_SECONDARY_TDM_RX_3,
-+				SECONDARY_TDM_RX_3, 1, 1},
-+	[SECONDARY_TDM_TX_3] =  { AFE_PORT_ID_SECONDARY_TDM_TX_3,
-+				SECONDARY_TDM_TX_3, 0, 1},
-+	[SECONDARY_TDM_RX_4] =  { AFE_PORT_ID_SECONDARY_TDM_RX_4,
-+				SECONDARY_TDM_RX_4, 1, 1},
-+	[SECONDARY_TDM_TX_4] =  { AFE_PORT_ID_SECONDARY_TDM_TX_4,
-+				SECONDARY_TDM_TX_4, 0, 1},
-+	[SECONDARY_TDM_RX_5] =  { AFE_PORT_ID_SECONDARY_TDM_RX_5,
-+				SECONDARY_TDM_RX_5, 1, 1},
-+	[SECONDARY_TDM_TX_5] =  { AFE_PORT_ID_SECONDARY_TDM_TX_5,
-+				SECONDARY_TDM_TX_5, 0, 1},
-+	[SECONDARY_TDM_RX_6] =  { AFE_PORT_ID_SECONDARY_TDM_RX_6,
-+				SECONDARY_TDM_RX_6, 1, 1},
-+	[SECONDARY_TDM_TX_6] =  { AFE_PORT_ID_SECONDARY_TDM_TX_6,
-+				SECONDARY_TDM_TX_6, 0, 1},
-+	[SECONDARY_TDM_RX_7] =  { AFE_PORT_ID_SECONDARY_TDM_RX_7,
-+				SECONDARY_TDM_RX_7, 1, 1},
-+	[SECONDARY_TDM_TX_7] =  { AFE_PORT_ID_SECONDARY_TDM_TX_7,
-+				SECONDARY_TDM_TX_7, 0, 1},
-+	[TERTIARY_TDM_RX_0] =  { AFE_PORT_ID_TERTIARY_TDM_RX,
-+				TERTIARY_TDM_RX_0, 1, 1},
-+	[TERTIARY_TDM_TX_0] =  { AFE_PORT_ID_TERTIARY_TDM_TX,
-+				TERTIARY_TDM_TX_0, 0, 1},
-+	[TERTIARY_TDM_RX_1] =  { AFE_PORT_ID_TERTIARY_TDM_RX_1,
-+				TERTIARY_TDM_RX_1, 1, 1},
-+	[TERTIARY_TDM_TX_1] =  { AFE_PORT_ID_TERTIARY_TDM_TX_1,
-+				TERTIARY_TDM_TX_1, 0, 1},
-+	[TERTIARY_TDM_RX_2] =  { AFE_PORT_ID_TERTIARY_TDM_RX_2,
-+				TERTIARY_TDM_RX_2, 1, 1},
-+	[TERTIARY_TDM_TX_2] =  { AFE_PORT_ID_TERTIARY_TDM_TX_2,
-+				TERTIARY_TDM_TX_2, 0, 1},
-+	[TERTIARY_TDM_RX_3] =  { AFE_PORT_ID_TERTIARY_TDM_RX_3,
-+				TERTIARY_TDM_RX_3, 1, 1},
-+	[TERTIARY_TDM_TX_3] =  { AFE_PORT_ID_TERTIARY_TDM_TX_3,
-+				TERTIARY_TDM_TX_3, 0, 1},
-+	[TERTIARY_TDM_RX_4] =  { AFE_PORT_ID_TERTIARY_TDM_RX_4,
-+				TERTIARY_TDM_RX_4, 1, 1},
-+	[TERTIARY_TDM_TX_4] =  { AFE_PORT_ID_TERTIARY_TDM_TX_4,
-+				TERTIARY_TDM_TX_4, 0, 1},
-+	[TERTIARY_TDM_RX_5] =  { AFE_PORT_ID_TERTIARY_TDM_RX_5,
-+				TERTIARY_TDM_RX_5, 1, 1},
-+	[TERTIARY_TDM_TX_5] =  { AFE_PORT_ID_TERTIARY_TDM_TX_5,
-+				TERTIARY_TDM_TX_5, 0, 1},
-+	[TERTIARY_TDM_RX_6] =  { AFE_PORT_ID_TERTIARY_TDM_RX_6,
-+				TERTIARY_TDM_RX_6, 1, 1},
-+	[TERTIARY_TDM_TX_6] =  { AFE_PORT_ID_TERTIARY_TDM_TX_6,
-+				TERTIARY_TDM_TX_6, 0, 1},
-+	[TERTIARY_TDM_RX_7] =  { AFE_PORT_ID_TERTIARY_TDM_RX_7,
-+				TERTIARY_TDM_RX_7, 1, 1},
-+	[TERTIARY_TDM_TX_7] =  { AFE_PORT_ID_TERTIARY_TDM_TX_7,
-+				TERTIARY_TDM_TX_7, 0, 1},
-+	[QUATERNARY_TDM_RX_0] =  { AFE_PORT_ID_QUATERNARY_TDM_RX,
-+				QUATERNARY_TDM_RX_0, 1, 1},
-+	[QUATERNARY_TDM_TX_0] =  { AFE_PORT_ID_QUATERNARY_TDM_TX,
-+				QUATERNARY_TDM_TX_0, 0, 1},
-+	[QUATERNARY_TDM_RX_1] =  { AFE_PORT_ID_QUATERNARY_TDM_RX_1,
-+				QUATERNARY_TDM_RX_1, 1, 1},
-+	[QUATERNARY_TDM_TX_1] =  { AFE_PORT_ID_QUATERNARY_TDM_TX_1,
-+				QUATERNARY_TDM_TX_1, 0, 1},
-+	[QUATERNARY_TDM_RX_2] =  { AFE_PORT_ID_QUATERNARY_TDM_RX_2,
-+				QUATERNARY_TDM_RX_2, 1, 1},
-+	[QUATERNARY_TDM_TX_2] =  { AFE_PORT_ID_QUATERNARY_TDM_TX_2,
-+				QUATERNARY_TDM_TX_2, 0, 1},
-+	[QUATERNARY_TDM_RX_3] =  { AFE_PORT_ID_QUATERNARY_TDM_RX_3,
-+				QUATERNARY_TDM_RX_3, 1, 1},
-+	[QUATERNARY_TDM_TX_3] =  { AFE_PORT_ID_QUATERNARY_TDM_TX_3,
-+				QUATERNARY_TDM_TX_3, 0, 1},
-+	[QUATERNARY_TDM_RX_4] =  { AFE_PORT_ID_QUATERNARY_TDM_RX_4,
-+				QUATERNARY_TDM_RX_4, 1, 1},
-+	[QUATERNARY_TDM_TX_4] =  { AFE_PORT_ID_QUATERNARY_TDM_TX_4,
-+				QUATERNARY_TDM_TX_4, 0, 1},
-+	[QUATERNARY_TDM_RX_5] =  { AFE_PORT_ID_QUATERNARY_TDM_RX_5,
-+				QUATERNARY_TDM_RX_5, 1, 1},
-+	[QUATERNARY_TDM_TX_5] =  { AFE_PORT_ID_QUATERNARY_TDM_TX_5,
-+				QUATERNARY_TDM_TX_5, 0, 1},
-+	[QUATERNARY_TDM_RX_6] =  { AFE_PORT_ID_QUATERNARY_TDM_RX_6,
-+				QUATERNARY_TDM_RX_6, 1, 1},
-+	[QUATERNARY_TDM_TX_6] =  { AFE_PORT_ID_QUATERNARY_TDM_TX_6,
-+				QUATERNARY_TDM_TX_6, 0, 1},
-+	[QUATERNARY_TDM_RX_7] =  { AFE_PORT_ID_QUATERNARY_TDM_RX_7,
-+				QUATERNARY_TDM_RX_7, 1, 1},
-+	[QUATERNARY_TDM_TX_7] =  { AFE_PORT_ID_QUATERNARY_TDM_TX_7,
-+				QUATERNARY_TDM_TX_7, 0, 1},
-+	[QUINARY_TDM_RX_0] =  { AFE_PORT_ID_QUINARY_TDM_RX,
-+				QUINARY_TDM_RX_0, 1, 1},
-+	[QUINARY_TDM_TX_0] =  { AFE_PORT_ID_QUINARY_TDM_TX,
-+				QUINARY_TDM_TX_0, 0, 1},
-+	[QUINARY_TDM_RX_1] =  { AFE_PORT_ID_QUINARY_TDM_RX_1,
-+				QUINARY_TDM_RX_1, 1, 1},
-+	[QUINARY_TDM_TX_1] =  { AFE_PORT_ID_QUINARY_TDM_TX_1,
-+				QUINARY_TDM_TX_1, 0, 1},
-+	[QUINARY_TDM_RX_2] =  { AFE_PORT_ID_QUINARY_TDM_RX_2,
-+				QUINARY_TDM_RX_2, 1, 1},
-+	[QUINARY_TDM_TX_2] =  { AFE_PORT_ID_QUINARY_TDM_TX_2,
-+				QUINARY_TDM_TX_2, 0, 1},
-+	[QUINARY_TDM_RX_3] =  { AFE_PORT_ID_QUINARY_TDM_RX_3,
-+				QUINARY_TDM_RX_3, 1, 1},
-+	[QUINARY_TDM_TX_3] =  { AFE_PORT_ID_QUINARY_TDM_TX_3,
-+				QUINARY_TDM_TX_3, 0, 1},
-+	[QUINARY_TDM_RX_4] =  { AFE_PORT_ID_QUINARY_TDM_RX_4,
-+				QUINARY_TDM_RX_4, 1, 1},
-+	[QUINARY_TDM_TX_4] =  { AFE_PORT_ID_QUINARY_TDM_TX_4,
-+				QUINARY_TDM_TX_4, 0, 1},
-+	[QUINARY_TDM_RX_5] =  { AFE_PORT_ID_QUINARY_TDM_RX_5,
-+				QUINARY_TDM_RX_5, 1, 1},
-+	[QUINARY_TDM_TX_5] =  { AFE_PORT_ID_QUINARY_TDM_TX_5,
-+				QUINARY_TDM_TX_5, 0, 1},
-+	[QUINARY_TDM_RX_6] =  { AFE_PORT_ID_QUINARY_TDM_RX_6,
-+				QUINARY_TDM_RX_6, 1, 1},
-+	[QUINARY_TDM_TX_6] =  { AFE_PORT_ID_QUINARY_TDM_TX_6,
-+				QUINARY_TDM_TX_6, 0, 1},
-+	[QUINARY_TDM_RX_7] =  { AFE_PORT_ID_QUINARY_TDM_RX_7,
-+				QUINARY_TDM_RX_7, 1, 1},
-+	[QUINARY_TDM_TX_7] =  { AFE_PORT_ID_QUINARY_TDM_TX_7,
-+				QUINARY_TDM_TX_7, 0, 1},
- };
- 
- static void q6afe_port_free(struct kref *ref)
-@@ -331,6 +704,7 @@ static void q6afe_port_free(struct kref *ref)
- 	spin_lock_irqsave(&afe->port_list_lock, flags);
- 	list_del(&port->node);
- 	spin_unlock_irqrestore(&afe->port_list_lock, flags);
-+	kfree(port->scfg);
- 	kfree(port);
- }
- 
-@@ -601,7 +975,9 @@ int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
- 		ccfg.clk_set_mode = Q6AFE_LPASS_MODE_CLK2_VALID;
- 		ret = q6afe_set_lpass_clock(port, &ccfg);
- 		break;
--	case Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT ... Q6AFE_LPASS_CLK_ID_INT_MCLK_1:
-+	case Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT ... Q6AFE_LPASS_CLK_ID_QUI_MI2S_OSR:
-+	case Q6AFE_LPASS_CLK_ID_MCLK_1 ... Q6AFE_LPASS_CLK_ID_INT_MCLK_1:
-+	case Q6AFE_LPASS_CLK_ID_PRI_TDM_IBIT ... Q6AFE_LPASS_CLK_ID_QUIN_TDM_EBIT:
- 		cset.clk_set_minor_version = AFE_API_VERSION_CLOCK_SET;
- 		cset.clk_id = clk_id;
- 		cset.clk_freq_in_hz = freq;
-@@ -696,6 +1072,42 @@ void q6afe_slim_port_prepare(struct q6afe_port *port,
- }
- EXPORT_SYMBOL_GPL(q6afe_slim_port_prepare);
- 
-+/**
-+ * q6afe_tdm_port_prepare() - Prepare tdm afe port.
-+ *
-+ * @port: Instance of afe port
-+ * @cfg: TDM configuration for the afe port
-+ *
-+ */
-+void q6afe_tdm_port_prepare(struct q6afe_port *port,
-+			     struct q6afe_tdm_cfg *cfg)
-+{
-+	union afe_port_config *pcfg = &port->port_cfg;
-+
-+	pcfg->tdm_cfg.tdm_cfg_minor_version = AFE_API_VERSION_TDM_CONFIG;
-+	pcfg->tdm_cfg.num_channels = cfg->num_channels;
-+	pcfg->tdm_cfg.sample_rate = cfg->sample_rate;
-+	pcfg->tdm_cfg.bit_width = cfg->bit_width;
-+	pcfg->tdm_cfg.data_format = cfg->data_format;
-+	pcfg->tdm_cfg.sync_mode = cfg->sync_mode;
-+	pcfg->tdm_cfg.sync_src = cfg->sync_src;
-+	pcfg->tdm_cfg.nslots_per_frame = cfg->nslots_per_frame;
-+
-+	pcfg->tdm_cfg.slot_width = cfg->slot_width;
-+	pcfg->tdm_cfg.slot_mask = cfg->slot_mask;
-+	port->scfg = kzalloc(sizeof(*port->scfg), GFP_KERNEL);
-+	if (!port->scfg)
-+		return;
-+
-+	port->scfg->minor_version = AFE_API_VERSION_SLOT_MAPPING_CONFIG;
-+	port->scfg->num_channels = cfg->num_channels;
-+	port->scfg->bitwidth = cfg->bit_width;
-+	port->scfg->data_align_type = cfg->data_align_type;
-+	memcpy(port->scfg->ch_mapping, cfg->ch_mapping,
-+			sizeof(u16) * AFE_PORT_MAX_AUDIO_CHAN_CNT);
-+}
-+EXPORT_SYMBOL_GPL(q6afe_tdm_port_prepare);
-+
- /**
-  * q6afe_hdmi_port_prepare() - Prepare hdmi afe port.
-  *
-@@ -886,6 +1298,17 @@ int q6afe_port_start(struct q6afe_port *port)
- 		return ret;
- 	}
- 
-+	if (port->scfg) {
-+		ret  = q6afe_port_set_param_v2(port, port->scfg,
-+					AFE_PARAM_ID_PORT_SLOT_MAPPING_CONFIG,
-+					AFE_MODULE_TDM, sizeof(*port->scfg));
-+		if (ret) {
-+			dev_err(afe->dev, "AFE enable for port 0x%x failed %d\n",
-+			port_id, ret);
-+			return ret;
+ 		if ((be->dpcm[stream].state != SND_SOC_DPCM_STATE_HW_FREE) &&
+-		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN))
+-			continue;
++		    (be->dpcm[stream].state != SND_SOC_DPCM_STATE_OPEN)) {
++			soc_pcm_hw_free(be_substream);
++			be->dpcm[stream].state = SND_SOC_DPCM_STATE_HW_FREE;
 +		}
-+	}
-+
- 	pkt_size = APR_HDR_SIZE + sizeof(*start);
- 	p = kzalloc(pkt_size, GFP_KERNEL);
- 	if (!p)
-@@ -970,6 +1393,10 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
- 	case AFE_PORT_ID_QUATERNARY_MI2S_TX:
- 		cfg_type = AFE_PARAM_ID_I2S_CONFIG;
- 		break;
-+	case AFE_PORT_ID_PRIMARY_TDM_RX ... AFE_PORT_ID_QUINARY_TDM_TX_7:
-+		cfg_type = AFE_PARAM_ID_TDM_CONFIG;
-+		break;
-+
- 	default:
- 		dev_err(dev, "Invalid port id 0x%x\n", port_id);
- 		return ERR_PTR(-EINVAL);
-diff --git a/sound/soc/qcom/qdsp6/q6afe.h b/sound/soc/qcom/qdsp6/q6afe.h
-index 5ca54a9bdfd5..c7ed5422baff 100644
---- a/sound/soc/qcom/qdsp6/q6afe.h
-+++ b/sound/soc/qcom/qdsp6/q6afe.h
-@@ -5,7 +5,7 @@
  
- #include <dt-bindings/sound/qcom,q6afe.h>
- 
--#define AFE_PORT_MAX		48
-+#define AFE_PORT_MAX		105
- 
- #define MSM_AFE_PORT_TYPE_RX 0
- #define MSM_AFE_PORT_TYPE_TX 1
-@@ -144,6 +144,8 @@
- /* Clock attribute for invert and no couple case */
- #define Q6AFE_LPASS_CLK_ATTRIBUTE_INVERT_COUPLE_NO	0x4
- 
-+#define Q6AFE_CMAP_INVALID		0xFFFF
-+
- struct q6afe_hdmi_cfg {
- 	u16                  datatype;
- 	u16                  channel_allocation;
-@@ -168,10 +170,25 @@ struct q6afe_i2s_cfg {
- 	int fmt;
- };
- 
-+struct q6afe_tdm_cfg {
-+	u16	num_channels;
-+	u32	sample_rate;
-+	u16	bit_width;
-+	u16	data_format;
-+	u16	sync_mode;
-+	u16	sync_src;
-+	u16	nslots_per_frame;
-+	u16	slot_width;
-+	u16	slot_mask;
-+	u32	data_align_type;
-+	u16	ch_mapping[AFE_MAX_CHAN_COUNT];
-+};
-+
- struct q6afe_port_config {
- 	struct q6afe_hdmi_cfg hdmi;
- 	struct q6afe_slim_cfg slim;
- 	struct q6afe_i2s_cfg i2s_cfg;
-+	struct q6afe_tdm_cfg tdm;
- };
- 
- struct q6afe_port;
-@@ -186,6 +203,7 @@ void q6afe_hdmi_port_prepare(struct q6afe_port *port,
- void q6afe_slim_port_prepare(struct q6afe_port *port,
- 			  struct q6afe_slim_cfg *cfg);
- int q6afe_i2s_port_prepare(struct q6afe_port *port, struct q6afe_i2s_cfg *cfg);
-+void q6afe_tdm_port_prepare(struct q6afe_port *port, struct q6afe_tdm_cfg *cfg);
- 
- int q6afe_port_set_sysclk(struct q6afe_port *port, int clk_id,
- 			  int clk_src, int clk_root,
+ 		dev_dbg(be->dev, "ASoC: close BE %s\n",
+ 			be->dai_link->name);
 -- 
 2.17.0
