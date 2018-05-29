@@ -1,96 +1,194 @@
-From: mac.chiang@intel.com
-Subject: [PATCH] [PATCH v3] ASoC: Intel: kbl: Move codec sysclk
-	config to codec_init function
-Date: Tue, 29 May 2018 15:43:10 +0800
-Message-ID: <1527579790-1666-1-git-send-email-mac.chiang@intel.com>
-References: <1527234447-13mail-mac.chiang@intel.com>
+From: "Lin, Mengdong" <mengdong.lin@intel.com>
+Subject: RE: [alsa-devel] [PATCH v2 2/3] ASoC: topology: Move v4 manifest
+ header data structures to uapi
+Date: Tue, 29 May 2018 07:51:24 +0000
+Message-ID: <F46914AEC2663F4A9BB62374E5EEF8F8828095D9@SHSMSX103.ccr.corp.intel.com>
+References: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
+ <1527191363-21021-2-git-send-email-linux@roeck-us.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 496482671EE
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 09:40:24 +0200 (CEST)
-In-Reply-To: <1527234447-13mail-mac.chiang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1527191363-21021-2-git-send-email-linux@roeck-us.net>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <linux@roeck-us.net>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Patel, Chintan M" <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Mac Chiang <mac.chiang@intel.com>
+> -----Original Message-----
+> From: alsa-devel-bounces@alsa-project.org [mailto:alsa-devel-bounces@alsa-
+> project.org] On Behalf Of Guenter Roeck
+> Sent: Friday, May 25, 2018 3:49 AM
 
-On APL, commit fd0f237572ad
-("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
-fixed an issue related to jack detection.
+> From: Guenter Roeck <groeck@chromium.org>
+> 
+> Topology manifest v4 is still part of the ABI. Move its data structures into the
+> uapi header file.
+> 
+> No functional change.
 
-The MCLK for DA7219 does not change in this platform, but is
-currently being configured everytime as part of the platform_clock
-event handler for DAPM. The upshot of this is that we have
-unnecessary calls to this function, and it also means that if
-a stream hasn't yet been started, DA7219 driver does not have the
-correct MCLK rates programmed and so the HP detection feature does
-not operate as expected.
+It looks good. The v4 version of topology ABI should be in uapi header file.
 
-The same fix is needed on KBL.
+Previously, we hid the v4 ABI in kernel and hoped people stop using it. But the topology files of old ABI were already shipped out and backward compatibility issue has been there. Thanks for fixing this.
 
-This patch rectifies this issue by moving the sysclk call to
-codec_init function so it's only called once at initialisation.
+Thanks
+Mengdong
 
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-
-Notes(changelog):
-  v2:
-    - correct the MCLK to 24.576M
-  v3:
-    - described the comments clearly
----
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index c332a32..ad3029d 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -66,14 +66,6 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 		return -EIO;
- 	}
- 
--	/* Configure sysclk for codec */
--	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
--				     SND_SOC_CLOCK_IN);
--	if (ret) {
--		dev_err(card->dev, "can't set codec sysclk configuration\n");
--		return ret;
--	}
--
- 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
- 		ret = snd_soc_dai_set_pll(codec_dai, 0,
- 				     DA7219_SYSCLK_MCLK, 0, 0);
-@@ -170,9 +162,18 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_component *component = rtd->codec_dai->component;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_jack *jack;
- 	int ret;
- 
-+	/* Configure sysclk for codec */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
-+						SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
-+		return ret;
-+	}
-+
- 	/*
- 	 * Headset buttons map to the google Reference headset.
- 	 * These can be configured by userspace.
--- 
-2.7.4
+> 
+> Signed-off-by: Guenter Roeck <groeck@chromium.org>
+> ---
+> v2: Added patch to series
+> 
+>  include/uapi/sound/asoc.h | 57
+> +++++++++++++++++++++++++++++++++++++++
+>  sound/soc/soc-topology.c  | 56 --------------------------------------
+>  2 files changed, 57 insertions(+), 56 deletions(-)
+> 
+> diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h index
+> 69c37ecbff7e..a9df4900789c 100644
+> --- a/include/uapi/sound/asoc.h
+> +++ b/include/uapi/sound/asoc.h
+> @@ -552,4 +552,61 @@ struct snd_soc_tplg_dai {
+>  	__le32 flags;           /* SND_SOC_TPLG_DAI_FLGBIT_* */
+>  	struct snd_soc_tplg_private priv;
+>  } __attribute__((packed));
+> +
+> +/*
+> + * Old version of ABI structs, supported for backward compatibility.
+> + */
+> +
+> +/* Manifest v4 */
+> +struct snd_soc_tplg_manifest_v4 {
+> +	__le32 size;		/* in bytes of this structure */
+> +	__le32 control_elems;	/* number of control elements */
+> +	__le32 widget_elems;	/* number of widget elements */
+> +	__le32 graph_elems;	/* number of graph elements */
+> +	__le32 pcm_elems;	/* number of PCM elements */
+> +	__le32 dai_link_elems;	/* number of DAI link elements */
+> +	struct snd_soc_tplg_private priv;
+> +} __packed;
+> +
+> +/* Stream Capabilities v4 */
+> +struct snd_soc_tplg_stream_caps_v4 {
+> +	__le32 size;		/* in bytes of this structure */
+> +	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> +	__le64 formats;	/* supported formats SNDRV_PCM_FMTBIT_* */
+> +	__le32 rates;		/* supported rates SNDRV_PCM_RATE_* */
+> +	__le32 rate_min;	/* min rate */
+> +	__le32 rate_max;	/* max rate */
+> +	__le32 channels_min;	/* min channels */
+> +	__le32 channels_max;	/* max channels */
+> +	__le32 periods_min;	/* min number of periods */
+> +	__le32 periods_max;	/* max number of periods */
+> +	__le32 period_size_min;	/* min period size bytes */
+> +	__le32 period_size_max;	/* max period size bytes */
+> +	__le32 buffer_size_min;	/* min buffer size bytes */
+> +	__le32 buffer_size_max;	/* max buffer size bytes */
+> +} __packed;
+> +
+> +/* PCM v4 */
+> +struct snd_soc_tplg_pcm_v4 {
+> +	__le32 size;		/* in bytes of this structure */
+> +	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> +	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> +	__le32 pcm_id;		/* unique ID - used to match with DAI link */
+> +	__le32 dai_id;		/* unique ID - used to match */
+> +	__le32 playback;	/* supports playback mode */
+> +	__le32 capture;		/* supports capture mode */
+> +	__le32 compress;	/* 1 = compressed; 0 = PCM */
+> +	struct snd_soc_tplg_stream
+> stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
+> +	__le32 num_streams;	/* number of streams */
+> +	struct snd_soc_tplg_stream_caps_v4 caps[2]; /* playback and capture
+> +for DAI */ } __packed;
+> +
+> +/* Physical link config v4 */
+> +struct snd_soc_tplg_link_config_v4 {
+> +	__le32 size;            /* in bytes of this structure */
+> +	__le32 id;              /* unique ID - used to match */
+> +	struct snd_soc_tplg_stream
+> stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback
+> and captrure */
+> +	__le32 num_streams;     /* number of streams */
+> +} __packed;
+> +
+>  #endif
+> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c index
+> d66b2e5ccd67..40753c6a2554 100644
+> --- a/sound/soc/soc-topology.c
+> +++ b/sound/soc/soc-topology.c
+> @@ -54,62 +54,6 @@
+>  #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
+>  #define SOC_TPLG_PASS_END	SOC_TPLG_PASS_LINK
+> 
+> -/*
+> - * Old version of ABI structs, supported for backward compatibility.
+> - */
+> -
+> -/* Manifest v4 */
+> -struct snd_soc_tplg_manifest_v4 {
+> -	__le32 size;		/* in bytes of this structure */
+> -	__le32 control_elems;	/* number of control elements */
+> -	__le32 widget_elems;	/* number of widget elements */
+> -	__le32 graph_elems;	/* number of graph elements */
+> -	__le32 pcm_elems;	/* number of PCM elements */
+> -	__le32 dai_link_elems;	/* number of DAI link elements */
+> -	struct snd_soc_tplg_private priv;
+> -} __packed;
+> -
+> -/* Stream Capabilities v4 */
+> -struct snd_soc_tplg_stream_caps_v4 {
+> -	__le32 size;		/* in bytes of this structure */
+> -	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> -	__le64 formats;	/* supported formats SNDRV_PCM_FMTBIT_* */
+> -	__le32 rates;		/* supported rates SNDRV_PCM_RATE_* */
+> -	__le32 rate_min;	/* min rate */
+> -	__le32 rate_max;	/* max rate */
+> -	__le32 channels_min;	/* min channels */
+> -	__le32 channels_max;	/* max channels */
+> -	__le32 periods_min;	/* min number of periods */
+> -	__le32 periods_max;	/* max number of periods */
+> -	__le32 period_size_min;	/* min period size bytes */
+> -	__le32 period_size_max;	/* max period size bytes */
+> -	__le32 buffer_size_min;	/* min buffer size bytes */
+> -	__le32 buffer_size_max;	/* max buffer size bytes */
+> -} __packed;
+> -
+> -/* PCM v4 */
+> -struct snd_soc_tplg_pcm_v4 {
+> -	__le32 size;		/* in bytes of this structure */
+> -	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> -	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
+> -	__le32 pcm_id;		/* unique ID - used to match with DAI link */
+> -	__le32 dai_id;		/* unique ID - used to match */
+> -	__le32 playback;	/* supports playback mode */
+> -	__le32 capture;		/* supports capture mode */
+> -	__le32 compress;	/* 1 = compressed; 0 = PCM */
+> -	struct snd_soc_tplg_stream
+> stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
+> -	__le32 num_streams;	/* number of streams */
+> -	struct snd_soc_tplg_stream_caps_v4 caps[2]; /* playback and capture
+> for DAI */
+> -} __packed;
+> -
+> -/* Physical link config v4 */
+> -struct snd_soc_tplg_link_config_v4 {
+> -	__le32 size;            /* in bytes of this structure */
+> -	__le32 id;              /* unique ID - used to match */
+> -	struct snd_soc_tplg_stream
+> stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback
+> and captrure */
+> -	__le32 num_streams;     /* number of streams */
+> -} __packed;
+> -
+>  /* topology context */
+>  struct soc_tplg {
+>  	const struct firmware *fw;
+> --
+> 2.17.0.441.gb46fe60e1d-goog
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
