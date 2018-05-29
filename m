@@ -1,94 +1,41 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: hda/realtek - Fixup mute led on HP
-	Spectre x360
-Date: Tue, 29 May 2018 11:49:39 +0200
-Message-ID: <20180529094940.2710-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 10EB526766E
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 11:49:43 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Tom Briden <tom@decompile.me.uk>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/6] ASoC: qdsp6: Add support to TDM ports
+Date: Tue, 29 May 2018 11:18:27 +0100
+Message-ID: <20180529101833.30489-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, bgoswami@codeaurora.org
+Cc: mark.rutland@arm.com, lgirdwood@gmail.com, plai@codeaurora.org, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com, spatakok@qti.qualcomm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Tom Briden <tom@decompile.me.uk>
+This patchset adds supports to 40 TDM ports available in q6AFE module.
 
-This patch adds the mute LED control for HP Spectre x360 Kabylake
-model.  The mute LED is controlled via VREF bits on NID 0x1b, so we
-need a new fixup function.
+Among these 6 patches, there are 2 cleanup patches, first one which
+makes i2s use common prepare function and the second one is add
+macros for routings to make it easy to add new port routings.
+Rest of the 4 patches are tdm dt-bindings, afe port prepare support
+in afe, afe-dais support and adding tdm routing update.
 
-Note that this doesn't fix the other issues like the missing speaker
-output on the machine.  They will be addressed by later patches.
+These patches have been tested by Rohit on SDM845.
 
-Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=189331
-Signed-off-by: Tom Briden <tom@decompile.me.uk>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/patch_realtek.c | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+Thanks,
+Srini
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 3af93841abe1..6369964c117a 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -3679,6 +3679,19 @@ static void alc269_fixup_hp_mute_led_mic2(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc269_fixup_hp_mute_led_mic3(struct hda_codec *codec,
-+				const struct hda_fixup *fix, int action)
-+{
-+	struct alc_spec *spec = codec->spec;
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
-+		spec->mute_led_polarity = 0;
-+		spec->mute_led_nid = 0x1b;
-+		spec->gen.vmaster_mute.hook = alc269_fixup_mic_mute_hook;
-+		spec->gen.vmaster_mute_enum = 1;
-+		codec->power_filter = led_power_filter;
-+	}
-+}
-+
- /* update LED status via GPIO */
- static void alc_update_gpio_led(struct hda_codec *codec, unsigned int mask,
- 				bool enabled)
-@@ -5413,6 +5426,7 @@ enum {
- 	ALC269_FIXUP_HP_MUTE_LED,
- 	ALC269_FIXUP_HP_MUTE_LED_MIC1,
- 	ALC269_FIXUP_HP_MUTE_LED_MIC2,
-+	ALC269_FIXUP_HP_MUTE_LED_MIC3,
- 	ALC269_FIXUP_HP_GPIO_LED,
- 	ALC269_FIXUP_HP_GPIO_MIC1_LED,
- 	ALC269_FIXUP_HP_LINE1_MIC1_LED,
-@@ -5672,6 +5686,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_hp_mute_led_mic2,
- 	},
-+	[ALC269_FIXUP_HP_MUTE_LED_MIC3] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc269_fixup_hp_mute_led_mic3,
-+	},
- 	[ALC269_FIXUP_HP_GPIO_LED] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc269_fixup_hp_gpio_led,
-@@ -6494,6 +6512,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x2337, "HP", ALC269_FIXUP_HP_MUTE_LED_MIC1),
- 	SND_PCI_QUIRK(0x103c, 0x221c, "HP EliteBook 755 G2", ALC280_FIXUP_HP_HEADSET_MIC),
- 	SND_PCI_QUIRK(0x103c, 0x8256, "HP", ALC221_FIXUP_HP_FRONT_MIC),
-+	SND_PCI_QUIRK(0x103c, 0x827e, "HP x360", ALC269_FIXUP_HP_MUTE_LED_MIC3),
- 	SND_PCI_QUIRK(0x103c, 0x82bf, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x82c0, "HP", ALC221_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x1043, 0x103e, "ASUS X540SA", ALC256_FIXUP_ASUS_MIC),
+Srinivas Kandagatla (6):
+  ASoC: qdsp6: dt-bindings: Add q6afe tdm dt binding
+  ASoC: qdsp6: qdafe: add support to tdm ports
+  ASoC: qdsp6: q6afe-dai: use q6afe_dai_prepare() for MI2S
+  ASoC: qdsp6: q6afe-dai: add support to tdm dais
+  ASoC: qdsp6: q6routing: Add macros for mixers
+  ASoC: qdsp6: q6routing: Add support to all TDM Mixers
+
+ .../devicetree/bindings/sound/qcom,q6afe.txt       |   68 ++
+ include/dt-bindings/sound/qcom,q6afe.h             |   80 ++
+ sound/soc/qcom/qdsp6/q6afe-dai.c                   |  621 ++++++++++-
+ sound/soc/qcom/qdsp6/q6afe.c                       |  429 +++++++-
+ sound/soc/qcom/qdsp6/q6afe.h                       |   20 +-
+ sound/soc/qcom/qdsp6/q6routing.c                   | 1084 ++++++++++----------
+ 6 files changed, 1733 insertions(+), 569 deletions(-)
+
 -- 
-2.17.0
+2.16.2
