@@ -1,21 +1,17 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 2/3] ALSA: hda: Add Intel NUC5i7RY to the
- power_save blacklist
-Date: Tue, 29 May 2018 09:09:07 +0200
-Message-ID: <bcb8eaa3-fe4a-99af-2187-3c6501271ba1@redhat.com>
-References: <20180513134814.26845-1-hdegoede@redhat.com>
- <20180513134814.26845-2-hdegoede@redhat.com>
+From: mac.chiang@intel.com
+Subject: [PATCH] [PATCH v3] ASoC: Intel: kbl: Move codec sysclk
+	config to codec_init function
+Date: Tue, 29 May 2018 15:43:10 +0800
+Message-ID: <1527579790-1666-1-git-send-email-mac.chiang@intel.com>
+References: <1527234447-13mail-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f41.google.com (mail-wm0-f41.google.com [74.125.82.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C2882671EE
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 09:09:09 +0200 (CEST)
-Received: by mail-wm0-f41.google.com with SMTP id a8-v6so37393733wmg.5
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 00:09:09 -0700 (PDT)
-In-Reply-To: <20180513134814.26845-2-hdegoede@redhat.com>
-Content-Language: en-US
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 496482671EE
+ for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 09:40:24 +0200 (CEST)
+In-Reply-To: <1527234447-13mail-mac.chiang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,48 +21,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+From: Mac Chiang <mac.chiang@intel.com>
 
-On 13-05-18 15:48, Hans de Goede wrote:
-> Power-saving is causing a humming sound when active on the Intel
-> NUC5i7RY, add it to the blacklist.
-> 
-> BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=199607
+On APL, commit fd0f237572ad
+("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
+fixed an issue related to jack detection.
 
-The reporter has provided the requested info now,
-disabling "Loopback Mixing" doesn't help.
+The MCLK for DA7219 does not change in this platform, but is
+currently being configured everytime as part of the platform_clock
+event handler for DAPM. The upshot of this is that we have
+unnecessary calls to this function, and it also means that if
+a stream hasn't yet been started, DA7219 driver does not have the
+correct MCLK rates programmed and so the HP detection feature does
+not operate as expected.
 
-Can we get this patch applied now?
+The same fix is needed on KBL.
 
-Let me know if you want me to send a rebased version.
+This patch rectifies this issue by moving the sysclk call to
+codec_init function so it's only called once at initialisation.
 
-Regards,
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
 
-Hans
+Notes(changelog):
+  v2:
+    - correct the MCLK to 24.576M
+  v3:
+    - described the comments clearly
+---
+ sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-
-
-
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
->   sound/pci/hda/hda_intel.c | 2 ++
->   1 file changed, 2 insertions(+)
-> 
-> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-> index 7ca29b890425..0981c3c64d87 100644
-> --- a/sound/pci/hda/hda_intel.c
-> +++ b/sound/pci/hda/hda_intel.c
-> @@ -2212,6 +2212,8 @@ static struct snd_pci_quirk power_save_blacklist[] = {
->   	SND_PCI_QUIRK(0x1849, 0x0c0c, "Asrock B85M-ITX", 0),
->   	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
->   	SND_PCI_QUIRK(0x1043, 0x8733, "Asus Prime X370-Pro", 0),
-> +	/* https://bugzilla.kernel.org/show_bug.cgi?id=199607 */
-> +	SND_PCI_QUIRK(0x8086, 0x2057, "Intel NUC5i7RYB", 0),
->   	/* https://bugzilla.kernel.org/show_bug.cgi?id=198611 */
->   	SND_PCI_QUIRK(0x17aa, 0x2227, "Lenovo X1 Carbon 3rd Gen", 0),
->   	{}
-> 
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index c332a32..ad3029d 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -66,14 +66,6 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		return -EIO;
+ 	}
+ 
+-	/* Configure sysclk for codec */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+-				     SND_SOC_CLOCK_IN);
+-	if (ret) {
+-		dev_err(card->dev, "can't set codec sysclk configuration\n");
+-		return ret;
+-	}
+-
+ 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+ 		ret = snd_soc_dai_set_pll(codec_dai, 0,
+ 				     DA7219_SYSCLK_MCLK, 0, 0);
+@@ -170,9 +162,18 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_component *component = rtd->codec_dai->component;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_jack *jack;
+ 	int ret;
+ 
++	/* Configure sysclk for codec */
++	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
++						SND_SOC_CLOCK_IN);
++	if (ret) {
++		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
++		return ret;
++	}
++
+ 	/*
+ 	 * Headset buttons map to the google Reference headset.
+ 	 * These can be configured by userspace.
+-- 
+2.7.4
