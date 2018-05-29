@@ -1,18 +1,20 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH] ALSA: usb-audio: Allow non-vmalloc buffer
- for PCM buffers
-Date: Tue, 29 May 2018 11:32:27 +0800
-Message-ID: <201805291158.QzP1l1wJ%fengguang.wu@intel.com>
-References: <20180528130921.16058-1-tiwai@suse.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: [PATCH 1/3] ASoC: simple-card: set cpu dai clk in
+	hw_params
+Date: Tue, 29 May 2018 06:26:24 +0200
+Message-ID: <6f6585a2-918f-ed9f-0965-5eac547933b0@zonque.org>
+References: <20180528193503.18905-1-daniel@zonque.org>
+ <20180528193503.18905-2-daniel@zonque.org>
+ <874lir5jox.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 32B43267196
- for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 05:33:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180528130921.16058-1-tiwai@suse.de>
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id 88399267196
+ for <alsa-devel@alsa-project.org>; Tue, 29 May 2018 06:26:25 +0200 (CEST)
+In-Reply-To: <874lir5jox.wl%kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +24,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, kbuild-all@01.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+On Tuesday, May 29, 2018 03:38 AM, Kuninori Morimoto wrote:
+>> The simple-card driver currently accepts a clock node in the cpu dai
+>> sub-node and only uses it as an alternative to the
+>> 'system-clock-frequency' property to get the current frequency.
+>>
+>> This patch adds another use of the passed clock node. If mclk-fs is
+>> specified, the clock will be set to the calculated rate (stream rate *
+>> mclk_fs) in hw_params. This allows platforms to pass a tuneable clock
+>> as phandle that will automatically be set to the right rates.
+>>
+>> Signed-off-by: Daniel Mack <daniel@zonque.org>
+>> ---
+> (snip)
+>>   	if (mclk_fs) {
+>>   		mclk = params_rate(params) * mclk_fs;
+>> +
+>> +		if (dai_props->cpu_dai.clk)
+>> +			clk_set_rate(dai_props->cpu_dai.clk, mclk);
+>> +
+>>   		ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
+>>   					     SND_SOC_CLOCK_IN);
+>>   		if (ret && ret != -ENOTSUPP)
+> 
+> Having codec is nice balance ?
 
-I love your patch! Perhaps something to improve:
-
-[auto build test WARNING on sound/for-next]
-[also build test WARNING on v4.17-rc7]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Takashi-Iwai/ALSA-usb-audio-Allow-non-vmalloc-buffer-for-PCM-buffers/20180529-093537
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+Ah, yes, why not. Will post a v2.
 
 
-sparse warnings: (new ones prefixed by >>)
-
-   sound/usb/pcm.c:1078:36: sparse: expression using sizeof(void)
-   sound/usb/pcm.c:1078:36: sparse: expression using sizeof(void)
-   sound/usb/pcm.c:1181:25: sparse: expression using sizeof(void)
-   sound/usb/pcm.c:1181:25: sparse: expression using sizeof(void)
->> sound/usb/pcm.c:1729:25: sparse: incorrect type in initializer (different argument counts) @@    expected int ( *open )( ... ) @@    got int ( *open )( ... ) @@
-   sound/usb/pcm.c:1729:25:    expected int ( *open )( ... )
-   sound/usb/pcm.c:1729:25:    got int ( *<noident> )( ... )
->> sound/usb/pcm.c:1730:25: sparse: incorrect type in initializer (different argument counts) @@    expected int ( *close )( ... ) @@    got int ( *close )( ... ) @@
-   sound/usb/pcm.c:1730:25:    expected int ( *close )( ... )
-   sound/usb/pcm.c:1730:25:    got int ( *<noident> )( ... )
-   sound/usb/pcm.c:1741:25: sparse: incorrect type in initializer (different argument counts) @@    expected int ( *open )( ... ) @@    got int ( *open )( ... ) @@
-   sound/usb/pcm.c:1741:25:    expected int ( *open )( ... )
-   sound/usb/pcm.c:1741:25:    got int ( *<noident> )( ... )
-   sound/usb/pcm.c:1742:25: sparse: incorrect type in initializer (different argument counts) @@    expected int ( *close )( ... ) @@    got int ( *close )( ... ) @@
-   sound/usb/pcm.c:1742:25:    expected int ( *close )( ... )
-   sound/usb/pcm.c:1742:25:    got int ( *<noident> )( ... )
-   sound/usb/pcm.c:1729:11: error: initialization of 'int (*)(struct snd_pcm_substream *)' from incompatible pointer type 'int (*)(struct snd_pcm_substream *, int)' [-Werror=incompatible-pointer-types]
-     .open =  snd_usb_pcm_open,
-              ^~~~~~~~~~~~~~~~
-   sound/usb/pcm.c:1729:11: note: (near initialization for 'snd_usb_playback_dev_ops.open')
-   sound/usb/pcm.c:1730:11: error: initialization of 'int (*)(struct snd_pcm_substream *)' from incompatible pointer type 'int (*)(struct snd_pcm_substream *, int)' [-Werror=incompatible-pointer-types]
-     .close = snd_usb_pcm_close,
-              ^~~~~~~~~~~~~~~~~
-   sound/usb/pcm.c:1730:11: note: (near initialization for 'snd_usb_playback_dev_ops.close')
-   sound/usb/pcm.c:1741:11: error: initialization of 'int (*)(struct snd_pcm_substream *)' from incompatible pointer type 'int (*)(struct snd_pcm_substream *, int)' [-Werror=incompatible-pointer-types]
-     .open =  snd_usb_pcm_open,
-              ^~~~~~~~~~~~~~~~
-   sound/usb/pcm.c:1741:11: note: (near initialization for 'snd_usb_capture_dev_ops.open')
-   sound/usb/pcm.c:1742:11: error: initialization of 'int (*)(struct snd_pcm_substream *)' from incompatible pointer type 'int (*)(struct snd_pcm_substream *, int)' [-Werror=incompatible-pointer-types]
-     .close = snd_usb_pcm_close,
-              ^~~~~~~~~~~~~~~~~
-   sound/usb/pcm.c:1742:11: note: (near initialization for 'snd_usb_capture_dev_ops.close')
-   cc1: some warnings being treated as errors
-
-vim +1729 sound/usb/pcm.c
-
-  1727	
-  1728	static const struct snd_pcm_ops snd_usb_playback_dev_ops = {
-> 1729		.open =		snd_usb_pcm_open,
-> 1730		.close =	snd_usb_pcm_close,
-  1731		.ioctl =	snd_pcm_lib_ioctl,
-  1732		.hw_params =	snd_usb_hw_params,
-  1733		.hw_free =	snd_usb_hw_free,
-  1734		.prepare =	snd_usb_pcm_prepare,
-  1735		.trigger =	snd_usb_substream_playback_trigger,
-  1736		.pointer =	snd_usb_pcm_pointer,
-  1737		.page =		snd_pcm_sgbuf_ops_page,
-  1738	};
-  1739	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Thanks,
+Daniel
