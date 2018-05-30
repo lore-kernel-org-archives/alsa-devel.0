@@ -1,7 +1,7 @@
 From: Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH] ASoC: core: Fix return code shown on error for hw_params
-Date: Wed, 30 May 2018 16:12:58 +0100
-Message-ID: <1527693178-5038-1-git-send-email-jonathanh@nvidia.com>
+Subject: [PATCH RESEND] ASoC: core: Fix return code shown on error for hw_params
+Date: Wed, 30 May 2018 16:15:19 +0100
+Message-ID: <1527693319-5148-1-git-send-email-jonathanh@nvidia.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -10,8 +10,8 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jarosl
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-The call to hw_params for a component fails the error code is held by
-the variable '__ret' but the error message displays the value held by
+When the call to hw_params for a component fails, the error code is held
+by the variable '__ret' but the error message displays the value held by
 the variable 'ret'. Fix the return code shown when hw_params fails for
 a component.
 
