@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix 0-day warnings with
-	snd_soc_new_compress()" to the asoc tree
-Date: Wed, 30 May 2018 12:02:46 +0100
-Message-ID: <E1fNysQ-0006gv-Ez@debutante>
-References: <20180529233002.23656-1-pierre-louis.bossart@linux.intel.com>
+From: Oleksandr Andrushchenko <andr2000@gmail.com>
+Subject: Re: [Xen-devel] [PATCH] ALSA: xen-front: freeing an
+	error pointer
+Date: Wed, 30 May 2018 14:14:58 +0300
+Message-ID: <588658f1-520f-be06-3ad5-9b97e3f8e866@gmail.com>
+References: <20180530103655.bnjzq2jpfrjjwvvj@kili.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A3B122676DD
- for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 13:02:51 +0200 (CEST)
-In-Reply-To: <20180529233002.23656-1-pierre-louis.bossart@linux.intel.com>
+Received: from mail-lf0-f68.google.com (mail-lf0-f68.google.com
+ [209.85.215.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B82B2676DC
+ for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 13:15:01 +0200 (CEST)
+Received: by mail-lf0-f68.google.com with SMTP id n18-v6so3656202lfh.10
+ for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 04:15:00 -0700 (PDT)
+In-Reply-To: <20180530103655.bnjzq2jpfrjjwvvj@kili.mountain>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,68 +25,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>, Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+Cc: xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: fix 0-day warnings with snd_soc_new_compress()
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0b014d72ebae14c0c6ab3fb36a442fda91e1a1b3 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 29 May 2018 18:30:02 -0500
-Subject: [PATCH] ASoC: fix 0-day warnings with snd_soc_new_compress()
-
-All conditionally-defined routines in include/sound/soc.h expose a
-static inline fallback to avoid 0-day warnings and compilation issues,
-except snd_soc_new_compress().
-
-Fixes: 5db6aab6f36f ('ASoC: topology: Add support for compressed PCMs')
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 600a7ebd10c0..1378dcd2128a 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -462,6 +462,11 @@ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
- int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
- #ifdef CONFIG_SND_SOC_COMPRESS
- int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
-+#else
-+static inline int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
-+{
-+	return 0;
-+}
- #endif
- 
- void snd_soc_disconnect_sync(struct device *dev);
--- 
-2.17.0
+On 05/30/2018 01:36 PM, Dan Carpenter wrote:
+> kfree() doesn't accept error pointers so I've set "str" to NULL on these
+> paths.
+>
+> Fixes: fd3b36045c2c ("ALSA: xen-front: Read sound driver configuration from Xen store")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> diff --git a/sound/xen/xen_snd_front_cfg.c b/sound/xen/xen_snd_front_cfg.c
+> index 38c7e1eefbb9..68dcd7d1f09e 100644
+> --- a/sound/xen/xen_snd_front_cfg.c
+> +++ b/sound/xen/xen_snd_front_cfg.c
+> @@ -306,6 +306,7 @@ static int cfg_get_stream_type(const char *path, int index,
+>   	str = xenbus_read(XBT_NIL, stream_path, XENSND_FIELD_TYPE, NULL);
+>   	if (IS_ERR(str)) {
+>   		ret = PTR_ERR(str);
+> +		str = NULL;
+>   		goto fail;
+>   	}
+>   
+> @@ -347,6 +348,7 @@ static int cfg_stream(struct xen_snd_front_info *front_info,
+>   	str = xenbus_read(XBT_NIL, stream_path, XENSND_FIELD_TYPE, NULL);
+>   	if (IS_ERR(str)) {
+>   		ret = PTR_ERR(str);
+> +		str = NULL;
+>   		goto fail;
+>   	}
+>   
+>
+> _______________________________________________
+> Xen-devel mailing list
+> Xen-devel@lists.xenproject.org
+> https://lists.xenproject.org/mailman/listinfo/xen-devel
+Thank you for your patch,
+Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
