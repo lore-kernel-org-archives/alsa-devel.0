@@ -1,38 +1,29 @@
 From: Jon Hunter <jonathanh@nvidia.com>
-Subject: [PATCH RESEND] ASoC: core: Fix return code shown on error for hw_params
-Date: Wed, 30 May 2018 16:15:19 +0100
-Message-ID: <1527693319-5148-1-git-send-email-jonathanh@nvidia.com>
+Subject: Re: [PATCH] ASoC: core: Fix return code shown on error for hw_params
+Date: Wed, 30 May 2018 16:16:31 +0100
+Message-ID: <cecd3b0d-b4b4-9b22-13be-3f6c51264cfe@nvidia.com>
+References: <1527693178-5038-1-git-send-email-jonathanh@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1527693178-5038-1-git-send-email-jonathanh@nvidia.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When the call to hw_params for a component fails, the error code is held
-by the variable '__ret' but the error message displays the value held by
-the variable 'ret'. Fix the return code shown when hw_params fails for
-a component.
 
-Fixes: b8135864d4d3 ("ASoC: snd_soc_component_driver has snd_pcm_ops")
-Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
----
- sound/soc/soc-pcm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 30/05/18 16:12, Jon Hunter wrote:
+> The call to hw_params for a component fails the error code is held by
+> the variable '__ret' but the error message displays the value held by
+> the variable 'ret'. Fix the return code shown when hw_params fails for
+> a component.
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 2df4719a84db..9376eb476364 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -956,7 +956,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		if (__ret < 0) {
- 			dev_err(component->dev,
- 				"ASoC: %s hw params failed: %d\n",
--				component->name, ret);
-+				component->name, __ret);
- 			ret = __ret;
- 		}
- 	}
+Sorry, just resent this as I realise the description does not read correctly!
+
+Jon
+
 -- 
-2.7.4
+nvpublic
