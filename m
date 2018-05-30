@@ -1,15 +1,14 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: mediatek: export mtk-afe symbols as
-	needed
-Date: Thu, 31 May 2018 00:00:35 +0200
-Message-ID: <20180530220057.1419933-1-arnd@arndb.de>
+Subject: [PATCH] ALSA: unhide snd_soc_new_compress() declaration
+Date: Thu, 31 May 2018 00:06:03 +0200
+Message-ID: <20180530220628.1613824-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 1DB6C2677D1
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 00:01:09 +0200 (CEST)
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id 940EB2677D4
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 00:06:51 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,68 +18,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org, KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Arnd Bergmann <arnd@arndb.de>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The new mt6797-afe driver uses some functions in a common file, which
-works for a built-in driver but fails for a loadable module:
+My randconfig build setup came across a new build failure today:
 
-ERROR: "mtk_afe_pcm_free" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
-ERROR: "mtk_afe_add_sub_dai_control" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
-ERROR: "mtk_afe_pcm_new" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
-ERROR: "mtk_afe_combine_sub_dai" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
-ERROR: "mtk_afe_pcm_ops" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
+sound/soc/soc-topology.c: In function 'soc_tplg_dai_create':
+sound/soc/soc-topology.c:1758:27: error: 'snd_soc_new_compress' undeclared (first use in this function); did you mean 'snd_soc_compr_ops'?
+   dai_drv->compress_new = snd_soc_new_compress;
 
-This exports the five symbols above for modules.
+Simply making that prototype visible again fixes the build failure
+for me, though I'm not exactly sure why we don't get a link
+error now.
 
-Fixes: b3c702f56bf5 ("ASoC: mt6797: combine DAI to register component")
+The reference to snd_soc_new_compress() was added a few weeks
+ago and seems to have caused the problem.
+
+Fixes: 5db6aab6f36f ("ASoC: topology: Add support for compressed PCMs")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/mediatek/common/mtk-afe-platform-driver.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/sound/soc.h | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-index 00618587ef1e..51ec4ff6ed95 100644
---- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-+++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
-@@ -57,6 +57,7 @@ int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe)
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 600a7ebd10c0..8e073865bde3 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -460,9 +460,7 @@ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+ 						   const char *driver_name);
  
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(mtk_afe_combine_sub_dai);
+ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
+-#ifdef CONFIG_SND_SOC_COMPRESS
+ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
+-#endif
  
- int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
- {
-@@ -90,6 +91,7 @@ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
- 	return 0;
+ void snd_soc_disconnect_sync(struct device *dev);
  
- }
-+EXPORT_SYMBOL_GPL(mtk_afe_add_sub_dai_control);
- 
- static snd_pcm_uframes_t mtk_afe_pcm_pointer
- 			 (struct snd_pcm_substream *substream)
-@@ -130,6 +132,7 @@ const struct snd_pcm_ops mtk_afe_pcm_ops = {
- 	.ioctl = snd_pcm_lib_ioctl,
- 	.pointer = mtk_afe_pcm_pointer,
- };
-+EXPORT_SYMBOL_GPL(mtk_afe_pcm_ops);
- 
- int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
- {
-@@ -143,11 +146,13 @@ int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 						     afe->dev,
- 						     size, size);
- }
-+EXPORT_SYMBOL_GPL(mtk_afe_pcm_new);
- 
- void mtk_afe_pcm_free(struct snd_pcm *pcm)
- {
- 	snd_pcm_lib_preallocate_free_for_all(pcm);
- }
-+EXPORT_SYMBOL_GPL(mtk_afe_pcm_free);
- 
- const struct snd_soc_component_driver mtk_afe_pcm_platform = {
- 	.name = AFE_PCM_NAME,
 -- 
 2.9.0
