@@ -1,21 +1,15 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: Remove clkdiv and pll setters from pxa dais
-Date: Wed, 30 May 2018 21:15:37 +0200
-Message-ID: <87tvqprm3q.fsf@belgarion.home>
-References: <ca4efb05-36d3-1571-6336-394b75ecc843@zonque.org>
- <20180530092445.GC6920@sirena.org.uk>
- <47e32456-c603-1c9c-b6ef-3c98f000caf9@zonque.org>
- <20180530102028.GF6920@sirena.org.uk>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH v2] ASoC: simple-card: set cpu dai clk in
+	hw_params
+Date: Wed, 30 May 2018 21:45:56 +0200
+Message-ID: <20180530194556.407-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp11.smtpout.orange.fr
- [80.12.242.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 867DE267796
- for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 21:15:40 +0200 (CEST)
-In-Reply-To: <20180530102028.GF6920@sirena.org.uk> (Mark Brown's message of
- "Wed, 30 May 2018 11:20:28 +0100")
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE8FC2677A1
+ for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 21:46:04 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +19,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>
+To: lgirdwood@gmail.com, broonie@kernel.org, kuninori.morimoto.gx@renesas.com
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, robert.jarzmik@free.fr, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@kernel.org> writes:
-
-> On Wed, May 30, 2018 at 11:47:15AM +0200, Daniel Mack wrote:
->> On Wednesday, May 30, 2018 11:24 AM, Mark Brown wrote:
->
->> > I think it's copied from somewhere else probably, it looks like there's
->> > a bit of code motion going on.  I bet it was just for I2S, keeping the
->> > extra clock cycle for the initial rising edge in the frame but not
->> > actually required.
->
->> Hmm, okay. You happen to still have access to that board for regression
->> tests?
->
-> No, I doubt anyone does - it was the PXA32x reference platform.  The
-> ones I'm aware of unfortunately got thrown out.
-
-I have a zylonite based on a pxa310 in my non-regression bench, if that can
-help. That's one of the targets I use to validate patches against the PXA tree.
-
-I'll let you come up with a patch. Meanwhile I'll try to figure out if I can
-make the audio alive again.
-
-Cheers.
-
--- 
-Robert
+VGhlIHNpbXBsZS1jYXJkIGRyaXZlciBjdXJyZW50bHkgYWNjZXB0cyBhIGNsb2NrIG5vZGUgaW4g
+dGhlIGNwdSBkYWkKc3ViLW5vZGUgYW5kIG9ubHkgdXNlcyBpdCBhcyBhbiBhbHRlcm5hdGl2ZSB0
+byB0aGUKJ3N5c3RlbS1jbG9jay1mcmVxdWVuY3knIHByb3BlcnR5IHRvIGdldCB0aGUgY3VycmVu
+dCBmcmVxdWVuY3kuCgpUaGlzIHBhdGNoIGFkZHMgYW5vdGhlciB1c2Ugb2YgdGhlIHBhc3NlZCBj
+bG9jayBub2RlLiBJZiBtY2xrLWZzIGlzCnNwZWNpZmllZCwgdGhlIGNsb2NrcyBpbiBjcHUgYW5k
+IGNvZGVjIGRhaSBzdWItbm9kZXMgd2lsbCBiZSBzZXQgdG8KdGhlIGNhbGN1bGF0ZWQgcmF0ZSAo
+c3RyZWFtIHJhdGUgKiBtY2xrX2ZzKSBpbiBod19wYXJhbXMuCgpUaGlzIGFsbG93cyBwbGF0Zm9y
+bXMgdG8gcGFzcyB0dW5lYWJsZSBjbG9ja3MgYXMgcGhhbmRsZSB0aGF0IHdpbGwKYXV0b21hdGlj
+YWxseSBiZSBzZXQgdG8gdGhlIHJpZ2h0IHJhdGVzLgoKU2lnbmVkLW9mZi1ieTogRGFuaWVsIE1h
+Y2sgPGRhbmllbEB6b25xdWUub3JnPgotLS0KClRoaXMgaXMgdGhlIG9ubHkgcGF0Y2ggdGhhdCdz
+IGxlZnQgZnJvbSB0aGUgc2VyaWVzIG9mIHRocmVlIHRoYXQgSQpwb3N0ZWQgZWFybGllci4KCnYx
+IOKGkiB2MjoKCiAqIEFwcGx5IHRoZSBzZXR0aW5nIHRvIGJvdGggdGhlIGNvZGVjIGFuZCB0aGUg
+Y3B1IGRhaQogKiBDaGVjayBmb3IgZXJyb3JzIGZyb20gY2xrX3NldF9yYXRlKCkgYW5kIGF2b2lk
+IHVubmVjZXNzYXJ5IHJhdGUKICAgY2hhbmdlcy4KCiAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9z
+b3VuZC9zaW1wbGUtY2FyZC50eHQgICAgICAgfCAgNSArKysrKwogc291bmQvc29jL2dlbmVyaWMv
+c2ltcGxlLWNhcmQuYyAgICAgICAgICAgICAgICAgICAgIHwgMjEgKysrKysrKysrKysrKysrKysr
+KysrCiAyIGZpbGVzIGNoYW5nZWQsIDI2IGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9Eb2N1
+bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc2ltcGxlLWNhcmQudHh0IGIvRG9j
+dW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1jYXJkLnR4dAppbmRl
+eCAxN2MxM2U3NDY2N2QuLmE0YzcyZDA5Y2Q0NSAxMDA2NDQKLS0tIGEvRG9jdW1lbnRhdGlvbi9k
+ZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1jYXJkLnR4dAorKysgYi9Eb2N1bWVudGF0
+aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc2ltcGxlLWNhcmQudHh0CkBAIC04Niw2ICs4
+NiwxMSBAQCBPcHRpb25hbCBDUFUvQ09ERUMgc3Vibm9kZXMgcHJvcGVydGllczoKIAkJCQkJICBp
+biBkYWkgc3RhcnR1cCgpIGFuZCBkaXNhYmxlZCB3aXRoCiAJCQkJCSAgY2xrX2Rpc2FibGVfdW5w
+cmVwYXJlKCkgaW4gZGFpCiAJCQkJCSAgc2h1dGRvd24oKS4KKwkJCQkJICBJZiBhIGNsb2NrIGlz
+IHNwZWNpZmllZCBhbmQgYQorCQkJCQkgIG11bHRpcGxpY2F0aW9uIGZhY3RvciBpcyBnaXZlbiB3
+aXRoCisJCQkJCSAgbWNsay1mcywgdGhlIGNsb2NrIHdpbGwgYmUgc2V0IHRvIHRoZQorCQkJCQkg
+IGNhbGN1bGF0ZWQgbWNsayBmcmVxdWVuY3kgd2hlbiB0aGUKKwkJCQkJICBzdHJlYW0gc3RhcnRz
+LgogLSBzeXN0ZW0tY2xvY2stZGlyZWN0aW9uLW91dAkJOiBzcGVjaWZpZXMgY2xvY2sgZGlyZWN0
+aW9uIGFzICdvdXQnIG9uCiAJCQkJCSAgaW5pdGlhbGl6YXRpb24uIEl0IGlzIHVzZWZ1bCBmb3Ig
+c29tZSBhQ1BVcyB3aXRoCiAJCQkJCSAgZml4ZWQgY2xvY2tzLgpkaWZmIC0tZ2l0IGEvc291bmQv
+c29jL2dlbmVyaWMvc2ltcGxlLWNhcmQuYyBiL3NvdW5kL3NvYy9nZW5lcmljL3NpbXBsZS1jYXJk
+LmMKaW5kZXggNjk1OWE3NGE2ZjQ5Li40YTUxNmM0MjhiM2QgMTAwNjQ0Ci0tLSBhL3NvdW5kL3Nv
+Yy9nZW5lcmljL3NpbXBsZS1jYXJkLmMKKysrIGIvc291bmQvc29jL2dlbmVyaWMvc2ltcGxlLWNh
+cmQuYwpAQCAtMTM1LDYgKzEzNSwxOCBAQCBzdGF0aWMgdm9pZCBhc29jX3NpbXBsZV9jYXJkX3No
+dXRkb3duKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtKQogCWFzb2Nfc2ltcGxl
+X2NhcmRfY2xrX2Rpc2FibGUoJmRhaV9wcm9wcy0+Y29kZWNfZGFpKTsKIH0KIAorc3RhdGljIGlu
+dCBhc29jX3NpbXBsZV9zZXRfY2xrX3JhdGUoc3RydWN0IGFzb2Nfc2ltcGxlX2RhaSAqc2ltcGxl
+X2RhaSwKKwkJCQkgICAgdW5zaWduZWQgbG9uZyByYXRlKQoreworCWlmICghc2ltcGxlX2RhaS0+
+Y2xrKQorCQlyZXR1cm4gMDsKKworCWlmIChjbGtfZ2V0X3JhdGUoc2ltcGxlX2RhaS0+Y2xrKSA9
+PSByYXRlKQorCQlyZXR1cm4gMDsKKworCXJldHVybiBjbGtfc2V0X3JhdGUoc2ltcGxlX2RhaS0+
+Y2xrLCByYXRlKTsKK30KKwogc3RhdGljIGludCBhc29jX3NpbXBsZV9jYXJkX2h3X3BhcmFtcyhz
+dHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSwKIAkJCQkgICAgICBzdHJ1Y3Qgc25k
+X3BjbV9od19wYXJhbXMgKnBhcmFtcykKIHsKQEAgLTE1NCw2ICsxNjYsMTUgQEAgc3RhdGljIGlu
+dCBhc29jX3NpbXBsZV9jYXJkX2h3X3BhcmFtcyhzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1
+YnN0cmVhbSwKIAogCWlmIChtY2xrX2ZzKSB7CiAJCW1jbGsgPSBwYXJhbXNfcmF0ZShwYXJhbXMp
+ICogbWNsa19mczsKKworCQlyZXQgPSBhc29jX3NpbXBsZV9zZXRfY2xrX3JhdGUoJmRhaV9wcm9w
+cy0+Y29kZWNfZGFpLCBtY2xrKTsKKwkJaWYgKHJldCA8IDApCisJCQlyZXR1cm4gcmV0OworCisJ
+CXJldCA9IGFzb2Nfc2ltcGxlX3NldF9jbGtfcmF0ZSgmZGFpX3Byb3BzLT5jcHVfZGFpLCBtY2xr
+KTsKKwkJaWYgKHJldCA8IDApCisJCQlyZXR1cm4gcmV0OworCiAJCXJldCA9IHNuZF9zb2NfZGFp
+X3NldF9zeXNjbGsoY29kZWNfZGFpLCAwLCBtY2xrLAogCQkJCQkgICAgIFNORF9TT0NfQ0xPQ0tf
+SU4pOwogCQlpZiAocmV0ICYmIHJldCAhPSAtRU5PVFNVUFApCi0tIAoyLjE0LjMKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
