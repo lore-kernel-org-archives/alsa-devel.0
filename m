@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/3] ASoC: simple-card: make sysclk index
-	configurable
-Date: Wed, 30 May 2018 10:49:01 +0100
-Message-ID: <20180530094901.GE6920@sirena.org.uk>
-References: <20180528193503.18905-1-daniel@zonque.org>
- <20180528193503.18905-3-daniel@zonque.org>
- <20180529112447.GC23509@sirena.org.uk>
- <f130a86f-deca-b5cf-da34-5cf52a9c39fc@zonque.org>
+Subject: Re: Remove clkdiv and pll setters from pxa dais
+Date: Wed, 30 May 2018 11:20:28 +0100
+Message-ID: <20180530102028.GF6920@sirena.org.uk>
+References: <ca4efb05-36d3-1571-6336-394b75ecc843@zonque.org>
+ <20180530092445.GC6920@sirena.org.uk>
+ <47e32456-c603-1c9c-b6ef-3c98f000caf9@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5965920488156982661=="
+Content-Type: multipart/mixed; boundary="===============8950035364198024954=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 36C7F267688
- for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 11:49:02 +0200 (CEST)
-In-Reply-To: <f130a86f-deca-b5cf-da34-5cf52a9c39fc@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6235E2676C4
+ for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 12:20:29 +0200 (CEST)
+In-Reply-To: <47e32456-c603-1c9c-b6ef-3c98f000caf9@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,70 +23,91 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Daniel Mack <daniel@zonque.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5965920488156982661==
+--===============8950035364198024954==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gMR3gsNFwZpnI/Ts"
+	protocol="application/pgp-signature"; boundary="jkO+KyKz7TfD21mV"
 Content-Disposition: inline
 
 
---gMR3gsNFwZpnI/Ts
+--jkO+KyKz7TfD21mV
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, May 29, 2018 at 10:23:48PM +0200, Daniel Mack wrote:
-> On Tuesday, May 29, 2018 01:24 PM, Mark Brown wrote:
+On Wed, May 30, 2018 at 11:47:15AM +0200, Daniel Mack wrote:
+> On Wednesday, May 30, 2018 11:24 AM, Mark Brown wrote:
 
-> > If we want to get more complex usage of clocks in the DT we should be
-> > moving the CODECs over to using the standard clock bindings for this
-> > stuff rather than inventing custom ASoC clock bindings for it.  That way
-> > we don't have to deal with the pain of trying to join things up in the
-> > future.
+> > I think it's copied from somewhere else probably, it looks like there's
+> > a bit of code motion going on.  I bet it was just for I2S, keeping the
+> > extra clock cycle for the initial rising edge in the frame but not
+> > actually required.
 
-> This will get rather complex too though, because most codec and cpu dais can
-> act as clock source xor clock consumer, depending on how the hardware is
-> built. Would you want to represent everything, bit clocks, frame clocks,
-> master clocks etc as clock nodes?
+> Hmm, okay. You happen to still have access to that board for regression
+> tests?
 
-We're probably OK just going down to the master clocks mostly I think.
-For the clocks on the actual bus we can probably have helpers in the
-core that generate the clocks and the drivers just tell the core the
-rates.
+No, I doubt anyone does - it was the PXA32x reference platform.  The
+ones I'm aware of unfortunately got thrown out.
 
-> If that's the case, could you depict how the DT bindings should look like by
-> example?
+> > > So for both 22050 and 44100, the base frequency and all dividers are the
+> > > same, which can't be right. I assume these rates have never been used. I'll
+> > > ignore this and implement the table in the datasheet which should do the
+> > > right thing. Philipp?
 
-I've not been able to dig far enough into the clock bindings yet.
-That's not super helpful for you I appreciate, TBH nobody seemed to
-particularly need this so it wasn't super urgent - most of the things
-using alternative clocks on devices seem to also need custom machine
-drivers for other reasons.
+> > That looks buggy, yeah.  I doubt anyone ever used 22.05kHz.
 
---gMR3gsNFwZpnI/Ts
+> AFAIU, it's rather the 44.1 rate that looks wrong. But okay, we'll see.
+
+That's definitely been tested...  perhaps the parent rate is set
+incorrectly?
+
+> > > What we need, however, is a way to describe whether the dai is mclk master
+> > > or slave. Would we add a DT propery for that?
+
+> > That might be sensible, though the MCLK isn't really part of the DAI.
+
+> Well, the DAI may well be the producer of the MCLK. If there's only a
+> master/slave mode to decide, we could set that property on the machine side
+
+It might be the same physical block, but the MCLK could also come from
+somewhere completely different and not even need to be in sync with the
+rest of the clocks.
+
+> as well, in the subnode of simple-card for instance (similar to
+> 'bitclock-master' and 'frame-master'), but then the question is which
+> callback to use for propagating that master/slave setting to the cpu dai. We
+> will, however, need such a callback anyway for non-DT boards, as those won't
+> go away anytime soon. Could we squeeze that into the SND_SOC_DAIFMT_ mask?
+> Not sure which options would be acceptable.
+
+DAIFMT feels like a push, like I say we'll need to handle clocks that
+aren't aligned with the DAI as well.  Possibly either the existing
+set_sysclk() operation or some new operation.
+
+--jkO+KyKz7TfD21mV
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsOc4wACgkQJNaLcl1U
-h9AjtAf/cdC7eyZp5ggY3+UOZi//ylePT/NRAxdS5SWZoVG7ogYCCU6WUSSEc4yX
-hxtvmlBeLHWVzyhVybabpeHCZR2r21+MngsVYefTP95M79nvBQKZXKEY2lMrtf9y
-ntPv2pMDcXWd4jgPT7r4REyL2icvw3AaOjqJPzl2GSGQNCZyCB20iQ7tJN3VWcDy
-xwBKOrf8XQA4qmXX2hBsJI3mHfLXSkTfF1AYG7Br0nHu/3EfOPynpB5htQku41u2
-yFR9yzdbFX11UtfDwge7GlGT6I3awqSwJ/a+ewUfHcBVEZAdPPZH3AUNwwRHIMwi
-23/iwm6DEvrClu7MFLKcxb7+gMHTwg==
-=l7v+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsOeusACgkQJNaLcl1U
+h9BpgAf/Xf3/sXWCHhnNZfmZNNQu7U8s8GM/A48ySZ3Iq3bbcyucFSL/nJBrmj6C
+JlnKxTnaJUKinoxxUW1WCJ4EJHPBO25yu8bOBSIY2B45c5CqFT50hP2Zb85Hv+dM
+QZsF4jNyBDZBzXYb+8ffERWO/2rvEaGZv5zSg36icZ62+O+9ybFE1bTko/guONP5
+1pefOwaM3z3XVagMCuETnNl4K+tn4dZOphrBsTNhQ3k/61kHLvcOGYWjG0JGnxZ4
+NyIZ00OmEcldpWDtH8TtFA88kgkHXeAlIJtZro+X3YJNIiF/uSyLWW5mNZtgJWi6
+JDB9mEpfc7zZgITfvovTnirOvi7wzg==
+=BEBA
 -----END PGP SIGNATURE-----
 
---gMR3gsNFwZpnI/Ts--
+--jkO+KyKz7TfD21mV--
 
---===============5965920488156982661==
+--===============8950035364198024954==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5965920488156982661==--
+--===============8950035364198024954==--
