@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-audmux: add RXFS/RXCLK defines for
-	6-wire connections" to the asoc tree
-Date: Wed, 30 May 2018 12:02:42 +0100
-Message-ID: <E1fNysM-0006fs-FS@debutante>
-References: <20180523094300.8780-1-m.felsch@pengutronix.de>
+Subject: Applied "ASoC: fix 0-day warnings with
+	snd_soc_new_compress()" to the asoc tree
+Date: Wed, 30 May 2018 12:02:46 +0100
+Message-ID: <E1fNysQ-0006gv-Ez@debutante>
+References: <20180529233002.23656-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BAE622676D7
- for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 13:02:47 +0200 (CEST)
-In-Reply-To: <20180523094300.8780-1-m.felsch@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A3B122676DD
+ for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 13:02:51 +0200 (CEST)
+In-Reply-To: <20180529233002.23656-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, timur@tabi.org, Xiubo.Lee@gmail.com, lgirdwood@gmail.com, Marco Felsch <m.felsch@pengutronix.de>, nicoleotsuka@gmail.com, broonie@kernel.org, kernel@pengutronix.de, fabio.estevam@nxp.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-audmux: add RXFS/RXCLK defines for 6-wire connections
+   ASoC: fix 0-day warnings with snd_soc_new_compress()
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From c25f2566250cc58491a489c854013aecdf75dfef Mon Sep 17 00:00:00 2001
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Date: Wed, 23 May 2018 11:43:00 +0200
-Subject: [PATCH] ASoC: imx-audmux: add RXFS/RXCLK defines for 6-wire
- connections
+>From 0b014d72ebae14c0c6ab3fb36a442fda91e1a1b3 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Tue, 29 May 2018 18:30:02 -0500
+Subject: [PATCH] ASoC: fix 0-day warnings with snd_soc_new_compress()
 
-In asynchronous mode, a RxFS and RxClk connection needs to be made between
-two ports. Add a define for the bit to be set in the *SEL fields.
+All conditionally-defined routines in include/sound/soc.h expose a
+static inline fallback to avoid 0-day warnings and compilation issues,
+except snd_soc_new_compress().
 
-Signed-off-by: Philipp Zabel <p.zabel@pengutronix.de>
-[m.felsch@pengutronix.de: fixed comment to include i.MX21 and 35]
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+Fixes: 5db6aab6f36f ('ASoC: topology: Add support for compressed PCMs')
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/dt-bindings/sound/fsl-imx-audmux.h | 7 +++++++
- 1 file changed, 7 insertions(+)
+ include/sound/soc.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/include/dt-bindings/sound/fsl-imx-audmux.h b/include/dt-bindings/sound/fsl-imx-audmux.h
-index 751fe1416f95..15f138bebe16 100644
---- a/include/dt-bindings/sound/fsl-imx-audmux.h
-+++ b/include/dt-bindings/sound/fsl-imx-audmux.h
-@@ -25,6 +25,13 @@
- #define MX51_AUDMUX_PORT6		5
- #define MX51_AUDMUX_PORT7		6
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 600a7ebd10c0..1378dcd2128a 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -462,6 +462,11 @@ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
+ int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
+ #ifdef CONFIG_SND_SOC_COMPRESS
+ int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
++#else
++static inline int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num)
++{
++	return 0;
++}
+ #endif
  
-+/*
-+ * TFCSEL/RFCSEL (i.MX27) or TFSEL/TCSEL/RFSEL/RCSEL (i.MX31/51/53/6Q)
-+ * can be sourced from Rx/Tx.
-+ */
-+#define IMX_AUDMUX_RXFS			0x8
-+#define IMX_AUDMUX_RXCLK		0x8
-+
- /* Register definitions for the i.MX21/27 Digital Audio Multiplexer */
- #define IMX_AUDMUX_V1_PCR_INMMASK(x)	((x) & 0xff)
- #define IMX_AUDMUX_V1_PCR_INMEN		(1 << 8)
+ void snd_soc_disconnect_sync(struct device *dev);
 -- 
 2.17.0
