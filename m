@@ -1,15 +1,20 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Remove clkdiv and pll setters from pxa dais
-Date: Wed, 30 May 2018 10:35:25 +0200
-Message-ID: <ca4efb05-36d3-1571-6336-394b75ecc843@zonque.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: simple-card: add support for
+ clock divider setup
+Date: Wed, 30 May 2018 10:10:11 +0100
+Message-ID: <20180530091011.GA6920@sirena.org.uk>
+References: <20180528193503.18905-1-daniel@zonque.org>
+ <20180528193503.18905-4-daniel@zonque.org>
+ <20180529113509.GE23509@sirena.org.uk>
+ <d6b9da97-8c71-ccfb-07e4-353620396a31@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8338851641267343715=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa0.perex.cz (Postfix) with ESMTP id BA3542677C6
- for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 10:35:27 +0200 (CEST)
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D4DA266F88
+ for <alsa-devel@alsa-project.org>; Wed, 30 May 2018 11:10:14 +0200 (CEST)
+In-Reply-To: <d6b9da97-8c71-ccfb-07e4-353620396a31@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,84 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>
-Cc: ALSA development <alsa-devel@alsa-project.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Haojian Zhuang <haojian.zhuang@gmail.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
 
-As discussed in the simple-card thread the other day, the .set_clkdiv 
-and .set_pll callbacks for DAIs are considered legacy. In order to 
-support PXA platforms with DT, we need get rid of those for the DAIs of 
-PXA hardware.
-
-On the good side, pxa-ssp is the only problematic one of the PXA dais, 
-the ac97, i2s don't have any special clocking knbos, and the mmp-sspa 
-should be straight forward to fix.
-
-I looked into pxa-ssp and it seems the conversion to calculate the audio 
-clock dividers automatically seems doable.
-
-There are currently 4 platforms that use this cpu dai in mainline that 
-also use snd_soc_dai_set_pll() or snd_soc_dai_set_clkdiv():
-
-  * Zylonite
-  * Brownstone
-  * Magician
-  * Raumfeld
-
-I can test modifications on the latter one, but for the others, I need 
-to understand what the machine drivers are doing, and there are some 
-bits I don't grok.
-
-For instance, code for Zylonite does this:
-
-         /* Add 1 to the width for the leading clock cycle */
-         pll_out = rate * (width + 1) * 8;
-
-The commit which introduced these lines dates back to 2009 and was done 
-by you, Mark. Can you remember what the reason for this was? I've never 
-seen sample frames with 17 bits :) This is a setup that we can't 
-generically describe through .hw_params() or .dai_fmt() in the cpu dai, 
-correct?
-
-In the magician code, you'll find this:
-
-         case 22050:
-                 acps = 5622000;
-                 switch (width) {
-                 case 16:
-                         /* 702750 Hz ~= 22050 Hz * 32 (-0.41%) */
-                         acds = PXA_SSP_CLK_AUDIO_DIV_2;
-                         break;
-                 default: /* 32 */
-                         /* 1405500 Hz ~= 22050 Hz * 64 (-0.41%) */
-                         acds = PXA_SSP_CLK_AUDIO_DIV_1;
-                 }
-                 break;
-         case 44100:
-                 acps = 5622000;
-                 switch (width) {
-                 case 16:
-                         /* 1405500 Hz ~= 44100 Hz * 32 (-0.41%) */
-                         acds = PXA_SSP_CLK_AUDIO_DIV_2;
-                         break;
-                 default: /* 32 */
-                         /* 2811000 Hz ~= 44100 Hz * 64 (-0.41%) */
-                         acds = PXA_SSP_CLK_AUDIO_DIV_1;
-                 }
-                 break;
+--===============8338851641267343715==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
 
 
-So for both 22050 and 44100, the base frequency and all dividers are the 
-same, which can't be right. I assume these rates have never been used. 
-I'll ignore this and implement the table in the datasheet which should 
-do the right thing. Philipp?
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-What we need, however, is a way to describe whether the dai is mclk 
-master or slave. Would we add a DT propery for that?
+On Tue, May 29, 2018 at 10:29:10PM +0200, Daniel Mack wrote:
+> On Tuesday, May 29, 2018 01:35 PM, Mark Brown wrote:
+
+> > Why do we have anything that actually needs this?  The devices with a
+> > set_clkdiv() operation are pretty legacy at this point and most of them
+> > should just be figuring out the dividers for themselves anyway.
+
+> The PXA platform CPU DAI still has it, and grepping also reveals some
+> Freescale and Samsung platforms.
+
+PXA is definitely very legacy, as are some of the Samsung and Freescale
+ones - PXA in particular hasn't had much love in years.
+
+> If that's considered legacy, we shouldn't add bindings for it of course. I
+> can look into the PXA driver and see if it can auto-detect the dividers
+> itself. It won't be straight forward though as the clocking setup also
+> depends on configurations such as TDM slots, external vs. internal clocks
+> etc. Meh.
+
+It's usually relatively straightforward - something along the lines of
+work out what your BCLK needs to be and everything else flows from that.
+
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsOanAACgkQJNaLcl1U
+h9CLHwf/fig0uV4FFAwxKHLQNO96dUW8xKE4q9Btgs1AGbTdUMZNxt7oC2cowEjR
+KuwFslG/NxFdv1RVUvuU/6GBILC7YqnZZAeTDVsti29I8xVX7BapUc65IPhZ+ZEO
+fM8Q/FUQZBxlLRp9svAw7LAc4HWxqtqtRXjNR8y3ZhPMvKGDhO8A2qSBVfY5kaDm
+wmUpQn6GWobqVqiU3TPol7Y5d9aXdkTshpH9tZH3DbD10ZrpZrEsFD5BBy3o1WiE
+0AnrmlImuaFsMWqBjsekjbSTTnCODH5he9RW55NZkHNnBd8ZgNGFW4lbtRrkxetT
+wwvVtkpAj+F+qx6p+qUeeF+Hb/jFkQ==
+=owBC
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
+
+--===============8338851641267343715==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
 
-
-Thanks,
-Daniel
+--===============8338851641267343715==--
