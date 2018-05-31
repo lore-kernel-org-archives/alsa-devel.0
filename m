@@ -1,17 +1,17 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 4/5] conf/ucm: chtnau8824: Add UCM profile for
-	chtnau8824 boards
-Date: Thu, 31 May 2018 17:10:25 +0200
-Message-ID: <20180531151026.29521-5-hdegoede@redhat.com>
-References: <20180531151026.29521-1-hdegoede@redhat.com>
+From: Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v4 2/7] clk: at91: add I2S clock mux driver
+Date: Thu, 31 May 2018 08:26:36 -0700
+Message-ID: <152778039660.144038.4743783065942615925@swboyd.mtv.corp.google.com>
+References: <1527251668-31396-1-git-send-email-codrin.ciubotariu@microchip.com>
+ <1527251668-31396-3-git-send-email-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 337EB267932
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 17:10:33 +0200 (CEST)
-In-Reply-To: <20180531151026.29521-1-hdegoede@redhat.com>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52C0626792D
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 17:26:39 +0200 (CEST)
+In-Reply-To: <1527251668-31396-3-git-send-email-codrin.ciubotariu@microchip.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,344 +21,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, boris.brezillon@bootlin.com, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com, robh+dt@kernel.org
+Cc: Cristian.Birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-Add UCM profile for chtnau8824 boards based on:
-https://github.com/plbossart/UCM/blob/master/chtnau8824
+Quoting Codrin Ciubotariu (2018-05-25 05:34:23)
+> This driver is a simple muxing driver that controls the
+> I2S's clock input by using syscon/regmap to change the parrent.
 
-Split into multiple files in the same way as this was done for the
-bytcr-rt5640 support, re-using the existing ucm/PlatformEnableSeq.conf
-and ucm/PlatformDisableSeq.conf files for the SST mixer settings.
+s/parrent/parent/
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- configure.ac                            |  2 ++
- src/conf/ucm/Makefile.am                |  2 ++
- src/conf/ucm/chtnau8824/HiFi.conf       | 28 ++++++++++++++++++++++
- src/conf/ucm/chtnau8824/Makefile.am     |  4 ++++
- src/conf/ucm/chtnau8824/chtnau8824.conf |  6 +++++
- src/conf/ucm/nau8824/EnableSeq.conf     | 15 ++++++++++++
- src/conf/ucm/nau8824/HeadPhones.conf    | 25 ++++++++++++++++++++
- src/conf/ucm/nau8824/HeadsetMic.conf    | 31 +++++++++++++++++++++++++
- src/conf/ucm/nau8824/InternalMic.conf   | 31 +++++++++++++++++++++++++
- src/conf/ucm/nau8824/Makefile.am        |  5 ++++
- src/conf/ucm/nau8824/MonoSpeaker.conf   | 29 +++++++++++++++++++++++
- src/conf/ucm/nau8824/Speaker.conf       | 28 ++++++++++++++++++++++
- 12 files changed, 206 insertions(+)
- create mode 100644 src/conf/ucm/chtnau8824/HiFi.conf
- create mode 100644 src/conf/ucm/chtnau8824/Makefile.am
- create mode 100644 src/conf/ucm/chtnau8824/chtnau8824.conf
- create mode 100644 src/conf/ucm/nau8824/EnableSeq.conf
- create mode 100644 src/conf/ucm/nau8824/HeadPhones.conf
- create mode 100644 src/conf/ucm/nau8824/HeadsetMic.conf
- create mode 100644 src/conf/ucm/nau8824/InternalMic.conf
- create mode 100644 src/conf/ucm/nau8824/Makefile.am
- create mode 100644 src/conf/ucm/nau8824/MonoSpeaker.conf
- create mode 100644 src/conf/ucm/nau8824/Speaker.conf
+> The available inputs can be Peripheral clock and Generated clock.
 
-diff --git a/configure.ac b/configure.ac
-index 57e0c354..ce21c7fb 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -729,6 +729,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/bytcr-rt5640-stereo-spk-in1-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5640-stereo-spk-in3-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5651/Makefile \
-+	  src/conf/ucm/chtnau8824/Makefile \
- 	  src/conf/ucm/chtrt5645/Makefile \
- 	  src/conf/ucm/chtrt5645-mono-speaker-analog-mic/Makefile \
- 	  src/conf/ucm/DAISY-I2S/Makefile \
-@@ -739,6 +740,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/HDAudio-Gigabyte-ALC1220DualCodecs/Makefile \
- 	  src/conf/ucm/HDAudio-Lenovo-DualCodecs/Makefile \
- 	  src/conf/ucm/LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216/Makefile \
-+	  src/conf/ucm/nau8824/Makefile \
- 	  src/conf/ucm/PandaBoard/Makefile \
- 	  src/conf/ucm/PandaBoardES/Makefile \
- 	  src/conf/ucm/PAZ00/Makefile \
-diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index a524921b..c350c526 100644
---- a/src/conf/ucm/Makefile.am
-+++ b/src/conf/ucm/Makefile.am
-@@ -11,6 +11,7 @@ bytcr-rt5640-stereo-spk-dmic1-mic \
- bytcr-rt5640-stereo-spk-in1-mic \
- bytcr-rt5640-stereo-spk-in3-mic \
- bytcr-rt5651 \
-+chtnau8824 \
- chtrt5645 \
- chtrt5645-mono-speaker-analog-mic \
- DAISY-I2S \
-@@ -21,6 +22,7 @@ gpd-win-pocket-rt5645 \
- HDAudio-Gigabyte-ALC1220DualCodecs \
- HDAudio-Lenovo-DualCodecs \
- LENOVO-80XF-LenovoMIIX320_10ICR-LNVNB161216 \
-+nau8824 \
- PandaBoard \
- PandaBoardES \
- PAZ00 \
-diff --git a/src/conf/ucm/chtnau8824/HiFi.conf b/src/conf/ucm/chtnau8824/HiFi.conf
-new file mode 100644
-index 00000000..dc52800e
---- /dev/null
-+++ b/src/conf/ucm/chtnau8824/HiFi.conf
-@@ -0,0 +1,28 @@
-+<searchdir:ucm>
-+
-+SectionVerb {
-+
-+	Value {
-+		TQ "HiFi"
-+		# ALSA PCM device for HiFi
-+		PlaybackPCM "hw:chtnau8824"
-+		CapturePCM "hw:chtnau8824"
-+	}
-+
-+	EnableSequence [
-+		cdev "hw:chtnau8824"
-+		<bytcr/PlatformEnableSeq.conf>
-+		<nau8824/EnableSeq.conf>
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtnau8824"
-+		<bytcr/PlatformDisableSeq.conf>
-+	]
-+}
-+
-+<nau8824/Speaker.conf>
-+<nau8824/HeadPhones.conf>
-+
-+<nau8824/InternalMic.conf>
-+<nau8824/HeadsetMic.conf>
-diff --git a/src/conf/ucm/chtnau8824/Makefile.am b/src/conf/ucm/chtnau8824/Makefile.am
-new file mode 100644
-index 00000000..e197d3e6
---- /dev/null
-+++ b/src/conf/ucm/chtnau8824/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/chtnau8824
-+ucm_DATA = chtnau8824.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/chtnau8824/chtnau8824.conf b/src/conf/ucm/chtnau8824/chtnau8824.conf
-new file mode 100644
-index 00000000..189b0dbe
---- /dev/null
-+++ b/src/conf/ucm/chtnau8824/chtnau8824.conf
-@@ -0,0 +1,6 @@
-+Comment "chtnau8824 internal card"
-+
-+SectionUseCase."HiFi" {
-+	File "HiFi.conf"
-+	Comment "Default"
-+}
-diff --git a/src/conf/ucm/nau8824/EnableSeq.conf b/src/conf/ucm/nau8824/EnableSeq.conf
-new file mode 100644
-index 00000000..05f5f0b4
---- /dev/null
-+++ b/src/conf/ucm/nau8824/EnableSeq.conf
-@@ -0,0 +1,15 @@
-+# Playback TDM configuration
-+cset "name='DACL Channel Source' 0"
-+cset "name='DACR Channel Source' 1"
-+# Input Configuration
-+cset "name='DMIC1 Enable Switch' off"
-+cset "name='DMIC2 Enable Switch' off"
-+cset "name='DMIC3 Enable Switch' off"
-+cset "name='DMIC4 Enable Switch' off"
-+cset "name='MIC1 Volume' 10"
-+cset "name='MIC2 Volume' 10"
-+# Button Configuration
-+cset "name='THD for key media' 10"
-+cset "name='THD for key voice command' 16"
-+cset "name='THD for key volume up' 38"
-+cset "name='THD for key volume down' 115"
-diff --git a/src/conf/ucm/nau8824/HeadPhones.conf b/src/conf/ucm/nau8824/HeadPhones.conf
-new file mode 100644
-index 00000000..8ed6f194
---- /dev/null
-+++ b/src/conf/ucm/nau8824/HeadPhones.conf
-@@ -0,0 +1,25 @@
-+SectionDevice."Headphones" {
-+	Comment "Headphones"
-+
-+	Value {
-+		PlaybackChannels "2"
-+		JackControl "Headphone Jack"
-+	}
-+
-+	ConflictingDevice [
-+		"MonoSpeaker"
-+		"Speaker"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='Headphone Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='Headphone Switch' off"
-+	]
-+}
-diff --git a/src/conf/ucm/nau8824/HeadsetMic.conf b/src/conf/ucm/nau8824/HeadsetMic.conf
-new file mode 100644
-index 00000000..11b0b52a
---- /dev/null
-+++ b/src/conf/ucm/nau8824/HeadsetMic.conf
-@@ -0,0 +1,31 @@
-+SectionDevice."HeadsetMic" {
-+	Comment "Headset Microphone"
-+
-+	Value {
-+		CaptureChannels "2"
-+		JackControl "Headset Mic Jack"
-+	}
-+
-+	ConflictingDevice [
-+		"InternalMic"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='ADC CH0 Select' 1"
-+		cset "name='ADC CH1 Select' 1"
-+
-+		cset "name='Headset Mic Switch' on"
-+		cset "name='Right ADC HSMIC Switch' on"
-+		cset "name='Left ADC HSMIC Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='Headset Mic Switch' off"
-+		cset "name='Right ADC HSMIC Switch' off"
-+		cset "name='Left ADC HSMIC Switch' off"
-+	]
-+}
-diff --git a/src/conf/ucm/nau8824/InternalMic.conf b/src/conf/ucm/nau8824/InternalMic.conf
-new file mode 100644
-index 00000000..c6a741cc
---- /dev/null
-+++ b/src/conf/ucm/nau8824/InternalMic.conf
-@@ -0,0 +1,31 @@
-+SectionDevice."InternalMic" {
-+	Comment "Internal Microphone"
-+
-+	Value {
-+		CaptureChannels "2"
-+		CapturePriority "150"
-+	}
-+
-+	ConflictingDevice [
-+		"HeadsetMic"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='ADC CH0 Select' 0"
-+		cset "name='ADC CH1 Select' 0"
-+
-+		cset "name='Int Mic Switch' on"
-+		cset "name='Right ADC MIC Switch' on"
-+		cset "name='Left ADC MIC Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='Int Mic Switch' off"
-+		cset "name='Right ADC MIC Switch' off"
-+		cset "name='Left ADC MIC Switch' off"
-+	]
-+}
-diff --git a/src/conf/ucm/nau8824/Makefile.am b/src/conf/ucm/nau8824/Makefile.am
-new file mode 100644
-index 00000000..b39b8bb4
---- /dev/null
-+++ b/src/conf/ucm/nau8824/Makefile.am
-@@ -0,0 +1,5 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/nau8824
-+ucm_DATA = EnableSeq.conf HeadPhones.conf HeadsetMic.conf InternalMic.conf \
-+	   MonoSpeaker.conf Speaker.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/nau8824/MonoSpeaker.conf b/src/conf/ucm/nau8824/MonoSpeaker.conf
-new file mode 100644
-index 00000000..86735181
---- /dev/null
-+++ b/src/conf/ucm/nau8824/MonoSpeaker.conf
-@@ -0,0 +1,29 @@
-+SectionDevice."MonoSpeaker" {
-+	Comment "Mono Speaker"
-+
-+	Value {
-+		PlaybackChannels "2"
-+	}
-+
-+	ConflictingDevice [
-+		"Speaker"
-+		"Headphones"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		# nau8824 mono speaker boards have the speaker on the right chan
-+		cset "name='Speaker Left DACL Volume' 0"
-+		cset "name='Speaker Left DACR Volume' 0"
-+		cset "name='Speaker Right DACL Volume' 1"
-+		cset "name='Speaker Right DACR Volume' 1"
-+		cset "name='Ext Spk Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='Ext Spk Switch' off"
-+	]
-+}
-diff --git a/src/conf/ucm/nau8824/Speaker.conf b/src/conf/ucm/nau8824/Speaker.conf
-new file mode 100644
-index 00000000..e4d25b08
---- /dev/null
-+++ b/src/conf/ucm/nau8824/Speaker.conf
-@@ -0,0 +1,28 @@
-+SectionDevice."Speaker" {
-+	Comment "Speaker"
-+
-+	Value {
-+		PlaybackChannels "2"
-+	}
-+
-+	ConflictingDevice [
-+		"MonoSpeaker"
-+		"Headphones"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='Speaker Left DACL Volume' 1"
-+		cset "name='Speaker Left DACR Volume' 0"
-+		cset "name='Speaker Right DACL Volume' 0"
-+		cset "name='Speaker Right DACR Volume' 1"
-+		cset "name='Ext Spk Switch' on"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:chtnau8824"
-+
-+		cset "name='Ext Spk Switch' off"
-+	]
-+}
--- 
-2.17.0
+Why capitalize peripheral and generated?
+
+> 
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> ---
+> diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+> index 1254bf9..903f23c 100644
+> --- a/arch/arm/mach-at91/Kconfig
+> +++ b/arch/arm/mach-at91/Kconfig
+> @@ -27,6 +27,7 @@ config SOC_SAMA5D2
+>         select HAVE_AT91_H32MX
+>         select HAVE_AT91_GENERATED_CLK
+>         select HAVE_AT91_AUDIO_PLL
+> +       select HAVE_AT91_I2S_MUX_CLK
+>         select PINCTRL_AT91PIO4
+>         help
+>           Select this if ou are using one of Microchip's SAMA5D2 family SoC.
+> @@ -129,6 +130,9 @@ config HAVE_AT91_GENERATED_CLK
+>  config HAVE_AT91_AUDIO_PLL
+>         bool
+>  
+> +config HAVE_AT91_I2S_MUX_CLK
+> +       bool
+> +
+>  config SOC_SAM_V4_V5
+>         bool
+>  
+
+I guess this is OK.
+
+> diff --git a/drivers/clk/at91/Makefile b/drivers/clk/at91/Makefile
+> index 082596f..facc169 100644
+> --- a/drivers/clk/at91/Makefile
+> +++ b/drivers/clk/at91/Makefile
+> @@ -13,3 +13,4 @@ obj-$(CONFIG_HAVE_AT91_USB_CLK)               += clk-usb.o
+>  obj-$(CONFIG_HAVE_AT91_SMD)            += clk-smd.o
+>  obj-$(CONFIG_HAVE_AT91_H32MX)          += clk-h32mx.o
+>  obj-$(CONFIG_HAVE_AT91_GENERATED_CLK)  += clk-generated.o
+> +obj-$(CONFIG_HAVE_AT91_I2S_MUX_CLK)    += clk-i2s-mux.o
+> diff --git a/drivers/clk/at91/clk-i2s-mux.c b/drivers/clk/at91/clk-i2s-mux.c
+> new file mode 100644
+> index 0000000..2d56ded
+> --- /dev/null
+> +++ b/drivers/clk/at91/clk-i2s-mux.c
+> @@ -0,0 +1,117 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + *  Copyright (C) 2018 Microchip Technology Inc,
+> + *                     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> + *
+> + *
+> + */
+> +
+> +#include <linux/clk-provider.h>
+> +#include <linux/of.h>
+> +#include <linux/mfd/syscon.h>
+> +#include <linux/regmap.h>
+> +#include <linux/slab.h>
+> +
+> +#include <soc/at91/atmel-sfr.h>
+> +
+> +#define        I2S_BUS_NR      2
+> +
+> +struct clk_i2s_mux {
+> +       struct clk_hw hw;
+> +       struct regmap *regmap;
+> +       u32 bus_id;
+
+Can be a u8?
+
+> +};
+> +
+> +#define to_clk_i2s_mux(hw) container_of(hw, struct clk_i2s_mux, hw)
+> +
+> +static u8 clk_i2s_mux_get_parent(struct clk_hw *hw)
+> +{
+> +       struct clk_i2s_mux *mux = to_clk_i2s_mux(hw);
+> +       u32 val;
+> +
+> +       regmap_read(mux->regmap, AT91_SFR_I2SCLKSEL, &val);
+> +
+> +       return (val & BIT(mux->bus_id)) >> mux->bus_id;
+> +}
+> +
+> +static int clk_i2s_mux_set_parent(struct clk_hw *hw, u8 index)
+> +{
+> +       struct clk_i2s_mux *mux = to_clk_i2s_mux(hw);
+> +
+> +       return regmap_update_bits(mux->regmap, AT91_SFR_I2SCLKSEL,
+> +                                 BIT(mux->bus_id), index << mux->bus_id);
+> +}
+> +
+> +const struct clk_ops clk_i2s_mux_ops = {
+
+static?
+
+> +       .get_parent = clk_i2s_mux_get_parent,
+> +       .set_parent = clk_i2s_mux_set_parent,
+> +       .determine_rate = __clk_mux_determine_rate,
+> +};
+> +
+> +static struct clk_hw * __init
+> +at91_clk_i2s_mux_register(struct regmap *regmap, const char *name,
+> +                         const char * const *parent_names,
+> +                         unsigned int num_parents, u32 bus_id)
+> +{
+> +       struct clk_init_data init = {};
+> +       struct clk_i2s_mux *i2s_ck;
+> +       int ret;
+> +
+> +       i2s_ck = kzalloc(sizeof(*i2s_ck), GFP_KERNEL);
+> +       if (!i2s_ck)
+> +               return ERR_PTR(-ENOMEM);
+> +
+> +       init.name = name;
+> +       init.ops = &clk_i2s_mux_ops;
+> +       init.parent_names = parent_names;
+> +       init.num_parents = num_parents;
+> +       init.flags = CLK_IGNORE_UNUSED;
+
+Really? Why?
+
+> +
+> +       i2s_ck->hw.init = &init;
+> +       i2s_ck->bus_id = bus_id;
+> +       i2s_ck->regmap = regmap;
+> +
+> +       ret = clk_hw_register(NULL, &i2s_ck->hw);
+> +       if (ret) {
+> +               kfree(i2s_ck);
+> +               return ERR_PTR(ret);
+> +       }
+> +
+> +       return &i2s_ck->hw;
+> +}
