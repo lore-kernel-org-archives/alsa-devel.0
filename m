@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Set card long_name
-	based on quirks" to the asoc tree
-Date: Thu, 31 May 2018 12:06:14 +0100
-Message-ID: <E1fOLPK-0001vO-Jm@debutante>
-References: <20180518193506.8251-1-hdegoede@redhat.com>
+Subject: Applied "ASoC: mt6797-mt6351: add hostless phone call
+	path" to the asoc tree
+Date: Thu, 31 May 2018 12:06:18 +0100
+Message-ID: <E1fOLPO-0001wK-7q@debutante>
+References: <1527729981-4802-3-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 98276267901
+ by alsa0.perex.cz (Postfix) with ESMTP id DF216267904
  for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 13:06:28 +0200 (CEST)
-In-Reply-To: <20180518193506.8251-1-hdegoede@redhat.com>
+In-Reply-To: <1527729981-4802-3-git-send-email-kaichieh.chuang@mediatek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Set card long_name based on quirks
+   ASoC: mt6797-mt6351: add hostless phone call path
 
 has been applied to the asoc tree at
 
@@ -53,69 +52,80 @@ to this mail.
 Thanks,
 Mark
 
->From 64484ccee7af53f08cca2ee3853cb8e18914d8b2 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Fri, 18 May 2018 21:35:06 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Set card long_name based on quirks
+>From 983333c0f6c4c6b4dab1257d14d16c31912d7561 Mon Sep 17 00:00:00 2001
+From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
+Date: Thu, 31 May 2018 09:26:21 +0800
+Subject: [PATCH] ASoC: mt6797-mt6351: add hostless phone call path
 
-Many X86 devices using a BYT SoC + RT5651 codec are cheap devices with
-generic DMI strings, causing snd_soc_set_dmi_name() to fail to set a
-long_name, making it impossible for userspace to have a correct UCM
-profile which knowns which input is connected to the internal mic,
-which input is connected to the hsmic (for correct jack-based switching)
-and which inputs are unused.
-
-Our quirks already specify which inputs the internal and headset mic
-are connected to.
-
-This commit sets a long_name based on the quirks so that userspace can
-have UCM profiles doing the right thing based on the long_name.
-
-Note that if we ever encounter the need for a special UCM profile for
-some device we can add a quirk to set a specific long_name for the
-device,
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ sound/soc/mediatek/mt6797/mt6797-mt6351.c | 46 +++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 3c7d93520c52..1be788e04193 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -706,6 +706,7 @@ static struct snd_soc_card byt_rt5651_card = {
- static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
- static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
- static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
-+static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-spk-*-mic" */
+diff --git a/sound/soc/mediatek/mt6797/mt6797-mt6351.c b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
+index 9e5866d6819a..b1558c57b9ca 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-mt6351.c
++++ b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
+@@ -89,6 +89,32 @@ static struct snd_soc_dai_link mt6797_mt6351_dai_links[] = {
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+ 	},
++	{
++		.name = "Hostless_LPBK",
++		.stream_name = "Hostless_LPBK",
++		.cpu_dai_name = "Hostless LPBK DAI",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_PRE,
++			    SND_SOC_DPCM_TRIGGER_PRE},
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++	},
++	{
++		.name = "Hostless_Speech",
++		.stream_name = "Hostless_Speech",
++		.cpu_dai_name = "Hostless Speech DAI",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_PRE,
++			    SND_SOC_DPCM_TRIGGER_PRE},
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++	},
+ 	/* BE */
+ 	{
+ 		.name = "Primary Codec",
+@@ -99,6 +125,26 @@ static struct snd_soc_dai_link mt6797_mt6351_dai_links[] = {
+ 		.dpcm_capture = 1,
+ 		.ignore_suspend = 1,
+ 	},
++	{
++		.name = "PCM 1",
++		.cpu_dai_name = "PCM 1",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.no_pcm = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++	},
++	{
++		.name = "PCM 2",
++		.cpu_dai_name = "PCM 2",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.no_pcm = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++	},
+ };
  
- static bool is_valleyview(void)
- {
-@@ -726,6 +727,10 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 
- static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- {
-+	const char * const intmic_name[] =
-+		{ "dmic", "in1", "in2", "in12", "in1", "in2" };
-+	const char * const hsmic_name[] =
-+		{  "in2", "in2", "in1",  "in3", "in3", "in3" };
- 	struct byt_rt5651_private *priv;
- 	struct snd_soc_acpi_mach *mach;
- 	const char *i2c_name = NULL;
-@@ -870,6 +875,12 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 		}
- 	}
- 
-+	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
-+		 "bytcr-rt5651-%s-intmic-%s-hsmic",
-+		 intmic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
-+		 hsmic_name[BYT_RT5651_MAP(byt_rt5651_quirk)]);
-+	byt_rt5651_card.long_name = byt_rt5651_long_name;
-+
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5651_card);
- 
- 	if (ret_val) {
+ static struct snd_soc_card mt6797_mt6351_card = {
 -- 
 2.17.0
