@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 3/5] conf/ucm: bytcr-rt5640: Add default
-	DisableSequence
-Date: Thu, 31 May 2018 17:10:24 +0200
-Message-ID: <20180531151026.29521-4-hdegoede@redhat.com>
+Subject: [PATCH 5/5] conf/ucm: chtnau8824: Add Cube iWork8 Air
+	and Pipo W2S specific profiles
+Date: Thu, 31 May 2018 17:10:26 +0200
+Message-ID: <20180531151026.29521-6-hdegoede@redhat.com>
 References: <20180531151026.29521-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E5FD26792D
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 17:10:32 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 27CD8267910
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 17:10:34 +0200 (CEST)
 In-Reply-To: <20180531151026.29521-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,150 +25,180 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a disable sequence powering off the SST mixer elements, loosely
-based on the default DisableSequence from:
-https://github.com/plbossart/UCM/blob/master/chtnau8824/HiFi.conf
+The Cube iWork8 Air and Pipo W2S tablets both only have a single speaker.
+Add long-name profiles for them which are identical to the default
+chtnau8824 profile, except that they include the nau8824/MonoSpeaker.conf
+snippet instead of the nau8824/Speaker.conf one.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- .../bytcr-rt5640-mono-spk-dmic1-mic/HiFi.conf |  2 ++
- .../bytcr-rt5640-mono-spk-in1-mic/HiFi.conf   |  2 ++
- .../bytcr-rt5640-mono-spk-in3-mic/HiFi.conf   |  2 ++
- .../HiFi.conf                                 |  2 ++
- .../bytcr-rt5640-stereo-spk-in1-mic/HiFi.conf |  2 ++
- .../bytcr-rt5640-stereo-spk-in3-mic/HiFi.conf |  2 ++
- src/conf/ucm/bytcr-rt5640/HiFi.conf           |  2 ++
- src/conf/ucm/bytcr/Makefile.am                |  2 +-
- src/conf/ucm/bytcr/PlatformDisableSeq.conf    | 20 +++++++++++++++++++
- 9 files changed, 35 insertions(+), 1 deletion(-)
- create mode 100644 src/conf/ucm/bytcr/PlatformDisableSeq.conf
+ configure.ac                                  |  2 ++
+ src/conf/ucm/Makefile.am                      |  2 ++
+ .../HiFi.conf                                 | 28 +++++++++++++++++++
+ .../Makefile.am                               |  4 +++
+ .../PIPO-W2S-Defaultstring-CherryTrailCR.conf |  6 ++++
+ .../HiFi.conf                                 | 28 +++++++++++++++++++
+ .../Makefile.am                               |  4 +++
+ ...ube-i1_TF-Defaultstring-CherryTrailCR.conf |  6 ++++
+ 8 files changed, 80 insertions(+)
+ create mode 100644 src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/HiFi.conf
+ create mode 100644 src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/Makefile.am
+ create mode 100644 src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/PIPO-W2S-Defaultstring-CherryTrailCR.conf
+ create mode 100644 src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/HiFi.conf
+ create mode 100644 src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/Makefile.am
+ create mode 100644 src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/cube-i1_TF-Defaultstring-CherryTrailCR.conf
 
-diff --git a/src/conf/ucm/bytcr-rt5640-mono-spk-dmic1-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5640-mono-spk-dmic1-mic/HiFi.conf
-index 47ca04f0..938b3592 100644
---- a/src/conf/ucm/bytcr-rt5640-mono-spk-dmic1-mic/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5640-mono-spk-dmic1-mic/HiFi.conf
-@@ -11,6 +11,8 @@ SectionVerb {
- 	]
- 
- 	DisableSequence [
-+		cdev "hw:bytcrrt5640"
-+		<bytcr/PlatformDisableSeq.conf>
- 	]
- 
- 	Value {
-diff --git a/src/conf/ucm/bytcr-rt5640-mono-spk-in1-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5640-mono-spk-in1-mic/HiFi.conf
-index e280843d..f36b245e 100644
---- a/src/conf/ucm/bytcr-rt5640-mono-spk-in1-mic/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5640-mono-spk-in1-mic/HiFi.conf
-@@ -11,6 +11,8 @@ SectionVerb {
- 	]
- 
- 	DisableSequence [
-+		cdev "hw:bytcrrt5640"
-+		<bytcr/PlatformDisableSeq.conf>
- 	]
- 
- 	Value {
-diff --git a/src/conf/ucm/bytcr-rt5640-mono-spk-in3-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5640-mono-spk-in3-mic/HiFi.conf
-index 511b7c98..1a08eded 100644
---- a/src/conf/ucm/bytcr-rt5640-mono-spk-in3-mic/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5640-mono-spk-in3-mic/HiFi.conf
-@@ -11,6 +11,8 @@ SectionVerb {
- 	]
- 
- 	DisableSequence [
-+		cdev "hw:bytcrrt5640"
-+		<bytcr/PlatformDisableSeq.conf>
- 	]
- 
- 	Value {
-diff --git a/src/conf/ucm/bytcr-rt5640-stereo-spk-dmic1-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5640-stereo-spk-dmic1-mic/HiFi.conf
-index 8cf5cb7c..4587b2e1 100644
---- a/src/conf/ucm/bytcr-rt5640-stereo-spk-dmic1-mic/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5640-stereo-spk-dmic1-mic/HiFi.conf
-@@ -11,6 +11,8 @@ SectionVerb {
- 	]
- 
- 	DisableSequence [
-+		cdev "hw:bytcrrt5640"
-+		<bytcr/PlatformDisableSeq.conf>
- 	]
- 
- 	Value {
-diff --git a/src/conf/ucm/bytcr-rt5640-stereo-spk-in1-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5640-stereo-spk-in1-mic/HiFi.conf
-index a617ba19..decd3960 100644
---- a/src/conf/ucm/bytcr-rt5640-stereo-spk-in1-mic/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5640-stereo-spk-in1-mic/HiFi.conf
-@@ -11,6 +11,8 @@ SectionVerb {
- 	]
- 
- 	DisableSequence [
-+		cdev "hw:bytcrrt5640"
-+		<bytcr/PlatformDisableSeq.conf>
- 	]
- 
- 	Value {
-diff --git a/src/conf/ucm/bytcr-rt5640-stereo-spk-in3-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5640-stereo-spk-in3-mic/HiFi.conf
-index 83b31795..d243bf82 100644
---- a/src/conf/ucm/bytcr-rt5640-stereo-spk-in3-mic/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5640-stereo-spk-in3-mic/HiFi.conf
-@@ -11,6 +11,8 @@ SectionVerb {
- 	]
- 
- 	DisableSequence [
-+		cdev "hw:bytcrrt5640"
-+		<bytcr/PlatformDisableSeq.conf>
- 	]
- 
- 	Value {
-diff --git a/src/conf/ucm/bytcr-rt5640/HiFi.conf b/src/conf/ucm/bytcr-rt5640/HiFi.conf
-index 130671ca..c833fe74 100644
---- a/src/conf/ucm/bytcr-rt5640/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5640/HiFi.conf
-@@ -11,6 +11,8 @@ SectionVerb {
- 	]
- 
- 	DisableSequence [
-+		cdev "hw:bytcrrt5640"
-+		<bytcr/PlatformDisableSeq.conf>
- 	]
- 
- 	Value {
-diff --git a/src/conf/ucm/bytcr/Makefile.am b/src/conf/ucm/bytcr/Makefile.am
-index a0e5545e..f7a54cbd 100644
---- a/src/conf/ucm/bytcr/Makefile.am
-+++ b/src/conf/ucm/bytcr/Makefile.am
-@@ -1,4 +1,4 @@
- alsaconfigdir = @ALSA_CONFIG_DIR@
- ucmdir = $(alsaconfigdir)/ucm/bytcr
--ucm_DATA = PlatformEnableSeq.conf
-+ucm_DATA = PlatformEnableSeq.conf PlatformDisableSeq.conf
- EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/bytcr/PlatformDisableSeq.conf b/src/conf/ucm/bytcr/PlatformDisableSeq.conf
+diff --git a/configure.ac b/configure.ac
+index ce21c7fb..adc654e2 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -732,6 +732,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/chtnau8824/Makefile \
+ 	  src/conf/ucm/chtrt5645/Makefile \
+ 	  src/conf/ucm/chtrt5645-mono-speaker-analog-mic/Makefile \
++	  src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/Makefile \
+ 	  src/conf/ucm/DAISY-I2S/Makefile \
+ 	  src/conf/ucm/DB410c/Makefile \
+ 	  src/conf/ucm/Dell-WD15-Dock/Makefile \
+@@ -744,6 +745,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/PandaBoard/Makefile \
+ 	  src/conf/ucm/PandaBoardES/Makefile \
+ 	  src/conf/ucm/PAZ00/Makefile \
++	  src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/Makefile \
+ 	  src/conf/ucm/rt5640/Makefile \
+ 	  src/conf/ucm/SDP4430/Makefile \
+ 	  src/conf/ucm/skylake-rt286/Makefile \
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index c350c526..1e51f73e 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -14,6 +14,7 @@ bytcr-rt5651 \
+ chtnau8824 \
+ chtrt5645 \
+ chtrt5645-mono-speaker-analog-mic \
++cube-i1_TF-Defaultstring-CherryTrailCR \
+ DAISY-I2S \
+ DB410c \
+ Dell-WD15-Dock \
+@@ -26,6 +27,7 @@ nau8824 \
+ PandaBoard \
+ PandaBoardES \
+ PAZ00 \
++PIPO-W2S-Defaultstring-CherryTrailCR \
+ rt5640 \
+ SDP4430 \
+ skylake-rt286 \
+diff --git a/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/HiFi.conf b/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/HiFi.conf
 new file mode 100644
-index 00000000..9bb018bc
+index 00000000..799163db
 --- /dev/null
-+++ b/src/conf/ucm/bytcr/PlatformDisableSeq.conf
-@@ -0,0 +1,20 @@
-+# disable audio output path
-+cset "name='codec_out0 mix 0 pcm0_in Switch' off"
-+cset "name='modem_out mix 0 pcm0_in Switch' off"
++++ b/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/HiFi.conf
+@@ -0,0 +1,28 @@
++<searchdir:ucm>
 +
-+cset "name='media0_out mix 0 media0_in Switch' off"
-+cset "name='media0_out mix 0 media1_in Switch' off"
-+cset "name='media0_out mix 0 media3_in Switch' off"
++SectionVerb {
 +
-+cset "name='media0_in Gain 0 Switch' off"
-+cset "name='media1_in Gain 0 Switch' off"
-+cset "name='media3_in Gain 0 Switch' off"
++	Value {
++		TQ "HiFi"
++		# ALSA PCM device for HiFi
++		PlaybackPCM "hw:chtnau8824"
++		CapturePCM "hw:chtnau8824"
++	}
 +
-+cset "name='pcm0_in Gain 0 Switch' off"
-+cset "name='codec_out0 Gain 0 Switch' off"
-+cset "name='modem_out Gain 0 Switch' off"
++	EnableSequence [
++		cdev "hw:chtnau8824"
++		<bytcr/PlatformEnableSeq.conf>
++		<nau8824/EnableSeq.conf>
++	]
 +
-+# disable audio input path
-+cset "name='pcm1_out Gain 0 Switch' off"
-+cset "name='codec_in0 Gain 0 Switch' off"
-+cset "name='modem_in Gain 0 Switch' off"
++	DisableSequence [
++		cdev "hw:chtnau8824"
++		<bytcr/PlatformDisableSeq.conf>
++	]
++}
++
++<nau8824/MonoSpeaker.conf>
++<nau8824/HeadPhones.conf>
++
++<nau8824/InternalMic.conf>
++<nau8824/HeadsetMic.conf>
+diff --git a/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/Makefile.am b/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/Makefile.am
+new file mode 100644
+index 00000000..5fc0f210
+--- /dev/null
++++ b/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/PIPO-W2S-Defaultstring-CherryTrailCR
++ucm_DATA = PIPO-W2S-Defaultstring-CherryTrailCR.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/PIPO-W2S-Defaultstring-CherryTrailCR.conf b/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/PIPO-W2S-Defaultstring-CherryTrailCR.conf
+new file mode 100644
+index 00000000..37a8d04e
+--- /dev/null
++++ b/src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/PIPO-W2S-Defaultstring-CherryTrailCR.conf
+@@ -0,0 +1,6 @@
++Comment "chtnau8824 internal card"
++
++SectionUseCase."HiFi" {
++	File "../PIPO-W2S-Defaultstring-CherryTrailCR/HiFi.conf"
++	Comment "Default"
++}
+diff --git a/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/HiFi.conf b/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/HiFi.conf
+new file mode 100644
+index 00000000..799163db
+--- /dev/null
++++ b/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/HiFi.conf
+@@ -0,0 +1,28 @@
++<searchdir:ucm>
++
++SectionVerb {
++
++	Value {
++		TQ "HiFi"
++		# ALSA PCM device for HiFi
++		PlaybackPCM "hw:chtnau8824"
++		CapturePCM "hw:chtnau8824"
++	}
++
++	EnableSequence [
++		cdev "hw:chtnau8824"
++		<bytcr/PlatformEnableSeq.conf>
++		<nau8824/EnableSeq.conf>
++	]
++
++	DisableSequence [
++		cdev "hw:chtnau8824"
++		<bytcr/PlatformDisableSeq.conf>
++	]
++}
++
++<nau8824/MonoSpeaker.conf>
++<nau8824/HeadPhones.conf>
++
++<nau8824/InternalMic.conf>
++<nau8824/HeadsetMic.conf>
+diff --git a/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/Makefile.am b/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/Makefile.am
+new file mode 100644
+index 00000000..92df54fd
+--- /dev/null
++++ b/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/cube-i1_TF-Defaultstring-CherryTrailCR
++ucm_DATA = cube-i1_TF-Defaultstring-CherryTrailCR.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/cube-i1_TF-Defaultstring-CherryTrailCR.conf b/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/cube-i1_TF-Defaultstring-CherryTrailCR.conf
+new file mode 100644
+index 00000000..3775ed4c
+--- /dev/null
++++ b/src/conf/ucm/cube-i1_TF-Defaultstring-CherryTrailCR/cube-i1_TF-Defaultstring-CherryTrailCR.conf
+@@ -0,0 +1,6 @@
++Comment "chtnau8824 internal card"
++
++SectionUseCase."HiFi" {
++	File "../cube-i1_TF-Defaultstring-CherryTrailCR/HiFi.conf"
++	Comment "Default"
++}
 -- 
 2.17.0
