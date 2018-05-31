@@ -1,80 +1,54 @@
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v4 1/7] dt-bindings: clk: at91: add an I2S
-	mux clock
-Date: Thu, 31 May 2018 18:01:17 +0200
-Message-ID: <20180531160117.GC2727@piout.net>
-References: <1527251668-31396-1-git-send-email-codrin.ciubotariu@microchip.com>
- <1527251668-31396-2-git-send-email-codrin.ciubotariu@microchip.com>
- <20180531005827.GA17203@rob-hp-laptop>
- <4f2e6e6a-df3a-b645-093c-b4467b3aa843@microchip.com>
- <CAL_JsqJ=T0p17hHg6=obtydt7T-yrAeOr7C2XAEnDFQ-c0b5XQ@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 16/21] ASoC: max98088: use match_string() helper
+Date: Thu, 31 May 2018 17:02:06 +0100
+Message-ID: <20180531160206.GE13319@sirena.org.uk>
+References: <1527765086-19873-1-git-send-email-xieyisheng1@huawei.com>
+ <1527765086-19873-17-git-send-email-xieyisheng1@huawei.com>
+ <20180531114921.GD13319@sirena.org.uk>
+ <8009e494-9ba0-bff3-e900-37f8923886a0@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FF2B26793D
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 18:01:18 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="AsxXAMtlQ5JHofzM"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJ=T0p17hHg6=obtydt7T-yrAeOr7C2XAEnDFQ-c0b5XQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>, Boris Brezillon <boris.brezillon@bootlin.com>, Mark Brown <broonie@kernel.org>, Cristian.Birsan@microchip.com, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, linux-clk <linux-clk@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+In-Reply-To: <8009e494-9ba0-bff3-e900-37f8923886a0@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Yisheng Xie <xieyisheng1@huawei.com>
+Cc: linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 31/05/2018 09:20:57-0500, Rob Herring wrote:
-> On Thu, May 31, 2018 at 5:25 AM, Codrin Ciubotariu
-> <codrin.ciubotariu@microchip.com> wrote:
-> > On 31.05.2018 03:58, Rob Herring wrote:
-> >>
-> >> On Fri, May 25, 2018 at 03:34:22PM +0300, Codrin Ciubotariu wrote:
-> >>>
-> >>> The I2S mux clock can be used to select the I2S input clock. The
-> >>> available parents are the peripheral and the generated clocks.
-> >>>
-> >>> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> >>> ---
-> >>>   .../devicetree/bindings/clock/at91-clock.txt       | 34
-> >>> ++++++++++++++++++++++
-> >>>   1 file changed, 34 insertions(+)
-> >>>
-> >>> diff --git a/Documentation/devicetree/bindings/clock/at91-clock.txt
-> >>> b/Documentation/devicetree/bindings/clock/at91-clock.txt
-> >>> index 51c259a..1c46b3c 100644
-> >>> --- a/Documentation/devicetree/bindings/clock/at91-clock.txt
-> >>> +++ b/Documentation/devicetree/bindings/clock/at91-clock.txt
-> >>> @@ -90,6 +90,8 @@ Required properties:
-> >>>         "atmel,sama5d2-clk-audio-pll-pmc"
-> >>>                 at91 audio pll output on AUDIOPLLCLK that feeds the PMC
-> >>>                 and can be used by peripheral clock or generic clock
-> >>> +       "atmel,sama5d2-clk-i2s-mux":
-> >>> +               at91 I2S clock source selection
-> >>
-> >>
-> >> Is this boolean or takes some values. If latter, what are valid values?
-> >
-> >
-> > This is the compatible string of the clock driver.
-> 
-> Ah, now I remember. AT91 uses fine grained clock nodes in DT. Is there
-> still a plan to fix this?
-> 
 
-There is still a plan to do that, hopefully soon (I'd like to aim for
-the next release or the one after).
+--AsxXAMtlQ5JHofzM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I think this one should go in as-is so it can be fixed with all the
-other one at once.
+On Thu, May 31, 2018 at 08:25:39PM +0800, Yisheng Xie wrote:
 
--- 
-Alexandre Belloni, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> Anyway, Here is the cover letter of v1 and I have add v2's cover letter to you:
+>   https://lkml.org/lkml/2018/5/21/303
+
+> Each patch in this patchset is a separate one, for what this patchset want to do
+> is use match_string() helper for echo subsystem.
+
+For something like this it's generally easier to not send everything as
+one big series - it avoids any confusion about dependencies and there's
+no actual relationship between the patches.  Instead just sending each
+subsystem as a series or perhaps even just a bunch of separate patches
+should make things smoother.
+
+--AsxXAMtlQ5JHofzM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsQHH0ACgkQJNaLcl1U
+h9ATxwf/cfSRfTKeyj24thB7iAGirKwmtfR5w42ZeMDl76thS0CTw/StQYGuUgTj
+NTtpwb4GlvYRVN1k4pYScbie2kf76MVLw/gsAkctuwYbOGuD6MR7bRqv/mkEBdlK
+1S0DW6iqmNLZ5e3lW1xnQAl1czz3fCeY6dD1XojeYKkAZKNuVLFFuF5t8If/YWZi
+T1zOT1ExDHHfkAaPRo2SuEDTDpPXKenkfLu6vbw5qNnV0lkBGLDNfHMw4Qw3f4t0
+G4hQNiHEUD8VYruFLQ/fzQs8y2+fVx8mnm06x4ZFC3X5bd0lWTxBVDKa0wmR7tmE
+fmX6fLq8NEoTw7ZBOdnrZrHXRf6rRg==
+=G6H8
+-----END PGP SIGNATURE-----
+
+--AsxXAMtlQ5JHofzM--
