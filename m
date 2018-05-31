@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Remove clkdiv and pll setters from pxa dais
-Date: Thu, 31 May 2018 11:22:50 +0100
-Message-ID: <20180531102250.GA13319@sirena.org.uk>
-References: <ca4efb05-36d3-1571-6336-394b75ecc843@zonque.org>
- <20180530092445.GC6920@sirena.org.uk>
- <47e32456-c603-1c9c-b6ef-3c98f000caf9@zonque.org>
- <20180530102028.GF6920@sirena.org.uk>
- <87tvqprm3q.fsf@belgarion.home>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH v4 1/7] dt-bindings: clk: at91: add an I2S
+	mux clock
+Date: Thu, 31 May 2018 13:25:26 +0300
+Message-ID: <4f2e6e6a-df3a-b645-093c-b4467b3aa843@microchip.com>
+References: <1527251668-31396-1-git-send-email-codrin.ciubotariu@microchip.com>
+ <1527251668-31396-2-git-send-email-codrin.ciubotariu@microchip.com>
+ <20180531005827.GA17203@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6734382667301890611=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 807062678F5
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 12:22:52 +0200 (CEST)
-In-Reply-To: <87tvqprm3q.fsf@belgarion.home>
+Received: from esa1.microchip.iphmx.com (esa1.microchip.iphmx.com
+ [68.232.147.91])
+ by alsa0.perex.cz (Postfix) with ESMTP id 250FF2678FE
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 12:25:40 +0200 (CEST)
+In-Reply-To: <20180531005827.GA17203@rob-hp-laptop>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,60 +25,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Haojian Zhuang <haojian.zhuang@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>
+To: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org, boris.brezillon@bootlin.com, broonie@kernel.org, Cristian.Birsan@microchip.com, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+On 31.05.2018 03:58, Rob Herring wrote:
+> On Fri, May 25, 2018 at 03:34:22PM +0300, Codrin Ciubotariu wrote:
+>> The I2S mux clock can be used to select the I2S input clock. The
+>> available parents are the peripheral and the generated clocks.
+>>
+>> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+>> ---
+>>   .../devicetree/bindings/clock/at91-clock.txt       | 34 ++++++++++++++++++++++
+>>   1 file changed, 34 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/clock/at91-clock.txt b/Documentation/devicetree/bindings/clock/at91-clock.txt
+>> index 51c259a..1c46b3c 100644
+>> --- a/Documentation/devicetree/bindings/clock/at91-clock.txt
+>> +++ b/Documentation/devicetree/bindings/clock/at91-clock.txt
+>> @@ -90,6 +90,8 @@ Required properties:
+>>   	"atmel,sama5d2-clk-audio-pll-pmc"
+>>   		at91 audio pll output on AUDIOPLLCLK that feeds the PMC
+>>   		and can be used by peripheral clock or generic clock
+>> +	"atmel,sama5d2-clk-i2s-mux":
+>> +		at91 I2S clock source selection
+> 
+> Is this boolean or takes some values. If latter, what are valid values?
 
---===============6734382667301890611==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="k+w/mQv8wyuph6w0"
-Content-Disposition: inline
+This is the compatible string of the clock driver.
 
+> 
+>>   
+>>   Required properties for SCKC node:
+>>   - reg : defines the IO memory reserved for the SCKC.
+>> @@ -507,3 +509,35 @@ For example:
+>>   			atmel,clk-output-range = <0 83000000>;
+>>   		};
+>>   	};
+>> +
+>> +Required properties for I2S mux clocks:
+>> +- #size-cells : shall be 0 (reg is used to encode I2S bus id).
+>> +- #address-cells : shall be 1 (reg is used to encode I2S bus id).
+>> +- name: device tree node describing a specific mux clock.
+>> +	* #clock-cells : from common clock binding; shall be set to 0.
+>> +	* clocks : shall be the mux clock parent phandles; shall be 2 phandles:
+>> +	  peripheral and generated clock; the first phandle shall belong to the
+>> +	  peripheral clock and the second one shall belong to the generated
+>> +	  clock; "clock-indices" property can be user to specify
+>> +	  the correct order.
+>> +	* reg: I2S bus id of the corresponding mux clock.
+>> +	  e.g. reg = <0>; for i2s0, reg = <1>; for i2s1
+>> +
+>> +For example:
+>> +	i2s_clkmux {
+> 
+> What is this a child of?
 
---k+w/mQv8wyuph6w0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It is a child of PMC node, since both parent clocks are generated by PMC.
 
-On Wed, May 30, 2018 at 09:15:37PM +0200, Robert Jarzmik wrote:
-> Mark Brown <broonie@kernel.org> writes:
+> 
+>> +		compatible = "atmel,sama5d2-clk-i2s-mux";
+>> +		#address-cells = <1>;
+>> +		#size-cells = <0>;
+> 
+> How do you address this block? My guess is you don't because it is just
+> part of some other block and you are just creating this node to
+> instantiate a driver. Just make the node for the actual h/w block a
+> clock provider and define the clock ids (0 and 1).
 
-> > No, I doubt anyone does - it was the PXA32x reference platform.  The
-> > ones I'm aware of unfortunately got thrown out.
+This block is not addressed, but its children are. The register we 
+access in this driver is not part of other block. It's a SFR register, 
+accessed through syscon and it has nothing to do with the I2S IP (see 
+SAMA5D2 DS, page 1256, fig. 44-1: I2SC Block Diagram) that is the 
+consumer of this clock. Adding a clock-id property in the I2S node would 
+be just like v3 of this series, with the difference that we use clock-id 
+instead of alias id to set the clock parent, which is not how you 
+suggested back then.
 
-> I have a zylonite based on a pxa310 in my non-regression bench, if that can
-> help. That's one of the targets I use to validate patches against the PXA tree.
+Thank you for your review.
 
-Ah, that's excellent!
+Best regards,
+Codrin
 
-> I'll let you come up with a patch. Meanwhile I'll try to figure out if I can
-> make the audio alive again.
-
-Probably worth taking a look at the big AC'97 refactoring that happened
-a while ago I guess...
-
---k+w/mQv8wyuph6w0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsPzPkACgkQJNaLcl1U
-h9Dn3wf/UbttOergVOasJz9hHaekCwdp2DjNuuOalVwpWHwQ65jQphlhasv3Xk5y
-2zprFijpJ9Me3VwEH7tM4yo0dKzoi0lU2hwnj8F9fTTEs/K5lZJgB4liGgGNIe7g
-d4tegolppIxKARdV31zTilHSWmVjdsIbq59OdZNzCqV2Lpk8Or7s+PNJoDmGuK0l
-x3gOErgeu1a6Mmm0/JbpcRHWVYJ0WTRbp4qTltwjAfcJztmFo5SdJjN6ojnCK7d3
-fEWbQbEgixm0E83qXyF/+UMFdGuOHYTE9ijKHwS3pLoTAO+OiwrteBKsIYzI20oG
-EmK0cM3poC8OBl/6bvwRlm5WEEHwDA==
-=wqgN
------END PGP SIGNATURE-----
-
---k+w/mQv8wyuph6w0--
-
---===============6734382667301890611==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6734382667301890611==--
+[...]
