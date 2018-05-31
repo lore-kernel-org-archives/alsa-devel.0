@@ -1,78 +1,46 @@
-From: Yisheng Xie <xieyisheng1@huawei.com>
-Subject: [PATCH v2 15/21] ALSA: oxygen: use match_string()
-	helper
-Date: Thu, 31 May 2018 19:11:20 +0800
-Message-ID: <1527765086-19873-16-git-send-email-xieyisheng1@huawei.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 16/21] ASoC: max98088: use match_string() helper
+Date: Thu, 31 May 2018 12:49:21 +0100
+Message-ID: <20180531114921.GD13319@sirena.org.uk>
 References: <1527765086-19873-1-git-send-email-xieyisheng1@huawei.com>
+ <1527765086-19873-17-git-send-email-xieyisheng1@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AEE7267906
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 13:22:48 +0200 (CEST)
-In-Reply-To: <1527765086-19873-1-git-send-email-xieyisheng1@huawei.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Yisheng Xie <xieyisheng1@huawei.com>, alsa-devel@alsa-project.org, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.com>, andy.shevchenko@gmail.com
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="RhUH2Ysw6aD5utA4"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1527765086-19873-17-git-send-email-xieyisheng1@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Yisheng Xie <xieyisheng1@huawei.com>
+Cc: linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-match_string() returns the index of an array for a matching string,
-which can be used instead of open coded variant.
 
-Cc: Clemens Ladisch <clemens@ladisch.de>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
----
-v2:
- - do not change the type of i - per Andy
+--RhUH2Ysw6aD5utA4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- sound/pci/oxygen/oxygen_mixer.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+On Thu, May 31, 2018 at 07:11:21PM +0800, Yisheng Xie wrote:
+> match_string() returns the index of an array for a matching string,
+> which can be used instead of open coded variant.
 
-diff --git a/sound/pci/oxygen/oxygen_mixer.c b/sound/pci/oxygen/oxygen_mixer.c
-index 4ca1266..81af21a 100644
---- a/sound/pci/oxygen/oxygen_mixer.c
-+++ b/sound/pci/oxygen/oxygen_mixer.c
-@@ -1052,10 +1052,10 @@ static int add_controls(struct oxygen *chip,
- 		[CONTROL_CD_CAPTURE_SWITCH] = "CD Capture Switch",
- 		[CONTROL_AUX_CAPTURE_SWITCH] = "Aux Capture Switch",
- 	};
--	unsigned int i, j;
-+	unsigned int i;
- 	struct snd_kcontrol_new template;
- 	struct snd_kcontrol *ctl;
--	int err;
-+	int j, err;
- 
- 	for (i = 0; i < count; ++i) {
- 		template = controls[i];
-@@ -1086,11 +1086,11 @@ static int add_controls(struct oxygen *chip,
- 		err = snd_ctl_add(chip->card, ctl);
- 		if (err < 0)
- 			return err;
--		for (j = 0; j < CONTROL_COUNT; ++j)
--			if (!strcmp(ctl->id.name, known_ctl_names[j])) {
--				chip->controls[j] = ctl;
--				ctl->private_free = oxygen_any_ctl_free;
--			}
-+		j = match_string(known_ctl_names, CONTROL_COUNT, ctl->id.name);
-+		if (j >= 0) {
-+			chip->controls[j] = ctl;
-+			ctl->private_free = oxygen_any_ctl_free;
-+		}
- 	}
- 	return 0;
- }
--- 
-1.7.12.4
+I don't have either the cover letter or the rest of the series here so
+I've no context - what is the story here with regard to dependencies and
+things?
+
+--RhUH2Ysw6aD5utA4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsP4UAACgkQJNaLcl1U
+h9ARWwf/eXONi0P5tRYseDnx7xeRNPi94O9wUx2+o8n7BSELbY9Plpo2s6YEW2U0
+37zqBaKzT+6Q95eYqGXDzAQPhvmsogWRUC6xRGu4pf1Q7giYLed4wq43PP4DGpSy
+262Z00PayoE3OqdbdZgbo6dKLAgjyDpVvl39ARX4p2KlgOwv2EUg2GKhtkaXvrBC
+f89Bf7is6X6gF3Fn6b5FHTdEcOK0mFptZAt6pFpq0g9LDNCG6W5YV3LgBA5pVl6/
+JCg63Tg0E0ASAfWwU+y8HxKB4/Jzhxn0Ig0Pvc6p158nBtsfX9XY9kGDudzeprtb
+UR5XRWsBWrRh2AeDYv1cxofuupb0dA==
+=bLKf
+-----END PGP SIGNATURE-----
+
+--RhUH2Ysw6aD5utA4--
