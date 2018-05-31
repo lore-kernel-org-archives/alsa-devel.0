@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: mt6797-mt6351: add hostless phone call
-	path" to the asoc tree
-Date: Thu, 31 May 2018 12:06:18 +0100
-Message-ID: <E1fOLPO-0001wK-7q@debutante>
-References: <1527729981-4802-3-git-send-email-kaichieh.chuang@mediatek.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DF216267904
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 13:06:28 +0200 (CEST)
-In-Reply-To: <1527729981-4802-3-git-send-email-kaichieh.chuang@mediatek.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
+Subject: Applied "ASoC: mediatek: export mtk-afe symbols as needed" to the asoc tree
+Date: Thu, 31 May 2018 12:06:33 +0100
+Message-ID: <E1fOLPd-0001zu-1m@debutante>
+References: <20180530220057.1419933-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180530220057.1419933-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Ryder Lee <ryder.lee@mediatek.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-mediatek@lists.infradead.org, Matthias Brugger <matthias.bgg@gmail.com>, linux-arm-kernel@lists.infradead.org, KaiChieh Chuang <kaichieh.chuang@mediatek.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: mt6797-mt6351: add hostless phone call path
+   ASoC: mediatek: export mtk-afe symbols as needed
 
 has been applied to the asoc tree at
 
@@ -52,80 +37,70 @@ to this mail.
 Thanks,
 Mark
 
->From 983333c0f6c4c6b4dab1257d14d16c31912d7561 Mon Sep 17 00:00:00 2001
-From: Kai Chieh Chuang <kaichieh.chuang@mediatek.com>
-Date: Thu, 31 May 2018 09:26:21 +0800
-Subject: [PATCH] ASoC: mt6797-mt6351: add hostless phone call path
+>From 39f56b757cf9778572041f497f6fad890224c9fb Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Thu, 31 May 2018 00:00:35 +0200
+Subject: [PATCH] ASoC: mediatek: export mtk-afe symbols as needed
 
-Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+The new mt6797-afe driver uses some functions in a common file, which
+works for a built-in driver but fails for a loadable module:
+
+ERROR: "mtk_afe_pcm_free" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
+ERROR: "mtk_afe_add_sub_dai_control" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
+ERROR: "mtk_afe_pcm_new" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
+ERROR: "mtk_afe_combine_sub_dai" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
+ERROR: "mtk_afe_pcm_ops" [sound/soc/mediatek/mt6797/snd-soc-mt6797-afe.ko] undefined!
+
+This exports the five symbols above for modules.
+
+Fixes: b3c702f56bf5 ("ASoC: mt6797: combine DAI to register component")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/mediatek/mt6797/mt6797-mt6351.c | 46 +++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
+ sound/soc/mediatek/common/mtk-afe-platform-driver.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/mediatek/mt6797/mt6797-mt6351.c b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
-index 9e5866d6819a..b1558c57b9ca 100644
---- a/sound/soc/mediatek/mt6797/mt6797-mt6351.c
-+++ b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
-@@ -89,6 +89,32 @@ static struct snd_soc_dai_link mt6797_mt6351_dai_links[] = {
- 		.dynamic = 1,
- 		.dpcm_capture = 1,
- 	},
-+	{
-+		.name = "Hostless_LPBK",
-+		.stream_name = "Hostless_LPBK",
-+		.cpu_dai_name = "Hostless LPBK DAI",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_PRE,
-+			    SND_SOC_DPCM_TRIGGER_PRE},
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ignore_suspend = 1,
-+	},
-+	{
-+		.name = "Hostless_Speech",
-+		.stream_name = "Hostless_Speech",
-+		.cpu_dai_name = "Hostless Speech DAI",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.trigger = {SND_SOC_DPCM_TRIGGER_PRE,
-+			    SND_SOC_DPCM_TRIGGER_PRE},
-+		.dynamic = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ignore_suspend = 1,
-+	},
- 	/* BE */
- 	{
- 		.name = "Primary Codec",
-@@ -99,6 +125,26 @@ static struct snd_soc_dai_link mt6797_mt6351_dai_links[] = {
- 		.dpcm_capture = 1,
- 		.ignore_suspend = 1,
- 	},
-+	{
-+		.name = "PCM 1",
-+		.cpu_dai_name = "PCM 1",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.no_pcm = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ignore_suspend = 1,
-+	},
-+	{
-+		.name = "PCM 2",
-+		.cpu_dai_name = "PCM 2",
-+		.codec_name = "snd-soc-dummy",
-+		.codec_dai_name = "snd-soc-dummy-dai",
-+		.no_pcm = 1,
-+		.dpcm_playback = 1,
-+		.dpcm_capture = 1,
-+		.ignore_suspend = 1,
-+	},
- };
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+index 00618587ef1e..51ec4ff6ed95 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+@@ -57,6 +57,7 @@ int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe)
  
- static struct snd_soc_card mt6797_mt6351_card = {
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(mtk_afe_combine_sub_dai);
+ 
+ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
+ {
+@@ -90,6 +91,7 @@ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
+ 	return 0;
+ 
+ }
++EXPORT_SYMBOL_GPL(mtk_afe_add_sub_dai_control);
+ 
+ static snd_pcm_uframes_t mtk_afe_pcm_pointer
+ 			 (struct snd_pcm_substream *substream)
+@@ -130,6 +132,7 @@ const struct snd_pcm_ops mtk_afe_pcm_ops = {
+ 	.ioctl = snd_pcm_lib_ioctl,
+ 	.pointer = mtk_afe_pcm_pointer,
+ };
++EXPORT_SYMBOL_GPL(mtk_afe_pcm_ops);
+ 
+ int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ {
+@@ -143,11 +146,13 @@ int mtk_afe_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 						     afe->dev,
+ 						     size, size);
+ }
++EXPORT_SYMBOL_GPL(mtk_afe_pcm_new);
+ 
+ void mtk_afe_pcm_free(struct snd_pcm *pcm)
+ {
+ 	snd_pcm_lib_preallocate_free_for_all(pcm);
+ }
++EXPORT_SYMBOL_GPL(mtk_afe_pcm_free);
+ 
+ const struct snd_soc_component_driver mtk_afe_pcm_platform = {
+ 	.name = AFE_PCM_NAME,
 -- 
 2.17.0
