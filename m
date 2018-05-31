@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98095: use match_string() helper" to the asoc tree
-Date: Thu, 31 May 2018 17:09:41 +0100
-Message-ID: <E1fOQ8z-0003BE-Nh@debutante>
-References: <1527765086-19873-18-git-send-email-xieyisheng1@huawei.com>
+Subject: Applied "ASoC: max98088: use match_string() helper" to the asoc tree
+Date: Thu, 31 May 2018 17:09:45 +0100
+Message-ID: <E1fOQ93-0003CU-AS@debutante>
+References: <1527765086-19873-17-git-send-email-xieyisheng1@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1527765086-19873-18-git-send-email-xieyisheng1@huawei.com>
+In-Reply-To: <1527765086-19873-17-git-send-email-xieyisheng1@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Yisheng Xie <xieyisheng1@huawei.com>Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.orgYisheng Xie <xieyisheng1@huawei.com>alsa-devel@alsa-project.orgTakashi Iwai <tiwai@suse.com>Liam Girdwood <lgirdwood@gmail.com>, andy.shevchenko@gmail.comMark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98095: use match_string() helper
+   ASoC: max98088: use match_string() helper
 
 has been applied to the asoc tree at
 
@@ -36,10 +36,10 @@ to this mail.
 Thanks,
 Mark
 
->From 1567062f17284637519d004ecc5d7ea0d6c754c3 Mon Sep 17 00:00:00 2001
+>From 3470631510fa383feac5969b436499ca9bad03b8 Mon Sep 17 00:00:00 2001
 From: Xie Yisheng <xieyisheng1@huawei.com>
-Date: Thu, 31 May 2018 19:11:22 +0800
-Subject: [PATCH] ASoC: max98095: use match_string() helper
+Date: Thu, 31 May 2018 19:11:21 +0800
+Subject: [PATCH] ASoC: max98088: use match_string() helper
 
 match_string() returns the index of an array for a matching string,
 which can be used instead of open coded variant.
@@ -52,33 +52,33 @@ Cc: alsa-devel@alsa-project.org
 Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98095.c | 13 +++++--------
+ sound/soc/codecs/max98088.c | 13 +++++--------
  1 file changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/max98095.c b/sound/soc/codecs/max98095.c
-index 6bf2d0ba864f..3b3a10da7f40 100644
---- a/sound/soc/codecs/max98095.c
-+++ b/sound/soc/codecs/max98095.c
-@@ -1634,15 +1634,12 @@ static const char *bq_mode_name[] = {"Biquad1 Mode", "Biquad2 Mode"};
- static int max98095_get_bq_channel(struct snd_soc_component *component,
- 				   const char *name)
+diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
+index 865f64c40b79..fb515aaa54fc 100644
+--- a/sound/soc/codecs/max98088.c
++++ b/sound/soc/codecs/max98088.c
+@@ -1382,15 +1382,12 @@ static const char *eq_mode_name[] = {"EQ1 Mode", "EQ2 Mode"};
+ 
+ static int max98088_get_channel(struct snd_soc_component *component, const char *name)
  {
 -	int i;
--
--	for (i = 0; i < ARRAY_SIZE(bq_mode_name); i++)
--		if (strcmp(name, bq_mode_name[i]) == 0)
--			return i;
 +	int ret;
  
+-	for (i = 0; i < ARRAY_SIZE(eq_mode_name); i++)
+-		if (strcmp(name, eq_mode_name[i]) == 0)
+-			return i;
+-
 -	/* Shouldn't happen */
--	dev_err(component->dev, "Bad biquad channel name '%s'\n", name);
+-	dev_err(component->dev, "Bad EQ channel name '%s'\n", name);
 -	return -EINVAL;
-+	ret = match_string(bq_mode_name, ARRAY_SIZE(bq_mode_name), name);
++	ret = match_string(eq_mode_name, ARRAY_SIZE(eq_mode_name), name);
 +	if (ret < 0)
-+		dev_err(component->dev, "Bad biquad channel name '%s'\n", name);
++		dev_err(component->dev, "Bad EQ channel name '%s'\n", name);
 +	return ret;
  }
  
- static int max98095_put_bq_enum(struct snd_kcontrol *kcontrol,
+ static void max98088_setup_eq1(struct snd_soc_component *component)
 -- 
 2.17.0
