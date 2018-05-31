@@ -1,17 +1,18 @@
-From: mac.chiang@intel.com
-Subject: [PATCH] [PATCH v4] ASoC: Intel: kbl: Move codec sysclk
-	config to codec_init function
-Date: Fri,  1 Jun 2018 01:18:32 +0800
-Message-ID: <1527787112-17493-1-git-send-email-mac.chiang@intel.com>
-References: <1527579790-1666-1-git-send-email-mac.chiang@intel.com>
+From: Ben Hutchings <ben.hutchings@codethink.co.uk>
+Subject: Re: [PATCH v2 2/3] ALSA: seq: Avoid open-code for
+ getting timer resolution
+Date: Thu, 31 May 2018 18:18:53 +0100
+Message-ID: <1527787133.2289.36.camel@codethink.co.uk>
+References: <20180517084911.11868-1-tiwai@suse.de>
+ <20180517084911.11868-3-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 036E4267960
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 19:15:48 +0200 (CEST)
-In-Reply-To: <1527579790-1666-1-git-send-email-mac.chiang@intel.com>
+Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id DBFA0267961
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 19:18:55 +0200 (CEST)
+In-Reply-To: <20180517084911.11868-3-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,80 +22,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: kuninori.morimoto.gx@renesas.com, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, mac.chiang@intel.com, broonie@kernel.org, naveen.m@intel.com, Adam.Thomson.Opensource@diasemi.com, andriy.shevchenko@linux.intel.com
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Mac Chiang <mac.chiang@intel.com>
-
-On APL, commit fd0f237572ad
-("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
-fixed an issue related to jack detection.
-
-The MCLK for DA7219 does not change in this platform, but is
-currently being configured everytime as part of the platform_clock
-event handler for DAPM. The upshot of this is that we have
-unnecessary calls to this function, and it also means that if
-a stream hasn't yet been started, DA7219 driver does not have the
-correct MCLK rates programmed and so the HP detection feature does
-not operate as expected.
-
-The same fix is needed on KBL.
-
-This patch rectifies this issue by moving the sysclk call to
-codec_init function so it's only called once at initialisation.
-
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-
----
-Notes(changelog):
-  v2:
-    - correct the MCLK to 24.576M
-  v3:
-    - described the comments clearly
-  v4:
-    - move the notes at the end
-
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index c332a32..ad3029d 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -66,14 +66,6 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 		return -EIO;
- 	}
- 
--	/* Configure sysclk for codec */
--	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
--				     SND_SOC_CLOCK_IN);
--	if (ret) {
--		dev_err(card->dev, "can't set codec sysclk configuration\n");
--		return ret;
--	}
--
- 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
- 		ret = snd_soc_dai_set_pll(codec_dai, 0,
- 				     DA7219_SYSCLK_MCLK, 0, 0);
-@@ -170,9 +162,18 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_component *component = rtd->codec_dai->component;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_jack *jack;
- 	int ret;
- 
-+	/* Configure sysclk for codec */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
-+						SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
-+		return ret;
-+	}
-+
- 	/*
- 	 * Headset buttons map to the google Reference headset.
- 	 * These can be configured by userspace.
--- 
-2.7.4
+T24gVGh1LCAyMDE4LTA1LTE3IGF0IDEwOjQ5ICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
+SW5zdGVhZCBvZiBvcGVuLWNvZGluZyBmb3IgZ2V0dGluZyB0aGUgdGltZXIgcmVzb2x1dGlvbiwg
+dXNlIHRoZQo+IHN0YW5kYXJkIHNuZF90aW1lcl9yZXNvbHV0aW9uKCkgaGVscGVyLgo+IAo+IFRo
+ZSBvcmlnaW5hbCBjb2RlIGZhbGxzIGJhY2sgdG8gdGhlIGNhbGxiYWNrIGZ1bmN0aW9uIHdoZW4g
+dGhlCj4gcmVzb2x1dGlvbiBpcyB6ZXJvLCBidXQgaXQgbXVzdCBiZSBhbHdheXMgc28gd2hlbiB0
+aGUgY2FsbGJhY2sKPiBmdW5jdGlvbiBpcyBkZWZpbmVkLsKgwqBTbyB0aGlzIHNob3VsZCBiZSBu
+byBmdW5jdGlvbmFsIGNoYW5nZS4KCk1heWJlIGl0ICpzaG91bGQqIGJlIHNvLCBidXQgSSBjYW4g
+c2VlIHRocmVlIGRyaXZlcnMgd2hlcmUgaXQgaXNuJ3Q6Cgpzb3VuZC9pc2EvYWQxODE2YS9hZDE4
+MTZhX2xpYi5jCnNvdW5kL2lzYS93c3Mvd3NzX2xpYi5jCnNvdW5kL3NwYXJjL2NzNDIzMS5jCgpG
+b3IgYWQxODE2YV9saWIuYywgdGhlIGNfcmVzb2x1dGlvbiBpbXBsZW1lbnRhdGlvbiBhbHdheXMg
+cmV0dXJucyB0aGUKc2FtZSB2YWx1ZcKgdGhhdCdzIGluIHJlc29sdXRpb24sIHNvIHRoaXMgcmVh
+bGx5IGRvZXNuJ3QgbWFrZSBhCmZ1bmN0aW9uYWwgY2hhbmdlLgoKSG93ZXZlciwgZm9yIHRoZSBv
+dGhlciB0d28sIHRoZSBjX3Jlc29sdXRpb24gaW1wbGVtZW50YXRpb24gY2FuIHJldHVybgpzZXZl
+cmFsIGRpZmZlcmVudCB2YWx1ZXMuCgpCZW4uCgo+IFNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdh
+aSA8dGl3YWlAc3VzZS5kZT4KPiAtLS0KPiDCoHNvdW5kL2NvcmUvc2VxL3NlcV90aW1lci5jIHwg
+NCArLS0tCj4gwqAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDMgZGVsZXRpb25zKC0p
+Cj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL2NvcmUvc2VxL3NlcV90aW1lci5jIGIvc291bmQvY29y
+ZS9zZXEvc2VxX3RpbWVyLmMKPiBpbmRleCAyMzE2NzU3ODIzMWYuLmY1ODdkMGUyNzQ3NiAxMDA2
+NDQKPiAtLS0gYS9zb3VuZC9jb3JlL3NlcS9zZXFfdGltZXIuYwo+ICsrKyBiL3NvdW5kL2NvcmUv
+c2VxL3NlcV90aW1lci5jCj4gQEAgLTM3MSw5ICszNzEsNyBAQCBzdGF0aWMgaW50IGluaXRpYWxp
+emVfdGltZXIoc3RydWN0IHNuZF9zZXFfdGltZXIgKnRtcikKPiDCoAo+IMKgCXRtci0+dGlja3Mg
+PSAxOwo+IMKgCWlmICghKHQtPmh3LmZsYWdzICYgU05EUlZfVElNRVJfSFdfU0xBVkUpKSB7Cj4g
+LQkJdW5zaWduZWQgbG9uZyByID0gdC0+aHcucmVzb2x1dGlvbjsKPiAtCQlpZiAoISByICYmIHQt
+Pmh3LmNfcmVzb2x1dGlvbikKPiAtCQkJciA9IHQtPmh3LmNfcmVzb2x1dGlvbih0KTsKPiArCQl1
+bnNpZ25lZCBsb25nIHIgPSBzbmRfdGltZXJfcmVzb2x1dGlvbih0bXItPnRpbWVyaSk7Cj4gwqAJ
+CWlmIChyKSB7Cj4gwqAJCQl0bXItPnRpY2tzID0gKHVuc2lnbmVkIGludCkoMTAwMDAwMDAwMHVM
+IC8gKHIgKiBmcmVxKSk7Cj4gwqAJCQlpZiAoISB0bXItPnRpY2tzKQotLSAKQmVuIEh1dGNoaW5n
+cywgU29mdHdhcmUgRGV2ZWxvcGVyICAgICAgICAgICAgICAgIMKgICAgICAgICBDb2RldGhpbmsg
+THRkCmh0dHBzOi8vd3d3LmNvZGV0aGluay5jby51ay8gICAgICAgICAgICAgICAgIERhbGUgSG91
+c2UsIDM1IERhbGUgU3RyZWV0CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBN
+YW5jaGVzdGVyLCBNMSAySEYsIFVuaXRlZCBLaW5nZG9tCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
