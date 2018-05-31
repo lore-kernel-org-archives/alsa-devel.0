@@ -1,54 +1,90 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 16/21] ASoC: max98088: use match_string() helper
-Date: Thu, 31 May 2018 17:02:06 +0100
-Message-ID: <20180531160206.GE13319@sirena.org.uk>
-References: <1527765086-19873-1-git-send-email-xieyisheng1@huawei.com>
- <1527765086-19873-17-git-send-email-xieyisheng1@huawei.com>
- <20180531114921.GD13319@sirena.org.uk>
- <8009e494-9ba0-bff3-e900-37f8923886a0@huawei.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="AsxXAMtlQ5JHofzM"
+Subject: Applied "ASoC: dapm: use match_string() helper" to the asoc tree
+Date: Thu, 31 May 2018 17:09:38 +0100
+Message-ID: <E1fOQ8w-0003A4-5a@debutante>
+References: <1526903890-35761-34-git-send-email-xieyisheng1@huawei.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <8009e494-9ba0-bff3-e900-37f8923886a0@huawei.com>
+In-Reply-To: <1526903890-35761-34-git-send-email-xieyisheng1@huawei.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Yisheng Xie <xieyisheng1@huawei.com>
-Cc: linux-kernel@vger.kernel.org, andy.shevchenko@gmail.com, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Yisheng Xie <xieyisheng1@huawei.com>Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.orgYisheng Xie <xieyisheng1@huawei.com>alsa-devel@alsa-project.orgTakashi Iwai <tiwai@suse.com>Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---AsxXAMtlQ5JHofzM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: dapm: use match_string() helper
 
-On Thu, May 31, 2018 at 08:25:39PM +0800, Yisheng Xie wrote:
+has been applied to the asoc tree at
 
-> Anyway, Here is the cover letter of v1 and I have add v2's cover letter to you:
->   https://lkml.org/lkml/2018/5/21/303
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> Each patch in this patchset is a separate one, for what this patchset want to do
-> is use match_string() helper for echo subsystem.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-For something like this it's generally easier to not send everything as
-one big series - it avoids any confusion about dependencies and there's
-no actual relationship between the patches.  Instead just sending each
-subsystem as a series or perhaps even just a bunch of separate patches
-should make things smoother.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---AsxXAMtlQ5JHofzM
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsQHH0ACgkQJNaLcl1U
-h9ATxwf/cfSRfTKeyj24thB7iAGirKwmtfR5w42ZeMDl76thS0CTw/StQYGuUgTj
-NTtpwb4GlvYRVN1k4pYScbie2kf76MVLw/gsAkctuwYbOGuD6MR7bRqv/mkEBdlK
-1S0DW6iqmNLZ5e3lW1xnQAl1czz3fCeY6dD1XojeYKkAZKNuVLFFuF5t8If/YWZi
-T1zOT1ExDHHfkAaPRo2SuEDTDpPXKenkfLu6vbw5qNnV0lkBGLDNfHMw4Qw3f4t0
-G4hQNiHEUD8VYruFLQ/fzQs8y2+fVx8mnm06x4ZFC3X5bd0lWTxBVDKa0wmR7tmE
-fmX6fLq8NEoTw7ZBOdnrZrHXRf6rRg==
-=G6H8
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---AsxXAMtlQ5JHofzM--
+>From f9e0b4afd4e9b19e95158962d81b5b776d57ca06 Mon Sep 17 00:00:00 2001
+From: Xie Yisheng <xieyisheng1@huawei.com>
+Date: Thu, 31 May 2018 19:11:23 +0800
+Subject: [PATCH] ASoC: dapm: use match_string() helper
+
+match_string() returns the index of an array for a matching string,
+which can be used instead of open coded variant.
+
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-dapm.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 2d9709104ec5..1e9a36389667 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -724,18 +724,14 @@ static int dapm_connect_mux(struct snd_soc_dapm_context *dapm,
+ 		item = 0;
+ 	}
+ 
+-	for (i = 0; i < e->items; i++) {
+-		if (!(strcmp(control_name, e->texts[i]))) {
+-			path->name = e->texts[i];
+-			if (i == item)
+-				path->connect = 1;
+-			else
+-				path->connect = 0;
+-			return 0;
+-		}
+-	}
++	i = match_string(e->texts, e->items, control_name);
++	if (i < 0)
++		return -ENODEV;
++
++	path->name = e->texts[i];
++	path->connect = (i == item);
++	return 0;
+ 
+-	return -ENODEV;
+ }
+ 
+ /* set up initial codec paths */
+-- 
+2.17.0
