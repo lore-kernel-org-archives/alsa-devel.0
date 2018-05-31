@@ -1,17 +1,18 @@
 From: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
-Subject: Re: [PATCH] ALSA: xen-front: fix a loop timeout
-Date: Thu, 31 May 2018 09:44:39 +0300
-Message-ID: <ff39a5c2-545a-3017-71c4-d8dca73e8129@epam.com>
-References: <20180531062507.ajgs4splaboukp2v@kili.mountain>
+Subject: Re: [PATCH] ALSA: xen-front: signdness bug in
+	alsa_prepare()
+Date: Thu, 31 May 2018 09:47:44 +0300
+Message-ID: <2e1e5c3f-229d-4351-369a-0a3e2b1dc31b@epam.com>
+References: <20180531062547.xfcmrfx7vmnef6gm@kili.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01on0079.outbound.protection.outlook.com [104.47.1.79])
- by alsa0.perex.cz (Postfix) with ESMTP id 65D342678A7
- for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 08:44:46 +0200 (CEST)
-In-Reply-To: <20180531062507.ajgs4splaboukp2v@kili.mountain>
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01on0071.outbound.protection.outlook.com [104.47.0.71])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C7DA2678A7
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 08:47:49 +0200 (CEST)
+In-Reply-To: <20180531062547.xfcmrfx7vmnef6gm@kili.mountain>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,25 +28,24 @@ Cc: xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, kernel-janitors
 List-Id: alsa-devel@alsa-project.org
 
 On 05/31/2018 09:25 AM, Dan Carpenter wrote:
-> We want the loop to exit when "to" is set to zero, but in the current
-> code it's set to -1.  Also I tweaked the indenting so it doesn't look
-> like we're passing "--to" to xenbus_read_unsigned().
+> "sndif_format" needs to be signed for the error handling to work.
 >
-> Fixes: cc3196ae197c ("ALSA: xen-front: Introduce Xen para-virtualized sound frontend driver")
+> Fixes: 1cee559351a7 ("ALSA: xen-front: Implement ALSA virtual sound driver")
 > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 >
-> diff --git a/sound/xen/xen_snd_front.c b/sound/xen/xen_snd_front.c
-> index c18973a9bc9b..b089b13b5160 100644
-> --- a/sound/xen/xen_snd_front.c
-> +++ b/sound/xen/xen_snd_front.c
-> @@ -334,7 +334,7 @@ static int xen_drv_remove(struct xenbus_device *dev)
->   	 */
->   	while ((xenbus_read_unsigned(front_info->xb_dev->otherend, "state",
->   				     XenbusStateUnknown) != XenbusStateInitWait) &&
-> -				     to--)
-> +	       --to)
->   		msleep(10);
+> diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
+> index 5041f83e98d2..43478f66954a 100644
+> --- a/sound/xen/xen_snd_front_alsa.c
+> +++ b/sound/xen/xen_snd_front_alsa.c
+> @@ -463,7 +463,7 @@ static int alsa_prepare(struct snd_pcm_substream *substream)
 >   
->   	if (!to) {
+>   	if (!stream->is_open) {
+>   		struct snd_pcm_runtime *runtime = substream->runtime;
+> -		u8 sndif_format;
+> +		int sndif_format;
+>   		int ret;
+>   
+>   		sndif_format = to_sndif_format(runtime->format);
 Thank you for your patch,
-Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
+please see 
+https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git/commit/sound/xen?h=for-next&id=014cea591afac9b3dae61793446f83d5be634203
