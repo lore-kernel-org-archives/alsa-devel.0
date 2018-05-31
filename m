@@ -1,84 +1,75 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98088: use match_string() helper" to the asoc tree
-Date: Thu, 31 May 2018 17:09:45 +0100
-Message-ID: <E1fOQ93-0003CU-AS@debutante>
-References: <1527765086-19873-17-git-send-email-xieyisheng1@huawei.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1527765086-19873-17-git-send-email-xieyisheng1@huawei.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, Yisheng Xie <xieyisheng1@huawei.com>Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.orgYisheng Xie <xieyisheng1@huawei.com>alsa-devel@alsa-project.orgTakashi Iwai <tiwai@suse.com>Liam Girdwood <lgirdwood@gmail.com>, andy.shevchenko@gmail.comMark Brown <broonie@kernel.org>alsa-devel@alsa-project.org
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 2/3] ASoC: simple-card: make sysclk index
+	configurable
+Date: Thu, 31 May 2018 12:02:40 -0500
+Message-ID: <20180531170240.GA29973@rob-hp-laptop>
+References: <20180528193503.18905-1-daniel@zonque.org>
+ <20180528193503.18905-3-daniel@zonque.org>
+ <20180529112447.GC23509@sirena.org.uk>
+ <f130a86f-deca-b5cf-da34-5cf52a9c39fc@zonque.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yb0-f194.google.com (mail-yb0-f194.google.com
+ [209.85.213.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id B63BC26795E
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 19:02:43 +0200 (CEST)
+Received: by mail-yb0-f194.google.com with SMTP id r13-v6so7812726ybm.12
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 10:02:43 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <f130a86f-deca-b5cf-da34-5cf52a9c39fc@zonque.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, May 29, 2018 at 10:23:48PM +0200, Daniel Mack wrote:
+> On Tuesday, May 29, 2018 01:24 PM, Mark Brown wrote:
+> > On Mon, May 28, 2018 at 09:35:02PM +0200, Daniel Mack wrote:
+> > > The simple-card driver currently hard-codes the clk_id parameter in
+> > > snd_soc_dai_set_sysclk() to 0. Make this configrable for both CPU and
+> > > codec dai sub-nodes.
+> > 
+> > > This still has the limitation that only one clk_id can be configured, but it
+> > > should help some more platforms to use simple-card in favor to a more
+> > > specific machine driver.
+> > 
+> > If we want to get more complex usage of clocks in the DT we should be
+> > moving the CODECs over to using the standard clock bindings for this
+> > stuff rather than inventing custom ASoC clock bindings for it.  That way
+> > we don't have to deal with the pain of trying to join things up in the
+> > future.
+> 
+> This will get rather complex too though, because most codec and cpu dais can
+> act as clock source xor clock consumer, depending on how the hardware is
+> built. Would you want to represent everything, bit clocks, frame clocks,
+> master clocks etc as clock nodes?
 
-   ASoC: max98088: use match_string() helper
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 3470631510fa383feac5969b436499ca9bad03b8 Mon Sep 17 00:00:00 2001
-From: Xie Yisheng <xieyisheng1@huawei.com>
-Date: Thu, 31 May 2018 19:11:21 +0800
-Subject: [PATCH] ASoC: max98088: use match_string() helper
-
-match_string() returns the index of an array for a matching string,
-which can be used instead of open coded variant.
-
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Yisheng Xie <xieyisheng1@huawei.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/max98088.c | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/max98088.c b/sound/soc/codecs/max98088.c
-index 865f64c40b79..fb515aaa54fc 100644
---- a/sound/soc/codecs/max98088.c
-+++ b/sound/soc/codecs/max98088.c
-@@ -1382,15 +1382,12 @@ static const char *eq_mode_name[] = {"EQ1 Mode", "EQ2 Mode"};
+I have no idea if you need all the clocks or not, but they certainly 
+shouldn't be a node per clock. Rather the codec and/or cpu dai should be 
+a clock provider and can provide N clocks.
  
- static int max98088_get_channel(struct snd_soc_component *component, const char *name)
- {
--	int i;
-+	int ret;
- 
--	for (i = 0; i < ARRAY_SIZE(eq_mode_name); i++)
--		if (strcmp(name, eq_mode_name[i]) == 0)
--			return i;
--
--	/* Shouldn't happen */
--	dev_err(component->dev, "Bad EQ channel name '%s'\n", name);
--	return -EINVAL;
-+	ret = match_string(eq_mode_name, ARRAY_SIZE(eq_mode_name), name);
-+	if (ret < 0)
-+		dev_err(component->dev, "Bad EQ channel name '%s'\n", name);
-+	return ret;
- }
- 
- static void max98088_setup_eq1(struct snd_soc_component *component)
--- 
-2.17.0
+> If that's the case, could you depict how the DT bindings should look like by
+> example?
+
+In clock providers, you just add #clock-cells. Then the consumer side 
+defines 'clocks'. Which clock(s) comes from the dai is defined by the 
+index in the 'clocks' property for that node.
+
+Both ends can be providers, but who is active is determined by defining 
+the actual connections with 'clocks'. Or perhaps you have both 
+directions shown and there is some other means to select which one is 
+active such as solving for who can provide the desired freq.
+
+Hope that helps.
+
+Rob
