@@ -1,65 +1,100 @@
-From: Craig Tatlor <ctatlor97@gmail.com>
-Subject: Re: [PATCH v2 0/2] slimbus: Add QCOM SLIMBus NGD driver
-Date: Thu, 31 May 2018 18:06:02 +0100
-Message-ID: <20180531170222.GA9629@arch>
-References: <20180525111547.18556-1-srinivas.kandagatla@linaro.org>
+From: mac.chiang@intel.com
+Subject: [PATCH] [PATCH v4] ASoC: Intel: kbl: Move codec sysclk
+	config to codec_init function
+Date: Fri,  1 Jun 2018 01:18:32 +0800
+Message-ID: <1527787112-17493-1-git-send-email-mac.chiang@intel.com>
+References: <1527579790-1666-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180525111547.18556-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: gregkh@linuxfoundation.org, robh+dt@kernel.org, kramasub@codeaurora.org, sdharia@quicinc.com, girishm@quicinc.com, linux-kernel@vger.kernel.org, mark.rutland@arm.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id 036E4267960
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 19:15:48 +0200 (CEST)
+In-Reply-To: <1527579790-1666-1-git-send-email-mac.chiang@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: kuninori.morimoto.gx@renesas.com, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, mac.chiang@intel.com, broonie@kernel.org, naveen.m@intel.com, Adam.Thomson.Opensource@diasemi.com, andriy.shevchenko@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Tested on msm8974 with wcd9320 codec.
+From: Mac Chiang <mac.chiang@intel.com>
 
-Tested-by: Craig Tatlor <ctatlor97@gmail.com>
+On APL, commit fd0f237572ad
+("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
+fixed an issue related to jack detection.
 
-On Fri, May 25, 2018 at 12:15:45PM +0100, Srinivas Kandagatla wrote:
-> This patchset adds support to basic version of Qualcomm NGD SLIMBus
-> controller driver found SoCs from B family.
-> 
-> This controller is light-weight SLIMBus controller driver responsible for
-> communicating with slave HW directly over the bus using messaging
-> interface, and communicating with master component residing on ADSP
-> for bandwidth and data-channel management.
-> 
-> Tested this patchset on DB820c with WCD9335 codec.
-> I have pushed my working branch to [1] incase someone want to try.
-> 
-> This patch has dependency on https://lkml.org/lkml/2018/5/17/251
-> 
-> Changes sinc v1 (https://lwn.net/Articles/754679):
-> - Fixed DT binding making NGD slave of the slim controller.
-> - Fixed few typos spotted by Vinod.
-> - Removed unnessary dmaengine_slave_config suggested by Vinod
-> - Removed few unnessary initializations.
-> - fixed commit log to remove reference to B family suggested by Trilok
-> 
-> Thanks,
-> srini
-> 
-> [1] https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=slimbus-ngd
-> 
-> Srinivas Kandagatla (2):
->   slimbus: ngd: dt-bindings: Add slim ngd dt bindings
->   slimbus: ngd: Add qcom SLIMBus NGD driver
-> 
->  .../bindings/slimbus/slim-ngd-qcom-ctrl.txt        |   84 ++
->  drivers/slimbus/Kconfig                            |   11 +
->  drivers/slimbus/Makefile                           |    3 +
->  drivers/slimbus/qcom-ngd-ctrl.c                    | 1342 ++++++++++++++++++++
->  drivers/slimbus/slimbus.h                          |    8 +
->  5 files changed, 1448 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
->  create mode 100644 drivers/slimbus/qcom-ngd-ctrl.c
-> 
-> -- 
-> 2.16.2
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-arm-msm" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The MCLK for DA7219 does not change in this platform, but is
+currently being configured everytime as part of the platform_clock
+event handler for DAPM. The upshot of this is that we have
+unnecessary calls to this function, and it also means that if
+a stream hasn't yet been started, DA7219 driver does not have the
+correct MCLK rates programmed and so the HP detection feature does
+not operate as expected.
+
+The same fix is needed on KBL.
+
+This patch rectifies this issue by moving the sysclk call to
+codec_init function so it's only called once at initialisation.
+
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+
+---
+Notes(changelog):
+  v2:
+    - correct the MCLK to 24.576M
+  v3:
+    - described the comments clearly
+  v4:
+    - move the notes at the end
+
+ sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index c332a32..ad3029d 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -66,14 +66,6 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		return -EIO;
+ 	}
+ 
+-	/* Configure sysclk for codec */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+-				     SND_SOC_CLOCK_IN);
+-	if (ret) {
+-		dev_err(card->dev, "can't set codec sysclk configuration\n");
+-		return ret;
+-	}
+-
+ 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+ 		ret = snd_soc_dai_set_pll(codec_dai, 0,
+ 				     DA7219_SYSCLK_MCLK, 0, 0);
+@@ -170,9 +162,18 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_component *component = rtd->codec_dai->component;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_jack *jack;
+ 	int ret;
+ 
++	/* Configure sysclk for codec */
++	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
++						SND_SOC_CLOCK_IN);
++	if (ret) {
++		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
++		return ret;
++	}
++
+ 	/*
+ 	 * Headset buttons map to the google Reference headset.
+ 	 * These can be configured by userspace.
+-- 
+2.7.4
