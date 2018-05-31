@@ -1,69 +1,98 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] ALSA: unhide snd_soc_new_compress() declaration
-Date: Thu, 31 May 2018 10:12:19 +0900
-Message-ID: <583985db-c99c-9b22-ab00-186d5d5cfa67@sakamocchi.jp>
-References: <20180530220628.1613824-1-arnd@arndb.de>
+From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: [PATCH 3/3] ASoC: mt6797-mt6351: add hostless phone
+	call path
+Date: Thu, 31 May 2018 09:26:21 +0800
+Message-ID: <1527729981-4802-3-git-send-email-kaichieh.chuang@mediatek.com>
+References: <1527729981-4802-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180530220628.1613824-1-arnd@arndb.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 307A226781D
+ for <alsa-devel@alsa-project.org>; Thu, 31 May 2018 03:26:29 +0200 (CEST)
+In-Reply-To: <1527729981-4802-1-git-send-email-kaichieh.chuang@mediatek.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+---
+ sound/soc/mediatek/mt6797/mt6797-mt6351.c | 46 +++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-On May 31 2018 07:06, Arnd Bergmann wrote:
-> My randconfig build setup came across a new build failure today:
-> 
-> sound/soc/soc-topology.c: In function 'soc_tplg_dai_create':
-> sound/soc/soc-topology.c:1758:27: error: 'snd_soc_new_compress' undeclared (first use in this function); did you mean 'snd_soc_compr_ops'?
->     dai_drv->compress_new = snd_soc_new_compress;
-> 
-> Simply making that prototype visible again fixes the build failure
-> for me, though I'm not exactly sure why we don't get a link
-> error now.
-> 
-> The reference to snd_soc_new_compress() was added a few weeks
-> ago and seems to have caused the problem.
-> 
-> Fixes: 5db6aab6f36f ("ASoC: topology: Add support for compressed PCMs")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->   include/sound/soc.h | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/include/sound/soc.h b/include/sound/soc.h
-> index 600a7ebd10c0..8e073865bde3 100644
-> --- a/include/sound/soc.h
-> +++ b/include/sound/soc.h
-> @@ -460,9 +460,7 @@ struct snd_soc_component *snd_soc_lookup_component(struct device *dev,
->   						   const char *driver_name);
->   
->   int soc_new_pcm(struct snd_soc_pcm_runtime *rtd, int num);
-> -#ifdef CONFIG_SND_SOC_COMPRESS
->   int snd_soc_new_compress(struct snd_soc_pcm_runtime *rtd, int num);
-> -#endif
->   
->   void snd_soc_disconnect_sync(struct device *dev);
-
-This bug was fixed by a commit 0b014d72ebae ('ASoC: fix 0-day warnings
-with snd_soc_new_compress()')[1][2] in Mark's tree. It applies an 
-different solution to add an alternative inline function.
-
-A small nitpicking; please add 'ASoC' prefix when posting patches to
-ALSA SoC part, instead of 'ALSA'.
-
-[1] [alsa-devel] [PATCH] ASoC: fix 0-day warnings with 
-snd_soc_new_compress()
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-May/136620.html
-[2] ASoC: fix 0-day warnings with snd_soc_new_compress()
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/commit/?h=for-4.18&id=0b014d72ebae14c0c6ab3fb36a442fda91e1a1b3
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/sound/soc/mediatek/mt6797/mt6797-mt6351.c b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
+index 9e5866d..b1558c5 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-mt6351.c
++++ b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
+@@ -89,6 +89,32 @@
+ 		.dynamic = 1,
+ 		.dpcm_capture = 1,
+ 	},
++	{
++		.name = "Hostless_LPBK",
++		.stream_name = "Hostless_LPBK",
++		.cpu_dai_name = "Hostless LPBK DAI",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_PRE,
++			    SND_SOC_DPCM_TRIGGER_PRE},
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++	},
++	{
++		.name = "Hostless_Speech",
++		.stream_name = "Hostless_Speech",
++		.cpu_dai_name = "Hostless Speech DAI",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.trigger = {SND_SOC_DPCM_TRIGGER_PRE,
++			    SND_SOC_DPCM_TRIGGER_PRE},
++		.dynamic = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++	},
+ 	/* BE */
+ 	{
+ 		.name = "Primary Codec",
+@@ -99,6 +125,26 @@
+ 		.dpcm_capture = 1,
+ 		.ignore_suspend = 1,
+ 	},
++	{
++		.name = "PCM 1",
++		.cpu_dai_name = "PCM 1",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.no_pcm = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++	},
++	{
++		.name = "PCM 2",
++		.cpu_dai_name = "PCM 2",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.no_pcm = 1,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.ignore_suspend = 1,
++	},
+ };
+ 
+ static struct snd_soc_card mt6797_mt6351_card = {
+-- 
+1.9.1
