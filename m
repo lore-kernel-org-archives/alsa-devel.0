@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl: Move codec sysclk config to
-	codec_init function" to the asoc tree
-Date: Fri, 01 Jun 2018 12:05:51 +0100
-Message-ID: <E1fOhsV-0000Sd-BQ@debutante>
-References: <1527234447-1384-1-git-send-email-mac.chiang@intel.com>
+Subject: Applied "ASoC: simple-card: set cpu dai clk in
+	hw_params" to the asoc tree
+Date: Fri, 01 Jun 2018 12:05:54 +0100
+Message-ID: <E1fOhsY-0000Ti-Un@debutante>
+References: <20180530194556.407-1-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C4BE42676E7
- for <alsa-devel@alsa-project.org>; Fri,  1 Jun 2018 13:05:57 +0200 (CEST)
-In-Reply-To: <1527234447-1384-1-git-send-email-mac.chiang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4CA1D2676E7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jun 2018 13:06:01 +0200 (CEST)
+In-Reply-To: <20180530194556.407-1-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mac Chiang <mac.chiang@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Daniel Mack <daniel@zonque.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kuninori.morimoto.gx@renesas.com, lgirdwood@gmail.com, broonie@kernel.org, robert.jarzmik@free.fr
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: kbl: Move codec sysclk config to codec_init function
+   ASoC: simple-card: set cpu dai clk in hw_params
 
 has been applied to the asoc tree at
 
@@ -53,73 +53,83 @@ to this mail.
 Thanks,
 Mark
 
->From 56c3a95385df558a471f7fcedba73c9ed836a906 Mon Sep 17 00:00:00 2001
-From: Mac Chiang <mac.chiang@intel.com>
-Date: Fri, 1 Jun 2018 01:18:32 +0800
-Subject: [PATCH] ASoC: Intel: kbl: Move codec sysclk config to codec_init
- function
+>From e9be4ffd4f40fcb18209dc5120233f2d11a24b6a Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@zonque.org>
+Date: Wed, 30 May 2018 21:45:56 +0200
+Subject: [PATCH] ASoC: simple-card: set cpu dai clk in hw_params
 
-On APL, commit fd0f237572ad
-("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
-fixed an issue related to jack detection.
+The simple-card driver currently accepts a clock node in the cpu dai
+sub-node and only uses it as an alternative to the
+'system-clock-frequency' property to get the current frequency.
 
-The MCLK for DA7219 does not change in this platform, but is
-currently being configured everytime as part of the platform_clock
-event handler for DAPM. The upshot of this is that we have
-unnecessary calls to this function, and it also means that if
-a stream hasn't yet been started, DA7219 driver does not have the
-correct MCLK rates programmed and so the HP detection feature does
-not operate as expected.
+This patch adds another use of the passed clock node. If mclk-fs is
+specified, the clocks in cpu and codec dai sub-nodes will be set to
+the calculated rate (stream rate * mclk_fs) in hw_params.
 
-The same fix is needed on KBL.
+This allows platforms to pass tuneable clocks as phandle that will
+automatically be set to the right rates.
 
-This patch rectifies this issue by moving the sysclk call to
-codec_init function so it's only called once at initialisation.
-
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ .../devicetree/bindings/sound/simple-card.txt |  5 +++++
+ sound/soc/generic/simple-card.c               | 21 +++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index 60e739f3d6f3..94294c27d1db 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -65,14 +65,6 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 		return -EIO;
- 	}
+diff --git a/Documentation/devicetree/bindings/sound/simple-card.txt b/Documentation/devicetree/bindings/sound/simple-card.txt
+index 17c13e74667d..a4c72d09cd45 100644
+--- a/Documentation/devicetree/bindings/sound/simple-card.txt
++++ b/Documentation/devicetree/bindings/sound/simple-card.txt
+@@ -86,6 +86,11 @@ Optional CPU/CODEC subnodes properties:
+ 					  in dai startup() and disabled with
+ 					  clk_disable_unprepare() in dai
+ 					  shutdown().
++					  If a clock is specified and a
++					  multiplication factor is given with
++					  mclk-fs, the clock will be set to the
++					  calculated mclk frequency when the
++					  stream starts.
+ - system-clock-direction-out		: specifies clock direction as 'out' on
+ 					  initialization. It is useful for some aCPUs with
+ 					  fixed clocks.
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index 6959a74a6f49..4a516c428b3d 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -135,6 +135,18 @@ static void asoc_simple_card_shutdown(struct snd_pcm_substream *substream)
+ 	asoc_simple_card_clk_disable(&dai_props->codec_dai);
+ }
  
--	/* Configure sysclk for codec */
--	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
--				     SND_SOC_CLOCK_IN);
--	if (ret) {
--		dev_err(card->dev, "can't set codec sysclk configuration\n");
--		return ret;
--	}
--
- 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
- 		ret = snd_soc_dai_set_pll(codec_dai, 0,
- 				     DA7219_SYSCLK_MCLK, 0, 0);
-@@ -169,9 +161,18 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
- {
- 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_component *component = rtd->codec_dai->component;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_jack *jack;
- 	int ret;
- 
-+	/* Configure sysclk for codec */
-+	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
-+						SND_SOC_CLOCK_IN);
-+	if (ret) {
-+		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
-+		return ret;
-+	}
++static int asoc_simple_set_clk_rate(struct asoc_simple_dai *simple_dai,
++				    unsigned long rate)
++{
++	if (!simple_dai->clk)
++		return 0;
 +
- 	/*
- 	 * Headset buttons map to the google Reference headset.
- 	 * These can be configured by userspace.
++	if (clk_get_rate(simple_dai->clk) == rate)
++		return 0;
++
++	return clk_set_rate(simple_dai->clk, rate);
++}
++
+ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ 				      struct snd_pcm_hw_params *params)
+ {
+@@ -154,6 +166,15 @@ static int asoc_simple_card_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	if (mclk_fs) {
+ 		mclk = params_rate(params) * mclk_fs;
++
++		ret = asoc_simple_set_clk_rate(&dai_props->codec_dai, mclk);
++		if (ret < 0)
++			return ret;
++
++		ret = asoc_simple_set_clk_rate(&dai_props->cpu_dai, mclk);
++		if (ret < 0)
++			return ret;
++
+ 		ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
+ 					     SND_SOC_CLOCK_IN);
+ 		if (ret && ret != -ENOTSUPP)
 -- 
 2.17.0
