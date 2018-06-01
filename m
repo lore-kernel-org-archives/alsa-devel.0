@@ -1,81 +1,161 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: topology: Improve backwards
- compatibility with v4 topology files
-Date: Fri, 1 Jun 2018 18:08:47 +0100
-Message-ID: <20180601170847.GC8677@sirena.org.uk>
-References: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
- <20180601102506.GB8677@sirena.org.uk>
- <0015aace-fe32-9707-d3c9-0dea6f5fc48c@roeck-us.net>
- <8452aca6-0ae4-9fe1-c8cd-9f84e34f509f@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5167006550307057319=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 67419267766
- for <alsa-devel@alsa-project.org>; Fri,  1 Jun 2018 19:09:16 +0200 (CEST)
-In-Reply-To: <8452aca6-0ae4-9fe1-c8cd-9f84e34f509f@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>, Guenter Roeck <linux@roeck-us.net>
+Subject: Applied "ASoC: topology: Move skl-tplg-interface.h to uapi" to the asoc tree
+Date: Fri, 01 Jun 2018 18:12:11 +0100
+Message-ID: <E1fOnb1-0003ET-Ry@debutante>
+References: <1527191363-21021-3-git-send-email-linux@roeck-us.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1527191363-21021-3-git-send-email-linux@roeck-us.net>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Guenter Roeck <groeck@chromium.org>
+Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Chintan Patel <chintan.m.patel@intel.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5167006550307057319==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="oJ71EGRlYNjSvfq7"
-Content-Disposition: inline
+   ASoC: topology: Move skl-tplg-interface.h to uapi
 
+has been applied to the asoc tree at
 
---oJ71EGRlYNjSvfq7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Jun 01, 2018 at 10:19:58AM -0500, Pierre-Louis Bossart wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> I wanted to ack this patch but the Intel validation folks asked for a cou=
-ple
-> of days to finish their tests on a variety of Chromebooks (e.g. Lars) and
-> double-check which models used the v4 topology. There is an internal thre=
-ad
-> on all this which remains active. I don't think the feedback will be dela=
-yed
-> beyond early next week.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-OK, I'm expecting the merge window to open over the weekend so I think
-I'm just going to apply now so we it's in -next when that happens. =20
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---oJ71EGRlYNjSvfq7
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsRfZ4ACgkQJNaLcl1U
-h9DtcQf+MLxA1Y7K9CWrSgFsWQtI23eljjg88XksXgCBs/1EEiyYXLmu7dVRLg+k
-5jxgxM98qG7M94RxNycoGLTa/IreTk5RdOBwLR/x7Y7G1/TYTbhqu7Bas0i0fAGv
-oVdi45AKtB8ummzQ180IVoeObPo+dMoBKLnTp4hRYumFwG8/BCOZo3ekj6yjXJak
-Ki66YWqsOp0DozBHl0Ezirne38FK27CtiJE0ze6iqR/7tX2MqExzfX+2AYfPlwLY
-zwRJS1T3rnZkrrQ0lpKmphaFH6nqZVvWGjXaS90me5pQdsubukm5Gtxu0dmDAko+
-Zn0+hBNs15Zdz0mb2teeUD/vuNpoHQ==
-=huYi
------END PGP SIGNATURE-----
+>From 0c24fdc00244cc08309e397e3783f2943221dc53 Mon Sep 17 00:00:00 2001
+From: Guenter Roeck <groeck@chromium.org>
+Date: Thu, 24 May 2018 12:49:23 -0700
+Subject: [PATCH] ASoC: topology: Move skl-tplg-interface.h to uapi
 
---oJ71EGRlYNjSvfq7--
+skl-tplg-interface.h describes firmware format details for Skylake
+topology files. It is part of the ABI and should reside in the uapi
+directory.
 
---===============5167006550307057319==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+While moving the file, also replace the license boilerplate with
+the SPDX License Identifier.
 
+No functional change.
 
---===============5167006550307057319==--
+Signed-off-by: Guenter Roeck <groeck@chromium.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../uapi/sound}/skl-tplg-interface.h                  | 11 +----------
+ sound/soc/intel/skylake/skl-debug.c                   |  2 +-
+ sound/soc/intel/skylake/skl-messages.c                |  2 +-
+ sound/soc/intel/skylake/skl-topology.c                |  2 +-
+ sound/soc/intel/skylake/skl-topology.h                |  2 +-
+ 5 files changed, 5 insertions(+), 14 deletions(-)
+ rename {sound/soc/intel/skylake => include/uapi/sound}/skl-tplg-interface.h (90%)
+
+diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/include/uapi/sound/skl-tplg-interface.h
+similarity index 90%
+rename from sound/soc/intel/skylake/skl-tplg-interface.h
+rename to include/uapi/sound/skl-tplg-interface.h
+index b0e3d376594c..f58cafa42f18 100644
+--- a/sound/soc/intel/skylake/skl-tplg-interface.h
++++ b/include/uapi/sound/skl-tplg-interface.h
+@@ -1,19 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
+ /*
+  * skl-tplg-interface.h - Intel DSP FW private data interface
+  *
+  * Copyright (C) 2015 Intel Corp
+  * Author: Jeeja KP <jeeja.kp@intel.com>
+  *	    Nilofer, Samreen <samreen.nilofer@intel.com>
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License as version 2, as
+- * published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful, but
+- * WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- * General Public License for more details.
+  */
+ 
+ #ifndef __HDA_TPLG_INTERFACE_H__
+diff --git a/sound/soc/intel/skylake/skl-debug.c b/sound/soc/intel/skylake/skl-debug.c
+index 302b40e63e6c..5d7ac2ee7a3c 100644
+--- a/sound/soc/intel/skylake/skl-debug.c
++++ b/sound/soc/intel/skylake/skl-debug.c
+@@ -15,10 +15,10 @@
+ 
+ #include <linux/pci.h>
+ #include <linux/debugfs.h>
++#include <uapi/sound/skl-tplg-interface.h>
+ #include "skl.h"
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+-#include "skl-tplg-interface.h"
+ #include "skl-topology.h"
+ #include "../common/sst-dsp.h"
+ #include "../common/sst-dsp-priv.h"
+diff --git a/sound/soc/intel/skylake/skl-messages.c b/sound/soc/intel/skylake/skl-messages.c
+index dd590a1c58e2..d5f9c30eba32 100644
+--- a/sound/soc/intel/skylake/skl-messages.c
++++ b/sound/soc/intel/skylake/skl-messages.c
+@@ -21,6 +21,7 @@
+ #include <linux/pci.h>
+ #include <sound/core.h>
+ #include <sound/pcm.h>
++#include <uapi/sound/skl-tplg-interface.h>
+ #include "skl-sst-dsp.h"
+ #include "cnl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+@@ -28,7 +29,6 @@
+ #include "../common/sst-dsp.h"
+ #include "../common/sst-dsp-priv.h"
+ #include "skl-topology.h"
+-#include "skl-tplg-interface.h"
+ 
+ static int skl_alloc_dma_buf(struct device *dev,
+ 		struct snd_dma_buffer *dmab, size_t size)
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 9e4c2cb88dea..2c5129782959 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -23,11 +23,11 @@
+ #include <sound/soc.h>
+ #include <sound/soc-topology.h>
+ #include <uapi/sound/snd_sst_tokens.h>
++#include <uapi/sound/skl-tplg-interface.h>
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+ #include "skl-topology.h"
+ #include "skl.h"
+-#include "skl-tplg-interface.h"
+ #include "../common/sst-dsp.h"
+ #include "../common/sst-dsp-priv.h"
+ 
+diff --git a/sound/soc/intel/skylake/skl-topology.h b/sound/soc/intel/skylake/skl-topology.h
+index b1e0667c0ae0..6d7e0569695f 100644
+--- a/sound/soc/intel/skylake/skl-topology.h
++++ b/sound/soc/intel/skylake/skl-topology.h
+@@ -25,8 +25,8 @@
+ 
+ #include <sound/hdaudio_ext.h>
+ #include <sound/soc.h>
++#include <uapi/sound/skl-tplg-interface.h>
+ #include "skl.h"
+-#include "skl-tplg-interface.h"
+ 
+ #define BITS_PER_BYTE 8
+ #define MAX_TS_GROUPS 8
+-- 
+2.17.0
