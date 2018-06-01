@@ -1,192 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Move v4 manifest header data structures to uapi" to the asoc tree
-Date: Fri, 01 Jun 2018 18:12:15 +0100
-Message-ID: <E1fOnb5-0003FX-FL@debutante>
-References: <1527191363-21021-2-git-send-email-linux@roeck-us.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1527191363-21021-2-git-send-email-linux@roeck-us.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <groeck@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Chintan Patel <chintan.m.patel@intel.com>alsa-devel@alsa-project.org
+Subject: Re: [PATCH v2 1/3] ASoC: topology: Improve backwards
+ compatibility with v4 topology files
+Date: Fri, 1 Jun 2018 18:11:57 +0100
+Message-ID: <20180601171157.GD8677@sirena.org.uk>
+References: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
+ <20180601102506.GB8677@sirena.org.uk>
+ <0015aace-fe32-9707-d3c9-0dea6f5fc48c@roeck-us.net>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============3099315677742437438=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B876267772
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jun 2018 19:12:22 +0200 (CEST)
+In-Reply-To: <0015aace-fe32-9707-d3c9-0dea6f5fc48c@roeck-us.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: topology: Move v4 manifest header data structures to uapi
+--===============3099315677742437438==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="IMjqdzrDRly81ofr"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--IMjqdzrDRly81ofr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Jun 01, 2018 at 06:17:05AM -0700, Guenter Roeck wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> Other than that, there was a question if this is a Linux issue or
+> a Chromebook issue (it appears that only Chromebooks shipped with
+> v4 configuration files). I took that as rhetorical since upstream
+> kernels (at least v4.4 and v4.5) support topology v4 configuration
+> files, and it should not matter which products shipped using those.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Yes, that's definitely completely irrelevant here - one of the great
+things about Chromebooks is their upstream support and this code was
+definitely no exception!
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--IMjqdzrDRly81ofr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
-Mark
+-----BEGIN PGP SIGNATURE-----
 
->From 348f48220b97130817de4aa2058569133c5cc051 Mon Sep 17 00:00:00 2001
-From: Guenter Roeck <groeck@chromium.org>
-Date: Thu, 24 May 2018 12:49:22 -0700
-Subject: [PATCH] ASoC: topology: Move v4 manifest header data structures to
- uapi
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsRfl0ACgkQJNaLcl1U
+h9AcgAf+M5/KOrs2V584NuGmUEoErJ27oGBQabujIUbxMFFHIVMLimpDmH4qlTW1
+Iu5i/H+E7r2yr0JL/DqfO61PGsCMaBT1ZYHOfD2xPZTUp6x4lDv9cP8Sun0jkoDE
+WJx7E8NyY0lF+MsJmaKc0cq2tSjOyqBKS16P7VKFBB+qtwgbXfSwSFejG/t3ZHwk
+lqjJYVf3bYR2KDBCdswCEsboGrxLBw9MK5/Pmm7vezPjD/I+UGXKcH+Hag1Ryv6s
+4o+BTYJFd4WTvWqGO04r0ByUps+enn5mdPbvyrnGAll1yD3febZI7P6Sz9lFbiTx
+E9Op5K3sKMFkB+cD+omM/MiPUs6KLw==
+=+Ejj
+-----END PGP SIGNATURE-----
 
-Topology manifest v4 is still part of the ABI. Move its data structures
-into the uapi header file.
+--IMjqdzrDRly81ofr--
 
-No functional change.
+--===============3099315677742437438==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Signed-off-by: Guenter Roeck <groeck@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/uapi/sound/asoc.h | 57 +++++++++++++++++++++++++++++++++++++++
- sound/soc/soc-topology.c  | 56 --------------------------------------
- 2 files changed, 57 insertions(+), 56 deletions(-)
 
-diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
-index b901cdbe532a..a74ca232f1fc 100644
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -573,4 +573,61 @@ struct snd_soc_tplg_dai {
- 	__le32 flags;           /* SND_SOC_TPLG_DAI_FLGBIT_* */
- 	struct snd_soc_tplg_private priv;
- } __attribute__((packed));
-+
-+/*
-+ * Old version of ABI structs, supported for backward compatibility.
-+ */
-+
-+/* Manifest v4 */
-+struct snd_soc_tplg_manifest_v4 {
-+	__le32 size;		/* in bytes of this structure */
-+	__le32 control_elems;	/* number of control elements */
-+	__le32 widget_elems;	/* number of widget elements */
-+	__le32 graph_elems;	/* number of graph elements */
-+	__le32 pcm_elems;	/* number of PCM elements */
-+	__le32 dai_link_elems;	/* number of DAI link elements */
-+	struct snd_soc_tplg_private priv;
-+} __packed;
-+
-+/* Stream Capabilities v4 */
-+struct snd_soc_tplg_stream_caps_v4 {
-+	__le32 size;		/* in bytes of this structure */
-+	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	__le64 formats;	/* supported formats SNDRV_PCM_FMTBIT_* */
-+	__le32 rates;		/* supported rates SNDRV_PCM_RATE_* */
-+	__le32 rate_min;	/* min rate */
-+	__le32 rate_max;	/* max rate */
-+	__le32 channels_min;	/* min channels */
-+	__le32 channels_max;	/* max channels */
-+	__le32 periods_min;	/* min number of periods */
-+	__le32 periods_max;	/* max number of periods */
-+	__le32 period_size_min;	/* min period size bytes */
-+	__le32 period_size_max;	/* max period size bytes */
-+	__le32 buffer_size_min;	/* min buffer size bytes */
-+	__le32 buffer_size_max;	/* max buffer size bytes */
-+} __packed;
-+
-+/* PCM v4 */
-+struct snd_soc_tplg_pcm_v4 {
-+	__le32 size;		/* in bytes of this structure */
-+	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
-+	__le32 pcm_id;		/* unique ID - used to match with DAI link */
-+	__le32 dai_id;		/* unique ID - used to match */
-+	__le32 playback;	/* supports playback mode */
-+	__le32 capture;		/* supports capture mode */
-+	__le32 compress;	/* 1 = compressed; 0 = PCM */
-+	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
-+	__le32 num_streams;	/* number of streams */
-+	struct snd_soc_tplg_stream_caps_v4 caps[2]; /* playback and capture for DAI */
-+} __packed;
-+
-+/* Physical link config v4 */
-+struct snd_soc_tplg_link_config_v4 {
-+	__le32 size;            /* in bytes of this structure */
-+	__le32 id;              /* unique ID - used to match */
-+	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
-+	__le32 num_streams;     /* number of streams */
-+} __packed;
-+
- #endif
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 3d04fa297677..3fd5d9c867b9 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -54,62 +54,6 @@
- #define SOC_TPLG_PASS_START	SOC_TPLG_PASS_MANIFEST
- #define SOC_TPLG_PASS_END	SOC_TPLG_PASS_LINK
- 
--/*
-- * Old version of ABI structs, supported for backward compatibility.
-- */
--
--/* Manifest v4 */
--struct snd_soc_tplg_manifest_v4 {
--	__le32 size;		/* in bytes of this structure */
--	__le32 control_elems;	/* number of control elements */
--	__le32 widget_elems;	/* number of widget elements */
--	__le32 graph_elems;	/* number of graph elements */
--	__le32 pcm_elems;	/* number of PCM elements */
--	__le32 dai_link_elems;	/* number of DAI link elements */
--	struct snd_soc_tplg_private priv;
--} __packed;
--
--/* Stream Capabilities v4 */
--struct snd_soc_tplg_stream_caps_v4 {
--	__le32 size;		/* in bytes of this structure */
--	char name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--	__le64 formats;	/* supported formats SNDRV_PCM_FMTBIT_* */
--	__le32 rates;		/* supported rates SNDRV_PCM_RATE_* */
--	__le32 rate_min;	/* min rate */
--	__le32 rate_max;	/* max rate */
--	__le32 channels_min;	/* min channels */
--	__le32 channels_max;	/* max channels */
--	__le32 periods_min;	/* min number of periods */
--	__le32 periods_max;	/* max number of periods */
--	__le32 period_size_min;	/* min period size bytes */
--	__le32 period_size_max;	/* max period size bytes */
--	__le32 buffer_size_min;	/* min buffer size bytes */
--	__le32 buffer_size_max;	/* max buffer size bytes */
--} __packed;
--
--/* PCM v4 */
--struct snd_soc_tplg_pcm_v4 {
--	__le32 size;		/* in bytes of this structure */
--	char pcm_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--	char dai_name[SNDRV_CTL_ELEM_ID_NAME_MAXLEN];
--	__le32 pcm_id;		/* unique ID - used to match with DAI link */
--	__le32 dai_id;		/* unique ID - used to match */
--	__le32 playback;	/* supports playback mode */
--	__le32 capture;		/* supports capture mode */
--	__le32 compress;	/* 1 = compressed; 0 = PCM */
--	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* for DAI link */
--	__le32 num_streams;	/* number of streams */
--	struct snd_soc_tplg_stream_caps_v4 caps[2]; /* playback and capture for DAI */
--} __packed;
--
--/* Physical link config v4 */
--struct snd_soc_tplg_link_config_v4 {
--	__le32 size;            /* in bytes of this structure */
--	__le32 id;              /* unique ID - used to match */
--	struct snd_soc_tplg_stream stream[SND_SOC_TPLG_STREAM_CONFIG_MAX]; /* supported configs playback and captrure */
--	__le32 num_streams;     /* number of streams */
--} __packed;
--
- /* topology context */
- struct soc_tplg {
- 	const struct firmware *fw;
--- 
-2.17.0
+--===============3099315677742437438==--
