@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/3] ASoC: topology: Improve backwards
- compatibility with v4 topology files
-Date: Fri, 1 Jun 2018 11:25:06 +0100
-Message-ID: <20180601102506.GB8677@sirena.org.uk>
-References: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
+Subject: Applied "ASoC: Intel: kbl: Move codec sysclk config to
+	codec_init function" to the asoc tree
+Date: Fri, 01 Jun 2018 12:05:51 +0100
+Message-ID: <E1fOhsV-0000Sd-BQ@debutante>
+References: <1527234447-1384-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5679412912372968554=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 21C742676DD
- for <alsa-devel@alsa-project.org>; Fri,  1 Jun 2018 12:25:31 +0200 (CEST)
-In-Reply-To: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id C4BE42676E7
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jun 2018 13:05:57 +0200 (CEST)
+In-Reply-To: <1527234447-1384-1-git-send-email-mac.chiang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,53 +22,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>
+To: Mac Chiang <mac.chiang@intel.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5679412912372968554==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wq9mPyueHGvFACwf"
-Content-Disposition: inline
+   ASoC: Intel: kbl: Move codec sysclk config to codec_init function
 
+has been applied to the asoc tree at
 
---wq9mPyueHGvFACwf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, May 24, 2018 at 12:49:21PM -0700, Guenter Roeck wrote:
-> From: Guenter Roeck <groeck@chromium.org>
->=20
-> Commit dc31e741db49 ("ASoC: topology: ABI - Add the types for BE
-> DAI") introduced sound topology files version 5. Initially, this
-> change made the topology code incompatible with v4 topology files.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-No review on these from anyone at Intel?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---wq9mPyueHGvFACwf
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsRHwEACgkQJNaLcl1U
-h9DI1QgAgaKFW5DKIHLNWriVAG2tJQsBwzOuzf5pMkVO/ae2hZuz2tf/+dF74f8G
-4Zs/u+9xzVlxPGoisNVkgMUyLg6lQdmu7nRR5s475vN/3M0nIxaNCJF9rM1v3bXT
-IUjcDS3F14lKt4f6Tz9Q6EWo/RESoFmUalCOlpKR0tLu+zcemumfV08jDHhQMP44
-c4auS5T++wQdHzwSff2vhmfhzOkcERP9V2JGXOfazo/j3HO4ANBicnnPAL92SS4I
-VXJs5MsLzIsC+nfLgdLzpZ7QqqhY1SJ/h/cpOcu2XNTp3HISevTH3KSGuLU2tJBB
-dwcvyjwSAQEKYKjNzEnHM3wHKRhhYA==
-=1ZMc
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---wq9mPyueHGvFACwf--
+>From 56c3a95385df558a471f7fcedba73c9ed836a906 Mon Sep 17 00:00:00 2001
+From: Mac Chiang <mac.chiang@intel.com>
+Date: Fri, 1 Jun 2018 01:18:32 +0800
+Subject: [PATCH] ASoC: Intel: kbl: Move codec sysclk config to codec_init
+ function
 
---===============5679412912372968554==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+On APL, commit fd0f237572ad
+("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
+fixed an issue related to jack detection.
 
+The MCLK for DA7219 does not change in this platform, but is
+currently being configured everytime as part of the platform_clock
+event handler for DAPM. The upshot of this is that we have
+unnecessary calls to this function, and it also means that if
+a stream hasn't yet been started, DA7219 driver does not have the
+correct MCLK rates programmed and so the HP detection feature does
+not operate as expected.
 
---===============5679412912372968554==--
+The same fix is needed on KBL.
+
+This patch rectifies this issue by moving the sysclk call to
+codec_init function so it's only called once at initialisation.
+
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+index 60e739f3d6f3..94294c27d1db 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+@@ -65,14 +65,6 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
+ 		return -EIO;
+ 	}
+ 
+-	/* Configure sysclk for codec */
+-	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+-				     SND_SOC_CLOCK_IN);
+-	if (ret) {
+-		dev_err(card->dev, "can't set codec sysclk configuration\n");
+-		return ret;
+-	}
+-
+ 	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+ 		ret = snd_soc_dai_set_pll(codec_dai, 0,
+ 				     DA7219_SYSCLK_MCLK, 0, 0);
+@@ -169,9 +161,18 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+ {
+ 	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_component *component = rtd->codec_dai->component;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+ 	struct snd_soc_jack *jack;
+ 	int ret;
+ 
++	/* Configure sysclk for codec */
++	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
++						SND_SOC_CLOCK_IN);
++	if (ret) {
++		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
++		return ret;
++	}
++
+ 	/*
+ 	 * Headset buttons map to the google Reference headset.
+ 	 * These can be configured by userspace.
+-- 
+2.17.0
