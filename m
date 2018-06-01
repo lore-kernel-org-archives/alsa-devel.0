@@ -1,388 +1,134 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Improve backwards compatibility with v4 topology files" to the asoc tree
-Date: Fri, 01 Jun 2018 18:12:19 +0100
-Message-ID: <E1fOnb9-0003GY-3J@debutante>
-References: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Guenter Roeck <groeck@chromium.org>
-Cc: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, linux-kernel@vger.kernel.org, Chintan Patel <chintan.m.patel@intel.com>alsa-devel@alsa-project.org
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [RFC PATCH] ASoC: pcm512x: enable set_sysclk callback
+Date: Fri,  1 Jun 2018 16:26:43 -0500
+Message-ID: <20180601212643.20101-1-pierre-louis.bossart@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63CE22677C5
+ for <alsa-devel@alsa-project.org>; Fri,  1 Jun 2018 23:27:10 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+For codec master mode, the current pcm512x code relies on the clock API.
 
-   ASoC: topology: Improve backwards compatibility with v4 topology files
+Simple boards such as Hifiberry DAC+ PRO rely on 2 local oscillators
+to generate 44.1 or 48kHz multiples, with the clock selection being
+handled by the machine driver toggling GPIOS.
 
-has been applied to the asoc tree at
+The RaspberryPi kernel exposes a "hifiberry,dacpro-clk" clock driver
+which does nothing but tell the codec driver what rate is set by the
+machine driver [1][2]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+This patch suggests an alternate fallback solution to let the codec
+driver know what the sysclk is based on the existing .set_sysclk
+callback.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+[1] https://github.com/raspberrypi/linux/blob/rpi-4.14.y/sound/soc/bcm/hifiberry_dacplus.c
+[2] https://github.com/raspberrypi/linux/blob/rpi-4.14.y/drivers/clk/clk-hifiberry-dacpro.c
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From ac9391daac004e12dc4e4c62e130b09f245ece2b Mon Sep 17 00:00:00 2001
-From: Guenter Roeck <groeck@chromium.org>
-Date: Thu, 24 May 2018 12:49:21 -0700
-Subject: [PATCH] ASoC: topology: Improve backwards compatibility with v4
- topology files
-
-Commit dc31e741db49 ("ASoC: topology: ABI - Add the types for BE
-DAI") introduced sound topology files version 5. Initially, this
-change made the topology code incompatible with v4 topology files.
-Backwards compatibility with v4 configuration files was
-subsequently added with commit 288b8da7e992 ("ASoC: topology:
-Support topology file of ABI v4").
-
-Unfortunately, backwards compatibility was never fully implemented.
-
-First, the manifest size in (Skylake) v4 configuration files is set
-to 0, which causes manifest_new_ver() to bail out with error messages
-similar to the following.
-
-snd_soc_skl 0000:00:1f.3: ASoC: invalid manifest size
-snd_soc_skl 0000:00:1f.3: tplg component load failed-22
-snd_soc_skl 0000:00:1f.3: Failed to init topology!
-snd_soc_skl 0000:00:1f.3: ASoC: failed to probe component -22
-skl_n88l25_m98357a skl_n88l25_m98357a: ASoC: failed to instantiate card -22
-skl_n88l25_m98357a: probe of skl_n88l25_m98357a failed with error -22
-
-After this problem is fixed, the following error message is seen instead.
-
-snd_soc_skl 0000:00:1f.3: ASoC: old version of manifest
-snd_soc_skl 0000:00:1f.3: Invalid descriptor token 1093938482
-snd_soc_skl 0000:00:1f.3: ASoC: failed to load widget media0_in cpr 0
-snd_soc_skl 0000:00:1f.3: tPlg component load failed-22
-
-This message is seen because backwards compatibility for loading widgets
-was never implemented.
-
-The lack of audio support when running the upstream kernel on recent
-Chromebooks has been reported in various forums, and can be traced back
-to this problem. Attempts to fix the problem, usually by providing v5
-configuration files, were only partially successful.
-
-Let's implement backward compatibility properly to solve the problem
-for good.
-
-Signed-off-by: Guenter Roeck <groeck@chromium.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl-topology.c       | 169 +++++++++++++++++++
- sound/soc/intel/skylake/skl-tplg-interface.h |  74 ++++++++
- sound/soc/soc-topology.c                     |   7 +-
- 3 files changed, 248 insertions(+), 2 deletions(-)
+ sound/soc/codecs/pcm512x.c | 33 +++++++++++++++++++++++++++++----
+ 1 file changed, 29 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 3b1dca419883..9e4c2cb88dea 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -19,6 +19,7 @@
- #include <linux/slab.h>
- #include <linux/types.h>
- #include <linux/firmware.h>
-+#include <linux/uuid.h>
- #include <sound/soc.h>
- #include <sound/soc-topology.h>
- #include <uapi/sound/snd_sst_tokens.h>
-@@ -2724,6 +2725,167 @@ static int skl_tplg_get_desc_blocks(struct device *dev,
- 	return -EINVAL;
+diff --git a/sound/soc/codecs/pcm512x.c b/sound/soc/codecs/pcm512x.c
+index f0f2d4fd3769..8d6c173c1e25 100644
+--- a/sound/soc/codecs/pcm512x.c
++++ b/sound/soc/codecs/pcm512x.c
+@@ -40,6 +40,7 @@ static const char * const pcm512x_supply_names[PCM512x_NUM_SUPPLIES] = {
+ struct pcm512x_priv {
+ 	struct regmap *regmap;
+ 	struct clk *sclk;
++	int sysclk;
+ 	struct regulator_bulk_data supplies[PCM512x_NUM_SUPPLIES];
+ 	struct notifier_block supply_nb[PCM512x_NUM_SUPPLIES];
+ 	int fmt;
+@@ -519,6 +520,29 @@ static int pcm512x_hw_rule_rate(struct snd_pcm_hw_params *params,
+ 				   ARRAY_SIZE(ranges), ranges, 0);
  }
  
-+/* Functions to parse private data from configuration file format v4 */
-+
-+/*
-+ * Add pipeline from topology binary into driver pipeline list
-+ *
-+ * If already added we return that instance
-+ * Otherwise we create a new instance and add into driver list
-+ */
-+static int skl_tplg_add_pipe_v4(struct device *dev,
-+				struct skl_module_cfg *mconfig, struct skl *skl,
-+				struct skl_dfw_v4_pipe *dfw_pipe)
++static int sclk_get_rate(struct pcm512x_priv *pcm512x)
 +{
-+	struct skl_pipeline *ppl;
-+	struct skl_pipe *pipe;
-+	struct skl_pipe_params *params;
-+
-+	list_for_each_entry(ppl, &skl->ppl_list, node) {
-+		if (ppl->pipe->ppl_id == dfw_pipe->pipe_id) {
-+			mconfig->pipe = ppl->pipe;
-+			return 0;
-+		}
-+	}
-+
-+	ppl = devm_kzalloc(dev, sizeof(*ppl), GFP_KERNEL);
-+	if (!ppl)
-+		return -ENOMEM;
-+
-+	pipe = devm_kzalloc(dev, sizeof(*pipe), GFP_KERNEL);
-+	if (!pipe)
-+		return -ENOMEM;
-+
-+	params = devm_kzalloc(dev, sizeof(*params), GFP_KERNEL);
-+	if (!params)
-+		return -ENOMEM;
-+
-+	pipe->ppl_id = dfw_pipe->pipe_id;
-+	pipe->memory_pages = dfw_pipe->memory_pages;
-+	pipe->pipe_priority = dfw_pipe->pipe_priority;
-+	pipe->conn_type = dfw_pipe->conn_type;
-+	pipe->state = SKL_PIPE_INVALID;
-+	pipe->p_params = params;
-+	INIT_LIST_HEAD(&pipe->w_list);
-+
-+	ppl->pipe = pipe;
-+	list_add(&ppl->node, &skl->ppl_list);
-+
-+	mconfig->pipe = pipe;
-+
-+	return 0;
++	if (!IS_ERR(pcm512x->sclk))
++		return clk_get_rate(pcm512x->sclk);
++	else
++		return pcm512x->sysclk;
 +}
 +
-+static void skl_fill_module_pin_info_v4(struct skl_dfw_v4_module_pin *dfw_pin,
-+					struct skl_module_pin *m_pin,
-+					bool is_dynamic, int max_pin)
++static int pcm512x_set_sysclk(struct snd_soc_dai *dai,
++			      int clk_id, unsigned int freq, int dir)
 +{
-+	int i;
++	struct snd_soc_component *component = dai->component;
++	struct pcm512x_priv *pcm512x = snd_soc_component_get_drvdata(component);
 +
-+	for (i = 0; i < max_pin; i++) {
-+		m_pin[i].id.module_id = dfw_pin[i].module_id;
-+		m_pin[i].id.instance_id = dfw_pin[i].instance_id;
-+		m_pin[i].in_use = false;
-+		m_pin[i].is_dynamic = is_dynamic;
-+		m_pin[i].pin_state = SKL_PIN_UNBIND;
++	switch (freq) {
++	case 22579200:
++	case 24576000:
++		pcm512x->sysclk = freq;
++		return 0;
 +	}
++	return -EINVAL;
 +}
 +
-+static void skl_tplg_fill_fmt_v4(struct skl_module_pin_fmt *dst_fmt,
-+				 struct skl_dfw_v4_module_fmt *src_fmt,
-+				 int pins)
-+{
-+	int i;
-+
-+	for (i = 0; i < pins; i++) {
-+		dst_fmt[i].fmt.channels  = src_fmt[i].channels;
-+		dst_fmt[i].fmt.s_freq = src_fmt[i].freq;
-+		dst_fmt[i].fmt.bit_depth = src_fmt[i].bit_depth;
-+		dst_fmt[i].fmt.valid_bit_depth = src_fmt[i].valid_bit_depth;
-+		dst_fmt[i].fmt.ch_cfg = src_fmt[i].ch_cfg;
-+		dst_fmt[i].fmt.ch_map = src_fmt[i].ch_map;
-+		dst_fmt[i].fmt.interleaving_style =
-+						src_fmt[i].interleaving_style;
-+		dst_fmt[i].fmt.sample_type = src_fmt[i].sample_type;
-+	}
-+}
-+
-+static int skl_tplg_get_pvt_data_v4(struct snd_soc_tplg_dapm_widget *tplg_w,
-+				    struct skl *skl, struct device *dev,
-+				    struct skl_module_cfg *mconfig)
-+{
-+	struct skl_dfw_v4_module *dfw =
-+				(struct skl_dfw_v4_module *)tplg_w->priv.data;
-+	int ret;
-+
-+	dev_dbg(dev, "Parsing Skylake v4 widget topology data\n");
-+
-+	ret = guid_parse(dfw->uuid, (guid_t *)mconfig->guid);
-+	if (ret)
-+		return ret;
-+	mconfig->id.module_id = -1;
-+	mconfig->id.instance_id = dfw->instance_id;
-+	mconfig->module->resources[0].cps = dfw->max_mcps;
-+	mconfig->module->resources[0].ibs = dfw->ibs;
-+	mconfig->module->resources[0].obs = dfw->obs;
-+	mconfig->core_id = dfw->core_id;
-+	mconfig->module->max_input_pins = dfw->max_in_queue;
-+	mconfig->module->max_output_pins = dfw->max_out_queue;
-+	mconfig->module->loadable = dfw->is_loadable;
-+	skl_tplg_fill_fmt_v4(mconfig->module->formats[0].inputs, dfw->in_fmt,
-+			     MAX_IN_QUEUE);
-+	skl_tplg_fill_fmt_v4(mconfig->module->formats[0].outputs, dfw->out_fmt,
-+			     MAX_OUT_QUEUE);
-+
-+	mconfig->params_fixup = dfw->params_fixup;
-+	mconfig->converter = dfw->converter;
-+	mconfig->m_type = dfw->module_type;
-+	mconfig->vbus_id = dfw->vbus_id;
-+	mconfig->module->resources[0].is_pages = dfw->mem_pages;
-+
-+	ret = skl_tplg_add_pipe_v4(dev, mconfig, skl, &dfw->pipe);
-+	if (ret)
-+		return ret;
-+
-+	mconfig->dev_type = dfw->dev_type;
-+	mconfig->hw_conn_type = dfw->hw_conn_type;
-+	mconfig->time_slot = dfw->time_slot;
-+	mconfig->formats_config.caps_size = dfw->caps.caps_size;
-+
-+	mconfig->m_in_pin = devm_kzalloc(dev,
-+				MAX_IN_QUEUE * sizeof(*mconfig->m_in_pin),
-+				GFP_KERNEL);
-+	if (!mconfig->m_in_pin)
-+		return -ENOMEM;
-+
-+	mconfig->m_out_pin = devm_kzalloc(dev,
-+				MAX_OUT_QUEUE * sizeof(*mconfig->m_out_pin),
-+				GFP_KERNEL);
-+	if (!mconfig->m_out_pin)
-+		return -ENOMEM;
-+
-+	skl_fill_module_pin_info_v4(dfw->in_pin, mconfig->m_in_pin,
-+				    dfw->is_dynamic_in_pin,
-+				    mconfig->module->max_input_pins);
-+	skl_fill_module_pin_info_v4(dfw->out_pin, mconfig->m_out_pin,
-+				    dfw->is_dynamic_out_pin,
-+				    mconfig->module->max_output_pins);
-+
-+	if (mconfig->formats_config.caps_size) {
-+		mconfig->formats_config.set_params = dfw->caps.set_params;
-+		mconfig->formats_config.param_id = dfw->caps.param_id;
-+		mconfig->formats_config.caps =
-+		devm_kzalloc(dev, mconfig->formats_config.caps_size,
-+			     GFP_KERNEL);
-+		if (!mconfig->formats_config.caps)
-+			return -ENOMEM;
-+		memcpy(mconfig->formats_config.caps, dfw->caps.caps,
-+		       dfw->caps.caps_size);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Parse the private data for the token and corresponding value.
-  * The private data can have multiple data blocks. So, a data block
-@@ -2739,6 +2901,13 @@ static int skl_tplg_get_pvt_data(struct snd_soc_tplg_dapm_widget *tplg_w,
- 	char *data;
- 	int ret;
+ static int pcm512x_dai_startup_master(struct snd_pcm_substream *substream,
+ 				      struct snd_soc_dai *dai)
+ {
+@@ -528,7 +552,7 @@ static int pcm512x_dai_startup_master(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_constraint_ratnums *constraints_no_pll;
+ 	struct snd_ratnum *rats_no_pll;
  
-+	/*
-+	 * v4 configuration files have a valid UUID at the start of
-+	 * the widget's private data.
-+	 */
-+	if (uuid_is_valid((char *)tplg_w->priv.data))
-+		return skl_tplg_get_pvt_data_v4(tplg_w, skl, dev, mconfig);
-+
- 	/* Read the NUM_DATA_BLOCKS descriptor */
- 	array = (struct snd_soc_tplg_vendor_array *)tplg_w->priv.data;
- 	ret = skl_tplg_get_desc_blocks(dev, array);
-diff --git a/sound/soc/intel/skylake/skl-tplg-interface.h b/sound/soc/intel/skylake/skl-tplg-interface.h
-index f8d1749a2e0c..b0e3d376594c 100644
---- a/sound/soc/intel/skylake/skl-tplg-interface.h
-+++ b/sound/soc/intel/skylake/skl-tplg-interface.h
-@@ -169,4 +169,78 @@ enum skl_tuple_type {
- 	SKL_TYPE_DATA
- };
- 
-+/* v4 configuration data */
-+
-+struct skl_dfw_v4_module_pin {
-+	u16 module_id;
-+	u16 instance_id;
-+} __packed;
-+
-+struct skl_dfw_v4_module_fmt {
-+	u32 channels;
-+	u32 freq;
-+	u32 bit_depth;
-+	u32 valid_bit_depth;
-+	u32 ch_cfg;
-+	u32 interleaving_style;
-+	u32 sample_type;
-+	u32 ch_map;
-+} __packed;
-+
-+struct skl_dfw_v4_module_caps {
-+	u32 set_params:2;
-+	u32 rsvd:30;
-+	u32 param_id;
-+	u32 caps_size;
-+	u32 caps[HDA_SST_CFG_MAX];
-+} __packed;
-+
-+struct skl_dfw_v4_pipe {
-+	u8 pipe_id;
-+	u8 pipe_priority;
-+	u16 conn_type:4;
-+	u16 rsvd:4;
-+	u16 memory_pages:8;
-+} __packed;
-+
-+struct skl_dfw_v4_module {
-+	char uuid[SKL_UUID_STR_SZ];
-+
-+	u16 module_id;
-+	u16 instance_id;
-+	u32 max_mcps;
-+	u32 mem_pages;
-+	u32 obs;
-+	u32 ibs;
-+	u32 vbus_id;
-+
-+	u32 max_in_queue:8;
-+	u32 max_out_queue:8;
-+	u32 time_slot:8;
-+	u32 core_id:4;
-+	u32 rsvd1:4;
-+
-+	u32 module_type:8;
-+	u32 conn_type:4;
-+	u32 dev_type:4;
-+	u32 hw_conn_type:4;
-+	u32 rsvd2:12;
-+
-+	u32 params_fixup:8;
-+	u32 converter:8;
-+	u32 input_pin_type:1;
-+	u32 output_pin_type:1;
-+	u32 is_dynamic_in_pin:1;
-+	u32 is_dynamic_out_pin:1;
-+	u32 is_loadable:1;
-+	u32 rsvd3:11;
-+
-+	struct skl_dfw_v4_pipe pipe;
-+	struct skl_dfw_v4_module_fmt in_fmt[MAX_IN_QUEUE];
-+	struct skl_dfw_v4_module_fmt out_fmt[MAX_OUT_QUEUE];
-+	struct skl_dfw_v4_module_pin in_pin[MAX_IN_QUEUE];
-+	struct skl_dfw_v4_module_pin out_pin[MAX_OUT_QUEUE];
-+	struct skl_dfw_v4_module_caps caps;
-+} __packed;
-+
- #endif
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index f25ea9aab235..3d04fa297677 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2313,8 +2313,11 @@ static int manifest_new_ver(struct soc_tplg *tplg,
- 	*manifest = NULL;
- 
- 	if (src->size != sizeof(*src_v4)) {
--		dev_err(tplg->dev, "ASoC: invalid manifest size\n");
--		return -EINVAL;
-+		dev_warn(tplg->dev, "ASoC: invalid manifest size %d\n",
-+			 src->size);
-+		if (src->size)
-+			return -EINVAL;
-+		src->size = sizeof(*src_v4);
+-	if (IS_ERR(pcm512x->sclk)) {
++	if (IS_ERR(pcm512x->sclk) && !pcm512x->sysclk) {
+ 		dev_err(dev, "Need SCLK for master mode: %ld\n",
+ 			PTR_ERR(pcm512x->sclk));
+ 		return PTR_ERR(pcm512x->sclk);
+@@ -551,7 +575,7 @@ static int pcm512x_dai_startup_master(struct snd_pcm_substream *substream,
+ 	if (!rats_no_pll)
+ 		return -ENOMEM;
+ 	constraints_no_pll->rats = rats_no_pll;
+-	rats_no_pll->num = clk_get_rate(pcm512x->sclk) / 64;
++	rats_no_pll->num = sclk_get_rate(pcm512x) / 64;
+ 	rats_no_pll->den_min = 1;
+ 	rats_no_pll->den_max = 128;
+ 	rats_no_pll->den_step = 1;
+@@ -858,7 +882,7 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
  	}
  
- 	dev_warn(tplg->dev, "ASoC: old version of manifest\n");
+ 	if (!pcm512x->pll_out) {
+-		sck_rate = clk_get_rate(pcm512x->sclk);
++		sck_rate = sclk_get_rate(pcm512x);
+ 		bclk_div = params->rate_den * 64 / lrclk_div;
+ 		bclk_rate = DIV_ROUND_CLOSEST(sck_rate, bclk_div);
+ 
+@@ -875,7 +899,7 @@ static int pcm512x_set_dividers(struct snd_soc_dai *dai,
+ 		}
+ 		bclk_rate = ret;
+ 
+-		pllin_rate = clk_get_rate(pcm512x->sclk);
++		pllin_rate = sclk_get_rate(pcm512x);
+ 
+ 		sck_rate = pcm512x_find_sck(dai, bclk_rate);
+ 		if (!sck_rate)
+@@ -1323,6 +1347,7 @@ static const struct snd_soc_dai_ops pcm512x_dai_ops = {
+ 	.startup = pcm512x_dai_startup,
+ 	.hw_params = pcm512x_hw_params,
+ 	.set_fmt = pcm512x_set_fmt,
++	.set_sysclk = pcm512x_set_sysclk,
+ };
+ 
+ static struct snd_soc_dai_driver pcm512x_dai = {
 -- 
-2.17.0
+2.14.1
