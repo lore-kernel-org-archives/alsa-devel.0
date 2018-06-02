@@ -1,15 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 06/13] ASoC: Intel: Skylake: add HDA BE DAIs
-Date: Fri,  1 Jun 2018 22:53:54 -0500
-Message-ID: <20180602035401.26934-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 08/13] ALSA: hda: split snd_hda_codec_new
+	function
+Date: Fri,  1 Jun 2018 22:53:56 -0500
+Message-ID: <20180602035401.26934-9-pierre-louis.bossart@linux.intel.com>
 References: <20180602035401.26934-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 89D56267845
- for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2018 05:54:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 63D22267842
+ for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2018 05:54:19 +0200 (CEST)
 In-Reply-To: <20180602035401.26934-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,112 +27,160 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
-Add support for HDA BE DAIs in SKL platform driver.
+Split snd_hda_codec_new into two separate functions.
+snd_hda_codec_device_init allocates memory and registers with bus.
+snd_hda_codec_device_new initialializes the fields and performs
+snd_device_new. This enables reuse of legacy HDA codec drivers as ASoC
+codec drivers.
+
+In addition mark some functions with EXPORT_SYMBOL_GPL so that it can
+be called by ASoC wrapper around the legacy HDA driver (hdac_hda).
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 70 ++++++++++++++++++++++++++++++++-------
- 1 file changed, 58 insertions(+), 12 deletions(-)
+ sound/pci/hda/hda_codec.c | 68 +++++++++++++++++++++++++++++++++++------------
+ sound/pci/hda/hda_codec.h |  2 ++
+ 2 files changed, 53 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index d7fc3b2d3e68..3284f16077a5 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -32,6 +32,7 @@
- #define HDA_MONO 1
- #define HDA_STEREO 2
- #define HDA_QUAD 4
-+#define HDA_MAX 8
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 5bc3a7468e17..76f4f097e83e 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -856,6 +856,39 @@ static void snd_hda_codec_dev_release(struct device *dev)
+ 	kfree(codec);
+ }
  
- static const struct snd_pcm_hardware azx_pcm_hw = {
- 	.info =			(SNDRV_PCM_INFO_MMAP |
-@@ -569,7 +570,10 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	stream_tag = hdac_stream(link_dev)->stream_tag;
- 
- 	/* set the stream tag in the codec dai dma params  */
--	snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
-+	else
-+		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
- 
- 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
- 	p_params.ch = params_channels(params);
-@@ -995,21 +999,63 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	},
- },
++#define DEV_NAME_LEN 31
++
++static int snd_hda_codec_device_init(struct hda_bus *bus, struct snd_card *card,
++			unsigned int codec_addr, struct hda_codec **codecp)
++{
++	char name[DEV_NAME_LEN];
++	struct hda_codec *codec;
++	int err;
++
++	dev_dbg(card->dev, "%s: entry\n", __func__);
++
++	if (snd_BUG_ON(!bus))
++		return -EINVAL;
++	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
++		return -EINVAL;
++
++	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
++	if (!codec)
++		return -ENOMEM;
++
++	sprintf(name, "hdaudioC%dD%d", card->number, codec_addr);
++	err = snd_hdac_device_init(&codec->core, &bus->core, name, codec_addr);
++	if (err < 0) {
++		kfree(codec);
++		return err;
++	}
++
++	codec->core.type = HDA_DEV_LEGACY;
++	*codecp = codec;
++
++	return err;
++}
++
+ /**
+  * snd_hda_codec_new - create a HDA codec
+  * @bus: the bus to assign
+@@ -867,7 +900,19 @@ static void snd_hda_codec_dev_release(struct device *dev)
+ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		      unsigned int codec_addr, struct hda_codec **codecp)
  {
--	.name = "HD-Codec Pin",
-+	.name = "Analog CPU DAI",
- 	.ops = &skl_link_dai_ops,
- 	.playback = {
--		.stream_name = "HD-Codec Tx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.stream_name = "Analog CPU Playback",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
- 	},
- 	.capture = {
--		.stream_name = "HD-Codec Rx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.stream_name = "Analog CPU Capture",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+},
+-	struct hda_codec *codec;
++	int ret;
++
++	ret = snd_hda_codec_device_init(bus, card, codec_addr, codecp);
++	if (ret < 0)
++		return ret;
++
++	return snd_hda_codec_device_new(bus, card, codec_addr, *codecp);
++}
++EXPORT_SYMBOL_GPL(snd_hda_codec_new);
++
++int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
++			unsigned int codec_addr, struct hda_codec *codec)
 +{
-+	.name = "Alt Analog CPU DAI",
-+	.ops = &skl_link_dai_ops,
-+	.playback = {
-+		.stream_name = "Alt Analog CPU Playback",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Alt Analog CPU Capture",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+},
-+{
-+	.name = "Digital CPU DAI",
-+	.ops = &skl_link_dai_ops,
-+	.playback = {
-+		.stream_name = "Digital CPU Playback",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Digital CPU Capture",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
- 	},
- },
- };
+ 	char component[31];
+ 	hda_nid_t fg;
+ 	int err;
+@@ -877,25 +922,14 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		.dev_free = snd_hda_codec_dev_free,
+ 	};
+ 
++	dev_dbg(card->dev, "%s: entry\n", __func__);
++
+ 	if (snd_BUG_ON(!bus))
+ 		return -EINVAL;
+ 	if (snd_BUG_ON(codec_addr > HDA_MAX_CODEC_ADDRESS))
+ 		return -EINVAL;
+ 
+-	codec = kzalloc(sizeof(*codec), GFP_KERNEL);
+-	if (!codec)
+-		return -ENOMEM;
+-
+-	sprintf(component, "hdaudioC%dD%d", card->number, codec_addr);
+-	err = snd_hdac_device_init(&codec->core, &bus->core, component,
+-				   codec_addr);
+-	if (err < 0) {
+-		kfree(codec);
+-		return err;
+-	}
+-
+ 	codec->core.dev.release = snd_hda_codec_dev_release;
+-	codec->core.type = HDA_DEV_LEGACY;
+ 	codec->core.exec_verb = codec_exec_verb;
+ 
+ 	codec->bus = bus;
+@@ -955,15 +989,13 @@ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 	if (err < 0)
+ 		goto error;
+ 
+-	if (codecp)
+-		*codecp = codec;
+ 	return 0;
+ 
+  error:
+ 	put_device(hda_codec_dev(codec));
+ 	return err;
+ }
+-EXPORT_SYMBOL_GPL(snd_hda_codec_new);
++EXPORT_SYMBOL_GPL(snd_hda_codec_device_new);
+ 
+ /**
+  * snd_hda_codec_update_widgets - Refresh widget caps and pin defaults
+@@ -2979,6 +3011,7 @@ int snd_hda_codec_build_controls(struct hda_codec *codec)
+ 	sync_power_up_states(codec);
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(snd_hda_codec_build_controls);
+ 
+ /*
+  * PCM stuff
+@@ -3184,6 +3217,7 @@ int snd_hda_codec_parse_pcms(struct hda_codec *codec)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(snd_hda_codec_parse_pcms);
+ 
+ /* assign all PCMs of the given codec */
+ int snd_hda_codec_build_pcms(struct hda_codec *codec)
+diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
+index 681c360f29f9..8bbedf7f3f54 100644
+--- a/sound/pci/hda/hda_codec.h
++++ b/sound/pci/hda/hda_codec.h
+@@ -307,6 +307,8 @@ struct hda_codec {
+  */
+ int snd_hda_codec_new(struct hda_bus *bus, struct snd_card *card,
+ 		      unsigned int codec_addr, struct hda_codec **codecp);
++int snd_hda_codec_device_new(struct hda_bus *bus, struct snd_card *card,
++		      unsigned int codec_addr, struct hda_codec *codec);
+ int snd_hda_codec_configure(struct hda_codec *codec);
+ int snd_hda_codec_update_widgets(struct hda_codec *codec);
+ 
 -- 
 2.14.1
