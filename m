@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 03/13] ALSA: hdac: Remove usage of struct
-	hdac_ext_driver, use hdac_driver instead
-Date: Fri,  1 Jun 2018 22:53:51 -0500
-Message-ID: <20180602035401.26934-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 05/13] ASoC: Intel: Skylake: Add entry in
+	sst_acpi_mach for HDA codecs
+Date: Fri,  1 Jun 2018 22:53:53 -0500
+Message-ID: <20180602035401.26934-6-pierre-louis.bossart@linux.intel.com>
 References: <20180602035401.26934-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 48B0A267845
- for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2018 05:54:13 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F2212267846
+ for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2018 05:54:15 +0200 (CEST)
 In-Reply-To: <20180602035401.26934-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,168 +22,138 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, rakesh.a.ughreja@intel.com
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, rakesh.a.ughreja@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
-This patch removes the hdac_ext_driver structure. The legacy and
-enhanced HDaudio capabilities can be handled in a backward-compatible
-way without separate definitions.
+When no I2S based codec entries are found in the BIOS, check if there are
+any HDA codecs detected on the bus. Based on the number of codecs found
+take appropriate action in machine driver. If there are two HDA codecs
+i.e. iDisp + HDA found on the bus, register DAIs and DAI links for both.
+If only one codec i.e. iDisp is found then load only iDisp machine driver.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/hdaudio.h      |  5 +++++
- include/sound/hdaudio_ext.h  | 17 ++---------------
- sound/hda/ext/hdac_ext_bus.c | 30 ++++++++++++++----------------
- sound/soc/codecs/hdac_hdmi.c | 12 +++++-------
- 4 files changed, 26 insertions(+), 38 deletions(-)
+ sound/soc/intel/skylake/skl.c | 61 ++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 55 insertions(+), 6 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index 17ab1118cad5..62dd486e7d48 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -188,6 +188,11 @@ struct hdac_driver {
- 	const struct hda_device_id *id_table;
- 	int (*match)(struct hdac_device *dev, struct hdac_driver *drv);
- 	void (*unsol_event)(struct hdac_device *dev, unsigned int event);
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 9c5a701d68ac..e5b2fc44f56a 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -473,6 +473,23 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+ 						{.name = "ssp5_sclkfs"},
+ };
+ 
++static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
++					struct snd_soc_acpi_mach *machines)
++{
++	struct hdac_bus *bus = skl_to_bus(skl);
++	struct snd_soc_acpi_mach *mach;
 +
-+	/* fields used by ext bus APIs */
-+	int (*probe)(struct hdac_device *dev);
-+	int (*remove)(struct hdac_device *dev);
-+	void (*shutdown)(struct hdac_device *dev);
- };
- 
- #define drv_to_hdac_driver(_drv) container_of(_drv, struct hdac_driver, driver)
-diff --git a/include/sound/hdaudio_ext.h b/include/sound/hdaudio_ext.h
-index e5b0cd1ade19..3c302477750b 100644
---- a/include/sound/hdaudio_ext.h
-+++ b/include/sound/hdaudio_ext.h
-@@ -160,20 +160,7 @@ struct hdac_ext_dma_params {
- 	u8 stream_tag;
- };
- 
--/*
-- * HD-audio codec base driver
-- */
--struct hdac_ext_driver {
--	struct hdac_driver hdac;
--
--	int	(*probe)(struct hdac_device *dev);
--	int	(*remove)(struct hdac_device *dev);
--	void	(*shutdown)(struct hdac_device *dev);
--};
--
--int snd_hda_ext_driver_register(struct hdac_ext_driver *drv);
--void snd_hda_ext_driver_unregister(struct hdac_ext_driver *drv);
--
--#define to_ehdac_driver(_drv) container_of(_drv, struct hdac_ext_driver, hdac)
-+int snd_hda_ext_driver_register(struct hdac_driver *drv);
-+void snd_hda_ext_driver_unregister(struct hdac_driver *drv);
- 
- #endif /* __SOUND_HDAUDIO_EXT_H */
-diff --git a/sound/hda/ext/hdac_ext_bus.c b/sound/hda/ext/hdac_ext_bus.c
-index 77547ede9ae8..52f07766fff3 100644
---- a/sound/hda/ext/hdac_ext_bus.c
-+++ b/sound/hda/ext/hdac_ext_bus.c
-@@ -200,12 +200,10 @@ EXPORT_SYMBOL_GPL(snd_hdac_ext_bus_device_remove);
- #define dev_to_hdac(dev) (container_of((dev), \
- 			struct hdac_device, dev))
- 
--static inline struct hdac_ext_driver *get_edrv(struct device *dev)
-+static inline struct hdac_driver *get_hdrv(struct device *dev)
++	/* check if we have any codecs detected on bus */
++	if (bus->codec_mask == 0)
++		return NULL;
++
++	for (mach = machines; mach->id[0]; mach++) {
++		if (!strcmp(mach->id, "HDA_GEN"))
++			return mach;
++	}
++	return NULL;
++}
++
+ static int skl_find_machine(struct skl *skl, void *driver_data)
  {
- 	struct hdac_driver *hdrv = drv_to_hdac_driver(dev->driver);
--	struct hdac_ext_driver *edrv = to_ehdac_driver(hdrv);
--
--	return edrv;
-+	return hdrv;
- }
+ 	struct hdac_bus *bus = skl_to_bus(skl);
+@@ -480,9 +497,13 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+ 	struct skl_machine_pdata *pdata;
  
- static inline struct hdac_device *get_hdev(struct device *dev)
-@@ -216,17 +214,17 @@ static inline struct hdac_device *get_hdev(struct device *dev)
+ 	mach = snd_soc_acpi_find_machine(mach);
+-	if (mach == NULL) {
+-		dev_err(bus->dev, "No matching machine driver found\n");
+-		return -ENODEV;
++	if (!mach) {
++		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
++		mach = skl_find_hda_machine(skl, driver_data);
++		if (!mach) {
++			dev_err(bus->dev, "No matching machine driver found\n");
++			return -ENODEV;
++		}
+ 	}
  
- static int hda_ext_drv_probe(struct device *dev)
+ 	skl->mach = mach;
+@@ -497,8 +518,9 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+ 
+ static int skl_machine_device_register(struct skl *skl)
  {
--	return (get_edrv(dev))->probe(get_hdev(dev));
-+	return (get_hdrv(dev))->probe(get_hdev(dev));
- }
+-	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct snd_soc_acpi_mach *mach = skl->mach;
++	struct hdac_bus *bus = skl_to_bus(skl);
++	struct skl_machine_pdata *pdata;
+ 	struct platform_device *pdev;
+ 	int ret;
  
- static int hdac_ext_drv_remove(struct device *dev)
- {
--	return (get_edrv(dev))->remove(get_hdev(dev));
-+	return (get_hdrv(dev))->remove(get_hdev(dev));
- }
+@@ -515,8 +537,12 @@ static int skl_machine_device_register(struct skl *skl)
+ 		return -EIO;
+ 	}
  
- static void hdac_ext_drv_shutdown(struct device *dev)
- {
--	return (get_edrv(dev))->shutdown(get_hdev(dev));
-+	return (get_hdrv(dev))->shutdown(get_hdev(dev));
- }
+-	if (mach->pdata)
++	if (mach->pdata) {
++		pdata = (struct skl_machine_pdata *)mach->pdata;
++		pdata->platform = dev_name(bus->dev);
++		pdata->codec_mask = bus->codec_mask;
+ 		dev_set_drvdata(&pdev->dev, mach->pdata);
++	}
  
- /**
-@@ -234,20 +232,20 @@ static void hdac_ext_drv_shutdown(struct device *dev)
-  *
-  * @drv: ext hda driver structure
-  */
--int snd_hda_ext_driver_register(struct hdac_ext_driver *drv)
-+int snd_hda_ext_driver_register(struct hdac_driver *drv)
- {
--	drv->hdac.type = HDA_DEV_ASOC;
--	drv->hdac.driver.bus = &snd_hda_bus_type;
-+	drv->type = HDA_DEV_ASOC;
-+	drv->driver.bus = &snd_hda_bus_type;
- 	/* we use default match */
+ 	skl->i2s_dev = pdev;
  
- 	if (drv->probe)
--		drv->hdac.driver.probe = hda_ext_drv_probe;
-+		drv->driver.probe = hda_ext_drv_probe;
- 	if (drv->remove)
--		drv->hdac.driver.remove = hdac_ext_drv_remove;
-+		drv->driver.remove = hdac_ext_drv_remove;
- 	if (drv->shutdown)
--		drv->hdac.driver.shutdown = hdac_ext_drv_shutdown;
-+		drv->driver.shutdown = hdac_ext_drv_shutdown;
- 
--	return driver_register(&drv->hdac.driver);
-+	return driver_register(&drv->driver);
- }
- EXPORT_SYMBOL_GPL(snd_hda_ext_driver_register);
- 
-@@ -256,8 +254,8 @@ EXPORT_SYMBOL_GPL(snd_hda_ext_driver_register);
-  *
-  * @drv: ext hda driver structure
-  */
--void snd_hda_ext_driver_unregister(struct hdac_ext_driver *drv)
-+void snd_hda_ext_driver_unregister(struct hdac_driver *drv)
- {
--	driver_unregister(&drv->hdac.driver);
-+	driver_unregister(&drv->driver);
- }
- EXPORT_SYMBOL_GPL(snd_hda_ext_driver_unregister);
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index c3ccc8d9c91d..3e3a2a9ef310 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -2186,14 +2186,12 @@ static const struct hda_device_id hdmi_list[] = {
- 
- MODULE_DEVICE_TABLE(hdaudio, hdmi_list);
- 
--static struct hdac_ext_driver hdmi_driver = {
--	. hdac = {
--		.driver = {
--			.name   = "HDMI HDA Codec",
--			.pm = &hdac_hdmi_pm,
--		},
--		.id_table       = hdmi_list,
-+static struct hdac_driver hdmi_driver = {
-+	.driver = {
-+		.name   = "HDMI HDA Codec",
-+		.pm = &hdac_hdmi_pm,
+@@ -1062,6 +1088,14 @@ static struct snd_soc_acpi_mach sst_skl_devdata[] = {
+ 		.quirk_data = &skl_codecs,
+ 		.pdata = &skl_dmic_data
  	},
-+	.id_table       = hdmi_list,
- 	.probe          = hdac_hdmi_dev_probe,
- 	.remove         = hdac_hdmi_dev_remove,
++	{
++		.id = "HDA_GEN",
++		.drv_name = "skl_hda_generic",
++		.fw_filename = "intel/dsp_fw_release.bin",
++		.machine_quirk = NULL,
++		.quirk_data = NULL,
++		.pdata = &cnl_pdata,
++	},
+ 	{}
  };
+ 
+@@ -1078,6 +1112,14 @@ static struct snd_soc_acpi_mach sst_bxtp_devdata[] = {
+ 		.machine_quirk = snd_soc_acpi_codec_list,
+ 		.quirk_data = &bxt_codecs,
+ 	},
++	{
++		.id = "HDA_GEN",
++		.drv_name = "skl_hda_generic",
++		.fw_filename = "intel/dsp_fw_bxtn.bin",
++		.machine_quirk = NULL,
++		.quirk_data = NULL,
++		.pdata = &cnl_pdata,
++	},
+ 	{}
+ };
+ 
+@@ -1132,7 +1174,14 @@ static struct snd_soc_acpi_mach sst_kbl_devdata[] = {
+ 		.quirk_data = &kbl_7219_98357_codecs,
+ 		.pdata = &skl_dmic_data
+ 	},
+-
++	{
++		.id = "HDA_GEN",
++		.drv_name = "skl_hda_generic",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = NULL,
++		.quirk_data = NULL,
++		.pdata = &cnl_pdata,
++	},
+ 	{}
+ };
+ 
 -- 
 2.14.1
