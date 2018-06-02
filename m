@@ -1,18 +1,22 @@
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Subject: [PATCH v2] DMA: OMAP: fix OMAP1510 incorrect
-	residue_granularity
-Date: Sat,  2 Jun 2018 17:27:19 +0200
-Message-ID: <20180602152719.28464-1-jmkrzyszt@gmail.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: Remove clkdiv and pll setters from pxa dais
+Date: Sat, 02 Jun 2018 21:26:42 +0200
+Message-ID: <87k1rhrnv1.fsf@belgarion.home>
+References: <ca4efb05-36d3-1571-6336-394b75ecc843@zonque.org>
+ <20180530092445.GC6920@sirena.org.uk>
+ <47e32456-c603-1c9c-b6ef-3c98f000caf9@zonque.org>
+ <20180530102028.GF6920@sirena.org.uk> <87tvqprm3q.fsf@belgarion.home>
+ <20180531102250.GA13319@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f65.google.com (mail-lf0-f65.google.com
- [209.85.215.65])
- by alsa0.perex.cz (Postfix) with ESMTP id DB3BE267910
- for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2018 17:27:50 +0200 (CEST)
-Received: by mail-lf0-f65.google.com with SMTP id r2-v6so18983850lff.4
- for <alsa-devel@alsa-project.org>; Sat, 02 Jun 2018 08:27:50 -0700 (PDT)
+Received: from smtp.smtpout.orange.fr (smtp11.smtpout.orange.fr
+ [80.12.242.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7468D26795C
+ for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2018 21:26:49 +0200 (CEST)
+In-Reply-To: <20180531102250.GA13319@sirena.org.uk> (Mark Brown's message of
+ "Thu, 31 May 2018 11:22:50 +0100")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +26,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, Takashi Iwai <tiwai@suse.com>, Janusz Krzysztofik <jmkrzyszt@gmail.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Haojian Zhuang <haojian.zhuang@gmail.com>, Philipp Zabel <philipp.zabel@gmail.com>, ALSA development <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-Commit 0198d7bb8a0c ("ASoC: omap-mcbsp: Convert to use the sdma-pcm
-instead of omap-pcm") resulted in broken audio playback on OMAP1510
-(discovered on Amstrad Delta).
+Mark Brown <broonie@kernel.org> writes:
 
-When running on OMAP1510, omap-pcm used to obtain DMA offset from
-snd_dmaengine_pcm_pointer_no_residue() based on DMA interrupt triggered
-software calculations instead of snd_dmaengine_pcm_pointer() which
-depended on residue value calculated from omap_dma_get_src_pos().
-Similar code path is still available in now used
-sound/soc/soc-generic-dmaengine-pcm.c but it is not triggered.
+>> I'll let you come up with a patch. Meanwhile I'll try to figure out if I can
+>> make the audio alive again.
+>
+> Probably worth taking a look at the big AC'97 refactoring that happened
+> a while ago I guess...
 
-It was verified already before that omap_get_dma_src_pos() from
-arch/arm/plat-omap/dma.c didn't work correctly for OMAP1510 - see
-commit 1bdd7419910c ("ASoC: OMAP: fix OMAP1510 broken PCM pointer
-callback") for details.  Apparently the same applies to its successor,
-omap_dma_get_src_pos() from drivers/dma/ti/omap-dma.c.
+Ah that was already the case, I had tested on the zylonite platform, up to the
+point where the asound zylonite card was correctly probed.
 
-On the other hand, snd_dmaengine_pcm_pointer_no_residue() is described
-as depreciated and discouraged for use in new drivers because of its
-unreliable accuracy.  However, it seems the only working option for
-OPAM1510 now, as long as a software calculated residue is not
-implemented as OMAP1510 fallback in omap-dma.
+That reminds me that the last patch of the AC97 serie was not merged (the PXA
+specific one), so I'll repost it :
+ - original https://patchwork.kernel.org/patch/9951919/
+ - repost will add a NULL pointer check + rebase, in its v8 version
 
-Using snd_dmaengine_pcm_pointer_no_residue() code path instead of
-snd_dmaengine_pcm_pointer() in sound/soc/soc-generic-dmaengine-pcm.c
-can be triggered in two ways:
-- by passing pcm->flags |= SND_DMAENGINE_PCM_FLAG_NO_RESIDUE from
-  sound/soc/omap/sdma-pcm.c,
-- by passing dma_caps.residue_granularity =
-  DMA_RESIDUE_GRANULARITY_DESCRIPTOR from DMA engine.
+Cheers.
 
-Let's do the latter.
-
-Created and tested against next-20180531 tag from linux-next tree.
-
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
----
-Changelog:
-v2: apply the patch against omap-dma.c moved to drivers/dma/ti/
-
- drivers/dma/ti/omap-dma.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/dma/ti/omap-dma.c b/drivers/dma/ti/omap-dma.c
-index b73fb51fbc81..96b5096c26dd 100644
---- a/drivers/dma/ti/omap-dma.c
-+++ b/drivers/dma/ti/omap-dma.c
-@@ -1485,7 +1485,11 @@ static int omap_dma_probe(struct platform_device *pdev)
- 	od->ddev.src_addr_widths = OMAP_DMA_BUSWIDTHS;
- 	od->ddev.dst_addr_widths = OMAP_DMA_BUSWIDTHS;
- 	od->ddev.directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
--	od->ddev.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
-+	if (__dma_omap15xx(od->plat->dma_attr))
-+		od->ddev.residue_granularity =
-+				DMA_RESIDUE_GRANULARITY_DESCRIPTOR;
-+	else
-+		od->ddev.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
- 	od->ddev.max_burst = SZ_16M - 1; /* CCEN: 24bit unsigned */
- 	od->ddev.dev = &pdev->dev;
- 	INIT_LIST_HEAD(&od->ddev.channels);
 -- 
-2.16.1
+Robert
