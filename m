@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v3 12/13] ALSA: hdac: ext: add wait for codec
-	to respond after link reset
-Date: Fri,  1 Jun 2018 22:54:00 -0500
-Message-ID: <20180602035401.26934-13-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v3 13/13] ASoC: Intel: Skylake: fix widget
+	handling
+Date: Fri,  1 Jun 2018 22:54:01 -0500
+Message-ID: <20180602035401.26934-14-pierre-louis.bossart@linux.intel.com>
 References: <20180602035401.26934-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 2CD30267865
- for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2018 05:54:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6763826783D
+ for <alsa-devel@alsa-project.org>; Sat,  2 Jun 2018 05:54:24 +0200 (CEST)
 In-Reply-To: <20180602035401.26934-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,36 +27,27 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
-As per HDA spec section 4.3 - Codec Discovery, the software shall wait
-for atleast 521usec for codec to respond after link reset.
-With the multi-link capability each link is turned ON/OFF individually.
-Link controller drives reset signal when it is turned ON.
+include DAPM Mux and output widgets into the list.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/hda/ext/hdac_ext_controller.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ sound/soc/intel/skylake/skl-topology.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/hda/ext/hdac_ext_controller.c b/sound/hda/ext/hdac_ext_controller.c
-index 72774119dd11..5bc4a1d587d4 100644
---- a/sound/hda/ext/hdac_ext_controller.c
-+++ b/sound/hda/ext/hdac_ext_controller.c
-@@ -271,6 +271,15 @@ int snd_hdac_ext_bus_link_get(struct hdac_bus *bus,
- 		}
- 
- 		ret = snd_hdac_ext_bus_link_power_up(link);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 5ed17218c57c..5700080387ed 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -108,6 +108,9 @@ static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w,
+ 	case snd_soc_dapm_aif_out:
+ 	case snd_soc_dapm_dai_out:
+ 	case snd_soc_dapm_switch:
++	case snd_soc_dapm_output:
++	case snd_soc_dapm_mux:
 +
-+		/*
-+		 *  wait for 521usec for codec to report status
-+		 *  HDA spec section 4.3 - Codec Discovery
-+		 */
-+		udelay(521);
-+		bus->codec_mask = snd_hdac_chip_readw(bus, STATESTS);
-+		dev_dbg(bus->dev, "codec_mask = 0x%lx\n", bus->codec_mask);
-+		snd_hdac_chip_writew(bus, STATESTS, bus->codec_mask);
- 	}
- 
- 	mutex_unlock(&bus->lock);
+ 		return false;
+ 	default:
+ 		return true;
 -- 
 2.14.1
