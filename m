@@ -1,50 +1,164 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 2/2] ASoC: Intel: bytcr_rt5640: Fix Acer Iconia
-	8 over-current detect threshold
-Date: Sun,  3 Jun 2018 15:42:32 +0200
-Message-ID: <20180603134232.677-2-hdegoede@redhat.com>
-References: <20180603134232.677-1-hdegoede@redhat.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 317BE267A69
- for <alsa-devel@alsa-project.org>; Sun,  3 Jun 2018 15:42:40 +0200 (CEST)
-In-Reply-To: <20180603134232.677-1-hdegoede@redhat.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v9] ASoC: pxa: switch to new ac97 bus support
+Date: Sun,  3 Jun 2018 22:12:02 +0200
+Message-ID: <20180603201202.15468-1-robert.jarzmik@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Change the over-current detect threshold on the Acer Iconia 8 from
-2000ua to 1500uA, this fixes headset button presses not being detected.
+Switch to the new ac97 bus support in sound/ac97 instead of the legacy
+snd_ac97 one.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Since v8: fixed the trivial compilation error
+          v7 was in https://patchwork.kernel.org/patch/9951919/
+---
+ sound/arm/Kconfig           |  1 -
+ sound/soc/pxa/Kconfig       |  5 ++---
+ sound/soc/pxa/pxa2xx-ac97.c | 48 +++++++++++++++++++++++----------------------
+ 3 files changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 27a05778584f..e577ace1c1d8 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -404,7 +404,7 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
- 					BYT_RT5640_JD_SRC_JD1_IN4P |
--					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_TH_1500UA |
- 					BYT_RT5640_OVCD_SF_0P75 |
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
+diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
+index 65171f6657a2..f1f25704fe52 100644
+--- a/sound/arm/Kconfig
++++ b/sound/arm/Kconfig
+@@ -36,7 +36,6 @@ endif	# SND_ARM
+ 
+ config SND_PXA2XX_LIB
+ 	tristate
+-	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
+ 	select SND_DMAENGINE_PCM
+ 
+ config SND_PXA2XX_LIB_AC97
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 484ab3c2ad67..1a0b55beb282 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -20,13 +20,12 @@ config SND_MMP_SOC
+ 
+ config SND_PXA2XX_AC97
+ 	tristate
+-	select SND_AC97_CODEC
+ 
+ config SND_PXA2XX_SOC_AC97
+ 	tristate
+-	select AC97_BUS
++	select AC97_BUS_NEW
+ 	select SND_PXA2XX_LIB_AC97
+-	select SND_SOC_AC97_BUS
++	select SND_SOC_AC97_BUS_NEW
+ 
+ config SND_PXA2XX_SOC_I2S
+ 	tristate
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 1b41c0f2a8fb..80e4757176d8 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -17,6 +17,7 @@
+ #include <linux/dmaengine.h>
+ #include <linux/dma/pxa-dma.h>
+ 
++#include <sound/ac97/controller.h>
+ #include <sound/core.h>
+ #include <sound/ac97_codec.h>
+ #include <sound/soc.h>
+@@ -27,43 +28,35 @@
+ #include <mach/regs-ac97.h>
+ #include <mach/audio.h>
+ 
+-static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97)
++static void pxa2xx_ac97_warm_reset(struct ac97_controller *adrv)
+ {
+ 	pxa2xx_ac97_try_warm_reset();
+ 
+ 	pxa2xx_ac97_finish_reset();
+ }
+ 
+-static void pxa2xx_ac97_cold_reset(struct snd_ac97 *ac97)
++static void pxa2xx_ac97_cold_reset(struct ac97_controller *adrv)
+ {
+ 	pxa2xx_ac97_try_cold_reset();
+ 
+ 	pxa2xx_ac97_finish_reset();
+ }
+ 
+-static unsigned short pxa2xx_ac97_legacy_read(struct snd_ac97 *ac97,
+-					      unsigned short reg)
++static int pxa2xx_ac97_read_actrl(struct ac97_controller *adrv, int slot,
++				  unsigned short reg)
+ {
+-	int ret;
+-
+-	ret = pxa2xx_ac97_read(ac97->num, reg);
+-	if (ret < 0)
+-		return 0;
+-	else
+-		return (unsigned short)(ret & 0xffff);
++	return pxa2xx_ac97_read(slot, reg);
+ }
+ 
+-static void pxa2xx_ac97_legacy_write(struct snd_ac97 *ac97,
+-				     unsigned short reg, unsigned short val)
++static int pxa2xx_ac97_write_actrl(struct ac97_controller *adrv, int slot,
++				   unsigned short reg, unsigned short val)
+ {
+-	int ret;
+-
+-	ret = pxa2xx_ac97_write(ac97->num, reg, val);
++	return pxa2xx_ac97_write(slot, reg, val);
+ }
+ 
+-static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
+-	.read	= pxa2xx_ac97_legacy_read,
+-	.write	= pxa2xx_ac97_legacy_write,
++static struct ac97_controller_ops pxa2xx_ac97_ops = {
++	.read	= pxa2xx_ac97_read_actrl,
++	.write	= pxa2xx_ac97_write_actrl,
+ 	.warm_reset	= pxa2xx_ac97_warm_reset,
+ 	.reset	= pxa2xx_ac97_cold_reset,
+ };
+@@ -219,6 +212,9 @@ static const struct snd_soc_component_driver pxa_ac97_component = {
+ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
+ {
+ 	int ret;
++	struct ac97_controller *ctrl;
++	pxa2xx_audio_ops_t *pdata = pdev->dev.platform_data;
++	void **codecs_pdata;
+ 
+ 	if (pdev->id != -1) {
+ 		dev_err(&pdev->dev, "PXA2xx has only one AC97 port.\n");
+@@ -231,10 +227,14 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
+-	ret = snd_soc_set_ac97_ops(&pxa2xx_ac97_ops);
+-	if (ret != 0)
+-		return ret;
++	codecs_pdata = pdata ? pdata->codec_pdata : NULL;
++	ctrl = snd_ac97_controller_register(&pxa2xx_ac97_ops, &pdev->dev,
++					    AC97_SLOTS_AVAILABLE_ALL,
++					    codecs_pdata);
++	if (IS_ERR(ctrl))
++		return PTR_ERR(ctrl);
+ 
++	platform_set_drvdata(pdev, ctrl);
+ 	/* Punt most of the init to the SoC probe; we may need the machine
+ 	 * driver to do interesting things with the clocking to get us up
+ 	 * and running.
+@@ -245,8 +245,10 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
+ 
+ static int pxa2xx_ac97_dev_remove(struct platform_device *pdev)
+ {
++	struct ac97_controller *ctrl = platform_get_drvdata(pdev);
++
+ 	snd_soc_unregister_component(&pdev->dev);
+-	snd_soc_set_ac97_ops(NULL);
++	snd_ac97_controller_unregister(ctrl);
+ 	pxa2xx_ac97_hw_remove(pdev);
+ 	return 0;
+ }
 -- 
-2.17.1
+2.11.0
