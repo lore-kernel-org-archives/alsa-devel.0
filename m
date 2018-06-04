@@ -1,111 +1,46 @@
-From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
-Subject: Re: [PATCH] [PATCH v4] ASoC: Intel: kbl: Move codec
- sysclk config to codec_init function
-Date: Mon, 4 Jun 2018 10:52:17 +0000
-Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1EF773@SW-EX-MBX01.diasemi.com>
-References: <1527579790-1666-1-git-send-email-mac.chiang@intel.com>
- <1527787112-17493-1-git-send-email-mac.chiang@intel.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: dapm: delete dapm_kcontrol_data paths entry before
+ freeing
+Date: Mon, 4 Jun 2018 11:55:10 +0100
+Message-ID: <e37bf559-b040-db34-6273-d4f8ea1e2284@linaro.org>
+References: <20180601225334.19064-1-srinivas.kandagatla@linaro.org>
+ <20180604104541.GB7536@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.bemta25.messagelabs.com (mail1.bemta25.messagelabs.com
- [195.245.230.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 43961267892
- for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 12:52:21 +0200 (CEST)
-In-Reply-To: <1527787112-17493-1-git-send-email-mac.chiang@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180604104541.GB7536@sirena.org.uk>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "mac.chiang@intel.com" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
-Cc: "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "tiwai@suse.de" <tiwai@suse.de>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "naveen.m@intel.com" <naveen.m@intel.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com, bgoswami@codeaurora.org, tiwai@suse.com, perex@perex.cz, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, rohkumar@qti.qualcomm.com
 List-Id: alsa-devel@alsa-project.org
 
-On 31 May 2018 18:19, Mac Chiang wrote:
 
-> From: Mac Chiang <mac.chiang@intel.com>
-> 
-> On APL, commit fd0f237572ad
-> ("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
-> fixed an issue related to jack detection.
-> 
-> The MCLK for DA7219 does not change in this platform, but is
-> currently being configured everytime as part of the platform_clock
-> event handler for DAPM. The upshot of this is that we have
-> unnecessary calls to this function, and it also means that if
-> a stream hasn't yet been started, DA7219 driver does not have the
-> correct MCLK rates programmed and so the HP detection feature does
-> not operate as expected.
-> 
-> The same fix is needed on KBL.
-> 
-> This patch rectifies this issue by moving the sysclk call to
-> codec_init function so it's only called once at initialisation.
-> 
-> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
 
-Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+On 04/06/18 11:45, Mark Brown wrote:
+> On Fri, Jun 01, 2018 at 11:53:34PM +0100, Srinivas Kandagatla wrote:
+> 
+>> Below is the kernel BUG with SLAB Poisoning
+> 
+>> =============================================================================
+>> BUG kmalloc-128 (Tainted: G        W        ): Poison overwritten
+>> -----------------------------------------------------------------------------
+>>
+>> Disabling lock debugging due to kernel taint
+>> INFO: 0xffff80003cf1c310-0xffff80003cf1c31f. First byte 0x10 instead of 0x6b
+>> INFO: Allocated in dapm_kcontrol_data_alloc.isra.37+0x34/0x2a8 age=6929 cpu=0 pid=50
+>>   __slab_alloc.isra.24+0x24/0x38
+>>   kmem_cache_alloc+0x190/0x1d8
+> 
+> Please think hard before including complete backtraces in upstream
+> reports, they are very large and contain almost no useful information
+> relative to their size so often obscure the relevant content in your
+> message. If part of the backtrace is usefully illustrative then it's
+> usually better to pull out the relevant sections.
+I agree, Do you want me to resend the patch removing irrelevant sections 
+in log?
 
+thanks,
+srini
 > 
-> ---
-> Notes(changelog):
->   v2:
->     - correct the MCLK to 24.576M
->   v3:
->     - described the comments clearly
->   v4:
->     - move the notes at the end
-> 
->  sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
->  1 file changed, 9 insertions(+), 8 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> index c332a32..ad3029d 100644
-> --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> @@ -66,14 +66,6 @@ static int platform_clock_control(struct
-> snd_soc_dapm_widget *w,
->  		return -EIO;
->  	}
-> 
-> -	/* Configure sysclk for codec */
-> -	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
-> -				     SND_SOC_CLOCK_IN);
-> -	if (ret) {
-> -		dev_err(card->dev, "can't set codec sysclk configuration\n");
-> -		return ret;
-> -	}
-> -
->  	if (SND_SOC_DAPM_EVENT_OFF(event)) {
->  		ret = snd_soc_dai_set_pll(codec_dai, 0,
->  				     DA7219_SYSCLK_MCLK, 0, 0);
-> @@ -170,9 +162,18 @@ static int kabylake_da7219_codec_init(struct
-> snd_soc_pcm_runtime *rtd)
->  {
->  	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
->  	struct snd_soc_component *component = rtd->codec_dai->component;
-> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
->  	struct snd_soc_jack *jack;
->  	int ret;
-> 
-> +	/* Configure sysclk for codec */
-> +	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
-> +						SND_SOC_CLOCK_IN);
-> +	if (ret) {
-> +		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
-> +		return ret;
-> +	}
-> +
->  	/*
->  	 * Headset buttons map to the google Reference headset.
->  	 * These can be configured by userspace.
-> --
-> 2.7.4
