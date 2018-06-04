@@ -1,164 +1,185 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH v9] ASoC: pxa: switch to new ac97 bus support
-Date: Sun,  3 Jun 2018 22:12:02 +0200
-Message-ID: <20180603201202.15468-1-robert.jarzmik@free.fr>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH v4 2/7] clk: at91: add I2S clock mux driver
+Date: Mon, 4 Jun 2018 11:20:29 +0300
+Message-ID: <d2558674-9aee-8b08-293f-34754fd2b185@microchip.com>
+References: <1527251668-31396-1-git-send-email-codrin.ciubotariu@microchip.com>
+ <1527251668-31396-3-git-send-email-codrin.ciubotariu@microchip.com>
+ <152778039660.144038.4743783065942615925@swboyd.mtv.corp.google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <152778039660.144038.4743783065942615925@swboyd.mtv.corp.google.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Stephen Boyd <sboyd@kernel.org>, alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, boris.brezillon@bootlin.com, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com, robh+dt@kernel.org
+Cc: Cristian.Birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-Switch to the new ac97 bus support in sound/ac97 instead of the legacy
-snd_ac97 one.
+On 31.05.2018 18:26, Stephen Boyd wrote:
+> Quoting Codrin Ciubotariu (2018-05-25 05:34:23)
+>> This driver is a simple muxing driver that controls the
+>> I2S's clock input by using syscon/regmap to change the parrent.
+> 
+> s/parrent/parent/
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
-Since v8: fixed the trivial compilation error
-          v7 was in https://patchwork.kernel.org/patch/9951919/
----
- sound/arm/Kconfig           |  1 -
- sound/soc/pxa/Kconfig       |  5 ++---
- sound/soc/pxa/pxa2xx-ac97.c | 48 +++++++++++++++++++++++----------------------
- 3 files changed, 27 insertions(+), 27 deletions(-)
+I will fix it.
 
-diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
-index 65171f6657a2..f1f25704fe52 100644
---- a/sound/arm/Kconfig
-+++ b/sound/arm/Kconfig
-@@ -36,7 +36,6 @@ endif	# SND_ARM
- 
- config SND_PXA2XX_LIB
- 	tristate
--	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
- 	select SND_DMAENGINE_PCM
- 
- config SND_PXA2XX_LIB_AC97
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 484ab3c2ad67..1a0b55beb282 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -20,13 +20,12 @@ config SND_MMP_SOC
- 
- config SND_PXA2XX_AC97
- 	tristate
--	select SND_AC97_CODEC
- 
- config SND_PXA2XX_SOC_AC97
- 	tristate
--	select AC97_BUS
-+	select AC97_BUS_NEW
- 	select SND_PXA2XX_LIB_AC97
--	select SND_SOC_AC97_BUS
-+	select SND_SOC_AC97_BUS_NEW
- 
- config SND_PXA2XX_SOC_I2S
- 	tristate
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 1b41c0f2a8fb..80e4757176d8 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -17,6 +17,7 @@
- #include <linux/dmaengine.h>
- #include <linux/dma/pxa-dma.h>
- 
-+#include <sound/ac97/controller.h>
- #include <sound/core.h>
- #include <sound/ac97_codec.h>
- #include <sound/soc.h>
-@@ -27,43 +28,35 @@
- #include <mach/regs-ac97.h>
- #include <mach/audio.h>
- 
--static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97)
-+static void pxa2xx_ac97_warm_reset(struct ac97_controller *adrv)
- {
- 	pxa2xx_ac97_try_warm_reset();
- 
- 	pxa2xx_ac97_finish_reset();
- }
- 
--static void pxa2xx_ac97_cold_reset(struct snd_ac97 *ac97)
-+static void pxa2xx_ac97_cold_reset(struct ac97_controller *adrv)
- {
- 	pxa2xx_ac97_try_cold_reset();
- 
- 	pxa2xx_ac97_finish_reset();
- }
- 
--static unsigned short pxa2xx_ac97_legacy_read(struct snd_ac97 *ac97,
--					      unsigned short reg)
-+static int pxa2xx_ac97_read_actrl(struct ac97_controller *adrv, int slot,
-+				  unsigned short reg)
- {
--	int ret;
--
--	ret = pxa2xx_ac97_read(ac97->num, reg);
--	if (ret < 0)
--		return 0;
--	else
--		return (unsigned short)(ret & 0xffff);
-+	return pxa2xx_ac97_read(slot, reg);
- }
- 
--static void pxa2xx_ac97_legacy_write(struct snd_ac97 *ac97,
--				     unsigned short reg, unsigned short val)
-+static int pxa2xx_ac97_write_actrl(struct ac97_controller *adrv, int slot,
-+				   unsigned short reg, unsigned short val)
- {
--	int ret;
--
--	ret = pxa2xx_ac97_write(ac97->num, reg, val);
-+	return pxa2xx_ac97_write(slot, reg, val);
- }
- 
--static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
--	.read	= pxa2xx_ac97_legacy_read,
--	.write	= pxa2xx_ac97_legacy_write,
-+static struct ac97_controller_ops pxa2xx_ac97_ops = {
-+	.read	= pxa2xx_ac97_read_actrl,
-+	.write	= pxa2xx_ac97_write_actrl,
- 	.warm_reset	= pxa2xx_ac97_warm_reset,
- 	.reset	= pxa2xx_ac97_cold_reset,
- };
-@@ -219,6 +212,9 @@ static const struct snd_soc_component_driver pxa_ac97_component = {
- static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- {
- 	int ret;
-+	struct ac97_controller *ctrl;
-+	pxa2xx_audio_ops_t *pdata = pdev->dev.platform_data;
-+	void **codecs_pdata;
- 
- 	if (pdev->id != -1) {
- 		dev_err(&pdev->dev, "PXA2xx has only one AC97 port.\n");
-@@ -231,10 +227,14 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	ret = snd_soc_set_ac97_ops(&pxa2xx_ac97_ops);
--	if (ret != 0)
--		return ret;
-+	codecs_pdata = pdata ? pdata->codec_pdata : NULL;
-+	ctrl = snd_ac97_controller_register(&pxa2xx_ac97_ops, &pdev->dev,
-+					    AC97_SLOTS_AVAILABLE_ALL,
-+					    codecs_pdata);
-+	if (IS_ERR(ctrl))
-+		return PTR_ERR(ctrl);
- 
-+	platform_set_drvdata(pdev, ctrl);
- 	/* Punt most of the init to the SoC probe; we may need the machine
- 	 * driver to do interesting things with the clocking to get us up
- 	 * and running.
-@@ -245,8 +245,10 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- 
- static int pxa2xx_ac97_dev_remove(struct platform_device *pdev)
- {
-+	struct ac97_controller *ctrl = platform_get_drvdata(pdev);
-+
- 	snd_soc_unregister_component(&pdev->dev);
--	snd_soc_set_ac97_ops(NULL);
-+	snd_ac97_controller_unregister(ctrl);
- 	pxa2xx_ac97_hw_remove(pdev);
- 	return 0;
- }
--- 
-2.11.0
+> 
+>> The available inputs can be Peripheral clock and Generated clock.
+> 
+> Why capitalize peripheral and generated?
+
+In DS, at I2S block these clocks appear defined with capital letters... 
+I will fix it.
+
+> 
+>>
+>> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+>> ---
+>> diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
+>> index 1254bf9..903f23c 100644
+>> --- a/arch/arm/mach-at91/Kconfig
+>> +++ b/arch/arm/mach-at91/Kconfig
+>> @@ -27,6 +27,7 @@ config SOC_SAMA5D2
+>>          select HAVE_AT91_H32MX
+>>          select HAVE_AT91_GENERATED_CLK
+>>          select HAVE_AT91_AUDIO_PLL
+>> +       select HAVE_AT91_I2S_MUX_CLK
+>>          select PINCTRL_AT91PIO4
+>>          help
+>>            Select this if ou are using one of Microchip's SAMA5D2 family SoC.
+>> @@ -129,6 +130,9 @@ config HAVE_AT91_GENERATED_CLK
+>>   config HAVE_AT91_AUDIO_PLL
+>>          bool
+>>   
+>> +config HAVE_AT91_I2S_MUX_CLK
+>> +       bool
+>> +
+>>   config SOC_SAM_V4_V5
+>>          bool
+>>   
+> 
+> I guess this is OK.
+> 
+>> diff --git a/drivers/clk/at91/Makefile b/drivers/clk/at91/Makefile
+>> index 082596f..facc169 100644
+>> --- a/drivers/clk/at91/Makefile
+>> +++ b/drivers/clk/at91/Makefile
+>> @@ -13,3 +13,4 @@ obj-$(CONFIG_HAVE_AT91_USB_CLK)               += clk-usb.o
+>>   obj-$(CONFIG_HAVE_AT91_SMD)            += clk-smd.o
+>>   obj-$(CONFIG_HAVE_AT91_H32MX)          += clk-h32mx.o
+>>   obj-$(CONFIG_HAVE_AT91_GENERATED_CLK)  += clk-generated.o
+>> +obj-$(CONFIG_HAVE_AT91_I2S_MUX_CLK)    += clk-i2s-mux.o
+>> diff --git a/drivers/clk/at91/clk-i2s-mux.c b/drivers/clk/at91/clk-i2s-mux.c
+>> new file mode 100644
+>> index 0000000..2d56ded
+>> --- /dev/null
+>> +++ b/drivers/clk/at91/clk-i2s-mux.c
+>> @@ -0,0 +1,117 @@
+>> +/* SPDX-License-Identifier: GPL-2.0 */
+>> +/*
+>> + *  Copyright (C) 2018 Microchip Technology Inc,
+>> + *                     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+>> + *
+>> + *
+>> + */
+>> +
+>> +#include <linux/clk-provider.h>
+>> +#include <linux/of.h>
+>> +#include <linux/mfd/syscon.h>
+>> +#include <linux/regmap.h>
+>> +#include <linux/slab.h>
+>> +
+>> +#include <soc/at91/atmel-sfr.h>
+>> +
+>> +#define        I2S_BUS_NR      2
+>> +
+>> +struct clk_i2s_mux {
+>> +       struct clk_hw hw;
+>> +       struct regmap *regmap;
+>> +       u32 bus_id;
+> 
+> Can be a u8?
+
+I think so, I will cast out_value parameter of of_property_read_u32() to u8.
+
+> 
+>> +};
+>> +
+>> +#define to_clk_i2s_mux(hw) container_of(hw, struct clk_i2s_mux, hw)
+>> +
+>> +static u8 clk_i2s_mux_get_parent(struct clk_hw *hw)
+>> +{
+>> +       struct clk_i2s_mux *mux = to_clk_i2s_mux(hw);
+>> +       u32 val;
+>> +
+>> +       regmap_read(mux->regmap, AT91_SFR_I2SCLKSEL, &val);
+>> +
+>> +       return (val & BIT(mux->bus_id)) >> mux->bus_id;
+>> +}
+>> +
+>> +static int clk_i2s_mux_set_parent(struct clk_hw *hw, u8 index)
+>> +{
+>> +       struct clk_i2s_mux *mux = to_clk_i2s_mux(hw);
+>> +
+>> +       return regmap_update_bits(mux->regmap, AT91_SFR_I2SCLKSEL,
+>> +                                 BIT(mux->bus_id), index << mux->bus_id);
+>> +}
+>> +
+>> +const struct clk_ops clk_i2s_mux_ops = {
+> 
+> static?
+
+Yes, I will fix it.
+
+> 
+>> +       .get_parent = clk_i2s_mux_get_parent,
+>> +       .set_parent = clk_i2s_mux_set_parent,
+>> +       .determine_rate = __clk_mux_determine_rate,
+>> +};
+>> +
+>> +static struct clk_hw * __init
+>> +at91_clk_i2s_mux_register(struct regmap *regmap, const char *name,
+>> +                         const char * const *parent_names,
+>> +                         unsigned int num_parents, u32 bus_id)
+>> +{
+>> +       struct clk_init_data init = {};
+>> +       struct clk_i2s_mux *i2s_ck;
+>> +       int ret;
+>> +
+>> +       i2s_ck = kzalloc(sizeof(*i2s_ck), GFP_KERNEL);
+>> +       if (!i2s_ck)
+>> +               return ERR_PTR(-ENOMEM);
+>> +
+>> +       init.name = name;
+>> +       init.ops = &clk_i2s_mux_ops;
+>> +       init.parent_names = parent_names;
+>> +       init.num_parents = num_parents;
+>> +       init.flags = CLK_IGNORE_UNUSED;
+> 
+> Really? Why?
+
+I am thinking that there is no need to gate this clock, since there is 
+no way to gate this clock in HW.
+
+> 
+>> +
+>> +       i2s_ck->hw.init = &init;
+>> +       i2s_ck->bus_id = bus_id;
+>> +       i2s_ck->regmap = regmap;
+>> +
+>> +       ret = clk_hw_register(NULL, &i2s_ck->hw);
+>> +       if (ret) {
+>> +               kfree(i2s_ck);
+>> +               return ERR_PTR(ret);
+>> +       }
+>> +
+>> +       return &i2s_ck->hw;
+>> +}
+
+Thank you for your review. I will wait a few more days for more comments 
+on this series and send a V5 afterwards.
+
+Best regards,
+Codrin
