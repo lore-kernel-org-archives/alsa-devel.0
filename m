@@ -1,17 +1,21 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Hans de Goede <hdegoede@redhat.com>
 Subject: Re: [PATCH 1/2] ASoC: Intel: bytcr_rt5640: Add quirk
  for the Nuvison/TMax TM800W560 tablet
-Date: Mon, 4 Jun 2018 08:57:58 -0500
-Message-ID: <ddb258d0-e8c4-fda7-f45f-fc396fc31acc@linux.intel.com>
+Date: Mon, 4 Jun 2018 16:00:06 +0200
+Message-ID: <3798fadf-8d05-5a6c-1b19-d246194d3ada@redhat.com>
 References: <20180603134232.677-1-hdegoede@redhat.com>
+ <ddb258d0-e8c4-fda7-f45f-fc396fc31acc@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id D689F267866
- for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 15:58:00 +0200 (CEST)
-In-Reply-To: <20180603134232.677-1-hdegoede@redhat.com>
+Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
+ [209.85.128.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0EA1A267866
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 16:00:07 +0200 (CEST)
+Received: by mail-wr0-f195.google.com with SMTP id d8-v6so12569255wro.4
+ for <alsa-devel@alsa-project.org>; Mon, 04 Jun 2018 07:00:07 -0700 (PDT)
+In-Reply-To: <ddb258d0-e8c4-fda7-f45f-fc396fc31acc@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,50 +26,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/3/18 8:42 AM, Hans de Goede wrote:
-> Add a quirk for the Nuvison/TMax TM800W560 tablet, this tablet uses IN1
-> for the internal mic rather then the default IN3 and it uses JD2 rather
-> then JD1 for its not-inverted jack-detect switch.
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-
-Both
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
-BTW maybe we should move those quirks to a separate file, the quirk 
-definitions will become larger than actual code pretty soon ...
-
-> ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 14 ++++++++++++++
->   1 file changed, 14 insertions(+)
-> 
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index d675d550f6c1..27a05778584f 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -549,6 +549,20 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->   					BYT_RT5640_DIFF_MIC |
->   					BYT_RT5640_MCLK_EN),
->   	},
-> +	{	/* Nuvison/TMax TM800W560 */
-> +		.matches = {
-> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "TMAX"),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "TM800W560L"),
-> +		},
-> +		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-> +					BYT_RT5640_JD_SRC_JD2_IN4N |
-> +					BYT_RT5640_OVCD_TH_2000UA |
-> +					BYT_RT5640_OVCD_SF_0P75 |
-> +					BYT_RT5640_JD_NOT_INV |
-> +					BYT_RT5640_DIFF_MIC |
-> +					BYT_RT5640_SSP0_AIF1 |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->   	{	/* Pipo W4 */
->   		.matches = {
->   			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-> 
+SGksCgpPbiAwNC0wNi0xOCAxNTo1NywgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24g
+Ni8zLzE4IDg6NDIgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4+IEFkZCBhIHF1aXJrIGZvciB0
+aGUgTnV2aXNvbi9UTWF4IFRNODAwVzU2MCB0YWJsZXQsIHRoaXMgdGFibGV0IHVzZXMgSU4xCj4+
+IGZvciB0aGUgaW50ZXJuYWwgbWljIHJhdGhlciB0aGVuIHRoZSBkZWZhdWx0IElOMyBhbmQgaXQg
+dXNlcyBKRDIgcmF0aGVyCj4+IHRoZW4gSkQxIGZvciBpdHMgbm90LWludmVydGVkIGphY2stZGV0
+ZWN0IHN3aXRjaC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVA
+cmVkaGF0LmNvbT4KPiAKPiBCb3RoCj4gQWNrZWQtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxw
+aWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+CgpUaGFua3MuCgo+IEJUVyBtYXli
+ZSB3ZSBzaG91bGQgbW92ZSB0aG9zZSBxdWlya3MgdG8gYSBzZXBhcmF0ZSBmaWxlLCB0aGUgcXVp
+cmsgZGVmaW5pdGlvbnMgd2lsbCBiZWNvbWUgbGFyZ2VyIHRoYW4gYWN0dWFsIGNvZGUgcHJldHR5
+IHNvb24gLi4uCgpJIGNhbiBkbyB0aGF0IHdoZW4gdGhlIG5leHQgcXVpcmsgY29tZXMgYWxvbmcu
+CgpNYXJrIHdoYXQgaXMgeW91ciB0YWtlIG9uIHRoaXM/CgpSZWdhcmRzLAoKSGFucwoKCgo+IAo+
+PiAtLS0KPj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYyB8IDE0ICsr
+KysrKysrKysrKysrCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspCj4+Cj4+
+IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jIGIvc291
+bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYwo+PiBpbmRleCBkNjc1ZDU1MGY2YzEu
+LjI3YTA1Nzc4NTg0ZiAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRj
+cl9ydDU2NDAuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5j
+Cj4+IEBAIC01NDksNiArNTQ5LDIwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9p
+ZCBieXRfcnQ1NjQwX3F1aXJrX3RhYmxlW10gPSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX0RJRkZfTUlDIHwKPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBfTUNMS19FTiksCj4+IMKg
+wqDCoMKgwqAgfSwKPj4gK8KgwqDCoCB7wqDCoMKgIC8qIE51dmlzb24vVE1heCBUTTgwMFc1NjAg
+Ki8KPj4gK8KgwqDCoMKgwqDCoMKgIC5tYXRjaGVzID0gewo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBETUlfRVhBQ1RfTUFUQ0goRE1JX1NZU19WRU5ET1IsICJUTUFYIiksCj4+ICvCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIERNSV9FWEFDVF9NQVRDSChETUlfUFJPRFVDVF9OQU1FLCAiVE04MDBX
+NTYwTCIpLAo+PiArwqDCoMKgwqDCoMKgwqAgfSwKPj4gK8KgwqDCoMKgwqDCoMKgIC5kcml2ZXJf
+ZGF0YSA9ICh2b2lkICopKEJZVF9SVDU2NDBfSU4xX01BUCB8Cj4+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX0pEX1NSQ19KRDJfSU40TiB8Cj4+ICvC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX09WQ0RfVEhf
+MjAwMFVBIHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9S
+VDU2NDBfT1ZDRF9TRl8wUDc1IHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIEJZVF9SVDU2NDBfSkRfTk9UX0lOViB8Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX0RJRkZfTUlDIHwKPj4gK8KgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBfU1NQMF9BSUYxIHwKPj4gK8KgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBfTUNMS19FTiksCj4+
+ICvCoMKgwqAgfSwKPj4gwqDCoMKgwqDCoCB7wqDCoMKgIC8qIFBpcG8gVzQgKi8KPj4gwqDCoMKg
+wqDCoMKgwqDCoMKgIC5tYXRjaGVzID0gewo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBE
+TUlfRVhBQ1RfTUFUQ0goRE1JX0JPQVJEX1ZFTkRPUiwgIkFNSSBDb3Jwb3JhdGlvbiIpLAo+Pgo+
+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
