@@ -1,185 +1,83 @@
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH v4 2/7] clk: at91: add I2S clock mux driver
-Date: Mon, 4 Jun 2018 11:20:29 +0300
-Message-ID: <d2558674-9aee-8b08-293f-34754fd2b185@microchip.com>
-References: <1527251668-31396-1-git-send-email-codrin.ciubotariu@microchip.com>
- <1527251668-31396-3-git-send-email-codrin.ciubotariu@microchip.com>
- <152778039660.144038.4743783065942615925@swboyd.mtv.corp.google.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH] ASoC: pcm512x: enable set_sysclk
+	callback
+Date: Mon, 4 Jun 2018 11:40:29 +0100
+Message-ID: <20180604104029.GA7536@sirena.org.uk>
+References: <20180601212643.20101-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <152778039660.144038.4743783065942615925@swboyd.mtv.corp.google.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@kernel.org>, alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, boris.brezillon@bootlin.com, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com, robh+dt@kernel.org
-Cc: Cristian.Birsan@microchip.com
+Content-Type: multipart/mixed; boundary="===============6316736390420687754=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51F1E26786E
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 12:40:34 +0200 (CEST)
+In-Reply-To: <20180601212643.20101-1-pierre-louis.bossart@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 31.05.2018 18:26, Stephen Boyd wrote:
-> Quoting Codrin Ciubotariu (2018-05-25 05:34:23)
->> This driver is a simple muxing driver that controls the
->> I2S's clock input by using syscon/regmap to change the parrent.
-> 
-> s/parrent/parent/
 
-I will fix it.
+--===============6316736390420687754==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="huq684BweRXVnRxX"
+Content-Disposition: inline
 
-> 
->> The available inputs can be Peripheral clock and Generated clock.
-> 
-> Why capitalize peripheral and generated?
 
-In DS, at I2S block these clocks appear defined with capital letters... 
-I will fix it.
+--huq684BweRXVnRxX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> 
->>
->> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->> ---
->> diff --git a/arch/arm/mach-at91/Kconfig b/arch/arm/mach-at91/Kconfig
->> index 1254bf9..903f23c 100644
->> --- a/arch/arm/mach-at91/Kconfig
->> +++ b/arch/arm/mach-at91/Kconfig
->> @@ -27,6 +27,7 @@ config SOC_SAMA5D2
->>          select HAVE_AT91_H32MX
->>          select HAVE_AT91_GENERATED_CLK
->>          select HAVE_AT91_AUDIO_PLL
->> +       select HAVE_AT91_I2S_MUX_CLK
->>          select PINCTRL_AT91PIO4
->>          help
->>            Select this if ou are using one of Microchip's SAMA5D2 family SoC.
->> @@ -129,6 +130,9 @@ config HAVE_AT91_GENERATED_CLK
->>   config HAVE_AT91_AUDIO_PLL
->>          bool
->>   
->> +config HAVE_AT91_I2S_MUX_CLK
->> +       bool
->> +
->>   config SOC_SAM_V4_V5
->>          bool
->>   
-> 
-> I guess this is OK.
-> 
->> diff --git a/drivers/clk/at91/Makefile b/drivers/clk/at91/Makefile
->> index 082596f..facc169 100644
->> --- a/drivers/clk/at91/Makefile
->> +++ b/drivers/clk/at91/Makefile
->> @@ -13,3 +13,4 @@ obj-$(CONFIG_HAVE_AT91_USB_CLK)               += clk-usb.o
->>   obj-$(CONFIG_HAVE_AT91_SMD)            += clk-smd.o
->>   obj-$(CONFIG_HAVE_AT91_H32MX)          += clk-h32mx.o
->>   obj-$(CONFIG_HAVE_AT91_GENERATED_CLK)  += clk-generated.o
->> +obj-$(CONFIG_HAVE_AT91_I2S_MUX_CLK)    += clk-i2s-mux.o
->> diff --git a/drivers/clk/at91/clk-i2s-mux.c b/drivers/clk/at91/clk-i2s-mux.c
->> new file mode 100644
->> index 0000000..2d56ded
->> --- /dev/null
->> +++ b/drivers/clk/at91/clk-i2s-mux.c
->> @@ -0,0 +1,117 @@
->> +/* SPDX-License-Identifier: GPL-2.0 */
->> +/*
->> + *  Copyright (C) 2018 Microchip Technology Inc,
->> + *                     Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->> + *
->> + *
->> + */
->> +
->> +#include <linux/clk-provider.h>
->> +#include <linux/of.h>
->> +#include <linux/mfd/syscon.h>
->> +#include <linux/regmap.h>
->> +#include <linux/slab.h>
->> +
->> +#include <soc/at91/atmel-sfr.h>
->> +
->> +#define        I2S_BUS_NR      2
->> +
->> +struct clk_i2s_mux {
->> +       struct clk_hw hw;
->> +       struct regmap *regmap;
->> +       u32 bus_id;
-> 
-> Can be a u8?
+On Fri, Jun 01, 2018 at 04:26:43PM -0500, Pierre-Louis Bossart wrote:
+> For codec master mode, the current pcm512x code relies on the clock API.
 
-I think so, I will cast out_value parameter of of_property_read_u32() to u8.
+> Simple boards such as Hifiberry DAC+ PRO rely on 2 local oscillators
+> to generate 44.1 or 48kHz multiples, with the clock selection being
+> handled by the machine driver toggling GPIOS.
 
-> 
->> +};
->> +
->> +#define to_clk_i2s_mux(hw) container_of(hw, struct clk_i2s_mux, hw)
->> +
->> +static u8 clk_i2s_mux_get_parent(struct clk_hw *hw)
->> +{
->> +       struct clk_i2s_mux *mux = to_clk_i2s_mux(hw);
->> +       u32 val;
->> +
->> +       regmap_read(mux->regmap, AT91_SFR_I2SCLKSEL, &val);
->> +
->> +       return (val & BIT(mux->bus_id)) >> mux->bus_id;
->> +}
->> +
->> +static int clk_i2s_mux_set_parent(struct clk_hw *hw, u8 index)
->> +{
->> +       struct clk_i2s_mux *mux = to_clk_i2s_mux(hw);
->> +
->> +       return regmap_update_bits(mux->regmap, AT91_SFR_I2SCLKSEL,
->> +                                 BIT(mux->bus_id), index << mux->bus_id);
->> +}
->> +
->> +const struct clk_ops clk_i2s_mux_ops = {
-> 
-> static?
+> The RaspberryPi kernel exposes a "hifiberry,dacpro-clk" clock driver
+> which does nothing but tell the codec driver what rate is set by the
+> machine driver [1][2]
 
-Yes, I will fix it.
+> This patch suggests an alternate fallback solution to let the codec
+> driver know what the sysclk is based on the existing .set_sysclk
+> callback.
 
-> 
->> +       .get_parent = clk_i2s_mux_get_parent,
->> +       .set_parent = clk_i2s_mux_set_parent,
->> +       .determine_rate = __clk_mux_determine_rate,
->> +};
->> +
->> +static struct clk_hw * __init
->> +at91_clk_i2s_mux_register(struct regmap *regmap, const char *name,
->> +                         const char * const *parent_names,
->> +                         unsigned int num_parents, u32 bus_id)
->> +{
->> +       struct clk_init_data init = {};
->> +       struct clk_i2s_mux *i2s_ck;
->> +       int ret;
->> +
->> +       i2s_ck = kzalloc(sizeof(*i2s_ck), GFP_KERNEL);
->> +       if (!i2s_ck)
->> +               return ERR_PTR(-ENOMEM);
->> +
->> +       init.name = name;
->> +       init.ops = &clk_i2s_mux_ops;
->> +       init.parent_names = parent_names;
->> +       init.num_parents = num_parents;
->> +       init.flags = CLK_IGNORE_UNUSED;
-> 
-> Really? Why?
+I'm not seeing a great advantage in this - we want to have more adoption
+of standard APIs for clocking rather than less.  As that Pi board shows
+it's easy to create static clocks in the clock API so why not just do
+that?
 
-I am thinking that there is no need to gate this clock, since there is 
-no way to gate this clock in HW.
+--huq684BweRXVnRxX
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> 
->> +
->> +       i2s_ck->hw.init = &init;
->> +       i2s_ck->bus_id = bus_id;
->> +       i2s_ck->regmap = regmap;
->> +
->> +       ret = clk_hw_register(NULL, &i2s_ck->hw);
->> +       if (ret) {
->> +               kfree(i2s_ck);
->> +               return ERR_PTR(ret);
->> +       }
->> +
->> +       return &i2s_ck->hw;
->> +}
+-----BEGIN PGP SIGNATURE-----
 
-Thank you for your review. I will wait a few more days for more comments 
-on this series and send a V5 afterwards.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsVFx0ACgkQJNaLcl1U
+h9AWqgf8DrfD/R7MyUBz6r4apSS6ev5vxP24HXi1aDSGk+CZvsSxtvQSADQblc5q
+PLlQXeJ1dsexvGSWzz4ixCgd42c/XG3JiD/BU7K+ElNbjLsz9MARwOzR48UaHBgh
+jcdi7ul7WZhoam98WKYx0oMuza1SkfoCoq6qq121SH2vKpzdSLhTlgLLw/x4ToNh
+Vc3r9XSeYZ4yGdg2X0lSoS5YW77gvHk8s/mNc8vQW4+BRBP6CnZhz4U6aK5OJXZc
+N1t7bCOhRR640AyL41aezyh+znGUvlvxmgiiFmVcuvGt+QMiMSXEHZo11EuErxkn
+ngZbuKMqX8gomwh268nNEpZqr9By+w==
+=PTLS
+-----END PGP SIGNATURE-----
 
-Best regards,
-Codrin
+--huq684BweRXVnRxX--
+
+--===============6316736390420687754==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6316736390420687754==--
