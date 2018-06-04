@@ -1,22 +1,19 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 1/2] ASoC: Intel: bytcr_rt5640: Add quirk
- for the Nuvison/TMax TM800W560 tablet
-Date: Mon, 4 Jun 2018 16:00:06 +0200
-Message-ID: <3798fadf-8d05-5a6c-1b19-d246194d3ada@redhat.com>
-References: <20180603134232.677-1-hdegoede@redhat.com>
- <ddb258d0-e8c4-fda7-f45f-fc396fc31acc@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RFC PATCH] ASoC: pcm512x: enable set_sysclk
+	callback
+Date: Mon, 4 Jun 2018 17:27:57 +0100
+Message-ID: <20180604162757.GH7536@sirena.org.uk>
+References: <20180601212643.20101-1-pierre-louis.bossart@linux.intel.com>
+ <20180604104029.GA7536@sirena.org.uk>
+ <a933ad0d-70a8-b046-a0a0-3bdf5fb07d2e@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============2236124612581266834=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 0EA1A267866
- for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 16:00:07 +0200 (CEST)
-Received: by mail-wr0-f195.google.com with SMTP id d8-v6so12569255wro.4
- for <alsa-devel@alsa-project.org>; Mon, 04 Jun 2018 07:00:07 -0700 (PDT)
-In-Reply-To: <ddb258d0-e8c4-fda7-f45f-fc396fc31acc@linux.intel.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81BED267887
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 18:28:04 +0200 (CEST)
+In-Reply-To: <a933ad0d-70a8-b046-a0a0-3bdf5fb07d2e@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,49 +23,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAwNC0wNi0xOCAxNTo1NywgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24g
-Ni8zLzE4IDg6NDIgQU0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4+IEFkZCBhIHF1aXJrIGZvciB0
-aGUgTnV2aXNvbi9UTWF4IFRNODAwVzU2MCB0YWJsZXQsIHRoaXMgdGFibGV0IHVzZXMgSU4xCj4+
-IGZvciB0aGUgaW50ZXJuYWwgbWljIHJhdGhlciB0aGVuIHRoZSBkZWZhdWx0IElOMyBhbmQgaXQg
-dXNlcyBKRDIgcmF0aGVyCj4+IHRoZW4gSkQxIGZvciBpdHMgbm90LWludmVydGVkIGphY2stZGV0
-ZWN0IHN3aXRjaC4KPj4KPj4gU2lnbmVkLW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVA
-cmVkaGF0LmNvbT4KPiAKPiBCb3RoCj4gQWNrZWQtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxw
-aWVycmUtbG91aXMuYm9zc2FydEBsaW51eC5pbnRlbC5jb20+CgpUaGFua3MuCgo+IEJUVyBtYXli
-ZSB3ZSBzaG91bGQgbW92ZSB0aG9zZSBxdWlya3MgdG8gYSBzZXBhcmF0ZSBmaWxlLCB0aGUgcXVp
-cmsgZGVmaW5pdGlvbnMgd2lsbCBiZWNvbWUgbGFyZ2VyIHRoYW4gYWN0dWFsIGNvZGUgcHJldHR5
-IHNvb24gLi4uCgpJIGNhbiBkbyB0aGF0IHdoZW4gdGhlIG5leHQgcXVpcmsgY29tZXMgYWxvbmcu
-CgpNYXJrIHdoYXQgaXMgeW91ciB0YWtlIG9uIHRoaXM/CgpSZWdhcmRzLAoKSGFucwoKCgo+IAo+
-PiAtLS0KPj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYyB8IDE0ICsr
-KysrKysrKysrKysrCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCAxNCBpbnNlcnRpb25zKCspCj4+Cj4+
-IGRpZmYgLS1naXQgYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5jIGIvc291
-bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NDAuYwo+PiBpbmRleCBkNjc1ZDU1MGY2YzEu
-LjI3YTA1Nzc4NTg0ZiAxMDA2NDQKPj4gLS0tIGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRj
-cl9ydDU2NDAuYwo+PiArKysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY0MC5j
-Cj4+IEBAIC01NDksNiArNTQ5LDIwIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgZG1pX3N5c3RlbV9p
-ZCBieXRfcnQ1NjQwX3F1aXJrX3RhYmxlW10gPSB7Cj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX0RJRkZfTUlDIHwKPj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBfTUNMS19FTiksCj4+IMKg
-wqDCoMKgwqAgfSwKPj4gK8KgwqDCoCB7wqDCoMKgIC8qIE51dmlzb24vVE1heCBUTTgwMFc1NjAg
-Ki8KPj4gK8KgwqDCoMKgwqDCoMKgIC5tYXRjaGVzID0gewo+PiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBETUlfRVhBQ1RfTUFUQ0goRE1JX1NZU19WRU5ET1IsICJUTUFYIiksCj4+ICvCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIERNSV9FWEFDVF9NQVRDSChETUlfUFJPRFVDVF9OQU1FLCAiVE04MDBX
-NTYwTCIpLAo+PiArwqDCoMKgwqDCoMKgwqAgfSwKPj4gK8KgwqDCoMKgwqDCoMKgIC5kcml2ZXJf
-ZGF0YSA9ICh2b2lkICopKEJZVF9SVDU2NDBfSU4xX01BUCB8Cj4+ICvCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX0pEX1NSQ19KRDJfSU40TiB8Cj4+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX09WQ0RfVEhf
-MjAwMFVBIHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9S
-VDU2NDBfT1ZDRF9TRl8wUDc1IHwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIEJZVF9SVDU2NDBfSkRfTk9UX0lOViB8Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjQwX0RJRkZfTUlDIHwKPj4gK8KgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBfU1NQMF9BSUYxIHwKPj4gK8KgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NDBfTUNMS19FTiksCj4+
-ICvCoMKgwqAgfSwKPj4gwqDCoMKgwqDCoCB7wqDCoMKgIC8qIFBpcG8gVzQgKi8KPj4gwqDCoMKg
-wqDCoMKgwqDCoMKgIC5tYXRjaGVzID0gewo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBE
-TUlfRVhBQ1RfTUFUQ0goRE1JX0JPQVJEX1ZFTkRPUiwgIkFNSSBDb3Jwb3JhdGlvbiIpLAo+Pgo+
-IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+
+--===============2236124612581266834==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jaoouwwPWoQSJZYp"
+Content-Disposition: inline
+
+
+--jaoouwwPWoQSJZYp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jun 04, 2018 at 08:48:40AM -0500, Pierre-Louis Bossart wrote:
+
+> What I find odd is the selection between the two static clocks. I have
+> nothing against the clock API, I just find that the Pi solution isn't
+> terribly elegant. The machine driver selects the 44.1 or 48kHz oscillator by
+> configuring GPIO using registers exposed by the codec driver, the clock API
+> implementation does nothing related to hardware, so we have three entities
+> involved to flip 2 GPIOs.
+
+That just sounds like a not great implementation decision in that
+platform code rather than a fundamental problem.
+
+> And even if I use this solution, I still don't know how to tell the codec
+> driver which sclk to use in an ACPI environment (this is to enable HiFiberry
+> cards on Up/Up^2). At the moment the code does
+> pcm512x->sclk = devm_clk_get(dev, NULL);
+> and I don't have a moral equivalent for ACPI. I can add information for the
+> codec driver to get from the DSDT, I'd need however a agreed solution based
+> on _DSD or some property, and the thread with AMD on their 'mclk_name' topic
+> for DA7219 didn't go anywhere, did it?
+
+For systems out in the wild now you're going to need to have a bit of
+platform glue code anyway so I'm not sure there's that big an overhead
+(other than the data tables, but that seems idiomatic for ACPI).  It's
+a bit of work to get something set up but I'd not expect it to be that
+bad, but perhaps I'm missing something there.
+
+> Bottom line there is an 'easy' solution for this specific case and a more
+> complicated one but potentially more generic based on the clock API - hence
+> the RFC.
+
+As far as I can see the two aren't that far off - creating a fixed
+frequency clock based on DMI data shouldn't be that much harder than
+doing a set_sysclk().
+
+--jaoouwwPWoQSJZYp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsVaIwACgkQJNaLcl1U
+h9CDlQf9FlnP6VG5PqqjskYgm+vp0bVda/C8lBGx7puK9J/+SI/Jb34epCoI6fsy
+XCTeILdwBpRWJzxsjw3T7TuliLz67aVI2/Uji7jZhZwsW8W1PRhYgyYJ9MHd0c9j
+jjDjPs4Y6NSfE28tZvvRa3wSSBXxxtDJasxRHkwy49aDYKLTpfI2BFckiBRxwShv
+xWfFZHuhKVNTR44SiirZA1kBDGH52AkiVLZRC/oaObQbUbtliJTDfuiMTU/U4dO2
++fv4slY3rZlX8G6b/zuyYZIPCflQdtsc0Pos9zWIn4KcSyZNobvrHqpqNg3T50gO
+k2oUz2jWPwZAkTZeFmMZ/SxptSOY8Q==
+=5/LB
+-----END PGP SIGNATURE-----
+
+--jaoouwwPWoQSJZYp--
+
+--===============2236124612581266834==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2236124612581266834==--
