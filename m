@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dapm: delete dapm_kcontrol_data
- paths entry before freeing
-Date: Mon, 4 Jun 2018 11:45:41 +0100
-Message-ID: <20180604104541.GB7536@sirena.org.uk>
-References: <20180601225334.19064-1-srinivas.kandagatla@linaro.org>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: Re: [PATCH] [PATCH v4] ASoC: Intel: kbl: Move codec
+ sysclk config to codec_init function
+Date: Mon, 4 Jun 2018 10:52:17 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337014C1EF773@SW-EX-MBX01.diasemi.com>
+References: <1527579790-1666-1-git-send-email-mac.chiang@intel.com>
+ <1527787112-17493-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7828174497593275602=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E82626786E
- for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 12:45:44 +0200 (CEST)
-In-Reply-To: <20180601225334.19064-1-srinivas.kandagatla@linaro.org>
+Received: from mail1.bemta25.messagelabs.com (mail1.bemta25.messagelabs.com
+ [195.245.230.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id 43961267892
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 12:52:21 +0200 (CEST)
+In-Reply-To: <1527787112-17493-1-git-send-email-mac.chiang@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,70 +24,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: "mac.chiang@intel.com" <mac.chiang@intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "tiwai@suse.de" <tiwai@suse.de>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "broonie@kernel.org" <broonie@kernel.org>, "naveen.m@intel.com" <naveen.m@intel.com>, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 31 May 2018 18:19, Mac Chiang wrote:
 
---===============7828174497593275602==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="XOIedfhf+7KOe/yw"
-Content-Disposition: inline
+> From: Mac Chiang <mac.chiang@intel.com>
+> 
+> On APL, commit fd0f237572ad
+> ("ASoC: Intel: bxt: Move codec sysclk config to codec_init function")
+> fixed an issue related to jack detection.
+> 
+> The MCLK for DA7219 does not change in this platform, but is
+> currently being configured everytime as part of the platform_clock
+> event handler for DAPM. The upshot of this is that we have
+> unnecessary calls to this function, and it also means that if
+> a stream hasn't yet been started, DA7219 driver does not have the
+> correct MCLK rates programmed and so the HP detection feature does
+> not operate as expected.
+> 
+> The same fix is needed on KBL.
+> 
+> This patch rectifies this issue by moving the sysclk call to
+> codec_init function so it's only called once at initialisation.
+> 
+> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
 
+Acked-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
 
---XOIedfhf+7KOe/yw
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Fri, Jun 01, 2018 at 11:53:34PM +0100, Srinivas Kandagatla wrote:
-
-> Below is the kernel BUG with SLAB Poisoning
-
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
-> BUG kmalloc-128 (Tainted: G        W        ): Poison overwritten
-> -------------------------------------------------------------------------=
-----
->=20
-> Disabling lock debugging due to kernel taint
-> INFO: 0xffff80003cf1c310-0xffff80003cf1c31f. First byte 0x10 instead of 0=
-x6b
-> INFO: Allocated in dapm_kcontrol_data_alloc.isra.37+0x34/0x2a8 age=3D6929=
- cpu=3D0 pid=3D50
->  __slab_alloc.isra.24+0x24/0x38
->  kmem_cache_alloc+0x190/0x1d8
-
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative then it's
-usually better to pull out the relevant sections.
-
---XOIedfhf+7KOe/yw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsVGFQACgkQJNaLcl1U
-h9DFlQf+KuP/lW/iPvlcjQ0oZp8RvCj0F1kfnQuRB5G/+5QM5yzH9aEVgIcK5JYq
-lcWNVkYmd+c8wa8xyWDcObTGfJIzo5cVWqoau4VoemZspU7VgH74X/SSTcynZiTQ
-LYoWZ6b6yIL3yfQUlbB65qxCkxFxza96Lug6keLwbsHiGCrO1yF/izzaE7MPswZV
-oBHlJoEVG5VYpKxBc5BsqUSUVJRX1afbQ6F8iouUgGTttm6fLq5k4prfsojBg46G
-uYHp4O3fNEAtkWR46h9XcogwlsGal4B/hEpZAcLdx89GTrh9192uwhcPaG+Ho2+R
-Y+vuAJgm2G2wsDN4/wmIcOsN52CV2A==
-=v59X
------END PGP SIGNATURE-----
-
---XOIedfhf+7KOe/yw--
-
---===============7828174497593275602==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7828174497593275602==--
+> 
+> ---
+> Notes(changelog):
+>   v2:
+>     - correct the MCLK to 24.576M
+>   v3:
+>     - described the comments clearly
+>   v4:
+>     - move the notes at the end
+> 
+>  sound/soc/intel/boards/kbl_da7219_max98357a.c | 17 +++++++++--------
+>  1 file changed, 9 insertions(+), 8 deletions(-)
+> 
+> diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> index c332a32..ad3029d 100644
+> --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> @@ -66,14 +66,6 @@ static int platform_clock_control(struct
+> snd_soc_dapm_widget *w,
+>  		return -EIO;
+>  	}
+> 
+> -	/* Configure sysclk for codec */
+> -	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+> -				     SND_SOC_CLOCK_IN);
+> -	if (ret) {
+> -		dev_err(card->dev, "can't set codec sysclk configuration\n");
+> -		return ret;
+> -	}
+> -
+>  	if (SND_SOC_DAPM_EVENT_OFF(event)) {
+>  		ret = snd_soc_dai_set_pll(codec_dai, 0,
+>  				     DA7219_SYSCLK_MCLK, 0, 0);
+> @@ -170,9 +162,18 @@ static int kabylake_da7219_codec_init(struct
+> snd_soc_pcm_runtime *rtd)
+>  {
+>  	struct kbl_codec_private *ctx = snd_soc_card_get_drvdata(rtd->card);
+>  	struct snd_soc_component *component = rtd->codec_dai->component;
+> +	struct snd_soc_dai *codec_dai = rtd->codec_dai;
+>  	struct snd_soc_jack *jack;
+>  	int ret;
+> 
+> +	/* Configure sysclk for codec */
+> +	ret = snd_soc_dai_set_sysclk(codec_dai, DA7219_CLKSRC_MCLK, 24576000,
+> +						SND_SOC_CLOCK_IN);
+> +	if (ret) {
+> +		dev_err(rtd->dev, "can't set codec sysclk configuration\n");
+> +		return ret;
+> +	}
+> +
+>  	/*
+>  	 * Headset buttons map to the google Reference headset.
+>  	 * These can be configured by userspace.
+> --
+> 2.7.4
