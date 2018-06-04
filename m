@@ -1,17 +1,15 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2] ASoC: dapm: delete dapm_kcontrol_data paths
-	list before freeing it
-Date: Mon,  4 Jun 2018 12:13:26 +0100
-Message-ID: <20180604111326.15708-1-srinivas.kandagatla@linaro.org>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: usb-audio: remove redundant check on err
+Date: Mon,  4 Jun 2018 12:49:19 +0100
+Message-ID: <20180604114919.2199-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id B7BC52678B5
- for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 13:15:34 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id x6-v6so8079125wmc.3
- for <alsa-devel@alsa-project.org>; Mon, 04 Jun 2018 04:15:34 -0700 (PDT)
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id DAA472678B5
+ for <alsa-devel@alsa-project.org>; Mon,  4 Jun 2018 13:49:24 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,39 +19,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: rohkumar@qti.qualcomm.com, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-dapm_kcontrol_data is freed as part of dapm_kcontrol_free(), leaving the
-paths pointer dangling in the list.
+From: Colin Ian King <colin.king@canonical.com>
 
-This leads to system crash when we try to unload and reload sound card.
-I hit this bug during ADSP crash/reboot test case on Dragon board DB410c.
+The check on err is redundant as both the true and false paths
+end up on a break statement. Remove the redundant check.
 
-Without this patch, on SLAB Poisoning enabled build, kernel crashes with
-"BUG kmalloc-128 (Tainted: G        W        ): Poison overwritten"
+Detected by CoverityScan, CID#1268773 ("Identical code for different
+branches")
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-Changes since v1:
-	-remove unnecessary very long bug trace.
+ sound/usb/mixer_quirks.c | 2 --
+ 1 file changed, 2 deletions(-)
 
- sound/soc/soc-dapm.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 1e9a36389667..36a39ba30226 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -433,6 +433,8 @@ static int dapm_kcontrol_data_alloc(struct snd_soc_dapm_widget *widget,
- static void dapm_kcontrol_free(struct snd_kcontrol *kctl)
- {
- 	struct dapm_kcontrol_data *data = snd_kcontrol_chip(kctl);
-+
-+	list_del(&data->paths);
- 	kfree(data->wlist);
- 	kfree(data);
- }
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index 4149543f613e..e82a72fea9a1 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -1849,8 +1849,6 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
+ 	/* EMU0204 */
+ 	case USB_ID(0x041e, 0x3f19):
+ 		err = snd_emu0204_controls_create(mixer);
+-		if (err < 0)
+-			break;
+ 		break;
+ 
+ 	case USB_ID(0x0763, 0x2030): /* M-Audio Fast Track C400 */
 -- 
-2.16.2
+2.17.0
