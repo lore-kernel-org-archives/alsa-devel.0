@@ -1,116 +1,73 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: ssm2602: Fix ADC powerup sequencing
-Date: Tue, 5 Jun 2018 17:06:05 +0100
-Message-ID: <20180605160605.GD25374@sirena.org.uk>
-References: <CAL_JsqKhkVOYf+XEA3MYpK4JYfMrZTbHZtoXgaH=wCBRoU6cfQ@mail.gmail.com>
- <1526640409.3948.5.camel@pengutronix.de>
- <20180523165352.GA6187@rob-hp-laptop>
- <20180525094724.3f4edofopk52i3v6@pengutronix.de>
- <20180525102609.GK4828@sirena.org.uk>
- <20180525114253.jj6akdazsbxqkbfu@pengutronix.de>
- <20180525145245.GM4828@sirena.org.uk>
- <1527261489.4938.9.camel@pengutronix.de>
- <20180525172441.GN4828@sirena.org.uk>
- <1528192731.4074.7.camel@pengutronix.de>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8964478305204842190=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F1976267A6C
- for <alsa-devel@alsa-project.org>; Tue,  5 Jun 2018 18:06:12 +0200 (CEST)
-In-Reply-To: <1528192731.4074.7.camel@pengutronix.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, Marco Felsch <m.felsch@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Subject: [PATCH v2] dmaengine: ti: omap-dma: Fix OMAP1510 incorrect residue_granularity
+Date: Tue,  5 Jun 2018 18:59:57 +0200
+Message-ID: <20180605165957.29616-1-jmkrzyszt@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod Koul <vkoul@kernel.org>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, linux-arm-kernel@lists.infradead.org, Janusz Krzysztofik <jmkrzyszt@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+Commit 0198d7bb8a0c ("ASoC: omap-mcbsp: Convert to use the sdma-pcm
+instead of omap-pcm") resulted in broken audio playback on OMAP1510
+(discovered on Amstrad Delta).
 
---===============8964478305204842190==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="DrWhICOqskFTAXiy"
-Content-Disposition: inline
+When running on OMAP1510, omap-pcm used to obtain DMA offset from
+snd_dmaengine_pcm_pointer_no_residue() based on DMA interrupt triggered
+software calculations instead of snd_dmaengine_pcm_pointer() which
+depended on residue value calculated from omap_dma_get_src_pos().
+Similar code path is still available in now used
+sound/soc/soc-generic-dmaengine-pcm.c but it is not triggered.
 
+It was verified already before that omap_get_dma_src_pos() from
+arch/arm/plat-omap/dma.c didn't work correctly for OMAP1510 - see
+commit 1bdd7419910c ("ASoC: OMAP: fix OMAP1510 broken PCM pointer
+callback") for details.  Apparently the same applies to its successor,
+omap_dma_get_src_pos() from drivers/dma/ti/omap-dma.c.
 
---DrWhICOqskFTAXiy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On the other hand, snd_dmaengine_pcm_pointer_no_residue() is described
+as depreciated and discouraged for use in new drivers because of its
+unreliable accuracy.  However, it seems the only working option for
+OPAM1510 now, as long as a software calculated residue is not
+implemented as OMAP1510 fallback in omap-dma.
 
-On Tue, Jun 05, 2018 at 11:58:51AM +0200, Philipp Zabel wrote:
-> On Fri, 2018-05-25 at 18:24 +0100, Mark Brown wrote:
+Using snd_dmaengine_pcm_pointer_no_residue() code path instead of
+snd_dmaengine_pcm_pointer() in sound/soc/soc-generic-dmaengine-pcm.c
+can be triggered in two ways:
+- by passing pcm->flags |= SND_DMAENGINE_PCM_FLAG_NO_RESIDUE from
+  sound/soc/omap/sdma-pcm.c,
+- by passing dma_caps.residue_granularity =
+  DMA_RESIDUE_GRANULARITY_DESCRIPTOR from DMA engine.
 
-> > If this is varying so drastically per board/system that it's relevant
-> > then we're already into problematic territory.  For most devices we just
-> > have a number for the part, not something that varies so wildly that
-> > each system needs to configure it.
+Let's do the latter.
 
-> I'm not arguing this should be configured per individual device, just
-> per board DT.
+Created and tested against next-20180531 tag from linux-next tree.
 
-Even per board is a very surprising amount of variability TBH. =20
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+Changelog:
+v2: fix subject as requested by Peter.
 
-> It's just that my experience of one datapoint consists of a board where
-> I had to increase the delay to about three times the delay calculated
-> from the nominal capacitance according to the datasheet before audible
-> artifacts disappeared reliably on multiple devices.
-> Putting the extended delay into the device tree with a comment
-> explaining its empirical nature seemed more straightforward than putting
-> a bogus capacitance value, that differs from the schematics, and that I
-> have never measured.
+ drivers/dma/ti/omap-dma.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-The thing that's surprising me here is that there's even a board to
-board variance that's so bad that it needs to be configured like this -
-usually these things are just hard coded into the driver so they work
-for everyone rather than needing per-board tuning.  It seems entirely
-possible that the formula quoted in the datasheet is just nonsense in
-general and that the driver would be better off using your number for
-all systems for example.  If we do have to hard code something in the DT
-it seems better to hard code something that is at least coming from a
-spec rather than a measured number that needs to come from an average
-over a batch of boards since at least we can revise how we handle the
-number without needing to do something that shows up in the ABI.
-
-> Also, by using the capacitance we are guaranteed to end up with a codec
-> specific property name (adi,vmid-decoupling-capacitance ?) as opposed to
-> the possibility of defining a common delay property that could be used
-> for different codecs.
-
-That's actually something I want to avoid since the delays tend to need
-to come in the middle of write sequences which makes a general property
-a lot more complicated, and obviously some devices have multiple delays
-too.
-
---DrWhICOqskFTAXiy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsWtOwACgkQJNaLcl1U
-h9CwyQf+J/2JXioJSW2xKqHWmiGHoTj94Ag9qPe+WT5oihx5QPqkMwf/9TiLG623
-74YzSuZ+Vjoz6GEaU6XfKvxtr1MUhv9swR/ZLuInZlaw62FBCpGA516TEfqeyLP0
-nuCVDRyD5sSdMXSsxmtBbZuV5FbNcXAKfbKoJC9ksqVSDJQOsnjYUD+KP4B04wbG
-+5xhNHS+DQDB/CSPm8CpwamAmVyjKksDlHzQ8vGHCutdQxJnV+h6CjitBvB37Cqm
-lAEVqHc+gx3SrxN4U58L+LKv93ofmsaFJ5KHQuNRclxubKfEe/sz9aMTQHu0jWt3
-qEejzZMOIGk5eQZ9lnZQijP1T+ttYw==
-=sNLM
------END PGP SIGNATURE-----
-
---DrWhICOqskFTAXiy--
-
---===============8964478305204842190==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8964478305204842190==--
+diff --git a/drivers/dma/ti/omap-dma.c b/drivers/dma/ti/omap-dma.c
+index b73fb51fbc81..96b5096c26dd 100644
+--- a/drivers/dma/ti/omap-dma.c
++++ b/drivers/dma/ti/omap-dma.c
+@@ -1485,7 +1485,11 @@ static int omap_dma_probe(struct platform_device *pdev)
+ 	od->ddev.src_addr_widths = OMAP_DMA_BUSWIDTHS;
+ 	od->ddev.dst_addr_widths = OMAP_DMA_BUSWIDTHS;
+ 	od->ddev.directions = BIT(DMA_DEV_TO_MEM) | BIT(DMA_MEM_TO_DEV);
+-	od->ddev.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
++	if (__dma_omap15xx(od->plat->dma_attr))
++		od->ddev.residue_granularity =
++				DMA_RESIDUE_GRANULARITY_DESCRIPTOR;
++	else
++		od->ddev.residue_granularity = DMA_RESIDUE_GRANULARITY_BURST;
+ 	od->ddev.max_burst = SZ_16M - 1; /* CCEN: 24bit unsigned */
+ 	od->ddev.dev = &pdev->dev;
+ 	INIT_LIST_HEAD(&od->ddev.channels);
+-- 
+2.16.1
