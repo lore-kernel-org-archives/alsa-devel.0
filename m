@@ -1,26 +1,14 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH] ASoC: ssm2602: Fix ADC powerup sequencing
-Date: Tue, 05 Jun 2018 11:58:51 +0200
-Message-ID: <1528192731.4074.7.camel@pengutronix.de>
-References: <20180517133009.26079-1-m.felsch@pengutronix.de>
- <CAL_JsqKhkVOYf+XEA3MYpK4JYfMrZTbHZtoXgaH=wCBRoU6cfQ@mail.gmail.com>
- <1526640409.3948.5.camel@pengutronix.de>
- <20180523165352.GA6187@rob-hp-laptop>
- <20180525094724.3f4edofopk52i3v6@pengutronix.de>
- <20180525102609.GK4828@sirena.org.uk>
- <20180525114253.jj6akdazsbxqkbfu@pengutronix.de>
- <20180525145245.GM4828@sirena.org.uk>
- <1527261489.4938.9.camel@pengutronix.de>
- <20180525172441.GN4828@sirena.org.uk>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: [PATCH 0/6] soundwire: Add multi link support
+Date: Tue,  5 Jun 2018 16:31:31 +0530
+Message-ID: <1528196497-29554-1-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [85.220.165.71])
- by alsa0.perex.cz (Postfix) with ESMTP id BBBAF267A13
- for <alsa-devel@alsa-project.org>; Tue,  5 Jun 2018 11:58:55 +0200 (CEST)
-In-Reply-To: <20180525172441.GN4828@sirena.org.uk>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6D1E267913
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jun 2018 13:03:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,55 +18,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, Rob Herring <robh@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Lars-Peter Clausen <lars@metafoo.de>, devicetree@vger.kernel.org, Sascha Hauer <s.hauer@pengutronix.de>, Marco Felsch <m.felsch@pengutronix.de>, Liam Girdwood <lgirdwood@gmail.com>, kernel@pengutronix.de
+To: alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTWFyaywKCk9uIEZyaSwgMjAxOC0wNS0yNSBhdCAxODoyNCArMDEwMCwgTWFyayBCcm93biB3
-cm90ZToKPiBPbiBGcmksIE1heSAyNSwgMjAxOCBhdCAwNToxODowOVBNICswMjAwLCBQaGlsaXBw
-IFphYmVsIHdyb3RlOgo+ID4gT24gRnJpLCAyMDE4LTA1LTI1IGF0IDE1OjUyICswMTAwLCBNYXJr
-IEJyb3duIHdyb3RlOgo+ID4gPiBPbiBGcmksIE1heSAyNSwgMjAxOCBhdCAwMTo0Mjo1M1BNICsw
-MjAwLCBNYXJjbyBGZWxzY2ggd3JvdGU6Cj4gPiA+ID4gQWxzbyB0aGUgZm9ybXVsYSBmb3IgdGhl
-IGRlbGF5IHRpbWUgKHQgPSBDIMOXIDI1LDAwMC8zLjUpIGRlcGVuZHMgb25seSBvbgo+ID4gPiA+
-IHRoZSBjYXBhY2l0eSBzaXplLgo+ID4gPiBXaHkgbm90IGp1c3QgaGF2ZSB0aGUgdXNlciBzcGVj
-aWZ5IHRoZSBjYXBhY2l0YW5jZSBvZiB0aGUgY2FwYWNpdG9yIG9uCj4gPiA+IHRoZSByYWlsIHdo
-aWNoIHRoZXkgY2FuIGRpcmVjdGx5IHJlYWQgZnJvbSB0aGUgc2NoZW1hdGljIHJhdGhlciB0aGFu
-Cj4gPiA+IGZvcmNpbmcgdGhlbSB0byBkbyB0aGUgY2FsY3VhbHRpb24/ICBUaGF0IHNlZW1zIGEg
-Yml0IGNsZWFyZXIgYW5kIG1vcmUKPiA+ID4gdXNlciBmcmllbmRseSAocGx1cyBpZiBzb21lb25l
-IGRlY2lkZXMgdGhlIHNwZWMgd2FzIHdyb25nIGl0J3MgZWFzaWVyIHRvCj4gPiA+IHJvbGwgb3V0
-IGZpeGVzKS4KPiA+IFRoZSBleGFjdCBjYXBhY2l0YW5jZSBtYXkgbm90IGJlIGtub3duIG9yIHZh
-cnkgYWJvdmUgdGhlIG5vbWluYWwgdmFsdWUKPiA+IGJlY2F1c2Ugb2YgY2hlYXAgY29tcG9uZW50
-cywgYW5kIHRoZSBmb3JtdWxhIGZyb20gdGhlIGRhdGFzaGVldCBpcyBqdXN0Cj4gPiBhIGd1aWRl
-bGluZS4KPiAKPiBUaGF0IHZhcmlhYmlsaXR5IGlzIGdvaW5nIHRvIGFwcGx5IGp1c3QgYXMgbXVj
-aCB0byB0aGUgY2hhcmdlIHRpbWUKPiBjYWxjdWxhdGlvbnMvbWVhc3VyZW1lbnRzIGFzIGl0IGlz
-IHRvIHRoZSBpbml0aWFsIGNhcGFjaXRhbmNlIHZhbHVlIC0KPiB0aGUgcmVzdWx0cyBhcmUgZ29p
-bmcgdG8gYmUgdmVyeSBtdWNoIGdhcmJhZ2UgaW4sIGdhcmJhZ2Ugb3V0LgoKVHJ1ZS4KCj4gPiBJ
-J2QgZXhwZWN0IHRoZSB1c3VhbCBtZXRob2QgdG8gc2V0IHRoaXMgZGVsYXkgdG8gYmUgc2VtaS1l
-bXBpcmljYWw6Cj4gPiAic3RhcnQgZnJvbSB0aGUgdmFsdWUgY2FsY3VsYXRlZCBmcm9tIGRhdGFz
-aGVldCBhbmQgc2NoZW1hdGljcyBhbmQgdGhlbgo+ID4gaW5jcmVhc2UgdW50aWwgbm8gbW9yZSBh
-dWRpbyBhcnRpZmFjdHMgb24gYSByZXByZXNlbnRhdGl2ZSBzYW1wbGUgb2YKPiA+IGJvYXJkcyIu
-Cj4gPiBJIHRoaW5rIGl0IGlzIGJlIGJldHRlciB0byBzcGVjaWZ5IGEgZGVsYXkgdGhhdCB3b3Jr
-cyB0aGFuIGEgYm9ndXMKPiA+IGNhcGFjaXRhbmNlIHZhbHVlIHRoYXQgaGFwcGVucyB0byBjb3Jy
-ZXNwb25kIHRvIGEgZGVsYXkgdGhhdCB3b3Jrcy4KPiAKPiBJZiB0aGlzIGlzIHZhcnlpbmcgc28g
-ZHJhc3RpY2FsbHkgcGVyIGJvYXJkL3N5c3RlbSB0aGF0IGl0J3MgcmVsZXZhbnQKPiB0aGVuIHdl
-J3JlIGFscmVhZHkgaW50byBwcm9ibGVtYXRpYyB0ZXJyaXRvcnkuICBGb3IgbW9zdCBkZXZpY2Vz
-IHdlIGp1c3QKPiBoYXZlIGEgbnVtYmVyIGZvciB0aGUgcGFydCwgbm90IHNvbWV0aGluZyB0aGF0
-IHZhcmllcyBzbyB3aWxkbHkgdGhhdAo+IGVhY2ggc3lzdGVtIG5lZWRzIHRvIGNvbmZpZ3VyZSBp
-dC4KCkknbSBub3QgYXJndWluZyB0aGlzIHNob3VsZCBiZSBjb25maWd1cmVkIHBlciBpbmRpdmlk
-dWFsIGRldmljZSwganVzdApwZXIgYm9hcmQgRFQuCgpJdCdzIGp1c3QgdGhhdCBteSBleHBlcmll
-bmNlIG9mIG9uZSBkYXRhcG9pbnQgY29uc2lzdHMgb2YgYSBib2FyZCB3aGVyZQpJIGhhZCB0byBp
-bmNyZWFzZSB0aGUgZGVsYXkgdG8gYWJvdXQgdGhyZWUgdGltZXMgdGhlIGRlbGF5IGNhbGN1bGF0
-ZWQKZnJvbSB0aGUgbm9taW5hbCBjYXBhY2l0YW5jZSBhY2NvcmRpbmcgdG8gdGhlIGRhdGFzaGVl
-dCBiZWZvcmUgYXVkaWJsZQphcnRpZmFjdHMgZGlzYXBwZWFyZWQgcmVsaWFibHkgb24gbXVsdGlw
-bGUgZGV2aWNlcy4KUHV0dGluZyB0aGUgZXh0ZW5kZWQgZGVsYXkgaW50byB0aGUgZGV2aWNlIHRy
-ZWUgd2l0aCBhIGNvbW1lbnQKZXhwbGFpbmluZyBpdHMgZW1waXJpY2FsIG5hdHVyZSBzZWVtZWQg
-bW9yZSBzdHJhaWdodGZvcndhcmQgdGhhbiBwdXR0aW5nCmEgYm9ndXMgY2FwYWNpdGFuY2UgdmFs
-dWUsIHRoYXQgZGlmZmVycyBmcm9tIHRoZSBzY2hlbWF0aWNzLCBhbmQgdGhhdCBJCmhhdmUgbmV2
-ZXIgbWVhc3VyZWQuCgpBbHNvLCBieSB1c2luZyB0aGUgY2FwYWNpdGFuY2Ugd2UgYXJlIGd1YXJh
-bnRlZWQgdG8gZW5kIHVwIHdpdGggYSBjb2RlYwpzcGVjaWZpYyBwcm9wZXJ0eSBuYW1lIChhZGks
-dm1pZC1kZWNvdXBsaW5nLWNhcGFjaXRhbmNlID8pIGFzIG9wcG9zZWQgdG8KdGhlIHBvc3NpYmls
-aXR5IG9mIGRlZmluaW5nIGEgY29tbW9uIGRlbGF5IHByb3BlcnR5IHRoYXQgY291bGQgYmUgdXNl
-ZApmb3IgZGlmZmVyZW50IGNvZGVjcy4KCnJlZ2FyZHMKUGhpbGlwcApfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApB
-bHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9y
-Zy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Currently, in the SoundWire subsystem, the concept of stream is
+limited to a Master and one or more Slaves(Codecs). This series
+aims to add support for multiple Master(s) sharing the same
+reference clock and synchronized in the hardware.
+
+This patch series adds:
+ - Helpers to lock bus instances part of the stream
+ - Boiler plate conversion of code to support a list of
+   Master runtime
+ - Support multi link bank switch to support synchronization
+   between multiple masters
+ - Add Intel platform ops for pre/post bank switch
+
+Sanyog Kale (2):
+  Documentation: soundwire: Add documentation for Multi link
+  soundwire: Add support to lock across bus instances
+
+Shreyas NC (3):
+  soundwire: Initialize completion for defer messages
+  soundwire: Add support for multilink bank switch
+  soundwire: intel: Add pre/post bank switch ops
+
+Vinod Koul (1):
+  soundwire: Handle multiple master instances in a stream
+
+ Documentation/driver-api/soundwire/stream.rst |  30 +-
+ drivers/soundwire/bus.c                       |   1 +
+ drivers/soundwire/bus.h                       |   4 +
+ drivers/soundwire/intel.c                     |  54 ++++
+ drivers/soundwire/stream.c                    | 429 ++++++++++++++++++--------
+ include/linux/soundwire/sdw.h                 |   6 +-
+ 6 files changed, 390 insertions(+), 134 deletions(-)
+
+-- 
+2.7.4
