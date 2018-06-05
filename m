@@ -1,17 +1,18 @@
-From: Shreyas NC <shreyas.nc@intel.com>
-Subject: [PATCH 6/6] soundwire: intel: Add pre/post bank switch
-	ops
-Date: Tue,  5 Jun 2018 16:31:37 +0530
-Message-ID: <1528196497-29554-7-git-send-email-shreyas.nc@intel.com>
-References: <1528196497-29554-1-git-send-email-shreyas.nc@intel.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH v2] DMA: OMAP: fix OMAP1510 incorrect
+	residue_granularity
+Date: Tue, 5 Jun 2018 15:56:37 +0300
+Message-ID: <3b6b4771-8d51-1305-8d72-1899d5e9f895@ti.com>
+References: <20180602152719.28464-1-jmkrzyszt@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DB5F267B2D
- for <alsa-devel@alsa-project.org>; Tue,  5 Jun 2018 13:03:35 +0200 (CEST)
-In-Reply-To: <1528196497-29554-1-git-send-email-shreyas.nc@intel.com>
+Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1AE41267913
+ for <alsa-devel@alsa-project.org>; Tue,  5 Jun 2018 14:58:38 +0200 (CEST)
+In-Reply-To: <20180602152719.28464-1-jmkrzyszt@gmail.com>
+Content-Language: en-GB
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,93 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>, sanyog.r.kale@intel.com
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>, Vinod Koul <vkoul@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Tony Lindgren <tony@atomide.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, dmaengine@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
-To support multi link on Intel platforms, we need to update
-SDW SHIM registers.
-
-So, add pre/post bank switch ops for the same in Intel driver.
-
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
----
- drivers/soundwire/intel.c | 54 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
-
-diff --git a/drivers/soundwire/intel.c b/drivers/soundwire/intel.c
-index 46c31717..50c253c 100644
---- a/drivers/soundwire/intel.c
-+++ b/drivers/soundwire/intel.c
-@@ -399,6 +399,58 @@ static int intel_config_stream(struct sdw_intel *sdw,
- }
- 
- /*
-+ * bank switch routines
-+ */
-+
-+static int intel_pre_bank_switch(struct sdw_bus *bus)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	void __iomem *shim = sdw->res->shim;
-+	int sync_reg;
-+
-+	/* Write to register only for multi-link */
-+	if (!bus->multi_link)
-+		return 0;
-+
-+	/* Read SYNC register */
-+	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
-+	sync_reg |= SDW_SHIM_SYNC_CMDSYNC << sdw->instance;
-+	intel_writel(shim, SDW_SHIM_SYNC, sync_reg);
-+
-+	return 0;
-+}
-+
-+static int intel_post_bank_switch(struct sdw_bus *bus)
-+{
-+	struct sdw_cdns *cdns = bus_to_cdns(bus);
-+	struct sdw_intel *sdw = cdns_to_intel(cdns);
-+	void __iomem *shim = sdw->res->shim;
-+	int sync_reg, ret;
-+
-+	/* Write to register only for multi-link */
-+	if (!bus->multi_link)
-+		return 0;
-+
-+	/* Read SYNC register */
-+	sync_reg = intel_readl(shim, SDW_SHIM_SYNC);
-+
-+	/* Check CMDSYNC bit set for any Master */
-+	if (!(sync_reg & SDW_SHIM_SYNC_CMDSYNC_MASK))
-+		return 0;
-+
-+	/* Set SyncGO bit */
-+	sync_reg |= SDW_SHIM_SYNC_SYNCGO;
-+
-+	ret = intel_clear_bit(shim, SDW_SHIM_SYNC, sync_reg,
-+					SDW_SHIM_SYNC_SYNCGO);
-+	if (ret < 0)
-+		dev_err(sdw->cdns.dev, "Post bank switch failed: %d", ret);
-+
-+	return ret;
-+}
-+
-+/*
-  * DAI routines
-  */
- 
-@@ -753,6 +805,8 @@ static struct sdw_master_ops sdw_intel_ops = {
- 	.xfer_msg_defer = cdns_xfer_msg_defer,
- 	.reset_page_addr = cdns_reset_page_addr,
- 	.set_bus_conf = cdns_bus_conf,
-+	.pre_bank_switch = intel_pre_bank_switch,
-+	.post_bank_switch = intel_post_bank_switch,
- };
- 
- /*
--- 
-2.7.4
+T24gMDYvMDIvMjAxOCAwNjoyNyBQTSwgSmFudXN6IEtyenlzenRvZmlrIHdyb3RlOgo+IENvbW1p
+dCAwMTk4ZDdiYjhhMGMgKCJBU29DOiBvbWFwLW1jYnNwOiBDb252ZXJ0IHRvIHVzZSB0aGUgc2Rt
+YS1wY20KPiBpbnN0ZWFkIG9mIG9tYXAtcGNtIikgcmVzdWx0ZWQgaW4gYnJva2VuIGF1ZGlvIHBs
+YXliYWNrIG9uIE9NQVAxNTEwCj4gKGRpc2NvdmVyZWQgb24gQW1zdHJhZCBEZWx0YSkuCgpHb29k
+IGNhdGNoLgoKY2FuIHlvdSBmaXggdXAgdGhlIHN1YmplY3Q6CmRtYWVuZ2luZTogdGk6IG9tYXAt
+ZG1hOiBGaXggT01BUDE1MTAuLi4KCgpPdGhlcndpc2U6CkFja2VkLWJ5OiBQZXRlciBVamZhbHVz
+aSA8cGV0ZXIudWpmYWx1c2lAdGkuY29tPgoKPiBXaGVuIHJ1bm5pbmcgb24gT01BUDE1MTAsIG9t
+YXAtcGNtIHVzZWQgdG8gb2J0YWluIERNQSBvZmZzZXQgZnJvbQo+IHNuZF9kbWFlbmdpbmVfcGNt
+X3BvaW50ZXJfbm9fcmVzaWR1ZSgpIGJhc2VkIG9uIERNQSBpbnRlcnJ1cHQgdHJpZ2dlcmVkCj4g
+c29mdHdhcmUgY2FsY3VsYXRpb25zIGluc3RlYWQgb2Ygc25kX2RtYWVuZ2luZV9wY21fcG9pbnRl
+cigpIHdoaWNoCj4gZGVwZW5kZWQgb24gcmVzaWR1ZSB2YWx1ZSBjYWxjdWxhdGVkIGZyb20gb21h
+cF9kbWFfZ2V0X3NyY19wb3MoKS4KPiBTaW1pbGFyIGNvZGUgcGF0aCBpcyBzdGlsbCBhdmFpbGFi
+bGUgaW4gbm93IHVzZWQKPiBzb3VuZC9zb2Mvc29jLWdlbmVyaWMtZG1hZW5naW5lLXBjbS5jIGJ1
+dCBpdCBpcyBub3QgdHJpZ2dlcmVkLgo+IAo+IEl0IHdhcyB2ZXJpZmllZCBhbHJlYWR5IGJlZm9y
+ZSB0aGF0IG9tYXBfZ2V0X2RtYV9zcmNfcG9zKCkgZnJvbQo+IGFyY2gvYXJtL3BsYXQtb21hcC9k
+bWEuYyBkaWRuJ3Qgd29yayBjb3JyZWN0bHkgZm9yIE9NQVAxNTEwIC0gc2VlCj4gY29tbWl0IDFi
+ZGQ3NDE5OTEwYyAoIkFTb0M6IE9NQVA6IGZpeCBPTUFQMTUxMCBicm9rZW4gUENNIHBvaW50ZXIK
+PiBjYWxsYmFjayIpIGZvciBkZXRhaWxzLiAgQXBwYXJlbnRseSB0aGUgc2FtZSBhcHBsaWVzIHRv
+IGl0cyBzdWNjZXNzb3IsCj4gb21hcF9kbWFfZ2V0X3NyY19wb3MoKSBmcm9tIGRyaXZlcnMvZG1h
+L3RpL29tYXAtZG1hLmMuCj4gCj4gT24gdGhlIG90aGVyIGhhbmQsIHNuZF9kbWFlbmdpbmVfcGNt
+X3BvaW50ZXJfbm9fcmVzaWR1ZSgpIGlzIGRlc2NyaWJlZAo+IGFzIGRlcHJlY2lhdGVkIGFuZCBk
+aXNjb3VyYWdlZCBmb3IgdXNlIGluIG5ldyBkcml2ZXJzIGJlY2F1c2Ugb2YgaXRzCj4gdW5yZWxp
+YWJsZSBhY2N1cmFjeS4gIEhvd2V2ZXIsIGl0IHNlZW1zIHRoZSBvbmx5IHdvcmtpbmcgb3B0aW9u
+IGZvcgo+IE9QQU0xNTEwIG5vdywgYXMgbG9uZyBhcyBhIHNvZnR3YXJlIGNhbGN1bGF0ZWQgcmVz
+aWR1ZSBpcyBub3QKPiBpbXBsZW1lbnRlZCBhcyBPTUFQMTUxMCBmYWxsYmFjayBpbiBvbWFwLWRt
+YS4KPiAKPiBVc2luZyBzbmRfZG1hZW5naW5lX3BjbV9wb2ludGVyX25vX3Jlc2lkdWUoKSBjb2Rl
+IHBhdGggaW5zdGVhZCBvZgo+IHNuZF9kbWFlbmdpbmVfcGNtX3BvaW50ZXIoKSBpbiBzb3VuZC9z
+b2Mvc29jLWdlbmVyaWMtZG1hZW5naW5lLXBjbS5jCj4gY2FuIGJlIHRyaWdnZXJlZCBpbiB0d28g
+d2F5czoKPiAtIGJ5IHBhc3NpbmcgcGNtLT5mbGFncyB8PSBTTkRfRE1BRU5HSU5FX1BDTV9GTEFH
+X05PX1JFU0lEVUUgZnJvbQo+ICAgc291bmQvc29jL29tYXAvc2RtYS1wY20uYywKPiAtIGJ5IHBh
+c3NpbmcgZG1hX2NhcHMucmVzaWR1ZV9ncmFudWxhcml0eSA9Cj4gICBETUFfUkVTSURVRV9HUkFO
+VUxBUklUWV9ERVNDUklQVE9SIGZyb20gRE1BIGVuZ2luZS4KPiAKPiBMZXQncyBkbyB0aGUgbGF0
+dGVyLgo+IAo+IENyZWF0ZWQgYW5kIHRlc3RlZCBhZ2FpbnN0IG5leHQtMjAxODA1MzEgdGFnIGZy
+b20gbGludXgtbmV4dCB0cmVlLgo+IAo+IFNpZ25lZC1vZmYtYnk6IEphbnVzeiBLcnp5c3p0b2Zp
+ayA8am1rcnp5c3p0QGdtYWlsLmNvbT4KPiAtLS0KPiBDaGFuZ2Vsb2c6Cj4gdjI6IGFwcGx5IHRo
+ZSBwYXRjaCBhZ2FpbnN0IG9tYXAtZG1hLmMgbW92ZWQgdG8gZHJpdmVycy9kbWEvdGkvCj4gCj4g
+IGRyaXZlcnMvZG1hL3RpL29tYXAtZG1hLmMgfCA2ICsrKysrLQo+ICAxIGZpbGUgY2hhbmdlZCwg
+NSBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMv
+ZG1hL3RpL29tYXAtZG1hLmMgYi9kcml2ZXJzL2RtYS90aS9vbWFwLWRtYS5jCj4gaW5kZXggYjcz
+ZmI1MWZiYzgxLi45NmI1MDk2YzI2ZGQgMTAwNjQ0Cj4gLS0tIGEvZHJpdmVycy9kbWEvdGkvb21h
+cC1kbWEuYwo+ICsrKyBiL2RyaXZlcnMvZG1hL3RpL29tYXAtZG1hLmMKPiBAQCAtMTQ4NSw3ICsx
+NDg1LDExIEBAIHN0YXRpYyBpbnQgb21hcF9kbWFfcHJvYmUoc3RydWN0IHBsYXRmb3JtX2Rldmlj
+ZSAqcGRldikKPiAgCW9kLT5kZGV2LnNyY19hZGRyX3dpZHRocyA9IE9NQVBfRE1BX0JVU1dJRFRI
+UzsKPiAgCW9kLT5kZGV2LmRzdF9hZGRyX3dpZHRocyA9IE9NQVBfRE1BX0JVU1dJRFRIUzsKPiAg
+CW9kLT5kZGV2LmRpcmVjdGlvbnMgPSBCSVQoRE1BX0RFVl9UT19NRU0pIHwgQklUKERNQV9NRU1f
+VE9fREVWKTsKPiAtCW9kLT5kZGV2LnJlc2lkdWVfZ3JhbnVsYXJpdHkgPSBETUFfUkVTSURVRV9H
+UkFOVUxBUklUWV9CVVJTVDsKPiArCWlmIChfX2RtYV9vbWFwMTV4eChvZC0+cGxhdC0+ZG1hX2F0
+dHIpKQo+ICsJCW9kLT5kZGV2LnJlc2lkdWVfZ3JhbnVsYXJpdHkgPQo+ICsJCQkJRE1BX1JFU0lE
+VUVfR1JBTlVMQVJJVFlfREVTQ1JJUFRPUjsKPiArCWVsc2UKPiArCQlvZC0+ZGRldi5yZXNpZHVl
+X2dyYW51bGFyaXR5ID0gRE1BX1JFU0lEVUVfR1JBTlVMQVJJVFlfQlVSU1Q7Cj4gIAlvZC0+ZGRl
+di5tYXhfYnVyc3QgPSBTWl8xNk0gLSAxOyAvKiBDQ0VOOiAyNGJpdCB1bnNpZ25lZCAqLwo+ICAJ
+b2QtPmRkZXYuZGV2ID0gJnBkZXYtPmRldjsKPiAgCUlOSVRfTElTVF9IRUFEKCZvZC0+ZGRldi5j
+aGFubmVscyk7Cj4gCgoKLS0gClDDqXRlcgoKVGV4YXMgSW5zdHJ1bWVudHMgRmlubGFuZCBPeSwg
+UG9ya2thbGFua2F0dSAyMiwgMDAxODAgSGVsc2lua2kuClktdHVubnVzL0J1c2luZXNzIElEOiAw
+NjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCl9fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
+L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
