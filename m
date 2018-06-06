@@ -1,49 +1,45 @@
 From: Mathieu Malaterre <malat@debian.org>
-Subject: [PATCH 1/3] MIPS: jz4780: Allow access to jz4740-i2s
-Date: Wed,  6 Jun 2018 21:38:08 +0200
-Message-ID: <20180606193811.16007-1-malat@debian.org>
+Subject: [PATCH 3/3] MIPS: jz4780: DTS: Probe the jz4740-i2s driver from devicetree
+Date: Wed,  6 Jun 2018 21:38:10 +0200
+Message-ID: <20180606193811.16007-3-malat@debian.org>
+References: <20180606193811.16007-1-malat@debian.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180606193811.16007-1-malat@debian.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: James Hogan <jhogan@kernel.org>
 Cc: Mathieu Malaterre <malat@debian.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Make it possible to select SND_JZ4740_SOC_I2S on MACH_JZ4780
+Since commit 967beb2e8777 ("ASoC: jz4740: Add jz4780 support"), jz4740-i2s
+driver supports jz4780 hardware. Use proper compatible string.
 
 Signed-off-by: Mathieu Malaterre <malat@debian.org>
 ---
- sound/soc/jz4740/Kconfig | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/mips/boot/dts/ingenic/jz4780.dtsi | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/jz4740/Kconfig b/sound/soc/jz4740/Kconfig
-index 1a354a6b6e87..35d82d96e781 100644
---- a/sound/soc/jz4740/Kconfig
-+++ b/sound/soc/jz4740/Kconfig
-@@ -1,20 +1,20 @@
- config SND_JZ4740_SOC
--	tristate "SoC Audio for Ingenic JZ4740 SoC"
--	depends on MACH_JZ4740 || COMPILE_TEST
-+	tristate "SoC Audio for Ingenic JZ4740/JZ4780 SoC"
-+	depends on MACH_JZ4740 || MACH_JZ4780 || COMPILE_TEST
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	help
- 	  Say Y or M if you want to add support for codecs attached to
--	  the JZ4740 I2S interface. You will also need to select the audio
-+	  the JZ4740/JZ4780 I2S interface. You will also need to select the audio
- 	  interfaces to support below.
+diff --git a/arch/mips/boot/dts/ingenic/jz4780.dtsi b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+index ae57976bc016..308079ee8dd3 100644
+--- a/arch/mips/boot/dts/ingenic/jz4780.dtsi
++++ b/arch/mips/boot/dts/ingenic/jz4780.dtsi
+@@ -57,6 +57,18 @@
+ 		clock-names = "rtc";
+ 	};
  
- if SND_JZ4740_SOC
- 
- config SND_JZ4740_SOC_I2S
--	tristate "SoC Audio (I2S protocol) for Ingenic JZ4740 SoC"
-+	tristate "SoC Audio (I2S protocol) for Ingenic JZ4740/JZ4780 SoC"
- 	depends on HAS_IOMEM
- 	help
- 	  Say Y if you want to use I2S protocol and I2S codec on Ingenic JZ4740
--	  based boards.
-+	  or JZ4780 based boards.
- 
- config SND_JZ4740_SOC_QI_LB60
- 	tristate "SoC Audio support for Qi LB60"
++	i2s: i2s@10020000 {
++		compatible = "ingenic,jz4780-i2s";
++		reg = <0x10020000 0x94>;
++
++		clocks = <&cgu JZ4780_CLK_AIC>, <&cgu JZ4780_CLK_I2SPLL>;
++		clock-names = "aic", "i2s";
++
++		dmas = <&dma 0 JZ4780_DMA_I2S0_RX 0xffffffff>,
++		       <&dma JZ4780_DMA_I2S0_TX 0 0xffffffff>;
++		dma-names = "rx" , "tx";
++	};
++
+ 	pinctrl: pin-controller@10010000 {
+ 		compatible = "ingenic,jz4780-pinctrl";
+ 		reg = <0x10010000 0x600>;
 -- 
 2.11.0
