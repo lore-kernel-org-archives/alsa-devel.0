@@ -1,21 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ASoC: pcm512x: enable set_sysclk
- callback
-Date: Wed, 6 Jun 2018 14:58:22 +0100
-Message-ID: <20180606135822.GA9174@sirena.org.uk>
-References: <20180601212643.20101-1-pierre-louis.bossart@linux.intel.com>
- <20180604104029.GA7536@sirena.org.uk>
- <a933ad0d-70a8-b046-a0a0-3bdf5fb07d2e@linux.intel.com>
- <20180604162757.GH7536@sirena.org.uk>
- <f2e83538-31a1-60af-44f4-6e9f1e59c0b9@linux.intel.com>
+From: Tzung-Bi Shih <tzungbi@google.com>
+Subject: [PATCH] ASoC: dapm: update function comments
+Date: Thu,  7 Jun 2018 00:07:36 +0800
+Message-ID: <20180606160736.169077-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2151395765443230385=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 10DC4266F0F
- for <alsa-devel@alsa-project.org>; Wed,  6 Jun 2018 15:58:27 +0200 (CEST)
-In-Reply-To: <f2e83538-31a1-60af-44f4-6e9f1e59c0b9@linux.intel.com>
+Received: from mail-pf0-f196.google.com (mail-pf0-f196.google.com
+ [209.85.192.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 166232671EE
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jun 2018 18:07:49 +0200 (CEST)
+Received: by mail-pf0-f196.google.com with SMTP id a12-v6so3383774pfi.3
+ for <alsa-devel@alsa-project.org>; Wed, 06 Jun 2018 09:07:49 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,69 +21,40 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org
+To: alsa-devel@alsa-project.org
+Cc: tzungbi@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
+snd_soc_dapm_put_volsw() and snd_soc_dapm_put_enum_double() returns
+0 if the value is unchanged and 1 if changed. Both 0 and 1 indicate
+a success.
 
---===============2151395765443230385==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
-Content-Disposition: inline
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+---
+ sound/soc/soc-dapm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jun 04, 2018 at 01:14:10PM -0500, Pierre-Louis Bossart wrote:
-> On 06/04/2018 11:27 AM, Mark Brown wrote:
-> > On Mon, Jun 04, 2018 at 08:48:40AM -0500, Pierre-Louis Bossart wrote:
-
-> > > Bottom line there is an 'easy' solution for this specific case and a more
-> > > complicated one but potentially more generic based on the clock API - hence
-> > > the RFC.
-
-> > As far as I can see the two aren't that far off - creating a fixed
-> > frequency clock based on DMI data shouldn't be that much harder than
-> > doing a set_sysclk().
-
-> Not sure how DMI could be used for devices with connectors? The information
-> should come from the additional ASL code that we typically add to SSDT or
-> initrd, e.g. [1]. This ASL code can add additional information clock as
-> needed, e.g. with _DSD properties, but the link with the clock API isn't
-> there atm.
-
-Presumably there's some way you can add IDs for quirking with these?
-This is the idiomatic way of handling this sort of stuff in ACPI as far
-as I can tell.  Otherwise presumably whatever works for letting you call
-set_sysclk() would let you set up a clock instead?
-
-It really feels like some of the ACPI users need to step up here and do
-the work on handling clocks.
-
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsX6HsACgkQJNaLcl1U
-h9BPLQf9GS1vvsGjRwzzkqCs589hAoWZqx7p5ZxLI8MYasf8B8u5GNXcfoLDCGcN
-vej2CrHxXlLBGZyP+DoW0IuQhFALiWTHBx9IYuB+0ajr+3olg40eFXgziLuGTS0P
-ytuQR5arlQbya6juLL1BU8HlMgoM6hSoJCNouWGLAeCXQbRqXj9FF0TbJT+V7Yk0
-NV02rtytXbqEdQ0dLbbKhidLdDSTEbgqreycOizs5O0FsMSgoGOFAcxgvsSQsYgR
-cUI4tG6zH59XJd87gjbSG1aAvKVpQuuir6FETrOdsTSqzYBuGTP/V2kWlFaBA8F3
-uLSvZZYI8e/+aYCGQZlw19QuGqUwmw==
-=2L1U
------END PGP SIGNATURE-----
-
---NzB8fVQJ5HfG6fxh--
-
---===============2151395765443230385==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2151395765443230385==--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 2d9709104ec5..9843086dc1ed 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3178,7 +3178,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_get_volsw);
+  *
+  * Callback to set the value of a dapm mixer control.
+  *
+- * Returns 0 for success.
++ * Returns either 0 or 1 for success: 1 if changed, 0 if unchanged.
+  */
+ int snd_soc_dapm_put_volsw(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+@@ -3311,7 +3311,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_get_enum_double);
+  *
+  * Callback to set the value of a dapm enumerated double mixer control.
+  *
+- * Returns 0 for success.
++ * Returns either 0 or 1 for success: 1 if changed, 0 if unchanged.
+  */
+ int snd_soc_dapm_put_enum_double(struct snd_kcontrol *kcontrol,
+ 	struct snd_ctl_elem_value *ucontrol)
+-- 
+2.18.0.rc1.242.g61856ae69a-goog
