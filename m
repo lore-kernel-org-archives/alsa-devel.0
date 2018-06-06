@@ -1,36 +1,37 @@
-From: Mathieu Malaterre <malat@debian.org>
-Subject: [PATCH 2/3] MIPS: Ci20: Enable SND_JZ4740_SOC driver
-Date: Wed,  6 Jun 2018 21:38:09 +0200
-Message-ID: <20180606193811.16007-2-malat@debian.org>
-References: <20180606193811.16007-1-malat@debian.org>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 1/3] ASoC: topology: Improve backwards
+ compatibility with v4 topology files
+Date: Wed, 6 Jun 2018 15:29:24 -0500
+Message-ID: <6fc091cf-bf63-9dae-40cd-8603c980cf95@linux.intel.com>
+References: <1527191363-21021-1-git-send-email-linux@roeck-us.net>
+ <20180601102506.GB8677@sirena.org.uk>
+ <0015aace-fe32-9707-d3c9-0dea6f5fc48c@roeck-us.net>
+ <8452aca6-0ae4-9fe1-c8cd-9f84e34f509f@linux.intel.com>
+ <20180601170847.GC8677@sirena.org.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180606193811.16007-1-malat@debian.org>
+In-Reply-To: <20180601170847.GC8677@sirena.org.uk>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: James Hogan <jhogan@kernel.org>
-Cc: Mathieu Malaterre <malat@debian.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, linux-mips@linux-mips.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Chintan Patel <chintan.m.patel@intel.com>, Guenter Roeck <groeck@chromium.org>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-Update the Ci20's defconfig to enable the JZ4780's SND driver.
 
-Signed-off-by: Mathieu Malaterre <malat@debian.org>
----
- arch/mips/configs/ci20_defconfig | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-index e1c14f6af824..0c08c7675b42 100644
---- a/arch/mips/configs/ci20_defconfig
-+++ b/arch/mips/configs/ci20_defconfig
-@@ -104,6 +104,10 @@ CONFIG_REGULATOR=y
- CONFIG_REGULATOR_DEBUG=y
- CONFIG_REGULATOR_FIXED_VOLTAGE=y
- # CONFIG_VGA_CONSOLE is not set
-+CONFIG_SOUND=y
-+CONFIG_SND=y
-+CONFIG_SND_SOC=y
-+CONFIG_SND_JZ4740_SOC=y
- # CONFIG_HID is not set
- # CONFIG_USB_SUPPORT is not set
- CONFIG_MMC=y
--- 
-2.11.0
+On 06/01/2018 12:08 PM, Mark Brown wrote:
+> On Fri, Jun 01, 2018 at 10:19:58AM -0500, Pierre-Louis Bossart wrote:
+>
+>> I wanted to ack this patch but the Intel validation folks asked for a couple
+>> of days to finish their tests on a variety of Chromebooks (e.g. Lars) and
+>> double-check which models used the v4 topology. There is an internal thread
+>> on all this which remains active. I don't think the feedback will be delayed
+>> beyond early next week.
+> OK, I'm expecting the merge window to open over the weekend so I think
+> I'm just going to apply now so we it's in -next when that happens.
+quick follow-up note: Intel folks successfully tested this patchset on 
+chell, sentry, lars, glados, asuka platforms. There is an unrelated 
+issue on chell with playback not working, but at least the topology 
+parsing is handled correctly with Guenter's contribution.
