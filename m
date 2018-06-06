@@ -1,20 +1,19 @@
-From: Shreyas NC <shreyas.nc@intel.com>
-Subject: Re: [PATCH 3/6] soundwire: Add support to lock across
- bus instances
-Date: Wed, 6 Jun 2018 11:02:26 +0530
-Message-ID: <20180606053224.GK3116@snc-desk>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH 1/6] Documentation: soundwire: Add
+ documentation for Multi link
+Date: Wed, 6 Jun 2018 11:51:39 +0530
+Message-ID: <20180606062139.GB16230@vkoul-mobl>
 References: <1528196497-29554-1-git-send-email-shreyas.nc@intel.com>
- <1528196497-29554-4-git-send-email-shreyas.nc@intel.com>
- <410b5432-cfc4-4a67-467a-aa091a85cdf3@linux.intel.com>
+ <1528196497-29554-2-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id BE510267712
- for <alsa-devel@alsa-project.org>; Wed,  6 Jun 2018 07:34:04 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCD24267172
+ for <alsa-devel@alsa-project.org>; Wed,  6 Jun 2018 08:28:36 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <410b5432-cfc4-4a67-467a-aa091a85cdf3@linux.intel.com>
+In-Reply-To: <1528196497-29554-2-git-send-email-shreyas.nc@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,61 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, vkoul@kernel.org, sanyog.r.kale@intel.com
+To: Shreyas NC <shreyas.nc@intel.com>
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-> >Typically to lock, one would acquire a global lock and then lock
-> >bus instances. In this case, the caller framework(ASoC DPCM)
-> >guarentees that stream operations on a card are always serialised.
-> guarantees
+On 05-06-18, 16:31, Shreyas NC wrote:
+> From: Sanyog Kale <sanyog.r.kale@intel.com>
+> 
+> Add example and documentation to describe Multi Link streams
+> 
+> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+> ---
+>  Documentation/driver-api/soundwire/stream.rst | 30 ++++++++++++++++++++++++++-
+>  1 file changed, 29 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
+> index 29121aa..af9529b 100644
+> --- a/Documentation/driver-api/soundwire/stream.rst
+> +++ b/Documentation/driver-api/soundwire/stream.rst
+> @@ -76,7 +76,35 @@ Slaves are using single port. ::
+>  	                                                   +---------------+
+>  
+>  
+> -Example 4: Stereo Stream with L and R channel is rendered by two different
+> +Example 4: Stereo Stream with L and R channel is rendered by 2 Masters, each
 
-Aargh! Ok, will fix it :)
+We already have an example 4, shouldn't this be 5th one, can you check?
+I would prefer adding new example at the end and not in middle..
 
-> >So, there is no race condition and hence no need for global lock.
-> >
-> >Bus lock(s) are acquired to reconfigure the bus while the stream
-> >is set-up.
-> >So, we add sdw_acquire_bus_lock()/sdw_release_bus_lock() for the same.
-> We should add a precision that this lock is only needed for the
-> reconfiguration parts. It is my understanding that we can still do a
-> synchronized bank switch between two or more streams handled by multiple
-> masters, right?
-
-Yes for the first question. I will add a note on the usage in the APIs.
-
-By "synchronized bank switch between two or more streams", are you
-referring to sync start of multiple stream handled by multiple masters?
-If that is the case it requires a bit more focus and we have not
-suppported/tested yet.
-
-> >
-> >Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-> >Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> >Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-> >---
-> >  drivers/soundwire/bus.h       |  2 ++
-> >  drivers/soundwire/stream.c    | 26 ++++++++++++++++++++++++++
-> >  include/linux/soundwire/sdw.h |  2 ++
-> >  3 files changed, 30 insertions(+)
-> >
-> >diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-> >index 3b15c4e..b6cfbdf 100644
-> >--- a/drivers/soundwire/bus.h
-> >+++ b/drivers/soundwire/bus.h
-> >@@ -99,6 +99,7 @@ struct sdw_slave_runtime {
-> >   * this stream, can be zero.
-> >   * @slave_rt_list: Slave runtime list
-> >   * @port_list: List of Master Ports configured for this stream, can be zero.
-> >+ * @stream_node: sdw_stream_runtime master_list node
-> Should we clarify that there is an expectation that the master_list can only
-> handle one node per master?
->
-
-Sure, if it make things clearer :)
-
-Thanks for the review!
-
---Shreyas
+> +rendering one channel, and is received by two different Slaves, each
+> +receiving one channel. Both Masters and both Slaves are using single port. ::
+> +
+> +	+---------------+                    Clock Signal  +---------------+
+> +	|    Master     +----------------------------------+     Slave     |
+> +	|   Interface   |                                  |   Interface   |
+> +	|       1       |                                  |       1       |
+> +	|               |                     Data Signal  |               |
+> +	|       L       +----------------------------------+       L       |
+> +	|     (Data)    |     Data Direction               |     (Data)    |
+> +	+---------------+  +----------------------->       +---------------+
+> +
+> +	+---------------+                    Clock Signal  +---------------+
+> +	|    Master     +----------------------------------+     Slave     |
+> +	|   Interface   |                                  |   Interface   |
+> +	|       2       |                                  |       2       |
+> +	|               |                     Data Signal  |               |
+> +	|       R       +----------------------------------+       R       |
+> +	|     (Data)    |     Data Direction               |     (Data)    |
+> +	+---------------+  +----------------------->       +---------------+
+> +
+> +Note: In multi-link cases like above, to lock, one would acquire a global
+> +lock and then go on locking bus instances. But, in this case the caller
+> +framework(ASoC DPCM) guarantees that stream operations on a card are
+> +always serialized. So, there is no race condition and hence no need for
+> +global lock.
+> +
+> +Example 5: Stereo Stream with L and R channel is rendered by two different
+>  Ports of the Master and is received by only single Port of the Slave
+>  interface. ::
+>  
+> -- 
+> 2.7.4
 
 -- 
+~Vinod
