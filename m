@@ -1,105 +1,41 @@
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Subject: Re: [PATCH 0/3] ASoC: stm32: sai: add support of
- iec958 controls
-Date: Wed, 6 Jun 2018 11:31:45 +0200
-Message-ID: <c4b2d22f-320d-a415-6328-b33f9c03aafe@st.com>
-References: <1520958428-10930-1-git-send-email-olivier.moysan@st.com>
- <a0552849-47fa-dc72-a512-a3e075adb07f@st.com>
- <20180417111733.GG8973@sirena.org.uk>
- <2ae6c5b6-872a-9aaa-6ca4-e29adb7c8bc0@st.com> <s5hpo15xf1q.wl-tiwai@suse.de>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: twl6040: make pointer dmic_codec_dev static
+Date: Wed,  6 Jun 2018 10:35:04 +0100
+Message-ID: <20180606093504.30255-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
- [91.207.212.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 19254266D4C
- for <alsa-devel@alsa-project.org>; Wed,  6 Jun 2018 11:31:52 +0200 (CEST)
-In-Reply-To: <s5hpo15xf1q.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "robh@kernel.org" <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Olivier MOYSAN <olivier.moysan@st.com>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "jsarha@ti.com" <jsarha@ti.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "kernel@stlinux.com" <kernel@stlinux.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "rmk@arm.linux.org.uk" <rmk@arm.linux.org.uk>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNi8wNS8yMDE4IDA4OjI5IFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAw
-NSBKdW4gMjAxOCAxNzo1MDo1NyArMDIwMCwKPiBBcm5hdWQgUG91bGlxdWVuIHdyb3RlOgo+PiAK
-Pj4gSGkgVGFrYXNoaSwKPj4gCj4+IE9uIDA0LzE3LzIwMTggMDE6MTcgUE0sIE1hcmsgQnJvd24g
-d3JvdGU6Cj4+ID4gT24gVHVlLCBBcHIgMTcsIDIwMTggYXQgMDg6Mjk6MTdBTSArMDAwMCwgT2xp
-dmllciBNT1lTQU4gd3JvdGU6Cj4+ID4gCj4+ID4+IEkgZ3Vlc3MgdGhlIGJsb2NraW5nIHBhdGNo
-IGluIHRoaXMgcGF0Y2hzZXQgaXMgdGhlIHBhdGNoICJhZGQgSUVDOTU4IAo+PiA+PiBjaGFubmVs
-IHN0YXR1cyBjb250cm9sIGhlbHBlciIuIFRoaXMgcGF0Y2ggaGFzIGJlZW4gcmV2aWV3ZWQgc2V2
-ZXJhbCAKPj4gPj4gdGltZXMsIGJ1dCBkaWQgbm90IGdldCBhIGFjayBzbyBmYXIuCj4+ID4+IElm
-IHlvdSB0aGluayB0aGVzZSBoZWxwZXJzIHdpbGwgbm90IGJlIG1lcmdlZCwgSSB3aWxsIHJlaW50
-ZWdyYXRlIHRoZSAKPj4gPj4gY29ycmVzcG9uZGluZyBjb2RlIGluIHN0bSBkcml2ZXIuCj4+ID4+
-IFBsZWFzZSBsZXQgbWUga25vdywgaWYgSSBuZWVkIHRvIHByZXBhcmUgYSB2MiB3aXRob3V0IGhl
-bHBlcnMsIG9yIGlmIHdlIAo+PiA+PiBjYW4gZ28gZnVydGhlciBpbiB0aGUgcmV2aWV3IG9mIGll
-YyBoZWxwZXJzIHBhdGNoID8KPj4gPiAKPj4gPiBJIGRvbid0IG1pbmQgZWl0aGVyIHdheSBidXQg
-eW91J3JlIHJpZ2h0IGhlcmUsIEknbSB3YWl0aW5nIGZvciBUYWthc2hpCj4+ID4gdG8gcmV2aWV3
-IHRoZSBmaXJzdCBwYXRjaC7CoCBJJ2QgcHJvYmFibHkgYmUgT0sgd2l0aCBpdCBqdXN0IGludGVn
-cmF0ZWQKPj4gPiBpbnRvIHRoZSBkcml2ZXIgaWYgd2UgaGF2ZSB0byBnbyB0aGF0IHdheSB0aG91
-Z2guCj4+IAo+PiBHZW50bGVtZW4gcmVtaW5kZXIgZm9yIHRoaXMgcGF0Y2ggc2V0LiBXZSB3b3Vs
-ZCBhcHByZWNpYXRlIHRvIGhhdmUgeW91cgo+PiBmZWVkYmFjayBvbiBpZWMgaGVscGVyLgo+PiBG
-cm9tIG91ciBwb2ludCBvZiB2aWV3IGl0IGNvdWxkIGJlIHVzZWZ1bCB0byBoYXZlIGEgZ2VuZXJp
-YyBtYW5hZ2VtZW50Cj4+IG9mIHRoZSBpZWMgY29udHJvbHMgYmFzZWQgb24gaGVscGVycyBpbnN0
-ZWFkIG9mIHJlZGVmaW5pbmcgdGhlbSBpbiBEQUlzLgo+PiBIYXZpbmcgdGhlIHNhbWUgYmVoYXZp
-b3IgZm9yIHRoZXNlIGNvbnRyb2xzIGNvdWxkIGJlIHVzZWZ1bCB0byBlbnN1cmUKPj4gY29oZXJl
-bmNlIG9mIHRoZSBjb250cm9sIG1hbmFnZW1lbnQgdXNlZCBieSBhcHBsaWNhdGlvbiAoZm9yIGlu
-c3RhbmNlCj4+IEdzdHJlYW1lciB1c2VzIGl0IHRvIGRldGVybWluZSBpZWMgcmF3IG1vZGUgY2Fw
-YWJpbGl0eSBmb3IgaWVjNjE5Mzcgc3RyZWFtcykKPiAKPiBPaCBzb3JyeSBmb3IgdGhlIGxhdGUg
-cmVwbHksIEkndmUgdG90YWxseSBvdmVybG9va2VkIHRoZSB0aHJlYWQuCj4gCj4gQW5kLCBhbm90
-aGVyIHNvcnJ5OiB0aGUgcGF0Y2hzZXQgZG9lc24ndCBsb29rIGNvbnZpbmNpbmcgZW5vdWdoIHRv
-Cj4gbWUuCj4gCj4gRmlyc3Qgb2ZmLCB0aGUgcHJvdmlkZWQgQVBJIGRlZmluaXRpb24gYXBwZWFy
-cyBzb21ld2hhdAo+IHVuY29udmVudGlvbmFsLCB0aGUgbWl4dHVyZSBvZiB0aGUgb3BzLCB0aGUg
-c3RhdGljIGRhdGEgYW5kIHRoZQo+IGR5bmFtaWMgZGF0YS4KU29ycnkgaSBjYW4ndCBmaWd1cmUg
-b3V0IHlvdXIgcG9pbnQuIEkgc3VwcG9zZSB0aGF0IHlvdSBzcGVhayBhYm91dCB0aGUKc25kX3Bj
-bV9pZWM5NThfcGFyYW1zLgp3aGF0IHdvdWxkIGJlIGEgbW9yZSBjb252ZW50aW9uYWwgQVBJPwoK
-PiAKPiBNb3Jlb3ZlciwgdGhpcyBpcyBvbmx5IGZvciB5b3VyIGRyaXZlciwgQVRNLsKgIApJdCBp
-cyBhbHNvIGNvbXBhdGlibGUgd2l0aCB0aGUgc291bmQvc3RpIGRyaXZlciwgZXZlbiBpZiB3ZSBk
-b2VzIG5vdApwcm9wb3NlIHBhdGNoIHlldC4gV2UgYWxzbyBwbGFuIHRvIHByb3Bvc2UgYW4gaW1w
-bGVtZW50YXRpb24sIGZvciB0aGUKSERNSV9jb2RlYyB0aGF0IHdvdWxkIG5lZWQgdG8gZXhwb3J0
-IGEgY29udHJvbCB0byBhbGxvdyBub25lLWF1ZGlvIG1vZGUuCgo+SWYgaXQgd2VyZSBhbiBBUEkg
-dGhhdAo+IGRvZXMgY2xlYW4gdXAgdGhlIGFscmVhZHkgZXhpc3RpbmcgdXNhZ2VzLCBJJ2QgaGFw
-cGlseSBhcHBseSBpdC4gVGhlcmUKPiBhcmUgbG90cyBvZiBkcml2ZXJzIGNyZWF0aW5nIGFuZCBj
-b250cm9sbGluZyB0aGUgSUVDOTU4IGN0bHMgZXZlbgo+IG5vdy4KPiAKPiBBbHNvLCB0aGUgcGF0
-Y2hzZXQgcmVxdWlyZXMgbW9yZSBmaW5lLXR1bmluZywgaW4gYW55d2F5cy7CoCBUaGUgY2hhbmdl
-cwo+IGluIGNyZWF0ZV9pZWM5NThfY29uc3VtcmUoKSBhcmUgYmFzaWNhbGx5IGlycmVsZXZhbnQs
-IHNob3VsZCBiZSBzcGxpdAo+IG9mZiBhcyBhbiBpbmRpdmlkdWFsIGZpeC7CoCBpdCBpcyBsaW5r
-ZWQgdG8gdGhlIGNvbnRyb2wsIGFzIG5vdCBwb3NzaWJsZSBpbiBleGlzdGluZyBpbXBsZW1lbnRh
-dGlvbgoocmF0ZSBhbmQgd2lkdGggYXJlIGdldCBmcm9tIGh3cGFyYW0gb3IgcnVudGltZSkuIEJ1
-dCBubyBwcm9ibGVtIHdlIGNhbgpzcGxpdCBpdCBpbiBhIHNlcGFyYXRlIHBhdGNoLgoKQWxzbywg
-dGhlIG5ldyBmdW5jdGlvbiBkb2Vzbid0IGNyZWF0ZSB0aGUKPiAiWFhYIE1hc2siIGNvbnRyb2xz
-LsKgIEFuZCB0aGUgYnl0ZSBjb21wYXJpc29uIHNob3VsZCBiZSByZXBsYWNlZCB3aXRoCj4gbWVt
-Y21wKCksIGV0YywgZXRjLgpZZXMgbWFzayBhcmUgbWlzc2luZywgY2FuIGJlIGFkZGVkLiBGb3Ig
-dGhlIHJlc3QgY291bGQgeW91IGNvbW1lbnQKZGlyZWN0bHkgaW4gY29kZT8gaSBzdXBwb3NlIHRo
-YXQgeW91IHdhbnQgdG8gcmVwbGFjZSB0aGUgZm9yIGxvb3BzIGJ5Cm1lbWNtcCwgbWVtY3B5Li4u
-Cj4gCj4gU28sIHBsZWFzZSBwcm9jZWVkIHJhdGhlciB3aXRoIHRoZSBvcGVuIGNvZGVzIGZvciBu
-b3cuwqAgSWYgeW91IGNhbgo+IHByb3ZpZGUgYSBwYXRjaCB0aGF0IGNsZWFucyB1cCB0aGUgKm11
-bHRpcGxlKiBkcml2ZXIgY29kZXMsIGFnYWluLAo+IEknbGwgaGFwcGlseSB0YWtlIGl0LsKgIEJ1
-dCBpdCBjYW4gYmUgZG9uZSBhbnl0aW1lIGxhdGVyLCB0b28uCk5vdCBzaW1wbGUgdG8gY2xlYW4g
-dXAgdGhlIG90aGVyIGRyaXZlcnMgYXMgdGhpcyBjb250cm9sIGlzIGEgUENNCmNvbnRyb2wsIHRo
-YXQgaXMgbWFpbmx5IGltcGxlbWVudGVkIGFzIGEgbWl4ZXIgb3IgY2FyZCBjb250cm9sLgpUaGlz
-IG1lYW5zIHRoYXQgaXQgc2hvdWxkIGJlIHJlZ2lzdGVyZWQgb24gdGhlIHBjbV9uZXcgaW4gQ1BV
-IERBSSBvciBpbgp0aGUgREFJIGNvZGVjLCB0byBiZSBhYmxlIHRvIGJpbmQgaXQgdG8gdGhlIFBD
-TSBkZXZpY2UuCklucGFjdCBpcyBub3Qgc3RyYWlndGhmb3J3YXJkIGFzIHRoaXMgY291bGQgZ2Vu
-ZXJhdGUgcmVncmVzc2lvbiBvbiBkcml2ZXIuCgpGb3Igbm93IFdlIGNhbiBhZGQgdGhlIGNsZWFu
-IHVwIG9uIHRoZSBzdGkgZHJpdmVyIGJhc2VkIG9uIHRoaXMgaGVscGVyLAphbmQgd2UgYXJlIHdv
-cmtpbmcgb24gdGhlIEhETUlfY29kZWMsIHdlIGNvdWxkIGFsc28gdXNlIHRoaXMgaGVscGVyIHRv
-CmV4cG9ydCB0aGUgY29udHJvbC4uLi4KClNvIGlmIHlvdSBlc3RpbWF0ZSB0aGF0IGl0IGlzIGlu
-dGVyZXN0aW5nIHRvIHB1cmNoYXNlIG9uIHRoaXMgaGVscGVyIHdlCmNhbiB0cnkgdG8gY29tZSBi
-YWNrIHdpdGggYSBwYXRjaCBzZXQgdGhhdCBpbXBsZW1lbnRzIHRoZSBoZWxwZXIgZm9yCnRoZSAz
-IGRyaXZlcnMuCgpUaGUgb3RoZXIgb3B0aW9uLCBpcyB0aGF0IHdlIGRyb3AgdGhlIGhlbHBlcnMs
-IGFuZCBpbXBsZW1lbnQgdGhlIGNvbnRyb2wKZGlyZWN0bHkgaW4gb3VyIGRyaXZlcnMuCgpQbGVh
-c2UganVzdCB0ZWxsIHVzIGlmIHdlIHNob3VsZCBjb250aW51ZSB0byBwcm9wb3NlIHRoZSBoZWxw
-ZXJzIG9yIG5vdC4KClRoYW5rcywKQXJuYXVkCgo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hp
-Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
-ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
-bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Colin Ian King <colin.king@canonical.com>
+
+The pointer dmic_codec_dev is local to the source and does not need
+to be in global scope, so make it static.
+
+Cleans up sparse warning:
+warning: symbol 'dmic_codec_dev' was not declared. Should it be static?
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/omap/omap-abe-twl6040.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
+index 15ccbf479c96..d5ae9eb8c756 100644
+--- a/sound/soc/omap/omap-abe-twl6040.c
++++ b/sound/soc/omap/omap-abe-twl6040.c
+@@ -40,7 +40,7 @@ struct abe_twl6040 {
+ 	int	mclk_freq;	/* MCLK frequency speed for twl6040 */
+ };
+ 
+-struct platform_device *dmic_codec_dev;
++static struct platform_device *dmic_codec_dev;
+ 
+ static int omap_abe_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
+-- 
+2.17.0
