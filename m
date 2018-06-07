@@ -1,19 +1,22 @@
-From: Melvin Vermeeren <mail@mel.vin>
-Subject: Re: [PATCH] ALSA: dice: add stream format parameters
-	for Mytek devices
-Date: Thu, 07 Jun 2018 16:40:21 +0200
-Message-ID: <3387264.iPd986TAIQ@melvin-pc>
-References: <20632004.ST2tKRhYS0@melvin-pc>
- <1cef1eca-3a06-e05e-765f-dfe984091085@sakamocchi.jp>
- <6661723.mKedtcoM4l@melvin-pc>
+From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Subject: Re: [PATCH 0/3] ASoC: stm32: sai: add support of
+ iec958 controls
+Date: Thu, 7 Jun 2018 18:02:36 +0200
+Message-ID: <5ab41e6d-eccf-df75-4c17-9dbadf05b5b7@st.com>
+References: <1520958428-10930-1-git-send-email-olivier.moysan@st.com>
+ <a0552849-47fa-dc72-a512-a3e075adb07f@st.com>
+ <20180417111733.GG8973@sirena.org.uk>
+ <2ae6c5b6-872a-9aaa-6ca4-e29adb7c8bc0@st.com> <s5hpo15xf1q.wl-tiwai@suse.de>
+ <c4b2d22f-320d-a415-6328-b33f9c03aafe@st.com> <s5hpo14w8k6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5485488493875609642=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net
- [217.70.183.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 25B202670BE
- for <alsa-devel@alsa-project.org>; Thu,  7 Jun 2018 16:40:25 +0200 (CEST)
-In-Reply-To: <6661723.mKedtcoM4l@melvin-pc>
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 445A7266E91
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jun 2018 18:02:41 +0200 (CEST)
+In-Reply-To: <s5hpo14w8k6.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,153 +26,113 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "robh@kernel.org" <robh@kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Olivier MOYSAN <olivier.moysan@st.com>, Alexandre TORGUE <alexandre.torgue@st.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "jsarha@ti.com" <jsarha@ti.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "kernel@stlinux.com" <kernel@stlinux.com>, "linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>, "mcoquelin.stm32@gmail.com" <mcoquelin.stm32@gmail.com>, "rmk@arm.linux.org.uk" <rmk@arm.linux.org.uk>, Benjamin GAIGNARD <benjamin.gaignard@st.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============5485488493875609642==
-Content-Type: multipart/signed; boundary="nextPart9498945.GlybBugrUk"; micalg="pgp-sha512"; protocol="application/pgp-signature"
-
---nextPart9498945.GlybBugrUk
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-
-Hi,
-
-Over the past weeks I have had some time to do some more research and hacking. 
-Thank you for the supplied un-upstreamed documents. Mytek has also been very 
-helpful providing some details about the unit. It appears that the assumptions 
-so far are largely invalid and there is almost no work to be done on ALSA Dice 
-driver.
-
-Although this is good news, I have unfortunately also discovered a problem.
-
-On Monday, 21 May 2018 17:09:37 CEST Melvin Vermeeren wrote:
-> On Saturday, 19 May 2018 10:23:30 CEST Takashi Sakamoto wrote:
-> > In my opinion, it's hard to achieve it with quick hack to the engine
-> > and ALSA Dice driver. Especially for your case, one data block for
-> > outgoing packet to target device should include two kind data; PCM
-> > and PDM samples. I can see output from '/proc/asound/DSD/dice' in
-> > your previous message[8] includes below:
-> > 
-> > ```
-> > 
-> > rx 0:
-> >    iso channel: 1
-> >    sequence start: 0
-> >    audio channels: 4
-> >    midi ports: 0
-> >    names: ANALOG L\ANALOG R\DSD1281\DSD1282\\
-> >    ac3 caps: 00000000
-> > 
-> > ```
-> > 
-> > If the 'ANALOG L/R' represent data channels for two PCM samples
-> > and the 'DSD1281/2' represent data channels for two PDM samples,
-> > I can assume that one data block includes two kind of samples,
-> > thus two data streams of PCM/PDM samples should be multiplexed into
-> > one data stream of IEC 61883-1/6 packets.
->
-> Also, I am not yet sure whether this specific DAC supports DoP over IEEE
-> 1394. Possibly there is another format in use for PDM playback over IEEE
-> 1394. Expect more details on this within the next few days.
-
-It turns out the Mytek Stereo-192-DSD-DAC only supports PDM samples over PCM 
-with DoP standard[1]. DoP uses 24-bit PCM frames at 176.4kHz sampling 
-frequency to transmit PDM samples.
-
-The "DSD128" channels to my DAC are for DSD128 DoP mode using the method as 
-described in 3.2. in the standard. Because this unit does not support 352.8kHz 
-four PCM channels are used in 176.4Khz rate to effectively transmit DSD128.
-
-This means the ALSA Dice driver can remain as is, since DoP standard is used 
-from userspace applications like MusicPlayerDaemon (MPD). I got DSD64 DoP 
-working by hacking the channel mappings. For proper DSD128 DoP with four 
-channels some changes are needed in MPD, I'll contact their mailing list soon.
-
-The above proposition might still be needed in the future if we encounter IEEE 
-1394 hardware that only supports native PDM formats.
-
-I will submit another patch soon to possibly add support for Mytek Manhattan 
-DAC and to correct and update some comments in the dice-mytek.c file.
-
-----
-
-Unfortunately, I have confirmed the existence of some sort of timing or 
-transmission issue to the unit. This did not happen when I ran the "old" 
-modules out-of-tree for over a year, as described in the initial mail[2]. In 
-this mail I also noticed the popping issue.
-
-It comes down to that the transmission is somehow not bit-perfect. In PCM mode 
-this causes subtle cracking and popping, which is a lot more notable on higher 
-frequencies. The higher the sampling frequency, the more rapid the popping 
-sounds become. The PCM stream never fully drops out, sounds do always keep 
-playing.
-
-In DSD (DoP) mode this causes complete drop-out of the signal for ~0.2-1.0 
-seconds since the DAC leaves DoP mode when the DoP markers are missing. This 
-happens consistently every 2 seconds or so. The 2 seconds it does play DSD64 
-it does work properly without any artefacts in the produced analog signal. The 
-display on DAC keeps saying "dsd DoP" during the dropout.
-
-Currently my kernel is 4.16.12-rt5. I also built 4.17.0-rc2-sound+ from 
-Tiwai's repo today, which is commit 3248e54292f93e1bf7b9ff084918d79dd6f655f8. 
-The problem is exactly the same in both and was also the same on any kernel I 
-used since I switched to the "new" modules.
-
-It should be noted the number of errors is variable. In the best case it is as 
-described above. In other cases the number of problematic packets is so high 
-the DAC cannot switch into DSD DoP mode at all, staying permanently silent 
-while the display flickers between "dsd DoP" and "176.4 PCM" rapidly. For PCM 
-streams the number and intensity of cracks and pops increase substantially.
-
-Based upon the above, I think it is likely to be a timing issue. Not sure if 
-it occurs during packet transmission or if something goes wrong when starting 
-the streams, when the DAC "locks" to the packets.
-
-Do you have a suggestion for anything I could try to either resolve the issue 
-or how to provide additional information?
-
-[1] http://dsd-guide.com/sites/default/files/white-papers/
-DoP_openStandard_1v1.pdf
-[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2017-September/
-125524.html
-
-Regards,
-
-Melvin Vermeeren
---nextPart9498945.GlybBugrUk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEETnzUjuV5O+rCrz6nRiwQnTrHuFkFAlsZQ9UACgkQRiwQnTrH
-uFmL9w/+NHIO45QFPFXSIjsPmWwGnknqFxRG/G8q977VF5Jv/QlhW9p1bHRg5AMR
-sKE2CqPESwxnYDve/qn0xg32qYX4nub+L3i+GkZGpwCLwWJWxJlQiAP+CrZOPf9M
-DGl3B/owh2TkGOx61bTbkLIfYi5cHTO/KTWt1T63aMsloQiEHkGE4sInBk+yLJlk
-vI1nLSghsytfRqqfGdQ8w/VYgKaoUyFRlwk6ShGrm4Mu1uTx8bMxRssjUfnfO6SJ
-9G74JySGQ+tMQRNPaTAmJCgVeHuTvRsRcB0eWdGUUKZS4wCuyJiIApDvRco9dmYk
-uzwVwvL8bU6+VR7liF8fHcE1H1K2c/cGhQOEvot8CxPIr2pENHZI2awpyC9LFrjK
-eZ9xx2qXFc5iFYuALwxnPMOM8EZ9EmJiaG1A6q8IKjinuiUq75j/1BFuCfCatY0w
-1llGLwcACaa7H2Tr3Z4oatnzW5sRo9X1rloDIDXCKnXdFJp5zt/NgN/OwjrmAZMr
-nRXQ0e7+YxK+F52YMAArpruZUqlxw2XCbccr8ZFNG2kZV8sicmrPaK/Gf0e4e4Bs
-V4vgOIxIjcvv3udKiflk52HFSuEBykSvCaapkMKS19gEkAR3g9NMIVC7OFEt28hu
-pyc4Cd+VJGVjJ00gJyc5ZcGIrDiMg2DxCMC5+xNRCJouafXxYnY=
-=hvjc
------END PGP SIGNATURE-----
-
---nextPart9498945.GlybBugrUk--
-
-
-
-
---===============5485488493875609642==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5485488493875609642==--
+CgpPbiAwNi8wNi8yMDE4IDExOjQ3IEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gV2VkLCAw
+NiBKdW4gMjAxOCAxMTozMTo0NSArMDIwMCwKPiBBcm5hdWQgUG91bGlxdWVuIHdyb3RlOgo+PiAK
+Pj4gCj4+IAo+PiBPbiAwNi8wNS8yMDE4IDA4OjI5IFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+
+ID4gT24gVHVlLCAwNSBKdW4gMjAxOCAxNzo1MDo1NyArMDIwMCwKPj4gPiBBcm5hdWQgUG91bGlx
+dWVuIHdyb3RlOgo+PiA+PiAKPj4gPj4gSGkgVGFrYXNoaSwKPj4gPj4gCj4+ID4+IE9uIDA0LzE3
+LzIwMTggMDE6MTcgUE0sIE1hcmsgQnJvd24gd3JvdGU6Cj4+ID4+ID4gT24gVHVlLCBBcHIgMTcs
+IDIwMTggYXQgMDg6Mjk6MTdBTSArMDAwMCwgT2xpdmllciBNT1lTQU4gd3JvdGU6Cj4+ID4+ID4g
+Cj4+ID4+ID4+IEkgZ3Vlc3MgdGhlIGJsb2NraW5nIHBhdGNoIGluIHRoaXMgcGF0Y2hzZXQgaXMg
+dGhlIHBhdGNoICJhZGQgSUVDOTU4IAo+PiA+PiA+PiBjaGFubmVsIHN0YXR1cyBjb250cm9sIGhl
+bHBlciIuIFRoaXMgcGF0Y2ggaGFzIGJlZW4gcmV2aWV3ZWQgc2V2ZXJhbCAKPj4gPj4gPj4gdGlt
+ZXMsIGJ1dCBkaWQgbm90IGdldCBhIGFjayBzbyBmYXIuCj4+ID4+ID4+IElmIHlvdSB0aGluayB0
+aGVzZSBoZWxwZXJzIHdpbGwgbm90IGJlIG1lcmdlZCwgSSB3aWxsIHJlaW50ZWdyYXRlIHRoZSAK
+Pj4gPj4gPj4gY29ycmVzcG9uZGluZyBjb2RlIGluIHN0bSBkcml2ZXIuCj4+ID4+ID4+IFBsZWFz
+ZSBsZXQgbWUga25vdywgaWYgSSBuZWVkIHRvIHByZXBhcmUgYSB2MiB3aXRob3V0IGhlbHBlcnMs
+IG9yIGlmIHdlIAo+PiA+PiA+PiBjYW4gZ28gZnVydGhlciBpbiB0aGUgcmV2aWV3IG9mIGllYyBo
+ZWxwZXJzIHBhdGNoID8KPj4gPj4gPiAKPj4gPj4gPiBJIGRvbid0IG1pbmQgZWl0aGVyIHdheSBi
+dXQgeW91J3JlIHJpZ2h0IGhlcmUsIEknbSB3YWl0aW5nIGZvciBUYWthc2hpCj4+ID4+ID4gdG8g
+cmV2aWV3IHRoZSBmaXJzdCBwYXRjaC7CoCBJJ2QgcHJvYmFibHkgYmUgT0sgd2l0aCBpdCBqdXN0
+IGludGVncmF0ZWQKPj4gPj4gPiBpbnRvIHRoZSBkcml2ZXIgaWYgd2UgaGF2ZSB0byBnbyB0aGF0
+IHdheSB0aG91Z2guCj4+ID4+IAo+PiA+PiBHZW50bGVtZW4gcmVtaW5kZXIgZm9yIHRoaXMgcGF0
+Y2ggc2V0LiBXZSB3b3VsZCBhcHByZWNpYXRlIHRvIGhhdmUgeW91cgo+PiA+PiBmZWVkYmFjayBv
+biBpZWMgaGVscGVyLgo+PiA+PiBGcm9tIG91ciBwb2ludCBvZiB2aWV3IGl0IGNvdWxkIGJlIHVz
+ZWZ1bCB0byBoYXZlIGEgZ2VuZXJpYyBtYW5hZ2VtZW50Cj4+ID4+IG9mIHRoZSBpZWMgY29udHJv
+bHMgYmFzZWQgb24gaGVscGVycyBpbnN0ZWFkIG9mIHJlZGVmaW5pbmcgdGhlbSBpbiBEQUlzLgo+
+PiA+PiBIYXZpbmcgdGhlIHNhbWUgYmVoYXZpb3IgZm9yIHRoZXNlIGNvbnRyb2xzIGNvdWxkIGJl
+IHVzZWZ1bCB0byBlbnN1cmUKPj4gPj4gY29oZXJlbmNlIG9mIHRoZSBjb250cm9sIG1hbmFnZW1l
+bnQgdXNlZCBieSBhcHBsaWNhdGlvbiAoZm9yIGluc3RhbmNlCj4+ID4+IEdzdHJlYW1lciB1c2Vz
+IGl0IHRvIGRldGVybWluZSBpZWMgcmF3IG1vZGUgY2FwYWJpbGl0eSBmb3IgaWVjNjE5Mzcgc3Ry
+ZWFtcykKPj4gPiAKPj4gPiBPaCBzb3JyeSBmb3IgdGhlIGxhdGUgcmVwbHksIEkndmUgdG90YWxs
+eSBvdmVybG9va2VkIHRoZSB0aHJlYWQuCj4+ID4gCj4+ID4gQW5kLCBhbm90aGVyIHNvcnJ5OiB0
+aGUgcGF0Y2hzZXQgZG9lc24ndCBsb29rIGNvbnZpbmNpbmcgZW5vdWdoIHRvCj4+ID4gbWUuCj4+
+ID4gCj4+ID4gRmlyc3Qgb2ZmLCB0aGUgcHJvdmlkZWQgQVBJIGRlZmluaXRpb24gYXBwZWFycyBz
+b21ld2hhdAo+PiA+IHVuY29udmVudGlvbmFsLCB0aGUgbWl4dHVyZSBvZiB0aGUgb3BzLCB0aGUg
+c3RhdGljIGRhdGEgYW5kIHRoZQo+PiA+IGR5bmFtaWMgZGF0YS4KPj4gU29ycnkgaSBjYW4ndCBm
+aWd1cmUgb3V0IHlvdXIgcG9pbnQuIEkgc3VwcG9zZSB0aGF0IHlvdSBzcGVhayBhYm91dCB0aGUK
+Pj4gc25kX3BjbV9pZWM5NThfcGFyYW1zLgo+PiB3aGF0IHdvdWxkIGJlIGEgbW9yZSBjb252ZW50
+aW9uYWwgQVBJPwo+IAo+IEltYWdpbmUgeW91J2Qgd2FudCB0byBwdXQgYSBjb25zdCB0byB0aGUg
+ZGF0YSBwYXNzZWQgdG8gdGhlIEFQSSBmb3IKPiBoYXJkZW5pbmcuwqAgVGhlIGN1cnJlbnQgc3Ry
+dWN0IGlzIGEgbWl4dHVyZSBvZiBzdGF0aWMgYW5kIGR5bmFtaWMKPiBkYXRhLgo+IAo+IAo+PiA+
+IE1vcmVvdmVyLCB0aGlzIGlzIG9ubHkgZm9yIHlvdXIgZHJpdmVyLCBBVE0uwqAgCj4+IEl0IGlz
+IGFsc28gY29tcGF0aWJsZSB3aXRoIHRoZSBzb3VuZC9zdGkgZHJpdmVyLCBldmVuIGlmIHdlIGRv
+ZXMgbm90Cj4+IHByb3Bvc2UgcGF0Y2ggeWV0LiBXZSBhbHNvIHBsYW4gdG8gcHJvcG9zZSBhbiBp
+bXBsZW1lbnRhdGlvbiwgZm9yIHRoZQo+PiBIRE1JX2NvZGVjIHRoYXQgd291bGQgbmVlZCB0byBl
+eHBvcnQgYSBjb250cm9sIHRvIGFsbG93IG5vbmUtYXVkaW8gbW9kZS4KPj4gCj4+ID5JZiBpdCB3
+ZXJlIGFuIEFQSSB0aGF0Cj4+ID4gZG9lcyBjbGVhbiB1cCB0aGUgYWxyZWFkeSBleGlzdGluZyB1
+c2FnZXMsIEknZCBoYXBwaWx5IGFwcGx5IGl0LiBUaGVyZQo+PiA+IGFyZSBsb3RzIG9mIGRyaXZl
+cnMgY3JlYXRpbmcgYW5kIGNvbnRyb2xsaW5nIHRoZSBJRUM5NTggY3RscyBldmVuCj4+ID4gbm93
+Lgo+PiA+IAo+PiA+IEFsc28sIHRoZSBwYXRjaHNldCByZXF1aXJlcyBtb3JlIGZpbmUtdHVuaW5n
+LCBpbiBhbnl3YXlzLsKgIFRoZSBjaGFuZ2VzCj4+ID4gaW4gY3JlYXRlX2llYzk1OF9jb25zdW1y
+ZSgpIGFyZSBiYXNpY2FsbHkgaXJyZWxldmFudCwgc2hvdWxkIGJlIHNwbGl0Cj4+ID4gb2ZmIGFz
+IGFuIGluZGl2aWR1YWwgZml4LsKgIGl0IGlzIGxpbmtlZCB0byB0aGUgY29udHJvbCwgYXMgbm90
+IHBvc3NpYmxlIGluIGV4aXN0aW5nIGltcGxlbWVudGF0aW9uCj4+IChyYXRlIGFuZCB3aWR0aCBh
+cmUgZ2V0IGZyb20gaHdwYXJhbSBvciBydW50aW1lKS4gQnV0IG5vIHByb2JsZW0gd2UgY2FuCj4+
+IHNwbGl0IGl0IGluIGEgc2VwYXJhdGUgcGF0Y2guCj4+IAo+PiBBbHNvLCB0aGUgbmV3IGZ1bmN0
+aW9uIGRvZXNuJ3QgY3JlYXRlIHRoZQo+PiA+ICJYWFggTWFzayIgY29udHJvbHMuwqAgQW5kIHRo
+ZSBieXRlIGNvbXBhcmlzb24gc2hvdWxkIGJlIHJlcGxhY2VkIHdpdGgKPj4gPiBtZW1jbXAoKSwg
+ZXRjLCBldGMuCj4+IFllcyBtYXNrIGFyZSBtaXNzaW5nLCBjYW4gYmUgYWRkZWQuIEZvciB0aGUg
+cmVzdCBjb3VsZCB5b3UgY29tbWVudAo+PiBkaXJlY3RseSBpbiBjb2RlPyBpIHN1cHBvc2UgdGhh
+dCB5b3Ugd2FudCB0byByZXBsYWNlIHRoZSBmb3IgbG9vcHMgYnkKPj4gbWVtY21wLCBtZW1jcHku
+Li4KPiAKPiBSaWdodC4KPiAKPj4gPiBTbywgcGxlYXNlIHByb2NlZWQgcmF0aGVyIHdpdGggdGhl
+IG9wZW4gY29kZXMgZm9yIG5vdy7CoCBJZiB5b3UgY2FuCj4+ID4gcHJvdmlkZSBhIHBhdGNoIHRo
+YXQgY2xlYW5zIHVwIHRoZSAqbXVsdGlwbGUqIGRyaXZlciBjb2RlcywgYWdhaW4sCj4+ID4gSSds
+bCBoYXBwaWx5IHRha2UgaXQuwqAgQnV0IGl0IGNhbiBiZSBkb25lIGFueXRpbWUgbGF0ZXIsIHRv
+by4KPj4gTm90IHNpbXBsZSB0byBjbGVhbiB1cCB0aGUgb3RoZXIgZHJpdmVycyBhcyB0aGlzIGNv
+bnRyb2wgaXMgYSBQQ00KPj4gY29udHJvbCwgdGhhdCBpcyBtYWlubHkgaW1wbGVtZW50ZWQgYXMg
+YSBtaXhlciBvciBjYXJkIGNvbnRyb2wuCj4+IFRoaXMgbWVhbnMgdGhhdCBpdCBzaG91bGQgYmUg
+cmVnaXN0ZXJlZCBvbiB0aGUgcGNtX25ldyBpbiBDUFUgREFJIG9yIGluCj4+IHRoZSBEQUkgY29k
+ZWMsIHRvIGJlIGFibGUgdG8gYmluZCBpdCB0byB0aGUgUENNIGRldmljZS4KPj4gSW5wYWN0IGlz
+IG5vdCBzdHJhaWd0aGZvcndhcmQgYXMgdGhpcyBjb3VsZCBnZW5lcmF0ZSByZWdyZXNzaW9uIG9u
+IGRyaXZlci4KPiAKPiBZZXMsIGFuZCB0aGF0J3MgbXkgcG9pbnQuwqAgVGhlIGFwcGxpY2F0aW9u
+IG9mIEFQSSBpcyByZWxhdGl2ZWx5Cj4gbGltaXRlZCAtLSBhbHRob3VnaCB0aGUgQVBJIGl0c2Vs
+ZiBoYXMgbm90aGluZyB0byBkbyB3aXRoIEFTb0MgYXQKPiBhbGwuCj4gCj4+IEZvciBub3cgV2Ug
+Y2FuIGFkZCB0aGUgY2xlYW4gdXAgb24gdGhlIHN0aSBkcml2ZXIgYmFzZWQgb24gdGhpcyBoZWxw
+ZXIsCj4+IGFuZCB3ZSBhcmUgd29ya2luZyBvbiB0aGUgSERNSV9jb2RlYywgd2UgY291bGQgYWxz
+byB1c2UgdGhpcyBoZWxwZXIgdG8KPj4gZXhwb3J0IHRoZSBjb250cm9sLi4uLgo+PiAKPj4gU28g
+aWYgeW91IGVzdGltYXRlIHRoYXQgaXQgaXMgaW50ZXJlc3RpbmcgdG8gcHVyY2hhc2Ugb24gdGhp
+cyBoZWxwZXIgd2UKPj4gY2FuIHRyeSB0byBjb21lIGJhY2sgd2l0aCBhIHBhdGNoIHNldCB0aGF0
+IGltcGxlbWVudHMgdGhlIGhlbHBlciBmb3IKPj4gdGhlIDMgZHJpdmVycy4KPiAKPiBSaWdodC7C
+oCBCYXNpY2FsbHkgdGhlcmUgYXJlIHR3byBjYXNlcyB3ZSBhZGQgYSBuZXcgQVBJOgo+IAo+IDEu
+IEl0J3MgYWJzb2x1dGVseSBuZXcgYW5kIG5vdGhpbmcgZWxzZSBjYW4gZG8gaXQKPiAyLiBBUEkg
+c2ltcGxpZmllcyB0aGUgd2hvbGUgdHJlZSwgbm90IG9ubHkgb25lIHlvdSdyZSB0cnlpbmcgdG8g
+YWRkLgo+IAo+IEFuZCBpbiB0aGlzIGNhc2UsIGxldCdzIHByb3ZlIDIgYXQgZmlyc3QsIHRoYXQg
+dGhlIEFQSSAqaXMqIGFjdHVhbGx5Cj4gdXNlZnVsIGluIG11bHRpcGxlIHNpdHVhdGlvbnMgd2Ug
+YWxyZWFkeSBoYXZlLsKgIFRoZW4gSSdsbCBoYXBwaWx5IGFjawo+IGZvciB0aGF0LsKgIE1vcmUg
+ZHJpdmVycyBjbGVhbnVwLCBiZXR0ZXIuwqAgQXQgYmVzdCwgdGhpbmsgb2YgbW9yZQo+IHJhbmdl
+IGFib3ZlIEFTb0MsIGFzIHlvdSdyZSBwcm9wb3NpbmcgQUxTQSBjb3JlIEFQSSwgbm90IHRoZSBB
+U29DCj4gb25lLgo+IAo+PiBUaGUgb3RoZXIgb3B0aW9uLCBpcyB0aGF0IHdlIGRyb3AgdGhlIGhl
+bHBlcnMsIGFuZCBpbXBsZW1lbnQgdGhlIGNvbnRyb2wKPj4gZGlyZWN0bHkgaW4gb3VyIGRyaXZl
+cnMuCj4gCj4gVGhpcyBpcyBvZiBjb3Vyc2UgYW5vdGhlciwgbWF5YmUgZWFzaWVyIG9wdGlvbi4K
+PiAKPj4gUGxlYXNlIGp1c3QgdGVsbCB1cyBpZiB3ZSBzaG91bGQgY29udGludWUgdG8gcHJvcG9z
+ZSB0aGUgaGVscGVycyBvciBub3QuCj4gCj4gSSBoYXZlIG5vIHByZWZlcmVuY2Ugb3ZlciB0d28g
+d2F5cywgYnV0IGFtIG9ubHkgaW50ZXJlc3RlZCBpbiB0aGUKPiByZXN1bHRpbmcgcGF0Y2hlcyA6
+KQoKTXkgdGVudGF0aXZlIGhlcmUgd2FzIHRvIHN0YXJ0IHRvIGludHJvZHVjZSBoZWxwZXJzIGF0
+IEFMU0EgbGV2ZWwgKG5vdApvbmx5IEFTb0MpIHRvIGhhdmUgYSBnZW5lcmljIGltcGxlbWVudGF0
+aW9uIG9mIHRoZSB0aGlzIGdlbmVyaWMgY29udHJvbC4KVG9kYXkgdGhlIHNuZF9wY21fY3JlYXRl
+X2llYzk1OF9jb25zdW1lcl9od19wYXJhbXMganVzdCBhbGxvdyB0byBmaWxsCkFFUyBiYXNlZCBv
+biBydW50aW1lIHBhcmFtZXRlcnMsIGJ1dCBub3QgdG8gb2ZmZXIgYSBnZW5lcmljIG1hbmFnZW1l
+bnQKb2YgaWVjIGNvbnRyb2wuCk5vdyB5b3UgYXJlIHJpZ2h0IGknbSBkZXZlbG9waW5nIHVuZGVy
+IEFTb0MgYW5kIGkgaGF2ZSBub3QgdGhlIHdob2xlCmtub3dsZWRnZSBvZiB0aGUgQUxTQSBkcml2
+ZXJzLCBhbiBwcm9iYWJseSB0b28gbGltaXRlZCB2aWV3IG9mIHRoZSBpZWMKY29udHJvbHMgdXNh
+Z2UuCgpCYXNlZCBvbiB5b3VyIGZlZWRiYWNrIGkgdGhpbmsgKGF0IGxlYXN0IGluIGEgZmlyc3Qg
+c3RlcCkgd2Ugd2lsbCBjaG9vc2UKdGhlIGVhc2llc3Qgb3B0aW9uIGZvciB0aGUgU1RNIGRyaXZl
+ci4uLgoKVGhhbmtzCkFybmF1ZAoKCj4gCj4gCj4gdGhhbmtzLAo+IAo+IFRha2FzaGkKX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWls
+aW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2Et
+cHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
