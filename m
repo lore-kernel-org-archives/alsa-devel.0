@@ -1,40 +1,51 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: dapm: update function comments
-Date: Thu, 7 Jun 2018 13:48:37 +0100
-Message-ID: <20180607124837.GC18740@imbe.wolfsonmicro.main>
-References: <20180606160736.169077-1-tzungbi@google.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] ASoC: rt1305: Use ULL suffixes for 64-bit constants
+Date: Thu,  7 Jun 2018 15:50:48 +0200
+Message-ID: <1528379448-3937-1-git-send-email-geert@linux-m68k.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id DCEF12670BE
- for <alsa-devel@alsa-project.org>; Thu,  7 Jun 2018 14:48:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180606160736.169077-1-tzungbi@google.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Tzung-Bi Shih <tzungbi@google.com>
-Cc: alsa-devel@alsa-project.org, cychiang@google.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Shuming Fan <shumingf@realtek.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Geert Uytterhoeven <geert@linux-m68k.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 07, 2018 at 12:07:36AM +0800, Tzung-Bi Shih wrote:
-> snd_soc_dapm_put_volsw() and snd_soc_dapm_put_enum_double() returns
-> 0 if the value is unchanged and 1 if changed. Both 0 and 1 indicate
-> a success.
-> 
-> Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
-> ---
+With gcc 4.1.2:
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+    sound/soc/codecs/rt1305.c: In function ‘rt1305_calibrate’:
+    sound/soc/codecs/rt1305.c:1069: warning: integer constant is too large for ‘long’ type
+    sound/soc/codecs/rt1305.c:1086: warning: integer constant is too large for ‘long’ type
 
-Thanks,
-Charles
+Add the missing "ULL" suffixes to fix this.
+
+Fixes: 29bc643ddd7efb74 ("ASoC: rt1305: Add RT1305/RT1306 amplifier driver")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ sound/soc/codecs/rt1305.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/rt1305.c b/sound/soc/codecs/rt1305.c
+index f4c8c45f40103cf8..421b8fb2fa04dd63 100644
+--- a/sound/soc/codecs/rt1305.c
++++ b/sound/soc/codecs/rt1305.c
+@@ -1066,7 +1066,7 @@ static void rt1305_calibrate(struct rt1305_priv *rt1305)
+ 	pr_debug("Left_rhl = 0x%x rh=0x%x rl=0x%x\n", rhl, rh, rl);
+ 	pr_info("Left channel %d.%dohm\n", (r0ohm/10), (r0ohm%10));
+ 
+-	r0l = 562949953421312;
++	r0l = 562949953421312ULL;
+ 	if (rhl != 0)
+ 		do_div(r0l, rhl);
+ 	pr_debug("Left_r0 = 0x%llx\n", r0l);
+@@ -1083,7 +1083,7 @@ static void rt1305_calibrate(struct rt1305_priv *rt1305)
+ 	pr_debug("Right_rhl = 0x%x rh=0x%x rl=0x%x\n", rhl, rh, rl);
+ 	pr_info("Right channel %d.%dohm\n", (r0ohm/10), (r0ohm%10));
+ 
+-	r0r = 562949953421312;
++	r0r = 562949953421312ULL;
+ 	if (rhl != 0)
+ 		do_div(r0r, rhl);
+ 	pr_debug("Right_r0 = 0x%llx\n", r0r);
+-- 
+2.7.4
