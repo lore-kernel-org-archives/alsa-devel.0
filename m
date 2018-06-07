@@ -1,105 +1,40 @@
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH v4 1/7] dt-bindings: clk: at91: add an I2S mux clock
-Date: Thu, 7 Jun 2018 13:30:14 +0300
-Message-ID: <18f6871e-794d-3ea2-487e-32399a8b89b4@microchip.com>
-References: <1527251668-31396-1-git-send-email-codrin.ciubotariu@microchip.com>
- <1527251668-31396-2-git-send-email-codrin.ciubotariu@microchip.com>
- <20180531005827.GA17203@rob-hp-laptop>
- <4f2e6e6a-df3a-b645-093c-b4467b3aa843@microchip.com>
- <CAL_JsqJ=T0p17hHg6=obtydt7T-yrAeOr7C2XAEnDFQ-c0b5XQ@mail.gmail.com>
- <152778070837.144038.4555982304713569160@swboyd.mtv.corp.google.com>
- <CAL_JsqJu6=ORfutZ5tAyNp2q2rH6P+fgJMRKw750RyFy=ptjPw@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: dapm: update function comments
+Date: Thu, 7 Jun 2018 13:48:37 +0100
+Message-ID: <20180607124837.GC18740@imbe.wolfsonmicro.main>
+References: <20180606160736.169077-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAL_JsqJu6=ORfutZ5tAyNp2q2rH6P+fgJMRKw750RyFy=ptjPw@mail.gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Alexandre Belloni <alexandre.belloni@bootlin.com>, Mark Brown <broonie@kernel.org>
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Boris Brezillon <boris.brezillon@bootlin.com>, Cristian.Birsan@microchip.com, linux-clk <linux-clk@vger.kernel.org>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCEF12670BE
+ for <alsa-devel@alsa-project.org>; Thu,  7 Jun 2018 14:48:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180606160736.169077-1-tzungbi@google.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Tzung-Bi Shih <tzungbi@google.com>
+Cc: alsa-devel@alsa-project.org, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
-On 31.05.2018 18:56, Rob Herring wrote:
-> On Thu, May 31, 2018 at 10:31 AM, Stephen Boyd <sboyd@kernel.org> wrote:
->> Quoting Rob Herring (2018-05-31 07:20:57)
->>> On Thu, May 31, 2018 at 5:25 AM, Codrin Ciubotariu
->>> <codrin.ciubotariu@microchip.com> wrote:
->>>> On 31.05.2018 03:58, Rob Herring wrote:
->>>>>
->>>>> On Fri, May 25, 2018 at 03:34:22PM +0300, Codrin Ciubotariu wrote:
->>>>>>
->>>>>> The I2S mux clock can be used to select the I2S input clock. The
->>>>>> available parents are the peripheral and the generated clocks.
->>>>>>
->>>>>> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->>>>>> ---
->>>>>>    .../devicetree/bindings/clock/at91-clock.txt       | 34
->>>>>> ++++++++++++++++++++++
->>>>>>    1 file changed, 34 insertions(+)
->>>>>>
->>>>>> diff --git a/Documentation/devicetree/bindings/clock/at91-clock.txt
->>>>>> b/Documentation/devicetree/bindings/clock/at91-clock.txt
->>>>>> index 51c259a..1c46b3c 100644
->>>>>> --- a/Documentation/devicetree/bindings/clock/at91-clock.txt
->>>>>> +++ b/Documentation/devicetree/bindings/clock/at91-clock.txt
->>>>>> @@ -90,6 +90,8 @@ Required properties:
->>>>>>          "atmel,sama5d2-clk-audio-pll-pmc"
->>>>>>                  at91 audio pll output on AUDIOPLLCLK that feeds the PMC
->>>>>>                  and can be used by peripheral clock or generic clock
->>>>>> +       "atmel,sama5d2-clk-i2s-mux":
->>>>>> +               at91 I2S clock source selection
->>>>>
->>>>>
->>>>> Is this boolean or takes some values. If latter, what are valid values?
->>>>
->>>>
->>>> This is the compatible string of the clock driver.
->>>
->>> Ah, now I remember. AT91 uses fine grained clock nodes in DT. Is there
->>> still a plan to fix this?
->>
->> I'm also interested in a plan.
->>
->>>>>
->>>>>> +               compatible = "atmel,sama5d2-clk-i2s-mux";
->>>>>> +               #address-cells = <1>;
->>>>>> +               #size-cells = <0>;
->>>>>
->>>>>
->>>>> How do you address this block? My guess is you don't because it is just
->>>>> part of some other block and you are just creating this node to
->>>>> instantiate a driver. Just make the node for the actual h/w block a
->>>>> clock provider and define the clock ids (0 and 1).
->>>>
->>>>
->>>> This block is not addressed, but its children are. The register we access in
->>>> this driver is not part of other block. It's a SFR register, accessed
->>>> through syscon and it has nothing to do with the I2S IP (see SAMA5D2 DS,
->>>> page 1256, fig. 44-1: I2SC Block Diagram) that is the consumer of this
->>>> clock. Adding a clock-id property in the I2S node would be just like v3 of
->>>> this series, with the difference that we use clock-id instead of alias id to
->>>> set the clock parent, which is not how you suggested back then.
->>>
->>> I wasn't suggesting a clock-id property, but a clock specifier (i.e.
->>> make #clock-cells 1).
->>>
->>> But AT91 clocks are all a mess, so I don't know what to tell you.
->>>
->>
->> If #clock-cells of 1 works then we should go with that. It's still weird
->> that we need random nodes to add more clks, but I guess that's how it's
->> going to be for each at91 clk driver until it changes to be one big
->> provider node.
+On Thu, Jun 07, 2018 at 12:07:36AM +0800, Tzung-Bi Shih wrote:
+> snd_soc_dapm_put_volsw() and snd_soc_dapm_put_enum_double() returns
+> 0 if the value is unchanged and 1 if changed. Both 0 and 1 indicate
+> a success.
 > 
-> Seems to me that clock additions could use a new binding and we start
-> with a new driver that handles these few clocks initially. But I
-> haven't looked whether both can coexist.
+> Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+> ---
 
-Mark already applied to broonie/sound.git the I2S bindings that have a 
-phandle to this clock. If I am to change #clock-cells to 1, I will have 
-to change the bindings to include the clock-id.
-Which approach should I take now?
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-Thanks and best regards,
-Codrin
+Thanks,
+Charles
