@@ -1,48 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: handling voice calls in ALSA soc (on Droid 4)
-Date: Mon, 11 Jun 2018 12:10:11 +0100
-Message-ID: <20180611111011.GA11580@sirena.org.uk>
-References: <20180611102529.GA1272@amd>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Order of device overrides in config files
+Date: Mon, 11 Jun 2018 13:33:14 +0200
+Message-ID: <fde2be1f-1e42-5e23-e1aa-77fb3e9a31bd@ivitera.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ikeVEW9yuYc//A+q"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180611102529.GA1272@amd>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pavel Machek <pavel@ucw.cz>
-Cc: kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, sre@kernel.org, nekit1000@gmail.com, mpartap@gmx.net, merlijn@wizzup.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1DD6266E91
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2018 13:33:15 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by cable.insite.cz (Postfix) with ESMTP id 1D9F6A1A40B04
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2018 13:33:15 +0200 (CEST)
+Received: from cable.insite.cz ([84.242.75.189])
+ by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id EYGxw0Y61N3V for <alsa-devel@alsa-project.org>;
+ Mon, 11 Jun 2018 13:33:15 +0200 (CEST)
+Received: from [192.168.100.32] (unknown [192.168.100.32])
+ (Authenticated sender: pavel)
+ by cable.insite.cz (Postfix) with ESMTPSA id 01C27A1A40B01
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2018 13:33:15 +0200 (CEST)
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
+Hello,
 
---ikeVEW9yuYc//A+q
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Please in what order are devices specified in alsa conf overriden?
 
-On Mon, Jun 11, 2018 at 12:25:30PM +0200, Pavel Machek wrote:
+The  pcm.!default device is defined in /usr/share/alsa/pulse-alsa.conf. 
+Also, I redefine this device in my .asoundrc. Strace dump shows my 
+.asoundrc is loaded after /usr/share/alsa/pulse-alsa.conf. Yet the 
+default device remains the pulse plugin.
 
-> ...and also. What is right interface for this? Mixer component that
-> says if voice call is active or not?
+Also, what is the exact meaning of the exclamation mark in the device name?
 
-Your modem should be represented as a component in the system and have
-an input and an output representing the input and output on the cell
-network.  See speyside for an example of how this can look in software
-though there's a bunch of different ways modems can appear so you might
-not have a fully digital link like that.
+I very much appreciate any help.
 
---ikeVEW9yuYc//A+q
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards,
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlseWI4ACgkQJNaLcl1U
-h9DhpAf7BS15OOmveIfPROJ0s61oMffmjz/tM8L1Cn14P8bhfHE4ieEH1l2RDkny
-sAviJ40O8vTn9XzuXyUSxj3JX8RD/0QsADPd1+X6w4Kgl8/l9Un6DlWBpLS2ro+t
-Ny5QKkIX32NhyrqtRTxdfz4sif3IDOE9DYJ6AwbSyjhOUO6gUEq/uudv5A1KfOFt
-DqumXqGRKVN5razt3lTFlel14NEzfdTVbDx4SJmXQz3zHgengRji6pYEdVvq5UqU
-VXNE8SKSs2UlANWWtzRo8/8ShHZO0ySgkh7Dxne8TmD74zXwPy71DeVq20qcQrYU
-k+/XWyFrbB9KnoHivTTFgjBdqnWgIw==
-=dtGy
------END PGP SIGNATURE-----
-
---ikeVEW9yuYc//A+q--
+Pavel.
