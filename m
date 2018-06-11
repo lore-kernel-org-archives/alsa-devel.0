@@ -1,68 +1,36 @@
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Subject: Re: [PATCH] ALSA: fm801: add error handling for snd_ctl_add
-Date: Mon, 11 Jun 2018 11:49:56 +0300
-Message-ID: <520e80a8b8de0f532e8dd3ee15af9efbc748dd9a.camel@linux.intel.com>
-References: <1528704248-33818-1-git-send-email-jiazhouyang09@gmail.com>
+From: Dennis Wassenberg <dennis.wassenberg@secunet.com>
+Subject: [PATCH 1/2] ALSA: hda: add dock and led support for HP EliteBook 830
+ G5
+Date: Mon, 11 Jun 2018 11:40:00 +0200
+Message-ID: <0cd9e66b-460a-4dc3-cd9c-3b0124b8284c@secunet.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1528704248-33818-1-git-send-email-jiazhouyang09@gmail.com>
+Content-Language: de-DE
 Sender: linux-kernel-owner@vger.kernel.org
-To: jiazhouyang09@gmail.com, =?ISO-8859-1?Q?=C9meric?= MASCHINO <emeric.maschino@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Hui Wang <hui.wang@canonical.com>, Florin Tudorache <florin_tudorache@live.com>, =?UTF-8?Q?Jer=c3=b3nimo_Borque?= <jeronimo@borque.com.ar>, Kai-Heng Feng <kai.heng.feng@canonical.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2018-06-11 at 16:04 +0800, jiazhouyang09@gmail.com wrote:
-> When snd_ctl_add fails, the lack of error-handling code may
-> cause unexpected results.
-> 
-> This patch adds error-handling code after calling snd_ctl_add.
-> 
+This patch adds missing initialisation for HP 2013 UltraSlim Dock
+Line-In/Out PINs and activates keyboard mute/micmute leds
+for HP EliteBook 830 G5
+---
+ sound/pci/hda/patch_conexant.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-
-Though I can't test this (I have FM-only card). Last person who would
-able to test was Émeric (Cc'ed).
-
-> Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
-> ---
->  sound/pci/fm801.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
-> index 73a67bc..e3fb9c6 100644
-> --- a/sound/pci/fm801.c
-> +++ b/sound/pci/fm801.c
-> @@ -1068,11 +1068,19 @@ static int snd_fm801_mixer(struct fm801 *chip)
->  		if ((err = snd_ac97_mixer(chip->ac97_bus, &ac97,
-> &chip->ac97_sec)) < 0)
->  			return err;
->  	}
-> -	for (i = 0; i < FM801_CONTROLS; i++)
-> -		snd_ctl_add(chip->card,
-> snd_ctl_new1(&snd_fm801_controls[i], chip));
-> +	for (i = 0; i < FM801_CONTROLS; i++) {
-> +		err = snd_ctl_add(chip->card,
-> +			snd_ctl_new1(&snd_fm801_controls[i], chip));
-> +		if (err < 0)
-> +			return err;
-> +	}
->  	if (chip->multichannel) {
-> -		for (i = 0; i < FM801_CONTROLS_MULTI; i++)
-> -			snd_ctl_add(chip->card,
-> snd_ctl_new1(&snd_fm801_controls_multi[i], chip));
-> +		for (i = 0; i < FM801_CONTROLS_MULTI; i++) {
-> +			err = snd_ctl_add(chip->card,
-> +				snd_ctl_new1(&snd_fm801_controls_mult
-> i[i], chip));
-> +			if (err < 0)
-> +				return err;
-> +		}
->  	}
->  	return 0;
->  }
-
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 5b4dbcec6de8..bca71f35b34f 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -959,6 +959,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
+ 	SND_PCI_QUIRK(0x103c, 0x8079, "HP EliteBook 840 G3", CXT_FIXUP_HP_DOCK),
+ 	SND_PCI_QUIRK(0x103c, 0x807C, "HP EliteBook 820 G3", CXT_FIXUP_HP_DOCK),
+ 	SND_PCI_QUIRK(0x103c, 0x80FD, "HP ProBook 640 G2", CXT_FIXUP_HP_DOCK),
++	SND_PCI_QUIRK(0x103c, 0x83b3, "HP EliteBook 830 G5", CXT_FIXUP_HP_DOCK),
+ 	SND_PCI_QUIRK(0x103c, 0x8174, "HP Spectre x360", CXT_FIXUP_HP_SPECTRE),
+ 	SND_PCI_QUIRK(0x103c, 0x8115, "HP Z1 Gen3", CXT_FIXUP_HP_GATE_MIC),
+ 	SND_PCI_QUIRK(0x103c, 0x814f, "HP ZBook 15u G3", CXT_FIXUP_MUTE_LED_GPIO),
 -- 
-Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Intel Finland Oy
+2.17.1
