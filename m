@@ -1,17 +1,21 @@
-From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH v2 1/1] ASoC: stm32: sai: add iec958 controls
-	support
-Date: Mon, 11 Jun 2018 17:13:59 +0200
-Message-ID: <1528730039-15757-2-git-send-email-olivier.moysan@st.com>
-References: <1528730039-15757-1-git-send-email-olivier.moysan@st.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Order of device overrides in config files
+Date: Mon, 11 Jun 2018 17:19:31 +0200
+Message-ID: <4845ff6e-d6db-909f-74d7-67bd74b43b77@perex.cz>
+References: <fde2be1f-1e42-5e23-e1aa-77fb3e9a31bd@ivitera.com>
+ <fb4a790c-9559-c706-2064-e3d4e9261cb9@perex.cz>
+ <ee2da76e-ed55-f7a1-b08a-99744cda8593@ivitera.com>
+ <8163424e-9373-aeae-23e6-9ebfcc757c3b@perex.cz>
+ <22a07e99-17cb-b2de-485b-1d7150a65d26@ivitera.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 0D799267253
- for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2018 17:14:08 +0200 (CEST)
-In-Reply-To: <1528730039-15757-1-git-send-email-olivier.moysan@st.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC3C0266E76
+ for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2018 17:19:33 +0200 (CEST)
+In-Reply-To: <22a07e99-17cb-b2de-485b-1d7150a65d26@ivitera.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,263 +25,103 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, kernel@stlinux.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com
-Cc: arnaud.pouliquen@st.com, benjamin.gaignard@st.com
+To: Pavel Hofman <pavel.hofman@ivitera.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add support of iec958 controls for STM32 SAI.
+Dne 11.6.2018 v 15:45 Pavel Hofman napsal(a):
+> Dne 11.6.2018 v 15:34 Jaroslav Kysela napsal(a):
+>> Dne 11.6.2018 v 15:18 Pavel Hofman napsal(a):
+>>> Dne 11.6.2018 v 14:20 Jaroslav Kysela napsal(a):
+>>
+>> It seems that there's something different in your system, so the
+>> ~/.asoundrc file is not parsed as last.
+> 
+> Ubuntu 16:04 (Mint 17)
+> 
+> It is parsed by the same order as specified in
+> 
+> @hooks [
+>          {
+>                  func load
+>                  files [
+>                          {
+>                                  @func concat
+>                                  strings [
+>                                          { @func datadir }
+>                                          "/alsa.conf.d/"
+>                                  ]
+>                          }
+>                          "/etc/asound.conf"
+>                          "~/.asoundrc"
+>                  ]
+>                  errors false
+>          }
+> ]
+> 
+> 
+> But the last "default" redefinition occurs from 
+> usr/share/alsa/pulse-alsa.conf, which is "scheduled" by 
+> alsa.conf.d/pulse.conf:
+> 
+> 
+> hook_func.pulse_load_if_running {
+>          lib "libasound_module_conf_pulse.so"
+>          func "conf_pulse_hook_load_if_running"
+> }
+> 
+> @hooks [
+>          {
+>                  func pulse_load_if_running
+>                  files [
+>                          "/usr/share/alsa/pulse-alsa.conf"
+>                  ]
+>                  errors false
+>          }
+> ]
+> 
+> According to strace, the function pulse_load_if_running opens 
+> /usr/share/alsa/pulse-alsa.conf AFTER ~/.asoundrc:
+> 
+> strace aplay -v -D default /home/hestia/Hudba/192.wav 2>&1 | nl | grep 
+> -E '/usr/share/alsa|asoundrc'
+>      88	stat("/usr/share/alsa/alsa.conf", {st_mode=S_IFREG|0644, 
+> st_size=9182, ...}) = 0
+>      89	open("/usr/share/alsa/alsa.conf", O_RDONLY) = 3
+>     100	access("/usr/share/alsa/alsa.conf.d/", R_OK) = 0
+>     101	stat("/usr/share/alsa/alsa.conf.d/", {st_mode=S_IFDIR|0755, 
+> st_size=123, ...}) = 0
+>     102	openat(AT_FDCWD, "/usr/share/alsa/alsa.conf.d/", 
+> O_RDONLY|O_NONBLOCK|O_DIRECTORY|O_CLOEXEC) = 3
+>     106	open("/usr/share/alsa/alsa.conf.d//50-pulseaudio.conf", 
+> O_RDONLY) = 3
+>     114	open("/usr/share/alsa/alsa.conf.d//bluetooth.conf", O_RDONLY) = 3
+>     122	open("/usr/share/alsa/alsa.conf.d//pulse.conf", O_RDONLY) = 3
+>     131	access("/home/hestia/.asoundrc", R_OK)  = 0
+>     132	stat("/home/hestia/.asoundrc", {st_mode=S_IFREG|0644, 
+> st_size=215, ...}) = 0
+>     133	open("/home/hestia/.asoundrc", O_RDONLY) = 3
+>     540	access("/usr/share/alsa/pulse-alsa.conf", R_OK) = 0
+>     541	stat("/usr/share/alsa/pulse-alsa.conf", {st_mode=S_IFREG|0644, 
+> st_size=340, ...}) = 0
+>     542	open("/usr/share/alsa/pulse-alsa.conf", O_RDONLY) = 6
 
-Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
----
- sound/soc/stm/Kconfig         |   1 +
- sound/soc/stm/stm32_sai_sub.c | 139 ++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 128 insertions(+), 12 deletions(-)
+This configuration comes from Ubuntu (debian). We do not have such
+config in the upstream (nor Fedora) where we expect to change the pulse
+configuration file or uninstall the alsa-plugins-pulseaudio package
+(which contains the default configuration file) when the pulseaudio is
+not used:
 
-diff --git a/sound/soc/stm/Kconfig b/sound/soc/stm/Kconfig
-index 48f9ddd94016..9b2681397dba 100644
---- a/sound/soc/stm/Kconfig
-+++ b/sound/soc/stm/Kconfig
-@@ -6,6 +6,7 @@ config SND_SOC_STM32_SAI
- 	depends on SND_SOC
- 	select SND_SOC_GENERIC_DMAENGINE_PCM
- 	select REGMAP_MMIO
-+	select SND_PCM_IEC958
- 	help
- 	  Say Y if you want to enable SAI for STM32
- 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index cfeb219e1d78..c4f15ea14197 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -96,7 +96,8 @@
-  * @slot_mask: rx or tx active slots mask. set at init or at runtime
-  * @data_size: PCM data width. corresponds to PCM substream width.
-  * @spdif_frm_cnt: S/PDIF playback frame counter
-- * @spdif_status_bits: S/PDIF status bits
-+ * @snd_aes_iec958: iec958 data
-+ * @ctrl_lock: control lock
-  */
- struct stm32_sai_sub_data {
- 	struct platform_device *pdev;
-@@ -125,7 +126,8 @@ struct stm32_sai_sub_data {
- 	int slot_mask;
- 	int data_size;
- 	unsigned int spdif_frm_cnt;
--	unsigned char spdif_status_bits[SAI_IEC60958_STATUS_BYTES];
-+	struct snd_aes_iec958 iec958;
-+	struct mutex ctrl_lock; /* protect resources accessed by controls */
- };
- 
- enum stm32_sai_fifo_th {
-@@ -184,10 +186,6 @@ static bool stm32_sai_sub_writeable_reg(struct device *dev, unsigned int reg)
- 	}
- }
- 
--static const unsigned char default_status_bits[SAI_IEC60958_STATUS_BYTES] = {
--	0, 0, 0, IEC958_AES3_CON_FS_48000,
--};
--
- static const struct regmap_config stm32_sai_sub_regmap_config_f4 = {
- 	.reg_bits = 32,
- 	.reg_stride = 4,
-@@ -210,6 +208,49 @@ static bool stm32_sai_sub_writeable_reg(struct device *dev, unsigned int reg)
- 	.fast_io = true,
- };
- 
-+static int snd_pcm_iec958_info(struct snd_kcontrol *kcontrol,
-+			       struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_IEC958;
-+	uinfo->count = 1;
-+
-+	return 0;
-+}
-+
-+static int snd_pcm_iec958_get(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *uctl)
-+{
-+	struct stm32_sai_sub_data *sai = snd_kcontrol_chip(kcontrol);
-+
-+	mutex_lock(&sai->ctrl_lock);
-+	memcpy(uctl->value.iec958.status, sai->iec958.status, 4);
-+	mutex_unlock(&sai->ctrl_lock);
-+
-+	return 0;
-+}
-+
-+static int snd_pcm_iec958_put(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *uctl)
-+{
-+	struct stm32_sai_sub_data *sai = snd_kcontrol_chip(kcontrol);
-+
-+	mutex_lock(&sai->ctrl_lock);
-+	memcpy(sai->iec958.status, uctl->value.iec958.status, 4);
-+	mutex_unlock(&sai->ctrl_lock);
-+
-+	return 0;
-+}
-+
-+static const struct snd_kcontrol_new iec958_ctls = {
-+	.access = (SNDRV_CTL_ELEM_ACCESS_READWRITE |
-+			SNDRV_CTL_ELEM_ACCESS_VOLATILE),
-+	.iface = SNDRV_CTL_ELEM_IFACE_PCM,
-+	.name = SNDRV_CTL_NAME_IEC958("", PLAYBACK, DEFAULT),
-+	.info = snd_pcm_iec958_info,
-+	.get = snd_pcm_iec958_get,
-+	.put = snd_pcm_iec958_put,
-+};
-+
- static irqreturn_t stm32_sai_isr(int irq, void *devid)
- {
- 	struct stm32_sai_sub_data *sai = (struct stm32_sai_sub_data *)devid;
-@@ -619,6 +660,59 @@ static void stm32_sai_set_frame(struct snd_soc_dai *cpu_dai)
- 	}
- }
- 
-+static void stm32_sai_init_iec958_status(struct stm32_sai_sub_data *sai)
-+{
-+	unsigned char *cs = sai->iec958.status;
-+
-+	cs[0] = IEC958_AES0_CON_NOT_COPYRIGHT | IEC958_AES0_CON_EMPHASIS_NONE;
-+	cs[1] = IEC958_AES1_CON_GENERAL;
-+	cs[2] = IEC958_AES2_CON_SOURCE_UNSPEC | IEC958_AES2_CON_CHANNEL_UNSPEC;
-+	cs[3] = IEC958_AES3_CON_CLOCK_1000PPM | IEC958_AES3_CON_FS_NOTID;
-+}
-+
-+static void stm32_sai_set_iec958_status(struct stm32_sai_sub_data *sai,
-+					struct snd_pcm_runtime *runtime)
-+{
-+	if (!runtime)
-+		return;
-+
-+	/* Force the sample rate according to runtime rate */
-+	mutex_lock(&sai->ctrl_lock);
-+	switch (runtime->rate) {
-+	case 22050:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_22050;
-+		break;
-+	case 44100:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_44100;
-+		break;
-+	case 88200:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_88200;
-+		break;
-+	case 176400:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_176400;
-+		break;
-+	case 24000:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_24000;
-+		break;
-+	case 48000:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_48000;
-+		break;
-+	case 96000:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_96000;
-+		break;
-+	case 192000:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_192000;
-+		break;
-+	case 32000:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_32000;
-+		break;
-+	default:
-+		sai->iec958.status[3] = IEC958_AES3_CON_FS_NOTID;
-+		break;
-+	}
-+	mutex_unlock(&sai->ctrl_lock);
-+}
-+
- static int stm32_sai_configure_clock(struct snd_soc_dai *cpu_dai,
- 				     struct snd_pcm_hw_params *params)
- {
-@@ -709,7 +803,11 @@ static int stm32_sai_hw_params(struct snd_pcm_substream *substream,
- 
- 	sai->data_size = params_width(params);
- 
--	if (!STM_SAI_PROTOCOL_IS_SPDIF(sai)) {
-+	if (STM_SAI_PROTOCOL_IS_SPDIF(sai)) {
-+		/* Rate not already set in runtime structure */
-+		substream->runtime->rate = params_rate(params);
-+		stm32_sai_set_iec958_status(sai, substream->runtime);
-+	} else {
- 		ret = stm32_sai_set_slots(cpu_dai);
- 		if (ret < 0)
- 			return ret;
-@@ -789,6 +887,20 @@ static void stm32_sai_shutdown(struct snd_pcm_substream *substream,
- 	sai->substream = NULL;
- }
- 
-+static int stm32_sai_pcm_new(struct snd_soc_pcm_runtime *rtd,
-+			     struct snd_soc_dai *cpu_dai)
-+{
-+	struct stm32_sai_sub_data *sai = dev_get_drvdata(cpu_dai->dev);
-+
-+	if (STM_SAI_PROTOCOL_IS_SPDIF(sai)) {
-+		dev_dbg(&sai->pdev->dev, "%s: register iec controls", __func__);
-+		return snd_ctl_add(rtd->pcm->card,
-+				   snd_ctl_new1(&iec958_ctls, sai));
-+	}
-+
-+	return 0;
-+}
-+
- static int stm32_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- {
- 	struct stm32_sai_sub_data *sai = dev_get_drvdata(cpu_dai->dev);
-@@ -809,6 +921,10 @@ static int stm32_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- 	else
- 		snd_soc_dai_init_dma_data(cpu_dai, NULL, &sai->dma_params);
- 
-+	/* Next settings are not relevant for spdif mode */
-+	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
-+		return 0;
-+
- 	cr1_mask = SAI_XCR1_RX_TX;
- 	if (STM_SAI_IS_CAPTURE(sai))
- 		cr1 |= SAI_XCR1_RX_TX;
-@@ -820,10 +936,6 @@ static int stm32_sai_dai_probe(struct snd_soc_dai *cpu_dai)
- 				     sai->synco, sai->synci);
- 	}
- 
--	if (STM_SAI_PROTOCOL_IS_SPDIF(sai))
--		memcpy(sai->spdif_status_bits, default_status_bits,
--		       sizeof(default_status_bits));
--
- 	cr1_mask |= SAI_XCR1_SYNCEN_MASK;
- 	cr1 |= SAI_XCR1_SYNCEN_SET(sai->sync);
- 
-@@ -861,7 +973,7 @@ static int stm32_sai_pcm_process_spdif(struct snd_pcm_substream *substream,
- 		/* Set channel status bit */
- 		byte = frm_cnt >> 3;
- 		mask = 1 << (frm_cnt - (byte << 3));
--		if (sai->spdif_status_bits[byte] & mask)
-+		if (sai->iec958.status[byte] & mask)
- 			*ptr |= 0x04000000;
- 		ptr++;
- 
-@@ -888,6 +1000,7 @@ static int stm32_sai_pcm_process_spdif(struct snd_pcm_substream *substream,
- static struct snd_soc_dai_driver stm32_sai_playback_dai[] = {
- {
- 		.probe = stm32_sai_dai_probe,
-+		.pcm_new = stm32_sai_pcm_new,
- 		.id = 1, /* avoid call to fmt_single_name() */
- 		.playback = {
- 			.channels_min = 1,
-@@ -998,6 +1111,7 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 			dev_err(&pdev->dev, "S/PDIF IEC60958 not supported\n");
- 			return -EINVAL;
- 		}
-+		stm32_sai_init_iec958_status(sai);
- 		sai->spdif = true;
- 		sai->master = true;
- 	}
-@@ -1114,6 +1228,7 @@ static int stm32_sai_sub_probe(struct platform_device *pdev)
- 	sai->id = (uintptr_t)of_id->data;
- 
- 	sai->pdev = pdev;
-+	mutex_init(&sai->ctrl_lock);
- 	platform_set_drvdata(pdev, sai);
- 
- 	sai->pdata = dev_get_drvdata(pdev->dev.parent);
+http://git.alsa-project.org/?p=alsa-plugins.git;a=blob;f=pulse/50-pulseaudio.conf
+http://git.alsa-project.org/?p=alsa-plugins.git;a=blob;f=pulse/99-pulseaudio-default.conf.example
+
+Unfortunately @hooks from the alsa.conf.d files (or any other files
+loaded from the @hooks in alsa.conf) are expanded dynamically on request
+when the 'pcm' definitions are parsed. So yes, pulse-alsa.conf is loaded
+later than other configuration files in this case.
+
+						Jaroslav
+
+
 -- 
-1.9.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
