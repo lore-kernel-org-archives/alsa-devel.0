@@ -1,51 +1,60 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Order of device overrides in config files
-Date: Mon, 11 Jun 2018 13:33:14 +0200
-Message-ID: <fde2be1f-1e42-5e23-e1aa-77fb3e9a31bd@ivitera.com>
+From: Pavel Machek <pavel@ucw.cz>
+Subject: Re: handling voice calls in ALSA soc (on Droid 4)
+Date: Mon, 11 Jun 2018 14:01:58 +0200
+Message-ID: <20180611120158.GA21745@amd>
+References: <20180611102529.GA1272@amd>
+ <20180611111011.GA11580@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id B1DD6266E91
- for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2018 13:33:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id 1D9F6A1A40B04
- for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2018 13:33:15 +0200 (CEST)
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id EYGxw0Y61N3V for <alsa-devel@alsa-project.org>;
- Mon, 11 Jun 2018 13:33:15 +0200 (CEST)
-Received: from [192.168.100.32] (unknown [192.168.100.32])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id 01C27A1A40B01
- for <alsa-devel@alsa-project.org>; Mon, 11 Jun 2018 13:33:15 +0200 (CEST)
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="FL5UXtIhxfXey3p5"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180611111011.GA11580@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: kernel list <linux-kernel@vger.kernel.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, linux-omap@vger.kernel.org, tony@atomide.com, sre@kernel.org, nekit1000@gmail.com, mpartap@gmx.net, merlijn@wizzup.org, alsa-devel@alsa-project.org, tiwai@suse.com, perex@perex.cz, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-Please in what order are devices specified in alsa conf overriden?
+--FL5UXtIhxfXey3p5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The  pcm.!default device is defined in /usr/share/alsa/pulse-alsa.conf. 
-Also, I redefine this device in my .asoundrc. Strace dump shows my 
-.asoundrc is loaded after /usr/share/alsa/pulse-alsa.conf. Yet the 
-default device remains the pulse plugin.
+On Mon 2018-06-11 12:10:11, Mark Brown wrote:
+> On Mon, Jun 11, 2018 at 12:25:30PM +0200, Pavel Machek wrote:
+>=20
+> > ...and also. What is right interface for this? Mixer component that
+> > says if voice call is active or not?
+>=20
+> Your modem should be represented as a component in the system and have
+> an input and an output representing the input and output on the cell
+> network.  See speyside for an example of how this can look in software
+> though there's a bunch of different ways modems can appear so you might
+> not have a fully digital link like that.
 
-Also, what is the exact meaning of the exclamation mark in the device name?
+Thanks for the pointer.
 
-I very much appreciate any help.
+With setup like that, how does userland tell kernel that the baseband
+<-> microphone/speaker connection should be activated?
 
 Best regards,
+									Pavel
+--=20
+(english) http://www.livejournal.com/~pavelmachek
+(cesky, pictures) http://atrey.karlin.mff.cuni.cz/~pavel/picture/horses/blo=
+g.html
 
-Pavel.
+--FL5UXtIhxfXey3p5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAlseZLYACgkQMOfwapXb+vLTKgCePk3alYN445NsOHmo+vsZuR+N
+8ncAn2Srh+HDZ8pQNncr6xWcW6+zAWf9
+=pkOF
+-----END PGP SIGNATURE-----
+
+--FL5UXtIhxfXey3p5--
