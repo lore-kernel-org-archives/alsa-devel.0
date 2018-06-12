@@ -1,17 +1,14 @@
-From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH 1/2] ALSA: usb-audio: Add bi-directional
-	terminal types.
-Date: Tue, 12 Jun 2018 15:32:00 +0100
-Message-ID: <20180612143201.29988-2-jorge.sanjuan@codethink.co.uk>
-References: <20180612143201.29988-1-jorge.sanjuan@codethink.co.uk>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/realtek - Add shutup hint
+Date: Tue, 12 Jun 2018 17:21:18 +0200
+Message-ID: <20180612152118.17720-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id E90CC266E8B
- for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2018 16:32:19 +0200 (CEST)
-In-Reply-To: <20180612143201.29988-1-jorge.sanjuan@codethink.co.uk>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id F268B266E8B
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2018 17:21:30 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,35 +18,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ruslan.bilovol@gmail.com
+To: alsa-devel@alsa-project.org
+Cc: Hans de Goede <hdegoede@redhat.com>, Benjamin Berg <bberg@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
-Define the bi-directional USB terminal types for audio devices.
+The pin shutup callback seems working well on some devices while it
+does harm on some other devices; e.g. Lenovo laptops show often the
+noises at (runtime) PM with the pin shutup enabled.
 
-Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Currently, the only way to disable the pin shutup is to hard-code
+  spec->shutup = alc_no_shutup;
+in the fixup, and this makes the debugging harder for normal users.
+For allowing users to test the similar effect without recompiling the
+kernel, this patch adds a new hint string "shutup".  It's a boolean
+value, and by passing false to this, user can turn off the pin shutup
+call.
+
+For example, to turn off the shutup on Lenovo P50, create a "firmware
+patch" file (e.g. /lib/firmware/alsa/lenovo-p50) containing the
+following lines:
+
+  [codec]
+  0x10ec0298 0x17aa222e 0
+
+  [hint]
+  shutup = no
+
+and pass the file via patch option of snd-hda-intel module
+(e.g. patch=alsa/lenovo-p50).
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/uapi/linux/usb/audio.h | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/pci/hda/patch_realtek.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/uapi/linux/usb/audio.h b/include/uapi/linux/usb/audio.h
-index 13d98e6e0db1..74e520fb944f 100644
---- a/include/uapi/linux/usb/audio.h
-+++ b/include/uapi/linux/usb/audio.h
-@@ -230,6 +230,14 @@ struct uac1_output_terminal_descriptor {
- #define UAC_OUTPUT_TERMINAL_COMMUNICATION_SPEAKER	0x306
- #define UAC_OUTPUT_TERMINAL_LOW_FREQ_EFFECTS_SPEAKER	0x307
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index b1eb6bd4fbd8..e5a002900292 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -793,6 +793,9 @@ static inline void alc_shutup(struct hda_codec *codec)
+ {
+ 	struct alc_spec *spec = codec->spec;
  
-+/* Terminals - 2.4 Bi-directional Terminal Types */
-+#define UAC_BIDIR_TERMINAL_UNDEFINED			0x400
-+#define UAC_BIDIR_TERMINAL_HANDSET			0x401
-+#define UAC_BIDIR_TERMINAL_HEADSET			0x402
-+#define UAC_BIDIR_TERMINAL_SPEAKER_PHONE		0x403
-+#define UAC_BIDIR_TERMINAL_ECHO_SUPPRESSING		0x404
-+#define UAC_BIDIR_TERMINAL_ECHO_CANCELING		0x405
++	if (!snd_hda_get_bool_hint(codec, "shutup"))
++		return; /* disabled explicitly by hints */
 +
- /* Set bControlSize = 2 as default setting */
- #define UAC_DT_FEATURE_UNIT_SIZE(ch)		(7 + ((ch) + 1) * 2)
- 
+ 	if (spec && spec->shutup)
+ 		spec->shutup(codec);
+ 	else
 -- 
-2.11.0
+2.17.1
