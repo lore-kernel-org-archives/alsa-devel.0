@@ -1,22 +1,17 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: Re: [PATCH 1/8] ASoC: fsi: convert to SPDX identifiers
-Date: Tue, 12 Jun 2018 08:06:22 -0300
-Message-ID: <CAOMZO5DBLzhRE_ibhna5vOmVUD96FaXSpz-gfdZt5kU8AW=djA@mail.gmail.com>
-References: <87po0wdda5.wl-kuninori.morimoto.gx@renesas.com>
- <87o9ggdd94.wl-kuninori.morimoto.gx@renesas.com>
- <CAOMZO5ACWxCandV_KhR7ysR0xoAxG8KO7qYCGA42Daq94ZGOxw@mail.gmail.com>
- <s5hlgbkzeae.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] pcm: dmix: Fix hwptr updates at status call
+Date: Tue, 12 Jun 2018 13:56:50 +0200
+Message-ID: <20180612115650.15965-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot0-f195.google.com (mail-ot0-f195.google.com
- [74.125.82.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 8AC79267252
- for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2018 13:06:24 +0200 (CEST)
-Received: by mail-ot0-f195.google.com with SMTP id w9-v6so22032305otj.7
- for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2018 04:06:24 -0700 (PDT)
-In-Reply-To: <s5hlgbkzeae.wl-tiwai@suse.de>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47553267252
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2018 13:56:53 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A9720AC71
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2018 11:56:52 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,21 +21,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 12, 2018 at 3:53 AM, Takashi Iwai <tiwai@suse.de> wrote:
+In the commit 38a2d2eda880 ("pcm: dmix: Do not discard slave reported
+delay in status result"), the PCM dmix hwptr update code was rewritten
+to follow the slave PCM hwptr update.  This is based on the similar
+change in PCM dshare, the commit faf53c197cab.
 
-> ... is this really the consensus as the preferred style in the whole
-> Linux kernel tree?  To be honest, I find it rather annoying.
->
-> It's a food for bikeshed, and in general I'd postpone such changes
-> unless we really have to convert.
+There was a bug in the commit 38a2d2eda880 regarding the PCM state
+change, and it was addressed in commit 3752e6b8733d ("pcm: dmix: Fix
+the inconsistent PCM state").  However, we've hit yet another bug in
+this commit.  Namely, the hwptr update was forgotten in the
+snd_pcm_dmix_sync_ptr0() function.  So the hwptr value passed from
+snd_pcm_dmix_status() isn't properly stored, and it screws up at some
+long run occasionally.
 
-Putting everything as // is Linus Torvalds' preferred style:
-https://lkml.org/lkml/2017/11/25/133
+This patch covers the bug by replacing with the right value.
 
-Regards,
+Fixes: 38a2d2eda880 ("pcm: dmix: Do not discard slave reported delay in status result")
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=200013
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ src/pcm/pcm_dmix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Fabio Estevam
+diff --git a/src/pcm/pcm_dmix.c b/src/pcm/pcm_dmix.c
+index c65259beb1d6..3a951f533655 100644
+--- a/src/pcm/pcm_dmix.c
++++ b/src/pcm/pcm_dmix.c
+@@ -398,7 +398,7 @@ static int snd_pcm_dmix_sync_ptr0(snd_pcm_t *pcm, snd_pcm_uframes_t slave_hw_ptr
+ 	snd_pcm_sframes_t diff;
+ 	
+ 	old_slave_hw_ptr = dmix->slave_hw_ptr;
+-	dmix->slave_hw_ptr = *dmix->spcm->hw.ptr;
++	dmix->slave_hw_ptr = slave_hw_ptr;
+ 	diff = slave_hw_ptr - old_slave_hw_ptr;
+ 	if (diff == 0)		/* fast path */
+ 		return 0;
+-- 
+2.17.1
