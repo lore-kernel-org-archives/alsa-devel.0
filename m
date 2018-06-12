@@ -1,54 +1,43 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: Re: [PATCH] ASoC: twl6040: make pointer dmic_codec_dev
-	static
-Date: Tue, 12 Jun 2018 10:46:56 +0300
-Message-ID: <d0355575-feb2-a1fe-242a-57acf52bad1e@ti.com>
-References: <20180606093504.30255-1-colin.king@canonical.com>
+From: Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v4 1/7] dt-bindings: clk: at91: add an I2S mux clock
+Date: Tue, 12 Jun 2018 01:06:05 -0700
+Message-ID: <152879076578.16708.6230985334183790836@swboyd.mtv.corp.google.com>
+References: <1527251668-31396-1-git-send-email-codrin.ciubotariu@microchip.com>
+ <1527251668-31396-2-git-send-email-codrin.ciubotariu@microchip.com>
+ <20180531005827.GA17203@rob-hp-laptop>
+ <4f2e6e6a-df3a-b645-093c-b4467b3aa843@microchip.com>
+ <CAL_JsqJ=T0p17hHg6=obtydt7T-yrAeOr7C2XAEnDFQ-c0b5XQ@mail.gmail.com>
+ <152778070837.144038.4555982304713569160@swboyd.mtv.corp.google.com>
+ <CAL_JsqJu6=ORfutZ5tAyNp2q2rH6P+fgJMRKw750RyFy=ptjPw@mail.gmail.com>
+ <18f6871e-794d-3ea2-487e-32399a8b89b4@microchip.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelnx194.ext.ti.com (lelnx194.ext.ti.com [198.47.27.80])
- by alsa0.perex.cz (Postfix) with ESMTP id EB708266E0E
- for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2018 09:45:52 +0200 (CEST)
-In-Reply-To: <20180606093504.30255-1-colin.king@canonical.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Colin King <colin.king@canonical.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <18f6871e-794d-3ea2-487e-32399a8b89b4@microchip.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alexandre Belloni <alexandre.belloni@bootlin.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Boris Brezillon <boris.brezillon@bootlin.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, Cristian.Birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiAyMDE4LTA2LTA2IDEyOjM1LCBDb2xpbiBLaW5nIHdyb3RlOgo+IEZyb206IENvbGlu
-IElhbiBLaW5nIDxjb2xpbi5raW5nQGNhbm9uaWNhbC5jb20+Cj4gCj4gVGhlIHBvaW50ZXIgZG1p
-Y19jb2RlY19kZXYgaXMgbG9jYWwgdG8gdGhlIHNvdXJjZSBhbmQgZG9lcyBub3QgbmVlZAo+IHRv
-IGJlIGluIGdsb2JhbCBzY29wZSwgc28gbWFrZSBpdCBzdGF0aWMuCj4gCj4gQ2xlYW5zIHVwIHNw
-YXJzZSB3YXJuaW5nOgo+IHdhcm5pbmc6IHN5bWJvbCAnZG1pY19jb2RlY19kZXYnIHdhcyBub3Qg
-ZGVjbGFyZWQuIFNob3VsZCBpdCBiZSBzdGF0aWM/CgpjYW4geW91IGNoYW5nZSB0aGUgc3ViamVj
-dCB0bzoKQVNvQzogb21hcC1hYmUtdHdsNjA0MDogbWFrZSBwb2ludGVyIGRtaWNfY29kZWNfZGV2
-IHN0YXRpYwoKV2l0aCB0aGF0IGNoYW5nZToKQWNrZWQtYnk6IFBldGVyIFVqZmFsdXNpIDxwZXRl
-ci51amZhbHVzaUB0aS5jb20+Cgo+IAo+IFNpZ25lZC1vZmYtYnk6IENvbGluIElhbiBLaW5nIDxj
-b2xpbi5raW5nQGNhbm9uaWNhbC5jb20+Cj4gLS0tCj4gIHNvdW5kL3NvYy9vbWFwL29tYXAtYWJl
-LXR3bDYwNDAuYyB8IDIgKy0KPiAgMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspLCAxIGRl
-bGV0aW9uKC0pCj4gCj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9vbWFwL29tYXAtYWJlLXR3bDYw
-NDAuYyBiL3NvdW5kL3NvYy9vbWFwL29tYXAtYWJlLXR3bDYwNDAuYwo+IGluZGV4IDE1Y2NiZjQ3
-OWM5Ni4uZDVhZTllYjhjNzU2IDEwMDY0NAo+IC0tLSBhL3NvdW5kL3NvYy9vbWFwL29tYXAtYWJl
-LXR3bDYwNDAuYwo+ICsrKyBiL3NvdW5kL3NvYy9vbWFwL29tYXAtYWJlLXR3bDYwNDAuYwo+IEBA
-IC00MCw3ICs0MCw3IEBAIHN0cnVjdCBhYmVfdHdsNjA0MCB7Cj4gIAlpbnQJbWNsa19mcmVxOwkv
-KiBNQ0xLIGZyZXF1ZW5jeSBzcGVlZCBmb3IgdHdsNjA0MCAqLwo+ICB9Owo+ICAKPiAtc3RydWN0
-IHBsYXRmb3JtX2RldmljZSAqZG1pY19jb2RlY19kZXY7Cj4gK3N0YXRpYyBzdHJ1Y3QgcGxhdGZv
-cm1fZGV2aWNlICpkbWljX2NvZGVjX2RldjsKPiAgCj4gIHN0YXRpYyBpbnQgb21hcF9hYmVfaHdf
-cGFyYW1zKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vic3RyZWFtLAo+ICAJc3RydWN0IHNu
-ZF9wY21faHdfcGFyYW1zICpwYXJhbXMpCj4gCgotIFDDqXRlcgoKVGV4YXMgSW5zdHJ1bWVudHMg
-RmlubGFuZCBPeSwgUG9ya2thbGFua2F0dSAyMiwgMDAxODAgSGVsc2lua2kuClktdHVubnVzL0J1
-c2luZXNzIElEOiAwNjE1NTIxLTQuIEtvdGlwYWlra2EvRG9taWNpbGU6IEhlbHNpbmtpCl9fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFp
-bGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Quoting Codrin Ciubotariu (2018-06-07 03:30:14)
+> > =
+
+> > Seems to me that clock additions could use a new binding and we start
+> > with a new driver that handles these few clocks initially. But I
+> > haven't looked whether both can coexist.
+> =
+
+> Mark already applied to broonie/sound.git the I2S bindings that have a =
+
+> phandle to this clock. If I am to change #clock-cells to 1, I will have =
+
+> to change the bindings to include the clock-id.
+> Which approach should I take now?
+> =
+
+
+You're talking about changing the example in the binding doc? That
+doesn't really matter. Consumer side of the provider has to match the
+cell count from the provider so it doesn't really need to be 'fixed' in
+the example at all.
