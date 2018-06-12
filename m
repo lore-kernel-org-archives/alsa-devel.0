@@ -1,43 +1,65 @@
-From: Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v4 1/7] dt-bindings: clk: at91: add an I2S mux clock
-Date: Tue, 12 Jun 2018 01:06:05 -0700
-Message-ID: <152879076578.16708.6230985334183790836@swboyd.mtv.corp.google.com>
-References: <1527251668-31396-1-git-send-email-codrin.ciubotariu@microchip.com>
- <1527251668-31396-2-git-send-email-codrin.ciubotariu@microchip.com>
- <20180531005827.GA17203@rob-hp-laptop>
- <4f2e6e6a-df3a-b645-093c-b4467b3aa843@microchip.com>
- <CAL_JsqJ=T0p17hHg6=obtydt7T-yrAeOr7C2XAEnDFQ-c0b5XQ@mail.gmail.com>
- <152778070837.144038.4555982304713569160@swboyd.mtv.corp.google.com>
- <CAL_JsqJu6=ORfutZ5tAyNp2q2rH6P+fgJMRKw750RyFy=ptjPw@mail.gmail.com>
- <18f6871e-794d-3ea2-487e-32399a8b89b4@microchip.com>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: [PATCH v2 0/6] soundwire: Add multi link support
+Date: Tue, 12 Jun 2018 16:23:38 +0530
+Message-ID: <1528800824-696-1-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <18f6871e-794d-3ea2-487e-32399a8b89b4@microchip.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: devicetree@vger.kernel.org, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Boris Brezillon <boris.brezillon@bootlin.com>, "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, linux-clk <linux-clk@vger.kernel.org>, Cristian.Birsan@microchip.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 33A04267252
+ for <alsa-devel@alsa-project.org>; Tue, 12 Jun 2018 12:55:21 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Codrin Ciubotariu (2018-06-07 03:30:14)
-> > =
+Currently, in the SoundWire subsystem, the concept of stream is
+limited to a Master and one or more Slaves(Codecs). This series
+aims to add support for multiple Master(s) sharing the same
+reference clock and synchronized in the hardware.
 
-> > Seems to me that clock additions could use a new binding and we start
-> > with a new driver that handles these few clocks initially. But I
-> > haven't looked whether both can coexist.
-> =
+This patch series adds:
+ - Helpers to lock bus instances part of the stream
+ - Boiler plate conversion of code to support a list of
+   Master runtime
+ - Support multi link bank switch to support synchronization
+   between multiple masters
+ - Add Intel platform ops for pre/post bank switch
 
-> Mark already applied to broonie/sound.git the I2S bindings that have a =
+Changes in v2:
+ - Add the example in Documentation as pointed out by Vinod
+ - As Pierre suggested, added more description to the
+   sdw_acquire_bus_lock() and sdw_release_bus_lock() API and
+   sdw_stream_runtime data structure.
 
-> phandle to this clock. If I am to change #clock-cells to 1, I will have =
+Sanyog Kale (2):
+  Documentation: soundwire: Add documentation for Multi link
+  soundwire: Add support to lock across bus instances
 
-> to change the bindings to include the clock-id.
-> Which approach should I take now?
-> =
+Shreyas NC (3):
+  soundwire: Initialize completion for defer messages
+  soundwire: Add support for multilink bank switch
+  soundwire: intel: Add pre/post bank switch ops
 
+Vinod Koul (1):
+  soundwire: Handle multiple master instances in a stream
 
-You're talking about changing the example in the binding doc? That
-doesn't really matter. Consumer side of the provider has to match the
-cell count from the provider so it doesn't really need to be 'fixed' in
-the example at all.
+ Documentation/driver-api/soundwire/stream.rst |  29 +-
+ drivers/soundwire/bus.c                       |   1 +
+ drivers/soundwire/bus.h                       |   4 +
+ drivers/soundwire/intel.c                     |  54 ++++
+ drivers/soundwire/stream.c                    | 441 ++++++++++++++++++--------
+ include/linux/soundwire/sdw.h                 |   8 +-
+ 6 files changed, 407 insertions(+), 130 deletions(-)
+
+-- 
+2.7.4
