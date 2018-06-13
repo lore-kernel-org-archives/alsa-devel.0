@@ -1,155 +1,40 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 4/6] soundwire: Handle multiple master
- instances in a stream
-Date: Wed, 13 Jun 2018 11:55:58 -0500
-Message-ID: <e34a35a8-9c2d-b254-65d2-012d57d5f528@linux.intel.com>
-References: <1528800824-696-1-git-send-email-shreyas.nc@intel.com>
- <1528800824-696-5-git-send-email-shreyas.nc@intel.com>
- <d6df99eb-e48b-7354-849d-cde43e33b504@linux.intel.com>
- <20180613055441.GA1127@buildpc-HP-Z230>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH 1/2] ASoC: pxa: add binding for pxa2xx-ac97 audio complex
+Date: Wed, 13 Jun 2018 21:00:19 +0200
+Message-ID: <87y3fiqzp8.fsf@belgarion.home>
+References: <20180611202211.15501-1-robert.jarzmik@free.fr>
+        <20180612221359.GA26741@rob-hp-laptop>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id AEE75266E76
- for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2018 18:56:02 +0200 (CEST)
-In-Reply-To: <20180613055441.GA1127@buildpc-HP-Z230>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180612221359.GA26741@rob-hp-laptop> (Rob Herring's message of
+        "Tue, 12 Jun 2018 16:13:59 -0600")
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/13/18 12:54 AM, Sanyog Kale wrote:
-> On Tue, Jun 12, 2018 at 02:12:46PM -0500, Pierre-Louis Bossart wrote:
->>
->>
->> On 06/12/2018 05:53 AM, Shreyas NC wrote:
->>> From: Vinod Koul <vkoul@kernel.org>
->>>
->>> For each SoundWire stream operation, we need to parse master
->>> list and operate upon all master runtime.
->>>
->>> This patch does the boilerplate conversion of stream handling
->> >from single master runtime to handle a list of master runtime.
->>>
->>> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
->>> Signed-off-by: Vinod Koul <vkoul@kernel.org>
->>> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
->>> ---
->>>   drivers/soundwire/stream.c    | 308 +++++++++++++++++++++++++-----------------
->>>   include/linux/soundwire/sdw.h |   2 -
->>>   2 files changed, 185 insertions(+), 125 deletions(-)
->>>
->>> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
->>> index eb942c6..36506a7 100644
->>> --- a/drivers/soundwire/stream.c
->>> +++ b/drivers/soundwire/stream.c
->>> @@ -681,35 +681,44 @@ static int sdw_bank_switch(struct sdw_bus *bus)
->>>   static int do_bank_switch(struct sdw_stream_runtime *stream)
->>>   {
->>> -	struct sdw_master_runtime *m_rt = stream->m_rt;
->>> +	struct sdw_master_runtime *m_rt = NULL;
->>>   	const struct sdw_master_ops *ops;
->>> -	struct sdw_bus *bus = m_rt->bus;
->>> +	struct sdw_bus *bus = NULL;
->>>   	int ret = 0;
->>> -	ops = bus->ops;
->>> -	/* Pre-bank switch */
->>> -	if (ops->pre_bank_switch) {
->>> -		ret = ops->pre_bank_switch(bus);
->>> +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
->>> +		bus = m_rt->bus;
->>> +		ops = bus->ops;
->>> +
->>> +		/* Pre-bank switch */
->>> +		if (ops->pre_bank_switch) {
->>> +			ret = ops->pre_bank_switch(bus);
->>> +			if (ret < 0) {
->>> +				dev_err(bus->dev,
->>> +					"Pre bank switch op failed: %d", ret);
->>> +				return ret;
->>> +			}
->>> +		}
->>> +
->>> +		/* Bank switch */
->>> +		ret = sdw_bank_switch(bus);
->>>   		if (ret < 0) {
->>> -			dev_err(bus->dev, "Pre bank switch op failed: %d", ret);
->>> +			dev_err(bus->dev, "Bank switch failed: %d", ret);
->>>   			return ret;
->>>   		}
->> You probably want to add a comment that in multi-link operation the actual
->> bank_switch happens later and is done in a synchronized manner. This is lost
->> if you just move code around and move the bank_switch into a loop.
->>
->> I am actually no longer clear just looking at this code on when the
->> bank_switch happens (i know we've discussed this before but I am trying to
->> find out just based on this v2 instead of projecting how I think it should
->> work):
->> In Patch 6/6 it's pretty obvious that the bank switch happens when the
->> SyncGO bit is set, but there is no comment or explanation on how we reach
->> the intel_post_bank_switch() routine once for all masters handling a stream
->> when everything is based on loops. Clearly the intel_pre_bank_switch is
->> called multiple times (once per master), I guess I am missing what the
->> trigger is for the intel_post_bank_switch() routine to be invoked?
->>
-> 
-> Hi Pierre,
-> 
-> To answer your last question, do_bank_switch is where we perform all the
-> bank switch operations.
-> 
-> In first loop for Master(s) involved in stream, ops->pre_bank_switch and
-> bank_switch is performed. In 2nd loop for Master(s) involved in stream,
-> ops->post_bank_switch and wait for bank switch is performed.
-> 
-> Assuming a stream with Master 1 and Master 2, the go_sync bit will be
-> set in Master 1 intel_post_bank_switch call which will trigger bank
-> switch for both the Master's. The Master 2 intel_post_bank_switch call
-> will just return as it will won't see CMDSYNC bit set for any Master(s).
+Rob Herring <robh@kernel.org> writes:
 
-Makes sense, thanks for taking the time to provide the details I didn't 
-remember.
-Sreyas, if you could add a bit of information on this it'd be a good 
-thing - specifically the expectation is that the bank switch is 
-triggered by the first master in the master_list loop while others just 
-return without doing anything.
+> On Mon, Jun 11, 2018 at 10:22:10PM +0200, Robert Jarzmik wrote:
+>> This adds a binding for the Marvell PXA audio complex, available in
+>> pxa2xx and pxa3xx variants.
+>> +Required properties:
+>> +  - compatible: "marvell,pxa2xx-ac97"
+>
+> Don't use wildcards in compatible strings. Though this is so old...
+Yes, I could use pxa270-ac97.
 
-> 
->>>   	}
->>> -	/* Bank switch */
->>> -	ret = sdw_bank_switch(bus);
->>> -	if (ret < 0) {
->>> -		dev_err(bus->dev, "Bank switch failed: %d", ret);
->>> -		return ret;
->>> -	}
->>> -
->>>   	/* Post-bank switch */
->>> -	if (ops->post_bank_switch) {
->>> -		ret = ops->post_bank_switch(bus);
->>> -		if (ret < 0) {
->>> -			dev_err(bus->dev,
->>> +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
->>> +		bus = m_rt->bus;
->>> +		ops = bus->ops;
->>> +		if (ops->post_bank_switch) {
->>> +			ret = ops->post_bank_switch(bus);
->>> +			if (ret < 0) {
->>> +				dev_err(bus->dev,
->>>   					"Post bank switch op failed: %d", ret);
->>> +			}
->>>   		}
->>>   	}
->>>   };
->>
-> 
+>> +  - reset-gpio: gpio used for AC97 reset, refer to gpio.txt
+> reset-gpios
+Right, I'm on it.
+
+>> +		status = "okay";
+>
+> Don't show status in examples.
+Sure.
+
+Cheers.
+
+-- 
+Robert
