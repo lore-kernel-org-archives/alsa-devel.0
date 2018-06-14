@@ -1,160 +1,65 @@
-From: Shreyas NC <shreyas.nc@intel.com>
-Subject: [PATCH v3 3/6] soundwire: Add support to lock across
-	bus instances
-Date: Thu, 14 Jun 2018 17:02:00 +0530
-Message-ID: <1528975923-15141-4-git-send-email-shreyas.nc@intel.com>
-References: <1528975923-15141-1-git-send-email-shreyas.nc@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E07926760A
- for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 13:34:34 +0200 (CEST)
-In-Reply-To: <1528975923-15141-1-git-send-email-shreyas.nc@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>, sanyog.r.kale@intel.com
+From: Zhouyang Jia <jiazhouyang09@gmail.com>
+Subject: [PATCH v3] ALSA: sonicvibes: add error handling for snd_ctl_add
+Date: Thu, 14 Jun 2018 19:41:37 +0800
+Message-ID: <1528976499-52071-1-git-send-email-jiazhouyang09@gmail.com>
+References: <1528704521-34060-1-git-send-email-jiazhouyang09@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1528704521-34060-1-git-send-email-jiazhouyang09@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Zhouyang Jia <jiazhouyang09@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Sanyog Kale <sanyog.r.kale@intel.com>
+When snd_ctl_add fails, the lack of error-handling code may
+cause unexpected results.
 
-Currently, the stream concept is limited to a Master and one or
-more Codecs.
+This patch adds error-handling code after calling snd_ctl_add.
 
-This patch extends the concept to support multiple Master(s)
-sharing the same reference clock and synchronized in the hardware.
-Modify sdw_stream_runtime to support a list of sdw_master_runtime
-for the same. The existing reference to a single m_rt is removed
-in the next patch.
-
-Typically to lock, one would acquire a global lock and then lock
-bus instances. In this case, the caller framework(ASoC DPCM)
-guarantees that stream operations on a card are always serialized.
-So, there is no race condition and hence no need for global lock.
-
-Bus lock(s) are acquired to reconfigure the bus while the stream
-is set-up.
-So, we add sdw_acquire_bus_lock()/sdw_release_bus_lock() APIs which
-are used only to reconfigure the bus.
-
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
 ---
- drivers/soundwire/bus.h       |  2 ++
- drivers/soundwire/stream.c    | 41 +++++++++++++++++++++++++++++++++++++++++
- include/linux/soundwire/sdw.h |  4 ++++
- 3 files changed, 47 insertions(+)
+v1->v2:
+- Check the return value of snd_sonicvibes_create_gameport.
+v2->v3:
+- Fix the code style.
+---
+ sound/pci/sonicvibes.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
-index 3b15c4e..b6cfbdf 100644
---- a/drivers/soundwire/bus.h
-+++ b/drivers/soundwire/bus.h
-@@ -99,6 +99,7 @@ struct sdw_slave_runtime {
-  * this stream, can be zero.
-  * @slave_rt_list: Slave runtime list
-  * @port_list: List of Master Ports configured for this stream, can be zero.
-+ * @stream_node: sdw_stream_runtime master_list node
-  * @bus_node: sdw_bus m_rt_list node
-  */
- struct sdw_master_runtime {
-@@ -108,6 +109,7 @@ struct sdw_master_runtime {
- 	unsigned int ch_count;
- 	struct list_head slave_rt_list;
- 	struct list_head port_list;
-+	struct list_head stream_node;
- 	struct list_head bus_node;
- };
- 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 8974a0f..eb942c6 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -747,6 +747,7 @@ struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name)
- 		return NULL;
- 
- 	stream->name = stream_name;
-+	INIT_LIST_HEAD(&stream->master_list);
- 	stream->state = SDW_STREAM_ALLOCATED;
- 
- 	return stream;
-@@ -1234,6 +1235,46 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
- 	return NULL;
- }
- 
-+/**
-+ * sdw_acquire_bus_lock: Acquire bus lock for all Master runtime(s)
-+ *
-+ * @stream: SoundWire stream
-+ *
-+ * Acquire bus_lock for each of the master runtime(m_rt) part of this
-+ * stream to reconfigure the bus.
-+ */
-+static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
-+{
-+	struct sdw_master_runtime *m_rt = NULL;
-+	struct sdw_bus *bus = NULL;
-+
-+	/* Iterate for all Master(s) in Master list */
-+	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-+		bus = m_rt->bus;
-+
-+		mutex_lock(&bus->bus_lock);
-+	}
-+}
-+
-+/**
-+ * sdw_release_bus_lock: Release bus lock for all Master runtime(s)
-+ *
-+ * @stream: SoundWire stream
-+ *
-+ * Release the previously held bus_lock after reconfiguring the bus.
-+ */
-+static void sdw_release_bus_lock(struct sdw_stream_runtime *stream)
-+{
-+	struct sdw_master_runtime *m_rt = NULL;
-+	struct sdw_bus *bus = NULL;
-+
-+	/* Iterate for all Master(s) in Master list */
-+	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-+		bus = m_rt->bus;
-+		mutex_unlock(&bus->bus_lock);
-+	}
-+}
-+
- static int _sdw_prepare_stream(struct sdw_stream_runtime *stream)
+diff --git a/sound/pci/sonicvibes.c b/sound/pci/sonicvibes.c
+index a8abb15..7fbdb70 100644
+--- a/sound/pci/sonicvibes.c
++++ b/sound/pci/sonicvibes.c
+@@ -1188,6 +1188,7 @@ SONICVIBES_SINGLE("Joystick Speed", 0, SV_IREG_GAME_PORT, 1, 15, 0);
+ static int snd_sonicvibes_create_gameport(struct sonicvibes *sonic)
  {
- 	struct sdw_master_runtime *m_rt = stream->m_rt;
-diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-index 962971e..ccd8dcdf 100644
---- a/include/linux/soundwire/sdw.h
-+++ b/include/linux/soundwire/sdw.h
-@@ -769,6 +769,9 @@ struct sdw_stream_params {
-  * @state: Current state of the stream
-  * @type: Stream type PCM or PDM
-  * @m_rt: Master runtime
-+ * @master_list: List of Master runtime(s) in this stream.
-+ * master_list can contain only one m_rt per Master instance
-+ * for a stream
-  */
- struct sdw_stream_runtime {
- 	char *name;
-@@ -776,6 +779,7 @@ struct sdw_stream_runtime {
- 	enum sdw_stream_state state;
- 	enum sdw_stream_type type;
- 	struct sdw_master_runtime *m_rt;
-+	struct list_head master_list;
- };
+ 	struct gameport *gp;
++	int err;
  
- struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name);
+ 	sonic->gameport = gp = gameport_allocate_port();
+ 	if (!gp) {
+@@ -1203,7 +1204,10 @@ static int snd_sonicvibes_create_gameport(struct sonicvibes *sonic)
+ 
+ 	gameport_register_port(gp);
+ 
+-	snd_ctl_add(sonic->card, snd_ctl_new1(&snd_sonicvibes_game_control, sonic));
++	err = snd_ctl_add(sonic->card,
++		snd_ctl_new1(&snd_sonicvibes_game_control, sonic));
++	if (err < 0)
++		return err;
+ 
+ 	return 0;
+ }
+@@ -1515,7 +1519,11 @@ static int snd_sonic_probe(struct pci_dev *pci,
+ 		return err;
+ 	}
+ 
+-	snd_sonicvibes_create_gameport(sonic);
++	err = snd_sonicvibes_create_gameport(sonic);
++	if (err < 0) {
++		snd_card_free(card);
++		return err;
++	}
+ 
+ 	if ((err = snd_card_register(card)) < 0) {
+ 		snd_card_free(card);
 -- 
 2.7.4
