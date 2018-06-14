@@ -1,16 +1,16 @@
-From: noman pouigt <variksla@gmail.com>
-Subject: Slow SPI reads in ALSA causing mic recording error
-Date: Thu, 14 Jun 2018 02:12:35 -0700
-Message-ID: <CAES_P+96hMOrbtVekpUC6dJg8Znmq9a8VSVU7hNAA5XG00eYjg@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Slow SPI reads in ALSA causing mic recording error
+Date: Thu, 14 Jun 2018 11:42:23 +0100
+Message-ID: <20180614104223.GA9660@sirena.org.uk>
+References: <CAES_P+96hMOrbtVekpUC6dJg8Znmq9a8VSVU7hNAA5XG00eYjg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4435354428460098822=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F8652673F2
- for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 11:12:38 +0200 (CEST)
-Received: by mail-pg0-f66.google.com with SMTP id q4-v6so2641697pgr.1
- for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 02:12:37 -0700 (PDT)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EC6E266E76
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 12:42:26 +0200 (CEST)
+In-Reply-To: <CAES_P+96hMOrbtVekpUC6dJg8Znmq9a8VSVU7hNAA5XG00eYjg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>
-Cc: broonie@kernel.org
+To: noman pouigt <variksla@gmail.com>
+Cc: tiwai@suse.de, alsa-devel@alsa-project.org, Vinod Koul <vinod.koul@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Folks,
 
-I have a DSP hardware connected over SPI
-to SoC with extra interrupt line.
+--===============4435354428460098822==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="EeQfGwPcQSOJBaQU"
+Content-Disposition: inline
 
-I am getting buffer overrun problem in DSP
-while doing MIC recording. SoC SPI consecutive reads
-are two slow and it is not able to empty DSP buffers
-in time which causes DSP to issue overruns interrupts
-to SoC and causes bad mic data recording.
 
-ARECORD properly records mic data but when I try to use
-AudioFlinger(android) then I see buffer overrun issue in
-DSP. Period size is same in both arecord and AudioFlinger case.
+--EeQfGwPcQSOJBaQU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-system: arm64, latest mainline kernel, latest alsa-lib
+On Thu, Jun 14, 2018 at 02:12:35AM -0700, noman pouigt wrote:
 
-I have below platform ops
-static const struct snd_pcm_ops platform_ops = {
-     .open    = platform_open,
-     .ioctl      = snd_pcm_lib_ioctl,
-     .pointer  = platform_pcm_pointer,
-     .mmap    = snd_pcm_lib_default_mmap,
-     .page      = snd_pcm_lib_get_vmalloc_page,
- };
+> I have also used high priority workqueues but that didn't
+> help either. Wondering if I can get some pointers to debug this?
+> also if there any alsa-utility which can simulate closely audio flinger?
 
-What baffles me is that consecutive SPI read(while loop
-in a workqueue) doesn't have any relation with userspace
-as it is interrupt driven (DSP interrupt) but still with
-audio flinger overrun happens. In the workqueue, between
-SPI reads, driver calls  elapsed function to notify the userspace
-to read 1 period data whenever data crosses period boundary.
-I don't think that causes any issues. Aforementioned workqueue
-stops only when userspace closes it so I don't know how
-userspace application can slow down SPI reads?
+You probably just need to ensure that you've got more than one period
+so there's always one ready, increase min_periods or possibly make the
+individual periods bigger.  It's normally going to be very hard to get
+everything scheduled reliably if there's no margin for error, ensuring
+there's some grace in case things run over will tend to be more robust.
 
-I have also used high priority workqueues but that didn't
-help either. Wondering if I can get some pointers to debug this?
-also if there any alsa-utility which can simulate closely audio flinger?
+--EeQfGwPcQSOJBaQU
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Thanks,
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsiRo0ACgkQJNaLcl1U
+h9DDxAf/abxRTl+2+lkOSmn/Um8iMZFoNfUX7fSaccUAksS5EBhkJNx5j0J6dd3b
+mU2G3o81SYvD47nShvBd2+bjofMHRFQS/F8/RXDLvVoZX4kiIhWIBwOj1ARqVu5Y
+zcjJ/2rEF1Hd3zp6iNtLqG1ybotNGuyW+xl6Ak7RItpMofwMRtyzj/T9xePPgonN
+68AHwpD4bQfgBDl0YLQjM1LYrZFUux4JVxqr6B8BPBvQka516/nG9ssb0wZTLyGv
+XkdaP3Hgd9LhjZjll5+73pLwMUBy+laY9gqVaHjV6RMsIfFriQbbg2QGwoSDSoKb
+F0DsJzyBOnioe/9yWkM+MFdv4veTyA==
+=MuRr
+-----END PGP SIGNATURE-----
+
+--EeQfGwPcQSOJBaQU--
+
+--===============4435354428460098822==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4435354428460098822==--
