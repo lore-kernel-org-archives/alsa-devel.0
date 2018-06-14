@@ -1,42 +1,62 @@
-From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: [PATCH v2 5/7] ASoC: qdsp6: Add depends on OF
-Date: Thu, 14 Jun 2018 13:11:36 +0200
-Message-ID: <20180614111138.8923-6-niklas.cassel@linaro.org>
-References: <20180614111138.8923-1-niklas.cassel@linaro.org>
+From: Zhouyang Jia <jiazhouyang09@gmail.com>
+Subject: [PATCH v2] ALSA: sonicvibes: add error handling for snd_ctl_add
+Date: Thu, 14 Jun 2018 19:22:18 +0800
+Message-ID: <1528975341-51696-1-git-send-email-jiazhouyang09@gmail.com>
+References: <1528704521-34060-1-git-send-email-jiazhouyang09@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180614111138.8923-1-niklas.cassel@linaro.org>
+In-Reply-To: <1528704521-34060-1-git-send-email-jiazhouyang09@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: andy.gross@linaro.org, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-arm-msm@vger.kernel.org, Niklas Cassel <niklas.cassel@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Zhouyang Jia <jiazhouyang09@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-of_platform_device_destroy is only defined when building
-with CONFIG_OF=y. Add a depends on OF.
+When snd_ctl_add fails, the lack of error-handling code may
+cause unexpected results.
 
-sound/soc/qcom/qdsp6/q6afe.o: In function `q6afe_remove':
-q6afe.c:(.text+0x363): undefined reference to `of_platform_device_destroy'
-sound/soc/qcom/qdsp6/q6adm.o: In function `q6adm_remove':
-q6adm.c:(.text+0x216): undefined reference to `of_platform_device_destroy'
-sound/soc/qcom/qdsp6/q6asm.o: In function `q6asm_remove':
-q6asm.c:(.text+0x723): undefined reference to `of_platform_device_destroy'
+This patch adds error-handling code after calling snd_ctl_add.
 
-Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
 ---
- sound/soc/qcom/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v1->v2:
+- Check the return value of snd_sonicvibes_create_gameport.
+---
+ sound/pci/sonicvibes.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 87838fa27997..3989ec856441 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -67,7 +67,7 @@ config SND_SOC_QDSP6_ASM_DAI
+diff --git a/sound/pci/sonicvibes.c b/sound/pci/sonicvibes.c
+index a8abb15..75225b04 100644
+--- a/sound/pci/sonicvibes.c
++++ b/sound/pci/sonicvibes.c
+@@ -1188,6 +1188,7 @@ SONICVIBES_SINGLE("Joystick Speed", 0, SV_IREG_GAME_PORT, 1, 15, 0);
+ static int snd_sonicvibes_create_gameport(struct sonicvibes *sonic)
+ {
+ 	struct gameport *gp;
++	int err;
  
- config SND_SOC_QDSP6
- 	tristate "SoC ALSA audio driver for QDSP6"
--	depends on QCOM_APR && HAS_DMA
-+	depends on QCOM_APR && HAS_DMA && OF
- 	select SND_SOC_QDSP6_COMMON
- 	select SND_SOC_QDSP6_CORE
- 	select SND_SOC_QDSP6_AFE
+ 	sonic->gameport = gp = gameport_allocate_port();
+ 	if (!gp) {
+@@ -1203,7 +1204,10 @@ static int snd_sonicvibes_create_gameport(struct sonicvibes *sonic)
+ 
+ 	gameport_register_port(gp);
+ 
+-	snd_ctl_add(sonic->card, snd_ctl_new1(&snd_sonicvibes_game_control, sonic));
++	err = snd_ctl_add(sonic->card,
++		snd_ctl_new1(&snd_sonicvibes_game_control, sonic));
++	if (err < 0)
++		return err;
+ 
+ 	return 0;
+ }
+@@ -1515,7 +1519,10 @@ static int snd_sonic_probe(struct pci_dev *pci,
+ 		return err;
+ 	}
+ 
+-	snd_sonicvibes_create_gameport(sonic);
++	if ((err = snd_sonicvibes_create_gameport(sonic)) < 0) {
++		snd_card_free(card);
++		return err;
++        }
+ 
+ 	if ((err = snd_card_register(card)) < 0) {
+ 		snd_card_free(card);
 -- 
-2.17.1
+2.7.4
