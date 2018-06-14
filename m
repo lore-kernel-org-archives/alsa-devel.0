@@ -1,14 +1,17 @@
 From: Shreyas NC <shreyas.nc@intel.com>
-Subject: [PATCH v3 0/6] soundwire: Add multi link support
-Date: Thu, 14 Jun 2018 17:01:57 +0530
-Message-ID: <1528975923-15141-1-git-send-email-shreyas.nc@intel.com>
+Subject: [PATCH v3 1/6] Documentation: soundwire: Add
+	documentation for multi link
+Date: Thu, 14 Jun 2018 17:01:58 +0530
+Message-ID: <1528975923-15141-2-git-send-email-shreyas.nc@intel.com>
+References: <1528975923-15141-1-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id CD1E02675FA
- for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 13:33:41 +0200 (CEST)
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7217E2675FC
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 13:34:10 +0200 (CEST)
+In-Reply-To: <1528975923-15141-1-git-send-email-shreyas.nc@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,44 +25,64 @@ To: alsa-devel@alsa-project.org
 Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Currently, in the SoundWire subsystem, the concept of stream is
-limited to a Master and one or more Slaves(Codecs). This series
-aims to add support for multiple Master(s) sharing the same
-reference clock and synchronized in the hardware.
+From: Sanyog Kale <sanyog.r.kale@intel.com>
 
-This patch series adds:
- - Helpers to lock bus instances part of the stream
- - Boiler plate conversion of code to support a list of
-   Master runtime
- - Support multi link bank switch to support synchronization
-   between multiple masters
- - Add Intel platform ops for pre/post bank switch
+Add example and documentation to describe multi link streams
 
-changes in v3:
- - Added comments to explain the trigger for multi link
-   bank switch
- - Added comments in the intel_post_bank_switch ops to explain
-   how synchronous trigger of bank switch is handled.
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+---
+ Documentation/driver-api/soundwire/stream.rst | 29 ++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
 
-Sanyog Kale (2):
-  Documentation: soundwire: Add documentation for multi link
-  soundwire: Add support to lock across bus instances
-
-Shreyas NC (3):
-  soundwire: Initialize completion for defer messages
-  soundwire: Add support for multi link bank switch
-  soundwire: intel: Add pre/post bank switch ops
-
-Vinod Koul (1):
-  soundwire: Handle multiple master instances in a stream
-
- Documentation/driver-api/soundwire/stream.rst |  29 +-
- drivers/soundwire/bus.c                       |   1 +
- drivers/soundwire/bus.h                       |   4 +
- drivers/soundwire/intel.c                     |  65 ++++
- drivers/soundwire/stream.c                    | 456 ++++++++++++++++++--------
- include/linux/soundwire/sdw.h                 |   8 +-
- 6 files changed, 432 insertions(+), 131 deletions(-)
-
+diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
+index 29121aa..11623aab 100644
+--- a/Documentation/driver-api/soundwire/stream.rst
++++ b/Documentation/driver-api/soundwire/stream.rst
+@@ -75,7 +75,6 @@ Slaves are using single port. ::
+ 	                                                   |     (Data)    |
+ 	                                                   +---------------+
+ 
+-
+ Example 4: Stereo Stream with L and R channel is rendered by two different
+ Ports of the Master and is received by only single Port of the Slave
+ interface. ::
+@@ -101,6 +100,34 @@ interface. ::
+ 	+--------------------+                             |                |
+ 							   +----------------+
+ 
++Example 5: Stereo Stream with L and R channel is rendered by 2 Masters, each
++rendering one channel, and is received by two different Slaves, each
++receiving one channel. Both Masters and both Slaves are using single port. ::
++
++	+---------------+                    Clock Signal  +---------------+
++	|    Master     +----------------------------------+     Slave     |
++	|   Interface   |                                  |   Interface   |
++	|       1       |                                  |       1       |
++	|               |                     Data Signal  |               |
++	|       L       +----------------------------------+       L       |
++	|     (Data)    |     Data Direction               |     (Data)    |
++	+---------------+  +----------------------->       +---------------+
++
++	+---------------+                    Clock Signal  +---------------+
++	|    Master     +----------------------------------+     Slave     |
++	|   Interface   |                                  |   Interface   |
++	|       2       |                                  |       2       |
++	|               |                     Data Signal  |               |
++	|       R       +----------------------------------+       R       |
++	|     (Data)    |     Data Direction               |     (Data)    |
++	+---------------+  +----------------------->       +---------------+
++
++Note: In multi-link cases like above, to lock, one would acquire a global
++lock and then go on locking bus instances. But, in this case the caller
++framework(ASoC DPCM) guarantees that stream operations on a card are
++always serialized. So, there is no race condition and hence no need for
++global lock.
++
+ SoundWire Stream Management flow
+ ================================
+ 
 -- 
 2.7.4
