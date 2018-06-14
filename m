@@ -1,128 +1,31 @@
-From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH v2 2/4] ALSA: usb-audio: Change in connectors
-	control creation interface
-Date: Thu, 14 Jun 2018 15:05:56 +0100
-Message-ID: <20180614140558.28277-3-jorge.sanjuan@codethink.co.uk>
-References: <20180612143201.29988-1-jorge.sanjuan@codethink.co.uk>
- <20180614140558.28277-1-jorge.sanjuan@codethink.co.uk>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: codecs: PCM1789: include gpio/consumer.h
+Date: Thu, 14 Jun 2018 16:44:38 +0200
+Message-ID: <CACRpkdb-j4E8JL10i2-AQ4_ZWRu9NrMVaGJBbXwoFxufY60HUQ@mail.gmail.com>
+References: <20180530215407.1196429-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 27D39267615
- for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 16:06:02 +0200 (CEST)
-In-Reply-To: <20180614140558.28277-1-jorge.sanjuan@codethink.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ruslan.bilovol@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180530215407.1196429-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@bootlin.com>
 List-Id: alsa-devel@alsa-project.org
 
-Change build_connector_control() and get_connector_control_name()
-so they take `struct usb_mixer_interface` as input argument instead
-of `struct mixer_build`.
+On Wed, May 30, 2018 at 11:53 PM, Arnd Bergmann <arnd@arndb.de> wrote:
 
-This is preliminary work to add support for connectors control
-for UAC3 BADD devices. No functional change.
+> When CONFIG_GPIOLIB is disabled, this codec fails to build
+> because gpio/consumer.h is not included implicitly.
+>
+> sound/soc/codecs/pcm1789.c: In function 'pcm1789_common_init':
+> sound/soc/codecs/pcm1789.c:247:19: error: implicit declaration of function 'devm_gpiod_get_optional'; did you mean 'devm_gpio_request_one'? [-Werror=implicit-function-declaration]
+>   pcm1789->reset = devm_gpiod_get_optional(dev, "reset", GPIOD_OUT_HIGH);
+>                    ^~~~~~~~~~~~~~~~~~~~~~~
+>
+> Fixes: 4ae340d1be36 ("ASoC: codecs: Add support for PCM1789")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
----
- sound/usb/mixer.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 898afd3001ea..34fef71e0330 100644
---- a/sound/usb/mixer.c
-+++ b/sound/usb/mixer.c
-@@ -1653,11 +1653,11 @@ static void build_feature_ctl_badd(struct usb_mixer_interface *mixer,
- 			NULL, NULL, unitid, 0, 0);
- }
- 
--static void get_connector_control_name(struct mixer_build *state,
-+static void get_connector_control_name(struct usb_mixer_interface *mixer,
- 				       struct usb_audio_term *term,
- 				       bool is_input, char *name, int name_size)
- {
--	int name_len = get_term_name(state->chip, term, name, name_size, 0);
-+	int name_len = get_term_name(mixer->chip, term, name, name_size, 0);
- 
- 	if (name_len == 0)
- 		strlcpy(name, "Unknown", name_size);
-@@ -1674,7 +1674,7 @@ static void get_connector_control_name(struct mixer_build *state,
- }
- 
- /* Build a mixer control for a UAC connector control (jack-detect) */
--static void build_connector_control(struct mixer_build *state,
-+static void build_connector_control(struct usb_mixer_interface *mixer,
- 				    struct usb_audio_term *term, bool is_input)
- {
- 	struct snd_kcontrol *kctl;
-@@ -1683,7 +1683,7 @@ static void build_connector_control(struct mixer_build *state,
- 	cval = kzalloc(sizeof(*cval), GFP_KERNEL);
- 	if (!cval)
- 		return;
--	snd_usb_mixer_elem_init_std(&cval->head, state->mixer, term->id);
-+	snd_usb_mixer_elem_init_std(&cval->head, mixer, term->id);
- 	/*
- 	 * UAC2: The first byte from reading the UAC2_TE_CONNECTOR control returns the
- 	 * number of channels connected.
-@@ -1694,7 +1694,7 @@ static void build_connector_control(struct mixer_build *state,
- 	 * This boolean ctl will simply report if any channels are connected
- 	 * or not.
- 	 */
--	if (state->mixer->protocol == UAC_VERSION_2)
-+	if (mixer->protocol == UAC_VERSION_2)
- 		cval->control = UAC2_TE_CONNECTOR;
- 	else /* UAC_VERSION_3 */
- 		cval->control = UAC3_TE_INSERTION;
-@@ -1705,11 +1705,11 @@ static void build_connector_control(struct mixer_build *state,
- 	cval->max = 1;
- 	kctl = snd_ctl_new1(&usb_connector_ctl_ro, cval);
- 	if (!kctl) {
--		usb_audio_err(state->chip, "cannot malloc kcontrol\n");
-+		usb_audio_err(mixer->chip, "cannot malloc kcontrol\n");
- 		kfree(cval);
- 		return;
- 	}
--	get_connector_control_name(state, term, is_input, kctl->id.name,
-+	get_connector_control_name(mixer, term, is_input, kctl->id.name,
- 				   sizeof(kctl->id.name));
- 	kctl->private_free = snd_usb_mixer_elem_free;
- 	snd_usb_mixer_add_control(&cval->head, kctl);
-@@ -2042,7 +2042,7 @@ static int parse_audio_input_terminal(struct mixer_build *state, int unitid,
- 
- 	/* Check for jack detection. */
- 	if (uac_v2v3_control_is_readable(bmctls, control))
--		build_connector_control(state, &iterm, true);
-+		build_connector_control(state->mixer, &iterm, true);
- 
- 	return 0;
- }
-@@ -2990,7 +2990,7 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 
- 			if (uac_v2v3_control_is_readable(le16_to_cpu(desc->bmControls),
- 							 UAC2_TE_CONNECTOR)) {
--				build_connector_control(&state, &state.oterm,
-+				build_connector_control(state.mixer, &state.oterm,
- 							false);
- 			}
- 		} else {  /* UAC_VERSION_3 */
-@@ -3017,7 +3017,7 @@ static int snd_usb_mixer_controls(struct usb_mixer_interface *mixer)
- 
- 			if (uac_v2v3_control_is_readable(le32_to_cpu(desc->bmControls),
- 							 UAC3_TE_INSERTION)) {
--				build_connector_control(&state, &state.oterm,
-+				build_connector_control(state.mixer, &state.oterm,
- 							false);
- 			}
- 		}
--- 
-2.11.0
+Yours,
+Linus Walleij
