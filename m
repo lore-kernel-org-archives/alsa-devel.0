@@ -1,47 +1,42 @@
 From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: [PATCH v2 0/7] soc: qcom: Allow COMPILE_TEST of all drivers
-Date: Thu, 14 Jun 2018 13:11:31 +0200
-Message-ID: <20180614111138.8923-1-niklas.cassel@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Subject: [PATCH v2 5/7] ASoC: qdsp6: Add depends on OF
+Date: Thu, 14 Jun 2018 13:11:36 +0200
+Message-ID: <20180614111138.8923-6-niklas.cassel@linaro.org>
+References: <20180614111138.8923-1-niklas.cassel@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180614111138.8923-1-niklas.cassel@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: andy.gross@linaro.org, Ohad Ben-Cohen <ohad@wizery.com>, Bjorn Andersson <bjorn.andersson@linaro.org>, David Brown <david.brown@linaro.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-arm-msm@vger.kernel.org, Niklas Cassel <niklas.cassel@linaro.org>, linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-soc@vger.kernel.org, alsa-devel@alsa-project.org
+To: andy.gross@linaro.org, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-arm-msm@vger.kernel.org, Niklas Cassel <niklas.cassel@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Since commit cab673583d96 ("soc: Unconditionally include qcom Makefile"),
-we unconditionally include the soc/qcom/Makefile.
+of_platform_device_destroy is only defined when building
+with CONFIG_OF=y. Add a depends on OF.
 
-This opens up the possibility to compile test the code even when
-building for other architectures.
+sound/soc/qcom/qdsp6/q6afe.o: In function `q6afe_remove':
+q6afe.c:(.text+0x363): undefined reference to `of_platform_device_destroy'
+sound/soc/qcom/qdsp6/q6adm.o: In function `q6adm_remove':
+q6adm.c:(.text+0x216): undefined reference to `of_platform_device_destroy'
+sound/soc/qcom/qdsp6/q6asm.o: In function `q6asm_remove':
+q6asm.c:(.text+0x723): undefined reference to `of_platform_device_destroy'
 
-This patch series prepares and enables all but two Kconfigs to be
-compile tested even when building for other architectures.
+Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+---
+ sound/soc/qcom/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Changes since v1:
-Added two new patches, "ASoC: qdsp6: Add depends on OF"
-and "soc: qcom: Remove bogus depends on OF".
-Patch "soc: qcom: Allow COMPILE_TEST of all drivers"
-now adds "depends on ARCH_QCOM || COMPILE_TEST" to the menu entry.
-
-
-Niklas Cassel (7):
-  rpmsg: smd: Add missing include of sizes.h
-  soc: qcom: smem: Add missing include of sizes.h
-  soc: qcom: smp2p: Add select IRQ_DOMAIN
-  soc: qcom: smsm: Add select IRQ_DOMAIN
-  ASoC: qdsp6: Add depends on OF
-  soc: qcom: Remove bogus depends on OF
-  soc: qcom: Allow COMPILE_TEST of all drivers
-
- drivers/rpmsg/qcom_smd.c |  1 +
- drivers/soc/qcom/Kconfig | 14 +++++---------
- drivers/soc/qcom/smem.c  |  1 +
- sound/soc/qcom/Kconfig   |  2 +-
- 4 files changed, 8 insertions(+), 10 deletions(-)
-
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 87838fa27997..3989ec856441 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -67,7 +67,7 @@ config SND_SOC_QDSP6_ASM_DAI
+ 
+ config SND_SOC_QDSP6
+ 	tristate "SoC ALSA audio driver for QDSP6"
+-	depends on QCOM_APR && HAS_DMA
++	depends on QCOM_APR && HAS_DMA && OF
+ 	select SND_SOC_QDSP6_COMMON
+ 	select SND_SOC_QDSP6_CORE
+ 	select SND_SOC_QDSP6_AFE
 -- 
 2.17.1
