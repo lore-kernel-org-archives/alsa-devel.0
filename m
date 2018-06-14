@@ -1,21 +1,16 @@
-From: Zhouyang Jia <jiazhouyang09@gmail.com>
-Subject: Re: [PATCH] ALSA: sonicvibes: add error handling for
-	snd_ctl_add
-Date: Thu, 14 Jun 2018 12:33:09 +0800
-Message-ID: <CABb2TxJLbxn6BrF7JtEQQZjLWWRSQYwX8Sthnqg-O=Jvqm80kg@mail.gmail.com>
-References: <1528704521-34060-1-git-send-email-jiazhouyang09@gmail.com>
- <s5hlgblbgk5.wl-tiwai@suse.de>
+From: noman pouigt <variksla@gmail.com>
+Subject: Slow SPI reads in ALSA causing mic recording error
+Date: Thu, 14 Jun 2018 02:12:35 -0700
+Message-ID: <CAES_P+96hMOrbtVekpUC6dJg8Znmq9a8VSVU7hNAA5XG00eYjg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f65.google.com (mail-it0-f65.google.com
- [209.85.214.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 876432675CA
- for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 06:33:11 +0200 (CEST)
-Received: by mail-it0-f65.google.com with SMTP id l6-v6so6945987iti.2
- for <alsa-devel@alsa-project.org>; Wed, 13 Jun 2018 21:33:11 -0700 (PDT)
-In-Reply-To: <s5hlgblbgk5.wl-tiwai@suse.de>
+Received: from mail-pg0-f66.google.com (mail-pg0-f66.google.com [74.125.83.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F8652673F2
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 11:12:38 +0200 (CEST)
+Received: by mail-pg0-f66.google.com with SMTP id q4-v6so2641697pgr.1
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 02:12:37 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +20,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Bhumika Goyal <bhumirks@gmail.com>
+To: alsa-devel@alsa-project.org, tiwai@suse.de, Vinod Koul <vinod.koul@linux.intel.com>
+Cc: broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+Hello Folks,
 
-I'll fix this in v2. Thanks for your kind reply.
+I have a DSP hardware connected over SPI
+to SoC with extra interrupt line.
 
-Best,
-Zhouyang
+I am getting buffer overrun problem in DSP
+while doing MIC recording. SoC SPI consecutive reads
+are two slow and it is not able to empty DSP buffers
+in time which causes DSP to issue overruns interrupts
+to SoC and causes bad mic data recording.
 
-2018-06-11 21:26 GMT+08:00 Takashi Iwai <tiwai@suse.de>:
+ARECORD properly records mic data but when I try to use
+AudioFlinger(android) then I see buffer overrun issue in
+DSP. Period size is same in both arecord and AudioFlinger case.
 
-> On Mon, 11 Jun 2018 10:08:40 +0200,
-> Zhouyang Jia wrote:
-> >
-> > When snd_ctl_add fails, the lack of error-handling code may
-> > cause unexpected results.
-> >
-> > This patch adds error-handling code after calling snd_ctl_add.
-> >
-> > Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
->
-> I postpone this one because the change won't give anything as is
-> although this change itself is correct.  If you look at the code
-> closely, the caller of snd_sonicvibes_create_gameport() ignores the
-> return value.
-> So we need to fix two places.
->
->
-> thanks,
->
-> Takashi
->
+system: arm64, latest mainline kernel, latest alsa-lib
+
+I have below platform ops
+static const struct snd_pcm_ops platform_ops = {
+     .open    = platform_open,
+     .ioctl      = snd_pcm_lib_ioctl,
+     .pointer  = platform_pcm_pointer,
+     .mmap    = snd_pcm_lib_default_mmap,
+     .page      = snd_pcm_lib_get_vmalloc_page,
+ };
+
+What baffles me is that consecutive SPI read(while loop
+in a workqueue) doesn't have any relation with userspace
+as it is interrupt driven (DSP interrupt) but still with
+audio flinger overrun happens. In the workqueue, between
+SPI reads, driver calls  elapsed function to notify the userspace
+to read 1 period data whenever data crosses period boundary.
+I don't think that causes any issues. Aforementioned workqueue
+stops only when userspace closes it so I don't know how
+userspace application can slow down SPI reads?
+
+I have also used high priority workqueues but that didn't
+help either. Wondering if I can get some pointers to debug this?
+also if there any alsa-utility which can simulate closely audio flinger?
+
+Thanks,
