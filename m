@@ -1,51 +1,57 @@
-From: Zhouyang Jia <jiazhouyang09@gmail.com>
-Subject: [PATCH v2] ALSA: lx6464es: add error handling for pci_ioremap_bar
-Date: Thu, 14 Jun 2018 21:51:46 +0800
-Message-ID: <1528984308-53122-1-git-send-email-jiazhouyang09@gmail.com>
-References: <1528773796-37922-1-git-send-email-jiazhouyang09@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1528773796-37922-1-git-send-email-jiazhouyang09@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Zhouyang Jia <jiazhouyang09@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH v2 0/4] ALSA: usb-audio: Insertion Control for
+	BADD Adaptors.
+Date: Thu, 14 Jun 2018 15:05:54 +0100
+Message-ID: <20180614140558.28277-1-jorge.sanjuan@codethink.co.uk>
+References: <20180612143201.29988-1-jorge.sanjuan@codethink.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 26A2F267614
+ for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 16:06:02 +0200 (CEST)
+In-Reply-To: <20180612143201.29988-1-jorge.sanjuan@codethink.co.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, ruslan.bilovol@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-When pci_ioremap_bar fails, the lack of error-handling code may
-cause unexpected results.
+Thanks for review!
 
-This patch adds error-handling code after calling pci_ioremap_bar.
+Here is what's new in this V2:
+ - Split the patchset into a more sensible series.
 
-Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
----
-v1->v2:
-- Add new goto label.
----
- sound/pci/lx6464es/lx6464es.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+This patchset adds support for the Insertion Control for BADD devices
+(subset of UAC3).
 
-diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
-index 9655b08..6c85f13 100644
---- a/sound/pci/lx6464es/lx6464es.c
-+++ b/sound/pci/lx6464es/lx6464es.c
-@@ -1016,6 +1016,10 @@ static int snd_lx6464es_create(struct snd_card *card,
- 
- 	/* dsp port */
- 	chip->port_dsp_bar = pci_ioremap_bar(pci, 2);
-+	if (!chip->port_dsp_bar) {
-+		dev_err(card->dev, "cannot remap PCI memory region\n");
-+		goto remap_pci_failed;
-+	}
- 
- 	err = request_threaded_irq(pci->irq, lx_interrupt, lx_threaded_irq,
- 				   IRQF_SHARED, KBUILD_MODNAME, chip);
-@@ -1055,6 +1059,9 @@ static int snd_lx6464es_create(struct snd_card *card,
- 	free_irq(pci->irq, chip);
- 
- request_irq_failed:
-+	iounmap(chip->port_dsp_bar);
-+
-+remap_pci_failed:
- 	pci_release_regions(pci);
- 
- request_regions_failed:
+This control is only pressent in the HEADSET ADAPTER BADD profile. The USB
+interrupt pipe shall be present for this profile so the status pipe
+creation should also happen for BADD devices.
+
+Also, the bi-directional type codes have been defined so they can be used
+as inferred values for the Input and Output terminals for this adapter
+profile.
+
+Based on tag: next-20180612
+
+Jorge Sanjuan (4):
+  ALSA: usb-audio: Add bi-directional terminal types.
+  ALSA: usb-audio: Change in connectors control creation interface
+  ALSA: usb-audio: UAC3. Add insertion control for BADD.
+  ALSA: usb-audio: Always create the interrupt pipe for the mixer
+
+ include/uapi/linux/usb/audio.h |  8 ++++++++
+ sound/usb/mixer.c              | 45 ++++++++++++++++++++++++++++++------------
+ 2 files changed, 40 insertions(+), 13 deletions(-)
+
 -- 
-2.7.4
+2.11.0
