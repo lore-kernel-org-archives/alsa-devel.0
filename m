@@ -1,37 +1,86 @@
-From: Stephen Boyd <sboyd@kernel.org>
-Subject: Re: [PATCH v3 16/27] docs: Fix more broken references
-Date: Fri, 15 Jun 2018 14:42:46 -0700
-Message-ID: <152909896651.16708.13481357388390831455@swboyd.mtv.corp.google.com>
-References: <cover.1528990947.git.mchehab+samsung@kernel.org>
- <e1bf52a721005b2017434acc54ec5ddc152d6fe4.1528990947.git.mchehab+samsung@kernel.org>
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Subject: [PATCH] ASoC: tegra: fix device_node refcounting
+Date: Sat, 16 Jun 2018 01:22:58 +0300
+Message-ID: <1529101378-5543-1-git-send-email-khoroshilov@ispras.ru>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <e1bf52a721005b2017434acc54ec5ddc152d6fe4.1528990947.git.mchehab+samsung@kernel.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-samsung-soc@vger.kernel.org, linux-mediatek@lists.infradead.org, Jonathan Corbet <corbet@lwn.net>, netdev@vger.kernel.org, linux-pm@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-rockchip@lists.infradead.org, linux-usb@vger.kernel.org, intel-wired-lan@lists.osuosl.org, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, linux-fsdevel@vger.kernel.org, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id A37ED267614
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jun 2018 00:23:07 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, sil2review@lists.osadl.org, linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>, linux-tegra@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>
 List-Id: alsa-devel@alsa-project.org
 
-UXVvdGluZyBNYXVybyBDYXJ2YWxobyBDaGVoYWIgKDIwMTgtMDYtMTQgMDk6MDk6MDEpCj4gQXMg
-d2UgbW92ZSBzdHVmZiBhcm91bmQsIHNvbWUgZG9jIHJlZmVyZW5jZXMgYXJlIGJyb2tlbi4gRml4
-IHNvbWUgb2YKPiB0aGVtIHZpYSB0aGlzIHNjcmlwdDoKPiAgICAgICAgIC4vc2NyaXB0cy9kb2N1
-bWVudGF0aW9uLWZpbGUtcmVmLWNoZWNrIC0tZml4Cj4gCj4gTWFudWFsbHkgY2hlY2tlZCB0aGF0
-IHByb2R1Y2VkIHJlc3VsdHMgYXJlIHZhbGlkLgo+IAo+IFNpZ25lZC1vZmYtYnk6IE1hdXJvIENh
-cnZhbGhvIENoZWhhYiA8bWNoZWhhYitzYW1zdW5nQGtlcm5lbC5vcmc+Cj4gLS0tCj4gIC4uLi9k
-ZXZpY2V0cmVlL2JpbmRpbmdzL2Nsb2NrL3N0L3N0LGNsa2dlbi50eHQgfCAgOCArKysrLS0tLQo+
-ICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9jbG9jay90aS9nYXRlLnR4dCAgICAgIHwgIDIgKy0K
-PiAgLi4uL2RldmljZXRyZWUvYmluZGluZ3MvY2xvY2svdGkvaW50ZXJmYWNlLnR4dCB8ICAyICst
-CgpBY2tlZC1ieTogU3RlcGhlbiBCb3lkIDxzYm95ZEBrZXJuZWwub3JnPgoKX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlz
-dApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0
-b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+tegra_rt5677_probe() gets a couple of device nodes with of_parse_phandle(),
+but there is no release of them.
+
+The patch adds the release to tegra_rt5677_remove() and
+to error handling paths in the probe.
+
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+---
+ sound/soc/tegra/tegra_rt5677.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
+index 0e4805c7b4ca..7081f15302cc 100644
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -264,13 +264,13 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,i2s-controller' missing or invalid\n");
+ 		ret = -EINVAL;
+-		goto err;
++		goto err_put_codec_of_node;
+ 	}
+ 	tegra_rt5677_dai.platform_of_node = tegra_rt5677_dai.cpu_of_node;
+ 
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
+-		goto err;
++		goto err_put_cpu_of_node;
+ 
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+@@ -283,6 +283,13 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
+ 
+ err_fini_utils:
+ 	tegra_asoc_utils_fini(&machine->util_data);
++err_put_cpu_of_node:
++	of_node_put(tegra_rt5677_dai.cpu_of_node);
++	tegra_rt5677_dai.cpu_of_node = NULL;
++	tegra_rt5677_dai.platform_of_node = NULL;
++err_put_codec_of_node:
++	of_node_put(tegra_rt5677_dai.codec_of_node);
++	tegra_rt5677_dai.codec_of_node = NULL;
+ err:
+ 	return ret;
+ }
+@@ -296,6 +303,12 @@ static int tegra_rt5677_remove(struct platform_device *pdev)
+ 
+ 	tegra_asoc_utils_fini(&machine->util_data);
+ 
++	tegra_rt5677_dai.platform_of_node = NULL;
++	of_node_put(tegra_rt5677_dai.codec_of_node);
++	tegra_rt5677_dai.codec_of_node = NULL;
++	of_node_put(tegra_rt5677_dai.cpu_of_node);
++	tegra_rt5677_dai.cpu_of_node = NULL;
++
+ 	return 0;
+ }
+ 
+-- 
+2.7.4
