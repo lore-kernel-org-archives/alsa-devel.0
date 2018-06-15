@@ -1,20 +1,18 @@
-From: noman pouigt <variksla@gmail.com>
-Subject: Re: Slow SPI reads in ALSA causing mic recording error
-Date: Thu, 14 Jun 2018 17:48:30 -0700
-Message-ID: <CAES_P+_BSYr9yENYdU+O55p=boQQQA6HxTwqrca167jKO-k3rw@mail.gmail.com>
-References: <CAES_P+96hMOrbtVekpUC6dJg8Znmq9a8VSVU7hNAA5XG00eYjg@mail.gmail.com>
- <20180614104223.GA9660@sirena.org.uk>
+From: Banajit Goswami <bgoswami@codeaurora.org>
+Subject: Re: [PATCH v2 5/7] ASoC: qdsp6: Add depends on OF
+Date: Thu, 14 Jun 2018 21:02:53 -0700
+Message-ID: <ba296da2-7daf-ba9c-d63c-fbeaeb38b335@codeaurora.org>
+References: <20180614111138.8923-1-niklas.cassel@linaro.org>
+ <20180614111138.8923-6-niklas.cassel@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f45.google.com (mail-pl0-f45.google.com
- [209.85.160.45])
- by alsa0.perex.cz (Postfix) with ESMTP id 06BC22673CC
- for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2018 02:48:32 +0200 (CEST)
-Received: by mail-pl0-f45.google.com with SMTP id w8-v6so2935610ply.8
- for <alsa-devel@alsa-project.org>; Thu, 14 Jun 2018 17:48:32 -0700 (PDT)
-In-Reply-To: <20180614104223.GA9660@sirena.org.uk>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id 64A912673CC
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2018 06:02:56 +0200 (CEST)
+In-Reply-To: <20180614111138.8923-6-niklas.cassel@linaro.org>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,37 +22,25 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, vkoul@kernel.org
-Cc: tiwai@suse.de, alsa-devel@alsa-project.org
+To: Niklas Cassel <niklas.cassel@linaro.org>, andy.gross@linaro.org, Patrick Lai <plai@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 14, 2018 at 3:42 AM, Mark Brown <broonie@kernel.org> wrote:
-> On Thu, Jun 14, 2018 at 02:12:35AM -0700, noman pouigt wrote:
+
+On 6/14/2018 4:11 AM, Niklas Cassel wrote:
+> of_platform_device_destroy is only defined when building
+> with CONFIG_OF=y. Add a depends on OF.
 >
->> I have also used high priority workqueues but that didn't
->> help either. Wondering if I can get some pointers to debug this?
->> also if there any alsa-utility which can simulate closely audio flinger?
+> sound/soc/qcom/qdsp6/q6afe.o: In function `q6afe_remove':
+> q6afe.c:(.text+0x363): undefined reference to `of_platform_device_destroy'
+> sound/soc/qcom/qdsp6/q6adm.o: In function `q6adm_remove':
+> q6adm.c:(.text+0x216): undefined reference to `of_platform_device_destroy'
+> sound/soc/qcom/qdsp6/q6asm.o: In function `q6asm_remove':
+> q6asm.c:(.text+0x723): undefined reference to `of_platform_device_destroy'
 >
-> You probably just need to ensure that you've got more than one period
-> so there's always one ready, increase min_periods or possibly make the
-> individual periods bigger.  It's normally going to be very hard to get
-> everything scheduled reliably if there's no margin for error, ensuring
-> there's some grace in case things run over will tend to be more robust.
+> Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+Acked-by: Banajit Goswami <bgoswami@codeaurora.org>
 
-Thanks, but can you kindly explain how userspace application read which
-is happening via pcm_read (mmap) affects kernel SPI workqueue thread doing
-SPI read in a while loop i.e. causing SPI reads to get delayed?
-
-In kernel, we have two workqueues:
-1. First to do SPI reads after trigger callback trigger and call
-elapsed callback
-once SoC gets more than period size.
-2. Second to handle interrupts from DSP.
-
-First workqueue SPI reads is getting delayed based on the what application is
-reading data. In case of tinycap, we don't see much time difference
-between SPI reads
-but with AudioFlinger we see lot of time difference between consecutive SPI
-reads? How can application affect kernel threads and cause this delay?
-
-Please let me know where is this dependency coming from?
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
