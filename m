@@ -1,8 +1,7 @@
 From: Alastair Bridgewater <alastair.bridgewater@gmail.com>
-Subject: [PATCH 2/6] ALSA: hda/ca0132: Delete redundant UNSOL
-	event requests
-Date: Fri, 15 Jun 2018 21:56:16 -0400
-Message-ID: <20180616015620.26663-3-alastair.bridgewater@gmail.com>
+Subject: [PATCH 4/6] ALSA: hda/ca0132: Don't test for QUIRK_NONE
+Date: Fri, 15 Jun 2018 21:56:18 -0400
+Message-ID: <20180616015620.26663-5-alastair.bridgewater@gmail.com>
 References: <20180616015620.26663-1-alastair.bridgewater@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,73 +21,34 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-During ca0132_init(), ca0132_init_unsol() is run before the
-spec->spec_init_verbs are written.  ca0132_init_unsol() calls
-snd_hda_jack_detect_enable_callback(), which requests UNSOL events
-for three or four nodes, two of which were also (redundantly)
-requested by spec_init_verbs.
+QUIRK_NONE is, quite explicitly, the default case.  The entire
+point of a quirks system is to allow "programming by difference"
+from a given base case, which requires that merely defining a new
+quirk for some piece of hardware should not change the behavior of
+the driver for that hardware.  In turn, this means that testing
+for QUIRK_NONE explicitly is a violation of that implicit contract.
 
-Kill the redundant AC_VERB_SET_UNSOLICITED_ENABLE verbs.
+Change a test for QUIRK_NONE and QUIRK_ALIENWARE to default, and
+add a test for QUIRK_SBZ to disable the default behavior in that
+instance.
 
 Signed-off-by: Alastair Bridgewater <alastair.bridgewater@gmail.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index e03461aab68c..bdd626bde267 100644
+index ca7375e48138..71487b82eef5 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -7462,7 +7462,7 @@ static void ca0132_config(struct hda_codec *codec)
- static int ca0132_prepare_verbs(struct hda_codec *codec)
- {
- /* Verbs + terminator (an empty element) */
--#define NUM_SPEC_VERBS 4
-+#define NUM_SPEC_VERBS 2
- 	struct ca0132_spec *spec = codec->spec;
- 
- 	spec->chip_init_verbs = ca0132_init_verbs0;
-@@ -7472,34 +7472,24 @@ static int ca0132_prepare_verbs(struct hda_codec *codec)
- 	if (!spec->spec_init_verbs)
- 		return -ENOMEM;
- 
--	/* HP jack autodetection */
--	spec->spec_init_verbs[0].nid = spec->unsol_tag_hp;
--	spec->spec_init_verbs[0].param = AC_VERB_SET_UNSOLICITED_ENABLE;
--	spec->spec_init_verbs[0].verb = AC_USRSP_EN | spec->unsol_tag_hp;
--
--	/* MIC1 jack autodetection */
--	spec->spec_init_verbs[1].nid = spec->unsol_tag_amic1;
--	spec->spec_init_verbs[1].param = AC_VERB_SET_UNSOLICITED_ENABLE;
--	spec->spec_init_verbs[1].verb = AC_USRSP_EN | spec->unsol_tag_amic1;
--
- 	/* config EAPD */
--	spec->spec_init_verbs[2].nid = 0x0b;
--	spec->spec_init_verbs[2].param = 0x78D;
--	spec->spec_init_verbs[2].verb = 0x00;
-+	spec->spec_init_verbs[0].nid = 0x0b;
-+	spec->spec_init_verbs[0].param = 0x78D;
-+	spec->spec_init_verbs[0].verb = 0x00;
- 
- 	/* Previously commented configuration */
- 	/*
--	spec->spec_init_verbs[3].nid = 0x0b;
--	spec->spec_init_verbs[3].param = AC_VERB_SET_EAPD_BTLENABLE;
-+	spec->spec_init_verbs[2].nid = 0x0b;
-+	spec->spec_init_verbs[2].param = AC_VERB_SET_EAPD_BTLENABLE;
-+	spec->spec_init_verbs[2].verb = 0x02;
-+
-+	spec->spec_init_verbs[3].nid = 0x10;
-+	spec->spec_init_verbs[3].param = 0x78D;
- 	spec->spec_init_verbs[3].verb = 0x02;
- 
- 	spec->spec_init_verbs[4].nid = 0x10;
--	spec->spec_init_verbs[4].param = 0x78D;
-+	spec->spec_init_verbs[4].param = AC_VERB_SET_EAPD_BTLENABLE;
- 	spec->spec_init_verbs[4].verb = 0x02;
--
--	spec->spec_init_verbs[5].nid = 0x10;
--	spec->spec_init_verbs[5].param = AC_VERB_SET_EAPD_BTLENABLE;
--	spec->spec_init_verbs[5].verb = 0x02;
- 	*/
- 
- 	/* Terminator: spec->spec_init_verbs[NUM_SPEC_VERBS-1] */
+@@ -7237,8 +7237,9 @@ static int ca0132_init(struct hda_codec *codec)
+ 	case QUIRK_R3DI:
+ 		r3di_setup_defaults(codec);
+ 		break;
+-	case QUIRK_NONE:
+-	case QUIRK_ALIENWARE:
++	case QUIRK_SBZ:
++		break;
++	default:
+ 		ca0132_setup_defaults(codec);
+ 		ca0132_init_analog_mic2(codec);
+ 		ca0132_init_dmic(codec);
 -- 
 2.16.1
