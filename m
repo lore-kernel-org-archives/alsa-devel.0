@@ -1,15 +1,22 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH 6/6] ALSA: hda/ca0132: Fix DMic data rate
- for Alienware M17x R4
-Date: Fri, 15 Jun 2018 22:34:56 -0400
-Message-ID: <CAM8Agx048MmN7sgsV9Q5JQR4yS7B=AdOfVGArUrLYHoM-AJLqA@mail.gmail.com>
+From: Alastair Bridgewater <alastair.bridgewater@gmail.com>
+Subject: Re: [PATCH 4/6] ALSA: hda/ca0132: Don't test for
+	QUIRK_NONE
+Date: Fri, 15 Jun 2018 23:11:53 -0400
+Message-ID: <CAEcYz2S18SDUeuZ8LDq6gO5xcyNKjMd=ctEn9dhgTGxB_dZQGg@mail.gmail.com>
 References: <20180616015620.26663-1-alastair.bridgewater@gmail.com>
- <20180616015620.26663-7-alastair.bridgewater@gmail.com>
+ <20180616015620.26663-5-alastair.bridgewater@gmail.com>
+ <CAM8Agx12RSbcd1-N0cQ96GtznbmmFWH=FCJCCaHyvynhX8_d5A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180616015620.26663-7-alastair.bridgewater@gmail.com>
+Received: from mail-it0-f67.google.com (mail-it0-f67.google.com
+ [209.85.214.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7AC75267614
+ for <alsa-devel@alsa-project.org>; Sat, 16 Jun 2018 05:11:55 +0200 (CEST)
+Received: by mail-it0-f67.google.com with SMTP id l6-v6so5352866iti.2
+ for <alsa-devel@alsa-project.org>; Fri, 15 Jun 2018 20:11:55 -0700 (PDT)
+In-Reply-To: <CAM8Agx12RSbcd1-N0cQ96GtznbmmFWH=FCJCCaHyvynhX8_d5A@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,78 +26,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alastair Bridgewater <alastair.bridgewater@gmail.com>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
+To: Connor McAdams <conmanx360@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In my experience, the Dmic is always set to have the voice focus
-effect enabled on the Chromebook. The reason it drops the sample rate
-is to ease the load on the DSP. On the Recon3Di and the Sound Blaster
-Z, if effects are enabled, it drops to 16khz when effects in general
-are enabled. I don't work for Creative so I have no clue about the
-actual details, but I do know if input effects are on on R3Di or SBZ,
-the card becomes laggy and less responsive to commands.
+My inconvenience from the R3Di/SBZ changes has been minor at worst.
 
-So, it may depend upon the implementation. You could probably figure
-out definitively by using my program QemuHDADump to dump the data if
-you really wanted to find out for sure what sample rate the mic is set
-to by default, and the other parameters. I would be willing to look
-through the data dump to help you determine it. Let me know.
+Actually, the timing on this has been very good.  Finding the R3Di
+patches and QemuHDADump two weeks ago, just as I was starting to look
+again into trying to improve sound support on my M17x R4 was a
+pleasant surprise.  Yes, there are rough edges, but they're the sort
+of thing that should get caught by careful code review or from testing
+various -rc kernels.  And you'll get better at this if you keep at it.
 
-On Fri, Jun 15, 2018 at 9:56 PM, Alastair Bridgewater
-<alastair.bridgewater@gmail.com> wrote:
-> The commentary says to use various parameters, and lays out what
-> the mapping is...  The code used a 32KHz rate when the comment
-> says that it needs to use a 48KHz rate.  And this has been the
-> case since day one.
+Speaking of rough edges, QUIRK_SBZ and QUIRK_R3DI have code paths that
+use both ca0132_alt_select_in() (from ca0132_init() and the input
+source control) and ca0132_select_mic() (from amic_callback(), tied to
+a jack detect).  I'm fairly certain that this is wrong.
+
+On Fri, Jun 15, 2018 at 10:20 PM, Connor McAdams <conmanx360@gmail.com>
+wrote:
+
+> Good call. Please understand that I'm fairly new to all of this, so
+> mistakes like this are more due to being ignorant than anything else.
+> I was afraid certain things may end up broken by my changes, and I
+> hope it didn't inconvenience you.
 >
-> On the Alienware M17x R4, the DMic used to have exceptionally quiet
-> pickup and a lot of noise.  Changing the data rate fixes both of
-> these issues.
+> On Fri, Jun 15, 2018 at 9:56 PM, Alastair Bridgewater
+> <alastair.bridgewater@gmail.com> wrote:
+> > QUIRK_NONE is, quite explicitly, the default case.  The entire
+> > point of a quirks system is to allow "programming by difference"
+> > from a given base case, which requires that merely defining a new
+> > quirk for some piece of hardware should not change the behavior of
+> > the driver for that hardware.  In turn, this means that testing
+> > for QUIRK_NONE explicitly is a violation of that implicit contract.
+> >
+> > Change a test for QUIRK_NONE and QUIRK_ALIENWARE to default, and
+> > add a test for QUIRK_SBZ to disable the default behavior in that
+> > instance.
+> >
+> > Signed-off-by: Alastair Bridgewater <alastair.bridgewater@gmail.com>
+> >
+> > diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+> > index ca7375e48138..71487b82eef5 100644
+> > --- a/sound/pci/hda/patch_ca0132.c
+> > +++ b/sound/pci/hda/patch_ca0132.c
+> > @@ -7237,8 +7237,9 @@ static int ca0132_init(struct hda_codec *codec)
+> >         case QUIRK_R3DI:
+> >                 r3di_setup_defaults(codec);
+> >                 break;
+> > -       case QUIRK_NONE:
+> > -       case QUIRK_ALIENWARE:
+> > +       case QUIRK_SBZ:
+> > +               break;
+> > +       default:
+> >                 ca0132_setup_defaults(codec);
+> >                 ca0132_init_analog_mic2(codec);
+> >                 ca0132_init_dmic(codec);
+> > --
+> > 2.16.1
+> >
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
 >
-> Searching the kernel bug tracker for ca0132-related issues shows no
-> mention of this being an issue for other hardware, and I have no
-> other hardware to test with, so a quirk is used to limit the effect
-> to just the M17x R4.
->
-> Signed-off-by: Alastair Bridgewater <alastair.bridgewater@gmail.com>
->
-> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-> index cef22c60d7ee..614f69407c9f 100644
-> --- a/sound/pci/hda/patch_ca0132.c
-> +++ b/sound/pci/hda/patch_ca0132.c
-> @@ -991,6 +991,7 @@ struct ca0132_spec {
->  enum {
->         QUIRK_NONE,
->         QUIRK_ALIENWARE,
-> +       QUIRK_ALIENWARE_M17XR4,
->         QUIRK_SBZ,
->         QUIRK_R3DI,
->  };
-> @@ -1040,6 +1041,7 @@ static const struct hda_pintbl r3di_pincfgs[] = {
->  };
->
->  static const struct snd_pci_quirk ca0132_quirks[] = {
-> +       SND_PCI_QUIRK(0x1028, 0x057b, "Alienware M17x R4", QUIRK_ALIENWARE_M17XR4),
->         SND_PCI_QUIRK(0x1028, 0x0685, "Alienware 15 2015", QUIRK_ALIENWARE),
->         SND_PCI_QUIRK(0x1028, 0x0688, "Alienware 17 2015", QUIRK_ALIENWARE),
->         SND_PCI_QUIRK(0x1028, 0x0708, "Alienware 15 R2 2016", QUIRK_ALIENWARE),
-> @@ -6130,7 +6132,10 @@ static void ca0132_init_dmic(struct hda_codec *codec)
->          * Bit   6: set to select Data2, clear for Data1
->          * Bit   7: set to enable DMic, clear for AMic
->          */
-> -       val = 0x23;
-> +       if (spec->quirk == QUIRK_ALIENWARE_M17XR4)
-> +               val = 0x33;
-> +       else
-> +               val = 0x23;
->         /* keep a copy of dmic ctl val for enable/disable dmic purpuse */
->         spec->dmic_ctl = val;
->         snd_hda_codec_write(codec, spec->input_pins[0], 0,
-> --
-> 2.16.1
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
