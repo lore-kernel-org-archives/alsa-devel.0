@@ -1,8 +1,8 @@
 From: Alastair Bridgewater <alastair.bridgewater@gmail.com>
-Subject: [PATCH 3/6] ALSA: hda/ca0132: Restore behavior of
-	QUIRK_ALIENWARE
-Date: Fri, 15 Jun 2018 21:56:17 -0400
-Message-ID: <20180616015620.26663-4-alastair.bridgewater@gmail.com>
+Subject: [PATCH 5/6] ALSA: hda/ca0132: Restore PCM Analog
+	Mic-In2
+Date: Fri, 15 Jun 2018 21:56:19 -0400
+Message-ID: <20180616015620.26663-6-alastair.bridgewater@gmail.com>
 References: <20180616015620.26663-1-alastair.bridgewater@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -22,29 +22,26 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit e93ac30a32a6ba7ac3b4b2a4379af1dadb91e505 (ALSA: HDA/ca0132:
-add extra init functions for r3di + sbz) introduced an extra
-initialization function that was improperly guarded, taking effect
-on systems with QUIRK_ALIENWARE, even though such systems were
-supposedly not affected.
-
-It may be that this piece of initialization should be done for all
-systems, but that's not a call that I can make.
+Commit 009b8f979bf8cb5f7ec6d3dd7683585122ed10f8 conditionalized
+adding the "CA0132 Analog Mic-In2" PCM with a comment to the
+effect that, "desktops don't use this ADC", but the test was set
+up such that the ADC was only created for desktops.  Invert the
+test.
 
 Signed-off-by: Alastair Bridgewater <alastair.bridgewater@gmail.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index bdd626bde267..ca7375e48138 100644
+index 71487b82eef5..cef22c60d7ee 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -7223,7 +7223,7 @@ static int ca0132_init(struct hda_codec *codec)
+@@ -5966,7 +5966,7 @@ static int ca0132_build_pcms(struct hda_codec *codec)
+ 	info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->adcs[0];
  
- 	snd_hda_sequence_write(codec, spec->base_init_verbs);
- 
--	if (spec->quirk != QUIRK_NONE)
-+	if (spec->use_alt_functions)
- 		ca0132_alt_init(codec);
- 
- 	ca0132_download_dsp(codec);
+ 	/* With the DSP enabled, desktops don't use this ADC. */
+-	if (spec->use_alt_functions) {
++	if (!spec->use_alt_functions) {
+ 		info = snd_hda_codec_pcm_new(codec, "CA0132 Analog Mic-In2");
+ 		if (!info)
+ 			return -ENOMEM;
 -- 
 2.16.1
