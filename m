@@ -1,7 +1,8 @@
 From: Alastair Bridgewater <alastair.bridgewater@gmail.com>
-Subject: [PATCH 4/6] ALSA: hda/ca0132: Don't test for QUIRK_NONE
-Date: Fri, 15 Jun 2018 21:56:18 -0400
-Message-ID: <20180616015620.26663-5-alastair.bridgewater@gmail.com>
+Subject: [PATCH 3/6] ALSA: hda/ca0132: Restore behavior of
+	QUIRK_ALIENWARE
+Date: Fri, 15 Jun 2018 21:56:17 -0400
+Message-ID: <20180616015620.26663-4-alastair.bridgewater@gmail.com>
 References: <20180616015620.26663-1-alastair.bridgewater@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -21,34 +22,29 @@ To: patch@alsa-project.org
 Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-QUIRK_NONE is, quite explicitly, the default case.  The entire
-point of a quirks system is to allow "programming by difference"
-from a given base case, which requires that merely defining a new
-quirk for some piece of hardware should not change the behavior of
-the driver for that hardware.  In turn, this means that testing
-for QUIRK_NONE explicitly is a violation of that implicit contract.
+Commit e93ac30a32a6ba7ac3b4b2a4379af1dadb91e505 (ALSA: HDA/ca0132:
+add extra init functions for r3di + sbz) introduced an extra
+initialization function that was improperly guarded, taking effect
+on systems with QUIRK_ALIENWARE, even though such systems were
+supposedly not affected.
 
-Change a test for QUIRK_NONE and QUIRK_ALIENWARE to default, and
-add a test for QUIRK_SBZ to disable the default behavior in that
-instance.
+It may be that this piece of initialization should be done for all
+systems, but that's not a call that I can make.
 
 Signed-off-by: Alastair Bridgewater <alastair.bridgewater@gmail.com>
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index ca7375e48138..71487b82eef5 100644
+index bdd626bde267..ca7375e48138 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -7237,8 +7237,9 @@ static int ca0132_init(struct hda_codec *codec)
- 	case QUIRK_R3DI:
- 		r3di_setup_defaults(codec);
- 		break;
--	case QUIRK_NONE:
--	case QUIRK_ALIENWARE:
-+	case QUIRK_SBZ:
-+		break;
-+	default:
- 		ca0132_setup_defaults(codec);
- 		ca0132_init_analog_mic2(codec);
- 		ca0132_init_dmic(codec);
+@@ -7223,7 +7223,7 @@ static int ca0132_init(struct hda_codec *codec)
+ 
+ 	snd_hda_sequence_write(codec, spec->base_init_verbs);
+ 
+-	if (spec->quirk != QUIRK_NONE)
++	if (spec->use_alt_functions)
+ 		ca0132_alt_init(codec);
+ 
+ 	ca0132_download_dsp(codec);
 -- 
 2.16.1
