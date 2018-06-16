@@ -1,14 +1,12 @@
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Subject: [PATCH] ASoC: tegra: fix device_node refcounting
-Date: Sat, 16 Jun 2018 01:22:58 +0300
-Message-ID: <1529101378-5543-1-git-send-email-khoroshilov@ispras.ru>
+From: Alastair Bridgewater <alastair.bridgewater@gmail.com>
+Subject: [PATCH 0/6] ALSA: hda/ca0132: Various cleanups and
+	fixes
+Date: Fri, 15 Jun 2018 21:56:14 -0400
+Message-ID: <20180616015620.26663-1-alastair.bridgewater@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.45])
- by alsa0.perex.cz (Postfix) with ESMTP id A37ED267614
- for <alsa-devel@alsa-project.org>; Sat, 16 Jun 2018 00:23:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,69 +16,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, sil2review@lists.osadl.org, linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>, linux-tegra@vger.kernel.org, Alexey Khoroshilov <khoroshilov@ispras.ru>
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-tegra_rt5677_probe() gets a couple of device nodes with of_parse_phandle(),
-but there is no release of them.
+The ca0132 codec support is fairly crufty, and the new R3Di and SBZ
+support hasn't exactly improved that situation.  This patch series
+tries to clean up a small amount of longstanding cruft, reverse some
+behavioral changes to other systems made by the recent R3Di/SBZ
+patches, and make the DMic work properly on the Alienware M17x R4.
 
-The patch adds the release to tegra_rt5677_remove() and
-to error handling paths in the probe.
+For two of these patches (the QUIRK_ALIENWARE patch and the DMic
+patch), it may be that the correct behavior is the exact OPPOSITE of
+what the patch does as far as quirk testing goes (that is, it should
+apply globally, rather than limited to some specific quirk or set of
+quirks), but I have no way to make such a determination at this time,
+so erring on the side of the status quo ante seems appropriate.
 
-Found by Linux Driver Verification project (linuxtesting.org).
+Alastair Bridgewater (6):
+  ALSA: hda/ca0132: Delete pointless assignments to struct auto_pin_cfg
+    fields
+  ALSA: hda/ca0132: Delete redundant UNSOL event requests
+  ALSA: hda/ca0132: Restore behavior of QUIRK_ALIENWARE
+  ALSA: hda/ca0132: Don't test for QUIRK_NONE
+  ALSA: hda/ca0132: Restore PCM Analog Mic-In2
+  ALSA: hda/ca0132: Fix DMic data rate for Alienware M17x R4
 
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
----
- sound/soc/tegra/tegra_rt5677.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 62 ++++++++++++++++----------------------------
+ 1 file changed, 22 insertions(+), 40 deletions(-)
 
-diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
-index 0e4805c7b4ca..7081f15302cc 100644
---- a/sound/soc/tegra/tegra_rt5677.c
-+++ b/sound/soc/tegra/tegra_rt5677.c
-@@ -264,13 +264,13 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev,
- 			"Property 'nvidia,i2s-controller' missing or invalid\n");
- 		ret = -EINVAL;
--		goto err;
-+		goto err_put_codec_of_node;
- 	}
- 	tegra_rt5677_dai.platform_of_node = tegra_rt5677_dai.cpu_of_node;
- 
- 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
- 	if (ret)
--		goto err;
-+		goto err_put_cpu_of_node;
- 
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
-@@ -283,6 +283,13 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
- 
- err_fini_utils:
- 	tegra_asoc_utils_fini(&machine->util_data);
-+err_put_cpu_of_node:
-+	of_node_put(tegra_rt5677_dai.cpu_of_node);
-+	tegra_rt5677_dai.cpu_of_node = NULL;
-+	tegra_rt5677_dai.platform_of_node = NULL;
-+err_put_codec_of_node:
-+	of_node_put(tegra_rt5677_dai.codec_of_node);
-+	tegra_rt5677_dai.codec_of_node = NULL;
- err:
- 	return ret;
- }
-@@ -296,6 +303,12 @@ static int tegra_rt5677_remove(struct platform_device *pdev)
- 
- 	tegra_asoc_utils_fini(&machine->util_data);
- 
-+	tegra_rt5677_dai.platform_of_node = NULL;
-+	of_node_put(tegra_rt5677_dai.codec_of_node);
-+	tegra_rt5677_dai.codec_of_node = NULL;
-+	of_node_put(tegra_rt5677_dai.cpu_of_node);
-+	tegra_rt5677_dai.cpu_of_node = NULL;
-+
- 	return 0;
- }
- 
 -- 
-2.7.4
+2.16.1
