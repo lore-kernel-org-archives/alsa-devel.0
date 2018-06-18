@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add rsnd_daidrv_get()" to the
-	asoc tree
-Date: Mon, 18 Jun 2018 13:00:07 +0100
-Message-ID: <E1fUspL-00006z-KP@debutante>
-References: <877en4sgi9.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: qcom: apq8096: set card as device
+	drvdata" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:05 +0100
+Message-ID: <E1fUspJ-00005s-Fk@debutante>
+References: <1528275324-4878-1-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DF6EB2676F2
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:10 +0200 (CEST)
-In-Reply-To: <877en4sgi9.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C9CE92676E6
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:12 +0200 (CEST)
+In-Reply-To: <1528275324-4878-1-git-send-email-rohitkr@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add rsnd_daidrv_get()
+   ASoC: qcom: apq8096: set card as device drvdata
 
 has been applied to the asoc tree at
 
@@ -53,52 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From a0d847c380ba47886fcca4168698eef51c69f109 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 12 Jun 2018 05:51:46 +0000
-Subject: [PATCH] ASoC: rsnd: add rsnd_daidrv_get()
+>From d5c4e972d512ae0b59108ca92b9b35bc5cf5c14e Mon Sep 17 00:00:00 2001
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Date: Wed, 6 Jun 2018 14:25:24 +0530
+Subject: [PATCH] ASoC: qcom: apq8096: set card as device drvdata
 
-rsnd priv has many parameters. On __rsnd_dai_probe() it uses
-rsnd_rdai_get() to get rdai pointer, but is using priv->daidrv
-directly to get daidrvhv, but it is confusable for reader.
-This patch adds rsnd_daidrv_get() to get daidrv from priv.
-Now reader can understand that rdai and daidrv are related.
+snd_soc_card is retrieved as device drvdata during unbind().
+Set it as drvdata during bind() to avoid memory corruption during
+unbind().
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ sound/soc/qcom/apq8096.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index eac22fef4543..6091e0916085 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -548,6 +548,15 @@ struct rsnd_dai *rsnd_rdai_get(struct rsnd_priv *priv, int id)
- 	return priv->rdai + id;
- }
+diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
+index 561cd429e6f2..239b8cb77bdb 100644
+--- a/sound/soc/qcom/apq8096.c
++++ b/sound/soc/qcom/apq8096.c
+@@ -140,6 +140,7 @@ static int apq8096_bind(struct device *dev)
  
-+static struct snd_soc_dai_driver
-+*rsnd_daidrv_get(struct rsnd_priv *priv, int id)
-+{
-+	if ((id < 0) || (id >= rsnd_rdai_nr(priv)))
-+		return NULL;
-+
-+	return priv->daidrv + id;
-+}
-+
- #define rsnd_dai_to_priv(dai) snd_soc_dai_get_drvdata(dai)
- static struct rsnd_dai *rsnd_dai_to_rdai(struct snd_soc_dai *dai)
- {
-@@ -1033,7 +1042,7 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
- 	int io_i;
- 
- 	rdai		= rsnd_rdai_get(priv, dai_i);
--	drv		= priv->daidrv + dai_i;
-+	drv		= rsnd_daidrv_get(priv, dai_i);
- 	io_playback	= &rdai->playback;
- 	io_capture	= &rdai->capture;
- 
+ 	component_bind_all(dev, card);
+ 	card->dev = dev;
++	dev_set_drvdata(dev, card);
+ 	ret = apq8096_sbc_parse_of(card);
+ 	if (ret) {
+ 		dev_err(dev, "Error parsing OF data\n");
 -- 
 2.17.1
