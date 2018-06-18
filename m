@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: PCM1789: unconditionally flush
-	work" to the asoc tree
-Date: Mon, 18 Jun 2018 12:59:46 +0100
-Message-ID: <E1fUsp0-0008P8-DO@debutante>
-References: <20180617134532.1070-1-stefan@agner.ch>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 84E632675D5
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 13:59:54 +0200 (CEST)
-In-Reply-To: <20180617134532.1070-1-stefan@agner.ch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Stefan Agner <stefan@agner.ch>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: pxa: add binding for pxa2xx-ac97 audio complex" to the asoc tree
+Date: Mon, 18 Jun 2018 12:59:44 +0100
+Message-ID: <E1fUsoy-0008OD-95@debutante>
+References: <20180617105001.17784-1-robert.jarzmik@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180617105001.17784-1-robert.jarzmik@free.fr>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: PCM1789: unconditionally flush work
+   ASoC: pxa: add binding for pxa2xx-ac97 audio complex
 
 has been applied to the asoc tree at
 
@@ -53,39 +37,53 @@ to this mail.
 Thanks,
 Mark
 
->From a7dc662c6a7b9209df600c64b16d33d72dbf56b1 Mon Sep 17 00:00:00 2001
-From: Stefan Agner <stefan@agner.ch>
-Date: Sun, 17 Jun 2018 15:45:29 +0200
-Subject: [PATCH] ASoC: codecs: PCM1789: unconditionally flush work
+>From e2b35e468c89000cf3b8b5beb63fd73dfa8a5435 Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Sun, 17 Jun 2018 12:50:00 +0200
+Subject: [PATCH] ASoC: pxa: add binding for pxa2xx-ac97 audio complex
 
-Work is guaranteed to be initialized on exit. Drop the unnecessary
-if statement and always call flush_work.
+This adds a binding for the Marvell PXA audio complex, available in
+pxa2xx and pxa3xx variants.
 
-This fixes a warning seen with clang:
-sound/soc/codecs/pcm1789.c:265:13: warning: address of 'priv->work' will
-      always evaluate to 'true' [-Wpointer-bool-conversion]
-        if (&priv->work)
-        ~~   ~~~~~~^~~~
-
-Signed-off-by: Stefan Agner <stefan@agner.ch>
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm1789.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ .../bindings/sound/marvell,pxa2xx-ac97.txt    | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
 
-diff --git a/sound/soc/codecs/pcm1789.c b/sound/soc/codecs/pcm1789.c
-index 21f15219b3ad..8df6447c76a6 100644
---- a/sound/soc/codecs/pcm1789.c
-+++ b/sound/soc/codecs/pcm1789.c
-@@ -262,8 +262,7 @@ int pcm1789_common_exit(struct device *dev)
- {
- 	struct pcm1789_private *priv = dev_get_drvdata(dev);
- 
--	if (&priv->work)
--		flush_work(&priv->work);
-+	flush_work(&priv->work);
- 
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt b/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
+new file mode 100644
+index 000000000000..2ea85d5be6a4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/marvell,pxa2xx-ac97.txt
+@@ -0,0 +1,27 @@
++Marvell PXA2xx audio complex
++
++This descriptions matches the AC97 controller found in pxa2xx and pxa3xx series.
++
++Required properties:
++  - compatible: should be one of the following:
++    "marvell,pxa250-ac97"
++    "marvell,pxa270-ac97"
++    "marvell,pxa300-ac97"
++  - reg: device MMIO address space
++  - interrupts: single interrupt generated by AC97 IP
++  - clocks: input clock of the AC97 IP, refer to clock-bindings.txt
++
++Optional properties:
++  - pinctrl-names, pinctrl-0: refer to pinctrl-bindings.txt
++  - reset-gpios: gpio used for AC97 reset, refer to gpio.txt
++
++Example:
++	ac97: sound@40500000 {
++		compatible = "marvell,pxa250-ac97";
++		reg = < 0x40500000 0x1000 >;
++		interrupts = <14>;
++		reset-gpios = <&gpio 113 GPIO_ACTIVE_HIGH>;
++		#sound-dai-cells = <1>;
++		pinctrl-names = "default";
++		pinctrl-0 = < &pmux_ac97_default >;
++	};
 -- 
 2.17.1
