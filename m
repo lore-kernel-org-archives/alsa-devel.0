@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hac: convert to SPDX identifiers" to
+Subject: Applied "ASoC: fsi: convert to SPDX identifiers" to
 	the asoc tree
-Date: Mon, 18 Jun 2018 13:00:46 +0100
-Message-ID: <E1fUspy-0000QS-0z@debutante>
-References: <87zi00r1op.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 18 Jun 2018 13:00:48 +0100
+Message-ID: <E1fUsq0-0000RG-5b@debutante>
+References: <871sdcsg9s.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 437F126771F
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:48 +0200 (CEST)
-In-Reply-To: <87zi00r1op.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6FD3B2676DC
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:50 +0200 (CEST)
+In-Reply-To: <871sdcsg9s.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hac: convert to SPDX identifiers
+   ASoC: fsi: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,52 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From cb006e7b1712bb9507a218be7ed811ca8e65fc4d Mon Sep 17 00:00:00 2001
+>From 134c875bff58ac988c64a1ea2a337acba1711d4b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 12 Jun 2018 05:57:13 +0000
-Subject: [PATCH] ASoC: hac: convert to SPDX identifiers
-
-Tidyup incoherence between MODULE_LICENSE and header license, too
+Date: Tue, 12 Jun 2018 05:56:51 +0000
+Subject: [PATCH] ASoC: fsi: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/hac.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
+ sound/soc/sh/fsi.c | 22 +++++++++-------------
+ 1 file changed, 9 insertions(+), 13 deletions(-)
 
-diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
-index 624aaf569fef..c2b496398e6b 100644
---- a/sound/soc/sh/hac.c
-+++ b/sound/soc/sh/hac.c
-@@ -1,13 +1,11 @@
+diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
+index 3bae06dd121f..aa7e902f0c02 100644
+--- a/sound/soc/sh/fsi.c
++++ b/sound/soc/sh/fsi.c
+@@ -1,16 +1,12 @@
 -/*
-- * Hitachi Audio Controller (AC97) support for SH7760/SH7780
+- * Fifo-attached Serial Interface (FSI) support for SH7724
 - *
+- * Copyright (C) 2009 Renesas Solutions Corp.
+- * Kuninori Morimoto <morimoto.kuninori@renesas.com>
+- *
+- * Based on ssi.c
 - * Copyright (c) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
-- *  licensed under the terms outlined in the file COPYING at the root
-- *  of the linux kernel sources.
 - *
-- * dont forget to set IPSEL/OMSEL register bits (in your board code) to
-- * enable HAC output pins!
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// Hitachi Audio Controller (AC97) support for SH7760/SH7780
++// Fifo-attached Serial Interface (FSI) support for SH7724
 +//
++// Copyright (C) 2009 Renesas Solutions Corp.
++// Kuninori Morimoto <morimoto.kuninori@renesas.com>
++//
++// Based on ssi.c
 +// Copyright (c) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
-+//
-+// dont forget to set IPSEL/OMSEL register bits (in your board code) to
-+// enable HAC output pins!
  
- /* BIG FAT FIXME: although the SH7760 has 2 independent AC97 units, only
-  * the FIRST can be used since ASoC does not pass any information to the
-@@ -343,6 +341,6 @@ static struct platform_driver hac_pcm_driver = {
- 
- module_platform_driver(hac_pcm_driver);
- 
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("SuperH onchip HAC (AC97) audio driver");
- MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
+ #include <linux/delay.h>
+ #include <linux/dma-mapping.h>
 -- 
 2.17.1
