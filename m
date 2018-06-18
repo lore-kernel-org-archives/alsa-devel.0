@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: TSCS42xx: Add mic bias boost control"
-	to the asoc tree
-Date: Mon, 18 Jun 2018 12:59:56 +0100
-Message-ID: <E1fUspA-0008T3-QW@debutante>
-References: <91e206cbabd7c7a7c8d7715b5e51ffef384ac6ec.1528143829.git.steven.eckhoff.opensource@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4EBDE2676DA
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:00 +0200 (CEST)
-In-Reply-To: <91e206cbabd7c7a7c8d7715b5e51ffef384ac6ec.1528143829.git.steven.eckhoff.opensource@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: simple-card: move hp and mic detection to soc_card probe" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:11 +0100
+Message-ID: <E1fUspP-00009M-T8@debutante>
+References: <20180611083214.16858-2-suzuki.katsuhiro@socionext.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180611083214.16858-2-suzuki.katsuhiro@socionext.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: TSCS42xx: Add mic bias boost control
+   ASoC: simple-card: move hp and mic detection to soc_card probe
 
 has been applied to the asoc tree at
 
@@ -53,32 +37,73 @@ to this mail.
 Thanks,
 Mark
 
->From 58f7d470c85801f55bbae2d3c93fe1a3d34aa143 Mon Sep 17 00:00:00 2001
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Date: Mon, 4 Jun 2018 15:45:40 -0500
-Subject: [PATCH] ASoC: TSCS42xx: Add mic bias boost control
+>From 8d1bd113a194407f9ad083403ea1cf92108edf5c Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Mon, 11 Jun 2018 17:32:13 +0900
+Subject: [PATCH] ASoC: simple-card: move hp and mic detection to soc_card
+ probe
 
-Add mic bias boost control
+This patch moves headphone and microphone detection to probe() of
+snd_soc_card from init() of snd_soc_dai_link. This is because init()
+is called (and an input device /dev/input/eventX is created too)
+twice or above if simple card has two or more DAI links.
 
-Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tscs42xx.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/generic/simple-card.c | 25 +++++++++++++++++--------
+ 1 file changed, 17 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index d18ff17719cc..743194052fc4 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -644,6 +644,9 @@ static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
- 	/* Input Channel Map */
- 	SOC_ENUM("Input Channel Map", ch_map_select_enum),
+diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
+index a6477a022156..c5b6e04cd926 100644
+--- a/sound/soc/generic/simple-card.c
++++ b/sound/soc/generic/simple-card.c
+@@ -149,14 +149,6 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
+ 	if (ret < 0)
+ 		return ret;
  
-+	/* Mic Bias */
-+	SOC_SINGLE("Mic Bias Boost Switch", 0x71, 0x07, 1, 0),
+-	ret = asoc_simple_card_init_hp(rtd->card, &priv->hp_jack, PREFIX);
+-	if (ret < 0)
+-		return ret;
+-
+-	ret = asoc_simple_card_init_mic(rtd->card, &priv->mic_jack, PREFIX);
+-	if (ret < 0)
+-		return ret;
+-
+ 	return 0;
+ }
+ 
+@@ -350,6 +342,22 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
+ 	return ret;
+ }
+ 
++static int asoc_simple_soc_card_probe(struct snd_soc_card *card)
++{
++	struct simple_card_data *priv = snd_soc_card_get_drvdata(card);
++	int ret;
 +
- 	/* Coefficient Ram */
- 	COEFF_RAM_CTL("Cascade1L BiQuad1", BIQUAD_SIZE, 0x00),
- 	COEFF_RAM_CTL("Cascade1L BiQuad2", BIQUAD_SIZE, 0x05),
++	ret = asoc_simple_card_init_hp(card, &priv->hp_jack, PREFIX);
++	if (ret < 0)
++		return ret;
++
++	ret = asoc_simple_card_init_mic(card, &priv->mic_jack, PREFIX);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
+ static int asoc_simple_card_probe(struct platform_device *pdev)
+ {
+ 	struct simple_card_data *priv;
+@@ -385,6 +393,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
+ 	card->dev		= dev;
+ 	card->dai_link		= priv->dai_link;
+ 	card->num_links		= num;
++	card->probe		= asoc_simple_soc_card_probe;
+ 
+ 	if (np && of_device_is_available(np)) {
+ 
 -- 
 2.17.1
