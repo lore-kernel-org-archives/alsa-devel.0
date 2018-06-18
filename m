@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: add devicetree support" to the asoc tree
-Date: Mon, 18 Jun 2018 12:59:42 +0100
-Message-ID: <E1fUsow-0008N6-3J@debutante>
-References: <20180617105001.17784-2-robert.jarzmik@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180617105001.17784-2-robert.jarzmik@free.fr>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: TSCS42xx: Add headphone auto switching"
+	to the asoc tree
+Date: Mon, 18 Jun 2018 12:59:52 +0100
+Message-ID: <E1fUsp6-0008RD-6w@debutante>
+References: <cec911cd9111bb4ae25bb9ec2df3af134bc49c58.1528143829.git.steven.eckhoff.opensource@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id F11CB2675D5
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 13:59:55 +0200 (CEST)
+In-Reply-To: <cec911cd9111bb4ae25bb9ec2df3af134bc49c58.1528143829.git.steven.eckhoff.opensource@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: add devicetree support
+   ASoC: TSCS42xx: Add headphone auto switching
 
 has been applied to the asoc tree at
 
@@ -37,80 +53,62 @@ to this mail.
 Thanks,
 Mark
 
->From a4519526ebbd261e36425fa1c269515ee0648ab2 Mon Sep 17 00:00:00 2001
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Sun, 17 Jun 2018 12:50:01 +0200
-Subject: [PATCH] ASoC: pxa: add devicetree support
+>From 53af408cd9f2d1c66bc081c1d82797bfe44af3e5 Mon Sep 17 00:00:00 2001
+From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Date: Mon, 4 Jun 2018 15:47:02 -0500
+Subject: [PATCH] ASoC: TSCS42xx: Add headphone auto switching
 
-Add the devicetree support, so that the driver can be used in a
-devictree platform.
+Add headphone auto switching controls
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/arm/pxa2xx-ac97-lib.c | 12 ++++++++++++
- sound/soc/pxa/pxa2xx-ac97.c | 12 ++++++++++++
- 2 files changed, 24 insertions(+)
+ sound/soc/codecs/tscs42xx.c | 6 ++++++
+ sound/soc/codecs/tscs42xx.h | 8 ++++++++
+ 2 files changed, 14 insertions(+)
 
-diff --git a/sound/arm/pxa2xx-ac97-lib.c b/sound/arm/pxa2xx-ac97-lib.c
-index 5950a9e218d9..8eafd3d3dff6 100644
---- a/sound/arm/pxa2xx-ac97-lib.c
-+++ b/sound/arm/pxa2xx-ac97-lib.c
-@@ -19,6 +19,7 @@
- #include <linux/module.h>
- #include <linux/io.h>
- #include <linux/gpio.h>
-+#include <linux/of_gpio.h>
+diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
+index 5d596e4dab0c..7396a6e5277e 100644
+--- a/sound/soc/codecs/tscs42xx.c
++++ b/sound/soc/codecs/tscs42xx.c
+@@ -647,6 +647,12 @@ static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
+ 	/* Mic Bias */
+ 	SOC_SINGLE("Mic Bias Boost Switch", 0x71, 0x07, 1, 0),
  
- #include <sound/pxa2xx-lib.h>
- 
-@@ -337,6 +338,17 @@ int pxa2xx_ac97_hw_probe(struct platform_device *dev)
- 			dev_err(&dev->dev, "Invalid reset GPIO %d\n",
- 				pdata->reset_gpio);
- 		}
-+	} else if (!pdata && dev->dev.of_node) {
-+		pdata = devm_kzalloc(&dev->dev, sizeof(*pdata), GFP_KERNEL);
-+		if (!pdata)
-+			return -ENOMEM;
-+		pdata->reset_gpio = of_get_named_gpio(dev->dev.of_node,
-+						      "reset-gpios", 0);
-+		if (pdata->reset_gpio == -ENOENT)
-+			pdata->reset_gpio = -1;
-+		else if (pdata->reset_gpio < 0)
-+			return pdata->reset_gpio;
-+		reset_gpio = pdata->reset_gpio;
- 	} else {
- 		if (cpu_is_pxa27x())
- 			reset_gpio = 113;
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 803818aabee9..5738a0abcd6a 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -238,6 +238,17 @@ static const struct snd_soc_component_driver pxa_ac97_component = {
- 	.name		= "pxa-ac97",
- };
- 
-+#ifdef CONFIG_OF
-+static const struct of_device_id pxa2xx_ac97_dt_ids[] = {
-+	{ .compatible = "marvell,pxa250-ac97", },
-+	{ .compatible = "marvell,pxa270-ac97", },
-+	{ .compatible = "marvell,pxa300-ac97", },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, pxa2xx_ac97_dt_ids);
++	/* Headphone Auto Switching */
++	SOC_SINGLE("Headphone Auto Switching Switch",
++			R_CTL, FB_CTL_HPSWEN, 1, 0),
++	SOC_SINGLE("Headphone Detect Polarity Toggle Switch",
++			R_CTL, FB_CTL_HPSWPOL, 1, 0),
 +
-+#endif
-+
- static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- {
- 	int ret;
-@@ -296,6 +307,7 @@ static struct platform_driver pxa2xx_ac97_driver = {
- #ifdef CONFIG_PM_SLEEP
- 		.pm	= &pxa2xx_ac97_pm_ops,
- #endif
-+		.of_match_table = of_match_ptr(pxa2xx_ac97_dt_ids),
- 	},
- };
+ 	/* Coefficient Ram */
+ 	COEFF_RAM_CTL("Cascade1L BiQuad1", BIQUAD_SIZE, 0x00),
+ 	COEFF_RAM_CTL("Cascade1L BiQuad2", BIQUAD_SIZE, 0x05),
+diff --git a/sound/soc/codecs/tscs42xx.h b/sound/soc/codecs/tscs42xx.h
+index 814c8f3c4a68..6b3a21081635 100644
+--- a/sound/soc/codecs/tscs42xx.h
++++ b/sound/soc/codecs/tscs42xx.h
+@@ -34,6 +34,7 @@ enum {
+ #define R_DACSR         0x19
+ #define R_PWRM1         0x1A
+ #define R_PWRM2         0x1B
++#define R_CTL		0x1C
+ #define R_CONFIG0       0x1F
+ #define R_CONFIG1       0x20
+ #define R_DMICCTL       0x24
+@@ -1110,6 +1111,13 @@ enum {
+ #define RV_PWRM2_VREF_DISABLE \
+ 	 RV(FV_PWRM2_VREF_DISABLE, FB_PWRM2_VREF)
  
++/******************************
++ *      R_CTL (0x1C)          *
++ ******************************/
++
++/* Fiel Offsets */
++#define FB_CTL_HPSWEN                        7
++#define FB_CTL_HPSWPOL                       6
+ 
+ /******************************
+  *      R_CONFIG0 (0x1F)      *
 -- 
 2.17.1
