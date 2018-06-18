@@ -1,60 +1,59 @@
-From: "Sommer, Roman" <roman.sommer@fau.de>
-Subject: Re: [PATCH 0/3] sound/usb/line6: fix some styling issues
-Date: Mon, 18 Jun 2018 13:57:26 +0200
-Message-ID: <dfb7ed2f90fb8fbc2164385f7403c8a4@fau.de>
-References: <1529317779-15908-1-git-send-email-roman.sommer@fau.de>
- <s5h8t7cz8cm.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/5] ALSA: firewire-motu: suppless consumption
+	for unused element of array in stack
+Date: Mon, 18 Jun 2018 21:07:51 +0900
+Message-ID: <20180618120755.19880-2-o-takashi@sakamocchi.jp>
+References: <20180618120755.19880-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8;
- format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h8t7cz8cm.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Kees Cook <keescook@chromium.org>, Daniel Graefe <daniel.graefe@fau.de>, Bhumika Goyal <bhumirks@gmail.com>, =?UTF-8?Q?Fabi=C3=A1n_Inostroza?= <soulsonceonfire@gmail.com>, linux-kernel@i4.cs.fau.de, Thomas Gleixner <tglx@linutronix.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Kate Stewart <kstewart@linuxfoundation.org>, Philippe Ombredanne <pombredanne@nexb.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, =?UTF-8?Q?Hans_P=2E_M=C3=B6ller_Ebner?= <hmoller@uc.cl>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl0-f65.google.com (mail-pl0-f65.google.com
+ [209.85.160.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6ED40267642
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:08:27 +0200 (CEST)
+Received: by mail-pl0-f65.google.com with SMTP id a7-v6so8922031plp.3
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 05:08:27 -0700 (PDT)
+In-Reply-To: <20180618120755.19880-1-o-takashi@sakamocchi.jp>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-On 2018-06-18 12:39, Takashi Iwai wrote:
-> On Mon, 18 Jun 2018 12:29:36 +0200,
-> Roman Sommer wrote:
->> 
->> CC: Jaroslav Kysela <perex@perex.cz>
->> CC: Takashi Iwai <tiwai@suse.com>
->> CC: Takashi Sakamoto <o-takashi@sakamocchi.jp>
->> CC: "Hans P. Möller Ebner" <hmoller@uc.cl>
->> CC: Kees Cook <keescook@chromium.org>
->> CC: Kate Stewart <kstewart@linuxfoundation.org>
->> CC: Thomas Gleixner <tglx@linutronix.de>
->> CC: "Fabián Inostroza" <soulsonceonfire@gmail.com>
->> CC: Bhumika Goyal <bhumirks@gmail.com>
->> CC: Philippe Ombredanne <pombredanne@nexb.com>
->> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->> CC: alsa-devel@alsa-project.org
->> CC: linux-kernel@vger.kernel.org
->> 
->> 
->> This patchseries addresses some styling issues in sound/usb/line6 
->> found by
->> checkpatch.
-> 
-> Are you working further on this driver to fix any real bugs (or
-> implements something new), or it's an action "just because checkpatch
-> tells"?  I'd take such cleanup patches only for the former case.
-> 
+In MOTU firewire protocol, data block consists of 24 bit data chunks except
+for one quadlet for source packet header (SPH). The number of data chunk in
+a data block is different between three clock modes; low, middle and high.
+When unit supports ADAT on optical interface, the data block includes some
+chunks for ADAT channels. These ADAT chunks are unavailable at high mode.
 
-Hi Takashi,
+This driver has local functions to calculate the number of ADAT chunks. But
+They uses stack for three clock modes. This is useless for higher mode.
 
-I do intend to work on a few issues as I have some Line6 USB devices 
-that
-don't work as expected (or at all).
-But for now this is just a cleanup patch and I don't want to promise
-anything at this point.
-Still my interest to use those devices is a strong
-motivator.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/motu/motu-protocol-v2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I'd be glad if you would consider accepting the patch anyway.
-
-
-Cheers,
-Roman
+diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
+index 525b746330be..a51fd196d884 100644
+--- a/sound/firewire/motu/motu-protocol-v2.c
++++ b/sound/firewire/motu/motu-protocol-v2.c
+@@ -176,7 +176,7 @@ static void calculate_differed_part(struct snd_motu_packet_format *formats,
+ 				    enum snd_motu_spec_flags flags,
+ 				    u32 data, u32 mask, u32 shift)
+ {
+-	unsigned char pcm_chunks[3] = {0, 0};
++	unsigned char pcm_chunks[2] = {0, 0};
+ 
+ 	/*
+ 	 * When optical interfaces are configured for S/PDIF (TOSLINK),
+-- 
+2.14.1
