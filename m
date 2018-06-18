@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ssi: convert to SPDX identifiers" to
+Subject: Applied "ASoC: hac: convert to SPDX identifiers" to
 	the asoc tree
-Date: Mon, 18 Jun 2018 13:00:43 +0100
-Message-ID: <E1fUspv-0000Pb-Sc@debutante>
-References: <87wov4r1ns.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 18 Jun 2018 13:00:46 +0100
+Message-ID: <E1fUspy-0000QS-0z@debutante>
+References: <87zi00r1op.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2FB22267786
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:46 +0200 (CEST)
-In-Reply-To: <87wov4r1ns.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 437F126771F
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:48 +0200 (CEST)
+In-Reply-To: <87zi00r1op.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ssi: convert to SPDX identifiers
+   ASoC: hac: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,53 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 217bc8c898b24fa2098a375a575f6170cfac45a9 Mon Sep 17 00:00:00 2001
+>From cb006e7b1712bb9507a218be7ed811ca8e65fc4d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 12 Jun 2018 05:57:47 +0000
-Subject: [PATCH] ASoC: ssi: convert to SPDX identifiers
+Date: Tue, 12 Jun 2018 05:57:13 +0000
+Subject: [PATCH] ASoC: hac: convert to SPDX identifiers
 
 Tidyup incoherence between MODULE_LICENSE and header license, too
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/ssi.c | 21 +++++++++------------
- 1 file changed, 9 insertions(+), 12 deletions(-)
+ sound/soc/sh/hac.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/sh/ssi.c b/sound/soc/sh/ssi.c
-index 89ed1b107ac5..8125fa3840b6 100644
---- a/sound/soc/sh/ssi.c
-+++ b/sound/soc/sh/ssi.c
-@@ -1,14 +1,11 @@
+diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
+index 624aaf569fef..c2b496398e6b 100644
+--- a/sound/soc/sh/hac.c
++++ b/sound/soc/sh/hac.c
+@@ -1,13 +1,11 @@
 -/*
-- * Serial Sound Interface (I2S) support for SH7760/SH7780
+- * Hitachi Audio Controller (AC97) support for SH7760/SH7780
 - *
 - * Copyright (c) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
-- *
 - *  licensed under the terms outlined in the file COPYING at the root
 - *  of the linux kernel sources.
 - *
 - * dont forget to set IPSEL/OMSEL register bits (in your board code) to
-- * enable SSI output pins!
+- * enable HAC output pins!
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// Serial Sound Interface (I2S) support for SH7760/SH7780
++// Hitachi Audio Controller (AC97) support for SH7760/SH7780
 +//
 +// Copyright (c) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
 +//
 +// dont forget to set IPSEL/OMSEL register bits (in your board code) to
-+// enable SSI output pins!
++// enable HAC output pins!
  
- /*
-  * LIMITATIONS:
-@@ -400,6 +397,6 @@ static struct platform_driver sh4_ssi_driver = {
+ /* BIG FAT FIXME: although the SH7760 has 2 independent AC97 units, only
+  * the FIRST can be used since ASoC does not pass any information to the
+@@ -343,6 +341,6 @@ static struct platform_driver hac_pcm_driver = {
  
- module_platform_driver(sh4_ssi_driver);
+ module_platform_driver(hac_pcm_driver);
  
 -MODULE_LICENSE("GPL");
 +MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("SuperH onchip SSI (I2S) audio driver");
+ MODULE_DESCRIPTION("SuperH onchip HAC (AC97) audio driver");
  MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
 -- 
 2.17.1
