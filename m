@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add config for rockchip
-	dmaengine pcm register" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:20 +0100
-Message-ID: <E1fUspY-0000DI-3A@debutante>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for the
+	Chuwi Vi10 tablet" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:16 +0100
+Message-ID: <E1fUspU-0000BV-6x@debutante>
+References: <20180608081925.9620-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2477226772E
+ by alsa0.perex.cz (Postfix) with ESMTP id 726092676E6
  for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:24 +0200 (CEST)
-In-Reply-To: 
+In-Reply-To: <20180608081925.9620-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jianqun Xu <jay.xu@rock-chips.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add config for rockchip dmaengine pcm register
+   ASoC: Intel: bytcr_rt5640: Add quirk for the Chuwi Vi10 tablet
 
 has been applied to the asoc tree at
 
@@ -52,134 +53,49 @@ to this mail.
 Thanks,
 Mark
 
->From 75b31192fe6ad20b42276b20ee3bdf1493216d63 Mon Sep 17 00:00:00 2001
-From: Jianqun Xu <jay.xu@rock-chips.com>
-Date: Fri, 8 Jun 2018 16:31:09 +0800
-Subject: [PATCH] ASoC: rockchip: add config for rockchip dmaengine pcm
- register
+>From d5a1826c32fa2ec2b161a89df904c6977f7ec44c Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Fri, 8 Jun 2018 10:19:25 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the Chuwi Vi10
+ tablet
 
-This patch makes the rockchip i2s pcm configurable by adding
-rockchip pcm config for devm_snd_dmaengine_pcm_register.
+Add a quirk for the Chuwi Vi10 tablet, this tablet uses IN1 for the
+internal mic rather then the default IN3 and it uses JD2 rather
+then JD1 for its jack-detect switch.
 
-Signed-off-by: Jianqun Xu <jay.xu@rock-chips.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/Makefile       |  3 ++-
- sound/soc/rockchip/rockchip_i2s.c |  3 ++-
- sound/soc/rockchip/rockchip_pcm.c | 45 +++++++++++++++++++++++++++++++
- sound/soc/rockchip/rockchip_pcm.h | 14 ++++++++++
- 4 files changed, 63 insertions(+), 2 deletions(-)
- create mode 100644 sound/soc/rockchip/rockchip_pcm.c
- create mode 100644 sound/soc/rockchip/rockchip_pcm.h
+ sound/soc/intel/boards/bytcr_rt5640.c | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-diff --git a/sound/soc/rockchip/Makefile b/sound/soc/rockchip/Makefile
-index 05b078e7b87f..65e814d46006 100644
---- a/sound/soc/rockchip/Makefile
-+++ b/sound/soc/rockchip/Makefile
-@@ -1,10 +1,11 @@
- # SPDX-License-Identifier: GPL-2.0
- # ROCKCHIP Platform Support
- snd-soc-rockchip-i2s-objs := rockchip_i2s.o
-+snd-soc-rockchip-pcm-objs := rockchip_pcm.o
- snd-soc-rockchip-pdm-objs := rockchip_pdm.o
- snd-soc-rockchip-spdif-objs := rockchip_spdif.o
- 
--obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-rockchip-i2s.o
-+obj-$(CONFIG_SND_SOC_ROCKCHIP_I2S) += snd-soc-rockchip-i2s.o snd-soc-rockchip-pcm.o
- obj-$(CONFIG_SND_SOC_ROCKCHIP_PDM) += snd-soc-rockchip-pdm.o
- obj-$(CONFIG_SND_SOC_ROCKCHIP_SPDIF) += snd-soc-rockchip-spdif.o
- 
-diff --git a/sound/soc/rockchip/rockchip_i2s.c b/sound/soc/rockchip/rockchip_i2s.c
-index 950823d69e9c..60d43d53a8f5 100644
---- a/sound/soc/rockchip/rockchip_i2s.c
-+++ b/sound/soc/rockchip/rockchip_i2s.c
-@@ -22,6 +22,7 @@
- #include <sound/dmaengine_pcm.h>
- 
- #include "rockchip_i2s.h"
-+#include "rockchip_pcm.h"
- 
- #define DRV_NAME "rockchip-i2s"
- 
-@@ -674,7 +675,7 @@ static int rockchip_i2s_probe(struct platform_device *pdev)
- 		goto err_suspend;
- 	}
- 
--	ret = devm_snd_dmaengine_pcm_register(&pdev->dev, NULL, 0);
-+	ret = rockchip_pcm_platform_register(&pdev->dev);
- 	if (ret) {
- 		dev_err(&pdev->dev, "Could not register PCM\n");
- 		return ret;
-diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockchip_pcm.c
-new file mode 100644
-index 000000000000..f77538319221
---- /dev/null
-+++ b/sound/soc/rockchip/rockchip_pcm.c
-@@ -0,0 +1,45 @@
-+/*
-+ * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/device.h>
-+#include <linux/init.h>
-+#include <linux/module.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/dmaengine_pcm.h>
-+
-+#include "rockchip_pcm.h"
-+
-+static const struct snd_pcm_hardware snd_rockchip_hardware = {
-+	.info			= SNDRV_PCM_INFO_MMAP |
-+				  SNDRV_PCM_INFO_MMAP_VALID |
-+				  SNDRV_PCM_INFO_PAUSE |
-+				  SNDRV_PCM_INFO_RESUME,
-+	.period_bytes_min	= 32,
-+	.period_bytes_max	= 8192,
-+	.periods_min		= 1,
-+	.periods_max		= 52,
-+	.buffer_bytes_max	= 64 * 1024,
-+	.fifo_size		= 32,
-+};
-+
-+static const struct snd_dmaengine_pcm_config rk_dmaengine_pcm_config = {
-+	.pcm_hardware = &snd_rockchip_hardware,
-+	.prealloc_buffer_size = 32 * 1024,
-+};
-+
-+int rockchip_pcm_platform_register(struct device *dev)
-+{
-+	return devm_snd_dmaengine_pcm_register(dev, &rk_dmaengine_pcm_config,
-+		SND_DMAENGINE_PCM_FLAG_COMPAT);
-+}
-+EXPORT_SYMBOL_GPL(rockchip_pcm_platform_register);
-+
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/rockchip/rockchip_pcm.h b/sound/soc/rockchip/rockchip_pcm.h
-new file mode 100644
-index 000000000000..d6c36115c60a
---- /dev/null
-+++ b/sound/soc/rockchip/rockchip_pcm.h
-@@ -0,0 +1,14 @@
-+/*
-+ * Copyright (c) 2018 Rockchip Electronics Co. Ltd.
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#ifndef _ROCKCHIP_PCM_H
-+#define _ROCKCHIP_PCM_H
-+
-+int rockchip_pcm_platform_register(struct device *dev);
-+
-+#endif
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 33065ba294a9..5c4f9ea40f57 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -463,6 +463,22 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{
++		/* Chuwi Vi10 (CWI505) */
++		.matches = {
++			DMI_MATCH(DMI_BOARD_VENDOR, "Hampoo"),
++			DMI_MATCH(DMI_BOARD_NAME, "BYT-PF02"),
++			DMI_MATCH(DMI_SYS_VENDOR, "ilife"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "S165"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Circuitco"),
 -- 
 2.17.1
