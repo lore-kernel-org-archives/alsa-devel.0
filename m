@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4458: make structure
-	soc_codec_dev_ak4458 static const" to the asoc tree
-Date: Mon, 18 Jun 2018 12:59:58 +0100
-Message-ID: <E1fUspC-0008U3-Uz@debutante>
-References: <20180606103123.31719-1-colin.king@canonical.com>
+Subject: Applied "ASoC: rsnd: add rsnd_daidrv_get()" to the
+	asoc tree
+Date: Mon, 18 Jun 2018 13:00:07 +0100
+Message-ID: <E1fUspL-00006z-KP@debutante>
+References: <877en4sgi9.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 50DF02676E6
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:08 +0200 (CEST)
-In-Reply-To: <20180606103123.31719-1-colin.king@canonical.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DF6EB2676F2
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:10 +0200 (CEST)
+In-Reply-To: <877en4sgi9.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4458: make structure soc_codec_dev_ak4458 static const
+   ASoC: rsnd: add rsnd_daidrv_get()
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 62624f72592b1d8e756e699cd6ade2be379f95a9 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 6 Jun 2018 11:31:23 +0100
-Subject: [PATCH] ASoC: ak4458: make structure soc_codec_dev_ak4458 static
- const
+>From a0d847c380ba47886fcca4168698eef51c69f109 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 12 Jun 2018 05:51:46 +0000
+Subject: [PATCH] ASoC: rsnd: add rsnd_daidrv_get()
 
-The structure soc_codec_dev_ak4458 is local to the source and do not
-need to be in global scope and can be const, make it static const.
+rsnd priv has many parameters. On __rsnd_dai_probe() it uses
+rsnd_rdai_get() to get rdai pointer, but is using priv->daidrv
+directly to get daidrvhv, but it is confusable for reader.
+This patch adds rsnd_daidrv_get() to get daidrv from priv.
+Now reader can understand that rdai and daidrv are related.
 
-Cleans up sparse warnings:
-warning: symbol 'soc_codec_dev_ak4458' was not declared. Should it
-be static?
-
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4458.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
-index 31ec0ba2e639..299ada4dfaa0 100644
---- a/sound/soc/codecs/ak4458.c
-+++ b/sound/soc/codecs/ak4458.c
-@@ -558,7 +558,7 @@ static int __maybe_unused ak4458_runtime_resume(struct device *dev)
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index eac22fef4543..6091e0916085 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -548,6 +548,15 @@ struct rsnd_dai *rsnd_rdai_get(struct rsnd_priv *priv, int id)
+ 	return priv->rdai + id;
  }
- #endif /* CONFIG_PM */
  
--struct snd_soc_component_driver soc_codec_dev_ak4458 = {
-+static const struct snd_soc_component_driver soc_codec_dev_ak4458 = {
- 	.probe			= ak4458_probe,
- 	.remove			= ak4458_remove,
- 	.controls		= ak4458_snd_controls,
++static struct snd_soc_dai_driver
++*rsnd_daidrv_get(struct rsnd_priv *priv, int id)
++{
++	if ((id < 0) || (id >= rsnd_rdai_nr(priv)))
++		return NULL;
++
++	return priv->daidrv + id;
++}
++
+ #define rsnd_dai_to_priv(dai) snd_soc_dai_get_drvdata(dai)
+ static struct rsnd_dai *rsnd_dai_to_rdai(struct snd_soc_dai *dai)
+ {
+@@ -1033,7 +1042,7 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
+ 	int io_i;
+ 
+ 	rdai		= rsnd_rdai_get(priv, dai_i);
+-	drv		= priv->daidrv + dai_i;
++	drv		= rsnd_daidrv_get(priv, dai_i);
+ 	io_playback	= &rdai->playback;
+ 	io_capture	= &rdai->capture;
+ 
 -- 
 2.17.1
