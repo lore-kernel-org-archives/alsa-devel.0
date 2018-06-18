@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: twl6040: make pointer dmic_codec_dev static" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:03 +0100
-Message-ID: <E1fUspH-0008WL-AN@debutante>
-References: <20180606093504.30255-1-colin.king@canonical.com>
+Subject: Applied "ASoC: rockchip: put device_node on remove" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:22 +0100
+Message-ID: <E1fUspa-0000EU-8H@debutante>
+References: <1528582854-8402-1-git-send-email-khoroshilov@ispras.ru>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180606093504.30255-1-colin.king@canonical.com>
+In-Reply-To: <1528582854-8402-1-git-send-email-khoroshilov@ispras.ru>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Julia Lawall <julia.lawall@lip6.fr>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, sil2review@lists.osadl.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: twl6040: make pointer dmic_codec_dev static
+   ASoC: rockchip: put device_node on remove
 
 has been applied to the asoc tree at
 
@@ -37,36 +37,84 @@ to this mail.
 Thanks,
 Mark
 
->From 510e419cb85798915c6426c496a164ec6328d1a7 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 6 Jun 2018 10:35:04 +0100
-Subject: [PATCH] ASoC: twl6040: make pointer dmic_codec_dev static
+>From a56df73ba5960848f60f609c68770d2638bf1dd5 Mon Sep 17 00:00:00 2001
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Date: Sun, 10 Jun 2018 01:20:54 +0300
+Subject: [PATCH] ASoC: rockchip: put device_node on remove
 
-The pointer dmic_codec_dev is local to the source and does not need
-to be in global scope, so make it static.
+snd_rk_mc_probe() gets a couple of device nodes with of_parse_phandle(),
+but there is no release of them.
 
-Cleans up sparse warning:
-warning: symbol 'dmic_codec_dev' was not declared. Should it be static?
+The patch adds remove handler and proper error handling in the probe.
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/omap-abe-twl6040.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/rockchip/rockchip_rt5645.c | 27 ++++++++++++++++++++++++---
+ 1 file changed, 24 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
-index 15ccbf479c96..d5ae9eb8c756 100644
---- a/sound/soc/omap/omap-abe-twl6040.c
-+++ b/sound/soc/omap/omap-abe-twl6040.c
-@@ -40,7 +40,7 @@ struct abe_twl6040 {
- 	int	mclk_freq;	/* MCLK frequency speed for twl6040 */
- };
+diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
+index 4db4fd56db35..881c32498808 100644
+--- a/sound/soc/rockchip/rockchip_rt5645.c
++++ b/sound/soc/rockchip/rockchip_rt5645.c
+@@ -181,7 +181,8 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
+ 	if (!rk_dailink.cpu_of_node) {
+ 		dev_err(&pdev->dev,
+ 			"Property 'rockchip,i2s-controller' missing or invalid\n");
+-		return -EINVAL;
++		ret = -EINVAL;
++		goto put_codec_of_node;
+ 	}
  
--struct platform_device *dmic_codec_dev;
-+static struct platform_device *dmic_codec_dev;
+ 	rk_dailink.platform_of_node = rk_dailink.cpu_of_node;
+@@ -190,17 +191,36 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
+ 			"Soc parse card name failed %d\n", ret);
+-		return ret;
++		goto put_cpu_of_node;
+ 	}
  
- static int omap_abe_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
+ 	if (ret) {
+ 		dev_err(&pdev->dev,
+ 			"Soc register card failed %d\n", ret);
+-		return ret;
++		goto put_cpu_of_node;
+ 	}
+ 
+ 	return ret;
++
++put_cpu_of_node:
++	of_node_put(rk_dailink.cpu_of_node);
++	rk_dailink.cpu_of_node = NULL;
++put_codec_of_node:
++	of_node_put(rk_dailink.codec_of_node);
++	rk_dailink.codec_of_node = NULL;
++
++	return ret;
++}
++
++static int snd_rk_mc_remove(struct platform_device *pdev)
++{
++	of_node_put(rk_dailink.cpu_of_node);
++	rk_dailink.cpu_of_node = NULL;
++	of_node_put(rk_dailink.codec_of_node);
++	rk_dailink.codec_of_node = NULL;
++
++	return 0;
+ }
+ 
+ static const struct of_device_id rockchip_rt5645_of_match[] = {
+@@ -212,6 +232,7 @@ MODULE_DEVICE_TABLE(of, rockchip_rt5645_of_match);
+ 
+ static struct platform_driver snd_rk_mc_driver = {
+ 	.probe = snd_rk_mc_probe,
++	.remove = snd_rk_mc_remove,
+ 	.driver = {
+ 		.name = DRV_NAME,
+ 		.pm = &snd_soc_pm_ops,
 -- 
 2.17.1
