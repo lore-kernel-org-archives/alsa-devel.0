@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: Fix Acer Iconia 8
-	over-current detect threshold" to the asoc tree
-Date: Mon, 18 Jun 2018 13:06:03 +0100
-Message-ID: <E1fUsv5-0001Bm-Mg@debutante>
-References: <20180603134232.677-2-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for the
+	Nuvison/TMax TM800W560 tablet" to the asoc tree
+Date: Mon, 18 Jun 2018 13:06:05 +0100
+Message-ID: <E1fUsv7-0001ET-TI@debutante>
+References: <20180603134232.677-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 984E02675E4
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:06:08 +0200 (CEST)
-In-Reply-To: <20180603134232.677-2-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B10562675E4
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:06:10 +0200 (CEST)
+In-Reply-To: <20180603134232.677-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: Fix Acer Iconia 8 over-current detect threshold
+   ASoC: Intel: bytcr_rt5640: Add quirk for the Nuvison/TMax TM800W560 tablet
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From f12a0a3c4cc6f594d7c2ea361f2396ae5c518d2c Mon Sep 17 00:00:00 2001
+>From 6cea3590820819049df5945136b8a5acd72ed0f8 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 3 Jun 2018 15:42:32 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Fix Acer Iconia 8 over-current
- detect threshold
+Date: Sun, 3 Jun 2018 15:42:31 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the Nuvison/TMax
+ TM800W560 tablet
 
-Change the over-current detect threshold on the Acer Iconia 8 from
-2000ua to 1500uA, this fixes headset button presses not being detected.
+Add a quirk for the Nuvison/TMax TM800W560 tablet, this tablet uses IN1
+for the internal mic rather then the default IN3 and it uses JD2 rather
+then JD1 for its not-inverted jack-detect switch.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 8571f41767ef..7456566c5648 100644
+index 5c4f9ea40f57..8571f41767ef 100644
 --- a/sound/soc/intel/boards/bytcr_rt5640.c
 +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -404,7 +404,7 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 		},
- 		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
- 					BYT_RT5640_JD_SRC_JD1_IN4P |
--					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_TH_1500UA |
- 					BYT_RT5640_OVCD_SF_0P75 |
- 					BYT_RT5640_SSP0_AIF1 |
+@@ -565,6 +565,20 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_DIFF_MIC |
  					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* Nuvison/TMax TM800W560 */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "TMAX"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "TM800W560L"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_JD_NOT_INV |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{	/* Pipo W4 */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
 -- 
 2.17.1
