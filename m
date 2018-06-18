@@ -1,20 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/5] ALSA: firewire-motu: suppless consumption
-	for unused element of array in stack
-Date: Mon, 18 Jun 2018 21:07:51 +0900
-Message-ID: <20180618120755.19880-2-o-takashi@sakamocchi.jp>
-References: <20180618120755.19880-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/5] ALSA: firewire-motu: add support for MOTU
+	Traveler
+Date: Mon, 18 Jun 2018 21:07:50 +0900
+Message-ID: <20180618120755.19880-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f65.google.com (mail-pl0-f65.google.com
- [209.85.160.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 6ED40267642
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:08:27 +0200 (CEST)
-Received: by mail-pl0-f65.google.com with SMTP id a7-v6so8922031plp.3
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 05:08:27 -0700 (PDT)
-In-Reply-To: <20180618120755.19880-1-o-takashi@sakamocchi.jp>
+Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
+ [209.85.160.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 334442675E4
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:08:24 +0200 (CEST)
+Received: by mail-pl0-f66.google.com with SMTP id 31-v6so8924010plc.4
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 05:08:24 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,32 +26,31 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In MOTU firewire protocol, data block consists of 24 bit data chunks except
-for one quadlet for source packet header (SPH). The number of data chunk in
-a data block is different between three clock modes; low, middle and high.
-When unit supports ADAT on optical interface, the data block includes some
-chunks for ADAT channels. These ADAT chunks are unavailable at high mode.
+Hi,
 
-This driver has local functions to calculate the number of ADAT chunks. But
-They uses stack for three clock modes. This is useless for higher mode.
+This patchset adds support for MOTU Traveler launched in 2005. Any
+transmission of PCM frames/MIDI messages is available via ALSA PCM and
+RawMIDI/Sequencer interfaces to handle MOTU specific protocol version 2.
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/motu/motu-protocol-v2.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Like ALSA Dice driver, this driver can't enable target device to generate
+sound properly at some sampling transmission frequency yet, due to
+timestamping issue. However, at sampling transmission frequencies for
+major sampling rate such as 44.1/48.0 kHz, it works well, as long as I
+tested. This situation might be improved future.
 
-diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
-index 525b746330be..a51fd196d884 100644
---- a/sound/firewire/motu/motu-protocol-v2.c
-+++ b/sound/firewire/motu/motu-protocol-v2.c
-@@ -176,7 +176,7 @@ static void calculate_differed_part(struct snd_motu_packet_format *formats,
- 				    enum snd_motu_spec_flags flags,
- 				    u32 data, u32 mask, u32 shift)
- {
--	unsigned char pcm_chunks[3] = {0, 0};
-+	unsigned char pcm_chunks[2] = {0, 0};
- 
- 	/*
- 	 * When optical interfaces are configured for S/PDIF (TOSLINK),
+Takashi Sakamoto (5):
+  ALSA: firewire-motu: suppless consumption for unused element of array
+    in stack
+  ALSA: firewire-motu: add a flag for chunks for main 1/2 out
+  ALSA: firewire-motu: add a flag for AES/EBU on XLR interface
+  ALSA: firewire-motu: cancel chunk alignment for protocol version 2
+  ALSA: firewire-motu: add support for Motu Traveler
+
+ sound/firewire/motu/motu-protocol-v2.c | 64 ++++++++++++++++++++++++++--------
+ sound/firewire/motu/motu-protocol-v3.c | 19 +++++++---
+ sound/firewire/motu/motu.c             | 19 ++++++++++
+ sound/firewire/motu/motu.h             |  5 ++-
+ 4 files changed, 87 insertions(+), 20 deletions(-)
+
 -- 
 2.14.1
