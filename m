@@ -1,191 +1,39 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 5/5] ALSA: firewire-motu: add support for Motu
-	Traveler
-Date: Mon, 18 Jun 2018 21:07:55 +0900
-Message-ID: <20180618120755.19880-6-o-takashi@sakamocchi.jp>
-References: <20180618120755.19880-1-o-takashi@sakamocchi.jp>
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: Re: [PATCH v2 5/7] ASoC: qdsp6: Add depends on OF
+Date: Mon, 18 Jun 2018 14:39:32 +0200
+Message-ID: <20180618123932.GA28476@centauri.lan>
+References: <20180614111138.8923-1-niklas.cassel@linaro.org>
+ <20180614111138.8923-6-niklas.cassel@linaro.org>
+ <20180618110642.GA6928@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf0-f193.google.com (mail-pf0-f193.google.com
- [209.85.192.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 2425B267718
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:08:38 +0200 (CEST)
-Received: by mail-pf0-f193.google.com with SMTP id a12-v6so8077483pfi.3
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 05:08:38 -0700 (PDT)
-In-Reply-To: <20180618120755.19880-1-o-takashi@sakamocchi.jp>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180618110642.GA6928@sirena.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, robh+dt@kernel.org, frowand.list@gmail.com
+Cc: andy.gross@linaro.org, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This commit adds support for MOTU Traveler, launched in 2005, discontinued
-quite before. As a result, transmission of PCM frame and MIDI messages is
-available via ALSA PCM and RawMIDI/Sequencer interfaces.
+On Mon, Jun 18, 2018 at 12:06:42PM +0100, Mark Brown wrote:
+> On Thu, Jun 14, 2018 at 01:11:36PM +0200, Niklas Cassel wrote:
+> > of_platform_device_destroy is only defined when building
+> > with CONFIG_OF=y. Add a depends on OF.
+> 
+> Is it sensible that of_platform_device_destroy() is only defined when
+> building with CONFIG_OF=y?
 
-This model supports sampling transmission frequency up to 192.0 kHz, and
-AES/EBU on XLR interface and ADAT on optical interface. Unlike
-Motu 828MkII, Windows driver can switch fetching mode for DSP, like
-mute/unmute feature.
+I'm redirecting that question to the device tree maintainers.
 
-Although this commit enables high sampling transmission frequency, actual
-sound from this model is not good. As long as I tested, it's silence at
-176.4 kHz, and it includes hissing noise at 192.0 kHz. In my opinion, as I
-reported at 3526ce7f9ba7 ('ALSA: firewire-motu: add MOTU specific protocol
-layer'), timestamping on source packet header (SPH) may not still be good
-for this model as well.
+There are a few of_* functions in include/linux/of_platform.h
+that are only defined when CONFIG_OF=y:
 
-$ python2 crpp < /sys/bus/firewire/devices/fw1/config_rom
-               ROM header and bus information block
-               -----------------------------------------------------------------
-400  04106505  bus_info_length 4, crc_length 16, crc 25861
-404  31333934  bus_name "1394"
-408  20001000  irmc 0, cmc 0, isc 1, bmc 0, cyc_clk_acc 0, max_rec 1 (4)
-40c  0001f200  company_id 0001f2     |
-410  0001f32f  device_id 000001f32f  | EUI-64 0001f2000001f32f
+of_platform_device_create()
+of_platform_device_destroy()
+of_platform_bus_probe()
+of_device_alloc()
 
-               root directory
-               -----------------------------------------------------------------
-414  0004c65c  directory_length 4, crc 50780
-418  030001f2  vendor
-41c  0c0083c0  node capabilities per IEEE 1394
-420  8d000006  --> eui-64 leaf at 438
-424  d1000001  --> unit directory at 428
+Rob, Frank, do you want me to create static inline dummy versions of these?
 
-               unit directory at 428
-               -----------------------------------------------------------------
-428  00035955  directory_length 3, crc 22869
-42c  120001f2  specifier id
-430  13000009  version
-434  17107800  model
-
-               eui-64 leaf at 438
-               -----------------------------------------------------------------
-438  000206b2  leaf_length 2, crc 1714
-43c  0001f200  company_id 0001f2     |
-440  0001f32f  device_id 000001f32f  | EUI-64 0001f2000001f32f
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- sound/firewire/motu/motu-protocol-v2.c | 34 ++++++++++++++++++++++++++++++++--
- sound/firewire/motu/motu.c             | 16 ++++++++++++++++
- sound/firewire/motu/motu.h             |  2 ++
- 3 files changed, 50 insertions(+), 2 deletions(-)
-
-diff --git a/sound/firewire/motu/motu-protocol-v2.c b/sound/firewire/motu/motu-protocol-v2.c
-index e5bd3ac02300..453fc29fade7 100644
---- a/sound/firewire/motu/motu-protocol-v2.c
-+++ b/sound/firewire/motu/motu-protocol-v2.c
-@@ -13,6 +13,8 @@
- #define  V2_CLOCK_RATE_SHIFT			3
- #define  V2_CLOCK_SRC_MASK			0x00000007
- #define  V2_CLOCK_SRC_SHIFT			0
-+#define  V2_CLOCK_TRAVELER_FETCH_DISABLE	0x04000000
-+#define  V2_CLOCK_TRAVELER_FETCH_ENABLE		0x03000000
- 
- #define V2_IN_OUT_CONF_OFFSET			0x0c04
- #define  V2_OPT_OUT_IFACE_MASK			0x00000c00
-@@ -66,6 +68,11 @@ static int v2_set_clock_rate(struct snd_motu *motu, unsigned int rate)
- 	data &= ~V2_CLOCK_RATE_MASK;
- 	data |= i << V2_CLOCK_RATE_SHIFT;
- 
-+	if (motu->spec == &snd_motu_spec_traveler) {
-+		data &= ~V2_CLOCK_TRAVELER_FETCH_ENABLE;
-+		data |= V2_CLOCK_TRAVELER_FETCH_DISABLE;
-+	}
-+
- 	reg = cpu_to_be32(data);
- 	return snd_motu_transaction_write(motu, V2_CLOCK_STATUS_OFFSET, &reg,
- 					  sizeof(reg));
-@@ -121,8 +128,31 @@ static int v2_get_clock_source(struct snd_motu *motu,
- 
- static int v2_switch_fetching_mode(struct snd_motu *motu, bool enable)
- {
--	/* V2 protocol doesn't have this feature. */
--	return 0;
-+	__be32 reg;
-+	u32 data;
-+	int err = 0;
-+
-+	if (motu->spec == &snd_motu_spec_traveler) {
-+		err = snd_motu_transaction_read(motu, V2_CLOCK_STATUS_OFFSET,
-+						&reg, sizeof(reg));
-+		if (err < 0)
-+			return err;
-+		data = be32_to_cpu(reg);
-+
-+		data &= ~(V2_CLOCK_TRAVELER_FETCH_DISABLE |
-+			  V2_CLOCK_TRAVELER_FETCH_ENABLE);
-+
-+		if (enable)
-+			data |= V2_CLOCK_TRAVELER_FETCH_ENABLE;
-+		else
-+			data |= V2_CLOCK_TRAVELER_FETCH_DISABLE;
-+
-+		reg = cpu_to_be32(data);
-+		err = snd_motu_transaction_write(motu, V2_CLOCK_STATUS_OFFSET,
-+						 &reg, sizeof(reg));
-+	}
-+
-+	return err;
- }
- 
- static void calculate_fixed_part(struct snd_motu_packet_format *formats,
-diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index 445aa589582d..300d31b6f191 100644
---- a/sound/firewire/motu/motu.c
-+++ b/sound/firewire/motu/motu.c
-@@ -209,6 +209,21 @@ static const struct snd_motu_spec motu_828mk2 = {
- 	.analog_out_ports = 8,
- };
- 
-+const struct snd_motu_spec snd_motu_spec_traveler = {
-+	.name = "Traveler",
-+	.protocol = &snd_motu_protocol_v2,
-+	.flags = SND_MOTU_SPEC_SUPPORT_CLOCK_X2 |
-+		 SND_MOTU_SPEC_SUPPORT_CLOCK_X4 |
-+		 SND_MOTU_SPEC_TX_RETURN_CHUNK |
-+		 SND_MOTU_SPEC_HAS_AESEBU_IFACE |
-+		 SND_MOTU_SPEC_HAS_OPT_IFACE_A |
-+		 SND_MOTU_SPEC_RX_MIDI_2ND_Q |
-+		 SND_MOTU_SPEC_TX_MIDI_2ND_Q,
-+
-+	.analog_in_ports = 8,
-+	.analog_out_ports = 8,
-+};
-+
- static const struct snd_motu_spec motu_828mk3 = {
- 	.name = "828mk3",
- 	.protocol = &snd_motu_protocol_v3,
-@@ -253,6 +268,7 @@ static const struct snd_motu_spec motu_audio_express = {
- 
- static const struct ieee1394_device_id motu_id_table[] = {
- 	SND_MOTU_DEV_ENTRY(0x101800, &motu_828mk2),
-+	SND_MOTU_DEV_ENTRY(0x107800, &snd_motu_spec_traveler),
- 	SND_MOTU_DEV_ENTRY(0x106800, &motu_828mk3),	/* FireWire only. */
- 	SND_MOTU_DEV_ENTRY(0x100800, &motu_828mk3),	/* Hybrid. */
- 	SND_MOTU_DEV_ENTRY(0x104800, &motu_audio_express),
-diff --git a/sound/firewire/motu/motu.h b/sound/firewire/motu/motu.h
-index 2764bcaab327..fd5327d30ab1 100644
---- a/sound/firewire/motu/motu.h
-+++ b/sound/firewire/motu/motu.h
-@@ -129,6 +129,8 @@ struct snd_motu_spec {
- extern const struct snd_motu_protocol snd_motu_protocol_v2;
- extern const struct snd_motu_protocol snd_motu_protocol_v3;
- 
-+extern const struct snd_motu_spec snd_motu_spec_traveler;
-+
- int amdtp_motu_init(struct amdtp_stream *s, struct fw_unit *unit,
- 		    enum amdtp_stream_direction dir,
- 		    const struct snd_motu_protocol *const protocol);
--- 
-2.14.1
+Regards,
+Niklas
