@@ -1,64 +1,44 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: ASoC: new ac97 bus and codec clock
-Date: Sun, 17 Jun 2018 22:03:54 +0200
-Message-ID: <87lgbdqixh.fsf@belgarion.home>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v4 23/26] devicetree: fix a series of wrong file
+ references
+Date: Mon, 18 Jun 2018 06:49:10 +0100
+Message-ID: <20180618054910.GB31141@dell>
+References: <cover.1529079119.git.mchehab+samsung@kernel.org>
+ <266e5f874b36aa83f3327879d85921fab52d5461.1529079120.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp05.smtpout.orange.fr
- [80.12.242.127])
- by alsa0.perex.cz (Postfix) with ESMTP id B5A8B267196
- for <alsa-devel@alsa-project.org>; Sun, 17 Jun 2018 22:03:56 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Daniel Mack <zonque@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <266e5f874b36aa83f3327879d85921fab52d5461.1529079120.git.mchehab+samsung@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel@vger.kernel.org, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Zhou Wang <wangzhou1@hisilicon.com>, Bjorn Helgaas <bhelgaas@google.com>, Xiaowei Song <songxiaowei@hisilicon.com>, Binghui Wang <wangbinghui@hisilicon.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, linux-input@vger.kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.inf
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+On Fri, 15 Jun 2018, Mauro Carvalho Chehab wrote:
 
-The new ac97 is working well in a platform data build. But in the device tree
-case, there is an issue, triggered by our review in [1].
+> As files got renamed, their references broke.
+> 
+> Manually fix a series of broken refs at the DT bindings.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> ---
+>  .../devicetree/bindings/input/rmi4/rmi_2d_sensor.txt |  2 +-
+>  Documentation/devicetree/bindings/mfd/sun6i-prcm.txt |  2 +-
 
-The main issue is the lack of one clock.
+Acked-by: Lee Jones <lee.jones@linaro.org>
 
-The device hierarchy is :
- - platform device sound@40500000 (the AC97 controller)
-   \-> ac97 device sound@40500000:0 (the discovered ac97 IP for a wm9713)
-
-Now the issue is here :
- - sound/ac97/bus.c:419, function ac97_get_enable_clk()
- - the clk_get() fails
-
-The sound@40500000:0 device was automatically created by the AC97 bus code, but
-I don't see any way to provide this device the "ac97_clk" ... How do you think
-this is supposed to work, and how can my devicetree description provide this
-clock ?
+>  .../devicetree/bindings/pci/hisilicon-pcie.txt       |  2 +-
+>  Documentation/devicetree/bindings/pci/kirin-pcie.txt |  2 +-
+>  .../devicetree/bindings/pci/pci-keystone.txt         |  4 ++--
+>  .../devicetree/bindings/sound/st,stm32-i2s.txt       |  2 +-
+>  .../devicetree/bindings/sound/st,stm32-sai.txt       |  2 +-
+>  MAINTAINERS                                          | 12 ++++++------
+>  8 files changed, 14 insertions(+), 14 deletions(-)
 
 -- 
-Robert
-
-[1] Discussion reference
-https://groups.google.com/forum/#!msg/linux.kernel/6_zIXK_maA4/RMYsmLlRMgAJ
-Look for "You probably mean the BITCLK clock."
-
-[2] Device tree extract
-ac97: sound@40500000 {
-      	compatible = "marvell,pxa270-ac97";
-	reg = < 0x40500000 0x1000 >;
-	interrupts = <14>;
-	reset-gpios = <&gpio 95 GPIO_ACTIVE_HIGH>;
-	#sound-dai-cells = <1>;
-	pinctrl-names = "default";
-	pinctrl-0 = < &pinctrl_ac97_default >;
-	clocks = <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
-	clock-names = "AC97CLK", "AC97CONFCLK";
-};
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
