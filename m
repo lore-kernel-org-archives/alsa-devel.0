@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: has .symmetric_rates if SSIs are
-	sharing WS pin" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:30 +0100
-Message-ID: <E1fUspi-0000JR-TX@debutante>
-References: <87602osghu.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sh7760-ac97: convert to SPDX
+	identifiers" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:33 +0100
+Message-ID: <E1fUspl-0000Ke-1b@debutante>
+References: <87po0wr1l0.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 352DE267747
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:33 +0200 (CEST)
-In-Reply-To: <87602osghu.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 60016267759
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:35 +0200 (CEST)
+In-Reply-To: <87po0wr1l0.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: has .symmetric_rates if SSIs are sharing WS pin
+   ASoC: sh7760-ac97: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,55 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 7cc90a5cadb1733d95d3c2bc147cbcf7843aa585 Mon Sep 17 00:00:00 2001
+>From 04433977b164c8ed0b65cd023c87c74da0fff2bf Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 12 Jun 2018 05:52:00 +0000
-Subject: [PATCH] ASoC: rsnd: has .symmetric_rates if SSIs are sharing WS pin
+Date: Tue, 12 Jun 2018 05:59:27 +0000
+Subject: [PATCH] ASoC: sh7760-ac97: convert to SPDX identifiers
 
-If SSIs are sharing WS pin, it should has .symmetric_rates.
-This patch sets it.
+Tidyup incoherence between MODULE_LICENSE and header license, too
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 6 ++++++
- sound/soc/sh/rcar/ssi.c  | 5 +++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
+ sound/soc/sh/sh7760-ac97.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index af04d41a4274..6bbdddef426e 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1085,6 +1085,12 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
- 		of_node_put(capture);
- 	}
+diff --git a/sound/soc/sh/sh7760-ac97.c b/sound/soc/sh/sh7760-ac97.c
+index 4a3568a9bf59..4bb4c13cf860 100644
+--- a/sound/soc/sh/sh7760-ac97.c
++++ b/sound/soc/sh/sh7760-ac97.c
+@@ -1,10 +1,8 @@
+-/*
+- * Generic AC97 sound support for SH7760
+- *
+- * (c) 2007 Manuel Lauss
+- *
+- * Licensed under the GPLv2.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// Generic AC97 sound support for SH7760
++//
++// (c) 2007 Manuel Lauss
  
-+	if (rsnd_ssi_is_pin_sharing(io_capture) ||
-+	    rsnd_ssi_is_pin_sharing(io_playback)) {
-+		/* should have symmetric_rates if pin sharing */
-+		drv->symmetric_rates = 1;
-+	}
-+
- 	dev_dbg(dev, "%s (%s/%s)\n", rdai->name,
- 		rsnd_io_to_mod_ssi(io_playback) ? "play"    : " -- ",
- 		rsnd_io_to_mod_ssi(io_capture) ? "capture" : "  --   ");
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 9538f76f8e20..4e605648918b 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -1055,9 +1055,10 @@ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id)
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+@@ -68,6 +66,6 @@ static void __exit sh7760_ac97_exit(void)
+ module_init(sh7760_ac97_init);
+ module_exit(sh7760_ac97_exit);
  
- int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
- {
--	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	if (!mod)
-+		return 0;
- 
--	return !!(rsnd_flags_has(ssi, RSND_SSI_CLK_PIN_SHARE));
-+	return !!(rsnd_flags_has(rsnd_mod_to_ssi(mod), RSND_SSI_CLK_PIN_SHARE));
- }
- 
- static u32 *rsnd_ssi_get_status(struct rsnd_dai_stream *io,
+-MODULE_LICENSE("GPL");
++MODULE_LICENSE("GPL v2");
+ MODULE_DESCRIPTION("Generic SH7760 AC97 sound machine");
+ MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
 -- 
 2.17.1
