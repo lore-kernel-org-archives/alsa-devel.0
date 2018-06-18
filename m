@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: TSCS42xx: Remove Playback/Capture in
-	names" to the asoc tree
-Date: Mon, 18 Jun 2018 12:59:54 +0100
-Message-ID: <E1fUsp8-0008S8-CN@debutante>
-References: <a1f30fe79d376bb1dea4c41a34f198310a8ff9a4.1528143829.git.steven.eckhoff.opensource@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A0BF4267614
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 13:59:57 +0200 (CEST)
-In-Reply-To: <a1f30fe79d376bb1dea4c41a34f198310a8ff9a4.1528143829.git.steven.eckhoff.opensource@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Subject: Applied "ASoC: tegra: fix device_node refcounting" to the asoc tree
+Date: Mon, 18 Jun 2018 12:59:39 +0100
+Message-ID: <E1fUsot-0008Lr-UI@debutante>
+References: <1529101378-5543-1-git-send-email-khoroshilov@ispras.ru>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1529101378-5543-1-git-send-email-khoroshilov@ispras.ru>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, sil2review@lists.osadl.org, linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>, linux-tegra@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: TSCS42xx: Remove Playback/Capture in names
+   ASoC: tegra: fix device_node refcounting
 
 has been applied to the asoc tree at
 
@@ -53,99 +37,72 @@ to this mail.
 Thanks,
 Mark
 
->From 19d996cc3ad698379bcd8482dabe78abe3dc8d96 Mon Sep 17 00:00:00 2001
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Date: Mon, 4 Jun 2018 15:46:28 -0500
-Subject: [PATCH] ASoC: TSCS42xx: Remove Playback/Capture in names
+>From 7c5dfd549617b87db8e891ff4ecaa4a582b6c4cc Mon Sep 17 00:00:00 2001
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Date: Sat, 16 Jun 2018 01:22:58 +0300
+Subject: [PATCH] ASoC: tegra: fix device_node refcounting
 
-These aren't needed and some userspace apps don't work consistently with
-them.
+tegra_rt5677_probe() gets a couple of device nodes with of_parse_phandle(),
+but there is no release of them.
 
-Remove Playback/Capture from control names
+The patch adds the release to tegra_rt5677_remove() and
+to error handling paths in the probe.
 
-Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Found by Linux Driver Verification project (linuxtesting.org).
+
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Reviewed-by: Nicholas Mc Guire <der.herr@hofr.at>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tscs42xx.c | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ sound/soc/tegra/tegra_rt5677.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
-index 743194052fc4..5d596e4dab0c 100644
---- a/sound/soc/codecs/tscs42xx.c
-+++ b/sound/soc/codecs/tscs42xx.c
-@@ -625,19 +625,19 @@ static int bytes_info_ext(struct snd_kcontrol *kcontrol,
+diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
+index 0e4805c7b4ca..7081f15302cc 100644
+--- a/sound/soc/tegra/tegra_rt5677.c
++++ b/sound/soc/tegra/tegra_rt5677.c
+@@ -264,13 +264,13 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,i2s-controller' missing or invalid\n");
+ 		ret = -EINVAL;
+-		goto err;
++		goto err_put_codec_of_node;
+ 	}
+ 	tegra_rt5677_dai.platform_of_node = tegra_rt5677_dai.cpu_of_node;
  
- static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
- 	/* Volumes */
--	SOC_DOUBLE_R_TLV("Headphone Playback Volume", R_HPVOLL, R_HPVOLR,
-+	SOC_DOUBLE_R_TLV("Headphone Volume", R_HPVOLL, R_HPVOLR,
- 			FB_HPVOLL, 0x7F, 0, hpvol_scale),
--	SOC_DOUBLE_R_TLV("Speaker Playback Volume", R_SPKVOLL, R_SPKVOLR,
-+	SOC_DOUBLE_R_TLV("Speaker Volume", R_SPKVOLL, R_SPKVOLR,
- 			FB_SPKVOLL, 0x7F, 0, spkvol_scale),
--	SOC_DOUBLE_R_TLV("Master Playback Volume", R_DACVOLL, R_DACVOLR,
-+	SOC_DOUBLE_R_TLV("Master Volume", R_DACVOLL, R_DACVOLR,
- 			FB_DACVOLL, 0xFF, 0, dacvol_scale),
--	SOC_DOUBLE_R_TLV("PCM Capture Volume", R_ADCVOLL, R_ADCVOLR,
-+	SOC_DOUBLE_R_TLV("PCM Volume", R_ADCVOLL, R_ADCVOLR,
- 			FB_ADCVOLL, 0xFF, 0, adcvol_scale),
--	SOC_DOUBLE_R_TLV("Master Capture Volume", R_INVOLL, R_INVOLR,
-+	SOC_DOUBLE_R_TLV("Input Volume", R_INVOLL, R_INVOLR,
- 			FB_INVOLL, 0x3F, 0, invol_scale),
+ 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
+ 	if (ret)
+-		goto err;
++		goto err_put_cpu_of_node;
  
- 	/* INSEL */
--	SOC_DOUBLE_R_TLV("Mic Boost Capture Volume", R_INSELL, R_INSELR,
-+	SOC_DOUBLE_R_TLV("Mic Boost Volume", R_INSELL, R_INSELR,
- 			FB_INSELL_MICBSTL, FV_INSELL_MICBSTL_30DB,
- 			0, mic_boost_scale),
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+@@ -283,6 +283,13 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
  
-@@ -736,9 +736,9 @@ static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
- 		R_CLECTL, FB_CLECTL_LIMIT_EN, 1, 0),
- 	SOC_SINGLE("Comp Switch",
- 		R_CLECTL, FB_CLECTL_COMP_EN, 1, 0),
--	SOC_SINGLE_TLV("CLE Make-Up Gain Playback Volume",
-+	SOC_SINGLE_TLV("CLE Make-Up Gain Volume",
- 		R_MUGAIN, FB_MUGAIN_CLEMUG, 0x1f, 0, mugain_scale),
--	SOC_SINGLE_TLV("Comp Thresh Playback Volume",
-+	SOC_SINGLE_TLV("Comp Thresh Volume",
- 		R_COMPTH, FB_COMPTH, 0xff, 0, compth_scale),
- 	SOC_ENUM("Comp Ratio", compressor_ratio_enum),
- 	SND_SOC_BYTES("Comp Atk Time", R_CATKTCL, 2),
-@@ -769,9 +769,9 @@ static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
+ err_fini_utils:
+ 	tegra_asoc_utils_fini(&machine->util_data);
++err_put_cpu_of_node:
++	of_node_put(tegra_rt5677_dai.cpu_of_node);
++	tegra_rt5677_dai.cpu_of_node = NULL;
++	tegra_rt5677_dai.platform_of_node = NULL;
++err_put_codec_of_node:
++	of_node_put(tegra_rt5677_dai.codec_of_node);
++	tegra_rt5677_dai.codec_of_node = NULL;
+ err:
+ 	return ret;
+ }
+@@ -296,6 +303,12 @@ static int tegra_rt5677_remove(struct platform_device *pdev)
  
- 	SOC_SINGLE("MBC1 Phase Invert Switch",
- 		R_DACMBCMUG1, FB_DACMBCMUG1_PHASE, 1, 0),
--	SOC_SINGLE_TLV("DAC MBC1 Make-Up Gain Playback Volume",
-+	SOC_SINGLE_TLV("DAC MBC1 Make-Up Gain Volume",
- 		R_DACMBCMUG1, FB_DACMBCMUG1_MUGAIN, 0x1f, 0, mugain_scale),
--	SOC_SINGLE_TLV("DAC MBC1 Comp Thresh Playback Volume",
-+	SOC_SINGLE_TLV("DAC MBC1 Comp Thresh Volume",
- 		R_DACMBCTHR1, FB_DACMBCTHR1_THRESH, 0xff, 0, compth_scale),
- 	SOC_ENUM("DAC MBC1 Comp Ratio",
- 		dac_mbc1_compressor_ratio_enum),
-@@ -781,9 +781,9 @@ static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
+ 	tegra_asoc_utils_fini(&machine->util_data);
  
- 	SOC_SINGLE("MBC2 Phase Invert Switch",
- 		R_DACMBCMUG2, FB_DACMBCMUG2_PHASE, 1, 0),
--	SOC_SINGLE_TLV("DAC MBC2 Make-Up Gain Playback Volume",
-+	SOC_SINGLE_TLV("DAC MBC2 Make-Up Gain Volume",
- 		R_DACMBCMUG2, FB_DACMBCMUG2_MUGAIN, 0x1f, 0, mugain_scale),
--	SOC_SINGLE_TLV("DAC MBC2 Comp Thresh Playback Volume",
-+	SOC_SINGLE_TLV("DAC MBC2 Comp Thresh Volume",
- 		R_DACMBCTHR2, FB_DACMBCTHR2_THRESH, 0xff, 0, compth_scale),
- 	SOC_ENUM("DAC MBC2 Comp Ratio",
- 		dac_mbc2_compressor_ratio_enum),
-@@ -793,9 +793,9 @@ static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
++	tegra_rt5677_dai.platform_of_node = NULL;
++	of_node_put(tegra_rt5677_dai.codec_of_node);
++	tegra_rt5677_dai.codec_of_node = NULL;
++	of_node_put(tegra_rt5677_dai.cpu_of_node);
++	tegra_rt5677_dai.cpu_of_node = NULL;
++
+ 	return 0;
+ }
  
- 	SOC_SINGLE("MBC3 Phase Invert Switch",
- 		R_DACMBCMUG3, FB_DACMBCMUG3_PHASE, 1, 0),
--	SOC_SINGLE_TLV("DAC MBC3 Make-Up Gain Playback Volume",
-+	SOC_SINGLE_TLV("DAC MBC3 Make-Up Gain Volume",
- 		R_DACMBCMUG3, FB_DACMBCMUG3_MUGAIN, 0x1f, 0, mugain_scale),
--	SOC_SINGLE_TLV("DAC MBC3 Comp Thresh Playback Volume",
-+	SOC_SINGLE_TLV("DAC MBC3 Comp Thresh Volume",
- 		R_DACMBCTHR3, FB_DACMBCTHR3_THRESH, 0xff, 0, compth_scale),
- 	SOC_ENUM("DAC MBC3 Comp Ratio",
- 		dac_mbc3_compressor_ratio_enum),
 -- 
 2.17.1
