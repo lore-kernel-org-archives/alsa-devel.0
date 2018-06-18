@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: topology: Add callback for DAPM route
-	load/unload" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:50 +0100
-Message-ID: <E1fUsq2-0000S5-AU@debutante>
-References: <20180327133045.29351-5-liam.r.girdwood@linux.intel.com>
+Subject: Applied "ASoC: dapm: Fix potential DAI widget pointer
+	deref when linking DAIs" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:54 +0100
+Message-ID: <E1fUsq6-0000Tp-L9@debutante>
+References: <20180614192642.11708-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B320267707
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:52 +0200 (CEST)
-In-Reply-To: <20180327133045.29351-5-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DD04B2677A2
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:56 +0200 (CEST)
+In-Reply-To: <20180614192642.11708-1-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: topology: Add callback for DAPM route load/unload
+   ASoC: dapm: Fix potential DAI widget pointer deref when linking DAIs
 
 has been applied to the asoc tree at
 
@@ -53,76 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 503e79b793fea5de626db73accf8e8994bc4289d Mon Sep 17 00:00:00 2001
+>From e01b4f624278d5efe5fb5da585ca371947b16680 Mon Sep 17 00:00:00 2001
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Date: Thu, 14 Jun 2018 20:53:59 +0100
-Subject: [PATCH] ASoC: topology: Add callback for DAPM route load/unload
+Date: Thu, 14 Jun 2018 20:26:42 +0100
+Subject: [PATCH] ASoC: dapm: Fix potential DAI widget pointer deref when
+ linking DAIs
 
-Add a callback fro clients for notification about DAPM route loading and
-unloading.
+Sometime a component or topology may configure a DAI widget with no
+private data leading to a dev_dbg() dereferencne of this data.
+
+Fix this to check for non NULL private data and let users know if widget
+is missing DAI.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-topology.h |  7 +++++++
- sound/soc/soc-topology.c     | 13 +++++++++++++
- 2 files changed, 20 insertions(+)
+ sound/soc/soc-dapm.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index e1f265e21ee1..401ef2c45d6c 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -32,6 +32,7 @@ struct snd_kcontrol_new;
- struct snd_soc_dai_link;
- struct snd_soc_dai_driver;
- struct snd_soc_dai;
-+struct snd_soc_dapm_route;
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 36a39ba30226..8ede773b1db8 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -4073,6 +4073,13 @@ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card)
+ 			continue;
+ 		}
  
- /* object scan be loaded and unloaded in groups with identfying indexes */
- #define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
-@@ -116,6 +117,12 @@ struct snd_soc_tplg_ops {
- 	int (*control_unload)(struct snd_soc_component *,
- 		struct snd_soc_dobj *);
++		/* let users know there is no DAI to link */
++		if (!dai_w->priv) {
++			dev_dbg(card->dev, "dai widget %s has no DAI\n",
++				dai_w->name);
++			continue;
++		}
++
+ 		dai = dai_w->priv;
  
-+	/* DAPM graph route element loading and unloading */
-+	int (*dapm_route_load)(struct snd_soc_component *, int index,
-+		struct snd_soc_dapm_route *route);
-+	int (*dapm_route_unload)(struct snd_soc_component *,
-+		struct snd_soc_dobj *);
-+
- 	/* external widget init - used for any driver specific init */
- 	int (*widget_load)(struct snd_soc_component *, int index,
- 		struct snd_soc_dapm_widget *,
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 9b33260fd537..05d177d689e2 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1105,6 +1105,17 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
- 	return 0;
- }
- 
-+/* optionally pass new dynamic kcontrol to component driver. */
-+static int soc_tplg_add_route(struct soc_tplg *tplg,
-+	struct snd_soc_dapm_route *route)
-+{
-+	if (tplg->comp && tplg->ops && tplg->ops->dapm_route_load)
-+		return tplg->ops->dapm_route_load(tplg->comp, tplg->index,
-+			route);
-+
-+	return 0;
-+}
-+
- static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 	struct snd_soc_tplg_hdr *hdr)
- {
-@@ -1153,6 +1164,8 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
- 		else
- 			route.control = elem->control;
- 
-+		soc_tplg_add_route(tplg, &route);
-+
- 		/* add route, but keep going if some fail */
- 		snd_soc_dapm_add_routes(dapm, &route, 1);
- 	}
+ 		/* ...find all widgets with the same stream and link them */
 -- 
 2.17.1
