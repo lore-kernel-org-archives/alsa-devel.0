@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: SSI parent cares SWSP bit" to the
-	asoc tree
-Date: Mon, 18 Jun 2018 13:00:28 +0100
-Message-ID: <E1fUspg-0000IK-Nw@debutante>
-References: <874li8sghe.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: has .symmetric_rates if SSIs are
+	sharing WS pin" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:30 +0100
+Message-ID: <E1fUspi-0000JR-TX@debutante>
+References: <87602osghu.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FC3226771F
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:31 +0200 (CEST)
-In-Reply-To: <874li8sghe.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 352DE267747
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:33 +0200 (CEST)
+In-Reply-To: <87602osghu.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: SSI parent cares SWSP bit
+   ASoC: rsnd: has .symmetric_rates if SSIs are sharing WS pin
 
 has been applied to the asoc tree at
 
@@ -53,117 +53,55 @@ to this mail.
 Thanks,
 Mark
 
->From 203cdf51f28820bee7893b4be392847418e6f4ec Mon Sep 17 00:00:00 2001
+>From 7cc90a5cadb1733d95d3c2bc147cbcf7843aa585 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 12 Jun 2018 05:52:17 +0000
-Subject: [PATCH] ASoC: rsnd: SSI parent cares SWSP bit
+Date: Tue, 12 Jun 2018 05:52:00 +0000
+Subject: [PATCH] ASoC: rsnd: has .symmetric_rates if SSIs are sharing WS pin
 
-SSICR has SWSP bit (= Serial WS Polarity) which decides WS pin 1st
-channel polarity (low or hi). This bit shouldn't exchange after running.
+If SSIs are sharing WS pin, it should has .symmetric_rates.
+This patch sets it.
 
-Current SSI "parent" doesn't care SSICR, just controls clock only.
-Because of this behavior, if platform uses SSI0 as playback,
-SSI1 as capture, and if user starts capture -> playback order,
-SSI0 SSICR::SWSP bit exchanged 0 -> 1 during captureing, and it makes
-capture noise.
-This patch cares SSICR on SSI parent, too.
-Special thanks to Yokoyama-san
-
-Reported-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
+ sound/soc/sh/rcar/core.c | 6 ++++++
+ sound/soc/sh/rcar/ssi.c  | 5 +++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 4e605648918b..98dd120d830a 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -37,6 +37,7 @@
- #define	CHNL_4		(1 << 22)	/* Channels */
- #define	CHNL_6		(2 << 22)	/* Channels */
- #define	CHNL_8		(3 << 22)	/* Channels */
-+#define DWL_MASK	(7 << 19)	/* Data Word Length mask */
- #define	DWL_8		(0 << 19)	/* Data Word Length */
- #define	DWL_16		(1 << 19)	/* Data Word Length */
- #define	DWL_18		(2 << 19)	/* Data Word Length */
-@@ -353,21 +354,18 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
--	u32 cr_own;
--	u32 cr_mode;
--	u32 wsr;
-+	u32 cr_own	= ssi->cr_own;
-+	u32 cr_mode	= ssi->cr_mode;
-+	u32 wsr		= ssi->wsr;
- 	int is_tdm;
- 
--	if (rsnd_ssi_is_parent(mod, io))
--		return;
--
- 	is_tdm = rsnd_runtime_is_ssi_tdm(io);
- 
- 	/*
- 	 * always use 32bit system word.
- 	 * see also rsnd_ssi_master_clk_enable()
- 	 */
--	cr_own = FORCE | SWL_32;
-+	cr_own |= FORCE | SWL_32;
- 
- 	if (rdai->bit_clk_inv)
- 		cr_own |= SCKP;
-@@ -377,9 +375,18 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 		cr_own |= SDTA;
- 	if (rdai->sys_delay)
- 		cr_own |= DEL;
-+
-+	/*
-+	 * We shouldn't exchange SWSP after running.
-+	 * This means, parent needs to care it.
-+	 */
-+	if (rsnd_ssi_is_parent(mod, io))
-+		goto init_end;
-+
- 	if (rsnd_io_is_play(io))
- 		cr_own |= TRMD;
- 
-+	cr_own &= ~DWL_MASK;
- 	switch (snd_pcm_format_width(runtime->format)) {
- 	case 16:
- 		cr_own |= DWL_16;
-@@ -406,7 +413,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 		wsr	|= WS_MODE;
- 		cr_own	|= CHNL_8;
- 	}
--
-+init_end:
- 	ssi->cr_own	= cr_own;
- 	ssi->cr_mode	= cr_mode;
- 	ssi->wsr	= wsr;
-@@ -470,15 +477,18 @@ static int rsnd_ssi_quit(struct rsnd_mod *mod,
- 		return -EIO;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index af04d41a4274..6bbdddef426e 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1085,6 +1085,12 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
+ 		of_node_put(capture);
  	}
  
--	if (!rsnd_ssi_is_parent(mod, io))
--		ssi->cr_own	= 0;
--
- 	rsnd_ssi_master_clk_stop(mod, io);
- 
- 	rsnd_mod_power_off(mod);
- 
- 	ssi->usrcnt--;
- 
-+	if (!ssi->usrcnt) {
-+		ssi->cr_own	= 0;
-+		ssi->cr_mode	= 0;
-+		ssi->wsr	= 0;
++	if (rsnd_ssi_is_pin_sharing(io_capture) ||
++	    rsnd_ssi_is_pin_sharing(io_playback)) {
++		/* should have symmetric_rates if pin sharing */
++		drv->symmetric_rates = 1;
 +	}
 +
- 	return 0;
+ 	dev_dbg(dev, "%s (%s/%s)\n", rdai->name,
+ 		rsnd_io_to_mod_ssi(io_playback) ? "play"    : " -- ",
+ 		rsnd_io_to_mod_ssi(io_capture) ? "capture" : "  --   ");
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 9538f76f8e20..4e605648918b 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -1055,9 +1055,10 @@ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id)
+ 
+ int __rsnd_ssi_is_pin_sharing(struct rsnd_mod *mod)
+ {
+-	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
++	if (!mod)
++		return 0;
+ 
+-	return !!(rsnd_flags_has(ssi, RSND_SSI_CLK_PIN_SHARE));
++	return !!(rsnd_flags_has(rsnd_mod_to_ssi(mod), RSND_SSI_CLK_PIN_SHARE));
  }
  
+ static u32 *rsnd_ssi_get_status(struct rsnd_dai_stream *io,
 -- 
 2.17.1
