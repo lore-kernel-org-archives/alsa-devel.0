@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sh7760-ac97: convert to SPDX
+Subject: Applied "ASoC: dma-sh7760: convert to SPDX
 	identifiers" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:33 +0100
-Message-ID: <E1fUspl-0000Ke-1b@debutante>
-References: <87po0wr1l0.wl%kuninori.morimoto.gx@renesas.com>
+Date: Mon, 18 Jun 2018 13:00:35 +0100
+Message-ID: <E1fUspn-0000LU-6u@debutante>
+References: <87r2lcr1lg.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 60016267759
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:35 +0200 (CEST)
-In-Reply-To: <87po0wr1l0.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8459F2676DC
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:37 +0200 (CEST)
+In-Reply-To: <87r2lcr1lg.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sh7760-ac97: convert to SPDX identifiers
+   ASoC: dma-sh7760: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,58 @@ to this mail.
 Thanks,
 Mark
 
->From 04433977b164c8ed0b65cd023c87c74da0fff2bf Mon Sep 17 00:00:00 2001
+>From ddfe227c0cbfb97b37afe123e014b9bc4df217b5 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 12 Jun 2018 05:59:27 +0000
-Subject: [PATCH] ASoC: sh7760-ac97: convert to SPDX identifiers
+Date: Tue, 12 Jun 2018 05:59:11 +0000
+Subject: [PATCH] ASoC: dma-sh7760: convert to SPDX identifiers
 
 Tidyup incoherence between MODULE_LICENSE and header license, too
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/sh7760-ac97.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/sh/dma-sh7760.c | 26 ++++++++++++--------------
+ 1 file changed, 12 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/sh/sh7760-ac97.c b/sound/soc/sh/sh7760-ac97.c
-index 4a3568a9bf59..4bb4c13cf860 100644
---- a/sound/soc/sh/sh7760-ac97.c
-+++ b/sound/soc/sh/sh7760-ac97.c
-@@ -1,10 +1,8 @@
+diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
+index 2dc3b762fdd9..922fb6aa3ed1 100644
+--- a/sound/soc/sh/dma-sh7760.c
++++ b/sound/soc/sh/dma-sh7760.c
+@@ -1,16 +1,14 @@
 -/*
-- * Generic AC97 sound support for SH7760
+- * SH7760 ("camelot") DMABRG audio DMA unit support
 - *
-- * (c) 2007 Manuel Lauss
+- * Copyright (C) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
+- *  licensed under the terms outlined in the file COPYING at the root
+- *  of the linux kernel sources.
 - *
-- * Licensed under the GPLv2.
+- * The SH7760 DMABRG provides 4 dma channels (2x rec, 2x play), which
+- * trigger an interrupt when one half of the programmed transfer size
+- * has been xmitted.
+- *
+- * FIXME: little-endian only for now
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// Generic AC97 sound support for SH7760
++// SH7760 ("camelot") DMABRG audio DMA unit support
 +//
-+// (c) 2007 Manuel Lauss
++// Copyright (C) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
++//
++// The SH7760 DMABRG provides 4 dma channels (2x rec, 2x play), which
++// trigger an interrupt when one half of the programmed transfer size
++// has been xmitted.
++//
++// FIXME: little-endian only for now
  
  #include <linux/module.h>
- #include <linux/moduleparam.h>
-@@ -68,6 +66,6 @@ static void __exit sh7760_ac97_exit(void)
- module_init(sh7760_ac97_init);
- module_exit(sh7760_ac97_exit);
+ #include <linux/gfp.h>
+@@ -341,6 +339,6 @@ static struct platform_driver sh7760_pcm_driver = {
+ 
+ module_platform_driver(sh7760_pcm_driver);
  
 -MODULE_LICENSE("GPL");
 +MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Generic SH7760 AC97 sound machine");
+ MODULE_DESCRIPTION("SH7760 Audio DMA (DMABRG) driver");
  MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
 -- 
 2.17.1
