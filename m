@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt1305: Use ULL suffixes for 64-bit constants" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:18 +0100
-Message-ID: <E1fUspW-0000CY-C2@debutante>
-References: <1528379448-3937-1-git-send-email-geert@linux-m68k.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1528379448-3937-1-git-send-email-geert@linux-m68k.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: Mark Brown <broonie@kernel.org>, Shuming Fan <shumingf@realtek.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: ak4458: make structure
+	soc_codec_dev_ak4458 static const" to the asoc tree
+Date: Mon, 18 Jun 2018 12:59:58 +0100
+Message-ID: <E1fUspC-0008U3-Uz@debutante>
+References: <20180606103123.31719-1-colin.king@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50DF02676E6
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:08 +0200 (CEST)
+In-Reply-To: <20180606103123.31719-1-colin.king@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt1305: Use ULL suffixes for 64-bit constants
+   ASoC: ak4458: make structure soc_codec_dev_ak4458 static const
 
 has been applied to the asoc tree at
 
@@ -37,50 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From 4f29b663c08d369fe320a148179996c94cf7d01b Mon Sep 17 00:00:00 2001
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Thu, 7 Jun 2018 15:50:48 +0200
-Subject: [PATCH] ASoC: rt1305: Use ULL suffixes for 64-bit constants
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+>From 62624f72592b1d8e756e699cd6ade2be379f95a9 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Wed, 6 Jun 2018 11:31:23 +0100
+Subject: [PATCH] ASoC: ak4458: make structure soc_codec_dev_ak4458 static
+ const
 
-With gcc 4.1.2:
+The structure soc_codec_dev_ak4458 is local to the source and do not
+need to be in global scope and can be const, make it static const.
 
-    sound/soc/codecs/rt1305.c: In function ‘rt1305_calibrate’:
-    sound/soc/codecs/rt1305.c:1069: warning: integer constant is too large for ‘long’ type
-    sound/soc/codecs/rt1305.c:1086: warning: integer constant is too large for ‘long’ type
+Cleans up sparse warnings:
+warning: symbol 'soc_codec_dev_ak4458' was not declared. Should it
+be static?
 
-Add the missing "ULL" suffixes to fix this.
-
-Fixes: 29bc643ddd7efb74 ("ASoC: rt1305: Add RT1305/RT1306 amplifier driver")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt1305.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/ak4458.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt1305.c b/sound/soc/codecs/rt1305.c
-index f4c8c45f4010..421b8fb2fa04 100644
---- a/sound/soc/codecs/rt1305.c
-+++ b/sound/soc/codecs/rt1305.c
-@@ -1066,7 +1066,7 @@ static void rt1305_calibrate(struct rt1305_priv *rt1305)
- 	pr_debug("Left_rhl = 0x%x rh=0x%x rl=0x%x\n", rhl, rh, rl);
- 	pr_info("Left channel %d.%dohm\n", (r0ohm/10), (r0ohm%10));
+diff --git a/sound/soc/codecs/ak4458.c b/sound/soc/codecs/ak4458.c
+index 31ec0ba2e639..299ada4dfaa0 100644
+--- a/sound/soc/codecs/ak4458.c
++++ b/sound/soc/codecs/ak4458.c
+@@ -558,7 +558,7 @@ static int __maybe_unused ak4458_runtime_resume(struct device *dev)
+ }
+ #endif /* CONFIG_PM */
  
--	r0l = 562949953421312;
-+	r0l = 562949953421312ULL;
- 	if (rhl != 0)
- 		do_div(r0l, rhl);
- 	pr_debug("Left_r0 = 0x%llx\n", r0l);
-@@ -1083,7 +1083,7 @@ static void rt1305_calibrate(struct rt1305_priv *rt1305)
- 	pr_debug("Right_rhl = 0x%x rh=0x%x rl=0x%x\n", rhl, rh, rl);
- 	pr_info("Right channel %d.%dohm\n", (r0ohm/10), (r0ohm%10));
- 
--	r0r = 562949953421312;
-+	r0r = 562949953421312ULL;
- 	if (rhl != 0)
- 		do_div(r0r, rhl);
- 	pr_debug("Right_r0 = 0x%llx\n", r0r);
+-struct snd_soc_component_driver soc_codec_dev_ak4458 = {
++static const struct snd_soc_component_driver soc_codec_dev_ak4458 = {
+ 	.probe			= ak4458_probe,
+ 	.remove			= ak4458_remove,
+ 	.controls		= ak4458_snd_controls,
 -- 
 2.17.1
