@@ -1,39 +1,93 @@
-From: Niklas Cassel <niklas.cassel@linaro.org>
-Subject: Re: [PATCH v2 5/7] ASoC: qdsp6: Add depends on OF
-Date: Mon, 18 Jun 2018 14:39:32 +0200
-Message-ID: <20180618123932.GA28476@centauri.lan>
-References: <20180614111138.8923-1-niklas.cassel@linaro.org>
- <20180614111138.8923-6-niklas.cassel@linaro.org>
- <20180618110642.GA6928@sirena.org.uk>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: [PATCH v5 0/5] ASoC: add driver for Atmel I2S
+	controller
+Date: Mon, 18 Jun 2018 17:12:34 +0300
+Message-ID: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180618110642.GA6928@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, robh+dt@kernel.org, frowand.list@gmail.com
-Cc: andy.gross@linaro.org, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from esa1.microchip.iphmx.com (esa1.microchip.iphmx.com
+ [68.232.147.91])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4E85266D4C
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 16:13:21 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@microchip.com, boris.brezillon@bootlin.com, alexandre.belloni@bootlin.com, robh+dt@kernel.org, broonie@kernel.org, sboyd@kernel.org
+Cc: Cristian.Birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 18, 2018 at 12:06:42PM +0100, Mark Brown wrote:
-> On Thu, Jun 14, 2018 at 01:11:36PM +0200, Niklas Cassel wrote:
-> > of_platform_device_destroy is only defined when building
-> > with CONFIG_OF=y. Add a depends on OF.
-> 
-> Is it sensible that of_platform_device_destroy() is only defined when
-> building with CONFIG_OF=y?
+This is a rework of Cyrille's patches named:
+[PATCH v3 0/2] ASoC: add driver for Atmel I2S controller
+https://lkml.org/lkml/2015/9/29/454
 
-I'm redirecting that question to the device tree maintainers.
+This is the version 5 of the series, and addresses the received feedback
+on the mailing lists.
 
-There are a few of_* functions in include/linux/of_platform.h
-that are only defined when CONFIG_OF=y:
+This series applies on top of clk-next branch of clk/linux.git.
 
-of_platform_device_create()
-of_platform_device_destroy()
-of_platform_bus_probe()
-of_device_alloc()
+Based on received feedback, I created a mux clock driver to select the I2S
+clock source, that also includes proper devicetree bindings and nodes.
+Also, I added the I2S nodes in sama5d2's devicetree, with the missing
+pin muxing for the second I2S controller.
 
-Rob, Frank, do you want me to create static inline dummy versions of these?
+Alexandre Belloni plans to change the at91 fine grained clock nodes and
+he recommended to leave the bindings for this clock driver in the same
+(wrong) manner, so he could fix them all at once.
 
-Regards,
-Niklas
+This series of patches adds support to the new Atmel I2S controller
+embedded on sama5d2 SoCs.
+
+ChangeLog
+
+v4 -> v5
+ - removed patches:
+   [PATCH v4 4/7] ASoC: atmel-i2s: dt-bindings: add DT bindings for I2S controller
+   [PATCH v4 5/7] ASoC: atmel-i2s: add driver for the new Atmel I2S controller
+   from this series since they were applied to the asoc tree at:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git
+ - addressed comments received on the mux clock;
+
+v3 -> v4
+ - as suggested by Rob Herring:
+   - added a clock mux driver for I2S's clock control bit;
+   - more precise description of I2S's devicetree bindings;
+   - removed SoC and internal detalls from bindings;
+ - addressed comments from Mark Brown;
+ - added devicetree nodes and pin muxing for I2S;
+
+v2 -> v3
+ - fix the coding style, add some more comments and add a section dedicated
+  to sama5d2 SoCs in the DT binding documentation as suggested by Mark
+  Brown.
+
+v1 -> v2
+ - initialize dev->dev before calling dev->caps->mck_init()
+
+Codrin Ciubotariu (3):
+  dt-bindings: clk: at91: add an I2S mux clock
+  clk: at91: add I2S clock mux driver
+  ARM: dts: at91: sama5d2: add I2S clock muxing nodes
+
+Cyrille Pitchen (2):
+  ARM: dts: at91: sama5d2: add nodes for I2S controllers
+  ARM: dts: at91: sama5d2 Xplained: add pin muxing for I2S
+
+ .../devicetree/bindings/clock/at91-clock.txt  |  35 ++++++
+ arch/arm/boot/dts/at91-sama5d2_xplained.dts   |  28 +++++
+ arch/arm/boot/dts/sama5d2.dtsi                |  52 ++++++++
+ arch/arm/mach-at91/Kconfig                    |   4 +
+ drivers/clk/at91/Makefile                     |   1 +
+ drivers/clk/at91/clk-i2s-mux.c                | 116 ++++++++++++++++++
+ 6 files changed, 236 insertions(+)
+ create mode 100644 drivers/clk/at91/clk-i2s-mux.c
+
+-- 
+2.17.1
