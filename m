@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: put device_node on remove" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:22 +0100
-Message-ID: <E1fUspa-0000EU-8H@debutante>
-References: <1528582854-8402-1-git-send-email-khoroshilov@ispras.ru>
+Subject: Applied "ASoC: AMD: Add NULL pointer check" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:26 +0100
+Message-ID: <E1fUspe-0000H5-Il@debutante>
+References: <1528354129-5023-1-git-send-email-akshu.agrawal@amd.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1528582854-8402-1-git-send-email-khoroshilov@ispras.ru>
+In-Reply-To: <1528354129-5023-1-git-send-email-akshu.agrawal@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, Julia Lawall <julia.lawall@lip6.fr>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-rockchip@lists.infradead.org, sil2review@lists.osadl.orgalsa-devel@alsa-project.org
+To: Agrawal@sirena.org.uk, Akshu <Akshu.Agrawal@amd.com>
+Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.orgMark Brown <broonie@kernel.org>, "Mukunda,, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>akshu.agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: put device_node on remove
+   ASoC: AMD: Add NULL pointer check
 
 has been applied to the asoc tree at
 
@@ -37,84 +37,34 @@ to this mail.
 Thanks,
 Mark
 
->From a56df73ba5960848f60f609c68770d2638bf1dd5 Mon Sep 17 00:00:00 2001
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Date: Sun, 10 Jun 2018 01:20:54 +0300
-Subject: [PATCH] ASoC: rockchip: put device_node on remove
+>From 6e56e5d04191aa20e08430dcb203c081fa247e93 Mon Sep 17 00:00:00 2001
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Date: Thu, 7 Jun 2018 14:48:43 +0800
+Subject: [PATCH] ASoC: AMD: Add NULL pointer check
 
-snd_rk_mc_probe() gets a couple of device nodes with of_parse_phandle(),
-but there is no release of them.
+Fix crash in those platforms whose machine driver does not expose
+platform_info. For those platforms we rely on default value and
+select I2SSP channel.
 
-The patch adds remove handler and proper error handling in the probe.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_rt5645.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/rockchip/rockchip_rt5645.c b/sound/soc/rockchip/rockchip_rt5645.c
-index 4db4fd56db35..881c32498808 100644
---- a/sound/soc/rockchip/rockchip_rt5645.c
-+++ b/sound/soc/rockchip/rockchip_rt5645.c
-@@ -181,7 +181,8 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
- 	if (!rk_dailink.cpu_of_node) {
- 		dev_err(&pdev->dev,
- 			"Property 'rockchip,i2s-controller' missing or invalid\n");
--		return -EINVAL;
-+		ret = -EINVAL;
-+		goto put_codec_of_node;
- 	}
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 77203841c535..1458b5048498 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -773,7 +773,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 	if (WARN_ON(!rtd))
+ 		return -EINVAL;
  
- 	rk_dailink.platform_of_node = rk_dailink.cpu_of_node;
-@@ -190,17 +191,36 @@ static int snd_rk_mc_probe(struct platform_device *pdev)
- 	if (ret) {
- 		dev_err(&pdev->dev,
- 			"Soc parse card name failed %d\n", ret);
--		return ret;
-+		goto put_cpu_of_node;
- 	}
- 
- 	ret = devm_snd_soc_register_card(&pdev->dev, card);
- 	if (ret) {
- 		dev_err(&pdev->dev,
- 			"Soc register card failed %d\n", ret);
--		return ret;
-+		goto put_cpu_of_node;
- 	}
- 
- 	return ret;
-+
-+put_cpu_of_node:
-+	of_node_put(rk_dailink.cpu_of_node);
-+	rk_dailink.cpu_of_node = NULL;
-+put_codec_of_node:
-+	of_node_put(rk_dailink.codec_of_node);
-+	rk_dailink.codec_of_node = NULL;
-+
-+	return ret;
-+}
-+
-+static int snd_rk_mc_remove(struct platform_device *pdev)
-+{
-+	of_node_put(rk_dailink.cpu_of_node);
-+	rk_dailink.cpu_of_node = NULL;
-+	of_node_put(rk_dailink.codec_of_node);
-+	rk_dailink.codec_of_node = NULL;
-+
-+	return 0;
- }
- 
- static const struct of_device_id rockchip_rt5645_of_match[] = {
-@@ -212,6 +232,7 @@ MODULE_DEVICE_TABLE(of, rockchip_rt5645_of_match);
- 
- static struct platform_driver snd_rk_mc_driver = {
- 	.probe = snd_rk_mc_probe,
-+	.remove = snd_rk_mc_remove,
- 	.driver = {
- 		.name = DRV_NAME,
- 		.pm = &snd_soc_pm_ops,
+-	rtd->i2s_instance = pinfo->i2s_instance;
++	if (pinfo)
++		rtd->i2s_instance = pinfo->i2s_instance;
+ 	if (adata->asic_type == CHIP_STONEY) {
+ 		val = acp_reg_read(adata->acp_mmio,
+ 				   mmACP_I2S_16BIT_RESOLUTION_EN);
 -- 
 2.17.1
