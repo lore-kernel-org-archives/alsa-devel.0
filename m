@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dma-sh7760: convert to SPDX
-	identifiers" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:35 +0100
-Message-ID: <E1fUspn-0000LU-6u@debutante>
-References: <87r2lcr1lg.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: migor: convert to SPDX identifiers" to
+	the asoc tree
+Date: Mon, 18 Jun 2018 13:00:37 +0100
+Message-ID: <E1fUspp-0000MU-Cg@debutante>
+References: <87sh5sr1lx.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8459F2676DC
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:37 +0200 (CEST)
-In-Reply-To: <87r2lcr1lg.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AB5772676E6
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:39 +0200 (CEST)
+In-Reply-To: <87sh5sr1lx.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dma-sh7760: convert to SPDX identifiers
+   ASoC: migor: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,58 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From ddfe227c0cbfb97b37afe123e014b9bc4df217b5 Mon Sep 17 00:00:00 2001
+>From 0026c551bacd9654eaa6ee8e4aa19d52730e74f4 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 12 Jun 2018 05:59:11 +0000
-Subject: [PATCH] ASoC: dma-sh7760: convert to SPDX identifiers
-
-Tidyup incoherence between MODULE_LICENSE and header license, too
+Date: Tue, 12 Jun 2018 05:58:54 +0000
+Subject: [PATCH] ASoC: migor: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/dma-sh7760.c | 26 ++++++++++++--------------
- 1 file changed, 12 insertions(+), 14 deletions(-)
+ sound/soc/sh/migor.c | 14 +++++---------
+ 1 file changed, 5 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/sh/dma-sh7760.c b/sound/soc/sh/dma-sh7760.c
-index 2dc3b762fdd9..922fb6aa3ed1 100644
---- a/sound/soc/sh/dma-sh7760.c
-+++ b/sound/soc/sh/dma-sh7760.c
-@@ -1,16 +1,14 @@
+diff --git a/sound/soc/sh/migor.c b/sound/soc/sh/migor.c
+index ecb057ff9fbb..8739c9f60672 100644
+--- a/sound/soc/sh/migor.c
++++ b/sound/soc/sh/migor.c
+@@ -1,12 +1,8 @@
 -/*
-- * SH7760 ("camelot") DMABRG audio DMA unit support
+- * ALSA SoC driver for Migo-R
 - *
-- * Copyright (C) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
-- *  licensed under the terms outlined in the file COPYING at the root
-- *  of the linux kernel sources.
+- * Copyright (C) 2009-2010 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
 - *
-- * The SH7760 DMABRG provides 4 dma channels (2x rec, 2x play), which
-- * trigger an interrupt when one half of the programmed transfer size
-- * has been xmitted.
-- *
-- * FIXME: little-endian only for now
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// SH7760 ("camelot") DMABRG audio DMA unit support
++// ALSA SoC driver for Migo-R
 +//
-+// Copyright (C) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
-+//
-+// The SH7760 DMABRG provides 4 dma channels (2x rec, 2x play), which
-+// trigger an interrupt when one half of the programmed transfer size
-+// has been xmitted.
-+//
-+// FIXME: little-endian only for now
++// Copyright (C) 2009-2010 Guennadi Liakhovetski <g.liakhovetski@gmx.de>
  
- #include <linux/module.h>
- #include <linux/gfp.h>
-@@ -341,6 +339,6 @@ static struct platform_driver sh7760_pcm_driver = {
- 
- module_platform_driver(sh7760_pcm_driver);
- 
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("SH7760 Audio DMA (DMABRG) driver");
- MODULE_AUTHOR("Manuel Lauss <mano@roarinelk.homelinux.net>");
+ #include <linux/clkdev.h>
+ #include <linux/device.h>
 -- 
 2.17.1
