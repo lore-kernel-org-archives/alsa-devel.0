@@ -1,136 +1,70 @@
-From: Roman Sommer <roman.sommer@fau.de>
-Subject: [PATCH 2/3] sound/line6: unsigned -> unsigned int
-Date: Mon, 18 Jun 2018 12:29:38 +0200
-Message-ID: <1529317779-15908-3-git-send-email-roman.sommer@fau.de>
-References: <1529317779-15908-1-git-send-email-roman.sommer@fau.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 5/7] ASoC: qdsp6: Add depends on OF
+Date: Mon, 18 Jun 2018 12:06:42 +0100
+Message-ID: <20180618110642.GA6928@sirena.org.uk>
+References: <20180614111138.8923-1-niklas.cassel@linaro.org>
+ <20180614111138.8923-6-niklas.cassel@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1529317779-15908-1-git-send-email-roman.sommer@fau.de>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Roman Sommer <roman.sommer@fau.de>, linux-kernel@i4.cs.fau.de, Daniel Graefe <daniel.graefe@fau.de>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, =?UTF-8?q?Hans=20P=2E=20M=C3=B6ller=20Ebner?= <hmoller@uc.cl>, Kees Cook <keescook@chromium.org>, Kate Stewart <kstewart@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, =?UTF-8?q?Fabi=C3=A1n=20Inostroza?= <soulsonceonfire@gmail.com>, Bhumika Goyal <bhumirks@gmail.com>, Philippe Ombredanne <pombredanne@nexb.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============4619413241370421179=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1D782673C7
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 13:06:52 +0200 (CEST)
+In-Reply-To: <20180614111138.8923-6-niklas.cassel@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Niklas Cassel <niklas.cassel@linaro.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, linux-arm-msm@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, andy.gross@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CC: Jaroslav Kysela <perex@perex.cz>
-CC: Takashi Iwai <tiwai@suse.com>
-CC: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-CC: "Hans P. Möller Ebner" <hmoller@uc.cl>
-CC: Kees Cook <keescook@chromium.org>
-CC: Kate Stewart <kstewart@linuxfoundation.org>
-CC: Thomas Gleixner <tglx@linutronix.de>
-CC: "Fabián Inostroza" <soulsonceonfire@gmail.com>
-CC: Bhumika Goyal <bhumirks@gmail.com>
-CC: Philippe Ombredanne <pombredanne@nexb.com>
-CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-CC: alsa-devel@alsa-project.org
-CC: linux-kernel@vger.kernel.org
 
-This patch replaces all occurrences of 'unsigned' in sound/usb/line6 with
-'unsigned int'.
+--===============4619413241370421179==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="GvXjxJ+pjyke8COw"
+Content-Disposition: inline
 
-Signed-off-by: Roman Sommer <roman.sommer@fau.de>
-Signed-off-by: Daniel Graefe <daniel.graefe@fau.de>
----
- sound/usb/line6/driver.c | 10 +++++-----
- sound/usb/line6/driver.h |  8 ++++----
- sound/usb/line6/pcm.c    |  4 ++--
- sound/usb/line6/pcm.h    |  6 +++---
- 4 files changed, 14 insertions(+), 14 deletions(-)
 
-diff --git a/sound/usb/line6/driver.c b/sound/usb/line6/driver.c
-index df7e761..fd176ef 100644
---- a/sound/usb/line6/driver.c
-+++ b/sound/usb/line6/driver.c
-@@ -346,13 +346,13 @@ static void line6_data_received(struct urb *urb)
- /*
-  * Read data from device.
-  */
--int line6_read_data(struct usb_line6 *line6, unsigned address, void *data,
--		    unsigned datalen)
-+int line6_read_data(struct usb_line6 *line6, unsigned int address, void *data,
-+		    unsigned int datalen)
- {
- 	struct usb_device *usbdev = line6->usbdev;
- 	int ret;
- 	unsigned char len;
--	unsigned count;
-+	unsigned int count;
- 
- 	if (address > 0xffff || datalen > 0xff)
- 		return -EINVAL;
-@@ -417,8 +417,8 @@ EXPORT_SYMBOL_GPL(line6_read_data);
- /*
-  * Write data to device.
-  */
--int line6_write_data(struct usb_line6 *line6, unsigned address, void *data,
--		     unsigned datalen)
-+int line6_write_data(struct usb_line6 *line6, unsigned int address, void *data,
-+		     unsigned int datalen)
- {
- 	struct usb_device *usbdev = line6->usbdev;
- 	int ret;
-diff --git a/sound/usb/line6/driver.h b/sound/usb/line6/driver.h
-index b307944..1dfb6de 100644
---- a/sound/usb/line6/driver.h
-+++ b/sound/usb/line6/driver.h
-@@ -187,8 +187,8 @@ struct usb_line6 {
- 
- extern char *line6_alloc_sysex_buffer(struct usb_line6 *line6, int code1,
- 				      int code2, int size);
--extern int line6_read_data(struct usb_line6 *line6, unsigned address,
--			   void *data, unsigned datalen);
-+extern int line6_read_data(struct usb_line6 *line6, unsigned int address,
-+			   void *data, unsigned int datalen);
- extern int line6_read_serial_number(struct usb_line6 *line6,
- 				    u32 *serial_number);
- extern int line6_send_raw_message_async(struct usb_line6 *line6,
-@@ -200,8 +200,8 @@ extern ssize_t line6_set_raw(struct device *dev, struct device_attribute *attr,
- extern void line6_start_timer(struct timer_list *timer, unsigned long msecs,
- 			      void (*function)(struct timer_list *t));
- extern int line6_version_request_async(struct usb_line6 *line6);
--extern int line6_write_data(struct usb_line6 *line6, unsigned address,
--			    void *data, unsigned datalen);
-+extern int line6_write_data(struct usb_line6 *line6, unsigned int address,
-+			    void *data, unsigned int datalen);
- 
- int line6_probe(struct usb_interface *interface,
- 		const struct usb_device_id *id,
-diff --git a/sound/usb/line6/pcm.c b/sound/usb/line6/pcm.c
-index 20a2da3..c4d698c 100644
---- a/sound/usb/line6/pcm.c
-+++ b/sound/usb/line6/pcm.c
-@@ -529,8 +529,8 @@ int line6_init_pcm(struct usb_line6 *line6,
- 		   struct line6_pcm_properties *properties)
- {
- 	int i, err;
--	unsigned ep_read = line6->properties->ep_audio_r;
--	unsigned ep_write = line6->properties->ep_audio_w;
-+	unsigned int ep_read = line6->properties->ep_audio_r;
-+	unsigned int ep_write = line6->properties->ep_audio_w;
- 	struct snd_pcm *pcm;
- 	struct snd_line6_pcm *line6pcm;
- 
-diff --git a/sound/usb/line6/pcm.h b/sound/usb/line6/pcm.h
-index acef244..cd1da40 100644
---- a/sound/usb/line6/pcm.h
-+++ b/sound/usb/line6/pcm.h
-@@ -104,13 +104,13 @@ struct line6_pcm_stream {
- 	/* Count processed bytes;
- 	 * This is modulo period size (to determine when a period is finished).
- 	 */
--	unsigned bytes;
-+	unsigned int bytes;
- 
- 	/* Counter to create desired sample rate */
--	unsigned count;
-+	unsigned int count;
- 
- 	/* period size in bytes */
--	unsigned period;
-+	unsigned int period;
- 
- 	/* Processed frame position in the buffer;
- 	 * The contents of the ring buffer have been consumed by the USB
--- 
-2.7.4
+--GvXjxJ+pjyke8COw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jun 14, 2018 at 01:11:36PM +0200, Niklas Cassel wrote:
+> of_platform_device_destroy is only defined when building
+> with CONFIG_OF=y. Add a depends on OF.
+
+Is it sensible that of_platform_device_destroy() is only defined when
+building with CONFIG_OF=y?
+
+--GvXjxJ+pjyke8COw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsnkj4ACgkQJNaLcl1U
+h9AVVwf/VkuPxov3tJzTawHKXw0n000NRSxme0b13/p1sM5sEOLHLsj+tCaYPfy/
+TsY0kHTJ6NDmr9YRm/vFbDRxUc19/6LAH021VsFrg3kz0mH/fNgifFfbYxoIjCCf
+2YyW5Ei1SLVFARQIN9BiphjwsZL6i/aEKlg7Q7b95OjVnA2/E/fh3ZGMhrUQ17t/
+HhCaw1EQ9yqhefxtCD8meRFZbrYrIT2tWIxZuXA/cBQplR8HIOu9NcUD7Pz+rJcO
+b1bwNTAEDfG8KSOZTTcTuASrumJLze1gOi6RVoQlSidG30ya3regKB4sJ0VndECL
++JUXsvVr/HCOHFsS+rYWIzV0rWtpFA==
+=ATMi
+-----END PGP SIGNATURE-----
+
+--GvXjxJ+pjyke8COw--
+
+--===============4619413241370421179==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4619413241370421179==--
