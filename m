@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: apq8096: set card as device
-	drvdata" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:05 +0100
-Message-ID: <E1fUspJ-00005s-Fk@debutante>
-References: <1528275324-4878-1-git-send-email-rohitkr@codeaurora.org>
+Subject: Applied "ASoC: audio-graph-card: add hp and mic detect
+	gpios same as simple-card" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:09 +0100
+Message-ID: <E1fUspN-00008A-PJ@debutante>
+References: <20180611051559.18082-3-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C9CE92676E6
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:12 +0200 (CEST)
-In-Reply-To: <1528275324-4878-1-git-send-email-rohitkr@codeaurora.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 41C44267713
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:19 +0200 (CEST)
+In-Reply-To: <20180611051559.18082-3-suzuki.katsuhiro@socionext.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, Rohit kumar <rohitkr@codeaurora.org>
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: apq8096: set card as device drvdata
+   ASoC: audio-graph-card: add hp and mic detect gpios same as simple-card
 
 has been applied to the asoc tree at
 
@@ -52,33 +53,73 @@ to this mail.
 Thanks,
 Mark
 
->From d5c4e972d512ae0b59108ca92b9b35bc5cf5c14e Mon Sep 17 00:00:00 2001
-From: Rohit Kumar <rohitkr@codeaurora.org>
-Date: Wed, 6 Jun 2018 14:25:24 +0530
-Subject: [PATCH] ASoC: qcom: apq8096: set card as device drvdata
+>From f6de35cc145fb55d842db94e74841ecd8382e012 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Mon, 11 Jun 2018 17:32:14 +0900
+Subject: [PATCH] ASoC: audio-graph-card: add hp and mic detect gpios same as
+ simple-card
 
-snd_soc_card is retrieved as device drvdata during unbind().
-Set it as drvdata during bind() to avoid memory corruption during
-unbind().
+This patch adds headphone and microphone jack detection gpios as same
+as simple-card driver.
 
-Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/apq8096.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/generic/audio-graph-card.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 561cd429e6f2..239b8cb77bdb 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -140,6 +140,7 @@ static int apq8096_bind(struct device *dev)
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index d93bacacbd5b..a2a3e630f11c 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -21,7 +21,6 @@
+ #include <linux/of_graph.h>
+ #include <linux/platform_device.h>
+ #include <linux/string.h>
+-#include <sound/jack.h>
+ #include <sound/simple_card_utils.h>
  
- 	component_bind_all(dev, card);
- 	card->dev = dev;
-+	dev_set_drvdata(dev, card);
- 	ret = apq8096_sbc_parse_of(card);
- 	if (ret) {
- 		dev_err(dev, "Error parsing OF data\n");
+ struct graph_card_data {
+@@ -32,6 +31,8 @@ struct graph_card_data {
+ 		unsigned int mclk_fs;
+ 	} *dai_props;
+ 	unsigned int mclk_fs;
++	struct asoc_simple_jack hp_jack;
++	struct asoc_simple_jack mic_jack;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct gpio_desc *pa_gpio;
+ };
+@@ -278,6 +279,22 @@ static int asoc_graph_get_dais_count(struct device *dev)
+ 	return count;
+ }
+ 
++static int asoc_graph_soc_card_probe(struct snd_soc_card *card)
++{
++	struct graph_card_data *priv = snd_soc_card_get_drvdata(card);
++	int ret;
++
++	ret = asoc_simple_card_init_hp(card, &priv->hp_jack, NULL);
++	if (ret < 0)
++		return ret;
++
++	ret = asoc_simple_card_init_mic(card, &priv->mic_jack, NULL);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
+ static int asoc_graph_card_probe(struct platform_device *pdev)
+ {
+ 	struct graph_card_data *priv;
+@@ -319,6 +336,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+ 	card->num_links	= num;
+ 	card->dapm_widgets = asoc_graph_card_dapm_widgets;
+ 	card->num_dapm_widgets = ARRAY_SIZE(asoc_graph_card_dapm_widgets);
++	card->probe	= asoc_graph_soc_card_probe;
+ 
+ 	ret = asoc_graph_card_parse_of(priv);
+ 	if (ret < 0) {
 -- 
 2.17.1
