@@ -1,17 +1,14 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 1/8] ASoC: Intel: broxton: reduce machine name
-	for bxt_da7219_max98357a
-Date: Mon, 18 Jun 2018 13:29:35 -0500
-Message-ID: <20180618182942.4925-2-pierre-louis.bossart@linux.intel.com>
-References: <20180618182942.4925-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 0/8] ASoC: Intel: common ACPI tables - take2
+Date: Mon, 18 Jun 2018 13:29:34 -0500
+Message-ID: <20180618182942.4925-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 88EC8266F88
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 20:29:48 +0200 (CEST)
-In-Reply-To: <20180618182942.4925-1-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D6203266E91
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 20:29:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,52 +19,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Naveen Manohar <naveen.m@intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Naveen Manohar <naveen.m@intel.com>
+Last fall we started using common codec-indexed ACPI tables in
+sound/soc/intel/common for BYT/CHT/HSW/BDW machine drivers. This is a
+follow-up for all Skylake+ platforms.
 
-Use truncated names in bxt id table and bxt_da7219_max98357a machine
-as platform device id table expects names to be less then 20chars.
+The first three patches are cleanups and moves, no new functionality,
+the last 5 add support for GeminiLake machine drivers as well as
+references to SOF firmware/topology files.
 
-Signed-off-by: Naveen Manohar <naveen.m@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 4 ++--
- sound/soc/intel/skylake/skl.c                 | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+Some of the ApolloLake tables map to machine drivers that haven't been
+submitted yet but will be submitted after the SOF core patches, I
+thought it was better to just go ahead with a single set of changes.
 
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index 40eb979d5ac1..3aba5bcf806a 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -586,7 +586,7 @@ static int broxton_audio_probe(struct platform_device *pdev)
- static struct platform_driver broxton_audio = {
- 	.probe = broxton_audio_probe,
- 	.driver = {
--		.name = "bxt_da7219_max98357a_i2s",
-+		.name = "bxt_da7219_max98357a",
- 		.pm = &snd_soc_pm_ops,
- 	},
- };
-@@ -599,4 +599,4 @@ MODULE_AUTHOR("Rohit Ainapure <rohit.m.ainapure@intel.com>");
- MODULE_AUTHOR("Harsha Priya <harshapriya.n@intel.com>");
- MODULE_AUTHOR("Conrad Cooke <conrad.cooke@intel.com>");
- MODULE_LICENSE("GPL v2");
--MODULE_ALIAS("platform:bxt_da7219_max98357a_i2s");
-+MODULE_ALIAS("platform:bxt_da7219_max98357a");
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index f0d9793f872a..0a8f0768e987 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -1093,7 +1093,7 @@ static struct snd_soc_acpi_mach sst_bxtp_devdata[] = {
- 	},
- 	{
- 		.id = "DLGS7219",
--		.drv_name = "bxt_da7219_max98357a_i2s",
-+		.drv_name = "bxt_da7219_max98357a",
- 		.fw_filename = "intel/dsp_fw_bxtn.bin",
- 		.machine_quirk = snd_soc_acpi_codec_list,
- 		.quirk_data = &bxt_codecs,
+The code was pushed on
+https://github.com/plbossart/sound/tree/topic/skl-acpi-tables to
+trigger 0day tests, with no reports received. Naveen also tested the
+GLK integration with his own machine driver patches submitted earlier today.
+
+Comments welcome.
+
+Naveen Manohar (3):
+  ASoC: Intel: broxton: reduce machine name for bxt_da7219_max98357a
+  ASoC: Intel: common: Add Geminilake Dialog+Maxim machine driver entry
+  ASoC: Intel: common: add Geminilake Realtek+Maxim machine driver entry
+
+Pierre-Louis Bossart (5):
+  ASoC: Intel: Skylake: cleanup before moving ACPI tables
+  ASoC: Intel: move SKL+ codec ACPI tables to common directory
+  ASoC: Intel: common: add firmware/topology information for SOF
+  ASoC: Intel: common: add entries for SOF-based machine drivers
+  ASoC: Intel: common: fix copy/paste issue with SOF/broadwell topology
+    file
+
+ include/sound/soc-acpi-intel-match.h               |   5 +
+ sound/soc/intel/boards/bxt_da7219_max98357a.c      |   4 +-
+ sound/soc/intel/common/Makefile                    |   6 +-
+ sound/soc/intel/common/soc-acpi-intel-bxt-match.c  |  59 +++++++
+ sound/soc/intel/common/soc-acpi-intel-cnl-match.c  |  32 ++++
+ sound/soc/intel/common/soc-acpi-intel-glk-match.c  |  51 +++++++
+ .../intel/common/soc-acpi-intel-hsw-bdw-match.c    |   2 +-
+ sound/soc/intel/common/soc-acpi-intel-kbl-match.c  |  91 +++++++++++
+ sound/soc/intel/common/soc-acpi-intel-skl-match.c  |  47 ++++++
+ sound/soc/intel/skylake/skl.c                      | 170 ++-------------------
+ 10 files changed, 303 insertions(+), 164 deletions(-)
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-glk-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-skl-match.c
+
+
+base-commit: 5544717d416d9a095edc616be789bdab69e284dc
 -- 
 2.14.1
