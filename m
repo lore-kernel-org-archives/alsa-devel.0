@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsi: convert to SPDX identifiers" to
-	the asoc tree
-Date: Mon, 18 Jun 2018 13:00:48 +0100
-Message-ID: <E1fUsq0-0000RG-5b@debutante>
-References: <871sdcsg9s.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: topology: Add callback for DAPM route
+	load/unload" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:50 +0100
+Message-ID: <E1fUsq2-0000S5-AU@debutante>
+References: <20180327133045.29351-5-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6FD3B2676DC
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:50 +0200 (CEST)
-In-Reply-To: <871sdcsg9s.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B320267707
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:52 +0200 (CEST)
+In-Reply-To: <20180327133045.29351-5-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsi: convert to SPDX identifiers
+   ASoC: topology: Add callback for DAPM route load/unload
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From 134c875bff58ac988c64a1ea2a337acba1711d4b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 12 Jun 2018 05:56:51 +0000
-Subject: [PATCH] ASoC: fsi: convert to SPDX identifiers
+>From 503e79b793fea5de626db73accf8e8994bc4289d Mon Sep 17 00:00:00 2001
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Date: Thu, 14 Jun 2018 20:53:59 +0100
+Subject: [PATCH] ASoC: topology: Add callback for DAPM route load/unload
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Add a callback fro clients for notification about DAPM route loading and
+unloading.
+
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/fsi.c | 22 +++++++++-------------
- 1 file changed, 9 insertions(+), 13 deletions(-)
+ include/sound/soc-topology.h |  7 +++++++
+ sound/soc/soc-topology.c     | 13 +++++++++++++
+ 2 files changed, 20 insertions(+)
 
-diff --git a/sound/soc/sh/fsi.c b/sound/soc/sh/fsi.c
-index 3bae06dd121f..aa7e902f0c02 100644
---- a/sound/soc/sh/fsi.c
-+++ b/sound/soc/sh/fsi.c
-@@ -1,16 +1,12 @@
--/*
-- * Fifo-attached Serial Interface (FSI) support for SH7724
-- *
-- * Copyright (C) 2009 Renesas Solutions Corp.
-- * Kuninori Morimoto <morimoto.kuninori@renesas.com>
-- *
-- * Based on ssi.c
-- * Copyright (c) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Fifo-attached Serial Interface (FSI) support for SH7724
-+//
-+// Copyright (C) 2009 Renesas Solutions Corp.
-+// Kuninori Morimoto <morimoto.kuninori@renesas.com>
-+//
-+// Based on ssi.c
-+// Copyright (c) 2007 Manuel Lauss <mano@roarinelk.homelinux.net>
+diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
+index e1f265e21ee1..401ef2c45d6c 100644
+--- a/include/sound/soc-topology.h
++++ b/include/sound/soc-topology.h
+@@ -32,6 +32,7 @@ struct snd_kcontrol_new;
+ struct snd_soc_dai_link;
+ struct snd_soc_dai_driver;
+ struct snd_soc_dai;
++struct snd_soc_dapm_route;
  
- #include <linux/delay.h>
- #include <linux/dma-mapping.h>
+ /* object scan be loaded and unloaded in groups with identfying indexes */
+ #define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
+@@ -116,6 +117,12 @@ struct snd_soc_tplg_ops {
+ 	int (*control_unload)(struct snd_soc_component *,
+ 		struct snd_soc_dobj *);
+ 
++	/* DAPM graph route element loading and unloading */
++	int (*dapm_route_load)(struct snd_soc_component *, int index,
++		struct snd_soc_dapm_route *route);
++	int (*dapm_route_unload)(struct snd_soc_component *,
++		struct snd_soc_dobj *);
++
+ 	/* external widget init - used for any driver specific init */
+ 	int (*widget_load)(struct snd_soc_component *, int index,
+ 		struct snd_soc_dapm_widget *,
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 9b33260fd537..05d177d689e2 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -1105,6 +1105,17 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
+ 	return 0;
+ }
+ 
++/* optionally pass new dynamic kcontrol to component driver. */
++static int soc_tplg_add_route(struct soc_tplg *tplg,
++	struct snd_soc_dapm_route *route)
++{
++	if (tplg->comp && tplg->ops && tplg->ops->dapm_route_load)
++		return tplg->ops->dapm_route_load(tplg->comp, tplg->index,
++			route);
++
++	return 0;
++}
++
+ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 	struct snd_soc_tplg_hdr *hdr)
+ {
+@@ -1153,6 +1164,8 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
+ 		else
+ 			route.control = elem->control;
+ 
++		soc_tplg_add_route(tplg, &route);
++
+ 		/* add route, but keep going if some fail */
+ 		snd_soc_dapm_add_routes(dapm, &route, 1);
+ 	}
 -- 
 2.17.1
