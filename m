@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra: fix device_node refcounting" to the asoc tree
-Date: Mon, 18 Jun 2018 12:59:39 +0100
-Message-ID: <E1fUsot-0008Lr-UI@debutante>
-References: <1529101378-5543-1-git-send-email-khoroshilov@ispras.ru>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1529101378-5543-1-git-send-email-khoroshilov@ispras.ru>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, ldv-project@linuxtesting.org, alsa-devel@alsa-project.org, sil2review@lists.osadl.org, linux-kernel@vger.kernel.org, Julia Lawall <julia.lawall@lip6.fr>, linux-tegra@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: TSCS42xx: Add mic bias boost control"
+	to the asoc tree
+Date: Mon, 18 Jun 2018 12:59:56 +0100
+Message-ID: <E1fUspA-0008T3-QW@debutante>
+References: <91e206cbabd7c7a7c8d7715b5e51ffef384ac6ec.1528143829.git.steven.eckhoff.opensource@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4EBDE2676DA
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:00 +0200 (CEST)
+In-Reply-To: <91e206cbabd7c7a7c8d7715b5e51ffef384ac6ec.1528143829.git.steven.eckhoff.opensource@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tegra: fix device_node refcounting
+   ASoC: TSCS42xx: Add mic bias boost control
 
 has been applied to the asoc tree at
 
@@ -37,72 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 7c5dfd549617b87db8e891ff4ecaa4a582b6c4cc Mon Sep 17 00:00:00 2001
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Date: Sat, 16 Jun 2018 01:22:58 +0300
-Subject: [PATCH] ASoC: tegra: fix device_node refcounting
+>From 58f7d470c85801f55bbae2d3c93fe1a3d34aa143 Mon Sep 17 00:00:00 2001
+From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Date: Mon, 4 Jun 2018 15:45:40 -0500
+Subject: [PATCH] ASoC: TSCS42xx: Add mic bias boost control
 
-tegra_rt5677_probe() gets a couple of device nodes with of_parse_phandle(),
-but there is no release of them.
+Add mic bias boost control
 
-The patch adds the release to tegra_rt5677_remove() and
-to error handling paths in the probe.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Reviewed-by: Nicholas Mc Guire <der.herr@hofr.at>
+Signed-off-by: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra_rt5677.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tscs42xx.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/tegra/tegra_rt5677.c b/sound/soc/tegra/tegra_rt5677.c
-index 0e4805c7b4ca..7081f15302cc 100644
---- a/sound/soc/tegra/tegra_rt5677.c
-+++ b/sound/soc/tegra/tegra_rt5677.c
-@@ -264,13 +264,13 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev,
- 			"Property 'nvidia,i2s-controller' missing or invalid\n");
- 		ret = -EINVAL;
--		goto err;
-+		goto err_put_codec_of_node;
- 	}
- 	tegra_rt5677_dai.platform_of_node = tegra_rt5677_dai.cpu_of_node;
+diff --git a/sound/soc/codecs/tscs42xx.c b/sound/soc/codecs/tscs42xx.c
+index d18ff17719cc..743194052fc4 100644
+--- a/sound/soc/codecs/tscs42xx.c
++++ b/sound/soc/codecs/tscs42xx.c
+@@ -644,6 +644,9 @@ static const struct snd_kcontrol_new tscs42xx_snd_controls[] = {
+ 	/* Input Channel Map */
+ 	SOC_ENUM("Input Channel Map", ch_map_select_enum),
  
- 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
- 	if (ret)
--		goto err;
-+		goto err_put_cpu_of_node;
- 
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
-@@ -283,6 +283,13 @@ static int tegra_rt5677_probe(struct platform_device *pdev)
- 
- err_fini_utils:
- 	tegra_asoc_utils_fini(&machine->util_data);
-+err_put_cpu_of_node:
-+	of_node_put(tegra_rt5677_dai.cpu_of_node);
-+	tegra_rt5677_dai.cpu_of_node = NULL;
-+	tegra_rt5677_dai.platform_of_node = NULL;
-+err_put_codec_of_node:
-+	of_node_put(tegra_rt5677_dai.codec_of_node);
-+	tegra_rt5677_dai.codec_of_node = NULL;
- err:
- 	return ret;
- }
-@@ -296,6 +303,12 @@ static int tegra_rt5677_remove(struct platform_device *pdev)
- 
- 	tegra_asoc_utils_fini(&machine->util_data);
- 
-+	tegra_rt5677_dai.platform_of_node = NULL;
-+	of_node_put(tegra_rt5677_dai.codec_of_node);
-+	tegra_rt5677_dai.codec_of_node = NULL;
-+	of_node_put(tegra_rt5677_dai.cpu_of_node);
-+	tegra_rt5677_dai.cpu_of_node = NULL;
++	/* Mic Bias */
++	SOC_SINGLE("Mic Bias Boost Switch", 0x71, 0x07, 1, 0),
 +
- 	return 0;
- }
- 
+ 	/* Coefficient Ram */
+ 	COEFF_RAM_CTL("Cascade1L BiQuad1", BIQUAD_SIZE, 0x00),
+ 	COEFF_RAM_CTL("Cascade1L BiQuad2", BIQUAD_SIZE, 0x05),
 -- 
 2.17.1
