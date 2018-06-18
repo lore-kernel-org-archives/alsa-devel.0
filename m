@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak5558: make two structures static" to
-	the asoc tree
-Date: Mon, 18 Jun 2018 13:00:01 +0100
-Message-ID: <E1fUspF-0008VA-60@debutante>
-References: <20180606095719.30831-1-colin.king@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 852B92675D5
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:07 +0200 (CEST)
-In-Reply-To: <20180606095719.30831-1-colin.king@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Colin Ian King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
+Subject: Applied "ASoC: rt1305: Use ULL suffixes for 64-bit constants" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:18 +0100
+Message-ID: <E1fUspW-0000CY-C2@debutante>
+References: <1528379448-3937-1-git-send-email-geert@linux-m68k.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1528379448-3937-1-git-send-email-geert@linux-m68k.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Mark Brown <broonie@kernel.org>, Shuming Fan <shumingf@realtek.com>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak5558: make two structures static
+   ASoC: rt1305: Use ULL suffixes for 64-bit constants
 
 has been applied to the asoc tree at
 
@@ -53,46 +37,50 @@ to this mail.
 Thanks,
 Mark
 
->From e380be7c557c4ddb1cb71404c10e0bfb3daf4644 Mon Sep 17 00:00:00 2001
-From: Colin Ian King <colin.king@canonical.com>
-Date: Wed, 6 Jun 2018 10:57:19 +0100
-Subject: [PATCH] ASoC: ak5558: make two structures static
+>From 4f29b663c08d369fe320a148179996c94cf7d01b Mon Sep 17 00:00:00 2001
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Thu, 7 Jun 2018 15:50:48 +0200
+Subject: [PATCH] ASoC: rt1305: Use ULL suffixes for 64-bit constants
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-The structure ak5558_pm and soc_codec_dev_ak5558 are local to the
-source and do not need to be in global scope, so make them static.
-Also make soc_codec_dev_ak5558 static.
+With gcc 4.1.2:
 
-Cleans up sparse warnings:
-warning: symbol 'ak5558_pm' was not declared. Should it be static?
-warning: symbol 'soc_codec_dev_ak5558' was not declared. Should it be
-static?
+    sound/soc/codecs/rt1305.c: In function ‘rt1305_calibrate’:
+    sound/soc/codecs/rt1305.c:1069: warning: integer constant is too large for ‘long’ type
+    sound/soc/codecs/rt1305.c:1086: warning: integer constant is too large for ‘long’ type
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
-Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
+Add the missing "ULL" suffixes to fix this.
+
+Fixes: 29bc643ddd7efb74 ("ASoC: rt1305: Add RT1305/RT1306 amplifier driver")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak5558.c | 4 ++--
+ sound/soc/codecs/rt1305.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
-index f4ed5cc40661..448bb90c9c8e 100644
---- a/sound/soc/codecs/ak5558.c
-+++ b/sound/soc/codecs/ak5558.c
-@@ -322,13 +322,13 @@ static int __maybe_unused ak5558_runtime_resume(struct device *dev)
- 	return regcache_sync(ak5558->regmap);
- }
+diff --git a/sound/soc/codecs/rt1305.c b/sound/soc/codecs/rt1305.c
+index f4c8c45f4010..421b8fb2fa04 100644
+--- a/sound/soc/codecs/rt1305.c
++++ b/sound/soc/codecs/rt1305.c
+@@ -1066,7 +1066,7 @@ static void rt1305_calibrate(struct rt1305_priv *rt1305)
+ 	pr_debug("Left_rhl = 0x%x rh=0x%x rl=0x%x\n", rhl, rh, rl);
+ 	pr_info("Left channel %d.%dohm\n", (r0ohm/10), (r0ohm%10));
  
--const struct dev_pm_ops ak5558_pm = {
-+static const struct dev_pm_ops ak5558_pm = {
- 	SET_RUNTIME_PM_OPS(ak5558_runtime_suspend, ak5558_runtime_resume, NULL)
- 	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
- 				pm_runtime_force_resume)
- };
+-	r0l = 562949953421312;
++	r0l = 562949953421312ULL;
+ 	if (rhl != 0)
+ 		do_div(r0l, rhl);
+ 	pr_debug("Left_r0 = 0x%llx\n", r0l);
+@@ -1083,7 +1083,7 @@ static void rt1305_calibrate(struct rt1305_priv *rt1305)
+ 	pr_debug("Right_rhl = 0x%x rh=0x%x rl=0x%x\n", rhl, rh, rl);
+ 	pr_info("Right channel %d.%dohm\n", (r0ohm/10), (r0ohm%10));
  
--struct snd_soc_component_driver soc_codec_dev_ak5558 = {
-+static const struct snd_soc_component_driver soc_codec_dev_ak5558 = {
- 	.probe			= ak5558_probe,
- 	.remove			= ak5558_remove,
- 	.controls		= ak5558_snd_controls,
+-	r0r = 562949953421312;
++	r0r = 562949953421312ULL;
+ 	if (rhl != 0)
+ 		do_div(r0r, rhl);
+ 	pr_debug("Right_r0 = 0x%llx\n", r0r);
 -- 
 2.17.1
