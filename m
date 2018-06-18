@@ -1,20 +1,18 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 1/3] sound/line6: checkpatch: fix block
-	comment style
-Date: Mon, 18 Jun 2018 13:21:34 +0200
-Message-ID: <20180618112134.GA4289@kroah.com>
-References: <1529317779-15908-1-git-send-email-roman.sommer@fau.de>
- <1529317779-15908-2-git-send-email-roman.sommer@fau.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/3] ASoC: TSCS42xx: Remove
+ Playback/Capture in names
+Date: Mon, 18 Jun 2018 12:31:54 +0100
+Message-ID: <20180618113154.GC6928@sirena.org.uk>
+References: <cover.1528143829.git.steven.eckhoff.opensource@gmail.com>
+ <a1f30fe79d376bb1dea4c41a34f198310a8ff9a4.1528143829.git.steven.eckhoff.opensource@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="===============4656627134611528635=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
- [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 791A12673C7
- for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 13:21:39 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1529317779-15908-2-git-send-email-roman.sommer@fau.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 186582673C7
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 13:31:56 +0200 (CEST)
+In-Reply-To: <a1f30fe79d376bb1dea4c41a34f198310a8ff9a4.1528143829.git.steven.eckhoff.opensource@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +22,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Roman Sommer <roman.sommer@fau.de>
-Cc: Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Kees Cook <keescook@chromium.org>, linux-kernel@i4.cs.fau.de, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>, Daniel Graefe <daniel.graefe@fau.de>, Philippe Ombredanne <pombredanne@nexb.com>, Thomas Gleixner <tglx@linutronix.de>, Hans =?iso-8859-1?B?UC4gTfZsbGVy?= Ebner <hmoller@uc.cl>, =?iso-8859-1?Q?Fabi=E1n?= Inostroza <soulsonceonfire@gmail.com>
+To: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 18, 2018 at 12:29:37PM +0200, Roman Sommer wrote:
-> CC: Jaroslav Kysela <perex@perex.cz>
-> CC: Takashi Iwai <tiwai@suse.com>
-> CC: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-> CC: "Hans P. M=F6ller Ebner" <hmoller@uc.cl>
-> CC: Kees Cook <keescook@chromium.org>
-> CC: Kate Stewart <kstewart@linuxfoundation.org>
-> CC: Thomas Gleixner <tglx@linutronix.de>
-> CC: "Fabi=E1n Inostroza" <soulsonceonfire@gmail.com>
-> CC: Bhumika Goyal <bhumirks@gmail.com>
-> CC: Philippe Ombredanne <pombredanne@nexb.com>
-> CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> CC: alsa-devel@alsa-project.org
-> CC: linux-kernel@vger.kernel.org
-> =
 
-> This patch fixed the style of multiline comments in sound/usb/line6.
+--===============4656627134611528635==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="UPT3ojh+0CqEDtpF"
+Content-Disposition: inline
 
-Why is all of those cc: lines in the changelog body?
 
-Very odd...
+--UPT3ojh+0CqEDtpF
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-greg k-h
+On Mon, Jun 04, 2018 at 03:46:28PM -0500, Steven Eckhoff wrote:
+> These aren't needed and some userspace apps don't work consistently with
+> them.
+>=20
+> Remove Playback/Capture from control names
+
+Really?  They're part of the spec so it indicates that the apps have a
+problem...
+
+--UPT3ojh+0CqEDtpF
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsnmCkACgkQJNaLcl1U
+h9AtMgf/db+DeLAlSJqM/obcQty/4KCFpwgIxy9w7jWqIyF37Cw9IzMII3WHrON2
+SmXGsFvc/2CdDLMnqnWxgLOJpyZZGtQngc0F3OfhecoffUzLhF2ZzB9EgzJaWzbq
+Ooik8l5WpaXYt+qiECh8m3z6vZFvOKHkq6BClH+UXgGNICYnoI2w3+ncfpQuQ3tx
+CWDqx6Fq8fhmxdgM5Ovvnq3veSIseHZfkZLd3cQhGHNSIjBtGQw8cbeMu11VZwFL
+LknamhHW99ROpck4uVIpItNi/4pgfZXvyKhbnWCLa8VRbm+xX7/lyEjyhfeUGo7y
+axmcx7YPh7G72cZG5r+Mf7V7d4MMvA==
+=cdsd
+-----END PGP SIGNATURE-----
+
+--UPT3ojh+0CqEDtpF--
+
+--===============4656627134611528635==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4656627134611528635==--
