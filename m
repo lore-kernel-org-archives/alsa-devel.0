@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: move hp and mic detection to soc_card probe" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:11 +0100
-Message-ID: <E1fUspP-00009M-T8@debutante>
-References: <20180611083214.16858-2-suzuki.katsuhiro@socionext.com>
+Subject: Applied "ASoC: twl6040: make pointer dmic_codec_dev static" to the asoc tree
+Date: Mon, 18 Jun 2018 13:00:03 +0100
+Message-ID: <E1fUspH-0008WL-AN@debutante>
+References: <20180606093504.30255-1-colin.king@canonical.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180611083214.16858-2-suzuki.katsuhiro@socionext.com>
+In-Reply-To: <20180606093504.30255-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: move hp and mic detection to soc_card probe
+   ASoC: twl6040: make pointer dmic_codec_dev static
 
 has been applied to the asoc tree at
 
@@ -37,73 +37,36 @@ to this mail.
 Thanks,
 Mark
 
->From 8d1bd113a194407f9ad083403ea1cf92108edf5c Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Date: Mon, 11 Jun 2018 17:32:13 +0900
-Subject: [PATCH] ASoC: simple-card: move hp and mic detection to soc_card
- probe
+>From 510e419cb85798915c6426c496a164ec6328d1a7 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Wed, 6 Jun 2018 10:35:04 +0100
+Subject: [PATCH] ASoC: twl6040: make pointer dmic_codec_dev static
 
-This patch moves headphone and microphone detection to probe() of
-snd_soc_card from init() of snd_soc_dai_link. This is because init()
-is called (and an input device /dev/input/eventX is created too)
-twice or above if simple card has two or more DAI links.
+The pointer dmic_codec_dev is local to the source and does not need
+to be in global scope, so make it static.
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cleans up sparse warning:
+warning: symbol 'dmic_codec_dev' was not declared. Should it be static?
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Acked-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ sound/soc/omap/omap-abe-twl6040.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index a6477a022156..c5b6e04cd926 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -149,14 +149,6 @@ static int asoc_simple_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	if (ret < 0)
- 		return ret;
+diff --git a/sound/soc/omap/omap-abe-twl6040.c b/sound/soc/omap/omap-abe-twl6040.c
+index 15ccbf479c96..d5ae9eb8c756 100644
+--- a/sound/soc/omap/omap-abe-twl6040.c
++++ b/sound/soc/omap/omap-abe-twl6040.c
+@@ -40,7 +40,7 @@ struct abe_twl6040 {
+ 	int	mclk_freq;	/* MCLK frequency speed for twl6040 */
+ };
  
--	ret = asoc_simple_card_init_hp(rtd->card, &priv->hp_jack, PREFIX);
--	if (ret < 0)
--		return ret;
--
--	ret = asoc_simple_card_init_mic(rtd->card, &priv->mic_jack, PREFIX);
--	if (ret < 0)
--		return ret;
--
- 	return 0;
- }
+-struct platform_device *dmic_codec_dev;
++static struct platform_device *dmic_codec_dev;
  
-@@ -350,6 +342,22 @@ static int asoc_simple_card_parse_of(struct simple_card_data *priv)
- 	return ret;
- }
- 
-+static int asoc_simple_soc_card_probe(struct snd_soc_card *card)
-+{
-+	struct simple_card_data *priv = snd_soc_card_get_drvdata(card);
-+	int ret;
-+
-+	ret = asoc_simple_card_init_hp(card, &priv->hp_jack, PREFIX);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = asoc_simple_card_init_mic(card, &priv->mic_jack, PREFIX);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
- static int asoc_simple_card_probe(struct platform_device *pdev)
- {
- 	struct simple_card_data *priv;
-@@ -385,6 +393,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	card->dev		= dev;
- 	card->dai_link		= priv->dai_link;
- 	card->num_links		= num;
-+	card->probe		= asoc_simple_soc_card_probe;
- 
- 	if (np && of_device_is_available(np)) {
- 
+ static int omap_abe_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_pcm_hw_params *params)
 -- 
 2.17.1
