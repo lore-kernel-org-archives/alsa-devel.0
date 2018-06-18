@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Add NULL pointer check" to the asoc tree
-Date: Mon, 18 Jun 2018 13:00:26 +0100
-Message-ID: <E1fUspe-0000H5-Il@debutante>
-References: <1528354129-5023-1-git-send-email-akshu.agrawal@amd.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1528354129-5023-1-git-send-email-akshu.agrawal@amd.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Agrawal@sirena.org.uk, Akshu <Akshu.Agrawal@amd.com>
-Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.orgMark Brown <broonie@kernel.org>, "Mukunda,, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>akshu.agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: ak5558: make two structures static" to
+	the asoc tree
+Date: Mon, 18 Jun 2018 13:00:01 +0100
+Message-ID: <E1fUspF-0008VA-60@debutante>
+References: <20180606095719.30831-1-colin.king@canonical.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 852B92675D5
+ for <alsa-devel@alsa-project.org>; Mon, 18 Jun 2018 14:00:07 +0200 (CEST)
+In-Reply-To: <20180606095719.30831-1-colin.king@canonical.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Colin Ian King <colin.king@canonical.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Daniel Baluta <daniel.baluta@nxp.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Add NULL pointer check
+   ASoC: ak5558: make two structures static
 
 has been applied to the asoc tree at
 
@@ -37,34 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 6e56e5d04191aa20e08430dcb203c081fa247e93 Mon Sep 17 00:00:00 2001
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Date: Thu, 7 Jun 2018 14:48:43 +0800
-Subject: [PATCH] ASoC: AMD: Add NULL pointer check
+>From e380be7c557c4ddb1cb71404c10e0bfb3daf4644 Mon Sep 17 00:00:00 2001
+From: Colin Ian King <colin.king@canonical.com>
+Date: Wed, 6 Jun 2018 10:57:19 +0100
+Subject: [PATCH] ASoC: ak5558: make two structures static
 
-Fix crash in those platforms whose machine driver does not expose
-platform_info. For those platforms we rely on default value and
-select I2SSP channel.
+The structure ak5558_pm and soc_codec_dev_ak5558 are local to the
+source and do not need to be in global scope, so make them static.
+Also make soc_codec_dev_ak5558 static.
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Cleans up sparse warnings:
+warning: symbol 'ak5558_pm' was not declared. Should it be static?
+warning: symbol 'soc_codec_dev_ak5558' was not declared. Should it be
+static?
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+Reviewed-by: Daniel Baluta <daniel.baluta@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/ak5558.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 77203841c535..1458b5048498 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -773,7 +773,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
- 	if (WARN_ON(!rtd))
- 		return -EINVAL;
+diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
+index f4ed5cc40661..448bb90c9c8e 100644
+--- a/sound/soc/codecs/ak5558.c
++++ b/sound/soc/codecs/ak5558.c
+@@ -322,13 +322,13 @@ static int __maybe_unused ak5558_runtime_resume(struct device *dev)
+ 	return regcache_sync(ak5558->regmap);
+ }
  
--	rtd->i2s_instance = pinfo->i2s_instance;
-+	if (pinfo)
-+		rtd->i2s_instance = pinfo->i2s_instance;
- 	if (adata->asic_type == CHIP_STONEY) {
- 		val = acp_reg_read(adata->acp_mmio,
- 				   mmACP_I2S_16BIT_RESOLUTION_EN);
+-const struct dev_pm_ops ak5558_pm = {
++static const struct dev_pm_ops ak5558_pm = {
+ 	SET_RUNTIME_PM_OPS(ak5558_runtime_suspend, ak5558_runtime_resume, NULL)
+ 	SET_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
+ 				pm_runtime_force_resume)
+ };
+ 
+-struct snd_soc_component_driver soc_codec_dev_ak5558 = {
++static const struct snd_soc_component_driver soc_codec_dev_ak5558 = {
+ 	.probe			= ak5558_probe,
+ 	.remove			= ak5558_remove,
+ 	.controls		= ak5558_snd_controls,
 -- 
 2.17.1
