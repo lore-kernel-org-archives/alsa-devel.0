@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: common: fix copy/paste issue
-	with SOF/broadwell topology file" to the asoc tree
-Date: Tue, 19 Jun 2018 16:24:31 +0100
-Message-ID: <E1fVIUh-0002LO-6T@debutante>
-References: <20180618182942.4925-9-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: common: add entries for
+	SOF-based machine drivers" to the asoc tree
+Date: Tue, 19 Jun 2018 16:24:33 +0100
+Message-ID: <E1fVIUj-0002MP-Bf@debutante>
+References: <20180618182942.4925-8-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 500F92675D5
+ by alsa0.perex.cz (Postfix) with ESMTP id 4E5D42673CF
  for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:24:36 +0200 (CEST)
-In-Reply-To: <20180618182942.4925-9-pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20180618182942.4925-8-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: common: fix copy/paste issue with SOF/broadwell topology file
+   ASoC: Intel: common: add entries for SOF-based machine drivers
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,53 @@ to this mail.
 Thanks,
 Mark
 
->From f0d9034b290d8bad590e843c2a1081eb47d813ad Mon Sep 17 00:00:00 2001
+>From b45350135b9241b64cc91ccc8dddca2ee4dc25d7 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 18 Jun 2018 13:29:42 -0500
-Subject: [PATCH] ASoC: Intel: common: fix copy/paste issue with SOF/broadwell
- topology file
+Date: Mon, 18 Jun 2018 13:29:41 -0500
+Subject: [PATCH] ASoC: Intel: common: add entries for SOF-based machine
+ drivers
 
-There are two commercially-available Broadwell platforms based on I2S
-(Dell XPS13 and 'Samus' Pixel 2015 Chromebook).
-
-Fix a copy/paste issue to allow each platform to enable different
-features if needed when SOF is enabled
+While we are at it, add entries for machine drivers that are used on
+SOF-based platforms. The drivers will be submitted upstream after the
+core SOF patches, but there's no harm in adding these references now.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../intel/common/soc-acpi-intel-bxt-match.c   | 21 +++++++++++++++++++
+ 1 file changed, 21 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-index e0e8c8c27528..53e7acdfbb81 100644
---- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
-@@ -45,7 +45,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[] = {
- 		.drv_name = "bdw-rt5677",
- 		.fw_filename =  "intel/IntcSST2.bin",
- 		.sof_fw_filename = "intel/reef-bdw.ri",
--		.sof_tplg_filename = "intel/reef-bdw-rt286.tplg",
-+		.sof_tplg_filename = "intel/reef-bdw-rt5677.tplg",
- 		.asoc_plat_name = "haswell-pcm-audio",
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+index 50869eddbb3b..f39386e540d3 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -30,6 +30,27 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
+ 		.sof_tplg_filename = "intel/sof-apl-da7219.tplg",
+ 		.asoc_plat_name = "0000:00:0e.0",
  	},
- 	{
++	{
++		.id = "104C5122",
++		.drv_name = "bxt-pcm512x",
++		.sof_fw_filename = "intel/sof-apl.ri",
++		.sof_tplg_filename = "intel/sof-apl-pcm512x.tplg",
++		.asoc_plat_name = "0000:00:0e.0",
++	},
++	{
++		.id = "1AEC8804",
++		.drv_name = "bxt-wm8804",
++		.sof_fw_filename = "intel/sof-apl.ri",
++		.sof_tplg_filename = "intel/sof-apl-wm8804.tplg",
++		.asoc_plat_name = "0000:00:0e.0",
++	},
++	{
++		.id = "INT34C3",
++		.drv_name = "bxt_tdf8532",
++		.sof_fw_filename = "intel/sof-apl.ri",
++		.sof_tplg_filename = "intel/sof-apl-tdf8532.tplg",
++		.asoc_plat_name = "0000:00:0e.0",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_bxt_machines);
 -- 
 2.17.1
