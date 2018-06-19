@@ -1,15 +1,15 @@
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 4/9] ALSA: usb-audio: use usb_fill_int_urb()
-Date: Tue, 19 Jun 2018 23:55:16 +0200
-Message-ID: <20180619215521.13688-5-bigeasy@linutronix.de>
+Subject: [PATCH 6/9] ALSA: usb: caiaq: use usb_fill_int_urb()
+Date: Tue, 19 Jun 2018 23:55:18 +0200
+Message-ID: <20180619215521.13688-7-bigeasy@linutronix.de>
 References: <20180619215521.13688-1-bigeasy@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 25FA1267601
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 23:55:32 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 08878267614
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 23:55:33 +0200 (CEST)
 In-Reply-To: <20180619215521.13688-1-bigeasy@linutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,56 +21,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tglx@linutronix.de, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Daniel Mack <zonque@gmail.com>, tglx@linutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-VXNpbmcgdXNiX2ZpbGxfaW50X3VyYigpIGhlbHBzIHRvIGZpbmQgY29kZSB3aGljaCBpbml0aWFs
-aXplcyBhbgpVUkIuIEEgZ3JlcCBmb3IgbWVtYmVycyBvZiB0aGUgc3RydWN0IChsaWtlIC0+Y29t
-cGxldGUpIHJldmVhbCBsb3RzCm9mIG90aGVyIHRoaW5ncywgdG9vLgoKZGF0YV9lcF9zZXRfcGFy
-YW1zKCkgYWRkaXRpb25hbGx5IHNldHMgdXJiLT50cmFuc2Zlcl9idWZmZXJfbGVuZ3RoIHdoaWNo
-CndhcyBub3QgdGhlIGNhc2UgZWFybGllci4KZGF0YV9lcF9zZXRfcGFyYW1zKCkgYW5kIGRhdGFf
-ZXBfc2V0X3BhcmFtcygpIGVuc3VyZSB0aGF0IHN5bmNpbnRlcnZhbCBpcwp3aXRoaW4gdGhlIGFs
-bG93ZWQgcmFuZ2Ugb24gSFMvU1MuIFRoZSBpbnRlcnZhbCB2YWx1ZSBzZWVtcyB0byBjb21lIGZy
-b20Kc25kX3VzYl9wYXJzZV9kYXRhaW50ZXJ2YWwoKSB3aGljaCBpcyBiSW50ZXJ2YWwgLSAxIGFu
-ZCBvbmx5IGluIHRoZSByYWdlIDEg4oCmIDQuClNvIGluIG9yZGVyIHRvIGtlZXAgdGhlIG1hZ2lj
-IHdva3JpbmcgSSBwYXNzIGRhdGFpbnRlcnZhbCArIDEuCgpDYzogSmFyb3NsYXYgS3lzZWxhIDxw
-ZXJleEBwZXJleC5jej4KQ2M6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5jb20+ClNpZ25lZC1v
-ZmYtYnk6IFNlYmFzdGlhbiBBbmRyemVqIFNpZXdpb3IgPGJpZ2Vhc3lAbGludXRyb25peC5kZT4K
-LS0tCiBzb3VuZC91c2IvZW5kcG9pbnQuYyB8IDI0ICsrKysrKysrKystLS0tLS0tLS0tLS0tLQog
-MSBmaWxlIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQoKZGlmZiAt
-LWdpdCBhL3NvdW5kL3VzYi9lbmRwb2ludC5jIGIvc291bmQvdXNiL2VuZHBvaW50LmMKaW5kZXgg
-YzkwNjA3ZWJlMTU1Li5iYmMwMmRiNWI0MTcgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9lbmRwb2lu
-dC5jCisrKyBiL3NvdW5kL3VzYi9lbmRwb2ludC5jCkBAIC03NzIsNiArNzcyLDggQEAgc3RhdGlj
-IGludCBkYXRhX2VwX3NldF9wYXJhbXMoc3RydWN0IHNuZF91c2JfZW5kcG9pbnQgKmVwLAogCS8q
-IGFsbG9jYXRlIGFuZCBpbml0aWFsaXplIGRhdGEgdXJicyAqLwogCWZvciAoaSA9IDA7IGkgPCBl
-cC0+bnVyYnM7IGkrKykgewogCQlzdHJ1Y3Qgc25kX3VyYl9jdHggKnUgPSAmZXAtPnVyYltpXTsK
-KwkJdm9pZCAqYnVmOworCiAJCXUtPmluZGV4ID0gaTsKIAkJdS0+ZXAgPSBlcDsKIAkJdS0+cGFj
-a2V0cyA9IHVyYl9wYWNrczsKQEAgLTc4MywxNiArNzg1LDEzIEBAIHN0YXRpYyBpbnQgZGF0YV9l
-cF9zZXRfcGFyYW1zKHN0cnVjdCBzbmRfdXNiX2VuZHBvaW50ICplcCwKIAkJaWYgKCF1LT51cmIp
-CiAJCQlnb3RvIG91dF9vZl9tZW1vcnk7CiAKLQkJdS0+dXJiLT50cmFuc2Zlcl9idWZmZXIgPQot
-CQkJdXNiX2FsbG9jX2NvaGVyZW50KGVwLT5jaGlwLT5kZXYsIHUtPmJ1ZmZlcl9zaXplLAotCQkJ
-CQkgICBHRlBfS0VSTkVMLCAmdS0+dXJiLT50cmFuc2Zlcl9kbWEpOwotCQlpZiAoIXUtPnVyYi0+
-dHJhbnNmZXJfYnVmZmVyKQorCQlidWYgPSB1c2JfYWxsb2NfY29oZXJlbnQoZXAtPmNoaXAtPmRl
-diwgdS0+YnVmZmVyX3NpemUsCisJCQkJCSBHRlBfS0VSTkVMLCAmdS0+dXJiLT50cmFuc2Zlcl9k
-bWEpOworCQlpZiAoIWJ1ZikKIAkJCWdvdG8gb3V0X29mX21lbW9yeTsKLQkJdS0+dXJiLT5waXBl
-ID0gZXAtPnBpcGU7CisJCXVzYl9maWxsX2ludF91cmIodS0+dXJiLCBOVUxMLCBlcC0+cGlwZSwg
-YnVmLCB1LT5idWZmZXJfc2l6ZSwKKwkJCQkgc25kX2NvbXBsZXRlX3VyYiwgdSwgZXAtPmRhdGFp
-bnRlcnZhbCArIDEpOwogCQl1LT51cmItPnRyYW5zZmVyX2ZsYWdzID0gVVJCX05PX1RSQU5TRkVS
-X0RNQV9NQVA7Ci0JCXUtPnVyYi0+aW50ZXJ2YWwgPSAxIDw8IGVwLT5kYXRhaW50ZXJ2YWw7Ci0J
-CXUtPnVyYi0+Y29udGV4dCA9IHU7Ci0JCXUtPnVyYi0+Y29tcGxldGUgPSBzbmRfY29tcGxldGVf
-dXJiOwogCQlJTklUX0xJU1RfSEVBRCgmdS0+cmVhZHlfbGlzdCk7CiAJfQogCkBAIC04MjMsMTUg
-KzgyMiwxMiBAQCBzdGF0aWMgaW50IHN5bmNfZXBfc2V0X3BhcmFtcyhzdHJ1Y3Qgc25kX3VzYl9l
-bmRwb2ludCAqZXApCiAJCXUtPnVyYiA9IHVzYl9hbGxvY191cmIoMSwgR0ZQX0tFUk5FTCk7CiAJ
-CWlmICghdS0+dXJiKQogCQkJZ290byBvdXRfb2ZfbWVtb3J5OwotCQl1LT51cmItPnRyYW5zZmVy
-X2J1ZmZlciA9IGVwLT5zeW5jYnVmICsgaSAqIDQ7CisJCXVzYl9maWxsX2ludF91cmIodS0+dXJi
-LCBOVUxMLCBlcC0+cGlwZSwgZXAtPnN5bmNidWYgKyBpICogNCwgNCwKKwkJCQkgc25kX2NvbXBs
-ZXRlX3VyYiwgdSwgZXAtPnN5bmNpbnRlcnZhbCArIDEpOworCiAJCXUtPnVyYi0+dHJhbnNmZXJf
-ZG1hID0gZXAtPnN5bmNfZG1hICsgaSAqIDQ7Ci0JCXUtPnVyYi0+dHJhbnNmZXJfYnVmZmVyX2xl
-bmd0aCA9IDQ7Ci0JCXUtPnVyYi0+cGlwZSA9IGVwLT5waXBlOwogCQl1LT51cmItPnRyYW5zZmVy
-X2ZsYWdzID0gVVJCX05PX1RSQU5TRkVSX0RNQV9NQVA7CiAJCXUtPnVyYi0+bnVtYmVyX29mX3Bh
-Y2tldHMgPSAxOwotCQl1LT51cmItPmludGVydmFsID0gMSA8PCBlcC0+c3luY2ludGVydmFsOwot
-CQl1LT51cmItPmNvbnRleHQgPSB1OwotCQl1LT51cmItPmNvbXBsZXRlID0gc25kX2NvbXBsZXRl
-X3VyYjsKIAl9CiAKIAllcC0+bnVyYnMgPSBTWU5DX1VSQlM7Ci0tIAoyLjE3LjEKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Using usb_fill_int_urb() helps to find code which initializes an
+URB. A grep for members of the struct (like ->complete) reveal lots
+of other things, too.
+
+Cc: Daniel Mack <zonque@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ sound/usb/caiaq/audio.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
+
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index 15344d39a6cd..e10d5790099f 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -736,16 +736,17 @@ static struct urb **alloc_urbs(struct snd_usb_caiaqdev *cdev, int dir, int *ret)
+ 	}
+ 
+ 	for (i = 0; i < N_URBS; i++) {
++		void *buf;
++
+ 		urbs[i] = usb_alloc_urb(FRAMES_PER_URB, GFP_KERNEL);
+ 		if (!urbs[i]) {
+ 			*ret = -ENOMEM;
+ 			return urbs;
+ 		}
+ 
+-		urbs[i]->transfer_buffer =
+-			kmalloc_array(BYTES_PER_FRAME, FRAMES_PER_URB,
+-				      GFP_KERNEL);
+-		if (!urbs[i]->transfer_buffer) {
++		buf = kmalloc_array(BYTES_PER_FRAME, FRAMES_PER_URB,
++				    GFP_KERNEL);
++		if (!buf) {
+ 			*ret = -ENOMEM;
+ 			return urbs;
+ 		}
+@@ -758,15 +759,13 @@ static struct urb **alloc_urbs(struct snd_usb_caiaqdev *cdev, int dir, int *ret)
+ 			iso->length = BYTES_PER_FRAME;
+ 		}
+ 
+-		urbs[i]->dev = usb_dev;
+-		urbs[i]->pipe = pipe;
+-		urbs[i]->transfer_buffer_length = FRAMES_PER_URB
+-						* BYTES_PER_FRAME;
+-		urbs[i]->context = &cdev->data_cb_info[i];
+-		urbs[i]->interval = 1;
++		usb_fill_int_urb(urbs[i], usb_dev, pipe, buf,
++				 FRAMES_PER_URB * BYTES_PER_FRAME,
++				 (dir == SNDRV_PCM_STREAM_CAPTURE) ?
++				 read_completed : write_completed,
++				 &cdev->data_cb_info[i], 1);
++
+ 		urbs[i]->number_of_packets = FRAMES_PER_URB;
+-		urbs[i]->complete = (dir == SNDRV_PCM_STREAM_CAPTURE) ?
+-					read_completed : write_completed;
+ 	}
+ 
+ 	*ret = 0;
+-- 
+2.17.1
