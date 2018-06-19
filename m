@@ -1,84 +1,66 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 5/7] ASoC: qdsp6: Add depends on OF
-Date: Tue, 19 Jun 2018 10:36:39 +0100
-Message-ID: <dc54226a-dee4-7557-fc36-98e4e1ed54cf@linaro.org>
-References: <20180614111138.8923-1-niklas.cassel@linaro.org>
- <20180614111138.8923-6-niklas.cassel@linaro.org>
- <20180618110642.GA6928@sirena.org.uk> <20180618123932.GA28476@centauri.lan>
- <CAL_JsqJQ0GbFtnpP9-YCEcVKHDdHbT5hshZGvNDQw=u5ZANdvg@mail.gmail.com>
- <20180618200848.GA32482@centauri.lan>
- <CAL_JsqJti8JzQ7mVQ6Y2zaWD_Q5R9bK4XVh3mJPohXh4sgSQwQ@mail.gmail.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH] dt-bindings: Fix unbalanced quotation marks
+Date: Tue, 19 Jun 2018 11:10:48 +0100
+Message-ID: <819db945-1f89-93d3-b213-365a9704e100@nvidia.com>
+References: <20180617143127.11421-1-j.neuschaefer@gmx.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAL_JsqJti8JzQ7mVQ6Y2zaWD_Q5R9bK4XVh3mJPohXh4sgSQwQ@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8BIT
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20180617143127.11421-1-j.neuschaefer@gmx.net>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh+dt@kernel.org>, Niklas Cassel <niklas.cassel@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Andy Gross <andy.gross@linaro.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>, devicetree@vger.kernel.org
+Cc: Kukjin Kim <kgene@kernel.org>, Krzysztof Kozlowski <krzk@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Linus Walleij <linus.walleij@linaro.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Thomas Gleixner <tglx@linutronix.de>, Jason Cooper <jason@lakedaemon.net>, Marc Zyngier <marc.zyngier@arm.com>, Thierry Reding <thierry.reding@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, Hauke Mehrtens <hauke@hauke-m.de>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Ralf Baechle <ralf@linux-mips.org>, Paul Burton <paul.burton@mips.com>, James Hogan <jhogan@kernel.org>, Madalin Bucur <madalin.bucur@nxp.com>, "David S. Miller" <davem@davemloft.net>
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 18/06/18 21:53, Rob Herring wrote:
-> On Mon, Jun 18, 2018 at 2:08 PM, Niklas Cassel <niklas.cassel@linaro.org> wrote:
->> On Mon, Jun 18, 2018 at 08:48:32AM -0600, Rob Herring wrote:
->>> On Mon, Jun 18, 2018 at 6:39 AM, Niklas Cassel <niklas.cassel@linaro.org> wrote:
->>>> On Mon, Jun 18, 2018 at 12:06:42PM +0100, Mark Brown wrote:
->>>>> On Thu, Jun 14, 2018 at 01:11:36PM +0200, Niklas Cassel wrote:
->>>>>> of_platform_device_destroy is only defined when building
->>>>>> with CONFIG_OF=y. Add a depends on OF.
->>>>>
->>>>> Is it sensible that of_platform_device_destroy() is only defined when
->>>>> building with CONFIG_OF=y?
->>>>
->>>> I'm redirecting that question to the device tree maintainers.
->>>>
->>>> There are a few of_* functions in include/linux/of_platform.h
->>>> that are only defined when CONFIG_OF=y:
->>>>
->>>> of_platform_device_create()
->>>> of_platform_device_destroy()
->>>> of_platform_bus_probe()
->>>> of_device_alloc()
->>>>
->>>> Rob, Frank, do you want me to create static inline dummy versions of these?
->>>
->>> No, because generally you should not be using these functions
->>> directly. Yes, there are some users, but if you look at the tree,
->>> there are few or isolated (PowerPC) users. Using
->>> of_platform_populate/of_platform_depopulate is preferred.
->>
->> of_platform_device_destroy() is also used by sound/soc/qcom/qdsp6/*
->> which is why I suggested this patch:
->> https://marc.info/?l=alsa-devel&m=152932497413567
->> that adds "depends on OF" for SND_SOC_QDSP6 in sound/soc/qcom/Kconfig.
->>
->> Or do you think that a better solution would be to modify
->> sound/soc/qcom/qdsp6/* so that it instead uses
->> of_platform_populate()/of_platform_depopulate()?
+On 17/06/18 15:31, Jonathan Neuschäfer wrote:
+> Multiple binding documents have various forms of unbalanced quotation
+> marks. Fix them.
 > 
-> Yes, that is preferred. However, that won't work here because the
-> child nodes don't have compatible strings. Maybe we should add them as
-> this all just went in. That would also allow DT based module
-> autoloading to work (which I don't think would currently). Really, as
-> is, of_platform_device_create isn't needed here and you could just use
-> platform_device_register_simple instead. The child driver would have
-> to get the DT node pointer from the parent device instead.
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
+> ---
 > 
-compatible was the reason why I started using 
-of_platform_device_{create,destroy} apis. As you said we could also do 
-it with simple platform device too.
+> Should I split this patch so that different parts can go through different trees?
+> ---
+>  .../devicetree/bindings/arm/samsung/samsung-boards.txt          | 2 +-
+>  .../devicetree/bindings/gpio/nintendo,hollywood-gpio.txt        | 2 +-
+>  Documentation/devicetree/bindings/input/touchscreen/hideep.txt  | 2 +-
+>  .../bindings/interrupt-controller/nvidia,tegra20-ictlr.txt      | 2 +-
+>  .../devicetree/bindings/interrupt-controller/st,stm32-exti.txt  | 2 +-
+>  Documentation/devicetree/bindings/mips/brcm/soc.txt             | 2 +-
+>  Documentation/devicetree/bindings/net/fsl-fman.txt              | 2 +-
+>  Documentation/devicetree/bindings/power/power_domain.txt        | 2 +-
+>  Documentation/devicetree/bindings/regulator/tps65090.txt        | 2 +-
+>  Documentation/devicetree/bindings/reset/st,sti-softreset.txt    | 2 +-
+>  Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt    | 2 +-
+>  Documentation/devicetree/bindings/sound/qcom,apq8096.txt        | 2 +-
+>  12 files changed, 12 insertions(+), 12 deletions(-)
 
-I think adding compatible seems to be better option here along with 
-of_platform_populate()/of_platform_depopulate(), I will try this!
+...
 
-thanks,
-srini
+> diff --git a/Documentation/devicetree/bindings/interrupt-controller/nvidia,tegra20-ictlr.txt b/Documentation/devicetree/bindings/interrupt-controller/nvidia,tegra20-ictlr.txt
+> index 1099fe0788fa..f246ccbf8838 100644
+> --- a/Documentation/devicetree/bindings/interrupt-controller/nvidia,tegra20-ictlr.txt
+> +++ b/Documentation/devicetree/bindings/interrupt-controller/nvidia,tegra20-ictlr.txt
+> @@ -15,7 +15,7 @@ Required properties:
+>    include "nvidia,tegra30-ictlr".	
+>  - reg : Specifies base physical address and size of the registers.
+>    Each controller must be described separately (Tegra20 has 4 of them,
+> -  whereas Tegra30 and later have 5"  
+> +  whereas Tegra30 and later have 5).
+>  - interrupt-controller : Identifies the node as an interrupt controller.
+>  - #interrupt-cells : Specifies the number of cells needed to encode an
+>    interrupt source. The value must be 3.
 
-> But if you want to add empty functions for just
-> of_platform_device_{create,destroy}, I guess that is fine.
-> 
-> Rob
-> 
+For the above Tegra portion ...
+
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
+
+Cheers
+Jon
+
+-- 
+nvpublic
