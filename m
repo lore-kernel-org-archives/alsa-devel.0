@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm: Tidy up open/hw_params handling"
-	to the asoc tree
-Date: Tue, 19 Jun 2018 16:24:29 +0100
-Message-ID: <E1fVIUf-0002KV-2l@debutante>
-References: <20180619152209.16713-1-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: Intel: move SKL+ codec ACPI tables to
+	common directory" to the asoc tree
+Date: Tue, 19 Jun 2018 16:24:39 +0100
+Message-ID: <E1fVIUp-0002PC-V3@debutante>
+References: <20180618182942.4925-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F42E2675FB
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:24:36 +0200 (CEST)
-In-Reply-To: <20180619152209.16713-1-ckeepax@opensource.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B17DD2676D8
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:24:42 +0200 (CEST)
+In-Reply-To: <20180618182942.4925-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm: Tidy up open/hw_params handling
+   ASoC: Intel: move SKL+ codec ACPI tables to common directory
 
 has been applied to the asoc tree at
 
@@ -53,246 +53,518 @@ to this mail.
 Thanks,
 Mark
 
->From 244e293690a6e07cbdfa11af1977488d91931eed Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 19 Jun 2018 16:22:09 +0100
-Subject: [PATCH] ASoC: pcm: Tidy up open/hw_params handling
+>From cbaa7f0bdbee1969bb311c641abbd0d2af6ba861 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 18 Jun 2018 13:29:37 -0500
+Subject: [PATCH] ASoC: Intel: move SKL+ codec ACPI tables to common directory
 
-Currently, the core will continue processing open/hw_params
-component callbacks after one has failed even though it will abort
-immediately afterwards. This is unnecessary and also has the issue
-that close/hw_free will be called on the component which failed
-open/hw_params which could result in issues if the driver doesn't
-expect this behaviour.
+No functionality change, just move to common tables to make it easier
+to deal with SOF and share the same machine drivers - as done
+previously for BYT/CHT/HSW/BDW.
 
-Update the core to abort processing open/hw_params when an error
-is hit and only call close/hw_free for those components that were
-successfully opened.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 116 +++++++++++++++++++++++---------------------
- 1 file changed, 62 insertions(+), 54 deletions(-)
+ include/sound/soc-acpi-intel-match.h          |   5 +
+ sound/soc/intel/common/Makefile               |   6 +-
+ .../intel/common/soc-acpi-intel-bxt-match.c   |  35 ++++
+ .../intel/common/soc-acpi-intel-cnl-match.c   |  29 ++++
+ .../intel/common/soc-acpi-intel-glk-match.c   |  23 +++
+ .../intel/common/soc-acpi-intel-kbl-match.c   |  91 ++++++++++
+ .../intel/common/soc-acpi-intel-skl-match.c   |  47 +++++
+ sound/soc/intel/skylake/skl.c                 | 162 +-----------------
+ 8 files changed, 241 insertions(+), 157 deletions(-)
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-glk-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-skl-match.c
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 5e7ae47a9658..45b52f7b9690 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -448,6 +448,29 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
+diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
+index 9da6388c20a1..917ddd0f2762 100644
+--- a/include/sound/soc-acpi-intel-match.h
++++ b/include/sound/soc-acpi-intel-match.h
+@@ -29,5 +29,10 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_legacy_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_baytrail_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cherrytrail_machines[];
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_skl_machines[];
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[];
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[];
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[];
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
+ 
+ #endif
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index 7379d8830c39..915a34cdc8ac 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -3,7 +3,11 @@ snd-soc-sst-dsp-objs := sst-dsp.o
+ snd-soc-sst-acpi-objs := sst-acpi.o
+ snd-soc-sst-ipc-objs := sst-ipc.o
+ snd-soc-sst-firmware-objs := sst-firmware.o
+-snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-match.o soc-acpi-intel-hsw-bdw-match.o
++snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-match.o \
++	soc-acpi-intel-hsw-bdw-match.o \
++	soc-acpi-intel-skl-match.o soc-acpi-intel-kbl-match.o \
++	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
++	soc-acpi-intel-cnl-match.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+ obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+diff --git a/sound/soc/intel/common/soc-acpi-intel-bxt-match.c b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+new file mode 100644
+index 000000000000..569f1de97e82
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-bxt-match.c
+@@ -0,0 +1,35 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * soc-apci-intel-bxt-match.c - tables and support for BXT ACPI enumeration.
++ *
++ * Copyright (c) 2018, Intel Corporation.
++ *
++ */
++
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++
++static struct snd_soc_acpi_codecs bxt_codecs = {
++	.num_codecs = 1,
++	.codecs = {"MX98357A"}
++};
++
++struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[] = {
++	{
++		.id = "INT343A",
++		.drv_name = "bxt_alc298s_i2s",
++		.fw_filename = "intel/dsp_fw_bxtn.bin",
++	},
++	{
++		.id = "DLGS7219",
++		.drv_name = "bxt_da7219_max98357a",
++		.fw_filename = "intel/dsp_fw_bxtn.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &bxt_codecs,
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_bxt_machines);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+new file mode 100644
+index 000000000000..b83ee053d417
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * soc-apci-intel-cnl-match.c - tables and support for CNL ACPI enumeration.
++ *
++ * Copyright (c) 2018, Intel Corporation.
++ *
++ */
++
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include "../skylake/skl.h"
++
++static struct skl_machine_pdata cnl_pdata = {
++	.use_tplg_pcm = true,
++};
++
++struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
++	{
++		.id = "INT34C2",
++		.drv_name = "cnl_rt274",
++		.fw_filename = "intel/dsp_fw_cnl.bin",
++		.pdata = &cnl_pdata,
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cnl_machines);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+new file mode 100644
+index 000000000000..dee09439e7cb
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+@@ -0,0 +1,23 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * soc-apci-intel-glk-match.c - tables and support for GLK ACPI enumeration.
++ *
++ * Copyright (c) 2018, Intel Corporation.
++ *
++ */
++
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++
++struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
++	{
++		.id = "INT343A",
++		.drv_name = "glk_alc298s_i2s",
++		.fw_filename = "intel/dsp_fw_glk.bin",
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_glk_machines);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+new file mode 100644
+index 000000000000..0ee173ca437d
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * soc-apci-intel-kbl-match.c - tables and support for KBL ACPI enumeration.
++ *
++ * Copyright (c) 2018, Intel Corporation.
++ *
++ */
++
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include "../skylake/skl.h"
++
++static struct skl_machine_pdata skl_dmic_data;
++
++static struct snd_soc_acpi_codecs kbl_codecs = {
++	.num_codecs = 1,
++	.codecs = {"10508825"}
++};
++
++static struct snd_soc_acpi_codecs kbl_poppy_codecs = {
++	.num_codecs = 1,
++	.codecs = {"10EC5663"}
++};
++
++static struct snd_soc_acpi_codecs kbl_5663_5514_codecs = {
++	.num_codecs = 2,
++	.codecs = {"10EC5663", "10EC5514"}
++};
++
++static struct snd_soc_acpi_codecs kbl_7219_98357_codecs = {
++	.num_codecs = 1,
++	.codecs = {"MX98357A"}
++};
++
++struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
++	{
++		.id = "INT343A",
++		.drv_name = "kbl_alc286s_i2s",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++	},
++	{
++		.id = "INT343B",
++		.drv_name = "kbl_n88l25_s4567",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &kbl_codecs,
++		.pdata = &skl_dmic_data,
++	},
++	{
++		.id = "MX98357A",
++		.drv_name = "kbl_n88l25_m98357a",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &kbl_codecs,
++		.pdata = &skl_dmic_data,
++	},
++	{
++		.id = "MX98927",
++		.drv_name = "kbl_r5514_5663_max",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &kbl_5663_5514_codecs,
++		.pdata = &skl_dmic_data,
++	},
++	{
++		.id = "MX98927",
++		.drv_name = "kbl_rt5663_m98927",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &kbl_poppy_codecs,
++		.pdata = &skl_dmic_data,
++	},
++	{
++		.id = "10EC5663",
++		.drv_name = "kbl_rt5663",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++	},
++	{
++		.id = "DLGS7219",
++		.drv_name = "kbl_da7219_max98357a",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &kbl_7219_98357_codecs,
++		.pdata = &skl_dmic_data,
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_kbl_machines);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-skl-match.c b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
+new file mode 100644
+index 000000000000..0c9c0edd35b3
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-skl-match.c
+@@ -0,0 +1,47 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * soc-apci-intel-skl-match.c - tables and support for SKL ACPI enumeration.
++ *
++ * Copyright (c) 2018, Intel Corporation.
++ *
++ */
++
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include "../skylake/skl.h"
++
++static struct skl_machine_pdata skl_dmic_data;
++
++static struct snd_soc_acpi_codecs skl_codecs = {
++	.num_codecs = 1,
++	.codecs = {"10508825"}
++};
++
++struct snd_soc_acpi_mach snd_soc_acpi_intel_skl_machines[] = {
++	{
++		.id = "INT343A",
++		.drv_name = "skl_alc286s_i2s",
++		.fw_filename = "intel/dsp_fw_release.bin",
++	},
++	{
++		.id = "INT343B",
++		.drv_name = "skl_n88l25_s4567",
++		.fw_filename = "intel/dsp_fw_release.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &skl_codecs,
++		.pdata = &skl_dmic_data,
++	},
++	{
++		.id = "MX98357A",
++		.drv_name = "skl_n88l25_m98357a",
++		.fw_filename = "intel/dsp_fw_release.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &skl_codecs,
++		.pdata = &skl_dmic_data,
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_skl_machines);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 6dec748e8949..670ff9aaca55 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -29,6 +29,7 @@
+ #include <linux/delay.h>
+ #include <sound/pcm.h>
+ #include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
+ #include <sound/hda_register.h>
+ #include <sound/hdaudio.h>
+ #include <sound/hda_i915.h>
+@@ -36,8 +37,6 @@
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
+ 
+-static struct skl_machine_pdata skl_dmic_data;
+-
+ /*
+  * initialize the PCI registers
+  */
+@@ -1026,172 +1025,23 @@ static void skl_remove(struct pci_dev *pci)
+ 	dev_set_drvdata(&pci->dev, NULL);
  }
  
-+static int soc_pcm_components_close(struct snd_pcm_substream *substream,
-+				    struct snd_soc_component *last)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	struct snd_soc_component *component;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		if (component == last)
-+			break;
-+
-+		if (!component->driver->ops ||
-+		    !component->driver->ops->close)
-+			continue;
-+
-+		component->driver->ops->close(substream);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Called by ALSA when a PCM substream is opened, the runtime->hw record is
-  * then initialized and any private data can be allocated. This also calls
-@@ -462,7 +485,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	const char *codec_dai_name = "multicodec";
--	int i, ret = 0, __ret;
-+	int i, ret = 0;
- 
- 	pinctrl_pm_select_default_state(cpu_dai->dev);
- 	for (i = 0; i < rtd->num_codecs; i++)
-@@ -486,7 +509,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 		}
- 	}
- 
--	ret = 0;
- 	for_each_rtdcom(rtd, rtdcom) {
- 		component = rtdcom->component;
- 
-@@ -494,16 +516,15 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 		    !component->driver->ops->open)
- 			continue;
- 
--		__ret = component->driver->ops->open(substream);
--		if (__ret < 0) {
-+		ret = component->driver->ops->open(substream);
-+		if (ret < 0) {
- 			dev_err(component->dev,
- 				"ASoC: can't open component %s: %d\n",
--				component->name, __ret);
--			ret = __ret;
-+				component->name, ret);
-+			goto component_err;
- 		}
- 	}
--	if (ret < 0)
--		goto component_err;
-+	component = NULL;
- 
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dai = rtd->codec_dais[i];
-@@ -612,15 +633,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	}
- 
- component_err:
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
+-static struct snd_soc_acpi_codecs skl_codecs = {
+-	.num_codecs = 1,
+-	.codecs = {"10508825"}
+-};
 -
--		if (!component->driver->ops ||
--		    !component->driver->ops->close)
--			continue;
+-static struct snd_soc_acpi_codecs kbl_codecs = {
+-	.num_codecs = 1,
+-	.codecs = {"10508825"}
+-};
 -
--		component->driver->ops->close(substream);
--	}
-+	soc_pcm_components_close(substream, component);
- 
- 	if (cpu_dai->driver->ops->shutdown)
- 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
-@@ -714,15 +727,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	if (rtd->dai_link->ops->shutdown)
- 		rtd->dai_link->ops->shutdown(substream);
- 
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
+-static struct snd_soc_acpi_codecs bxt_codecs = {
+-	.num_codecs = 1,
+-	.codecs = {"MX98357A"}
+-};
 -
--		if (!component->driver->ops ||
--		    !component->driver->ops->close)
--			continue;
+-static struct snd_soc_acpi_codecs kbl_poppy_codecs = {
+-	.num_codecs = 1,
+-	.codecs = {"10EC5663"}
+-};
 -
--		component->driver->ops->close(substream);
--	}
-+	soc_pcm_components_close(substream, NULL);
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
-@@ -874,6 +879,29 @@ int soc_dai_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int soc_pcm_components_hw_free(struct snd_pcm_substream *substream,
-+				      struct snd_soc_component *last)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	struct snd_soc_component *component;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		if (component == last)
-+			break;
-+
-+		if (!component->driver->ops ||
-+		    !component->driver->ops->hw_free)
-+			continue;
-+
-+		component->driver->ops->hw_free(substream);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Called by ALSA when the hardware params are set by application. This
-  * function can also be called multiple times and can allocate buffers
-@@ -886,7 +914,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	int i, ret = 0, __ret;
-+	int i, ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 	if (rtd->dai_link->ops->hw_params) {
-@@ -944,7 +972,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		goto interface_err;
- 
--	ret = 0;
- 	for_each_rtdcom(rtd, rtdcom) {
- 		component = rtdcom->component;
- 
-@@ -952,16 +979,15 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		    !component->driver->ops->hw_params)
- 			continue;
- 
--		__ret = component->driver->ops->hw_params(substream, params);
--		if (__ret < 0) {
-+		ret = component->driver->ops->hw_params(substream, params);
-+		if (ret < 0) {
- 			dev_err(component->dev,
- 				"ASoC: %s hw params failed: %d\n",
--				component->name, __ret);
--			ret = __ret;
-+				component->name, ret);
-+			goto component_err;
- 		}
- 	}
--	if (ret < 0)
--		goto component_err;
-+	component = NULL;
- 
- 	/* store the parameters for each DAIs */
- 	cpu_dai->rate = params_rate(params);
-@@ -977,15 +1003,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- 
- component_err:
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
+-static struct snd_soc_acpi_codecs kbl_5663_5514_codecs = {
+-	.num_codecs = 2,
+-	.codecs = {"10EC5663", "10EC5514"}
+-};
 -
--		if (!component->driver->ops ||
--		    !component->driver->ops->hw_free)
--			continue;
+-static struct snd_soc_acpi_codecs kbl_7219_98357_codecs = {
+-	.num_codecs = 1,
+-	.codecs = {"MX98357A"}
+-};
 -
--		component->driver->ops->hw_free(substream);
--	}
-+	soc_pcm_components_hw_free(substream, component);
- 
- 	if (cpu_dai->driver->ops->hw_free)
- 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
-@@ -1014,8 +1032,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component;
--	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	bool playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-@@ -1052,15 +1068,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 		rtd->dai_link->ops->hw_free(substream);
- 
- 	/* free any component resources */
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
+-static struct skl_machine_pdata cnl_pdata = {
+-	.use_tplg_pcm = true,
+-};
 -
--		if (!component->driver->ops ||
--		    !component->driver->ops->hw_free)
--			continue;
+-static struct snd_soc_acpi_mach sst_skl_devdata[] = {
+-	{
+-		.id = "INT343A",
+-		.drv_name = "skl_alc286s_i2s",
+-		.fw_filename = "intel/dsp_fw_release.bin",
+-	},
+-	{
+-		.id = "INT343B",
+-		.drv_name = "skl_n88l25_s4567",
+-		.fw_filename = "intel/dsp_fw_release.bin",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &skl_codecs,
+-		.pdata = &skl_dmic_data
+-	},
+-	{
+-		.id = "MX98357A",
+-		.drv_name = "skl_n88l25_m98357a",
+-		.fw_filename = "intel/dsp_fw_release.bin",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &skl_codecs,
+-		.pdata = &skl_dmic_data
+-	},
+-	{}
+-};
 -
--		component->driver->ops->hw_free(substream);
--	}
-+	soc_pcm_components_hw_free(substream, NULL);
- 
- 	/* now free hw params for the DAIs  */
- 	for (i = 0; i < rtd->num_codecs; i++) {
+-static struct snd_soc_acpi_mach sst_bxtp_devdata[] = {
+-	{
+-		.id = "INT343A",
+-		.drv_name = "bxt_alc298s_i2s",
+-		.fw_filename = "intel/dsp_fw_bxtn.bin",
+-	},
+-	{
+-		.id = "DLGS7219",
+-		.drv_name = "bxt_da7219_max98357a",
+-		.fw_filename = "intel/dsp_fw_bxtn.bin",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &bxt_codecs,
+-	},
+-	{}
+-};
+-
+-static struct snd_soc_acpi_mach sst_kbl_devdata[] = {
+-	{
+-		.id = "INT343A",
+-		.drv_name = "kbl_alc286s_i2s",
+-		.fw_filename = "intel/dsp_fw_kbl.bin",
+-	},
+-	{
+-		.id = "INT343B",
+-		.drv_name = "kbl_n88l25_s4567",
+-		.fw_filename = "intel/dsp_fw_kbl.bin",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &kbl_codecs,
+-		.pdata = &skl_dmic_data
+-	},
+-	{
+-		.id = "MX98357A",
+-		.drv_name = "kbl_n88l25_m98357a",
+-		.fw_filename = "intel/dsp_fw_kbl.bin",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &kbl_codecs,
+-		.pdata = &skl_dmic_data
+-	},
+-	{
+-		.id = "MX98927",
+-		.drv_name = "kbl_r5514_5663_max",
+-		.fw_filename = "intel/dsp_fw_kbl.bin",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &kbl_5663_5514_codecs,
+-		.pdata = &skl_dmic_data
+-	},
+-	{
+-		.id = "MX98927",
+-		.drv_name = "kbl_rt5663_m98927",
+-		.fw_filename = "intel/dsp_fw_kbl.bin",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &kbl_poppy_codecs,
+-		.pdata = &skl_dmic_data
+-	},
+-	{
+-		.id = "10EC5663",
+-		.drv_name = "kbl_rt5663",
+-		.fw_filename = "intel/dsp_fw_kbl.bin",
+-	},
+-	{
+-		.id = "DLGS7219",
+-		.drv_name = "kbl_da7219_max98357a",
+-		.fw_filename = "intel/dsp_fw_kbl.bin",
+-		.machine_quirk = snd_soc_acpi_codec_list,
+-		.quirk_data = &kbl_7219_98357_codecs,
+-		.pdata = &skl_dmic_data
+-	},
+-
+-	{}
+-};
+-
+-static struct snd_soc_acpi_mach sst_glk_devdata[] = {
+-	{
+-		.id = "INT343A",
+-		.drv_name = "glk_alc298s_i2s",
+-		.fw_filename = "intel/dsp_fw_glk.bin",
+-	},
+-	{}
+-};
+-
+-static const struct snd_soc_acpi_mach sst_cnl_devdata[] = {
+-	{
+-		.id = "INT34C2",
+-		.drv_name = "cnl_rt274",
+-		.fw_filename = "intel/dsp_fw_cnl.bin",
+-		.pdata = &cnl_pdata,
+-	},
+-	{}
+-};
+-
+ /* PCI IDs */
+ static const struct pci_device_id skl_ids[] = {
+ 	/* Sunrise Point-LP */
+ 	{ PCI_DEVICE(0x8086, 0x9d70),
+-		.driver_data = (unsigned long)&sst_skl_devdata},
++		.driver_data = (unsigned long)&snd_soc_acpi_intel_skl_machines},
+ 	/* BXT-P */
+ 	{ PCI_DEVICE(0x8086, 0x5a98),
+-		.driver_data = (unsigned long)&sst_bxtp_devdata},
++		.driver_data = (unsigned long)&snd_soc_acpi_intel_bxt_machines},
+ 	/* KBL */
+ 	{ PCI_DEVICE(0x8086, 0x9D71),
+-		.driver_data = (unsigned long)&sst_kbl_devdata},
++		.driver_data = (unsigned long)&snd_soc_acpi_intel_kbl_machines},
+ 	/* GLK */
+ 	{ PCI_DEVICE(0x8086, 0x3198),
+-		.driver_data = (unsigned long)&sst_glk_devdata},
++		.driver_data = (unsigned long)&snd_soc_acpi_intel_glk_machines},
+ 	/* CNL */
+ 	{ PCI_DEVICE(0x8086, 0x9dc8),
+-		.driver_data = (unsigned long)&sst_cnl_devdata},
++		.driver_data = (unsigned long)&snd_soc_acpi_intel_cnl_machines},
+ 	{ 0, }
+ };
+ MODULE_DEVICE_TABLE(pci, skl_ids);
 -- 
 2.17.1
