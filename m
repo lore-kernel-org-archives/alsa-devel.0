@@ -1,18 +1,16 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: kbl_da7219_max98357a: add
- fe_ops for kbl Audio Capture Port
-Date: Tue, 19 Jun 2018 09:41:59 -0500
-Message-ID: <912e7c2c-9b6a-d764-2096-9df54f8d6bfc@linux.intel.com>
-References: <1529388966-5184-1-git-send-email-mac.chiang@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC: new ac97 bus and codec clock
+Date: Tue, 19 Jun 2018 16:02:04 +0100
+Message-ID: <20180619150204.GF11230@sirena.org.uk>
+References: <87lgbdqixh.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2862301511289185152=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id BFC6F2675D5
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 16:42:15 +0200 (CEST)
-In-Reply-To: <1529388966-5184-1-git-send-email-mac.chiang@intel.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 468E82675D5
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:02:05 +0200 (CEST)
+In-Reply-To: <87lgbdqixh.fsf@belgarion.home>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,38 +20,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mac.chiang@intel.com, alsa-devel@alsa-project.org
-Cc: naveen.m@intel.com, broonie@kernel.org, louiscollard@google.com
+To: Robert Jarzmik <robert.jarzmik@free.fr>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
+Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 6/19/18 1:16 AM, mac.chiang@intel.com wrote:
-> From: Mac Chiang <mac.chiang@intel.com>
-> 
-> platform support fixed constraint hw_prams as Stereo, 48KHz, 16 bits.
-> This fixed the headset mic recorded noise due to mono capturing
-> request from some apps. e.g. online Voice Recorder
 
-This change mirrors existing code in bxt_da7219_max98357a.c so
+--===============2862301511289185152==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="OzxllxdKGCiKxUZM"
+Content-Disposition: inline
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
-> 
-> Signed-off-by: Louis Collard <louiscollard@google.com>
-> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-> ---
->   sound/soc/intel/boards/kbl_da7219_max98357a.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> index 94294c2..7961f1f 100644
-> --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> @@ -380,6 +380,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
->   		.trigger = {
->   			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
->   		.dpcm_capture = 1,
-> +		.ops = &kabylake_da7219_fe_ops,
->   	},
->   	[KBL_DPCM_AUDIO_DMIC_CP] = {
->   		.name = "Kbl Audio DMIC cap",
-> 
+--OzxllxdKGCiKxUZM
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Jun 17, 2018 at 10:03:54PM +0200, Robert Jarzmik wrote:
+
+> The new ac97 is working well in a platform data build. But in the device =
+tree
+> case, there is an issue, triggered by our review in [1].
+
+> The main issue is the lack of one clock.
+
+> The device hierarchy is :
+>  - platform device sound@40500000 (the AC97 controller)
+>    \-> ac97 device sound@40500000:0 (the discovered ac97 IP for a wm9713)
+
+> Now the issue is here :
+>  - sound/ac97/bus.c:419, function ac97_get_enable_clk()
+>  - the clk_get() fails
+
+> The sound@40500000:0 device was automatically created by the AC97 bus cod=
+e, but
+> I don't see any way to provide this device the "ac97_clk" ... How do you =
+think
+> this is supposed to work, and how can my devicetree description provide t=
+his
+> clock ?
+
+This sounds like a DT question - how do you hook things up using DT to a
+device that will be enumerated from the hardware?  I'm not sure what
+best practice is here, adding Rob and Frank.
+
+> [1] Discussion reference
+> https://groups.google.com/forum/#!msg/linux.kernel/6_zIXK_maA4/RMYsmLlRMg=
+AJ
+> Look for "You probably mean the BITCLK clock."
+>=20
+> [2] Device tree extract
+> ac97: sound@40500000 {
+>       	compatible =3D "marvell,pxa270-ac97";
+> 	reg =3D < 0x40500000 0x1000 >;
+> 	interrupts =3D <14>;
+> 	reset-gpios =3D <&gpio 95 GPIO_ACTIVE_HIGH>;
+> 	#sound-dai-cells =3D <1>;
+> 	pinctrl-names =3D "default";
+> 	pinctrl-0 =3D < &pinctrl_ac97_default >;
+> 	clocks =3D <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
+> 	clock-names =3D "AC97CLK", "AC97CONFCLK";
+> };
+
+--OzxllxdKGCiKxUZM
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlspGusACgkQJNaLcl1U
+h9C59gf8COPh/tEBnZO4h8fONYqlOsxCOx0d7y84FWrQgRQ4kTIcurzQA408M1hM
+gu52Su4GO5ANRvSBc7hXSSJKEgmMW4F+akWqXXGPLu6I68NlWtsVgQKFUj+7FAgc
+KadNQ655ctIw1RvpRP2iJNvt1qhcKbuo0zAkoOYkPWooMp6nWDz1+b251XWqsi35
+/SbjEgHJKmu6m7oXsDfXaF79g6yco/yKg3I2RFeiU8Lw6FP3NUvba9Olc+VkdSeP
+K+AJml9MCKaWyeSe3MKoTtYNv816LDFFeGy7OCaEE55IiOgLynmlGh+APIp3RbvM
+0JuGgDHtbkCY1LEyFxGB1XWfHoTkyg==
+=muli
+-----END PGP SIGNATURE-----
+
+--OzxllxdKGCiKxUZM--
+
+--===============2862301511289185152==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2862301511289185152==--
