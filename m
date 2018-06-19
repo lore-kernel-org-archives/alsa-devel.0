@@ -1,56 +1,66 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v4 0/5] slimbus: Add QCOM SLIMBus NGD driver
-Date: Tue, 19 Jun 2018 17:12:56 +0100
-Message-ID: <20180619161301.4556-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v4 2/5] slimbus: core: rearrange slim_eaddr
+	structure
+Date: Tue, 19 Jun 2018 17:12:58 +0100
+Message-ID: <20180619161301.4556-3-srinivas.kandagatla@linaro.org>
+References: <20180619161301.4556-1-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 10C752675EC
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 18:13:08 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id v16-v6so1302880wmh.5
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 09:13:08 -0700 (PDT)
+In-Reply-To: <20180619161301.4556-1-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: gregkh@linuxfoundation.org
-Cc: robh+dt@kernel.org, kramasub@codeaurora.org, sdharia@quicinc.com, linux-kernel@vger.kernel.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, robh+dt@kernel.org, broonie@kernel.org, kramasub@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sdharia@quicinc.com
 List-Id: alsa-devel@alsa-project.org
 
-This patchset adds support to basic version of Qualcomm NGD SLIMBus
-controller driver found SoCs from B family.
+Rearrange struct slim_eaddr so that the structure is packed correctly
+to be able to send in SLIMBus messages.
 
-This controller is light-weight SLIMBus controller driver responsible for
-communicating with slave HW directly over the bus using messaging
-interface, and communicating with master component residing on ADSP
-for bandwidth and data-channel management.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ include/linux/slimbus.h | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Some parts fot the work is derived from Qualcomm downstream kernels
-and intial work from
-Karthikeyan Ramasubramanian <kramasub@codeaurora.org> and
-Sagar Dharia <sdharia@codeaurora.org>
-
-Tested this patchset with v4.18-rc1 on DB820c with WCD9335 codec for playback
-and Craig tested on msm8974 with wcd9320 codec for register read/writes.
-
-I have pushed my working branch to [1] incase someone want to try.
-
-[1]:https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=slimbus-ngd
-
-Changes since v4:
-- Moved all dependency patches to this patchset.
-- replaced slim_prepare_txn with slim_alloc/free_txn_tid()
-- fixed runtime pm issue for ngd device.
-
-Srinivas Kandagatla (5):
-  slimbus: core: add of_slim_device_get() helper
-  slimbus: core: rearrange slim_eaddr structure
-  slimbus: messaging: add slim_alloc/free_txn_tid()
-  slimbus: ngd: dt-bindings: Add slim ngd dt bindings
-  slimbus: ngd: Add qcom SLIMBus NGD driver
-
- .../bindings/slimbus/slim-ngd-qcom-ctrl.txt        |   84 ++
- drivers/slimbus/Kconfig                            |   11 +
- drivers/slimbus/Makefile                           |    3 +
- drivers/slimbus/core.c                             |   39 +
- drivers/slimbus/messaging.c                        |   74 +-
- drivers/slimbus/qcom-ngd-ctrl.c                    | 1381 ++++++++++++++++++++
- drivers/slimbus/slimbus.h                          |   10 +
- include/linux/slimbus.h                            |   14 +-
- 8 files changed, 1588 insertions(+), 28 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/slimbus/slim-ngd-qcom-ctrl.txt
- create mode 100644 drivers/slimbus/qcom-ngd-ctrl.c
-
+diff --git a/include/linux/slimbus.h b/include/linux/slimbus.h
+index efa36a852dc3..63801bcc5e60 100644
+--- a/include/linux/slimbus.h
++++ b/include/linux/slimbus.h
+@@ -14,16 +14,16 @@ extern struct bus_type slimbus_bus;
+ 
+ /**
+  * struct slim_eaddr - Enumeration address for a SLIMbus device
+- * @manf_id: Manufacturer Id for the device
+- * @prod_code: Product code
+- * @dev_index: Device index
+  * @instance: Instance value
++ * @dev_index: Device index
++ * @prod_code: Product code
++ * @manf_id: Manufacturer Id for the device
+  */
+ struct slim_eaddr {
+-	u16 manf_id;
+-	u16 prod_code;
+-	u8 dev_index;
+ 	u8 instance;
++	u8 dev_index;
++	u16 prod_code;
++	u16 manf_id;
+ } __packed;
+ 
+ /**
 -- 
 2.16.2
