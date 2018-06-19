@@ -1,110 +1,127 @@
 From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH v2] ASoC: topology: Add callback for DAPM
- route load/unload
-Date: Tue, 19 Jun 2018 10:17:21 +0530
-Message-ID: <20180619044721.GQ25852@vkoul-mobl>
-References: <20180614195359.12027-1-liam.r.girdwood@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: qcom: add sdm845 sound card support
+Date: Tue, 19 Jun 2018 10:35:27 +0530
+Message-ID: <20180619050527.GR25852@vkoul-mobl>
+References: <1529320591-22434-1-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 772FA266D4C
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 06:47:31 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180614195359.12027-1-liam.r.girdwood@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+In-Reply-To: <1529320591-22434-1-git-send-email-rohitkr@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rohit kumar <rohitkr@codeaurora.org>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 14-06-18, 20:53, Liam Girdwood wrote:
-> Add a callback fro clients for notification about DAPM route loading and
+On 18-06-18, 16:46, Rohit kumar wrote:
 
-/s/fro/for ?
-
-> unloading.
-
-It would help to add motivation for callback, how is this useful and
-user as well
-
-> 
-> Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> ---
-> 
-> Changes since V1:
->  - Fixed merge conflict with recent component model update.
-> 
-> ---
->  include/sound/soc-topology.h |  7 +++++++
->  sound/soc/soc-topology.c     | 13 +++++++++++++
->  2 files changed, 20 insertions(+)
-> 
-> diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-> index e1f265e21ee1..401ef2c45d6c 100644
-> --- a/include/sound/soc-topology.h
-> +++ b/include/sound/soc-topology.h
-> @@ -32,6 +32,7 @@ struct snd_kcontrol_new;
->  struct snd_soc_dai_link;
->  struct snd_soc_dai_driver;
->  struct snd_soc_dai;
-> +struct snd_soc_dapm_route;
->  
->  /* object scan be loaded and unloaded in groups with identfying indexes */
->  #define SND_SOC_TPLG_INDEX_ALL	0	/* ID that matches all FW objects */
-> @@ -116,6 +117,12 @@ struct snd_soc_tplg_ops {
->  	int (*control_unload)(struct snd_soc_component *,
->  		struct snd_soc_dobj *);
->  
-> +	/* DAPM graph route element loading and unloading */
-> +	int (*dapm_route_load)(struct snd_soc_component *, int index,
-> +		struct snd_soc_dapm_route *route);
-> +	int (*dapm_route_unload)(struct snd_soc_component *,
-> +		struct snd_soc_dobj *);
+> +struct sdm845_snd_data {
+> +	struct snd_soc_card *card;
+> +	struct regulator *vdd_supply;
+> +	struct snd_soc_dai_link dai_link[];
+> +};
 > +
->  	/* external widget init - used for any driver specific init */
->  	int (*widget_load)(struct snd_soc_component *, int index,
->  		struct snd_soc_dapm_widget *,
-> diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-> index a30bb94fc800..ed8c00b43ef9 100644
-> --- a/sound/soc/soc-topology.c
-> +++ b/sound/soc/soc-topology.c
-> @@ -1105,6 +1105,17 @@ static int soc_tplg_kcontrol_elems_load(struct soc_tplg *tplg,
->  	return 0;
->  }
->  
-> +/* optionally pass new dynamic kcontrol to component driver. */
-> +static int soc_tplg_add_route(struct soc_tplg *tplg,
-> +	struct snd_soc_dapm_route *route)
+> +static struct mutex pri_mi2s_res_lock;
+> +static struct mutex quat_tdm_res_lock;
 
-Align with preceding please
+any reason why the locks can't be part of sdm845_snd_data?
+Also why do we need two locks ?
 
+> +static atomic_t pri_mi2s_clk_count;
+> +static atomic_t quat_tdm_clk_count;
+
+Any specific reason for using atomic variables?
+
+> +static unsigned int tdm_slot_offset[8] = {0, 4, 8, 12, 16, 20, 24, 28};
+> +
+> +static int sdm845_tdm_snd_hw_params(struct snd_pcm_substream *substream,
+> +					struct snd_pcm_hw_params *params)
 > +{
-> +	if (tplg->comp && tplg->ops && tplg->ops->dapm_route_load)
-> +		return tplg->ops->dapm_route_load(tplg->comp, tplg->index,
-> +			route);
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> +	int ret = 0;
+> +	int channels, slot_width;
 > +
-> +	return 0;
-> +}
-> +
->  static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
->  	struct snd_soc_tplg_hdr *hdr)
->  {
-> @@ -1153,6 +1164,8 @@ static int soc_tplg_dapm_graph_elems_load(struct soc_tplg *tplg,
->  		else
->  			route.control = elem->control;
->  
-> +		soc_tplg_add_route(tplg, &route);
+> +	channels = params_channels(params);
+> +	if (channels < 1 || channels > 8) {
 
-it is not really add_route right, so notify_load or something?
+I though ch = 0 would be caught by framework and IIRC ASoC doesn't
+support more than 8 channels
+
+> +		pr_err("%s: invalid param channels %d\n",
+> +				__func__, channels);
+> +		return -EINVAL;
+> +	}
+> +
+> +	switch (params_format(params)) {
+> +	case SNDRV_PCM_FORMAT_S32_LE:
+> +	case SNDRV_PCM_FORMAT_S24_LE:
+> +	case SNDRV_PCM_FORMAT_S16_LE:
+> +		slot_width = 32;
+> +		break;
+> +	default:
+> +		pr_err("%s: invalid param format 0x%x\n",
+> +				__func__, params_format(params));
+
+why not use dev_err, bonus you get device name printer with the logs :)
+
+> +static int sdm845_snd_startup(struct snd_pcm_substream *substream)
+> +{
+> +	unsigned int fmt = SND_SOC_DAIFMT_CBS_CFS;
+> +	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+> +	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> +
+> +	pr_debug("%s: dai_id: 0x%x\n", __func__, cpu_dai->id);
+
+It is good for debug but not very useful here, so removing it would be
+good
+
+> +	switch (cpu_dai->id) {
+> +	case PRIMARY_MI2S_RX:
+> +	case PRIMARY_MI2S_TX:
+> +		mutex_lock(&pri_mi2s_res_lock);
+> +		if (atomic_inc_return(&pri_mi2s_clk_count) == 1) {
+> +			snd_soc_dai_set_sysclk(cpu_dai,
+> +				Q6AFE_LPASS_CLK_ID_MCLK_1,
+> +				DEFAULT_MCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
+> +			snd_soc_dai_set_sysclk(cpu_dai,
+> +				Q6AFE_LPASS_CLK_ID_PRI_MI2S_IBIT,
+> +				DEFAULT_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
+> +		}
+> +		mutex_unlock(&pri_mi2s_res_lock);
+
+why do we need locking here? Can you please explain that.
+
+> +		snd_soc_dai_set_fmt(cpu_dai, fmt);
+> +		break;
+
+empty line after break helps in readability
+
+> +static int sdm845_sbc_parse_of(struct snd_soc_card *card)
+> +{
+> +	struct device *dev = card->dev;
+> +	struct snd_soc_dai_link *link;
+> +	struct device_node *np, *codec, *platform, *cpu, *node;
+> +	int ret, num_links;
+> +	struct sdm845_snd_data *data;
+> +
+> +	ret = snd_soc_of_parse_card_name(card, "qcom,model");
+> +	if (ret) {
+> +		dev_err(dev, "Error parsing card name: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	node = dev->of_node;
+> +
+> +	/* DAPM routes */
+> +	if (of_property_read_bool(node, "qcom,audio-routing")) {
+> +		ret = snd_soc_of_parse_audio_routing(card,
+> +					"qcom,audio-routing");
+> +		if (ret)
+> +			return ret;
+> +	}
+
+so if we dont find audio-routing, then? we seems to continue..
 
 -- 
 ~Vinod
