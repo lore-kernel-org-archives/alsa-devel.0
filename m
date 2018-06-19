@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: cleanup before moving
-	ACPI tables" to the asoc tree
-Date: Tue, 19 Jun 2018 16:24:42 +0100
-Message-ID: <E1fVIUs-0002QE-48@debutante>
-References: <20180618182942.4925-3-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: common: Add Geminilake
+	Dialog+Maxim machine driver entry" to the asoc tree
+Date: Tue, 19 Jun 2018 16:24:37 +0100
+Message-ID: <E1fVIUn-0002OJ-On@debutante>
+References: <20180618182942.4925-5-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9BB412676E3
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:24:44 +0200 (CEST)
-In-Reply-To: <20180618182942.4925-3-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8529C2676E7
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:24:46 +0200 (CEST)
+In-Reply-To: <20180618182942.4925-5-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
+To: Naveen Manohar <naveen.m@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: cleanup before moving ACPI tables
+   ASoC: Intel: common: Add Geminilake Dialog+Maxim machine driver entry
 
 has been applied to the asoc tree at
 
@@ -53,49 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 5f15f267daf81a4c7c2a1cd2a0d6743ec7fc8b59 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Mon, 18 Jun 2018 13:29:36 -0500
-Subject: [PATCH] ASoC: Intel: Skylake: cleanup before moving ACPI tables
+>From 65a33883c778befcb85ef45285763fd8ac1b2ba3 Mon Sep 17 00:00:00 2001
+From: Naveen Manohar <naveen.m@intel.com>
+Date: Mon, 18 Jun 2018 13:29:38 -0500
+Subject: [PATCH] ASoC: Intel: common: Add Geminilake Dialog+Maxim machine
+ driver entry
 
-There is no need to deal with DMICs if the DSP is not present and
-there is no ACPI machine ID found.
+This patch adds da7219_max98357a machine driver entry into
+machine table
 
-Simplify before moving these ACPI tables to sound/soc/intel/common
-
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-glk-match.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 0a8f0768e987..6dec748e8949 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -500,10 +500,12 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+diff --git a/sound/soc/intel/common/soc-acpi-intel-glk-match.c b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+index dee09439e7cb..5902aa1d0ee3 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-glk-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-glk-match.c
+@@ -9,12 +9,24 @@
+ #include <sound/soc-acpi.h>
+ #include <sound/soc-acpi-intel-match.h>
  
- 	skl->mach = mach;
- 	skl->fw_name = mach->fw_filename;
--	pdata = skl->mach->pdata;
-+	pdata = mach->pdata;
- 
--	if (mach->pdata)
-+	if (pdata) {
- 		skl->use_tplg_pcm = pdata->use_tplg_pcm;
-+		pdata->dmic_num = skl_get_dmic_geo(skl);
-+	}
- 
- 	return 0;
- }
-@@ -930,8 +932,6 @@ static int skl_probe(struct pci_dev *pci,
- 
- 	pci_set_drvdata(skl->pci, ebus);
- 
--	skl_dmic_data.dmic_num = skl_get_dmic_geo(skl);
--
- 	/* check if dsp is there */
- 	if (bus->ppcap) {
- 		/* create device for dsp clk */
++static struct snd_soc_acpi_codecs glk_codecs = {
++	.num_codecs = 1,
++	.codecs = {"MX98357A"}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[] = {
+ 	{
+ 		.id = "INT343A",
+ 		.drv_name = "glk_alc298s_i2s",
+ 		.fw_filename = "intel/dsp_fw_glk.bin",
+ 	},
++	{
++		.id = "DLGS7219",
++		.drv_name = "glk_da7219_max98357a",
++		.fw_filename = "intel/dsp_fw_glk.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &glk_codecs,
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_glk_machines);
 -- 
 2.17.1
