@@ -1,16 +1,16 @@
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 9/9] ALSA: usx2y: usx2yhwdeppcm: use
-	usb_fill_int_urb()
-Date: Tue, 19 Jun 2018 23:55:21 +0200
-Message-ID: <20180619215521.13688-10-bigeasy@linutronix.de>
+Subject: [PATCH 5/9] ALSA: usb: caiaq: audio: use irqsave() in
+	USB's complete callback
+Date: Tue, 19 Jun 2018 23:55:17 +0200
+Message-ID: <20180619215521.13688-6-bigeasy@linutronix.de>
 References: <20180619215521.13688-1-bigeasy@linutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id AFCBF2675FA
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 23:55:34 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A1C52675FA
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 23:55:36 +0200 (CEST)
 In-Reply-To: <20180619215521.13688-1-bigeasy@linutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,65 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tglx@linutronix.de, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: John Ogness <john.ogness@linutronix.de>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Daniel Mack <zonque@gmail.com>, tglx@linutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-Using usb_fill_int_urb() helps to find code which initializes an
-URB. A grep for members of the struct (like ->complete) reveal lots
-of other things, too.
-I'm keeping the transfer-length initialisation in
-usX2Y_usbpcm_urbs_start() because I am not certain if this does not
-change over time.
+From: John Ogness <john.ogness@linutronix.de>
 
+The USB completion callback does not disable interrupts while acquiring
+the lock. We want to remove the local_irq_disable() invocation from
+__usb_hcd_giveback_urb() and therefore it is required for the callback
+handler to disable the interrupts while acquiring the lock.
+The callback may be invoked either in IRQ or BH context depending on the
+USB host controller.
+Use the _irqsave() variant of the locking primitives.
+
+Cc: Daniel Mack <zonque@gmail.com>
 Cc: Jaroslav Kysela <perex@perex.cz>
 Cc: Takashi Iwai <tiwai@suse.com>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
 Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- sound/usb/usx2y/usx2yhwdeppcm.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ sound/usb/caiaq/audio.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/usx2y/usx2yhwdeppcm.c b/sound/usb/usx2y/usx2yhwdeppcm.c
-index 4fd9276b8e50..0a14612f2178 100644
---- a/sound/usb/usx2y/usx2yhwdeppcm.c
-+++ b/sound/usb/usx2y/usx2yhwdeppcm.c
-@@ -325,6 +325,8 @@ static int usX2Y_usbpcm_urbs_allocate(struct snd_usX2Y_substream *subs)
- 	/* allocate and initialize data urbs */
- 	for (i = 0; i < NRURBS; i++) {
- 		struct urb **purb = subs->urb + i;
-+		void *buf;
-+
- 		if (*purb) {
- 			usb_kill_urb(*purb);
- 			continue;
-@@ -334,18 +336,19 @@ static int usX2Y_usbpcm_urbs_allocate(struct snd_usX2Y_substream *subs)
- 			usX2Y_usbpcm_urbs_release(subs);
- 			return -ENOMEM;
- 		}
--		(*purb)->transfer_buffer = is_playback ?
--			subs->usX2Y->hwdep_pcm_shm->playback : (
--				subs->endpoint == 0x8 ?
--				subs->usX2Y->hwdep_pcm_shm->capture0x8 :
--				subs->usX2Y->hwdep_pcm_shm->capture0xA);
-+		if (is_playback) {
-+			buf = subs->usX2Y->hwdep_pcm_shm->playback;
-+		} else {
-+			if (subs->endpoint == 0x8)
-+				buf = subs->usX2Y->hwdep_pcm_shm->capture0x8;
-+			else
-+				buf = subs->usX2Y->hwdep_pcm_shm->capture0xA;
-+		}
-+		usb_fill_int_urb(*purb, dev, pipe, buf,
-+				 subs->maxpacksize * nr_of_packs(),
-+				 i_usX2Y_usbpcm_subs_startup, subs, 1);
+diff --git a/sound/usb/caiaq/audio.c b/sound/usb/caiaq/audio.c
+index f35d29f49ffe..15344d39a6cd 100644
+--- a/sound/usb/caiaq/audio.c
++++ b/sound/usb/caiaq/audio.c
+@@ -636,6 +636,7 @@ static void read_completed(struct urb *urb)
+ 	struct device *dev;
+ 	struct urb *out = NULL;
+ 	int i, frame, len, send_it = 0, outframe = 0;
++	unsigned long flags;
+ 	size_t offset = 0;
  
--		(*purb)->dev = dev;
--		(*purb)->pipe = pipe;
- 		(*purb)->number_of_packets = nr_of_packs();
--		(*purb)->context = subs;
--		(*purb)->interval = 1;
--		(*purb)->complete = i_usX2Y_usbpcm_subs_startup;
- 	}
- 	return 0;
- }
+ 	if (urb->status || !info)
+@@ -672,10 +673,10 @@ static void read_completed(struct urb *urb)
+ 		offset += len;
+ 
+ 		if (len > 0) {
+-			spin_lock(&cdev->spinlock);
++			spin_lock_irqsave(&cdev->spinlock, flags);
+ 			fill_out_urb(cdev, out, &out->iso_frame_desc[outframe]);
+ 			read_in_urb(cdev, urb, &urb->iso_frame_desc[frame]);
+-			spin_unlock(&cdev->spinlock);
++			spin_unlock_irqrestore(&cdev->spinlock, flags);
+ 			check_for_elapsed_periods(cdev, cdev->sub_playback);
+ 			check_for_elapsed_periods(cdev, cdev->sub_capture);
+ 			send_it = 1;
 -- 
 2.17.1
