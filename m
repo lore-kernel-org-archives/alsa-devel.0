@@ -1,86 +1,89 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: kbl_da7219_max98357a: add fe_ops
-	for kbl Audio Capture Port" to the asoc tree
-Date: Tue, 19 Jun 2018 16:24:46 +0100
-Message-ID: <E1fVIUw-0002SD-EO@debutante>
-References: <1529388966-5184-1-git-send-email-mac.chiang@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 75AA72676E3
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:24:54 +0200 (CEST)
-In-Reply-To: <1529388966-5184-1-git-send-email-mac.chiang@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, mac.chiang@intel.com, broonie@kernel.org, louiscollard@google.com, naveen.m@intel.com
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 1/5] slimbus: core: add of_slim_device_get() helper
+Date: Tue, 19 Jun 2018 17:12:57 +0100
+Message-ID: <20180619161301.4556-2-srinivas.kandagatla@linaro.org>
+References: <20180619161301.4556-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180619161301.4556-1-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: gregkh@linuxfoundation.org
+Cc: robh+dt@kernel.org, kramasub@codeaurora.org, sdharia@quicinc.com, linux-kernel@vger.kernel.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On SLIMBus controllers like Qcom NGD(non ported device), controller
+can request logical address once the remote side is powered, having a
+helper function like this to explicitly enumerate the bus is helpful.
+Also codec drivers which are taking to interface device would need
+such a helper too.
 
-   ASoC: Intel: kbl_da7219_max98357a: add fe_ops for kbl Audio Capture Port
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 5fd46e649ee63259f2197625662477ac67a69e79 Mon Sep 17 00:00:00 2001
-From: Mac Chiang <mac.chiang@intel.com>
-Date: Tue, 19 Jun 2018 14:16:06 +0800
-Subject: [PATCH] ASoC: Intel: kbl_da7219_max98357a: add fe_ops for kbl Audio
- Capture Port
-
-platform support fixed constraint hw_prams as Stereo, 48KHz, 16 bits.
-This fixed the headset mic recorded noise due to mono capturing
-request from some apps. e.g. online Voice Recorder
-
-Signed-off-by: Louis Collard <louiscollard@google.com>
-Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/intel/boards/kbl_da7219_max98357a.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/slimbus/core.c  | 39 +++++++++++++++++++++++++++++++++++++++
+ include/linux/slimbus.h |  2 ++
+ 2 files changed, 41 insertions(+)
 
-diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-index 94294c27d1db..7961f1fd18bd 100644
---- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-@@ -380,6 +380,7 @@ static struct snd_soc_dai_link kabylake_dais[] = {
- 		.trigger = {
- 			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
- 		.dpcm_capture = 1,
-+		.ops = &kabylake_da7219_fe_ops,
- 	},
- 	[KBL_DPCM_AUDIO_DMIC_CP] = {
- 		.name = "Kbl Audio DMIC cap",
+diff --git a/drivers/slimbus/core.c b/drivers/slimbus/core.c
+index 7ddfc675b131..88248a4ecad9 100644
+--- a/drivers/slimbus/core.c
++++ b/drivers/slimbus/core.c
+@@ -356,6 +356,45 @@ struct slim_device *slim_get_device(struct slim_controller *ctrl,
+ }
+ EXPORT_SYMBOL_GPL(slim_get_device);
+ 
++static int of_slim_match_dev(struct device *dev, void *data)
++{
++	struct device_node *np = data;
++	struct slim_device *sbdev = to_slim_device(dev);
++
++	return (sbdev->dev.of_node == np);
++}
++
++static struct slim_device *of_find_slim_device(struct slim_controller *ctrl,
++					       struct device_node *np)
++{
++	struct slim_device *sbdev;
++	struct device *dev;
++
++	dev = device_find_child(ctrl->dev, np, of_slim_match_dev);
++	if (dev) {
++		sbdev = to_slim_device(dev);
++		return sbdev;
++	}
++
++	return NULL;
++}
++
++/**
++ * of_slim_get_device() - get handle to a device using dt node.
++ *
++ * @ctrl: Controller on which this device will be added/queried
++ * @np: node pointer to device
++ *
++ * Return: pointer to a device if it has already reported. Creates a new
++ * device and returns pointer to it if the device has not yet enumerated.
++ */
++struct slim_device *of_slim_get_device(struct slim_controller *ctrl,
++				       struct device_node *np)
++{
++	return of_find_slim_device(ctrl, np);
++}
++EXPORT_SYMBOL_GPL(of_slim_get_device);
++
+ static int slim_device_alloc_laddr(struct slim_device *sbdev,
+ 				   bool report_present)
+ {
+diff --git a/include/linux/slimbus.h b/include/linux/slimbus.h
+index c36cf121d2cd..efa36a852dc3 100644
+--- a/include/linux/slimbus.h
++++ b/include/linux/slimbus.h
+@@ -138,6 +138,8 @@ static inline void slim_set_devicedata(struct slim_device *dev, void *data)
+ 	dev_set_drvdata(&dev->dev, data);
+ }
+ 
++struct slim_device *of_slim_get_device(struct slim_controller *ctrl,
++				       struct device_node *np);
+ struct slim_device *slim_get_device(struct slim_controller *ctrl,
+ 				    struct slim_eaddr *e_addr);
+ int slim_get_logical_addr(struct slim_device *sbdev);
 -- 
-2.17.1
+2.16.2
