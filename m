@@ -1,15 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: pcm: Tidy up open/hw_params handling
-Date: Tue, 19 Jun 2018 16:22:09 +0100
-Message-ID: <20180619152209.16713-1-ckeepax@opensource.cirrus.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: common: fix copy/paste issue
+	with SOF/broadwell topology file" to the asoc tree
+Date: Tue, 19 Jun 2018 16:24:31 +0100
+Message-ID: <E1fVIUh-0002LO-6T@debutante>
+References: <20180618182942.4925-9-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id CD769266D4C
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:22:14 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 500F92675D5
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:24:36 +0200 (CEST)
+In-Reply-To: <20180618182942.4925-9-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,244 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently, the core will continue processing open/hw_params
-component callbacks after one has failed even though it will abort
-immediately afterwards. This is unnecessary and also has the issue
-that close/hw_free will be called on the component which failed
-open/hw_params which could result in issues if the driver doesn't
-expect this behaviour.
+The patch
 
-Update the core to abort processing open/hw_params when an error
-is hit and only call close/hw_free for those components that were
-successfully opened.
+   ASoC: Intel: common: fix copy/paste issue with SOF/broadwell topology file
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From f0d9034b290d8bad590e843c2a1081eb47d813ad Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Mon, 18 Jun 2018 13:29:42 -0500
+Subject: [PATCH] ASoC: Intel: common: fix copy/paste issue with SOF/broadwell
+ topology file
+
+There are two commercially-available Broadwell platforms based on I2S
+(Dell XPS13 and 'Samus' Pixel 2015 Chromebook).
+
+Fix a copy/paste issue to allow each platform to enable different
+features if needed when SOF is enabled
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 116 ++++++++++++++++++++++++++++------------------------
- 1 file changed, 62 insertions(+), 54 deletions(-)
+ sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 5e7ae47a9658..45b52f7b9690 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -448,6 +448,29 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
- 	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
- }
- 
-+static int soc_pcm_components_close(struct snd_pcm_substream *substream,
-+				    struct snd_soc_component *last)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	struct snd_soc_component *component;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		if (component == last)
-+			break;
-+
-+		if (!component->driver->ops ||
-+		    !component->driver->ops->close)
-+			continue;
-+
-+		component->driver->ops->close(substream);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Called by ALSA when a PCM substream is opened, the runtime->hw record is
-  * then initialized and any private data can be allocated. This also calls
-@@ -462,7 +485,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	const char *codec_dai_name = "multicodec";
--	int i, ret = 0, __ret;
-+	int i, ret = 0;
- 
- 	pinctrl_pm_select_default_state(cpu_dai->dev);
- 	for (i = 0; i < rtd->num_codecs; i++)
-@@ -486,7 +509,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 		}
- 	}
- 
--	ret = 0;
- 	for_each_rtdcom(rtd, rtdcom) {
- 		component = rtdcom->component;
- 
-@@ -494,16 +516,15 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 		    !component->driver->ops->open)
- 			continue;
- 
--		__ret = component->driver->ops->open(substream);
--		if (__ret < 0) {
-+		ret = component->driver->ops->open(substream);
-+		if (ret < 0) {
- 			dev_err(component->dev,
- 				"ASoC: can't open component %s: %d\n",
--				component->name, __ret);
--			ret = __ret;
-+				component->name, ret);
-+			goto component_err;
- 		}
- 	}
--	if (ret < 0)
--		goto component_err;
-+	component = NULL;
- 
- 	for (i = 0; i < rtd->num_codecs; i++) {
- 		codec_dai = rtd->codec_dais[i];
-@@ -612,15 +633,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
- 	}
- 
- component_err:
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->ops ||
--		    !component->driver->ops->close)
--			continue;
--
--		component->driver->ops->close(substream);
--	}
-+	soc_pcm_components_close(substream, component);
- 
- 	if (cpu_dai->driver->ops->shutdown)
- 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
-@@ -714,15 +727,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
- 	if (rtd->dai_link->ops->shutdown)
- 		rtd->dai_link->ops->shutdown(substream);
- 
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->ops ||
--		    !component->driver->ops->close)
--			continue;
--
--		component->driver->ops->close(substream);
--	}
-+	soc_pcm_components_close(substream, NULL);
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
- 		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
-@@ -874,6 +879,29 @@ int soc_dai_hw_params(struct snd_pcm_substream *substream,
- 	return 0;
- }
- 
-+static int soc_pcm_components_hw_free(struct snd_pcm_substream *substream,
-+				      struct snd_soc_component *last)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_rtdcom_list *rtdcom;
-+	struct snd_soc_component *component;
-+
-+	for_each_rtdcom(rtd, rtdcom) {
-+		component = rtdcom->component;
-+
-+		if (component == last)
-+			break;
-+
-+		if (!component->driver->ops ||
-+		    !component->driver->ops->hw_free)
-+			continue;
-+
-+		component->driver->ops->hw_free(substream);
-+	}
-+
-+	return 0;
-+}
-+
- /*
-  * Called by ALSA when the hardware params are set by application. This
-  * function can also be called multiple times and can allocate buffers
-@@ -886,7 +914,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component;
- 	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	int i, ret = 0, __ret;
-+	int i, ret = 0;
- 
- 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
- 	if (rtd->dai_link->ops->hw_params) {
-@@ -944,7 +972,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		goto interface_err;
- 
--	ret = 0;
- 	for_each_rtdcom(rtd, rtdcom) {
- 		component = rtdcom->component;
- 
-@@ -952,16 +979,15 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 		    !component->driver->ops->hw_params)
- 			continue;
- 
--		__ret = component->driver->ops->hw_params(substream, params);
--		if (__ret < 0) {
-+		ret = component->driver->ops->hw_params(substream, params);
-+		if (ret < 0) {
- 			dev_err(component->dev,
- 				"ASoC: %s hw params failed: %d\n",
--				component->name, __ret);
--			ret = __ret;
-+				component->name, ret);
-+			goto component_err;
- 		}
- 	}
--	if (ret < 0)
--		goto component_err;
-+	component = NULL;
- 
- 	/* store the parameters for each DAIs */
- 	cpu_dai->rate = params_rate(params);
-@@ -977,15 +1003,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- 	return ret;
- 
- component_err:
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->ops ||
--		    !component->driver->ops->hw_free)
--			continue;
--
--		component->driver->ops->hw_free(substream);
--	}
-+	soc_pcm_components_hw_free(substream, component);
- 
- 	if (cpu_dai->driver->ops->hw_free)
- 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
-@@ -1014,8 +1032,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
- static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_soc_component *component;
--	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai;
- 	bool playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
-@@ -1052,15 +1068,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
- 		rtd->dai_link->ops->hw_free(substream);
- 
- 	/* free any component resources */
--	for_each_rtdcom(rtd, rtdcom) {
--		component = rtdcom->component;
--
--		if (!component->driver->ops ||
--		    !component->driver->ops->hw_free)
--			continue;
--
--		component->driver->ops->hw_free(substream);
--	}
-+	soc_pcm_components_hw_free(substream, NULL);
- 
- 	/* now free hw params for the DAIs  */
- 	for (i = 0; i < rtd->num_codecs; i++) {
+diff --git a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+index e0e8c8c27528..53e7acdfbb81 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-hsw-bdw-match.c
+@@ -45,7 +45,7 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_broadwell_machines[] = {
+ 		.drv_name = "bdw-rt5677",
+ 		.fw_filename =  "intel/IntcSST2.bin",
+ 		.sof_fw_filename = "intel/reef-bdw.ri",
+-		.sof_tplg_filename = "intel/reef-bdw-rt286.tplg",
++		.sof_tplg_filename = "intel/reef-bdw-rt5677.tplg",
+ 		.asoc_plat_name = "haswell-pcm-audio",
+ 	},
+ 	{
 -- 
-2.11.0
+2.17.1
