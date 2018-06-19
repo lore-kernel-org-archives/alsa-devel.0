@@ -1,66 +1,58 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v2 5/7] ASoC: qdsp6: Add depends on OF
-Date: Mon, 18 Jun 2018 14:53:19 -0600
-Message-ID: <CAL_JsqJti8JzQ7mVQ6Y2zaWD_Q5R9bK4XVh3mJPohXh4sgSQwQ@mail.gmail.com>
-References: <20180614111138.8923-1-niklas.cassel@linaro.org>
- <20180614111138.8923-6-niklas.cassel@linaro.org> <20180618110642.GA6928@sirena.org.uk>
- <20180618123932.GA28476@centauri.lan> <CAL_JsqJQ0GbFtnpP9-YCEcVKHDdHbT5hshZGvNDQw=u5ZANdvg@mail.gmail.com>
- <20180618200848.GA32482@centauri.lan>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH v2] dmaengine: ti: omap-dma: Fix OMAP1510 incorrect
+ residue_granularity
+Date: Tue, 19 Jun 2018 09:59:08 +0530
+Message-ID: <20180619042908.GM25852@vkoul-mobl>
+References: <20180605165957.29616-1-jmkrzyszt@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180618200848.GA32482@centauri.lan>
+Content-Disposition: inline
+In-Reply-To: <20180605165957.29616-1-jmkrzyszt@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Niklas Cassel <niklas.cassel@linaro.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Andy Gross <andy.gross@linaro.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-arm-msm <linux-arm-msm@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Aaro Koskinen <aaro.koskinen@iki.fi>, Tony Lindgren <tony@atomide.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 18, 2018 at 2:08 PM, Niklas Cassel <niklas.cassel@linaro.org> wrote:
-> On Mon, Jun 18, 2018 at 08:48:32AM -0600, Rob Herring wrote:
->> On Mon, Jun 18, 2018 at 6:39 AM, Niklas Cassel <niklas.cassel@linaro.org> wrote:
->> > On Mon, Jun 18, 2018 at 12:06:42PM +0100, Mark Brown wrote:
->> >> On Thu, Jun 14, 2018 at 01:11:36PM +0200, Niklas Cassel wrote:
->> >> > of_platform_device_destroy is only defined when building
->> >> > with CONFIG_OF=y. Add a depends on OF.
->> >>
->> >> Is it sensible that of_platform_device_destroy() is only defined when
->> >> building with CONFIG_OF=y?
->> >
->> > I'm redirecting that question to the device tree maintainers.
->> >
->> > There are a few of_* functions in include/linux/of_platform.h
->> > that are only defined when CONFIG_OF=y:
->> >
->> > of_platform_device_create()
->> > of_platform_device_destroy()
->> > of_platform_bus_probe()
->> > of_device_alloc()
->> >
->> > Rob, Frank, do you want me to create static inline dummy versions of these?
->>
->> No, because generally you should not be using these functions
->> directly. Yes, there are some users, but if you look at the tree,
->> there are few or isolated (PowerPC) users. Using
->> of_platform_populate/of_platform_depopulate is preferred.
->
-> of_platform_device_destroy() is also used by sound/soc/qcom/qdsp6/*
-> which is why I suggested this patch:
-> https://marc.info/?l=alsa-devel&m=152932497413567
-> that adds "depends on OF" for SND_SOC_QDSP6 in sound/soc/qcom/Kconfig.
->
-> Or do you think that a better solution would be to modify
-> sound/soc/qcom/qdsp6/* so that it instead uses
-> of_platform_populate()/of_platform_depopulate()?
+On 05-06-18, 18:59, Janusz Krzysztofik wrote:
+> Commit 0198d7bb8a0c ("ASoC: omap-mcbsp: Convert to use the sdma-pcm
+> instead of omap-pcm") resulted in broken audio playback on OMAP1510
+> (discovered on Amstrad Delta).
+> 
+> When running on OMAP1510, omap-pcm used to obtain DMA offset from
+> snd_dmaengine_pcm_pointer_no_residue() based on DMA interrupt triggered
+> software calculations instead of snd_dmaengine_pcm_pointer() which
+> depended on residue value calculated from omap_dma_get_src_pos().
+> Similar code path is still available in now used
+> sound/soc/soc-generic-dmaengine-pcm.c but it is not triggered.
+> 
+> It was verified already before that omap_get_dma_src_pos() from
+> arch/arm/plat-omap/dma.c didn't work correctly for OMAP1510 - see
+> commit 1bdd7419910c ("ASoC: OMAP: fix OMAP1510 broken PCM pointer
+> callback") for details.  Apparently the same applies to its successor,
+> omap_dma_get_src_pos() from drivers/dma/ti/omap-dma.c.
+> 
+> On the other hand, snd_dmaengine_pcm_pointer_no_residue() is described
+> as depreciated and discouraged for use in new drivers because of its
+> unreliable accuracy.  However, it seems the only working option for
+> OPAM1510 now, as long as a software calculated residue is not
+> implemented as OMAP1510 fallback in omap-dma.
+> 
+> Using snd_dmaengine_pcm_pointer_no_residue() code path instead of
+> snd_dmaengine_pcm_pointer() in sound/soc/soc-generic-dmaengine-pcm.c
+> can be triggered in two ways:
+> - by passing pcm->flags |= SND_DMAENGINE_PCM_FLAG_NO_RESIDUE from
+>   sound/soc/omap/sdma-pcm.c,
+> - by passing dma_caps.residue_granularity =
+>   DMA_RESIDUE_GRANULARITY_DESCRIPTOR from DMA engine.
+> 
+> Let's do the latter.
+> 
+> Created and tested against next-20180531 tag from linux-next tree.
 
-Yes, that is preferred. However, that won't work here because the
-child nodes don't have compatible strings. Maybe we should add them as
-this all just went in. That would also allow DT based module
-autoloading to work (which I don't think would currently). Really, as
-is, of_platform_device_create isn't needed here and you could just use
-platform_device_register_simple instead. The child driver would have
-to get the DT node pointer from the parent device instead.
+This is not useful for log.
 
-But if you want to add empty functions for just
-of_platform_device_{create,destroy}, I guess that is fine.
+I have stripped this and applied
 
-Rob
+-- 
+~Vinod
