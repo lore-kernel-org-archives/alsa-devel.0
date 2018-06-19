@@ -1,15 +1,15 @@
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 2/9] ALSA: line6: use usb_fill_int_urb()
-Date: Tue, 19 Jun 2018 23:55:14 +0200
-Message-ID: <20180619215521.13688-3-bigeasy@linutronix.de>
+Subject: [PATCH 4/9] ALSA: usb-audio: use usb_fill_int_urb()
+Date: Tue, 19 Jun 2018 23:55:16 +0200
+Message-ID: <20180619215521.13688-5-bigeasy@linutronix.de>
 References: <20180619215521.13688-1-bigeasy@linutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 95F1D2675EC
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 23:55:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 25FA1267601
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 23:55:32 +0200 (CEST)
 In-Reply-To: <20180619215521.13688-1-bigeasy@linutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,90 +24,53 @@ To: alsa-devel@alsa-project.org
 Cc: tglx@linutronix.de, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 List-Id: alsa-devel@alsa-project.org
 
-Using usb_fill_int_urb() helps to find code which initializes an
-URB. A grep for members of the struct (like ->complete) reveal lots
-of other things, too.
-Data pointer & size is filled out later so they are not considered.
-
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- sound/usb/line6/capture.c  | 16 ++++++----------
- sound/usb/line6/playback.c | 16 ++++++----------
- 2 files changed, 12 insertions(+), 20 deletions(-)
-
-diff --git a/sound/usb/line6/capture.c b/sound/usb/line6/capture.c
-index d8a14d769f48..4ee54ba436df 100644
---- a/sound/usb/line6/capture.c
-+++ b/sound/usb/line6/capture.c
-@@ -52,7 +52,6 @@ static int submit_audio_in_urb(struct snd_line6_pcm *line6pcm)
- 	    line6pcm->in.buffer +
- 	    index * LINE6_ISO_PACKETS * line6pcm->max_packet_size_in;
- 	urb_in->transfer_buffer_length = urb_size;
--	urb_in->context = line6pcm;
- 
- 	ret = usb_submit_urb(urb_in, GFP_ATOMIC);
- 
-@@ -280,17 +279,14 @@ int line6_create_audio_in_urbs(struct snd_line6_pcm *line6pcm)
- 		if (urb == NULL)
- 			return -ENOMEM;
- 
--		urb->dev = line6->usbdev;
--		urb->pipe =
--		    usb_rcvisocpipe(line6->usbdev,
--				    line6->properties->ep_audio_r &
--				    USB_ENDPOINT_NUMBER_MASK);
-+		usb_fill_int_urb(urb, line6->usbdev,
-+				 usb_rcvisocpipe(line6->usbdev,
-+						 line6->properties->ep_audio_r &
-+						 USB_ENDPOINT_NUMBER_MASK),
-+				 NULL, 0, audio_in_callback, line6pcm,
-+				 LINE6_ISO_INTERVAL);
- 		urb->transfer_flags = URB_ISO_ASAP;
--		urb->start_frame = -1;
- 		urb->number_of_packets = LINE6_ISO_PACKETS;
--		urb->interval = LINE6_ISO_INTERVAL;
--		urb->error_count = 0;
--		urb->complete = audio_in_callback;
- 	}
- 
- 	return 0;
-diff --git a/sound/usb/line6/playback.c b/sound/usb/line6/playback.c
-index dec89d2beb57..af1ca09c260e 100644
---- a/sound/usb/line6/playback.c
-+++ b/sound/usb/line6/playback.c
-@@ -202,7 +202,6 @@ static int submit_audio_out_urb(struct snd_line6_pcm *line6pcm)
- 	    line6pcm->out.buffer +
- 	    index * LINE6_ISO_PACKETS * line6pcm->max_packet_size_out;
- 	urb_out->transfer_buffer_length = urb_size;
--	urb_out->context = line6pcm;
- 
- 	if (test_bit(LINE6_STREAM_PCM, &line6pcm->out.running) &&
- 	    !test_bit(LINE6_FLAG_PAUSE_PLAYBACK, &line6pcm->flags)) {
-@@ -425,17 +424,14 @@ int line6_create_audio_out_urbs(struct snd_line6_pcm *line6pcm)
- 		if (urb == NULL)
- 			return -ENOMEM;
- 
--		urb->dev = line6->usbdev;
--		urb->pipe =
--		    usb_sndisocpipe(line6->usbdev,
--				    line6->properties->ep_audio_w &
--				    USB_ENDPOINT_NUMBER_MASK);
-+		usb_fill_int_urb(urb, line6->usbdev,
-+				 usb_sndisocpipe(line6->usbdev,
-+						 line6->properties->ep_audio_w &
-+						 USB_ENDPOINT_NUMBER_MASK),
-+				 NULL, 0, audio_out_callback, line6pcm,
-+				 LINE6_ISO_INTERVAL);
- 		urb->transfer_flags = URB_ISO_ASAP;
--		urb->start_frame = -1;
- 		urb->number_of_packets = LINE6_ISO_PACKETS;
--		urb->interval = LINE6_ISO_INTERVAL;
--		urb->error_count = 0;
--		urb->complete = audio_out_callback;
- 	}
- 
- 	return 0;
--- 
-2.17.1
+VXNpbmcgdXNiX2ZpbGxfaW50X3VyYigpIGhlbHBzIHRvIGZpbmQgY29kZSB3aGljaCBpbml0aWFs
+aXplcyBhbgpVUkIuIEEgZ3JlcCBmb3IgbWVtYmVycyBvZiB0aGUgc3RydWN0IChsaWtlIC0+Y29t
+cGxldGUpIHJldmVhbCBsb3RzCm9mIG90aGVyIHRoaW5ncywgdG9vLgoKZGF0YV9lcF9zZXRfcGFy
+YW1zKCkgYWRkaXRpb25hbGx5IHNldHMgdXJiLT50cmFuc2Zlcl9idWZmZXJfbGVuZ3RoIHdoaWNo
+CndhcyBub3QgdGhlIGNhc2UgZWFybGllci4KZGF0YV9lcF9zZXRfcGFyYW1zKCkgYW5kIGRhdGFf
+ZXBfc2V0X3BhcmFtcygpIGVuc3VyZSB0aGF0IHN5bmNpbnRlcnZhbCBpcwp3aXRoaW4gdGhlIGFs
+bG93ZWQgcmFuZ2Ugb24gSFMvU1MuIFRoZSBpbnRlcnZhbCB2YWx1ZSBzZWVtcyB0byBjb21lIGZy
+b20Kc25kX3VzYl9wYXJzZV9kYXRhaW50ZXJ2YWwoKSB3aGljaCBpcyBiSW50ZXJ2YWwgLSAxIGFu
+ZCBvbmx5IGluIHRoZSByYWdlIDEg4oCmIDQuClNvIGluIG9yZGVyIHRvIGtlZXAgdGhlIG1hZ2lj
+IHdva3JpbmcgSSBwYXNzIGRhdGFpbnRlcnZhbCArIDEuCgpDYzogSmFyb3NsYXYgS3lzZWxhIDxw
+ZXJleEBwZXJleC5jej4KQ2M6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5jb20+ClNpZ25lZC1v
+ZmYtYnk6IFNlYmFzdGlhbiBBbmRyemVqIFNpZXdpb3IgPGJpZ2Vhc3lAbGludXRyb25peC5kZT4K
+LS0tCiBzb3VuZC91c2IvZW5kcG9pbnQuYyB8IDI0ICsrKysrKysrKystLS0tLS0tLS0tLS0tLQog
+MSBmaWxlIGNoYW5nZWQsIDEwIGluc2VydGlvbnMoKyksIDE0IGRlbGV0aW9ucygtKQoKZGlmZiAt
+LWdpdCBhL3NvdW5kL3VzYi9lbmRwb2ludC5jIGIvc291bmQvdXNiL2VuZHBvaW50LmMKaW5kZXgg
+YzkwNjA3ZWJlMTU1Li5iYmMwMmRiNWI0MTcgMTAwNjQ0Ci0tLSBhL3NvdW5kL3VzYi9lbmRwb2lu
+dC5jCisrKyBiL3NvdW5kL3VzYi9lbmRwb2ludC5jCkBAIC03NzIsNiArNzcyLDggQEAgc3RhdGlj
+IGludCBkYXRhX2VwX3NldF9wYXJhbXMoc3RydWN0IHNuZF91c2JfZW5kcG9pbnQgKmVwLAogCS8q
+IGFsbG9jYXRlIGFuZCBpbml0aWFsaXplIGRhdGEgdXJicyAqLwogCWZvciAoaSA9IDA7IGkgPCBl
+cC0+bnVyYnM7IGkrKykgewogCQlzdHJ1Y3Qgc25kX3VyYl9jdHggKnUgPSAmZXAtPnVyYltpXTsK
+KwkJdm9pZCAqYnVmOworCiAJCXUtPmluZGV4ID0gaTsKIAkJdS0+ZXAgPSBlcDsKIAkJdS0+cGFj
+a2V0cyA9IHVyYl9wYWNrczsKQEAgLTc4MywxNiArNzg1LDEzIEBAIHN0YXRpYyBpbnQgZGF0YV9l
+cF9zZXRfcGFyYW1zKHN0cnVjdCBzbmRfdXNiX2VuZHBvaW50ICplcCwKIAkJaWYgKCF1LT51cmIp
+CiAJCQlnb3RvIG91dF9vZl9tZW1vcnk7CiAKLQkJdS0+dXJiLT50cmFuc2Zlcl9idWZmZXIgPQot
+CQkJdXNiX2FsbG9jX2NvaGVyZW50KGVwLT5jaGlwLT5kZXYsIHUtPmJ1ZmZlcl9zaXplLAotCQkJ
+CQkgICBHRlBfS0VSTkVMLCAmdS0+dXJiLT50cmFuc2Zlcl9kbWEpOwotCQlpZiAoIXUtPnVyYi0+
+dHJhbnNmZXJfYnVmZmVyKQorCQlidWYgPSB1c2JfYWxsb2NfY29oZXJlbnQoZXAtPmNoaXAtPmRl
+diwgdS0+YnVmZmVyX3NpemUsCisJCQkJCSBHRlBfS0VSTkVMLCAmdS0+dXJiLT50cmFuc2Zlcl9k
+bWEpOworCQlpZiAoIWJ1ZikKIAkJCWdvdG8gb3V0X29mX21lbW9yeTsKLQkJdS0+dXJiLT5waXBl
+ID0gZXAtPnBpcGU7CisJCXVzYl9maWxsX2ludF91cmIodS0+dXJiLCBOVUxMLCBlcC0+cGlwZSwg
+YnVmLCB1LT5idWZmZXJfc2l6ZSwKKwkJCQkgc25kX2NvbXBsZXRlX3VyYiwgdSwgZXAtPmRhdGFp
+bnRlcnZhbCArIDEpOwogCQl1LT51cmItPnRyYW5zZmVyX2ZsYWdzID0gVVJCX05PX1RSQU5TRkVS
+X0RNQV9NQVA7Ci0JCXUtPnVyYi0+aW50ZXJ2YWwgPSAxIDw8IGVwLT5kYXRhaW50ZXJ2YWw7Ci0J
+CXUtPnVyYi0+Y29udGV4dCA9IHU7Ci0JCXUtPnVyYi0+Y29tcGxldGUgPSBzbmRfY29tcGxldGVf
+dXJiOwogCQlJTklUX0xJU1RfSEVBRCgmdS0+cmVhZHlfbGlzdCk7CiAJfQogCkBAIC04MjMsMTUg
+KzgyMiwxMiBAQCBzdGF0aWMgaW50IHN5bmNfZXBfc2V0X3BhcmFtcyhzdHJ1Y3Qgc25kX3VzYl9l
+bmRwb2ludCAqZXApCiAJCXUtPnVyYiA9IHVzYl9hbGxvY191cmIoMSwgR0ZQX0tFUk5FTCk7CiAJ
+CWlmICghdS0+dXJiKQogCQkJZ290byBvdXRfb2ZfbWVtb3J5OwotCQl1LT51cmItPnRyYW5zZmVy
+X2J1ZmZlciA9IGVwLT5zeW5jYnVmICsgaSAqIDQ7CisJCXVzYl9maWxsX2ludF91cmIodS0+dXJi
+LCBOVUxMLCBlcC0+cGlwZSwgZXAtPnN5bmNidWYgKyBpICogNCwgNCwKKwkJCQkgc25kX2NvbXBs
+ZXRlX3VyYiwgdSwgZXAtPnN5bmNpbnRlcnZhbCArIDEpOworCiAJCXUtPnVyYi0+dHJhbnNmZXJf
+ZG1hID0gZXAtPnN5bmNfZG1hICsgaSAqIDQ7Ci0JCXUtPnVyYi0+dHJhbnNmZXJfYnVmZmVyX2xl
+bmd0aCA9IDQ7Ci0JCXUtPnVyYi0+cGlwZSA9IGVwLT5waXBlOwogCQl1LT51cmItPnRyYW5zZmVy
+X2ZsYWdzID0gVVJCX05PX1RSQU5TRkVSX0RNQV9NQVA7CiAJCXUtPnVyYi0+bnVtYmVyX29mX3Bh
+Y2tldHMgPSAxOwotCQl1LT51cmItPmludGVydmFsID0gMSA8PCBlcC0+c3luY2ludGVydmFsOwot
+CQl1LT51cmItPmNvbnRleHQgPSB1OwotCQl1LT51cmItPmNvbXBsZXRlID0gc25kX2NvbXBsZXRl
+X3VyYjsKIAl9CiAKIAllcC0+bnVyYnMgPSBTWU5DX1VSQlM7Ci0tIAoyLjE3LjEKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
