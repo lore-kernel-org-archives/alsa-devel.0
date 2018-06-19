@@ -1,306 +1,738 @@
-From: Rohit Kumar <rohitkr@codeaurora.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: qcom: add sdm845 sound card support
-Date: Tue, 19 Jun 2018 19:28:24 +0530
-Message-ID: <b616b2e7-234b-1ca3-1821-40637f3945ab@codeaurora.org>
-References: <1529320591-22434-1-git-send-email-rohitkr@codeaurora.org>
- <f3f677bf-d0b5-baab-cf7c-4a7d7588259b@linaro.org>
+From: Naveen Manohar <naveen.m@intel.com>
+Subject: [PATCH v3] ASoC: Intel: Boards: Add GLK Realtek Maxim
+	I2S machine driver
+Date: Tue, 19 Jun 2018 19:29:37 +0530
+Message-ID: <1529416777-25675-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <f3f677bf-d0b5-baab-cf7c-4a7d7588259b@linaro.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id DEFAE2675F1
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 16:00:00 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: harshapriya.n@intel.com, naveen.m@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Srinivas for reviewing.
+Patch adds Geminilake I2S machine driver which uses following codecs:
+RT5682 and MAX98357A.
 
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+v1->v2: reverse xmas tree alignment of var declaration, Add Acked-by.
+v2->v3: corrected: platform-name for echo-ref dai & change-log position.
 
-On 6/19/2018 2:16 PM, Srinivas Kandagatla wrote:
-> Thanks Rohit for the patch!
->
-> On 18/06/18 12:16, Rohit kumar wrote:
->> This patch adds sdm845 audio machine driver support.
->>
->> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
->> ---
->>   .../devicetree/bindings/sound/qcom,sdm845.txt      |  87 ++++
->>   sound/soc/qcom/Kconfig                             |   9 +
->>   sound/soc/qcom/Makefile                            |   2 +
->>   sound/soc/qcom/sdm845.c                            | 539 
->> +++++++++++++++++++++
->>   4 files changed, 637 insertions(+)
->>   create mode 100644 
->> Documentation/devicetree/bindings/sound/qcom,sdm845.txt
->
-> Split the bindings into a separate patch!
+ sound/soc/intel/boards/Kconfig                |  14 +
+ sound/soc/intel/boards/Makefile               |   2 +
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 644 ++++++++++++++++++++++++++
+ 3 files changed, 660 insertions(+)
+ create mode 100644 sound/soc/intel/boards/glk_rt5682_max98357a.c
 
-Sure, will do it in next spin.
->
->>   create mode 100644 sound/soc/qcom/sdm845.c
->>
->> diff --git a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt 
->> b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
->> new file mode 100644
->> index 0000000..fc0e98c
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
->> @@ -0,0 +1,87 @@
->> +* Qualcomm Technologies Inc. SDM845 ASoC sound card driver
->> +
->> +This binding describes the SDM845 sound card, which uses qdsp for 
->> audio.
->>
-[..]
->> +
->> +- codec:
->> +    Usage: required
->> +    Value type: <subnode>
->> +    Definition: codec dai sub-node
->> +
->> +- platform:
->> +    Usage: opional
->
-> Optional
-
-okay
->> +    Value type: <subnode>
->> +    Definition: platform dai sub-node
->> +
->> +- sound-dai:
->> +    Usage: required
->> +    Value type: <phandle>
->> +    Definition: dai phandle/s and port of CPU/CODEC/PLATFORM node.
->> +
->> +Example:
->> +
->> +audio {
->> +    compatible = "qcom,sdm845-sndcard";
->> +    qcom,model = "sdm845-snd-card";
->> +    pinctrl-names = "pri_active", "pri_sleep";
->> +    pinctrl-0 = <&pri_mi2s_active &pri_mi2s_ws_active>;
->> +    pinctrl-1 = <&pri_mi2s_sleep &pri_mi2s_ws_sleep>;
->> +
->> +    qcom,audio-routing = "PRI_MI2S_RX Audio Mixer", "Pri-mi2s-gpio";
->> +
->> +    cdc-vdd-supply = <&pm8998_l14>;
->> +
->> +    fe@1 {
-> Lets not use fe or be reference here, its just a link.
-okay
-
->
->> +        link-name = "MultiMedia1";
->> +        cpu {
->> +            sound-dai = <&q6asmdai MSM_FRONTEND_DAI_MULTIMEDIA1>;
->> +        };
->> +        platform {
->> +            sound-dai = <&q6asmdai>;
->> +        };
-> asmdai has sound-cell specifier as 1, so this will dtc will throw 
-> warning for this.
->
-> have a look at how 8996 is done.
-
-ok, sure
->
->> +    };
->> +
->> +    be@1 {
->>
-[..]
->> diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
->> index 206945b..ac9609e 100644
->> --- a/sound/soc/qcom/Makefile
->> +++ b/sound/soc/qcom/Makefile
->> @@ -14,10 +14,12 @@ obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += 
->> snd-soc-lpass-apq8016.o
->>   snd-soc-storm-objs := storm.o
->>   snd-soc-apq8016-sbc-objs := apq8016_sbc.o
->>   snd-soc-apq8096-objs := apq8096.o
->> +snd-soc-sdm845-objs := sdm845.o
->>     obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
->>   obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
->>   obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
->> ++obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
->
-> ?? looks like typo here.
->
-Right. Will update.
->
->>     #DSP lib
->>   obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
->> diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
->> new file mode 100644
->> index 0000000..70d2611
->> --- /dev/null
->> +++ b/sound/soc/qcom/sdm845.c
->> @@ -0,0 +1,539 @@
->> +// SPDX-License-Identifier: GPL-2.0
->> +/*
->> + * Copyright (c) 2018, The Linux Foundation. All rights reserved.
->> + */
->> +
->> +#include <linux/module.h>
->> +#include <linux/component.h>
-[..]
->> +}
->> +
->> +static int sdm845_snd_startup(struct snd_pcm_substream *substream)
->> +{
->> +    unsigned int fmt = SND_SOC_DAIFMT_CBS_CFS;
->> +    struct snd_soc_pcm_runtime *rtd = substream->private_data;
->> +    struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
->> +
->> +    pr_debug("%s: dai_id: 0x%x\n", __func__, cpu_dai->id);
->> +    switch (cpu_dai->id) {
->> +    case PRIMARY_MI2S_RX:
->> +    case PRIMARY_MI2S_TX:
->> +        mutex_lock(&pri_mi2s_res_lock);
->
-> Mutex and atomic variables looks redundant here.
-> Can you explain why do you need both?
-Right. Only mutex is required here. I will make count as non-atomic.
-
->
-> ...
->> +
->> +static int sdm845_sbc_parse_of(struct snd_soc_card *card)
->> +{
->> +    struct device *dev = card->dev;
->> +    struct snd_soc_dai_link *link;
->> +    struct device_node *np, *codec, *platform, *cpu, *node;
->> +    int ret, num_links;
->> +    struct sdm845_snd_data *data;
->> +
->> +    ret = snd_soc_of_parse_card_name(card, "qcom,model");
->> +    if (ret) {
->> +        dev_err(dev, "Error parsing card name: %d\n", ret);
->> +        return ret;
->> +    }
->> +
->> +    node = dev->of_node;
->> +
->> +    /* DAPM routes */
->> +    if (of_property_read_bool(node, "qcom,audio-routing")) {
->> +        ret = snd_soc_of_parse_audio_routing(card,
->> +                    "qcom,audio-routing");
->> +        if (ret)
->> +            return ret;
->> +    }
->> +
->> +    /* Populate links */
->> +    num_links = of_get_child_count(node);
->> +
->> +    dev_info(dev, "Found %d child audio dai links..\n", num_links);
->
-> Looks unnessary!
-
-Ok . Will remove it in next patchset.
->
->> +
->> +        link->platform_of_node = of_parse_phandle(platform,
->> +                "sound-dai", 0);
->> +        if (!link->platform_of_node) {
->> +            dev_err(card->dev, "error getting platform phandle\n");
->> +            ret = -EINVAL;
->> +            goto fail;
->> +        }
->> +
->> +        ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
->> +        if (ret) {
->> +            dev_err(card->dev, "error getting cpu dai name\n");
->> +            goto fail;
->> +        }
->> +
->> +        if (codec) {
->> +            ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
->> +            if (ret < 0) {
->> +                dev_err(card->dev, "error getting codec dai name\n");
->> +                goto fail;
->> +            }
->> +            link->no_pcm = 1;
->> +            link->ignore_suspend = 1;
->> +            link->ignore_pmdown_time = 1;
->> +            link->ops = &sdm845_be_ops;
->> +            link->be_hw_params_fixup = sdm845_be_hw_params_fixup;
->> +        } else {
->> +            link->dynamic = 1;
->> +            link->codec_dai_name = "snd-soc-dummy-dai";
->> +            link->codec_name = "snd-soc-dummy";
->> +        }
->> +
->
-> You could optimize this code, have a look at apq8096.c which does 
-> exactly same thing.
->
-
-Okay. will check and update.
-> ...
->> +
->> +static void sdm845_unbind(struct device *dev)
->> +{
->> +    struct snd_soc_card *card = dev_get_drvdata(dev);
->> +    struct sdm845_snd_data *data = snd_soc_card_get_drvdata(card);
->> +
->> +    mutex_destroy(&pri_mi2s_res_lock);
->> +    mutex_destroy(&quat_tdm_res_lock);
->> +    if (data->vdd_supply)
->> +        regulator_put(data->vdd_supply);
->> +    component_unbind_all(dev, card);
->> +    snd_soc_unregister_card(card);
->> +    kfree(data);
->> +    kfree(card);
->> +}
->> +
->> +static const struct component_master_ops sdm845_ops = {
->> +    .bind = sdm845_bind,
->> +    .unbind = sdm845_unbind,
->> +};
->> +
->> +static int sdm845_runtime_resume(struct device *dev)
->> +{
->> +    struct snd_soc_card *card = dev_get_drvdata(dev);
->> +    struct sdm845_snd_data *data = snd_soc_card_get_drvdata(card);
->> +
->> +    if (!data->vdd_supply) {
->> +        dev_dbg(dev, "no supplies defined\n");
->> +        return 0;
->> +    }
->> +
->> +    if (regulator_enable(data->vdd_supply))
->> +        dev_err(dev, "Enable regulator supply failed\n");
->> +
->> +    return 0;
->> +}
->> +
->> +static struct platform_driver sdm845_snd_driver = {
->> +    .probe = sdm845_snd_platform_probe,
->> +    .remove = sdm845_snd_platform_remove,
->> +    .driver = {
->> +        .name = "msm-snd-sdm845",
->> +        .pm = &sdm845_pm_ops,
->> +        .owner = THIS_MODULE,
-> not necessary!
-
-Okay. Will remove it.
->> +        .of_match_table = of_match_ptr(sdm845_snd_device_id),
->> +    },
->> +};
->> +module_platform_driver(sdm845_snd_driver);
->> +
->> +MODULE_DESCRIPTION("sdm845 ASoC Machine Driver");
->> +MODULE_LICENSE("GPL v2");
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-Regards,
-Rohit
-
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 2479748..cccda87 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -281,6 +281,20 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
++config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
++	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
++	depends on MFD_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_RT5682
++	select SND_SOC_MAX98357A
++	select SND_SOC_DMIC
++	select SND_SOC_HDAC_HDMI
++	select SND_HDA_DSP_LOADER
++	help
++	   This adds support for ASoC machine driver for Geminilake platforms
++	   with RT5682 + MAX98357A I2S audio codec.
++	   Say Y if you have such a device.
++	   If unsure select "N".
++
+ endif ## SND_SOC_INTEL_SKYLAKE
+ 
+ endif ## SND_SOC_INTEL_MACH
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index 92b5507..87ef8b4 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -6,6 +6,7 @@ snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
+ snd-soc-sst-broadwell-objs := broadwell.o
+ snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o
+ snd-soc-sst-bxt-rt298-objs := bxt_rt298.o
++snd-soc-sst-glk-rt5682_max98357a-objs := glk_rt5682_max98357a.o
+ snd-soc-sst-bytcr-rt5640-objs := bytcr_rt5640.o
+ snd-soc-sst-bytcr-rt5651-objs := bytcr_rt5651.o
+ snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
+@@ -27,6 +28,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH) += snd-soc-sst-bxt-da7219_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_BXT_RT298_MACH) += snd-soc-sst-bxt-rt298.o
++obj-$(CONFIG_SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH) += snd-soc-sst-glk-rt5682_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BDW_RT5677_MACH) += snd-soc-sst-bdw-rt5677-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH) += snd-soc-sst-bytcr-rt5640.o
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+new file mode 100644
+index 0000000..2c36ff4
+--- /dev/null
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -0,0 +1,644 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright(c) 2018 Intel Corporation.
++
++/*
++ * Intel Geminilake I2S Machine Driver with MAX98357A & RT5682 Codecs
++ *
++ * Modified from:
++ *   Intel Apollolake I2S Machine driver
++ */
++
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/jack.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "../skylake/skl.h"
++#include "../../codecs/rt5682.h"
++#include "../../codecs/hdac_hdmi.h"
++
++/* The platform clock outputs 19.2Mhz clock to codec as I2S MCLK */
++#define GLK_PLAT_CLK_FREQ 19200000
++#define RT5682_PLL_FREQ (48000 * 512)
++#define GLK_REALTEK_CODEC_DAI "rt5682-aif1"
++#define GLK_MAXIM_CODEC_DAI "HiFi"
++#define MAXIM_DEV0_NAME "MX98357A:00"
++#define DUAL_CHANNEL 2
++#define QUAD_CHANNEL 4
++#define NAME_SIZE 32
++
++static struct snd_soc_jack geminilake_hdmi[3];
++
++struct glk_hdmi_pcm {
++	struct list_head head;
++	struct snd_soc_dai *codec_dai;
++	int device;
++};
++
++struct glk_card_private {
++	struct snd_soc_jack geminilake_headset;
++	struct list_head hdmi_pcm_list;
++};
++
++enum {
++	GLK_DPCM_AUDIO_PB = 0,
++	GLK_DPCM_AUDIO_CP,
++	GLK_DPCM_AUDIO_HS_PB,
++	GLK_DPCM_AUDIO_ECHO_REF_CP,
++	GLK_DPCM_AUDIO_REF_CP,
++	GLK_DPCM_AUDIO_DMIC_CP,
++	GLK_DPCM_AUDIO_HDMI1_PB,
++	GLK_DPCM_AUDIO_HDMI2_PB,
++	GLK_DPCM_AUDIO_HDMI3_PB,
++};
++
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *k, int  event)
++{
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *codec_dai;
++	int ret = 0;
++
++	codec_dai = snd_soc_card_get_codec_dai(card, GLK_REALTEK_CODEC_DAI);
++	if (!codec_dai) {
++		dev_err(card->dev, "Codec dai not found; Unable to set/unset codec pll\n");
++		return -EIO;
++	}
++
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		ret = snd_soc_dai_set_pll(codec_dai, 0,
++				     RT5682_PLL1_S_MCLK, 0, 0);
++		if (ret)
++			dev_err(card->dev, "failed to stop PLL: %d\n", ret);
++	} else if (SND_SOC_DAPM_EVENT_ON(event)) {
++		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
++					GLK_PLAT_CLK_FREQ, RT5682_PLL_FREQ);
++		if (ret < 0) {
++			dev_err(card->dev, "can't set codec pll: %d\n", ret);
++			return ret;
++		}
++	}
++
++	if (ret)
++		dev_err(card->dev, "failed to start internal clk: %d\n", ret);
++
++	return ret;
++}
++
++static const struct snd_kcontrol_new geminilake_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Spk"),
++};
++
++static const struct snd_soc_dapm_widget geminilake_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_SPK("Spk", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
++	SND_SOC_DAPM_SPK("HDMI1", NULL),
++	SND_SOC_DAPM_SPK("HDMI2", NULL),
++	SND_SOC_DAPM_SPK("HDMI3", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
++			SND_SOC_DAPM_POST_PMD),
++};
++
++static const struct snd_soc_dapm_route geminilake_map[] = {
++	/* HP jack connectors - unknown if we have jack detection */
++	{ "Headphone Jack", NULL, "Platform Clock" },
++	{ "Headphone Jack", NULL, "HPOL" },
++	{ "Headphone Jack", NULL, "HPOR" },
++
++	/* speaker */
++	{ "Spk", NULL, "Speaker" },
++
++	/* other jacks */
++	{ "Headset Mic", NULL, "Platform Clock" },
++	{ "IN1P", NULL, "Headset Mic" },
++
++	/* digital mics */
++	{ "DMic", NULL, "SoC DMIC" },
++
++	/* CODEC BE connections */
++	{ "HiFi Playback", NULL, "ssp1 Tx" },
++	{ "ssp1 Tx", NULL, "codec0_out" },
++
++	{ "AIF1 Playback", NULL, "ssp2 Tx" },
++	{ "ssp2 Tx", NULL, "codec1_out" },
++
++	{ "codec0_in", NULL, "ssp2 Rx" },
++	{ "ssp2 Rx", NULL, "AIF1 Capture" },
++
++	{ "HDMI1", NULL, "hif5-0 Output" },
++	{ "HDMI2", NULL, "hif6-0 Output" },
++	{ "HDMI2", NULL, "hif7-0 Output" },
++
++	{ "hifi3", NULL, "iDisp3 Tx" },
++	{ "iDisp3 Tx", NULL, "iDisp3_out" },
++	{ "hifi2", NULL, "iDisp2 Tx" },
++	{ "iDisp2 Tx", NULL, "iDisp2_out" },
++	{ "hifi1", NULL, "iDisp1 Tx" },
++	{ "iDisp1 Tx", NULL, "iDisp1_out" },
++
++	/* DMIC */
++	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
++	{ "DMIC01 Rx", NULL, "DMIC AIF" },
++};
++
++static int geminilake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
++			struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++
++	/* The ADSP will convert the FE rate to 48k, stereo */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = DUAL_CHANNEL;
++
++	/* set SSP to 24 bit */
++	snd_mask_none(fmt);
++	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
++
++	return 0;
++}
++
++static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct glk_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_component *component = rtd->codec_dai->component;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_jack *jack;
++	int ret;
++
++	/* Configure sysclk for codec */
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
++					RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
++
++	/*
++	 * Headset buttons map to the google Reference headset.
++	 * These can be configured by userspace.
++	 */
++	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
++			SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++			SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
++			&ctx->geminilake_headset, NULL, 0);
++	if (ret) {
++		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
++		return ret;
++	}
++
++	jack = &ctx->geminilake_headset;
++
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
++	ret = snd_soc_component_set_jack(component, jack, NULL);
++
++	if (ret) {
++		dev_err(rtd->dev, "Headset Jack call-back failed: %d\n", ret);
++		return ret;
++	}
++
++	return ret;
++};
++
++static int geminilake_rt5682_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	/* Set valid bitmask & configuration for I2S in 24 bit */
++	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x0, 0x0, 2, 24);
++	if (ret < 0) {
++		dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
++		return ret;
++	}
++
++	return ret;
++}
++
++static struct snd_soc_ops geminilake_rt5682_ops = {
++	.hw_params = geminilake_rt5682_hw_params,
++};
++
++static int geminilake_hdmi_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct glk_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_dai *dai = rtd->codec_dai;
++	struct glk_hdmi_pcm *pcm;
++
++	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
++	if (!pcm)
++		return -ENOMEM;
++
++	pcm->device = GLK_DPCM_AUDIO_HDMI1_PB + dai->id;
++	pcm->codec_dai = dai;
++
++	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
++
++	return 0;
++}
++
++static int geminilake_rt5682_fe_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_component *component = rtd->cpu_dai->component;
++	struct snd_soc_dapm_context *dapm;
++	int ret;
++
++	dapm = snd_soc_component_get_dapm(component);
++	ret = snd_soc_dapm_ignore_suspend(dapm, "Reference Capture");
++	if (ret) {
++		dev_err(rtd->dev, "Ref Cap ignore suspend failed %d\n", ret);
++		return ret;
++	}
++
++	return ret;
++}
++
++static const unsigned int rates[] = {
++	48000,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
++	.count = ARRAY_SIZE(rates),
++	.list  = rates,
++	.mask = 0,
++};
++
++static const unsigned int channels[] = {
++	DUAL_CHANNEL,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++static unsigned int channels_quad[] = {
++	QUAD_CHANNEL,
++};
++
++static struct snd_pcm_hw_constraint_list constraints_channels_quad = {
++	.count = ARRAY_SIZE(channels_quad),
++	.list = channels_quad,
++	.mask = 0,
++};
++
++static int geminilake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
++		struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *channels = hw_param_interval(params,
++				SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/*
++	 * set BE channel constraint as user FE channels
++	 */
++	channels->min = channels->max = 4;
++
++	return 0;
++}
++
++static int geminilake_dmic_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	runtime->hw.channels_min = runtime->hw.channels_max = QUAD_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++			&constraints_channels_quad);
++
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
++}
++
++static const struct snd_soc_ops geminilake_dmic_ops = {
++	.startup = geminilake_dmic_startup,
++};
++
++static const unsigned int rates_16000[] = {
++	16000,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_16000 = {
++	.count = ARRAY_SIZE(rates_16000),
++	.list  = rates_16000,
++};
++
++static int geminilake_refcap_startup(struct snd_pcm_substream *substream)
++{
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE,
++				&constraints_16000);
++};
++
++static const struct snd_soc_ops geminilake_refcap_ops = {
++	.startup = geminilake_refcap_startup,
++};
++
++/* geminilake digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link geminilake_dais[] = {
++	/* Front End DAI links */
++	[GLK_DPCM_AUDIO_PB] = {
++		.name = "Glk Audio Port",
++		.stream_name = "Audio",
++		.cpu_dai_name = "System Pin",
++		.platform_name = "0000:00:0e.0",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.nonatomic = 1,
++		.init = geminilake_rt5682_fe_init,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++	},
++	[GLK_DPCM_AUDIO_CP] = {
++		.name = "Glk Audio Capture Port",
++		.stream_name = "Audio Record",
++		.cpu_dai_name = "System Pin",
++		.platform_name = "0000:00:0e.0",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.nonatomic = 1,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_capture = 1,
++	},
++	[GLK_DPCM_AUDIO_HS_PB] = {
++		.name = "Glk Audio Headset Playback",
++		.stream_name = "Headset Audio",
++		.cpu_dai_name = "System Pin2",
++		.platform_name = "0000:00:0e.0",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.dpcm_playback = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[GLK_DPCM_AUDIO_ECHO_REF_CP] = {
++		.name = "Glk Audio Echo Reference cap",
++		.stream_name = "Echoreference Capture",
++		.cpu_dai_name = "Echoref Pin",
++		.platform_name = "0000:00:0e.0",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.init = NULL,
++		.capture_only = 1,
++		.nonatomic = 1,
++	},
++	[GLK_DPCM_AUDIO_REF_CP] = {
++		.name = "Glk Audio Reference cap",
++		.stream_name = "Refcap",
++		.cpu_dai_name = "Reference Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.init = NULL,
++		.dpcm_capture = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++		.ops = &geminilake_refcap_ops,
++	},
++	[GLK_DPCM_AUDIO_DMIC_CP] = {
++		.name = "Glk Audio DMIC cap",
++		.stream_name = "dmiccap",
++		.cpu_dai_name = "DMIC Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.init = NULL,
++		.dpcm_capture = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++		.ops = &geminilake_dmic_ops,
++	},
++	[GLK_DPCM_AUDIO_HDMI1_PB] = {
++		.name = "Glk HDMI Port1",
++		.stream_name = "Hdmi1",
++		.cpu_dai_name = "HDMI1 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.dpcm_playback = 1,
++		.init = NULL,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[GLK_DPCM_AUDIO_HDMI2_PB] =	{
++		.name = "Glk HDMI Port2",
++		.stream_name = "Hdmi2",
++		.cpu_dai_name = "HDMI2 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.dpcm_playback = 1,
++		.init = NULL,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[GLK_DPCM_AUDIO_HDMI3_PB] =	{
++		.name = "Glk HDMI Port3",
++		.stream_name = "Hdmi3",
++		.cpu_dai_name = "HDMI3 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++		.init = NULL,
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	/* Back End DAI links */
++	{
++		/* SSP1 - Codec */
++		.name = "SSP1-Codec",
++		.id = 0,
++		.cpu_dai_name = "SSP1 Pin",
++		.platform_name = "0000:00:0e.0",
++		.no_pcm = 1,
++		.codec_name = MAXIM_DEV0_NAME,
++		.codec_dai_name = GLK_MAXIM_CODEC_DAI,
++		.dai_fmt = SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++		.ignore_pmdown_time = 1,
++		.be_hw_params_fixup = geminilake_ssp_fixup,
++		.dpcm_playback = 1,
++	},
++	{
++		/* SSP2 - Codec */
++		.name = "SSP2-Codec",
++		.id = 1,
++		.cpu_dai_name = "SSP2 Pin",
++		.platform_name = "0000:00:0e.0",
++		.no_pcm = 1,
++		.codec_name = "i2c-10EC5682:00",
++		.codec_dai_name = GLK_REALTEK_CODEC_DAI,
++		.init = geminilake_rt5682_codec_init,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++		.ignore_pmdown_time = 1,
++		.be_hw_params_fixup = geminilake_ssp_fixup,
++		.ops = &geminilake_rt5682_ops,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++	},
++	{
++		.name = "dmic01",
++		.id = 2,
++		.cpu_dai_name = "DMIC01 Pin",
++		.codec_name = "dmic-codec",
++		.codec_dai_name = "dmic-hifi",
++		.platform_name = "0000:00:0e.0",
++		.ignore_suspend = 1,
++		.be_hw_params_fixup = geminilake_dmic_fixup,
++		.dpcm_capture = 1,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp1",
++		.id = 3,
++		.cpu_dai_name = "iDisp1 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi1",
++		.platform_name = "0000:00:0e.0",
++		.init = geminilake_hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp2",
++		.id = 4,
++		.cpu_dai_name = "iDisp2 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi2",
++		.platform_name = "0000:00:0e.0",
++		.init = geminilake_hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp3",
++		.id = 5,
++		.cpu_dai_name = "iDisp3 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi3",
++		.platform_name = "0000:00:0e.0",
++		.init = geminilake_hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
++};
++
++static int glk_card_late_probe(struct snd_soc_card *card)
++{
++	struct glk_card_private *ctx = snd_soc_card_get_drvdata(card);
++	struct snd_soc_component *component = NULL;
++	char jack_name[NAME_SIZE];
++	struct glk_hdmi_pcm *pcm;
++	int err = 0;
++	int i = 0;
++
++	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		component = pcm->codec_dai->component;
++		snprintf(jack_name, sizeof(jack_name),
++			"HDMI/DP, pcm=%d Jack", pcm->device);
++		err = snd_soc_card_jack_new(card, jack_name,
++					SND_JACK_AVOUT, &geminilake_hdmi[i],
++					NULL, 0);
++
++		if (err)
++			return err;
++
++		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
++						&geminilake_hdmi[i]);
++		if (err < 0)
++			return err;
++
++		i++;
++	}
++
++	if (!component)
++		return -EINVAL;
++
++	return hdac_hdmi_jack_port_init(component, &card->dapm);
++}
++
++/* geminilake audio machine driver for SPT + RT5682 */
++static struct snd_soc_card glk_audio_card_rt5682_m98357a = {
++	.name = "glkrt5682max",
++	.owner = THIS_MODULE,
++	.dai_link = geminilake_dais,
++	.num_links = ARRAY_SIZE(geminilake_dais),
++	.controls = geminilake_controls,
++	.num_controls = ARRAY_SIZE(geminilake_controls),
++	.dapm_widgets = geminilake_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(geminilake_widgets),
++	.dapm_routes = geminilake_map,
++	.num_dapm_routes = ARRAY_SIZE(geminilake_map),
++	.fully_routed = true,
++	.late_probe = glk_card_late_probe,
++};
++
++static int geminilake_audio_probe(struct platform_device *pdev)
++{
++	struct glk_card_private *ctx;
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	if (!ctx)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
++
++	glk_audio_card_rt5682_m98357a.dev = &pdev->dev;
++	snd_soc_card_set_drvdata(&glk_audio_card_rt5682_m98357a, ctx);
++
++	return devm_snd_soc_register_card(&pdev->dev,
++					&glk_audio_card_rt5682_m98357a);
++}
++
++static const struct platform_device_id glk_board_ids[] = {
++	{
++		.name = "glk_rt5682_max98357a",
++		.driver_data =
++			(kernel_ulong_t)&glk_audio_card_rt5682_m98357a,
++	},
++	{ }
++};
++
++static struct platform_driver geminilake_audio = {
++	.probe = geminilake_audio_probe,
++	.driver = {
++		.name = "glk_rt5682_max98357a",
++		.pm = &snd_soc_pm_ops,
++	},
++	.id_table = glk_board_ids,
++};
++module_platform_driver(geminilake_audio)
++
++/* Module information */
++MODULE_DESCRIPTION("Geminilake Audio Machine driver-RT5682 & MAX98357A in I2S mode");
++MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
++MODULE_AUTHOR("Harsha Priya <harshapriya.n@intel.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:glk_rt5682_max98357a");
 -- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.7.4
