@@ -1,50 +1,76 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] dt-bindings: Fix unbalanced quotation marks
-Date: Tue, 19 Jun 2018 12:15:08 +0100
-Message-ID: <1d775530-e250-6397-8e60-4dac8d580f7d@linaro.org>
-References: <20180617143127.11421-1-j.neuschaefer@gmx.net>
+From: Alastair Bridgewater <alastair.bridgewater@gmail.com>
+Subject: Re: [PATCH 0/6] ALSA: hda/ca0132: Various cleanups and
+	fixes
+Date: Tue, 19 Jun 2018 09:18:41 -0400
+Message-ID: <CAEcYz2QSL5n12zonud4oB9mAK7aL2cx7xD7hF0dYaCfL4gjzuQ@mail.gmail.com>
+References: <20180616015620.26663-1-alastair.bridgewater@gmail.com>
+ <s5h1sd5ubb3.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20180617143127.11421-1-j.neuschaefer@gmx.net>
-Content-Language: en-US
-Sender: netdev-owner@vger.kernel.org
-To: =?UTF-8?Q?Jonathan_Neusch=c3=a4fer?= <j.neuschaefer@gmx.net>, devicetree@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, linux-mips@linux-mips.org, Ulf Hansson <ulf.hansson@linaro.org>, Madalin Bucur <madalin.bucur@nxp.com>, James Hogan <jhogan@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Thierry Reding <thierry.reding@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, linux-samsung-soc@vger.kernel.org, Kevin Hilman <khilman@kernel.org>, =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>, Krzysztof Kozlowski <krzk@kernel.org>, Jonathan Hunter <jonathanh@nvidia.com>, Kukjin Kim <kgene@kernel.org>, linux-input@vger.kernel.org, Philipp Zabel <p.zabel@pengutronix.de>, Jason Cooper <jason@lakedaemon.net>, linux-pm@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-io0-f193.google.com (mail-io0-f193.google.com
+ [209.85.223.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6560E2673CB
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 15:18:44 +0200 (CEST)
+Received: by mail-io0-f193.google.com with SMTP id d22-v6so150372iof.13
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 06:18:44 -0700 (PDT)
+In-Reply-To: <s5h1sd5ubb3.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Connor McAdams <conmanx360@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+On Sun, Jun 17, 2018 at 3:22 AM, Takashi Iwai <tiwai@suse.de> wrote:
+
+> On Sat, 16 Jun 2018 03:56:14 +0200,
+> Alastair Bridgewater wrote:
+> >
+> > The ca0132 codec support is fairly crufty, and the new R3Di and SBZ
+> > support hasn't exactly improved that situation.  This patch series
+> > tries to clean up a small amount of longstanding cruft, reverse some
+> > behavioral changes to other systems made by the recent R3Di/SBZ
+> > patches, and make the DMic work properly on the Alienware M17x R4.
+> >
+> > For two of these patches (the QUIRK_ALIENWARE patch and the DMic
+> > patch), it may be that the correct behavior is the exact OPPOSITE of
+> > what the patch does as far as quirk testing goes (that is, it should
+> > apply globally, rather than limited to some specific quirk or set of
+> > quirks), but I have no way to make such a determination at this time,
+> > so erring on the side of the status quo ante seems appropriate.
+> >
+> > Alastair Bridgewater (6):
+> >   ALSA: hda/ca0132: Delete pointless assignments to struct auto_pin_cfg
+> >     fields
+> >   ALSA: hda/ca0132: Delete redundant UNSOL event requests
+> >   ALSA: hda/ca0132: Restore behavior of QUIRK_ALIENWARE
+> >   ALSA: hda/ca0132: Don't test for QUIRK_NONE
+> >   ALSA: hda/ca0132: Restore PCM Analog Mic-In2
+> >   ALSA: hda/ca0132: Fix DMic data rate for Alienware M17x R4
+>
+> Since these look like reasonable fixes, I applied all six patches as
+> is now.
+>
+> If any further fixes are needed, please make on top of these.
+>
+
+Wonderful!  Thank you.  About the only other patch that I can see
+making at this point is to call ca0132_alt_vol_setup() on all systems,
+and I could go either way on that.
+
+With a bit of luck, I may have another patch series in a month or so.
+Not suitable for 4.18, but maybe for 4.19 or so?
 
 
-On 17/06/18 15:31, Jonathan Neuschäfer wrote:
->   example:
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-> index 6a4aadc4ce06..84b28dbe9f15 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8016-sbc.txt
-> @@ -30,7 +30,7 @@ Required properties:
->   
->   			  Board connectors:
->   			  * Headset Mic
-> -			  * Secondary Mic",
-> +			  * Secondary Mic
->   			  * DMIC
->   			  * Ext Spk
->   
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-> index aa54e49fc8a2..c7600a93ab39 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-> +++ b/Documentation/devicetree/bindings/sound/qcom,apq8096.txt
-> @@ -35,7 +35,7 @@ This binding describes the APQ8096 sound card, which uses qdsp for audio.
->   			"Digital Mic3"
->   
->   		Audio pins and MicBias on WCD9335 Codec:
-> -			"MIC_BIAS1
-> +			"MIC_BIAS1"
->   			"MIC_BIAS2"
->   			"MIC_BIAS3"
->   			"MIC_BIAS4"
-
-for apq8016 and apq8096 parts:
-
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> thanks,
+>
+> Takashi
+>
