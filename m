@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: ASoC: new ac97 bus and codec clock
-Date: Tue, 19 Jun 2018 16:02:04 +0100
-Message-ID: <20180619150204.GF11230@sirena.org.uk>
-References: <87lgbdqixh.fsf@belgarion.home>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH] ASoC: pcm: Tidy up open/hw_params handling
+Date: Tue, 19 Jun 2018 16:22:09 +0100
+Message-ID: <20180619152209.16713-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2862301511289185152=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 468E82675D5
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:02:05 +0200 (CEST)
-In-Reply-To: <87lgbdqixh.fsf@belgarion.home>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id CD769266D4C
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:22:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,90 +19,244 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>, Rob Herring <robh+dt@kernel.org>, Frank Rowand <frowand.list@gmail.com>
-Cc: alsa-devel@alsa-project.org, Daniel Mack <zonque@gmail.com>
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
+Currently, the core will continue processing open/hw_params
+component callbacks after one has failed even though it will abort
+immediately afterwards. This is unnecessary and also has the issue
+that close/hw_free will be called on the component which failed
+open/hw_params which could result in issues if the driver doesn't
+expect this behaviour.
 
---===============2862301511289185152==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="OzxllxdKGCiKxUZM"
-Content-Disposition: inline
+Update the core to abort processing open/hw_params when an error
+is hit and only call close/hw_free for those components that were
+successfully opened.
 
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/soc-pcm.c | 116 ++++++++++++++++++++++++++++------------------------
+ 1 file changed, 62 insertions(+), 54 deletions(-)
 
---OzxllxdKGCiKxUZM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Sun, Jun 17, 2018 at 10:03:54PM +0200, Robert Jarzmik wrote:
-
-> The new ac97 is working well in a platform data build. But in the device =
-tree
-> case, there is an issue, triggered by our review in [1].
-
-> The main issue is the lack of one clock.
-
-> The device hierarchy is :
->  - platform device sound@40500000 (the AC97 controller)
->    \-> ac97 device sound@40500000:0 (the discovered ac97 IP for a wm9713)
-
-> Now the issue is here :
->  - sound/ac97/bus.c:419, function ac97_get_enable_clk()
->  - the clk_get() fails
-
-> The sound@40500000:0 device was automatically created by the AC97 bus cod=
-e, but
-> I don't see any way to provide this device the "ac97_clk" ... How do you =
-think
-> this is supposed to work, and how can my devicetree description provide t=
-his
-> clock ?
-
-This sounds like a DT question - how do you hook things up using DT to a
-device that will be enumerated from the hardware?  I'm not sure what
-best practice is here, adding Rob and Frank.
-
-> [1] Discussion reference
-> https://groups.google.com/forum/#!msg/linux.kernel/6_zIXK_maA4/RMYsmLlRMg=
-AJ
-> Look for "You probably mean the BITCLK clock."
->=20
-> [2] Device tree extract
-> ac97: sound@40500000 {
->       	compatible =3D "marvell,pxa270-ac97";
-> 	reg =3D < 0x40500000 0x1000 >;
-> 	interrupts =3D <14>;
-> 	reset-gpios =3D <&gpio 95 GPIO_ACTIVE_HIGH>;
-> 	#sound-dai-cells =3D <1>;
-> 	pinctrl-names =3D "default";
-> 	pinctrl-0 =3D < &pinctrl_ac97_default >;
-> 	clocks =3D <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
-> 	clock-names =3D "AC97CLK", "AC97CONFCLK";
-> };
-
---OzxllxdKGCiKxUZM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlspGusACgkQJNaLcl1U
-h9C59gf8COPh/tEBnZO4h8fONYqlOsxCOx0d7y84FWrQgRQ4kTIcurzQA408M1hM
-gu52Su4GO5ANRvSBc7hXSSJKEgmMW4F+akWqXXGPLu6I68NlWtsVgQKFUj+7FAgc
-KadNQ655ctIw1RvpRP2iJNvt1qhcKbuo0zAkoOYkPWooMp6nWDz1+b251XWqsi35
-/SbjEgHJKmu6m7oXsDfXaF79g6yco/yKg3I2RFeiU8Lw6FP3NUvba9Olc+VkdSeP
-K+AJml9MCKaWyeSe3MKoTtYNv816LDFFeGy7OCaEE55IiOgLynmlGh+APIp3RbvM
-0JuGgDHtbkCY1LEyFxGB1XWfHoTkyg==
-=muli
------END PGP SIGNATURE-----
-
---OzxllxdKGCiKxUZM--
-
---===============2862301511289185152==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2862301511289185152==--
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 5e7ae47a9658..45b52f7b9690 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -448,6 +448,29 @@ static void soc_pcm_init_runtime_hw(struct snd_pcm_substream *substream)
+ 	hw->rate_max = min_not_zero(hw->rate_max, rate_max);
+ }
+ 
++static int soc_pcm_components_close(struct snd_pcm_substream *substream,
++				    struct snd_soc_component *last)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_rtdcom_list *rtdcom;
++	struct snd_soc_component *component;
++
++	for_each_rtdcom(rtd, rtdcom) {
++		component = rtdcom->component;
++
++		if (component == last)
++			break;
++
++		if (!component->driver->ops ||
++		    !component->driver->ops->close)
++			continue;
++
++		component->driver->ops->close(substream);
++	}
++
++	return 0;
++}
++
+ /*
+  * Called by ALSA when a PCM substream is opened, the runtime->hw record is
+  * then initialized and any private data can be allocated. This also calls
+@@ -462,7 +485,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct snd_soc_dai *codec_dai;
+ 	const char *codec_dai_name = "multicodec";
+-	int i, ret = 0, __ret;
++	int i, ret = 0;
+ 
+ 	pinctrl_pm_select_default_state(cpu_dai->dev);
+ 	for (i = 0; i < rtd->num_codecs; i++)
+@@ -486,7 +509,6 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		}
+ 	}
+ 
+-	ret = 0;
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+@@ -494,16 +516,15 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 		    !component->driver->ops->open)
+ 			continue;
+ 
+-		__ret = component->driver->ops->open(substream);
+-		if (__ret < 0) {
++		ret = component->driver->ops->open(substream);
++		if (ret < 0) {
+ 			dev_err(component->dev,
+ 				"ASoC: can't open component %s: %d\n",
+-				component->name, __ret);
+-			ret = __ret;
++				component->name, ret);
++			goto component_err;
+ 		}
+ 	}
+-	if (ret < 0)
+-		goto component_err;
++	component = NULL;
+ 
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+ 		codec_dai = rtd->codec_dais[i];
+@@ -612,15 +633,7 @@ static int soc_pcm_open(struct snd_pcm_substream *substream)
+ 	}
+ 
+ component_err:
+-	for_each_rtdcom(rtd, rtdcom) {
+-		component = rtdcom->component;
+-
+-		if (!component->driver->ops ||
+-		    !component->driver->ops->close)
+-			continue;
+-
+-		component->driver->ops->close(substream);
+-	}
++	soc_pcm_components_close(substream, component);
+ 
+ 	if (cpu_dai->driver->ops->shutdown)
+ 		cpu_dai->driver->ops->shutdown(substream, cpu_dai);
+@@ -714,15 +727,7 @@ static int soc_pcm_close(struct snd_pcm_substream *substream)
+ 	if (rtd->dai_link->ops->shutdown)
+ 		rtd->dai_link->ops->shutdown(substream);
+ 
+-	for_each_rtdcom(rtd, rtdcom) {
+-		component = rtdcom->component;
+-
+-		if (!component->driver->ops ||
+-		    !component->driver->ops->close)
+-			continue;
+-
+-		component->driver->ops->close(substream);
+-	}
++	soc_pcm_components_close(substream, NULL);
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 		if (snd_soc_runtime_ignore_pmdown_time(rtd)) {
+@@ -874,6 +879,29 @@ int soc_dai_hw_params(struct snd_pcm_substream *substream,
+ 	return 0;
+ }
+ 
++static int soc_pcm_components_hw_free(struct snd_pcm_substream *substream,
++				      struct snd_soc_component *last)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_rtdcom_list *rtdcom;
++	struct snd_soc_component *component;
++
++	for_each_rtdcom(rtd, rtdcom) {
++		component = rtdcom->component;
++
++		if (component == last)
++			break;
++
++		if (!component->driver->ops ||
++		    !component->driver->ops->hw_free)
++			continue;
++
++		component->driver->ops->hw_free(substream);
++	}
++
++	return 0;
++}
++
+ /*
+  * Called by ALSA when the hardware params are set by application. This
+  * function can also be called multiple times and can allocate buffers
+@@ -886,7 +914,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component;
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-	int i, ret = 0, __ret;
++	int i, ret = 0;
+ 
+ 	mutex_lock_nested(&rtd->pcm_mutex, rtd->pcm_subclass);
+ 	if (rtd->dai_link->ops->hw_params) {
+@@ -944,7 +972,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	if (ret < 0)
+ 		goto interface_err;
+ 
+-	ret = 0;
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+@@ -952,16 +979,15 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 		    !component->driver->ops->hw_params)
+ 			continue;
+ 
+-		__ret = component->driver->ops->hw_params(substream, params);
+-		if (__ret < 0) {
++		ret = component->driver->ops->hw_params(substream, params);
++		if (ret < 0) {
+ 			dev_err(component->dev,
+ 				"ASoC: %s hw params failed: %d\n",
+-				component->name, __ret);
+-			ret = __ret;
++				component->name, ret);
++			goto component_err;
+ 		}
+ 	}
+-	if (ret < 0)
+-		goto component_err;
++	component = NULL;
+ 
+ 	/* store the parameters for each DAIs */
+ 	cpu_dai->rate = params_rate(params);
+@@ -977,15 +1003,7 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ 	return ret;
+ 
+ component_err:
+-	for_each_rtdcom(rtd, rtdcom) {
+-		component = rtdcom->component;
+-
+-		if (!component->driver->ops ||
+-		    !component->driver->ops->hw_free)
+-			continue;
+-
+-		component->driver->ops->hw_free(substream);
+-	}
++	soc_pcm_components_hw_free(substream, component);
+ 
+ 	if (cpu_dai->driver->ops->hw_free)
+ 		cpu_dai->driver->ops->hw_free(substream, cpu_dai);
+@@ -1014,8 +1032,6 @@ static int soc_pcm_hw_params(struct snd_pcm_substream *substream,
+ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+-	struct snd_soc_component *component;
+-	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct snd_soc_dai *codec_dai;
+ 	bool playback = substream->stream == SNDRV_PCM_STREAM_PLAYBACK;
+@@ -1052,15 +1068,7 @@ static int soc_pcm_hw_free(struct snd_pcm_substream *substream)
+ 		rtd->dai_link->ops->hw_free(substream);
+ 
+ 	/* free any component resources */
+-	for_each_rtdcom(rtd, rtdcom) {
+-		component = rtdcom->component;
+-
+-		if (!component->driver->ops ||
+-		    !component->driver->ops->hw_free)
+-			continue;
+-
+-		component->driver->ops->hw_free(substream);
+-	}
++	soc_pcm_components_hw_free(substream, NULL);
+ 
+ 	/* now free hw params for the DAIs  */
+ 	for (i = 0; i < rtd->num_codecs; i++) {
+-- 
+2.11.0
