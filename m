@@ -1,82 +1,89 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: ASoC: new ac97 bus and codec clock
-Date: Wed, 20 Jun 2018 21:36:59 +0200
-Message-ID: <87h8lxp7vo.fsf@belgarion.home>
-References: <87lgbdqixh.fsf@belgarion.home>
- <20180619150204.GF11230@sirena.org.uk>
- <CAL_JsqLn2t-zFi8xrig_63OD-SBq8d0jZctih38sZ4cAnRoe6g@mail.gmail.com>
- <8736xhqzmn.fsf@belgarion.home>
- <CAL_JsqJbXGLO+xu1NZOiqmrukHKWUySv=0Sk5KDmSTLL7Mt7+Q@mail.gmail.com>
- <87y3f9peyb.fsf@belgarion.home>
- <CAL_JsqKBOdZBuDnRUAcpARP1fFquc7vpcUayYRaJAMSPrhsPdg@mail.gmail.com>
+From: =?UTF-8?Q?=C3=89meric_MASCHINO?= <emeric.maschino@gmail.com>
+Subject: Re: [PATCH] ALSA: fm801: add error handling for snd_ctl_add
+Date: Wed, 20 Jun 2018 21:39:14 +0200
+Message-ID: <CAA9xbM7_vrn-f_m67eowzLzWjoJP=9Hkgyxfc=yu=aDtmk=Qvw@mail.gmail.com>
+References: <1528704248-33818-1-git-send-email-jiazhouyang09@gmail.com>
+ <520e80a8b8de0f532e8dd3ee15af9efbc748dd9a.camel@linux.intel.com> <s5hmuw1bgmd.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp10.smtpout.orange.fr
- [80.12.242.132])
- by alsa0.perex.cz (Postfix) with ESMTP id E25972673CB
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 21:37:00 +0200 (CEST)
-In-Reply-To: <CAL_JsqKBOdZBuDnRUAcpARP1fFquc7vpcUayYRaJAMSPrhsPdg@mail.gmail.com>
- (Rob Herring's message of "Wed, 20 Jun 2018 11:16:15 -0600")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh+dt@kernel.org>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Daniel Mack <zonque@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hmuw1bgmd.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, jiazhouyang09@gmail.com, alsa-devel@alsa-project.org, BhumikaGoyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Rob Herring <robh+dt@kernel.org> writes:
+Patch tested on my ia64 workstation. Works flawlessly.
 
-> Does AC97 specify a common programming model? That's were a common
-> compatible is used (though experience has proven things like
-> "generic-ehci" are don't work).
-If regmap is enough "common programming model" then yes. If you think of a
-common layout of AC97 registers and a common dynamics to program them across all
-ac97 controllers, then no, as far as I'm aware it does not.
+Thanks,
 
->> If the purpose for this compatible string is to filter the child nodes which are
->> only ac97 codecs, so that the ac97 framework can act upon them (ie. acquire the
->> clock for example), then wm9713 is too specific ... That won't work for another
->> device with an Analog Devices AD1835 for example.
+     =C3=89meric
 
-> Are there ID registers? If so, then just construct a compatible string
-> from them and just find the compatible child node. See USB bindings
-> for an example using VID/PID.
-There is an AC97 ID register, yes, a key as VID/PID is a key for USB.
 
-So my example, where the id is 0x574d4c13, would become :
-
-ac97: sound@40500000 {
-      	compatible = "marvell,pxa270-ac97";
-	reg = < 0x40500000 0x1000 >;
-	interrupts = <14>;
-	reset-gpios = <&gpio 95 GPIO_ACTIVE_HIGH>;
-	#sound-dai-cells = <1>;
-	pinctrl-names = "default";
-	pinctrl-0 = < &pinctrl_ac97_default >;
-	clocks = <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
-	clock-names = "AC97CLK", "AC97CONFCLK";
-
-        audio-codec@0 {
-        	reg = <0>; /* Codex index (between 0 and 3) */
-                compatible = "ac97id574d4c13";
-                clocks = <&fixed_wm9713_clock>;
-                clock-names = "ac97_clk";
-        }
-};
-
-Once we have converged on this example, I will post the patches for the binding,
-and the adaptation of the ac97 bus of course. Gives me a better chance to shoot
-in the right direction first :)
-
-Cheers.
-
--- 
-Robert
+2018-06-11 15:24 GMT+02:00 Takashi Iwai <tiwai@suse.de>:
+> On Mon, 11 Jun 2018 10:49:56 +0200,
+> Andy Shevchenko wrote:
+>>
+>> On Mon, 2018-06-11 at 16:04 +0800, jiazhouyang09@gmail.com wrote:
+>> > When snd_ctl_add fails, the lack of error-handling code may
+>> > cause unexpected results.
+>> >
+>> > This patch adds error-handling code after calling snd_ctl_add.
+>> >
+>>
+>> Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>
+>> Though I can't test this (I have FM-only card). Last person who would
+>> able to test was =C3=89meric (Cc'ed).
+>
+> I applied now as this change is pretty safe.
+>
+>
+> thanks,
+>
+> Takashi
+>
+>>
+>> > Signed-off-by: Zhouyang Jia <jiazhouyang09@gmail.com>
+>> > ---
+>> >  sound/pci/fm801.c | 16 ++++++++++++----
+>> >  1 file changed, 12 insertions(+), 4 deletions(-)
+>> >
+>> > diff --git a/sound/pci/fm801.c b/sound/pci/fm801.c
+>> > index 73a67bc..e3fb9c6 100644
+>> > --- a/sound/pci/fm801.c
+>> > +++ b/sound/pci/fm801.c
+>> > @@ -1068,11 +1068,19 @@ static int snd_fm801_mixer(struct fm801 *chip)
+>> >             if ((err =3D snd_ac97_mixer(chip->ac97_bus, &ac97,
+>> > &chip->ac97_sec)) < 0)
+>> >                     return err;
+>> >     }
+>> > -   for (i =3D 0; i < FM801_CONTROLS; i++)
+>> > -           snd_ctl_add(chip->card,
+>> > snd_ctl_new1(&snd_fm801_controls[i], chip));
+>> > +   for (i =3D 0; i < FM801_CONTROLS; i++) {
+>> > +           err =3D snd_ctl_add(chip->card,
+>> > +                   snd_ctl_new1(&snd_fm801_controls[i], chip));
+>> > +           if (err < 0)
+>> > +                   return err;
+>> > +   }
+>> >     if (chip->multichannel) {
+>> > -           for (i =3D 0; i < FM801_CONTROLS_MULTI; i++)
+>> > -                   snd_ctl_add(chip->card,
+>> > snd_ctl_new1(&snd_fm801_controls_multi[i], chip));
+>> > +           for (i =3D 0; i < FM801_CONTROLS_MULTI; i++) {
+>> > +                   err =3D snd_ctl_add(chip->card,
+>> > +                           snd_ctl_new1(&snd_fm801_controls_mult
+>> > i[i], chip));
+>> > +                   if (err < 0)
+>> > +                           return err;
+>> > +           }
+>> >     }
+>> >     return 0;
+>> >  }
+>>
+>> --
+>> Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> Intel Finland Oy
+>>
