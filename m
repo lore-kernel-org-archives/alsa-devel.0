@@ -1,27 +1,22 @@
-From: Rob Herring <robh+dt@kernel.org>
-Subject: Re: ASoC: new ac97 bus and codec clock
-Date: Wed, 20 Jun 2018 09:10:49 -0600
-Message-ID: <CAL_JsqJbXGLO+xu1NZOiqmrukHKWUySv=0Sk5KDmSTLL7Mt7+Q@mail.gmail.com>
-References: <87lgbdqixh.fsf@belgarion.home>
- <20180619150204.GF11230@sirena.org.uk>
- <CAL_JsqLn2t-zFi8xrig_63OD-SBq8d0jZctih38sZ4cAnRoe6g@mail.gmail.com>
- <8736xhqzmn.fsf@belgarion.home>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 8/9] ALSA: usx2y: usbusx2yaudio: use
+	usb_fill_int_urb()
+Date: Wed, 20 Jun 2018 17:38:44 +0200
+Message-ID: <20180620153844.zayxlivlroqs2oaw@linutronix.de>
+References: <20180619215521.13688-1-bigeasy@linutronix.de>
+ <20180619215521.13688-9-bigeasy@linutronix.de>
+ <s5hr2l1mxj3.wl-tiwai@suse.de>
+ <20180620143922.nkcazvbcrmkyvm2c@linutronix.de>
+ <s5hzhzpldc2.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B3D0266D4C
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 17:11:13 +0200 (CEST)
-Received: from mail-io0-f175.google.com (mail-io0-f175.google.com
- [209.85.223.175])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- by mail.kernel.org (Postfix) with ESMTPSA id D21F620883
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 15:11:11 +0000 (UTC)
-Received: by mail-io0-f175.google.com with SMTP id d22-v6so39714iof.13
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 08:11:11 -0700 (PDT)
-In-Reply-To: <8736xhqzmn.fsf@belgarion.home>
+Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 12DDA266D4C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 17:38:45 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hzhzpldc2.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,57 +26,111 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Daniel Mack <zonque@gmail.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tglx@linutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 20, 2018 at 8:52 AM, Robert Jarzmik <robert.jarzmik@free.fr> wrote:
-> Rob Herring <robh+dt@kernel.org> writes:
->
->> Like PCI, USB, SDIO, etc., you need to define an AC97 bus binding
->> which defines child node structure, compatible formatting (if you can
->> base compatibles on something like VID/PID), and addressing (reg and
->> unit-address formats). Then once you define child nodes, you can add
->> whatever sideband connections you need. The AC97 core should be able
->> to populate struct device_node if there are any matching child
->> devices.
-> Ok, I thing I understand.
->
-> So the device-tree will look like :
-> ac97: sound@40500000 {
->         compatible = "marvell,pxa270-ac97";
->         reg = < 0x40500000 0x1000 >;
->         interrupts = <14>;
->         reset-gpios = <&gpio 95 GPIO_ACTIVE_HIGH>;
->         #sound-dai-cells = <1>;
->         pinctrl-names = "default";
->         pinctrl-0 = < &pinctrl_ac97_default >;
->         clocks = <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
->         clock-names = "AC97CLK", "AC97CONFCLK";
->
->         wm9713@0 {
+On 2018-06-20 16:52:45 [+0200], Takashi Iwai wrote:
+> > but then we end up with two multiplications.
+> 
+> Yes, but it's no hot path, and the code won't bigger.
+> And I bet you won't notice any performance lost by that :)
+> 
+> > What about pulling the
+> > overflow-mul macro out of malloc_array() and doing this instead:
+> 
+> Well, it's neither smaller nor more readable...
 
-audio-codec@0
+okay, as you wish:
 
->                 reg = <0>; /* Codex index (between 0 and 3) */
->                 compatible = "ac97-codec";
+> thanks,
+> 
+> Takashi
 
-This should be something with 'wm9713' in it or if there are ID
-registers you can base it on that.
+----------- >8
 
->                 clocks = <&fixed_wm9713_clock>;
->                 clock-names = "ac97_clk";
+Subject: [PATCH 8/9 v3] ALSA: usx2y: usbusx2yaudio: use usb_fill_int_urb()
 
-This is the standard 12MHz clock?
+Using usb_fill_int_urb() helps to find code which initializes an
+URB. A grep for members of the struct (like ->complete) reveal lots
+of other things, too.
 
->         }
-> };
->
-> And the function ac97_codec_add() will :
->  - scan the device-tree ac97 controller childs
->  - match one if its reg equals (in our case wm9713@0)
->  - set codec->dev.of_node to the matched one
+The "&& !(*purb)->transfer_buffer" check has been removed because the
+URB has been freshly allocated a few lines above so ->transfer_buffer
+has to be NULL here.
+The `dev' and `transfer_size' assignments have been moved from
+usX2Y_urbs_start() to usX2Y_urbs_allocate() because they don't change
+overtime.
+The multiplication via check_mul_overflow() has been extracted from
+kmalloc_array() to avoid two multiplication (one with overflow check and
+one without for the length argument). This requires to change the type
+`maxpacksize' to int so there is only one type involved in the
+multiplication.
 
-Not familiar with that function, but that sounds about right.
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+---
+ sound/usb/usx2y/usbusx2yaudio.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
-Rob
+diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
+index 2b833054e3b0..ee8d21a784fd 100644
+--- a/sound/usb/usx2y/usbusx2yaudio.c
++++ b/sound/usb/usx2y/usbusx2yaudio.c
+@@ -425,6 +425,9 @@ static int usX2Y_urbs_allocate(struct snd_usX2Y_substream *subs)
+ 	/* allocate and initialize data urbs */
+ 	for (i = 0; i < NRURBS; i++) {
+ 		struct urb **purb = subs->urb + i;
++		void *buf = NULL;
++		int len = 0;
++
+ 		if (*purb) {
+ 			usb_kill_urb(*purb);
+ 			continue;
+@@ -434,22 +437,20 @@ static int usX2Y_urbs_allocate(struct snd_usX2Y_substream *subs)
+ 			usX2Y_urbs_release(subs);
+ 			return -ENOMEM;
+ 		}
+-		if (!is_playback && !(*purb)->transfer_buffer) {
++
++		if (!is_playback) {
+ 			/* allocate a capture buffer per urb */
+-			(*purb)->transfer_buffer =
+-				kmalloc_array(subs->maxpacksize,
+-					      nr_of_packs(), GFP_KERNEL);
+-			if (NULL == (*purb)->transfer_buffer) {
++			buf = kmalloc_array(subs->maxpacksize, nr_of_packs,
++					    GFP_KERNEL);
++			if (!buf) {
+ 				usX2Y_urbs_release(subs);
+ 				return -ENOMEM;
+ 			}
++			len = subs->maxpacksize * nr_of_packs;
+ 		}
+-		(*purb)->dev = dev;
+-		(*purb)->pipe = pipe;
++		usb_fill_int_urb(*purb, dev, pipe, buf, len,
++				 i_usX2Y_subs_startup, subs, 1);
+ 		(*purb)->number_of_packets = nr_of_packs();
+-		(*purb)->context = subs;
+-		(*purb)->interval = 1;
+-		(*purb)->complete = i_usX2Y_subs_startup;
+ 	}
+ 	return 0;
+ }
+@@ -485,12 +486,10 @@ static int usX2Y_urbs_start(struct snd_usX2Y_substream *subs)
+ 			unsigned long pack;
+ 			if (0 == i)
+ 				atomic_set(&subs->state, state_STARTING3);
+-			urb->dev = usX2Y->dev;
+ 			for (pack = 0; pack < nr_of_packs(); pack++) {
+ 				urb->iso_frame_desc[pack].offset = subs->maxpacksize * pack;
+ 				urb->iso_frame_desc[pack].length = subs->maxpacksize;
+ 			}
+-			urb->transfer_buffer_length = subs->maxpacksize * nr_of_packs(); 
+ 			if ((err = usb_submit_urb(urb, GFP_ATOMIC)) < 0) {
+ 				snd_printk (KERN_ERR "cannot submit datapipe for urb %d, err = %d\n", i, err);
+ 				err = -EPIPE;
+-- 
+2.17.1
