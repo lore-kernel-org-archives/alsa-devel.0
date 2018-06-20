@@ -1,21 +1,15 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH 4/9] ALSA: usb-audio: use usb_fill_int_urb()
-Date: Wed, 20 Jun 2018 11:23:12 +0300
-Message-ID: <ce8ffb2b-35e8-1108-9065-81f4d3cb4d8d@cogentembedded.com>
-References: <20180619215521.13688-1-bigeasy@linutronix.de>
- <20180619215521.13688-5-bigeasy@linutronix.de>
+From: <jiada_wang@mentor.com>
+Subject: [PATCH 1/1] ASoC: soc-pcm: DPCM cares BE channel
+	constraint
+Date: Wed, 20 Jun 2018 18:25:20 +0900
+Message-ID: <20180620092520.14101-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf0-f66.google.com (mail-lf0-f66.google.com
- [209.85.215.66])
- by alsa0.perex.cz (Postfix) with ESMTP id F33D226720C
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 10:23:14 +0200 (CEST)
-Received: by mail-lf0-f66.google.com with SMTP id n24-v6so3624528lfh.3
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 01:23:14 -0700 (PDT)
-In-Reply-To: <20180619215521.13688-5-bigeasy@linutronix.de>
-Content-Language: en-US
+Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE49026720C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 11:25:29 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,25 +19,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, alsa-devel@alsa-project.org
-Cc: tglx@linutronix.de, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com
+Cc: jiada_wang@mentor.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8hCgpPbiA2LzIwLzIwMTggMTI6NTUgQU0sIFNlYmFzdGlhbiBBbmRyemVqIFNpZXdpb3Ig
-d3JvdGU6Cgo+IFVzaW5nIHVzYl9maWxsX2ludF91cmIoKSBoZWxwcyB0byBmaW5kIGNvZGUgd2hp
-Y2ggaW5pdGlhbGl6ZXMgYW4KPiBVUkIuIEEgZ3JlcCBmb3IgbWVtYmVycyBvZiB0aGUgc3RydWN0
-IChsaWtlIC0+Y29tcGxldGUpIHJldmVhbCBsb3RzCj4gb2Ygb3RoZXIgdGhpbmdzLCB0b28uCj4g
-Cj4gZGF0YV9lcF9zZXRfcGFyYW1zKCkgYWRkaXRpb25hbGx5IHNldHMgdXJiLT50cmFuc2Zlcl9i
-dWZmZXJfbGVuZ3RoIHdoaWNoCj4gd2FzIG5vdCB0aGUgY2FzZSBlYXJsaWVyLgo+IGRhdGFfZXBf
-c2V0X3BhcmFtcygpIGFuZCBkYXRhX2VwX3NldF9wYXJhbXMoKQoKICAgIFRoZXNlIDIgYXJlIHRo
-ZSBzYW1lIGZ1bmN0aW9uPwoKPiBlbnN1cmUgdGhhdCBzeW5jaW50ZXJ2YWwgaXMKPiB3aXRoaW4g
-dGhlIGFsbG93ZWQgcmFuZ2Ugb24gSFMvU1MuIFRoZSBpbnRlcnZhbCB2YWx1ZSBzZWVtcyB0byBj
-b21lIGZyb20KPiBzbmRfdXNiX3BhcnNlX2RhdGFpbnRlcnZhbCgpIHdoaWNoIGlzIGJJbnRlcnZh
-bCAtIDEgYW5kIG9ubHkgaW4gdGhlIHJhZ2UgMSDigKYgNC4KPiBTbyBpbiBvcmRlciB0byBrZWVw
-IHRoZSBtYWdpYyB3b2tyaW5nIEkgcGFzcyBkYXRhaW50ZXJ2YWwgKyAxLgoKICAgIFdvcmtpbmcu
-Cgo+IENjOiBKYXJvc2xhdiBLeXNlbGEgPHBlcmV4QHBlcmV4LmN6Pgo+IENjOiBUYWthc2hpIEl3
-YWkgPHRpd2FpQHN1c2UuY29tPgo+IFNpZ25lZC1vZmYtYnk6IFNlYmFzdGlhbiBBbmRyemVqIFNp
-ZXdpb3IgPGJpZ2Vhc3lAbGludXRyb25peC5kZT4KWy4uLl0KCk1CUiwgU2VyZ2VpCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+From: Jiada Wang <jiada_wang@mentor.com>
+
+Current DPCM is caring only FE channel configuration. Sometimes
+it will be trouble if user selects channel which isn't supported
+by BE.
+
+This patch adds new .dpcm_merged_chan on struct snd_soc_dai_link.
+DPCM will use FE / BE merged channel if struct snd_soc_dai_link
+has it.
+
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+---
+ include/sound/soc.h |  2 ++
+ sound/soc/soc-pcm.c | 46 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 48 insertions(+)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 1378dcd2128a..f7579f82cc00 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -957,6 +957,8 @@ struct snd_soc_dai_link {
+ 
+ 	/* DPCM used FE & BE merged format */
+ 	unsigned int dpcm_merged_format:1;
++	/* DPCM used FE & BE merged channel */
++	unsigned int dpcm_merged_chan:1;
+ 
+ 	/* pmdown_time is ignored at stop */
+ 	unsigned int ignore_pmdown_time:1;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 45b52f7b9690..19ebfc958b9d 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1715,6 +1715,46 @@ static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
+ 	return formats;
+ }
+ 
++static void dpcm_runtime_base_chan(struct snd_pcm_substream *substream,
++				   unsigned int *channels_min,
++				   unsigned int *channels_max)
++{
++	struct snd_soc_pcm_runtime *fe = substream->private_data;
++	struct snd_soc_dpcm *dpcm;
++	int stream = substream->stream;
++
++	if (!fe->dai_link->dpcm_merged_chan)
++		return;
++
++	*channels_min = 0;
++	*channels_max = UINT_MAX;
++
++	/*
++	 * It returns merged BE codec channel;
++	 * if FE want to use it (= dpcm_merged_chan)
++	 */
++
++	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
++		struct snd_soc_pcm_runtime *be = dpcm->be;
++		struct snd_soc_dai_driver *codec_dai_drv;
++		struct snd_soc_pcm_stream *codec_stream;
++		int i;
++
++		for (i = 0; i < be->num_codecs; i++) {
++			codec_dai_drv = be->codec_dais[i]->driver;
++			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++				codec_stream = &codec_dai_drv->playback;
++			else
++				codec_stream = &codec_dai_drv->capture;
++
++			*channels_min = max(*channels_min,
++					    codec_stream->channels_min);
++			*channels_max = min(*channels_max,
++					    codec_stream->channels_max);
++		}
++	}
++}
++
+ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+@@ -1722,11 +1762,17 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct snd_soc_dai_driver *cpu_dai_drv = cpu_dai->driver;
+ 	u64 format = dpcm_runtime_base_format(substream);
++	unsigned int channels_min = 0, channels_max = UINT_MAX;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback, format);
+ 	else
+ 		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture, format);
++
++	dpcm_runtime_base_chan(substream, &channels_min, &channels_max);
++
++	runtime->hw.channels_min = max(channels_min, runtime->hw.channels_min);
++	runtime->hw.channels_max = min(channels_max, runtime->hw.channels_max);
+ }
+ 
+ static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd);
+-- 
+2.17.0
