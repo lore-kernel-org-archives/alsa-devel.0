@@ -1,22 +1,23 @@
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Subject: Re: [PATCH 8/9] ALSA: usx2y: usbusx2yaudio: use
 	usb_fill_int_urb()
-Date: Wed, 20 Jun 2018 17:38:44 +0200
-Message-ID: <20180620153844.zayxlivlroqs2oaw@linutronix.de>
+Date: Wed, 20 Jun 2018 17:47:01 +0200
+Message-ID: <20180620154701.i4zgeram6i2gxps6@linutronix.de>
 References: <20180619215521.13688-1-bigeasy@linutronix.de>
  <20180619215521.13688-9-bigeasy@linutronix.de>
  <s5hr2l1mxj3.wl-tiwai@suse.de>
  <20180620143922.nkcazvbcrmkyvm2c@linutronix.de>
  <s5hzhzpldc2.wl-tiwai@suse.de>
+ <20180620153844.zayxlivlroqs2oaw@linutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 12DDA266D4C
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 17:38:45 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D730F266D4C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 17:47:02 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5hzhzpldc2.wl-tiwai@suse.de>
+In-Reply-To: <20180620153844.zayxlivlroqs2oaw@linutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,26 +31,18 @@ To: Takashi Iwai <tiwai@suse.de>
 Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tglx@linutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-On 2018-06-20 16:52:45 [+0200], Takashi Iwai wrote:
-> > but then we end up with two multiplications.
-> 
-> Yes, but it's no hot path, and the code won't bigger.
-> And I bet you won't notice any performance lost by that :)
-> 
-> > What about pulling the
-> > overflow-mul macro out of malloc_array() and doing this instead:
-> 
-> Well, it's neither smaller nor more readable...
+On 2018-06-20 17:38:44 [+0200], To Takashi Iwai wrote:
+> okay, as you wish:
 
-okay, as you wish:
+I'm sorry, I compiled one patch and send the other. Here is the fixed
+one.
 
-> thanks,
+> > thanks,
+> > 
+> > Takashi
 > 
-> Takashi
-
 ----------- >8
-
-Subject: [PATCH 8/9 v3] ALSA: usx2y: usbusx2yaudio: use usb_fill_int_urb()
+Subject: [PATCH 8/9 v4] ALSA: usx2y: usbusx2yaudio: use usb_fill_int_urb()
 
 Using usb_fill_int_urb() helps to find code which initializes an
 URB. A grep for members of the struct (like ->complete) reveal lots
@@ -75,7 +68,7 @@ Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
  1 file changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
-index 2b833054e3b0..ee8d21a784fd 100644
+index 2b833054e3b0..de3a21444db3 100644
 --- a/sound/usb/usx2y/usbusx2yaudio.c
 +++ b/sound/usb/usx2y/usbusx2yaudio.c
 @@ -425,6 +425,9 @@ static int usX2Y_urbs_allocate(struct snd_usX2Y_substream *subs)
@@ -100,13 +93,13 @@ index 2b833054e3b0..ee8d21a784fd 100644
 -				kmalloc_array(subs->maxpacksize,
 -					      nr_of_packs(), GFP_KERNEL);
 -			if (NULL == (*purb)->transfer_buffer) {
-+			buf = kmalloc_array(subs->maxpacksize, nr_of_packs,
++			buf = kmalloc_array(subs->maxpacksize, nr_of_packs(),
 +					    GFP_KERNEL);
 +			if (!buf) {
  				usX2Y_urbs_release(subs);
  				return -ENOMEM;
  			}
-+			len = subs->maxpacksize * nr_of_packs;
++			len = subs->maxpacksize * nr_of_packs();
  		}
 -		(*purb)->dev = dev;
 -		(*purb)->pipe = pipe;
