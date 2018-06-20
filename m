@@ -1,33 +1,71 @@
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH] ASoC: add hp-det-gpio and mic-det-gpio to audio graph card binding
-Date: Wed, 20 Jun 2018 10:59:59 +0900
-Message-ID: <20180620015959.10312-1-suzuki.katsuhiro@socionext.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [PATCH] ASoC: qcom: add sdm845 sound card support
+Date: Wed, 20 Jun 2018 13:07:29 +0530
+Message-ID: <f7891675-4c98-7fc6-b80f-840ada9a1c5b@codeaurora.org>
+References: <1529320591-22434-1-git-send-email-rohitkr@codeaurora.org>
+ <20180619050527.GR25852@vkoul-mobl>
+ <8562b574-3738-8983-53e7-64366590fad4@codeaurora.org>
+ <20180619162230.GF13316@vkoul-mobl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB144266D04
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 09:45:01 +0200 (CEST)
+In-Reply-To: <20180619162230.GF13316@vkoul-mobl>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod <vkoul@kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Add headphone and microphone detection GPIO support to audio graph
-card same as supported in simple card.
-
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
----
- Documentation/devicetree/bindings/sound/audio-graph-card.txt | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-index d04ea3b1a1dd..7e63e53a901c 100644
---- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-+++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
-@@ -18,6 +18,8 @@ Below are same as Simple-Card.
- - bitclock-inversion
- - frame-inversion
- - mclk-fs
-+- hp-det-gpio
-+- mic-det-gpio
- - dai-tdm-slot-num
- - dai-tdm-slot-width
- - clocks / system-clock-frequency
--- 
-2.17.1
+SGVsbG8gVmlub2QsCgoKT24gNi8xOS8yMDE4IDk6NTIgUE0sIFZpbm9kIHdyb3RlOgo+IEhpIFJv
+aGl0LAo+Cj4gT24gMTktMDYtMTgsIDE5OjIwLCBSb2hpdCBLdW1hciB3cm90ZToKPj4gT24gNi8x
+OS8yMDE4IDEwOjM1IEFNLCBWaW5vZCB3cm90ZToKPj4+IE9uIDE4LTA2LTE4LCAxNjo0NiwgUm9o
+aXQga3VtYXIgd3JvdGU6Cj4+Pgo+Pj4+ICtzdHJ1Y3Qgc2RtODQ1X3NuZF9kYXRhIHsKPj4+PiAr
+CXN0cnVjdCBzbmRfc29jX2NhcmQgKmNhcmQ7Cj4+Pj4gKwlzdHJ1Y3QgcmVndWxhdG9yICp2ZGRf
+c3VwcGx5Owo+Pj4+ICsJc3RydWN0IHNuZF9zb2NfZGFpX2xpbmsgZGFpX2xpbmtbXTsKPj4+PiAr
+fTsKPj4+PiArCj4+Pj4gK3N0YXRpYyBzdHJ1Y3QgbXV0ZXggcHJpX21pMnNfcmVzX2xvY2s7Cj4+
+Pj4gK3N0YXRpYyBzdHJ1Y3QgbXV0ZXggcXVhdF90ZG1fcmVzX2xvY2s7Cj4+PiBhbnkgcmVhc29u
+IHdoeSB0aGUgbG9ja3MgY2FuJ3QgYmUgcGFydCBvZiBzZG04NDVfc25kX2RhdGE/Cj4+PiBBbHNv
+IHdoeSBkbyB3ZSBuZWVkIHR3byBsb2NrcyA/Cj4+IE5vIHNwZWNpZmljIHJlYXNvbiwgSSB3aWxs
+IG1vdmUgaXQgdG8gc2RtODQ1X3NuZF9kYXRhLgo+PiBUaGVzZSBsb2NrcyBhcmUgdXNlZCB0byBw
+cm90ZWN0IGVuYWJsZS9kaXNhYmxlIG9mIGJpdCBjbG9ja3MuIFdlIGhhdmUKPj4gUHJpbWFyeSBN
+STJTIFJYL1RYCj4+IGFuZCBRdWF0ZXJuYXJ5IFRETSBSWC9UWCBpbnRlcmZhY2VzLiBGb3IgcHJp
+bWFyeSBtaTJzIHJ4L3R4LCB3ZSBoYXZlIHNpbmdsZQo+PiBjbG9jayB3aGljaCBpcwo+PiBzeW5j
+aHJvbml6ZWQgd2l0aCBwcmlfbWkyc19yZXNfbG9jay4gRm9yIFF1YXQgVERNIFJYL1RYLCB3ZSBh
+cmUgdXNpbmcKPj4gcXVhdF90ZG1fcmVzX2xvY2suCj4+IFdlIG5lZWQgdHdvIGxvY2tzIGFzIHdl
+IGFyZSBwcm90ZWN0aW5nIHR3byBkaWZmZXJlbnQgcmVzb3VyY2VzLgo+IEkgdGhpbmsgYmlnZ2Vy
+IHF1ZXN0aW9uIGlzIHdoeSBkbyB5b3UgbmVlZCBhbnkgbG9ja3M/IFdoYXQgaXMgdGhlIHJhY2UK
+PiBzY2VuYXJpbyB5b3UgZW52aXNpb24gd2hpY2ggbmVlZHMgcHJvdGVjdGlvbgo+CgpCZWxvdyBp
+cyBvbmUgb2YgdGhlIHJhY2UgY29uZGl0aW9uOgoKVGhyZWFkMcKgwqDCoCDCoMKgwqAgwqDCoMKg
+IMKgwqDCoCDCoMKgwqAgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoCBUaHJlYWQyCi0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0Kc3Rh
+cnR1cCgpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwK
+Y291bnQrKzvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+fMKgwqDCoCBzdGFydHVwKCkKcmVhZCBjb3VudCAoY291bnQgPSAxKSB8CmVuYWJsZV9jbG9jaygp
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgIGNvdW50Kys7wqDCoCAvL2NvdW50
+ID0gMgpzaHV0ZG93bigpwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfApj
+b3VudC0tOy8vIGNvdW50ID0gMcKgwqDCoMKgwqAgfAogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+fCByZWFkIGNvdW50IChjb3VudCA9IDEpCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8IGVuYWJs
+ZV9jbG9jaygpCgpIZXJlIGNsb2NrIHdpbGwgYmUgZW5hYmxlZCB0d2ljZSBidXQgZGlzYWJsZSB3
+aWxsIGJlIGNhbGxlZCBvbmx5IG9uY2UgCndoZW4gY291bnQgPSAwLgoKVGhpcyB3aWxsIG1ha2Ug
+dGhlIGNsb2NrIGFsd2F5cyBlbmFibGVkLiBTbywgSSB0aGluayB3ZSBzaG91bGQga2VlcCAKZWl0
+aGVyIG11dGV4IGxvY2sgb3IgYXRvbWljIHZhcmlhYmxlIHRvIHN5bmNocm9uaXplIHRoaXMuCgpS
+ZWdhcmRzLApSb2hpdAoKLS0gClF1YWxjb21tIEluZGlhIFByaXZhdGUgTGltaXRlZCwgb24gYmVo
+YWxmIG9mIFF1YWxjb21tIElubm92YXRpb24gQ2VudGVyLCBJbmMuLAppcyBhIG1lbWJlciBvZiBD
+b2RlIEF1cm9yYSBGb3J1bSwgYSBMaW51eCBGb3VuZGF0aW9uIENvbGxhYm9yYXRpdmUgUHJvamVj
+dC4KCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
