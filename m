@@ -1,21 +1,16 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH] ASoC: qcom: add sdm845 sound card support
-Date: Wed, 20 Jun 2018 15:01:06 +0530
-Message-ID: <20180620093106.GI13316@vkoul-mobl>
-References: <1529320591-22434-1-git-send-email-rohitkr@codeaurora.org>
- <20180619050527.GR25852@vkoul-mobl>
- <8562b574-3738-8983-53e7-64366590fad4@codeaurora.org>
- <20180619162230.GF13316@vkoul-mobl>
- <f7891675-4c98-7fc6-b80f-840ada9a1c5b@codeaurora.org>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: HDA controller w/o CLKSTOP and EPSS support
+Date: Wed, 20 Jun 2018 11:34:52 +0200
+Message-ID: <20180620093452.GA25280@wunner.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 241D42673CB
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 11:31:15 +0200 (CEST)
+Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net
+ [83.223.95.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA9F22673CB
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 11:34:53 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <f7891675-4c98-7fc6-b80f-840ada9a1c5b@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,73 +20,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit Kumar <rohitkr@codeaurora.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, srinivas.kandagatla@linaro.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Henning Kuehn <prg@cooco.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rohit,
+Hi Takashi,
 
-On 20-06-18, 13:07, Rohit Kumar wrote:
-> > On 19-06-18, 19:20, Rohit Kumar wrote:
-> > > On 6/19/2018 10:35 AM, Vinod wrote:
-> > > > On 18-06-18, 16:46, Rohit kumar wrote:
-> > > > =
+Henning K=FChn reports that due to my commit 07f4f97d7b4b ("vga_switcheroo:
+Use device link for HDA controller"), the discrete GPU on his hybrid
+graphics laptop no longer runtime suspends.
 
-> > > > > +struct sdm845_snd_data {
-> > > > > +	struct snd_soc_card *card;
-> > > > > +	struct regulator *vdd_supply;
-> > > > > +	struct snd_soc_dai_link dai_link[];
-> > > > > +};
-> > > > > +
-> > > > > +static struct mutex pri_mi2s_res_lock;
-> > > > > +static struct mutex quat_tdm_res_lock;
-> > > > any reason why the locks can't be part of sdm845_snd_data?
-> > > > Also why do we need two locks ?
-> > > No specific reason, I will move it to sdm845_snd_data.
-> > > These locks are used to protect enable/disable of bit clocks. We have
-> > > Primary MI2S RX/TX
-> > > and Quaternary TDM RX/TX interfaces. For primary mi2s rx/tx, we have =
-single
-> > > clock which is
-> > > synchronized with pri_mi2s_res_lock. For Quat TDM RX/TX, we are using
-> > > quat_tdm_res_lock.
-> > > We need two locks as we are protecting two different resources.
-> > I think bigger question is why do you need any locks? What is the race
-> > scenario you envision which needs protection
-> > =
+The root cause is that the single codec of the GPU's HDA controller
+doesn't support CLKSTOP and EPSS.  (The "Supported Power States" are
+0x00000009, i.e. CLKSTOP and EPSS bits are not set, cf. page 209 of
+the HDA spec.)
 
-> =
+This means that in hda_codec_runtime_suspend() we do not call
+snd_hdac_codec_link_down():
 
-> Below is one of the race condition:
-> =
+	if (codec_has_clkstop(codec) && codec_has_epss(codec) &&
+	    (state & AC_PWRST_CLK_STOP_OK))
+		snd_hdac_codec_link_down(&codec->core);
 
-> Thread1=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0 =
-|=A0=A0=A0=A0=A0=A0=A0=A0 Thread2
-> ----------------------------------------------------------
-> startup()=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 |
-> count++;=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 |=A0=A0=A0 startup()
-> read count (count =3D 1) |
-> enable_clock()=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |=A0=A0=A0 count=
-++;=A0=A0 //count =3D 2
-> shutdown()=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 |
-> count--;// count =3D 1=A0=A0=A0=A0=A0 |
-> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 | read count (count =3D 1)
-> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 | enable_clock()
-> =
+If snd_hdac_codec_link_down() isn't called, the bit in the codec_powered
+bitmask isn't cleared, which in turn prevents the controller from going
+to PCI_D3hot in azx_runtime_idle():
 
-> Here clock will be enabled twice but disable will be called only once when
-> count =3D 0.
-> =
+	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
+	    azx_bus(chip)->codec_powered || !chip->running)
+		return -EBUSY;
 
-> This will make the clock always enabled. So, I think we should keep either
-> mutex lock or atomic variable to synchronize this.
+The codec does runtime suspend to D3, but the PS-ClkStopOk bit in the
+response to "Get Power State" is not set. (Response is 0x00000033,
+cf. page 151 of the HD Audio spec.)  Hence the check above
+"state & AC_PWRST_CLK_STOP_OK" also results in "false".
 
-we are using DPCM here right?
+I'm not familiar enough with the intricacies of the HD Audio spec to
+fully comprehend the implications of missing EPSS and CLKSTOP support
+and to come up with a fix.  We could quirk any HDA controller in a
+vga_switcheroo setup to ignore missing EPSS and CLKSTOP support, but
+would that be safe?  E.g. the spec says that if the bus clock does stop,
+"a full reset shall be performed" when the clock is reenabled.  Are we
+handling this correctly?
 
--- =
+Any help in coming up with a proper fix would be greatly appreciated.
 
-~Vinod
+dmesg output is available here:
+https://bugs.freedesktop.org/show_bug.cgi?id=3D106957
+
+It's a muxed hybrid graphics machine, the HDA controller has PCI ID
+1002:aa60.
+
+Thanks!
+
+Lukas
