@@ -1,19 +1,25 @@
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 4/9 v2] ALSA: usb-audio: use usb_fill_int_urb()
-Date: Wed, 20 Jun 2018 11:38:27 +0200
-Message-ID: <20180620093827.ei6bqkkb4ahk3hbn@linutronix.de>
-References: <20180619215521.13688-1-bigeasy@linutronix.de>
- <20180619215521.13688-5-bigeasy@linutronix.de>
- <ce8ffb2b-35e8-1108-9065-81f4d3cb4d8d@cogentembedded.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: add sdm845 sound card support
+Date: Wed, 20 Jun 2018 10:53:01 +0100
+Message-ID: <53db13d7-b4bd-0e06-4110-ce75fd0bdd3c@linaro.org>
+References: <1529320591-22434-1-git-send-email-rohitkr@codeaurora.org>
+ <20180619050527.GR25852@vkoul-mobl>
+ <8562b574-3738-8983-53e7-64366590fad4@codeaurora.org>
+ <20180619162230.GF13316@vkoul-mobl>
+ <f7891675-4c98-7fc6-b80f-840ada9a1c5b@codeaurora.org>
+ <20180620093106.GI13316@vkoul-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id EB2622673CB
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 11:38:29 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <ce8ffb2b-35e8-1108-9065-81f4d3cb4d8d@cogentembedded.com>
+Received: from mail-wr0-f194.google.com (mail-wr0-f194.google.com
+ [209.85.128.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 25D8126720C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 11:53:02 +0200 (CEST)
+Received: by mail-wr0-f194.google.com with SMTP id o12-v6so2583175wrm.12
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 02:53:02 -0700 (PDT)
+In-Reply-To: <20180620093106.GI13316@vkoul-mobl>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,59 +29,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tglx@linutronix.de, Takashi Iwai <tiwai@suse.com>
+To: Vinod <vkoul@kernel.org>, Rohit Kumar <rohitkr@codeaurora.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-VXNpbmcgdXNiX2ZpbGxfaW50X3VyYigpIGhlbHBzIHRvIGZpbmQgY29kZSB3aGljaCBpbml0aWFs
-aXplcyBhbgpVUkIuIEEgZ3JlcCBmb3IgbWVtYmVycyBvZiB0aGUgc3RydWN0IChsaWtlIC0+Y29t
-cGxldGUpIHJldmVhbCBsb3RzCm9mIG90aGVyIHRoaW5ncywgdG9vLgoKZGF0YV9lcF9zZXRfcGFy
-YW1zKCkgYWRkaXRpb25hbGx5IHNldHMgdXJiLT50cmFuc2Zlcl9idWZmZXJfbGVuZ3RoIHdoaWNo
-CndhcyBub3QgdGhlIGNhc2UgZWFybGllci4KdXNiX2ZpbGxfaW50X3VyYigpIGVuc3VyZXMgdGhh
-dCBzeW5jaW50ZXJ2YWwgaXMgd2l0aGluIHRoZSBhbGxvd2VkIHJhbmdlCm9uIEhTL1NTLiBUaGUg
-aW50ZXJ2YWwgdmFsdWUgc2VlbXMgdG8gY29tZSBmcm9tCnNuZF91c2JfcGFyc2VfZGF0YWludGVy
-dmFsKCkgd2hpY2ggaXMgYkludGVydmFsIC0gMSBhbmQgb25seSBpbiB0aGUgcmFnZQoxIOKApiA0
-LiBTbyBpbiBvcmRlciB0byBrZWVwIHRoZSBtYWdpYyB3b3JraW5nIEkgcGFzcyBkYXRhaW50ZXJ2
-YWwgKyAxLgoKQ2M6IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+CkNjOiBUYWthc2hp
-IEl3YWkgPHRpd2FpQHN1c2UuY29tPgpTaWduZWQtb2ZmLWJ5OiBTZWJhc3RpYW4gQW5kcnplaiBT
-aWV3aW9yIDxiaWdlYXN5QGxpbnV0cm9uaXguZGU+Ci0tLQp2MeKApnYyOiBkZXNjcmlwdGlvbiBj
-aGFuZ2VzIChzcGVsbGluZyArIHVzYl9maWxsX2ludF91cmIoKSBlbnN1cmVzCiAgICAgICAic3lu
-Y2ludGVydmFsIiBub3QgZGF0YV9lcF9zZXRfcGFyYW1zKCkpCgogc291bmQvdXNiL2VuZHBvaW50
-LmMgfCAyNCArKysrKysrKysrLS0tLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNl
-cnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvZW5kcG9p
-bnQuYyBiL3NvdW5kL3VzYi9lbmRwb2ludC5jCmluZGV4IGM5MDYwN2ViZTE1NS4uYmJjMDJkYjVi
-NDE3IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvZW5kcG9pbnQuYworKysgYi9zb3VuZC91c2IvZW5k
-cG9pbnQuYwpAQCAtNzcyLDYgKzc3Miw4IEBAIHN0YXRpYyBpbnQgZGF0YV9lcF9zZXRfcGFyYW1z
-KHN0cnVjdCBzbmRfdXNiX2VuZHBvaW50ICplcCwKIAkvKiBhbGxvY2F0ZSBhbmQgaW5pdGlhbGl6
-ZSBkYXRhIHVyYnMgKi8KIAlmb3IgKGkgPSAwOyBpIDwgZXAtPm51cmJzOyBpKyspIHsKIAkJc3Ry
-dWN0IHNuZF91cmJfY3R4ICp1ID0gJmVwLT51cmJbaV07CisJCXZvaWQgKmJ1ZjsKKwogCQl1LT5p
-bmRleCA9IGk7CiAJCXUtPmVwID0gZXA7CiAJCXUtPnBhY2tldHMgPSB1cmJfcGFja3M7CkBAIC03
-ODMsMTYgKzc4NSwxMyBAQCBzdGF0aWMgaW50IGRhdGFfZXBfc2V0X3BhcmFtcyhzdHJ1Y3Qgc25k
-X3VzYl9lbmRwb2ludCAqZXAsCiAJCWlmICghdS0+dXJiKQogCQkJZ290byBvdXRfb2ZfbWVtb3J5
-OwogCi0JCXUtPnVyYi0+dHJhbnNmZXJfYnVmZmVyID0KLQkJCXVzYl9hbGxvY19jb2hlcmVudChl
-cC0+Y2hpcC0+ZGV2LCB1LT5idWZmZXJfc2l6ZSwKLQkJCQkJICAgR0ZQX0tFUk5FTCwgJnUtPnVy
-Yi0+dHJhbnNmZXJfZG1hKTsKLQkJaWYgKCF1LT51cmItPnRyYW5zZmVyX2J1ZmZlcikKKwkJYnVm
-ID0gdXNiX2FsbG9jX2NvaGVyZW50KGVwLT5jaGlwLT5kZXYsIHUtPmJ1ZmZlcl9zaXplLAorCQkJ
-CQkgR0ZQX0tFUk5FTCwgJnUtPnVyYi0+dHJhbnNmZXJfZG1hKTsKKwkJaWYgKCFidWYpCiAJCQln
-b3RvIG91dF9vZl9tZW1vcnk7Ci0JCXUtPnVyYi0+cGlwZSA9IGVwLT5waXBlOworCQl1c2JfZmls
-bF9pbnRfdXJiKHUtPnVyYiwgTlVMTCwgZXAtPnBpcGUsIGJ1ZiwgdS0+YnVmZmVyX3NpemUsCisJ
-CQkJIHNuZF9jb21wbGV0ZV91cmIsIHUsIGVwLT5kYXRhaW50ZXJ2YWwgKyAxKTsKIAkJdS0+dXJi
-LT50cmFuc2Zlcl9mbGFncyA9IFVSQl9OT19UUkFOU0ZFUl9ETUFfTUFQOwotCQl1LT51cmItPmlu
-dGVydmFsID0gMSA8PCBlcC0+ZGF0YWludGVydmFsOwotCQl1LT51cmItPmNvbnRleHQgPSB1Owot
-CQl1LT51cmItPmNvbXBsZXRlID0gc25kX2NvbXBsZXRlX3VyYjsKIAkJSU5JVF9MSVNUX0hFQUQo
-JnUtPnJlYWR5X2xpc3QpOwogCX0KIApAQCAtODIzLDE1ICs4MjIsMTIgQEAgc3RhdGljIGludCBz
-eW5jX2VwX3NldF9wYXJhbXMoc3RydWN0IHNuZF91c2JfZW5kcG9pbnQgKmVwKQogCQl1LT51cmIg
-PSB1c2JfYWxsb2NfdXJiKDEsIEdGUF9LRVJORUwpOwogCQlpZiAoIXUtPnVyYikKIAkJCWdvdG8g
-b3V0X29mX21lbW9yeTsKLQkJdS0+dXJiLT50cmFuc2Zlcl9idWZmZXIgPSBlcC0+c3luY2J1ZiAr
-IGkgKiA0OworCQl1c2JfZmlsbF9pbnRfdXJiKHUtPnVyYiwgTlVMTCwgZXAtPnBpcGUsIGVwLT5z
-eW5jYnVmICsgaSAqIDQsIDQsCisJCQkJIHNuZF9jb21wbGV0ZV91cmIsIHUsIGVwLT5zeW5jaW50
-ZXJ2YWwgKyAxKTsKKwogCQl1LT51cmItPnRyYW5zZmVyX2RtYSA9IGVwLT5zeW5jX2RtYSArIGkg
-KiA0OwotCQl1LT51cmItPnRyYW5zZmVyX2J1ZmZlcl9sZW5ndGggPSA0OwotCQl1LT51cmItPnBp
-cGUgPSBlcC0+cGlwZTsKIAkJdS0+dXJiLT50cmFuc2Zlcl9mbGFncyA9IFVSQl9OT19UUkFOU0ZF
-Ul9ETUFfTUFQOwogCQl1LT51cmItPm51bWJlcl9vZl9wYWNrZXRzID0gMTsKLQkJdS0+dXJiLT5p
-bnRlcnZhbCA9IDEgPDwgZXAtPnN5bmNpbnRlcnZhbDsKLQkJdS0+dXJiLT5jb250ZXh0ID0gdTsK
-LQkJdS0+dXJiLT5jb21wbGV0ZSA9IHNuZF9jb21wbGV0ZV91cmI7CiAJfQogCiAJZXAtPm51cmJz
-ID0gU1lOQ19VUkJTOwotLSAKMi4xNy4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+
+
+On 20/06/18 10:31, Vinod wrote:
+>> Here clock will be enabled twice but disable will be called only once when
+>> count = 0.
+>>
+>> This will make the clock always enabled. So, I think we should keep either
+>> mutex lock or atomic variable to synchronize this.
+> we are using DPCM here right?
+
+We should probably model this clk as DAPM widget so we do not need to 
+handle this in machine code.
+
+--srini
