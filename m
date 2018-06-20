@@ -1,16 +1,19 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: HDA controller w/o CLKSTOP and EPSS support
-Date: Wed, 20 Jun 2018 11:34:52 +0200
-Message-ID: <20180620093452.GA25280@wunner.de>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH 4/9 v2] ALSA: usb-audio: use usb_fill_int_urb()
+Date: Wed, 20 Jun 2018 11:38:27 +0200
+Message-ID: <20180620093827.ei6bqkkb4ahk3hbn@linutronix.de>
+References: <20180619215521.13688-1-bigeasy@linutronix.de>
+ <20180619215521.13688-5-bigeasy@linutronix.de>
+ <ce8ffb2b-35e8-1108-9065-81f4d3cb4d8d@cogentembedded.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net
- [83.223.95.100])
- by alsa0.perex.cz (Postfix) with ESMTP id CA9F22673CB
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 11:34:53 +0200 (CEST)
+Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB2622673CB
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 11:38:29 +0200 (CEST)
 Content-Disposition: inline
+In-Reply-To: <ce8ffb2b-35e8-1108-9065-81f4d3cb4d8d@cogentembedded.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,57 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Henning Kuehn <prg@cooco.de>
+To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tglx@linutronix.de, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
-
-Henning K=FChn reports that due to my commit 07f4f97d7b4b ("vga_switcheroo:
-Use device link for HDA controller"), the discrete GPU on his hybrid
-graphics laptop no longer runtime suspends.
-
-The root cause is that the single codec of the GPU's HDA controller
-doesn't support CLKSTOP and EPSS.  (The "Supported Power States" are
-0x00000009, i.e. CLKSTOP and EPSS bits are not set, cf. page 209 of
-the HDA spec.)
-
-This means that in hda_codec_runtime_suspend() we do not call
-snd_hdac_codec_link_down():
-
-	if (codec_has_clkstop(codec) && codec_has_epss(codec) &&
-	    (state & AC_PWRST_CLK_STOP_OK))
-		snd_hdac_codec_link_down(&codec->core);
-
-If snd_hdac_codec_link_down() isn't called, the bit in the codec_powered
-bitmask isn't cleared, which in turn prevents the controller from going
-to PCI_D3hot in azx_runtime_idle():
-
-	if (!power_save_controller || !azx_has_pm_runtime(chip) ||
-	    azx_bus(chip)->codec_powered || !chip->running)
-		return -EBUSY;
-
-The codec does runtime suspend to D3, but the PS-ClkStopOk bit in the
-response to "Get Power State" is not set. (Response is 0x00000033,
-cf. page 151 of the HD Audio spec.)  Hence the check above
-"state & AC_PWRST_CLK_STOP_OK" also results in "false".
-
-I'm not familiar enough with the intricacies of the HD Audio spec to
-fully comprehend the implications of missing EPSS and CLKSTOP support
-and to come up with a fix.  We could quirk any HDA controller in a
-vga_switcheroo setup to ignore missing EPSS and CLKSTOP support, but
-would that be safe?  E.g. the spec says that if the bus clock does stop,
-"a full reset shall be performed" when the clock is reenabled.  Are we
-handling this correctly?
-
-Any help in coming up with a proper fix would be greatly appreciated.
-
-dmesg output is available here:
-https://bugs.freedesktop.org/show_bug.cgi?id=3D106957
-
-It's a muxed hybrid graphics machine, the HDA controller has PCI ID
-1002:aa60.
-
-Thanks!
-
-Lukas
+VXNpbmcgdXNiX2ZpbGxfaW50X3VyYigpIGhlbHBzIHRvIGZpbmQgY29kZSB3aGljaCBpbml0aWFs
+aXplcyBhbgpVUkIuIEEgZ3JlcCBmb3IgbWVtYmVycyBvZiB0aGUgc3RydWN0IChsaWtlIC0+Y29t
+cGxldGUpIHJldmVhbCBsb3RzCm9mIG90aGVyIHRoaW5ncywgdG9vLgoKZGF0YV9lcF9zZXRfcGFy
+YW1zKCkgYWRkaXRpb25hbGx5IHNldHMgdXJiLT50cmFuc2Zlcl9idWZmZXJfbGVuZ3RoIHdoaWNo
+CndhcyBub3QgdGhlIGNhc2UgZWFybGllci4KdXNiX2ZpbGxfaW50X3VyYigpIGVuc3VyZXMgdGhh
+dCBzeW5jaW50ZXJ2YWwgaXMgd2l0aGluIHRoZSBhbGxvd2VkIHJhbmdlCm9uIEhTL1NTLiBUaGUg
+aW50ZXJ2YWwgdmFsdWUgc2VlbXMgdG8gY29tZSBmcm9tCnNuZF91c2JfcGFyc2VfZGF0YWludGVy
+dmFsKCkgd2hpY2ggaXMgYkludGVydmFsIC0gMSBhbmQgb25seSBpbiB0aGUgcmFnZQoxIOKApiA0
+LiBTbyBpbiBvcmRlciB0byBrZWVwIHRoZSBtYWdpYyB3b3JraW5nIEkgcGFzcyBkYXRhaW50ZXJ2
+YWwgKyAxLgoKQ2M6IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+CkNjOiBUYWthc2hp
+IEl3YWkgPHRpd2FpQHN1c2UuY29tPgpTaWduZWQtb2ZmLWJ5OiBTZWJhc3RpYW4gQW5kcnplaiBT
+aWV3aW9yIDxiaWdlYXN5QGxpbnV0cm9uaXguZGU+Ci0tLQp2MeKApnYyOiBkZXNjcmlwdGlvbiBj
+aGFuZ2VzIChzcGVsbGluZyArIHVzYl9maWxsX2ludF91cmIoKSBlbnN1cmVzCiAgICAgICAic3lu
+Y2ludGVydmFsIiBub3QgZGF0YV9lcF9zZXRfcGFyYW1zKCkpCgogc291bmQvdXNiL2VuZHBvaW50
+LmMgfCAyNCArKysrKysrKysrLS0tLS0tLS0tLS0tLS0KIDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNl
+cnRpb25zKCspLCAxNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvZW5kcG9p
+bnQuYyBiL3NvdW5kL3VzYi9lbmRwb2ludC5jCmluZGV4IGM5MDYwN2ViZTE1NS4uYmJjMDJkYjVi
+NDE3IDEwMDY0NAotLS0gYS9zb3VuZC91c2IvZW5kcG9pbnQuYworKysgYi9zb3VuZC91c2IvZW5k
+cG9pbnQuYwpAQCAtNzcyLDYgKzc3Miw4IEBAIHN0YXRpYyBpbnQgZGF0YV9lcF9zZXRfcGFyYW1z
+KHN0cnVjdCBzbmRfdXNiX2VuZHBvaW50ICplcCwKIAkvKiBhbGxvY2F0ZSBhbmQgaW5pdGlhbGl6
+ZSBkYXRhIHVyYnMgKi8KIAlmb3IgKGkgPSAwOyBpIDwgZXAtPm51cmJzOyBpKyspIHsKIAkJc3Ry
+dWN0IHNuZF91cmJfY3R4ICp1ID0gJmVwLT51cmJbaV07CisJCXZvaWQgKmJ1ZjsKKwogCQl1LT5p
+bmRleCA9IGk7CiAJCXUtPmVwID0gZXA7CiAJCXUtPnBhY2tldHMgPSB1cmJfcGFja3M7CkBAIC03
+ODMsMTYgKzc4NSwxMyBAQCBzdGF0aWMgaW50IGRhdGFfZXBfc2V0X3BhcmFtcyhzdHJ1Y3Qgc25k
+X3VzYl9lbmRwb2ludCAqZXAsCiAJCWlmICghdS0+dXJiKQogCQkJZ290byBvdXRfb2ZfbWVtb3J5
+OwogCi0JCXUtPnVyYi0+dHJhbnNmZXJfYnVmZmVyID0KLQkJCXVzYl9hbGxvY19jb2hlcmVudChl
+cC0+Y2hpcC0+ZGV2LCB1LT5idWZmZXJfc2l6ZSwKLQkJCQkJICAgR0ZQX0tFUk5FTCwgJnUtPnVy
+Yi0+dHJhbnNmZXJfZG1hKTsKLQkJaWYgKCF1LT51cmItPnRyYW5zZmVyX2J1ZmZlcikKKwkJYnVm
+ID0gdXNiX2FsbG9jX2NvaGVyZW50KGVwLT5jaGlwLT5kZXYsIHUtPmJ1ZmZlcl9zaXplLAorCQkJ
+CQkgR0ZQX0tFUk5FTCwgJnUtPnVyYi0+dHJhbnNmZXJfZG1hKTsKKwkJaWYgKCFidWYpCiAJCQln
+b3RvIG91dF9vZl9tZW1vcnk7Ci0JCXUtPnVyYi0+cGlwZSA9IGVwLT5waXBlOworCQl1c2JfZmls
+bF9pbnRfdXJiKHUtPnVyYiwgTlVMTCwgZXAtPnBpcGUsIGJ1ZiwgdS0+YnVmZmVyX3NpemUsCisJ
+CQkJIHNuZF9jb21wbGV0ZV91cmIsIHUsIGVwLT5kYXRhaW50ZXJ2YWwgKyAxKTsKIAkJdS0+dXJi
+LT50cmFuc2Zlcl9mbGFncyA9IFVSQl9OT19UUkFOU0ZFUl9ETUFfTUFQOwotCQl1LT51cmItPmlu
+dGVydmFsID0gMSA8PCBlcC0+ZGF0YWludGVydmFsOwotCQl1LT51cmItPmNvbnRleHQgPSB1Owot
+CQl1LT51cmItPmNvbXBsZXRlID0gc25kX2NvbXBsZXRlX3VyYjsKIAkJSU5JVF9MSVNUX0hFQUQo
+JnUtPnJlYWR5X2xpc3QpOwogCX0KIApAQCAtODIzLDE1ICs4MjIsMTIgQEAgc3RhdGljIGludCBz
+eW5jX2VwX3NldF9wYXJhbXMoc3RydWN0IHNuZF91c2JfZW5kcG9pbnQgKmVwKQogCQl1LT51cmIg
+PSB1c2JfYWxsb2NfdXJiKDEsIEdGUF9LRVJORUwpOwogCQlpZiAoIXUtPnVyYikKIAkJCWdvdG8g
+b3V0X29mX21lbW9yeTsKLQkJdS0+dXJiLT50cmFuc2Zlcl9idWZmZXIgPSBlcC0+c3luY2J1ZiAr
+IGkgKiA0OworCQl1c2JfZmlsbF9pbnRfdXJiKHUtPnVyYiwgTlVMTCwgZXAtPnBpcGUsIGVwLT5z
+eW5jYnVmICsgaSAqIDQsIDQsCisJCQkJIHNuZF9jb21wbGV0ZV91cmIsIHUsIGVwLT5zeW5jaW50
+ZXJ2YWwgKyAxKTsKKwogCQl1LT51cmItPnRyYW5zZmVyX2RtYSA9IGVwLT5zeW5jX2RtYSArIGkg
+KiA0OwotCQl1LT51cmItPnRyYW5zZmVyX2J1ZmZlcl9sZW5ndGggPSA0OwotCQl1LT51cmItPnBp
+cGUgPSBlcC0+cGlwZTsKIAkJdS0+dXJiLT50cmFuc2Zlcl9mbGFncyA9IFVSQl9OT19UUkFOU0ZF
+Ul9ETUFfTUFQOwogCQl1LT51cmItPm51bWJlcl9vZl9wYWNrZXRzID0gMTsKLQkJdS0+dXJiLT5p
+bnRlcnZhbCA9IDEgPDwgZXAtPnN5bmNpbnRlcnZhbDsKLQkJdS0+dXJiLT5jb250ZXh0ID0gdTsK
+LQkJdS0+dXJiLT5jb21wbGV0ZSA9IHNuZF9jb21wbGV0ZV91cmI7CiAJfQogCiAJZXAtPm51cmJz
+ID0gU1lOQ19VUkJTOwotLSAKMi4xNy4xCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
+cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
+bmZvL2Fsc2EtZGV2ZWwK
