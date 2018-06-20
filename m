@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-pcm: DPCM cares BE channel
-	constraint" to the asoc tree
-Date: Fri, 22 Jun 2018 15:57:17 +0100
-Message-ID: <E1fWNUz-0003N1-F3@debutante>
-References: <20180620092520.14101-1-jiada_wang@mentor.com>
+From: prg@cooco.de
+Subject: Re: HDA controller w/o CLKSTOP and EPSS support
+Date: Wed, 20 Jun 2018 22:28:37 +0000
+Message-ID: <e41e5b75383f90214d9541e528ef567c@cooco.de>
+References: <20180620093452.GA25280@wunner.de> <s5h36xhojcn.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 19B192676DD
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 16:57:27 +0200 (CEST)
-In-Reply-To: <20180620092520.14101-1-jiada_wang@mentor.com>
+Received: from mail.cooco.de (cooco.de [94.16.118.246])
+ by alsa0.perex.cz (Postfix) with ESMTP id 81B40266D4C
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 00:28:40 +0200 (CEST)
+In-Reply-To: <s5h36xhojcn.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,137 +20,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, jiada_wang@mentor.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Lukas Wunner <lukas@wunner.de>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, 20 Jun 2018 12:14:32 +0200, Takashi Iwai <tiwai@suse.de> wrote:
 
-   ASoC: soc-pcm: DPCM cares BE channel constraint
+> I guess it would work with a quirk. The EPSS and CLKSTOP checks are
+> just to assure the modern codec PM, and GPU is always exceptional.
+> 
+> Supposing that it's AMD GPU, does a fix like below work?
 
-has been applied to the asoc tree at
+The suggested fix restores the previous behavior: the dGPU is properly
+powered down. But this previous behavior is really broken in other
+ways, so I'm now wondering if it could work any better than that.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+On kernels <4.17 and on 4.17 with that patch applied the notebook
+screen turns off completely when running things with DRI_PRIME=1 and
+only comes back a few seconds after the process ends. glxinfo is
+showing radeon instead of intel as expected, but with a blank screen,
+it's useless.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On kernel 4.17 without the patch, when the dGPU is constantly on, I can
+have intel render things with DRI_PRIME=0 and radeon with DRI_PRIME=1
+without the screen turning off. Also, switches between vt and X are now
+instant and external displays are working, which wasn't the case
+before. Why is this now working suddenly? Is the dGPU rendering all of
+the desktop when it's always on anyway? Or is the iGPU rendering the
+desktop and the dGPU could potentially be suspended when not in use, if
+it was just done the right way?
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+I used to accept this broken behavior and just changed the BIOS setting
+for the GPU from "switchable" to "discrete" when I wanted to actually
+use the dGPU. Initially when I reported the bug I just wanted to find a
+way to suspend the dGPU again to save power. But now that I've seen my
+notebook working like this I'd like to have both: a powered down dGPU
+when not in use and properly working DRI_PRIME.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+Any ideas what's up with the current situation or should I file a new
+bug report?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f4c277b817cc9489fffabffb4e15d2f3b686056c Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Wed, 20 Jun 2018 18:25:20 +0900
-Subject: [PATCH] ASoC: soc-pcm: DPCM cares BE channel constraint
-
-Current DPCM is caring only FE channel configuration. Sometimes
-it will be trouble if user selects channel which isn't supported
-by BE.
-
-This patch adds new .dpcm_merged_chan on struct snd_soc_dai_link.
-DPCM will use FE / BE merged channel if struct snd_soc_dai_link
-has it.
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- include/sound/soc.h |  2 ++
- sound/soc/soc-pcm.c | 46 +++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 48 insertions(+)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 1378dcd2128a..f7579f82cc00 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -957,6 +957,8 @@ struct snd_soc_dai_link {
- 
- 	/* DPCM used FE & BE merged format */
- 	unsigned int dpcm_merged_format:1;
-+	/* DPCM used FE & BE merged channel */
-+	unsigned int dpcm_merged_chan:1;
- 
- 	/* pmdown_time is ignored at stop */
- 	unsigned int ignore_pmdown_time:1;
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 45b52f7b9690..19ebfc958b9d 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1715,6 +1715,46 @@ static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
- 	return formats;
- }
- 
-+static void dpcm_runtime_base_chan(struct snd_pcm_substream *substream,
-+				   unsigned int *channels_min,
-+				   unsigned int *channels_max)
-+{
-+	struct snd_soc_pcm_runtime *fe = substream->private_data;
-+	struct snd_soc_dpcm *dpcm;
-+	int stream = substream->stream;
-+
-+	if (!fe->dai_link->dpcm_merged_chan)
-+		return;
-+
-+	*channels_min = 0;
-+	*channels_max = UINT_MAX;
-+
-+	/*
-+	 * It returns merged BE codec channel;
-+	 * if FE want to use it (= dpcm_merged_chan)
-+	 */
-+
-+	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
-+		struct snd_soc_pcm_runtime *be = dpcm->be;
-+		struct snd_soc_dai_driver *codec_dai_drv;
-+		struct snd_soc_pcm_stream *codec_stream;
-+		int i;
-+
-+		for (i = 0; i < be->num_codecs; i++) {
-+			codec_dai_drv = be->codec_dais[i]->driver;
-+			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+				codec_stream = &codec_dai_drv->playback;
-+			else
-+				codec_stream = &codec_dai_drv->capture;
-+
-+			*channels_min = max(*channels_min,
-+					    codec_stream->channels_min);
-+			*channels_max = min(*channels_max,
-+					    codec_stream->channels_max);
-+		}
-+	}
-+}
-+
- static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -1722,11 +1762,17 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai_driver *cpu_dai_drv = cpu_dai->driver;
- 	u64 format = dpcm_runtime_base_format(substream);
-+	unsigned int channels_min = 0, channels_max = UINT_MAX;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
- 		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback, format);
- 	else
- 		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture, format);
-+
-+	dpcm_runtime_base_chan(substream, &channels_min, &channels_max);
-+
-+	runtime->hw.channels_min = max(channels_min, runtime->hw.channels_min);
-+	runtime->hw.channels_max = min(channels_max, runtime->hw.channels_max);
- }
- 
- static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd);
--- 
-2.18.0.rc2
+Kind regards
+Henning
