@@ -1,18 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Simplify handling of alg
-	offset and length" to the asoc tree
-Date: Wed, 20 Jun 2018 15:07:59 +0100
-Message-ID: <E1fVdmB-0001qH-IM@debutante>
-References: <20180620105621.2660-2-ckeepax@opensource.cirrus.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 8/9] ALSA: usx2y: usbusx2yaudio: use
+	usb_fill_int_urb()
+Date: Wed, 20 Jun 2018 16:39:22 +0200
+Message-ID: <20180620143922.nkcazvbcrmkyvm2c@linutronix.de>
+References: <20180619215521.13688-1-bigeasy@linutronix.de>
+ <20180619215521.13688-9-bigeasy@linutronix.de>
+ <s5hr2l1mxj3.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D3AC62673CF
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 16:08:02 +0200 (CEST)
-In-Reply-To: <20180620105621.2660-2-ckeepax@opensource.cirrus.com>
+Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C13C2673CB
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 16:39:25 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hr2l1mxj3.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,134 +24,136 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tglx@linutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 2018-06-20 14:51:12 [+0200], Takashi Iwai wrote:
+> On Tue, 19 Jun 2018 23:55:20 +0200,
+> Sebastian Andrzej Siewior wrote:
+> > -			(*purb)->transfer_buffer =
+> > -				kmalloc_array(subs->maxpacksize,
+> > -					      nr_of_packs(), GFP_KERNEL);
+> > -			if (NULL == (*purb)->transfer_buffer) {
+> > +			len = subs->maxpacksize * nr_of_packs();
+> > +			buf = kmalloc(len, GFP_KERNEL);
+> 
+> I'd keep kmalloc_array() as is, and just put subs->maxpacksize *
+> nr_of_packs() in usb_fill_int_urb().  Otherwise it's a step backward.
 
-   ASoC: wm_adsp: Simplify handling of alg offset and length
+but then we end up with two multiplications. What about pulling the
+overflow-mul macro out of malloc_array() and doing this instead:
 
-has been applied to the asoc tree at
+----------- >8
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Subject: [PATCH 8/9 v2] ALSA: usx2y: usbusx2yaudio: use usb_fill_int_urb()
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Using usb_fill_int_urb() helps to find code which initializes an
+URB. A grep for members of the struct (like ->complete) reveal lots
+of other things, too.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+The "&& !(*purb)->transfer_buffer" check has been removed because the
+URB has been freshly allocated a few lines above so ->transfer_buffer
+has to be NULL here.
+The `dev' and `transfer_size' assignments have been moved from
+usX2Y_urbs_start() to usX2Y_urbs_allocate() because they don't change
+overtime.
+The multiplication via check_mul_overflow() has been extracted from
+kmalloc_array() to avoid two multiplication (one with overflow check and
+one without for the length argument). This requires to change the type
+`maxpacksize' to int so there is only one type involved in the
+multiplication.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 7f7cca08abf4c6c58ff1037cff5beec5a10a7da3 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Wed, 20 Jun 2018 11:56:21 +0100
-Subject: [PATCH] ASoC: wm_adsp: Simplify handling of alg offset and length
-
-The current code that reads the algorithm list from the DSP is
-somewhat unclear, it converts directly from bytes to registers using
-a hard coded divide by 2. Most offsets are usually handled in DSP
-words within the driver and there is a function specifically for
-converting from words to register addresses. So update the handling
-to use these. This also removes the assumption that the registers
-are 16-bit word addressed, which will no longer be true on some of
-our newer parts.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 ---
- sound/soc/codecs/wm_adsp.c | 29 ++++++++++++++++++++---------
- 1 file changed, 20 insertions(+), 9 deletions(-)
+ sound/usb/usx2y/usbusx2y.h      |  2 +-
+ sound/usb/usx2y/usbusx2yaudio.c | 38 ++++++++++++++++-----------------
+ 2 files changed, 20 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 2fcdd84021a5..07c17acc8a4f 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1871,9 +1871,11 @@ static void wm_adsp_ctl_fixup_base(struct wm_adsp *dsp,
+diff --git a/sound/usb/usx2y/usbusx2y.h b/sound/usb/usx2y/usbusx2y.h
+index e0f77172ce8f..2bec412589b4 100644
+--- a/sound/usb/usx2y/usbusx2y.h
++++ b/sound/usb/usx2y/usbusx2y.h
+@@ -56,7 +56,7 @@ struct snd_usX2Y_substream {
+ 	struct snd_pcm_substream *pcm_substream;
+ 
+ 	int			endpoint;		
+-	unsigned int		maxpacksize;		/* max packet size in bytes */
++	int			maxpacksize;		/* max packet size in bytes */
+ 
+ 	atomic_t		state;
+ #define state_STOPPED	0
+diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
+index 2b833054e3b0..e5580cb59858 100644
+--- a/sound/usb/usx2y/usbusx2yaudio.c
++++ b/sound/usb/usx2y/usbusx2yaudio.c
+@@ -425,33 +425,35 @@ static int usX2Y_urbs_allocate(struct snd_usX2Y_substream *subs)
+ 	/* allocate and initialize data urbs */
+ 	for (i = 0; i < NRURBS; i++) {
+ 		struct urb **purb = subs->urb + i;
++		void *buf = NULL;
++		int len = 0;
++
+ 		if (*purb) {
+ 			usb_kill_urb(*purb);
+ 			continue;
+ 		}
+ 		*purb = usb_alloc_urb(nr_of_packs(), GFP_KERNEL);
+-		if (NULL == *purb) {
+-			usX2Y_urbs_release(subs);
+-			return -ENOMEM;
+-		}
+-		if (!is_playback && !(*purb)->transfer_buffer) {
++		if (NULL == *purb)
++			goto err_free;
++
++		if (!is_playback) {
+ 			/* allocate a capture buffer per urb */
+-			(*purb)->transfer_buffer =
+-				kmalloc_array(subs->maxpacksize,
+-					      nr_of_packs(), GFP_KERNEL);
+-			if (NULL == (*purb)->transfer_buffer) {
+-				usX2Y_urbs_release(subs);
+-				return -ENOMEM;
+-			}
++			if (check_mul_overflow(subs->maxpacksize,
++					       nr_of_packs(),
++					       &len))
++				goto err_free;
++			buf = kmalloc(len, GFP_KERNEL);
++			if (!buf)
++				goto err_free;
+ 		}
+-		(*purb)->dev = dev;
+-		(*purb)->pipe = pipe;
++		usb_fill_int_urb(*purb, dev, pipe, buf, len,
++				 i_usX2Y_subs_startup, subs, 1);
+ 		(*purb)->number_of_packets = nr_of_packs();
+-		(*purb)->context = subs;
+-		(*purb)->interval = 1;
+-		(*purb)->complete = i_usX2Y_subs_startup;
+ 	}
+ 	return 0;
++err_free:
++	usX2Y_urbs_release(subs);
++	return -ENOMEM;
  }
  
- static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
-+			       const struct wm_adsp_region *mem,
- 			       unsigned int pos, unsigned int len)
- {
- 	void *alg;
-+	unsigned int reg;
- 	int ret;
- 	__be32 val;
- 
-@@ -1888,7 +1890,9 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
- 	}
- 
- 	/* Read the terminator first to validate the length */
--	ret = regmap_raw_read(dsp->regmap, pos + len, &val, sizeof(val));
-+	reg = wm_adsp_region_to_reg(mem, pos + len);
-+
-+	ret = regmap_raw_read(dsp->regmap, reg, &val, sizeof(val));
- 	if (ret != 0) {
- 		adsp_err(dsp, "Failed to read algorithm list end: %d\n",
- 			ret);
-@@ -1897,13 +1901,18 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
- 
- 	if (be32_to_cpu(val) != 0xbedead)
- 		adsp_warn(dsp, "Algorithm list end %x 0x%x != 0xbedead\n",
--			  pos + len, be32_to_cpu(val));
-+			  reg, be32_to_cpu(val));
-+
-+	/* Convert length from DSP words to bytes */
-+	len *= sizeof(u32);
- 
- 	alg = kcalloc(len, 2, GFP_KERNEL | GFP_DMA);
- 	if (!alg)
- 		return ERR_PTR(-ENOMEM);
- 
--	ret = regmap_raw_read(dsp->regmap, pos, alg, len * 2);
-+	reg = wm_adsp_region_to_reg(mem, pos);
-+
-+	ret = regmap_raw_read(dsp->regmap, reg, alg, len);
- 	if (ret != 0) {
- 		adsp_err(dsp, "Failed to read algorithm list: %d\n", ret);
- 		kfree(alg);
-@@ -2002,10 +2011,11 @@ static int wm_adsp1_setup_algs(struct wm_adsp *dsp)
- 	if (IS_ERR(alg_region))
- 		return PTR_ERR(alg_region);
- 
--	pos = sizeof(adsp1_id) / 2;
--	len = (sizeof(*adsp1_alg) * n_algs) / 2;
-+	/* Calculate offset and length in DSP words */
-+	pos = sizeof(adsp1_id) / sizeof(u32);
-+	len = (sizeof(*adsp1_alg) * n_algs) / sizeof(u32);
- 
--	adsp1_alg = wm_adsp_read_algs(dsp, n_algs, mem->base + pos, len);
-+	adsp1_alg = wm_adsp_read_algs(dsp, n_algs, mem, pos, len);
- 	if (IS_ERR(adsp1_alg))
- 		return PTR_ERR(adsp1_alg);
- 
-@@ -2113,10 +2123,11 @@ static int wm_adsp2_setup_algs(struct wm_adsp *dsp)
- 	if (IS_ERR(alg_region))
- 		return PTR_ERR(alg_region);
- 
--	pos = sizeof(adsp2_id) / 2;
--	len = (sizeof(*adsp2_alg) * n_algs) / 2;
-+	/* Calculate offset and length in DSP words */
-+	pos = sizeof(adsp2_id) / sizeof(u32);
-+	len = (sizeof(*adsp2_alg) * n_algs) / sizeof(u32);
- 
--	adsp2_alg = wm_adsp_read_algs(dsp, n_algs, mem->base + pos, len);
-+	adsp2_alg = wm_adsp_read_algs(dsp, n_algs, mem, pos, len);
- 	if (IS_ERR(adsp2_alg))
- 		return PTR_ERR(adsp2_alg);
- 
+ static void usX2Y_subs_startup(struct snd_usX2Y_substream *subs)
+@@ -485,12 +487,10 @@ static int usX2Y_urbs_start(struct snd_usX2Y_substream *subs)
+ 			unsigned long pack;
+ 			if (0 == i)
+ 				atomic_set(&subs->state, state_STARTING3);
+-			urb->dev = usX2Y->dev;
+ 			for (pack = 0; pack < nr_of_packs(); pack++) {
+ 				urb->iso_frame_desc[pack].offset = subs->maxpacksize * pack;
+ 				urb->iso_frame_desc[pack].length = subs->maxpacksize;
+ 			}
+-			urb->transfer_buffer_length = subs->maxpacksize * nr_of_packs(); 
+ 			if ((err = usb_submit_urb(urb, GFP_ATOMIC)) < 0) {
+ 				snd_printk (KERN_ERR "cannot submit datapipe for urb %d, err = %d\n", i, err);
+ 				err = -EPIPE;
 -- 
 2.17.1
