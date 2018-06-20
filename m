@@ -1,20 +1,20 @@
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH 8/9] ALSA: usx2y: usbusx2yaudio: use
-	usb_fill_int_urb()
-Date: Wed, 20 Jun 2018 16:39:22 +0200
-Message-ID: <20180620143922.nkcazvbcrmkyvm2c@linutronix.de>
-References: <20180619215521.13688-1-bigeasy@linutronix.de>
- <20180619215521.13688-9-bigeasy@linutronix.de>
- <s5hr2l1mxj3.wl-tiwai@suse.de>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: ASoC: new ac97 bus and codec clock
+Date: Wed, 20 Jun 2018 16:52:16 +0200
+Message-ID: <8736xhqzmn.fsf@belgarion.home>
+References: <87lgbdqixh.fsf@belgarion.home>
+ <20180619150204.GF11230@sirena.org.uk>
+ <CAL_JsqLn2t-zFi8xrig_63OD-SBq8d0jZctih38sZ4cAnRoe6g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C13C2673CB
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 16:39:25 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hr2l1mxj3.wl-tiwai@suse.de>
+Received: from smtp.smtpout.orange.fr (smtp01.smtpout.orange.fr
+ [80.12.242.123])
+ by alsa0.perex.cz (Postfix) with ESMTP id EED602673CF
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 16:52:17 +0200 (CEST)
+In-Reply-To: <CAL_JsqLn2t-zFi8xrig_63OD-SBq8d0jZctih38sZ4cAnRoe6g@mail.gmail.com>
+ (Rob Herring's message of "Tue, 19 Jun 2018 11:56:41 -0600")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,136 +24,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tglx@linutronix.de
+To: Rob Herring <robh+dt@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 2018-06-20 14:51:12 [+0200], Takashi Iwai wrote:
-> On Tue, 19 Jun 2018 23:55:20 +0200,
-> Sebastian Andrzej Siewior wrote:
-> > -			(*purb)->transfer_buffer =
-> > -				kmalloc_array(subs->maxpacksize,
-> > -					      nr_of_packs(), GFP_KERNEL);
-> > -			if (NULL == (*purb)->transfer_buffer) {
-> > +			len = subs->maxpacksize * nr_of_packs();
-> > +			buf = kmalloc(len, GFP_KERNEL);
-> 
-> I'd keep kmalloc_array() as is, and just put subs->maxpacksize *
-> nr_of_packs() in usb_fill_int_urb().  Otherwise it's a step backward.
+Rob Herring <robh+dt@kernel.org> writes:
 
-but then we end up with two multiplications. What about pulling the
-overflow-mul macro out of malloc_array() and doing this instead:
+> Like PCI, USB, SDIO, etc., you need to define an AC97 bus binding
+> which defines child node structure, compatible formatting (if you can
+> base compatibles on something like VID/PID), and addressing (reg and
+> unit-address formats). Then once you define child nodes, you can add
+> whatever sideband connections you need. The AC97 core should be able
+> to populate struct device_node if there are any matching child
+> devices.
+Ok, I thing I understand.
 
------------ >8
+So the device-tree will look like :
+ac97: sound@40500000 {
+      	compatible = "marvell,pxa270-ac97";
+	reg = < 0x40500000 0x1000 >;
+	interrupts = <14>;
+	reset-gpios = <&gpio 95 GPIO_ACTIVE_HIGH>;
+	#sound-dai-cells = <1>;
+	pinctrl-names = "default";
+	pinctrl-0 = < &pinctrl_ac97_default >;
+	clocks = <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
+	clock-names = "AC97CLK", "AC97CONFCLK";
 
-Subject: [PATCH 8/9 v2] ALSA: usx2y: usbusx2yaudio: use usb_fill_int_urb()
+        wm9713@0 {
+        	reg = <0>; /* Codex index (between 0 and 3) */
+                compatible = "ac97-codec";
+                clocks = <&fixed_wm9713_clock>;
+                clock-names = "ac97_clk";
+        }
+};
 
-Using usb_fill_int_urb() helps to find code which initializes an
-URB. A grep for members of the struct (like ->complete) reveal lots
-of other things, too.
+And the function ac97_codec_add() will :
+ - scan the device-tree ac97 controller childs
+ - match one if its reg equals (in our case wm9713@0)
+ - set codec->dev.of_node to the matched one
 
-The "&& !(*purb)->transfer_buffer" check has been removed because the
-URB has been freshly allocated a few lines above so ->transfer_buffer
-has to be NULL here.
-The `dev' and `transfer_size' assignments have been moved from
-usX2Y_urbs_start() to usX2Y_urbs_allocate() because they don't change
-overtime.
-The multiplication via check_mul_overflow() has been extracted from
-kmalloc_array() to avoid two multiplication (one with overflow check and
-one without for the length argument). This requires to change the type
-`maxpacksize' to int so there is only one type involved in the
-multiplication.
+> It gets a bit more complicated if you need to do things like
+> enable power or de-assert resets to discover the devices. Sounds like
+> that might be the next person's problem in this case. :)
+Yeah ... Crossing fingers that won't be me :)
 
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- sound/usb/usx2y/usbusx2y.h      |  2 +-
- sound/usb/usx2y/usbusx2yaudio.c | 38 ++++++++++++++++-----------------
- 2 files changed, 20 insertions(+), 20 deletions(-)
+Cheers.
 
-diff --git a/sound/usb/usx2y/usbusx2y.h b/sound/usb/usx2y/usbusx2y.h
-index e0f77172ce8f..2bec412589b4 100644
---- a/sound/usb/usx2y/usbusx2y.h
-+++ b/sound/usb/usx2y/usbusx2y.h
-@@ -56,7 +56,7 @@ struct snd_usX2Y_substream {
- 	struct snd_pcm_substream *pcm_substream;
- 
- 	int			endpoint;		
--	unsigned int		maxpacksize;		/* max packet size in bytes */
-+	int			maxpacksize;		/* max packet size in bytes */
- 
- 	atomic_t		state;
- #define state_STOPPED	0
-diff --git a/sound/usb/usx2y/usbusx2yaudio.c b/sound/usb/usx2y/usbusx2yaudio.c
-index 2b833054e3b0..e5580cb59858 100644
---- a/sound/usb/usx2y/usbusx2yaudio.c
-+++ b/sound/usb/usx2y/usbusx2yaudio.c
-@@ -425,33 +425,35 @@ static int usX2Y_urbs_allocate(struct snd_usX2Y_substream *subs)
- 	/* allocate and initialize data urbs */
- 	for (i = 0; i < NRURBS; i++) {
- 		struct urb **purb = subs->urb + i;
-+		void *buf = NULL;
-+		int len = 0;
-+
- 		if (*purb) {
- 			usb_kill_urb(*purb);
- 			continue;
- 		}
- 		*purb = usb_alloc_urb(nr_of_packs(), GFP_KERNEL);
--		if (NULL == *purb) {
--			usX2Y_urbs_release(subs);
--			return -ENOMEM;
--		}
--		if (!is_playback && !(*purb)->transfer_buffer) {
-+		if (NULL == *purb)
-+			goto err_free;
-+
-+		if (!is_playback) {
- 			/* allocate a capture buffer per urb */
--			(*purb)->transfer_buffer =
--				kmalloc_array(subs->maxpacksize,
--					      nr_of_packs(), GFP_KERNEL);
--			if (NULL == (*purb)->transfer_buffer) {
--				usX2Y_urbs_release(subs);
--				return -ENOMEM;
--			}
-+			if (check_mul_overflow(subs->maxpacksize,
-+					       nr_of_packs(),
-+					       &len))
-+				goto err_free;
-+			buf = kmalloc(len, GFP_KERNEL);
-+			if (!buf)
-+				goto err_free;
- 		}
--		(*purb)->dev = dev;
--		(*purb)->pipe = pipe;
-+		usb_fill_int_urb(*purb, dev, pipe, buf, len,
-+				 i_usX2Y_subs_startup, subs, 1);
- 		(*purb)->number_of_packets = nr_of_packs();
--		(*purb)->context = subs;
--		(*purb)->interval = 1;
--		(*purb)->complete = i_usX2Y_subs_startup;
- 	}
- 	return 0;
-+err_free:
-+	usX2Y_urbs_release(subs);
-+	return -ENOMEM;
- }
- 
- static void usX2Y_subs_startup(struct snd_usX2Y_substream *subs)
-@@ -485,12 +487,10 @@ static int usX2Y_urbs_start(struct snd_usX2Y_substream *subs)
- 			unsigned long pack;
- 			if (0 == i)
- 				atomic_set(&subs->state, state_STARTING3);
--			urb->dev = usX2Y->dev;
- 			for (pack = 0; pack < nr_of_packs(); pack++) {
- 				urb->iso_frame_desc[pack].offset = subs->maxpacksize * pack;
- 				urb->iso_frame_desc[pack].length = subs->maxpacksize;
- 			}
--			urb->transfer_buffer_length = subs->maxpacksize * nr_of_packs(); 
- 			if ((err = usb_submit_urb(urb, GFP_ATOMIC)) < 0) {
- 				snd_printk (KERN_ERR "cannot submit datapipe for urb %d, err = %d\n", i, err);
- 				err = -EPIPE;
 -- 
-2.17.1
+Robert
