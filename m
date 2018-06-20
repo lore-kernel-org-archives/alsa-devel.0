@@ -1,36 +1,43 @@
-From: Steven Eckhoff <steven.eckhoff.opensource@gmail.com>
-Subject: Re: [alsa-devel][PATCH 2/3] ASoC: TSCS42xx: Remove Playback/Capture
- in names
-Date: Wed, 20 Jun 2018 12:34:53 -0500
-Message-ID: <20180620173451.GA3900@t7-ThinkPad-E560>
-References: <cover.1528143829.git.steven.eckhoff.opensource@gmail.com>
- <a1f30fe79d376bb1dea4c41a34f198310a8ff9a4.1528143829.git.steven.eckhoff.opensource@gmail.com>
- <20180618113154.GC6928@sirena.org.uk>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v5 1/5] dt-bindings: clk: at91: add an I2S mux clock
+Date: Wed, 20 Jun 2018 20:44:49 +0200
+Message-ID: <20180620184449.GH7737@piout.net>
+References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
+ <20180618141239.10892-2-codrin.ciubotariu@microchip.com>
+ <20180620154759.GA4755@rob-hp-laptop>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180618113154.GC6928@sirena.org.uk>
+In-Reply-To: <20180620154759.GA4755@rob-hp-laptop>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org
+To: Rob Herring <robh@kernel.org>
+Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@microchip.com, boris.brezillon@bootlin.com, broonie@kernel.org, sboyd@kernel.org, Cristian.Birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 18, 2018 at 12:31:54PM +0100, Mark Brown wrote:
-> Really?  They're part of the spec so it indicates that the apps have a
-> problem...
+On 20/06/2018 09:47:59-0600, Rob Herring wrote:
+> On Mon, Jun 18, 2018 at 05:12:35PM +0300, Codrin Ciubotariu wrote:
+> > The I2S mux clock can be used to select the I2S input clock. The
+> > available parents are the peripheral and the generated clocks.
+> > 
+> > Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> > ---
+> > 
+> > Changes in v5:
+> > 	- specified clock's parent;
+> > 	- added a newline before adding the clock's compatible string;
+> > 
+> >  .../devicetree/bindings/clock/at91-clock.txt  | 35 +++++++++++++++++++
+> >  1 file changed, 35 insertions(+)
+> 
+> Well, since Alexandre promises all this is going to get re-worked soon:
+> 
+> Acked-by: Rob Herring <robh@kernel.org>
 
-I apologize for the delayed response.
+Thanks, I'm planning to send a first version next week, it will be based
+on top of that series.
 
-I am unable to reproduce the issue that I was seeing with controls that
-had Playback or Capture in their names. I am going look into this
-further.
-
-I was seeing an issue with amixer set where it would not find the
-control, but I could use the numid. I wanted to make sure that it would
-always work, so I could provide amixer set commands using the name of
-the control in our documentation.
-
-Regards,
-
-Steven
+-- 
+Alexandre Belloni, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
