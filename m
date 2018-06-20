@@ -1,22 +1,19 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v5 1/5] dt-bindings: clk: at91: add an I2S
-	mux clock
-Date: Wed, 20 Jun 2018 09:47:59 -0600
-Message-ID: <20180620154759.GA4755@rob-hp-laptop>
-References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
- <20180618141239.10892-2-codrin.ciubotariu@microchip.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: common: rename 'reef' to
+ 'sof' in ACPI matching table
+Date: Wed, 20 Jun 2018 10:59:43 -0500
+Message-ID: <f1690317-8d6e-7877-b813-3c324f92d311@linux.intel.com>
+References: <20180619190037.8307-1-pierre-louis.bossart@linux.intel.com>
+ <20180620111736.GD6242@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw0-f193.google.com (mail-yw0-f193.google.com
- [209.85.161.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D3E6266D4C
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 17:48:02 +0200 (CEST)
-Received: by mail-yw0-f193.google.com with SMTP id t184-v6so4894ywg.9
- for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 08:48:02 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20180618141239.10892-2-codrin.ciubotariu@microchip.com>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id D493E266D4C
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 17:59:47 +0200 (CEST)
+In-Reply-To: <20180620111736.GD6242@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,24 +23,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com, sboyd@kernel.org, nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org, boris.brezillon@bootlin.com, broonie@kernel.org, Cristian.Birsan@microchip.com, linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+To: Mark Brown <broonie@kernel.org>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 18, 2018 at 05:12:35PM +0300, Codrin Ciubotariu wrote:
-> The I2S mux clock can be used to select the I2S input clock. The
-> available parents are the peripheral and the generated clocks.
+On 6/20/18 6:17 AM, Mark Brown wrote:
+> On Tue, Jun 19, 2018 at 02:00:37PM -0500, Pierre-Louis Bossart wrote:
 > 
-> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> ---
+>> -	.sof_fw_filename = "intel/reef-byt.ri",
+>> -	.sof_tplg_filename = "intel/reef-byt-rt5670.tplg",
+>> +	.sof_fw_filename = "intel/sof-byt.ri",
+>> +	.sof_tplg_filename = "intel/sof-byt-rt5670.tplg",
 > 
-> Changes in v5:
-> 	- specified clock's parent;
-> 	- added a newline before adding the clock's compatible string;
-> 
->  .../devicetree/bindings/clock/at91-clock.txt  | 35 +++++++++++++++++++
->  1 file changed, 35 insertions(+)
+> We're sure nobody is using this stuff in production yet?
 
-Well, since Alexandre promises all this is going to get re-worked soon:
+Yes. The topology tools were changed back in April to remove all 
+references to reef, same for the firmware code.
 
-Acked-by: Rob Herring <robh@kernel.org>
+https://github.com/thesofproject/soft/commit/4f6d459586c22a8c9d946ee821ccf9c1ce7804c7
+
+we will make sure the IPC and topology are tracked in backwards 
+compatible ways once devices are released, it's on our TODO list to add 
+checks for version numbers and always make sure the kernel update does 
+not require changes to the firmware or filesystems.
