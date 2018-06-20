@@ -1,43 +1,82 @@
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v5 1/5] dt-bindings: clk: at91: add an I2S mux clock
-Date: Wed, 20 Jun 2018 20:44:49 +0200
-Message-ID: <20180620184449.GH7737@piout.net>
-References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
- <20180618141239.10892-2-codrin.ciubotariu@microchip.com>
- <20180620154759.GA4755@rob-hp-laptop>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: ASoC: new ac97 bus and codec clock
+Date: Wed, 20 Jun 2018 21:36:59 +0200
+Message-ID: <87h8lxp7vo.fsf@belgarion.home>
+References: <87lgbdqixh.fsf@belgarion.home>
+ <20180619150204.GF11230@sirena.org.uk>
+ <CAL_JsqLn2t-zFi8xrig_63OD-SBq8d0jZctih38sZ4cAnRoe6g@mail.gmail.com>
+ <8736xhqzmn.fsf@belgarion.home>
+ <CAL_JsqJbXGLO+xu1NZOiqmrukHKWUySv=0Sk5KDmSTLL7Mt7+Q@mail.gmail.com>
+ <87y3f9peyb.fsf@belgarion.home>
+ <CAL_JsqKBOdZBuDnRUAcpARP1fFquc7vpcUayYRaJAMSPrhsPdg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180620154759.GA4755@rob-hp-laptop>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@microchip.com, boris.brezillon@bootlin.com, broonie@kernel.org, sboyd@kernel.org, Cristian.Birsan@microchip.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.smtpout.orange.fr (smtp10.smtpout.orange.fr
+ [80.12.242.132])
+ by alsa0.perex.cz (Postfix) with ESMTP id E25972673CB
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 21:37:00 +0200 (CEST)
+In-Reply-To: <CAL_JsqKBOdZBuDnRUAcpARP1fFquc7vpcUayYRaJAMSPrhsPdg@mail.gmail.com>
+ (Rob Herring's message of "Wed, 20 Jun 2018 11:16:15 -0600")
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rob Herring <robh+dt@kernel.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>, Frank Rowand <frowand.list@gmail.com>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 20/06/2018 09:47:59-0600, Rob Herring wrote:
-> On Mon, Jun 18, 2018 at 05:12:35PM +0300, Codrin Ciubotariu wrote:
-> > The I2S mux clock can be used to select the I2S input clock. The
-> > available parents are the peripheral and the generated clocks.
-> > 
-> > Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> > ---
-> > 
-> > Changes in v5:
-> > 	- specified clock's parent;
-> > 	- added a newline before adding the clock's compatible string;
-> > 
-> >  .../devicetree/bindings/clock/at91-clock.txt  | 35 +++++++++++++++++++
-> >  1 file changed, 35 insertions(+)
-> 
-> Well, since Alexandre promises all this is going to get re-worked soon:
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
+Rob Herring <robh+dt@kernel.org> writes:
 
-Thanks, I'm planning to send a first version next week, it will be based
-on top of that series.
+> Does AC97 specify a common programming model? That's were a common
+> compatible is used (though experience has proven things like
+> "generic-ehci" are don't work).
+If regmap is enough "common programming model" then yes. If you think of a
+common layout of AC97 registers and a common dynamics to program them across all
+ac97 controllers, then no, as far as I'm aware it does not.
+
+>> If the purpose for this compatible string is to filter the child nodes which are
+>> only ac97 codecs, so that the ac97 framework can act upon them (ie. acquire the
+>> clock for example), then wm9713 is too specific ... That won't work for another
+>> device with an Analog Devices AD1835 for example.
+
+> Are there ID registers? If so, then just construct a compatible string
+> from them and just find the compatible child node. See USB bindings
+> for an example using VID/PID.
+There is an AC97 ID register, yes, a key as VID/PID is a key for USB.
+
+So my example, where the id is 0x574d4c13, would become :
+
+ac97: sound@40500000 {
+      	compatible = "marvell,pxa270-ac97";
+	reg = < 0x40500000 0x1000 >;
+	interrupts = <14>;
+	reset-gpios = <&gpio 95 GPIO_ACTIVE_HIGH>;
+	#sound-dai-cells = <1>;
+	pinctrl-names = "default";
+	pinctrl-0 = < &pinctrl_ac97_default >;
+	clocks = <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
+	clock-names = "AC97CLK", "AC97CONFCLK";
+
+        audio-codec@0 {
+        	reg = <0>; /* Codex index (between 0 and 3) */
+                compatible = "ac97id574d4c13";
+                clocks = <&fixed_wm9713_clock>;
+                clock-names = "ac97_clk";
+        }
+};
+
+Once we have converged on this example, I will post the patches for the binding,
+and the adaptation of the ac97 bus of course. Gives me a better chance to shoot
+in the right direction first :)
+
+Cheers.
 
 -- 
-Alexandre Belloni, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Robert
