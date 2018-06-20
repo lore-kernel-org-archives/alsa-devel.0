@@ -1,15 +1,28 @@
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: ALSA: use irqsave() in URB completion +
-	usb_fill_int_urb
-Date: Tue, 19 Jun 2018 23:55:12 +0200
-Message-ID: <20180619215521.13688-1-bigeasy@linutronix.de>
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH v3 24/27] devicetree: fix a series of wrong
+	file references
+Date: Wed, 20 Jun 2018 08:42:23 +0800
+Message-ID: <CAGb2v67s29mYa+hcYFWCokmzLwi7aYyeBwDnQiTJQYxT0GxPNA@mail.gmail.com>
+References: <cover.1528990947.git.mchehab+samsung@kernel.org>
+ <bce1b59268ac2d659fd7cb37f89285ef2acc8316.1528990947.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AE9F2676DC
- for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 23:55:39 +0200 (CEST)
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8390F2675EC
+ for <alsa-devel@alsa-project.org>; Wed, 20 Jun 2018 02:42:46 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id r125-v6so3593215wmg.2
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:42:46 -0700 (PDT)
+Received: from mail-wr0-f174.google.com (mail-wr0-f174.google.com.
+ [209.85.128.174])
+ by smtp.gmail.com with ESMTPSA id i22-v6sm466439edq.83.2018.06.19.17.42.43
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Tue, 19 Jun 2018 17:42:44 -0700 (PDT)
+Received: by mail-wr0-f174.google.com with SMTP id l41-v6so1411813wre.7
+ for <alsa-devel@alsa-project.org>; Tue, 19 Jun 2018 17:42:43 -0700 (PDT)
+In-Reply-To: <bce1b59268ac2d659fd7cb37f89285ef2acc8316.1528990947.git.mchehab+samsung@kernel.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,14 +32,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tglx@linutronix.de, linux-usb@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, linux-pci@vger.kernel.org, Binghui Wang <wangbinghui@hisilicon.com>, linux-kernel <linux-kernel@vger.kernel.org>, Lee Jones <lee.jones@linaro.org>, Jonathan Corbet <corbet@lwn.net>, linux-input@vger.kernel.org, devicetree <devicetree@vger.kernel.org>, Alexandre Torgue <alexandre.torgue@st.com>, Xiaowei Song <songxiaowei@hisilicon.com>, Mauro Carvalho Chehab <mchehab@infradead.org>, Mark Brown <broonie@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Zhou Wang <wangzhou1@hisilicon.com>, Rob Herring <robh+dt@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series is mostly about using _irqsave() primitives in the
-completion callback in order to get rid of local_irq_save() in
-__usb_hcd_giveback_urb(). While at it, I also tried to move drivers to
-use usb_fill_int_urb() otherwise it is hard find users of a certain API.
+On Fri, Jun 15, 2018 at 12:09 AM, Mauro Carvalho Chehab
+<mchehab+samsung@kernel.org> wrote:
+> As files got renamed, their references broke.
+>
+> Manually fix a series of broken refs at the DT bindings.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> ---
 
-Sebastian
- 
+>  Documentation/devicetree/bindings/mfd/sun6i-prcm.txt |  2 +-
+
+Acked-by: Chen-Yu Tsai <wens@csie.org>
