@@ -1,213 +1,43 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 2/2] slimbus: ngd: add stream support
-Date: Thu, 21 Jun 2018 14:40:09 +0100
-Message-ID: <20180621134009.27116-3-srinivas.kandagatla@linaro.org>
-References: <20180621134009.27116-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180621134009.27116-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: gregkh@linuxfoundation.org, broonie@kernel.org
-Cc: sdharia@quicinc.com, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, ctatlor97@gmail.com, vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 2/2] ASoC: qcom: add sdm845 sound card
+ support
+Date: Thu, 21 Jun 2018 16:09:47 +0100
+Message-ID: <46f1a6af-a180-2568-d203-87323379c2fd@linaro.org>
+References: <1529578399-3633-1-git-send-email-rohitkr@codeaurora.org>
+ <1529578399-3633-3-git-send-email-rohitkr@codeaurora.org>
+ <20180621123503.GD27187@vkoul-mobl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2ADE2673F2
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 17:09:49 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id r15-v6so5781857wmc.1
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 08:09:49 -0700 (PDT)
+In-Reply-To: <20180621123503.GD27187@vkoul-mobl>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vinod <vkoul@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support to stream support, this involve implementing
-user specific implementation of Data channel management and channel
-management SLIMbus messages.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- drivers/slimbus/qcom-ngd-ctrl.c | 144 +++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 142 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index 8554e3f43522..aa597f50f040 100644
---- a/drivers/slimbus/qcom-ngd-ctrl.c
-+++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -603,7 +603,9 @@ static void qcom_slim_ngd_rx(struct qcom_slim_ngd_ctrl *ctrl, u8 *buf)
- 
- 	if (mc == SLIM_MSG_MC_REPLY_INFORMATION ||
- 	    mc == SLIM_MSG_MC_REPLY_VALUE || (mc == SLIM_USR_MC_ADDR_REPLY &&
--	    mt == SLIM_MSG_MT_SRC_REFERRED_USER)) {
-+	    mt == SLIM_MSG_MT_SRC_REFERRED_USER) ||
-+		(mc == SLIM_USR_MC_GENERIC_ACK &&
-+		 mt == SLIM_MSG_MT_SRC_REFERRED_USER)) {
- 		slim_msg_response(&ctrl->ctrl, &buf[4], buf[3], len - 4);
- 		pm_runtime_mark_last_busy(ctrl->dev);
- 	}
-@@ -766,7 +768,10 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
- {
- 	struct qcom_slim_ngd_ctrl *ctrl = dev_get_drvdata(sctrl->dev);
- 	DECLARE_COMPLETION_ONSTACK(tx_sent);
--	int ret, timeout;
-+	DECLARE_COMPLETION_ONSTACK(done);
-+	int ret, timeout, i;
-+	u8 wbuf[SLIM_MSGQ_BUF_LEN];
-+	u8 rbuf[SLIM_MSGQ_BUF_LEN];
- 	u32 *pbuf;
- 	u8 *puc;
- 	u8 la = txn->la;
-@@ -794,6 +799,40 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
- 		return -ENOMEM;
- 	}
- 
-+	if (txn->mt == SLIM_MSG_MT_CORE &&
-+		(txn->mc == SLIM_MSG_MC_CONNECT_SOURCE ||
-+		txn->mc == SLIM_MSG_MC_CONNECT_SINK ||
-+		txn->mc == SLIM_MSG_MC_DISCONNECT_PORT)) {
-+
-+		txn->mt = SLIM_MSG_MT_DEST_REFERRED_USER;
-+		if (txn->mc == SLIM_MSG_MC_CONNECT_SOURCE)
-+			txn->mc = SLIM_USR_MC_CONNECT_SRC;
-+		else if (txn->mc == SLIM_MSG_MC_CONNECT_SINK)
-+			txn->mc = SLIM_USR_MC_CONNECT_SINK;
-+		else if (txn->mc == SLIM_MSG_MC_DISCONNECT_PORT)
-+			txn->mc = SLIM_USR_MC_DISCONNECT_PORT;
-+		i = 0;
-+		wbuf[i++] = txn->la;
-+		la = SLIM_LA_MGR;
-+		wbuf[i++] = txn->msg->wbuf[0];
-+		if (txn->mc != SLIM_USR_MC_DISCONNECT_PORT)
-+			wbuf[i++] = txn->msg->wbuf[1];
-+
-+		txn->comp = &done;
-+		ret = slim_alloc_txn_tid(sctrl, txn);
-+		if (ret) {
-+			dev_err(ctrl->dev, "Unable to allocate TID\n");
-+			return ret;
-+		}
-+
-+		wbuf[i++] = txn->tid;
-+
-+		txn->msg->num_bytes = i;
-+		txn->msg->wbuf = wbuf;
-+		txn->msg->rbuf = rbuf;
-+		txn->rl = txn->msg->num_bytes + 4;
-+	}
-+
- 	/* HW expects length field to be excluded */
- 	txn->rl--;
- 	puc = (u8 *)pbuf;
-@@ -830,6 +869,19 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
- 		return -ETIMEDOUT;
- 	}
- 
-+	if (txn->mt == SLIM_MSG_MT_DEST_REFERRED_USER &&
-+		(txn->mc == SLIM_USR_MC_CONNECT_SRC ||
-+		 txn->mc == SLIM_USR_MC_CONNECT_SINK ||
-+		 txn->mc == SLIM_USR_MC_DISCONNECT_PORT)) {
-+		timeout = wait_for_completion_timeout(&done, HZ);
-+		if (!timeout) {
-+			dev_err(sctrl->dev, "TX timed out:MC:0x%x,mt:0x%x",
-+				txn->mc, txn->mt);
-+			return -ETIMEDOUT;
-+		}
-+
-+	}
-+
- 	return 0;
- }
- 
-@@ -856,6 +908,93 @@ static int qcom_slim_ngd_xfer_msg_sync(struct slim_controller *ctrl,
- 	return 0;
- }
- 
-+static int qcom_slim_ngd_enable_stream(struct slim_stream_runtime *rt)
-+{
-+	struct slim_device *sdev = rt->dev;
-+	struct slim_controller *ctrl = sdev->ctrl;
-+	struct slim_val_inf msg =  {0};
-+	u8 wbuf[SLIM_MSGQ_BUF_LEN];
-+	u8 rbuf[SLIM_MSGQ_BUF_LEN];
-+	struct slim_msg_txn txn = {0,};
-+	int i, ret;
-+
-+	txn.mt = SLIM_MSG_MT_DEST_REFERRED_USER;
-+	txn.dt = SLIM_MSG_DEST_LOGICALADDR;
-+	txn.la = SLIM_LA_MGR;
-+	txn.ec = 0;
-+	txn.msg = &msg;
-+	txn.msg->num_bytes = 0;
-+	txn.msg->wbuf = wbuf;
-+	txn.msg->rbuf = rbuf;
-+
-+	for (i = 0; i < rt->num_ports; i++) {
-+		struct slim_port *port = &rt->ports[i];
-+
-+		if (txn.msg->num_bytes == 0) {
-+			int seg_interval = SLIM_SLOTS_PER_SUPERFRAME/rt->ratem;
-+			int exp;
-+
-+			wbuf[txn.msg->num_bytes++] = sdev->laddr;
-+			wbuf[txn.msg->num_bytes] = rt->bps >> 2 |
-+						   (port->ch.aux_fmt << 6);
-+
-+			/* Data channel segment interval not multiple of 3 */
-+			exp = seg_interval % 3;
-+			if (exp)
-+				wbuf[txn.msg->num_bytes] |= BIT(5);
-+
-+			txn.msg->num_bytes++;
-+			wbuf[txn.msg->num_bytes++] = exp << 4 | rt->prot;
-+
-+			if (rt->prot == SLIM_PROTO_ISO)
-+				wbuf[txn.msg->num_bytes++] =
-+						port->ch.prrate |
-+						SLIM_CHANNEL_CONTENT_FL;
-+			else
-+				wbuf[txn.msg->num_bytes++] =  port->ch.prrate;
-+
-+			ret = slim_alloc_txn_tid(ctrl, &txn);
-+			if (ret) {
-+				dev_err(&sdev->dev, "Fail to allocate TID\n");
-+				return -ENXIO;
-+			}
-+			wbuf[txn.msg->num_bytes++] = txn.tid;
-+		}
-+		wbuf[txn.msg->num_bytes++] = port->ch.id;
-+	}
-+
-+	txn.mc = SLIM_USR_MC_DEF_ACT_CHAN;
-+	txn.rl = txn.msg->num_bytes + 4;
-+	ret = qcom_slim_ngd_xfer_msg_sync(ctrl, &txn);
-+	if (ret) {
-+		slim_free_txn_tid(ctrl, &txn);
-+		dev_err(&sdev->dev, "TX timed out:MC:0x%x,mt:0x%x", txn.mc,
-+				txn.mt);
-+		return ret;
-+	}
-+
-+	txn.mc = SLIM_USR_MC_RECONFIG_NOW;
-+	txn.msg->num_bytes = 2;
-+	wbuf[1] = sdev->laddr;
-+	txn.rl = txn.msg->num_bytes + 4;
-+
-+	ret = slim_alloc_txn_tid(ctrl, &txn);
-+	if (ret) {
-+		dev_err(ctrl->dev, "Fail to allocate TID\n");
-+		return ret;
-+	}
-+
-+	wbuf[0] = txn.tid;
-+	ret = qcom_slim_ngd_xfer_msg_sync(ctrl, &txn);
-+	if (ret) {
-+		slim_free_txn_tid(ctrl, &txn);
-+		dev_err(&sdev->dev, "TX timed out:MC:0x%x,mt:0x%x", txn.mc,
-+				txn.mt);
-+	}
-+
-+	return ret;
-+}
-+
- static int qcom_slim_ngd_get_laddr(struct slim_controller *ctrl,
- 				   struct slim_eaddr *ea, u8 *laddr)
- {
-@@ -1288,6 +1427,7 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
- 	ctrl->ctrl.a_framer = &ctrl->framer;
- 	ctrl->ctrl.clkgear = SLIM_MAX_CLK_GEAR;
- 	ctrl->ctrl.get_laddr = qcom_slim_ngd_get_laddr;
-+	ctrl->ctrl.enable_stream = qcom_slim_ngd_enable_stream;
- 	ctrl->ctrl.xfer_msg = qcom_slim_ngd_xfer_msg;
- 	ctrl->ctrl.wakeup = NULL;
- 	ctrl->state = QCOM_SLIM_NGD_CTRL_DOWN;
--- 
-2.16.2
+On 21/06/18 13:35, Vinod wrote:
+> And this one is generic DT parsing and seems quite similar to one in apq8096.c
+> Can we move these into a lib and use them instead of duplicating.
+I totally agree with Vinod, We should probably come up with a library 
+functions something like common.c so that we do not duplicate code.
+This code is going be exactly same for most of the SoCs using qdsp.
+
+thanks,
+srini
