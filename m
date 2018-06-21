@@ -1,168 +1,92 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v2 2/2] ASoC: qcom: add sdm845 sound card
- support
-Date: Thu, 21 Jun 2018 18:05:03 +0530
-Message-ID: <20180621123503.GD27187@vkoul-mobl>
-References: <1529578399-3633-1-git-send-email-rohitkr@codeaurora.org>
- <1529578399-3633-3-git-send-email-rohitkr@codeaurora.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/2] slimbus: Add Stream Support
+Date: Thu, 21 Jun 2018 14:40:07 +0100
+Message-ID: <20180621134009.27116-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1529578399-3633-3-git-send-email-rohitkr@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rohit kumar <rohitkr@codeaurora.org>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr0-f196.google.com (mail-wr0-f196.google.com
+ [209.85.128.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FF002673F2
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 15:42:22 +0200 (CEST)
+Received: by mail-wr0-f196.google.com with SMTP id w7-v6so3258855wrn.6
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 06:42:22 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: gregkh@linuxfoundation.org, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, ctatlor97@gmail.com, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, sdharia@quicinc.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rohit,
+This patchset adds basic stream support for SLIMbus devices and
+controllers. Mostly inspired by soundwire stream patches. But slimbus
+stream is much simpler compared to soundwire
 
-On 21-06-18, 16:23, Rohit kumar wrote:
+>From slim_device side, we have below 6 new apis.
+slim_stream_allocate() - allocating runtime slim stream
+slim_stream_prepare() - to configure runtime stream with config
+slim_stream_enable() - enable channels/ports for data
+slim_stream_disable() - disable channels/ports.
+slim_stream_unprepare() - un configure runtime stream
+slim_stream_free() - free all associated memory.
 
-> +static struct sdm845_snd_data *sdm845_sbc_parse_of(struct snd_soc_card *card)
-> +{
-> +	struct device *dev = card->dev;
-> +	struct snd_soc_dai_link *link;
-> +	struct device_node *np, *codec, *platform, *cpu, *node;
-> +	int ret, num_links;
-> +	struct sdm845_snd_data *data;
-> +
-> +	ret = snd_soc_of_parse_card_name(card, "qcom,model");
-> +	if (ret) {
-> +		dev_err(dev, "Error parsing card name: %d\n", ret);
-> +		return ERR_PTR(ret);
-> +	}
-> +
-> +	node = dev->of_node;
-> +
-> +	/* DAPM routes */
-> +	if (of_property_read_bool(node, "qcom,audio-routing")) {
-> +		ret = snd_soc_of_parse_audio_routing(card,
-> +					"qcom,audio-routing");
-> +		if (ret)
-> +			return ERR_PTR(ret);
-> +	}
-> +
-> +	/* Populate links */
-> +	num_links = of_get_child_count(node);
-> +
-> +	/* Allocate the private data and the DAI link array */
-> +	data = kzalloc(sizeof(*data) + sizeof(*link) * num_links,
-> +			GFP_KERNEL);
-> +	if (!data)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	card->dai_link = &data->dai_link[0];
-> +	card->num_links = num_links;
-> +
-> +	link = data->dai_link;
-> +	data->card = card;
-> +
-> +	for_each_child_of_node(node, np) {
-> +		cpu = of_get_child_by_name(np, "cpu");
-> +		if (!cpu) {
-> +			dev_err(dev, "Can't find cpu DT node\n");
-> +			ret = -EINVAL;
-> +			goto fail;
-> +		}
-> +
-> +		link->cpu_of_node = of_parse_phandle(cpu, "sound-dai", 0);
-> +		if (!link->cpu_of_node) {
-> +			dev_err(card->dev, "error getting cpu phandle\n");
-> +			ret = -EINVAL;
-> +			goto fail;
-> +		}
-> +
-> +		ret = snd_soc_of_get_dai_name(cpu, &link->cpu_dai_name);
-> +		if (ret) {
-> +			dev_err(card->dev, "error getting cpu dai name\n");
-> +			goto fail;
-> +		}
-> +
-> +		platform = of_get_child_by_name(np, "platform");
-> +		codec = of_get_child_by_name(np, "codec");
-> +		if (codec && platform) {
-> +			link->platform_of_node = of_parse_phandle(platform,
-> +					"sound-dai", 0);
-> +			if (!link->platform_of_node) {
-> +				dev_err(card->dev, "error getting platform phandle\n");
-> +				ret = -EINVAL;
-> +				goto fail;
-> +			}
-> +
-> +			ret = snd_soc_of_get_dai_link_codecs(dev, codec, link);
-> +			if (ret < 0) {
-> +				dev_err(card->dev, "error getting codec dai name\n");
-> +				goto fail;
-> +			}
-> +			link->no_pcm = 1;
-> +			link->ignore_pmdown_time = 1;
-> +			link->ops = &sdm845_be_ops;
-> +			link->be_hw_params_fixup = sdm845_be_hw_params_fixup;
-> +		} else {
-> +			link->platform_of_node = link->cpu_of_node;
-> +			link->codec_dai_name = "snd-soc-dummy-dai";
-> +			link->codec_name = "snd-soc-dummy";
-> +			link->dynamic = 1;
-> +		}
-> +
-> +		link->ignore_suspend = 1;
-> +		ret = of_property_read_string(np, "link-name", &link->name);
-> +		if (ret) {
-> +			dev_err(card->dev,
-> +				"error getting codec dai_link name\n");
-> +			goto fail;
-> +		}
-> +
-> +		link->dpcm_playback = 1;
-> +		link->dpcm_capture = 1;
-> +		link->stream_name = link->name;
-> +		link++;
-> +	}
-> +	dev_set_drvdata(dev, card);
-> +	snd_soc_card_set_drvdata(card, data);
-> +
-> +	return data;
-> +fail:
-> +	kfree(data);
-> +	return ERR_PTR(ret);
-> +}
+>From Controller side:
+Data channel Management and reconfiguration messages are applicable for
+all the controllers which are inline with SLIMbus specs. However light
+weight controller like NGD which have user specific implementation of
+some messages need to be invoked instead of standard message commands.
+For usecases like this simple enable/disable stream apis are provided.
 
-this routine...
+Assumptions:
+1> Current design assumes that the channel and ports are statically allocated
+to the device during SoC integration, which is the case with all the
+Qualcomm SoCs.
+2> One-to-One mapping between Port and Channel, SLIMBus versions earlier
+than 2.0 has only one endpoint per port. Current patchset can be extended
+to support more than one endpoints per port.
+3> Only audio usecase, This patchset only supports Isochronous and Push/Pull
+transport protocols, which are sufficient for audio use cases.
+4> DSP does all the data handling for the allocated channels. Which is true
+for Qcom SoCs.
 
-> +static int add_audio_components(struct device *dev,
-> +				struct component_match **matchptr)
-> +{
-> +	struct device_node *np, *platform, *cpu, *node, *dai_node;
-> +
-> +	node = dev->of_node;
-> +
-> +	for_each_child_of_node(node, np) {
-> +		cpu = of_get_child_by_name(np, "cpu");
-> +		if (cpu) {
-> +			dai_node = of_parse_phandle(cpu, "sound-dai", 0);
-> +			of_node_get(dai_node);
-> +			component_match_add_release(dev, matchptr,
-> +					sdm845_release_of,
-> +					sdm845_compare_of,
-> +					dai_node);
-> +		}
-> +
-> +		platform = of_get_child_by_name(np, "platform");
-> +		if (platform) {
-> +			dai_node = of_parse_phandle(platform, "sound-dai", 0);
-> +			component_match_add_release(dev, matchptr,
-> +					sdm845_release_of,
-> +					sdm845_compare_of,
-> +					dai_node);
-> +		}
-> +	}
-> +
-> +	return 0;
-> +}
+TODO:
+	Bandwidth management.
 
-And this one is generic DT parsing and seems quite similar to one in apq8096.c
-Can we move these into a lib and use them instead of duplicating.
+Dependency:
+	This patchset has dependency on the NGD driver
+	https://patchwork.kernel.org/patch/10474959/
+
+Tested this patchset with WCD9335 codec playback on DB820c on
+top of 4.18-rc1 with qdsp6.
+
+I have pushed my working branch to [1] incase someone want to try.
+
+[1]:https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=slimbus-ngd
+
+
+Thanks,
+srini
+
+Srinivas Kandagatla (2):
+  slimbus: stream: add stream support
+  slimbus: ngd: add stream support
+
+ Documentation/driver-api/slimbus.rst |   5 +
+ drivers/slimbus/Makefile             |   2 +-
+ drivers/slimbus/core.c               |   2 +
+ drivers/slimbus/qcom-ngd-ctrl.c      | 144 +++++++++-
+ drivers/slimbus/slimbus.h            | 206 +++++++++++++++
+ drivers/slimbus/stream.c             | 493 +++++++++++++++++++++++++++++++++++
+ include/linux/slimbus.h              |  56 ++++
+ 7 files changed, 905 insertions(+), 3 deletions(-)
+ create mode 100644 drivers/slimbus/stream.c
 
 -- 
-~Vinod
+2.16.2
