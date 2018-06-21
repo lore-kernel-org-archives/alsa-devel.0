@@ -1,19 +1,16 @@
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: Re: [RESEND][PATCH] ASoC: hdac_hdmi: Program
- pin-port-mux during jack report event
-Date: Thu, 21 Jun 2018 13:24:20 +0530
-Message-ID: <20180621075419.GA10037@intel.com>
-References: <1529492902-6600-1-git-send-email-sriramx.periyasamy@intel.com>
- <s5ho9g5mx2e.wl-tiwai@suse.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ALSA: lx6464es: Missing error code in
+	snd_lx6464es_create()
+Date: Thu, 21 Jun 2018 11:07:21 +0300
+Message-ID: <20180620204256.wvesr47qgikwhfgq@kili.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DE05266E76
- for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 10:05:53 +0200 (CEST)
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id B041B2676B0
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 10:07:34 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <s5ho9g5mx2e.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,28 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA ML <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+To: Jaroslav Kysela <perex@perex.cz>, Zhouyang Jia <jiazhouyang09@gmail.com>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 20, 2018 at 03:01:13PM +0200, Takashi Iwai wrote:
-> On Wed, 20 Jun 2018 13:08:21 +0200,
-> Sriram Periyasamy wrote:
-> > 
-> > During d3/d0 cycle, the connection selection index of all pins points
-> > to the default value. This needs to be restored to ensure audio is
-> > restored after d3/d0 cycle.
-> > 
-> > So store the connection selection index and program it during jack
-> > report event which gets invoked in cases like d3/d0 cycle, hot plug
-> > detection when multiple displays are connected.
-> 
-> Hm, I thought *_CONNECT_SEL being cached and restored at resume
-> already by regmap?
-> 
+We forgot to set the error code on this error path.
 
-Yes, legacy HDA HDMI driver has this method whereas ASoC based HDAC HDMI
-driver doesn't use regmap. Hence we needed this solution.
+Fixes: 4a23fc8cc068 ("ALSA: lx6464es: add error handling for pci_ioremap_bar")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Thanks,
-Sriram.
+diff --git a/sound/pci/lx6464es/lx6464es.c b/sound/pci/lx6464es/lx6464es.c
+index 6c85f13ab23f..54f6252faca6 100644
+--- a/sound/pci/lx6464es/lx6464es.c
++++ b/sound/pci/lx6464es/lx6464es.c
+@@ -1018,6 +1018,7 @@ static int snd_lx6464es_create(struct snd_card *card,
+ 	chip->port_dsp_bar = pci_ioremap_bar(pci, 2);
+ 	if (!chip->port_dsp_bar) {
+ 		dev_err(card->dev, "cannot remap PCI memory region\n");
++		err = -ENOMEM;
+ 		goto remap_pci_failed;
+ 	}
+ 
