@@ -1,15 +1,17 @@
 From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH 1/2] ALSA: ac97: add bus binding for codecs
-Date: Thu, 21 Jun 2018 17:43:55 +0200
-Message-ID: <20180621154356.5438-1-robert.jarzmik@free.fr>
+Subject: [PATCH 2/2] ALSA: ac97: add codecs devicetree binding
+Date: Thu, 21 Jun 2018 17:43:56 +0200
+Message-ID: <20180621154356.5438-2-robert.jarzmik@free.fr>
+References: <20180621154356.5438-1-robert.jarzmik@free.fr>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from smtp.smtpout.orange.fr (smtp02.smtpout.orange.fr
  [80.12.242.124])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F16B267610
- for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 17:44:10 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 53E292676C3
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 17:44:11 +0200 (CEST)
+In-Reply-To: <20180621154356.5438-1-robert.jarzmik@free.fr>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,52 +25,67 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the generic ac97 bus binding, especially for ac97 codecs discovered
-by ac97 hardware probing.
+Add a devicetree binding for codecs. This is especially useful if the
+AC97 bitclk clock is provided by the codec, as it has to be described in
+the devicetree description for the ac97 bus code to aquire it.
 
 Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 ---
- .../devicetree/bindings/sound/ac97-bus.txt         | 32 ++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/ac97-bus.txt
+Special review query: review the "return of_node_get(node)", which
+assumes that upon device removal, of_put_node(dev.of_node) will be
+called...
+---
+ sound/ac97/bus.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/ac97-bus.txt b/Documentation/devicetree/bindings/sound/ac97-bus.txt
-new file mode 100644
-index 000000000000..103c428f2595
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/ac97-bus.txt
-@@ -0,0 +1,32 @@
-+Generic AC97 Device Properties
+diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
+index 31f858eceffc..c8e20dd8786f 100644
+--- a/sound/ac97/bus.c
++++ b/sound/ac97/bus.c
+@@ -13,6 +13,7 @@
+ #include <linux/idr.h>
+ #include <linux/list.h>
+ #include <linux/mutex.h>
++#include <linux/of.h>
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/slab.h>
+@@ -68,6 +69,27 @@ ac97_codec_find(struct ac97_controller *ac97_ctrl, unsigned int codec_num)
+ 	return ac97_ctrl->codecs[codec_num];
+ }
+ 
++static struct device_node *
++ac97_of_get_child_device(struct ac97_controller *ac97_ctrl, int idx,
++			 unsigned int vendor_id)
++{
++	struct device_node *node;
++	u32 reg;
++	char compat[] = "ac97,0000,0000";
 +
-+This documents describes the devicetree bindings for an ac97 controller child
-+node describing ac97 codecs.
++	snprintf(compat, sizeof(compat), "ac97,%04x,%04x",
++		 vendor_id >> 16, vendor_id & 0xffff);
 +
-+Required properties:
-+-compatible : Must be "ac97,vendor_id1,vendor_id2
-+	      The ids shall be the 4 characters hexadecimal encoding, such as
-+	      given by "%04x" formatting of printf
-+-reg	    : Must be the ac97 codec number, between 0 and 3
-+
-+Example:
-+ac97: sound@40500000 {
-+	compatible = "marvell,pxa270-ac97";
-+	reg = < 0x40500000 0x1000 >;
-+	interrupts = <14>;
-+	reset-gpios = <&gpio 95 GPIO_ACTIVE_HIGH>;
-+	#sound-dai-cells = <1>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = < &pinctrl_ac97_default >;
-+	clocks = <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
-+	clock-names = "AC97CLK", "AC97CONFCLK";
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+	audio-codec@0 {
-+		reg = <0>;
-+		compatible = "ac97,574d,4c13";
-+		clocks = <&fixed_wm9713_clock>;
-+		clock-names = "ac97_clk";
++	for_each_child_of_node(ac97_ctrl->parent->of_node, node) {
++		if ((idx != of_property_read_u32(node, "reg", &reg)) ||
++		    !of_device_is_compatible(node, compat))
++			continue;
++		return of_node_get(node);
 +	}
-+};
++
++	return NULL;
++}
++
+ static void ac97_codec_release(struct device *dev)
+ {
+ 	struct ac97_codec_device *adev;
+@@ -98,6 +120,8 @@ static int ac97_codec_add(struct ac97_controller *ac97_ctrl, int idx,
+ 
+ 	device_initialize(&codec->dev);
+ 	dev_set_name(&codec->dev, "%s:%u", dev_name(ac97_ctrl->parent), idx);
++	codec->dev.of_node = ac97_of_get_child_device(ac97_ctrl, idx,
++						      vendor_id);
+ 
+ 	ret = device_add(&codec->dev);
+ 	if (ret)
 -- 
 2.11.0
