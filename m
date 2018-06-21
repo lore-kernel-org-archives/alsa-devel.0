@@ -1,15 +1,20 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: Intel: common: fix missing rename from
-	'reef' to 'sof'
-Date: Thu, 21 Jun 2018 15:47:35 -0500
-Message-ID: <20180621204735.6825-1-pierre-louis.bossart@linux.intel.com>
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH 6/9] ALSA: usb: caiaq: use
+	usb_fill_int_urb()
+Date: Thu, 21 Jun 2018 23:16:39 +0200
+Message-ID: <20180621211639.a7vym5mikaejvlgw@linutronix.de>
+References: <20180619215521.13688-1-bigeasy@linutronix.de>
+ <20180619215521.13688-7-bigeasy@linutronix.de>
+ <2f8cbd9b-55ad-d543-d26a-c4452717b121@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 6309F267610
- for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 22:47:39 +0200 (CEST)
+Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A216267610
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 23:16:42 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <2f8cbd9b-55ad-d543-d26a-c4452717b121@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,32 +24,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, KCHSU0@nuvoton.com, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tglx@linutronix.de, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Somehow I missed the Nau8824 support which was added in 4.17. Oops
+On 2018-06-21 22:19:32 [+0200], Daniel Mack wrote:
+> On Tuesday, June 19, 2018 11:55 PM, Sebastian Andrzej Siewior wrote:
+> > Using usb_fill_int_urb() helps to find code which initializes an
+> > URB. A grep for members of the struct (like ->complete) reveal lots
+> > of other things, too.
+> 
+> Acked-by: Daniel Mack <zonque@gmail.com>
 
-Fixes: 4f722a6a736 ("ASoC: Intel: common: rename 'reef' to 'sof' in ACPI matching table")
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
----
- sound/soc/intel/common/soc-acpi-intel-cht-match.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+nope, please don't.
+Takashi, please ignore the usb_fill_.* patches. I will be doing another
+spin with usb_fill_iso_urb() instead.
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-cht-match.c b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-index 3c3f2f8585d7..91bb99b69601 100644
---- a/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-cht-match.c
-@@ -122,8 +122,8 @@ struct snd_soc_acpi_mach  snd_soc_acpi_intel_cherrytrail_machines[] = {
- 		.drv_name = "cht-bsw-nau8824",
- 		.fw_filename = "intel/fw_sst_22a8.bin",
- 		.board = "cht-bsw",
--		.sof_fw_filename = "intel/reef-cht.ri",
--		.sof_tplg_filename = "intel/reef-cht-nau8824.tplg",
-+		.sof_fw_filename = "intel/sof-cht.ri",
-+		.sof_tplg_filename = "intel/sof-cht-nau8824.tplg",
- 		.asoc_plat_name = "sst-mfld-platform",
- 	},
- 	{
--- 
-2.14.1
+Sebastian
