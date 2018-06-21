@@ -1,91 +1,42 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH 2/2] ALSA: ac97: add codecs devicetree binding
-Date: Thu, 21 Jun 2018 17:43:56 +0200
-Message-ID: <20180621154356.5438-2-robert.jarzmik@free.fr>
-References: <20180621154356.5438-1-robert.jarzmik@free.fr>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: hda/ca0132: make array ca0132_alt_chmaps static
+Date: Thu, 21 Jun 2018 19:34:57 +0100
+Message-ID: <20180621183457.31008-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp02.smtpout.orange.fr
- [80.12.242.124])
- by alsa0.perex.cz (Postfix) with ESMTP id 53E292676C3
- for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 17:44:11 +0200 (CEST)
-In-Reply-To: <20180621154356.5438-1-robert.jarzmik@free.fr>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add a devicetree binding for codecs. This is especially useful if the
-AC97 bitclk clock is provided by the codec, as it has to be described in
-the devicetree description for the ac97 bus code to aquire it.
+From: Colin Ian King <colin.king@canonical.com>
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
----
-Special review query: review the "return of_node_get(node)", which
-assumes that upon device removal, of_put_node(dev.of_node) will be
-called...
----
- sound/ac97/bus.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+The array ca0132_alt_chmaps is local to the source and does not
+need to be in global scope, so make it static.
 
-diff --git a/sound/ac97/bus.c b/sound/ac97/bus.c
-index 31f858eceffc..c8e20dd8786f 100644
---- a/sound/ac97/bus.c
-+++ b/sound/ac97/bus.c
-@@ -13,6 +13,7 @@
- #include <linux/idr.h>
- #include <linux/list.h>
- #include <linux/mutex.h>
-+#include <linux/of.h>
- #include <linux/pm.h>
- #include <linux/pm_runtime.h>
- #include <linux/slab.h>
-@@ -68,6 +69,27 @@ ac97_codec_find(struct ac97_controller *ac97_ctrl, unsigned int codec_num)
- 	return ac97_ctrl->codecs[codec_num];
- }
- 
-+static struct device_node *
-+ac97_of_get_child_device(struct ac97_controller *ac97_ctrl, int idx,
-+			 unsigned int vendor_id)
-+{
-+	struct device_node *node;
-+	u32 reg;
-+	char compat[] = "ac97,0000,0000";
-+
-+	snprintf(compat, sizeof(compat), "ac97,%04x,%04x",
-+		 vendor_id >> 16, vendor_id & 0xffff);
-+
-+	for_each_child_of_node(ac97_ctrl->parent->of_node, node) {
-+		if ((idx != of_property_read_u32(node, "reg", &reg)) ||
-+		    !of_device_is_compatible(node, compat))
-+			continue;
-+		return of_node_get(node);
-+	}
-+
-+	return NULL;
-+}
-+
- static void ac97_codec_release(struct device *dev)
- {
- 	struct ac97_codec_device *adev;
-@@ -98,6 +120,8 @@ static int ac97_codec_add(struct ac97_controller *ac97_ctrl, int idx,
- 
- 	device_initialize(&codec->dev);
- 	dev_set_name(&codec->dev, "%s:%u", dev_name(ac97_ctrl->parent), idx);
-+	codec->dev.of_node = ac97_of_get_child_device(ac97_ctrl, idx,
-+						      vendor_id);
- 
- 	ret = device_add(&codec->dev);
- 	if (ret)
+Cleans up sparse warning:
+warning: symbol 'ca0132_alt_chmaps' was not declared. Should it be
+static?
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/pci/hda/patch_ca0132.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index d62c56feaf7d..4ff5320378e2 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -5665,7 +5665,7 @@ static const char * const ca0132_alt_slave_pfxs[] = {
+  * I think this has to do with the pin for rear surround being 0x11,
+  * and the center/lfe being 0x10. Usually the pin order is the opposite.
+  */
+-const struct snd_pcm_chmap_elem ca0132_alt_chmaps[] = {
++static const struct snd_pcm_chmap_elem ca0132_alt_chmaps[] = {
+ 	{ .channels = 2,
+ 	  .map = { SNDRV_CHMAP_FL, SNDRV_CHMAP_FR } },
+ 	{ .channels = 4,
 -- 
-2.11.0
+2.17.0
