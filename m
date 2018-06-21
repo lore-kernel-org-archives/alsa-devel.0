@@ -1,27 +1,35 @@
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH] ALSA: fm801: add error handling for snd_ctl_add
-Date: Thu, 21 Jun 2018 03:34:10 +0300
-Message-ID: <CAHp75Veew3LCEKa64V+YFZZMtzvNc5dkJfXE4DGQ1noDQMhOXg@mail.gmail.com>
-References: <1528704248-33818-1-git-send-email-jiazhouyang09@gmail.com>
- <520e80a8b8de0f532e8dd3ee15af9efbc748dd9a.camel@linux.intel.com>
- <s5hmuw1bgmd.wl-tiwai@suse.de> <CAA9xbM7_vrn-f_m67eowzLzWjoJP=9Hkgyxfc=yu=aDtmk=Qvw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Subject: [PATCH] ASoC: uniphier: remove redundant check of PLL ID
+Date: Thu, 21 Jun 2018 11:43:46 +0900
+Message-ID: <20180621024346.13131-1-suzuki.katsuhiro@socionext.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAA9xbM7_vrn-f_m67eowzLzWjoJP=9Hkgyxfc=yu=aDtmk=Qvw@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: =?UTF-8?Q?=C3=89meric_MASCHINO?= <emeric.maschino@gmail.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>, Zhouyang Jia <jiazhouyang09@gmail.com>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, BhumikaGoyal <bhumirks@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 20, 2018 at 10:39 PM, =C3=89meric MASCHINO
-<emeric.maschino@gmail.com> wrote:
-> Patch tested on my ia64 workstation. Works flawlessly.
->
+This patch removes redudant check of PLL ID. struct uniphier_aio_pll
+enable member has already been checked at is_valid_pll().
 
-Thanks, =C3=89meric!
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+---
+ sound/soc/uniphier/aio-cpu.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
---=20
-With Best Regards,
-Andy Shevchenko
+diff --git a/sound/soc/uniphier/aio-cpu.c b/sound/soc/uniphier/aio-cpu.c
+index 2d9b7dde2ffa..cfe69ab44b63 100644
+--- a/sound/soc/uniphier/aio-cpu.c
++++ b/sound/soc/uniphier/aio-cpu.c
+@@ -224,10 +224,6 @@ static int uniphier_aio_set_pll(struct snd_soc_dai *dai, int pll_id,
+ 
+ 	if (!is_valid_pll(aio->chip, pll_id))
+ 		return -EINVAL;
+-	if (!aio->chip->plls[pll_id].enable) {
+-		dev_err(dev, "PLL(%d) is not implemented\n", pll_id);
+-		return -ENOTSUPP;
+-	}
+ 
+ 	ret = aio_chip_set_pll(aio->chip, pll_id, freq_out);
+ 	if (ret < 0)
+-- 
+2.17.1
