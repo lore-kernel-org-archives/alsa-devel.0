@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: hda - Use the common helper for
-	thinkpad_acpi mic mute LED handling
-Date: Thu, 21 Jun 2018 13:54:00 +0200
-Message-ID: <20180621115400.20427-2-tiwai@suse.de>
-References: <20180621115400.20427-1-tiwai@suse.de>
+Subject: [PATCH 0/5] ALSA: hda - second batch for mute LED
+	helper & cleanups
+Date: Thu, 21 Jun 2018 14:24:56 +0200
+Message-ID: <20180621122501.22290-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E58A2676C3
- for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 13:54:03 +0200 (CEST)
-In-Reply-To: <20180621115400.20427-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A81612676C7
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 14:25:05 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 0E53FACAD
+ for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 12:25:05 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +23,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali.rohar@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-VXNlIHRoZSBuZXcgY29tbW9uIGhlbHBlciBmb3Igc2V0dGluZyB1cCBhbmQgY29udHJvbGxpbmcg
-dGhlIG1pYyBtdXRlCkxFRCBvdmVyIHRoaW5rcGFkX2FjcGkuICBUaGlzIGFsc28gcHJvdmlkZXMg
-YSBuZXcgbWl4ZXIgZW51bSAiTWljCk11dGUtTEVEIE1vZGUiICh0aGF0IHdhcyBwcmVzZW50IG9u
-bHkgZm9yIERlbGwgbW9kZWxzKSwgd2hpY2ggYWxsb3dzCnVzZXIgdG8gY2hvb3NlIHRoZSBtaWMg
-bXV0ZSBMRUQgYmVoYXZpb3IuICBGb3IgZXhhbXBsZSwgaWYgeW91IHdhbnQKdGhlIG1pYyBtdXRl
-IExFRCB0dXJuZWQgb24gb25seSB3aGlsZSBtaWMgaXMgb24sIGNob29zZSAiRm9sbG93CkNhcHR1
-cmUiIHRoZXJlLgoKVGVzdGVkLWJ5OiBQYWxpIFJvaMOhciA8cGFsaS5yb2hhckBnbWFpbC5jb20+
-ClNpZ25lZC1vZmYtYnk6IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4KLS0tCiBzb3VuZC9w
-Y2kvaGRhL3RoaW5rcGFkX2hlbHBlci5jIHwgMjcgKysrKysrKystLS0tLS0tLS0tLS0tLS0tLS0t
-CiAxIGZpbGUgY2hhbmdlZCwgOCBpbnNlcnRpb25zKCspLCAxOSBkZWxldGlvbnMoLSkKCmRpZmYg
-LS1naXQgYS9zb3VuZC9wY2kvaGRhL3RoaW5rcGFkX2hlbHBlci5jIGIvc291bmQvcGNpL2hkYS90
-aGlua3BhZF9oZWxwZXIuYwppbmRleCA2NWJiM2FjNmFmNGMuLjk3ZjQ5Yjc1MWU2ZSAxMDA2NDQK
-LS0tIGEvc291bmQvcGNpL2hkYS90aGlua3BhZF9oZWxwZXIuYworKysgYi9zb3VuZC9wY2kvaGRh
-L3RoaW5rcGFkX2hlbHBlci5jCkBAIC0yNywxNyArMjcsMTEgQEAgc3RhdGljIHZvaWQgdXBkYXRl
-X3RwYWNwaV9tdXRlX2xlZCh2b2lkICpwcml2YXRlX2RhdGEsIGludCBlbmFibGVkKQogCQlsZWRf
-c2V0X2Z1bmMoVFBBQ1BJX0xFRF9NVVRFLCAhZW5hYmxlZCk7CiB9CiAKLXN0YXRpYyB2b2lkIHVw
-ZGF0ZV90cGFjcGlfbWljbXV0ZV9sZWQoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMsCi0JCQkJICAg
-ICAgc3RydWN0IHNuZF9rY29udHJvbCAqa2NvbnRyb2wsCi0JCQkJICAgICAgc3RydWN0IHNuZF9j
-dGxfZWxlbV92YWx1ZSAqdWNvbnRyb2wpCitzdGF0aWMgdm9pZCB1cGRhdGVfdHBhY3BpX21pY211
-dGUoc3RydWN0IGhkYV9jb2RlYyAqY29kZWMpCiB7Ci0JaWYgKCF1Y29udHJvbCB8fCAhbGVkX3Nl
-dF9mdW5jKQotCQlyZXR1cm47Ci0JaWYgKHN0cmNtcCgiQ2FwdHVyZSBTd2l0Y2giLCB1Y29udHJv
-bC0+aWQubmFtZSkgPT0gMCAmJiB1Y29udHJvbC0+aWQuaW5kZXggPT0gMCkgewotCQkvKiBUT0RP
-OiBIb3cgZG8gSSB2ZXJpZnkgaWYgaXQncyBhIG1vbm8gb3Igc3RlcmVvIGhlcmU/ICovCi0JCWJv
-b2wgdmFsID0gdWNvbnRyb2wtPnZhbHVlLmludGVnZXIudmFsdWVbMF0gfHwgdWNvbnRyb2wtPnZh
-bHVlLmludGVnZXIudmFsdWVbMV07Ci0JCWxlZF9zZXRfZnVuYyhUUEFDUElfTEVEX01JQ01VVEUs
-ICF2YWwpOwotCX0KKwlzdHJ1Y3QgaGRhX2dlbl9zcGVjICpzcGVjID0gY29kZWMtPnNwZWM7CisK
-KwlsZWRfc2V0X2Z1bmMoVFBBQ1BJX0xFRF9NSUNNVVRFLCBzcGVjLT5taWNtdXRlX2xlZC5sZWRf
-dmFsdWUpOwogfQogCiBzdGF0aWMgdm9pZCBoZGFfZml4dXBfdGhpbmtwYWRfYWNwaShzdHJ1Y3Qg
-aGRhX2NvZGVjICpjb2RlYywKQEAgLTYzLDE1ICs1NywxMCBAQCBzdGF0aWMgdm9pZCBoZGFfZml4
-dXBfdGhpbmtwYWRfYWNwaShzdHJ1Y3QgaGRhX2NvZGVjICpjb2RlYywKIAkJCXNwZWMtPnZtYXN0
-ZXJfbXV0ZS5ob29rID0gdXBkYXRlX3RwYWNwaV9tdXRlX2xlZDsKIAkJCXJlbW92ZWZ1bmMgPSBm
-YWxzZTsKIAkJfQotCQlpZiAobGVkX3NldF9mdW5jKFRQQUNQSV9MRURfTUlDTVVURSwgZmFsc2Up
-ID49IDApIHsKLQkJCWlmIChzcGVjLT5udW1fYWRjX25pZHMgPiAxICYmICFzcGVjLT5keW5fYWRj
-X3N3aXRjaCkKLQkJCQljb2RlY19kYmcoY29kZWMsCi0JCQkJCSAgIlNraXBwaW5nIG1pY211dGUg
-TEVEIGNvbnRyb2wgZHVlIHRvIHNldmVyYWwgQURDcyIpOwotCQkJZWxzZSB7Ci0JCQkJc3BlYy0+
-Y2FwX3N5bmNfaG9vayA9IHVwZGF0ZV90cGFjcGlfbWljbXV0ZV9sZWQ7Ci0JCQkJcmVtb3ZlZnVu
-YyA9IGZhbHNlOwotCQkJfQotCQl9CisJCWlmIChsZWRfc2V0X2Z1bmMoVFBBQ1BJX0xFRF9NSUNN
-VVRFLCBmYWxzZSkgPj0gMCAmJgorCQkgICAgc25kX2hkYV9nZW5fYWRkX21pY211dGVfbGVkKGNv
-ZGVjLAorCQkJCQkJdXBkYXRlX3RwYWNwaV9taWNtdXRlKSA+IDApCisJCQlyZW1vdmVmdW5jID0g
-ZmFsc2U7CiAJfQogCiAJaWYgKGxlZF9zZXRfZnVuYyAmJiAoYWN0aW9uID09IEhEQV9GSVhVUF9B
-Q1RfRlJFRSB8fCByZW1vdmVmdW5jKSkgewotLSAKMi4xNy4xCgpfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9t
-YWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+this is the additional changes for applying the common mute LED helper
+to more codecs and machines, to be applied on top of the previous two
+patches ("[PATCH 1/2] ALSA: hda - Move mic mute LED helper to the generic
+parser" and "[PATCH 2/2] ALSA: hda - Use the common helper for
+thinkpad_acpi mic mute LED handling").  Now HP laptops on Realtek and
+Conexant, as well as on IDT codecs receive the same mute LED
+functionality.
+
+
+Takashi
+
+===
+
+Takashi Iwai (5):
+  ALSA: hda/realtek - Use the mic-mute LED helper for HP and others
+  ALSA: hda/conexant - Use the mic-mute LED helper
+  ALSA: hda - Allow multiple ADCs for mic mute LED controls
+  ALSA: hda/sigmatel - Use common helper for mic mute LED
+  ALSA: hda - Sanity check of unexpected cap_sync_hook override
+
+ sound/pci/hda/hda_generic.c    | 32 ++++++++++------------
+ sound/pci/hda/patch_conexant.c | 13 ++++-----
+ sound/pci/hda/patch_realtek.c  | 50 +++++++++++++---------------------
+ sound/pci/hda/patch_sigmatel.c | 31 ++++-----------------
+ 4 files changed, 44 insertions(+), 82 deletions(-)
+
+-- 
+2.17.1
