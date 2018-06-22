@@ -1,16 +1,17 @@
-From: prg@cooco.de
-Subject: Re: HDA controller w/o CLKSTOP and EPSS support
-Date: Wed, 20 Jun 2018 22:28:37 +0000
-Message-ID: <e41e5b75383f90214d9541e528ef567c@cooco.de>
-References: <20180620093452.GA25280@wunner.de> <s5h36xhojcn.wl-tiwai@suse.de>
+From: Subhashini Rao Beerisetty <subhashbeerisetty@gmail.com>
+Subject: first and last audio sample timestamp
+Date: Fri, 22 Jun 2018 19:30:10 +0530
+Message-ID: <CAPY=qRT-AvUiLFLTx7MzMzreLkWK8Fk06egUMCJsVJ7VwgziuA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.cooco.de (cooco.de [94.16.118.246])
- by alsa0.perex.cz (Postfix) with ESMTP id 81B40266D4C
- for <alsa-devel@alsa-project.org>; Thu, 21 Jun 2018 00:28:40 +0200 (CEST)
-In-Reply-To: <s5h36xhojcn.wl-tiwai@suse.de>
+Received: from mail-qk0-f175.google.com (mail-qk0-f175.google.com
+ [209.85.220.175])
+ by alsa0.perex.cz (Postfix) with ESMTP id D49172670D7
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 16:00:11 +0200 (CEST)
+Received: by mail-qk0-f175.google.com with SMTP id g14-v6so3694619qkm.6
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 07:00:11 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,45 +21,19 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Lukas Wunner <lukas@wunner.de>
+To: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 20 Jun 2018 12:14:32 +0200, Takashi Iwai <tiwai@suse.de> wrote:
-
-> I guess it would work with a quirk. The EPSS and CLKSTOP checks are
-> just to assure the modern codec PM, and GPU is always exceptional.
-> 
-> Supposing that it's AMD GPU, does a fix like below work?
-
-The suggested fix restores the previous behavior: the dGPU is properly
-powered down. But this previous behavior is really broken in other
-ways, so I'm now wondering if it could work any better than that.
-
-On kernels <4.17 and on 4.17 with that patch applied the notebook
-screen turns off completely when running things with DRI_PRIME=1 and
-only comes back a few seconds after the process ends. glxinfo is
-showing radeon instead of intel as expected, but with a blank screen,
-it's useless.
-
-On kernel 4.17 without the patch, when the dGPU is constantly on, I can
-have intel render things with DRI_PRIME=0 and radeon with DRI_PRIME=1
-without the screen turning off. Also, switches between vt and X are now
-instant and external displays are working, which wasn't the case
-before. Why is this now working suddenly? Is the dGPU rendering all of
-the desktop when it's always on anyway? Or is the iGPU rendering the
-desktop and the dGPU could potentially be suspended when not in use, if
-it was just done the right way?
-
-I used to accept this broken behavior and just changed the BIOS setting
-for the GPU from "switchable" to "discrete" when I wanted to actually
-use the dGPU. Initially when I reported the bug I just wanted to find a
-way to suspend the dGPU again to save power. But now that I've seen my
-notebook working like this I'd like to have both: a powered down dGPU
-when not in use and properly working DRI_PRIME.
-
-Any ideas what's up with the current situation or should I file a new
-bug report?
-
-Kind regards
-Henning
+WyBQbGVhc2Uga2VlcCBtZSBpbiBDQyBhcyBJJ20gbm90IHN1YnNjcmliZWQgdG8gdGhlIGxpc3Rd
+CgpIaSBBbGwsCgoKCkhlbGxvIGFsbCwKCgpJ4oCZbSB1c2luZyBhcGxheSBhbmQgYXJlY29yZCB1
+dGlsaXRpZXMgZm9yIHBsYXliYWNrIGFuZCBjYXB0dXJlLiBJIG5lZWQgdG8KY2FwdHVyZSB0aGUg
+dGltZXN0YW1wcyBmb3IgdGhlIGZpcnN0IGFuZCBsYXN0IGF1ZGlvIHNhbXBsZXMgdGhhdCBhcnJp
+dmUgYXQKdGhlIGRyaXZlciBsZXZlbC4KCkZvciB0aGlzIEnigJltIGNhcHR1cmluZyB0aGUgQ0xP
+Q0tfTU9OT1RPTklDX1JBVyB0aW1lc3RhbXAgYXQgdGhlCi50cmlnZ2VyKGZvciBwbGF5YmFjayAm
+IGNhcHR1cmUpIGNhbGxiYWNrIGluIFNORFJWX1BDTV9UUklHR0VSX1NUQVJUICBjYXNlCuKAkyBp
+cyBpdCB0aGUgY29ycmVjdCB0aW1lc3RhbXAgZm9yIHRoZSBmaXJzdCBhdWRpbyBzYW1wbGUgYXJy
+aXZlZCBhdCB0aGUKZHJpdmVyIGxldmVsPwoKU2ltaWxhcmx5IGRvZXMgLnRyaWdnZXIgY2FsbGJh
+Y2tzIFNORFJWX1BDTV9UUklHR0VSX1NUT1AgZ2l2ZXMgdGhlIGxhc3QKYXVkaW8gc2FtcGxlIHRp
+bWVzdGFtcD8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18K
+QWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
