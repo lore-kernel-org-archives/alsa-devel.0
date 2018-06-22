@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/16] ALSA: hda/realtek - Simplify Dell XPS13
-	GPIO handling
-Date: Fri, 22 Jun 2018 11:53:44 +0200
-Message-ID: <20180622095352.19451-9-tiwai@suse.de>
+Subject: [PATCH 04/16] ALSA: hda/realtek - Consolidate
+	gpio_data and gpio_led
+Date: Fri, 22 Jun 2018 11:53:40 +0200
+Message-ID: <20180622095352.19451-5-tiwai@suse.de>
 References: <20180622095352.19451-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 48EF72676FC
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CDF52676C7
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:54 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id A197FAFA6
+ by mx2.suse.de (Postfix) with ESMTP id 725B5AF97
  for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:53:54 +0000 (UTC)
 In-Reply-To: <20180622095352.19451-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,90 +27,136 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dell XPS13 has multi-step fixups, and one of them
-(ALC288_FIXUP_DELL_XPS_13_GPIO6) corresponds to the management of GPIO
-bit6 (0x40).  It used to be a static init verbs (to turn *off* the
-bit6).
+Until now, two fields, gpio_data and gpio_led, coexist in alc_spec
+although basically both of them serve for the same purpose -- the GPIO
+data bits.
 
-In this patch, we convert it as the gpio_mask and gpio_dir
-initializations folded in the existing fixup function.  With this
-change, ALC288_FIXUP_DELL_XPS_13_GPIO6 becomes superfluous, thus it's
-removed.
+This patch consolidates both usages and eliminates the superfluous
+gpio_led field.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 24 ++++++------------------
- 1 file changed, 6 insertions(+), 18 deletions(-)
+ sound/pci/hda/patch_realtek.c | 28 ++++------------------------
+ 1 file changed, 4 insertions(+), 24 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index f5cc506504c0..2cda4a614435 100644
+index bd54d9e25440..0db8329aa114 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -4881,13 +4881,10 @@ static void alc288_update_headset_jack_cb(struct hda_codec *codec,
- 				       struct hda_jack_callback *jack)
+@@ -100,7 +100,6 @@ struct alc_spec {
+ 	hda_nid_t mute_led_nid;
+ 	hda_nid_t cap_mute_led_nid;
+ 
+-	unsigned int gpio_led; /* used for alc269_fixup_hp_gpio_led() */
+ 	unsigned int gpio_mute_led_mask;
+ 	unsigned int gpio_mic_led_mask;
+ 
+@@ -3497,9 +3496,8 @@ static int alc269_resume(struct hda_codec *codec)
+ 	 * suspend, and won't restore the data after resume, so we restore it
+ 	 * in the driver.
+ 	 */
+-	if (spec->gpio_led)
+-		snd_hda_codec_write(codec, codec->core.afg, 0, AC_VERB_SET_GPIO_DATA,
+-			    spec->gpio_led);
++	if (spec->gpio_data)
++		alc_write_gpio_data(codec);
+ 
+ 	if (spec->has_alc5505_dsp)
+ 		alc5505_dsp_resume(codec);
+@@ -3739,18 +3737,10 @@ static void alc_update_gpio_led(struct hda_codec *codec, unsigned int mask,
+ 				bool enabled)
  {
  	struct alc_spec *spec = codec->spec;
--	int present;
+-	unsigned int oldval = spec->gpio_led;
  
- 	alc_update_headset_jack_cb(codec, jack);
- 	/* Headset Mic enable or disable, only for Dell Dino */
--	present = spec->gen.hp_jack_present ? 0x40 : 0;
--	snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
--				present);
-+	alc_update_gpio_data(codec, 0x40, spec->gen.hp_jack_present);
+ 	if (spec->mute_led_polarity)
+ 		enabled = !enabled;
+-
+-	if (enabled)
+-		spec->gpio_led &= ~mask;
+-	else
+-		spec->gpio_led |= mask;
+-	if (spec->gpio_led != oldval)
+-		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
+-				    spec->gpio_led);
++	alc_update_gpio_data(codec, mask, !enabled); /* muted -> LED on */
  }
  
- static void alc_fixup_headset_mode_dell_alc288(struct hda_codec *codec,
-@@ -4896,6 +4893,9 @@ static void alc_fixup_headset_mode_dell_alc288(struct hda_codec *codec,
- 	alc_fixup_headset_mode(codec, fix, action);
- 	if (action == HDA_FIXUP_ACT_PROBE) {
- 		struct alc_spec *spec = codec->spec;
-+		/* toggled via hp_automute_hook */
-+		spec->gpio_mask |= 0x40;
-+		spec->gpio_dir |= 0x40;
- 		spec->gen.hp_automute_hook = alc288_update_headset_jack_cb;
- 	}
+ /* turn on/off mute LED via GPIO per vmaster hook */
+@@ -3783,7 +3773,6 @@ static void alc269_fixup_hp_gpio_led(struct hda_codec *codec,
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
+-		spec->gpio_led = 0;
+ 		spec->mute_led_polarity = 0;
+ 		spec->gpio_mute_led_mask = 0x08;
+ 		spec->gpio_mic_led_mask = 0x10;
+@@ -3804,7 +3793,6 @@ static void alc286_fixup_hp_gpio_led(struct hda_codec *codec,
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
+-		spec->gpio_led = 0;
+ 		spec->mute_led_polarity = 0;
+ 		spec->gpio_mute_led_mask = 0x02;
+ 		spec->gpio_mic_led_mask = 0x20;
+@@ -3842,7 +3830,6 @@ static void alc269_fixup_hp_gpio_mic1_led(struct hda_codec *codec,
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
+-		spec->gpio_led = 0;
+ 		spec->mute_led_polarity = 0;
+ 		spec->gpio_mute_led_mask = 0x08;
+ 		spec->cap_mute_led_nid = 0x18;
+@@ -3865,7 +3852,6 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
+-		spec->gpio_led = 0;
+ 		spec->mute_led_polarity = 0;
+ 		spec->gpio_mute_led_mask = 0x08;
+ 		spec->cap_mute_led_nid = 0x18;
+@@ -3948,7 +3934,6 @@ static void alc280_fixup_hp_gpio2_mic_hotkey(struct hda_codec *codec,
+ 						    gpio2_mic_hotkey_event);
+ 
+ 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
+-		spec->gpio_led = 0;
+ 		spec->mute_led_polarity = 0;
+ 		spec->gpio_mute_led_mask = 0x08;
+ 		spec->gpio_mic_led_mask = 0x10;
+@@ -3988,7 +3973,6 @@ static void alc233_fixup_lenovo_line2_mic_hotkey(struct hda_codec *codec,
+ 		snd_hda_jack_detect_enable_callback(codec, 0x1b,
+ 						    gpio2_mic_hotkey_event);
+ 
+-		spec->gpio_led = 0;
+ 		spec->mute_led_polarity = 0;
+ 		spec->gpio_mic_led_mask = 0x04;
+ 		snd_hda_gen_add_micmute_led(codec, alc_gpio_micmute_update);
+@@ -5365,9 +5349,6 @@ static void alc280_fixup_hp_9480m(struct hda_codec *codec,
+ 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
+ 		spec->gen.hp_automute_hook = alc280_hp_gpio4_automute_hook;
+ 
+-		/* The GPIOs are currently off */
+-		spec->gpio_led = 0;
+-
+ 		/* GPIO3 is connected to the output mute LED,
+ 		 * high is on, low is off
+ 		 */
+@@ -7592,7 +7573,7 @@ static unsigned int gpio_led_power_filter(struct hda_codec *codec,
+ 					  unsigned int power_state)
+ {
+ 	struct alc_spec *spec = codec->spec;
+-	if (nid == codec->core.afg && power_state == AC_PWRST_D3 && spec->gpio_led)
++	if (nid == codec->core.afg && power_state == AC_PWRST_D3 && spec->gpio_data)
+ 		return AC_PWRST_D0;
+ 	return power_state;
  }
-@@ -5433,7 +5433,6 @@ enum {
- 	ALC280_FIXUP_HP_9480M,
- 	ALC288_FIXUP_DELL_HEADSET_MODE,
- 	ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
--	ALC288_FIXUP_DELL_XPS_13_GPIO6,
- 	ALC288_FIXUP_DELL_XPS_13,
- 	ALC288_FIXUP_DISABLE_AAMIX,
- 	ALC292_FIXUP_DELL_E7X,
-@@ -6049,22 +6048,11 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC288_FIXUP_DELL_HEADSET_MODE
- 	},
--	[ALC288_FIXUP_DELL_XPS_13_GPIO6] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = (const struct hda_verb[]) {
--			{0x01, AC_VERB_SET_GPIO_MASK, 0x40},
--			{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x40},
--			{0x01, AC_VERB_SET_GPIO_DATA, 0x00},
--			{ }
--		},
--		.chained = true,
--		.chain_id = ALC288_FIXUP_DELL1_MIC_NO_PRESENCE
--	},
- 	[ALC288_FIXUP_DISABLE_AAMIX] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_disable_aamix,
- 		.chained = true,
--		.chain_id = ALC288_FIXUP_DELL_XPS_13_GPIO6
-+		.chain_id = ALC288_FIXUP_DELL1_MIC_NO_PRESENCE
- 	},
- 	[ALC288_FIXUP_DELL_XPS_13] = {
- 		.type = HDA_FIXUP_FUNC,
-@@ -6902,7 +6890,7 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x12, 0x90a60130},
- 		{0x19, 0x03a11020},
- 		{0x21, 0x0321101f}),
--	SND_HDA_PIN_QUIRK(0x10ec0288, 0x1028, "Dell", ALC288_FIXUP_DELL_XPS_13_GPIO6,
-+	SND_HDA_PIN_QUIRK(0x10ec0288, 0x1028, "Dell", ALC288_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60120},
- 		{0x14, 0x90170110},
- 		{0x21, 0x0321101f}),
+@@ -7609,7 +7590,6 @@ static void alc662_fixup_led_gpio1(struct hda_codec *codec,
+ 
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
+-		spec->gpio_led = 0;
+ 		spec->mute_led_polarity = 1;
+ 		spec->gpio_mute_led_mask = 0x01;
+ 		snd_hda_add_verbs(codec, gpio_init);
 -- 
 2.17.1
