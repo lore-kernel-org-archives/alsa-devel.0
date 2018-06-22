@@ -1,60 +1,59 @@
-From: Harald Schuster <schuster@technikum-wien.at>
-Subject: poll blocked after prepare state
-Date: Fri, 22 Jun 2018 18:36:12 +0000
-Message-ID: <20180622183612.Horde.zlSuz13lBOQlZHX62qPNxF5@webmail.technikum-wien.at>
-References: <20180621104224.Horde.WJU_RKtLDLoAGMPfW3FREnA@webmail.technikum-wien.at>
- <20180622132921.Horde.VdiLUhoIz-J3ymTOC0qkzL5@webmail.technikum-wien.at>
- <s5h7emq3oxb.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="Yes"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bifrost.technikum-wien.at (bifrost.technikum-wien.at
- [195.245.225.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B9FA266D04
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 20:36:15 +0200 (CEST)
-Received: from mail.technikum-wien.at (groupware.technikum-wien.at
- [10.127.0.250])
- by bifrost2.technikum-wien.at (Postfix) with ESMTPS id AEE34428
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 20:36:12 +0200 (CEST)
-In-Reply-To: <s5h7emq3oxb.wl-tiwai@suse.de>
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: [PATCH v2 1/2] ALSA: ac97: add bus binding for codecs
+Date: Fri, 22 Jun 2018 21:28:33 +0200
+Message-ID: <20180622192834.7797-1-robert.jarzmik@free.fr>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
+Add the generic ac97 bus binding, especially for ac97 codecs discovered
+by ac97 hardware probing.
 
-Zitat von Takashi Iwai <tiwai@suse.de>:
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+---
+ .../devicetree/bindings/sound/ac97-bus.txt         | 32 ++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/ac97-bus.txt
 
-> On Fri, 22 Jun 2018 15:29:21 +0200,
-> Harald Schuster wrote:
->>
->> I found out that an underrun occours and so the pcm_prepare function
->> for pcm_direct is called and then pcm_start_dshare is called. Both
->> functions returns without any error but the playback path is blocked
->> in the snd_pcm_wait_nocheck function. I read that there was an similar
->> problem before in the group but i didn't found any solution. Is this a
->> problem in the driver and how can i go forward to fix it. The codec is
->> a tlv320aic3x-audio. Thanks for your help.
->
-> Does this happen with the very latest alsa-lib git version?
-> Just to be sure.
->
->
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
-Hi
-We are using k4.1.15-6QP+ga2066af.
-br Harald
+diff --git a/Documentation/devicetree/bindings/sound/ac97-bus.txt b/Documentation/devicetree/bindings/sound/ac97-bus.txt
+new file mode 100644
+index 000000000000..103c428f2595
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/ac97-bus.txt
+@@ -0,0 +1,32 @@
++Generic AC97 Device Properties
++
++This documents describes the devicetree bindings for an ac97 controller child
++node describing ac97 codecs.
++
++Required properties:
++-compatible : Must be "ac97,vendor_id1,vendor_id2
++	      The ids shall be the 4 characters hexadecimal encoding, such as
++	      given by "%04x" formatting of printf
++-reg	    : Must be the ac97 codec number, between 0 and 3
++
++Example:
++ac97: sound@40500000 {
++	compatible = "marvell,pxa270-ac97";
++	reg = < 0x40500000 0x1000 >;
++	interrupts = <14>;
++	reset-gpios = <&gpio 95 GPIO_ACTIVE_HIGH>;
++	#sound-dai-cells = <1>;
++	pinctrl-names = "default";
++	pinctrl-0 = < &pinctrl_ac97_default >;
++	clocks = <&clks CLK_AC97>, <&clks CLK_AC97CONF>;
++	clock-names = "AC97CLK", "AC97CONFCLK";
++
++	#address-cells = <1>;
++	#size-cells = <0>;
++	audio-codec@0 {
++		reg = <0>;
++		compatible = "ac97,574d,4c13";
++		clocks = <&fixed_wm9713_clock>;
++		clock-names = "ac97_clk";
++	}
++};
+-- 
+2.11.0
