@@ -1,15 +1,18 @@
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [PATCH] ASoC: Intel: Power down links before turning
-	off display audio power
-Date: Fri, 22 Jun 2018 14:55:51 +0530
-Message-ID: <1529659551-22902-1-git-send-email-sriramx.periyasamy@intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/realtek - Simplify
+	alc269_fixup_hp_line1_mic1_led()
+Date: Fri, 22 Jun 2018 11:38:02 +0200
+Message-ID: <20180622093802.25120-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 60D2F2676C7
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:37:27 +0200 (CEST)
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 09A382673F2
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:38:06 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id 71219ACFC
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:38:06 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,80 +22,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Patches Audio <patches.audio@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On certain platforms, Display HDMI HDA codec was not going to sleep state
-after the use when links are powered down after turning off the display
-power. As per the HW recommendation, links are powered down before turning
-off the display power to ensure that the codec goes to sleep state.
+alc269_fixup_hp_line1_mic1_led() can be simplified more with the
+existing helper code.
 
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/hdac_hdmi.c  | 12 +++++-------
- sound/soc/intel/skylake/skl.c | 11 ++++++-----
- 2 files changed, 11 insertions(+), 12 deletions(-)
+ sound/pci/hda/patch_realtek.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 84f7a7a36e4b..b78fd84bf591 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -2127,12 +2127,6 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 	 */
- 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
- 							AC_PWRST_D3);
--	err = snd_hdac_display_power(bus, false);
--	if (err < 0) {
--		dev_err(bus->dev, "Cannot turn on display power on i915\n");
--		return err;
--	}
--
- 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
- 	if (!hlink) {
- 		dev_err(dev, "hdac link not found\n");
-@@ -2141,7 +2135,11 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index d9461eebcfdf..7934c5df4d80 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3973,14 +3973,10 @@ static void alc269_fixup_hp_line1_mic1_led(struct hda_codec *codec,
+ {
+ 	struct alc_spec *spec = codec->spec;
  
- 	snd_hdac_ext_bus_link_put(ebus, hlink);
- 
--	return 0;
-+	err = snd_hdac_display_power(bus, false);
-+	if (err < 0)
-+		dev_err(bus->dev, "Cannot turn off display power on i915\n");
-+
-+	return err;
++	alc269_fixup_hp_mute_led_micx(codec, fix, action, 0x1a);
+ 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+-		spec->gen.vmaster_mute.hook = alc269_fixup_mic_mute_hook;
+-		spec->mute_led_polarity = 0;
+-		spec->mute_led_nid = 0x1a;
+ 		spec->cap_mute_led_nid = 0x18;
+ 		snd_hda_gen_add_micmute_led(codec, alc_cap_micmute_update);
+-		spec->gen.vmaster_mute_enum = 1;
+-		codec->power_filter = led_power_filter;
+ 	}
  }
  
- static int hdac_hdmi_runtime_resume(struct device *dev)
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 670ff9aaca55..c62e474717ff 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -762,6 +762,12 @@ static void skl_probe_work(struct work_struct *work)
- 		}
- 	}
- 
-+	/*
-+	 * we are done probing so decrement link counts
-+	 */
-+	list_for_each_entry(hlink, &ebus->hlink_list, list)
-+		snd_hdac_ext_bus_link_put(ebus, hlink);
-+
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
- 		err = snd_hdac_display_power(bus, false);
- 		if (err < 0) {
-@@ -771,11 +777,6 @@ static void skl_probe_work(struct work_struct *work)
- 		}
- 	}
- 
--	/*
--	 * we are done probing so decrement link counts
--	 */
--	list_for_each_entry(hlink, &ebus->hlink_list, list)
--		snd_hdac_ext_bus_link_put(ebus, hlink);
- 
- 	/* configure PM */
- 	pm_runtime_put_noidle(bus->dev);
 -- 
-2.7.4
+2.17.1
