@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 04/16] ALSA: hda/realtek - Consolidate
-	gpio_data and gpio_led
-Date: Fri, 22 Jun 2018 11:53:40 +0200
-Message-ID: <20180622095352.19451-5-tiwai@suse.de>
+Subject: [PATCH 02/16] ALSA: hda/realtek - Manage GPIO bits
+	commonly
+Date: Fri, 22 Jun 2018 11:53:38 +0200
+Message-ID: <20180622095352.19451-3-tiwai@suse.de>
 References: <20180622095352.19451-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0CDF52676C7
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BC8B2673F2
  for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:54 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 725B5AF97
+ by mx2.suse.de (Postfix) with ESMTP id 5DA45AEC4
  for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:53:54 +0000 (UTC)
 In-Reply-To: <20180622095352.19451-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,136 +27,238 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Until now, two fields, gpio_data and gpio_led, coexist in alc_spec
-although basically both of them serve for the same purpose -- the GPIO
-data bits.
+Currently the GPIO bits are managed by individual verbs in some cases
+while toggled dynamically in other cases.  For simplifying the GPIO
+management, define the GPIO mask, dir and data bits in alc_spec
+fields, and refer to / set them consistently from all places.
 
-This patch consolidates both usages and eliminates the superfluous
-gpio_led field.
+As a first step, along with the definition of the new gpio_* fields,
+this patch replaces the static verbs that are used at initialization
+and fixups with the common helper functions.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 28 ++++------------------------
- 1 file changed, 4 insertions(+), 24 deletions(-)
+ sound/pci/hda/patch_realtek.c | 129 +++++++++++++++++++++-------------
+ 1 file changed, 81 insertions(+), 48 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index bd54d9e25440..0db8329aa114 100644
+index 1f054e5ae2b3..489075b23652 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -100,7 +100,6 @@ struct alc_spec {
+@@ -46,9 +46,6 @@ enum {
+ 	ALC_INIT_UNDEFINED,
+ 	ALC_INIT_NONE,
+ 	ALC_INIT_DEFAULT,
+-	ALC_INIT_GPIO1,
+-	ALC_INIT_GPIO2,
+-	ALC_INIT_GPIO3,
+ };
+ 
+ enum {
+@@ -93,6 +90,11 @@ struct alc_spec {
+ 	struct alc_customize_define cdefine;
+ 	unsigned int parse_flags; /* flag for snd_hda_parse_pin_defcfg() */
+ 
++	/* GPIO bits */
++	unsigned int gpio_mask;
++	unsigned int gpio_dir;
++	unsigned int gpio_data;
++
+ 	/* mute LED for HP laptops, see alc269_fixup_mic_mute_hook() */
+ 	int mute_led_polarity;
  	hda_nid_t mute_led_nid;
- 	hda_nid_t cap_mute_led_nid;
+@@ -220,27 +222,63 @@ static void add_mixer(struct alc_spec *spec, const struct snd_kcontrol_new *mix)
+ /*
+  * GPIO setup tables, used in initialization
+  */
++
+ /* Enable GPIO mask and set output */
+-static const struct hda_verb alc_gpio1_init_verbs[] = {
+-	{0x01, AC_VERB_SET_GPIO_MASK, 0x01},
+-	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x01},
+-	{0x01, AC_VERB_SET_GPIO_DATA, 0x01},
+-	{ }
+-};
++static void alc_setup_gpio(struct hda_codec *codec, unsigned int mask)
++{
++	struct alc_spec *spec = codec->spec;
  
--	unsigned int gpio_led; /* used for alc269_fixup_hp_gpio_led() */
- 	unsigned int gpio_mute_led_mask;
- 	unsigned int gpio_mic_led_mask;
+-static const struct hda_verb alc_gpio2_init_verbs[] = {
+-	{0x01, AC_VERB_SET_GPIO_MASK, 0x02},
+-	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x02},
+-	{0x01, AC_VERB_SET_GPIO_DATA, 0x02},
+-	{ }
+-};
++	spec->gpio_mask |= mask;
++	spec->gpio_dir |= mask;
++	spec->gpio_data |= mask;
++}
  
-@@ -3497,9 +3496,8 @@ static int alc269_resume(struct hda_codec *codec)
- 	 * suspend, and won't restore the data after resume, so we restore it
- 	 * in the driver.
- 	 */
--	if (spec->gpio_led)
--		snd_hda_codec_write(codec, codec->core.afg, 0, AC_VERB_SET_GPIO_DATA,
--			    spec->gpio_led);
-+	if (spec->gpio_data)
-+		alc_write_gpio_data(codec);
+-static const struct hda_verb alc_gpio3_init_verbs[] = {
+-	{0x01, AC_VERB_SET_GPIO_MASK, 0x03},
+-	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x03},
+-	{0x01, AC_VERB_SET_GPIO_DATA, 0x03},
+-	{ }
+-};
++static void alc_write_gpio_data(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++
++	snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
++			    spec->gpio_data);
++}
++
++static void alc_write_gpio(struct hda_codec *codec)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (!spec->gpio_mask)
++		return;
++
++	snd_hda_codec_write(codec, codec->core.afg, 0,
++			    AC_VERB_SET_GPIO_MASK, spec->gpio_mask);
++	snd_hda_codec_write(codec, codec->core.afg, 0,
++			    AC_VERB_SET_GPIO_DIRECTION, spec->gpio_dir);
++	alc_write_gpio_data(codec);
++}
++
++static void alc_fixup_gpio(struct hda_codec *codec, int action,
++			   unsigned int mask)
++{
++	if (action == HDA_FIXUP_ACT_PRE_PROBE)
++		alc_setup_gpio(codec, mask);
++}
++
++static void alc_fixup_gpio1(struct hda_codec *codec,
++			    const struct hda_fixup *fix, int action)
++{
++	alc_fixup_gpio(codec, action, 0x01);
++}
++
++static void alc_fixup_gpio2(struct hda_codec *codec,
++			    const struct hda_fixup *fix, int action)
++{
++	alc_fixup_gpio(codec, action, 0x02);
++}
++
++static void alc_fixup_gpio3(struct hda_codec *codec,
++			    const struct hda_fixup *fix, int action)
++{
++	alc_fixup_gpio(codec, action, 0x03);
++}
  
- 	if (spec->has_alc5505_dsp)
- 		alc5505_dsp_resume(codec);
-@@ -3739,18 +3737,10 @@ static void alc_update_gpio_led(struct hda_codec *codec, unsigned int mask,
- 				bool enabled)
+ /*
+  * Fix hardware PLL issue
+@@ -448,16 +486,8 @@ static void alc_auto_init_amp(struct hda_codec *codec, int type)
  {
- 	struct alc_spec *spec = codec->spec;
--	unsigned int oldval = spec->gpio_led;
+ 	alc_fill_eapd_coef(codec);
+ 	alc_auto_setup_eapd(codec, true);
++	alc_write_gpio(codec);
+ 	switch (type) {
+-	case ALC_INIT_GPIO1:
+-		snd_hda_sequence_write(codec, alc_gpio1_init_verbs);
+-		break;
+-	case ALC_INIT_GPIO2:
+-		snd_hda_sequence_write(codec, alc_gpio2_init_verbs);
+-		break;
+-	case ALC_INIT_GPIO3:
+-		snd_hda_sequence_write(codec, alc_gpio3_init_verbs);
+-		break;
+ 	case ALC_INIT_DEFAULT:
+ 		switch (codec->core.vendor_id) {
+ 		case 0x10ec0260:
+@@ -660,13 +690,13 @@ static int alc_subsystem_id(struct hda_codec *codec, const hda_nid_t *ports)
+ 	if (spec->init_amp == ALC_INIT_UNDEFINED) {
+ 		switch (tmp) {
+ 		case 1:
+-			spec->init_amp = ALC_INIT_GPIO1;
++			alc_setup_gpio(codec, 0x01);
+ 			break;
+ 		case 3:
+-			spec->init_amp = ALC_INIT_GPIO2;
++			alc_setup_gpio(codec, 0x02);
+ 			break;
+ 		case 7:
+-			spec->init_amp = ALC_INIT_GPIO3;
++			alc_setup_gpio(codec, 0x03);
+ 			break;
+ 		case 5:
+ 		default:
+@@ -1107,12 +1137,12 @@ static void alc880_fixup_vol_knob(struct hda_codec *codec,
  
- 	if (spec->mute_led_polarity)
- 		enabled = !enabled;
--
--	if (enabled)
--		spec->gpio_led &= ~mask;
--	else
--		spec->gpio_led |= mask;
--	if (spec->gpio_led != oldval)
--		snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
--				    spec->gpio_led);
-+	alc_update_gpio_data(codec, mask, !enabled); /* muted -> LED on */
+ static const struct hda_fixup alc880_fixups[] = {
+ 	[ALC880_FIXUP_GPIO1] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = alc_gpio1_init_verbs,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio1,
+ 	},
+ 	[ALC880_FIXUP_GPIO2] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = alc_gpio2_init_verbs,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio2,
+ 	},
+ 	[ALC880_FIXUP_MEDION_RIM] = {
+ 		.type = HDA_FIXUP_VERBS,
+@@ -1565,7 +1595,7 @@ static void alc260_fixup_gpio1_toggle(struct hda_codec *codec,
+ 		spec->gen.autocfg.hp_pins[0] = 0x0f; /* copy it for automute */
+ 		snd_hda_jack_detect_enable_callback(codec, 0x0f,
+ 						    snd_hda_gen_hp_automute);
+-		snd_hda_add_verbs(codec, alc_gpio1_init_verbs);
++		alc_setup_gpio(codec, 0x01);
+ 	}
  }
  
- /* turn on/off mute LED via GPIO per vmaster hook */
-@@ -3783,7 +3773,6 @@ static void alc269_fixup_hp_gpio_led(struct hda_codec *codec,
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
--		spec->gpio_led = 0;
- 		spec->mute_led_polarity = 0;
- 		spec->gpio_mute_led_mask = 0x08;
- 		spec->gpio_mic_led_mask = 0x10;
-@@ -3804,7 +3793,6 @@ static void alc286_fixup_hp_gpio_led(struct hda_codec *codec,
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
--		spec->gpio_led = 0;
- 		spec->mute_led_polarity = 0;
- 		spec->gpio_mute_led_mask = 0x02;
- 		spec->gpio_mic_led_mask = 0x20;
-@@ -3842,7 +3830,6 @@ static void alc269_fixup_hp_gpio_mic1_led(struct hda_codec *codec,
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
--		spec->gpio_led = 0;
- 		spec->mute_led_polarity = 0;
- 		spec->gpio_mute_led_mask = 0x08;
- 		spec->cap_mute_led_nid = 0x18;
-@@ -3865,7 +3852,6 @@ static void alc280_fixup_hp_gpio4(struct hda_codec *codec,
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
--		spec->gpio_led = 0;
- 		spec->mute_led_polarity = 0;
- 		spec->gpio_mute_led_mask = 0x08;
- 		spec->cap_mute_led_nid = 0x18;
-@@ -3948,7 +3934,6 @@ static void alc280_fixup_hp_gpio2_mic_hotkey(struct hda_codec *codec,
- 						    gpio2_mic_hotkey_event);
- 
- 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
--		spec->gpio_led = 0;
- 		spec->mute_led_polarity = 0;
- 		spec->gpio_mute_led_mask = 0x08;
- 		spec->gpio_mic_led_mask = 0x10;
-@@ -3988,7 +3973,6 @@ static void alc233_fixup_lenovo_line2_mic_hotkey(struct hda_codec *codec,
+@@ -1639,8 +1669,8 @@ static const struct hda_fixup alc260_fixups[] = {
+ 		},
+ 	},
+ 	[ALC260_FIXUP_GPIO1] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = alc_gpio1_init_verbs,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio1,
+ 	},
+ 	[ALC260_FIXUP_GPIO1_TOGGLE] = {
+ 		.type = HDA_FIXUP_FUNC,
+@@ -2144,20 +2174,20 @@ static const struct hda_fixup alc882_fixups[] = {
+ 		}
+ 	},
+ 	[ALC882_FIXUP_GPIO1] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = alc_gpio1_init_verbs,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio1,
+ 	},
+ 	[ALC882_FIXUP_GPIO2] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = alc_gpio2_init_verbs,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio2,
+ 	},
+ 	[ALC882_FIXUP_GPIO3] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = alc_gpio3_init_verbs,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio3,
+ 	},
+ 	[ALC882_FIXUP_ASUS_W2JC] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = alc_gpio1_init_verbs,
++		.type = HDA_FIXUP_FUNC,
++		.v.func = alc_fixup_gpio1,
+ 		.chained = true,
+ 		.chain_id = ALC882_FIXUP_EAPD,
+ 	},
+@@ -5232,6 +5262,9 @@ static void alc282_fixup_asus_tx300(struct hda_codec *codec,
  		snd_hda_jack_detect_enable_callback(codec, 0x1b,
- 						    gpio2_mic_hotkey_event);
- 
--		spec->gpio_led = 0;
- 		spec->mute_led_polarity = 0;
- 		spec->gpio_mic_led_mask = 0x04;
- 		snd_hda_gen_add_micmute_led(codec, alc_gpio_micmute_update);
-@@ -5365,9 +5349,6 @@ static void alc280_fixup_hp_9480m(struct hda_codec *codec,
- 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
- 		spec->gen.hp_automute_hook = alc280_hp_gpio4_automute_hook;
- 
--		/* The GPIOs are currently off */
--		spec->gpio_led = 0;
--
- 		/* GPIO3 is connected to the output mute LED,
- 		 * high is on, low is off
- 		 */
-@@ -7592,7 +7573,7 @@ static unsigned int gpio_led_power_filter(struct hda_codec *codec,
- 					  unsigned int power_state)
- {
- 	struct alc_spec *spec = codec->spec;
--	if (nid == codec->core.afg && power_state == AC_PWRST_D3 && spec->gpio_led)
-+	if (nid == codec->core.afg && power_state == AC_PWRST_D3 && spec->gpio_data)
- 		return AC_PWRST_D0;
- 	return power_state;
- }
-@@ -7609,7 +7590,6 @@ static void alc662_fixup_led_gpio1(struct hda_codec *codec,
- 
- 	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
- 		spec->gen.vmaster_mute.hook = alc_fixup_gpio_mute_hook;
--		spec->gpio_led = 0;
- 		spec->mute_led_polarity = 1;
- 		spec->gpio_mute_led_mask = 0x01;
- 		snd_hda_add_verbs(codec, gpio_init);
+ 						    snd_hda_gen_hp_automute);
+ 		break;
++	case HDA_FIXUP_ACT_PROBE:
++		spec->init_amp = ALC_INIT_DEFAULT;
++		break;
+ 	case HDA_FIXUP_ACT_BUILD:
+ 		/* this is a bit tricky; give more sane names for the main
+ 		 * (tablet) speaker and the dock speaker, respectively
 -- 
 2.17.1
