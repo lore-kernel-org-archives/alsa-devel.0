@@ -1,19 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 14/16] ALSA: hda/via - Rewrite with error goto
-Date: Fri, 22 Jun 2018 11:53:50 +0200
-Message-ID: <20180622095352.19451-15-tiwai@suse.de>
-References: <20180622095352.19451-1-tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/realtek - Apply PRE_PROBE fixup
+	after ALC269 codec variant setups
+Date: Fri, 22 Jun 2018 11:58:39 +0200
+Message-ID: <20180622095839.19844-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 652682676CA
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:57 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id D8421AFAC
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:53:54 +0000 (UTC)
-In-Reply-To: <20180622095352.19451-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 948E72673F2
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:58:41 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A5AAAADC6
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:58:40 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,236 +25,89 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently VIA codec driver invokes via_free() at each place of the
-error path.  Move the error handling to the end of each function
-commonly and do goto-error as a standard idiom.
+Currently patch_alc269() calls the fixup with HDA_FIXUP_ACT_PRE_PROBE
+before setting up the codec model-specific setups (e.g. setting
+codec_variant or mixer_nid setup).  This is rather confusing as others
+do call the *_PRE_PROBE fixup after such a setup.  Due to this
+disorder, we have to override spec->shutup not at the usual
+HDA_FIXUP_ACT_PRE_PROBE but the unusual HDA_FIXUP_ACT_PROBE time.
 
-This is a preliminary patch for the further cleanups, and no
-functional changes.
+This patch corrects the fixup call orders in patch_alc269(), and also
+corrects the action to set up spec->shutup accordingly.
+
+No functional changes but just refactoring.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_via.c | 100 +++++++++++++++++++++++---------------
- 1 file changed, 60 insertions(+), 40 deletions(-)
 
-diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-index fc30d1e8aa76..76e47d088a41 100644
---- a/sound/pci/hda/patch_via.c
-+++ b/sound/pci/hda/patch_via.c
-@@ -686,10 +686,8 @@ static int patch_vt1708(struct hda_codec *codec)
+Yet another code refactoring that doesn't belong to previous patchsets.
+I promise it's the last one in this week!
+
+ sound/pci/hda/patch_realtek.c | 29 ++++++++++++++---------------
+ 1 file changed, 14 insertions(+), 15 deletions(-)
+
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 0e84d9cdd42d..c93e09f9c109 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -4906,7 +4906,7 @@ static void alc_no_shutup(struct hda_codec *codec)
+ static void alc_fixup_no_shutup(struct hda_codec *codec,
+ 				const struct hda_fixup *fix, int action)
+ {
+-	if (action == HDA_FIXUP_ACT_PROBE) {
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
+ 		struct alc_spec *spec = codec->spec;
+ 		spec->shutup = alc_no_shutup;
+ 	}
+@@ -4988,10 +4988,9 @@ static void alc_fixup_dell_xps13(struct hda_codec *codec,
+ 		 * it causes a click noise at start up
+ 		 */
+ 		snd_hda_codec_set_pin_target(codec, 0x19, PIN_VREFHIZ);
++		spec->shutup = alc_shutup_dell_xps13;
+ 		break;
+ 	case HDA_FIXUP_ACT_PROBE:
+-		spec->shutup = alc_shutup_dell_xps13;
+-
+ 		/* Make the internal mic the default input source. */
+ 		for (i = 0; i < imux->num_items; i++) {
+ 			if (spec->gen.imux_pins[i] == 0x12) {
+@@ -7037,18 +7036,6 @@ static int patch_alc269(struct hda_codec *codec)
+ 	spec->shutup = alc_default_shutup;
+ 	spec->init_hook = alc_default_init;
  
+-	snd_hda_pick_fixup(codec, alc269_fixup_models,
+-		       alc269_fixup_tbl, alc269_fixups);
+-	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups);
+-	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
+-			   alc269_fixups);
+-	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
+-
+-	alc_auto_parse_customize_define(codec);
+-
+-	if (has_cdefine_beep(codec))
+-		spec->gen.beep_nid = 0x01;
+-
+ 	switch (codec->core.vendor_id) {
+ 	case 0x10ec0269:
+ 		spec->codec_variant = ALC269_TYPE_ALC269VA;
+@@ -7168,6 +7155,18 @@ static int patch_alc269(struct hda_codec *codec)
+ 		spec->init_hook = alc5505_dsp_init;
+ 	}
+ 
++	snd_hda_pick_fixup(codec, alc269_fixup_models,
++		       alc269_fixup_tbl, alc269_fixups);
++	snd_hda_pick_pin_fixup(codec, alc269_pin_fixup_tbl, alc269_fixups);
++	snd_hda_pick_fixup(codec, NULL,	alc269_fixup_vendor_tbl,
++			   alc269_fixups);
++	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
++
++	alc_auto_parse_customize_define(codec);
++
++	if (has_cdefine_beep(codec))
++		spec->gen.beep_nid = 0x01;
++
  	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	/* add jack detect on/off control */
- 	spec->mixers[spec->num_mixers++] = vt1708_jack_detect_ctl;
-@@ -700,6 +698,10 @@ static int patch_vt1708(struct hda_codec *codec)
- 	codec->jackpoll_interval = 0;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- static int patch_vt1709(struct hda_codec *codec)
-@@ -715,12 +717,14 @@ static int patch_vt1709(struct hda_codec *codec)
- 	spec->gen.mixer_nid = 0x18;
- 
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- static int patch_vt1708S(struct hda_codec *codec);
-@@ -741,12 +745,14 @@ static int patch_vt1708B(struct hda_codec *codec)
- 
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- /* Patch for VT1708S */
-@@ -793,14 +799,16 @@ static int patch_vt1708S(struct hda_codec *codec)
- 
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	spec->init_verbs[spec->num_iverbs++] = vt1708S_init_verbs;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- /* Patch for VT1702 */
-@@ -834,14 +842,16 @@ static int patch_vt1702(struct hda_codec *codec)
- 
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	spec->init_verbs[spec->num_iverbs++] = vt1702_init_verbs;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- /* Patch for VT1718S */
-@@ -906,14 +916,16 @@ static int patch_vt1718S(struct hda_codec *codec)
- 
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	spec->init_verbs[spec->num_iverbs++] = vt1718S_init_verbs;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- /* Patch for VT1716S */
-@@ -1002,10 +1014,8 @@ static int patch_vt1716S(struct hda_codec *codec)
- 
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	spec->init_verbs[spec->num_iverbs++]  = vt1716S_init_verbs;
- 
-@@ -1013,6 +1023,10 @@ static int patch_vt1716S(struct hda_codec *codec)
- 	spec->mixers[spec->num_mixers++] = vt1716S_mono_out_mixer;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- /* for vt2002P */
-@@ -1109,10 +1123,8 @@ static int patch_vt2002P(struct hda_codec *codec)
- 
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	if (spec->codec_type == VT1802)
- 		spec->init_verbs[spec->num_iverbs++] = vt1802_init_verbs;
-@@ -1120,6 +1132,10 @@ static int patch_vt2002P(struct hda_codec *codec)
- 		spec->init_verbs[spec->num_iverbs++] = vt2002P_init_verbs;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- /* for vt1812 */
-@@ -1150,14 +1166,16 @@ static int patch_vt1812(struct hda_codec *codec)
- 
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	spec->init_verbs[spec->num_iverbs++]  = vt1812_init_verbs;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- /* patch for vt3476 */
-@@ -1187,14 +1205,16 @@ static int patch_vt3476(struct hda_codec *codec)
- 
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
--	if (err < 0) {
--		via_free(codec);
--		return err;
--	}
-+	if (err < 0)
-+		goto error;
- 
- 	spec->init_verbs[spec->num_iverbs++] = vt3476_init_verbs;
- 
- 	return 0;
-+
-+ error:
-+	via_free(codec);
-+	return err;
- }
- 
- /*
+ 	err = alc269_parse_auto_config(codec);
+ 	if (err < 0)
 -- 
 2.17.1
