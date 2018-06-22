@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Change codec to channel link as per hardware redesign" to the asoc tree
-Date: Fri, 22 Jun 2018 15:50:30 +0100
-Message-ID: <E1fWNOQ-0002et-2X@debutante>
-References: <1525840011-14077-1-git-send-email-akshu.agrawal@amd.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1525840011-14077-1-git-send-email-akshu.agrawal@amd.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Agrawal@sirena.org.uk, Akshu <Akshu.Agrawal@amd.com>
-Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.orgMark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.comakshu.agrawal@amd.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: add hp-det-gpio and mic-det-gpio to
+	audio graph card binding" to the asoc tree
+Date: Fri, 22 Jun 2018 15:50:25 +0100
+Message-ID: <E1fWNOL-0002cU-Oj@debutante>
+References: <20180620015959.10312-1-suzuki.katsuhiro@socionext.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D895D2676C7
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 16:50:39 +0200 (CEST)
+In-Reply-To: <20180620015959.10312-1-suzuki.katsuhiro@socionext.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Change codec to channel link as per hardware redesign
+   ASoC: add hp-det-gpio and mic-det-gpio to audio graph card binding
 
 has been applied to the asoc tree at
 
@@ -37,104 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 3bec6fa3cdd338860d4b7d4110a49292646d801e Mon Sep 17 00:00:00 2001
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Date: Thu, 21 Jun 2018 12:58:16 +0800
-Subject: [PATCH] ASoC: AMD: Change codec to channel link as per hardware
- redesign
+>From a12f671b4241f53e7cd9dec8770d51549682453b Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Wed, 20 Jun 2018 10:59:59 +0900
+Subject: [PATCH] ASoC: add hp-det-gpio and mic-det-gpio to audio graph card
+ binding
 
-This is a correction to match acutal hardware configuration.
-The hardware configuration looks like:
-I2S_BT -> SPK(Max) + DMIC(Adau)
-I2S_SP -> DA7219 Headset
+Add headphone and microphone detection GPIO support to audio graph
+card same as supported in simple card.
 
-No actual products have been shipped with previous configuration.
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-da7219-max98357a.c | 27 +++++++++++++++++++--------
- 1 file changed, 19 insertions(+), 8 deletions(-)
+ Documentation/devicetree/bindings/sound/audio-graph-card.txt | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index ccddc6650b9c..566bd268be3a 100644
---- a/sound/soc/amd/acp-da7219-max98357a.c
-+++ b/sound/soc/amd/acp-da7219-max98357a.c
-@@ -148,7 +148,7 @@ static int cz_da7219_startup(struct snd_pcm_substream *substream)
- 	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
- 				   &constraints_rates);
- 
--	machine->i2s_instance = I2S_BT_INSTANCE;
-+	machine->i2s_instance = I2S_SP_INSTANCE;
- 	return da7219_clk_enable(substream);
- }
- 
-@@ -163,7 +163,7 @@ static int cz_max_startup(struct snd_pcm_substream *substream)
- 	struct snd_soc_card *card = rtd->card;
- 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
- 
--	machine->i2s_instance = I2S_SP_INSTANCE;
-+	machine->i2s_instance = I2S_BT_INSTANCE;
- 	return da7219_clk_enable(substream);
- }
- 
-@@ -178,7 +178,7 @@ static int cz_dmic_startup(struct snd_pcm_substream *substream)
- 	struct snd_soc_card *card = rtd->card;
- 	struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
- 
--	machine->i2s_instance = I2S_SP_INSTANCE;
-+	machine->i2s_instance = I2S_BT_INSTANCE;
- 	return da7219_clk_enable(substream);
- }
- 
-@@ -204,16 +204,27 @@ static const struct snd_soc_ops cz_dmic_cap_ops = {
- 
- static struct snd_soc_dai_link cz_dai_7219_98357[] = {
- 	{
--		.name = "amd-da7219-play-cap",
--		.stream_name = "Playback and Capture",
-+		.name = "amd-da7219-play",
-+		.stream_name = "Playback",
- 		.platform_name = "acp_audio_dma.0.auto",
--		.cpu_dai_name = "designware-i2s.3.auto",
-+		.cpu_dai_name = "designware-i2s.1.auto",
- 		.codec_dai_name = "da7219-hifi",
- 		.codec_name = "i2c-DLGS7219:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
- 				| SND_SOC_DAIFMT_CBM_CFM,
- 		.init = cz_da7219_init,
- 		.dpcm_playback = 1,
-+		.ops = &cz_da7219_cap_ops,
-+	},
-+	{
-+		.name = "amd-da7219-cap",
-+		.stream_name = "Capture",
-+		.platform_name = "acp_audio_dma.0.auto",
-+		.cpu_dai_name = "designware-i2s.2.auto",
-+		.codec_dai_name = "da7219-hifi",
-+		.codec_name = "i2c-DLGS7219:00",
-+		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-+				| SND_SOC_DAIFMT_CBM_CFM,
- 		.dpcm_capture = 1,
- 		.ops = &cz_da7219_cap_ops,
- 	},
-@@ -221,7 +232,7 @@ static struct snd_soc_dai_link cz_dai_7219_98357[] = {
- 		.name = "amd-max98357-play",
- 		.stream_name = "HiFi Playback",
- 		.platform_name = "acp_audio_dma.0.auto",
--		.cpu_dai_name = "designware-i2s.1.auto",
-+		.cpu_dai_name = "designware-i2s.3.auto",
- 		.codec_dai_name = "HiFi",
- 		.codec_name = "MX98357A:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
-@@ -233,7 +244,7 @@ static struct snd_soc_dai_link cz_dai_7219_98357[] = {
- 		.name = "dmic",
- 		.stream_name = "DMIC Capture",
- 		.platform_name = "acp_audio_dma.0.auto",
--		.cpu_dai_name = "designware-i2s.2.auto",
-+		.cpu_dai_name = "designware-i2s.3.auto",
- 		.codec_dai_name = "adau7002-hifi",
- 		.codec_name = "ADAU7002:00",
- 		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF
+diff --git a/Documentation/devicetree/bindings/sound/audio-graph-card.txt b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+index d04ea3b1a1dd..7e63e53a901c 100644
+--- a/Documentation/devicetree/bindings/sound/audio-graph-card.txt
++++ b/Documentation/devicetree/bindings/sound/audio-graph-card.txt
+@@ -18,6 +18,8 @@ Below are same as Simple-Card.
+ - bitclock-inversion
+ - frame-inversion
+ - mclk-fs
++- hp-det-gpio
++- mic-det-gpio
+ - dai-tdm-slot-num
+ - dai-tdm-slot-width
+ - clocks / system-clock-frequency
 -- 
 2.18.0.rc2
