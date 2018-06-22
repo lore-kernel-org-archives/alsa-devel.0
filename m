@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: uniphier: remove redundant check of PLL
-	ID" to the asoc tree
-Date: Fri, 22 Jun 2018 15:50:32 +0100
-Message-ID: <E1fWNOS-0002fp-81@debutante>
-References: <20180621025628.4046-1-suzuki.katsuhiro@socionext.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AFA4D2676B0
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 16:50:39 +0200 (CEST)
-In-Reply-To: <20180621025628.4046-1-suzuki.katsuhiro@socionext.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+Subject: Applied "ASoC: rt5682: use devm_snd_soc_register_component()" to the asoc tree
+Date: Fri, 22 Jun 2018 15:50:36 +0100
+Message-ID: <E1fWNOW-0002hz-IT@debutante>
+References: <1529634204-105428-1-git-send-email-weiyongjun1@huawei.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1529634204-105428-1-git-send-email-weiyongjun1@huawei.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Wei Yongjun <weiyongjun1@huawei.com>
+Cc: Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: uniphier: remove redundant check of PLL ID
+   ASoC: rt5682: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -53,39 +37,51 @@ to this mail.
 Thanks,
 Mark
 
->From 366f074d047b2538cc5d7e4a820bb6c117a3ccec Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Date: Thu, 21 Jun 2018 11:56:28 +0900
-Subject: [PATCH] ASoC: uniphier: remove redundant check of PLL ID
+>From a98ec93d7e378db21a6cdbc6d55feaba9fb4b999 Mon Sep 17 00:00:00 2001
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Date: Fri, 22 Jun 2018 02:23:24 +0000
+Subject: [PATCH] ASoC: rt5682: use devm_snd_soc_register_component()
 
-This patch removes redudant check of PLL ID. struct uniphier_aio_pll
-enable member has already been checked at is_valid_pll().
+Using devm_snd_soc_register_component() and drop all of the code
+related to .remove hook.
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/uniphier/aio-cpu.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/codecs/rt5682.c | 11 ++---------
+ 1 file changed, 2 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/uniphier/aio-cpu.c b/sound/soc/uniphier/aio-cpu.c
-index 2d9b7dde2ffa..ee90e6c3937c 100644
---- a/sound/soc/uniphier/aio-cpu.c
-+++ b/sound/soc/uniphier/aio-cpu.c
-@@ -219,15 +219,10 @@ static int uniphier_aio_set_pll(struct snd_soc_dai *dai, int pll_id,
- 				unsigned int freq_out)
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 61a97301bcfa..baad177908ab 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2630,17 +2630,11 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
+ 
+ 	}
+ 
+-	return snd_soc_register_component(&i2c->dev, &soc_component_dev_rt5682,
++	return devm_snd_soc_register_component(&i2c->dev,
++			&soc_component_dev_rt5682,
+ 			rt5682_dai, ARRAY_SIZE(rt5682_dai));
+ }
+ 
+-static int rt5682_i2c_remove(struct i2c_client *i2c)
+-{
+-	snd_soc_unregister_component(&i2c->dev);
+-
+-	return 0;
+-}
+-
+ static void rt5682_i2c_shutdown(struct i2c_client *client)
  {
- 	struct uniphier_aio *aio = uniphier_priv(dai);
--	struct device *dev = &aio->chip->pdev->dev;
- 	int ret;
- 
- 	if (!is_valid_pll(aio->chip, pll_id))
- 		return -EINVAL;
--	if (!aio->chip->plls[pll_id].enable) {
--		dev_err(dev, "PLL(%d) is not implemented\n", pll_id);
--		return -ENOTSUPP;
--	}
- 
- 	ret = aio_chip_set_pll(aio->chip, pll_id, freq_out);
- 	if (ret < 0)
+ 	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
+@@ -2671,7 +2665,6 @@ static struct i2c_driver rt5682_i2c_driver = {
+ 		.acpi_match_table = ACPI_PTR(rt5682_acpi_match),
+ 	},
+ 	.probe = rt5682_i2c_probe,
+-	.remove = rt5682_i2c_remove,
+ 	.shutdown = rt5682_i2c_shutdown,
+ 	.id_table = rt5682_i2c_id,
+ };
 -- 
 2.18.0.rc2
