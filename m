@@ -1,17 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 00/16] ALSA: hda - GPIO cleanups
-Date: Fri, 22 Jun 2018 11:53:36 +0200
-Message-ID: <20180622095352.19451-1-tiwai@suse.de>
+Subject: [PATCH 05/16] ALSA: hda/realtek - Simplify
+	alc885_fixup_macpro_gpio()
+Date: Fri, 22 Jun 2018 11:53:41 +0200
+Message-ID: <20180622095352.19451-6-tiwai@suse.de>
+References: <20180622095352.19451-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 101002676DD
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 47D002676DF
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:56 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 482EAADC6
+ by mx2.suse.de (Postfix) with ESMTP id 83167AF99
  for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:53:54 +0000 (UTC)
+In-Reply-To: <20180622095352.19451-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,41 +27,90 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The fixup for Macbook Pro is nothing but setting the GPIO bits as
+usual but with one exception: it adds some delay at writing the GPIO
+bits.
 
-this is a series of cleanup patches for GPIO handlings in HD-audio
-codec drivers.  Not really fixing bugs but mostly for straightening
-the code flow.
+Add a flag to put the conditional delay in the common helper, and
+clean up alc885_fixup_macpro_gpio() with the new flag.
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 44 ++++++-----------------------------
+ 1 file changed, 7 insertions(+), 37 deletions(-)
 
-Takashi
-
-===
-
-Takashi Iwai (16):
-  ALSA: hda/realtek - Allow skipping spec->init_amp detection
-  ALSA: hda/realtek - Manage GPIO bits commonly
-  ALSA: hda/realtek - Add GPIO data update helper
-  ALSA: hda/realtek - Consolidate gpio_data and gpio_led
-  ALSA: hda/realtek - Simplify alc885_fixup_macpro_gpio()
-  ALSA: hda/realtek - Simplify mute LED GPIO handling
-  ALSA: hda/realtek - Convert some manual GPIO setups
-  ALSA: hda/realtek - Simplify Dell XPS13 GPIO handling
-  ALSA: hda/realtek - Use common GPIO mask for ALC660VD ASUS fixup
-  ALSA: hda/realtek - Use common helper for creating ALC268 beep
-    controls
-  ALSA: hda/realtek - Use common helper for creating beep controls
-  ALSA: hda/conexant - Clean up beep code
-  ALSA: hda/cirrus - Simplify creation of new controls
-  ALSA: hda/via - Rewrite with error goto
-  ALSA: hda/via - Simplify control management
-  ALSA: hda/via - Use standard verb containers
-
- sound/pci/hda/patch_cirrus.c   |  29 +-
- sound/pci/hda/patch_conexant.c |  85 ++---
- sound/pci/hda/patch_realtek.c  | 639 +++++++++++++++------------------
- sound/pci/hda/patch_via.c      | 294 +++++++--------
- 4 files changed, 462 insertions(+), 585 deletions(-)
-
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 0db8329aa114..786b29eb2ba9 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -94,6 +94,7 @@ struct alc_spec {
+ 	unsigned int gpio_mask;
+ 	unsigned int gpio_dir;
+ 	unsigned int gpio_data;
++	bool gpio_write_delay;	/* add a delay before writing gpio_data */
+ 
+ 	/* mute LED for HP laptops, see alc269_fixup_mic_mute_hook() */
+ 	int mute_led_polarity;
+@@ -265,6 +266,8 @@ static void alc_write_gpio(struct hda_codec *codec)
+ 			    AC_VERB_SET_GPIO_MASK, spec->gpio_mask);
+ 	snd_hda_codec_write(codec, codec->core.afg, 0,
+ 			    AC_VERB_SET_GPIO_DIRECTION, spec->gpio_dir);
++	if (spec->gpio_write_delay)
++		msleep(1);
+ 	alc_write_gpio_data(codec);
+ }
+ 
+@@ -1868,47 +1871,14 @@ static void alc889_fixup_coef(struct hda_codec *codec,
+ 	alc_update_coef_idx(codec, 7, 0, 0x2030);
+ }
+ 
+-/* toggle speaker-output according to the hp-jack state */
+-static void alc882_gpio_mute(struct hda_codec *codec, int pin, int muted)
+-{
+-	unsigned int gpiostate, gpiomask, gpiodir;
+-
+-	gpiostate = snd_hda_codec_read(codec, codec->core.afg, 0,
+-				       AC_VERB_GET_GPIO_DATA, 0);
+-
+-	if (!muted)
+-		gpiostate |= (1 << pin);
+-	else
+-		gpiostate &= ~(1 << pin);
+-
+-	gpiomask = snd_hda_codec_read(codec, codec->core.afg, 0,
+-				      AC_VERB_GET_GPIO_MASK, 0);
+-	gpiomask |= (1 << pin);
+-
+-	gpiodir = snd_hda_codec_read(codec, codec->core.afg, 0,
+-				     AC_VERB_GET_GPIO_DIRECTION, 0);
+-	gpiodir |= (1 << pin);
+-
+-
+-	snd_hda_codec_write(codec, codec->core.afg, 0,
+-			    AC_VERB_SET_GPIO_MASK, gpiomask);
+-	snd_hda_codec_write(codec, codec->core.afg, 0,
+-			    AC_VERB_SET_GPIO_DIRECTION, gpiodir);
+-
+-	msleep(1);
+-
+-	snd_hda_codec_write(codec, codec->core.afg, 0,
+-			    AC_VERB_SET_GPIO_DATA, gpiostate);
+-}
+-
+ /* set up GPIO at initialization */
+ static void alc885_fixup_macpro_gpio(struct hda_codec *codec,
+ 				     const struct hda_fixup *fix, int action)
+ {
+-	if (action != HDA_FIXUP_ACT_INIT)
+-		return;
+-	alc882_gpio_mute(codec, 0, 0);
+-	alc882_gpio_mute(codec, 1, 0);
++	struct alc_spec *spec = codec->spec;
++
++	spec->gpio_write_delay = true;
++	alc_fixup_gpio3(codec, fix, action);
+ }
+ 
+ /* Fix the connection of some pins for ALC889:
 -- 
 2.17.1
