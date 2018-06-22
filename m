@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 16/16] ALSA: hda/via - Use standard verb
-	containers
-Date: Fri, 22 Jun 2018 11:53:52 +0200
-Message-ID: <20180622095352.19451-17-tiwai@suse.de>
+Subject: [PATCH 14/16] ALSA: hda/via - Rewrite with error goto
+Date: Fri, 22 Jun 2018 11:53:50 +0200
+Message-ID: <20180622095352.19451-15-tiwai@suse.de>
 References: <20180622095352.19451-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 65B542676D9
+ by alsa0.perex.cz (Postfix) with ESMTP id 652682676CA
  for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:57 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id E7538AFAF
+ by mx2.suse.de (Postfix) with ESMTP id D8421AFAC
  for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:53:54 +0000 (UTC)
 In-Reply-To: <20180622095352.19451-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,199 +26,236 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-In this patch, the remaining static init verbs in VIA codec driver are
-converted to the standard snd_hda_add_verbs() calls.  The conversion
-is straightforward, but one change to be noted is the place of calls:
-since these verbs are supposed to be executed at the beginning of the
-init / resume procedure, we need to add snd_hda_add_verbs() calls
-before calling the other parsers.
+Currently VIA codec driver invokes via_free() at each place of the
+error path.  Move the error handling to the end of each function
+commonly and do goto-error as a standard idiom.
 
-This is merely a cleanup, no functional changes.
+This is a preliminary patch for the further cleanups, and no
+functional changes.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_via.c | 64 +++++++++++++++++++++------------------
- 1 file changed, 35 insertions(+), 29 deletions(-)
+ sound/pci/hda/patch_via.c | 100 +++++++++++++++++++++++---------------
+ 1 file changed, 60 insertions(+), 40 deletions(-)
 
 diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
-index dc4961f0dfd1..6b9617aee0e6 100644
+index fc30d1e8aa76..76e47d088a41 100644
 --- a/sound/pci/hda/patch_via.c
 +++ b/sound/pci/hda/patch_via.c
-@@ -90,10 +90,6 @@ enum VIA_HDA_CODEC {
- struct via_spec {
- 	struct hda_gen_spec gen;
+@@ -686,10 +686,8 @@ static int patch_vt1708(struct hda_codec *codec)
  
--	/* codec parameterization */
--	const struct hda_verb *init_verbs[5];
--	unsigned int num_iverbs;
--
- 	/* HP mode source */
- 	unsigned int dmic_enabled;
- 	enum VIA_HDA_CODEC codec_type;
-@@ -555,12 +551,6 @@ static int via_parse_auto_config(struct hda_codec *codec)
- 
- static int via_init(struct hda_codec *codec)
- {
--	struct via_spec *spec = codec->spec;
--	int i;
--
--	for (i = 0; i < spec->num_iverbs; i++)
--		snd_hda_sequence_write(codec, spec->init_verbs[i]);
--
- 	/* init power states */
- 	__analog_low_current_mode(codec, true);
- 
-@@ -639,6 +629,10 @@ static int patch_vt1708(struct hda_codec *codec)
- 	vt1708_set_pinconfig_connect(codec, VT1708_HP_PIN_NID);
- 	vt1708_set_pinconfig_connect(codec, VT1708_CD_PIN_NID);
- 
-+	err = snd_hda_add_verbs(codec, vt1708_init_verbs);
-+	if (err < 0)
-+		goto error;
-+
  	/* automatic parse from the BIOS config */
  	err = via_parse_auto_config(codec);
- 	if (err < 0)
-@@ -650,8 +644,6 @@ static int patch_vt1708(struct hda_codec *codec)
- 		goto error;
- 	}
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
++	if (err < 0)
++		goto error;
  
--	spec->init_verbs[spec->num_iverbs++] = vt1708_init_verbs;
--
- 	/* clear jackpoll_interval again; it's set dynamically */
+ 	/* add jack detect on/off control */
+ 	spec->mixers[spec->num_mixers++] = vt1708_jack_detect_ctl;
+@@ -700,6 +698,10 @@ static int patch_vt1708(struct hda_codec *codec)
  	codec->jackpoll_interval = 0;
  
-@@ -755,13 +747,15 @@ static int patch_vt1708S(struct hda_codec *codec)
- 	if (codec->core.vendor_id == 0x11064397)
- 		snd_hda_codec_set_name(codec, "VT1705");
- 
-+	err = snd_hda_add_verbs(codec, vt1708S_init_verbs);
-+	if (err < 0)
-+		goto error;
-+
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
- 	if (err < 0)
- 		goto error;
- 
--	spec->init_verbs[spec->num_iverbs++] = vt1708S_init_verbs;
--
  	return 0;
++
++ error:
++	via_free(codec);
++	return err;
+ }
  
-  error:
-@@ -798,13 +792,15 @@ static int patch_vt1702(struct hda_codec *codec)
- 				  (0x5 << AC_AMPCAP_STEP_SIZE_SHIFT) |
- 				  (1 << AC_AMPCAP_MUTE_SHIFT));
+ static int patch_vt1709(struct hda_codec *codec)
+@@ -715,12 +717,14 @@ static int patch_vt1709(struct hda_codec *codec)
+ 	spec->gen.mixer_nid = 0x18;
  
-+	err = snd_hda_add_verbs(codec, vt1702_init_verbs);
+ 	err = via_parse_auto_config(codec);
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
 +	if (err < 0)
 +		goto error;
-+
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
- 	if (err < 0)
- 		goto error;
  
--	spec->init_verbs[spec->num_iverbs++] = vt1702_init_verbs;
--
  	return 0;
- 
-  error:
-@@ -872,13 +868,15 @@ static int patch_vt1718S(struct hda_codec *codec)
- 	override_mic_boost(codec, 0x29, 0, 3, 40);
- 	add_secret_dac_path(codec);
- 
-+	err = snd_hda_add_verbs(codec, vt1718S_init_verbs);
-+	if (err < 0)
-+		goto error;
 +
++ error:
++	via_free(codec);
++	return err;
+ }
+ 
+ static int patch_vt1708S(struct hda_codec *codec);
+@@ -741,12 +745,14 @@ static int patch_vt1708B(struct hda_codec *codec)
+ 
  	/* automatic parse from the BIOS config */
  	err = via_parse_auto_config(codec);
- 	if (err < 0)
- 		goto error;
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
++	if (err < 0)
++		goto error;
  
--	spec->init_verbs[spec->num_iverbs++] = vt1718S_init_verbs;
--
  	return 0;
- 
-  error:
-@@ -966,13 +964,15 @@ static int patch_vt1716S(struct hda_codec *codec)
- 	override_mic_boost(codec, 0x1a, 0, 3, 40);
- 	override_mic_boost(codec, 0x1e, 0, 3, 40);
- 
-+	err = snd_hda_add_verbs(codec, vt1716S_init_verbs);
-+	if (err < 0)
-+		goto error;
 +
++ error:
++	via_free(codec);
++	return err;
+ }
+ 
+ /* Patch for VT1708S */
+@@ -793,14 +799,16 @@ static int patch_vt1708S(struct hda_codec *codec)
+ 
  	/* automatic parse from the BIOS config */
  	err = via_parse_auto_config(codec);
- 	if (err < 0)
- 		goto error;
- 
--	spec->init_verbs[spec->num_iverbs++]  = vt1716S_init_verbs;
--
- 	if (!snd_hda_gen_add_kctl(&spec->gen, NULL, &vt1716s_dmic_mixer_vol) ||
- 	    !snd_hda_gen_add_kctl(&spec->gen, NULL, &vt1716s_dmic_mixer_sw) ||
- 	    !snd_hda_gen_add_kctl(&spec->gen, NULL, &vt1716S_mono_out_mixer)) {
-@@ -1079,16 +1079,18 @@ static int patch_vt2002P(struct hda_codec *codec)
- 	snd_hda_pick_fixup(codec, NULL, vt2002p_fixups, via_fixups);
- 	snd_hda_apply_fixup(codec, HDA_FIXUP_ACT_PRE_PROBE);
- 
-+	if (spec->codec_type == VT1802)
-+		err = snd_hda_add_verbs(codec, vt1802_init_verbs);
-+	else
-+		err = snd_hda_add_verbs(codec, vt2002P_init_verbs);
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
 +	if (err < 0)
 +		goto error;
-+
- 	/* automatic parse from the BIOS config */
- 	err = via_parse_auto_config(codec);
- 	if (err < 0)
- 		goto error;
  
--	if (spec->codec_type == VT1802)
--		spec->init_verbs[spec->num_iverbs++] = vt1802_init_verbs;
--	else
--		spec->init_verbs[spec->num_iverbs++] = vt2002P_init_verbs;
--
+ 	spec->init_verbs[spec->num_iverbs++] = vt1708S_init_verbs;
+ 
  	return 0;
- 
-  error:
-@@ -1122,13 +1124,15 @@ static int patch_vt1812(struct hda_codec *codec)
- 	override_mic_boost(codec, 0x29, 0, 3, 40);
- 	add_secret_dac_path(codec);
- 
-+	err = snd_hda_add_verbs(codec, vt1812_init_verbs);
-+	if (err < 0)
-+		goto error;
 +
++ error:
++	via_free(codec);
++	return err;
+ }
+ 
+ /* Patch for VT1702 */
+@@ -834,14 +842,16 @@ static int patch_vt1702(struct hda_codec *codec)
+ 
  	/* automatic parse from the BIOS config */
  	err = via_parse_auto_config(codec);
- 	if (err < 0)
- 		goto error;
- 
--	spec->init_verbs[spec->num_iverbs++]  = vt1812_init_verbs;
--
- 	return 0;
- 
-  error:
-@@ -1161,13 +1165,15 @@ static int patch_vt3476(struct hda_codec *codec)
- 	spec->gen.mixer_nid = 0x3f;
- 	add_secret_dac_path(codec);
- 
-+	err = snd_hda_add_verbs(codec, vt3476_init_verbs);
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
 +	if (err < 0)
 +		goto error;
+ 
+ 	spec->init_verbs[spec->num_iverbs++] = vt1702_init_verbs;
+ 
+ 	return 0;
 +
++ error:
++	via_free(codec);
++	return err;
+ }
+ 
+ /* Patch for VT1718S */
+@@ -906,14 +916,16 @@ static int patch_vt1718S(struct hda_codec *codec)
+ 
  	/* automatic parse from the BIOS config */
  	err = via_parse_auto_config(codec);
- 	if (err < 0)
- 		goto error;
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
++	if (err < 0)
++		goto error;
  
--	spec->init_verbs[spec->num_iverbs++] = vt3476_init_verbs;
--
+ 	spec->init_verbs[spec->num_iverbs++] = vt1718S_init_verbs;
+ 
  	return 0;
++
++ error:
++	via_free(codec);
++	return err;
+ }
  
-  error:
+ /* Patch for VT1716S */
+@@ -1002,10 +1014,8 @@ static int patch_vt1716S(struct hda_codec *codec)
+ 
+ 	/* automatic parse from the BIOS config */
+ 	err = via_parse_auto_config(codec);
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
++	if (err < 0)
++		goto error;
+ 
+ 	spec->init_verbs[spec->num_iverbs++]  = vt1716S_init_verbs;
+ 
+@@ -1013,6 +1023,10 @@ static int patch_vt1716S(struct hda_codec *codec)
+ 	spec->mixers[spec->num_mixers++] = vt1716S_mono_out_mixer;
+ 
+ 	return 0;
++
++ error:
++	via_free(codec);
++	return err;
+ }
+ 
+ /* for vt2002P */
+@@ -1109,10 +1123,8 @@ static int patch_vt2002P(struct hda_codec *codec)
+ 
+ 	/* automatic parse from the BIOS config */
+ 	err = via_parse_auto_config(codec);
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
++	if (err < 0)
++		goto error;
+ 
+ 	if (spec->codec_type == VT1802)
+ 		spec->init_verbs[spec->num_iverbs++] = vt1802_init_verbs;
+@@ -1120,6 +1132,10 @@ static int patch_vt2002P(struct hda_codec *codec)
+ 		spec->init_verbs[spec->num_iverbs++] = vt2002P_init_verbs;
+ 
+ 	return 0;
++
++ error:
++	via_free(codec);
++	return err;
+ }
+ 
+ /* for vt1812 */
+@@ -1150,14 +1166,16 @@ static int patch_vt1812(struct hda_codec *codec)
+ 
+ 	/* automatic parse from the BIOS config */
+ 	err = via_parse_auto_config(codec);
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
++	if (err < 0)
++		goto error;
+ 
+ 	spec->init_verbs[spec->num_iverbs++]  = vt1812_init_verbs;
+ 
+ 	return 0;
++
++ error:
++	via_free(codec);
++	return err;
+ }
+ 
+ /* patch for vt3476 */
+@@ -1187,14 +1205,16 @@ static int patch_vt3476(struct hda_codec *codec)
+ 
+ 	/* automatic parse from the BIOS config */
+ 	err = via_parse_auto_config(codec);
+-	if (err < 0) {
+-		via_free(codec);
+-		return err;
+-	}
++	if (err < 0)
++		goto error;
+ 
+ 	spec->init_verbs[spec->num_iverbs++] = vt3476_init_verbs;
+ 
+ 	return 0;
++
++ error:
++	via_free(codec);
++	return err;
+ }
+ 
+ /*
 -- 
 2.17.1
