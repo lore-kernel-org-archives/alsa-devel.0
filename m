@@ -1,22 +1,18 @@
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH 6/9] ALSA: usb: caiaq: use
-	usb_fill_int_urb()
-Date: Fri, 22 Jun 2018 12:14:29 +0200
-Message-ID: <20180622101428.wcdnlexsbcvltqpu@linutronix.de>
-References: <20180619215521.13688-1-bigeasy@linutronix.de>
- <20180619215521.13688-7-bigeasy@linutronix.de>
- <2f8cbd9b-55ad-d543-d26a-c4452717b121@zonque.org>
- <20180621211639.a7vym5mikaejvlgw@linutronix.de>
- <156bfc42-650f-1ac0-73d5-085556ae318c@zonque.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/realtek - Add a quirk for FSC
+	ESPRIMO U9210
+Date: Fri, 22 Jun 2018 12:23:45 +0200
+Message-ID: <20180622102345.22726-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from Galois.linutronix.de (galois.linutronix.de [146.0.238.70])
- by alsa0.perex.cz (Postfix) with ESMTP id 7CDA92676DF
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 12:14:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <156bfc42-650f-1ac0-73d5-085556ae318c@zonque.org>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 312E12670D7
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 12:23:46 +0200 (CEST)
+Received: from relay1.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id A2BABAE75
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 10:23:46 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,39 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, linux-usb@vger.kernel.org, tglx@linutronix.de, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 2018-06-22 12:01:13 [+0200], Daniel Mack wrote:
-> Hmm, there is no such thing as usb_fill_iso_urb() in my tree, are you going
-> to add that?
+Fujitsu Seimens ESPRIMO Mobile U9210 requires the same fixup as H270
+for the correct pin configs.
 
-Yes.
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=200107
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> The only part that needs attention is the interval parameter, which is
-> passed to usb_fill_int_urb() as 1 now, and hence urb->interval will also be
-> 1, just like the open-coded version before. Unless I miss anything, your
-> conversion should work, but I haven't tested it yet.
-
-It should work in most cases. The point is that the argument expects
-bInterval (from the endpoint) which has a different encoding on FS vs
-HS/SS for INTR endpoints but not for ISOC endpoints and I got this wrong
-initially.
-
-> But I agree the function name is misleading, so we should probably get a
-> usb_fill_iso_urb() and use it where appropriate. AFAICS, it will be
-> identical to usb_fill_bulk_urb(), as the endpoint type is encoded in the
-> pipe. Maybe it's worth adding a check?
-
-What check?
-it should be identical to INTR without the speed check (always the HS
-version should be used). I need to check if it makes sense to extend the
-parameters to cover ->number_of_packets and so on.
-Any way, I plan to first RFC the function, land it upstream and then
-convert the users.
-
-> Thanks,
-> Daniel
-
-Sebastian
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 487ceb9fd038..70bf4c30548a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -2545,6 +2545,7 @@ static const struct snd_pci_quirk alc262_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x10cf, 0x1397, "Fujitsu Lifebook S7110", ALC262_FIXUP_FSC_S7110),
+ 	SND_PCI_QUIRK(0x10cf, 0x142d, "Fujitsu Lifebook E8410", ALC262_FIXUP_BENQ),
+ 	SND_PCI_QUIRK(0x10f1, 0x2915, "Tyan Thunder n6650W", ALC262_FIXUP_TYAN),
++	SND_PCI_QUIRK(0x1734, 0x1141, "FSC ESPRIMO U9210", ALC262_FIXUP_FSC_H270),
+ 	SND_PCI_QUIRK(0x1734, 0x1147, "FSC Celsius H270", ALC262_FIXUP_FSC_H270),
+ 	SND_PCI_QUIRK(0x17aa, 0x384e, "Lenovo 3000", ALC262_FIXUP_LENOVO_3000),
+ 	SND_PCI_QUIRK(0x17ff, 0x0560, "Benq ED8", ALC262_FIXUP_BENQ),
+-- 
+2.17.1
