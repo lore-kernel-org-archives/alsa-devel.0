@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/16] ALSA: hda/realtek - Manage GPIO bits
-	commonly
-Date: Fri, 22 Jun 2018 11:53:38 +0200
-Message-ID: <20180622095352.19451-3-tiwai@suse.de>
+Subject: [PATCH 07/16] ALSA: hda/realtek - Convert some manual
+	GPIO setups
+Date: Fri, 22 Jun 2018 11:53:43 +0200
+Message-ID: <20180622095352.19451-8-tiwai@suse.de>
 References: <20180622095352.19451-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BC8B2673F2
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 482A12676E0
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:56 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5DA45AEC4
+ by mx2.suse.de (Postfix) with ESMTP id 94082AFA4
  for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:53:54 +0000 (UTC)
 In-Reply-To: <20180622095352.19451-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,238 +27,110 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently the GPIO bits are managed by individual verbs in some cases
-while toggled dynamically in other cases.  For simplifying the GPIO
-management, define the GPIO mask, dir and data bits in alc_spec
-fields, and refer to / set them consistently from all places.
-
-As a first step, along with the definition of the new gpio_* fields,
-this patch replaces the static verbs that are used at initialization
-and fixups with the common helper functions.
+This patch converts the remaining static init verbs for GPIO bits with
+the common gpio_* fields management.  Only the verbs setting the GPIO
+data bits are targeted in this patch.  The rest will be changed in
+later patches.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_realtek.c | 129 +++++++++++++++++++++-------------
- 1 file changed, 81 insertions(+), 48 deletions(-)
+ sound/pci/hda/patch_realtek.c | 49 +++++++++++++++++++----------------
+ 1 file changed, 26 insertions(+), 23 deletions(-)
 
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 1f054e5ae2b3..489075b23652 100644
+index a0881ffcd9d7..f5cc506504c0 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -46,9 +46,6 @@ enum {
- 	ALC_INIT_UNDEFINED,
- 	ALC_INIT_NONE,
- 	ALC_INIT_DEFAULT,
--	ALC_INIT_GPIO1,
--	ALC_INIT_GPIO2,
--	ALC_INIT_GPIO3,
- };
+@@ -296,6 +296,12 @@ static void alc_fixup_gpio3(struct hda_codec *codec,
+ 	alc_fixup_gpio(codec, action, 0x03);
+ }
  
- enum {
-@@ -93,6 +90,11 @@ struct alc_spec {
- 	struct alc_customize_define cdefine;
- 	unsigned int parse_flags; /* flag for snd_hda_parse_pin_defcfg() */
- 
-+	/* GPIO bits */
-+	unsigned int gpio_mask;
-+	unsigned int gpio_dir;
-+	unsigned int gpio_data;
-+
- 	/* mute LED for HP laptops, see alc269_fixup_mic_mute_hook() */
- 	int mute_led_polarity;
- 	hda_nid_t mute_led_nid;
-@@ -220,27 +222,63 @@ static void add_mixer(struct alc_spec *spec, const struct snd_kcontrol_new *mix)
- /*
-  * GPIO setup tables, used in initialization
-  */
-+
- /* Enable GPIO mask and set output */
--static const struct hda_verb alc_gpio1_init_verbs[] = {
--	{0x01, AC_VERB_SET_GPIO_MASK, 0x01},
--	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x01},
--	{0x01, AC_VERB_SET_GPIO_DATA, 0x01},
--	{ }
--};
-+static void alc_setup_gpio(struct hda_codec *codec, unsigned int mask)
-+{
-+	struct alc_spec *spec = codec->spec;
- 
--static const struct hda_verb alc_gpio2_init_verbs[] = {
--	{0x01, AC_VERB_SET_GPIO_MASK, 0x02},
--	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x02},
--	{0x01, AC_VERB_SET_GPIO_DATA, 0x02},
--	{ }
--};
-+	spec->gpio_mask |= mask;
-+	spec->gpio_dir |= mask;
-+	spec->gpio_data |= mask;
-+}
- 
--static const struct hda_verb alc_gpio3_init_verbs[] = {
--	{0x01, AC_VERB_SET_GPIO_MASK, 0x03},
--	{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x03},
--	{0x01, AC_VERB_SET_GPIO_DATA, 0x03},
--	{ }
--};
-+static void alc_write_gpio_data(struct hda_codec *codec)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	snd_hda_codec_write(codec, 0x01, 0, AC_VERB_SET_GPIO_DATA,
-+			    spec->gpio_data);
-+}
-+
-+static void alc_write_gpio(struct hda_codec *codec)
-+{
-+	struct alc_spec *spec = codec->spec;
-+
-+	if (!spec->gpio_mask)
-+		return;
-+
-+	snd_hda_codec_write(codec, codec->core.afg, 0,
-+			    AC_VERB_SET_GPIO_MASK, spec->gpio_mask);
-+	snd_hda_codec_write(codec, codec->core.afg, 0,
-+			    AC_VERB_SET_GPIO_DIRECTION, spec->gpio_dir);
-+	alc_write_gpio_data(codec);
-+}
-+
-+static void alc_fixup_gpio(struct hda_codec *codec, int action,
-+			   unsigned int mask)
-+{
-+	if (action == HDA_FIXUP_ACT_PRE_PROBE)
-+		alc_setup_gpio(codec, mask);
-+}
-+
-+static void alc_fixup_gpio1(struct hda_codec *codec,
++static void alc_fixup_gpio4(struct hda_codec *codec,
 +			    const struct hda_fixup *fix, int action)
 +{
-+	alc_fixup_gpio(codec, action, 0x01);
++	alc_fixup_gpio(codec, action, 0x04);
 +}
 +
-+static void alc_fixup_gpio2(struct hda_codec *codec,
-+			    const struct hda_fixup *fix, int action)
-+{
-+	alc_fixup_gpio(codec, action, 0x02);
-+}
-+
-+static void alc_fixup_gpio3(struct hda_codec *codec,
-+			    const struct hda_fixup *fix, int action)
-+{
-+	alc_fixup_gpio(codec, action, 0x03);
-+}
- 
  /*
   * Fix hardware PLL issue
-@@ -448,16 +486,8 @@ static void alc_auto_init_amp(struct hda_codec *codec, int type)
+  * On some codecs, the analog PLL gating control must be off while
+@@ -5172,13 +5178,6 @@ static void alc282_fixup_asus_tx300(struct hda_codec *codec,
+ 				    const struct hda_fixup *fix, int action)
  {
- 	alc_fill_eapd_coef(codec);
- 	alc_auto_setup_eapd(codec, true);
-+	alc_write_gpio(codec);
- 	switch (type) {
--	case ALC_INIT_GPIO1:
--		snd_hda_sequence_write(codec, alc_gpio1_init_verbs);
--		break;
--	case ALC_INIT_GPIO2:
--		snd_hda_sequence_write(codec, alc_gpio2_init_verbs);
--		break;
--	case ALC_INIT_GPIO3:
--		snd_hda_sequence_write(codec, alc_gpio3_init_verbs);
--		break;
- 	case ALC_INIT_DEFAULT:
- 		switch (codec->core.vendor_id) {
- 		case 0x10ec0260:
-@@ -660,13 +690,13 @@ static int alc_subsystem_id(struct hda_codec *codec, const hda_nid_t *ports)
- 	if (spec->init_amp == ALC_INIT_UNDEFINED) {
- 		switch (tmp) {
- 		case 1:
--			spec->init_amp = ALC_INIT_GPIO1;
-+			alc_setup_gpio(codec, 0x01);
- 			break;
- 		case 3:
--			spec->init_amp = ALC_INIT_GPIO2;
-+			alc_setup_gpio(codec, 0x02);
- 			break;
- 		case 7:
--			spec->init_amp = ALC_INIT_GPIO3;
-+			alc_setup_gpio(codec, 0x03);
- 			break;
- 		case 5:
- 		default:
-@@ -1107,12 +1137,12 @@ static void alc880_fixup_vol_knob(struct hda_codec *codec,
- 
- static const struct hda_fixup alc880_fixups[] = {
- 	[ALC880_FIXUP_GPIO1] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = alc_gpio1_init_verbs,
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_gpio1,
- 	},
- 	[ALC880_FIXUP_GPIO2] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = alc_gpio2_init_verbs,
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_gpio2,
- 	},
- 	[ALC880_FIXUP_MEDION_RIM] = {
- 		.type = HDA_FIXUP_VERBS,
-@@ -1565,7 +1595,7 @@ static void alc260_fixup_gpio1_toggle(struct hda_codec *codec,
- 		spec->gen.autocfg.hp_pins[0] = 0x0f; /* copy it for automute */
- 		snd_hda_jack_detect_enable_callback(codec, 0x0f,
- 						    snd_hda_gen_hp_automute);
--		snd_hda_add_verbs(codec, alc_gpio1_init_verbs);
-+		alc_setup_gpio(codec, 0x01);
+ 	struct alc_spec *spec = codec->spec;
+-	/* TX300 needs to set up GPIO2 for the speaker amp */
+-	static const struct hda_verb gpio2_verbs[] = {
+-		{ 0x01, AC_VERB_SET_GPIO_MASK, 0x04 },
+-		{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x04 },
+-		{ 0x01, AC_VERB_SET_GPIO_DATA, 0x04 },
+-		{}
+-	};
+ 	static const struct hda_pintbl dock_pins[] = {
+ 		{ 0x1b, 0x21114000 }, /* dock speaker pin */
+ 		{}
+@@ -5187,7 +5186,8 @@ static void alc282_fixup_asus_tx300(struct hda_codec *codec,
+ 	switch (action) {
+ 	case HDA_FIXUP_ACT_PRE_PROBE:
+ 		spec->init_amp = ALC_INIT_DEFAULT;
+-		snd_hda_add_verbs(codec, gpio2_verbs);
++		/* TX300 needs to set up GPIO2 for the speaker amp */
++		alc_setup_gpio(codec, 0x04);
+ 		snd_hda_apply_pincfgs(codec, dock_pins);
+ 		spec->gen.auto_mute_via_amp = 1;
+ 		spec->gen.automute_hook = asus_tx300_automute;
+@@ -5280,6 +5280,19 @@ static void alc280_fixup_hp_9480m(struct hda_codec *codec,
  	}
  }
  
-@@ -1639,8 +1669,8 @@ static const struct hda_fixup alc260_fixups[] = {
- 		},
- 	},
- 	[ALC260_FIXUP_GPIO1] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = alc_gpio1_init_verbs,
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_gpio1,
- 	},
- 	[ALC260_FIXUP_GPIO1_TOGGLE] = {
- 		.type = HDA_FIXUP_FUNC,
-@@ -2144,20 +2174,20 @@ static const struct hda_fixup alc882_fixups[] = {
++static void alc275_fixup_gpio4_off(struct hda_codec *codec,
++				   const struct hda_fixup *fix,
++				   int action)
++{
++	struct alc_spec *spec = codec->spec;
++
++	if (action == HDA_FIXUP_ACT_PRE_PROBE) {
++		spec->gpio_mask |= 0x04;
++		spec->gpio_dir |= 0x04;
++		/* set data bit low */
++	}
++}
++
+ static void alc233_alc662_fixup_lenovo_dual_codecs(struct hda_codec *codec,
+ 					 const struct hda_fixup *fix,
+ 					 int action)
+@@ -5468,13 +5481,8 @@ static const struct hda_fixup alc269_fixups[] = {
  		}
  	},
- 	[ALC882_FIXUP_GPIO1] = {
+ 	[ALC275_FIXUP_SONY_VAIO_GPIO2] = {
 -		.type = HDA_FIXUP_VERBS,
--		.v.verbs = alc_gpio1_init_verbs,
+-		.v.verbs = (const struct hda_verb[]) {
+-			{0x01, AC_VERB_SET_GPIO_MASK, 0x04},
+-			{0x01, AC_VERB_SET_GPIO_DIRECTION, 0x04},
+-			{0x01, AC_VERB_SET_GPIO_DATA, 0x00},
+-			{ }
+-		},
 +		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_gpio1,
- 	},
- 	[ALC882_FIXUP_GPIO2] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = alc_gpio2_init_verbs,
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_gpio2,
- 	},
- 	[ALC882_FIXUP_GPIO3] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = alc_gpio3_init_verbs,
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_gpio3,
- 	},
- 	[ALC882_FIXUP_ASUS_W2JC] = {
--		.type = HDA_FIXUP_VERBS,
--		.v.verbs = alc_gpio1_init_verbs,
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc_fixup_gpio1,
++		.v.func = alc275_fixup_gpio4_off,
  		.chained = true,
- 		.chain_id = ALC882_FIXUP_EAPD,
+ 		.chain_id = ALC269_FIXUP_SONY_VAIO
  	},
-@@ -5232,6 +5262,9 @@ static void alc282_fixup_asus_tx300(struct hda_codec *codec,
- 		snd_hda_jack_detect_enable_callback(codec, 0x1b,
- 						    snd_hda_gen_hp_automute);
- 		break;
-+	case HDA_FIXUP_ACT_PROBE:
-+		spec->init_amp = ALC_INIT_DEFAULT;
-+		break;
- 	case HDA_FIXUP_ACT_BUILD:
- 		/* this is a bit tricky; give more sane names for the main
- 		 * (tablet) speaker and the dock speaker, respectively
+@@ -6219,14 +6227,9 @@ static const struct hda_fixup alc269_fixups[] = {
+ 		.chain_id = ALC256_FIXUP_ASUS_HEADSET_MODE
+ 	},
+ 	[ALC256_FIXUP_ASUS_AIO_GPIO2] = {
+-		.type = HDA_FIXUP_VERBS,
+-		.v.verbs = (const struct hda_verb[]) {
+-			/* Set up GPIO2 for the speaker amp */
+-			{ 0x01, AC_VERB_SET_GPIO_MASK, 0x04 },
+-			{ 0x01, AC_VERB_SET_GPIO_DIRECTION, 0x04 },
+-			{ 0x01, AC_VERB_SET_GPIO_DATA, 0x04 },
+-			{}
+-		},
++		.type = HDA_FIXUP_FUNC,
++		/* Set up GPIO2 for the speaker amp */
++		.v.func = alc_fixup_gpio4,
+ 	},
+ 	[ALC233_FIXUP_ASUS_MIC_NO_PRESENCE] = {
+ 		.type = HDA_FIXUP_PINS,
 -- 
 2.17.1
