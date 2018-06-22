@@ -1,18 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 12/16] ALSA: hda/conexant - Clean up beep code
-Date: Fri, 22 Jun 2018 11:53:48 +0200
-Message-ID: <20180622095352.19451-13-tiwai@suse.de>
+Subject: [PATCH 15/16] ALSA: hda/via - Simplify control
+	management
+Date: Fri, 22 Jun 2018 11:53:51 +0200
+Message-ID: <20180622095352.19451-16-tiwai@suse.de>
 References: <20180622095352.19451-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 67013267711
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:57 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E43626770F
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 11:53:56 +0200 (CEST)
 Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id CF225AFB0
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:53:55 +0000 (UTC)
+ by mx2.suse.de (Postfix) with ESMTP id DCA5DAFAE
+ for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 09:53:54 +0000 (UTC)
 In-Reply-To: <20180622095352.19451-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,48 +27,75 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Like the previous commit for Realtek codec, the similar cleanup work
-can be applied to Conexant codec, too.  A slight difference is that
-the call of cx_auto_parse_beep() is moved after
-snd_hda_gen_parse_auto_config().  It's not strictly needed, but it'd
-be good to make the creation of such beep mixers at the end, which
-matches with the former situation.
+This patch replaces the control element creations in VIA codec driver
+with the standard snd_hda_gen_add_kctl() calls as a cleanup.  There
+are two major fields targeted by this patch: the beep controls and
+static init controls.
 
-Along with this conversion, cx_auto_build_controls() becomes just
-calling snd_hda_gen_build_controls(), so it's simply replaced with
-snd_hda_gen_build_controls.
+The former is converted just like other codec drivers do.  The
+spec->beep_amp field can be eliminated by this change as well.
+
+The latter, static init controls, are replaced simply with explicit
+snd_hda_gen_add_kctl() calls.
+
+After these conversions, via_build_controls() becomes superfluous and
+replaced with snd_hda_gen_build_controls(), too.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/patch_conexant.c | 85 +++++++++++-----------------------
- 1 file changed, 27 insertions(+), 58 deletions(-)
+ sound/pci/hda/patch_via.c | 130 +++++++++++++-------------------------
+ 1 file changed, 44 insertions(+), 86 deletions(-)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index b7339cb5c45b..75ba66eb4ccd 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -37,8 +37,6 @@
- struct conexant_spec {
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index 76e47d088a41..dc4961f0dfd1 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -91,9 +91,6 @@ struct via_spec {
  	struct hda_gen_spec gen;
  
--	unsigned int beep_amp;
+ 	/* codec parameterization */
+-	const struct snd_kcontrol_new *mixers[6];
+-	unsigned int num_mixers;
 -
- 	/* extra EAPD pins */
- 	unsigned int num_eapds;
- 	hda_nid_t eapds[4];
-@@ -62,65 +60,48 @@ struct conexant_spec {
+ 	const struct hda_verb *init_verbs[5];
+ 	unsigned int num_iverbs;
  
+@@ -107,8 +104,6 @@ struct via_spec {
+ 	/* work to check hp jack state */
+ 	int hp_work_active;
+ 	int vt1708_jack_detect;
+-
+-	unsigned int beep_amp;
+ };
+ 
+ static enum VIA_HDA_CODEC get_codec_type(struct hda_codec *codec);
+@@ -262,69 +257,51 @@ static int via_pin_power_ctl_put(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
+-static const struct snd_kcontrol_new via_pin_power_ctl_enum[] = {
+-	{
++static const struct snd_kcontrol_new via_pin_power_ctl_enum = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "Dynamic Power-Control",
+ 	.info = via_pin_power_ctl_info,
+ 	.get = via_pin_power_ctl_get,
+ 	.put = via_pin_power_ctl_put,
+-	},
+-	{} /* terminator */
+ };
  
  #ifdef CONFIG_SND_HDA_INPUT_BEEP
--static inline void set_beep_amp(struct conexant_spec *spec, hda_nid_t nid,
+-static inline void set_beep_amp(struct via_spec *spec, hda_nid_t nid,
 -				int idx, int dir)
 -{
 -	spec->gen.beep_nid = nid;
 -	spec->beep_amp = HDA_COMPOSE_AMP_VAL(nid, 1, idx, dir);
 -}
--/* additional beep mixers; the actual parameters are overwritten at build */
-+/* additional beep mixers; private_value will be overwritten */
- static const struct snd_kcontrol_new cxt_beep_mixer[] = {
+-
+ /* additional beep mixers; the actual parameters are overwritten at build */
+-static const struct snd_kcontrol_new cxt_beep_mixer[] = {
++static const struct snd_kcontrol_new via_beep_mixer[] = {
  	HDA_CODEC_VOLUME_MONO("Beep Playback Volume", 0, 1, 0, HDA_OUTPUT),
  	HDA_CODEC_MUTE_BEEP_MONO("Beep Playback Switch", 0, 1, 0, HDA_OUTPUT),
 -	{ } /* end */
@@ -75,10 +103,10 @@ index b7339cb5c45b..75ba66eb4ccd 100644
  
 -/* create beep controls if needed */
 -static int add_beep_ctls(struct hda_codec *codec)
-+static int set_beep_amp(struct conexant_spec *spec, hda_nid_t nid,
++static int set_beep_amp(struct via_spec *spec, hda_nid_t nid,
 +			int idx, int dir)
  {
--	struct conexant_spec *spec = codec->spec;
+-	struct via_spec *spec = codec->spec;
 -	int err;
 +	struct snd_kcontrol_new *knew;
 +	unsigned int beep_amp = HDA_COMPOSE_AMP_VAL(nid, 1, idx, dir);
@@ -97,29 +125,20 @@ index b7339cb5c45b..75ba66eb4ccd 100644
 -				return err;
 -		}
 +	spec->gen.beep_nid = nid;
-+	for (i = 0; i < ARRAY_SIZE(cxt_beep_mixer); i++) {
++	for (i = 0; i < ARRAY_SIZE(via_beep_mixer); i++) {
 +		knew = snd_hda_gen_add_kctl(&spec->gen, NULL,
-+					    &cxt_beep_mixer[i]);
++					    &via_beep_mixer[i]);
 +		if (!knew)
 +			return -ENOMEM;
 +		knew->private_value = beep_amp;
  	}
  	return 0;
  }
--#else
--#define set_beep_amp(spec, nid, idx, dir) /* NOP */
--#define add_beep_ctls(codec)	0
--#endif
  
--/*
-- * Automatic parser for CX20641 & co
-- */
--
--#ifdef CONFIG_SND_HDA_INPUT_BEEP
--static void cx_auto_parse_beep(struct hda_codec *codec)
-+static int cx_auto_parse_beep(struct hda_codec *codec)
+-static void auto_parse_beep(struct hda_codec *codec)
++static int auto_parse_beep(struct hda_codec *codec)
  {
- 	struct conexant_spec *spec = codec->spec;
+ 	struct via_spec *spec = codec->spec;
  	hda_nid_t nid;
  
  	for_each_hda_codec_node(nid, codec)
@@ -132,24 +151,21 @@ index b7339cb5c45b..75ba66eb4ccd 100644
 +	return 0;
  }
  #else
--#define cx_auto_parse_beep(codec)
-+#define cx_auto_parse_beep(codec)	0
+-#define set_beep_amp(spec, nid, idx, dir) /* NOP */
+-#define add_beep_ctls(codec)	0
+-#define auto_parse_beep(codec)
++#define auto_parse_beep(codec)	0
  #endif
  
-+/*
-+ * Automatic parser for CX20641 & co
-+ */
-+
- /* parse EAPDs */
- static void cx_auto_parse_eapd(struct hda_codec *codec)
- {
-@@ -179,21 +160,6 @@ static void cx_auto_vmaster_hook_mute_led(void *private_data, int enabled)
- 			    enabled ? 0x00 : 0x02);
+ /* check AA path's mute status */
+@@ -403,30 +380,6 @@ static void analog_low_current_mode(struct hda_codec *codec)
+ 	return __analog_low_current_mode(codec, false);
  }
  
--static int cx_auto_build_controls(struct hda_codec *codec)
+-static int via_build_controls(struct hda_codec *codec)
 -{
--	int err;
+-	struct via_spec *spec = codec->spec;
+-	int err, i;
 -
 -	err = snd_hda_gen_build_controls(codec);
 -	if (err < 0)
@@ -159,39 +175,134 @@ index b7339cb5c45b..75ba66eb4ccd 100644
 -	if (err < 0)
 -		return err;
 -
+-	spec->mixers[spec->num_mixers++] = via_pin_power_ctl_enum;
+-
+-	for (i = 0; i < spec->num_mixers; i++) {
+-		err = snd_hda_add_new_ctls(codec, spec->mixers[i]);
+-		if (err < 0)
+-			return err;
+-	}
+-
 -	return 0;
 -}
 -
- static int cx_auto_init(struct hda_codec *codec)
- {
- 	struct conexant_spec *spec = codec->spec;
-@@ -234,7 +200,7 @@ static void cx_auto_free(struct hda_codec *codec)
- }
+ static void via_playback_pcm_hook(struct hda_pcm_stream *hinfo,
+ 				  struct hda_codec *codec,
+ 				  struct snd_pcm_substream *substream,
+@@ -481,7 +434,7 @@ static int via_check_power_status(struct hda_codec *codec, hda_nid_t nid)
+ static int via_init(struct hda_codec *codec);
  
- static const struct hda_codec_ops cx_auto_patch_ops = {
--	.build_controls = cx_auto_build_controls,
+ static const struct hda_codec_ops via_patch_ops = {
+-	.build_controls = via_build_controls,
 +	.build_controls = snd_hda_gen_build_controls,
  	.build_pcms = snd_hda_gen_build_pcms,
- 	.init = cx_auto_init,
- 	.reboot_notify = cx_auto_reboot_notify,
-@@ -1033,7 +999,6 @@ static int patch_conexant_auto(struct hda_codec *codec)
- 	codec->spec = spec;
- 	codec->patch_ops = cx_auto_patch_ops;
+ 	.init = via_init,
+ 	.free = via_free,
+@@ -545,16 +498,13 @@ static int vt1708_jack_detect_put(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
  
--	cx_auto_parse_beep(codec);
- 	cx_auto_parse_eapd(codec);
- 	spec->gen.own_eapd_ctl = 1;
- 	if (spec->dynamic_eapd)
-@@ -1093,6 +1058,10 @@ static int patch_conexant_auto(struct hda_codec *codec)
+-static const struct snd_kcontrol_new vt1708_jack_detect_ctl[] = {
+-	{
++static const struct snd_kcontrol_new vt1708_jack_detect_ctl = {
+ 	.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	.name = "Jack Detect",
+ 	.count = 1,
+ 	.info = snd_ctl_boolean_mono_info,
+ 	.get = vt1708_jack_detect_get,
+ 	.put = vt1708_jack_detect_put,
+-	},
+-	{} /* terminator */
+ };
+ 
+ static const struct badness_table via_main_out_badness = {
+@@ -586,12 +536,17 @@ static int via_parse_auto_config(struct hda_codec *codec)
  	if (err < 0)
+ 		return err;
+ 
+-	auto_parse_beep(codec);
+-
+ 	err = snd_hda_gen_parse_auto_config(codec, &spec->gen.autocfg);
+ 	if (err < 0)
+ 		return err;
+ 
++	err = auto_parse_beep(codec);
++	if (err < 0)
++		return err;
++
++	if (!snd_hda_gen_add_kctl(&spec->gen, NULL, &via_pin_power_ctl_enum))
++		return -ENOMEM;
++
+ 	/* disable widget PM at start for compatibility */
+ 	codec->power_save_node = 0;
+ 	spec->gen.power_down_unused = 0;
+@@ -623,7 +578,7 @@ static int vt1708_build_controls(struct hda_codec *codec)
+ 	int err;
+ 	int old_interval = codec->jackpoll_interval;
+ 	codec->jackpoll_interval = msecs_to_jiffies(100);
+-	err = via_build_controls(codec);
++	err = snd_hda_gen_build_controls(codec);
+ 	codec->jackpoll_interval = old_interval;
+ 	return err;
+ }
+@@ -690,7 +645,10 @@ static int patch_vt1708(struct hda_codec *codec)
  		goto error;
  
-+	err = cx_auto_parse_beep(codec);
-+	if (err < 0)
+ 	/* add jack detect on/off control */
+-	spec->mixers[spec->num_mixers++] = vt1708_jack_detect_ctl;
++	if (!snd_hda_gen_add_kctl(&spec->gen, NULL, &vt1708_jack_detect_ctl)) {
++		err = -ENOMEM;
 +		goto error;
-+
- 	/* Some laptops with Conexant chips show stalls in S3 resume,
- 	 * which falls into the single-cmd mode.
- 	 * Better to make reset, then.
++	}
+ 
+ 	spec->init_verbs[spec->num_iverbs++] = vt1708_init_verbs;
+ 
+@@ -967,9 +925,9 @@ static int vt1716s_dmic_put(struct snd_kcontrol *kcontrol,
+ 	return 1;
+ }
+ 
+-static const struct snd_kcontrol_new vt1716s_dmic_mixer[] = {
+-	HDA_CODEC_VOLUME("Digital Mic Capture Volume", 0x22, 0x0, HDA_INPUT),
+-	{
++static const struct snd_kcontrol_new vt1716s_dmic_mixer_vol =
++	HDA_CODEC_VOLUME("Digital Mic Capture Volume", 0x22, 0x0, HDA_INPUT);
++static const struct snd_kcontrol_new vt1716s_dmic_mixer_sw = {
+ 	 .iface = SNDRV_CTL_ELEM_IFACE_MIXER,
+ 	 .name = "Digital Mic Capture Switch",
+ 	 .subdevice = HDA_SUBDEV_NID_FLAG | 0x26,
+@@ -977,16 +935,12 @@ static const struct snd_kcontrol_new vt1716s_dmic_mixer[] = {
+ 	 .info = vt1716s_dmic_info,
+ 	 .get = vt1716s_dmic_get,
+ 	 .put = vt1716s_dmic_put,
+-	 },
+-	{}			/* end */
+ };
+ 
+ 
+ /* mono-out mixer elements */
+-static const struct snd_kcontrol_new vt1716S_mono_out_mixer[] = {
+-	HDA_CODEC_MUTE("Mono Playback Switch", 0x2a, 0x0, HDA_OUTPUT),
+-	{ } /* end */
+-};
++static const struct snd_kcontrol_new vt1716S_mono_out_mixer =
++	HDA_CODEC_MUTE("Mono Playback Switch", 0x2a, 0x0, HDA_OUTPUT);
+ 
+ static const struct hda_verb vt1716S_init_verbs[] = {
+ 	/* Enable Boost Volume backdoor */
+@@ -1019,8 +973,12 @@ static int patch_vt1716S(struct hda_codec *codec)
+ 
+ 	spec->init_verbs[spec->num_iverbs++]  = vt1716S_init_verbs;
+ 
+-	spec->mixers[spec->num_mixers++] = vt1716s_dmic_mixer;
+-	spec->mixers[spec->num_mixers++] = vt1716S_mono_out_mixer;
++	if (!snd_hda_gen_add_kctl(&spec->gen, NULL, &vt1716s_dmic_mixer_vol) ||
++	    !snd_hda_gen_add_kctl(&spec->gen, NULL, &vt1716s_dmic_mixer_sw) ||
++	    !snd_hda_gen_add_kctl(&spec->gen, NULL, &vt1716S_mono_out_mixer)) {
++		err = -ENOMEM;
++		goto error;
++	}
+ 
+ 	return 0;
+ 
 -- 
 2.17.1
