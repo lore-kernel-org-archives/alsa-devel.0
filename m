@@ -1,46 +1,50 @@
-From: Subhashini Rao Beerisetty <subhashbeerisetty@gmail.com>
-Subject: audio samples data flow from user mode to kernel mode
-Date: Sat, 23 Jun 2018 16:22:19 +0530
-Message-ID: <CAPY=qRRw0oyJTs0qKHbWdn2wj_iHUzqmBQFPRip08yLU1pdXQw@mail.gmail.com>
+From: o@goosey.org
+Subject: Re: audio samples data flow from user mode to kernel mode
+Date: Sat, 23 Jun 2018 15:11:33 +0400
+Message-ID: <2927881529752293@web10g.yandex.ru>
+References: <CAPY=qRRw0oyJTs0qKHbWdn2wj_iHUzqmBQFPRip08yLU1pdXQw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f195.google.com (mail-qt0-f195.google.com
- [209.85.216.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 3CD3D2673F5
- for <alsa-devel@alsa-project.org>; Sat, 23 Jun 2018 12:52:21 +0200 (CEST)
-Received: by mail-qt0-f195.google.com with SMTP id h5-v6so8147391qtm.13
- for <alsa-devel@alsa-project.org>; Sat, 23 Jun 2018 03:52:20 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, kernelnewbies <kernelnewbies@kernelnewbies.org>
-Cc: linux-sound@vger.kernel.org
+Return-path: <kernelnewbies-bounces@kernelnewbies.org>
+In-Reply-To: <CAPY=qRRw0oyJTs0qKHbWdn2wj_iHUzqmBQFPRip08yLU1pdXQw@mail.gmail.com>
+List-Unsubscribe: <https://lists.kernelnewbies.org/mailman/options/kernelnewbies>,
+ <mailto:kernelnewbies-request@kernelnewbies.org?subject=unsubscribe>
+List-Archive: <http://lists.kernelnewbies.org/pipermail/kernelnewbies/>
+List-Post: <mailto:kernelnewbies@kernelnewbies.org>
+List-Help: <mailto:kernelnewbies-request@kernelnewbies.org?subject=help>
+List-Subscribe: <https://lists.kernelnewbies.org/mailman/listinfo/kernelnewbies>,
+ <mailto:kernelnewbies-request@kernelnewbies.org?subject=subscribe>
+Errors-To: kernelnewbies-bounces@kernelnewbies.org
+To: Subhashini Rao Beerisetty <subhashbeerisetty@gmail.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, kernelnewbies <kernelnewbies@kernelnewbies.org>
+Cc: "linux-sound@vger.kernel.org" <linux-sound@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gQWxsLAoKCgpJ4oCZbSB0cnlpbmcgdG8gdW5kZXJzdGFuZCBob3cgYXVkaW8gc2FtcGxl
-cyB0cmFuc2ZlcnJlZCBiZXR3ZWVuIHVzZXIgbW9kZSB0bwprZXJuZWwgbW9kZSBkdXJpbmcgcGxh
-eWJhY2sgYW5kIGNhcHR1cmUuIEnigJltIHVzaW5nIGFwbGF5ICYgYXJlY29yZCBhbHNhCnV0aWxp
-dGllcyBmb3IgcGxheWJhY2sgYW5kIGNhcHR1cmUuCgoKCkxldCB1cyB0YWtlIGEgUENNIHdhdiBm
-aWxlIG9mIHNhbXBsZSByYXRlIDQ4MDAwIGFuZCBpdCBoYXMgYSB0b3RhbCBudW1iZXIKb2Ygc2Ft
-cGxlcyA0ODAwMDAgKEFwcHJveC5EdXJhdGlvbiBpbiBzZWNvbmRzPTEwKS4gU2l6ZSBvZiBlYWNo
-IHNhbXBsZSBpcyA4CmJ5dGVzKHR3byBjaGFubmVscykuIEFmdGVyIGludm9jYXRpb24gb2YgYXBs
-YXkgZnJvbSB1c2VyIG1vZGUsIGhvdyBkb2VzCnRoZXNlIGF1ZGlvIHNhbXBsZXMgZ2V0cyBjb3Bp
-ZWQgdG8ga2VybmVsIG1vZGU/IENhbiBzb21lb25lIGV4cGxhaW4gbWUgb24KdGhpcz8KCgoKSXMg
-aXQgcG9zc2libGUgdG8gY2FwdHVyZSB0aGUgdGltZXN0YW1wcyBmb3IgdGhlIGZpcnN0IGFuZCBs
-YXN0IGF1ZGlvCnNhbXBsZXMgdGhhdCBhcnJpdmUgYXQgdGhlIGRyaXZlciBsZXZlbD8KCgoKQ2Fu
-IEkgY29uc2lkZXIgdGhlIC50cmlnZ2VyKGZvciBwbGF5YmFjayAmIGNhcHR1cmUpIGNhbGxiYWNr
-IGluClNORFJWX1BDTV9UUklHR0VSX1NUQVJUICBjYXNlIGlzIHRpbWVzdGFtcCBmb3IgdGhlIGZp
-cnN0IGF1ZGlvIHNhbXBsZT8KCgoKU2ltaWxhcmx5IGRvZXMgLnRyaWdnZXIgY2FsbGJhY2tzIFNO
-RFJWX1BDTV9UUklHR0VSX1NUT1AgZ2l2ZXMgdGhlIGxhc3QKYXVkaW8gc2FtcGxlIHRpbWVzdGFt
-cD8KCgoKVGhhbmtzLApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
-aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
-ZWwK
+CgoyMy4wNi4yMDE4LCAxNDo1MiwgIlN1Ymhhc2hpbmkgUmFvIEJlZXJpc2V0dHkiIDxzdWJoYXNo
+YmVlcmlzZXR0eUBnbWFpbC5jb20+Ogo+IEhlbGxvIEFsbCwKCkhlbGxvLAoKCj4gSeKAmW0gdHJ5
+aW5nIHRvIHVuZGVyc3RhbmQgaG93IGF1ZGlvIHNhbXBsZXMgdHJhbnNmZXJyZWQgYmV0d2VlbiB1
+c2VyIG1vZGUgdG8ga2VybmVsIG1vZGUgZHVyaW5nIHBsYXliYWNrIGFuZCBjYXB0dXJlLiBJ4oCZ
+bSB1c2luZyBhcGxheSAmIGFyZWNvcmQgYWxzYSB1dGlsaXRpZXMgZm9yIHBsYXliYWNrIGFuZCBj
+YXB0dXJlLgo+Cj4gTGV0IHVzIHRha2UgYSBQQ00gd2F2IGZpbGUgb2Ygc2FtcGxlIHJhdGUgNDgw
+MDAgYW5kIGl0IGhhcyBhIHRvdGFsIG51bWJlciBvZiBzYW1wbGVzIDQ4MDAwMCAoQXBwcm94LkR1
+cmF0aW9uIGluIHNlY29uZHM9MTApLiBTaXplIG9mIGVhY2ggc2FtcGxlIGlzIDggYnl0ZXModHdv
+IGNoYW5uZWxzKS4gQWZ0ZXIgaW52b2NhdGlvbiBvZiBhcGxheSBmcm9tIHVzZXIgbW9kZSwgaG93
+IGRvZXMgdGhlc2UgYXVkaW8gc2FtcGxlcyBnZXRzIGNvcGllZCB0byBrZXJuZWwgbW9kZT8gQ2Fu
+IHNvbWVvbmUgZXhwbGFpbiBtZSBvbiB0aGlzPwo+Cj4gSXMgaXQgcG9zc2libGUgdG8gY2FwdHVy
+ZSB0aGUgdGltZXN0YW1wcyBmb3IgdGhlIGZpcnN0IGFuZCBsYXN0IGF1ZGlvIHNhbXBsZXMgdGhh
+dCBhcnJpdmUgYXQgdGhlIGRyaXZlciBsZXZlbD8KPgo+IENhbiBJIGNvbnNpZGVyIHRoZSAudHJp
+Z2dlcihmb3IgcGxheWJhY2sgJiBjYXB0dXJlKSBjYWxsYmFjayBpbiBTTkRSVl9QQ01fVFJJR0dF
+Ul9TVEFSVMKgIGNhc2UgaXMgdGltZXN0YW1wIGZvciB0aGUgZmlyc3QgYXVkaW8gc2FtcGxlPwo+
+Cj4gU2ltaWxhcmx5IGRvZXMgLnRyaWdnZXIgY2FsbGJhY2tzIFNORFJWX1BDTV9UUklHR0VSX1NU
+T1AgZ2l2ZXMgdGhlIGxhc3QgYXVkaW8gc2FtcGxlIHRpbWVzdGFtcD8KCkkgdGhpbmsgbm8sIGJl
+Y2F1c2UgdGhlIFNORFJWX1BDTV9UUklHR0VSX1NUQVJUIGFuZCBTTkRSVl9QQ01fVFJJR0dFUl9T
+VE9QIGZ1bmN0aW9ucyBvbmx5IHN5c3RlbSBjYWxsIHRvIHRoZSBQQ00gdHJhbnNtaXR0ZWQuClNv
+LCB3aWxsIHdhbnQgdHdvIGRpZmZlcmVudCBmdW5jdGlvbnMgYXMgcGxheWJhY2sgLyBjYXB0dXJl
+IGFuZCB0aGUgbWV0aG9kIGRlcGVuZHMgb24geW91IHVzZSBhbHNhIG9yIHB1bHNlLgoKSSB0aGlu
+ayB5b3Ugd2FudCB0bzoKCnNuZF9teWNoaXBfcGxheWJhY2tfb3BlbgpzbmRfbXljaGlwX3BsYXli
+YWNrX2Nsb3NlCgpzbmRfbXljaGlwX2NhcHR1cmVfb3BlbgpzbmRfbXljaGlwX2NhcHR1cmVfY2xv
+c2UKClRyaWdnZXIgZnVuY3MgdGltZXMgYXJlIG5vdCByZWFsIHBsYXliYWNrIG9yIGNhcHR1cmUg
+dGltZS1zdGFtcHMuCgpSZWdhcmRzCgpPemd1cgoKPiBUaGFua3MsCgpfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpLZXJuZWxuZXdiaWVzIG1haWxpbmcgbGlz
+dApLZXJuZWxuZXdiaWVzQGtlcm5lbG5ld2JpZXMub3JnCmh0dHBzOi8vbGlzdHMua2VybmVsbmV3
+Ymllcy5vcmcvbWFpbG1hbi9saXN0aW5mby9rZXJuZWxuZXdiaWVzCg==
