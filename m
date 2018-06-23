@@ -1,21 +1,17 @@
-From: Dennis Mungai <dmngaie@gmail.com>
-Subject: Re: The SPDIF light on the Eurocom Q6 (Clevo
- P95xER-series) is always on
-Date: Sat, 23 Jun 2018 03:54:09 +0300
-Message-ID: <CAKKYfmEJk0jsZn2yMvpzpUmwsYXJt7cLfyj7KwACkr3+qRGxng@mail.gmail.com>
-References: <CAKKYfmGwTxx2pArezdg7mdmH31-S+K0vP=67A+7T66Rg584hkQ@mail.gmail.com>
- <s5h602a3of2.wl-tiwai@suse.de>
+From: Subhashini Rao Beerisetty <subhashbeerisetty@gmail.com>
+Subject: audio samples data flow from user mode to kernel mode
+Date: Sat, 23 Jun 2018 16:22:19 +0530
+Message-ID: <CAPY=qRRw0oyJTs0qKHbWdn2wj_iHUzqmBQFPRip08yLU1pdXQw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f196.google.com (mail-io0-f196.google.com
- [209.85.223.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 230192670D7
- for <alsa-devel@alsa-project.org>; Sat, 23 Jun 2018 02:54:51 +0200 (CEST)
-Received: by mail-io0-f196.google.com with SMTP id r24-v6so7626701ioh.9
- for <alsa-devel@alsa-project.org>; Fri, 22 Jun 2018 17:54:51 -0700 (PDT)
-In-Reply-To: <s5h602a3of2.wl-tiwai@suse.de>
+Received: from mail-qt0-f195.google.com (mail-qt0-f195.google.com
+ [209.85.216.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CD3D2673F5
+ for <alsa-devel@alsa-project.org>; Sat, 23 Jun 2018 12:52:21 +0200 (CEST)
+Received: by mail-qt0-f195.google.com with SMTP id h5-v6so8147391qtm.13
+ for <alsa-devel@alsa-project.org>; Sat, 23 Jun 2018 03:52:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,65 +21,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, kernelnewbies <kernelnewbies@kernelnewbies.org>
+Cc: linux-sound@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi,
-
-Running amixer -c0 cset iface=mixer,name='IEC958 Playback Switch',index=16
-off turns off the SPDIF light.
-
-If I may ask, with this model, the primary sound card shows up as the
-ALC1120:
-
-cat /proc/asound/car*/co* |  grep Codec
-Codec: Realtek ALC1220
-Codec: Intel Kabylake HDMI
-Codec: Nvidia GPU 83 HDMI/DP
-
-Would a model override via:
-
-options snd-hda-intel model={model_name}
-
-in /etc/modprobe.d/alsa-base.conf using a model name from
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git/tree/Documentation/sound/hd-audio/models.rst
-be applied to work around the issue above?
-
-Also, does turning off the SPDIF light as shown above disable SDPIF output?
-
-Regards,
-
-Dennis.
-
-
-
-
-
-On 22 June 2018 at 17:07, Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Fri, 22 Jun 2018 01:29:33 +0200,
-> Dennis Mungai wrote:
-> >
-> > Hello there,
-> >
-> > As stated in the subject, the SPDIF light on the machine is always on,
-> and
-> > this is only when I boot into Linux.
-> >
-> > Output from alsa-info:
-> > http://www.alsa-project.org/db/?f=29b57d6465130b92dd70360150aad5
-> 28cfb85f92
-> >
-> > I can get both the internal audio + headphone jack to work by editing
-> > /usr/share/pulseaudio/alsa-mixer/paths/iec958-stereo-output.conf and
-> adding:
->
-> Try to run like:
->   amixer -c0 cset iface=mixer,name='IEC958 Playback Switch',index=16 off
->
-> Does this turn off the SPDIF light?
->
->
-> Takashi
->
+SGVsbG8gQWxsLAoKCgpJ4oCZbSB0cnlpbmcgdG8gdW5kZXJzdGFuZCBob3cgYXVkaW8gc2FtcGxl
+cyB0cmFuc2ZlcnJlZCBiZXR3ZWVuIHVzZXIgbW9kZSB0bwprZXJuZWwgbW9kZSBkdXJpbmcgcGxh
+eWJhY2sgYW5kIGNhcHR1cmUuIEnigJltIHVzaW5nIGFwbGF5ICYgYXJlY29yZCBhbHNhCnV0aWxp
+dGllcyBmb3IgcGxheWJhY2sgYW5kIGNhcHR1cmUuCgoKCkxldCB1cyB0YWtlIGEgUENNIHdhdiBm
+aWxlIG9mIHNhbXBsZSByYXRlIDQ4MDAwIGFuZCBpdCBoYXMgYSB0b3RhbCBudW1iZXIKb2Ygc2Ft
+cGxlcyA0ODAwMDAgKEFwcHJveC5EdXJhdGlvbiBpbiBzZWNvbmRzPTEwKS4gU2l6ZSBvZiBlYWNo
+IHNhbXBsZSBpcyA4CmJ5dGVzKHR3byBjaGFubmVscykuIEFmdGVyIGludm9jYXRpb24gb2YgYXBs
+YXkgZnJvbSB1c2VyIG1vZGUsIGhvdyBkb2VzCnRoZXNlIGF1ZGlvIHNhbXBsZXMgZ2V0cyBjb3Bp
+ZWQgdG8ga2VybmVsIG1vZGU/IENhbiBzb21lb25lIGV4cGxhaW4gbWUgb24KdGhpcz8KCgoKSXMg
+aXQgcG9zc2libGUgdG8gY2FwdHVyZSB0aGUgdGltZXN0YW1wcyBmb3IgdGhlIGZpcnN0IGFuZCBs
+YXN0IGF1ZGlvCnNhbXBsZXMgdGhhdCBhcnJpdmUgYXQgdGhlIGRyaXZlciBsZXZlbD8KCgoKQ2Fu
+IEkgY29uc2lkZXIgdGhlIC50cmlnZ2VyKGZvciBwbGF5YmFjayAmIGNhcHR1cmUpIGNhbGxiYWNr
+IGluClNORFJWX1BDTV9UUklHR0VSX1NUQVJUICBjYXNlIGlzIHRpbWVzdGFtcCBmb3IgdGhlIGZp
+cnN0IGF1ZGlvIHNhbXBsZT8KCgoKU2ltaWxhcmx5IGRvZXMgLnRyaWdnZXIgY2FsbGJhY2tzIFNO
+RFJWX1BDTV9UUklHR0VSX1NUT1AgZ2l2ZXMgdGhlIGxhc3QKYXVkaW8gc2FtcGxlIHRpbWVzdGFt
+cD8KCgoKVGhhbmtzLApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcK
+aHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2
+ZWwK
