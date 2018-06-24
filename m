@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 6/9] ASoC: Intel: bytcr_rt5651: Fix DMIC map
-	headsetmic mapping
-Date: Sun, 24 Jun 2018 16:06:31 +0200
-Message-ID: <20180624140634.16835-7-hdegoede@redhat.com>
+Subject: [PATCH 7/9] ASoC: Intel: bytcr_rt5651: Simplify card
+	long-name
+Date: Sun, 24 Jun 2018 16:06:32 +0200
+Message-ID: <20180624140634.16835-8-hdegoede@redhat.com>
 References: <20180624140634.16835-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 4CB36267716
- for <alsa-devel@alsa-project.org>; Sun, 24 Jun 2018 16:06:48 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E45C267716
+ for <alsa-devel@alsa-project.org>; Sun, 24 Jun 2018 16:06:49 +0200 (CEST)
 In-Reply-To: <20180624140634.16835-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,41 +25,54 @@ To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-The initial bytcr_rt5651 machine driver commit mapped IN2 as the headset
-mic. In retrospect this is not correct as all known boards have the headset
-mic on IN3.
+Now that the headset-mic is always IN3 there is no reason to have
+the headset-mic mapping in the long-name.
 
-This commit fixes the original DMIC mapping to correctly have the headset
-mic on IN3.
+This commit simplifies the long name to "bytcr-rt5651-<intmic-map>-mic".
+
+We can safely do this without causing regressions (UCM profile not found
+due to the longname change) as the UCM profiles are not in upstream
+alsa-lib yet.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 70067e31a33e..4499960e1c21 100644
+index 4499960e1c21..45a11799c008 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -238,9 +238,9 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
- };
+@@ -683,7 +683,7 @@ static struct snd_soc_card byt_rt5651_card = {
+ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+ static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+-static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-spk-*-mic" */
++static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic" */
  
- static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic_map[] = {
--	{"IN2P", NULL, "Headset Mic"},
- 	{"DMIC L1", NULL, "Internal Mic"},
- 	{"DMIC R1", NULL, "Internal Mic"},
-+	{"IN3P", NULL, "Headset Mic"},
- };
+ static bool is_valleyview(void)
+ {
+@@ -704,8 +704,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
  
- static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_map[] = {
-@@ -705,7 +705,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
  static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  {
- 	const char * const intmic_name[] = { "dmic", "in1", "in12" };
--	const char * const hsmic_name[] = { "in2", "in3", "in3" };
-+	const char * const hsmic_name[] = { "in3", "in3", "in3" };
+-	const char * const intmic_name[] = { "dmic", "in1", "in12" };
+-	const char * const hsmic_name[] = { "in3", "in3", "in3" };
++	const char * const mic_name[] = { "dmic", "in1", "in12" };
  	struct byt_rt5651_private *priv;
  	struct snd_soc_acpi_mach *mach;
  	const char *i2c_name = NULL;
+@@ -852,9 +851,8 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
+-		 "bytcr-rt5651-%s-intmic-%s-hsmic",
+-		 intmic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
+-		 hsmic_name[BYT_RT5651_MAP(byt_rt5651_quirk)]);
++		 "bytcr-rt5651-%s-mic",
++		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)]);
+ 	byt_rt5651_card.long_name = byt_rt5651_long_name;
+ 
+ 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5651_card);
 -- 
 2.17.1
