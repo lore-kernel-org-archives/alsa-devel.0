@@ -1,145 +1,102 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH 2/2] slimbus: ngd: add stream support
-Date: Mon, 25 Jun 2018 10:13:06 +0530
-Message-ID: <20180625044306.GA2404@vkoul-mobl>
-References: <20180621134009.27116-1-srinivas.kandagatla@linaro.org>
- <20180621134009.27116-3-srinivas.kandagatla@linaro.org>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: Re: [PATCH v6 1/3] ASoC: Add initial support for
+ multiple CPU DAIs
+Date: Mon, 25 Jun 2018 10:20:00 +0530
+Message-ID: <20180625045000.GA15119@snc-desk>
+References: <1529492057-32627-1-git-send-email-shreyas.nc@intel.com>
+ <1529492057-32627-2-git-send-email-shreyas.nc@intel.com>
+ <d6b2b5a1-a714-e72c-8012-52a40e4e9447@linux.intel.com>
+ <20180622041437.GP3116@snc-desk>
+ <dffba216-f4ff-4ec6-24f0-f9c7bbdf4b68@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id D985E2673F5
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 06:51:31 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20180621134009.27116-3-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: gregkh@linuxfoundation.org, broonie@kernel.org, sdharia@quicinc.com, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org, ctatlor97@gmail.com
+In-Reply-To: <dffba216-f4ff-4ec6-24f0-f9c7bbdf4b68@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, patches.audio@intel.com, liam.r.girdwood@linux.intel.com, Vinod Koul <vkoul@kernel.org>, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21-06-18, 14:40, Srinivas Kandagatla wrote:
+On Fri, Jun 22, 2018 at 10:13:28AM -0500, Pierre-Louis Bossart wrote:
+> 
+> >>>+static int snd_soc_init_single_cpu_dai(struct snd_soc_card *card,
+> >>>+				   struct snd_soc_dai_link *dai_link)
+> >>>+{
+> >>>+	if (dai_link->cpu_name || dai_link->cpu_of_node ||
+> >>>+					dai_link->cpu_dai_name) {
+> >>>+		dai_link->num_cpu_dai = 1;
+> >>>+		dai_link->cpu_dai = devm_kzalloc(card->dev,
+> >>>+				sizeof(struct snd_soc_dai_link_component),
+> >>>+				GFP_KERNEL);
+> >>>+
+> >>>+		if (!dai_link->cpu_dai)
+> >>>+			return -ENOMEM;
+> >>>+
+> >>>+		dai_link->cpu_dai[0].name = dai_link->cpu_name;
+> >>>+		dai_link->cpu_dai[0].of_node = dai_link->cpu_of_node;
+> >>>+		dai_link->cpu_dai[0].dai_name = dai_link->cpu_dai_name;
+> >>Question: is cpu_dai[i].of_node defined for i>0 in the multi cpu_dai case?
+> >>
+> >
+> >Yes, it should be defined.
+> 
+> I have limited understanding of how cpu_of_node would be handled and if
+> there is any guidance for DT folks on how to deal with multiple cpu_dais.
+> 
 
-> +	if (txn->mt == SLIM_MSG_MT_CORE &&
-> +		(txn->mc == SLIM_MSG_MC_CONNECT_SOURCE ||
-> +		txn->mc == SLIM_MSG_MC_CONNECT_SINK ||
-> +		txn->mc == SLIM_MSG_MC_DISCONNECT_PORT)) {
-> +
-> +		txn->mt = SLIM_MSG_MT_DEST_REFERRED_USER;
-> +		if (txn->mc == SLIM_MSG_MC_CONNECT_SOURCE)
-> +			txn->mc = SLIM_USR_MC_CONNECT_SRC;
-> +		else if (txn->mc == SLIM_MSG_MC_CONNECT_SINK)
-> +			txn->mc = SLIM_USR_MC_CONNECT_SINK;
-> +		else if (txn->mc == SLIM_MSG_MC_DISCONNECT_PORT)
-> +			txn->mc = SLIM_USR_MC_DISCONNECT_PORT;
+>From what I could gather, it looks like we need not add additional code.
+But, my understanding of DT is pretty limited as well. Vinod, Liam,  can you help us
+here?
 
-How about a switch case for this
+> >
+> >>>@@ -1644,7 +1751,7 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+> >>>  	unsigned int dai_fmt)
+> >>>  {
+> >>>  	struct snd_soc_dai **codec_dais = rtd->codec_dais;
+> >>>-	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+> >>>+	struct snd_soc_dai **cpu_dais = rtd->cpu_dais;
+> >>>  	unsigned int i;
+> >>>  	int ret;
+> >>>@@ -1659,35 +1766,44 @@ int snd_soc_runtime_set_dai_fmt(struct snd_soc_pcm_runtime *rtd,
+> >>>  		}
+> >>>  	}
+> >>>-	/* Flip the polarity for the "CPU" end of a CODEC<->CODEC link */
+> >>why was this comment removed?
+> >>
+> >
+> >Looks like I messed up resolving ocnflicts while rebase
+> >
+> >>>  	/* the component which has non_legacy_dai_naming is Codec */
+> >>>-	if (cpu_dai->component->driver->non_legacy_dai_naming) {
+> >>Not sure if the code refactoring below makes sense in a codec-codec link,
+> >>you probably wouldn't have multiple cpu_dais then, would you?
+> >
+> >Yes, a valid point. You suggest to leave this piece of code as is ?
+> 
+> Not necessarily. I don't understand how the codec-codec and multi cpu_dais
+> intersect, all I am asking for is a check if this change is needed or not.
+> 
 
-> +		i = 0;
-> +		wbuf[i++] = txn->la;
-> +		la = SLIM_LA_MGR;
-> +		wbuf[i++] = txn->msg->wbuf[0];
-> +		if (txn->mc != SLIM_USR_MC_DISCONNECT_PORT)
-> +			wbuf[i++] = txn->msg->wbuf[1];
-> +
-> +		txn->comp = &done;
-> +		ret = slim_alloc_txn_tid(sctrl, txn);
-> +		if (ret) {
-> +			dev_err(ctrl->dev, "Unable to allocate TID\n");
-> +			return ret;
-> +		}
-> +
-> +		wbuf[i++] = txn->tid;
-> +
-> +		txn->msg->num_bytes = i;
-> +		txn->msg->wbuf = wbuf;
-> +		txn->msg->rbuf = rbuf;
-> +		txn->rl = txn->msg->num_bytes + 4;
-> +	}
-> +
->  	/* HW expects length field to be excluded */
->  	txn->rl--;
->  	puc = (u8 *)pbuf;
-> @@ -830,6 +869,19 @@ static int qcom_slim_ngd_xfer_msg(struct slim_controller *sctrl,
->  		return -ETIMEDOUT;
->  	}
->  
-> +	if (txn->mt == SLIM_MSG_MT_DEST_REFERRED_USER &&
-> +		(txn->mc == SLIM_USR_MC_CONNECT_SRC ||
-> +		 txn->mc == SLIM_USR_MC_CONNECT_SINK ||
-> +		 txn->mc == SLIM_USR_MC_DISCONNECT_PORT)) {
+In soc_link_dai_widgets() which is called from probe_dai_links(),
+we call out that we do not support multi cpu/codec for CODEC - CODEC link.
+All the operation there are done only on single CPU DAI/Codec DAI.
 
-how about precalculate this check and use:
-        bool something = txn->mt == SLIM_MSG_MT_DEST_REFERRED_USER &&
-                              txn->mc == SLIM_USR_MC_CONNECT_SRC ||
-                              txn->mc == SLIM_USR_MC_CONNECT_SINK ||
-                              txn->mc == SLIM_USR_MC_DISCONNECT_PORT;
+But, in this function snd_soc_dai_set_fmt() is set on all Codec DAIs. So,
+for sake of consistency we can do it for CPU DAIs too.
 
-and then use in this case and previous one, make code better to read
+--Shreyas
 
-        if (something) {
-> +		timeout = wait_for_completion_timeout(&done, HZ);
-> +		if (!timeout) {
-> +			dev_err(sctrl->dev, "TX timed out:MC:0x%x,mt:0x%x",
-> +				txn->mc, txn->mt);
-> +			return -ETIMEDOUT;
-> +		}
-> +
-> +	}
-> +
-
-[...]
-
-> +		struct slim_port *port = &rt->ports[i];
-> +
-> +		if (txn.msg->num_bytes == 0) {
-> +			int seg_interval = SLIM_SLOTS_PER_SUPERFRAME/rt->ratem;
-> +			int exp;
-> +
-> +			wbuf[txn.msg->num_bytes++] = sdev->laddr;
-> +			wbuf[txn.msg->num_bytes] = rt->bps >> 2 |
-> +						   (port->ch.aux_fmt << 6);
-> +
-> +			/* Data channel segment interval not multiple of 3 */
-> +			exp = seg_interval % 3;
-> +			if (exp)
-> +				wbuf[txn.msg->num_bytes] |= BIT(5);
-> +
-> +			txn.msg->num_bytes++;
-> +			wbuf[txn.msg->num_bytes++] = exp << 4 | rt->prot;
-> +
-> +			if (rt->prot == SLIM_PROTO_ISO)
-> +				wbuf[txn.msg->num_bytes++] =
-> +						port->ch.prrate |
-> +						SLIM_CHANNEL_CONTENT_FL;
-> +			else
-> +				wbuf[txn.msg->num_bytes++] =  port->ch.prrate;
-> +
-> +			ret = slim_alloc_txn_tid(ctrl, &txn);
-> +			if (ret) {
-> +				dev_err(&sdev->dev, "Fail to allocate TID\n");
-> +				return -ENXIO;
-> +			}
-> +			wbuf[txn.msg->num_bytes++] = txn.tid;
-> +		}
-> +		wbuf[txn.msg->num_bytes++] = port->ch.id;
-> +	}
-> +
-> +	txn.mc = SLIM_USR_MC_DEF_ACT_CHAN;
-> +	txn.rl = txn.msg->num_bytes + 4;
-> +	ret = qcom_slim_ngd_xfer_msg_sync(ctrl, &txn);
-> +	if (ret) {
-> +		slim_free_txn_tid(ctrl, &txn);
-> +		dev_err(&sdev->dev, "TX timed out:MC:0x%x,mt:0x%x", txn.mc,
-> +				txn.mt);
-> +		return ret;
-> +	}
-> +
-> +	txn.mc = SLIM_USR_MC_RECONFIG_NOW;
-> +	txn.msg->num_bytes = 2;
-> +	wbuf[1] = sdev->laddr;
-> +	txn.rl = txn.msg->num_bytes + 4;
-> +
-> +	ret = slim_alloc_txn_tid(ctrl, &txn);
-> +	if (ret) {
-
-what about tid allocated in previous loop.. they are not freed here on
-error and seems to be overwritten by this allocation.
 -- 
-~Vinod
