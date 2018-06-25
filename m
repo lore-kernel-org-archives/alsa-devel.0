@@ -1,19 +1,18 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 05/11] ASoC: qdsp6: q6asm: use
+Subject: [PATCH 06/11] ASoC: qdsp6: q6afe: use
 	of_platform_populate/depopulate()
-Date: Mon, 25 Jun 2018 15:31:09 +0100
-Message-ID: <20180625143115.8346-6-srinivas.kandagatla@linaro.org>
+Date: Mon, 25 Jun 2018 15:31:10 +0100
+Message-ID: <20180625143115.8346-7-srinivas.kandagatla@linaro.org>
 References: <20180625143115.8346-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id A723D2675C8
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 16:33:52 +0200 (CEST)
-Received: by mail-wr0-f195.google.com with SMTP id c13-v6so3979748wrq.2
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 07:33:52 -0700 (PDT)
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF67B2677FC
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 16:33:53 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id x6-v6so9527122wmc.3
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 07:33:53 -0700 (PDT)
 In-Reply-To: <20180625143115.8346-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,40 +33,37 @@ of_platform_device_create()/destroy().
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6asm.c | 17 ++---------------
- 1 file changed, 2 insertions(+), 15 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 530852385cad..2b2c7233bb5f 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -174,10 +174,8 @@ struct q6asm {
- 	struct device *dev;
- 	struct q6core_svc_api_info ainfo;
- 	wait_queue_head_t mem_wait;
--	struct platform_device *pcmdev;
- 	spinlock_t slock;
- 	struct audio_client *session[MAX_SESSIONS + 1];
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 01f43218984b..621b67b34db9 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -316,7 +316,6 @@ struct q6afe {
+ 	struct mutex lock;
+ 	struct list_head port_list;
+ 	spinlock_t port_list_lock;
 -	struct platform_device *pdev_dais;
  };
  
- struct audio_client {
-@@ -1344,7 +1342,6 @@ EXPORT_SYMBOL_GPL(q6asm_cmd_nowait);
- static int q6asm_probe(struct apr_device *adev)
+ struct afe_port_cmd_device_start {
+@@ -1438,7 +1437,6 @@ static int q6afe_probe(struct apr_device *adev)
  {
+ 	struct q6afe *afe;
  	struct device *dev = &adev->dev;
 -	struct device_node *dais_np;
- 	struct q6asm *q6asm;
  
- 	q6asm = devm_kzalloc(dev, sizeof(*q6asm), GFP_KERNEL);
-@@ -1359,22 +1356,12 @@ static int q6asm_probe(struct apr_device *adev)
- 	spin_lock_init(&q6asm->slock);
- 	dev_set_drvdata(dev, q6asm);
+ 	afe = devm_kzalloc(dev, sizeof(*afe), GFP_KERNEL);
+ 	if (!afe)
+@@ -1453,22 +1451,12 @@ static int q6afe_probe(struct apr_device *adev)
+ 
+ 	dev_set_drvdata(dev, afe);
  
 -	dais_np = of_get_child_by_name(dev->of_node, "dais");
 -	if (dais_np) {
--		q6asm->pdev_dais = of_platform_device_create(dais_np,
--							   "q6asm-dai", dev);
+-		afe->pdev_dais = of_platform_device_create(dais_np,
+-							   "q6afe-dai", dev);
 -		of_node_put(dais_np);
 -	}
 -
@@ -75,12 +71,12 @@ index 530852385cad..2b2c7233bb5f 100644
 +	return of_platform_populate(dev->of_node, NULL, NULL, dev);
  }
  
- static int q6asm_remove(struct apr_device *adev)
+ static int q6afe_remove(struct apr_device *adev)
  {
--	struct q6asm *q6asm = dev_get_drvdata(&adev->dev);
+-	struct q6afe *afe = dev_get_drvdata(&adev->dev);
 -
--	if (q6asm->pdev_dais)
--		of_platform_device_destroy(&q6asm->pdev_dais->dev, NULL);
+-	if (afe->pdev_dais)
+-		of_platform_device_destroy(&afe->pdev_dais->dev, NULL);
 +	of_platform_depopulate(&adev->dev);
  
  	return 0;
