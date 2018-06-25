@@ -1,17 +1,20 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH] ASoC: dpcm: improve runtime update
-	predictability
-Date: Mon, 25 Jun 2018 10:29:23 +0200
-Message-ID: <20180625082923.25636-1-jbrunet@baylibre.com>
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Power down links before
+ turning off display audio power
+Date: Mon, 25 Jun 2018 14:23:49 +0530
+Message-ID: <20180625085348.GA30506@intel.com>
+References: <1529659551-22902-1-git-send-email-sriramx.periyasamy@intel.com>
+ <a1991293-7d83-8aa8-6a2d-85d06fad7adb@linux.intel.com>
+ <s5htvpuvj3p.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 70A7A2675C8
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 10:29:32 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id u18-v6so4442305wmc.1
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 01:29:32 -0700 (PDT)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 368862675C8
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 11:05:30 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5htvpuvj3p.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,242 +24,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-As it is, dpcm_runtime_update() performs the old path and new path
-update of a frontend before going on to the next frontend DAI.
-Depending the order of the FEs within the rtd list, the result of
-the update might be different.
+On Fri, Jun 22, 2018 at 07:14:50PM +0200, Takashi Iwai wrote:
+> On Fri, 22 Jun 2018 18:42:24 +0200,
+> Pierre-Louis Bossart wrote:
+> > 
+> > On 6/22/18 4:25 AM, Sriram Periyasamy wrote:
+> > > On certain platforms, Display HDMI HDA codec was not going to sleep state
+> > > after the use when links are powered down after turning off the display
+> > > power. As per the HW recommendation, links are powered down before turning
+> > > off the display power to ensure that the codec goes to sleep state.
+> > 
+> > The change looks ok, I am still not clear on display power
+> > management. snd_hdac_display_power is called both from hdac_hdmi.c and
+> > skl.c in the respective probe/suspend/resume routines, wondering if
+> > this is redundant or intentional.
+> 
+> Yeah, it looks like that skl.c keeps the display power on by assuming
+> that it's turned off by the codec driver, but it doesn't happen
+> actually.  I also find it fishy there...
+> 
 
-For example:
- * Frontend A connected to backend C, with a 48kHz playback
- * Frontend B connected to backend D, with a 44.1kHz playback
- * FE A appears before FE B in the rtd list of the card.
+snd_hdac_display_power is called intentionally to ensure that the codec is
+powered up before any communication is initiated from either skl.c or
+hdac_hdmi.c.
 
-If we reparent BE C to FE B (disconnecting BE D):
-* old path update of FE A will run first, and BE C will get hw_free()
-  and shutdown()
-* new path update of FE B will run after and BE C, which is stopped,
-  so it will be configured at 44.1kHz, as expected
-
-If we reparent BE D to FE A (disconnecting BE C):
-* new path update of FE A will run first but since BE D is still running
-  at 44.1kHz, it won't be reconfigured (no call to startup() or
-  hw_params())
-* old path update of FE B runs after, nothing happens
-* In this case, we end up with a BE playing at 44.1kHz a stream which is
-  supposed to be played at 48Khz (too slow)
-
-To improve this situation, this patch performs all the FE old paths update
-before going on to update the new paths. With this, the result should
-no longer depend on the order of the FE within the card rtd list.
-
-Please note that there might be a small performance penalty since
-dpcm_process_paths() is called twice per stream direction.
-
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/soc-pcm.c | 165 +++++++++++++++++++++++++++-------------------------
- 1 file changed, 86 insertions(+), 79 deletions(-)
-
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 5e7ae47a9658..5c2534414478 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2543,106 +2543,113 @@ static int dpcm_run_old_update(struct snd_soc_pcm_runtime *fe, int stream)
- 	return ret;
- }
- 
--/* Called by DAPM mixer/mux changes to update audio routing between PCMs and
-- * any DAI links.
-- */
--int soc_dpcm_runtime_update(struct snd_soc_card *card)
-+int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
- {
--	struct snd_soc_pcm_runtime *fe;
--	int old, new, paths;
-+	struct snd_soc_dapm_widget_list *list;
-+	int count, paths;
- 
--	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
--	list_for_each_entry(fe, &card->rtd_list, list) {
--		struct snd_soc_dapm_widget_list *list;
-+	if (!fe->dai_link->dynamic)
-+		return 0;
- 
--		/* make sure link is FE */
--		if (!fe->dai_link->dynamic)
--			continue;
-+	/* only check active links */
-+	if (!fe->cpu_dai->active)
-+		return 0;
- 
--		/* only check active links */
--		if (!fe->cpu_dai->active)
--			continue;
-+	/* DAPM sync will call this to update DSP paths */
-+	dev_dbg(fe->dev, "ASoC: DPCM %s runtime update for FE %s\n",
-+		new ? "new" : "old", fe->dai_link->name);
- 
--		/* DAPM sync will call this to update DSP paths */
--		dev_dbg(fe->dev, "ASoC: DPCM runtime update for FE %s\n",
--			fe->dai_link->name);
-+	/* skip if FE doesn't have playback capability */
-+	if (!fe->cpu_dai->driver->playback.channels_min ||
-+	    !fe->codec_dai->driver->playback.channels_min)
-+		goto capture;
- 
--		/* skip if FE doesn't have playback capability */
--		if (!fe->cpu_dai->driver->playback.channels_min
--		    || !fe->codec_dai->driver->playback.channels_min)
--			goto capture;
--
--		/* skip if FE isn't currently playing */
--		if (!fe->cpu_dai->playback_active
--		    || !fe->codec_dai->playback_active)
--			goto capture;
--
--		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
--		if (paths < 0) {
--			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
--					fe->dai_link->name,  "playback");
--			mutex_unlock(&card->mutex);
--			return paths;
--		}
-+	/* skip if FE isn't currently playing */
-+	if (!fe->cpu_dai->playback_active || !fe->codec_dai->playback_active)
-+		goto capture;
- 
--		/* update any new playback paths */
--		new = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, 1);
--		if (new) {
--			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
--			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
--			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
--		}
-+	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
-+	if (paths < 0) {
-+		dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
-+			 fe->dai_link->name,  "playback");
-+		return paths;
-+	}
- 
--		/* update any old playback paths */
--		old = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, 0);
--		if (old) {
-+	/* update any playback paths */
-+	count = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, new);
-+	if (count) {
-+		if (new)
-+			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
-+		else
- 			dpcm_run_old_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
--			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
--			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
--		}
- 
--		dpcm_path_put(&list);
-+		dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
-+		dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
-+	}
-+
-+	dpcm_path_put(&list);
-+
- capture:
--		/* skip if FE doesn't have capture capability */
--		if (!fe->cpu_dai->driver->capture.channels_min
--		    || !fe->codec_dai->driver->capture.channels_min)
--			continue;
-+	/* skip if FE doesn't have capture capability */
-+	if (!fe->cpu_dai->driver->capture.channels_min ||
-+	    !fe->codec_dai->driver->capture.channels_min)
-+		return 0;
- 
--		/* skip if FE isn't currently capturing */
--		if (!fe->cpu_dai->capture_active
--		    || !fe->codec_dai->capture_active)
--			continue;
-+	/* skip if FE isn't currently capturing */
-+	if (!fe->cpu_dai->capture_active || !fe->codec_dai->capture_active)
-+		return 0;
- 
--		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
--		if (paths < 0) {
--			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
--					fe->dai_link->name,  "capture");
--			mutex_unlock(&card->mutex);
--			return paths;
--		}
-+	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
-+	if (paths < 0) {
-+		dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
-+			 fe->dai_link->name,  "capture");
-+		return paths;
-+	}
- 
--		/* update any new capture paths */
--		new = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, 1);
--		if (new) {
-+	/* update any old capture paths */
-+	count = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, new);
-+	if (count) {
-+		if (new)
- 			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_CAPTURE);
--			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
--			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
--		}
--
--		/* update any old capture paths */
--		old = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, 0);
--		if (old) {
-+		else
- 			dpcm_run_old_update(fe, SNDRV_PCM_STREAM_CAPTURE);
--			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
--			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
--		}
- 
--		dpcm_path_put(&list);
-+		dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
-+		dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
- 	}
- 
--	mutex_unlock(&card->mutex);
-+	dpcm_path_put(&list);
-+
- 	return 0;
- }
-+
-+/* Called by DAPM mixer/mux changes to update audio routing between PCMs and
-+ * any DAI links.
-+ */
-+int soc_dpcm_runtime_update(struct snd_soc_card *card)
-+{
-+	struct snd_soc_pcm_runtime *fe;
-+	int ret = 0;
-+
-+	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-+	/* shutdown all old paths first */
-+	list_for_each_entry(fe, &card->rtd_list, list) {
-+		ret = soc_dpcm_fe_runtime_update(fe, 0);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	/* bring new paths up */
-+	list_for_each_entry(fe, &card->rtd_list, list) {
-+		ret = soc_dpcm_fe_runtime_update(fe, 1);
-+		if (ret)
-+			goto out;
-+	}
-+
-+out:
-+	mutex_unlock(&card->mutex);
-+	return ret;
-+}
- int soc_dpcm_be_digital_mute(struct snd_soc_pcm_runtime *fe, int mute)
- {
- 	struct snd_soc_dpcm *dpcm;
--- 
-2.14.4
+Thanks,
+Sriram.
