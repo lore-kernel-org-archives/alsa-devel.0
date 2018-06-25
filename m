@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: add generic simple-amplifier
-	support
-Date: Mon, 25 Jun 2018 12:21:44 +0100
-Message-ID: <20180625112144.GB9413@sirena.org.uk>
-References: <1529924777-21136-1-git-send-email-nicveronese@gmail.com>
+Subject: Re: [PATCH v2 1/2] ALSA: ac97: add bus binding for
+	codecs
+Date: Mon, 25 Jun 2018 12:23:30 +0100
+Message-ID: <20180625112330.GD9413@sirena.org.uk>
+References: <20180622192834.7797-1-robert.jarzmik@free.fr>
+ <s5h36xbe1cp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7895185686822350756=="
+Content-Type: multipart/mixed; boundary="===============7630951723015768665=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3ECC52676D8
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 13:21:47 +0200 (CEST)
-In-Reply-To: <1529924777-21136-1-git-send-email-nicveronese@gmail.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D30826777E
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 13:23:37 +0200 (CEST)
+In-Reply-To: <s5h36xbe1cp.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,233 +22,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7895185686822350756==
+--===============7630951723015768665==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
+	protocol="application/pgp-signature"; boundary="3Gf/FFewwPeBMqCJ"
 Content-Disposition: inline
 
 
---gj572EiMnwbLXET9
-Content-Type: text/plain; charset=iso-8859-1
+--3Gf/FFewwPeBMqCJ
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 25, 2018 at 01:06:16PM +0200, Nicol=F2 Veronese wrote:
-> Many boards have speaker amplifier attached on an analog output.
-> Most of them are only managed by a mute or shutdown GPIO.
-> In order to reduce duplicate driver, this patch adds generic/simple-ampli=
-fier.
-
-Copying in Hans who has a machine that needs something like this, not
-deleting context for his benefit.
-
-This looks good to me, one coding style thing below but otherwise the
-main thing I'm thinking is that we might want to add a mono channel as
-well for simplicity when wiring up a system using a mono amplifier.
-That could always be done later though.
-
+On Mon, Jun 25, 2018 at 10:07:02AM +0200, Takashi Iwai wrote:
+> On Fri, 22 Jun 2018 21:28:33 +0200,
+> Robert Jarzmik wrote:
+> >=20
+> > Add the generic ac97 bus binding, especially for ac97 codecs discovered
+> > by ac97 hardware probing.
+> >=20
+> > Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 >=20
-> Signed-off-by: Nicol=F2 Veronese <nicveronese@gmail.com>
-> ---
->  sound/soc/generic/Kconfig            |   5 ++
->  sound/soc/generic/Makefile           |   2 +
->  sound/soc/generic/simple-amplifier.c | 109 +++++++++++++++++++++++++++++=
-++++++
->  3 files changed, 116 insertions(+)
->  create mode 100644 sound/soc/generic/simple-amplifier.c
+> OK, now I applied both patches.
 >=20
-> diff --git a/sound/soc/generic/Kconfig b/sound/soc/generic/Kconfig
-> index c954be0..ace17c3a 100644
-> --- a/sound/soc/generic/Kconfig
-> +++ b/sound/soc/generic/Kconfig
-> @@ -7,6 +7,11 @@ config SND_SIMPLE_CARD
->  	help
->  	  This option enables generic simple sound card support
-> =20
-> +config SND_SIMPLE_AMPLIFIER
-> +	tristate "ASoC Simple Amplifier support"
-> +	help
-> +	  This option enables generic simple amplifier support
-> +
->  config SND_SIMPLE_SCU_CARD
->  	tristate "ASoC Simple SCU sound card support"
->  	depends on OF
-> diff --git a/sound/soc/generic/Makefile b/sound/soc/generic/Makefile
-> index 9dec293..805a746 100644
-> --- a/sound/soc/generic/Makefile
-> +++ b/sound/soc/generic/Makefile
-> @@ -1,12 +1,14 @@
->  # SPDX-License-Identifier: GPL-2.0
->  snd-soc-simple-card-utils-objs	:=3D simple-card-utils.o
->  snd-soc-simple-card-objs	:=3D simple-card.o
-> +snd-soc-simple-amplifier-objs		:=3D simple-amplifier.o
->  snd-soc-simple-scu-card-objs	:=3D simple-scu-card.o
->  snd-soc-audio-graph-card-objs	:=3D audio-graph-card.o
->  snd-soc-audio-graph-scu-card-objs	:=3D audio-graph-scu-card.o
-> =20
->  obj-$(CONFIG_SND_SIMPLE_CARD_UTILS)	+=3D snd-soc-simple-card-utils.o
->  obj-$(CONFIG_SND_SIMPLE_CARD)		+=3D snd-soc-simple-card.o
-> +obj-$(CONFIG_SND_SIMPLE_AMPLIFIER)		+=3D snd-soc-simple-amplifier.o
->  obj-$(CONFIG_SND_SIMPLE_SCU_CARD)	+=3D snd-soc-simple-scu-card.o
->  obj-$(CONFIG_SND_AUDIO_GRAPH_CARD)	+=3D snd-soc-audio-graph-card.o
->  obj-$(CONFIG_SND_AUDIO_GRAPH_SCU_CARD)	+=3D snd-soc-audio-graph-scu-card=
-=2Eo
-> diff --git a/sound/soc/generic/simple-amplifier.c b/sound/soc/generic/sim=
-ple-amplifier.c
-> new file mode 100644
-> index 0000000..e135a43
-> --- /dev/null
-> +++ b/sound/soc/generic/simple-amplifier.c
-> @@ -0,0 +1,109 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// ALSA SoC simple amplifier driver
-> +//
-> +// Copyright 2018
-> +// Author:  Nicol=F2 Veronese <nicveronese@gmail.com>
-> +
-> +#include <linux/module.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/regulator/consumer.h>
-> +
-> +#include <sound/soc.h>
-> +#include <sound/soc-dapm.h>
-> +
-> +/* This struct is used to save the context */
-> +struct simple_amp_data {
-> +	struct device *dev;
-> +	struct regmap *regmap;
+> Mark, if you need these changes, pull topic/ac97-bus branch from my
+> tree.  It's a clean branch from 4.18-rc1.
 
-You don't need a regmap here.
+Thanks!
 
-> +	struct gpio_desc *power_gpio;
-> +};
-> +
-> +static int simple_amp_power_event(struct snd_soc_dapm_widget *widget,
-> +				 struct snd_kcontrol *kctrl, int event)
-> +{
-> +	struct snd_soc_component *c =3D snd_soc_dapm_to_component(widget->dapm);
-> +	struct simple_amp_data *data =3D snd_soc_component_get_drvdata(c);
-> +
-> +	/* Shutdown GPIO */
-> +    if (data->power_gpio)
-> +        gpiod_set_value_cansleep(data->power_gpio, SND_SOC_DAPM_EVENT_ON=
-(event));
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct snd_soc_dapm_widget simple_amp_dapm_widgets[] =3D {
-> +	SND_SOC_DAPM_INPUT("LEFT AMP IN"),
-> +	SND_SOC_DAPM_INPUT("RIGHT AMP IN"),
-> +
-> +	SND_SOC_DAPM_OUTPUT("SPK LEFT"),
-> +	SND_SOC_DAPM_OUTPUT("SPK RIGHT"),
-> +
-> +	SND_SOC_DAPM_REGULATOR_SUPPLY("VCC", 20, 0),
-> +	SND_SOC_DAPM_SPK("MUTE", simple_amp_power_event),
-> +};
-> +
-> +static const struct snd_soc_dapm_route simple_amp_dapm_routes[] =3D {
-> +	{ "MUTE", NULL, "LEFT AMP IN" },
-> +	{ "MUTE", NULL, "RIGHT AMP IN" },
-> +
-> +	{ "SPK LEFT", NULL, "VCC" },
-> +	{ "SPK RIGHT", NULL, "VCC" },
-> +
-> +	{ "SPK LEFT", NULL, "MUTE" },
-> +	{ "SPK RIGHT", NULL, "MUTE" },
-> +};
-> +
-> +static const struct snd_soc_component_driver simple_amp_component_driver=
- =3D {
-> +	.name =3D "simple-amplifier",
-> +	.dapm_widgets =3D simple_amp_dapm_widgets,
-> +	.num_dapm_widgets =3D ARRAY_SIZE(simple_amp_dapm_widgets),
-> +	.dapm_routes =3D simple_amp_dapm_routes,
-> +	.num_dapm_routes =3D ARRAY_SIZE(simple_amp_dapm_routes),
-> +};
-> +
-> +static int asoc_simple_amp_probe(struct platform_device *pdev)
-> +{
-> +	struct simple_amp_data *data;
-> +	struct device *dev =3D &pdev->dev;
-> +	int ret;
-> +
-> +	data =3D devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +	data->dev =3D &pdev->dev;
-> +	platform_set_drvdata(pdev, data);
-> +
-> +	if(of_property_read_bool(pdev->dev.of_node,"shutdown-gpios")) {
-
-Coding style: should be if (
-
-> +		data->power_gpio =3D devm_gpiod_get_optional(&pdev->dev, "shutdown", G=
-PIOD_OUT_LOW);
-> +
-> +		if (IS_ERR(data->power_gpio)) {
-> +			ret =3D PTR_ERR(data->power_gpio);
-> +			dev_err(&pdev->dev, "Failed to get shutdown gpio: %d\n", ret);
-> +			return ret;
-> +		}
-> +	}
-> +
-> +	return devm_snd_soc_register_component(dev,
-> +			&simple_amp_component_driver, NULL, 0);
-> +}
-> +
-> +static const struct of_device_id asoc_simple_of_match[] =3D {
-> +	{ .compatible =3D "simple-audio-amplifier", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, asoc_simple_of_match);
-> +
-> +static struct platform_driver asoc_simple_amp =3D {
-> +	.driver =3D {
-> +		.name =3D "asoc-simple-amplifier",
-> +		.of_match_table =3D of_match_ptr(asoc_simple_of_match),
-> +	},
-> +	.probe =3D asoc_simple_amp_probe,
-> +};
-> +
-> +module_platform_driver(asoc_simple_amp);
-> +
-> +MODULE_LICENSE("GPL v2");
-> +MODULE_DESCRIPTION("ASoC Simple Amplifier");
-> +MODULE_AUTHOR("Nicol=F2 Veronese <nicveronese@gmail.com>");
-> --=20
-> 2.7.4
->=20
-
---gj572EiMnwbLXET9
+--3Gf/FFewwPeBMqCJ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsw0EgACgkQJNaLcl1U
-h9Cwhgf+KMApQgs16jYozz5h7pIZqyTOR9OuXfOKiUJRIn0dY0ji1kFe+5UQyFQH
-rBrjAiI3qO+vM1F+4nHWu6PC49DWQCpaStOY7U6/f5rEOFBh6r+za/ybwrkhrUer
-QAez2I7ARJgSAybjo+27mdiqt8XXB2p7i+LF8lTKopFSEcq+MKUpo/kCk1Bot+VB
-nIrStCjPHRqJprXXPJGHjl4S9ZnE530LgOJB3zXNpn3spsqONGZLplCZDglzT/Qm
-yRcEThDh4P7TOu+DGTWMb1s04C6xuOhI8mwsZT2wADl+Fd2w51WeTr3Jr9ALKqFk
-/Kp5oFJK2j4VFJDfZIgAVsMsQUjjJg==
-=ahSh
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsw0LEACgkQJNaLcl1U
+h9DfrAf9GlxyEFEs2pxqfLQp4kmb6cd1fA5N3twtiLq0KnqFUsIX95MX0ZT37p+V
+cFSoD5v+C+bvhvjeEP0ASkFWqo+C45LsR6yh7nyAzrpahjCaKcWXscx0wh7v/A5+
+gHB4e+kb58vi49pTptg1uMhY7osfqX1UpO11Sw3xK4kUnrTRGrFh2ahxIUbySx9U
+taK4MBGBrEJnstdevxGesPRxuMXcQuv7bG5wUbAFX9e4STQIqVFpKy7pgO99XMzQ
+P8kVQAAxUP6kOf61KsnSfSCHJZAIR0uLNFNU+l1RRCjDOi4BOr/sKnF14jptTXzK
+pRq5FPsDVuOimrbmg/iqP3OPawUHMA==
+=VlxG
 -----END PGP SIGNATURE-----
 
---gj572EiMnwbLXET9--
+--3Gf/FFewwPeBMqCJ--
 
---===============7895185686822350756==
+--===============7630951723015768665==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7895185686822350756==--
+--===============7630951723015768665==--
