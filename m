@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "dmaengine: pxa: use a dma slave map" to the
-	asoc tree
-Date: Mon, 25 Jun 2018 14:15:38 +0100
-Message-ID: <E1fXRLG-00005A-3A@debutante>
-References: <20180524070703.11901-2-robert.jarzmik@free.fr>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH] ASoC: dpcm: improve runtime update
+	predictability
+Date: Mon, 25 Jun 2018 21:39:29 +0800
+Message-ID: <201806251940.hnjUV4rz%fengguang.wu@intel.com>
+References: <20180625082923.25636-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CF3ED2677D3
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 15:15:46 +0200 (CEST)
-In-Reply-To: <20180524070703.11901-2-robert.jarzmik@free.fr>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id C883426720C
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 15:40:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180625082923.25636-1-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,120 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Boris Brezillon <boris.brezillon@free-electrons.com>, alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-ide@vger.kernel.org, Richard Weinberger <richard@nod.at>, linux-mmc@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, Marek Vasut <marek.vasut@gmail.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, linux-mtd@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, netdev@vger.kernel.org, dmaengine@vger.kernel.org, Brian Norris <computersforpeace@gmail.com>, David Woodhouse <dwmw2@infradead.org>, Daniel Mack <daniel@zonque.org>, linux-media@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Hi Jerome,
 
-   dmaengine: pxa: use a dma slave map
+I love your patch! Perhaps something to improve:
 
-has been applied to the asoc tree at
+[auto build test WARNING on asoc/for-next]
+[also build test WARNING on v4.18-rc2 next-20180625]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+url:    https://github.com/0day-ci/linux/commits/Jerome-Brunet/ASoC-dpcm-improve-runtime-update-predictability/20180625-172002
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+sparse warnings: (new ones prefixed by >>)
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+   sound/soc/soc-pcm.c:357:32: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:357:32: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:367:32: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:367:32: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:417:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:417:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:418:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:418:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:419:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:419:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:420:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:420:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:435:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:435:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:436:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:436:28: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:445:24: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:445:24: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:446:24: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:446:24: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:447:24: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:447:24: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:448:24: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:448:24: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1194:39: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1194:39: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1750:41: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1750:41: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1752:41: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1752:41: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1774:36: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1774:36: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1775:36: sparse: expression using sizeof(void)
+   sound/soc/soc-pcm.c:1775:36: sparse: expression using sizeof(void)
+>> sound/soc/soc-pcm.c:2600:5: sparse: symbol 'soc_dpcm_fe_runtime_update' was not declared. Should it be static?
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Please review and possibly fold the followup patch.
 
-Thanks,
-Mark
-
->From 420c0117db25db38b72b6230223f7a976d3070ea Mon Sep 17 00:00:00 2001
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Date: Sun, 17 Jun 2018 19:02:04 +0200
-Subject: [PATCH] dmaengine: pxa: use a dma slave map
-
-In order to remove the specific knowledge of the dma mapping from PXA
-drivers, add a default slave map for pxa architectures.
-
-This won't impact MMP architecture, but is aimed only at all PXA boards.
-
-This is the first step, and once all drivers are converted,
-pxad_filter_fn() will be made static, and the DMA resources removed from
-device.c.
-
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Reported-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Vinod Koul <vkoul@kernel.org>
 ---
- drivers/dma/pxa_dma.c                 | 10 +++++++++-
- include/linux/platform_data/mmp_dma.h |  4 ++++
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/dma/pxa_dma.c b/drivers/dma/pxa_dma.c
-index b53fb618bbf6..9505334f9c6e 100644
---- a/drivers/dma/pxa_dma.c
-+++ b/drivers/dma/pxa_dma.c
-@@ -179,6 +179,8 @@ static unsigned int pxad_drcmr(unsigned int line)
- 	return 0x1000 + line * 4;
- }
- 
-+bool pxad_filter_fn(struct dma_chan *chan, void *param);
-+
- /*
-  * Debug fs
-  */
-@@ -1396,9 +1398,10 @@ static int pxad_probe(struct platform_device *op)
- {
- 	struct pxad_device *pdev;
- 	const struct of_device_id *of_id;
-+	const struct dma_slave_map *slave_map = NULL;
- 	struct mmp_dma_platdata *pdata = dev_get_platdata(&op->dev);
- 	struct resource *iores;
--	int ret, dma_channels = 0, nb_requestors = 0;
-+	int ret, dma_channels = 0, nb_requestors = 0, slave_map_cnt = 0;
- 	const enum dma_slave_buswidth widths =
- 		DMA_SLAVE_BUSWIDTH_1_BYTE   | DMA_SLAVE_BUSWIDTH_2_BYTES |
- 		DMA_SLAVE_BUSWIDTH_4_BYTES;
-@@ -1429,6 +1432,8 @@ static int pxad_probe(struct platform_device *op)
- 	} else if (pdata && pdata->dma_channels) {
- 		dma_channels = pdata->dma_channels;
- 		nb_requestors = pdata->nb_requestors;
-+		slave_map = pdata->slave_map;
-+		slave_map_cnt = pdata->slave_map_cnt;
- 	} else {
- 		dma_channels = 32;	/* default 32 channel */
- 	}
-@@ -1440,6 +1445,9 @@ static int pxad_probe(struct platform_device *op)
- 	pdev->slave.device_prep_dma_memcpy = pxad_prep_memcpy;
- 	pdev->slave.device_prep_slave_sg = pxad_prep_slave_sg;
- 	pdev->slave.device_prep_dma_cyclic = pxad_prep_dma_cyclic;
-+	pdev->slave.filter.map = slave_map;
-+	pdev->slave.filter.mapcnt = slave_map_cnt;
-+	pdev->slave.filter.fn = pxad_filter_fn;
- 
- 	pdev->slave.copy_align = PDMA_ALIGNMENT;
- 	pdev->slave.src_addr_widths = widths;
-diff --git a/include/linux/platform_data/mmp_dma.h b/include/linux/platform_data/mmp_dma.h
-index d1397c8ed94e..6397b9c8149a 100644
---- a/include/linux/platform_data/mmp_dma.h
-+++ b/include/linux/platform_data/mmp_dma.h
-@@ -12,9 +12,13 @@
- #ifndef MMP_DMA_H
- #define MMP_DMA_H
- 
-+struct dma_slave_map;
-+
- struct mmp_dma_platdata {
- 	int dma_channels;
- 	int nb_requestors;
-+	int slave_map_cnt;
-+	const struct dma_slave_map *slave_map;
- };
- 
- #endif /* MMP_DMA_H */
--- 
-2.18.0.rc2
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
