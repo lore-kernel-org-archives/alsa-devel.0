@@ -1,49 +1,97 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
-Date: Mon, 25 Jun 2018 14:07:04 +0100
-Message-ID: <20180625130704.GQ9413@sirena.org.uk>
-References: <20180617170217.24177-1-robert.jarzmik@free.fr>
- <20180618104159.24b9fffb@bbrezillon>
- <87d0wnrhqz.fsf@belgarion.home>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="Vsi50HYs5tPfr+1I"
+Subject: Applied "ASoC: cx20442: Don't ignore regulator_get() errors." to the asoc tree
+Date: Mon, 25 Jun 2018 14:15:13 +0100
+Message-ID: <E1fXRKr-0008HO-Bk@debutante>
+References: <20180624181441.6975-1-jmkrzyszt@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <87d0wnrhqz.fsf@belgarion.home>
+In-Reply-To: <20180624181441.6975-1-jmkrzyszt@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: Daniel Mack <daniel@zonque.org>, Boris Brezillon <boris.brezillon@bootlin.com>, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org
+To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---Vsi50HYs5tPfr+1I
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: cx20442: Don't ignore regulator_get() errors.
 
-On Mon, Jun 18, 2018 at 09:56:20PM +0200, Robert Jarzmik wrote:
+has been applied to the asoc tree at
 
-> I must insist on "Wednesday", as I need to have one last pass from 0-day kernel
-> checker to be fully covered, and I'd like as well to know which tree the ASoC
-> patch will take, ie. if Mark commits to take it, or rather wants to pull from
-> the imutable branch.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-I'll pull the branch in (a signed tag would've been nicer but it's not
-the end of the world).
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
---Vsi50HYs5tPfr+1I
-Content-Type: application/pgp-signature; name="signature.asc"
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
------BEGIN PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsw6PcACgkQJNaLcl1U
-h9DjMAf/af5+btMq4R9XHetdh/iAvu2jYHAw4/iyHWOKMS8MDABxBEz/3eB2XlUA
-35JbCDcC7RYyk41csobZ7/CnhgkTM5HOjyLVHs8OOYhAOSrmFK0sDoGg884OvlAp
-F5WNWOsmiqGfJEUoiSh7SoHtVi+cN3snsAcgX2yJtPlmyMcRodxvSMdXxjACwDoE
-092a9LGzs4WYoPqdk8zszqY+2cu2HLH2aXvB1oplkwbcyJYB3VkO4Q0O+7o9AvMM
-26QSPG26ufIJY+/ZxrO5BWsZrs8QlOAAhLjI65FITchHfVEoBxqryQbGk4MjpG3G
-VAOCzizL4A454dl/xHPD8erqdXCmVw==
-=EUsN
------END PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---Vsi50HYs5tPfr+1I--
+Thanks,
+Mark
+
+>From 50c678772a0b3f9dc6b04262f27e2c373fe03a4d Mon Sep 17 00:00:00 2001
+From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Date: Sun, 24 Jun 2018 20:14:41 +0200
+Subject: [PATCH] ASoC: cx20442: Don't ignore regulator_get() errors.
+
+In its current shape, the driver just ignores errors returned by
+regulator_get() at component_probe().  This doesn't hurt on Amstrad
+Delta board as long as it registers the codec device at late_initcall,
+when the regulator which depends on basic-mmio-gpio device (probed as
+late as at dev_initcall) is already available.  Otherwise the driver
+may end up trying to control a codec which is not powered up.
+
+Remove that dependency on initialization order by handling the error.
+If the regulator is not yet available and -ENODEV is returned, convert
+it to -EPROBE_DEFER to get another chance.
+
+Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cx20442.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
+index 07dd33b09596..ab174b5114dc 100644
+--- a/sound/soc/codecs/cx20442.c
++++ b/sound/soc/codecs/cx20442.c
+@@ -362,8 +362,27 @@ static int cx20442_component_probe(struct snd_soc_component *component)
+ 		return -ENOMEM;
+ 
+ 	cx20442->por = regulator_get(component->dev, "POR");
+-	if (IS_ERR(cx20442->por))
+-		dev_warn(component->dev, "failed to get the regulator");
++	if (IS_ERR(cx20442->por)) {
++		int err = PTR_ERR(cx20442->por);
++
++		dev_warn(component->dev, "failed to get POR supply (%d)", err);
++		/*
++		 * When running on a non-dt platform and requested regulator
++		 * is not available, regulator_get() never returns
++		 * -EPROBE_DEFER as it is not able to justify if the regulator
++		 * may still appear later.  On the other hand, the board can
++		 * still set full constraints flag at late_initcall in order
++		 * to instruct regulator_get() to return a dummy one if
++		 * sufficient.  Hence, if we get -ENODEV here, let's convert
++		 * it to -EPROBE_DEFER and wait for the board to decide or
++		 * let Deferred Probe infrastructure handle this error.
++		 */
++		if (err == -ENODEV)
++			err = -EPROBE_DEFER;
++		kfree(cx20442);
++		return err;
++	}
++
+ 	cx20442->tty = NULL;
+ 
+ 	snd_soc_component_set_drvdata(component, cx20442);
+-- 
+2.18.0.rc2
