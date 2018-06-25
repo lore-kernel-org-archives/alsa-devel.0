@@ -1,17 +1,14 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: rt5651: Add support for external
- amplifier enable GPIO
-Date: Mon, 25 Jun 2018 11:45:03 +0100
-Message-ID: <20180625104503.GA9413@sirena.org.uk>
-References: <20180624130247.18150-1-hdegoede@redhat.com>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: [PATCH v4 0/7] soundwire: Add multi link support
+Date: Mon, 25 Jun 2018 16:28:53 +0530
+Message-ID: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3186147536672337536=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 46C712675FB
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 12:45:13 +0200 (CEST)
-In-Reply-To: <20180624130247.18150-1-hdegoede@redhat.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EC912675FB
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 13:00:42 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,54 +18,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
+To: alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
+Currently, in the SoundWire subsystem, the concept of stream is
+limited to a Master and one or more Slaves(Codecs). This series
+aims to add support for multiple Master(s) sharing the same
+reference clock and synchronized in the hardware.
 
---===============3186147536672337536==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qDbXVdCdHGoSgWSk"
-Content-Disposition: inline
+This patch series adds:
+ - Helpers to lock bus instances part of the stream
+ - Boiler plate conversion of code to support a list of
+   Master runtime
+ - Support multi link bank switch to support synchronization
+   between multiple masters
+ - Add Intel platform ops for pre/post bank switch
 
+changes in v4:
+ - Added changes in sdw_stream_runtime structure to track Masters
+   added to stream
+ - Add changes to support ml_bankswitch only if both the hardware
+   supports and the stream is handled by multiple masters
 
---qDbXVdCdHGoSgWSk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+changes in v3:
+ - Added comments to explain the trigger for multi link
+   bank switch
+ - Added comments in the intel_post_bank_switch ops to explain
+   how synchronous trigger of bank switch is handled.
 
-On Sun, Jun 24, 2018 at 03:02:46PM +0200, Hans de Goede wrote:
-> The rt5651 does not have a built-in speaker amplifier, so it is often
-> used together with an external amplifier. On some boards the external
-> amplifier's enable pin is driven through a GPIO, add support for this.
+Sanyog Kale (2):
+  Documentation: soundwire: Add documentation for multi link
+  soundwire: Add support to lock across bus instances
 
-This obviously shouldn't be part of the CODEC driver since it's not part
-of the device, you should make a driver for GPIO controlled amplifiers
-and add it to the card.  There's actually a guy I've been talking to a
-bit on IRC recently who's just written one actually and will hopefully
-be posting it soon.
+Shreyas NC (4):
+  soundwire: Initialize completion for defer messages
+  soundwire: keep track of Masters in a stream
+  soundwire: Add support for multi link bank switch
+  soundwire: intel: Add pre/post bank switch ops
 
---qDbXVdCdHGoSgWSk
-Content-Type: application/pgp-signature; name="signature.asc"
+Vinod Koul (1):
+  soundwire: Handle multiple master instances in a stream
 
------BEGIN PGP SIGNATURE-----
+ Documentation/driver-api/soundwire/stream.rst |  28 ++
+ drivers/soundwire/bus.c                       |   6 +
+ drivers/soundwire/bus.h                       |   4 +
+ drivers/soundwire/intel.c                     |  65 ++++
+ drivers/soundwire/stream.c                    | 483 +++++++++++++++++++-------
+ include/linux/soundwire/sdw.h                 |  12 +-
+ 6 files changed, 467 insertions(+), 131 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlswx6wACgkQJNaLcl1U
-h9D+yAf9FRWoWneEKcEj39nzZ6jZKrRaDmyChPHF5jiK7kPgQ5UjeYKMAv/xQZfD
-mtChwic8EryiN6VU0pGk0EUiJtUyAABPeFfRE5xS3S1NSJz5KYaeF8/GYa19HgMx
-OVKELvQhcuY+i4w/PJp0uK2cOTI5L6yDgjP3tzlmaA31PzI889zZJ6u9pWRvG1I+
-FN1GNUB4r/PUFsQD/SosHRdkxLPCBBkaffc68d0B/gCtGpe+bY3kdUvANqMdEuIn
-4sbuf5FjkSC0m+wJVwVADG1pbIQkOn63CnKilu0faK519ixCT/rRQFVpiOGVwa5l
-0ndar6RHnYJ7rD/KCBldItZpK8Tl5g==
-=knSW
------END PGP SIGNATURE-----
-
---qDbXVdCdHGoSgWSk--
-
---===============3186147536672337536==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3186147536672337536==--
+-- 
+2.7.4
