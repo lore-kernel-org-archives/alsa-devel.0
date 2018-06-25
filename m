@@ -1,18 +1,23 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 1/2] ALSA: ac97: add bus binding for
-	codecs
-Date: Mon, 25 Jun 2018 12:23:30 +0100
-Message-ID: <20180625112330.GD9413@sirena.org.uk>
-References: <20180622192834.7797-1-robert.jarzmik@free.fr>
- <s5h36xbe1cp.wl-tiwai@suse.de>
+Subject: Re: [PATCH 3/3] ASoC: simple-card: add support for
+ clock divider setup
+Date: Mon, 25 Jun 2018 12:24:40 +0100
+Message-ID: <20180625112440.GE9413@sirena.org.uk>
+References: <20180528193503.18905-1-daniel@zonque.org>
+ <20180528193503.18905-4-daniel@zonque.org>
+ <20180529113509.GE23509@sirena.org.uk>
+ <d6b9da97-8c71-ccfb-07e4-353620396a31@zonque.org>
+ <20180530091011.GA6920@sirena.org.uk>
+ <ace99dbd-3480-9ac3-e5b8-4ddae73bba10@zonque.org>
+ <b006a926-09ff-59e0-2b88-6f15e3e714e9@zonque.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7630951723015768665=="
+Content-Type: multipart/mixed; boundary="===============7427591268174346333=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8D30826777E
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 13:23:37 +0200 (CEST)
-In-Reply-To: <s5h36xbe1cp.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7764626777E
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 13:24:42 +0200 (CEST)
+In-Reply-To: <b006a926-09ff-59e0-2b88-6f15e3e714e9@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +27,53 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Robert Jarzmik <robert.jarzmik@free.fr>
+To: Daniel Mack <daniel@zonque.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============7630951723015768665==
+--===============7427591268174346333==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3Gf/FFewwPeBMqCJ"
+	protocol="application/pgp-signature"; boundary="GxcwvYAGnODwn7V8"
 Content-Disposition: inline
 
 
---3Gf/FFewwPeBMqCJ
+--GxcwvYAGnODwn7V8
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Jun 25, 2018 at 10:07:02AM +0200, Takashi Iwai wrote:
-> On Fri, 22 Jun 2018 21:28:33 +0200,
-> Robert Jarzmik wrote:
-> >=20
-> > Add the generic ac97 bus binding, especially for ac97 codecs discovered
-> > by ac97 hardware probing.
-> >=20
-> > Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
->=20
-> OK, now I applied both patches.
->=20
-> Mark, if you need these changes, pull topic/ac97-bus branch from my
-> tree.  It's a clean branch from 4.18-rc1.
+On Sat, Jun 23, 2018 at 08:41:27PM +0200, Daniel Mack wrote:
 
-Thanks!
+> I'd like to get some of this done for 4.19, but for that, I'd need Robert's
+> patch that addresses DMA compat issues in your tree.
 
---3Gf/FFewwPeBMqCJ
+> Not sure if you've followed the thread titled '[PATCH v3 09/14] ASoC: pxa:
+> remove the dmaengine compat need' - could you chime in there?
+
+No, I reviewed my patch in there.  What's going on?
+
+--GxcwvYAGnODwn7V8
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsw0LEACgkQJNaLcl1U
-h9DfrAf9GlxyEFEs2pxqfLQp4kmb6cd1fA5N3twtiLq0KnqFUsIX95MX0ZT37p+V
-cFSoD5v+C+bvhvjeEP0ASkFWqo+C45LsR6yh7nyAzrpahjCaKcWXscx0wh7v/A5+
-gHB4e+kb58vi49pTptg1uMhY7osfqX1UpO11Sw3xK4kUnrTRGrFh2ahxIUbySx9U
-taK4MBGBrEJnstdevxGesPRxuMXcQuv7bG5wUbAFX9e4STQIqVFpKy7pgO99XMzQ
-P8kVQAAxUP6kOf61KsnSfSCHJZAIR0uLNFNU+l1RRCjDOi4BOr/sKnF14jptTXzK
-pRq5FPsDVuOimrbmg/iqP3OPawUHMA==
-=VlxG
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsw0PcACgkQJNaLcl1U
+h9AdSQf/RiYmfpfH/iezMbGpr2xTXZvVZ4WgXWTNsubCl6tuQLZAv+5eMQ7k68nF
+22jVkgOH7OQCwOXwZoupg/Ze1/KyyR4GBPiYac1XIOh1iOkWfV2jKuKXI5BGQCER
+zWW459vgSjy4uQUy5MNTBIMxBEyW6Hce7/nTinIwdzMbahkflA7dSivwpcbj2pZT
+3kvn9Gyrr8Inrngp/EFe+azrMi/e45/fTFNMTuz4RyCb57HjzKMuK43PAoUBNh/r
+Whc2rmTaUPGUGrbI55LQWEaXkj+eJodgjDiwR7onIgirX1BTDFrBV/Rzzo+L5tg5
+o3teFkzK8loPqm2tr0a1uS543W0VJA==
+=1Qsj
 -----END PGP SIGNATURE-----
 
---3Gf/FFewwPeBMqCJ--
+--GxcwvYAGnODwn7V8--
 
---===============7630951723015768665==
+--===============7427591268174346333==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============7630951723015768665==--
+--===============7427591268174346333==--
