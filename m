@@ -1,22 +1,22 @@
-From: Subhashini Rao Beerisetty <subhashbeerisetty@gmail.com>
-Subject: Re: first and last audio sample timestamp
-Date: Mon, 25 Jun 2018 20:28:26 +0530
-Message-ID: <CAPY=qRSoxCDSWG7wyExP8t5USkrCFiYDyd3i28PR_tpbiJZp4Q@mail.gmail.com>
-References: <CAPY=qRT-AvUiLFLTx7MzMzreLkWK8Fk06egUMCJsVJ7VwgziuA@mail.gmail.com>
- <s5hbmbzylx6.wl-tiwai@suse.de>
- <CAPY=qRSp7XO+swhPZy56zVPd5eBTh2PhXOfSyySsrhW-T1PnzA@mail.gmail.com>
- <s5h7emmzzly.wl-tiwai@suse.de>
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: Re: [PATCH] ASoC: Intel: Power down links before
+ turning off display audio power
+Date: Mon, 25 Jun 2018 20:21:12 +0530
+Message-ID: <20180625145112.GA14734@intel.com>
+References: <1529659551-22902-1-git-send-email-sriramx.periyasamy@intel.com>
+ <a1991293-7d83-8aa8-6a2d-85d06fad7adb@linux.intel.com>
+ <s5htvpuvj3p.wl-tiwai@suse.de> <20180625085348.GA30506@intel.com>
+ <s5hfu1b1beq.wl-tiwai@suse.de> <20180625092316.GA13073@intel.com>
+ <s5h7emn19ag.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
- [209.85.216.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 901FB2675C8
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 16:58:27 +0200 (CEST)
-Received: by mail-qt0-f193.google.com with SMTP id x23-v6so2001217qto.7
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 07:58:27 -0700 (PDT)
-In-Reply-To: <s5h7emmzzly.wl-tiwai@suse.de>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 87E3F2675C8
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 17:02:52 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h7emn19ag.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,55 +27,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdW4gMjUsIDIwMTggYXQgODoyMyBQTSwgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNl
-LmRlPiB3cm90ZToKCj4gT24gTW9uLCAyNSBKdW4gMjAxOCAxNjo1MDoyMCArMDIwMCwKPiBTdWJo
-YXNoaW5pIFJhbyBCZWVyaXNldHR5IHdyb3RlOgo+ID4KPiA+IE9uIE1vbiwgSnVuIDI1LCAyMDE4
-IGF0IDg6MDQgUE0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3JvdGU6Cj4gPgo+ID4g
-PiBPbiBGcmksIDIyIEp1biAyMDE4IDE2OjAwOjEwICswMjAwLAo+ID4gPiBTdWJoYXNoaW5pIFJh
-byBCZWVyaXNldHR5IHdyb3RlOgo+ID4gPiA+Cj4gPiA+ID4gWyBQbGVhc2Uga2VlcCBtZSBpbiBD
-QyBhcyBJJ20gbm90IHN1YnNjcmliZWQgdG8gdGhlIGxpc3RdCj4gPiA+ID4KPiA+ID4gPiBIaSBB
-bGwsCj4gPiA+ID4KPiA+ID4gPgo+ID4gPiA+Cj4gPiA+ID4gSGVsbG8gYWxsLAo+ID4gPiA+Cj4g
-PiA+ID4KPiA+ID4gPiBJ4oCZbSB1c2luZyBhcGxheSBhbmQgYXJlY29yZCB1dGlsaXRpZXMgZm9y
-IHBsYXliYWNrIGFuZCBjYXB0dXJlLiBJCj4gbmVlZCB0bwo+ID4gPiA+IGNhcHR1cmUgdGhlIHRp
-bWVzdGFtcHMgZm9yIHRoZSBmaXJzdCBhbmQgbGFzdCBhdWRpbyBzYW1wbGVzIHRoYXQKPiBhcnJp
-dmUKPiA+ID4gYXQKPiA+ID4gPiB0aGUgZHJpdmVyIGxldmVsLgo+ID4gPiA+Cj4gPiA+ID4gRm9y
-IHRoaXMgSeKAmW0gY2FwdHVyaW5nIHRoZSBDTE9DS19NT05PVE9OSUNfUkFXIHRpbWVzdGFtcCBh
-dCB0aGUKPiA+ID4gPiAudHJpZ2dlcihmb3IgcGxheWJhY2sgJiBjYXB0dXJlKSBjYWxsYmFjayBp
-biBTTkRSVl9QQ01fVFJJR0dFUl9TVEFSVAo+ID4gPiBjYXNlCj4gPiA+ID4g4oCTIGlzIGl0IHRo
-ZSBjb3JyZWN0IHRpbWVzdGFtcCBmb3IgdGhlIGZpcnN0IGF1ZGlvIHNhbXBsZSBhcnJpdmVkIGF0
-Cj4gdGhlCj4gPiA+ID4gZHJpdmVyIGxldmVsPwo+ID4gPiA+Cj4gPiA+ID4gU2ltaWxhcmx5IGRv
-ZXMgLnRyaWdnZXIgY2FsbGJhY2tzIFNORFJWX1BDTV9UUklHR0VSX1NUT1AgZ2l2ZXMgdGhlCj4g
-bGFzdAo+ID4gPiA+IGF1ZGlvIHNhbXBsZSB0aW1lc3RhbXA/Cj4gPiA+Cj4gPiA+IE5vLCBpdCdz
-IHRoZSB0aW1lc3RhbXAgdXBvbiBjYWxsaW5nIHRoZSB0cmlnZ2VyIGNhbGxiYWNrLgo+ID4gPiBJ
-dCBoYXMgbm90aGluZyB0byBkbyBkaXJlY3RseSB3aXRoIHRoZSBmaXJzdCBvciB0aGUgbGFzdCBz
-YW1wbGUuCj4gPiA+IChCdXQgdXN1YWxseSB0aGUgc3RhcnQgdHJpZ2dlciBpcyB0aGUgdGltZSBv
-ZiB0aGUgZmlyc3Qgc2FtcGxlIGZvcgo+ID4gPiAgY2FwdHVyZSwgdGhvdWdoLikKPiA+ID4KPiA+
-Cj4gPiBPa2F5IHRoZW4gaWYgc3RhcnQgdHJpZ2dlciBpcyB0aGUgdGltZSBvZiB0aGUgZmlyc3Qg
-c2FtcGxlIGZvciBjYXB0dXJlLAo+ID4gdGhlbiBpcyBzdG9wIHRyaWdnZXIgaXMgZm9yIGxhc3Qg
-c2FtcGxlPwo+Cj4gTm8sIGl0J3Mgbm90IG5lY2Vzc2FyaWx5IHRoZSBsYXN0IHNhbXBsZS4gIEl0
-J3MgdGhlIGp1c3QgdGltZSB5b3Ugc3RvcAo+IHRoZSBzdHJlYW0uICBUaGUgc3RvcCBtaWdodCBo
-YXBwZW4gc29tZSB0aW1lIGFmdGVyIHRoZSBsYXN0IHNhbXBsZSBnb3QKPiByZWNlaXZlZC4gIFRo
-ZSBhY2N1cmFjeSBpbiB0aGF0IHJlZ2FyZCBwcmV0dHkgbXVjaCBkZXBlbmRzIG9uIHRoZQo+IGhh
-cmR3YXJlIGFuZCB0aGUgZHJpdmVyIGltcGxlbWVudGF0aW9uLgo+ClRoYW5rcyBmb3IgdGhlIGNs
-YXJpZmljYXRpb24uIFdoYXQgYWJvdXQgZm9yIHBsYXliYWNrIHNjZW5hcmlvPwoKCj4KPgo+IFRh
-a2FzaGkKPgo+ID4gRm9yIGV4YW1wbGUsIGknbSBwcmludGluZyB0aGUKPiA+IHRpbWVzdGFtcCBh
-cyBnaXZlbiBiZWxvdy4gU2ltaWxhcmx5IGluIHdoaWNoIGNhbGwgYmFjayBJIGNhbiB1c2UgdGhl
-Cj4gPiBnZXRyYXdtb25vdG9uaWMoKQo+ID4gZm9yIHBsYXliYWNrIGNhc2UuCj4gPgo+ID4gc3Rh
-dGljIGludCBzbmRfbXljaGlwX2NhcHR1cmVfdHJpZ2dlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJl
-YW0KPiAqc3Vic3RyZWFtLAo+ID4gaW50IGNtZCkKPiA+Cj4gPiB7Cj4gPgo+ID4gICAgIHN0cnVj
-dCB0aW1lc3BlYyB0czsKPiA+Cj4gPgo+ID4KPiA+ICAgICBzd2l0Y2goY21kKSB7Cj4gPgo+ID4g
-ICAgICAgICBjYXNlIFNORFJWX1BDTV9UUklHR0VSX1NUQVJUOgo+ID4KPiA+ICAgICAgICAgICAg
-IGdldHJhd21vbm90b25pYygmdHMpOwo+ID4KPiA+ICAgICAgICAgICAgIHByaW50aygiMXN0IGF1
-ZGlvIHNhbXBsZSByZWNlaXZlZCB0aW1lOgo+ID4gWyUuNmx1OiUuOWx1XVxuIix0cy50dl9zZWMs
-IHRzLnR2X25zZWMpOwo+ID4KPiA+ICAgICAgICAgICAgIGJyZWFrOwo+ID4KPiA+ICAgICAgICAg
-Y2FzZSBTTkRSVl9QQ01fVFJJR0dFUl9TVE9QOgo+ID4KPiA+ICAgICAgICAgICAgIGdldHJhd21v
-bm90b25pYygmdHMpOwo+ID4KPiA+ICAgICAgICAgICAgIHByaW50aygiTGFzdCBhdWRpbyBzYW1w
-bGUgcmVjZWl2ZWQgdGltZToKPiA+IFslLjZsdTolLjlsdV1cbiIsdHMudHZfc2VjLCB0cy50dl9u
-c2VjKTsKPiA+Cj4gPiAgICAgICAgICAgICBicmVhazsKPiA+Cj4gPiAgICAgfQo+ID4KPiA+Cj4g
-Pgo+ID4gfQo+ID4KPiA+Cj4gPiA+Cj4gPiA+Cj4gPiA+IFRha2FzaGkKPiA+ID4KPgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+On Mon, Jun 25, 2018 at 11:53:59AM +0200, Takashi Iwai wrote:
+> On Mon, 25 Jun 2018 11:23:17 +0200,
+> Sriram Periyasamy wrote:
+> > 
+> > On Mon, Jun 25, 2018 at 11:08:13AM +0200, Takashi Iwai wrote:
+> > > On Mon, 25 Jun 2018 10:53:49 +0200,
+> > > Sriram Periyasamy wrote:
+> > > > 
+> > > > On Fri, Jun 22, 2018 at 07:14:50PM +0200, Takashi Iwai wrote:
+> > > > > On Fri, 22 Jun 2018 18:42:24 +0200,
+> > > > > Pierre-Louis Bossart wrote:
+> > > > > > 
+> > > > > > On 6/22/18 4:25 AM, Sriram Periyasamy wrote:
+> > > > > > > On certain platforms, Display HDMI HDA codec was not going to sleep state
+> > > > > > > after the use when links are powered down after turning off the display
+> > > > > > > power. As per the HW recommendation, links are powered down before turning
+> > > > > > > off the display power to ensure that the codec goes to sleep state.
+> > > > > > 
+> > > > > > The change looks ok, I am still not clear on display power
+> > > > > > management. snd_hdac_display_power is called both from hdac_hdmi.c and
+> > > > > > skl.c in the respective probe/suspend/resume routines, wondering if
+> > > > > > this is redundant or intentional.
+> > > > > 
+> > > > > Yeah, it looks like that skl.c keeps the display power on by assuming
+> > > > > that it's turned off by the codec driver, but it doesn't happen
+> > > > > actually.  I also find it fishy there...
+> > > > > 
+> > > > 
+> > > > snd_hdac_display_power is called intentionally to ensure that the codec is
+> > > > powered up before any communication is initiated from either skl.c or
+> > > > hdac_hdmi.c.
+> > > 
+> > > But who turns it down if the device is not used?
+> > 
+> > Powering down of codec is taken care in codec's suspend routine.
+> 
+> But you'll power up twice, no?  Once in skl_resume() (which is no
+> runtime resume but only for S3/S4) and once in codec resume.
+> I wonder who will turn down when you wake up from S3.
+
+No. When entering to S3, hdmi_codec_prepare() will invoke the runtime
+resume of codec hdac_hdmi_runtime_resume() which power up the codec and
+skl_suspend power down the codec. When it wakes up from S3, skl_resume()
+powers up the codec and hdmi_codec_complete invokes the runtime suspend of
+codec hdac_hdmi_runtime_suspend() which powers down the codec.
+
+This design is required to achieve the runtime power reference count for
+codec device when it is put to S3/S4 while playback was going on.
+
+>  The runtime
+> suspend doesn't call snd_hdac_display_power() in skl.c.
+> 
+
+Display power management for all runtime uses cases are handled in the
+codec driver hdac_hdmi.c.
+
+Thanks,
+Sriram.
