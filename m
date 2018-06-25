@@ -1,23 +1,22 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 1/2] slimbus: stream: add stream support
-Date: Mon, 25 Jun 2018 17:30:48 +0100
-Message-ID: <531e49bb-cdc9-610f-1bad-bd40f633e90d@linaro.org>
-References: <20180621134009.27116-1-srinivas.kandagatla@linaro.org>
- <20180621134009.27116-2-srinivas.kandagatla@linaro.org>
- <20180622125050.GO27187@vkoul-mobl>
- <a922d359-2096-48ed-c442-affc5b0c4ccf@linaro.org>
- <20180625162156.GC2404@vkoul-mobl>
+From: Niklas Cassel <niklas.cassel@linaro.org>
+Subject: Re: [PATCH 01/11] ASoC: q6adm: dt-bindings: add
+ compatible string to routing
+Date: Mon, 25 Jun 2018 19:59:45 +0200
+Message-ID: <20180625175945.GA10876@centauri.lan>
+References: <20180625143115.8346-1-srinivas.kandagatla@linaro.org>
+ <20180625143115.8346-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D9A42673F5
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 18:30:55 +0200 (CEST)
-Received: by mail-wm0-f50.google.com with SMTP id p126-v6so10018756wmb.2
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 09:30:55 -0700 (PDT)
-In-Reply-To: <20180625162156.GC2404@vkoul-mobl>
-Content-Language: en-US
+Received: from mail-lf0-f67.google.com (mail-lf0-f67.google.com
+ [209.85.215.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id D1C392673F5
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 19:59:48 +0200 (CEST)
+Received: by mail-lf0-f67.google.com with SMTP id n24-v6so15203826lfh.3
+ for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 10:59:48 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180625143115.8346-2-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,22 +26,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org, ctatlor97@gmail.com, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, broonie@kernel.org, linux-arm-msm@vger.kernel.org, sdharia@quicinc.com
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: rohkumar@qti.qualcomm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 
-
-On 25/06/18 17:21, Vinod wrote:
->>>> +/*
->>>> + * slim_stream_enable() - Enable a prepared SLIMbus Stream
->>> Do you want to check if it is already prepared ..?
->> Yep, I think most of the code needs similar state machine check, I will add
->> this in next version.
-> so if you are tying to snd stream states then I don't think you need a
-> state machine here. ALSA already does that for you so you can skip it :D
-Stream state machine looks redundant, I will try to skip it and see how 
-things look at the end! before sending next version.
-
-thanks,
-srini
+On Mon, Jun 25, 2018 at 03:31:05PM +0100, Srinivas Kandagatla wrote:
+> Add compatible string to routing so that it can support DT based module
+> autoloading.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  Documentation/devicetree/bindings/sound/qcom,q6adm.txt | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+> index cb709e5dbc44..bbae426cdfb1 100644
+> --- a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+> +++ b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+> @@ -18,6 +18,11 @@ used by the apr service device.
+>  = ADM routing
+>  "routing" subnode of the ADM node represents adm routing specific configuration
+>  
+> +- compatible:
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: must be "qcom,q6adm-routing".
+> +
+>  - #sound-dai-cells
+>  	Usage: required
+>  	Value type: <u32>
+> @@ -28,6 +33,7 @@ q6adm@8 {
+>  	compatible = "qcom,q6adm";
+>  	reg = <APR_SVC_ADM>;
+>  	q6routing: routing {
+> +		compatible = "qcom,q6adm-routing";
+>  		#sound-dai-cells = <0>;
+>  	};
+>  };
+> -- 
+> 2.16.2
+> 
