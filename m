@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cx20442: Don't ignore regulator_get() errors." to the asoc tree
-Date: Mon, 25 Jun 2018 14:15:13 +0100
-Message-ID: <E1fXRKr-0008HO-Bk@debutante>
-References: <20180624181441.6975-1-jmkrzyszt@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180624181441.6975-1-jmkrzyszt@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-omap@vger.kernel.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Bhumika Goyal <bhumirks@gmail.com>alsa-devel@alsa-project.org
+Subject: Applied "dmaengine: pxa: document pxad_param" to the asoc tree
+Date: Mon, 25 Jun 2018 14:15:20 +0100
+Message-ID: <E1fXRKy-0008Lb-A6@debutante>
+References: <20180524070703.11901-11-robert.jarzmik@free.fr>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20180524070703.11901-11-robert.jarzmik@free.fr>
+Sender: netdev-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Vinod Koul <vkoul@kernel.org>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cx20442: Don't ignore regulator_get() errors.
+   dmaengine: pxa: document pxad_param
 
 has been applied to the asoc tree at
 
@@ -37,61 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From 50c678772a0b3f9dc6b04262f27e2c373fe03a4d Mon Sep 17 00:00:00 2001
-From: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Date: Sun, 24 Jun 2018 20:14:41 +0200
-Subject: [PATCH] ASoC: cx20442: Don't ignore regulator_get() errors.
+>From b6d1a17f4729e4fda5740a855da91d202db2c118 Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Sun, 17 Jun 2018 19:02:14 +0200
+Subject: [PATCH] dmaengine: pxa: document pxad_param
 
-In its current shape, the driver just ignores errors returned by
-regulator_get() at component_probe().  This doesn't hurt on Amstrad
-Delta board as long as it registers the codec device at late_initcall,
-when the regulator which depends on basic-mmio-gpio device (probed as
-late as at dev_initcall) is already available.  Otherwise the driver
-may end up trying to control a codec which is not powered up.
+Add some documentation for the pxad_param structure, and describe the
+contract behind the minimal required priority of a DMA channel.
 
-Remove that dependency on initialization order by handling the error.
-If the regulator is not yet available and -ENODEV is returned, convert
-it to -EPROBE_DEFER to get another chance.
-
-Signed-off-by: Janusz Krzysztofik <jmkrzyszt@gmail.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Acked-by: Vinod Koul <vkoul@kernel.org>
 ---
- sound/soc/codecs/cx20442.c | 23 +++++++++++++++++++++--
- 1 file changed, 21 insertions(+), 2 deletions(-)
+ include/linux/dma/pxa-dma.h | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
-index 07dd33b09596..ab174b5114dc 100644
---- a/sound/soc/codecs/cx20442.c
-+++ b/sound/soc/codecs/cx20442.c
-@@ -362,8 +362,27 @@ static int cx20442_component_probe(struct snd_soc_component *component)
- 		return -ENOMEM;
+diff --git a/include/linux/dma/pxa-dma.h b/include/linux/dma/pxa-dma.h
+index e56ec7af4fd7..9fc594f69eff 100644
+--- a/include/linux/dma/pxa-dma.h
++++ b/include/linux/dma/pxa-dma.h
+@@ -9,6 +9,15 @@ enum pxad_chan_prio {
+ 	PXAD_PRIO_LOWEST,
+ };
  
- 	cx20442->por = regulator_get(component->dev, "POR");
--	if (IS_ERR(cx20442->por))
--		dev_warn(component->dev, "failed to get the regulator");
-+	if (IS_ERR(cx20442->por)) {
-+		int err = PTR_ERR(cx20442->por);
-+
-+		dev_warn(component->dev, "failed to get POR supply (%d)", err);
-+		/*
-+		 * When running on a non-dt platform and requested regulator
-+		 * is not available, regulator_get() never returns
-+		 * -EPROBE_DEFER as it is not able to justify if the regulator
-+		 * may still appear later.  On the other hand, the board can
-+		 * still set full constraints flag at late_initcall in order
-+		 * to instruct regulator_get() to return a dummy one if
-+		 * sufficient.  Hence, if we get -ENODEV here, let's convert
-+		 * it to -EPROBE_DEFER and wait for the board to decide or
-+		 * let Deferred Probe infrastructure handle this error.
-+		 */
-+		if (err == -ENODEV)
-+			err = -EPROBE_DEFER;
-+		kfree(cx20442);
-+		return err;
-+	}
-+
- 	cx20442->tty = NULL;
- 
- 	snd_soc_component_set_drvdata(component, cx20442);
++/**
++ * struct pxad_param - dma channel request parameters
++ * @drcmr: requestor line number
++ * @prio: minimal mandatory priority of the channel
++ *
++ * If a requested channel is granted, its priority will be at least @prio,
++ * ie. if PXAD_PRIO_LOW is required, the requested channel will be either
++ * PXAD_PRIO_LOW, PXAD_PRIO_NORMAL or PXAD_PRIO_HIGHEST.
++ */
+ struct pxad_param {
+ 	unsigned int drcmr;
+ 	enum pxad_chan_prio prio;
 -- 
 2.18.0.rc2
