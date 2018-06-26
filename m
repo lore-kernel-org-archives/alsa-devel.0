@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: q6afe: dt-bindings: add compatible string to dais" to the asoc tree
-Date: Tue, 26 Jun 2018 16:11:33 +0100 (BST)
-Message-ID: <20180626151133.5E097440070@finisterre.ee.mobilebroadband>
-References: <20180626092016.9296-4-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180626092016.9296-4-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Niklas Cassel <niklas.cassel@linaro.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, robh+dt@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, tiwai@suse.com, linux-arm-kernel@lists.infradead.orgniklas.cassel@linaro.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: qdsp6: q6afe: use
+	of_platform_populate/depopulate()" to the asoc tree
+Date: Tue, 26 Jun 2018 16:11:07 +0100 (BST)
+Message-ID: <20180626151107.2C0CB440070@finisterre.ee.mobilebroadband>
+References: <20180625143115.8346-7-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB04E26790D
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:11:07 +0200 (CEST)
+In-Reply-To: <20180625143115.8346-7-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: rohkumar@qti.qualcomm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, niklas.cassel@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: q6afe: dt-bindings: add compatible string to dais
+   ASoC: qdsp6: q6afe: use of_platform_populate/depopulate()
 
 has been applied to the asoc tree at
 
@@ -37,44 +52,66 @@ to this mail.
 Thanks,
 Mark
 
->From e43792c6e5027ad3f0280f5a2e6952b0d436b19b Mon Sep 17 00:00:00 2001
+>From 01afbd45f78cb0557db18c3ba768eea3e9576cfd Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 26 Jun 2018 10:20:07 +0100
-Subject: [PATCH] ASoC: q6afe: dt-bindings: add compatible string to dais
+Date: Tue, 26 Jun 2018 10:20:10 +0100
+Subject: [PATCH] ASoC: qdsp6: q6afe: use of_platform_populate/depopulate()
 
-Add compatible string to dais so that it can support DT based module
-autoloading.
+Now that the child nodes have there own compatible strings,
+Use of_platform_populate/depopulate() instead of less common
+of_platform_device_create()/destroy().
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/qcom,q6afe.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/qcom/qdsp6/q6afe.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-index bdbf87df8c0b..a8179409c194 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-@@ -17,6 +17,11 @@ used by all apr services. Must contain the following properties.
- subnode of "dais" representing board specific dai setup.
- "dais" node should have following properties followed by dai children.
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 01f43218984b..621b67b34db9 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -316,7 +316,6 @@ struct q6afe {
+ 	struct mutex lock;
+ 	struct list_head port_list;
+ 	spinlock_t port_list_lock;
+-	struct platform_device *pdev_dais;
+ };
  
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,q6afe-dais"
-+
- - #sound-dai-cells
- 	Usage: required
- 	Value type: <u32>
-@@ -100,6 +105,7 @@ q6afe@4 {
- 	reg = <APR_SVC_AFE>;
+ struct afe_port_cmd_device_start {
+@@ -1438,7 +1437,6 @@ static int q6afe_probe(struct apr_device *adev)
+ {
+ 	struct q6afe *afe;
+ 	struct device *dev = &adev->dev;
+-	struct device_node *dais_np;
  
- 	dais {
-+		compatible = "qcom,q6afe-dais";
- 		#sound-dai-cells = <1>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
+ 	afe = devm_kzalloc(dev, sizeof(*afe), GFP_KERNEL);
+ 	if (!afe)
+@@ -1453,22 +1451,12 @@ static int q6afe_probe(struct apr_device *adev)
+ 
+ 	dev_set_drvdata(dev, afe);
+ 
+-	dais_np = of_get_child_by_name(dev->of_node, "dais");
+-	if (dais_np) {
+-		afe->pdev_dais = of_platform_device_create(dais_np,
+-							   "q6afe-dai", dev);
+-		of_node_put(dais_np);
+-	}
+-
+-	return 0;
++	return of_platform_populate(dev->of_node, NULL, NULL, dev);
+ }
+ 
+ static int q6afe_remove(struct apr_device *adev)
+ {
+-	struct q6afe *afe = dev_get_drvdata(&adev->dev);
+-
+-	if (afe->pdev_dais)
+-		of_platform_device_destroy(&afe->pdev_dais->dev, NULL);
++	of_platform_depopulate(&adev->dev);
+ 
+ 	return 0;
+ }
 -- 
 2.17.1
