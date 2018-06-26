@@ -1,20 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: soc-pcm: DPCM cares BE channel
- constraint
-Date: Tue, 26 Jun 2018 15:18:37 +0100
-Message-ID: <20180626141837.GF1779@sirena.org.uk>
-References: <20180620092520.14101-1-jiada_wang@mentor.com>
- <1530008318.2900.44.camel@baylibre.com>
- <20180626115526.GC1779@sirena.org.uk>
- <1530014920.2900.50.camel@baylibre.com>
+Subject: Applied "ASoC: trace: remove snd_soc_codec" to the
+	asoc tree
+Date: Tue, 26 Jun 2018 16:03:42 +0100 (BST)
+Message-ID: <20180626150342.127D1440070@finisterre.ee.mobilebroadband>
+References: <87vadh3pz1.wl%kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5788577026255188529=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 67C0F267715
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 16:18:40 +0200 (CEST)
-In-Reply-To: <1530014920.2900.50.camel@baylibre.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 17793267705
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:03:44 +0200 (CEST)
+In-Reply-To: <87vadh3pz1.wl%kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,63 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, jiada_wang@mentor.com, linux-kernel@vger.kernel.org, tiwai@suse.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Kate Stewart <kstewart@linuxfoundation.org>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, open list <linux-kernel@vger.kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Mark Brown <broonie@kernel.org>, Philippe Ombredanne <pombredanne@nexb.com>, Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5788577026255188529==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="NQTVMVnDVuULnIzU"
-Content-Disposition: inline
+   ASoC: trace: remove snd_soc_codec
 
+has been applied to the asoc tree at
 
---NQTVMVnDVuULnIzU
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Jun 26, 2018 at 02:08:40PM +0200, Jerome Brunet wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> From comment here and in other mails, I get that you are not big fan of D=
-PCM :)
-> It is indeed a complex beast ...
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> It there anything else we can use to represent audio routing within the S=
-oC ?
-> The SoC I'm working on make heavy use of this, unfortunately.=20
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-The goal is to be able to propagate digital configuration along audio
-paths in much the same way as we currently do for power with DAPM.  Lars
-did a presentation with a good writeup of a proposal for that at ELC-E a
-few years ago.  Unfortunately the only person that is really able to
-find time to work on this at the minute is Morimoto-san, this is what
-his componentization changes are driving towards - part of the design is
-that everything in the system will be a component and we can therefore
-treat every device identically.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---NQTVMVnDVuULnIzU
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 211b4415ecb254e167837206756dea123342689c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 28 Mar 2018 02:18:13 +0000
+Subject: [PATCH] ASoC: trace: remove snd_soc_codec
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsySzkACgkQJNaLcl1U
-h9BeMAf/S/+T+a9a2BmSaYJTz8xBAweB70bnNa1smJN+ebaAu6zaz5OqOoCzrlh3
-LDmZHNQYSVxx28hdko1q7ZjLE42mOWY7Xrs5DEBRCuJHJtfeXzFWsNyAv9tOyBEf
-CxwnWsSQNeQftrI9XH1+2CITMbUJ9PR3Ifvu2X2ua5VhJP82qfOLed12H7yWYy6A
-fU36dYPLWd5V9l6kFHiO9tbnhLUaVCXx4Faa/HgkmzIp0fzSjRdGU65+K7vjPXaj
-GHpNKo3jR+3INlv43zPHwatYpGcmrvGwwQW92TAes8/Nj/Q6Nn7B5yqJAhOUMiiw
-aoA4AxHRlnspfQlhZxB/nIXNG7TkTQ==
-=aRcD
------END PGP SIGNATURE-----
+snd_soc_codec is replaced to snd_soc_component,
+and it is not used in this file.
+Let's remove it
 
---NQTVMVnDVuULnIzU--
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ include/trace/events/asoc.h | 1 -
+ 1 file changed, 1 deletion(-)
 
---===============5788577026255188529==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5788577026255188529==--
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index ccd1a3bdff46..40c300fe704d 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -12,7 +12,6 @@
+ #define DAPM_ARROW(dir) (((dir) == SND_SOC_DAPM_DIR_OUT) ? "->" : "<-")
+ 
+ struct snd_soc_jack;
+-struct snd_soc_codec;
+ struct snd_soc_card;
+ struct snd_soc_dapm_widget;
+ struct snd_soc_dapm_path;
+-- 
+2.17.1
