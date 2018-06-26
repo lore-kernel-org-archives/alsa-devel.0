@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: q6asm: dt-bindings: add compatible
-	string to dais" to the asoc tree
-Date: Tue, 26 Jun 2018 16:11:52 +0100 (BST)
-Message-ID: <20180626151152.E2B77440070@finisterre.ee.mobilebroadband>
-References: <20180625143115.8346-3-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: q6adm: dt-bindings: add compatible
+	string to routing" to the asoc tree
+Date: Tue, 26 Jun 2018 16:11:55 +0100 (BST)
+Message-ID: <20180626151155.A49E9440070@finisterre.ee.mobilebroadband>
+References: <20180625143115.8346-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 74A67267905
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:11:54 +0200 (CEST)
-In-Reply-To: <20180625143115.8346-3-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FFF2267905
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:11:56 +0200 (CEST)
+In-Reply-To: <20180625143115.8346-2-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: q6asm: dt-bindings: add compatible string to dais
+   ASoC: q6adm: dt-bindings: add compatible string to routing
 
 has been applied to the asoc tree at
 
@@ -52,43 +52,43 @@ to this mail.
 Thanks,
 Mark
 
->From 9618b706672db1b595c7076389a833078335417c Mon Sep 17 00:00:00 2001
+>From c486a185744c593417a126aebb119771c1bbe670 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 26 Jun 2018 10:20:06 +0100
-Subject: [PATCH] ASoC: q6asm: dt-bindings: add compatible string to dais
+Date: Tue, 26 Jun 2018 10:20:05 +0100
+Subject: [PATCH] ASoC: q6adm: dt-bindings: add compatible string to routing
 
-Add compatible string to dais so that it can support DT based module
+Add compatible string to routing so that it can support DT based module
 autoloading.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/qcom,q6asm.txt | 6 ++++++
+ Documentation/devicetree/bindings/sound/qcom,q6adm.txt | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-index 2178eb91146f..f9c7bd8c1bc0 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-@@ -17,6 +17,11 @@ used by the apr service device.
- = ASM DAIs (Digial Audio Interface)
- "dais" subnode of the ASM node represents dai specific configuration
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+index cb709e5dbc44..bbae426cdfb1 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
+@@ -18,6 +18,11 @@ used by the apr service device.
+ = ADM routing
+ "routing" subnode of the ADM node represents adm routing specific configuration
  
 +- compatible:
 +	Usage: required
 +	Value type: <stringlist>
-+	Definition: must be "qcom,q6asm-dais".
++	Definition: must be "qcom,q6adm-routing".
 +
  - #sound-dai-cells
  	Usage: required
  	Value type: <u32>
-@@ -28,6 +33,7 @@ q6asm@7 {
- 	compatible = "qcom,q6asm";
- 	reg = <APR_SVC_ASM>;
- 	q6asmdai: dais {
-+		compatible = "qcom,q6asm-dais";
- 		#sound-dai-cells = <1>;
+@@ -28,6 +33,7 @@ q6adm@8 {
+ 	compatible = "qcom,q6adm";
+ 	reg = <APR_SVC_ADM>;
+ 	q6routing: routing {
++		compatible = "qcom,q6adm-routing";
+ 		#sound-dai-cells = <0>;
  	};
  };
 -- 
