@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6afe-dai: support dt based module loading" to the asoc tree
-Date: Tue, 26 Jun 2018 16:11:04 +0100 (BST)
-Message-ID: <20180626151104.CB715440070@finisterre.ee.mobilebroadband>
-References: <20180626092016.9296-8-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: q6afe: dt-bindings: add compatible string to dais" to the asoc tree
+Date: Tue, 26 Jun 2018 16:11:33 +0100 (BST)
+Message-ID: <20180626151133.5E097440070@finisterre.ee.mobilebroadband>
+References: <20180626092016.9296-4-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180626092016.9296-8-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20180626092016.9296-4-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: Niklas Cassel <niklas.cassel@linaro.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, robh+dt@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, tiwai@suse.com, linux-arm-kernel@lists.infradead.orgniklas.cassel@linaro.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6afe-dai: support dt based module loading
+   ASoC: q6afe: dt-bindings: add compatible string to dais
 
 has been applied to the asoc tree at
 
@@ -37,40 +37,44 @@ to this mail.
 Thanks,
 Mark
 
->From eb7cc9be6e9ce17e69252a6fc00e75a5b08201ab Mon Sep 17 00:00:00 2001
+>From e43792c6e5027ad3f0280f5a2e6952b0d436b19b Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 26 Jun 2018 10:20:11 +0100
-Subject: [PATCH] ASoC: qdsp6: q6afe-dai: support dt based module loading
+Date: Tue, 26 Jun 2018 10:20:07 +0100
+Subject: [PATCH] ASoC: q6afe: dt-bindings: add compatible string to dais
 
-This patch uses new compatible string to make DT based module loading work.
+Add compatible string to dais so that it can support DT based module
+autoloading.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ Documentation/devicetree/bindings/sound/qcom,q6afe.txt | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index 5002dd05bf27..1d2e5013c121 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -1290,9 +1290,16 @@ static int q6afe_dai_dev_remove(struct platform_device *pdev)
- 	return 0;
- }
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+index bdbf87df8c0b..a8179409c194 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -17,6 +17,11 @@ used by all apr services. Must contain the following properties.
+ subnode of "dais" representing board specific dai setup.
+ "dais" node should have following properties followed by dai children.
  
-+static const struct of_device_id q6afe_dai_device_id[] = {
-+	{ .compatible = "qcom,q6afe-dais" },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, q6afe_dai_device_id);
++- compatible:
++	Usage: required
++	Value type: <stringlist>
++	Definition: must be "qcom,q6afe-dais"
 +
- static struct platform_driver q6afe_dai_platform_driver = {
- 	.driver = {
- 		.name = "q6afe-dai",
-+		.of_match_table = of_match_ptr(q6afe_dai_device_id),
- 	},
- 	.probe = q6afe_dai_dev_probe,
- 	.remove = q6afe_dai_dev_remove,
+ - #sound-dai-cells
+ 	Usage: required
+ 	Value type: <u32>
+@@ -100,6 +105,7 @@ q6afe@4 {
+ 	reg = <APR_SVC_AFE>;
+ 
+ 	dais {
++		compatible = "qcom,q6afe-dais";
+ 		#sound-dai-cells = <1>;
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
 -- 
 2.17.1
