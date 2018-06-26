@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 5/5] ALSA: hda/realtek - Comprehensive model
-	list for ALC882 & co
-Date: Tue, 26 Jun 2018 17:42:58 +0200
-Message-ID: <20180626154258.31475-6-tiwai@suse.de>
+Subject: [PATCH 2/5] ALSA: hda/realtek - Comprehensive model
+	list for ALC259 & co
+Date: Tue, 26 Jun 2018 17:42:55 +0200
+Message-ID: <20180626154258.31475-3-tiwai@suse.de>
 References: <20180626154258.31475-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 55C202678FD
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:43:03 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2385B2678F9
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:43:01 +0200 (CEST)
 Received: from relay1.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id B843CAFBA
+ by mx2.suse.de (Postfix) with ESMTP id 981EAAFAF
  for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 15:43:01 +0000 (UTC)
 In-Reply-To: <20180626154258.31475-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,134 +27,292 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-More comprehensive list of model strings for ALC882 & co.
-
-Also corrected the subsection in models.rst, too.
+Like the previous commit for ALC662, let's give more comprehensive
+list of model entries for ALC269 & co as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- Documentation/sound/hd-audio/models.rst | 54 ++++++++++++++++++++++++-
- sound/pci/hda/patch_realtek.c           | 25 ++++++++++++
- 2 files changed, 77 insertions(+), 2 deletions(-)
+ Documentation/sound/hd-audio/models.rst | 156 ++++++++++++++++++++++++
+ sound/pci/hda/patch_realtek.c           |  82 +++++++++++++
+ 2 files changed, 238 insertions(+)
 
 diff --git a/Documentation/sound/hd-audio/models.rst b/Documentation/sound/hd-audio/models.rst
-index 560235519555..e06238131f77 100644
+index f2f8402ff899..a403a7f34a78 100644
 --- a/Documentation/sound/hd-audio/models.rst
 +++ b/Documentation/sound/hd-audio/models.rst
-@@ -326,20 +326,70 @@ ALC680
- ======
- N/A
- 
--ALC88x/898/1150
--======================
-+ALC88x/898/1150/1220
-+====================
-+abit-aw9d
-+    Pin fixups for Abit AW9D-MAX
-+lenovo-y530
-+    Pin fixups for Lenovo Y530
-+acer-aspire-7736
-+    Fixup for Acer Aspire 7736
-+asus-w90v
-+    Pin fixup for ASUS W90V
-+cd
-+    Enable audio CD pin NID 0x1c
-+no-front-hp
-+    Disable front HP pin NID 0x1b
-+vaio-tt
-+    Pin fixup for VAIO TT
-+eee1601
-+    COEF setups for ASUS Eee 1601
-+alc882-eapd
-+    Change EAPD COEF mode on ALC882
-+alc883-eapd
-+    Change EAPD COEF mode on ALC883
-+gpio1
-+    Enable GPIO1
-+gpio2
-+    Enable GPIO2
-+gpio3
-+    Enable GPIO3
-+alc889-coef
-+    Setup ALC889 COEF
-+asus-w2jc
-+    Fixups for ASUS W2JC
- acer-aspire-4930g
-     Acer Aspire 4930G/5930G/6530G/6930G/7730G
- acer-aspire-8930g
-     Acer Aspire 8330G/6935G
- acer-aspire
-     Acer Aspire others
-+macpro-gpio
-+    GPIO setup for Mac Pro
-+dac-route
-+    Workaround for DAC routing on Acer Aspire
-+mbp-vref
-+    Vref setup for Macbook Pro
-+imac91-vref
-+    Vref setup for iMac 9,1
-+mba11-vref
-+    Vref setup for MacBook Air 1,1
-+mba21-vref
-+    Vref setup for MacBook Air 2,1
-+mp11-vref
-+    Vref setup for Mac Pro 1,1
-+mp41-vref
-+    Vref setup for Mac Pro 4,1
- inv-dmic
-     Inverted internal mic workaround
- no-primary-hp
-     VAIO Z/VGC-LN51JGB workaround (for fixed speaker DAC)
-+asus-bass
-+    Bass speaker setup for ASUS ET2700
+@@ -70,6 +70,10 @@ dell-headset-multi
+     Headset jack, which can also be used as mic-in
+ dell-headset-dock
+     Headset jack (without mic-in), and also dock I/O
++dell-headset3
++    Headset jack (without mic-in), and also dock I/O, variant 3
++dell-headset4
++    Headset jack (without mic-in), and also dock I/O, variant 4
+ alc283-dac-wcaps
+     Fixups for Chromebook with ALC283
+ alc283-sense-combo
+@@ -80,10 +84,162 @@ tpt440
+     Lenovo Thinkpad T440s setup
+ tpt460
+     Lenovo Thinkpad T460/560 setup
++tpt470-dock
++    Lenovo Thinkpad T470 dock setup
  dual-codecs
-     ALC1220 dual codecs for Gaming mobos
-+clevo-p950
-+    Fixups for Clevo P950
+     Lenovo laptops with dual codecs
+ alc700-ref
+     Intel reference board with ALC700 codec
++vaio
++    Pin fixups for Sony VAIO laptops
++dell-m101z
++    COEF setup for Dell M101z
++asus-g73jw
++    Subwoofer pin fixup for ASUS G73JW
++lenovo-eapd
++    Inversed EAPD setup for Lenovo laptops
++sony-hweq
++    H/W EQ COEF setup for Sony laptops
++pcm44k
++    Fixed PCM 44kHz constraints (for buggy devices)
++lifebook
++    Dock pin fixups for Fujitsu Lifebook
++lifebook-extmic
++    Headset mic fixup for Fujitsu Lifebook
++lifebook-hp-pin
++    Headphone pin fixup for Fujitsu Lifebook
++lifebook-u7x7
++    Lifebook U7x7 fixups
++alc269vb-amic
++    ALC269VB analog mic pin fixups
++alc269vb-dmic
++    ALC269VB digital mic pin fixups
++hp-mute-led-mic1
++    Mute LED via Mic1 pin on HP
++hp-mute-led-mic2
++    Mute LED via Mic2 pin on HP
++hp-mute-led-mic3
++    Mute LED via Mic3 pin on HP
++hp-gpio-mic1
++    GPIO + Mic1 pin LED on HP
++hp-line1-mic1
++    Mute LED via Line1 + Mic1 pins on HP
++noshutup
++    Skip shutup callback
++sony-nomic
++    Headset mic fixup for Sony laptops
++aspire-headset-mic
++    Headset pin fixup for Acer Aspire
++asus-x101
++    ASUS X101 fixups
++acer-ao7xx
++    Acer AO7xx fixups
++acer-aspire-e1
++    Acer Aspire E1 fixups
++acer-ac700
++    Acer AC700 fixups
++limit-mic-boost
++    Limit internal mic boost on Lenovo machines
++asus-zenbook
++    ASUS Zenbook fixups
++asus-zenbook-ux31a
++    ASUS Zenbook UX31A fixups
++ordissimo
++    Ordissimo EVE2 (or Malata PC-B1303) fixups
++asus-tx300
++    ASUS TX300 fixups
++alc283-int-mic
++    ALC283 COEF setup for Lenovo machines
++mono-speakers
++    Subwoofer and headset fixupes for Dell Inspiron
++alc290-subwoofer
++    Subwoofer fixups for Dell Vostro
++thinkpad
++    Binding with thinkpad_acpi driver for Lenovo machines
++dmic-thinkpad
++    thinkpad_acpi binding + digital mic support
++alc255-acer
++    ALC255 fixups on Acer machines
++alc255-asus
++    ALC255 fixups on ASUS machines
++alc255-dell1
++    ALC255 fixups on Dell machines
++alc255-dell2
++    ALC255 fixups on Dell machines, variant 2
++alc293-dell1
++    ALC293 fixups on Dell machines
++alc283-headset
++    Headset pin fixups on ALC283
++aspire-v5
++    Acer Aspire V5 fixups
++hp-gpio4
++    GPIO and Mic1 pin mute LED fixups for HP
++hp-gpio-led
++    GPIO mute LEDs on HP
++hp-gpio2-hotkey
++    GPIO mute LED with hot key handling on HP
++hp-dock-pins
++    GPIO mute LEDs and dock support on HP
++hp-dock-gpio-mic
++    GPIO, Mic mute LED and dock support on HP
++hp-9480m
++    HP 9480m fixups
++alc288-dell1
++    ALC288 fixups on Dell machines
++alc288-dell-xps13
++    ALC288 fixups on Dell XPS13
++dell-e7x
++    Dell E7x fixups
++alc293-dell
++    ALC293 fixups on Dell machines
++alc298-dell1
++    ALC298 fixups on Dell machines
++alc298-dell-aio
++    ALC298 fixups on Dell AIO machines
++alc275-dell-xps
++    ALC275 fixups on Dell XPS models
++alc256-dell-xps13
++    ALC256 fixups on Dell XPS13
++lenovo-spk-noise
++    Workaround for speaker noise on Lenovo machines
++lenovo-hotkey
++    Hot-key support via Mic2 pin on Lenovo machines
++dell-spk-noise
++    Workaround for speaker noise on Dell machines
++alc255-dell1
++    ALC255 fixups on Dell machines
++alc295-disable-dac3
++    Disable DAC3 routing on ALC295
++alc280-hp-headset
++    HP Elitebook fixups
++alc221-hp-mic
++    Front mic pin fixup on HP machines
++alc298-spk-volume
++    Speaker pin routing workaround on ALC298
++dell-inspiron-7559
++    Dell Inspiron 7559 fixups
++ativ-book
++    Samsung Ativ book 8 fixups
++alc221-hp-mic
++    ALC221 headset fixups on HP machines
++alc256-asus-mic
++    ALC256 fixups on ASUS machines
++alc256-asus-aio
++    ALC256 fixups on ASUS AIO machines
++alc233-eapd
++    ALC233 fixups on ASUS machines
++alc294-lenovo-mic
++    ALC294 Mic pin fixup for Lenovo AIO machines
++alc225-wyse
++    Dell Wyse fixups
++alc274-dell-aio
++    ALC274 fixups on Dell AIO machines
++alc255-dummy-lineout
++    Dell Precision 3930 fixups
++alc255-dell-headset"},
++    Dell Precision 3630 fixups
++alc295-hp-x360
++    HP Spectre X360 fixups
  
- ALC861/660
- ==========
+ ALC66x/67x/892
+ ==============
 diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index d4a231b92fcc..63154b9ad3c9 100644
+index ba23f766e945..de77763e2725 100644
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -2374,12 +2374,37 @@ static const struct snd_pci_quirk alc882_fixup_tbl[] = {
- };
- 
- static const struct hda_model_fixup alc882_fixup_models[] = {
-+	{.id = ALC882_FIXUP_ABIT_AW9D_MAX, .name = "abit-aw9d"},
-+	{.id = ALC882_FIXUP_LENOVO_Y530, .name = "lenovo-y530"},
-+	{.id = ALC882_FIXUP_ACER_ASPIRE_7736, .name = "acer-aspire-7736"},
-+	{.id = ALC882_FIXUP_ASUS_W90V, .name = "asus-w90v"},
-+	{.id = ALC889_FIXUP_CD, .name = "cd"},
-+	{.id = ALC889_FIXUP_FRONT_HP_NO_PRESENCE, .name = "no-front-hp"},
-+	{.id = ALC889_FIXUP_VAIO_TT, .name = "vaio-tt"},
-+	{.id = ALC888_FIXUP_EEE1601, .name = "eee1601"},
-+	{.id = ALC882_FIXUP_EAPD, .name = "alc882-eapd"},
-+	{.id = ALC883_FIXUP_EAPD, .name = "alc883-eapd"},
-+	{.id = ALC882_FIXUP_GPIO1, .name = "gpio1"},
-+	{.id = ALC882_FIXUP_GPIO2, .name = "gpio2"},
-+	{.id = ALC882_FIXUP_GPIO3, .name = "gpio3"},
-+	{.id = ALC889_FIXUP_COEF, .name = "alc889-coef"},
-+	{.id = ALC882_FIXUP_ASUS_W2JC, .name = "asus-w2jc"},
- 	{.id = ALC882_FIXUP_ACER_ASPIRE_4930G, .name = "acer-aspire-4930g"},
- 	{.id = ALC882_FIXUP_ACER_ASPIRE_8930G, .name = "acer-aspire-8930g"},
- 	{.id = ALC883_FIXUP_ACER_EAPD, .name = "acer-aspire"},
-+	{.id = ALC885_FIXUP_MACPRO_GPIO, .name = "macpro-gpio"},
-+	{.id = ALC889_FIXUP_DAC_ROUTE, .name = "dac-route"},
-+	{.id = ALC889_FIXUP_MBP_VREF, .name = "mbp-vref"},
-+	{.id = ALC889_FIXUP_IMAC91_VREF, .name = "imac91-vref"},
-+	{.id = ALC889_FIXUP_MBA11_VREF, .name = "mba11-vref"},
-+	{.id = ALC889_FIXUP_MBA21_VREF, .name = "mba21-vref"},
-+	{.id = ALC889_FIXUP_MP11_VREF, .name = "mp11-vref"},
-+	{.id = ALC889_FIXUP_MP41_VREF, .name = "mp41-vref"},
- 	{.id = ALC882_FIXUP_INV_DMIC, .name = "inv-dmic"},
- 	{.id = ALC882_FIXUP_NO_PRIMARY_HP, .name = "no-primary-hp"},
-+	{.id = ALC887_FIXUP_ASUS_BASS, .name = "asus-bass"},
- 	{.id = ALC1220_FIXUP_GB_DUAL_CODECS, .name = "dual-codecs"},
-+	{.id = ALC1220_FIXUP_CLEVO_P950, .name = "clevo-p950"},
+@@ -6622,13 +6622,95 @@ static const struct hda_model_fixup alc269_fixup_models[] = {
+ 	{.id = ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED, .name = "hp-dock-gpio-mic1-led"},
+ 	{.id = ALC269_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "dell-headset-multi"},
+ 	{.id = ALC269_FIXUP_DELL2_MIC_NO_PRESENCE, .name = "dell-headset-dock"},
++	{.id = ALC269_FIXUP_DELL3_MIC_NO_PRESENCE, .name = "dell-headset3"},
++	{.id = ALC269_FIXUP_DELL4_MIC_NO_PRESENCE, .name = "dell-headset4"},
+ 	{.id = ALC283_FIXUP_CHROME_BOOK, .name = "alc283-dac-wcaps"},
+ 	{.id = ALC283_FIXUP_SENSE_COMBO_JACK, .name = "alc283-sense-combo"},
+ 	{.id = ALC292_FIXUP_TPT440_DOCK, .name = "tpt440-dock"},
+ 	{.id = ALC292_FIXUP_TPT440, .name = "tpt440"},
+ 	{.id = ALC292_FIXUP_TPT460, .name = "tpt460"},
++	{.id = ALC298_FIXUP_TPT470_DOCK, .name = "tpt470-dock"},
+ 	{.id = ALC233_FIXUP_LENOVO_MULTI_CODECS, .name = "dual-codecs"},
+ 	{.id = ALC700_FIXUP_INTEL_REFERENCE, .name = "alc700-ref"},
++	{.id = ALC269_FIXUP_SONY_VAIO, .name = "vaio"},
++	{.id = ALC269_FIXUP_DELL_M101Z, .name = "dell-m101z"},
++	{.id = ALC269_FIXUP_ASUS_G73JW, .name = "asus-g73jw"},
++	{.id = ALC269_FIXUP_LENOVO_EAPD, .name = "lenovo-eapd"},
++	{.id = ALC275_FIXUP_SONY_HWEQ, .name = "sony-hweq"},
++	{.id = ALC269_FIXUP_PCM_44K, .name = "pcm44k"},
++	{.id = ALC269_FIXUP_LIFEBOOK, .name = "lifebook"},
++	{.id = ALC269_FIXUP_LIFEBOOK_EXTMIC, .name = "lifebook-extmic"},
++	{.id = ALC269_FIXUP_LIFEBOOK_HP_PIN, .name = "lifebook-hp-pin"},
++	{.id = ALC255_FIXUP_LIFEBOOK_U7x7_HEADSET_MIC, .name = "lifebook-u7x7"},
++	{.id = ALC269VB_FIXUP_AMIC, .name = "alc269vb-amic"},
++	{.id = ALC269VB_FIXUP_DMIC, .name = "alc269vb-dmic"},
++	{.id = ALC269_FIXUP_HP_MUTE_LED_MIC1, .name = "hp-mute-led-mic1"},
++	{.id = ALC269_FIXUP_HP_MUTE_LED_MIC2, .name = "hp-mute-led-mic2"},
++	{.id = ALC269_FIXUP_HP_MUTE_LED_MIC3, .name = "hp-mute-led-mic3"},
++	{.id = ALC269_FIXUP_HP_GPIO_MIC1_LED, .name = "hp-gpio-mic1"},
++	{.id = ALC269_FIXUP_HP_LINE1_MIC1_LED, .name = "hp-line1-mic1"},
++	{.id = ALC269_FIXUP_NO_SHUTUP, .name = "noshutup"},
++	{.id = ALC286_FIXUP_SONY_MIC_NO_PRESENCE, .name = "sony-nomic"},
++	{.id = ALC269_FIXUP_ASPIRE_HEADSET_MIC, .name = "aspire-headset-mic"},
++	{.id = ALC269_FIXUP_ASUS_X101, .name = "asus-x101"},
++	{.id = ALC271_FIXUP_HP_GATE_MIC_JACK, .name = "acer-ao7xx"},
++	{.id = ALC271_FIXUP_HP_GATE_MIC_JACK_E1_572, .name = "acer-aspire-e1"},
++	{.id = ALC269_FIXUP_ACER_AC700, .name = "acer-ac700"},
++	{.id = ALC269_FIXUP_LIMIT_INT_MIC_BOOST, .name = "limit-mic-boost"},
++	{.id = ALC269VB_FIXUP_ASUS_ZENBOOK, .name = "asus-zenbook"},
++	{.id = ALC269VB_FIXUP_ASUS_ZENBOOK_UX31A, .name = "asus-zenbook-ux31a"},
++	{.id = ALC269VB_FIXUP_ORDISSIMO_EVE2, .name = "ordissimo"},
++	{.id = ALC282_FIXUP_ASUS_TX300, .name = "asus-tx300"},
++	{.id = ALC283_FIXUP_INT_MIC, .name = "alc283-int-mic"},
++	{.id = ALC290_FIXUP_MONO_SPEAKERS_HSJACK, .name = "mono-speakers"},
++	{.id = ALC290_FIXUP_SUBWOOFER_HSJACK, .name = "alc290-subwoofer"},
++	{.id = ALC269_FIXUP_THINKPAD_ACPI, .name = "thinkpad"},
++	{.id = ALC269_FIXUP_DMIC_THINKPAD_ACPI, .name = "dmic-thinkpad"},
++	{.id = ALC255_FIXUP_ACER_MIC_NO_PRESENCE, .name = "alc255-acer"},
++	{.id = ALC255_FIXUP_ASUS_MIC_NO_PRESENCE, .name = "alc255-asus"},
++	{.id = ALC255_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "alc255-dell1"},
++	{.id = ALC255_FIXUP_DELL2_MIC_NO_PRESENCE, .name = "alc255-dell2"},
++	{.id = ALC293_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "alc293-dell1"},
++	{.id = ALC283_FIXUP_HEADSET_MIC, .name = "alc283-headset"},
++	{.id = ALC255_FIXUP_DELL_WMI_MIC_MUTE_LED, .name = "alc255-dell-mute"},
++	{.id = ALC282_FIXUP_ASPIRE_V5_PINS, .name = "aspire-v5"},
++	{.id = ALC280_FIXUP_HP_GPIO4, .name = "hp-gpio4"},
++	{.id = ALC286_FIXUP_HP_GPIO_LED, .name = "hp-gpio-led"},
++	{.id = ALC280_FIXUP_HP_GPIO2_MIC_HOTKEY, .name = "hp-gpio2-hotkey"},
++	{.id = ALC280_FIXUP_HP_DOCK_PINS, .name = "hp-dock-pins"},
++	{.id = ALC269_FIXUP_HP_DOCK_GPIO_MIC1_LED, .name = "hp-dock-gpio-mic"},
++	{.id = ALC280_FIXUP_HP_9480M, .name = "hp-9480m"},
++	{.id = ALC288_FIXUP_DELL_HEADSET_MODE, .name = "alc288-dell-headset"},
++	{.id = ALC288_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "alc288-dell1"},
++	{.id = ALC288_FIXUP_DELL_XPS_13, .name = "alc288-dell-xps13"},
++	{.id = ALC292_FIXUP_DELL_E7X, .name = "dell-e7x"},
++	{.id = ALC293_FIXUP_DISABLE_AAMIX_MULTIJACK, .name = "alc293-dell"},
++	{.id = ALC298_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "alc298-dell1"},
++	{.id = ALC298_FIXUP_DELL_AIO_MIC_NO_PRESENCE, .name = "alc298-dell-aio"},
++	{.id = ALC275_FIXUP_DELL_XPS, .name = "alc275-dell-xps"},
++	{.id = ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE, .name = "alc256-dell-xps13"},
++	{.id = ALC293_FIXUP_LENOVO_SPK_NOISE, .name = "lenovo-spk-noise"},
++	{.id = ALC233_FIXUP_LENOVO_LINE2_MIC_HOTKEY, .name = "lenovo-hotkey"},
++	{.id = ALC255_FIXUP_DELL_SPK_NOISE, .name = "dell-spk-noise"},
++	{.id = ALC225_FIXUP_DELL1_MIC_NO_PRESENCE, .name = "alc255-dell1"},
++	{.id = ALC295_FIXUP_DISABLE_DAC3, .name = "alc295-disable-dac3"},
++	{.id = ALC280_FIXUP_HP_HEADSET_MIC, .name = "alc280-hp-headset"},
++	{.id = ALC221_FIXUP_HP_FRONT_MIC, .name = "alc221-hp-mic"},
++	{.id = ALC298_FIXUP_SPK_VOLUME, .name = "alc298-spk-volume"},
++	{.id = ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER, .name = "dell-inspiron-7559"},
++	{.id = ALC269_FIXUP_ATIV_BOOK_8, .name = "ativ-book"},
++	{.id = ALC221_FIXUP_HP_MIC_NO_PRESENCE, .name = "alc221-hp-mic"},
++	{.id = ALC256_FIXUP_ASUS_HEADSET_MODE, .name = "alc256-asus-headset"},
++	{.id = ALC256_FIXUP_ASUS_MIC, .name = "alc256-asus-mic"},
++	{.id = ALC256_FIXUP_ASUS_AIO_GPIO2, .name = "alc256-asus-aio"},
++	{.id = ALC233_FIXUP_ASUS_MIC_NO_PRESENCE, .name = "alc233-asus"},
++	{.id = ALC233_FIXUP_EAPD_COEF_AND_MIC_NO_PRESENCE, .name = "alc233-eapd"},
++	{.id = ALC294_FIXUP_LENOVO_MIC_LOCATION, .name = "alc294-lenovo-mic"},
++	{.id = ALC225_FIXUP_DELL_WYSE_MIC_NO_PRESENCE, .name = "alc225-wyse"},
++	{.id = ALC274_FIXUP_DELL_AIO_LINEOUT_VERB, .name = "alc274-dell-aio"},
++	{.id = ALC255_FIXUP_DUMMY_LINEOUT_VERB, .name = "alc255-dummy-lineout"},
++	{.id = ALC255_FIXUP_DELL_HEADSET_MIC, .name = "alc255-dell-headset"},
++	{.id = ALC295_FIXUP_HP_X360, .name = "alc295-hp-x360"},
  	{}
  };
- 
+ #define ALC225_STANDARD_PINS \
 -- 
 2.17.1
