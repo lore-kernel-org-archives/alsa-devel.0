@@ -1,33 +1,30 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: apq8096: remove redundant owner
-	assignment" to the asoc tree
-Date: Tue, 26 Jun 2018 16:10:57 +0100 (BST)
-Message-ID: <20180626151057.A5751440070@finisterre.ee.mobilebroadband>
-References: <20180625143115.8346-11-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qdsp6: q6asm-dai: support dt based module loading" to
+ the asoc tree
+Date: Tue, 26 Jun 2018 16:11:02 +0100 (BST)
+Message-ID: <20180626151102.612F1440070@finisterre.ee.mobilebroadband>
+References: <20180626092016.9296-9-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 039D72678FE
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:10:59 +0200 (CEST)
-In-Reply-To: <20180625143115.8346-11-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: rohkumar@qti.qualcomm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, niklas.cassel@linaro.org, linux-arm-kernel@lists.infradead.org
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <20180626092016.9296-9-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com, broonie@kernel.org, niklas.cassel@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: apq8096: remove redundant owner assignment
+   ASoC: qdsp6: q6asm-dai: support dt based module loading
 
 has been applied to the asoc tree at
 
@@ -52,32 +49,40 @@ to this mail.
 Thanks,
 Mark
 
->From 2d12c20b98ad610892151da37367f2d018181455 Mon Sep 17 00:00:00 2001
+>From 1ce09ef36fb190fa207fdb3e31fc1c8caa292125 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 26 Jun 2018 10:20:14 +0100
-Subject: [PATCH] ASoC: qcom: apq8096: remove redundant owner assignment
+Date: Tue, 26 Jun 2018 10:20:12 +0100
+Subject: [PATCH] ASoC: qdsp6: q6asm-dai: support dt based module loading
 
-module owner is already set in platform_driver_register(), so remove this
-redundant assignment.
+This patch uses new compatible string to make DT based module loading work.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/apq8096.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 239b8cb77bdb..cab8c4ff7c00 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -246,7 +246,6 @@ static struct platform_driver msm_snd_apq8096_driver = {
- 	.remove = apq8096_platform_remove,
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index 349c6a883c63..1196dc7483d2 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -611,9 +611,16 @@ static int q6asm_dai_dev_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
++static const struct of_device_id q6asm_dai_device_id[] = {
++	{ .compatible = "qcom,q6asm-dais" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, q6asm_dai_device_id);
++
+ static struct platform_driver q6asm_dai_platform_driver = {
  	.driver = {
- 		.name = "msm-snd-apq8096",
--		.owner = THIS_MODULE,
- 		.of_match_table = msm_snd_apq8096_dt_match,
+ 		.name = "q6asm-dai",
++		.of_match_table = of_match_ptr(q6asm_dai_device_id),
  	},
- };
+ 	.probe = q6asm_dai_probe,
+ 	.remove = q6asm_dai_dev_remove,
 -- 
 2.17.1
