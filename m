@@ -1,19 +1,21 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [PATCH 3/4] alsa: multisound.sh: update module
-	namespace
-Date: Tue, 26 Jun 2018 06:24:39 -0300
-Message-ID: <5dbfe342b316515c88650fe7aadb2816e4312d3d.1530004939.git.mchehab+samsung@kernel.org>
-References: <cover.1530004939.git.mchehab+samsung@kernel.org>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: Re: [PATCH v4 3/7] soundwire: Add support to lock
+ across	bus instances
+Date: Tue, 26 Jun 2018 14:53:59 +0530
+Message-ID: <20180626092359.GD15119@snc-desk>
+References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
+ <1529924340-30065-4-git-send-email-shreyas.nc@intel.com>
+ <s5hy3f3yrbd.wl-tiwai@suse.de> <20180626082200.GC15119@snc-desk>
+ <s5hy3f2aquu.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from osg.samsung.com (osg.samsung.com [64.30.133.232])
- by alsa0.perex.cz (Postfix) with ESMTP id 5418F26787F
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 11:24:49 +0200 (CEST)
-In-Reply-To: <cover.1530004939.git.mchehab+samsung@kernel.org>
-In-Reply-To: <cover.1530004939.git.mchehab+samsung@kernel.org>
-References: <cover.1530004939.git.mchehab+samsung@kernel.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id B94372678CD
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 11:25:28 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hy3f2aquu.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,193 +25,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The modules for the cards described here changed their names.
-Update accordingly.
+On Tue, Jun 26, 2018 at 10:34:17AM +0200, Takashi Iwai wrote:
+> On Tue, 26 Jun 2018 10:22:01 +0200,
+> Shreyas NC wrote:
+> > 
+> > > > +/**
+> > > > + * sdw_acquire_bus_lock: Acquire bus lock for all Master runtime(s)
+> > > > + *
+> > > > + * @stream: SoundWire stream
+> > > > + *
+> > > > + * Acquire bus_lock for each of the master runtime(m_rt) part of this
+> > > > + * stream to reconfigure the bus.
+> > > > + */
+> > > > +static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
+> > > > +{
+> > > > +	struct sdw_master_runtime *m_rt = NULL;
+> > > > +	struct sdw_bus *bus = NULL;
+> > > > +
+> > > > +	/* Iterate for all Master(s) in Master list */
+> > > > +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+> > > > +		bus = m_rt->bus;
+> > > > +
+> > > > +		mutex_lock(&bus->bus_lock);
+> > > > +	}
+> > > > +}
+> > > 
+> > > So it's nested locks?  Then you'd need some more trick to deal with
+> > > the lockdep.  I guess you'll get the false-positive deadlock detection
+> > > by this code when the mutex lock debug is enabled.
+> > > 
+> > > Also, is the linked order assured not to lead to a real deadlock?
+> > >
+> > 
+> > Hi Takashi,
+> > 
+> > Thanks for the review :)
+> > 
+> > A multi link SoundWire stream consists of a list of Master runtimes and
+> > more importantly only one master runtime per SoundWire bus instance.
+> > 
+> > So, these mutexes are actually different mutex locks(one per bus instance)
+> > and are not nested.
+> 
+> You take a mutex lock inside a mutex lock, so they are nested.
+> If they take the very same lock, it's called a "deadlock" instead.
+> 
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
----
- Documentation/sound/cards/multisound.sh | 72 ++++++++++++-------------
- 1 file changed, 36 insertions(+), 36 deletions(-)
+Ok, myy bad, I misunderstood the comment :(
 
-diff --git a/Documentation/sound/cards/multisound.sh b/Documentation/sound/cards/multisound.sh
-index 0e0cb029421b..a915a1affcde 100755
---- a/Documentation/sound/cards/multisound.sh
-+++ b/Documentation/sound/cards/multisound.sh
-@@ -34,12 +34,12 @@
- #  composed of the following modules (these can also operate compiled
- #  into the kernel):
- #
--#  msnd               - MultiSound base (requires soundcore)
-+#  snd-msnd-lib           - MultiSound base (requires snd)
- #
--#  msnd_classic       - Base audio/mixer support for Classic, Monetery and
--#                       Tahiti cards
-+#  snd-msnd-classic       - Base audio/mixer support for Classic, Monetery and
-+#                           Tahiti cards
- #
--#  msnd_pinnacle      - Base audio/mixer support for Pinnacle and Fiji cards
-+#  snd-msnd-pinnacle      - Base audio/mixer support for Pinnacle and Fiji cards
- #
- #
- #  Important Notes - Read Before Using
-@@ -66,7 +66,7 @@
- #
- #  * Classic/Monterey/Tahiti
- #
--#  These cards are configured through the driver msnd_classic.  You must
-+#  These cards are configured through the driver snd-msnd-classic.  You must
- #  know the io port, then the driver will select the irq and memory resources
- #  on the card.  It is up to you to know if these are free locations or now,
- #  a conflict can lock the machine up.
-@@ -81,10 +81,10 @@
- #  can be used to configure the card in non-PnP mode, and in PnP mode
- #  you can use isapnptools.  These are described briefly here.
- #
--#  pinnaclecfg is not required; you can use the msnd_pinnacle module
-+#  pinnaclecfg is not required; you can use the snd-msnd-pinnacle module
- #  to fully configure the card as well.  However, pinnaclecfg can be
- #  used to change the resource values of a particular device after the
--#  msnd_pinnacle module has been loaded.  If you are compiling the
-+#  snd-msnd-pinnacle module has been loaded.  If you are compiling the
- #  driver into the kernel, you must set these values during compile
- #  time, however other peripheral resource values can be changed with
- #  the pinnaclecfg program after the kernel is loaded.
-@@ -96,7 +96,7 @@
- #  to obtain one with the command `pnpdump 1 0x203' -- this may vary
- #  for you (running pnpdump by itself did not work for me).  Then,
- #  edit this file and use isapnp to uncomment and set the card values.
--#  Use these values when inserting the msnd_pinnacle module.  Using
-+#  Use these values when inserting the snd-msnd-pinnacle module.  Using
- #  this method, you can set the resources for the DSP and the Kurzweil
- #  synth (Pinnacle).  Since Linux does not directly support PnP
- #  devices, you may have difficulty when using the card in PnP mode
-@@ -133,16 +133,16 @@
- #  pinnaclecfg program.  Using this program, you can assign the
- #  resource values to the card's devices, or disable the devices.  As
- #  an alternative to using pinnaclecfg, you can specify many of the
--#  configuration values when loading the msnd_pinnacle module (or
-+#  configuration values when loading the snd-msnd-pinnacle module (or
- #  during kernel configuration when compiling the driver into the
- #  kernel).
- #
--#  If you specify cfg=0x250 for the msnd_pinnacle module, it
-+#  If you specify cfg=0x250 for the snd-msnd-pinnacle module, it
- #  automatically configure the card to the given io, irq and memory
- #  values using that config port (the config port is jumper selectable
- #  on the card to 0x250, 0x260 or 0x270).
- #
--#  See the `msnd_pinnacle Additional Options' section below for more
-+#  See the `snd-msnd-pinnacle Additional Options' section below for more
- #  information on these parameters (also, if you compile the driver
- #  directly into the kernel, these extra parameters can be useful
- #  here).
-@@ -157,44 +157,44 @@
- #
- #  * MultiSound Classic/Monterey/Tahiti:
- #
--#  modprobe soundcore
--#  insmod msnd
--#  insmod msnd_classic io=0x290 irq=7 mem=0xd0000
-+#  modprobe snd
-+#  insmod snd-msnd-lib
-+#  insmod snd-msnd-classic io=0x290 irq=7 mem=0xd0000
- #
- #  * MultiSound Pinnacle in PnP mode:
- #
--#  modprobe soundcore
--#  insmod msnd
-+#  modprobe snd
-+#  insmod snd-msnd-lib
- #  isapnp mypinnacle.conf
--#  insmod msnd_pinnacle io=0x210 irq=5 mem=0xd8000 <-- match mypinnacle.conf values
-+#  insmod snd-msnd-pinnacle io=0x210 irq=5 mem=0xd8000 <-- match mypinnacle.conf values
- #
- #  * MultiSound Pinnacle in non-PnP mode (replace 0x250 with your configuration port,
- #    one of 0x250, 0x260 or 0x270):
- #
--#  insmod soundcore
--#  insmod msnd
--#  insmod msnd_pinnacle cfg=0x250 io=0x290 irq=5 mem=0xd0000
-+#  modprobe snd
-+#  insmod snd-msnd-lib
-+#  insmod snd-msnd-pinnacle cfg=0x250 io=0x290 irq=5 mem=0xd0000
- #
- # * To use the MPU-compatible Kurzweil synth on the Pinnacle in PnP
- #   mode, add the following (assumes you did `isapnp mypinnacle.conf'):
- #
--#  insmod sound
-+#  insmod snd
- #  insmod mpu401 io=0x330 irq=9                    <-- match mypinnacle.conf values
- #
- # * To use the MPU-compatible Kurzweil synth on the Pinnacle in non-PnP
- #   mode, add the following.  Note how we first configure the peripheral's
- #   resources, _then_ install a Linux driver for it:
- #
--#  insmod sound
-+#  insmod snd
- #  pinnaclecfg 0x250 mpu 0x330 9
- #  insmod mpu401 io=0x330 irq=9
- #
- #  -- OR you can use the following sequence without pinnaclecfg in non-PnP mode:
- #
--#  insmod soundcore
--#  insmod msnd
--#  insmod msnd_pinnacle cfg=0x250 io=0x290 irq=5 mem=0xd0000 mpu_io=0x330 mpu_irq=9
--#  insmod sound
-+#  modprobe snd
-+#  insmod snd-msnd-lib
-+#  insmod snd-msnd-pinnacle cfg=0x250 io=0x290 irq=5 mem=0xd0000 mpu_io=0x330 mpu_irq=9
-+#  insmod snd
- #  insmod mpu401 io=0x330 irq=9
- #
- # * To setup the joystick port on the Pinnacle in non-PnP mode (though
-@@ -203,15 +203,15 @@
- #
- #   pinnaclecfg 0x250 joystick 0x200
- #
--#  -- OR you can configure this using msnd_pinnacle with the following:
-+#  -- OR you can configure this using snd-msnd-pinnacle with the following:
- #
--#  insmod soundcore
--#  insmod msnd
--#  insmod msnd_pinnacle cfg=0x250 io=0x290 irq=5 mem=0xd0000 joystick_io=0x200
-+#  modprobe snd
-+#  insmod snd-msnd-lib
-+#  insmod snd-msnd-pinnacle cfg=0x250 io=0x290 irq=5 mem=0xd0000 joystick_io=0x200
- #
- #
--#  msnd_classic, msnd_pinnacle Required Options
--#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+#  snd-msnd-classic, snd-msnd-pinnacle Required Options
-+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- #
- #  If the following options are not given, the module will not load.
- #  Examine the kernel message log for informative error messages.
-@@ -223,8 +223,8 @@
- #  mem                  Shared memory area, e.g. mem=0xd8000
- #
- #
--#  msnd_classic, msnd_pinnacle Additional Options
--#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+#  snd-msnd-classic, snd-msnd-pinnacle Additional Options
-+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- #
- #  fifosize             The digital audio FIFOs, in kilobytes.  If not
- #                       specified, the default will be used.  Increasing
-@@ -244,8 +244,8 @@
- #                       to zero).
- #
- #
--#  msnd_pinnacle Additional Options
--#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+#  snd-msnd-pinnacle Additional Options
-+#  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- #
- #  digital              Specify digital=1 to enable the S/PDIF input
- #                       if you have the digital daughterboard
+I forgot to add that I did check with mutex debug enabled and lockdep did
+not complain though :)
+
+> > In SDW we have a bus instance per Master (link). In multi-link case, a
+> > stream may have multiple Masters, thus we need to lock all bus instances
+> > before we operate on them.
+> > 
+> > Now since these are invoked from a stream (pcm ops) they will be always
+> > serialized and DPCM ensures we are never racing.
+> > 
+> > We did add this note here and in Documentation to make it explicit.
+> 
+> Well, my question is whether the order to take the multiple locks is
+> always assured.  You're calling like:
+> 
+> 	list_for_each_entry(m_rt, &stream->master_list, stream_node)
+> 		mutex_lock();
+> 
+> And it's a linked-list.  If a stream has a link of masters like
+> M1->M2->M3 while another stream has a link like M2->M1->M3, it'll lead
+> to a deadlock with the concurrent calls above.
+> 
+
+These are called from PCM stream ops context and the DPCM holds
+lock(fe->card->mutex) which serializes these operations.
+So, in the scenario you have mentioned, we would not have
+concurrent calls to this function.
+
+> > > > +/**
+> > > > + * sdw_release_bus_lock: Release bus lock for all Master runtime(s)
+> > > > + *
+> > > > + * @stream: SoundWire stream
+> > > > + *
+> > > > + * Release the previously held bus_lock after reconfiguring the bus.
+> > > > + */
+> > > > +static void sdw_release_bus_lock(struct sdw_stream_runtime *stream)
+> > > > +{
+> > > > +	struct sdw_master_runtime *m_rt = NULL;
+> > > > +	struct sdw_bus *bus = NULL;
+> > > > +
+> > > > +	/* Iterate for all Master(s) in Master list */
+> > > > +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+> > > > +		bus = m_rt->bus;
+> > > > +		mutex_unlock(&bus->bus_lock);
+> > > > +	}
+> > > 
+> > > ... and this looks bad.  The loop for unlocking should be traversed
+> > > reversely.
+> > > 
+> > 
+> > Yes in principle I agree locking should be in reverse, but as explained
+> > above in this case, it does not matter much :)
+> 
+> It does matter when you dealing with the multiple nested mutexes...
+> 
+
+Ok
+
+--Shreyas
+
 -- 
-2.17.1
