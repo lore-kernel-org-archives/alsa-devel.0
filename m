@@ -1,31 +1,20 @@
-From: Chen-Yu Tsai <wens@csie.org>
-Subject: Re: [PATCH 1/2] ASoC: add generic simple-amplifier
-	support
-Date: Tue, 26 Jun 2018 11:20:37 +0800
-Message-ID: <CAGb2v64v4DEsXL4M2SsjjABgvOwANDQfGOTum0kL_JMYJ+vbug@mail.gmail.com>
-References: <1529924777-21136-1-git-send-email-nicveronese@gmail.com>
- <20180625112144.GB9413@sirena.org.uk> <1529926289.2900.26.camel@baylibre.com>
- <CAGb2v64D=DC02vVfwJj3XHwQTcAeS6y6fujdj2v=f5O5QHmLxg@mail.gmail.com>
- <20180625123952.GJ9413@sirena.org.uk>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: Re: [PATCH v4 3/7] soundwire: Add support to lock
+ across	bus instances
+Date: Tue, 26 Jun 2018 13:52:01 +0530
+Message-ID: <20180626082200.GC15119@snc-desk>
+References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
+ <1529924340-30065-4-git-send-email-shreyas.nc@intel.com>
+ <s5hy3f3yrbd.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f67.google.com (mail-ed1-f67.google.com
- [209.85.208.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 914E92673F5
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 05:20:59 +0200 (CEST)
-Received: by mail-ed1-f67.google.com with SMTP id r17-v6so52726edo.13
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 20:20:59 -0700 (PDT)
-Received: from mail-wm0-f44.google.com (mail-wm0-f44.google.com.
- [74.125.82.44])
- by smtp.gmail.com with ESMTPSA id b20-v6sm204291edr.26.2018.06.25.20.20.58
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 25 Jun 2018 20:20:58 -0700 (PDT)
-Received: by mail-wm0-f44.google.com with SMTP id w137-v6so98147wmw.1
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 20:20:58 -0700 (PDT)
-In-Reply-To: <20180625123952.GJ9413@sirena.org.uk>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id DCB682676B4
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 10:23:34 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hy3f3yrbd.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,42 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, Linux-ALSA <alsa-devel@alsa-project.org>, =?UTF-8?Q?Nicol=C3=B2_Veronese?= <nicveronese@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jun 25, 2018 at 8:39 PM, Mark Brown <broonie@kernel.org> wrote:
-> On Mon, Jun 25, 2018 at 08:28:32PM +0800, Chen-Yu Tsai wrote:
+> > +/**
+> > + * sdw_acquire_bus_lock: Acquire bus lock for all Master runtime(s)
+> > + *
+> > + * @stream: SoundWire stream
+> > + *
+> > + * Acquire bus_lock for each of the master runtime(m_rt) part of this
+> > + * stream to reconfigure the bus.
+> > + */
+> > +static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
+> > +{
+> > +	struct sdw_master_runtime *m_rt = NULL;
+> > +	struct sdw_bus *bus = NULL;
+> > +
+> > +	/* Iterate for all Master(s) in Master list */
+> > +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+> > +		bus = m_rt->bus;
+> > +
+> > +		mutex_lock(&bus->bus_lock);
+> > +	}
+> > +}
+> 
+> So it's nested locks?  Then you'd need some more trick to deal with
+> the lockdep.  I guess you'll get the false-positive deadlock detection
+> by this code when the mutex lock debug is enabled.
+> 
+> Also, is the linked order assured not to lead to a real deadlock?
 >
->> I think slightly different semantics apply for "shutdown" vs "mute"
->> pins / controls.
->> "shutdown" implies a low power, if not powered off altogether, mode which might
->> require a slight delay to charge up when the amp is enabled. "mute" is
->> just that,
->> disconnecting the output, which would be useful in masking pops or other noises,
->> but does nothing to help power consumption.
->
->> Not sure if the subtle differences can be handled in DAPM, but it would be nice
->> to have. I've seen devices that have both control pins.
->
-> It's certainly potentially useful to have pins for both and treat them
-> differently - ideally something that's a mute would get autodisable type
-> treatment so we mask out any pops in the input path but also make it
-> available to userspace if it needs it.  That's something that could be
-> done when the need arises though, until something that actually has both
-> controls appears handling a mute pin like a power control is probably
-> going to result in the most reliable integration.
 
-Agreed. I'll dig around to see which one of my devices has this.
+Hi Takashi,
 
-> Having the binding specify both differently would be good for future
-> proofing.
+Thanks for the review :)
 
-Ack.
+A multi link SoundWire stream consists of a list of Master runtimes and
+more importantly only one master runtime per SoundWire bus instance.
 
-Also, would it be possible to specify the name or prefix of the widgets
-from the device tree, such that it would be possible to have multiple
-instances? I'm thinking one amp for speakers, and one for headphones,
-each individually controlled.
+So, these mutexes are actually different mutex locks(one per bus instance)
+and are not nested.
 
-ChenYu
+In SDW we have a bus instance per Master (link). In multi-link case, a
+stream may have multiple Masters, thus we need to lock all bus instances
+before we operate on them.
+
+Now since these are invoked from a stream (pcm ops) they will be always
+serialized and DPCM ensures we are never racing.
+
+We did add this note here and in Documentation to make it explicit.
+
+> > +/**
+> > + * sdw_release_bus_lock: Release bus lock for all Master runtime(s)
+> > + *
+> > + * @stream: SoundWire stream
+> > + *
+> > + * Release the previously held bus_lock after reconfiguring the bus.
+> > + */
+> > +static void sdw_release_bus_lock(struct sdw_stream_runtime *stream)
+> > +{
+> > +	struct sdw_master_runtime *m_rt = NULL;
+> > +	struct sdw_bus *bus = NULL;
+> > +
+> > +	/* Iterate for all Master(s) in Master list */
+> > +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
+> > +		bus = m_rt->bus;
+> > +		mutex_unlock(&bus->bus_lock);
+> > +	}
+> 
+> ... and this looks bad.  The loop for unlocking should be traversed
+> reversely.
+> 
+
+Yes in principle I agree locking should be in reverse, but as explained
+above in this case, it does not matter much :)
+
+--Shreyas
