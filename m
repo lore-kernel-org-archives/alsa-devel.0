@@ -1,58 +1,68 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 03/12] ASoC: q6afe: dt-bindings: add compatible string to
- dais
-Date: Tue, 26 Jun 2018 10:20:07 +0100
-Message-ID: <20180626092016.9296-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 05/12] ASoC: qdsp6: q6asm: use of_platform_populate/depopulate()
+Date: Tue, 26 Jun 2018 10:20:09 +0100
+Message-ID: <20180626092016.9296-6-srinivas.kandagatla@linaro.org>
 References: <20180626092016.9296-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180626092016.9296-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, robh+dt@kernel.org, alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, tiwai@suse.com, perex@perex.cz, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, niklas.cassel@linaro.org, linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com, bgoswami@codeaurora.org, tiwai@suse.com, perex@perex.cz, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, niklas.cassel@linaro.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add compatible string to dais so that it can support DT based module
-autoloading.
+Now that the child nodes have there own compatible strings,
+Use of_platform_populate/depopulate() instead of less common
+of_platform_device_create()/destroy().
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- Documentation/devicetree/bindings/sound/qcom,q6afe.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/qcom/qdsp6/q6asm.c | 16 ++--------------
+ 1 file changed, 2 insertions(+), 14 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-index bdbf87df8c0b..a8179409c194 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
-@@ -17,6 +17,11 @@ used by all apr services. Must contain the following properties.
- subnode of "dais" representing board specific dai setup.
- "dais" node should have following properties followed by dai children.
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index 530852385cad..c4fd28f168d5 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -177,7 +177,6 @@ struct q6asm {
+ 	struct platform_device *pcmdev;
+ 	spinlock_t slock;
+ 	struct audio_client *session[MAX_SESSIONS + 1];
+-	struct platform_device *pdev_dais;
+ };
  
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,q6afe-dais"
-+
- - #sound-dai-cells
- 	Usage: required
- 	Value type: <u32>
-@@ -100,6 +105,7 @@ q6afe@4 {
- 	reg = <APR_SVC_AFE>;
+ struct audio_client {
+@@ -1344,7 +1343,6 @@ EXPORT_SYMBOL_GPL(q6asm_cmd_nowait);
+ static int q6asm_probe(struct apr_device *adev)
+ {
+ 	struct device *dev = &adev->dev;
+-	struct device_node *dais_np;
+ 	struct q6asm *q6asm;
  
- 	dais {
-+		compatible = "qcom,q6afe-dais";
- 		#sound-dai-cells = <1>;
- 		#address-cells = <1>;
- 		#size-cells = <0>;
+ 	q6asm = devm_kzalloc(dev, sizeof(*q6asm), GFP_KERNEL);
+@@ -1359,22 +1357,12 @@ static int q6asm_probe(struct apr_device *adev)
+ 	spin_lock_init(&q6asm->slock);
+ 	dev_set_drvdata(dev, q6asm);
+ 
+-	dais_np = of_get_child_by_name(dev->of_node, "dais");
+-	if (dais_np) {
+-		q6asm->pdev_dais = of_platform_device_create(dais_np,
+-							   "q6asm-dai", dev);
+-		of_node_put(dais_np);
+-	}
+-
+-	return 0;
++	return of_platform_populate(dev->of_node, NULL, NULL, dev);
+ }
+ 
+ static int q6asm_remove(struct apr_device *adev)
+ {
+-	struct q6asm *q6asm = dev_get_drvdata(&adev->dev);
+-
+-	if (q6asm->pdev_dais)
+-		of_platform_device_destroy(&q6asm->pdev_dais->dev, NULL);
++	of_platform_depopulate(&adev->dev);
+ 
+ 	return 0;
+ }
 -- 
 2.16.2
