@@ -1,64 +1,58 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 02/12] ASoC: q6asm: dt-bindings: add
-	compatible string to dais
-Date: Tue, 26 Jun 2018 10:20:06 +0100
-Message-ID: <20180626092016.9296-3-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 03/12] ASoC: q6afe: dt-bindings: add compatible string to
+ dais
+Date: Tue, 26 Jun 2018 10:20:07 +0100
+Message-ID: <20180626092016.9296-4-srinivas.kandagatla@linaro.org>
 References: <20180626092016.9296-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id B94862676E7
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 11:22:25 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id z6-v6so14761160wma.0
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 02:22:25 -0700 (PDT)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <20180626092016.9296-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: broonie@kernel.org, robh+dt@kernel.org, alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, niklas.cassel@linaro.org, linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, tiwai@suse.com, perex@perex.cz, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, niklas.cassel@linaro.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 Add compatible string to dais so that it can support DT based module
 autoloading.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 ---
- Documentation/devicetree/bindings/sound/qcom,q6asm.txt | 6 ++++++
+ Documentation/devicetree/bindings/sound/qcom,q6afe.txt | 6 ++++++
  1 file changed, 6 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-index 2178eb91146f..f9c7bd8c1bc0 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-@@ -17,6 +17,11 @@ used by the apr service device.
- = ASM DAIs (Digial Audio Interface)
- "dais" subnode of the ASM node represents dai specific configuration
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+index bdbf87df8c0b..a8179409c194 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -17,6 +17,11 @@ used by all apr services. Must contain the following properties.
+ subnode of "dais" representing board specific dai setup.
+ "dais" node should have following properties followed by dai children.
  
 +- compatible:
 +	Usage: required
 +	Value type: <stringlist>
-+	Definition: must be "qcom,q6asm-dais".
++	Definition: must be "qcom,q6afe-dais"
 +
  - #sound-dai-cells
  	Usage: required
  	Value type: <u32>
-@@ -28,6 +33,7 @@ q6asm@7 {
- 	compatible = "qcom,q6asm";
- 	reg = <APR_SVC_ASM>;
- 	q6asmdai: dais {
-+		compatible = "qcom,q6asm-dais";
+@@ -100,6 +105,7 @@ q6afe@4 {
+ 	reg = <APR_SVC_AFE>;
+ 
+ 	dais {
++		compatible = "qcom,q6afe-dais";
  		#sound-dai-cells = <1>;
- 	};
- };
+ 		#address-cells = <1>;
+ 		#size-cells = <0>;
 -- 
 2.16.2
