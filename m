@@ -1,16 +1,20 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 0/3] ASoC: add simple-amplifier
-Date: Tue, 26 Jun 2018 14:11:25 +0200
-Message-ID: <20180626121128.28564-1-jbrunet@baylibre.com>
+Subject: [PATCH 1/3] ASoC: simple-amplifier: remame dio2125
+	documentation
+Date: Tue, 26 Jun 2018 14:11:26 +0200
+Message-ID: <20180626121128.28564-2-jbrunet@baylibre.com>
+References: <20180626121128.28564-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 50D202675C8
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 14:11:34 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id u18-v6so1583703wmc.1
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 05:11:34 -0700 (PDT)
+Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
+ [209.85.128.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6530E2675C8
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 14:11:35 +0200 (CEST)
+Received: by mail-wr0-f193.google.com with SMTP id a12-v6so17027146wro.1
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 05:11:35 -0700 (PDT)
+In-Reply-To: <20180626121128.28564-1-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +28,38 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, =?UTF-
 Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-As discuss here [0], this patchset rename the dio2125 driver to
-simple-amplifier in order to make it more discoverable.
-
-The last patch adds simple-audio-amplifier as new compatible
-
-[0]: https://lkml.kernel.org/r/20180625114445.GG9413@sirena.org.uk
-
-Jerome Brunet (3):
-  ASoC: simple-amplifier: remame dio2125 documentation
-  ASoC: simple-amplifier: rename dio2125 to simple-amplifer
-  ASoC: simple-amplifer: add simple-amplifier compatible
-
- .../devicetree/bindings/sound/dioo,dio2125.txt     | 12 -------
- .../devicetree/bindings/sound/simple-amplifier.txt | 12 +++++++
- sound/soc/codecs/Kconfig                           | 10 +++---
- sound/soc/codecs/Makefile                          |  4 +--
- sound/soc/codecs/{dio2125.c => simple-amplifier.c} | 42 +++++++++++-----------
- 5 files changed, 41 insertions(+), 39 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/sound/dioo,dio2125.txt
- create mode 100644 Documentation/devicetree/bindings/sound/simple-amplifier.txt
- rename sound/soc/codecs/{dio2125.c => simple-amplifier.c} (68%)
-
--- 
-2.14.4
+VGhlIGRpbzIxMjUgaXMgc2ltcGxlIGVub3VnaCB0aGF0IHdlIGNhbiBtYWtlIGl0IGEgZ2VuZXJp
+YyBjb21wb25lbnQuClJlbmFtZSB0aGUgdGhlIGRpbzIxMjUgZG9jdW1lbnRhdGlvbiB0byBzaW1w
+bGUtYW1wbGlmaWVyIHRvCnByZXBhcmUgdGhpcyBjaGFuZ2UuCgpTdWdnZXN0ZWQtYnk6IE5pY29s
+w7IgVmVyb25lc2UgPG5pY3Zlcm9uZXNlQGdtYWlsLmNvbT4KU2lnbmVkLW9mZi1ieTogSmVyb21l
+IEJydW5ldCA8amJydW5ldEBiYXlsaWJyZS5jb20+Ci0tLQogRG9jdW1lbnRhdGlvbi9kZXZpY2V0
+cmVlL2JpbmRpbmdzL3NvdW5kL2Rpb28sZGlvMjEyNS50eHQgICAgIHwgMTIgLS0tLS0tLS0tLS0t
+CiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc2ltcGxlLWFtcGxpZmll
+ci50eHQgfCAxMiArKysrKysrKysrKysKIDIgZmlsZXMgY2hhbmdlZCwgMTIgaW5zZXJ0aW9ucygr
+KSwgMTIgZGVsZXRpb25zKC0pCiBkZWxldGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZp
+Y2V0cmVlL2JpbmRpbmdzL3NvdW5kL2Rpb28sZGlvMjEyNS50eHQKIGNyZWF0ZSBtb2RlIDEwMDY0
+NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc2ltcGxlLWFtcGxpZmll
+ci50eHQKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291
+bmQvZGlvbyxkaW8yMTI1LnR4dCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9z
+b3VuZC9kaW9vLGRpbzIxMjUudHh0CmRlbGV0ZWQgZmlsZSBtb2RlIDEwMDY0NAppbmRleCA2M2Ri
+ZmUwZjExZDAuLjAwMDAwMDAwMDAwMAotLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
+ZGluZ3Mvc291bmQvZGlvbyxkaW8yMTI1LnR4dAorKysgL2Rldi9udWxsCkBAIC0xLDEyICswLDAg
+QEAKLURJTzIxMjUgQXVkaW8gRHJpdmVyCi0KLVJlcXVpcmVkIHByb3BlcnRpZXM6Ci0tIGNvbXBh
+dGlibGUgOiAiZGlvbyxkaW8yMTI1IgotLSBlbmFibGUtZ3Bpb3MgOiB0aGUgZ3BpbyBjb25uZWN0
+ZWQgdG8gdGhlIGVuYWJsZSBwaW4gb2YgdGhlIGRpbzIxMjUKLQotRXhhbXBsZToKLQotYW1wOiBh
+bmFsb2ctYW1wbGlmaWVyIHsKLQljb21wYXRpYmxlID0gImRpb28sZGlvMjEyNSI7Ci0JZW5hYmxl
+LWdwaW9zID0gPCZncGlvIEdQSU9IXzMgMD47Ci19OwpkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlv
+bi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1hbXBsaWZpZXIudHh0IGIvRG9jdW1l
+bnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1hbXBsaWZpZXIudHh0Cm5l
+dyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMDAwMC4uODY0N2VkYWU3YWYwCi0tLSAv
+ZGV2L251bGwKKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3Np
+bXBsZS1hbXBsaWZpZXIudHh0CkBAIC0wLDAgKzEsMTIgQEAKK1NpbXBsZSBBbXBsaWZpZXIgQXVk
+aW8gRHJpdmVyCisKK1JlcXVpcmVkIHByb3BlcnRpZXM6CistIGNvbXBhdGlibGUgOiAiZGlvbyxk
+aW8yMTI1IiBvciAic2ltcGxlLWF1ZGlvLWFtcGxpZmllciIKKy0gZW5hYmxlLWdwaW9zIDogdGhl
+IGdwaW8gY29ubmVjdGVkIHRvIHRoZSBlbmFibGUgcGluIG9mIHRoZSBzaW1wbGUgYW1wbGlmaWVy
+CisKK0V4YW1wbGU6CisKK2FtcDogYW5hbG9nLWFtcGxpZmllciB7CisJY29tcGF0aWJsZSA9ICJz
+aW1wbGUtYXVkaW8tYW1wbGlmaWVyIjsKKwllbmFibGUtZ3Bpb3MgPSA8JmdwaW8gR1BJT0hfMyAw
+PjsKK307Ci0tIAoyLjE0LjQKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
