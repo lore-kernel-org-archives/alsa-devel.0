@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: q6adm: dt-bindings: add compatible
-	string to routing" to the asoc tree
-Date: Tue, 26 Jun 2018 16:11:55 +0100 (BST)
-Message-ID: <20180626151155.A49E9440070@finisterre.ee.mobilebroadband>
-References: <20180625143115.8346-2-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: soc-utils: Fix unregistration order" to
+	the asoc tree
+Date: Tue, 26 Jun 2018 16:12:05 +0100 (BST)
+Message-ID: <20180626151205.39553440070@finisterre.ee.mobilebroadband>
+References: <1530014315-17674-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5FFF2267905
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:11:56 +0200 (CEST)
-In-Reply-To: <20180625143115.8346-2-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 683EF267904
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:12:06 +0200 (CEST)
+In-Reply-To: <1530014315-17674-1-git-send-email-festevam@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: rohkumar@qti.qualcomm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, broonie@kernel.org, srinivas.kandagatla@linaro.org, niklas.cassel@linaro.org, linux-arm-kernel@lists.infradead.org
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: q6adm: dt-bindings: add compatible string to routing
+   ASoC: soc-utils: Fix unregistration order
 
 has been applied to the asoc tree at
 
@@ -52,44 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From c486a185744c593417a126aebb119771c1bbe670 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 26 Jun 2018 10:20:05 +0100
-Subject: [PATCH] ASoC: q6adm: dt-bindings: add compatible string to routing
+>From b66c9b911fe6ca188002b342b05c43deab4491a3 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Tue, 26 Jun 2018 08:58:35 -0300
+Subject: [PATCH] ASoC: soc-utils: Fix unregistration order
 
-Add compatible string to routing so that it can support DT based module
-autoloading.
+The unregistration should happen in the opposite order of
+the registration, so change it accordingly.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
+No real issue has been noticed, but it is good practice to
+keep the correct unregistration order.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/qcom,q6adm.txt | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/soc-utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
-index cb709e5dbc44..bbae426cdfb1 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6adm.txt
-@@ -18,6 +18,11 @@ used by the apr service device.
- = ADM routing
- "routing" subnode of the ADM node represents adm routing specific configuration
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index 2d9e98bd1530..a863bb3f66c2 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -381,6 +381,6 @@ int __init snd_soc_util_init(void)
  
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: must be "qcom,q6adm-routing".
-+
- - #sound-dai-cells
- 	Usage: required
- 	Value type: <u32>
-@@ -28,6 +33,7 @@ q6adm@8 {
- 	compatible = "qcom,q6adm";
- 	reg = <APR_SVC_ADM>;
- 	q6routing: routing {
-+		compatible = "qcom,q6adm-routing";
- 		#sound-dai-cells = <0>;
- 	};
- };
+ void __exit snd_soc_util_exit(void)
+ {
+-	platform_device_unregister(soc_dummy_dev);
+ 	platform_driver_unregister(&soc_dummy_driver);
++	platform_device_unregister(soc_dummy_dev);
+ }
 -- 
 2.17.1
