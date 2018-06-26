@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6asm: use of_platform_populate/depopulate()" to the asoc tree
-Date: Tue, 26 Jun 2018 16:11:09 +0100 (BST)
-Message-ID: <20180626151109.43C44440070@finisterre.ee.mobilebroadband>
-References: <20180626092016.9296-6-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qdsp6: q6afe-dai: support dt based module loading" to the asoc tree
+Date: Tue, 26 Jun 2018 16:11:04 +0100 (BST)
+Message-ID: <20180626151104.CB715440070@finisterre.ee.mobilebroadband>
+References: <20180626092016.9296-8-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180626092016.9296-6-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20180626092016.9296-8-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Cc: Niklas Cassel <niklas.cassel@linaro.org>, Mark Brown <broonie@kernel.org>broonie@kernel.org, robh+dt@kernel.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, tiwai@suse.com, linux-arm-kernel@lists.infradead.orgniklas.cassel@linaro.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6asm: use of_platform_populate/depopulate()
+   ASoC: qdsp6: q6afe-dai: support dt based module loading
 
 has been applied to the asoc tree at
 
@@ -37,66 +37,40 @@ to this mail.
 Thanks,
 Mark
 
->From 4aac7e2773030d667491fbb6d97c9f467fdcbc05 Mon Sep 17 00:00:00 2001
+>From eb7cc9be6e9ce17e69252a6fc00e75a5b08201ab Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 26 Jun 2018 10:20:09 +0100
-Subject: [PATCH] ASoC: qdsp6: q6asm: use of_platform_populate/depopulate()
+Date: Tue, 26 Jun 2018 10:20:11 +0100
+Subject: [PATCH] ASoC: qdsp6: q6afe-dai: support dt based module loading
 
-Now that the child nodes have there own compatible strings,
-Use of_platform_populate/depopulate() instead of less common
-of_platform_device_create()/destroy().
+This patch uses new compatible string to make DT based module loading work.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
-index 530852385cad..c4fd28f168d5 100644
---- a/sound/soc/qcom/qdsp6/q6asm.c
-+++ b/sound/soc/qcom/qdsp6/q6asm.c
-@@ -177,7 +177,6 @@ struct q6asm {
- 	struct platform_device *pcmdev;
- 	spinlock_t slock;
- 	struct audio_client *session[MAX_SESSIONS + 1];
--	struct platform_device *pdev_dais;
- };
- 
- struct audio_client {
-@@ -1344,7 +1343,6 @@ EXPORT_SYMBOL_GPL(q6asm_cmd_nowait);
- static int q6asm_probe(struct apr_device *adev)
- {
- 	struct device *dev = &adev->dev;
--	struct device_node *dais_np;
- 	struct q6asm *q6asm;
- 
- 	q6asm = devm_kzalloc(dev, sizeof(*q6asm), GFP_KERNEL);
-@@ -1359,22 +1357,12 @@ static int q6asm_probe(struct apr_device *adev)
- 	spin_lock_init(&q6asm->slock);
- 	dev_set_drvdata(dev, q6asm);
- 
--	dais_np = of_get_child_by_name(dev->of_node, "dais");
--	if (dais_np) {
--		q6asm->pdev_dais = of_platform_device_create(dais_np,
--							   "q6asm-dai", dev);
--		of_node_put(dais_np);
--	}
--
--	return 0;
-+	return of_platform_populate(dev->of_node, NULL, NULL, dev);
- }
- 
- static int q6asm_remove(struct apr_device *adev)
- {
--	struct q6asm *q6asm = dev_get_drvdata(&adev->dev);
--
--	if (q6asm->pdev_dais)
--		of_platform_device_destroy(&q6asm->pdev_dais->dev, NULL);
-+	of_platform_depopulate(&adev->dev);
- 
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index 5002dd05bf27..1d2e5013c121 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -1290,9 +1290,16 @@ static int q6afe_dai_dev_remove(struct platform_device *pdev)
  	return 0;
  }
+ 
++static const struct of_device_id q6afe_dai_device_id[] = {
++	{ .compatible = "qcom,q6afe-dais" },
++	{},
++};
++MODULE_DEVICE_TABLE(of, q6afe_dai_device_id);
++
+ static struct platform_driver q6afe_dai_platform_driver = {
+ 	.driver = {
+ 		.name = "q6afe-dai",
++		.of_match_table = of_match_ptr(q6afe_dai_device_id),
+ 	},
+ 	.probe = q6afe_dai_dev_probe,
+ 	.remove = q6afe_dai_dev_remove,
 -- 
 2.17.1
