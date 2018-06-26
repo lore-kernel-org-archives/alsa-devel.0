@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6routing: add proper error
-	check" to the asoc tree
-Date: Tue, 26 Jun 2018 16:10:54 +0100 (BST)
-Message-ID: <20180626151054.6E282440070@finisterre.ee.mobilebroadband>
-References: <20180625143115.8346-12-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qcom: apq8096: remove redundant owner
+	assignment" to the asoc tree
+Date: Tue, 26 Jun 2018 16:10:57 +0100 (BST)
+Message-ID: <20180626151057.A5751440070@finisterre.ee.mobilebroadband>
+References: <20180625143115.8346-11-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6AF87267705
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:10:57 +0200 (CEST)
-In-Reply-To: <20180625143115.8346-12-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 039D72678FE
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:10:59 +0200 (CEST)
+In-Reply-To: <20180625143115.8346-11-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6routing: add proper error check
+   ASoC: qcom: apq8096: remove redundant owner assignment
 
 has been applied to the asoc tree at
 
@@ -52,33 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From 972562f7aaaa261ec6e1ac14fed0c5bdd0dfb1cb Mon Sep 17 00:00:00 2001
+>From 2d12c20b98ad610892151da37367f2d018181455 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Tue, 26 Jun 2018 10:20:15 +0100
-Subject: [PATCH] ASoC: qdsp6: q6routing: add proper error check
+Date: Tue, 26 Jun 2018 10:20:14 +0100
+Subject: [PATCH] ASoC: qcom: apq8096: remove redundant owner assignment
 
-q6adm_open can return error pointer or a null in error cases.
-Fix the return handling.
+module owner is already set in platform_driver_register(), so remove this
+redundant assignment.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6routing.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/apq8096.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index ab696bf8d1d3..c80fdbc2442e 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -310,7 +310,7 @@ int q6routing_stream_open(int fedai_id, int perf_mode,
- 			      session->channels, topology, perf_mode,
- 			      session->bits_per_sample, 0, 0);
- 
--	if (!copp) {
-+	if (IS_ERR_OR_NULL(copp)) {
- 		mutex_unlock(&routing_data->lock);
- 		return -EINVAL;
- 	}
+diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
+index 239b8cb77bdb..cab8c4ff7c00 100644
+--- a/sound/soc/qcom/apq8096.c
++++ b/sound/soc/qcom/apq8096.c
+@@ -246,7 +246,6 @@ static struct platform_driver msm_snd_apq8096_driver = {
+ 	.remove = apq8096_platform_remove,
+ 	.driver = {
+ 		.name = "msm-snd-apq8096",
+-		.owner = THIS_MODULE,
+ 		.of_match_table = msm_snd_apq8096_dt_match,
+ 	},
+ };
 -- 
 2.17.1
