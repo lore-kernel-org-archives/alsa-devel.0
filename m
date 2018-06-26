@@ -1,132 +1,251 @@
-From: Shreyas NC <shreyas.nc@intel.com>
-Subject: Re: [PATCH v4 3/7] soundwire: Add support to lock
- across	bus instances
-Date: Tue, 26 Jun 2018 15:29:32 +0530
-Message-ID: <20180626095932.GE15119@snc-desk>
-References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
- <1529924340-30065-4-git-send-email-shreyas.nc@intel.com>
- <s5hy3f3yrbd.wl-tiwai@suse.de> <20180626082200.GC15119@snc-desk>
- <s5hy3f2aquu.wl-tiwai@suse.de> <20180626092359.GD15119@snc-desk>
- <s5hlgb1c22s.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 024642675C8
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 12:01:02 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hlgb1c22s.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, sanyog.r.kale@intel.com
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH v2] ASoC: dpcm: improve runtime update predictability
+Date: Tue, 26 Jun 2018 12:07:25 +0200
+Message-ID: <20180626100725.6016-1-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jun 26, 2018 at 11:46:35AM +0200, Takashi Iwai wrote:
-> On Tue, 26 Jun 2018 11:23:59 +0200,
-> Shreyas NC wrote:
-> > 
-> > On Tue, Jun 26, 2018 at 10:34:17AM +0200, Takashi Iwai wrote:
-> > > On Tue, 26 Jun 2018 10:22:01 +0200,
-> > > Shreyas NC wrote:
-> > > > 
-> > > > > > +/**
-> > > > > > + * sdw_acquire_bus_lock: Acquire bus lock for all Master runtime(s)
-> > > > > > + *
-> > > > > > + * @stream: SoundWire stream
-> > > > > > + *
-> > > > > > + * Acquire bus_lock for each of the master runtime(m_rt) part of this
-> > > > > > + * stream to reconfigure the bus.
-> > > > > > + */
-> > > > > > +static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
-> > > > > > +{
-> > > > > > +	struct sdw_master_runtime *m_rt = NULL;
-> > > > > > +	struct sdw_bus *bus = NULL;
-> > > > > > +
-> > > > > > +	/* Iterate for all Master(s) in Master list */
-> > > > > > +	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
-> > > > > > +		bus = m_rt->bus;
-> > > > > > +
-> > > > > > +		mutex_lock(&bus->bus_lock);
-> > > > > > +	}
-> > > > > > +}
-> > > > > 
-> > > > > So it's nested locks?  Then you'd need some more trick to deal with
-> > > > > the lockdep.  I guess you'll get the false-positive deadlock detection
-> > > > > by this code when the mutex lock debug is enabled.
-> > > > > 
-> > > > > Also, is the linked order assured not to lead to a real deadlock?
-> > > > >
-> > > > 
-> > > > Hi Takashi,
-> > > > 
-> > > > Thanks for the review :)
-> > > > 
-> > > > A multi link SoundWire stream consists of a list of Master runtimes and
-> > > > more importantly only one master runtime per SoundWire bus instance.
-> > > > 
-> > > > So, these mutexes are actually different mutex locks(one per bus instance)
-> > > > and are not nested.
-> > > 
-> > > You take a mutex lock inside a mutex lock, so they are nested.
-> > > If they take the very same lock, it's called a "deadlock" instead.
-> > > 
-> > 
-> > Ok, myy bad, I misunderstood the comment :(
-> > 
-> > I forgot to add that I did check with mutex debug enabled and lockdep did
-> > not complain though :)
-> 
-> You didn't test the actual concurrent calls because of FE's mutex
-> below, right?
-> 
+As it is, dpcm_runtime_update() performs the old path and new path
+update of a frontend before going on to the next frontend DAI.
+Depending the order of the FEs within the rtd list, the result of
+the update might be different.
 
-Yes
+For example:
+ * Frontend A connected to backend C, with a 48kHz playback
+ * Frontend B connected to backend D, with a 44.1kHz playback
+ * FE A appears before FE B in the rtd list of the card.
 
-> 
-> > > > In SDW we have a bus instance per Master (link). In multi-link case, a
-> > > > stream may have multiple Masters, thus we need to lock all bus instances
-> > > > before we operate on them.
-> > > > 
-> > > > Now since these are invoked from a stream (pcm ops) they will be always
-> > > > serialized and DPCM ensures we are never racing.
-> > > > 
-> > > > We did add this note here and in Documentation to make it explicit.
-> > > 
-> > > Well, my question is whether the order to take the multiple locks is
-> > > always assured.  You're calling like:
-> > > 
-> > > 	list_for_each_entry(m_rt, &stream->master_list, stream_node)
-> > > 		mutex_lock();
-> > > 
-> > > And it's a linked-list.  If a stream has a link of masters like
-> > > M1->M2->M3 while another stream has a link like M2->M1->M3, it'll lead
-> > > to a deadlock with the concurrent calls above.
-> > > 
-> > 
-> > These are called from PCM stream ops context and the DPCM holds
-> > lock(fe->card->mutex) which serializes these operations.
-> > So, in the scenario you have mentioned, we would not have
-> > concurrent calls to this function.
-> 
-> The implementation of soundwire bus is basically independent from ASoC
-> or whatever else.  That is, any other drivers may use this API, and
-> it'll be busted.
-> 
+If we reparent BE C to FE B (disconnecting BE D):
+* old path update of FE A will run first, and BE C will get hw_free()
+  and shutdown()
+* new path update of FE B will run after and BE C, which is stopped,
+  so it will be configured at 44.1kHz, as expected
 
-Hmmh, yes. The only way we could think of to protect this is to use a global
-lock which we wanted to avoid.
-We did give this a thought and since today no other subsytem
-can use this, we went ahead with the way it is today.
-Any suggestions on how to go about this ?
+If we reparent BE D to FE A (disconnecting BE C):
+* new path update of FE A will run first but since BE D is still running
+  at 44.1kHz, it won't be reconfigured (no call to startup() or
+  hw_params())
+* old path update of FE B runs after, nothing happens
+* In this case, we end up with a BE playing at 44.1kHz a stream which is
+  supposed to be played at 48Khz (too slow)
 
---Shreyas
+To improve this situation, this patch performs all the FE old paths update
+before going on to update the new paths. With this, the result should
+no longer depend on the order of the FE within the card rtd list.
+
+Please note that there might be a small performance penalty since
+dpcm_process_paths() is called twice per stream direction.
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+
+Changes since v1 [0]:
+ * Add missing static as reported by kbuild robot.
+
+[0]: https://lkml.kernel.org/r/20180625082923.25636-1-jbrunet@baylibre.com
+
+ sound/soc/soc-pcm.c | 165 +++++++++++++++++++++++++++-------------------------
+ 1 file changed, 86 insertions(+), 79 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 5e7ae47a9658..4eda18cfe895 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2543,106 +2543,113 @@ static int dpcm_run_old_update(struct snd_soc_pcm_runtime *fe, int stream)
+ 	return ret;
+ }
+ 
+-/* Called by DAPM mixer/mux changes to update audio routing between PCMs and
+- * any DAI links.
+- */
+-int soc_dpcm_runtime_update(struct snd_soc_card *card)
++static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+ {
+-	struct snd_soc_pcm_runtime *fe;
+-	int old, new, paths;
++	struct snd_soc_dapm_widget_list *list;
++	int count, paths;
+ 
+-	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
+-	list_for_each_entry(fe, &card->rtd_list, list) {
+-		struct snd_soc_dapm_widget_list *list;
++	if (!fe->dai_link->dynamic)
++		return 0;
+ 
+-		/* make sure link is FE */
+-		if (!fe->dai_link->dynamic)
+-			continue;
++	/* only check active links */
++	if (!fe->cpu_dai->active)
++		return 0;
+ 
+-		/* only check active links */
+-		if (!fe->cpu_dai->active)
+-			continue;
++	/* DAPM sync will call this to update DSP paths */
++	dev_dbg(fe->dev, "ASoC: DPCM %s runtime update for FE %s\n",
++		new ? "new" : "old", fe->dai_link->name);
+ 
+-		/* DAPM sync will call this to update DSP paths */
+-		dev_dbg(fe->dev, "ASoC: DPCM runtime update for FE %s\n",
+-			fe->dai_link->name);
++	/* skip if FE doesn't have playback capability */
++	if (!fe->cpu_dai->driver->playback.channels_min ||
++	    !fe->codec_dai->driver->playback.channels_min)
++		goto capture;
+ 
+-		/* skip if FE doesn't have playback capability */
+-		if (!fe->cpu_dai->driver->playback.channels_min
+-		    || !fe->codec_dai->driver->playback.channels_min)
+-			goto capture;
+-
+-		/* skip if FE isn't currently playing */
+-		if (!fe->cpu_dai->playback_active
+-		    || !fe->codec_dai->playback_active)
+-			goto capture;
+-
+-		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
+-		if (paths < 0) {
+-			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
+-					fe->dai_link->name,  "playback");
+-			mutex_unlock(&card->mutex);
+-			return paths;
+-		}
++	/* skip if FE isn't currently playing */
++	if (!fe->cpu_dai->playback_active || !fe->codec_dai->playback_active)
++		goto capture;
+ 
+-		/* update any new playback paths */
+-		new = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, 1);
+-		if (new) {
+-			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
+-			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
+-			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
+-		}
++	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
++	if (paths < 0) {
++		dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
++			 fe->dai_link->name,  "playback");
++		return paths;
++	}
+ 
+-		/* update any old playback paths */
+-		old = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, 0);
+-		if (old) {
++	/* update any playback paths */
++	count = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, new);
++	if (count) {
++		if (new)
++			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
++		else
+ 			dpcm_run_old_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
+-			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
+-			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
+-		}
+ 
+-		dpcm_path_put(&list);
++		dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
++		dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
++	}
++
++	dpcm_path_put(&list);
++
+ capture:
+-		/* skip if FE doesn't have capture capability */
+-		if (!fe->cpu_dai->driver->capture.channels_min
+-		    || !fe->codec_dai->driver->capture.channels_min)
+-			continue;
++	/* skip if FE doesn't have capture capability */
++	if (!fe->cpu_dai->driver->capture.channels_min ||
++	    !fe->codec_dai->driver->capture.channels_min)
++		return 0;
+ 
+-		/* skip if FE isn't currently capturing */
+-		if (!fe->cpu_dai->capture_active
+-		    || !fe->codec_dai->capture_active)
+-			continue;
++	/* skip if FE isn't currently capturing */
++	if (!fe->cpu_dai->capture_active || !fe->codec_dai->capture_active)
++		return 0;
+ 
+-		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
+-		if (paths < 0) {
+-			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
+-					fe->dai_link->name,  "capture");
+-			mutex_unlock(&card->mutex);
+-			return paths;
+-		}
++	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
++	if (paths < 0) {
++		dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
++			 fe->dai_link->name,  "capture");
++		return paths;
++	}
+ 
+-		/* update any new capture paths */
+-		new = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, 1);
+-		if (new) {
++	/* update any old capture paths */
++	count = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, new);
++	if (count) {
++		if (new)
+ 			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_CAPTURE);
+-			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
+-			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
+-		}
+-
+-		/* update any old capture paths */
+-		old = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, 0);
+-		if (old) {
++		else
+ 			dpcm_run_old_update(fe, SNDRV_PCM_STREAM_CAPTURE);
+-			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
+-			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
+-		}
+ 
+-		dpcm_path_put(&list);
++		dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
++		dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
+ 	}
+ 
+-	mutex_unlock(&card->mutex);
++	dpcm_path_put(&list);
++
+ 	return 0;
+ }
++
++/* Called by DAPM mixer/mux changes to update audio routing between PCMs and
++ * any DAI links.
++ */
++int soc_dpcm_runtime_update(struct snd_soc_card *card)
++{
++	struct snd_soc_pcm_runtime *fe;
++	int ret = 0;
++
++	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
++	/* shutdown all old paths first */
++	list_for_each_entry(fe, &card->rtd_list, list) {
++		ret = soc_dpcm_fe_runtime_update(fe, 0);
++		if (ret)
++			goto out;
++	}
++
++	/* bring new paths up */
++	list_for_each_entry(fe, &card->rtd_list, list) {
++		ret = soc_dpcm_fe_runtime_update(fe, 1);
++		if (ret)
++			goto out;
++	}
++
++out:
++	mutex_unlock(&card->mutex);
++	return ret;
++}
+ int soc_dpcm_be_digital_mute(struct snd_soc_pcm_runtime *fe, int mute)
+ {
+ 	struct snd_soc_dpcm *dpcm;
 -- 
+2.14.4
