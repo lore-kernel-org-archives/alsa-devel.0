@@ -1,20 +1,14 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 10/12] ASoC: qcom: apq8096: remove redundant
-	owner assignment
-Date: Tue, 26 Jun 2018 10:20:14 +0100
-Message-ID: <20180626092016.9296-11-srinivas.kandagatla@linaro.org>
-References: <20180626092016.9296-1-srinivas.kandagatla@linaro.org>
+From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Subject: [PATCH 0/4] Fix a broken/missing documentation at sound
+Date: Tue, 26 Jun 2018 06:24:36 -0300
+Message-ID: <cover.1530004939.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f196.google.com (mail-wr0-f196.google.com
- [209.85.128.196])
- by alsa0.perex.cz (Postfix) with ESMTP id E436F2676B4
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 11:22:34 +0200 (CEST)
-Received: by mail-wr0-f196.google.com with SMTP id l14-v6so11398431wrq.13
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 02:22:34 -0700 (PDT)
-In-Reply-To: <20180626092016.9296-1-srinivas.kandagatla@linaro.org>
+Received: from osg.samsung.com (osg.samsung.com [64.30.133.232])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE1D62675C8
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 11:24:47 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,30 +18,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, robh+dt@kernel.org, alsa-devel@alsa-project.org
-Cc: devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-arm-msm@vger.kernel.org, tiwai@suse.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org, niklas.cassel@linaro.org, linux-kernel@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, Jonathan Corbet <corbet@lwn.net>, Linux Doc Mailing List <linux-doc@vger.kernel.org>, linux-kernel@vger.kernel.org, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, Mauro Carvalho Chehab <mchehab@infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-module owner is already set in platform_driver_register(), so remove this
-redundant assignment.
+After running ./scripts/documentation-file-ref-check I noticed that it
+was complaining about the lack of a MultiSound file that used to be
+inside the old OSS sound system.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
----
- sound/soc/qcom/apq8096.c | 1 -
- 1 file changed, 1 deletion(-)
+That's actually a script, with seems to be needed in order to make
+the multisound driver to work. Also, it contains some instructions
+about how to use the module.
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 561cd429e6f2..6e79fec7e789 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -245,7 +245,6 @@ static struct platform_driver msm_snd_apq8096_driver = {
- 	.remove = apq8096_platform_remove,
- 	.driver = {
- 		.name = "msm-snd-apq8096",
--		.owner = THIS_MODULE,
- 		.of_match_table = msm_snd_apq8096_dt_match,
- 	},
- };
+Granted, this is old ISA stuff, but, as long as the driver remains in
+Kernel, it probably makes sense to keep the script somewhere.
+
+So, this patch restores the file from the git log, moving it to an
+existing directory and updates the module names. 
+
+It also fixes the script, as it has some issues that prevents it to work
+with modern distributions (basically, include stuff at C files it
+produces).
+
+-
+
+Please notice that I don't have such hardware to test. So, I have no 
+means to know if the produced exec file still makes sense.
+
+Mauro Carvalho Chehab (4):
+  sound: restore MultiSound script
+  alsa: multisound.sh: fix script to make it build with modern tools
+  alsa: multisound.sh: update module namespace
+  alsa: Fix references to Documentation/.*/MultiSound
+
+ Documentation/sound/alsa-configuration.rst |    2 +-
+ Documentation/sound/cards/multisound.sh    | 1139 ++++++++++++++++++++
+ sound/isa/Kconfig                          |    2 +-
+ 3 files changed, 1141 insertions(+), 2 deletions(-)
+ create mode 100755 Documentation/sound/cards/multisound.sh
+
 -- 
-2.16.2
+2.17.1
