@@ -1,22 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: add generic simple-amplifier
- support
-Date: Tue, 26 Jun 2018 12:28:38 +0100
-Message-ID: <20180626112838.GA1779@sirena.org.uk>
-References: <1529924777-21136-1-git-send-email-nicveronese@gmail.com>
- <20180625112144.GB9413@sirena.org.uk>
- <1529926289.2900.26.camel@baylibre.com>
- <CAGb2v64D=DC02vVfwJj3XHwQTcAeS6y6fujdj2v=f5O5QHmLxg@mail.gmail.com>
- <20180625123952.GJ9413@sirena.org.uk>
- <CAGb2v64v4DEsXL4M2SsjjABgvOwANDQfGOTum0kL_JMYJ+vbug@mail.gmail.com>
+From: Fabio Estevam <festevam@gmail.com>
+Subject: [PATCH] ASoC: soc-utils: Fix unregistration order
+Date: Tue, 26 Jun 2018 08:58:35 -0300
+Message-ID: <1530014315-17674-1-git-send-email-festevam@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0771195599646330165=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D4C7A2675C8
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 13:35:52 +0200 (CEST)
-In-Reply-To: <CAGb2v64v4DEsXL4M2SsjjABgvOwANDQfGOTum0kL_JMYJ+vbug@mail.gmail.com>
+Received: from mail-qk0-f196.google.com (mail-qk0-f196.google.com
+ [209.85.220.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id A08D22675C8
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 13:58:17 +0200 (CEST)
+Received: by mail-qk0-f196.google.com with SMTP id u62-v6so6763693qkf.9
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 04:58:17 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,53 +21,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Hans de Goede <hdegoede@redhat.com>, Linux-ALSA <alsa-devel@alsa-project.org>, =?iso-8859-1?Q?Nicol=F2?= Veronese <nicveronese@gmail.com>, Jerome Brunet <jbrunet@baylibre.com>
+To: broonie@kernel.org
+Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
+From: Fabio Estevam <fabio.estevam@nxp.com>
 
---===============0771195599646330165==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Nq2Wo0NMKNjxTN9z"
-Content-Disposition: inline
+The unregistration should happen in the opposite order of
+the registration, so change it accordingly.
 
+No real issue has been noticed, but it is good practice to
+keep the correct unregistration order.
 
---Nq2Wo0NMKNjxTN9z
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+---
+ sound/soc/soc-utils.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On Tue, Jun 26, 2018 at 11:20:37AM +0800, Chen-Yu Tsai wrote:
-
-> Also, would it be possible to specify the name or prefix of the widgets
-> from the device tree, such that it would be possible to have multiple
-> instances? I'm thinking one amp for speakers, and one for headphones,
-> each individually controlled.
-
-There's already a general facility for doing this - name_prefix.  I
-don't think it's got a DT binding yet but no reason not to add one.
-
---Nq2Wo0NMKNjxTN9z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsyI2MACgkQJNaLcl1U
-h9DLRwf/TjaCvllZkFZnlMyz4J/gQNrGrqFB1VeFMvT5Q5Q/xTWr/TcpmiJDBX8T
-Z/lOMLgyEIjPedjcgX2ik5UIPZ2j5ID4t3HvD+tMgiosz6Vk7l+ycq02xymtxCqD
-42kHBd4UQMGwwoI9ylCT5EJqhKegwpAmtwjtC3sasoLuOw02R4ZimORG6z8jGLDz
-w+ZYOs075apWojicUGOSiLy/COGUe7ddDQOH22os4HNtaYVxZRruNx4DItywrCAW
-oRhVCJEZ9bmXDKVK56cDrlmKz6RRkpmG3MNIdwI0GeF5NDvio41ZW3xDvn4uN+MW
-JMpKCzpmiv2MxgBwz6AUiZT3x4vyBA==
-=Ubra
------END PGP SIGNATURE-----
-
---Nq2Wo0NMKNjxTN9z--
-
---===============0771195599646330165==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0771195599646330165==--
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index 2d9e98b..a863bb3 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -381,6 +381,6 @@ int __init snd_soc_util_init(void)
+ 
+ void __exit snd_soc_util_exit(void)
+ {
+-	platform_device_unregister(soc_dummy_dev);
+ 	platform_driver_unregister(&soc_dummy_driver);
++	platform_device_unregister(soc_dummy_dev);
+ }
+-- 
+2.7.4
