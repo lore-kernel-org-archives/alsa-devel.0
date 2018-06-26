@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: doc: replace codec to component" to the
-	asoc tree
-Date: Tue, 26 Jun 2018 16:03:44 +0100 (BST)
-Message-ID: <20180626150344.1F4A4440070@finisterre.ee.mobilebroadband>
-References: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: qdsp6: q6asm: remove unused struct
+	q6asm member" to the asoc tree
+Date: Tue, 26 Jun 2018 16:10:52 +0100 (BST)
+Message-ID: <20180626151052.2DE53440070@finisterre.ee.mobilebroadband>
+References: <20180626092016.9296-13-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 18DCA267715
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:03:44 +0200 (CEST)
-In-Reply-To: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F3AC3267705
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 17:10:54 +0200 (CEST)
+In-Reply-To: <20180626092016.9296-13-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com, broonie@kernel.org, niklas.cassel@linaro.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: doc: replace codec to component
+   ASoC: qdsp6: q6asm: remove unused struct q6asm member
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From a3ac7727f3a226b0569431de62a4e9bb4c770b2b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Mar 2018 02:14:22 +0000
-Subject: [PATCH] ASoC: doc: replace codec to component
+>From f339155a4063cf3177bb38f6e83760951148e86b Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Tue, 26 Jun 2018 10:20:16 +0100
+Subject: [PATCH] ASoC: qdsp6: q6asm: remove unused struct q6asm member
 
-Now we can replace Codec to Component. Let's do it.
+pcmdev in struct q6asm seems be left over and unused, so just remove it.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Acked-by: Niklas Cassel <niklas.cassel@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/sound/soc/codec.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
-index f87612b94812..58f625fe3d39 100644
---- a/Documentation/sound/soc/codec.rst
-+++ b/Documentation/sound/soc/codec.rst
-@@ -179,12 +179,12 @@ i.e.
- 
-   static int wm8974_mute(struct snd_soc_dai *dai, int mute)
-   {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 mute_reg = snd_soc_read(codec, WM8974_DAC) & 0xffbf;
-+	struct snd_soc_component *component = dai->component;
-+	u16 mute_reg = snd_soc_component_read32(component, WM8974_DAC) & 0xffbf;
- 
- 	if (mute)
--		snd_soc_write(codec, WM8974_DAC, mute_reg | 0x40);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg | 0x40);
- 	else
--		snd_soc_write(codec, WM8974_DAC, mute_reg);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg);
- 	return 0;
-   }
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index c4fd28f168d5..2b2c7233bb5f 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -174,7 +174,6 @@ struct q6asm {
+ 	struct device *dev;
+ 	struct q6core_svc_api_info ainfo;
+ 	wait_queue_head_t mem_wait;
+-	struct platform_device *pcmdev;
+ 	spinlock_t slock;
+ 	struct audio_client *session[MAX_SESSIONS + 1];
+ };
 -- 
 2.17.1
