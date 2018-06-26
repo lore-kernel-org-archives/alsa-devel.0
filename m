@@ -1,17 +1,18 @@
-From: Fabio Estevam <festevam@gmail.com>
-Subject: [PATCH] ASoC: soc-utils: Fix unregistration order
-Date: Tue, 26 Jun 2018 08:58:35 -0300
-Message-ID: <1530014315-17674-1-git-send-email-festevam@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/1] ASoC: soc-pcm: DPCM cares BE channel
+ constraint
+Date: Tue, 26 Jun 2018 12:55:26 +0100
+Message-ID: <20180626115526.GC1779@sirena.org.uk>
+References: <20180620092520.14101-1-jiada_wang@mentor.com>
+ <1530008318.2900.44.camel@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8375248840130747789=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f196.google.com (mail-qk0-f196.google.com
- [209.85.220.196])
- by alsa0.perex.cz (Postfix) with ESMTP id A08D22675C8
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 13:58:17 +0200 (CEST)
-Received: by mail-qk0-f196.google.com with SMTP id u62-v6so6763693qkf.9
- for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 04:58:17 -0700 (PDT)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A33152675C8
+ for <alsa-devel@alsa-project.org>; Tue, 26 Jun 2018 14:04:01 +0200 (CEST)
+In-Reply-To: <1530008318.2900.44.camel@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,34 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, lgirdwood@gmail.com, tiwai@suse.com
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, jiada_wang@mentor.com, linux-kernel@vger.kernel.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Fabio Estevam <fabio.estevam@nxp.com>
 
-The unregistration should happen in the opposite order of
-the registration, so change it accordingly.
+--===============8375248840130747789==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bKyqfOwhbdpXa4YI"
+Content-Disposition: inline
 
-No real issue has been noticed, but it is good practice to
-keep the correct unregistration order.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
- sound/soc/soc-utils.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--bKyqfOwhbdpXa4YI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index 2d9e98b..a863bb3 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -381,6 +381,6 @@ int __init snd_soc_util_init(void)
- 
- void __exit snd_soc_util_exit(void)
- {
--	platform_device_unregister(soc_dummy_dev);
- 	platform_driver_unregister(&soc_dummy_driver);
-+	platform_device_unregister(soc_dummy_dev);
- }
--- 
-2.7.4
+On Tue, Jun 26, 2018 at 12:18:38PM +0200, Jerome Brunet wrote:
+> On Wed, 2018-06-20 at 18:25 +0900, jiada_wang@mentor.com wrote:
+
+> > +	/* DPCM used FE & BE merged channel */
+> > +	unsigned int dpcm_merged_chan:1;
+
+> Jiada, Mark,
+
+> Do you think we could extend this flag to let the link choose whether the merge
+> should be performed on the codec dais (as done here) or on the backend cpu dais
+> ?
+
+> I have more less the same need as Jiada but since my card uses multicodec links,
+> merging on the codec dais does not work for me.
+
+> Like in soc_pcm_init_runtime_hw(), we can't enforce channels min/max based on
+> the codec when there is multiple codecs on the link.
+
+Ugh, probably that'd work.  The ideal thing would be to remove DPCM but
+we're stuck with it for the time being :(
+
+--bKyqfOwhbdpXa4YI
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlsyKa0ACgkQJNaLcl1U
+h9B3ZQf/VDdH0OllOt1exYM3rc75dChu4BPa80cTKJP3QlUJEHbpn4Jzl8hdC4B9
+dM6DDOQUlPcr8ak9WIbYX9JkYU8v04cSlEyJ5hC9g51Mosk9TvTZJE/yerq1dvYn
+GRuN6eluPWnRo3fsDonNR0OjH/61LhDv32iRylqZl1nKqNXdeLYx1ftdcRJZGoSs
+NTjImvM8Jt795nVMQ9hJMjfmv5kj6m7W01B2co75TEtGjkIk1Wl6zDWzf2USn6Cn
+MMB7OS3qnTVQACCudOFDNqZJS8GKXx2gyiwQc+o+hzjhX7qKU2lF8vmPQnScYjgL
+1hi7reNzeHQ00GovkyHlyViQnnsCfQ==
+=9LN/
+-----END PGP SIGNATURE-----
+
+--bKyqfOwhbdpXa4YI--
+
+--===============8375248840130747789==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8375248840130747789==--
