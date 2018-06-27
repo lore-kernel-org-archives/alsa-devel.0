@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Simplify card
-	long-name" to the asoc tree
-Date: Wed, 27 Jun 2018 12:31:23 +0100 (BST)
-Message-ID: <20180627113123.24D6D440070@finisterre.ee.mobilebroadband>
-References: <20180624140634.16835-8-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Fix DMIC map
+	headsetmic mapping" to the asoc tree
+Date: Wed, 27 Jun 2018 12:31:26 +0100 (BST)
+Message-ID: <20180627113126.44E20440070@finisterre.ee.mobilebroadband>
+References: <20180624140634.16835-7-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E0D5026797D
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 13:31:24 +0200 (CEST)
-In-Reply-To: <20180624140634.16835-8-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 826F1267978
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 13:31:27 +0200 (CEST)
+In-Reply-To: <20180624140634.16835-7-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Simplify card long-name
+   ASoC: Intel: bytcr_rt5651: Fix DMIC map headsetmic mapping
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,48 @@ to this mail.
 Thanks,
 Mark
 
->From 8e69cd640097fa7af53fb476dbd3597608f32b10 Mon Sep 17 00:00:00 2001
+>From 37c7401e8c1f583d197c096152fc87a58f460277 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 24 Jun 2018 16:06:32 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Simplify card long-name
+Date: Sun, 24 Jun 2018 16:06:31 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Fix DMIC map headsetmic mapping
 
-Now that the headset-mic is always IN3 there is no reason to have
-the headset-mic mapping in the long-name.
+The initial bytcr_rt5651 machine driver commit mapped IN2 as the headset
+mic. In retrospect this is not correct as all known boards have the headset
+mic on IN3.
 
-This commit simplifies the long name to "bytcr-rt5651-<intmic-map>-mic".
-
-We can safely do this without causing regressions (UCM profile not found
-due to the longname change) as the UCM profiles are not in upstream
-alsa-lib yet.
+This commit fixes the original DMIC mapping to correctly have the headset
+mic on IN3.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 042334d9be32..e778142b8a6e 100644
+index bf2adb36f455..042334d9be32 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -662,7 +662,7 @@ static struct snd_soc_card byt_rt5651_card = {
- static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
- static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
- static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
--static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-spk-*-mic" */
-+static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic" */
+@@ -236,9 +236,9 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
+ };
  
- static bool is_valleyview(void)
- {
-@@ -683,8 +683,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ static const struct snd_soc_dapm_route byt_rt5651_intmic_dmic_map[] = {
+-	{"IN2P", NULL, "Headset Mic"},
+ 	{"DMIC L1", NULL, "Internal Mic"},
+ 	{"DMIC R1", NULL, "Internal Mic"},
++	{"IN3P", NULL, "Headset Mic"},
+ };
  
+ static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_map[] = {
+@@ -684,7 +684,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
  static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  {
--	const char * const intmic_name[] = { "dmic", "in1", "in12" };
--	const char * const hsmic_name[] = { "in3", "in3", "in3" };
-+	const char * const mic_name[] = { "dmic", "in1", "in12" };
+ 	const char * const intmic_name[] = { "dmic", "in1", "in12" };
+-	const char * const hsmic_name[] = { "in2", "in3", "in3" };
++	const char * const hsmic_name[] = { "in3", "in3", "in3" };
  	struct byt_rt5651_private *priv;
  	struct snd_soc_acpi_mach *mach;
  	const char *i2c_name = NULL;
-@@ -831,9 +830,8 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	}
- 
- 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
--		 "bytcr-rt5651-%s-intmic-%s-hsmic",
--		 intmic_name[BYT_RT5651_MAP(byt_rt5651_quirk)],
--		 hsmic_name[BYT_RT5651_MAP(byt_rt5651_quirk)]);
-+		 "bytcr-rt5651-%s-mic",
-+		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)]);
- 	byt_rt5651_card.long_name = byt_rt5651_long_name;
- 
- 	ret_val = devm_snd_soc_register_card(&pdev->dev, &byt_rt5651_card);
 -- 
 2.17.1
