@@ -1,17 +1,18 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Kill snd_hda_codec_update_cache()
-Date: Wed, 27 Jun 2018 11:51:23 +0200
-Message-ID: <20180627095123.26506-1-tiwai@suse.de>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH tinycompress] cplay: Stop playback stream
+ at the end
+Date: Wed, 27 Jun 2018 15:54:24 +0530
+Message-ID: <20180627102424.GH22377@vkoul-mobl>
+References: <1530085691-27736-1-git-send-email-daniel.baluta@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B763B2677C9
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 11:51:24 +0200 (CEST)
-Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
- by mx2.suse.de (Postfix) with ESMTP id 5B680AD25
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 09:51:24 +0000 (UTC)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id AADD8267610
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 12:33:38 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <1530085691-27736-1-git-send-email-daniel.baluta@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,134 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Baluta <daniel.baluta@nxp.com>
+Cc: alsa-devel@alsa-project.org, shengjiu.wang@nxp.com
 List-Id: alsa-devel@alsa-project.org
 
-snd_hda_codec_update_cache() used to serve for a slightly different
-purpose from snd_hdac_write_cache(), but now both of them became
-identical.
+On 27-06-18, 10:48, Daniel Baluta wrote:
+> Each compress_start should have a corresponding compress_stop
+> at the end.
+> 
+> Also, this gives user a change to cleanup resources that might
+> have been allocated in compress_start.
 
-Let's unify and replace with the latter one consistently.
+I think the assumptions are not quite correct here, resources should be
+allocated in .open and cleanup in .free for driver callback.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_codec.c      | 4 ++--
- sound/pci/hda/hda_codec.h      | 3 ---
- sound/pci/hda/hda_generic.c    | 8 ++++----
- sound/pci/hda/patch_analog.c   | 4 ++--
- sound/pci/hda/patch_conexant.c | 2 +-
- 5 files changed, 9 insertions(+), 12 deletions(-)
+> 
+> Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
+> ---
+> I'm implementing codec library dynamic loading at runtime and I'm exploring
+> using:
+> 	* SNDRV_COMPRESS_START -> to load the library
+> 	* SNDRV_COMPRESS_STOP  -> to unload the library
+> 
+> This might not be the best idea becasue for example loading
+> the library might introduce some delays, anyhow i still think
+> this that compress_stop is correct thing to add at the end of
+> playback.
 
-diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index d91c87e41756..f42af88bd2de 100644
---- a/sound/pci/hda/hda_codec.c
-+++ b/sound/pci/hda/hda_codec.c
-@@ -3842,7 +3842,7 @@ EXPORT_SYMBOL_GPL(snd_hda_correct_pin_ctl);
-  * This function is a helper to set a pin ctl value more safely.
-  * It corrects the pin ctl value via snd_hda_correct_pin_ctl(), stores the
-  * value in pin target array via snd_hda_codec_set_pin_target(), then
-- * actually writes the value via either snd_hda_codec_update_cache() or
-+ * actually writes the value via either snd_hda_codec_write_cache() or
-  * snd_hda_codec_write() depending on @cached flag.
-  */
- int _snd_hda_set_pin_ctl(struct hda_codec *codec, hda_nid_t pin,
-@@ -3851,7 +3851,7 @@ int _snd_hda_set_pin_ctl(struct hda_codec *codec, hda_nid_t pin,
- 	val = snd_hda_correct_pin_ctl(codec, pin, val);
- 	snd_hda_codec_set_pin_target(codec, pin, val);
- 	if (cached)
--		return snd_hda_codec_update_cache(codec, pin, 0,
-+		return snd_hda_codec_write_cache(codec, pin, 0,
- 				AC_VERB_SET_PIN_WIDGET_CONTROL, val);
- 	else
- 		return snd_hda_codec_write(codec, pin, 0,
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index 681c360f29f9..8a095c16ee65 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -381,9 +381,6 @@ snd_hda_codec_write_cache(struct hda_codec *codec, hda_nid_t nid,
- 	return snd_hdac_regmap_write(&codec->core, nid, verb, parm);
- }
- 
--#define snd_hda_codec_update_cache(codec, nid, flags, verb, parm) \
--	snd_hda_codec_write_cache(codec, nid, flags, verb, parm)
--
- /* the struct for codec->pin_configs */
- struct hda_pincfg {
- 	hda_nid_t nid;
-diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
-index 942f96e184b6..579984ecdec3 100644
---- a/sound/pci/hda/hda_generic.c
-+++ b/sound/pci/hda/hda_generic.c
-@@ -209,7 +209,7 @@ static void parse_user_hints(struct hda_codec *codec)
-  */
- 
- #define update_pin_ctl(codec, pin, val) \
--	snd_hda_codec_update_cache(codec, pin, 0, \
-+	snd_hda_codec_write_cache(codec, pin, 0, \
- 				   AC_VERB_SET_PIN_WIDGET_CONTROL, val)
- 
- /* restore the pinctl based on the cached value */
-@@ -898,7 +898,7 @@ void snd_hda_activate_path(struct hda_codec *codec, struct nid_path *path,
- 		hda_nid_t nid = path->path[i];
- 
- 		if (enable && path->multi[i])
--			snd_hda_codec_update_cache(codec, nid, 0,
-+			snd_hda_codec_write_cache(codec, nid, 0,
- 					    AC_VERB_SET_CONNECT_SEL,
- 					    path->idx[i]);
- 		if (has_amp_in(codec, path, i))
-@@ -930,7 +930,7 @@ static void set_pin_eapd(struct hda_codec *codec, hda_nid_t pin, bool enable)
- 		return;
- 	if (codec->inv_eapd)
- 		enable = !enable;
--	snd_hda_codec_update_cache(codec, pin, 0,
-+	snd_hda_codec_write_cache(codec, pin, 0,
- 				   AC_VERB_SET_EAPD_BTLENABLE,
- 				   enable ? 0x02 : 0x00);
- }
-@@ -5973,7 +5973,7 @@ static void clear_unsol_on_unused_pins(struct hda_codec *codec)
- 		hda_nid_t nid = pin->nid;
- 		if (is_jack_detectable(codec, nid) &&
- 		    !snd_hda_jack_tbl_get(codec, nid))
--			snd_hda_codec_update_cache(codec, nid, 0,
-+			snd_hda_codec_write_cache(codec, nid, 0,
- 					AC_VERB_SET_UNSOLICITED_ENABLE, 0);
- 	}
- }
-diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
-index 757857313426..fd476fb40e1b 100644
---- a/sound/pci/hda/patch_analog.c
-+++ b/sound/pci/hda/patch_analog.c
-@@ -148,7 +148,7 @@ static void ad_vmaster_eapd_hook(void *private_data, int enabled)
- 		return;
- 	if (codec->inv_eapd)
- 		enabled = !enabled;
--	snd_hda_codec_update_cache(codec, spec->eapd_nid, 0,
-+	snd_hda_codec_write_cache(codec, spec->eapd_nid, 0,
- 				   AC_VERB_SET_EAPD_BTLENABLE,
- 				   enabled ? 0x02 : 0x00);
- }
-@@ -991,7 +991,7 @@ static void ad1884_vmaster_hp_gpio_hook(void *private_data, int enabled)
- 
- 	if (spec->eapd_nid)
- 		ad_vmaster_eapd_hook(private_data, enabled);
--	snd_hda_codec_update_cache(codec, 0x01, 0,
-+	snd_hda_codec_write_cache(codec, 0x01, 0,
- 				   AC_VERB_SET_GPIO_DATA,
- 				   enabled ? 0x00 : 0x02);
- }
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index 75ba66eb4ccd..8b48352689b4 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -341,7 +341,7 @@ static void cxt_fixup_headset_mic(struct hda_codec *codec,
-  * control. */
- 
- #define update_mic_pin(codec, nid, val)					\
--	snd_hda_codec_update_cache(codec, nid, 0,			\
-+	snd_hda_codec_write_cache(codec, nid, 0,			\
- 				   AC_VERB_SET_PIN_WIDGET_CONTROL, val)
- 
- static const struct hda_input_mux olpc_xo_dc_bias = {
+I think you should tie the library load to much earlier in path. Not in
+start.
+
+Also, we invoke drain and hence there is no need of stop
+
+> 
+> 
+>  src/utils/cplay.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/src/utils/cplay.c b/src/utils/cplay.c
+> index 87863a3..3c48d15 100644
+> --- a/src/utils/cplay.c
+> +++ b/src/utils/cplay.c
+> @@ -403,6 +403,7 @@ void play_samples(char *name, unsigned int card, unsigned int device,
+>  		printf("%s: exit success\n", __func__);
+>  	/* issue drain if it supports */
+>  	compress_drain(compress);
+> +	compress_stop(compress);
+>  	free(buffer);
+>  	fclose(file);
+>  	compress_close(compress);
+> -- 
+> 2.7.4
+> 
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
 -- 
-2.17.1
+~Vinod
