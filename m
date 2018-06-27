@@ -1,15 +1,21 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2] ALSA: hda/hdmi - Don't fall back to generic
-	when i915 binding fails
-Date: Thu, 28 Jun 2018 00:07:16 +0200
-Message-ID: <20180627220716.3810-1-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v3 00/13] Enable HDA Codec support on Intel
+ Platforms
+Date: Wed, 27 Jun 2018 16:04:57 -0700
+Message-ID: <c69dbe7e-5b74-334d-abce-cd81da205fe2@linux.intel.com>
+References: <20180602035401.26934-1-pierre-louis.bossart@linux.intel.com>
+ <s5h603136ni.wl-tiwai@suse.de>
+ <1c445079-c5c6-8c70-ebcf-f1eabb7616e8@linux.intel.com>
+ <s5hy3fuk6nw.wl-tiwai@suse.de> <s5ha7rhbc8k.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4B3B12679A6
- for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 00:07:19 +0200 (CEST)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 195412679A6
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 01:05:05 +0200 (CEST)
+In-Reply-To: <s5ha7rhbc8k.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,49 +25,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, Chris Wilson <chris@chris-wilson.co.uk>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, rakesh.a.ughreja@intel.com, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-When i915 component binding fails, it means that HDMI isn't applicable
-anyway.  Although the probe with the generic HDMI parser would still
-work, it's essentially useless, hence better to be left unbound.
+On 6/26/18 12:04 PM, Takashi Iwai wrote:
+> On Mon, 04 Jun 2018 15:44:35 +0200,
+> Takashi Iwai wrote:
+>>
+>> On Mon, 04 Jun 2018 15:27:18 +0200,
+>> Pierre-Louis Bossart wrote:
+>>>
+>>> On 6/2/18 4:00 AM, Takashi Iwai wrote:
+>>>> ... and these patches are touching both ASoC and HD-audio legacy, we'd
+>>>> need the coordinated patch application.  That is, we'd need a topic
+>>>> branch that will be merged to both Mark and my trees.  We can branch it
+>>>> off after 4.18-rc1 release, for example, as a clean start point.
+>>>
+>>> ... And I am not sure I understand the topic branch merged in both
+>>> directions. If we want to perform a non-regression with the first
+>>> parts (without ASoC additions) then we may need to create a partial
+>>> topic branch, then add the rest later?
+>>
+>> The topic branch is needed so that it can be merged in my tree and
+>> Mark's tree directly and cleanly.  It has nothing to do with 'no
+>> regression' rule, but rather only about the git merge mechanism.
+>>
+>> Usually a topic branch is created from a clean stub point, e.g.
+>> Linus 4.18-rc1 release.  Then I'd merge your patches starting at this
+>> point, so that these can be merged via git-merge to both my tree and
+>> Mark's tree at the same time.  At later point, I'll merge whole Mark's
+>> tree for 4.19 merge window.  And the merge will work cleanly since
+>> these common changes have been already merged in my tree.
+>>
+>> The split of patches are helpful to ease reviews in general.  For this
+>> kind of big mixture changes, some staged merges are preferred.  That
+>> is, at first merge individual fixes, and merge preliminary / cleanup
+>> patches that don't break any functionality.  These can be merged and
+>> tested quickly, per nature.
+>>
+>> Then it follows the rest, the main change; this will need more careful
+>> reviews and tests, and it'd be often requested to rewrite multiple
+>> times.  When the preliminary patches have been already merged, you
+>> don't have to resend the whole series again, and this will make the
+>> mail thread a lot easer to read through.
+> 
+> Now I've put a few patches from the series into topic/hda-core-intel
+> branch of sound git tree: namely,
+> 
+>     ALSA: hdac: ext: add wait for codec to respond after link reset
+>     ALSA: hdac: Remove usage of struct hdac_ext_device and use hdac_device instead
+>     ALSA: hdac: Remove usage of struct hdac_ext_bus and use hdac_bus instead
+>     ALSA: hdac: Remove usage of struct hdac_ext_driver, use hdac_driver instead
+>     ALSA: hda: split snd_hda_codec_new function
+>     ALSA: hdac: remove memory allocation from snd_hdac_ext_bus_device_init
+>     ALSA: hdac: add extended ops in the hdac_bus
+> 
+> corresponds to the patch 12 as a fix at first, followed by patches 1,
+> 2, 3 as hdac_ext_* cleanup, and patches 8, 9, 10 for preparation of
+> the further move.  All these should be only cleanups / refactoring
+> (and one fix), hence no visible functional changes.
+> 
+> The branch isn't merged to for-next yet.  And it's cleanly based on
+> v4.18-rc1 so that Mark can pull into his tree.  As far as I've
+> checked, the merge can be done smoothly to the current asoc tree,
+> too.
+> 
+> So, guys, please check / review whether these are all OK for now.
+> 
+> The rest are rather ASoC-intensive part and needs more careful
+> reviews.
 
-This patch mimics the probe_id field at failing the i915 component
-binding so that the generic HDMI won't be bound after that.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
-v1->v2: use the dummy probe_id value to assure failing the further binding
-
- sound/pci/hda/hda_codec.h  | 1 +
- sound/pci/hda/patch_hdmi.c | 2 ++
- 2 files changed, 3 insertions(+)
-
-diff --git a/sound/pci/hda/hda_codec.h b/sound/pci/hda/hda_codec.h
-index a8b1b31f161c..53af948dacea 100644
---- a/sound/pci/hda/hda_codec.h
-+++ b/sound/pci/hda/hda_codec.h
-@@ -84,6 +84,7 @@ struct hda_bus {
-  */
- typedef int (*hda_codec_patch_t)(struct hda_codec *);
- 	
-+#define HDA_CODEC_ID_SKIP_PROBE		0x00000001
- #define HDA_CODEC_ID_GENERIC_HDMI	0x00000101
- #define HDA_CODEC_ID_GENERIC		0x00000201
- 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index c182e619ad58..31f092abf299 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2542,6 +2542,8 @@ static int alloc_intel_hdmi(struct hda_codec *codec)
- 	/* requires i915 binding */
- 	if (!codec->bus->core.audio_component) {
- 		codec_info(codec, "No i915 binding for Intel HDMI/DP codec\n");
-+		/* set probe_id here to prevent generic fallback binding */
-+		codec->probe_id = HDA_CODEC_ID_SKIP_PROBE;
- 		return -ENODEV;
- 	}
- 
--- 
-2.16.4
+Great, thank you, I was about to resend a smaller series but you beat me 
+to it. Will double-check the branch.
