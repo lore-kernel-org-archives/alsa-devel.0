@@ -1,19 +1,24 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH 1/3] ALSA: hda - Handle error from
-	snd_hda_power_up*()
-Date: Wed, 27 Jun 2018 19:12:06 +0300
-Message-ID: <20180627161206.GG20518@intel.com>
-References: <20180627091034.22724-1-tiwai@suse.de>
- <20180627091034.22724-2-tiwai@suse.de>
+From: slava <slavak61@gmail.com>
+Subject: dsd formats in ALSA plugins
+Date: Wed, 27 Jun 2018 21:34:34 +0300
+Message-ID: <cada4d63-9bba-f816-0d30-67ae555f9e97@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 31F31267999
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 18:12:10 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180627091034.22724-2-tiwai@suse.de>
+Received: from mail-lf0-f54.google.com (mail-lf0-f54.google.com
+ [209.85.215.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id A5CBD267705
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 20:34:38 +0200 (CEST)
+Received: by mail-lf0-f54.google.com with SMTP id u202-v6so2280800lff.9
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 11:34:38 -0700 (PDT)
+Received: from [192.168.5.100] (ip-109-254-78-40.eq.dec.net.ua.
+ [109.254.78.40])
+ by smtp.gmail.com with ESMTPSA id w4-v6sm794632ljh.88.2018.06.27.11.34.36
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Wed, 27 Jun 2018 11:34:36 -0700 (PDT)
+Content-Language: ru
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,85 +28,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Chris Wilson <chris@chris-wilson.co.uk>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 27, 2018 at 11:10:32AM +0200, Takashi Iwai wrote:
-> Although snd_hda_power_up() and snd_hda_power_up_pm() may fail, we
-> haven't dealt with the error properly in many places.  It's an unusual
-> situation but still possible.
-> =
-
-> This patch spots these places and adds the proper error paths.
-> =
-
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/pci/hda/hda_beep.c       |  3 +-
->  sound/pci/hda/hda_codec.c      |  4 ++-
->  sound/pci/hda/hda_controller.c |  4 ++-
->  sound/pci/hda/hda_proc.c       |  3 +-
->  sound/pci/hda/hda_sysfs.c      |  4 ++-
->  sound/pci/hda/patch_ca0132.c   | 53 +++++++++++++++++++++++++++-------
->  sound/pci/hda/patch_realtek.c  |  3 +-
->  7 files changed, 57 insertions(+), 17 deletions(-)
-> =
-
-> diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
-> index 066b5b59c4d7..e9d5fbd6c13a 100644
-> --- a/sound/pci/hda/hda_beep.c
-> +++ b/sound/pci/hda/hda_beep.c
-> @@ -26,7 +26,8 @@ static void generate_tone(struct hda_beep *beep, int to=
-ne)
->  	struct hda_codec *codec =3D beep->codec;
->  =
-
->  	if (tone && !beep->playing) {
-> -		snd_hda_power_up(codec);
-> +		if (snd_hda_power_up(codec) < 0)
-> +			return;
->  		if (beep->power_hook)
->  			beep->power_hook(beep, true);
->  		beep->playing =3D 1;
-> diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-> index 20a171ac4bb2..44165f3e344e 100644
-> --- a/sound/pci/hda/hda_codec.c
-> +++ b/sound/pci/hda/hda_codec.c
-> @@ -65,7 +65,9 @@ static int codec_exec_verb(struct hdac_device *dev, uns=
-igned int cmd,
->  		return -1;
->  =
-
->   again:
-> -	snd_hda_power_up_pm(codec);
-> +	err =3D snd_hda_power_up_pm(codec);
-> +	if (err < 0)
-> +		return err;
->  	mutex_lock(&bus->core.cmd_mutex);
->  	if (flags & HDA_RW_NO_RESPONSE_FALLBACK)
->  		bus->no_response_fallback =3D 1;
-> diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controlle=
-r.c
-> index a12e594d4e3b..4273be1f3eaa 100644
-> --- a/sound/pci/hda/hda_controller.c
-> +++ b/sound/pci/hda/hda_controller.c
-> @@ -645,7 +645,9 @@ static int azx_pcm_open(struct snd_pcm_substream *sub=
-stream)
->  				   buff_step);
->  	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
->  				   buff_step);
-> -	snd_hda_power_up(apcm->codec);
-> +	err =3D snd_hda_power_up(apcm->codec);
-> +	if (err < 0)
-> +		return err;
-
-Missing azx_release_device() here?
-
->  	if (hinfo->ops.open)
->  		err =3D hinfo->ops.open(hinfo, apcm->codec, substream);
->  	else
--- =
-
-Ville Syrj=E4l=E4
-Intel
+U29ycnksIGRvbid0IHJlY2VpdmUgbXkgb3duIHBvc3QsIHNvIGNhbid0IHJlcGx5CgpGaW5kIGlu
+IGFsc2EtbGliLTEuMS42IGZpbGUgc3JjL3BjbS9wY20tcGFyYW1zLmMgbGluZSAxOTQ1CgpzdGF0
+aWMgY29uc3Qgc25kX21hc2tfdCByZWZpbmVfbWFza3NbU05EX1BDTV9IV19QQVJBTV9MQVNUX01B
+U0sgLSAKU05EX1BDTV9IV19QQVJBTV9GSVJTVF9NQVNLICsgMV0gPSB7CiDCoMKgwqAgW1NORF9Q
+Q01fSFdfUEFSQU1fQUNDRVNTIC0gU05EX1BDTV9IV19QQVJBTV9GSVJTVF9NQVNLXSA9IHsKIMKg
+wqDCoCDCoMKgwqAgLmJpdHMgPSB7IDB4MWYgfSwKIMKgwqDCoCB9LAogwqDCoMKgIFtTTkRfUENN
+X0hXX1BBUkFNX0ZPUk1BVCAtIFNORF9QQ01fSFdfUEFSQU1fRklSU1RfTUFTS10gPSB7CiDCoMKg
+wqAgwqDCoMKgIC5iaXRzID0geyAweDgxZmZmZmZmLCAweGZmZn0sCgpDaGFuZ2UgbGFzdCAweGZm
+ZiB0byAweGZmZmZmIGFuZCBub3cgY2FuIHVzZSBEU0QgZm9ybWF0cwoKSG93IGkgdW5kZXJzdGFu
+ZCwgaW4gdmVyc2lvbiAxLjAuMjcgbGFzdCBmb3JtYXQgPSA0MwphbmQgd2hlbiBuZXcgZm9ybWF0
+IHdhcyBhZGRlZCBidXQgbWFzayBub3QgY2hhbmdlZAoKTWF5IGJlIGkgYWJzb2x1dGVseSB3cm9u
+ZyBhbmQgd2hhdCBpIGRvIGhhcyBzaWRlIGVmZmVjdHMgb3IKbmVlZGVkIGFueSBlbHNlPwoKVGhh
+bmtzCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
