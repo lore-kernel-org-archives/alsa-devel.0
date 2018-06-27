@@ -1,42 +1,46 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
-Date: Wed, 27 Jun 2018 17:11:49 +0200
-Message-ID: <87r2ksl0wa.fsf@belgarion.home>
-References: <20180617170217.24177-1-robert.jarzmik@free.fr>
-        <20180618104159.24b9fffb@bbrezillon> <87d0wnrhqz.fsf@belgarion.home>
-        <20180625130704.GQ9413@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH] ASoC: dpcm: don't merge format from invalid codec dai
+Date: Wed, 27 Jun 2018 17:36:38 +0200
+Message-ID: <20180627153638.11832-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180625130704.GQ9413@sirena.org.uk> (Mark Brown's message of
-        "Mon, 25 Jun 2018 14:07:04 +0100")
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>
-Cc: Boris Brezillon <boris.brezillon@bootlin.com>, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Mark Brown <broonie@kernel.org> writes:
+When merging codec formats, dpcm_runtime_base_format() should skip
+the codecs which are not supporting the current stream direction.
 
-> On Mon, Jun 18, 2018 at 09:56:20PM +0200, Robert Jarzmik wrote:
->
->> I must insist on "Wednesday", as I need to have one last pass from 0-day kernel
->> checker to be fully covered, and I'd like as well to know which tree the ASoC
->> patch will take, ie. if Mark commits to take it, or rather wants to pull from
->> the imutable branch.
->
-> I'll pull the branch in (a signed tag would've been nicer but it's not
-> the end of the world).
-Yeah, I realised that too ... late.
+At the moment, if a BE link has more than one codec, and only one
+of these codecs has no capture DAI, it becomes impossible to start
+a capture stream because the merged format would be 0.
 
-Anyways, the immutable branch doesn't contain the specific ASoC patch "ASoC:
-pxa: remove the dmaengine compat need", and up to my better understanding
-neither does your for-next branch.
+Skipping invalid codec DAI solves the problem.
 
-So until I see it in your branch it will dwelve happily in pxa/for-next. If it
-has to be routed through your tree, so that Daniel can work on ASoC pxa, I'd
-like to know at -rc4 time so that I drop it from my pxa/for-next branch.
+Fixes: b073ed4e2126 ("ASoC: soc-pcm: DPCM cares BE format")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ sound/soc/soc-pcm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-Cheers.
-
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 5141409ccaed..a58d8e7bf52b 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1694,6 +1694,14 @@ static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
+ 		int i;
+ 
+ 		for (i = 0; i < be->num_codecs; i++) {
++			/*
++			 * Skip CODECs which don't support the current stream
++			 * type. See soc_pcm_init_runtime_hw() for more details
++			 */
++			if (!snd_soc_dai_stream_valid(be->codec_dais[i],
++						      stream))
++				continue;
++
+ 			codec_dai_drv = be->codec_dais[i]->driver;
+ 			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 				codec_stream = &codec_dai_drv->playback;
 -- 
-Robert
+2.14.4
