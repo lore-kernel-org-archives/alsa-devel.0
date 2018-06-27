@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-amplifer: add simple-amplifier compatible" to the asoc tree
-Date: Wed, 27 Jun 2018 12:30:20 +0100 (BST)
-Message-ID: <20180627113020.D3DC4440070@finisterre.ee.mobilebroadband>
-References: <20180626121128.28564-4-jbrunet@baylibre.com>
+Subject: Applied "ASoC: simple-amplifier: remame dio2125 documentation" to the asoc tree
+Date: Wed, 27 Jun 2018 12:30:27 +0100 (BST)
+Message-ID: <20180627113027.6DABD440070@finisterre.ee.mobilebroadband>
+References: <20180626121128.28564-2-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180626121128.28564-4-jbrunet@baylibre.com>
+In-Reply-To: <20180626121128.28564-2-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, =?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-amplifer: add simple-amplifier compatible
+   ASoC: simple-amplifier: remame dio2125 documentation
 
 has been applied to the asoc tree at
 
@@ -37,34 +37,63 @@ to this mail.
 Thanks,
 Mark
 
->From 8ed237e83ce9ff4b3964a6b096beb1cbd3397d5a Mon Sep 17 00:00:00 2001
+>From 0ed03e6dc288c50b2e7d71523b99df1afd81cea1 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Tue, 26 Jun 2018 14:11:28 +0200
-Subject: [PATCH] ASoC: simple-amplifer: add simple-amplifier compatible
+Date: Tue, 26 Jun 2018 14:11:26 +0200
+Subject: [PATCH] ASoC: simple-amplifier: remame dio2125 documentation
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Add simple-audio-amplifier to the list of available compatible
+The dio2125 is simple enough that we can make it a generic component.
+Rename the the dio2125 documentation to simple-amplifier to
+prepare this change.
 
 Suggested-by: Nicolò Veronese <nicveronese@gmail.com>
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/simple-amplifier.c | 1 +
- 1 file changed, 1 insertion(+)
+ .../devicetree/bindings/sound/dioo,dio2125.txt       | 12 ------------
+ .../devicetree/bindings/sound/simple-amplifier.txt   | 12 ++++++++++++
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/dioo,dio2125.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/simple-amplifier.txt
 
-diff --git a/sound/soc/codecs/simple-amplifier.c b/sound/soc/codecs/simple-amplifier.c
-index 6c27d4afaf3a..85524acf3e9c 100644
---- a/sound/soc/codecs/simple-amplifier.c
-+++ b/sound/soc/codecs/simple-amplifier.c
-@@ -101,6 +101,7 @@ static int simple_amp_probe(struct platform_device *pdev)
- #ifdef CONFIG_OF
- static const struct of_device_id simple_amp_ids[] = {
- 	{ .compatible = "dioo,dio2125", },
-+	{ .compatible = "simple-audio-amplifier", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, simple_amp_ids);
+diff --git a/Documentation/devicetree/bindings/sound/dioo,dio2125.txt b/Documentation/devicetree/bindings/sound/dioo,dio2125.txt
+deleted file mode 100644
+index 63dbfe0f11d0..000000000000
+--- a/Documentation/devicetree/bindings/sound/dioo,dio2125.txt
++++ /dev/null
+@@ -1,12 +0,0 @@
+-DIO2125 Audio Driver
+-
+-Required properties:
+-- compatible : "dioo,dio2125"
+-- enable-gpios : the gpio connected to the enable pin of the dio2125
+-
+-Example:
+-
+-amp: analog-amplifier {
+-	compatible = "dioo,dio2125";
+-	enable-gpios = <&gpio GPIOH_3 0>;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/simple-amplifier.txt b/Documentation/devicetree/bindings/sound/simple-amplifier.txt
+new file mode 100644
+index 000000000000..8647edae7af0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/simple-amplifier.txt
+@@ -0,0 +1,12 @@
++Simple Amplifier Audio Driver
++
++Required properties:
++- compatible : "dioo,dio2125" or "simple-audio-amplifier"
++- enable-gpios : the gpio connected to the enable pin of the simple amplifier
++
++Example:
++
++amp: analog-amplifier {
++	compatible = "simple-audio-amplifier";
++	enable-gpios = <&gpio GPIOH_3 0>;
++};
 -- 
 2.17.1
