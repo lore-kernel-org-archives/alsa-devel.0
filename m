@@ -1,21 +1,22 @@
-From: Daniel Baluta <daniel.baluta@nxp.com>
-Subject: Re: [PATCH tinycompress] cplay: Stop playback stream
- at the end
-Date: Wed, 27 Jun 2018 11:15:15 +0000
-Message-ID: <1530098114.2102.36.camel@nxp.com>
-References: <1530085691-27736-1-git-send-email-daniel.baluta@nxp.com>
- <20180627102424.GH22377@vkoul-mobl>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: ASoC: new ac97 bus and codec clock
+Date: Wed, 27 Jun 2018 12:23:35 +0100
+Message-ID: <20180627112335.GI1779@sirena.org.uk>
+References: <87lgbdqixh.fsf@belgarion.home>
+ <20180619150204.GF11230@sirena.org.uk>
+ <CAL_JsqLn2t-zFi8xrig_63OD-SBq8d0jZctih38sZ4cAnRoe6g@mail.gmail.com>
+ <8736xhqzmn.fsf@belgarion.home>
+ <CAL_JsqJbXGLO+xu1NZOiqmrukHKWUySv=0Sk5KDmSTLL7Mt7+Q@mail.gmail.com>
+ <87y3f9peyb.fsf@belgarion.home>
+ <CAL_JsqKBOdZBuDnRUAcpARP1fFquc7vpcUayYRaJAMSPrhsPdg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="===============3770734897306970529=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01on0056.outbound.protection.outlook.com [104.47.1.56])
- by alsa0.perex.cz (Postfix) with ESMTP id 833A4267610
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 13:15:17 +0200 (CEST)
-In-Reply-To: <20180627102424.GH22377@vkoul-mobl>
-Content-Language: en-US
-Content-ID: <12F11A273045E4429F470A47A3FD446C@eurprd04.prod.outlook.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5EF6E267610
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 13:23:39 +0200 (CEST)
+In-Reply-To: <CAL_JsqKBOdZBuDnRUAcpARP1fFquc7vpcUayYRaJAMSPrhsPdg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,34 +26,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "vkoul@kernel.org" <vkoul@kernel.org>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
+To: Rob Herring <robh+dt@kernel.org>
+Cc: Frank Rowand <frowand.list@gmail.com>, Linux-ALSA <alsa-devel@alsa-project.org>, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <zonque@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTWksIDIwMTgtMDYtMjcgYXQgMTU6NTQgKzA1MzAsIFZpbm9kIHdyb3RlOg0KPiBPbiAyNy0w
-Ni0xOCwgMTA6NDgsIERhbmllbCBCYWx1dGEgd3JvdGU6DQo+ID4gDQo+ID4gRWFjaCBjb21wcmVz
-c19zdGFydCBzaG91bGQgaGF2ZSBhIGNvcnJlc3BvbmRpbmcgY29tcHJlc3Nfc3RvcA0KPiA+IGF0
-IHRoZSBlbmQuDQo+ID4gDQo+ID4gQWxzbywgdGhpcyBnaXZlcyB1c2VyIGEgY2hhbmdlIHRvIGNs
-ZWFudXAgcmVzb3VyY2VzIHRoYXQgbWlnaHQNCj4gPiBoYXZlIGJlZW4gYWxsb2NhdGVkIGluIGNv
-bXByZXNzX3N0YXJ0Lg0KPiBJIHRoaW5rIHRoZSBhc3N1bXB0aW9ucyBhcmUgbm90IHF1aXRlIGNv
-cnJlY3QgaGVyZSwgcmVzb3VyY2VzIHNob3VsZA0KPiBiZQ0KPiBhbGxvY2F0ZWQgaW4gLm9wZW4g
-YW5kIGNsZWFudXAgaW4gLmZyZWUgZm9yIGRyaXZlciBjYWxsYmFjay4NCj4gDQo+ID4gDQo+ID4g
-DQo+ID4gU2lnbmVkLW9mZi1ieTogRGFuaWVsIEJhbHV0YSA8ZGFuaWVsLmJhbHV0YUBueHAuY29t
-Pg0KPiA+IC0tLQ0KPiA+IEknbSBpbXBsZW1lbnRpbmcgY29kZWMgbGlicmFyeSBkeW5hbWljIGxv
-YWRpbmcgYXQgcnVudGltZSBhbmQgSSdtDQo+ID4gZXhwbG9yaW5nDQo+ID4gdXNpbmc6DQo+ID4g
-CSogU05EUlZfQ09NUFJFU1NfU1RBUlQgLT4gdG8gbG9hZCB0aGUgbGlicmFyeQ0KPiA+IAkqIFNO
-RFJWX0NPTVBSRVNTX1NUT1DCoMKgLT4gdG8gdW5sb2FkIHRoZSBsaWJyYXJ5DQo+ID4gDQo+ID4g
-VGhpcyBtaWdodCBub3QgYmUgdGhlIGJlc3QgaWRlYSBiZWNhc3VlIGZvciBleGFtcGxlIGxvYWRp
-bmcNCj4gPiB0aGUgbGlicmFyeSBtaWdodCBpbnRyb2R1Y2Ugc29tZSBkZWxheXMsIGFueWhvdyBp
-IHN0aWxsIHRoaW5rDQo+ID4gdGhpcyB0aGF0IGNvbXByZXNzX3N0b3AgaXMgY29ycmVjdCB0aGlu
-ZyB0byBhZGQgYXQgdGhlIGVuZCBvZg0KPiA+IHBsYXliYWNrLg0KPiBJIHRoaW5rIHlvdSBzaG91
-bGQgdGllIHRoZSBsaWJyYXJ5IGxvYWQgdG8gbXVjaCBlYXJsaWVyIGluIHBhdGguIE5vdA0KPiBp
-bg0KPiBzdGFydC4NCj4gDQo+IEFsc28sIHdlIGludm9rZSBkcmFpbiBhbmQgaGVuY2UgdGhlcmUg
-aXMgbm8gbmVlZCBvZiBzdG9wDQoNCkdvdCB5b3VyIHBvaW50IGhlcmUuwqANCg0KUGVyaGFwcywN
-Cg0KwqAtIHVzZSAuaHdfcGFyYW1zIHRvIGxvYWQgdGhlIGNvZGVjIGxpYnJhcnkuDQrCoC0gYWRk
-IC5od19mcmVlIChhcyBMaWFtIHN1Z2dlc3RlZCBpbiBhIHNlcGFyYXRlIGVtYWlsKSB0byB1bmxv
-YWQgdGhlIMKgIMKgIMKgY29kZWMgbGlicmFyeS4NCg0KVGhhbmtzIHdlIGNhbiBkcm9wIHRoaXMg
-cGF0Y2ggdGhlbi4NCg0KRGFuaWVsLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+
+--===============3770734897306970529==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ZOudaV4lSIjFTlHv"
+Content-Disposition: inline
+
+
+--ZOudaV4lSIjFTlHv
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Jun 20, 2018 at 11:16:15AM -0600, Rob Herring wrote:
+
+> Does AC97 specify a common programming model? That's were a common
+> compatible is used (though experience has proven things like
+> "generic-ehci" are don't work).
+
+Yes, there is a standard register interface which all AC'97 CODECs
+implemented and which does work effectively for drivers that only use
+that.  Devices can offer extensions which do need specific drivers, and
+there are ID registers which can be used to enumerate.  However one of
+the things that some of the devices targetted at embedded systems do is
+offer non-standard clocking features that need some configuration during
+initialization (and may need to work with input clocks too) which
+complicates things, especially in the context of DT.
+
+--ZOudaV4lSIjFTlHv
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlszc7cACgkQJNaLcl1U
+h9BahQf/ZczIHdyfC6r/Khks82FtXbEYPr1hq25SF8ExEQLpZMJXNMS4M2hFFPNV
+EgZknbfoQAjMlVYijJKos61wcDihhzi1BH8KW6KpM6mJzEjRpgSQjmMHfIlEmJtH
+4vsdpbvrwwSwdmPNWWduGnE4zNNzdzxBbHPaQvol7dAhxXNTawrvSolj/B9fv3Sj
+mal8w/k2Kt1zk3f34A/VfBGxTmTcpFH/pvxEjCEhJZgQIYY3SlTDCa6CG9qtfbEO
+6XcRVIwsOlQbYCGUBDK+d8gBQMuJ6uLpFu86IXob7bapETbHTk1Ve1DsWkSQHW5F
+9Qh2wU2xEVa6kEJKwgbh6YyQo1J2Kw==
+=I1Py
+-----END PGP SIGNATURE-----
+
+--ZOudaV4lSIjFTlHv--
+
+--===============3770734897306970529==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3770734897306970529==--
