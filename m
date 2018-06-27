@@ -1,15 +1,17 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ASoC: qdsp6: qdafe: fix some off by one bugs
-Date: Wed, 27 Jun 2018 11:56:53 +0300
-Message-ID: <20180627085653.v5bi34k2ozkvvrsr@kili.mountain>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 2/3] ALSA: hda - Move in_pm accessors to HDA
+	core
+Date: Wed, 27 Jun 2018 11:10:33 +0200
+Message-ID: <20180627091034.22724-3-tiwai@suse.de>
+References: <20180627091034.22724-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2130.oracle.com (aserp2130.oracle.com [141.146.126.79])
- by alsa0.perex.cz (Postfix) with ESMTP id DDBEC267950
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 10:57:07 +0200 (CEST)
-Content-Disposition: inline
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id F28EA267959
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 11:10:39 +0200 (CEST)
+In-Reply-To: <20180627091034.22724-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,44 +21,150 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, Chris Wilson <chris@chris-wilson.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The > should be >= or we could read one element beyond the end of the
-port_maps[] array.
+The in_pm atomic in hdac_device is an important field used as a flag
+as well as a refcount for PM.  The existing snd_hdac_power_up/down
+helpers already refer to it in the HD-audio core code, while the code
+to actually setting the value (atomic_inc() / _dec()) is open-coded in
+HDA legacy side, which is hard to find.
 
-Fixes: 7fa2d70f9766 ("ASoC: qdsp6: q6afe: Add q6afe driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+This patch adds the helper functions to set/reset the in_pm counter to
+HDA core and use them in HDA legacy side, for making it clearer who /
+where the PM is managed.
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 01f43218984b..69a7896cb713 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -777,7 +777,7 @@ static int q6afe_callback(struct apr_device *adev, struct apr_resp_pkt *data)
-  */
- int q6afe_get_port_id(int index)
+There is no functional changes, just code refactoring.
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/hdaudio.h    | 27 +++++++++++++++++++++++++++
+ sound/pci/hda/hda_codec.c  | 21 ++++++---------------
+ sound/pci/hda/patch_hdmi.c |  2 +-
+ 3 files changed, 34 insertions(+), 16 deletions(-)
+
+diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
+index c052afc27547..294a5a21937b 100644
+--- a/include/sound/hdaudio.h
++++ b/include/sound/hdaudio.h
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/device.h>
+ #include <linux/interrupt.h>
++#include <linux/pm_runtime.h>
+ #include <linux/timecounter.h>
+ #include <sound/core.h>
+ #include <sound/memalloc.h>
+@@ -171,12 +172,38 @@ int snd_hdac_power_down(struct hdac_device *codec);
+ int snd_hdac_power_up_pm(struct hdac_device *codec);
+ int snd_hdac_power_down_pm(struct hdac_device *codec);
+ int snd_hdac_keep_power_up(struct hdac_device *codec);
++
++/* call this at entering into suspend/resume callbacks in codec driver */
++static inline void snd_hdac_enter_pm(struct hdac_device *codec)
++{
++	atomic_inc(&codec->in_pm);
++}
++
++/* call this at leaving from suspend/resume callbacks in codec driver */
++static inline void snd_hdac_leave_pm(struct hdac_device *codec)
++{
++	atomic_dec(&codec->in_pm);
++}
++
++static inline bool snd_hdac_is_in_pm(struct hdac_device *codec)
++{
++	return atomic_read(&codec->in_pm);
++}
++
++static inline bool snd_hdac_is_power_on(struct hdac_device *codec)
++{
++	return !pm_runtime_suspended(&codec->dev);
++}
+ #else
+ static inline int snd_hdac_power_up(struct hdac_device *codec) { return 0; }
+ static inline int snd_hdac_power_down(struct hdac_device *codec) { return 0; }
+ static inline int snd_hdac_power_up_pm(struct hdac_device *codec) { return 0; }
+ static inline int snd_hdac_power_down_pm(struct hdac_device *codec) { return 0; }
+ static inline int snd_hdac_keep_power_up(struct hdac_device *codec) { return 0; }
++static inline void snd_hdac_enter_pm(struct hdac_device *codec) {}
++static inline void snd_hdac_leave_pm(struct hdac_device *codec) {}
++static inline bool snd_hdac_is_in_pm(struct hdac_device *codec) { return 0; }
++static inline bool snd_hdac_is_power_on(struct hdac_device *codec) { return 1; }
+ #endif
+ 
+ /*
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 44165f3e344e..27ce6ff6354e 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -37,15 +37,8 @@
+ #include "hda_jack.h"
+ #include <sound/hda_hwdep.h>
+ 
+-#ifdef CONFIG_PM
+-#define codec_in_pm(codec)	atomic_read(&(codec)->core.in_pm)
+-#define hda_codec_is_power_on(codec) \
+-	(!pm_runtime_suspended(hda_codec_dev(codec)))
+-#else
+-#define codec_in_pm(codec)	0
+-#define hda_codec_is_power_on(codec)	1
+-#endif
+-
++#define codec_in_pm(codec)		snd_hdac_is_in_pm(&codec->core)
++#define hda_codec_is_power_on(codec)	snd_hdac_is_power_on(&codec->core)
+ #define codec_has_epss(codec) \
+ 	((codec)->core.power_caps & AC_PWRST_EPSS)
+ #define codec_has_clkstop(codec) \
+@@ -2848,14 +2841,13 @@ static unsigned int hda_call_codec_suspend(struct hda_codec *codec)
  {
--	if (index < 0 || index > AFE_PORT_MAX)
-+	if (index < 0 || index >= AFE_PORT_MAX)
- 		return -EINVAL;
+ 	unsigned int state;
  
- 	return port_maps[index].port_id;
-@@ -1014,7 +1014,7 @@ int q6afe_port_stop(struct q6afe_port *port)
+-	atomic_inc(&codec->core.in_pm);
+-
++	snd_hdac_enter_pm(&codec->core);
+ 	if (codec->patch_ops.suspend)
+ 		codec->patch_ops.suspend(codec);
+ 	hda_cleanup_all_streams(codec);
+ 	state = hda_set_power_state(codec, AC_PWRST_D3);
+ 	update_power_acct(codec, true);
+-	atomic_dec(&codec->core.in_pm);
++	snd_hdac_leave_pm(&codec->core);
+ 	return state;
+ }
  
- 	port_id = port->id;
- 	index = port->token;
--	if (index < 0 || index > AFE_PORT_MAX) {
-+	if (index < 0 || index >= AFE_PORT_MAX) {
- 		dev_err(afe->dev, "AFE port index[%d] invalid!\n", index);
- 		return -EINVAL;
- 	}
-@@ -1355,7 +1355,7 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
- 	unsigned long flags;
- 	int cfg_type;
+@@ -2864,8 +2856,7 @@ static unsigned int hda_call_codec_suspend(struct hda_codec *codec)
+  */
+ static void hda_call_codec_resume(struct hda_codec *codec)
+ {
+-	atomic_inc(&codec->core.in_pm);
+-
++	snd_hdac_enter_pm(&codec->core);
+ 	if (codec->core.regmap)
+ 		regcache_mark_dirty(codec->core.regmap);
  
--	if (id < 0 || id > AFE_PORT_MAX) {
-+	if (id < 0 || id >= AFE_PORT_MAX) {
- 		dev_err(dev, "AFE port token[%d] invalid!\n", id);
- 		return ERR_PTR(-EINVAL);
- 	}
+@@ -2888,7 +2879,7 @@ static void hda_call_codec_resume(struct hda_codec *codec)
+ 		hda_jackpoll_work(&codec->jackpoll_work.work);
+ 	else
+ 		snd_hda_jack_report_sync(codec);
+-	atomic_dec(&codec->core.in_pm);
++	snd_hdac_leave_pm(&codec->core);
+ }
+ 
+ static int hda_codec_runtime_suspend(struct device *dev)
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index e7d99a802bcc..c182e619ad58 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -2489,7 +2489,7 @@ static void intel_pin_eld_notify(void *audio_ptr, int port, int pipe)
+ 	if (snd_power_get_state(codec->card) != SNDRV_CTL_POWER_D0)
+ 		return;
+ 	/* ditto during suspend/resume process itself */
+-	if (atomic_read(&(codec)->core.in_pm))
++	if (snd_hdac_is_in_pm(&codec->core))
+ 		return;
+ 
+ 	snd_hdac_i915_set_bclk(&codec->bus->core);
+-- 
+2.17.1
