@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/3] ALSA: hda - Move in_pm accessors to HDA
-	core
-Date: Wed, 27 Jun 2018 11:10:33 +0200
-Message-ID: <20180627091034.22724-3-tiwai@suse.de>
+Subject: [PATCH 1/3] ALSA: hda - Handle error from
+	snd_hda_power_up*()
+Date: Wed, 27 Jun 2018 11:10:32 +0200
+Message-ID: <20180627091034.22724-2-tiwai@suse.de>
 References: <20180627091034.22724-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F28EA267959
+ by alsa0.perex.cz (Postfix) with ESMTP id F00292677C9
  for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 11:10:39 +0200 (CEST)
 In-Reply-To: <20180627091034.22724-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,146 +25,293 @@ To: alsa-devel@alsa-project.org
 Cc: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, Chris Wilson <chris@chris-wilson.co.uk>
 List-Id: alsa-devel@alsa-project.org
 
-The in_pm atomic in hdac_device is an important field used as a flag
-as well as a refcount for PM.  The existing snd_hdac_power_up/down
-helpers already refer to it in the HD-audio core code, while the code
-to actually setting the value (atomic_inc() / _dec()) is open-coded in
-HDA legacy side, which is hard to find.
+Although snd_hda_power_up() and snd_hda_power_up_pm() may fail, we
+haven't dealt with the error properly in many places.  It's an unusual
+situation but still possible.
 
-This patch adds the helper functions to set/reset the in_pm counter to
-HDA core and use them in HDA legacy side, for making it clearer who /
-where the PM is managed.
-
-There is no functional changes, just code refactoring.
+This patch spots these places and adds the proper error paths.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/hdaudio.h    | 27 +++++++++++++++++++++++++++
- sound/pci/hda/hda_codec.c  | 21 ++++++---------------
- sound/pci/hda/patch_hdmi.c |  2 +-
- 3 files changed, 34 insertions(+), 16 deletions(-)
+ sound/pci/hda/hda_beep.c       |  3 +-
+ sound/pci/hda/hda_codec.c      |  4 ++-
+ sound/pci/hda/hda_controller.c |  4 ++-
+ sound/pci/hda/hda_proc.c       |  3 +-
+ sound/pci/hda/hda_sysfs.c      |  4 ++-
+ sound/pci/hda/patch_ca0132.c   | 53 +++++++++++++++++++++++++++-------
+ sound/pci/hda/patch_realtek.c  |  3 +-
+ 7 files changed, 57 insertions(+), 17 deletions(-)
 
-diff --git a/include/sound/hdaudio.h b/include/sound/hdaudio.h
-index c052afc27547..294a5a21937b 100644
---- a/include/sound/hdaudio.h
-+++ b/include/sound/hdaudio.h
-@@ -8,6 +8,7 @@
+diff --git a/sound/pci/hda/hda_beep.c b/sound/pci/hda/hda_beep.c
+index 066b5b59c4d7..e9d5fbd6c13a 100644
+--- a/sound/pci/hda/hda_beep.c
++++ b/sound/pci/hda/hda_beep.c
+@@ -26,7 +26,8 @@ static void generate_tone(struct hda_beep *beep, int tone)
+ 	struct hda_codec *codec = beep->codec;
  
- #include <linux/device.h>
- #include <linux/interrupt.h>
-+#include <linux/pm_runtime.h>
- #include <linux/timecounter.h>
- #include <sound/core.h>
- #include <sound/memalloc.h>
-@@ -171,12 +172,38 @@ int snd_hdac_power_down(struct hdac_device *codec);
- int snd_hdac_power_up_pm(struct hdac_device *codec);
- int snd_hdac_power_down_pm(struct hdac_device *codec);
- int snd_hdac_keep_power_up(struct hdac_device *codec);
-+
-+/* call this at entering into suspend/resume callbacks in codec driver */
-+static inline void snd_hdac_enter_pm(struct hdac_device *codec)
-+{
-+	atomic_inc(&codec->in_pm);
-+}
-+
-+/* call this at leaving from suspend/resume callbacks in codec driver */
-+static inline void snd_hdac_leave_pm(struct hdac_device *codec)
-+{
-+	atomic_dec(&codec->in_pm);
-+}
-+
-+static inline bool snd_hdac_is_in_pm(struct hdac_device *codec)
-+{
-+	return atomic_read(&codec->in_pm);
-+}
-+
-+static inline bool snd_hdac_is_power_on(struct hdac_device *codec)
-+{
-+	return !pm_runtime_suspended(&codec->dev);
-+}
- #else
- static inline int snd_hdac_power_up(struct hdac_device *codec) { return 0; }
- static inline int snd_hdac_power_down(struct hdac_device *codec) { return 0; }
- static inline int snd_hdac_power_up_pm(struct hdac_device *codec) { return 0; }
- static inline int snd_hdac_power_down_pm(struct hdac_device *codec) { return 0; }
- static inline int snd_hdac_keep_power_up(struct hdac_device *codec) { return 0; }
-+static inline void snd_hdac_enter_pm(struct hdac_device *codec) {}
-+static inline void snd_hdac_leave_pm(struct hdac_device *codec) {}
-+static inline bool snd_hdac_is_in_pm(struct hdac_device *codec) { return 0; }
-+static inline bool snd_hdac_is_power_on(struct hdac_device *codec) { return 1; }
- #endif
- 
- /*
+ 	if (tone && !beep->playing) {
+-		snd_hda_power_up(codec);
++		if (snd_hda_power_up(codec) < 0)
++			return;
+ 		if (beep->power_hook)
+ 			beep->power_hook(beep, true);
+ 		beep->playing = 1;
 diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
-index 44165f3e344e..27ce6ff6354e 100644
+index 20a171ac4bb2..44165f3e344e 100644
 --- a/sound/pci/hda/hda_codec.c
 +++ b/sound/pci/hda/hda_codec.c
-@@ -37,15 +37,8 @@
- #include "hda_jack.h"
- #include <sound/hda_hwdep.h>
+@@ -65,7 +65,9 @@ static int codec_exec_verb(struct hdac_device *dev, unsigned int cmd,
+ 		return -1;
  
--#ifdef CONFIG_PM
--#define codec_in_pm(codec)	atomic_read(&(codec)->core.in_pm)
--#define hda_codec_is_power_on(codec) \
--	(!pm_runtime_suspended(hda_codec_dev(codec)))
--#else
--#define codec_in_pm(codec)	0
--#define hda_codec_is_power_on(codec)	1
--#endif
--
-+#define codec_in_pm(codec)		snd_hdac_is_in_pm(&codec->core)
-+#define hda_codec_is_power_on(codec)	snd_hdac_is_power_on(&codec->core)
- #define codec_has_epss(codec) \
- 	((codec)->core.power_caps & AC_PWRST_EPSS)
- #define codec_has_clkstop(codec) \
-@@ -2848,14 +2841,13 @@ static unsigned int hda_call_codec_suspend(struct hda_codec *codec)
- {
- 	unsigned int state;
- 
--	atomic_inc(&codec->core.in_pm);
--
-+	snd_hdac_enter_pm(&codec->core);
- 	if (codec->patch_ops.suspend)
- 		codec->patch_ops.suspend(codec);
- 	hda_cleanup_all_streams(codec);
- 	state = hda_set_power_state(codec, AC_PWRST_D3);
- 	update_power_acct(codec, true);
--	atomic_dec(&codec->core.in_pm);
-+	snd_hdac_leave_pm(&codec->core);
- 	return state;
- }
- 
-@@ -2864,8 +2856,7 @@ static unsigned int hda_call_codec_suspend(struct hda_codec *codec)
-  */
- static void hda_call_codec_resume(struct hda_codec *codec)
- {
--	atomic_inc(&codec->core.in_pm);
--
-+	snd_hdac_enter_pm(&codec->core);
- 	if (codec->core.regmap)
- 		regcache_mark_dirty(codec->core.regmap);
- 
-@@ -2888,7 +2879,7 @@ static void hda_call_codec_resume(struct hda_codec *codec)
- 		hda_jackpoll_work(&codec->jackpoll_work.work);
+  again:
+-	snd_hda_power_up_pm(codec);
++	err = snd_hda_power_up_pm(codec);
++	if (err < 0)
++		return err;
+ 	mutex_lock(&bus->core.cmd_mutex);
+ 	if (flags & HDA_RW_NO_RESPONSE_FALLBACK)
+ 		bus->no_response_fallback = 1;
+diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
+index a12e594d4e3b..4273be1f3eaa 100644
+--- a/sound/pci/hda/hda_controller.c
++++ b/sound/pci/hda/hda_controller.c
+@@ -645,7 +645,9 @@ static int azx_pcm_open(struct snd_pcm_substream *substream)
+ 				   buff_step);
+ 	snd_pcm_hw_constraint_step(runtime, 0, SNDRV_PCM_HW_PARAM_PERIOD_BYTES,
+ 				   buff_step);
+-	snd_hda_power_up(apcm->codec);
++	err = snd_hda_power_up(apcm->codec);
++	if (err < 0)
++		return err;
+ 	if (hinfo->ops.open)
+ 		err = hinfo->ops.open(hinfo, apcm->codec, substream);
  	else
- 		snd_hda_jack_report_sync(codec);
--	atomic_dec(&codec->core.in_pm);
-+	snd_hdac_leave_pm(&codec->core);
- }
- 
- static int hda_codec_runtime_suspend(struct device *dev)
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index e7d99a802bcc..c182e619ad58 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -2489,7 +2489,7 @@ static void intel_pin_eld_notify(void *audio_ptr, int port, int pipe)
- 	if (snd_power_get_state(codec->card) != SNDRV_CTL_POWER_D0)
+diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
+index c6b778b2580c..4206749d5130 100644
+--- a/sound/pci/hda/hda_proc.c
++++ b/sound/pci/hda/hda_proc.c
+@@ -760,7 +760,8 @@ static void print_codec_info(struct snd_info_entry *entry,
+ 	fg = codec->core.afg;
+ 	if (!fg)
  		return;
- 	/* ditto during suspend/resume process itself */
--	if (atomic_read(&(codec)->core.in_pm))
-+	if (snd_hdac_is_in_pm(&codec->core))
- 		return;
+-	snd_hda_power_up(codec);
++	if (snd_hda_power_up(codec) < 0)
++		return;
+ 	snd_iprintf(buffer, "Default PCM:\n");
+ 	print_pcm_caps(buffer, codec, fg);
+ 	snd_iprintf(buffer, "Default Amp-In caps: ");
+diff --git a/sound/pci/hda/hda_sysfs.c b/sound/pci/hda/hda_sysfs.c
+index 6ec79c58d48d..d17a808e72d2 100644
+--- a/sound/pci/hda/hda_sysfs.c
++++ b/sound/pci/hda/hda_sysfs.c
+@@ -130,7 +130,9 @@ static int reconfig_codec(struct hda_codec *codec)
+ {
+ 	int err;
  
- 	snd_hdac_i915_set_bclk(&codec->bus->core);
+-	snd_hda_power_up(codec);
++	err = snd_hda_power_up(codec);
++	if (err < 0)
++		return err;
+ 	codec_info(codec, "hda-codec: reconfiguring\n");
+ 	err = snd_hda_codec_reset(codec);
+ 	if (err < 0) {
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 4ff5320378e2..3b58f6032250 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -3575,12 +3575,15 @@ static int tuning_ctl_set(struct hda_codec *codec, hda_nid_t nid,
+ 			  unsigned int *lookup, int idx)
+ {
+ 	int i = 0;
++	int err;
+ 
+ 	for (i = 0; i < TUNING_CTLS_COUNT; i++)
+ 		if (nid == ca0132_tuning_ctls[i].nid)
+ 			break;
+ 
+-	snd_hda_power_up(codec);
++	err = snd_hda_power_up(codec);
++	if (err < 0)
++		return err;
+ 	dspio_set_param(codec, ca0132_tuning_ctls[i].mid, 0x20,
+ 			ca0132_tuning_ctls[i].req,
+ 			&(lookup[idx]), sizeof(unsigned int));
+@@ -3801,7 +3804,9 @@ static int ca0132_select_out(struct hda_codec *codec)
+ 
+ 	codec_dbg(codec, "ca0132_select_out\n");
+ 
+-	snd_hda_power_up_pm(codec);
++	err = snd_hda_power_up_pm(codec);
++	if (err < 0)
++		return err;
+ 
+ 	auto_jack = spec->vnode_lswitch[VNID_HP_ASEL - VNODE_START_NID];
+ 
+@@ -3914,7 +3919,9 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
+ 
+ 	codec_dbg(codec, "%s\n", __func__);
+ 
+-	snd_hda_power_up_pm(codec);
++	err = snd_hda_power_up_pm(codec);
++	if (err < 0)
++		return err;
+ 
+ 	auto_jack = spec->vnode_lswitch[VNID_HP_ASEL - VNODE_START_NID];
+ 
+@@ -4225,10 +4232,13 @@ static int ca0132_select_mic(struct hda_codec *codec)
+ 	struct ca0132_spec *spec = codec->spec;
+ 	int jack_present;
+ 	int auto_jack;
++	int err;
+ 
+ 	codec_dbg(codec, "ca0132_select_mic\n");
+ 
+-	snd_hda_power_up_pm(codec);
++	err = snd_hda_power_up_pm(codec);
++	if (err < 0)
++		return err;
+ 
+ 	auto_jack = spec->vnode_lswitch[VNID_AMIC1_ASEL - VNODE_START_NID];
+ 
+@@ -4276,10 +4286,13 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+ 	unsigned int tmp;
++	int err;
+ 
+ 	codec_dbg(codec, "%s\n", __func__);
+ 
+-	snd_hda_power_up_pm(codec);
++	err = snd_hda_power_up_pm(codec);
++	if (err < 0)
++		return err;
+ 
+ 	chipio_set_stream_control(codec, 0x03, 0);
+ 	chipio_set_stream_control(codec, 0x04, 0);
+@@ -4701,6 +4714,8 @@ static int ca0132_alt_slider_ctl_set(struct hda_codec *codec, hda_nid_t nid,
+ {
+ 	int i = 0;
+ 	unsigned int y;
++	int err;
++
+ 	/*
+ 	 * For X_BASS, req 2 is actually crossover freq instead of
+ 	 * effect level
+@@ -4710,7 +4725,9 @@ static int ca0132_alt_slider_ctl_set(struct hda_codec *codec, hda_nid_t nid,
+ 	else
+ 		y = 1;
+ 
+-	snd_hda_power_up(codec);
++	err = snd_hda_power_up(codec);
++	if (err < 0)
++		return err;
+ 	if (nid == XBASS_XOVER) {
+ 		for (i = 0; i < OUT_EFFECTS_COUNT; i++)
+ 			if (ca0132_effects[i].nid == X_BASS)
+@@ -5221,11 +5238,14 @@ static int ca0132_switch_put(struct snd_kcontrol *kcontrol,
+ 	int ch = get_amp_channels(kcontrol);
+ 	long *valp = ucontrol->value.integer.value;
+ 	int changed = 1;
++	int err;
+ 
+ 	codec_dbg(codec, "ca0132_switch_put: nid=0x%x, val=%ld\n",
+ 		    nid, *valp);
+ 
+-	snd_hda_power_up(codec);
++	err = snd_hda_power_up(codec);
++	if (err < 0)
++		return err;
+ 	/* vnode */
+ 	if ((nid >= VNODE_START_NID) && (nid < VNODE_END_NID)) {
+ 		if (ch & 1) {
+@@ -5390,6 +5410,7 @@ static int ca0132_volume_put(struct snd_kcontrol *kcontrol,
+ 	hda_nid_t shared_nid = 0;
+ 	bool effective;
+ 	int changed = 1;
++	int err;
+ 
+ 	/* store the left and right volume */
+ 	if (ch & 1) {
+@@ -5407,7 +5428,9 @@ static int ca0132_volume_put(struct snd_kcontrol *kcontrol,
+ 		int dir = get_amp_direction(kcontrol);
+ 		unsigned long pval;
+ 
+-		snd_hda_power_up(codec);
++		err = snd_hda_power_up(codec);
++		if (err < 0)
++			return err;
+ 		mutex_lock(&codec->control_mutex);
+ 		pval = kcontrol->private_value;
+ 		kcontrol->private_value = HDA_COMPOSE_AMP_VAL(shared_nid, ch,
+@@ -5436,6 +5459,7 @@ static int ca0132_alt_volume_put(struct snd_kcontrol *kcontrol,
+ 	long *valp = ucontrol->value.integer.value;
+ 	hda_nid_t vnid = 0;
+ 	int changed = 1;
++	int err;
+ 
+ 	switch (nid) {
+ 	case 0x02:
+@@ -5456,7 +5480,9 @@ static int ca0132_alt_volume_put(struct snd_kcontrol *kcontrol,
+ 		valp++;
+ 	}
+ 
+-	snd_hda_power_up(codec);
++	err = snd_hda_power_up(codec);
++	if (err < 0)
++		return err;
+ 	ca0132_alt_dsp_volume_put(codec, vnid);
+ 	mutex_lock(&codec->control_mutex);
+ 	changed = snd_hda_mixer_amp_volume_put(kcontrol, ucontrol);
+@@ -7190,6 +7216,7 @@ static int ca0132_init(struct hda_codec *codec)
+ 	struct auto_pin_cfg *cfg = &spec->autocfg;
+ 	int i;
+ 	bool dsp_loaded;
++	int err;
+ 
+ 	/*
+ 	 * If the DSP is already downloaded, and init has been entered again,
+@@ -7220,7 +7247,9 @@ static int ca0132_init(struct hda_codec *codec)
+ 	if (spec->quirk == QUIRK_SBZ)
+ 		sbz_region2_startup(codec);
+ 
+-	snd_hda_power_up_pm(codec);
++	err = snd_hda_power_up_pm(codec);
++	if (err < 0)
++		return err;
+ 
+ 	ca0132_init_unsol(codec);
+ 	ca0132_init_params(codec);
+@@ -7310,7 +7339,8 @@ static void ca0132_free(struct hda_codec *codec)
+ 	struct ca0132_spec *spec = codec->spec;
+ 
+ 	cancel_delayed_work_sync(&spec->unsol_hp_work);
+-	snd_hda_power_up(codec);
++	if (snd_hda_power_up(codec) < 0)
++		goto skip_shutdown;
+ 	switch (spec->quirk) {
+ 	case QUIRK_SBZ:
+ 		sbz_exit_chip(codec);
+@@ -7326,6 +7356,7 @@ static void ca0132_free(struct hda_codec *codec)
+ 		break;
+ 	}
+ 	snd_hda_power_down(codec);
++ skip_shutdown:
+ 	if (spec->mem_base)
+ 		iounmap(spec->mem_base);
+ 	kfree(spec->spec_init_verbs);
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 5ad6c7e5f92e..b0d757cf7aab 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -3606,7 +3606,8 @@ static void alc269_fixup_mic_mute_hook(void *private_data, int enabled)
+ 	pinval |= enabled ? AC_PINCTL_VREF_HIZ : AC_PINCTL_VREF_80;
+ 	if (spec->mute_led_nid) {
+ 		/* temporarily power up/down for setting VREF */
+-		snd_hda_power_up_pm(codec);
++		if (snd_hda_power_up_pm(codec) < 0)
++			return;
+ 		snd_hda_set_pin_ctl_cache(codec, spec->mute_led_nid, pinval);
+ 		snd_hda_power_down_pm(codec);
+ 	}
 -- 
 2.17.1
