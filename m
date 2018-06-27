@@ -1,20 +1,18 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH tinycompress] cplay: Stop playback stream
- at the end
-Date: Wed, 27 Jun 2018 17:21:31 +0530
-Message-ID: <20180627115130.GI22377@vkoul-mobl>
-References: <1530085691-27736-1-git-send-email-daniel.baluta@nxp.com>
- <20180627102424.GH22377@vkoul-mobl>
- <1530098114.2102.36.camel@nxp.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: intel_hdmi: Use strlcpy() instead of
+	strncpy()
+Date: Wed, 27 Jun 2018 15:01:38 +0200
+Message-ID: <20180627130138.12026-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F741267973
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 13:51:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1530098114.2102.36.camel@nxp.com>
+Received: from mx2.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 84D3A267973
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 15:01:40 +0200 (CEST)
+Received: from relay2.suse.de (charybdis-ext-too.suse.de [195.135.220.254])
+ by mx2.suse.de (Postfix) with ESMTP id DC250AFB2
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 13:01:39 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,69 +22,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Baluta <daniel.baluta@nxp.com>
-Cc: "S.j. Wang" <shengjiu.wang@nxp.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "liam.r.girdwood@intel.com" <liam.r.girdwood@intel.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 27-06-18, 11:15, Daniel Baluta wrote:
-> On Mi, 2018-06-27 at 15:54 +0530, Vinod wrote:
-> > On 27-06-18, 10:48, Daniel Baluta wrote:
-> > > =
+hdmi_lpe_audio_probe() copies the pcm name string via strncpy(), but
+as a gcc8 warning suggests, it misses a NUL terminator, and unlikely
+the expected result.
 
-> > > Each compress_start should have a corresponding compress_stop
-> > > at the end.
-> > > =
+Use the proper one, strlcpy() instead.
 
-> > > Also, this gives user a change to cleanup resources that might
-> > > have been allocated in compress_start.
-> > I think the assumptions are not quite correct here, resources should
-> > be
-> > allocated in .open and cleanup in .free for driver callback.
-> > =
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/x86/intel_hdmi_audio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > =
-
-> > > =
-
-> > > Signed-off-by: Daniel Baluta <daniel.baluta@nxp.com>
-> > > ---
-> > > I'm implementing codec library dynamic loading at runtime and I'm
-> > > exploring
-> > > using:
-> > > 	* SNDRV_COMPRESS_START -> to load the library
-> > > 	* SNDRV_COMPRESS_STOP=A0=A0-> to unload the library
-> > > =
-
-> > > This might not be the best idea becasue for example loading
-> > > the library might introduce some delays, anyhow i still think
-> > > this that compress_stop is correct thing to add at the end of
-> > > playback.
-> > I think you should tie the library load to much earlier in path. Not
-> > in
-> > start.
-> > =
-
-> > Also, we invoke drain and hence there is no need of stop
-> =
-
-> Got your point here.=A0
-> =
-
-> Perhaps,
-> =
-
-> =A0- use .hw_params to load the codec library.
-> =A0- add .hw_free (as Liam suggested in a separate email) to unload the =
-=A0 =A0 =A0codec library.
-
-Sure, sounds better design to me
-
-> =
-
-> Thanks we can drop this patch then.
-
-Okay
-
--- =
-
-~Vinod
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index 4ed9d0c41843..edc9f5a34eff 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -1854,7 +1854,7 @@ static int hdmi_lpe_audio_probe(struct platform_device *pdev)
+ 		/* setup private data which can be retrieved when required */
+ 		pcm->private_data = ctx;
+ 		pcm->info_flags = 0;
+-		strncpy(pcm->name, card->shortname, strlen(card->shortname));
++		strlcpy(pcm->name, card->shortname, strlen(card->shortname));
+ 		/* setup the ops for playabck */
+ 		snd_pcm_set_ops(pcm, SNDRV_PCM_STREAM_PLAYBACK, &had_pcm_ops);
+ 
+-- 
+2.17.1
