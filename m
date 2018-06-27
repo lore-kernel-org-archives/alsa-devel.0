@@ -1,56 +1,42 @@
-From: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH 0/3] ALSA: PM-related fixes/cleanups
-Date: Wed, 27 Jun 2018 14:57:15 +0100
-Message-ID: <153010783573.8693.14699907396659337523@mail.alporthouse.com>
-References: <20180627091034.22724-1-tiwai@suse.de>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
+Date: Wed, 27 Jun 2018 17:11:49 +0200
+Message-ID: <87r2ksl0wa.fsf@belgarion.home>
+References: <20180617170217.24177-1-robert.jarzmik@free.fr>
+        <20180618104159.24b9fffb@bbrezillon> <87d0wnrhqz.fsf@belgarion.home>
+        <20180625130704.GQ9413@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fireflyinternet.com (mail.fireflyinternet.com [109.228.58.192])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C05D2676FD
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 15:58:08 +0200 (CEST)
-In-Reply-To: <20180627091034.22724-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: =?utf-8?b?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180625130704.GQ9413@sirena.org.uk> (Mark Brown's message of
+        "Mon, 25 Jun 2018 14:07:04 +0100")
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, Daniel Mack <daniel@zonque.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Takashi Iwai (2018-06-27 10:10:31)
-> Hi,
-> 
-> this is a patch set addressing some minor issues found in PM-related
-> stuff, as well as the Intel HDMI fallback issue.  The first patch
-> covers the unusual error paths from runtime PM, the second one is a
-> code refactoring and the last one fixes the superfluous (rather
-> harmful) binding with the generic HDMI driver as fallback of i915
-> component binding.
+Mark Brown <broonie@kernel.org> writes:
 
-Hmm, our CI casts a shade of doubt over these.
+> On Mon, Jun 18, 2018 at 09:56:20PM +0200, Robert Jarzmik wrote:
+>
+>> I must insist on "Wednesday", as I need to have one last pass from 0-day kernel
+>> checker to be fully covered, and I'd like as well to know which tree the ASoC
+>> patch will take, ie. if Mark commits to take it, or rather wants to pull from
+>> the imutable branch.
+>
+> I'll pull the branch in (a signed tag would've been nicer but it's not
+> the end of the world).
+Yeah, I realised that too ... late.
 
-https://intel-gfx-ci.01.org/tree/drm-tip/combined-issues-by-run.html
+Anyways, the immutable branch doesn't contain the specific ASoC patch "ASoC:
+pxa: remove the dmaengine compat need", and up to my better understanding
+neither does your for-next branch.
 
->From CI_DRM_4385 onwards, a small explosion
+So until I see it in your branch it will dwelve happily in pxa/for-next. If it
+has to be routed through your tree, so that Daniel can work on ASoC pxa, I'd
+like to know at -rc4 time so that I drop it from my pxa/for-next branch.
 
-79527147382a drm-tip: 2018y-06m-27d-13h-05m-01s UTC integration manifest
-67ca07e7ac10 drm/i915/icl: Add power well support
-828e10e61e0a drm-tip: 2018y-06m-27d-12h-10m-06s UTC integration manifest
-43c489277bdd ALSA: hda/hdmi - Don't fall back to generic when i915
-binding fails
-bd0afa8b3573 ALSA: hda - Move in_pm accessors to HDA core
-644a790aed11 ALSA: hda - Handle error from snd_hda_power_up*()
-401caff70cd3 ALSA: hda - Kill snd_hda_codec_update_cache()
+Cheers.
 
-I haven't ruled out the icl patch, but I presume that was run past CI
-for pre-merge checking.
-
-Just a heads up,
--Chris
+-- 
+Robert
