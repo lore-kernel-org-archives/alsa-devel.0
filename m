@@ -1,46 +1,65 @@
-From: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH 2/3] ALSA: hda - Move in_pm accessors to
-	HDA core
-Date: Wed, 27 Jun 2018 10:38:40 +0100
-Message-ID: <153009232054.8693.169642523536241126@mail.alporthouse.com>
-References: <20180627091034.22724-1-tiwai@suse.de>
- <20180627091034.22724-3-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fireflyinternet.com (mail.fireflyinternet.com [109.228.58.192])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C73F267962
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 11:38:46 +0200 (CEST)
-In-Reply-To: <20180627091034.22724-3-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: =?utf-8?b?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH] ASoC: dpcm: extend channel merging to the backend cpu dai
+Date: Wed, 27 Jun 2018 11:48:18 +0200
+Message-ID: <20180627094818.5885-1-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jiada Wang <jiada_wang@mentor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Quoting Takashi Iwai (2018-06-27 10:10:33)
-> The in_pm atomic in hdac_device is an important field used as a flag
-> as well as a refcount for PM.  The existing snd_hdac_power_up/down
-> helpers already refer to it in the HD-audio core code, while the code
-> to actually setting the value (atomic_inc() / _dec()) is open-coded in
-> HDA legacy side, which is hard to find.
-> 
-> This patch adds the helper functions to set/reset the in_pm counter to
-> HDA core and use them in HDA legacy side, for making it clearer who /
-> where the PM is managed.
-> 
-> There is no functional changes, just code refactoring.
-> 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Extend dpcm_merge_chan to also check backend cpu dai channels
+capabilities. Apply the same policy as soc_pcm_init_runtime_hw() for
+multicodec links and only check cpu dai in this case.
 
-Mechanical code change that helps explain what it is doing,
-Reviewed-by: Chris Wilson <chris@chris-wilson.co.uk>
--Chris
+Cc: Jiada Wang <jiada_wang@mentor.com>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+
+ Hi Mark,
+
+ As you've probably noticed, this patch applies on top Jiada's patch
+ pf4c277b817cc ("ASoC: soc-pcm: DPCM cares BE channel constraint")
+
+ Regards.
+ Jerome
+
+ sound/soc/soc-pcm.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index b82d9ff1f47e..5141409ccaed 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1728,12 +1728,26 @@ static void dpcm_runtime_base_chan(struct snd_pcm_substream *substream,
+ 
+ 	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
++		struct snd_soc_dai_driver *cpu_dai_drv =  be->cpu_dai->driver;
+ 		struct snd_soc_dai_driver *codec_dai_drv;
+ 		struct snd_soc_pcm_stream *codec_stream;
+-		int i;
++		struct snd_soc_pcm_stream *cpu_stream;
++
++		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++			cpu_stream = &cpu_dai_drv->playback;
++		else
++			cpu_stream = &cpu_dai_drv->capture;
++
++		*channels_min = max(*channels_min, cpu_stream->channels_min);
++		*channels_max = min(*channels_max, cpu_stream->channels_max);
++
++		/*
++		 * chan min/max cannot be enforced if there are multiple CODEC
++		 * DAIs connected to a single CPU DAI, use CPU DAI's directly
++		 */
++		if (be->num_codecs == 1) {
++			codec_dai_drv = be->codec_dais[0]->driver;
+ 
+-		for (i = 0; i < be->num_codecs; i++) {
+-			codec_dai_drv = be->codec_dais[i]->driver;
+ 			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 				codec_stream = &codec_dai_drv->playback;
+ 			else
+-- 
+2.14.4
