@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Fix IN1_IN2_MAP
-	quirk not being logged" to the asoc tree
-Date: Wed, 27 Jun 2018 12:32:07 +0100 (BST)
-Message-ID: <20180627113207.A0801440070@finisterre.ee.mobilebroadband>
-References: <20180624140634.16835-4-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Change default
+	input map from in2 to in1" to the asoc tree
+Date: Wed, 27 Jun 2018 12:32:11 +0100 (BST)
+Message-ID: <20180627113211.B697B440070@finisterre.ee.mobilebroadband>
+References: <20180624140634.16835-3-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 858D8267989
- for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 13:32:09 +0200 (CEST)
-In-Reply-To: <20180624140634.16835-4-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id ACF102679C1
+ for <alsa-devel@alsa-project.org>; Wed, 27 Jun 2018 13:32:13 +0200 (CEST)
+In-Reply-To: <20180624140634.16835-3-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Fix IN1_IN2_MAP quirk not being logged
+   ASoC: Intel: bytcr_rt5651: Change default input map from in2 to in1
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,60 @@ to this mail.
 Thanks,
 Mark
 
->From 366780df3e2d40533cc95a4bf25ddd3b934b5fd3 Mon Sep 17 00:00:00 2001
+>From 10876d24eb40c6bfaa0aabd97e3e143258176c53 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 24 Jun 2018 16:06:28 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Fix IN1_IN2_MAP quirk not being
- logged
+Date: Sun, 24 Jun 2018 16:06:27 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Change default input map from in2
+ to in1
 
-Fix the quirk logging code not logging the IN1_IN2_MAP quirk.
+Further testing on all 6 model x86 tablets with a rt5651 which I have
+access to for testing has shown that their single (mono) microphone is
+connected to both IN1 *and* IN2.
+
+The previous default mapping of IN2 was based on testing on the same 6
+tablets, where the internal mic works fine with a mapping of IN2. But it
+works fine too with a mapping of IN1.
+
+This commit changes the default input mapping to to use IN1 instead of
+IN2, to match the mapping used for the other mono devices in the DMI quirk
+table. So that we need less different mappings.
+
+The same change is made to the Chuwi Vi8 Plus quirks, which is one of the
+6 models tested.
+
+This is a preparation patch for simplifying the maps in a follow-up commit.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5651.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 910890de38b0..7cc6e36b7c47 100644
+index 735b8312e275..910890de38b0 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -102,6 +102,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk IN1_MAP enabled");
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN2_MAP)
- 		dev_info(dev, "quirk IN2_MAP enabled");
-+	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN1_IN2_MAP)
-+		dev_info(dev, "quirk IN1_IN2_MAP enabled");
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN1_HS_IN3_MAP)
- 		dev_info(dev, "quirk IN1_HS_IN3_MAP enabled");
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN2_HS_IN3_MAP)
+@@ -90,9 +90,9 @@ struct byt_rt5651_private {
+ 	struct snd_soc_jack jack;
+ };
+ 
+-/* Default: jack-detect on JD1_1, internal mic on in2, headsetmic on in3 */
++/* Default: jack-detect on JD1_1, internal mic on in1, headsetmic on in3 */
+ static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
+-					BYT_RT5651_IN2_HS_IN3_MAP;
++					BYT_RT5651_IN1_HS_IN3_MAP;
+ 
+ static void log_quirks(struct device *dev)
+ {
+@@ -392,7 +392,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 			DMI_MATCH(DMI_PRODUCT_NAME, "D2D3_Vi8A1"),
+ 		},
+ 		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
+-					BYT_RT5651_IN2_HS_IN3_MAP),
++					BYT_RT5651_IN1_HS_IN3_MAP),
+ 	},
+ 	{
+ 		/* VIOS LTH17 */
 -- 
 2.17.1
