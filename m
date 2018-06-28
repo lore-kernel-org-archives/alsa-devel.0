@@ -1,18 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: qdafe: fix some off by one bugs"
-	to the asoc tree
-Date: Thu, 28 Jun 2018 11:20:35 +0100
-Message-ID: <E1fYU2V-00048l-O0@debutante>
-References: <20180627085653.v5bi34k2ozkvvrsr@kili.mountain>
+Subject: Re: [PATCH v3 00/14] ARM: pxa: switch to DMA slave maps
+Date: Thu, 28 Jun 2018 12:52:50 +0100
+Message-ID: <20180628115250.GE14040@sirena.org.uk>
+References: <20180617170217.24177-1-robert.jarzmik@free.fr>
+ <20180618104159.24b9fffb@bbrezillon>
+ <87d0wnrhqz.fsf@belgarion.home>
+ <20180625130704.GQ9413@sirena.org.uk>
+ <87r2ksl0wa.fsf@belgarion.home>
+ <45a4e773-aaa3-6d43-f02d-5056a2a265d4@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5119178038725380829=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 142BB2676C7
- for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 12:20:48 +0200 (CEST)
-In-Reply-To: <20180627085653.v5bi34k2ozkvvrsr@kili.mountain>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3B5E3266E76
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 13:52:54 +0200 (CEST)
+In-Reply-To: <45a4e773-aaa3-6d43-f02d-5056a2a265d4@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +25,60 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Daniel Mack <daniel@zonque.org>
+Cc: Boris Brezillon <boris.brezillon@bootlin.com>, alsa-devel@alsa-project.org, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: qdsp6: qdafe: fix some off by one bugs
+--===============5119178038725380829==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qFgkTsE6LiHkLPZw"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--qFgkTsE6LiHkLPZw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Wed, Jun 27, 2018 at 11:03:16PM +0200, Daniel Mack wrote:
+> On Wednesday, June 27, 2018 05:11 PM, Robert Jarzmik wrote:
+> > Mark Brown <broonie@kernel.org> writes:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> > Anyways, the immutable branch doesn't contain the specific ASoC patch "ASoC:
+> > pxa: remove the dmaengine compat need", and up to my better understanding
+> > neither does your for-next branch.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > So until I see it in your branch it will dwelve happily in pxa/for-next. If it
+> > has to be routed through your tree, so that Daniel can work on ASoC pxa, I'd
+> > like to know at -rc4 time so that I drop it from my pxa/for-next branch.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> Ah, yes. The series I just posted depends on that.
 
-Thanks,
-Mark
+Ugh, please resend this patch so I know what's going on :(  My
+understanding was that I was pulling a tag with the dependencies.
 
->From c54c1c5ee8e73b7cb752834e52e2129b1dab00bd Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Wed, 27 Jun 2018 11:56:53 +0300
-Subject: [PATCH] ASoC: qdsp6: qdafe: fix some off by one bugs
+--qFgkTsE6LiHkLPZw
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The > should be >= or we could read one element beyond the end of the
-port_maps[] array.
+-----BEGIN PGP SIGNATURE-----
 
-Fixes: 7fa2d70f9766 ("ASoC: qdsp6: q6afe: Add q6afe driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/qdsp6/q6afe.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls0zBEACgkQJNaLcl1U
+h9CqMAf/YnJSuYfkDLsMJj+Ma+azKxHUUSNo2TTk7zLNL2f7sFayIkYng3Go7cw4
+KcZhV5KILOySk00mHN8RmO+kW/j1sipOD9MaNoQfr3omL0upYyaa9gTs5SHm1e7o
+s5yeLUrFCn1V0gSsuIsgEHDS0tA7h9V8p9ATAMRZcs94Zho490r/VeKya9Ouqxhw
+qVYrApADDxxyvoiZ0W7SdfWYvottnqzNzZFAmTtEmbj7AAQcKI0fcn6tTlAZUcuj
+fW9A4GdAvv+xZGHgD496oLaIe3yP4rhGpz6gIvmtFxBMJCU0BAEL5Rc/JVh7d/gG
+RGrTKKeFKpwFciY7VgyEDzR/QQfJEQ==
+=OPKL
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
-index 621b67b34db9..671743453fbb 100644
---- a/sound/soc/qcom/qdsp6/q6afe.c
-+++ b/sound/soc/qcom/qdsp6/q6afe.c
-@@ -776,7 +776,7 @@ static int q6afe_callback(struct apr_device *adev, struct apr_resp_pkt *data)
-  */
- int q6afe_get_port_id(int index)
- {
--	if (index < 0 || index > AFE_PORT_MAX)
-+	if (index < 0 || index >= AFE_PORT_MAX)
- 		return -EINVAL;
- 
- 	return port_maps[index].port_id;
-@@ -1013,7 +1013,7 @@ int q6afe_port_stop(struct q6afe_port *port)
- 
- 	port_id = port->id;
- 	index = port->token;
--	if (index < 0 || index > AFE_PORT_MAX) {
-+	if (index < 0 || index >= AFE_PORT_MAX) {
- 		dev_err(afe->dev, "AFE port index[%d] invalid!\n", index);
- 		return -EINVAL;
- 	}
-@@ -1354,7 +1354,7 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
- 	unsigned long flags;
- 	int cfg_type;
- 
--	if (id < 0 || id > AFE_PORT_MAX) {
-+	if (id < 0 || id >= AFE_PORT_MAX) {
- 		dev_err(dev, "AFE port token[%d] invalid!\n", id);
- 		return ERR_PTR(-EINVAL);
- 	}
--- 
-2.18.0.rc2
+--qFgkTsE6LiHkLPZw--
+
+--===============5119178038725380829==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5119178038725380829==--
