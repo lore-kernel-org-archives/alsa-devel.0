@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: improve runtime update predictability" to the asoc tree
-Date: Thu, 28 Jun 2018 11:20:37 +0100
-Message-ID: <E1fYU2X-00049u-T3@debutante>
-References: <20180626100725.6016-1-jbrunet@baylibre.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180626100725.6016-1-jbrunet@baylibre.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: qdsp6: qdafe: fix some off by one bugs"
+	to the asoc tree
+Date: Thu, 28 Jun 2018 11:20:35 +0100
+Message-ID: <E1fYU2V-00048l-O0@debutante>
+References: <20180627085653.v5bi34k2ozkvvrsr@kili.mountain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 142BB2676C7
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 12:20:48 +0200 (CEST)
+In-Reply-To: <20180627085653.v5bi34k2ozkvvrsr@kili.mountain>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: improve runtime update predictability
+   ASoC: qdsp6: qdafe: fix some off by one bugs
 
 has been applied to the asoc tree at
 
@@ -37,244 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From de15d7ff5bef98746fcb76a0db7ac46de48d3560 Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Tue, 26 Jun 2018 12:07:25 +0200
-Subject: [PATCH] ASoC: dpcm: improve runtime update predictability
+>From c54c1c5ee8e73b7cb752834e52e2129b1dab00bd Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Wed, 27 Jun 2018 11:56:53 +0300
+Subject: [PATCH] ASoC: qdsp6: qdafe: fix some off by one bugs
 
-As it is, dpcm_runtime_update() performs the old path and new path
-update of a frontend before going on to the next frontend DAI.
-Depending the order of the FEs within the rtd list, the result of
-the update might be different.
+The > should be >= or we could read one element beyond the end of the
+port_maps[] array.
 
-For example:
- * Frontend A connected to backend C, with a 48kHz playback
- * Frontend B connected to backend D, with a 44.1kHz playback
- * FE A appears before FE B in the rtd list of the card.
-
-If we reparent BE C to FE B (disconnecting BE D):
-* old path update of FE A will run first, and BE C will get hw_free()
-  and shutdown()
-* new path update of FE B will run after and BE C, which is stopped,
-  so it will be configured at 44.1kHz, as expected
-
-If we reparent BE D to FE A (disconnecting BE C):
-* new path update of FE A will run first but since BE D is still running
-  at 44.1kHz, it won't be reconfigured (no call to startup() or
-  hw_params())
-* old path update of FE B runs after, nothing happens
-* In this case, we end up with a BE playing at 44.1kHz a stream which is
-  supposed to be played at 48Khz (too slow)
-
-To improve this situation, this patch performs all the FE old paths update
-before going on to update the new paths. With this, the result should
-no longer depend on the order of the FE within the card rtd list.
-
-Please note that there might be a small performance penalty since
-dpcm_process_paths() is called twice per stream direction.
-
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Fixes: 7fa2d70f9766 ("ASoC: qdsp6: q6afe: Add q6afe driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 165 +++++++++++++++++++++++---------------------
- 1 file changed, 86 insertions(+), 79 deletions(-)
+ sound/soc/qcom/qdsp6/q6afe.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 19ebfc958b9d..63f96cde046a 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -2597,106 +2597,113 @@ static int dpcm_run_old_update(struct snd_soc_pcm_runtime *fe, int stream)
- 	return ret;
- }
- 
--/* Called by DAPM mixer/mux changes to update audio routing between PCMs and
-- * any DAI links.
-- */
--int soc_dpcm_runtime_update(struct snd_soc_card *card)
-+static int soc_dpcm_fe_runtime_update(struct snd_soc_pcm_runtime *fe, int new)
+diff --git a/sound/soc/qcom/qdsp6/q6afe.c b/sound/soc/qcom/qdsp6/q6afe.c
+index 621b67b34db9..671743453fbb 100644
+--- a/sound/soc/qcom/qdsp6/q6afe.c
++++ b/sound/soc/qcom/qdsp6/q6afe.c
+@@ -776,7 +776,7 @@ static int q6afe_callback(struct apr_device *adev, struct apr_resp_pkt *data)
+  */
+ int q6afe_get_port_id(int index)
  {
--	struct snd_soc_pcm_runtime *fe;
--	int old, new, paths;
-+	struct snd_soc_dapm_widget_list *list;
-+	int count, paths;
+-	if (index < 0 || index > AFE_PORT_MAX)
++	if (index < 0 || index >= AFE_PORT_MAX)
+ 		return -EINVAL;
  
--	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
--	list_for_each_entry(fe, &card->rtd_list, list) {
--		struct snd_soc_dapm_widget_list *list;
-+	if (!fe->dai_link->dynamic)
-+		return 0;
+ 	return port_maps[index].port_id;
+@@ -1013,7 +1013,7 @@ int q6afe_port_stop(struct q6afe_port *port)
  
--		/* make sure link is FE */
--		if (!fe->dai_link->dynamic)
--			continue;
-+	/* only check active links */
-+	if (!fe->cpu_dai->active)
-+		return 0;
- 
--		/* only check active links */
--		if (!fe->cpu_dai->active)
--			continue;
-+	/* DAPM sync will call this to update DSP paths */
-+	dev_dbg(fe->dev, "ASoC: DPCM %s runtime update for FE %s\n",
-+		new ? "new" : "old", fe->dai_link->name);
- 
--		/* DAPM sync will call this to update DSP paths */
--		dev_dbg(fe->dev, "ASoC: DPCM runtime update for FE %s\n",
--			fe->dai_link->name);
-+	/* skip if FE doesn't have playback capability */
-+	if (!fe->cpu_dai->driver->playback.channels_min ||
-+	    !fe->codec_dai->driver->playback.channels_min)
-+		goto capture;
- 
--		/* skip if FE doesn't have playback capability */
--		if (!fe->cpu_dai->driver->playback.channels_min
--		    || !fe->codec_dai->driver->playback.channels_min)
--			goto capture;
--
--		/* skip if FE isn't currently playing */
--		if (!fe->cpu_dai->playback_active
--		    || !fe->codec_dai->playback_active)
--			goto capture;
--
--		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
--		if (paths < 0) {
--			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
--					fe->dai_link->name,  "playback");
--			mutex_unlock(&card->mutex);
--			return paths;
--		}
-+	/* skip if FE isn't currently playing */
-+	if (!fe->cpu_dai->playback_active || !fe->codec_dai->playback_active)
-+		goto capture;
- 
--		/* update any new playback paths */
--		new = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, 1);
--		if (new) {
--			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
--			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
--			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
--		}
-+	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_PLAYBACK, &list);
-+	if (paths < 0) {
-+		dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
-+			 fe->dai_link->name,  "playback");
-+		return paths;
-+	}
- 
--		/* update any old playback paths */
--		old = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, 0);
--		if (old) {
-+	/* update any playback paths */
-+	count = dpcm_process_paths(fe, SNDRV_PCM_STREAM_PLAYBACK, &list, new);
-+	if (count) {
-+		if (new)
-+			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
-+		else
- 			dpcm_run_old_update(fe, SNDRV_PCM_STREAM_PLAYBACK);
--			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
--			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
--		}
- 
--		dpcm_path_put(&list);
-+		dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_PLAYBACK);
-+		dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_PLAYBACK);
-+	}
-+
-+	dpcm_path_put(&list);
-+
- capture:
--		/* skip if FE doesn't have capture capability */
--		if (!fe->cpu_dai->driver->capture.channels_min
--		    || !fe->codec_dai->driver->capture.channels_min)
--			continue;
-+	/* skip if FE doesn't have capture capability */
-+	if (!fe->cpu_dai->driver->capture.channels_min ||
-+	    !fe->codec_dai->driver->capture.channels_min)
-+		return 0;
- 
--		/* skip if FE isn't currently capturing */
--		if (!fe->cpu_dai->capture_active
--		    || !fe->codec_dai->capture_active)
--			continue;
-+	/* skip if FE isn't currently capturing */
-+	if (!fe->cpu_dai->capture_active || !fe->codec_dai->capture_active)
-+		return 0;
- 
--		paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
--		if (paths < 0) {
--			dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
--					fe->dai_link->name,  "capture");
--			mutex_unlock(&card->mutex);
--			return paths;
--		}
-+	paths = dpcm_path_get(fe, SNDRV_PCM_STREAM_CAPTURE, &list);
-+	if (paths < 0) {
-+		dev_warn(fe->dev, "ASoC: %s no valid %s path\n",
-+			 fe->dai_link->name,  "capture");
-+		return paths;
-+	}
- 
--		/* update any new capture paths */
--		new = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, 1);
--		if (new) {
-+	/* update any old capture paths */
-+	count = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, new);
-+	if (count) {
-+		if (new)
- 			dpcm_run_new_update(fe, SNDRV_PCM_STREAM_CAPTURE);
--			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
--			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
--		}
--
--		/* update any old capture paths */
--		old = dpcm_process_paths(fe, SNDRV_PCM_STREAM_CAPTURE, &list, 0);
--		if (old) {
-+		else
- 			dpcm_run_old_update(fe, SNDRV_PCM_STREAM_CAPTURE);
--			dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
--			dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
--		}
- 
--		dpcm_path_put(&list);
-+		dpcm_clear_pending_state(fe, SNDRV_PCM_STREAM_CAPTURE);
-+		dpcm_be_disconnect(fe, SNDRV_PCM_STREAM_CAPTURE);
+ 	port_id = port->id;
+ 	index = port->token;
+-	if (index < 0 || index > AFE_PORT_MAX) {
++	if (index < 0 || index >= AFE_PORT_MAX) {
+ 		dev_err(afe->dev, "AFE port index[%d] invalid!\n", index);
+ 		return -EINVAL;
  	}
+@@ -1354,7 +1354,7 @@ struct q6afe_port *q6afe_port_get_from_id(struct device *dev, int id)
+ 	unsigned long flags;
+ 	int cfg_type;
  
--	mutex_unlock(&card->mutex);
-+	dpcm_path_put(&list);
-+
- 	return 0;
- }
-+
-+/* Called by DAPM mixer/mux changes to update audio routing between PCMs and
-+ * any DAI links.
-+ */
-+int soc_dpcm_runtime_update(struct snd_soc_card *card)
-+{
-+	struct snd_soc_pcm_runtime *fe;
-+	int ret = 0;
-+
-+	mutex_lock_nested(&card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-+	/* shutdown all old paths first */
-+	list_for_each_entry(fe, &card->rtd_list, list) {
-+		ret = soc_dpcm_fe_runtime_update(fe, 0);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	/* bring new paths up */
-+	list_for_each_entry(fe, &card->rtd_list, list) {
-+		ret = soc_dpcm_fe_runtime_update(fe, 1);
-+		if (ret)
-+			goto out;
-+	}
-+
-+out:
-+	mutex_unlock(&card->mutex);
-+	return ret;
-+}
- int soc_dpcm_be_digital_mute(struct snd_soc_pcm_runtime *fe, int mute)
- {
- 	struct snd_soc_dpcm *dpcm;
+-	if (id < 0 || id > AFE_PORT_MAX) {
++	if (id < 0 || id >= AFE_PORT_MAX) {
+ 		dev_err(dev, "AFE port token[%d] invalid!\n", id);
+ 		return ERR_PTR(-EINVAL);
+ 	}
 -- 
 2.18.0.rc2
