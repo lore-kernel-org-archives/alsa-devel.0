@@ -1,14 +1,16 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ASoC: pxa: remove the dmaengine compat need
-Date: Thu, 28 Jun 2018 17:12:00 +0200
-Message-ID: <20180628151200.16463-1-daniel@zonque.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: pxa: remove the dmaengine compat need
+Date: Thu, 28 Jun 2018 16:49:11 +0100
+Message-ID: <20180628154911.GF14040@sirena.org.uk>
+References: <20180628151200.16463-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8337305410209979222=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa0.perex.cz (Postfix) with ESMTP id 377FF266E76
- for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 17:12:15 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 18782266E76
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 17:49:12 +0200 (CEST)
+In-Reply-To: <20180628151200.16463-1-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,192 +20,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
+To: Daniel Mack <daniel@zonque.org>
 Cc: boris.brezillon@bootlin.com, alsa-devel@alsa-project.org, robert.jarzmik@free.fr
 List-Id: alsa-devel@alsa-project.org
 
-From: Robert Jarzmik <robert.jarzmik@free.fr>
 
-As the pxa architecture switched towards the dmaengine slave map, the
-old compatibility mechanism to acquire the dma requestor line number and
-priority are not needed anymore.
-
-This patch simplifies the dma resource acquisition, using the more
-generic function dma_request_slave_channel().
-
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Reviewed-by: Daniel Mack <daniel@zonque.org>
-Acked-by: Mark Brown <broonie@kernel.org>
----
-
-Mark,
-
-That's the patch that's Robert says is missing in your tree.
-As a matter of fact, that's the only reason why I pinged you and
-asked you to pull it in, because the cleanups for ASoC/pxa I've
-sent build upon it.
-
-Not sure what happened and caused this confusion :-/ Sorry.
+--===============8337305410209979222==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="O98KdSgI27dgYlM5"
+Content-Disposition: inline
 
 
-Thanks,
-Daniel
+--O98KdSgI27dgYlM5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
- sound/arm/pxa2xx-ac97.c     | 14 ++------------
- sound/arm/pxa2xx-pcm-lib.c  |  6 +++---
- sound/soc/pxa/pxa2xx-ac97.c | 32 +++++---------------------------
- sound/soc/pxa/pxa2xx-i2s.c  |  6 ++----
- 4 files changed, 12 insertions(+), 46 deletions(-)
+On Thu, Jun 28, 2018 at 05:12:00PM +0200, Daniel Mack wrote:
 
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index 4bc244c40f80..236a63cdaf9f 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -63,28 +63,18 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
- 	.reset	= pxa2xx_ac97_legacy_reset,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_out_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 12,
--};
--
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_out = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "pcm_pcm_stereo_out",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_ac97_pcm_out_req,
--};
--
--static struct pxad_param pxa2xx_ac97_pcm_in_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 11,
- };
- 
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_in = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "pcm_pcm_stereo_in",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_ac97_pcm_in_req,
- };
- 
- static struct snd_pcm *pxa2xx_ac97_pcm;
-diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
-index e8da3b8ee721..dcbe7ecc1835 100644
---- a/sound/arm/pxa2xx-pcm-lib.c
-+++ b/sound/arm/pxa2xx-pcm-lib.c
-@@ -125,9 +125,9 @@ int __pxa2xx_pcm_open(struct snd_pcm_substream *substream)
- 	if (ret < 0)
- 		return ret;
- 
--	return snd_dmaengine_pcm_open_request_chan(substream,
--					pxad_filter_fn,
--					dma_params->filter_data);
-+	return snd_dmaengine_pcm_open(
-+		substream, dma_request_slave_channel(rtd->cpu_dai->dev,
-+						     dma_params->chan_name));
- }
- EXPORT_SYMBOL(__pxa2xx_pcm_open);
- 
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 803818aabee9..1b41c0f2a8fb 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -68,61 +68,39 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
- 	.reset	= pxa2xx_ac97_cold_reset,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_stereo_in_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 11,
--};
--
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_in = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "pcm_pcm_stereo_in",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_ac97_pcm_stereo_in_req,
--};
--
--static struct pxad_param pxa2xx_ac97_pcm_stereo_out_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 12,
- };
- 
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_out = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "pcm_pcm_stereo_out",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_ac97_pcm_stereo_out_req,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_aux_mono_out_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 10,
--};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_out = {
- 	.addr		= __PREG(MODR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-+	.chan_name	= "pcm_aux_mono_out",
- 	.maxburst	= 16,
--	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_out_req,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_aux_mono_in_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 9,
--};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_in = {
- 	.addr		= __PREG(MODR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-+	.chan_name	= "pcm_aux_mono_in",
- 	.maxburst	= 16,
--	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_in_req,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_aux_mic_mono_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 8,
--};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_mic_mono_in = {
- 	.addr		= __PREG(MCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-+	.chan_name	= "pcm_aux_mic_mono",
- 	.maxburst	= 16,
--	.filter_data	= &pxa2xx_ac97_pcm_aux_mic_mono_req,
- };
- 
- static int pxa2xx_ac97_hifi_startup(struct snd_pcm_substream *substream,
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 3fb60baf6eab..e7184de0de04 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -82,20 +82,18 @@ static struct pxa_i2s_port pxa_i2s;
- static struct clk *clk_i2s;
- static int clk_ena = 0;
- 
--static unsigned long pxa2xx_i2s_pcm_stereo_out_req = 3;
- static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_out = {
- 	.addr		= __PREG(SADR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "tx",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_i2s_pcm_stereo_out_req,
- };
- 
--static unsigned long pxa2xx_i2s_pcm_stereo_in_req = 2;
- static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_in = {
- 	.addr		= __PREG(SADR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "rx",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_i2s_pcm_stereo_in_req,
- };
- 
- static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream,
--- 
-2.17.1
+> Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Reviewed-by: Daniel Mack <daniel@zonque.org>
+> Acked-by: Mark Brown <broonie@kernel.org>
+> ---
+
+I can't apply this as it's missing your signoff.
+
+--O98KdSgI27dgYlM5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls1A3YACgkQJNaLcl1U
+h9CdPgf/ZdFsdWCI7SSgeMsEmv6WKVSowg0GZOfO+R05USdo6x/SprOxw7NX5TZI
+XV2H2NUAkPormR8+rCtpARwuVHoFew/BCxUiIEBscAWnlYMGkWK9CrYR6MVyYoSm
+q5QcgPojiQf3AwSSfWLyyJbskwjfM625LnfOrhveyYuM5a3P3rzBKWK/lB80Hwop
+EnL7MheitNn9Iz2kAmSUZ8Yle2mK2jH7xHZtqCwCihnz3FDJjxgD8drynR5hbiTt
+OsJj1g6tsSZRUJq7/dSsepfETu9Uz37ks8pjPnfeUYGQuw8KyOaxHikL8eRDItvI
+IGh1/fQosDqOjNsXZWmnHIM5FvmY1g==
+=DKgE
+-----END PGP SIGNATURE-----
+
+--O98KdSgI27dgYlM5--
+
+--===============8337305410209979222==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8337305410209979222==--
