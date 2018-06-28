@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: don't merge format from invalid codec dai" to the asoc tree
-Date: Thu, 28 Jun 2018 11:20:31 +0100
-Message-ID: <E1fYU2R-00046n-DA@debutante>
-References: <20180627153638.11832-1-jbrunet@baylibre.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180627153638.11832-1-jbrunet@baylibre.com>
-Sender: stable-owner@vger.kernel.org
+Subject: Applied "ASoC: dpcm: extend channel merging to the
+	backend cpu dai" to the asoc tree
+Date: Thu, 28 Jun 2018 11:20:33 +0100
+Message-ID: <E1fYU2T-00047k-IT@debutante>
+References: <20180627094818.5885-1-jbrunet@baylibre.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2CDD267A0A
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 12:20:37 +0200 (CEST)
+In-Reply-To: <20180627094818.5885-1-jbrunet@baylibre.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Cc: Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: don't merge format from invalid codec dai
+   ASoC: dpcm: extend channel merging to the backend cpu dai
 
 has been applied to the asoc tree at
 
@@ -37,46 +53,55 @@ to this mail.
 Thanks,
 Mark
 
->From 4febced15ac8ddb9cf3e603edb111842e4863d9a Mon Sep 17 00:00:00 2001
+>From 4f2bd18b191a10660782f2f1ccc989b000b2be63 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Wed, 27 Jun 2018 17:36:38 +0200
-Subject: [PATCH] ASoC: dpcm: don't merge format from invalid codec dai
+Date: Wed, 27 Jun 2018 11:48:18 +0200
+Subject: [PATCH] ASoC: dpcm: extend channel merging to the backend cpu dai
 
-When merging codec formats, dpcm_runtime_base_format() should skip
-the codecs which are not supporting the current stream direction.
+Extend dpcm_merge_chan to also check backend cpu dai channels
+capabilities. Apply the same policy as soc_pcm_init_runtime_hw() for
+multicodec links and only check cpu dai in this case.
 
-At the moment, if a BE link has more than one codec, and only one
-of these codecs has no capture DAI, it becomes impossible to start
-a capture stream because the merged format would be 0.
-
-Skipping invalid codec DAI solves the problem.
-
-Fixes: b073ed4e2126 ("ASoC: soc-pcm: DPCM cares BE format")
+Cc: Jiada Wang <jiada_wang@mentor.com>
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/soc-pcm.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/soc-pcm.c | 20 +++++++++++++++++---
+ 1 file changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 5e7ae47a9658..5feae9666822 100644
+index 63f96cde046a..6ee4131941df 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1694,6 +1694,14 @@ static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
- 		int i;
+@@ -1736,12 +1736,26 @@ static void dpcm_runtime_base_chan(struct snd_pcm_substream *substream,
  
- 		for (i = 0; i < be->num_codecs; i++) {
-+			/*
-+			 * Skip CODECs which don't support the current stream
-+			 * type. See soc_pcm_init_runtime_hw() for more details
-+			 */
-+			if (!snd_soc_dai_stream_valid(be->codec_dais[i],
-+						      stream))
-+				continue;
+ 	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
+ 		struct snd_soc_pcm_runtime *be = dpcm->be;
++		struct snd_soc_dai_driver *cpu_dai_drv =  be->cpu_dai->driver;
+ 		struct snd_soc_dai_driver *codec_dai_drv;
+ 		struct snd_soc_pcm_stream *codec_stream;
+-		int i;
++		struct snd_soc_pcm_stream *cpu_stream;
 +
- 			codec_dai_drv = be->codec_dais[i]->driver;
++		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
++			cpu_stream = &cpu_dai_drv->playback;
++		else
++			cpu_stream = &cpu_dai_drv->capture;
++
++		*channels_min = max(*channels_min, cpu_stream->channels_min);
++		*channels_max = min(*channels_max, cpu_stream->channels_max);
++
++		/*
++		 * chan min/max cannot be enforced if there are multiple CODEC
++		 * DAIs connected to a single CPU DAI, use CPU DAI's directly
++		 */
++		if (be->num_codecs == 1) {
++			codec_dai_drv = be->codec_dais[0]->driver;
+ 
+-		for (i = 0; i < be->num_codecs; i++) {
+-			codec_dai_drv = be->codec_dais[i]->driver;
  			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
  				codec_stream = &codec_dai_drv->playback;
+ 			else
 -- 
 2.18.0.rc2
