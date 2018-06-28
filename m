@@ -1,70 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: dpcm: extend channel merging to the
-	backend cpu dai
-Date: Thu, 28 Jun 2018 11:15:50 +0100
-Message-ID: <20180628101550.GC14040@sirena.org.uk>
-References: <20180627094818.5885-1-jbrunet@baylibre.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7560394730262888823=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 50EA8266E76
- for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 12:15:52 +0200 (CEST)
-In-Reply-To: <20180627094818.5885-1-jbrunet@baylibre.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: dpcm: don't merge format from invalid codec dai" to the asoc tree
+Date: Thu, 28 Jun 2018 11:20:31 +0100
+Message-ID: <E1fYU2R-00046n-DA@debutante>
+References: <20180627153638.11832-1-jbrunet@baylibre.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180627153638.11832-1-jbrunet@baylibre.com>
+Sender: stable-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>, stable@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7560394730262888823==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="c3bfwLpm8qysLVxt"
-Content-Disposition: inline
+   ASoC: dpcm: don't merge format from invalid codec dai
 
+has been applied to the asoc tree at
 
---c3bfwLpm8qysLVxt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Jun 27, 2018 at 11:48:18AM +0200, Jerome Brunet wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
->  As you've probably noticed, this patch applies on top Jiada's patch
->  pf4c277b817cc ("ASoC: soc-pcm: DPCM cares BE channel constraint")
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-That isn't a valid hash...
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---c3bfwLpm8qysLVxt
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls0tVUACgkQJNaLcl1U
-h9AXqgf/bFZ3U6fQ0m/FOjnECHppZxMEAwcwQztAjy+d7bSmc/LaKUJDrjy6lUyx
-VH3WJ4z89OtBUkGEq0CSo2qZfnUHEtZg8EkGFOU35rMnEpNFkSPRwwMynKFDp7KI
-Vqsng2rnXiCU25rvmL1wWFMhTr4byacwpX2DfY4H30Ug+NAxIttR6pnSEP303HfI
-lu3f5Z2FZJLh8xrKJ6J1Kq9z3npg6nIgjYpozTRK2W43aJioczvI7UFOyCRgJhcR
-t2bveMA+s1MiStlyL6x3lxr9XwNJumSjxIRs2YNQzSm1moKVaDfirHio63rAZ/Wu
-s8SCDKB9dDs2qnCQJOdWsnIMFhxa6w==
-=3BW4
------END PGP SIGNATURE-----
+>From 4febced15ac8ddb9cf3e603edb111842e4863d9a Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Wed, 27 Jun 2018 17:36:38 +0200
+Subject: [PATCH] ASoC: dpcm: don't merge format from invalid codec dai
 
---c3bfwLpm8qysLVxt--
+When merging codec formats, dpcm_runtime_base_format() should skip
+the codecs which are not supporting the current stream direction.
 
---===============7560394730262888823==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+At the moment, if a BE link has more than one codec, and only one
+of these codecs has no capture DAI, it becomes impossible to start
+a capture stream because the merged format would be 0.
 
+Skipping invalid codec DAI solves the problem.
 
---===============7560394730262888823==--
+Fixes: b073ed4e2126 ("ASoC: soc-pcm: DPCM cares BE format")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
+---
+ sound/soc/soc-pcm.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 5e7ae47a9658..5feae9666822 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1694,6 +1694,14 @@ static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
+ 		int i;
+ 
+ 		for (i = 0; i < be->num_codecs; i++) {
++			/*
++			 * Skip CODECs which don't support the current stream
++			 * type. See soc_pcm_init_runtime_hw() for more details
++			 */
++			if (!snd_soc_dai_stream_valid(be->codec_dais[i],
++						      stream))
++				continue;
++
+ 			codec_dai_drv = be->codec_dais[i]->driver;
+ 			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 				codec_stream = &codec_dai_drv->playback;
+-- 
+2.18.0.rc2
