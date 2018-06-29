@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fold pxa2xx-pcm into its only user,
-	pxa2xx-ac97" to the asoc tree
-Date: Fri, 29 Jun 2018 12:07:27 +0100
-Message-ID: <E1fYrFP-0002fG-Jr@debutante>
-References: <20180627193359.26631-2-daniel@zonque.org>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [PATCH] vgaswitchroo: set audio client id
+ according to bound gpu client id
+Date: Fri, 29 Jun 2018 13:11:08 +0200
+Message-ID: <20180629111108.GA11609@wunner.de>
+References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>
+ <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
+ <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629080634.GA7357@wunner.de>
+ <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629092138.GA11849@wunner.de>
+ <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 99B04267A46
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 13:07:29 +0200 (CEST)
-In-Reply-To: <20180627193359.26631-2-daniel@zonque.org>
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net
+ [176.9.242.62]) by alsa0.perex.cz (Postfix) with ESMTP id 69FE7267A34
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 13:11:09 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,484 +28,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, robert.jarzmik@free.fr, lgirdwood@gmail.com, haojian.zhuang@gmail.com
+To: "Qu, Jim" <Jim.Qu@amd.com>
+Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Jun 29, 2018 at 10:40:50AM +0000, Qu, Jim wrote:
+> > That is no longer the case since v4.17.  The HDA controller now runtime
+> > suspends autonomously, see commit 07f4f97d7b4b ("vga_switcheroo: Use
+> > device link for HDA controller").
+> > 
+> > Your patch appears to be geared towards an older kernel version.
+> > Please retest on the laptop in question with a v4.17+ kernel.
+> 
+> indeed? I used 4.13 on the platform. let me have a try with the patch
+> you mentioned
 
-   ASoC: fold pxa2xx-pcm into its only user, pxa2xx-ac97
+The commit can't be cherry-picked by itself onto v4.13, it was part of
+a larger series.  It's best to use a stock v4.17 kernel.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Note, a fix went into Linus' tree yesterday, commit 57cb54e53bdd
+("ALSA: hda - Force to link down at runtime suspend on ATI/AMD HDMI").
+Not sure if it's needed on your machine.
 
 Thanks,
-Mark
 
->From 95acb005fef2aeaeb63c20de98aca0ed5bd0efa2 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Wed, 27 Jun 2018 21:33:53 +0200
-Subject: [PATCH] ASoC: fold pxa2xx-pcm into its only user, pxa2xx-ac97
-
-Now that the PXA SSP bits are ported over to generic DMA, the pxa2xx-pcm
-code only has a single user left. This patch folds the remaining bits into
-its only user and removes the unnecessary glue layer along with its header
-file.
-
-The include dependency to linux/dma/pxa-dma.h is also gone now.
-
-Signed-off-by: Daniel Mack <daniel@zonque.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/arm/Kconfig          |   5 --
- sound/arm/Makefile         |   3 -
- sound/arm/pxa2xx-ac97.c    | 114 +++++++++++++++++++++-----------
- sound/arm/pxa2xx-pcm-lib.c |   2 -
- sound/arm/pxa2xx-pcm.c     | 129 -------------------------------------
- sound/arm/pxa2xx-pcm.h     |  27 --------
- sound/soc/pxa/pxa-ssp.c    |   1 -
- sound/soc/pxa/pxa2xx-pcm.c |   2 -
- 8 files changed, 76 insertions(+), 207 deletions(-)
- delete mode 100644 sound/arm/pxa2xx-pcm.c
- delete mode 100644 sound/arm/pxa2xx-pcm.h
-
-diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
-index 65171f6657a2..5fbd47a9177e 100644
---- a/sound/arm/Kconfig
-+++ b/sound/arm/Kconfig
-@@ -17,14 +17,9 @@ config SND_ARMAACI
- 	select SND_PCM
- 	select SND_AC97_CODEC
- 
--config SND_PXA2XX_PCM
--	tristate
--	select SND_PCM
--
- config SND_PXA2XX_AC97
- 	tristate "AC97 driver for the Intel PXA2xx chip"
- 	depends on ARCH_PXA
--	select SND_PXA2XX_PCM
- 	select SND_AC97_CODEC
- 	select SND_PXA2XX_LIB
- 	select SND_PXA2XX_LIB_AC97
-diff --git a/sound/arm/Makefile b/sound/arm/Makefile
-index e10d5b169565..34c769489877 100644
---- a/sound/arm/Makefile
-+++ b/sound/arm/Makefile
-@@ -6,9 +6,6 @@
- obj-$(CONFIG_SND_ARMAACI)	+= snd-aaci.o
- snd-aaci-objs			:= aaci.o
- 
--obj-$(CONFIG_SND_PXA2XX_PCM)	+= snd-pxa2xx-pcm.o
--snd-pxa2xx-pcm-objs		:= pxa2xx-pcm.o
--
- obj-$(CONFIG_SND_PXA2XX_LIB)	+= snd-pxa2xx-lib.o
- snd-pxa2xx-lib-y		:= pxa2xx-pcm-lib.o
- snd-pxa2xx-lib-$(CONFIG_SND_PXA2XX_LIB_AC97)	+= pxa2xx-ac97-lib.o
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index 236a63cdaf9f..7d8d7b7199dc 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -15,7 +15,7 @@
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/dmaengine.h>
--#include <linux/dma/pxa-dma.h>
-+#include <linux/dma-mapping.h>
- 
- #include <sound/core.h>
- #include <sound/pcm.h>
-@@ -27,8 +27,6 @@
- #include <mach/regs-ac97.h>
- #include <mach/audio.h>
- 
--#include "pxa2xx-pcm.h"
--
- static void pxa2xx_ac97_legacy_reset(struct snd_ac97 *ac97)
- {
- 	if (!pxa2xx_ac97_try_cold_reset())
-@@ -63,51 +61,46 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
- 	.reset	= pxa2xx_ac97_legacy_reset,
- };
- 
--static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_out = {
--	.addr		= __PREG(PCDR),
--	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
--	.chan_name	= "pcm_pcm_stereo_out",
--	.maxburst	= 32,
--};
--
--static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_in = {
--	.addr		= __PREG(PCDR),
--	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
--	.chan_name	= "pcm_pcm_stereo_in",
--	.maxburst	= 32,
--};
--
- static struct snd_pcm *pxa2xx_ac97_pcm;
- static struct snd_ac97 *pxa2xx_ac97_ac97;
- 
--static int pxa2xx_ac97_pcm_startup(struct snd_pcm_substream *substream)
-+static int pxa2xx_ac97_pcm_open(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	pxa2xx_audio_ops_t *platform_ops;
--	int r;
-+	int ret, i;
-+
-+	ret = __pxa2xx_pcm_open(substream);
-+	if (ret)
-+		return ret;
- 
- 	runtime->hw.channels_min = 2;
- 	runtime->hw.channels_max = 2;
- 
--	r = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
--	    AC97_RATES_FRONT_DAC : AC97_RATES_ADC;
--	runtime->hw.rates = pxa2xx_ac97_ac97->rates[r];
-+	i = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
-+		AC97_RATES_FRONT_DAC : AC97_RATES_ADC;
-+	runtime->hw.rates = pxa2xx_ac97_ac97->rates[i];
- 	snd_pcm_limit_hw_rates(runtime);
- 
--       	platform_ops = substream->pcm->card->dev->platform_data;
--	if (platform_ops && platform_ops->startup)
--		return platform_ops->startup(substream, platform_ops->priv);
--	else
--		return 0;
-+	platform_ops = substream->pcm->card->dev->platform_data;
-+	if (platform_ops && platform_ops->startup) {
-+		ret = platform_ops->startup(substream, platform_ops->priv);
-+		if (ret < 0)
-+			__pxa2xx_pcm_close(substream);
-+	}
-+
-+	return ret;
- }
- 
--static void pxa2xx_ac97_pcm_shutdown(struct snd_pcm_substream *substream)
-+static int pxa2xx_ac97_pcm_close(struct snd_pcm_substream *substream)
- {
- 	pxa2xx_audio_ops_t *platform_ops;
- 
--       	platform_ops = substream->pcm->card->dev->platform_data;
-+	platform_ops = substream->pcm->card->dev->platform_data;
- 	if (platform_ops && platform_ops->shutdown)
- 		platform_ops->shutdown(substream, platform_ops->priv);
-+
-+	return 0;
- }
- 
- static int pxa2xx_ac97_pcm_prepare(struct snd_pcm_substream *substream)
-@@ -115,17 +108,15 @@ static int pxa2xx_ac97_pcm_prepare(struct snd_pcm_substream *substream)
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	int reg = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
- 		  AC97_PCM_FRONT_DAC_RATE : AC97_PCM_LR_ADC_RATE;
-+	int ret;
-+
-+	ret = __pxa2xx_pcm_prepare(substream);
-+	if (ret < 0)
-+		return ret;
-+
- 	return snd_ac97_set_rate(pxa2xx_ac97_ac97, reg, runtime->rate);
- }
- 
--static struct pxa2xx_pcm_client pxa2xx_ac97_pcm_client = {
--	.playback_params	= &pxa2xx_ac97_pcm_out,
--	.capture_params		= &pxa2xx_ac97_pcm_in,
--	.startup		= pxa2xx_ac97_pcm_startup,
--	.shutdown		= pxa2xx_ac97_pcm_shutdown,
--	.prepare		= pxa2xx_ac97_pcm_prepare,
--};
--
- #ifdef CONFIG_PM_SLEEP
- 
- static int pxa2xx_ac97_do_suspend(struct snd_card *card)
-@@ -183,6 +174,53 @@ static int pxa2xx_ac97_resume(struct device *dev)
- static SIMPLE_DEV_PM_OPS(pxa2xx_ac97_pm_ops, pxa2xx_ac97_suspend, pxa2xx_ac97_resume);
- #endif
- 
-+static const struct snd_pcm_ops pxa2xx_pcm_ops = {
-+	.open		= pxa2xx_ac97_pcm_open,
-+	.close		= pxa2xx_ac97_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= __pxa2xx_pcm_hw_params,
-+	.hw_free	= __pxa2xx_pcm_hw_free,
-+	.prepare	= pxa2xx_ac97_pcm_prepare,
-+	.trigger	= pxa2xx_pcm_trigger,
-+	.pointer	= pxa2xx_pcm_pointer,
-+	.mmap		= pxa2xx_pcm_mmap,
-+};
-+
-+
-+static int pxa2xx_ac97_pcm_new(struct snd_card *card)
-+{
-+	struct snd_pcm *pcm;
-+	int stream, ret;
-+
-+	ret = snd_pcm_new(card, "PXA2xx-PCM", 0, 1, 1, &pcm);
-+	if (ret)
-+		goto out;
-+
-+	pcm->private_free = pxa2xx_pcm_free_dma_buffers;
-+
-+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
-+	if (ret)
-+		goto out;
-+
-+	stream = SNDRV_PCM_STREAM_PLAYBACK;
-+	snd_pcm_set_ops(pcm, stream, &pxa2xx_pcm_ops);
-+	ret = pxa2xx_pcm_preallocate_dma_buffer(pcm, stream);
-+	if (ret)
-+		goto out;
-+
-+	stream = SNDRV_PCM_STREAM_CAPTURE;
-+	snd_pcm_set_ops(pcm, stream, &pxa2xx_pcm_ops);
-+	ret = pxa2xx_pcm_preallocate_dma_buffer(pcm, stream);
-+	if (ret)
-+		goto out;
-+
-+	pxa2xx_ac97_pcm = pcm;
-+	ret = 0;
-+
-+ out:
-+	return ret;
-+}
-+
- static int pxa2xx_ac97_probe(struct platform_device *dev)
- {
- 	struct snd_card *card;
-@@ -204,7 +242,7 @@ static int pxa2xx_ac97_probe(struct platform_device *dev)
- 
- 	strlcpy(card->driver, dev->dev.driver->name, sizeof(card->driver));
- 
--	ret = pxa2xx_pcm_new(card, &pxa2xx_ac97_pcm_client, &pxa2xx_ac97_pcm);
-+	ret = pxa2xx_ac97_pcm_new(card);
- 	if (ret)
- 		goto err;
- 
-diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
-index dcbe7ecc1835..b927fa5ddbc0 100644
---- a/sound/arm/pxa2xx-pcm-lib.c
-+++ b/sound/arm/pxa2xx-pcm-lib.c
-@@ -16,8 +16,6 @@
- #include <sound/pxa2xx-lib.h>
- #include <sound/dmaengine_pcm.h>
- 
--#include "pxa2xx-pcm.h"
--
- static const struct snd_pcm_hardware pxa2xx_pcm_hardware = {
- 	.info			= SNDRV_PCM_INFO_MMAP |
- 				  SNDRV_PCM_INFO_MMAP_VALID |
-diff --git a/sound/arm/pxa2xx-pcm.c b/sound/arm/pxa2xx-pcm.c
-deleted file mode 100644
-index 1c6f4b436de3..000000000000
---- a/sound/arm/pxa2xx-pcm.c
-+++ /dev/null
-@@ -1,129 +0,0 @@
--/*
-- * linux/sound/arm/pxa2xx-pcm.c -- ALSA PCM interface for the Intel PXA2xx chip
-- *
-- * Author:	Nicolas Pitre
-- * Created:	Nov 30, 2004
-- * Copyright:	(C) 2004 MontaVista Software, Inc.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--#include <linux/module.h>
--#include <linux/dma-mapping.h>
--#include <linux/dmaengine.h>
--
--#include <mach/dma.h>
--
--#include <sound/core.h>
--#include <sound/pxa2xx-lib.h>
--#include <sound/dmaengine_pcm.h>
--
--#include "pxa2xx-pcm.h"
--
--static int pxa2xx_pcm_prepare(struct snd_pcm_substream *substream)
--{
--	struct pxa2xx_pcm_client *client = substream->private_data;
--
--	__pxa2xx_pcm_prepare(substream);
--
--	return client->prepare(substream);
--}
--
--static int pxa2xx_pcm_open(struct snd_pcm_substream *substream)
--{
--	struct pxa2xx_pcm_client *client = substream->private_data;
--	struct snd_pcm_runtime *runtime = substream->runtime;
--	struct pxa2xx_runtime_data *rtd;
--	int ret;
--
--	ret = __pxa2xx_pcm_open(substream);
--	if (ret)
--		goto out;
--
--	rtd = runtime->private_data;
--
--	rtd->params = (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) ?
--		      client->playback_params : client->capture_params;
--
--	ret = client->startup(substream);
--	if (!ret)
--		goto err2;
--
--	return 0;
--
-- err2:
--	__pxa2xx_pcm_close(substream);
-- out:
--	return ret;
--}
--
--static int pxa2xx_pcm_close(struct snd_pcm_substream *substream)
--{
--	struct pxa2xx_pcm_client *client = substream->private_data;
--
--	client->shutdown(substream);
--
--	return __pxa2xx_pcm_close(substream);
--}
--
--static const struct snd_pcm_ops pxa2xx_pcm_ops = {
--	.open		= pxa2xx_pcm_open,
--	.close		= pxa2xx_pcm_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= __pxa2xx_pcm_hw_params,
--	.hw_free	= __pxa2xx_pcm_hw_free,
--	.prepare	= pxa2xx_pcm_prepare,
--	.trigger	= pxa2xx_pcm_trigger,
--	.pointer	= pxa2xx_pcm_pointer,
--	.mmap		= pxa2xx_pcm_mmap,
--};
--
--int pxa2xx_pcm_new(struct snd_card *card, struct pxa2xx_pcm_client *client,
--		   struct snd_pcm **rpcm)
--{
--	struct snd_pcm *pcm;
--	int play = client->playback_params ? 1 : 0;
--	int capt = client->capture_params ? 1 : 0;
--	int ret;
--
--	ret = snd_pcm_new(card, "PXA2xx-PCM", 0, play, capt, &pcm);
--	if (ret)
--		goto out;
--
--	pcm->private_data = client;
--	pcm->private_free = pxa2xx_pcm_free_dma_buffers;
--
--	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
--	if (ret)
--		goto out;
--
--	if (play) {
--		int stream = SNDRV_PCM_STREAM_PLAYBACK;
--		snd_pcm_set_ops(pcm, stream, &pxa2xx_pcm_ops);
--		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm, stream);
--		if (ret)
--			goto out;
--	}
--	if (capt) {
--		int stream = SNDRV_PCM_STREAM_CAPTURE;
--		snd_pcm_set_ops(pcm, stream, &pxa2xx_pcm_ops);
--		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm, stream);
--		if (ret)
--			goto out;
--	}
--
--	if (rpcm)
--		*rpcm = pcm;
--	ret = 0;
--
-- out:
--	return ret;
--}
--
--EXPORT_SYMBOL(pxa2xx_pcm_new);
--
--MODULE_AUTHOR("Nicolas Pitre");
--MODULE_DESCRIPTION("Intel PXA2xx PCM DMA module");
--MODULE_LICENSE("GPL");
-diff --git a/sound/arm/pxa2xx-pcm.h b/sound/arm/pxa2xx-pcm.h
-deleted file mode 100644
-index 8fa2b7c9e6b8..000000000000
---- a/sound/arm/pxa2xx-pcm.h
-+++ /dev/null
-@@ -1,27 +0,0 @@
--/*
-- * linux/sound/arm/pxa2xx-pcm.h -- ALSA PCM interface for the Intel PXA2xx chip
-- *
-- * Author:	Nicolas Pitre
-- * Created:	Nov 30, 2004
-- * Copyright:	MontaVista Software, Inc.
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--struct pxa2xx_runtime_data {
--	int dma_ch;
--	struct snd_dmaengine_dai_dma_data *params;
--};
--
--struct pxa2xx_pcm_client {
--	struct snd_dmaengine_dai_dma_data *playback_params;
--	struct snd_dmaengine_dai_dma_data *capture_params;
--	int (*startup)(struct snd_pcm_substream *);
--	void (*shutdown)(struct snd_pcm_substream *);
--	int (*prepare)(struct snd_pcm_substream *);
--};
--
--extern int pxa2xx_pcm_new(struct snd_card *, struct pxa2xx_pcm_client *, struct snd_pcm **);
--
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 0b441338bdd4..c1f4af869289 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -34,7 +34,6 @@
- #include <sound/pxa2xx-lib.h>
- #include <sound/dmaengine_pcm.h>
- 
--#include "../../arm/pxa2xx-pcm.h"
- #include "pxa-ssp.h"
- 
- /*
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index 8b6a70e94c01..445e691126e5 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -20,8 +20,6 @@
- #include <sound/pxa2xx-lib.h>
- #include <sound/dmaengine_pcm.h>
- 
--#include "../../arm/pxa2xx-pcm.h"
--
- static int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_pcm_hw_params *params)
- {
--- 
-2.18.0.rc2
+Lukas
