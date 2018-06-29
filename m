@@ -1,15 +1,23 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH RESEND] ASoC: pxa: remove the dmaengine compat
-	need
-Date: Thu, 28 Jun 2018 22:08:37 +0200
-Message-ID: <20180628200837.17957-1-daniel@zonque.org>
-Mime-Version: 1.0
+From: Tom Rinehart <tom.rinehart@gmail.com>
+Subject: Driver for Maxim MAX9744 Stereo Amplifier
+Date: Thu, 28 Jun 2018 23:46:19 -0600
+Message-ID: <2CA9F072-2E9F-483F-8E3A-4C08B1BA0C24@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa0.perex.cz (Postfix) with ESMTP id 55B24266E76
- for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 22:08:44 +0200 (CEST)
+Received: from mail-io0-f172.google.com (mail-io0-f172.google.com
+ [209.85.223.172])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA302266E76
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 07:46:22 +0200 (CEST)
+Received: by mail-io0-f172.google.com with SMTP id l19-v6so7416062ioj.5
+ for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 22:46:22 -0700 (PDT)
+Received: from ?IPv6:2601:681:4701:d390:1cbf:c566:76e2:29a?
+ ([2601:681:4701:d390:1cbf:c566:76e2:29a])
+ by smtp.gmail.com with ESMTPSA id d136-v6sm313970itd.22.2018.06.28.22.46.20
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Thu, 28 Jun 2018 22:46:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,178 +27,11 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: boris.brezillon@bootlin.com, alsa-devel@alsa-project.org, robert.jarzmik@free.fr, Daniel Mack <daniel@zonque.org>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Robert Jarzmik <robert.jarzmik@free.fr>
+I am trying to develop a driver the the Maxim MAX9744 20W Class D Stereo Amplifier.  (see https://www.maximintegrated.com/en/products/analog/audio/MAX9744.html <https://www.maximintegrated.com/en/products/analog/audio/MAX9744.html>).  It is very similar to the MAX9768 10W Class D Mono amplifier which has a linux driver. (see https://www.maximintegrated.com/en/products/analog/audio/MAX9768.html <https://www.maximintegrated.com/en/products/analog/audio/MAX9768.html>)  From a control perspective, both look to be the same from their data sheets.  Volume is controlled through i2c, and it has mute and shutdown controlled through gpio.  The MAX9744 has a volume control that changes both channels together.  When I try to use the MAX9768 driver it shows up as a mono amplifier in alsamixer.  What do
+  I need to change in the driver to have it recognize stereo input and output but with the volume control tied together (not independent for each channel)?  It seems like I should be able to modify t
+ he MAX9768 driver to work with the MAX9744.
 
-As the pxa architecture switched towards the dmaengine slave map, the
-old compatibility mechanism to acquire the dma requestor line number and
-priority are not needed anymore.
-
-This patch simplifies the dma resource acquisition, using the more
-generic function dma_request_slave_channel().
-
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Signed-off-by: Daniel Mack <daniel@zonque.org>
-Acked-by: Mark Brown <broonie@kernel.org>
----
- sound/arm/pxa2xx-ac97.c     | 14 ++------------
- sound/arm/pxa2xx-pcm-lib.c  |  6 +++---
- sound/soc/pxa/pxa2xx-ac97.c | 32 +++++---------------------------
- sound/soc/pxa/pxa2xx-i2s.c  |  6 ++----
- 4 files changed, 12 insertions(+), 46 deletions(-)
-
-diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index 4bc244c40f80..236a63cdaf9f 100644
---- a/sound/arm/pxa2xx-ac97.c
-+++ b/sound/arm/pxa2xx-ac97.c
-@@ -63,28 +63,18 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
- 	.reset	= pxa2xx_ac97_legacy_reset,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_out_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 12,
--};
--
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_out = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "pcm_pcm_stereo_out",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_ac97_pcm_out_req,
--};
--
--static struct pxad_param pxa2xx_ac97_pcm_in_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 11,
- };
- 
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_in = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "pcm_pcm_stereo_in",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_ac97_pcm_in_req,
- };
- 
- static struct snd_pcm *pxa2xx_ac97_pcm;
-diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
-index e8da3b8ee721..dcbe7ecc1835 100644
---- a/sound/arm/pxa2xx-pcm-lib.c
-+++ b/sound/arm/pxa2xx-pcm-lib.c
-@@ -125,9 +125,9 @@ int __pxa2xx_pcm_open(struct snd_pcm_substream *substream)
- 	if (ret < 0)
- 		return ret;
- 
--	return snd_dmaengine_pcm_open_request_chan(substream,
--					pxad_filter_fn,
--					dma_params->filter_data);
-+	return snd_dmaengine_pcm_open(
-+		substream, dma_request_slave_channel(rtd->cpu_dai->dev,
-+						     dma_params->chan_name));
- }
- EXPORT_SYMBOL(__pxa2xx_pcm_open);
- 
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 803818aabee9..1b41c0f2a8fb 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -68,61 +68,39 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
- 	.reset	= pxa2xx_ac97_cold_reset,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_stereo_in_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 11,
--};
--
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_in = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "pcm_pcm_stereo_in",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_ac97_pcm_stereo_in_req,
--};
--
--static struct pxad_param pxa2xx_ac97_pcm_stereo_out_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 12,
- };
- 
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_out = {
- 	.addr		= __PREG(PCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "pcm_pcm_stereo_out",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_ac97_pcm_stereo_out_req,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_aux_mono_out_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 10,
--};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_out = {
- 	.addr		= __PREG(MODR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-+	.chan_name	= "pcm_aux_mono_out",
- 	.maxburst	= 16,
--	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_out_req,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_aux_mono_in_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 9,
--};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_in = {
- 	.addr		= __PREG(MODR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-+	.chan_name	= "pcm_aux_mono_in",
- 	.maxburst	= 16,
--	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_in_req,
- };
- 
--static struct pxad_param pxa2xx_ac97_pcm_aux_mic_mono_req = {
--	.prio = PXAD_PRIO_LOWEST,
--	.drcmr = 8,
--};
- static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_mic_mono_in = {
- 	.addr		= __PREG(MCDR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
-+	.chan_name	= "pcm_aux_mic_mono",
- 	.maxburst	= 16,
--	.filter_data	= &pxa2xx_ac97_pcm_aux_mic_mono_req,
- };
- 
- static int pxa2xx_ac97_hifi_startup(struct snd_pcm_substream *substream,
-diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
-index 3fb60baf6eab..e7184de0de04 100644
---- a/sound/soc/pxa/pxa2xx-i2s.c
-+++ b/sound/soc/pxa/pxa2xx-i2s.c
-@@ -82,20 +82,18 @@ static struct pxa_i2s_port pxa_i2s;
- static struct clk *clk_i2s;
- static int clk_ena = 0;
- 
--static unsigned long pxa2xx_i2s_pcm_stereo_out_req = 3;
- static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_out = {
- 	.addr		= __PREG(SADR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "tx",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_i2s_pcm_stereo_out_req,
- };
- 
--static unsigned long pxa2xx_i2s_pcm_stereo_in_req = 2;
- static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_in = {
- 	.addr		= __PREG(SADR),
- 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
-+	.chan_name	= "rx",
- 	.maxburst	= 32,
--	.filter_data	= &pxa2xx_i2s_pcm_stereo_in_req,
- };
- 
- static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream,
--- 
-2.17.1
+I have an Adafruit board with the MAX9744 amplifier on it so it is easy to test: https://www.adafruit.com/product/1752 <https://www.adafruit.com/product/1752>.  
