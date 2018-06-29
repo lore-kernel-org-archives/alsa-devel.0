@@ -1,18 +1,14 @@
-From: =?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>
-Subject: [PATCH 2/2] ASoC: simple-amplifier: add dt-bindings
-Date: Mon, 25 Jun 2018 13:06:17 +0200
-Message-ID: <1529924777-21136-2-git-send-email-nicveronese@gmail.com>
-References: <1529924777-21136-1-git-send-email-nicveronese@gmail.com>
+From: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+Subject: [PATCH 1/2] ASoC: mediatek: sub dai use list_head
+Date: Fri, 29 Jun 2018 20:29:44 +0800
+Message-ID: <1530275385-11422-1-git-send-email-kaichieh.chuang@mediatek.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 29B2D267772
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 13:06:35 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id w137-v6so3441572wmw.1
- for <alsa-devel@alsa-project.org>; Mon, 25 Jun 2018 04:06:35 -0700 (PDT)
-In-Reply-To: <1529924777-21136-1-git-send-email-nicveronese@gmail.com>
+Received: from mailgw01.mediatek.com (unknown [210.61.82.183])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FFD02675C8
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 14:29:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,36 +18,146 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Nicol=C3=B2=20Veronese?= <nicveronese@gmail.com>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, garlic.tseng@mediatek.com, linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com, kaichieh.chuang@mediatek.com
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogTmljb2zDsiBWZXJvbmVzZSA8bmljdmVyb25lc2VAZ21haWwuY29tPgot
-LS0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1hbXBsaWZpZXIudHh0IHwg
-MzYgKysrKysrKysrKysrKysrKysrKysrKwogMSBmaWxlIGNoYW5nZWQsIDM2IGluc2VydGlvbnMo
-KykKIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mv
-c291bmQvc2ltcGxlLWFtcGxpZmllci50eHQKCmRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2Rl
-dmljZXRyZWUvYmluZGluZ3Mvc291bmQvc2ltcGxlLWFtcGxpZmllci50eHQgYi9Eb2N1bWVudGF0
-aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvc2ltcGxlLWFtcGxpZmllci50eHQKbmV3IGZp
-bGUgbW9kZSAxMDA2NDQKaW5kZXggMDAwMDAwMC4uMWMyYjU3YwotLS0gL2Rldi9udWxsCisrKyBi
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9zaW1wbGUtYW1wbGlmaWVy
-LnR4dApAQCAtMCwwICsxLDM2IEBACitTaW1wbGUtQW1wbGlmaWVyOgorCitTaW1wbGUtQW1wbGlm
-aWVyIHNwZWNpZmllcyBhIHNpbXBsZSBhdXggZGV2aWNlIGZvciB5b3VyIGNvZGVjLgorTW9zdCBh
-cGxpZmllcnMgYXJlIG1hbmFnZWQgYnkgYSBzaW5nbGUgR1BJTy4gVGhlIG1haW4gZnVuY3Rpb24K
-K29mIHRoaXMgZHJpdmVyIGlzIHRvIHRvZ2dsZSB0aGUgTVVURS9TSFVURE9XTiBHUElPLgorCitS
-ZXF1aXJlZCBwcm9wZXJ0aWVzOgorCistIGNvbXBhdGlibGUJOiAic2ltcGxlLWF1ZGlvLWFtcGxp
-ZmllciIKKworLSBWQ0Mtc3VwcGx5CTogcG93ZXIgc3VwcGx5IGZvciB0aGUgZGV2aWNlLCBhcyBj
-b3ZlcmVkCitpbiBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvcmVndWxhdG9yL3Jl
-Z3VsYXRvci50eHQKKworT3B0aW9uYWwgcHJvcGVydGllczoKKworLSBzaHV0ZG93bi1ncGlvcwk6
-IFRoZSBncGlvIHRvIGJlIHRvZ2dsZWQgb24gYW5kIG9mZgordG8gc2h1dGRvd24gdGhlIGFtcGxp
-ZmllciB3aGVuIG5vdCBpbiB1c2UuIGFzIGNvdmVyZWQKK2luIERvY3VtZW50YXRpb24vZ3Bpby9i
-b2FyZC50eHQKKworRXhhbXBsZToKKworc291bmQgeworCWNvbXBhdGlibGUgPSAic2ltcGxlLWF1
-ZGlvLWNhcmQiOworCS4uLgorCXNpbXBsZS1hdWRpby1jYXJkLHJvdXRpbmcgPQorCQkiTEVGVCBB
-TVAgSU4iLCAiTElORV9PVVRfTEVGVCIsCisJCSJSSUdIVCBBTVAgSU4iLCAiTElORV9PVVRfUklH
-SFQiOworCXNpbXBsZS1hdWRpby1jYXJkLGF1eC1kZXZzID0gPCZhbXA+OworCS4uLgorfTsKKwor
-YW1wOiBhbXBsaWZpZXIgeworCWNvbXBhdGlibGUgPSAic2ltcGxlLWF1ZGlvLWFtcGxpZmllciI7
-CisJVkNDLXN1cHBseSA9IDwmcmVndWxhdG9yPgorCXNodXRkb3duLWdwaW9zID0gPCZyX3BpbyAy
-IEdQSU9fQUNUSVZFX0xPVz47Cit9OwotLSAKMi43LjQKCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+use list_head for sub_dais,
+since original sub_dais array is sparsely occupied
+
+Signed-off-by: KaiChieh Chuang <kaichieh.chuang@mediatek.com>
+---
+ .../soc/mediatek/common/mtk-afe-platform-driver.c  | 64 ++++++++--------------
+ sound/soc/mediatek/common/mtk-base-afe.h           |  6 +-
+ 2 files changed, 28 insertions(+), 42 deletions(-)
+
+diff --git a/sound/soc/mediatek/common/mtk-afe-platform-driver.c b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+index 0061858..3a5bde6 100644
+--- a/sound/soc/mediatek/common/mtk-afe-platform-driver.c
++++ b/sound/soc/mediatek/common/mtk-afe-platform-driver.c
+@@ -15,20 +15,12 @@
+ 
+ int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe)
+ {
+-	struct snd_soc_dai_driver *sub_dai_drivers;
++	struct mtk_base_afe_dai *dai;
+ 	size_t num_dai_drivers = 0, dai_idx = 0;
+-	int i;
+-
+-	if (!afe->sub_dais) {
+-		dev_err(afe->dev, "%s(), sub_dais == NULL\n", __func__);
+-		return -EINVAL;
+-	}
+ 
+ 	/* calcualte total dai driver size */
+-	for (i = 0; i < afe->num_sub_dais; i++) {
+-		if (afe->sub_dais[i].dai_drivers &&
+-		    afe->sub_dais[i].num_dai_drivers != 0)
+-			num_dai_drivers += afe->sub_dais[i].num_dai_drivers;
++	list_for_each_entry(dai, &afe->sub_dais, list) {
++		num_dai_drivers += dai->num_dai_drivers;
+ 	}
+ 
+ 	dev_info(afe->dev, "%s(), num of dai %zd\n", __func__, num_dai_drivers);
+@@ -42,47 +34,39 @@ int mtk_afe_combine_sub_dai(struct mtk_base_afe *afe)
+ 	if (!afe->dai_drivers)
+ 		return -ENOMEM;
+ 
+-	for (i = 0; i < afe->num_sub_dais; i++) {
+-		if (afe->sub_dais[i].dai_drivers &&
+-		    afe->sub_dais[i].num_dai_drivers != 0) {
+-			sub_dai_drivers = afe->sub_dais[i].dai_drivers;
+-			/* dai driver */
+-			memcpy(&afe->dai_drivers[dai_idx],
+-			       sub_dai_drivers,
+-			       afe->sub_dais[i].num_dai_drivers *
+-			       sizeof(struct snd_soc_dai_driver));
+-			dai_idx += afe->sub_dais[i].num_dai_drivers;
+-		}
++	list_for_each_entry(dai, &afe->sub_dais, list) {
++		/* dai driver */
++		memcpy(&afe->dai_drivers[dai_idx],
++		       dai->dai_drivers,
++		       dai->num_dai_drivers *
++		       sizeof(struct snd_soc_dai_driver));
++		dai_idx += dai->num_dai_drivers;
+ 	}
+-
+ 	return 0;
+ }
+ 
+ int mtk_afe_add_sub_dai_control(struct snd_soc_component *component)
+ {
+ 	struct mtk_base_afe *afe = snd_soc_component_get_drvdata(component);
+-	int i;
++	struct mtk_base_afe_dai *dai;
+ 
+-	if (!afe->sub_dais) {
+-		dev_err(afe->dev, "%s(), sub_dais == NULL\n", __func__);
+-		return -EINVAL;
+-	}
+-
+-	for (i = 0; i < afe->num_sub_dais; i++) {
+-		if (afe->sub_dais[i].controls)
++	list_for_each_entry(dai, &afe->sub_dais, list) {
++		if (dai->controls)
+ 			snd_soc_add_component_controls(component,
+-				afe->sub_dais[i].controls,
+-				afe->sub_dais[i].num_controls);
++						       dai->controls,
++						       dai->num_controls);
+ 
+-		if (afe->sub_dais[i].dapm_widgets)
++		if (dai->dapm_widgets)
+ 			snd_soc_dapm_new_controls(&component->dapm,
+-				afe->sub_dais[i].dapm_widgets,
+-				afe->sub_dais[i].num_dapm_widgets);
+-
+-		if (afe->sub_dais[i].dapm_routes)
++						  dai->dapm_widgets,
++						  dai->num_dapm_widgets);
++	}
++	/* add routes after all widgets are added */
++	list_for_each_entry(dai, &afe->sub_dais, list) {
++		if (dai->dapm_routes)
+ 			snd_soc_dapm_add_routes(&component->dapm,
+-				afe->sub_dais[i].dapm_routes,
+-				afe->sub_dais[i].num_dapm_routes);
++						dai->dapm_routes,
++						dai->num_dapm_routes);
+ 	}
+ 
+ 	snd_soc_dapm_new_widgets(component->dapm.card);
+diff --git a/sound/soc/mediatek/common/mtk-base-afe.h b/sound/soc/mediatek/common/mtk-base-afe.h
+index bcf562f0..bd8d5e0 100644
+--- a/sound/soc/mediatek/common/mtk-base-afe.h
++++ b/sound/soc/mediatek/common/mtk-base-afe.h
+@@ -46,6 +46,7 @@ struct mtk_base_irq_data {
+ };
+ 
+ struct device;
++struct list_head;
+ struct mtk_base_afe_memif;
+ struct mtk_base_afe_irq;
+ struct mtk_base_afe_dai;
+@@ -72,8 +73,7 @@ struct mtk_base_afe {
+ 	struct mtk_base_afe_irq *irqs;
+ 	int irqs_size;
+ 
+-	struct mtk_base_afe_dai *sub_dais;
+-	int num_sub_dais;
++	struct list_head sub_dais;
+ 	struct snd_soc_dai_driver *dai_drivers;
+ 	unsigned int num_dai_drivers;
+ 
+@@ -110,6 +110,8 @@ struct mtk_base_afe_dai {
+ 	unsigned int num_dapm_widgets;
+ 	const struct snd_soc_dapm_route *dapm_routes;
+ 	unsigned int num_dapm_routes;
++
++	struct list_head list;
+ };
+ 
+ #endif
+-- 
+1.9.1
