@@ -1,17 +1,24 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: kbl_da7219_max98357a: Map
- BTN_0 to KEY_PLAYPAUSE
-Date: Fri, 29 Jun 2018 16:31:51 -0500
-Message-ID: <b6c5f6b2-fa58-2bf2-27be-0e25dd51b1c0@linux.intel.com>
-References: <1530166267-13731-1-git-send-email-mac.chiang@intel.com>
- <6b434f52-4992-7f09-3f41-4d9e05dfb02d@linux.intel.com>
- <20180629055832.GA583@intel.com>
+From: slava <slavak61@gmail.com>
+Subject: dsd formats in ALSA plugins
+Date: Sat, 30 Jun 2018 01:08:16 +0300
+Message-ID: <a1bf74e2-0e8d-cc89-78e2-88c177bc44ca@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180629055832.GA583@intel.com>
-Content-Language: en-US
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com
+ [209.85.208.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCD232675C8
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jun 2018 00:08:17 +0200 (CEST)
+Received: by mail-lj1-f182.google.com with SMTP id v15-v6so8415671ljk.5
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 15:08:17 -0700 (PDT)
+Received: from [192.168.5.100] (ip-109-254-78-40.eq.dec.net.ua.
+ [109.254.78.40])
+ by smtp.gmail.com with ESMTPSA id y82-v6sm1895306lfd.81.2018.06.29.15.08.15
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+ Fri, 29 Jun 2018 15:08:15 -0700 (PDT)
+Content-Language: ru
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,63 +28,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel-bounces@alsa-project.org
-Cc: mac.chiang@intel.com, broonie@kernel.org, bleung@chromium.org, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 6/29/18 12:59 AM, alsa-devel-bounces@alsa-project.org wrote:
-> On Thu, Jun 28, 2018 at 10:46:58PM -0700, Pierre-Louis Bossart wrote:
->> On 6/27/18 11:11 PM, mac.chiang@intel.com wrote:
->>> From: Mac Chiang <mac.chiang@intel.com>
->>>
->>> On kbl_rt5663_max98927, commit 38a5882e4292
->>>      ("ASoC: Intel: kbl_rt5663_max98927: Map BTN_0 to KEY_PLAYPAUSE")
->>>      This key pair mapping to play/pause when playing Youtube
->>>
->>> The Android 3.5mm Headset jack specification mentions that BTN_0 should
->>> be mapped to KEY_MEDIA, but this is less logical than KEY_PLAYPAUSE,
->>> which has much broader userspace support.
->>>
->>> For example, the Chrome OS userspace now supports KEY_PLAYPAUSE to toggle
->>> play/pause of videos and audio, but does not handle KEY_MEDIA.
->>>
->>> Furthermore, Android itself now supports KEY_PLAYPAUSE equivalently, as the
->>> new USB headset spec requires KEY_PLAYPAUSE for BTN_0.
->>> https://source.android.com/devices/accessories/headset/usb-headset-spec
->>>
->>> The same fix is required on Chrome kbl_da7219_max98357a.
->>>
->>> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
->>
->> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->>
->> this is aligned with a recent patch for the same headset for an AMD
->> platform. We'd need the same fix for the bxt_da7219 machine driver btw.
->> Naveen, is this something you can look into? Thanks!
->>
->>
-> Agreed Pierre, earlier I have submitted a patch on this for bxt_da7219 -
-> https://patchwork.kernel.org/patch/10335295/
-> Also I have updated the same for recently ack'd glk_rt5682_max machine.
-
-Right, but neither of those patches were merged? I may be mistaken but 
-this code wasn't in Mark's tree when I looked yesterday.
-
->>> ---
->>>   sound/soc/intel/boards/kbl_da7219_max98357a.c | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
->>> index 7961f1f..edafe23 100644
->>> --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
->>> +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
->>> @@ -188,7 +188,7 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
->>>   	jack = &ctx->kabylake_headset;
->>> -	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
->>> +	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
->>>   	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
->>>   	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
->>>   	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
->>>
->>
-> 
+WWVzLCBwYXRjaCBmcm9tIHByZXZpb3VzIHBvc3TCoCB3b3JrcyBhcyBleHBlY3RlZC4KCkkgdHJ5
+IHRvIHdyaXRlIGV4dGVybmFsIGZpbHRlciBwbHVnaW4gZm9yIGRpbmFtaWNhbGx5IGNoYW5nZQpz
+bGF2ZSBmb3JtYXQgKCBkc2RfeHh4IC0+IHh4eCksIHVuc3VjY2Vzc2Z1bGx5ICgKSXQgc3VwcG9z
+ZSBvbmx5IHN0YXRpYyBjb25maWcgb3IgaSBtaXN0YWtlPwoKVGhhbmtzCl9fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0
+CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qu
+b3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
