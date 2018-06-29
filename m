@@ -1,28 +1,16 @@
-From: "Wischer, Timo (ADITG/ESB)" <twischer@de.adit-jv.com>
-Subject: snd_pcm_hw_params_set_buffer_time_near fails with
- "Invalid argument" when var_periodsize is enabled
-Date: Fri, 29 Jun 2018 15:24:30 +0000
-Message-ID: <B0FB33DC1499054591F62C0EF1E013D76856A5A9@HI2EXCH01.adit-jv.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH 0/2] ASoC: add es7241 support
+Date: Fri, 29 Jun 2018 17:24:42 +0200
+Message-ID: <20180629152444.21525-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 93F7D2675C8
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 17:24:38 +0200 (CEST)
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
- by smtp1.de.adit-jv.com (Postfix) with ESMTP id 23C433C0162
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 17:24:38 +0200 (CEST)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
- by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id nK_fSbd5vv3J for <alsa-devel@alsa-project.org>;
- Fri, 29 Jun 2018 17:24:30 +0200 (CEST)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
- (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
- (No client certificate requested)
- by smtp1.de.adit-jv.com (Postfix) with ESMTPS id BC2CB3C015C
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 17:24:30 +0200 (CEST)
-Content-Language: en-US
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 343F42675C8
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 17:25:03 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id b188-v6so2613788wme.3
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 08:25:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,53 +20,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsLA0KDQphdCB0aGUgbW9tZW50IEkgYW0gaW52ZXN0aWdhdGluZyBpbiB0aGUgaXNzdWUg
-ZGVzY3JpYmVkIGluIFsxXS4NClRoaXMgaXNzdWUgaXMgYWxyZWFkeSBhdm9pZGVkIGJ5IGEgd29y
-a2Fyb3VuZCBbMl0uDQoNCkkgYW0gYWJsZSB0byByZXByb2R1Y2UgdGhlIGlzc3VlIHdpdGggYSBt
-b3JlIHNpbXBsZSBhcGxheSB1c2UgY2FzZSB1c2luZyB0aGUgZm9sbG93aW5nIGNvbmZpZ3VyYXRp
-b246DQpwY21fc2xhdmUuYWRyM190ZG1fOGNoIHsNCiAgICBwY20gew0KICAgICAgICB0eXBlIGh3
-DQogICAgICAgIGNhcmQgIkxvb3BiYWNrIg0KICAgICAgICBkZXZpY2UgMA0KICAgIH0NCiAgICBy
-YXRlIDQ4MDAwDQogICAgcGVyaW9kX3NpemUgMTI4DQogICAgYnVmZmVyX3NpemUgMTAyNA0KICAg
-IGNoYW5uZWxzIDINCn0NCg0KDQpwY20uZHNoYXJlX1BsYXliYWNrXzMgew0KICAgIHR5cGUgZG1p
-eA0KICAgIGlwY19rZXkgNjAwDQogICAgaXBjX3Blcm0gMDY2MA0KICAgIGlwY19naWQgYXVkaW8N
-CiAgICB2YXJfcGVyaW9kc2l6ZSB0cnVlDQogICAgc2xhdmUgYWRyM190ZG1fOGNoDQp9DQoNCg0K
-cGNtLkFkZXZBY291c3RpY291dFNwZWVjaCB7DQogICAgdHlwZSByYXRlDQogICAgc2xhdmUucGNt
-IGRzaGFyZV9QbGF5YmFja18zDQogICAgc2xhdmUucmF0ZSA0ODAwMA0KfQ0KDQokIG1vZHByb2Jl
-IHNuZF9hbG9vcA0KJCBhcGxheSAtdiAtLXBlcmlvZC1zaXplPTM1MiAtYzIgLWZTMTZfTEUgLXIy
-MjUwMCAtRCBBZGV2QWNvdXN0aWNvdXRTcGVlY2ggL2Rldi91cmFuZG9tDQphcGxheTogLi4vLi4v
-YWxzYS11dGlscy0xLjEuNS9hcGxheS9hcGxheS5jOjEzOTA6IHNldF9wYXJhbXM6IEFzc2VydGlv
-biBgZXJyID49IDAnIGZhaWxlZC4NCkFib3J0ZWQgYnkgc2lnbmFsIEFib3J0ZWQuLi4NCg0KDQpJ
-dCBsb29rcyBsaWtlIHRoZSByZWZpbmVtZW50IGZhaWxzLg0KTm93LCBJIG5lZWQgeW91ciBoZWxw
-IGJlY2F1c2UgdGhlIGludGVydmFscyBzZWVtcyBub3QgdG8gYmUgaGFuZGxlZCBpbiB0aGUgc2Ft
-ZSB3YXkgaW4gZWFjaCBmdW5jdGlvbiBhbmQNCkkgd2FudCB0byB1bmRlcnN0YW5kIHdoYXQgaXMg
-dGhlIGNvcnJlY3QgaW50ZXJwcmV0YXRpb24gb2YgYW4gaW50ZXJ2YWwuDQoNCkZvciBleGFtcGxl
-IHNuZF9pbnRlcnZhbF9jaGVja2VtcHR5KCkgYW5kIHNuZF9pbnRlcnZhbF9zaW5nbGUoKSBjb25m
-bGljdGluZyB3aXRoIGVhY2ggb3RoZXIuDQpzbmRfaW50ZXJ2YWxfY2hlY2tlbXB0eSgpIGludGVy
-cHJldHMgKHggeF0gYW5kIFt4IHgpIGFzIGFuIGVtcHR5IHNldCBidXQgc25kX2ludGVydmFsX3Np
-bmdsZSgpIGRvZXMgbm90Lg0KKHggeCkgc2VlbXMgbm90IHRvIGJlIGFuIGVtcHR5IHNldCBhcyBp
-bXBsZW1lbnRlZCBieSBzbmRfaW50ZXJ2YWxfc2luZ2xlKCkuDQoNClRoZXJlZm9yZSBjb3VsZCBz
-b21lb25lIHBsZWFzZSBleHBsYWluIG1lIHdoYXQgaXMgdGhlIGNvcnJlY3QgaW50ZXJwcmV0YXRp
-b24gb2YgdGhlIHNuZF9pbnRlcnZhbF90IGluIGNvbWJpbmF0aW9uIHdpdGggb3Blbm1pbiBhbmQg
-b3Blbm1heC4NCg0KVGhlIGZvbGxvd2luZyBzZWVtcyB0byBiZSBjb25zaXN0ZW50DQooeCB4KzEp
-IGFuZCBbeCB4KzEpIOKGkiB4IChzZWUgc25kX2ludGVydmFsX3NpbmdsZSgpIGFuZCBzbmRfaW50
-ZXJ2YWxfdmFsdWUoKSkNCmJ1dCBpdCBpcyBkaWZmZXJlbnQgdG8gd2hhdCBJIGhhdmUgbGVhcm50
-IGF0IHVuaXZlcnNpdHkuDQoNCg0KU28gaXQgd291bGQgYmUgdmVyeSBoZWxwZnVsIGlmIHNvbWVv
-bmUgY291bGQgZGlyZWN0IG1lIHRvIHRoZSByaWdodCBkZWZpbml0aW9uLg0KU28gSSBob3BlIEkg
-Y291bGQgZWFzaWVyIHNvbHZlIHRoaXMgaXNzdWUuDQoNCg0KWzFdIGh0dHBzOi8vYnVnemlsbGEu
-b3BlbnN1c2Uub3JnL3Nob3dfYnVnLmNnaT9pZD0xMDMzMTc5DQpbMl0gaHR0cDovL2dpdC5hbHNh
-LXByb2plY3Qub3JnLz9wPWFsc2EtbGliLmdpdDthPWNvbW1pdDtoPWU3MzY3MTVhOGVkNGM4Njkw
-MDU5NDc5ZmQxZDBlMDRlMzMyMGM5MzkNCg0KQmVzdCByZWdhcmRzDQoNClRpbW8gV2lzY2hlcg0K
-DQpBZHZhbmNlZCBEcml2ZXIgSW5mb3JtYXRpb24gVGVjaG5vbG9neSBHbWJIDQpFbmdpbmVlcmlu
-ZyBTb2Z0d2FyZSBCYXNlIChBRElURy9FU0IpDQpSb2JlcnQtQm9zY2gtU3RyLiAyMDANCjMxMTM5
-IEhpbGRlc2hlaW0NCkdlcm1hbnkNCg0KVGVsLiArNDkgNTEyMSA0OSA2OTM4DQpGYXggKzQ5IDUx
-MjEgNDkgNjk5OQ0KdHdpc2NoZXJAZGUuYWRpdC1qdi5jb20NCg0KQURJVCBpcyBhIGpvaW50IHZl
-bnR1cmUgY29tcGFueSBvZiBSb2JlcnQgQm9zY2ggR21iSC9Sb2JlcnQgQm9zY2ggQ2FyIE11bHRp
-bWVkaWEgR21iSCBhbmQgREVOU08gQ29ycG9yYXRpb24NClNpdHo6IEhpbGRlc2hlaW0sIFJlZ2lz
-dGVyZ2VyaWNodDogQW10c2dlcmljaHQgSGlsZGVzaGVpbSBIUkIgMzQzOA0KR2VzY2jDpGZ0c2bD
-vGhydW5nOiBXaWxoZWxtIEdyYWJvdywgS2VuIFlhZ3VjaGkNCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Add support for the es7241 which is a simple 2 channels analog to
+digital converter.
+
+Jerome Brunet (2):
+  ASoC: es7241: add dt-bindings documentation for the es7241 adc
+  ASoC: es7241: add es7241 codec support
+
+ .../devicetree/bindings/sound/everest,es7241.txt   |  23 ++
+ sound/soc/codecs/Kconfig                           |   4 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/es7241.c                          | 307 +++++++++++++++++++++
+ 4 files changed, 336 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/everest,es7241.txt
+ create mode 100644 sound/soc/codecs/es7241.c
+
+-- 
+2.14.4
