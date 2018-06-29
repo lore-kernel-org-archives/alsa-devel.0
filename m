@@ -1,81 +1,145 @@
-From: Naveen M <naveen.m@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: kbl_da7219_max98357a: Map
- BTN_0 to KEY_PLAYPAUSE
-Date: Fri, 29 Jun 2018 11:29:12 +0530
-Message-ID: <20180629055832.GA583@intel.com>
-References: <1530166267-13731-1-git-send-email-mac.chiang@intel.com>
- <6b434f52-4992-7f09-3f41-4d9e05dfb02d@linux.intel.com>
+From: "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSB2Z2Fzd2l0Y2hyb286IHNldCBhdWRpbyBjbGllbnQg?=
+ =?gb2312?Q?id_according_to_bound_gpu_client_id?=
+Date: Fri, 29 Jun 2018 07:39:36 +0000
+Message-ID: <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>,
+ <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id DD0AB266E76
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 08:01:24 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <6b434f52-4992-7f09-3f41-4d9e05dfb02d@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: mac.chiang@intel.com, broonie@kernel.org, bleung@chromium.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+Content-Language: zh-CN
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Maling list - DRI developers <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+Cc: "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>, amd-gfx list <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jun 28, 2018 at 10:46:58PM -0700, Pierre-Louis Bossart wrote:
-> On 6/27/18 11:11 PM, mac.chiang@intel.com wrote:
-> >From: Mac Chiang <mac.chiang@intel.com>
-> >
-> >On kbl_rt5663_max98927, commit 38a5882e4292
-> >     ("ASoC: Intel: kbl_rt5663_max98927: Map BTN_0 to KEY_PLAYPAUSE")
-> >     This key pair mapping to play/pause when playing Youtube
-> >
-> >The Android 3.5mm Headset jack specification mentions that BTN_0 should
-> >be mapped to KEY_MEDIA, but this is less logical than KEY_PLAYPAUSE,
-> >which has much broader userspace support.
-> >
-> >For example, the Chrome OS userspace now supports KEY_PLAYPAUSE to toggle
-> >play/pause of videos and audio, but does not handle KEY_MEDIA.
-> >
-> >Furthermore, Android itself now supports KEY_PLAYPAUSE equivalently, as the
-> >new USB headset spec requires KEY_PLAYPAUSE for BTN_0.
-> >https://source.android.com/devices/accessories/headset/usb-headset-spec
-> >
-> >The same fix is required on Chrome kbl_da7219_max98357a.
-> >
-> >Signed-off-by: Mac Chiang <mac.chiang@intel.com>
-> 
-> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> 
-> this is aligned with a recent patch for the same headset for an AMD
-> platform. We'd need the same fix for the bxt_da7219 machine driver btw.
-> Naveen, is this something you can look into? Thanks!
-> 
-> 
-Agreed Pierre, earlier I have submitted a patch on this for bxt_da7219 - 
-https://patchwork.kernel.org/patch/10335295/
-Also I have updated the same for recently ack'd glk_rt5682_max machine.
-> >---
-> >  sound/soc/intel/boards/kbl_da7219_max98357a.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> >diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> >index 7961f1f..edafe23 100644
-> >--- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> >+++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
-> >@@ -188,7 +188,7 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
-> >  	jack = &ctx->kabylake_headset;
-> >-	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
-> >+	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-> >  	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-> >  	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-> >  	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
-> >
-> 
-
--- 
+SEksDQoNCkFueSBjb21tZW50cyBmb3IgdGhlIHBhdGNoPw0KDQpUaGFua3MNCkppbVF1DQoNCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCuWPkeS7tuS6ujogQWxleCBE
+ZXVjaGVyIDxhbGV4ZGV1Y2hlckBnbWFpbC5jb20+DQrlj5HpgIHml7bpl7Q6IDIwMTjlubQ25pyI
+Mjjml6UgMjA6NDMNCuaUtuS7tuS6ujogUXUsIEppbTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnOyBNYWxpbmcgbGlzdCAtIERSSSBkZXZlbG9wZXJzDQrmioTpgIE6IGFtZC1nZnggbGlzdDsg
+RGV1Y2hlciwgQWxleGFuZGVyDQrkuLvpopg6IFJlOiBbUEFUQ0hdIHZnYXN3aXRjaHJvbzogc2V0
+IGF1ZGlvIGNsaWVudCBpZCBhY2NvcmRpbmcgdG8gYm91bmQgZ3B1IGNsaWVudCBpZA0KDQpPbiBU
+aHUsIEp1biAyOCwgMjAxOCBhdCAyOjIyIEFNLCBKaW0gUXUgPEppbS5RdUBhbWQuY29tPiB3cm90
+ZToNCj4gT24gbW9kZXJuIGxhcHRvcCwgdGhlcmUgYXJlIG1vcmUgYW5kIG1vcmUgcGxhdGZvcm1z
+DQo+IGhhdmUgdHdvIEdQVXMsIGFuZCBlYWNoIG9mIHRoZW0gbWF5YmUgaGF2ZSBhdWRpbyBjb2Rl
+Yw0KPiBmb3IgSERNUC9EUCBvdXRwdXQuIEZvciBzb21lIGRHUFUgd2hpY2ggaXMgbm8gb3V0cHV0
+LA0KPiBhdWRpbyBjb2RlYyB1c3VhbGx5IGlzIGRpc2FibGVkLg0KPg0KPiBJbiBjdXJyZWN0IEhE
+QSBhdWRpbyBkcml2ZXIsIGl0IHdpbGwgc2V0IGFsbCBjb2RlYyBhcw0KPiBWR0FfU1dJVENIRVJP
+T19ESVMsIHNvIGlmIHN5c3RlbSBydW50aW1lIHBtIGlzIGVuYWJsZWQsDQo+IHRoZSBhdWRpbyB3
+aGljaCBpcyBiaW5kZWQgdG8gVU1BIHdpbGwgYmUgc3VzcGVuZGVkLg0KPg0KPiBJbiBIREEgZHJp
+dmVyIHNpZGUsIGl0IGlzIGRpZmZpY3VsdCB0byBrbm93IHdoaWNoIEdQVQ0KPiB0aGUgYXVkaW8g
+aGFzIGJpbmRlZCB0by4gU28gc2V0IHRoZSBib3VuZCBncHUgcGNpIGRldg0KPiB0byB2Z2Fzd2l0
+Y2hyb28sIGxldCB2Z2Fzd2l0Y2hyb28gbWFrZSBkZWNpc2lvbi4NCj4NCj4gTmV3ZXIgZEdQVXMg
+dXNlIFBDSV9DTEFTU19ESVNQTEFZX09USEVSIHJhdGhlciB0aGFuDQo+IFBDSV9DTEFTU19ESVNQ
+TEFZX1ZHQS4gIE1ha2Ugc3VyZSB3ZSBjaGVjayBmb3IgYm90aCB3aGVuDQo+IGNoZWNraW5nIGZv
+ciB0aGUgZEdQVSBpbiBnZXRfYm91bmRfdmdhKCkNCj4NCj4gVGhlIHBhdGNoIGFsc28gY29tYmlu
+ZSB0aGUgSERBIGNoYW5nZSB0byBhdm9pZCBicmVhaw0KPiBidWlsZGluZy4NCj4NCj4gQ2hhbmdl
+LUlkOiBJOTkwNmMxYmQ0ZGQ1YjM2MTA4ZDcxMzNiYjFjZjcyNGQxM2YxY2Q2ZA0KPiBTaWduZWQt
+b2ZmLWJ5OiBBbGV4IERldWNoZXIgPGFsZXhhbmRlci5kZXVjaGVyQGFtZC5jb20+DQo+IFNpZ25l
+ZC1vZmYtYnk6IEppbSBRdSA8SmltLlF1QGFtZC5jb20+DQo+IC0tLQ0KPiAgZHJpdmVycy9ncHUv
+dmdhL3ZnYV9zd2l0Y2hlcm9vLmMgfCAxMSArKysrKysrKystLQ0KPiAgaW5jbHVkZS9saW51eC92
+Z2Ffc3dpdGNoZXJvby5oICAgfCAgNCArKy0tDQo+ICBzb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5j
+ICAgICAgICB8IDE1ICsrKysrKysrKy0tLS0tLQ0KPiAgMyBmaWxlcyBjaGFuZ2VkLCAyMCBpbnNl
+cnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkNCj4NCg0KUGxlYXNlIHJlc2VuZCBhbmQgc2VuZCBp
+dCB0byBkcmktZGV2ZWwgYW5kIGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZw0Kc2luY2UgdGhp
+cyBwYXRjaCB0b3VjaGVzIG11bHRpcGxlIHN1YnN5c3RlbXMuICBJIHdvdWxkIHByb3Bvc2Ugd2UN
+Cm1lcmdlIHRoaXMgdGhyb3VnaCB0aGUgZHJtIHRyZWUgaWYgcG9zc2libGUuDQoNCkFsZXgNCg0K
+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvdmdhL3ZnYV9zd2l0Y2hlcm9vLmMgYi9kcml2ZXJz
+L2dwdS92Z2EvdmdhX3N3aXRjaGVyb28uYw0KPiBpbmRleCBmYzRhZGYzLi43YjdiMGZkIDEwMDY0
+NA0KPiAtLS0gYS9kcml2ZXJzL2dwdS92Z2EvdmdhX3N3aXRjaGVyb28uYw0KPiArKysgYi9kcml2
+ZXJzL2dwdS92Z2EvdmdhX3N3aXRjaGVyb28uYw0KPiBAQCAtMzI5LDcgKzMyOSw3IEBAIEVYUE9S
+VF9TWU1CT0wodmdhX3N3aXRjaGVyb29fcmVnaXN0ZXJfY2xpZW50KTsNCj4gICAqIHZnYV9zd2l0
+Y2hlcm9vX3JlZ2lzdGVyX2F1ZGlvX2NsaWVudCAtIHJlZ2lzdGVyIGF1ZGlvIGNsaWVudA0KPiAg
+ICogQHBkZXY6IGNsaWVudCBwY2kgZGV2aWNlDQo+ICAgKiBAb3BzOiBjbGllbnQgY2FsbGJhY2tz
+DQo+IC0gKiBAaWQ6IGNsaWVudCBpZGVudGlmaWVyDQo+ICsgKiBAYm91bmRfdmdhOiBjbGllbnQg
+Ym91bmQgdmdhIHBjaSBkZXZpY2UNCj4gICAqDQo+ICAgKiBSZWdpc3RlciBhdWRpbyBjbGllbnQg
+KGF1ZGlvIGRldmljZSBvbiBhIEdQVSkuIFRoZSBjbGllbnQgaXMgYXNzdW1lZA0KPiAgICogdG8g
+dXNlIHJ1bnRpbWUgUE0uIEJlZm9yZWhhbmQsIHZnYV9zd2l0Y2hlcm9vX2NsaWVudF9wcm9iZV9k
+ZWZlcigpDQo+IEBAIC0zMzksOCArMzM5LDE1IEBAIEVYUE9SVF9TWU1CT0wodmdhX3N3aXRjaGVy
+b29fcmVnaXN0ZXJfY2xpZW50KTsNCj4gICAqLw0KPiAgaW50IHZnYV9zd2l0Y2hlcm9vX3JlZ2lz
+dGVyX2F1ZGlvX2NsaWVudChzdHJ1Y3QgcGNpX2RldiAqcGRldiwNCj4gICAgICAgICAgICAgICAg
+ICAgICAgICAgY29uc3Qgc3RydWN0IHZnYV9zd2l0Y2hlcm9vX2NsaWVudF9vcHMgKm9wcywNCj4g
+LSAgICAgICAgICAgICAgICAgICAgICAgZW51bSB2Z2Ffc3dpdGNoZXJvb19jbGllbnRfaWQgaWQp
+DQo+ICsgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBwY2lfZGV2ICpib3VuZF92Z2EpDQo+
+ICB7DQo+ICsgICAgICAgZW51bSB2Z2Ffc3dpdGNoZXJvb19jbGllbnRfaWQgaWQgPSBWR0FfU1dJ
+VENIRVJPT19ESVM7DQo+ICsNCj4gKyAgICAgICBpZiAoYm91bmRfdmdhKSB7DQo+ICsgICAgICAg
+ICAgICAgICBpZiAodmdhc3JfcHJpdi5oYW5kbGVyLT5nZXRfY2xpZW50X2lkKQ0KPiArICAgICAg
+ICAgICAgICAgICAgICAgICBpZCA9IHZnYXNyX3ByaXYuaGFuZGxlci0+Z2V0X2NsaWVudF9pZChi
+b3VuZF92Z2EpOw0KPiArICAgICAgIH0NCj4gKw0KPiAgICAgICAgIHJldHVybiByZWdpc3Rlcl9j
+bGllbnQocGRldiwgb3BzLCBpZCB8IElEX0JJVF9BVURJTywgZmFsc2UsIHRydWUpOw0KPiAgfQ0K
+PiAgRVhQT1JUX1NZTUJPTCh2Z2Ffc3dpdGNoZXJvb19yZWdpc3Rlcl9hdWRpb19jbGllbnQpOw0K
+PiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC92Z2Ffc3dpdGNoZXJvby5oIGIvaW5jbHVkZS9s
+aW51eC92Z2Ffc3dpdGNoZXJvby5oDQo+IGluZGV4IDc3ZjBmMGEuLmEwYzdiODYgMTAwNjQ0DQo+
+IC0tLSBhL2luY2x1ZGUvbGludXgvdmdhX3N3aXRjaGVyb28uaA0KPiArKysgYi9pbmNsdWRlL2xp
+bnV4L3ZnYV9zd2l0Y2hlcm9vLmgNCj4gQEAgLTE1MSw3ICsxNTEsNyBAQCBpbnQgdmdhX3N3aXRj
+aGVyb29fcmVnaXN0ZXJfY2xpZW50KHN0cnVjdCBwY2lfZGV2ICpkZXYsDQo+ICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgYm9vbCBkcml2ZXJfcG93ZXJfY29udHJvbCk7DQo+ICBp
+bnQgdmdhX3N3aXRjaGVyb29fcmVnaXN0ZXJfYXVkaW9fY2xpZW50KHN0cnVjdCBwY2lfZGV2ICpw
+ZGV2LA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGNvbnN0IHN0
+cnVjdCB2Z2Ffc3dpdGNoZXJvb19jbGllbnRfb3BzICpvcHMsDQo+IC0gICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgZW51bSB2Z2Ffc3dpdGNoZXJvb19jbGllbnRfaWQgaWQp
+Ow0KPiArICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHN0cnVjdCBwY2lf
+ZGV2ICpib3VuZF92Z2EpOw0KPg0KPiAgdm9pZCB2Z2Ffc3dpdGNoZXJvb19jbGllbnRfZmJfc2V0
+KHN0cnVjdCBwY2lfZGV2ICpkZXYsDQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBzdHJ1Y3QgZmJfaW5mbyAqaW5mbyk7DQo+IEBAIC0xODAsNyArMTgwLDcgQEAgc3RhdGljIGlu
+bGluZSBpbnQgdmdhX3N3aXRjaGVyb29fcmVnaXN0ZXJfaGFuZGxlcihjb25zdCBzdHJ1Y3Qgdmdh
+X3N3aXRjaGVyb29faGENCj4gICAgICAgICAgICAgICAgIGVudW0gdmdhX3N3aXRjaGVyb29faGFu
+ZGxlcl9mbGFnc190IGhhbmRsZXJfZmxhZ3MpIHsgcmV0dXJuIDA7IH0NCj4gIHN0YXRpYyBpbmxp
+bmUgaW50IHZnYV9zd2l0Y2hlcm9vX3JlZ2lzdGVyX2F1ZGlvX2NsaWVudChzdHJ1Y3QgcGNpX2Rl
+diAqcGRldiwNCj4gICAgICAgICBjb25zdCBzdHJ1Y3QgdmdhX3N3aXRjaGVyb29fY2xpZW50X29w
+cyAqb3BzLA0KPiAtICAgICAgIGVudW0gdmdhX3N3aXRjaGVyb29fY2xpZW50X2lkIGlkKSB7IHJl
+dHVybiAwOyB9DQo+ICsgICAgICAgc3RydWN0IHBjaV9kZXYgKmJvdW5kX3ZnYSkgeyByZXR1cm4g
+MDsgfQ0KPiAgc3RhdGljIGlubGluZSB2b2lkIHZnYV9zd2l0Y2hlcm9vX3VucmVnaXN0ZXJfaGFu
+ZGxlcih2b2lkKSB7fQ0KPiAgc3RhdGljIGlubGluZSBlbnVtIHZnYV9zd2l0Y2hlcm9vX2hhbmRs
+ZXJfZmxhZ3NfdCB2Z2Ffc3dpdGNoZXJvb19oYW5kbGVyX2ZsYWdzKHZvaWQpIHsgcmV0dXJuIDA7
+IH0NCj4gIHN0YXRpYyBpbmxpbmUgaW50IHZnYV9zd2l0Y2hlcm9vX2xvY2tfZGRjKHN0cnVjdCBw
+Y2lfZGV2ICpwZGV2KSB7IHJldHVybiAtRU5PREVWOyB9DQo+IGRpZmYgLS1naXQgYS9zb3VuZC9w
+Y2kvaGRhL2hkYV9pbnRlbC5jIGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYw0KPiBpbmRleCAx
+YWUxODUwLi44Zjk5MmU2IDEwMDY0NA0KPiAtLS0gYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5j
+DQo+ICsrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMNCj4gQEAgLTEzMTksMTUgKzEzMTks
+MTcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCB2Z2Ffc3dpdGNoZXJvb19jbGllbnRfb3BzIGF6eF92
+c19vcHMgPSB7DQo+ICBzdGF0aWMgaW50IHJlZ2lzdGVyX3ZnYV9zd2l0Y2hlcm9vKHN0cnVjdCBh
+enggKmNoaXApDQo+ICB7DQo+ICAgICAgICAgc3RydWN0IGhkYV9pbnRlbCAqaGRhID0gY29udGFp
+bmVyX29mKGNoaXAsIHN0cnVjdCBoZGFfaW50ZWwsIGNoaXApOw0KPiArICAgICAgIHN0cnVjdCBw
+Y2lfZGV2ICpwOw0KPiAgICAgICAgIGludCBlcnI7DQo+DQo+ICAgICAgICAgaWYgKCFoZGEtPnVz
+ZV92Z2Ffc3dpdGNoZXJvbykNCj4gICAgICAgICAgICAgICAgIHJldHVybiAwOw0KPiAtICAgICAg
+IC8qIEZJWE1FOiBjdXJyZW50bHkgb25seSBoYW5kbGluZyBESVMgY29udHJvbGxlcg0KPiAtICAg
+ICAgICAqIGlzIHRoZXJlIGFueSBtYWNoaW5lIHdpdGggdHdvIHN3aXRjaGFibGUgSERNSSBhdWRp
+byBjb250cm9sbGVycz8NCj4gLSAgICAgICAgKi8NCj4gLSAgICAgICBlcnIgPSB2Z2Ffc3dpdGNo
+ZXJvb19yZWdpc3Rlcl9hdWRpb19jbGllbnQoY2hpcC0+cGNpLCAmYXp4X3ZzX29wcywNCj4gLSAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgVkdBX1NXSVRD
+SEVST09fRElTKTsNCj4gKw0KPiArICAgICAgIHAgPSBnZXRfYm91bmRfdmdhKGNoaXAtPnBjaSk7
+DQo+ICsgICAgICAgZXJyID0gdmdhX3N3aXRjaGVyb29fcmVnaXN0ZXJfYXVkaW9fY2xpZW50KGNo
+aXAtPnBjaSwgJmF6eF92c19vcHMsIHApOw0KPiArDQo+ICsgICAgICAgaWYgKHApDQo+ICsgICAg
+ICAgICAgICAgICBwY2lfZGV2X3B1dChwKTsNCj4gICAgICAgICBpZiAoZXJyIDwgMCkNCj4gICAg
+ICAgICAgICAgICAgIHJldHVybiBlcnI7DQo+ICAgICAgICAgaGRhLT52Z2Ffc3dpdGNoZXJvb19y
+ZWdpc3RlcmVkID0gMTsNCj4gQEAgLTE0MjksNyArMTQzMSw4IEBAIHN0YXRpYyBzdHJ1Y3QgcGNp
+X2RldiAqZ2V0X2JvdW5kX3ZnYShzdHJ1Y3QgcGNpX2RldiAqcGNpKQ0KPiAgICAgICAgICAgICAg
+ICAgICAgICAgICBwID0gcGNpX2dldF9kb21haW5fYnVzX2FuZF9zbG90KHBjaV9kb21haW5fbnIo
+cGNpLT5idXMpLA0KPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHBjaS0+YnVzLT5udW1iZXIsIDApOw0KPiAgICAgICAgICAgICAgICAgICAg
+ICAgICBpZiAocCkgew0KPiAtICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGlmICgocC0+
+Y2xhc3MgPj4gOCkgPT0gUENJX0NMQVNTX0RJU1BMQVlfVkdBKQ0KPiArICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIGlmICgocC0+Y2xhc3MgPj4gOCkgPT0gUENJX0NMQVNTX0RJU1BMQVlf
+VkdBIHx8DQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgKHAtPmNsYXNzID4+IDgp
+ID09IFBDSV9DTEFTU19ESVNQTEFZX09USEVSKQ0KPiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgcmV0dXJuIHA7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgcGNpX2Rldl9wdXQocCk7DQo+ICAgICAgICAgICAgICAgICAgICAgICAgIH0NCj4gLS0NCj4g
+Mi43LjQNCj4NCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18NCj4gYW1kLWdmeCBtYWlsaW5nIGxpc3QNCj4gYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5v
+cmcNCj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbWQt
+Z2Z4DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphbWQt
+Z2Z4IG1haWxpbmcgbGlzdAphbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xp
+c3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2FtZC1nZngK
