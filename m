@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: move some functions to pxa2xx-lib"
-	to the asoc tree
-Date: Fri, 29 Jun 2018 12:07:18 +0100
-Message-ID: <E1fYrFG-0002dL-O7@debutante>
-References: <20180627193359.26631-4-daniel@zonque.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4AE45267A3C
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 13:07:20 +0200 (CEST)
-In-Reply-To: <20180627193359.26631-4-daniel@zonque.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, robert.jarzmik@free.fr, lgirdwood@gmail.com, haojian.zhuang@gmail.com
+Subject: Applied "ASoC: pxa: remove the dmaengine compat need" to the asoc tree
+Date: Fri, 29 Jun 2018 12:07:31 +0100
+Message-ID: <E1fYrFT-0002gi-9G@debutante>
+References: <20180524070703.11901-9-robert.jarzmik@free.fr>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20180524070703.11901-9-robert.jarzmik@free.fr>
+Sender: netdev-owner@vger.kernel.org
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: Daniel Mack <daniel@zonque.org>, Mark Brown <broonie@kernel.org>Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Ezequiel Garcia <ezequiel.garcia@free-electrons.com>, Boris Brezillon <boris.brezillon@free-electrons.com>, David Woodhouse <dwmw2@infradead.org>, Brian Norris <computersforpeace@gmail.com>, Marek Vasut <marek.vasut@gmail.com>, Richard Weinberger <richard@nod.at>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Arnd Bergmann <arnd@arndb.de>, alsa-devel@alsa-project.org, netdev@vger.kernel.org, linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ide@vger.kernel.org, linux-mtd@lists.infradead.org, dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.orgalsa-d
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: move some functions to pxa2xx-lib
+   ASoC: pxa: remove the dmaengine compat need
 
 has been applied to the asoc tree at
 
@@ -53,190 +37,177 @@ to this mail.
 Thanks,
 Mark
 
->From 7afd1b0b2ef9a8120951188a955010ef92bdf885 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Wed, 27 Jun 2018 21:33:55 +0200
-Subject: [PATCH] ASoC: pxa: move some functions to pxa2xx-lib
+>From 8f54061d001ad2da24dba89fc48adbbf4c85222b Mon Sep 17 00:00:00 2001
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Date: Thu, 28 Jun 2018 22:08:37 +0200
+Subject: [PATCH] ASoC: pxa: remove the dmaengine compat need
 
-To get rid of some intermediate platform layers, move pxa2xx_soc_pcm_new()
-and pxa2xx_pcm_ops in pxa2xx-lib.
+As the pxa architecture switched towards the dmaengine slave map, the
+old compatibility mechanism to acquire the dma requestor line number and
+priority are not needed anymore.
 
+This patch simplifies the dma resource acquisition, using the more
+generic function dma_request_slave_channel().
+
+Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
 Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/pxa2xx-lib.h |  3 +++
- sound/arm/pxa2xx-ac97.c    |  6 ++---
- sound/arm/pxa2xx-pcm-lib.c | 41 ++++++++++++++++++++++++++++
- sound/soc/pxa/pxa2xx-pcm.c | 55 --------------------------------------
- 4 files changed, 47 insertions(+), 58 deletions(-)
+ sound/arm/pxa2xx-ac97.c     | 14 ++------------
+ sound/arm/pxa2xx-pcm-lib.c  |  6 +++---
+ sound/soc/pxa/pxa2xx-ac97.c | 32 +++++---------------------------
+ sound/soc/pxa/pxa2xx-i2s.c  |  6 ++----
+ 4 files changed, 12 insertions(+), 46 deletions(-)
 
-diff --git a/include/sound/pxa2xx-lib.h b/include/sound/pxa2xx-lib.h
-index b43de38de8b2..6758fc12fa84 100644
---- a/include/sound/pxa2xx-lib.h
-+++ b/include/sound/pxa2xx-lib.h
-@@ -8,6 +8,7 @@
- /* PCM */
- struct snd_pcm_substream;
- struct snd_pcm_hw_params;
-+struct snd_soc_pcm_runtime;
- struct snd_pcm;
- 
- extern int pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
-@@ -22,6 +23,8 @@ extern int pxa2xx_pcm_mmap(struct snd_pcm_substream *substream,
- 	struct vm_area_struct *vma);
- extern int pxa2xx_pcm_preallocate_dma_buffer(struct snd_pcm *pcm, int stream);
- extern void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm);
-+extern int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd);
-+extern const struct snd_pcm_ops pxa2xx_pcm_ops;
- 
- /* AC97 */
- 
 diff --git a/sound/arm/pxa2xx-ac97.c b/sound/arm/pxa2xx-ac97.c
-index 0d624337857b..1f72672262d0 100644
+index 4bc244c40f80..236a63cdaf9f 100644
 --- a/sound/arm/pxa2xx-ac97.c
 +++ b/sound/arm/pxa2xx-ac97.c
-@@ -174,7 +174,7 @@ static int pxa2xx_ac97_resume(struct device *dev)
- static SIMPLE_DEV_PM_OPS(pxa2xx_ac97_pm_ops, pxa2xx_ac97_suspend, pxa2xx_ac97_resume);
- #endif
+@@ -63,28 +63,18 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
+ 	.reset	= pxa2xx_ac97_legacy_reset,
+ };
  
--static const struct snd_pcm_ops pxa2xx_pcm_ops = {
-+static const struct snd_pcm_ops pxa2xx_ac97_pcm_ops = {
- 	.open		= pxa2xx_ac97_pcm_open,
- 	.close		= pxa2xx_ac97_pcm_close,
- 	.ioctl		= snd_pcm_lib_ioctl,
-@@ -203,13 +203,13 @@ static int pxa2xx_ac97_pcm_new(struct snd_card *card)
- 		goto out;
- 
- 	stream = SNDRV_PCM_STREAM_PLAYBACK;
--	snd_pcm_set_ops(pcm, stream, &pxa2xx_pcm_ops);
-+	snd_pcm_set_ops(pcm, stream, &pxa2xx_ac97_pcm_ops);
- 	ret = pxa2xx_pcm_preallocate_dma_buffer(pcm, stream);
- 	if (ret)
- 		goto out;
- 
- 	stream = SNDRV_PCM_STREAM_CAPTURE;
--	snd_pcm_set_ops(pcm, stream, &pxa2xx_pcm_ops);
-+	snd_pcm_set_ops(pcm, stream, &pxa2xx_ac97_pcm_ops);
- 	ret = pxa2xx_pcm_preallocate_dma_buffer(pcm, stream);
- 	if (ret)
- 		goto out;
-diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
-index dc56dbebf441..add23d9b4ef6 100644
---- a/sound/arm/pxa2xx-pcm-lib.c
-+++ b/sound/arm/pxa2xx-pcm-lib.c
-@@ -179,6 +179,47 @@ void pxa2xx_pcm_free_dma_buffers(struct snd_pcm *pcm)
- }
- EXPORT_SYMBOL(pxa2xx_pcm_free_dma_buffers);
- 
-+int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_card *card = rtd->card->snd_card;
-+	struct snd_pcm *pcm = rtd->pcm;
-+	int ret;
-+
-+	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
-+	if (ret)
-+		return ret;
-+
-+	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
-+		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_PLAYBACK);
-+		if (ret)
-+			goto out;
-+	}
-+
-+	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
-+		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
-+			SNDRV_PCM_STREAM_CAPTURE);
-+		if (ret)
-+			goto out;
-+	}
-+ out:
-+	return ret;
-+}
-+EXPORT_SYMBOL(pxa2xx_soc_pcm_new);
-+
-+const struct snd_pcm_ops pxa2xx_pcm_ops = {
-+	.open		= pxa2xx_pcm_open,
-+	.close		= pxa2xx_pcm_close,
-+	.ioctl		= snd_pcm_lib_ioctl,
-+	.hw_params	= pxa2xx_pcm_hw_params,
-+	.hw_free	= pxa2xx_pcm_hw_free,
-+	.prepare	= pxa2xx_pcm_prepare,
-+	.trigger	= pxa2xx_pcm_trigger,
-+	.pointer	= pxa2xx_pcm_pointer,
-+	.mmap		= pxa2xx_pcm_mmap,
-+};
-+EXPORT_SYMBOL(pxa2xx_pcm_ops);
-+
- MODULE_AUTHOR("Nicolas Pitre");
- MODULE_DESCRIPTION("Intel PXA2xx sound library");
- MODULE_LICENSE("GPL");
-diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
-index da252d1f732e..a1df4ec76cbd 100644
---- a/sound/soc/pxa/pxa2xx-pcm.c
-+++ b/sound/soc/pxa/pxa2xx-pcm.c
-@@ -20,61 +20,6 @@
- #include <sound/pxa2xx-lib.h>
- #include <sound/dmaengine_pcm.h>
- 
--static int __pxa2xx_pcm_hw_params(struct snd_pcm_substream *substream,
--				  struct snd_pcm_hw_params *params)
--{
--	struct snd_soc_pcm_runtime *rtd = substream->private_data;
--	struct snd_dmaengine_dai_dma_data *dma;
--
--	dma = snd_soc_dai_get_dma_data(rtd->cpu_dai, substream);
--
--	/* return if this is a bufferless transfer e.g.
--	 * codec <--> BT codec or GSM modem -- lg FIXME */
--	if (!dma)
--		return 0;
--
--	return pxa2xx_pcm_hw_params(substream, params);
--}
--
--static const struct snd_pcm_ops pxa2xx_pcm_ops = {
--	.open		= pxa2xx_pcm_open,
--	.close		= pxa2xx_pcm_close,
--	.ioctl		= snd_pcm_lib_ioctl,
--	.hw_params	= __pxa2xx_pcm_hw_params,
--	.hw_free	= pxa2xx_pcm_hw_free,
--	.prepare	= pxa2xx_pcm_prepare,
--	.trigger	= pxa2xx_pcm_trigger,
--	.pointer	= pxa2xx_pcm_pointer,
--	.mmap		= pxa2xx_pcm_mmap,
+-static struct pxad_param pxa2xx_ac97_pcm_out_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 12,
 -};
 -
--static int pxa2xx_soc_pcm_new(struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_card *card = rtd->card->snd_card;
--	struct snd_pcm *pcm = rtd->pcm;
--	int ret;
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_out = {
+ 	.addr		= __PREG(PCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "pcm_pcm_stereo_out",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_ac97_pcm_out_req,
+-};
 -
--	ret = dma_coerce_mask_and_coherent(card->dev, DMA_BIT_MASK(32));
--	if (ret)
--		return ret;
+-static struct pxad_param pxa2xx_ac97_pcm_in_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 11,
+ };
+ 
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_in = {
+ 	.addr		= __PREG(PCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "pcm_pcm_stereo_in",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_ac97_pcm_in_req,
+ };
+ 
+ static struct snd_pcm *pxa2xx_ac97_pcm;
+diff --git a/sound/arm/pxa2xx-pcm-lib.c b/sound/arm/pxa2xx-pcm-lib.c
+index e8da3b8ee721..dcbe7ecc1835 100644
+--- a/sound/arm/pxa2xx-pcm-lib.c
++++ b/sound/arm/pxa2xx-pcm-lib.c
+@@ -125,9 +125,9 @@ int __pxa2xx_pcm_open(struct snd_pcm_substream *substream)
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	return snd_dmaengine_pcm_open_request_chan(substream,
+-					pxad_filter_fn,
+-					dma_params->filter_data);
++	return snd_dmaengine_pcm_open(
++		substream, dma_request_slave_channel(rtd->cpu_dai->dev,
++						     dma_params->chan_name));
+ }
+ EXPORT_SYMBOL(__pxa2xx_pcm_open);
+ 
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 5738a0abcd6a..c52b33802bf2 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -68,61 +68,39 @@ static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
+ 	.reset	= pxa2xx_ac97_cold_reset,
+ };
+ 
+-static struct pxad_param pxa2xx_ac97_pcm_stereo_in_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 11,
+-};
 -
--	if (pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream) {
--		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_PLAYBACK);
--		if (ret)
--			goto out;
--	}
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_in = {
+ 	.addr		= __PREG(PCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "pcm_pcm_stereo_in",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_ac97_pcm_stereo_in_req,
+-};
 -
--	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
--		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
--			SNDRV_PCM_STREAM_CAPTURE);
--		if (ret)
--			goto out;
--	}
-- out:
--	return ret;
--}
--
- static const struct snd_soc_component_driver pxa2xx_soc_platform = {
- 	.ops		= &pxa2xx_pcm_ops,
- 	.pcm_new	= pxa2xx_soc_pcm_new,
+-static struct pxad_param pxa2xx_ac97_pcm_stereo_out_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 12,
+ };
+ 
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_stereo_out = {
+ 	.addr		= __PREG(PCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "pcm_pcm_stereo_out",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_ac97_pcm_stereo_out_req,
+ };
+ 
+-static struct pxad_param pxa2xx_ac97_pcm_aux_mono_out_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 10,
+-};
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_out = {
+ 	.addr		= __PREG(MODR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
++	.chan_name	= "pcm_aux_mono_out",
+ 	.maxburst	= 16,
+-	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_out_req,
+ };
+ 
+-static struct pxad_param pxa2xx_ac97_pcm_aux_mono_in_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 9,
+-};
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_aux_mono_in = {
+ 	.addr		= __PREG(MODR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
++	.chan_name	= "pcm_aux_mono_in",
+ 	.maxburst	= 16,
+-	.filter_data	= &pxa2xx_ac97_pcm_aux_mono_in_req,
+ };
+ 
+-static struct pxad_param pxa2xx_ac97_pcm_aux_mic_mono_req = {
+-	.prio = PXAD_PRIO_LOWEST,
+-	.drcmr = 8,
+-};
+ static struct snd_dmaengine_dai_dma_data pxa2xx_ac97_pcm_mic_mono_in = {
+ 	.addr		= __PREG(MCDR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_2_BYTES,
++	.chan_name	= "pcm_aux_mic_mono",
+ 	.maxburst	= 16,
+-	.filter_data	= &pxa2xx_ac97_pcm_aux_mic_mono_req,
+ };
+ 
+ static int pxa2xx_ac97_hifi_startup(struct snd_pcm_substream *substream,
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 3fb60baf6eab..e7184de0de04 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -82,20 +82,18 @@ static struct pxa_i2s_port pxa_i2s;
+ static struct clk *clk_i2s;
+ static int clk_ena = 0;
+ 
+-static unsigned long pxa2xx_i2s_pcm_stereo_out_req = 3;
+ static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_out = {
+ 	.addr		= __PREG(SADR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "tx",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_i2s_pcm_stereo_out_req,
+ };
+ 
+-static unsigned long pxa2xx_i2s_pcm_stereo_in_req = 2;
+ static struct snd_dmaengine_dai_dma_data pxa2xx_i2s_pcm_stereo_in = {
+ 	.addr		= __PREG(SADR),
+ 	.addr_width	= DMA_SLAVE_BUSWIDTH_4_BYTES,
++	.chan_name	= "rx",
+ 	.maxburst	= 32,
+-	.filter_data	= &pxa2xx_i2s_pcm_stereo_in_req,
+ };
+ 
+ static int pxa2xx_i2s_startup(struct snd_pcm_substream *substream,
 -- 
 2.18.0.rc2
