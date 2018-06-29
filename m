@@ -1,14 +1,15 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH v2] ALSA: hda - Handle pm failure during hotplug
-Date: Fri, 29 Jun 2018 14:44:40 +0200
-Message-ID: <20180629124440.3578-1-tiwai@suse.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH RFC] ASoC: pxa-ssp: remove .set_pll() and
+	.set_clkdiv() callbacks
+Date: Fri, 29 Jun 2018 14:59:40 +0200
+Message-ID: <20180629125940.27359-1-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id BD3EB2675C8
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 14:44:46 +0200 (CEST)
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E3D12675C8
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 14:59:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,94 +19,291 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, Chris Wilson <chris@chris-wilson.co.uk>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, philipp.zabel@gmail.com, robert.jarzmik@free.fr, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Chris Wilson <chris@chris-wilson.co.uk>
+The .set_pll() and .set_clkdiv() callbacks are considered legacy and should
+not be used anymore. In order to support PXA boards on DT platforms, remove
+them and let the code figure out the correct dividers and PLL base
+frequencies itself.
 
-Obtaining the runtime pm wakeref can fail, especially in a hotplug
-scenario where i915.ko has been unloaded. If we do not catch the
-failure, we end up with an unbalanced pm.
-
-[ Additional changes:
-  hdmi_present_sense() checks the return value and handle only a
-  negative error case and bails out only if it's really still
-  suspended.  Also, snd_hda_power_down() is called at the error path
-  so that the refcount is balanced.
-
-  Along with it, the spec->pcm_lock is taken outside
-  hdmi_present_sense() in the caller side, so that it won't cause
-  deadlock at reentrace via runtime resume. -- tiwai ]
-
-References: 222bde03881c ("ALSA: hda - Fix mutex deadlock at HDMI/DP hotplug")
-Signed-off-by: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 ---
- sound/pci/hda/patch_hdmi.c | 18 +++++++++++++-----
- 1 file changed, 13 insertions(+), 5 deletions(-)
 
-diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
-index 98e1c411c56a..9e3916ed2588 100644
---- a/sound/pci/hda/patch_hdmi.c
-+++ b/sound/pci/hda/patch_hdmi.c
-@@ -764,8 +764,10 @@ static void check_presence_and_report(struct hda_codec *codec, hda_nid_t nid,
+I'd appreciate some review of this one. The only PXA3xx based platform
+I have access to uses the EXTCLK clocking source, but this patch
+changes the way the internal audio PLL works. Hence, I could only
+complile-test it for now.
+
+The PLL lookup table is taken from the datasheet, so it should be fine,
+but I'm not sure whether I got the mclk/bclk/fs calculations right, so
+a 2nd pair of eyes would help to avoid regressions.
+
+Given that the PXA platform has very little active mainline users,
+another option would be to just merge it and fix regressions if someone
+reports them.
+
+Once this is applied, I'll post another patch that removes the
+calculations and the calls to snd_soc_dai_set_{clkdiv,pll} from the
+zylonite and magician machine drivers.
+
+
+Thanks,
+Daniel
+
+ include/linux/pxa2xx_ssp.h |   8 ++
+ sound/soc/pxa/pxa-ssp.c    | 146 ++++++++++++++++++-------------------
+ 2 files changed, 81 insertions(+), 73 deletions(-)
+
+diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
+index 03a7ca46735b..13b4244d44c1 100644
+--- a/include/linux/pxa2xx_ssp.h
++++ b/include/linux/pxa2xx_ssp.h
+@@ -171,6 +171,14 @@
+ #define SSACD_SCDB		(1 << 3)	/* SSPSYSCLK Divider Bypass */
+ #define SSACD_ACPS(x)		((x) << 4)	/* Audio clock PLL select */
+ #define SSACD_ACDS(x)		((x) << 0)	/* Audio clock divider select */
++#define SSACD_ACDS_1		(0)
++#define SSACD_ACDS_2		(1)
++#define SSACD_ACDS_4		(2)
++#define SSACD_ACDS_8		(3)
++#define SSACD_ACDS_16		(4)
++#define SSACD_ACDS_32		(5)
++#define SSACD_SCDB_4X		(0)
++#define SSACD_SCDB_1X		(1)
+ #define SSACD_SCDX8		(1 << 7)	/* SYSCLK division ratio select */
  
- 	if (pin_idx < 0)
- 		return;
-+	mutex_lock(&spec->pcm_lock);
- 	if (hdmi_present_sense(get_pin(spec, pin_idx), 1))
- 		snd_hda_jack_report_sync(codec);
-+	mutex_unlock(&spec->pcm_lock);
+ /* LPSS SSP */
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 01d54697ede4..f8339bb01251 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -41,6 +41,7 @@
+  */
+ struct ssp_priv {
+ 	struct ssp_device *ssp;
++	unsigned long ssp_clk;
+ 	unsigned int sysclk;
+ 	unsigned int dai_fmt;
+ 	unsigned int configured_dai_fmt;
+@@ -192,21 +193,6 @@ static void pxa_ssp_set_scr(struct ssp_device *ssp, u32 div)
+ 	pxa_ssp_write_reg(ssp, SSCR0, sscr0);
  }
  
- static void jack_callback(struct hda_codec *codec,
-@@ -1628,21 +1630,23 @@ static void sync_eld_via_acomp(struct hda_codec *codec,
- static bool hdmi_present_sense(struct hdmi_spec_per_pin *per_pin, int repoll)
+-/**
+- * pxa_ssp_get_clkdiv - get SSP clock divider
+- */
+-static u32 pxa_ssp_get_scr(struct ssp_device *ssp)
+-{
+-	u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0);
+-	u32 div;
+-
+-	if (ssp->type == PXA25x_SSP)
+-		div = ((sscr0 >> 8) & 0xff) * 2 + 2;
+-	else
+-		div = ((sscr0 >> 8) & 0xfff) + 1;
+-	return div;
+-}
+-
+ /*
+  * Set the SSP ports SYSCLK.
+  */
+@@ -262,67 +248,18 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	return 0;
+ }
+ 
+-/*
+- * Set the SSP clock dividers.
+- */
+-static int pxa_ssp_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+-	int div_id, int div)
+-{
+-	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+-	struct ssp_device *ssp = priv->ssp;
+-	int val;
+-
+-	switch (div_id) {
+-	case PXA_SSP_AUDIO_DIV_ACDS:
+-		val = (pxa_ssp_read_reg(ssp, SSACD) & ~0x7) | SSACD_ACDS(div);
+-		pxa_ssp_write_reg(ssp, SSACD, val);
+-		break;
+-	case PXA_SSP_AUDIO_DIV_SCDB:
+-		val = pxa_ssp_read_reg(ssp, SSACD);
+-		val &= ~SSACD_SCDB;
+-		if (ssp->type == PXA3xx_SSP)
+-			val &= ~SSACD_SCDX8;
+-		switch (div) {
+-		case PXA_SSP_CLK_SCDB_1:
+-			val |= SSACD_SCDB;
+-			break;
+-		case PXA_SSP_CLK_SCDB_4:
+-			break;
+-		case PXA_SSP_CLK_SCDB_8:
+-			if (ssp->type == PXA3xx_SSP)
+-				val |= SSACD_SCDX8;
+-			else
+-				return -EINVAL;
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
+-		pxa_ssp_write_reg(ssp, SSACD, val);
+-		break;
+-	case PXA_SSP_DIV_SCR:
+-		pxa_ssp_set_scr(ssp, div);
+-		break;
+-	default:
+-		return -ENODEV;
+-	}
+-
+-	return 0;
+-}
+-
+ /*
+  * Configure the PLL frequency pxa27x and (afaik - pxa320 only)
+  */
+-static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
+-	int source, unsigned int freq_in, unsigned int freq_out)
++static int pxa_ssp_set_pll(struct ssp_priv *priv, unsigned int freq)
  {
- 	struct hda_codec *codec = per_pin->codec;
--	struct hdmi_spec *spec = codec->spec;
+-	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
+ 	u32 ssacd = pxa_ssp_read_reg(ssp, SSACD) & ~0x70;
+ 
+ 	if (ssp->type == PXA3xx_SSP)
+ 		pxa_ssp_write_reg(ssp, SSACDD, 0);
+ 
+-	switch (freq_out) {
++	switch (freq) {
+ 	case 5622000:
+ 		break;
+ 	case 11345000:
+@@ -353,7 +290,7 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
+ 			u64 tmp = 19968;
+ 
+ 			tmp *= 1000000;
+-			do_div(tmp, freq_out);
++			do_div(tmp, freq);
+ 			val = tmp;
+ 
+ 			val = (val << 16) | 64;
+@@ -363,7 +300,7 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
+ 
+ 			dev_dbg(&ssp->pdev->dev,
+ 				"Using SSACDD %x to supply %uHz\n",
+-				val, freq_out);
++				val, freq);
+ 			break;
+ 		}
+ 
+@@ -568,6 +505,24 @@ static int pxa_ssp_configure_dai_fmt(struct ssp_priv *priv)
+ 	return 0;
+ }
+ 
++struct pxa_ssp_clock_mode {
++	int rate;
++	int pll;
++	u8 acds;
++	u8 scdb;
++};
++
++static const struct pxa_ssp_clock_mode pxa_ssp_clock_modes[] = {
++	{ .rate =  8000, .pll = 32842000, .acds = SSACD_ACDS_32, .scdb = SSACD_SCDB_4X },
++	{ .rate = 11025, .pll =  5622000, .acds = SSACD_ACDS_4,  .scdb = SSACD_SCDB_4X },
++	{ .rate = 16000, .pll = 32842000, .acds = SSACD_ACDS_16, .scdb = SSACD_SCDB_4X },
++	{ .rate = 22050, .pll =  5622000, .acds = SSACD_ACDS_2,  .scdb = SSACD_SCDB_4X },
++	{ .rate = 44100, .pll = 11345000, .acds = SSACD_ACDS_2,  .scdb = SSACD_SCDB_4X },
++	{ .rate = 48000, .pll = 12235000, .acds = SSACD_ACDS_2,  .scdb = SSACD_SCDB_4X },
++	{ .rate = 96000, .pll = 12235000, .acds = SSACD_ACDS_4,  .scdb = SSACD_SCDB_1X },
++	{}
++};
++
+ /*
+  * Set the SSP audio DMA parameters and sample size.
+  * Can be called multiple times by oss emulation.
+@@ -579,11 +534,12 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
+ 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
+ 	int chn = params_channels(params);
+-	u32 sscr0;
+-	u32 sspsp;
++	u32 sscr0, sspsp;
+ 	int width = snd_pcm_format_physical_width(params_format(params));
+ 	int ttsa = pxa_ssp_read_reg(ssp, SSTSA) & 0xf;
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
++	int rate = params_rate(params);
++	int bclk = rate * chn * (width / 8);
  	int ret;
  
- 	/* no temporary power up/down needed for component notifier */
--	if (!codec_has_acomp(codec))
--		snd_hda_power_up_pm(codec);
-+	if (!codec_has_acomp(codec)) {
-+		ret = snd_hda_power_up_pm(codec);
-+		if (ret < 0 && pm_runtime_suspended(hda_codec_dev(codec))) {
-+			snd_hda_power_down_pm(codec);
-+			return false;
-+		}
-+	}
- 
--	mutex_lock(&spec->pcm_lock);
- 	if (codec_has_acomp(codec)) {
- 		sync_eld_via_acomp(codec, per_pin);
- 		ret = false; /* don't call snd_hda_jack_report_sync() */
- 	} else {
- 		ret = hdmi_present_sense_via_verbs(per_pin, repoll);
+ 	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
+@@ -623,11 +579,57 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
  	}
--	mutex_unlock(&spec->pcm_lock);
+ 	pxa_ssp_write_reg(ssp, SSCR0, sscr0);
  
- 	if (!codec_has_acomp(codec))
- 		snd_hda_power_down_pm(codec);
-@@ -1654,12 +1658,16 @@ static void hdmi_repoll_eld(struct work_struct *work)
- {
- 	struct hdmi_spec_per_pin *per_pin =
- 	container_of(to_delayed_work(work), struct hdmi_spec_per_pin, work);
-+	struct hda_codec *codec = per_pin->codec;
-+	struct hdmi_spec *spec = codec->spec;
++	if (sscr0 & SSCR0_ACS) {
++		ret = pxa_ssp_set_pll(priv, bclk);
++
++		/*
++		 * If we were able to generate the bclk directly,
++		 * all is fine. Otherwise, look up the closest rate
++		 * from the table and also set the dividers.
++		 */
++
++		if (ret < 0) {
++			const struct pxa_ssp_clock_mode *m;
++			int ssacd, acds;
++
++			for (m = pxa_ssp_clock_modes; m->rate; m++) {
++				if (m->rate == rate)
++					break;
++			}
++
++			if (!m->rate)
++				return -EINVAL;
++
++			acds = m->acds;
++
++			/* The values in the table are for 16 bits */
++			if (width == 32)
++				acds--;
++
++			ret = pxa_ssp_set_pll(priv, bclk);
++			if (ret < 0)
++				return ret;
++
++			ssacd = pxa_ssp_read_reg(ssp, SSACD);
++			ssacd &= ~(SSACD_ACDS(7) | SSACD_SCDB_1X);
++			ssacd |= SSACD_ACDS(m->acds);
++			ssacd |= m->scdb;
++			pxa_ssp_write_reg(ssp, SSACD, ssacd);
++		}
++	} else if (sscr0 & SSCR0_ECS) {
++		/*
++		 * For setups with external clocking, the PLL and its diviers
++		 * are not active. Instead, the SCR bits in SSCR0 can be used
++		 * to divide the clock.
++		 */
++		pxa_ssp_set_scr(ssp, bclk / rate);
++	}
++
+ 	switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 	       sspsp = pxa_ssp_read_reg(ssp, SSPSP);
  
- 	if (per_pin->repoll_count++ > 6)
- 		per_pin->repoll_count = 0;
- 
-+	mutex_lock(&spec->pcm_lock);
- 	if (hdmi_present_sense(per_pin, per_pin->repoll_count))
- 		snd_hda_jack_report_sync(per_pin->codec);
-+	mutex_unlock(&spec->pcm_lock);
- }
- 
- static void intel_haswell_fixup_connect_list(struct hda_codec *codec,
+-		if ((pxa_ssp_get_scr(ssp) == 4) && (width == 16)) {
++		if (((priv->sysclk / bclk) == 64) && (width == 16)) {
+ 			/* This is a special case where the bitclk is 64fs
+ 			 * and we're not dealing with 2*32 bits of audio
+ 			 * samples.
+@@ -812,8 +814,6 @@ static const struct snd_soc_dai_ops pxa_ssp_dai_ops = {
+ 	.trigger	= pxa_ssp_trigger,
+ 	.hw_params	= pxa_ssp_hw_params,
+ 	.set_sysclk	= pxa_ssp_set_dai_sysclk,
+-	.set_clkdiv	= pxa_ssp_set_dai_clkdiv,
+-	.set_pll	= pxa_ssp_set_dai_pll,
+ 	.set_fmt	= pxa_ssp_set_dai_fmt,
+ 	.set_tdm_slot	= pxa_ssp_set_dai_tdm_slot,
+ 	.set_tristate	= pxa_ssp_set_dai_tristate,
 -- 
 2.17.1
