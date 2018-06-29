@@ -1,57 +1,41 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 1/5] ASoC: es7134: remove 64kHz rate from the
-	supported rates
-Date: Fri, 29 Jun 2018 17:09:20 +0200
-Message-ID: <20180629150924.18197-2-jbrunet@baylibre.com>
+Subject: [PATCH 3/5] ASoC: es7134: update DT binding with new compatible and supplies
+Date: Fri, 29 Jun 2018 17:09:22 +0200
+Message-ID: <20180629150924.18197-4-jbrunet@baylibre.com>
 References: <20180629150924.18197-1-jbrunet@baylibre.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f193.google.com (mail-wr0-f193.google.com
- [209.85.128.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 40F95267601
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 17:09:32 +0200 (CEST)
-Received: by mail-wr0-f193.google.com with SMTP id a12-v6so9188262wro.1
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 08:09:32 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180629150924.18197-1-jbrunet@baylibre.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-64Khz is actually not supported by the es7134 according to the datasheet
+Update the documentation to add support for the es7154 and
+optional power supplies phandles.
 
-Fixes: 9000b59d7a12 ("ASoC: es7134: add es7134 DAC driver")
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/codecs/es7134.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/everest,es7134.txt | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/es7134.c b/sound/soc/codecs/es7134.c
-index 58515bb1a303..2fbb49f5b278 100644
---- a/sound/soc/codecs/es7134.c
-+++ b/sound/soc/codecs/es7134.c
-@@ -48,7 +48,11 @@ static struct snd_soc_dai_driver es7134_dai = {
- 		.stream_name = "Playback",
- 		.channels_min = 2,
- 		.channels_max = 2,
--		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.rates = (SNDRV_PCM_RATE_8000_48000 |
-+			  SNDRV_PCM_RATE_88200      |
-+			  SNDRV_PCM_RATE_96000      |
-+			  SNDRV_PCM_RATE_176400     |
-+			  SNDRV_PCM_RATE_192000),
- 		.formats = (SNDRV_PCM_FMTBIT_S16_LE  |
- 			    SNDRV_PCM_FMTBIT_S18_3LE |
- 			    SNDRV_PCM_FMTBIT_S20_3LE |
+diff --git a/Documentation/devicetree/bindings/sound/everest,es7134.txt b/Documentation/devicetree/bindings/sound/everest,es7134.txt
+index 5495a3cb8b7b..c6bcdc5bded8 100644
+--- a/Documentation/devicetree/bindings/sound/everest,es7134.txt
++++ b/Documentation/devicetree/bindings/sound/everest,es7134.txt
+@@ -1,7 +1,13 @@
+ ES7134 i2s DA converter
+ 
+ Required properties:
+-- compatible : "everest,es7134" or "everest,es7144"
++- compatible : "everest,es7134" or
++               "everest,es7144" or
++	       "everest,es7154"
++
++Optional properties:
++- VDD-supply: regulator phandle for the VDD supply
++- AVDD-supply: regulator phandle for the AVDD supply
+ 
+ Example:
+ 
 -- 
 2.14.4
