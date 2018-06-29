@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: make SND_PXA2XX_SOC_I2S
-	selectable" to the asoc tree
-Date: Fri, 29 Jun 2018 12:07:07 +0100
-Message-ID: <E1fYrF5-0002Zm-DB@debutante>
-References: <20180627193359.26631-8-daniel@zonque.org>
+Subject: Applied "ASoC: pxa: remove bindings from pxa2xx-pcm"
+	to the asoc tree
+Date: Fri, 29 Jun 2018 12:07:09 +0100
+Message-ID: <E1fYrF7-0002af-Il@debutante>
+References: <20180627193359.26631-7-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 65D2F267A2F
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 13:07:10 +0200 (CEST)
-In-Reply-To: <20180627193359.26631-8-daniel@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id A5CD0267A30
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 13:07:11 +0200 (CEST)
+In-Reply-To: <20180627193359.26631-7-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: make SND_PXA2XX_SOC_I2S selectable
+   ASoC: pxa: remove bindings from pxa2xx-pcm
 
 has been applied to the asoc tree at
 
@@ -53,29 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 0a94cf3457408058f894cc4d95e58d8e18eb7f75 Mon Sep 17 00:00:00 2001
+>From c7b4f15ddb4f28451679019374027f5223c616ce Mon Sep 17 00:00:00 2001
 From: Daniel Mack <daniel@zonque.org>
-Date: Wed, 27 Jun 2018 21:33:59 +0200
-Subject: [PATCH] ASoC: pxa: make SND_PXA2XX_SOC_I2S selectable
+Date: Wed, 27 Jun 2018 21:33:58 +0200
+Subject: [PATCH] ASoC: pxa: remove bindings from pxa2xx-pcm
+
+This platform is no longer needed on DT boards, so let's remove them to
+avoid confusion. DT bindings should use the CPU DAIs (I2S/SSP/AC97)
+directly.
 
 Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt | 15 ---------------
+ sound/soc/pxa/pxa2xx-pcm.c                        |  9 ---------
+ 2 files changed, 24 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 960744e46edc..95dcf97a6271 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -31,7 +31,7 @@ config SND_PXA2XX_SOC_I2S
- 	tristate
+diff --git a/Documentation/devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt b/Documentation/devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt
+deleted file mode 100644
+index 551fbb8348c2..000000000000
+--- a/Documentation/devicetree/bindings/sound/mrvl,pxa2xx-pcm.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-DT bindings for ARM PXA2xx PCM platform driver
+-
+-This is just a dummy driver that registers the PXA ASoC platform driver.
+-It does not have any resources assigned.
+-
+-Required properties:
+-
+-	- compatible		'mrvl,pxa-pcm-audio'
+-
+-Example:
+-
+-	pxa_pcm_audio: snd_soc_pxa_audio {
+-		compatible = "mrvl,pxa-pcm-audio";
+-	};
+-
+diff --git a/sound/soc/pxa/pxa2xx-pcm.c b/sound/soc/pxa/pxa2xx-pcm.c
+index a1df4ec76cbd..72eaaef1b426 100644
+--- a/sound/soc/pxa/pxa2xx-pcm.c
++++ b/sound/soc/pxa/pxa2xx-pcm.c
+@@ -32,18 +32,9 @@ static int pxa2xx_soc_platform_probe(struct platform_device *pdev)
+ 					       NULL, 0);
+ }
  
- config SND_PXA_SOC_SSP
--	tristate
-+	tristate "Soc Audio via PXA2xx/PXA3xx SSP ports"
- 	select PXA_SSP
+-#ifdef CONFIG_OF
+-static const struct of_device_id snd_soc_pxa_audio_match[] = {
+-	{ .compatible   = "mrvl,pxa-pcm-audio" },
+-	{ }
+-};
+-MODULE_DEVICE_TABLE(of, snd_soc_pxa_audio_match);
+-#endif
+-
+ static struct platform_driver pxa_pcm_driver = {
+ 	.driver = {
+ 		.name = "pxa-pcm-audio",
+-		.of_match_table = of_match_ptr(snd_soc_pxa_audio_match),
+ 	},
  
- config SND_MMP_SOC_SSPA
+ 	.probe = pxa2xx_soc_platform_probe,
 -- 
 2.18.0.rc2
