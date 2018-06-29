@@ -1,23 +1,18 @@
-From: Tom Rinehart <tom.rinehart@gmail.com>
-Subject: Driver for Maxim MAX9744 Stereo Amplifier
-Date: Thu, 28 Jun 2018 23:46:19 -0600
-Message-ID: <2CA9F072-2E9F-483F-8E3A-4C08B1BA0C24@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Content-Type: text/plain; charset="us-ascii"
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: Intel: kbl_da7219_max98357a: Map
+ BTN_0 to KEY_PLAYPAUSE
+Date: Thu, 28 Jun 2018 22:46:58 -0700
+Message-ID: <6b434f52-4992-7f09-3f41-4d9e05dfb02d@linux.intel.com>
+References: <1530166267-13731-1-git-send-email-mac.chiang@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io0-f172.google.com (mail-io0-f172.google.com
- [209.85.223.172])
- by alsa0.perex.cz (Postfix) with ESMTP id CA302266E76
- for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 07:46:22 +0200 (CEST)
-Received: by mail-io0-f172.google.com with SMTP id l19-v6so7416062ioj.5
- for <alsa-devel@alsa-project.org>; Thu, 28 Jun 2018 22:46:22 -0700 (PDT)
-Received: from ?IPv6:2601:681:4701:d390:1cbf:c566:76e2:29a?
- ([2601:681:4701:d390:1cbf:c566:76e2:29a])
- by smtp.gmail.com with ESMTPSA id d136-v6sm313970itd.22.2018.06.28.22.46.20
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Thu, 28 Jun 2018 22:46:20 -0700 (PDT)
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4509D267A2C
+ for <alsa-devel@alsa-project.org>; Fri, 29 Jun 2018 07:47:00 +0200 (CEST)
+In-Reply-To: <1530166267-13731-1-git-send-email-mac.chiang@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,11 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: mac.chiang@intel.com, alsa-devel@alsa-project.org
+Cc: "M, Naveen" <naveen.m@intel.com>, broonie@kernel.org, bleung@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-I am trying to develop a driver the the Maxim MAX9744 20W Class D Stereo Amplifier.  (see https://www.maximintegrated.com/en/products/analog/audio/MAX9744.html <https://www.maximintegrated.com/en/products/analog/audio/MAX9744.html>).  It is very similar to the MAX9768 10W Class D Mono amplifier which has a linux driver. (see https://www.maximintegrated.com/en/products/analog/audio/MAX9768.html <https://www.maximintegrated.com/en/products/analog/audio/MAX9768.html>)  From a control perspective, both look to be the same from their data sheets.  Volume is controlled through i2c, and it has mute and shutdown controlled through gpio.  The MAX9744 has a volume control that changes both channels together.  When I try to use the MAX9768 driver it shows up as a mono amplifier in alsamixer.  What do
-  I need to change in the driver to have it recognize stereo input and output but with the volume control tied together (not independent for each channel)?  It seems like I should be able to modify t
- he MAX9768 driver to work with the MAX9744.
+On 6/27/18 11:11 PM, mac.chiang@intel.com wrote:
+> From: Mac Chiang <mac.chiang@intel.com>
+> 
+> On kbl_rt5663_max98927, commit 38a5882e4292
+>      ("ASoC: Intel: kbl_rt5663_max98927: Map BTN_0 to KEY_PLAYPAUSE")
+>      This key pair mapping to play/pause when playing Youtube
+> 
+> The Android 3.5mm Headset jack specification mentions that BTN_0 should
+> be mapped to KEY_MEDIA, but this is less logical than KEY_PLAYPAUSE,
+> which has much broader userspace support.
+> 
+> For example, the Chrome OS userspace now supports KEY_PLAYPAUSE to toggle
+> play/pause of videos and audio, but does not handle KEY_MEDIA.
+> 
+> Furthermore, Android itself now supports KEY_PLAYPAUSE equivalently, as the
+> new USB headset spec requires KEY_PLAYPAUSE for BTN_0.
+> https://source.android.com/devices/accessories/headset/usb-headset-spec
+> 
+> The same fix is required on Chrome kbl_da7219_max98357a.
+> 
+> Signed-off-by: Mac Chiang <mac.chiang@intel.com>
 
-I have an Adafruit board with the MAX9744 amplifier on it so it is easy to test: https://www.adafruit.com/product/1752 <https://www.adafruit.com/product/1752>.  
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+this is aligned with a recent patch for the same headset for an AMD 
+platform. We'd need the same fix for the bxt_da7219 machine driver btw.
+Naveen, is this something you can look into? Thanks!
+
+
+> ---
+>   sound/soc/intel/boards/kbl_da7219_max98357a.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/intel/boards/kbl_da7219_max98357a.c b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> index 7961f1f..edafe23 100644
+> --- a/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/kbl_da7219_max98357a.c
+> @@ -188,7 +188,7 @@ static int kabylake_da7219_codec_init(struct snd_soc_pcm_runtime *rtd)
+>   
+>   	jack = &ctx->kabylake_headset;
+>   
+> -	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_MEDIA);
+> +	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
+>   	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
+>   	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
+>   	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
+> 
