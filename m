@@ -1,79 +1,168 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH 2/2] ASoC: es7241: add es7241 codec support
-Date: Sat, 30 Jun 2018 11:28:29 +0300
-Message-ID: <20180630082829.qwnhkk4f76n32omm@mwanda>
-References: <20180629152444.21525-3-jbrunet@baylibre.com>
+From: Harald Schuster <schuster@technikum-wien.at>
+Subject: poll blocked after prepare state
+Date: Sat, 30 Jun 2018 10:10:20 +0000
+Message-ID: <20180630101020.Horde.AjJAhdX9TE7cFNB1y6xcE_L@webmail.technikum-wien.at>
+References: <20180621104224.Horde.WJU_RKtLDLoAGMPfW3FREnA@webmail.technikum-wien.at>
+ <20180622132921.Horde.VdiLUhoIz-J3ymTOC0qkzL5@webmail.technikum-wien.at>
+ <s5h7emq3oxb.wl-tiwai@suse.de>
+ <20180622183612.Horde.zlSuz13lBOQlZHX62qPNxF5@webmail.technikum-wien.at>
+ <s5hd0wgdvn0.wl-tiwai@suse.de>
+ <20180625095902.Horde.IP1UVAcUOineuktGUtPeR52@webmail.technikum-wien.at>
+ <s5hzhzjyriz.wl-tiwai@suse.de>
+ <20180625134315.Horde.3aYK199Y2wKOF9JnRDEG3Qh@webmail.technikum-wien.at>
+ <s5hlgb3yntu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="Yes"
 Content-Transfer-Encoding: 7bit
-Return-path: <kbuild-bounces@lists.01.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bifrost.technikum-wien.at (bifrost.technikum-wien.at
+ [195.245.225.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9339F26735C
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jun 2018 12:10:24 +0200 (CEST)
+Received: from mail.technikum-wien.at (groupware.technikum-wien.at
+ [10.127.0.250])
+ by bifrost2.technikum-wien.at (Postfix) with ESMTPS id BCE7E226
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jun 2018 12:10:20 +0200 (CEST)
+In-Reply-To: <s5hlgb3yntu.wl-tiwai@suse.de>
 Content-Disposition: inline
-In-Reply-To: <20180629152444.21525-3-jbrunet@baylibre.com>
-List-Unsubscribe: <https://lists.01.org/mailman/options/kbuild>,
- <mailto:kbuild-request@lists.01.org?subject=unsubscribe>
-List-Archive: <http://lists.01.org/pipermail/kbuild/>
-List-Post: <mailto:kbuild@lists.01.org>
-List-Help: <mailto:kbuild-request@lists.01.org?subject=help>
-List-Subscribe: <https://lists.01.org/mailman/listinfo/kbuild>,
- <mailto:kbuild-request@lists.01.org?subject=subscribe>
-Errors-To: kbuild-bounces@lists.01.org
-Sender: "kbuild" <kbuild-bounces@lists.01.org>
-To: kbuild@01.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Jerome Brunet <jbrunet@baylibre.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jerome,
+We found out that in some cases after the underrun the  
+snd_pcm_dshare_start function is called and in some cases  
+snd_pcm_dshare_start and the snd_pcm_hw_start function is called. When  
+both functions are called the codec stops playback.
 
-I love your patch! Perhaps something to improve:
+Zitat von Takashi Iwai <tiwai@suse.de>:
 
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v4.18-rc2 next-20180629]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Jerome-Brunet/ASoC-add-es7241-support/20180630-021159
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-
-smatch warnings:
-sound/soc/codecs/es7241.c:147 es7241_set_fmt() warn: missing break? reassigning 'priv->is_slave'
-
-# https://github.com/0day-ci/linux/commit/d494a70ae50e5f95d2ab09bcaf3065b4359bde0e
-git remote add linux-review https://github.com/0day-ci/linux
-git remote update linux-review
-git checkout d494a70ae50e5f95d2ab09bcaf3065b4359bde0e
-vim +147 sound/soc/codecs/es7241.c
-
-d494a70a Jerome Brunet 2018-06-29  123  
-d494a70a Jerome Brunet 2018-06-29  124  static int es7241_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-d494a70a Jerome Brunet 2018-06-29  125  {
-d494a70a Jerome Brunet 2018-06-29  126  	struct es7241_data *priv = snd_soc_dai_get_drvdata(dai);
-d494a70a Jerome Brunet 2018-06-29  127  
-d494a70a Jerome Brunet 2018-06-29  128  	if ((fmt & SND_SOC_DAIFMT_INV_MASK) != SND_SOC_DAIFMT_NB_NF) {
-d494a70a Jerome Brunet 2018-06-29  129  		dev_err(dai->dev, "Unsupported dai clock inversion\n");
-d494a70a Jerome Brunet 2018-06-29  130  		return -EINVAL;
-d494a70a Jerome Brunet 2018-06-29  131  	}
-d494a70a Jerome Brunet 2018-06-29  132  
-d494a70a Jerome Brunet 2018-06-29  133  	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-d494a70a Jerome Brunet 2018-06-29  134  	case SND_SOC_DAIFMT_I2S:
-d494a70a Jerome Brunet 2018-06-29  135  	case SND_SOC_DAIFMT_LEFT_J:
-d494a70a Jerome Brunet 2018-06-29  136  		break;
-d494a70a Jerome Brunet 2018-06-29  137  
-d494a70a Jerome Brunet 2018-06-29  138  	default:
-d494a70a Jerome Brunet 2018-06-29  139  		dev_err(dai->dev, "Unsupported dai format\n");
-d494a70a Jerome Brunet 2018-06-29  140  		return -EINVAL;
-d494a70a Jerome Brunet 2018-06-29  141  	}
-d494a70a Jerome Brunet 2018-06-29  142  
-d494a70a Jerome Brunet 2018-06-29  143  	switch (fmt & SND_SOC_DAIFMT_MASTER_MASK) {
-d494a70a Jerome Brunet 2018-06-29  144  	case SND_SOC_DAIFMT_CBS_CFS:
-d494a70a Jerome Brunet 2018-06-29  145  		priv->is_slave = true;
-d494a70a Jerome Brunet 2018-06-29  146  	case SND_SOC_DAIFMT_CBM_CFM:
-d494a70a Jerome Brunet 2018-06-29 @147  		priv->is_slave = false;
-d494a70a Jerome Brunet 2018-06-29  148  		break;
-d494a70a Jerome Brunet 2018-06-29  149  
-d494a70a Jerome Brunet 2018-06-29  150  	default:
-d494a70a Jerome Brunet 2018-06-29  151  		dev_err(dai->dev, "Unsupported clock configuration\n");
-d494a70a Jerome Brunet 2018-06-29  152  		return -EINVAL;
-d494a70a Jerome Brunet 2018-06-29  153  	}
-d494a70a Jerome Brunet 2018-06-29  154  
-d494a70a Jerome Brunet 2018-06-29  155  	return 0;
-d494a70a Jerome Brunet 2018-06-29  156  }
-d494a70a Jerome Brunet 2018-06-29  157  
+> On Mon, 25 Jun 2018 15:43:15 +0200,
+> Harald Schuster wrote:
+>>
+>> Hi
+>> The codec is the TI tlv320aic3x and the buffersize is set to 64 and
+>> the periodsize is set to 32 in the asound.conf. We use the pjProject
+>> for the audioprocessing and the internal period time is 4ms and the
+>> sample rate is 8000 Hz. The second codec is a USB codec which has no
+>> problems. Our scenario is that a incoming VOIP call is connected to
+>> the both codec (I2s and USB) and the USB codec starts the playback
+>> without any problems and the tlv320 sometimes works but when a
+>> underrun accours it crash!
+>
+> Is it really so hardware-specific problem?
+>
+> And, did you follow the recent development / fixes if it's about
+> dshare plugin?  There have been lots of changes.
+>
+> I'm not asking about updating the kernels.  The question is rather
+> about alsa-lib.
+>
+>
+> Takashi
+>
+>>
+>> best regards Harald
+>>
+>>
+>> Zitat von Takashi Iwai <tiwai@suse.de>:
+>>
+>> > On Mon, 25 Jun 2018 11:59:02 +0200,
+>> > Harald Schuster wrote:
+>> >>
+>> >>
+>> >> Hi
+>> >> We are not able to update our system. We are using USB codecs which
+>> >> are working fine but they are using the snd_pcm_hw_prepare function.
+>> >> The Problem only exists for the I2S codec in our system. When i
+>> >> changed the buffer size in the asound.conf for the codec the problem
+>> >> allready exists but it arise not so often because there is not so
+>> >> often a underrun. Is there any hint where i could lock for the
+>> >> problem?!
+>> >
+>> > Well, with that little information, it's hard to advice anything...
+>> >
+>> >
+>> > Takashi
+>> >
+>> >> br Harald
+>> >>
+>> >> Zitat von Takashi Iwai <tiwai@suse.de>:
+>> >>
+>> >> > On Fri, 22 Jun 2018 20:36:12 +0200,
+>> >> > Harald Schuster wrote:
+>> >> >>
+>> >> >>
+>> >> >> Zitat von Takashi Iwai <tiwai@suse.de>:
+>> >> >>
+>> >> >> > On Fri, 22 Jun 2018 15:29:21 +0200,
+>> >> >> > Harald Schuster wrote:
+>> >> >> >>
+>> >> >> >> I found out that an underrun occours and so the  
+>> pcm_prepare function
+>> >> >> >> for pcm_direct is called and then pcm_start_dshare is called. Both
+>> >> >> >> functions returns without any error but the playback path  
+>> is blocked
+>> >> >> >> in the snd_pcm_wait_nocheck function. I read that there  
+>> was an similar
+>> >> >> >> problem before in the group but i didn't found any  
+>> solution. Is this a
+>> >> >> >> problem in the driver and how can i go forward to fix it.  
+>> The codec is
+>> >> >> >> a tlv320aic3x-audio. Thanks for your help.
+>> >> >> >
+>> >> >> > Does this happen with the very latest alsa-lib git version?
+>> >> >> > Just to be sure.
+>> >> >> >
+>> >> >> >
+>> >> >> > Takashi
+>> >> >> > _______________________________________________
+>> >> >> > Alsa-devel mailing list
+>> >> >> > Alsa-devel@alsa-project.org
+>> >> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >> >>
+>> >> >> Hi
+>> >> >> We are using k4.1.15-6QP+ga2066af.
+>> >> >
+>> >> > I'm asking the alsa-lib, not kernel.
+>> >> >
+>> >> > And 4.1.x is very old...  Please check either 4.17.x or latest Linus
+>> >> > tree whether the problem persists, too.
+>> >> >
+>> >> >
+>> >> > Takashi
+>> >> > _______________________________________________
+>> >> > Alsa-devel mailing list
+>> >> > Alsa-devel@alsa-project.org
+>> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>
+>> >>
+>> >>
+>> >> _______________________________________________
+>> >> Alsa-devel mailing list
+>> >> Alsa-devel@alsa-project.org
+>> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>
+>> > _______________________________________________
+>> > Alsa-devel mailing list
+>> > Alsa-devel@alsa-project.org
+>> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>>
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
