@@ -1,30 +1,19 @@
-From: Harald Schuster <schuster@technikum-wien.at>
-Subject: poll blocked after prepare state
-Date: Sat, 30 Jun 2018 10:10:20 +0000
-Message-ID: <20180630101020.Horde.AjJAhdX9TE7cFNB1y6xcE_L@webmail.technikum-wien.at>
-References: <20180621104224.Horde.WJU_RKtLDLoAGMPfW3FREnA@webmail.technikum-wien.at>
- <20180622132921.Horde.VdiLUhoIz-J3ymTOC0qkzL5@webmail.technikum-wien.at>
- <s5h7emq3oxb.wl-tiwai@suse.de>
- <20180622183612.Horde.zlSuz13lBOQlZHX62qPNxF5@webmail.technikum-wien.at>
- <s5hd0wgdvn0.wl-tiwai@suse.de>
- <20180625095902.Horde.IP1UVAcUOineuktGUtPeR52@webmail.technikum-wien.at>
- <s5hzhzjyriz.wl-tiwai@suse.de>
- <20180625134315.Horde.3aYK199Y2wKOF9JnRDEG3Qh@webmail.technikum-wien.at>
- <s5hlgb3yntu.wl-tiwai@suse.de>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH RFC] ASoC: pxa-ssp: remove .set_pll() and
+	.set_clkdiv() callbacks
+Date: Sat, 30 Jun 2018 17:26:03 +0200
+Message-ID: <876020i9dg.fsf@belgarion.home>
+References: <20180629125940.27359-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="Yes"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bifrost.technikum-wien.at (bifrost.technikum-wien.at
- [195.245.225.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 9339F26735C
- for <alsa-devel@alsa-project.org>; Sat, 30 Jun 2018 12:10:24 +0200 (CEST)
-Received: from mail.technikum-wien.at (groupware.technikum-wien.at
- [10.127.0.250])
- by bifrost2.technikum-wien.at (Postfix) with ESMTPS id BCE7E226
- for <alsa-devel@alsa-project.org>; Sat, 30 Jun 2018 12:10:20 +0200 (CEST)
-In-Reply-To: <s5hlgb3yntu.wl-tiwai@suse.de>
-Content-Disposition: inline
+Received: from smtp.smtpout.orange.fr (smtp07.smtpout.orange.fr
+ [80.12.242.129])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1771726735C
+ for <alsa-devel@alsa-project.org>; Sat, 30 Jun 2018 17:26:04 +0200 (CEST)
+In-Reply-To: <20180629125940.27359-1-daniel@zonque.org> (Daniel Mack's message
+ of "Fri, 29 Jun 2018 14:59:40 +0200")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -34,135 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, philipp.zabel@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-We found out that in some cases after the underrun the  
-snd_pcm_dshare_start function is called and in some cases  
-snd_pcm_dshare_start and the snd_pcm_hw_start function is called. When  
-both functions are called the codec stops playback.
+Daniel Mack <daniel@zonque.org> writes:
 
-Zitat von Takashi Iwai <tiwai@suse.de>:
+>
+> I'd appreciate some review of this one. The only PXA3xx based platform
+> I have access to uses the EXTCLK clocking source, but this patch
+> changes the way the internal audio PLL works. Hence, I could only
+> complile-test it for now.
 
-> On Mon, 25 Jun 2018 15:43:15 +0200,
-> Harald Schuster wrote:
->>
->> Hi
->> The codec is the TI tlv320aic3x and the buffersize is set to 64 and
->> the periodsize is set to 32 in the asound.conf. We use the pjProject
->> for the audioprocessing and the internal period time is 4ms and the
->> sample rate is 8000 Hz. The second codec is a USB codec which has no
->> problems. Our scenario is that a incoming VOIP call is connected to
->> the both codec (I2s and USB) and the USB codec starts the playback
->> without any problems and the tlv320 sometimes works but when a
->> underrun accours it crash!
->
-> Is it really so hardware-specific problem?
->
-> And, did you follow the recent development / fixes if it's about
-> dshare plugin?  There have been lots of changes.
->
-> I'm not asking about updating the kernels.  The question is rather
-> about alsa-lib.
->
->
-> Takashi
->
->>
->> best regards Harald
->>
->>
->> Zitat von Takashi Iwai <tiwai@suse.de>:
->>
->> > On Mon, 25 Jun 2018 11:59:02 +0200,
->> > Harald Schuster wrote:
->> >>
->> >>
->> >> Hi
->> >> We are not able to update our system. We are using USB codecs which
->> >> are working fine but they are using the snd_pcm_hw_prepare function.
->> >> The Problem only exists for the I2S codec in our system. When i
->> >> changed the buffer size in the asound.conf for the codec the problem
->> >> allready exists but it arise not so often because there is not so
->> >> often a underrun. Is there any hint where i could lock for the
->> >> problem?!
->> >
->> > Well, with that little information, it's hard to advice anything...
->> >
->> >
->> > Takashi
->> >
->> >> br Harald
->> >>
->> >> Zitat von Takashi Iwai <tiwai@suse.de>:
->> >>
->> >> > On Fri, 22 Jun 2018 20:36:12 +0200,
->> >> > Harald Schuster wrote:
->> >> >>
->> >> >>
->> >> >> Zitat von Takashi Iwai <tiwai@suse.de>:
->> >> >>
->> >> >> > On Fri, 22 Jun 2018 15:29:21 +0200,
->> >> >> > Harald Schuster wrote:
->> >> >> >>
->> >> >> >> I found out that an underrun occours and so the  
->> pcm_prepare function
->> >> >> >> for pcm_direct is called and then pcm_start_dshare is called. Both
->> >> >> >> functions returns without any error but the playback path  
->> is blocked
->> >> >> >> in the snd_pcm_wait_nocheck function. I read that there  
->> was an similar
->> >> >> >> problem before in the group but i didn't found any  
->> solution. Is this a
->> >> >> >> problem in the driver and how can i go forward to fix it.  
->> The codec is
->> >> >> >> a tlv320aic3x-audio. Thanks for your help.
->> >> >> >
->> >> >> > Does this happen with the very latest alsa-lib git version?
->> >> >> > Just to be sure.
->> >> >> >
->> >> >> >
->> >> >> > Takashi
->> >> >> > _______________________________________________
->> >> >> > Alsa-devel mailing list
->> >> >> > Alsa-devel@alsa-project.org
->> >> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> >> >>
->> >> >> Hi
->> >> >> We are using k4.1.15-6QP+ga2066af.
->> >> >
->> >> > I'm asking the alsa-lib, not kernel.
->> >> >
->> >> > And 4.1.x is very old...  Please check either 4.17.x or latest Linus
->> >> > tree whether the problem persists, too.
->> >> >
->> >> >
->> >> > Takashi
->> >> > _______________________________________________
->> >> > Alsa-devel mailing list
->> >> > Alsa-devel@alsa-project.org
->> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> >>
->> >>
->> >>
->> >> _______________________________________________
->> >> Alsa-devel mailing list
->> >> Alsa-devel@alsa-project.org
->> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> >>
->> > _______________________________________________
->> > Alsa-devel mailing list
->> > Alsa-devel@alsa-project.org
->> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
->>
->>
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+If the zylonite platform is a target, I can try. Nevertheless, I'd be inclined
+to use the approach "merge first, fix if there are regressions next".
+
+I must admit that due to hot weather conditions in south France, and the
+electrical outages, my inverter decided to commit suicide ... As a true hero, he
+protected my boards, but now I must order a new one before attempting to use my
+lubbock/mainstone/zylonite again.
+
+Cheers.
+
+--
+Robert
