@@ -1,15 +1,15 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ASoC: pxa: select SND_PXA2XX_LIB for drivers
-	that depend on it
-Date: Sat, 30 Jun 2018 22:24:33 +0200
-Message-ID: <20180630202433.8615-1-daniel@zonque.org>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the
+	"Connect Tablet 9" tablet
+Date: Sun,  1 Jul 2018 11:30:23 +0200
+Message-ID: <20180701093023.6872-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa0.perex.cz (Postfix) with ESMTP id AAB2F26735C
- for <alsa-devel@alsa-project.org>; Sat, 30 Jun 2018 22:24:39 +0200 (CEST)
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1CD5E2676A5
+ for <alsa-devel@alsa-project.org>; Sun,  1 Jul 2018 11:30:28 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,42 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, lkp@intel.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, robert.jarzmik@free.fr, Daniel Mack <daniel@zonque.org>
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Commit d767d3ce5c48b ("ASoC: pxa: provide PCM ops for ssp, i2s and ac97
-components") created a build-time dependency to SND_PXA2XX_LIB but
-missed to reflect that in Kconfig.
+Add a quirk for the "Connect Tablet 9" tablet, this tablet has a
+mono-speaker. Otherwise it works fine with the defaults.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/pxa/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 95dcf97a6271..2fc02c227f69 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -24,15 +24,18 @@ config SND_PXA2XX_AC97
- config SND_PXA2XX_SOC_AC97
- 	tristate
- 	select AC97_BUS
-+	select SND_PXA2XX_LIB
- 	select SND_PXA2XX_LIB_AC97
- 	select SND_SOC_AC97_BUS
- 
- config SND_PXA2XX_SOC_I2S
-+	select SND_PXA2XX_LIB
- 	tristate
- 
- config SND_PXA_SOC_SSP
- 	tristate "Soc Audio via PXA2xx/PXA3xx SSP ports"
- 	select PXA_SSP
-+	select SND_PXA2XX_LIB
- 
- config SND_MMP_SOC_SSPA
- 	tristate
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 7456566c5648..718f022b3aa0 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -486,6 +486,16 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP),
+ 	},
++	{	/* Connect Tablet 9 */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Connect"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Tablet 9"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
 -- 
 2.17.1
