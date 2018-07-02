@@ -1,19 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4 4/7] soundwire: Handle multiple master
- instances in a stream
-Date: Mon, 2 Jul 2018 15:22:07 -0500
-Message-ID: <a528936c-0685-726a-1606-9d9c53a696b1@linux.intel.com>
-References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
- <1529924340-30065-5-git-send-email-shreyas.nc@intel.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v2] ALSA: core: Allow drivers to set R/W wait
+	time.
+Date: Mon,  2 Jul 2018 17:04:54 +0100
+Message-ID: <20180702160454.6895-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 69B022676FD
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 00:12:14 +0200 (CEST)
-In-Reply-To: <1529924340-30065-5-git-send-email-shreyas.nc@intel.com>
-Content-Language: en-US
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 74CAE2676AB
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 00:17:38 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,47 +19,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>, alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, vkoul@kernel.org, sanyog.r.kale@intel.com
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Currently ALSA core blocks userspace for about 10 seconds for PCM R/W IO.
+This needs to be configurable for modern hardware like DSPs where no
+pointer update in milliseconds can indicate terminal DSP errors.
 
->   /**
-> @@ -918,13 +951,22 @@ static void sdw_release_master_stream(struct sdw_stream_runtime *stream)
->   int sdw_stream_remove_master(struct sdw_bus *bus,
->   		struct sdw_stream_runtime *stream)
->   {
-> +	struct sdw_master_runtime *m_rt, *_m_rt;
-> +
->   	mutex_lock(&bus->bus_lock);
->   
-> -	sdw_release_master_stream(stream);
-> -	sdw_master_port_release(bus, stream->m_rt);
-> -	stream->state = SDW_STREAM_RELEASED;
-> -	kfree(stream->m_rt);
-> -	stream->m_rt = NULL;
-> +	list_for_each_entry_safe(m_rt, _m_rt,
-> +			&stream->master_list, stream_node) {
-> +
-> +		if (m_rt->bus != bus)
-> +			continue;
-> +
-> +		sdw_master_port_release(bus, m_rt);
-> +		sdw_release_master_stream(m_rt, stream);
-> +	}
-> +
-> +	if (list_empty(&stream->master_list))
-> +		stream->state = SDW_STREAM_RELEASED;
-When a master is removed, there is an explicit test to make sure the 
-stream state changes when there are no masters left in the list, but...
+Add a substream variable to set the wait time in ms. This allows userspace
+and drivers to recover more quickly from terminal DSP errors.
 
->   
->   	mutex_unlock(&bus->bus_lock);
->   
-> @@ -1127,7 +1169,7 @@ int sdw_stream_add_master(struct sdw_bus *bus,
->   	stream->state = SDW_STREAM_CONFIGURED;
-... it's not symmetrical for the add_master case. The stream state 
-changes on the first added master. In addition the stream state changes 
-both when a slave is added and a master is added.
-Is this intentional or not - and are there side effects resulting from 
-this inconsistency?
+Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+---
+
+Changes since V1 :-
+
+ o Remove API method and alow drivers to set directly.
+ o Validate time is driver supplied times.
+
+ include/sound/pcm.h  |  1 +
+ sound/core/pcm_lib.c | 10 ++++++++--
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+diff --git a/include/sound/pcm.h b/include/sound/pcm.h
+index e054c583d3b3..edad4a506b93 100644
+--- a/include/sound/pcm.h
++++ b/include/sound/pcm.h
+@@ -462,6 +462,7 @@ struct snd_pcm_substream {
+         /* -- timer section -- */
+ 	struct snd_timer *timer;		/* timer */
+ 	unsigned timer_running: 1;	/* time is running */
++	unsigned wait_time;	/* time in ms for R/W to wait for avail */
+ 	/* -- next substream -- */
+ 	struct snd_pcm_substream *next;
+ 	/* -- linked substreams -- */
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 44b5ae833082..6909b896a6a1 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -1832,12 +1832,18 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
+ 	if (runtime->no_period_wakeup)
+ 		wait_time = MAX_SCHEDULE_TIMEOUT;
+ 	else {
+-		wait_time = 10;
++		/* use wait time from substream if available */
++		if (substream->wait_time) {
++			wait_time = substream->wait_time;
++		} else {
++			wait_time = 10 * 1000; /* 10 secs */
++		}
++
+ 		if (runtime->rate) {
+ 			long t = runtime->period_size * 2 / runtime->rate;
+ 			wait_time = max(t, wait_time);
+ 		}
+-		wait_time = msecs_to_jiffies(wait_time * 1000);
++		wait_time = msecs_to_jiffies(wait_time);
+ 	}
+ 
+ 	for (;;) {
+-- 
+2.17.1
