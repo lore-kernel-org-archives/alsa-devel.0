@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-scu-card.c: convert to SPDX
+Subject: Applied "ASoC: audio-graph-card.c: convert to SPDX
 	identifiers" to the asoc tree
-Date: Mon, 02 Jul 2018 11:12:01 +0100
-Message-ID: <E1fZvoP-0006gK-T7@debutante>
-References: <87y3eudugz.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 02 Jul 2018 11:11:59 +0100
+Message-ID: <E1fZvoN-0006fU-NK@debutante>
+References: <87wouedugi.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 97EA9267214
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:58:53 +0200 (CEST)
-In-Reply-To: <87y3eudugz.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B34CD267795
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:58:54 +0200 (CEST)
+In-Reply-To: <87wouedugi.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-scu-card.c: convert to SPDX identifiers
+   ASoC: audio-graph-card.c: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,26 +53,26 @@ to this mail.
 Thanks,
 Mark
 
->From 9afe58f1cbd1fb5e9426483656ae6f65de4130e4 Mon Sep 17 00:00:00 2001
+>From decd896121f965db2fdee0f0475c3e404746b333 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Jul 2018 06:30:58 +0000
-Subject: [PATCH] ASoC: simple-scu-card.c: convert to SPDX identifiers
+Date: Mon, 2 Jul 2018 06:31:16 +0000
+Subject: [PATCH] ASoC: audio-graph-card.c: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-scu-card.c | 21 +++++++++------------
+ sound/soc/generic/audio-graph-card.c | 21 +++++++++------------
  1 file changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
-index 487716559deb..16a83bc51e0e 100644
---- a/sound/soc/generic/simple-scu-card.c
-+++ b/sound/soc/generic/simple-scu-card.c
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index a2a3e630f11c..2094d2c8919f 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
 @@ -1,15 +1,12 @@
 -/*
-- * ASoC simple SCU sound card support
+- * ASoC audio graph sound card support
 - *
-- * Copyright (C) 2015 Renesas Solutions Corp.
+- * Copyright (C) 2016 Renesas Solutions Corp.
 - * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 - *
 - * based on ${LINUX}/sound/soc/generic/simple-card.c
@@ -83,15 +83,15 @@ index 487716559deb..16a83bc51e0e 100644
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// ASoC simple SCU sound card support
++// ASoC audio graph sound card support
 +//
-+// Copyright (C) 2015 Renesas Solutions Corp.
++// Copyright (C) 2016 Renesas Solutions Corp.
 +// Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 +//
 +// based on ${LINUX}/sound/soc/generic/simple-card.c
 +
  #include <linux/clk.h>
  #include <linux/device.h>
- #include <linux/module.h>
+ #include <linux/gpio.h>
 -- 
 2.18.0.rc2
