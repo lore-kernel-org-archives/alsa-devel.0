@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-io.c: convert to SPDX identifiers"
+Subject: Applied "ASoC: soc-dai.h: convert to SPDX identifiers"
 	to the asoc tree
-Date: Mon, 02 Jul 2018 11:11:55 +0100
-Message-ID: <E1fZvoJ-0006dm-D9@debutante>
-References: <87o9fqf9gk.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 02 Jul 2018 11:11:53 +0100
+Message-ID: <E1fZvoH-0006cy-7N@debutante>
+References: <87muvaf9fz.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E73AE267214
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:58:56 +0200 (CEST)
-In-Reply-To: <87o9fqf9gk.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0CFD62677A1
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:58:58 +0200 (CEST)
+In-Reply-To: <87muvaf9fz.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-io.c: convert to SPDX identifiers
+   ASoC: soc-dai.h: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,43 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From d1aaa2e68619ca4c1cc05ce7bc029cda5a8cbe87 Mon Sep 17 00:00:00 2001
+>From e2cfd2c9673f4e9d08971fed53fe1f41d8270ef0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Jul 2018 06:21:54 +0000
-Subject: [PATCH] ASoC: soc-io.c: convert to SPDX identifiers
+Date: Mon, 2 Jul 2018 06:22:15 +0000
+Subject: [PATCH] ASoC: soc-dai.h: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-io.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ include/sound/soc-dai.h | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/soc-io.c b/sound/soc/soc-io.c
-index 026cd5347e53..1ff9175e9d5e 100644
---- a/sound/soc/soc-io.c
-+++ b/sound/soc/soc-io.c
-@@ -1,15 +1,10 @@
+diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
+index e6f8c40ed43c..a14bc0608ae9 100644
+--- a/include/sound/soc-dai.h
++++ b/include/sound/soc-dai.h
+@@ -1,12 +1,9 @@
 -/*
-- * soc-io.c  --  ASoC register I/O helpers
++/* SPDX-License-Identifier: GPL-2.0
++ *
+  * linux/sound/soc-dai.h -- ALSA SoC Layer
+  *
+  * Copyright:	2005-2008 Wolfson Microelectronics. PLC.
+  *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
 - *
-- * Copyright 2009-2011 Wolfson Microelectronics PLC.
-- *
-- * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// soc-io.c  --  ASoC register I/O helpers
-+//
-+// Copyright 2009-2011 Wolfson Microelectronics PLC.
-+//
-+// Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+  * Digital Audio Interface (DAI) API.
+  */
  
- #include <linux/i2c.h>
- #include <linux/spi/spi.h>
 -- 
 2.18.0.rc2
