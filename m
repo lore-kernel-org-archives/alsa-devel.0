@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: select SND_PXA2XX_LIB for drivers
-	that depend on it" to the asoc tree
-Date: Mon, 02 Jul 2018 11:10:06 +0100
-Message-ID: <E1fZvmY-0006PN-8Z@debutante>
-References: <20180630202433.8615-1-daniel@zonque.org>
+Subject: Applied "ASoC: soc-compress: convert to SPDX
+	identifiers" to the asoc tree
+Date: Mon, 02 Jul 2018 11:10:12 +0100
+Message-ID: <E1fZvme-0006Ru-Nq@debutante>
+References: <877emef9bf.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E8CB5267795
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:08 +0200 (CEST)
-In-Reply-To: <20180630202433.8615-1-daniel@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 06D672677CB
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:10 +0200 (CEST)
+In-Reply-To: <877emef9bf.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, lkp@intel.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, broonie@kernel.org, robert.jarzmik@free.fr
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: select SND_PXA2XX_LIB for drivers that depend on it
+   ASoC: soc-compress: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,84 @@ to this mail.
 Thanks,
 Mark
 
->From 1581250119daa9426c359d059e2dc14ec04bcc0c Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Sat, 30 Jun 2018 22:24:33 +0200
-Subject: [PATCH] ASoC: pxa: select SND_PXA2XX_LIB for drivers that depend on
- it
+>From b3ed4c86a700b494fc5058a52531eeb14d6fe00f Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 2 Jul 2018 06:24:57 +0000
+Subject: [PATCH] ASoC: soc-compress: convert to SPDX identifiers
 
-Commit d767d3ce5c48b ("ASoC: pxa: provide PCM ops for ssp, i2s and ac97
-components") created a build-time dependency to SND_PXA2XX_LIB but
-missed to reflect that in Kconfig.
-
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Kconfig | 3 +++
- 1 file changed, 3 insertions(+)
+ include/sound/compress_driver.h | 21 +++------------------
+ sound/soc/soc-compress.c        | 24 +++++++++---------------
+ 2 files changed, 12 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 95dcf97a6271..2fc02c227f69 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -24,15 +24,18 @@ config SND_PXA2XX_AC97
- config SND_PXA2XX_SOC_AC97
- 	tristate
- 	select AC97_BUS
-+	select SND_PXA2XX_LIB
- 	select SND_PXA2XX_LIB_AC97
- 	select SND_SOC_AC97_BUS
+diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+index 9924bc9cbc7c..ea8c93bbb0e0 100644
+--- a/include/sound/compress_driver.h
++++ b/include/sound/compress_driver.h
+@@ -1,27 +1,12 @@
+-/*
++/* SPDX-License-Identifier: GPL-2.0
++ *
+  *  compress_driver.h - compress offload driver definations
+  *
+  *  Copyright (C) 2011 Intel Corporation
+  *  Authors:	Vinod Koul <vinod.koul@linux.intel.com>
+  *		Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+- *  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+- *  This program is free software; you can redistribute it and/or modify
+- *  it under the terms of the GNU General Public License as published by
+- *  the Free Software Foundation; version 2 of the License.
+- *
+- *  This program is distributed in the hope that it will be useful, but
+- *  WITHOUT ANY WARRANTY; without even the implied warranty of
+- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+- *  General Public License for more details.
+- *
+- *  You should have received a copy of the GNU General Public License along
+- *  with this program; if not, write to the Free Software Foundation, Inc.,
+- *  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA.
+- *
+- * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+- *
+  */
++
+ #ifndef __COMPRESS_DRIVER_H
+ #define __COMPRESS_DRIVER_H
  
- config SND_PXA2XX_SOC_I2S
-+	select SND_PXA2XX_LIB
- 	tristate
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index e095115fa9f9..b9e1673fea51 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -1,18 +1,12 @@
+-/*
+- * soc-compress.c  --  ALSA SoC Compress
+- *
+- * Copyright (C) 2012 Intel Corp.
+- *
+- * Authors: Namarta Kohli <namartax.kohli@intel.com>
+- *          Ramesh Babu K V <ramesh.babu@linux.intel.com>
+- *          Vinod Koul <vinod.koul@linux.intel.com>
+- *
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
+- *
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// soc-compress.c  --  ALSA SoC Compress
++//
++// Copyright (C) 2012 Intel Corp.
++//
++// Authors: Namarta Kohli <namartax.kohli@intel.com>
++//          Ramesh Babu K V <ramesh.babu@linux.intel.com>
++//          Vinod Koul <vinod.koul@linux.intel.com>
  
- config SND_PXA_SOC_SSP
- 	tristate "Soc Audio via PXA2xx/PXA3xx SSP ports"
- 	select PXA_SSP
-+	select SND_PXA2XX_LIB
- 
- config SND_MMP_SOC_SSPA
- 	tristate
+ #include <linux/kernel.h>
+ #include <linux/init.h>
 -- 
 2.18.0.rc2
