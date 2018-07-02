@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-utils.c: convert to SPDX
-	identifiers" to the asoc tree
-Date: Mon, 02 Jul 2018 11:11:12 +0100
-Message-ID: <E1fZvnc-0006YA-82@debutante>
-References: <87fu12f9dv.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-acpi: convert to SPDX identifiers"
+	to the asoc tree
+Date: Mon, 02 Jul 2018 11:10:57 +0100
+Message-ID: <E1fZvnN-0006W9-DR@debutante>
+References: <87d0w6f9cx.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F578267214
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:03 +0200 (CEST)
-In-Reply-To: <87fu12f9dv.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 91FEC2677B0
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:04 +0200 (CEST)
+In-Reply-To: <87d0w6f9cx.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-utils.c: convert to SPDX identifiers
+   ASoC: soc-acpi: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,91 @@ to this mail.
 Thanks,
 Mark
 
->From 632628df453ccda727fbcc1e346600162ac995e9 Mon Sep 17 00:00:00 2001
+>From 7730bb13c7472620b585783f248b2dccd09d1819 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Jul 2018 06:23:30 +0000
-Subject: [PATCH] ASoC: soc-utils.c: convert to SPDX identifiers
+Date: Mon, 2 Jul 2018 06:24:04 +0000
+Subject: [PATCH] ASoC: soc-acpi: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-utils.c | 22 ++++++++--------------
- 1 file changed, 8 insertions(+), 14 deletions(-)
+ include/sound/soc-acpi-intel-match.h | 14 ++------------
+ include/sound/soc-acpi.h             | 13 ++-----------
+ sound/soc/soc-acpi.c                 | 20 +++++---------------
+ 3 files changed, 9 insertions(+), 38 deletions(-)
 
-diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
-index 2d9e98bd1530..ea024236c643 100644
---- a/sound/soc/soc-utils.c
-+++ b/sound/soc/soc-utils.c
-@@ -1,17 +1,11 @@
+diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
+index 917ddd0f2762..bb1d24b703fb 100644
+--- a/include/sound/soc-acpi-intel-match.h
++++ b/include/sound/soc-acpi-intel-match.h
+@@ -1,16 +1,6 @@
+-
 -/*
-- * soc-util.c  --  ALSA SoC Audio Layer utility functions
+- * Copyright (C) 2017, Intel Corporation. All rights reserved.
 - *
-- * Copyright 2009 Wolfson Microelectronics PLC.
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License version
+- * 2 as published by the Free Software Foundation.
 - *
-- * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
-- *         Liam Girdwood <lrg@slimlogic.co.uk>
-- *         
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// soc-util.c  --  ALSA SoC Audio Layer utility functions
-+//
-+// Copyright 2009 Wolfson Microelectronics PLC.
-+//
-+// Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
-+//         Liam Girdwood <lrg@slimlogic.co.uk>
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
++/* SPDX-License-Identifier: GPL-2.0
+  *
++ * Copyright (C) 2017, Intel Corporation. All rights reserved.
+  */
  
- #include <linux/platform_device.h>
- #include <linux/export.h>
+ #ifndef __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
+diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
+index 082224275f52..e45b2330d16a 100644
+--- a/include/sound/soc-acpi.h
++++ b/include/sound/soc-acpi.h
+@@ -1,15 +1,6 @@
+-/*
+- * Copyright (C) 2013-15, Intel Corporation. All rights reserved.
+- *
+- * This program is free software; you can redistribute it and/or
+- * modify it under the terms of the GNU General Public License version
+- * 2 as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope that it will be useful,
+- * but WITHOUT ANY WARRANTY; without even the implied warranty of
+- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+- * GNU General Public License for more details.
++/* SPDX-License-Identifier: GPL-2.0
+  *
++ * Copyright (C) 2013-15, Intel Corporation. All rights reserved.
+  */
+ 
+ #ifndef __LINUX_SND_SOC_ACPI_H
+diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
+index 3d7e1ff79139..b8e72b52db30 100644
+--- a/sound/soc/soc-acpi.c
++++ b/sound/soc/soc-acpi.c
+@@ -1,18 +1,8 @@
+-/*
+- * soc-apci.c - support for ACPI enumeration.
+- *
+- * Copyright (c) 2013-15, Intel Corporation.
+- *
+- *
+- * This program is free software; you can redistribute it and/or modify it
+- * under the terms and conditions of the GNU General Public License,
+- * version 2, as published by the Free Software Foundation.
+- *
+- * This program is distributed in the hope it will be useful, but WITHOUT
+- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+- * more details.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// soc-apci.c - support for ACPI enumeration.
++//
++// Copyright (c) 2013-15, Intel Corporation.
+ 
+ #include <sound/soc-acpi.h>
+ 
 -- 
 2.18.0.rc2
