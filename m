@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-jack.c: convert to SPDX
-	identifiers" to the asoc tree
-Date: Mon, 02 Jul 2018 11:11:15 +0100
-Message-ID: <E1fZvnf-0006Yz-EG@debutante>
-References: <87h8lif9ed.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-ops.c: convert to SPDX identifiers"
+	to the asoc tree
+Date: Mon, 02 Jul 2018 11:11:33 +0100
+Message-ID: <E1fZvnx-0006bk-Lz@debutante>
+References: <87lgauf9fj.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 68D022677AD
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:02 +0200 (CEST)
-In-Reply-To: <87h8lif9ed.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1EAC126771C
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:58:59 +0200 (CEST)
+In-Reply-To: <87lgauf9fj.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-jack.c: convert to SPDX identifiers
+   ASoC: soc-ops.c: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,28 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From 8ab0215c11817fc0a89f1f82cdf10fd4c0eb9e86 Mon Sep 17 00:00:00 2001
+>From 4eef5a90ca8b2aab61c98853141f9242af4a8339 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Jul 2018 06:23:16 +0000
-Subject: [PATCH] ASoC: soc-jack.c: convert to SPDX identifiers
+Date: Mon, 2 Jul 2018 06:22:30 +0000
+Subject: [PATCH] ASoC: soc-ops.c: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-jack.c | 19 +++++++------------
- 1 file changed, 7 insertions(+), 12 deletions(-)
+ sound/soc/soc-ops.c | 29 ++++++++++++-----------------
+ 1 file changed, 12 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/soc-jack.c b/sound/soc/soc-jack.c
-index b2b16044ae80..c7b990abdbaa 100644
---- a/sound/soc/soc-jack.c
-+++ b/sound/soc/soc-jack.c
-@@ -1,15 +1,10 @@
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index 7144a51ddfa9..592efb370c44 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -1,20 +1,15 @@
 -/*
-- * soc-jack.c  --  ALSA SoC jack handling
+- * soc-ops.c  --  Generic ASoC operations
 - *
-- * Copyright 2008 Wolfson Microelectronics PLC.
+- * Copyright 2005 Wolfson Microelectronics PLC.
+- * Copyright 2005 Openedhand Ltd.
+- * Copyright (C) 2010 Slimlogic Ltd.
+- * Copyright (C) 2010 Texas Instruments Inc.
 - *
-- * Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
+- * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+- *         with code, comments and ideas from :-
+- *         Richard Purdie <richard@openedhand.com>
 - *
 - *  This program is free software; you can redistribute  it and/or modify it
 - *  under  the terms of  the GNU General  Public License as published by the
@@ -83,13 +88,18 @@ index b2b16044ae80..c7b990abdbaa 100644
 - */
 +// SPDX-License-Identifier: GPL-2.0+
 +//
-+// soc-jack.c  --  ALSA SoC jack handling
++// soc-ops.c  --  Generic ASoC operations
 +//
-+// Copyright 2008 Wolfson Microelectronics PLC.
++// Copyright 2005 Wolfson Microelectronics PLC.
++// Copyright 2005 Openedhand Ltd.
++// Copyright (C) 2010 Slimlogic Ltd.
++// Copyright (C) 2010 Texas Instruments Inc.
 +//
-+// Author: Mark Brown <broonie@opensource.wolfsonmicro.com>
++// Author: Liam Girdwood <lrg@slimlogic.co.uk>
++//         with code, comments and ideas from :-
++//         Richard Purdie <richard@openedhand.com>
  
- #include <sound/jack.h>
- #include <sound/soc.h>
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
 -- 
 2.18.0.rc2
