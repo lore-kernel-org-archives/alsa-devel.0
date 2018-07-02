@@ -1,37 +1,52 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: linux-next: Tree for Jul 2 (sound/soc/pxa/)
-Date: Mon, 02 Jul 2018 21:22:45 +0200
-Message-ID: <87h8lhh27u.fsf@belgarion.home>
-References: <20180702145158.10190101@canb.auug.org.au>
-        <2276786f-3f50-0740-0500-68a26a49704a@infradead.org>
-        <c12cc7c4-03d0-4b0b-d02f-7e72b8a135d4@infradead.org>
-Mime-Version: 1.0
-Content-Type: text/plain
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: [PATCH 1/6] ASoC: AMD: Always stop ch2 first
+Date: Mon,  2 Jul 2018 15:19:50 -0600
+Message-ID: <20180702211956.149355-1-djkurtz@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <c12cc7c4-03d0-4b0b-d02f-7e72b8a135d4@infradead.org> (Randy
-        Dunlap's message of "Mon, 2 Jul 2018 09:41:16 -0700")
 Sender: linux-kernel-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@infradead.org>, Daniel Mack <zonque@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linux-Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, moderated for non-subscribers <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-arm-kernel@lists.infradead.org
+Cc: Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Randy Dunlap <rdunlap@infradead.org> writes:
-> [add other maintainers]
-> on i386 or x86_64:
-> 
-> builtin:
-> sound/soc/pxa/pxa-ssp.o:(.rodata+0x228): undefined reference to `pxa2xx_soc_pcm_new'
-> sound/soc/pxa/pxa-ssp.o:(.rodata+0x22c): undefined reference to `pxa2xx_pcm_free_dma_buffers'
-> sound/soc/pxa/pxa-ssp.o:(.rodata+0x250): undefined reference to `pxa2xx_pcm_ops'
+Commit 6b116dfb4633a ("ASoC: AMD: make channel 1 dma as circular") made
+both channels circular, so this comment and logic no longer applies.  Always
+stop ch2 (the channel closest to the output) before ch1.  This ensures
+that the downstream circular DMA channel does not continue to play/capture
+repeated samples after the upstream circular DMA channel has already
+stopped.
 
-Hi Randy,
+Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
+---
+ sound/soc/amd/acp-pcm-dma.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
 
-I think the fix is already queued in Mark's tree, the commit message should be
-"ASoC: pxa: select SND_PXA2XX_LIB for drivers that depend on it".
-
-Adding Daniel as he is the original author.
-
-Cheers.
-
---
-Robert
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 3c3d398d0d0b1..4665ae12e74e4 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -1067,21 +1067,8 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_STOP:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_PUSH:
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+-		/* For playback, non circular dma should be stopped first
+-		 * i.e Sysram to acp dma transfer channel(rtd->ch1) should be
+-		 * stopped before stopping cirular dma which is acp sram to i2s
+-		 * fifo dma transfer channel(rtd->ch2). Where as in Capture
+-		 * scenario, i2s fifo to acp sram dma channel(rtd->ch2) stopped
+-		 * first before stopping acp sram to sysram which is circular
+-		 * dma(rtd->ch1).
+-		 */
+-		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+-			acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+-			ret =  acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+-		} else {
+-			acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+-			ret = acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+-		}
++		acp_dma_stop(rtd->acp_mmio, rtd->ch2);
++		ret = acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+ 		rtd->bytescount = 0;
+ 		break;
+ 	default:
+-- 
+2.18.0.399.gad0ab374a1-goog
