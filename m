@@ -1,7 +1,7 @@
 From: Daniel Kurtz <djkurtz@chromium.org>
-Subject: [PATCH 5/6] ASoC: AMD: Do not generate interrups for every captured sample
-Date: Mon,  2 Jul 2018 15:19:54 -0600
-Message-ID: <20180702211956.149355-5-djkurtz@chromium.org>
+Subject: [PATCH 2/6] ASoC: AMD: Reset bytescount when starting transaction
+Date: Mon,  2 Jul 2018 15:19:51 -0600
+Message-ID: <20180702211956.149355-2-djkurtz@chromium.org>
 References: <20180702211956.149355-1-djkurtz@chromium.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180702211956.149355-1-djkurtz@chromium.org>
@@ -10,60 +10,52 @@ Cc: Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Ma
         AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On capture, audio data is first copied from I2S to ACP memory, and then
-from ACP to SYSRAM.  The I2S_TO_ACP_DMA interrupt fires on every sample
-transferred from I2S to ACP memory.  That is it fires ~48000 times per
-second when capturing @ 48 kHz.  Since we don't do anything on this
-interrupt anyway, disable it to save quite a few unnecessary interrupts.
-The real "work" (calling snd_pcm_period_elapsed()) is done when transfer
-from ACP to SYSRAM is complete.
+The pointer() callback gets its value by reading the I2S BYTE_COUNT
+register.  This is a 64-bit runnning transaction counter. If a
+transaction was aborted in the middle of a sample buffer, the counter will
+stop counting on a number divisible by the buffer size.  Since we actually
+use it as a pointer into an aligned buffer, however, we do want to ensure
+that it always starts at a number divisible by the buffer size when
+starting a transaction, hence we reset it whenever starting a transaction.
+
+To accomplish this, it wasn't necessary to zero bytescount at the
+termination of each transaction, so remove this unnecessary code.
 
 Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 2a6a6e65e27c3..ab60129f4f266 100644
+index 4665ae12e74e4..e6f85f2e5ac2a 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -412,10 +412,8 @@ static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
- 	switch (ch_num) {
- 	case ACP_TO_I2S_DMA_CH_NUM:
- 	case ACP_TO_SYSRAM_CH_NUM:
--	case I2S_TO_ACP_DMA_CH_NUM:
- 	case ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM:
- 	case ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM:
--	case I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM:
- 		dma_ctrl |= ACP_DMA_CNTL_0__DMAChIOCEn_MASK;
+@@ -1029,7 +1029,6 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ {
+ 	int ret;
+-	u64 bytescount = 0;
+ 
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audio_substream_data *rtd = runtime->private_data;
+@@ -1040,9 +1039,7 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case SNDRV_PCM_TRIGGER_RESUME:
+-		bytescount = acp_get_byte_count(rtd);
+-		if (rtd->bytescount == 0)
+-			rtd->bytescount = bytescount;
++		rtd->bytescount = acp_get_byte_count(rtd);
+ 		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
+ 			acp_dma_start(rtd->acp_mmio, rtd->ch1);
+ 			acp_dma_start(rtd->acp_mmio, rtd->ch2);
+@@ -1069,7 +1066,6 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 	case SNDRV_PCM_TRIGGER_SUSPEND:
+ 		acp_dma_stop(rtd->acp_mmio, rtd->ch2);
+ 		ret = acp_dma_stop(rtd->acp_mmio, rtd->ch1);
+-		rtd->bytescount = 0;
  		break;
  	default:
-@@ -704,12 +702,6 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
- 
--	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
--		valid_irq = true;
--		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) << 16,
--			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
--	}
--
- 	if ((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) != 0) {
- 		valid_irq = true;
- 		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
-@@ -718,13 +710,6 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
- 
--	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
--		valid_irq = true;
--		acp_reg_write((intr_flag &
--			      BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
--			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
--	}
--
- 	if (valid_irq)
- 		return IRQ_HANDLED;
- 	else
+ 		ret = -EINVAL;
 -- 
 2.18.0.399.gad0ab374a1-goog
