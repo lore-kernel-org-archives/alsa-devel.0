@@ -1,29 +1,61 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH 5/5] ASoC: es7134: add support for the es7154
-Date: Mon, 02 Jul 2018 12:15:28 +0200
-Message-ID: <1530526528.2900.145.camel@baylibre.com>
-References: <20180629150924.18197-1-jbrunet@baylibre.com>
-         <20180629150924.18197-6-jbrunet@baylibre.com>
-         <20180702100533.GD18211@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2 2/2] ASoC: es7241: add es7241 codec support
+Date: Mon, 2 Jul 2018 11:20:21 +0100
+Message-ID: <20180702102021.GG18211@sirena.org.uk>
+References: <20180630172241.10806-1-jbrunet@baylibre.com>
+ <20180630172241.10806-3-jbrunet@baylibre.com>
+ <20180702101222.GF18211@sirena.org.uk>
+ <1530526503.2900.144.camel@baylibre.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Z0mFw3+mXTC5ycVe"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180702100533.GD18211@sirena.org.uk>
+Content-Disposition: inline
+In-Reply-To: <1530526503.2900.144.camel@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
+To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 2018-07-02 at 11:05 +0100, Mark Brown wrote:
-> On Fri, Jun 29, 2018 at 05:09:24PM +0200, Jerome Brunet wrote:
-> 
-> >  	{ .compatible = "everest,es7134", .data = &es7134_chip },
-> >  	{ .compatible = "everest,es7144", .data = &es7134_chip },
-> > +	{ .compatible = "everest,es7154", .data = &es7154_chip },
-> >  	{ }
-> 
-> This needs to be added to the DT documentation.
 
-I believe I added this in patch 3 of this serie, which I'll resubmit.
-Shall I resubmit this patch along with it ?
+--Z0mFw3+mXTC5ycVe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jul 02, 2018 at 12:15:03PM +0200, Jerome Brunet wrote:
+> On Mon, 2018-07-02 at 11:12 +0100, Mark Brown wrote:
+> > On Sat, Jun 30, 2018 at 07:22:41PM +0200, Jerome Brunet wrote:
+
+> > > +	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+> > > +	case SND_SOC_DAIFMT_I2S:
+> > > +	case SND_SOC_DAIFMT_LEFT_J:
+> > > +		break;
+
+> > These two modes are not the same so either there should be some
+> > different handling to select between them or one shouldn't be supported.
+
+> Actually, the difference is provided with some pull-up/pull-down resistor.
+> There no way to set this up in SW, AFAIK.
+> So the driver shall accept both and trust we are not doing anything crazy
+
+It at least needs a comment as this is obviously dodgy code.  Ideally
+there'd be a DT property saying which mode was selected on a given board
+so if we ever get round to doing automatic configuration of formats the
+driver will be able to cope.
+
+--Z0mFw3+mXTC5ycVe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls5/GUACgkQJNaLcl1U
+h9Dk6Qf+KpnHKNh2NZjc91/0ZUyk0RyOmMbzKit6MK+DL2ye8d7IgPmEOdsKXr0B
+s6Xsm+1UMYYj9p8MwVdhKJwMqfdk42QFW52L1zWnQ+5cRXTrzDLcJ2xy8/oHdS1F
+SMNa4r7mEAwyHMJjCO9ve5b9FMVi1M70zsbPRl03a+BuRvc2omqFBCF6DWkeRNUN
+fdwKj3TF7ZCs0w2XsrLP5aFsSV3KwOsctvxJCwQTRgNkYFpIS9/LtX25LZHA5t0D
+7HBfBbuCj4vxiJJCn97STHbcYpNyoMa6jIIYymqgoJSLJ24oNb5h1g8n79OWJdCd
+/CuLIGF69EkqgWJde9xX9/PnCu06kw==
+=EDSK
+-----END PGP SIGNATURE-----
+
+--Z0mFw3+mXTC5ycVe--
