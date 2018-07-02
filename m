@@ -1,54 +1,37 @@
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
 Subject: Re: linux-next: Tree for Jul 2 (sound/soc/pxa/)
-Date: Mon, 2 Jul 2018 09:41:16 -0700
-Message-ID: <c12cc7c4-03d0-4b0b-d02f-7e72b8a135d4@infradead.org>
+Date: Mon, 02 Jul 2018 21:22:45 +0200
+Message-ID: <87h8lhh27u.fsf@belgarion.home>
 References: <20180702145158.10190101@canb.auug.org.au>
- <2276786f-3f50-0740-0500-68a26a49704a@infradead.org>
+        <2276786f-3f50-0740-0500-68a26a49704a@infradead.org>
+        <c12cc7c4-03d0-4b0b-d02f-7e72b8a135d4@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <2276786f-3f50-0740-0500-68a26a49704a@infradead.org>
-Content-Language: en-US
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: Stephen Rothwell <sfr@canb.auug.org.au>, Linux-Next Mailing List <linux-next@vger.kernel.org>
-Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <c12cc7c4-03d0-4b0b-d02f-7e72b8a135d4@infradead.org> (Randy
+        Dunlap's message of "Mon, 2 Jul 2018 09:41:16 -0700")
+Sender: linux-kernel-owner@vger.kernel.org
+To: Randy Dunlap <rdunlap@infradead.org>, Daniel Mack <zonque@gmail.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>, Linux-Next Mailing List <linux-next@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Mark Brown <broonie@opensource.wolfsonmicro.com>, moderated for non-subscribers <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-[add other maintainers]
-
-On 07/02/18 09:09, Randy Dunlap wrote:
-> On 07/01/18 21:51, Stephen Rothwell wrote:
->> Hi all,
->>
->> Changes since 20180629:
->>
-> 
+Randy Dunlap <rdunlap@infradead.org> writes:
+> [add other maintainers]
 > on i386 or x86_64:
 > 
 > builtin:
 > sound/soc/pxa/pxa-ssp.o:(.rodata+0x228): undefined reference to `pxa2xx_soc_pcm_new'
 > sound/soc/pxa/pxa-ssp.o:(.rodata+0x22c): undefined reference to `pxa2xx_pcm_free_dma_buffers'
 > sound/soc/pxa/pxa-ssp.o:(.rodata+0x250): undefined reference to `pxa2xx_pcm_ops'
-> /home/rdunlap/lnx/next/linux-next-20180702/Makefile:1023: recipe for target 'vmlinux' failed
-> 
-> modular:
-> ERROR: "pxa2xx_pcm_ops" [sound/soc/pxa/snd-soc-pxa-ssp.ko] undefined!
-> ERROR: "pxa2xx_pcm_free_dma_buffers" [sound/soc/pxa/snd-soc-pxa-ssp.ko] undefined!
-> ERROR: "pxa2xx_soc_pcm_new" [sound/soc/pxa/snd-soc-pxa-ssp.ko] undefined!
-> 
-> 
-> x86_64 [modular] randconfig file is attached.
-> 
 
+Hi Randy,
 
--- 
-~Randy
+I think the fix is already queued in Mark's tree, the commit message should be
+"ASoC: pxa: select SND_PXA2XX_LIB for drivers that depend on it".
+
+Adding Daniel as he is the original author.
+
+Cheers.
+
+--
+Robert
