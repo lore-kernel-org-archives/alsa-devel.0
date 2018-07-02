@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: convert to SPDX
+Subject: Applied "ASoC: simple-card-utils: convert to SPDX
 	identifiers" to the asoc tree
-Date: Mon, 02 Jul 2018 11:12:06 +0100
-Message-ID: <E1fZvoU-0006hx-Dm@debutante>
-References: <871scmf929.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 02 Jul 2018 11:12:04 +0100
+Message-ID: <E1fZvoS-0006hA-7v@debutante>
+References: <87zhzaduhd.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 389CE267214
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:58:51 +0200 (CEST)
-In-Reply-To: <871scmf929.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B3D1267214
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:58:52 +0200 (CEST)
+In-Reply-To: <87zhzaduhd.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: convert to SPDX identifiers
+   ASoC: simple-card-utils: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,47 +53,47 @@ to this mail.
 Thanks,
 Mark
 
->From d573454d9b4f00061da314460908e19476d2ff6d Mon Sep 17 00:00:00 2001
+>From d613a7f45ebb2f113444630fcbbb8a074c741998 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Jul 2018 06:30:28 +0000
-Subject: [PATCH] ASoC: simple-card: convert to SPDX identifiers
+Date: Mon, 2 Jul 2018 06:30:44 +0000
+Subject: [PATCH] ASoC: simple-card-utils: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/simple_card.h     |  7 ++-----
- sound/soc/generic/simple-card.c | 17 +++++++----------
- 2 files changed, 9 insertions(+), 15 deletions(-)
+ include/sound/simple_card_utils.h     |  8 +++-----
+ sound/soc/generic/simple-card-utils.c | 15 ++++++---------
+ 2 files changed, 9 insertions(+), 14 deletions(-)
 
-diff --git a/include/sound/simple_card.h b/include/sound/simple_card.h
-index a6a2e1547092..d264e5463f22 100644
---- a/include/sound/simple_card.h
-+++ b/include/sound/simple_card.h
-@@ -1,12 +1,9 @@
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index f82acef3b992..8bc5e2d8b13c 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -1,12 +1,10 @@
 -/*
 +/* SPDX-License-Identifier: GPL-2.0
 + *
-  * ASoC simple sound card support
+  * simple_card_utils.h
   *
-  * Copyright (C) 2012 Renesas Solutions Corp.
-  * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+  * Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 - *
 - * This program is free software; you can redistribute it and/or modify
 - * it under the terms of the GNU General Public License version 2 as
 - * published by the Free Software Foundation.
   */
++
+ #ifndef __SIMPLE_CARD_UTILS_H
+ #define __SIMPLE_CARD_UTILS_H
  
- #ifndef __SIMPLE_CARD_H
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index c5b6e04cd926..64bf3560c1d1 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -1,13 +1,10 @@
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 4398c9580929..d3f3f0fec74c 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -1,12 +1,9 @@
 -/*
-- * ASoC simple sound card support
+- * simple-card-utils.c
 - *
-- * Copyright (C) 2012 Renesas Solutions Corp.
-- * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+- * Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 - *
 - * This program is free software; you can redistribute it and/or modify
 - * it under the terms of the GNU General Public License version 2 as
@@ -101,13 +101,12 @@ index c5b6e04cd926..64bf3560c1d1 100644
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// ASoC simple sound card support
++// simple-card-utils.c
 +//
-+// Copyright (C) 2012 Renesas Solutions Corp.
-+// Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++// Copyright (c) 2016 Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 +
  #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/module.h>
+ #include <linux/gpio.h>
+ #include <linux/gpio/consumer.h>
 -- 
 2.18.0.rc2
