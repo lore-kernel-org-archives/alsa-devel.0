@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-acpi: convert to SPDX identifiers"
+Subject: Applied "ASoC: soc-core: convert to SPDX identifiers"
 	to the asoc tree
-Date: Mon, 02 Jul 2018 11:10:57 +0100
-Message-ID: <E1fZvnN-0006W9-DR@debutante>
-References: <87d0w6f9cx.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 02 Jul 2018 11:10:37 +0100
+Message-ID: <E1fZvn3-0006Ug-Fw@debutante>
+References: <87bmbqf9cj.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 91FEC2677B0
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:04 +0200 (CEST)
-In-Reply-To: <87d0w6f9cx.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A83822677C9
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:05 +0200 (CEST)
+In-Reply-To: <87bmbqf9cj.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-acpi: convert to SPDX identifiers
+   ASoC: soc-core: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,91 +53,88 @@ to this mail.
 Thanks,
 Mark
 
->From 7730bb13c7472620b585783f248b2dccd09d1819 Mon Sep 17 00:00:00 2001
+>From 873486ed4af3e11bfc20832dff7b124ba652bf77 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Jul 2018 06:24:04 +0000
-Subject: [PATCH] ASoC: soc-acpi: convert to SPDX identifiers
+Date: Mon, 2 Jul 2018 06:24:18 +0000
+Subject: [PATCH] ASoC: soc-core: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-acpi-intel-match.h | 14 ++------------
- include/sound/soc-acpi.h             | 13 ++-----------
- sound/soc/soc-acpi.c                 | 20 +++++---------------
- 3 files changed, 9 insertions(+), 38 deletions(-)
+ include/sound/soc.h  | 11 ++++-------
+ sound/soc/soc-core.c | 41 ++++++++++++++++++-----------------------
+ 2 files changed, 22 insertions(+), 30 deletions(-)
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index 917ddd0f2762..bb1d24b703fb 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -1,16 +1,6 @@
--
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index f7579f82cc00..16f0bf10cc42 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1,13 +1,10 @@
 -/*
-- * Copyright (C) 2017, Intel Corporation. All rights reserved.
-- *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License version
-- * 2 as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
 +/* SPDX-License-Identifier: GPL-2.0
++ *
+  * linux/sound/soc.h -- ALSA SoC Layer
   *
-+ * Copyright (C) 2017, Intel Corporation. All rights reserved.
+- * Author:		Liam Girdwood
+- * Created:		Aug 11th 2005
++ * Author:	Liam Girdwood
++ * Created:	Aug 11th 2005
+  * Copyright:	Wolfson Microelectronics. PLC.
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
   */
  
- #ifndef __LINUX_SND_SOC_ACPI_INTEL_MATCH_H
-diff --git a/include/sound/soc-acpi.h b/include/sound/soc-acpi.h
-index 082224275f52..e45b2330d16a 100644
---- a/include/sound/soc-acpi.h
-+++ b/include/sound/soc-acpi.h
-@@ -1,15 +1,6 @@
+ #ifndef __LINUX_SND_SOC_H
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 4663de3cf495..68b08781c832 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1,26 +1,21 @@
 -/*
-- * Copyright (C) 2013-15, Intel Corporation. All rights reserved.
+- * soc-core.c  --  ALSA SoC Audio Layer
 - *
-- * This program is free software; you can redistribute it and/or
-- * modify it under the terms of the GNU General Public License version
-- * 2 as published by the Free Software Foundation.
+- * Copyright 2005 Wolfson Microelectronics PLC.
+- * Copyright 2005 Openedhand Ltd.
+- * Copyright (C) 2010 Slimlogic Ltd.
+- * Copyright (C) 2010 Texas Instruments Inc.
 - *
-- * This program is distributed in the hope that it will be useful,
-- * but WITHOUT ANY WARRANTY; without even the implied warranty of
-- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- * GNU General Public License for more details.
-+/* SPDX-License-Identifier: GPL-2.0
-  *
-+ * Copyright (C) 2013-15, Intel Corporation. All rights reserved.
-  */
- 
- #ifndef __LINUX_SND_SOC_ACPI_H
-diff --git a/sound/soc/soc-acpi.c b/sound/soc/soc-acpi.c
-index 3d7e1ff79139..b8e72b52db30 100644
---- a/sound/soc/soc-acpi.c
-+++ b/sound/soc/soc-acpi.c
-@@ -1,18 +1,8 @@
--/*
-- * soc-apci.c - support for ACPI enumeration.
+- * Author: Liam Girdwood <lrg@slimlogic.co.uk>
+- *         with code, comments and ideas from :-
+- *         Richard Purdie <richard@openedhand.com>
 - *
-- * Copyright (c) 2013-15, Intel Corporation.
+- *  This program is free software; you can redistribute  it and/or modify it
+- *  under  the terms of  the GNU General  Public License as published by the
+- *  Free Software Foundation;  either version 2 of the  License, or (at your
+- *  option) any later version.
 - *
-- *
-- * This program is free software; you can redistribute it and/or modify it
-- * under the terms and conditions of the GNU General Public License,
-- * version 2, as published by the Free Software Foundation.
-- *
-- * This program is distributed in the hope it will be useful, but WITHOUT
-- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-- * more details.
+- *  TODO:
+- *   o Add hw rules to enforce rates, etc.
+- *   o More testing with other codecs/machines.
+- *   o Add more codecs and platforms to ensure good API coverage.
+- *   o Support TDM on PCM and I2S
 - */
-+// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0+
 +//
-+// soc-apci.c - support for ACPI enumeration.
++// soc-core.c  --  ALSA SoC Audio Layer
 +//
-+// Copyright (c) 2013-15, Intel Corporation.
++// Copyright 2005 Wolfson Microelectronics PLC.
++// Copyright 2005 Openedhand Ltd.
++// Copyright (C) 2010 Slimlogic Ltd.
++// Copyright (C) 2010 Texas Instruments Inc.
++//
++// Author: Liam Girdwood <lrg@slimlogic.co.uk>
++//         with code, comments and ideas from :-
++//         Richard Purdie <richard@openedhand.com>
++//
++//  TODO:
++//   o Add hw rules to enforce rates, etc.
++//   o More testing with other codecs/machines.
++//   o Add more codecs and platforms to ensure good API coverage.
++//   o Support TDM on PCM and I2S
  
- #include <sound/soc-acpi.h>
- 
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
 -- 
 2.18.0.rc2
