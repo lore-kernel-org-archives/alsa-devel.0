@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-topology: convert to SPDX
-	identifiers" to the asoc tree
-Date: Mon, 02 Jul 2018 11:10:32 +0100
-Message-ID: <E1fZvmy-0006T4-BF@debutante>
-References: <878t6uf9bt.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: pxa: select SND_PXA2XX_LIB for drivers
+	that depend on it" to the asoc tree
+Date: Mon, 02 Jul 2018 11:10:06 +0100
+Message-ID: <E1fZvmY-0006PN-8Z@debutante>
+References: <20180630202433.8615-1-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D8189267796
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:07 +0200 (CEST)
-In-Reply-To: <878t6uf9bt.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E8CB5267795
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:08 +0200 (CEST)
+In-Reply-To: <20180630202433.8615-1-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Daniel Mack <daniel@zonque.org>
+Cc: alsa-devel@alsa-project.org, lkp@intel.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, broonie@kernel.org, robert.jarzmik@free.fr
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-topology: convert to SPDX identifiers
+   ASoC: pxa: select SND_PXA2XX_LIB for drivers that depend on it
 
 has been applied to the asoc tree at
 
@@ -53,92 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From f2b6a1b25fecc48a46c8a41636101af8a41c88a8 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Jul 2018 06:24:45 +0000
-Subject: [PATCH] ASoC: soc-topology: convert to SPDX identifiers
+>From 1581250119daa9426c359d059e2dc14ec04bcc0c Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@zonque.org>
+Date: Sat, 30 Jun 2018 22:24:33 +0200
+Subject: [PATCH] ASoC: pxa: select SND_PXA2XX_LIB for drivers that depend on
+ it
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Commit d767d3ce5c48b ("ASoC: pxa: provide PCM ops for ssp, i2s and ac97
+components") created a build-time dependency to SND_PXA2XX_LIB but
+missed to reflect that in Kconfig.
+
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-topology.h |  7 ++----
- sound/soc/soc-topology.c     | 47 ++++++++++++++++--------------------
- 2 files changed, 23 insertions(+), 31 deletions(-)
+ sound/soc/pxa/Kconfig | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/sound/soc-topology.h b/include/sound/soc-topology.h
-index 401ef2c45d6c..fa4b8413d2e2 100644
---- a/include/sound/soc-topology.h
-+++ b/include/sound/soc-topology.h
-@@ -1,13 +1,10 @@
--/*
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-  * linux/sound/soc-topology.h -- ALSA SoC Firmware Controls and DAPM
-  *
-  * Copyright (C) 2012 Texas Instruments Inc.
-  * Copyright (C) 2015 Intel Corporation.
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- *
-  * Simple file API to load FW that includes mixers, coefficients, DAPM graphs,
-  * algorithms, equalisers, DAIs, widgets, FE caps, BE caps, codec link caps etc.
-  */
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 05d177d689e2..66e77e020745 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -1,29 +1,24 @@
--/*
-- * soc-topology.c  --  ALSA SoC Topology
-- *
-- * Copyright (C) 2012 Texas Instruments Inc.
-- * Copyright (C) 2015 Intel Corporation.
-- *
-- * Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-- *		K, Mythri P <mythri.p.k@intel.com>
-- *		Prusty, Subhransu S <subhransu.s.prusty@intel.com>
-- *		B, Jayachandran <jayachandran.b@intel.com>
-- *		Abdullah, Omair M <omair.m.abdullah@intel.com>
-- *		Jin, Yao <yao.jin@intel.com>
-- *		Lin, Mengdong <mengdong.lin@intel.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
-- *
-- *  Add support to read audio firmware topology alongside firmware text. The
-- *  topology data can contain kcontrols, DAPM graphs, widgets, DAIs, DAI links,
-- *  equalizers, firmware, coefficients etc.
-- *
-- *  This file only manages the core ALSA and ASoC components, all other bespoke
-- *  firmware topology data is passed to component drivers for bespoke handling.
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// soc-topology.c  --  ALSA SoC Topology
-+//
-+// Copyright (C) 2012 Texas Instruments Inc.
-+// Copyright (C) 2015 Intel Corporation.
-+//
-+// Authors: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-+//		K, Mythri P <mythri.p.k@intel.com>
-+//		Prusty, Subhransu S <subhransu.s.prusty@intel.com>
-+//		B, Jayachandran <jayachandran.b@intel.com>
-+//		Abdullah, Omair M <omair.m.abdullah@intel.com>
-+//		Jin, Yao <yao.jin@intel.com>
-+//		Lin, Mengdong <mengdong.lin@intel.com>
-+//
-+//  Add support to read audio firmware topology alongside firmware text. The
-+//  topology data can contain kcontrols, DAPM graphs, widgets, DAIs, DAI links,
-+//  equalizers, firmware, coefficients etc.
-+//
-+//  This file only manages the core ALSA and ASoC components, all other bespoke
-+//  firmware topology data is passed to component drivers for bespoke handling.
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 95dcf97a6271..2fc02c227f69 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -24,15 +24,18 @@ config SND_PXA2XX_AC97
+ config SND_PXA2XX_SOC_AC97
+ 	tristate
+ 	select AC97_BUS
++	select SND_PXA2XX_LIB
+ 	select SND_PXA2XX_LIB_AC97
+ 	select SND_SOC_AC97_BUS
  
- #include <linux/kernel.h>
- #include <linux/export.h>
+ config SND_PXA2XX_SOC_I2S
++	select SND_PXA2XX_LIB
+ 	tristate
+ 
+ config SND_PXA_SOC_SSP
+ 	tristate "Soc Audio via PXA2xx/PXA3xx SSP ports"
+ 	select PXA_SSP
++	select SND_PXA2XX_LIB
+ 
+ config SND_MMP_SOC_SSPA
+ 	tristate
 -- 
 2.18.0.rc2
