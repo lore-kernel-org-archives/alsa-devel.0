@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ac97: convert to SPDX identifiers" to
-	the asoc tree
-Date: Mon, 02 Jul 2018 11:10:08 +0100
-Message-ID: <E1fZvma-0006QJ-DA@debutante>
-References: <874lhif98z.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: pxa-ssp: remove .set_pll() and
+	.set_clkdiv() callbacks" to the asoc tree
+Date: Mon, 02 Jul 2018 11:09:45 +0100
+Message-ID: <E1fZvmD-0006O4-Do@debutante>
+References: <20180629125940.27359-1-daniel@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3498A2677CB
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:12 +0200 (CEST)
-In-Reply-To: <874lhif98z.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 47C8B2677E4
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:13 +0200 (CEST)
+In-Reply-To: <20180629125940.27359-1-daniel@zonque.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Daniel Mack <daniel@zonque.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, broonie@kernel.org, philipp.zabel@gmail.com, robert.jarzmik@free.fr
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ac97: convert to SPDX identifiers
+   ASoC: pxa-ssp: remove .set_pll() and .set_clkdiv() callbacks
 
 has been applied to the asoc tree at
 
@@ -53,190 +53,271 @@ to this mail.
 Thanks,
 Mark
 
->From 1a8f0a3c13c136951de7ea24ccb148e745db98a2 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 2 Jul 2018 06:26:27 +0000
-Subject: [PATCH] ASoC: ac97: convert to SPDX identifiers
+>From 05739375f1c0a1048fea8b9c4cb54d9e4a891938 Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@zonque.org>
+Date: Fri, 29 Jun 2018 14:59:40 +0200
+Subject: [PATCH] ASoC: pxa-ssp: remove .set_pll() and .set_clkdiv() callbacks
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+The .set_pll() and .set_clkdiv() callbacks are considered legacy and should
+not be used anymore. In order to support PXA boards on DT platforms, remove
+them and let the code figure out the correct dividers and PLL base
+frequencies itself.
+
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/ac97/codec.h      |  8 +++-----
- include/sound/ac97/compat.h     |  9 +++------
- include/sound/ac97/controller.h |  8 +++-----
- include/sound/ac97/regs.h       | 20 ++------------------
- include/sound/ac97_codec.h      | 25 +++++--------------------
- sound/soc/soc-ac97.c            | 29 ++++++++++++-----------------
- 6 files changed, 28 insertions(+), 71 deletions(-)
+ include/linux/pxa2xx_ssp.h |   8 ++
+ sound/soc/pxa/pxa-ssp.c    | 146 ++++++++++++++++++-------------------
+ 2 files changed, 81 insertions(+), 73 deletions(-)
 
-diff --git a/include/sound/ac97/codec.h b/include/sound/ac97/codec.h
-index ec04be9ab119..9792d25fa369 100644
---- a/include/sound/ac97/codec.h
-+++ b/include/sound/ac97/codec.h
-@@ -1,10 +1,8 @@
--/*
-- *  Copyright (C) 2016 Robert Jarzmik <robert.jarzmik@free.fr>
-+/* SPDX-License-Identifier: GPL-2.0
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-+ *  Copyright (C) 2016 Robert Jarzmik <robert.jarzmik@free.fr>
-  */
-+
- #ifndef __SOUND_AC97_CODEC2_H
- #define __SOUND_AC97_CODEC2_H
+diff --git a/include/linux/pxa2xx_ssp.h b/include/linux/pxa2xx_ssp.h
+index 03a7ca46735b..13b4244d44c1 100644
+--- a/include/linux/pxa2xx_ssp.h
++++ b/include/linux/pxa2xx_ssp.h
+@@ -171,6 +171,14 @@
+ #define SSACD_SCDB		(1 << 3)	/* SSPSYSCLK Divider Bypass */
+ #define SSACD_ACPS(x)		((x) << 4)	/* Audio clock PLL select */
+ #define SSACD_ACDS(x)		((x) << 0)	/* Audio clock divider select */
++#define SSACD_ACDS_1		(0)
++#define SSACD_ACDS_2		(1)
++#define SSACD_ACDS_4		(2)
++#define SSACD_ACDS_8		(3)
++#define SSACD_ACDS_16		(4)
++#define SSACD_ACDS_32		(5)
++#define SSACD_SCDB_4X		(0)
++#define SSACD_SCDB_1X		(1)
+ #define SSACD_SCDX8		(1 << 7)	/* SYSCLK division ratio select */
  
-diff --git a/include/sound/ac97/compat.h b/include/sound/ac97/compat.h
-index 1351cba40048..57e19afa31ab 100644
---- a/include/sound/ac97/compat.h
-+++ b/include/sound/ac97/compat.h
-@@ -1,14 +1,11 @@
--/*
-- *  Copyright (C) 2016 Robert Jarzmik <robert.jarzmik@free.fr>
-+/* SPDX-License-Identifier: GPL-2.0
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-+ *  Copyright (C) 2016 Robert Jarzmik <robert.jarzmik@free.fr>
-  *
-  * This file is for backward compatibility with snd_ac97 structure and its
-  * multiple usages, such as the snd_ac97_bus and snd_ac97_build_ops.
-- *
+ /* LPSS SSP */
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 01d54697ede4..f8339bb01251 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -41,6 +41,7 @@
   */
-+
- #ifndef AC97_COMPAT_H
- #define AC97_COMPAT_H
+ struct ssp_priv {
+ 	struct ssp_device *ssp;
++	unsigned long ssp_clk;
+ 	unsigned int sysclk;
+ 	unsigned int dai_fmt;
+ 	unsigned int configured_dai_fmt;
+@@ -192,21 +193,6 @@ static void pxa_ssp_set_scr(struct ssp_device *ssp, u32 div)
+ 	pxa_ssp_write_reg(ssp, SSCR0, sscr0);
+ }
  
-diff --git a/include/sound/ac97/controller.h b/include/sound/ac97/controller.h
-index b36ecdd64f14..06b5afb7fa6b 100644
---- a/include/sound/ac97/controller.h
-+++ b/include/sound/ac97/controller.h
-@@ -1,10 +1,8 @@
--/*
-- *  Copyright (C) 2016 Robert Jarzmik <robert.jarzmik@free.fr>
-+/* SPDX-License-Identifier: GPL-2.0
-  *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-+ * Copyright (C) 2016 Robert Jarzmik <robert.jarzmik@free.fr>
-  */
-+
- #ifndef AC97_CONTROLLER_H
- #define AC97_CONTROLLER_H
- 
-diff --git a/include/sound/ac97/regs.h b/include/sound/ac97/regs.h
-index 9a4fa0c3264a..843f73f3705a 100644
---- a/include/sound/ac97/regs.h
-+++ b/include/sound/ac97/regs.h
-@@ -1,27 +1,11 @@
--/*
-+/* SPDX-License-Identifier: GPL-2.0+
-+ *
-  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
-  *  Universal interface for Audio Codec '97
-  *
-  *  For more details look to AC '97 component specification revision 2.1
-  *  by Intel Corporation (http://developer.intel.com).
-- *
-- *
-- *   This program is free software; you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- *   GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program; if not, write to the Free Software
-- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-- *
-  */
+-/**
+- * pxa_ssp_get_clkdiv - get SSP clock divider
+- */
+-static u32 pxa_ssp_get_scr(struct ssp_device *ssp)
+-{
+-	u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0);
+-	u32 div;
+-
+-	if (ssp->type == PXA25x_SSP)
+-		div = ((sscr0 >> 8) & 0xff) * 2 + 2;
+-	else
+-		div = ((sscr0 >> 8) & 0xfff) + 1;
+-	return div;
+-}
 -
  /*
-  *  AC'97 codec registers
+  * Set the SSP ports SYSCLK.
   */
-diff --git a/include/sound/ac97_codec.h b/include/sound/ac97_codec.h
-index 89d311a503d3..cc383991c0fe 100644
---- a/include/sound/ac97_codec.h
-+++ b/include/sound/ac97_codec.h
-@@ -1,30 +1,15 @@
--#ifndef __SOUND_AC97_CODEC_H
--#define __SOUND_AC97_CODEC_H
--
--/*
-+/* SPDX-License-Identifier: GPL-2.0+
-+ *
-  *  Copyright (c) by Jaroslav Kysela <perex@perex.cz>
-  *  Universal interface for Audio Codec '97
-  *
-  *  For more details look to AC '97 component specification revision 2.1
-  *  by Intel Corporation (http://developer.intel.com).
-- *
-- *
-- *   This program is free software; you can redistribute it and/or modify
-- *   it under the terms of the GNU General Public License as published by
-- *   the Free Software Foundation; either version 2 of the License, or
-- *   (at your option) any later version.
-- *
-- *   This program is distributed in the hope that it will be useful,
-- *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-- *   GNU General Public License for more details.
-- *
-- *   You should have received a copy of the GNU General Public License
-- *   along with this program; if not, write to the Free Software
-- *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-- *
-  */
+@@ -262,67 +248,18 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
+ 	return 0;
+ }
  
-+#ifndef __SOUND_AC97_CODEC_H
-+#define __SOUND_AC97_CODEC_H
-+
- #include <linux/bitops.h>
- #include <linux/device.h>
- #include <linux/workqueue.h>
-diff --git a/sound/soc/soc-ac97.c b/sound/soc/soc-ac97.c
-index 3f424f214bca..c086786e4471 100644
---- a/sound/soc/soc-ac97.c
-+++ b/sound/soc/soc-ac97.c
-@@ -1,20 +1,15 @@
 -/*
-- * soc-ac97.c  --  ALSA SoC Audio Layer AC97 support
-- *
-- * Copyright 2005 Wolfson Microelectronics PLC.
-- * Copyright 2005 Openedhand Ltd.
-- * Copyright (C) 2010 Slimlogic Ltd.
-- * Copyright (C) 2010 Texas Instruments Inc.
-- *
-- * Author: Liam Girdwood <lrg@slimlogic.co.uk>
-- *         with code, comments and ideas from :-
-- *         Richard Purdie <richard@openedhand.com>
-- *
-- *  This program is free software; you can redistribute  it and/or modify it
-- *  under  the terms of  the GNU General  Public License as published by the
-- *  Free Software Foundation;  either version 2 of the  License, or (at your
-- *  option) any later version.
+- * Set the SSP clock dividers.
 - */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// soc-ac97.c  --  ALSA SoC Audio Layer AC97 support
-+//
-+// Copyright 2005 Wolfson Microelectronics PLC.
-+// Copyright 2005 Openedhand Ltd.
-+// Copyright (C) 2010 Slimlogic Ltd.
-+// Copyright (C) 2010 Texas Instruments Inc.
-+//
-+// Author: Liam Girdwood <lrg@slimlogic.co.uk>
-+//         with code, comments and ideas from :-
-+//         Richard Purdie <richard@openedhand.com>
+-static int pxa_ssp_set_dai_clkdiv(struct snd_soc_dai *cpu_dai,
+-	int div_id, int div)
+-{
+-	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+-	struct ssp_device *ssp = priv->ssp;
+-	int val;
+-
+-	switch (div_id) {
+-	case PXA_SSP_AUDIO_DIV_ACDS:
+-		val = (pxa_ssp_read_reg(ssp, SSACD) & ~0x7) | SSACD_ACDS(div);
+-		pxa_ssp_write_reg(ssp, SSACD, val);
+-		break;
+-	case PXA_SSP_AUDIO_DIV_SCDB:
+-		val = pxa_ssp_read_reg(ssp, SSACD);
+-		val &= ~SSACD_SCDB;
+-		if (ssp->type == PXA3xx_SSP)
+-			val &= ~SSACD_SCDX8;
+-		switch (div) {
+-		case PXA_SSP_CLK_SCDB_1:
+-			val |= SSACD_SCDB;
+-			break;
+-		case PXA_SSP_CLK_SCDB_4:
+-			break;
+-		case PXA_SSP_CLK_SCDB_8:
+-			if (ssp->type == PXA3xx_SSP)
+-				val |= SSACD_SCDX8;
+-			else
+-				return -EINVAL;
+-			break;
+-		default:
+-			return -EINVAL;
+-		}
+-		pxa_ssp_write_reg(ssp, SSACD, val);
+-		break;
+-	case PXA_SSP_DIV_SCR:
+-		pxa_ssp_set_scr(ssp, div);
+-		break;
+-	default:
+-		return -ENODEV;
+-	}
+-
+-	return 0;
+-}
+-
+ /*
+  * Configure the PLL frequency pxa27x and (afaik - pxa320 only)
+  */
+-static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
+-	int source, unsigned int freq_in, unsigned int freq_out)
++static int pxa_ssp_set_pll(struct ssp_priv *priv, unsigned int freq)
+ {
+-	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
+ 	u32 ssacd = pxa_ssp_read_reg(ssp, SSACD) & ~0x70;
  
- #include <linux/ctype.h>
- #include <linux/delay.h>
+ 	if (ssp->type == PXA3xx_SSP)
+ 		pxa_ssp_write_reg(ssp, SSACDD, 0);
+ 
+-	switch (freq_out) {
++	switch (freq) {
+ 	case 5622000:
+ 		break;
+ 	case 11345000:
+@@ -353,7 +290,7 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
+ 			u64 tmp = 19968;
+ 
+ 			tmp *= 1000000;
+-			do_div(tmp, freq_out);
++			do_div(tmp, freq);
+ 			val = tmp;
+ 
+ 			val = (val << 16) | 64;
+@@ -363,7 +300,7 @@ static int pxa_ssp_set_dai_pll(struct snd_soc_dai *cpu_dai, int pll_id,
+ 
+ 			dev_dbg(&ssp->pdev->dev,
+ 				"Using SSACDD %x to supply %uHz\n",
+-				val, freq_out);
++				val, freq);
+ 			break;
+ 		}
+ 
+@@ -568,6 +505,24 @@ static int pxa_ssp_configure_dai_fmt(struct ssp_priv *priv)
+ 	return 0;
+ }
+ 
++struct pxa_ssp_clock_mode {
++	int rate;
++	int pll;
++	u8 acds;
++	u8 scdb;
++};
++
++static const struct pxa_ssp_clock_mode pxa_ssp_clock_modes[] = {
++	{ .rate =  8000, .pll = 32842000, .acds = SSACD_ACDS_32, .scdb = SSACD_SCDB_4X },
++	{ .rate = 11025, .pll =  5622000, .acds = SSACD_ACDS_4,  .scdb = SSACD_SCDB_4X },
++	{ .rate = 16000, .pll = 32842000, .acds = SSACD_ACDS_16, .scdb = SSACD_SCDB_4X },
++	{ .rate = 22050, .pll =  5622000, .acds = SSACD_ACDS_2,  .scdb = SSACD_SCDB_4X },
++	{ .rate = 44100, .pll = 11345000, .acds = SSACD_ACDS_2,  .scdb = SSACD_SCDB_4X },
++	{ .rate = 48000, .pll = 12235000, .acds = SSACD_ACDS_2,  .scdb = SSACD_SCDB_4X },
++	{ .rate = 96000, .pll = 12235000, .acds = SSACD_ACDS_4,  .scdb = SSACD_SCDB_1X },
++	{}
++};
++
+ /*
+  * Set the SSP audio DMA parameters and sample size.
+  * Can be called multiple times by oss emulation.
+@@ -579,11 +534,12 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
+ 	struct ssp_priv *priv = snd_soc_dai_get_drvdata(cpu_dai);
+ 	struct ssp_device *ssp = priv->ssp;
+ 	int chn = params_channels(params);
+-	u32 sscr0;
+-	u32 sspsp;
++	u32 sscr0, sspsp;
+ 	int width = snd_pcm_format_physical_width(params_format(params));
+ 	int ttsa = pxa_ssp_read_reg(ssp, SSTSA) & 0xf;
+ 	struct snd_dmaengine_dai_dma_data *dma_data;
++	int rate = params_rate(params);
++	int bclk = rate * chn * (width / 8);
+ 	int ret;
+ 
+ 	dma_data = snd_soc_dai_get_dma_data(cpu_dai, substream);
+@@ -623,11 +579,57 @@ static int pxa_ssp_hw_params(struct snd_pcm_substream *substream,
+ 	}
+ 	pxa_ssp_write_reg(ssp, SSCR0, sscr0);
+ 
++	if (sscr0 & SSCR0_ACS) {
++		ret = pxa_ssp_set_pll(priv, bclk);
++
++		/*
++		 * If we were able to generate the bclk directly,
++		 * all is fine. Otherwise, look up the closest rate
++		 * from the table and also set the dividers.
++		 */
++
++		if (ret < 0) {
++			const struct pxa_ssp_clock_mode *m;
++			int ssacd, acds;
++
++			for (m = pxa_ssp_clock_modes; m->rate; m++) {
++				if (m->rate == rate)
++					break;
++			}
++
++			if (!m->rate)
++				return -EINVAL;
++
++			acds = m->acds;
++
++			/* The values in the table are for 16 bits */
++			if (width == 32)
++				acds--;
++
++			ret = pxa_ssp_set_pll(priv, bclk);
++			if (ret < 0)
++				return ret;
++
++			ssacd = pxa_ssp_read_reg(ssp, SSACD);
++			ssacd &= ~(SSACD_ACDS(7) | SSACD_SCDB_1X);
++			ssacd |= SSACD_ACDS(m->acds);
++			ssacd |= m->scdb;
++			pxa_ssp_write_reg(ssp, SSACD, ssacd);
++		}
++	} else if (sscr0 & SSCR0_ECS) {
++		/*
++		 * For setups with external clocking, the PLL and its diviers
++		 * are not active. Instead, the SCR bits in SSCR0 can be used
++		 * to divide the clock.
++		 */
++		pxa_ssp_set_scr(ssp, bclk / rate);
++	}
++
+ 	switch (priv->dai_fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
+ 	case SND_SOC_DAIFMT_I2S:
+ 	       sspsp = pxa_ssp_read_reg(ssp, SSPSP);
+ 
+-		if ((pxa_ssp_get_scr(ssp) == 4) && (width == 16)) {
++		if (((priv->sysclk / bclk) == 64) && (width == 16)) {
+ 			/* This is a special case where the bitclk is 64fs
+ 			 * and we're not dealing with 2*32 bits of audio
+ 			 * samples.
+@@ -812,8 +814,6 @@ static const struct snd_soc_dai_ops pxa_ssp_dai_ops = {
+ 	.trigger	= pxa_ssp_trigger,
+ 	.hw_params	= pxa_ssp_hw_params,
+ 	.set_sysclk	= pxa_ssp_set_dai_sysclk,
+-	.set_clkdiv	= pxa_ssp_set_dai_clkdiv,
+-	.set_pll	= pxa_ssp_set_dai_pll,
+ 	.set_fmt	= pxa_ssp_set_dai_fmt,
+ 	.set_tdm_slot	= pxa_ssp_set_dai_tdm_slot,
+ 	.set_tristate	= pxa_ssp_set_dai_tristate,
 -- 
 2.18.0.rc2
