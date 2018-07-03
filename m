@@ -1,73 +1,126 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - JACK IO plug 2/2] jack: Update poll_fd also
-	in draining state
-Date: Tue, 3 Jul 2018 15:59:23 +0200
-Message-ID: <1530626363-8808-4-git-send-email-twischer@de.adit-jv.com>
-References: <1530626363-8808-1-git-send-email-twischer@de.adit-jv.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: [PATCH 1/2] ASoC: atmel-i2s: Remove unnecessary audio PLL clock (aclk)
+Date: Tue, 3 Jul 2018 17:56:30 +0300
+Message-ID: <20180703145631.15246-2-codrin.ciubotariu@microchip.com>
+References: <20180703145631.15246-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <1530626363-8808-1-git-send-email-twischer@de.adit-jv.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org, tiwai@suse.de
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180703145631.15246-1-codrin.ciubotariu@microchip.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com, robh+dt@kernel.org, broonie@kernel.org, quentin.schulz@bootlin.com
+Cc: Cristian.Birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+The generated clock (gclk) driver is able to set aclk as its parent and
+change its rate alone, if needed. This means that our driver no longer
+needs to configure aclk and we can let gclk select and configure its
+clock source.
 
-to support snd_pcm_drain for the JACK IO plugin.
-With this changes there will be an poll_fd event in DRAINING state even if
-the min_avail was not yet reached. Otherwise the application would never
-recognize that all samples were processed by JACK.
-In addition the JACK real-time thread is also processing when in DRAINING
-state and not only when in RUNNING or PREPARE state.
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+---
+ sound/soc/atmel/atmel-i2s.c | 46 ++++++-------------------------------
+ 1 file changed, 7 insertions(+), 39 deletions(-)
 
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index 5a57e13..98a6f7e 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -66,6 +66,7 @@ static int pcm_poll_block_check(snd_pcm_ioplug_t *io)
- 	snd_pcm_jack_t *jack = io->private_data;
+diff --git a/sound/soc/atmel/atmel-i2s.c b/sound/soc/atmel/atmel-i2s.c
+index 5d3b5af9fd92..d88c1d995036 100644
+--- a/sound/soc/atmel/atmel-i2s.c
++++ b/sound/soc/atmel/atmel-i2s.c
+@@ -206,7 +206,6 @@ struct atmel_i2s_dev {
+ 	struct regmap				*regmap;
+ 	struct clk				*pclk;
+ 	struct clk				*gclk;
+-	struct clk				*aclk;
+ 	struct snd_dmaengine_dai_dma_data	playback;
+ 	struct snd_dmaengine_dai_dma_data	capture;
+ 	unsigned int				fmt;
+@@ -303,7 +302,7 @@ static int atmel_i2s_get_gck_param(struct atmel_i2s_dev *dev, int fs)
+ {
+ 	int i, best;
  
- 	if (io->state == SND_PCM_STATE_RUNNING ||
-+	    io->state == SND_PCM_STATE_DRAINING ||
- 	    (io->state == SND_PCM_STATE_PREPARED && io->stream == SND_PCM_STREAM_CAPTURE)) {
- 		avail = snd_pcm_ioplug_avail(io, jack->hw_ptr, io->appl_ptr);
- 		if (avail < jack->min_avail) {
-@@ -85,7 +86,12 @@ static int pcm_poll_unblock_check(snd_pcm_ioplug_t *io)
- 	snd_pcm_jack_t *jack = io->private_data;
- 
- 	avail = snd_pcm_ioplug_avail(io, jack->hw_ptr, io->appl_ptr);
--	if (avail >= jack->min_avail) {
-+	/* In draining state poll_fd is used to wait
-+	 * till all pending frames are played.
-+	 * Therefore it has to be guarantee that a poll event is also generated
-+	 * if the buffer contains less than min_avail frames
-+	 */
-+	if (avail >= jack->min_avail || io->state == SND_PCM_STATE_DRAINING) {
- 		write(jack->fd, &buf, 1);
- 		return 1;
+-	if (!dev->gclk || !dev->aclk) {
++	if (!dev->gclk) {
+ 		dev_err(dev->dev, "cannot generate the I2S Master Clock\n");
+ 		return -EINVAL;
  	}
-@@ -161,7 +167,8 @@ snd_pcm_jack_process_cb(jack_nframes_t nframes, snd_pcm_ioplug_t *io)
- 		jack->areas[channel].step = jack->sample_bits;
+@@ -421,7 +420,7 @@ static int atmel_i2s_switch_mck_generator(struct atmel_i2s_dev *dev,
+ 					  bool enabled)
+ {
+ 	unsigned int mr, mr_mask;
+-	unsigned long aclk_rate;
++	unsigned long gclk_rate;
+ 	int ret;
+ 
+ 	mr = 0;
+@@ -445,35 +444,18 @@ static int atmel_i2s_switch_mck_generator(struct atmel_i2s_dev *dev,
+ 		/* Disable/unprepare the PMC generated clock. */
+ 		clk_disable_unprepare(dev->gclk);
+ 
+-		/* Disable/unprepare the PLL audio clock. */
+-		clk_disable_unprepare(dev->aclk);
+ 		return 0;
  	}
  
--	if (io->state == SND_PCM_STATE_RUNNING) {
-+	if (io->state == SND_PCM_STATE_RUNNING ||
-+	    io->state == SND_PCM_STATE_DRAINING) {
- 		snd_pcm_uframes_t hw_ptr = jack->hw_ptr;
- 		const snd_pcm_uframes_t hw_avail = snd_pcm_ioplug_hw_avail(io, hw_ptr,
- 									   io->appl_ptr);
+ 	if (!dev->gck_param)
+ 		return -EINVAL;
+ 
+-	aclk_rate = dev->gck_param->mck * (dev->gck_param->imckdiv + 1);
++	gclk_rate = dev->gck_param->mck * (dev->gck_param->imckdiv + 1);
+ 
+-	/* Fist change the PLL audio clock frequency ... */
+-	ret = clk_set_rate(dev->aclk, aclk_rate);
++	ret = clk_set_rate(dev->gclk, gclk_rate);
+ 	if (ret)
+ 		return ret;
+ 
+-	/*
+-	 * ... then set the PMC generated clock rate to the very same frequency
+-	 * to set the gclk parent to aclk.
+-	 */
+-	ret = clk_set_rate(dev->gclk, aclk_rate);
+-	if (ret)
+-		return ret;
+-
+-	/* Prepare and enable the PLL audio clock first ... */
+-	ret = clk_prepare_enable(dev->aclk);
+-	if (ret)
+-		return ret;
+-
+-	/* ... then prepare and enable the PMC generated clock. */
+ 	ret = clk_prepare_enable(dev->gclk);
+ 	if (ret)
+ 		return ret;
+@@ -668,28 +650,14 @@ static int atmel_i2s_probe(struct platform_device *pdev)
+ 		return err;
+ 	}
+ 
+-	/* Get audio clocks to generate the I2S Master Clock (I2S_MCK) */
+-	dev->aclk = devm_clk_get(&pdev->dev, "aclk");
++	/* Get audio clock to generate the I2S Master Clock (I2S_MCK) */
+ 	dev->gclk = devm_clk_get(&pdev->dev, "gclk");
+-	if (IS_ERR(dev->aclk) && IS_ERR(dev->gclk)) {
+-		if (PTR_ERR(dev->aclk) == -EPROBE_DEFER ||
+-		    PTR_ERR(dev->gclk) == -EPROBE_DEFER)
++	if (IS_ERR(dev->gclk)) {
++		if (PTR_ERR(dev->gclk) == -EPROBE_DEFER)
+ 			return -EPROBE_DEFER;
+ 		/* Master Mode not supported */
+-		dev->aclk = NULL;
+ 		dev->gclk = NULL;
+-	} else if (IS_ERR(dev->gclk)) {
+-		err = PTR_ERR(dev->gclk);
+-		dev_err(&pdev->dev,
+-			"failed to get the PMC generated clock: %d\n", err);
+-		return err;
+-	} else if (IS_ERR(dev->aclk)) {
+-		err = PTR_ERR(dev->aclk);
+-		dev_err(&pdev->dev,
+-			"failed to get the PLL audio clock: %d\n", err);
+-		return err;
+ 	}
+-
+ 	dev->dev = &pdev->dev;
+ 	dev->regmap = regmap;
+ 	platform_set_drvdata(pdev, dev);
 -- 
-2.7.4
+2.17.1
