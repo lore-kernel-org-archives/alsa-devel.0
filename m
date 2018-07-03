@@ -1,48 +1,92 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v3 0/2] ASoC: add es7241 support
-Date: Tue, 3 Jul 2018 16:32:12 +0100
-Message-ID: <20180703153212.GC13744@sirena.org.uk>
-References: <20180703132845.26554-1-jbrunet@baylibre.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uXxzq0nDebZQVNAZ"
+Subject: Applied "ASoC: atmel-i2s: dt-bindings: Remove unnecessary phandle to aclk" to the asoc tree
+Date: Tue, 03 Jul 2018 16:33:55 +0100
+Message-ID: <E1faNJT-0003di-5D@debutante>
+References: <20180703145631.15246-3-codrin.ciubotariu@microchip.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180703132845.26554-1-jbrunet@baylibre.com>
+In-Reply-To: <20180703145631.15246-3-codrin.ciubotariu@microchip.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com, robh+dt@kernel.orgbroonie@kernel.org, quentin.schulz@bootlin.com, Cristian.Birsan@microchip.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---uXxzq0nDebZQVNAZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: atmel-i2s: dt-bindings: Remove unnecessary phandle to aclk
 
-On Tue, Jul 03, 2018 at 03:28:43PM +0200, Jerome Brunet wrote:
-> Add support for the es7241 which is a simple 2 channels analog to
-> digital converter.
+has been applied to the asoc tree at
 
-Please don't resubmit patches that have already been applied, you should
-submit patches against current code in the tree you're expecting things
-to be applied to.  If any updates are needed to a patch that's already
-been applied you should submit incremental patches which make those
-updates.  This avoids having to change published git commits which could
-cause problems for people working against git.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
---uXxzq0nDebZQVNAZ
-Content-Type: application/pgp-signature; name="signature.asc"
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
------BEGIN PGP SIGNATURE-----
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls7lvsACgkQJNaLcl1U
-h9D40Qf/TBe4I8pootfIqHDb+wyZwfwj9U1ajEgbwLF8R+hrvuKkR3f7LuB6DfRn
-oieN/hPIVQumKtQxjihCxXYS3DhEOPTpXR8qvNowneU5uKXBe/ZrHznXUqWMVFlR
-jkLkEhrLzv9XZmsinD96kxiqrVpuhpfNC5+LMsSjELgGCIP4H98uLRcUeNStFZgh
-8o2ezljBy0zfVpkfBafJP8UXnhSJ5spMpKmfPC+Eg20/OI4ICHyQfWVAXUNb21In
-yCY5MGvgqSx2SpgmjEwAA+Z9DCytf3HFkyqmILpY1qSrQ5RjCy+cb+dcq3GnVP6K
-M8ahIzv9qzF++IhN8GQjALhyNQfsXg==
-=D2OE
------END PGP SIGNATURE-----
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---uXxzq0nDebZQVNAZ--
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 2bd368d7bf21028f37a123041a138922254d4840 Mon Sep 17 00:00:00 2001
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Date: Tue, 3 Jul 2018 17:56:31 +0300
+Subject: [PATCH] ASoC: atmel-i2s: dt-bindings: Remove unnecessary phandle to
+ aclk
+
+The optional clock phandle to aclk (Audio PLL clock) is no longer needed
+by the driver.
+
+Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ Documentation/devicetree/bindings/sound/atmel-i2s.txt | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/atmel-i2s.txt b/Documentation/devicetree/bindings/sound/atmel-i2s.txt
+index 735368b8a73f..40549f496a81 100644
+--- a/Documentation/devicetree/bindings/sound/atmel-i2s.txt
++++ b/Documentation/devicetree/bindings/sound/atmel-i2s.txt
+@@ -15,7 +15,6 @@ Required properties:
+ - clock-names:    Should be one of each entry matching the clocks phandles list:
+                   - "pclk" (peripheral clock) Required.
+                   - "gclk" (generated clock) Optional (1).
+-                  - "aclk" (Audio PLL clock) Optional (1).
+                   - "muxclk" (I2S mux clock) Optional (1).
+ 
+ Optional properties:
+@@ -23,9 +22,9 @@ Optional properties:
+ - princtrl-names: Should contain only one value - "default".
+ 
+ 
+-(1) : Only the peripheral clock is required. The generated clock, the Audio
+-      PLL clock adn the I2S mux clock are optional and should only be set
+-      together, when Master Mode is required.
++(1) : Only the peripheral clock is required. The generated clock and the I2S
++      mux clock are optional and should only be set together, when Master Mode
++      is required.
+ 
+ Example:
+ 
+@@ -40,8 +39,8 @@ Example:
+ 			(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
+ 			 AT91_XDMAC_DT_PERID(32))>;
+ 		dma-names = "tx", "rx";
+-		clocks = <&i2s0_clk>, <&i2s0_gclk>, <&audio_pll_pmc>, <&i2s0muxck>;
+-		clock-names = "pclk", "gclk", "aclk", "muxclk";
++		clocks = <&i2s0_clk>, <&i2s0_gclk>, <&i2s0muxck>;
++		clock-names = "pclk", "gclk", "muxclk";
+ 		pinctrl-names = "default";
+ 		pinctrl-0 = <&pinctrl_i2s0_default>;
+ 	};
+-- 
+2.18.0.rc2
