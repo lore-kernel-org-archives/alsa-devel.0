@@ -1,76 +1,40 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - JACK IO plug 1/2 v2] jack: Avoid call to
-	snd_pcm_avail_update() from JACK thread
-Date: Tue, 3 Jul 2018 14:57:17 +0200
-Message-ID: <1530622637-7397-1-git-send-email-twischer@de.adit-jv.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org, tiwai@suse.de
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: [PATCH v3 0/2] ASoC: add es7241 support
+Date: Tue,  3 Jul 2018 15:28:43 +0200
+Message-ID: <20180703132845.26554-1-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+Add support for the es7241 which is a simple 2 channels analog to
+digital converter.
 
-snd_pcm_avail_update() can call snd_pcm_jack_stop() but
-snd_pcm_jack_stop() should not be called by the JACK thread.
-It should only be called by the thread how has called
-snd_pcm_jack_start().
+Changes since v1: [0]
+ * Add missing break as reported by smatch [1]
+   My device is hardwired in slave mode, which probably why this slipped
+   through unnoticed.
 
-In addition the execution of snd_pcm_avail_update() can take a while.
-Therefore it should not be called by the JACK thread to not block this
-thread.
+Changes since v2: [2]
+ * Supply are now required dt properties
+ * Add a dt property to state the serial interface configuration
 
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
----
-v2 uses snd_pcm_uframes_t as type for avail and does not check for avail < 0
-becasue snd_pcm_ioplug_avail() will never retrun a value < 0
+[0]: https://lkml.kernel.org/r/20180629152444.21525-1-jbrunet@baylibre.com
+[1]: https://lkml.kernel.org/r/20180630082829.qwnhkk4f76n32omm@mwanda
+[2]: https://lkml.kernel.org/r/20180630172241.10806-1-jbrunet@baylibre.com
 
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index e3df4d2..5a57e13 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -62,13 +62,13 @@ static int snd_pcm_jack_stop(snd_pcm_ioplug_t *io);
- static int pcm_poll_block_check(snd_pcm_ioplug_t *io)
- {
- 	static char buf[32];
--	snd_pcm_sframes_t avail;
-+	snd_pcm_uframes_t avail;
- 	snd_pcm_jack_t *jack = io->private_data;
- 
- 	if (io->state == SND_PCM_STATE_RUNNING ||
- 	    (io->state == SND_PCM_STATE_PREPARED && io->stream == SND_PCM_STREAM_CAPTURE)) {
--		avail = snd_pcm_avail_update(io->pcm);
--		if (avail >= 0 && avail < jack->min_avail) {
-+		avail = snd_pcm_ioplug_avail(io, jack->hw_ptr, io->appl_ptr);
-+		if (avail < jack->min_avail) {
- 			while (read(io->poll_fd, &buf, sizeof(buf)) == sizeof(buf))
- 				;
- 			return 1;
-@@ -81,11 +81,11 @@ static int pcm_poll_block_check(snd_pcm_ioplug_t *io)
- static int pcm_poll_unblock_check(snd_pcm_ioplug_t *io)
- {
- 	static char buf[1];
--	snd_pcm_sframes_t avail;
-+	snd_pcm_uframes_t avail;
- 	snd_pcm_jack_t *jack = io->private_data;
- 
--	avail = snd_pcm_avail_update(io->pcm);
--	if (avail < 0 || avail >= jack->min_avail) {
-+	avail = snd_pcm_ioplug_avail(io, jack->hw_ptr, io->appl_ptr);
-+	if (avail >= jack->min_avail) {
- 		write(jack->fd, &buf, 1);
- 		return 1;
- 	}
+Jerome Brunet (2):
+  ASoC: es7241: add dt-bindings documentation for the es7241 adc
+  ASoC: es7241: add es7241 codec support
+
+ .../devicetree/bindings/sound/everest,es7241.txt   |  28 ++
+ sound/soc/codecs/Kconfig                           |   4 +
+ sound/soc/codecs/Makefile                          |   2 +
+ sound/soc/codecs/es7241.c                          | 322 +++++++++++++++++++++
+ 4 files changed, 356 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/everest,es7241.txt
+ create mode 100644 sound/soc/codecs/es7241.c
+
 -- 
-2.7.4
+2.14.4
