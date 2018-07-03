@@ -1,22 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v4 4/7] soundwire: Handle multiple master
- instances in a stream
-Date: Tue, 3 Jul 2018 13:59:26 -0500
-Message-ID: <dbde119d-5533-4872-5b8e-559d05322dfa@linux.intel.com>
-References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
- <1529924340-30065-5-git-send-email-shreyas.nc@intel.com>
- <a528936c-0685-726a-1606-9d9c53a696b1@linux.intel.com>
- <20180703011302.GH15119@snc-desk>
- <2fe08662-ad3e-7730-c053-37b729b0a45e@linux.intel.com>
- <78E8B3DDF116FF4CB089A311DDEB1B345204E483@BGSMSX103.gar.corp.intel.com>
+Subject: Re: [PATCH v3] ASoC: Intel: Boards: Add GLK Realtek
+ Maxim I2S machine driver
+Date: Tue, 3 Jul 2018 14:12:57 -0500
+Message-ID: <e532f50d-3c29-d491-48b8-4c7b7650f647@linux.intel.com>
+References: <1529416777-25675-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 8262B26735C
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 20:59:29 +0200 (CEST)
-In-Reply-To: <78E8B3DDF116FF4CB089A311DDEB1B345204E483@BGSMSX103.gar.corp.intel.com>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id E765A2673E1
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 21:12:59 +0200 (CEST)
+In-Reply-To: <1529416777-25675-1-git-send-email-naveen.m@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,84 +22,23 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Nc, Shreyas" <shreyas.nc@intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "vkoul@kernel.org" <vkoul@kernel.org>, "Kale,
- Sanyog R" <sanyog.r.kale@intel.com>
+To: Naveen Manohar <naveen.m@intel.com>, alsa-devel@alsa-project.org
+Cc: harshapriya.n@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNy8wMy8yMDE4IDExOjAzIEFNLCBOYywgU2hyZXlhcyB3cm90ZToKPj4+Pj4gKwlzdHJ1
-Y3Qgc2R3X21hc3Rlcl9ydW50aW1lICptX3J0LCAqX21fcnQ7Cj4+Pj4+ICsKPj4+Pj4gICAgCW11
-dGV4X2xvY2soJmJ1cy0+YnVzX2xvY2spOwo+Pj4+PiAtCXNkd19yZWxlYXNlX21hc3Rlcl9zdHJl
-YW0oc3RyZWFtKTsKPj4+Pj4gLQlzZHdfbWFzdGVyX3BvcnRfcmVsZWFzZShidXMsIHN0cmVhbS0+
-bV9ydCk7Cj4+Pj4+IC0Jc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJFQU1fUkVMRUFTRUQ7Cj4+Pj4+
-IC0Ja2ZyZWUoc3RyZWFtLT5tX3J0KTsKPj4+Pj4gLQlzdHJlYW0tPm1fcnQgPSBOVUxMOwo+Pj4+
-PiArCWxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZShtX3J0LCBfbV9ydCwKPj4+Pj4gKwkJCSZzdHJl
-YW0tPm1hc3Rlcl9saXN0LCBzdHJlYW1fbm9kZSkgewo+Pj4+PiArCj4+Pj4+ICsJCWlmIChtX3J0
-LT5idXMgIT0gYnVzKQo+Pj4+PiArCQkJY29udGludWU7Cj4+Pj4+ICsKPj4+Pj4gKwkJc2R3X21h
-c3Rlcl9wb3J0X3JlbGVhc2UoYnVzLCBtX3J0KTsKPj4+Pj4gKwkJc2R3X3JlbGVhc2VfbWFzdGVy
-X3N0cmVhbShtX3J0LCBzdHJlYW0pOwo+Pj4+PiArCX0KPj4+Pj4gKwo+Pj4+PiArCWlmIChsaXN0
-X2VtcHR5KCZzdHJlYW0tPm1hc3Rlcl9saXN0KSkKPj4+Pj4gKwkJc3RyZWFtLT5zdGF0ZSA9IFNE
-V19TVFJFQU1fUkVMRUFTRUQ7Cj4+Pj4gV2hlbiBhIG1hc3RlciBpcyByZW1vdmVkLCB0aGVyZSBp
-cyBhbiBleHBsaWNpdCB0ZXN0IHRvIG1ha2Ugc3VyZSB0aGUKPj4+PiBzdHJlYW0gc3RhdGUgY2hh
-bmdlcyB3aGVuIHRoZXJlIGFyZSBubyBtYXN0ZXJzIGxlZnQgaW4gdGhlIGxpc3QsIGJ1dC4uLgo+
-Pj4+Cj4+Pj4+ICAgIAltdXRleF91bmxvY2soJmJ1cy0+YnVzX2xvY2spOwo+Pj4+PiBAQCAtMTEy
-Nyw3ICsxMTY5LDcgQEAgaW50IHNkd19zdHJlYW1fYWRkX21hc3RlcihzdHJ1Y3Qgc2R3X2J1cwo+
-PiAqYnVzLAo+Pj4+PiAgICAJc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJFQU1fQ09ORklHVVJFRDsK
-Pj4+PiAuLi4gaXQncyBub3Qgc3ltbWV0cmljYWwgZm9yIHRoZSBhZGRfbWFzdGVyIGNhc2UuIFRo
-ZSBzdHJlYW0gc3RhdGUKPj4+PiBjaGFuZ2VzIG9uIHRoZSBmaXJzdCBhZGRlZCBtYXN0ZXIuIElu
-IGFkZGl0aW9uIHRoZSBzdHJlYW0gc3RhdGUKPj4+PiBjaGFuZ2VzIGJvdGggd2hlbiBhIHNsYXZl
-IGlzIGFkZGVkIGFuZCBhIG1hc3RlciBpcyBhZGRlZC4KPj4+PiBJcyB0aGlzIGludGVudGlvbmFs
-IG9yIG5vdCAtIGFuZCBhcmUgdGhlcmUgc2lkZSBlZmZlY3RzIHJlc3VsdGluZwo+Pj4+IGZyb20g
-dGhpcyBpbmNvbnNpc3RlbmN5Pwo+Pj4+Cj4+PiBGb3IgcmVtb3ZlX21hc3Rlciwgd2UgYWxyZWFk
-eSBrbm93IHRoZSBudW1iZXIgb2YgTWFzdGVycyBpbiB0aGUgc3RyZWFtCj4+PiBhbmQgaGVuY2Ug
-d2UgY2hhbmdlIHRoZSBzdGF0ZSB0byBSRUxFQVNFRCBvbmx5IHdoZW4gdGhlcmUgYXJlIG5vCj4+
-PiBNYXN0ZXJzIGxlZnQgaW4gc3RyZWFtLgo+Pj4KPj4+IEJ1dCwgaW4gdGhlIGFkZF9tYXN0ZXIg
-Y2FzZSwgd2UgaGF2ZSBubyBpZGVhIG9uIGhvdyBtYW55IG1hc3Rlcgo+Pj4gaW5zdGFuY2VzIGFy
-ZSBwYXJ0IG9mIHRoZSBzdHJlYW0gYW5kIGhlbmNlIGhvdyBtYW55IHRpbWVzIGFkZF9tYXN0ZXIK
-Pj4gd291bGQgYmUgY2FsbGVkLgo+Pj4gU28sIHdlIGNoYW5nZSB0aGUgc3RyZWFtIHN0YXRlIHRv
-IENPTkZJR1VSRUQgd2hlbiB0aGUgZmlyc3QgTWFzdGVyIGlzCj4+IGFkZGVkLgo+Pj4gSSBjYW4g
-YWRkIGEgY29tbWVudCBpZiB0aGF0IGhlbHBzIDopCj4+IEkgZ2V0IHRoZSBwb2ludCwgYnV0IHlv
-dSBjdXJyZW50bHkgY2hhbmdlIHRoZSBzdGF0ZSBmb3IgdGhlIGZpcnN0IHNsYXZlIHRoYXQncwo+
-PiBhZGRlZCwgc28gdGhlcmUgaXMgYW4gaW5jb25zaXN0ZW5jeSBoZXJlIChldmVuIGJlZm9yZSB3
-ZSBhZGQgdGhlIG11bHRpLW1hc3Rlcgo+PiBzdXBwb3J0KS4KPiBXaGVuIHdlIGFkZCBhIHNsYXZl
-LCB3ZSBjaGVjayBpZiB0aGVyZSBpcyBhbiBleGlzdGluZyBtX3J0IGZvciB0aGF0IGJ1cyBpbnN0
-YW5jZQo+IGFuZCBpZiBJdCBkb2VzIG5vdCBleGlzdCB3ZSBjcmVhdGUgYSBtX3J0IGZvciB0aGF0
-IG1hc3RlciBpbnN0YW5jZSwgYWRkIHRoZSBzbGF2ZQo+IHJ1bnRpbWUgYW5kIGNoYW5nZSB0aGUg
-c3RhdGUgdG8gQ09ORklHVVJFRC4gU28gdGVjaG5pY2FsbHkgd2Ugc3RpbGwgY2hhbmdlCj4gdGhl
-IHN0YXRlIGFmdGVyIGFkZGluZyB0aGUgZmlyc3QgbV9ydC4KCklmIHlvdSBtYWRlIG5vIGFzc3Vt
-cHRpb24gb24gdGhlIG9yZGVyIGluIHdoaWNoIHNsYXZlcyBhbmQgbWFzdGVycyBhcmUgCmFkZGVk
-IHRoZW4geW91IG5lZWQgdGhpcyBhc3NpZ25tZW50IHRvIENPTkZJR1VSRUQgdHdpY2UuIEJ1dCBp
-ZiB5b3Uga25vdyAKdGhlIHNsYXZlcyBhcmUgYWRkZWQgZmlyc3QgdGhlbiB0aGUgc2Vjb25kIGFz
-c2lnbm1lbnQgaXMgaXJyZWxldmFudC4KSXQncyBoYXJkIHRvIG1lbW9yaXplIHJlYWxseSBzaW5j
-ZSB0aGVyZSBhcmUgcGFydHMgd2hlcmUgeW91IGFzc3VtZSAKdGhpbmdzIGFyZSB0cmlnZ2VyZWQg
-YnkgZXh0ZXJuYWwgZXZlbnRzIGFuZCBvdGhlcnMgd2hlcmUgdGhlcmUgaXMgbm8gCmFzc3VtcHRp
-b24gb24gQVBJIHVzZS4uLgoKPgo+PiBJZiBJIHdhbnRlZCB0byBzcGxpdCBoYWlyIEknZCBhbHNv
-IG5vdGUgaXQncyBhbG1vc3QgbGlrZSB0aGUgc3RhdGUgaXMgQ09ORklHVVJJTkcKPj4gcmF0aGVy
-IHRoYW4gQ09ORklHVVJFRCBpZiB5b3UgZG9uJ3QgcmVhbGx5IGNvbnRyb2wgd2hlbiBhbGwgY29u
-ZmlndXJhdGlvbnMgYXJlCj4+IGNvbXBsZXRlIGF0IHRoZSBidXMgbGV2ZWwgYW5kIGRlcGVuZCBv
-biBleHRlcm5hbCB0cmFuc2l0aW9ucyAoZS5nLiBEQVBNL0FMU0EKPj4gaW5pdGlhdGVkKSB0byBn
-byBpbiBQUkVQQVJFRCBtb2RlLgo+Pgo+Pj4gWWVzLCBpdCBpcyBhZGRlZCBpbnRlbnRpb25hbGx5
-IChvciByYXRoZXIgYmVjYXVzZSB3ZSBjb3VsZCBub3QgdGhpbmsKPj4+IG9mIGFueSBvdGhlciBz
-dWl0YWJsZSB3YXkpIGFuZCB3ZSBkb250IHNlZSBhbnkgc2lkZSBlZmZlY3RzLiBBbnl0aGluZwo+
-Pj4gdGhhdCB5b3UgY291bGQgdGhpbmsgb2Y/Cj4+IFdlIHNob3VsZCBjaGVjayB3aGF0IGhhcHBl
-bnMgaWYgdGhlIHN0cmVhbSBpcyByZW1vdmVkIGJlZm9yZSBiZWluZyBlbmFibGVkLAo+PiBvciBh
-bGwgY2FzZXMgb2YgdGVzdGluZyBzdHJlYW0tPnN0YXRlLgo+IFdoaWxlIHJlbGVhc2luZyB0aGUg
-c3RyZWFtIHdlIHVuY29uZGl0aW9uYWxseSBjbGVhbiB1cCB0aGluZ3Mgd2l0aG91dCBjaGVja2lu
-Zwo+IHN0cmVhbSBzdGF0ZS4gU28sIHdlIHNob3VsZCBiZSBmaW5lIHRoYXQgd2F5LiBCdXQsIEkg
-Y2FuIGNoZWNrIHRoZXNlIDopCkEgcXVpY2sgY2hlY2sgZm9yIHN0cmVhbS0+c3RhdGUgZ2l2ZXMg
-bWUgdGhpczoKCiDCoMKgwqAgc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJFQU1fQ09ORklHVVJFRDsK
-CiA+Pj4gc28gaGVyZSBpdCdzIGEgc3VjY2VzcyBjYXNlIGJ1dCB3ZSBmYWxsYmFjayB0byBhbiBl
-cnJvciBjYXNlLi4uCgpzdHJlYW1fZXJyb3I6CiDCoMKgwqAgc2R3X3JlbGVhc2VfbWFzdGVyX3N0
-cmVhbShtX3J0LCBzdHJlYW0pOwplcnJvcjoKIMKgwqDCoCBtdXRleF91bmxvY2soJmJ1cy0+YnVz
-X2xvY2spOwogwqDCoMKgIHJldHVybiByZXQ7CgpZb3UgYXJlIHByb2JhYmx5IG1pc3NpbmcgYQoK
-IMKgwqDCoCBzdHJlYW0tPnN0YXRlID0gU0RXX1NUUkVBTV9DT05GSUdVUkVEOwogwqDCoMKgIGdv
-dG8gZXJyb3I7IC8vPDw8IEFkZCB0aGlzCgphcyBkb25lIGZvciB0aGUgc2xhdmU/CgpXb25kZXJp
-bmcgaG93IHRoaXMgZXZlciB3b3JrZWQsIHlvdSBtYXkgd2FudCB0byB0cmlwbGUtY2hlY2sgdGhl
-IHJlZ3VsYXIgCnN0cmVhbSBtYW5hZ2VtZW50IGJlZm9yZSBhZGRpbmcgdGhlIG11bHRpLW1hc3Rl
-ciBzdHVmZj8KCj4KPiAtLVNocmV5YXMKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
-L2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
-YWxzYS1kZXZlbAo=
+
+
+On 06/19/2018 08:59 AM, Naveen Manohar wrote:
+> Patch adds Geminilake I2S machine driver which uses following codecs:
+> RT5682 and MAX98357A.
+>
+> Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+> Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+> v1->v2: reverse xmas tree alignment of var declaration, Add Acked-by.
+> v2->v3: corrected: platform-name for echo-ref dai & change-log position.
+Humm, wondering what happened to this patch. Mark, in case you were 
+waiting for my ack here is it again.
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
