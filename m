@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Do not generate interrups for
-	every captured sample" to the asoc tree
-Date: Tue, 03 Jul 2018 16:34:15 +0100
-Message-ID: <E1faNJn-0003l5-IK@debutante>
-References: <20180702211956.149355-5-djkurtz@chromium.org>
+Subject: Applied "ASoC: AMD: Always subtract bytescount" to the
+	asoc tree
+Date: Tue, 03 Jul 2018 16:34:19 +0100
+Message-ID: <E1faNJr-0003nQ-Qt@debutante>
+References: <20180702211956.149355-3-djkurtz@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 46CE526776A
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AC3126779F
  for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 17:34:27 +0200 (CEST)
-In-Reply-To: <20180702211956.149355-5-djkurtz@chromium.org>
+In-Reply-To: <20180702211956.149355-3-djkurtz@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,7 +29,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Do not generate interrups for every captured sample
+   ASoC: AMD: Always subtract bytescount
 
 has been applied to the asoc tree at
 
@@ -54,67 +54,34 @@ to this mail.
 Thanks,
 Mark
 
->From 8c6b964eddd2c39a9796899b2be099ece1b6c6ca Mon Sep 17 00:00:00 2001
+>From 715cdce04487fb23d5c10693b3bc01309fea955a Mon Sep 17 00:00:00 2001
 From: Daniel Kurtz <djkurtz@chromium.org>
-Date: Mon, 2 Jul 2018 15:19:54 -0600
-Subject: [PATCH] ASoC: AMD: Do not generate interrups for every captured
- sample
+Date: Mon, 2 Jul 2018 15:19:52 -0600
+Subject: [PATCH] ASoC: AMD: Always subtract bytescount
 
-On capture, audio data is first copied from I2S to ACP memory, and then
-from ACP to SYSRAM.  The I2S_TO_ACP_DMA interrupt fires on every sample
-transferred from I2S to ACP memory.  That is it fires ~48000 times per
-second when capturing @ 48 kHz.  Since we don't do anything on this
-interrupt anyway, disable it to save quite a few unnecessary interrupts.
-The real "work" (calling snd_pcm_period_elapsed()) is done when transfer
-from ACP to SYSRAM is complete.
+It is always correct to subtract out the starting bytescount value.  Even
+in the case of 2^64 byte rollover (292 Million Years in the future
+@ 48000 Hz) the math still works out.
 
 Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index df53412967e1..cd4d2520ac14 100644
+index 4665ae12e74e..034fac3de037 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -412,10 +412,8 @@ static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
- 	switch (ch_num) {
- 	case ACP_TO_I2S_DMA_CH_NUM:
- 	case ACP_TO_SYSRAM_CH_NUM:
--	case I2S_TO_ACP_DMA_CH_NUM:
- 	case ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM:
- 	case ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM:
--	case I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM:
- 		dma_ctrl |= ACP_DMA_CNTL_0__DMAChIOCEn_MASK;
- 		break;
- 	default:
-@@ -704,12 +702,6 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
+@@ -995,8 +995,7 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
+ 	bytescount = acp_get_byte_count(rtd);
  
--	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
--		valid_irq = true;
--		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) << 16,
--			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
--	}
--
- 	if ((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) != 0) {
- 		valid_irq = true;
- 		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
-@@ -718,13 +710,6 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
- 
--	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
--		valid_irq = true;
--		acp_reg_write((intr_flag &
--			      BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
--			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
--	}
--
- 	if (valid_irq)
- 		return IRQ_HANDLED;
- 	else
+-	if (bytescount > rtd->bytescount)
+-		bytescount -= rtd->bytescount;
++	bytescount -= rtd->bytescount;
+ 	pos = do_div(bytescount, buffersize);
+ 	return bytes_to_frames(runtime, pos);
+ }
 -- 
 2.18.0.rc2
