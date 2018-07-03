@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
+From: Fabio Estevam <festevam@gmail.com>
 Subject: Re: [PATCH 1/5] ASoC: simple-card: convert to SPDX
 	identifiers
-Date: Mon, 2 Jul 2018 10:48:52 +0100
-Message-ID: <20180702094852.GA18211@sirena.org.uk>
+Date: Tue, 3 Jul 2018 00:09:33 -0300
+Message-ID: <CAOMZO5C=OmPv5jkqtVia702AU4q6wao3Fx4bTougex8mvPxKHA@mail.gmail.com>
 References: <8736x2f93c.wl-kuninori.morimoto.gx@renesas.com>
  <871scmf929.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5506463557416393858=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E1C89267796
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 04:59:21 +0200 (CEST)
+Received: from mail-oi0-f66.google.com (mail-oi0-f66.google.com
+ [209.85.218.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 420EA267731
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 05:09:35 +0200 (CEST)
+Received: by mail-oi0-f66.google.com with SMTP id k12-v6so901978oiw.8
+ for <alsa-devel@alsa-project.org>; Mon, 02 Jul 2018 20:09:34 -0700 (PDT)
 In-Reply-To: <871scmf929.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,56 +26,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+On Mon, Jul 2, 2018 at 3:30 AM, Kuninori Morimoto
+<kuninori.morimoto.gx@renesas.com> wrote:
 
---===============5506463557416393858==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5mCyUwZo2JvN/JJP"
-Content-Disposition: inline
-
-
---5mCyUwZo2JvN/JJP
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 02, 2018 at 06:30:28AM +0000, Kuninori Morimoto wrote:
-
+> index a6a2e15..d264e54 100644
+> --- a/include/sound/simple_card.h
 > +++ b/include/sound/simple_card.h
 > @@ -1,12 +1,9 @@
 > -/*
 > +/* SPDX-License-Identifier: GPL-2.0
-> + *
->   * ASoC simple sound card support
->   *
 
-The SPDX identifier needs to be a C++ comment for the tools, and to
-maken things look more consistent I prefer that the entire comment get
-converted to C++.
+The first line should be:
 
---5mCyUwZo2JvN/JJP
-Content-Type: application/pgp-signature; name="signature.asc"
+/* SPDX-License-Identifier: GPL-2.0 */
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls59QEACgkQJNaLcl1U
-h9BwCgf8DXQvw9Z3tz/iKCblotdyBlBmeQZ4FWKt9787qz3qsqYr1pbckrKE+rkg
-+UD1xKgVNd9BwjcAzmnioWyaRVNq9eR3fB31rLJIxuszhw9pvWACJYrlp4OwrEsW
-TPmKcVv7F8EY4VZjdn+7H3/TNddistlRtxex56eAXEmzqo4j+HHDEODqQvqzEaWA
-ASpYqj3FYr6De7lXhvTdNDRm3uGNwa816Ke5EDOBNuoLFwoXygnic6Q7yIVBrb3E
-cZOQDkOBmy97f3BnVLawZfzfsVJIFzigjJTLIpGS3FVzw9N6e1X3j/mO0v3WpeU4
-R+PjZBh4ZBJ0C/164Lof/ctu71L2Bg==
-=2Jz9
------END PGP SIGNATURE-----
-
---5mCyUwZo2JvN/JJP--
-
---===============5506463557416393858==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============5506463557416393858==--
+as explained in Documentation/process/license-rules.rst
