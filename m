@@ -1,12 +1,20 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH] snd_interval_refine_first/last: exclude value
-	only if also excluded before
-Date: Mon, 2 Jul 2018 16:53:06 +0200
-Message-ID: <1530543186-20962-1-git-send-email-twischer@de.adit-jv.com>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: Re: [PATCH v4 4/7] soundwire: Handle multiple master
+ instances in a stream
+Date: Tue, 3 Jul 2018 06:43:03 +0530
+Message-ID: <20180703011302.GH15119@snc-desk>
+References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
+ <1529924340-30065-5-git-send-email-shreyas.nc@intel.com>
+ <a528936c-0685-726a-1606-9d9c53a696b1@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4E8E267214
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 03:14:29 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <a528936c-0685-726a-1606-9d9c53a696b1@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,123 +24,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, vkoul@kernel.org, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
+On Mon, Jul 02, 2018 at 03:22:07PM -0500, Pierre-Louis Bossart wrote:
+> 
+> >  /**
+> >@@ -918,13 +951,22 @@ static void sdw_release_master_stream(struct sdw_stream_runtime *stream)
+> >  int sdw_stream_remove_master(struct sdw_bus *bus,
+> >  		struct sdw_stream_runtime *stream)
+> >  {
+> >+	struct sdw_master_runtime *m_rt, *_m_rt;
+> >+
+> >  	mutex_lock(&bus->bus_lock);
+> >-	sdw_release_master_stream(stream);
+> >-	sdw_master_port_release(bus, stream->m_rt);
+> >-	stream->state = SDW_STREAM_RELEASED;
+> >-	kfree(stream->m_rt);
+> >-	stream->m_rt = NULL;
+> >+	list_for_each_entry_safe(m_rt, _m_rt,
+> >+			&stream->master_list, stream_node) {
+> >+
+> >+		if (m_rt->bus != bus)
+> >+			continue;
+> >+
+> >+		sdw_master_port_release(bus, m_rt);
+> >+		sdw_release_master_stream(m_rt, stream);
+> >+	}
+> >+
+> >+	if (list_empty(&stream->master_list))
+> >+		stream->state = SDW_STREAM_RELEASED;
+> When a master is removed, there is an explicit test to make sure the stream
+> state changes when there are no masters left in the list, but...
+>
+> >  	mutex_unlock(&bus->bus_lock);
+> >@@ -1127,7 +1169,7 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+> >  	stream->state = SDW_STREAM_CONFIGURED;
+> ... it's not symmetrical for the add_master case. The stream state changes
+> on the first added master. In addition the stream state changes both when a
+> slave is added and a master is added.
+> Is this intentional or not - and are there side effects resulting from this
+> inconsistency?
+>
 
-Without this commit the following intervals [x y), (x y) were be
-replaced to (y-1 y) by snd_interval_refine_last(). This was also done if
-y-1 is part of the previous interval.
-With this changes it will be replaced with [y-1 y) in case of y-1 is
-part of the previous interval. A similar behavior will be used for
-snd_interval_refine_first().
+For remove_master, we already know the number of Masters in the stream and
+hence we change the state to RELEASED only when there are no Masters
+left in stream.
 
-This solves the issue reported here:
-https://bugzilla.opensuse.org/show_bug.cgi?id=1033179
-and work arounded with commit
-e736715 ("pcm: dmix: Disable var_periodsize as default").
+But, in the add_master case, we have no idea on how many master instances
+are part of the stream and hence how many times add_master would be called.
+So, we change the stream state to CONFIGURED when the first Master is added.
+I can add a comment if that helps :)
 
-I am able to reproduce the issue with a simplified aplay use case using
-the following configuration:
-pcm_slave.adr3_tdm_8ch {
-    pcm {
-        type hw
-        card "Loopback"
-        device 0
-    }
-    rate 48000
-    period_size 128
-    buffer_size 1024
-    channels 2
-}
+Yes, it is added intentionally (or rather because we could not think of any
+other suitable way) and we dont see any side effects. Anything
+that you could think of?
 
-pcm.dshare_Playback_3 {
-    type dmix
-    ipc_key 600
-    ipc_perm 0660
-    ipc_gid audio
-    var_periodsize true
-    slave adr3_tdm_8ch
-}
+IIRC, we had this discussion when the stream series was posted. But I am
+unable to find those mails :(
 
-pcm.AdevAcousticoutSpeech {
-    type rate
-    slave.pcm dshare_Playback_3
-    slave.rate 48000
-}
+Thanks for the review!
 
-$ modprobe snd_aloop
-$ aplay -v --period-size=352 -c2 -fS16_LE -r22500 -DAdevAcousticoutSpeech /dev/urandom
-...
-Rule 9 (0xffff91d1f230): PERIODS=(0 2) -> NONE BUFFER_SIZE=480 PERIOD_SIZE=[240 240]
-refine_soft 'AdevAcousticoutSpeech' (end--22)
-...
-aplay: ../../alsa-utils-1.1.5/aplay/aplay.c:1390: set_params: Assertion `err >= 0' failed.
-Aborted by signal Aborted...
-
-The following stack trace shows where the -EINVAL will be thrown:
-__snd_pcm_hw_params_set_period_size_near()
-snd1_pcm_hw_param_set_near()
-snd1_pcm_hw_param_set_last()
-snd1_pcm_hw_refine_slave()
-snd1_pcm_hw_refine_soft()
-snd_pcm_hw_rule_div()
-snd1_interval_refine()
-
-This issue exists due to PERIODS does not include 2
-Rule 9 (0xffff91d1f230): PERIODS=(0 9) -> (0 2) BUFFER_SIZE=[120 480]
-PERIOD_SIZE=(240 241)
-because of an invalid integer inverval of PERIOD_SIZE of (240 241).
-This interval is set by snd_interval_refine_last().
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
----
- src/pcm/interval.c | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
-
-diff --git a/src/pcm/interval.c b/src/pcm/interval.c
-index 95cedd5..ef4c2ed 100644
---- a/src/pcm/interval.c
-+++ b/src/pcm/interval.c
-@@ -200,27 +200,33 @@ int snd_interval_refine(snd_interval_t *i, const snd_interval_t *v)
- 
- int snd_interval_refine_first(snd_interval_t *i)
- {
-+	const unsigned int last_max = i->max;
-+
- 	if (snd_interval_empty(i))
- 		return -ENOENT;
- 	if (snd_interval_single(i))
- 		return 0;
- 	i->max = i->min;
--	i->openmax = i->openmin;
--	if (i->openmax)
-+	if (i->openmin)
- 		i->max++;
-+	/* only exclude max value if also excluded before refine */
-+	i->openmax = (i->openmax && i->max >= last_max);
- 	return 1;
- }
- 
- int snd_interval_refine_last(snd_interval_t *i)
- {
-+	const unsigned int last_min = i->min;
-+
- 	if (snd_interval_empty(i))
- 		return -ENOENT;
- 	if (snd_interval_single(i))
- 		return 0;
- 	i->min = i->max;
--	i->openmin = i->openmax;
--	if (i->openmin)
-+	if (i->openmax)
- 		i->min--;
-+	/* only exclude min value if also excluded before refine */
-+	i->openmin = (i->openmin && i->min <= last_min);
- 	return 1;
- }
- 
+--Shreyas
 -- 
-2.7.4
