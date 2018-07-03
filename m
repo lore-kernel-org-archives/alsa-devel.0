@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Simplify trigger handler" to the
-	asoc tree
-Date: Tue, 03 Jul 2018 16:34:11 +0100
-Message-ID: <E1faNJj-0003is-6E@debutante>
-References: <20180702211956.149355-6-djkurtz@chromium.org>
+Subject: Applied "ASoC: pxa-ssp: mark expected switch
+	fall-through" to the asoc tree
+Date: Tue, 03 Jul 2018 16:34:23 +0100
+Message-ID: <E1faNJv-0003pC-OK@debutante>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 23937267790
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 17:34:22 +0200 (CEST)
-In-Reply-To: <20180702211956.149355-6-djkurtz@chromium.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8914A26771C
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 17:34:26 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,14 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Kurtz <djkurtz@chromium.org>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Guenter Roeck <linux@roeck-us.net>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Simplify trigger handler
+   ASoC: pxa-ssp: mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -54,49 +52,31 @@ to this mail.
 Thanks,
 Mark
 
->From df61f9f76609456efbc60d495b3235baf7d07691 Mon Sep 17 00:00:00 2001
-From: Daniel Kurtz <djkurtz@chromium.org>
-Date: Mon, 2 Jul 2018 15:19:55 -0600
-Subject: [PATCH] ASoC: AMD: Simplify trigger handler
+>From e0431de301cbb8e3915261dfff4d0b072738de69 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Mon, 2 Jul 2018 07:17:07 -0500
+Subject: [PATCH] ASoC: pxa-ssp: mark expected switch fall-through
 
-Now that the I2S channel names are fixed, and DMA data flow order is
-consistent (ch1 then ch2), we can simplify channel start order:
-start the upstream channel and then the downstream channel for both
-playback and capture cases.
+In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+where we are expecting to fall through.
 
-Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+ sound/soc/pxa/pxa-ssp.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index ab60129f4f26..65c1033bd51c 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1024,10 +1024,7 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
- 	case SNDRV_PCM_TRIGGER_RESUME:
- 		rtd->bytescount = acp_get_byte_count(rtd);
--		if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK) {
--			acp_dma_start(rtd->acp_mmio, rtd->ch1);
--			acp_dma_start(rtd->acp_mmio, rtd->ch2);
--		} else {
-+		if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
- 			if (rtd->capture_channel == CAP_CHANNEL0) {
- 				acp_dma_cap_channel_disable(rtd->acp_mmio,
- 							    CAP_CHANNEL1);
-@@ -1040,9 +1037,9 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
- 				acp_dma_cap_channel_enable(rtd->acp_mmio,
- 							   CAP_CHANNEL1);
- 			}
--			acp_dma_start(rtd->acp_mmio, rtd->ch2);
--			acp_dma_start(rtd->acp_mmio, rtd->ch1);
- 		}
-+		acp_dma_start(rtd->acp_mmio, rtd->ch1);
-+		acp_dma_start(rtd->acp_mmio, rtd->ch2);
- 		ret = 0;
- 		break;
- 	case SNDRV_PCM_TRIGGER_STOP:
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index f8339bb01251..ff1e0bd8d407 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -470,6 +470,7 @@ static int pxa_ssp_configure_dai_fmt(struct ssp_priv *priv)
+ 
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		sspsp |= SSPSP_FSRT;
++		/* fall through */
+ 	case SND_SOC_DAIFMT_DSP_B:
+ 		sscr0 |= SSCR0_MOD | SSCR0_PSP;
+ 		sscr1 |= SSCR1_TRAIL | SSCR1_RWOT;
 -- 
 2.18.0.rc2
