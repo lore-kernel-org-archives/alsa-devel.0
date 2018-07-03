@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5682: add button detection mode
-	control" to the asoc tree
-Date: Tue, 03 Jul 2018 16:34:30 +0100
-Message-ID: <E1faNK2-0003tN-8x@debutante>
-References: <1530594445-30007-1-git-send-email-bardliao@realtek.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH v3 0/2] ASoC: add es7241 support
+Date: Tue, 03 Jul 2018 17:36:19 +0200
+Message-ID: <1530632179.2900.210.camel@baylibre.com>
+References: <20180703132845.26554-1-jbrunet@baylibre.com>
+ <20180703153212.GC13744@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DE83D26776A
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 17:34:53 +0200 (CEST)
-In-Reply-To: <1530594445-30007-1-git-send-email-bardliao@realtek.com>
+Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id D0C7426771C
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 17:36:20 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id n17-v6so2792612wmh.2
+ for <alsa-devel@alsa-project.org>; Tue, 03 Jul 2018 08:36:20 -0700 (PDT)
+In-Reply-To: <20180703153212.GC13744@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,83 +23,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, naveen.m@intel.com, flove@realtek.com
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, 2018-07-03 at 16:32 +0100, Mark Brown wrote:
+> On Tue, Jul 03, 2018 at 03:28:43PM +0200, Jerome Brunet wrote:
+> > Add support for the es7241 which is a simple 2 channels analog to
+> > digital converter.
+> 
+> Please don't resubmit patches that have already been applied, you should
+> submit patches against current code in the tree you're expecting things
+> to be applied to.  If any updates are needed to a patch that's already
+> been applied you should submit incremental patches which make those
+> updates.  This avoids having to change published git commits which could
+> cause problems for people working against git.
 
-   ASoC: rt5682: add button detection mode control
+Unless I missed something, which entirely possible, I don't think any patches of
+this series have been applied yet. You asked me resubmit after the v1 because of
+ power supply bindings and the mode selection.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 2daf3d9962c5a11fb79fe17bae03125df5d60236 Mon Sep 17 00:00:00 2001
-From: Bard Liao <bardliao@realtek.com>
-Date: Tue, 3 Jul 2018 13:07:25 +0800
-Subject: [PATCH] ASoC: rt5682: add button detection mode control
-
-We are currently using power saving mode for button detection.
-However, it will impact the headset recording performance.
-This patch will switch button detection to normal mode in capture
-and switch to power saving mode in the end of capture.
-
-Signed-off-by: Bard Liao <bardliao@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5682.c | 6 ++++++
- 1 file changed, 6 insertions(+)
-
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index baad177908ab..640d400ca013 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -857,6 +857,8 @@ static int rt5682_button_detect(struct snd_soc_component *component)
- 	btn_type = val & 0xfff0;
- 	snd_soc_component_write(component, RT5682_4BTN_IL_CMD_1, val);
- 	pr_debug("%s btn_type=%x\n", __func__, btn_type);
-+	snd_soc_component_update_bits(component,
-+		RT5682_SAR_IL_CMD_2, 0x10, 0x10);
- 
- 	return btn_type;
- }
-@@ -1645,6 +1647,8 @@ static const struct snd_soc_dapm_widget rt5682_dapm_widgets[] = {
- 	SND_SOC_DAPM_MIXER("Stereo1 ADC MIXR", RT5682_STO1_ADC_DIG_VOL,
- 		RT5682_R_MUTE_SFT, 1, rt5682_sto1_adc_r_mix,
- 		ARRAY_SIZE(rt5682_sto1_adc_r_mix)),
-+	SND_SOC_DAPM_SUPPLY("BTN Detection Mode", RT5682_SAR_IL_CMD_1,
-+		14, 1, NULL, 0),
- 
- 	/* ADC PGA */
- 	SND_SOC_DAPM_PGA("Stereo1 ADC MIX", SND_SOC_NOPM, 0, 0, NULL, 0),
-@@ -1807,6 +1811,8 @@ static const struct snd_soc_dapm_route rt5682_dapm_routes[] = {
- 	{"Stereo1 ADC MIXR", "ADC2 Switch", "Stereo1 ADC R2 Mux"},
- 	{"Stereo1 ADC MIXR", NULL, "ADC Stereo1 Filter"},
- 
-+	{"ADC Stereo1 Filter", NULL, "BTN Detection Mode"},
-+
- 	{"Stereo1 ADC MIX", NULL, "Stereo1 ADC MIXL"},
- 	{"Stereo1 ADC MIX", NULL, "Stereo1 ADC MIXR"},
- 
--- 
-2.18.0.rc2
+I don't see anything related to the es7241 in your tree ATM.
