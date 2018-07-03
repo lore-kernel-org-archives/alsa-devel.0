@@ -1,21 +1,22 @@
-From: "Nc, Shreyas" <shreyas.nc@intel.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Subject: Re: [PATCH v4 4/7] soundwire: Handle multiple master
  instances in a stream
-Date: Tue, 3 Jul 2018 16:03:10 +0000
-Message-ID: <78E8B3DDF116FF4CB089A311DDEB1B345204E483@BGSMSX103.gar.corp.intel.com>
+Date: Tue, 3 Jul 2018 13:59:26 -0500
+Message-ID: <dbde119d-5533-4872-5b8e-559d05322dfa@linux.intel.com>
 References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
  <1529924340-30065-5-git-send-email-shreyas.nc@intel.com>
  <a528936c-0685-726a-1606-9d9c53a696b1@linux.intel.com>
  <20180703011302.GH15119@snc-desk>
  <2fe08662-ad3e-7730-c053-37b729b0a45e@linux.intel.com>
+ <78E8B3DDF116FF4CB089A311DDEB1B345204E483@BGSMSX103.gar.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 2078F26735C
- for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 18:03:19 +0200 (CEST)
-In-Reply-To: <2fe08662-ad3e-7730-c053-37b729b0a45e@linux.intel.com>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8262B26735C
+ for <alsa-devel@alsa-project.org>; Tue,  3 Jul 2018 20:59:29 +0200 (CEST)
+In-Reply-To: <78E8B3DDF116FF4CB089A311DDEB1B345204E483@BGSMSX103.gar.corp.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,79 +27,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: "Nc, Shreyas" <shreyas.nc@intel.com>
 Cc: Patches Audio <patches.audio@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "vkoul@kernel.org" <vkoul@kernel.org>, "Kale,
  Sanyog R" <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-> >>> +	struct sdw_master_runtime *m_rt, *_m_rt;
-> >>> +
-> >>>   	mutex_lock(&bus->bus_lock);
-> >>> -	sdw_release_master_stream(stream);
-> >>> -	sdw_master_port_release(bus, stream->m_rt);
-> >>> -	stream->state = SDW_STREAM_RELEASED;
-> >>> -	kfree(stream->m_rt);
-> >>> -	stream->m_rt = NULL;
-> >>> +	list_for_each_entry_safe(m_rt, _m_rt,
-> >>> +			&stream->master_list, stream_node) {
-> >>> +
-> >>> +		if (m_rt->bus != bus)
-> >>> +			continue;
-> >>> +
-> >>> +		sdw_master_port_release(bus, m_rt);
-> >>> +		sdw_release_master_stream(m_rt, stream);
-> >>> +	}
-> >>> +
-> >>> +	if (list_empty(&stream->master_list))
-> >>> +		stream->state = SDW_STREAM_RELEASED;
-> >> When a master is removed, there is an explicit test to make sure the
-> >> stream state changes when there are no masters left in the list, but...
-> >>
-> >>>   	mutex_unlock(&bus->bus_lock);
-> >>> @@ -1127,7 +1169,7 @@ int sdw_stream_add_master(struct sdw_bus
-> *bus,
-> >>>   	stream->state = SDW_STREAM_CONFIGURED;
-> >> ... it's not symmetrical for the add_master case. The stream state
-> >> changes on the first added master. In addition the stream state
-> >> changes both when a slave is added and a master is added.
-> >> Is this intentional or not - and are there side effects resulting
-> >> from this inconsistency?
-> >>
-> >
-> > For remove_master, we already know the number of Masters in the stream
-> > and hence we change the state to RELEASED only when there are no
-> > Masters left in stream.
-> >
-> > But, in the add_master case, we have no idea on how many master
-> > instances are part of the stream and hence how many times add_master
-> would be called.
-> > So, we change the stream state to CONFIGURED when the first Master is
-> added.
-> > I can add a comment if that helps :)
-> 
-> I get the point, but you currently change the state for the first slave that's
-> added, so there is an inconsistency here (even before we add the multi-master
-> support).
-
-When we add a slave, we check if there is an existing m_rt for that bus instance
-and if It does not exist we create a m_rt for that master instance, add the slave
-runtime and change the state to CONFIGURED. So technically we still change
-the state after adding the first m_rt.
-
-> If I wanted to split hair I'd also note it's almost like the state is CONFIGURING
-> rather than CONFIGURED if you don't really control when all configurations are
-> complete at the bus level and depend on external transitions (e.g. DAPM/ALSA
-> initiated) to go in PREPARED mode.
-> 
-> >
-> > Yes, it is added intentionally (or rather because we could not think
-> > of any other suitable way) and we dont see any side effects. Anything
-> > that you could think of?
-> 
-> We should check what happens if the stream is removed before being enabled,
-> or all cases of testing stream->state.
-
-While releasing the stream we unconditionally clean up things without checking
-stream state. So, we should be fine that way. But, I can check these :)
-
---Shreyas
+CgpPbiAwNy8wMy8yMDE4IDExOjAzIEFNLCBOYywgU2hyZXlhcyB3cm90ZToKPj4+Pj4gKwlzdHJ1
+Y3Qgc2R3X21hc3Rlcl9ydW50aW1lICptX3J0LCAqX21fcnQ7Cj4+Pj4+ICsKPj4+Pj4gICAgCW11
+dGV4X2xvY2soJmJ1cy0+YnVzX2xvY2spOwo+Pj4+PiAtCXNkd19yZWxlYXNlX21hc3Rlcl9zdHJl
+YW0oc3RyZWFtKTsKPj4+Pj4gLQlzZHdfbWFzdGVyX3BvcnRfcmVsZWFzZShidXMsIHN0cmVhbS0+
+bV9ydCk7Cj4+Pj4+IC0Jc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJFQU1fUkVMRUFTRUQ7Cj4+Pj4+
+IC0Ja2ZyZWUoc3RyZWFtLT5tX3J0KTsKPj4+Pj4gLQlzdHJlYW0tPm1fcnQgPSBOVUxMOwo+Pj4+
+PiArCWxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZShtX3J0LCBfbV9ydCwKPj4+Pj4gKwkJCSZzdHJl
+YW0tPm1hc3Rlcl9saXN0LCBzdHJlYW1fbm9kZSkgewo+Pj4+PiArCj4+Pj4+ICsJCWlmIChtX3J0
+LT5idXMgIT0gYnVzKQo+Pj4+PiArCQkJY29udGludWU7Cj4+Pj4+ICsKPj4+Pj4gKwkJc2R3X21h
+c3Rlcl9wb3J0X3JlbGVhc2UoYnVzLCBtX3J0KTsKPj4+Pj4gKwkJc2R3X3JlbGVhc2VfbWFzdGVy
+X3N0cmVhbShtX3J0LCBzdHJlYW0pOwo+Pj4+PiArCX0KPj4+Pj4gKwo+Pj4+PiArCWlmIChsaXN0
+X2VtcHR5KCZzdHJlYW0tPm1hc3Rlcl9saXN0KSkKPj4+Pj4gKwkJc3RyZWFtLT5zdGF0ZSA9IFNE
+V19TVFJFQU1fUkVMRUFTRUQ7Cj4+Pj4gV2hlbiBhIG1hc3RlciBpcyByZW1vdmVkLCB0aGVyZSBp
+cyBhbiBleHBsaWNpdCB0ZXN0IHRvIG1ha2Ugc3VyZSB0aGUKPj4+PiBzdHJlYW0gc3RhdGUgY2hh
+bmdlcyB3aGVuIHRoZXJlIGFyZSBubyBtYXN0ZXJzIGxlZnQgaW4gdGhlIGxpc3QsIGJ1dC4uLgo+
+Pj4+Cj4+Pj4+ICAgIAltdXRleF91bmxvY2soJmJ1cy0+YnVzX2xvY2spOwo+Pj4+PiBAQCAtMTEy
+Nyw3ICsxMTY5LDcgQEAgaW50IHNkd19zdHJlYW1fYWRkX21hc3RlcihzdHJ1Y3Qgc2R3X2J1cwo+
+PiAqYnVzLAo+Pj4+PiAgICAJc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJFQU1fQ09ORklHVVJFRDsK
+Pj4+PiAuLi4gaXQncyBub3Qgc3ltbWV0cmljYWwgZm9yIHRoZSBhZGRfbWFzdGVyIGNhc2UuIFRo
+ZSBzdHJlYW0gc3RhdGUKPj4+PiBjaGFuZ2VzIG9uIHRoZSBmaXJzdCBhZGRlZCBtYXN0ZXIuIElu
+IGFkZGl0aW9uIHRoZSBzdHJlYW0gc3RhdGUKPj4+PiBjaGFuZ2VzIGJvdGggd2hlbiBhIHNsYXZl
+IGlzIGFkZGVkIGFuZCBhIG1hc3RlciBpcyBhZGRlZC4KPj4+PiBJcyB0aGlzIGludGVudGlvbmFs
+IG9yIG5vdCAtIGFuZCBhcmUgdGhlcmUgc2lkZSBlZmZlY3RzIHJlc3VsdGluZwo+Pj4+IGZyb20g
+dGhpcyBpbmNvbnNpc3RlbmN5Pwo+Pj4+Cj4+PiBGb3IgcmVtb3ZlX21hc3Rlciwgd2UgYWxyZWFk
+eSBrbm93IHRoZSBudW1iZXIgb2YgTWFzdGVycyBpbiB0aGUgc3RyZWFtCj4+PiBhbmQgaGVuY2Ug
+d2UgY2hhbmdlIHRoZSBzdGF0ZSB0byBSRUxFQVNFRCBvbmx5IHdoZW4gdGhlcmUgYXJlIG5vCj4+
+PiBNYXN0ZXJzIGxlZnQgaW4gc3RyZWFtLgo+Pj4KPj4+IEJ1dCwgaW4gdGhlIGFkZF9tYXN0ZXIg
+Y2FzZSwgd2UgaGF2ZSBubyBpZGVhIG9uIGhvdyBtYW55IG1hc3Rlcgo+Pj4gaW5zdGFuY2VzIGFy
+ZSBwYXJ0IG9mIHRoZSBzdHJlYW0gYW5kIGhlbmNlIGhvdyBtYW55IHRpbWVzIGFkZF9tYXN0ZXIK
+Pj4gd291bGQgYmUgY2FsbGVkLgo+Pj4gU28sIHdlIGNoYW5nZSB0aGUgc3RyZWFtIHN0YXRlIHRv
+IENPTkZJR1VSRUQgd2hlbiB0aGUgZmlyc3QgTWFzdGVyIGlzCj4+IGFkZGVkLgo+Pj4gSSBjYW4g
+YWRkIGEgY29tbWVudCBpZiB0aGF0IGhlbHBzIDopCj4+IEkgZ2V0IHRoZSBwb2ludCwgYnV0IHlv
+dSBjdXJyZW50bHkgY2hhbmdlIHRoZSBzdGF0ZSBmb3IgdGhlIGZpcnN0IHNsYXZlIHRoYXQncwo+
+PiBhZGRlZCwgc28gdGhlcmUgaXMgYW4gaW5jb25zaXN0ZW5jeSBoZXJlIChldmVuIGJlZm9yZSB3
+ZSBhZGQgdGhlIG11bHRpLW1hc3Rlcgo+PiBzdXBwb3J0KS4KPiBXaGVuIHdlIGFkZCBhIHNsYXZl
+LCB3ZSBjaGVjayBpZiB0aGVyZSBpcyBhbiBleGlzdGluZyBtX3J0IGZvciB0aGF0IGJ1cyBpbnN0
+YW5jZQo+IGFuZCBpZiBJdCBkb2VzIG5vdCBleGlzdCB3ZSBjcmVhdGUgYSBtX3J0IGZvciB0aGF0
+IG1hc3RlciBpbnN0YW5jZSwgYWRkIHRoZSBzbGF2ZQo+IHJ1bnRpbWUgYW5kIGNoYW5nZSB0aGUg
+c3RhdGUgdG8gQ09ORklHVVJFRC4gU28gdGVjaG5pY2FsbHkgd2Ugc3RpbGwgY2hhbmdlCj4gdGhl
+IHN0YXRlIGFmdGVyIGFkZGluZyB0aGUgZmlyc3QgbV9ydC4KCklmIHlvdSBtYWRlIG5vIGFzc3Vt
+cHRpb24gb24gdGhlIG9yZGVyIGluIHdoaWNoIHNsYXZlcyBhbmQgbWFzdGVycyBhcmUgCmFkZGVk
+IHRoZW4geW91IG5lZWQgdGhpcyBhc3NpZ25tZW50IHRvIENPTkZJR1VSRUQgdHdpY2UuIEJ1dCBp
+ZiB5b3Uga25vdyAKdGhlIHNsYXZlcyBhcmUgYWRkZWQgZmlyc3QgdGhlbiB0aGUgc2Vjb25kIGFz
+c2lnbm1lbnQgaXMgaXJyZWxldmFudC4KSXQncyBoYXJkIHRvIG1lbW9yaXplIHJlYWxseSBzaW5j
+ZSB0aGVyZSBhcmUgcGFydHMgd2hlcmUgeW91IGFzc3VtZSAKdGhpbmdzIGFyZSB0cmlnZ2VyZWQg
+YnkgZXh0ZXJuYWwgZXZlbnRzIGFuZCBvdGhlcnMgd2hlcmUgdGhlcmUgaXMgbm8gCmFzc3VtcHRp
+b24gb24gQVBJIHVzZS4uLgoKPgo+PiBJZiBJIHdhbnRlZCB0byBzcGxpdCBoYWlyIEknZCBhbHNv
+IG5vdGUgaXQncyBhbG1vc3QgbGlrZSB0aGUgc3RhdGUgaXMgQ09ORklHVVJJTkcKPj4gcmF0aGVy
+IHRoYW4gQ09ORklHVVJFRCBpZiB5b3UgZG9uJ3QgcmVhbGx5IGNvbnRyb2wgd2hlbiBhbGwgY29u
+ZmlndXJhdGlvbnMgYXJlCj4+IGNvbXBsZXRlIGF0IHRoZSBidXMgbGV2ZWwgYW5kIGRlcGVuZCBv
+biBleHRlcm5hbCB0cmFuc2l0aW9ucyAoZS5nLiBEQVBNL0FMU0EKPj4gaW5pdGlhdGVkKSB0byBn
+byBpbiBQUkVQQVJFRCBtb2RlLgo+Pgo+Pj4gWWVzLCBpdCBpcyBhZGRlZCBpbnRlbnRpb25hbGx5
+IChvciByYXRoZXIgYmVjYXVzZSB3ZSBjb3VsZCBub3QgdGhpbmsKPj4+IG9mIGFueSBvdGhlciBz
+dWl0YWJsZSB3YXkpIGFuZCB3ZSBkb250IHNlZSBhbnkgc2lkZSBlZmZlY3RzLiBBbnl0aGluZwo+
+Pj4gdGhhdCB5b3UgY291bGQgdGhpbmsgb2Y/Cj4+IFdlIHNob3VsZCBjaGVjayB3aGF0IGhhcHBl
+bnMgaWYgdGhlIHN0cmVhbSBpcyByZW1vdmVkIGJlZm9yZSBiZWluZyBlbmFibGVkLAo+PiBvciBh
+bGwgY2FzZXMgb2YgdGVzdGluZyBzdHJlYW0tPnN0YXRlLgo+IFdoaWxlIHJlbGVhc2luZyB0aGUg
+c3RyZWFtIHdlIHVuY29uZGl0aW9uYWxseSBjbGVhbiB1cCB0aGluZ3Mgd2l0aG91dCBjaGVja2lu
+Zwo+IHN0cmVhbSBzdGF0ZS4gU28sIHdlIHNob3VsZCBiZSBmaW5lIHRoYXQgd2F5LiBCdXQsIEkg
+Y2FuIGNoZWNrIHRoZXNlIDopCkEgcXVpY2sgY2hlY2sgZm9yIHN0cmVhbS0+c3RhdGUgZ2l2ZXMg
+bWUgdGhpczoKCiDCoMKgwqAgc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJFQU1fQ09ORklHVVJFRDsK
+CiA+Pj4gc28gaGVyZSBpdCdzIGEgc3VjY2VzcyBjYXNlIGJ1dCB3ZSBmYWxsYmFjayB0byBhbiBl
+cnJvciBjYXNlLi4uCgpzdHJlYW1fZXJyb3I6CiDCoMKgwqAgc2R3X3JlbGVhc2VfbWFzdGVyX3N0
+cmVhbShtX3J0LCBzdHJlYW0pOwplcnJvcjoKIMKgwqDCoCBtdXRleF91bmxvY2soJmJ1cy0+YnVz
+X2xvY2spOwogwqDCoMKgIHJldHVybiByZXQ7CgpZb3UgYXJlIHByb2JhYmx5IG1pc3NpbmcgYQoK
+IMKgwqDCoCBzdHJlYW0tPnN0YXRlID0gU0RXX1NUUkVBTV9DT05GSUdVUkVEOwogwqDCoMKgIGdv
+dG8gZXJyb3I7IC8vPDw8IEFkZCB0aGlzCgphcyBkb25lIGZvciB0aGUgc2xhdmU/CgpXb25kZXJp
+bmcgaG93IHRoaXMgZXZlciB3b3JrZWQsIHlvdSBtYXkgd2FudCB0byB0cmlwbGUtY2hlY2sgdGhl
+IHJlZ3VsYXIgCnN0cmVhbSBtYW5hZ2VtZW50IGJlZm9yZSBhZGRpbmcgdGhlIG11bHRpLW1hc3Rl
+ciBzdHVmZj8KCj4KPiAtLVNocmV5YXMKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFu
+L2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9q
+ZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8v
+YWxzYS1kZXZlbAo=
