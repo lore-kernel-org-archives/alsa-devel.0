@@ -1,40 +1,84 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 5/6] ASoC: qdsp6: q6afe-dai: do not close port if its not opened
-Date: Wed,  4 Jul 2018 10:49:43 +0100
-Message-ID: <20180704094944.16440-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 3/6] ASoC: qdsp6: q6routing: add slim rx
+	routings
+Date: Wed,  4 Jul 2018 10:49:41 +0100
+Message-ID: <20180704094944.16440-4-srinivas.kandagatla@linaro.org>
 References: <20180704094944.16440-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f52.google.com (mail-wm0-f52.google.com [74.125.82.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id CB5DB2676FB
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 11:51:56 +0200 (CEST)
+Received: by mail-wm0-f52.google.com with SMTP id w16-v6so5118615wmc.2
+ for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2018 02:51:56 -0700 (PDT)
 In-Reply-To: <20180704094944.16440-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: linux-arm-msm@vger.kernel.org, lgirdwood@gmail.com, bgoswami@codeaurora.org, tiwai@suse.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-afe ports are open as part of prepare, so for use cases like
-"aplay sample.wav" were sample.wav is not present. This would
-call port close eventhough port was never opened. DSP would
-return errors for such use cases.
-
-Avoid doing this by checking the port state.
+This patch add routings mixer controls for slim rx ports.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/qcom/qdsp6/q6routing.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index 074582afda85..e7f809e3ee1f 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -314,6 +314,9 @@ static void q6afe_dai_shutdown(struct snd_pcm_substream *substream,
- 	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
- 	int rc;
- 
-+	if (!dai_data->is_port_started[dai->id])
-+		return;
-+
- 	rc = q6afe_port_stop(dai_data->port[dai->id]);
- 	if (rc < 0)
- 		dev_err(dai->dev, "fail to close AFE port (%d)\n", rc);
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index c80fdbc2442e..35269b492761 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -68,6 +68,13 @@
+ 	{ mix_name, "SEC_MI2S_TX", "SEC_MI2S_TX" },	\
+ 	{ mix_name, "QUAT_MI2S_TX", "QUAT_MI2S_TX" },	\
+ 	{ mix_name, "TERT_MI2S_TX", "TERT_MI2S_TX" },		\
++	{ mix_name, "SLIMBUS_0_TX", "SLIMBUS_0_TX" },		\
++	{ mix_name, "SLIMBUS_1_TX", "SLIMBUS_1_TX" },		\
++	{ mix_name, "SLIMBUS_2_TX", "SLIMBUS_2_TX" },		\
++	{ mix_name, "SLIMBUS_3_TX", "SLIMBUS_3_TX" },		\
++	{ mix_name, "SLIMBUS_4_TX", "SLIMBUS_4_TX" },		\
++	{ mix_name, "SLIMBUS_5_TX", "SLIMBUS_5_TX" },		\
++	{ mix_name, "SLIMBUS_6_TX", "SLIMBUS_6_TX" },		\
+ 	{ mix_name, "PRIMARY_TDM_TX_0", "PRIMARY_TDM_TX_0"},	\
+ 	{ mix_name, "PRIMARY_TDM_TX_1", "PRIMARY_TDM_TX_1"},	\
+ 	{ mix_name, "PRIMARY_TDM_TX_2", "PRIMARY_TDM_TX_2"},	\
+@@ -122,6 +129,27 @@
+ 	SOC_SINGLE_EXT("QUAT_MI2S_TX", QUATERNARY_MI2S_TX,		\
+ 		id, 1, 0, msm_routing_get_audio_mixer,			\
+ 		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_0_TX", SLIMBUS_0_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_1_TX", SLIMBUS_1_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_2_TX", SLIMBUS_2_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_3_TX", SLIMBUS_3_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_4_TX", SLIMBUS_4_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_5_TX", SLIMBUS_5_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_6_TX", SLIMBUS_6_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
+ 	SOC_SINGLE_EXT("PRIMARY_TDM_TX_0", PRIMARY_TDM_TX_0,		\
+ 		id, 1, 0, msm_routing_get_audio_mixer,			\
+ 		msm_routing_put_audio_mixer),				\
 -- 
 2.16.2
