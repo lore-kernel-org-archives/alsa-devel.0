@@ -1,20 +1,17 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 4/6] ASoC: qdsp6: q6afe-dai: Do not overwrite
-	slim dai num_channels
-Date: Wed,  4 Jul 2018 10:49:42 +0100
-Message-ID: <20180704094944.16440-5-srinivas.kandagatla@linaro.org>
-References: <20180704094944.16440-1-srinivas.kandagatla@linaro.org>
+From: =?UTF-8?B?UmFwaGHDq2wgRGluZ8Op?= <raphael.dinge@ohmforce.com>
+Subject: Can't detect "XRUNs"
+Date: Wed, 4 Jul 2018 12:26:01 +0200
+Message-ID: <CAL-i0qF80jHGH_7Cwxik3HO86Ng3PZH18fxf0vABk4cMUY5OdQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr0-f195.google.com (mail-wr0-f195.google.com
- [209.85.128.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 945D126772D
- for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 11:51:57 +0200 (CEST)
-Received: by mail-wr0-f195.google.com with SMTP id j33-v6so4678950wrj.5
- for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2018 02:51:57 -0700 (PDT)
-In-Reply-To: <20180704094944.16440-1-srinivas.kandagatla@linaro.org>
+Received: from mail-oi0-f49.google.com (mail-oi0-f49.google.com
+ [209.85.218.49])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6A74267214
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 12:26:03 +0200 (CEST)
+Received: by mail-oi0-f49.google.com with SMTP id r16-v6so9799011oie.3
+ for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2018 03:26:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,29 +21,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, alsa-devel@alsa-project.org
-Cc: bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-num_channels for slim dais are aready set int set_channel_map,
-do not overwrite them in hw_params.
+Hi,
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/qdsp6/q6afe-dai.c | 1 -
- 1 file changed, 1 deletion(-)
+I don't get audio drop notification "XRUNs" in /proc/kmsg.
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index 8dd3683eb367..074582afda85 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -81,7 +81,6 @@ static int q6slim_hw_params(struct snd_pcm_substream *substream,
- 	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
- 	struct q6afe_slim_cfg *slim = &dai_data->port_config[dai->id].slim;
- 
--	slim->num_channels = params_channels(params);
- 	slim->sample_rate = params_rate(params);
- 
- 	switch (params_format(params)) {
--- 
-2.16.2
+Not sure if this is the right mailing list as maybe my question is
+more kernel related, but I'll try a shot here.
+
+I'm currently making a proof of concept to see if I can run a quite
+CPU hungry audio application running without audio drops over time
+given a set of tests. In particular I want to automate playback buffer
+underruns detection so that I don't have to sit and listen closely
+when they happen.
+
+With some very extreme tests, I can hear that there are audio drops
+all over the place.
+
+I have 2 audio cards in the system, one is audio over HDMI, and the
+other one is an USB audio card that supports audio class definition.
+In both case the sound is working as I would expect. The system itself
+is an Intel NUC i7.
+
+I configured the kernel with CONFIG_SND_DEBUG=y,
+CONFIG_SND_PCM_XRUN_DEBUG=y and CONFIG_SND_VERBOSE_PROCFS=y as well as
+echo 5 > /proc/asound/cardX/pcmYp/xrun_debug with X and Y the card and
+pcm stream of interest, and so hw:X,Y when opening the device with
+snd_pcm_open.
+
+Then I watch the output of the ksyslog interface using cat /proc/kmsg
+
+When an audio drop occurs, there is nothing about XRUNs or whatever it
+is called. I don't even know what kind of log message it should look
+like, and can't find it on google as well.
+
+With audio over HDMI, I have some occurence of ALSA: PCM: [Q] Lost
+interrupts? that seems more of less related to audio drops, but not
+always.
+With the USB audio card, I have nothing.
+
+I tried to write to the xrun_injection proc file in the stream, but
+nothing happens as well.
+
+Finally I log any occurence of snd_pcm_writei returning a negative
+number, but that never happens as well.
+
+Am I missing something completely?
+
+Thanks for any information on that matter,
+
+Raphael
