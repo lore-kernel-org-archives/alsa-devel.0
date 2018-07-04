@@ -1,14 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/4] ASoC: qcom: Use snd_pcm_stop_xrun() helper
-Date: Wed,  4 Jul 2018 16:01:44 +0200
-Message-ID: <20180704140146.6768-3-tiwai@suse.de>
+Subject: [PATCH 4/4] ASoC: stm32: Use snd_pcm_stop_xrun() helper
+Date: Wed,  4 Jul 2018 16:01:46 +0200
+Message-ID: <20180704140146.6768-5-tiwai@suse.de>
 References: <20180704140146.6768-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 306B326772D
+ by alsa0.perex.cz (Postfix) with ESMTP id 73B0E267732
  for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 16:01:50 +0200 (CEST)
 In-Reply-To: <20180704140146.6768-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,26 +25,30 @@ Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Alex
 List-Id: alsa-devel@alsa-project.org
 
 The XRUN trigger from the driver should be done via
-snd_pcm_stop_xrun().  It fixes the missing stream locking as a gratis,
-too.
+snd_pcm_stop_xrun().  It simplifies the locking as well.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/qcom/lpass-platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/stm/stm32_sai_sub.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/qcom/lpass-platform.c b/sound/soc/qcom/lpass-platform.c
-index 31fe78aa207f..d07271ea4c45 100644
---- a/sound/soc/qcom/lpass-platform.c
-+++ b/sound/soc/qcom/lpass-platform.c
-@@ -458,7 +458,7 @@ static irqreturn_t lpass_dma_interrupt_handler(
- 			return IRQ_NONE;
- 		}
- 		dev_warn(soc_runtime->dev, "xrun warning\n");
--		snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
-+		snd_pcm_stop_xrun(substream);
- 		ret = IRQ_HANDLED;
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index cfeb219e1d78..6fea8a684da2 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -259,11 +259,8 @@ static irqreturn_t stm32_sai_isr(int irq, void *devid)
+ 		status = SNDRV_PCM_STATE_XRUN;
  	}
  
+-	if (status != SNDRV_PCM_STATE_RUNNING) {
+-		snd_pcm_stream_lock(sai->substream);
+-		snd_pcm_stop(sai->substream, SNDRV_PCM_STATE_XRUN);
+-		snd_pcm_stream_unlock(sai->substream);
+-	}
++	if (status != SNDRV_PCM_STATE_RUNNING)
++		snd_pcm_stop_xrun(sai->substream);
+ 
+ 	return IRQ_HANDLED;
+ }
 -- 
 2.18.0
