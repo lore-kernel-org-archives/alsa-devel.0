@@ -1,23 +1,15 @@
-From: "Nc, Shreyas" <shreyas.nc@intel.com>
-Subject: Re: [PATCH v4 4/7] soundwire: Handle multiple master
- instances in a stream
-Date: Wed, 4 Jul 2018 00:17:35 +0000
-Message-ID: <78E8B3DDF116FF4CB089A311DDEB1B345204E530@BGSMSX103.gar.corp.intel.com>
-References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
- <1529924340-30065-5-git-send-email-shreyas.nc@intel.com>
- <a528936c-0685-726a-1606-9d9c53a696b1@linux.intel.com>
- <20180703011302.GH15119@snc-desk>
- <2fe08662-ad3e-7730-c053-37b729b0a45e@linux.intel.com>
- <78E8B3DDF116FF4CB089A311DDEB1B345204E483@BGSMSX103.gar.corp.intel.com>
- <dbde119d-5533-4872-5b8e-559d05322dfa@linux.intel.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH - JACK IO plug 1/1] pcm: ioplug: Provide
+ avail helper function for plugins
+Date: Wed, 4 Jul 2018 09:34:47 +0900
+Message-ID: <6496aaee-6158-d880-f683-29dc1d926887@sakamocchi.jp>
+References: <1530626363-8808-1-git-send-email-twischer@de.adit-jv.com>
+ <1530626363-8808-2-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 92C2A26771C
- for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 02:18:02 +0200 (CEST)
-In-Reply-To: <dbde119d-5533-4872-5b8e-559d05322dfa@linux.intel.com>
+In-Reply-To: <1530626363-8808-2-git-send-email-twischer@de.adit-jv.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,92 +20,112 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Patches Audio <patches.audio@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "vkoul@kernel.org" <vkoul@kernel.org>, "Kale,
- Sanyog R" <sanyog.r.kale@intel.com>
+To: twischer@de.adit-jv.com, patch@alsa-project.org, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-PiBPbiAwNy8wMy8yMDE4IDExOjAzIEFNLCBOYywgU2hyZXlhcyB3cm90ZToNCj4gPj4+Pj4gKwlz
-dHJ1Y3Qgc2R3X21hc3Rlcl9ydW50aW1lICptX3J0LCAqX21fcnQ7DQo+ID4+Pj4+ICsNCj4gPj4+
-Pj4gICAgCW11dGV4X2xvY2soJmJ1cy0+YnVzX2xvY2spOw0KPiA+Pj4+PiAtCXNkd19yZWxlYXNl
-X21hc3Rlcl9zdHJlYW0oc3RyZWFtKTsNCj4gPj4+Pj4gLQlzZHdfbWFzdGVyX3BvcnRfcmVsZWFz
-ZShidXMsIHN0cmVhbS0+bV9ydCk7DQo+ID4+Pj4+IC0Jc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJF
-QU1fUkVMRUFTRUQ7DQo+ID4+Pj4+IC0Ja2ZyZWUoc3RyZWFtLT5tX3J0KTsNCj4gPj4+Pj4gLQlz
-dHJlYW0tPm1fcnQgPSBOVUxMOw0KPiA+Pj4+PiArCWxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZSht
-X3J0LCBfbV9ydCwNCj4gPj4+Pj4gKwkJCSZzdHJlYW0tPm1hc3Rlcl9saXN0LCBzdHJlYW1fbm9k
-ZSkgew0KPiA+Pj4+PiArDQo+ID4+Pj4+ICsJCWlmIChtX3J0LT5idXMgIT0gYnVzKQ0KPiA+Pj4+
-PiArCQkJY29udGludWU7DQo+ID4+Pj4+ICsNCj4gPj4+Pj4gKwkJc2R3X21hc3Rlcl9wb3J0X3Jl
-bGVhc2UoYnVzLCBtX3J0KTsNCj4gPj4+Pj4gKwkJc2R3X3JlbGVhc2VfbWFzdGVyX3N0cmVhbSht
-X3J0LCBzdHJlYW0pOw0KPiA+Pj4+PiArCX0NCj4gPj4+Pj4gKw0KPiA+Pj4+PiArCWlmIChsaXN0
-X2VtcHR5KCZzdHJlYW0tPm1hc3Rlcl9saXN0KSkNCj4gPj4+Pj4gKwkJc3RyZWFtLT5zdGF0ZSA9
-IFNEV19TVFJFQU1fUkVMRUFTRUQ7DQo+ID4+Pj4gV2hlbiBhIG1hc3RlciBpcyByZW1vdmVkLCB0
-aGVyZSBpcyBhbiBleHBsaWNpdCB0ZXN0IHRvIG1ha2Ugc3VyZQ0KPiA+Pj4+IHRoZSBzdHJlYW0g
-c3RhdGUgY2hhbmdlcyB3aGVuIHRoZXJlIGFyZSBubyBtYXN0ZXJzIGxlZnQgaW4gdGhlIGxpc3Qs
-IGJ1dC4uLg0KPiA+Pj4+DQo+ID4+Pj4+ICAgIAltdXRleF91bmxvY2soJmJ1cy0+YnVzX2xvY2sp
-Ow0KPiA+Pj4+PiBAQCAtMTEyNyw3ICsxMTY5LDcgQEAgaW50IHNkd19zdHJlYW1fYWRkX21hc3Rl
-cihzdHJ1Y3Qgc2R3X2J1cw0KPiA+PiAqYnVzLA0KPiA+Pj4+PiAgICAJc3RyZWFtLT5zdGF0ZSA9
-IFNEV19TVFJFQU1fQ09ORklHVVJFRDsNCj4gPj4+PiAuLi4gaXQncyBub3Qgc3ltbWV0cmljYWwg
-Zm9yIHRoZSBhZGRfbWFzdGVyIGNhc2UuIFRoZSBzdHJlYW0gc3RhdGUNCj4gPj4+PiBjaGFuZ2Vz
-IG9uIHRoZSBmaXJzdCBhZGRlZCBtYXN0ZXIuIEluIGFkZGl0aW9uIHRoZSBzdHJlYW0gc3RhdGUN
-Cj4gPj4+PiBjaGFuZ2VzIGJvdGggd2hlbiBhIHNsYXZlIGlzIGFkZGVkIGFuZCBhIG1hc3RlciBp
-cyBhZGRlZC4NCj4gPj4+PiBJcyB0aGlzIGludGVudGlvbmFsIG9yIG5vdCAtIGFuZCBhcmUgdGhl
-cmUgc2lkZSBlZmZlY3RzIHJlc3VsdGluZw0KPiA+Pj4+IGZyb20gdGhpcyBpbmNvbnNpc3RlbmN5
-Pw0KPiA+Pj4+DQo+ID4+PiBGb3IgcmVtb3ZlX21hc3Rlciwgd2UgYWxyZWFkeSBrbm93IHRoZSBu
-dW1iZXIgb2YgTWFzdGVycyBpbiB0aGUNCj4gPj4+IHN0cmVhbSBhbmQgaGVuY2Ugd2UgY2hhbmdl
-IHRoZSBzdGF0ZSB0byBSRUxFQVNFRCBvbmx5IHdoZW4gdGhlcmUgYXJlDQo+ID4+PiBubyBNYXN0
-ZXJzIGxlZnQgaW4gc3RyZWFtLg0KPiA+Pj4NCj4gPj4+IEJ1dCwgaW4gdGhlIGFkZF9tYXN0ZXIg
-Y2FzZSwgd2UgaGF2ZSBubyBpZGVhIG9uIGhvdyBtYW55IG1hc3Rlcg0KPiA+Pj4gaW5zdGFuY2Vz
-IGFyZSBwYXJ0IG9mIHRoZSBzdHJlYW0gYW5kIGhlbmNlIGhvdyBtYW55IHRpbWVzIGFkZF9tYXN0
-ZXINCj4gPj4gd291bGQgYmUgY2FsbGVkLg0KPiA+Pj4gU28sIHdlIGNoYW5nZSB0aGUgc3RyZWFt
-IHN0YXRlIHRvIENPTkZJR1VSRUQgd2hlbiB0aGUgZmlyc3QgTWFzdGVyDQo+ID4+PiBpcw0KPiA+
-PiBhZGRlZC4NCj4gPj4+IEkgY2FuIGFkZCBhIGNvbW1lbnQgaWYgdGhhdCBoZWxwcyA6KQ0KPiA+
-PiBJIGdldCB0aGUgcG9pbnQsIGJ1dCB5b3UgY3VycmVudGx5IGNoYW5nZSB0aGUgc3RhdGUgZm9y
-IHRoZSBmaXJzdA0KPiA+PiBzbGF2ZSB0aGF0J3MgYWRkZWQsIHNvIHRoZXJlIGlzIGFuIGluY29u
-c2lzdGVuY3kgaGVyZSAoZXZlbiBiZWZvcmUgd2UNCj4gPj4gYWRkIHRoZSBtdWx0aS1tYXN0ZXIg
-c3VwcG9ydCkuDQo+ID4gV2hlbiB3ZSBhZGQgYSBzbGF2ZSwgd2UgY2hlY2sgaWYgdGhlcmUgaXMg
-YW4gZXhpc3RpbmcgbV9ydCBmb3IgdGhhdA0KPiA+IGJ1cyBpbnN0YW5jZSBhbmQgaWYgSXQgZG9l
-cyBub3QgZXhpc3Qgd2UgY3JlYXRlIGEgbV9ydCBmb3IgdGhhdCBtYXN0ZXINCj4gPiBpbnN0YW5j
-ZSwgYWRkIHRoZSBzbGF2ZSBydW50aW1lIGFuZCBjaGFuZ2UgdGhlIHN0YXRlIHRvIENPTkZJR1VS
-RUQuIFNvDQo+ID4gdGVjaG5pY2FsbHkgd2Ugc3RpbGwgY2hhbmdlIHRoZSBzdGF0ZSBhZnRlciBh
-ZGRpbmcgdGhlIGZpcnN0IG1fcnQuDQo+IA0KPiBJZiB5b3UgbWFkZSBubyBhc3N1bXB0aW9uIG9u
-IHRoZSBvcmRlciBpbiB3aGljaCBzbGF2ZXMgYW5kIG1hc3RlcnMgYXJlIGFkZGVkDQo+IHRoZW4g
-eW91IG5lZWQgdGhpcyBhc3NpZ25tZW50IHRvIENPTkZJR1VSRUQgdHdpY2UuIEJ1dCBpZiB5b3Ug
-a25vdyB0aGUgc2xhdmVzDQo+IGFyZSBhZGRlZCBmaXJzdCB0aGVuIHRoZSBzZWNvbmQgYXNzaWdu
-bWVudCBpcyBpcnJlbGV2YW50Lg0KPiBJdCdzIGhhcmQgdG8gbWVtb3JpemUgcmVhbGx5IHNpbmNl
-IHRoZXJlIGFyZSBwYXJ0cyB3aGVyZSB5b3UgYXNzdW1lIHRoaW5ncyBhcmUNCj4gdHJpZ2dlcmVk
-IGJ5IGV4dGVybmFsIGV2ZW50cyBhbmQgb3RoZXJzIHdoZXJlIHRoZXJlIGlzIG5vIGFzc3VtcHRp
-b24gb24gQVBJDQo+IHVzZS4uLg0KDQpPaywgd2lsbCBmaXggdGhpcy4gDQpWaW5vZCwgd291bGQg
-eW91IGxpa2UgdG8gaGF2ZSBhIHBhdGNoIGZvciBmaXhpbmcgdGhpcyBpbiB0aGUgc2FtZSBzZXJp
-ZXMgb3IgYQ0KcGF0Y2ggbGF0ZXIgb24gPw0KDQo+IA0KPiA+DQo+ID4+IElmIEkgd2FudGVkIHRv
-IHNwbGl0IGhhaXIgSSdkIGFsc28gbm90ZSBpdCdzIGFsbW9zdCBsaWtlIHRoZSBzdGF0ZSBpcw0K
-PiA+PiBDT05GSUdVUklORyByYXRoZXIgdGhhbiBDT05GSUdVUkVEIGlmIHlvdSBkb24ndCByZWFs
-bHkgY29udHJvbCB3aGVuDQo+ID4+IGFsbCBjb25maWd1cmF0aW9ucyBhcmUgY29tcGxldGUgYXQg
-dGhlIGJ1cyBsZXZlbCBhbmQgZGVwZW5kIG9uDQo+ID4+IGV4dGVybmFsIHRyYW5zaXRpb25zIChl
-LmcuIERBUE0vQUxTQQ0KPiA+PiBpbml0aWF0ZWQpIHRvIGdvIGluIFBSRVBBUkVEIG1vZGUuDQo+
-ID4+DQo+ID4+PiBZZXMsIGl0IGlzIGFkZGVkIGludGVudGlvbmFsbHkgKG9yIHJhdGhlciBiZWNh
-dXNlIHdlIGNvdWxkIG5vdCB0aGluaw0KPiA+Pj4gb2YgYW55IG90aGVyIHN1aXRhYmxlIHdheSkg
-YW5kIHdlIGRvbnQgc2VlIGFueSBzaWRlIGVmZmVjdHMuDQo+ID4+PiBBbnl0aGluZyB0aGF0IHlv
-dSBjb3VsZCB0aGluayBvZj8NCj4gPj4gV2Ugc2hvdWxkIGNoZWNrIHdoYXQgaGFwcGVucyBpZiB0
-aGUgc3RyZWFtIGlzIHJlbW92ZWQgYmVmb3JlIGJlaW5nDQo+ID4+IGVuYWJsZWQsIG9yIGFsbCBj
-YXNlcyBvZiB0ZXN0aW5nIHN0cmVhbS0+c3RhdGUuDQo+ID4gV2hpbGUgcmVsZWFzaW5nIHRoZSBz
-dHJlYW0gd2UgdW5jb25kaXRpb25hbGx5IGNsZWFuIHVwIHRoaW5ncyB3aXRob3V0DQo+ID4gY2hl
-Y2tpbmcgc3RyZWFtIHN0YXRlLiBTbywgd2Ugc2hvdWxkIGJlIGZpbmUgdGhhdCB3YXkuIEJ1dCwg
-SSBjYW4NCj4gPiBjaGVjayB0aGVzZSA6KQ0KPiBBIHF1aWNrIGNoZWNrIGZvciBzdHJlYW0tPnN0
-YXRlIGdpdmVzIG1lIHRoaXM6DQo+IA0KPiAgwqDCoMKgIHN0cmVhbS0+c3RhdGUgPSBTRFdfU1RS
-RUFNX0NPTkZJR1VSRUQ7DQo+IA0KPiAgPj4+IHNvIGhlcmUgaXQncyBhIHN1Y2Nlc3MgY2FzZSBi
-dXQgd2UgZmFsbGJhY2sgdG8gYW4gZXJyb3IgY2FzZS4uLg0KPiANCj4gc3RyZWFtX2Vycm9yOg0K
-PiAgwqDCoMKgIHNkd19yZWxlYXNlX21hc3Rlcl9zdHJlYW0obV9ydCwgc3RyZWFtKTsNCj4gZXJy
-b3I6DQo+ICDCoMKgwqAgbXV0ZXhfdW5sb2NrKCZidXMtPmJ1c19sb2NrKTsNCj4gIMKgwqDCoCBy
-ZXR1cm4gcmV0Ow0KPiANCj4gWW91IGFyZSBwcm9iYWJseSBtaXNzaW5nIGENCj4gDQo+ICDCoMKg
-wqAgc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJFQU1fQ09ORklHVVJFRDsNCj4gIMKgwqDCoCBnb3Rv
-IGVycm9yOyAvLzw8PCBBZGQgdGhpcw0KPiANCj4gYXMgZG9uZSBmb3IgdGhlIHNsYXZlPw0KPiAN
-Cj4gV29uZGVyaW5nIGhvdyB0aGlzIGV2ZXIgd29ya2VkLCB5b3UgbWF5IHdhbnQgdG8gdHJpcGxl
-LWNoZWNrIHRoZSByZWd1bGFyDQo+IHN0cmVhbSBtYW5hZ2VtZW50IGJlZm9yZSBhZGRpbmcgdGhl
-IG11bHRpLW1hc3RlciBzdHVmZj8NCg0KWWVzLCB5b3UgYXJlIHJpZ2h0LiBJdCB3b3JrcyBiZWNh
-dXNlIG9mIHRoZSBjaGFuZ2UgYmVpbmcgYSBwYXJ0IG9mIGFub3RoZXIgY2hhbmdlDQp0aGF0IGlz
-IHlldCB0byBiZSB1cCBzdHJlYW1lZCA6KA0KDQpXb25kZXJpbmcgaG93IHRoaXMgc2xpcHBlZCwg
-dGhpcyBzaG91bGQgaGF2ZSBiZWVuIHBhcnQgb2YgdGhlIHN0cmVhbSBzZXJpZXMgaXRzZWxmLg0K
-V2lsbCBmaXggdGhpcyB1cCA6KQ0KDQotLVNocmV5YXMNCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
-YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Iwai-san,
+
+On Jul 3 2018 22:59, twischer@de.adit-jv.com wrote:
+> From: Timo Wischer <twischer@de.adit-jv.com>
+> 
+> This function can be called without calling snd_pcm_avail_update().
+> 
+> The call to snd_pcm_avail_update() can take some time.
+> Therefore some developers would not like to call it from a real-time
+> context (e.g. from JACK client context).
+> 
+> Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+> 
+> diff --git a/include/pcm_ioplug.h b/include/pcm_ioplug.h
+> index c1310e3..b16fc8b 100644
+> --- a/include/pcm_ioplug.h
+> +++ b/include/pcm_ioplug.h
+> @@ -235,6 +235,9 @@ int snd_pcm_ioplug_set_param_list(snd_pcm_ioplug_t *io, int type, unsigned int n
+>   int snd_pcm_ioplug_set_state(snd_pcm_ioplug_t *ioplug, snd_pcm_state_t state);
+>   
+>   /* calucalte the available frames */
+> +snd_pcm_uframes_t snd_pcm_ioplug_avail(const snd_pcm_ioplug_t * const ioplug,
+> +				       const snd_pcm_uframes_t hw_ptr,
+> +				       const snd_pcm_uframes_t appl_ptr);
+>   snd_pcm_uframes_t snd_pcm_ioplug_hw_avail(const snd_pcm_ioplug_t * const ioplug,
+>   					  const snd_pcm_uframes_t hw_ptr,
+>   					  const snd_pcm_uframes_t appl_ptr);
+> diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
+> index 4d44ae2..6d52c27 100644
+> --- a/src/pcm/pcm_ioplug.c
+> +++ b/src/pcm/pcm_ioplug.c
+> @@ -1221,6 +1221,21 @@ int snd_pcm_ioplug_set_state(snd_pcm_ioplug_t *ioplug, snd_pcm_state_t state)
+>    * \param ioplug the ioplug handle
+>    * \param hw_ptr hardware pointer in frames
+>    * \param appl_ptr application pointer in frames
+> + * \return available frames for the application
+> + */
+> +snd_pcm_uframes_t snd_pcm_ioplug_avail(const snd_pcm_ioplug_t * const ioplug,
+> +				       const snd_pcm_uframes_t hw_ptr,
+> +				       const snd_pcm_uframes_t appl_ptr)
+> +{
+> +	return __snd_pcm_avail(ioplug->pcm, hw_ptr, appl_ptr);
+> +}
+> +
+> +/**
+> + * \brief Get the available frames. This function can be used to calculate the
+> + * the available frames before calling #snd_pcm_avail_update()
+> + * \param ioplug the ioplug handle
+> + * \param hw_ptr hardware pointer in frames
+> + * \param appl_ptr application pointer in frames
+>    * \return available frames for the hardware
+>    */
+>   snd_pcm_uframes_t snd_pcm_ioplug_hw_avail(const snd_pcm_ioplug_t * const ioplug,
+> @@ -1230,8 +1245,9 @@ snd_pcm_uframes_t snd_pcm_ioplug_hw_avail(const snd_pcm_ioplug_t * const ioplug,
+>   	/* available data/space which can be transferred by the user
+>   	 * application
+>   	 */
+> -	const snd_pcm_uframes_t user_avail = __snd_pcm_avail(ioplug->pcm,
+> -							     hw_ptr, appl_ptr);
+> +	const snd_pcm_uframes_t user_avail = snd_pcm_ioplug_avail(ioplug,
+> +								  hw_ptr,
+> +								  appl_ptr);
+>   
+>   	if (user_avail > ioplug->pcm->buffer_size) {
+>   		/* there was an Xrun */
+
+I have a question about maintenance policy of this library to update 
+version script for GNU Linker (ld) when introducing new symbols. The 
+version script is not updated since node name as 'ALSA_0.9.7'. The newly
+intduced symbol, 'snd_pcm_ioplug_hw_avail' is in node name of
+'ALSA_0.9'.
+
+```
+$ readelf -s src/.libs/libasound.so.2.0.0 | grep snd_pcm_ioplug_hw_avail
+   1254: 000000000009bfe0    40 FUNC    GLOBAL DEFAULT   13 
+snd_pcm_ioplug_hw_avail@@ALSA_0.9
+   3840: 000000000009bfe0    40 FUNC    GLOBAL DEFAULT   13 
+snd_pcm_ioplug_hw_avail
+```
+
+The last node name is 'ALSA_1.1.6':
+
+```
+$ tail -n 10 src/Versions.in
+   global:
+
+     @SYMBOL_PREFIX@alsa_lisp_*;
+} ALSA_0.9.5;
+
+ALSA_1.1.6 {
+   global:
+
+     @SYMBOL_PREFIX@snd_dlopen;
+} ALSA_0.9.7;
+```
+
+Practically this brings no issue, but theoretically the newly introduced 
+symbol should be in a new node name next to ALSA_1.1.6. I'm not so 
+strict in this point, but it's better to decide maintenance policy 
+(because I've added some APIs in recent years).
+
+
+Regards
+
+Takashi Sakamoto
