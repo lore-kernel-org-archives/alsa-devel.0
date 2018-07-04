@@ -1,43 +1,74 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ASoC: nau8825: use 64-bit arithmetic instead of 32-bit
-Date: Wed, 4 Jul 2018 09:28:28 -0500
-Message-ID: <20180704142828.GA11007@embeddedor.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: qdsp6: q6asm-dai: do not close port if its not opened" to the asoc tree
+Date: Wed, 04 Jul 2018 15:35:24 +0100
+Message-ID: <E1faisO-0003OI-Mz@debutante>
+References: <20180704094944.16440-7-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <20180704094944.16440-7-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Add suffix ULL to constant 256 in order to give the compiler complete
-information about the proper arithmetic to use.
+The patch
 
-Notice that such constant is used in a context that expects an
-expression of type u64 (64 bits, unsigned) and the following
-expression is currently being evaluated using 32-bit arithmetic:
+   ASoC: qdsp6: q6asm-dai: do not close port if its not opened
 
-256 * fs * 2 * mclk_src_scaling[i].param
+has been applied to the asoc tree at
 
-Addresses-Coverity-ID: 1339616 ("Unintentional integer overflow")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 5dffc1752cabde6396fca28ff8343febfa524512 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Wed, 4 Jul 2018 10:49:44 +0100
+Subject: [PATCH] ASoC: qdsp6: q6asm-dai: do not close port if its not opened
+
+asm ports are open as part of prepare, so for use cases like
+"aplay sample.wav" were sample.wav is not present. This would
+call port close eventhough port was never opened. DSP would
+return errors for such use cases.
+
+Avoid doing this by checking the port state.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/nau8825.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index dc6ea49..b9fed99 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -2016,7 +2016,7 @@ static int nau8825_calc_fll_param(unsigned int fll_in, unsigned int fs,
- 	fvco_max = 0;
- 	fvco_sel = ARRAY_SIZE(mclk_src_scaling);
- 	for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
--		fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
-+		fvco = 256ULL * fs * 2 * mclk_src_scaling[i].param;
- 		if (fvco > NAU_FVCO_MIN && fvco < NAU_FVCO_MAX &&
- 			fvco_max < fvco) {
- 			fvco_max = fvco;
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index 349c6a883c63..360936703b3d 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -390,7 +390,9 @@ static int q6asm_dai_close(struct snd_pcm_substream *substream)
+ 	struct q6asm_dai_rtd *prtd = runtime->private_data;
+ 
+ 	if (prtd->audio_client) {
+-		q6asm_cmd(prtd->audio_client, CMD_CLOSE);
++		if (prtd->state)
++			q6asm_cmd(prtd->audio_client, CMD_CLOSE);
++
+ 		q6asm_unmap_memory_regions(substream->stream,
+ 					   prtd->audio_client);
+ 		q6asm_audio_client_free(prtd->audio_client);
 -- 
-2.7.4
+2.18.0.rc2
