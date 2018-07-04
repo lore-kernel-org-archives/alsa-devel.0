@@ -1,18 +1,26 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nau8825: use 64-bit arithmetic instead
-	of 32-bit" to the asoc tree
-Date: Wed, 04 Jul 2018 15:42:13 +0100
-Message-ID: <E1faiyz-00044f-HH@debutante>
-References: <20180704142828.GA11007@embeddedor.com>
+From: =?UTF-8?B?UmFwaGHDq2wgRGluZ8Op?= <raphael.dinge@ohmforce.com>
+Subject: Re: Can't detect "XRUNs"
+Date: Wed, 4 Jul 2018 17:11:17 +0200
+Message-ID: <CAL-i0qEuJda-YRFUn6EMg2eiBMRq4+nnju4r=T1dnUEZBuFA8Q@mail.gmail.com>
+References: <CAL-i0qF80jHGH_7Cwxik3HO86Ng3PZH18fxf0vABk4cMUY5OdQ@mail.gmail.com>
+ <s5hwoubwar6.wl-tiwai@suse.de>
+ <CAL-i0qFbukDczTtgnkbfpE=Giu6piv6dvcMi-D=QtnYy69Q5FQ@mail.gmail.com>
+ <CAL-i0qERNjW-0kUE5xj8u2roCU0p0wVmscKiqUV7pxiFtO84mQ@mail.gmail.com>
+ <s5hk1qbw37u.wl-tiwai@suse.de>
+ <CAL-i0qHv-W0Qva1QW6FUUj04P=F41_Q4X1TWaYoZXCjHB7bXoA@mail.gmail.com>
+ <s5hd0w3w132.wl-tiwai@suse.de>
+ <CAL-i0qGLuuOCtSCOwUxFnHfPD9ub5Zvk-0L54+6SxHkZhAFP0w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D7EE22677A5
- for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 16:42:19 +0200 (CEST)
-In-Reply-To: <20180704142828.GA11007@embeddedor.com>
+Received: from mail-oi0-f47.google.com (mail-oi0-f47.google.com
+ [209.85.218.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FFFC2670D7
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 17:11:18 +0200 (CEST)
+Received: by mail-oi0-f47.google.com with SMTP id n84-v6so11305538oib.9
+ for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2018 08:11:18 -0700 (PDT)
+In-Reply-To: <CAL-i0qGLuuOCtSCOwUxFnHfPD9ub5Zvk-0L54+6SxHkZhAFP0w@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,69 +30,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+> I'm going back to the program to see if there is anything suspect.
 
-   ASoC: nau8825: use 64-bit arithmetic instead of 32-bit
+So I got back to the program and put a bit more logging. I have new
+results, but they are even more confusing.
 
-has been applied to the asoc tree at
+Here is the part that writes to the buffer :
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+    snd_pcm_wait(pcm, 1000 /* milliseconds */);
+    snd_pcm_sframes_t avail = snd_pcm_avail_update(pcm);
+    if (avail < 0)
+    {
+      std::cout << "snd_pcm_avail_update failed\n";
+      snd_pcm_recover (pcm, avail, 1);
+   }
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+    snd_pcm_sframes_t nb_written = snd_pcm_writei(pcm, &buffer[0],
+frames_per_buffer);
+    if (nb_written < 0) {
+      std::cout << "snd_pcm_writei failed\n";
+      snd_pcm_recover(pcm, nb_written, 1 /* silent */);
+      xrun_count++;
+    }
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Not sure if this is the proper way, didn't write it myself, but looks
+more or less legit.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+When I launch the program, nothing is output to the console.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+But! If I echo 1 > xrun_injection, then I have "snd_pcm_avail_update
+failed" systematically.
+
+However at the same time, no events are traces in
+/sys/kernel/debug/tracing/trace
+
+Then the program itself is always dropping audio. In /proc/kmsg I see
+messages about lost interrupts and callback suppression.
+
+Does it ring a bell?
+
+I'm using kernel 4.17.2
+http://kernel.org/pub/linux/kernel/v4.x/linux-4.17.2.tar.xz
+
+With glibc 2.27
+http://ftp.gnu.org/gnu/glibc/glibc-2.27.tar.bz2
+
+With Alsa 1.1.6
+http://www.mirrorservice.org/sites/ftp.alsa-project.org/pub/lib/alsa-lib-1.1.6.tar.bz2
 
 Thanks,
-Mark
 
->From da13ed1d80fe6a4d95043aaf2e0aff292ade5708 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Wed, 4 Jul 2018 09:28:28 -0500
-Subject: [PATCH] ASoC: nau8825: use 64-bit arithmetic instead of 32-bit
-
-Add suffix ULL to constant 256 in order to give the compiler complete
-information about the proper arithmetic to use.
-
-Notice that such constant is used in a context that expects an
-expression of type u64 (64 bits, unsigned) and the following
-expression is currently being evaluated using 32-bit arithmetic:
-
-256 * fs * 2 * mclk_src_scaling[i].param
-
-Addresses-Coverity-ID: 1339616 ("Unintentional integer overflow")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/nau8825.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
-index dc6ea4987b7d..b9fed99d8b5e 100644
---- a/sound/soc/codecs/nau8825.c
-+++ b/sound/soc/codecs/nau8825.c
-@@ -2016,7 +2016,7 @@ static int nau8825_calc_fll_param(unsigned int fll_in, unsigned int fs,
- 	fvco_max = 0;
- 	fvco_sel = ARRAY_SIZE(mclk_src_scaling);
- 	for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
--		fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
-+		fvco = 256ULL * fs * 2 * mclk_src_scaling[i].param;
- 		if (fvco > NAU_FVCO_MIN && fvco < NAU_FVCO_MAX &&
- 			fvco_max < fvco) {
- 			fvco_max = fvco;
--- 
-2.18.0.rc2
+Raphael
