@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci: Use snd_pcm_stop_xrun()
-	helper" to the asoc tree
-Date: Wed, 04 Jul 2018 15:42:11 +0100
-Message-ID: <E1faiyx-00043h-B6@debutante>
-References: <20180704140146.6768-2-tiwai@suse.de>
+Subject: Applied "ASoC: nau8825: use 64-bit arithmetic instead
+	of 32-bit" to the asoc tree
+Date: Wed, 04 Jul 2018 15:42:13 +0100
+Message-ID: <E1faiyz-00044f-HH@debutante>
+References: <20180704142828.GA11007@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 01FFC267796
- for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 16:42:14 +0200 (CEST)
-In-Reply-To: <20180704140146.6768-2-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id D7EE22677A5
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 16:42:19 +0200 (CEST)
+In-Reply-To: <20180704142828.GA11007@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Alexandre Torgue <alexandre.torgue@st.com>, Patrick Lai <plai@codeaurora.org>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci: Use snd_pcm_stop_xrun() helper
+   ASoC: nau8825: use 64-bit arithmetic instead of 32-bit
 
 has been applied to the asoc tree at
 
@@ -53,53 +52,39 @@ to this mail.
 Thanks,
 Mark
 
->From dae35d1f4f7dab9ccef20037df91c43e680bad0f Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 4 Jul 2018 16:01:43 +0200
-Subject: [PATCH] ASoC: davinci: Use snd_pcm_stop_xrun() helper
+>From da13ed1d80fe6a4d95043aaf2e0aff292ade5708 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Wed, 4 Jul 2018 09:28:28 -0500
+Subject: [PATCH] ASoC: nau8825: use 64-bit arithmetic instead of 32-bit
 
-Replace open-codes with the standard snd_pcm_stop_xrun() helper.
-It simplifies codes a lot.
+Add suffix ULL to constant 256 in order to give the compiler complete
+information about the proper arithmetic to use.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Notice that such constant is used in a context that expects an
+expression of type u64 (64 bits, unsigned) and the following
+expression is currently being evaluated using 32-bit arithmetic:
+
+256 * fs * 2 * mclk_src_scaling[i].param
+
+Addresses-Coverity-ID: 1339616 ("Unintentional integer overflow")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-mcasp.c | 16 ++++------------
- 1 file changed, 4 insertions(+), 12 deletions(-)
+ sound/soc/codecs/nau8825.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
-index 47c0c821d325..f70db8412c7c 100644
---- a/sound/soc/davinci/davinci-mcasp.c
-+++ b/sound/soc/davinci/davinci-mcasp.c
-@@ -320,12 +320,8 @@ static irqreturn_t davinci_mcasp_tx_irq_handler(int irq, void *data)
- 		handled_mask |= XUNDRN;
- 
- 		substream = mcasp->substreams[SNDRV_PCM_STREAM_PLAYBACK];
--		if (substream) {
--			snd_pcm_stream_lock_irq(substream);
--			if (snd_pcm_running(substream))
--				snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
--			snd_pcm_stream_unlock_irq(substream);
--		}
-+		if (substream)
-+			snd_pcm_stop_xrun(substream);
- 	}
- 
- 	if (!handled_mask)
-@@ -355,12 +351,8 @@ static irqreturn_t davinci_mcasp_rx_irq_handler(int irq, void *data)
- 		handled_mask |= ROVRN;
- 
- 		substream = mcasp->substreams[SNDRV_PCM_STREAM_CAPTURE];
--		if (substream) {
--			snd_pcm_stream_lock_irq(substream);
--			if (snd_pcm_running(substream))
--				snd_pcm_stop(substream, SNDRV_PCM_STATE_XRUN);
--			snd_pcm_stream_unlock_irq(substream);
--		}
-+		if (substream)
-+			snd_pcm_stop_xrun(substream);
- 	}
- 
- 	if (!handled_mask)
+diff --git a/sound/soc/codecs/nau8825.c b/sound/soc/codecs/nau8825.c
+index dc6ea4987b7d..b9fed99d8b5e 100644
+--- a/sound/soc/codecs/nau8825.c
++++ b/sound/soc/codecs/nau8825.c
+@@ -2016,7 +2016,7 @@ static int nau8825_calc_fll_param(unsigned int fll_in, unsigned int fs,
+ 	fvco_max = 0;
+ 	fvco_sel = ARRAY_SIZE(mclk_src_scaling);
+ 	for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
+-		fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
++		fvco = 256ULL * fs * 2 * mclk_src_scaling[i].param;
+ 		if (fvco > NAU_FVCO_MIN && fvco < NAU_FVCO_MAX &&
+ 			fvco_max < fvco) {
+ 			fvco_max = fvco;
 -- 
 2.18.0.rc2
