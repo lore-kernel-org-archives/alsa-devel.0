@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6afe-dai: Do not overwrite slim dai num_channels" to the asoc tree
-Date: Wed, 04 Jul 2018 15:41:55 +0100
-Message-ID: <E1faiyh-0003wX-4A@debutante>
-References: <20180704094944.16440-5-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180704094944.16440-5-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: Applied "ASoC: qdsp6: q6routing: add slim rx routings"
+	to the asoc tree
+Date: Wed, 04 Jul 2018 15:41:57 +0100
+Message-ID: <E1faiyj-0003xf-9K@debutante>
+References: <20180704094944.16440-4-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F8032670D7
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 16:42:03 +0200 (CEST)
+In-Reply-To: <20180704094944.16440-4-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.orgalsa-devel@alsa-project.org
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-arm-msm@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6afe-dai: Do not overwrite slim dai num_channels
+   ASoC: qdsp6: q6routing: add slim rx routings
 
 has been applied to the asoc tree at
 
@@ -37,32 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From f1478a1476d45c5d7b070c726f46a7b581d3103c Mon Sep 17 00:00:00 2001
+>From 9191ffe2d212f64aa2ec311f4294ba7066d1f8a1 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Wed, 4 Jul 2018 10:49:42 +0100
-Subject: [PATCH] ASoC: qdsp6: q6afe-dai: Do not overwrite slim dai
- num_channels
+Date: Wed, 4 Jul 2018 10:49:41 +0100
+Subject: [PATCH] ASoC: qdsp6: q6routing: add slim rx routings
 
-num_channels for slim dais are aready set int set_channel_map,
-do not overwrite them in hw_params.
+This patch add routings mixer controls for slim rx ports.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index 8dd3683eb367..074582afda85 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -81,7 +81,6 @@ static int q6slim_hw_params(struct snd_pcm_substream *substream,
- 	struct q6afe_dai_data *dai_data = dev_get_drvdata(dai->dev);
- 	struct q6afe_slim_cfg *slim = &dai_data->port_config[dai->id].slim;
- 
--	slim->num_channels = params_channels(params);
- 	slim->sample_rate = params_rate(params);
- 
- 	switch (params_format(params)) {
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index c80fdbc2442e..35269b492761 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -68,6 +68,13 @@
+ 	{ mix_name, "SEC_MI2S_TX", "SEC_MI2S_TX" },	\
+ 	{ mix_name, "QUAT_MI2S_TX", "QUAT_MI2S_TX" },	\
+ 	{ mix_name, "TERT_MI2S_TX", "TERT_MI2S_TX" },		\
++	{ mix_name, "SLIMBUS_0_TX", "SLIMBUS_0_TX" },		\
++	{ mix_name, "SLIMBUS_1_TX", "SLIMBUS_1_TX" },		\
++	{ mix_name, "SLIMBUS_2_TX", "SLIMBUS_2_TX" },		\
++	{ mix_name, "SLIMBUS_3_TX", "SLIMBUS_3_TX" },		\
++	{ mix_name, "SLIMBUS_4_TX", "SLIMBUS_4_TX" },		\
++	{ mix_name, "SLIMBUS_5_TX", "SLIMBUS_5_TX" },		\
++	{ mix_name, "SLIMBUS_6_TX", "SLIMBUS_6_TX" },		\
+ 	{ mix_name, "PRIMARY_TDM_TX_0", "PRIMARY_TDM_TX_0"},	\
+ 	{ mix_name, "PRIMARY_TDM_TX_1", "PRIMARY_TDM_TX_1"},	\
+ 	{ mix_name, "PRIMARY_TDM_TX_2", "PRIMARY_TDM_TX_2"},	\
+@@ -122,6 +129,27 @@
+ 	SOC_SINGLE_EXT("QUAT_MI2S_TX", QUATERNARY_MI2S_TX,		\
+ 		id, 1, 0, msm_routing_get_audio_mixer,			\
+ 		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_0_TX", SLIMBUS_0_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_1_TX", SLIMBUS_1_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_2_TX", SLIMBUS_2_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_3_TX", SLIMBUS_3_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_4_TX", SLIMBUS_4_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_5_TX", SLIMBUS_5_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
++	SOC_SINGLE_EXT("SLIMBUS_6_TX", SLIMBUS_6_TX,			\
++		id, 1, 0, msm_routing_get_audio_mixer,			\
++		msm_routing_put_audio_mixer),				\
+ 	SOC_SINGLE_EXT("PRIMARY_TDM_TX_0", PRIMARY_TDM_TX_0,		\
+ 		id, 1, 0, msm_routing_get_audio_mixer,			\
+ 		msm_routing_put_audio_mixer),				\
 -- 
 2.18.0.rc2
