@@ -1,18 +1,23 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 3/3] ASoC: Intel: bytcr_rt5651: Add
- support for externar amplifier enable GPIO
-Date: Tue, 3 Jul 2018 19:14:51 -0500
-Message-ID: <c456352b-ebb9-7b41-acf2-e1935ecc5633@linux.intel.com>
-References: <20180701183631.5532-1-hdegoede@redhat.com>
- <20180701183631.5532-3-hdegoede@redhat.com>
+From: "Nc, Shreyas" <shreyas.nc@intel.com>
+Subject: Re: [PATCH v4 4/7] soundwire: Handle multiple master
+ instances in a stream
+Date: Wed, 4 Jul 2018 00:17:35 +0000
+Message-ID: <78E8B3DDF116FF4CB089A311DDEB1B345204E530@BGSMSX103.gar.corp.intel.com>
+References: <1529924340-30065-1-git-send-email-shreyas.nc@intel.com>
+ <1529924340-30065-5-git-send-email-shreyas.nc@intel.com>
+ <a528936c-0685-726a-1606-9d9c53a696b1@linux.intel.com>
+ <20180703011302.GH15119@snc-desk>
+ <2fe08662-ad3e-7730-c053-37b729b0a45e@linux.intel.com>
+ <78E8B3DDF116FF4CB089A311DDEB1B345204E483@BGSMSX103.gar.corp.intel.com>
+ <dbde119d-5533-4872-5b8e-559d05322dfa@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id C424D26735C
- for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 02:14:55 +0200 (CEST)
-In-Reply-To: <20180701183631.5532-3-hdegoede@redhat.com>
+Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92C2A26771C
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 02:18:02 +0200 (CEST)
+In-Reply-To: <dbde119d-5533-4872-5b8e-559d05322dfa@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,152 +28,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Patches Audio <patches.audio@intel.com>, "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "vkoul@kernel.org" <vkoul@kernel.org>, "Kale,
+ Sanyog R" <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/1/18 1:36 PM, Hans de Goede wrote:
-> The rt5651 does not have a built-in speaker amplifier, so it is often
-> used together with an external amplifier. On Cherry Trail boards this
-> external amplifier's enable pin is driven through a GPIO, which is
-> given as the first GPIO in the ACPI resources of the codec fwnode.
-> 
-> This commit adds support to the bytcr_rt5651 for this GPIO, fixing
-> the speaker not working on CHT devices with a rt5651 codec.
-
-ALl this GPIO/ACPI stuff is a bit beyond my understanding. My only 
-comment is "how would this work on Baytrail"? There are clearly a set of 
-devices which use the SSP0 routing - so Baytrail-CR packages, it's not 
-clear to me how the amplifier is controlled in those cases?
-
-> 
-> Cc: Carlo Caione <carlo@endlessm.com>
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-> ---
-> Changes in v2:
-> -Handle the ext amp GPIO entirely in the machine driver, the ext-amp is
->   not part of the codec, so it should not be controlled by the codec driver
-> ---
->   sound/soc/intel/boards/bytcr_rt5651.c | 65 +++++++++++++++++++++++++--
->   1 file changed, 62 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-> index d920725ce603..5301205496be 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5651.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-> @@ -26,6 +26,8 @@
->   #include <linux/clk.h>
->   #include <linux/device.h>
->   #include <linux/dmi.h>
-> +#include <linux/gpio/consumer.h>
-> +#include <linux/gpio/machine.h>
->   #include <linux/slab.h>
->   #include <asm/cpu_device_id.h>
->   #include <asm/intel-family.h>
-> @@ -86,6 +88,7 @@ enum {
->   
->   struct byt_rt5651_private {
->   	struct clk *mclk;
-> +	struct gpio_desc *ext_amp_gpio;
->   	struct snd_soc_jack jack;
->   };
->   
-> @@ -208,6 +211,20 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
->   	return 0;
->   }
->   
-> +static int rt5651_ext_amp_power_event(struct snd_soc_dapm_widget *w,
-> +	struct snd_kcontrol *kcontrol, int event)
-> +{
-> +	struct snd_soc_card *card = w->dapm->card;
-> +	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
-> +
-> +	if (SND_SOC_DAPM_EVENT_ON(event))
-> +		gpiod_set_value_cansleep(priv->ext_amp_gpio, 1);
-> +	else
-> +		gpiod_set_value_cansleep(priv->ext_amp_gpio, 0);
-> +
-> +	return 0;
-> +}
-> +
->   static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
->   	SND_SOC_DAPM_HP("Headphone", NULL),
->   	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-> @@ -217,7 +234,9 @@ static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
->   	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
->   			    platform_clock_control, SND_SOC_DAPM_PRE_PMU |
->   			    SND_SOC_DAPM_POST_PMD),
-> -
-> +	SND_SOC_DAPM_SUPPLY("Ext Amp Power", SND_SOC_NOPM, 0, 0,
-> +			    rt5651_ext_amp_power_event,
-> +			    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
->   };
->   
->   static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
-> @@ -225,6 +244,7 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
->   	{"Headset Mic", NULL, "Platform Clock"},
->   	{"Internal Mic", NULL, "Platform Clock"},
->   	{"Speaker", NULL, "Platform Clock"},
-> +	{"Speaker", NULL, "Ext Amp Power"},
->   	{"Line In", NULL, "Platform Clock"},
->   
->   	{"Headset Mic", NULL, "micbias1"}, /* lowercase for rt5651 */
-> @@ -678,6 +698,18 @@ static const struct x86_cpu_id baytrail_cpu_ids[] = {
->   	{}
->   };
->   
-> +static const struct x86_cpu_id cherrytrail_cpu_ids[] = {
-> +	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_AIRMONT },     /* Braswell */
-> +	{}
-> +};
-> +
-> +static const struct acpi_gpio_params ext_amp_enable_gpios = { 0, 0, false };
-> +
-> +static const struct acpi_gpio_mapping byt_rt5651_gpios[] = {
-> +	{ "ext-amp-enable-gpios", &ext_amp_enable_gpios, 1 },
-> +	{ },
-> +};
-> +
->   struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
->   	u64 aif_value;       /* 1: AIF1, 2: AIF2 */
->   	u64 mclock_value;    /* usually 25MHz (0x17d7940), ignored */
-> @@ -793,9 +825,36 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
->   
->   	/* Must be called before register_card, also see declaration comment. */
->   	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
-> -	put_device(codec_dev);
-> -	if (ret_val)
-> +	if (ret_val) {
-> +		put_device(codec_dev);
->   		return ret_val;
-> +	}
-> +
-> +	/* Cherry Trail devices use an external amplifier enable gpio */
-> +	if (x86_match_cpu(cherrytrail_cpu_ids)) {
-> +		devm_acpi_dev_add_driver_gpios(codec_dev, byt_rt5651_gpios);
-> +		priv->ext_amp_gpio = devm_fwnode_get_index_gpiod_from_child(
-> +						&pdev->dev, "ext-amp-enable", 0,
-> +						codec_dev->fwnode,
-> +						GPIOD_OUT_LOW, "speaker-amp");
-> +		if (IS_ERR(priv->ext_amp_gpio)) {
-> +			ret_val = PTR_ERR(priv->ext_amp_gpio);
-> +			switch (ret_val) {
-> +			case -ENOENT:
-> +				priv->ext_amp_gpio = NULL;
-> +				break;
-> +			default:
-> +				dev_err(&pdev->dev, "Failed to get ext-amp-enable GPIO: %d\n",
-> +					ret_val);
-> +				/* fall through */
-> +			case -EPROBE_DEFER:
-> +				put_device(codec_dev);
-> +				return ret_val;
-> +			}
-> +		}
-> +	}
-> +
-> +	put_device(codec_dev);
->   
->   	log_quirks(&pdev->dev);
->   
-> 
+PiBPbiAwNy8wMy8yMDE4IDExOjAzIEFNLCBOYywgU2hyZXlhcyB3cm90ZToNCj4gPj4+Pj4gKwlz
+dHJ1Y3Qgc2R3X21hc3Rlcl9ydW50aW1lICptX3J0LCAqX21fcnQ7DQo+ID4+Pj4+ICsNCj4gPj4+
+Pj4gICAgCW11dGV4X2xvY2soJmJ1cy0+YnVzX2xvY2spOw0KPiA+Pj4+PiAtCXNkd19yZWxlYXNl
+X21hc3Rlcl9zdHJlYW0oc3RyZWFtKTsNCj4gPj4+Pj4gLQlzZHdfbWFzdGVyX3BvcnRfcmVsZWFz
+ZShidXMsIHN0cmVhbS0+bV9ydCk7DQo+ID4+Pj4+IC0Jc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJF
+QU1fUkVMRUFTRUQ7DQo+ID4+Pj4+IC0Ja2ZyZWUoc3RyZWFtLT5tX3J0KTsNCj4gPj4+Pj4gLQlz
+dHJlYW0tPm1fcnQgPSBOVUxMOw0KPiA+Pj4+PiArCWxpc3RfZm9yX2VhY2hfZW50cnlfc2FmZSht
+X3J0LCBfbV9ydCwNCj4gPj4+Pj4gKwkJCSZzdHJlYW0tPm1hc3Rlcl9saXN0LCBzdHJlYW1fbm9k
+ZSkgew0KPiA+Pj4+PiArDQo+ID4+Pj4+ICsJCWlmIChtX3J0LT5idXMgIT0gYnVzKQ0KPiA+Pj4+
+PiArCQkJY29udGludWU7DQo+ID4+Pj4+ICsNCj4gPj4+Pj4gKwkJc2R3X21hc3Rlcl9wb3J0X3Jl
+bGVhc2UoYnVzLCBtX3J0KTsNCj4gPj4+Pj4gKwkJc2R3X3JlbGVhc2VfbWFzdGVyX3N0cmVhbSht
+X3J0LCBzdHJlYW0pOw0KPiA+Pj4+PiArCX0NCj4gPj4+Pj4gKw0KPiA+Pj4+PiArCWlmIChsaXN0
+X2VtcHR5KCZzdHJlYW0tPm1hc3Rlcl9saXN0KSkNCj4gPj4+Pj4gKwkJc3RyZWFtLT5zdGF0ZSA9
+IFNEV19TVFJFQU1fUkVMRUFTRUQ7DQo+ID4+Pj4gV2hlbiBhIG1hc3RlciBpcyByZW1vdmVkLCB0
+aGVyZSBpcyBhbiBleHBsaWNpdCB0ZXN0IHRvIG1ha2Ugc3VyZQ0KPiA+Pj4+IHRoZSBzdHJlYW0g
+c3RhdGUgY2hhbmdlcyB3aGVuIHRoZXJlIGFyZSBubyBtYXN0ZXJzIGxlZnQgaW4gdGhlIGxpc3Qs
+IGJ1dC4uLg0KPiA+Pj4+DQo+ID4+Pj4+ICAgIAltdXRleF91bmxvY2soJmJ1cy0+YnVzX2xvY2sp
+Ow0KPiA+Pj4+PiBAQCAtMTEyNyw3ICsxMTY5LDcgQEAgaW50IHNkd19zdHJlYW1fYWRkX21hc3Rl
+cihzdHJ1Y3Qgc2R3X2J1cw0KPiA+PiAqYnVzLA0KPiA+Pj4+PiAgICAJc3RyZWFtLT5zdGF0ZSA9
+IFNEV19TVFJFQU1fQ09ORklHVVJFRDsNCj4gPj4+PiAuLi4gaXQncyBub3Qgc3ltbWV0cmljYWwg
+Zm9yIHRoZSBhZGRfbWFzdGVyIGNhc2UuIFRoZSBzdHJlYW0gc3RhdGUNCj4gPj4+PiBjaGFuZ2Vz
+IG9uIHRoZSBmaXJzdCBhZGRlZCBtYXN0ZXIuIEluIGFkZGl0aW9uIHRoZSBzdHJlYW0gc3RhdGUN
+Cj4gPj4+PiBjaGFuZ2VzIGJvdGggd2hlbiBhIHNsYXZlIGlzIGFkZGVkIGFuZCBhIG1hc3RlciBp
+cyBhZGRlZC4NCj4gPj4+PiBJcyB0aGlzIGludGVudGlvbmFsIG9yIG5vdCAtIGFuZCBhcmUgdGhl
+cmUgc2lkZSBlZmZlY3RzIHJlc3VsdGluZw0KPiA+Pj4+IGZyb20gdGhpcyBpbmNvbnNpc3RlbmN5
+Pw0KPiA+Pj4+DQo+ID4+PiBGb3IgcmVtb3ZlX21hc3Rlciwgd2UgYWxyZWFkeSBrbm93IHRoZSBu
+dW1iZXIgb2YgTWFzdGVycyBpbiB0aGUNCj4gPj4+IHN0cmVhbSBhbmQgaGVuY2Ugd2UgY2hhbmdl
+IHRoZSBzdGF0ZSB0byBSRUxFQVNFRCBvbmx5IHdoZW4gdGhlcmUgYXJlDQo+ID4+PiBubyBNYXN0
+ZXJzIGxlZnQgaW4gc3RyZWFtLg0KPiA+Pj4NCj4gPj4+IEJ1dCwgaW4gdGhlIGFkZF9tYXN0ZXIg
+Y2FzZSwgd2UgaGF2ZSBubyBpZGVhIG9uIGhvdyBtYW55IG1hc3Rlcg0KPiA+Pj4gaW5zdGFuY2Vz
+IGFyZSBwYXJ0IG9mIHRoZSBzdHJlYW0gYW5kIGhlbmNlIGhvdyBtYW55IHRpbWVzIGFkZF9tYXN0
+ZXINCj4gPj4gd291bGQgYmUgY2FsbGVkLg0KPiA+Pj4gU28sIHdlIGNoYW5nZSB0aGUgc3RyZWFt
+IHN0YXRlIHRvIENPTkZJR1VSRUQgd2hlbiB0aGUgZmlyc3QgTWFzdGVyDQo+ID4+PiBpcw0KPiA+
+PiBhZGRlZC4NCj4gPj4+IEkgY2FuIGFkZCBhIGNvbW1lbnQgaWYgdGhhdCBoZWxwcyA6KQ0KPiA+
+PiBJIGdldCB0aGUgcG9pbnQsIGJ1dCB5b3UgY3VycmVudGx5IGNoYW5nZSB0aGUgc3RhdGUgZm9y
+IHRoZSBmaXJzdA0KPiA+PiBzbGF2ZSB0aGF0J3MgYWRkZWQsIHNvIHRoZXJlIGlzIGFuIGluY29u
+c2lzdGVuY3kgaGVyZSAoZXZlbiBiZWZvcmUgd2UNCj4gPj4gYWRkIHRoZSBtdWx0aS1tYXN0ZXIg
+c3VwcG9ydCkuDQo+ID4gV2hlbiB3ZSBhZGQgYSBzbGF2ZSwgd2UgY2hlY2sgaWYgdGhlcmUgaXMg
+YW4gZXhpc3RpbmcgbV9ydCBmb3IgdGhhdA0KPiA+IGJ1cyBpbnN0YW5jZSBhbmQgaWYgSXQgZG9l
+cyBub3QgZXhpc3Qgd2UgY3JlYXRlIGEgbV9ydCBmb3IgdGhhdCBtYXN0ZXINCj4gPiBpbnN0YW5j
+ZSwgYWRkIHRoZSBzbGF2ZSBydW50aW1lIGFuZCBjaGFuZ2UgdGhlIHN0YXRlIHRvIENPTkZJR1VS
+RUQuIFNvDQo+ID4gdGVjaG5pY2FsbHkgd2Ugc3RpbGwgY2hhbmdlIHRoZSBzdGF0ZSBhZnRlciBh
+ZGRpbmcgdGhlIGZpcnN0IG1fcnQuDQo+IA0KPiBJZiB5b3UgbWFkZSBubyBhc3N1bXB0aW9uIG9u
+IHRoZSBvcmRlciBpbiB3aGljaCBzbGF2ZXMgYW5kIG1hc3RlcnMgYXJlIGFkZGVkDQo+IHRoZW4g
+eW91IG5lZWQgdGhpcyBhc3NpZ25tZW50IHRvIENPTkZJR1VSRUQgdHdpY2UuIEJ1dCBpZiB5b3Ug
+a25vdyB0aGUgc2xhdmVzDQo+IGFyZSBhZGRlZCBmaXJzdCB0aGVuIHRoZSBzZWNvbmQgYXNzaWdu
+bWVudCBpcyBpcnJlbGV2YW50Lg0KPiBJdCdzIGhhcmQgdG8gbWVtb3JpemUgcmVhbGx5IHNpbmNl
+IHRoZXJlIGFyZSBwYXJ0cyB3aGVyZSB5b3UgYXNzdW1lIHRoaW5ncyBhcmUNCj4gdHJpZ2dlcmVk
+IGJ5IGV4dGVybmFsIGV2ZW50cyBhbmQgb3RoZXJzIHdoZXJlIHRoZXJlIGlzIG5vIGFzc3VtcHRp
+b24gb24gQVBJDQo+IHVzZS4uLg0KDQpPaywgd2lsbCBmaXggdGhpcy4gDQpWaW5vZCwgd291bGQg
+eW91IGxpa2UgdG8gaGF2ZSBhIHBhdGNoIGZvciBmaXhpbmcgdGhpcyBpbiB0aGUgc2FtZSBzZXJp
+ZXMgb3IgYQ0KcGF0Y2ggbGF0ZXIgb24gPw0KDQo+IA0KPiA+DQo+ID4+IElmIEkgd2FudGVkIHRv
+IHNwbGl0IGhhaXIgSSdkIGFsc28gbm90ZSBpdCdzIGFsbW9zdCBsaWtlIHRoZSBzdGF0ZSBpcw0K
+PiA+PiBDT05GSUdVUklORyByYXRoZXIgdGhhbiBDT05GSUdVUkVEIGlmIHlvdSBkb24ndCByZWFs
+bHkgY29udHJvbCB3aGVuDQo+ID4+IGFsbCBjb25maWd1cmF0aW9ucyBhcmUgY29tcGxldGUgYXQg
+dGhlIGJ1cyBsZXZlbCBhbmQgZGVwZW5kIG9uDQo+ID4+IGV4dGVybmFsIHRyYW5zaXRpb25zIChl
+LmcuIERBUE0vQUxTQQ0KPiA+PiBpbml0aWF0ZWQpIHRvIGdvIGluIFBSRVBBUkVEIG1vZGUuDQo+
+ID4+DQo+ID4+PiBZZXMsIGl0IGlzIGFkZGVkIGludGVudGlvbmFsbHkgKG9yIHJhdGhlciBiZWNh
+dXNlIHdlIGNvdWxkIG5vdCB0aGluaw0KPiA+Pj4gb2YgYW55IG90aGVyIHN1aXRhYmxlIHdheSkg
+YW5kIHdlIGRvbnQgc2VlIGFueSBzaWRlIGVmZmVjdHMuDQo+ID4+PiBBbnl0aGluZyB0aGF0IHlv
+dSBjb3VsZCB0aGluayBvZj8NCj4gPj4gV2Ugc2hvdWxkIGNoZWNrIHdoYXQgaGFwcGVucyBpZiB0
+aGUgc3RyZWFtIGlzIHJlbW92ZWQgYmVmb3JlIGJlaW5nDQo+ID4+IGVuYWJsZWQsIG9yIGFsbCBj
+YXNlcyBvZiB0ZXN0aW5nIHN0cmVhbS0+c3RhdGUuDQo+ID4gV2hpbGUgcmVsZWFzaW5nIHRoZSBz
+dHJlYW0gd2UgdW5jb25kaXRpb25hbGx5IGNsZWFuIHVwIHRoaW5ncyB3aXRob3V0DQo+ID4gY2hl
+Y2tpbmcgc3RyZWFtIHN0YXRlLiBTbywgd2Ugc2hvdWxkIGJlIGZpbmUgdGhhdCB3YXkuIEJ1dCwg
+SSBjYW4NCj4gPiBjaGVjayB0aGVzZSA6KQ0KPiBBIHF1aWNrIGNoZWNrIGZvciBzdHJlYW0tPnN0
+YXRlIGdpdmVzIG1lIHRoaXM6DQo+IA0KPiAgwqDCoMKgIHN0cmVhbS0+c3RhdGUgPSBTRFdfU1RS
+RUFNX0NPTkZJR1VSRUQ7DQo+IA0KPiAgPj4+IHNvIGhlcmUgaXQncyBhIHN1Y2Nlc3MgY2FzZSBi
+dXQgd2UgZmFsbGJhY2sgdG8gYW4gZXJyb3IgY2FzZS4uLg0KPiANCj4gc3RyZWFtX2Vycm9yOg0K
+PiAgwqDCoMKgIHNkd19yZWxlYXNlX21hc3Rlcl9zdHJlYW0obV9ydCwgc3RyZWFtKTsNCj4gZXJy
+b3I6DQo+ICDCoMKgwqAgbXV0ZXhfdW5sb2NrKCZidXMtPmJ1c19sb2NrKTsNCj4gIMKgwqDCoCBy
+ZXR1cm4gcmV0Ow0KPiANCj4gWW91IGFyZSBwcm9iYWJseSBtaXNzaW5nIGENCj4gDQo+ICDCoMKg
+wqAgc3RyZWFtLT5zdGF0ZSA9IFNEV19TVFJFQU1fQ09ORklHVVJFRDsNCj4gIMKgwqDCoCBnb3Rv
+IGVycm9yOyAvLzw8PCBBZGQgdGhpcw0KPiANCj4gYXMgZG9uZSBmb3IgdGhlIHNsYXZlPw0KPiAN
+Cj4gV29uZGVyaW5nIGhvdyB0aGlzIGV2ZXIgd29ya2VkLCB5b3UgbWF5IHdhbnQgdG8gdHJpcGxl
+LWNoZWNrIHRoZSByZWd1bGFyDQo+IHN0cmVhbSBtYW5hZ2VtZW50IGJlZm9yZSBhZGRpbmcgdGhl
+IG11bHRpLW1hc3RlciBzdHVmZj8NCg0KWWVzLCB5b3UgYXJlIHJpZ2h0LiBJdCB3b3JrcyBiZWNh
+dXNlIG9mIHRoZSBjaGFuZ2UgYmVpbmcgYSBwYXJ0IG9mIGFub3RoZXIgY2hhbmdlDQp0aGF0IGlz
+IHlldCB0byBiZSB1cCBzdHJlYW1lZCA6KA0KDQpXb25kZXJpbmcgaG93IHRoaXMgc2xpcHBlZCwg
+dGhpcyBzaG91bGQgaGF2ZSBiZWVuIHBhcnQgb2YgdGhlIHN0cmVhbSBzZXJpZXMgaXRzZWxmLg0K
+V2lsbCBmaXggdGhpcyB1cCA6KQ0KDQotLVNocmV5YXMNCl9fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxt
+YW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
