@@ -1,20 +1,12 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: pcm: Use snd_pcm_stop_xrun() for
-	xrun injection
-Date: Wed,  4 Jul 2018 15:34:32 +0200
-Message-ID: <20180704133432.13925-2-tiwai@suse.de>
-References: <20180704133432.13925-1-tiwai@suse.de>
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH - PCM rate v2 1/1] pcm: rate: Add error check
+	for snd_pcm_avail_update()
+Date: Wed, 4 Jul 2018 15:39:49 +0200
+Message-ID: <1530711589-3919-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CEA61267214
- for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 15:34:37 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2061CAE6C
- for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 13:34:37 +0000 (UTC)
-In-Reply-To: <20180704133432.13925-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +16,41 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: patch@alsa-project.org, tiwai@suse.de
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Basically the xrun injection routine can simply call the standard
-helper snd_pcm_stop_xrun(), but with one exception: it may be called
-even when the stream is closed.
+From: Timo Wischer <twischer@de.adit-jv.com>
 
-Make snd_pcm_stop_xrun() more robust and check the NULL runtime state,
-and simplify xrun injection code by calling it.
+Without these changes a negative error code returned by
+snd_pcm_avail_update() will be not handled correctly.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+With this patch the returned error code of snd_pcm_avail_update() will be
+returned by snd_pcm_rate_avail_update().
+
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 ---
- sound/core/pcm.c        | 7 +------
- sound/core/pcm_native.c | 2 +-
- 2 files changed, 2 insertions(+), 7 deletions(-)
+Compared to v1[1] of this patch only the changelog and the subject has changed.
 
-diff --git a/sound/core/pcm.c b/sound/core/pcm.c
-index 6f037a4b8b52..fdb9b92fc8d6 100644
---- a/sound/core/pcm.c
-+++ b/sound/core/pcm.c
-@@ -492,13 +492,8 @@ static void snd_pcm_xrun_injection_write(struct snd_info_entry *entry,
- 					 struct snd_info_buffer *buffer)
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-July/137838.html
+
+diff --git a/src/pcm/pcm_rate.c b/src/pcm/pcm_rate.c
+index 4e0c7ca..031a43d 100644
+--- a/src/pcm/pcm_rate.c
++++ b/src/pcm/pcm_rate.c
+@@ -970,9 +970,12 @@ static snd_pcm_sframes_t snd_pcm_rate_avail_update(snd_pcm_t *pcm)
  {
- 	struct snd_pcm_substream *substream = entry->private_data;
--	struct snd_pcm_runtime *runtime;
+ 	snd_pcm_rate_t *rate = pcm->private_data;
+ 	snd_pcm_t *slave = rate->gen.slave;
+-	snd_pcm_uframes_t slave_size;
++	snd_pcm_sframes_t slave_size;
  
--	snd_pcm_stream_lock_irq(substream);
--	runtime = substream->runtime;
--	if (runtime && runtime->status->state == SNDRV_PCM_STATE_RUNNING)
--		__snd_pcm_xrun(substream);
--	snd_pcm_stream_unlock_irq(substream);
-+	snd_pcm_stop_xrun(substream);
- }
- 
- static void snd_pcm_xrun_debug_read(struct snd_info_entry *entry,
-diff --git a/sound/core/pcm_native.c b/sound/core/pcm_native.c
-index 20174d0c0527..66c90f486af9 100644
---- a/sound/core/pcm_native.c
-+++ b/sound/core/pcm_native.c
-@@ -1339,7 +1339,7 @@ int snd_pcm_stop_xrun(struct snd_pcm_substream *substream)
- 	unsigned long flags;
- 
- 	snd_pcm_stream_lock_irqsave(substream, flags);
--	if (snd_pcm_running(substream))
-+	if (substream->runtime && snd_pcm_running(substream))
- 		__snd_pcm_xrun(substream);
- 	snd_pcm_stream_unlock_irqrestore(substream, flags);
- 	return 0;
+ 	slave_size = snd_pcm_avail_update(slave);
++	if (slave_size < 0)
++		return slave_size;
++
+ 	if (pcm->stream == SND_PCM_STREAM_CAPTURE)
+ 		goto _capture;
+ 	snd_pcm_rate_sync_hwptr(pcm);
 -- 
-2.18.0
+2.7.4
