@@ -1,124 +1,150 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH] dma: add support for reporting pause and resume
- separately
-Date: Wed, 4 Jul 2018 12:30:33 +0530
-Message-ID: <20180704070033.GA22377@vkoul-mobl>
-References: <CGME20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65@eucas1p2.samsung.com>
- <20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65~9jzNWZMqQ1216712167eucas1p27@eucas1p2.samsung.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2 3/3] ASoC: Intel: bytcr_rt5651: Add
+ support for externar amplifier enable GPIO
+Date: Wed, 4 Jul 2018 09:46:12 +0200
+Message-ID: <8519b442-1b2d-bd61-132e-1c0d0e102bf4@redhat.com>
+References: <20180701183631.5532-1-hdegoede@redhat.com>
+ <20180701183631.5532-3-hdegoede@redhat.com>
+ <c456352b-ebb9-7b41-acf2-e1935ecc5633@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65~9jzNWZMqQ1216712167eucas1p27@eucas1p2.samsung.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marek Szyprowski <m.szyprowski@samsung.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Cc: dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ed1-f65.google.com (mail-ed1-f65.google.com
+ [209.85.208.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id CCA262676FB
+ for <alsa-devel@alsa-project.org>; Wed,  4 Jul 2018 09:46:14 +0200 (CEST)
+Received: by mail-ed1-f65.google.com with SMTP id a5-v6so3356677edt.5
+ for <alsa-devel@alsa-project.org>; Wed, 04 Jul 2018 00:46:14 -0700 (PDT)
+In-Reply-To: <c456352b-ebb9-7b41-acf2-e1935ecc5633@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Marek,
-
-On 02-07-18, 15:08, Marek Szyprowski wrote:
-> 'cmd_pause' DMA channel capability means that respective DMA engine
-> supports both pausing and resuming given DMA channel. However, in some
-> cases it is important to know if DMA channel can be paused without the
-> need to resume it. This is a typical requirement for proper residue
-> reading on transfer timeout in UART drivers. There are also some DMA
-> engines with limited hardware, which doesn't really support resuming.
-
-Am curious given that your hardware does not support resume, what was motivation
-for adding pause?
-
-> Reporting pause and resume capabilities separately allows UART drivers to
-> properly check for the really required capabilities and operate in DMA
-> mode also in systems with limited DMA hardware. On the other hand drivers,
-> which rely on full channel suspend/resume support, should now check for
-> both 'pause' and 'resume' features.
-> 
-> Existing clients of dma_get_slave_caps() have been checked and the only
-> driver which rely on proper channel resuming is soc-generic-dmaengine-pcm
-> driver, which has been updated to check the newly added capability.
-> Existing 'cmd_pause' now only indicates that DMA engine support pausing
-> given DMA channel.
-
-The change looks fine to me. I was hoping that serial would also check
-this..
-
-Mark, Lars you okay with this?
-
-> 
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> ---
-> This patch is a follow-up of the Vinod's advise from the following
-> discussion:
-> https://www.spinics.net/lists/linux-samsung-soc/msg63166.html
-> ---
->  drivers/dma/dmaengine.c               | 8 ++------
->  include/linux/dmaengine.h             | 5 ++++-
->  sound/soc/soc-generic-dmaengine-pcm.c | 2 +-
->  3 files changed, 7 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/dma/dmaengine.c b/drivers/dma/dmaengine.c
-> index 08ba8473a284..84ac38dbdb65 100644
-> --- a/drivers/dma/dmaengine.c
-> +++ b/drivers/dma/dmaengine.c
-> @@ -500,12 +500,8 @@ int dma_get_slave_caps(struct dma_chan *chan, struct dma_slave_caps *caps)
->  	caps->max_burst = device->max_burst;
->  	caps->residue_granularity = device->residue_granularity;
->  	caps->descriptor_reuse = device->descriptor_reuse;
-> -
-> -	/*
-> -	 * Some devices implement only pause (e.g. to get residuum) but no
-> -	 * resume. However cmd_pause is advertised as pause AND resume.
-> -	 */
-> -	caps->cmd_pause = !!(device->device_pause && device->device_resume);
-> +	caps->cmd_pause = !!device->device_pause;
-> +	caps->cmd_resume = !!device->device_resume;
->  	caps->cmd_terminate = !!device->device_terminate_all;
->  
->  	return 0;
-> diff --git a/include/linux/dmaengine.h b/include/linux/dmaengine.h
-> index 861be5cab1df..c8c3a7a93802 100644
-> --- a/include/linux/dmaengine.h
-> +++ b/include/linux/dmaengine.h
-> @@ -415,7 +415,9 @@ enum dma_residue_granularity {
->   *	each type, the dma controller should set BIT(<TYPE>) and same
->   *	should be checked by controller as well
->   * @max_burst: max burst capability per-transfer
-> - * @cmd_pause: true, if pause and thereby resume is supported
-> + * @cmd_pause: true, if pause is supported (i.e. for reading residue or
-> + *	       for resume later)
-> + * @cmd_resume: true, if resume is supported
->   * @cmd_terminate: true, if terminate cmd is supported
->   * @residue_granularity: granularity of the reported transfer residue
->   * @descriptor_reuse: if a descriptor can be reused by client and
-> @@ -427,6 +429,7 @@ struct dma_slave_caps {
->  	u32 directions;
->  	u32 max_burst;
->  	bool cmd_pause;
-> +	bool cmd_resume;
->  	bool cmd_terminate;
->  	enum dma_residue_granularity residue_granularity;
->  	bool descriptor_reuse;
-> diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-> index 56a541b9ff9e..76c46d793843 100644
-> --- a/sound/soc/soc-generic-dmaengine-pcm.c
-> +++ b/sound/soc/soc-generic-dmaengine-pcm.c
-> @@ -156,7 +156,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
->  
->  	ret = dma_get_slave_caps(chan, &dma_caps);
->  	if (ret == 0) {
-> -		if (dma_caps.cmd_pause)
-> +		if (dma_caps.cmd_pause && dma_caps.cmd_resume)
->  			hw.info |= SNDRV_PCM_INFO_PAUSE | SNDRV_PCM_INFO_RESUME;
->  		if (dma_caps.residue_granularity <= DMA_RESIDUE_GRANULARITY_SEGMENT)
->  			hw.info |= SNDRV_PCM_INFO_BATCH;
-> -- 
-> 2.17.1
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe dmaengine" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
--- 
-~Vinod
+SGksCgpPbiAwNC0wNy0xOCAwMjoxNCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gT24g
+Ny8xLzE4IDE6MzYgUE0sIEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4+IFRoZSBydDU2NTEgZG9lcyBu
+b3QgaGF2ZSBhIGJ1aWx0LWluIHNwZWFrZXIgYW1wbGlmaWVyLCBzbyBpdCBpcyBvZnRlbgo+PiB1
+c2VkIHRvZ2V0aGVyIHdpdGggYW4gZXh0ZXJuYWwgYW1wbGlmaWVyLiBPbiBDaGVycnkgVHJhaWwg
+Ym9hcmRzIHRoaXMKPj4gZXh0ZXJuYWwgYW1wbGlmaWVyJ3MgZW5hYmxlIHBpbiBpcyBkcml2ZW4g
+dGhyb3VnaCBhIEdQSU8sIHdoaWNoIGlzCj4+IGdpdmVuIGFzIHRoZSBmaXJzdCBHUElPIGluIHRo
+ZSBBQ1BJIHJlc291cmNlcyBvZiB0aGUgY29kZWMgZndub2RlLgo+Pgo+PiBUaGlzIGNvbW1pdCBh
+ZGRzIHN1cHBvcnQgdG8gdGhlIGJ5dGNyX3J0NTY1MSBmb3IgdGhpcyBHUElPLCBmaXhpbmcKPj4g
+dGhlIHNwZWFrZXIgbm90IHdvcmtpbmcgb24gQ0hUIGRldmljZXMgd2l0aCBhIHJ0NTY1MSBjb2Rl
+Yy4KPiAKPiBBTGwgdGhpcyBHUElPL0FDUEkgc3R1ZmYgaXMgYSBiaXQgYmV5b25kIG15IHVuZGVy
+c3RhbmRpbmcuIE15IG9ubHkgY29tbWVudCBpcyAiaG93IHdvdWxkIHRoaXMgd29yayBvbiBCYXl0
+cmFpbCI/IFRoZXJlIGFyZSBjbGVhcmx5IGEgc2V0IG9mIGRldmljZXMgd2hpY2ggdXNlIHRoZSBT
+U1AwIHJvdXRpbmcgLSBzbyBCYXl0cmFpbC1DUiBwYWNrYWdlcywgaXQncyBub3QgY2xlYXIgdG8g
+bWUgaG93IHRoZSBhbXBsaWZpZXIgaXMgY29udHJvbGxlZCBpbiB0aG9zZSBjYXNlcz8KCkkgaGF2
+ZSBhIGNvdXBsZSBvZiBCWVQgZGV2aWNlcyB3aXRoIGEgcnQ1NjUxIGNvZGVjIGFuZCB0aGVyZSB0
+aGUKYW1wbGlmaWVyIGp1c3Qgd29ya3MuIEVpdGhlciBpdCBpcyBhIGRpZmZlcmVudCBtb2RlbCB3
+aXRob3V0IGFuCmVuYWJsZSBwaW4sIG9yIHRoZSBlbmFibGUgcGluIGlzIGhhcmQgd2lyZWQgdG8g
+VmNjLgoKUmVnYXJkcywKCkhhbnMKCgo+IAo+Pgo+PiBDYzogQ2FybG8gQ2Fpb25lIDxjYXJsb0Bl
+bmRsZXNzbS5jb20+Cj4+IFNpZ25lZC1vZmYtYnk6IEhhbnMgZGUgR29lZGUgPGhkZWdvZWRlQHJl
+ZGhhdC5jb20+Cj4+IC0tLQo+PiBDaGFuZ2VzIGluIHYyOgo+PiAtSGFuZGxlIHRoZSBleHQgYW1w
+IEdQSU8gZW50aXJlbHkgaW4gdGhlIG1hY2hpbmUgZHJpdmVyLCB0aGUgZXh0LWFtcCBpcwo+PiDC
+oCBub3QgcGFydCBvZiB0aGUgY29kZWMsIHNvIGl0IHNob3VsZCBub3QgYmUgY29udHJvbGxlZCBi
+eSB0aGUgY29kZWMgZHJpdmVyCj4+IC0tLQo+PiDCoCBzb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5
+dGNyX3J0NTY1MS5jIHwgNjUgKysrKysrKysrKysrKysrKysrKysrKysrKy0tCj4+IMKgIDEgZmls
+ZSBjaGFuZ2VkLCA2MiBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQo+Pgo+PiBkaWZmIC0t
+Z2l0IGEvc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NTEuYyBiL3NvdW5kL3NvYy9p
+bnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjUxLmMKPj4gaW5kZXggZDkyMDcyNWNlNjAzLi41MzAxMjA1
+NDk2YmUgMTAwNjQ0Cj4+IC0tLSBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjUx
+LmMKPj4gKysrIGIvc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NTEuYwo+PiBAQCAt
+MjYsNiArMjYsOCBAQAo+PiDCoCAjaW5jbHVkZSA8bGludXgvY2xrLmg+Cj4+IMKgICNpbmNsdWRl
+IDxsaW51eC9kZXZpY2UuaD4KPj4gwqAgI2luY2x1ZGUgPGxpbnV4L2RtaS5oPgo+PiArI2luY2x1
+ZGUgPGxpbnV4L2dwaW8vY29uc3VtZXIuaD4KPj4gKyNpbmNsdWRlIDxsaW51eC9ncGlvL21hY2hp
+bmUuaD4KPj4gwqAgI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KPj4gwqAgI2luY2x1ZGUgPGFzbS9j
+cHVfZGV2aWNlX2lkLmg+Cj4+IMKgICNpbmNsdWRlIDxhc20vaW50ZWwtZmFtaWx5Lmg+Cj4+IEBA
+IC04Niw2ICs4OCw3IEBAIGVudW0gewo+PiDCoCBzdHJ1Y3QgYnl0X3J0NTY1MV9wcml2YXRlIHsK
+Pj4gwqDCoMKgwqDCoCBzdHJ1Y3QgY2xrICptY2xrOwo+PiArwqDCoMKgIHN0cnVjdCBncGlvX2Rl
+c2MgKmV4dF9hbXBfZ3BpbzsKPj4gwqDCoMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19qYWNrIGphY2s7
+Cj4+IMKgIH07Cj4+IEBAIC0yMDgsNiArMjExLDIwIEBAIHN0YXRpYyBpbnQgcGxhdGZvcm1fY2xv
+Y2tfY29udHJvbChzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCAqdywKPj4gwqDCoMKgwqDCoCBy
+ZXR1cm4gMDsKPj4gwqAgfQo+PiArc3RhdGljIGludCBydDU2NTFfZXh0X2FtcF9wb3dlcl9ldmVu
+dChzdHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCAqdywKPj4gK8KgwqDCoCBzdHJ1Y3Qgc25kX2tj
+b250cm9sICprY29udHJvbCwgaW50IGV2ZW50KQo+PiArewo+PiArwqDCoMKgIHN0cnVjdCBzbmRf
+c29jX2NhcmQgKmNhcmQgPSB3LT5kYXBtLT5jYXJkOwo+PiArwqDCoMKgIHN0cnVjdCBieXRfcnQ1
+NjUxX3ByaXZhdGUgKnByaXYgPSBzbmRfc29jX2NhcmRfZ2V0X2RydmRhdGEoY2FyZCk7Cj4+ICsK
+Pj4gK8KgwqDCoCBpZiAoU05EX1NPQ19EQVBNX0VWRU5UX09OKGV2ZW50KSkKPj4gK8KgwqDCoMKg
+wqDCoMKgIGdwaW9kX3NldF92YWx1ZV9jYW5zbGVlcChwcml2LT5leHRfYW1wX2dwaW8sIDEpOwo+
+PiArwqDCoMKgIGVsc2UKPj4gK8KgwqDCoMKgwqDCoMKgIGdwaW9kX3NldF92YWx1ZV9jYW5zbGVl
+cChwcml2LT5leHRfYW1wX2dwaW8sIDApOwo+PiArCj4+ICvCoMKgwqAgcmV0dXJuIDA7Cj4+ICt9
+Cj4+ICsKPj4gwqAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IGJ5dF9y
+dDU2NTFfd2lkZ2V0c1tdID0gewo+PiDCoMKgwqDCoMKgIFNORF9TT0NfREFQTV9IUCgiSGVhZHBo
+b25lIiwgTlVMTCksCj4+IMKgwqDCoMKgwqAgU05EX1NPQ19EQVBNX01JQygiSGVhZHNldCBNaWMi
+LCBOVUxMKSwKPj4gQEAgLTIxNyw3ICsyMzQsOSBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9z
+b2NfZGFwbV93aWRnZXQgYnl0X3J0NTY1MV93aWRnZXRzW10gPSB7Cj4+IMKgwqDCoMKgwqAgU05E
+X1NPQ19EQVBNX1NVUFBMWSgiUGxhdGZvcm0gQ2xvY2siLCBTTkRfU09DX05PUE0sIDAsIDAsCj4+
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcGxhdGZvcm1fY2xvY2tfY29udHJv
+bCwgU05EX1NPQ19EQVBNX1BSRV9QTVUgfAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIFNORF9TT0NfREFQTV9QT1NUX1BNRCksCj4+IC0KPj4gK8KgwqDCoCBTTkRfU09DX0RB
+UE1fU1VQUExZKCJFeHQgQW1wIFBvd2VyIiwgU05EX1NPQ19OT1BNLCAwLCAwLAo+PiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJ0NTY1MV9leHRfYW1wX3Bvd2VyX2V2ZW50LAo+PiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFNORF9TT0NfREFQTV9QUkVfUE1EIHwgU05E
+X1NPQ19EQVBNX1BPU1RfUE1VKSwKPj4gwqAgfTsKPj4gwqAgc3RhdGljIGNvbnN0IHN0cnVjdCBz
+bmRfc29jX2RhcG1fcm91dGUgYnl0X3J0NTY1MV9hdWRpb19tYXBbXSA9IHsKPj4gQEAgLTIyNSw2
+ICsyNDQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9zb2NfZGFwbV9yb3V0ZSBieXRfcnQ1
+NjUxX2F1ZGlvX21hcFtdID0gewo+PiDCoMKgwqDCoMKgIHsiSGVhZHNldCBNaWMiLCBOVUxMLCAi
+UGxhdGZvcm0gQ2xvY2sifSwKPj4gwqDCoMKgwqDCoCB7IkludGVybmFsIE1pYyIsIE5VTEwsICJQ
+bGF0Zm9ybSBDbG9jayJ9LAo+PiDCoMKgwqDCoMKgIHsiU3BlYWtlciIsIE5VTEwsICJQbGF0Zm9y
+bSBDbG9jayJ9LAo+PiArwqDCoMKgIHsiU3BlYWtlciIsIE5VTEwsICJFeHQgQW1wIFBvd2VyIn0s
+Cj4+IMKgwqDCoMKgwqAgeyJMaW5lIEluIiwgTlVMTCwgIlBsYXRmb3JtIENsb2NrIn0sCj4+IMKg
+wqDCoMKgwqAgeyJIZWFkc2V0IE1pYyIsIE5VTEwsICJtaWNiaWFzMSJ9LCAvKiBsb3dlcmNhc2Ug
+Zm9yIHJ0NTY1MSAqLwo+PiBAQCAtNjc4LDYgKzY5OCwxOCBAQCBzdGF0aWMgY29uc3Qgc3RydWN0
+IHg4Nl9jcHVfaWQgYmF5dHJhaWxfY3B1X2lkc1tdID0gewo+PiDCoMKgwqDCoMKgIHt9Cj4+IMKg
+IH07Cj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHg4Nl9jcHVfaWQgY2hlcnJ5dHJhaWxfY3B1X2lk
+c1tdID0gewo+PiArwqDCoMKgIHsgWDg2X1ZFTkRPUl9JTlRFTCwgNiwgSU5URUxfRkFNNl9BVE9N
+X0FJUk1PTlQgfSzCoMKgwqDCoCAvKiBCcmFzd2VsbCAqLwo+PiArwqDCoMKgIHt9Cj4+ICt9Owo+
+PiArCj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IGFjcGlfZ3Bpb19wYXJhbXMgZXh0X2FtcF9lbmFi
+bGVfZ3Bpb3MgPSB7IDAsIDAsIGZhbHNlIH07Cj4+ICsKPj4gK3N0YXRpYyBjb25zdCBzdHJ1Y3Qg
+YWNwaV9ncGlvX21hcHBpbmcgYnl0X3J0NTY1MV9ncGlvc1tdID0gewo+PiArwqDCoMKgIHsgImV4
+dC1hbXAtZW5hYmxlLWdwaW9zIiwgJmV4dF9hbXBfZW5hYmxlX2dwaW9zLCAxIH0sCj4+ICvCoMKg
+wqAgeyB9LAo+PiArfTsKPj4gKwo+PiDCoCBzdHJ1Y3QgYWNwaV9jaGFuX3BhY2thZ2Uge8KgwqAg
+LyogQUNQSUNBIHNlZW1zIHRvIHJlcXVpcmUgNjQgYml0IGludGVnZXJzICovCj4+IMKgwqDCoMKg
+wqAgdTY0IGFpZl92YWx1ZTvCoMKgwqDCoMKgwqAgLyogMTogQUlGMSwgMjogQUlGMiAqLwo+PiDC
+oMKgwqDCoMKgIHU2NCBtY2xvY2tfdmFsdWU7wqDCoMKgIC8qIHVzdWFsbHkgMjVNSHogKDB4MTdk
+Nzk0MCksIGlnbm9yZWQgKi8KPj4gQEAgLTc5Myw5ICs4MjUsMzYgQEAgc3RhdGljIGludCBzbmRf
+Ynl0X3J0NTY1MV9tY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiDCoMKg
+wqDCoMKgIC8qIE11c3QgYmUgY2FsbGVkIGJlZm9yZSByZWdpc3Rlcl9jYXJkLCBhbHNvIHNlZSBk
+ZWNsYXJhdGlvbiBjb21tZW50LiAqLwo+PiDCoMKgwqDCoMKgIHJldF92YWwgPSBieXRfcnQ1NjUx
+X2FkZF9jb2RlY19kZXZpY2VfcHJvcHMoY29kZWNfZGV2KTsKPj4gLcKgwqDCoCBwdXRfZGV2aWNl
+KGNvZGVjX2Rldik7Cj4+IC3CoMKgwqAgaWYgKHJldF92YWwpCj4+ICvCoMKgwqAgaWYgKHJldF92
+YWwpIHsKPj4gK8KgwqDCoMKgwqDCoMKgIHB1dF9kZXZpY2UoY29kZWNfZGV2KTsKPj4gwqDCoMKg
+wqDCoMKgwqDCoMKgIHJldHVybiByZXRfdmFsOwo+PiArwqDCoMKgIH0KPj4gKwo+PiArwqDCoMKg
+IC8qIENoZXJyeSBUcmFpbCBkZXZpY2VzIHVzZSBhbiBleHRlcm5hbCBhbXBsaWZpZXIgZW5hYmxl
+IGdwaW8gKi8KPj4gK8KgwqDCoCBpZiAoeDg2X21hdGNoX2NwdShjaGVycnl0cmFpbF9jcHVfaWRz
+KSkgewo+PiArwqDCoMKgwqDCoMKgwqAgZGV2bV9hY3BpX2Rldl9hZGRfZHJpdmVyX2dwaW9zKGNv
+ZGVjX2RldiwgYnl0X3J0NTY1MV9ncGlvcyk7Cj4+ICvCoMKgwqDCoMKgwqDCoCBwcml2LT5leHRf
+YW1wX2dwaW8gPSBkZXZtX2Z3bm9kZV9nZXRfaW5kZXhfZ3Bpb2RfZnJvbV9jaGlsZCgKPj4gK8Kg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJnBkZXYtPmRldiwg
+ImV4dC1hbXAtZW5hYmxlIiwgMCwKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgY29kZWNfZGV2LT5md25vZGUsCj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEdQSU9EX09VVF9MT1csICJzcGVha2VyLWFtcCIp
+Owo+PiArwqDCoMKgwqDCoMKgwqAgaWYgKElTX0VSUihwcml2LT5leHRfYW1wX2dwaW8pKSB7Cj4+
+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldF92YWwgPSBQVFJfRVJSKHByaXYtPmV4dF9hbXBf
+Z3Bpbyk7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN3aXRjaCAocmV0X3ZhbCkgewo+PiAr
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjYXNlIC1FTk9FTlQ6Cj4+ICvCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgcHJpdi0+ZXh0X2FtcF9ncGlvID0gTlVMTDsKPj4gK8KgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBicmVhazsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGVm
+YXVsdDoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkZXZfZXJyKCZwZGV2LT5k
+ZXYsICJGYWlsZWQgdG8gZ2V0IGV4dC1hbXAtZW5hYmxlIEdQSU86ICVkXG4iLAo+PiArwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0X3ZhbCk7Cj4+ICvCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgLyogZmFsbCB0aHJvdWdoICovCj4+ICvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGNhc2UgLUVQUk9CRV9ERUZFUjoKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBwdXRfZGV2aWNlKGNvZGVjX2Rldik7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgcmV0dXJuIHJldF92YWw7Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0KPj4g
+K8KgwqDCoMKgwqDCoMKgIH0KPj4gK8KgwqDCoCB9Cj4+ICsKPj4gK8KgwqDCoCBwdXRfZGV2aWNl
+KGNvZGVjX2Rldik7Cj4+IMKgwqDCoMKgwqAgbG9nX3F1aXJrcygmcGRldi0+ZGV2KTsKPj4KPiAK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
