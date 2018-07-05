@@ -1,17 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: cmd: Add missing newline to debug message" to the asoc tree
-Date: Thu, 05 Jul 2018 11:08:37 +0100
-Message-ID: <E1fb1Bl-0002uj-Pe@debutante>
-References: <20180705022004.24524-1-jiada_wang@mentor.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180705022004.24524-1-jiada_wang@mentor.com>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: Jiada Wang <jiada_wang@mentor.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.comkuninori.morimoto.gx@renesas.comjiada_wang@mentor.com, keescook@chromium.org, andrew_gabbasov@mentor.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: fsl_spdif: Use 64-bit arithmetic
+	instead of 32-bit" to the asoc tree
+Date: Thu, 05 Jul 2018 11:08:39 +0100
+Message-ID: <E1fb1Bn-0002vz-Tf@debutante>
+References: <20180704141833.GA6702@embeddedor.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D96DF267214
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2018 12:09:09 +0200 (CEST)
+In-Reply-To: <20180704141833.GA6702@embeddedor.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: cmd: Add missing newline to debug message
+   ASoC: fsl_spdif: Use 64-bit arithmetic instead of 32-bit
 
 has been applied to the asoc tree at
 
@@ -36,35 +52,40 @@ to this mail.
 Thanks,
 Mark
 
->From 74b37e299f038c910dc728d736e3f071ba0ead2a Mon Sep 17 00:00:00 2001
-From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Date: Thu, 5 Jul 2018 11:20:04 +0900
-Subject: [PATCH] ASoC: rsnd: cmd: Add missing newline to debug message
+>From b999a7a9e72bd2d37b5d03772cedfc4dd45875bf Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Wed, 4 Jul 2018 09:18:33 -0500
+Subject: [PATCH] ASoC: fsl_spdif: Use 64-bit arithmetic instead of 32-bit
 
-To comply with the style of all kernel messages, add newline
-to the end of every message.
+Add suffix ULL to constant 64 in order to give the compiler complete
+information about the proper arithmetic to use.
 
-Fixes: 70fb10529f61 ("ASoC: rsnd: add MIX (Mixer) support")
-Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Notice that such constant is used in a context that expects an
+expression of type u64 (64 bits, unsigned) and the following
+expression is currently being evaluated using 32-bit arithmetic:
+
+rate[index] * txclk_df * 64
+
+Addresses-Coverity-ID: 1222129 ("Unintentional integer overflow")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Acked-by: Nicolin Chen <nicoleotsuka@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/cmd.c | 2 +-
+ sound/soc/fsl/fsl_spdif.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
-index d8043ad33540..cc191cd5fb82 100644
---- a/sound/soc/sh/rcar/cmd.c
-+++ b/sound/soc/sh/rcar/cmd.c
-@@ -86,7 +86,7 @@ static int rsnd_cmd_init(struct rsnd_mod *mod,
- 			cmd_case[rsnd_mod_id(src)] << 16;
- 	}
+diff --git a/sound/soc/fsl/fsl_spdif.c b/sound/soc/fsl/fsl_spdif.c
+index 9b59d87b61bf..740b90df44bb 100644
+--- a/sound/soc/fsl/fsl_spdif.c
++++ b/sound/soc/fsl/fsl_spdif.c
+@@ -1118,7 +1118,7 @@ static u32 fsl_spdif_txclk_caldiv(struct fsl_spdif_priv *spdif_priv,
  
--	dev_dbg(dev, "ctu/mix path = 0x%08x", data);
-+	dev_dbg(dev, "ctu/mix path = 0x%08x\n", data);
- 
- 	rsnd_mod_write(mod, CMD_ROUTE_SLCT, data);
- 	rsnd_mod_write(mod, CMD_BUSIF_MODE, rsnd_get_busif_shift(io, mod) | 1);
+ 	for (sysclk_df = sysclk_dfmin; sysclk_df <= sysclk_dfmax; sysclk_df++) {
+ 		for (txclk_df = 1; txclk_df <= 128; txclk_df++) {
+-			rate_ideal = rate[index] * txclk_df * 64;
++			rate_ideal = rate[index] * txclk_df * 64ULL;
+ 			if (round)
+ 				rate_actual = clk_round_rate(clk, rate_ideal);
+ 			else
 -- 
 2.18.0.rc2
