@@ -1,53 +1,43 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] regmap: slimbus: add support to raw read/writes
-Date: Thu, 5 Jul 2018 16:08:57 +0100
-Message-ID: <20180705150857.GA6227@sirena.org.uk>
-References: <20180705113700.32465-1-srinivas.kandagatla@linaro.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ASoC: nau8810: use 64-bit arithmetic instead of 32-bit
+Date: Thu, 5 Jul 2018 10:14:07 -0500
+Message-ID: <20180705151407.GA30984@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180705113700.32465-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
+Add suffix ULL to constant 256 in order to give the compiler complete
+information about the proper arithmetic to use.
 
---4Ckj6UjgE2iN1+kY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Notice that such constant is used in a context that expects an
+expression of type u64 (64 bits, unsigned) and the following
+expression is currently being evaluated using 32-bit arithmetic:
 
-On Thu, Jul 05, 2018 at 12:37:00PM +0100, Srinivas Kandagatla wrote:
+256 * fs * 4 * nau8810_mclk_scaler[i] / 10
 
-> SLIMbus supports upto 16 bytes in value management messages,
-> so add support to raw read/writes upto 16 bytes.
+Addresses-Coverity-ID: 1357595 ("Unintentional integer overflow")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ sound/soc/codecs/nau8810.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-That's not what raw access is.  It's unmediated access to existing
-registers, not some other thing with completely different register sizes
-which you can't see through the register map.  The intended use is for
-things like fast firmware downloads.  If it's not part of the register
-map we shouldn't be going through regmap to get to it.
-
-> Also useful for paged register access on SLIMbus interfaced codecs.
-
-That needs a bunch more explanation...  in what way does raw access
-relate to paged register maps?
-
---4Ckj6UjgE2iN1+kY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls+NIkACgkQJNaLcl1U
-h9CgaAf+O/7Vv1B6FBGkyZAWEtgbx7kuUHRjw+gL5RkucN53bfq4VCnb7HuogOul
-4/70MYrtH+++epGz/Vkojs+D8rmRPpytYT+vdVbw3dPhX4G/y37DV8DLunb9EpAs
-qr8SJVqfSbXEpNwxEiRLNRvlWQAUf+kFpx370jaJlJOY0TqZH6Hx3RVzYq6GMZ7J
-Z0Im0Y/pVpjyh+qK+z/gsMbMCsppMhFPcZLDVqNeqIPHqZeWeiXkDnU+jvWvH7wO
-h40Whn/X4ZepvpdsJ/vroqqaleSrpQ7LWQfLm5DIdL/rlUcmyMHUn09vx3lwkKDx
-PwCGf0V+0864OXeiWJtWjCCt7lN20A==
-=uxp1
------END PGP SIGNATURE-----
-
---4Ckj6UjgE2iN1+kY--
+diff --git a/sound/soc/codecs/nau8810.c b/sound/soc/codecs/nau8810.c
+index bfd74b8..e7fd0b2 100644
+--- a/sound/soc/codecs/nau8810.c
++++ b/sound/soc/codecs/nau8810.c
+@@ -505,7 +505,7 @@ static int nau88l0_calc_pll(unsigned int pll_in,
+ 	f2_max = 0;
+ 	scal_sel = ARRAY_SIZE(nau8810_mclk_scaler);
+ 	for (i = 0; i < ARRAY_SIZE(nau8810_mclk_scaler); i++) {
+-		f2 = 256 * fs * 4 * nau8810_mclk_scaler[i] / 10;
++		f2 = 256ULL * fs * 4 * nau8810_mclk_scaler[i] / 10;
+ 		if (f2 > NAU_PLL_FREQ_MIN && f2 < NAU_PLL_FREQ_MAX &&
+ 			f2_max < f2) {
+ 			f2_max = f2;
+-- 
+2.7.4
