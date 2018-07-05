@@ -1,34 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa-ssp: add support for an external
-	clock in devicetree" to the asoc tree
-Date: Thu, 05 Jul 2018 11:08:35 +0100
-Message-ID: <E1fb1Bj-0002sd-KD@debutante>
-References: <20180702151100.28999-1-daniel@zonque.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C9DD8267214
- for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2018 12:08:39 +0200 (CEST)
-In-Reply-To: <20180702151100.28999-1-daniel@zonque.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, robh+dt@kernel.org, broonie@kernel.org, robert.jarzmik@free.fr
+Subject: Applied "ASoC: rsnd: cmd: Add missing newline to debug message" to the asoc tree
+Date: Thu, 05 Jul 2018 11:08:37 +0100
+Message-ID: <E1fb1Bl-0002uj-Pe@debutante>
+References: <20180705022004.24524-1-jiada_wang@mentor.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180705022004.24524-1-jiada_wang@mentor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Jiada Wang <jiada_wang@mentor.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, lgirdwood@gmail.combroonie@kernel.org, perex@perex.cz, tiwai@suse.comkuninori.morimoto.gx@renesas.comjiada_wang@mentor.com, keescook@chromium.org, andrew_gabbasov@mentor.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa-ssp: add support for an external clock in devicetree
+   ASoC: rsnd: cmd: Add missing newline to debug message
 
 has been applied to the asoc tree at
 
@@ -53,92 +36,35 @@ to this mail.
 Thanks,
 Mark
 
->From 90eb6b59d311e6facd040124cb5b659a865125b8 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Mon, 2 Jul 2018 17:11:00 +0200
-Subject: [PATCH] ASoC: pxa-ssp: add support for an external clock in
- devicetree
+>From 74b37e299f038c910dc728d736e3f071ba0ead2a Mon Sep 17 00:00:00 2001
+From: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Date: Thu, 5 Jul 2018 11:20:04 +0900
+Subject: [PATCH] ASoC: rsnd: cmd: Add missing newline to debug message
 
-Allow setting a clock called 'extclk' in the device of the ssp-dai
-device. If specified, this clock will be set to the mclk rate from the
-DAI's .set_sysclk() callback. The DAI will also configure itself to
-use that external clock.
+To comply with the style of all kernel messages, add newline
+to the end of every message.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+Fixes: 70fb10529f61 ("ASoC: rsnd: add MIX (Mixer) support")
+Signed-off-by: Andrew Gabbasov <andrew_gabbasov@mentor.com>
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/mrvl,pxa-ssp.txt           |  8 ++++++
- sound/soc/pxa/pxa-ssp.c                       | 25 +++++++++++++++++++
- 2 files changed, 33 insertions(+)
+ sound/soc/sh/rcar/cmd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/mrvl,pxa-ssp.txt b/Documentation/devicetree/bindings/sound/mrvl,pxa-ssp.txt
-index 74c9ba6c2823..93b982e9419f 100644
---- a/Documentation/devicetree/bindings/sound/mrvl,pxa-ssp.txt
-+++ b/Documentation/devicetree/bindings/sound/mrvl,pxa-ssp.txt
-@@ -5,6 +5,14 @@ Required properties:
- 	compatible	Must be "mrvl,pxa-ssp-dai"
- 	port		A phandle reference to a PXA ssp upstream device
+diff --git a/sound/soc/sh/rcar/cmd.c b/sound/soc/sh/rcar/cmd.c
+index d8043ad33540..cc191cd5fb82 100644
+--- a/sound/soc/sh/rcar/cmd.c
++++ b/sound/soc/sh/rcar/cmd.c
+@@ -86,7 +86,7 @@ static int rsnd_cmd_init(struct rsnd_mod *mod,
+ 			cmd_case[rsnd_mod_id(src)] << 16;
+ 	}
  
-+Optional properties:
-+
-+	clock-names
-+	clocks		Through "clock-names" and "clocks", external clocks
-+			can be configured. If a clock names "extclk" exists,
-+			it will be set to the mclk rate of the audio stream
-+			and be used as clock provider of the DAI.
-+
- Example:
+-	dev_dbg(dev, "ctu/mix path = 0x%08x", data);
++	dev_dbg(dev, "ctu/mix path = 0x%08x\n", data);
  
- 	/* upstream device */
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index ff1e0bd8d407..69033e1a84e6 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -41,6 +41,7 @@
-  */
- struct ssp_priv {
- 	struct ssp_device *ssp;
-+	struct clk *extclk;
- 	unsigned long ssp_clk;
- 	unsigned int sysclk;
- 	unsigned int dai_fmt;
-@@ -205,6 +206,21 @@ static int pxa_ssp_set_dai_sysclk(struct snd_soc_dai *cpu_dai,
- 	u32 sscr0 = pxa_ssp_read_reg(ssp, SSCR0) &
- 		~(SSCR0_ECS | SSCR0_NCS | SSCR0_MOD | SSCR0_ACS);
- 
-+	if (priv->extclk) {
-+		int ret;
-+
-+		/*
-+		 * For DT based boards, if an extclk is given, use it
-+		 * here and configure PXA_SSP_CLK_EXT.
-+		 */
-+
-+		ret = clk_set_rate(priv->extclk, freq);
-+		if (ret < 0)
-+			return ret;
-+
-+		clk_id = PXA_SSP_CLK_EXT;
-+	}
-+
- 	dev_dbg(&ssp->pdev->dev,
- 		"pxa_ssp_set_dai_sysclk id: %d, clk_id %d, freq %u\n",
- 		cpu_dai->id, clk_id, freq);
-@@ -774,6 +790,15 @@ static int pxa_ssp_probe(struct snd_soc_dai *dai)
- 			ret = -ENODEV;
- 			goto err_priv;
- 		}
-+
-+		priv->extclk = devm_clk_get(dev, "extclk");
-+		if (IS_ERR(priv->extclk)) {
-+			ret = PTR_ERR(priv->extclk);
-+			if (ret == -EPROBE_DEFER)
-+				return ret;
-+
-+			priv->extclk = NULL;
-+		}
- 	} else {
- 		priv->ssp = pxa_ssp_request(dai->id + 1, "SoC audio");
- 		if (priv->ssp == NULL) {
+ 	rsnd_mod_write(mod, CMD_ROUTE_SLCT, data);
+ 	rsnd_mod_write(mod, CMD_BUSIF_MODE, rsnd_get_busif_shift(io, mod) | 1);
 -- 
 2.18.0.rc2
