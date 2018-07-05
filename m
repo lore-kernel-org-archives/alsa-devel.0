@@ -1,116 +1,138 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 2/2] ASoC: dpcm: add rate merge to the BE stream merge
-Date: Thu,  5 Jul 2018 12:13:49 +0200
-Message-ID: <20180705101349.7520-3-jbrunet@baylibre.com>
+Subject: [PATCH 1/2] ASoC: dpcm: rework runtime stream merge
+Date: Thu,  5 Jul 2018 12:13:48 +0200
+Message-ID: <20180705101349.7520-2-jbrunet@baylibre.com>
 References: <20180705101349.7520-1-jbrunet@baylibre.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A88326735C
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2018 12:13:57 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id b188-v6so10190148wme.3
+ for <alsa-devel@alsa-project.org>; Thu, 05 Jul 2018 03:13:57 -0700 (PDT)
 In-Reply-To: <20180705101349.7520-1-jbrunet@baylibre.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-As done for format and channels, add the possibility to merge
-the backend rates on the frontend rates.
+The goal of this patch is to simplify a bit dpcm runtime stream merge
+by removing several local variables.
 
-This useful if the backend does not support all rates supported by the
-frontend, or if several backends (cpu and codecs) with different
-capabilities are connected to the same frontend.
+ATM, merge functions return the BE 'filter' values which should then be
+filtered against the FE stream values. This create a lot of local
+variable and unnecessary init of min and max.
+
+Instead of this, we can pass the FE stream values directly and let the
+BE filtering functions perform the merge 'in-place'
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- include/sound/soc.h |  2 ++
- sound/soc/soc-pcm.c | 60 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 62 insertions(+)
+ sound/soc/soc-pcm.c | 39 +++++++++++++++------------------------
+ 1 file changed, 15 insertions(+), 24 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 870ba6b64817..a4915148f739 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -964,6 +964,8 @@ struct snd_soc_dai_link {
- 	unsigned int dpcm_merged_format:1;
- 	/* DPCM used FE & BE merged channel */
- 	unsigned int dpcm_merged_chan:1;
-+	/* DPCM used FE & BE merged rate */
-+	unsigned int dpcm_merged_rate:1;
- 
- 	/* pmdown_time is ignored at stop */
- 	unsigned int ignore_pmdown_time:1;
 diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 54141a69b6b0..98be04b543ae 100644
+index b959af4cff3a..54141a69b6b0 100644
 --- a/sound/soc/soc-pcm.c
 +++ b/sound/soc/soc-pcm.c
-@@ -1777,6 +1777,64 @@ static void dpcm_runtime_merge_chan(struct snd_pcm_substream *substream,
- 	}
+@@ -1672,29 +1672,28 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
  }
  
-+static void dpcm_runtime_merge_rate(struct snd_pcm_substream *substream,
-+				    unsigned int *rates,
-+				    unsigned int *rate_min,
-+				    unsigned int *rate_max)
-+{
-+	struct snd_soc_pcm_runtime *fe = substream->private_data;
-+	struct snd_soc_dpcm *dpcm;
-+	int stream = substream->stream;
-+
-+	if (!fe->dai_link->dpcm_merged_rate)
-+		return;
-+
-+	/*
-+	 * It returns merged BE codec channel;
-+	 * if FE want to use it (= dpcm_merged_chan)
-+	 */
-+
-+	list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be) {
-+		struct snd_soc_pcm_runtime *be = dpcm->be;
-+		struct snd_soc_dai_driver *cpu_dai_drv =  be->cpu_dai->driver;
-+		struct snd_soc_dai_driver *codec_dai_drv;
-+		struct snd_soc_pcm_stream *codec_stream;
-+		struct snd_soc_pcm_stream *cpu_stream;
-+		int i;
-+
-+		if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+			cpu_stream = &cpu_dai_drv->playback;
-+		else
-+			cpu_stream = &cpu_dai_drv->capture;
-+
-+		*rate_min = max(*rate_min, cpu_stream->rate_min);
-+		*rate_max = min_not_zero(*rate_max, cpu_stream->rate_max);
-+		*rates = snd_pcm_rate_mask_intersect(*rates, cpu_stream->rates);
-+
-+		for (i = 0; i < be->num_codecs; i++) {
-+			/*
-+			 * Skip CODECs which don't support the current stream
-+			 * type. See soc_pcm_init_runtime_hw() for more details
-+			 */
-+			if (!snd_soc_dai_stream_valid(be->codec_dais[i],
-+						      stream))
-+				continue;
-+
-+			codec_dai_drv = be->codec_dais[i]->driver;
-+			if (stream == SNDRV_PCM_STREAM_PLAYBACK)
-+				codec_stream = &codec_dai_drv->playback;
-+			else
-+				codec_stream = &codec_dai_drv->capture;
-+
-+			*rate_min = max(*rate_min, codec_stream->rate_min);
-+			*rate_max = min_not_zero(*rate_max,
-+						 codec_stream->rate_max);
-+			*rates = snd_pcm_rate_mask_intersect(*rates,
-+						codec_stream->rates);
-+		}
-+	}
-+}
-+
- static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
+ static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
+-				 struct snd_soc_pcm_stream *stream,
+-				 u64 formats)
++				 struct snd_soc_pcm_stream *stream)
  {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
-@@ -1792,6 +1850,8 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
- 	dpcm_runtime_merge_format(substream, &runtime->hw.formats);
- 	dpcm_runtime_merge_chan(substream, &runtime->hw.channels_min,
- 				&runtime->hw.channels_max);
-+	dpcm_runtime_merge_rate(substream, &runtime->hw.rates,
-+				&runtime->hw.rate_min, &runtime->hw.rate_max);
+ 	runtime->hw.rate_min = stream->rate_min;
+ 	runtime->hw.rate_max = stream->rate_max;
+ 	runtime->hw.channels_min = stream->channels_min;
+ 	runtime->hw.channels_max = stream->channels_max;
+ 	if (runtime->hw.formats)
+-		runtime->hw.formats &= formats & stream->formats;
++		runtime->hw.formats &= stream->formats;
+ 	else
+-		runtime->hw.formats = formats & stream->formats;
++		runtime->hw.formats = stream->formats;
+ 	runtime->hw.rates = stream->rates;
+ }
+ 
+-static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
++static void dpcm_runtime_merge_format(struct snd_pcm_substream *substream,
++				      u64 *formats)
+ {
+ 	struct snd_soc_pcm_runtime *fe = substream->private_data;
+ 	struct snd_soc_dpcm *dpcm;
+-	u64 formats = ULLONG_MAX;
+ 	int stream = substream->stream;
+ 
+ 	if (!fe->dai_link->dpcm_merged_format)
+-		return formats;
++		return;
+ 
+ 	/*
+ 	 * It returns merged BE codec format
+@@ -1722,16 +1721,14 @@ static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
+ 			else
+ 				codec_stream = &codec_dai_drv->capture;
+ 
+-			formats &= codec_stream->formats;
++			*formats &= codec_stream->formats;
+ 		}
+ 	}
+-
+-	return formats;
+ }
+ 
+-static void dpcm_runtime_base_chan(struct snd_pcm_substream *substream,
+-				   unsigned int *channels_min,
+-				   unsigned int *channels_max)
++static void dpcm_runtime_merge_chan(struct snd_pcm_substream *substream,
++				    unsigned int *channels_min,
++				    unsigned int *channels_max)
+ {
+ 	struct snd_soc_pcm_runtime *fe = substream->private_data;
+ 	struct snd_soc_dpcm *dpcm;
+@@ -1740,9 +1737,6 @@ static void dpcm_runtime_base_chan(struct snd_pcm_substream *substream,
+ 	if (!fe->dai_link->dpcm_merged_chan)
+ 		return;
+ 
+-	*channels_min = 0;
+-	*channels_max = UINT_MAX;
+-
+ 	/*
+ 	 * It returns merged BE codec channel;
+ 	 * if FE want to use it (= dpcm_merged_chan)
+@@ -1789,18 +1783,15 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
+ 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
+ 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+ 	struct snd_soc_dai_driver *cpu_dai_drv = cpu_dai->driver;
+-	u64 format = dpcm_runtime_base_format(substream);
+-	unsigned int channels_min = 0, channels_max = UINT_MAX;
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+-		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback, format);
++		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback);
+ 	else
+-		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture, format);
+-
+-	dpcm_runtime_base_chan(substream, &channels_min, &channels_max);
++		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture);
+ 
+-	runtime->hw.channels_min = max(channels_min, runtime->hw.channels_min);
+-	runtime->hw.channels_max = min(channels_max, runtime->hw.channels_max);
++	dpcm_runtime_merge_format(substream, &runtime->hw.formats);
++	dpcm_runtime_merge_chan(substream, &runtime->hw.channels_min,
++				&runtime->hw.channels_max);
  }
  
  static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd);
