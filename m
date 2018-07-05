@@ -1,19 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] regmap: slimbus: add support to raw
-	read/writes
-Date: Thu, 5 Jul 2018 17:50:11 +0100
-Message-ID: <20180705165011.GC6227@sirena.org.uk>
-References: <20180705113700.32465-1-srinivas.kandagatla@linaro.org>
- <20180705150857.GA6227@sirena.org.uk>
- <3c958e52-d720-c008-913b-4ff29ea35c00@linaro.org>
+Subject: Applied "ASoC: nau8824: use 64-bit arithmetic instead
+	of 32-bit" to the asoc tree
+Date: Thu, 05 Jul 2018 18:07:58 +0100
+Message-ID: <E1fb7ja-00008q-KN@debutante>
+References: <20180705130617.GA31233@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2458820619092973376=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4F7DA266E76
- for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2018 18:50:12 +0200 (CEST)
-In-Reply-To: <3c958e52-d720-c008-913b-4ff29ea35c00@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id A4B24267601
+ for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2018 19:08:25 +0200 (CEST)
+In-Reply-To: <20180705130617.GA31233@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,60 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2458820619092973376==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Fig2xvG2VGoz8o/s"
-Content-Disposition: inline
+   ASoC: nau8824: use 64-bit arithmetic instead of 32-bit
 
+has been applied to the asoc tree at
 
---Fig2xvG2VGoz8o/s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Jul 05, 2018 at 05:13:21PM +0100, Srinivas Kandagatla wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> I think I got it wrong by looking at _regmap_bus_read() implementation which
-> calls _regmap_raw_read(), this made me think that read/writes callbacks
-> imply raw read/writes. Looks like that is not the case.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-They are reads and writes, the thing is that they're reads and writes of
-the register map that's also accessible for other operations rather than
-something separate.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> All am trying to do is support paged registers, which seems to be only
-> possible via read/write support at bus level.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-Could you explain what you mean by paged registers?  There's framework
-support for what's normally called pages but perhaps this is some
-slimbus specific thing?
+Thanks,
+Mark
 
---Fig2xvG2VGoz8o/s
-Content-Type: application/pgp-signature; name="signature.asc"
+>From f7ddff54d0a0f068442414b48bec7f22aa777de7 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Thu, 5 Jul 2018 08:06:17 -0500
+Subject: [PATCH] ASoC: nau8824: use 64-bit arithmetic instead of 32-bit
 
------BEGIN PGP SIGNATURE-----
+Add suffix ULL to constant 256 in order to give the compiler complete
+information about the proper arithmetic to use.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls+TEIACgkQJNaLcl1U
-h9BV6Qf/YNI1I8OaYffK4zwYsjGpMRe4M0LvAW5ZMcqX3WI6v3DgqWeWwuZ2i4Mq
-84riJ88XTtfuk0uQUm1GPBf5BIE7FOD7SaNR8QOfgLAZSAgq4sEcGu6fJRYK+97A
-2GTylrltzsc/ZDOEsctJKTmdK/h0pF2DWv4zQ2SG9VpFB3HxpjxpYxG+N8x9cv8I
-KNEcqJaK8uLBaiNRYRmuVB3HMSW0WO0hQhKOphETNelrGor2Y4HPyqO5q47yeuc9
-HcCdu4sUBKYFWqNl3Fb4gtOaLYSlehUH68oL5GBT47+jPCYN4NKzHZdrQQmhDwBW
-eT3qzOzZOQFUSffd64wlVZSxf7LF5g==
-=bFLm
------END PGP SIGNATURE-----
+Notice that such constant is used in a context that expects an
+expression of type u64 (64 bits, unsigned) and the following
+expression is currently being evaluated using 32-bit arithmetic:
 
---Fig2xvG2VGoz8o/s--
+256 * fs * 2 * mclk_src_scaling[i].param
 
---===============2458820619092973376==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Addresses-Coverity-ID: 1432039 ("Unintentional integer overflow")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/nau8824.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---===============2458820619092973376==--
+diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+index 6bd14453f06e..468d5143e2c4 100644
+--- a/sound/soc/codecs/nau8824.c
++++ b/sound/soc/codecs/nau8824.c
+@@ -1274,7 +1274,7 @@ static int nau8824_calc_fll_param(unsigned int fll_in,
+ 	fvco_max = 0;
+ 	fvco_sel = ARRAY_SIZE(mclk_src_scaling);
+ 	for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
+-		fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
++		fvco = 256ULL * fs * 2 * mclk_src_scaling[i].param;
+ 		if (fvco > NAU_FVCO_MIN && fvco < NAU_FVCO_MAX &&
+ 			fvco_max < fvco) {
+ 			fvco_max = fvco;
+-- 
+2.18.0.rc2
