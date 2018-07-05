@@ -1,18 +1,18 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 1/2] ASoC: dpcm: rework runtime stream merge
-Date: Thu,  5 Jul 2018 12:13:48 +0200
-Message-ID: <20180705101349.7520-2-jbrunet@baylibre.com>
-References: <20180705101349.7520-1-jbrunet@baylibre.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH - JACK IO plug 1/1] pcm: ioplug: Provide
+ avail helper function for plugins
+Date: Thu, 5 Jul 2018 19:36:47 +0900
+Message-ID: <a87c3746-b67e-0b4a-0c91-a014c45181bb@sakamocchi.jp>
+References: <1530626363-8808-1-git-send-email-twischer@de.adit-jv.com>
+ <1530626363-8808-2-git-send-email-twischer@de.adit-jv.com>
+ <6496aaee-6158-d880-f683-29dc1d926887@sakamocchi.jp>
+ <s5hefgjh66g.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A88326735C
- for <alsa-devel@alsa-project.org>; Thu,  5 Jul 2018 12:13:57 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id b188-v6so10190148wme.3
- for <alsa-devel@alsa-project.org>; Thu, 05 Jul 2018 03:13:57 -0700 (PDT)
-In-Reply-To: <20180705101349.7520-1-jbrunet@baylibre.com>
+In-Reply-To: <s5hefgjh66g.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,119 +22,129 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jerome Brunet <jbrunet@baylibre.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: twischer@de.adit-jv.com, alsa-devel@alsa-project.org, patch@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The goal of this patch is to simplify a bit dpcm runtime stream merge
-by removing several local variables.
+Hi,
 
-ATM, merge functions return the BE 'filter' values which should then be
-filtered against the FE stream values. This create a lot of local
-variable and unnecessary init of min and max.
+On Jul 4 2018 15:21, Takashi Iwai wrote:
+> On Wed, 04 Jul 2018 02:34:47 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> Iwai-san,
+>>
+>> On Jul 3 2018 22:59, twischer@de.adit-jv.com wrote:
+>>> From: Timo Wischer <twischer@de.adit-jv.com>
+>>>
+>>> This function can be called without calling snd_pcm_avail_update().
+>>>
+>>> The call to snd_pcm_avail_update() can take some time.
+>>> Therefore some developers would not like to call it from a real-time
+>>> context (e.g. from JACK client context).
+>>>
+>>> Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+>>>
+>>> diff --git a/include/pcm_ioplug.h b/include/pcm_ioplug.h
+>>> index c1310e3..b16fc8b 100644
+>>> --- a/include/pcm_ioplug.h
+>>> +++ b/include/pcm_ioplug.h
+>>> @@ -235,6 +235,9 @@ int snd_pcm_ioplug_set_param_list(snd_pcm_ioplug_t *io, int type, unsigned int n
+>>>    int snd_pcm_ioplug_set_state(snd_pcm_ioplug_t *ioplug, snd_pcm_state_t state);
+>>>      /* calucalte the available frames */
+>>> +snd_pcm_uframes_t snd_pcm_ioplug_avail(const snd_pcm_ioplug_t * const ioplug,
+>>> +				       const snd_pcm_uframes_t hw_ptr,
+>>> +				       const snd_pcm_uframes_t appl_ptr);
+>>>    snd_pcm_uframes_t snd_pcm_ioplug_hw_avail(const snd_pcm_ioplug_t * const ioplug,
+>>>    					  const snd_pcm_uframes_t hw_ptr,
+>>>    					  const snd_pcm_uframes_t appl_ptr);
+>>> diff --git a/src/pcm/pcm_ioplug.c b/src/pcm/pcm_ioplug.c
+>>> index 4d44ae2..6d52c27 100644
+>>> --- a/src/pcm/pcm_ioplug.c
+>>> +++ b/src/pcm/pcm_ioplug.c
+>>> @@ -1221,6 +1221,21 @@ int snd_pcm_ioplug_set_state(snd_pcm_ioplug_t *ioplug, snd_pcm_state_t state)
+>>>     * \param ioplug the ioplug handle
+>>>     * \param hw_ptr hardware pointer in frames
+>>>     * \param appl_ptr application pointer in frames
+>>> + * \return available frames for the application
+>>> + */
+>>> +snd_pcm_uframes_t snd_pcm_ioplug_avail(const snd_pcm_ioplug_t * const ioplug,
+>>> +				       const snd_pcm_uframes_t hw_ptr,
+>>> +				       const snd_pcm_uframes_t appl_ptr)
+>>> +{
+>>> +	return __snd_pcm_avail(ioplug->pcm, hw_ptr, appl_ptr);
+>>> +}
+>>> +
+>>> +/**
+>>> + * \brief Get the available frames. This function can be used to calculate the
+>>> + * the available frames before calling #snd_pcm_avail_update()
+>>> + * \param ioplug the ioplug handle
+>>> + * \param hw_ptr hardware pointer in frames
+>>> + * \param appl_ptr application pointer in frames
+>>>     * \return available frames for the hardware
+>>>     */
+>>>    snd_pcm_uframes_t snd_pcm_ioplug_hw_avail(const snd_pcm_ioplug_t * const ioplug,
+>>> @@ -1230,8 +1245,9 @@ snd_pcm_uframes_t snd_pcm_ioplug_hw_avail(const snd_pcm_ioplug_t * const ioplug,
+>>>    	/* available data/space which can be transferred by the user
+>>>    	 * application
+>>>    	 */
+>>> -	const snd_pcm_uframes_t user_avail = __snd_pcm_avail(ioplug->pcm,
+>>> -							     hw_ptr, appl_ptr);
+>>> +	const snd_pcm_uframes_t user_avail = snd_pcm_ioplug_avail(ioplug,
+>>> +								  hw_ptr,
+>>> +								  appl_ptr);
+>>>      	if (user_avail > ioplug->pcm->buffer_size) {
+>>>    		/* there was an Xrun */
+>>
+>> I have a question about maintenance policy of this library to update
+>> version script for GNU Linker (ld) when introducing new symbols. The
+>> version script is not updated since node name as 'ALSA_0.9.7'. The
+>> newly
+>> intduced symbol, 'snd_pcm_ioplug_hw_avail' is in node name of
+>> 'ALSA_0.9'.
+>>
+>> ```
+>> $ readelf -s src/.libs/libasound.so.2.0.0 | grep snd_pcm_ioplug_hw_avail
+>>    1254: 000000000009bfe0    40 FUNC    GLOBAL DEFAULT   13
+>> snd_pcm_ioplug_hw_avail@@ALSA_0.9
+>>    3840: 000000000009bfe0    40 FUNC    GLOBAL DEFAULT   13
+>> snd_pcm_ioplug_hw_avail
+>> ```
+>>
+>> The last node name is 'ALSA_1.1.6':
+>>
+>> ```
+>> $ tail -n 10 src/Versions.in
+>>    global:
+>>
+>>      @SYMBOL_PREFIX@alsa_lisp_*;
+>> } ALSA_0.9.5;
+>>
+>> ALSA_1.1.6 {
+>>    global:
+>>
+>>      @SYMBOL_PREFIX@snd_dlopen;
+>> } ALSA_0.9.7;
+>> ```
+>>
+>> Practically this brings no issue, but theoretically the newly
+>> introduced symbol should be in a new node name next to ALSA_1.1.6. I'm
+>> not so strict in this point, but it's better to decide maintenance
+>> policy (because I've added some APIs in recent years).
+> 
+> Yes, that's an open question.
+> 
+> I myself am no big fan of the versioned symbols.  This has been a PITA
+> for many applications.  The versioned smybols is useful only if the
+> function signature may change.  But what's the difference from
+> renaming the function, then?
+> 
+> So we've stopped putting the new symbols into the new versioned
+> section; the snd_dlopen was an exception because it really changed the
+> signature.
 
-Instead of this, we can pass the FE stream values directly and let the
-BE filtering functions perform the merge 'in-place'
+Nowadays I have no positive reason to use versioned symbols as you said.
+I'm OK and thanks for your explanation.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/soc-pcm.c | 39 +++++++++++++++------------------------
- 1 file changed, 15 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index b959af4cff3a..54141a69b6b0 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1672,29 +1672,28 @@ int dpcm_be_dai_startup(struct snd_soc_pcm_runtime *fe, int stream)
- }
- 
- static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
--				 struct snd_soc_pcm_stream *stream,
--				 u64 formats)
-+				 struct snd_soc_pcm_stream *stream)
- {
- 	runtime->hw.rate_min = stream->rate_min;
- 	runtime->hw.rate_max = stream->rate_max;
- 	runtime->hw.channels_min = stream->channels_min;
- 	runtime->hw.channels_max = stream->channels_max;
- 	if (runtime->hw.formats)
--		runtime->hw.formats &= formats & stream->formats;
-+		runtime->hw.formats &= stream->formats;
- 	else
--		runtime->hw.formats = formats & stream->formats;
-+		runtime->hw.formats = stream->formats;
- 	runtime->hw.rates = stream->rates;
- }
- 
--static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
-+static void dpcm_runtime_merge_format(struct snd_pcm_substream *substream,
-+				      u64 *formats)
- {
- 	struct snd_soc_pcm_runtime *fe = substream->private_data;
- 	struct snd_soc_dpcm *dpcm;
--	u64 formats = ULLONG_MAX;
- 	int stream = substream->stream;
- 
- 	if (!fe->dai_link->dpcm_merged_format)
--		return formats;
-+		return;
- 
- 	/*
- 	 * It returns merged BE codec format
-@@ -1722,16 +1721,14 @@ static u64 dpcm_runtime_base_format(struct snd_pcm_substream *substream)
- 			else
- 				codec_stream = &codec_dai_drv->capture;
- 
--			formats &= codec_stream->formats;
-+			*formats &= codec_stream->formats;
- 		}
- 	}
--
--	return formats;
- }
- 
--static void dpcm_runtime_base_chan(struct snd_pcm_substream *substream,
--				   unsigned int *channels_min,
--				   unsigned int *channels_max)
-+static void dpcm_runtime_merge_chan(struct snd_pcm_substream *substream,
-+				    unsigned int *channels_min,
-+				    unsigned int *channels_max)
- {
- 	struct snd_soc_pcm_runtime *fe = substream->private_data;
- 	struct snd_soc_dpcm *dpcm;
-@@ -1740,9 +1737,6 @@ static void dpcm_runtime_base_chan(struct snd_pcm_substream *substream,
- 	if (!fe->dai_link->dpcm_merged_chan)
- 		return;
- 
--	*channels_min = 0;
--	*channels_max = UINT_MAX;
--
- 	/*
- 	 * It returns merged BE codec channel;
- 	 * if FE want to use it (= dpcm_merged_chan)
-@@ -1789,18 +1783,15 @@ static void dpcm_set_fe_runtime(struct snd_pcm_substream *substream)
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai_driver *cpu_dai_drv = cpu_dai->driver;
--	u64 format = dpcm_runtime_base_format(substream);
--	unsigned int channels_min = 0, channels_max = UINT_MAX;
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
--		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback, format);
-+		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->playback);
- 	else
--		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture, format);
--
--	dpcm_runtime_base_chan(substream, &channels_min, &channels_max);
-+		dpcm_init_runtime_hw(runtime, &cpu_dai_drv->capture);
- 
--	runtime->hw.channels_min = max(channels_min, runtime->hw.channels_min);
--	runtime->hw.channels_max = min(channels_max, runtime->hw.channels_max);
-+	dpcm_runtime_merge_format(substream, &runtime->hw.formats);
-+	dpcm_runtime_merge_chan(substream, &runtime->hw.channels_min,
-+				&runtime->hw.channels_max);
- }
- 
- static int dpcm_fe_dai_do_trigger(struct snd_pcm_substream *substream, int cmd);
--- 
-2.14.4
+Takashi Sakamoto
