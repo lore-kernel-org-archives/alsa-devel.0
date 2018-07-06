@@ -1,93 +1,33 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v4] ALSA: core: Allow drivers to set R/W wait
-	time.
-Date: Fri,  6 Jul 2018 13:50:36 +0100
-Message-ID: <20180706125036.12940-1-liam.r.girdwood@linux.intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 4501C2673C7
- for <alsa-devel@alsa-project.org>; Fri,  6 Jul 2018 14:50:28 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+From: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Subject: [PATCH] sound: stm32: replace "%p" with "%pK"
+Date: Fri,  6 Jul 2018 15:07:03 +0200
+Message-ID: <20180706130703.22352-1-benjamin.gaignard@st.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, arnaud.pouliquen@st.com
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Benjamin Gaignard <benjamin.gaignard@st.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently ALSA core blocks userspace for about 10 seconds for PCM R/W IO.
-This needs to be configurable for modern hardware like DSPs where no
-pointer update in milliseconds can indicate terminal DSP errors.
+The format specifier "%p" can leak kernel addresses.
+Use "%pK" instead.
 
-Add a substream variable to set the wait time in ms. This allows userspace
-and drivers to recover more quickly from terminal DSP errors.
-
-Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
 ---
+ sound/soc/stm/stm32_adfsdm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Changes since V1 :-
-  o Remove API method and alow drivers to set directly.
-  o Validate time is driver supplied times.
-
-V2 :-
-  o Max wait calc now in ms.
-  o checkpatch. 
-
-v3:-
-  o Remove driver supplied time validation.
-
- include/sound/pcm.h  |  1 +
- sound/core/pcm_lib.c | 17 ++++++++++++-----
- 2 files changed, 13 insertions(+), 5 deletions(-)
-
-diff --git a/include/sound/pcm.h b/include/sound/pcm.h
-index e054c583d3b3..fcdf358a25f0 100644
---- a/include/sound/pcm.h
-+++ b/include/sound/pcm.h
-@@ -462,6 +462,7 @@ struct snd_pcm_substream {
-         /* -- timer section -- */
- 	struct snd_timer *timer;		/* timer */
- 	unsigned timer_running: 1;	/* time is running */
-+	long wait_time;	/* time in ms for R/W to wait for avail */
- 	/* -- next substream -- */
- 	struct snd_pcm_substream *next;
- 	/* -- linked substreams -- */
-diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
-index 44b5ae833082..eecbfdc7a2c9 100644
---- a/sound/core/pcm_lib.c
-+++ b/sound/core/pcm_lib.c
-@@ -1832,12 +1832,19 @@ static int wait_for_avail(struct snd_pcm_substream *substream,
- 	if (runtime->no_period_wakeup)
- 		wait_time = MAX_SCHEDULE_TIMEOUT;
- 	else {
--		wait_time = 10;
--		if (runtime->rate) {
--			long t = runtime->period_size * 2 / runtime->rate;
--			wait_time = max(t, wait_time);
-+		/* use wait time from substream if available */
-+		if (substream->wait_time) {
-+			wait_time = substream->wait_time;
-+		} else {
-+			wait_time = 10;
-+
-+			if (runtime->rate) {
-+				long t = runtime->period_size * 2 /
-+					 runtime->rate;
-+				wait_time = max(t, wait_time);
-+			}
-+			wait_time = msecs_to_jiffies(wait_time * 1000);
- 		}
--		wait_time = msecs_to_jiffies(wait_time * 1000);
- 	}
+diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
+index db73fef3e500..0e9373064032 100644
+--- a/sound/soc/stm/stm32_adfsdm.c
++++ b/sound/soc/stm/stm32_adfsdm.c
+@@ -149,7 +149,7 @@ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
+ 	unsigned int old_pos = priv->pos;
+ 	unsigned int cur_size = size;
  
- 	for (;;) {
+-	dev_dbg(rtd->dev, "%s: buff_add :%p, pos = %d, size = %zu\n",
++	dev_dbg(rtd->dev, "%s: buff_add :%pK, pos = %d, size = %zu\n",
+ 		__func__, &pcm_buff[priv->pos], priv->pos, size);
+ 
+ 	if ((priv->pos + size) > buff_size) {
 -- 
-2.17.1
+2.15.0
