@@ -1,65 +1,47 @@
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH] dma: add support for reporting pause and resume
- separately
-Date: Fri, 6 Jul 2018 08:22:21 +0200
-Message-ID: <20180706062223eucas1p1295e6366bbe19f4fe11a6427bc12af94~_s17Sg74d0494404944eucas1p1X@eucas1p1.samsung.com>
-References: <CGME20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65@eucas1p2.samsung.com>
-        <20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65~9jzNWZMqQ1216712167eucas1p27@eucas1p2.samsung.com>
-        <20180704070033.GA22377@vkoul-mobl>
-        <CAHp75Vfy8=i3dSYoQ5Uto-RtmU6E8BVWU1dmG8BihN=Wtkr+_A@mail.gmail.com>
-        <20180706060036.GR22377@vkoul-mobl>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180706060036.GR22377@vkoul-mobl>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod <vkoul@kernel.org>, Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, dmaengine <dmaengine@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+From: Hui Wang <hui.wang@canonical.com>
+Subject: [PATCH] ALSA: hda/realtek - two more lenovo models need fixup of MIC_LOCATION
+Date: Fri,  6 Jul 2018 15:14:11 +0800
+Message-ID: <1530861251-3405-1-git-send-email-hui.wang@canonical.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de
+Cc: stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Vinod,
+We have two new lenovo desktop models which need to apply the fixup of
+ALC294_FIXUP_LENOVO_MIC_LOCATION, and they have the same pin cfg as
+the machine with subsystem id:0x17aa3136, now use the pincfg table
+to apply the fixup for them.
 
-On 2018-07-06 08:00, Vinod wrote:
-> On 04-07-18, 13:38, Andy Shevchenko wrote:
->> On Wed, Jul 4, 2018 at 10:00 AM, Vinod <vkoul@kernel.org> wrote:
->>> Hi Marek,
->>>
->>> On 02-07-18, 15:08, Marek Szyprowski wrote:
->>>> 'cmd_pause' DMA channel capability means that respective DMA engine
->>>> supports both pausing and resuming given DMA channel. However, in some
->>>> cases it is important to know if DMA channel can be paused without the
->>>> need to resume it. This is a typical requirement for proper residue
->>>> reading on transfer timeout in UART drivers. There are also some DMA
->>>> engines with limited hardware, which doesn't really support resuming.
->>> Am curious given that your hardware does not support resume, what was motivation
->>> for adding pause?
->>>
->>>> Reporting pause and resume capabilities separately allows UART drivers to
->>>> properly check for the really required capabilities and operate in DMA
->>>> mode also in systems with limited DMA hardware. On the other hand drivers,
->>>> which rely on full channel suspend/resume support, should now check for
->>>> both 'pause' and 'resume' features.
->>>>
->>>> Existing clients of dma_get_slave_caps() have been checked and the only
->>>> driver which rely on proper channel resuming is soc-generic-dmaengine-pcm
->>>> driver, which has been updated to check the newly added capability.
->>>> Existing 'cmd_pause' now only indicates that DMA engine support pausing
->>>> given DMA channel.
->>> The change looks fine to me. I was hoping that serial would also check
->>> this..
->> AFAIU serial does not need to resume.
-> I meant the serial should check for Pause capability..
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-Yes, I want to add such check to Samsung Exynos serial driver once this 
-change is
-merged. PL330 DMA engine (which is used in Samsung Exynos SoCs) supports 
-only
-pause, it is not possible to check that functionality from serial driver 
-yet.
-
-Best regards
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 63154b9..666713e 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6556,7 +6556,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+ 	SND_PCI_QUIRK(0x17aa, 0x312a, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+ 	SND_PCI_QUIRK(0x17aa, 0x312f, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+-	SND_PCI_QUIRK(0x17aa, 0x3136, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+ 	SND_PCI_QUIRK(0x17aa, 0x313c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
+ 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
+@@ -6822,6 +6821,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
+ 		{0x1a, 0x02a11040},
+ 		{0x1b, 0x01014020},
+ 		{0x21, 0x0221101f}),
++	SND_HDA_PIN_QUIRK(0x10ec0235, 0x17aa, "Lenovo", ALC294_FIXUP_LENOVO_MIC_LOCATION,
++		{0x14, 0x90170110},
++		{0x19, 0x02a11020},
++		{0x1a, 0x02a11030},
++		{0x21, 0x0221101f}),
+ 	SND_HDA_PIN_QUIRK(0x10ec0236, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
+ 		{0x12, 0x90a60140},
+ 		{0x14, 0x90170110},
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.7.4
