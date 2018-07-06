@@ -1,47 +1,46 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda/realtek - two more lenovo models need fixup of MIC_LOCATION
-Date: Fri,  6 Jul 2018 15:14:11 +0800
-Message-ID: <1530861251-3405-1-git-send-email-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: stable@vger.kernel.org
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH v3 0/5] Add support for audio on SDM845 SoC
+Date: Fri,  6 Jul 2018 15:13:10 +0530
+Message-ID: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-We have two new lenovo desktop models which need to apply the fixup of
-ALC294_FIXUP_LENOVO_MIC_LOCATION, and they have the same pin cfg as
-the machine with subsystem id:0x17aa3136, now use the pincfg table
-to apply the fixup for them.
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+This provides initial patchset to support audio on
+Qualcomm Techonologies Inc. SDM845 SoC. Currently, it supports
+audio playback/capture over Primary MI2S and Quaternary
+TDM ports.
+Changes since v2:
+- Added new file to parse dai-links from device tree
+  and use it in sdm845 and apq8096 machine driver.
+- Removed qcom prefix from device tree properties as
+  suggested by Robb.
+- Updated apq8096 machine driver to use common APIs.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 63154b9..666713e 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6556,7 +6556,6 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x17aa, 0x310c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x312a, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x312f, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
--	SND_PCI_QUIRK(0x17aa, 0x3136, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x313c, "ThinkCentre Station", ALC294_FIXUP_LENOVO_MIC_LOCATION),
- 	SND_PCI_QUIRK(0x17aa, 0x3902, "Lenovo E50-80", ALC269_FIXUP_DMIC_THINKPAD_ACPI),
- 	SND_PCI_QUIRK(0x17aa, 0x3977, "IdeaPad S210", ALC283_FIXUP_INT_MIC),
-@@ -6822,6 +6821,11 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x1a, 0x02a11040},
- 		{0x1b, 0x01014020},
- 		{0x21, 0x0221101f}),
-+	SND_HDA_PIN_QUIRK(0x10ec0235, 0x17aa, "Lenovo", ALC294_FIXUP_LENOVO_MIC_LOCATION,
-+		{0x14, 0x90170110},
-+		{0x19, 0x02a11020},
-+		{0x1a, 0x02a11030},
-+		{0x21, 0x0221101f}),
- 	SND_HDA_PIN_QUIRK(0x10ec0236, 0x1028, "Dell", ALC255_FIXUP_DELL1_MIC_NO_PRESENCE,
- 		{0x12, 0x90a60140},
- 		{0x14, 0x90170110},
+Rohit kumar (5):
+  ASoC: qcom: dt-bindings: Add sdm845 machine bindings
+  ASoC: qcom: Add support to parse common audio device nodes
+  ASoC: qcom: add sdm845 sound card support
+  ASoC: dt-bindings: Update dt binding name for apq8096
+  ASoC: qcom: apq8096: Use common APIs to parse device nodes
+
+ .../devicetree/bindings/sound/qcom,apq8096.txt     |  15 +-
+ .../devicetree/bindings/sound/qcom,sdm845.txt      |  80 +++++
+ sound/soc/qcom/Kconfig                             |  14 +
+ sound/soc/qcom/Makefile                            |   3 +
+ sound/soc/qcom/apq8096.c                           | 151 +-------
+ sound/soc/qcom/common.c                            | 150 ++++++++
+ sound/soc/qcom/common.h                            |  14 +
+ sound/soc/qcom/sdm845.c                            | 390 +++++++++++++++++++++
+ 8 files changed, 674 insertions(+), 143 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+ create mode 100644 sound/soc/qcom/common.c
+ create mode 100644 sound/soc/qcom/common.h
+ create mode 100644 sound/soc/qcom/sdm845.c
+
 -- 
-2.7.4
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
