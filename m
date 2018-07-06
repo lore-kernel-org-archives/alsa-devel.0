@@ -1,55 +1,55 @@
-From: Trent Piepho <xyzzy@speakeasy.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: nau8824: use 64-bit arithmetic instead
- of 32-bit
-Date: Thu, 5 Jul 2018 19:09:05 -0700
-Message-ID: <CA+7tXiiPTSiJ==Q72Ynit-_fTLdVoy1v9PyJTchid5TjdYpkLQ@mail.gmail.com>
-References: <20180705130617.GA31233@embeddedor.com>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH] dma: add support for reporting pause and resume
+ separately
+Date: Fri, 6 Jul 2018 11:30:36 +0530
+Message-ID: <20180706060036.GR22377@vkoul-mobl>
+References: <CGME20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65@eucas1p2.samsung.com>
+ <20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65~9jzNWZMqQ1216712167eucas1p27@eucas1p2.samsung.com>
+ <20180704070033.GA22377@vkoul-mobl>
+ <CAHp75Vfy8=i3dSYoQ5Uto-RtmU6E8BVWU1dmG8BihN=Wtkr+_A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180705130617.GA31233@embeddedor.com>
+Content-Disposition: inline
+In-Reply-To: <CAHp75Vfy8=i3dSYoQ5Uto-RtmU6E8BVWU1dmG8BihN=Wtkr+_A@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, dmaengine <dmaengine@vger.kernel.org>, ALSA Development Mailing List <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Dan Williams <dan.j.williams@intel.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 5, 2018 at 6:06 AM, Gustavo A. R. Silva
-<gustavo@embeddedor.com> wrote:
-> Add suffix ULL to constant 256 in order to give the compiler complete
-> information about the proper arithmetic to use.
->
-> Notice that such constant is used in a context that expects an
-> expression of type u64 (64 bits, unsigned) and the following
-> expression is currently being evaluated using 32-bit arithmetic:
->
-> 256 * fs * 2 * mclk_src_scaling[i].param
->
-> Addresses-Coverity-ID: 1432039 ("Unintentional integer overflow")
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
->  sound/soc/codecs/nau8824.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
-> index 6bd1445..468d514 100644
-> --- a/sound/soc/codecs/nau8824.c
-> +++ b/sound/soc/codecs/nau8824.c
-> @@ -1274,7 +1274,7 @@ static int nau8824_calc_fll_param(unsigned int fll_in,
->         fvco_max = 0;
->         fvco_sel = ARRAY_SIZE(mclk_src_scaling);
->         for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
-> -               fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
-> +               fvco = 256ULL * fs * 2 * mclk_src_scaling[i].param;
+On 04-07-18, 13:38, Andy Shevchenko wrote:
+> On Wed, Jul 4, 2018 at 10:00 AM, Vinod <vkoul@kernel.org> wrote:
+> > Hi Marek,
+> >
+> > On 02-07-18, 15:08, Marek Szyprowski wrote:
+> >> 'cmd_pause' DMA channel capability means that respective DMA engine
+> >> supports both pausing and resuming given DMA channel. However, in some
+> >> cases it is important to know if DMA channel can be paused without the
+> >> need to resume it. This is a typical requirement for proper residue
+> >> reading on transfer timeout in UART drivers. There are also some DMA
+> >> engines with limited hardware, which doesn't really support resuming.
+> >
+> > Am curious given that your hardware does not support resume, what was motivation
+> > for adding pause?
+> >
+> >> Reporting pause and resume capabilities separately allows UART drivers to
+> >> properly check for the really required capabilities and operate in DMA
+> >> mode also in systems with limited DMA hardware. On the other hand drivers,
+> >> which rely on full channel suspend/resume support, should now check for
+> >> both 'pause' and 'resume' features.
+> >>
+> >> Existing clients of dma_get_slave_caps() have been checked and the only
+> >> driver which rely on proper channel resuming is soc-generic-dmaengine-pcm
+> >> driver, which has been updated to check the newly added capability.
+> >> Existing 'cmd_pause' now only indicates that DMA engine support pausing
+> >> given DMA channel.
+> >
+> > The change looks fine to me. I was hoping that serial would also check
+> > this..
+> 
+> AFAIU serial does not need to resume.
 
-This would be better written as fvco = (256 * 2 *
-mclk_src_scaling[i].param) * (u64)fs;
+I meant the serial should check for Pause capability..
 
-There no reason the entire expression must use 64 bit multiplies,
-since the left side
-above is know to fit in 32-bits.
-
-The code could be more efficient if mclk_src_scaling had been sorted
-by scaling ratio
-instead of register value.  In fact, most of the math in this loop
-could be precomputed by the
-compiler if one instead though of min and max fs range for a given scaler.
+-- 
+~Vinod
