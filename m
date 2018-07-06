@@ -1,54 +1,55 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] regmap: slimbus: add support to raw read/writes
-Date: Thu, 5 Jul 2018 18:47:24 +0100
-Message-ID: <20180705174724.GG6227@sirena.org.uk>
-References: <20180705113700.32465-1-srinivas.kandagatla@linaro.org>
- <20180705150857.GA6227@sirena.org.uk>
- <3c958e52-d720-c008-913b-4ff29ea35c00@linaro.org>
- <20180705165011.GC6227@sirena.org.uk>
- <5c3bfd3c-f84a-3fa2-f6fd-5624fd052e87@linaro.org>
- <20180705173059.GF6227@sirena.org.uk>
- <2d2ea16e-c8b4-53b9-259e-d75e6ead4362@linaro.org>
+From: Trent Piepho <xyzzy@speakeasy.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: nau8824: use 64-bit arithmetic instead
+ of 32-bit
+Date: Thu, 5 Jul 2018 19:09:05 -0700
+Message-ID: <CA+7tXiiPTSiJ==Q72Ynit-_fTLdVoy1v9PyJTchid5TjdYpkLQ@mail.gmail.com>
+References: <20180705130617.GA31233@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="XRI2XbIfl/05pQwm"
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2d2ea16e-c8b4-53b9-259e-d75e6ead4362@linaro.org>
+In-Reply-To: <20180705130617.GA31233@embeddedor.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, Jul 5, 2018 at 6:06 AM, Gustavo A. R. Silva
+<gustavo@embeddedor.com> wrote:
+> Add suffix ULL to constant 256 in order to give the compiler complete
+> information about the proper arithmetic to use.
+>
+> Notice that such constant is used in a context that expects an
+> expression of type u64 (64 bits, unsigned) and the following
+> expression is currently being evaluated using 32-bit arithmetic:
+>
+> 256 * fs * 2 * mclk_src_scaling[i].param
+>
+> Addresses-Coverity-ID: 1432039 ("Unintentional integer overflow")
+> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+> ---
+>  sound/soc/codecs/nau8824.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/sound/soc/codecs/nau8824.c b/sound/soc/codecs/nau8824.c
+> index 6bd1445..468d514 100644
+> --- a/sound/soc/codecs/nau8824.c
+> +++ b/sound/soc/codecs/nau8824.c
+> @@ -1274,7 +1274,7 @@ static int nau8824_calc_fll_param(unsigned int fll_in,
+>         fvco_max = 0;
+>         fvco_sel = ARRAY_SIZE(mclk_src_scaling);
+>         for (i = 0; i < ARRAY_SIZE(mclk_src_scaling); i++) {
+> -               fvco = 256 * fs * 2 * mclk_src_scaling[i].param;
+> +               fvco = 256ULL * fs * 2 * mclk_src_scaling[i].param;
 
---XRI2XbIfl/05pQwm
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This would be better written as fvco = (256 * 2 *
+mclk_src_scaling[i].param) * (u64)fs;
 
-On Thu, Jul 05, 2018 at 06:39:14PM +0100, Srinivas Kandagatla wrote:
+There no reason the entire expression must use 64 bit multiplies,
+since the left side
+above is know to fit in 32-bits.
 
-> Are reg_read/reg_write callbacks in bus regmap redundant to read/write
-> callbacks?
-
-> By the looks of it, it seems redundant, reg_read/reg_write will never be
-> used if bus regmap has read/write callbacks. Just wanted reconfirm before
-> replacing them with just read/write callbacks.
-
-Yes.
-
---XRI2XbIfl/05pQwm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAls+WasACgkQJNaLcl1U
-h9Ctsgf/W5M95JNkGApzOvZ1t8G6afSlQUw5P4gMTVdYIC7qb3ewSW3Hb/3LcNDQ
-N/b+lDAi9Ec3huoqgHg322AmcxzxTZhSVNgckJtmgSSQm+ShUfKOWQh3bTdSLo4f
-BHKeNVGrdOtaONNCkVlShsUrvA5esrjoblXZ6XScaqAoaRDN9sR9DmtL2jkFDI6T
-blKuzjnuxbM+ZpGC4C4+t3JoQ4W/+CACXf5nEKTi9yvGoDiw8BZUtPjKiWCaaM64
-rEl3S+kO3iHbLrGo0662P7haWkKcXDnS3BbSkJWGXrlXu1NZKCHpazKzvBhqWETQ
-u9XBILy6MsCsY113GJ5Ul5DUomIBZg==
-=jnsz
------END PGP SIGNATURE-----
-
---XRI2XbIfl/05pQwm--
+The code could be more efficient if mclk_src_scaling had been sorted
+by scaling ratio
+instead of register value.  In fact, most of the math in this loop
+could be precomputed by the
+compiler if one instead though of min and max fs range for a given scaler.
