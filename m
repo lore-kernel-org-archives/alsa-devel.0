@@ -1,65 +1,34 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 2/5] ASoC: qcom: Add support to parse
- common audio device nodes
-Date: Fri, 6 Jul 2018 18:51:20 +0100
-Message-ID: <84b6f1f7-b9c1-fd0c-b684-1e07d35663ba@linaro.org>
-References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
- <1530870195-13576-3-git-send-email-rohitkr@codeaurora.org>
+From: Stephen Boyd <sboyd@kernel.org>
+Subject: Re: [PATCH v5 2/5] clk: at91: add I2S clock mux driver
+Date: Fri, 06 Jul 2018 11:12:45 -0700
+Message-ID: <153090076533.143105.11588903392800697432@swboyd.mtv.corp.google.com>
+References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
+ <20180618141239.10892-3-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
- [209.85.221.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B1802676AD
- for <alsa-devel@alsa-project.org>; Fri,  6 Jul 2018 19:51:21 +0200 (CEST)
-Received: by mail-wr1-f66.google.com with SMTP id u7-v6so4955020wrn.12
- for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2018 10:51:21 -0700 (PDT)
-In-Reply-To: <1530870195-13576-3-git-send-email-rohitkr@codeaurora.org>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit kumar <rohitkr@codeaurora.org>, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180618141239.10892-3-codrin.ciubotariu@microchip.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, boris.brezillon@bootlin.com, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com, robh+dt@kernel.org
+Cc: Cristian.Birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
+Quoting Codrin Ciubotariu (2018-06-18 07:12:36)
+> This driver is a simple muxing driver that controls the
+> I2S's clock input by using syscon/regmap to change the parent.
+> The available inputs can be peripheral clock and generated clock.
+> =
 
-
-On 06/07/18 10:43, Rohit kumar wrote:
-> This adds support to parse cpu, platform and codec
-> device nodes and add them in dai-links. Also, add
-> API to add slave components associated with machine
-> driver.
-> 
-> Signed-off-by: Rohit kumar<rohitkr@codeaurora.org>
+> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 > ---
->   sound/soc/qcom/Kconfig  |   3 +
->   sound/soc/qcom/Makefile |   1 +
->   sound/soc/qcom/common.c | 150 ++++++++++++++++++++++++++++++++++++++++++++++++
->   sound/soc/qcom/common.h |  14 +++++
->   4 files changed, 168 insertions(+)
->   create mode 100644 sound/soc/qcom/common.c
 
-common.c seems to miss
+Applied to clk-next
 
-MODULE_LICENSE("GPL v2");
+But I had to fix:
 
-this will be an issue for snd card module auto-loading!
+WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+#56: FILE: drivers/clk/at91/clk-i2s-mux.c:1:
++/* SPDX-License-Identifier: GPL-2.0 */
 
-Also patch 5/5 can go with this.
-
-Other than that it looks good.
-
-Once these 2 fixed you can add my Ack
-
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-
---srini
-
->   create mode 100644 sound/soc/qcom/common.h
+so I did. Please run checkpatch next time.
