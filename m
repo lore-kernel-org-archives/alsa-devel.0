@@ -1,21 +1,21 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 4/5] ASoC: dt-bindings: Update dt
- binding name for apq8096
-Date: Fri, 6 Jul 2018 18:51:14 +0100
-Message-ID: <cf28657d-3ca7-f0d6-8614-04d021ce909f@linaro.org>
+Subject: Re: [PATCH v3 2/5] ASoC: qcom: Add support to parse
+ common audio device nodes
+Date: Fri, 6 Jul 2018 18:51:20 +0100
+Message-ID: <84b6f1f7-b9c1-fd0c-b684-1e07d35663ba@linaro.org>
 References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
- <1530870195-13576-5-git-send-email-rohitkr@codeaurora.org>
+ <1530870195-13576-3-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com
- [209.85.221.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B2AE2673C7
- for <alsa-devel@alsa-project.org>; Fri,  6 Jul 2018 19:51:17 +0200 (CEST)
-Received: by mail-wr1-f67.google.com with SMTP id b15-v6so4950773wrv.10
- for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2018 10:51:17 -0700 (PDT)
-In-Reply-To: <1530870195-13576-5-git-send-email-rohitkr@codeaurora.org>
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
+ [209.85.221.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B1802676AD
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jul 2018 19:51:21 +0200 (CEST)
+Received: by mail-wr1-f66.google.com with SMTP id u7-v6so4955020wrn.12
+ for <alsa-devel@alsa-project.org>; Fri, 06 Jul 2018 10:51:21 -0700 (PDT)
+In-Reply-To: <1530870195-13576-3-git-send-email-rohitkr@codeaurora.org>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -32,14 +32,34 @@ List-Id: alsa-devel@alsa-project.org
 
 
 On 06/07/18 10:43, Rohit kumar wrote:
-> Remove qcom prefix from machine driver dt bindings of
-> apq8096 SoC.
-Yes, this is a good move to make everything inline!
-
+> This adds support to parse cpu, platform and codec
+> device nodes and add them in dai-links. Also, add
+> API to add slave components associated with machine
+> driver.
 > 
 > Signed-off-by: Rohit kumar<rohitkr@codeaurora.org>
 > ---
->   Documentation/devicetree/bindings/sound/qcom,apq8096.txt | 15 +++++++++++++--
->   1 file changed, 13 insertions(+), 2 deletions(-)
+>   sound/soc/qcom/Kconfig  |   3 +
+>   sound/soc/qcom/Makefile |   1 +
+>   sound/soc/qcom/common.c | 150 ++++++++++++++++++++++++++++++++++++++++++++++++
+>   sound/soc/qcom/common.h |  14 +++++
+>   4 files changed, 168 insertions(+)
+>   create mode 100644 sound/soc/qcom/common.c
+
+common.c seems to miss
+
+MODULE_LICENSE("GPL v2");
+
+this will be an issue for snd card module auto-loading!
+
+Also patch 5/5 can go with this.
+
+Other than that it looks good.
+
+Once these 2 fixed you can add my Ack
 
 Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+
+--srini
+
+>   create mode 100644 sound/soc/qcom/common.h
