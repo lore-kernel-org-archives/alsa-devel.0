@@ -1,33 +1,55 @@
-From: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Subject: [PATCH] sound: stm32: replace "%p" with "%pK"
-Date: Fri,  6 Jul 2018 15:07:03 +0200
-Message-ID: <20180706130703.22352-1-benjamin.gaignard@st.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, arnaud.pouliquen@st.com
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Benjamin Gaignard <benjamin.gaignard@st.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: pxa: make SND_PXA_SOC_SSP depend on
+	PLAT_PXA
+Date: Fri,  6 Jul 2018 15:30:48 +0200
+Message-ID: <20180706133104.129049-1-arnd@arndb.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.134])
+ by alsa0.perex.cz (Postfix) with ESMTP id A70CF2673C7
+ for <alsa-devel@alsa-project.org>; Fri,  6 Jul 2018 15:31:13 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-The format specifier "%p" can leak kernel addresses.
-Use "%pK" instead.
+For the moment, we can't enable CONFIG_SND_PXA_SOC_SSP unless we are
+building for ARM PXA or MMP:
 
-Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+WARNING: unmet direct dependencies detected for PXA_SSP
+  Depends on [n]: PLAT_PXA [=n]
+  Selected by [y]:
+  - SND_PXA_SOC_SSP [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y]
+
+This adds an explicit dependency for it.
+
+Fixes: 0a94cf345740 ("ASoC: pxa: make SND_PXA2XX_SOC_I2S selectable")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/stm/stm32_adfsdm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/pxa/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
-index db73fef3e500..0e9373064032 100644
---- a/sound/soc/stm/stm32_adfsdm.c
-+++ b/sound/soc/stm/stm32_adfsdm.c
-@@ -149,7 +149,7 @@ static int stm32_afsdm_pcm_cb(const void *data, size_t size, void *private)
- 	unsigned int old_pos = priv->pos;
- 	unsigned int cur_size = size;
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 2fc02c227f69..776e148b0aa2 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -34,6 +34,7 @@ config SND_PXA2XX_SOC_I2S
  
--	dev_dbg(rtd->dev, "%s: buff_add :%p, pos = %d, size = %zu\n",
-+	dev_dbg(rtd->dev, "%s: buff_add :%pK, pos = %d, size = %zu\n",
- 		__func__, &pcm_buff[priv->pos], priv->pos, size);
+ config SND_PXA_SOC_SSP
+ 	tristate "Soc Audio via PXA2xx/PXA3xx SSP ports"
++	depends on PLAT_PXA
+ 	select PXA_SSP
+ 	select SND_PXA2XX_LIB
  
- 	if ((priv->pos + size) > buff_size) {
 -- 
-2.15.0
+2.9.0
