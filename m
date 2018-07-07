@@ -1,34 +1,40 @@
-From: Benjamin Gaignard <benjamin.gaignard@linaro.org>
-Subject: Re: [PATCH] sound: stm32: replace "%p" with "%pK"
-Date: Sat, 7 Jul 2018 13:29:18 +0200
-Message-ID: <CA+M3ks7QL6t+HLHAiW3T8hDFDNyR494y4dM20jc8YXJ7-Xbd_g@mail.gmail.com>
-References: <20180706130703.22352-1-benjamin.gaignard@st.com> <s5hpo00quk4.wl-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] slimbus: stream: Fix htmldocs warnings
+Date: Sat,  7 Jul 2018 20:28:41 +0100
+Message-ID: <20180707192841.2358-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hpo00quk4.wl-tiwai@suse.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Alexandre Torgue <alexandre.torgue@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, Benjamin Gaignard <benjamin.gaignard@st.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: gregkh@linuxfoundation.org
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-2018-07-06 16:59 GMT+02:00 Takashi Iwai <tiwai@suse.de>:
-> On Fri, 06 Jul 2018 15:07:03 +0200,
-> Benjamin Gaignard wrote:
->>
->> The format specifier "%p" can leak kernel addresses.
->> Use "%pK" instead.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
->
-> The code change itself is OK (apart from the subject prefix to be
-> "ASoC").  But do we really want to patch manually every single place
-> like this?  There are thousands of files using '%p'.
+This patch fixes below warning during building htmldoc:
+slimbus.h:352: warning: Function parameter or member 'name'
+ not described in 'slim_stream_runtime'
 
-I have limited myself to the few remaining %p in STM32 architecture.
+This patch also removes documentation for state variable
+in struct slim_stream_runtime which was redundant and removed.
 
->
->
-> thanks,
->
-> Takashi
+Reported-by: kbuild test robot <lkp@intel.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/slimbus/slimbus.h | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/slimbus/slimbus.h b/drivers/slimbus/slimbus.h
+index 411880f3fc0a..32ac4046154f 100644
+--- a/drivers/slimbus/slimbus.h
++++ b/drivers/slimbus/slimbus.h
+@@ -325,9 +325,8 @@ enum slim_transport_protocol {
+ /**
+  * struct slim_stream_runtime  - SLIMbus stream runtime instance
+  *
+- * @dev: Name of the stream
++ * @name: Name of the stream
+  * @dev: SLIM Device instance associated with this stream
+- * @state: state of stream
+  * @direction: direction of stream
+  * @prot: Transport protocol used in this stream
+  * @rate: Data rate of samples *
+-- 
+2.16.2
