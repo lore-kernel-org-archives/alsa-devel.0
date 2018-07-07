@@ -1,61 +1,34 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the
-	Lenovo Miix2 8 tablet
-Date: Sat,  7 Jul 2018 12:22:10 +0200
-Message-ID: <20180707102210.15633-1-hdegoede@redhat.com>
+From: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Subject: Re: [PATCH] sound: stm32: replace "%p" with "%pK"
+Date: Sat, 7 Jul 2018 13:29:18 +0200
+Message-ID: <CA+M3ks7QL6t+HLHAiW3T8hDFDNyR494y4dM20jc8YXJ7-Xbd_g@mail.gmail.com>
+References: <20180706130703.22352-1-benjamin.gaignard@st.com> <s5hpo00quk4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 27F9826720C
- for <alsa-devel@alsa-project.org>; Sat,  7 Jul 2018 12:22:16 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, russianneuromancer@ya.ru
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hpo00quk4.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Alexandre Torgue <alexandre.torgue@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, alsa-devel@alsa-project.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, Benjamin Gaignard <benjamin.gaignard@st.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add a quirk for the Lenovo Miix2 8 tablet, this tablet uses a digital
-mic on DMIC1 and has a mono-speaker. The jack-detect uses the default
-settings..
+2018-07-06 16:59 GMT+02:00 Takashi Iwai <tiwai@suse.de>:
+> On Fri, 06 Jul 2018 15:07:03 +0200,
+> Benjamin Gaignard wrote:
+>>
+>> The format specifier "%p" can leak kernel addresses.
+>> Use "%pK" instead.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@st.com>
+>
+> The code change itself is OK (apart from the subject prefix to be
+> "ASoC").  But do we really want to patch manually every single place
+> like this?  There are thousands of files using '%p'.
 
-Reported-and-tested-by: russianneuromancer@ya.ru
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
+I have limited myself to the few remaining %p in STM32 architecture.
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 718f022b3aa0..d32844f94d74 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -562,6 +562,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{	/* Lenovo Miix 2 8 */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "20326"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Hiking"),
-+		},
-+		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
-+					BYT_RT5640_MONO_SPEAKER |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{	/* MSI S100 tablet */
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
--- 
-2.17.1
+>
+>
+> thanks,
+>
+> Takashi
