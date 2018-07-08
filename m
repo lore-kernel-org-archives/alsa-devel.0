@@ -1,18 +1,18 @@
-From: =?UTF-8?Q?Giedrius_Trainavi=C4=8Dius?= <giedrius.trainavicius@gmail.com>
-Subject: Getting a notification of snd_kcontrol value change,
- defined in codec, in machine driver
-Date: Sun, 8 Jul 2018 02:10:59 +0300
-Message-ID: <CABpuRUMrVKFniRGm8zM1SYsR8vprb+9rRMyJf=4Q7K2pfSwa6w@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Getting a notification of snd_kcontrol value
+ change, defined in codec, in machine driver
+Date: Sun, 8 Jul 2018 10:00:24 +0900
+Message-ID: <7147ebd1-bb2d-6fcf-66df-ce8a109a3b2f@sakamocchi.jp>
+References: <CABpuRUMrVKFniRGm8zM1SYsR8vprb+9rRMyJf=4Q7K2pfSwa6w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua0-f173.google.com (mail-ua0-f173.google.com
- [209.85.217.173])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C1F6267650
- for <alsa-devel@alsa-project.org>; Sun,  8 Jul 2018 01:11:01 +0200 (CEST)
-Received: by mail-ua0-f173.google.com with SMTP id y8-v6so9666185uan.3
- for <alsa-devel@alsa-project.org>; Sat, 07 Jul 2018 16:11:01 -0700 (PDT)
+Received: from smtp-proxy001.phy.lolipop.jp (smtp-proxy001.phy.lolipop.jp
+ [157.7.104.42]) by alsa0.perex.cz (Postfix) with ESMTP id 5ECD926761D
+ for <alsa-devel@alsa-project.org>; Sun,  8 Jul 2018 03:00:29 +0200 (CEST)
+In-Reply-To: <CABpuRUMrVKFniRGm8zM1SYsR8vprb+9rRMyJf=4Q7K2pfSwa6w@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,22 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: =?UTF-8?Q?Giedrius_Trainavi=c4=8dius?= <giedrius.trainavicius@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hey,
-
-What would be the best way in machine driver to learn about changes of alsa
-mixer control values? The controls are defined in the codec driver.
-
-The intended use case would be to use the current volume setting for the
-codec on the board to forward to a dedicated microcontroller for visual
-feedback.
-
-I am aware that this could be bridged over via a user space program, but I
-will have to forward the current PCM stream format to the MCU anyway from
-hw_params, so ideally I would like all of this functionality contained in
-the machine driver.
-
-Thank you,
-Giedrius.
+SGksCgpPbiBKdWwgOCAyMDE4IDA4OjEwLCBHaWVkcml1cyBUcmFpbmF2acSNaXVzIHdyb3RlOgo+
+IFdoYXQgd291bGQgYmUgdGhlIGJlc3Qgd2F5IGluIG1hY2hpbmUgZHJpdmVyIHRvIGxlYXJuIGFi
+b3V0IGNoYW5nZXMgb2YgYWxzYQo+IG1peGVyIGNvbnRyb2wgdmFsdWVzPyBUaGUgY29udHJvbHMg
+YXJlIGRlZmluZWQgaW4gdGhlIGNvZGVjIGRyaXZlci4KPiAKPiBUaGUgaW50ZW5kZWQgdXNlIGNh
+c2Ugd291bGQgYmUgdG8gdXNlIHRoZSBjdXJyZW50IHZvbHVtZSBzZXR0aW5nIGZvciB0aGUKPiBj
+b2RlYyBvbiB0aGUgYm9hcmQgdG8gZm9yd2FyZCB0byBhIGRlZGljYXRlZCBtaWNyb2NvbnRyb2xs
+ZXIgZm9yIHZpc3VhbAo+IGZlZWRiYWNrLgo+IAo+IEkgYW0gYXdhcmUgdGhhdCB0aGlzIGNvdWxk
+IGJlIGJyaWRnZWQgb3ZlciB2aWEgYSB1c2VyIHNwYWNlIHByb2dyYW0sIGJ1dCBJCj4gd2lsbCBo
+YXZlIHRvIGZvcndhcmQgdGhlIGN1cnJlbnQgUENNIHN0cmVhbSBmb3JtYXQgdG8gdGhlIE1DVSBh
+bnl3YXkgZnJvbQo+IGh3X3BhcmFtcywgc28gaWRlYWxseSBJIHdvdWxkIGxpa2UgYWxsIG9mIHRo
+aXMgZnVuY3Rpb25hbGl0eSBjb250YWluZWQgaW4KPiB0aGUgbWFjaGluZSBkcml2ZXIuCgpCeSBh
+c3NpZ25pbmcgYSBmdW5jdGlvbiB0byAgJ3N0cnVjdCBzbmRfa2NvbnRyb2wucHV0JywgaW4ta2Vy
+bmVsIGRyaXZlcnMgCmNhbiByZWNlaXZlIGFueSBub3RpZmljYXRpb24gYXMgYSBjYWxsYmFjayBh
+dCBjaGFuZ2luZyB2YWx1ZSBhcnJheSBvZiBhIApjb250cm9sIGVsZW1lbnQgc2V0IGluY2x1ZGlu
+ZyBoYW5kbGVkIGNvbm50cm9sIGVsZW1lbnQuIFdoZW4gY2FsbGluZyAKc25kX2N0bF9uZXcoKSwg
+cGFzc2luZyBwcm9wZXIgZGF0YSBmb3IgYW4gYXJndW1lbnQgb2YgJ3N0cnVjdCAKc25kX2tjb250
+cm9sX25ldycuCgpJIG5vdGUgdGhhdCBmb3IgdXNlcnNwYWNlIGFwcGxpY2F0aW9ucywgQUxTQSBj
+b250cm9sIGNvcmUgc3VwcG9ydHMgCm5vdGlmaWNhdGlvbiBtZWNoYW5pc20gZm9yIHRoaXMgcHVy
+cG9zZSBieSB0eXBpY2FsIEkvTyBoYW5kbGluZyBpbiBVTklYIAplbnZpcm9ubWVudC4gV2l0aCBh
+bHNhLWxpYiwgYXQgZmlyc3QsIGNhbGwgJ3NuZF9jdGxfc3Vic2NyaWJlX2V2ZW50cygpJywgCnRo
+ZW4gbGlzdGVuIHRvIGZpbGUgZGVzY3JpcHRvciBmb3Igb3BlbmVkIEFMU0EgY29udHJvbCBjaGFy
+YWN0ZXIgZGV2aWNlIAoob3IgY2FsbCAnc25kX2N0bF93YWl0KCknKS4gV2hlbiBhbnkgZXZlbnRz
+IGFyZSBlbWl0dGVkLCB0aGUgCmFwcGxpY2F0aW9ucyBjYW4gcmVhZCBkYXRhIG9mICdzdHJ1Y3Qg
+c25kX2N0bF9ldmVudCcgZnJvbSB0aGUgZGVzY3JpcHRvciAKYW5kIGhhbmRsZSB0aGUgbm90aWZp
+Y2F0aW9uIGJ5IHBhcnNpbmcgdGhlIGRhdGEuCgoKUmVnYXJkcwoKVGFrYXNoaSBTYWthbW90bwpf
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4u
+YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
