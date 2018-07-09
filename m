@@ -1,18 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v5 8/9] soundwire: Add support for multi
- link bank switch
-Date: Mon, 9 Jul 2018 18:22:26 -0500
-Message-ID: <6ac86676-ad92-141d-bda7-99549e0d76ea@linux.intel.com>
+Subject: Re: [PATCH v5 6/9] soundwire: Handle multiple master
+ instances in a stream
+Date: Mon, 9 Jul 2018 18:42:34 -0500
+Message-ID: <19b89cc8-b97e-dd43-3d96-8c5bdcb5287d@linux.intel.com>
 References: <1530791196-15483-1-git-send-email-shreyas.nc@intel.com>
- <1530791196-15483-9-git-send-email-shreyas.nc@intel.com>
+ <1530791196-15483-7-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 615EF2675CF
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 01:49:31 +0200 (CEST)
-In-Reply-To: <1530791196-15483-9-git-send-email-shreyas.nc@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id F00B12676FD
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 01:49:35 +0200 (CEST)
+In-Reply-To: <1530791196-15483-7-git-send-email-shreyas.nc@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,29 +27,49 @@ To: Shreyas NC <shreyas.nc@intel.com>, alsa-devel@alsa-project.org
 Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, vkoul@kernel.org, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-
->   
-> @@ -1170,6 +1276,17 @@ int sdw_stream_add_master(struct sdw_bus *bus,
->   
->   	stream->m_rt_count++;
->   
-> +	/*
-> +	 * For multi link streams, add the second master only if
-> +	 * the bus supports it.
-> +	 * Check if bus->multi_link is set
-> +	 */
-> +	if (!bus->multi_link && stream->m_rt_count > 1) {
-> +		dev_err(bus->dev,
-> +			"Multilink not supported, link %d", bus->link_id);
-> +		goto stream_error;
-> +	}
-> +
->   	goto unlock;
->   
->   stream_error:
->
-
-This error handling is a bit weird. It's make more sense to check 
-upfront if there is already one m_rt allocated (m_rt_count > 0) and bail 
-to avoid allocating/releasing a stream. Also there should be a return 
-value set (-EINVAL?)
+U29ycnksIGFub3RoZXIgaXNzdWUgdGhhdCBJIGZvdW5kIHdoaWxlIHJldmlld2luZyB0aGUgZW50
+aXJlIHNlY3Rpb24uCj4gICB9Cj4gQEAgLTg4OCw2ICs5MTgsNyBAQCBzdGF0aWMgdm9pZCBzZHdf
+cmVsZWFzZV9zbGF2ZV9zdHJlYW0oc3RydWN0IHNkd19zbGF2ZSAqc2xhdmUsCj4gICAvKioKPiAg
+ICAqIHNkd19yZWxlYXNlX21hc3Rlcl9zdHJlYW0oKSAtIEZyZWUgTWFzdGVyIHJ1bnRpbWUgaGFu
+ZGxlCj4gICAgKgo+ICsgKiBAbV9ydDogTWFzdGVyIHJ1bnRpbWUgbm9kZQo+ICAgICogQHN0cmVh
+bTogU3RyZWFtIHJ1bnRpbWUgaGFuZGxlLgo+ICAgICoKPiAgICAqIFRoaXMgZnVuY3Rpb24gaXMg
+dG8gYmUgY2FsbGVkIHdpdGggYnVzX2xvY2sgaGVsZAo+IEBAIC04OTUsMTYgKzkyNiwxOCBAQCBz
+dGF0aWMgdm9pZCBzZHdfcmVsZWFzZV9zbGF2ZV9zdHJlYW0oc3RydWN0IHNkd19zbGF2ZSAqc2xh
+dmUsCj4gICAgKiBoYW5kbGUuIElmIHRoaXMgaXMgY2FsbGVkIGZpcnN0IHRoZW4gc2R3X3JlbGVh
+c2Vfc2xhdmVfc3RyZWFtKCkgd2lsbCBoYXZlCj4gICAgKiBubyBlZmZlY3QgYXMgU2xhdmUocykg
+cnVudGltZSBoYW5kbGUgd291bGQgYWxyZWFkeSBiZSBmcmVlZCB1cC4KPiAgICAqLwo+IC1zdGF0
+aWMgdm9pZCBzZHdfcmVsZWFzZV9tYXN0ZXJfc3RyZWFtKHN0cnVjdCBzZHdfc3RyZWFtX3J1bnRp
+bWUgKnN0cmVhbSkKPiArc3RhdGljIHZvaWQgc2R3X3JlbGVhc2VfbWFzdGVyX3N0cmVhbShzdHJ1
+Y3Qgc2R3X21hc3Rlcl9ydW50aW1lICptX3J0LAo+ICsJCQlzdHJ1Y3Qgc2R3X3N0cmVhbV9ydW50
+aW1lICpzdHJlYW0pCj4gICB7Cj4gLQlzdHJ1Y3Qgc2R3X21hc3Rlcl9ydW50aW1lICptX3J0ID0g
+c3RyZWFtLT5tX3J0Owo+ICAgCXN0cnVjdCBzZHdfc2xhdmVfcnVudGltZSAqc19ydCwgKl9zX3J0
+Owo+ICAgCj4gICAJbGlzdF9mb3JfZWFjaF9lbnRyeV9zYWZlKHNfcnQsIF9zX3J0LAo+ICAgCQkJ
+Jm1fcnQtPnNsYXZlX3J0X2xpc3QsIG1fcnRfbm9kZSkKPiAgIAkJc2R3X3N0cmVhbV9yZW1vdmVf
+c2xhdmUoc19ydC0+c2xhdmUsIHN0cmVhbSk7Cj4gICAKPiArCWxpc3RfZGVsKCZtX3J0LT5zdHJl
+YW1fbm9kZSk7Cj4gICAJbGlzdF9kZWwoJm1fcnQtPmJ1c19ub2RlKTsKPiArCWtmcmVlKG1fcnQp
+Owo+ICAgfQo+ICAgCj4gICAvKioKPiBAQCAtOTE4LDEzICs5NTEsMjIgQEAgc3RhdGljIHZvaWQg
+c2R3X3JlbGVhc2VfbWFzdGVyX3N0cmVhbShzdHJ1Y3Qgc2R3X3N0cmVhbV9ydW50aW1lICpzdHJl
+YW0pCj4gICBpbnQgc2R3X3N0cmVhbV9yZW1vdmVfbWFzdGVyKHN0cnVjdCBzZHdfYnVzICpidXMs
+Cj4gICAJCXN0cnVjdCBzZHdfc3RyZWFtX3J1bnRpbWUgKnN0cmVhbSkKPiAgIHsKPiArCXN0cnVj
+dCBzZHdfbWFzdGVyX3J1bnRpbWUgKm1fcnQsICpfbV9ydDsKPiArCj4gICAJbXV0ZXhfbG9jaygm
+YnVzLT5idXNfbG9jayk7Cj4gICAKPiAtCXNkd19yZWxlYXNlX21hc3Rlcl9zdHJlYW0oc3RyZWFt
+KTsKPiAtCXNkd19tYXN0ZXJfcG9ydF9yZWxlYXNlKGJ1cywgc3RyZWFtLT5tX3J0KTsKPiAtCXN0
+cmVhbS0+c3RhdGUgPSBTRFdfU1RSRUFNX1JFTEVBU0VEOwo+IC0Ja2ZyZWUoc3RyZWFtLT5tX3J0
+KTsKPiAtCXN0cmVhbS0+bV9ydCA9IE5VTEw7Cj4gKwlsaXN0X2Zvcl9lYWNoX2VudHJ5X3NhZmUo
+bV9ydCwgX21fcnQsCj4gKwkJCSZzdHJlYW0tPm1hc3Rlcl9saXN0LCBzdHJlYW1fbm9kZSkgewo+
+ICsKPiArCQlpZiAobV9ydC0+YnVzICE9IGJ1cykKPiArCQkJY29udGludWU7Cj4gKwo+ICsJCXNk
+d19tYXN0ZXJfcG9ydF9yZWxlYXNlKGJ1cywgbV9ydCk7Cj4gKwkJc2R3X3JlbGVhc2VfbWFzdGVy
+X3N0cmVhbShtX3J0LCBzdHJlYW0pOwo+ICsJfQo+ICsKPiArCWlmIChsaXN0X2VtcHR5KCZzdHJl
+YW0tPm1hc3Rlcl9saXN0KSkKPiArCQlzdHJlYW0tPnN0YXRlID0gU0RXX1NUUkVBTV9SRUxFQVNF
+RDsKPiAgIAo+ICAgCW11dGV4X3VubG9jaygmYnVzLT5idXNfbG9jayk7Cj4gICAKPgpTbyB0aGUg
+c2VxdWVuY2UgaXMKCm11dGV4X2xvY2sKc2R3X21hc3Rlcl9wb3J0X3JlbGVhc2UoKQpzZHdfcmVs
+ZWFzZV9tYXN0ZXJfc3RyZWFtKCkKIMKgwqDCoCBzZHdfc3RyZWFtX3JlbW92ZV9zbGF2ZSgpCiDC
+oMKgwqAgwqDCoMKgIG11dGV4X2xvY2sKCklzIHRoaXMgaW50ZW50aW9uYWwgdG8gdGFrZSB0aGUg
+c2FtZSBtdXRleCB0d2ljZSAobm90IHN1cmUgaWYgaXQgZXZlbiAKd29ya3MpLgp3aGF0IHlvdSBw
+cm9iYWJseSB3YW50ZWQgaXMgdG8gcmVwbGFjZSBzZHdfc3RyZWFtX3JlbW92ZV9zbGF2ZSgpIGJ5
+IHRoZSAKZXF1aXZhbGVudCBzZXF1ZW5jZQoKc2R3X3NsYXZlX3BvcnRfcmVsZWFzZSgpCnNkd19y
+ZWxlYXNlX3NsYXZlX3N0cmVhbSgpCgp3aGljaCBhcmUgYm90aCBzdXBwb3NlZCB0byBiZSBjYWxs
+ZWQgd2l0aCBhIGJ1c19sb2NrIGhlbGQuCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
+cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
+Zm8vYWxzYS1kZXZlbAo=
