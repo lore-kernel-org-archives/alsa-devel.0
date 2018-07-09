@@ -1,73 +1,89 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 3/5] ASoC: qcom: add sdm845 sound card
-	support
-Date: Mon, 9 Jul 2018 15:02:11 +0100
-Message-ID: <887331ff-8892-66a7-20bc-0fce447c792f@linaro.org>
-References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
- <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
- <20180709111437.GB16082@sirena.org.uk>
- <b5a3f0e2-d420-603d-f9a0-f93bdbd2619f@linaro.org>
- <20180709124117.GG16082@sirena.org.uk>
+From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: =?UTF-8?Q?Re=3A_=E7=AD=94=E5=A4=8D=3A_=5BPATCH=5D_vgaswitchroo=3A_set_audio_client_i?=
+ =?UTF-8?Q?d_according_to_bound_gpu_client_id?=
+Date: Mon, 9 Jul 2018 10:02:48 -0400
+Message-ID: <CADnq5_PS_ZO2Y35HHnp3DcvN9wopQGavpDtMNCuuz4A1mDnD7g@mail.gmail.com>
+References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>
+ <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
+ <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629080634.GA7357@wunner.de>
+ <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629092138.GA11849@wunner.de>
+ <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629111108.GA11609@wunner.de>
+ <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180709092759.GA3649@wunner.de>
+ <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com
- [209.85.221.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AE6626739D
- for <alsa-devel@alsa-project.org>; Mon,  9 Jul 2018 16:02:13 +0200 (CEST)
-Received: by mail-wr1-f65.google.com with SMTP id a3-v6so1889624wrt.2
- for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2018 07:02:13 -0700 (PDT)
-In-Reply-To: <20180709124117.GG16082@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, Rohit kumar <rohitkr@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <DM3PR12MB087309CBC2CD3A934327EBCE99440-4hRkV8tDpBiYEITDcfEJ8AdYzm3356FpvxpqHgZTriW3zl9H0oFU5g@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
+Cc: "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-
-
-On 09/07/18 13:41, Mark Brown wrote:
->> AFAIU, The issue with that mechanism or EPROBEDEFER is that it works only
->> for first time.. for the second time(restart usecase) there are no hooks
->> like bind/unbind.
-> This is not the case, the card will be unbound at the ASoC level when
-> any of the components are removed and then probed again when they
-> reappear.
-> 
-I did try this and It works only for first time! May be am missing 
-something!
-
-snd_soc_component_del_unlocked() unregisters the sound card totally. so 
-for the second time (After DSP stop) there is no registered sound card 
-in place.. Am not sure how this is supposed to work?
-
-The reason I think it works for the first time is because of EPROBEDEFER 
-from the machine driver.
-
-Here are the steps I do with DSP:
-
-Step1: Start DSP, can see sound card after all the services are ON.
-Step2: Stop DSP, there is no audio card.
-Step3: Start DSP, I can see all the components in debugfs but not the 
-sound card.
-
-This is what I do w.r.t code:
- From machine driver in snd_soc_register_card() in probe()
- From Audio services driver snd_soc_register_component() in probe() and
-snd_soc_unregister_component() in remove()
-
-When DSP is stopped the audio services disappear and 
-snd_soc_unregister_component() is invoked.
-
-
-thanks,
-srini
+T24gTW9uLCBKdWwgOSwgMjAxOCBhdCA2OjE2IEFNLCBRdSwgSmltIDxKaW0uUXVAYW1kLmNvbT4g
+d3JvdGU6Cj4gSGkgTHVrYXMsCj4KPiBUaGFua3MgdG8geW91ciBleHBsYW5hdGlvbiwgYW5kIHNl
+ZSBjb21tZW50cyBpbiBsaW5lLgo+Cj4KPiBEbyB5b3UgbmVlZCB0byBydW50aW1lIHJlc3VtZSB0
+aGUgSERBIGNvbnRyb2xsZXIgZXZlbiBpZiB1c2VyIHNwYWNlIGlzbid0Cj4gc3RyZWFtaW5nIGF1
+ZGlvPyAgV2h5LCBhbmQgaW4gd2hpY2ggc2l0dWF0aW9uIGV4YWN0bHk/Cj4KPiBKaW06IE9FTSBz
+eXN0ZW0gdXNlcyBwYWN0bCB0byBxdWVpcnkgYXVkaW8gY2FyZCBhbmQgYXVkaW8gb3V0cHV0IHNp
+bmssIHNpbmNlIHRoZSBhdWRpbyBoYXMgcG93ZXIgZG93biBieSBydW50aW1lIHBtLCBzbyB0aGUg
+YXVkaW8gY2FyZCBhbmQgb3V0cHV0IHNpbmsgYXJlIGFsbCB1bmF2YWlsYWJsZS4gdGhleSBjb3Vs
+ZCBub3Qgc2VsZWN0IHRoZSBhdmFpbGFibGUgSERNSSBhdWRpbyBmb3IgYXVkaW8gcGxheWluZy4K
+CgpTb3VuZHMgbGlrZSBhIGJ1ZyBpbiB0aGUgSERBIGRyaXZlci4gIFRoZSBIREEgZHJpdmVyIHNo
+b3VsZCBjYWNoZSB3aGF0Cml0IG5lZWRzIG9yIHBvd2VyIGl0IGJhY2sgdXAgd2hlbiB0aGVyZSBp
+cyBhbiBpb2N0bC9ldGMuIHRoYXQgcmVxdWlyZXMKc29tZXRoaW5nIHRoYXQgY2FuJ3QgYmUgY2Fj
+aGVkLgoKQWxleAoKPgo+IFlvdSdyZSBzYXlpbmcgYWJvdmUgdGhhdCB0aGUgSERBIGNvbnRyb2xs
+ZXIgaXNuJ3QgcnVudGltZSByZXN1bWVkIG9uCj4gaG90cGx1ZyBvZiBhIGRpc3BsYXkuICBJcyB0
+aGF0IG5lY2Vzc2FyeSB0byByZXRyaWV2ZSBFTEQgb3Igc29tZXRoaW5nPwo+IEknbSBub3Qgc3Vy
+ZSBpZiB0aGVyZSdzIGNvZGUgaW4gdGhlIEhEQSBkcml2ZXIgdG8gYWNxdWlyZSBhIHJ1bnRpbWUg
+UE0KPiByZWYgb24gSFBELCBidXQgbWF5YmUgaXQncyBuZWNlc3NhcnkuICBPciBtYXliZSB0aGUg
+Y29kZSBpcyB0aGVyZSBidXQKPiBzb21laG93IG5vIEhQRCBpbnRlcnJ1cHQgaXMgcmVjZWl2ZWQg
+YnkgdGhlIEhEQSBkcml2ZXI/Cj4KPiBKaW06IFNvIGZhciwgSSBkbyBub3QgZmluZCBhbnkgY29k
+ZSBhYm91dCBhdWRpbyByZXNwb25zZSBIUEQgaW4ga2VybmVsLiB0aGUgSFBEIGludGVycnVwdCB3
+aWxsIHNlbnQgdG8gdXNlciBtb2RlIHZpYSB1ZXZlbnQsIG5vdCBzdXJlIHdoZXRoZXIgYXVkaW8g
+dXNlciBtb2RlIGRyaXZlciBjYW4gcmVjZWl2ZSB0aGUgZXZlbnQgb3Igbm90Lgo+Cj4gVGhhbmtz
+Cj4gSmltUXUKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiDl
+j5Hku7bkuro6IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPgo+IOWPkemAgeaXtumXtDog
+MjAxOOW5tDfmnIg55pelIDE3OjI3Cj4g5pS25Lu25Lq6OiBRdSwgSmltCj4g5oqE6YCBOiBhbHNh
+LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7
+IERldWNoZXIsIEFsZXhhbmRlcjsgYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiDkuLvp
+opg6IFJlOiBbUEFUQ0hdIHZnYXN3aXRjaHJvbzogc2V0IGF1ZGlvIGNsaWVudCBpZCBhY2NvcmRp
+bmcgdG8gYm91bmQgZ3B1IGNsaWVudCBpZAo+Cj4gT24gTW9uLCBKdWwgMDksIDIwMTggYXQgMDg6
+NTI6MzNBTSArMDAwMCwgUXUsIEppbSB3cm90ZToKPj4gTm93LCBJIGZvdW5kIHRoZSBhdWRpbyBk
+ZXZpY2Ugd2lsbCBhdXRvIHN1c3BlbmQgZXZlbiBpZiB0aGUgZ3B1IGlzIGFjdGl2ZSwKPj4gYW5k
+IGlmIEkgcGx1ZyBpbiBhIEhETUkgZGV2aWNlIGl0IGFsc28gZG8gbm90IHJlc3VtZSBiYWNrLgo+
+Pgo+PiAxLiBEaWQgeW91IGVuY291bnRlciBzaW1pbGFyIGlzc3VlIGJlZm9yZT8KPj4gMi4gYXVk
+aW8gd2lsbCBhdXRvIHN1c3BlbmQgYXMgZGVmYXVsdCBhdCBiZWdpbm5pbmcgb2YgYm9vdCwgaXMg
+aXQgZXhwZWN0Cj4+IGJlaGF2aW91cj8KPgo+IFllcywgdGhhdCdzIGV4cGVjdGVkLiAgT25jZSB5
+b3Ugc3RhcnQgc3RyZWFtaW5nIGF1ZGlvIHRvIGF0dGFjaGVkIGRpc3BsYXlzLAo+IHVzZXIgc3Bh
+Y2Ugb3BlbnMgdGhlIGNvZGVjIGRldmljZSBhbmQgdGhpcyBjYXVzZXMgdGhlIEhEQSBjb250cm9s
+bGVyIHRvCj4gcnVudGltZSByZXN1bWUuICBJZiB0aGUgZGlzY3JldGUgR1BVIGlzIHN1c3BlbmRl
+ZCBhdCB0aGF0IG1vbWVudCwgaXQgd2lsbAo+IGJlIHBvd2VyZWQgb24gYW5kIGtlcHQgcG93ZXJl
+ZCBvbiBhcyBsb25nIGFzIHVzZXIgc3BhY2UgaXMgc3RyZWFtaW5nIGF1ZGlvLgo+Cj4gRG8geW91
+IG5lZWQgdG8gcnVudGltZSByZXN1bWUgdGhlIEhEQSBjb250cm9sbGVyIGV2ZW4gaWYgdXNlciBz
+cGFjZSBpc24ndAo+IHN0cmVhbWluZyBhdWRpbz8gIFdoeSwgYW5kIGluIHdoaWNoIHNpdHVhdGlv
+biBleGFjdGx5Pwo+Cj4gWW91J3JlIHNheWluZyBhYm92ZSB0aGF0IHRoZSBIREEgY29udHJvbGxl
+ciBpc24ndCBydW50aW1lIHJlc3VtZWQgb24KPiBob3RwbHVnIG9mIGEgZGlzcGxheS4gIElzIHRo
+YXQgbmVjZXNzYXJ5IHRvIHJldHJpZXZlIEVMRCBvciBzb21ldGhpbmc/Cj4gSSdtIG5vdCBzdXJl
+IGlmIHRoZXJlJ3MgY29kZSBpbiB0aGUgSERBIGRyaXZlciB0byBhY3F1aXJlIGEgcnVudGltZSBQ
+TQo+IHJlZiBvbiBIUEQsIGJ1dCBtYXliZSBpdCdzIG5lY2Vzc2FyeS4gIE9yIG1heWJlIHRoZSBj
+b2RlIGlzIHRoZXJlIGJ1dAo+IHNvbWVob3cgbm8gSFBEIGludGVycnVwdCBpcyByZWNlaXZlZCBi
+eSB0aGUgSERBIGRyaXZlcj8KPgo+IFRoYW5rcywKPgo+IEx1a2FzCj4gX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBkcmktZGV2ZWwgbWFpbGluZyBsaXN0
+Cj4gZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+IGh0dHBzOi8vbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fCmFtZC1nZnggbWFpbGluZyBsaXN0CmFtZC1nZnhA
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
+YW4vbGlzdGluZm8vYW1kLWdmeAo=
