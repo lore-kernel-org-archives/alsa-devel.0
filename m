@@ -1,74 +1,70 @@
-From: Alex Deucher <alexdeucher@gmail.com>
-Subject: Re: [alsa-devel] ??????: [PATCH] vgaswitchroo: set audio client id
- according to bound gpu client id
-Date: Mon, 9 Jul 2018 12:15:32 -0400
-Message-ID: <CADnq5_OqsZyMJx5TCqdr4iydzVyb3UHtqadvuq0szG+kNPe9dg@mail.gmail.com>
-References: <20180629092138.GA11849@wunner.de>
- <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629111108.GA11609@wunner.de>
- <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180709092759.GA3649@wunner.de>
- <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
- <s5hr2kco3gp.wl-tiwai@suse.de> <20180709154734.GA30496@wunner.de>
- <s5hsh4scsoe.wl-tiwai@suse.de> <20180709160644.GB1490@wunner.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 3/5] ASoC: qcom: add sdm845 sound card support
+Date: Mon, 9 Jul 2018 17:33:26 +0100
+Message-ID: <20180709163326.GI16082@sirena.org.uk>
+References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
+ <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
+ <20180709111437.GB16082@sirena.org.uk>
+ <b5a3f0e2-d420-603d-f9a0-f93bdbd2619f@linaro.org>
+ <20180709124117.GG16082@sirena.org.uk>
+ <887331ff-8892-66a7-20bc-0fce447c792f@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20180709160644.GB1490@wunner.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Qu,
- Jim" <Jim.Qu@amd.com>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, "Deucher,
- Alexander" <Alexander.Deucher@amd.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="gJNQRAHI5jiYqw2y"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <887331ff-8892-66a7-20bc-0fce447c792f@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Rohit kumar <rohitkr@codeaurora.org>, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdWwgOSwgMjAxOCBhdCAxMjowNiBQTSwgTHVrYXMgV3VubmVyIDxsdWthc0B3dW5u
-ZXIuZGU+IHdyb3RlOgo+IE9uIE1vbiwgSnVsIDA5LCAyMDE4IGF0IDA1OjUyOjQ5UE0gKzAyMDAs
-IFRha2FzaGkgSXdhaSB3cm90ZToKPj4gT24gTW9uLCAwOSBKdWwgMjAxOCAxNzo0NzozNCArMDIw
-MCwgTHVrYXMgV3VubmVyIHdyb3RlOgo+PiA+IFNpbmNlIHY0LjE3LCBldmVyeSB0aW1lIHRoZSBH
-UFUgaXMgcG93ZXJlZCB1cCwgdGhlIEhEQSBjb250cm9sbGVyIGlzCj4+ID4gcnVudGltZSByZXN1
-bWVkIHRvIFBDSV9EMC4gIChTZWUgdGhlIGNhbGwgdG8gcGNpX3dha2V1cF9idXMoKSBpbgo+PiA+
-IHZnYV9zd2l0Y2hlcm9vX3J1bnRpbWVfcmVzdW1lKCkgYWRkZWQgYnkgZGNhYzg2YjdkMC4pCj4+
-ID4KPj4gPiBJZiB0aGUgSERBIGNvbnRyb2xsZXIgY2FuJ3QgZGV0ZWN0IHByZXNlbmNlIG9mIGFu
-IEhETUkgZGlzcGxheSBldmVuCj4+ID4gaWYgaXQncyBpbiBQQ0lfRDAsIHRoZW4gSSBzdXBwb3Nl
-IHRoYXQgbmVlZHMgdG8gYmUgYWRyZXNzZWQgaW4gdGhlIEhEQQo+PiA+IGRyaXZlci4gIFRodXMg
-c28gZmFyIEkgZG9uJ3Qgc2VlIHRoZSBuZWVkIHRvIGNhbGwgZnJvbSBhbWRncHUgaW50byB0aGUK
-Pj4gPiBIREEgZHJpdmVyLgo+Pgo+PiBJdCdzIG5vdCBhYm91dCB0aGUgUENJIHBvd2VyIHN0YXRl
-LCBidXQgdGhlIHByb2JsZW0gaXMgdGhhdCB0aGUKPj4gZGV0ZWN0aW9uIG9mIHRoZSBIRE1JIGFu
-ZCBpdHMgRUxEIHJlYWQgaXMgc29tZXdoYXQgYXN5bmNocm9ub3VzLgo+PiBCYXNpY2FsbHkgaXQn
-cyBoYW5kbGVkIHZpYSB0aGUgaGFyZHdhcmUgdW5zb2xpY2l0ZWQgZXZlbnQgZW1pdHRlZCBvdmVy
-Cj4+IEhELWF1ZGlvIGJ1cywgd2hpY2ggd2FzIG9yaWdpbmFsbHkgZ2VuZXJhdGVkIGJ5IEdQVSBh
-dCBkZWFsaW5nIHdpdGgKPj4gdGhlIGhvdHBsdWcvdW5wbHVnLiAgU28sIHRoaXMgcGFydCBpcyBy
-YWN5IGFuZCBub3QgMTAwJSByZWxpYWJsZSAtLQo+PiBhbHRob3VnaCB1c3VhbGx5IGl0IHNob3Vs
-ZG4ndCBiZSBhIGJpZyBwcm9ibGVtLgo+Pgo+PiBUaGF0IHNhaWQsIGl0J3Mgbm90IHRoZSBleGFj
-dCAibmVlZCIgYnV0IGl0IHdvdWxkIG1ha2UgdGhpbmdzIG1vcmUKPj4gcmVsaWFibGUgYW5kIGFj
-Y3VyYXRlIChldmVuIGNvbnN1bWVzIGxlc3MgcG93ZXIgYXMgd2UgZG9uJ3QgbmVlZCB0bwo+PiBw
-b3dlciB1cC9kb3duIGp1c3QgZm9yIHRoZSBIRE1JIGRldGVjdGlvbikuCj4KPiBPa2F5LiAgSWYg
-YW1kZ3B1IHRyaWdnZXJzIHRoZSBldmVudCBvbiB0aGUgSERBIGJ1cywgaXQgc2hvdWxkIGNhbGwK
-PiBwbV9ydW50aW1lX2dldF9zeW5jKCkgb24gdGhlIEhEQSBkZXZpY2UgYmVmb3JlaGFuZC4gIFdo
-aWNoIGRldmljZQo+IG5lZWRzIHRvIGJlIHJlc3VtZWQgZXhhY3RseSB0byBlbnN1cmUgRUxEIHJl
-Y2VwdGlvbiwgdGhlIFBDSSBvbmUKPiBvciB0aGUgY29kZWM/CgpJIGRvbid0IHRoaW5rIGl0IG1h
-a2VzIHNlbnNlIHRvIHBvd2VyIHVwIGFueXRoaW5nIHVudGlsIHRoZSB1c2VyIHdhbnRzCnRvIGRv
-IHNvbWV0aGluZyB3aXRoIHRoZSBldmVudC4gIE9uIEFNRCBoYXJkd2FyZSwgdGhlIEVMRCBpcyBu
-b3QKYWN0dWFsbHkgdXNlZC4gIFRoZSBncHUgcGFzc2VzIHRoZSBFTEQgaW5mbyBpbnRlcm5hbGx5
-IHZpYSBzaGFyZWQKcmVnaXN0ZXJzLiAgU28gYXMgc29vbiBhcyB0aGUgR1BVIGRyaXZlciBwYXJz
-ZXMgdGhlIEVESUQgYW5kIHVwZGF0ZXMKdGhlIHNoYXJlZCByZWdpc3RlcnMsIHRoZSBhdWRpbyBk
-cml2ZXIgd2lsbCBrbm93IHRoZSBzdGF0ZSBqdXN0IGJ5CnJlYWRpbmcgYmFjayB0aGUgc2hhcmVk
-IHJlZ2lzdGVycy4gIFRoYXQgc2FpZCwgdGhlcmUgbm8gcmVhc29uIHRvIGFjdApvbiB0aGUgZXZl
-bnQgdW5sZXNzIHRoZSB1c2VyIGFjdHVhbGx5IHdhbnRzIHRvIGRvIHNvbWV0aGluZyB3aXRoIGl0
-LgpFLmcuLCB0aGUgZGVza3RvcCBtYW5hZ2VyIHNlZXMgdGhlIGV2ZW50IGFuZCBkZWNpZGVzIHRv
-IGNhbGwgZG93biB0bwp0aGUga2VybmVsIHRvIHF1ZXJ5IHRoZSBkaXNwbGF5IHRvcG9sb2d5IChv
-ciBub3QpLiAgQXQgd2hpY2ggcG9pbnQgdGhlCmh3IGNhbiBiZSBwb3dlcmVkIHVwLCBldGMuCgpB
-bGV4Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRyaS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczov
-L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
+
+--gJNQRAHI5jiYqw2y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jul 09, 2018 at 03:02:11PM +0100, Srinivas Kandagatla wrote:
+> On 09/07/18 13:41, Mark Brown wrote:
+> > > AFAIU, The issue with that mechanism or EPROBEDEFER is that it works only
+
+> > This is not the case, the card will be unbound at the ASoC level when
+> > any of the components are removed and then probed again when they
+> > reappear.
+
+> I did try this and It works only for first time! May be am missing
+> something!
+
+> snd_soc_component_del_unlocked() unregisters the sound card totally. so for
+> the second time (After DSP stop) there is no registered sound card in
+> place.. Am not sure how this is supposed to work?
+
+> The reason I think it works for the first time is because of EPROBEDEFER
+> from the machine driver.
+
+Ugh, right - we ripped out that code because there's no sensible use
+case for it so now we don't keep the cards on a list.  The expectation
+is that if someone is going around removing bits of the card they can
+probably figure out that they should be removing the card first.
+
+In any case the place to implement this is in the core, there's nothing
+special about your cards here.  Either the core should be using the
+component framework or the card list should be resurrected and we open
+code it.  This isn't something that's unique to your device.
+
+--gJNQRAHI5jiYqw2y
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltDjlUACgkQJNaLcl1U
+h9Dzuwf/d8/yNOtgkhwg3Bv3BDHETSOvAfCUMJtd6SdcTKImYMto5yWnVT74gOte
+VNG18sOnmCo5DVWhEZigXVlOPVXiueXfgOUWJvcO5Rokb1u/XuueXsNQKnlRRwkr
+unW0xlN3DKpYR+eOVHYvZR5P3WWrMiFS58yjT8QtOTtV4F8P6z7mfRUfIqpiDj5B
+YWva+v+2U8ZqhM/hiU6wmh28jXLKfUUH2j2uLMxH0nO/LZBZQ++C4WVhwQYf6oIq
+Pxv+CkXvOWAYvpZApXIVuRH4BcsgyERQMgBcV2SOyRdpiz9HX4CgN6nQcJfRbkKG
+HhUFLQ9DeN8m+NfuPDe4Yvd3uskATg==
+=8mIg
+-----END PGP SIGNATURE-----
+
+--gJNQRAHI5jiYqw2y--
