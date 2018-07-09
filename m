@@ -1,17 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for
- the Lenovo Miix2 8 tablet
-Date: Mon, 9 Jul 2018 17:58:30 -0500
-Message-ID: <42abb6a5-a84c-694c-fcdc-87ca339699e4@linux.intel.com>
-References: <20180707102210.15633-1-hdegoede@redhat.com>
+Subject: Re: [PATCH v5 1/9] soundwire: Fix duplicate stream
+	state assignment
+Date: Mon, 9 Jul 2018 18:41:40 -0500
+Message-ID: <31cd152c-b8f1-77eb-6a81-a6e5a1ac7101@linux.intel.com>
+References: <1530791196-15483-1-git-send-email-shreyas.nc@intel.com>
+ <1530791196-15483-2-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 757252676FD
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 00:58:33 +0200 (CEST)
-In-Reply-To: <20180707102210.15633-1-hdegoede@redhat.com>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BCD02676FB
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 01:49:35 +0200 (CEST)
+In-Reply-To: <1530791196-15483-2-git-send-email-shreyas.nc@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,47 +23,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: russianneuromancer@ya.ru, alsa-devel@alsa-project.org
+To: Shreyas NC <shreyas.nc@intel.com>, alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, vkoul@kernel.org, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 07/07/2018 05:22 AM, Hans de Goede wrote:
-> Add a quirk for the Lenovo Miix2 8 tablet, this tablet uses a digital
-> mic on DMIC1 and has a mono-speaker. The jack-detect uses the default
-> settings..
+On 07/05/2018 06:46 AM, Shreyas NC wrote:
+> For a SoundWire stream it is expected that a Slave is added to the
+> stream before Master is added.
 >
-> Reported-and-tested-by: russianneuromancer@ya.ru
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-
+> So, move the stream state to CONFIGURED after the first Slave is
+> added and remove the stream state assignment for Master add.
+> Along with these changes, add additional comments to explain the same.
+>
+> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 > ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
+>   drivers/soundwire/stream.c | 11 +++++++++--
+>   1 file changed, 9 insertions(+), 2 deletions(-)
 >
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 718f022b3aa0..d32844f94d74 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -562,6 +562,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->   					BYT_RT5640_SSP0_AIF1 |
->   					BYT_RT5640_MCLK_EN),
->   	},
-> +	{	/* Lenovo Miix 2 8 */
-> +		.matches = {
-> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "20326"),
-> +			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Hiking"),
-> +		},
-> +		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
-> +					BYT_RT5640_JD_SRC_JD2_IN4N |
-> +					BYT_RT5640_OVCD_TH_2000UA |
-> +					BYT_RT5640_OVCD_SF_0P75 |
-> +					BYT_RT5640_MONO_SPEAKER |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->   	{	/* MSI S100 tablet */
->   		.matches = {
->   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
+> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+> index 8974a0f..37603c3 100644
+> --- a/drivers/soundwire/stream.c
+> +++ b/drivers/soundwire/stream.c
+> @@ -1123,8 +1123,6 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+>   	if (ret)
+>   		goto stream_error;
+>   
+> -	stream->state = SDW_STREAM_CONFIGURED;
+> -
+>   stream_error:
+>   	sdw_release_master_stream(stream);
+>   error:
+> @@ -1141,6 +1139,10 @@ EXPORT_SYMBOL(sdw_stream_add_master);
+>    * @stream: SoundWire stream
+>    * @port_config: Port configuration for audio stream
+>    * @num_ports: Number of ports
+> + *
+> + * It is expected that Slave is added before adding Master
+> + * to the Stream.
+> + *
+>    */
+>   int sdw_stream_add_slave(struct sdw_slave *slave,
+>   		struct sdw_stream_config *stream_config,
+> @@ -1186,6 +1188,11 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+>   	if (ret)
+>   		goto stream_error;
+>   
+> +	/*
+> +	 * Change stream state to CONFIGURED on first Slave add.
+> +	 * We don't know number of Slaves in a stream currently so cant
+can't or cannot.
+> +	 * wait for all Slaves to be added
+> +	 */
+>   	stream->state = SDW_STREAM_CONFIGURED;
+>   	goto error;
+>   
