@@ -1,47 +1,124 @@
-From: Riccardo Casagrande <riccardo.casagrande@multiconn.it>
-Subject: How to add new sound card with ASoC generic driver
-Date: Mon, 09 Jul 2018 12:29:28 +0200
-Message-ID: <136fb6789ebce8330862ba3e55d0a55d@multiconn.it>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [alsa-devel] [PATCH v3 3/5] ASoC: qcom: add sdm845 sound card
+ support
+Date: Mon, 9 Jul 2018 16:16:45 +0530
+Message-ID: <c1766ce9-060f-32d8-46fa-b0a6ac42538b@codeaurora.org>
+References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
+ <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
+ <20180709074835.GB22377@vkoul-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.mmit.com.mt (mail.mmit.com.mt [176.56.128.31])
- by alsa0.perex.cz (Postfix) with ESMTP id B498D26739D
- for <alsa-devel@alsa-project.org>; Mon,  9 Jul 2018 12:29:29 +0200 (CEST)
-Received: from multiconn.it [10.101.1.251] ([127.0.0.1])
- by mail.mmit.com.mt (MM IT Mail Server v3.0) with ASMTP id ZRM39101
- for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2018 12:29:01 +0200
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180709074835.GB22377@vkoul-mobl>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod <vkoul@kernel.org>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-CkhlbGxvLAoKCkknbSBuZXcgdG8gQUxTQSBhbmQgbGludXggaW4gZ2VuZXJhbCwgSSBuZWVkIGhl
-bHAgZnJvbSB3aG8ga25vd3Mgd2VsbCBBTFNBIGR1ZSB0byB0aGUgdGlnaHQgc2NoZWR1bGUgb2Yg
-dGhlIHByb2plY3QuCkknbSB3b3JraW5nIG9uIGEgWW9jdG8gcHJvamVjdCBvbiBOWFAgaS5NWDZR
-dWFkLgpUaGUgaGFyZHdhcmUgYXJjaGl0ZXR0dXJlIGlzIHRoaXM6CnRoZSBpLk1BWDZRdWFkIGhh
-cyA2IG91dHB1dCBjb25uZWN0ZWQgdG8gMyBTVCBGREEyMTAwIGFuZCAyIGlucHV0IGZyb20gQURD
-LgpJbiB0aGUgZmlyc3Qgc3RlcCB3aGF0IEkgbmVlZCBpcyBzaW1wbHkgdG8gZW5hYmxlIDYgb3V0
-cHV0IGFuZMKgIHNlbmQgSTJTIGF1ZGlvIHRvIEZEQXMuIEluIHRoZSBzZWNvbmQgc3RlcCBpcyBy
-ZXF1aXJlZCBhIGNsb2NrIGZvciBBREMgYW5kIGVuYWJsZSBpbnB1dCBwb3J0cy4KSSBzcGVudCBk
-YXlzL3dlZWtzIHJlYWRpbmcgZG9jcywgZXhhbXBsZXMgZXRjIHdpdGhvdXQgc3VjY2Vzcy4KSSB1
-bmRlcnN0b29kIHRoYXQgd29ya2luZyBvbiBkZXZpY2UgdHJlZSBmaWxlIGFuZCBzZXR0aW5nIGEg
-c2ltcGxlIGF1ZGlvIGNhcmQgd2l0aCBnZW5lcmljIGNvZGVjIHByb3Blcmx5IGlzIHRoZSBhbnN3
-ZXIsIGJ1dCBteSBrbm93bGVkZ2UgaXMgYWxtb3N0IG5vdGhpbmcuCgoKCkkgZm9sbG93ZWQgdGhl
-c2UgZG9jcy90aHJlYWQKCmh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9z
-b3VyY2UvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL3NpbXBsZS1jYXJk
-LnR4dAoKCmh0dHBzOi8vY29tbXVuaXR5Lm54cC5jb20vdGhyZWFkLzQ3NTQyOAoKCmJ1dCBjb21w
-aWxpbmcgSSBoYXZlIHN5bnRheCBlcnJvcnMgb24gZGV2aWNlIHRyZWUgZmlsZS4KCgpUaGVyZSBp
-cyBzb21lb25lIHdobyBjYW4gaGVscCBtZSBzdGVwIGJ5IHN0ZXA/CgoKVGhhbmtzIGluIGFkdmFu
-Y2UKUmljY2FyZG8KCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-ZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1k
-ZXZlbAo=
+Thanks Vinod for reviewing.
+
+
+On 7/9/2018 1:18 PM, Vinod wrote:
+> On 06-07-18, 15:13, Rohit kumar wrote:
+>
+>> +static void sdm845_init_supplies(struct device *dev)
+>> +{
+>> +	struct snd_soc_card *card = dev_get_drvdata(dev);
+>> +	struct sdm845_snd_data *data = snd_soc_card_get_drvdata(card);
+>> +
+>> +	data->vdd_supply = regulator_get(dev, "cdc-vdd");
+>> +	if (IS_ERR(data->vdd_supply)) {
+>> +		dev_err(dev, "Unable to get regulator supplies\n");
+>> +		data->vdd_supply = NULL;
+>> +		return;
+>> +	}
+>> +
+>> +	if (regulator_enable(data->vdd_supply))
+>> +		dev_err(dev, "Unable to enable vdd supply\n");
+>> +}
+>> +
+>> +static void sdm845_deinit_supplies(struct device *dev)
+>> +{
+>> +	struct snd_soc_card *card = dev_get_drvdata(dev);
+>> +	struct sdm845_snd_data *data = snd_soc_card_get_drvdata(card);
+>> +
+>> +	if (!data->vdd_supply)
+>> +		return;
+>> +
+>> +	regulator_disable(data->vdd_supply);
+>> +	regulator_put(data->vdd_supply);
+>> +}
+> these two can be made generic, cant we make these common when we have
+> supplies present?
+
+Actually we  need to move it to codec driver as suggested by Rob in v2 
+patchset.
+I will remove this in next spin.
+
+>> +static int sdm845_bind(struct device *dev)
+>> +{
+>> +	struct snd_soc_card *card;
+>> +	struct sdm845_snd_data *data;
+>> +	int ret;
+>> +
+>> +	card = kzalloc(sizeof(*card), GFP_KERNEL);
+>> +	if (!card)
+>> +		return -ENOMEM;
+>> +
+>> +	/* Allocate the private data */
+>> +	data = kzalloc(sizeof(*data), GFP_KERNEL);
+>> +	if (!data)
+>> +		return -ENOMEM;
+>> +
+>> +	ret = component_bind_all(dev, card);
+>> +	if (ret) {
+>> +		dev_err(dev, "Audio components bind failed: %d\n", ret);
+>> +		goto bind_fail;
+>> +	}
+>> +
+>> +	dev_set_drvdata(dev, card);
+>> +	card->dev = dev;
+>> +	ret = qcom_snd_parse_of(card);
+>> +	if (ret) {
+>> +		dev_err(dev, "Error parsing OF data\n");
+>> +		goto parse_dt_fail;
+>> +	}
+>> +
+>> +	data->card = card;
+>> +	snd_soc_card_set_drvdata(card, data);
+>> +
+>> +	sdm845_add_be_ops(card);
+>> +
+>> +	sdm845_init_supplies(dev);
+>> +
+>> +	ret = snd_soc_register_card(card);
+>> +	if (ret) {
+>> +		dev_err(dev, "Sound card registration failed\n");
+>> +		goto register_card_fail;
+>> +	}
+>> +	return ret;
+>> +
+>> +register_card_fail:
+>> +	sdm845_deinit_supplies(dev);
+>> +	kfree(card->dai_link);
+>> +parse_dt_fail:
+>> +	component_unbind_all(dev, card);
+>> +bind_fail:
+>> +	kfree(data);
+>> +	kfree(card);
+>> +	return ret;
+>> +}
+> I would make a case for this to be moved into common too :)
+
+There are few platform specific APIs and structs here like struct 
+sdm845_snd_data,
+sdm845_add_be_ops() which needs to be initialized and assigned before 
+soundcard
+registration. Moving this complete API to common will restrict it. 
+Please suggest.
+
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
