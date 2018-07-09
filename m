@@ -1,82 +1,45 @@
-From: "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
-Subject: =?gb2312?B?tPC4tDogW2Fsc2EtZGV2ZWxdID8/Pz8/PzogW1BBVENIXSB2Z2Fzd2l0Y2hy?=
- =?gb2312?B?b286IHNldCBhdWRpbyBjbGllbnQgaWQgYWNjb3JkaW5nIHRvIGJvdW5kIGdw?=
- =?gb2312?Q?u_client_id?=
-Date: Mon, 9 Jul 2018 15:53:19 +0000
-Message-ID: <DM3PR12MB0873D43BE3B6E5E0ADE1CE0599440@DM3PR12MB0873.namprd12.prod.outlook.com>
-References: <20180629080634.GA7357@wunner.de>
- <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629092138.GA11849@wunner.de>
- <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629111108.GA11609@wunner.de>
- <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180709092759.GA3649@wunner.de>
- <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
- <s5hr2kco3gp.wl-tiwai@suse.de> <20180709154734.GA30496@wunner.de>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH v5 2/5] clk: at91: add I2S clock mux driver
+Date: Mon, 9 Jul 2018 18:55:01 +0300
+Message-ID: <b7a379b3-0cfe-7a8e-fa13-3d152beb5e32@microchip.com>
+References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
+ <20180618141239.10892-3-codrin.ciubotariu@microchip.com>
+ <153090076533.143105.11588903392800697432@swboyd.mtv.corp.google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <20180709154734.GA30496-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
-Content-Language: zh-CN
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>, Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "Deucher,
- Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <153090076533.143105.11588903392800697432@swboyd.mtv.corp.google.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Stephen Boyd <sboyd@kernel.org>, alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, boris.brezillon@bootlin.com, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com, robh+dt@kernel.org
+Cc: Cristian.Birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-SGkgQWxsLA0KDQpIZXJlLCBJIHdhbnQgdG8gY2xhcmlmeSB0aGUgYXVkaW8gZGV2aWNlIGlzIGJv
-dW5kIHRvIGlHUFUuIFRoZXJlIGlzIG5vIGF1ZGlvIGNvZGVjIGZvciBkR1BVLiANCg0KVGhhbmtz
-DQpKaW1RdSANCg0KLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K5Y+R5Lu25Lq6OiBMdWthcyBXdW5u
-ZXIgPGx1a2FzQHd1bm5lci5kZT4gDQrlj5HpgIHml7bpl7Q6IDIwMTjlubQ35pyIOeaXpSAyMzo0
-OA0K5pS25Lu25Lq6OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQrmioTpgIE6IEFsZXgg
-RGV1Y2hlciA8YWxleGRldWNoZXJAZ21haWwuY29tPjsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnOyBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgUXUsIEppbSA8SmltLlF1QGFtZC5j
-b20+OyBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBEZXVjaGVyLCBBbGV4YW5kZXIg
-PEFsZXhhbmRlci5EZXVjaGVyQGFtZC5jb20+DQrkuLvpopg6IFJlOiBbYWxzYS1kZXZlbF0gPz8/
-Pz8/OiBbUEFUQ0hdIHZnYXN3aXRjaHJvbzogc2V0IGF1ZGlvIGNsaWVudCBpZCBhY2NvcmRpbmcg
-dG8gYm91bmQgZ3B1IGNsaWVudCBpZA0KDQpPbiBNb24sIEp1bCAwOSwgMjAxOCBhdCAwNTowNDoy
-MlBNICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6DQo+IE9uIE1vbiwgMDkgSnVsIDIwMTggMTU6
-NTg6NTEgKzAyMDAsIEFsZXggRGV1Y2hlciB3cm90ZToNCj4gPiBPbiBNb24sIEp1bCA5LCAyMDE4
-IGF0IDY6MTYgQU0sIFF1LCBKaW0gPEppbS5RdUBhbWQuY29tPiB3cm90ZToNCj4gPiA+ID4gWW91
-J3JlIHNheWluZyBhYm92ZSB0aGF0IHRoZSBIREEgY29udHJvbGxlciBpc24ndCBydW50aW1lIA0K
-PiA+ID4gPiByZXN1bWVkIG9uIGhvdHBsdWcgb2YgYSBkaXNwbGF5LiAgSXMgdGhhdCBuZWNlc3Nh
-cnkgdG8gcmV0cmlldmUgRUxEIG9yIHNvbWV0aGluZz8NCj4gPiA+ID4gSSdtIG5vdCBzdXJlIGlm
-IHRoZXJlJ3MgY29kZSBpbiB0aGUgSERBIGRyaXZlciB0byBhY3F1aXJlIGEgDQo+ID4gPiA+IHJ1
-bnRpbWUgUE0gcmVmIG9uIEhQRCwgYnV0IG1heWJlIGl0J3MgbmVjZXNzYXJ5LiAgT3IgbWF5YmUg
-dGhlIA0KPiA+ID4gPiBjb2RlIGlzIHRoZXJlIGJ1dCBzb21laG93IG5vIEhQRCBpbnRlcnJ1cHQg
-aXMgcmVjZWl2ZWQgYnkgdGhlIEhEQSBkcml2ZXI/DQo+ID4gPg0KPiA+ID4gU28gZmFyLCBJIGRv
-IG5vdCBmaW5kIGFueSBjb2RlIGFib3V0IGF1ZGlvIHJlc3BvbnNlIEhQRCBpbiBrZXJuZWwuDQo+
-ID4gPiB0aGUgSFBEIGludGVycnVwdCB3aWxsIHNlbnQgdG8gdXNlciBtb2RlIHZpYSB1ZXZlbnQs
-IG5vdCBzdXJlIA0KPiA+ID4gd2hldGhlciBhdWRpbyB1c2VyIG1vZGUgZHJpdmVyIGNhbiByZWNl
-aXZlIHRoZSBldmVudCBvciBub3QuDQo+ID4gDQo+ID4gT24gdGhlIGdmeCBzaWRlIGF0IGxlYXN0
-LCB3ZSBjYW4gZ2V0IGEgaG90cGx1ZyBldmVudCB2aWEgQUNQSSANCj4gPiAoZGVwZW5kaW5nIG9u
-IHRoZSBPRU0gZGVzaWduKSBpZiBkaXNwbGF5cyBhcmUgYXR0YWNoZWQvZGV0YWNoZWQgDQo+ID4g
-d2hpbGUgdGhlIGRHUFUgaXMgcG93ZXJlZCBkb3duLiAgSSBzdXBwb3NlIHRoZSBnZnggZHJpdmVy
-IGNvdWxkIGNhbGwgDQo+ID4gaW50byB0aGUgYXVkaW8gZHJpdmVyIGR1cmluZyBvbmUgb2YgdGhv
-c2UgZXZlbnRzLiAgT24gdGhlIGdmeCBzaWRlIA0KPiA+IGF0IGxlYXN0IHdlIGp1c3QgZ2VuZXJh
-dGUgdGhlIGdmeCBob3RwbHVnIGV2ZW50IGFuZCBsZXQgdXNlcnNwYWNlIGRlYWwgd2l0aCBpdC4N
-Cj4gDQo+IElNTywgYSBtb3JlIHByb3BlciB3YXkgd291bGQgYmUgdG8gaGF2ZSB0aGUgZGlyZWN0
-IGNvbW11bmljYXRpb24gDQo+IGJldHdlZW4gdGhlIGdyYXBoaWNzIGRyaXZlciBhbmQgdGhlIGF1
-ZGlvIGRyaXZlciBsaWtlIGk5MTUgZHJpdmVyIA0KPiBkb2VzLiAgVGhlbiB0aGUgYXVkaW8gZHJp
-dmVyIGNhbiBnZXQgcGx1Zy91bnBsdWcgZXZlbnQgYXQgbW9yZSANCj4gYWNjdXJhdGUgdGltaW5n
-IHdpdGhvdXQgcmFjZXMuDQoNClNpbmNlIHY0LjE3LCBldmVyeSB0aW1lIHRoZSBHUFUgaXMgcG93
-ZXJlZCB1cCwgdGhlIEhEQSBjb250cm9sbGVyIGlzIHJ1bnRpbWUgcmVzdW1lZCB0byBQQ0lfRDAu
-ICAoU2VlIHRoZSBjYWxsIHRvIHBjaV93YWtldXBfYnVzKCkgaW4NCnZnYV9zd2l0Y2hlcm9vX3J1
-bnRpbWVfcmVzdW1lKCkgYWRkZWQgYnkgZGNhYzg2YjdkMC4pDQoNCklmIHRoZSBIREEgY29udHJv
-bGxlciBjYW4ndCBkZXRlY3QgcHJlc2VuY2Ugb2YgYW4gSERNSSBkaXNwbGF5IGV2ZW4gaWYgaXQn
-cyBpbiBQQ0lfRDAsIHRoZW4gSSBzdXBwb3NlIHRoYXQgbmVlZHMgdG8gYmUgYWRyZXNzZWQgaW4g
-dGhlIEhEQSBkcml2ZXIuICBUaHVzIHNvIGZhciBJIGRvbid0IHNlZSB0aGUgbmVlZCB0byBjYWxs
-IGZyb20gYW1kZ3B1IGludG8gdGhlIEhEQSBkcml2ZXIuDQoNClRoYW5rcywNCg0KTHVrYXMNCl9f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmFtZC1nZnggbWFp
-bGluZyBsaXN0CmFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vYW1kLWdmeAo=
+On 06.07.2018 21:12, Stephen Boyd wrote:
+> Quoting Codrin Ciubotariu (2018-06-18 07:12:36)
+>> This driver is a simple muxing driver that controls the
+>> I2S's clock input by using syscon/regmap to change the parent.
+>> The available inputs can be peripheral clock and generated clock.
+>>
+>> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+>> ---
+> 
+> Applied to clk-next
+> 
+> But I had to fix:
+> 
+> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
+> #56: FILE: drivers/clk/at91/clk-i2s-mux.c:1:
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> 
+> so I did. Please run checkpatch next time.
+> 
+
+Sorry about that. I did run checkpatch, but I saw some files that 
+commented the License-Identifier the same way I did. Didn't notice back 
+then that were only the headers...
+Thank you for applying my patches.
+
+Best regards,
+Codrin
