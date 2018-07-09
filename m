@@ -1,123 +1,81 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: Binding volume and mute switch
-Date: Mon, 9 Jul 2018 12:10:13 +0200
-Message-ID: <20180709101013.GA21707@lenoch>
+From: "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSB2Z2Fzd2l0Y2hyb286IHNldCBhdWRpbyBjbGllbnQg?=
+ =?gb2312?Q?id_according_to_bound_gpu_client_id?=
+Date: Mon, 9 Jul 2018 10:16:14 +0000
+Message-ID: <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
+References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>
+ <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
+ <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629080634.GA7357@wunner.de>
+ <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629092138.GA11849@wunner.de>
+ <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629111108.GA11609@wunner.de>
+ <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>,
+ <20180709092759.GA3649@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id 33A1926739D
- for <alsa-devel@alsa-project.org>; Mon,  9 Jul 2018 12:10:14 +0200 (CEST)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23990505AbeGIKKO39s-u (ORCPT
- <rfc822;alsa-devel@alsa-project.org>); Mon, 9 Jul 2018 12:10:14 +0200
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <20180709092759.GA3649-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
+Content-Language: zh-CN
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
+Cc: "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-to provide almost self descriptive controls to alsamixer I'd like to achive
-something like this: http://ladislav.michl.sweb.cz/alsamixer1.png
-Master volume is muted using switch coupled with master volume control,
-microphone is muted using switch coupled with microphone volume control,
-etc...
-
-For mic and line input is works as expected, but for sidetone and
-master volume I had to use "proper" names for mixer controls,
-see bellow:
-
-/* Input mixer */
-static const struct snd_kcontrol_new max9867_input_mixer_controls[] = {
-	SOC_DAPM_DOUBLE("Mic Switch", MAX9867_INPUTCONFIG, 6, 4, 1, 0),
-	SOC_DAPM_DOUBLE("Line Switch", MAX9867_INPUTCONFIG, 7, 5, 1, 0),
-};
-
-/* Output mixer */
-static const struct snd_kcontrol_new max9867_output_mixer_controls[] = {
-	SOC_DAPM_DOUBLE_R("Line Bypass Switch",
-			  MAX9867_LEFTLINELVL, MAX9867_RIGHTLINELVL, 6, 1, 1),
-};
-
-/* Sidetone mixer */
-static const struct snd_kcontrol_new max9867_sidetone_mixer_controls[] = {
-	SOC_DAPM_DOUBLE("Sidetone Switch", MAX9867_SIDETONE, 6, 7, 1, 0),
-};
-
-/* Line out switch */
-static const struct snd_kcontrol_new max9867_line_out_control =
-	SOC_DAPM_DOUBLE_R("Switch",
-			  MAX9867_LEFTVOL, MAX9867_RIGHTVOL, 6, 1, 1);
-
-static const struct snd_soc_dapm_widget max9867_dapm_widgets[] = {
-	SND_SOC_DAPM_INPUT("MICL"),
-	SND_SOC_DAPM_INPUT("MICR"),
-	SND_SOC_DAPM_INPUT("LINL"),
-	SND_SOC_DAPM_INPUT("LINR"),
-	SND_SOC_DAPM_MIXER("Left Input Mixer", MAX9867_PWRMAN, 6, 1,
-			   max9867_input_mixer_controls,
-			   ARRAY_SIZE(max9867_input_mixer_controls)),
-	SND_SOC_DAPM_MIXER("Right Input Mixer", MAX9867_PWRMAN, 5, 1,
-			   max9867_input_mixer_controls,
-			   ARRAY_SIZE(max9867_input_mixer_controls)),
-	SND_SOC_DAPM_ADC("ADCL", "HiFi Capture", MAX9867_PWRMAN, 1, 0),
-	SND_SOC_DAPM_ADC("ADCR", "HiFi Capture", MAX9867_PWRMAN, 0, 0),
-
-	SND_SOC_DAPM_MIXER("Digital", SND_SOC_NOPM, 0, 0,
-			   max9867_sidetone_mixer_controls,
-			   ARRAY_SIZE(max9867_sidetone_mixer_controls)),
-	SND_SOC_DAPM_MIXER("Output Mixer", SND_SOC_NOPM, 0, 0,
-			   max9867_output_mixer_controls,
-			   ARRAY_SIZE(max9867_output_mixer_controls)),
-	SND_SOC_DAPM_DAC("DACL", "HiFi Playback", MAX9867_PWRMAN, 3, 0),
-	SND_SOC_DAPM_DAC("DACR", "HiFi Playback", MAX9867_PWRMAN, 2, 0),
-	SND_SOC_DAPM_SWITCH("Master Playback", SND_SOC_NOPM, 0, 0,
-			    &max9867_line_out_control),
-	SND_SOC_DAPM_OUTPUT("LOUT"),
-	SND_SOC_DAPM_OUTPUT("ROUT"),
-};
-
-static const struct snd_soc_dapm_route max9867_audio_map[] = {
-	{"Left Input Mixer", "Mic Switch", "MICL"},
-	{"Right Input Mixer", "Mic Switch", "MICR"},
-	{"Left Input Mixer", "Line Switch", "LINL"},
-	{"Right Input Mixer", "Line Switch", "LINR"},
-	{"ADCL", NULL, "Left Input Mixer"},
-	{"ADCR", NULL, "Right Input Mixer"},
-
-	{"Digital", "Sidetone Switch", "ADCL"},
-	{"Digital", "Sidetone Switch", "ADCR"},
-	{"DACL", NULL, "Digital"},
-	{"DACR", NULL, "Digital"},
-
-	{"Output Mixer", "Line Bypass Switch", "LINL"},
-	{"Output Mixer", "Line Bypass Switch", "LINR"},
-	{"Output Mixer", NULL, "DACL"},
-	{"Output Mixer", NULL, "DACR"},
-	{"Master Playback", "Switch", "Output Mixer"},
-	{"LOUT", NULL, "Master Playback"},
-	{"ROUT", NULL, "Master Playback"},
-};
-
-With other control names than "Digital" for sidetone digital
-mixer, sidetone switch is shown separately from sidetone volume.
-The same for master volume switch, which is bind with master
-volume only once its name is "Master Playback".
-
-Is it intended to work this way or there is some other, more
-elegant way how to bind mute switch with volume control.
-(above solution seem too fragile to me)
-
-Thank you,
-	ladis
+SGkgTHVrYXMsIA0KDQpUaGFua3MgdG8geW91ciBleHBsYW5hdGlvbiwgYW5kIHNlZSBjb21tZW50
+cyBpbiBsaW5lLg0KDQoNCkRvIHlvdSBuZWVkIHRvIHJ1bnRpbWUgcmVzdW1lIHRoZSBIREEgY29u
+dHJvbGxlciBldmVuIGlmIHVzZXIgc3BhY2UgaXNuJ3QNCnN0cmVhbWluZyBhdWRpbz8gIFdoeSwg
+YW5kIGluIHdoaWNoIHNpdHVhdGlvbiBleGFjdGx5Pw0KDQpKaW06IE9FTSBzeXN0ZW0gdXNlcyBw
+YWN0bCB0byBxdWVpcnkgYXVkaW8gY2FyZCBhbmQgYXVkaW8gb3V0cHV0IHNpbmssIHNpbmNlIHRo
+ZSBhdWRpbyBoYXMgcG93ZXIgZG93biBieSBydW50aW1lIHBtLCBzbyB0aGUgYXVkaW8gY2FyZCBh
+bmQgb3V0cHV0IHNpbmsgYXJlIGFsbCB1bmF2YWlsYWJsZS4gdGhleSBjb3VsZCBub3Qgc2VsZWN0
+IHRoZSBhdmFpbGFibGUgSERNSSBhdWRpbyBmb3IgYXVkaW8gcGxheWluZy4NCg0KWW91J3JlIHNh
+eWluZyBhYm92ZSB0aGF0IHRoZSBIREEgY29udHJvbGxlciBpc24ndCBydW50aW1lIHJlc3VtZWQg
+b24NCmhvdHBsdWcgb2YgYSBkaXNwbGF5LiAgSXMgdGhhdCBuZWNlc3NhcnkgdG8gcmV0cmlldmUg
+RUxEIG9yIHNvbWV0aGluZz8NCkknbSBub3Qgc3VyZSBpZiB0aGVyZSdzIGNvZGUgaW4gdGhlIEhE
+QSBkcml2ZXIgdG8gYWNxdWlyZSBhIHJ1bnRpbWUgUE0NCnJlZiBvbiBIUEQsIGJ1dCBtYXliZSBp
+dCdzIG5lY2Vzc2FyeS4gIE9yIG1heWJlIHRoZSBjb2RlIGlzIHRoZXJlIGJ1dA0Kc29tZWhvdyBu
+byBIUEQgaW50ZXJydXB0IGlzIHJlY2VpdmVkIGJ5IHRoZSBIREEgZHJpdmVyPw0KDQpKaW06IFNv
+IGZhciwgSSBkbyBub3QgZmluZCBhbnkgY29kZSBhYm91dCBhdWRpbyByZXNwb25zZSBIUEQgaW4g
+a2VybmVsLiB0aGUgSFBEIGludGVycnVwdCB3aWxsIHNlbnQgdG8gdXNlciBtb2RlIHZpYSB1ZXZl
+bnQsIG5vdCBzdXJlIHdoZXRoZXIgYXVkaW8gdXNlciBtb2RlIGRyaXZlciBjYW4gcmVjZWl2ZSB0
+aGUgZXZlbnQgb3Igbm90Lg0KDQpUaGFua3MNCkppbVF1DQoNCl9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX18NCuWPkeS7tuS6ujogTHVrYXMgV3VubmVyIDxsdWthc0B3dW5u
+ZXIuZGU+DQrlj5HpgIHml7bpl7Q6IDIwMTjlubQ35pyIOeaXpSAxNzoyNw0K5pS25Lu25Lq6OiBR
+dSwgSmltDQrmioTpgIE6IGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgZHJpLWRldmVsQGxp
+c3RzLmZyZWVkZXNrdG9wLm9yZzsgRGV1Y2hlciwgQWxleGFuZGVyOyBhbWQtZ2Z4QGxpc3RzLmZy
+ZWVkZXNrdG9wLm9yZw0K5Li76aKYOiBSZTogW1BBVENIXSB2Z2Fzd2l0Y2hyb286IHNldCBhdWRp
+byBjbGllbnQgaWQgYWNjb3JkaW5nIHRvIGJvdW5kIGdwdSBjbGllbnQgaWQNCg0KT24gTW9uLCBK
+dWwgMDksIDIwMTggYXQgMDg6NTI6MzNBTSArMDAwMCwgUXUsIEppbSB3cm90ZToNCj4gTm93LCBJ
+IGZvdW5kIHRoZSBhdWRpbyBkZXZpY2Ugd2lsbCBhdXRvIHN1c3BlbmQgZXZlbiBpZiB0aGUgZ3B1
+IGlzIGFjdGl2ZSwNCj4gYW5kIGlmIEkgcGx1ZyBpbiBhIEhETUkgZGV2aWNlIGl0IGFsc28gZG8g
+bm90IHJlc3VtZSBiYWNrLg0KPg0KPiAxLiBEaWQgeW91IGVuY291bnRlciBzaW1pbGFyIGlzc3Vl
+IGJlZm9yZT8NCj4gMi4gYXVkaW8gd2lsbCBhdXRvIHN1c3BlbmQgYXMgZGVmYXVsdCBhdCBiZWdp
+bm5pbmcgb2YgYm9vdCwgaXMgaXQgZXhwZWN0DQo+IGJlaGF2aW91cj8NCg0KWWVzLCB0aGF0J3Mg
+ZXhwZWN0ZWQuICBPbmNlIHlvdSBzdGFydCBzdHJlYW1pbmcgYXVkaW8gdG8gYXR0YWNoZWQgZGlz
+cGxheXMsDQp1c2VyIHNwYWNlIG9wZW5zIHRoZSBjb2RlYyBkZXZpY2UgYW5kIHRoaXMgY2F1c2Vz
+IHRoZSBIREEgY29udHJvbGxlciB0bw0KcnVudGltZSByZXN1bWUuICBJZiB0aGUgZGlzY3JldGUg
+R1BVIGlzIHN1c3BlbmRlZCBhdCB0aGF0IG1vbWVudCwgaXQgd2lsbA0KYmUgcG93ZXJlZCBvbiBh
+bmQga2VwdCBwb3dlcmVkIG9uIGFzIGxvbmcgYXMgdXNlciBzcGFjZSBpcyBzdHJlYW1pbmcgYXVk
+aW8uDQoNCkRvIHlvdSBuZWVkIHRvIHJ1bnRpbWUgcmVzdW1lIHRoZSBIREEgY29udHJvbGxlciBl
+dmVuIGlmIHVzZXIgc3BhY2UgaXNuJ3QNCnN0cmVhbWluZyBhdWRpbz8gIFdoeSwgYW5kIGluIHdo
+aWNoIHNpdHVhdGlvbiBleGFjdGx5Pw0KDQpZb3UncmUgc2F5aW5nIGFib3ZlIHRoYXQgdGhlIEhE
+QSBjb250cm9sbGVyIGlzbid0IHJ1bnRpbWUgcmVzdW1lZCBvbg0KaG90cGx1ZyBvZiBhIGRpc3Bs
+YXkuICBJcyB0aGF0IG5lY2Vzc2FyeSB0byByZXRyaWV2ZSBFTEQgb3Igc29tZXRoaW5nPw0KSSdt
+IG5vdCBzdXJlIGlmIHRoZXJlJ3MgY29kZSBpbiB0aGUgSERBIGRyaXZlciB0byBhY3F1aXJlIGEg
+cnVudGltZSBQTQ0KcmVmIG9uIEhQRCwgYnV0IG1heWJlIGl0J3MgbmVjZXNzYXJ5LiAgT3IgbWF5
+YmUgdGhlIGNvZGUgaXMgdGhlcmUgYnV0DQpzb21laG93IG5vIEhQRCBpbnRlcnJ1cHQgaXMgcmVj
+ZWl2ZWQgYnkgdGhlIEhEQSBkcml2ZXI/DQoNClRoYW5rcywNCg0KTHVrYXMNCl9fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmFtZC1nZnggbWFpbGluZyBsaXN0
+CmFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnL21haWxtYW4vbGlzdGluZm8vYW1kLWdmeAo=
