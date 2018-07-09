@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: make SND_PXA_SOC_SSP depend on PLAT_PXA" to the asoc tree
-Date: Mon, 09 Jul 2018 12:27:36 +0100
-Message-ID: <E1fcUKO-0006Am-GV@debutante>
-References: <20180706133104.129049-1-arnd@arndb.de>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180706133104.129049-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: adau171x1: Connect playback DAI to the
+	DSP" to the asoc tree
+Date: Mon, 09 Jul 2018 12:29:18 +0100
+Message-ID: <E1fcUM2-0006QA-MG@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C295626739D
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jul 2018 13:29:23 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Lars-Peter Clausen <lars@metafoo.de>
+Cc: Alexandru Ardelean <alexandru.ardelean@analog.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: make SND_PXA_SOC_SSP depend on PLAT_PXA
+   ASoC: adau171x1: Connect playback DAI to the DSP
 
 has been applied to the asoc tree at
 
@@ -37,39 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From 9d1310daedae494874fe36a995172e64b06e29a4 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Fri, 6 Jul 2018 15:30:48 +0200
-Subject: [PATCH] ASoC: pxa: make SND_PXA_SOC_SSP depend on PLAT_PXA
+>From 5bea327962fa296efd16f2d3369dd339ddd7ce6f Mon Sep 17 00:00:00 2001
+From: Lars-Peter Clausen <lars@metafoo.de>
+Date: Fri, 6 Jul 2018 16:19:14 +0300
+Subject: [PATCH] ASoC: adau171x1: Connect playback DAI to the DSP
 
-For the moment, we can't enable CONFIG_SND_PXA_SOC_SSP unless we are
-building for ARM PXA or MMP:
+The playback DAI is connected to the DSP and the DSP might be sourcing
+signals from the playback stream. Add a DAPM route between the two to make
+sure that the playback DAI is powered up, when the DSP is active.
 
-WARNING: unmet direct dependencies detected for PXA_SSP
-  Depends on [n]: PLAT_PXA [=n]
-  Selected by [y]:
-  - SND_PXA_SOC_SSP [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y]
-
-This adds an explicit dependency for it.
-
-Fixes: 0a94cf345740 ("ASoC: pxa: make SND_PXA2XX_SOC_I2S selectable")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Kconfig | 1 +
+ sound/soc/codecs/adau17x1.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 2fc02c227f69..776e148b0aa2 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -34,6 +34,7 @@ config SND_PXA2XX_SOC_I2S
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index ae41edd1c406..57169b8ff14e 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -299,6 +299,7 @@ static const struct snd_soc_dapm_route adau17x1_dsp_dapm_routes[] = {
  
- config SND_PXA_SOC_SSP
- 	tristate "Soc Audio via PXA2xx/PXA3xx SSP ports"
-+	depends on PLAT_PXA
- 	select PXA_SSP
- 	select SND_PXA2XX_LIB
+ 	{ "DSP", NULL, "Left Decimator" },
+ 	{ "DSP", NULL, "Right Decimator" },
++	{ "DSP", NULL, "Playback" },
+ };
  
+ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
 -- 
 2.18.0.rc2
