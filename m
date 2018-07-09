@@ -1,107 +1,70 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [PATCH v3 3/5] ASoC: qcom: add sdm845 sound card
- support
-Date: Mon, 9 Jul 2018 13:18:35 +0530
-Message-ID: <20180709074835.GB22377@vkoul-mobl>
-References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
- <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
+From: "Qu, Jim" <Jim.Qu@amd.com>
+Subject: =?gb2312?B?tPC4tDogW1BBVENIXSB2Z2Fzd2l0Y2hyb286IHNldCBhdWRpbyBjbGllbnQg?=
+ =?gb2312?Q?id_according_to_bound_gpu_client_id?=
+Date: Mon, 9 Jul 2018 08:52:33 +0000
+Message-ID: <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
+References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>
+ <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
+ <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629080634.GA7357@wunner.de>
+ <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629092138.GA11849@wunner.de>
+ <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>,
+ <20180629111108.GA11609@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rohit kumar <rohitkr@codeaurora.org>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20180629111108.GA11609@wunner.de>
+Content-Language: zh-CN
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06-07-18, 15:13, Rohit kumar wrote:
-
-> +static void sdm845_init_supplies(struct device *dev)
-> +{
-> +	struct snd_soc_card *card = dev_get_drvdata(dev);
-> +	struct sdm845_snd_data *data = snd_soc_card_get_drvdata(card);
-> +
-> +	data->vdd_supply = regulator_get(dev, "cdc-vdd");
-> +	if (IS_ERR(data->vdd_supply)) {
-> +		dev_err(dev, "Unable to get regulator supplies\n");
-> +		data->vdd_supply = NULL;
-> +		return;
-> +	}
-> +
-> +	if (regulator_enable(data->vdd_supply))
-> +		dev_err(dev, "Unable to enable vdd supply\n");
-> +}
-> +
-> +static void sdm845_deinit_supplies(struct device *dev)
-> +{
-> +	struct snd_soc_card *card = dev_get_drvdata(dev);
-> +	struct sdm845_snd_data *data = snd_soc_card_get_drvdata(card);
-> +
-> +	if (!data->vdd_supply)
-> +		return;
-> +
-> +	regulator_disable(data->vdd_supply);
-> +	regulator_put(data->vdd_supply);
-> +}
-
-these two can be made generic, cant we make these common when we have
-supplies present?
-
-> +static int sdm845_bind(struct device *dev)
-> +{
-> +	struct snd_soc_card *card;
-> +	struct sdm845_snd_data *data;
-> +	int ret;
-> +
-> +	card = kzalloc(sizeof(*card), GFP_KERNEL);
-> +	if (!card)
-> +		return -ENOMEM;
-> +
-> +	/* Allocate the private data */
-> +	data = kzalloc(sizeof(*data), GFP_KERNEL);
-> +	if (!data)
-> +		return -ENOMEM;
-> +
-> +	ret = component_bind_all(dev, card);
-> +	if (ret) {
-> +		dev_err(dev, "Audio components bind failed: %d\n", ret);
-> +		goto bind_fail;
-> +	}
-> +
-> +	dev_set_drvdata(dev, card);
-> +	card->dev = dev;
-> +	ret = qcom_snd_parse_of(card);
-> +	if (ret) {
-> +		dev_err(dev, "Error parsing OF data\n");
-> +		goto parse_dt_fail;
-> +	}
-> +
-> +	data->card = card;
-> +	snd_soc_card_set_drvdata(card, data);
-> +
-> +	sdm845_add_be_ops(card);
-> +
-> +	sdm845_init_supplies(dev);
-> +
-> +	ret = snd_soc_register_card(card);
-> +	if (ret) {
-> +		dev_err(dev, "Sound card registration failed\n");
-> +		goto register_card_fail;
-> +	}
-> +	return ret;
-> +
-> +register_card_fail:
-> +	sdm845_deinit_supplies(dev);
-> +	kfree(card->dai_link);
-> +parse_dt_fail:
-> +	component_unbind_all(dev, card);
-> +bind_fail:
-> +	kfree(data);
-> +	kfree(card);
-> +	return ret;
-> +}
-
-I would make a case for this to be moved into common too :)
--- 
-~Vinod
+SGkgTHVrYXMsDQoNCk91ciBPRU0gcmVwb3J0IHRoZSBpc3N1ZSBhbHNvIGNhbiBiZSBvYnNlcnZl
+ZCB3aXRoIHY0LjE3cmM3IG9mIHRlc3QgcGxhdGZvcm0sIGFuZCBJIGFsc28gYmFja3BvcnRlZCB0
+aGVzZSA3IHBhdGNoZXMgdG8gdjQuMTUsIGhhdmUgY29uZmlybWVkIHRoZSBpc3N1ZS4NCg0KTm93
+LCBJIGZvdW5kIHRoZSBhdWRpbyBkZXZpY2Ugd2lsbCBhdXRvIHN1c3BlbmQgZXZlbiBpZiB0aGUg
+Z3B1IGlzIGFjdGl2ZSwgYW5kIGlmIEkgcGx1ZyBpbiBhIEhETUkgZGV2aWNlIGl0IGFsc28gZG8g
+bm90IHJlc3VtZSBiYWNrLiANCg0KMS4gRGlkIHlvdSBlbmNvdW50ZXIgc2ltaWxhciBpc3N1ZSBi
+ZWZvcmU/DQoyLiBhdWRpbyB3aWxsIGF1dG8gc3VzcGVuZCBhcyBkZWZhdWx0IGF0IGJlZ2lubmlu
+ZyBvZiBib290LCBpcyBpdCBleHBlY3QgYmVoYXZpb3VyPw0KDQpEZXZpY2UgbGlua3MgaGVscCB1
+cyBoYW5kbGUgdHdvIHRoaW5nczoNCg0KMS4gbWFrZSB0aGUgYXVkaW8vZ3B1IHN1c3BlbmQvcmVz
+dW1lL3Bvd2Vyb2ZmIHByb2Nlc3NpbmcgaW4gYW4gb3JkZXJseSB3YXkgd2l0aCB0aGUgRExfRkxB
+R19TVEFURUxFU1MgZmxhZy4NCjIuIGl0IGNhbiBndWFyYW50ZWUgdGhlIGF1ZGlvIGNhbiBiZSBh
+Y2Nlc3NlZCBpZiBncHUgaXMgcG93ZXJvZmZlZCBieSBzZXR0aW5nIHRoZSBETF9GTEFHX1BNX1JV
+TlRJTUUgZmxhZy4NCg0KU28sIGluIG15IG9waW5pb24sIGF1ZGlvJ3Mgc3VzcGVuZC9yZXN1bWUg
+c2hvdWxkIGJlIHByb2Nlc3NlZCB3aXRoIGdwdSBzdXNwZW5kL3Jlc3VtZS4NCg0KVGhhbmtzDQpK
+aW1RdQ0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQrlj5Hku7bk
+uro6IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPg0K5Y+R6YCB5pe26Ze0OiAyMDE45bm0
+NuaciDI55pelIDE5OjExDQrmlLbku7bkuro6IFF1LCBKaW0NCuaKhOmAgTogYWxzYS1kZXZlbEBh
+bHNhLXByb2plY3Qub3JnOyBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBEZXVjaGVy
+LCBBbGV4YW5kZXI7IGFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnDQrkuLvpopg6IFJlOiBb
+UEFUQ0hdIHZnYXN3aXRjaHJvbzogc2V0IGF1ZGlvIGNsaWVudCBpZCBhY2NvcmRpbmcgdG8gYm91
+bmQgZ3B1IGNsaWVudCBpZA0KDQpPbiBGcmksIEp1biAyOSwgMjAxOCBhdCAxMDo0MDo1MEFNICsw
+MDAwLCBRdSwgSmltIHdyb3RlOg0KPiA+IFRoYXQgaXMgbm8gbG9uZ2VyIHRoZSBjYXNlIHNpbmNl
+IHY0LjE3LiAgVGhlIEhEQSBjb250cm9sbGVyIG5vdyBydW50aW1lDQo+ID4gc3VzcGVuZHMgYXV0
+b25vbW91c2x5LCBzZWUgY29tbWl0IDA3ZjRmOTdkN2I0YiAoInZnYV9zd2l0Y2hlcm9vOiBVc2UN
+Cj4gPiBkZXZpY2UgbGluayBmb3IgSERBIGNvbnRyb2xsZXIiKS4NCj4gPg0KPiA+IFlvdXIgcGF0
+Y2ggYXBwZWFycyB0byBiZSBnZWFyZWQgdG93YXJkcyBhbiBvbGRlciBrZXJuZWwgdmVyc2lvbi4N
+Cj4gPiBQbGVhc2UgcmV0ZXN0IG9uIHRoZSBsYXB0b3AgaW4gcXVlc3Rpb24gd2l0aCBhIHY0LjE3
+KyBrZXJuZWwuDQo+DQo+IGluZGVlZD8gSSB1c2VkIDQuMTMgb24gdGhlIHBsYXRmb3JtLiBsZXQg
+bWUgaGF2ZSBhIHRyeSB3aXRoIHRoZSBwYXRjaA0KPiB5b3UgbWVudGlvbmVkDQoNClRoZSBjb21t
+aXQgY2FuJ3QgYmUgY2hlcnJ5LXBpY2tlZCBieSBpdHNlbGYgb250byB2NC4xMywgaXQgd2FzIHBh
+cnQgb2YNCmEgbGFyZ2VyIHNlcmllcy4gIEl0J3MgYmVzdCB0byB1c2UgYSBzdG9jayB2NC4xNyBr
+ZXJuZWwuDQoNCk5vdGUsIGEgZml4IHdlbnQgaW50byBMaW51cycgdHJlZSB5ZXN0ZXJkYXksIGNv
+bW1pdCA1N2NiNTRlNTNiZGQNCigiQUxTQTogaGRhIC0gRm9yY2UgdG8gbGluayBkb3duIGF0IHJ1
+bnRpbWUgc3VzcGVuZCBvbiBBVEkvQU1EIEhETUkiKS4NCk5vdCBzdXJlIGlmIGl0J3MgbmVlZGVk
+IG9uIHlvdXIgbWFjaGluZS4NCg0KVGhhbmtzLA0KDQpMdWthcw0KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
+ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+L21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
