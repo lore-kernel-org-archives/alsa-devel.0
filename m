@@ -1,70 +1,43 @@
-From: "Qu, Jim" <Jim.Qu@amd.com>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIXSB2Z2Fzd2l0Y2hyb286IHNldCBhdWRpbyBjbGllbnQg?=
- =?gb2312?Q?id_according_to_bound_gpu_client_id?=
-Date: Mon, 9 Jul 2018 08:52:33 +0000
-Message-ID: <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
-References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>
- <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
- <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629080634.GA7357@wunner.de>
- <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629092138.GA11849@wunner.de>
- <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>,
- <20180629111108.GA11609@wunner.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 3/5] ASoC: qcom: add sdm845 sound card support
+Date: Mon, 9 Jul 2018 10:06:13 +0100
+Message-ID: <39104e1f-d976-b51d-aa02-932c264070ba@linaro.org>
+References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
+ <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20180629111108.GA11609@wunner.de>
-Content-Language: zh-CN
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Lukas Wunner <lukas@wunner.de>
-Cc: "Deucher, Alexander" <Alexander.Deucher@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rohit kumar <rohitkr@codeaurora.org>, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgTHVrYXMsDQoNCk91ciBPRU0gcmVwb3J0IHRoZSBpc3N1ZSBhbHNvIGNhbiBiZSBvYnNlcnZl
-ZCB3aXRoIHY0LjE3cmM3IG9mIHRlc3QgcGxhdGZvcm0sIGFuZCBJIGFsc28gYmFja3BvcnRlZCB0
-aGVzZSA3IHBhdGNoZXMgdG8gdjQuMTUsIGhhdmUgY29uZmlybWVkIHRoZSBpc3N1ZS4NCg0KTm93
-LCBJIGZvdW5kIHRoZSBhdWRpbyBkZXZpY2Ugd2lsbCBhdXRvIHN1c3BlbmQgZXZlbiBpZiB0aGUg
-Z3B1IGlzIGFjdGl2ZSwgYW5kIGlmIEkgcGx1ZyBpbiBhIEhETUkgZGV2aWNlIGl0IGFsc28gZG8g
-bm90IHJlc3VtZSBiYWNrLiANCg0KMS4gRGlkIHlvdSBlbmNvdW50ZXIgc2ltaWxhciBpc3N1ZSBi
-ZWZvcmU/DQoyLiBhdWRpbyB3aWxsIGF1dG8gc3VzcGVuZCBhcyBkZWZhdWx0IGF0IGJlZ2lubmlu
-ZyBvZiBib290LCBpcyBpdCBleHBlY3QgYmVoYXZpb3VyPw0KDQpEZXZpY2UgbGlua3MgaGVscCB1
-cyBoYW5kbGUgdHdvIHRoaW5nczoNCg0KMS4gbWFrZSB0aGUgYXVkaW8vZ3B1IHN1c3BlbmQvcmVz
-dW1lL3Bvd2Vyb2ZmIHByb2Nlc3NpbmcgaW4gYW4gb3JkZXJseSB3YXkgd2l0aCB0aGUgRExfRkxB
-R19TVEFURUxFU1MgZmxhZy4NCjIuIGl0IGNhbiBndWFyYW50ZWUgdGhlIGF1ZGlvIGNhbiBiZSBh
-Y2Nlc3NlZCBpZiBncHUgaXMgcG93ZXJvZmZlZCBieSBzZXR0aW5nIHRoZSBETF9GTEFHX1BNX1JV
-TlRJTUUgZmxhZy4NCg0KU28sIGluIG15IG9waW5pb24sIGF1ZGlvJ3Mgc3VzcGVuZC9yZXN1bWUg
-c2hvdWxkIGJlIHByb2Nlc3NlZCB3aXRoIGdwdSBzdXNwZW5kL3Jlc3VtZS4NCg0KVGhhbmtzDQpK
-aW1RdQ0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQrlj5Hku7bk
-uro6IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPg0K5Y+R6YCB5pe26Ze0OiAyMDE45bm0
-NuaciDI55pelIDE5OjExDQrmlLbku7bkuro6IFF1LCBKaW0NCuaKhOmAgTogYWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnOyBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnOyBEZXVjaGVy
-LCBBbGV4YW5kZXI7IGFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnDQrkuLvpopg6IFJlOiBb
-UEFUQ0hdIHZnYXN3aXRjaHJvbzogc2V0IGF1ZGlvIGNsaWVudCBpZCBhY2NvcmRpbmcgdG8gYm91
-bmQgZ3B1IGNsaWVudCBpZA0KDQpPbiBGcmksIEp1biAyOSwgMjAxOCBhdCAxMDo0MDo1MEFNICsw
-MDAwLCBRdSwgSmltIHdyb3RlOg0KPiA+IFRoYXQgaXMgbm8gbG9uZ2VyIHRoZSBjYXNlIHNpbmNl
-IHY0LjE3LiAgVGhlIEhEQSBjb250cm9sbGVyIG5vdyBydW50aW1lDQo+ID4gc3VzcGVuZHMgYXV0
-b25vbW91c2x5LCBzZWUgY29tbWl0IDA3ZjRmOTdkN2I0YiAoInZnYV9zd2l0Y2hlcm9vOiBVc2UN
-Cj4gPiBkZXZpY2UgbGluayBmb3IgSERBIGNvbnRyb2xsZXIiKS4NCj4gPg0KPiA+IFlvdXIgcGF0
-Y2ggYXBwZWFycyB0byBiZSBnZWFyZWQgdG93YXJkcyBhbiBvbGRlciBrZXJuZWwgdmVyc2lvbi4N
-Cj4gPiBQbGVhc2UgcmV0ZXN0IG9uIHRoZSBsYXB0b3AgaW4gcXVlc3Rpb24gd2l0aCBhIHY0LjE3
-KyBrZXJuZWwuDQo+DQo+IGluZGVlZD8gSSB1c2VkIDQuMTMgb24gdGhlIHBsYXRmb3JtLiBsZXQg
-bWUgaGF2ZSBhIHRyeSB3aXRoIHRoZSBwYXRjaA0KPiB5b3UgbWVudGlvbmVkDQoNClRoZSBjb21t
-aXQgY2FuJ3QgYmUgY2hlcnJ5LXBpY2tlZCBieSBpdHNlbGYgb250byB2NC4xMywgaXQgd2FzIHBh
-cnQgb2YNCmEgbGFyZ2VyIHNlcmllcy4gIEl0J3MgYmVzdCB0byB1c2UgYSBzdG9jayB2NC4xNyBr
-ZXJuZWwuDQoNCk5vdGUsIGEgZml4IHdlbnQgaW50byBMaW51cycgdHJlZSB5ZXN0ZXJkYXksIGNv
-bW1pdCA1N2NiNTRlNTNiZGQNCigiQUxTQTogaGRhIC0gRm9yY2UgdG8gbGluayBkb3duIGF0IHJ1
-bnRpbWUgc3VzcGVuZCBvbiBBVEkvQU1EIEhETUkiKS4NCk5vdCBzdXJlIGlmIGl0J3MgbmVlZGVk
-IG9uIHlvdXIgbWFjaGluZS4NCg0KVGhhbmtzLA0KDQpMdWthcw0KX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
-ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
-L21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+Minor Nits...
+
+On 06/07/18 10:43, Rohit kumar wrote:
+> +struct sdm845_snd_data {
+> +	struct snd_soc_card *card;
+> +	struct regulator *vdd_supply;
+> +	uint32_t pri_mi2s_clk_count;
+> +	uint32_t quat_tdm_clk_count;
+> +};
+> +
+> +
+Unnecessary extra line..
+> +static unsigned int tdm_slot_offset[8] = {0, 4, 8, 12, 16, 20, 24, 28};
+> +
+> 
+> +static struct platform_driver sdm845_snd_driver = {
+> +	.probe = sdm845_snd_platform_probe,
+> +	.remove = sdm845_snd_platform_remove,
+> +	.driver = {
+> +		.name = "msm-snd-sdm845",
+> +		.pm = &sdm845_pm_ops,
+> +		.owner = THIS_MODULE,
+setting owner is not required here!
+
+> +		.of_match_table = sdm845_snd_device_id,
+> +	},
+> +};
