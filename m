@@ -1,18 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v5 1/9] soundwire: Fix duplicate stream
-	state assignment
-Date: Mon, 9 Jul 2018 18:41:40 -0500
-Message-ID: <31cd152c-b8f1-77eb-6a81-a6e5a1ac7101@linux.intel.com>
+Subject: Re: [PATCH v5 8/9] soundwire: Add support for multi
+ link bank switch
+Date: Mon, 9 Jul 2018 18:22:26 -0500
+Message-ID: <6ac86676-ad92-141d-bda7-99549e0d76ea@linux.intel.com>
 References: <1530791196-15483-1-git-send-email-shreyas.nc@intel.com>
- <1530791196-15483-2-git-send-email-shreyas.nc@intel.com>
+ <1530791196-15483-9-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 3BCD02676FB
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 01:49:35 +0200 (CEST)
-In-Reply-To: <1530791196-15483-2-git-send-email-shreyas.nc@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 615EF2675CF
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 01:49:31 +0200 (CEST)
+In-Reply-To: <1530791196-15483-9-git-send-email-shreyas.nc@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,54 +28,28 @@ Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, vkoul@kernel.org, sanyo
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On 07/05/2018 06:46 AM, Shreyas NC wrote:
-> For a SoundWire stream it is expected that a Slave is added to the
-> stream before Master is added.
->
-> So, move the stream state to CONFIGURED after the first Slave is
-> added and remove the stream state assignment for Master add.
-> Along with these changes, add additional comments to explain the same.
->
-> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-> ---
->   drivers/soundwire/stream.c | 11 +++++++++--
->   1 file changed, 9 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index 8974a0f..37603c3 100644
-> --- a/drivers/soundwire/stream.c
-> +++ b/drivers/soundwire/stream.c
-> @@ -1123,8 +1123,6 @@ int sdw_stream_add_master(struct sdw_bus *bus,
->   	if (ret)
->   		goto stream_error;
 >   
-> -	stream->state = SDW_STREAM_CONFIGURED;
-> -
->   stream_error:
->   	sdw_release_master_stream(stream);
->   error:
-> @@ -1141,6 +1139,10 @@ EXPORT_SYMBOL(sdw_stream_add_master);
->    * @stream: SoundWire stream
->    * @port_config: Port configuration for audio stream
->    * @num_ports: Number of ports
-> + *
-> + * It is expected that Slave is added before adding Master
-> + * to the Stream.
-> + *
->    */
->   int sdw_stream_add_slave(struct sdw_slave *slave,
->   		struct sdw_stream_config *stream_config,
-> @@ -1186,6 +1188,11 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
->   	if (ret)
->   		goto stream_error;
+> @@ -1170,6 +1276,17 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+>   
+>   	stream->m_rt_count++;
 >   
 > +	/*
-> +	 * Change stream state to CONFIGURED on first Slave add.
-> +	 * We don't know number of Slaves in a stream currently so cant
-can't or cannot.
-> +	 * wait for all Slaves to be added
+> +	 * For multi link streams, add the second master only if
+> +	 * the bus supports it.
+> +	 * Check if bus->multi_link is set
 > +	 */
->   	stream->state = SDW_STREAM_CONFIGURED;
->   	goto error;
+> +	if (!bus->multi_link && stream->m_rt_count > 1) {
+> +		dev_err(bus->dev,
+> +			"Multilink not supported, link %d", bus->link_id);
+> +		goto stream_error;
+> +	}
+> +
+>   	goto unlock;
 >   
+>   stream_error:
+>
+
+This error handling is a bit weird. It's make more sense to check 
+upfront if there is already one m_rt allocated (m_rt_count > 0) and bail 
+to avoid allocating/releasing a stream. Also there should be a return 
+value set (-EINVAL?)
