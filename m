@@ -1,92 +1,73 @@
-From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: =?UTF-8?Q?Re=3A_=E7=AD=94=E5=A4=8D=3A_=5BPATCH=5D_vgaswitchroo=3A_set_audio_client_i?=
- =?UTF-8?Q?d_according_to_bound_gpu_client_id?=
-Date: Mon, 9 Jul 2018 09:58:51 -0400
-Message-ID: <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
-References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>
- <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
- <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629080634.GA7357@wunner.de>
- <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629092138.GA11849@wunner.de>
- <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629111108.GA11609@wunner.de>
- <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180709092759.GA3649@wunner.de>
- <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 3/5] ASoC: qcom: add sdm845 sound card
+	support
+Date: Mon, 9 Jul 2018 15:02:11 +0100
+Message-ID: <887331ff-8892-66a7-20bc-0fce447c792f@linaro.org>
+References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
+ <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
+ <20180709111437.GB16082@sirena.org.uk>
+ <b5a3f0e2-d420-603d-f9a0-f93bdbd2619f@linaro.org>
+ <20180709124117.GG16082@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <DM3PR12MB087309CBC2CD3A934327EBCE99440-4hRkV8tDpBiYEITDcfEJ8AdYzm3356FpvxpqHgZTriW3zl9H0oFU5g@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
-Cc: "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com
+ [209.85.221.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AE6626739D
+ for <alsa-devel@alsa-project.org>; Mon,  9 Jul 2018 16:02:13 +0200 (CEST)
+Received: by mail-wr1-f65.google.com with SMTP id a3-v6so1889624wrt.2
+ for <alsa-devel@alsa-project.org>; Mon, 09 Jul 2018 07:02:13 -0700 (PDT)
+In-Reply-To: <20180709124117.GG16082@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, robh+dt@kernel.org, Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdWwgOSwgMjAxOCBhdCA2OjE2IEFNLCBRdSwgSmltIDxKaW0uUXVAYW1kLmNvbT4g
-d3JvdGU6Cj4gSGkgTHVrYXMsCj4KPiBUaGFua3MgdG8geW91ciBleHBsYW5hdGlvbiwgYW5kIHNl
-ZSBjb21tZW50cyBpbiBsaW5lLgo+Cj4KPiBEbyB5b3UgbmVlZCB0byBydW50aW1lIHJlc3VtZSB0
-aGUgSERBIGNvbnRyb2xsZXIgZXZlbiBpZiB1c2VyIHNwYWNlIGlzbid0Cj4gc3RyZWFtaW5nIGF1
-ZGlvPyAgV2h5LCBhbmQgaW4gd2hpY2ggc2l0dWF0aW9uIGV4YWN0bHk/Cj4KPiBKaW06IE9FTSBz
-eXN0ZW0gdXNlcyBwYWN0bCB0byBxdWVpcnkgYXVkaW8gY2FyZCBhbmQgYXVkaW8gb3V0cHV0IHNp
-bmssIHNpbmNlIHRoZSBhdWRpbyBoYXMgcG93ZXIgZG93biBieSBydW50aW1lIHBtLCBzbyB0aGUg
-YXVkaW8gY2FyZCBhbmQgb3V0cHV0IHNpbmsgYXJlIGFsbCB1bmF2YWlsYWJsZS4gdGhleSBjb3Vs
-ZCBub3Qgc2VsZWN0IHRoZSBhdmFpbGFibGUgSERNSSBhdWRpbyBmb3IgYXVkaW8gcGxheWluZy4K
-Pgo+IFlvdSdyZSBzYXlpbmcgYWJvdmUgdGhhdCB0aGUgSERBIGNvbnRyb2xsZXIgaXNuJ3QgcnVu
-dGltZSByZXN1bWVkIG9uCj4gaG90cGx1ZyBvZiBhIGRpc3BsYXkuICBJcyB0aGF0IG5lY2Vzc2Fy
-eSB0byByZXRyaWV2ZSBFTEQgb3Igc29tZXRoaW5nPwo+IEknbSBub3Qgc3VyZSBpZiB0aGVyZSdz
-IGNvZGUgaW4gdGhlIEhEQSBkcml2ZXIgdG8gYWNxdWlyZSBhIHJ1bnRpbWUgUE0KPiByZWYgb24g
-SFBELCBidXQgbWF5YmUgaXQncyBuZWNlc3NhcnkuICBPciBtYXliZSB0aGUgY29kZSBpcyB0aGVy
-ZSBidXQKPiBzb21laG93IG5vIEhQRCBpbnRlcnJ1cHQgaXMgcmVjZWl2ZWQgYnkgdGhlIEhEQSBk
-cml2ZXI/Cj4KPiBKaW06IFNvIGZhciwgSSBkbyBub3QgZmluZCBhbnkgY29kZSBhYm91dCBhdWRp
-byByZXNwb25zZSBIUEQgaW4ga2VybmVsLiB0aGUgSFBEIGludGVycnVwdCB3aWxsIHNlbnQgdG8g
-dXNlciBtb2RlIHZpYSB1ZXZlbnQsIG5vdCBzdXJlIHdoZXRoZXIgYXVkaW8gdXNlciBtb2RlIGRy
-aXZlciBjYW4gcmVjZWl2ZSB0aGUgZXZlbnQgb3Igbm90LgoKT24gdGhlIGdmeCBzaWRlIGF0IGxl
-YXN0LCB3ZSBjYW4gZ2V0IGEgaG90cGx1ZyBldmVudCB2aWEgQUNQSQooZGVwZW5kaW5nIG9uIHRo
-ZSBPRU0gZGVzaWduKSBpZiBkaXNwbGF5cyBhcmUgYXR0YWNoZWQvZGV0YWNoZWQgd2hpbGUKdGhl
-IGRHUFUgaXMgcG93ZXJlZCBkb3duLiAgSSBzdXBwb3NlIHRoZSBnZnggZHJpdmVyIGNvdWxkIGNh
-bGwgaW50bwp0aGUgYXVkaW8gZHJpdmVyIGR1cmluZyBvbmUgb2YgdGhvc2UgZXZlbnRzLiAgT24g
-dGhlIGdmeCBzaWRlIGF0IGxlYXN0CndlIGp1c3QgZ2VuZXJhdGUgdGhlIGdmeCBob3RwbHVnIGV2
-ZW50IGFuZCBsZXQgdXNlcnNwYWNlIGRlYWwgd2l0aCBpdC4KCkFsZXgKCj4KPiBUaGFua3MKPiBK
-aW1RdQo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IOWPkeS7
-tuS6ujogTHVrYXMgV3VubmVyIDxsdWthc0B3dW5uZXIuZGU+Cj4g5Y+R6YCB5pe26Ze0OiAyMDE4
-5bm0N+aciDnml6UgMTc6MjcKPiDmlLbku7bkuro6IFF1LCBKaW0KPiDmioTpgIE6IGFsc2EtZGV2
-ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgRGV1
-Y2hlciwgQWxleGFuZGVyOyBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+IOS4u+mimDog
-UmU6IFtQQVRDSF0gdmdhc3dpdGNocm9vOiBzZXQgYXVkaW8gY2xpZW50IGlkIGFjY29yZGluZyB0
-byBib3VuZCBncHUgY2xpZW50IGlkCj4KPiBPbiBNb24sIEp1bCAwOSwgMjAxOCBhdCAwODo1Mjoz
-M0FNICswMDAwLCBRdSwgSmltIHdyb3RlOgo+PiBOb3csIEkgZm91bmQgdGhlIGF1ZGlvIGRldmlj
-ZSB3aWxsIGF1dG8gc3VzcGVuZCBldmVuIGlmIHRoZSBncHUgaXMgYWN0aXZlLAo+PiBhbmQgaWYg
-SSBwbHVnIGluIGEgSERNSSBkZXZpY2UgaXQgYWxzbyBkbyBub3QgcmVzdW1lIGJhY2suCj4+Cj4+
-IDEuIERpZCB5b3UgZW5jb3VudGVyIHNpbWlsYXIgaXNzdWUgYmVmb3JlPwo+PiAyLiBhdWRpbyB3
-aWxsIGF1dG8gc3VzcGVuZCBhcyBkZWZhdWx0IGF0IGJlZ2lubmluZyBvZiBib290LCBpcyBpdCBl
-eHBlY3QKPj4gYmVoYXZpb3VyPwo+Cj4gWWVzLCB0aGF0J3MgZXhwZWN0ZWQuICBPbmNlIHlvdSBz
-dGFydCBzdHJlYW1pbmcgYXVkaW8gdG8gYXR0YWNoZWQgZGlzcGxheXMsCj4gdXNlciBzcGFjZSBv
-cGVucyB0aGUgY29kZWMgZGV2aWNlIGFuZCB0aGlzIGNhdXNlcyB0aGUgSERBIGNvbnRyb2xsZXIg
-dG8KPiBydW50aW1lIHJlc3VtZS4gIElmIHRoZSBkaXNjcmV0ZSBHUFUgaXMgc3VzcGVuZGVkIGF0
-IHRoYXQgbW9tZW50LCBpdCB3aWxsCj4gYmUgcG93ZXJlZCBvbiBhbmQga2VwdCBwb3dlcmVkIG9u
-IGFzIGxvbmcgYXMgdXNlciBzcGFjZSBpcyBzdHJlYW1pbmcgYXVkaW8uCj4KPiBEbyB5b3UgbmVl
-ZCB0byBydW50aW1lIHJlc3VtZSB0aGUgSERBIGNvbnRyb2xsZXIgZXZlbiBpZiB1c2VyIHNwYWNl
-IGlzbid0Cj4gc3RyZWFtaW5nIGF1ZGlvPyAgV2h5LCBhbmQgaW4gd2hpY2ggc2l0dWF0aW9uIGV4
-YWN0bHk/Cj4KPiBZb3UncmUgc2F5aW5nIGFib3ZlIHRoYXQgdGhlIEhEQSBjb250cm9sbGVyIGlz
-bid0IHJ1bnRpbWUgcmVzdW1lZCBvbgo+IGhvdHBsdWcgb2YgYSBkaXNwbGF5LiAgSXMgdGhhdCBu
-ZWNlc3NhcnkgdG8gcmV0cmlldmUgRUxEIG9yIHNvbWV0aGluZz8KPiBJJ20gbm90IHN1cmUgaWYg
-dGhlcmUncyBjb2RlIGluIHRoZSBIREEgZHJpdmVyIHRvIGFjcXVpcmUgYSBydW50aW1lIFBNCj4g
-cmVmIG9uIEhQRCwgYnV0IG1heWJlIGl0J3MgbmVjZXNzYXJ5LiAgT3IgbWF5YmUgdGhlIGNvZGUg
-aXMgdGhlcmUgYnV0Cj4gc29tZWhvdyBubyBIUEQgaW50ZXJydXB0IGlzIHJlY2VpdmVkIGJ5IHRo
-ZSBIREEgZHJpdmVyPwo+Cj4gVGhhbmtzLAo+Cj4gTHVrYXMKPiBfX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBk
-cmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0
-cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbWQtZ2Z4Cg==
+
+
+On 09/07/18 13:41, Mark Brown wrote:
+>> AFAIU, The issue with that mechanism or EPROBEDEFER is that it works only
+>> for first time.. for the second time(restart usecase) there are no hooks
+>> like bind/unbind.
+> This is not the case, the card will be unbound at the ASoC level when
+> any of the components are removed and then probed again when they
+> reappear.
+> 
+I did try this and It works only for first time! May be am missing 
+something!
+
+snd_soc_component_del_unlocked() unregisters the sound card totally. so 
+for the second time (After DSP stop) there is no registered sound card 
+in place.. Am not sure how this is supposed to work?
+
+The reason I think it works for the first time is because of EPROBEDEFER 
+from the machine driver.
+
+Here are the steps I do with DSP:
+
+Step1: Start DSP, can see sound card after all the services are ON.
+Step2: Stop DSP, there is no audio card.
+Step3: Start DSP, I can see all the components in debugfs but not the 
+sound card.
+
+This is what I do w.r.t code:
+ From machine driver in snd_soc_register_card() in probe()
+ From Audio services driver snd_soc_register_component() in probe() and
+snd_soc_unregister_component() in remove()
+
+When DSP is stopped the audio services disappear and 
+snd_soc_unregister_component() is invoked.
+
+
+thanks,
+srini
