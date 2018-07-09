@@ -1,55 +1,75 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] dma: add support for reporting pause and resume
- separately
-Date: Mon, 9 Jul 2018 12:17:50 +0100
-Message-ID: <20180709111750.GC16082@sirena.org.uk>
-References: <CGME20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65@eucas1p2.samsung.com>
- <20180702130819eucas1p2e11d8fabec93ba78d9e84f4ca6e5fd65~9jzNWZMqQ1216712167eucas1p27@eucas1p2.samsung.com>
- <20180704070033.GA22377@vkoul-mobl>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="iFRdW5/EC4oqxDHL"
+Subject: Applied "ASoC: pxa: make SND_PXA_SOC_SSP depend on PLAT_PXA" to the asoc tree
+Date: Mon, 09 Jul 2018 12:27:36 +0100
+Message-ID: <E1fcUKO-0006Am-GV@debutante>
+References: <20180706133104.129049-1-arnd@arndb.de>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180704070033.GA22377@vkoul-mobl>
+In-Reply-To: <20180706133104.129049-1-arnd@arndb.de>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod <vkoul@kernel.org>
-Cc: Marek Szyprowski <m.szyprowski@samsung.com>, Lars-Peter Clausen <lars@metafoo.de>, dmaengine@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Dan Williams <dan.j.williams@intel.com>, Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Robert Jarzmik <robert.jarzmik@free.fr>, Daniel Mack <daniel@zonque.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---iFRdW5/EC4oqxDHL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   ASoC: pxa: make SND_PXA_SOC_SSP depend on PLAT_PXA
 
-On Wed, Jul 04, 2018 at 12:30:33PM +0530, Vinod wrote:
+has been applied to the asoc tree at
 
-> > Existing clients of dma_get_slave_caps() have been checked and the only
-> > driver which rely on proper channel resuming is soc-generic-dmaengine-pcm
-> > driver, which has been updated to check the newly added capability.
-> > Existing 'cmd_pause' now only indicates that DMA engine support pausing
-> > given DMA channel.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-> The change looks fine to me. I was hoping that serial would also check
-> this..
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> Mark, Lars you okay with this?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---iFRdW5/EC4oqxDHL
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltDRF4ACgkQJNaLcl1U
-h9ArzQgAghDGW9+/mOESfXsKVbjaF3dY+et4k6kzf9ku4hsV+M98UUK/PnGVBt8X
-Sy7kVY0pcs8gL3Vr38U5MNCAciqUIU8cSpIFmlIklR09AH/vjo0iZV6Lvwx3og5Q
-Ue7WsvB+I+JETEK/skTdtPQaobPsEU1eK4nDB1RmsxSy+49XfDtVKNuTHCXGt7OM
-MOxVD1zQxMbWXg8YEmhA/YFteqBSDjP88CAL1z1G3UBGNEv00k1lPbLOLcEkYMUK
-tLcnHbwshBaC1odwcn6GkhBkwHIJ43YnT2QY3+p/lum9ZCBdz8Njui6c/a1cKC31
-01MNm6AnUNAGo74m1s8Ojo+vLyVpqg==
-=//z2
------END PGP SIGNATURE-----
+>From 9d1310daedae494874fe36a995172e64b06e29a4 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Fri, 6 Jul 2018 15:30:48 +0200
+Subject: [PATCH] ASoC: pxa: make SND_PXA_SOC_SSP depend on PLAT_PXA
 
---iFRdW5/EC4oqxDHL--
+For the moment, we can't enable CONFIG_SND_PXA_SOC_SSP unless we are
+building for ARM PXA or MMP:
+
+WARNING: unmet direct dependencies detected for PXA_SSP
+  Depends on [n]: PLAT_PXA [=n]
+  Selected by [y]:
+  - SND_PXA_SOC_SSP [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y]
+
+This adds an explicit dependency for it.
+
+Fixes: 0a94cf345740 ("ASoC: pxa: make SND_PXA2XX_SOC_I2S selectable")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/pxa/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 2fc02c227f69..776e148b0aa2 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -34,6 +34,7 @@ config SND_PXA2XX_SOC_I2S
+ 
+ config SND_PXA_SOC_SSP
+ 	tristate "Soc Audio via PXA2xx/PXA3xx SSP ports"
++	depends on PLAT_PXA
+ 	select PXA_SSP
+ 	select SND_PXA2XX_LIB
+ 
+-- 
+2.18.0.rc2
