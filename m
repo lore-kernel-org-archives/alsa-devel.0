@@ -1,89 +1,89 @@
-From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: =?UTF-8?Q?Re=3A_=E7=AD=94=E5=A4=8D=3A_=5BPATCH=5D_vgaswitchroo=3A_set_audio_client_i?=
- =?UTF-8?Q?d_according_to_bound_gpu_client_id?=
-Date: Mon, 9 Jul 2018 10:02:48 -0400
-Message-ID: <CADnq5_PS_ZO2Y35HHnp3DcvN9wopQGavpDtMNCuuz4A1mDnD7g@mail.gmail.com>
-References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>
- <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
- <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629080634.GA7357@wunner.de>
- <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629092138.GA11849@wunner.de>
- <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629111108.GA11609@wunner.de>
- <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180709092759.GA3649@wunner.de>
- <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [alsa-devel] [PATCH v3 3/5] ASoC: qcom: add sdm845 sound card
+ support
+Date: Mon, 9 Jul 2018 20:15:33 +0530
+Message-ID: <20180709144533.GE22377@vkoul-mobl>
+References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
+ <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
+ <20180709074835.GB22377@vkoul-mobl>
+ <c1766ce9-060f-32d8-46fa-b0a6ac42538b@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <DM3PR12MB087309CBC2CD3A934327EBCE99440-4hRkV8tDpBiYEITDcfEJ8AdYzm3356FpvxpqHgZTriW3zl9H0oFU5g@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
-Cc: "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <c1766ce9-060f-32d8-46fa-b0a6ac42538b@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rohit Kumar <rohitkr@codeaurora.org>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdWwgOSwgMjAxOCBhdCA2OjE2IEFNLCBRdSwgSmltIDxKaW0uUXVAYW1kLmNvbT4g
-d3JvdGU6Cj4gSGkgTHVrYXMsCj4KPiBUaGFua3MgdG8geW91ciBleHBsYW5hdGlvbiwgYW5kIHNl
-ZSBjb21tZW50cyBpbiBsaW5lLgo+Cj4KPiBEbyB5b3UgbmVlZCB0byBydW50aW1lIHJlc3VtZSB0
-aGUgSERBIGNvbnRyb2xsZXIgZXZlbiBpZiB1c2VyIHNwYWNlIGlzbid0Cj4gc3RyZWFtaW5nIGF1
-ZGlvPyAgV2h5LCBhbmQgaW4gd2hpY2ggc2l0dWF0aW9uIGV4YWN0bHk/Cj4KPiBKaW06IE9FTSBz
-eXN0ZW0gdXNlcyBwYWN0bCB0byBxdWVpcnkgYXVkaW8gY2FyZCBhbmQgYXVkaW8gb3V0cHV0IHNp
-bmssIHNpbmNlIHRoZSBhdWRpbyBoYXMgcG93ZXIgZG93biBieSBydW50aW1lIHBtLCBzbyB0aGUg
-YXVkaW8gY2FyZCBhbmQgb3V0cHV0IHNpbmsgYXJlIGFsbCB1bmF2YWlsYWJsZS4gdGhleSBjb3Vs
-ZCBub3Qgc2VsZWN0IHRoZSBhdmFpbGFibGUgSERNSSBhdWRpbyBmb3IgYXVkaW8gcGxheWluZy4K
-CgpTb3VuZHMgbGlrZSBhIGJ1ZyBpbiB0aGUgSERBIGRyaXZlci4gIFRoZSBIREEgZHJpdmVyIHNo
-b3VsZCBjYWNoZSB3aGF0Cml0IG5lZWRzIG9yIHBvd2VyIGl0IGJhY2sgdXAgd2hlbiB0aGVyZSBp
-cyBhbiBpb2N0bC9ldGMuIHRoYXQgcmVxdWlyZXMKc29tZXRoaW5nIHRoYXQgY2FuJ3QgYmUgY2Fj
-aGVkLgoKQWxleAoKPgo+IFlvdSdyZSBzYXlpbmcgYWJvdmUgdGhhdCB0aGUgSERBIGNvbnRyb2xs
-ZXIgaXNuJ3QgcnVudGltZSByZXN1bWVkIG9uCj4gaG90cGx1ZyBvZiBhIGRpc3BsYXkuICBJcyB0
-aGF0IG5lY2Vzc2FyeSB0byByZXRyaWV2ZSBFTEQgb3Igc29tZXRoaW5nPwo+IEknbSBub3Qgc3Vy
-ZSBpZiB0aGVyZSdzIGNvZGUgaW4gdGhlIEhEQSBkcml2ZXIgdG8gYWNxdWlyZSBhIHJ1bnRpbWUg
-UE0KPiByZWYgb24gSFBELCBidXQgbWF5YmUgaXQncyBuZWNlc3NhcnkuICBPciBtYXliZSB0aGUg
-Y29kZSBpcyB0aGVyZSBidXQKPiBzb21laG93IG5vIEhQRCBpbnRlcnJ1cHQgaXMgcmVjZWl2ZWQg
-YnkgdGhlIEhEQSBkcml2ZXI/Cj4KPiBKaW06IFNvIGZhciwgSSBkbyBub3QgZmluZCBhbnkgY29k
-ZSBhYm91dCBhdWRpbyByZXNwb25zZSBIUEQgaW4ga2VybmVsLiB0aGUgSFBEIGludGVycnVwdCB3
-aWxsIHNlbnQgdG8gdXNlciBtb2RlIHZpYSB1ZXZlbnQsIG5vdCBzdXJlIHdoZXRoZXIgYXVkaW8g
-dXNlciBtb2RlIGRyaXZlciBjYW4gcmVjZWl2ZSB0aGUgZXZlbnQgb3Igbm90Lgo+Cj4gVGhhbmtz
-Cj4gSmltUXUKPgo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiDl
-j5Hku7bkuro6IEx1a2FzIFd1bm5lciA8bHVrYXNAd3VubmVyLmRlPgo+IOWPkemAgeaXtumXtDog
-MjAxOOW5tDfmnIg55pelIDE3OjI3Cj4g5pS25Lu25Lq6OiBRdSwgSmltCj4g5oqE6YCBOiBhbHNh
-LWRldmVsQGFsc2EtcHJvamVjdC5vcmc7IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7
-IERldWNoZXIsIEFsZXhhbmRlcjsgYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiDkuLvp
-opg6IFJlOiBbUEFUQ0hdIHZnYXN3aXRjaHJvbzogc2V0IGF1ZGlvIGNsaWVudCBpZCBhY2NvcmRp
-bmcgdG8gYm91bmQgZ3B1IGNsaWVudCBpZAo+Cj4gT24gTW9uLCBKdWwgMDksIDIwMTggYXQgMDg6
-NTI6MzNBTSArMDAwMCwgUXUsIEppbSB3cm90ZToKPj4gTm93LCBJIGZvdW5kIHRoZSBhdWRpbyBk
-ZXZpY2Ugd2lsbCBhdXRvIHN1c3BlbmQgZXZlbiBpZiB0aGUgZ3B1IGlzIGFjdGl2ZSwKPj4gYW5k
-IGlmIEkgcGx1ZyBpbiBhIEhETUkgZGV2aWNlIGl0IGFsc28gZG8gbm90IHJlc3VtZSBiYWNrLgo+
-Pgo+PiAxLiBEaWQgeW91IGVuY291bnRlciBzaW1pbGFyIGlzc3VlIGJlZm9yZT8KPj4gMi4gYXVk
-aW8gd2lsbCBhdXRvIHN1c3BlbmQgYXMgZGVmYXVsdCBhdCBiZWdpbm5pbmcgb2YgYm9vdCwgaXMg
-aXQgZXhwZWN0Cj4+IGJlaGF2aW91cj8KPgo+IFllcywgdGhhdCdzIGV4cGVjdGVkLiAgT25jZSB5
-b3Ugc3RhcnQgc3RyZWFtaW5nIGF1ZGlvIHRvIGF0dGFjaGVkIGRpc3BsYXlzLAo+IHVzZXIgc3Bh
-Y2Ugb3BlbnMgdGhlIGNvZGVjIGRldmljZSBhbmQgdGhpcyBjYXVzZXMgdGhlIEhEQSBjb250cm9s
-bGVyIHRvCj4gcnVudGltZSByZXN1bWUuICBJZiB0aGUgZGlzY3JldGUgR1BVIGlzIHN1c3BlbmRl
-ZCBhdCB0aGF0IG1vbWVudCwgaXQgd2lsbAo+IGJlIHBvd2VyZWQgb24gYW5kIGtlcHQgcG93ZXJl
-ZCBvbiBhcyBsb25nIGFzIHVzZXIgc3BhY2UgaXMgc3RyZWFtaW5nIGF1ZGlvLgo+Cj4gRG8geW91
-IG5lZWQgdG8gcnVudGltZSByZXN1bWUgdGhlIEhEQSBjb250cm9sbGVyIGV2ZW4gaWYgdXNlciBz
-cGFjZSBpc24ndAo+IHN0cmVhbWluZyBhdWRpbz8gIFdoeSwgYW5kIGluIHdoaWNoIHNpdHVhdGlv
-biBleGFjdGx5Pwo+Cj4gWW91J3JlIHNheWluZyBhYm92ZSB0aGF0IHRoZSBIREEgY29udHJvbGxl
-ciBpc24ndCBydW50aW1lIHJlc3VtZWQgb24KPiBob3RwbHVnIG9mIGEgZGlzcGxheS4gIElzIHRo
-YXQgbmVjZXNzYXJ5IHRvIHJldHJpZXZlIEVMRCBvciBzb21ldGhpbmc/Cj4gSSdtIG5vdCBzdXJl
-IGlmIHRoZXJlJ3MgY29kZSBpbiB0aGUgSERBIGRyaXZlciB0byBhY3F1aXJlIGEgcnVudGltZSBQ
-TQo+IHJlZiBvbiBIUEQsIGJ1dCBtYXliZSBpdCdzIG5lY2Vzc2FyeS4gIE9yIG1heWJlIHRoZSBj
-b2RlIGlzIHRoZXJlIGJ1dAo+IHNvbWVob3cgbm8gSFBEIGludGVycnVwdCBpcyByZWNlaXZlZCBi
-eSB0aGUgSERBIGRyaXZlcj8KPgo+IFRoYW5rcywKPgo+IEx1a2FzCj4gX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiBkcmktZGV2ZWwgbWFpbGluZyBsaXN0
-Cj4gZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+IGh0dHBzOi8vbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCmFtZC1nZnggbWFpbGluZyBsaXN0CmFtZC1nZnhA
-bGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxt
-YW4vbGlzdGluZm8vYW1kLWdmeAo=
+On 09-07-18, 16:16, Rohit Kumar wrote:
+
+> > > +static int sdm845_bind(struct device *dev)
+> > > +{
+> > > +	struct snd_soc_card *card;
+> > > +	struct sdm845_snd_data *data;
+> > > +	int ret;
+> > > +
+> > > +	card = kzalloc(sizeof(*card), GFP_KERNEL);
+> > > +	if (!card)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	/* Allocate the private data */
+> > > +	data = kzalloc(sizeof(*data), GFP_KERNEL);
+> > > +	if (!data)
+> > > +		return -ENOMEM;
+> > > +
+> > > +	ret = component_bind_all(dev, card);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "Audio components bind failed: %d\n", ret);
+> > > +		goto bind_fail;
+> > > +	}
+> > > +
+> > > +	dev_set_drvdata(dev, card);
+> > > +	card->dev = dev;
+> > > +	ret = qcom_snd_parse_of(card);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "Error parsing OF data\n");
+> > > +		goto parse_dt_fail;
+> > > +	}
+> > > +
+> > > +	data->card = card;
+> > > +	snd_soc_card_set_drvdata(card, data);
+> > > +
+> > > +	sdm845_add_be_ops(card);
+> > > +
+> > > +	sdm845_init_supplies(dev);
+> > > +
+> > > +	ret = snd_soc_register_card(card);
+> > > +	if (ret) {
+> > > +		dev_err(dev, "Sound card registration failed\n");
+> > > +		goto register_card_fail;
+> > > +	}
+> > > +	return ret;
+> > > +
+> > > +register_card_fail:
+> > > +	sdm845_deinit_supplies(dev);
+> > > +	kfree(card->dai_link);
+> > > +parse_dt_fail:
+> > > +	component_unbind_all(dev, card);
+> > > +bind_fail:
+> > > +	kfree(data);
+> > > +	kfree(card);
+> > > +	return ret;
+> > > +}
+> > I would make a case for this to be moved into common too :)
+> 
+> There are few platform specific APIs and structs here like struct
+> sdm845_snd_data,
+> sdm845_add_be_ops() which needs to be initialized and assigned before
+> soundcard
+> registration. Moving this complete API to common will restrict it. Please
+> suggest.
+
+Yes indeed, they can be split and done outside while the common stuff
+use a 'core' object and use that to initialize. If you need to do some
+driver step, you can invoke a callback.
+
+-- 
+~Vinod
