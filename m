@@ -1,20 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v2 3/3] ASoC: Intel: bytcr_rt5651: Add
- support for externar amplifier enable GPIO
-Date: Mon, 9 Jul 2018 17:50:26 -0500
-Message-ID: <4ab46422-a9b0-3095-cf3c-9b49aef854d3@linux.intel.com>
-References: <20180701183631.5532-1-hdegoede@redhat.com>
- <20180701183631.5532-3-hdegoede@redhat.com>
- <c456352b-ebb9-7b41-acf2-e1935ecc5633@linux.intel.com>
- <8519b442-1b2d-bd61-132e-1c0d0e102bf4@redhat.com>
+Subject: Re: [PATCH 4/5] ASoC: Intel: bytcr_rt5651: Disable
+ jack-detect over suspend/resume
+Date: Mon, 9 Jul 2018 17:57:37 -0500
+Message-ID: <c5ead62d-0d0c-d720-30fc-a1a7187227c4@linux.intel.com>
+References: <20180704225935.7902-1-hdegoede@redhat.com>
+ <20180704225935.7902-4-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 059082675CF
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 00:50:30 +0200 (CEST)
-In-Reply-To: <8519b442-1b2d-bd61-132e-1c0d0e102bf4@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A49622675CF
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 00:57:41 +0200 (CEST)
+In-Reply-To: <20180704225935.7902-4-hdegoede@redhat.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,127 +27,85 @@ To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.in
 Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNy8wNC8yMDE4IDAyOjQ2IEFNLCBIYW5zIGRlIEdvZWRlIHdyb3RlOgo+IEhpLAo+Cj4g
-T24gMDQtMDctMTggMDI6MTQsIFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+PiBPbiA3LzEv
-MTggMTozNiBQTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4+IFRoZSBydDU2NTEgZG9lcyBub3Qg
-aGF2ZSBhIGJ1aWx0LWluIHNwZWFrZXIgYW1wbGlmaWVyLCBzbyBpdCBpcyBvZnRlbgo+Pj4gdXNl
-ZCB0b2dldGhlciB3aXRoIGFuIGV4dGVybmFsIGFtcGxpZmllci4gT24gQ2hlcnJ5IFRyYWlsIGJv
-YXJkcyB0aGlzCj4+PiBleHRlcm5hbCBhbXBsaWZpZXIncyBlbmFibGUgcGluIGlzIGRyaXZlbiB0
-aHJvdWdoIGEgR1BJTywgd2hpY2ggaXMKPj4+IGdpdmVuIGFzIHRoZSBmaXJzdCBHUElPIGluIHRo
-ZSBBQ1BJIHJlc291cmNlcyBvZiB0aGUgY29kZWMgZndub2RlLgo+Pj4KPj4+IFRoaXMgY29tbWl0
-IGFkZHMgc3VwcG9ydCB0byB0aGUgYnl0Y3JfcnQ1NjUxIGZvciB0aGlzIEdQSU8sIGZpeGluZwo+
-Pj4gdGhlIHNwZWFrZXIgbm90IHdvcmtpbmcgb24gQ0hUIGRldmljZXMgd2l0aCBhIHJ0NTY1MSBj
-b2RlYy4KPj4KPj4gQUxsIHRoaXMgR1BJTy9BQ1BJIHN0dWZmIGlzIGEgYml0IGJleW9uZCBteSB1
-bmRlcnN0YW5kaW5nLiBNeSBvbmx5IAo+PiBjb21tZW50IGlzICJob3cgd291bGQgdGhpcyB3b3Jr
-IG9uIEJheXRyYWlsIj8gVGhlcmUgYXJlIGNsZWFybHkgYSBzZXQgCj4+IG9mIGRldmljZXMgd2hp
-Y2ggdXNlIHRoZSBTU1AwIHJvdXRpbmcgLSBzbyBCYXl0cmFpbC1DUiBwYWNrYWdlcywgaXQncyAK
-Pj4gbm90IGNsZWFyIHRvIG1lIGhvdyB0aGUgYW1wbGlmaWVyIGlzIGNvbnRyb2xsZWQgaW4gdGhv
-c2UgY2FzZXM/Cj4KPiBJIGhhdmUgYSBjb3VwbGUgb2YgQllUIGRldmljZXMgd2l0aCBhIHJ0NTY1
-MSBjb2RlYyBhbmQgdGhlcmUgdGhlCj4gYW1wbGlmaWVyIGp1c3Qgd29ya3MuIEVpdGhlciBpdCBp
-cyBhIGRpZmZlcmVudCBtb2RlbCB3aXRob3V0IGFuCj4gZW5hYmxlIHBpbiwgb3IgdGhlIGVuYWJs
-ZSBwaW4gaXMgaGFyZCB3aXJlZCB0byBWY2MuCm9rLiBBbGwgcGF0Y2hlcyBpbiB0aGlzIHNlcmll
-cwoKQWNrZWQtYnk6IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IDxwaWVycmUtbG91aXMuYm9zc2FydEBs
-aW51eC5pbnRlbC5jb20+Cgo+Cj4gUmVnYXJkcywKPgo+IEhhbnMKPgo+Cj4+Cj4+Pgo+Pj4gQ2M6
-IENhcmxvIENhaW9uZSA8Y2FybG9AZW5kbGVzc20uY29tPgo+Pj4gU2lnbmVkLW9mZi1ieTogSGFu
-cyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KPj4+IC0tLQo+Pj4gQ2hhbmdlcyBpbiB2
-MjoKPj4+IC1IYW5kbGUgdGhlIGV4dCBhbXAgR1BJTyBlbnRpcmVseSBpbiB0aGUgbWFjaGluZSBk
-cml2ZXIsIHRoZSBleHQtYW1wIGlzCj4+PiDCoCBub3QgcGFydCBvZiB0aGUgY29kZWMsIHNvIGl0
-IHNob3VsZCBub3QgYmUgY29udHJvbGxlZCBieSB0aGUgY29kZWMgCj4+PiBkcml2ZXIKPj4+IC0t
-LQo+Pj4gwqAgc291bmQvc29jL2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NTEuYyB8IDY1IAo+Pj4g
-KysrKysrKysrKysrKysrKysrKysrKysrKy0tCj4+PiDCoCAxIGZpbGUgY2hhbmdlZCwgNjIgaW5z
-ZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkKPj4+Cj4+PiBkaWZmIC0tZ2l0IGEvc291bmQvc29j
-L2ludGVsL2JvYXJkcy9ieXRjcl9ydDU2NTEuYyAKPj4+IGIvc291bmQvc29jL2ludGVsL2JvYXJk
-cy9ieXRjcl9ydDU2NTEuYwo+Pj4gaW5kZXggZDkyMDcyNWNlNjAzLi41MzAxMjA1NDk2YmUgMTAw
-NjQ0Cj4+PiAtLS0gYS9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY1MS5jCj4+PiAr
-KysgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY1MS5jCj4+PiBAQCAtMjYsNiAr
-MjYsOCBAQAo+Pj4gwqAgI2luY2x1ZGUgPGxpbnV4L2Nsay5oPgo+Pj4gwqAgI2luY2x1ZGUgPGxp
-bnV4L2RldmljZS5oPgo+Pj4gwqAgI2luY2x1ZGUgPGxpbnV4L2RtaS5oPgo+Pj4gKyNpbmNsdWRl
-IDxsaW51eC9ncGlvL2NvbnN1bWVyLmg+Cj4+PiArI2luY2x1ZGUgPGxpbnV4L2dwaW8vbWFjaGlu
-ZS5oPgo+Pj4gwqAgI2luY2x1ZGUgPGxpbnV4L3NsYWIuaD4KPj4+IMKgICNpbmNsdWRlIDxhc20v
-Y3B1X2RldmljZV9pZC5oPgo+Pj4gwqAgI2luY2x1ZGUgPGFzbS9pbnRlbC1mYW1pbHkuaD4KPj4+
-IEBAIC04Niw2ICs4OCw3IEBAIGVudW0gewo+Pj4gwqAgc3RydWN0IGJ5dF9ydDU2NTFfcHJpdmF0
-ZSB7Cj4+PiDCoMKgwqDCoMKgIHN0cnVjdCBjbGsgKm1jbGs7Cj4+PiArwqDCoMKgIHN0cnVjdCBn
-cGlvX2Rlc2MgKmV4dF9hbXBfZ3BpbzsKPj4+IMKgwqDCoMKgwqAgc3RydWN0IHNuZF9zb2NfamFj
-ayBqYWNrOwo+Pj4gwqAgfTsKPj4+IEBAIC0yMDgsNiArMjExLDIwIEBAIHN0YXRpYyBpbnQgcGxh
-dGZvcm1fY2xvY2tfY29udHJvbChzdHJ1Y3QgCj4+PiBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3LAo+
-Pj4gwqDCoMKgwqDCoCByZXR1cm4gMDsKPj4+IMKgIH0KPj4+ICtzdGF0aWMgaW50IHJ0NTY1MV9l
-eHRfYW1wX3Bvd2VyX2V2ZW50KHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0ICp3LAo+Pj4gK8Kg
-wqDCoCBzdHJ1Y3Qgc25kX2tjb250cm9sICprY29udHJvbCwgaW50IGV2ZW50KQo+Pj4gK3sKPj4+
-ICvCoMKgwqAgc3RydWN0IHNuZF9zb2NfY2FyZCAqY2FyZCA9IHctPmRhcG0tPmNhcmQ7Cj4+PiAr
-wqDCoMKgIHN0cnVjdCBieXRfcnQ1NjUxX3ByaXZhdGUgKnByaXYgPSBzbmRfc29jX2NhcmRfZ2V0
-X2RydmRhdGEoY2FyZCk7Cj4+PiArCj4+PiArwqDCoMKgIGlmIChTTkRfU09DX0RBUE1fRVZFTlRf
-T04oZXZlbnQpKQo+Pj4gK8KgwqDCoMKgwqDCoMKgIGdwaW9kX3NldF92YWx1ZV9jYW5zbGVlcChw
-cml2LT5leHRfYW1wX2dwaW8sIDEpOwo+Pj4gK8KgwqDCoCBlbHNlCj4+PiArwqDCoMKgwqDCoMKg
-wqAgZ3Bpb2Rfc2V0X3ZhbHVlX2NhbnNsZWVwKHByaXYtPmV4dF9hbXBfZ3BpbywgMCk7Cj4+PiAr
-Cj4+PiArwqDCoMKgIHJldHVybiAwOwo+Pj4gK30KPj4+ICsKPj4+IMKgIHN0YXRpYyBjb25zdCBz
-dHJ1Y3Qgc25kX3NvY19kYXBtX3dpZGdldCBieXRfcnQ1NjUxX3dpZGdldHNbXSA9IHsKPj4+IMKg
-wqDCoMKgwqAgU05EX1NPQ19EQVBNX0hQKCJIZWFkcGhvbmUiLCBOVUxMKSwKPj4+IMKgwqDCoMKg
-wqAgU05EX1NPQ19EQVBNX01JQygiSGVhZHNldCBNaWMiLCBOVUxMKSwKPj4+IEBAIC0yMTcsNyAr
-MjM0LDkgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fd2lkZ2V0IAo+Pj4gYnl0
-X3J0NTY1MV93aWRnZXRzW10gPSB7Cj4+PiDCoMKgwqDCoMKgIFNORF9TT0NfREFQTV9TVVBQTFko
-IlBsYXRmb3JtIENsb2NrIiwgU05EX1NPQ19OT1BNLCAwLCAwLAo+Pj4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBwbGF0Zm9ybV9jbG9ja19jb250cm9sLCBTTkRfU09DX0RBUE1f
-UFJFX1BNVSB8Cj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIFNORF9TT0Nf
-REFQTV9QT1NUX1BNRCksCj4+PiAtCj4+PiArwqDCoMKgIFNORF9TT0NfREFQTV9TVVBQTFkoIkV4
-dCBBbXAgUG93ZXIiLCBTTkRfU09DX05PUE0sIDAsIDAsCj4+PiArwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgIHJ0NTY1MV9leHRfYW1wX3Bvd2VyX2V2ZW50LAo+Pj4gK8KgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBTTkRfU09DX0RBUE1fUFJFX1BNRCB8IFNORF9TT0NfREFQTV9Q
-T1NUX1BNVSksCj4+PiDCoCB9Owo+Pj4gwqAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2Rh
-cG1fcm91dGUgYnl0X3J0NTY1MV9hdWRpb19tYXBbXSA9IHsKPj4+IEBAIC0yMjUsNiArMjQ0LDcg
-QEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfc29jX2RhcG1fcm91dGUgCj4+PiBieXRfcnQ1NjUx
-X2F1ZGlvX21hcFtdID0gewo+Pj4gwqDCoMKgwqDCoCB7IkhlYWRzZXQgTWljIiwgTlVMTCwgIlBs
-YXRmb3JtIENsb2NrIn0sCj4+PiDCoMKgwqDCoMKgIHsiSW50ZXJuYWwgTWljIiwgTlVMTCwgIlBs
-YXRmb3JtIENsb2NrIn0sCj4+PiDCoMKgwqDCoMKgIHsiU3BlYWtlciIsIE5VTEwsICJQbGF0Zm9y
-bSBDbG9jayJ9LAo+Pj4gK8KgwqDCoCB7IlNwZWFrZXIiLCBOVUxMLCAiRXh0IEFtcCBQb3dlciJ9
-LAo+Pj4gwqDCoMKgwqDCoCB7IkxpbmUgSW4iLCBOVUxMLCAiUGxhdGZvcm0gQ2xvY2sifSwKPj4+
-IMKgwqDCoMKgwqAgeyJIZWFkc2V0IE1pYyIsIE5VTEwsICJtaWNiaWFzMSJ9LCAvKiBsb3dlcmNh
-c2UgZm9yIHJ0NTY1MSAqLwo+Pj4gQEAgLTY3OCw2ICs2OTgsMTggQEAgc3RhdGljIGNvbnN0IHN0
-cnVjdCB4ODZfY3B1X2lkIAo+Pj4gYmF5dHJhaWxfY3B1X2lkc1tdID0gewo+Pj4gwqDCoMKgwqDC
-oCB7fQo+Pj4gwqAgfTsKPj4+ICtzdGF0aWMgY29uc3Qgc3RydWN0IHg4Nl9jcHVfaWQgY2hlcnJ5
-dHJhaWxfY3B1X2lkc1tdID0gewo+Pj4gK8KgwqDCoCB7IFg4Nl9WRU5ET1JfSU5URUwsIDYsIElO
-VEVMX0ZBTTZfQVRPTV9BSVJNT05UIH0swqDCoMKgwqAgLyogCj4+PiBCcmFzd2VsbCAqLwo+Pj4g
-K8KgwqDCoCB7fQo+Pj4gK307Cj4+PiArCj4+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBhY3BpX2dw
-aW9fcGFyYW1zIGV4dF9hbXBfZW5hYmxlX2dwaW9zID0geyAwLCAwLCAKPj4+IGZhbHNlIH07Cj4+
-PiArCj4+PiArc3RhdGljIGNvbnN0IHN0cnVjdCBhY3BpX2dwaW9fbWFwcGluZyBieXRfcnQ1NjUx
-X2dwaW9zW10gPSB7Cj4+PiArwqDCoMKgIHsgImV4dC1hbXAtZW5hYmxlLWdwaW9zIiwgJmV4dF9h
-bXBfZW5hYmxlX2dwaW9zLCAxIH0sCj4+PiArwqDCoMKgIHsgfSwKPj4+ICt9Owo+Pj4gKwo+Pj4g
-wqAgc3RydWN0IGFjcGlfY2hhbl9wYWNrYWdlIHvCoMKgIC8qIEFDUElDQSBzZWVtcyB0byByZXF1
-aXJlIDY0IGJpdCAKPj4+IGludGVnZXJzICovCj4+PiDCoMKgwqDCoMKgIHU2NCBhaWZfdmFsdWU7
-wqDCoMKgwqDCoMKgIC8qIDE6IEFJRjEsIDI6IEFJRjIgKi8KPj4+IMKgwqDCoMKgwqAgdTY0IG1j
-bG9ja192YWx1ZTvCoMKgwqAgLyogdXN1YWxseSAyNU1IeiAoMHgxN2Q3OTQwKSwgaWdub3JlZCAq
-Lwo+Pj4gQEAgLTc5Myw5ICs4MjUsMzYgQEAgc3RhdGljIGludCBzbmRfYnl0X3J0NTY1MV9tY19w
-cm9iZShzdHJ1Y3QgCj4+PiBwbGF0Zm9ybV9kZXZpY2UgKnBkZXYpCj4+PiDCoMKgwqDCoMKgIC8q
-IE11c3QgYmUgY2FsbGVkIGJlZm9yZSByZWdpc3Rlcl9jYXJkLCBhbHNvIHNlZSBkZWNsYXJhdGlv
-biAKPj4+IGNvbW1lbnQuICovCj4+PiDCoMKgwqDCoMKgIHJldF92YWwgPSBieXRfcnQ1NjUxX2Fk
-ZF9jb2RlY19kZXZpY2VfcHJvcHMoY29kZWNfZGV2KTsKPj4+IC3CoMKgwqAgcHV0X2RldmljZShj
-b2RlY19kZXYpOwo+Pj4gLcKgwqDCoCBpZiAocmV0X3ZhbCkKPj4+ICvCoMKgwqAgaWYgKHJldF92
-YWwpIHsKPj4+ICvCoMKgwqDCoMKgwqDCoCBwdXRfZGV2aWNlKGNvZGVjX2Rldik7Cj4+PiDCoMKg
-wqDCoMKgwqDCoMKgwqAgcmV0dXJuIHJldF92YWw7Cj4+PiArwqDCoMKgIH0KPj4+ICsKPj4+ICvC
-oMKgwqAgLyogQ2hlcnJ5IFRyYWlsIGRldmljZXMgdXNlIGFuIGV4dGVybmFsIGFtcGxpZmllciBl
-bmFibGUgZ3BpbyAqLwo+Pj4gK8KgwqDCoCBpZiAoeDg2X21hdGNoX2NwdShjaGVycnl0cmFpbF9j
-cHVfaWRzKSkgewo+Pj4gK8KgwqDCoMKgwqDCoMKgIGRldm1fYWNwaV9kZXZfYWRkX2RyaXZlcl9n
-cGlvcyhjb2RlY19kZXYsIGJ5dF9ydDU2NTFfZ3Bpb3MpOwo+Pj4gK8KgwqDCoMKgwqDCoMKgIHBy
-aXYtPmV4dF9hbXBfZ3BpbyA9IGRldm1fZndub2RlX2dldF9pbmRleF9ncGlvZF9mcm9tX2NoaWxk
-KAo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgJnBk
-ZXYtPmRldiwgImV4dC1hbXAtZW5hYmxlIiwgMCwKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNvZGVjX2Rldi0+Zndub2RlLAo+Pj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgR1BJT0RfT1VUX0xPVywgInNw
-ZWFrZXItYW1wIik7Cj4+PiArwqDCoMKgwqDCoMKgwqAgaWYgKElTX0VSUihwcml2LT5leHRfYW1w
-X2dwaW8pKSB7Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXRfdmFsID0gUFRSX0VSUihw
-cml2LT5leHRfYW1wX2dwaW8pOwo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3dpdGNoIChy
-ZXRfdmFsKSB7Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjYXNlIC1FTk9FTlQ6Cj4+PiAr
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHByaXYtPmV4dF9hbXBfZ3BpbyA9IE5VTEw7
-Cj4+PiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGJyZWFrOwo+Pj4gK8KgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgZGVmYXVsdDoKPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgZGV2X2VycigmcGRldi0+ZGV2LCAiRmFpbGVkIHRvIGdldCBleHQtYW1wLWVuYWJsZSAKPj4+
-IEdQSU86ICVkXG4iLAo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHJldF92YWwpOwo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKiBmYWxsIHRo
-cm91Z2ggKi8KPj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGNhc2UgLUVQUk9CRV9ERUZFUjoK
-Pj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcHV0X2RldmljZShjb2RlY19kZXYp
-Owo+Pj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm4gcmV0X3ZhbDsKPj4+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIH0KPj4+ICvCoMKgwqDCoMKgwqDCoCB9Cj4+PiArwqDC
-oMKgIH0KPj4+ICsKPj4+ICvCoMKgwqAgcHV0X2RldmljZShjb2RlY19kZXYpOwo+Pj4gwqDCoMKg
-wqDCoCBsb2dfcXVpcmtzKCZwZGV2LT5kZXYpOwo+Pj4KPj4KCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+
+On 07/04/2018 05:59 PM, Hans de Goede wrote:
+> Disable jack-detection and thus the codec IRQ over suspend/resume.
+>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+> ---
+>   sound/soc/intel/boards/bytcr_rt5651.c | 49 ++++++++++++++++++++++++---
+>   1 file changed, 44 insertions(+), 5 deletions(-)
+>
+> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+> index 5301205496be..2a8f86dfe4cb 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5651.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
+> @@ -676,6 +676,48 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+>   };
+>   
+>   /* SoC card */
+> +static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+> +static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+> +static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+> +static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic[-swapped-hp]" */
+> +
+> +static int byt_rt5651_suspend(struct snd_soc_card *card)
+> +{
+> +	struct snd_soc_component *component;
+> +
+> +	if (!BYT_RT5651_JDSRC(byt_rt5651_quirk))
+> +		return 0;
+> +
+> +	list_for_each_entry(component, &card->component_dev_list, card_list) {
+> +		if (!strcmp(component->name, byt_rt5651_codec_name)) {
+> +			dev_dbg(component->dev, "disabling jack detect before suspend\n");
+> +			snd_soc_component_set_jack(component, NULL, NULL);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int byt_rt5651_resume(struct snd_soc_card *card)
+> +{
+> +	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
+> +	struct snd_soc_component *component;
+> +
+> +	if (!BYT_RT5651_JDSRC(byt_rt5651_quirk))
+> +		return 0;
+> +
+> +	list_for_each_entry(component, &card->component_dev_list, card_list) {
+> +		if (!strcmp(component->name, byt_rt5651_codec_name)) {
+> +			dev_dbg(component->dev, "re-enabling jack detect after resume\n");
+> +			snd_soc_component_set_jack(component, &priv->jack, NULL);
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static struct snd_soc_card byt_rt5651_card = {
+>   	.name = "bytcr-rt5651",
+>   	.owner = THIS_MODULE,
+> @@ -686,13 +728,10 @@ static struct snd_soc_card byt_rt5651_card = {
+>   	.dapm_routes = byt_rt5651_audio_map,
+>   	.num_dapm_routes = ARRAY_SIZE(byt_rt5651_audio_map),
+>   	.fully_routed = true,
+> +	.suspend_pre = byt_rt5651_suspend,
+> +	.resume_post = byt_rt5651_resume,
+>   };
+>   
+> -static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+> -static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+> -static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+> -static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic[-swapped-hp]" */
+> -
+>   static const struct x86_cpu_id baytrail_cpu_ids[] = {
+>   	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_SILVERMONT1 }, /* Valleyview */
+>   	{}
