@@ -1,18 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 5/5] ASoC: Intel: bytcr_rt5651: Reporting
- button presses
-Date: Mon, 9 Jul 2018 17:58:08 -0500
-Message-ID: <fefb12c5-9041-a88e-6acd-bec4963589e3@linux.intel.com>
-References: <20180704225935.7902-1-hdegoede@redhat.com>
- <20180704225935.7902-5-hdegoede@redhat.com>
+Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for
+ the Lenovo Miix2 8 tablet
+Date: Mon, 9 Jul 2018 17:58:30 -0500
+Message-ID: <42abb6a5-a84c-694c-fcdc-87ca339699e4@linux.intel.com>
+References: <20180707102210.15633-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id B89AE2675CF
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 00:58:10 +0200 (CEST)
-In-Reply-To: <20180704225935.7902-5-hdegoede@redhat.com>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 757252676FD
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 00:58:33 +0200 (CEST)
+In-Reply-To: <20180707102210.15633-1-hdegoede@redhat.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,53 +22,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>
+To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: russianneuromancer@ya.ru, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 07/04/2018 05:59 PM, Hans de Goede wrote:
-> Enable reporting of button presses now that the codec driver recently has
-> gotten support for this.
+On 07/07/2018 05:22 AM, Hans de Goede wrote:
+> Add a quirk for the Lenovo Miix2 8 tablet, this tablet uses a digital
+> mic on DMIC1 and has a mono-speaker. The jack-detect uses the default
+> settings..
 >
+> Reported-and-tested-by: russianneuromancer@ya.ru
 > Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 
 > ---
->   sound/soc/intel/boards/bytcr_rt5651.c | 9 +++++++--
->   1 file changed, 7 insertions(+), 2 deletions(-)
+>   sound/soc/intel/boards/bytcr_rt5640.c | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
 >
-> diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-> index 2a8f86dfe4cb..b687043c8425 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5651.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-> @@ -26,6 +26,7 @@
->   #include <linux/clk.h>
->   #include <linux/device.h>
->   #include <linux/dmi.h>
-> +#include <linux/input.h>
->   #include <linux/gpio/consumer.h>
->   #include <linux/gpio/machine.h>
->   #include <linux/slab.h>
-> @@ -531,13 +532,17 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
->   
->   	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
->   		ret = snd_soc_card_jack_new(runtime->card, "Headset",
-> -				    SND_JACK_HEADSET, &priv->jack,
-> -				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
-> +				    SND_JACK_HEADSET | SND_JACK_BTN_0,
-> +				    &priv->jack, bytcr_jack_pins,
-> +				    ARRAY_SIZE(bytcr_jack_pins));
->   		if (ret) {
->   			dev_err(runtime->dev, "jack creation failed %d\n", ret);
->   			return ret;
->   		}
->   
-> +		snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0,
-> +				 KEY_PLAYPAUSE);
-> +
->   		ret = snd_soc_component_set_jack(codec, &priv->jack, NULL);
->   		if (ret)
->   			return ret;
+> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+> index 718f022b3aa0..d32844f94d74 100644
+> --- a/sound/soc/intel/boards/bytcr_rt5640.c
+> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
+> @@ -562,6 +562,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+>   					BYT_RT5640_SSP0_AIF1 |
+>   					BYT_RT5640_MCLK_EN),
+>   	},
+> +	{	/* Lenovo Miix 2 8 */
+> +		.matches = {
+> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LENOVO"),
+> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "20326"),
+> +			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Hiking"),
+> +		},
+> +		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
+> +					BYT_RT5640_JD_SRC_JD2_IN4N |
+> +					BYT_RT5640_OVCD_TH_2000UA |
+> +					BYT_RT5640_OVCD_SF_0P75 |
+> +					BYT_RT5640_MONO_SPEAKER |
+> +					BYT_RT5640_MCLK_EN),
+> +	},
+>   	{	/* MSI S100 tablet */
+>   		.matches = {
+>   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
