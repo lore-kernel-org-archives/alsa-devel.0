@@ -1,45 +1,117 @@
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH v5 2/5] clk: at91: add I2S clock mux driver
-Date: Mon, 9 Jul 2018 18:55:01 +0300
-Message-ID: <b7a379b3-0cfe-7a8e-fa13-3d152beb5e32@microchip.com>
-References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
- <20180618141239.10892-3-codrin.ciubotariu@microchip.com>
- <153090076533.143105.11588903392800697432@swboyd.mtv.corp.google.com>
+From: Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>
+Subject: Re: [alsa-devel]	=?utf-8?B?562U5aSNOiBb?=
+ =?utf-8?Q?PATCH=5D_vgaswitchroo?= =?utf-8?Q?=3A?= set audio client id
+ according to bound gpu client id
+Date: Mon, 9 Jul 2018 17:56:43 +0200
+Message-ID: <20180709155643.GE3008@phenom.ffwll.local>
+References: <20180629080634.GA7357@wunner.de>
+ <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629092138.GA11849@wunner.de>
+ <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629111108.GA11609@wunner.de>
+ <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180709092759.GA3649@wunner.de>
+ <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
+ <s5hr2kco3gp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <153090076533.143105.11588903392800697432@swboyd.mtv.corp.google.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Stephen Boyd <sboyd@kernel.org>, alexandre.belloni@bootlin.com, alsa-devel@alsa-project.org, boris.brezillon@bootlin.com, broonie@kernel.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-clk@vger.kernel.org, linux-kernel@vger.kernel.org, nicolas.ferre@microchip.com, robh+dt@kernel.org
-Cc: Cristian.Birsan@microchip.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+Content-Disposition: inline
+In-Reply-To: <s5hr2kco3gp.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
+Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "Qu,
+ Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "Deucher,
+ Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06.07.2018 21:12, Stephen Boyd wrote:
-> Quoting Codrin Ciubotariu (2018-06-18 07:12:36)
->> This driver is a simple muxing driver that controls the
->> I2S's clock input by using syscon/regmap to change the parent.
->> The available inputs can be peripheral clock and generated clock.
->>
->> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->> ---
-> 
-> Applied to clk-next
-> 
-> But I had to fix:
-> 
-> WARNING: Missing or malformed SPDX-License-Identifier tag in line 1
-> #56: FILE: drivers/clk/at91/clk-i2s-mux.c:1:
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> 
-> so I did. Please run checkpatch next time.
-> 
-
-Sorry about that. I did run checkpatch, but I saw some files that 
-commented the License-Identifier the same way I did. Didn't notice back 
-then that were only the headers...
-Thank you for applying my patches.
-
-Best regards,
-Codrin
+T24gTW9uLCBKdWwgMDksIDIwMTggYXQgMDU6MDQ6MjJQTSArMDIwMCwgVGFrYXNoaSBJd2FpIHdy
+b3RlOgo+IE9uIE1vbiwgMDkgSnVsIDIwMTggMTU6NTg6NTEgKzAyMDAsCj4gQWxleCBEZXVjaGVy
+IHdyb3RlOgo+ID4gCj4gPiBPbiBNb24sIEp1bCA5LCAyMDE4IGF0IDY6MTYgQU0sIFF1LCBKaW0g
+PEppbS5RdUBhbWQuY29tPiB3cm90ZToKPiA+ID4gSGkgTHVrYXMsCj4gPiA+Cj4gPiA+IFRoYW5r
+cyB0byB5b3VyIGV4cGxhbmF0aW9uLCBhbmQgc2VlIGNvbW1lbnRzIGluIGxpbmUuCj4gPiA+Cj4g
+PiA+Cj4gPiA+IERvIHlvdSBuZWVkIHRvIHJ1bnRpbWUgcmVzdW1lIHRoZSBIREEgY29udHJvbGxl
+ciBldmVuIGlmIHVzZXIgc3BhY2UgaXNuJ3QKPiA+ID4gc3RyZWFtaW5nIGF1ZGlvPyAgV2h5LCBh
+bmQgaW4gd2hpY2ggc2l0dWF0aW9uIGV4YWN0bHk/Cj4gPiA+Cj4gPiA+IEppbTogT0VNIHN5c3Rl
+bSB1c2VzIHBhY3RsIHRvIHF1ZWlyeSBhdWRpbyBjYXJkIGFuZCBhdWRpbyBvdXRwdXQgc2luaywg
+c2luY2UgdGhlIGF1ZGlvIGhhcyBwb3dlciBkb3duIGJ5IHJ1bnRpbWUgcG0sIHNvIHRoZSBhdWRp
+byBjYXJkIGFuZCBvdXRwdXQgc2luayBhcmUgYWxsIHVuYXZhaWxhYmxlLiB0aGV5IGNvdWxkIG5v
+dCBzZWxlY3QgdGhlIGF2YWlsYWJsZSBIRE1JIGF1ZGlvIGZvciBhdWRpbyBwbGF5aW5nLgo+ID4g
+Pgo+ID4gPiBZb3UncmUgc2F5aW5nIGFib3ZlIHRoYXQgdGhlIEhEQSBjb250cm9sbGVyIGlzbid0
+IHJ1bnRpbWUgcmVzdW1lZCBvbgo+ID4gPiBob3RwbHVnIG9mIGEgZGlzcGxheS4gIElzIHRoYXQg
+bmVjZXNzYXJ5IHRvIHJldHJpZXZlIEVMRCBvciBzb21ldGhpbmc/Cj4gPiA+IEknbSBub3Qgc3Vy
+ZSBpZiB0aGVyZSdzIGNvZGUgaW4gdGhlIEhEQSBkcml2ZXIgdG8gYWNxdWlyZSBhIHJ1bnRpbWUg
+UE0KPiA+ID4gcmVmIG9uIEhQRCwgYnV0IG1heWJlIGl0J3MgbmVjZXNzYXJ5LiAgT3IgbWF5YmUg
+dGhlIGNvZGUgaXMgdGhlcmUgYnV0Cj4gPiA+IHNvbWVob3cgbm8gSFBEIGludGVycnVwdCBpcyBy
+ZWNlaXZlZCBieSB0aGUgSERBIGRyaXZlcj8KPiA+ID4KPiA+ID4gSmltOiBTbyBmYXIsIEkgZG8g
+bm90IGZpbmQgYW55IGNvZGUgYWJvdXQgYXVkaW8gcmVzcG9uc2UgSFBEIGluIGtlcm5lbC4gdGhl
+IEhQRCBpbnRlcnJ1cHQgd2lsbCBzZW50IHRvIHVzZXIgbW9kZSB2aWEgdWV2ZW50LCBub3Qgc3Vy
+ZSB3aGV0aGVyIGF1ZGlvIHVzZXIgbW9kZSBkcml2ZXIgY2FuIHJlY2VpdmUgdGhlIGV2ZW50IG9y
+IG5vdC4KPiA+IAo+ID4gT24gdGhlIGdmeCBzaWRlIGF0IGxlYXN0LCB3ZSBjYW4gZ2V0IGEgaG90
+cGx1ZyBldmVudCB2aWEgQUNQSQo+ID4gKGRlcGVuZGluZyBvbiB0aGUgT0VNIGRlc2lnbikgaWYg
+ZGlzcGxheXMgYXJlIGF0dGFjaGVkL2RldGFjaGVkIHdoaWxlCj4gPiB0aGUgZEdQVSBpcyBwb3dl
+cmVkIGRvd24uICBJIHN1cHBvc2UgdGhlIGdmeCBkcml2ZXIgY291bGQgY2FsbCBpbnRvCj4gPiB0
+aGUgYXVkaW8gZHJpdmVyIGR1cmluZyBvbmUgb2YgdGhvc2UgZXZlbnRzLiAgT24gdGhlIGdmeCBz
+aWRlIGF0IGxlYXN0Cj4gPiB3ZSBqdXN0IGdlbmVyYXRlIHRoZSBnZnggaG90cGx1ZyBldmVudCBh
+bmQgbGV0IHVzZXJzcGFjZSBkZWFsIHdpdGggaXQuCj4gCj4gSU1PLCBhIG1vcmUgcHJvcGVyIHdh
+eSB3b3VsZCBiZSB0byBoYXZlIHRoZSBkaXJlY3QgY29tbXVuaWNhdGlvbgo+IGJldHdlZW4gdGhl
+IGdyYXBoaWNzIGRyaXZlciBhbmQgdGhlIGF1ZGlvIGRyaXZlciBsaWtlIGk5MTUgZHJpdmVyCj4g
+ZG9lcy4gIFRoZW4gdGhlIGF1ZGlvIGRyaXZlciBjYW4gZ2V0IHBsdWcvdW5wbHVnIGV2ZW50IGF0
+IG1vcmUKPiBhY2N1cmF0ZSB0aW1pbmcgd2l0aG91dCByYWNlcy4KPiAKPiAoVGhvdWdoLCBpdCB3
+aWxsIGNhdXNlIGFub3RoZXIgbWVzcyB3cnQgdGhlIHdlYWsgbW9kdWxlIGRlcGVuZGVuY3ksCj4g
+IGJ1dCBpdCdzIGFub3RoZXIgc3RvcnkgOikKCkp1c3QgZG9uJ3QgZG8gd2hhdCBzbmQtaGRhLWlu
+dGVsIGRpZCBhbmQgaW5zdGVhZCBpbXBsZW1lbnQgdGhlIGNvbXBvbmVudApzdHVmZiBwcm9wZXJs
+eSA6LSkKLURhbmllbAoKPiAKPiAKPiB0aGFua3MsCj4gCj4gVGFrYXNoaQo+IAo+IAo+ID4gCj4g
+PiBBbGV4Cj4gPiAKPiA+ID4KPiA+ID4gVGhhbmtzCj4gPiA+IEppbVF1Cj4gPiA+Cj4gPiA+IF9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPiA+ID4g5Y+R5Lu25Lq6OiBM
+dWthcyBXdW5uZXIgPGx1a2FzQHd1bm5lci5kZT4KPiA+ID4g5Y+R6YCB5pe26Ze0OiAyMDE45bm0
+N+aciDnml6UgMTc6MjcKPiA+ID4g5pS25Lu25Lq6OiBRdSwgSmltCj4gPiA+IOaKhOmAgTogYWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+OyBEZXVjaGVyLCBBbGV4YW5kZXI7IGFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gPiA+
+IOS4u+mimDogUmU6IFtQQVRDSF0gdmdhc3dpdGNocm9vOiBzZXQgYXVkaW8gY2xpZW50IGlkIGFj
+Y29yZGluZyB0byBib3VuZCBncHUgY2xpZW50IGlkCj4gPiA+Cj4gPiA+IE9uIE1vbiwgSnVsIDA5
+LCAyMDE4IGF0IDA4OjUyOjMzQU0gKzAwMDAsIFF1LCBKaW0gd3JvdGU6Cj4gPiA+PiBOb3csIEkg
+Zm91bmQgdGhlIGF1ZGlvIGRldmljZSB3aWxsIGF1dG8gc3VzcGVuZCBldmVuIGlmIHRoZSBncHUg
+aXMgYWN0aXZlLAo+ID4gPj4gYW5kIGlmIEkgcGx1ZyBpbiBhIEhETUkgZGV2aWNlIGl0IGFsc28g
+ZG8gbm90IHJlc3VtZSBiYWNrLgo+ID4gPj4KPiA+ID4+IDEuIERpZCB5b3UgZW5jb3VudGVyIHNp
+bWlsYXIgaXNzdWUgYmVmb3JlPwo+ID4gPj4gMi4gYXVkaW8gd2lsbCBhdXRvIHN1c3BlbmQgYXMg
+ZGVmYXVsdCBhdCBiZWdpbm5pbmcgb2YgYm9vdCwgaXMgaXQgZXhwZWN0Cj4gPiA+PiBiZWhhdmlv
+dXI/Cj4gPiA+Cj4gPiA+IFllcywgdGhhdCdzIGV4cGVjdGVkLiAgT25jZSB5b3Ugc3RhcnQgc3Ry
+ZWFtaW5nIGF1ZGlvIHRvIGF0dGFjaGVkIGRpc3BsYXlzLAo+ID4gPiB1c2VyIHNwYWNlIG9wZW5z
+IHRoZSBjb2RlYyBkZXZpY2UgYW5kIHRoaXMgY2F1c2VzIHRoZSBIREEgY29udHJvbGxlciB0bwo+
+ID4gPiBydW50aW1lIHJlc3VtZS4gIElmIHRoZSBkaXNjcmV0ZSBHUFUgaXMgc3VzcGVuZGVkIGF0
+IHRoYXQgbW9tZW50LCBpdCB3aWxsCj4gPiA+IGJlIHBvd2VyZWQgb24gYW5kIGtlcHQgcG93ZXJl
+ZCBvbiBhcyBsb25nIGFzIHVzZXIgc3BhY2UgaXMgc3RyZWFtaW5nIGF1ZGlvLgo+ID4gPgo+ID4g
+PiBEbyB5b3UgbmVlZCB0byBydW50aW1lIHJlc3VtZSB0aGUgSERBIGNvbnRyb2xsZXIgZXZlbiBp
+ZiB1c2VyIHNwYWNlIGlzbid0Cj4gPiA+IHN0cmVhbWluZyBhdWRpbz8gIFdoeSwgYW5kIGluIHdo
+aWNoIHNpdHVhdGlvbiBleGFjdGx5Pwo+ID4gPgo+ID4gPiBZb3UncmUgc2F5aW5nIGFib3ZlIHRo
+YXQgdGhlIEhEQSBjb250cm9sbGVyIGlzbid0IHJ1bnRpbWUgcmVzdW1lZCBvbgo+ID4gPiBob3Rw
+bHVnIG9mIGEgZGlzcGxheS4gIElzIHRoYXQgbmVjZXNzYXJ5IHRvIHJldHJpZXZlIEVMRCBvciBz
+b21ldGhpbmc/Cj4gPiA+IEknbSBub3Qgc3VyZSBpZiB0aGVyZSdzIGNvZGUgaW4gdGhlIEhEQSBk
+cml2ZXIgdG8gYWNxdWlyZSBhIHJ1bnRpbWUgUE0KPiA+ID4gcmVmIG9uIEhQRCwgYnV0IG1heWJl
+IGl0J3MgbmVjZXNzYXJ5LiAgT3IgbWF5YmUgdGhlIGNvZGUgaXMgdGhlcmUgYnV0Cj4gPiA+IHNv
+bWVob3cgbm8gSFBEIGludGVycnVwdCBpcyByZWNlaXZlZCBieSB0aGUgSERBIGRyaXZlcj8KPiA+
+ID4KPiA+ID4gVGhhbmtzLAo+ID4gPgo+ID4gPiBMdWthcwo+ID4gPiBfX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+ID4gPiBkcmktZGV2ZWwgbWFpbGluZyBs
+aXN0Cj4gPiA+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiA+ID4gaHR0cHM6Ly9s
+aXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwKPiA+IF9fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gPiBBbHNhLWRldmVs
+IG1haWxpbmcgbGlzdAo+ID4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gPiBodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+IF9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gZHJpLWRldmVs
+IG1haWxpbmcgbGlzdAo+IGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKPiBodHRwczov
+L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAoKLS0gCkRh
+bmllbCBWZXR0ZXIKU29mdHdhcmUgRW5naW5lZXIsIEludGVsIENvcnBvcmF0aW9uCmh0dHA6Ly9i
+bG9nLmZmd2xsLmNoCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fCmFtZC1nZnggbWFpbGluZyBsaXN0CmFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
+dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vYW1kLWdmeAo=
