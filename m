@@ -1,83 +1,92 @@
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH v5 4/5] ARM: dts: at91: sama5d2: add nodes for I2S
- controllers
-Date: Mon, 9 Jul 2018 16:29:43 +0300
-Message-ID: <e056ed7d-521d-54ab-2e5d-0f5259a09ec6@microchip.com>
-References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
- <20180618141239.10892-5-codrin.ciubotariu@microchip.com>
- <20180706193923.GC16084@piout.net>
+From: Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: =?UTF-8?Q?Re=3A_=E7=AD=94=E5=A4=8D=3A_=5BPATCH=5D_vgaswitchroo=3A_set_audio_client_i?=
+ =?UTF-8?Q?d_according_to_bound_gpu_client_id?=
+Date: Mon, 9 Jul 2018 09:58:51 -0400
+Message-ID: <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
+References: <1530166933-21655-1-git-send-email-Jim.Qu@amd.com>
+ <CADnq5_NcNfMD9UDN17c-513rD--kQY7nzw6OTgimV0pVqLjbOg@mail.gmail.com>
+ <DM3PR12MB08737CF35AF6D0CE1A1BDC64994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629080634.GA7357@wunner.de>
+ <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629092138.GA11849@wunner.de>
+ <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180629111108.GA11609@wunner.de>
+ <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <20180709092759.GA3649@wunner.de>
+ <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180706193923.GC16084@piout.net>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@microchip.com, boris.brezillon@bootlin.com, robh+dt@kernel.org, broonie@kernel.org, sboyd@kernel.org, Cristian.Birsan@microchip.com, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <DM3PR12MB087309CBC2CD3A934327EBCE99440-4hRkV8tDpBiYEITDcfEJ8AdYzm3356FpvxpqHgZTriW3zl9H0oFU5g@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
+Cc: "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 06.07.2018 22:39, Alexandre Belloni wrote:
-> Hi Codrin,
-> 
-> On 18/06/2018 17:12:38+0300, Codrin Ciubotariu wrote:
->> From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->>
->> This patch adds DT nodes for I2S0 and I2S1. It also adds an alias for
->> each I2S node.
->>
->> Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
->> [codrin.ciubotariu@microchip.com: added phandle to new mux clock]
->> Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
->> ---
->>
->> The bindings for the I2S node are applied to broonie/sound.git .
->>
->> Changes in v5:
->> 	- the previous name was:
->> 	  [PATCH v4 6/7] ARM: dts: at91: sama5d2: add nodes for I2S controllers
->>
->>   arch/arm/boot/dts/sama5d2.dtsi | 34 ++++++++++++++++++++++++++++++++++
->>   1 file changed, 34 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
->> index eeb6afa1cda7..eca73ce40bc5 100644
->> --- a/arch/arm/boot/dts/sama5d2.dtsi
->> +++ b/arch/arm/boot/dts/sama5d2.dtsi
->> @@ -58,6 +58,8 @@
->>   		serial1 = &uart3;
->>   		tcb0 = &tcb0;
->>   		tcb1 = &tcb1;
->> +		i2s0 = &i2s0;
->> +		i2s1 = &i2s1;
->>   	};
->>   
->>   	cpus {
->> @@ -1313,6 +1315,22 @@
->>   				clocks = <&clk32k>;
->>   			};
->>   
->> +			i2s0: i2s@f8050000 {
->> +				compatible = "atmel,sama5d2-i2s";
->> +				reg = <0xf8050000 0x100>;
->> +				interrupts = <54 IRQ_TYPE_LEVEL_HIGH 7>;
->> +				dmas = <&dma0
->> +					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
->> +					 AT91_XDMAC_DT_PERID(31))>,
->> +				       <&dma0
->> +					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
->> +					 AT91_XDMAC_DT_PERID(32))>;
->> +				dma-names = "tx", "rx";
->> +				clocks = <&i2s0_clk>, <&i2s0_gclk>, <&audio_pll_pmc>, <&i2s0muxck>;
->> +				clock-names = "pclk", "gclk", "aclk", "muxclk";
->> +				status = "disabled";
->> +			};
->> +
-> 
-> Can you resend the DTS patches after removing the unnecessary clocks?
-
-I will. Should I also make the "muxclk" clock an assigned clock to 
-assign its parent ?
-
-Thanks and best regards,
-Codrin
+T24gTW9uLCBKdWwgOSwgMjAxOCBhdCA2OjE2IEFNLCBRdSwgSmltIDxKaW0uUXVAYW1kLmNvbT4g
+d3JvdGU6Cj4gSGkgTHVrYXMsCj4KPiBUaGFua3MgdG8geW91ciBleHBsYW5hdGlvbiwgYW5kIHNl
+ZSBjb21tZW50cyBpbiBsaW5lLgo+Cj4KPiBEbyB5b3UgbmVlZCB0byBydW50aW1lIHJlc3VtZSB0
+aGUgSERBIGNvbnRyb2xsZXIgZXZlbiBpZiB1c2VyIHNwYWNlIGlzbid0Cj4gc3RyZWFtaW5nIGF1
+ZGlvPyAgV2h5LCBhbmQgaW4gd2hpY2ggc2l0dWF0aW9uIGV4YWN0bHk/Cj4KPiBKaW06IE9FTSBz
+eXN0ZW0gdXNlcyBwYWN0bCB0byBxdWVpcnkgYXVkaW8gY2FyZCBhbmQgYXVkaW8gb3V0cHV0IHNp
+bmssIHNpbmNlIHRoZSBhdWRpbyBoYXMgcG93ZXIgZG93biBieSBydW50aW1lIHBtLCBzbyB0aGUg
+YXVkaW8gY2FyZCBhbmQgb3V0cHV0IHNpbmsgYXJlIGFsbCB1bmF2YWlsYWJsZS4gdGhleSBjb3Vs
+ZCBub3Qgc2VsZWN0IHRoZSBhdmFpbGFibGUgSERNSSBhdWRpbyBmb3IgYXVkaW8gcGxheWluZy4K
+Pgo+IFlvdSdyZSBzYXlpbmcgYWJvdmUgdGhhdCB0aGUgSERBIGNvbnRyb2xsZXIgaXNuJ3QgcnVu
+dGltZSByZXN1bWVkIG9uCj4gaG90cGx1ZyBvZiBhIGRpc3BsYXkuICBJcyB0aGF0IG5lY2Vzc2Fy
+eSB0byByZXRyaWV2ZSBFTEQgb3Igc29tZXRoaW5nPwo+IEknbSBub3Qgc3VyZSBpZiB0aGVyZSdz
+IGNvZGUgaW4gdGhlIEhEQSBkcml2ZXIgdG8gYWNxdWlyZSBhIHJ1bnRpbWUgUE0KPiByZWYgb24g
+SFBELCBidXQgbWF5YmUgaXQncyBuZWNlc3NhcnkuICBPciBtYXliZSB0aGUgY29kZSBpcyB0aGVy
+ZSBidXQKPiBzb21laG93IG5vIEhQRCBpbnRlcnJ1cHQgaXMgcmVjZWl2ZWQgYnkgdGhlIEhEQSBk
+cml2ZXI/Cj4KPiBKaW06IFNvIGZhciwgSSBkbyBub3QgZmluZCBhbnkgY29kZSBhYm91dCBhdWRp
+byByZXNwb25zZSBIUEQgaW4ga2VybmVsLiB0aGUgSFBEIGludGVycnVwdCB3aWxsIHNlbnQgdG8g
+dXNlciBtb2RlIHZpYSB1ZXZlbnQsIG5vdCBzdXJlIHdoZXRoZXIgYXVkaW8gdXNlciBtb2RlIGRy
+aXZlciBjYW4gcmVjZWl2ZSB0aGUgZXZlbnQgb3Igbm90LgoKT24gdGhlIGdmeCBzaWRlIGF0IGxl
+YXN0LCB3ZSBjYW4gZ2V0IGEgaG90cGx1ZyBldmVudCB2aWEgQUNQSQooZGVwZW5kaW5nIG9uIHRo
+ZSBPRU0gZGVzaWduKSBpZiBkaXNwbGF5cyBhcmUgYXR0YWNoZWQvZGV0YWNoZWQgd2hpbGUKdGhl
+IGRHUFUgaXMgcG93ZXJlZCBkb3duLiAgSSBzdXBwb3NlIHRoZSBnZnggZHJpdmVyIGNvdWxkIGNh
+bGwgaW50bwp0aGUgYXVkaW8gZHJpdmVyIGR1cmluZyBvbmUgb2YgdGhvc2UgZXZlbnRzLiAgT24g
+dGhlIGdmeCBzaWRlIGF0IGxlYXN0CndlIGp1c3QgZ2VuZXJhdGUgdGhlIGdmeCBob3RwbHVnIGV2
+ZW50IGFuZCBsZXQgdXNlcnNwYWNlIGRlYWwgd2l0aCBpdC4KCkFsZXgKCj4KPiBUaGFua3MKPiBK
+aW1RdQo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IOWPkeS7
+tuS6ujogTHVrYXMgV3VubmVyIDxsdWthc0B3dW5uZXIuZGU+Cj4g5Y+R6YCB5pe26Ze0OiAyMDE4
+5bm0N+aciDnml6UgMTc6MjcKPiDmlLbku7bkuro6IFF1LCBKaW0KPiDmioTpgIE6IGFsc2EtZGV2
+ZWxAYWxzYS1wcm9qZWN0Lm9yZzsgZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZzsgRGV1
+Y2hlciwgQWxleGFuZGVyOyBhbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwo+IOS4u+mimDog
+UmU6IFtQQVRDSF0gdmdhc3dpdGNocm9vOiBzZXQgYXVkaW8gY2xpZW50IGlkIGFjY29yZGluZyB0
+byBib3VuZCBncHUgY2xpZW50IGlkCj4KPiBPbiBNb24sIEp1bCAwOSwgMjAxOCBhdCAwODo1Mjoz
+M0FNICswMDAwLCBRdSwgSmltIHdyb3RlOgo+PiBOb3csIEkgZm91bmQgdGhlIGF1ZGlvIGRldmlj
+ZSB3aWxsIGF1dG8gc3VzcGVuZCBldmVuIGlmIHRoZSBncHUgaXMgYWN0aXZlLAo+PiBhbmQgaWYg
+SSBwbHVnIGluIGEgSERNSSBkZXZpY2UgaXQgYWxzbyBkbyBub3QgcmVzdW1lIGJhY2suCj4+Cj4+
+IDEuIERpZCB5b3UgZW5jb3VudGVyIHNpbWlsYXIgaXNzdWUgYmVmb3JlPwo+PiAyLiBhdWRpbyB3
+aWxsIGF1dG8gc3VzcGVuZCBhcyBkZWZhdWx0IGF0IGJlZ2lubmluZyBvZiBib290LCBpcyBpdCBl
+eHBlY3QKPj4gYmVoYXZpb3VyPwo+Cj4gWWVzLCB0aGF0J3MgZXhwZWN0ZWQuICBPbmNlIHlvdSBz
+dGFydCBzdHJlYW1pbmcgYXVkaW8gdG8gYXR0YWNoZWQgZGlzcGxheXMsCj4gdXNlciBzcGFjZSBv
+cGVucyB0aGUgY29kZWMgZGV2aWNlIGFuZCB0aGlzIGNhdXNlcyB0aGUgSERBIGNvbnRyb2xsZXIg
+dG8KPiBydW50aW1lIHJlc3VtZS4gIElmIHRoZSBkaXNjcmV0ZSBHUFUgaXMgc3VzcGVuZGVkIGF0
+IHRoYXQgbW9tZW50LCBpdCB3aWxsCj4gYmUgcG93ZXJlZCBvbiBhbmQga2VwdCBwb3dlcmVkIG9u
+IGFzIGxvbmcgYXMgdXNlciBzcGFjZSBpcyBzdHJlYW1pbmcgYXVkaW8uCj4KPiBEbyB5b3UgbmVl
+ZCB0byBydW50aW1lIHJlc3VtZSB0aGUgSERBIGNvbnRyb2xsZXIgZXZlbiBpZiB1c2VyIHNwYWNl
+IGlzbid0Cj4gc3RyZWFtaW5nIGF1ZGlvPyAgV2h5LCBhbmQgaW4gd2hpY2ggc2l0dWF0aW9uIGV4
+YWN0bHk/Cj4KPiBZb3UncmUgc2F5aW5nIGFib3ZlIHRoYXQgdGhlIEhEQSBjb250cm9sbGVyIGlz
+bid0IHJ1bnRpbWUgcmVzdW1lZCBvbgo+IGhvdHBsdWcgb2YgYSBkaXNwbGF5LiAgSXMgdGhhdCBu
+ZWNlc3NhcnkgdG8gcmV0cmlldmUgRUxEIG9yIHNvbWV0aGluZz8KPiBJJ20gbm90IHN1cmUgaWYg
+dGhlcmUncyBjb2RlIGluIHRoZSBIREEgZHJpdmVyIHRvIGFjcXVpcmUgYSBydW50aW1lIFBNCj4g
+cmVmIG9uIEhQRCwgYnV0IG1heWJlIGl0J3MgbmVjZXNzYXJ5LiAgT3IgbWF5YmUgdGhlIGNvZGUg
+aXMgdGhlcmUgYnV0Cj4gc29tZWhvdyBubyBIUEQgaW50ZXJydXB0IGlzIHJlY2VpdmVkIGJ5IHRo
+ZSBIREEgZHJpdmVyPwo+Cj4gVGhhbmtzLAo+Cj4gTHVrYXMKPiBfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IGRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBk
+cmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3Rv
+cC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0
+cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbWQtZ2Z4Cg==
