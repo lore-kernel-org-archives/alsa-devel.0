@@ -1,84 +1,70 @@
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: Re: [RESEND][PATCH] ASoC: hdac_hdmi: Program
- pin-port-mux during jack report event
-Date: Mon, 9 Jul 2018 18:02:42 +0530
-Message-ID: <20180709123240.GA19136@intel.com>
-References: <1529492902-6600-1-git-send-email-sriramx.periyasamy@intel.com>
- <s5ho9g5mx2e.wl-tiwai@suse.de> <20180621075419.GA10037@intel.com>
- <s5hfu1glf0u.wl-tiwai@suse.de> <20180621104533.GA10220@intel.com>
- <s5h4lhwl7cb.wl-tiwai@suse.de> <20180622055754.GA18494@intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 3/5] ASoC: qcom: add sdm845 sound card support
+Date: Mon, 9 Jul 2018 13:41:17 +0100
+Message-ID: <20180709124117.GG16082@sirena.org.uk>
+References: <1530870195-13576-1-git-send-email-rohitkr@codeaurora.org>
+ <1530870195-13576-4-git-send-email-rohitkr@codeaurora.org>
+ <20180709111437.GB16082@sirena.org.uk>
+ <b5a3f0e2-d420-603d-f9a0-f93bdbd2619f@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id B534F267760
- for <alsa-devel@alsa-project.org>; Mon,  9 Jul 2018 14:37:06 +0200 (CEST)
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0z5c7mBtSy1wdr4F"
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180622055754.GA18494@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: ALSA ML <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
+In-Reply-To: <b5a3f0e2-d420-603d-f9a0-f93bdbd2619f@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Rohit kumar <rohitkr@codeaurora.org>, lgirdwood@gmail.com, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jun 22, 2018 at 11:27:55AM +0530, Sriram Periyasamy wrote:
-> On Thu, Jun 21, 2018 at 01:14:28PM +0200, Takashi Iwai wrote:
-> > On Thu, 21 Jun 2018 12:45:34 +0200,
-> > Sriram Periyasamy wrote:
-> > > 
-> > > On Thu, Jun 21, 2018 at 10:28:33AM +0200, Takashi Iwai wrote:
-> > > > On Thu, 21 Jun 2018 09:54:20 +0200,
-> > > > Sriram Periyasamy wrote:
-> > > > > 
-> > > > > On Wed, Jun 20, 2018 at 03:01:13PM +0200, Takashi Iwai wrote:
-> > > > > > On Wed, 20 Jun 2018 13:08:21 +0200,
-> > > > > > Sriram Periyasamy wrote:
-> > > > > > > 
-> > > > > > > During d3/d0 cycle, the connection selection index of all pins points
-> > > > > > > to the default value. This needs to be restored to ensure audio is
-> > > > > > > restored after d3/d0 cycle.
-> > > > > > > 
-> > > > > > > So store the connection selection index and program it during jack
-> > > > > > > report event which gets invoked in cases like d3/d0 cycle, hot plug
-> > > > > > > detection when multiple displays are connected.
-> > > > > > 
-> > > > > > Hm, I thought *_CONNECT_SEL being cached and restored at resume
-> > > > > > already by regmap?
-> > > > > > 
-> > > > > 
-> > > > > Yes, legacy HDA HDMI driver has this method whereas ASoC based HDAC HDMI
-> > > > > driver doesn't use regmap. Hence we needed this solution.
-> > > > 
-> > > > If so, why not just use the standard snd_hdac_codec_write()?
-> > > > 
-> > > 
-> > > Because snd_hdac_codec_write doesn't power up the device to send the verb
-> > > across the link when the device is runtime suspended.
-> > 
-> > Then why hdac_hdmi_port_select_set() would work?  It's using
-> > snd_hdac_codec_write(), too.
-> >
-> 
-> We will check and come back on this.
->
 
-In case of MST, it will work since snd_hdac_read_parm_uncached() wakes up
-the device and put the device to runtime auto suspend. The auto suspend
-delay was helping this snd_hdac_codec_write() pass through.
+--0z5c7mBtSy1wdr4F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-In case of non-MST, hdac_hdmi_port_select_set() will simply return 0 by
-checking the MST capable port->pin->mst_capable. Hence the device is not
-runtime resumed and subsequent calls of snd_hdac_codec_write() will fail.
+On Mon, Jul 09, 2018 at 01:34:42PM +0100, Srinivas Kandagatla wrote:
+> On 09/07/18 12:14, Mark Brown wrote:
+> > > +static const struct component_master_ops sdm845_ops = {
+> > > +	.bind = sdm845_bind,
+> > > +	.unbind = sdm845_unbind,
+> > > +};
 
-We will post v2 to address this.
+> > Why is this using the component stuff rather than the normal support for
+> > finding the components of audio cards?
 
-Thanks,
-Sriram.
+> Could you elaborate this please?
+> Do you mean something like snd_soc_lookup_component()?  Or in general audio
+> card binding during startup.
+
+Just the normal audio card binding during startup.
+
+> AFAIU, The issue with that mechanism or EPROBEDEFER is that it works only
+> for first time.. for the second time(restart usecase) there are no hooks
+> like bind/unbind.
+
+This is not the case, the card will be unbound at the ASoC level when
+any of the components are removed and then probed again when they
+reappear.
+
+> The reason why we chose to use component framework is because of bind and
+> unbind functionality. Am more than happy to rework on this if there is
+> already a alternative mechanism in ASoC which can provide this.
+
+The component framework is a generalization of what ASoC does.
+
+--0z5c7mBtSy1wdr4F
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltDV+0ACgkQJNaLcl1U
+h9BaCwf8DPkajFrD2z0vPsuEoi+2W0C8+W5Ts6wFobM8vKNYBOY8NpGUF/EOjjUI
+fTKW7aZXV6KQaxV6ESwfJw/ye1gZXb18fZVW/xPuzLSHpkcSzJwG+1Mg2jSSj3q2
+BqezmNMnnB3MTMfw5w9jM1xwyM1a4AXrWK2jSSA8NfKV+vKvoa1HtydyzGLEjGyR
+Bw6HiB5+93AT2ljB/Rvt2hKluHPEkfnYbhyEm18KzAnma6xacsC2OLmFMW550/x7
+TuwA6wNajAgvIOKpf9b9USAqUQaL5GlvMpA+zgJk/ApKs5ta+Rq5mGeqUwdxogKi
+AlbHY++iPkl8pqExaB9J7aZGM80PIA==
+=nKqd
+-----END PGP SIGNATURE-----
+
+--0z5c7mBtSy1wdr4F--
