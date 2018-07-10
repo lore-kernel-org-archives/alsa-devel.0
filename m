@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Reporting button
-	presses" to the asoc tree
-Date: Tue, 10 Jul 2018 19:16:29 +0100
-Message-ID: <E1fcxBd-0001fG-TK@debutante>
-References: <20180704225935.7902-5-hdegoede@redhat.com>
+Subject: Applied "ASoC: rt5651: Fix workqueue cancel vs irq
+	free race on remove" to the asoc tree
+Date: Tue, 10 Jul 2018 19:16:38 +0100
+Message-ID: <E1fcxBm-0001jO-QL@debutante>
+References: <20180704225935.7902-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6BE3F267715
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:42 +0200 (CEST)
-In-Reply-To: <20180704225935.7902-5-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E968267718
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:44 +0200 (CEST)
+In-Reply-To: <20180704225935.7902-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Reporting button presses
+   ASoC: rt5651: Fix workqueue cancel vs irq free race on remove
 
 has been applied to the asoc tree at
 
@@ -53,52 +53,83 @@ to this mail.
 Thanks,
 Mark
 
->From caed9d636e857997e923dfe473b9310de645d916 Mon Sep 17 00:00:00 2001
+>From 8d2d7bcdc1645dc243f7735278675b083c0e506c Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Thu, 5 Jul 2018 00:59:35 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Reporting button presses
+Date: Thu, 5 Jul 2018 00:59:31 +0200
+Subject: [PATCH] ASoC: rt5651: Fix workqueue cancel vs irq free race on remove
 
-Enable reporting of button presses now that the codec driver recently has
-gotten support for this.
+On removal we must free the IRQ *before* cancelling the jack-detect work,
+so that the jack-detect work cannot be rescheduled by the IRQ.
 
+Before this commit we were cancelling the jack-detect work from the
+driver remove callback, while relying on devm to free the IRQ, which
+happens after the remove callback.
+
+This is the wrong order. This commit uses a devm-action to register
+a devm callback which cancels the work, before requesting the IRQ
+(devm tears things down in reverse order). This also allows us to
+remove the now empty remove driver callback.
+
+Cc: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5651.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 2a8f86dfe4cb..b687043c8425 100644
---- a/sound/soc/intel/boards/bytcr_rt5651.c
-+++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -26,6 +26,7 @@
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/dmi.h>
-+#include <linux/input.h>
- #include <linux/gpio/consumer.h>
- #include <linux/gpio/machine.h>
- #include <linux/slab.h>
-@@ -531,13 +532,17 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 6b5669f3e85d..39d2c67cd064 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -1696,6 +1696,13 @@ static irqreturn_t rt5651_irq(int irq, void *data)
+ 	return IRQ_HANDLED;
+ }
  
- 	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
- 		ret = snd_soc_card_jack_new(runtime->card, "Headset",
--				    SND_JACK_HEADSET, &priv->jack,
--				    bytcr_jack_pins, ARRAY_SIZE(bytcr_jack_pins));
-+				    SND_JACK_HEADSET | SND_JACK_BTN_0,
-+				    &priv->jack, bytcr_jack_pins,
-+				    ARRAY_SIZE(bytcr_jack_pins));
- 		if (ret) {
- 			dev_err(runtime->dev, "jack creation failed %d\n", ret);
- 			return ret;
- 		}
- 
-+		snd_jack_set_key(priv->jack.jack, SND_JACK_BTN_0,
-+				 KEY_PLAYPAUSE);
++static void rt5651_cancel_work(void *data)
++{
++	struct rt5651_priv *rt5651 = data;
 +
- 		ret = snd_soc_component_set_jack(codec, &priv->jack, NULL);
- 		if (ret)
- 			return ret;
++	cancel_work_sync(&rt5651->jack_detect_work);
++}
++
+ static int rt5651_set_jack(struct snd_soc_component *component,
+ 			   struct snd_soc_jack *hp_jack, void *data)
+ {
+@@ -2036,6 +2043,11 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 
+ 	INIT_WORK(&rt5651->jack_detect_work, rt5651_jack_detect_work);
+ 
++	/* Make sure work is stopped on probe-error / remove */
++	ret = devm_add_action_or_reset(&i2c->dev, rt5651_cancel_work, rt5651);
++	if (ret)
++		return ret;
++
+ 	ret = devm_snd_soc_register_component(&i2c->dev,
+ 				&soc_component_dev_rt5651,
+ 				rt5651_dai, ARRAY_SIZE(rt5651_dai));
+@@ -2043,15 +2055,6 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
+ 	return ret;
+ }
+ 
+-static int rt5651_i2c_remove(struct i2c_client *i2c)
+-{
+-	struct rt5651_priv *rt5651 = i2c_get_clientdata(i2c);
+-
+-	cancel_work_sync(&rt5651->jack_detect_work);
+-
+-	return 0;
+-}
+-
+ static struct i2c_driver rt5651_i2c_driver = {
+ 	.driver = {
+ 		.name = "rt5651",
+@@ -2059,7 +2062,6 @@ static struct i2c_driver rt5651_i2c_driver = {
+ 		.of_match_table = of_match_ptr(rt5651_of_match),
+ 	},
+ 	.probe = rt5651_i2c_probe,
+-	.remove   = rt5651_i2c_remove,
+ 	.id_table = rt5651_i2c_id,
+ };
+ module_i2c_driver(rt5651_i2c_driver);
 -- 
 2.18.0.rc2
