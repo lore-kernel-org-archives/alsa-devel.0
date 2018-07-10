@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5651: Allow disabling jack-detect by
-	calling set_jack(NULL)" to the asoc tree
-Date: Tue, 10 Jul 2018 19:16:36 +0100
-Message-ID: <E1fcxBk-0001iP-Kh@debutante>
-References: <20180704225935.7902-2-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Add support for
+	externar amplifier enable GPIO" to the asoc tree
+Date: Tue, 10 Jul 2018 19:16:40 +0100
+Message-ID: <E1fcxBo-0001kX-WE@debutante>
+References: <20180701183107.4896-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CF22267716
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:42 +0200 (CEST)
-In-Reply-To: <20180704225935.7902-2-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C8B74267713
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:46 +0200 (CEST)
+In-Reply-To: <20180701183107.4896-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5651: Allow disabling jack-detect by calling set_jack(NULL)
+   ASoC: Intel: bytcr_rt5651: Add support for externar amplifier enable GPIO
 
 has been applied to the asoc tree at
 
@@ -53,120 +53,146 @@ to this mail.
 Thanks,
 Mark
 
->From 34c906ddacd237511808fb2bbd941e6b91e9095a Mon Sep 17 00:00:00 2001
+>From 5f6fb23d2e114506ddb8437a3e65f4a20d081013 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Thu, 5 Jul 2018 00:59:32 +0200
-Subject: [PATCH] ASoC: rt5651: Allow disabling jack-detect by calling
- set_jack(NULL)
+Date: Sun, 1 Jul 2018 20:36:31 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Add support for externar amplifier
+ enable GPIO
 
-Allow the machine driver to disable jack-detect over a suspend/resume by
-calling snd_soc_component_set_jack(NULL).
+The rt5651 does not have a built-in speaker amplifier, so it is often
+used together with an external amplifier. On Cherry Trail boards this
+external amplifier's enable pin is driven through a GPIO, which is
+given as the first GPIO in the ACPI resources of the codec fwnode.
 
-Note this renames rt5651_set_jack, where all the jack-enable work was done
-to rt5651_enable_jack_detect. This function can now no longer fail as it
-does not request the IRQ anymore. It can still be passed an invalid jack
-source, but that should never happen, so this is now logged and treated as
-no jack source.
+This commit adds support to the bytcr_rt5651 for this GPIO, fixing
+the speaker not working on CHT devices with a rt5651 codec.
 
 Cc: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5651.c | 55 +++++++++++++++++++++++++--------------
- 1 file changed, 36 insertions(+), 19 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 65 +++++++++++++++++++++++++--
+ 1 file changed, 62 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 39d2c67cd064..40bd1e70fee7 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -1703,14 +1703,10 @@ static void rt5651_cancel_work(void *data)
- 	cancel_work_sync(&rt5651->jack_detect_work);
- }
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index d920725ce603..5301205496be 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -26,6 +26,8 @@
+ #include <linux/clk.h>
+ #include <linux/device.h>
+ #include <linux/dmi.h>
++#include <linux/gpio/consumer.h>
++#include <linux/gpio/machine.h>
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
+ #include <asm/intel-family.h>
+@@ -86,6 +88,7 @@ enum {
  
--static int rt5651_set_jack(struct snd_soc_component *component,
--			   struct snd_soc_jack *hp_jack, void *data)
-+static void rt5651_enable_jack_detect(struct snd_soc_component *component,
-+				      struct snd_soc_jack *hp_jack)
- {
- 	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
--	int ret;
--
--	if (!rt5651->irq)
--		return -EINVAL;
+ struct byt_rt5651_private {
+ 	struct clk *mclk;
++	struct gpio_desc *ext_amp_gpio;
+ 	struct snd_soc_jack jack;
+ };
  
- 	/* IRQ output on GPIO1 */
- 	snd_soc_component_update_bits(component, RT5651_GPIO_CTRL1,
-@@ -1737,10 +1733,10 @@ static int rt5651_set_jack(struct snd_soc_component *component,
- 			RT5651_JD2_IRQ_EN, RT5651_JD2_IRQ_EN);
- 		break;
- 	case RT5651_JD_NULL:
--		return 0;
-+		return;
- 	default:
- 		dev_err(component->dev, "Currently only JD1_1 / JD1_2 / JD2 are supported\n");
--		return -EINVAL;
-+		return;
- 	}
- 
- 	/* Enable jack detect power */
-@@ -1774,19 +1770,28 @@ static int rt5651_set_jack(struct snd_soc_component *component,
- 		RT5651_MB1_OC_STKY_MASK, RT5651_MB1_OC_STKY_EN);
- 
- 	rt5651->hp_jack = hp_jack;
--
--	ret = devm_request_threaded_irq(component->dev, rt5651->irq, NULL,
--					rt5651_irq,
--					IRQF_TRIGGER_RISING |
--					IRQF_TRIGGER_FALLING |
--					IRQF_ONESHOT, "rt5651", rt5651);
--	if (ret) {
--		dev_err(component->dev, "Failed to reguest IRQ: %d\n", ret);
--		return ret;
--	}
--
-+	enable_irq(rt5651->irq);
- 	/* sync initial jack state */
- 	queue_work(system_power_efficient_wq, &rt5651->jack_detect_work);
-+}
-+
-+static void rt5651_disable_jack_detect(struct snd_soc_component *component)
-+{
-+	struct rt5651_priv *rt5651 = snd_soc_component_get_drvdata(component);
-+
-+	disable_irq(rt5651->irq);
-+	rt5651_cancel_work(rt5651);
-+
-+	rt5651->hp_jack = NULL;
-+}
-+
-+static int rt5651_set_jack(struct snd_soc_component *component,
-+			   struct snd_soc_jack *jack, void *data)
-+{
-+	if (jack)
-+		rt5651_enable_jack_detect(component, jack);
-+	else
-+		rt5651_disable_jack_detect(component);
- 
+@@ -208,6 +211,20 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
  	return 0;
  }
-@@ -2048,6 +2053,18 @@ static int rt5651_i2c_probe(struct i2c_client *i2c,
- 	if (ret)
- 		return ret;
  
-+	ret = devm_request_irq(&i2c->dev, rt5651->irq, rt5651_irq,
-+			       IRQF_TRIGGER_RISING | IRQF_TRIGGER_FALLING
-+			       | IRQF_ONESHOT, "rt5651", rt5651);
-+	if (ret == 0) {
-+		/* Gets re-enabled by rt5651_set_jack() */
-+		disable_irq(rt5651->irq);
-+	} else {
-+		dev_warn(&i2c->dev, "Failed to reguest IRQ %d: %d\n",
-+			 rt5651->irq, ret);
-+		rt5651->irq = -ENXIO;
++static int rt5651_ext_amp_power_event(struct snd_soc_dapm_widget *w,
++	struct snd_kcontrol *kcontrol, int event)
++{
++	struct snd_soc_card *card = w->dapm->card;
++	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
++
++	if (SND_SOC_DAPM_EVENT_ON(event))
++		gpiod_set_value_cansleep(priv->ext_amp_gpio, 1);
++	else
++		gpiod_set_value_cansleep(priv->ext_amp_gpio, 0);
++
++	return 0;
++}
++
+ static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
+ 	SND_SOC_DAPM_HP("Headphone", NULL),
+ 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
+@@ -217,7 +234,9 @@ static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
+ 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
+ 			    platform_clock_control, SND_SOC_DAPM_PRE_PMU |
+ 			    SND_SOC_DAPM_POST_PMD),
+-
++	SND_SOC_DAPM_SUPPLY("Ext Amp Power", SND_SOC_NOPM, 0, 0,
++			    rt5651_ext_amp_power_event,
++			    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
+ };
+ 
+ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
+@@ -225,6 +244,7 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
+ 	{"Headset Mic", NULL, "Platform Clock"},
+ 	{"Internal Mic", NULL, "Platform Clock"},
+ 	{"Speaker", NULL, "Platform Clock"},
++	{"Speaker", NULL, "Ext Amp Power"},
+ 	{"Line In", NULL, "Platform Clock"},
+ 
+ 	{"Headset Mic", NULL, "micbias1"}, /* lowercase for rt5651 */
+@@ -678,6 +698,18 @@ static const struct x86_cpu_id baytrail_cpu_ids[] = {
+ 	{}
+ };
+ 
++static const struct x86_cpu_id cherrytrail_cpu_ids[] = {
++	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_AIRMONT },     /* Braswell */
++	{}
++};
++
++static const struct acpi_gpio_params ext_amp_enable_gpios = { 0, 0, false };
++
++static const struct acpi_gpio_mapping byt_rt5651_gpios[] = {
++	{ "ext-amp-enable-gpios", &ext_amp_enable_gpios, 1 },
++	{ },
++};
++
+ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ 	u64 aif_value;       /* 1: AIF1, 2: AIF2 */
+ 	u64 mclock_value;    /* usually 25MHz (0x17d7940), ignored */
+@@ -793,9 +825,36 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 
+ 	/* Must be called before register_card, also see declaration comment. */
+ 	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
+-	put_device(codec_dev);
+-	if (ret_val)
++	if (ret_val) {
++		put_device(codec_dev);
+ 		return ret_val;
 +	}
 +
- 	ret = devm_snd_soc_register_component(&i2c->dev,
- 				&soc_component_dev_rt5651,
- 				rt5651_dai, ARRAY_SIZE(rt5651_dai));
++	/* Cherry Trail devices use an external amplifier enable gpio */
++	if (x86_match_cpu(cherrytrail_cpu_ids)) {
++		devm_acpi_dev_add_driver_gpios(codec_dev, byt_rt5651_gpios);
++		priv->ext_amp_gpio = devm_fwnode_get_index_gpiod_from_child(
++						&pdev->dev, "ext-amp-enable", 0,
++						codec_dev->fwnode,
++						GPIOD_OUT_LOW, "speaker-amp");
++		if (IS_ERR(priv->ext_amp_gpio)) {
++			ret_val = PTR_ERR(priv->ext_amp_gpio);
++			switch (ret_val) {
++			case -ENOENT:
++				priv->ext_amp_gpio = NULL;
++				break;
++			default:
++				dev_err(&pdev->dev, "Failed to get ext-amp-enable GPIO: %d\n",
++					ret_val);
++				/* fall through */
++			case -EPROBE_DEFER:
++				put_device(codec_dev);
++				return ret_val;
++			}
++		}
++	}
++
++	put_device(codec_dev);
+ 
+ 	log_quirks(&pdev->dev);
+ 
 -- 
 2.18.0.rc2
