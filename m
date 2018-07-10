@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Add support for
-	externar amplifier enable GPIO" to the asoc tree
-Date: Tue, 10 Jul 2018 19:16:40 +0100
-Message-ID: <E1fcxBo-0001kX-WE@debutante>
-References: <20180701183107.4896-1-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Move getting of
+	codec_dev into probe()" to the asoc tree
+Date: Tue, 10 Jul 2018 19:16:43 +0100
+Message-ID: <E1fcxBr-0001lY-6U@debutante>
+References: <20180701183631.5532-2-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C8B74267713
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:46 +0200 (CEST)
-In-Reply-To: <20180701183107.4896-1-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 755C1267713
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:48 +0200 (CEST)
+In-Reply-To: <20180701183631.5532-2-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Add support for externar amplifier enable GPIO
+   ASoC: Intel: bytcr_rt5651: Move getting of codec_dev into probe()
 
 has been applied to the asoc tree at
 
@@ -53,146 +53,89 @@ to this mail.
 Thanks,
 Mark
 
->From 5f6fb23d2e114506ddb8437a3e65f4a20d081013 Mon Sep 17 00:00:00 2001
+>From 2c375204bfad2f481feb006a82cdb67cc570b670 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 1 Jul 2018 20:36:31 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Add support for externar amplifier
- enable GPIO
+Date: Sun, 1 Jul 2018 20:36:30 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Move getting of codec_dev into
+ probe()
 
-The rt5651 does not have a built-in speaker amplifier, so it is often
-used together with an external amplifier. On Cherry Trail boards this
-external amplifier's enable pin is driven through a GPIO, which is
-given as the first GPIO in the ACPI resources of the codec fwnode.
+Move the getting of the codec_dev, to add device-props to it, out of
+byt_rt5651_add_codec_device_props() and into its caller,
+snd_byt_rt5651_mc_probe().
 
-This commit adds support to the bytcr_rt5651 for this GPIO, fixing
-the speaker not working on CHT devices with a rt5651 codec.
+This is a preparation patch for adding support for an external amplifier
+enable GPIO, which requires further accesses to the codec_dev.
 
-Cc: Carlo Caione <carlo@endlessm.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 65 +++++++++++++++++++++++++--
- 1 file changed, 62 insertions(+), 3 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index d920725ce603..5301205496be 100644
+index 80f47a45cb10..d920725ce603 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -26,6 +26,8 @@
- #include <linux/clk.h>
- #include <linux/device.h>
- #include <linux/dmi.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/gpio/machine.h>
- #include <linux/slab.h>
- #include <asm/cpu_device_id.h>
- #include <asm/intel-family.h>
-@@ -86,6 +88,7 @@ enum {
+@@ -403,15 +403,10 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+  * Note this MUST be called before snd_soc_register_card(), so that the props
+  * are in place before the codec component driver's probe function parses them.
+  */
+-static int byt_rt5651_add_codec_device_props(const char *i2c_dev_name)
++static int byt_rt5651_add_codec_device_props(struct device *i2c_dev)
+ {
+ 	struct property_entry props[MAX_NO_PROPS] = {};
+-	struct device *i2c_dev;
+-	int ret, cnt = 0;
+-
+-	i2c_dev = bus_find_device_by_name(&i2c_bus_type, NULL, i2c_dev_name);
+-	if (!i2c_dev)
+-		return -EPROBE_DEFER;
++	int cnt = 0;
  
- struct byt_rt5651_private {
- 	struct clk *mclk;
-+	struct gpio_desc *ext_amp_gpio;
- 	struct snd_soc_jack jack;
- };
+ 	props[cnt++] = PROPERTY_ENTRY_U32("realtek,jack-detect-source",
+ 				BYT_RT5651_JDSRC(byt_rt5651_quirk));
+@@ -425,10 +420,7 @@ static int byt_rt5651_add_codec_device_props(const char *i2c_dev_name)
+ 	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
+ 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,dmic-en");
  
-@@ -208,6 +211,20 @@ static int platform_clock_control(struct snd_soc_dapm_widget *w,
- 	return 0;
+-	ret = device_add_properties(i2c_dev, props);
+-	put_device(i2c_dev);
+-
+-	return ret;
++	return device_add_properties(i2c_dev, props);
  }
  
-+static int rt5651_ext_amp_power_event(struct snd_soc_dapm_widget *w,
-+	struct snd_kcontrol *kcontrol, int event)
-+{
-+	struct snd_soc_card *card = w->dapm->card;
-+	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
-+
-+	if (SND_SOC_DAPM_EVENT_ON(event))
-+		gpiod_set_value_cansleep(priv->ext_amp_gpio, 1);
-+	else
-+		gpiod_set_value_cansleep(priv->ext_amp_gpio, 0);
-+
-+	return 0;
-+}
-+
- static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
- 	SND_SOC_DAPM_HP("Headphone", NULL),
- 	SND_SOC_DAPM_MIC("Headset Mic", NULL),
-@@ -217,7 +234,9 @@ static const struct snd_soc_dapm_widget byt_rt5651_widgets[] = {
- 	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
- 			    platform_clock_control, SND_SOC_DAPM_PRE_PMU |
- 			    SND_SOC_DAPM_POST_PMD),
--
-+	SND_SOC_DAPM_SUPPLY("Ext Amp Power", SND_SOC_NOPM, 0, 0,
-+			    rt5651_ext_amp_power_event,
-+			    SND_SOC_DAPM_PRE_PMD | SND_SOC_DAPM_POST_PMU),
- };
+ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
+@@ -696,6 +688,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	const char * const mic_name[] = { "dmic", "in1", "in12" };
+ 	struct byt_rt5651_private *priv;
+ 	struct snd_soc_acpi_mach *mach;
++	struct device *codec_dev;
+ 	const char *i2c_name = NULL;
+ 	const char *hp_swapped;
+ 	bool is_bytcr = false;
+@@ -731,6 +724,11 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		"%s%s", "i2c-", i2c_name);
+ 	byt_rt5651_dais[dai_index].codec_name = byt_rt5651_codec_name;
  
- static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
-@@ -225,6 +244,7 @@ static const struct snd_soc_dapm_route byt_rt5651_audio_map[] = {
- 	{"Headset Mic", NULL, "Platform Clock"},
- 	{"Internal Mic", NULL, "Platform Clock"},
- 	{"Speaker", NULL, "Platform Clock"},
-+	{"Speaker", NULL, "Ext Amp Power"},
- 	{"Line In", NULL, "Platform Clock"},
- 
- 	{"Headset Mic", NULL, "micbias1"}, /* lowercase for rt5651 */
-@@ -678,6 +698,18 @@ static const struct x86_cpu_id baytrail_cpu_ids[] = {
- 	{}
- };
- 
-+static const struct x86_cpu_id cherrytrail_cpu_ids[] = {
-+	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_AIRMONT },     /* Braswell */
-+	{}
-+};
++	codec_dev = bus_find_device_by_name(&i2c_bus_type, NULL,
++					    byt_rt5651_codec_name);
++	if (!codec_dev)
++		return -EPROBE_DEFER;
 +
-+static const struct acpi_gpio_params ext_amp_enable_gpios = { 0, 0, false };
-+
-+static const struct acpi_gpio_mapping byt_rt5651_gpios[] = {
-+	{ "ext-amp-enable-gpios", &ext_amp_enable_gpios, 1 },
-+	{ },
-+};
-+
- struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
- 	u64 aif_value;       /* 1: AIF1, 2: AIF2 */
- 	u64 mclock_value;    /* usually 25MHz (0x17d7940), ignored */
-@@ -793,9 +825,36 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	/*
+ 	 * swap SSP0 if bytcr is detected
+ 	 * (will be overridden if DMI quirk is detected)
+@@ -794,7 +792,8 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 	dmi_check_system(byt_rt5651_quirk_table);
  
  	/* Must be called before register_card, also see declaration comment. */
- 	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
--	put_device(codec_dev);
--	if (ret_val)
-+	if (ret_val) {
-+		put_device(codec_dev);
- 		return ret_val;
-+	}
-+
-+	/* Cherry Trail devices use an external amplifier enable gpio */
-+	if (x86_match_cpu(cherrytrail_cpu_ids)) {
-+		devm_acpi_dev_add_driver_gpios(codec_dev, byt_rt5651_gpios);
-+		priv->ext_amp_gpio = devm_fwnode_get_index_gpiod_from_child(
-+						&pdev->dev, "ext-amp-enable", 0,
-+						codec_dev->fwnode,
-+						GPIOD_OUT_LOW, "speaker-amp");
-+		if (IS_ERR(priv->ext_amp_gpio)) {
-+			ret_val = PTR_ERR(priv->ext_amp_gpio);
-+			switch (ret_val) {
-+			case -ENOENT:
-+				priv->ext_amp_gpio = NULL;
-+				break;
-+			default:
-+				dev_err(&pdev->dev, "Failed to get ext-amp-enable GPIO: %d\n",
-+					ret_val);
-+				/* fall through */
-+			case -EPROBE_DEFER:
-+				put_device(codec_dev);
-+				return ret_val;
-+			}
-+		}
-+	}
-+
+-	ret_val = byt_rt5651_add_codec_device_props(byt_rt5651_codec_name);
++	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
 +	put_device(codec_dev);
- 
- 	log_quirks(&pdev->dev);
+ 	if (ret_val)
+ 		return ret_val;
  
 -- 
 2.18.0.rc2
