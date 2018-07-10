@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Move getting of
-	codec_dev into probe()" to the asoc tree
-Date: Tue, 10 Jul 2018 19:16:43 +0100
-Message-ID: <E1fcxBr-0001lY-6U@debutante>
-References: <20180701183631.5532-2-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Remove
+	is_valleyview helper" to the asoc tree
+Date: Tue, 10 Jul 2018 19:16:45 +0100
+Message-ID: <E1fcxBt-0001mY-Ex@debutante>
+References: <20180701183631.5532-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 755C1267713
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:48 +0200 (CEST)
-In-Reply-To: <20180701183631.5532-2-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 06C10267720
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:51 +0200 (CEST)
+In-Reply-To: <20180701183631.5532-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Move getting of codec_dev into probe()
+   ASoC: Intel: bytcr_rt5651: Remove is_valleyview helper
 
 has been applied to the asoc tree at
 
@@ -53,89 +53,63 @@ to this mail.
 Thanks,
 Mark
 
->From 2c375204bfad2f481feb006a82cdb67cc570b670 Mon Sep 17 00:00:00 2001
+>From fbea16dbc0a31484811c5f335ae344b2bbc66f40 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 1 Jul 2018 20:36:30 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Move getting of codec_dev into
- probe()
+Date: Sun, 1 Jul 2018 20:36:29 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Remove is_valleyview helper
 
-Move the getting of the codec_dev, to add device-props to it, out of
-byt_rt5651_add_codec_device_props() and into its caller,
-snd_byt_rt5651_mc_probe().
-
-This is a preparation patch for adding support for an external amplifier
-enable GPIO, which requires further accesses to the codec_dev.
+Remove is_valleyview helper, this is not necessary, we can simply call
+x86_match_cpu() directly instead.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 80f47a45cb10..d920725ce603 100644
+index ba2753e0e12a..80f47a45cb10 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -403,15 +403,10 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
-  * Note this MUST be called before snd_soc_register_card(), so that the props
-  * are in place before the codec component driver's probe function parses them.
-  */
--static int byt_rt5651_add_codec_device_props(const char *i2c_dev_name)
-+static int byt_rt5651_add_codec_device_props(struct device *i2c_dev)
- {
- 	struct property_entry props[MAX_NO_PROPS] = {};
--	struct device *i2c_dev;
--	int ret, cnt = 0;
+@@ -28,6 +28,7 @@
+ #include <linux/dmi.h>
+ #include <linux/slab.h>
+ #include <asm/cpu_device_id.h>
++#include <asm/intel-family.h>
+ #include <asm/platform_sst_audio.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+@@ -680,17 +681,10 @@ static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+ static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+ static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic[-swapped-hp]" */
+ 
+-static bool is_valleyview(void)
+-{
+-	static const struct x86_cpu_id cpu_ids[] = {
+-		{ X86_VENDOR_INTEL, 6, 55 }, /* Valleyview, Bay Trail */
+-		{}
+-	};
 -
--	i2c_dev = bus_find_device_by_name(&i2c_bus_type, NULL, i2c_dev_name);
--	if (!i2c_dev)
--		return -EPROBE_DEFER;
-+	int cnt = 0;
+-	if (!x86_match_cpu(cpu_ids))
+-		return false;
+-	return true;
+-}
++static const struct x86_cpu_id baytrail_cpu_ids[] = {
++	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_SILVERMONT1 }, /* Valleyview */
++	{}
++};
  
- 	props[cnt++] = PROPERTY_ENTRY_U32("realtek,jack-detect-source",
- 				BYT_RT5651_JDSRC(byt_rt5651_quirk));
-@@ -425,10 +420,7 @@ static int byt_rt5651_add_codec_device_props(const char *i2c_dev_name)
- 	if (byt_rt5651_quirk & BYT_RT5651_DMIC_EN)
- 		props[cnt++] = PROPERTY_ENTRY_BOOL("realtek,dmic-en");
- 
--	ret = device_add_properties(i2c_dev, props);
--	put_device(i2c_dev);
--
--	return ret;
-+	return device_add_properties(i2c_dev, props);
- }
- 
- static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
-@@ -696,6 +688,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	const char * const mic_name[] = { "dmic", "in1", "in12" };
- 	struct byt_rt5651_private *priv;
- 	struct snd_soc_acpi_mach *mach;
-+	struct device *codec_dev;
- 	const char *i2c_name = NULL;
- 	const char *hp_swapped;
- 	bool is_bytcr = false;
-@@ -731,6 +724,11 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 		"%s%s", "i2c-", i2c_name);
- 	byt_rt5651_dais[dai_index].codec_name = byt_rt5651_codec_name;
- 
-+	codec_dev = bus_find_device_by_name(&i2c_bus_type, NULL,
-+					    byt_rt5651_codec_name);
-+	if (!codec_dev)
-+		return -EPROBE_DEFER;
-+
- 	/*
+ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ 	u64 aif_value;       /* 1: AIF1, 2: AIF2 */
+@@ -741,7 +735,7 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
  	 * swap SSP0 if bytcr is detected
  	 * (will be overridden if DMI quirk is detected)
-@@ -794,7 +792,8 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
- 	dmi_check_system(byt_rt5651_quirk_table);
- 
- 	/* Must be called before register_card, also see declaration comment. */
--	ret_val = byt_rt5651_add_codec_device_props(byt_rt5651_codec_name);
-+	ret_val = byt_rt5651_add_codec_device_props(codec_dev);
-+	put_device(codec_dev);
- 	if (ret_val)
- 		return ret_val;
+ 	 */
+-	if (is_valleyview()) {
++	if (x86_match_cpu(baytrail_cpu_ids)) {
+ 		struct sst_platform_info *p_info = mach->pdata;
+ 		const struct sst_res_info *res_info = p_info->res_info;
  
 -- 
 2.18.0.rc2
