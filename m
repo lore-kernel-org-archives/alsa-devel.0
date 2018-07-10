@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for the
-	Lenovo Miix2 8 tablet" to the asoc tree
-Date: Tue, 10 Jul 2018 19:16:47 +0100
-Message-ID: <E1fcxBv-0001nc-Kj@debutante>
-References: <20180707102210.15633-1-hdegoede@redhat.com>
+From: Adam Goode <agoode@google.com>
+Subject: [PATCH - usb-audio 1/1] ALSA: usb-audio: Allow
+ changing from a bad sample rate
+Date: Tue, 10 Jul 2018 16:27:43 -0400
+Message-ID: <20180710202743.69639-1-agoode@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 60593267736
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:54 +0200 (CEST)
-In-Reply-To: <20180707102210.15633-1-hdegoede@redhat.com>
+Received: from mail-qt0-f202.google.com (mail-qt0-f202.google.com
+ [209.85.216.202])
+ by alsa0.perex.cz (Postfix) with ESMTP id 23EC9267700
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 22:27:51 +0200 (CEST)
+Received: by mail-qt0-f202.google.com with SMTP id b8-v6so22232567qto.16
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 13:27:51 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, russianneuromancer@ya.ru, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: patch@alsa-project.org
+Cc: Adam Goode <agoode@google.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+If the audio device is externally clocked and set to a rate that does
+not match the external clock, the clock will never be valid and we cannot
+set the rate successfully. To fix this, allow a rate change even if
+the clock is initially invalid, and validate again after the rate is
+changed.
 
-   ASoC: Intel: bytcr_rt5640: Add quirk for the Lenovo Miix2 8 tablet
+This fixes problems with MOTU UltraLite AVB hardware over USB.
 
-has been applied to the asoc tree at
+Signed-off-by: Adam Goode <agoode@google.com>
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 81583afe790c5bd86300537783b23f3b12794f03 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Sat, 7 Jul 2018 12:22:10 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the Lenovo Miix2 8
- tablet
-
-Add a quirk for the Lenovo Miix2 8 tablet, this tablet uses a digital
-mic on DMIC1 and has a mono-speaker. The jack-detect uses the default
-settings..
-
-Reported-and-tested-by: russianneuromancer@ya.ru
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/bytcr_rt5640.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index 7456566c5648..657910a08261 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -552,6 +552,19 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{	/* Lenovo Miix 2 8 */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LENOVO"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "20326"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Hiking"),
-+		},
-+		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
-+					BYT_RT5640_MONO_SPEAKER |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{	/* MSI S100 tablet */
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index c79749613fa6..9e9019464f91 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -513,14 +513,26 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip, int iface,
+ 	bool writeable;
+ 	u32 bmControls;
+ 
++	/* First, try to find a valid clock. This may trigger
++	 * automatic clock selection if the current clock is not
++	 * valid. */
+ 	clock = snd_usb_clock_find_source(chip, fmt->protocol,
+ 					  fmt->clock, true);
+-	if (clock < 0)
+-		return clock;
++	if (clock < 0) {
++		/* We did not find a valid clock, but that might be
++		 * because the current sample rate does not match an
++		 * external clock source. Try again without validation
++		 * and we will do another validation after setting the
++		 * rate. */
++		clock = snd_usb_clock_find_source(chip, fmt->protocol,
++						  fmt->clock, false);
++		if (clock < 0)
++			return clock;
++	}
+ 
+ 	prev_rate = get_sample_rate_v2v3(chip, iface, fmt->altsetting, clock);
+ 	if (prev_rate == rate)
+-		return 0;
++		return uac_clock_source_is_valid(chip, fmt->protocol, clock) ? 0 : -ENXIO;
+ 
+ 	if (fmt->protocol == UAC_VERSION_3) {
+ 		struct uac3_clock_source_descriptor *cs_desc;
+@@ -577,7 +589,8 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip, int iface,
+ 		snd_usb_set_interface_quirk(dev);
+ 	}
+ 
+-	return 0;
++	/* validate clock after rate change */
++	return uac_clock_source_is_valid(chip, fmt->protocol, clock) ? 0 : -ENXIO;
+ }
+ 
+ int snd_usb_init_sample_rate(struct snd_usb_audio *chip, int iface,
 -- 
-2.18.0.rc2
+2.18.0.203.gfac676dfb9-goog
