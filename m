@@ -1,21 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v5 6/9] soundwire: Handle multiple master
- instances in a stream
-Date: Tue, 10 Jul 2018 13:16:30 -0500
-Message-ID: <39c187f6-f9d6-4f01-81db-8ddba35572d7@linux.intel.com>
-References: <1530791196-15483-1-git-send-email-shreyas.nc@intel.com>
- <1530791196-15483-7-git-send-email-shreyas.nc@intel.com>
- <19b89cc8-b97e-dd43-3d96-8c5bdcb5287d@linux.intel.com>
- <20180710170229.GB22349@buildpc-HP-Z230>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Disable
+	jack-detect over suspend/resume" to the asoc tree
+Date: Tue, 10 Jul 2018 19:16:32 +0100
+Message-ID: <E1fcxBg-0001gI-4m@debutante>
+References: <20180704225935.7902-4-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 44B6F267700
- for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:34 +0200 (CEST)
-In-Reply-To: <20180710170229.GB22349@buildpc-HP-Z230>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 653CD267713
+ for <alsa-devel@alsa-project.org>; Tue, 10 Jul 2018 20:16:42 +0200 (CEST)
+In-Reply-To: <20180704225935.7902-4-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,114 +22,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/10/18 12:02 PM, Sanyog Kale wrote:
-> On Mon, Jul 09, 2018 at 06:42:34PM -0500, Pierre-Louis Bossart wrote:
->> Sorry, another issue that I found while reviewing the entire section.
->>>   }
->>> @@ -888,6 +918,7 @@ static void sdw_release_slave_stream(struct sdw_slave *slave,
->>>   /**
->>>    * sdw_release_master_stream() - Free Master runtime handle
->>>    *
->>> + * @m_rt: Master runtime node
->>>    * @stream: Stream runtime handle.
->>>    *
->>>    * This function is to be called with bus_lock held
->>> @@ -895,16 +926,18 @@ static void sdw_release_slave_stream(struct sdw_slave *slave,
->>>    * handle. If this is called first then sdw_release_slave_stream() will have
->>>    * no effect as Slave(s) runtime handle would already be freed up.
->>>    */
->>> -static void sdw_release_master_stream(struct sdw_stream_runtime *stream)
->>> +static void sdw_release_master_stream(struct sdw_master_runtime *m_rt,
->>> +			struct sdw_stream_runtime *stream)
->>>   {
->>> -	struct sdw_master_runtime *m_rt = stream->m_rt;
->>>   	struct sdw_slave_runtime *s_rt, *_s_rt;
->>>   	list_for_each_entry_safe(s_rt, _s_rt,
->>>   			&m_rt->slave_rt_list, m_rt_node)
->>>   		sdw_stream_remove_slave(s_rt->slave, stream);
->>> +	list_del(&m_rt->stream_node);
->>>   	list_del(&m_rt->bus_node);
->>> +	kfree(m_rt);
->>>   }
->>>   /**
->>> @@ -918,13 +951,22 @@ static void sdw_release_master_stream(struct sdw_stream_runtime *stream)
->>>   int sdw_stream_remove_master(struct sdw_bus *bus,
->>>   		struct sdw_stream_runtime *stream)
->>>   {
->>> +	struct sdw_master_runtime *m_rt, *_m_rt;
->>> +
->>>   	mutex_lock(&bus->bus_lock);
->>> -	sdw_release_master_stream(stream);
->>> -	sdw_master_port_release(bus, stream->m_rt);
->>> -	stream->state = SDW_STREAM_RELEASED;
->>> -	kfree(stream->m_rt);
->>> -	stream->m_rt = NULL;
->>> +	list_for_each_entry_safe(m_rt, _m_rt,
->>> +			&stream->master_list, stream_node) {
->>> +
->>> +		if (m_rt->bus != bus)
->>> +			continue;
->>> +
->>> +		sdw_master_port_release(bus, m_rt);
->>> +		sdw_release_master_stream(m_rt, stream);
->>> +	}
->>> +
->>> +	if (list_empty(&stream->master_list))
->>> +		stream->state = SDW_STREAM_RELEASED;
->>>   	mutex_unlock(&bus->bus_lock);
->>>
->> So the sequence is
->>
->> mutex_lock
->> sdw_master_port_release()
->> sdw_release_master_stream()
->> ?????? sdw_stream_remove_slave()
->> ?????? ?????? mutex_lock
->>
->> Is this intentional to take the same mutex twice (not sure if it even
->> works).
-> 
-> sdw_stream_remove_slave is called from sdw_release_master_stream to make
-> sure all Slave(s) resources are freed up before freeing Master.
-> sdw_stream_remove_slave is also called by Slave driver to free up Slave
-> resources. In either case, we wanted to make sure the bus_lock is held
-> hence the bus lock is held in sdw_stream_remove_slave API as well.
+The patch
 
-Yes, it's fine to take the lock from sdw_stream_remove_slave(), the 
-point was to avoid taking the lock twice when the master is removed first.
+   ASoC: Intel: bytcr_rt5651: Disable jack-detect over suspend/resume
 
-> 
-> It doesnt look correct to take same mutex twice. Will check on this.
-> 
->> what you probably wanted is to replace sdw_stream_remove_slave() by the
->> equivalent sequence
->>
->> sdw_slave_port_release()
->> sdw_release_slave_stream()
->>
->> which are both supposed to be called with a bus_lock held.
-> 
-> you mean to say perform sdw_slave_port_release and
-> sdw_release_slave_stream in sdw_release_master_stream instead of calling
-> sdw_stream_remove_slave??
+has been applied to the asoc tree at
 
-Yes, something like the change below:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-static void sdw_release_master_stream(struct sdw_master_runtime *m_rt,
-			struct sdw_stream_runtime *stream)
-  {
-	struct sdw_master_runtime *m_rt = stream->m_rt;
-  	struct sdw_slave_runtime *s_rt, *_s_rt;
-  	list_for_each_entry_safe(s_rt, _s_rt,
-  			&m_rt->slave_rt_list, m_rt_node)
-- 		sdw_stream_remove_slave(s_rt->slave, stream);
-+		sdw_slave_port_release()
-+		sdw_release_slave_stream()
-	list_del(&m_rt->stream_node);
-  	list_del(&m_rt->bus_node);
-	kfree(m_rt);
-  }
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From b91f432cbc3326f715b8c3f02ff4066ab398833f Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Thu, 5 Jul 2018 00:59:34 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Disable jack-detect over
+ suspend/resume
+
+Disable jack-detection and thus the codec IRQ over suspend/resume.
+
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/boards/bytcr_rt5651.c | 49 ++++++++++++++++++++++++---
+ 1 file changed, 44 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
+index 5301205496be..2a8f86dfe4cb 100644
+--- a/sound/soc/intel/boards/bytcr_rt5651.c
++++ b/sound/soc/intel/boards/bytcr_rt5651.c
+@@ -676,6 +676,48 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+ };
+ 
+ /* SoC card */
++static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
++static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
++static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
++static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic[-swapped-hp]" */
++
++static int byt_rt5651_suspend(struct snd_soc_card *card)
++{
++	struct snd_soc_component *component;
++
++	if (!BYT_RT5651_JDSRC(byt_rt5651_quirk))
++		return 0;
++
++	list_for_each_entry(component, &card->component_dev_list, card_list) {
++		if (!strcmp(component->name, byt_rt5651_codec_name)) {
++			dev_dbg(component->dev, "disabling jack detect before suspend\n");
++			snd_soc_component_set_jack(component, NULL, NULL);
++			break;
++		}
++	}
++
++	return 0;
++}
++
++static int byt_rt5651_resume(struct snd_soc_card *card)
++{
++	struct byt_rt5651_private *priv = snd_soc_card_get_drvdata(card);
++	struct snd_soc_component *component;
++
++	if (!BYT_RT5651_JDSRC(byt_rt5651_quirk))
++		return 0;
++
++	list_for_each_entry(component, &card->component_dev_list, card_list) {
++		if (!strcmp(component->name, byt_rt5651_codec_name)) {
++			dev_dbg(component->dev, "re-enabling jack detect after resume\n");
++			snd_soc_component_set_jack(component, &priv->jack, NULL);
++			break;
++		}
++	}
++
++	return 0;
++}
++
+ static struct snd_soc_card byt_rt5651_card = {
+ 	.name = "bytcr-rt5651",
+ 	.owner = THIS_MODULE,
+@@ -686,13 +728,10 @@ static struct snd_soc_card byt_rt5651_card = {
+ 	.dapm_routes = byt_rt5651_audio_map,
+ 	.num_dapm_routes = ARRAY_SIZE(byt_rt5651_audio_map),
+ 	.fully_routed = true,
++	.suspend_pre = byt_rt5651_suspend,
++	.resume_post = byt_rt5651_resume,
+ };
+ 
+-static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+-static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+-static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+-static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic[-swapped-hp]" */
+-
+ static const struct x86_cpu_id baytrail_cpu_ids[] = {
+ 	{ X86_VENDOR_INTEL, 6, INTEL_FAM6_ATOM_SILVERMONT1 }, /* Valleyview */
+ 	{}
+-- 
+2.18.0.rc2
