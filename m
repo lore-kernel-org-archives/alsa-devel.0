@@ -1,18 +1,30 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH] ASoC: core: add support to card re-bind/unbind
-	using component framework
-Date: Wed, 11 Jul 2018 09:43:18 +0100
-Message-ID: <20180711084318.11786-1-srinivas.kandagatla@linaro.org>
+From: Harald Schuster <schuster@technikum-wien.at>
+Subject: Re: poll blocked after prepare state
+Date: Wed, 11 Jul 2018 08:54:48 +0000
+Message-ID: <20180711085448.Horde.i_RZ0FUK1Gk9efjLRzRhEgF@webmail.technikum-wien.at>
+References: <20180621104224.Horde.WJU_RKtLDLoAGMPfW3FREnA@webmail.technikum-wien.at>
+ <20180622132921.Horde.VdiLUhoIz-J3ymTOC0qkzL5@webmail.technikum-wien.at>
+ <s5h7emq3oxb.wl-tiwai@suse.de>
+ <20180622183612.Horde.zlSuz13lBOQlZHX62qPNxF5@webmail.technikum-wien.at>
+ <s5hd0wgdvn0.wl-tiwai@suse.de>
+ <20180625095902.Horde.IP1UVAcUOineuktGUtPeR52@webmail.technikum-wien.at>
+ <s5hzhzjyriz.wl-tiwai@suse.de>
+ <20180625134315.Horde.3aYK199Y2wKOF9JnRDEG3Qh@webmail.technikum-wien.at>
+ <s5hlgb3yntu.wl-tiwai@suse.de>
+ <20180630101020.Horde.AjJAhdX9TE7cFNB1y6xcE_L@webmail.technikum-wien.at>
+ <20180703104138.Horde.j4jzVQNyS4AoF4yPJhMc3Vw@webmail.technikum-wien.at>
+ <20180711072727.Horde.JcILA71f0WklgGMdKJP5EEi@webmail.technikum-wien.at>
+ <s5hbmbep6sr.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"; DelSp="Yes"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com
- [209.85.221.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 41E46267711
- for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 10:45:24 +0200 (CEST)
-Received: by mail-wr1-f68.google.com with SMTP id m1-v6so4552533wrg.5
- for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 01:45:24 -0700 (PDT)
+Received: from bifrost.technikum-wien.at (bifrost.technikum-wien.at
+ [195.245.225.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id CA5CF267712
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 10:54:48 +0200 (CEST)
+In-Reply-To: <s5hbmbep6sr.wl-tiwai@suse.de>
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,191 +34,217 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
-Cc: bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org, rohitkr@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch aims at add achieving dynamic behaviour of audio card when
-the dependent components disappear and reappear.
 
-With this patch the card is removed if any of the dependent component
-is removed and card is added back if the dependent component comes back.
-All this is done using component framework and matching based on
-component name.
+Zitat von Takashi Iwai <tiwai@suse.de>:
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
+> On Wed, 11 Jul 2018 09:27:27 +0200,
+> Harald Schuster wrote:
+>>
+>> Hi
+>> So I found out that the problem only occours when the dshare Plugin is
+>> used! When the normal hw is used the problem does not exist. Is there
+>> any knwon problem with the dshare plugin that the playback stops or is
+>> there a workaraund?
+>
+> Let me ask again like a broken record: did you check with the latest
+> alsa-lib?
+>
+> And, please don't top-post unless you have to do so.
+>
 
-During discussion regarding card re-binding when components unregister
-and register back at https://lkml.org/lkml/2018/7/9/785 it was suggested
-that component framework can be added into core to provide this feature.
-
-With this new changes the card will re-bind once the dependent component
-re-registers after unregistering. This works based on the match done
-from component name using component framework.
-
-I have tested this patch with qdsp start-stop usecase for more than 10000
-times in loop on Qcom platforms.
-
-I will send qdsp side cleanup patches once I get some feedback on this patch.
+I tested it with alsa-lib 1.1.2 because i can not update to a newer  
+version and the error still exists.
 
 
- include/sound/soc.h  |  5 ++++
- sound/soc/soc-core.c | 70 ++++++++++++++++++++++++++++++++++++++++++++++++----
- 2 files changed, 70 insertions(+), 5 deletions(-)
-
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 870ba6b64817..b94149d29c0d 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -17,6 +17,7 @@
- #include <linux/workqueue.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
-+#include <linux/component.h>
- #include <linux/regmap.h>
- #include <linux/log2.h>
- #include <sound/core.h>
-@@ -1088,6 +1089,10 @@ struct snd_soc_card {
- 
- 	struct work_struct deferred_resume_work;
- 
-+	/* component framework related */
-+	bool components_added;
-+	struct component_match *match;
-+
- 	/* lists of probed devices belonging to this card */
- 	struct list_head component_dev_list;
- 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6d33634b934b..377ed8e67686 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -279,11 +279,31 @@ static inline void snd_soc_debugfs_exit(void)
- 
- #endif
- 
-+static int snd_soc_card_comp_compare(struct device *dev, void *data)
-+{
-+	struct snd_soc_component *component = NULL;
-+	struct snd_soc_component *t;
-+
-+	lockdep_assert_held(&client_mutex);
-+	list_for_each_entry(t, &component_list, list) {
-+		if (dev == t->dev) {
-+			component = t;
-+			break;
-+		}
-+	}
-+
-+	if (component && !strcmp(component->name, data))
-+		return 1;
-+
-+	return 0;
-+}
-+
- static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
- 			      struct snd_soc_component *component)
- {
- 	struct snd_soc_rtdcom_list *rtdcom;
- 	struct snd_soc_rtdcom_list *new_rtdcom;
-+	char *cname;
- 
- 	for_each_rtdcom(rtd, rtdcom) {
- 		/* already connected */
-@@ -300,6 +320,13 @@ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
- 
- 	list_add_tail(&new_rtdcom->list, &rtd->component_list);
- 
-+	if (!rtd->card->components_added) {
-+		cname = devm_kasprintf(rtd->card->dev, GFP_KERNEL,
-+				       "%s", component->name);
-+		component_match_add(rtd->card->dev, &rtd->card->match,
-+				    snd_soc_card_comp_compare, cname);
-+	}
-+
- 	return 0;
- }
- 
-@@ -835,6 +862,28 @@ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
- 	return false;
- }
- 
-+static int snd_soc_card_comp_bind(struct device *dev)
-+{
-+	struct snd_soc_card *card = dev_get_drvdata(dev);
-+
-+	if (card->instantiated)
-+		return 0;
-+
-+	return snd_soc_register_card(card);
-+}
-+
-+static void snd_soc_card_comp_unbind(struct device *dev)
-+{
-+	struct snd_soc_card *card = dev_get_drvdata(dev);
-+
-+	snd_soc_unregister_card(card);
-+}
-+
-+static const struct component_master_ops snd_soc_card_comp_ops = {
-+	.bind = snd_soc_card_comp_bind,
-+	.unbind = snd_soc_card_comp_unbind,
-+};
-+
- static int soc_bind_dai_link(struct snd_soc_card *card,
- 	struct snd_soc_dai_link *dai_link)
- {
-@@ -2108,6 +2157,12 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
- 
- 	card->instantiated = 1;
- 	snd_soc_dapm_sync(&card->dapm);
-+	if (!card->components_added) {
-+		component_master_add_with_match(card->dev,
-+						&snd_soc_card_comp_ops,
-+						card->match);
-+		card->components_added = true;
-+	}
- 	mutex_unlock(&card->mutex);
- 	mutex_unlock(&client_mutex);
- 
-@@ -3098,11 +3153,6 @@ static void snd_soc_component_cleanup(struct snd_soc_component *component)
- 
- static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
- {
--	struct snd_soc_card *card = component->card;
--
--	if (card)
--		snd_soc_unregister_card(card);
--
- 	list_del(&component->list);
- }
- 
-@@ -3169,8 +3219,17 @@ int snd_soc_add_component(struct device *dev,
- 
- 	snd_soc_component_add(component);
- 
-+	ret = component_add(dev, NULL);
-+	if (ret < 0) {
-+		dev_err(dev, "ASoC: Failed to add Component: %d\n", ret);
-+		goto err_comp;
-+	}
-+
- 	return 0;
- 
-+err_comp:
-+	soc_remove_component(component);
-+	snd_soc_unregister_dais(component);
- err_cleanup:
- 	snd_soc_component_cleanup(component);
- err_free:
-@@ -3218,6 +3277,7 @@ static int __snd_soc_unregister_component(struct device *dev)
- 	mutex_unlock(&client_mutex);
- 
- 	if (found) {
-+		component_del(dev, NULL);
- 		snd_soc_component_cleanup(component);
- 	}
- 
--- 
-2.16.2
+>
+> thanks,
+>
+> Takashi
+>
+>
+>> br Harald
+>>
+>> Zitat von Harald Schuster <schuster@technikum-wien.at>:
+>>
+>> > Hi
+>> > I found out that the error occours when the snd_pcm_read_areas
+>> > function is called in a special order. When the function
+>> > snd_pcm_read_areas is not called or it is called between the
+>> > snd_pcm_dshare_starts it works fine. The Codec is already running
+>> > because the mic path is working fine.
+>> >
+>> > pb_thread_func (alsa_dev.c): Underrun
+>> > snd_pcm_read_areas(pcm.c): Before snd_pcm_start()
+>> > snd_pcm_generic_start(pcm_generic.c):
+>> > snd_pcm_hw_start
+>> > snd_pcm_hw_start
+>> > pb_thread_func (alsa_dev.c): Underrun 0x74395c80
+>> > snd_pcm_write_areas(pcm.c): Before snd_pcm_start()
+>> > snd_pcm_dshare_start
+>> > snd_pcm_write_areas(pcm.c): Before snd_pcm_start()
+>> > snd_pcm_dshare_start
+>> > snd_pcm_write_areas(pcm.c): Before snd_pcm_start()
+>> > snd_pcm_dshare_start
+>> > snd_pcm_write_areas(pcm.c): Before snd_pcm_start()
+>> > snd_pcm_dshare_start
+>> >
+>> >
+>> >
+>> > Zitat von Harald Schuster <schuster@technikum-wien.at>:
+>> >
+>> >> We found out that in some cases after the underrun the
+>> >> snd_pcm_dshare_start function is called and in some cases
+>> >> snd_pcm_dshare_start and the snd_pcm_hw_start function is called.
+>> >> When both functions are called the codec stops playback.
+>> >>
+>> >> Zitat von Takashi Iwai <tiwai@suse.de>:
+>> >>
+>> >>> On Mon, 25 Jun 2018 15:43:15 +0200,
+>> >>> Harald Schuster wrote:
+>> >>>>
+>> >>>> Hi
+>> >>>> The codec is the TI tlv320aic3x and the buffersize is set to 64 and
+>> >>>> the periodsize is set to 32 in the asound.conf. We use the pjProject
+>> >>>> for the audioprocessing and the internal period time is 4ms and the
+>> >>>> sample rate is 8000 Hz. The second codec is a USB codec which has no
+>> >>>> problems. Our scenario is that a incoming VOIP call is connected to
+>> >>>> the both codec (I2s and USB) and the USB codec starts the playback
+>> >>>> without any problems and the tlv320 sometimes works but when a
+>> >>>> underrun accours it crash!
+>> >>>
+>> >>> Is it really so hardware-specific problem?
+>> >>>
+>> >>> And, did you follow the recent development / fixes if it's about
+>> >>> dshare plugin?  There have been lots of changes.
+>> >>>
+>> >>> I'm not asking about updating the kernels.  The question is rather
+>> >>> about alsa-lib.
+>> >>>
+>> >>>
+>> >>> Takashi
+>> >>>
+>> >>>>
+>> >>>> best regards Harald
+>> >>>>
+>> >>>>
+>> >>>> Zitat von Takashi Iwai <tiwai@suse.de>:
+>> >>>>
+>> >>>>> On Mon, 25 Jun 2018 11:59:02 +0200,
+>> >>>>> Harald Schuster wrote:
+>> >>>>>>
+>> >>>>>>
+>> >>>>>> Hi
+>> >>>>>> We are not able to update our system. We are using USB codecs which
+>> >>>>>> are working fine but they are using the snd_pcm_hw_prepare function.
+>> >>>>>> The Problem only exists for the I2S codec in our system. When i
+>> >>>>>> changed the buffer size in the asound.conf for the codec the problem
+>> >>>>>> allready exists but it arise not so often because there is not so
+>> >>>>>> often a underrun. Is there any hint where i could lock for the
+>> >>>>>> problem?!
+>> >>>>>
+>> >>>>> Well, with that little information, it's hard to advice anything...
+>> >>>>>
+>> >>>>>
+>> >>>>> Takashi
+>> >>>>>
+>> >>>>>> br Harald
+>> >>>>>>
+>> >>>>>> Zitat von Takashi Iwai <tiwai@suse.de>:
+>> >>>>>>
+>> >>>>>>> On Fri, 22 Jun 2018 20:36:12 +0200,
+>> >>>>>>> Harald Schuster wrote:
+>> >>>>>>>>
+>> >>>>>>>>
+>> >>>>>>>> Zitat von Takashi Iwai <tiwai@suse.de>:
+>> >>>>>>>>
+>> >>>>>>>> > On Fri, 22 Jun 2018 15:29:21 +0200,
+>> >>>>>>>> > Harald Schuster wrote:
+>> >>>>>>>> >>
+>> >>>>>>>> >> I found out that an underrun occours and so the
+>> >>>>>>>> pcm_prepare function
+>> >>>>>>>> >> for pcm_direct is called and then pcm_start_dshare is  
+>> called. Both
+>> >>>>>>>> >> functions returns without any error but the playback path
+>> >>>>>>>> is blocked
+>> >>>>>>>> >> in the snd_pcm_wait_nocheck function. I read that there
+>> >>>>>>>> was an similar
+>> >>>>>>>> >> problem before in the group but i didn't found any
+>> >>>>>>>> solution. Is this a
+>> >>>>>>>> >> problem in the driver and how can i go forward to fix it.
+>> >>>>>>>> The codec is
+>> >>>>>>>> >> a tlv320aic3x-audio. Thanks for your help.
+>> >>>>>>>> >
+>> >>>>>>>> > Does this happen with the very latest alsa-lib git version?
+>> >>>>>>>> > Just to be sure.
+>> >>>>>>>> >
+>> >>>>>>>> >
+>> >>>>>>>> > Takashi
+>> >>>>>>>> > _______________________________________________
+>> >>>>>>>> > Alsa-devel mailing list
+>> >>>>>>>> > Alsa-devel@alsa-project.org
+>> >>>>>>>> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>>>>>>>
+>> >>>>>>>> Hi
+>> >>>>>>>> We are using k4.1.15-6QP+ga2066af.
+>> >>>>>>>
+>> >>>>>>> I'm asking the alsa-lib, not kernel.
+>> >>>>>>>
+>> >>>>>>> And 4.1.x is very old...  Please check either 4.17.x or latest Linus
+>> >>>>>>> tree whether the problem persists, too.
+>> >>>>>>>
+>> >>>>>>>
+>> >>>>>>> Takashi
+>> >>>>>>> _______________________________________________
+>> >>>>>>> Alsa-devel mailing list
+>> >>>>>>> Alsa-devel@alsa-project.org
+>> >>>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>>>>>
+>> >>>>>>
+>> >>>>>>
+>> >>>>>> _______________________________________________
+>> >>>>>> Alsa-devel mailing list
+>> >>>>>> Alsa-devel@alsa-project.org
+>> >>>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>>>>>
+>> >>>>> _______________________________________________
+>> >>>>> Alsa-devel mailing list
+>> >>>>> Alsa-devel@alsa-project.org
+>> >>>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>>>
+>> >>>>
+>> >>>>
+>> >>>> _______________________________________________
+>> >>>> Alsa-devel mailing list
+>> >>>> Alsa-devel@alsa-project.org
+>> >>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>>>
+>> >>> _______________________________________________
+>> >>> Alsa-devel mailing list
+>> >>> Alsa-devel@alsa-project.org
+>> >>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >>
+>> >>
+>> >>
+>> >> _______________________________________________
+>> >> Alsa-devel mailing list
+>> >> Alsa-devel@alsa-project.org
+>> >> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> >
+>> >
+>> >
+>> > _______________________________________________
+>> > Alsa-devel mailing list
+>> > Alsa-devel@alsa-project.org
+>> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
+>>
+>>
+>> _______________________________________________
+>> Alsa-devel mailing list
+>> Alsa-devel@alsa-project.org
+>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>>
