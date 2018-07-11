@@ -1,104 +1,77 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "regmap: slimbus: add support to multi read/write" to the regmap tree
-Date: Wed, 11 Jul 2018 11:59:14 +0100
-Message-ID: <E1fdCq2-0007z5-D1@debutante>
-References: <20180706150527.8811-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180706150527.8811-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.orglinux-kernel@vger.kernel.org
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: Re: [PATCH v2] ASoC: hdac_hdmi: Program pin-port-mux
+ during jack report event
+Date: Wed, 11 Jul 2018 16:26:03 +0530
+Message-ID: <20180711105603.GA23064@intel.com>
+References: <1531290643-29312-1-git-send-email-sriramx.periyasamy@intel.com>
+ <s5hpnzup8y6.wl-tiwai@suse.de> <20180711092545.GA30345@intel.com>
+ <s5h4lh6ay3h.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8282A267610
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 13:00:11 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5h4lh6ay3h.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Wed, Jul 11, 2018 at 12:03:14PM +0200, Takashi Iwai wrote:
+> On Wed, 11 Jul 2018 11:25:46 +0200,
+> Sriram Periyasamy wrote:
+> > 
+> > On Wed, Jul 11, 2018 at 08:45:05AM +0200, Takashi Iwai wrote:
+> > > On Wed, 11 Jul 2018 08:30:43 +0200,
+> > > Sriram Periyasamy wrote:
+> > > > +		if (port->pin->conn_index > 0)
+> > > > +			snd_hdac_codec_write(&edev->hdev, port->pin->nid,
+> > > > +						0, AC_VERB_SET_CONNECT_SEL,
+> > > > +						port->pin->conn_index - 1);
+> > > 
+> > > And, here checks conn_index > 0 while...
+> > > 
+> > > > @@ -903,6 +931,9 @@ static int hdac_hdmi_set_pin_port_mux(struct snd_kcontrol *kcontrol,
+> > > >  		}
+> > > >  	}
+> > > >  
+> > > > +	if (ucontrol->value.enumerated.item[0] > 0)
+> > > > +		port->pin->conn_index =	ucontrol->value.enumerated.item[0];
+> > > 
+> > > ... conn_index is set only non-zero here.
+> > > 
+> > > That is, once after a non-zero is passed, conn_index can't any longer
+> > > back to zero.  I guess it's not intentional?
+> > > 
+> > 
+> > No, it is intentional. For example, two ports are connected to the
+> > display and user land set mux only for one port. Hence other port's
+> > conn_index is set to default 0. When jack report happens for that port,
+> > we would be writing invalid connection select index which will lead to
+> > undefined hardware behaviour as per the HDA spec.
+> > 
+> > Though it is userland's mistake, it is better to take care in the driver.
+> 
+> Then wouldn't it be better to remember the last set value in
+> hdac_hdmi_pin_mux_widget_event()?  The purpose of the patch is to
+> restore the previous state.
+> 
 
-   regmap: slimbus: add support to multi read/write
-
-has been applied to the regmap tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Since hdac_hdmi_pin_mux_widget_event() invoked only for current playback
+pin-port-mux path, we wouldn't restore other port's indices. So
+hdac_hdmi_jack_report() chosen which will restore other ports also in
+all use cases.
 
 Thanks,
-Mark
-
->From e76ad18b56775aa20c0fb8e6203fae2aaee57e5c Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Fri, 6 Jul 2018 16:05:27 +0100
-Subject: [PATCH] regmap: slimbus: add support to multi read/write
-
-SLIMbus supports upto 16 bytes in value management messages,
-so add support to read/writes upto 16 bytes.
-
-This also removes redundant single register reg_read/reg_write.
-
-Also useful for paged register access on SLIMbus interfaced codecs.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- drivers/base/regmap/regmap-slimbus.c | 23 +++++++----------------
- 1 file changed, 7 insertions(+), 16 deletions(-)
-
-diff --git a/drivers/base/regmap/regmap-slimbus.c b/drivers/base/regmap/regmap-slimbus.c
-index 91d501eda8a9..0968059f1ef5 100644
---- a/drivers/base/regmap/regmap-slimbus.c
-+++ b/drivers/base/regmap/regmap-slimbus.c
-@@ -7,33 +7,24 @@
- 
- #include "internal.h"
- 
--static int regmap_slimbus_byte_reg_read(void *context, unsigned int reg,
--					unsigned int *val)
-+static int regmap_slimbus_write(void *context, const void *data, size_t count)
- {
- 	struct slim_device *sdev = context;
--	int v;
- 
--	v = slim_readb(sdev, reg);
--
--	if (v < 0)
--		return v;
--
--	*val = v;
--
--	return 0;
-+	return slim_write(sdev, *(u16 *)data, count - 2, (u8 *)data + 2);
- }
- 
--static int regmap_slimbus_byte_reg_write(void *context, unsigned int reg,
--					 unsigned int val)
-+static int regmap_slimbus_read(void *context, const void *reg, size_t reg_size,
-+			       void *val, size_t val_size)
- {
- 	struct slim_device *sdev = context;
- 
--	return slim_writeb(sdev, reg, val);
-+	return slim_read(sdev, *(u16 *)reg, val_size, val);
- }
- 
- static struct regmap_bus regmap_slimbus_bus = {
--	.reg_write = regmap_slimbus_byte_reg_write,
--	.reg_read = regmap_slimbus_byte_reg_read,
-+	.write = regmap_slimbus_write,
-+	.read = regmap_slimbus_read,
- 	.reg_format_endian_default = REGMAP_ENDIAN_LITTLE,
- 	.val_format_endian_default = REGMAP_ENDIAN_LITTLE,
- };
--- 
-2.18.0.rc2
+Sriram.
