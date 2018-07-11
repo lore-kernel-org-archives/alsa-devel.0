@@ -1,121 +1,91 @@
-From: jimqu <jimqu-5C7GfCeVMHo@public.gmane.org>
-Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiBbYWxzYS1kZXZlbF0g562U5aSNOiBb?=
- =?UTF-8?Q?PATCH]_vgaswitchroo:_set_audio_client_id_according_to_bound_gpu_c?=
- =?UTF-8?Q?lient_id?=
-Date: Wed, 11 Jul 2018 17:26:11 +0800
-Message-ID: <46d4d516-8373-2b22-da2e-f9f386c66973@amd.com>
-References: <20180629080634.GA7357@wunner.de>
- <20180629092138.GA11849@wunner.de>
- <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629111108.GA11609@wunner.de>
- <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180709092759.GA3649@wunner.de>
- <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
- <s5hr2kco3gp.wl-tiwai@suse.de> <20180709155643.GE3008@phenom.ffwll.local>
- <s5hpnzwcsf7.wl-tiwai@suse.de>
- <DM3PR12MB0873E9DD8B7448CB8A6829DA99440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <s5hr2kbr03k.wl-tiwai@suse.de> <a37f08e7-734e-977c-597f-46d5c3ec34bc@amd.com>
- <s5hin5nctby.wl-tiwai@suse.de> <733011b9-1880-76a8-d00f-076591e93c53@amd.com>
- <s5hbmbfcp5v.wl-tiwai@suse.de> <s5hfu0qp7cv.wl-tiwai@suse.de>
- <1936c752-f858-2caf-35e7-98bea431fb7c@amd.com> <s5h1scap2h2.wl-tiwai@suse.de>
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: Re: [PATCH v2] ASoC: hdac_hdmi: Program pin-port-mux
+ during jack report event
+Date: Wed, 11 Jul 2018 14:55:46 +0530
+Message-ID: <20180711092545.GA30345@intel.com>
+References: <1531290643-29312-1-git-send-email-sriramx.periyasamy@intel.com>
+ <s5hpnzup8y6.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <s5h1scap2h2.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "Qu,
- Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>, Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A140267711
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 11:29:55 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <s5hpnzup8y6.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Patches Audio <patches.audio@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Jeeja KP <jeeja.kp@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE45bm0MDfmnIgxMeaXpSAxNzowNCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFdl
-ZCwgMTEgSnVsIDIwMTggMTA6NDE6MzggKzAyMDAsCj4gamltcXUgd3JvdGU6Cj4+Cj4+Cj4+IE9u
-IDIwMTjlubQwN+aciDEx5pelIDE1OjE5LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+PiBPbiBUdWUs
-IDEwIEp1bCAyMDE4IDEzOjIxOjAwICswMjAwLAo+Pj4gVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+
-PiByZXZlcnQgdGhlIGZpeCBvZiBhbWRncHUgc3VzcGVuZCBpc3N1ZSwgYXVkaW8gaXNzdWUgYWxz
-byBjYW4gYmUgb2JzZXJ2ZWQuCj4+Pj4gRGlkIHlvdSBjaGVjayB0aGUgYmVoYXZpb3Igd2l0aCB0
-aGUgc2luZ2xlIEFNRCBHUFUgaGFyZHdhcmU/Cj4+Pj4gSWYgY29uZmlybWVkLCB3ZSBjYW4gZm9y
-Z2V0IGFib3V0IHZnYV9zd2l0Y2hlcm9vLgo+Pj4gLi4uIGFuZCB0YWtpbmcgYSBsb29rIGJhY2sg
-YXQgdGhlIHJlY2VudCBjaGFuZ2VzLCBJIGd1ZXNzIGl0IGNhbiBiZQo+Pj4gdGhlIGZvcmNlZCBy
-dW50aW1lIFBNIGVuYWJsZW1lbnQsIG5vdCBkaXJlY3RseSB3aXRoIHZnYV9zd2l0Y2hlcm9vCj4+
-PiBhY3Rpb24gaXRzZWxmLgo+PiBZZWFoLCB0aGUgZnVuY3Rpb24gdmdhX3N3aXRjaGVyb29fc2V0
-X2R5bmFtaWNfc3dpdGNoKCkgaGFzIGRpc2NhcmRlZCwKPj4gc28gdGhlcmUgaXMgbm8gd2F5IEdG
-WCBkcml2ZXIgdG8gY29udHJvbCBhdWRpbyBwb3dlci4gSG93ZXZlciwga2VlcCBpbgo+PiBtaW5k
-LCBjdXJyZW50IGF1ZGlvIGlzIGJvdW5kIHRvIGlHUFUsIHRoYXQgbWVhbiB0aGUgaXNzdWUgc2hv
-dWxkIGJlCj4+IG5vdGhpbmcgYWJvdXQKPj4gdmdhc3d0aWNocmVvby4gc2luY2UgY3VycmVudCBh
-dWRpbyBwY2kgYnVzIGlzIGRpZmZlcmVudCBmcm9tIGRHUFUsCj4+IHRoYXQgbWVhbnMgdGhlIHBj
-aV9idXNfc2V0X2N1cnJlbnRfc3RhdGUoKSBpbgo+PiB2Z2Ffc3dpdGNoZXJvb19ydW50aW1lX3N1
-c3BlbmQoKSBhbmQgcGNpX3dha2V1cF9idXMoKSBpbgo+PiB2Z2Ffc3dpdGNoZXJvb19ydW50aW1l
-X3Jlc3VtZSgpIGNvdWxkIG5vdCB0b3VjaCB0aGUgYXVkaW8gcGNpIHBvd2VyCj4+IHN0YXRlIGZy
-b20gZEdQVSBpbnN0YW5jZS4KPj4KPj4gVGhpcyBpcyBhIGZlZWRiYWNrIGdvdCBmcm9tIG91ciBP
-RU0gZGV2ZWxvcGVyLCBpdCBpcyB0aGUgb3ZlcnZpZXcgb2YKPj4gYXVkaW8gZGV0ZWN0IHByb2Nl
-c3MuCj4+Cj4+PiBGaXJzdCwgdGhlIGtlcm5lbCAgYXVkaW8gZHJpdmVyIHdpbGwgYmUgdHJpZ2dl
-cmVkIHRvIHJlYWQgRUxELCBpZiB0aGUKPj4+PiBFTEQgaXMgdmFsaWQsIGl0IHdpbGwgcmVwb3J0
-IGEgamFjayBldmVudCAob24gb3IgYXZhaWxhYmxlKSB0byBzb3VuZAo+Pj4+IGNvcmUgZHJpdmVy
-OyB0aGUgcHVsc2VhdWRpbyBzdWJzY3JpYmUgYWxsIGphY2sgZXZlbnRzLCBpZiBpdCBpcyB0b2xk
-Cj4+Pj4gdGhhdCB0aGUgaGRtaSBqYWNrIGlzIHBsdWdnZWQgaW4gKG9uKSwgdGhlIHB1bHNlYXVk
-aW8gd2lsbCBzZXQgdGhpcwo+Pj4+IHBvcnQgdG8gYXZhaWxhYmxlLCB0aGVuIHRoZSBwYS1jYXJk
-IG9yIHBhLXNpbmsgaGFzIGF2YWlsYWJsZSBwb3J0LCBpdAo+Pj4+IGNhbiBiZSBzZWxlY3RlZCAo
-bWFudWFsbHksIHNvbWUgZGFlbW9ucyBvciBwb2xpY3kgaW4KPj4+PiAvdXNyL3NoYXJlL3B1bHNl
-YXVkaW8vYWxzYS1taXhlci8pIGFzIGRlZmF1bHQgb3V0cHV0IGNhcmQvZGVmYXVsdCBzaW5rLgo+
-PiBJZiB0aGUgZGVzY3JpcHRpb24gaXMgY29ycmVjdC4gSSB0aGluayB0aGVyZSBhcmUgbWF5YmUg
-dHdvIHByb2JsZW1zLgo+Pgo+PiAxLiBhdWRpbyB3aWxsIGF1dG8gcG93ZXIgb2ZmIGFmdGVyIHNl
-dHVwIGRldmljZSBsaW5rIGR1byB0byB1c2FnZV9jb3VudD0wLgo+PiAyLiBkdW8gdG8gYXVkaW8g
-aXMgcG93ZXIgZG93biwgaXQgY291bGQgbm90IGdldCB0aGUgSERNSSBqYWNrIGluc2VydCBldmVu
-dC4KPj4KPj4gSG93IGRvIHlvdSB0aGluaz8KPj4KPj4+IEppbSwgY291bGQgeW91IHRlbGwgbWUg
-d2hpY2ggUENJIGRldmljZXMgYXJlIGhhbmRsZWQgYXMgdmdhX3N3aXRjaGVyb28KPj4+IGF1ZGlv
-IGNsaWVudD8gIFRoZSBrZXJuZWwgc2hvdWxkIHNob3cgYWxsIG1lc3NhZ2VzICJ4eHg6IEhhbmRs
-ZQo+Pj4gdmdhX3N3aXRjaGVyb28gYXVkaW8gY2xpZW50Ii4KPj4gW8KgwqDCoCA0LjMxMTA5NV0g
-c25kX2hkYV9pbnRlbCAwMDAwOjA2OjAwLjE6IGVuYWJsaW5nIGRldmljZSAoMDAwMCAtPiAwMDAy
-KQo+PiBbwqDCoMKgIDQuMzE0Mjg2XSBzbmRfaGRhX2ludGVsIDAwMDA6MDY6MDAuMTogSGFuZGxl
-IHZnYV9zd2l0Y2hlcm9vIGF1ZGlvCj4+IGNsaWVudAo+PiBbwqDCoMKgIDQuMzE0ODIyXSBzbmRf
-aGRhX2ludGVsIDAwMDA6MDY6MDAuNjogZW5hYmxpbmcgZGV2aWNlICgwMDAwIC0+IDAwMDIpCj4+
-Cj4+IDAxOjAwLjAgVkdBIGNvbXBhdGlibGUgY29udHJvbGxlciBbMDMwMF06IEFkdmFuY2VkIE1p
-Y3JvIERldmljZXMsCj4+IEluYy4gW0FNRC9BVEldIERldmljZSBbMTAwMjo2OTlmXSAocmV2IGMz
-KQo+PiAwNjowMC4wIFZHQSBjb21wYXRpYmxlIGNvbnRyb2xsZXIgWzAzMDBdOiBBZHZhbmNlZCBN
-aWNybyBEZXZpY2VzLAo+PiBJbmMuIFtBTUQvQVRJXSBEZXZpY2UgWzEwMDI6MTVkZF0gKHJldiBk
-MSkKPj4gMDY6MDAuMSBBdWRpbyBkZXZpY2UgWzA0MDNdOiBBZHZhbmNlZCBNaWNybyBEZXZpY2Vz
-LCBJbmMuIFtBTUQvQVRJXQo+PiBEZXZpY2UgWzEwMDI6MTVkZV0KPiBPSyB0aGlzIHNoZWRzIGEg
-YnJpZ2h0ZXIgbGlnaHQsIGZpbmFsbHkuCj4KPiBJZiBteSB1bmRlcnN0YW5kaW5nIGlzIGNvcnJl
-Y3QsIHRoZSBpc3N1ZSBpcyBhIGZhbHNlIHZnYV9zd2l0Y2hlcm9vCj4gYXVkaW8gZGV0ZWN0aW9u
-LCBhZnRlciBhbGwuICBUaGlzIGlzIHRoZSBwcmltYXJ5IEdQVSBhbmQgaXQgc2hvdWxkbid0Cj4g
-YmUgcmVnaXN0ZXJlZCBhcyBhIHZnYV9zd2l0Y2hlcm9vIGRpc2NyZXRlIEdQVS4KPgo+IEJlbG93
-IGlzIGEgdmVyeSB1Z2x5IHdvcmthcm91bmQgZm9yIHRoaXMgcGFydGljdWxhciBjYXNlLiAgSXQg
-YXNzdW1lcwo+IHRoYXQgdGhlIEFNRCtBTUQgY29tYm8gd2lsbCBuZXZlciBoYXZlIGF1ZGlvIG91
-dHB1dHMgb24gYm90aCBidXQgb25seQo+IGZvciB0aGUgcHJpbWFyeSwgYW5kIGl0J3MgcG9zc2li
-bHkgd3JvbmcuCj4KPiBJcyB0aGVyZSBhIGhhbmR5IHdheSB0byBpZGVudGlmeSB3aGV0aGVyIHRo
-ZSBnaXZlbiBWR0EgUENJIGVudHJ5IGlzCj4gYSBkaXNjcmV0ZSBHUFUgb3Igbm90PyAgVGhlIGFt
-ZGdwdSBhbmQgcmFkZW9uIHNlZW0gY2hlY2tpbmcgQVRQWAo+IEFDUEkuCgpUaGlzIGlzIG5vIGlz
-c3VlIGFib3V0IHRoaXMgdG9waWMsIGluIGFtZGdwdSBkcml2ZXIsIGJvdGggaUdQVS9kR1BVIHdp
-bGwgCnJlZ2lzdGVyIGFzIFZHQV9TV0lUQ0hFUk9PX1VOS05PV05fSUQsIGFuZCB0aGUgY2xpZW50
-IGlkIHdpbGwgYmUgCnJlLWluaXRpYWxpemVkIGluIHZnYXN3aXRjaHJlb29fZW5hYmxlKCkgdmlh
-IEFUUFggY2FsbC4gVGhlbiwgaUdQVSB3aWxsIApzZXQgYXMgVkdBX1NXSVRDSEVST09fSUdELCBh
-bmQgZEdQVSB3aWxsIHNldCBhcyBWR0FfU1dJVENIRVJPT19ESVMuCgpJIHRoaW5rIGN1cnJlbnQg
-Zm9jdXMgc2hvdWxkIGJlIGhvdyB0byBkZXRlY3QgSERNSSBhdWRpbyBkZXZpY2UgdW5kZXIgCmF1
-ZGlvIHN1c3BlbmQgc3RhdGUuCgpUaGFua3MKSmltUXUKPgo+IFRha2FzaGkKPgo+IC0tLQo+IC0t
-LSBhL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMKPiArKysgYi9zb3VuZC9wY2kvaGRhL2hkYV9p
-bnRlbC5jCj4gQEAgLTE0MTgsOCArMTQxOCwxOCBAQCBzdGF0aWMgaW50IGF6eF9kZXZfZnJlZShz
-dHJ1Y3Qgc25kX2RldmljZSAqZGV2aWNlKQo+ICAgICovCj4gICBzdGF0aWMgc3RydWN0IHBjaV9k
-ZXYgKmdldF9ib3VuZF92Z2Eoc3RydWN0IHBjaV9kZXYgKnBjaSkKPiAgIHsKPiArCXN0YXRpYyBj
-b25zdCBzdHJ1Y3QgcGNpX2RldmljZV9pZCBpZHNbXSA9IHsKPiArCQl7IFBDSV9ERVZJQ0UoUENJ
-X1ZFTkRPUl9JRF9JTlRFTCwgUENJX0FOWV9JRCksCj4gKwkJICAuY2xhc3MgPSBQQ0lfQkFTRV9D
-TEFTU19ESVNQTEFZIDw8IDE2LAo+ICsJCSAgLmNsYXNzX21hc2sgPSAweGZmIDw8IDE2IH0sCj4g
-KwkJe30KPiArCX07Cj4gICAJc3RydWN0IHBjaV9kZXYgKnA7Cj4gICAKPiArCS8qIGNoZWNrIHdo
-ZXRoZXIgSW50ZWwgZ3JhcGhpY3MgaXMgcHJlc2VudCBhcyBwcmltYXJ5IEdQVSAqLwo+ICsJaWYg
-KCFwY2lfZGV2X3ByZXNlbnQoaWRzKSkKPiArCQlyZXR1cm4gTlVMTDsKPiArCj4gICAJLyogY2hl
-Y2sgb25seSBkaXNjcmV0ZSBHUFUgKi8KPiAgIAlzd2l0Y2ggKHBjaS0+dmVuZG9yKSB7Cj4gICAJ
-Y2FzZSBQQ0lfVkVORE9SX0lEX0FUSToKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCmFtZC1nZnggbWFpbGluZyBsaXN0CmFtZC1nZnhAbGlzdHMuZnJlZWRl
-c2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8v
-YW1kLWdmeAo=
+On Wed, Jul 11, 2018 at 08:45:05AM +0200, Takashi Iwai wrote:
+> On Wed, 11 Jul 2018 08:30:43 +0200,
+> Sriram Periyasamy wrote:
+> > 
+> > @@ -167,6 +171,30 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
+> >  
+> >  	if (is_connect) {
+> >  		/*
+> > +		 * Increment the usage count to ensure that the device
+> > +		 * is runtime active to send verb across.
+> > +		 */
+> > +		pm_runtime_get_sync(&edev->hdev.dev);
+> 
+> This looks more reasonable now, but...
+> 
+> > +		/* set the device if pin is mst_capable */
+> > +		if (hdac_hdmi_port_select_set(edev, port) < 0) {
+> > +			dev_err(&edev->hdev.dev,
+> > +				"port %d device select fail\n", port->id);
+> > +			return;
+> 
+> It appears like an unbalanced pm refcount here in the error path.
+> 
+
+Thanks for pointing out. Will fix it.
+
+> > +		}
+> > +
+> > +		/*
+> > +		 * Restore the connection selection index of the
+> > +		 * respective pin.
+> > +		 */
+> > +		if (port->pin->conn_index > 0)
+> > +			snd_hdac_codec_write(&edev->hdev, port->pin->nid,
+> > +						0, AC_VERB_SET_CONNECT_SEL,
+> > +						port->pin->conn_index - 1);
+> 
+> And, here checks conn_index > 0 while...
+> 
+> > @@ -903,6 +931,9 @@ static int hdac_hdmi_set_pin_port_mux(struct snd_kcontrol *kcontrol,
+> >  		}
+> >  	}
+> >  
+> > +	if (ucontrol->value.enumerated.item[0] > 0)
+> > +		port->pin->conn_index =	ucontrol->value.enumerated.item[0];
+> 
+> ... conn_index is set only non-zero here.
+> 
+> That is, once after a non-zero is passed, conn_index can't any longer
+> back to zero.  I guess it's not intentional?
+> 
+
+No, it is intentional. For example, two ports are connected to the
+display and user land set mux only for one port. Hence other port's
+conn_index is set to default 0. When jack report happens for that port,
+we would be writing invalid connection select index which will lead to
+undefined hardware behaviour as per the HDA spec.
+
+Though it is userland's mistake, it is better to take care in the driver.
+
+Thanks,
+Sriram.
