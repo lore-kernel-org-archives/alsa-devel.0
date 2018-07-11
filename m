@@ -1,144 +1,78 @@
 From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH 4/5] ALSA: usb-audio: Unify virtual type units type to UAC3 values
-Date: Wed, 11 Jul 2018 13:37:54 +0100
-Message-ID: <20180711123755.27182-5-jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH 2/5] ALSA: usb-audio: Processing Unit controls
+	parsing in UAC2
+Date: Wed, 11 Jul 2018 13:37:52 +0100
+Message-ID: <20180711123755.27182-3-jorge.sanjuan@codethink.co.uk>
 References: <20180711123755.27182-1-jorge.sanjuan@codethink.co.uk>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id 254AB26770A
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 14:38:02 +0200 (CEST)
 In-Reply-To: <20180711123755.27182-1-jorge.sanjuan@codethink.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The Audio Control interface descriptor subtypes do not match
-across all the UAC versions. That makes reusability of the
-"virtual type" (Mixer, Processors, Selectors, etc) terminals
-difficult. It also makes the mixer get the default names for
-the virtual terminals wrong due to the overlap.
+Current support for UAC2 Processing Units does the parsing
+as one control per bit in the bitmap. However, the UAC2 spec
+defines the controls as bit pairs where b01 means read-only
+and b11 means read/write control.
 
-This patch proposes an unified approach by always using the most
-comprehensive spec version to define them all (in this case UAC3).
+This patch fixes that and uses the helper functions for checking
+controls readability/writability when the control is defined as
+bit pairs (UAC2 and UAC3).
 
 Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 ---
- sound/usb/mixer.c | 36 +++++++++++++++++++++++-------------
- 1 file changed, 23 insertions(+), 13 deletions(-)
+ sound/usb/mixer.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
 diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 39fde49e8749..87f18cb74ca3 100644
+index a51f2320a3dd..bfb3484096a6 100644
 --- a/sound/usb/mixer.c
 +++ b/sound/usb/mixer.c
-@@ -675,16 +675,16 @@ static int get_term_name(struct snd_usb_audio *chip, struct usb_audio_term *iter
- 		if (term_only)
- 			return 0;
- 		switch (iterm->type >> 16) {
--		case UAC_SELECTOR_UNIT:
-+		case UAC3_SELECTOR_UNIT:
- 			strcpy(name, "Selector");
- 			return 8;
--		case UAC1_PROCESSING_UNIT:
-+		case UAC3_PROCESSING_UNIT:
- 			strcpy(name, "Process Unit");
- 			return 12;
--		case UAC1_EXTENSION_UNIT:
-+		case UAC3_EXTENSION_UNIT:
- 			strcpy(name, "Ext Unit");
- 			return 8;
--		case UAC_MIXER_UNIT:
-+		case UAC3_MIXER_UNIT:
- 			strcpy(name, "Mixer");
- 			return 5;
- 		default:
-@@ -832,7 +832,7 @@ static int check_input_term(struct mixer_build *state, int id,
- 			case UAC_MIXER_UNIT: {
- 				struct uac_mixer_unit_descriptor *d = p1;
+@@ -2300,8 +2300,16 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 	for (valinfo = info->values; valinfo->control; valinfo++) {
+ 		__u8 *controls = uac_processing_unit_bmControls(desc, state->mixer->protocol);
  
--				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				term->type = UAC3_MIXER_UNIT << 16; /* virtual type */
- 				term->channels = uac_mixer_unit_bNrChannels(d);
- 				term->chconfig = uac_mixer_unit_wChannelConfig(d, protocol);
- 				term->name = uac_mixer_unit_iMixer(d);
-@@ -845,15 +845,23 @@ static int check_input_term(struct mixer_build *state, int id,
- 				err = check_input_term(state, d->baSourceID[0], term);
- 				if (err < 0)
- 					return err;
--				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				term->type = UAC3_SELECTOR_UNIT << 16; /* virtual type */
- 				term->id = id;
- 				term->name = uac_selector_unit_iSelector(d);
- 				return 0;
- 			}
- 			case UAC1_PROCESSING_UNIT:
-+			/* UAC2_EFFECT_UNIT */
-+				if (protocol == UAC_VERSION_1)
-+					term->type = UAC3_PROCESSING_UNIT << 16; /* virtual type */
-+				else /* UAC_VERSION_2 */
-+					term->type = UAC3_EFFECT_UNIT << 16; /* virtual type */
- 			case UAC1_EXTENSION_UNIT:
- 			/* UAC2_PROCESSING_UNIT_V2 */
--			/* UAC2_EFFECT_UNIT */
-+				if (protocol == UAC_VERSION_1 && !term->type)
-+					term->type = UAC3_EXTENSION_UNIT << 16; /* virtual type */
-+				else if (protocol == UAC_VERSION_2 && !term->type)
-+					term->type = UAC3_PROCESSING_UNIT << 16; /* virtual type */
- 			case UAC2_EXTENSION_UNIT_V2: {
- 				struct uac_processing_unit_descriptor *d = p1;
- 
-@@ -869,7 +877,9 @@ static int check_input_term(struct mixer_build *state, int id,
- 					id = d->baSourceID[0];
- 					break; /* continue to parse */
- 				}
--				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				if (!term->type)
-+					term->type = UAC3_EXTENSION_UNIT << 16; /* virtual type */
+-		if (!(controls[valinfo->control / 8] & (1 << ((valinfo->control % 8) - 1))))
+-			continue;
++		if (state->mixer->protocol == UAC_VERSION_1) {
++			if (!(controls[valinfo->control / 8] &
++					(1 << ((valinfo->control % 8) - 1))))
++				continue;
++		} else { /* UAC_VERSION_2/3 */
++			if (!uac_v2v3_control_is_readable(controls[valinfo->control / 8],
++							  valinfo->control))
++				continue;
++		}
 +
- 				term->channels = uac_processing_unit_bNrChannels(d);
- 				term->chconfig = uac_processing_unit_wChannelConfig(d, protocol);
- 				term->name = uac_processing_unit_iProcessing(d, protocol);
-@@ -878,7 +888,7 @@ static int check_input_term(struct mixer_build *state, int id,
- 			case UAC2_CLOCK_SOURCE: {
- 				struct uac_clock_source_descriptor *d = p1;
+ 		map = find_map(state->map, unitid, valinfo->control);
+ 		if (check_ignored_ctl(map))
+ 			continue;
+@@ -2313,6 +2321,11 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
+ 		cval->val_type = valinfo->val_type;
+ 		cval->channels = 1;
  
--				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				term->type = UAC3_CLOCK_SOURCE << 16; /* virtual type */
- 				term->id = id;
- 				term->name = d->iClockSource;
- 				return 0;
-@@ -923,7 +933,7 @@ static int check_input_term(struct mixer_build *state, int id,
- 			case UAC3_CLOCK_SOURCE: {
- 				struct uac3_clock_source_descriptor *d = p1;
- 
--				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				term->type = UAC3_CLOCK_SOURCE << 16; /* virtual type */
- 				term->id = id;
- 				term->name = le16_to_cpu(d->wClockSourceStr);
- 				return 0;
-@@ -936,7 +946,7 @@ static int check_input_term(struct mixer_build *state, int id,
- 					return err;
- 
- 				term->channels = err;
--				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				term->type = UAC3_MIXER_UNIT << 16; /* virtual type */
- 
- 				return 0;
- 			}
-@@ -947,7 +957,7 @@ static int check_input_term(struct mixer_build *state, int id,
- 				err = check_input_term(state, d->baSourceID[0], term);
- 				if (err < 0)
- 					return err;
--				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				term->type = UAC3_SELECTOR_UNIT << 16; /* virtual type */
- 				term->id = id;
- 				term->name = 0; /* TODO: UAC3 Class-specific strings */
- 
-@@ -964,7 +974,7 @@ static int check_input_term(struct mixer_build *state, int id,
- 				if (err < 0)
- 					return err;
- 
--				term->type = d->bDescriptorSubtype << 16; /* virtual type */
-+				term->type = UAC3_PROCESSING_UNIT << 16; /* virtual type */
- 				term->id = id;
- 				term->name = 0; /* TODO: UAC3 Class-specific strings */
- 
++		if (state->mixer->protocol > UAC_VERSION_1 &&
++		    !uac_v2v3_control_is_writeable(controls[valinfo->control / 8],
++						   valinfo->control))
++			cval->master_readonly = 1;
++
+ 		/* get min/max values */
+ 		if (type == UAC_PROCESS_UP_DOWNMIX && cval->control == UAC_UD_MODE_SELECT) {
+ 			__u8 *control_spec = uac_processing_unit_specific(desc, state->mixer->protocol);
 -- 
 2.11.0
