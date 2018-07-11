@@ -1,96 +1,44 @@
-From: syzbot <syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com>
-Subject: WARNING in port_delete
-Date: Wed, 11 Jul 2018 12:55:02 -0700
-Message-ID: <0000000000004f7eb00570be9f92@google.com>
+From: Alastair Bridgewater <alastair.bridgewater@gmail.com>
+Subject: [PATCH 1/2] ALSA: hda/ca0132: Add Recon3Di quirk for
+	Gigabyte G1.Sniper Z97
+Date: Wed, 11 Jul 2018 18:09:45 -0400
+Message-ID: <20180711220946.20368-1-alastair.bridgewater@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, colin.king@canonical.com, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+These motherboards have Sound Core3D and apparently "support"
+Recon3Di.  Added to the quirk list as QUIRK_R3DI.
 
-syzbot found the following crash on:
+Issue report, PCI Subsystem ID, and testing by a contributor on
+IRC who wished to remain anonymous.
 
-HEAD commit:    30c2c32d7f70 Merge tag 'drm-fixes-2018-07-10' of git://ano..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=139408c8400000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=25856fac4e580aa7
-dashboard link: https://syzkaller.appspot.com/bug?extid=e4c8abb920efa77bace9
-compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
+Signed-off-by: Alastair Bridgewater <alastair.bridgewater@gmail.com>
 
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com
-
-netlink: 8 bytes leftover after parsing attributes in process  
-`syz-executor0'.
-WARNING: CPU: 0 PID: 20823 at sound/core/seq/seq_ports.c:276  
-port_delete+0x16e/0x1b0 sound/core/seq/seq_ports.c:276
-Kernel panic - not syncing: panic_on_warn set ...
-
-CPU: 0 PID: 20823 Comm: syz-executor4 Not tainted 4.18.0-rc4+ #140
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x1c9/0x2b4 lib/dump_stack.c:113
-  panic+0x238/0x4e7 kernel/panic.c:184
-  __warn.cold.8+0x163/0x1ba kernel/panic.c:536
-  report_bug+0x252/0x2d0 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:178 [inline]
-  do_error_trap+0x1fc/0x4d0 arch/x86/kernel/traps.c:296
-  do_invalid_op+0x1b/0x20 arch/x86/kernel/traps.c:316
-  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:992
-RIP: 0010:port_delete+0x16e/0x1b0 sound/core/seq/seq_ports.c:276
-Code: 00 00 31 ff 44 89 e6 e8 e0 f8 9d fb 45 85 e4 75 14 e8 c6 f7 9d fb 48  
-89 df e8 4e a6 db fb 31 c0 5b 41 5c 5d c3 e8 b2 f7 9d fb <0f> 0b eb e3 e8  
-a9 f7 9d fb 0f 0b eb 9b e8 d0 d1 db fb eb bd e8 c9
-RSP: 0018:ffff88019b9f78d0 EFLAGS: 00010293
-RAX: ffff8801c5f74100 RBX: ffff8801b053adc0 RCX: ffffffff85de13d0
-RDX: 0000000000000000 RSI: ffffffff85de13ee RDI: 0000000000000005
-RBP: ffff88019b9f78e0 R08: ffff8801c5f74100 R09: 0000000000000006
-R10: ffff8801c5f74100 R11: 0000000000000000 R12: 0000000000000001
-R13: ffff8801b053ae10 R14: 1ffff1003373ef28 R15: ffff88019b95d6d0
-  snd_seq_delete_port+0x3cb/0x4a0 sound/core/seq/seq_ports.c:303
-  snd_seq_ioctl_delete_port+0xba/0x190 sound/core/seq/seq_clientmgr.c:1325
-  snd_seq_kernel_client_ctl+0x15a/0x190 sound/core/seq/seq_clientmgr.c:2361
-  snd_seq_event_port_detach+0xfb/0x160 sound/core/seq/seq_ports.c:705
-  delete_port+0x7d/0xc0 sound/core/seq/oss/seq_oss_init.c:354
-  snd_seq_oss_release+0xf2/0x130 sound/core/seq/oss/seq_oss_init.c:433
-  odev_release+0x52/0x70 sound/core/seq/oss/seq_oss.c:153
-  __fput+0x355/0x8b0 fs/file_table.c:209
-  ____fput+0x15/0x20 fs/file_table.c:243
-  task_work_run+0x1ec/0x2a0 kernel/task_work.c:113
-  tracehook_notify_resume include/linux/tracehook.h:192 [inline]
-  exit_to_usermode_loop+0x313/0x370 arch/x86/entry/common.c:166
-  prepare_exit_to_usermode arch/x86/entry/common.c:197 [inline]
-  syscall_return_slowpath arch/x86/entry/common.c:268 [inline]
-  do_syscall_64+0x6be/0x820 arch/x86/entry/common.c:293
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x40ff01
-Code: 75 14 b8 03 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 34 19 00 00 c3 48  
-83 ec 08 e8 0a fc ff ff 48 89 04 24 b8 03 00 00 00 0f 05 <48> 8b 3c 24 48  
-89 c2 e8 53 fc ff ff 48 89 d0 48 83 c4 08 48 3d 01
-RSP: 002b:0000000000a3eab0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000015 RCX: 000000000040ff01
-RDX: 0000000000000000 RSI: 00000000007328a0 RDI: 0000000000000014
-RBP: 0000000000000013 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000a3e930 R11: 0000000000000293 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000a3f160 R15: 00000000007034c0
-Dumping ftrace buffer:
-    (ftrace buffer empty)
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#bug-status-tracking for how to communicate with  
-syzbot.
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index d62c56feaf7d..c803cca1c236 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -1048,6 +1048,7 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
+ 	SND_PCI_QUIRK(0x1102, 0x0010, "Sound Blaster Z", QUIRK_SBZ),
+ 	SND_PCI_QUIRK(0x1102, 0x0023, "Sound Blaster Z", QUIRK_SBZ),
+ 	SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
++	SND_PCI_QUIRK(0x1458, 0xA026, "Gigabyte G1.Sniper Z97", QUIRK_R3DI),
+ 	SND_PCI_QUIRK(0x1458, 0xA036, "Recon3Di", QUIRK_R3DI),
+ 	{}
+ };
+-- 
+2.16.1
