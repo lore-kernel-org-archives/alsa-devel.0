@@ -1,111 +1,122 @@
 From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH 5/5] ALSA: usb-audio: Tidy up logic for
-	Processing Unit min/max values
-Date: Wed, 11 Jul 2018 13:37:55 +0100
-Message-ID: <20180711123755.27182-6-jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH 1/5] ALSA: usb-audio: Add support for Selector Units in UAC3
+Date: Wed, 11 Jul 2018 13:37:51 +0100
+Message-ID: <20180711123755.27182-2-jorge.sanjuan@codethink.co.uk>
 References: <20180711123755.27182-1-jorge.sanjuan@codethink.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E8DD267712
- for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 14:38:03 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180711123755.27182-1-jorge.sanjuan@codethink.co.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch refactors the processing units min/max calculation logic
-for the mixer controls and fixes an issue where the Mode Select
-checking of the Up/Down mixers doesn't differentiate between the
-UAC1 and UAC2 Control Selector (0x02) and the UAC3 one which is
-different (0x01).
+This patch add support for Selector Units and Clock Selector Units
+defined in the new UAC3 spec.
+
+Selector Units play a really important role in the new UAC3 spec as
+Processing Units do not define an on/off switch control anymore.
+This forces topology designers to add bypass paths in the topology
+to enable/dissable the Processing Units.
 
 Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 ---
- sound/usb/mixer.c | 58 +++++++++++++++++++++++++++++++++++++++----------------
- 1 file changed, 41 insertions(+), 17 deletions(-)
+ sound/usb/mixer.c | 54 ++++++++++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 44 insertions(+), 10 deletions(-)
 
 diff --git a/sound/usb/mixer.c b/sound/usb/mixer.c
-index 87f18cb74ca3..73e811f86a95 100644
+index ca963e94ec03..a51f2320a3dd 100644
 --- a/sound/usb/mixer.c
 +++ b/sound/usb/mixer.c
-@@ -2376,25 +2376,49 @@ static int build_audio_procunit(struct mixer_build *state, int unitid,
- 			cval->master_readonly = 1;
+@@ -940,6 +940,19 @@ static int check_input_term(struct mixer_build *state, int id,
  
- 		/* get min/max values */
--		if (type == UAC_PROCESS_UP_DOWNMIX && cval->control == UAC_UD_MODE_SELECT) {
--			__u8 *control_spec = uac_processing_unit_specific(desc, state->mixer->protocol);
--			/* FIXME: hard-coded */
--			cval->min = 1;
--			cval->max = control_spec[0];
--			cval->res = 1;
--			cval->initialized = 1;
--		} else {
--			if (type == USB_XU_CLOCK_RATE) {
--				/*
--				 * E-Mu USB 0404/0202/TrackerPre/0204
--				 * samplerate control quirk
--				 */
--				cval->min = 0;
--				cval->max = 5;
-+		switch (type) {
-+		case UAC_PROCESS_UP_DOWNMIX: {
-+			bool mode_sel = false;
+ 				return 0;
+ 			}
++			case UAC3_SELECTOR_UNIT:
++			case UAC3_CLOCK_SELECTOR: {
++				struct uac_selector_unit_descriptor *d = p1;
++				/* call recursively to retrieve the channel info */
++				err = check_input_term(state, d->baSourceID[0], term);
++				if (err < 0)
++					return err;
++				term->type = d->bDescriptorSubtype << 16; /* virtual type */
++				term->id = id;
++				term->name = 0; /* TODO: UAC3 Class-specific strings */
 +
-+			switch (state->mixer->protocol) {
-+			case UAC_VERSION_1:
-+			case UAC_VERSION_2:
-+			default:
-+				if (cval->control == UAC_UD_MODE_SELECT)
-+					mode_sel = true;
-+				break;
-+			case UAC_VERSION_3:
-+				if (cval->control == UAC3_UD_MODE_SELECT)
-+					mode_sel = true;
-+				break;
++				return 0;
 +			}
-+
-+			if (mode_sel) {
-+				__u8 *control_spec = uac_processing_unit_specific(desc,
-+								state->mixer->protocol);
-+				cval->min = 1;
-+				cval->max = control_spec[0];
- 				cval->res = 1;
- 				cval->initialized = 1;
--			} else
--				get_min_max(cval, valinfo->min_value);
-+				break;
-+			}
-+
-+			get_min_max(cval, valinfo->min_value);
+ 			default:
+ 				return -ENODEV;
+ 			}
+@@ -2509,11 +2522,20 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 	cval->res = 1;
+ 	cval->initialized = 1;
+ 
+-	if (state->mixer->protocol == UAC_VERSION_1)
++	switch (state->mixer->protocol) {
++	case UAC_VERSION_1:
++	default:
+ 		cval->control = 0;
+-	else /* UAC_VERSION_2 */
+-		cval->control = (desc->bDescriptorSubtype == UAC2_CLOCK_SELECTOR) ?
+-			UAC2_CX_CLOCK_SELECTOR : UAC2_SU_SELECTOR;
++		break;
++	case UAC_VERSION_2:
++	case UAC_VERSION_3:
++		if (desc->bDescriptorSubtype == UAC2_CLOCK_SELECTOR ||
++		    desc->bDescriptorSubtype == UAC3_CLOCK_SELECTOR)
++			cval->control = UAC2_CX_CLOCK_SELECTOR;
++		else /* UAC2/3_SELECTOR_UNIT */
++			cval->control = UAC2_SU_SELECTOR;
++		break;
++	}
+ 
+ 	namelist = kmalloc_array(desc->bNrInPins, sizeof(char *), GFP_KERNEL);
+ 	if (!namelist) {
+@@ -2555,12 +2577,22 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 	len = check_mapped_name(map, kctl->id.name, sizeof(kctl->id.name));
+ 	if (!len) {
+ 		/* no mapping ? */
++		switch (state->mixer->protocol) {
++		case UAC_VERSION_1:
++		case UAC_VERSION_2:
++		default:
+ 		/* if iSelector is given, use it */
+-		nameid = uac_selector_unit_iSelector(desc);
+-		if (nameid)
+-			len = snd_usb_copy_string_desc(state->chip, nameid,
+-						       kctl->id.name,
+-						       sizeof(kctl->id.name));
++			nameid = uac_selector_unit_iSelector(desc);
++			if (nameid)
++				len = snd_usb_copy_string_desc(state->chip,
++							nameid, kctl->id.name,
++							sizeof(kctl->id.name));
++			break;
++		case UAC_VERSION_3:
++			/* TODO: Class-Specific strings not yet supported */
 +			break;
 +		}
-+		case USB_XU_CLOCK_RATE:
-+			/*
-+			 * E-Mu USB 0404/0202/TrackerPre/0204
-+			 * samplerate control quirk
-+			 */
-+			cval->min = 0;
-+			cval->max = 5;
-+			cval->res = 1;
-+			cval->initialized = 1;
-+			break;
-+		default:
-+			get_min_max(cval, valinfo->min_value);
-+			break;
- 		}
++
+ 		/* ... or pick up the terminal name at next */
+ 		if (!len)
+ 			len = get_term_name(state->chip, &state->oterm,
+@@ -2570,7 +2602,8 @@ static int parse_audio_selector_unit(struct mixer_build *state, int unitid,
+ 			strlcpy(kctl->id.name, "USB", sizeof(kctl->id.name));
  
- 		kctl = snd_ctl_new1(&mixer_procunit_ctl, cval);
+ 		/* and add the proper suffix */
+-		if (desc->bDescriptorSubtype == UAC2_CLOCK_SELECTOR)
++		if (desc->bDescriptorSubtype == UAC2_CLOCK_SELECTOR ||
++		    desc->bDescriptorSubtype == UAC3_CLOCK_SELECTOR)
+ 			append_ctl_name(kctl, " Clock Source");
+ 		else if ((state->oterm.type & 0xff00) == 0x0100)
+ 			append_ctl_name(kctl, " Capture Source");
+@@ -2641,6 +2674,7 @@ static int parse_audio_unit(struct mixer_build *state, int unitid)
+ 			return parse_audio_mixer_unit(state, unitid, p1);
+ 		case UAC3_CLOCK_SOURCE:
+ 			return parse_clock_source_unit(state, unitid, p1);
++		case UAC3_SELECTOR_UNIT:
+ 		case UAC3_CLOCK_SELECTOR:
+ 			return parse_audio_selector_unit(state, unitid, p1);
+ 		case UAC3_FEATURE_UNIT:
 -- 
 2.11.0
