@@ -1,243 +1,212 @@
-From: jimqu <jimqu-5C7GfCeVMHo@public.gmane.org>
-Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiBbYWxzYS1kZXZlbF0g562U5aSNOiBb?=
- =?UTF-8?Q?PATCH]_vgaswitchroo:_set_audio_client_id_according_to_bound_gpu_c?=
- =?UTF-8?Q?lient_id?=
-Date: Wed, 11 Jul 2018 16:41:38 +0800
-Message-ID: <1936c752-f858-2caf-35e7-98bea431fb7c@amd.com>
-References: <20180629080634.GA7357@wunner.de>
- <DM3PR12MB08737DC9FB94BB6F3AEF5634994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629092138.GA11849@wunner.de>
- <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629111108.GA11609@wunner.de>
- <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180709092759.GA3649@wunner.de>
- <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
- <s5hr2kco3gp.wl-tiwai@suse.de> <20180709155643.GE3008@phenom.ffwll.local>
- <s5hpnzwcsf7.wl-tiwai@suse.de>
- <DM3PR12MB0873E9DD8B7448CB8A6829DA99440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <s5hr2kbr03k.wl-tiwai@suse.de> <a37f08e7-734e-977c-597f-46d5c3ec34bc@amd.com>
- <s5hin5nctby.wl-tiwai@suse.de> <733011b9-1880-76a8-d00f-076591e93c53@amd.com>
- <s5hbmbfcp5v.wl-tiwai@suse.de> <s5hfu0qp7cv.wl-tiwai@suse.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH] ASoC: core: add support to card re-bind/unbind
+	using component framework
+Date: Wed, 11 Jul 2018 09:43:18 +0100
+Message-ID: <20180711084318.11786-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1048296387=="
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <s5hfu0qp7cv.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "Deucher,
- Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>, Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f68.google.com (mail-wr1-f68.google.com
+ [209.85.221.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41E46267711
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 10:45:24 +0200 (CEST)
+Received: by mail-wr1-f68.google.com with SMTP id m1-v6so4552533wrg.5
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 01:45:24 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Cc: bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org, rohitkr@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---===============1048296387==
-Content-Type: multipart/alternative;
- boundary="------------C943BFC6C6D5996CBF144267"
-Content-Language: en-US
+This patch aims at add achieving dynamic behaviour of audio card when
+the dependent components disappear and reappear.
 
-This is a multi-part message in MIME format.
---------------C943BFC6C6D5996CBF144267
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+With this patch the card is removed if any of the dependent component
+is removed and card is added back if the dependent component comes back.
+All this is done using component framework and matching based on
+component name.
 
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
 
+During discussion regarding card re-binding when components unregister
+and register back at https://lkml.org/lkml/2018/7/9/785 it was suggested
+that component framework can be added into core to provide this feature.
 
-On 2018年07月11日 15:19, Takashi Iwai wrote:
-> On Tue, 10 Jul 2018 13:21:00 +0200,
-> Takashi Iwai wrote:
->>> revert the fix of amdgpu suspend issue, audio issue also can be observed.
->> Did you check the behavior with the single AMD GPU hardware?
->> If confirmed, we can forget about vga_switcheroo.
-> ... and taking a look back at the recent changes, I guess it can be
-> the forced runtime PM enablement, not directly with vga_switcheroo
-> action itself.
+With this new changes the card will re-bind once the dependent component
+re-registers after unregistering. This works based on the match done
+from component name using component framework.
 
-Yeah, the function vga_switcheroo_set_dynamic_switch() has discarded, so 
-there is no way GFX driver to control audio power. However, keep in 
-mind, current audio is bound to iGPU, that mean the issue should be 
-nothing about
-vgaswtichreoo. since current audio pci bus is different from dGPU, that 
-means the pci_bus_set_current_state() in 
-vga_switcheroo_runtime_suspend() and pci_wakeup_bus() in 
-vga_switcheroo_runtime_resume() could not touch the audio pci power 
-state from dGPU instance.
+I have tested this patch with qdsp start-stop usecase for more than 10000
+times in loop on Qcom platforms.
 
-This is a feedback got from our OEM developer, it is the overview of 
-audio detect process.
-
-> First, the kernel  audio driver will be triggered to read ELD, if the
- >> ELD is valid, it will report a jack event (on or available) to sound
- >> core driver; the pulseaudio subscribe all jack events, if it is told
- >> that the hdmi jack is plugged in (on), the pulseaudio will set this
- >> port to available, then the pa-card or pa-sink has available port, it
- >> can be selected (manually, some daemons or policy in
- >> /usr/share/pulseaudio/alsa-mixer/) as default output card/default sink.
-
-If the description is correct. I think there are maybe two problems.
-
-1. audio will auto power off after setup device link duo to usage_count=0.
-2. duo to audio is power down, it could not get the HDMI jack insert event.
-
-How do you think?
-
-> Jim, could you tell me which PCI devices are handled as vga_switcheroo
-> audio client?  The kernel should show all messages "xxx: Handle
-> vga_switcheroo audio client".
-
-[    4.311095] snd_hda_intel 0000:06:00.1: enabling device (0000 -> 0002)
-[    4.314286] snd_hda_intel 0000:06:00.1: Handle vga_switcheroo audio 
-client
-[    4.314822] snd_hda_intel 0000:06:00.6: enabling device (0000 -> 0002)
-
-01:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc. 
-[AMD/ATI] Device [1002:699f] (rev c3)
-06:00.0 VGA compatible controller [0300]: Advanced Micro Devices, Inc. 
-[AMD/ATI] Device [1002:15dd] (rev d1)
-06:00.1 Audio device [0403]: Advanced Micro Devices, Inc. [AMD/ATI] 
-Device [1002:15de]
-
-Thanks
-JimQu
-> At best, give the full dmesg output and the lspci -nv output.
->
->
-> thanks,
->
-> Takashi
+I will send qdsp side cleanup patches once I get some feedback on this patch.
 
 
---------------C943BFC6C6D5996CBF144267
-Content-Type: text/html; charset=utf-8
-Content-Transfer-Encoding: 8bit
+ include/sound/soc.h  |  5 ++++
+ sound/soc/soc-core.c | 70 ++++++++++++++++++++++++++++++++++++++++++++++++----
+ 2 files changed, 70 insertions(+), 5 deletions(-)
 
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  </head>
-  <body text="#000000" bgcolor="#FFFFFF">
-    <p><br>
-    </p>
-    <br>
-    <div class="moz-cite-prefix">On 2018年07月11日 15:19, Takashi Iwai
-      wrote:<br>
-    </div>
-    <blockquote type="cite" cite="mid:s5hfu0qp7cv.wl-tiwai-l3A5Bk7waGM@public.gmane.org">
-      <pre wrap="">On Tue, 10 Jul 2018 13:21:00 +0200,
-Takashi Iwai wrote:
-</pre>
-      <blockquote type="cite">
-        <pre wrap="">
-</pre>
-        <blockquote type="cite">
-          <pre wrap="">revert the fix of amdgpu suspend issue, audio issue also can be observed.
-</pre>
-        </blockquote>
-        <pre wrap="">
-Did you check the behavior with the single AMD GPU hardware?
-If confirmed, we can forget about vga_switcheroo.
-</pre>
-      </blockquote>
-      <pre wrap="">
-... and taking a look back at the recent changes, I guess it can be
-the forced runtime PM enablement, not directly with vga_switcheroo
-action itself.
-</pre>
-    </blockquote>
-    <br>
-    Yeah, the function vga_switcheroo_set_dynamic_switch() has
-    discarded, so there is no way GFX driver to control audio power. 
-    However, keep in mind, current audio is bound to iGPU, that mean the
-    issue should be nothing about <br>
-    vgaswtichreoo. since current audio pci bus is different from dGPU,
-    that means the pci_bus_set_current_state() in
-    vga_switcheroo_runtime_suspend() and pci_wakeup_bus() in
-    vga_switcheroo_runtime_resume() could not touch the audio pci power
-    state from dGPU instance.<br>
-    <br>
-    This is a feedback got from our OEM developer, it is the overview of
-    audio detect process.<br>
-    <br>
-    <font size="2"><span style="font-size:11pt;">&gt; First, the kernel
-        audio driver will be triggered to read ELD, if the <br>
-        &gt;&gt; ELD is valid, it will report a jack event (on or
-        available) to sound <br>
-        &gt;&gt; core driver; the pulseaudio subscribe all jack events,
-        if it is told <br>
-        &gt;&gt; that the hdmi jack is plugged in (on), the pulseaudio
-        will set this <br>
-        &gt;&gt; port to available, then the pa-card or pa-sink has
-        available port, it <br>
-        &gt;&gt; can be selected (manually, some daemons or policy in <br>
-        &gt;&gt; /usr/share/pulseaudio/alsa-mixer/) as default output
-        card/default sink.<br>
-        <br>
-        If the description is correct. I think there are maybe two
-        problems.<br>
-        <br>
-        1. audio will auto power off after setup device link duo to
-        usage_count=0.<br>
-        2. duo to audio is power down, it could not get the HDMI jack
-        insert event.<br>
-        <br>
-        How do you think?<br>
-      </span></font><br>
-    <blockquote type="cite" cite="mid:s5hfu0qp7cv.wl-tiwai-l3A5Bk7waGM@public.gmane.org">
-      <pre wrap="">
-Jim, could you tell me which PCI devices are handled as vga_switcheroo
-audio client?  The kernel should show all messages "xxx: Handle
-vga_switcheroo audio client". 
-</pre>
-    </blockquote>
-    <br>
-    [    4.311095] snd_hda_intel 0000:06:00.1: enabling device (0000
-    -&gt; 0002)<br>
-    [    4.314286] snd_hda_intel 0000:06:00.1: Handle vga_switcheroo
-    audio client<br>
-    [    4.314822] snd_hda_intel 0000:06:00.6: enabling device (0000
-    -&gt; 0002)<br>
-    <br>
-    01:00.0 VGA compatible controller [0300]: Advanced Micro Devices,
-    Inc. [AMD/ATI] Device [1002:699f] (rev c3)<br>
-    06:00.0 VGA compatible controller [0300]: Advanced Micro Devices,
-    Inc. [AMD/ATI] Device [1002:15dd] (rev d1)<br>
-    06:00.1 Audio device [0403]: Advanced Micro Devices, Inc. [AMD/ATI]
-    Device [1002:15de]<br>
-    <br>
-    Thanks<br>
-    JimQu<br>
-    <blockquote type="cite" cite="mid:s5hfu0qp7cv.wl-tiwai-l3A5Bk7waGM@public.gmane.org">
-      <pre wrap="">
-At best, give the full dmesg output and the lspci -nv output.
-
-
-thanks,
-
-Takashi
-</pre>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------C943BFC6C6D5996CBF144267--
-
---===============1048296387==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KYW1kLWdmeCBt
-YWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5m
-cmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbWQtZ2Z4Cg==
-
---===============1048296387==--
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 870ba6b64817..b94149d29c0d 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -17,6 +17,7 @@
+ #include <linux/workqueue.h>
+ #include <linux/interrupt.h>
+ #include <linux/kernel.h>
++#include <linux/component.h>
+ #include <linux/regmap.h>
+ #include <linux/log2.h>
+ #include <sound/core.h>
+@@ -1088,6 +1089,10 @@ struct snd_soc_card {
+ 
+ 	struct work_struct deferred_resume_work;
+ 
++	/* component framework related */
++	bool components_added;
++	struct component_match *match;
++
+ 	/* lists of probed devices belonging to this card */
+ 	struct list_head component_dev_list;
+ 
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 6d33634b934b..377ed8e67686 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -279,11 +279,31 @@ static inline void snd_soc_debugfs_exit(void)
+ 
+ #endif
+ 
++static int snd_soc_card_comp_compare(struct device *dev, void *data)
++{
++	struct snd_soc_component *component = NULL;
++	struct snd_soc_component *t;
++
++	lockdep_assert_held(&client_mutex);
++	list_for_each_entry(t, &component_list, list) {
++		if (dev == t->dev) {
++			component = t;
++			break;
++		}
++	}
++
++	if (component && !strcmp(component->name, data))
++		return 1;
++
++	return 0;
++}
++
+ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
+ 			      struct snd_soc_component *component)
+ {
+ 	struct snd_soc_rtdcom_list *rtdcom;
+ 	struct snd_soc_rtdcom_list *new_rtdcom;
++	char *cname;
+ 
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		/* already connected */
+@@ -300,6 +320,13 @@ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
+ 
+ 	list_add_tail(&new_rtdcom->list, &rtd->component_list);
+ 
++	if (!rtd->card->components_added) {
++		cname = devm_kasprintf(rtd->card->dev, GFP_KERNEL,
++				       "%s", component->name);
++		component_match_add(rtd->card->dev, &rtd->card->match,
++				    snd_soc_card_comp_compare, cname);
++	}
++
+ 	return 0;
+ }
+ 
+@@ -835,6 +862,28 @@ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
+ 	return false;
+ }
+ 
++static int snd_soc_card_comp_bind(struct device *dev)
++{
++	struct snd_soc_card *card = dev_get_drvdata(dev);
++
++	if (card->instantiated)
++		return 0;
++
++	return snd_soc_register_card(card);
++}
++
++static void snd_soc_card_comp_unbind(struct device *dev)
++{
++	struct snd_soc_card *card = dev_get_drvdata(dev);
++
++	snd_soc_unregister_card(card);
++}
++
++static const struct component_master_ops snd_soc_card_comp_ops = {
++	.bind = snd_soc_card_comp_bind,
++	.unbind = snd_soc_card_comp_unbind,
++};
++
+ static int soc_bind_dai_link(struct snd_soc_card *card,
+ 	struct snd_soc_dai_link *dai_link)
+ {
+@@ -2108,6 +2157,12 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 
+ 	card->instantiated = 1;
+ 	snd_soc_dapm_sync(&card->dapm);
++	if (!card->components_added) {
++		component_master_add_with_match(card->dev,
++						&snd_soc_card_comp_ops,
++						card->match);
++		card->components_added = true;
++	}
+ 	mutex_unlock(&card->mutex);
+ 	mutex_unlock(&client_mutex);
+ 
+@@ -3098,11 +3153,6 @@ static void snd_soc_component_cleanup(struct snd_soc_component *component)
+ 
+ static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
+ {
+-	struct snd_soc_card *card = component->card;
+-
+-	if (card)
+-		snd_soc_unregister_card(card);
+-
+ 	list_del(&component->list);
+ }
+ 
+@@ -3169,8 +3219,17 @@ int snd_soc_add_component(struct device *dev,
+ 
+ 	snd_soc_component_add(component);
+ 
++	ret = component_add(dev, NULL);
++	if (ret < 0) {
++		dev_err(dev, "ASoC: Failed to add Component: %d\n", ret);
++		goto err_comp;
++	}
++
+ 	return 0;
+ 
++err_comp:
++	soc_remove_component(component);
++	snd_soc_unregister_dais(component);
+ err_cleanup:
+ 	snd_soc_component_cleanup(component);
+ err_free:
+@@ -3218,6 +3277,7 @@ static int __snd_soc_unregister_component(struct device *dev)
+ 	mutex_unlock(&client_mutex);
+ 
+ 	if (found) {
++		component_del(dev, NULL);
+ 		snd_soc_component_cleanup(component);
+ 	}
+ 
+-- 
+2.16.2
