@@ -1,142 +1,737 @@
-From: jimqu <jimqu-5C7GfCeVMHo@public.gmane.org>
-Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiBbYWxzYS1kZXZlbF0g562U5aSNOiBb?=
- =?UTF-8?Q?PATCH]_vgaswitchroo:_set_audio_client_id_according_to_bound_gpu_c?=
- =?UTF-8?Q?lient_id?=
-Date: Wed, 11 Jul 2018 18:21:03 +0800
-Message-ID: <112c3801-8138-2e05-557a-08be69f3810b@amd.com>
-References: <20180629080634.GA7357@wunner.de>
- <DM3PR12MB08732DAAAA57739DCE431D66994E0@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180629111108.GA11609@wunner.de>
- <DM3PR12MB0873FEC702770190057B49F799440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <20180709092759.GA3649@wunner.de>
- <DM3PR12MB087309CBC2CD3A934327EBCE99440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
- <s5hr2kco3gp.wl-tiwai@suse.de> <20180709155643.GE3008@phenom.ffwll.local>
- <s5hpnzwcsf7.wl-tiwai@suse.de>
- <DM3PR12MB0873E9DD8B7448CB8A6829DA99440@DM3PR12MB0873.namprd12.prod.outlook.com>
- <s5hr2kbr03k.wl-tiwai@suse.de> <a37f08e7-734e-977c-597f-46d5c3ec34bc@amd.com>
- <s5hin5nctby.wl-tiwai@suse.de> <733011b9-1880-76a8-d00f-076591e93c53@amd.com>
- <s5hbmbfcp5v.wl-tiwai@suse.de> <s5hfu0qp7cv.wl-tiwai@suse.de>
- <1936c752-f858-2caf-35e7-98bea431fb7c@amd.com> <s5h1scap2h2.wl-tiwai@suse.de>
- <46d4d516-8373-2b22-da2e-f9f386c66973@amd.com> <s5h601mayk0.wl-tiwai@suse.de>
+From: Naveen Manohar <naveen.m@intel.com>
+Subject: [PATCH v4] ASoC: Intel: Boards: Add GLK Realtek Maxim
+	I2S machine driver
+Date: Wed, 11 Jul 2018 16:05:36 +0530
+Message-ID: <1531305336-29861-1-git-send-email-naveen.m@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <s5h601mayk0.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>
-Cc: "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "Qu,
- Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, Daniel Vetter <daniel-/w4YWyX8dFk@public.gmane.org>, Alex Deucher <alexdeucher-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "Deucher, Alexander" <Alexander.Deucher-5C7GfCeVMHo@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id BEC8A2673ED
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 12:37:58 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Harsha Priya <harshapriya.n@intel.com>, naveen.m@intel.com, broonie@kernel.org, pierre-louis.bossart@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE45bm0MDfmnIgxMeaXpSAxNzo1MywgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFdl
-ZCwgMTEgSnVsIDIwMTggMTE6MjY6MTEgKzAyMDAsCj4gamltcXUgd3JvdGU6Cj4+Cj4+Cj4+IE9u
-IDIwMTjlubQwN+aciDEx5pelIDE3OjA0LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+PiBPbiBXZWQs
-IDExIEp1bCAyMDE4IDEwOjQxOjM4ICswMjAwLAo+Pj4gamltcXUgd3JvdGU6Cj4+Pj4KPj4+PiBP
-biAyMDE45bm0MDfmnIgxMeaXpSAxNToxOSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4+PiBPbiBU
-dWUsIDEwIEp1bCAyMDE4IDEzOjIxOjAwICswMjAwLAo+Pj4+PiBUYWthc2hpIEl3YWkgd3JvdGU6
-Cj4+Pj4+Pj4gcmV2ZXJ0IHRoZSBmaXggb2YgYW1kZ3B1IHN1c3BlbmQgaXNzdWUsIGF1ZGlvIGlz
-c3VlIGFsc28gY2FuIGJlIG9ic2VydmVkLgo+Pj4+Pj4gRGlkIHlvdSBjaGVjayB0aGUgYmVoYXZp
-b3Igd2l0aCB0aGUgc2luZ2xlIEFNRCBHUFUgaGFyZHdhcmU/Cj4+Pj4+PiBJZiBjb25maXJtZWQs
-IHdlIGNhbiBmb3JnZXQgYWJvdXQgdmdhX3N3aXRjaGVyb28uCj4+Pj4+IC4uLiBhbmQgdGFraW5n
-IGEgbG9vayBiYWNrIGF0IHRoZSByZWNlbnQgY2hhbmdlcywgSSBndWVzcyBpdCBjYW4gYmUKPj4+
-Pj4gdGhlIGZvcmNlZCBydW50aW1lIFBNIGVuYWJsZW1lbnQsIG5vdCBkaXJlY3RseSB3aXRoIHZn
-YV9zd2l0Y2hlcm9vCj4+Pj4+IGFjdGlvbiBpdHNlbGYuCj4+Pj4gWWVhaCwgdGhlIGZ1bmN0aW9u
-IHZnYV9zd2l0Y2hlcm9vX3NldF9keW5hbWljX3N3aXRjaCgpIGhhcyBkaXNjYXJkZWQsCj4+Pj4g
-c28gdGhlcmUgaXMgbm8gd2F5IEdGWCBkcml2ZXIgdG8gY29udHJvbCBhdWRpbyBwb3dlci4gSG93
-ZXZlciwga2VlcCBpbgo+Pj4+IG1pbmQsIGN1cnJlbnQgYXVkaW8gaXMgYm91bmQgdG8gaUdQVSwg
-dGhhdCBtZWFuIHRoZSBpc3N1ZSBzaG91bGQgYmUKPj4+PiBub3RoaW5nIGFib3V0Cj4+Pj4gdmdh
-c3d0aWNocmVvby4gc2luY2UgY3VycmVudCBhdWRpbyBwY2kgYnVzIGlzIGRpZmZlcmVudCBmcm9t
-IGRHUFUsCj4+Pj4gdGhhdCBtZWFucyB0aGUgcGNpX2J1c19zZXRfY3VycmVudF9zdGF0ZSgpIGlu
-Cj4+Pj4gdmdhX3N3aXRjaGVyb29fcnVudGltZV9zdXNwZW5kKCkgYW5kIHBjaV93YWtldXBfYnVz
-KCkgaW4KPj4+PiB2Z2Ffc3dpdGNoZXJvb19ydW50aW1lX3Jlc3VtZSgpIGNvdWxkIG5vdCB0b3Vj
-aCB0aGUgYXVkaW8gcGNpIHBvd2VyCj4+Pj4gc3RhdGUgZnJvbSBkR1BVIGluc3RhbmNlLgo+Pj4+
-Cj4+Pj4gVGhpcyBpcyBhIGZlZWRiYWNrIGdvdCBmcm9tIG91ciBPRU0gZGV2ZWxvcGVyLCBpdCBp
-cyB0aGUgb3ZlcnZpZXcgb2YKPj4+PiBhdWRpbyBkZXRlY3QgcHJvY2Vzcy4KPj4+Pgo+Pj4+PiBG
-aXJzdCwgdGhlIGtlcm5lbCAgYXVkaW8gZHJpdmVyIHdpbGwgYmUgdHJpZ2dlcmVkIHRvIHJlYWQg
-RUxELCBpZiB0aGUKPj4+Pj4+IEVMRCBpcyB2YWxpZCwgaXQgd2lsbCByZXBvcnQgYSBqYWNrIGV2
-ZW50IChvbiBvciBhdmFpbGFibGUpIHRvIHNvdW5kCj4+Pj4+PiBjb3JlIGRyaXZlcjsgdGhlIHB1
-bHNlYXVkaW8gc3Vic2NyaWJlIGFsbCBqYWNrIGV2ZW50cywgaWYgaXQgaXMgdG9sZAo+Pj4+Pj4g
-dGhhdCB0aGUgaGRtaSBqYWNrIGlzIHBsdWdnZWQgaW4gKG9uKSwgdGhlIHB1bHNlYXVkaW8gd2ls
-bCBzZXQgdGhpcwo+Pj4+Pj4gcG9ydCB0byBhdmFpbGFibGUsIHRoZW4gdGhlIHBhLWNhcmQgb3Ig
-cGEtc2luayBoYXMgYXZhaWxhYmxlIHBvcnQsIGl0Cj4+Pj4+PiBjYW4gYmUgc2VsZWN0ZWQgKG1h
-bnVhbGx5LCBzb21lIGRhZW1vbnMgb3IgcG9saWN5IGluCj4+Pj4+PiAvdXNyL3NoYXJlL3B1bHNl
-YXVkaW8vYWxzYS1taXhlci8pIGFzIGRlZmF1bHQgb3V0cHV0IGNhcmQvZGVmYXVsdCBzaW5rLgo+
-Pj4+IElmIHRoZSBkZXNjcmlwdGlvbiBpcyBjb3JyZWN0LiBJIHRoaW5rIHRoZXJlIGFyZSBtYXli
-ZSB0d28gcHJvYmxlbXMuCj4+Pj4KPj4+PiAxLiBhdWRpbyB3aWxsIGF1dG8gcG93ZXIgb2ZmIGFm
-dGVyIHNldHVwIGRldmljZSBsaW5rIGR1byB0byB1c2FnZV9jb3VudD0wLgo+Pj4+IDIuIGR1byB0
-byBhdWRpbyBpcyBwb3dlciBkb3duLCBpdCBjb3VsZCBub3QgZ2V0IHRoZSBIRE1JIGphY2sgaW5z
-ZXJ0IGV2ZW50Lgo+Pj4+Cj4+Pj4gSG93IGRvIHlvdSB0aGluaz8KPj4+Pgo+Pj4+PiBKaW0sIGNv
-dWxkIHlvdSB0ZWxsIG1lIHdoaWNoIFBDSSBkZXZpY2VzIGFyZSBoYW5kbGVkIGFzIHZnYV9zd2l0
-Y2hlcm9vCj4+Pj4+IGF1ZGlvIGNsaWVudD8gIFRoZSBrZXJuZWwgc2hvdWxkIHNob3cgYWxsIG1l
-c3NhZ2VzICJ4eHg6IEhhbmRsZQo+Pj4+PiB2Z2Ffc3dpdGNoZXJvbyBhdWRpbyBjbGllbnQiLgo+
-Pj4+IFvCoMKgwqAgNC4zMTEwOTVdIHNuZF9oZGFfaW50ZWwgMDAwMDowNjowMC4xOiBlbmFibGlu
-ZyBkZXZpY2UgKDAwMDAgLT4gMDAwMikKPj4+PiBbwqDCoMKgIDQuMzE0Mjg2XSBzbmRfaGRhX2lu
-dGVsIDAwMDA6MDY6MDAuMTogSGFuZGxlIHZnYV9zd2l0Y2hlcm9vIGF1ZGlvCj4+Pj4gY2xpZW50
-Cj4+Pj4gW8KgwqDCoCA0LjMxNDgyMl0gc25kX2hkYV9pbnRlbCAwMDAwOjA2OjAwLjY6IGVuYWJs
-aW5nIGRldmljZSAoMDAwMCAtPiAwMDAyKQo+Pj4+Cj4+Pj4gMDE6MDAuMCBWR0EgY29tcGF0aWJs
-ZSBjb250cm9sbGVyIFswMzAwXTogQWR2YW5jZWQgTWljcm8gRGV2aWNlcywKPj4+PiBJbmMuIFtB
-TUQvQVRJXSBEZXZpY2UgWzEwMDI6Njk5Zl0gKHJldiBjMykKPj4+PiAwNjowMC4wIFZHQSBjb21w
-YXRpYmxlIGNvbnRyb2xsZXIgWzAzMDBdOiBBZHZhbmNlZCBNaWNybyBEZXZpY2VzLAo+Pj4+IElu
-Yy4gW0FNRC9BVEldIERldmljZSBbMTAwMjoxNWRkXSAocmV2IGQxKQo+Pj4+IDA2OjAwLjEgQXVk
-aW8gZGV2aWNlIFswNDAzXTogQWR2YW5jZWQgTWljcm8gRGV2aWNlcywgSW5jLiBbQU1EL0FUSV0K
-Pj4+PiBEZXZpY2UgWzEwMDI6MTVkZV0KPj4+IE9LIHRoaXMgc2hlZHMgYSBicmlnaHRlciBsaWdo
-dCwgZmluYWxseS4KPj4+Cj4+PiBJZiBteSB1bmRlcnN0YW5kaW5nIGlzIGNvcnJlY3QsIHRoZSBp
-c3N1ZSBpcyBhIGZhbHNlIHZnYV9zd2l0Y2hlcm9vCj4+PiBhdWRpbyBkZXRlY3Rpb24sIGFmdGVy
-IGFsbC4gIFRoaXMgaXMgdGhlIHByaW1hcnkgR1BVIGFuZCBpdCBzaG91bGRuJ3QKPj4+IGJlIHJl
-Z2lzdGVyZWQgYXMgYSB2Z2Ffc3dpdGNoZXJvbyBkaXNjcmV0ZSBHUFUuCj4+Pgo+Pj4gQmVsb3cg
-aXMgYSB2ZXJ5IHVnbHkgd29ya2Fyb3VuZCBmb3IgdGhpcyBwYXJ0aWN1bGFyIGNhc2UuICBJdCBh
-c3N1bWVzCj4+PiB0aGF0IHRoZSBBTUQrQU1EIGNvbWJvIHdpbGwgbmV2ZXIgaGF2ZSBhdWRpbyBv
-dXRwdXRzIG9uIGJvdGggYnV0IG9ubHkKPj4+IGZvciB0aGUgcHJpbWFyeSwgYW5kIGl0J3MgcG9z
-c2libHkgd3JvbmcuCj4+Pgo+Pj4gSXMgdGhlcmUgYSBoYW5keSB3YXkgdG8gaWRlbnRpZnkgd2hl
-dGhlciB0aGUgZ2l2ZW4gVkdBIFBDSSBlbnRyeSBpcwo+Pj4gYSBkaXNjcmV0ZSBHUFUgb3Igbm90
-PyAgVGhlIGFtZGdwdSBhbmQgcmFkZW9uIHNlZW0gY2hlY2tpbmcgQVRQWAo+Pj4gQUNQSS4KPj4g
-VGhpcyBpcyBubyBpc3N1ZSBhYm91dCB0aGlzIHRvcGljLCBpbiBhbWRncHUgZHJpdmVyLCBib3Ro
-IGlHUFUvZEdQVQo+PiB3aWxsIHJlZ2lzdGVyIGFzIFZHQV9TV0lUQ0hFUk9PX1VOS05PV05fSUQs
-IGFuZCB0aGUgY2xpZW50IGlkIHdpbGwgYmUKPj4gcmUtaW5pdGlhbGl6ZWQgaW4gdmdhc3dpdGNo
-cmVvb19lbmFibGUoKSB2aWEgQVRQWCBjYWxsLiBUaGVuLCBpR1BVCj4+IHdpbGwgc2V0IGFzIFZH
-QV9TV0lUQ0hFUk9PX0lHRCwgYW5kIGRHUFUgd2lsbCBzZXQgYXMKPj4gVkdBX1NXSVRDSEVST09f
-RElTLgo+IFBsZWFzZSBjaGVjayB0aGUgcGF0Y2guICBJdCdzIG5vdCBhYm91dCBBTURHUFUgZHJp
-dmVyIGJ1dCB0aGUgdmdhCj4gc3dpdGNoZXJvbyBkZXRlY3Rpb24gaW4gSEQtYXVkaW8gZHJpdmVy
-LiAgTm90IHRoZSBHUFUgc2lkZSBidXQgdGhlCj4gYXVkaW8gc2lkZS4KPgo+IFRoZSBpc3N1ZXMg
-YXJlIHR3byBmb2xkczoKPiAtIFdlIHJlZ2lzdGVyIGVhY2ggQU1EIGNvbnRyb2xsZXIgYXNzb2Np
-YXRlZCB3aXRoIGEgR1BVIGFsd2F5cyBhcyBhCj4gICAgZGlzY3JldGUgR1BVIHZnYV9zd2l0Y2hl
-cm9vIGF1ZGlvLgo+IC0gQW5kIHdoZW4gaXQncyByZWdpc3RlcmVkIGFzIGEgdmdhX3N3aXRjaGVy
-b28gY2xpZW50LCB3ZSBmb3JjaWJseQo+ICAgIGVuYWJsZSBydW50aW1lIFBNIG9mIHRoZSBjb250
-cm9sbGVyLCBzaW5jZSBkaXNjcmV0ZSBHUFUgbmVlZHMgdGhlCj4gICAgcnVudGltZSBzdXNwZW5k
-Lgo+Cj4gU28gYSB3b3JrYXJvdW5kIGluIHlvdXIgY2FzZSBpcyBqdXN0IG5vdCB0byByZWdpc3Rl
-ciBhcyBhIHZnYQo+IHN3aXRjaGVyb28gYXVkaW8gY2xpZW50LiAgVGhlbiB0aGUgcnVudGltZSBQ
-TSBpc24ndCBlbmFibGVkIGluIHRoZSBBTUQKPiBIRE1JIGF1ZGlvIGNvbnRyb2xsZXIsIGFuZCB0
-aGUgSERNSSBkZXRlY3Rpb24gcmVtYWlucyBhY3RpdmUuCj4KPgo+IFRha2FzaGkKCk9LLCBJIGdv
-dCB5b3VyIHBvaW50LiBMZXQgbWUgaGF2ZSBhIHRyeS4KCkJUVywgd2hhdCBhYm91dCB0aGUgcGF0
-Y2ggaW4gdGhpcyB0aHJlYWQsIEkgdGhpbmsgaXQgaXMgYWxzbyBuZWVkIGZvciAKY3VycmVudCBj
-b2RlLiBhbHRob3VnaCBhdWRpbyBwb3dlciBpcyBub3QgY29udHJvbGxlZCBieSB2Z2Fzd2l0Y2hy
-ZW9vLCAKd2UgYWxzbyBjYW4gZW5jb3VudGVyIHRoZSBpc3N1ZShhdWRpbyB3aGljaCBpcyBib3Vu
-ZCB0byBpR1BVIHdpbGwgCnN1c3BlbmQgd2l0aCBkR1BVKSBpZiB1c2VyIGRlYnVnZnMgdG8gY29u
-dHJvbCB0aGUgY2xpZW50IHBvd2VyLgoKVGhhbmtzCkppbVF1Cj4+IFRoYW5rcwo+PiBKaW1RdQo+
-Pj4gVGFrYXNoaQo+Pj4KPj4+IC0tLQo+Pj4gLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwu
-Ywo+Pj4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwo+Pj4gQEAgLTE0MTgsOCArMTQx
-OCwxOCBAQCBzdGF0aWMgaW50IGF6eF9kZXZfZnJlZShzdHJ1Y3Qgc25kX2RldmljZSAqZGV2aWNl
-KQo+Pj4gICAgICovCj4+PiAgICBzdGF0aWMgc3RydWN0IHBjaV9kZXYgKmdldF9ib3VuZF92Z2Eo
-c3RydWN0IHBjaV9kZXYgKnBjaSkKPj4+ICAgIHsKPj4+ICsJc3RhdGljIGNvbnN0IHN0cnVjdCBw
-Y2lfZGV2aWNlX2lkIGlkc1tdID0gewo+Pj4gKwkJeyBQQ0lfREVWSUNFKFBDSV9WRU5ET1JfSURf
-SU5URUwsIFBDSV9BTllfSUQpLAo+Pj4gKwkJICAuY2xhc3MgPSBQQ0lfQkFTRV9DTEFTU19ESVNQ
-TEFZIDw8IDE2LAo+Pj4gKwkJICAuY2xhc3NfbWFzayA9IDB4ZmYgPDwgMTYgfSwKPj4+ICsJCXt9
-Cj4+PiArCX07Cj4+PiAgICAJc3RydWN0IHBjaV9kZXYgKnA7Cj4+PiAgICArCS8qIGNoZWNrIHdo
-ZXRoZXIgSW50ZWwgZ3JhcGhpY3MgaXMgcHJlc2VudCBhcyBwcmltYXJ5IEdQVSAqLwo+Pj4gKwlp
-ZiAoIXBjaV9kZXZfcHJlc2VudChpZHMpKQo+Pj4gKwkJcmV0dXJuIE5VTEw7Cj4+PiArCj4+PiAg
-ICAJLyogY2hlY2sgb25seSBkaXNjcmV0ZSBHUFUgKi8KPj4+ICAgIAlzd2l0Y2ggKHBjaS0+dmVu
-ZG9yKSB7Cj4+PiAgICAJY2FzZSBQQ0lfVkVORE9SX0lEX0FUSToKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmFtZC1nZnggbWFpbGluZyBsaXN0CmFtZC1n
-ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vYW1kLWdmeAo=
+Patch adds Geminilake I2S machine driver which uses following codecs:
+RT5682 and MAX98357A.
+
+Signed-off-by: Naveen Manohar <naveen.m@intel.com>
+Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+---
+v1->v2: reverse xmas tree alignment of var declaration, Add Acked-by.
+v2->v3: corrected: platform-name for echo-ref dai & change-log position.
+v3->v4: turn-off sys_clk instead of PLL, when use-case is not ran to save power
+
+ sound/soc/intel/boards/Kconfig                |  14 +
+ sound/soc/intel/boards/Makefile               |   2 +
+ sound/soc/intel/boards/glk_rt5682_max98357a.c | 643 ++++++++++++++++++++++++++
+ 3 files changed, 659 insertions(+)
+ create mode 100644 sound/soc/intel/boards/glk_rt5682_max98357a.c
+
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index 2479748..cccda87 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -281,6 +281,20 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
++config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
++	tristate "GLK with RT5682 and MAX98357A in I2S Mode"
++	depends on MFD_INTEL_LPSS && I2C && ACPI
++	select SND_SOC_RT5682
++	select SND_SOC_MAX98357A
++	select SND_SOC_DMIC
++	select SND_SOC_HDAC_HDMI
++	select SND_HDA_DSP_LOADER
++	help
++	   This adds support for ASoC machine driver for Geminilake platforms
++	   with RT5682 + MAX98357A I2S audio codec.
++	   Say Y if you have such a device.
++	   If unsure select "N".
++
+ endif ## SND_SOC_INTEL_SKYLAKE
+ 
+ endif ## SND_SOC_INTEL_MACH
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index 92b5507..87ef8b4 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -6,6 +6,7 @@ snd-soc-sst-bdw-rt5677-mach-objs := bdw-rt5677.o
+ snd-soc-sst-broadwell-objs := broadwell.o
+ snd-soc-sst-bxt-da7219_max98357a-objs := bxt_da7219_max98357a.o
+ snd-soc-sst-bxt-rt298-objs := bxt_rt298.o
++snd-soc-sst-glk-rt5682_max98357a-objs := glk_rt5682_max98357a.o
+ snd-soc-sst-bytcr-rt5640-objs := bytcr_rt5640.o
+ snd-soc-sst-bytcr-rt5651-objs := bytcr_rt5651.o
+ snd-soc-sst-cht-bsw-rt5672-objs := cht_bsw_rt5672.o
+@@ -27,6 +28,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BYT_RT5640_MACH) += snd-soc-sst-byt-rt5640-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_MAX98090_MACH) += snd-soc-sst-byt-max98090-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BXT_DA7219_MAX98357A_MACH) += snd-soc-sst-bxt-da7219_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_BXT_RT298_MACH) += snd-soc-sst-bxt-rt298.o
++obj-$(CONFIG_SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH) += snd-soc-sst-glk-rt5682_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_BROADWELL_MACH) += snd-soc-sst-broadwell.o
+ obj-$(CONFIG_SND_SOC_INTEL_BDW_RT5677_MACH) += snd-soc-sst-bdw-rt5677-mach.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYTCR_RT5640_MACH) += snd-soc-sst-bytcr-rt5640.o
+diff --git a/sound/soc/intel/boards/glk_rt5682_max98357a.c b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+new file mode 100644
+index 0000000..c4b94e2
+--- /dev/null
++++ b/sound/soc/intel/boards/glk_rt5682_max98357a.c
+@@ -0,0 +1,643 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright(c) 2018 Intel Corporation.
++
++/*
++ * Intel Geminilake I2S Machine Driver with MAX98357A & RT5682 Codecs
++ *
++ * Modified from:
++ *   Intel Apollolake I2S Machine driver
++ */
++
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <sound/core.h>
++#include <sound/jack.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include "../skylake/skl.h"
++#include "../../codecs/rt5682.h"
++#include "../../codecs/hdac_hdmi.h"
++
++/* The platform clock outputs 19.2Mhz clock to codec as I2S MCLK */
++#define GLK_PLAT_CLK_FREQ 19200000
++#define RT5682_PLL_FREQ (48000 * 512)
++#define GLK_REALTEK_CODEC_DAI "rt5682-aif1"
++#define GLK_MAXIM_CODEC_DAI "HiFi"
++#define MAXIM_DEV0_NAME "MX98357A:00"
++#define DUAL_CHANNEL 2
++#define QUAD_CHANNEL 4
++#define NAME_SIZE 32
++
++static struct snd_soc_jack geminilake_hdmi[3];
++
++struct glk_hdmi_pcm {
++	struct list_head head;
++	struct snd_soc_dai *codec_dai;
++	int device;
++};
++
++struct glk_card_private {
++	struct snd_soc_jack geminilake_headset;
++	struct list_head hdmi_pcm_list;
++};
++
++enum {
++	GLK_DPCM_AUDIO_PB = 0,
++	GLK_DPCM_AUDIO_CP,
++	GLK_DPCM_AUDIO_HS_PB,
++	GLK_DPCM_AUDIO_ECHO_REF_CP,
++	GLK_DPCM_AUDIO_REF_CP,
++	GLK_DPCM_AUDIO_DMIC_CP,
++	GLK_DPCM_AUDIO_HDMI1_PB,
++	GLK_DPCM_AUDIO_HDMI2_PB,
++	GLK_DPCM_AUDIO_HDMI3_PB,
++};
++
++static int platform_clock_control(struct snd_soc_dapm_widget *w,
++					struct snd_kcontrol *k, int  event)
++{
++	struct snd_soc_dapm_context *dapm = w->dapm;
++	struct snd_soc_card *card = dapm->card;
++	struct snd_soc_dai *codec_dai;
++	int ret = 0;
++
++	codec_dai = snd_soc_card_get_codec_dai(card, GLK_REALTEK_CODEC_DAI);
++	if (!codec_dai) {
++		dev_err(card->dev, "Codec dai not found; Unable to set/unset codec pll\n");
++		return -EIO;
++	}
++
++	if (SND_SOC_DAPM_EVENT_OFF(event)) {
++		ret = snd_soc_dai_set_sysclk(codec_dai, 0, 0, 0);
++		if (ret)
++			dev_err(card->dev, "failed to stop sysclk: %d\n", ret);
++	} else if (SND_SOC_DAPM_EVENT_ON(event)) {
++		ret = snd_soc_dai_set_pll(codec_dai, 0, RT5682_PLL1_S_MCLK,
++					GLK_PLAT_CLK_FREQ, RT5682_PLL_FREQ);
++		if (ret < 0) {
++			dev_err(card->dev, "can't set codec pll: %d\n", ret);
++			return ret;
++		}
++	}
++
++	if (ret)
++		dev_err(card->dev, "failed to start internal clk: %d\n", ret);
++
++	return ret;
++}
++
++static const struct snd_kcontrol_new geminilake_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("Spk"),
++};
++
++static const struct snd_soc_dapm_widget geminilake_widgets[] = {
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_SPK("Spk", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
++	SND_SOC_DAPM_SPK("HDMI1", NULL),
++	SND_SOC_DAPM_SPK("HDMI2", NULL),
++	SND_SOC_DAPM_SPK("HDMI3", NULL),
++	SND_SOC_DAPM_SUPPLY("Platform Clock", SND_SOC_NOPM, 0, 0,
++			platform_clock_control, SND_SOC_DAPM_PRE_PMU |
++			SND_SOC_DAPM_POST_PMD),
++};
++
++static const struct snd_soc_dapm_route geminilake_map[] = {
++	/* HP jack connectors - unknown if we have jack detection */
++	{ "Headphone Jack", NULL, "Platform Clock" },
++	{ "Headphone Jack", NULL, "HPOL" },
++	{ "Headphone Jack", NULL, "HPOR" },
++
++	/* speaker */
++	{ "Spk", NULL, "Speaker" },
++
++	/* other jacks */
++	{ "Headset Mic", NULL, "Platform Clock" },
++	{ "IN1P", NULL, "Headset Mic" },
++
++	/* digital mics */
++	{ "DMic", NULL, "SoC DMIC" },
++
++	/* CODEC BE connections */
++	{ "HiFi Playback", NULL, "ssp1 Tx" },
++	{ "ssp1 Tx", NULL, "codec0_out" },
++
++	{ "AIF1 Playback", NULL, "ssp2 Tx" },
++	{ "ssp2 Tx", NULL, "codec1_out" },
++
++	{ "codec0_in", NULL, "ssp2 Rx" },
++	{ "ssp2 Rx", NULL, "AIF1 Capture" },
++
++	{ "HDMI1", NULL, "hif5-0 Output" },
++	{ "HDMI2", NULL, "hif6-0 Output" },
++	{ "HDMI2", NULL, "hif7-0 Output" },
++
++	{ "hifi3", NULL, "iDisp3 Tx" },
++	{ "iDisp3 Tx", NULL, "iDisp3_out" },
++	{ "hifi2", NULL, "iDisp2 Tx" },
++	{ "iDisp2 Tx", NULL, "iDisp2_out" },
++	{ "hifi1", NULL, "iDisp1 Tx" },
++	{ "iDisp1 Tx", NULL, "iDisp1_out" },
++
++	/* DMIC */
++	{ "dmic01_hifi", NULL, "DMIC01 Rx" },
++	{ "DMIC01 Rx", NULL, "DMIC AIF" },
++};
++
++static int geminilake_ssp_fixup(struct snd_soc_pcm_runtime *rtd,
++			struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++			SNDRV_PCM_HW_PARAM_CHANNELS);
++	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
++
++	/* The ADSP will convert the FE rate to 48k, stereo */
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = DUAL_CHANNEL;
++
++	/* set SSP to 24 bit */
++	snd_mask_none(fmt);
++	snd_mask_set(fmt, SNDRV_PCM_FORMAT_S24_LE);
++
++	return 0;
++}
++
++static int geminilake_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct glk_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_component *component = rtd->codec_dai->component;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	struct snd_soc_jack *jack;
++	int ret;
++
++	/* Configure sysclk for codec */
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
++					RT5682_PLL_FREQ, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		dev_err(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
++
++	/*
++	 * Headset buttons map to the google Reference headset.
++	 * These can be configured by userspace.
++	 */
++	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
++			SND_JACK_HEADSET | SND_JACK_BTN_0 | SND_JACK_BTN_1 |
++			SND_JACK_BTN_2 | SND_JACK_BTN_3 | SND_JACK_LINEOUT,
++			&ctx->geminilake_headset, NULL, 0);
++	if (ret) {
++		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
++		return ret;
++	}
++
++	jack = &ctx->geminilake_headset;
++
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOICECOMMAND);
++	ret = snd_soc_component_set_jack(component, jack, NULL);
++
++	if (ret) {
++		dev_err(rtd->dev, "Headset Jack call-back failed: %d\n", ret);
++		return ret;
++	}
++
++	return ret;
++};
++
++static int geminilake_rt5682_hw_params(struct snd_pcm_substream *substream,
++	struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int ret;
++
++	/* Set valid bitmask & configuration for I2S in 24 bit */
++	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x0, 0x0, 2, 24);
++	if (ret < 0) {
++		dev_err(rtd->dev, "set TDM slot err:%d\n", ret);
++		return ret;
++	}
++
++	return ret;
++}
++
++static struct snd_soc_ops geminilake_rt5682_ops = {
++	.hw_params = geminilake_rt5682_hw_params,
++};
++
++static int geminilake_hdmi_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct glk_card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_dai *dai = rtd->codec_dai;
++	struct glk_hdmi_pcm *pcm;
++
++	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
++	if (!pcm)
++		return -ENOMEM;
++
++	pcm->device = GLK_DPCM_AUDIO_HDMI1_PB + dai->id;
++	pcm->codec_dai = dai;
++
++	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
++
++	return 0;
++}
++
++static int geminilake_rt5682_fe_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct snd_soc_component *component = rtd->cpu_dai->component;
++	struct snd_soc_dapm_context *dapm;
++	int ret;
++
++	dapm = snd_soc_component_get_dapm(component);
++	ret = snd_soc_dapm_ignore_suspend(dapm, "Reference Capture");
++	if (ret) {
++		dev_err(rtd->dev, "Ref Cap ignore suspend failed %d\n", ret);
++		return ret;
++	}
++
++	return ret;
++}
++
++static const unsigned int rates[] = {
++	48000,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_rates = {
++	.count = ARRAY_SIZE(rates),
++	.list  = rates,
++	.mask = 0,
++};
++
++static const unsigned int channels[] = {
++	DUAL_CHANNEL,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_channels = {
++	.count = ARRAY_SIZE(channels),
++	.list = channels,
++	.mask = 0,
++};
++
++static unsigned int channels_quad[] = {
++	QUAD_CHANNEL,
++};
++
++static struct snd_pcm_hw_constraint_list constraints_channels_quad = {
++	.count = ARRAY_SIZE(channels_quad),
++	.list = channels_quad,
++	.mask = 0,
++};
++
++static int geminilake_dmic_fixup(struct snd_soc_pcm_runtime *rtd,
++		struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *channels = hw_param_interval(params,
++				SNDRV_PCM_HW_PARAM_CHANNELS);
++
++	/*
++	 * set BE channel constraint as user FE channels
++	 */
++	channels->min = channels->max = 4;
++
++	return 0;
++}
++
++static int geminilake_dmic_startup(struct snd_pcm_substream *substream)
++{
++	struct snd_pcm_runtime *runtime = substream->runtime;
++
++	runtime->hw.channels_min = runtime->hw.channels_max = QUAD_CHANNEL;
++	snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
++			&constraints_channels_quad);
++
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++			SNDRV_PCM_HW_PARAM_RATE, &constraints_rates);
++}
++
++static const struct snd_soc_ops geminilake_dmic_ops = {
++	.startup = geminilake_dmic_startup,
++};
++
++static const unsigned int rates_16000[] = {
++	16000,
++};
++
++static const struct snd_pcm_hw_constraint_list constraints_16000 = {
++	.count = ARRAY_SIZE(rates_16000),
++	.list  = rates_16000,
++};
++
++static int geminilake_refcap_startup(struct snd_pcm_substream *substream)
++{
++	return snd_pcm_hw_constraint_list(substream->runtime, 0,
++				SNDRV_PCM_HW_PARAM_RATE,
++				&constraints_16000);
++};
++
++static const struct snd_soc_ops geminilake_refcap_ops = {
++	.startup = geminilake_refcap_startup,
++};
++
++/* geminilake digital audio interface glue - connects codec <--> CPU */
++static struct snd_soc_dai_link geminilake_dais[] = {
++	/* Front End DAI links */
++	[GLK_DPCM_AUDIO_PB] = {
++		.name = "Glk Audio Port",
++		.stream_name = "Audio",
++		.cpu_dai_name = "System Pin",
++		.platform_name = "0000:00:0e.0",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.nonatomic = 1,
++		.init = geminilake_rt5682_fe_init,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++	},
++	[GLK_DPCM_AUDIO_CP] = {
++		.name = "Glk Audio Capture Port",
++		.stream_name = "Audio Record",
++		.cpu_dai_name = "System Pin",
++		.platform_name = "0000:00:0e.0",
++		.dynamic = 1,
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.nonatomic = 1,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_capture = 1,
++	},
++	[GLK_DPCM_AUDIO_HS_PB] = {
++		.name = "Glk Audio Headset Playback",
++		.stream_name = "Headset Audio",
++		.cpu_dai_name = "System Pin2",
++		.platform_name = "0000:00:0e.0",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.dpcm_playback = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[GLK_DPCM_AUDIO_ECHO_REF_CP] = {
++		.name = "Glk Audio Echo Reference cap",
++		.stream_name = "Echoreference Capture",
++		.cpu_dai_name = "Echoref Pin",
++		.platform_name = "0000:00:0e.0",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.init = NULL,
++		.capture_only = 1,
++		.nonatomic = 1,
++	},
++	[GLK_DPCM_AUDIO_REF_CP] = {
++		.name = "Glk Audio Reference cap",
++		.stream_name = "Refcap",
++		.cpu_dai_name = "Reference Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.init = NULL,
++		.dpcm_capture = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++		.ops = &geminilake_refcap_ops,
++	},
++	[GLK_DPCM_AUDIO_DMIC_CP] = {
++		.name = "Glk Audio DMIC cap",
++		.stream_name = "dmiccap",
++		.cpu_dai_name = "DMIC Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.init = NULL,
++		.dpcm_capture = 1,
++		.nonatomic = 1,
++		.dynamic = 1,
++		.ops = &geminilake_dmic_ops,
++	},
++	[GLK_DPCM_AUDIO_HDMI1_PB] = {
++		.name = "Glk HDMI Port1",
++		.stream_name = "Hdmi1",
++		.cpu_dai_name = "HDMI1 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.dpcm_playback = 1,
++		.init = NULL,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[GLK_DPCM_AUDIO_HDMI2_PB] =	{
++		.name = "Glk HDMI Port2",
++		.stream_name = "Hdmi2",
++		.cpu_dai_name = "HDMI2 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.dpcm_playback = 1,
++		.init = NULL,
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	[GLK_DPCM_AUDIO_HDMI3_PB] =	{
++		.name = "Glk HDMI Port3",
++		.stream_name = "Hdmi3",
++		.cpu_dai_name = "HDMI3 Pin",
++		.codec_name = "snd-soc-dummy",
++		.codec_dai_name = "snd-soc-dummy-dai",
++		.platform_name = "0000:00:0e.0",
++		.trigger = {
++			SND_SOC_DPCM_TRIGGER_POST, SND_SOC_DPCM_TRIGGER_POST},
++		.dpcm_playback = 1,
++		.init = NULL,
++		.nonatomic = 1,
++		.dynamic = 1,
++	},
++	/* Back End DAI links */
++	{
++		/* SSP1 - Codec */
++		.name = "SSP1-Codec",
++		.id = 0,
++		.cpu_dai_name = "SSP1 Pin",
++		.platform_name = "0000:00:0e.0",
++		.no_pcm = 1,
++		.codec_name = MAXIM_DEV0_NAME,
++		.codec_dai_name = GLK_MAXIM_CODEC_DAI,
++		.dai_fmt = SND_SOC_DAIFMT_I2S |
++			SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++		.ignore_pmdown_time = 1,
++		.be_hw_params_fixup = geminilake_ssp_fixup,
++		.dpcm_playback = 1,
++	},
++	{
++		/* SSP2 - Codec */
++		.name = "SSP2-Codec",
++		.id = 1,
++		.cpu_dai_name = "SSP2 Pin",
++		.platform_name = "0000:00:0e.0",
++		.no_pcm = 1,
++		.codec_name = "i2c-10EC5682:00",
++		.codec_dai_name = GLK_REALTEK_CODEC_DAI,
++		.init = geminilake_rt5682_codec_init,
++		.dai_fmt = SND_SOC_DAIFMT_I2S | SND_SOC_DAIFMT_NB_NF |
++			SND_SOC_DAIFMT_CBS_CFS,
++		.ignore_pmdown_time = 1,
++		.be_hw_params_fixup = geminilake_ssp_fixup,
++		.ops = &geminilake_rt5682_ops,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++	},
++	{
++		.name = "dmic01",
++		.id = 2,
++		.cpu_dai_name = "DMIC01 Pin",
++		.codec_name = "dmic-codec",
++		.codec_dai_name = "dmic-hifi",
++		.platform_name = "0000:00:0e.0",
++		.ignore_suspend = 1,
++		.be_hw_params_fixup = geminilake_dmic_fixup,
++		.dpcm_capture = 1,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp1",
++		.id = 3,
++		.cpu_dai_name = "iDisp1 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi1",
++		.platform_name = "0000:00:0e.0",
++		.init = geminilake_hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp2",
++		.id = 4,
++		.cpu_dai_name = "iDisp2 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi2",
++		.platform_name = "0000:00:0e.0",
++		.init = geminilake_hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
++	{
++		.name = "iDisp3",
++		.id = 5,
++		.cpu_dai_name = "iDisp3 Pin",
++		.codec_name = "ehdaudio0D2",
++		.codec_dai_name = "intel-hdmi-hifi3",
++		.platform_name = "0000:00:0e.0",
++		.init = geminilake_hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++	},
++};
++
++static int glk_card_late_probe(struct snd_soc_card *card)
++{
++	struct glk_card_private *ctx = snd_soc_card_get_drvdata(card);
++	struct snd_soc_component *component = NULL;
++	char jack_name[NAME_SIZE];
++	struct glk_hdmi_pcm *pcm;
++	int err = 0;
++	int i = 0;
++
++	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		component = pcm->codec_dai->component;
++		snprintf(jack_name, sizeof(jack_name),
++			"HDMI/DP, pcm=%d Jack", pcm->device);
++		err = snd_soc_card_jack_new(card, jack_name,
++					SND_JACK_AVOUT, &geminilake_hdmi[i],
++					NULL, 0);
++
++		if (err)
++			return err;
++
++		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
++						&geminilake_hdmi[i]);
++		if (err < 0)
++			return err;
++
++		i++;
++	}
++
++	if (!component)
++		return -EINVAL;
++
++	return hdac_hdmi_jack_port_init(component, &card->dapm);
++}
++
++/* geminilake audio machine driver for SPT + RT5682 */
++static struct snd_soc_card glk_audio_card_rt5682_m98357a = {
++	.name = "glkrt5682max",
++	.owner = THIS_MODULE,
++	.dai_link = geminilake_dais,
++	.num_links = ARRAY_SIZE(geminilake_dais),
++	.controls = geminilake_controls,
++	.num_controls = ARRAY_SIZE(geminilake_controls),
++	.dapm_widgets = geminilake_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(geminilake_widgets),
++	.dapm_routes = geminilake_map,
++	.num_dapm_routes = ARRAY_SIZE(geminilake_map),
++	.fully_routed = true,
++	.late_probe = glk_card_late_probe,
++};
++
++static int geminilake_audio_probe(struct platform_device *pdev)
++{
++	struct glk_card_private *ctx;
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	if (!ctx)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
++
++	glk_audio_card_rt5682_m98357a.dev = &pdev->dev;
++	snd_soc_card_set_drvdata(&glk_audio_card_rt5682_m98357a, ctx);
++
++	return devm_snd_soc_register_card(&pdev->dev,
++					&glk_audio_card_rt5682_m98357a);
++}
++
++static const struct platform_device_id glk_board_ids[] = {
++	{
++		.name = "glk_rt5682_max98357a",
++		.driver_data =
++			(kernel_ulong_t)&glk_audio_card_rt5682_m98357a,
++	},
++	{ }
++};
++
++static struct platform_driver geminilake_audio = {
++	.probe = geminilake_audio_probe,
++	.driver = {
++		.name = "glk_rt5682_max98357a",
++		.pm = &snd_soc_pm_ops,
++	},
++	.id_table = glk_board_ids,
++};
++module_platform_driver(geminilake_audio)
++
++/* Module information */
++MODULE_DESCRIPTION("Geminilake Audio Machine driver-RT5682 & MAX98357A in I2S mode");
++MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
++MODULE_AUTHOR("Harsha Priya <harshapriya.n@intel.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:glk_rt5682_max98357a");
+-- 
+2.7.4
