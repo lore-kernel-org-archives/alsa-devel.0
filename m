@@ -1,15 +1,17 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH 2/2] ALSA: hda/ca0132: Update a pci quirk
- device name
-Date: Wed, 11 Jul 2018 20:08:56 -0400
-Message-ID: <CAM8Agx0gnGgZud9fTuPC5GbrQPNKDs9VO3Czh9b20wKEyodEXg@mail.gmail.com>
-References: <20180711220946.20368-1-alastair.bridgewater@gmail.com>
- <20180711220946.20368-2-alastair.bridgewater@gmail.com>
+From: Srinivas Reddy <srinulinux91@gmail.com>
+Subject: Alsa_development
+Date: Thu, 12 Jul 2018 11:46:08 +0530
+Message-ID: <CAKueuzRjn80yXqG8dWpafE0YOZHj7uyKymrXfujQkwpE9x6BPg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180711220946.20368-2-alastair.bridgewater@gmail.com>
+Received: from mail-lf0-f47.google.com (mail-lf0-f47.google.com
+ [209.85.215.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A9D0267700
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jul 2018 08:16:20 +0200 (CEST)
+Received: by mail-lf0-f47.google.com with SMTP id m12-v6so23224541lfc.10
+ for <alsa-devel@alsa-project.org>; Wed, 11 Jul 2018 23:16:20 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,37 +21,7 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alastair Bridgewater <alastair.bridgewater@gmail.com>
-Cc: alsa-devel@alsa-project.org, patch@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Reviewed-by: Connor McAdams <conmanx360@gmail.com>
-
-On Wed, Jul 11, 2018 at 6:09 PM, Alastair Bridgewater
-<alastair.bridgewater@gmail.com> wrote:
-> The PCI subsystem in question for this quirk rule has been
-> identified as a Gigabyte GA-Z170X-Gaming 7 motherboard.  Set the
-> device name appropriately.
->
-> Signed-off-by: Alastair Bridgewater <alastair.bridgewater@gmail.com>
->
-> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-> index c803cca1c236..d09422aab2b4 100644
-> --- a/sound/pci/hda/patch_ca0132.c
-> +++ b/sound/pci/hda/patch_ca0132.c
-> @@ -1049,7 +1049,7 @@ static const struct snd_pci_quirk ca0132_quirks[] = {
->         SND_PCI_QUIRK(0x1102, 0x0023, "Sound Blaster Z", QUIRK_SBZ),
->         SND_PCI_QUIRK(0x1458, 0xA016, "Recon3Di", QUIRK_R3DI),
->         SND_PCI_QUIRK(0x1458, 0xA026, "Gigabyte G1.Sniper Z97", QUIRK_R3DI),
-> -       SND_PCI_QUIRK(0x1458, 0xA036, "Recon3Di", QUIRK_R3DI),
-> +       SND_PCI_QUIRK(0x1458, 0xA036, "Gigabyte GA-Z170X-Gaming 7", QUIRK_R3DI),
->         {}
->  };
->
-> --
-> 2.16.1
->
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Hi ALSA Team,
