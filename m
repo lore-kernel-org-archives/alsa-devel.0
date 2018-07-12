@@ -1,150 +1,222 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH] ASoC: core: add support to card re-bind/unbind using
- component framework
-Date: Thu, 12 Jul 2018 18:09:42 +0530
-Message-ID: <20180712123942.GV3219@vkoul-mobl>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: core: add support to card
+ re-bind/unbind using component framework
+Date: Thu, 12 Jul 2018 10:26:00 -0500
+Message-ID: <68715fbc-9447-dfaf-3fe5-4200684c2cbc@linux.intel.com>
 References: <20180711084318.11786-1-srinivas.kandagatla@linaro.org>
- <20180712105910.GU3219@vkoul-mobl>
- <c4eae2f4-8094-bf09-abed-bfd7a0428f34@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <c4eae2f4-8094-bf09-abed-bfd7a0428f34@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, perex@perex.cz, tiwai@suse.com, linux-kernel@vger.kernel.org, rohitkr@codeaurora.org, bgoswami@codeaurora.org
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 769C6267715
+ for <alsa-devel@alsa-project.org>; Thu, 12 Jul 2018 17:27:11 +0200 (CEST)
+In-Reply-To: <20180711084318.11786-1-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Cc: vkoul@kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-On 12-07-18, 13:02, Srinivas Kandagatla wrote:
-> Thanks Vinod for taking look at this!
+On 7/11/18 3:43 AM, Srinivas Kandagatla wrote:
+> This patch aims at add achieving dynamic behaviour of audio card when
+> the dependent components disappear and reappear.
 > 
-> On 12/07/18 11:59, Vinod wrote:
-> > On 11-07-18, 09:43, Srinivas Kandagatla wrote:
-> > > This patch aims at add achieving dynamic behaviour of audio card when
-> > > the dependent components disappear and reappear.
-> > > 
-> > > With this patch the card is removed if any of the dependent component
-> > > is removed and card is added back if the dependent component comes back.
-> > > All this is done using component framework and matching based on
-> > > component name.
-> > > 
-> > > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> > 
-> > Looks fine mostly, some nitpicks below:
-> > 
-> > > ---
-> > > 
-> > > During discussion regarding card re-binding when components unregister
-> > > and register back at https://lkml.org/lkml/2018/7/9/785 it was suggested
-> > > that component framework can be added into core to provide this feature.
-> > > 
-> > > With this new changes the card will re-bind once the dependent component
-> > > re-registers after unregistering. This works based on the match done
-> > > from component name using component framework.
-> > > 
-> > > I have tested this patch with qdsp start-stop usecase for more than 10000
-> > > times in loop on Qcom platforms.
-> > > 
-> > > I will send qdsp side cleanup patches once I get some feedback on this patch.
-> > > 
-> > > 
-> > >   include/sound/soc.h  |  5 ++++
-> > >   sound/soc/soc-core.c | 70 ++++++++++++++++++++++++++++++++++++++++++++++++----
-> > >   2 files changed, 70 insertions(+), 5 deletions(-)
-> > > 
-> > > diff --git a/include/sound/soc.h b/include/sound/soc.h
-> > > index 870ba6b64817..b94149d29c0d 100644
-> > > --- a/include/sound/soc.h
-> > > +++ b/include/sound/soc.h
-> > > @@ -17,6 +17,7 @@
-> > >   #include <linux/workqueue.h>
-> > >   #include <linux/interrupt.h>
-> > >   #include <linux/kernel.h>
-> > > +#include <linux/component.h>
-> > >   #include <linux/regmap.h>
-> > >   #include <linux/log2.h>
-> > >   #include <sound/core.h>
-> > > @@ -1088,6 +1089,10 @@ struct snd_soc_card {
-> > >   	struct work_struct deferred_resume_work;
-> > > +	/* component framework related */
-> > > +	bool components_added;
-> > > +	struct component_match *match;
-> > > +
-> > >   	/* lists of probed devices belonging to this card */
-> > >   	struct list_head component_dev_list;
-> > > diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> > > index 6d33634b934b..377ed8e67686 100644
-> > > --- a/sound/soc/soc-core.c
-> > > +++ b/sound/soc/soc-core.c
-> > > @@ -279,11 +279,31 @@ static inline void snd_soc_debugfs_exit(void)
-> > >   #endif
-> > > +static int snd_soc_card_comp_compare(struct device *dev, void *data)
-> > 
-> > Why not make last arg as name and avoid void *
-> > 
-> 
-> I can rename argument "data" to "name", but I can not change the prototype
-> of the compare callback expected by component framework.
+> With this patch the card is removed if any of the dependent component
+> is removed and card is added back if the dependent component comes back.
+> All this is done using component framework and matching based on
+> component name.
 
-oh yes the data type can't be changed.
+Humm, no real comment on this patch proper but rather on how userspace 
+would deal with this dynamic behavior?
+We had similar opens when we worked on the BYT/CHT HDMI stuff and 
+ended-up with quite a few issues in userspace (PulseAudio mainly) 
+related to dynamic behavior at the kernel level as a result of 
+plug/unplug. Also not sure how an Android HAL would deal with a card 
+disappearing temporarily if DSP resources become unavailable or 
+unresponsive. Any thoughts or guidance you might think of?
 
 > 
-> > > +{
-> > > +	struct snd_soc_component *component = NULL;
-> > > +	struct snd_soc_component *t;
-> > 
-> > why do you need two variables for this
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
 > 
-> We need two because one is iterator and other is find.
+> During discussion regarding card re-binding when components unregister
+> and register back at https://lkml.org/lkml/2018/7/9/785 it was suggested
+> that component framework can be added into core to provide this feature.
 > 
-> if we use just one we will endup with valid iterator item which may not have
-> matched dev.
+> With this new changes the card will re-bind once the dependent component
+> re-registers after unregistering. This works based on the match done
+> from component name using component framework.
 > 
-> Or I can re-organize/simplify the code like this:
+> I have tested this patch with qdsp start-stop usecase for more than 10000
+> times in loop on Qcom platforms.
 > 
-> static int snd_soc_card_comp_compare(struct device *dev, void *name)
-> {
->         struct snd_soc_component *t;
-> 
->         lockdep_assert_held(&client_mutex);
->         list_for_each_entry(t, &component_list, list) {
->                 if (dev == t->dev) {
->                         if (!strcmp(t->name, name))
->                                 return 1;
->                 }
->         }
-> 
->         return 0;
-> }
-
-looks better :)
-
-> 
-> > > +
-> > > +	lockdep_assert_held(&client_mutex);
-> > > +	list_for_each_entry(t, &component_list, list) {
-> > > +		if (dev == t->dev) {
-> > > +			component = t;
-> > 
-> > you can skip this line and use t in below code.
-> > 
-> > > +			break;
-> > > +		}
-> > > +	}
-> > > +
-> > > +	if (component && !strcmp(component->name, data))
-> > 
+> I will send qdsp side cleanup patches once I get some feedback on this patch.
 > 
 > 
-> > strncmp?
+>   include/sound/soc.h  |  5 ++++
+>   sound/soc/soc-core.c | 70 ++++++++++++++++++++++++++++++++++++++++++++++++----
+>   2 files changed, 70 insertions(+), 5 deletions(-)
 > 
-> AFAIU, strcmp should be safe here as component->name is generated/sanitized
-> by core and would be of max len of NAME_SIZE.
-> core uses strcmp in may places. Any particular reason you want me to move to
-> strncmp?
-
-I agree that name is generated but I don't trust strings :)
-
--- 
-~Vinod
+> diff --git a/include/sound/soc.h b/include/sound/soc.h
+> index 870ba6b64817..b94149d29c0d 100644
+> --- a/include/sound/soc.h
+> +++ b/include/sound/soc.h
+> @@ -17,6 +17,7 @@
+>   #include <linux/workqueue.h>
+>   #include <linux/interrupt.h>
+>   #include <linux/kernel.h>
+> +#include <linux/component.h>
+>   #include <linux/regmap.h>
+>   #include <linux/log2.h>
+>   #include <sound/core.h>
+> @@ -1088,6 +1089,10 @@ struct snd_soc_card {
+>   
+>   	struct work_struct deferred_resume_work;
+>   
+> +	/* component framework related */
+> +	bool components_added;
+> +	struct component_match *match;
+> +
+>   	/* lists of probed devices belonging to this card */
+>   	struct list_head component_dev_list;
+>   
+> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+> index 6d33634b934b..377ed8e67686 100644
+> --- a/sound/soc/soc-core.c
+> +++ b/sound/soc/soc-core.c
+> @@ -279,11 +279,31 @@ static inline void snd_soc_debugfs_exit(void)
+>   
+>   #endif
+>   
+> +static int snd_soc_card_comp_compare(struct device *dev, void *data)
+> +{
+> +	struct snd_soc_component *component = NULL;
+> +	struct snd_soc_component *t;
+> +
+> +	lockdep_assert_held(&client_mutex);
+> +	list_for_each_entry(t, &component_list, list) {
+> +		if (dev == t->dev) {
+> +			component = t;
+> +			break;
+> +		}
+> +	}
+> +
+> +	if (component && !strcmp(component->name, data))
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+>   static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
+>   			      struct snd_soc_component *component)
+>   {
+>   	struct snd_soc_rtdcom_list *rtdcom;
+>   	struct snd_soc_rtdcom_list *new_rtdcom;
+> +	char *cname;
+>   
+>   	for_each_rtdcom(rtd, rtdcom) {
+>   		/* already connected */
+> @@ -300,6 +320,13 @@ static int snd_soc_rtdcom_add(struct snd_soc_pcm_runtime *rtd,
+>   
+>   	list_add_tail(&new_rtdcom->list, &rtd->component_list);
+>   
+> +	if (!rtd->card->components_added) {
+> +		cname = devm_kasprintf(rtd->card->dev, GFP_KERNEL,
+> +				       "%s", component->name);
+> +		component_match_add(rtd->card->dev, &rtd->card->match,
+> +				    snd_soc_card_comp_compare, cname);
+> +	}
+> +
+>   	return 0;
+>   }
+>   
+> @@ -835,6 +862,28 @@ static bool soc_is_dai_link_bound(struct snd_soc_card *card,
+>   	return false;
+>   }
+>   
+> +static int snd_soc_card_comp_bind(struct device *dev)
+> +{
+> +	struct snd_soc_card *card = dev_get_drvdata(dev);
+> +
+> +	if (card->instantiated)
+> +		return 0;
+> +
+> +	return snd_soc_register_card(card);
+> +}
+> +
+> +static void snd_soc_card_comp_unbind(struct device *dev)
+> +{
+> +	struct snd_soc_card *card = dev_get_drvdata(dev);
+> +
+> +	snd_soc_unregister_card(card);
+> +}
+> +
+> +static const struct component_master_ops snd_soc_card_comp_ops = {
+> +	.bind = snd_soc_card_comp_bind,
+> +	.unbind = snd_soc_card_comp_unbind,
+> +};
+> +
+>   static int soc_bind_dai_link(struct snd_soc_card *card,
+>   	struct snd_soc_dai_link *dai_link)
+>   {
+> @@ -2108,6 +2157,12 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+>   
+>   	card->instantiated = 1;
+>   	snd_soc_dapm_sync(&card->dapm);
+> +	if (!card->components_added) {
+> +		component_master_add_with_match(card->dev,
+> +						&snd_soc_card_comp_ops,
+> +						card->match);
+> +		card->components_added = true;
+> +	}
+>   	mutex_unlock(&card->mutex);
+>   	mutex_unlock(&client_mutex);
+>   
+> @@ -3098,11 +3153,6 @@ static void snd_soc_component_cleanup(struct snd_soc_component *component)
+>   
+>   static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
+>   {
+> -	struct snd_soc_card *card = component->card;
+> -
+> -	if (card)
+> -		snd_soc_unregister_card(card);
+> -
+>   	list_del(&component->list);
+>   }
+>   
+> @@ -3169,8 +3219,17 @@ int snd_soc_add_component(struct device *dev,
+>   
+>   	snd_soc_component_add(component);
+>   
+> +	ret = component_add(dev, NULL);
+> +	if (ret < 0) {
+> +		dev_err(dev, "ASoC: Failed to add Component: %d\n", ret);
+> +		goto err_comp;
+> +	}
+> +
+>   	return 0;
+>   
+> +err_comp:
+> +	soc_remove_component(component);
+> +	snd_soc_unregister_dais(component);
+>   err_cleanup:
+>   	snd_soc_component_cleanup(component);
+>   err_free:
+> @@ -3218,6 +3277,7 @@ static int __snd_soc_unregister_component(struct device *dev)
+>   	mutex_unlock(&client_mutex);
+>   
+>   	if (found) {
+> +		component_del(dev, NULL);
+>   		snd_soc_component_cleanup(component);
+>   	}
+>   
+> 
