@@ -1,46 +1,64 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ASoC: qdsp6: q6routing: off by one in
-	routing_hw_params()
-Date: Fri, 13 Jul 2018 18:11:04 +0300
-Message-ID: <20180713151100.x5usbqhlhrzjmeoq@kili.mountain>
+From: jimqu <jimqu-5C7GfCeVMHo@public.gmane.org>
+Subject: Re: [alsa-devel] [PATCH 2/2] vgaswitchreoo: set audio client id in
+ vgaswitchreoo enable function
+Date: Fri, 13 Jul 2018 23:25:39 +0800
+Message-ID: <1add12ce-a28c-c964-0f52-9d1661839ca2@amd.com>
+References: <1531469162-6472-1-git-send-email-Jim.Qu@amd.com>
+ <1531469162-6472-2-git-send-email-Jim.Qu@amd.com>
+ <s5hmuuv8qvp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
- by alsa0.perex.cz (Postfix) with ESMTP id 973C8267727
- for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 17:11:17 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Niklas Cassel <niklas.cassel@linaro.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <s5hmuuv8qvp.wl-tiwai-l3A5Bk7waGM@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, Jim Qu <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-The data->port_data[] array has AFE_MAX_PORTS elements so the check
-should be >= instead of > or we write one element beyond the end of the
-array.
-
-Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 35269b492761..0e7cf9e35d51 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -927,7 +927,7 @@ static int routing_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		path_type = ADM_PATH_LIVE_REC;
- 
--	if (be_id > AFE_MAX_PORTS)
-+	if (be_id >= AFE_MAX_PORTS)
- 		return -EINVAL;
- 
- 	session = &data->port_data[be_id];
+CgrlnKggMjAxOC83LzEzIDE2OjQ2LCBUYWthc2hpIEl3YWkg5YaZ6YGTOgo+IE9uIEZyaSwgMTMg
+SnVsIDIwMTggMTA6MDY6MDIgKzAyMDAsCj4gSmltIFF1IHdyb3RlOgo+PiBPbiBtb2Rlcm4gbGFw
+dG9wLCB0aGVyZSBhcmUgbW9yZSBhbmQgbW9yZSBwbGF0Zm9ybXMKPj4gaGF2ZSB0d28gR1BVcywg
+YW5kIGVhY2ggb2YgdGhlbSBtYXliZSBoYXZlIGF1ZGlvIGNvZGVjCj4+IGZvciBIRE1QL0RQIG91
+dHB1dC4gRm9yIHNvbWUgZEdQVSB3aGljaCBpcyBubyBvdXRwdXQsCj4+IGF1ZGlvIGNvZGVjIHVz
+dWFsbHkgaXMgZGlzYWJsZWQuCj4+Cj4+IEluIGN1cnJlY3QgSERBIGF1ZGlvIGRyaXZlciwgaXQg
+d2lsbCBzZXQgYWxsIGNvZGVjIGFzCj4+IFZHQV9TV0lUQ0hFUk9PX0RJUywgdGhlIGF1ZGlvIHdo
+aWNoIGlzIGJpbmRlZCB0byBVTUEKPj4gd2lsbCBiZSBzdXNwZW5kZWQgaWYgdXNlciB1c2UgZGVi
+dWdmcyB0byBjb250b3JsIHBvd2VyCj4+Cj4+IEluIEhEQSBkcml2ZXIgc2lkZSwgaXQgaXMgZGlm
+ZmljdWx0IHRvIGtub3cgd2hpY2ggR1BVCj4+IHRoZSBhdWRpbyBoYXMgYmluZGVkIHRvLiBTbyBz
+ZXQgdGhlIGJvdW5kIGdwdSBwY2kgZGV2Cj4+IHRvIHZnYXN3aXRjaHJvbywgdGhlIGNvcnJlY3Qg
+YXVkaW8gaWQgd2lsbCBiZSBzZXQgaW4KPj4gdmdhc3dpdGNocmVvbyBlbmFibGUgZnVuY3Rpb24u
+Cj4+Cj4+IFNpZ25lZC1vZmYtYnk6IEppbSBRdSA8SmltLlF1QGFtZC5jb20+Cj4gVGhlIGlkZWEg
+bG9va3MgZ29vZCB0byBtZS4gIEp1c3QgYSBuaXRwaWNrOgo+Cj4+IEBAIC0xMzE5LDE1ICsxMzE5
+LDE2IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgdmdhX3N3aXRjaGVyb29fY2xpZW50X29wcyBhenhf
+dnNfb3BzID0gewo+PiAgIHN0YXRpYyBpbnQgcmVnaXN0ZXJfdmdhX3N3aXRjaGVyb28oc3RydWN0
+IGF6eCAqY2hpcCkKPj4gICB7Cj4+ICAgCXN0cnVjdCBoZGFfaW50ZWwgKmhkYSA9IGNvbnRhaW5l
+cl9vZihjaGlwLCBzdHJ1Y3QgaGRhX2ludGVsLCBjaGlwKTsKPj4gKwlzdHJ1Y3QgcGNpX2RldiAq
+IHA7Cj4+ICAgCWludCBlcnI7Cj4+ICAgCj4+ICAgCWlmICghaGRhLT51c2VfdmdhX3N3aXRjaGVy
+b28pCj4+ICAgCQlyZXR1cm4gMDsKPj4gLQkvKiBGSVhNRTogY3VycmVudGx5IG9ubHkgaGFuZGxp
+bmcgRElTIGNvbnRyb2xsZXIKPj4gLQkgKiBpcyB0aGVyZSBhbnkgbWFjaGluZSB3aXRoIHR3byBz
+d2l0Y2hhYmxlIEhETUkgYXVkaW8gY29udHJvbGxlcnM/Cj4+IC0JICovCj4+IC0JZXJyID0gdmdh
+X3N3aXRjaGVyb29fcmVnaXN0ZXJfYXVkaW9fY2xpZW50KGNoaXAtPnBjaSwgJmF6eF92c19vcHMs
+Cj4+IC0JCQkJCQkgICBWR0FfU1dJVENIRVJPT19ESVMpOwo+PiArCj4+ICsJcCAgPSBnZXRfYm91
+bmRfdmdhKGNoaXAtPnBjaSk7Cj4+ICsJZXJyID0gdmdhX3N3aXRjaGVyb29fcmVnaXN0ZXJfYXVk
+aW9fY2xpZW50KGNoaXAtPnBjaSwgJmF6eF92c19vcHMsIHApOwo+PiArCWlmIChwKQo+PiArCQlw
+Y2lfZGV2X3B1dChwKTsKPiBQYXNzaW5nIGEgTlVMTCB2Z2FfZGV2IHdvbid0IHdvcmssIHNvIHRo
+ZSBOVUxMIGNoZWNrIGFmdGVyIGNhbGxpbmcKPiB2Z2Ffc3dpdGNoZXJvb19yZWdpc3Rlcl9hdWRp
+b19jbGllbnQoKSBpcyBtb290LiAgSWYgYW55LCBpdCBzaG91bGQgYmUKPiBjaGVja2VkIGJlZm9y
+ZSB0aGF0Lgo+CgogwqBUaGUgaGRhLT51c2VfdmdhX3N3aXRjaGVyb28gaXMgc2V0IHRvIDEgaW4g
+aW5pdF92Z2Ffc3dpdGNoZXJvbygpIGlmIApib3VuZCB2Z2EgcGNpIGRldiBpcyBub3QgTlVMTC4g
+U2luY2UgdGhlIGhkYS0+dXNlX3ZnYV9zd2l0Y2hlcm9vIGlzIApjaGVja2VkIGF0IGJlZ2lubmlu
+ZyBvZiB0aGUgZnVuY3Rpb24uIHNvIHRoZSBwIHdoaWNoIHBhc3MgaW50byAKdmdhX3N3aXRjaGVy
+b29fcmVnaXN0ZXJfYXVkaW9fY2xpZW50KCkgaXMgY29uc3RhbnQgdmFsaWQgdmFsdWUuCgpUaGFu
+a3MKSmltUXUKPiB0aGFua3MsCj4KPiBUYWthc2hpCgpfX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fXwphbWQtZ2Z4IG1haWxpbmcgbGlzdAphbWQtZ2Z4QGxpc3Rz
+LmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2FtZC1nZngK
