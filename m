@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: allow soc-core to pick up name prefixes
-	from component nodes" to the asoc tree
-Date: Fri, 13 Jul 2018 16:10:12 +0100 (BST)
-Message-ID: <20180713151012.162C444007A@finisterre.ee.mobilebroadband>
-References: <20180713125043.13242-3-jbrunet@baylibre.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AEB9267730
- for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2018 00:44:23 +0200 (CEST)
-In-Reply-To: <20180713125043.13242-3-jbrunet@baylibre.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Subject: Applied "ASoC: trace: remove snd_soc_codec" to the asoc tree
+Date: Fri, 13 Jul 2018 16:10:17 +0100 (BST)
+Message-ID: <20180713151017.C69EF440080@finisterre.ee.mobilebroadband>
+References: <87vadh3pz1.wl%kuninori.morimoto.gx@renesas.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87vadh3pz1.wl%kuninori.morimoto.gx@renesas.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@redhat.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Thomas Gleixner <tglx@linutronix.de>, Philippe Ombredanne <pombredanne@nexb.com>, Kate Stewart <kstewart@linuxfoundation.org>, Linux-ALSA <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: allow soc-core to pick up name prefixes from component nodes
+   ASoC: trace: remove snd_soc_codec
 
 has been applied to the asoc tree at
 
@@ -53,72 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From aefba45539bc4868c1fae336410aec907ee0882a Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Fri, 13 Jul 2018 14:50:43 +0200
-Subject: [PATCH] ASoC: allow soc-core to pick up name prefixes from component
- nodes
+>From 211b4415ecb254e167837206756dea123342689c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 28 Mar 2018 02:18:13 +0000
+Subject: [PATCH] ASoC: trace: remove snd_soc_codec
 
-When the component does not match the configuration table provided
-by the card, let soc-core check the component node for a name prefix
+snd_soc_codec is replaced to snd_soc_component,
+and it is not used in this file.
+Let's remove it
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 28 +++++++++++++++++++++++-----
- 1 file changed, 23 insertions(+), 5 deletions(-)
+ include/trace/events/asoc.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 00bd58d167dd..3be0310d5c81 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1193,15 +1193,27 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
- }
- EXPORT_SYMBOL_GPL(snd_soc_remove_dai_link);
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index ccd1a3bdff46..40c300fe704d 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -12,7 +12,6 @@
+ #define DAPM_ARROW(dir) (((dir) == SND_SOC_DAPM_DIR_OUT) ? "->" : "<-")
  
-+static void soc_set_of_name_prefix(struct snd_soc_component *component)
-+{
-+	struct device_node *component_of_node = component->dev->of_node;
-+	const char *str;
-+	int ret;
-+
-+	if (!component_of_node && component->dev->parent)
-+		component_of_node = component->dev->parent->of_node;
-+
-+	ret = of_property_read_string(component_of_node, "sound-name-prefix",
-+				      &str);
-+	if (!ret)
-+		component->name_prefix = str;
-+}
-+
- static void soc_set_name_prefix(struct snd_soc_card *card,
- 				struct snd_soc_component *component)
- {
- 	int i;
- 
--	if (card->codec_conf == NULL)
--		return;
--
--	for (i = 0; i < card->num_configs; i++) {
-+	for (i = 0; i < card->num_configs && card->codec_conf; i++) {
- 		struct snd_soc_codec_conf *map = &card->codec_conf[i];
- 		struct device_node *component_of_node = component->dev->of_node;
- 
-@@ -1213,8 +1225,14 @@ static void soc_set_name_prefix(struct snd_soc_card *card,
- 		if (map->dev_name && strcmp(component->name, map->dev_name))
- 			continue;
- 		component->name_prefix = map->name_prefix;
--		break;
-+		return;
- 	}
-+
-+	/*
-+	 * If there is no configuration table or no match in the table,
-+	 * check if a prefix is provided in the node
-+	 */
-+	soc_set_of_name_prefix(component);
- }
- 
- static int soc_probe_component(struct snd_soc_card *card,
+ struct snd_soc_jack;
+-struct snd_soc_codec;
+ struct snd_soc_card;
+ struct snd_soc_dapm_widget;
+ struct snd_soc_dapm_path;
 -- 
 2.18.0
