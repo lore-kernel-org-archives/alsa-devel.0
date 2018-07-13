@@ -1,19 +1,19 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: qdsp6: q6routing: off by one in
-	routing_hw_params()
-Date: Fri, 13 Jul 2018 16:42:47 +0100
-Message-ID: <24d37072-bd4f-677f-5216-cca9d040f98a@linaro.org>
-References: <20180713151100.x5usbqhlhrzjmeoq@kili.mountain>
+Subject: Re: [PATCH] ASoC: qdsp6: q6afe-dai: fix a range check
+ in of_q6afe_parse_dai_data()
+Date: Fri, 13 Jul 2018 16:45:32 +0100
+Message-ID: <fc36ef7d-87df-f76b-9641-c354dabc69ca@linaro.org>
+References: <20180713150557.gsx7wrau2l7tg2jq@kili.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-wm0-f67.google.com (mail-wm0-f67.google.com [74.125.82.67])
- by alsa0.perex.cz (Postfix) with ESMTP id B1E90267727
- for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 17:42:49 +0200 (CEST)
-Received: by mail-wm0-f67.google.com with SMTP id h20-v6so9755448wmb.4
- for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 08:42:49 -0700 (PDT)
-In-Reply-To: <20180713151100.x5usbqhlhrzjmeoq@kili.mountain>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4FE28267727
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 17:45:34 +0200 (CEST)
+Received: by mail-wm0-f67.google.com with SMTP id s13-v6so4829126wmc.1
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 08:45:34 -0700 (PDT)
+In-Reply-To: <20180713150557.gsx7wrau2l7tg2jq@kili.mountain>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -30,29 +30,30 @@ List-Id: alsa-devel@alsa-project.org
 
 
 
-On 13/07/18 16:11, Dan Carpenter wrote:
-> The data->port_data[] array has AFE_MAX_PORTS elements so the check
-> should be >= instead of > or we write one element beyond the end of the
-> array.
+On 13/07/18 16:05, Dan Carpenter wrote:
+> The main thing is that the data->priv[] array has AFE_PORT_MAX elements
+> so the > condition should be >=.  But we may as well check for negative
+> values as well just to be safe.
 > 
-> Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
+> Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
 > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Thanks for the fix,
 
-Acked-by: Srinivas Kandgatla <srinivas.kandagatla@linaro.org>
+Thanks for the patch,
+
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
 > 
-> diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-> index 35269b492761..0e7cf9e35d51 100644
-> --- a/sound/soc/qcom/qdsp6/q6routing.c
-> +++ b/sound/soc/qcom/qdsp6/q6routing.c
-> @@ -927,7 +927,7 @@ static int routing_hw_params(struct snd_pcm_substream *substream,
->   	else
->   		path_type = ADM_PATH_LIVE_REC;
+> diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+> index e7f809e3ee1f..89df25e711c5 100644
+> --- a/sound/soc/qcom/qdsp6/q6afe-dai.c
+> +++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+> @@ -1329,7 +1329,7 @@ static void of_q6afe_parse_dai_data(struct device *dev,
+>   		int id, i, num_lines;
 >   
-> -	if (be_id > AFE_MAX_PORTS)
-> +	if (be_id >= AFE_MAX_PORTS)
->   		return -EINVAL;
->   
->   	session = &data->port_data[be_id];
+>   		ret = of_property_read_u32(node, "reg", &id);
+> -		if (ret || id > AFE_PORT_MAX) {
+> +		if (ret || id < 0 || id >= AFE_PORT_MAX) {
+>   			dev_err(dev, "valid dai id not found:%d\n", ret);
+>   			continue;
+>   		}
 > 
