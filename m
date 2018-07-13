@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6routing: off by one in
-	routing_hw_params()" to the asoc tree
-Date: Fri, 13 Jul 2018 16:30:10 +0100 (BST)
-Message-ID: <20180713153010.3EF2F440085@finisterre.ee.mobilebroadband>
-References: <20180713151100.x5usbqhlhrzjmeoq@kili.mountain>
+Subject: Applied "ASoC: qdsp6: q6afe-dai: fix a range check in
+	of_q6afe_parse_dai_data()" to the asoc tree
+Date: Fri, 13 Jul 2018 16:30:13 +0100 (BST)
+Message-ID: <20180713153013.31DC8440088@finisterre.ee.mobilebroadband>
+References: <20180713150557.gsx7wrau2l7tg2jq@kili.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A130267730
+ by alsa0.perex.cz (Postfix) with ESMTP id C9AFD267730
  for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2018 00:44:28 +0200 (CEST)
-In-Reply-To: <20180713151100.x5usbqhlhrzjmeoq@kili.mountain>
+In-Reply-To: <20180713150557.gsx7wrau2l7tg2jq@kili.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6routing: off by one in routing_hw_params()
+   ASoC: qdsp6: q6afe-dai: fix a range check in of_q6afe_parse_dai_data()
 
 has been applied to the asoc tree at
 
@@ -53,34 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 090345ce7265dd111299e3a63cdc79c3ef924481 Mon Sep 17 00:00:00 2001
+>From b8110a87b75f948d978c06e130cc68026645c4a1 Mon Sep 17 00:00:00 2001
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 13 Jul 2018 18:11:04 +0300
-Subject: [PATCH] ASoC: qdsp6: q6routing: off by one in routing_hw_params()
+Date: Fri, 13 Jul 2018 18:05:57 +0300
+Subject: [PATCH] ASoC: qdsp6: q6afe-dai: fix a range check in
+ of_q6afe_parse_dai_data()
 
-The data->port_data[] array has AFE_MAX_PORTS elements so the check
-should be >= instead of > or we write one element beyond the end of the
-array.
+The main thing is that the data->priv[] array has AFE_PORT_MAX elements
+so the > condition should be >=.  But we may as well check for negative
+values as well just to be safe.
 
-Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
+Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6routing.c | 2 +-
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 593f66b8622f..7a19d6278406 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -899,7 +899,7 @@ static int routing_hw_params(struct snd_pcm_substream *substream,
- 	else
- 		path_type = ADM_PATH_LIVE_REC;
+diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
+index a373ca5523ff..9ba95956ada8 100644
+--- a/sound/soc/qcom/qdsp6/q6afe-dai.c
++++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
+@@ -1183,7 +1183,7 @@ static void of_q6afe_parse_dai_data(struct device *dev,
+ 		int id, i, num_lines;
  
--	if (be_id > AFE_MAX_PORTS)
-+	if (be_id >= AFE_MAX_PORTS)
- 		return -EINVAL;
- 
- 	session = &data->port_data[be_id];
+ 		ret = of_property_read_u32(node, "reg", &id);
+-		if (ret || id > AFE_PORT_MAX) {
++		if (ret || id < 0 || id >= AFE_PORT_MAX) {
+ 			dev_err(dev, "valid dai id not found:%d\n", ret);
+ 			continue;
+ 		}
 -- 
 2.18.0
