@@ -1,58 +1,47 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [alsa-devel] [PATCH] ASoC: core: add support to card
- re-bind/unbind using component framework
-Date: Thu, 12 Jul 2018 22:13:50 +0530
-Message-ID: <20180712164350.GW3219@vkoul-mobl>
-References: <20180711084318.11786-1-srinivas.kandagatla@linaro.org>
- <68715fbc-9447-dfaf-3fe5-4200684c2cbc@linux.intel.com>
+From: Jim Qu <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
+Subject: [PATCH 1/2] ALSA: HDA: use PCI_BASE_CLASS_DISPLAY to cover more
+ display adapters
+Date: Fri, 13 Jul 2018 16:06:01 +0800
+Message-ID: <1531469162-6472-1-git-send-email-Jim.Qu@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <68715fbc-9447-dfaf-3fe5-4200684c2cbc@linux.intel.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, rohitkr@codeaurora.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Cc: Jim Qu <Jim.Qu-5C7GfCeVMHo@public.gmane.org>, amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On 12-07-18, 10:26, Pierre-Louis Bossart wrote:
-> On 7/11/18 3:43 AM, Srinivas Kandagatla wrote:
-> > This patch aims at add achieving dynamic behaviour of audio card when
-> > the dependent components disappear and reappear.
-> > 
-> > With this patch the card is removed if any of the dependent component
-> > is removed and card is added back if the dependent component comes back.
-> > All this is done using component framework and matching based on
-> > component name.
-> 
-> Humm, no real comment on this patch proper but rather on how userspace would
-> deal with this dynamic behavior?
-
-As Takashi pointed out card disappearing and appearing should not be an
-issue. On this machine, I typically run a BT headset which disappears
-and keep appearing, haven't seen issue :)
-
-> We had similar opens when we worked on the BYT/CHT HDMI stuff and ended-up
-> with quite a few issues in userspace (PulseAudio mainly) related to dynamic
-> behavior at the kernel level as a result of plug/unplug.
-
-IIRC those had something to do with gfx callback, register, interrupt
-racing on BYT HDMI. Ramesh/Jerome might have more details if they
-remember now :)
-
-> Also not sure how
-> an Android HAL would deal with a card disappearing temporarily if DSP
-> resources become unavailable or unresponsive. Any thoughts or guidance you
-> might think of?
-
-I have not see userspace HAL code but my guess is that it deals with
-card not being there.
-
-Btw this was handled/buried in the driver atm and asking realized that
-this is better suited in core, so Srini pushed it up. Current QC stack
-expects DSP to go off and card disappear as a result. Once DSP is back
-it would appear again (DSP is handled thru remoteproc, I think you
-should have a look at it and see if it would suit your DSP needs too)
-
--- 
-~Vinod
+U2lnbmVkLW9mZi1ieTogSmltIFF1IDxKaW0uUXVAYW1kLmNvbT4KLS0tCiBzb3VuZC9wY2kvaGRh
+L2hkYV9pbnRlbC5jIHwgOCArKysrLS0tLQogMSBmaWxlIGNoYW5nZWQsIDQgaW5zZXJ0aW9ucygr
+KSwgNCBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9pbnRlbC5j
+IGIvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYwppbmRleCAxYWUxODUwLi5lMDA2NDU2NyAxMDA2
+NDQKLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfaW50ZWwuYworKysgYi9zb3VuZC9wY2kvaGRhL2hk
+YV9pbnRlbC5jCkBAIC0zMSw3ICszMSw3IEBACiAgKiAgQ0hBTkdFUzoKICAqCiAgKiAgMjAwNC4x
+Mi4wMQlNYWpvciByZXdyaXRlIGJ5IHRpd2FpLCBtZXJnZWQgdGhlIHdvcmsgb2YgcHNob3UKLSAq
+IAorICoKICAqLwogCiAjaW5jbHVkZSA8bGludXgvZGVsYXkuaD4KQEAgLTM5MCw4ICszOTAsOCBA
+QCBzdGF0aWMgY2hhciAqZHJpdmVyX3Nob3J0X25hbWVzW10gPSB7CiAJW0FaWF9EUklWRVJfU0lT
+XSA9ICJIREEgU0lTOTY2IiwKIAlbQVpYX0RSSVZFUl9VTEldID0gIkhEQSBVTEkgTTU0NjEiLAog
+CVtBWlhfRFJJVkVSX05WSURJQV0gPSAiSERBIE5WaWRpYSIsCi0JW0FaWF9EUklWRVJfVEVSQV0g
+PSAiSERBIFRlcmFkaWNpIiwgCi0JW0FaWF9EUklWRVJfQ1RYXSA9ICJIREEgQ3JlYXRpdmUiLCAK
+KwlbQVpYX0RSSVZFUl9URVJBXSA9ICJIREEgVGVyYWRpY2kiLAorCVtBWlhfRFJJVkVSX0NUWF0g
+PSAiSERBIENyZWF0aXZlIiwKIAlbQVpYX0RSSVZFUl9DVEhEQV0gPSAiSERBIENyZWF0aXZlIiwK
+IAlbQVpYX0RSSVZFUl9DTUVESUFdID0gIkhEQSBDLU1lZGlhIiwKIAlbQVpYX0RSSVZFUl9HRU5F
+UklDXSA9ICJIRC1BdWRpbyBHZW5lcmljIiwKQEAgLTE0MjksNyArMTQyOSw3IEBAIHN0YXRpYyBz
+dHJ1Y3QgcGNpX2RldiAqZ2V0X2JvdW5kX3ZnYShzdHJ1Y3QgcGNpX2RldiAqcGNpKQogCQkJcCA9
+IHBjaV9nZXRfZG9tYWluX2J1c19hbmRfc2xvdChwY2lfZG9tYWluX25yKHBjaS0+YnVzKSwKIAkJ
+CQkJCQlwY2ktPmJ1cy0+bnVtYmVyLCAwKTsKIAkJCWlmIChwKSB7Ci0JCQkJaWYgKChwLT5jbGFz
+cyA+PiA4KSA9PSBQQ0lfQ0xBU1NfRElTUExBWV9WR0EpCisJCQkJaWYgKChwLT5jbGFzcyA+PiAx
+NikgPT0gUENJX0JBU0VfQ0xBU1NfRElTUExBWSkKIAkJCQkJcmV0dXJuIHA7CiAJCQkJcGNpX2Rl
+dl9wdXQocCk7CiAJCQl9Ci0tIAoyLjcuNAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KYW1kLWdmeCBtYWlsaW5nIGxpc3QKYW1kLWdmeEBsaXN0cy5mcmVl
+ZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbWQtZ2Z4Cg==
