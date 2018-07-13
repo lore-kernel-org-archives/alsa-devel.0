@@ -1,77 +1,67 @@
-From: jimqu <jimqu-5C7GfCeVMHo@public.gmane.org>
-Subject: Re: [PATCH 2/2] vgaswitchreoo: set audio client id in vgaswitchreoo
- enable function
-Date: Fri, 13 Jul 2018 23:34:53 +0800
-Message-ID: <7f754d8b-b09b-0313-ba57-7a9eb374fd31@amd.com>
-References: <1531469162-6472-1-git-send-email-Jim.Qu@amd.com>
- <1531469162-6472-2-git-send-email-Jim.Qu@amd.com>
- <20180713092742.GA4013@wunner.de>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 0/5] ASoC: core: add support to card re-bind
+	using component framework
+Date: Fri, 13 Jul 2018 16:36:27 +0100
+Message-ID: <20180713153632.32511-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <20180713092742.GA4013-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>, Jim Qu <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
-Cc: Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 651F6267727
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 17:39:21 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id 69-v6so9754865wmf.3
+ for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 08:39:21 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+Cc: bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org, rohitkr@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgrlnKggMjAxOC83LzEzIDE3OjI3LCBMdWthcyBXdW5uZXIg5YaZ6YGTOgo+IE9uIEZyaSwgSnVs
-IDEzLCAyMDE4IGF0IDA0OjA2OjAyUE0gKzA4MDAsIEppbSBRdSB3cm90ZToKPj4gT24gbW9kZXJu
-IGxhcHRvcCwgdGhlcmUgYXJlIG1vcmUgYW5kIG1vcmUgcGxhdGZvcm1zCj4+IGhhdmUgdHdvIEdQ
-VXMsIGFuZCBlYWNoIG9mIHRoZW0gbWF5YmUgaGF2ZSBhdWRpbyBjb2RlYwo+PiBmb3IgSERNUC9E
-UCBvdXRwdXQuIEZvciBzb21lIGRHUFUgd2hpY2ggaXMgbm8gb3V0cHV0LAo+PiBhdWRpbyBjb2Rl
-YyB1c3VhbGx5IGlzIGRpc2FibGVkLgo+Pgo+PiBJbiBjdXJyZWN0IEhEQSBhdWRpbyBkcml2ZXIs
-IGl0IHdpbGwgc2V0IGFsbCBjb2RlYyBhcwo+PiBWR0FfU1dJVENIRVJPT19ESVMsIHRoZSBhdWRp
-byB3aGljaCBpcyBiaW5kZWQgdG8gVU1BCj4+IHdpbGwgYmUgc3VzcGVuZGVkIGlmIHVzZXIgdXNl
-IGRlYnVnZnMgdG8gY29udG9ybCBwb3dlcgo+Pgo+PiBJbiBIREEgZHJpdmVyIHNpZGUsIGl0IGlz
-IGRpZmZpY3VsdCB0byBrbm93IHdoaWNoIEdQVQo+PiB0aGUgYXVkaW8gaGFzIGJpbmRlZCB0by4g
-U28gc2V0IHRoZSBib3VuZCBncHUgcGNpIGRldgo+PiB0byB2Z2Fzd2l0Y2hyb28sIHRoZSBjb3Jy
-ZWN0IGF1ZGlvIGlkIHdpbGwgYmUgc2V0IGluCj4+IHZnYXN3aXRjaHJlb28gZW5hYmxlIGZ1bmN0
-aW9uLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBKaW0gUXUgPEppbS5RdUBhbWQuY29tPgo+IFRoZSBh
-cHByb2FjaCB5b3UndmUgdGFrZW4gaW4gdGhpcyBwYXRjaCB3b24ndCB3b3JrIGlmIHRoZSBIREEg
-Y29udHJvbGxlcgo+IGlzIGJvdW5kIHRvIGEgZHJpdmVyIGFmdGVyIGJvdGggR1BVcyBoYXZlIGFs
-cmVhZHkgYmVlbiBib3VuZCB0byBhIGRyaXZlcgo+IGFuZCB0aGUgaGFuZGxlciBoYXMgYWxyZWFk
-eSBiZWVuIHJlZ2lzdGVyZWQuCj4KPiBUaGF0J3MgYmVjYXVzZSB2Z2Ffc3dpdGNoZXJvb19lbmFi
-bGUoKSBpcyBydW4gd2hlbiB0d28gR1BVcyBoYXZlIHJlZ2lzdGVyZWQKPiBhcyBjbGllbnRzIGFu
-ZCB0aGUgaGFuZGxlciBoYXMgYWxzbyByZWdpc3RlcmVkLiAgSWYgdGhlIEhEQSBjb250cm9sbGVy
-IGlzCj4gcHJvYmVkIGFmdGVyd2FyZHMsIGl0cyBJRCB3aWxsIGJlIHN0dWNrIGF0IFZHQV9TV0lU
-Q0hFUk9PX1VOS05PV05fSUQuCj4KPiBCZWZvcmUgcmVzdWJtaXR0aW5nIHRoaXMgcGF0Y2gsIHBs
-ZWFzZSBydW4gaXQgdGhyb3VnaCBzY3JpcHRzL2NoZWNrcGF0Y2gucGwsCj4gdGhlcmUgYXJlIG11
-bHRpcGxlIHRyaXZpYWwgaXNzdWVzIGhlcmUuCj4KPiBBbHNvLCBwbGVhc2UgdXNlIHNjcmlwdHMv
-Z2V0X21haW50YWluZXJzLnBsIG9uIGFsbCBmaWxlcyB5b3UncmUgdG91Y2hpbmcKPiBhbmQgY2Mg
-dGhlIHBhdGNoIHRvIHRoZSBsaXN0ZWQgbWFpbnRhaW5lcnMgYW5kIHJldmlld2Vycy4KPgo+Cj4+
-IEBAIC0xNjEsOSArMTYzLDggQEAgc3RydWN0IHZnYXNyX3ByaXYgewo+PiAgIH07Cj4+ICAgCj4+
-ICAgI2RlZmluZSBJRF9CSVRfQVVESU8JCTB4MTAwCj4+IC0jZGVmaW5lIGNsaWVudF9pc19hdWRp
-byhjKQkoKGMpLT5pZCAmIElEX0JJVF9BVURJTykKPj4gLSNkZWZpbmUgY2xpZW50X2lzX3ZnYShj
-KQkoKGMpLT5pZCA9PSBWR0FfU1dJVENIRVJPT19VTktOT1dOX0lEIHx8IFwKPj4gLQkJCQkgIWNs
-aWVudF9pc19hdWRpbyhjKSkKPj4gKyNkZWZpbmUgY2xpZW50X2lzX2F1ZGlvKGMpCQkoKGMpLT5p
-ZCAmIElEX0JJVF9BVURJTykKPj4gKyNkZWZpbmUgY2xpZW50X2lzX3ZnYShjKQkJKCFjbGllbnRf
-aXNfYXVkaW8oYykpCj4+ICAgI2RlZmluZSBjbGllbnRfaWQoYykJCSgoYyktPmlkICYgfklEX0JJ
-VF9BVURJTykKPiBUaGVyZSdzIGEgc3B1cmlvdXMgd2hpdGVzcGFjZSBjaGFuZ2UgaW4gdGhlIGNs
-aWVudF9pc19hdWRpbygpIGxpbmUsCj4gcGxlYXNlIGdldCByaWQgb2YgaXQuCj4KClllYWgsIEkg
-d2lsbCBjb3JyZWN0IGl0IGluIGxhdGVyIHVwZGF0ZS4KCj4+IC0tLSBhL2luY2x1ZGUvbGludXgv
-dmdhX3N3aXRjaGVyb28uaAo+PiArKysgYi9pbmNsdWRlL2xpbnV4L3ZnYV9zd2l0Y2hlcm9vLmgK
-Pj4gQEAgLTg0LDggKzg0LDggQEAgZW51bSB2Z2Ffc3dpdGNoZXJvb19zdGF0ZSB7Cj4+ICAgICog
-Q2xpZW50IGlkZW50aWZpZXIuIEF1ZGlvIGNsaWVudHMgdXNlIHRoZSBzYW1lIGlkZW50aWZpZXIg
-JiAweDEwMC4KPj4gICAgKi8KPj4gICBlbnVtIHZnYV9zd2l0Y2hlcm9vX2NsaWVudF9pZCB7Cj4+
-IC0JVkdBX1NXSVRDSEVST09fVU5LTk9XTl9JRCA9IC0xLAo+PiAtCVZHQV9TV0lUQ0hFUk9PX0lH
-RCwKPj4gKwlWR0FfU1dJVENIRVJPT19VTktOT1dOX0lEID0gMHgxMDAwLAo+PiArCVZHQV9TV0lU
-Q0hFUk9PX0lHRCA9IDAsCj4gSG0sIHdoeSBpcyB0aGlzIGNoYW5nZSBuZWNlc3Nhcnk/CgpCZWZv
-cmUsIHdlIHN1cHBvc2UgVkdBX1NXSVRDSEVST09fVU5LTk9XTl9JRCBjYW4gYmUgb25seSB1c2Vk
-IGZvciBncHUgCmNsaWVudCwgYnV0IG5vdyB3ZSBhbHNvIHVzZSBpdCBvbiBhdWRpbyBjbGllbnQu
-IEJlY2F1c2Ugb2YgLTEgaW4gbWVtb3J5IAppcyBwcmVzZW50ZWQgYXMgMHhmZmZmZmZmZmZmZmZm
-ZmZmLCBzbyB0aGUgMHhmZmZmZmZmZmZmZmZmZmZmICYgCklEX0JJVF9BVURJTyA9IElEX0JJVF9B
-VURJTywgdGhpcyB3aWxsIGNvbmZ1c2UgcGVvcGxlIGlmIGl0IHVzZWQgb24gZ3B1IApjbGllbnQu
-IHRoYXQgYXVkaW8gaWRlbnRpZnkgYml0IGlzIHNldC4KClRoYW5rcwpKaW1RdQo+Cj4gVGhhbmtz
-LAo+Cj4gTHVrYXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCmFtZC1nZnggbWFpbGluZyBsaXN0CmFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0
-dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vYW1kLWdmeAo=
+During discussion regarding card re-binding when components unregister
+and register back at https://lkml.org/lkml/2018/7/9/785 it was suggested
+that component framework can be added into core to provide this feature.
+
+With this new changes the card will re-bind once the dependent component
+re-registers after unregistering. This works based on the match done
+from component name using component framework.
+
+I have tested this patch with qdsp start-stop and module-load-unload usecase
+for more than 10000 times in loop on Qcom platforms.
+
+Thanks,
+srini
+
+Changes since v1:
+ - Added new flag to enable/disable auto bind at card level, It is useful
+  if machine driver/module is really removed/unloaded. Also to help cleanup
+  the master component. Without this we will endup with a memory leak if the
+  machine driver and memory associated with card are removed.
+ - removed unregister from unbind callback.
+ - updated match function as suggested by Vinod.
+ - Added qdsp6 cleanup patches to this series.
+
+Srinivas Kandagatla (5):
+  ASoC: core: add support to card re-bind using component framework
+  ASoC: qdsp6: q6afe-dai: remove component fw related code
+  ASoC: qdsp6: q6asm-dai: remove component framework related code
+  ASoC: qdsp6: q6routing: remove component framework related code
+  ASoC: qcom: apq8096: remove component framework related code
+
+ include/sound/soc.h              |  7 ++++
+ sound/soc/qcom/apq8096.c         | 75 ++++------------------------------------
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 34 +++---------------
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 35 +++----------------
+ sound/soc/qcom/qdsp6/q6routing.c | 32 ++++-------------
+ sound/soc/soc-core.c             | 62 +++++++++++++++++++++++++++++++++
+ 6 files changed, 89 insertions(+), 156 deletions(-)
+
+-- 
+2.16.2
