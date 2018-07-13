@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: doc: replace codec to component" to the
-	asoc tree
-Date: Fri, 13 Jul 2018 16:10:20 +0100 (BST)
-Message-ID: <20180713151020.715CD440083@finisterre.ee.mobilebroadband>
-References: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: qdsp6: q6routing: off by one in
+	routing_hw_params()" to the asoc tree
+Date: Fri, 13 Jul 2018 16:30:10 +0100 (BST)
+Message-ID: <20180713153010.3EF2F440085@finisterre.ee.mobilebroadband>
+References: <20180713151100.x5usbqhlhrzjmeoq@kili.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AAA5F267736
- for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2018 00:44:24 +0200 (CEST)
-In-Reply-To: <87woxx3q5g.wl%kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A130267730
+ for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2018 00:44:28 +0200 (CEST)
+In-Reply-To: <20180713151100.x5usbqhlhrzjmeoq@kili.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Niklas Cassel <niklas.cassel@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: doc: replace codec to component
+   ASoC: qdsp6: q6routing: off by one in routing_hw_params()
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From a3ac7727f3a226b0569431de62a4e9bb4c770b2b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Mar 2018 02:14:22 +0000
-Subject: [PATCH] ASoC: doc: replace codec to component
+>From 090345ce7265dd111299e3a63cdc79c3ef924481 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Fri, 13 Jul 2018 18:11:04 +0300
+Subject: [PATCH] ASoC: qdsp6: q6routing: off by one in routing_hw_params()
 
-Now we can replace Codec to Component. Let's do it.
+The data->port_data[] array has AFE_MAX_PORTS elements so the check
+should be >= instead of > or we write one element beyond the end of the
+array.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/sound/soc/codec.rst | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
-index f87612b94812..58f625fe3d39 100644
---- a/Documentation/sound/soc/codec.rst
-+++ b/Documentation/sound/soc/codec.rst
-@@ -179,12 +179,12 @@ i.e.
- 
-   static int wm8974_mute(struct snd_soc_dai *dai, int mute)
-   {
--	struct snd_soc_codec *codec = dai->codec;
--	u16 mute_reg = snd_soc_read(codec, WM8974_DAC) & 0xffbf;
-+	struct snd_soc_component *component = dai->component;
-+	u16 mute_reg = snd_soc_component_read32(component, WM8974_DAC) & 0xffbf;
- 
- 	if (mute)
--		snd_soc_write(codec, WM8974_DAC, mute_reg | 0x40);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg | 0x40);
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index 593f66b8622f..7a19d6278406 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -899,7 +899,7 @@ static int routing_hw_params(struct snd_pcm_substream *substream,
  	else
--		snd_soc_write(codec, WM8974_DAC, mute_reg);
-+		snd_soc_component_write(component, WM8974_DAC, mute_reg);
- 	return 0;
-   }
+ 		path_type = ADM_PATH_LIVE_REC;
+ 
+-	if (be_id > AFE_MAX_PORTS)
++	if (be_id >= AFE_MAX_PORTS)
+ 		return -EINVAL;
+ 
+ 	session = &data->port_data[be_id];
 -- 
 2.18.0
