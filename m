@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 5/5] ASoC: qcom: apq8096: remove component framework related code
-Date: Fri, 13 Jul 2018 16:36:32 +0100
-Message-ID: <20180713153632.32511-6-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 4/5] ASoC: qdsp6: q6routing: remove component framework related code
+Date: Fri, 13 Jul 2018 16:36:31 +0100
+Message-ID: <20180713153632.32511-5-srinivas.kandagatla@linaro.org>
 References: <20180713153632.32511-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180713153632.32511-1-srinivas.kandagatla@linaro.org>
@@ -15,119 +15,72 @@ remove any redundant code in this driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/apq8096.c | 75 ++++--------------------------------------------
- 1 file changed, 6 insertions(+), 69 deletions(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 32 ++++++--------------------------
+ 1 file changed, 6 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index cab8c4ff7c00..a56156281c8d 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -129,17 +129,18 @@ static int apq8096_sbc_parse_of(struct snd_soc_card *card)
- 	return ret;
- }
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index 35269b492761..1d33b00e5b44 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -8,7 +8,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/of_platform.h>
+ #include <linux/bitops.h>
+-#include <linux/component.h>
+ #include <linux/mutex.h>
+ #include <linux/of_device.h>
+ #include <linux/slab.h>
+@@ -977,9 +976,10 @@ static const struct snd_soc_component_driver msm_soc_routing_component = {
+ 	.num_dapm_routes = ARRAY_SIZE(intercon),
+ };
  
--static int apq8096_bind(struct device *dev)
-+static int apq8096_platform_probe(struct platform_device *pdev)
+-static int q6routing_dai_bind(struct device *dev, struct device *master,
+-			      void *data)
++static int q6pcm_routing_probe(struct platform_device *pdev)
  {
- 	struct snd_soc_card *card;
 +	struct device *dev = &pdev->dev;
- 	int ret;
- 
- 	card = kzalloc(sizeof(*card), GFP_KERNEL);
- 	if (!card)
++
+ 	routing_data = kzalloc(sizeof(*routing_data), GFP_KERNEL);
+ 	if (!routing_data)
  		return -ENOMEM;
+@@ -989,35 +989,15 @@ static int q6routing_dai_bind(struct device *dev, struct device *master,
+ 	mutex_init(&routing_data->lock);
+ 	dev_set_drvdata(dev, routing_data);
  
--	component_bind_all(dev, card);
- 	card->dev = dev;
-+	card->auto_bind = true;
- 	dev_set_drvdata(dev, card);
- 	ret = apq8096_sbc_parse_of(card);
- 	if (ret) {
-@@ -154,82 +155,18 @@ static int apq8096_bind(struct device *dev)
- 	return 0;
- 
- err:
--	component_unbind_all(dev, card);
- 	kfree(card);
- 	return ret;
+-	return snd_soc_register_component(dev, &msm_soc_routing_component,
++	return devm_snd_soc_register_component(dev, &msm_soc_routing_component,
+ 					  NULL, 0);
  }
  
--static void apq8096_unbind(struct device *dev)
-+static int apq8096_platform_remove(struct platform_device *pdev)
+-static void q6routing_dai_unbind(struct device *dev, struct device *master,
+-				 void *d)
++static int q6pcm_routing_remove(struct platform_device *pdev)
  {
--	struct snd_soc_card *card = dev_get_drvdata(dev);
-+	struct snd_soc_card *card = dev_get_drvdata(&pdev->dev);
- 
-+	card->auto_bind = false;
- 	snd_soc_unregister_card(card);
--	component_unbind_all(dev, card);
- 	kfree(card->dai_link);
- 	kfree(card);
--}
+-	struct msm_routing_data *data = dev_get_drvdata(dev);
 -
--static const struct component_master_ops apq8096_ops = {
--	.bind = apq8096_bind,
--	.unbind = apq8096_unbind,
+-	snd_soc_unregister_component(dev);
+-
+-	kfree(data);
+-
++	kfree(routing_data);
+ 	routing_data = NULL;
+-}
+ 
+-static const struct component_ops q6routing_dai_comp_ops = {
+-	.bind   = q6routing_dai_bind,
+-	.unbind = q6routing_dai_unbind,
 -};
 -
--static int apq8016_compare_of(struct device *dev, void *data)
+-static int q6pcm_routing_probe(struct platform_device *pdev)
 -{
--	return dev->of_node == data;
+-	return component_add(&pdev->dev, &q6routing_dai_comp_ops);
 -}
 -
--static void apq8016_release_of(struct device *dev, void *data)
+-static int q6pcm_routing_remove(struct platform_device *pdev)
 -{
--	of_node_put(data);
--}
--
--static int add_audio_components(struct device *dev,
--				struct component_match **matchptr)
--{
--	struct device_node *np, *platform, *cpu, *node, *dai_node;
--
--	node = dev->of_node;
--
--	for_each_child_of_node(node, np) {
--		cpu = of_get_child_by_name(np, "cpu");
--		if (cpu) {
--			dai_node = of_parse_phandle(cpu, "sound-dai", 0);
--			of_node_get(dai_node);
--			component_match_add_release(dev, matchptr,
--						    apq8016_release_of,
--						    apq8016_compare_of,
--						    dai_node);
--		}
--
--		platform = of_get_child_by_name(np, "platform");
--		if (platform) {
--			dai_node = of_parse_phandle(platform, "sound-dai", 0);
--			component_match_add_release(dev, matchptr,
--						    apq8016_release_of,
--						    apq8016_compare_of,
--						    dai_node);
--		}
--	}
--
--	return 0;
--}
--
--static int apq8096_platform_probe(struct platform_device *pdev)
--{
--	struct component_match *match = NULL;
--	int ret;
--
--	ret = add_audio_components(&pdev->dev, &match);
--	if (ret)
--		return ret;
--
--	return component_master_add_with_match(&pdev->dev, &apq8096_ops, match);
--}
--
--static int apq8096_platform_remove(struct platform_device *pdev)
--{
--	component_master_del(&pdev->dev, &apq8096_ops);
- 
+-	component_del(&pdev->dev, &q6routing_dai_comp_ops);
  	return 0;
  }
+ 
 -- 
 2.16.2
