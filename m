@@ -1,74 +1,86 @@
-From: Rob Duncan <rduncan@tesla.com>
-Subject: Bug in snd_pcm_ioplug_avail_update()?
-Date: Fri, 13 Jul 2018 15:10:29 -0700
-Message-ID: <dw77em7elyg52i.fsf@tesla.com>
+From: jimqu <jimqu-5C7GfCeVMHo@public.gmane.org>
+Subject: Re: [PATCH 2/2] vgaswitchreoo: set audio client id in vgaswitchreoo
+ enable function
+Date: Sat, 14 Jul 2018 14:15:24 +0800
+Message-ID: <8832b090-c399-ab88-8c56-4509a3413c44@amd.com>
+References: <1531469162-6472-1-git-send-email-Jim.Qu@amd.com>
+ <1531469162-6472-2-git-send-email-Jim.Qu@amd.com>
+ <20180713092742.GA4013@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-0019bd01.pphosted.com (mx0a-0019bd01.pphosted.com
- [148.163.151.57])
- by alsa0.perex.cz (Postfix) with ESMTP id 2631826771A
- for <alsa-devel@alsa-project.org>; Sat, 14 Jul 2018 00:10:34 +0200 (CEST)
-Received: from pps.filterd (m0127434.ppops.net [127.0.0.1])
- by mx0a-0019bd01.pphosted.com (8.16.0.22/8.16.0.22) with SMTP id
- w6DM7LUp007908
- for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 15:10:32 -0700
-Received: from external-smtp.teslamotors.com ([209.11.133.121])
- by mx0a-0019bd01.pphosted.com with ESMTP id 2k7442r3xr-1
- (version=TLSv1 cipher=ECDHE-RSA-AES256-SHA bits=256 verify=NOT)
- for <alsa-devel@alsa-project.org>; Fri, 13 Jul 2018 15:10:31 -0700
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <20180713092742.GA4013-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>, Jim Qu <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
+Cc: Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-It seems to me that there's something wrong in
-snd_pcm_ioplug_avail_update() for capture IO plugins.
-
-Once a bunch of conditions are met it makes this call:
-
-	__snd_pcm_mmap_begin(pcm, &areas, &offset, &size);
-	result = io->data->callback->transfer(io->data, areas, offset, size);
-	if (result < 0)
-		return result;
-
-This transfers size frames from the IO plugin, which in general is not
-all the available data: it's limited by the amount of contiguous space
-in the mmap.
-
-However, the function returns like this:
-
-	avail = snd_pcm_mmap_avail(pcm);
-	if (avail > io->avail_max)
-		io->avail_max = avail;
-	return (snd_pcm_sframes_t)avail;
-
-But this is all the available data in the IO plugin, without considering
-the contiguous space limitation. This means that there is now
-uninitialized data in the mmap, and some data still in the IO plugin
-that has yet to be transferred.
-
-I'm running into this misbehaviour with a rate conversion plugin pulling
-data from an IO plugin.  I get chunks of old data showing up later in
-the stream, I think because the mmap buffer is not being fully written
-to.
-
-I suspect that this avail mismatch tricks snd_pcm_rate_avail_update()
-into thinking that it can grab an integral number of periods of data
-from the mmap, which is not the case.
-
-But I'm quite tangled up trying to follow the control flow here so I
-could certainly be mistaken.  I'd appreciate any insight into what might
-be going wrong.
-
-Thanks,
-
-Rob.
+CgrlnKggMjAxOC83LzEzIDE3OjI3LCBMdWthcyBXdW5uZXIg5YaZ6YGTOgo+IE9uIEZyaSwgSnVs
+IDEzLCAyMDE4IGF0IDA0OjA2OjAyUE0gKzA4MDAsIEppbSBRdSB3cm90ZToKPj4gT24gbW9kZXJu
+IGxhcHRvcCwgdGhlcmUgYXJlIG1vcmUgYW5kIG1vcmUgcGxhdGZvcm1zCj4+IGhhdmUgdHdvIEdQ
+VXMsIGFuZCBlYWNoIG9mIHRoZW0gbWF5YmUgaGF2ZSBhdWRpbyBjb2RlYwo+PiBmb3IgSERNUC9E
+UCBvdXRwdXQuIEZvciBzb21lIGRHUFUgd2hpY2ggaXMgbm8gb3V0cHV0LAo+PiBhdWRpbyBjb2Rl
+YyB1c3VhbGx5IGlzIGRpc2FibGVkLgo+Pgo+PiBJbiBjdXJyZWN0IEhEQSBhdWRpbyBkcml2ZXIs
+IGl0IHdpbGwgc2V0IGFsbCBjb2RlYyBhcwo+PiBWR0FfU1dJVENIRVJPT19ESVMsIHRoZSBhdWRp
+byB3aGljaCBpcyBiaW5kZWQgdG8gVU1BCj4+IHdpbGwgYmUgc3VzcGVuZGVkIGlmIHVzZXIgdXNl
+IGRlYnVnZnMgdG8gY29udG9ybCBwb3dlcgo+Pgo+PiBJbiBIREEgZHJpdmVyIHNpZGUsIGl0IGlz
+IGRpZmZpY3VsdCB0byBrbm93IHdoaWNoIEdQVQo+PiB0aGUgYXVkaW8gaGFzIGJpbmRlZCB0by4g
+U28gc2V0IHRoZSBib3VuZCBncHUgcGNpIGRldgo+PiB0byB2Z2Fzd2l0Y2hyb28sIHRoZSBjb3Jy
+ZWN0IGF1ZGlvIGlkIHdpbGwgYmUgc2V0IGluCj4+IHZnYXN3aXRjaHJlb28gZW5hYmxlIGZ1bmN0
+aW9uLgo+Pgo+PiBTaWduZWQtb2ZmLWJ5OiBKaW0gUXUgPEppbS5RdUBhbWQuY29tPgo+IFRoZSBh
+cHByb2FjaCB5b3UndmUgdGFrZW4gaW4gdGhpcyBwYXRjaCB3b24ndCB3b3JrIGlmIHRoZSBIREEg
+Y29udHJvbGxlcgo+IGlzIGJvdW5kIHRvIGEgZHJpdmVyIGFmdGVyIGJvdGggR1BVcyBoYXZlIGFs
+cmVhZHkgYmVlbiBib3VuZCB0byBhIGRyaXZlcgo+IGFuZCB0aGUgaGFuZGxlciBoYXMgYWxyZWFk
+eSBiZWVuIHJlZ2lzdGVyZWQuCj4KPiBUaGF0J3MgYmVjYXVzZSB2Z2Ffc3dpdGNoZXJvb19lbmFi
+bGUoKSBpcyBydW4gd2hlbiB0d28gR1BVcyBoYXZlIHJlZ2lzdGVyZWQKPiBhcyBjbGllbnRzIGFu
+ZCB0aGUgaGFuZGxlciBoYXMgYWxzbyByZWdpc3RlcmVkLiAgSWYgdGhlIEhEQSBjb250cm9sbGVy
+IGlzCj4gcHJvYmVkIGFmdGVyd2FyZHMsIGl0cyBJRCB3aWxsIGJlIHN0dWNrIGF0IFZHQV9TV0lU
+Q0hFUk9PX1VOS05PV05fSUQuCgpJbiBnZW5lcm5pYyBzcGVha2luZywgdGhlcmUgYXJlIHR3byBj
+YXNlcyAsIGEuIGF1ZGlvIGNsaWVudCBpcyB0aGUgdGhpcmQgCmNsaWVudC4gYi4gYXVkaW8gY2xp
+ZW50IGlzIG5vdCB0aGUgdGhpcmQgY2xpZW50LgoKaWYgYXVkaW8gaXMgdGhpcmQgY2xpZW50LiB2
+Z2Ffc3dpdGNoZXJvb19yZWFkeSgpIGlzIHRydWUsIAp2Z2Ffc3dpdGNoZXJvb19lbmFibGUoKSBj
+YW4gYmUgY2FsbGVkIGluIGF1ZGlvIGNsaWVudCByZWdpc3RlciBmdWN0aW9uLgppZiBhdWRpbyBp
+cyBub3QgdGhlIHRoaXJkIGNsaWVudCwgdmdhX3N3aXRjaGVyb29fZW5hYmxlKCkgd2lsbCBiZSBj
+YWxsZWQgCmluIHRoZSBzZWNvbmQgR0ZYIGNsaWVudCByZWdpc3Rlci4KSW4gdmdhX3N3aXRjaGVy
+b29fZW5hYmxlKCkgLCB0aGUgZmlyc3QgbGlzdCBsb29wIHdpbGwgc2V0IHR3byBHUFUgCmNsaWVu
+dHMnIGlkLCBhbmQgdGhlIHNlY29uZCBsaXN0IGxvb3Agd2lsbCBzZWxlY3QgYXVkaW8gY2xpZW50
+LCBzZXQgaWQgCmJ5IGl0cyBib3VuZCBncHUgcGNpIGRldi4KCj4gQmVmb3JlIHJlc3VibWl0dGlu
+ZyB0aGlzIHBhdGNoLCBwbGVhc2UgcnVuIGl0IHRocm91Z2ggc2NyaXB0cy9jaGVja3BhdGNoLnBs
+LAo+IHRoZXJlIGFyZSBtdWx0aXBsZSB0cml2aWFsIGlzc3VlcyBoZXJlLgo+Cj4gQWxzbywgcGxl
+YXNlIHVzZSBzY3JpcHRzL2dldF9tYWludGFpbmVycy5wbCBvbiBhbGwgZmlsZXMgeW91J3JlIHRv
+dWNoaW5nCj4gYW5kIGNjIHRoZSBwYXRjaCB0byB0aGUgbGlzdGVkIG1haW50YWluZXJzIGFuZCBy
+ZXZpZXdlcnMuCj4KT0ssIHdpbGwgZG8gaXQgaW4gbmV4dCB2Mi4KPj4gQEAgLTE2MSw5ICsxNjMs
+OCBAQCBzdHJ1Y3Qgdmdhc3JfcHJpdiB7Cj4+ICAgfTsKPj4gICAKPj4gICAjZGVmaW5lIElEX0JJ
+VF9BVURJTwkJMHgxMDAKPj4gLSNkZWZpbmUgY2xpZW50X2lzX2F1ZGlvKGMpCSgoYyktPmlkICYg
+SURfQklUX0FVRElPKQo+PiAtI2RlZmluZSBjbGllbnRfaXNfdmdhKGMpCSgoYyktPmlkID09IFZH
+QV9TV0lUQ0hFUk9PX1VOS05PV05fSUQgfHwgXAo+PiAtCQkJCSAhY2xpZW50X2lzX2F1ZGlvKGMp
+KQo+PiArI2RlZmluZSBjbGllbnRfaXNfYXVkaW8oYykJCSgoYyktPmlkICYgSURfQklUX0FVRElP
+KQo+PiArI2RlZmluZSBjbGllbnRfaXNfdmdhKGMpCQkoIWNsaWVudF9pc19hdWRpbyhjKSkKPj4g
+ICAjZGVmaW5lIGNsaWVudF9pZChjKQkJKChjKS0+aWQgJiB+SURfQklUX0FVRElPKQo+IFRoZXJl
+J3MgYSBzcHVyaW91cyB3aGl0ZXNwYWNlIGNoYW5nZSBpbiB0aGUgY2xpZW50X2lzX2F1ZGlvKCkg
+bGluZSwKPiBwbGVhc2UgZ2V0IHJpZCBvZiBpdC4KPgoKV2lsbCB1cGRhdGUgaXQgaW4gdjIuCgo+
+PiAtLS0gYS9pbmNsdWRlL2xpbnV4L3ZnYV9zd2l0Y2hlcm9vLmgKPj4gKysrIGIvaW5jbHVkZS9s
+aW51eC92Z2Ffc3dpdGNoZXJvby5oCj4+IEBAIC04NCw4ICs4NCw4IEBAIGVudW0gdmdhX3N3aXRj
+aGVyb29fc3RhdGUgewo+PiAgICAqIENsaWVudCBpZGVudGlmaWVyLiBBdWRpbyBjbGllbnRzIHVz
+ZSB0aGUgc2FtZSBpZGVudGlmaWVyICYgMHgxMDAuCj4+ICAgICovCj4+ICAgZW51bSB2Z2Ffc3dp
+dGNoZXJvb19jbGllbnRfaWQgewo+PiAtCVZHQV9TV0lUQ0hFUk9PX1VOS05PV05fSUQgPSAtMSwK
+Pj4gLQlWR0FfU1dJVENIRVJPT19JR0QsCj4+ICsJVkdBX1NXSVRDSEVST09fVU5LTk9XTl9JRCA9
+IDB4MTAwMCwKPj4gKwlWR0FfU1dJVENIRVJPT19JR0QgPSAwLAo+IEhtLCB3aHkgaXMgdGhpcyBj
+aGFuZ2UgbmVjZXNzYXJ5PwpCZWZvcmUgLCB3ZSBzdXBwb3NlwqAgVkdBX1NXSVRDSEVST09fVU5L
+Tk9XTl9JRCBjYW4gYmUgb25seSB1c2VkIGZvciBncHUgCmNsaWVudCwgYW5kIG5vdyB3ZSBhbHNv
+IHVzZSBpdCBvbiB0aGUgYXVkaW8gY2xpZW50LiBpZiB3ZSBzZXQgClZHQV9TV0lUQ0hFUk9PX1VO
+S05PV05fSUQgdG8gZ3B1IGNsaWVudHMsIGNsaWVudF9pc19hdWRpbyhjbGllbnQpIHdpbGwgCmJl
+IHRydWUsIHNpbmNlIC0xIGluIG1lbW9yeSBpcyBwcmVzZW50ZWQgYXMgMHhmZmZmZmZmZmZmZmZm
+ZmZmKGlmIGl0IGlzIAo2NGJpdCBhc2ljKS4KCnRoYW5rcwpKaW1RdQo+Cj4gVGhhbmtzLAo+Cj4g
+THVrYXMKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmFt
+ZC1nZnggbWFpbGluZyBsaXN0CmFtZC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8v
+bGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vYW1kLWdmeAo=
