@@ -1,87 +1,122 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6afe-dai: fix a range check in
-	of_q6afe_parse_dai_data()" to the asoc tree
-Date: Fri, 13 Jul 2018 16:30:13 +0100 (BST)
-Message-ID: <20180713153013.31DC8440088@finisterre.ee.mobilebroadband>
-References: <20180713150557.gsx7wrau2l7tg2jq@kili.mountain>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] Suppress udev detection of sound card
+ for some units on IEEE 1394 bus
+Date: Sun, 15 Jul 2018 19:57:35 +0900
+Message-ID: <20180715105735.13008-1-o-takashi@sakamocchi.jp>
+Reply-To: General PulseAudio Discussion
+ <pulseaudio-discuss@lists.freedesktop.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C9AFD267730
- for <alsa-devel@alsa-project.org>; Sun, 15 Jul 2018 00:44:28 +0200 (CEST)
-In-Reply-To: <20180713150557.gsx7wrau2l7tg2jq@kili.mountain>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, Niklas Cassel <niklas.cassel@linaro.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <pulseaudio-discuss-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/pulseaudio-discuss>
+List-Post: <mailto:pulseaudio-discuss@lists.freedesktop.org>
+List-Help: <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/pulseaudio-discuss>,
+ <mailto:pulseaudio-discuss-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: pulseaudio-discuss-bounces@lists.freedesktop.org
+Sender: "pulseaudio-discuss" <pulseaudio-discuss-bounces@lists.freedesktop.org>
+To: pulseaudio-discuss@lists.freedesktop.org
+Cc: ramon.fried@linaro.org, alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: qdsp6: q6afe-dai: fix a range check in of_q6afe_parse_dai_data()
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From b8110a87b75f948d978c06e130cc68026645c4a1 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 13 Jul 2018 18:05:57 +0300
-Subject: [PATCH] ASoC: qdsp6: q6afe-dai: fix a range check in
- of_q6afe_parse_dai_data()
-
-The main thing is that the data->priv[] array has AFE_PORT_MAX elements
-so the > condition should be >=.  But we may as well check for negative
-values as well just to be safe.
-
-Fixes: 24c4cbcfac09 ("ASoC: qdsp6: q6afe: Add q6afe dai driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/qdsp6/q6afe-dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index a373ca5523ff..9ba95956ada8 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -1183,7 +1183,7 @@ static void of_q6afe_parse_dai_data(struct device *dev,
- 		int id, i, num_lines;
- 
- 		ret = of_property_read_u32(node, "reg", &id);
--		if (ret || id > AFE_PORT_MAX) {
-+		if (ret || id < 0 || id >= AFE_PORT_MAX) {
- 			dev_err(dev, "valid dai id not found:%d\n", ret);
- 			continue;
- 		}
--- 
-2.18.0
+QSBidWcgd2FzIGZpbGVkIHRvIGJ1Z3ppbGxhLmtlcm5lbC5vcmcgZm9yIGEgcXVpcmsgb2Ygc29t
+ZSBtb2RlbHMgd2hpY2gKQUxTQSBCZUJvQiBkcml2ZXIgc3VwcG9ydHMuCgpCdWcgMTk5MzY1IC0g
+cmVwZWF0aW5nIGJ1cyByZXNldHMgb24gRmlyZXdpcmUgYnVzIHdpdGggRm9jdXNyaXRlIFNhZmZh
+aXJlIDI2L2lvCmh0dHBzOi8vYnVnemlsbGEua2VybmVsLm9yZy9zaG93X2J1Zy5jZ2k/aWQ9MTk5
+MzY1CgpTb21lIG1vZGVscyAodHdvIG1vZGVscyBhcyBsb25nIGFzIEkga25vdykgaGF2ZSBhIHF1
+aXJrIHRvIGRpc2FwcGVhciBmcm9tCklFRUUgMTM5NCBidXMgYXQgZGlzY29ubmVjdGlvbnMgb2Yg
+cGFja2V0IHN0cmVhbWluZy4gQ29ycmVzcG9uZGluZwpjaGFyYWN0ZXIgZGV2aWNlcyBhcmUgcmVt
+b3ZlZCBhY2NvcmRpbmcgdG8gJ3JlbW92ZScgY2FsbGJhY2tzIG9mIHJlbGV2YW50CmRyaXZlcnMg
+ZnJvbSBMaW51eCBkZCBjb3JlLiBUaGVuIHRoZSBtb2RlbHMgcmUtYXBwZWFyIG9uIHRoZSBidXMg
+YnkKZ2VuZXJhdGluZyBidXMgcmVzZXRzIGFuZCBjb3JyZXNwb25kaW5nIGNoYXJhY3RlciBkZXZp
+Y2VzIGFyZSBhZGRlZAphY2NvcmRpbmcgdG8gJ3Byb2JlJyBjYWxsYmFja3MgZnJvbSBMaW51eCBk
+ZCBjb3JlLgoKSW4gYSB2aWV3IG9mIEFMU0EgYXBwbGljYXRpb25zLCB0aGlzIGxvb2tzIHRoYXQg
+cGx1Zy1vdXQvcGx1Zy1pbiBvY2N1ciBpbgphIHNlcXVlbnRpYWwgb3JkZXIgZm9yIHRoZSBtb2Rl
+bHMgd2hlbiB0aGV5IHN0b3AgcGxheWJhY2svY2FwdHVyZSBzdWJzdHJlYW0uCkZvciBtb3N0IGFw
+cGxpY2F0aW9ucywgdGhpcyBkb2Vzbid0IGNhdXNlIGxhcmdlIGlzc3VlLiBIb3dldmVyLCB0aGlz
+IHF1aXJrCmlzIG5vdCBnb29kIGZvciBjb21iaW5hdGlvbiBvZiBiZWxvdyBtb2R1bGVzIGluIFB1
+bHNlQXVkaW8uIFB1bHNlQXVkaW8KZW50ZXJzIGVuZGxlc3MgbG9vcCB0byBkZXRlY3QgdGhlIG1v
+ZGVscyBhbmQgc3RhcnQvc3RvcCBQQ00gc3Vic3RyZWFtLgogLSBtb2R1bGUtdWRldi1kZXRlY3QK
+IC0gbW9kdWxlLWFsc2EtY2FyZAogLSBtb2R1bGUtc3VzcGVuZC1vbi1pZGxlCgpJbiBkZXRhaWws
+IHBsZWFzZSByZWFkIG15IGNvbW1lbnQgbm8uNjoKaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3Jn
+L3Nob3dfYnVnLmNnaT9pZD0xOTkzNjUjYzYKClRoaXMgY29tbWl0IHN1cHByZXNzZWQgdWRldiBk
+ZXRlY3Rpb24gb2Ygc291bmQgY2FyZCBmb3IgdGhlIGlzc3VlZCBtb2RlbHMuCkZvciB0aGUgbW9k
+ZWxzLCAnUFVMU0VfSUdOT1JFJyBmbGFnIGlzIGFkZGVkIHRvIHVkZXYgcnVsZXMsIHRoZW4KbW9k
+dWxlLXVkZXYtZGV0ZWN0IGRvbid0IGhhbmRsZSB0aGUgbW9kZWxzIGFuZCBQdWxzZUF1ZGlvIG5l
+dmVyIHVzZXMgdGhlCm1vZGVscyBhdXRvbWF0aWNhbGx5LiBJbiBhIHNjZW5hcmlvIGZvciB1c2Vy
+cyB0byBsb2FkCm1vZHVsZS1hbHNhLWNhcmQvbW9kdWxlLWFsc2Etc2luay9tb2R1bGUtYWxzYS1z
+b3VyY2UgYnkgaGFuZCwgYWx0aG91Z2gKdGhlc2UgbW9kdWxlcyBjYW4gc3RpbGwgc3RvcCBQQ00g
+c3Vic3RyZWFtcyB3aXRoIG1vZHVsZS1zdXNwZW5kLW9uLWlkbGUsClB1bHNlQXVkaW8gbmV2ZXIg
+ZW50ZXJzIHRoZSBlbmRsZXNzIGxvb3AgYmVjYXVzZSB1ZGV2IGRldGVjdGlvbiBkb2Vzbid0Cndv
+cmsgZm9yIHRoZSBtb2RlbHMuIEluIHRoaXMgY2FzZSwgYXMgbG9uZyBhcyBzcGVjaWFsIGZpbGVz
+IGZvciBBTFNBCmNoYXJhY3RlciBkZXZpY2VzIGZvciB0aGVzZSBtb2RlbHMgYXJlIHRoZSBzYW1l
+LCBjb3JyZXNwb25kaW5nIHNpbmtzIGFuZApzb3VyY2VzIGFyZSBhdmFpbGFibGUgZXZlbiBpZiB0
+aGUgdm9sdW50YXJ5IHBsdWctb3V0L3BsdWctaW4gb2NjdXIuCgooRm9jdXNyaXRlIFNhZmZpcmUg
+UHJvIDEwIGkvbyB3aXRoIHN5c3RlbWQgMjM3KQokIHVkZXZhZG0gaW5mbyAtcSBhbGwgLXAgL2Rl
+dmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA3LjAvZncxL2Z3MS4wL3NvdW5kL2NhcmQxClA6IC9k
+ZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowNy4wL2Z3MS9mdzEuMC9zb3VuZC9jYXJkMQpFOiBE
+RVZQQVRIPS9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowNy4wL2Z3MS9mdzEuMC9zb3VuZC9j
+YXJkMQpFOiBJRF9CVVM9ZmlyZXdpcmUKRTogSURfRk9SX1NFQVQ9c291bmQtcGNpLTAwMDBfMDBf
+MDdfMApFOiBJRF9JRD1maXJld2lyZS0weDAwMTMwZTAxMDAwNjA2ZTAKRTogSURfTU9ERUw9UHJv
+MTBJTwpFOiBJRF9NT0RFTF9GUk9NX0RBVEFCQVNFPVhJTzIyMTNBL0IvWElPMjIyMSBJRUVFLTEz
+OTRiIE9IQ0kgQ29udHJvbGxlciBbQ2hlZXRhaCBFeHByZXNzXQpFOiBJRF9NT0RFTF9JRD0weDAw
+MDAwNgpFOiBJRF9QQVRIPXBjaS0wMDAwOjAwOjA3LjAKRTogSURfUEFUSF9UQUc9cGNpLTAwMDBf
+MDBfMDdfMApFOiBJRF9QQ0lfQ0xBU1NfRlJPTV9EQVRBQkFTRT1TZXJpYWwgYnVzIGNvbnRyb2xs
+ZXIKRTogSURfUENJX0lOVEVSRkFDRV9GUk9NX0RBVEFCQVNFPU9IQ0kKRTogSURfUENJX1NVQkNM
+QVNTX0ZST01fREFUQUJBU0U9RmlyZVdpcmUgKElFRUUgMTM5NCkKRTogSURfU0VSSUFMPTB4MDAx
+MzBlMDEwMDA2MDZlMApFOiBJRF9TRVJJQUxfU0hPUlQ9MHgwMDEzMGUwMTAwMDYwNmUwCkU6IElE
+X1ZFTkRPUj1Gb2N1c3JpdGUKRTogSURfVkVORE9SX0ZST01fREFUQUJBU0U9VGV4YXMgSW5zdHJ1
+bWVudHMKRTogSURfVkVORE9SX0lEPTB4MDAxMzBlCkU6IFNPVU5EX0lOSVRJQUxJWkVEPTEKRTog
+U1VCU1lTVEVNPXNvdW5kCkU6IFNZU1RFTURfV0FOVFM9c291bmQudGFyZ2V0CkU6IFRBR1M9OnN5
+c3RlbWQ6c2VhdDoKRTogVVNFQ19JTklUSUFMSVpFRD05NTcwODkwNjQKCihGb2N1c3JpdGUgU2Fm
+ZmlyZSBQcm8gMjYgaS9vIHdpdGggc3lzdGVtZCAyMzcpCiQgdWRldmFkbSBpbmZvIC1xIGFsbCAt
+cCAvZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MDcuMC9mdzEvZncxLjAvc291bmQvY2FyZDEK
+UDogL2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA3LjAvZncxL2Z3MS4wL3NvdW5kL2NhcmQx
+CkU6IERFVlBBVEg9L2RldmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjA3LjAvZncxL2Z3MS4wL3Nv
+dW5kL2NhcmQxCkU6IElEX0JVUz1maXJld2lyZQpFOiBJRF9GT1JfU0VBVD1zb3VuZC1wY2ktMDAw
+MF8wMF8wN18wCkU6IElEX0lEPWZpcmV3aXJlLTB4MDAxMzBlMDEwMDAzMGNkZApFOiBJRF9NT0RF
+TD1Qcm8yNklPCkU6IElEX01PREVMX0ZST01fREFUQUJBU0U9WElPMjIxM0EvQi9YSU8yMjIxIElF
+RUUtMTM5NGIgT0hDSSBDb250cm9sbGVyIFtDaGVldGFoIEV4cHJlc3NdCkU6IElEX01PREVMX0lE
+PTB4MDAwMDAzCkU6IElEX1BBVEg9cGNpLTAwMDA6MDA6MDcuMApFOiBJRF9QQVRIX1RBRz1wY2kt
+MDAwMF8wMF8wN18wCkU6IElEX1BDSV9DTEFTU19GUk9NX0RBVEFCQVNFPVNlcmlhbCBidXMgY29u
+dHJvbGxlcgpFOiBJRF9QQ0lfSU5URVJGQUNFX0ZST01fREFUQUJBU0U9T0hDSQpFOiBJRF9QQ0lf
+U1VCQ0xBU1NfRlJPTV9EQVRBQkFTRT1GaXJlV2lyZSAoSUVFRSAxMzk0KQpFOiBJRF9TRVJJQUw9
+MHgwMDEzMGUwMTAwMDMwY2RkCkU6IElEX1NFUklBTF9TSE9SVD0weDAwMTMwZTAxMDAwMzBjZGQK
+RTogSURfVkVORE9SPUZvY3Vzcml0ZQpFOiBJRF9WRU5ET1JfRlJPTV9EQVRBQkFTRT1UZXhhcyBJ
+bnN0cnVtZW50cwpFOiBJRF9WRU5ET1JfSUQ9MHgwMDEzMGUKRTogU09VTkRfSU5JVElBTElaRUQ9
+MQpFOiBTVUJTWVNURU09c291bmQKRTogU1lTVEVNRF9XQU5UUz1zb3VuZC50YXJnZXQKRTogVEFH
+Uz06c3lzdGVtZDpzZWF0OgpFOiBVU0VDX0lOSVRJQUxJWkVEPTEwNzEwMjY2ODQKClNpZ25lZC1v
+ZmYtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpwPgotLS0KIC4u
+Li9hbHNhL21peGVyL3Byb2ZpbGUtc2V0cy85MC1wdWxzZWF1ZGlvLnJ1bGVzICAgICAgICB8IDEw
+ICsrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCAxMCBpbnNlcnRpb25zKCspCgpkaWZmIC0tZ2l0
+IGEvc3JjL21vZHVsZXMvYWxzYS9taXhlci9wcm9maWxlLXNldHMvOTAtcHVsc2VhdWRpby5ydWxl
+cyBiL3NyYy9tb2R1bGVzL2Fsc2EvbWl4ZXIvcHJvZmlsZS1zZXRzLzkwLXB1bHNlYXVkaW8ucnVs
+ZXMKaW5kZXggY2ViNjFkOWU1Li4xOWI4MjZiNTIgMTAwNjQ0Ci0tLSBhL3NyYy9tb2R1bGVzL2Fs
+c2EvbWl4ZXIvcHJvZmlsZS1zZXRzLzkwLXB1bHNlYXVkaW8ucnVsZXMKKysrIGIvc3JjL21vZHVs
+ZXMvYWxzYS9taXhlci9wcm9maWxlLXNldHMvOTAtcHVsc2VhdWRpby5ydWxlcwpAQCAtMTksNiAr
+MTksNyBAQCBTVUJTWVNURU0hPSJzb3VuZCIsIEdPVE89InB1bHNlYXVkaW9fZW5kIgogQUNUSU9O
+IT0iY2hhbmdlIiwgR09UTz0icHVsc2VhdWRpb19lbmQiCiBLRVJORUwhPSJjYXJkKiIsIEdPVE89
+InB1bHNlYXVkaW9fZW5kIgogU1VCU1lTVEVNUz09InVzYiIsIEdPVE89InB1bHNlYXVkaW9fY2hl
+Y2tfdXNiIgorU1VCU1lTVEVNUz09ImZpcmV3aXJlIiwgR09UTz0icHVsc2VhdWRpb19maXJld2ly
+ZV9xdWlyayIKIAogU1VCU1lTVEVNUz09InBsYXRmb3JtIiwgRFJJVkVSUz09InRoaW5rcGFkX2Fj
+cGkiLCBFTlZ7UFVMU0VfSUdOT1JFfT0iMSIKIApAQCAtMTA5LDQgKzExMCwxMyBAQCBBVFRSU3tp
+ZFZlbmRvcn09PSIxMDM4IiwgQVRUUlN7aWRQcm9kdWN0fT09IjEyNTAiLCBFTlZ7UFVMU0VfUFJP
+RklMRV9TRVR9PSJzdGVlbAogQVRUUlN7aWRWZW5kb3J9PT0iMTAzOCIsIEFUVFJTe2lkUHJvZHVj
+dH09PSIxMjYwIiwgRU5We1BVTFNFX1BST0ZJTEVfU0VUfT0ic3RlZWxzZXJpZXMtYXJjdGlzLTct
+dXNiLWF1ZGlvLmNvbmYiCiBBVFRSU3tpZFZlbmRvcn09PSIxNDdhIiwgQVRUUlN7aWRQcm9kdWN0
+fT09ImUwNTUiLCBFTlZ7UFVMU0VfUFJPRklMRV9TRVR9PSJjbWVkaWEtaGlnaC1zcGVlZC10cnVl
+LWhkYXVkaW8uY29uZiIKIAorR09UTz0icHVsc2VhdWRpb19lbmQiCisKK0xBQkVMPSJwdWxzZWF1
+ZGlvX2ZpcmV3aXJlX3F1aXJrIgorCisjIEZvY3Vzcml0ZSBTYWZmaXJlIFBybyAxMC8yNiBpL28g
+aGFzIGEgcXVpcmsgdG8gZGlzYXBwZWFyIGZyb20gSUVFRSAxMzk0IGJ1cyB3aGVuIGxvc2luZyBj
+b25uZWN0aW9ucy4KKyMgaHR0cHM6Ly9idWd6aWxsYS5rZXJuZWwub3JnL3Nob3dfYnVnLmNnaT9p
+ZD0xOTkzNjUKK0VOVntJRF9WRU5ET1JfSUR9PT0iMHgwMDEzMGUiLCBFTlZ7SURfTU9ERUxfSUR9
+PT0iMHgwMDAwMDMiLCBFTlZ7UFVMU0VfSUdOT1JFfT0iMSIKK0VOVntJRF9WRU5ET1JfSUR9PT0i
+MHgwMDEzMGUiLCBFTlZ7SURfTU9ERUxfSUR9PT0iMHgwMDAwMDYiLCBFTlZ7UFVMU0VfSUdOT1JF
+fT0iMSIKKwogTEFCRUw9InB1bHNlYXVkaW9fZW5kIgotLSAKMi4xNy4xCgpfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpwdWxzZWF1ZGlvLWRpc2N1c3MgbWFp
+bGluZyBsaXN0CnB1bHNlYXVkaW8tZGlzY3Vzc0BsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6
+Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9wdWxzZWF1ZGlvLWRpc2N1
+c3MK
