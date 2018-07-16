@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Send correct channel for configuring DMA descriptors" to the asoc tree
-Date: Mon, 16 Jul 2018 15:30:30 +0100
-Message-ID: <E1ff4WE-0005U2-7q@debutante>
-References: <1531724566-4019-1-git-send-email-akshu.agrawal@amd.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1531724566-4019-1-git-send-email-akshu.agrawal@amd.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Agrawal@sirena.org.uk, Akshu <Akshu.Agrawal@amd.com>
-Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.orgMark Brown <broonie@kernel.org>, "Mukunda,, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>akshu.agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: hdmi-codec: fix routing" to the asoc
+	tree
+Date: Mon, 16 Jul 2018 15:30:51 +0100
+Message-ID: <E1ff4WZ-0005Wb-U6@debutante>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 916B4267750
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 16:30:54 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Russell King <rmk+kernel@armlinux.org.uk>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Send correct channel for configuring DMA descriptors
+   ASoC: hdmi-codec: fix routing
 
 has been applied to the asoc tree at
 
@@ -37,88 +52,87 @@ to this mail.
 Thanks,
 Mark
 
->From fa9d2f17c23fb3ea6b659b1bfe4ca10551a19e56 Mon Sep 17 00:00:00 2001
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Date: Mon, 16 Jul 2018 15:02:40 +0800
-Subject: [PATCH] ASoC: AMD: Send correct channel for configuring DMA
- descriptors
+>From d30e23d69981a4b665f5ce8711335df986576389 Mon Sep 17 00:00:00 2001
+From: Russell King <rmk+kernel@armlinux.org.uk>
+Date: Sat, 14 Jul 2018 16:01:06 +0100
+Subject: [PATCH] ASoC: hdmi-codec: fix routing
 
-Earlier, ch1 was used to define ACP-SYSMEM transfer and ch2 for
-ACP-I2S transfer. With recent patches ch1 is used to define channel
-order number 1 and ch2 as channel order number 2. Thus,
-Playback:
-ch1:SYSMEM->ACP
-ch2:ACP->I2S
-Capture:
-ch1:I2S->ACP
-ch1:ACP->SYSMEM
+Commit 943fa0228252 ("ASoC: hdmi-codec: Use different name for playback
+streams") broke hdmi-codec's routing between it's output "TX" widget
+and the S/PDIF or I2S streams by renaming the streams.
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Whether an error occurs or not is dependent on whether there is another
+widget called "Playback" registered by some other component - if there
+is, that widget will be (incorrectly) bound to the HDMI codec's "TX"
+output widget.  If we end up connecting "TX" incorrectly, it can result
+in components not being started, causing no audio output.
+
+Since the I2S and S/PDIF streams now have different names, we can't
+use a static route at component level to describe the relationship, so
+arrange to dynamically create the route when the DAI driver is probed.
+
+Fixes: 943fa0228252 ("ASoC: hdmi-codec: Use different name for playback streams")
+Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ sound/soc/codecs/hdmi-codec.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 65c1033bd51c..eeb867767252 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -322,17 +322,27 @@ static void config_acp_dma(void __iomem *acp_mmio,
- 			   struct audio_substream_data *rtd,
- 			   u32 asic_type)
- {
-+	u16 ch_acp_sysmem, ch_acp_i2s;
-+
- 	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
- 		       rtd->pte_offset);
-+
-+	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ch_acp_sysmem = rtd->ch1;
-+		ch_acp_i2s = rtd->ch2;
-+	} else {
-+		ch_acp_i2s = rtd->ch1;
-+		ch_acp_sysmem = rtd->ch2;
-+	}
- 	/* Configure System memory <-> ACP SRAM DMA descriptors */
- 	set_acp_sysmem_dma_descriptors(acp_mmio, rtd->size,
- 				       rtd->direction, rtd->pte_offset,
--				       rtd->ch1, rtd->sram_bank,
-+				       ch_acp_sysmem, rtd->sram_bank,
- 				       rtd->dma_dscr_idx_1, asic_type);
- 	/* Configure ACP SRAM <-> I2S DMA descriptors */
- 	set_acp_to_i2s_dma_descriptors(acp_mmio, rtd->size,
- 				       rtd->direction, rtd->sram_bank,
--				       rtd->destination, rtd->ch2,
-+				       rtd->destination, ch_acp_i2s,
- 				       rtd->dma_dscr_idx_2, asic_type);
+diff --git a/sound/soc/codecs/hdmi-codec.c b/sound/soc/codecs/hdmi-codec.c
+index 6fa11888672d..3e5b12de71bb 100644
+--- a/sound/soc/codecs/hdmi-codec.c
++++ b/sound/soc/codecs/hdmi-codec.c
+@@ -291,10 +291,6 @@ static const struct snd_soc_dapm_widget hdmi_widgets[] = {
+ 	SND_SOC_DAPM_OUTPUT("TX"),
+ };
+ 
+-static const struct snd_soc_dapm_route hdmi_routes[] = {
+-	{ "TX", NULL, "Playback" },
+-};
+-
+ enum {
+ 	DAI_ID_I2S = 0,
+ 	DAI_ID_SPDIF,
+@@ -689,9 +685,23 @@ static int hdmi_codec_pcm_new(struct snd_soc_pcm_runtime *rtd,
+ 	return snd_ctl_add(rtd->card->snd_card, kctl);
  }
  
-@@ -995,16 +1005,24 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
-+	u16 ch_acp_sysmem, ch_acp_i2s;
- 
- 	if (!rtd)
- 		return -EINVAL;
- 
-+	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ch_acp_sysmem = rtd->ch1;
-+		ch_acp_i2s = rtd->ch2;
-+	} else {
-+		ch_acp_i2s = rtd->ch1;
-+		ch_acp_sysmem = rtd->ch2;
-+	}
- 	config_acp_dma_channel(rtd->acp_mmio,
--			       rtd->ch1,
-+			       ch_acp_sysmem,
- 			       rtd->dma_dscr_idx_1,
- 			       NUM_DSCRS_PER_CHANNEL, 0);
- 	config_acp_dma_channel(rtd->acp_mmio,
--			       rtd->ch2,
-+			       ch_acp_i2s,
- 			       rtd->dma_dscr_idx_2,
- 			       NUM_DSCRS_PER_CHANNEL, 0);
- 	return 0;
++static int hdmi_dai_probe(struct snd_soc_dai *dai)
++{
++	struct snd_soc_dapm_context *dapm;
++	struct snd_soc_dapm_route route = {
++		.sink = "TX",
++		.source = dai->driver->playback.stream_name,
++	};
++
++	dapm = snd_soc_component_get_dapm(dai->component);
++
++	return snd_soc_dapm_add_routes(dapm, &route, 1);
++}
++
+ static const struct snd_soc_dai_driver hdmi_i2s_dai = {
+ 	.name = "i2s-hifi",
+ 	.id = DAI_ID_I2S,
++	.probe = hdmi_dai_probe,
+ 	.playback = {
+ 		.stream_name = "I2S Playback",
+ 		.channels_min = 2,
+@@ -707,6 +717,7 @@ static const struct snd_soc_dai_driver hdmi_i2s_dai = {
+ static const struct snd_soc_dai_driver hdmi_spdif_dai = {
+ 	.name = "spdif-hifi",
+ 	.id = DAI_ID_SPDIF,
++	.probe = hdmi_dai_probe,
+ 	.playback = {
+ 		.stream_name = "SPDIF Playback",
+ 		.channels_min = 2,
+@@ -733,8 +744,6 @@ static int hdmi_of_xlate_dai_id(struct snd_soc_component *component,
+ static const struct snd_soc_component_driver hdmi_driver = {
+ 	.dapm_widgets		= hdmi_widgets,
+ 	.num_dapm_widgets	= ARRAY_SIZE(hdmi_widgets),
+-	.dapm_routes		= hdmi_routes,
+-	.num_dapm_routes	= ARRAY_SIZE(hdmi_routes),
+ 	.of_xlate_dai_id	= hdmi_of_xlate_dai_id,
+ 	.idle_bias_on		= 1,
+ 	.use_pmdown_time	= 1,
 -- 
 2.18.0.rc2
