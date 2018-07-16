@@ -1,17 +1,23 @@
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: [PATCH v6 10/10] soundwire: Fix acquiring bus lock
-	twice during master release
-Date: Tue, 17 Jul 2018 00:17:13 +0530
-Message-ID: <20180716184713.13356-11-sanyog.r.kale@intel.com>
-References: <20180716184713.13356-1-sanyog.r.kale@intel.com>
+From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
+Subject: Boundary calculation
+Date: Mon, 16 Jul 2018 16:25:07 -0300
+Message-ID: <20180716192507.GA7151@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 465332677A1
- for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 20:47:17 +0200 (CEST)
-In-Reply-To: <20180716184713.13356-1-sanyog.r.kale@intel.com>
+Received: from mail-qk0-f170.google.com (mail-qk0-f170.google.com
+ [209.85.220.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id D5FE6267600
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 21:25:16 +0200 (CEST)
+Received: by mail-qk0-f170.google.com with SMTP id z74-v6so21070628qkb.10
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 12:25:16 -0700 (PDT)
+Received: from localhost.localdomain ([201.37.66.59])
+ by smtp.gmail.com with ESMTPSA id u21-v6sm14149905qka.88.2018.07.16.12.25.14
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+ Mon, 16 Jul 2018 12:25:14 -0700 (PDT)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,39 +28,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, shreyas.nc@intel.com, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-As part of sdw_stream_remove_master(), sdw_stream_remove_slave() is called
-which ends up acquiring bus lock twice.
+Hello.
 
-So, fix it by performing Slave remove operations in
-sdw_release_master_stream().
+I can't get the tricky boundary calculation. Perhaps I'm
+missing some obvious thing, or maybe it's really some
+circumvent for a specific case that was not commented.
 
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
----
- drivers/soundwire/stream.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+The current calculation for boundary is:
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index 6d437eb6a2d3..515b2f68bb7d 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -1038,9 +1038,10 @@ static void sdw_release_master_stream(struct sdw_master_runtime *m_rt,
- {
- 	struct sdw_slave_runtime *s_rt, *_s_rt;
- 
--	list_for_each_entry_safe(s_rt, _s_rt,
--			&m_rt->slave_rt_list, m_rt_node)
--		sdw_stream_remove_slave(s_rt->slave, stream);
-+	list_for_each_entry_safe(s_rt, _s_rt, &m_rt->slave_rt_list, m_rt_node) {
-+		sdw_slave_port_release(s_rt->slave->bus, s_rt->slave, stream);
-+		sdw_release_slave_stream(s_rt->slave, stream);
-+	}
- 
- 	list_del(&m_rt->stream_node);
- 	list_del(&m_rt->bus_node);
--- 
-2.13.0
+	boundary = buffer_size;
+	while (boundary * 2 <= LONG_MAX - buffer_size)
+		boundary *= 2;
+
+I've checked out some repositories, specially alsa-driver
+in ALSA git, and I realized this calculation exists at
+least since 2001. I guess it was Jaroslav who wrote.
+
+Visualization of the calculation (B = buffer_size):
+
+                           LONG_MAX
+-------------------------------
+\______________/           \__/
+     B * 4                  B
+\______/
+ B * 2
+\__/
+ B
+
+Why isn't a simpler calculation used instead? e.g.:
+
+	/* closest multiple of buffer size less or equal LONG_MAX */
+	boundary = LONG_MAX - LONG_MAX % buffer_size;
+
+                           LONG_MAX
+-------------------------------
+\__________________________/
+           B * 6
+
+Cheers!
+
+	pasquali
