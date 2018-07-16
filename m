@@ -1,48 +1,48 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ALSA: es1688: remove redundant pointer chip
-Date: Mon, 16 Jul 2018 09:43:08 +0100
-Message-ID: <20180716084308.15571-1-colin.king@canonical.com>
+Subject: [PATCH] ALSA: gus: remove redundant pointer private_data
+Date: Mon, 16 Jul 2018 09:49:38 +0100
+Message-ID: <20180716084938.15733-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Arvind Yadav <arvind.yadav.cs@gmail.com>, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-Pointer chip is being assigned but is never used hence it is
+Pointer private_data is being assigned but is never used hence it is
 redundant and can be removed.
 
 Cleans up clang warning:
-warning: variable 'chip' set but not used [-Wunused-but-set-variable]
+warning: variable 'private_data' set but not used [-Wunused-but-set-variable]
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/isa/es1688/es1688.c | 2 --
+ sound/isa/gus/gus_reset.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/isa/es1688/es1688.c b/sound/isa/es1688/es1688.c
-index a826c138e7f5..3dfe7e592c25 100644
---- a/sound/isa/es1688/es1688.c
-+++ b/sound/isa/es1688/es1688.c
-@@ -260,7 +260,6 @@ static int snd_es968_pnp_detect(struct pnp_card_link *pcard,
- 	struct snd_card *card;
- 	static unsigned int dev;
- 	int error;
--	struct snd_es1688 *chip;
+diff --git a/sound/isa/gus/gus_reset.c b/sound/isa/gus/gus_reset.c
+index 3d1fed0c2620..59b3f683d49b 100644
+--- a/sound/isa/gus/gus_reset.c
++++ b/sound/isa/gus/gus_reset.c
+@@ -292,7 +292,6 @@ void snd_gf1_free_voice(struct snd_gus_card * gus, struct snd_gus_voice *voice)
+ {
+ 	unsigned long flags;
+ 	void (*private_free)(struct snd_gus_voice *voice);
+-	void *private_data;
  
- 	if (snd_es968_pnp_is_probed)
- 		return -EBUSY;
-@@ -276,7 +275,6 @@ static int snd_es968_pnp_detect(struct pnp_card_link *pcard,
- 			     sizeof(struct snd_es1688), &card);
- 	if (error < 0)
- 		return error;
--	chip = card->private_data;
- 
- 	error = snd_card_es968_pnp(card, dev, pcard, pid);
- 	if (error < 0) {
+ 	if (voice == NULL || !voice->use)
+ 		return;
+@@ -300,7 +299,6 @@ void snd_gf1_free_voice(struct snd_gus_card * gus, struct snd_gus_voice *voice)
+ 	snd_gf1_clear_voices(gus, voice->number, voice->number);
+ 	spin_lock_irqsave(&gus->voice_alloc, flags);
+ 	private_free = voice->private_free;
+-	private_data = voice->private_data;
+ 	voice->private_free = NULL;
+ 	voice->private_data = NULL;
+ 	if (voice->pcm)
 -- 
 2.17.1
