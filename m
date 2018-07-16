@@ -1,90 +1,93 @@
 From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH 1/2] ASoC: AMD: Send correct channel for configuring DMA descriptors
-Date: Mon, 16 Jul 2018 15:02:40 +0800
-Message-ID: <1531724566-4019-1-git-send-email-akshu.agrawal@amd.com>
+Subject: [PATCH 2/2] ASoC: AMD: For capture have interrupts on
+	I2S->ACP channel
+Date: Mon, 16 Jul 2018 15:02:41 +0800
+Message-ID: <1531724566-4019-2-git-send-email-akshu.agrawal@amd.com>
+References: <1531724566-4019-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: djkurtz@chromium.org, akshu.agrawal@amd.com, Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC
-        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com
+ (mail-eopbgr730043.outbound.protection.outlook.com [40.107.73.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55704267743
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 09:03:37 +0200 (CEST)
+In-Reply-To: <1531724566-4019-1-git-send-email-akshu.agrawal@amd.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, "Mukunda,
+ Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, akshu.agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
-Earlier, ch1 was used to define ACP-SYSMEM transfer and ch2 for
-ACP-I2S transfer. With recent patches ch1 is used to define channel
-order number 1 and ch2 as channel order number 2. Thus,
-Playback:
-ch1:SYSMEM->ACP
-ch2:ACP->I2S
-Capture:
-ch1:I2S->ACP
-ch1:ACP->SYSMEM
+Having interrupts enabled for ACP<->SYSMEM DMA transfer, we are in
+for an interrupt storm.
+For both playback and capture interrupts should be enabled for
+I2S<->ACP DMA.
 
 Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 ---
- sound/soc/amd/acp-pcm-dma.c | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 65c1033..eeb8677 100644
+index eeb8677..94bcf69 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -322,17 +322,27 @@ static void config_acp_dma(void __iomem *acp_mmio,
- 			   struct audio_substream_data *rtd,
- 			   u32 asic_type)
- {
-+	u16 ch_acp_sysmem, ch_acp_i2s;
-+
- 	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
- 		       rtd->pte_offset);
-+
-+	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ch_acp_sysmem = rtd->ch1;
-+		ch_acp_i2s = rtd->ch2;
-+	} else {
-+		ch_acp_i2s = rtd->ch1;
-+		ch_acp_sysmem = rtd->ch2;
-+	}
- 	/* Configure System memory <-> ACP SRAM DMA descriptors */
- 	set_acp_sysmem_dma_descriptors(acp_mmio, rtd->size,
- 				       rtd->direction, rtd->pte_offset,
--				       rtd->ch1, rtd->sram_bank,
-+				       ch_acp_sysmem, rtd->sram_bank,
- 				       rtd->dma_dscr_idx_1, asic_type);
- 	/* Configure ACP SRAM <-> I2S DMA descriptors */
- 	set_acp_to_i2s_dma_descriptors(acp_mmio, rtd->size,
- 				       rtd->direction, rtd->sram_bank,
--				       rtd->destination, rtd->ch2,
-+				       rtd->destination, ch_acp_i2s,
- 				       rtd->dma_dscr_idx_2, asic_type);
- }
+@@ -224,13 +224,11 @@ static void set_acp_sysmem_dma_descriptors(void __iomem *acp_mmio,
+ 			switch (asic_type) {
+ 			case CHIP_STONEY:
+ 				dmadscr[i].xfer_val |=
+-				BIT(22) |
+ 				(ACP_DMA_ATTR_SHARED_MEM_TO_DAGB_GARLIC << 16) |
+ 				(size / 2);
+ 				break;
+ 			default:
+ 				dmadscr[i].xfer_val |=
+-				BIT(22) |
+ 				(ACP_DMA_ATTR_SHAREDMEM_TO_DAGB_ONION << 16) |
+ 				(size / 2);
+ 			}
+@@ -421,9 +419,9 @@ static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
  
-@@ -995,16 +1005,24 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
- {
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	struct audio_substream_data *rtd = runtime->private_data;
-+	u16 ch_acp_sysmem, ch_acp_i2s;
+ 	switch (ch_num) {
+ 	case ACP_TO_I2S_DMA_CH_NUM:
+-	case ACP_TO_SYSRAM_CH_NUM:
++	case I2S_TO_ACP_DMA_CH_NUM:
+ 	case ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM:
+-	case ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM:
++	case I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM:
+ 		dma_ctrl |= ACP_DMA_CNTL_0__DMAChIOCEn_MASK;
+ 		break;
+ 	default:
+@@ -705,18 +703,18 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
  
- 	if (!rtd)
- 		return -EINVAL;
+-	if ((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) != 0) {
++	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
+ 		valid_irq = true;
+ 		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
+-		acp_reg_write((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) << 16,
++		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
  
-+	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
-+		ch_acp_sysmem = rtd->ch1;
-+		ch_acp_i2s = rtd->ch2;
-+	} else {
-+		ch_acp_i2s = rtd->ch1;
-+		ch_acp_sysmem = rtd->ch2;
-+	}
- 	config_acp_dma_channel(rtd->acp_mmio,
--			       rtd->ch1,
-+			       ch_acp_sysmem,
- 			       rtd->dma_dscr_idx_1,
- 			       NUM_DSCRS_PER_CHANNEL, 0);
- 	config_acp_dma_channel(rtd->acp_mmio,
--			       rtd->ch2,
-+			       ch_acp_i2s,
- 			       rtd->dma_dscr_idx_2,
- 			       NUM_DSCRS_PER_CHANNEL, 0);
- 	return 0;
+-	if ((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) != 0) {
++	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
+ 		valid_irq = true;
+ 		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
+ 		acp_reg_write((intr_flag &
+-			      BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) << 16,
++			      BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
+ 
 -- 
 1.9.1
