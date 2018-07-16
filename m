@@ -1,114 +1,75 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [V2 2/2] vgaswitchreoo: set audio client id in
- vgaswitchreoo enable function
-Date: Mon, 16 Jul 2018 16:43:42 +0200
-Message-ID: <20180716144342.GA23508@wunner.de>
-References: <1531721195-4982-1-git-send-email-Jim.Qu@amd.com>
- <1531721195-4982-2-git-send-email-Jim.Qu@amd.com>
+From: jimqu <jimqu-5C7GfCeVMHo@public.gmane.org>
+Subject: Re: [PATCH 2/2] vgaswitchreoo: set audio client id in vgaswitchreoo
+ enable function
+Date: Mon, 16 Jul 2018 22:45:54 +0800
+Message-ID: <d2c79b0c-4507-9ea2-12fb-b86fcc6de3fe@amd.com>
+References: <1531469162-6472-1-git-send-email-Jim.Qu@amd.com>
+ <1531469162-6472-2-git-send-email-Jim.Qu@amd.com>
+ <20180713092742.GA4013@wunner.de>
+ <8832b090-c399-ab88-8c56-4509a3413c44@amd.com>
+ <20180716140246.GA12334@wunner.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bmailout1.hostsharing.net (bmailout1.hostsharing.net
- [83.223.95.100])
- by alsa0.perex.cz (Postfix) with ESMTP id B63DC2675CF
- for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 16:43:43 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1531721195-4982-2-git-send-email-Jim.Qu@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jim Qu <Jim.Qu@amd.com>
-Cc: alsa-devel@alsa-project.org, tiwai@suse.com, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, daniel@ffwll.ch, alexander.deucher@amd.com
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+In-Reply-To: <20180716140246.GA12334-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
+List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
+ <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
+Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
+Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+To: Lukas Wunner <lukas-JFq808J9C/izQB+pC5nmwQ@public.gmane.org>
+Cc: Alex Deucher <alexander.deucher-5C7GfCeVMHo@public.gmane.org>, alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 16, 2018 at 02:06:35PM +0800, Jim Qu wrote:
-> +
-> +	list_for_each_entry(client, &vgasr_priv.clients, list) {
-> +		if (!client_is_audio(client) || client_id(client) !=
-> +			VGA_SWITCHEROO_UNKNOWN_ID)
-
-Don't you have to check for
-
-      client_id(client) != VGA_SWITCHEROO_UNKNOWN_ID | ID_BIT_AUDIO
-
-here?  That's the value you assign when the audio client registers,
-yet you're checking for something else, so you're always skipping
-over audio clients.  Did you actually test this patch?
-
-
-> On modern laptop, there are more and more platforms
-> have two GPUs, and each of them maybe have audio codec
-> for HDMP/DP output. For some dGPU which is no output,
-> audio codec usually is disabled.
-> 
-> In currect HDA audio driver, it will set all codec as
-> VGA_SWITCHEROO_DIS, the audio which is binded to UMA
-> will be suspended if user use debugfs to control power
-> 
-> In HDA driver side, it is difficult to know which GPU
-> the audio has bound to. So set the bound gpu pci dev
-> to vgaswitchreoo, the correct audio id will be set in
-> vgaswitchreoo enable function.
-> 
-> Signed-off-by: Jim Qu <Jim.Qu@amd.com>
-
-Apart from the issue above and that this approach doesn't work if
-hda_intel registers after the two GPUs, some nits:
-
-vgaswitchreoo => vga_switcheroo multiple times above and in the subject.
-
-
-> --- a/drivers/gpu/vga/vga_switcheroo.c
-> +++ b/drivers/gpu/vga/vga_switcheroo.c
-> @@ -103,6 +103,7 @@
->   *	runtime pm. If true, writing ON and OFF to the vga_switcheroo debugfs
->   *	interface is a no-op so as not to interfere with runtime pm
->   * @list: client list
-> + * @vga_dev: pci device, indicate which GPU is bound to current audio client
->   *
->   * Registered client. A client can be either a GPU or an audio device on a GPU.
->   * For audio clients, the @fb_info and @active members are bogus.
-
-Please add a note here that vga_dev is bogus for GPU clients.
-
-
-> @@ -192,14 +193,28 @@ static void vga_switcheroo_enable(void)
->  		vgasr_priv.handler->init();
->  
->  	list_for_each_entry(client, &vgasr_priv.clients, list) {
-> -		if (client->id != VGA_SWITCHEROO_UNKNOWN_ID)
-> +		if (!client_is_vga(client) || client_id(client) !=
-> +			VGA_SWITCHEROO_UNKNOWN_ID)
-
-Readability might improve if you break the line like this:
-
-		if (!client_is_vga(client) ||
-		    client_id(client) != VGA_SWITCHEROO_UNKNOWN_ID)
-
-
-> @@ -339,9 +357,10 @@ EXPORT_SYMBOL(vga_switcheroo_register_client);
->   */
->  int vga_switcheroo_register_audio_client(struct pci_dev *pdev,
->  			const struct vga_switcheroo_client_ops *ops,
-> -			enum vga_switcheroo_client_id id)
-> +			struct pci_dev *vga_dev)
->  {
-> -	return register_client(pdev, ops, id | ID_BIT_AUDIO, false, true);
-> +	return register_client(pdev, ops, VGA_SWITCHEROO_UNKNOWN_ID |
-> +			ID_BIT_AUDIO, vga_dev, false, true);
-
-Again, I'd break the line such that the two operands to the bitwise or
-are on the same line:
-
-	return register_client(pdev, ops,
-			       VGA_SWITCHEROO_UNKNOWN_ID | ID_BIT_AUDIO,
-			       vga_dev, false, true);
-
-Lukas
+CgrlnKggMjAxOC83LzE2IDIyOjAyLCBMdWthcyBXdW5uZXIg5YaZ6YGTOgo+IE9uIFNhdCwgSnVs
+IDE0LCAyMDE4IGF0IDAyOjE1OjI0UE0gKzA4MDAsIGppbXF1IHdyb3RlOgo+PiA/Pz8gMjAxOC83
+LzEzIDE3OjI3LCBMdWthcyBXdW5uZXIgPz8/Pz8/Ogo+Pj4gT24gRnJpLCBKdWwgMTMsIDIwMTgg
+YXQgMDQ6MDY6MDJQTSArMDgwMCwgSmltIFF1IHdyb3RlOgo+Pj4+IE9uIG1vZGVybiBsYXB0b3As
+IHRoZXJlIGFyZSBtb3JlIGFuZCBtb3JlIHBsYXRmb3Jtcwo+Pj4+IGhhdmUgdHdvIEdQVXMsIGFu
+ZCBlYWNoIG9mIHRoZW0gbWF5YmUgaGF2ZSBhdWRpbyBjb2RlYwo+Pj4+IGZvciBIRE1QL0RQIG91
+dHB1dC4gRm9yIHNvbWUgZEdQVSB3aGljaCBpcyBubyBvdXRwdXQsCj4+Pj4gYXVkaW8gY29kZWMg
+dXN1YWxseSBpcyBkaXNhYmxlZC4KPj4+Pgo+Pj4+IEluIGN1cnJlY3QgSERBIGF1ZGlvIGRyaXZl
+ciwgaXQgd2lsbCBzZXQgYWxsIGNvZGVjIGFzCj4+Pj4gVkdBX1NXSVRDSEVST09fRElTLCB0aGUg
+YXVkaW8gd2hpY2ggaXMgYmluZGVkIHRvIFVNQQo+Pj4+IHdpbGwgYmUgc3VzcGVuZGVkIGlmIHVz
+ZXIgdXNlIGRlYnVnZnMgdG8gY29udG9ybCBwb3dlcgo+Pj4+Cj4+Pj4gSW4gSERBIGRyaXZlciBz
+aWRlLCBpdCBpcyBkaWZmaWN1bHQgdG8ga25vdyB3aGljaCBHUFUKPj4+PiB0aGUgYXVkaW8gaGFz
+IGJpbmRlZCB0by4gU28gc2V0IHRoZSBib3VuZCBncHUgcGNpIGRldgo+Pj4+IHRvIHZnYXN3aXRj
+aHJvbywgdGhlIGNvcnJlY3QgYXVkaW8gaWQgd2lsbCBiZSBzZXQgaW4KPj4+PiB2Z2Fzd2l0Y2hy
+ZW9vIGVuYWJsZSBmdW5jdGlvbi4KPj4+Pgo+Pj4+IFNpZ25lZC1vZmYtYnk6IEppbSBRdSA8Smlt
+LlF1QGFtZC5jb20+Cj4+PiBUaGUgYXBwcm9hY2ggeW91J3ZlIHRha2VuIGluIHRoaXMgcGF0Y2gg
+d29uJ3Qgd29yayBpZiB0aGUgSERBIGNvbnRyb2xsZXIKPj4+IGlzIGJvdW5kIHRvIGEgZHJpdmVy
+IGFmdGVyIGJvdGggR1BVcyBoYXZlIGFscmVhZHkgYmVlbiBib3VuZCB0byBhIGRyaXZlcgo+Pj4g
+YW5kIHRoZSBoYW5kbGVyIGhhcyBhbHJlYWR5IGJlZW4gcmVnaXN0ZXJlZC4KPj4+Cj4+PiBUaGF0
+J3MgYmVjYXVzZSB2Z2Ffc3dpdGNoZXJvb19lbmFibGUoKSBpcyBydW4gd2hlbiB0d28gR1BVcyBo
+YXZlIHJlZ2lzdGVyZWQKPj4+IGFzIGNsaWVudHMgYW5kIHRoZSBoYW5kbGVyIGhhcyBhbHNvIHJl
+Z2lzdGVyZWQuICBJZiB0aGUgSERBIGNvbnRyb2xsZXIgaXMKPj4+IHByb2JlZCBhZnRlcndhcmRz
+LCBpdHMgSUQgd2lsbCBiZSBzdHVjayBhdCBWR0FfU1dJVENIRVJPT19VTktOT1dOX0lELgo+PiBJ
+biBnZW5lcm5pYyBzcGVha2luZywgdGhlcmUgYXJlIHR3byBjYXNlcyAsIGEuIGF1ZGlvIGNsaWVu
+dCBpcyB0aGUgdGhpcmQKPj4gY2xpZW50LiBiLiBhdWRpbyBjbGllbnQgaXMgbm90IHRoZSB0aGly
+ZCBjbGllbnQuCj4+Cj4+IGlmIGF1ZGlvIGlzIHRoaXJkIGNsaWVudC4gdmdhX3N3aXRjaGVyb29f
+cmVhZHkoKSBpcyB0cnVlLAo+PiB2Z2Ffc3dpdGNoZXJvb19lbmFibGUoKSBjYW4gYmUgY2FsbGVk
+IGluIGF1ZGlvIGNsaWVudCByZWdpc3RlciBmdWN0aW9uLgo+PiBpZiBhdWRpbyBpcyBub3QgdGhl
+IHRoaXJkIGNsaWVudCwgdmdhX3N3aXRjaGVyb29fZW5hYmxlKCkgd2lsbCBiZSBjYWxsZWQgaW4K
+Pj4gdGhlIHNlY29uZCBHRlggY2xpZW50IHJlZ2lzdGVyLgo+PiBJbiB2Z2Ffc3dpdGNoZXJvb19l
+bmFibGUoKSAsIHRoZSBmaXJzdCBsaXN0IGxvb3Agd2lsbCBzZXQgdHdvIEdQVSBjbGllbnRzJwo+
+PiBpZCwgYW5kIHRoZSBzZWNvbmQgbGlzdCBsb29wIHdpbGwgc2VsZWN0IGF1ZGlvIGNsaWVudCwg
+c2V0IGlkIGJ5IGl0cyBib3VuZAo+PiBncHUgcGNpIGRldi4KPiBObywgaWYgYXVkaW8gaXMgdGhl
+IHRoaXJkIGNsaWVudCwgdmdhX3N3aXRjaGVyb29fcmVhZHkoKSBpcyAqbm90KiB0cnVlCj4gYmVj
+YXVzZSB2Z2Fzcl9wcml2LmFjdGl2ZSBpcyB0cnVlLiAgVGhpcyBpcyBzZXQgdG8gdHJ1ZSBvbmNl
+IHRoZSB0d28KPiBHUFVzIGFuZCB0aGUgaGFuZGxlciBoYXZlIHJlZ2lzdGVyZWQuICBJZiB0aGUg
+YXVkaW8gZGV2aWNlIHJlZ2lzdGVycwo+IGFmdGVyd2FyZHMsIHZnYV9zd2l0Y2hlcm9vX2VuYWJs
+ZSgpIHdpbGwgYWxyZWFkeSBoYXZlIGJlZW4gY2FsbGVkLgo+IEl0J3MgbmV2ZXIgY2FsbGVkIHR3
+aWNlIGJlY2F1c2UgaXQgc2V0cyB2Z2Fzcl9wcml2LmFjdGl2ZSA9IHRydWUuCj4KPiBBcyBhIHJl
+c3VsdCwgdGhlIGF1ZGlvIGRldmljZSBpcyBzdHVjayBhdCBWR0FfU1dJVENIRVJPT19VTktOT1dO
+X0lELgoKSW5kZWVkLCBJIGFsbW9zdCBpZ25vcmUgdGhlIHZnYXNyX3ByaXYuYWN0aXZlLCBzaW5j
+ZSBJIGFkZGVkIGFtZGdwdSB0byAKYmxhY2tsaXN0LCBhdWRpbyBpcyBhbHdheXMgdGhlIGZpcnN0
+IGNsaWVudC4gOikuCm5vdCBzbyBiYWQsIExldCBtZSByZXdvcmsgdGhlIHBhdGNoIHRvbW9ycm93
+LgoKVGhhbmtzCkppbVF1Cgo+IFRoYW5rcywKPgo+IEx1a2FzCgpfX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fXwphbWQtZ2Z4IG1haWxpbmcgbGlzdAphbWQtZ2Z4
+QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2FtZC1nZngK
