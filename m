@@ -1,14 +1,17 @@
 From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: [PATCH v6 00/10] soundwire: Add multi link support
-Date: Tue, 17 Jul 2018 00:17:03 +0530
-Message-ID: <20180716184713.13356-1-sanyog.r.kale@intel.com>
+Subject: [PATCH v6 02/10] soundwire: Initialize completion for
+	defer messages
+Date: Tue, 17 Jul 2018 00:17:05 +0530
+Message-ID: <20180716184713.13356-3-sanyog.r.kale@intel.com>
+References: <20180716184713.13356-1-sanyog.r.kale@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 382FC267600
- for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 20:46:45 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A3717267600
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 20:46:51 +0200 (CEST)
+In-Reply-To: <20180716184713.13356-1-sanyog.r.kale@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,62 +25,34 @@ To: alsa-devel@alsa-project.org
 Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, shreyas.nc@intel.com, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Currently, in the SoundWire subsystem, the concept of stream is limited
-to a Master and one or more Slaves(Codecs). This series aims to add
-support for multiple Master(s) sharing the same reference clock and
-synchronized in the hardware.
+From: Shreyas NC <shreyas.nc@intel.com>
 
-This patch series adds:
- - Fix to avoid duplicate stream state assignment
- - Avoid incorrect stream release after configuring Master
- - Helpers to lock bus instances part of the stream
- - Boiler plate conversion of code to support a list of Master runtime
- - Support multi link bank switch to support synchronization between
-   multiple masters
- - Add Intel platform ops for pre/post bank switch
- - Fix to avoid bus lock acquired twice
+Deferred messages are async messages used to synchronize
+transitions mostly while doing a bank switch on multi links.
+On successful transitions these messages are marked complete
+and thereby confirming that all the buses performed bank switch
+successfully.
 
-changes in v6:
- - Add patch to fix acquiring bus lock twice during master release
- - In sdw_stream_add_master(), perform multi link check at start of
-   function as suggested by Pierre
- - Minor comment fixes
+So, initialize the completion structure for the same.
 
-changes in v5:
- - Add patch to fix duplicate stream state assignment
- - fix incorrect exit which was releasing the stream after configuring master
- - In sdw_release_bus_lock(), release the mutex in reverse order as
-   suggested by Takashi
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+---
+ drivers/soundwire/bus.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-changes in v4:
- - Added changes in sdw_stream_runtime structure to track Masters
-   added to stream
- - Add changes to support ml_bankswitch only if both the hardware supports
-   and the stream is handled by multiple masters
-
-Sanyog Kale (3):
-  Documentation: soundwire: Add documentation for multi link
-  soundwire: Add support to lock across bus instances
-  soundwire: Fix acquiring bus lock twice during master release
-
-Shreyas NC (6):
-  soundwire: Initialize completion for defer messages
-  soundwire: Fix duplicate stream state assignment
-  soundwire: fix incorrect exit after configuring stream
-  soundwire: keep track of Masters in a stream
-  soundwire: Add support for multi link bank switch
-  soundwire: intel: Add pre/post bank switch ops
-
-Vinod Koul (1):
-  soundwire: Handle multiple master instances in a stream
-
- Documentation/driver-api/soundwire/stream.rst |  28 ++
- drivers/soundwire/bus.c                       |   6 +
- drivers/soundwire/bus.h                       |   4 +
- drivers/soundwire/intel.c                     |  65 ++++
- drivers/soundwire/stream.c                    | 511 +++++++++++++++++++-------
- include/linux/soundwire/sdw.h                 |  12 +-
- 6 files changed, 489 insertions(+), 137 deletions(-)
-
+diff --git a/drivers/soundwire/bus.c b/drivers/soundwire/bus.c
+index dcc0ff9f0c22..dbabd5e69343 100644
+--- a/drivers/soundwire/bus.c
++++ b/drivers/soundwire/bus.c
+@@ -175,6 +175,7 @@ static inline int do_transfer_defer(struct sdw_bus *bus,
+ 
+ 	defer->msg = msg;
+ 	defer->length = msg->len;
++	init_completion(&defer->complete);
+ 
+ 	for (i = 0; i <= retry; i++) {
+ 		resp = bus->ops->xfer_msg_defer(bus, msg, defer);
 -- 
 2.13.0
