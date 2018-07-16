@@ -1,16 +1,16 @@
 From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: [PATCH v6 04/10] soundwire: fix incorrect exit after
-	configuring stream
-Date: Tue, 17 Jul 2018 00:17:07 +0530
-Message-ID: <20180716184713.13356-5-sanyog.r.kale@intel.com>
+Subject: [PATCH v6 05/10] soundwire: Add support to lock across
+	bus instances
+Date: Tue, 17 Jul 2018 00:17:08 +0530
+Message-ID: <20180716184713.13356-6-sanyog.r.kale@intel.com>
 References: <20180716184713.13356-1-sanyog.r.kale@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A83B267600
- for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 20:46:57 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 4347B267743
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 20:47:01 +0200 (CEST)
 In-Reply-To: <20180716184713.13356-1-sanyog.r.kale@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,46 +25,136 @@ To: alsa-devel@alsa-project.org
 Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, shreyas.nc@intel.com, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-From: Shreyas NC <shreyas.nc@intel.com>
+Currently, the stream concept is limited to single Master and one
+or more Codecs.
 
-In sdw_stream_add_master() after the Master ports are configured,
-the stream is released incorrectly.
+This patch extends the concept to support multiple Master(s)
+sharing the same reference clock and synchronized in the hardware.
+Modify sdw_stream_runtime to support a list of sdw_master_runtime
+for the same. The existing reference to a single m_rt is removed
+in the next patch.
 
-So, fix it by avoiding stream release after configuring the Master
-for the stream.
-While at it, rename the label appropriately.
+Typically to lock, one would acquire a global lock and then lock
+bus instances. In this case, the caller framework(ASoC DPCM)
+guarantees that stream operations on a card are always serialized.
+So, there is no race condition and hence no need for global lock.
 
-Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+Bus lock(s) are acquired to reconfigure the bus while the stream
+is set-up.
+So, we add sdw_acquire_bus_lock()/sdw_release_bus_lock() APIs which
+are used only to reconfigure the bus.
+
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 ---
- drivers/soundwire/stream.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/soundwire/bus.h       |  2 ++
+ drivers/soundwire/stream.c    | 43 +++++++++++++++++++++++++++++++++++++++++++
+ include/linux/soundwire/sdw.h |  4 ++++
+ 3 files changed, 49 insertions(+)
 
+diff --git a/drivers/soundwire/bus.h b/drivers/soundwire/bus.h
+index 3b15c4e25a3a..b6cfbdfc47d5 100644
+--- a/drivers/soundwire/bus.h
++++ b/drivers/soundwire/bus.h
+@@ -99,6 +99,7 @@ struct sdw_slave_runtime {
+  * this stream, can be zero.
+  * @slave_rt_list: Slave runtime list
+  * @port_list: List of Master Ports configured for this stream, can be zero.
++ * @stream_node: sdw_stream_runtime master_list node
+  * @bus_node: sdw_bus m_rt_list node
+  */
+ struct sdw_master_runtime {
+@@ -108,6 +109,7 @@ struct sdw_master_runtime {
+ 	unsigned int ch_count;
+ 	struct list_head slave_rt_list;
+ 	struct list_head port_list;
++	struct list_head stream_node;
+ 	struct list_head bus_node;
+ };
+ 
 diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index e6ee4baef0a2..eaaa180cf0fd 100644
+index eaaa180cf0fd..97a2bd6ab518 100644
 --- a/drivers/soundwire/stream.c
 +++ b/drivers/soundwire/stream.c
-@@ -1112,7 +1112,7 @@ int sdw_stream_add_master(struct sdw_bus *bus,
- 				"Master runtime config failed for stream:%s",
- 				stream->name);
- 		ret = -ENOMEM;
--		goto error;
-+		goto unlock;
- 	}
+@@ -747,6 +747,7 @@ struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name)
+ 		return NULL;
  
- 	ret = sdw_config_stream(bus->dev, stream, stream_config, false);
-@@ -1123,9 +1123,11 @@ int sdw_stream_add_master(struct sdw_bus *bus,
- 	if (ret)
- 		goto stream_error;
+ 	stream->name = stream_name;
++	INIT_LIST_HEAD(&stream->master_list);
+ 	stream->state = SDW_STREAM_ALLOCATED;
  
-+	goto unlock;
-+
- stream_error:
- 	sdw_release_master_stream(stream);
--error:
-+unlock:
- 	mutex_unlock(&bus->bus_lock);
- 	return ret;
+ 	return stream;
+@@ -1244,6 +1245,48 @@ struct sdw_dpn_prop *sdw_get_slave_dpn_prop(struct sdw_slave *slave,
+ 	return NULL;
  }
+ 
++/**
++ * sdw_acquire_bus_lock: Acquire bus lock for all Master runtime(s)
++ *
++ * @stream: SoundWire stream
++ *
++ * Acquire bus_lock for each of the master runtime(m_rt) part of this
++ * stream to reconfigure the bus.
++ * NOTE: This function is called from SoundWire stream ops and is
++ * expected that a global lock is held before acquiring bus_lock.
++ */
++static void sdw_acquire_bus_lock(struct sdw_stream_runtime *stream)
++{
++	struct sdw_master_runtime *m_rt = NULL;
++	struct sdw_bus *bus = NULL;
++
++	/* Iterate for all Master(s) in Master list */
++	list_for_each_entry(m_rt, &stream->master_list, stream_node) {
++		bus = m_rt->bus;
++
++		mutex_lock(&bus->bus_lock);
++	}
++}
++
++/**
++ * sdw_release_bus_lock: Release bus lock for all Master runtime(s)
++ *
++ * @stream: SoundWire stream
++ *
++ * Release the previously held bus_lock after reconfiguring the bus.
++ */
++static void sdw_release_bus_lock(struct sdw_stream_runtime *stream)
++{
++	struct sdw_master_runtime *m_rt = NULL;
++	struct sdw_bus *bus = NULL;
++
++	/* Iterate for all Master(s) in Master list */
++	list_for_each_entry_reverse(m_rt, &stream->master_list, stream_node) {
++		bus = m_rt->bus;
++		mutex_unlock(&bus->bus_lock);
++	}
++}
++
+ static int _sdw_prepare_stream(struct sdw_stream_runtime *stream)
+ {
+ 	struct sdw_master_runtime *m_rt = stream->m_rt;
+diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
+index 962971e6a9c7..ccd8dcdf06ab 100644
+--- a/include/linux/soundwire/sdw.h
++++ b/include/linux/soundwire/sdw.h
+@@ -769,6 +769,9 @@ struct sdw_stream_params {
+  * @state: Current state of the stream
+  * @type: Stream type PCM or PDM
+  * @m_rt: Master runtime
++ * @master_list: List of Master runtime(s) in this stream.
++ * master_list can contain only one m_rt per Master instance
++ * for a stream
+  */
+ struct sdw_stream_runtime {
+ 	char *name;
+@@ -776,6 +779,7 @@ struct sdw_stream_runtime {
+ 	enum sdw_stream_state state;
+ 	enum sdw_stream_type type;
+ 	struct sdw_master_runtime *m_rt;
++	struct list_head master_list;
+ };
+ 
+ struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name);
 -- 
 2.13.0
