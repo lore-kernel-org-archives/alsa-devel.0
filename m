@@ -1,54 +1,110 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [alsa-devel] [V2 2/2] vgaswitchreoo: set audio client id in
- vgaswitchreoo enable function
-Date: Mon, 16 Jul 2018 16:16:10 +0200
-Message-ID: <20180716141610.GA19679@wunner.de>
-References: <1531721195-4982-1-git-send-email-Jim.Qu@amd.com>
- <1531721195-4982-2-git-send-email-Jim.Qu@amd.com>
- <5212bc55-1aeb-cb7e-2527-45cc4b483861@canonical.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <5212bc55-1aeb-cb7e-2527-45cc4b483861@canonical.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Hui Wang <hui.wang@canonical.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: AMD: For capture have interrupts on I2S->ACP channel" to the asoc tree
+Date: Mon, 16 Jul 2018 15:30:28 +0100
+Message-ID: <E1ff4WC-0005St-2u@debutante>
+References: <1531724566-4019-2-git-send-email-akshu.agrawal@amd.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1531724566-4019-2-git-send-email-akshu.agrawal@amd.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Agrawal@sirena.org.uk, Akshu <Akshu.Agrawal@amd.com>
+Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.orgMark Brown <broonie@kernel.org>, "Mukunda,, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>akshu.agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T24gTW9uLCBKdWwgMTYsIDIwMTggYXQgMDM6NTI6NDVQTSArMDgwMCwgSHVpIFdhbmcgd3JvdGU6
-Cj4gT24gMjAxOD8/PzA3Pz8/MTY/Pz8gMTQ6MDYsIEppbSBRdSB3cm90ZToKPiA+T24gbW9kZXJu
-IGxhcHRvcCwgdGhlcmUgYXJlIG1vcmUgYW5kIG1vcmUgcGxhdGZvcm1zCj4gPmhhdmUgdHdvIEdQ
-VXMsIGFuZCBlYWNoIG9mIHRoZW0gbWF5YmUgaGF2ZSBhdWRpbyBjb2RlYwo+ID5mb3IgSERNUC9E
-UCBvdXRwdXQuIEZvciBzb21lIGRHUFUgd2hpY2ggaXMgbm8gb3V0cHV0LAo+ID5hdWRpbyBjb2Rl
-YyB1c3VhbGx5IGlzIGRpc2FibGVkLgo+ID4KPiA+SW4gY3VycmVjdCBIREEgYXVkaW8gZHJpdmVy
-LCBpdCB3aWxsIHNldCBhbGwgY29kZWMgYXMKPiA+VkdBX1NXSVRDSEVST09fRElTLCB0aGUgYXVk
-aW8gd2hpY2ggaXMgYmluZGVkIHRvIFVNQQo+ID53aWxsIGJlIHN1c3BlbmRlZCBpZiB1c2VyIHVz
-ZSBkZWJ1Z2ZzIHRvIGNvbnRyb2wgcG93ZXIKPiA+Cj4gPkluIEhEQSBkcml2ZXIgc2lkZSwgaXQg
-aXMgZGlmZmljdWx0IHRvIGtub3cgd2hpY2ggR1BVCj4gPnRoZSBhdWRpbyBoYXMgYm91bmQgdG8u
-IFNvIHNldCB0aGUgYm91bmQgZ3B1IHBjaSBkZXYKPiA+dG8gdmdhc3dpdGNocmVvbywgdGhlIGNv
-cnJlY3QgYXVkaW8gaWQgd2lsbCBiZSBzZXQgaW4KPiA+dmdhc3dpdGNocmVvbyBlbmFibGUgZnVu
-Y3Rpb24uCj4gPgo+ID5TaWduZWQtb2ZmLWJ5OiBKaW0gUXUgPEppbS5RdUBhbWQuY29tPgo+IAo+
-IElzIGl0IHBvc3NpYmxlIHRvIHNlbmQgdGhpcyBwYXRjaCB0byA8c3RhYmxlQHZnZXIua2VybmVs
-Lm9yZz4gYXMgd2VsbCwgdGhlbgo+IHdlIHdpbGwga25vdyB0aGF0IGl0IGlzIHNhZmUgdG8gYmFj
-a3BvcnQgdGhpcyBwYXRjaCB0byB0aGUgbGludXgga2VybmVscwo+IHdpdGggZGlmZmVyZW50IHZl
-cnNpb24uCgpGb3Igd2hpY2ggaGFyZHdhcmUgZG8geW91IHdhbnQgaXQgaW4gc3RhYmxlIGtlcm5l
-bHM/CgpUaGlzIHBhdGNoIHBlcnRhaW5zIHRvIG1hbnVhbCBwb3dlciBjb250cm9sLCB3aGljaCBp
-cyBvbmx5IHVzZWQgb24gdGhlCk1hY0Jvb2sgUHJvIGJ5IGRlZmF1bHQuICBBbmQgdGhlcmUgYXJl
-IG5vIE1hY0Jvb2sgUHJvcyB3aXRoIEFNRCBBUFVzLgpPbiBhbGwgb3RoZXIgaGFyZHdhcmUsIHVz
-ZXJzIGhhdmUgdG8gc3BlY2lmeSAiYW1kZ3B1LnJ1bnBtPTAiIG9uIHRoZQpjb21tYW5kIGxpbmUg
-dG8gc2VlIGFueSBiZW5lZml0IGZyb20gdGhpcyBwYXRjaC4gIEFsc28sIG1hbnVhbCBwb3dlcgpj
-b250cm9sIHdpbGwgbGlrZWx5IGJlIHJlbW92ZWQgb25jZSB3ZSBnZXQgcnVudGltZSBQTSB3b3Jr
-aW5nIHdpdGgKbXV4ZWQgc3lzdGVtcyAoc3VjaCBhcyB0aGUgTWFjQm9vayBQcm8pLgoKTHVrYXMK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+The patch
+
+   ASoC: AMD: For capture have interrupts on I2S->ACP channel
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 19e023e3befb4cb64b4a81b47a92a0c687672661 Mon Sep 17 00:00:00 2001
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Date: Mon, 16 Jul 2018 15:02:41 +0800
+Subject: [PATCH] ASoC: AMD: For capture have interrupts on I2S->ACP channel
+
+Having interrupts enabled for ACP<->SYSMEM DMA transfer, we are in
+for an interrupt storm.
+For both playback and capture interrupts should be enabled for
+I2S<->ACP DMA.
+
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/amd/acp-pcm-dma.c | 14 ++++++--------
+ 1 file changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index eeb867767252..94bcf69008df 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -224,13 +224,11 @@ static void set_acp_sysmem_dma_descriptors(void __iomem *acp_mmio,
+ 			switch (asic_type) {
+ 			case CHIP_STONEY:
+ 				dmadscr[i].xfer_val |=
+-				BIT(22) |
+ 				(ACP_DMA_ATTR_SHARED_MEM_TO_DAGB_GARLIC << 16) |
+ 				(size / 2);
+ 				break;
+ 			default:
+ 				dmadscr[i].xfer_val |=
+-				BIT(22) |
+ 				(ACP_DMA_ATTR_SHAREDMEM_TO_DAGB_ONION << 16) |
+ 				(size / 2);
+ 			}
+@@ -421,9 +419,9 @@ static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
+ 
+ 	switch (ch_num) {
+ 	case ACP_TO_I2S_DMA_CH_NUM:
+-	case ACP_TO_SYSRAM_CH_NUM:
++	case I2S_TO_ACP_DMA_CH_NUM:
+ 	case ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM:
+-	case ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM:
++	case I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM:
+ 		dma_ctrl |= ACP_DMA_CNTL_0__DMAChIOCEn_MASK;
+ 		break;
+ 	default:
+@@ -705,18 +703,18 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
+ 
+-	if ((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) != 0) {
++	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
+ 		valid_irq = true;
+ 		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
+-		acp_reg_write((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) << 16,
++		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
+ 
+-	if ((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) != 0) {
++	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
+ 		valid_irq = true;
+ 		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
+ 		acp_reg_write((intr_flag &
+-			      BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) << 16,
++			      BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+ 	}
+ 
+-- 
+2.18.0.rc2
