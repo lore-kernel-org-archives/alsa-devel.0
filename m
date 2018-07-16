@@ -1,28 +1,16 @@
-From: Po-Hsu Lin <po-hsu.lin@canonical.com>
-Subject: [PATCH] ALSA: hda: add mute led support for HP ProBook
-	455 G5
-Date: Mon, 16 Jul 2018 15:50:08 +0800
-Message-ID: <20180716075008.7272-1-po-hsu.lin@canonical.com>
+From: yokota.hgml@gmail.com
+Subject: [PATCH] ALSA: hda/realtek - Add Panasonic CF-SZ6
+	headset jack quirk
+Date: Mon, 16 Jul 2018 17:10:45 +0900
+Message-ID: <CA+0c0dVT4v5bkkWXn6sLPL9ac29Sjxiz4qV+ypbHhDJ=uaDdvg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="000000000000e3e62a0571195d49"
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 9763E26720C
- for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 09:50:21 +0200 (CEST)
-Received: from mail-pl0-f71.google.com ([209.85.160.71])
- by youngberry.canonical.com with esmtps (TLS1.0:RSA_AES_128_CBC_SHA1:16)
- (Exim 4.76) (envelope-from <po-hsu.lin@canonical.com>)
- id 1feyGy-000495-QI
- for alsa-devel@alsa-project.org; Mon, 16 Jul 2018 07:50:20 +0000
-Received: by mail-pl0-f71.google.com with SMTP id e1-v6so24112192pld.23
- for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 00:50:20 -0700 (PDT)
-Received: from Leggiero.taipei.internal ([175.41.48.77])
- by smtp.gmail.com with ESMTPSA id t186-v6sm20078628pgd.77.2018.07.16.00.50.17
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Mon, 16 Jul 2018 00:50:18 -0700 (PDT)
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8A69C2673ED
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 10:10:47 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id s14-v6so14862110wmc.1
+ for <alsa-devel@alsa-project.org>; Mon, 16 Jul 2018 01:10:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,27 +23,54 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Audio mute led does not work on HP ProBook 455 G5,
-this can be fixed by using CXT_FIXUP_MUTE_LED_GPIO to support it.
+--000000000000e3e62a0571195d49
+Content-Type: text/plain; charset="UTF-8"
 
-BugLink: https://bugs.launchpad.net/bugs/1781763
-Reported-by: James Buren
-Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
+ This adds some required quirk when uses headset or headphone on
+Panasonic CF-SZ6.
+
+Signed-off-by: YOKOTA Hiroshi <yokota.hgml@gmail.com>
 ---
- sound/pci/hda/patch_conexant.c | 1 +
+ sound/pci/hda/patch_realtek.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
-index e7fcfc3..f641c20 100644
---- a/sound/pci/hda/patch_conexant.c
-+++ b/sound/pci/hda/patch_conexant.c
-@@ -964,6 +964,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8115, "HP Z1 Gen3", CXT_FIXUP_HP_GATE_MIC),
- 	SND_PCI_QUIRK(0x103c, 0x814f, "HP ZBook 15u G3", CXT_FIXUP_MUTE_LED_GPIO),
- 	SND_PCI_QUIRK(0x103c, 0x822e, "HP ProBook 440 G4", CXT_FIXUP_MUTE_LED_GPIO),
-+	SND_PCI_QUIRK(0x103c, 0x836e, "HP ProBook 455 G5", CXT_FIXUP_MUTE_LED_GPIO),
- 	SND_PCI_QUIRK(0x103c, 0x8299, "HP 800 G3 SFF", CXT_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x829a, "HP 800 G3 DM", CXT_FIXUP_HP_MIC_NO_PRESENCE),
- 	SND_PCI_QUIRK(0x103c, 0x8455, "HP Z2 G4", CXT_FIXUP_HP_MIC_NO_PRESENCE),
--- 
-2.7.4
+--000000000000e3e62a0571195d49
+Content-Type: text/x-patch; charset="US-ASCII";
+	name="0001-ALSA-hda-realtek-Add-Panasonic-CF-SZ6-headset-jack-q.patch"
+Content-Disposition: attachment;
+	filename="0001-ALSA-hda-realtek-Add-Panasonic-CF-SZ6-headset-jack-q.patch"
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_jjnzbes00
+
+RnJvbSAzN2ZjM2VhMDQ2OTExMjRjOTJhOGQ2Mjg1NjBiOTcyZWIyMTVjN2U4IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBZT0tPVEEgSGlyb3NoaSA8eW9rb3RhLmhnbWxAZ21haWwuY29t
+PgpEYXRlOiBTdW4sIDEgSnVsIDIwMTggMTg6MzA6MDEgKzA5MDAKU3ViamVjdDogW1BBVENIXSBB
+TFNBOiBoZGEvcmVhbHRlayAtIEFkZCBQYW5hc29uaWMgQ0YtU1o2IGhlYWRzZXQgamFjayBxdWly
+awoKIFRoaXMgYWRkcyBzb21lIHJlcXVpcmVkIHF1aXJrIHdoZW4gdXNlcyBoZWFkc2V0IG9yIGhl
+YWRwaG9uZSBvbgpQYW5hc29uaWMgQ0YtU1o2LgoKU2lnbmVkLW9mZi1ieTogWU9LT1RBIEhpcm9z
+aGkgPHlva290YS5oZ21sQGdtYWlsLmNvbT4KLS0tCiBzb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0
+ZWsuYyB8IDEgKwogMSBmaWxlIGNoYW5nZWQsIDEgaW5zZXJ0aW9uKCspCgpkaWZmIC0tZ2l0IGEv
+c291bmQvcGNpL2hkYS9wYXRjaF9yZWFsdGVrLmMgYi9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0
+ZWsuYwppbmRleCA2NjY3MTNlMS4uZGI2MjVkMDAgMTAwNjQ0Ci0tLSBhL3NvdW5kL3BjaS9oZGEv
+cGF0Y2hfcmVhbHRlay5jCisrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCkBAIC02
+NTEzLDYgKzY1MTMsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IHNuZF9wY2lfcXVpcmsgYWxjMjY5
+X2ZpeHVwX3RibFtdID0gewogCVNORF9QQ0lfUVVJUksoMHgxMGNmLCAweDE2MjksICJMaWZlYm9v
+ayBVN3g3IiwgQUxDMjU1X0ZJWFVQX0xJRkVCT09LX1U3eDdfSEVBRFNFVF9NSUMpLAogCVNORF9Q
+Q0lfUVVJUksoMHgxMGNmLCAweDE4NDUsICJMaWZlYm9vayBVOTA0IiwgQUxDMjY5X0ZJWFVQX0xJ
+RkVCT09LX0VYVE1JQyksCiAJU05EX1BDSV9RVUlSSygweDEwZWMsIDB4MTBmMiwgIkludGVsIFJl
+ZmVyZW5jZSBib2FyZCIsIEFMQzcwMF9GSVhVUF9JTlRFTF9SRUZFUkVOQ0UpLAorCVNORF9QQ0lf
+UVVJUksoMHgxMGY3LCAweDgzMzgsICJQYW5hc29uaWMgQ0YtU1o2IiwgQUxDMjY5X0ZJWFVQX0hF
+QURTRVRfTU9ERSksCiAJU05EX1BDSV9RVUlSSygweDE0NGQsIDB4YzEwOSwgIlNhbXN1bmcgQXRp
+diBib29rIDkgKE5QOTAwWDNHKSIsIEFMQzI2OV9GSVhVUF9JTlZfRE1JQyksCiAJU05EX1BDSV9R
+VUlSSygweDE0NGQsIDB4Yzc0MCwgIlNhbXN1bmcgQXRpdiBib29rIDggKE5QODcwWjVHKSIsIEFM
+QzI2OV9GSVhVUF9BVElWX0JPT0tfOCksCiAJU05EX1BDSV9RVUlSSygweDE0NTgsIDB4ZmE1Mywg
+IkdpZ2FieXRlIEJYQlQtMjgwNyIsIEFMQzI4M19GSVhVUF9IRUFEU0VUX01JQyksCi0tIAoyLjE4
+LjAKCg==
+--000000000000e3e62a0571195d49
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--000000000000e3e62a0571195d49--
