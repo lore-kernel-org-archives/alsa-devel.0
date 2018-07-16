@@ -1,70 +1,91 @@
-From: Lukas Wunner <lukas@wunner.de>
-Subject: Re: [PATCH 2/2] vgaswitchreoo: set audio client id in vgaswitchreoo
- enable function
-Date: Mon, 16 Jul 2018 16:02:46 +0200
-Message-ID: <20180716140246.GA12334@wunner.de>
-References: <1531469162-6472-1-git-send-email-Jim.Qu@amd.com>
- <1531469162-6472-2-git-send-email-Jim.Qu@amd.com>
- <20180713092742.GA4013@wunner.de>
- <8832b090-c399-ab88-8c56-4509a3413c44@amd.com>
+From: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCH v5 4/5] ARM: dts: at91: sama5d2: add nodes for I2S
+ controllers
+Date: Mon, 16 Jul 2018 16:15:04 +0200
+Message-ID: <20180716141504.GB3180@piout.net>
+References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
+ <20180618141239.10892-5-codrin.ciubotariu@microchip.com>
+ <20180706193923.GC16084@piout.net>
+ <e056ed7d-521d-54ab-2e5d-0f5259a09ec6@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8832b090-c399-ab88-8c56-4509a3413c44@amd.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: jimqu <jimqu@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org, amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+In-Reply-To: <e056ed7d-521d-54ab-2e5d-0f5259a09ec6@microchip.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@microchip.com, boris.brezillon@bootlin.com, robh+dt@kernel.org, broonie@kernel.org, sboyd@kernel.org, Cristian.Birsan@microchip.com, Cyrille Pitchen <cyrille.pitchen@atmel.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gU2F0LCBKdWwgMTQsIDIwMTggYXQgMDI6MTU6MjRQTSArMDgwMCwgamltcXUgd3JvdGU6Cj4g
-Pz8/IDIwMTgvNy8xMyAxNzoyNywgTHVrYXMgV3VubmVyID8/Pz8/PzoKPiA+T24gRnJpLCBKdWwg
-MTMsIDIwMTggYXQgMDQ6MDY6MDJQTSArMDgwMCwgSmltIFF1IHdyb3RlOgo+ID4+T24gbW9kZXJu
-IGxhcHRvcCwgdGhlcmUgYXJlIG1vcmUgYW5kIG1vcmUgcGxhdGZvcm1zCj4gPj5oYXZlIHR3byBH
-UFVzLCBhbmQgZWFjaCBvZiB0aGVtIG1heWJlIGhhdmUgYXVkaW8gY29kZWMKPiA+PmZvciBIRE1Q
-L0RQIG91dHB1dC4gRm9yIHNvbWUgZEdQVSB3aGljaCBpcyBubyBvdXRwdXQsCj4gPj5hdWRpbyBj
-b2RlYyB1c3VhbGx5IGlzIGRpc2FibGVkLgo+ID4+Cj4gPj5JbiBjdXJyZWN0IEhEQSBhdWRpbyBk
-cml2ZXIsIGl0IHdpbGwgc2V0IGFsbCBjb2RlYyBhcwo+ID4+VkdBX1NXSVRDSEVST09fRElTLCB0
-aGUgYXVkaW8gd2hpY2ggaXMgYmluZGVkIHRvIFVNQQo+ID4+d2lsbCBiZSBzdXNwZW5kZWQgaWYg
-dXNlciB1c2UgZGVidWdmcyB0byBjb250b3JsIHBvd2VyCj4gPj4KPiA+PkluIEhEQSBkcml2ZXIg
-c2lkZSwgaXQgaXMgZGlmZmljdWx0IHRvIGtub3cgd2hpY2ggR1BVCj4gPj50aGUgYXVkaW8gaGFz
-IGJpbmRlZCB0by4gU28gc2V0IHRoZSBib3VuZCBncHUgcGNpIGRldgo+ID4+dG8gdmdhc3dpdGNo
-cm9vLCB0aGUgY29ycmVjdCBhdWRpbyBpZCB3aWxsIGJlIHNldCBpbgo+ID4+dmdhc3dpdGNocmVv
-byBlbmFibGUgZnVuY3Rpb24uCj4gPj4KPiA+PlNpZ25lZC1vZmYtYnk6IEppbSBRdSA8SmltLlF1
-QGFtZC5jb20+Cj4gPlRoZSBhcHByb2FjaCB5b3UndmUgdGFrZW4gaW4gdGhpcyBwYXRjaCB3b24n
-dCB3b3JrIGlmIHRoZSBIREEgY29udHJvbGxlcgo+ID5pcyBib3VuZCB0byBhIGRyaXZlciBhZnRl
-ciBib3RoIEdQVXMgaGF2ZSBhbHJlYWR5IGJlZW4gYm91bmQgdG8gYSBkcml2ZXIKPiA+YW5kIHRo
-ZSBoYW5kbGVyIGhhcyBhbHJlYWR5IGJlZW4gcmVnaXN0ZXJlZC4KPiA+Cj4gPlRoYXQncyBiZWNh
-dXNlIHZnYV9zd2l0Y2hlcm9vX2VuYWJsZSgpIGlzIHJ1biB3aGVuIHR3byBHUFVzIGhhdmUgcmVn
-aXN0ZXJlZAo+ID5hcyBjbGllbnRzIGFuZCB0aGUgaGFuZGxlciBoYXMgYWxzbyByZWdpc3RlcmVk
-LiAgSWYgdGhlIEhEQSBjb250cm9sbGVyIGlzCj4gPnByb2JlZCBhZnRlcndhcmRzLCBpdHMgSUQg
-d2lsbCBiZSBzdHVjayBhdCBWR0FfU1dJVENIRVJPT19VTktOT1dOX0lELgo+IAo+IEluIGdlbmVy
-bmljIHNwZWFraW5nLCB0aGVyZSBhcmUgdHdvIGNhc2VzICwgYS4gYXVkaW8gY2xpZW50IGlzIHRo
-ZSB0aGlyZAo+IGNsaWVudC4gYi4gYXVkaW8gY2xpZW50IGlzIG5vdCB0aGUgdGhpcmQgY2xpZW50
-Lgo+IAo+IGlmIGF1ZGlvIGlzIHRoaXJkIGNsaWVudC4gdmdhX3N3aXRjaGVyb29fcmVhZHkoKSBp
-cyB0cnVlLAo+IHZnYV9zd2l0Y2hlcm9vX2VuYWJsZSgpIGNhbiBiZSBjYWxsZWQgaW4gYXVkaW8g
-Y2xpZW50IHJlZ2lzdGVyIGZ1Y3Rpb24uCj4gaWYgYXVkaW8gaXMgbm90IHRoZSB0aGlyZCBjbGll
-bnQsIHZnYV9zd2l0Y2hlcm9vX2VuYWJsZSgpIHdpbGwgYmUgY2FsbGVkIGluCj4gdGhlIHNlY29u
-ZCBHRlggY2xpZW50IHJlZ2lzdGVyLgo+IEluIHZnYV9zd2l0Y2hlcm9vX2VuYWJsZSgpICwgdGhl
-IGZpcnN0IGxpc3QgbG9vcCB3aWxsIHNldCB0d28gR1BVIGNsaWVudHMnCj4gaWQsIGFuZCB0aGUg
-c2Vjb25kIGxpc3QgbG9vcCB3aWxsIHNlbGVjdCBhdWRpbyBjbGllbnQsIHNldCBpZCBieSBpdHMg
-Ym91bmQKPiBncHUgcGNpIGRldi4KCk5vLCBpZiBhdWRpbyBpcyB0aGUgdGhpcmQgY2xpZW50LCB2
-Z2Ffc3dpdGNoZXJvb19yZWFkeSgpIGlzICpub3QqIHRydWUKYmVjYXVzZSB2Z2Fzcl9wcml2LmFj
-dGl2ZSBpcyB0cnVlLiAgVGhpcyBpcyBzZXQgdG8gdHJ1ZSBvbmNlIHRoZSB0d28KR1BVcyBhbmQg
-dGhlIGhhbmRsZXIgaGF2ZSByZWdpc3RlcmVkLiAgSWYgdGhlIGF1ZGlvIGRldmljZSByZWdpc3Rl
-cnMKYWZ0ZXJ3YXJkcywgdmdhX3N3aXRjaGVyb29fZW5hYmxlKCkgd2lsbCBhbHJlYWR5IGhhdmUg
-YmVlbiBjYWxsZWQuCkl0J3MgbmV2ZXIgY2FsbGVkIHR3aWNlIGJlY2F1c2UgaXQgc2V0cyB2Z2Fz
-cl9wcml2LmFjdGl2ZSA9IHRydWUuCgpBcyBhIHJlc3VsdCwgdGhlIGF1ZGlvIGRldmljZSBpcyBz
-dHVjayBhdCBWR0FfU1dJVENIRVJPT19VTktOT1dOX0lELgoKVGhhbmtzLAoKTHVrYXMKX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxp
-bmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJl
-ZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
+Hello,
+
+On 09/07/2018 16:29:43+0300, Codrin Ciubotariu wrote:
+> On 06.07.2018 22:39, Alexandre Belloni wrote:
+> > Hi Codrin,
+> > 
+> > On 18/06/2018 17:12:38+0300, Codrin Ciubotariu wrote:
+> > > From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> > > 
+> > > This patch adds DT nodes for I2S0 and I2S1. It also adds an alias for
+> > > each I2S node.
+> > > 
+> > > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
+> > > [codrin.ciubotariu@microchip.com: added phandle to new mux clock]
+> > > Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+> > > ---
+> > > 
+> > > The bindings for the I2S node are applied to broonie/sound.git .
+> > > 
+> > > Changes in v5:
+> > > 	- the previous name was:
+> > > 	  [PATCH v4 6/7] ARM: dts: at91: sama5d2: add nodes for I2S controllers
+> > > 
+> > >   arch/arm/boot/dts/sama5d2.dtsi | 34 ++++++++++++++++++++++++++++++++++
+> > >   1 file changed, 34 insertions(+)
+> > > 
+> > > diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
+> > > index eeb6afa1cda7..eca73ce40bc5 100644
+> > > --- a/arch/arm/boot/dts/sama5d2.dtsi
+> > > +++ b/arch/arm/boot/dts/sama5d2.dtsi
+> > > @@ -58,6 +58,8 @@
+> > >   		serial1 = &uart3;
+> > >   		tcb0 = &tcb0;
+> > >   		tcb1 = &tcb1;
+> > > +		i2s0 = &i2s0;
+> > > +		i2s1 = &i2s1;
+> > >   	};
+> > >   	cpus {
+> > > @@ -1313,6 +1315,22 @@
+> > >   				clocks = <&clk32k>;
+> > >   			};
+> > > +			i2s0: i2s@f8050000 {
+> > > +				compatible = "atmel,sama5d2-i2s";
+> > > +				reg = <0xf8050000 0x100>;
+> > > +				interrupts = <54 IRQ_TYPE_LEVEL_HIGH 7>;
+> > > +				dmas = <&dma0
+> > > +					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
+> > > +					 AT91_XDMAC_DT_PERID(31))>,
+> > > +				       <&dma0
+> > > +					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
+> > > +					 AT91_XDMAC_DT_PERID(32))>;
+> > > +				dma-names = "tx", "rx";
+> > > +				clocks = <&i2s0_clk>, <&i2s0_gclk>, <&audio_pll_pmc>, <&i2s0muxck>;
+> > > +				clock-names = "pclk", "gclk", "aclk", "muxclk";
+> > > +				status = "disabled";
+> > > +			};
+> > > +
+> > 
+> > Can you resend the DTS patches after removing the unnecessary clocks?
+> 
+> I will. Should I also make the "muxclk" clock an assigned clock to assign
+> its parent ?
+> 
+
+It would be better if that allows to remove the corresponding code in
+the driver.
+
+
+-- 
+Alexandre Belloni, Bootlin (formerly Free Electrons)
+Embedded Linux and Kernel engineering
+https://bootlin.com
