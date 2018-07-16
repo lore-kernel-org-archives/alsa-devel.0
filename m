@@ -1,16 +1,29 @@
-From: jimqu <jimqu@amd.com>
-Subject: Re: [alsa-devel] [V2 2/2] vgaswitchreoo: set audio client id in
- vgaswitchreoo enable function
-Date: Mon, 16 Jul 2018 23:09:57 +0800
-Message-ID: <9afe9d15-df81-b123-f713-f0bf921cded8@amd.com>
-References: <1531721195-4982-1-git-send-email-Jim.Qu@amd.com>
- <1531721195-4982-2-git-send-email-Jim.Qu@amd.com>
- <5212bc55-1aeb-cb7e-2527-45cc4b483861@canonical.com>
- <20180716141610.GA19679@wunner.de>
+From: Harry Wentland <harry.wentland@amd.com>
+Subject: =?UTF-8?B?UmU6IOetlOWkjTog562U5aSNOiBbYWxzYS1kZXZlbF0g562U5aSNOiBb?=
+ =?UTF-8?Q?PATCH]_vgaswitchroo:_set_audio_client_id_according_to_bound_gpu_c?=
+ =?UTF-8?Q?lient_id?=
+Date: Mon, 16 Jul 2018 11:10:43 -0400
+Message-ID: <84b8615e-9de1-a279-e103-55367e2f0f85@amd.com>
+References: <20180629080634.GA7357@wunner.de>
+ <CADnq5_OpZz=AgNomX7+5BzeN77CRZT7mXDT7kn620TE-OjqS0w@mail.gmail.com>
+ <s5hr2kco3gp.wl-tiwai@suse.de> <20180709155643.GE3008@phenom.ffwll.local>
+ <s5hpnzwcsf7.wl-tiwai@suse.de>
+ <DM3PR12MB0873E9DD8B7448CB8A6829DA99440@DM3PR12MB0873.namprd12.prod.outlook.com>
+ <s5hr2kbr03k.wl-tiwai@suse.de> <a37f08e7-734e-977c-597f-46d5c3ec34bc@amd.com>
+ <s5hin5nctby.wl-tiwai@suse.de> <733011b9-1880-76a8-d00f-076591e93c53@amd.com>
+ <s5hbmbfcp5v.wl-tiwai@suse.de> <s5hfu0qp7cv.wl-tiwai@suse.de>
+ <1936c752-f858-2caf-35e7-98bea431fb7c@amd.com> <s5h1scap2h2.wl-tiwai@suse.de>
+ <46d4d516-8373-2b22-da2e-f9f386c66973@amd.com> <s5h601mayk0.wl-tiwai@suse.de>
+ <112c3801-8138-2e05-557a-08be69f3810b@amd.com> <s5hwou29gce.wl-tiwai@suse.de>
+ <s5hzhyv6uol.wl-tiwai@suse.de> <cad8a61b-064a-5f20-acb3-06cee3a19e04@amd.com>
+ <s5hy3edlqxw.wl-tiwai@suse.de>
+ <CADnq5_NZBqHXoQXgsBhyFQzOHzUsf_KPhRRNWmcQChaWcdXbtw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0091299377=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20180716141610.GA19679@wunner.de>
+In-Reply-To: <CADnq5_NZBqHXoQXgsBhyFQzOHzUsf_KPhRRNWmcQChaWcdXbtw@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
 List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
@@ -20,269 +33,65 @@ List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
  <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
 Errors-To: dri-devel-bounces@lists.freedesktop.org
 Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Lukas Wunner <lukas@wunner.de>, Hui Wang <hui.wang@canonical.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
+To: Alex Deucher <alexdeucher@gmail.com>, Takashi Iwai <tiwai@suse.de>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>, jimqu <jimqu@amd.com>, "Qu, Jim" <Jim.Qu@amd.com>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "Deucher,
+ Alexander" <Alexander.Deucher@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-This is a multi-part message in MIME format.
---===============0091299377==
-Content-Type: multipart/alternative;
- boundary="------------D69288B88EA0274B82AF9C4A"
-
-This is a multi-part message in MIME format.
---------------D69288B88EA0274B82AF9C4A
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-
-
-
-在 2018/7/16 22:16, Lukas Wunner 写道:
-> On Mon, Jul 16, 2018 at 03:52:45PM +0800, Hui Wang wrote:
->> On 2018???07???16??? 14:06, Jim Qu wrote:
->>> On modern laptop, there are more and more platforms
->>> have two GPUs, and each of them maybe have audio codec
->>> for HDMP/DP output. For some dGPU which is no output,
->>> audio codec usually is disabled.
->>>
->>> In currect HDA audio driver, it will set all codec as
->>> VGA_SWITCHEROO_DIS, the audio which is binded to UMA
->>> will be suspended if user use debugfs to control power
->>>
->>> In HDA driver side, it is difficult to know which GPU
->>> the audio has bound to. So set the bound gpu pci dev
->>> to vgaswitchreoo, the correct audio id will be set in
->>> vgaswitchreoo enable function.
->>>
->>> Signed-off-by: Jim Qu <Jim.Qu@amd.com>
->> Is it possible to send this patch to <stable@vger.kernel.org> as well, then
->> we will know that it is safe to backport this patch to the linux kernels
->> with different version.
-> For which hardware do you want it in stable kernels?
->
-> This patch pertains to manual power control, which is only used on the
-> MacBook Pro by default.  And there are no MacBook Pros with AMD APUs.
-> On all other hardware, users have to specify "amdgpu.runpm=0" on the
-> command line to see any benefit from this patch.  Also, manual power
-> control will likely be removed once we get runtime PM working with
-> muxed systems (such as the MacBook Pro).
-
-The patch idea will deal with the issues 1) manual power control after 
-v4.17. 2) driver control before v4.17.  As we know current a lot of 
-mainstream OS, such like ubuntu 16.04.4 (kernel is v4.15), ubuntu 
-18.04(kernel is v4.15), RHEL7.x (kernel is 3.1x).
-BTW, I believe you will see more and more products with AMD next 
-generation of APUs in the near future.
-
-Thanks
-JimQu
-
-> Lukas
-
-
---------------D69288B88EA0274B82AF9C4A
-Content-Type: text/html; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-
-<html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  </head>
-  <body text="#000000" bgcolor="#FFFFFF">
-    <p><br>
-    </p>
-    <br>
-    <div class="moz-cite-prefix">在 2018/7/16 22:16, Lukas Wunner 写道:<br>
-    </div>
-    <blockquote type="cite" cite="mid:20180716141610.GA19679@wunner.de">
-      <pre wrap="">On Mon, Jul 16, 2018 at 03:52:45PM +0800, Hui Wang wrote:
-</pre>
-      <blockquote type="cite">
-        <pre wrap="">On 2018???07???16??? 14:06, Jim Qu wrote:
-</pre>
-        <blockquote type="cite">
-          <pre wrap="">On modern laptop, there are more and more platforms
-have two GPUs, and each of them maybe have audio codec
-for HDMP/DP output. For some dGPU which is no output,
-audio codec usually is disabled.
-
-In currect HDA audio driver, it will set all codec as
-VGA_SWITCHEROO_DIS, the audio which is binded to UMA
-will be suspended if user use debugfs to control power
-
-In HDA driver side, it is difficult to know which GPU
-the audio has bound to. So set the bound gpu pci dev
-to vgaswitchreoo, the correct audio id will be set in
-vgaswitchreoo enable function.
-
-Signed-off-by: Jim Qu <a class="moz-txt-link-rfc2396E" href="mailto:Jim.Qu@amd.com">&lt;Jim.Qu@amd.com&gt;</a>
-</pre>
-        </blockquote>
-        <pre wrap="">
-Is it possible to send this patch to <a class="moz-txt-link-rfc2396E" href="mailto:stable@vger.kernel.org">&lt;stable@vger.kernel.org&gt;</a> as well, then
-we will know that it is safe to backport this patch to the linux kernels
-with different version.
-</pre>
-      </blockquote>
-      <pre wrap="">
-For which hardware do you want it in stable kernels?
-
-This patch pertains to manual power control, which is only used on the
-MacBook Pro by default.  And there are no MacBook Pros with AMD APUs.
-On all other hardware, users have to specify "amdgpu.runpm=0" on the
-command line to see any benefit from this patch.  Also, manual power
-control will likely be removed once we get runtime PM working with
-muxed systems (such as the MacBook Pro).
-</pre>
-    </blockquote>
-    <br>
-    The patch idea will deal with the issues 1) manual power control
-    after v4.17. 2) driver control before v4.17.  As we know current a
-    lot of mainstream OS, such like ubuntu 16.04.4 (kernel is v4.15),
-    ubuntu 18.04(kernel is v4.15), RHEL7.x (kernel is 3.1x).<br>
-    BTW, I believe you will see more and more products with AMD next
-    generation of APUs in the near future.<br>
-    <br>
-    Thanks<br>
-    JimQu<span id="w_88" class="" style="color: rgb(51, 51, 51);
-      font-family: Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans
-      GB&quot;, STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi
-      Micro Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_89" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_90" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_91" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_92" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_93" style="color: rgb(51, 51, 51); font-family: Arial,
-      &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti,
-      &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;,
-      sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_94" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_95" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_96" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_97" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_98" class="" style="color: rgb(51, 51, 51); font-family:
-      Arial, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;,
-      STHeiti, &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro
-      Hei&quot;, sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px; background-color: rgb(249, 249,
-      249);"><span class="Apple-converted-space"></span></span><span
-      id="w_99" class="high-light-bg" style="background: rgb(67, 149,
-      255); color: rgb(255, 255, 255); font-family: Arial,
-      &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, STHeiti,
-      &quot;Microsoft YaHei&quot;, &quot;WenQuanYi Micro Hei&quot;,
-      sans-serif; font-size: 14px; font-style: normal;
-      font-variant-ligatures: normal; font-variant-caps: normal;
-      font-weight: normal; letter-spacing: normal; orphans: 2;
-      text-align: left; text-indent: 0px; text-transform: none;
-      white-space: normal; widows: 2; word-spacing: 0px;
-      -webkit-text-stroke-width: 0px;"></span><br>
-    <br>
-    <blockquote type="cite" cite="mid:20180716141610.GA19679@wunner.de">
-      <pre wrap="">
-Lukas
-</pre>
-    </blockquote>
-    <br>
-  </body>
-</html>
-
---------------D69288B88EA0274B82AF9C4A--
-
---===============0091299377==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: base64
-Content-Disposition: inline
-
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
-IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
-dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
-
---===============0091299377==--
+CgpPbiAyMDE4LTA3LTE1IDEwOjM2IEFNLCBBbGV4IERldWNoZXIgd3JvdGU6Cj4gT24gU2F0LCBK
+dWwgMTQsIDIwMTggYXQgMTI6MzEgUE0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4gd3Jv
+dGU6Cj4+IE9uIFNhdCwgMTQgSnVsIDIwMTggMTQ6MDM6MjYgKzAyMDAsCj4+IGppbXF1IHdyb3Rl
+Ogo+Pj4KPj4+Cj4+Pgo+Pj4g5ZyoIDIwMTgvNy8xMyAyMzowNywgVGFrYXNoaSBJd2FpIOWGmemB
+kzoKPj4+PiBPbiBXZWQsIDExIEp1bCAyMDE4IDEzOjEyOjAxICswMjAwLAo+Pj4+IFRha2FzaGkg
+SXdhaSB3cm90ZToKPj4+Pj4gQW5kIHRoZSBmb3JjZWQgcnVudGltZSBQTSBpcyBzdGlsbCBhbiBp
+c3N1ZSwgYW5kIHRoaXMgd291bGQgbmVlZCB0aGUKPj4+Pj4gb3RoZXIgbm90aWZpY2F0aW9uIG1l
+Y2hhbmlzbSB0aGFuIHRoZSBIRC1hdWRpbyB1bnNvbGljaXRlZCBldmVudCBhcwo+Pj4+PiBBTUQg
+SERNSSBjb250cm9sbGVyIGRvZXNuJ3QgaG9ub3IgdGhlIEhELWF1ZGlvIFdBS0VFTiBiaXQuCj4+
+Pj4gU2luY2Ugd2UgaGFkIGEgbmljZSAiaGFjayB3ZWVrIiBpbiB0aGlzIHdlZWsgYXQgU1VTRSwg
+SSBzcGVudCBzb21lCj4+Pj4gdGltZSB0byB3cml0ZSBzb21lIHBhdGNoZXMgZm9yIHRoZSBzdXBw
+b3J0IG9mIHRoZSBkaXJlY3QgaG90cGx1Zwo+Pj4+IG5vdGlmaWNhdGlvbiAvIEVMRCBxdWVyeSBi
+ZXR3ZWVuIEhELWF1ZGlvIGFuZCByYWRlb24vYW1kZ3B1LiAgSXQKPj4+PiByZS11dGlsaXplcyB0
+aGUgYXVkaW8gY29tcG9uZW50IGZyYW1ld29yayBmb3IgaTkxNSBidXQgaW4gYSBzbGlnaHRseQo+
+Pj4+IG1vcmUgZmxleGlibGUgd2F5Lgo+Pj4+Cj4+Pj4gVGhlIHBhdGNoZXMgYXJlIGZvdW5kIGlu
+IHRvcGljL2hkYS1hY29tcCBicmFuY2ggb2YgbXkgc291bmQuZ2l0IHRyZWU6Cj4+Pj4gICAgZ2l0
+Oi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdp
+dAo+Pj4+Cj4+Pj4gVGhlIGZvbGxvd2luZyBjb21taXRzIGFyZSByZWxldmFudDoKPj4+PiAgICBk
+cm0vaTkxNTogU3BsaXQgYXVkaW8gY29tcG9uZW50IHRvIGEgZ2VuZXJpYyB0eXBlCj4+Pj4gICAg
+QUxTQTogaGRhL2k5MTU6IEFsbG93IGRlbGF5ZWQgaTkxNSBhdWRpbyBjb21wb25lbnQgYmluZGlu
+Zwo+Pj4+ICAgIEFMU0E6IGhkYS9pOTE1OiBBc3NvY2lhdGUgYXVkaW8gY29tcG9uZW50IHdpdGgg
+ZGV2cmVzCj4+Pj4gICAgQUxTQTogaGRhOiBNYWtlIGF1ZGlvIGNvbXBvbmVudCBzdXBwb3J0IG1v
+cmUgZ2VuZXJpYwo+Pj4+ICAgIEFMU0E6IGhkYS9oZG1pOiBBbGxvdyBhdWRpbyBjb21wb25lbnQg
+Zm9yIEFNRC9BVEkgSERNSQo+Pj4+ICAgIEFMU0E6IGhkYS9oZG1pOiBVc2Ugc2luZ2xlIG11dGV4
+IHVubG9jayBpbiBlcnJvciBwYXRocwo+Pj4+ICAgIGRybS9yYWRlb246IEFkZCBhdWRpbyBjb21w
+b25lbnQgc3VwcG9ydAo+Pj4+ICAgIGRybS9hbWRncHU6IEFkZCBhdWRpbyBjb21wb25lbnQgc3Vw
+cG9ydAo+Pj4+Cj4+Pj4gVGhlIGJyYW5jaCBzaG91bGQgYmUgY2xlYW5seSBwdWxsYWJsZSBvbnRv
+IHRoZSBsYXRlc3QgNC4xOC1yYy4KPj4+Pgo+Pj4+IEkgY291bGRuJ3QgdGVzdCBhbWRncHUgYnV0
+IHRoZSB0ZXN0IHdpdGggYSByYWRlb24gZHJpdmVyIG9uIGFuIG9sZAo+Pj4+IGxhcHRvcCBzZWVt
+ZWQgd29ya2luZyB0aHJvdWdoIGEgdmVyeSBxdWljayB0ZXN0Lgo+Pj4+Cj4+Pj4gUGxlYXNlIGdp
+dmUgaXQgYSB0cnkuCj4+Pgo+Pj4gVGhhdCBpcyByZWFsbHkgd29uZGVyZnVsIHdvcmsuIEkgd2ls
+bCBjaGVjayBpdCBvbiBvdXIgQU1ECj4+PiBwbGF0Zm9ybS4KPj4KPj4gVGhhbmtzLCBpdCdsbCBi
+ZSBncmVhdCBpZiB5b3UgY2FuIGNoZWNrIHdoZXRoZXIgdGhlIGN1cnJlbnQgY29kZSB3b3Jrcwo+
+PiBvciBub3QuICBJJ2QgbG92ZSB0byBwdXNoIHRoZSBzdHVmZiBmb3IgNC4xOS4gIEhvcGVmdWxs
+eSBJJ2xsIHN0YXJ0Cj4+IHN1Ym1pdHRpbmcgdGhlIHByZXBhcmF0aW9uIHBhdGNoZXMgaW4gdGhl
+IG5leHQgd2Vlay4KPj4KPj4gQmFzaWNhbGx5IHRoaXMgYWxzbyBvcGVucyB0aGUgZG9vciBvZiB0
+aGUgc2ltaWxhciBjYXBhYmlsaXR5IGZvcgo+PiBub3V2ZWF1LCBhbmQgSSBndWVzcyBpdCdzIGFs
+c28gdHJpdmlhbCBlbm91Z2guCj4+Cj4+PiBCVFcsIEZvciBkaXNwbGF5LCBBTUQgaGFzIG1vdmVk
+IHRvIHVzZSBEQyB0byBzdXBwb3J0IG5ldwo+Pj4gYXNpY3MuIHNvIHRoZXJlIGFsc28gbmVlZCBh
+IHBhdGNoIGZvciBhbWRncHUgaW4gREMgY29kZS4KPj4KPj4gQ291bGQgeW91IGdpdmUgYSBtb3Jl
+IGhpbnQ/ICBJJ2xsIHRyeSBhZGFwdCB0aGUgY29kZSBpZiBzdWNoIGEgY2hhbmdlCj4+IGlzIGFs
+cmVhZHkgaW4gdXBzdHJlYW0gdHJlZS4KPiAKPiBUaGUgbmV3IGNvZGUgaXMgaW4gZHJpdmVycy9n
+cHUvZHJtL2FtZC9kaXNwbGF5Lgo+IAoKSW4gcGFydGljdWxhciwgSSBpbWFnaW5lIGFsbCB5b3Ug
+bmVlZCBzaG91bGQgYmUgaW4gZGlzcGxheS9hbWRncHVfZG0sIGFsdGhvdWdoIHRoZXJlJ3MgY2hh
+bmNlIHlvdSBtaWdodCBoYXZlIHRvIHRvdWNoIGRpc3BsYXkvZGMvZGNlL2RjZV9hdWRpby5jIGlm
+IHlvdSBoYXZlIHRvIGRvIGFueXRoaW5nIHdpdGggdGhlIHVuc29saWNpdGVkIGV2ZW50LgoKSSBz
+ZWUgeW91J3JlIHVzaW5nIHRoZSBHUEwgbGljZW5zZSwgcmF0aGVyIHRoYW4gTUlUIGluIGFtZGdw
+dV9hdWRpby5jLiBTaW5jZSB0aGUgY29kZSBpbiBkaXNwbGF5L2RjIGlzIHNoYXJlZCB3aXRoIG90
+aGVyIE9TZXMgYW5kIGludGVybmFsIHRlc3QgZnJhbWV3b3JrcyBpdCBoYXMgdG8gYmUgTUlULiBO
+b3QgZW50aXJlbHkgc3VyZSBhYm91dCBkaXNwbGF5L2FtZGdwdV9kbSwgYnV0IGlmIEdQTCBpcyBm
+aW5lIGluIGFtZC9hbWRncHUgaXQncyBwcm9iYWJseSBmaW5lIHRoZXJlIGFzIHdlbGwuCgpIYXJy
+eQoKPiBBbGV4Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X18KPiBkcmktZGV2ZWwgbWFpbGluZyBsaXN0Cj4gZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZwo+IGh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJp
+LWRldmVsCj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpo
+dHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
