@@ -1,91 +1,54 @@
-From: Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCH v5 4/5] ARM: dts: at91: sama5d2: add nodes for I2S
- controllers
-Date: Mon, 16 Jul 2018 16:15:04 +0200
-Message-ID: <20180716141504.GB3180@piout.net>
-References: <20180618141239.10892-1-codrin.ciubotariu@microchip.com>
- <20180618141239.10892-5-codrin.ciubotariu@microchip.com>
- <20180706193923.GC16084@piout.net>
- <e056ed7d-521d-54ab-2e5d-0f5259a09ec6@microchip.com>
+From: Lukas Wunner <lukas@wunner.de>
+Subject: Re: [alsa-devel] [V2 2/2] vgaswitchreoo: set audio client id in
+ vgaswitchreoo enable function
+Date: Mon, 16 Jul 2018 16:16:10 +0200
+Message-ID: <20180716141610.GA19679@wunner.de>
+References: <1531721195-4982-1-git-send-email-Jim.Qu@amd.com>
+ <1531721195-4982-2-git-send-email-Jim.Qu@amd.com>
+ <5212bc55-1aeb-cb7e-2527-45cc4b483861@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
 Content-Disposition: inline
-In-Reply-To: <e056ed7d-521d-54ab-2e5d-0f5259a09ec6@microchip.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, linux-clk@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@microchip.com, boris.brezillon@bootlin.com, robh+dt@kernel.org, broonie@kernel.org, sboyd@kernel.org, Cristian.Birsan@microchip.com, Cyrille Pitchen <cyrille.pitchen@atmel.com>
+In-Reply-To: <5212bc55-1aeb-cb7e-2527-45cc4b483861@canonical.com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Hui Wang <hui.wang@canonical.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
-
-On 09/07/2018 16:29:43+0300, Codrin Ciubotariu wrote:
-> On 06.07.2018 22:39, Alexandre Belloni wrote:
-> > Hi Codrin,
-> > 
-> > On 18/06/2018 17:12:38+0300, Codrin Ciubotariu wrote:
-> > > From: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> > > 
-> > > This patch adds DT nodes for I2S0 and I2S1. It also adds an alias for
-> > > each I2S node.
-> > > 
-> > > Signed-off-by: Cyrille Pitchen <cyrille.pitchen@atmel.com>
-> > > [codrin.ciubotariu@microchip.com: added phandle to new mux clock]
-> > > Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-> > > ---
-> > > 
-> > > The bindings for the I2S node are applied to broonie/sound.git .
-> > > 
-> > > Changes in v5:
-> > > 	- the previous name was:
-> > > 	  [PATCH v4 6/7] ARM: dts: at91: sama5d2: add nodes for I2S controllers
-> > > 
-> > >   arch/arm/boot/dts/sama5d2.dtsi | 34 ++++++++++++++++++++++++++++++++++
-> > >   1 file changed, 34 insertions(+)
-> > > 
-> > > diff --git a/arch/arm/boot/dts/sama5d2.dtsi b/arch/arm/boot/dts/sama5d2.dtsi
-> > > index eeb6afa1cda7..eca73ce40bc5 100644
-> > > --- a/arch/arm/boot/dts/sama5d2.dtsi
-> > > +++ b/arch/arm/boot/dts/sama5d2.dtsi
-> > > @@ -58,6 +58,8 @@
-> > >   		serial1 = &uart3;
-> > >   		tcb0 = &tcb0;
-> > >   		tcb1 = &tcb1;
-> > > +		i2s0 = &i2s0;
-> > > +		i2s1 = &i2s1;
-> > >   	};
-> > >   	cpus {
-> > > @@ -1313,6 +1315,22 @@
-> > >   				clocks = <&clk32k>;
-> > >   			};
-> > > +			i2s0: i2s@f8050000 {
-> > > +				compatible = "atmel,sama5d2-i2s";
-> > > +				reg = <0xf8050000 0x100>;
-> > > +				interrupts = <54 IRQ_TYPE_LEVEL_HIGH 7>;
-> > > +				dmas = <&dma0
-> > > +					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-> > > +					 AT91_XDMAC_DT_PERID(31))>,
-> > > +				       <&dma0
-> > > +					(AT91_XDMAC_DT_MEM_IF(0) | AT91_XDMAC_DT_PER_IF(1) |
-> > > +					 AT91_XDMAC_DT_PERID(32))>;
-> > > +				dma-names = "tx", "rx";
-> > > +				clocks = <&i2s0_clk>, <&i2s0_gclk>, <&audio_pll_pmc>, <&i2s0muxck>;
-> > > +				clock-names = "pclk", "gclk", "aclk", "muxclk";
-> > > +				status = "disabled";
-> > > +			};
-> > > +
-> > 
-> > Can you resend the DTS patches after removing the unnecessary clocks?
-> 
-> I will. Should I also make the "muxclk" clock an assigned clock to assign
-> its parent ?
-> 
-
-It would be better if that allows to remove the corresponding code in
-the driver.
-
-
--- 
-Alexandre Belloni, Bootlin (formerly Free Electrons)
-Embedded Linux and Kernel engineering
-https://bootlin.com
+T24gTW9uLCBKdWwgMTYsIDIwMTggYXQgMDM6NTI6NDVQTSArMDgwMCwgSHVpIFdhbmcgd3JvdGU6
+Cj4gT24gMjAxOD8/PzA3Pz8/MTY/Pz8gMTQ6MDYsIEppbSBRdSB3cm90ZToKPiA+T24gbW9kZXJu
+IGxhcHRvcCwgdGhlcmUgYXJlIG1vcmUgYW5kIG1vcmUgcGxhdGZvcm1zCj4gPmhhdmUgdHdvIEdQ
+VXMsIGFuZCBlYWNoIG9mIHRoZW0gbWF5YmUgaGF2ZSBhdWRpbyBjb2RlYwo+ID5mb3IgSERNUC9E
+UCBvdXRwdXQuIEZvciBzb21lIGRHUFUgd2hpY2ggaXMgbm8gb3V0cHV0LAo+ID5hdWRpbyBjb2Rl
+YyB1c3VhbGx5IGlzIGRpc2FibGVkLgo+ID4KPiA+SW4gY3VycmVjdCBIREEgYXVkaW8gZHJpdmVy
+LCBpdCB3aWxsIHNldCBhbGwgY29kZWMgYXMKPiA+VkdBX1NXSVRDSEVST09fRElTLCB0aGUgYXVk
+aW8gd2hpY2ggaXMgYmluZGVkIHRvIFVNQQo+ID53aWxsIGJlIHN1c3BlbmRlZCBpZiB1c2VyIHVz
+ZSBkZWJ1Z2ZzIHRvIGNvbnRyb2wgcG93ZXIKPiA+Cj4gPkluIEhEQSBkcml2ZXIgc2lkZSwgaXQg
+aXMgZGlmZmljdWx0IHRvIGtub3cgd2hpY2ggR1BVCj4gPnRoZSBhdWRpbyBoYXMgYm91bmQgdG8u
+IFNvIHNldCB0aGUgYm91bmQgZ3B1IHBjaSBkZXYKPiA+dG8gdmdhc3dpdGNocmVvbywgdGhlIGNv
+cnJlY3QgYXVkaW8gaWQgd2lsbCBiZSBzZXQgaW4KPiA+dmdhc3dpdGNocmVvbyBlbmFibGUgZnVu
+Y3Rpb24uCj4gPgo+ID5TaWduZWQtb2ZmLWJ5OiBKaW0gUXUgPEppbS5RdUBhbWQuY29tPgo+IAo+
+IElzIGl0IHBvc3NpYmxlIHRvIHNlbmQgdGhpcyBwYXRjaCB0byA8c3RhYmxlQHZnZXIua2VybmVs
+Lm9yZz4gYXMgd2VsbCwgdGhlbgo+IHdlIHdpbGwga25vdyB0aGF0IGl0IGlzIHNhZmUgdG8gYmFj
+a3BvcnQgdGhpcyBwYXRjaCB0byB0aGUgbGludXgga2VybmVscwo+IHdpdGggZGlmZmVyZW50IHZl
+cnNpb24uCgpGb3Igd2hpY2ggaGFyZHdhcmUgZG8geW91IHdhbnQgaXQgaW4gc3RhYmxlIGtlcm5l
+bHM/CgpUaGlzIHBhdGNoIHBlcnRhaW5zIHRvIG1hbnVhbCBwb3dlciBjb250cm9sLCB3aGljaCBp
+cyBvbmx5IHVzZWQgb24gdGhlCk1hY0Jvb2sgUHJvIGJ5IGRlZmF1bHQuICBBbmQgdGhlcmUgYXJl
+IG5vIE1hY0Jvb2sgUHJvcyB3aXRoIEFNRCBBUFVzLgpPbiBhbGwgb3RoZXIgaGFyZHdhcmUsIHVz
+ZXJzIGhhdmUgdG8gc3BlY2lmeSAiYW1kZ3B1LnJ1bnBtPTAiIG9uIHRoZQpjb21tYW5kIGxpbmUg
+dG8gc2VlIGFueSBiZW5lZml0IGZyb20gdGhpcyBwYXRjaC4gIEFsc28sIG1hbnVhbCBwb3dlcgpj
+b250cm9sIHdpbGwgbGlrZWx5IGJlIHJlbW92ZWQgb25jZSB3ZSBnZXQgcnVudGltZSBQTSB3b3Jr
+aW5nIHdpdGgKbXV4ZWQgc3lzdGVtcyAoc3VjaCBhcyB0aGUgTWFjQm9vayBQcm8pLgoKTHVrYXMK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVs
+IG1haWxpbmcgbGlzdApkcmktZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlz
+dHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
