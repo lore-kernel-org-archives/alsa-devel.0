@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: For capture have interrupts on I2S->ACP channel" to the asoc tree
-Date: Mon, 16 Jul 2018 15:30:28 +0100
-Message-ID: <E1ff4WC-0005St-2u@debutante>
-References: <1531724566-4019-2-git-send-email-akshu.agrawal@amd.com>
+Subject: Applied "ASoC: AMD: Send correct channel for configuring DMA descriptors" to the asoc tree
+Date: Mon, 16 Jul 2018 15:30:30 +0100
+Message-ID: <E1ff4WE-0005U2-7q@debutante>
+References: <1531724566-4019-1-git-send-email-akshu.agrawal@amd.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1531724566-4019-2-git-send-email-akshu.agrawal@amd.com>
+In-Reply-To: <1531724566-4019-1-git-send-email-akshu.agrawal@amd.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Agrawal@sirena.org.uk, Akshu <Akshu.Agrawal@amd.com>
 Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.orgMark Brown <broonie@kernel.org>, "Mukunda,, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>akshu.agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>alsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: For capture have interrupts on I2S->ACP channel
+   ASoC: AMD: Send correct channel for configuring DMA descriptors
 
 has been applied to the asoc tree at
 
@@ -37,74 +37,88 @@ to this mail.
 Thanks,
 Mark
 
->From 19e023e3befb4cb64b4a81b47a92a0c687672661 Mon Sep 17 00:00:00 2001
+>From fa9d2f17c23fb3ea6b659b1bfe4ca10551a19e56 Mon Sep 17 00:00:00 2001
 From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Date: Mon, 16 Jul 2018 15:02:41 +0800
-Subject: [PATCH] ASoC: AMD: For capture have interrupts on I2S->ACP channel
+Date: Mon, 16 Jul 2018 15:02:40 +0800
+Subject: [PATCH] ASoC: AMD: Send correct channel for configuring DMA
+ descriptors
 
-Having interrupts enabled for ACP<->SYSMEM DMA transfer, we are in
-for an interrupt storm.
-For both playback and capture interrupts should be enabled for
-I2S<->ACP DMA.
+Earlier, ch1 was used to define ACP-SYSMEM transfer and ch2 for
+ACP-I2S transfer. With recent patches ch1 is used to define channel
+order number 1 and ch2 as channel order number 2. Thus,
+Playback:
+ch1:SYSMEM->ACP
+ch2:ACP->I2S
+Capture:
+ch1:I2S->ACP
+ch1:ACP->SYSMEM
 
 Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ sound/soc/amd/acp-pcm-dma.c | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index eeb867767252..94bcf69008df 100644
+index 65c1033bd51c..eeb867767252 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -224,13 +224,11 @@ static void set_acp_sysmem_dma_descriptors(void __iomem *acp_mmio,
- 			switch (asic_type) {
- 			case CHIP_STONEY:
- 				dmadscr[i].xfer_val |=
--				BIT(22) |
- 				(ACP_DMA_ATTR_SHARED_MEM_TO_DAGB_GARLIC << 16) |
- 				(size / 2);
- 				break;
- 			default:
- 				dmadscr[i].xfer_val |=
--				BIT(22) |
- 				(ACP_DMA_ATTR_SHAREDMEM_TO_DAGB_ONION << 16) |
- 				(size / 2);
- 			}
-@@ -421,9 +419,9 @@ static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
+@@ -322,17 +322,27 @@ static void config_acp_dma(void __iomem *acp_mmio,
+ 			   struct audio_substream_data *rtd,
+ 			   u32 asic_type)
+ {
++	u16 ch_acp_sysmem, ch_acp_i2s;
++
+ 	acp_pte_config(acp_mmio, rtd->pg, rtd->num_of_pages,
+ 		       rtd->pte_offset);
++
++	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		ch_acp_sysmem = rtd->ch1;
++		ch_acp_i2s = rtd->ch2;
++	} else {
++		ch_acp_i2s = rtd->ch1;
++		ch_acp_sysmem = rtd->ch2;
++	}
+ 	/* Configure System memory <-> ACP SRAM DMA descriptors */
+ 	set_acp_sysmem_dma_descriptors(acp_mmio, rtd->size,
+ 				       rtd->direction, rtd->pte_offset,
+-				       rtd->ch1, rtd->sram_bank,
++				       ch_acp_sysmem, rtd->sram_bank,
+ 				       rtd->dma_dscr_idx_1, asic_type);
+ 	/* Configure ACP SRAM <-> I2S DMA descriptors */
+ 	set_acp_to_i2s_dma_descriptors(acp_mmio, rtd->size,
+ 				       rtd->direction, rtd->sram_bank,
+-				       rtd->destination, rtd->ch2,
++				       rtd->destination, ch_acp_i2s,
+ 				       rtd->dma_dscr_idx_2, asic_type);
+ }
  
- 	switch (ch_num) {
- 	case ACP_TO_I2S_DMA_CH_NUM:
--	case ACP_TO_SYSRAM_CH_NUM:
-+	case I2S_TO_ACP_DMA_CH_NUM:
- 	case ACP_TO_I2S_DMA_BT_INSTANCE_CH_NUM:
--	case ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM:
-+	case I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM:
- 		dma_ctrl |= ACP_DMA_CNTL_0__DMAChIOCEn_MASK;
- 		break;
- 	default:
-@@ -705,18 +703,18 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
+@@ -995,16 +1005,24 @@ static int acp_dma_prepare(struct snd_pcm_substream *substream)
+ {
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	struct audio_substream_data *rtd = runtime->private_data;
++	u16 ch_acp_sysmem, ch_acp_i2s;
  
--	if ((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) != 0) {
-+	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
- 		valid_irq = true;
- 		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
--		acp_reg_write((intr_flag & BIT(ACP_TO_SYSRAM_CH_NUM)) << 16,
-+		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) << 16,
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
+ 	if (!rtd)
+ 		return -EINVAL;
  
--	if ((intr_flag & BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) != 0) {
-+	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
- 		valid_irq = true;
- 		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
- 		acp_reg_write((intr_flag &
--			      BIT(ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM)) << 16,
-+			      BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
- 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
- 	}
- 
++	if (rtd->direction == SNDRV_PCM_STREAM_PLAYBACK) {
++		ch_acp_sysmem = rtd->ch1;
++		ch_acp_i2s = rtd->ch2;
++	} else {
++		ch_acp_i2s = rtd->ch1;
++		ch_acp_sysmem = rtd->ch2;
++	}
+ 	config_acp_dma_channel(rtd->acp_mmio,
+-			       rtd->ch1,
++			       ch_acp_sysmem,
+ 			       rtd->dma_dscr_idx_1,
+ 			       NUM_DSCRS_PER_CHANNEL, 0);
+ 	config_acp_dma_channel(rtd->acp_mmio,
+-			       rtd->ch2,
++			       ch_acp_i2s,
+ 			       rtd->dma_dscr_idx_2,
+ 			       NUM_DSCRS_PER_CHANNEL, 0);
+ 	return 0;
 -- 
 2.18.0.rc2
