@@ -1,20 +1,21 @@
 From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: Boundary calculation
-Date: Tue, 17 Jul 2018 08:43:27 +0200
-Message-ID: <834aaf57-b1d0-1a00-48f8-796add3027e0@ladisch.de>
-References: <20180716192507.GA7151@localhost.localdomain>
+Subject: Re: [PATCH RFC] usb: add usb_fill_iso_urb()
+Date: Tue, 17 Jul 2018 08:54:34 +0200
+Message-ID: <d05f2d3a-dfa7-d94a-a115-925158b31b5f@ladisch.de>
+References: <20180620164945.xb24m7wlbtb6cys5@linutronix.de>
+ <Pine.LNX.4.44L0.1806201322260.1758-100000@iolanthe.rowland.org>
+ <20180712223527.5nmxndignujo7smt@linutronix.de>
+ <20180713072923.GA31191@kroah.com>
+ <20180713074728.itw7ua7zygazotuk@linutronix.de>
+ <20180716225357.v25f6rurz56q4yes@linutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- by alsa0.perex.cz (Postfix) with ESMTP id 816C626767C
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 08:43:01 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id A0E5F5581A27
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 08:43:00 +0200 (CEST)
-In-Reply-To: <20180716192507.GA7151@localhost.localdomain>
+Received: from dubhe.uberspace.de (dubhe.uberspace.de [185.26.156.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CD4226739D
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 08:54:09 +0200 (CEST)
+In-Reply-To: <20180716225357.v25f6rurz56q4yes@linutronix.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,25 +26,18 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-usb@vger.kernel.org, Alan Stern <stern@rowland.harvard.edu>, Laurent Pinchart <laurent.pinchart@ideasonboard.com>, tglx@linutronix.de, Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Ricardo Biehl Pasquali wrote:
-> The current calculation for boundary is:
->
-> 	boundary = buffer_size;
-> 	while (boundary * 2 <= LONG_MAX - buffer_size)
-> 		boundary *= 2;
->
-> Why isn't a simpler calculation used instead? e.g.:
->
-> 	/* closest multiple of buffer size less or equal LONG_MAX */
-> 	boundary = LONG_MAX - LONG_MAX % buffer_size;
+Sebastian Andrzej Siewior wrote:
+> sound/ is (almost) the only part where struct usb_iso_packet_descriptor
+> init does not fit. It looks like it is done just before urb_submit() and
+> could be avoided there (moved to the init funtcion instead).
 
-To ensure that the factor is a power of two.
-
-Originally, that was not really necessary, but the algorithm is
-now part of the kernel/userspace interface.
+For playback, the packet lengths change dynamically, because the nominal
+sample rate (let alone the actual sample rate) often is not an integer
+multiple of the 1 kHz/8 kHz USB frame rate.
 
 
 Regards,
