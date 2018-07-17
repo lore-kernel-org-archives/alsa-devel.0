@@ -1,7 +1,7 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH RESEND 03/15] ASoC: meson: add axg frddr driver
-Date: Tue, 17 Jul 2018 17:42:52 +0200
-Message-ID: <20180717154304.9973-4-jbrunet@baylibre.com>
+Subject: [PATCH RESEND 05/15] ASoC: meson: add axg spdif output DT bindings documentation
+Date: Tue, 17 Jul 2018 17:42:54 +0200
+Message-ID: <20180717154304.9973-6-jbrunet@baylibre.com>
 References: <20180717154304.9973-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180717154304.9973-1-jbrunet@baylibre.com>
@@ -10,192 +10,39 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the playback memory interface of Amlogic's axg SoCs.
-This device pulls data from DDR to an internal FIFO.
-This FIFO is then used to feed TDM and SPDIF Output devices.
+Add the DT bindings documentation for axg's SPDIF output.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/meson/Kconfig     |   7 +++
- sound/soc/meson/Makefile    |   2 +
- sound/soc/meson/axg-frddr.c | 141 ++++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 150 insertions(+)
- create mode 100644 sound/soc/meson/axg-frddr.c
+ .../bindings/sound/amlogic,axg-spdifout.txt          | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
 
-diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index c3eb5e050308..cdd78f62e8d7 100644
---- a/sound/soc/meson/Kconfig
-+++ b/sound/soc/meson/Kconfig
-@@ -5,4 +5,11 @@ config SND_MESON_AXG_FIFO
- 	tristate
- 	select REGMAP_MMIO
- 
-+config SND_MESON_AXG_FRDDR
-+	tristate "Amlogic AXG Playback FIFO support"
-+	select SND_MESON_AXG_FIFO
-+	help
-+	  Select Y or M to add support for the frontend playback interfaces
-+	  embedded in the Amlogic AXG SoC family
-+
- endmenu
-diff --git a/sound/soc/meson/Makefile b/sound/soc/meson/Makefile
-index 75289b6b3ade..9c5d7d4a8e33 100644
---- a/sound/soc/meson/Makefile
-+++ b/sound/soc/meson/Makefile
-@@ -1,5 +1,7 @@
- # SPDX-License-Identifier: (GPL-2.0 OR MIT)
- 
- snd-soc-meson-axg-fifo-objs := axg-fifo.o
-+snd-soc-meson-axg-frddr-objs := axg-frddr.o
- 
- obj-$(CONFIG_SND_MESON_AXG_FIFO) += snd-soc-meson-axg-fifo.o
-+obj-$(CONFIG_SND_MESON_AXG_FRDDR) += snd-soc-meson-axg-frddr.o
-diff --git a/sound/soc/meson/axg-frddr.c b/sound/soc/meson/axg-frddr.c
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
 new file mode 100644
-index 000000000000..a6f6f6a2eca8
+index 000000000000..521c38ad89e7
 --- /dev/null
-+++ b/sound/soc/meson/axg-frddr.c
-@@ -0,0 +1,141 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+//
-+// Copyright (c) 2018 BayLibre, SAS.
-+// Author: Jerome Brunet <jbrunet@baylibre.com>
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
+@@ -0,0 +1,20 @@
++* Amlogic Audio SPDIF Output
 +
-+/* This driver implements the frontend playback DAI of AXG based SoCs */
++Required properties:
++- compatible: 'amlogic,axg-spdifout'
++- clocks: list of clock phandle, one for each entry clock-names.
++- clock-names: should contain the following:
++  * "pclk" : peripheral clock.
++  * "mclk" : master clock
++- #sound-dai-cells: must be 0.
 +
-+#include <linux/clk.h>
-+#include <linux/regmap.h>
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
++Example on the A113 SoC:
 +
-+#include "axg-fifo.h"
-+
-+#define CTRL0_FRDDR_PP_MODE	BIT(30)
-+
-+static int axg_frddr_dai_startup(struct snd_pcm_substream *substream,
-+				 struct snd_soc_dai *dai)
-+{
-+	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
-+	unsigned int fifo_depth, fifo_threshold;
-+	int ret;
-+
-+	/* Enable pclk to access registers and clock the fifo ip */
-+	ret = clk_prepare_enable(fifo->pclk);
-+	if (ret)
-+		return ret;
-+
-+	/* Apply single buffer mode to the interface */
-+	regmap_update_bits(fifo->map, FIFO_CTRL0, CTRL0_FRDDR_PP_MODE, 0);
-+
-+	/*
-+	 * TODO: We could adapt the fifo depth and the fifo threshold
-+	 * depending on the expected memory throughput and lantencies
-+	 * For now, we'll just use the same values as the vendor kernel
-+	 * Depth and threshold are zero based.
-+	 */
-+	fifo_depth = AXG_FIFO_MIN_CNT - 1;
-+	fifo_threshold = (AXG_FIFO_MIN_CNT / 2) - 1;
-+	regmap_update_bits(fifo->map, FIFO_CTRL1,
-+			   CTRL1_FRDDR_DEPTH_MASK | CTRL1_THRESHOLD_MASK,
-+			   CTRL1_FRDDR_DEPTH(fifo_depth) |
-+			   CTRL1_THRESHOLD(fifo_threshold));
-+
-+	return 0;
-+}
-+
-+static void axg_frddr_dai_shutdown(struct snd_pcm_substream *substream,
-+				   struct snd_soc_dai *dai)
-+{
-+	struct axg_fifo *fifo = snd_soc_dai_get_drvdata(dai);
-+
-+	clk_disable_unprepare(fifo->pclk);
-+}
-+
-+static int axg_frddr_pcm_new(struct snd_soc_pcm_runtime *rtd,
-+			     struct snd_soc_dai *dai)
-+{
-+	return axg_fifo_pcm_new(rtd, SNDRV_PCM_STREAM_PLAYBACK);
-+}
-+
-+static const struct snd_soc_dai_ops axg_frddr_ops = {
-+	.startup	= axg_frddr_dai_startup,
-+	.shutdown	= axg_frddr_dai_shutdown,
++spdifout: audio-controller@480 {
++	compatible = "amlogic,axg-spdifout";
++	reg = <0x0 0x480 0x0 0x50>;
++	#sound-dai-cells = <0>;
++	clocks = <&clkc_audio AUD_CLKID_SPDIFOUT>,
++		 <&clkc_audio AUD_CLKID_SPDIFOUT_CLK>;
++	clock-names = "pclk", "mclk";
 +};
-+
-+static struct snd_soc_dai_driver axg_frddr_dai_drv = {
-+	.name = "FRDDR",
-+	.playback = {
-+		.stream_name	= "Playback",
-+		.channels_min	= 1,
-+		.channels_max	= AXG_FIFO_CH_MAX,
-+		.rates		= AXG_FIFO_RATES,
-+		.formats	= AXG_FIFO_FORMATS,
-+	},
-+	.ops		= &axg_frddr_ops,
-+	.pcm_new	= axg_frddr_pcm_new,
-+};
-+
-+static const char * const axg_frddr_sel_texts[] = {
-+	"OUT 0", "OUT 1", "OUT 2", "OUT 3"
-+};
-+
-+static SOC_ENUM_SINGLE_DECL(axg_frddr_sel_enum, FIFO_CTRL0, CTRL0_SEL_SHIFT,
-+			    axg_frddr_sel_texts);
-+
-+static const struct snd_kcontrol_new axg_frddr_out_demux =
-+	SOC_DAPM_ENUM("Output Sink", axg_frddr_sel_enum);
-+
-+static const struct snd_soc_dapm_widget axg_frddr_dapm_widgets[] = {
-+	SND_SOC_DAPM_DEMUX("SINK SEL", SND_SOC_NOPM, 0, 0,
-+			   &axg_frddr_out_demux),
-+	SND_SOC_DAPM_AIF_OUT("OUT 0", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("OUT 1", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("OUT 2", NULL, 0, SND_SOC_NOPM, 0, 0),
-+	SND_SOC_DAPM_AIF_OUT("OUT 3", NULL, 0, SND_SOC_NOPM, 0, 0),
-+};
-+
-+static const struct snd_soc_dapm_route axg_frddr_dapm_routes[] = {
-+	{ "SINK SEL", NULL, "Playback" },
-+	{ "OUT 0", "OUT 0",  "SINK SEL" },
-+	{ "OUT 1", "OUT 1",  "SINK SEL" },
-+	{ "OUT 2", "OUT 2",  "SINK SEL" },
-+	{ "OUT 3", "OUT 3",  "SINK SEL" },
-+};
-+
-+static const struct snd_soc_component_driver axg_frddr_component_drv = {
-+	.dapm_widgets		= axg_frddr_dapm_widgets,
-+	.num_dapm_widgets	= ARRAY_SIZE(axg_frddr_dapm_widgets),
-+	.dapm_routes		= axg_frddr_dapm_routes,
-+	.num_dapm_routes	= ARRAY_SIZE(axg_frddr_dapm_routes),
-+	.ops			= &axg_fifo_pcm_ops
-+};
-+
-+static const struct axg_fifo_match_data axg_frddr_match_data = {
-+	.component_drv	= &axg_frddr_component_drv,
-+	.dai_drv	= &axg_frddr_dai_drv
-+};
-+
-+static const struct of_device_id axg_frddr_of_match[] = {
-+	{
-+		.compatible = "amlogic,axg-frddr",
-+		.data = &axg_frddr_match_data,
-+	}, {}
-+};
-+MODULE_DEVICE_TABLE(of, axg_frddr_of_match);
-+
-+static struct platform_driver axg_frddr_pdrv = {
-+	.probe = axg_fifo_probe,
-+	.driver = {
-+		.name = "axg-frddr",
-+		.of_match_table = axg_frddr_of_match,
-+	},
-+};
-+module_platform_driver(axg_frddr_pdrv);
-+
-+MODULE_DESCRIPTION("Amlogic AXG playback fifo driver");
-+MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
-+MODULE_LICENSE("GPL v2");
 -- 
 2.14.4
