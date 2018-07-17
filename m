@@ -1,38 +1,43 @@
-From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
-Subject: Boundary calculation
-Date: Tue, 17 Jul 2018 10:13:41 -0300
-Message-ID: <20180717131341.GA13614@localhost.localdomain>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ALSA: emu10k1_patch: Use swap macro in snd_emu10k1_sample_new
+Date: Tue, 17 Jul 2018 10:00:43 -0500
+Message-ID: <20180717150043.GA8729@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f180.google.com (mail-qt0-f180.google.com
- [209.85.216.180])
- by alsa0.perex.cz (Postfix) with ESMTP id D4941267743
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 15:13:50 +0200 (CEST)
-Received: by mail-qt0-f180.google.com with SMTP id z8-v6so763831qto.9
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 06:13:50 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de
-Cc: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Have you addressed your reply to pasqualirb at gmail.com?
-I have not received in my mail neither yours nor Takashi's
-reply. I had to copy manually the headers and the message.
+Make use of the swap macro and remove unnecessary variable *tmp*. This
+makes the code easier to read and maintain.
 
-Thanks!
+This code was detected with the help of Coccinelle.
 
-Clemens Ladisch wrote:
-> To ensure that the factor is a power of two.
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ sound/pci/emu10k1/emu10k1_patch.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
 
-Ok, but why LONG_MAX - buffer_size?
+diff --git a/sound/pci/emu10k1/emu10k1_patch.c b/sound/pci/emu10k1/emu10k1_patch.c
+index 0e069ae..c32eb70 100644
+--- a/sound/pci/emu10k1/emu10k1_patch.c
++++ b/sound/pci/emu10k1/emu10k1_patch.c
+@@ -70,11 +70,8 @@ snd_emu10k1_sample_new(struct snd_emux *rec, struct snd_sf_sample *sp,
+ 		loopend = sampleend;
+ 
+ 	/* be sure loop points start < end */
+-	if (sp->v.loopstart >= sp->v.loopend) {
+-		int tmp = sp->v.loopstart;
+-		sp->v.loopstart = sp->v.loopend;
+-		sp->v.loopend = tmp;
+-	}
++	if (sp->v.loopstart >= sp->v.loopend)
++		swap(sp->v.loopstart, sp->v.loopend);
+ 
+ 	/* compute true data size to be loaded */
+ 	truesize = sp->v.size + BLANK_HEAD_SIZE;
+-- 
+2.7.4
