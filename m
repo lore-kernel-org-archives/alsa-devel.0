@@ -1,48 +1,53 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 05/15] ASoC: meson: add axg spdif output DT bindings documentation
-Date: Tue, 17 Jul 2018 17:36:30 +0200
-Message-ID: <20180717153643.8806-7-jbrunet@baylibre.com>
+Subject: Re: [PATCH 00/15] ASoC: meson: add axg audio subsystem support
+Date: Tue, 17 Jul 2018 17:38:47 +0200
+Message-ID: <1531841927.26720.18.camel@baylibre.com>
 References: <20180717153643.8806-1-jbrunet@baylibre.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180717153643.8806-1-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the DT bindings documentation for axg's SPDIF output.
+On Tue, 2018-07-17 at 17:36 +0200, Jerome Brunet wrote:
+> This patchset adds support for the audio subsystem found on Amlogic's
+> axg SoC family. The first SoC of this family is the A113D/X targeted
+> at smart speaker application. The G12a SoC family, Amlogic next-gen
+> STB chipset, will reuse this audio subsystem with a few changes.
+> 
+> This patchset implements the DPCM machine driver and the different
+> components it made of. Several components are still missing, such
+> spdif input and pdm, and will submitted later on.
+> 
+> The fancier part of this patchset is probably around the TDM. Properly
+> modeling the SoC architecture and its capatilities made things a little
+> more complex than usual (details in the related commit descriptions)
+> 
+> If necessary, this patchset could broken into smaller series. For the
+> intial submission, I wanted to give a global view of the subsystem.
+> Hopefully, it will make it a bit easier to understand.
+> 
+> Jerome Brunet (15):
+>   ASoC: meson: add axg fifos DT binding documentation
+>   ASoC: meson: add axg fifo base driver
+>   ASoC: meson: add axg frddr driver
+>   ASoC: meson: add axg toddr driver
+>   ASoC: meson: add axg spdif output DT bindings documentation
+>   ASoC: meson: add axg spdif output
+>   ASoC: meson: add axg tdm formatters DT bindings documentation
+>   ASoC: meson: add axg tdm interface DT bindings documentation
+>   ASoC: meson: add tdm formatter base driver
+>   ASoC: meson: add tdm interface driver
+>   ASoC: meson: add tdm output driver
+>   ASoC: meson: add tdm input driver
+>   ASoC: export snd_soc_of_get_slot_mask
+>   ASoC: meson: add axg sound card DT bindings documentation
+>   ASoC: meson: add axg sound card support
+> 
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- .../bindings/sound/amlogic,axg-spdifout.txt          | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
-
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
-new file mode 100644
-index 000000000000..521c38ad89e7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-spdifout.txt
-@@ -0,0 +1,20 @@
-+* Amlogic Audio SPDIF Output
-+
-+Required properties:
-+- compatible: 'amlogic,axg-spdifout'
-+- clocks: list of clock phandle, one for each entry clock-names.
-+- clock-names: should contain the following:
-+  * "pclk" : peripheral clock.
-+  * "mclk" : master clock
-+- #sound-dai-cells: must be 0.
-+
-+Example on the A113 SoC:
-+
-+spdifout: audio-controller@480 {
-+	compatible = "amlogic,axg-spdifout";
-+	reg = <0x0 0x480 0x0 0x50>;
-+	#sound-dai-cells = <0>;
-+	clocks = <&clkc_audio AUD_CLKID_SPDIFOUT>,
-+		 <&clkc_audio AUD_CLKID_SPDIFOUT_CLK>;
-+	clock-names = "pclk", "mclk";
-+};
--- 
-2.14.4
+Really sorry for the noise, messed up with format-patch.
+Please ignore this series. I will resend it
