@@ -1,51 +1,124 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v1 3/7] Documentation: spi-rockchip: add description for
- px30
-Date: Tue, 17 Jul 2018 11:34:34 +0100
-Message-ID: <20180717103434.GA8555@sirena.org.uk>
-References: <1531813747-8804-1-git-send-email-cl@rock-chips.com>
- <1531813747-8804-4-git-send-email-cl@rock-chips.com>
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: [PATCH v3] ASoC: hdac_hdmi: Program pin-port-mux
+	during jack report event
+Date: Tue, 17 Jul 2018 16:40:42 +0530
+Message-ID: <1531825842-26513-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="lrZ03NoBR/3+SXJZ"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1531813747-8804-4-git-send-email-cl@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: cl@rock-chips.com
-Cc: heiko@sntech.de, robh+dt@kernel.org, mark.rutland@arm.com, klaus.goger@theobroma-systems.com, jagan@amarulasolutions.com, djw@t-chip.com.cn, jacob-chen@iotwrt.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, frank.wang@rock-chips.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, catalin.marinas@arm.com, will.deacon@arm.com, yamada.masahiro@socionext.com, arnd@arndb.de, zhangqing@rock-chips.com, shawn.lin@rock-chips.com, kever.yang@rock-chips.com, david.wu@rock-chips.com, huangtao@rock-chips.com, tony.xie@rock-chips.com, sugar.zhang@rock-chips.com, huibin.hong@rock-chips.com, william.wu@rock-chips.com, san
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5938226770A
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 13:15:05 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Jeeja KP <jeeja.kp@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+During d3/d0 cycle, the connection selection index of all pins points
+to the default value. This needs to be restored to ensure audio is
+restored after d3/d0 cycle.
 
---lrZ03NoBR/3+SXJZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So store the connection selection index and program it during jack
+report event which gets invoked in cases like d3/d0 cycle, hot plug
+detection when multiple displays are connected.
 
-On Tue, Jul 17, 2018 at 03:49:03PM +0800, cl@rock-chips.com wrote:
-> From: Liang Chen <cl@rock-chips.com>
->=20
-> Add "rockchip,px30-spi", "rockchip,rk3066-spi" for spi on px30 platform.
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Jeeja KP <jeeja.kp@intel.com>
+Signed-off-by: Guneshwor Singh <guneshwor.o.singh@intel.com>
+---
 
-Please submit patches using subject lines reflecting the style for the
-subsystem.  This makes it easier for people to identify relevant
-patches.  Look at what existing commits in the area you're changing are
-doing and make sure your subject lines visually resemble what they're
-doing.
+v2 -> v3:
+	- Balance PM usage count in error path
 
---lrZ03NoBR/3+SXJZ
-Content-Type: application/pgp-signature; name="signature.asc"
+	- Add more explanation to the patch
 
------BEGIN PGP SIGNATURE-----
+v1 -> v2:
+	- Runtime resume the device explicitly in order to use
+	  snd_hdac_codec_write()
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltNxjcACgkQJNaLcl1U
-h9DddAf/ZhXQY60brHxYGhfzQMhjXm+A6Gw/eRa3+bM/zfnLUPej7OAaLnh6KH5T
-fTbPHzwa137TOXy/TrJvFmJymK5h7vBGJMAqZ53j08G+2/ghSzBpNaLZ9zgQeuvy
-+2bbwRnk7s6H42dukgDomTy98UAh2zh3E9CueNH4Ev+FyLD5nxQVlYnzjhr7msFN
-ppwPrc7R26rv9S4wtd9g4CHKvlTOPrwM+L0LXCjg7DtS41HZtGouxGS0/eB/TPkQ
-vZS92+kGvcJs4+fiP/oK6g2EJSO6bQtFg8LZj9ejIouxiJj+FOGCEdquzQxI8dGg
-jCqMB/asqioX1//AlCtsC6Wd8Yvm9A==
-=hLie
------END PGP SIGNATURE-----
+ sound/soc/codecs/hdac_hdmi.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
---lrZ03NoBR/3+SXJZ--
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 84f7a7a36e4b..39224f01e59b 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -83,6 +83,7 @@ struct hdac_hdmi_pin {
+ 	struct list_head head;
+ 	hda_nid_t nid;
+ 	bool mst_capable;
++	int conn_index;
+ 	struct hdac_hdmi_port *ports;
+ 	int num_ports;
+ 	struct hdac_ext_device *edev;
+@@ -141,6 +142,9 @@ struct hdac_hdmi_priv {
+ 
+ #define hdev_to_hdmi_priv(_hdev) ((to_ehdac_device(_hdev))->private_data)
+ 
++static int hdac_hdmi_port_select_set(struct hdac_ext_device *edev,
++					struct hdac_hdmi_port *port);
++
+ static struct hdac_hdmi_pcm *
+ hdac_hdmi_get_pcm_from_cvt(struct hdac_hdmi_priv *hdmi,
+ 			   struct hdac_hdmi_cvt *cvt)
+@@ -167,6 +171,38 @@ static void hdac_hdmi_jack_report(struct hdac_hdmi_pcm *pcm,
+ 
+ 	if (is_connect) {
+ 		/*
++		 * Restore the connection selection index in
++		 * hdac_hdmi_jack_report() which will restore all ports
++		 * irrespective of their usage in all use cases like D0/D3
++		 * cycles, Hot plug detection.
++		 *
++		 * Increment the usage count to ensure that the device
++		 * is runtime active to send verb across.
++		 */
++		pm_runtime_get_sync(&edev->hdev.dev);
++
++		/* set the device if pin is mst_capable */
++		if (hdac_hdmi_port_select_set(edev, port) < 0) {
++			dev_err(&edev->hdev.dev,
++				"port %d device select fail\n", port->id);
++			pm_runtime_put_sync(&edev->hdev.dev);
++			return;
++		}
++
++		/*
++		 * Ensure that valid connection selection index of the
++		 * respective pin is updated since writing invalid will
++		 * lead to undefined HW behaviour in such cases like if
++		 * mux is not set for ports from userland.
++		 */
++		if (port->pin->conn_index > 0)
++			snd_hdac_codec_write(&edev->hdev, port->pin->nid,
++						0, AC_VERB_SET_CONNECT_SEL,
++						port->pin->conn_index - 1);
++
++		pm_runtime_put_sync(&edev->hdev.dev);
++
++		/*
+ 		 * Report Jack connect event when a device is connected
+ 		 * for the first time where same PCM is attached to multiple
+ 		 * ports.
+@@ -903,6 +939,9 @@ static int hdac_hdmi_set_pin_port_mux(struct snd_kcontrol *kcontrol,
+ 		}
+ 	}
+ 
++	if (ucontrol->value.enumerated.item[0] > 0)
++		port->pin->conn_index =	ucontrol->value.enumerated.item[0];
++
+ 	/*
+ 	 * Jack status is not reported during device probe as the
+ 	 * PCMs are not registered by then. So report it here.
+-- 
+2.7.4
