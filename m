@@ -1,7 +1,7 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH RESEND 07/15] ASoC: meson: add axg tdm formatters DT bindings documentation
-Date: Tue, 17 Jul 2018 17:42:56 +0200
-Message-ID: <20180717154304.9973-8-jbrunet@baylibre.com>
+Subject: [PATCH RESEND 08/15] ASoC: meson: add axg tdm interface DT bindings documentation
+Date: Tue, 17 Jul 2018 17:42:57 +0200
+Message-ID: <20180717154304.9973-9-jbrunet@baylibre.com>
 References: <20180717154304.9973-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180717154304.9973-1-jbrunet@baylibre.com>
@@ -10,48 +10,41 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the DT bindings documentation for axg's TDM formatters: TDMIN
-and TDMOUT.
+Add the DT bindings documentation for axg's TDM interfaces
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- .../bindings/sound/amlogic,axg-tdm-formatters.txt  | 28 ++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt
+ .../bindings/sound/amlogic,axg-tdm-iface.txt       | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
 new file mode 100644
-index 000000000000..1c1b7490554e
+index 000000000000..cabfb26a5f22
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-formatters.txt
-@@ -0,0 +1,28 @@
-+* Amlogic Audio TDM formatters
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
+@@ -0,0 +1,22 @@
++* Amlogic Audio TDM Interfaces
 +
 +Required properties:
-+- compatible: 'amlogic,axg-tdmin' or
-+	      'amlogic,axg-tdmout'
-+- reg: physical base address of the controller and length of memory
-+       mapped region.
++- compatible: 'amlogic,axg-tdm-iface'
 +- clocks: list of clock phandle, one for each entry clock-names.
 +- clock-names: should contain the following:
-+  * "pclk"     : peripheral clock.
-+  * "sclk"     : bit clock.
-+  * "sclk_sel" : bit clock input multiplexer.
-+  * "lrclk"    : sample clock
-+  * "lrclk_sel": sample clock input multiplexer
++  * "sclk" : bit clock.
++  * "lrclk": sample clock
++  * "mclk" : master clock
++	     -> optional if the interface is in clock slave mode.
++- #sound-dai-cells: must be 0.
 +
-+Example of TDMOUT_A on the A113 SoC:
++Example of TDM_A on the A113 SoC:
 +
-+tdmout_a: audio-controller@500 {
-+	compatible = "amlogic,axg-tdmout";
-+	reg = <0x0 0x500 0x0 0x40>;
-+	clocks = <&clkc_audio AUD_CLKID_TDMOUT_A>,
-+		 <&clkc_audio AUD_CLKID_TDMOUT_A_SCLK>,
-+		 <&clkc_audio AUD_CLKID_TDMOUT_A_SCLK_SEL>,
-+		 <&clkc_audio AUD_CLKID_TDMOUT_A_LRCLK>,
-+		 <&clkc_audio AUD_CLKID_TDMOUT_A_LRCLK>;
-+	clock-names = "pclk", "sclk", "sclk_sel",
-+		      "lrclk", "lrclk_sel";
++tdmif_a: audio-controller@0 {
++	compatible = "amlogic,axg-tdm-iface";
++	#sound-dai-cells = <0>;
++	clocks = <&clkc_audio AUD_CLKID_MST_A_MCLK>,
++		 <&clkc_audio AUD_CLKID_MST_A_SCLK>,
++		 <&clkc_audio AUD_CLKID_MST_A_LRCLK>;
++	clock-names = "mclk", "sclk", "lrclk";
 +};
 -- 
 2.14.4
