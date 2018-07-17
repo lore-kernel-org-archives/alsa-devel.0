@@ -1,25 +1,38 @@
-From: Christoph Hellwig <hch@infradead.org>
-Subject: Re: [PATCH] [RFC] y2038: globally rename compat_time to old_time32
-Date: Tue, 17 Jul 2018 05:58:55 -0700
-Message-ID: <20180717125855.GA3681@infradead.org>
-References: <20180713133204.3123939-1-arnd@arndb.de>
- <CABeXuvphoYM+KOGPgtsuxzS1_XDSOO0Ta5hr3sA7gYtt-78wtQ@mail.gmail.com>
- <CAK8P3a2xu4KGVM1BvTjtXKHfXpBQ2PMynAPybW4cRt7FB8ktwg@mail.gmail.com>
+From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
+Subject: Boundary calculation
+Date: Tue, 17 Jul 2018 10:13:41 -0300
+Message-ID: <20180717131341.GA13614@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f180.google.com (mail-qt0-f180.google.com
+ [209.85.216.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id D4941267743
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 15:13:50 +0200 (CEST)
+Received: by mail-qt0-f180.google.com with SMTP id z8-v6so763831qto.9
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 06:13:50 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a2xu4KGVM1BvTjtXKHfXpBQ2PMynAPybW4cRt7FB8ktwg@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: Deepa Dinamani <deepa.kernel@gmail.com>, y2038 Mailman List <y2038@lists.linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Christoph Hellwig <hch@infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>, linux-xfs <linux-xfs@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, alsa-devel@alsa-project.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 16, 2018 at 12:11:53PM +0200, Arnd Bergmann wrote:
-> I don't think it makes a big difference whether we change it now or later,
-> but if Christoph feels that it addresses his concern about the compat_
-> namespace being reused during the transition, doing it earlier would
-> enable us to finish the remaining syscalls.
+Have you addressed your reply to pasqualirb at gmail.com?
+I have not received in my mail neither yours nor Takashi's
+reply. I had to copy manually the headers and the message.
 
-Yes, I've been looking at your new series and the reuse of compat_*
-is really confusing
+Thanks!
+
+Clemens Ladisch wrote:
+> To ensure that the factor is a power of two.
+
+Ok, but why LONG_MAX - buffer_size?
