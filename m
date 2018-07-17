@@ -1,7 +1,7 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 07/15] ASoC: meson: add axg tdm formatters DT binding documentation
-Date: Tue, 17 Jul 2018 17:36:32 +0200
-Message-ID: <20180717153643.8806-9-jbrunet@baylibre.com>
+Subject: [PATCH 07/15] ASoC: meson: add axg tdm formatters DT bindings documentation
+Date: Tue, 17 Jul 2018 17:36:33 +0200
+Message-ID: <20180717153643.8806-10-jbrunet@baylibre.com>
 References: <20180717153643.8806-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180717153643.8806-1-jbrunet@baylibre.com>
@@ -10,7 +10,7 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Add the DT binding documentation for axg's TDM formatters: TDMIN
+Add the DT bindings documentation for axg's TDM formatters: TDMIN
 and TDMOUT.
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
