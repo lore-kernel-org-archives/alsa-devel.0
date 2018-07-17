@@ -1,32 +1,104 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH] [RFC] y2038: globally rename compat_time to old_time32
-Date: Tue, 17 Jul 2018 18:16:44 +0200
-Message-ID: <CAK8P3a3suHZo25uNKnWRz3MLJOFTBRwixTfTW7fSxG2CNoU-NA@mail.gmail.com>
-References: <20180713133204.3123939-1-arnd@arndb.de> <CABeXuvphoYM+KOGPgtsuxzS1_XDSOO0Ta5hr3sA7gYtt-78wtQ@mail.gmail.com>
- <CAK8P3a2xu4KGVM1BvTjtXKHfXpBQ2PMynAPybW4cRt7FB8ktwg@mail.gmail.com> <20180717125855.GA3681@infradead.org>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: rawmidi: Change resized buffers
+	atomically
+Date: Tue, 17 Jul 2018 19:53:39 +0200
+Message-ID: <20180717175339.20535-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180717125855.GA3681@infradead.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Deepa Dinamani <deepa.kernel@gmail.com>, y2038 Mailman List <y2038@lists.linaro.org>, Thomas Gleixner <tglx@linutronix.de>, Geert Uytterhoeven <geert@linux-m68k.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux ARM <linux-arm-kernel@lists.infradead.org>, Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>, linux-xfs <linux-xfs@vger.kernel.org>, Linux API <linux-api@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7713E2677BC
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 19:53:42 +0200 (CEST)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id C2588AF64
+ for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 17:53:41 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 17, 2018 at 2:58 PM, Christoph Hellwig <hch@infradead.org> wrote:
-> On Mon, Jul 16, 2018 at 12:11:53PM +0200, Arnd Bergmann wrote:
->> I don't think it makes a big difference whether we change it now or later,
->> but if Christoph feels that it addresses his concern about the compat_
->> namespace being reused during the transition, doing it earlier would
->> enable us to finish the remaining syscalls.
->
-> Yes, I've been looking at your new series and the reuse of compat_*
-> is really confusing
+The SNDRV_RAWMIDI_IOCTL_PARAMS ioctl may resize the buffers and the
+current code is racy.  For example, the sequencer client may write to
+buffer while it being resized.
 
-Ok, let's do that then. Do you think it's sufficient to change it on top
-of the existing patch series? While I can rebase everything on top of
-the rename, the header file dependencies are a bit tricky and adding
-a patch at the end would make it easier to ensure that I don't
-introduce any bisection issues.
+As a simple workaround, let's switch to the resized buffer inside the
+stream runtime lock.
 
-       Arnd
+Reported-by: syzbot+52f83f0ea8df16932f7f@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/rawmidi.c | 20 ++++++++++++++------
+ 1 file changed, 14 insertions(+), 6 deletions(-)
+
+diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
+index 69616d00481c..b53026a72e73 100644
+--- a/sound/core/rawmidi.c
++++ b/sound/core/rawmidi.c
+@@ -635,7 +635,7 @@ static int snd_rawmidi_info_select_user(struct snd_card *card,
+ int snd_rawmidi_output_params(struct snd_rawmidi_substream *substream,
+ 			      struct snd_rawmidi_params * params)
+ {
+-	char *newbuf;
++	char *newbuf, *oldbuf;
+ 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+ 	
+ 	if (substream->append && substream->use_count > 1)
+@@ -648,13 +648,17 @@ int snd_rawmidi_output_params(struct snd_rawmidi_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 	if (params->buffer_size != runtime->buffer_size) {
+-		newbuf = krealloc(runtime->buffer, params->buffer_size,
+-				  GFP_KERNEL);
++		newbuf = kmalloc(params->buffer_size, GFP_KERNEL);
+ 		if (!newbuf)
+ 			return -ENOMEM;
++		spin_lock_irq(&runtime->lock);
++		oldbuf = runtime->buffer;
+ 		runtime->buffer = newbuf;
+ 		runtime->buffer_size = params->buffer_size;
+ 		runtime->avail = runtime->buffer_size;
++		runtime->appl_ptr = runtime->hw_ptr = 0;
++		spin_unlock_irq(&runtime->lock);
++		kfree(oldbuf);
+ 	}
+ 	runtime->avail_min = params->avail_min;
+ 	substream->active_sensing = !params->no_active_sensing;
+@@ -665,7 +669,7 @@ EXPORT_SYMBOL(snd_rawmidi_output_params);
+ int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
+ 			     struct snd_rawmidi_params * params)
+ {
+-	char *newbuf;
++	char *newbuf, *oldbuf;
+ 	struct snd_rawmidi_runtime *runtime = substream->runtime;
+ 
+ 	snd_rawmidi_drain_input(substream);
+@@ -676,12 +680,16 @@ int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
+ 		return -EINVAL;
+ 	}
+ 	if (params->buffer_size != runtime->buffer_size) {
+-		newbuf = krealloc(runtime->buffer, params->buffer_size,
+-				  GFP_KERNEL);
++		newbuf = kmalloc(params->buffer_size, GFP_KERNEL);
+ 		if (!newbuf)
+ 			return -ENOMEM;
++		spin_lock_irq(&runtime->lock);
++		oldbuf = runtime->buffer;
+ 		runtime->buffer = newbuf;
+ 		runtime->buffer_size = params->buffer_size;
++		runtime->appl_ptr = runtime->hw_ptr = 0;
++		spin_unlock_irq(&runtime->lock);
++		kfree(oldbuf);
+ 	}
+ 	runtime->avail_min = params->avail_min;
+ 	return 0;
+-- 
+2.18.0
