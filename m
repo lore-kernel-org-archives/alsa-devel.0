@@ -1,53 +1,51 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [PATCH 00/15] ASoC: meson: add axg audio subsystem support
-Date: Tue, 17 Jul 2018 17:38:47 +0200
-Message-ID: <1531841927.26720.18.camel@baylibre.com>
-References: <20180717153643.8806-1-jbrunet@baylibre.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
+Subject: [PATCH RESEND 01/15] ASoC: meson: add axg fifos DT binding documentation
+Date: Tue, 17 Jul 2018 17:42:50 +0200
+Message-ID: <20180717154304.9973-2-jbrunet@baylibre.com>
+References: <20180717154304.9973-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180717153643.8806-1-jbrunet@baylibre.com>
+In-Reply-To: <20180717154304.9973-1-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
+Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-07-17 at 17:36 +0200, Jerome Brunet wrote:
-> This patchset adds support for the audio subsystem found on Amlogic's
-> axg SoC family. The first SoC of this family is the A113D/X targeted
-> at smart speaker application. The G12a SoC family, Amlogic next-gen
-> STB chipset, will reuse this audio subsystem with a few changes.
-> 
-> This patchset implements the DPCM machine driver and the different
-> components it made of. Several components are still missing, such
-> spdif input and pdm, and will submitted later on.
-> 
-> The fancier part of this patchset is probably around the TDM. Properly
-> modeling the SoC architecture and its capatilities made things a little
-> more complex than usual (details in the related commit descriptions)
-> 
-> If necessary, this patchset could broken into smaller series. For the
-> intial submission, I wanted to give a global view of the subsystem.
-> Hopefully, it will make it a bit easier to understand.
-> 
-> Jerome Brunet (15):
->   ASoC: meson: add axg fifos DT binding documentation
->   ASoC: meson: add axg fifo base driver
->   ASoC: meson: add axg frddr driver
->   ASoC: meson: add axg toddr driver
->   ASoC: meson: add axg spdif output DT bindings documentation
->   ASoC: meson: add axg spdif output
->   ASoC: meson: add axg tdm formatters DT bindings documentation
->   ASoC: meson: add axg tdm interface DT bindings documentation
->   ASoC: meson: add tdm formatter base driver
->   ASoC: meson: add tdm interface driver
->   ASoC: meson: add tdm output driver
->   ASoC: meson: add tdm input driver
->   ASoC: export snd_soc_of_get_slot_mask
->   ASoC: meson: add axg sound card DT bindings documentation
->   ASoC: meson: add axg sound card support
-> 
+Add the DT bindings documentation for axg's FIFOs: TODDR and FRDDR.
 
-Really sorry for the noise, messed up with format-patch.
-Please ignore this series. I will resend it
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ .../devicetree/bindings/sound/amlogic,axg-fifo.txt | 23 ++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
+
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
+new file mode 100644
+index 000000000000..3dfc2515e5c6
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
+@@ -0,0 +1,23 @@
++* Amlogic Audio FIFO controllers
++
++Required properties:
++- compatible: 'amlogic,axg-toddr' or
++	      'amlogic,axg-frddr'
++- reg: physical base address of the controller and length of memory
++       mapped region.
++- interrupts: interrupt specifier for the fifo.
++- clocks: phandle to the fifo peripheral clock provided by the audio
++	  clock controller.
++- resets: phandle to memory ARB line provided by the arb reset controller.
++- #sound-dai-cells: must be 0.
++
++Example of FRDDR A on the A113 SoC:
++
++frddr_a: audio-controller@1c0 {
++	compatible = "amlogic,axg-frddr";
++	reg = <0x0 0x1c0 0x0 0x1c>;
++	#sound-dai-cells = <0>;
++	interrupts = <GIC_SPI 88 IRQ_TYPE_EDGE_RISING>;
++	clocks = <&clkc_audio AUD_CLKID_FRDDR_A>;
++	resets = <&arb AXG_ARB_FRDDR_A>;
++};
+-- 
+2.14.4
