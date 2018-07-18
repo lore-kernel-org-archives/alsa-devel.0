@@ -1,172 +1,76 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/4] ALSA: rawmidi: Minor code refactoring
-Date: Tue, 17 Jul 2018 23:19:48 +0200
-Message-ID: <20180717211949.689-4-tiwai@suse.de>
-References: <20180717211949.689-1-tiwai@suse.de>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A679F267839
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 23:19:51 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 28086AD9C
- for <alsa-devel@alsa-project.org>; Tue, 17 Jul 2018 21:19:51 +0000 (UTC)
-In-Reply-To: <20180717211949.689-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: [PATCH 2/2] ASoC: AMD: Add an always on fixed 1.8V regulator for da7219 VDDIO
+Date: Tue, 17 Jul 2018 18:49:09 -0600
+Message-ID: <20180718004909.213735-3-djkurtz@chromium.org>
+References: <20180718004909.213735-1-djkurtz@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180718004909.213735-1-djkurtz@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Dylan Reid <dgreid@chromium.org>, Jimmy Cheng-Yi Chiang <cychiang@google.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Daniel Kurtz <djkurtz@chromium.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Wei Yongjun <weiyongjun1@huawei.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Unify a few open codes with helper functions to improve the
-readability.  Minor behavior changes (rather fixes) are:
-- runtime->drain clearance is done within lock
-- active_sensing is updated before resizing buffer in
-  SNDRV_RAWMIDI_IOCTL_PARAMS ioctl.
-Other than that, simply code cleanups.
+From: Akshu Agrawal <akshu.agrawal@amd.com>
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+DA7219's VDDIO for our platform need to be configured for 1.8V.
+Hence we register a fixed 1.8V voltage regulator in the machine driver.
+
+Change-Id: I65fd93e1dd37c3e0d38265b4b1492ea53b93afd4
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
 ---
- sound/core/rawmidi.c | 77 +++++++++++++++++++-------------------------
- 1 file changed, 33 insertions(+), 44 deletions(-)
+ sound/soc/amd/Kconfig                |  1 +
+ sound/soc/amd/acp-da7219-max98357a.c | 14 ++++++++++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 6b24c2d2dae6..cc944a3637a2 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -164,17 +164,28 @@ static void snd_rawmidi_input_trigger(struct snd_rawmidi_substream *substream, i
- 		cancel_work_sync(&substream->runtime->event_work);
- }
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 6cbf9cf4d1a4c2..58c1dcb4d2550f 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -8,6 +8,7 @@ config SND_SOC_AMD_CZ_DA7219MX98357_MACH
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_ADAU7002
++	select REGULATOR
+ 	depends on SND_SOC_AMD_ACP && I2C
+ 	help
+ 	 This option enables machine driver for DA7219 and MAX9835.
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index ccddc6650b9c79..6ea0f42f5b7692 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -32,6 +32,8 @@
+ #include <linux/clk.h>
+ #include <linux/gpio.h>
+ #include <linux/module.h>
++#include <linux/regulator/fixed.h>
++#include <linux/regulator/machine.h>
+ #include <linux/i2c.h>
+ #include <linux/input.h>
+ #include <linux/acpi.h>
+@@ -278,11 +280,23 @@ static struct snd_soc_card cz_card = {
+ 	.num_controls = ARRAY_SIZE(cz_mc_controls),
+ };
  
--int snd_rawmidi_drop_output(struct snd_rawmidi_substream *substream)
-+static void __reset_runtime_ptrs(struct snd_rawmidi_runtime *runtime,
-+				 bool is_input)
-+{
-+	runtime->drain = 0;
-+	runtime->appl_ptr = runtime->hw_ptr = 0;
-+	runtime->avail = is_input ? 0 : runtime->buffer_size;
-+}
++static struct regulator_consumer_supply acp_da7219_supplies[] = {
++	REGULATOR_SUPPLY("VDDIO", "i2c-DLGS7219:00")
++};
 +
-+static void reset_runtime_ptrs(struct snd_rawmidi_runtime *runtime,
-+			       bool is_input)
+ static int cz_probe(struct platform_device *pdev)
  {
- 	unsigned long flags;
--	struct snd_rawmidi_runtime *runtime = substream->runtime;
- 
--	snd_rawmidi_output_trigger(substream, 0);
--	runtime->drain = 0;
- 	spin_lock_irqsave(&runtime->lock, flags);
--	runtime->appl_ptr = runtime->hw_ptr = 0;
--	runtime->avail = runtime->buffer_size;
-+	__reset_runtime_ptrs(runtime, is_input);
- 	spin_unlock_irqrestore(&runtime->lock, flags);
-+}
+ 	int ret;
+ 	struct snd_soc_card *card;
+ 	struct acp_platform_info *machine;
++	struct platform_device *reg;
 +
-+int snd_rawmidi_drop_output(struct snd_rawmidi_substream *substream)
-+{
-+	snd_rawmidi_output_trigger(substream, 0);
-+	reset_runtime_ptrs(substream->runtime, false);
- 	return 0;
- }
- EXPORT_SYMBOL(snd_rawmidi_drop_output);
-@@ -213,15 +224,8 @@ EXPORT_SYMBOL(snd_rawmidi_drain_output);
++	reg = regulator_register_always_on(0, "fixed-1.8V",
++					   acp_da7219_supplies,
++					   ARRAY_SIZE(acp_da7219_supplies),
++					   1800000);
++	if (!reg)
++		return -ENOMEM;
  
- int snd_rawmidi_drain_input(struct snd_rawmidi_substream *substream)
- {
--	unsigned long flags;
--	struct snd_rawmidi_runtime *runtime = substream->runtime;
--
- 	snd_rawmidi_input_trigger(substream, 0);
--	runtime->drain = 0;
--	spin_lock_irqsave(&runtime->lock, flags);
--	runtime->appl_ptr = runtime->hw_ptr = 0;
--	runtime->avail = 0;
--	spin_unlock_irqrestore(&runtime->lock, flags);
-+	reset_runtime_ptrs(substream->runtime, true);
- 	return 0;
- }
- EXPORT_SYMBOL(snd_rawmidi_drain_input);
-@@ -639,15 +643,12 @@ static int snd_rawmidi_info_select_user(struct snd_card *card,
- 	return 0;
- }
- 
--int snd_rawmidi_output_params(struct snd_rawmidi_substream *substream,
--			      struct snd_rawmidi_params *params)
-+static int resize_runtime_buffer(struct snd_rawmidi_runtime *runtime,
-+				 struct snd_rawmidi_params *params,
-+				 bool is_input)
- {
- 	char *newbuf, *oldbuf;
--	struct snd_rawmidi_runtime *runtime = substream->runtime;
- 
--	if (substream->append && substream->use_count > 1)
--		return -EBUSY;
--	snd_rawmidi_drain_output(substream);
- 	if (params->buffer_size < 32 || params->buffer_size > 1024L * 1024L)
- 		return -EINVAL;
- 	if (params->avail_min < 1 || params->avail_min > params->buffer_size)
-@@ -660,42 +661,30 @@ int snd_rawmidi_output_params(struct snd_rawmidi_substream *substream,
- 		oldbuf = runtime->buffer;
- 		runtime->buffer = newbuf;
- 		runtime->buffer_size = params->buffer_size;
--		runtime->avail = runtime->buffer_size;
--		runtime->appl_ptr = runtime->hw_ptr = 0;
-+		__reset_runtime_ptrs(runtime, is_input);
- 		spin_unlock_irq(&runtime->lock);
- 		kfree(oldbuf);
- 	}
- 	runtime->avail_min = params->avail_min;
--	substream->active_sensing = !params->no_active_sensing;
- 	return 0;
- }
-+
-+int snd_rawmidi_output_params(struct snd_rawmidi_substream *substream,
-+			      struct snd_rawmidi_params *params)
-+{
-+	if (substream->append && substream->use_count > 1)
-+		return -EBUSY;
-+	snd_rawmidi_drain_output(substream);
-+	substream->active_sensing = !params->no_active_sensing;
-+	return resize_runtime_buffer(substream->runtime, params, false);
-+}
- EXPORT_SYMBOL(snd_rawmidi_output_params);
- 
- int snd_rawmidi_input_params(struct snd_rawmidi_substream *substream,
- 			     struct snd_rawmidi_params *params)
- {
--	char *newbuf, *oldbuf;
--	struct snd_rawmidi_runtime *runtime = substream->runtime;
--
- 	snd_rawmidi_drain_input(substream);
--	if (params->buffer_size < 32 || params->buffer_size > 1024L * 1024L)
--		return -EINVAL;
--	if (params->avail_min < 1 || params->avail_min > params->buffer_size)
--		return -EINVAL;
--	if (params->buffer_size != runtime->buffer_size) {
--		newbuf = kmalloc(params->buffer_size, GFP_KERNEL);
--		if (!newbuf)
--			return -ENOMEM;
--		spin_lock_irq(&runtime->lock);
--		oldbuf = runtime->buffer;
--		runtime->buffer = newbuf;
--		runtime->buffer_size = params->buffer_size;
--		runtime->appl_ptr = runtime->hw_ptr = 0;
--		spin_unlock_irq(&runtime->lock);
--		kfree(oldbuf);
--	}
--	runtime->avail_min = params->avail_min;
--	return 0;
-+	return resize_runtime_buffer(substream->runtime, params, true);
- }
- EXPORT_SYMBOL(snd_rawmidi_input_params);
- 
+ 	machine = devm_kzalloc(&pdev->dev, sizeof(struct acp_platform_info),
+ 			       GFP_KERNEL);
 -- 
-2.18.0
+2.18.0.203.gfac676dfb9-goog
