@@ -1,209 +1,329 @@
-From: Adam Ford <aford173@gmail.com>
-Subject: Re: i.MX6Q no audio with wm8962 Question
-Date: Wed, 18 Jul 2018 11:07:56 -0500
-Message-ID: <CAHCN7x+7MGRR+4tr22kMFxbaqOjKFh-mWz4iqpVRPQ72wiAF9w@mail.gmail.com>
-References: <CAHCN7xLtV=wQuhorEi-BH_Ofk1bXexb33xZyF8R=QC61aciLhw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
-In-Reply-To: <CAHCN7xLtV=wQuhorEi-BH_Ofk1bXexb33xZyF8R=QC61aciLhw@mail.gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
-To: arm-soc <linux-arm-kernel@lists.infradead.org>, Fabio Estevam <fabio.estevam@nxp.com>, Fabio Estevam <festevam@gmail.com>, alsa-devel@alsa-project.org
-Cc: Brad Brown <brad.brown@logicpd.com>
+From: =?windows-1252?Q?Ren=E9_Rebe?= <rene@exactcode.de>
+Subject: Re: [PATCH RFC 16/26] ALSA: rme32: Convert to
+	copy_silence ops
+Date: Wed, 18 Jul 2018 20:10:01 +0200
+Message-ID: <91F60AF4-0A8B-4165-9B21-F744C8F1716B@exactcode.de>
+References: <20170511210925.18208-1-tiwai@suse.de>
+ <20170511210925.18208-17-tiwai@suse.de>
+ <29B2CB39-BCFF-4A04-9406-80059409BDEE@exactcode.de>
+ <s5hva9cbymf.wl-tiwai@suse.de>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 15CCC2677C1
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 20:10:13 +0200 (CEST)
+In-Reply-To: <s5hva9cbymf.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 17, 2018 at 2:40 PM Adam Ford <aford173@gmail.com> wrote:
->
-> I have an iMX6Q with a wm8962 attached using AUDMUX4 and SSI2, but I
-> am having difficulty getting the sound to generate from the headphone
-> jack.
+Hi,
 
-sorry for the noise.  It turns out to be a faulty pull-up resistor on
-the I2C bus
+On 18 Jul 2018, at 12:56, Takashi Iwai <tiwai@suse.de> wrote:
 
-it's working
+> On Wed, 18 Jul 2018 12:22:11 +0200,
+> Ren=E9 Rebe wrote:
+>> =
 
-adam
->
-> I have verified the power is working, and we're getting the 24MHz
-> clock signal from CK0 to the codec, and we've played with the
-> alsamixer to un-mute a variety of options, yet we're still unable to
-> get sound from the headphone port.
->
-> sound {
-> compatible = "fsl,imx-audio-wm8962";
-> model = "wm8962-audio";
-> ssi-controller = <&ssi2>;
-> audio-codec = <&codec>;
-> audio-routing =
-> "Headphone Jack", "HPOUTL",
-> "Headphone Jack", "HPOUTR",
-> "Ext Spk", "SPKOUTL",
-> "Ext Spk", "SPKOUTR",
-> "AMIC", "MICBIAS",
-> "IN3R", "AMIC";
-> mux-int-port = <2>;
-> mux-ext-port = <4>;
-> };
->
->
-> I beleive the mux-int-port points to ssi2 which should match the
-> ssi-controller = <&ssi2> option
-> I also beleive mux-ext-port = <4> should match the audmux 4 port.
->
-> &i2c1 {
-> pinctrl-names = "default";
-> pinctrl-0 = <&pinctrl_i2c1>;
-> clock-frequency = <400000>;
-> status = "okay";
->
->
->
->     codec: wm8962@1a {
-> compatible = "wlf,wm8962";
-> reg = <0x1a>;
-> clocks = <&clks IMX6QDL_CLK_CKO>;
-> clock-names = "xclk";
-> DCVDD-supply = <&reg_audio>;
-> DBVDD-supply = <&reg_audio>;
-> AVDD-supply = <&reg_audio>;
-> CPVDD-supply = <&reg_audio>;
-> MICVDD-supply = <&reg_audio>;
-> PLLVDD-supply = <&reg_audio>;
-> SPKVDD1-supply = <&reg_audio>;
-> SPKVDD2-supply = <&reg_audio>;
-> gpio-cfg = <
-> 0x0000 /* 0:Default */
-> 0x0000 /* 1:Default */
-> 0x0013 /* 2:FN_DMICCLK */
-> 0x0000 /* 3:Default */
-> 0x8014 /* 4:FN_DMICCDAT */
-> 0x0000 /* 5:Default */
-> >;
-> };
-> };
->
->
-> The snippet of my boot log are as follows:
->
-> [    4.359592] snd-soc-dummy snd-soc-dummy: codec register snd-soc-dummy
-> [    4.359615] snd-soc-dummy snd-soc-dummy: ASoC: dai register snd-soc-dummy #1
-> [    4.359625] snd-soc-dummy snd-soc-dummy: ASoC: dynamically register
-> DAI snd-soc-dummy
-> [    4.359637] snd-soc-dummy snd-soc-dummy: ASoC: Registered DAI
-> 'snd-soc-dummy-dai'
-> [    4.359744] snd-soc-dummy snd-soc-dummy: ASoC: Registered codec
-> 'snd-soc-dummy'
-> [    4.359753] snd-soc-dummy snd-soc-dummy: ASoC: platform register
-> snd-soc-dummy
-> [    4.359775] snd-soc-dummy snd-soc-dummy: ASoC: Registered platform
-> 'snd-soc-dummy'
-> [    4.365610] wm8962 0-001a: customer id 0 revision F
-> [    4.382144] wm8962 0-001a: codec register 0-001a
-> [    4.382170] wm8962 0-001a: ASoC: dai register 0-001a #1
-> [    4.382178] wm8962 0-001a: ASoC: dynamically register DAI 0-001a
-> [    4.382190] wm8962 0-001a: ASoC: Registered DAI 'wm8962'
-> [    4.382202] wm8962 0-001a: ASoC: Registered codec 'wm8962.0-001a'
-> [    4.383977] fsl-asoc-card sound: ASoC: binding HiFi
->
-> [    4.384007] fsl-asoc-card sound: ASoC: CPU DAI (null) not registered
->
-> This seems like an issue,but it looks like it potentially gets resolved later.
->
-> [    4.386043] fsl-asrc 2034000.asrc: ASoC: dai register 2034000.asrc #1
-> [    4.386092] fsl-asrc 2034000.asrc: ASoC: dynamically register DAI
-> 2034000.asrc
-> [    4.386108] fsl-asrc 2034000.asrc: ASoC: Registered DAI '2034000.asrc'
-> [    4.386126] fsl-asrc 2034000.asrc: ASoC: platform register 2034000.asrc
-> [    4.386144] fsl-asrc 2034000.asrc: ASoC: Registered platform '2034000.asrc'
-> [    4.387439] fsl-ssi-dai 202c000.ssi: No cache defaults, reading back from HW
-> [    4.388567] fsl-ssi-dai 202c000.ssi: ASoC: Registered platform '202c000.ssi'
-> [    4.388589] fsl-ssi-dai 202c000.ssi: ASoC: dai register 202c000.ssi #1
-> [    4.388597] fsl-ssi-dai 202c000.ssi: ASoC: dynamically register DAI
-> 202c000.ssi
-> [    4.388610] fsl-ssi-dai 202c000.ssi: ASoC: Registered DAI '202c000.ssi'
-> [    4.393581] imx-wm8962 sound: ASoC: binding HiFi
-> [    4.396233] input: WM8962 Beep Generator as
-> /devices/soc0/soc/2100000.aips-bus/21a0000.i2c/i2c-0/0-001a/input/input1
-> [    4.442347] imx-wm8962 sound: ASoC: probe wm8962-audio dai link 0 late -2
-> [    4.442380] imx-wm8962 sound: ASoC: probe wm8962-audio dai link 0 late -1
-> [    4.442392] imx-wm8962 sound: ASoC: probe wm8962-audio dai link 0 late 0
-> [    4.442403] imx-wm8962 sound: ASoC: probe wm8962-audio dai link 0 late 1
-> [    4.442412] imx-wm8962 sound: ASoC: probe wm8962-audio dai link 0 late 2
-> [    4.458756] imx-wm8962 sound: wm8962 <-> 202c000.ssi mapping ok
->
->
-> When trying to play audio through the headphone jack, I unmute the
-> headphones in alsamixer, but when I query the interface, it appears to
-> remain muted.
->
-> # amixer -c0 cget numid=24
-> numid=24,iface=MIXER,name='Headphone Volume'
->   ; type=INTEGER,access=rw---R--,values=2,min=0,max=127,step=0
->   : values=107,107
->   | dBscale-min=-121.00dB,step=1.00dB,mute=1
->
->
->
-> I have tried unmute with a simiar instruction without any luck.
->
-> I also noticed that when I run speaker-test -c2 -t wav, I get the
-> following message:
->
-> [ 1467.051679] wm8962 0-001a: Failed to read DCS status: -1
-> Rate set to 48000Hz (requested 48000Hz)
-> Buffer size range from 3840 to 17280
-> Period size range from 1920 to 1920
-> Using max buffer size 17280
-> Periods = 4
-> was set period_size = 1920
-> was set buffer_size = 17280
->  0 - Front Left
-> Time per period = 1.138101
->  0 - Front Left
-> ^CTransfer failed: Bad address
-> # [ 1474.553646] wm8962 0-001a: Failed to read DSPCLK: -1
->
->
-> I am assuming that being unable to read the DCS -1 is a bad thing.
-> Unfortunatly, after this instruction. we can no longer use alsamixer
-> or the any alsa tool except for the speaker-test app.
-> When running the speaker test a second time I get even more errors:
->
-> Stream parameters are 48000Hz, S16_LE, 2 channels
-> WAV file(s)
-> [ 1700.659314] wm8962 0-001a: Unable to sync registers 0x0-0x3. -6
-> [ 1700.833594] wm8962 0-001a: Failed to read DSPCLK: -1
-> [ 1700.862662] wm8962 0-001a: ASoC: POST_PMU: HPOUTL PGA event failed: -6
-> [ 1700.869709] wm8962 0-001a: ASoC: POST_PMU: SPKOUTL PGA event failed: -6
-> [ 1700.879766] wm8962 0-001a: ASoC: POST_PMU: HPOUTR PGA event failed: -6
-> [ 1700.888565] wm8962 0-001a: ASoC: POST_PMU: SPKOUTR PGA event failed: -6
-> [ 1700.922471] wm8962 0-001a: Failed to read DCS status: -1
-> Rate set to 48000Hz (requested 48000Hz)
-> Buffer size range from 3840 to 17280
-> Period size range from 1920 to 1920
-> Using max buffer size 17280
-> Periods = 4
-> was set period_size = 1920
-> was set buffer_size = 17280
->  0 - Front Left
->  1 - Front Right
->
-> This worked one day, and for some reason, it seems to have stopped,
-> and its repeatable on multiple boards, so I think it's a software
-> configuration somewhere.
->
-> Might someone have any suggestions?
->
-> thank you,
->
-> adam
+>> Hello everyone,
+>> =
+
+>> to have another digital audio i/o card for our studio / office, I got a =
+pair of RME32 the other week from ebay. (mostly as reference to implement A=
+DAT for the RAD1 Sgi/Octane ALSA driver, =85)
+>> =
+
+>> Unfortunately they do not work with Linux. They are recognised and all t=
+he usual devices and /proc/=85 entries show up, however, the hardware point=
+er does not move during playback or capture no matter what clock source I c=
+hoose.
+>> I tried attaching coax s/pdif as well as an 8-channel Behringer Ultragai=
+n ADAT source w/ clock.
+> =
+
+> Does the /proc/asound/card*/rme32 entry show the right setup?
+
+Well, I think it never showed external clock when I set it to external ADAT=
+, right now, freshly booted (without the ext. ADAT) just trying to play ste=
+reo on the s/pdif it shows:
+
+RME Digi32/8 (Rev. 101) at 0xec000000, irq 5 (index #1)
+
+General settings
+  Half-duplex mode
+  receiver: CS8412
+  format: 16 bit, Stereo
+
+Input settings
+  input: optical
+  sample rate: no valid signal
+
+Output settings
+  output signal: normal playback (muted)
+  sample rate: 44100 Hz
+  sample clock source: Internal
+  format: IEC958 (consumer)
+  emphasis: off
+
+Which should be right for internally word clock=92ed s/pdif output. However=
+, aplay does not play anything, after some 20? seconds or so of hanging it =
+even prints:
+
+aplay: pcm_write:2011: write error: Input/output error
+
+While it is =93trying to playback=94 /proc shows:
+
+root@hostname:/proc/asound/card0# grep . pcm*p/sub0/*
+pcm0p/sub0/hw_params:access: RW_INTERLEAVED
+pcm0p/sub0/hw_params:format: S16_LE
+pcm0p/sub0/hw_params:subformat: STD
+pcm0p/sub0/hw_params:channels: 2
+pcm0p/sub0/hw_params:rate: 44100 (44100/1)
+pcm0p/sub0/hw_params:period_size: 2048
+pcm0p/sub0/hw_params:buffer_size: 32768
+pcm0p/sub0/info:card: 0
+pcm0p/sub0/info:device: 0
+pcm0p/sub0/info:subdevice: 0
+pcm0p/sub0/info:stream: PLAYBACK
+pcm0p/sub0/info:id: Digi32 IEC958
+pcm0p/sub0/info:name: Digi32 IEC958
+pcm0p/sub0/info:subname: subdevice #0
+pcm0p/sub0/info:class: 0
+pcm0p/sub0/info:subclass: 0
+pcm0p/sub0/info:subdevices_count: 1
+pcm0p/sub0/info:subdevices_avail: 0
+pcm0p/sub0/status:state: RUNNING
+pcm0p/sub0/status:owner_pid   : 753
+pcm0p/sub0/status:trigger_time: 1195.174967384
+pcm0p/sub0/status:tstamp      : 0.000000000
+pcm0p/sub0/status:delay       : 32768
+pcm0p/sub0/status:avail       : 0
+pcm0p/sub0/status:avail_max   : 30720
+pcm0p/sub0/status:-----
+pcm0p/sub0/status:hw_ptr      : 10243
+pcm0p/sub0/status:appl_ptr    : 43011
+pcm0p/sub0/sw_params:tstamp_mode: NONE
+pcm0p/sub0/sw_params:period_step: 1
+pcm0p/sub0/sw_params:avail_min: 2048
+pcm0p/sub0/sw_params:start_threshold: 32768
+pcm0p/sub0/sw_params:stop_threshold: 32768
+pcm0p/sub0/sw_params:silence_threshold: 0
+pcm0p/sub0/sw_params:silence_size: 0
+pcm0p/sub0/sw_params:boundary: 1073741824
+
+I tried many kernels, down to 2.6.31, which I had initially on the box.
+So unless some this hwparams never worked, this driver appears to not work =
+a looong looooong time.
+
+I doubt they are fully defect, as both behave the same and at least output =
+=93something=94 on Windows XP, ...
+
+> RME32 seems to have only few registers, and it behaves differently for
+> read and write.  Maybe you should try to watch the register 0x20000.
+> The hwptr is the LSB 33 bits.
+
+Yeah, guess I have to instrument this driver to track what is happening, ma=
+ybe register not flushed to the hw?
+
+> Takashi
+> =
+
+>> The two cards came from the same seller, look ok and both behave the sam=
+e. =
+
+>> I went so far to install a Windows XP test install where both cards work=
+ =93more=94.
+>> (They are not perfect in windows, however, at least s/pdif can come out =
+with or with-out external ADAT clock source. However, the digital signal st=
+rangely unclean, but that may be a bug in the window system sound device em=
+ulation, I only tested with foobar2k and not some Pro audio app which I do =
+not really have).
+>> =
+
+>> Long story short, does someone still have such a card, or not moving har=
+dware ptr (or missing interrupts?) does ring a bell regarding this RME gene=
+ration? Instead of a working ADAT reference card, I apparently have two ALS=
+A driver to hack on, =85 ;-)
+>> =
+
+>> I tested two different =93PC=94 boards and the results were the same, to=
+o.
+>> =
+
+>> Thanks,
+>> 	Ren=E9
+>> =
+
+>> On 11 May 2017, at 23:09, Takashi Iwai <tiwai@suse.de> wrote:
+>> =
+
+>>> Replace the copy and the silence ops with the new merged ops.
+>>> The conversion is straightforward with standard helper functions.
+>>> =
+
+>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>> ---
+>>> sound/pci/rme32.c | 49 ++++++++++++++++++++++++-------------------------
+>>> 1 file changed, 24 insertions(+), 25 deletions(-)
+>>> =
+
+>>> diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
+>>> index 96d15db65dfd..d2b4a3ef0bd3 100644
+>>> --- a/sound/pci/rme32.c
+>>> +++ b/sound/pci/rme32.c
+>>> @@ -253,41 +253,42 @@ static inline unsigned int snd_rme32_pcm_byteptr(=
+struct rme32 * rme32)
+>>> 		& RME32_RCR_AUDIO_ADDR_MASK);
+>>> }
+>>> =
+
+>>> -/* silence callback for halfduplex mode */
+>>> -static int snd_rme32_playback_silence(struct snd_pcm_substream *substr=
+eam, int channel,	/* not used (interleaved data) */
+>>> -				      snd_pcm_uframes_t pos,
+>>> -				      snd_pcm_uframes_t count)
+>>> -{
+>>> -	struct rme32 *rme32 =3D snd_pcm_substream_chip(substream);
+>>> -	count <<=3D rme32->playback_frlog;
+>>> -	pos <<=3D rme32->playback_frlog;
+>>> -	memset_io(rme32->iobase + RME32_IO_DATA_BUFFER + pos, 0, count);
+>>> -	return 0;
+>>> -}
+>>> -
+>>> /* copy callback for halfduplex mode */
+>>> -static int snd_rme32_playback_copy(struct snd_pcm_substream *substream=
+, int channel,	/* not used (interleaved data) */
+>>> +static int snd_rme32_playback_copy(struct snd_pcm_substream *substream,
+>>> +				   int channel,	/* not used (interleaved data) */
+>>> 				   snd_pcm_uframes_t pos,
+>>> -				   void __user *src, snd_pcm_uframes_t count)
+>>> +				   void __user *src, snd_pcm_uframes_t count,
+>>> +				   bool in_kernel)
+>>> {
+>>> 	struct rme32 *rme32 =3D snd_pcm_substream_chip(substream);
+>>> 	count <<=3D rme32->playback_frlog;
+>>> 	pos <<=3D rme32->playback_frlog;
+>>> -	if (copy_from_user_toio(rme32->iobase + RME32_IO_DATA_BUFFER + pos,
+>>> -			    src, count))
+>>> +	if (!src)
+>>> +		memset_io(rme32->iobase + RME32_IO_DATA_BUFFER + pos, 0, count);
+>>> +	else if (in_kernel)
+>>> +		memcpy_toio(rme32->iobase + RME32_IO_DATA_BUFFER + pos,
+>>> +			    (void *)src, count);
+>>> +	else if (copy_from_user_toio(rme32->iobase + RME32_IO_DATA_BUFFER + p=
+os,
+>>> +				     src, count))
+>>> 		return -EFAULT;
+>>> 	return 0;
+>>> }
+>>> =
+
+>>> /* copy callback for halfduplex mode */
+>>> -static int snd_rme32_capture_copy(struct snd_pcm_substream *substream,=
+ int channel,	/* not used (interleaved data) */
+>>> +static int snd_rme32_capture_copy(struct snd_pcm_substream *substream,
+>>> +				  int channel,	/* not used (interleaved data) */
+>>> 				  snd_pcm_uframes_t pos,
+>>> -				  void __user *dst, snd_pcm_uframes_t count)
+>>> +				  void __user *dst, snd_pcm_uframes_t count,
+>>> +				  bool in_kernel)
+>>> {
+>>> 	struct rme32 *rme32 =3D snd_pcm_substream_chip(substream);
+>>> 	count <<=3D rme32->capture_frlog;
+>>> 	pos <<=3D rme32->capture_frlog;
+>>> -	if (copy_to_user_fromio(dst,
+>>> +	if (in_kernel)
+>>> +		memcpy_fromio((void *)dst,
+>>> +			      rme32->iobase + RME32_IO_DATA_BUFFER + pos,
+>>> +			      count);
+>>> +	else if (copy_to_user_fromio(dst,
+>>> 			    rme32->iobase + RME32_IO_DATA_BUFFER + pos,
+>>> 			    count))
+>>> 		return -EFAULT;
+>>> @@ -1205,8 +1206,7 @@ static const struct snd_pcm_ops snd_rme32_playbac=
+k_spdif_ops =3D {
+>>> 	.prepare =3D	snd_rme32_playback_prepare,
+>>> 	.trigger =3D	snd_rme32_pcm_trigger,
+>>> 	.pointer =3D	snd_rme32_playback_pointer,
+>>> -	.copy =3D		snd_rme32_playback_copy,
+>>> -	.silence =3D	snd_rme32_playback_silence,
+>>> +	.copy_silence =3D	snd_rme32_playback_copy,
+>>> 	.mmap =3D		snd_pcm_lib_mmap_iomem,
+>>> };
+>>> =
+
+>>> @@ -1219,7 +1219,7 @@ static const struct snd_pcm_ops snd_rme32_capture=
+_spdif_ops =3D {
+>>> 	.prepare =3D	snd_rme32_capture_prepare,
+>>> 	.trigger =3D	snd_rme32_pcm_trigger,
+>>> 	.pointer =3D	snd_rme32_capture_pointer,
+>>> -	.copy =3D		snd_rme32_capture_copy,
+>>> +	.copy_silence =3D	snd_rme32_capture_copy,
+>>> 	.mmap =3D		snd_pcm_lib_mmap_iomem,
+>>> };
+>>> =
+
+>>> @@ -1231,8 +1231,7 @@ static const struct snd_pcm_ops snd_rme32_playbac=
+k_adat_ops =3D {
+>>> 	.prepare =3D	snd_rme32_playback_prepare,
+>>> 	.trigger =3D	snd_rme32_pcm_trigger,
+>>> 	.pointer =3D	snd_rme32_playback_pointer,
+>>> -	.copy =3D		snd_rme32_playback_copy,
+>>> -	.silence =3D	snd_rme32_playback_silence,
+>>> +	.copy_silence =3D	snd_rme32_playback_copy,
+>>> 	.mmap =3D		snd_pcm_lib_mmap_iomem,
+>>> };
+>>> =
+
+>>> @@ -1244,7 +1243,7 @@ static const struct snd_pcm_ops snd_rme32_capture=
+_adat_ops =3D {
+>>> 	.prepare =3D	snd_rme32_capture_prepare,
+>>> 	.trigger =3D	snd_rme32_pcm_trigger,
+>>> 	.pointer =3D	snd_rme32_capture_pointer,
+>>> -	.copy =3D		snd_rme32_capture_copy,
+>>> +	.copy_silence =3D	snd_rme32_capture_copy,
+>>> 	.mmap =3D		snd_pcm_lib_mmap_iomem,
+>>> };
+>>> =
+
+>>> -- =
+
+>>> 2.12.2
+>>> =
+
+>>> _______________________________________________
+>>> Alsa-devel mailing list
+>>> Alsa-devel@alsa-project.org
+>>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>> =
+
+>> -- =
+
+>> ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+>> DE Legal: Amtsgericht Berlin (Charlottenburg) HRB 105123B, Tax-ID#: DE25=
+1602478
+>> Managing Director: Ren=E9 Rebe
+>> http://exactcode.com | http://exactscan.com | http://ocrkit.com | http:/=
+/t2-project.org | http://rene.rebe.de
+>> =
+
+
+-- =
+
+ ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
+ DE Legal: Amtsgericht Berlin (Charlottenburg) HRB 105123B, Tax-ID#: DE2516=
+02478
+ Managing Director: Ren=E9 Rebe
+ http://exactcode.com | http://exactscan.com | http://ocrkit.com | http://t=
+2-project.org | http://rene.rebe.de
