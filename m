@@ -1,77 +1,61 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for
- the "Connect Tablet 9" tablet
-Date: Wed, 18 Jul 2018 15:49:00 +0100
-Message-ID: <20180718144900.GN5700@sirena.org.uk>
-References: <20180701093023.6872-1-hdegoede@redhat.com>
- <20180718112545.GH5700@sirena.org.uk>
- <98cf80d0-108a-2340-da5a-70ee3b29ce1a@redhat.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1433776028796004561=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 79BA926739D
- for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 16:49:05 +0200 (CEST)
-In-Reply-To: <98cf80d0-108a-2340-da5a-70ee3b29ce1a@redhat.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Bard Liao <bardliao@realtek.com>, alsa-devel@alsa-project.org, Oder Chiou <oder_chiou@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+From: Srikanth K H <srikanth.h@samsung.com>
+Subject: [PATCHv2 1/1] Preventive fix in sound module
+Date: Wed, 18 Jul 2018 20:37:00 +0530
+Message-ID: <1531926420-25488-1-git-send-email-srikanth.h@samsung.com>
+References: <1531908468-1352-1-git-send-email-srikanth.h@samsung.com>
+        <CGME20180718150653epcas2p3c2f0e36569529df72ce0b79a22867eac@epcas2p3.samsung.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-reply-to: <1531908468-1352-1-git-send-email-srikanth.h@samsung.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, elfring@users.sourceforge.net, ben.hutchings@codethink.co.uk, viro@zeniv.linux.org.uk, keescook@chromium.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: cpgs@samsung.com, srikanth.h@samsung.com
 List-Id: alsa-devel@alsa-project.org
 
+If the timer object is created without the card for entries
+"SNDRV_TIMER_CLASS_CARD" and "SNDRV_TIMER_CLASS_PCM", then
+while reading the sound info entry in function
+"snd_timer_proc_read" the card information is directly
+dereferenced without checking for NULL and hence kernel
+panic occur. So as preventive measure while the creating
+the sound timer object is created the card information
+availability is checked for the mentioned entries and
+returned error if its NULL.
 
---===============1433776028796004561==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="/JIF1IJL1ITjxcV4"
-Content-Disposition: inline
+Signed-off-by: Srikanth K H <srikanth.h@samsung.com>
+---
+ sound/core/timer.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-
---/JIF1IJL1ITjxcV4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Jul 18, 2018 at 02:54:32PM +0200, Hans de Goede wrote:
-> On 18-07-18 13:25, Mark Brown wrote:
-> > On Sun, Jul 01, 2018 at 11:30:23AM +0200, Hans de Goede wrote:
-> > > Add a quirk for the "Connect Tablet 9" tablet, this tablet has a
-> > > mono-speaker. Otherwise it works fine with the defaults.
-
-> > Did this get rolled up into some other series?
-
-> No this patch is still pending / waiting for you to merge it.
-
-I'm still waiting for Pierre to review it so...
-
---/JIF1IJL1ITjxcV4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltPU1sACgkQJNaLcl1U
-h9BiYggAgVbElMVkz/I0xmJ2+MYndf0NJi7DyxAGGDTUMWjQOSQyPNb5BmODmNOT
-H7zyv8vgbXPFPR60lkHWvMDEvRdPeBwe0G6MnmkVh+JVRjEYBRWtFIoIJbrR1WAv
-UoHsP5UeztGtaBIs6qspIz1TJ0OiiSWAJgPRiEq7jPwpaYrXMmZVQy4zznKqq4uC
-UvE0JTY2eeN/+KghHGgv8eyRhQVnWhx1aarEPuTbHVIBosyhiaPvY4QVDKZm3t8T
-OPVVsNaN6jeOIn0KEx/yYIglT5gacBWwU+ymy3MwiNlKjMzFrfspVNISld0xmrcQ
-O2nlOYT6CPie+2AN4OZ1cB6r/cqzvg==
-=aqKy
------END PGP SIGNATURE-----
-
---/JIF1IJL1ITjxcV4--
-
---===============1433776028796004561==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============1433776028796004561==--
+diff --git a/sound/core/timer.c b/sound/core/timer.c
+index c7be4f1..06f734f 100644
+--- a/sound/core/timer.c
++++ b/sound/core/timer.c
+@@ -883,6 +883,11 @@ int snd_timer_new(struct snd_card *card, char *id, struct snd_timer_id *tid,
+ 
+ 	if (snd_BUG_ON(!tid))
+ 		return -EINVAL;
++	if (tid->dev_class == SNDRV_TIMER_CLASS_CARD ||
++			tid->dev_class == SNDRV_TIMER_CLASS_PCM) {
++		if (WARN_ON(!card))
++			return -EINVAL;
++	}
+ 	if (rtimer)
+ 		*rtimer = NULL;
+ 	timer = kzalloc(sizeof(*timer), GFP_KERNEL);
+@@ -1192,12 +1197,10 @@ static void snd_timer_proc_read(struct snd_info_entry *entry,
+ 			break;
+ 		case SNDRV_TIMER_CLASS_CARD:
+ 			snd_iprintf(buffer, "C%i-%i: ",
+-					timer->card ? timer->card->number : -1,
+-					timer->tmr_device);
++				    timer->card->number, timer->tmr_device);
+ 			break;
+ 		case SNDRV_TIMER_CLASS_PCM:
+-			snd_iprintf(buffer, "P%i-%i-%i: ",
+-					timer->card ? timer->card->number : -1,
++			snd_iprintf(buffer, "P%i-%i-%i: ", timer->card->number,
+ 				    timer->tmr_device, timer->tmr_subdevice);
+ 			break;
+ 		default:
+-- 
+1.9.1
