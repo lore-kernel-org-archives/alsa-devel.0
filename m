@@ -1,18 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6routing: remove component framework related code" to the asoc tree
-Date: Wed, 18 Jul 2018 13:27:52 +0100
-Message-ID: <E1fflYe-0007Kl-OZ@debutante>
-References: <20180713153632.32511-5-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180713153632.32511-5-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org, rohitkr@codeaurora.orgalsa-devel@alsa-project.org
+Subject: Applied "ASoC: hdac_hdmi: Add documentation for power
+	management" to the asoc tree
+Date: Wed, 18 Jul 2018 13:27:08 +0100
+Message-ID: <E1fflXw-0007Hx-PQ@debutante>
+References: <1531735354-13352-1-git-send-email-sriramx.periyasamy@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7027A2677B9
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 14:27:17 +0200 (CEST)
+In-Reply-To: <1531735354-13352-1-git-send-email-sriramx.periyasamy@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, Mark Brown <broonie@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6routing: remove component framework related code
+   ASoC: hdac_hdmi: Add documentation for power management
 
 has been applied to the asoc tree at
 
@@ -37,85 +53,100 @@ to this mail.
 Thanks,
 Mark
 
->From 791940779d651c2219e97702d2245b5420b0c8ae Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Fri, 13 Jul 2018 16:36:31 +0100
-Subject: [PATCH] ASoC: qdsp6: q6routing: remove component framework related
- code
+>From bf270262b7b8bb7b48a846c613f74e800abba392 Mon Sep 17 00:00:00 2001
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Date: Mon, 16 Jul 2018 15:32:34 +0530
+Subject: [PATCH] ASoC: hdac_hdmi: Add documentation for power management
 
-Now that the component framework is integrated into the ASoC core,
-remove any redundant code in this driver.
+Add documentation for power management of HDAC HDMI codec device for
+various scenarios such as S0/S3, probe and playback use case.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6routing.c | 32 ++++++--------------------------
- 1 file changed, 6 insertions(+), 26 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 69 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 69 insertions(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index 35269b492761..1d33b00e5b44 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -8,7 +8,6 @@
- #include <linux/platform_device.h>
- #include <linux/of_platform.h>
- #include <linux/bitops.h>
--#include <linux/component.h>
- #include <linux/mutex.h>
- #include <linux/of_device.h>
- #include <linux/slab.h>
-@@ -977,9 +976,10 @@ static const struct snd_soc_component_driver msm_soc_routing_component = {
- 	.num_dapm_routes = ARRAY_SIZE(intercon),
- };
- 
--static int q6routing_dai_bind(struct device *dev, struct device *master,
--			      void *data)
-+static int q6pcm_routing_probe(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
-+
- 	routing_data = kzalloc(sizeof(*routing_data), GFP_KERNEL);
- 	if (!routing_data)
- 		return -ENOMEM;
-@@ -989,35 +989,15 @@ static int q6routing_dai_bind(struct device *dev, struct device *master,
- 	mutex_init(&routing_data->lock);
- 	dev_set_drvdata(dev, routing_data);
- 
--	return snd_soc_register_component(dev, &msm_soc_routing_component,
-+	return devm_snd_soc_register_component(dev, &msm_soc_routing_component,
- 					  NULL, 0);
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 84f7a7a36e4b..30ccc902e5cf 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -2103,6 +2103,75 @@ static int hdac_hdmi_dev_remove(struct hdac_ext_device *edev)
  }
  
--static void q6routing_dai_unbind(struct device *dev, struct device *master,
--				 void *d)
-+static int q6pcm_routing_remove(struct platform_device *pdev)
+ #ifdef CONFIG_PM
++/*
++ * Power management sequences
++ * ==========================
++ *
++ * The following explains the PM handling of HDAC HDMI with its parent
++ * device SKL and display power usage
++ *
++ * Probe
++ * -----
++ * In SKL probe,
++ * 1. skl_probe_work() powers up the display (refcount++ -> 1)
++ * 2. enumerates the codecs on the link
++ * 3. powers down the display  (refcount-- -> 0)
++ *
++ * In HDAC HDMI probe,
++ * 1. hdac_hdmi_dev_probe() powers up the display (refcount++ -> 1)
++ * 2. probe the codec
++ * 3. put the HDAC HDMI device to runtime suspend
++ * 4. hdac_hdmi_runtime_suspend() powers down the display (refcount-- -> 0)
++ *
++ * Once children are runtime suspended, SKL device also goes to runtime
++ * suspend
++ *
++ * HDMI Playback
++ * -------------
++ * Open HDMI device,
++ * 1. skl_runtime_resume() invoked
++ * 2. hdac_hdmi_runtime_resume() powers up the display (refcount++ -> 1)
++ *
++ * Close HDMI device,
++ * 1. hdac_hdmi_runtime_suspend() powers down the display (refcount-- -> 0)
++ * 2. skl_runtime_suspend() invoked
++ *
++ * S0/S3 Cycle with playback in progress
++ * -------------------------------------
++ * When the device is opened for playback, the device is runtime active
++ * already and the display refcount is 1 as explained above.
++ *
++ * Entering to S3,
++ * 1. hdmi_codec_prepare() invoke the runtime resume of codec which just
++ *    increments the PM runtime usage count of the codec since the device
++ *    is in use already
++ * 2. skl_suspend() powers down the display (refcount-- -> 0)
++ *
++ * Wakeup from S3,
++ * 1. skl_resume() powers up the display (refcount++ -> 1)
++ * 2. hdmi_codec_complete() invokes the runtime suspend of codec which just
++ *    decrements the PM runtime usage count of the codec since the device
++ *    is in use already
++ *
++ * Once playback is stopped, the display refcount is set to 0 as explained
++ * above in the HDMI playback sequence. The PM handlings are designed in
++ * such way that to balance the refcount of display power when the codec
++ * device put to S3 while playback is going on.
++ *
++ * S0/S3 Cycle without playback in progress
++ * ----------------------------------------
++ * Entering to S3,
++ * 1. hdmi_codec_prepare() invoke the runtime resume of codec
++ * 2. skl_runtime_resume() invoked
++ * 3. hdac_hdmi_runtime_resume() powers up the display (refcount++ -> 1)
++ * 4. skl_suspend() powers down the display (refcount-- -> 0)
++ *
++ * Wakeup from S3,
++ * 1. skl_resume() powers up the display (refcount++ -> 1)
++ * 2. hdmi_codec_complete() invokes the runtime suspend of codec
++ * 3. hdac_hdmi_runtime_suspend() powers down the display (refcount-- -> 0)
++ * 4. skl_runtime_suspend() invoked
++ */
+ static int hdac_hdmi_runtime_suspend(struct device *dev)
  {
--	struct msm_routing_data *data = dev_get_drvdata(dev);
--
--	snd_soc_unregister_component(dev);
--
--	kfree(data);
--
-+	kfree(routing_data);
- 	routing_data = NULL;
--}
- 
--static const struct component_ops q6routing_dai_comp_ops = {
--	.bind   = q6routing_dai_bind,
--	.unbind = q6routing_dai_unbind,
--};
--
--static int q6pcm_routing_probe(struct platform_device *pdev)
--{
--	return component_add(&pdev->dev, &q6routing_dai_comp_ops);
--}
--
--static int q6pcm_routing_remove(struct platform_device *pdev)
--{
--	component_del(&pdev->dev, &q6routing_dai_comp_ops);
- 	return 0;
- }
- 
+ 	struct hdac_ext_device *edev = to_hda_ext_device(dev);
 -- 
 2.18.0
