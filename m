@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: add axg fifos DT binding documentation" to the asoc tree
-Date: Wed, 18 Jul 2018 13:27:06 +0100
-Message-ID: <E1fflXu-0007H0-JJ@debutante>
-References: <20180717153643.8806-2-jbrunet@baylibre.com>
+Subject: Applied "ASoC: qdsp6: q6routing: remove component framework related code" to the asoc tree
+Date: Wed, 18 Jul 2018 13:27:52 +0100
+Message-ID: <E1fflYe-0007Kl-OZ@debutante>
+References: <20180713153632.32511-5-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180717153643.8806-2-jbrunet@baylibre.com>
+In-Reply-To: <20180713153632.32511-5-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, vkoul@kernel.org, rohitkr@codeaurora.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: add axg fifos DT binding documentation
+   ASoC: qdsp6: q6routing: remove component framework related code
 
 has been applied to the asoc tree at
 
@@ -37,48 +37,85 @@ to this mail.
 Thanks,
 Mark
 
->From e32d99af6830c9a8f37b4f2637ef0cdc60fa79fb Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Tue, 17 Jul 2018 17:42:50 +0200
-Subject: [PATCH] ASoC: meson: add axg fifos DT binding documentation
+>From 791940779d651c2219e97702d2245b5420b0c8ae Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Fri, 13 Jul 2018 16:36:31 +0100
+Subject: [PATCH] ASoC: qdsp6: q6routing: remove component framework related
+ code
 
-Add the DT bindings documentation for axg's FIFOs: TODDR and FRDDR.
+Now that the component framework is integrated into the ASoC core,
+remove any redundant code in this driver.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/amlogic,axg-fifo.txt       | 23 +++++++++++++++++++
- 1 file changed, 23 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
+ sound/soc/qcom/qdsp6/q6routing.c | 32 ++++++--------------------------
+ 1 file changed, 6 insertions(+), 26 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
-new file mode 100644
-index 000000000000..3dfc2515e5c6
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/amlogic,axg-fifo.txt
-@@ -0,0 +1,23 @@
-+* Amlogic Audio FIFO controllers
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index 35269b492761..1d33b00e5b44 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -8,7 +8,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/of_platform.h>
+ #include <linux/bitops.h>
+-#include <linux/component.h>
+ #include <linux/mutex.h>
+ #include <linux/of_device.h>
+ #include <linux/slab.h>
+@@ -977,9 +976,10 @@ static const struct snd_soc_component_driver msm_soc_routing_component = {
+ 	.num_dapm_routes = ARRAY_SIZE(intercon),
+ };
+ 
+-static int q6routing_dai_bind(struct device *dev, struct device *master,
+-			      void *data)
++static int q6pcm_routing_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
 +
-+Required properties:
-+- compatible: 'amlogic,axg-toddr' or
-+	      'amlogic,axg-frddr'
-+- reg: physical base address of the controller and length of memory
-+       mapped region.
-+- interrupts: interrupt specifier for the fifo.
-+- clocks: phandle to the fifo peripheral clock provided by the audio
-+	  clock controller.
-+- resets: phandle to memory ARB line provided by the arb reset controller.
-+- #sound-dai-cells: must be 0.
-+
-+Example of FRDDR A on the A113 SoC:
-+
-+frddr_a: audio-controller@1c0 {
-+	compatible = "amlogic,axg-frddr";
-+	reg = <0x0 0x1c0 0x0 0x1c>;
-+	#sound-dai-cells = <0>;
-+	interrupts = <GIC_SPI 88 IRQ_TYPE_EDGE_RISING>;
-+	clocks = <&clkc_audio AUD_CLKID_FRDDR_A>;
-+	resets = <&arb AXG_ARB_FRDDR_A>;
-+};
+ 	routing_data = kzalloc(sizeof(*routing_data), GFP_KERNEL);
+ 	if (!routing_data)
+ 		return -ENOMEM;
+@@ -989,35 +989,15 @@ static int q6routing_dai_bind(struct device *dev, struct device *master,
+ 	mutex_init(&routing_data->lock);
+ 	dev_set_drvdata(dev, routing_data);
+ 
+-	return snd_soc_register_component(dev, &msm_soc_routing_component,
++	return devm_snd_soc_register_component(dev, &msm_soc_routing_component,
+ 					  NULL, 0);
+ }
+ 
+-static void q6routing_dai_unbind(struct device *dev, struct device *master,
+-				 void *d)
++static int q6pcm_routing_remove(struct platform_device *pdev)
+ {
+-	struct msm_routing_data *data = dev_get_drvdata(dev);
+-
+-	snd_soc_unregister_component(dev);
+-
+-	kfree(data);
+-
++	kfree(routing_data);
+ 	routing_data = NULL;
+-}
+ 
+-static const struct component_ops q6routing_dai_comp_ops = {
+-	.bind   = q6routing_dai_bind,
+-	.unbind = q6routing_dai_unbind,
+-};
+-
+-static int q6pcm_routing_probe(struct platform_device *pdev)
+-{
+-	return component_add(&pdev->dev, &q6routing_dai_comp_ops);
+-}
+-
+-static int q6pcm_routing_remove(struct platform_device *pdev)
+-{
+-	component_del(&pdev->dev, &q6routing_dai_comp_ops);
+ 	return 0;
+ }
+ 
 -- 
 2.18.0
