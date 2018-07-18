@@ -1,69 +1,49 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 0/3] Make the audio
- component binding more generic
-Date: Wed, 18 Jul 2018 15:54:35 -0500
-Message-ID: <249d6be5-13a0-89ca-4a2f-0d88299415cd@linux.intel.com>
-References: <20180717092652.25630-1-tiwai@suse.de>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH 0/6] ASoC: rt5651: Various fixes and quirks
+Date: Wed, 18 Jul 2018 22:55:36 +0200
+Message-ID: <20180718205542.12364-1-hdegoede@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20180717092652.25630-1-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
-Cc: Jim Qu <Jim.Qu@amd.com>, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, Rodrigo Vivi <rodrigo.vivi@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1A9B02677A0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 22:55:46 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAwNy8xNy8yMDE4IDA0OjI2IEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gSGksCj4KPiB0
-aGlzIGlzIGEgcHJlbGltaW5pYXJ5IHBhdGNoIHNldCB0byBjb252ZXJ0IHRoZSBleGlzdGluZyBp
-OTE1IC8KPiBIRC1hdWRpbyBjb21wb25lbnQgYmluZGluZyB0byBiZSBhcHBsaWNhYmxlIHRvIG90
-aGVyIGRyaXZlcnMgbGlrZQo+IHJhZGVvbiAvIGFtZGdwdS4gIFRoaXMgcGF0Y2hzZXQgaXRzZWxm
-IGRvZXNuJ3QgY2hhbmdlIHRoZQo+IGZ1bmN0aW9uYWxpdHkgYnV0IG9ubHkgcmVuYW1lcyBhbmQg
-c3BsaXQgdG8gYSBuZXcgZHJtX2F1ZGlvX2NvbXBvbmVudAo+IHN0dWZmIGZyb20gaTkxNV9hdWRp
-b19jb21wb25lbnQuCj4KPiBUaGUgYWN0dWFsIHVzYWdlIG9mIHRoZSBuZXcgQVBJIHdpbGwgZm9s
-bG93IG9uY2UgYWZ0ZXIgdGhpcyBvbmUgZ2V0cwo+IHJldmlld2VkIC8gYWNjZXB0ZWQuICBUaGUg
-d2hvbGUgcGF0Y2hlcyAoaW5jbHVkaW5nIHRoaXMgcGF0Y2hzZXQpIGFyZQo+IGZvdW5kIGluIHRv
-cGljL2hkYS1hY29tcCBicmFuY2ggb2Ygc291bmQuZ2l0IHRyZWUuCj4KPiBCVFcsIHNpbmNlIHRo
-ZSB3aG9sZSBzdHVmZiBpcyBhYm91dCB0aGUgYXVkaW8gYmluZGluZywgSSBzdXBwb3NlIHRoZXNl
-Cj4gd2lsbCBnbyB0aHJvdWdoIHNvdW5kIGdpdCB0cmVlLiAgTGV0IG1lIGtub3cgaWYgYW55b25l
-IGhhcyBjb25jZXJucy4KTm8gb2JqZWN0aW9ucyBidXQgYSBzbGlnaHQgY29uY2VybiB0aGF0IHRo
-aXMgd2lsbCBjb25mbGljdCB3aXRoIHRoZSAKSERBdWRpbytEU1AgcGF0Y2hlcyB0aGF0IEkgd2Fz
-IGFib3V0IHRvIHJlc3VibWl0IG9uIHRvcCBvZiB5b3VyIAp0b3BpYy9oZGEtY29yZS1pbnRlbCBi
-cmFuY2guIHRoZSB0d28gc2VyaWVzIHRvdWNoIHRoZSBzYW1lIGZpbGVzIHNvIGl0J2QgCmJlIGEg
-bWlyYWNsZSBpZiB0aGVyZSBpcyBubyBpc3N1ZS4KSG93IGRvIHlvdSB3YW50IHRvIGRlYWwgd2l0
-aCB0aGlzPwo+Cj4KPiBUaGFua3MhCj4KPiBUYWthc2hpCj4KPiA9PT0KPgo+IHYxLT52MjoKPiAq
-IENoYW5nZSB0byBTUERYIGZvciB0aGUgbmV3IGRybV9hdWRpb19jb21wb25lbnQuaAo+ICogRml4
-IHJlbWFpbmluZyBpOTE1IHdvcmQgaW4gZHJtX2F1ZGlvX2NvbXBvbmVudC5oIGNvbW1lbnRzCj4g
-KiBGaXggTlVMTCBkZXJlZmVyZW5jZSBpbiBtYXN0ZXJfYmluZCAvIF91bmJpbmQgb3BzCj4KPiA9
-PT0KPgo+IFRha2FzaGkgSXdhaSAoMyk6Cj4gICAgZHJtL2k5MTU6IFNwbGl0IGF1ZGlvIGNvbXBv
-bmVudCB0byBhIGdlbmVyaWMgdHlwZQo+ICAgIEFMU0E6IGhkYS9pOTE1OiBBc3NvY2lhdGUgYXVk
-aW8gY29tcG9uZW50IHdpdGggZGV2cmVzCj4gICAgQUxTQTogaGRhOiBNYWtlIGF1ZGlvIGNvbXBv
-bmVudCBzdXBwb3J0IG1vcmUgZ2VuZXJpYwo+Cj4gICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9LY29u
-ZmlnICAgICAgIHwgICAxICsKPiAgIGRyaXZlcnMvZ3B1L2RybS9pOTE1L2ludGVsX2F1ZGlvLmMg
-fCAgMjIgKy0KPiAgIGluY2x1ZGUvZHJtL2RybV9hdWRpb19jb21wb25lbnQuaCAgfCAxMTggKysr
-KysrKysrKwo+ICAgaW5jbHVkZS9kcm0vaTkxNV9jb21wb25lbnQuaCAgICAgICB8ICA4NSArLS0t
-LS0tLQo+ICAgaW5jbHVkZS9zb3VuZC9oZGFfY29tcG9uZW50LmggICAgICB8ICA2MSArKysrKysK
-PiAgIGluY2x1ZGUvc291bmQvaGRhX2k5MTUuaCAgICAgICAgICAgfCAgMzcgKy0tLQo+ICAgaW5j
-bHVkZS9zb3VuZC9oZGF1ZGlvLmggICAgICAgICAgICB8ICAgNiArLQo+ICAgc291bmQvaGRhL0tj
-b25maWcgICAgICAgICAgICAgICAgICB8ICAgNyArLQo+ICAgc291bmQvaGRhL01ha2VmaWxlICAg
-ICAgICAgICAgICAgICB8ICAgMSArCj4gICBzb3VuZC9oZGEvaGRhY19jb21wb25lbnQuYyAgICAg
-ICAgIHwgMzM1ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrCj4gICBzb3VuZC9oZGEvaGRh
-Y19pOTE1LmMgICAgICAgICAgICAgIHwgMzM1ICsrLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-Cj4gICBzb3VuZC9wY2kvaGRhL3BhdGNoX2hkbWkuYyAgICAgICAgIHwgIDU3ICsrKy0tCj4gICBz
-b3VuZC9zb2MvY29kZWNzL2hkYWNfaGRtaS5jICAgICAgIHwgIDEwICstCj4gICAxMyBmaWxlcyBj
-aGFuZ2VkLCA2MDcgaW5zZXJ0aW9ucygrKSwgNDY4IGRlbGV0aW9ucygtKQo+ICAgY3JlYXRlIG1v
-ZGUgMTAwNjQ0IGluY2x1ZGUvZHJtL2RybV9hdWRpb19jb21wb25lbnQuaAo+ICAgY3JlYXRlIG1v
-ZGUgMTAwNjQ0IGluY2x1ZGUvc291bmQvaGRhX2NvbXBvbmVudC5oCj4gICBjcmVhdGUgbW9kZSAx
-MDA2NDQgc291bmQvaGRhL2hkYWNfY29tcG9uZW50LmMKPgoKX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1n
-ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21h
-aWxtYW4vbGlzdGluZm8vaW50ZWwtZ2Z4Cg==
+Hi All,
+
+Here is my last (big) round of (Intel) rt5651 support updates, with
+these patches combined with the updated, matching UCM profiles from here:
+https://github.com/jwrdegoede/alsa-lib/commits/master
+
+All 7 different devices I have work 100% OOTB, without requiring
+any manual config or mixer setup. After this there should be no more
+big changes.
+
+I will submit the matching alsa-lib UCM profile changes upstream once
+this set is in -next (and thus I can be sure the long-names will not
+change due to review).
+
+Note that unfortunately my previous round of cleanup patches removed
+1 input mapping (of the 3 mappings in total it removed) which is
+actually necessary. So this series re-introduces that 1 mapping. I did
+not notice this before because UCM input profile switching does not work
+reliably for some reason, something which I still need to investigate.
+This time I manually veryfied that the correct / expected mixer settings
+where used while testing.
+
+Regards,
+
+Hans
