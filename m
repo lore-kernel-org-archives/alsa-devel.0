@@ -1,18 +1,18 @@
-From: =?windows-1252?Q?Ren=E9_Rebe?= <rene@exactcode.de>
-Subject: Re: [PATCH RFC 16/26] ALSA: rme32: Convert to
-	copy_silence ops
-Date: Wed, 18 Jul 2018 12:22:11 +0200
-Message-ID: <29B2CB39-BCFF-4A04-9406-80059409BDEE@exactcode.de>
-References: <20170511210925.18208-1-tiwai@suse.de>
- <20170511210925.18208-17-tiwai@suse.de>
-Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: quoted-printable
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: AMD: Add an always on fixed 1.8V
+ regulator for da7219 VDDIO
+Date: Wed, 18 Jul 2018 11:46:15 +0100
+Message-ID: <20180718104615.GC5700@sirena.org.uk>
+References: <20180718004909.213735-1-djkurtz@chromium.org>
+ <20180718004909.213735-3-djkurtz@chromium.org>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============0095705609366895711=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.exactcode.de (mx.exactcode.de [144.76.154.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 230E426772E
- for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 12:22:25 +0200 (CEST)
-In-Reply-To: <20170511210925.18208-17-tiwai@suse.de>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6211426720C
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 12:46:41 +0200 (CEST)
+In-Reply-To: <20180718004909.213735-3-djkurtz@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,188 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Daniel Kurtz <djkurtz@chromium.org>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Jimmy Cheng-Yi Chiang <cychiang@google.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Dylan Reid <dgreid@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello everyone,
 
-to have another digital audio i/o card for our studio / office, I got a pai=
-r of RME32 the other week from ebay. (mostly as reference to implement ADAT=
- for the RAD1 Sgi/Octane ALSA driver, =85)
+--===============0095705609366895711==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="DIOMP1UsTsWJauNi"
+Content-Disposition: inline
 
-Unfortunately they do not work with Linux. They are recognised and all the =
-usual devices and /proc/=85 entries show up, however, the hardware pointer =
-does not move during playback or capture no matter what clock source I choo=
-se.
-I tried attaching coax s/pdif as well as an 8-channel Behringer Ultragain A=
-DAT source w/ clock.
 
-The two cards came from the same seller, look ok and both behave the same. =
+--DIOMP1UsTsWJauNi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I went so far to install a Windows XP test install where both cards work =
-=93more=94.
-(They are not perfect in windows, however, at least s/pdif can come out wit=
-h or with-out external ADAT clock source. However, the digital signal stran=
-gely unclean, but that may be a bug in the window system sound device emula=
-tion, I only tested with foobar2k and not some Pro audio app which I do not=
- really have).
+On Tue, Jul 17, 2018 at 06:49:09PM -0600, Daniel Kurtz wrote:
+> From: Akshu Agrawal <akshu.agrawal@amd.com>
+>=20
+> DA7219's VDDIO for our platform need to be configured for 1.8V.
+> Hence we register a fixed 1.8V voltage regulator in the machine driver.
+>=20
+> Change-Id: I65fd93e1dd37c3e0d38265b4b1492ea53b93afd4
 
-Long story short, does someone still have such a card, or not moving hardwa=
-re ptr (or missing interrupts?) does ring a bell regarding this RME generat=
-ion? Instead of a working ADAT reference card, I apparently have two ALSA d=
-river to hack on, =85 ;-)
+Again, please don't include noise like this in upstream submissions.
 
-I tested two different =93PC=94 boards and the results were the same, too.
+> +++ b/sound/soc/amd/Kconfig
+> @@ -8,6 +8,7 @@ config SND_SOC_AMD_CZ_DA7219MX98357_MACH
+>  	select SND_SOC_DA7219
+>  	select SND_SOC_MAX98357A
+>  	select SND_SOC_ADAU7002
+> +	select REGULATOR
+>  	depends on SND_SOC_AMD_ACP && I2C
 
-Thanks,
-	Ren=E9
+This seems inappropriate, I'd expect a dependency and if it were to stay
+a select it's also not selecting all the bits required to make this do
+something useful. =20
 
-On 11 May 2017, at 23:09, Takashi Iwai <tiwai@suse.de> wrote:
+--DIOMP1UsTsWJauNi
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> Replace the copy and the silence ops with the new merged ops.
-> The conversion is straightforward with standard helper functions.
-> =
+-----BEGIN PGP SIGNATURE-----
 
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
-> sound/pci/rme32.c | 49 ++++++++++++++++++++++++-------------------------
-> 1 file changed, 24 insertions(+), 25 deletions(-)
-> =
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltPGncACgkQJNaLcl1U
+h9Ax3wf+OAx7UIiqmrElA100Ap6YDd6dACXNEzEP00mPEvtwj5TWnHpw2556Ty01
+9j8kG8q+QMRZg10mcsyKCWcykd7QGGmw4ukfVLBVdeGfCLrACke+Zs7ibfy3wPYp
+9RBUzz5zPpTiOWiNGHjIGRtXLlvbvsZ04Q3FGzNuwEsawofbQM9vFiPTWC86VxuG
+Zy6nAbqYxr3Uy3PCnc5UpuEjm1szw5z6X1MxGxYySCpolsGs/PThR9hBnA8l3qnX
+tmqPE724lwcnC6rmV5lo/NF/qCBmVLVEzK2ZwxKqtMG5bN7PnD2uktz5SK8DFOo6
+spMl0f7cU6O64mgRLcReACzmaq//+g==
+=79H6
+-----END PGP SIGNATURE-----
 
-> diff --git a/sound/pci/rme32.c b/sound/pci/rme32.c
-> index 96d15db65dfd..d2b4a3ef0bd3 100644
-> --- a/sound/pci/rme32.c
-> +++ b/sound/pci/rme32.c
-> @@ -253,41 +253,42 @@ static inline unsigned int snd_rme32_pcm_byteptr(st=
-ruct rme32 * rme32)
-> 		& RME32_RCR_AUDIO_ADDR_MASK);
-> }
-> =
+--DIOMP1UsTsWJauNi--
 
-> -/* silence callback for halfduplex mode */
-> -static int snd_rme32_playback_silence(struct snd_pcm_substream *substrea=
-m, int channel,	/* not used (interleaved data) */
-> -				      snd_pcm_uframes_t pos,
-> -				      snd_pcm_uframes_t count)
-> -{
-> -	struct rme32 *rme32 =3D snd_pcm_substream_chip(substream);
-> -	count <<=3D rme32->playback_frlog;
-> -	pos <<=3D rme32->playback_frlog;
-> -	memset_io(rme32->iobase + RME32_IO_DATA_BUFFER + pos, 0, count);
-> -	return 0;
-> -}
-> -
-> /* copy callback for halfduplex mode */
-> -static int snd_rme32_playback_copy(struct snd_pcm_substream *substream, =
-int channel,	/* not used (interleaved data) */
-> +static int snd_rme32_playback_copy(struct snd_pcm_substream *substream,
-> +				   int channel,	/* not used (interleaved data) */
-> 				   snd_pcm_uframes_t pos,
-> -				   void __user *src, snd_pcm_uframes_t count)
-> +				   void __user *src, snd_pcm_uframes_t count,
-> +				   bool in_kernel)
-> {
-> 	struct rme32 *rme32 =3D snd_pcm_substream_chip(substream);
-> 	count <<=3D rme32->playback_frlog;
-> 	pos <<=3D rme32->playback_frlog;
-> -	if (copy_from_user_toio(rme32->iobase + RME32_IO_DATA_BUFFER + pos,
-> -			    src, count))
-> +	if (!src)
-> +		memset_io(rme32->iobase + RME32_IO_DATA_BUFFER + pos, 0, count);
-> +	else if (in_kernel)
-> +		memcpy_toio(rme32->iobase + RME32_IO_DATA_BUFFER + pos,
-> +			    (void *)src, count);
-> +	else if (copy_from_user_toio(rme32->iobase + RME32_IO_DATA_BUFFER + pos,
-> +				     src, count))
-> 		return -EFAULT;
-> 	return 0;
-> }
-> =
+--===============0095705609366895711==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-> /* copy callback for halfduplex mode */
-> -static int snd_rme32_capture_copy(struct snd_pcm_substream *substream, i=
-nt channel,	/* not used (interleaved data) */
-> +static int snd_rme32_capture_copy(struct snd_pcm_substream *substream,
-> +				  int channel,	/* not used (interleaved data) */
-> 				  snd_pcm_uframes_t pos,
-> -				  void __user *dst, snd_pcm_uframes_t count)
-> +				  void __user *dst, snd_pcm_uframes_t count,
-> +				  bool in_kernel)
-> {
-> 	struct rme32 *rme32 =3D snd_pcm_substream_chip(substream);
-> 	count <<=3D rme32->capture_frlog;
-> 	pos <<=3D rme32->capture_frlog;
-> -	if (copy_to_user_fromio(dst,
-> +	if (in_kernel)
-> +		memcpy_fromio((void *)dst,
-> +			      rme32->iobase + RME32_IO_DATA_BUFFER + pos,
-> +			      count);
-> +	else if (copy_to_user_fromio(dst,
-> 			    rme32->iobase + RME32_IO_DATA_BUFFER + pos,
-> 			    count))
-> 		return -EFAULT;
-> @@ -1205,8 +1206,7 @@ static const struct snd_pcm_ops snd_rme32_playback_=
-spdif_ops =3D {
-> 	.prepare =3D	snd_rme32_playback_prepare,
-> 	.trigger =3D	snd_rme32_pcm_trigger,
-> 	.pointer =3D	snd_rme32_playback_pointer,
-> -	.copy =3D		snd_rme32_playback_copy,
-> -	.silence =3D	snd_rme32_playback_silence,
-> +	.copy_silence =3D	snd_rme32_playback_copy,
-> 	.mmap =3D		snd_pcm_lib_mmap_iomem,
-> };
-> =
 
-> @@ -1219,7 +1219,7 @@ static const struct snd_pcm_ops snd_rme32_capture_s=
-pdif_ops =3D {
-> 	.prepare =3D	snd_rme32_capture_prepare,
-> 	.trigger =3D	snd_rme32_pcm_trigger,
-> 	.pointer =3D	snd_rme32_capture_pointer,
-> -	.copy =3D		snd_rme32_capture_copy,
-> +	.copy_silence =3D	snd_rme32_capture_copy,
-> 	.mmap =3D		snd_pcm_lib_mmap_iomem,
-> };
-> =
-
-> @@ -1231,8 +1231,7 @@ static const struct snd_pcm_ops snd_rme32_playback_=
-adat_ops =3D {
-> 	.prepare =3D	snd_rme32_playback_prepare,
-> 	.trigger =3D	snd_rme32_pcm_trigger,
-> 	.pointer =3D	snd_rme32_playback_pointer,
-> -	.copy =3D		snd_rme32_playback_copy,
-> -	.silence =3D	snd_rme32_playback_silence,
-> +	.copy_silence =3D	snd_rme32_playback_copy,
-> 	.mmap =3D		snd_pcm_lib_mmap_iomem,
-> };
-> =
-
-> @@ -1244,7 +1243,7 @@ static const struct snd_pcm_ops snd_rme32_capture_a=
-dat_ops =3D {
-> 	.prepare =3D	snd_rme32_capture_prepare,
-> 	.trigger =3D	snd_rme32_pcm_trigger,
-> 	.pointer =3D	snd_rme32_capture_pointer,
-> -	.copy =3D		snd_rme32_capture_copy,
-> +	.copy_silence =3D	snd_rme32_capture_copy,
-> 	.mmap =3D		snd_pcm_lib_mmap_iomem,
-> };
-> =
-
-> -- =
-
-> 2.12.2
-> =
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
--- =
-
- ExactCODE GmbH, Lietzenburger Str. 42, DE-10789 Berlin
- DE Legal: Amtsgericht Berlin (Charlottenburg) HRB 105123B, Tax-ID#: DE2516=
-02478
- Managing Director: Ren=E9 Rebe
- http://exactcode.com | http://exactscan.com | http://ocrkit.com | http://t=
-2-project.org | http://rene.rebe.de
+--===============0095705609366895711==--
