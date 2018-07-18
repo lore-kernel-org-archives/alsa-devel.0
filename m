@@ -1,71 +1,81 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH RESEND 02/15] ASoC: meson: add axg fifo
-	base driver
-Date: Wed, 18 Jul 2018 12:50:54 +0100
-Message-ID: <20180718115054.GI5700@sirena.org.uk>
-References: <20180717154304.9973-1-jbrunet@baylibre.com>
- <20180717154304.9973-3-jbrunet@baylibre.com>
+From: "He, Bo" <bo.he@intel.com>
+Subject: [PATCH] ALSA: core: fix unsigned int pages overflow when comapred
+Date: Wed, 18 Jul 2018 11:52:45 +0000
+Message-ID: <CD6925E8781EFD4D8E11882D20FC406D52980C51@SHSMSX104.ccr.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7386913901980755936=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BDAD726720C
- for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 13:50:56 +0200 (CEST)
-In-Reply-To: <20180717154304.9973-3-jbrunet@baylibre.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>
+Cc: "Zhang, Jun" <jun.zhang@intel.com>, "Zhang, Yanmin" <yanmin.zhang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+we see the below kernel panic on stress suspend resume test in
+snd_malloc_sgbuf_pages(), snd_dma_alloc_pages_fallback() alloc
+chunk maybe larger than the left pages due to the pages alignment,
+which will cause the pages overflow.
 
---===============7386913901980755936==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="CNK/L7dwKXQ4Ub8J"
-Content-Disposition: inline
+while (pages > 0) {
+	...
+	pages -= chunk;
+}
 
+the patch is change the pages from unsigned int to int to fix the issue.
 
---CNK/L7dwKXQ4Ub8J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+BUG: unable to handle kernel paging request at ffff88000deb4000
+IP: [<ffffffff81404fa9>] memset_erms+0x9/0x10
+Call Trace:
+ [<ffffffff818f222f>] snd_dma_alloc_pages+0xff/0x210
+ [<ffffffff818f23af>] snd_dma_alloc_pages_fallback+0x6f/0x90
+ [<ffffffff818f2b85>] snd_malloc_sgbuf_pages+0x145/0x370
+ [<ffffffff818f229e>] snd_dma_alloc_pages+0x16e/0x210
+ [<ffffffffc011930d>] hdac_ext_dma_alloc_pages+0x1d/0x40 [snd_hda_ext_core]
+ [<ffffffffc010729a>] snd_hdac_dsp_prepare+0xca/0x1c0 [snd_hda_core]
+ [<ffffffffc01880f9>] skl_dsp_prepare+0x99/0xf0 [snd_soc_skl]
+ [<ffffffffc0162a7e>] bxt_load_base_firmware+0x9e/0x5c0 [snd_soc_skl_ipc]
+ [<ffffffffc01630ec>] bxt_set_dsp_D0+0x14c/0x300 [snd_soc_skl_ipc]
+ [<ffffffffc015f9c3>] skl_dsp_get_core+0x43/0xd0 [snd_soc_skl_ipc]
+ [<ffffffffc015fa60>] skl_dsp_wake+0x10/0x20 [snd_soc_skl_ipc]
+ [<ffffffffc0188e3e>] skl_resume_dsp+0x7e/0x140 [snd_soc_skl]
+ [<ffffffffc0183c4a>] skl_resume+0xda/0x170 [snd_soc_skl]
+ [<ffffffff81452726>] pci_pm_resume+0x76/0xe0
+ [<ffffffff816616da>] dpm_run_callback+0x5a/0x180
+ [<ffffffff81661e3c>] device_resume+0xdc/0x2c0
+ [<ffffffff81663818>] dpm_resume+0x118/0x310
+ [<ffffffff81663e11>] dpm_resume_end+0x11/0x20
+ [<ffffffff810f8bcc>] suspend_devices_and_enter+0x11c/0x2b0
+ [<ffffffff810f90bd>] pm_suspend+0x35d/0x3d0
+ [<ffffffff810f78a6>] state_store+0x66/0x90
+ [<ffffffff813f80e2>] kobj_attr_store+0x12/0x20
+ [<ffffffff812a37bc>] sysfs_kf_write+0x3c/0x50
+ [<ffffffff812a2cbd>] kernfs_fop_write+0x11d/0x1a0
+ [<ffffffff8121dfaa>] __vfs_write+0x3a/0x150
+ [<ffffffff8121f2b1>] vfs_write+0xb1/0x1a0
+ [<ffffffff81220898>] SyS_write+0x58/0xc0
+ [<ffffffff81001fca>] do_syscall_64+0x6a/0xe0
+ [<ffffffff81b06560>] entry_SYSCALL_64_after_swapgs+0x5d/0xd7
 
-On Tue, Jul 17, 2018 at 05:42:51PM +0200, Jerome Brunet wrote:
+Signed-off-by: he, bo <bo.he@intel.com>
+Signed-off-by: zhang jun <jun.zhang@intel.com>
+---
+ sound/core/sgbuf.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> +	return !status ? IRQ_NONE : IRQ_HANDLED;
-
-Please just write normal conditional statements, it makes things a lot
-easier to read (the ! isn't helping either here).
-
---CNK/L7dwKXQ4Ub8J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltPKZ0ACgkQJNaLcl1U
-h9A0+gf/VsQEQ3Eh3LFVvVOE4q/C6dHPik7B1mL+EauJ5ivAVTQbE/MpoHy/rAF0
-sVXGt+XVVsef/OLGmglJ3QM+k3z4QagK7r0eH4S4DjiDsBTW2h8OO1kR/Yrdnwee
-BULhCJqV5IBuTRIIlxAMvSYPe07SEs3KNzPbFjVbfTH6w44XdCDEnR+rKBkAcCOA
-c/NWQke0nlQe5LZC4GVQEPtXD3m4SlHyXyYc6Hiuf9f6+9GWEXMvh6lJU9mvo3VY
-ZUNXZjkzBc20K9ekCWVtOZwPC59rbsgoGYhhkXQhIGi0buyv+EjoYqn4QM/lDcOV
-WfA/uW/+EQukr9SjnXLNlMKcVCeexA==
-=WYYV
------END PGP SIGNATURE-----
-
---CNK/L7dwKXQ4Ub8J--
-
---===============7386913901980755936==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7386913901980755936==--
+diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
+index 84fffab..33449ee 100644
+--- a/sound/core/sgbuf.c
++++ b/sound/core/sgbuf.c
+@@ -68,7 +68,8 @@ void *snd_malloc_sgbuf_pages(struct device *device,
+ 			     size_t *res_size)
+ {
+ 	struct snd_sg_buf *sgbuf;
+-	unsigned int i, pages, chunk, maxpages;
++	unsigned int i, chunk, maxpages;
++	int pages;
+ 	struct snd_dma_buffer tmpb;
+ 	struct snd_sg_page *table;
+ 	struct page **pgtable;
+-- 
+2.7.4
