@@ -1,14 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 0/6] ASoC: rt5651: Various fixes and quirks
-Date: Wed, 18 Jul 2018 22:55:36 +0200
-Message-ID: <20180718205542.12364-1-hdegoede@redhat.com>
+Subject: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume control
+Date: Wed, 18 Jul 2018 22:55:37 +0200
+Message-ID: <20180718205542.12364-2-hdegoede@redhat.com>
+References: <20180718205542.12364-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A9B02677A0
- for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 22:55:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 0034C267822
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 22:55:47 +0200 (CEST)
+In-Reply-To: <20180718205542.12364-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,28 +24,33 @@ To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+Add a mixer control for the IN3 Boost volume, IN3 is used for the headset
+mic on most devices, so this is necessary to control the headset mic
+volume.
 
-Here is my last (big) round of (Intel) rt5651 support updates, with
-these patches combined with the updated, matching UCM profiles from here:
-https://github.com/jwrdegoede/alsa-lib/commits/master
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/soc/codecs/rt5651.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-All 7 different devices I have work 100% OOTB, without requiring
-any manual config or mixer setup. After this there should be no more
-big changes.
-
-I will submit the matching alsa-lib UCM profile changes upstream once
-this set is in -next (and thus I can be sure the long-names will not
-change due to review).
-
-Note that unfortunately my previous round of cleanup patches removed
-1 input mapping (of the 3 mappings in total it removed) which is
-actually necessary. So this series re-introduces that 1 mapping. I did
-not notice this before because UCM input profile switching does not work
-reliably for some reason, something which I still need to investigate.
-This time I manually veryfied that the correct / expected mixer settings
-where used while testing.
-
-Regards,
-
-Hans
+diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
+index 0462049e739c..985852fd9723 100644
+--- a/sound/soc/codecs/rt5651.c
++++ b/sound/soc/codecs/rt5651.c
+@@ -331,11 +331,13 @@ static const struct snd_kcontrol_new rt5651_snd_controls[] = {
+ 	SOC_DOUBLE_TLV("Mono DAC Playback Volume", RT5651_DAC2_DIG_VOL,
+ 			RT5651_L_VOL_SFT, RT5651_R_VOL_SFT,
+ 			175, 0, dac_vol_tlv),
+-	/* IN1/IN2 Control */
++	/* IN1/IN2/IN3 Control */
+ 	SOC_SINGLE_TLV("IN1 Boost", RT5651_IN1_IN2,
+ 		RT5651_BST_SFT1, 8, 0, bst_tlv),
+ 	SOC_SINGLE_TLV("IN2 Boost", RT5651_IN1_IN2,
+ 		RT5651_BST_SFT2, 8, 0, bst_tlv),
++	SOC_SINGLE_TLV("IN3 Boost", RT5651_IN3,
++		RT5651_BST_SFT1, 8, 0, bst_tlv),
+ 	/* INL/INR Volume Control */
+ 	SOC_DOUBLE_TLV("IN Capture Volume", RT5651_INL1_INR1_VOL,
+ 			RT5651_INL_VOL_SFT, RT5651_INR_VOL_SFT,
+-- 
+2.17.1
