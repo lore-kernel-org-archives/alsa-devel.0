@@ -1,18 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for
- the "Connect Tablet 9" tablet
-Date: Wed, 18 Jul 2018 15:36:01 -0500
-Message-ID: <02ee687b-7f8c-366c-2e30-d360b0facf1e@linux.intel.com>
-References: <20180701093023.6872-1-hdegoede@redhat.com>
+From: Adam Goode <agoode@google.com>
+Subject: [PATCH - usb-audio v2 1/1] ALSA: usb-audio: Allow
+ changing from a bad sample rate
+Date: Wed, 18 Jul 2018 16:41:05 -0400
+Message-ID: <20180718204105.166439-1-agoode@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A5C52677A0
- for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 22:36:39 +0200 (CEST)
-In-Reply-To: <20180701093023.6872-1-hdegoede@redhat.com>
-Content-Language: en-US
+Received: from mail-vk0-f73.google.com (mail-vk0-f73.google.com
+ [209.85.213.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B4FE2677A0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 22:41:14 +0200 (CEST)
+Received: by mail-vk0-f73.google.com with SMTP id g71-v6so2132197vke.15
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 13:41:14 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,42 +22,66 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: Adam Goode <agoode@google.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+If the audio device is externally clocked and set to a rate that does
+not match the external clock, the clock will never be valid and we cannot
+set the rate successfully. To fix this, allow a rate change even if
+the clock is initially invalid, and validate again after the rate is
+changed.
 
+This fixes problems with MOTU UltraLite AVB hardware over USB.
 
-On 07/01/2018 04:30 AM, Hans de Goede wrote:
-> Add a quirk for the "Connect Tablet 9" tablet, this tablet has a
-> mono-speaker. Otherwise it works fine with the defaults.
->
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Sorry about the delay, I missed this patch.
+Signed-off-by: Adam Goode <agoode@google.com>
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
->
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index 7456566c5648..718f022b3aa0 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -486,6 +486,16 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->   		},
->   		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP),
->   	},
-> +	{	/* Connect Tablet 9 */
-> +		.matches = {
-> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Connect"),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Tablet 9"),
-> +		},
-> +		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-> +					BYT_RT5640_MONO_SPEAKER |
-> +					BYT_RT5640_SSP0_AIF1 |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->   	{
->   		.matches = {
->   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+diff --git a/sound/usb/clock.c b/sound/usb/clock.c
+index c79749613fa6..db5e39d67a90 100644
+--- a/sound/usb/clock.c
++++ b/sound/usb/clock.c
+@@ -513,14 +513,28 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip, int iface,
+ 	bool writeable;
+ 	u32 bmControls;
+ 
++	/* First, try to find a valid clock. This may trigger
++	 * automatic clock selection if the current clock is not
++	 * valid.
++	 */
+ 	clock = snd_usb_clock_find_source(chip, fmt->protocol,
+ 					  fmt->clock, true);
+-	if (clock < 0)
+-		return clock;
++	if (clock < 0) {
++		/* We did not find a valid clock, but that might be
++		 * because the current sample rate does not match an
++		 * external clock source. Try again without validation
++		 * and we will do another validation after setting the
++		 * rate.
++		 */
++		clock = snd_usb_clock_find_source(chip, fmt->protocol,
++						  fmt->clock, false);
++		if (clock < 0)
++			return clock;
++	}
+ 
+ 	prev_rate = get_sample_rate_v2v3(chip, iface, fmt->altsetting, clock);
+ 	if (prev_rate == rate)
+-		return 0;
++		goto validation;
+ 
+ 	if (fmt->protocol == UAC_VERSION_3) {
+ 		struct uac3_clock_source_descriptor *cs_desc;
+@@ -577,6 +591,10 @@ static int set_sample_rate_v2v3(struct snd_usb_audio *chip, int iface,
+ 		snd_usb_set_interface_quirk(dev);
+ 	}
+ 
++validation:
++	/* validate clock after rate change */
++	if (!uac_clock_source_is_valid(chip, fmt->protocol, clock))
++		return -ENXIO;
+ 	return 0;
+ }
+ 
+-- 
+2.17.1
