@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 4/6] ASoC: Intel: bytcr_rt5651: Add IN2 input
-	mapping
-Date: Wed, 18 Jul 2018 22:55:40 +0200
-Message-ID: <20180718205542.12364-5-hdegoede@redhat.com>
+Subject: [PATCH 5/6] ASoC: Intel: bytcr_rt5651: Add mono
+	speaker quirk
+Date: Wed, 18 Jul 2018 22:55:41 +0200
+Message-ID: <20180718205542.12364-6-hdegoede@redhat.com>
 References: <20180718205542.12364-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id F08322677A0
- for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 22:55:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5716F2677A0
+ for <alsa-devel@alsa-project.org>; Wed, 18 Jul 2018 22:55:53 +0200 (CEST)
 In-Reply-To: <20180718205542.12364-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,112 +25,96 @@ To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-During the recent cleanup series 3 of the 6 input mappings where removed
-from the bytcr_rt5651 machine driver because testing showed that none of
-them were used.
+During my initial round of bytcr_rt5651 long-name patches I did not include
+a difference for mono vs stereo speaker setups in the longname because it
+seems that all 5651 devices with only a single speaker do some mixing of
+left + right on the PCB.
 
-However some devices do actually have their internal mic on IN2 (and
-only IN2, not IN1 and IN2), this did not show during previous tests
-due to a bug in the userspace UCM input device switching code.
+However further testing has shown that while this works great when only
+playing audio on the left or right channel, the output becomes garbled
+when using both channels at once. Something which does not happen when
+using the Stereo DAC MIXL / MIXR switches to mix the channels together
+inside the codec and then only outputting on a single channel.
 
-This commit re-adds the IN2 mapping for devices with the internal mic.
-on IN2 and the headser mic on IN3 and enables this mapping on devices
-with their internal mic on IN2.
+So we need to have separate UCM profiles and thus separate long-names
+for devices with a mono speaker vs stereo speakers. Just as we already
+have for the bytcr_rt5640 case.
 
-This commit also changes the default internal mic input to IN2, because
-all my 7 test devices have their mic there.
+This commit adds a new BYT_RT5651_MONO_SPEAKER quirk and adds "stereo-spk"
+or "mono-spk" to the long-name based on this and enables this mapping on
+devices with a mono speaker.
+
+Changing the long-name like this is ok for now, since I'm still working
+on the UCM profiles, so they are not in upstream alsa-lib yet.
+
+This brings the long-name naming scheme fully in sync with the bytcr_rt5640
+case, which is good from a consistency pov.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
-Note I have put getting to the bottom of the UCM input device switching
-code and fixing it on my TODO list
----
- sound/soc/intel/boards/bytcr_rt5651.c | 23 ++++++++++++++++++-----
- 1 file changed, 18 insertions(+), 5 deletions(-)
+ sound/soc/intel/boards/bytcr_rt5651.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 53ac97c15fc6..d85530b1cc8e 100644
+index d85530b1cc8e..8374e633796d 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -44,6 +44,7 @@
- enum {
- 	BYT_RT5651_DMIC_MAP,
- 	BYT_RT5651_IN1_MAP,
-+	BYT_RT5651_IN2_MAP,
- 	BYT_RT5651_IN1_IN2_MAP,
- };
+@@ -79,6 +79,7 @@ enum {
+ #define BYT_RT5651_SSP0_AIF1		BIT(20)
+ #define BYT_RT5651_SSP0_AIF2		BIT(21)
+ #define BYT_RT5651_HP_LR_SWAPPED	BIT(22)
++#define BYT_RT5651_MONO_SPEAKER		BIT(23)
  
-@@ -93,9 +94,9 @@ struct byt_rt5651_private {
- 	struct snd_soc_jack jack;
- };
+ #define BYT_RT5651_DEFAULT_QUIRKS	(BYT_RT5651_MCLK_EN | \
+ 					 BYT_RT5651_JD1_1   | \
+@@ -128,6 +129,8 @@ static void log_quirks(struct device *dev)
+ 		dev_info(dev, "quirk SSP0_AIF1 enabled\n");
+ 	if (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2)
+ 		dev_info(dev, "quirk SSP0_AIF2 enabled\n");
++	if (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER)
++		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
+ }
  
--/* Default: jack-detect on JD1_1, internal mic on in1, headsetmic on in3 */
-+/* Default: jack-detect on JD1_1, internal mic on in2, headsetmic on in3 */
- static unsigned long byt_rt5651_quirk = BYT_RT5651_DEFAULT_QUIRKS |
--					BYT_RT5651_IN1_MAP;
-+					BYT_RT5651_IN2_MAP;
- 
- static void log_quirks(struct device *dev)
- {
-@@ -103,6 +104,8 @@ static void log_quirks(struct device *dev)
- 		dev_info(dev, "quirk DMIC_MAP enabled");
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN1_MAP)
- 		dev_info(dev, "quirk IN1_MAP enabled");
-+	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN2_MAP)
-+		dev_info(dev, "quirk IN2_MAP enabled");
- 	if (BYT_RT5651_MAP(byt_rt5651_quirk) == BYT_RT5651_IN1_IN2_MAP)
- 		dev_info(dev, "quirk IN1_IN2_MAP enabled");
- 	if (BYT_RT5651_JDSRC(byt_rt5651_quirk)) {
-@@ -270,6 +273,12 @@ static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_map[] = {
- 	{"IN3P", NULL, "Headset Mic"},
- };
- 
-+static const struct snd_soc_dapm_route byt_rt5651_intmic_in2_map[] = {
-+	{"Internal Mic", NULL, "micbias1"},
-+	{"IN2P", NULL, "Internal Mic"},
-+	{"IN3P", NULL, "Headset Mic"},
-+};
-+
- static const struct snd_soc_dapm_route byt_rt5651_intmic_in1_in2_map[] = {
- 	{"Internal Mic", NULL, "micbias1"},
- 	{"IN1P", NULL, "Internal Mic"},
-@@ -364,7 +373,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "X1D3_C806N"),
+ #define BYT_CODEC_DAI1	"rt5651-aif1"
+@@ -374,7 +377,8 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
  		},
  		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
--					BYT_RT5651_IN1_MAP |
-+					BYT_RT5651_IN2_MAP |
- 					BYT_RT5651_HP_LR_SWAPPED),
+ 					BYT_RT5651_IN2_MAP |
+-					BYT_RT5651_HP_LR_SWAPPED),
++					BYT_RT5651_HP_LR_SWAPPED |
++					BYT_RT5651_MONO_SPEAKER),
  	},
  	{
-@@ -375,7 +384,7 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "D2D3_Vi8A1"),
+ 		/* Chuwi Vi8 Plus (CWI519) */
+@@ -385,7 +389,8 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
  		},
  		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
--					BYT_RT5651_IN1_MAP |
-+					BYT_RT5651_IN2_MAP |
- 					BYT_RT5651_HP_LR_SWAPPED),
+ 					BYT_RT5651_IN2_MAP |
+-					BYT_RT5651_HP_LR_SWAPPED),
++					BYT_RT5651_HP_LR_SWAPPED |
++					BYT_RT5651_MONO_SPEAKER),
  	},
  	{
-@@ -468,6 +477,10 @@ static int byt_rt5651_init(struct snd_soc_pcm_runtime *runtime)
- 		custom_map = byt_rt5651_intmic_in1_map;
- 		num_routes = ARRAY_SIZE(byt_rt5651_intmic_in1_map);
- 		break;
-+	case BYT_RT5651_IN2_MAP:
-+		custom_map = byt_rt5651_intmic_in2_map;
-+		num_routes = ARRAY_SIZE(byt_rt5651_intmic_in2_map);
-+		break;
- 	case BYT_RT5651_IN1_IN2_MAP:
- 		custom_map = byt_rt5651_intmic_in1_in2_map;
- 		num_routes = ARRAY_SIZE(byt_rt5651_intmic_in1_in2_map);
-@@ -825,7 +838,7 @@ struct acpi_chan_package {   /* ACPICA seems to require 64 bit integers */
+ 		/* KIANO SlimNote 14.2 */
+@@ -700,7 +705,7 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+ static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+-static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic[-swapped-hp]" */
++static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
  
- static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ static int byt_rt5651_suspend(struct snd_soc_card *card)
  {
--	const char * const mic_name[] = { "dmic", "in1", "in12" };
-+	const char * const mic_name[] = { "dmic", "in1", "in2", "in12" };
- 	struct byt_rt5651_private *priv;
- 	struct snd_soc_acpi_mach *mach;
- 	struct device *codec_dev;
+@@ -1025,7 +1030,9 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		hp_swapped = "";
+ 
+ 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
+-		 "bytcr-rt5651-%s-mic%s",
++		 "bytcr-rt5651-%s-spk-%s-mic%s",
++		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ?
++			"mono" : "stereo",
+ 		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
+ 	byt_rt5651_card.long_name = byt_rt5651_long_name;
+ 
 -- 
 2.17.1
