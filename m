@@ -1,56 +1,118 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 2/5] ASoC: wm_adsp: Take prefix into account in
-	control name length
-Date: Thu, 19 Jul 2018 11:50:36 +0100
-Message-ID: <20180719105039.28312-2-ckeepax@opensource.cirrus.com>
-References: <20180719105039.28312-1-ckeepax@opensource.cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id A5442267815
- for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 12:50:43 +0200 (CEST)
-In-Reply-To: <20180719105039.28312-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: stuarth@opensource.cirrus.com, patches@opensource.cirrus.com, rf@opensource.cirrus.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
+From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH 4/4] ALSA: usb-audio: Add UAC3 Power Domains to suspend/resume
+Date: Thu, 19 Jul 2018 12:22:15 +0100
+Message-ID: <20180719112215.4219-5-jorge.sanjuan@codethink.co.uk>
+References: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently when creating ALSA control names for the DSP the length of any
-prefix applied to the CODEC is not taken into account. Whilst this is
-mostly harmless it does result in ALSA doing the truncation of the
-control names and printing a warning. It is better to have the driver do
-the truncation so it can truncate from the start of parameter name
-itself to give a greater chance of the result maintain a unique name.
+Set the UAC3 Power Domain state for an Audio Streaming interface
+to D2 state before suspending the device (usb_driver callback).
+This lets the device know there is no intention to use any of the
+Units in the Audio Function and that the host is not going to
+even listen for wake-up events (interrupts) on the units.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+If the usb_driver gets resumed, the state D1 (idle) will be
+set.
+
+Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 ---
- sound/soc/codecs/wm_adsp.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/usb/card.c |  9 +++++++++
+ sound/usb/pcm.c  | 30 ++++++++++++++++++++++++++++++
+ sound/usb/pcm.h  |  2 ++
+ 3 files changed, 41 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 99108d18de8d..eec73c98a141 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -1343,6 +1343,9 @@ static int wm_adsp_create_control(struct wm_adsp *dsp,
- 			int avail = SNDRV_CTL_ELEM_ID_NAME_MAXLEN - ret - 2;
- 			int skip = 0;
+diff --git a/sound/usb/card.c b/sound/usb/card.c
+index a1ed798a1c6b..9c2a15b805c3 100644
+--- a/sound/usb/card.c
++++ b/sound/usb/card.c
+@@ -808,6 +808,7 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
+ 	if (!chip->num_suspended_intf++) {
+ 		list_for_each_entry(as, &chip->pcm_list, list) {
++			snd_usb_pcm_suspend(as);
+ 			snd_pcm_suspend_all(as->pcm);
+ 			as->substream[0].need_setup_ep =
+ 				as->substream[1].need_setup_ep = true;
+@@ -824,6 +825,7 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
+ static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
+ {
+ 	struct snd_usb_audio *chip = usb_get_intfdata(intf);
++	struct snd_usb_stream *as;
+ 	struct usb_mixer_interface *mixer;
+ 	struct list_head *p;
+ 	int err = 0;
+@@ -834,6 +836,13 @@ static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
+ 		return 0;
  
-+			if (dsp->component->name_prefix)
-+				avail -= strlen(dsp->component->name_prefix) + 1;
+ 	atomic_inc(&chip->active); /* avoid autopm */
 +
- 			if (subname_len > avail)
- 				skip = subname_len - avail;
++	list_for_each_entry(as, &chip->pcm_list, list) {
++		err = snd_usb_pcm_resume(as);
++		if (err < 0)
++			goto err_out;
++	}
++
+ 	/*
+ 	 * ALSA leaves material resumption to user space
+ 	 * we just notify and restart the mixers
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index 0ae5f539706d..266f7028d01b 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -729,6 +729,36 @@ static int snd_usb_pcm_change_state(struct snd_usb_substream *subs, int state)
+ 	return 0;
+ }
  
++int snd_usb_pcm_suspend(struct snd_usb_stream *as)
++{
++	int ret;
++
++	ret = snd_usb_pcm_change_state(&as->substream[0], UAC3_PD_STATE_D2);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_usb_pcm_change_state(&as->substream[1], UAC3_PD_STATE_D2);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
++int snd_usb_pcm_resume(struct snd_usb_stream *as)
++{
++	int ret;
++
++	ret = snd_usb_pcm_change_state(&as->substream[0], UAC3_PD_STATE_D1);
++	if (ret < 0)
++		return ret;
++
++	ret = snd_usb_pcm_change_state(&as->substream[1], UAC3_PD_STATE_D1);
++	if (ret < 0)
++		return ret;
++
++	return 0;
++}
++
+ /*
+  * hw_params callback
+  *
+diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
+index f77ec58bf1a1..9833627c1eca 100644
+--- a/sound/usb/pcm.h
++++ b/sound/usb/pcm.h
+@@ -6,6 +6,8 @@ snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
+ 				    unsigned int rate);
+ 
+ void snd_usb_set_pcm_ops(struct snd_pcm *pcm, int stream);
++int snd_usb_pcm_suspend(struct snd_usb_stream *as);
++int snd_usb_pcm_resume(struct snd_usb_stream *as);
+ 
+ int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
+ 		       struct usb_host_interface *alts,
 -- 
 2.11.0
