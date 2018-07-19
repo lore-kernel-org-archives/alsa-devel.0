@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Correct algorithm list
-	allocation size" to the asoc tree
-Date: Thu, 19 Jul 2018 17:57:47 +0100
-Message-ID: <E1fgCFP-0005XW-DK@debutante>
-References: <20180719105039.28312-1-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: wm_adsp: Ensure DSP boot work complete
+	before preloader_put return" to the asoc tree
+Date: Thu, 19 Jul 2018 17:58:23 +0100
+Message-ID: <E1fgCFz-0005Z6-TR@debutante>
+References: <20180719105039.28312-3-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 18920267727
- for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 18:57:49 +0200 (CEST)
-In-Reply-To: <20180719105039.28312-1-ckeepax@opensource.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3564D267600
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 18:58:26 +0200 (CEST)
+In-Reply-To: <20180719105039.28312-3-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, lgirdwood@gmail.com, stuarth@opensource.cirrus.com, rf@opensource.cirrus.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com, lgirdwood@gmail.com, stuarth@opensource.cirrus.com, rf@opensource.cirrus.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Correct algorithm list allocation size
+   ASoC: wm_adsp: Ensure DSP boot work complete before preloader_put return
 
 has been applied to the asoc tree at
 
@@ -53,37 +52,35 @@ to this mail.
 Thanks,
 Mark
 
->From 517ee74e1b3124b696f293aa4e220418f8125b4c Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Thu, 19 Jul 2018 11:50:35 +0100
-Subject: [PATCH] ASoC: wm_adsp: Correct algorithm list allocation size
+>From 868e49a4a00afaca07d2c450a02e49581eaece6c Mon Sep 17 00:00:00 2001
+From: Stuart Henderson <stuarth@opensource.cirrus.com>
+Date: Thu, 19 Jul 2018 11:50:37 +0100
+Subject: [PATCH] ASoC: wm_adsp: Ensure DSP boot work complete before
+ preloader_put return
 
-Commit 6396bb221514 ("treewide: kzalloc() -> kcalloc()") was
-overlooked when doing some refactoring to the algorithm list
-handling, which lead to twice as much buffer being allocated
-as required for reading the algorithm list. A kcalloc is no
-longer appropriate since the allocation size is now in bytes
-not registers, as such change back to kzalloc.
+All controls derived from the loaded firmware should be created prior
+to returning from the preloader's put function, such that they are
+immediately available to user-space.
 
-Fixes: 7f7cca08abf4 ("ASoC: wm_adsp: Simplify handling of alg offset and length")
+Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/wm_adsp.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
 diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 07c17acc8a4f..99108d18de8d 100644
+index b7b914963c62..4e7f8525449e 100644
 --- a/sound/soc/codecs/wm_adsp.c
 +++ b/sound/soc/codecs/wm_adsp.c
-@@ -1906,7 +1906,7 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
- 	/* Convert length from DSP words to bytes */
- 	len *= sizeof(u32);
+@@ -2672,6 +2672,8 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
  
--	alg = kcalloc(len, 2, GFP_KERNEL | GFP_DMA);
-+	alg = kzalloc(len, GFP_KERNEL | GFP_DMA);
- 	if (!alg)
- 		return ERR_PTR(-ENOMEM);
+ 	snd_soc_dapm_sync(dapm);
  
++	flush_work(&dsp->boot_work);
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_preloader_put);
 -- 
 2.18.0
