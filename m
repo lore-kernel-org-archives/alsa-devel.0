@@ -1,15 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH 10/11] ASoC: SOF: Add userspace ABI support
-Date: Thu, 19 Jul 2018 19:53:34 +0100
-Message-ID: <20180719185335.30912-10-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH 11/11] ASoC: SOF: Add Build support for SOF core
+Date: Thu, 19 Jul 2018 19:53:35 +0100
+Message-ID: <20180719185335.30912-11-liam.r.girdwood@linux.intel.com>
 References: <20180719185335.30912-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 42679267600
- for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 20:54:05 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 361FD26770A
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 20:54:07 +0200 (CEST)
 In-Reply-To: <20180719185335.30912-1-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,273 +24,97 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add userspace ABI for audio userspace application IO outside of regular
-ALSA PCM and kcontrols. This is intended to be used to format
-coefficients and data for custom processing components.
+Build SOF core.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- include/uapi/sound/sof-abi.h  |  29 ++++++++++
- include/uapi/sound/sof-eq.h   | 102 ++++++++++++++++++++++++++++++++++
- include/uapi/sound/sof-fw.h   |  69 +++++++++++++++++++++++
- include/uapi/sound/sof-tone.h |  28 ++++++++++
- 4 files changed, 228 insertions(+)
- create mode 100644 include/uapi/sound/sof-abi.h
- create mode 100644 include/uapi/sound/sof-eq.h
- create mode 100644 include/uapi/sound/sof-fw.h
- create mode 100644 include/uapi/sound/sof-tone.h
+ sound/soc/Kconfig      |  1 +
+ sound/soc/Makefile     |  1 +
+ sound/soc/sof/Kconfig  | 38 ++++++++++++++++++++++++++++++++++++++
+ sound/soc/sof/Makefile |  6 ++++++
+ 4 files changed, 46 insertions(+)
+ create mode 100644 sound/soc/sof/Kconfig
+ create mode 100644 sound/soc/sof/Makefile
 
-diff --git a/include/uapi/sound/sof-abi.h b/include/uapi/sound/sof-abi.h
+diff --git a/sound/soc/Kconfig b/sound/soc/Kconfig
+index 41af6b9cc350..2c0e6e5c7d7e 100644
+--- a/sound/soc/Kconfig
++++ b/sound/soc/Kconfig
+@@ -64,6 +64,7 @@ source "sound/soc/rockchip/Kconfig"
+ source "sound/soc/samsung/Kconfig"
+ source "sound/soc/sh/Kconfig"
+ source "sound/soc/sirf/Kconfig"
++source "sound/soc/sof/Kconfig"
+ source "sound/soc/spear/Kconfig"
+ source "sound/soc/sti/Kconfig"
+ source "sound/soc/stm/Kconfig"
+diff --git a/sound/soc/Makefile b/sound/soc/Makefile
+index 06389a5385d7..06ecbabefe03 100644
+--- a/sound/soc/Makefile
++++ b/sound/soc/Makefile
+@@ -48,6 +48,7 @@ obj-$(CONFIG_SND_SOC)	+= rockchip/
+ obj-$(CONFIG_SND_SOC)	+= samsung/
+ obj-$(CONFIG_SND_SOC)	+= sh/
+ obj-$(CONFIG_SND_SOC)	+= sirf/
++obj-$(CONFIG_SND_SOC)	+= sof/
+ obj-$(CONFIG_SND_SOC)	+= spear/
+ obj-$(CONFIG_SND_SOC)	+= sti/
+ obj-$(CONFIG_SND_SOC)	+= stm/
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
 new file mode 100644
-index 000000000000..4e78fa14465e
+index 000000000000..73cb59801d1e
 --- /dev/null
-+++ b/include/uapi/sound/sof-abi.h
-@@ -0,0 +1,29 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note)) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2017 Intel Corporation. All rights reserved.
-+ */
++++ b/sound/soc/sof/Kconfig
+@@ -0,0 +1,38 @@
++config SND_SOC_SOF_PCI
++	tristate
 +
-+#ifndef __INCLUDE_UAPI_ABI_H__
-+#define __INCLUDE_UAPI_ABI_H__
++config SND_SOC_SOF_ACPI
++	tristate
 +
-+#define SOF_ABI_VERSION		1
-+#define SOF_ABI_MAGIC		0x00464F53	/* "SOF\0" */
++config SND_SOC_SOF_PLATFORM
++	tristate
 +
-+/*
-+ * Header for all non IPC ABI data. Identifies data type, size and ABI.
-+ * Used by any bespoke component data structures or binary blobs.
-+ */
++config SND_SOC_SOF
++	tristate "Sound Open Firmware Support"
++	default m
++	select SND_SOC_TOPOLOGY
++	select SND_SOC_COMPRESS
++	help
++          This adds support for Sound Open Firmware (SOF). SOF is a free and
++	  generic open source audio DSP firmware for multiple devices.
++          Say Y if you have such a device that is supported by SOF.
++          If unsure select "N".
 +
-+struct sof_abi_hdr {
-+	uint32_t magic;		/* 'S', 'O', 'F', '\0' */
-+	uint32_t type;		/* component specific type */
-+	uint32_t size;		/* size in bytes of data excluding this struct */
-+	uint32_t abi;		/* SOF ABI version */
-+	uint32_t comp_abi;	/* component specific ABI version */
-+	char data[0];
-+}  __attribute__((packed));
++config SND_SOC_SOF_DEBUG
++	bool "SOF debugging features"
++	depends on SND_SOC_SOF
++	help
++	  This option can be used to enable or disable individual SOF firmware
++	  and driver debugging options.
++	  Say Y if you are debugging SOF FW or drivers.
++          If unsure select "N".
 +
-+#endif
-diff --git a/include/uapi/sound/sof-eq.h b/include/uapi/sound/sof-eq.h
++config SND_SOC_SOF_DEBUG_XRUN_STOP
++	bool "SOF stop on XRUN"
++	depends on SND_SOC_SOF_DEBUG
++	help
++	  This option forces PCMs to stop on any XRUN event. This is useful to
++	  preserve any trace data ond pipeline status prior to the XRUN.
++	  Say Y if you are debugging SOF FW pipeline XRUNs.
++          If unsure select "N".
++
+diff --git a/sound/soc/sof/Makefile b/sound/soc/sof/Makefile
 new file mode 100644
-index 000000000000..96aefd1e1950
+index 000000000000..aad44d2f6697
 --- /dev/null
-+++ b/include/uapi/sound/sof-eq.h
-@@ -0,0 +1,102 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note)) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2017 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
-+ */
++++ b/sound/soc/sof/Makefile
+@@ -0,0 +1,6 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +
-+#ifndef EQ_H
-+#define EQ_H
++snd-sof-objs := core.o ops.o loader.o ipc.o pcm.o debug.o topology.o\
++		control.o trace.o
 +
-+/* FIR EQ type */
-+
-+/* Component will reject non-matching configuration. The version number need
-+ * to be incremented with any ABI changes in function fir_cmd().
-+ */
-+#define SOF_EQ_FIR_ABI_VERSION  1
-+
-+#define SOF_EQ_FIR_IDX_SWITCH	0
-+
-+#define SOF_EQ_FIR_MAX_SIZE 4096 /* Max size allowed for coef data in bytes */
-+
-+/*
-+ * eq_fir_configuration data structure contains this information
-+ *     uint16_t channels_in_config
-+ *         This describes the number of channels in this EQ config data. It
-+ *         can be different from PLATFORM_MAX_CHANNELS.
-+ *     uint16_t number_of_responses
-+ *         0=no responses, 1=one response defined, 2=two responses defined, etc.
-+ *     int16_t data[]
-+ *         assign_response[STREAM_MAX_CHANNELS]
-+ *             -1 = not defined, 0 = use first response, 1 = use 2nd response, etc.
-+ *             E.g. {0, 0, 0, 0, -1, -1, -1, -1} would apply to channels 0-3 the
-+ *	       same first defined response and leave channels 4-7 unequalized.
-+ *         coef_data[]
-+ *             Repeated data { filter_length, input_shift, output_shift, h[] }
-+ *	       for every EQ response defined where vector h has filter_length
-+ *             number of coefficients. Coefficients in h[] are in Q1.15 format.
-+ *             E.g. 16384 (Q1.15) = 0.5. The shifts are number of right shifts.
-+ */
-+
-+struct sof_eq_fir_config {
-+	uint16_t channels_in_config;
-+	uint16_t number_of_responses;
-+	int16_t data[];
-+};
-+
-+/* IIR EQ type */
-+
-+/* Component will reject non-matching configuration. The version number need
-+ * to be incremented with any ABI changes in function fir_cmd().
-+ */
-+#define SOF_EQ_FIR_ABI_VERSION  1
-+
-+#define SOF_EQ_IIR_IDX_SWITCH   0
-+
-+#define SOF_EQ_IIR_MAX_SIZE 1024 /* Max size allowed for coef data in bytes */
-+
-+/* eq_iir_configuration
-+ *     uint32_t channels_in_config
-+ *         This describes the number of channels in this EQ config data. It
-+ *         can be different from PLATFORM_MAX_CHANNELS.
-+ *     uint32_t number_of_responses_defined
-+ *         0=no responses, 1=one response defined, 2=two responses defined, etc.
-+ *     int32_t data[]
-+ *         Data consist of two parts. First is the response assign vector that
-+ *	   has length of channels_in_config. The latter part is coefficient
-+ *         data.
-+ *         uint32_t assign_response[channels_in_config]
-+ *             -1 = not defined, 0 = use first response, 1 = use 2nd, etc.
-+ *             E.g. {0, 0, 0, 0, -1, -1, -1, -1} would apply to channels 0-3 the
-+ *             same first defined response and leave channels 4-7 unequalized.
-+ *         coefficient_data[]
-+ *             <1st EQ>
-+ *             uint32_t num_biquads
-+ *             uint32_t num_biquads_in_series
-+ *             <1st biquad>
-+ *             int32_t coef_a2       Q2.30 format
-+ *             int32_t coef_a1       Q2.30 format
-+ *             int32_t coef_b2       Q2.30 format
-+ *             int32_t coef_b1       Q2.30 format
-+ *             int32_t coef_b0       Q2.30 format
-+ *             int32_t output_shift  number of shifts right, shift left is negative
-+ *             int32_t output_gain   Q2.14 format
-+ *             <2nd biquad>
-+ *             ...
-+ *             <2nd EQ>
-+ *
-+ *         Note: A flat response biquad can be made with a section set to
-+ *         b0 = 1.0, gain = 1.0, and other parameters set to 0
-+ *         {0, 0, 0, 0, 1073741824, 0, 16484}
-+ */
-+
-+struct sof_eq_iir_config {
-+	uint32_t channels_in_config;
-+	uint32_t number_of_responses;
-+	int32_t data[];
-+};
-+
-+#endif /* EQ_H */
-diff --git a/include/uapi/sound/sof-fw.h b/include/uapi/sound/sof-fw.h
-new file mode 100644
-index 000000000000..2f9bd827d2f0
---- /dev/null
-+++ b/include/uapi/sound/sof-fw.h
-@@ -0,0 +1,69 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note)) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2017 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-+ */
-+
-+/*
-+ * Firmware file format .
-+ */
-+
-+#ifndef __INCLUDE_UAPI_SOF_FW_H__
-+#define __INCLUDE_UAPI_SOF_FW_H__
-+
-+#define SND_SOF_FW_SIG_SIZE	4
-+#define SND_SOF_FW_ABI		1
-+#define SND_SOF_FW_SIG		"Reef"
-+
-+/*
-+ * Firmware module is made up of 1 . N blocks of different types. The
-+ * Block header is used to determine where and how block is to be copied in the
-+ * DSP/host memory space.
-+ */
-+enum snd_sof_fw_blk_type {
-+	SOF_BLK_IMAGE	= 0,	/* whole image - parsed by ROMs */
-+	SOF_BLK_TEXT	= 1,
-+	SOF_BLK_DATA	= 2,
-+	SOF_BLK_CACHE	= 3,
-+	SOF_BLK_REGS	= 4,
-+	SOF_BLK_SIG	= 5,
-+	SOF_BLK_ROM	= 6,
-+	/* add new block types here */
-+};
-+
-+struct snd_sof_blk_hdr {
-+	enum snd_sof_fw_blk_type type;
-+	uint32_t size;		/* bytes minus this header */
-+	uint32_t offset;	/* offset from base */
-+} __attribute__((packed));
-+
-+/*
-+ * Firmware file is made up of 1 .. N different modules types. The module
-+ * type is used to determine how to load and parse the module.
-+ */
-+enum snd_sof_fw_mod_type {
-+	SOF_FW_BASE	= 0,	/* base firmware image */
-+	SOF_FW_MODULE	= 1,	/* firmware module */
-+};
-+
-+struct snd_sof_mod_hdr {
-+	enum snd_sof_fw_mod_type type;
-+	uint32_t size;		/* bytes minus this header */
-+	uint32_t num_blocks;	/* number of blocks */
-+} __attribute__((packed));
-+
-+/*
-+ * Firmware file header.
-+ */
-+struct snd_sof_fw_header {
-+	unsigned char sig[SND_SOF_FW_SIG_SIZE]; /* "Reef" */
-+	uint32_t file_size;	/* size of file minus this header */
-+	uint32_t num_modules;	/* number of modules */
-+	uint32_t abi;		/* version of header format */
-+} __attribute__((packed));
-+
-+#endif
-diff --git a/include/uapi/sound/sof-tone.h b/include/uapi/sound/sof-tone.h
-new file mode 100644
-index 000000000000..f9c9bf5c482d
---- /dev/null
-+++ b/include/uapi/sound/sof-tone.h
-@@ -0,0 +1,28 @@
-+/* SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note)) OR BSD-3-Clause) */
-+/*
-+ * This file is provided under a dual BSD/GPLv2 license.  When using or
-+ * redistributing this file, you may do so under either license.
-+ *
-+ * Copyright(c) 2017 Intel Corporation. All rights reserved.
-+ *
-+ * Author: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
-+ */
-+
-+#ifndef TONE_H
-+#define TONE_H
-+
-+/* Component will reject non-matching configuration. The version number need
-+ * to be incremented with any ABI changes in function fir_cmd().
-+ */
-+#define SOF_TONE_ABI_VERSION		1
-+
-+#define SOF_TONE_IDX_FREQUENCY		0
-+#define SOF_TONE_IDX_AMPLITUDE		1
-+#define SOF_TONE_IDX_FREQ_MULT		2
-+#define SOF_TONE_IDX_AMPL_MULT		3
-+#define SOF_TONE_IDX_LENGTH		4
-+#define SOF_TONE_IDX_PERIOD		5
-+#define SOF_TONE_IDX_REPEATS		6
-+#define SOF_TONE_IDX_LIN_RAMP_STEP	7
-+
-+#endif /* TONE_ABI_H */
++obj-$(CONFIG_SND_SOC_SOF) += snd-sof.o
 -- 
 2.17.1
