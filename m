@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5651: Add quirk table
-	entries for various devices" to the asoc tree
-Date: Thu, 19 Jul 2018 17:56:52 +0100
-Message-ID: <E1fgCEW-0005Nc-40@debutante>
-References: <20180718205542.12364-7-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5651: Add mono speaker
+	quirk" to the asoc tree
+Date: Thu, 19 Jul 2018 17:56:54 +0100
+Message-ID: <E1fgCEY-0005Ob-9g@debutante>
+References: <20180718205542.12364-6-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EC2AF26733D
+ by alsa0.perex.cz (Postfix) with ESMTP id ED2F12673C7
  for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 18:57:00 +0200 (CEST)
-In-Reply-To: <20180718205542.12364-7-hdegoede@redhat.com>
+In-Reply-To: <20180718205542.12364-6-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5651: Add quirk table entries for various devices
+   ASoC: Intel: bytcr_rt5651: Add mono speaker quirk
 
 has been applied to the asoc tree at
 
@@ -53,74 +53,103 @@ to this mail.
 Thanks,
 Mark
 
->From 06aa6e51273c9ac458af0bb9be95603cfbad14ec Mon Sep 17 00:00:00 2001
+>From a0d1d867c262f4ad5d8e4925e2212711ebdbf2b7 Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Wed, 18 Jul 2018 22:55:42 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Add quirk table entries for
- various devices
+Date: Wed, 18 Jul 2018 22:55:41 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5651: Add mono speaker quirk
 
-Add quirk table entries for the following tablets:
+During my initial round of bytcr_rt5651 long-name patches I did not include
+a difference for mono vs stereo speaker setups in the longname because it
+seems that all 5651 devices with only a single speaker do some mixing of
+left + right on the PCB.
 
-ITWorks TW701
-Ployer Momo7w
-Trekstor win7
-Yours 8"
+However further testing has shown that while this works great when only
+playing audio on the left or right channel, the output becomes garbled
+when using both channels at once. Something which does not happen when
+using the Stereo DAC MIXL / MIXR switches to mix the channels together
+inside the codec and then only outputting on a single channel.
 
-These all use the default settings, except that they only have a single
-speaker and thus need the mono-speaker quirk.
+So we need to have separate UCM profiles and thus separate long-names
+for devices with a mono speaker vs stereo speakers. Just as we already
+have for the bytcr_rt5640 case.
+
+This commit adds a new BYT_RT5651_MONO_SPEAKER quirk and adds "stereo-spk"
+or "mono-spk" to the long-name based on this and enables this mapping on
+devices with a mono speaker.
+
+Changing the long-name like this is ok for now, since I'm still working
+on the UCM profiles, so they are not in upstream alsa-lib yet.
+
+This brings the long-name naming scheme fully in sync with the bytcr_rt5640
+case, which is good from a consistency pov.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5651.c | 28 +++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5651.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
 diff --git a/sound/soc/intel/boards/bytcr_rt5651.c b/sound/soc/intel/boards/bytcr_rt5651.c
-index 8374e633796d..f8a68bdb3885 100644
+index d85530b1cc8e..8374e633796d 100644
 --- a/sound/soc/intel/boards/bytcr_rt5651.c
 +++ b/sound/soc/intel/boards/bytcr_rt5651.c
-@@ -392,6 +392,21 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 					BYT_RT5651_HP_LR_SWAPPED |
- 					BYT_RT5651_MONO_SPEAKER),
- 	},
-+	{
-+		/* I.T.Works TW701, Ployer Momo7w and Trekstor ST70416-6
-+		 * (these all use the same mainboard) */
-+		.callback = byt_rt5651_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_BIOS_VENDOR, "INSYDE Corp."),
-+			/* Partial match for all of itWORKS.G.WI71C.JGBMRBA,
-+			 * TREK.G.WI71C.JGBMRBA0x and MOMO.G.WI71C.MABMRBA02 */
-+			DMI_MATCH(DMI_BIOS_VERSION, ".G.WI71C."),
-+		},
-+		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
-+					BYT_RT5651_IN2_MAP |
-+					BYT_RT5651_SSP0_AIF1 |
+@@ -79,6 +79,7 @@ enum {
+ #define BYT_RT5651_SSP0_AIF1		BIT(20)
+ #define BYT_RT5651_SSP0_AIF2		BIT(21)
+ #define BYT_RT5651_HP_LR_SWAPPED	BIT(22)
++#define BYT_RT5651_MONO_SPEAKER		BIT(23)
+ 
+ #define BYT_RT5651_DEFAULT_QUIRKS	(BYT_RT5651_MCLK_EN | \
+ 					 BYT_RT5651_JD1_1   | \
+@@ -128,6 +129,8 @@ static void log_quirks(struct device *dev)
+ 		dev_info(dev, "quirk SSP0_AIF1 enabled\n");
+ 	if (byt_rt5651_quirk & BYT_RT5651_SSP0_AIF2)
+ 		dev_info(dev, "quirk SSP0_AIF2 enabled\n");
++	if (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER)
++		dev_info(dev, "quirk MONO_SPEAKER enabled\n");
+ }
+ 
+ #define BYT_CODEC_DAI1	"rt5651-aif1"
+@@ -374,7 +377,8 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
+ 					BYT_RT5651_IN2_MAP |
+-					BYT_RT5651_HP_LR_SWAPPED),
++					BYT_RT5651_HP_LR_SWAPPED |
 +					BYT_RT5651_MONO_SPEAKER),
-+	},
+ 	},
+ 	{
+ 		/* Chuwi Vi8 Plus (CWI519) */
+@@ -385,7 +389,8 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
+ 					BYT_RT5651_IN2_MAP |
+-					BYT_RT5651_HP_LR_SWAPPED),
++					BYT_RT5651_HP_LR_SWAPPED |
++					BYT_RT5651_MONO_SPEAKER),
+ 	},
  	{
  		/* KIANO SlimNote 14.2 */
- 		.callback = byt_rt5651_quirk_cb,
-@@ -434,6 +449,19 @@ static const struct dmi_system_id byt_rt5651_quirk_table[] = {
- 					BYT_RT5651_OVCD_SF_1P0 |
- 					BYT_RT5651_MCLK_EN),
- 	},
-+	{
-+		/* Yours Y8W81 (and others using the same mainboard) */
-+		.callback = byt_rt5651_quirk_cb,
-+		.matches = {
-+			DMI_MATCH(DMI_BIOS_VENDOR, "INSYDE Corp."),
-+			/* Partial match for all devs with a W86C mainboard */
-+			DMI_MATCH(DMI_BIOS_VERSION, ".F.W86C."),
-+		},
-+		.driver_data = (void *)(BYT_RT5651_DEFAULT_QUIRKS |
-+					BYT_RT5651_IN2_MAP |
-+					BYT_RT5651_SSP0_AIF1 |
-+					BYT_RT5651_MONO_SPEAKER),
-+	},
- 	{}
- };
+@@ -700,7 +705,7 @@ static struct snd_soc_dai_link byt_rt5651_dais[] = {
+ static char byt_rt5651_codec_name[SND_ACPI_I2C_ID_LEN];
+ static char byt_rt5651_codec_aif_name[12]; /*  = "rt5651-aif[1|2]" */
+ static char byt_rt5651_cpu_dai_name[10]; /*  = "ssp[0|2]-port" */
+-static char byt_rt5651_long_name[40]; /* = "bytcr-rt5651-*-mic[-swapped-hp]" */
++static char byt_rt5651_long_name[50]; /* = "bytcr-rt5651-*-spk-*-mic[-swapped-hp]" */
+ 
+ static int byt_rt5651_suspend(struct snd_soc_card *card)
+ {
+@@ -1025,7 +1030,9 @@ static int snd_byt_rt5651_mc_probe(struct platform_device *pdev)
+ 		hp_swapped = "";
+ 
+ 	snprintf(byt_rt5651_long_name, sizeof(byt_rt5651_long_name),
+-		 "bytcr-rt5651-%s-mic%s",
++		 "bytcr-rt5651-%s-spk-%s-mic%s",
++		 (byt_rt5651_quirk & BYT_RT5651_MONO_SPEAKER) ?
++			"mono" : "stereo",
+ 		 mic_name[BYT_RT5651_MAP(byt_rt5651_quirk)], hp_swapped);
+ 	byt_rt5651_card.long_name = byt_rt5651_long_name;
  
 -- 
 2.18.0
