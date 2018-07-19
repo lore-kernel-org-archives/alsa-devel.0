@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Ensure DSP boot work complete
-	before preloader_put return" to the asoc tree
-Date: Thu, 19 Jul 2018 17:58:23 +0100
-Message-ID: <E1fgCFz-0005Z6-TR@debutante>
-References: <20180719105039.28312-3-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirk for the
+	"Connect Tablet 9" tablet" to the asoc tree
+Date: Thu, 19 Jul 2018 18:08:41 +0100
+Message-ID: <E1fgCPx-000602-RS@debutante>
+References: <20180701093023.6872-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3564D267600
- for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 18:58:26 +0200 (CEST)
-In-Reply-To: <20180719105039.28312-3-ckeepax@opensource.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AB32D26733D
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 19:08:48 +0200 (CEST)
+In-Reply-To: <20180701093023.6872-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, patches@opensource.cirrus.com, lgirdwood@gmail.com, stuarth@opensource.cirrus.com, rf@opensource.cirrus.com, broonie@kernel.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Ensure DSP boot work complete before preloader_put return
+   ASoC: Intel: bytcr_rt5640: Add quirk for the "Connect Tablet 9" tablet
 
 has been applied to the asoc tree at
 
@@ -52,35 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From 868e49a4a00afaca07d2c450a02e49581eaece6c Mon Sep 17 00:00:00 2001
-From: Stuart Henderson <stuarth@opensource.cirrus.com>
-Date: Thu, 19 Jul 2018 11:50:37 +0100
-Subject: [PATCH] ASoC: wm_adsp: Ensure DSP boot work complete before
- preloader_put return
+>From 9ee6f8a8cbbd203fb0a844f937007a9525422697 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 1 Jul 2018 11:30:23 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirk for the "Connect Tablet
+ 9" tablet
 
-All controls derived from the loaded firmware should be created prior
-to returning from the preloader's put function, such that they are
-immediately available to user-space.
+Add a quirk for the "Connect Tablet 9" tablet, this tablet has a
+mono-speaker. Otherwise it works fine with the defaults.
 
-Signed-off-by: Stuart Henderson <stuarth@opensource.cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/boards/bytcr_rt5640.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index b7b914963c62..4e7f8525449e 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2672,6 +2672,8 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
- 
- 	snd_soc_dapm_sync(dapm);
- 
-+	flush_work(&dsp->boot_work);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(wm_adsp2_preloader_put);
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index 657910a08261..d32844f94d74 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -486,6 +486,16 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 		},
+ 		.driver_data = (void *)(BYT_RT5640_DMIC1_MAP),
+ 	},
++	{	/* Connect Tablet 9 */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Connect"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "Tablet 9"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
 -- 
 2.18.0
