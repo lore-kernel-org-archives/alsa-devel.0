@@ -1,12 +1,22 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - ALSA JACK plugin 1/1] jack: Only allow ALSA
-	periods multiple of JACKd period
-Date: Thu, 19 Jul 2018 09:50:09 +0200
-Message-ID: <1531986609-10437-1-git-send-email-twischer@de.adit-jv.com>
+From: Jerome Brunet <jbrunet@baylibre.com>
+Subject: Re: [PATCH RESEND 02/15] ASoC: meson: add axg
+	fifo	base driver
+Date: Thu, 19 Jul 2018 09:55:53 +0200
+Message-ID: <1531986953.26720.21.camel@baylibre.com>
+References: <20180717154304.9973-1-jbrunet@baylibre.com>
+ <20180717154304.9973-3-jbrunet@baylibre.com>
+ <20180718115054.GI5700@sirena.org.uk> <s5ha7qoblk0.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com
+ [209.85.221.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id C0A072675FC
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 09:55:55 +0200 (CEST)
+Received: by mail-wr1-f65.google.com with SMTP id h9-v6so7070278wro.3
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 00:55:55 -0700 (PDT)
+In-Reply-To: <s5ha7qoblk0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,88 +26,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Laxmi Devi <ldevi@de.adit-jv.com>, alsa-devel@alsa-project.org, Timo Wischer <twischer@de.adit-jv.com>
+To: Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Laxmi Devi <ldevi@de.adit-jv.com>
+On Wed, 2018-07-18 at 17:39 +0200, Takashi Iwai wrote:
+> On Wed, 18 Jul 2018 13:50:54 +0200,
+> Mark Brown wrote:
+> > 
+> > On Tue, Jul 17, 2018 at 05:42:51PM +0200, Jerome Brunet wrote:
+> > 
+> > > +	return !status ? IRQ_NONE : IRQ_HANDLED;
+> > 
+> > Please just write normal conditional statements, it makes things a lot
+> > easier to read (the ! isn't helping either here).
 
-There is a higher Xrun probability whenever the ALSA period is not a
-multiple of the JACKd period and the ALSA buffer is only twice the period.
-Allowing ALSA buffers of min. 3x period is not a good solution because this
-would increase the latency.
+Indeed. I'll correct this in a follow up patch
 
-As an example in case of ALSA is using a period of 11 frames and JACK a
-period of 12 frames and a buffer of 22 frames (2x ALSA period) is used:
-- The buffer is filled and contains 22 frames
-- JACK is reading 12 frames. Buffer is only containing 10 frames
-- Now, ALSA has to be scheduled exactly after the last JACK read and
-  before the next read. Otherwise we will get an Xrun
-In case of ALSA is using a multiple period of JACK, JACK can always read
-2 periods before an Xrun if the buffer was full.
+> 
+> ... and there is the standard IRQ_RETVAL() macro for this purpose.
 
-In case of ALSA is using a period of 12 frames and JACK a period of 11
-frames and a buffer of 24 frames (2x ALSA period) is used:
-- The buffer is filled and contains 24 frames
-- JACK is reading 11 frames. Buffer is now containing 13 frames. But ALSA
-  can still not write to the buffer
-- JACK reads 11 additional frames. Buffer contains 2 frames
-- Now, ALSA has to be scheduled exactly after the last JACK read and
-  before the next read. Otherwise we will get an Xrun
-In case of ALSA is using a multiple period of JACK, ALSA can always write
-to the buffer as long as the buffer is filled with less or equal of half
-of buffer.
+I was not aware of it. Thanks for the tip Takashi
 
-Therefore this patch enforces an ALSA period which is always a multiple
-of the JACKd period.
-
-Signed-off-by: Laxmi Devi <ldevi@de.adit-jv.com>
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-
-diff --git a/jack/pcm_jack.c b/jack/pcm_jack.c
-index fbc9daf..b39835e 100644
---- a/jack/pcm_jack.c
-+++ b/jack/pcm_jack.c
-@@ -29,6 +29,8 @@
- #include <alsa/asoundlib.h>
- #include <alsa/pcm_external.h>
- 
-+#define MAX_PERIODS_MULTIPLE 64
-+
- typedef enum _jack_format {
- 	SND_PCM_JACK_FORMAT_RAW
- } snd_pcm_jack_format_t;
-@@ -364,8 +366,20 @@ static int jack_set_hw_constraint(snd_pcm_jack_t *jack)
- 	};
- 	unsigned int format = SND_PCM_FORMAT_FLOAT;
- 	unsigned int rate = jack_get_sample_rate(jack->client);
-+	unsigned int psize_list[MAX_PERIODS_MULTIPLE];
-+	unsigned int nframes = jack_get_buffer_size(jack->client);
-+	unsigned int jack_buffer_bytes = (snd_pcm_format_size(format, nframes) *
-+					  jack->channels);
-+	unsigned int i;
- 	int err;
- 
-+	if (!jack_buffer_bytes) {
-+		SNDERR("Buffer size is zero");
-+		return -EINVAL;
-+	}
-+	for (i = 1; i <= ARRAY_SIZE(psize_list); i++)
-+		psize_list[i-1] = jack_buffer_bytes * i;
-+
- 	jack->sample_bits = snd_pcm_format_physical_width(format);
- 	if ((err = snd_pcm_ioplug_set_param_list(&jack->io, SND_PCM_IOPLUG_HW_ACCESS,
- 						 ARRAY_SIZE(access_list), access_list)) < 0 ||
-@@ -375,8 +389,8 @@ static int jack_set_hw_constraint(snd_pcm_jack_t *jack)
- 						   jack->channels, jack->channels)) < 0 ||
- 	    (err = snd_pcm_ioplug_set_param_minmax(&jack->io, SND_PCM_IOPLUG_HW_RATE,
- 						   rate, rate)) < 0 ||
--	    (err = snd_pcm_ioplug_set_param_minmax(&jack->io, SND_PCM_IOPLUG_HW_PERIOD_BYTES,
--						   128, 64*1024)) < 0 ||
-+	    (err = snd_pcm_ioplug_set_param_list(&jack->io, SND_PCM_IOPLUG_HW_PERIOD_BYTES,
-+						 ARRAY_SIZE(psize_list), psize_list)) < 0 ||
- 	    (err = snd_pcm_ioplug_set_param_minmax(&jack->io, SND_PCM_IOPLUG_HW_PERIODS,
- 						   2, 64)) < 0)
- 		return err;
--- 
-2.7.4
+> 
+> 
+> Takashi
