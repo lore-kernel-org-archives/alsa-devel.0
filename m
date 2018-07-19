@@ -1,7 +1,7 @@
 From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH 4/4] ALSA: usb-audio: Add UAC3 Power Domains to suspend/resume
-Date: Thu, 19 Jul 2018 12:22:15 +0100
-Message-ID: <20180719112215.4219-5-jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH 3/4] ALSA: usb-audio: Operate UAC3 Power Domains in PCM callbacks
+Date: Thu, 19 Jul 2018 12:22:14 +0100
+Message-ID: <20180719112215.4219-4-jorge.sanjuan@codethink.co.uk>
 References: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
@@ -10,90 +10,44 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Set the UAC3 Power Domain state for an Audio Streaming interface
-to D2 state before suspending the device (usb_driver callback).
-This lets the device know there is no intention to use any of the
-Units in the Audio Function and that the host is not going to
-even listen for wake-up events (interrupts) on the units.
+Make use of UAC3 Power Domains associated to an Audio Streaming
+path within the PCM's logic. This means, when there is no audio
+being transferred (pcm is closed), the host will set the Power Domain
+associated to that substream to state D1. When audio is being transferred
+(from hw_params onwards), the Power Domain will be set to D0 state.
 
-If the usb_driver gets resumed, the state D1 (idle) will be
-set.
+This is the way the host lets the device now which Terminal
+is going to be actively used and it is for the device to
+manage its own internal resources on that UAC3 Power Domain.
 
 Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 ---
- sound/usb/card.c |  9 +++++++++
- sound/usb/pcm.c  | 30 ++++++++++++++++++++++++++++++
- sound/usb/pcm.h  |  2 ++
- 3 files changed, 41 insertions(+)
+ sound/usb/pcm.c    | 34 +++++++++++++++++++++++++++++++---
+ sound/usb/stream.c |  6 +++++-
+ 2 files changed, 36 insertions(+), 4 deletions(-)
 
-diff --git a/sound/usb/card.c b/sound/usb/card.c
-index a1ed798a1c6b..9c2a15b805c3 100644
---- a/sound/usb/card.c
-+++ b/sound/usb/card.c
-@@ -808,6 +808,7 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- 		snd_power_change_state(chip->card, SNDRV_CTL_POWER_D3hot);
- 	if (!chip->num_suspended_intf++) {
- 		list_for_each_entry(as, &chip->pcm_list, list) {
-+			snd_usb_pcm_suspend(as);
- 			snd_pcm_suspend_all(as->pcm);
- 			as->substream[0].need_setup_ep =
- 				as->substream[1].need_setup_ep = true;
-@@ -824,6 +825,7 @@ static int usb_audio_suspend(struct usb_interface *intf, pm_message_t message)
- static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
- {
- 	struct snd_usb_audio *chip = usb_get_intfdata(intf);
-+	struct snd_usb_stream *as;
- 	struct usb_mixer_interface *mixer;
- 	struct list_head *p;
- 	int err = 0;
-@@ -834,6 +836,13 @@ static int __usb_audio_resume(struct usb_interface *intf, bool reset_resume)
- 		return 0;
- 
- 	atomic_inc(&chip->active); /* avoid autopm */
-+
-+	list_for_each_entry(as, &chip->pcm_list, list) {
-+		err = snd_usb_pcm_resume(as);
-+		if (err < 0)
-+			goto err_out;
-+	}
-+
- 	/*
- 	 * ALSA leaves material resumption to user space
- 	 * we just notify and restart the mixers
 diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
-index 0ae5f539706d..266f7028d01b 100644
+index 4b930fa47277..0ae5f539706d 100644
 --- a/sound/usb/pcm.c
 +++ b/sound/usb/pcm.c
-@@ -729,6 +729,36 @@ static int snd_usb_pcm_change_state(struct snd_usb_substream *subs, int state)
- 	return 0;
+@@ -711,6 +711,24 @@ static int configure_endpoint(struct snd_usb_substream *subs)
+ 	return ret;
  }
  
-+int snd_usb_pcm_suspend(struct snd_usb_stream *as)
++static int snd_usb_pcm_change_state(struct snd_usb_substream *subs, int state)
 +{
 +	int ret;
 +
-+	ret = snd_usb_pcm_change_state(&as->substream[0], UAC3_PD_STATE_D2);
-+	if (ret < 0)
++	if (!subs->str_pd)
++		return 0;
++
++	ret = snd_usb_power_domain_set(subs->stream->chip, subs->str_pd, state);
++	if (ret < 0) {
++		dev_err(&subs->dev->dev,
++			"Cannot change Power Domain ID: %d to state: %d. Err: %d\n",
++			subs->str_pd->pd_id, state, ret);
 +		return ret;
-+
-+	ret = snd_usb_pcm_change_state(&as->substream[1], UAC3_PD_STATE_D2);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+int snd_usb_pcm_resume(struct snd_usb_stream *as)
-+{
-+	int ret;
-+
-+	ret = snd_usb_pcm_change_state(&as->substream[0], UAC3_PD_STATE_D1);
-+	if (ret < 0)
-+		return ret;
-+
-+	ret = snd_usb_pcm_change_state(&as->substream[1], UAC3_PD_STATE_D1);
-+	if (ret < 0)
-+		return ret;
++	}
 +
 +	return 0;
 +}
@@ -101,18 +55,68 @@ index 0ae5f539706d..266f7028d01b 100644
  /*
   * hw_params callback
   *
-diff --git a/sound/usb/pcm.h b/sound/usb/pcm.h
-index f77ec58bf1a1..9833627c1eca 100644
---- a/sound/usb/pcm.h
-+++ b/sound/usb/pcm.h
-@@ -6,6 +6,8 @@ snd_pcm_uframes_t snd_usb_pcm_delay(struct snd_usb_substream *subs,
- 				    unsigned int rate);
+@@ -755,16 +773,22 @@ static int snd_usb_hw_params(struct snd_pcm_substream *substream,
+ 	ret = snd_usb_lock_shutdown(subs->stream->chip);
+ 	if (ret < 0)
+ 		return ret;
++
+ 	ret = set_format(subs, fmt);
+-	snd_usb_unlock_shutdown(subs->stream->chip);
+ 	if (ret < 0)
+-		return ret;
++		goto unlock;
++
++	ret = snd_usb_pcm_change_state(subs, UAC3_PD_STATE_D0);
++	if (ret < 0)
++		goto unlock;
  
- void snd_usb_set_pcm_ops(struct snd_pcm *pcm, int stream);
-+int snd_usb_pcm_suspend(struct snd_usb_stream *as);
-+int snd_usb_pcm_resume(struct snd_usb_stream *as);
+ 	subs->interface = fmt->iface;
+ 	subs->altset_idx = fmt->altset_idx;
+ 	subs->need_setup_ep = true;
  
- int snd_usb_init_pitch(struct snd_usb_audio *chip, int iface,
- 		       struct usb_host_interface *alts,
+-	return 0;
++ unlock:
++	snd_usb_unlock_shutdown(subs->stream->chip);
++	return ret;
+ }
+ 
+ /*
+@@ -1265,6 +1289,7 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+ 	int direction = substream->stream;
+ 	struct snd_usb_stream *as = snd_pcm_substream_chip(substream);
+ 	struct snd_usb_substream *subs = &as->substream[direction];
++	int ret;
+ 
+ 	stop_endpoints(subs, true);
+ 
+@@ -1273,7 +1298,10 @@ static int snd_usb_pcm_close(struct snd_pcm_substream *substream)
+ 	    !snd_usb_lock_shutdown(subs->stream->chip)) {
+ 		usb_set_interface(subs->dev, subs->interface, 0);
+ 		subs->interface = -1;
++		ret = snd_usb_pcm_change_state(subs, UAC3_PD_STATE_D1);
+ 		snd_usb_unlock_shutdown(subs->stream->chip);
++		if (ret < 0)
++			return ret;
+ 	}
+ 
+ 	subs->pcm_substream = NULL;
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 031878a2a481..96402ca87aa5 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -110,8 +110,12 @@ static void snd_usb_init_substream(struct snd_usb_stream *as,
+ 	if (fp->channels > subs->channels_max)
+ 		subs->channels_max = fp->channels;
+ 
+-	if (pd)
++	if (pd) {
+ 		subs->str_pd = pd;
++		/* Initialize Power Domain to idle status D1 */
++		snd_usb_power_domain_set(subs->stream->chip, pd,
++					 UAC3_PD_STATE_D1);
++	}
+ 
+ 	snd_usb_preallocate_buffer(subs);
+ }
 -- 
 2.11.0
