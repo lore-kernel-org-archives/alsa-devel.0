@@ -1,12 +1,16 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - DMA engine v2 1/1] ALSA: SOC: DMA: increment
-	buffer pointer atomically
-Date: Thu, 19 Jul 2018 12:29:00 +0200
-Message-ID: <1531996140-19880-1-git-send-email-twischer@de.adit-jv.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH 1/5] ASoC: wm_adsp: Correct algorithm list
+	allocation size
+Date: Thu, 19 Jul 2018 11:50:35 +0100
+Message-ID: <20180719105039.28312-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id A8C6826789E
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 12:50:43 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -16,65 +20,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org, Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>, Jiada Wang <jiada_wang@mentor.com>, Veeraiyan Chidambaram <veeraiyan.chidambaram@in.bosch.com>, Andreas Pape <apape@de.adit-jv.com>
+To: broonie@kernel.org
+Cc: stuarth@opensource.cirrus.com, patches@opensource.cirrus.com, rf@opensource.cirrus.com, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Pape <apape@de.adit-jv.com>
+Commit 6396bb221514 ("treewide: kzalloc() -> kcalloc()") was
+overlooked when doing some refactoring to the algorithm list
+handling, which lead to twice as much buffer being allocated
+as required for reading the algorithm list. A kcalloc is no
+longer appropriate since the allocation size is now in bytes
+not registers, as such change back to kzalloc.
 
-Setting pointer and afterwards check for wrap around leads
-to the possibility of returning the inconsistent pointer position.
-This patch increments buffer pointer atomically to avoid this issue.
-
-Signed-off-by: Andreas Pape <apape@de.adit-jv.com>
-
-Since commit: b7ae6f3 dmaengine implementation has been moved
-from ASoC to ALSA core. So change goes to sound/soc/soc-dmaengine-pcm.c,
-apply to sound/core/pcm_dmaengine.c now
-
-cherry picked from ADIT v3.14 e2f803f("ALSA: SOC: DMA: increment buffer pointer atomically")
-Signed-off-by: Veeraiyan Chidambaram <veeraiyan.chidambaram@in.bosch.com>
-(cherry picked from ADIT v4.1 commit 9e7eff10a38157db75f12e032fc378d3104a2812)
-Signed-off-by: Takashi Sakamoto <takashi.sakamoto@miraclelinux.com>
-(cherry picked from ADIT v4.9 commit 66c00aa1e7cd3b077fc2e5a45a4594b86246cf78)
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+Fixes: 7f7cca08abf4 ("ASoC: wm_adsp: Simplify handling of alg offset and length")
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 ---
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-v1 can be found in
-http://mailman.alsa-project.org/pipermail/alsa-devel/2016-November/115277.html
-
-diff --git a/sound/core/pcm_dmaengine.c b/sound/core/pcm_dmaengine.c
-index 8eb58c7..0a7ed85 100644
---- a/sound/core/pcm_dmaengine.c
-+++ b/sound/core/pcm_dmaengine.c
-@@ -139,12 +139,14 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_set_config_from_dai_data);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 07c17acc8a4f..99108d18de8d 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -1906,7 +1906,7 @@ static void *wm_adsp_read_algs(struct wm_adsp *dsp, size_t n_algs,
+ 	/* Convert length from DSP words to bytes */
+ 	len *= sizeof(u32);
  
- static void dmaengine_pcm_dma_complete(void *arg)
- {
-+	unsigned int new_pos;
- 	struct snd_pcm_substream *substream = arg;
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
- 
--	prtd->pos += snd_pcm_lib_period_bytes(substream);
--	if (prtd->pos >= snd_pcm_lib_buffer_bytes(substream))
--		prtd->pos = 0;
-+	new_pos = READ_ONCE(prtd->pos) + snd_pcm_lib_period_bytes(substream);
-+	if (new_pos >= snd_pcm_lib_buffer_bytes(substream))
-+		new_pos = 0;
-+	WRITE_ONCE(prtd->pos, new_pos);
- 
- 	snd_pcm_period_elapsed(substream);
- }
-@@ -235,7 +237,7 @@ EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_trigger);
- snd_pcm_uframes_t snd_dmaengine_pcm_pointer_no_residue(struct snd_pcm_substream *substream)
- {
- 	struct dmaengine_pcm_runtime_data *prtd = substream_to_prtd(substream);
--	return bytes_to_frames(substream->runtime, prtd->pos);
-+	return bytes_to_frames(substream->runtime, READ_ONCE(prtd->pos));
- }
- EXPORT_SYMBOL_GPL(snd_dmaengine_pcm_pointer_no_residue);
+-	alg = kcalloc(len, 2, GFP_KERNEL | GFP_DMA);
++	alg = kzalloc(len, GFP_KERNEL | GFP_DMA);
+ 	if (!alg)
+ 		return ERR_PTR(-ENOMEM);
  
 -- 
-2.7.4
+2.11.0
