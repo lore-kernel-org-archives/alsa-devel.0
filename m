@@ -1,78 +1,45 @@
-From: "He, Bo" <bo.he@intel.com>
-Subject: RE: [PATCH] ALSA: core: fix unsigned int pages overflow when
- comapred
-Date: Thu, 19 Jul 2018 01:10:03 +0000
-Message-ID: <CD6925E8781EFD4D8E11882D20FC406D52980D9A@SHSMSX104.ccr.corp.intel.com>
-References: <CD6925E8781EFD4D8E11882D20FC406D52980C51@SHSMSX104.ccr.corp.intel.com>
- <s5hpnzkbu3v.wl-tiwai@suse.de>
+From: Srikanth Korangala Hari <srikanth.h@samsung.com>
+Subject: Re: [PATCHv2 1/1] Preventive fix in sound module
+Date: Thu, 19 Jul 2018 10:46:31 +0530
+Message-ID: <20180719051631epcms5p8224b903510a4fe2414c30f3b6b02d7de@epcms5p8>
+References: <s5hd0vkbm7r.wl-tiwai@suse.de>
+ <1531908468-1352-1-git-send-email-srikanth.h@samsung.com>
+ <1531926420-25488-1-git-send-email-srikanth.h@samsung.com>
+ <CGME20180718150653epcas2p3c2f0e36569529df72ce0b79a22867eac@epcms5p8>
+Reply-To: srikanth.h@samsung.com
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hpnzkbu3v.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
+ by alsa0.perex.cz (Postfix) with ESMTP id 20566267815
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 07:16:36 +0200 (CEST)
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+ by mailout3.samsung.com (KnoxPortal) with ESMTP id
+ 20180719051633epoutp0378463ebcaff42914ac53c4c9f607ca42~CrVKZC1_y2483524835epoutp03o
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 05:16:33 +0000 (GMT)
+In-Reply-To: <s5hd0vkbm7r.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "perex@perex.cz" <perex@perex.cz>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "Zhang, Jun" <jun.zhang@intel.com>, "Zhang, Yanmin" <yanmin.zhang@intel.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "keescook@chromium.org" <keescook@chromium.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "ben.hutchings@codethink.co.uk" <ben.hutchings@codethink.co.uk>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, CPGS <cpgs@samsung.com>, "elfring@users.sourceforge.net" <elfring@users.sourceforge.net>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks, we will run the test with your patch, will update the test results in 24 Hours.
-
-Current status is:
-We can reproduce the issue in 3000 cycles stress S/R test, we can't reproduce the kernel panic with our patch in 6000 cycles.
-
------Original Message-----
-From: Takashi Iwai <tiwai@suse.de> 
-Sent: Wednesday, July 18, 2018 8:34 PM
-To: He, Bo <bo.he@intel.com>
-Cc: alsa-devel@alsa-project.org; perex@perex.cz; linux-kernel@vger.kernel.org; Zhang, Jun <jun.zhang@intel.com>; Zhang, Yanmin <yanmin.zhang@intel.com>
-Subject: Re: [PATCH] ALSA: core: fix unsigned int pages overflow when comapred
-
-On Wed, 18 Jul 2018 13:52:45 +0200,
- He, Bo  wrote:
-> 
-> we see the below kernel panic on stress suspend resume test in 
-> snd_malloc_sgbuf_pages(), snd_dma_alloc_pages_fallback() alloc chunk 
-> maybe larger than the left pages due to the pages alignment, which 
-> will cause the pages overflow.
-> 
-> while (pages > 0) {
-> 	...
-> 	pages -= chunk;
-> }
-> 
-> the patch is change the pages from unsigned int to int to fix the issue.
-
-Thanks for the patch.
-
-Although the analysis is correct, the fix doesn't look ideal.  It's also possible that the returned size may over sgbuf->tblsize if we are more unlucky.
-
-A change like below should work instead.  Could you give it a try?
-
-
-Takashi
-
--- 8< --
---- a/sound/core/sgbuf.c
-+++ b/sound/core/sgbuf.c
-@@ -108,7 +108,7 @@ void *snd_malloc_sgbuf_pages(struct device *device,
- 			break;
- 		}
- 		chunk = tmpb.bytes >> PAGE_SHIFT;
--		for (i = 0; i < chunk; i++) {
-+		for (i = 0; i < chunk && pages > 0; i++) {
- 			table->buf = tmpb.area;
- 			table->addr = tmpb.addr;
- 			if (!i)
-@@ -117,9 +117,9 @@ void *snd_malloc_sgbuf_pages(struct device *device,
- 			*pgtable++ = virt_to_page(tmpb.area);
- 			tmpb.area += PAGE_SIZE;
- 			tmpb.addr += PAGE_SIZE;
-+			sgbuf->pages++;
-+			pages--;
- 		}
--		sgbuf->pages += chunk;
--		pages -= chunk;
- 		if (chunk < maxpages)
- 			maxpages = chunk;
- 	}
+wqANCj4gVGhlwqBjaGVja3PCoGluwqBwcm9jwqBhcmXCoG1vb3TCoGlmwqB3ZcKgZ3VhcmFudGVl
+wqB0aGXCoG5vbi1OVUxMwqBjYXJkwqBhdA0KPiBzbmRfdGltZXJfbmV3KCnCoGluwqB0aGXCoGFi
+b3ZlLg0KwqANCj4gU2/CoGl0J3PCoG5vdMKgYWJvdXTCoGZpeGluZ8KgaW7CoHNvdW5kwqBtb2R1
+bGUuwqDCoEl0wqBzZXJ2ZXPCoHJpZ2h0LsKgwqBZb3VyDQo+IHBhdGNowqB3b3VsZMKgYWRkwqBh
+wqBzYW5pdHnCoGNoZWNrwqB0b8KgY2F0Y2jCoGHCoGJ1Z2d5wqBjb2RlwqBpbsKgdGhlwqBjYWxs
+ZXINCj4gc2lkZS4NCsKgDQpZb3UgYXJlIHJpZ2h0IFRha2FzaGksIGFzIHlvdSBzYWlkIHRoaXMg
+Y2hhbmdlcyB3aWxsIGNhdGNoIGJ1Z2d5IGNvZGUgaW4gY2FsbGVyIHNpZGUuDQoNClRoYW5rIHlv
+dSBmb3IgeW91ciByZXNwb3NlLg0KDQpUaGFua3MsDQpTcmlrYW50aA0KwqANCsKgCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
