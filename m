@@ -1,95 +1,80 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v6 07/10] soundwire: keep track of Masters
- in a stream
-Date: Thu, 19 Jul 2018 10:06:30 -0500
-Message-ID: <4a8e46a4-4010-aa70-a3d4-5c5d3faf5245@linux.intel.com>
-References: <20180716184713.13356-1-sanyog.r.kale@intel.com>
- <20180716184713.13356-8-sanyog.r.kale@intel.com>
+Subject: Re: [alsa-devel] [PATCH v2 0/3] Make the audio
+ component binding more generic
+Date: Thu, 19 Jul 2018 18:26:28 -0500
+Message-ID: <136e40e7-8667-8816-108b-7102c8f963d8@linux.intel.com>
+References: <20180717092652.25630-1-tiwai@suse.de>
+ <249d6be5-13a0-89ca-4a2f-0d88299415cd@linux.intel.com>
+ <s5hpnzj6afa.wl-tiwai@suse.de>
+ <c6ae9387-0f2e-34fa-4ccc-596512377066@linux.intel.com>
+ <s5hpnzj3vhb.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
- by alsa0.perex.cz (Postfix) with ESMTP id 1787826733D
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 01:18:10 +0200 (CEST)
-In-Reply-To: <20180716184713.13356-8-sanyog.r.kale@intel.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hpnzj3vhb.wl-tiwai@suse.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sanyog Kale <sanyog.r.kale@intel.com>, alsa-devel@alsa-project.org
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, vkoul@kernel.org, shreyas.nc@intel.com
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, Jim Qu <Jim.Qu@amd.com>, Mark Brown <broonie@kernel.org>, Rodrigo Vivi <rodrigo.vivi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/16/18 1:47 PM, Sanyog Kale wrote:
-> From: Shreyas NC <shreyas.nc@intel.com>
-> 
-> A multi link bankswitch can be done if the hardware supports and
-> the stream is handled by multiple Master(s).
-> 
-> This preparatory patch adds support to track m_rt in a stream.
-
-The order of the patches seems off, you are adding the definition of 
-m_rt_count in patch 7 but using it in patch 6, that'll break git bisect.
-What am i missing?
-
-It'd also make more sense to have the reference counts in the same 
-patch, it's hard to track otherwise, so maybe one patch to add the 
-definitions and inits and the second to increase/decrease+use the value 
-as needed.
-
-> 
-> Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
-> Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
-> ---
->   drivers/soundwire/stream.c    | 2 ++
->   include/linux/soundwire/sdw.h | 2 ++
->   2 files changed, 4 insertions(+)
-> 
-> diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-> index 7e75a400d03e..539b98ec18d9 100644
-> --- a/drivers/soundwire/stream.c
-> +++ b/drivers/soundwire/stream.c
-> @@ -759,6 +759,7 @@ struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name)
->   	stream->name = stream_name;
->   	INIT_LIST_HEAD(&stream->master_list);
->   	stream->state = SDW_STREAM_ALLOCATED;
-> +	stream->m_rt_count = 0;
->   
->   	return stream;
->   }
-> @@ -963,6 +964,7 @@ int sdw_stream_remove_master(struct sdw_bus *bus,
->   
->   		sdw_master_port_release(bus, m_rt);
->   		sdw_release_master_stream(m_rt, stream);
-> +		stream->m_rt_count--;
->   	}
->   
->   	if (list_empty(&stream->master_list))
-> diff --git a/include/linux/soundwire/sdw.h b/include/linux/soundwire/sdw.h
-> index 03df709fb8ef..214e14604d9f 100644
-> --- a/include/linux/soundwire/sdw.h
-> +++ b/include/linux/soundwire/sdw.h
-> @@ -771,6 +771,7 @@ struct sdw_stream_params {
->    * @master_list: List of Master runtime(s) in this stream.
->    * master_list can contain only one m_rt per Master instance
->    * for a stream
-> + * @m_rt_count: Count of Master runtime(s) in this stream
->    */
->   struct sdw_stream_runtime {
->   	char *name;
-> @@ -778,6 +779,7 @@ struct sdw_stream_runtime {
->   	enum sdw_stream_state state;
->   	enum sdw_stream_type type;
->   	struct list_head master_list;
-> +	int m_rt_count;
->   };
->   
->   struct sdw_stream_runtime *sdw_alloc_stream(char *stream_name);
-> 
+T24gNy8xOS8xOCAxOjU2IFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVGh1LCAxOSBKdWwg
+MjAxOCAxNTowNTo0NSArMDIwMCwKPiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4KPj4g
+T24gNy8xOS8xOCAxMjo1MCBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4gT24gV2VkLCAxOCBK
+dWwgMjAxOCAyMjo1NDozNSArMDIwMCwKPj4+IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+
+Pj4+Cj4+Pj4KPj4+Pgo+Pj4+IE9uIDA3LzE3LzIwMTggMDQ6MjYgQU0sIFRha2FzaGkgSXdhaSB3
+cm90ZToKPj4+Pj4gSGksCj4+Pj4+Cj4+Pj4+IHRoaXMgaXMgYSBwcmVsaW1pbmlhcnkgcGF0Y2gg
+c2V0IHRvIGNvbnZlcnQgdGhlIGV4aXN0aW5nIGk5MTUgLwo+Pj4+PiBIRC1hdWRpbyBjb21wb25l
+bnQgYmluZGluZyB0byBiZSBhcHBsaWNhYmxlIHRvIG90aGVyIGRyaXZlcnMgbGlrZQo+Pj4+PiBy
+YWRlb24gLyBhbWRncHUuICBUaGlzIHBhdGNoc2V0IGl0c2VsZiBkb2Vzbid0IGNoYW5nZSB0aGUK
+Pj4+Pj4gZnVuY3Rpb25hbGl0eSBidXQgb25seSByZW5hbWVzIGFuZCBzcGxpdCB0byBhIG5ldyBk
+cm1fYXVkaW9fY29tcG9uZW50Cj4+Pj4+IHN0dWZmIGZyb20gaTkxNV9hdWRpb19jb21wb25lbnQu
+Cj4+Pj4+Cj4+Pj4+IFRoZSBhY3R1YWwgdXNhZ2Ugb2YgdGhlIG5ldyBBUEkgd2lsbCBmb2xsb3cg
+b25jZSBhZnRlciB0aGlzIG9uZSBnZXRzCj4+Pj4+IHJldmlld2VkIC8gYWNjZXB0ZWQuICBUaGUg
+d2hvbGUgcGF0Y2hlcyAoaW5jbHVkaW5nIHRoaXMgcGF0Y2hzZXQpIGFyZQo+Pj4+PiBmb3VuZCBp
+biB0b3BpYy9oZGEtYWNvbXAgYnJhbmNoIG9mIHNvdW5kLmdpdCB0cmVlLgo+Pj4+Pgo+Pj4+PiBC
+VFcsIHNpbmNlIHRoZSB3aG9sZSBzdHVmZiBpcyBhYm91dCB0aGUgYXVkaW8gYmluZGluZywgSSBz
+dXBwb3NlIHRoZXNlCj4+Pj4+IHdpbGwgZ28gdGhyb3VnaCBzb3VuZCBnaXQgdHJlZS4gIExldCBt
+ZSBrbm93IGlmIGFueW9uZSBoYXMgY29uY2VybnMuCj4+Pj4gTm8gb2JqZWN0aW9ucyBidXQgYSBz
+bGlnaHQgY29uY2VybiB0aGF0IHRoaXMgd2lsbCBjb25mbGljdCB3aXRoIHRoZQo+Pj4+IEhEQXVk
+aW8rRFNQIHBhdGNoZXMgdGhhdCBJIHdhcyBhYm91dCB0byByZXN1Ym1pdCBvbiB0b3Agb2YgeW91
+cgo+Pj4+IHRvcGljL2hkYS1jb3JlLWludGVsIGJyYW5jaC4gdGhlIHR3byBzZXJpZXMgdG91Y2gg
+dGhlIHNhbWUgZmlsZXMgc28KPj4+PiBpdCdkIGJlIGEgbWlyYWNsZSBpZiB0aGVyZSBpcyBubyBp
+c3N1ZS4KPj4+PiBIb3cgZG8geW91IHdhbnQgdG8gZGVhbCB3aXRoIHRoaXM/Cj4+Pgo+Pj4gRG9l
+cyBpdCBjb25mbGljdCBzZXZlcmVseT8gIElmIGl0J3MgdHJpdmlhbCwgaXQgY2FuIGJlIHJlc29s
+dmVkIGF0Cj4+PiBtZXJnZSB0aW1lLCB0b28uICBUaGUgY2hhbmdlcyBpbiBteSBwYXRjaHNldCBh
+cmUgZmFpcmx5IHRyaXZpYWwsIHNvIGl0Cj4+PiBzaG91bGRuJ3QgYmUgdG9vIGhhcmQuCj4+Cj4+
+IEkgd2FzIGFibGUgdG8gbWFrZSB0aGluZ3Mgd29yayBieSB0YWtpbmcgeW91ciB0b3BpYy9oZGEt
+Y29yZS1pbnRlbCwKPj4gbWVyZ2UgaXQgb24gTWFyaydzIGZvci1uZXh0LCB0aGVuIGFkZCBteSBh
+ZGRpdGlvbmFsIGNoYW5nZXMgYW5kIHRoZXNlCj4+IERSTSBjaGFuZ2VzLiBUaGUgbGFzdCB0d28g
+Y2FuIGJlIGRvbmUgaW4gYW55IG9yZGVyLiBCdXQgSSBhbSBnZXR0aW5nCj4+IHNvbWUgY29uZmxp
+Y3RzIGlmIEkgdHJ5IHRvIGFwcGx5IHRoZXNlIERSTSBjaGFuZ2VzIGZpcnN0LCBub3Qgc3VyZSB3
+aHkKPj4gZ2l0IGlzIGNvbXBsYWluaW5nIHRob3VnaCwgdGhlIGNoYW5nZXMgbG9vayB0cml2aWFs
+IGVub3VnaC4KPj4gU28geWVzIGl0IGxvb2tzIHBvc3NpYmxlIHRvIGRlYWwgd2l0aCB0aGUgdHdv
+IHNlcmllcyBpbiBwYXJhbGxlbCwgd2lsbAo+PiBzZW5kIG15IHVwZGF0ZSBsYXRlciB0b2RheS4K
+PiAKPiBPSywgc2luY2UgbXkgY2hhbmdlcyBhcmUgcmVsYXRpdmVseSB0cml2aWFsIHRvIGRlYWwg
+d2l0aCwgSSBtZXJnZSB0aGUKPiBjaGFuZ2VzIHRvIGZvci1uZXh0IGJyYW5jaCBub3cuCj4gCj4g
+SWYgeW91ciBwYXRjaGVzIGNhbiBiZSByZXNwaW5uZWQsIG1heWJlIGl0J3MgZWFzaWVyIHRvIGJl
+IHJlYmFzZWQgb24KPiB0b3Agb2YgdGhlc2UgbWVyZ2VzLgoKSSB3YXMgcGxhbm5pbmcgdG8gcmVz
+ZW5kIHRoZW0gdG9tb3Jyb3cgYWZ0ZXIgaW50ZXJuYWwgcmV2aWV3cyAobW9zdGx5IApjaGFuZ2Vz
+IGluIHRoZSBkZXRlY3Rpb24vZW5hYmxlbWVudCBvZiB0aGUgSERhdWRpbytEU1AgY2FzZSkuIElm
+IHlvdSAKd2FudCB0byB0YWtlIGEgbG9vayBpbiB0aGUgbWVhbiB0aW1lIHRoZSBwYXRjaGVzIGFy
+ZSBoZXJlOiAKaHR0cHM6Ly9naXRodWIuY29tL3BsYm9zc2FydC9zb3VuZC9jb21taXRzL3Vwc3Ry
+ZWFtL2hkYTIKCkkgY2FuIHJlYmFzZSB0aGVtIGFzIG5lZWRlZCwgbm8gYmlnIGRlYWwuClRoYW5r
+cwotUGllcnJlCgo+IAo+IE1hcmssIGNvdWxkIHlvdSBtZXJnZSB0b3BpYy9kcm1fYXVkaW9fY29t
+cG9uZW50IGJyYW5jaCBpbnRvIHlvdXJzLCBpZgo+IFBpZXJyZSdzIHBhdGNoc2V0IHdvbid0IGdv
+IGluIGltbWVkaWF0ZWx5PyAgSXQncyBhbiBpbW11dGFibGUgYnJhbmNoLAo+IGluY2x1ZGluZyBh
+bHJlYWR5IHRvcGljL2hkYS1jb3JlLWludGVsIGluIGl0c2VsZi4KPiAKPiAKPiB0aGFua3MsCj4g
+Cj4gVGFrYXNoaQo+IAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
+b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
+Z2Z4Cg==
