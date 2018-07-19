@@ -1,232 +1,136 @@
-From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH 2/4] ALSA: usb-audio: AudioStreaming Power Domain parsing
-Date: Thu, 19 Jul 2018 12:22:13 +0100
-Message-ID: <20180719112215.4219-3-jorge.sanjuan@codethink.co.uk>
-References: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 4/6] ASoC: Intel: bytcr_rt5651: Add IN2
+ input mapping
+Date: Thu, 19 Jul 2018 13:37:46 +0200
+Message-ID: <8ea67d64-09b2-1365-ea0b-d77475adb2d3@redhat.com>
+References: <20180718205542.12364-1-hdegoede@redhat.com>
+ <20180718205542.12364-5-hdegoede@redhat.com>
+ <178b53d8-cb08-cdcc-5e7b-73de42003610@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-ed1-f68.google.com (mail-ed1-f68.google.com
+ [209.85.208.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1726267600
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 13:37:48 +0200 (CEST)
+Received: by mail-ed1-f68.google.com with SMTP id b10-v6so6843528edi.2
+ for <alsa-devel@alsa-project.org>; Thu, 19 Jul 2018 04:37:48 -0700 (PDT)
+In-Reply-To: <178b53d8-cb08-cdcc-5e7b-73de42003610@linux.intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
+Cc: alsa-devel@alsa-project.org, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-Power Domains in the UAC3 spec are mainly intended to be
-associated to an Input or Output Terminal so the host
-changes the power state of the entire capture or playback
-path within the topology.
-
-This patch adds support for finding Power Domains associated
-to an Audio Streaming Interface (bTerminalLink) and adds a
-reference to them in the usb audio substreams (snd_usb_substream).
-
-Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
----
- sound/usb/card.h   |  2 ++
- sound/usb/stream.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++-------
- 2 files changed, 60 insertions(+), 8 deletions(-)
-
-diff --git a/sound/usb/card.h b/sound/usb/card.h
-index 9b41b7dda84f..ac785d15ced4 100644
---- a/sound/usb/card.h
-+++ b/sound/usb/card.h
-@@ -37,6 +37,7 @@ struct audioformat {
- 
- struct snd_usb_substream;
- struct snd_usb_endpoint;
-+struct snd_usb_power_domain;
- 
- struct snd_urb_ctx {
- 	struct urb *urb;
-@@ -115,6 +116,7 @@ struct snd_usb_substream {
- 	int interface;	/* current interface */
- 	int endpoint;	/* assigned endpoint */
- 	struct audioformat *cur_audiofmt;	/* current audioformat pointer (for hw_params callback) */
-+	struct snd_usb_power_domain *str_pd;	/* UAC3 Power Domain for streaming path */
- 	snd_pcm_format_t pcm_format;	/* current audio format (for hw_params callback) */
- 	unsigned int channels;		/* current number of channels (for hw_params callback) */
- 	unsigned int channels_max;	/* max channels in the all audiofmts */
-diff --git a/sound/usb/stream.c b/sound/usb/stream.c
-index 729afd808cc4..031878a2a481 100644
---- a/sound/usb/stream.c
-+++ b/sound/usb/stream.c
-@@ -37,6 +37,7 @@
- #include "format.h"
- #include "clock.h"
- #include "stream.h"
-+#include "power.h"
- 
- /*
-  * free a substream
-@@ -53,6 +54,7 @@ static void free_substream(struct snd_usb_substream *subs)
- 		kfree(fp);
- 	}
- 	kfree(subs->rate_list.list);
-+	kfree(subs->str_pd);
- }
- 
- 
-@@ -82,7 +84,8 @@ static void snd_usb_audio_pcm_free(struct snd_pcm *pcm)
- 
- static void snd_usb_init_substream(struct snd_usb_stream *as,
- 				   int stream,
--				   struct audioformat *fp)
-+				   struct audioformat *fp,
-+				   struct snd_usb_power_domain *pd)
- {
- 	struct snd_usb_substream *subs = &as->substream[stream];
- 
-@@ -107,6 +110,9 @@ static void snd_usb_init_substream(struct snd_usb_stream *as,
- 	if (fp->channels > subs->channels_max)
- 		subs->channels_max = fp->channels;
- 
-+	if (pd)
-+		subs->str_pd = pd;
-+
- 	snd_usb_preallocate_buffer(subs);
- }
- 
-@@ -468,9 +474,11 @@ snd_pcm_chmap_elem *convert_chmap_v3(struct uac3_cluster_header_descriptor
-  * fmt_list and will be freed on the chip instance release. do not free
-  * fp or do remove it from the substream fmt_list to avoid double-free.
-  */
--int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
--			     int stream,
--			     struct audioformat *fp)
-+static int __snd_usb_add_audio_stream(struct snd_usb_audio *chip,
-+				      int stream,
-+				      struct audioformat *fp,
-+				      struct snd_usb_power_domain *pd)
-+
- {
- 	struct snd_usb_stream *as;
- 	struct snd_usb_substream *subs;
-@@ -498,7 +506,7 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
- 		err = snd_pcm_new_stream(as->pcm, stream, 1);
- 		if (err < 0)
- 			return err;
--		snd_usb_init_substream(as, stream, fp);
-+		snd_usb_init_substream(as, stream, fp, pd);
- 		return add_chmap(as->pcm, stream, subs);
- 	}
- 
-@@ -526,7 +534,7 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
- 	else
- 		strcpy(pcm->name, "USB Audio");
- 
--	snd_usb_init_substream(as, stream, fp);
-+	snd_usb_init_substream(as, stream, fp, pd);
- 
- 	/*
- 	 * Keep using head insertion for M-Audio Audiophile USB (tm) which has a
-@@ -544,6 +552,21 @@ int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
- 	return add_chmap(pcm, stream, &as->substream[stream]);
- }
- 
-+int snd_usb_add_audio_stream(struct snd_usb_audio *chip,
-+			     int stream,
-+			     struct audioformat *fp)
-+{
-+	return __snd_usb_add_audio_stream(chip, stream, fp, NULL);
-+}
-+
-+int snd_usb_add_audio_stream_v3(struct snd_usb_audio *chip,
-+				int stream,
-+				struct audioformat *fp,
-+				struct snd_usb_power_domain *pd)
-+{
-+	return __snd_usb_add_audio_stream(chip, stream, fp, pd);
-+}
-+
- static int parse_uac_endpoint_attributes(struct snd_usb_audio *chip,
- 					 struct usb_host_interface *alts,
- 					 int protocol, int iface_no)
-@@ -819,6 +842,7 @@ snd_usb_get_audioformat_uac12(struct snd_usb_audio *chip,
- static struct audioformat *
- snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
- 			     struct usb_host_interface *alts,
-+			     struct snd_usb_power_domain **pd_out,
- 			     int iface_no, int altset_idx,
- 			     int altno, int stream)
- {
-@@ -829,6 +853,7 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
- 	struct uac3_as_header_descriptor *as = NULL;
- 	struct uac3_hc_descriptor_header hc_header;
- 	struct snd_pcm_chmap_elem *chmap;
-+	struct snd_usb_power_domain *pd;
- 	unsigned char badd_profile;
- 	u64 badd_formats = 0;
- 	unsigned int num_channels;
-@@ -1008,12 +1033,28 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
- 		fp->rate_max = UAC3_BADD_SAMPLING_RATE;
- 		fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
- 
-+		pd = kzalloc(sizeof(pd), GFP_KERNEL);
-+		if (!pd) {
-+			kfree(fp->rate_table);
-+			kfree(fp);
-+			return NULL;
-+		}
-+		pd->pd_id = (stream == SNDRV_PCM_STREAM_PLAYBACK) ?
-+					UAC3_BADD_PD_ID10 : UAC3_BADD_PD_ID11;
-+		pd->pd_d1d0_rec = UAC3_BADD_PD_RECOVER_D1D0;
-+		pd->pd_d2d0_rec = UAC3_BADD_PD_RECOVER_D2D0;
-+
- 	} else {
- 		fp->attributes = parse_uac_endpoint_attributes(chip, alts,
- 							       UAC_VERSION_3,
- 							       iface_no);
-+
-+		pd = snd_usb_find_power_domain(chip->ctrl_intf,
-+					       as->bTerminalLink);
-+
- 		/* ok, let's parse further... */
- 		if (snd_usb_parse_audio_format_v3(chip, fp, as, stream) < 0) {
-+			kfree(pd);
- 			kfree(fp->chmap);
- 			kfree(fp->rate_table);
- 			kfree(fp);
-@@ -1021,6 +1062,9 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
- 		}
- 	}
- 
-+	if (pd)
-+		*pd_out = pd;
-+
- 	return fp;
- }
- 
-@@ -1032,6 +1076,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 	struct usb_interface_descriptor *altsd;
- 	int i, altno, err, stream;
- 	struct audioformat *fp = NULL;
-+	struct snd_usb_power_domain *pd = NULL;
- 	int num, protocol;
- 
- 	dev = chip->dev;
-@@ -1114,7 +1159,7 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 			break;
- 		}
- 		case UAC_VERSION_3:
--			fp = snd_usb_get_audioformat_uac3(chip, alts,
-+			fp = snd_usb_get_audioformat_uac3(chip, alts, &pd,
- 						iface_no, i, altno, stream);
- 			break;
- 		}
-@@ -1125,9 +1170,14 @@ int snd_usb_parse_audio_interface(struct snd_usb_audio *chip, int iface_no)
- 			return PTR_ERR(fp);
- 
- 		dev_dbg(&dev->dev, "%u:%d: add audio endpoint %#x\n", iface_no, altno, fp->endpoint);
--		err = snd_usb_add_audio_stream(chip, stream, fp);
-+		if (protocol == UAC_VERSION_3)
-+			err = snd_usb_add_audio_stream_v3(chip, stream, fp, pd);
-+		else
-+			err = snd_usb_add_audio_stream(chip, stream, fp);
-+
- 		if (err < 0) {
- 			list_del(&fp->list); /* unlink for avoiding double-free */
-+			kfree(pd);
- 			kfree(fp->rate_table);
- 			kfree(fp->chmap);
- 			kfree(fp);
--- 
-2.11.0
+SGksCgpPbiAxOC0wNy0xOCAyMzoyMCwgUGllcnJlLUxvdWlzIEJvc3NhcnQgd3JvdGU6Cj4gCj4g
+Cj4gT24gMDcvMTgvMjAxOCAwMzo1NSBQTSwgSGFucyBkZSBHb2VkZSB3cm90ZToKPj4gRHVyaW5n
+IHRoZSByZWNlbnQgY2xlYW51cCBzZXJpZXMgMyBvZiB0aGUgNiBpbnB1dCBtYXBwaW5ncyB3aGVy
+ZSByZW1vdmVkCj4+IGZyb20gdGhlIGJ5dGNyX3J0NTY1MSBtYWNoaW5lIGRyaXZlciBiZWNhdXNl
+IHRlc3Rpbmcgc2hvd2VkIHRoYXQgbm9uZSBvZgo+PiB0aGVtIHdlcmUgdXNlZC4KPj4KPj4gSG93
+ZXZlciBzb21lIGRldmljZXMgZG8gYWN0dWFsbHkgaGF2ZSB0aGVpciBpbnRlcm5hbCBtaWMgb24g
+SU4yIChhbmQKPj4gb25seSBJTjIsIG5vdCBJTjEgYW5kIElOMiksIHRoaXMgZGlkIG5vdCBzaG93
+IGR1cmluZyBwcmV2aW91cyB0ZXN0cwo+PiBkdWUgdG8gYSBidWcgaW4gdGhlIHVzZXJzcGFjZSBV
+Q00gaW5wdXQgZGV2aWNlIHN3aXRjaGluZyBjb2RlLgo+Pgo+PiBUaGlzIGNvbW1pdCByZS1hZGRz
+IHRoZSBJTjIgbWFwcGluZyBmb3IgZGV2aWNlcyB3aXRoIHRoZSBpbnRlcm5hbCBtaWMuCj4+IG9u
+IElOMiBhbmQgdGhlIGhlYWRzZXIgbWljIG9uIElOMyBhbmQgZW5hYmxlcyB0aGlzIG1hcHBpbmcg
+b24gZGV2aWNlcwo+PiB3aXRoIHRoZWlyIGludGVybmFsIG1pYyBvbiBJTjIuCj4gSSBhbSBnZXR0
+aW5nIGRpenp5IDotKQo+IGlzIHRoZSBjb25jbHVzaW9uIHRoYXQgaHM9PUlOMyAobm8gY2hhbmdl
+KSBhbmQgaW50LW1pYz09KERNSUMsIElOMSwgSU4yLCBJTjEyKQoKWWVzIHRoYXQgaXMgdGhlIGNv
+bmNsdXNpb24uIFNvcnJ5IGFib3V0IHRoaXMsIGFzIHNhaWQgbXkgcHJldmlvdXMKdGVzdGluZyB3
+YXMgd3JvbmcgYmVjYXVzZSBvZiBhbiB1c2Vyc3BhY2UgYnVnICh3aGljaCBJIHN0aWxsIG5lZWQg
+dG8KdHJhY2sgZG93bikuCgogPiBhbmQgdGhlIFVDTSBuYW1lcyBvbmx5IHVzZSB0aGUgbGF0dGVy
+IGZvciBkaWZmZXJlbnRpYXRpb24gb2YgcHJvZmlsZXM/CgpDb3JyZWN0LiBUaGlzIHByZXR0eSBt
+dWNoIGZ1bGx5IGFsaWducyB0aGUgcnQ1NjUxIGNvZGUgd2l0aCB0aGUgcnQ1NjQwIGNvZGUKd3J0
+IGxvbmctbmFtZXMuCgpSZWdhcmRzLAoKSGFucwoKCj4gCj4+Cj4+IFRoaXMgY29tbWl0IGFsc28g
+Y2hhbmdlcyB0aGUgZGVmYXVsdCBpbnRlcm5hbCBtaWMgaW5wdXQgdG8gSU4yLCBiZWNhdXNlCj4+
+IGFsbCBteSA3IHRlc3QgZGV2aWNlcyBoYXZlIHRoZWlyIG1pYyB0aGVyZS4KPj4KPj4gU2lnbmVk
+LW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KPj4gLS0tCj4+IE5v
+dGUgSSBoYXZlIHB1dCBnZXR0aW5nIHRvIHRoZSBib3R0b20gb2YgdGhlIFVDTSBpbnB1dCBkZXZp
+Y2Ugc3dpdGNoaW5nCj4+IGNvZGUgYW5kIGZpeGluZyBpdCBvbiBteSBUT0RPIGxpc3QKPj4gLS0t
+Cj4+IMKgIHNvdW5kL3NvYy9pbnRlbC9ib2FyZHMvYnl0Y3JfcnQ1NjUxLmMgfCAyMyArKysrKysr
+KysrKysrKysrKystLS0tLQo+PiDCoCAxIGZpbGUgY2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKSwg
+NSBkZWxldGlvbnMoLSkKPj4KPj4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9pbnRlbC9ib2FyZHMv
+Ynl0Y3JfcnQ1NjUxLmMgYi9zb3VuZC9zb2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY1MS5jCj4+
+IGluZGV4IDUzYWM5N2MxNWZjNi4uZDg1NTMwYjFjYzhlIDEwMDY0NAo+PiAtLS0gYS9zb3VuZC9z
+b2MvaW50ZWwvYm9hcmRzL2J5dGNyX3J0NTY1MS5jCj4+ICsrKyBiL3NvdW5kL3NvYy9pbnRlbC9i
+b2FyZHMvYnl0Y3JfcnQ1NjUxLmMKPj4gQEAgLTQ0LDYgKzQ0LDcgQEAKPj4gwqAgZW51bSB7Cj4+
+IMKgwqDCoMKgwqAgQllUX1JUNTY1MV9ETUlDX01BUCwKPj4gwqDCoMKgwqDCoCBCWVRfUlQ1NjUx
+X0lOMV9NQVAsCj4+ICvCoMKgwqAgQllUX1JUNTY1MV9JTjJfTUFQLAo+PiDCoMKgwqDCoMKgIEJZ
+VF9SVDU2NTFfSU4xX0lOMl9NQVAsCj4+IMKgIH07Cj4+IEBAIC05Myw5ICs5NCw5IEBAIHN0cnVj
+dCBieXRfcnQ1NjUxX3ByaXZhdGUgewo+PiDCoMKgwqDCoMKgIHN0cnVjdCBzbmRfc29jX2phY2sg
+amFjazsKPj4gwqAgfTsKPj4gLS8qIERlZmF1bHQ6IGphY2stZGV0ZWN0IG9uIEpEMV8xLCBpbnRl
+cm5hbCBtaWMgb24gaW4xLCBoZWFkc2V0bWljIG9uIGluMyAqLwo+PiArLyogRGVmYXVsdDogamFj
+ay1kZXRlY3Qgb24gSkQxXzEsIGludGVybmFsIG1pYyBvbiBpbjIsIGhlYWRzZXRtaWMgb24gaW4z
+ICovCj4+IMKgIHN0YXRpYyB1bnNpZ25lZCBsb25nIGJ5dF9ydDU2NTFfcXVpcmsgPSBCWVRfUlQ1
+NjUxX0RFRkFVTFRfUVVJUktTIHwKPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIEJZVF9SVDU2NTFfSU4xX01BUDsKPj4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIEJZVF9SVDU2NTFfSU4yX01BUDsKPj4gwqAgc3RhdGljIHZvaWQgbG9nX3F1
+aXJrcyhzdHJ1Y3QgZGV2aWNlICpkZXYpCj4+IMKgIHsKPj4gQEAgLTEwMyw2ICsxMDQsOCBAQCBz
+dGF0aWMgdm9pZCBsb2dfcXVpcmtzKHN0cnVjdCBkZXZpY2UgKmRldikKPj4gwqDCoMKgwqDCoMKg
+wqDCoMKgIGRldl9pbmZvKGRldiwgInF1aXJrIERNSUNfTUFQIGVuYWJsZWQiKTsKPj4gwqDCoMKg
+wqDCoCBpZiAoQllUX1JUNTY1MV9NQVAoYnl0X3J0NTY1MV9xdWlyaykgPT0gQllUX1JUNTY1MV9J
+TjFfTUFQKQo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2X2luZm8oZGV2LCAicXVpcmsgSU4xX01B
+UCBlbmFibGVkIik7Cj4+ICvCoMKgwqAgaWYgKEJZVF9SVDU2NTFfTUFQKGJ5dF9ydDU2NTFfcXVp
+cmspID09IEJZVF9SVDU2NTFfSU4yX01BUCkKPj4gK8KgwqDCoMKgwqDCoMKgIGRldl9pbmZvKGRl
+diwgInF1aXJrIElOMl9NQVAgZW5hYmxlZCIpOwo+PiDCoMKgwqDCoMKgIGlmIChCWVRfUlQ1NjUx
+X01BUChieXRfcnQ1NjUxX3F1aXJrKSA9PSBCWVRfUlQ1NjUxX0lOMV9JTjJfTUFQKQo+PiDCoMKg
+wqDCoMKgwqDCoMKgwqAgZGV2X2luZm8oZGV2LCAicXVpcmsgSU4xX0lOMl9NQVAgZW5hYmxlZCIp
+Owo+PiDCoMKgwqDCoMKgIGlmIChCWVRfUlQ1NjUxX0pEU1JDKGJ5dF9ydDU2NTFfcXVpcmspKSB7
+Cj4+IEBAIC0yNzAsNiArMjczLDEyIEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3Qgc25kX3NvY19kYXBt
+X3JvdXRlIGJ5dF9ydDU2NTFfaW50bWljX2luMV9tYXBbXSA9IHsKPj4gwqDCoMKgwqDCoCB7IklO
+M1AiLCBOVUxMLCAiSGVhZHNldCBNaWMifSwKPj4gwqAgfTsKPj4gK3N0YXRpYyBjb25zdCBzdHJ1
+Y3Qgc25kX3NvY19kYXBtX3JvdXRlIGJ5dF9ydDU2NTFfaW50bWljX2luMl9tYXBbXSA9IHsKPj4g
+K8KgwqDCoCB7IkludGVybmFsIE1pYyIsIE5VTEwsICJtaWNiaWFzMSJ9LAo+PiArwqDCoMKgIHsi
+SU4yUCIsIE5VTEwsICJJbnRlcm5hbCBNaWMifSwKPj4gK8KgwqDCoCB7IklOM1AiLCBOVUxMLCAi
+SGVhZHNldCBNaWMifSwKPj4gK307Cj4+ICsKPj4gwqAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRf
+c29jX2RhcG1fcm91dGUgYnl0X3J0NTY1MV9pbnRtaWNfaW4xX2luMl9tYXBbXSA9IHsKPj4gwqDC
+oMKgwqDCoCB7IkludGVybmFsIE1pYyIsIE5VTEwsICJtaWNiaWFzMSJ9LAo+PiDCoMKgwqDCoMKg
+IHsiSU4xUCIsIE5VTEwsICJJbnRlcm5hbCBNaWMifSwKPj4gQEAgLTM2NCw3ICszNzMsNyBAQCBz
+dGF0aWMgY29uc3Qgc3RydWN0IGRtaV9zeXN0ZW1faWQgYnl0X3J0NTY1MV9xdWlya190YWJsZVtd
+ID0gewo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBETUlfTUFUQ0goRE1JX1BST0RVQ1Rf
+TkFNRSwgIlgxRDNfQzgwNk4iKSwKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0sCj4+IMKgwqDCoMKg
+wqDCoMKgwqDCoCAuZHJpdmVyX2RhdGEgPSAodm9pZCAqKShCWVRfUlQ1NjUxX0RFRkFVTFRfUVVJ
+UktTIHwKPj4gLcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2
+NTFfSU4xX01BUCB8Cj4+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBC
+WVRfUlQ1NjUxX0lOMl9NQVAgfAo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgQllUX1JUNTY1MV9IUF9MUl9TV0FQUEVEKSwKPj4gwqDCoMKgwqDCoCB9LAo+PiDC
+oMKgwqDCoMKgIHsKPj4gQEAgLTM3NSw3ICszODQsNyBAQCBzdGF0aWMgY29uc3Qgc3RydWN0IGRt
+aV9zeXN0ZW1faWQgYnl0X3J0NTY1MV9xdWlya190YWJsZVtdID0gewo+PiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBETUlfTUFUQ0goRE1JX1BST0RVQ1RfTkFNRSwgIkQyRDNfVmk4QTEiKSwK
+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgIH0sCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCAuZHJpdmVyX2Rh
+dGEgPSAodm9pZCAqKShCWVRfUlQ1NjUxX0RFRkFVTFRfUVVJUktTIHwKPj4gLcKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIEJZVF9SVDU2NTFfSU4xX01BUCB8Cj4+ICvCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCWVRfUlQ1NjUxX0lOMl9NQVAgfAo+
+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgQllUX1JUNTY1MV9I
+UF9MUl9TV0FQUEVEKSwKPj4gwqDCoMKgwqDCoCB9LAo+PiDCoMKgwqDCoMKgIHsKPj4gQEAgLTQ2
+OCw2ICs0NzcsMTAgQEAgc3RhdGljIGludCBieXRfcnQ1NjUxX2luaXQoc3RydWN0IHNuZF9zb2Nf
+cGNtX3J1bnRpbWUgKnJ1bnRpbWUpCj4+IMKgwqDCoMKgwqDCoMKgwqDCoCBjdXN0b21fbWFwID0g
+Ynl0X3J0NTY1MV9pbnRtaWNfaW4xX21hcDsKPj4gwqDCoMKgwqDCoMKgwqDCoMKgIG51bV9yb3V0
+ZXMgPSBBUlJBWV9TSVpFKGJ5dF9ydDU2NTFfaW50bWljX2luMV9tYXApOwo+PiDCoMKgwqDCoMKg
+wqDCoMKgwqAgYnJlYWs7Cj4+ICvCoMKgwqAgY2FzZSBCWVRfUlQ1NjUxX0lOMl9NQVA6Cj4+ICvC
+oMKgwqDCoMKgwqDCoCBjdXN0b21fbWFwID0gYnl0X3J0NTY1MV9pbnRtaWNfaW4yX21hcDsKPj4g
+K8KgwqDCoMKgwqDCoMKgIG51bV9yb3V0ZXMgPSBBUlJBWV9TSVpFKGJ5dF9ydDU2NTFfaW50bWlj
+X2luMl9tYXApOwo+PiArwqDCoMKgwqDCoMKgwqAgYnJlYWs7Cj4+IMKgwqDCoMKgwqAgY2FzZSBC
+WVRfUlQ1NjUxX0lOMV9JTjJfTUFQOgo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgY3VzdG9tX21hcCA9
+IGJ5dF9ydDU2NTFfaW50bWljX2luMV9pbjJfbWFwOwo+PiDCoMKgwqDCoMKgwqDCoMKgwqAgbnVt
+X3JvdXRlcyA9IEFSUkFZX1NJWkUoYnl0X3J0NTY1MV9pbnRtaWNfaW4xX2luMl9tYXApOwo+PiBA
+QCAtODI1LDcgKzgzOCw3IEBAIHN0cnVjdCBhY3BpX2NoYW5fcGFja2FnZSB7wqDCoCAvKiBBQ1BJ
+Q0Egc2VlbXMgdG8gcmVxdWlyZSA2NCBiaXQgaW50ZWdlcnMgKi8KPj4gwqAgc3RhdGljIGludCBz
+bmRfYnl0X3J0NTY1MV9tY19wcm9iZShzdHJ1Y3QgcGxhdGZvcm1fZGV2aWNlICpwZGV2KQo+PiDC
+oCB7Cj4+IC3CoMKgwqAgY29uc3QgY2hhciAqIGNvbnN0IG1pY19uYW1lW10gPSB7ICJkbWljIiwg
+ImluMSIsICJpbjEyIiB9Owo+PiArwqDCoMKgIGNvbnN0IGNoYXIgKiBjb25zdCBtaWNfbmFtZVtd
+ID0geyAiZG1pYyIsICJpbjEiLCAiaW4yIiwgImluMTIiIH07Cj4+IMKgwqDCoMKgwqAgc3RydWN0
+IGJ5dF9ydDU2NTFfcHJpdmF0ZSAqcHJpdjsKPj4gwqDCoMKgwqDCoCBzdHJ1Y3Qgc25kX3NvY19h
+Y3BpX21hY2ggKm1hY2g7Cj4+IMKgwqDCoMKgwqAgc3RydWN0IGRldmljZSAqY29kZWNfZGV2Owo+
+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
+dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
+YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
