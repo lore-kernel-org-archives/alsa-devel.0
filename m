@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 06/14] conf/ucm: bytcr-rt5651: Change
-	Speaker/Headphone en/disable sequences to fix switching
-Date: Fri, 20 Jul 2018 09:27:33 +0200
-Message-ID: <20180720072741.4632-7-hdegoede@redhat.com>
+Subject: [PATCH 08/14] conf/ucm: bytcr-rt5651: Fix ADC and Mic
+	capture volumes
+Date: Fri, 20 Jul 2018 09:27:35 +0200
+Message-ID: <20180720072741.4632-9-hdegoede@redhat.com>
 References: <20180720072741.4632-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A95326774A
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A127326775E
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:52 +0200 (CEST)
 In-Reply-To: <20180720072741.4632-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,69 +25,50 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-pulseaudio will run the DisableSequence of the current playback device
-before running the EnableSequence of the new playback device.
-
-This causes the Platform Clock and BIAS to temporarily get turned off which
-on the rt5651 breaks audio-streams which are playing when switching.
-
-This commit moves the disabling to the EnableSequence of the other device
-fixing this.
+Fix ADC and Mic capture volumes, so that the microphone inputs actually
+work.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- src/conf/ucm/bytcr-rt5651/HiFi.conf | 22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+ src/conf/ucm/rt5651/EnableSeq.conf | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/src/conf/ucm/bytcr-rt5651/HiFi.conf b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-index bc604276..42fa2c9a 100644
---- a/src/conf/ucm/bytcr-rt5651/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-@@ -30,14 +30,19 @@ SectionDevice."Headphones" {
- 		cset "name='Headphone Switch' on"
- 		cset "name='HPO L Playback Switch' on"
- 		cset "name='HPO R Playback Switch' on"
-+		# Done after turning the HP on to keep the bias and clk on
-+		cset "name='Speaker Switch' off"
-+		cset "name='LOUT L Playback Switch' off"
-+		cset "name='LOUT R Playback Switch' off"
- 	]
+diff --git a/src/conf/ucm/rt5651/EnableSeq.conf b/src/conf/ucm/rt5651/EnableSeq.conf
+index 3ef9afc0..37bffecb 100644
+--- a/src/conf/ucm/rt5651/EnableSeq.conf
++++ b/src/conf/ucm/rt5651/EnableSeq.conf
+@@ -7,8 +7,6 @@ cset "name='HPOVOL L Switch' on"
+ cset "name='HPOVOL R Switch' on"
+ cset "name='LOUT MIX DAC L1 Switch' on"
+ cset "name='LOUT MIX DAC R1 Switch' on"
+-cset "name='IN1 Boost' 1"
+-cset "name='IN2 Boost' 1"
+ cset "name='IF1 ASRC Switch' on"
+ cset "name='LOUT L Playback Switch' off"
+ cset "name='LOUT R Playback Switch' off"
+@@ -23,12 +21,20 @@ cset "name='Stereo2 ADC MIXR ADC2 Switch' on"
+ cset "name='Headphone Switch' off"
+ cset "name='Speaker Switch' off"
  
- 	DisableSequence [
- 		cdev "hw:bytcrrt5651"
- 		exec "echo Headphones playback disable sequence"
--		cset "name='Headphone Switch' off"
--		cset "name='HPO L Playback Switch' off"
--		cset "name='HPO R Playback Switch' off"
-+		# This is done by the Speaker EnableSequence, so that the
-+		# Platform Clock and BIAS do not temporarily get turned off
-+		# as that breaks audio-streams which are playing when
-+		# switching between Speaker/Headphone
- 	]
+-# volumes for 0dB
++# volumes
+ cset "name='OUT Playback Volume' 31"
+ cset "name='HP Playback Volume' 31"
+-cset "name='IN Capture Volume' 23"
+-cset "name='ADC Capture Volume' 47"
+ cset "name='DAC1 Playback Volume' 175"
++cset "name='IN Capture Volume' 23"
++# 47=0dB, 0.375 dB/step, set it to 6 dB to help with soft mics
++cset "name='ADC Capture Volume' 63"
++cset "name='ADC Capture Switch' on"
++# Set ADC Boost Gain to 3dB higher vals result in too much noise
++cset "name='ADC Boost Gain' 1"
++# Set IN1, IN2 and IN3 internal mic boost to 1
++cset "name='IN1 Boost' 1"
++cset "name='IN2 Boost' 1"
++cset "name='IN3 Boost' 1"
  
- 	Value {
-@@ -57,12 +62,21 @@ SectionDevice."Speaker" {
- 		cdev "hw:bytcrrt5651"
- 		exec "echo Speaker enable sequence"
- 		cset "name='Speaker Switch' on"
-+		cset "name='LOUT L Playback Switch' on"
-+		cset "name='LOUT R Playback Switch' on"
-+		# Done after turning the speaker on to keep the bias and clk on
-+		cset "name='Headphone Switch' off"
-+		cset "name='HPO L Playback Switch' off"
-+		cset "name='HPO R Playback Switch' off"
- 	]
- 
- 	DisableSequence [
- 		cdev "hw:bytcrrt5651"
- 		exec "echo Speaker disable sequence"
--		cset "name='Speaker Switch' off"
-+		# This is done by the Headphones EnableSequence, so that the
-+		# Platform Clock and BIAS do not temporarily get turned off
-+		# as that breaks audio-streams which are playing when
-+		# switching between Speaker/Headphone
- 	]
- 
- 	Value {
+ # input
+ cset "name='Stereo1 ADC L1 Mux' ADC"
 -- 
 2.17.1
