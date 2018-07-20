@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 07/14] conf/ucm: bytcr-rt5651: Use generic SSP
-	enable + disable sequence
-Date: Fri, 20 Jul 2018 09:27:34 +0200
-Message-ID: <20180720072741.4632-8-hdegoede@redhat.com>
+Subject: [PATCH 09/14] conf/ucm: bytcr-rt5651: Add support for
+	mic input on various pins
+Date: Fri, 20 Jul 2018 09:27:36 +0200
+Message-ID: <20180720072741.4632-10-hdegoede@redhat.com>
 References: <20180720072741.4632-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id BB11D26774B
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id EB94926776A
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:53 +0200 (CEST)
 In-Reply-To: <20180720072741.4632-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,293 +25,169 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Use the generic SSP enable sequence from bytcr/PlatformEnableSeq.conf,
-this is identical to the replaced code, call the generic disable sequence
-on shutdown (this is new) and move the rt5651 enable sequence to
-a new rt5651/EnableSeq.conf file for easy reuse in board-specific
-UCM profiles.
+Note this commit replaces the pre-existing "Handset Microphone" and
+"Main Microphone" options, these come from the first commit of the
+bytcr-rt5651 UCM profile and were based on wrong assumptions about the
+input mappings. None of the existing devices has the Hand/Headset mic
+on IN1 as these options assumed.
+
+The rt5651 is used in various configurations with the Internal Mic(s)
+hooked up to IN1, IN2, or to IN1 and IN2 and the Headset Mic hooked up
+to IN3.
+
+Add support for all these to the generic bytcr-rt5651 profile and name
+them accotding to their input + functions.
+
+A follow up commit will add specialized longname configs which
+will only expose the inputs actually used on the board with that
+longname.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- configure.ac                                |   1 +
- src/conf/ucm/Makefile.am                    |   1 +
- src/conf/ucm/bytcr-rt5651/HiFi.conf         |   5 +-
- src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf | 155 --------------------
- src/conf/ucm/rt5651/EnableSeq.conf          |  46 ++++++
- src/conf/ucm/rt5651/Makefile.am             |   4 +
- 6 files changed, 55 insertions(+), 157 deletions(-)
- create mode 100644 src/conf/ucm/rt5651/EnableSeq.conf
- create mode 100644 src/conf/ucm/rt5651/Makefile.am
+ src/conf/ucm/bytcr-rt5651/HiFi.conf | 93 +++++++++++++++++++++++++----
+ 1 file changed, 82 insertions(+), 11 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index adc654e2..85a6be80 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -747,6 +747,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/PAZ00/Makefile \
- 	  src/conf/ucm/PIPO-W2S-Defaultstring-CherryTrailCR/Makefile \
- 	  src/conf/ucm/rt5640/Makefile \
-+	  src/conf/ucm/rt5651/Makefile \
- 	  src/conf/ucm/SDP4430/Makefile \
- 	  src/conf/ucm/skylake-rt286/Makefile \
- 	  src/conf/ucm/TECLAST-X80Pro-Defaultstring-CherryTrailCR/Makefile \
-diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index 1e51f73e..669e98d5 100644
---- a/src/conf/ucm/Makefile.am
-+++ b/src/conf/ucm/Makefile.am
-@@ -29,6 +29,7 @@ PandaBoardES \
- PAZ00 \
- PIPO-W2S-Defaultstring-CherryTrailCR \
- rt5640 \
-+rt5651 \
- SDP4430 \
- skylake-rt286 \
- TECLAST-X80Pro-Defaultstring-CherryTrailCR \
 diff --git a/src/conf/ucm/bytcr-rt5651/HiFi.conf b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-index 42fa2c9a..fd878f4a 100644
+index fd878f4a..54c365d9 100644
 --- a/src/conf/ucm/bytcr-rt5651/HiFi.conf
 +++ b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-@@ -3,12 +3,13 @@
- SectionVerb {
+@@ -85,51 +85,91 @@ SectionDevice."Speaker" {
+ 	}
+ }
+ 
+-SectionDevice."Handset" {
+-	Comment "Handset Microphone"
++SectionDevice."InternalMic-IN1" {
++	Comment "Internal Microphone on IN1"
+ 
+ 	ConflictingDevice [
+-		"Mainmic"
++		"InternalMic-IN2"
++		"InternalMic-IN12"
++		"HeadsetMic-IN3"
+ 	]
+ 
  	EnableSequence [
  		cdev "hw:bytcrrt5651"
--		exec "echo HiFi enable sequence"
-+		<bytcr/PlatformEnableSeq.conf>
-+		<rt5651/EnableSeq.conf>
+-		exec "echo Handset Microphone enable sequence"
++		exec "echo Internal Mic IN1 Microphone enable sequence"
++		cset "name='Internal Mic Switch' on"
+ 		cset "name='RECMIXL BST1 Switch' on"
+ 		cset "name='RECMIXR BST1 Switch' on"
  	]
  
  	DisableSequence [
  		cdev "hw:bytcrrt5651"
--		exec "echo HiFi disable sequence"
-+		<bytcr/PlatformDisableSeq.conf>
+-		exec "echo Handset Microphone disable sequence"
++		exec "echo Internal Mic IN1 Microphone disable sequence"
++		cset "name='Internal Mic Switch' off"
+ 		cset "name='RECMIXL BST1 Switch' off"
+ 		cset "name='RECMIXR BST1 Switch' off"
  	]
  
  	Value {
-diff --git a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-index 4bcc6a6c..45889d82 100644
---- a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-+++ b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-@@ -7,159 +7,4 @@ SectionUseCase."HiFi" {
+ 		CaptureChannels "2"
+-		JackControl "Headset Mic Jack"
+ 	}
+ }
  
- SectionDefaults [
- 	cdev "hw:bytcrrt5651"
--
--	# media mixer settings
--	#   compress
--	cset "name='media0_in Gain 0 Switch' on"
--	cset "name='media0_in Gain 0 Volume' 0"
--	#   normal
--	cset "name='media1_in Gain 0 Switch' on"
--	cset "name='media1_in Gain 0 Volume' 0"
--	#   swm loopback
--	cset "name='media2_in Gain 0 Switch' off"
--	cset "name='media2_in Gain 0 Volume' 0%"
--	#   deep buffer
--	cset "name='media3_in Gain 0 Switch' on"
--	cset "name='media3_in Gain 0 Volume' 0"
--	cset "name='media0_out mix 0 media0_in Switch' on"
--	cset "name='media0_out mix 0 media1_in Switch' on"
--	cset "name='media0_out mix 0 media2_in Switch' off"
--	cset "name='media0_out mix 0 media3_in Switch' on"
--	cset "name='media1_out mix 0 media0_in Switch' off"
--	cset "name='media1_out mix 0 media1_in Switch' off"
--	cset "name='media1_out mix 0 media2_in Switch' off"
--	cset "name='media1_out mix 0 media3_in Switch' off"
--	cset "name='pcm0_in Gain 0 Switch' on"
--	cset "name='pcm0_in Gain 0 Volume' 0"
--	cset "name='pcm1_in Gain 0 Switch' off"
--	cset "name='pcm1_in Gain 0 Volume' 0%"
--
--	# codec0_out settings used when SSP2 is connected
--	cset "name='codec_out0 mix 0 codec_in0 Switch' off"
--	cset "name='codec_out0 mix 0 codec_in1 Switch' off"
--	cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
--	cset "name='codec_out0 mix 0 media_loop2_in Switch' off"
--	cset "name='codec_out0 mix 0 pcm0_in Switch' on"
--	cset "name='codec_out0 mix 0 pcm1_in Switch' off"
--	cset "name='codec_out0 mix 0 sprot_loop_in Switch' off"
--	cset "name='codec_out0 Gain 0 Switch' on"
--	cset "name='codec_out0 Gain 0 Volume' 0"
--
--	# modem_out settings used when SSP0 is connected
--	cset "name='modem_out mix 0 codec_in0 Switch' off"
--	cset "name='modem_out mix 0 codec_in1 Switch' off"
--	cset "name='modem_out mix 0 media_loop1_in Switch' off"
--	cset "name='modem_out mix 0 media_loop2_in Switch' off"
--	cset "name='modem_out mix 0 pcm0_in Switch' on"
--	cset "name='modem_out mix 0 pcm1_in Switch' off"
--	cset "name='modem_out mix 0 sprot_loop_in Switch' off"
--	cset "name='modem_out Gain 0 Switch' on"
--	cset "name='modem_out Gain 0 Volume' 0"
--
--	# input settings
--	# pcm1_out settings
--
--	# input used when SSP2 is connected
--	cset "name='codec_in0 Gain 0 Switch' on"
--	cset "name='codec_in0 Gain 0 Volume' 0"
--
--	# input used when SSP0 is connected
--	cset "name='modem_in Gain 0 Switch' on"
--	cset "name='modem_in Gain 0 Volume' 0"
--
--	cset "name='pcm1_out mix 0 codec_in0 Switch' on"
--	cset "name='pcm1_out mix 0 modem_in Switch' on"
--	cset "name='pcm1_out mix 0 codec_in1 Switch' off"
--	cset "name='pcm1_out mix 0 media_loop1_in Switch' off"
--	cset "name='pcm1_out mix 0 media_loop2_in Switch' off"
--	cset "name='pcm1_out mix 0 pcm0_in Switch' off"
--	cset "name='pcm1_out mix 0 pcm1_in Switch' off"
--	cset "name='pcm1_out mix 0 sprot_loop_in Switch' off"
--	cset "name='pcm1_out Gain 0 Switch' on"
--	cset "name='pcm1_out Gain 0 Volume' 0"
--
--	# disable codec_out1
--	cset "name='codec_out1 mix 0 codec_in0 Switch' off"
--	cset "name='codec_out1 mix 0 codec_in1 Switch' off"
--	cset "name='codec_out1 mix 0 media_loop1_in Switch' off"
--	cset "name='codec_out1 mix 0 media_loop2_in Switch' off"
--	cset "name='codec_out1 mix 0 pcm0_in Switch' off"
--	cset "name='codec_out1 mix 0 pcm1_in Switch' off"
--	cset "name='codec_out1 mix 0 sprot_loop_in Switch' off"
--	cset "name='codec_out1 Gain 0 Switch' off"
--	cset "name='codec_out1 Gain 0 Volume' 0%"
--
--	# disable codec_in1
--	cset "name='codec_in1 Gain 0 Switch' off"
--	cset "name='codec_in1 Gain 0 Volume' 0%"
--
--	# disable all loops
--	cset "name='media_loop1_out mix 0 codec_in0 Switch' off"
--	cset "name='media_loop1_out mix 0 codec_in1 Switch' off"
--	cset "name='media_loop1_out mix 0 media_loop1_in Switch' off"
--	cset "name='media_loop1_out mix 0 media_loop2_in Switch' off"
--	cset "name='media_loop1_out mix 0 pcm0_in Switch' off"
--	cset "name='media_loop1_out mix 0 pcm1_in Switch' off"
--	cset "name='media_loop1_out mix 0 sprot_loop_in Switch' off"
--	cset "name='media_loop2_out mix 0 codec_in0 Switch' off"
--	cset "name='media_loop2_out mix 0 codec_in1 Switch' off"
--	cset "name='media_loop2_out mix 0 media_loop1_in Switch' off"
--	cset "name='media_loop2_out mix 0 media_loop2_in Switch' off"
--	cset "name='media_loop2_out mix 0 pcm0_in Switch' off"
--	cset "name='media_loop2_out mix 0 pcm1_in Switch' off"
--	cset "name='media_loop2_out mix 0 sprot_loop_in Switch' off"
--	cset "name='sprot_loop_out mix 0 codec_in0 Switch' off"
--	cset "name='sprot_loop_out mix 0 codec_in1 Switch' off"
--	cset "name='sprot_loop_out mix 0 media_loop1_in Switch' off"
--	cset "name='sprot_loop_out mix 0 media_loop2_in Switch' off"
--	cset "name='sprot_loop_out mix 0 pcm0_in Switch' off"
--	cset "name='sprot_loop_out mix 0 pcm1_in Switch' off"
--	cset "name='sprot_loop_out mix 0 sprot_loop_in Switch' off"
--
--	# default state
--	cset "name='HPO MIX DAC1 Switch' on"
--	cset "name='HPO MIX HPVOL Switch' off"
--	cset "name='HPO L Playback Switch' off"
--	cset "name='HPO R Playback Switch' off"
--	cset "name='HPOVOL L Switch' on"
--	cset "name='HPOVOL R Switch' on"
--	cset "name='LOUT MIX DAC L1 Switch' on"
--	cset "name='LOUT MIX DAC R1 Switch' on"
--	cset "name='IN1 Boost' 1"
--	cset "name='IN2 Boost' 1"
--	cset "name='IF1 ASRC Switch' on"
--	cset "name='LOUT L Playback Switch' off"
--	cset "name='LOUT R Playback Switch' off"
--	cset "name='Stereo DAC MIXL DAC L1 Switch' on"
--	cset "name='Stereo DAC MIXR DAC R1 Switch' on"
--	cset "name='Stereo1 ADC MIXR ADC1 Switch' on"
--	cset "name='Stereo1 ADC MIXR ADC2 Switch' on"
--	cset "name='Stereo2 ADC MIXL ADC1 Switch' on"
--	cset "name='Stereo2 ADC MIXL ADC2 Switch' on"
--	cset "name='Stereo2 ADC MIXR ADC1 Switch' on"
--	cset "name='Stereo2 ADC MIXR ADC2 Switch' on"
--	cset "name='Headphone Switch' off"
--	cset "name='Speaker Switch' off"
--
--	# volumes for 0dB
--	cset "name='OUT Playback Volume' 31"
--	cset "name='HP Playback Volume' 31"
--	cset "name='IN Capture Volume' 23"
--	cset "name='ADC Capture Volume' 47"
--	cset "name='DAC1 Playback Volume' 175"
--
--	# input
--	cset "name='Stereo1 ADC L1 Mux' ADC"
--	cset "name='Stereo1 ADC R1 Mux' ADC"
--	cset "name='Stereo1 ADC MIXL ADC1 Switch' on"
--	cset "name='Stereo1 ADC MIXR ADC1 Switch' on"
--	cset "name='RECMIXL BST1 Switch' off"
--	cset "name='RECMIXR BST1 Switch' off"
--	cset "name='RECMIXL BST3 Switch' off"
--	cset "name='RECMIXR BST3 Switch' off"
--	cset "name='RECMIXL BST2 Switch' off"
--	cset "name='RECMIXR BST2 Switch' off"
--	cset "name='Headset Mic Switch' off"
--	cset "name='Internal Mic Switch' off"
--	cset "name='Line In Switch' off"
- ]
-diff --git a/src/conf/ucm/rt5651/EnableSeq.conf b/src/conf/ucm/rt5651/EnableSeq.conf
-new file mode 100644
-index 00000000..3ef9afc0
---- /dev/null
-+++ b/src/conf/ucm/rt5651/EnableSeq.conf
-@@ -0,0 +1,46 @@
-+# default state
-+cset "name='HPO MIX DAC1 Switch' on"
-+cset "name='HPO MIX HPVOL Switch' off"
-+cset "name='HPO L Playback Switch' off"
-+cset "name='HPO R Playback Switch' off"
-+cset "name='HPOVOL L Switch' on"
-+cset "name='HPOVOL R Switch' on"
-+cset "name='LOUT MIX DAC L1 Switch' on"
-+cset "name='LOUT MIX DAC R1 Switch' on"
-+cset "name='IN1 Boost' 1"
-+cset "name='IN2 Boost' 1"
-+cset "name='IF1 ASRC Switch' on"
-+cset "name='LOUT L Playback Switch' off"
-+cset "name='LOUT R Playback Switch' off"
-+cset "name='Stereo DAC MIXL DAC L1 Switch' on"
-+cset "name='Stereo DAC MIXR DAC R1 Switch' on"
-+cset "name='Stereo1 ADC MIXR ADC1 Switch' on"
-+cset "name='Stereo1 ADC MIXR ADC2 Switch' on"
-+cset "name='Stereo2 ADC MIXL ADC1 Switch' on"
-+cset "name='Stereo2 ADC MIXL ADC2 Switch' on"
-+cset "name='Stereo2 ADC MIXR ADC1 Switch' on"
-+cset "name='Stereo2 ADC MIXR ADC2 Switch' on"
-+cset "name='Headphone Switch' off"
-+cset "name='Speaker Switch' off"
++SectionDevice."InternalMic-IN2" {
++	Comment "Internal Microphone on IN2"
 +
-+# volumes for 0dB
-+cset "name='OUT Playback Volume' 31"
-+cset "name='HP Playback Volume' 31"
-+cset "name='IN Capture Volume' 23"
-+cset "name='ADC Capture Volume' 47"
-+cset "name='DAC1 Playback Volume' 175"
++	ConflictingDevice [
++		"InternalMic-IN1"
++		"InternalMic-IN12"
++		"HeadsetMic-IN3"
++	]
 +
-+# input
-+cset "name='Stereo1 ADC L1 Mux' ADC"
-+cset "name='Stereo1 ADC R1 Mux' ADC"
-+cset "name='Stereo1 ADC MIXL ADC1 Switch' on"
-+cset "name='Stereo1 ADC MIXR ADC1 Switch' on"
-+cset "name='RECMIXL BST1 Switch' off"
-+cset "name='RECMIXR BST1 Switch' off"
-+cset "name='RECMIXL BST3 Switch' off"
-+cset "name='RECMIXR BST3 Switch' off"
-+cset "name='RECMIXL BST2 Switch' off"
-+cset "name='RECMIXR BST2 Switch' off"
-+cset "name='Headset Mic Switch' off"
-+cset "name='Internal Mic Switch' off"
-+cset "name='Line In Switch' off"
-diff --git a/src/conf/ucm/rt5651/Makefile.am b/src/conf/ucm/rt5651/Makefile.am
-new file mode 100644
-index 00000000..8a22159c
---- /dev/null
-+++ b/src/conf/ucm/rt5651/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/rt5651
-+ucm_DATA = EnableSeq.conf
-+EXTRA_DIST = $(ucm_DATA)
++	EnableSequence [
++		cdev "hw:bytcrrt5651"
++		exec "echo Internal Mic IN2 Microphone enable sequence"
++		cset "name='Internal Mic Switch' on"
++		cset "name='RECMIXL BST2 Switch' on"
++		cset "name='RECMIXR BST2 Switch' on"
++	]
++
++	DisableSequence [
++		cdev "hw:bytcrrt5651"
++		exec "echo Internal Mic IN2 Microphone disable sequence"
++		cset "name='Internal Mic Switch' off"
++		cset "name='RECMIXL BST2 Switch' off"
++		cset "name='RECMIXR BST2 Switch' off"
++	]
+ 
+-SectionDevice."Mainmic" {
+-	Comment "Main Microphone"
++	Value {
++		CaptureChannels "2"
++	}
++}
++
++SectionDevice."InternalMic-IN12" {
++	Comment "Internal Microphones on IN1 and IN2"
+ 
+ 	ConflictingDevice [
+-		"Handset"
++		"InternalMic-IN1"
++		"InternalMic-IN2"
++		"HeadsetMic-IN3"
+ 	]
+ 
+ 	EnableSequence [
+ 		cdev "hw:bytcrrt5651"
+-		exec "echo Main Microphone enable sequence"
++		exec "echo Internal Mic IN12 Microphone enable sequence"
++		cset "name='Internal Mic Switch' on"
++		cset "name='RECMIXL BST1 Switch' on"
++		cset "name='RECMIXR BST1 Switch' on"
+ 		cset "name='RECMIXL BST2 Switch' on"
+ 		cset "name='RECMIXR BST2 Switch' on"
+ 	]
+ 
+ 	DisableSequence [
+ 		cdev "hw:bytcrrt5651"
+-		exec "echo Main Microphone disable sequence"
++		exec "echo Internal Mic IN12 Microphone disable sequence"
++		cset "name='Internal Mic Switch' off"
++		cset "name='RECMIXL BST1 Switch' off"
++		cset "name='RECMIXR BST1 Switch' off"
+ 		cset "name='RECMIXL BST2 Switch' off"
+ 		cset "name='RECMIXR BST2 Switch' off"
+ 	]
+@@ -138,3 +178,34 @@ SectionDevice."Mainmic" {
+ 		CaptureChannels "2"
+ 	}
+ }
++
++SectionDevice."HeadsetMic-IN3" {
++	Comment "Headset Microphone"
++
++	ConflictingDevice [
++		"InternalMic-IN1"
++		"InternalMic-IN2"
++		"InternalMic-IN12"
++	]
++
++	EnableSequence [
++		cdev "hw:bytcrrt5651"
++		exec "echo HeadsetMic-IN3 Microphone enable sequence"
++		cset "name='Headset Mic Switch' on"
++		cset "name='RECMIXL BST3 Switch' on"
++		cset "name='RECMIXR BST3 Switch' on"
++	]
++
++	DisableSequence [
++		cdev "hw:bytcrrt5651"
++		exec "echo HeadsetMic-IN3 Microphone disable sequence"
++		cset "name='Headset Mic Switch' off"
++		cset "name='RECMIXL BST3 Switch' off"
++		cset "name='RECMIXR BST3 Switch' off"
++	]
++
++	Value {
++		CaptureChannels "2"
++		JackControl "Headset Mic Jack"
++	}
++}
 -- 
 2.17.1
