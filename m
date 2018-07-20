@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: remove clock divider and pll setup
-	from zylonite and magician" to the asoc tree
-Date: Fri, 20 Jul 2018 17:42:58 +0100
-Message-ID: <E1fgYUc-0000g3-QZ@debutante>
-References: <20180716062445.15819-1-daniel@zonque.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AF73E26774A
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 18:43:02 +0200 (CEST)
-In-Reply-To: <20180716062445.15819-1-daniel@zonque.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, robert.jarzmik@free.fr, lgirdwood@gmail.com, haojian.zhuang@gmail.com
+Subject: Applied "ASoC: meson: add axg sound card support" to the asoc tree
+Date: Fri, 20 Jul 2018 17:43:00 +0100
+Message-ID: <E1fgYUe-0000h4-NQ@debutante>
+References: <20180717153643.8806-20-jbrunet@baylibre.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180717153643.8806-20-jbrunet@baylibre.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: remove clock divider and pll setup from zylonite and magician
+   ASoC: meson: add axg sound card support
 
 has been applied to the asoc tree at
 
@@ -53,189 +37,746 @@ to this mail.
 Thanks,
 Mark
 
->From a8e43c21a8a32a3af4abc605b6ebcab039f28e00 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Mon, 16 Jul 2018 08:24:45 +0200
-Subject: [PATCH] ASoC: pxa: remove clock divider and pll setup from zylonite
- and magician
+>From 7864a79f37b55769b817d5e6c5ae0ca4bfdba93b Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Tue, 17 Jul 2018 17:43:04 +0200
+Subject: [PATCH] ASoC: meson: add axg sound card support
 
-The SSP DAI now handles the clocking setup itself, all it needs is the
-master clock frequency. Remove the code from Zylonite and Magician
-platforms.
+Add the axg sound card to handle the specifities of the axg audio
+sub system.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+This card is required to:
+ * setup the dpcm links specific to the AXG (with a cpu sound dai)
+ * handle the 4 lanes masks of the tdm interfaces
+ * add the loopback link when a tdm pad interface has a playback
+   stream
+ * handle multi-codec links
+
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/magician.c | 106 +--------------------------------------
- sound/soc/pxa/zylonite.c |   9 ----
- 2 files changed, 2 insertions(+), 113 deletions(-)
+ sound/soc/meson/Kconfig    |  11 +
+ sound/soc/meson/Makefile   |   2 +
+ sound/soc/meson/axg-card.c | 671 +++++++++++++++++++++++++++++++++++++
+ 3 files changed, 684 insertions(+)
+ create mode 100644 sound/soc/meson/axg-card.c
 
-diff --git a/sound/soc/pxa/magician.c b/sound/soc/pxa/magician.c
-index 2fc012b06c43..935a248e5bf6 100644
---- a/sound/soc/pxa/magician.c
-+++ b/sound/soc/pxa/magician.c
-@@ -90,95 +90,9 @@ static int magician_playback_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int acps, acds, width;
--	unsigned int div4 = PXA_SSP_CLK_SCDB_4;
-+	unsigned int width;
- 	int ret = 0;
+diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
+index 00d05df67b52..4cf93c05a982 100644
+--- a/sound/soc/meson/Kconfig
++++ b/sound/soc/meson/Kconfig
+@@ -43,6 +43,17 @@ config SND_MESON_AXG_TDMOUT
+ 	  Select Y or M to add support for TDM output formatter embedded
+ 	  in the Amlogic AXG SoC family
  
--	width = snd_pcm_format_physical_width(params_format(params));
--
--	/*
--	 * rate = SSPSCLK / (2 * width(16 or 32))
--	 * SSPSCLK = (ACPS / ACDS) / SSPSCLKDIV(div4 or div1)
--	 */
--	switch (params_rate(params)) {
--	case 8000:
--		/* off by a factor of 2: bug in the PXA27x audio clock? */
--		acps = 32842000;
--		switch (width) {
--		case 16:
--			/* 513156 Hz ~= _2_ * 8000 Hz * 32 (+0.23%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_16;
--			break;
--		default: /* 32 */
--			/* 1026312 Hz ~= _2_ * 8000 Hz * 64 (+0.23%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_8;
--		}
--		break;
--	case 11025:
--		acps = 5622000;
--		switch (width) {
--		case 16:
--			/* 351375 Hz ~= 11025 Hz * 32 (-0.41%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_4;
--			break;
--		default: /* 32 */
--			/* 702750 Hz ~= 11025 Hz * 64 (-0.41%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_2;
--		}
--		break;
--	case 22050:
--		acps = 5622000;
--		switch (width) {
--		case 16:
--			/* 702750 Hz ~= 22050 Hz * 32 (-0.41%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_2;
--			break;
--		default: /* 32 */
--			/* 1405500 Hz ~= 22050 Hz * 64 (-0.41%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_1;
--		}
--		break;
--	case 44100:
--		acps = 5622000;
--		switch (width) {
--		case 16:
--			/* 1405500 Hz ~= 44100 Hz * 32 (-0.41%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_2;
--			break;
--		default: /* 32 */
--			/* 2811000 Hz ~= 44100 Hz * 64 (-0.41%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_1;
--		}
--		break;
--	case 48000:
--		acps = 12235000;
--		switch (width) {
--		case 16:
--			/* 1529375 Hz ~= 48000 Hz * 32 (-0.44%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_2;
--			break;
--		default: /* 32 */
--			/* 3058750 Hz ~= 48000 Hz * 64 (-0.44%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_1;
--		}
--		break;
--	case 96000:
--	default:
--		acps = 12235000;
--		switch (width) {
--		case 16:
--			/* 3058750 Hz ~= 96000 Hz * 32 (-0.44%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_1;
--			break;
--		default: /* 32 */
--			/* 6117500 Hz ~= 96000 Hz * 64 (-0.44%) */
--			acds = PXA_SSP_CLK_AUDIO_DIV_2;
--			div4 = PXA_SSP_CLK_SCDB_1;
--			break;
--		}
--		break;
--	}
--
- 	/* set codec DAI configuration */
- 	ret = snd_soc_dai_set_fmt(codec_dai, SND_SOC_DAIFMT_MSB |
- 			SND_SOC_DAIFMT_NB_NF | SND_SOC_DAIFMT_CBS_CFS);
-@@ -191,6 +105,7 @@ static int magician_playback_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
++config SND_MESON_AXG_SOUND_CARD
++	tristate "Amlogic AXG Sound Card Support"
++	select SND_MESON_AXG_TDM_INTERFACE
++	imply SND_MESON_AXG_FRDDR
++	imply SND_MESON_AXG_TODDR
++	imply SND_MESON_AXG_TDMIN
++	imply SND_MESON_AXG_TDMOUT
++	imply SND_MESON_AXG_SPDIFOUT
++	help
++	  Select Y or M to add support for the AXG SoC sound card
++
+ config SND_MESON_AXG_SPDIFOUT
+ 	tristate "Amlogic AXG SPDIF Output Support"
+ 	imply SND_SOC_SPDIF
+diff --git a/sound/soc/meson/Makefile b/sound/soc/meson/Makefile
+index f62833fb44d8..c5e003b093db 100644
+--- a/sound/soc/meson/Makefile
++++ b/sound/soc/meson/Makefile
+@@ -7,6 +7,7 @@ snd-soc-meson-axg-tdm-formatter-objs := axg-tdm-formatter.o
+ snd-soc-meson-axg-tdm-interface-objs := axg-tdm-interface.o
+ snd-soc-meson-axg-tdmin-objs := axg-tdmin.o
+ snd-soc-meson-axg-tdmout-objs := axg-tdmout.o
++snd-soc-meson-axg-sound-card-objs := axg-card.o
+ snd-soc-meson-axg-spdifout-objs := axg-spdifout.o
  
-+	width = snd_pcm_format_physical_width(params_format(params));
- 	ret = snd_soc_dai_set_tdm_slot(cpu_dai, 1, 0, 1, width);
- 	if (ret < 0)
- 		return ret;
-@@ -201,23 +116,6 @@ static int magician_playback_hw_params(struct snd_pcm_substream *substream,
- 	if (ret < 0)
- 		return ret;
- 
--	/* set the SSP audio system clock ACDS divider */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai,
--			PXA_SSP_AUDIO_DIV_ACDS, acds);
--	if (ret < 0)
--		return ret;
--
--	/* set the SSP audio system clock SCDB divider4 */
--	ret = snd_soc_dai_set_clkdiv(cpu_dai,
--			PXA_SSP_AUDIO_DIV_SCDB, div4);
--	if (ret < 0)
--		return ret;
--
--	/* set SSP audio pll clock */
--	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, 0, acps);
--	if (ret < 0)
--		return ret;
--
- 	return 0;
- }
- 
-diff --git a/sound/soc/pxa/zylonite.c b/sound/soc/pxa/zylonite.c
-index ba468e560dd2..230eee450f45 100644
---- a/sound/soc/pxa/zylonite.c
-+++ b/sound/soc/pxa/zylonite.c
-@@ -83,11 +83,9 @@ static int zylonite_voice_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	unsigned int pll_out = 0;
- 	unsigned int wm9713_div = 0;
- 	int ret = 0;
- 	int rate = params_rate(params);
--	int width = snd_pcm_format_physical_width(params_format(params));
- 
- 	/* Only support ratios that we can generate neatly from the AC97
- 	 * based master clock - in particular, this excludes 44.1kHz.
-@@ -109,17 +107,10 @@ static int zylonite_voice_hw_params(struct snd_pcm_substream *substream,
- 		return -EINVAL;
- 	}
- 
--	/* Add 1 to the width for the leading clock cycle */
--	pll_out = rate * (width + 1) * 8;
--
- 	ret = snd_soc_dai_set_sysclk(cpu_dai, PXA_SSP_CLK_AUDIO, 0, 1);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = snd_soc_dai_set_pll(cpu_dai, 0, 0, 0, pll_out);
--	if (ret < 0)
--		return ret;
--
- 	if (clk_pout)
- 		ret = snd_soc_dai_set_clkdiv(codec_dai, WM9713_PCMCLK_PLL_DIV,
- 					     WM9713_PCMDIV(wm9713_div));
+ obj-$(CONFIG_SND_MESON_AXG_FIFO) += snd-soc-meson-axg-fifo.o
+@@ -16,4 +17,5 @@ obj-$(CONFIG_SND_MESON_AXG_TDM_FORMATTER) += snd-soc-meson-axg-tdm-formatter.o
+ obj-$(CONFIG_SND_MESON_AXG_TDM_INTERFACE) += snd-soc-meson-axg-tdm-interface.o
+ obj-$(CONFIG_SND_MESON_AXG_TDMIN) += snd-soc-meson-axg-tdmin.o
+ obj-$(CONFIG_SND_MESON_AXG_TDMOUT) += snd-soc-meson-axg-tdmout.o
++obj-$(CONFIG_SND_MESON_AXG_SOUND_CARD) += snd-soc-meson-axg-sound-card.o
+ obj-$(CONFIG_SND_MESON_AXG_SPDIFOUT) += snd-soc-meson-axg-spdifout.o
+diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+new file mode 100644
+index 000000000000..d6d1081d94ad
+--- /dev/null
++++ b/sound/soc/meson/axg-card.c
+@@ -0,0 +1,671 @@
++// SPDX-License-Identifier: (GPL-2.0 OR MIT)
++//
++// Copyright (c) 2018 BayLibre, SAS.
++// Author: Jerome Brunet <jbrunet@baylibre.com>
++
++#include <linux/module.h>
++#include <linux/of_platform.h>
++#include <sound/soc.h>
++#include <sound/soc-dai.h>
++
++#include "axg-tdm.h"
++
++struct axg_card {
++	struct snd_soc_card card;
++	void **link_data;
++};
++
++struct axg_dai_link_tdm_mask {
++	u32 tx;
++	u32 rx;
++};
++
++struct axg_dai_link_tdm_data {
++	unsigned int mclk_fs;
++	unsigned int slots;
++	unsigned int slot_width;
++	u32 *tx_mask;
++	u32 *rx_mask;
++	struct axg_dai_link_tdm_mask *codec_masks;
++};
++
++#define PREFIX "amlogic,"
++
++static int axg_card_reallocate_links(struct axg_card *priv,
++				     unsigned int num_links)
++{
++	struct snd_soc_dai_link *links;
++	void **ldata;
++
++	links = krealloc(priv->card.dai_link,
++			 num_links * sizeof(*priv->card.dai_link),
++			 GFP_KERNEL | __GFP_ZERO);
++	ldata = krealloc(priv->link_data,
++			 num_links * sizeof(*priv->link_data),
++			 GFP_KERNEL | __GFP_ZERO);
++
++	if (!links || !ldata) {
++		dev_err(priv->card.dev, "failed to allocate links\n");
++		return -ENOMEM;
++	}
++
++	priv->card.dai_link = links;
++	priv->link_data = ldata;
++	priv->card.num_links = num_links;
++	return 0;
++}
++
++static int axg_card_parse_dai(struct snd_soc_card *card,
++			      struct device_node *node,
++			      struct device_node **dai_of_node,
++			      const char **dai_name)
++{
++	struct of_phandle_args args;
++	int ret;
++
++	if (!dai_name || !dai_of_node || !node)
++		return -EINVAL;
++
++	ret = of_parse_phandle_with_args(node, "sound-dai",
++					 "#sound-dai-cells", 0, &args);
++	if (ret) {
++		if (ret != -EPROBE_DEFER)
++			dev_err(card->dev, "can't parse dai %d\n", ret);
++		return ret;
++	}
++	*dai_of_node = args.np;
++
++	return snd_soc_get_dai_name(&args, dai_name);
++}
++
++static int axg_card_set_link_name(struct snd_soc_card *card,
++				  struct snd_soc_dai_link *link,
++				  const char *prefix)
++{
++	char *name = devm_kasprintf(card->dev, GFP_KERNEL, "%s.%s",
++				    prefix, link->cpu_of_node->full_name);
++	if (!name)
++		return -ENOMEM;
++
++	link->name = name;
++	link->stream_name = name;
++
++	return 0;
++}
++
++static void axg_card_clean_references(struct axg_card *priv)
++{
++	struct snd_soc_card *card = &priv->card;
++	struct snd_soc_dai_link *link;
++	int i, j;
++
++	if (card->dai_link) {
++		for (i = 0; i < card->num_links; i++) {
++			link = &card->dai_link[i];
++			of_node_put(link->cpu_of_node);
++			for (j = 0; j < link->num_codecs; j++)
++				of_node_put(link->codecs[j].of_node);
++		}
++	}
++
++	if (card->aux_dev) {
++		for (i = 0; i < card->num_aux_devs; i++)
++			of_node_put(card->aux_dev[i].codec_of_node);
++	}
++
++	kfree(card->dai_link);
++	kfree(priv->link_data);
++}
++
++static int axg_card_add_aux_devices(struct snd_soc_card *card)
++{
++	struct device_node *node = card->dev->of_node;
++	struct snd_soc_aux_dev *aux;
++	int num, i;
++
++	num = of_count_phandle_with_args(node, PREFIX "aux-devs", NULL);
++	if (num == -ENOENT) {
++		/*
++		 * It is ok to have no auxiliary devices but for this card it
++		 * is a strange situtation. Let's warn the about it.
++		 */
++		dev_warn(card->dev, "card has no auxiliary devices\n");
++		return 0;
++	} else if (num < 0) {
++		dev_err(card->dev, "error getting auxiliary devices: %d\n",
++			num);
++		return num;
++	}
++
++	aux = devm_kcalloc(card->dev, num, sizeof(*aux), GFP_KERNEL);
++	if (!aux)
++		return -ENOMEM;
++	card->aux_dev = aux;
++	card->num_aux_devs = num;
++
++	for (i = 0; i < card->num_aux_devs; i++, aux++) {
++		aux->codec_of_node = of_parse_phandle(node,
++						      PREFIX "aux-devs", i);
++		if (!aux->codec_of_node)
++			return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int axg_card_tdm_be_hw_params(struct snd_pcm_substream *substream,
++				     struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct axg_card *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct axg_dai_link_tdm_data *be =
++		(struct axg_dai_link_tdm_data *)priv->link_data[rtd->num];
++	struct snd_soc_dai *codec_dai;
++	unsigned int mclk;
++	int ret, i;
++
++	if (be->mclk_fs) {
++		mclk = params_rate(params) * be->mclk_fs;
++
++		for (i = 0; i < rtd->num_codecs; i++) {
++			codec_dai = rtd->codec_dais[i];
++			ret = snd_soc_dai_set_sysclk(codec_dai, 0, mclk,
++						     SND_SOC_CLOCK_IN);
++			if (ret && ret != -ENOTSUPP)
++				return ret;
++		}
++
++		ret = snd_soc_dai_set_sysclk(rtd->cpu_dai, 0, mclk,
++					     SND_SOC_CLOCK_OUT);
++		if (ret && ret != -ENOTSUPP)
++			return ret;
++	}
++
++	return 0;
++}
++
++static const struct snd_soc_ops axg_card_tdm_be_ops = {
++	.hw_params = axg_card_tdm_be_hw_params,
++};
++
++static int axg_card_tdm_dai_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct axg_card *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct axg_dai_link_tdm_data *be =
++		(struct axg_dai_link_tdm_data *)priv->link_data[rtd->num];
++	struct snd_soc_dai *codec_dai;
++	int ret, i;
++
++	for (i = 0; i < rtd->num_codecs; i++) {
++		codec_dai = rtd->codec_dais[i];
++		ret = snd_soc_dai_set_tdm_slot(codec_dai,
++					       be->codec_masks[i].tx,
++					       be->codec_masks[i].rx,
++					       be->slots, be->slot_width);
++		if (ret && ret != -ENOTSUPP) {
++			dev_err(codec_dai->dev,
++				"setting tdm link slots failed\n");
++			return ret;
++		}
++	}
++
++	ret = axg_tdm_set_tdm_slots(rtd->cpu_dai, be->tx_mask, be->rx_mask,
++				    be->slots, be->slot_width);
++	if (ret) {
++		dev_err(rtd->cpu_dai->dev, "setting tdm link slots failed\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static int axg_card_tdm_dai_lb_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct axg_card *priv = snd_soc_card_get_drvdata(rtd->card);
++	struct axg_dai_link_tdm_data *be =
++		(struct axg_dai_link_tdm_data *)priv->link_data[rtd->num];
++	int ret;
++
++	/* The loopback rx_mask is the pad tx_mask */
++	ret = axg_tdm_set_tdm_slots(rtd->cpu_dai, NULL, be->tx_mask,
++				    be->slots, be->slot_width);
++	if (ret) {
++		dev_err(rtd->cpu_dai->dev, "setting tdm link slots failed\n");
++		return ret;
++	}
++
++	return 0;
++}
++
++static int axg_card_add_tdm_loopback(struct snd_soc_card *card,
++				     int *index)
++{
++	struct axg_card *priv = snd_soc_card_get_drvdata(card);
++	struct snd_soc_dai_link *pad = &card->dai_link[*index];
++	struct snd_soc_dai_link *lb;
++	int ret;
++
++	/* extend links */
++	ret = axg_card_reallocate_links(priv, card->num_links + 1);
++	if (ret)
++		return ret;
++
++	lb = &card->dai_link[*index + 1];
++
++	lb->name = kasprintf(GFP_KERNEL, "%s-lb", pad->name);
++	if (!lb->name)
++		return -ENOMEM;
++
++	lb->stream_name = lb->name;
++	lb->cpu_of_node = pad->cpu_of_node;
++	lb->cpu_dai_name = "TDM Loopback";
++	lb->codec_name = "snd-soc-dummy";
++	lb->codec_dai_name = "snd-soc-dummy-dai";
++	lb->dpcm_capture = 1;
++	lb->no_pcm = 1;
++	lb->ops = &axg_card_tdm_be_ops;
++	lb->init = axg_card_tdm_dai_lb_init;
++
++	/* Provide the same link data to the loopback */
++	priv->link_data[*index + 1] = priv->link_data[*index];
++
++	/*
++	 * axg_card_clean_references() will iterate over this link,
++	 * make sure the node count is balanced
++	 */
++	of_node_get(lb->cpu_of_node);
++
++	/* Let add_links continue where it should */
++	*index += 1;
++
++	return 0;
++}
++
++static unsigned int axg_card_parse_daifmt(struct device_node *node,
++					  struct device_node *cpu_node)
++{
++	struct device_node *bitclkmaster = NULL;
++	struct device_node *framemaster = NULL;
++	unsigned int daifmt;
++
++	daifmt = snd_soc_of_parse_daifmt(node, PREFIX,
++					 &bitclkmaster, &framemaster);
++	daifmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
++
++	/* If no master is provided, default to cpu master */
++	if (!bitclkmaster || bitclkmaster == cpu_node) {
++		daifmt |= (!framemaster || framemaster == cpu_node) ?
++			SND_SOC_DAIFMT_CBS_CFS : SND_SOC_DAIFMT_CBS_CFM;
++	} else {
++		daifmt |= (!framemaster || framemaster == cpu_node) ?
++			SND_SOC_DAIFMT_CBM_CFS : SND_SOC_DAIFMT_CBM_CFM;
++	}
++
++	of_node_put(bitclkmaster);
++	of_node_put(framemaster);
++
++	return daifmt;
++}
++
++static int axg_card_parse_cpu_tdm_slots(struct snd_soc_card *card,
++					struct snd_soc_dai_link *link,
++					struct device_node *node,
++					struct axg_dai_link_tdm_data *be)
++{
++	char propname[32];
++	u32 tx, rx;
++	int i;
++
++	be->tx_mask = devm_kcalloc(card->dev, AXG_TDM_NUM_LANES,
++				   sizeof(*be->tx_mask), GFP_KERNEL);
++	be->rx_mask = devm_kcalloc(card->dev, AXG_TDM_NUM_LANES,
++				   sizeof(*be->rx_mask), GFP_KERNEL);
++	if (!be->tx_mask || !be->rx_mask)
++		return -ENOMEM;
++
++	for (i = 0, tx = 0; i < AXG_TDM_NUM_LANES; i++) {
++		snprintf(propname, 32, "dai-tdm-slot-tx-mask-%d", i);
++		snd_soc_of_get_slot_mask(node, propname, &be->tx_mask[i]);
++		tx = max(tx, be->tx_mask[i]);
++	}
++
++	/* Disable playback is the interface has no tx slots */
++	if (!tx)
++		link->dpcm_playback = 0;
++
++	for (i = 0, rx = 0; i < AXG_TDM_NUM_LANES; i++) {
++		snprintf(propname, 32, "dai-tdm-slot-rx-mask-%d", i);
++		snd_soc_of_get_slot_mask(node, propname, &be->rx_mask[i]);
++		rx = max(rx, be->rx_mask[i]);
++	}
++
++	/* Disable capture is the interface has no rx slots */
++	if (!rx)
++		link->dpcm_capture = 0;
++
++	/* ... but the interface should at least have one of them */
++	if (!tx && !rx) {
++		dev_err(card->dev, "tdm link has no cpu slots\n");
++		return -EINVAL;
++	}
++
++	of_property_read_u32(node, "dai-tdm-slot-num", &be->slots);
++	if (!be->slots) {
++		/*
++		 * If the slot number is not provided, set it such as it
++		 * accommodates the largest mask
++		 */
++		be->slots = fls(max(tx, rx));
++	} else if (be->slots < fls(max(tx, rx)) || be->slots > 32) {
++		/*
++		 * Error if the slots can't accommodate the largest mask or
++		 * if it is just too big
++		 */
++		dev_err(card->dev, "bad slot number\n");
++		return -EINVAL;
++	}
++
++	of_property_read_u32(node, "dai-tdm-slot-width", &be->slot_width);
++
++	return 0;
++}
++
++static int axg_card_parse_codecs_masks(struct snd_soc_card *card,
++				       struct snd_soc_dai_link *link,
++				       struct device_node *node,
++				       struct axg_dai_link_tdm_data *be)
++{
++	struct axg_dai_link_tdm_mask *codec_mask;
++	struct device_node *np;
++
++	codec_mask = devm_kcalloc(card->dev, link->num_codecs,
++				  sizeof(*codec_mask), GFP_KERNEL);
++	if (!codec_mask)
++		return -ENOMEM;
++
++	be->codec_masks = codec_mask;
++
++	for_each_child_of_node(node, np) {
++		snd_soc_of_get_slot_mask(np, "dai-tdm-slot-rx-mask",
++					 &codec_mask->rx);
++		snd_soc_of_get_slot_mask(np, "dai-tdm-slot-tx-mask",
++					 &codec_mask->tx);
++
++		codec_mask++;
++	}
++
++	return 0;
++}
++
++static int axg_card_parse_tdm(struct snd_soc_card *card,
++			      struct device_node *node,
++			      int *index)
++{
++	struct axg_card *priv = snd_soc_card_get_drvdata(card);
++	struct snd_soc_dai_link *link = &card->dai_link[*index];
++	struct axg_dai_link_tdm_data *be;
++	int ret;
++
++	/* Allocate tdm link parameters */
++	be = devm_kzalloc(card->dev, sizeof(*be), GFP_KERNEL);
++	if (!be)
++		return -ENOMEM;
++	priv->link_data[*index] = be;
++
++	/* Setup tdm link */
++	link->ops = &axg_card_tdm_be_ops;
++	link->init = axg_card_tdm_dai_init;
++	link->dai_fmt = axg_card_parse_daifmt(node, link->cpu_of_node);
++
++	of_property_read_u32(node, "mclk-fs", &be->mclk_fs);
++
++	ret = axg_card_parse_cpu_tdm_slots(card, link, node, be);
++	if (ret) {
++		dev_err(card->dev, "error parsing tdm link slots\n");
++		return ret;
++	}
++
++	ret = axg_card_parse_codecs_masks(card, link, node, be);
++	if (ret)
++		return ret;
++
++	/* Add loopback if the pad dai has playback */
++	if (link->dpcm_playback) {
++		ret = axg_card_add_tdm_loopback(card, index);
++		if (ret)
++			return ret;
++	}
++
++	return 0;
++}
++
++static int axg_card_set_be_link(struct snd_soc_card *card,
++				struct snd_soc_dai_link *link,
++				struct device_node *node)
++{
++	struct snd_soc_dai_link_component *codec;
++	struct device_node *np;
++	int ret, num_codecs;
++
++	link->no_pcm = 1;
++	link->dpcm_playback = 1;
++	link->dpcm_capture = 1;
++
++	num_codecs = of_get_child_count(node);
++	if (!num_codecs) {
++		dev_err(card->dev, "be link %s has no codec\n",
++			node->full_name);
++		return -EINVAL;
++	}
++
++	codec = devm_kcalloc(card->dev, num_codecs, sizeof(*codec), GFP_KERNEL);
++	if (!codec)
++		return -ENOMEM;
++
++	link->codecs = codec;
++	link->num_codecs = num_codecs;
++
++	for_each_child_of_node(node, np) {
++		ret = axg_card_parse_dai(card, np, &codec->of_node,
++					 &codec->dai_name);
++		if (ret) {
++			of_node_put(np);
++			return ret;
++		}
++
++		codec++;
++	}
++
++	ret = axg_card_set_link_name(card, link, "be");
++	if (ret)
++		dev_err(card->dev, "error setting %s link name\n", np->name);
++
++	return ret;
++}
++
++static int axg_card_set_fe_link(struct snd_soc_card *card,
++				struct snd_soc_dai_link *link,
++				bool is_playback)
++{
++	link->dynamic = 1;
++	link->dpcm_merged_format = 1;
++	link->dpcm_merged_chan = 1;
++	link->dpcm_merged_rate = 1;
++	link->codec_dai_name = "snd-soc-dummy-dai";
++	link->codec_name = "snd-soc-dummy";
++
++	if (is_playback)
++		link->dpcm_playback = 1;
++	else
++		link->dpcm_capture = 1;
++
++	return axg_card_set_link_name(card, link, "fe");
++}
++
++static int axg_card_cpu_is_capture_fe(struct device_node *np)
++{
++	return of_device_is_compatible(np, PREFIX "axg-toddr");
++}
++
++static int axg_card_cpu_is_playback_fe(struct device_node *np)
++{
++	return of_device_is_compatible(np, PREFIX "axg-frddr");
++}
++
++static int axg_card_cpu_is_tdm_iface(struct device_node *np)
++{
++	return of_device_is_compatible(np, PREFIX "axg-tdm-iface");
++}
++
++static int axg_card_add_link(struct snd_soc_card *card, struct device_node *np,
++			     int *index)
++{
++	struct snd_soc_dai_link *dai_link = &card->dai_link[*index];
++	int ret;
++
++	ret = axg_card_parse_dai(card, np, &dai_link->cpu_of_node,
++				 &dai_link->cpu_dai_name);
++	if (ret)
++		return ret;
++
++	if (axg_card_cpu_is_playback_fe(dai_link->cpu_of_node))
++		ret = axg_card_set_fe_link(card, dai_link, true);
++	else if (axg_card_cpu_is_capture_fe(dai_link->cpu_of_node))
++		ret = axg_card_set_fe_link(card, dai_link, false);
++	else
++		ret = axg_card_set_be_link(card, dai_link, np);
++
++	if (ret)
++		return ret;
++
++	if (axg_card_cpu_is_tdm_iface(dai_link->cpu_of_node))
++		ret = axg_card_parse_tdm(card, np, index);
++
++	return ret;
++}
++
++static int axg_card_add_links(struct snd_soc_card *card)
++{
++	struct axg_card *priv = snd_soc_card_get_drvdata(card);
++	struct device_node *node = card->dev->of_node;
++	struct device_node *np;
++	int num, i, ret;
++
++	num = of_get_child_count(node);
++	if (!num) {
++		dev_err(card->dev, "card has no links\n");
++		return -EINVAL;
++	}
++
++	ret = axg_card_reallocate_links(priv, num);
++	if (ret)
++		return ret;
++
++	i = 0;
++	for_each_child_of_node(node, np) {
++		ret = axg_card_add_link(card, np, &i);
++		if (ret) {
++			of_node_put(np);
++			return ret;
++		}
++
++		i++;
++	}
++
++	return 0;
++}
++
++static int axg_card_parse_of_optional(struct snd_soc_card *card,
++				      const char *propname,
++				      int (*func)(struct snd_soc_card *c,
++						  const char *p))
++{
++	/* If property is not provided, don't fail ... */
++	if (!of_property_read_bool(card->dev->of_node, propname))
++		return 0;
++
++	/* ... but do fail if it is provided and the parsing fails */
++	return func(card, propname);
++}
++
++static const struct of_device_id axg_card_of_match[] = {
++	{ .compatible = "amlogic,axg-sound-card", },
++	{}
++};
++MODULE_DEVICE_TABLE(of, axg_card_of_match);
++
++static int axg_card_probe(struct platform_device *pdev)
++{
++	struct device *dev = &pdev->dev;
++	struct axg_card *priv;
++	int ret;
++
++	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
++	if (!priv)
++		return -ENOMEM;
++
++	platform_set_drvdata(pdev, priv);
++	snd_soc_card_set_drvdata(&priv->card, priv);
++
++	priv->card.owner = THIS_MODULE;
++	priv->card.dev = dev;
++
++	ret = snd_soc_of_parse_card_name(&priv->card, PREFIX "name");
++	if (ret < 0)
++		return ret;
++
++	ret = axg_card_parse_of_optional(&priv->card, PREFIX "routing",
++					 snd_soc_of_parse_audio_routing);
++	if (ret) {
++		dev_err(dev, "error while parsing routing\n");
++		return ret;
++	}
++
++	ret = axg_card_parse_of_optional(&priv->card, PREFIX "widgets",
++					 snd_soc_of_parse_audio_simple_widgets);
++	if (ret) {
++		dev_err(dev, "error while parsing widgets\n");
++		return ret;
++	}
++
++	ret = axg_card_add_links(&priv->card);
++	if (ret)
++		goto out_err;
++
++	ret = axg_card_add_aux_devices(&priv->card);
++	if (ret)
++		goto out_err;
++
++	ret = devm_snd_soc_register_card(dev, &priv->card);
++	if (ret)
++		goto out_err;
++
++	return 0;
++
++out_err:
++	axg_card_clean_references(priv);
++	return ret;
++}
++
++static int axg_card_remove(struct platform_device *pdev)
++{
++	struct axg_card *priv = platform_get_drvdata(pdev);
++
++	axg_card_clean_references(priv);
++
++	return 0;
++}
++
++static struct platform_driver axg_card_pdrv = {
++	.probe = axg_card_probe,
++	.remove = axg_card_remove,
++	.driver = {
++		.name = "axg-sound-card",
++		.of_match_table = axg_card_of_match,
++	},
++};
++module_platform_driver(axg_card_pdrv);
++
++MODULE_DESCRIPTION("Amlogic AXG ALSA machine driver");
++MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
++MODULE_LICENSE("GPL v2");
 -- 
 2.18.0
