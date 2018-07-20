@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "MAINTAINERS: add entry for STM32 audio
-	drivers" to the asoc tree
-Date: Fri, 20 Jul 2018 13:19:39 +0100
-Message-ID: <E1fgUNn-0006BQ-6I@debutante>
-References: <1532073771-8600-2-git-send-email-arnaud.pouliquen@st.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 57EA8267774
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 14:19:44 +0200 (CEST)
-In-Reply-To: <1532073771-8600-2-git-send-email-arnaud.pouliquen@st.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, Alexandre TORGUE <alexandre.torgue@st.com>, Takashi Iwai <tiwai@suse.de>, arnaud.pouliquen@st.com, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sgtl5000: fix spelling in devicetree binding document" to the asoc tree
+Date: Fri, 20 Jul 2018 13:20:01 +0100
+Message-ID: <E1fgUO9-0006FG-HW@debutante>
+References: <20180720075302.21079-1-marcel@ziswiler.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180720075302.21079-1-marcel@ziswiler.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mark Rutland <mark.rutland@arm.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   MAINTAINERS: add entry for STM32 audio drivers
+   ASoC: sgtl5000: fix spelling in devicetree binding document
 
 has been applied to the asoc tree at
 
@@ -52,38 +37,31 @@ to this mail.
 Thanks,
 Mark
 
->From faa80b66c767ef4995e33835e9844a5df142c6cc Mon Sep 17 00:00:00 2001
-From: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Date: Fri, 20 Jul 2018 10:02:51 +0200
-Subject: [PATCH] MAINTAINERS: add entry for STM32 audio drivers
+>From 486c16f2b5d1eb12339fb7a020961ea1c40e619f Mon Sep 17 00:00:00 2001
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Date: Fri, 20 Jul 2018 09:53:02 +0200
+Subject: [PATCH] ASoC: sgtl5000: fix spelling in devicetree binding document
 
-Add sound/soc/stm drivers entry for STM32 audio drivers from
-ST Microelectronics.
+This fixes a spelling mistake.
 
-Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- MAINTAINERS | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ Documentation/devicetree/bindings/sound/sgtl5000.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index b44d7167a9e9..fc711d23dc83 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -13577,6 +13577,14 @@ T:	git git://linuxtv.org/media_tree.git
- S:	Maintained
- F:	drivers/media/usb/stk1160/
+diff --git a/Documentation/devicetree/bindings/sound/sgtl5000.txt b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+index 0f214457476f..9c58f724396a 100644
+--- a/Documentation/devicetree/bindings/sound/sgtl5000.txt
++++ b/Documentation/devicetree/bindings/sound/sgtl5000.txt
+@@ -17,7 +17,7 @@ Optional properties:
  
-+STM32 AUDIO (ASoC) DRIVERS
-+M:	Olivier Moysan <olivier.moysan@st.com>
-+M:	Arnaud Pouliquen <arnaud.pouliquen@st.com>
-+L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
-+S:	Maintained
-+F:	Documentation/devicetree/bindings/sound/st,stm32-*.txt
-+F:	sound/soc/stm/
-+
- STM32 TIMER/LPTIMER DRIVERS
- M:	Fabrice Gasnier <fabrice.gasnier@st.com>
- S:	Maintained
+ - VDDD-supply : the regulator provider of VDDD
+ 
+-- micbias-resistor-k-ohms : the bias resistor to be used in kOmhs
++- micbias-resistor-k-ohms : the bias resistor to be used in kOhms
+ 	The resistor can take values of 2k, 4k or 8k.
+ 	If set to 0 it will be off.
+ 	If this node is not mentioned or if the value is unknown, then
 -- 
 2.18.0
