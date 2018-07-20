@@ -1,47 +1,51 @@
-From: Marcel Ziswiler <marcel@ziswiler.com>
-Subject: Re: [PATCH] ASoC: wm9712: fix replace codec to component
-Date: Fri, 20 Jul 2018 11:20:47 +0200
-Message-ID: <1532078447.19673.8.camel@ziswiler.com>
-References: <20180720075148.14648-1-marcel@ziswiler.com>
-         <87effy48lz.wl-kuninori.morimoto.gx@renesas.com>
+From: Puneeth Prabhu <puneethx.prabhu@intel.com>
+Subject: [PATCH] ASoC: topology: Increase
+	SND_SOC_TPLG_NUM_TEXTS to 32
+Date: Fri, 20 Jul 2018 15:57:06 +0530
+Message-ID: <1532082427-4912-1-git-send-email-puneethx.prabhu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87effy48lz.wl-kuninori.morimoto.gx@renesas.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-mips@linux-mips.org, Gregory CLEMENT <gregory.clement@bootlin.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, James Hogan <jhogan@kernel.org>, Philippe Ombredanne <pombredanne@nexb.com>, Bhumika Goyal <bhumirks@gmail.com>, Kate Stewart <kstewart@linuxfoundation.org>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Ralf Baechle <ralf@linux-mips.org>, Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, Takashi Iwai <tiwai@suse.com>, Paul Burton <paul.burton@mips.com>, Liam Girdwood <lgirdwood@gmail.com>, Lee Jones <lee.jones@linaro.org>, Daniel Mack <daniel@zonque.org>, Manuel Lauss <manuel.lauss@gmail.com>, Russell
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 04EDD267715
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 12:24:25 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: cezary.rojewski@intel.com, Takashi Iwai <tiwai@suse.de>, pardha.saradhi.kesapragada@intel.com, Puneeth Prabhu <puneethx.prabhu@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, gustaw.lewandowski@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Kuninori
+Topology supports maximum of 32 configs for a path 
+whereas kernel can support only 16 configs of a path.
+So, increase SND_SOC_TPLG_NUM_TEXTS to 32 to support 32
+configs for a path.
 
-On Fri, 2018-07-20 at 08:30 +0000, Kuninori Morimoto wrote:
-> Hi Marcel
-> 
-> > From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> > 
-> > Since commit 143b44845d87 ("ASoC: wm9712: replace codec to
-> > component")
-> > "wm9712-codec" got renamed to "wm9712-component", however, this
-> > change
-> > never got propagated down to the actual board/platform drivers.
-> > E.g. on
-> > Colibri T20 this lead to the following spew upon boot with
-> > sound/touch
-> > being broken:
-> 
-> Oops, my bad...
-> The platform_driver name is not important,
-> how about simply rename back it to "wm9712-codec" ?
+Signed-off-by: Puneeth Prabhu <puneethx.prabhu@intel.com>
+Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+---
+ include/uapi/sound/asoc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sure, that's your call. After all it was now broken for almost half a
-year (;-p). Should I cook that up as well or are you gona do it?
-
-> Best regards
-> ---
-> Kuninori Morimoto
-
-Cheers
-
-Marcel
+diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+index a74ca23..5b1411b 100644
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -88,7 +88,7 @@
+ #define SND_SOC_TPLG_MAGIC		0x41536F43 /* ASoC */
+ 
+ /* string sizes */
+-#define SND_SOC_TPLG_NUM_TEXTS		16
++#define SND_SOC_TPLG_NUM_TEXTS		32
+ 
+ /* ABI version */
+ #define SND_SOC_TPLG_ABI_VERSION	0x5	/* current version */
+-- 
+2.1.4
