@@ -1,80 +1,55 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH v2 0/3] Make the audio
- component binding more generic
-Date: Thu, 19 Jul 2018 18:26:28 -0500
-Message-ID: <136e40e7-8667-8816-108b-7102c8f963d8@linux.intel.com>
-References: <20180717092652.25630-1-tiwai@suse.de>
- <249d6be5-13a0-89ca-4a2f-0d88299415cd@linux.intel.com>
- <s5hpnzj6afa.wl-tiwai@suse.de>
- <c6ae9387-0f2e-34fa-4ccc-596512377066@linux.intel.com>
- <s5hpnzj3vhb.wl-tiwai@suse.de>
+From: Bard Liao <bardliao@realtek.com>
+Subject: Re: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume
+	control
+Date: Fri, 20 Jul 2018 01:31:04 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D7028430F3@RTITMBSV02.realtek.com.tw>
+References: <20180718205542.12364-1-hdegoede@redhat.com>
+ <20180718205542.12364-2-hdegoede@redhat.com>
+ <20180719150234.GE27938@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <s5hpnzj3vhb.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org, Jim Qu <Jim.Qu@amd.com>, Mark Brown <broonie@kernel.org>, Rodrigo Vivi <rodrigo.vivi@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB7F026733D
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 03:31:13 +0200 (CEST)
+In-Reply-To: <20180719150234.GE27938@sirena.org.uk>
+Content-Language: zh-TW
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Hans de Goede <hdegoede@redhat.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gNy8xOS8xOCAxOjU2IFBNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVGh1LCAxOSBKdWwg
-MjAxOCAxNTowNTo0NSArMDIwMCwKPiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4KPj4g
-T24gNy8xOS8xOCAxMjo1MCBBTSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+Pj4gT24gV2VkLCAxOCBK
-dWwgMjAxOCAyMjo1NDozNSArMDIwMCwKPj4+IFBpZXJyZS1Mb3VpcyBCb3NzYXJ0IHdyb3RlOgo+
-Pj4+Cj4+Pj4KPj4+Pgo+Pj4+IE9uIDA3LzE3LzIwMTggMDQ6MjYgQU0sIFRha2FzaGkgSXdhaSB3
-cm90ZToKPj4+Pj4gSGksCj4+Pj4+Cj4+Pj4+IHRoaXMgaXMgYSBwcmVsaW1pbmlhcnkgcGF0Y2gg
-c2V0IHRvIGNvbnZlcnQgdGhlIGV4aXN0aW5nIGk5MTUgLwo+Pj4+PiBIRC1hdWRpbyBjb21wb25l
-bnQgYmluZGluZyB0byBiZSBhcHBsaWNhYmxlIHRvIG90aGVyIGRyaXZlcnMgbGlrZQo+Pj4+PiBy
-YWRlb24gLyBhbWRncHUuICBUaGlzIHBhdGNoc2V0IGl0c2VsZiBkb2Vzbid0IGNoYW5nZSB0aGUK
-Pj4+Pj4gZnVuY3Rpb25hbGl0eSBidXQgb25seSByZW5hbWVzIGFuZCBzcGxpdCB0byBhIG5ldyBk
-cm1fYXVkaW9fY29tcG9uZW50Cj4+Pj4+IHN0dWZmIGZyb20gaTkxNV9hdWRpb19jb21wb25lbnQu
-Cj4+Pj4+Cj4+Pj4+IFRoZSBhY3R1YWwgdXNhZ2Ugb2YgdGhlIG5ldyBBUEkgd2lsbCBmb2xsb3cg
-b25jZSBhZnRlciB0aGlzIG9uZSBnZXRzCj4+Pj4+IHJldmlld2VkIC8gYWNjZXB0ZWQuICBUaGUg
-d2hvbGUgcGF0Y2hlcyAoaW5jbHVkaW5nIHRoaXMgcGF0Y2hzZXQpIGFyZQo+Pj4+PiBmb3VuZCBp
-biB0b3BpYy9oZGEtYWNvbXAgYnJhbmNoIG9mIHNvdW5kLmdpdCB0cmVlLgo+Pj4+Pgo+Pj4+PiBC
-VFcsIHNpbmNlIHRoZSB3aG9sZSBzdHVmZiBpcyBhYm91dCB0aGUgYXVkaW8gYmluZGluZywgSSBz
-dXBwb3NlIHRoZXNlCj4+Pj4+IHdpbGwgZ28gdGhyb3VnaCBzb3VuZCBnaXQgdHJlZS4gIExldCBt
-ZSBrbm93IGlmIGFueW9uZSBoYXMgY29uY2VybnMuCj4+Pj4gTm8gb2JqZWN0aW9ucyBidXQgYSBz
-bGlnaHQgY29uY2VybiB0aGF0IHRoaXMgd2lsbCBjb25mbGljdCB3aXRoIHRoZQo+Pj4+IEhEQXVk
-aW8rRFNQIHBhdGNoZXMgdGhhdCBJIHdhcyBhYm91dCB0byByZXN1Ym1pdCBvbiB0b3Agb2YgeW91
-cgo+Pj4+IHRvcGljL2hkYS1jb3JlLWludGVsIGJyYW5jaC4gdGhlIHR3byBzZXJpZXMgdG91Y2gg
-dGhlIHNhbWUgZmlsZXMgc28KPj4+PiBpdCdkIGJlIGEgbWlyYWNsZSBpZiB0aGVyZSBpcyBubyBp
-c3N1ZS4KPj4+PiBIb3cgZG8geW91IHdhbnQgdG8gZGVhbCB3aXRoIHRoaXM/Cj4+Pgo+Pj4gRG9l
-cyBpdCBjb25mbGljdCBzZXZlcmVseT8gIElmIGl0J3MgdHJpdmlhbCwgaXQgY2FuIGJlIHJlc29s
-dmVkIGF0Cj4+PiBtZXJnZSB0aW1lLCB0b28uICBUaGUgY2hhbmdlcyBpbiBteSBwYXRjaHNldCBh
-cmUgZmFpcmx5IHRyaXZpYWwsIHNvIGl0Cj4+PiBzaG91bGRuJ3QgYmUgdG9vIGhhcmQuCj4+Cj4+
-IEkgd2FzIGFibGUgdG8gbWFrZSB0aGluZ3Mgd29yayBieSB0YWtpbmcgeW91ciB0b3BpYy9oZGEt
-Y29yZS1pbnRlbCwKPj4gbWVyZ2UgaXQgb24gTWFyaydzIGZvci1uZXh0LCB0aGVuIGFkZCBteSBh
-ZGRpdGlvbmFsIGNoYW5nZXMgYW5kIHRoZXNlCj4+IERSTSBjaGFuZ2VzLiBUaGUgbGFzdCB0d28g
-Y2FuIGJlIGRvbmUgaW4gYW55IG9yZGVyLiBCdXQgSSBhbSBnZXR0aW5nCj4+IHNvbWUgY29uZmxp
-Y3RzIGlmIEkgdHJ5IHRvIGFwcGx5IHRoZXNlIERSTSBjaGFuZ2VzIGZpcnN0LCBub3Qgc3VyZSB3
-aHkKPj4gZ2l0IGlzIGNvbXBsYWluaW5nIHRob3VnaCwgdGhlIGNoYW5nZXMgbG9vayB0cml2aWFs
-IGVub3VnaC4KPj4gU28geWVzIGl0IGxvb2tzIHBvc3NpYmxlIHRvIGRlYWwgd2l0aCB0aGUgdHdv
-IHNlcmllcyBpbiBwYXJhbGxlbCwgd2lsbAo+PiBzZW5kIG15IHVwZGF0ZSBsYXRlciB0b2RheS4K
-PiAKPiBPSywgc2luY2UgbXkgY2hhbmdlcyBhcmUgcmVsYXRpdmVseSB0cml2aWFsIHRvIGRlYWwg
-d2l0aCwgSSBtZXJnZSB0aGUKPiBjaGFuZ2VzIHRvIGZvci1uZXh0IGJyYW5jaCBub3cuCj4gCj4g
-SWYgeW91ciBwYXRjaGVzIGNhbiBiZSByZXNwaW5uZWQsIG1heWJlIGl0J3MgZWFzaWVyIHRvIGJl
-IHJlYmFzZWQgb24KPiB0b3Agb2YgdGhlc2UgbWVyZ2VzLgoKSSB3YXMgcGxhbm5pbmcgdG8gcmVz
-ZW5kIHRoZW0gdG9tb3Jyb3cgYWZ0ZXIgaW50ZXJuYWwgcmV2aWV3cyAobW9zdGx5IApjaGFuZ2Vz
-IGluIHRoZSBkZXRlY3Rpb24vZW5hYmxlbWVudCBvZiB0aGUgSERhdWRpbytEU1AgY2FzZSkuIElm
-IHlvdSAKd2FudCB0byB0YWtlIGEgbG9vayBpbiB0aGUgbWVhbiB0aW1lIHRoZSBwYXRjaGVzIGFy
-ZSBoZXJlOiAKaHR0cHM6Ly9naXRodWIuY29tL3BsYm9zc2FydC9zb3VuZC9jb21taXRzL3Vwc3Ry
-ZWFtL2hkYTIKCkkgY2FuIHJlYmFzZSB0aGVtIGFzIG5lZWRlZCwgbm8gYmlnIGRlYWwuClRoYW5r
-cwotUGllcnJlCgo+IAo+IE1hcmssIGNvdWxkIHlvdSBtZXJnZSB0b3BpYy9kcm1fYXVkaW9fY29t
-cG9uZW50IGJyYW5jaCBpbnRvIHlvdXJzLCBpZgo+IFBpZXJyZSdzIHBhdGNoc2V0IHdvbid0IGdv
-IGluIGltbWVkaWF0ZWx5PyAgSXQncyBhbiBpbW11dGFibGUgYnJhbmNoLAo+IGluY2x1ZGluZyBh
-bHJlYWR5IHRvcGljL2hkYS1jb3JlLWludGVsIGluIGl0c2VsZi4KPiAKPiAKPiB0aGFua3MsCj4g
-Cj4gVGFrYXNoaQo+IAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX18KSW50ZWwtZ2Z4IG1haWxpbmcgbGlzdApJbnRlbC1nZnhAbGlzdHMuZnJlZWRlc2t0b3Au
-b3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3JnL21haWxtYW4vbGlzdGluZm8vaW50ZWwt
-Z2Z4Cg==
+> -----Original Message-----
+> From: Mark Brown [mailto:broonie@kernel.org]
+> Sent: Thursday, July 19, 2018 11:03 PM
+> To: Hans de Goede
+> Cc: Liam Girdwood; Bard Liao; Oder Chiou; Pierre-Louis Bossart; Carlo Caione;
+> alsa-devel@alsa-project.org
+> Subject: Re: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume control
+> 
+> On Wed, Jul 18, 2018 at 10:55:37PM +0200, Hans de Goede wrote:
+> 
+> > +	/* IN1/IN2/IN3 Control */
+> >  	SOC_SINGLE_TLV("IN1 Boost", RT5651_IN1_IN2,
+> >  		RT5651_BST_SFT1, 8, 0, bst_tlv),
+> >  	SOC_SINGLE_TLV("IN2 Boost", RT5651_IN1_IN2,
+> >  		RT5651_BST_SFT2, 8, 0, bst_tlv),
+> > +	SOC_SINGLE_TLV("IN3 Boost", RT5651_IN3,
+> > +		RT5651_BST_SFT1, 8, 0, bst_tlv),
+> 
+> These should all have Volume added to the name however that's a
+> preexisting bug so not a blocker on this.
+
+I will add "Volume" to the name for all of them.
+
+> 
+> ------Please consider the environment before printing this e-mail.
