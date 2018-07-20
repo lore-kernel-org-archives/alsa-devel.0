@@ -1,10 +1,10 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: add tdm formatter base driver" to the asoc tree
-Date: Fri, 20 Jul 2018 17:44:31 +0100
-Message-ID: <E1fgYW7-0000x8-8Q@debutante>
-References: <20180717153643.8806-13-jbrunet@baylibre.com>
+Subject: Applied "ASoC: meson: add axg tdm interface DT bindings documentation" to the asoc tree
+Date: Fri, 20 Jul 2018 17:45:12 +0100
+Message-ID: <E1fgYWm-00010r-J8@debutante>
+References: <20180717153643.8806-11-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180717153643.8806-13-jbrunet@baylibre.com>
+In-Reply-To: <20180717153643.8806-11-jbrunet@baylibre.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Jerome Brunet <jbrunet@baylibre.com>
 Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
@@ -12,7 +12,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: add tdm formatter base driver
+   ASoC: meson: add axg tdm interface DT bindings documentation
 
 has been applied to the asoc tree at
 
@@ -37,584 +37,47 @@ to this mail.
 Thanks,
 Mark
 
->From 1a11d88f499ceb69e9b4098ddc36866820335a54 Mon Sep 17 00:00:00 2001
+>From 9e960c0298b5811e5a2c1ebceea6aa3b7bbc61c6 Mon Sep 17 00:00:00 2001
 From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Tue, 17 Jul 2018 17:42:58 +0200
-Subject: [PATCH] ASoC: meson: add tdm formatter base driver
+Date: Tue, 17 Jul 2018 17:42:57 +0200
+Subject: [PATCH] ASoC: meson: add axg tdm interface DT bindings documentation
 
-Add Amlogic's axg TDM core driver. On this SoC, tdm is bit more
-complex than usual, mainly because the different TDM input decoders can
-be attached to any of TDM pad interface, including the output pads.
-
-For the this, TDM on this SoC is modeled like this:
-- TDM interface provides the DAIs the codecs will be attached to.
-  The main responsibility of this driver is to manage the pad format
-  and the TDM clock rates.
-- TDM Formatters: These are the entities which are actually dealing with
-  the TDM signal. TDMOUT produce a TDM signal from the audio sample
-  provided by FRDDR using the clocks provided the TDM interface. TDMIN
-  feeds TODDR with audio sample using the clocks and TDM signal provided
-  by the TDM Interface.
-- TDM Streams: This provides the link between 1 DAI stream of the TDM
-  interface and one (or more) TDM formatters.
-
-This driver provides the TDM formatter and TDM stream operations.
+Add the DT bindings documentation for axg's TDM interfaces
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/Kconfig             |   4 +
- sound/soc/meson/Makefile            |   2 +
- sound/soc/meson/axg-tdm-formatter.c | 381 ++++++++++++++++++++++++++++
- sound/soc/meson/axg-tdm-formatter.h |  39 +++
- sound/soc/meson/axg-tdm.h           |  74 ++++++
- 5 files changed, 500 insertions(+)
- create mode 100644 sound/soc/meson/axg-tdm-formatter.c
- create mode 100644 sound/soc/meson/axg-tdm-formatter.h
- create mode 100644 sound/soc/meson/axg-tdm.h
+ .../bindings/sound/amlogic,axg-tdm-iface.txt  | 22 +++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
 
-diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index 9408214b5854..80a88689491f 100644
---- a/sound/soc/meson/Kconfig
-+++ b/sound/soc/meson/Kconfig
-@@ -19,6 +19,10 @@ config SND_MESON_AXG_TODDR
- 	  Select Y or M to add support for the frontend capture interfaces
- 	  embedded in the Amlogic AXG SoC family
- 
-+config SND_MESON_AXG_TDM_FORMATTER
-+	tristate
-+	select REGMAP_MMIO
-+
- config SND_MESON_AXG_SPDIFOUT
- 	tristate "Amlogic AXG SPDIF Output Support"
- 	imply SND_SOC_SPDIF
-diff --git a/sound/soc/meson/Makefile b/sound/soc/meson/Makefile
-index d51ae045ef08..a06b56a1c995 100644
---- a/sound/soc/meson/Makefile
-+++ b/sound/soc/meson/Makefile
-@@ -3,9 +3,11 @@
- snd-soc-meson-axg-fifo-objs := axg-fifo.o
- snd-soc-meson-axg-frddr-objs := axg-frddr.o
- snd-soc-meson-axg-toddr-objs := axg-toddr.o
-+snd-soc-meson-axg-tdm-formatter-objs := axg-tdm-formatter.o
- snd-soc-meson-axg-spdifout-objs := axg-spdifout.o
- 
- obj-$(CONFIG_SND_MESON_AXG_FIFO) += snd-soc-meson-axg-fifo.o
- obj-$(CONFIG_SND_MESON_AXG_FRDDR) += snd-soc-meson-axg-frddr.o
- obj-$(CONFIG_SND_MESON_AXG_TODDR) += snd-soc-meson-axg-toddr.o
-+obj-$(CONFIG_SND_MESON_AXG_TDM_FORMATTER) += snd-soc-meson-axg-tdm-formatter.o
- obj-$(CONFIG_SND_MESON_AXG_SPDIFOUT) += snd-soc-meson-axg-spdifout.o
-diff --git a/sound/soc/meson/axg-tdm-formatter.c b/sound/soc/meson/axg-tdm-formatter.c
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
 new file mode 100644
-index 000000000000..43e390f9358a
+index 000000000000..cabfb26a5f22
 --- /dev/null
-+++ b/sound/soc/meson/axg-tdm-formatter.c
-@@ -0,0 +1,381 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+//
-+// Copyright (c) 2018 BayLibre, SAS.
-+// Author: Jerome Brunet <jbrunet@baylibre.com>
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-tdm-iface.txt
+@@ -0,0 +1,22 @@
++* Amlogic Audio TDM Interfaces
 +
-+#include <linux/clk.h>
-+#include <linux/module.h>
-+#include <linux/of_platform.h>
-+#include <linux/regmap.h>
-+#include <sound/soc.h>
++Required properties:
++- compatible: 'amlogic,axg-tdm-iface'
++- clocks: list of clock phandle, one for each entry clock-names.
++- clock-names: should contain the following:
++  * "sclk" : bit clock.
++  * "lrclk": sample clock
++  * "mclk" : master clock
++	     -> optional if the interface is in clock slave mode.
++- #sound-dai-cells: must be 0.
 +
-+#include "axg-tdm-formatter.h"
++Example of TDM_A on the A113 SoC:
 +
-+struct axg_tdm_formatter {
-+	struct list_head list;
-+	struct axg_tdm_stream *stream;
-+	const struct axg_tdm_formatter_driver *drv;
-+	struct clk *pclk;
-+	struct clk *sclk;
-+	struct clk *lrclk;
-+	struct clk *sclk_sel;
-+	struct clk *lrclk_sel;
-+	bool enabled;
-+	struct regmap *map;
++tdmif_a: audio-controller@0 {
++	compatible = "amlogic,axg-tdm-iface";
++	#sound-dai-cells = <0>;
++	clocks = <&clkc_audio AUD_CLKID_MST_A_MCLK>,
++		 <&clkc_audio AUD_CLKID_MST_A_SCLK>,
++		 <&clkc_audio AUD_CLKID_MST_A_LRCLK>;
++	clock-names = "mclk", "sclk", "lrclk";
 +};
-+
-+int axg_tdm_formatter_set_channel_masks(struct regmap *map,
-+					struct axg_tdm_stream *ts,
-+					unsigned int offset)
-+{
-+	unsigned int val, ch = ts->channels;
-+	unsigned long mask;
-+	int i, j;
-+
-+	/*
-+	 * Distribute the channels of the stream over the available slots
-+	 * of each TDM lane
-+	 */
-+	for (i = 0; i < AXG_TDM_NUM_LANES; i++) {
-+		val = 0;
-+		mask = ts->mask[i];
-+
-+		for (j = find_first_bit(&mask, 32);
-+		     (j < 32) && ch;
-+		     j = find_next_bit(&mask, 32, j + 1)) {
-+			val |= 1 << j;
-+			ch -= 1;
-+		}
-+
-+		regmap_write(map, offset, val);
-+		offset += regmap_get_reg_stride(map);
-+	}
-+
-+	/*
-+	 * If we still have channel left at the end of the process, it means
-+	 * the stream has more channels than we can accommodate and we should
-+	 * have caught this earlier.
-+	 */
-+	if (WARN_ON(ch != 0)) {
-+		pr_err("channel mask error\n");
-+		return -EINVAL;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(axg_tdm_formatter_set_channel_masks);
-+
-+static int axg_tdm_formatter_enable(struct axg_tdm_formatter *formatter)
-+{
-+	struct axg_tdm_stream *ts = formatter->stream;
-+	bool invert = formatter->drv->invert_sclk;
-+	int ret;
-+
-+	/* Do nothing if the formatter is already enabled */
-+	if (formatter->enabled)
-+		return 0;
-+
-+	/*
-+	 * If sclk is inverted, invert it back and provide the inversion
-+	 * required by the formatter
-+	 */
-+	invert ^= axg_tdm_sclk_invert(ts->iface->fmt);
-+	ret = clk_set_phase(formatter->sclk, invert ? 180 : 0);
-+	if (ret)
-+		return ret;
-+
-+	/* Setup the stream parameter in the formatter */
-+	ret = formatter->drv->ops->prepare(formatter->map, formatter->stream);
-+	if (ret)
-+		return ret;
-+
-+	/* Enable the signal clocks feeding the formatter */
-+	ret = clk_prepare_enable(formatter->sclk);
-+	if (ret)
-+		return ret;
-+
-+	ret = clk_prepare_enable(formatter->lrclk);
-+	if (ret) {
-+		clk_disable_unprepare(formatter->sclk);
-+		return ret;
-+	}
-+
-+	/* Finally, actually enable the formatter */
-+	formatter->drv->ops->enable(formatter->map);
-+	formatter->enabled = true;
-+
-+	return 0;
-+}
-+
-+static void axg_tdm_formatter_disable(struct axg_tdm_formatter *formatter)
-+{
-+	/* Do nothing if the formatter is already disabled */
-+	if (!formatter->enabled)
-+		return;
-+
-+	formatter->drv->ops->disable(formatter->map);
-+	clk_disable_unprepare(formatter->lrclk);
-+	clk_disable_unprepare(formatter->sclk);
-+	formatter->enabled = false;
-+}
-+
-+static int axg_tdm_formatter_attach(struct axg_tdm_formatter *formatter)
-+{
-+	struct axg_tdm_stream *ts = formatter->stream;
-+	int ret = 0;
-+
-+	mutex_lock(&ts->lock);
-+
-+	/* Catch up if the stream is already running when we attach */
-+	if (ts->ready) {
-+		ret = axg_tdm_formatter_enable(formatter);
-+		if (ret) {
-+			pr_err("failed to enable formatter\n");
-+			goto out;
-+		}
-+	}
-+
-+	list_add_tail(&formatter->list, &ts->formatter_list);
-+out:
-+	mutex_unlock(&ts->lock);
-+	return ret;
-+}
-+
-+static void axg_tdm_formatter_dettach(struct axg_tdm_formatter *formatter)
-+{
-+	struct axg_tdm_stream *ts = formatter->stream;
-+
-+	mutex_lock(&ts->lock);
-+	list_del(&formatter->list);
-+	mutex_unlock(&ts->lock);
-+
-+	axg_tdm_formatter_disable(formatter);
-+}
-+
-+static int axg_tdm_formatter_power_up(struct axg_tdm_formatter *formatter,
-+				      struct snd_soc_dapm_widget *w)
-+{
-+	struct axg_tdm_stream *ts = formatter->drv->ops->get_stream(w);
-+	int ret;
-+
-+	/*
-+	 * If we don't get a stream at this stage, it would mean that the
-+	 * widget is powering up but is not attached to any backend DAI.
-+	 * It should not happen, ever !
-+	 */
-+	if (WARN_ON(!ts))
-+		return -ENODEV;
-+
-+	/* Clock our device */
-+	ret = clk_prepare_enable(formatter->pclk);
-+	if (ret)
-+		return ret;
-+
-+	/* Reparent the bit clock to the TDM interface */
-+	ret = clk_set_parent(formatter->sclk_sel, ts->iface->sclk);
-+	if (ret)
-+		goto disable_pclk;
-+
-+	/* Reparent the sample clock to the TDM interface */
-+	ret = clk_set_parent(formatter->lrclk_sel, ts->iface->lrclk);
-+	if (ret)
-+		goto disable_pclk;
-+
-+	formatter->stream = ts;
-+	ret = axg_tdm_formatter_attach(formatter);
-+	if (ret)
-+		goto disable_pclk;
-+
-+	return 0;
-+
-+disable_pclk:
-+	clk_disable_unprepare(formatter->pclk);
-+	return ret;
-+}
-+
-+static void axg_tdm_formatter_power_down(struct axg_tdm_formatter *formatter)
-+{
-+	axg_tdm_formatter_dettach(formatter);
-+	clk_disable_unprepare(formatter->pclk);
-+	formatter->stream = NULL;
-+}
-+
-+int axg_tdm_formatter_event(struct snd_soc_dapm_widget *w,
-+			    struct snd_kcontrol *control,
-+			    int event)
-+{
-+	struct snd_soc_component *c = snd_soc_dapm_to_component(w->dapm);
-+	struct axg_tdm_formatter *formatter = snd_soc_component_get_drvdata(c);
-+	int ret = 0;
-+
-+	switch (event) {
-+	case SND_SOC_DAPM_PRE_PMU:
-+		ret = axg_tdm_formatter_power_up(formatter, w);
-+		break;
-+
-+	case SND_SOC_DAPM_PRE_PMD:
-+		axg_tdm_formatter_power_down(formatter);
-+		break;
-+
-+	default:
-+		dev_err(c->dev, "Unexpected event %d\n", event);
-+		return -EINVAL;
-+	}
-+
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(axg_tdm_formatter_event);
-+
-+int axg_tdm_formatter_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	const struct axg_tdm_formatter_driver *drv;
-+	struct axg_tdm_formatter *formatter;
-+	struct resource *res;
-+	void __iomem *regs;
-+	int ret;
-+
-+	drv = of_device_get_match_data(dev);
-+	if (!drv) {
-+		dev_err(dev, "failed to match device\n");
-+		return -ENODEV;
-+	}
-+
-+	formatter = devm_kzalloc(dev, sizeof(*formatter), GFP_KERNEL);
-+	if (!formatter)
-+		return -ENOMEM;
-+	platform_set_drvdata(pdev, formatter);
-+	formatter->drv = drv;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	regs = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(regs))
-+		return PTR_ERR(regs);
-+
-+	formatter->map = devm_regmap_init_mmio(dev, regs, drv->regmap_cfg);
-+	if (IS_ERR(formatter->map)) {
-+		dev_err(dev, "failed to init regmap: %ld\n",
-+			PTR_ERR(formatter->map));
-+		return PTR_ERR(formatter->map);
-+	}
-+
-+	/* Peripharal clock */
-+	formatter->pclk = devm_clk_get(dev, "pclk");
-+	if (IS_ERR(formatter->pclk)) {
-+		ret = PTR_ERR(formatter->pclk);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get pclk: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Formatter bit clock */
-+	formatter->sclk = devm_clk_get(dev, "sclk");
-+	if (IS_ERR(formatter->sclk)) {
-+		ret = PTR_ERR(formatter->sclk);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get sclk: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Formatter sample clock */
-+	formatter->lrclk = devm_clk_get(dev, "lrclk");
-+	if (IS_ERR(formatter->lrclk)) {
-+		ret = PTR_ERR(formatter->lrclk);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get lrclk: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Formatter bit clock input multiplexer */
-+	formatter->sclk_sel = devm_clk_get(dev, "sclk_sel");
-+	if (IS_ERR(formatter->sclk_sel)) {
-+		ret = PTR_ERR(formatter->sclk_sel);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get sclk_sel: %d\n", ret);
-+		return ret;
-+	}
-+
-+	/* Formatter sample clock input multiplexer */
-+	formatter->lrclk_sel = devm_clk_get(dev, "lrclk_sel");
-+	if (IS_ERR(formatter->lrclk_sel)) {
-+		ret = PTR_ERR(formatter->lrclk_sel);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "failed to get lrclk_sel: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return devm_snd_soc_register_component(dev, drv->component_drv,
-+					       NULL, 0);
-+}
-+EXPORT_SYMBOL_GPL(axg_tdm_formatter_probe);
-+
-+int axg_tdm_stream_start(struct axg_tdm_stream *ts)
-+{
-+	struct axg_tdm_formatter *formatter;
-+	int ret = 0;
-+
-+	mutex_lock(&ts->lock);
-+	ts->ready = true;
-+
-+	/* Start all the formatters attached to the stream */
-+	list_for_each_entry(formatter, &ts->formatter_list, list) {
-+		ret = axg_tdm_formatter_enable(formatter);
-+		if (ret) {
-+			pr_err("failed to start tdm stream\n");
-+			goto out;
-+		}
-+	}
-+
-+out:
-+	mutex_unlock(&ts->lock);
-+	return ret;
-+}
-+EXPORT_SYMBOL_GPL(axg_tdm_stream_start);
-+
-+void axg_tdm_stream_stop(struct axg_tdm_stream *ts)
-+{
-+	struct axg_tdm_formatter *formatter;
-+
-+	mutex_lock(&ts->lock);
-+	ts->ready = false;
-+
-+	/* Stop all the formatters attached to the stream */
-+	list_for_each_entry(formatter, &ts->formatter_list, list) {
-+		axg_tdm_formatter_disable(formatter);
-+	}
-+
-+	mutex_unlock(&ts->lock);
-+}
-+EXPORT_SYMBOL_GPL(axg_tdm_stream_stop);
-+
-+struct axg_tdm_stream *axg_tdm_stream_alloc(struct axg_tdm_iface *iface)
-+{
-+	struct axg_tdm_stream *ts;
-+
-+	ts = kzalloc(sizeof(*ts), GFP_KERNEL);
-+	if (ts) {
-+		INIT_LIST_HEAD(&ts->formatter_list);
-+		mutex_init(&ts->lock);
-+		ts->iface = iface;
-+	}
-+
-+	return ts;
-+}
-+EXPORT_SYMBOL_GPL(axg_tdm_stream_alloc);
-+
-+void axg_tdm_stream_free(struct axg_tdm_stream *ts)
-+{
-+	/*
-+	 * If the list is not empty, it would mean that one of the formatter
-+	 * widget is still powered and attached to the interface while we
-+	 * we are removing the TDM DAI. It should not be possible
-+	 */
-+	WARN_ON(!list_empty(&ts->formatter_list));
-+	mutex_destroy(&ts->lock);
-+	kfree(ts);
-+}
-+EXPORT_SYMBOL_GPL(axg_tdm_stream_free);
-+
-+MODULE_DESCRIPTION("Amlogic AXG TDM formatter driver");
-+MODULE_AUTHOR("Jerome Brunet <jbrunet@baylibre.com>");
-+MODULE_LICENSE("GPL v2");
-diff --git a/sound/soc/meson/axg-tdm-formatter.h b/sound/soc/meson/axg-tdm-formatter.h
-new file mode 100644
-index 000000000000..cf947caf3cb1
---- /dev/null
-+++ b/sound/soc/meson/axg-tdm-formatter.h
-@@ -0,0 +1,39 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+ *
-+ * Copyright (c) 2018 Baylibre SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
-+ */
-+
-+#ifndef _MESON_AXG_TDM_FORMATTER_H
-+#define _MESON_AXG_TDM_FORMATTER_H
-+
-+#include "axg-tdm.h"
-+
-+struct platform_device;
-+struct regmap;
-+struct snd_soc_dapm_widget;
-+struct snd_kcontrol;
-+
-+struct axg_tdm_formatter_ops {
-+	struct axg_tdm_stream *(*get_stream)(struct snd_soc_dapm_widget *w);
-+	void (*enable)(struct regmap *map);
-+	void (*disable)(struct regmap *map);
-+	int (*prepare)(struct regmap *map, struct axg_tdm_stream *ts);
-+};
-+
-+struct axg_tdm_formatter_driver {
-+	const struct snd_soc_component_driver *component_drv;
-+	const struct regmap_config *regmap_cfg;
-+	const struct axg_tdm_formatter_ops *ops;
-+	bool invert_sclk;
-+};
-+
-+int axg_tdm_formatter_set_channel_masks(struct regmap *map,
-+					struct axg_tdm_stream *ts,
-+					unsigned int offset);
-+int axg_tdm_formatter_event(struct snd_soc_dapm_widget *w,
-+			    struct snd_kcontrol *control,
-+			    int event);
-+int axg_tdm_formatter_probe(struct platform_device *pdev);
-+
-+#endif /* _MESON_AXG_TDM_FORMATTER_H */
-diff --git a/sound/soc/meson/axg-tdm.h b/sound/soc/meson/axg-tdm.h
-new file mode 100644
-index 000000000000..435d95b86457
---- /dev/null
-+++ b/sound/soc/meson/axg-tdm.h
-@@ -0,0 +1,74 @@
-+/* SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+ *
-+ * Copyright (c) 2018 Baylibre SAS.
-+ * Author: Jerome Brunet <jbrunet@baylibre.com>
-+ */
-+
-+#ifndef _MESON_AXG_TDM_H
-+#define _MESON_AXG_TDM_H
-+
-+#include <linux/clk.h>
-+#include <linux/regmap.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/soc-dai.h>
-+
-+#define AXG_TDM_NUM_LANES	4
-+#define AXG_TDM_CHANNEL_MAX	128
-+#define AXG_TDM_RATES		(SNDRV_PCM_RATE_5512 |		\
-+				 SNDRV_PCM_RATE_8000_192000)
-+#define AXG_TDM_FORMATS		(SNDRV_PCM_FMTBIT_S8 |		\
-+				 SNDRV_PCM_FMTBIT_S16_LE |	\
-+				 SNDRV_PCM_FMTBIT_S20_LE |	\
-+				 SNDRV_PCM_FMTBIT_S24_LE |	\
-+				 SNDRV_PCM_FMTBIT_S32_LE)
-+
-+struct axg_tdm_iface {
-+	struct clk *sclk;
-+	struct clk *lrclk;
-+	struct clk *mclk;
-+	unsigned long mclk_rate;
-+
-+	/* format is common to all the DAIs of the iface */
-+	unsigned int fmt;
-+	unsigned int slots;
-+	unsigned int slot_width;
-+
-+	/* For component wide symmetry */
-+	int rate;
-+};
-+
-+static inline bool axg_tdm_lrclk_invert(unsigned int fmt)
-+{
-+	return (fmt & SND_SOC_DAIFMT_I2S) ^
-+		!!(fmt & (SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_NB_IF));
-+}
-+
-+static inline bool axg_tdm_sclk_invert(unsigned int fmt)
-+{
-+	return fmt & (SND_SOC_DAIFMT_IB_IF | SND_SOC_DAIFMT_IB_NF);
-+}
-+
-+struct axg_tdm_stream {
-+	struct axg_tdm_iface *iface;
-+	struct list_head formatter_list;
-+	struct mutex lock;
-+	unsigned int channels;
-+	unsigned int width;
-+	unsigned int physical_width;
-+	u32 *mask;
-+	bool ready;
-+};
-+
-+struct axg_tdm_stream *axg_tdm_stream_alloc(struct axg_tdm_iface *iface);
-+void axg_tdm_stream_free(struct axg_tdm_stream *ts);
-+int axg_tdm_stream_start(struct axg_tdm_stream *ts);
-+void axg_tdm_stream_stop(struct axg_tdm_stream *ts);
-+
-+static inline int axg_tdm_stream_reset(struct axg_tdm_stream *ts)
-+{
-+	axg_tdm_stream_stop(ts);
-+	return axg_tdm_stream_start(ts);
-+}
-+
-+#endif /* _MESON_AXG_TDM_H */
 -- 
 2.18.0
