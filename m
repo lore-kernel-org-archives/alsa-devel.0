@@ -1,15 +1,17 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 00/14] conf/ucm: bytcr-rt5651: Various
-	improvements + long-name profiles addition
-Date: Fri, 20 Jul 2018 09:27:27 +0200
-Message-ID: <20180720072741.4632-1-hdegoede@redhat.com>
+Subject: [PATCH 01/14] conf/ucm: bytcr-rt5645: Use the generic
+	bytcr/PlatformEnableSeq.conf
+Date: Fri, 20 Jul 2018 09:27:28 +0200
+Message-ID: <20180720072741.4632-2-hdegoede@redhat.com>
+References: <20180720072741.4632-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 7F7CA26739D
+ by alsa0.perex.cz (Postfix) with ESMTP id DF6D32675D4
  for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:45 +0200 (CEST)
+In-Reply-To: <20180720072741.4632-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,21 +25,140 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi All,
+Use the generic Intel SSP bytcr/PlatformEnableSeq.conf file, it is
+identical to all the cset statements this commit removes.
 
-Here is a set of patches to the bytcr-rt5651 UCM profiles. This series
-also adds a bunch of long-name profiles so that users automatically
-only see the inputs / outputs which their device actually has.
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ src/conf/ucm/chtrt5645/HiFi.conf | 116 +------------------------------
+ 1 file changed, 1 insertion(+), 115 deletions(-)
 
-The long-names are based on the long-names set by the kernel after
-the rt5651 patch series which is currently queued in -next:
-https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git/log/?h=for-next
-
-With these UCM profile patches and the kernel changes in place all
-inputs and outputs as well as jack-detect will work 100% OOTB on
-supported bytcr-rt5651 devices, without the user needing to do any
-manual config or mixer settings.
-
-Regards,
-
-Hans
+diff --git a/src/conf/ucm/chtrt5645/HiFi.conf b/src/conf/ucm/chtrt5645/HiFi.conf
+index e81866cf..d993f6ae 100644
+--- a/src/conf/ucm/chtrt5645/HiFi.conf
++++ b/src/conf/ucm/chtrt5645/HiFi.conf
+@@ -11,121 +11,7 @@ SectionVerb {
+ 	EnableSequence [
+ 		cdev "hw:chtrt5645"
+ 
+-		# media mixer settings
+-		#   compress
+-		cset "name='media0_in Gain 0 Switch' on"
+-		cset "name='media0_in Gain 0 Volume' 0"
+-
+-		#   normal
+-		cset "name='media1_in Gain 0 Switch' on"
+-		cset "name='media1_in Gain 0 Volume' 0"
+-		#   swm loopback
+-		cset "name='media2_in Gain 0 Switch' off"
+-		cset "name='media2_in Gain 0 Volume' 0%"
+-		#   deep buffer
+-		cset "name='media3_in Gain 0 Switch' on"
+-		cset "name='media3_in Gain 0 Volume' 0"
+-
+-		cset "name='media0_out mix 0 media0_in Switch' on"
+-		cset "name='media0_out mix 0 media1_in Switch' on"
+-		cset "name='media0_out mix 0 media2_in Switch' off"
+-		cset "name='media0_out mix 0 media3_in Switch' on"
+-
+-		cset "name='media1_out mix 0 media0_in Switch' off"
+-		cset "name='media1_out mix 0 media1_in Switch' off"
+-		cset "name='media1_out mix 0 media2_in Switch' off"
+-		cset "name='media1_out mix 0 media3_in Switch' off"
+-
+-		cset "name='pcm0_in Gain 0 Switch' on"
+-		cset "name='pcm0_in Gain 0 Volume' 0"
+-
+-		cset "name='pcm1_in Gain 0 Switch' off"
+-		cset "name='pcm1_in Gain 0 Volume' 0%"
+-
+-		# codec0_out settings (used if ssp2 is connected to aif1)
+-		cset "name='codec_out0 mix 0 codec_in0 Switch' off"
+-		cset "name='codec_out0 mix 0 codec_in1 Switch' off"
+-		cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
+-		cset "name='codec_out0 mix 0 media_loop2_in Switch' off"
+-		cset "name='codec_out0 mix 0 pcm0_in Switch' on"
+-		cset "name='codec_out0 mix 0 pcm1_in Switch' off"
+-		cset "name='codec_out0 mix 0 sprot_loop_in Switch' off"
+-		cset "name='codec_out0 Gain 0 Switch' on"
+-		cset "name='codec_out0 Gain 0 Volume' 0"
+-
+-		# modem_out settings (used if ssp0 is connected to aif2)
+-		cset "name='modem_out mix 0 codec_in0 Switch' off"
+-		cset "name='modem_out mix 0 codec_in1 Switch' off"
+-		cset "name='modem_out mix 0 media_loop1_in Switch' off"
+-		cset "name='modem_out mix 0 media_loop2_in Switch' off"
+-		cset "name='modem_out mix 0 pcm0_in Switch' on"
+-		cset "name='modem_out mix 0 pcm1_in Switch' off"
+-		cset "name='modem_out mix 0 sprot_loop_in Switch' off"
+-		cset "name='modem_out Gain 0 Switch' on"
+-		cset "name='modem_out Gain 0 Volume' 0"
+-
+-		# input settings
+-		# pcm1_out settings
+-
+-		# input used when SSP2 is connected
+-		cset "name='codec_in0 Gain 0 Switch' on"
+-		cset "name='codec_in0 Gain 0 Volume' 0"
+-
+-		# input used when SSP0 is connected
+-		cset "name='modem_in Gain 0 Switch' on"
+-		cset "name='modem_in Gain 0 Volume' 0"
+-
+-		cset "name='pcm1_out mix 0 codec_in0 Switch' on"
+-		cset "name='pcm1_out mix 0 modem_in Switch' on"
+-		cset "name='pcm1_out mix 0 codec_in1 Switch' off"
+-		cset "name='pcm1_out mix 0 media_loop1_in Switch' off"
+-		cset "name='pcm1_out mix 0 media_loop2_in Switch' off"
+-		cset "name='pcm1_out mix 0 pcm0_in Switch' off"
+-		cset "name='pcm1_out mix 0 pcm1_in Switch' off"
+-		cset "name='pcm1_out mix 0 sprot_loop_in Switch' off"
+-
+-		cset "name='pcm1_out Gain 0 Switch' on"
+-		cset "name='pcm1_out Gain 0 Volume' 0"
+-
+-		# disable codec_out1
+-		cset "name='codec_out1 mix 0 codec_in0 Switch' off"
+-		cset "name='codec_out1 mix 0 codec_in1 Switch' off"
+-		cset "name='codec_out1 mix 0 media_loop1_in Switch' off"
+-		cset "name='codec_out1 mix 0 media_loop2_in Switch' off"
+-		cset "name='codec_out1 mix 0 pcm0_in Switch' off"
+-		cset "name='codec_out1 mix 0 pcm1_in Switch' off"
+-		cset "name='codec_out1 mix 0 sprot_loop_in Switch' off"
+-		cset "name='codec_out1 Gain 0 Switch' off"
+-		cset "name='codec_out1 Gain 0 Volume' 0%"
+-
+-		# disable codec_in1
+-		cset "name='codec_in1 Gain 0 Switch' off"
+-		cset "name='codec_in1 Gain 0 Volume' 0%"
+-
+-		# disable all loops
+-		cset "name='media_loop1_out mix 0 codec_in0 Switch' off"
+-		cset "name='media_loop1_out mix 0 codec_in1 Switch' off"
+-		cset "name='media_loop1_out mix 0 media_loop1_in Switch' off"
+-		cset "name='media_loop1_out mix 0 media_loop2_in Switch' off"
+-		cset "name='media_loop1_out mix 0 pcm0_in Switch' off"
+-		cset "name='media_loop1_out mix 0 pcm1_in Switch' off"
+-		cset "name='media_loop1_out mix 0 sprot_loop_in Switch' off"
+-
+-		cset "name='media_loop2_out mix 0 codec_in0 Switch' off"
+-		cset "name='media_loop2_out mix 0 codec_in1 Switch' off"
+-		cset "name='media_loop2_out mix 0 media_loop1_in Switch' off"
+-		cset "name='media_loop2_out mix 0 media_loop2_in Switch' off"
+-		cset "name='media_loop2_out mix 0 pcm0_in Switch' off"
+-		cset "name='media_loop2_out mix 0 pcm1_in Switch' off"
+-		cset "name='media_loop2_out mix 0 sprot_loop_in Switch' off"
+-
+-		cset "name='sprot_loop_out mix 0 codec_in0 Switch' off"
+-		cset "name='sprot_loop_out mix 0 codec_in1 Switch' off"
+-		cset "name='sprot_loop_out mix 0 media_loop1_in Switch' off"
+-		cset "name='sprot_loop_out mix 0 media_loop2_in Switch' off"
+-		cset "name='sprot_loop_out mix 0 pcm0_in Switch' off"
+-		cset "name='sprot_loop_out mix 0 pcm1_in Switch' off"
+-		cset "name='sprot_loop_out mix 0 sprot_loop_in Switch' off"
++		<bytcr/PlatformEnableSeq.conf>
+ 
+ 		# Output Configuration
+ 		cset "name='DAC1 L Mux' IF1 DAC"
+-- 
+2.17.1
