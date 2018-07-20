@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 02/14] conf/ucm: bytcr-rt5651: Add support for
-	boards using SSP0
-Date: Fri, 20 Jul 2018 09:27:29 +0200
-Message-ID: <20180720072741.4632-3-hdegoede@redhat.com>
+Subject: [PATCH 03/14] conf/ucm: bytcr-rt5651: Do not use both
+	DAC1 and HPVOL inputs for HP
+Date: Fri, 20 Jul 2018 09:27:30 +0200
+Message-ID: <20180720072741.4632-4-hdegoede@redhat.com>
 References: <20180720072741.4632-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id C6CAA26770A
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:46 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F11526739D
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:47 +0200 (CEST)
 In-Reply-To: <20180720072741.4632-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,58 +25,62 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add support for bytcr-rt5651 boards using SSP0.
+The headphones can either be driven directly from DAC1, or through
+the HP volume mixer chain to allow volume control, both can be enabled
+at the same time, but this should not be done.
 
-This fixes sound not working on Bay Trail CR tablets with a rt5651 codec.
+Mix only DAC1 to the headphones and not the HP volume path, there
+are 2 reasons to choice the DAC1 path;
+1) It is the power-on-reset default
+2) We don't expose the volume control to e.g. pulseaudio anyways so it
+   is not useful
+
+While at it also move the "HPO MIX DAC1" and "HPO MIX HPVOL" entries up a
+bit so that they are no longer inbetween the "HPO L Playback Switch" and
+"HPO R Playback Switch" entries.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf | 21 ++++++++++++++++++++-
- 1 file changed, 20 insertions(+), 1 deletion(-)
+ src/conf/ucm/bytcr-rt5651/HiFi.conf         | 2 --
+ src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf | 4 ++--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
+diff --git a/src/conf/ucm/bytcr-rt5651/HiFi.conf b/src/conf/ucm/bytcr-rt5651/HiFi.conf
+index 8ded2d52..bc604276 100644
+--- a/src/conf/ucm/bytcr-rt5651/HiFi.conf
++++ b/src/conf/ucm/bytcr-rt5651/HiFi.conf
+@@ -30,7 +30,6 @@ SectionDevice."Headphones" {
+ 		cset "name='Headphone Switch' on"
+ 		cset "name='HPO L Playback Switch' on"
+ 		cset "name='HPO R Playback Switch' on"
+-		cset "name='HP Playback Volume' 100"
+ 	]
+ 
+ 	DisableSequence [
+@@ -39,7 +38,6 @@ SectionDevice."Headphones" {
+ 		cset "name='Headphone Switch' off"
+ 		cset "name='HPO L Playback Switch' off"
+ 		cset "name='HPO R Playback Switch' off"
+-		cset "name='HP Playback Volume' 0"
+ 	]
+ 
+ 	Value {
 diff --git a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-index 069427b7..9efcafc0 100644
+index 9efcafc0..5dcb11e6 100644
 --- a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
 +++ b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-@@ -34,7 +34,7 @@ SectionDefaults [
- 	cset "name='pcm1_in Gain 0 Switch' off"
- 	cset "name='pcm1_in Gain 0 Volume' 0%"
+@@ -118,10 +118,10 @@ SectionDefaults [
  
--	# codec0_out settings
-+	# codec0_out settings used when SSP2 is connected
- 	cset "name='codec_out0 mix 0 codec_in0 Switch' off"
- 	cset "name='codec_out0 mix 0 codec_in1 Switch' off"
- 	cset "name='codec_out0 mix 0 media_loop1_in Switch' off"
-@@ -45,11 +45,30 @@ SectionDefaults [
- 	cset "name='codec_out0 Gain 0 Switch' on"
- 	cset "name='codec_out0 Gain 0 Volume' 0"
- 
-+	# modem_out settings used when SSP0 is connected
-+	cset "name='modem_out mix 0 codec_in0 Switch' off"
-+	cset "name='modem_out mix 0 codec_in1 Switch' off"
-+	cset "name='modem_out mix 0 media_loop1_in Switch' off"
-+	cset "name='modem_out mix 0 media_loop2_in Switch' off"
-+	cset "name='modem_out mix 0 pcm0_in Switch' on"
-+	cset "name='modem_out mix 0 pcm1_in Switch' off"
-+	cset "name='modem_out mix 0 sprot_loop_in Switch' off"
-+	cset "name='modem_out Gain 0 Switch' on"
-+	cset "name='modem_out Gain 0 Volume' 0"
-+
- 	# input settings
- 	# pcm1_out settings
-+
-+	# input used when SSP2 is connected
- 	cset "name='codec_in0 Gain 0 Switch' on"
- 	cset "name='codec_in0 Gain 0 Volume' 0"
-+
-+	# input used when SSP0 is connected
-+	cset "name='modem_in Gain 0 Switch' on"
-+	cset "name='modem_in Gain 0 Volume' 0"
-+
- 	cset "name='pcm1_out mix 0 codec_in0 Switch' on"
-+	cset "name='pcm1_out mix 0 modem_in Switch' on"
- 	cset "name='pcm1_out mix 0 codec_in1 Switch' off"
- 	cset "name='pcm1_out mix 0 media_loop1_in Switch' off"
- 	cset "name='pcm1_out mix 0 media_loop2_in Switch' off"
+ 	# default state
+ 	cset "name='ADC Capture Volume' 126"
++	cset "name='HPO MIX DAC1 Switch' on"
++	cset "name='HPO MIX HPVOL Switch' off"
+ 	cset "name='HP Playback Volume' 0"
+ 	cset "name='HPO L Playback Switch' off"
+-	cset "name='HPO MIX DAC1 Switch' on"
+-	cset "name='HPO MIX HPVOL Switch' on"
+ 	cset "name='HPO R Playback Switch' off"
+ 	cset "name='HPOVOL L Switch' on"
+ 	cset "name='HPOVOL R Switch' on"
 -- 
 2.17.1
