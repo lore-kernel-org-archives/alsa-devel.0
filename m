@@ -1,40 +1,75 @@
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Subject: Re: [PATCH 2/2] ASoC: tegra: probe deferral error reporting
-Date: Fri, 20 Jul 2018 12:31:07 +0000
-Message-ID: <1532089865.19673.13.camel@toradex.com>
-References: <20180720080424.31505-1-marcel@ziswiler.com>
-         <20180720080424.31505-2-marcel@ziswiler.com>
-         <20180720121612.GC10784@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: topology: Increase
+	SND_SOC_TPLG_NUM_TEXTS to 32
+Date: Fri, 20 Jul 2018 13:38:20 +0100
+Message-ID: <20180720123820.GG10784@sirena.org.uk>
+References: <1532082427-4912-1-git-send-email-puneethx.prabhu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180720121612.GC10784@sirena.org.uk>
-Content-Language: en-US
-Content-ID: <8B6721A59255464FBF580EB4F549AB22@eurprd05.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "broonie@kernel.org" <broonie@kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jonathanh@nvidia.com" <jonathanh@nvidia.com>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="===============6078435662413477264=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id EEB0526772E
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 14:38:28 +0200 (CEST)
+In-Reply-To: <1532082427-4912-1-git-send-email-puneethx.prabhu@intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Puneeth Prabhu <puneethx.prabhu@intel.com>
+Cc: ALSA ML <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.de>, pardha.saradhi.kesapragada@intel.com, cezary.rojewski@intel.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, gustaw.lewandowski@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-T24gRnJpLCAyMDE4LTA3LTIwIGF0IDEzOjE2ICswMTAwLCBNYXJrIEJyb3duIHdyb3RlOg0KPiBP
-biBGcmksIEp1bCAyMCwgMjAxOCBhdCAxMDowNDoyNEFNICswMjAwLCBNYXJjZWwgWmlzd2lsZXIg
-d3JvdGU6DQo+IA0KPiA+IC0JCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJjb3VsZCBub3QgZ2V0IGNv
-ZGVjLQ0KPiA+IHJlc2V0IEdQSU9cbiIpOw0KPiA+ICsJCQlkZXZfZXJyKCZwZGV2LT5kZXYsICJj
-b3VsZCBub3QgZ2V0IGNvZGVjLQ0KPiA+IHJlc2V0IEdQSU86ICINCj4gPiArCQkJCQkgICAgIiVk
-XG4iLCByZXQpOw0KPiANCj4gRG9uJ3Qgc3BsaXQgc3RyaW5ncyBvdmVyIGxpbmVzIGxpa2UgdGhp
-cywgaXQgY2F1c2VzIHByb2JsZW1zIHdoZW4NCj4gcGVvcGxlDQo+IGdyZXAgZm9yIGVycm9ycy4g
-IEl0J3MgYmV0dGVyIHRvIGdvIG92ZXIgODAgY29sdW1ucy4NCg0KT0ssIHdpbGwgZG8uIEhvd2V2
-ZXIsIGluIHRoaXMgY2FzZSBJIGRpZCBub3QgYWN0dWFsbHkgc3BsaXQgYW55dGhpbmcNCnNlYXJj
-aGFibGUgYW55d2F5Lg0KDQo+ID4gIAlhYzk3LT5zeW5jX2dwaW8gPSBvZl9nZXRfbmFtZWRfZ3Bp
-byhwZGV2LT5kZXYub2Zfbm9kZSwNCj4gPiAgCQkJCQkgICAgIm52aWRpYSxjb2RlYy1zeW5jLQ0K
-PiA+IGdwaW8iLCAwKTsNCj4gPiAgCWlmICghZ3Bpb19pc192YWxpZChhYzk3LT5zeW5jX2dwaW8p
-KSB7DQo+ID4gLQkJZGV2X2VycigmcGRldi0+ZGV2LCAibm8gY29kZWMtc3luYyBHUElPDQo+ID4g
-c3VwcGxpZWRcbiIpOw0KPiA+ICsJCXJldCA9IGFjOTctPnN5bmNfZ3BpbzsNCj4gPiArCQlkZXZf
-ZXJyKCZwZGV2LT5kZXYsICJubyBjb2RlYy1zeW5jIEdQSU8gc3VwcGxpZWQ6DQo+ID4gJWRcbiIs
-IHJldCk7DQo+ID4gIAkJZ290byBlcnJfY2xrX3B1dDsNCj4gPiAgCX0NCj4gDQo+IFRoaXMgaXNu
-J3QgcmVwb3J0aW5nIGFuIGVycm9yIGNvZGUgYXNzb2NpYXRlZCB3aXRoIHRoZSBhdHRlbXB0IHRv
-DQo+IGZpbmQgYQ0KPiBjb2RlYy1zeW5jIEdQSU8sIGl0J3MgdGhlIHJlc3VsdCBvZiBzb21lIG90
-aGVyIG9wZXJhdGlvbi4NCg0KV2hhdCBleGFjdGx5IGlzIHRoZW4gdGhlIG9mX2dldF9uYW1lZF9n
-cGlvKCkgYWJvdmUgcGxlYXNlIGRvaW5nIGlmDQpub3QgZ2V0dGluZyB0aGUgY29kZWMgc3luYyBH
-UElPPyBJIGFtIG5vdCBmb2xsb3dpbmcgeW91LCBzb3JyeS4=
+
+--===============6078435662413477264==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="UTZ8bGhNySVQ9LYl"
+Content-Disposition: inline
+
+
+--UTZ8bGhNySVQ9LYl
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jul 20, 2018 at 03:57:06PM +0530, Puneeth Prabhu wrote:
+
+>  /* string sizes */
+> -#define SND_SOC_TPLG_NUM_TEXTS		16
+> +#define SND_SOC_TPLG_NUM_TEXTS		32
+
+This will increase the size of the texts and values fields of at least
+snd_soc_tplg_enum_control which on the face of it appears to be an
+incompatible ABI change, topology files created with the old value will
+have a different layout for these structures to those created with the
+new one.
+
+--UTZ8bGhNySVQ9LYl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltR17sACgkQJNaLcl1U
+h9CjWAf9G53cEZOsqhX5nMA1XxdaTh2yhZzllVIsT4QQ1+HeLX2zSA8BrydPbPP0
+mlcA9wYKTLZWlIQre/fb3VK42XUBrgh1Eas193X+JpZYJBriGCudpxiv4OaIqs0P
+SMWb/FV3/3blsrtst3leifvwE8VbUWrZ8jGr5496gITePACkrBigVmANqkoeNPK0
+FmKQsLOqlULNr5boV6Z3LhB1c/qvdXigmZHxvd3DssMVgdNwwYE5UFXWZgGONbxl
+dLvGzifrr9ysu5v4l+xzxV2UMbuBVJXC1fz9rVvbJUIx7S0QWz4D+7HXghfyAXaC
+Tns2wy9uQq5n+IGJ6HRgHac12nOnhw==
+=HM3S
+-----END PGP SIGNATURE-----
+
+--UTZ8bGhNySVQ9LYl--
+
+--===============6078435662413477264==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6078435662413477264==--
