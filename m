@@ -1,15 +1,22 @@
 From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 1/3] ASoC: rt5651: add Volume to the name of
-	volume control
-Date: Fri, 20 Jul 2018 09:48:18 +0800
-Message-ID: <1532051300-11884-1-git-send-email-bardliao@realtek.com>
+Subject: Re: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume
+	control
+Date: Fri, 20 Jul 2018 02:53:24 +0000
+Message-ID: <ABFD875FF5FB574BA706497D987D48D70284323D@RTITMBSV02.realtek.com.tw>
+References: <20180718205542.12364-1-hdegoede@redhat.com>
+ <20180718205542.12364-2-hdegoede@redhat.com>
+ <20180719150234.GE27938@sirena.org.uk>
+ <ABFD875FF5FB574BA706497D987D48D7028430F3@RTITMBSV02.realtek.com.tw>
+ <f38e30f0-182b-484e-8de1-a9fd0db4663c@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id BD44926770A
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 03:48:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 99F0226733D
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 04:53:31 +0200 (CEST)
+In-Reply-To: <f38e30f0-182b-484e-8de1-a9fd0db4663c@linux.intel.com>
+Content-Language: zh-TW
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,35 +26,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, hdegoede@redhat.com, shumingf@realtek.com, Bard Liao <bardliao@realtek.com>, flove@realtek.com
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Hans de Goede <hdegoede@redhat.com>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Carlo Caione <carlo@endlessm.com>
 List-Id: alsa-devel@alsa-project.org
 
-add Volume to the name of volume control
+> -----Original Message-----
+> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
+> Sent: Friday, July 20, 2018 9:40 AM
+> To: Bard Liao; Mark Brown; Hans de Goede
+> Cc: Liam Girdwood; Oder Chiou; alsa-devel@alsa-project.org; Carlo Caione
+> Subject: Re: [alsa-devel] [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume
+> control
+> 
+> On 07/19/2018 08:31 PM, Bard Liao wrote:
+> >> -----Original Message-----
+> >> From: Mark Brown [mailto:broonie@kernel.org]
+> >> Sent: Thursday, July 19, 2018 11:03 PM
+> >> To: Hans de Goede
+> >> Cc: Liam Girdwood; Bard Liao; Oder Chiou; Pierre-Louis Bossart; Carlo
+> Caione;
+> >> alsa-devel@alsa-project.org
+> >> Subject: Re: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume control
+> >>
+> >> On Wed, Jul 18, 2018 at 10:55:37PM +0200, Hans de Goede wrote:
+> >>
+> >>> +	/* IN1/IN2/IN3 Control */
+> >>>   	SOC_SINGLE_TLV("IN1 Boost", RT5651_IN1_IN2,
+> >>>   		RT5651_BST_SFT1, 8, 0, bst_tlv),
+> >>>   	SOC_SINGLE_TLV("IN2 Boost", RT5651_IN1_IN2,
+> >>>   		RT5651_BST_SFT2, 8, 0, bst_tlv),
+> >>> +	SOC_SINGLE_TLV("IN3 Boost", RT5651_IN3,
+> >>> +		RT5651_BST_SFT1, 8, 0, bst_tlv),
+> >> These should all have Volume added to the name however that's a
+> >> preexisting bug so not a blocker on this.
+> > I will add "Volume" to the name for all of them.
+> isn't this going to break userspace configs if we change the name of
+> controls?
 
-Signed-off-by: Bard Liao <bardliao@realtek.com>
----
- sound/soc/codecs/rt5651.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Yes, it should be modified, too.
 
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 985852f..fe970ed 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -332,11 +332,11 @@ static const struct snd_kcontrol_new rt5651_snd_controls[] = {
- 			RT5651_L_VOL_SFT, RT5651_R_VOL_SFT,
- 			175, 0, dac_vol_tlv),
- 	/* IN1/IN2/IN3 Control */
--	SOC_SINGLE_TLV("IN1 Boost", RT5651_IN1_IN2,
-+	SOC_SINGLE_TLV("IN1 Boost Volume", RT5651_IN1_IN2,
- 		RT5651_BST_SFT1, 8, 0, bst_tlv),
--	SOC_SINGLE_TLV("IN2 Boost", RT5651_IN1_IN2,
-+	SOC_SINGLE_TLV("IN2 Boost Volume", RT5651_IN1_IN2,
- 		RT5651_BST_SFT2, 8, 0, bst_tlv),
--	SOC_SINGLE_TLV("IN3 Boost", RT5651_IN3,
-+	SOC_SINGLE_TLV("IN3 Boost Volume", RT5651_IN3,
- 		RT5651_BST_SFT1, 8, 0, bst_tlv),
- 	/* INL/INR Volume Control */
- 	SOC_DOUBLE_TLV("IN Capture Volume", RT5651_INL1_INR1_VOL,
--- 
-2.7.4
+> 
+> ------Please consider the environment before printing this e-mail.
