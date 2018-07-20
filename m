@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH 03/14] conf/ucm: bytcr-rt5651: Do not use both
-	DAC1 and HPVOL inputs for HP
-Date: Fri, 20 Jul 2018 09:27:30 +0200
-Message-ID: <20180720072741.4632-4-hdegoede@redhat.com>
+Subject: [PATCH 04/14] conf/ucm: bytcr-rt5651: Configure all
+	volumes at 0dB
+Date: Fri, 20 Jul 2018 09:27:31 +0200
+Message-ID: <20180720072741.4632-5-hdegoede@redhat.com>
 References: <20180720072741.4632-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F11526739D
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:47 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8BD1526739D
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 09:27:48 +0200 (CEST)
 In-Reply-To: <20180720072741.4632-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,62 +25,51 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The headphones can either be driven directly from DAC1, or through
-the HP volume mixer chain to allow volume control, both can be enabled
-at the same time, but this should not be done.
+The volumes are taken from this commit:
+https://github.com/plbossart/UCM/commit/753e2430cd0e6cafbf10c6b29b689dbd32ac5250
 
-Mix only DAC1 to the headphones and not the HP volume path, there
-are 2 reasons to choice the DAC1 path;
-1) It is the power-on-reset default
-2) We don't expose the volume control to e.g. pulseaudio anyways so it
-   is not useful
-
-While at it also move the "HPO MIX DAC1" and "HPO MIX HPVOL" entries up a
-bit so that they are no longer inbetween the "HPO L Playback Switch" and
-"HPO R Playback Switch" entries.
+That commit also adds line-in support, so it has not been
+taken in its entirety.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- src/conf/ucm/bytcr-rt5651/HiFi.conf         | 2 --
- src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf | 4 ++--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+ src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-diff --git a/src/conf/ucm/bytcr-rt5651/HiFi.conf b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-index 8ded2d52..bc604276 100644
---- a/src/conf/ucm/bytcr-rt5651/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-@@ -30,7 +30,6 @@ SectionDevice."Headphones" {
- 		cset "name='Headphone Switch' on"
- 		cset "name='HPO L Playback Switch' on"
- 		cset "name='HPO R Playback Switch' on"
--		cset "name='HP Playback Volume' 100"
- 	]
- 
- 	DisableSequence [
-@@ -39,7 +38,6 @@ SectionDevice."Headphones" {
- 		cset "name='Headphone Switch' off"
- 		cset "name='HPO L Playback Switch' off"
- 		cset "name='HPO R Playback Switch' off"
--		cset "name='HP Playback Volume' 0"
- 	]
- 
- 	Value {
 diff --git a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-index 9efcafc0..5dcb11e6 100644
+index 5dcb11e6..d6e8e48d 100644
 --- a/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
 +++ b/src/conf/ucm/bytcr-rt5651/bytcr-rt5651.conf
-@@ -118,10 +118,10 @@ SectionDefaults [
+@@ -117,16 +117,13 @@ SectionDefaults [
+ 	cset "name='sprot_loop_out mix 0 sprot_loop_in Switch' off"
  
  	# default state
- 	cset "name='ADC Capture Volume' 126"
-+	cset "name='HPO MIX DAC1 Switch' on"
-+	cset "name='HPO MIX HPVOL Switch' off"
- 	cset "name='HP Playback Volume' 0"
+-	cset "name='ADC Capture Volume' 126"
+ 	cset "name='HPO MIX DAC1 Switch' on"
+ 	cset "name='HPO MIX HPVOL Switch' off"
+-	cset "name='HP Playback Volume' 0"
  	cset "name='HPO L Playback Switch' off"
--	cset "name='HPO MIX DAC1 Switch' on"
--	cset "name='HPO MIX HPVOL Switch' on"
  	cset "name='HPO R Playback Switch' off"
  	cset "name='HPOVOL L Switch' on"
  	cset "name='HPOVOL R Switch' on"
+ 	cset "name='IF1 ASRC Switch' on"
+-	cset "name='IN Capture Volume' 27"
+ 	cset "name='IN2 Boost' 1"
+ 	cset "name='IN1 Boost' 1"
+ 	cset "name='LOUT L Playback Switch' on"
+@@ -145,6 +142,13 @@ SectionDefaults [
+ 	cset "name='Headphone Switch' off"
+ 	cset "name='Speaker Switch' off"
+ 
++	# volumes for 0dB
++	cset "name='OUT Playback Volume' 31"
++	cset "name='HP Playback Volume' 31"
++	cset "name='IN Capture Volume' 23"
++	cset "name='ADC Capture Volume' 47"
++	cset "name='DAC1 Playback Volume' 175"
++
+ 	# input
+ 	cset "name='Stereo1 ADC L1 Mux' ADC"
+ 	cset "name='Stereo1 ADC R1 Mux' ADC"
 -- 
 2.17.1
