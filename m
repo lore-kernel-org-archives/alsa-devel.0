@@ -1,17 +1,18 @@
-From: Riccardo Casagrande <riccardo.casagrande@multiconn.it>
-Subject: No controls in alsamixer
-Date: Fri, 20 Jul 2018 17:30:00 +0200
-Message-ID: <d6c201473fda6144111f0518c5b54ed5@multiconn.it>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ASoC: topology: Increase
+ SND_SOC_TPLG_NUM_TEXTS to 32
+Date: Fri, 20 Jul 2018 11:02:12 -0500
+Message-ID: <4f269916-9c74-a2d1-3cde-8fc67e1ae161@linux.intel.com>
+References: <1532082427-4912-1-git-send-email-puneethx.prabhu@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.mmit.com.mt (mail.mmit.com.mt [176.56.128.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 277BE267749
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 17:30:00 +0200 (CEST)
-Received: from multiconn.it [10.101.1.251] ([127.0.0.1])
- by mail.mmit.com.mt (MM IT Mail Server v3.0) with ASMTP id KWX24930
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 17:29:30 +0200
+Received: from mga18.intel.com (mga18.intel.com [134.134.136.126])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EEDF267749
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 18:02:17 +0200 (CEST)
+In-Reply-To: <1532082427-4912-1-git-send-email-puneethx.prabhu@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,37 +22,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Puneeth Prabhu <puneethx.prabhu@intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: cezary.rojewski@intel.com, Takashi Iwai <tiwai@suse.de>, pardha.saradhi.kesapragada@intel.com, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Patches Audio <patches.audio@intel.com>, gustaw.lewandowski@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-CkhlbGxvIGFsbCwKCgpmb2xsb3dpbmcgdGhpcyB0aHJlYWQgaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE2LU1heS8xMDgwNjguaHRtbCBJIGFk
-ZGVkIGEgbmV3IHNvdW5kIGNhcmQgd2l0aG91dCBjb2RlYy4gT24gbXkgYm9hcmQgdGhlIGkuTVg2
-USBjaGlwIHB1dHMgYXVkaW8gZGF0YSBkaXJlY3RseSB0byBzb21lIFNUIEZEQTIxMDAgcG93ZXIg
-YW1wbGlmaWVycy4KVGhlIHNvdW5kIGNhcmQgaXMgbGlzdGVkIGNvcnJlY3RseSBpbiBhbHNhIGJ1
-dCBpbiBhbHNhbWl4ZXIgdGhlcmUgYXJlIG5vIGF1ZGlvIGNvbnRyb2xzLCBJIG5lZWQgYSB2b2x1
-bWUgY29udHJvbC4gSSB0cmllZCB0byBlZGl0IGFzb3VuZC5jb25mIGZpbGUgd2l0aCB0aGlzIHBh
-cnQKCgpwY20uc29mdHZvbCB7CsKgIHR5cGXCoCBzb2Z0dm9sCsKgIHNsYXZlIHsKwqDCoMKgIHBj
-bSAiaHc6MSwwIgrCoCB9CsKgIGNvbnRyb2wgewrCoMKgwqAgbmFtZcKgICJTb2Z0Vm9sIgrCoMKg
-wqAgY2FyZMKgIDEKwqAgfQp9CgpjdGwuc29mdHZvbCB7CsKgwqDCoCB0eXBlIGh3CsKgwqDCoMKg
-wqDCoMKgIGNhcmQgMQp9CgoKVGhpcyBpcyBwYXJ0IG9mIGxvZ3MgZHVyaW5nIHRoZSBib290CgoK
-LS0+IElURUwgaW14X2l0ZWxfcHJvYmUKLS0+IElURUwgQ29uZmlndXJvIGF1ZG11eAotLT4gSVRF
-TCBpbXgtYXVkbXV4LWNvbmZpYyBleHQtcG9ydCBwb3J0PTB4MDAwMDAwMDFwdGNyPTB4OWNlNzM4
-MDAgcGRjcj0weDAwMDA2MDAwCi0tPiBJVEVMIGlteC1hdWRtdXgtY29uZmlnIGludC1wb3J0IHBv
-cnQ9MHgwMDAwMDAwMXB0Y3I9MHgwMDAwMDgwMCBwZGNyPTB4MDAwMDIwMDAKLS0+IElURUwgaW14
-LXByb2JlIHJlZ2lzdHJvIGNhcmQKaW14LWl0ZWwgc291bmQtYXVkaW8taXRlbDogc25kLXNvYy1k
-dW1teS1kYWkgPC0+IDIwMmMwMDAuc3NpIG1hcHBpbmcgb2sKLS0+IElURUwgaW14LXByb2JlIG9m
-IHNzaQotLT4gSVRFTCBpbXgtcHJvYmUgb2YgY29kZWMKWy4uLl0KQUxTQSBkZXZpY2UgbGlzdDoK
-wqAgIzA6IGNzNDI4ODgtYXVkaW8KwqAgIzE6IGlteC1hdWRpby1pdGVsCsKgICMyOiBpbXgtc3Bk
-aWYKwqAgIzM6IGlteC1oZG1pLXNvYwpbLi4uXQpBTFNBOiBSZXN0b3JpbmcgbWl4ZXIgc2V0dGlu
-Z3MuLi4KTm8gc3RhdGUgaXMgcHJlc2VudCBmb3IgY2FyZCBpbXhhdWRpb2l0ZWwKRm91bmQgaGFy
-ZHdhcmU6ICJpbXgtYXVkaW8taXRlbCIgIiIgIiIgIiIgIiIKSGFyZHdhcmUgaXMgaW5pdGlhbGl6
-ZWQgdXNpbmcgYSBnZW5lcmljIG1ldGhvZApObyBzdGF0ZSBpcyBwcmVzZW50IGZvciBjYXJkIGlt
-eGF1ZGlvaXRlbApObyBzdGF0ZSBpcyBwcmVzZW50IGZvciBjYXJkIGlteHNwZGlmCkZvdW5kIGhh
-cmR3YXJlOiAiaW14LXNwZGlmIiAiIiAiIiAiIiAiIgpIYXJkd2FyZSBpcyBpbml0aWFsaXplZCB1
-c2luZyBhIGdlbmVyaWMgbWV0aG9kCk5vIHN0YXRlIGlzIHByZXNlbnQgZm9yIGNhcmQgaW14c3Bk
-aWYKCgpTb3JyeSBidXQgSSdtIG5ldyBpbiBhbHNhIGFuZCBsaW51eCBpbiBnZW5lcmFsLgpSaWNj
-YXJkbwoKCgoKCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpo
-dHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZl
-bAo=
+On 7/20/18 5:27 AM, Puneeth Prabhu wrote:
+> Topology supports maximum of 32 configs for a path
+> whereas kernel can support only 16 configs of a path.
+> So, increase SND_SOC_TPLG_NUM_TEXTS to 32 to support 32
+> configs for a path.
+
+What do you mean by "Topology supports maximum of 32 configs for a 
+path"? I checked in alsa-lib and the same value of 16 is used.
+I don't get how a change at the kernel level is going to help if the 
+information generated by alsatplg uses a different structure.
+
+I also don't get how you enable this change, the code in skl-topology 
+only accesses the .priv structure in the enum, but if you change the 
+size of the texts array then all your pointers are incorrect so you'd 
+handle garbage data.
+
+> 
+> Signed-off-by: Puneeth Prabhu <puneethx.prabhu@intel.com>
+> Signed-off-by: Pardha Saradhi K <pardha.saradhi.kesapragada@intel.com>
+> ---
+>   include/uapi/sound/asoc.h | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/uapi/sound/asoc.h b/include/uapi/sound/asoc.h
+> index a74ca23..5b1411b 100644
+> --- a/include/uapi/sound/asoc.h
+> +++ b/include/uapi/sound/asoc.h
+> @@ -88,7 +88,7 @@
+>   #define SND_SOC_TPLG_MAGIC		0x41536F43 /* ASoC */
+>   
+>   /* string sizes */
+> -#define SND_SOC_TPLG_NUM_TEXTS		16
+> +#define SND_SOC_TPLG_NUM_TEXTS		32
+>   
+>   /* ABI version */
+>   #define SND_SOC_TPLG_ABI_VERSION	0x5	/* current version */
+> 
