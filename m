@@ -1,87 +1,69 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: AMD: Add a fix voltage regulator for
- DA7219 and ADAU7002
-Date: Fri, 20 Jul 2018 13:18:16 +0100
-Message-ID: <20180720121816.GD10784@sirena.org.uk>
-References: <1532068715-2992-1-git-send-email-akshu.agrawal@amd.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2813769744762866919=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D3C9426772E
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 14:18:37 +0200 (CEST)
-In-Reply-To: <1532068715-2992-1-git-send-email-akshu.agrawal@amd.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com, Dylan Reid <dgreid@chromium.org>
+Subject: Applied "ASoC: tegra: improve goto error label" to the asoc tree
+Date: Fri, 20 Jul 2018 13:19:16 +0100
+Message-ID: <E1fgUNQ-0006A3-Lc@debutante>
+References: <20180720080424.31505-1-marcel@ziswiler.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180720080424.31505-1-marcel@ziswiler.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>Mark Brown <broonie@kernel.org>, Thierry Reding <thierry.reding@gmail.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2813769744762866919==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="BI5RvnYi6R4T2M87"
-Content-Disposition: inline
+   ASoC: tegra: improve goto error label
 
+has been applied to the asoc tree at
 
---BI5RvnYi6R4T2M87
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Fri, Jul 20, 2018 at 02:38:11PM +0800, Akshu Agrawal wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
->  static int cz_probe(struct platform_device *pdev)
->  {
->  	int ret;
->  	struct snd_soc_card *card;
->  	struct acp_platform_info *machine;
-> +	static bool regulators_registered;
-> +
-> +	if (!regulators_registered) {
-> +		ret = platform_device_register(&acp_da7219_regulator);
-> +		if (ret) {
-> +			dev_err(&pdev->dev, "Failed to register regulator: %d\n",
-> +				ret);
-> +			return ret;
-> +		}
-> +		regulators_registered = true;
-> +	}
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-You should be unregistering the regulator in your remove function, not
-doing this hack here.  I'd also expect to see the card made the parent
-of the device that gets registered.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---BI5RvnYi6R4T2M87
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltR0wcACgkQJNaLcl1U
-h9AbcAf9Fo9ThI5pEiQ3xKKD0YZk9HfxvxQMV9aGNR2pdVyXzGb4qsIc3Iudax1B
-h4VIUfmGjPmA62O2Pw5PjSJ+yqb+gn6Rxy6KcXPgZ1b5hBavB0CHAqyD4SGKSZSf
-Yn1i1HqYYWZ+ag0fYM3CIEKyQAV2vWRbOgWQadWsKj8qBUoVSFE7IvsKVDZtalxv
-9hkCekoKBZcaeuby9ovPkIM5x7gMQfORmarUpbv5xzHai+yeNPl5BlGYVV1GyYoi
-69F4PMy5PkV60tH4ALBAAYJMOSWdbLIWkoMivl+4yxCiuNEXBPsEifaXm/ZHqymU
-nw9f8D0WNWeFz60XTZCCrTjcqxMkww==
-=AQ8P
------END PGP SIGNATURE-----
+>From 2ec42486358f63c4a426514c395d13f4b9de5da8 Mon Sep 17 00:00:00 2001
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Date: Fri, 20 Jul 2018 10:04:23 +0200
+Subject: [PATCH] ASoC: tegra: improve goto error label
 
---BI5RvnYi6R4T2M87--
+While the two error labels "err" and "err_clk_put" goto the same place
+it is rather confusing that the earlier one is certainly used later
+again.
 
---===============2813769744762866919==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/tegra/tegra20_ac97.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
---===============2813769744762866919==--
+diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+index affad46bf188..682ef33afb5f 100644
+--- a/sound/soc/tegra/tegra20_ac97.c
++++ b/sound/soc/tegra/tegra20_ac97.c
+@@ -377,7 +377,7 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+ 	ret = clk_prepare_enable(ac97->clk_ac97);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "clk_enable failed: %d\n", ret);
+-		goto err;
++		goto err_clk_put;
+ 	}
+ 
+ 	ret = snd_soc_set_ac97_ops(&tegra20_ac97_ops);
+-- 
+2.18.0
