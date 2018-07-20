@@ -1,16 +1,16 @@
 From: Bard Liao <bardliao@realtek.com>
-Subject: [PATCH 3/3] ASoC: rt5631: add Volume to the name of
+Subject: [PATCH 2/3] ASoC: rt5640: add Volume to the name of
 	volume control
-Date: Fri, 20 Jul 2018 09:48:20 +0800
-Message-ID: <1532051300-11884-3-git-send-email-bardliao@realtek.com>
+Date: Fri, 20 Jul 2018 09:48:19 +0800
+Message-ID: <1532051300-11884-2-git-send-email-bardliao@realtek.com>
 References: <1532051300-11884-1-git-send-email-bardliao@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 7003126733D
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 03:48:36 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BE5D5267711
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 03:48:37 +0200 (CEST)
 In-Reply-To: <1532051300-11884-1-git-send-email-bardliao@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,25 +29,27 @@ add Volume to the name of volume control.
 
 Signed-off-by: Bard Liao <bardliao@realtek.com>
 ---
- sound/soc/codecs/rt5631.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5640.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
-index cf6dce6..e52e467 100644
---- a/sound/soc/codecs/rt5631.c
-+++ b/sound/soc/codecs/rt5631.c
-@@ -229,10 +229,10 @@ static SOC_ENUM_SINGLE_DECL(rt5631_spk_ratio_enum, RT5631_GEN_PUR_CTRL_REG,
- static const struct snd_kcontrol_new rt5631_snd_controls[] = {
- 	/* MIC */
- 	SOC_ENUM("MIC1 Mode Control",  rt5631_mic1_mode_enum),
--	SOC_SINGLE_TLV("MIC1 Boost", RT5631_MIC_CTRL_2,
-+	SOC_SINGLE_TLV("MIC1 Boost Volume", RT5631_MIC_CTRL_2,
- 		RT5631_MIC1_BOOST_SHIFT, 8, 0, mic_bst_tlv),
- 	SOC_ENUM("MIC2 Mode Control", rt5631_mic2_mode_enum),
--	SOC_SINGLE_TLV("MIC2 Boost", RT5631_MIC_CTRL_2,
-+	SOC_SINGLE_TLV("MIC2 Boost Volume", RT5631_MIC_CTRL_2,
- 		RT5631_MIC2_BOOST_SHIFT, 8, 0, mic_bst_tlv),
- 	/* MONO IN */
- 	SOC_ENUM("MONOIN Mode Control", rt5631_monoin_mode_enum),
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 8bf8d36..2140157 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -407,11 +407,11 @@ static const struct snd_kcontrol_new rt5640_snd_controls[] = {
+ 			RT5640_L_VOL_SFT, RT5640_R_VOL_SFT,
+ 			175, 0, dac_vol_tlv),
+ 	/* IN1/IN2/IN3 Control */
+-	SOC_SINGLE_TLV("IN1 Boost", RT5640_IN1_IN2,
++	SOC_SINGLE_TLV("IN1 Boost Volume", RT5640_IN1_IN2,
+ 		RT5640_BST_SFT1, 8, 0, bst_tlv),
+-	SOC_SINGLE_TLV("IN2 Boost", RT5640_IN3_IN4,
++	SOC_SINGLE_TLV("IN2 Boost Volume", RT5640_IN3_IN4,
+ 		RT5640_BST_SFT2, 8, 0, bst_tlv),
+-	SOC_SINGLE_TLV("IN3 Boost", RT5640_IN1_IN2,
++	SOC_SINGLE_TLV("IN3 Boost Volume", RT5640_IN1_IN2,
+ 		RT5640_BST_SFT2, 8, 0, bst_tlv),
+ 
+ 	/* INL/INR Volume Control */
 -- 
 2.7.4
