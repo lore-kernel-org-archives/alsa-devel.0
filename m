@@ -1,18 +1,14 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH 01/11] ASoC: SOF: Add Sound Open
-	Firmware	driver core
-Date: Fri, 20 Jul 2018 12:05:33 +0100
-Message-ID: <961ff20aa21bc1a66f24877ad330acebc4500837.camel@linux.intel.com>
-References: <20180719185335.30912-1-liam.r.girdwood@linux.intel.com>
- <s5ho9f33vdw.wl-tiwai@suse.de>
+Subject: [PATCH 00/11] Sound Open Firmware Core
+Date: Fri, 20 Jul 2018 12:05:55 +0100
+Message-ID: <20180720110555.7335-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id F1396267715
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 13:05:38 +0200 (CEST)
-In-Reply-To: <s5ho9f33vdw.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id BA762267715
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 13:06:14 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,32 +18,90 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, 2018-07-19 at 20:58 +0200, Takashi Iwai wrote:
-> On Thu, 19 Jul 2018 20:53:25 +0200,
-> Liam Girdwood wrote:
-> > 
-> > The Sound Open Firmware driver core is a generic architecture
-> > independent layer that allows SOF to be used on many different different
-> > architectures and platforms. It abstracts DSP operations and IO methods
-> > so that the target DSP can be an internal memory mapped or external SPI
-> > or I2C based device. This abstraction also allows SOF to be run on
-> > many different VMs on the same physical HW.
-> > 
-> > SOF also requires some data in ASoC PCM runtime data for looking up
-> > SOF data during ASoC PCM operations.
-> > 
-> > Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-> 
-> Could you give a cover letter?  It'd be helpful for digestion of such
-> series.
-> 
+Sound Open Firmware (SOF) is a host and DSP architecture agnostic audio DSP
+firmware. SOF is not tied to any specific host architecture or any specific
+physical IO communication type (it will work with on SoC DSPs, or DSP connected
+via SPI/I2C).
 
-Sure, will follow shortly.
+SOF is also not coupled to any particular DSP architecture and has abstraction
+similar to Linux to allow porting to other DSP architectures. 
 
-Thanks
+https://www.sofproject.org/
 
-Liam
+This patch series introduces the SOF core, later series will add host platform
+support for SOF.
+
+The SOF core manages all the core DSP services and ALSA/ASoC IO. The core is 
+responsible for loading firmware, parsing topology, exposing PCMs and
+kcontrols, providing debug and trace mechanisms and performing IPC between
+host and DSP.
+
+The SOF core also has logic to allow reuse of existing machine drivers for other
+platforms/machines without any code modification. i.e. DAI links can be
+modified at runtime to bind with SOF and SOF topologies instead of existing
+hard coded DAI links and topology.
+
+Liam Girdwood (11):
+  ASoC: SOF: Add Sound Open Firmware driver core
+  ASoC: SOF: Add Sound Open Firmware KControl support
+  ASoC: SOF: Add driver debug support.
+  ASoC: SOF: Add support for IPC IO between DSP and Host
+  ASoC: SOF: Add PCM operations support
+  ASoC: SOF: Add support for loading topologies
+  ASoC: SOF: Add DSP firmware trace event support
+  ASoC: SOF: Add DSP HW abstraction operations
+  ASoC: SOF: Add firmware loader support
+  ASoC: SOF: Add userspace ABI support
+  ASoC: SOF: Add Build support for SOF core
+
+ include/sound/soc.h               |    1 +
+ include/sound/sof.h               |   92 ++
+ include/uapi/sound/sof-abi.h      |   29 +
+ include/uapi/sound/sof-eq.h       |  102 ++
+ include/uapi/sound/sof-fw.h       |   69 +
+ include/uapi/sound/sof-ipc.h      |  915 +++++++++++++
+ include/uapi/sound/sof-tone.h     |   28 +
+ include/uapi/sound/sof-topology.h |   92 ++
+ sound/soc/Kconfig                 |    1 +
+ sound/soc/Makefile                |    1 +
+ sound/soc/sof/Kconfig             |   38 +
+ sound/soc/sof/Makefile            |    6 +
+ sound/soc/sof/control.c           |  218 +++
+ sound/soc/sof/core.c              |  373 ++++++
+ sound/soc/sof/debug.c             |  147 +++
+ sound/soc/sof/ipc.c               |  659 ++++++++++
+ sound/soc/sof/loader.c            |  287 ++++
+ sound/soc/sof/ops.c               |  210 +++
+ sound/soc/sof/ops.h               |  298 +++++
+ sound/soc/sof/pcm.c               |  641 +++++++++
+ sound/soc/sof/sof-priv.h          |  504 +++++++
+ sound/soc/sof/topology.c          | 2036 +++++++++++++++++++++++++++++
+ sound/soc/sof/trace.c             |  279 ++++
+ 23 files changed, 7026 insertions(+)
+ create mode 100644 include/sound/sof.h
+ create mode 100644 include/uapi/sound/sof-abi.h
+ create mode 100644 include/uapi/sound/sof-eq.h
+ create mode 100644 include/uapi/sound/sof-fw.h
+ create mode 100644 include/uapi/sound/sof-ipc.h
+ create mode 100644 include/uapi/sound/sof-tone.h
+ create mode 100644 include/uapi/sound/sof-topology.h
+ create mode 100644 sound/soc/sof/Kconfig
+ create mode 100644 sound/soc/sof/Makefile
+ create mode 100644 sound/soc/sof/control.c
+ create mode 100644 sound/soc/sof/core.c
+ create mode 100644 sound/soc/sof/debug.c
+ create mode 100644 sound/soc/sof/ipc.c
+ create mode 100644 sound/soc/sof/loader.c
+ create mode 100644 sound/soc/sof/ops.c
+ create mode 100644 sound/soc/sof/ops.h
+ create mode 100644 sound/soc/sof/pcm.c
+ create mode 100644 sound/soc/sof/sof-priv.h
+ create mode 100644 sound/soc/sof/topology.c
+ create mode 100644 sound/soc/sof/trace.c
+
+-- 
+2.17.1
