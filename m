@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: tegra: probe deferral error
-	reporting
-Date: Fri, 20 Jul 2018 13:16:12 +0100
-Message-ID: <20180720121612.GC10784@sirena.org.uk>
-References: <20180720080424.31505-1-marcel@ziswiler.com>
- <20180720080424.31505-2-marcel@ziswiler.com>
+Subject: Re: [PATCH] ASoC: AMD: Add a fix voltage regulator for
+ DA7219 and ADAU7002
+Date: Fri, 20 Jul 2018 13:18:16 +0100
+Message-ID: <20180720121816.GD10784@sirena.org.uk>
+References: <1532068715-2992-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3105660243370161700=="
+Content-Type: multipart/mixed; boundary="===============2813769744762866919=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 66E9226772E
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 14:16:16 +0200 (CEST)
-In-Reply-To: <20180720080424.31505-2-marcel@ziswiler.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D3C9426772E
+ for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 14:18:37 +0200 (CEST)
+In-Reply-To: <1532068715-2992-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,64 +21,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcel Ziswiler <marcel@ziswiler.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Jonathan Hunter <jonathanh@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, linux-tegra@vger.kernel.org
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda,
+ Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3105660243370161700==
+--===============2813769744762866919==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Clx92ZfkiYIKRjnr"
+	protocol="application/pgp-signature"; boundary="BI5RvnYi6R4T2M87"
 Content-Disposition: inline
 
 
---Clx92ZfkiYIKRjnr
+--BI5RvnYi6R4T2M87
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Jul 20, 2018 at 10:04:24AM +0200, Marcel Ziswiler wrote:
+On Fri, Jul 20, 2018 at 02:38:11PM +0800, Akshu Agrawal wrote:
 
-> -			dev_err(&pdev->dev, "could not get codec-reset GPIO\n");
-> +			dev_err(&pdev->dev, "could not get codec-reset GPIO: "
-> +					    "%d\n", ret);
+>  static int cz_probe(struct platform_device *pdev)
+>  {
+>  	int ret;
+>  	struct snd_soc_card *card;
+>  	struct acp_platform_info *machine;
+> +	static bool regulators_registered;
+> +
+> +	if (!regulators_registered) {
+> +		ret = platform_device_register(&acp_da7219_regulator);
+> +		if (ret) {
+> +			dev_err(&pdev->dev, "Failed to register regulator: %d\n",
+> +				ret);
+> +			return ret;
+> +		}
+> +		regulators_registered = true;
+> +	}
 
-Don't split strings over lines like this, it causes problems when people
-grep for errors.  It's better to go over 80 columns.
+You should be unregistering the regulator in your remove function, not
+doing this hack here.  I'd also expect to see the card made the parent
+of the device that gets registered.
 
->  	ac97->sync_gpio = of_get_named_gpio(pdev->dev.of_node,
->  					    "nvidia,codec-sync-gpio", 0);
->  	if (!gpio_is_valid(ac97->sync_gpio)) {
-> -		dev_err(&pdev->dev, "no codec-sync GPIO supplied\n");
-> +		ret = ac97->sync_gpio;
-> +		dev_err(&pdev->dev, "no codec-sync GPIO supplied: %d\n", ret);
->  		goto err_clk_put;
->  	}
-
-This isn't reporting an error code associated with the attempt to find a
-codec-sync GPIO, it's the result of some other operation.
-
---Clx92ZfkiYIKRjnr
+--BI5RvnYi6R4T2M87
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltR0osACgkQJNaLcl1U
-h9AVmwf/e4WjlzV4DYAbjzGF9Ht1ig2O1wJA0BPK4/21DHuYhCAkLkLXbGoE3HKD
-j+0NjjLNSqdSeuQChz+tY0Tw12CIupCNSInA6+AS6cQ/OaAPlaTnNuPjDpF3aXWs
-aoxbZ+OclgsvtoHU3q7Oq1EHDJTuYBRMIQsw3fZmSG2L9ZX3u86S6spEE2pdVifW
-ZMHRfbqeIFJpnuVnhHEecYH3y4ZaK1oxOCqpzPWSpcnbSTotMzXSGQLZtc9Voyn7
-tS4/aTY3iMsLa/RUpC9PMCBvPdn4Hj9zzWkOeDz1AviKsW0eJaMdAlg2m8f9it8E
-c0gfHvC1bc0xNsqpQQLp2doD2OwWYA==
-=qJDp
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltR0wcACgkQJNaLcl1U
+h9AbcAf9Fo9ThI5pEiQ3xKKD0YZk9HfxvxQMV9aGNR2pdVyXzGb4qsIc3Iudax1B
+h4VIUfmGjPmA62O2Pw5PjSJ+yqb+gn6Rxy6KcXPgZ1b5hBavB0CHAqyD4SGKSZSf
+Yn1i1HqYYWZ+ag0fYM3CIEKyQAV2vWRbOgWQadWsKj8qBUoVSFE7IvsKVDZtalxv
+9hkCekoKBZcaeuby9ovPkIM5x7gMQfORmarUpbv5xzHai+yeNPl5BlGYVV1GyYoi
+69F4PMy5PkV60tH4ALBAAYJMOSWdbLIWkoMivl+4yxCiuNEXBPsEifaXm/ZHqymU
+nw9f8D0WNWeFz60XTZCCrTjcqxMkww==
+=AQ8P
 -----END PGP SIGNATURE-----
 
---Clx92ZfkiYIKRjnr--
+--BI5RvnYi6R4T2M87--
 
---===============3105660243370161700==
+--===============2813769744762866919==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3105660243370161700==--
+--===============2813769744762866919==--
