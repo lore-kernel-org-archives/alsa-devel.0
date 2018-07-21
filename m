@@ -1,138 +1,101 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [asoc:for-4.19 199/204]
- sound/soc//meson/axg-tdm-interface.c:225:8: error: implicit declaration of
- function 'clk_set_duty_cycle'; did you mean 'clk_set_rate'?
-Date: Fri, 20 Jul 2018 20:40:58 +0200
-Message-ID: <1532112058.26720.62.camel@baylibre.com>
-References: <201807210204.l9GJCtSI%fengguang.wu@intel.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 3E529267762
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 20:41:00 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id o11-v6so10306169wmh.2
- for <alsa-devel@alsa-project.org>; Fri, 20 Jul 2018 11:41:00 -0700 (PDT)
-In-Reply-To: <201807210204.l9GJCtSI%fengguang.wu@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Michael Turquette <mturquette@baylibre.com>
-Cc: "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>, alsa-devel@alsa-project.org
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: [PATCH] ASoC: da7219: Allow pdata to specify a VDDIO
+Date: Fri, 20 Jul 2018 18:12:35 -0600
+Message-ID: <20180721001235.164891-1-djkurtz@chromium.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Dylan Reid <dgreid@chromium.org>, Jimmy Cheng-Yi Chiang <cychiang@google.com>, Akshu Agrawal <akshu.agrawal@amd.com>, Daniel Kurtz <djkurtz@chromium.org>, Support Opensource <support.opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, 2018-07-21 at 02:12 +0800, kbuild test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-4.19
-> head:   a8e43c21a8a32a3af4abc605b6ebcab039f28e00
-> commit: c41c2a355b86368608377eaf3df442ec0f342f1e [199/204] ASoC: meson: add tdm output driver
-> config: m68k-allyesconfig (attached as .config)
-> compiler: m68k-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
-> reproduce:
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         git checkout c41c2a355b86368608377eaf3df442ec0f342f1e
->         # save the attached .config to linux build tree
->         GCC_VERSION=7.2.0 make.cross ARCH=m68k 
-> 
-> All errors (new ones prefixed by >>):
-> 
->    sound/soc//meson/axg-tdm-interface.c: In function 'axg_tdm_iface_set_lrclk':
-> > > sound/soc//meson/axg-tdm-interface.c:225:8: error: implicit declaration of function 'clk_set_duty_cycle'; did you mean 'clk_set_rate'? [-Werror=implicit-function-declaration]
-> 
->      ret = clk_set_duty_cycle(iface->lrclk, ratio_num, 2);
+Some systems do not have software controllable regulators driving the
+DA7219's supplies, nor can they use device tree to create "always-on fixed
+regulators" to easily pretend like they do.
 
-Hi Mark,
+On these systems the call to devm_regulator_bulk_get() just creates
+a set of dummy registers.  Calling regulator_get_voltage() on a dummy
+regulator just returns -EINVAL, in which case the DA7219 is always set up
+to use the default VDDIO voltage range of 2.5-3.6V.
 
-I'm really sorry about this. I completely forgot this dependency.
-It has been accepted in clk early in this cycle and it should be sent to Linus
-during the next merge window. Mike and Stephen have topic branch with related
-change:
+Provide a new device property to let such systems specify a different
+VDDIO if needed (e.g., 1.8V).
 
-git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-core-duty-cycle
+Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
+---
 
-commit:
-9fba738a53dd ("clk: add duty cycle support") 
+This patch tries to solve the same problem as in the following patches,
+but does so in a way that doesn't require registering fixed regulators in
+the audio machine-driver:
+  https://patchwork.kernel.org/patch/10531097 & 10531099
+  https://patchwork.kernel.org/patch/10536023/
 
-Again, sorry about this.
-Regards
-Jerome
+ include/sound/da7219.h    |  2 ++
+ sound/soc/codecs/da7219.c | 19 +++++++++++++------
+ 2 files changed, 15 insertions(+), 6 deletions(-)
 
->            ^~~~~~~~~~~~~~~~~~
->            clk_set_rate
->    cc1: some warnings being treated as errors
-> 
-> vim +225 sound/soc//meson/axg-tdm-interface.c
-> 
-> d60e4f1e Jerome Brunet 2018-07-17  188  
-> d60e4f1e Jerome Brunet 2018-07-17  189  static int axg_tdm_iface_set_lrclk(struct snd_soc_dai *dai,
-> d60e4f1e Jerome Brunet 2018-07-17  190  				   struct snd_pcm_hw_params *params)
-> d60e4f1e Jerome Brunet 2018-07-17  191  {
-> d60e4f1e Jerome Brunet 2018-07-17  192  	struct axg_tdm_iface *iface = snd_soc_dai_get_drvdata(dai);
-> d60e4f1e Jerome Brunet 2018-07-17  193  	unsigned int ratio_num;
-> d60e4f1e Jerome Brunet 2018-07-17  194  	int ret;
-> d60e4f1e Jerome Brunet 2018-07-17  195  
-> d60e4f1e Jerome Brunet 2018-07-17  196  	ret = clk_set_rate(iface->lrclk, params_rate(params));
-> d60e4f1e Jerome Brunet 2018-07-17  197  	if (ret) {
-> d60e4f1e Jerome Brunet 2018-07-17  198  		dev_err(dai->dev, "setting sample clock failed: %d\n", ret);
-> d60e4f1e Jerome Brunet 2018-07-17  199  		return ret;
-> d60e4f1e Jerome Brunet 2018-07-17  200  	}
-> d60e4f1e Jerome Brunet 2018-07-17  201  
-> d60e4f1e Jerome Brunet 2018-07-17  202  	switch (iface->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> d60e4f1e Jerome Brunet 2018-07-17  203  	case SND_SOC_DAIFMT_I2S:
-> d60e4f1e Jerome Brunet 2018-07-17  204  	case SND_SOC_DAIFMT_LEFT_J:
-> d60e4f1e Jerome Brunet 2018-07-17  205  	case SND_SOC_DAIFMT_RIGHT_J:
-> d60e4f1e Jerome Brunet 2018-07-17  206  		/* 50% duty cycle ratio */
-> d60e4f1e Jerome Brunet 2018-07-17  207  		ratio_num = 1;
-> d60e4f1e Jerome Brunet 2018-07-17  208  		break;
-> d60e4f1e Jerome Brunet 2018-07-17  209  
-> d60e4f1e Jerome Brunet 2018-07-17  210  	case SND_SOC_DAIFMT_DSP_A:
-> d60e4f1e Jerome Brunet 2018-07-17  211  	case SND_SOC_DAIFMT_DSP_B:
-> d60e4f1e Jerome Brunet 2018-07-17  212  		/*
-> d60e4f1e Jerome Brunet 2018-07-17  213  		 * A zero duty cycle ratio will result in setting the mininum
-> d60e4f1e Jerome Brunet 2018-07-17  214  		 * ratio possible which, for this clock, is 1 cycle of the
-> d60e4f1e Jerome Brunet 2018-07-17  215  		 * parent bclk clock high and the rest low, This is exactly
-> d60e4f1e Jerome Brunet 2018-07-17  216  		 * what we want here.
-> d60e4f1e Jerome Brunet 2018-07-17  217  		 */
-> d60e4f1e Jerome Brunet 2018-07-17  218  		ratio_num = 0;
-> d60e4f1e Jerome Brunet 2018-07-17  219  		break;
-> d60e4f1e Jerome Brunet 2018-07-17  220  
-> d60e4f1e Jerome Brunet 2018-07-17  221  	default:
-> d60e4f1e Jerome Brunet 2018-07-17  222  		return -EINVAL;
-> d60e4f1e Jerome Brunet 2018-07-17  223  	}
-> d60e4f1e Jerome Brunet 2018-07-17  224  
-> d60e4f1e Jerome Brunet 2018-07-17 @225  	ret = clk_set_duty_cycle(iface->lrclk, ratio_num, 2);
-> d60e4f1e Jerome Brunet 2018-07-17  226  	if (ret) {
-> d60e4f1e Jerome Brunet 2018-07-17  227  		dev_err(dai->dev,
-> d60e4f1e Jerome Brunet 2018-07-17  228  			"setting sample clock duty cycle failed: %d\n", ret);
-> d60e4f1e Jerome Brunet 2018-07-17  229  		return ret;
-> d60e4f1e Jerome Brunet 2018-07-17  230  	}
-> d60e4f1e Jerome Brunet 2018-07-17  231  
-> d60e4f1e Jerome Brunet 2018-07-17  232  	/* Set sample clock inversion */
-> d60e4f1e Jerome Brunet 2018-07-17  233  	ret = clk_set_phase(iface->lrclk,
-> d60e4f1e Jerome Brunet 2018-07-17  234  			    axg_tdm_lrclk_invert(iface->fmt) ? 180 : 0);
-> d60e4f1e Jerome Brunet 2018-07-17  235  	if (ret) {
-> d60e4f1e Jerome Brunet 2018-07-17  236  		dev_err(dai->dev,
-> d60e4f1e Jerome Brunet 2018-07-17  237  			"setting sample clock phase failed: %d\n", ret);
-> d60e4f1e Jerome Brunet 2018-07-17  238  		return ret;
-> d60e4f1e Jerome Brunet 2018-07-17  239  	}
-> d60e4f1e Jerome Brunet 2018-07-17  240  
-> d60e4f1e Jerome Brunet 2018-07-17  241  	return 0;
-> d60e4f1e Jerome Brunet 2018-07-17  242  }
-> d60e4f1e Jerome Brunet 2018-07-17  243  
-> 
-> :::::: The code at line 225 was first introduced by commit
-> :::::: d60e4f1e4be5e2dfb55fb084b119aed094227a35 ASoC: meson: add tdm interface driver
-> 
-> :::::: TO: Jerome Brunet <jbrunet@baylibre.com>
-> :::::: CC: Mark Brown <broonie@kernel.org>
-> 
-> ---
-> 0-DAY kernel test infrastructure                Open Source Technology Center
-> https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+index 1bfcb16f2d10ab..16ab125ad4adbf 100644
+--- a/include/sound/da7219.h
++++ b/include/sound/da7219.h
+@@ -38,6 +38,8 @@ struct da7219_pdata {
+ 
+ 	const char *dai_clks_name;
+ 
++	u32 vddio;
++
+ 	/* Mic */
+ 	enum da7219_micbias_voltage micbias_lvl;
+ 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 980a6a8bf56d38..d8f202c57f958d 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1634,6 +1634,9 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
+ 	else
+ 		pdata->mic_amp_in_sel = DA7219_MIC_AMP_IN_SEL_DIFF;
+ 
++	if (!device_property_read_string(dev, "dlg,vddio", &of_val32))
++		pdata->vddio = of_val32;
++
+ 	return pdata;
+ }
+ 
+@@ -1717,8 +1720,12 @@ static int da7219_handle_supplies(struct snd_soc_component *component)
+ 	/* Determine VDDIO voltage provided */
+ 	vddio = da7219->supplies[DA7219_SUPPLY_VDDIO].consumer;
+ 	ret = regulator_get_voltage(vddio);
++	/* If regulator_get_voltage() fails, try to use vddio from pdata. */
++	if (ret < 0 && da7219->pdata)
++		ret = da7219->pdata->vddio;
+ 	if (ret < 1200000)
+-		dev_warn(component->dev, "Invalid VDDIO voltage\n");
++		dev_warn(component->dev, "Invalid VDDIO voltage: %d mV\n",
++			 ret);
+ 	else if (ret < 2800000)
+ 		io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_1_2V_2_8V;
+ 
+@@ -1872,6 +1879,11 @@ static int da7219_probe(struct snd_soc_component *component)
+ 	mutex_init(&da7219->ctrl_lock);
+ 	mutex_init(&da7219->pll_lock);
+ 
++	/* Handle DT/ACPI/Platform data */
++	da7219->pdata = dev_get_platdata(component->dev);
++	if (!da7219->pdata)
++		da7219->pdata = da7219_fw_to_pdata(component);
++
+ 	/* Regulator configuration */
+ 	ret = da7219_handle_supplies(component);
+ 	if (ret)
+@@ -1897,11 +1909,6 @@ static int da7219_probe(struct snd_soc_component *component)
+ 		break;
+ 	}
+ 
+-	/* Handle DT/ACPI/Platform data */
+-	da7219->pdata = dev_get_platdata(component->dev);
+-	if (!da7219->pdata)
+-		da7219->pdata = da7219_fw_to_pdata(component);
+-
+ 	da7219_handle_pdata(component);
+ 
+ 	/* Check if MCLK provided */
+-- 
+2.18.0.233.g985f88cf7e-goog
