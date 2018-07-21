@@ -1,18 +1,20 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH] ASoC: da7219: Allow pdata to specify a
-	VDDIO
-Date: Sat, 21 Jul 2018 11:37:52 +0800
-Message-ID: <201807211137.jmWeBTni%fengguang.wu@intel.com>
-References: <20180721001235.164891-1-djkurtz@chromium.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: tegra: probe deferral error
+	reporting
+Date: Sat, 21 Jul 2018 10:56:15 +0100
+Message-ID: <20180721095615.GG16228@sirena.org.uk>
+References: <20180720080424.31505-1-marcel@ziswiler.com>
+ <20180720080424.31505-2-marcel@ziswiler.com>
+ <20180720121612.GC10784@sirena.org.uk>
+ <1532089865.19673.13.camel@toradex.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4247015806527658385=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 94978267762
- for <alsa-devel@alsa-project.org>; Sat, 21 Jul 2018 05:38:09 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180721001235.164891-1-djkurtz@chromium.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 63680267762
+ for <alsa-devel@alsa-project.org>; Sat, 21 Jul 2018 11:56:19 +0200 (CEST)
+In-Reply-To: <1532089865.19673.13.camel@toradex.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +24,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Daniel Kurtz <djkurtz@chromium.org>, Akshu Agrawal <akshu.agrawal@amd.com>, Mark Brown <broonie@kernel.org>, kbuild-all@01.org, Dylan Reid <dgreid@chromium.org>, Jimmy Cheng-Yi Chiang <cychiang@google.com>
+To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "jonathanh@nvidia.com" <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Daniel,
 
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on v4.18-rc5 next-20180720]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Daniel-Kurtz/ASoC-da7219-Allow-pdata-to-specify-a-VDDIO/20180721-082411
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
+--===============4247015806527658385==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="0qt3EE9wi45a2ZFX"
+Content-Disposition: inline
 
 
-sparse warnings: (new ones prefixed by >>)
+--0qt3EE9wi45a2ZFX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   sound/soc/codecs/da7219.c:440:44: sparse: cast to restricted __le16
-   sound/soc/codecs/da7219.c:461:13: sparse: incorrect type in assignment (different base types) @@    expected unsigned short [unsigned] [usertype] val @@    got  short [unsigned] [usertype] val @@
-   sound/soc/codecs/da7219.c:461:13:    expected unsigned short [unsigned] [usertype] val
-   sound/soc/codecs/da7219.c:461:13:    got restricted __le16 [usertype] <noident>
-   sound/soc/codecs/da7219.c:817:57: sparse: dubious: x & !y
-   sound/soc/codecs/da7219.c:1427:16: sparse: incorrect type in assignment (different base types) @@    expected unsigned short [unsigned] [usertype] offset @@    got  short [unsigned] [usertype] offset @@
-   sound/soc/codecs/da7219.c:1427:16:    expected unsigned short [unsigned] [usertype] offset
-   sound/soc/codecs/da7219.c:1427:16:    got restricted __le16 [usertype] <noident>
->> sound/soc/codecs/da7219.c:1637:61: sparse: incorrect type in argument 3 (different base types) @@    expected char const **val @@    got uchar const **val @@
-   sound/soc/codecs/da7219.c:1637:61:    expected char const **val
-   sound/soc/codecs/da7219.c:1637:61:    got unsigned int *<noident>
-   sound/soc/codecs/da7219.c: In function 'da7219_fw_to_pdata':
-   sound/soc/codecs/da7219.c:1637:53: error: passing argument 3 of 'device_property_read_string' from incompatible pointer type [-Werror=incompatible-pointer-types]
-     if (!device_property_read_string(dev, "dlg,vddio", &of_val32))
-                                                        ^
-   In file included from include/linux/acpi.h:28:0,
-                    from sound/soc/codecs/da7219.c:14:
-   include/linux/property.h:49:5: note: expected 'const char **' but argument is of type 'u32 * {aka unsigned int *}'
-    int device_property_read_string(struct device *dev, const char *propname,
-        ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
+On Fri, Jul 20, 2018 at 12:31:07PM +0000, Marcel Ziswiler wrote:
+> On Fri, 2018-07-20 at 13:16 +0100, Mark Brown wrote:
 
-vim +1637 sound/soc/codecs/da7219.c
+> > >  	ac97->sync_gpio = of_get_named_gpio(pdev->dev.of_node,
+> > >  					    "nvidia,codec-sync-
+> > > gpio", 0);
+> > >  	if (!gpio_is_valid(ac97->sync_gpio)) {
+> > > -		dev_err(&pdev->dev, "no codec-sync GPIO
+> > > supplied\n");
+> > > +		ret = ac97->sync_gpio;
+> > > +		dev_err(&pdev->dev, "no codec-sync GPIO supplied:
+> > > %d\n", ret);
+> > >  		goto err_clk_put;
+> > >  	}
 
-  1607	
-  1608	static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *component)
-  1609	{
-  1610		struct device *dev = component->dev;
-  1611		struct da7219_pdata *pdata;
-  1612		const char *of_str;
-  1613		u32 of_val32;
-  1614	
-  1615		pdata = devm_kzalloc(dev, sizeof(*pdata), GFP_KERNEL);
-  1616		if (!pdata)
-  1617			return NULL;
-  1618	
-  1619		pdata->wakeup_source = device_property_read_bool(dev, "wakeup-source");
-  1620	
-  1621		pdata->dai_clks_name = "da7219-dai-clks";
-  1622		if (device_property_read_string(dev, "clock-output-names",
-  1623						&pdata->dai_clks_name))
-  1624			dev_warn(dev, "Using default clk name: %s\n",
-  1625				 pdata->dai_clks_name);
-  1626	
-  1627		if (device_property_read_u32(dev, "dlg,micbias-lvl", &of_val32) >= 0)
-  1628			pdata->micbias_lvl = da7219_fw_micbias_lvl(dev, of_val32);
-  1629		else
-  1630			pdata->micbias_lvl = DA7219_MICBIAS_2_2V;
-  1631	
-  1632		if (!device_property_read_string(dev, "dlg,mic-amp-in-sel", &of_str))
-  1633			pdata->mic_amp_in_sel = da7219_fw_mic_amp_in_sel(dev, of_str);
-  1634		else
-  1635			pdata->mic_amp_in_sel = DA7219_MIC_AMP_IN_SEL_DIFF;
-  1636	
-> 1637		if (!device_property_read_string(dev, "dlg,vddio", &of_val32))
-  1638			pdata->vddio = of_val32;
-  1639	
-  1640		return pdata;
-  1641	}
-  1642	
+> > This isn't reporting an error code associated with the attempt to
+> > find a
+> > codec-sync GPIO, it's the result of some other operation.
 
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+> What exactly is then the of_get_named_gpio() above please doing if
+> not getting the codec sync GPIO? I am not following you, sorry.
+
+It's not in any way involved in setting the value of ret, whatever value
+that has it's nothing to do with that operation.
+
+--0qt3EE9wi45a2ZFX
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltTAzoACgkQJNaLcl1U
+h9Cr9gf/Uajueh0tP2ANyMJ75Z87P4f3b/nF3mN5D/jxrZYbr42S/NBnjkm+lhEW
+6zDiWAkzrTRg+X9WrdphxFZOqitLmrkKycnS8UDQZh0M4ZPSFPTLnXMWS+LHhhoK
+lDk1mX7s6unzTF2xGs7FTZKd1PW/BqGTKCDL0MHUoQwLriZ8qsz5qqKV/nnfUSBz
+V+1WswE0mMF7eYsWx9J8/Asbslr4QZJ0zT29aqGVyVZnPmrXF6GMXM9Mgg0Se9yf
+UjB5AoNSsjgY6Kmz5a68xb/doF7yW3YRfkbJjJg+XrA8R3b2DMYaASdDgi+e0fqf
+u15lzygMG5fbKBXhW6758dt2isQd9g==
+=8Lir
+-----END PGP SIGNATURE-----
+
+--0qt3EE9wi45a2ZFX--
+
+--===============4247015806527658385==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4247015806527658385==--
