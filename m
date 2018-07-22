@@ -1,97 +1,68 @@
-From: Dmitry Osipenko <digetx@gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: tegra: probe deferral error reporting
-Date: Sat, 21 Jul 2018 15:15:37 +0300
-Message-ID: <102145026.ENfUlVqMES@dimapc>
-References: <20180720080424.31505-1-marcel@ziswiler.com> <1532174119.19673.24.camel@toradex.com> <2195096.d8yV6ZqeS2@dimapc>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda/i915: Allow delayed i915 audio
+ component binding
+Date: Sun, 22 Jul 2018 10:47:23 +0200
+Message-ID: <20180722084723.30609-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <2195096.d8yV6ZqeS2@dimapc>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marcel Ziswiler <marcel.ziswiler@toradex.com>, "broonie@kernel.org" <broonie@kernel.org>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "jonathanh@nvidia.com" <jonathanh@nvidia.com>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: alsa-devel@alsa-project.org
+Cc: intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-On Saturday, 21 July 2018 15:03:57 MSK Dmitry Osipenko wrote:
-> On Saturday, 21 July 2018 14:55:21 MSK Marcel Ziswiler wrote:
-> > On Sat, 2018-07-21 at 14:17 +0300, Dmitry Osipenko wrote:
-> > > On Saturday, 21 July 2018 12:56:15 MSK Mark Brown wrote:
-> > > > On Fri, Jul 20, 2018 at 12:31:07PM +0000, Marcel Ziswiler wrote:
-> > > > > On Fri, 2018-07-20 at 13:16 +0100, Mark Brown wrote:
-> > > > > > >  	ac97->sync_gpio = of_get_named_gpio(pdev-
-> > > > > > > >
-> > > > > > > >dev.of_node,
-> > > > > > > >
-> > > > > > >  					    "nvidia,codec-
-> > > > > > > 
-> > > > > > > sync-
-> > > > > > > 
-> > > > > > > gpio", 0);
-> > > > > > > 
-> > > > > > >  	if (!gpio_is_valid(ac97->sync_gpio)) {
-> > > > > > > 
-> > > > > > > -		dev_err(&pdev->dev, "no codec-sync GPIO
-> > > > > > > supplied\n");
-> > > > > > > +		ret = ac97->sync_gpio;
-> > > > > > > +		dev_err(&pdev->dev, "no codec-sync GPIO
-> > > > > > > supplied:
-> > > > > > > %d\n", ret);
-> > > > > > > 
-> > > > > > >  		goto err_clk_put;
-> > > > > > >  	
-> > > > > > >  	}
-> > > > > > 
-> > > > > > This isn't reporting an error code associated with the attempt
-> > > > > > to
-> > > > > > find a
-> > > > > > codec-sync GPIO, it's the result of some other operation.
-> > > > > 
-> > > > > What exactly is then the of_get_named_gpio() above please doing
-> > > > > if
-> > > > > not getting the codec sync GPIO? I am not following you, sorry.
-> > > > 
-> > > > It's not in any way involved in setting the value of ret, whatever
-> > > > value
-> > > > that has it's nothing to do with that operation.
-> > > 
-> > > The comment to gpio_is_valid() says that it "Returns GPIO number to
-> > > use with
-> > > Linux generic GPIO API, or one of the errno value on the error
-> > > condition".
-> > > Comment doesn't explicitly states that the returned GPIO number is
-> > > always
-> > > valid, but it is kinda implied.
-> > 
-> > Do you mean I should be assigning the return value of gpio_is_valid()
-> > to ret and use that instead?
-> 
-> No, gpio_is_valid() returns a boolean. I think your patch is fine as it is
-> is.
-> 
-> Probably Mark meant something like this:
-> 
->         ac97->sync_gpio = of_get_named_gpio(pdev->dev.of_node,
->                                             "nvidia,codec-sync-gpio", 0);
->         if (ac97->sync_gpio < 0) {
->                 ret = ac97->sync_gpio;
->                 dev_err(&pdev->dev, "no codec-sync GPIO supplied: %d\n",
-> ret); goto err_clk_put;
->         }
-> 
->         if (!gpio_is_valid(ac97->sync_gpio)) {
->                 ret = -EINVAL;
->                 goto err_clk_put;
->        }
-> 
-> But that is not needed because of_get_named_gpio() returns either a valid
-> GPIO number or a error code.
-
-Also note that tegra20_ac97 code doesn't check the returned value of:
-
-	gpio_request(workdata->sync_gpio, "codec-sync");
-
-That is a bit fragile. Probably would be better to move the GPIO requesting to 
-the drivers probe function using the devm_gpio_request_one() and fail the 
-driver probing if requesting fails. That should be a distinct patch if you'll 
-want to implement that.
+Q3VycmVudGx5IEhELWF1ZGlvIGk5MTUgYXVkaW8gYmluZGluZyBkb2Vzbid0IHN1cHBvcnQgYW55
+IGRlbGF5ZWQKYmluZGluZywgYW5kIHN1cHBvc2VzIHRoYXQgdGhlIGk5MTUgZHJpdmVyIHJlZ2lz
+dGVycyB0aGUgY29tcG9uZW50CmltbWVkaWF0ZWx5LiAgVGhpcyBoYXMgYmVlbiBPSywgc28gZmFy
+LCBidXQgdGhlIHdvcmstaW4tcHJvZ3Jlc3MKY2hhbmdlIGluIGk5MTUgbWF5IGludHJvZHVjZSB0
+aGUgYXN5bmNocm9ub3VzIGJpbmRpbmcsIHdoaWNoCmVmZmVjdGl2ZWx5IGRlbGF5cyB0aGUgY29t
+cG9uZW50IHJlZ2lzdHJhdGlvbi4KCkZvciBhZGRyZXNzaW5nIGl0LCBpbXBsZW1lbnQgYSBjb21w
+bGV0aW9uIHRvIGJlIHN5bmNlZCB3aXRoIHRoZSBtYXN0ZXIKYmluZGluZy4gIFRoZSB0aW1lb3V0
+IGlzIHNldCB0byAxMCBzZWNvbmRzIHdoaWNoIHNob3VsZCBiZSBsb25nIGVub3VnaAphbmQgaG9w
+ZWZ1bGx5IGJlIG5vdCB0b28gYW5ub3lpbmcgaWYgYW55b25lIGJvb3RzIHVwIGEgZGVidWdnaW5n
+CnNlc3Npb24gd2l0aCBpOTE1IEtNUyB0dXJuZWQgb2ZmLgoKU2lnbmVkLW9mZi1ieTogVGFrYXNo
+aSBJd2FpIDx0aXdhaUBzdXNlLmRlPgotLS0KClRoaXMgaXMgYXBwbGllZCBvbiB0b3Agb2YgdGhl
+IGN1cnJlbnQgZm9yLW5leHQgb3IgdG9waWMvZHJtX2F1ZGlvX2NvbXBvbmVudApicmFuY2ggb2Yg
+c291bmQgZ2l0IHRyZWUuCgogc291bmQvaGRhL2hkYWNfaTkxNS5jIHwgMjQgKysrKysrKysrKysr
+KysrKysrKysrKy0tCiAxIGZpbGUgY2hhbmdlZCwgMjIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlv
+bnMoLSkKCmRpZmYgLS1naXQgYS9zb3VuZC9oZGEvaGRhY19pOTE1LmMgYi9zb3VuZC9oZGEvaGRh
+Y19pOTE1LmMKaW5kZXggOGYyYWE4YmMxMTg1Li5iNTI4MmNiYmU0ODkgMTAwNjQ0Ci0tLSBhL3Nv
+dW5kL2hkYS9oZGFjX2k5MTUuYworKysgYi9zb3VuZC9oZGEvaGRhY19pOTE1LmMKQEAgLTIwLDYg
+KzIwLDggQEAKICNpbmNsdWRlIDxzb3VuZC9oZGFfaTkxNS5oPgogI2luY2x1ZGUgPHNvdW5kL2hk
+YV9yZWdpc3Rlci5oPgogCitzdGF0aWMgc3RydWN0IGNvbXBsZXRpb24gYmluZF9jb21wbGV0ZTsK
+KwogI2RlZmluZSBDT05UUk9MTEVSX0lOX0dQVShwY2kpICgoKHBjaSktPmRldmljZSA9PSAweDBh
+MGMpIHx8IFwKIAkJCQkoKHBjaSktPmRldmljZSA9PSAweDBjMGMpIHx8IFwKIAkJCQkoKHBjaSkt
+PmRldmljZSA9PSAweDBkMGMpIHx8IFwKQEAgLTk3LDYgKzk5LDE5IEBAIHN0YXRpYyBib29sIGk5
+MTVfZ2Z4X3ByZXNlbnQodm9pZCkKIAlyZXR1cm4gcGNpX2Rldl9wcmVzZW50KGlkcyk7CiB9CiAK
+K3N0YXRpYyBpbnQgaTkxNV9tYXN0ZXJfYmluZChzdHJ1Y3QgZGV2aWNlICpkZXYsCisJCQkgICAg
+c3RydWN0IGRybV9hdWRpb19jb21wb25lbnQgKmFjb21wKQoreworCWNvbXBsZXRlX2FsbCgmYmlu
+ZF9jb21wbGV0ZSk7CisJLyogY2xlYXIgYXVkaW9fb3BzIGhlcmUgYXMgaXQgd2FzIG5lZWRlZCBv
+bmx5IGZvciBjb21wbGV0aW9uIGNhbGwgKi8KKwlhY29tcC0+YXVkaW9fb3BzID0gTlVMTDsKKwly
+ZXR1cm4gMDsKK30KKworc3RhdGljIGNvbnN0IHN0cnVjdCBkcm1fYXVkaW9fY29tcG9uZW50X2F1
+ZGlvX29wcyBpOTE1X2luaXRfb3BzID0geworCS5tYXN0ZXJfYmluZCA9IGk5MTVfbWFzdGVyX2Jp
+bmQKK307CisKIC8qKgogICogc25kX2hkYWNfaTkxNV9pbml0IC0gSW5pdGlhbGl6ZSBpOTE1IGF1
+ZGlvIGNvbXBvbmVudAogICogQGJ1czogSERBIGNvcmUgYnVzCkBAIC0xMTcsNyArMTMyLDkgQEAg
+aW50IHNuZF9oZGFjX2k5MTVfaW5pdChzdHJ1Y3QgaGRhY19idXMgKmJ1cykKIAlpZiAoIWk5MTVf
+Z2Z4X3ByZXNlbnQoKSkKIAkJcmV0dXJuIC1FTk9ERVY7CiAKLQllcnIgPSBzbmRfaGRhY19hY29t
+cF9pbml0KGJ1cywgTlVMTCwKKwlpbml0X2NvbXBsZXRpb24oJmJpbmRfY29tcGxldGUpOworCisJ
+ZXJyID0gc25kX2hkYWNfYWNvbXBfaW5pdChidXMsICZpOTE1X2luaXRfb3BzLAogCQkJCSAgaTkx
+NV9jb21wb25lbnRfbWFzdGVyX21hdGNoLAogCQkJCSAgc2l6ZW9mKHN0cnVjdCBpOTE1X2F1ZGlv
+X2NvbXBvbmVudCkgLSBzaXplb2YoKmFjb21wKSk7CiAJaWYgKGVyciA8IDApCkBAIC0xMjUsOCAr
+MTQyLDExIEBAIGludCBzbmRfaGRhY19pOTE1X2luaXQoc3RydWN0IGhkYWNfYnVzICpidXMpCiAJ
+YWNvbXAgPSBidXMtPmF1ZGlvX2NvbXBvbmVudDsKIAlpZiAoIWFjb21wKQogCQlyZXR1cm4gLUVO
+T0RFVjsKLQlpZiAoIWFjb21wLT5vcHMpCisJaWYgKCFhY29tcC0+b3BzKSB7CiAJCXJlcXVlc3Rf
+bW9kdWxlKCJpOTE1Iik7CisJCS8qIDEwcyB0aW1lb3V0ICovCisJCXdhaXRfZm9yX2NvbXBsZXRp
+b25fdGltZW91dCgmYmluZF9jb21wbGV0ZSwgMTAgKiAxMDAwKTsKKwl9CiAJaWYgKCFhY29tcC0+
+b3BzKSB7CiAJCXNuZF9oZGFjX2Fjb21wX2V4aXQoYnVzKTsKIAkJcmV0dXJuIC1FTk9ERVY7Ci0t
+IAoyLjE4LjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+CkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpo
+dHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
