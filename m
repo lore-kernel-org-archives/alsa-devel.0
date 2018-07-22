@@ -1,17 +1,17 @@
-From: Christopher Head <alsa@chead.ca>
-Subject: Incorrect name of PCM
-Date: Sun, 22 Jul 2018 08:38:50 -0700
-Message-ID: <20180722083850.5283c197@amdahl.home.chead.ca>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: [PATCH v2] ASoC: da7219: Allow pdata to specify a VDDIO
+Date: Sun, 22 Jul 2018 17:28:22 -0600
+Message-ID: <20180722232822.34641-1-djkurtz@chromium.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0507087945181371962=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lovelace.chead.ca (lovelace.chead.ca [162.223.226.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 1ED7C26763A
- for <alsa-devel@alsa-project.org>; Sun, 22 Jul 2018 17:38:57 +0200 (CEST)
-Received: from [192.252.228.35] (helo=amdahl.home.chead.ca)
- by lovelace.chead.ca with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
- (Exim 4.91) (envelope-from <alsa@chead.ca>) id 1fhGRh-0000Gy-Qx
- for alsa-devel@alsa-project.org; Sun, 22 Jul 2018 08:38:53 -0700
+Received: from mail-io0-f194.google.com (mail-io0-f194.google.com
+ [209.85.223.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 06F7F26763A
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 01:28:27 +0200 (CEST)
+Received: by mail-io0-f194.google.com with SMTP id w11-v6so8591705iob.2
+ for <alsa-devel@alsa-project.org>; Sun, 22 Jul 2018 16:28:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,146 +21,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Cc: "moderated list:SOUND" <alsa-devel@alsa-project.org>, Support Opensource <support.opensource@diasemi.com>, open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Daniel Kurtz <djkurtz@chromium.org>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Akshu Agrawal <akshu.agrawal@amd.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============0507087945181371962==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_//BW0u4Xbs02dKvLjjyriLZK"; protocol="application/pgp-signature"
+Some systems do not have software controllable regulators driving the
+DA7219's supplies, nor can they use device tree to create "always-on fixed
+regulators" to easily pretend like they do.
 
---Sig_//BW0u4Xbs02dKvLjjyriLZK
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On these systems the call to devm_regulator_bulk_get() just creates
+a set of dummy registers.  Calling regulator_get_voltage() on a dummy
+regulator just returns -EINVAL, in which case the DA7219 is always set up
+to use the default VDDIO voltage range of 2.5-3.6V.
 
-Hi folks,
-I have an Asus P8H77-I motherboard. On board is an Intel HDA connected
-to a Via VT1708S codec. There are a number of analogue ports. In
-addition to them, on the back panel are an HDMI port (from an
-integrated GPU) and a TOSLINK port. The motherboard manual isn=E2=80=99t to=
-tally
-clear on whether the HDMI port can also carry sound or only video, but
-Windows claims to be able to send sound there, so probably yes. I don=E2=80=
-=99t
-use the integrated GPU, though.
+Provide a new device property to let such systems specify a different
+VDDIO if needed (e.g., 1.8V).
 
-Here=E2=80=99s the problem:
-$ aplay -l
-**** List of PLAYBACK Hardware Devices ****
-card 0: PCH [HDA Intel PCH], device 0: VT1708S Analog [VT1708S Analog]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 0: PCH [HDA Intel PCH], device 2: VT1708S Alt Analog [VT1708S Alt
-Analog] Subdevices: 0/1
-  Subdevice #0: subdevice #0
-card 0: PCH [HDA Intel PCH], device 3: VT1708S Digital [VT1708S Digital]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia [HDA NVidia], device 3: HDMI 0 [HDMI 0]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia [HDA NVidia], device 7: HDMI 1 [HDMI 1]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia [HDA NVidia], device 8: HDMI 2 [HDMI 2]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
-card 1: NVidia [HDA NVidia], device 9: HDMI 3 [HDMI 3]
-  Subdevices: 1/1
-  Subdevice #0: subdevice #0
+Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
+---
+Changes for v2:
+ - fix to use device_property_read_u32()
 
-OK, a little bit unexpected that there is only one digital device
-listed rather than two. The codec datasheet says it should have two
-digital output widgets. Maybe it=E2=80=99s due to the integrated GPU being
-disabled though.
+ include/sound/da7219.h    |  2 ++
+ sound/soc/codecs/da7219.c | 19 +++++++++++++------
+ 2 files changed, 15 insertions(+), 6 deletions(-)
 
-$ aplay -L
-null
-    Discard all samples (playback) or generate zero samples (capture)
-default:CARD=3DPCH
-    HDA Intel PCH, VT1708S Analog
-    Default Audio Device
-sysdefault:CARD=3DPCH
-    HDA Intel PCH, VT1708S Analog
-    Default Audio Device
-front:CARD=3DPCH,DEV=3D0
-    HDA Intel PCH, VT1708S Analog
-    Front speakers
-surround21:CARD=3DPCH,DEV=3D0
-    HDA Intel PCH, VT1708S Analog
-    2.1 Surround output to Front and Subwoofer speakers
-surround40:CARD=3DPCH,DEV=3D0
-    HDA Intel PCH, VT1708S Analog
-    4.0 Surround output to Front and Rear speakers
-surround41:CARD=3DPCH,DEV=3D0
-    HDA Intel PCH, VT1708S Analog
-    4.1 Surround output to Front, Rear and Subwoofer speakers
-surround50:CARD=3DPCH,DEV=3D0
-    HDA Intel PCH, VT1708S Analog
-    5.0 Surround output to Front, Center and Rear speakers
-surround51:CARD=3DPCH,DEV=3D0
-    HDA Intel PCH, VT1708S Analog
-    5.1 Surround output to Front, Center, Rear and Subwoofer speakers
-surround71:CARD=3DPCH,DEV=3D0
-    HDA Intel PCH, VT1708S Analog
-    7.1 Surround output to Front, Center, Side, Rear and Woofer speakers
-hdmi:CARD=3DPCH,DEV=3D0
-    HDA Intel PCH, VT1708S Digital
-    HDMI Audio Output
-hdmi:CARD=3DNVidia,DEV=3D0
-    HDA NVidia, HDMI 0
-    HDMI Audio Output
-hdmi:CARD=3DNVidia,DEV=3D1
-    HDA NVidia, HDMI 1
-    HDMI Audio Output
-hdmi:CARD=3DNVidia,DEV=3D2
-    HDA NVidia, HDMI 2
-    HDMI Audio Output
-hdmi:CARD=3DNVidia,DEV=3D3
-    HDA NVidia, HDMI 3
-    HDMI Audio Output
-
-Why is this wrong? Because when I play to the =E2=80=9Chdmi=E2=80=9D PCM, a=
-t least with
-the S/PDIF switch turned on in mixer controls, the sound comes out the
-TOSLINK port! It seems that the PCM naming is wrong. This is all
-without any configuration file. Everything works fine, just the name is
-wrong.
-
-I don=E2=80=99t know whether turning off the S/PDIF switch results in the s=
-ound
-coming out the HDMI port instead; maybe it does (I don=E2=80=99t have anyth=
-ing
-that speaks HDMI and can also play sound to test with). Either way,
-seems like it should be called either =E2=80=9Cspdif=E2=80=9D (if it=E2=80=
-=99s only the TOSLINK
-port) or some combination of the two (if it=E2=80=99s both and switchable by
-the mixer switch).
-
-If replying, please note that I=E2=80=99m not subscribed.
-
-Thanks!
---=20
-Christopher Head
-
---Sig_//BW0u4Xbs02dKvLjjyriLZK
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQQl7biEw6IqP57fjDtLFNZko10+CwUCW1SlCgAKCRBLFNZko10+
-C7NLAQDqVAPEaYm1SYOdJ59zRtXg3VNrvyG5K2zUCemnoN6MUwD/Top3O1TvPYf7
-Ctbj005s2jFBkfR2UXt9LuOQTgIefA4=
-=zRbq
------END PGP SIGNATURE-----
-
---Sig_//BW0u4Xbs02dKvLjjyriLZK--
-
---===============0507087945181371962==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0507087945181371962==--
+diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+index 1bfcb16f2d10ab..16ab125ad4adbf 100644
+--- a/include/sound/da7219.h
++++ b/include/sound/da7219.h
+@@ -38,6 +38,8 @@ struct da7219_pdata {
+ 
+ 	const char *dai_clks_name;
+ 
++	u32 vddio;
++
+ 	/* Mic */
+ 	enum da7219_micbias_voltage micbias_lvl;
+ 	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 980a6a8bf56d38..9893920b26f41f 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -1634,6 +1634,9 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct snd_soc_component *compone
+ 	else
+ 		pdata->mic_amp_in_sel = DA7219_MIC_AMP_IN_SEL_DIFF;
+ 
++	if (device_property_read_u32(dev, "dlg,vddio", &of_val32) >= 0)
++		pdata->vddio = of_val32;
++
+ 	return pdata;
+ }
+ 
+@@ -1717,8 +1720,12 @@ static int da7219_handle_supplies(struct snd_soc_component *component)
+ 	/* Determine VDDIO voltage provided */
+ 	vddio = da7219->supplies[DA7219_SUPPLY_VDDIO].consumer;
+ 	ret = regulator_get_voltage(vddio);
++	/* If regulator_get_voltage() fails, try to use vddio from pdata. */
++	if (ret < 0 && da7219->pdata)
++		ret = da7219->pdata->vddio;
+ 	if (ret < 1200000)
+-		dev_warn(component->dev, "Invalid VDDIO voltage\n");
++		dev_warn(component->dev, "Invalid VDDIO voltage: %d mV\n",
++			 ret);
+ 	else if (ret < 2800000)
+ 		io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_1_2V_2_8V;
+ 
+@@ -1872,6 +1879,11 @@ static int da7219_probe(struct snd_soc_component *component)
+ 	mutex_init(&da7219->ctrl_lock);
+ 	mutex_init(&da7219->pll_lock);
+ 
++	/* Handle DT/ACPI/Platform data */
++	da7219->pdata = dev_get_platdata(component->dev);
++	if (!da7219->pdata)
++		da7219->pdata = da7219_fw_to_pdata(component);
++
+ 	/* Regulator configuration */
+ 	ret = da7219_handle_supplies(component);
+ 	if (ret)
+@@ -1897,11 +1909,6 @@ static int da7219_probe(struct snd_soc_component *component)
+ 		break;
+ 	}
+ 
+-	/* Handle DT/ACPI/Platform data */
+-	da7219->pdata = dev_get_platdata(component->dev);
+-	if (!da7219->pdata)
+-		da7219->pdata = da7219_fw_to_pdata(component);
+-
+ 	da7219_handle_pdata(component);
+ 
+ 	/* Check if MCLK provided */
+-- 
+2.18.0.233.g985f88cf7e-goog
