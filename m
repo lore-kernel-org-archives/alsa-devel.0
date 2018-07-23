@@ -1,38 +1,42 @@
-From: Yue Wang <yuleopen@gmail.com>
-Subject: [PATCH] alsa/usb-audio: Topping DX7s quirk for DSD interface
-Date: Mon, 23 Jul 2018 01:02:06 -0700
-Message-ID: <20180723080208.44235-1-yuleopen@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: yuleopen@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jussi Laako <jussi@sonarnerd.net>, Nobutaka Okabe <nob77413@gmail.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>, Daniel Mack <daniel@zonque.org>, Ruslan Bilovol <ruslan.bilovol@gmail.com>, Alberto Aguirre <albaguirre@gmail.com>, alsa-devel@alsa-project.org
+From: Jussi Laako <jussi@sonarnerd.net>
+Subject: Re: [PATCH] alsa/usb-audio: Topping DX7s quirk for DSD
+	interface
+Date: Mon, 23 Jul 2018 11:26:41 +0300
+Message-ID: <133b10a8-95d0-7882-39dc-c3cf8f80aaab@sonarnerd.net>
+References: <20180723080208.44235-1-yuleopen@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41B7F2676CB
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 10:26:41 +0200 (CEST)
+In-Reply-To: <20180723080208.44235-1-yuleopen@gmail.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Yue Wang <yuleopen@gmail.com>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Nobutaka Okabe <nob77413@gmail.com>, Takashi Iwai <tiwai@suse.com>, Alberto Aguirre <albaguirre@gmail.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>, Ruslan Bilovol <ruslan.bilovol@gmail.com>, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds the support for native DSD for Topping DX7s DAC. The
-product description is on
-http://en.tpdz.net/products_detail/productId=32.html and it's
-available on https://www.amazon.com/Balanced-Headphone-Amplifier-Topping-2ES9038Q2M/dp/B07B4VFS21
+Hi,
 
-The DAC uses XMOS chip but uses a special vendor id and product id.
-The patch will enable the SNDRV_PCM_FMTBIT_DSD_U32_BE bit for the DAC
-hence enable native DSD playback up to DSD512 format.
+> +	case USB_ID(0x152a, 0x8750): /* Topping DX7s */
+0x152a is Thesycon's VID and if it's based on XMOS I'd recommend to try 
+adding the 0x152a VID to the generic DSD capability auto-detect list 
+instead of this old device specific list.
 
-Signed-off-by: Yue Wang <yuleopen@gmail.com>
----
- sound/usb/quirks.c | 1 +
- 1 file changed, 1 insertion(+)
+I consider it very likely that it would work that way and at the same 
+time also cover all other devices with the same firmware and Thesycon's VID.
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 02b6cc02767f..c51e2dee3075 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1374,6 +1374,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 		break;
- 
- 	case USB_ID(0x0d8c, 0x0316): /* Hegel HD12 DSD */
-+	case USB_ID(0x152a, 0x8750): /* Topping DX7s */
- 	case USB_ID(0x16b0, 0x06b2): /* NuPrime DAC-10 */
- 	case USB_ID(0x16d0, 0x0733): /* Furutech ADL Stratos */
- 	case USB_ID(0x16d0, 0x09db): /* NuPrime Audio DAC-9 */
--- 
-2.18.0
+
+Best regards,
+
+	- Jussi
