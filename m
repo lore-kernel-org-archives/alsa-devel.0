@@ -1,82 +1,65 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip-i2s: add description for px30"
-	to the asoc tree
-Date: Mon, 23 Jul 2018 20:11:07 +0100 (BST)
-Message-ID: <20180723191107.662AB112387B@debutante.sirena.org.uk>
+From: Alex Deucher <alexdeucher@gmail.com>
+Subject: Re: [PATCH 0/4] drm_audio_component support for AMD/ATI HDMI codecs
+Date: Mon, 23 Jul 2018 16:53:08 -0400
+Message-ID: <CADnq5_MJf-+Xp5177oTf1M2z1ytrGXM1CYG_fyoh7+WQ5bPAPQ@mail.gmail.com>
+References: <20180723145030.25133-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B48B1267637
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 21:11:08 +0200 (CEST)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liang Chen <cl@rock-chips.com>
-Cc: Rob Herring <robh@kernel.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20180723145030.25133-1-tiwai@suse.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Maling list - DRI developers <dri-devel@lists.freedesktop.org>, amd-gfx list <amd-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: rockchip-i2s: add description for px30
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 2f562a4739602d96928de0b040ce46b00d8d3adc Mon Sep 17 00:00:00 2001
-From: Liang Chen <cl@rock-chips.com>
-Date: Mon, 23 Jul 2018 17:25:21 +0800
-Subject: [PATCH] ASoC: rockchip-i2s: add description for px30
-
-Add "rockchip,px30-i2s", "rockchip,rk3066-i2s" for i2s on px30 platform.
-
-Acked-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Liang Chen <cl@rock-chips.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- Documentation/devicetree/bindings/sound/rockchip-i2s.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-index b208a752576c..54aefab71f2c 100644
---- a/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/rockchip-i2s.txt
-@@ -7,6 +7,7 @@ Required properties:
- 
- - compatible: should be one of the following:
-    - "rockchip,rk3066-i2s": for rk3066
-+   - "rockchip,px30-i2s", "rockchip,rk3066-i2s": for px30
-    - "rockchip,rk3036-i2s", "rockchip,rk3066-i2s": for rk3036
-    - "rockchip,rk3188-i2s", "rockchip,rk3066-i2s": for rk3188
-    - "rockchip,rk3228-i2s", "rockchip,rk3066-i2s": for rk3228
--- 
-2.18.0
+T24gTW9uLCBKdWwgMjMsIDIwMTggYXQgMTA6NTAgQU0sIFRha2FzaGkgSXdhaSA8dGl3YWlAc3Vz
+ZS5kZT4gd3JvdGU6Cj4gSGksCj4KPiB0aGlzIGlzIGEgcGF0Y2ggc2V0IHRvIGFkZCB0aGUgc3Vw
+cG9ydCBvZiBkcm1fYXVkaW9fY29tcG9uZW50IGZvcgo+IEFNRC9BVEkgSERNSSBjb2RlY3MuICBX
+aXRoIHRoZSBkcm1fYXVkaW9fY29tcG9uZW50LCB0aGUgSERNSS9EUCBhdWRpbwo+IGhvdHBsdWcg
+YW5kIEVMRCByZWFkLW91dCBjYW4gYmUgYWNoaWV2ZWQgZGlyZWN0bHkgd2l0aG91dCB0aGUgaGFy
+ZHdhcmUKPiBhY2Nlc3MuICBUaGUgYmVzdCBwb2ludCBieSB0aGF0IGlzIHRoYXQgaXQgbWFrZXMg
+dGhlIGhvdHBsdWcKPiBub3RpZmljYXRpb24gd29ya2luZyBldmVuIGR1cmluZyBydW50aW1lIHN1
+c3BlbmQuCj4KPiBUaGUgc3VwcG9ydCBpcyB0b3RhbGx5IG9wdGlvbmFsIGFuZCBkeW5hbWljLCBo
+ZW5jZSBpdCBzdGlsbCB3b3JrcyBldmVuCj4gaWYgZWl0aGVyIEhELWF1ZGlvIG9yIERSTSBzaWRl
+IGlzbid0IHBhdGNoZWQsIGFuZCBpdCdsbCBmYWxsIGJhY2sgdG8KPiB0aGUgZXhpc3RpbmcgbWV0
+aG9kLgoKSSdtIHN0aWxsIGdldHRpbmcgbXkgaGVhZCBhcm91bmQgaG93IHRoZSBuZXcgY2FsbGJh
+Y2tzIHdvcmsgc28gYmVhcgp3aXRoIG1lLiAgSXQgc2VlbXMgbGlrZSB3ZSdkIHdhbnQgdG8gc2V0
+IHRoZSBFTEQgYW5kIHJlcG9ydCB3aGV0aGVyCnRoZSBkaXNwbGF5IGlzIGF0dGFjaGVkIGluIHdo
+ZW4gd2UgZGV0ZWN0IHRoZSBkaXNwbGF5cyBvciBmZXRjaCB0aGUKRURJRCByYXRoZXIgdGhhbiBh
+dCBtb2Rlc2V0IHRpbWUgd2hlbiB3ZSBlbmFibGUgdGhlIGF1ZGlvIHN0cmVhbS4KCkFsZXgKCgo+
+Cj4gVGhlIGN1cnJlbnQgcGF0Y2ggc3VwcG9ydHMgb25seSByYWRlb24gYW5kIGEgcGFydCBvZiBh
+bWRncHU7IHRoZSBEQwo+IHN1cHBvcnQgaXNuJ3QgaW5jbHVkZWQgeWV0Lgo+Cj4KPiBUYWthc2hp
+Cj4KPiA9PT0KPgo+IFRha2FzaGkgSXdhaSAoNCk6Cj4gICBBTFNBOiBoZGEvaGRtaTogVXNlIHNp
+bmdsZSBtdXRleCB1bmxvY2sgaW4gZXJyb3IgcGF0aHMKPiAgIEFMU0E6IGhkYS9oZG1pOiBBbGxv
+dyBhdWRpbyBjb21wb25lbnQgZm9yIEFNRC9BVEkgSERNSQo+ICAgZHJtL3JhZGVvbjogQWRkIGF1
+ZGlvIGNvbXBvbmVudCBzdXBwb3J0Cj4gICBkcm0vYW1kZ3B1OiBBZGQgYXVkaW8gY29tcG9uZW50
+IHN1cHBvcnQKPgo+ICBkcml2ZXJzL2dwdS9kcm0vS2NvbmZpZyAgICAgICAgICAgICAgICAgICB8
+ICAgMiArCj4gIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L01ha2VmaWxlICAgICAgIHwgICAy
+ICstCj4gIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdS5oICAgICAgIHwgICA0ICsK
+PiAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2F1ZGlvLmMgfCAgOTcgKysrKysr
+KysrKwo+ICBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfbW9kZS5oICB8ICAgMyAr
+Cj4gIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2RjZV92MTBfMC5jICAgIHwgICA2ICsKPiAg
+ZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvZGNlX3YxMV8wLmMgICAgfCAgIDYgKwo+ICBkcml2
+ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9kY2VfdjZfMC5jICAgICB8ICAgNiArCj4gIGRyaXZlcnMv
+Z3B1L2RybS9hbWQvYW1kZ3B1L2RjZV92OF8wLmMgICAgIHwgICA2ICsKPiAgZHJpdmVycy9ncHUv
+ZHJtL3JhZGVvbi9yYWRlb24uaCAgICAgICAgICAgfCAgIDMgKwo+ICBkcml2ZXJzL2dwdS9kcm0v
+cmFkZW9uL3JhZGVvbl9hdWRpby5jICAgICB8ICA3OSArKysrKysrKwo+ICBzb3VuZC9wY2kvaGRh
+L3BhdGNoX2hkbWkuYyAgICAgICAgICAgICAgICB8IDIwOSArKysrKysrKysrKysrKysrKy0tLS0t
+Cj4gIDEyIGZpbGVzIGNoYW5nZWQsIDM3NCBpbnNlcnRpb25zKCspLCA0OSBkZWxldGlvbnMoLSkK
+PiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdwdV9h
+dWRpby5jCj4KPiAtLQo+IDIuMTguMAo+Cj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KPiBhbWQtZ2Z4IG1haWxpbmcgbGlzdAo+IGFtZC1nZnhAbGlzdHMu
+ZnJlZWRlc2t0b3Aub3JnCj4gaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9s
+aXN0aW5mby9hbWQtZ2Z4Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fCmRyaS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9w
+Lm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1k
+ZXZlbAo=
