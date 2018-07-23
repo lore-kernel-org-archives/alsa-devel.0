@@ -1,37 +1,36 @@
-From: Yue Wang <yuleopen@gmail.com>
-Subject: [PATCH] alsa/usb-audio: Generic DSD detection for Thesycon-based implementations
-Date: Mon, 23 Jul 2018 01:56:46 -0700
-Message-ID: <20180723085647.49537-1-yuleopen@gmail.com>
+From: <cl@rock-chips.com>
+Subject: [PATCH v2 1/6] dt-bindings: usb: dwc2: add description for px30
+Date: Mon, 23 Jul 2018 17:25:19 +0800
+Message-ID: <1532337924-4185-2-git-send-email-cl@rock-chips.com>
+References: <1532337924-4185-1-git-send-email-cl@rock-chips.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1532337924-4185-1-git-send-email-cl@rock-chips.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: yuleopen@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jussi Laako <jussi@sonarnerd.net>, Nobutaka Okabe <nob77413@gmail.com>, Kai-Heng Feng <kai.heng.feng@canonical.com>, Daniel Mack <daniel@zonque.org>, Ruslan Bilovol <ruslan.bilovol@gmail.com>, Alberto Aguirre <albaguirre@gmail.com>, alsa-devel@alsa-project.org
+To: heiko@sntech.de
+Cc: robh+dt@kernel.org, mark.rutland@arm.com, klaus.goger@theobroma-systems.com, hjc@rock-chips.com, jagan@amarulasolutions.com, djw@t-chip.com.cn, jacob-chen@iotwrt.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, frank.wang@rock-chips.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, catalin.marinas@arm.com, will.deacon@arm.com, yamada.masahiro@socionext.com, arnd@arndb.de, zhangqing@rock-chips.com, shawn.lin@rock-chips.com, kever.yang@rock-chips.com, david.wu@rock-chips.com, huangtao@rock-chips.com, tony.xie@rock-chips.com, sugar.zhang@rock-chips.com, huibin.hong@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
-Thesycon provides solutions to XMOS chips, and has its own device vendor id.
+From: Liang Chen <cl@rock-chips.com>
 
-In this patch, we use generic method to detect DSD capability of Thesycon-based UAC2
-implementations in order to support a wide range of current and future devices.
+This patch adds the compatible of dwc2 for PX30 SoCs.
 
-The patch will enable the SNDRV_PCM_FMTBIT_DSD_U32_BE bit for the DAC
-hence enable native DSD playback up to DSD512 format.
-
-Signed-off-by: Yue Wang <yuleopen@gmail.com>
+Acked-by: Rob Herring <robh@kernel.org>
+Signed-off-by: Liang Chen <cl@rock-chips.com>
 ---
- sound/usb/quirks.c | 1 +
+ Documentation/devicetree/bindings/usb/dwc2.txt | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 02b6cc02767f..06ae3f5adf4b 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1443,6 +1443,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 	 */
- 	switch (USB_ID_VENDOR(chip->usb_id)) {
- 	case 0x20b1:  /* XMOS based devices */
-+	case 0x152a:  /* Thesycon devices */
- 	case 0x25ce:  /* Mytek devices */
- 		if (fp->dsd_raw)
- 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+diff --git a/Documentation/devicetree/bindings/usb/dwc2.txt b/Documentation/devicetree/bindings/usb/dwc2.txt
+index 46da5f1..6dc3c4a 100644
+--- a/Documentation/devicetree/bindings/usb/dwc2.txt
++++ b/Documentation/devicetree/bindings/usb/dwc2.txt
+@@ -6,6 +6,7 @@ Required properties:
+   - brcm,bcm2835-usb: The DWC2 USB controller instance in the BCM2835 SoC.
+   - hisilicon,hi6220-usb: The DWC2 USB controller instance in the hi6220 SoC.
+   - rockchip,rk3066-usb: The DWC2 USB controller instance in the rk3066 Soc;
++  - "rockchip,px30-usb", "rockchip,rk3066-usb", "snps,dwc2": for px30 Soc;
+   - "rockchip,rk3188-usb", "rockchip,rk3066-usb", "snps,dwc2": for rk3188 Soc;
+   - "rockchip,rk3288-usb", "rockchip,rk3066-usb", "snps,dwc2": for rk3288 Soc;
+   - "lantiq,arx100-usb": The DWC2 USB controller instance in Lantiq ARX SoCs;
 -- 
-2.18.0
+1.9.1
