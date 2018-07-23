@@ -1,22 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: tegra: probe deferral error
-	reporting
-Date: Mon, 23 Jul 2018 11:25:28 +0100
-Message-ID: <20180723102528.GA13981@sirena.org.uk>
-References: <20180720080424.31505-1-marcel@ziswiler.com>
- <20180720080424.31505-2-marcel@ziswiler.com>
- <20180720121612.GC10784@sirena.org.uk>
- <1532089865.19673.13.camel@toradex.com>
- <20180721095615.GG16228@sirena.org.uk>
- <1532167581.19673.21.camel@toradex.com>
+From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Subject: [RESEND][PATCH] ASoC: Intel: Power down links before
+	turning off display audio power
+Date: Mon, 23 Jul 2018 18:32:11 +0530
+Message-ID: <1532350931-7324-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6362421475197353317=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D4A9326733D
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 12:25:31 +0200 (CEST)
-In-Reply-To: <1532167581.19673.21.camel@toradex.com>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAB77267786
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 15:06:49 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,61 +19,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "jonathanh@nvidia.com" <jonathanh@nvidia.com>
+To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On certain platforms, Display HDMI HDA codec was not going to sleep state
+after the use when links are powered down after turning off the display
+power. As per the HW recommendation, links are powered down before turning
+off the display power to ensure that the codec goes to sleep state.
 
---===============6362421475197353317==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4Ckj6UjgE2iN1+kY"
-Content-Disposition: inline
+Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+---
+ sound/soc/codecs/hdac_hdmi.c  | 12 +++++-------
+ sound/soc/intel/skylake/skl.c | 11 ++++++-----
+ 2 files changed, 11 insertions(+), 12 deletions(-)
 
-
---4Ckj6UjgE2iN1+kY
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Jul 21, 2018 at 10:06:23AM +0000, Marcel Ziswiler wrote:
-> On Sat, 2018-07-21 at 10:56 +0100, Mark Brown wrote:
-
-> > > > > -		dev_err(&pdev->dev, "no codec-sync GPIO
-> > > > > supplied\n");
-> > > > > +		ret = ac97->sync_gpio;
-
-> And here I assign ret with that return value from of_get_named_gpio(),
-> right?
-
-> > It's not in any way involved in setting the value of ret, whatever
-> > value
-> > that has it's nothing to do with that operation.
-
-> I really do not understand what you are trying to get at, sorry.
-
-Didn't see the above assignment you'd added, sorry.
-
---4Ckj6UjgE2iN1+kY
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltVrRcACgkQJNaLcl1U
-h9BPnAf/X7WpWwT+ycthPvj/M4GzQ9pY0c+5oUCBO66OIRz5TjmLDck3P0oSGlwM
-tquV26H2D8YwAjE2QUE9QWH4rMmvObuf+yKEUuBhknCe4Uyk3Jcm3+A+BMtVZQ9d
-9GPCyvwG/MeT2YukiJOlsh7TmVgU5qiPNJc2Gb40zeMJf0TxpEHLMut1vU0rqD5i
-lwrqnD/iep0GhLrZAPIQ8b+kVBT7kQmrzkHf+YuVCmWqcsvPy7lEIfAYuI+OaNuw
-SoF1Yu5t+gMwVgYhxpR/Ta1PHZqapX5yjpWmDtm31052akyXiDXQ0+9p/OOTSO8K
-pxH071GVUcHGZPQ5Id9IFfaP4CnAew==
-=DxoV
------END PGP SIGNATURE-----
-
---4Ckj6UjgE2iN1+kY--
-
---===============6362421475197353317==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6362421475197353317==--
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 0cdceca2b216..c98c4c2babc9 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -2235,12 +2235,6 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 	 */
+ 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
+ 							AC_PWRST_D3);
+-	err = snd_hdac_display_power(bus, false);
+-	if (err < 0) {
+-		dev_err(bus->dev, "Cannot turn on display power on i915\n");
+-		return err;
+-	}
+-
+ 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
+ 	if (!hlink) {
+ 		dev_err(dev, "hdac link not found\n");
+@@ -2249,7 +2243,11 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
+ 
+ 	snd_hdac_ext_bus_link_put(ebus, hlink);
+ 
+-	return 0;
++	err = snd_hdac_display_power(bus, false);
++	if (err < 0)
++		dev_err(bus->dev, "Cannot turn off display power on i915\n");
++
++	return err;
+ }
+ 
+ static int hdac_hdmi_runtime_resume(struct device *dev)
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index 670ff9aaca55..c62e474717ff 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -762,6 +762,12 @@ static void skl_probe_work(struct work_struct *work)
+ 		}
+ 	}
+ 
++	/*
++	 * we are done probing so decrement link counts
++	 */
++	list_for_each_entry(hlink, &ebus->hlink_list, list)
++		snd_hdac_ext_bus_link_put(ebus, hlink);
++
+ 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
+ 		err = snd_hdac_display_power(bus, false);
+ 		if (err < 0) {
+@@ -771,11 +777,6 @@ static void skl_probe_work(struct work_struct *work)
+ 		}
+ 	}
+ 
+-	/*
+-	 * we are done probing so decrement link counts
+-	 */
+-	list_for_each_entry(hlink, &ebus->hlink_list, list)
+-		snd_hdac_ext_bus_link_put(ebus, hlink);
+ 
+ 	/* configure PM */
+ 	pm_runtime_put_noidle(bus->dev);
+-- 
+2.7.4
