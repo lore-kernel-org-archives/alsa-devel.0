@@ -1,72 +1,77 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 03/11] ASoC: SOF: Add driver debug support.
-Date: Mon, 23 Jul 2018 20:03:23 +0100
-Message-ID: <20180723190323.GK13981@sirena.org.uk>
-References: <20180719185335.30912-1-liam.r.girdwood@linux.intel.com>
- <20180719185335.30912-3-liam.r.girdwood@linux.intel.com>
+Subject: Re: [PATCH v2 3/6] dt-bindings: sound: rockchip-i2s: add description
+ for px30
+Date: Mon, 23 Jul 2018 20:10:08 +0100
+Message-ID: <20180723191008.GL13981@sirena.org.uk>
+References: <1532337924-4185-1-git-send-email-cl@rock-chips.com>
+ <1532337924-4185-4-git-send-email-cl@rock-chips.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1740394962015355806=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3593C2675FC
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 21:03:24 +0200 (CEST)
-In-Reply-To: <20180719185335.30912-3-liam.r.girdwood@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============3309507783022417474=="
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+In-Reply-To: <1532337924-4185-4-git-send-email-cl@rock-chips.com>
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+To: cl@rock-chips.com
+Cc: mark.rutland@arm.com, ulf.hansson@linaro.org, heiko@sntech.de, huibin.hong@rock-chips.com, catalin.marinas@arm.com, shawn.lin@rock-chips.com, will.deacon@arm.com, alsa-devel@alsa-project.org, hjc@rock-chips.com, yamada.masahiro@socionext.com, tony.xie@rock-chips.com, klaus.goger@theobroma-systems.com, sugar.zhang@rock-chips.com, linux-rockchip@lists.infradead.org, jacob-chen@iotwrt.com, jagan@amarulasolutions.com, huangtao@rock-chips.com, devicetree@vger.kernel.org, arnd@arndb.de, frank.wang@rock-chips.com, zhangqing@rock-chips.com, kever.yang@rock-chips.com, robh+dt@kernel.org, djw@t-chip.com.cn, sandy.huang@rock-chips.com, linux-arm-kernel@lists.infradead.org, gregkh@linuxfoundation.org, linux-mmc@vger.kernel.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, david.wu@rock-chips.com, william.wu@rock-chips.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1740394962015355806==
+--===============3309507783022417474==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ed/6oDxOLijJh8b0"
+	protocol="application/pgp-signature"; boundary="OX2aLCKeO1apYW07"
 Content-Disposition: inline
 
 
---ed/6oDxOLijJh8b0
+--OX2aLCKeO1apYW07
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Jul 19, 2018 at 07:53:27PM +0100, Liam Girdwood wrote:
+On Mon, Jul 23, 2018 at 05:25:21PM +0800, cl@rock-chips.com wrote:
+> From: Liang Chen <cl@rock-chips.com>
+>=20
+> Add "rockchip,px30-i2s", "rockchip,rk3066-i2s" for i2s on px30 platform.
 
-> +	/* copy from DSP MMIO */
-> +	pm_runtime_get(sdev->dev);
-> +	memcpy_fromio(buf,  dfse->buf + pos, size);
-> +	pm_runtime_put(sdev->dev);
+Please submit patches using subject lines reflecting the style for the
+subsystem.  This makes it easier for people to identify relevant
+patches.  Look at what existing commits in the area you're changing are
+doing and make sure your subject lines visually resemble what they're
+doing.
 
-Doesn't this need to be a _get_sync()?
-
---ed/6oDxOLijJh8b0
+--OX2aLCKeO1apYW07
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltWJnoACgkQJNaLcl1U
-h9C6CQf7BRREO9XXGQhcUGNMPwQEMK7/5yEsqQU6R8bYbATEApBoM7IH/q8vTPBq
-6Ko151Zyeve+sA0CuYjh7WuPnyq6BKswmDHFPdHyPc2rWoCUBPt8WzBZjgfE0r0v
-QGHxJQiFq9acxNsVio1Hs3/TOx+6DNbDGF+anjOvG1xF+48Dzzzu74F4NdXmzLum
-DWntpqHQorqA/8OL6iDupIk2Akptp+YfyIrlzUqYJ7/MDK8mTnE0TFXsE/il9eqT
-49Mw1ya5QkYN7Ife42MV88Q4e53Opk4jHI2TQuCyhMqeD2uQy0z8gOFzKj52R05B
-CiEHx+PB0iaFRNlmo9GqJFqV9gokvA==
-=UwzJ
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltWKA8ACgkQJNaLcl1U
+h9BhLgf/Y0UU7Id4l6ICoIlmMMIaggZlIIZfIWDu4AXODkAXnewyj9blyVs+cdVm
+u5Frz8gAdH51Jm7o3t+JKQcHdl5yYEGi9Yf8Ob3KhbgpuBma3jUY6krtczVDaGdN
+r1QkRRCEmAw0Bxl6olyHG8sq4gFcp1Ixo1/WydCWG4vGr1ryZmsFjZDw1j9N10nJ
+9oHwx3ZqaRUiJAFttkrhSxrYlAK11KHfFjb2Luj6c7tnNATE69+kXkKSlRv/6Y+v
+PM3VEPiSGV7yIDYu6qCnzobhCG+MbkxF8Th5dEu2CjAxdtm7bZfe6kLcuPcBmY64
+WxWcdNYvUCqwYV1EpA4OzaR4zYnYPg==
+=Am74
 -----END PGP SIGNATURE-----
 
---ed/6oDxOLijJh8b0--
+--OX2aLCKeO1apYW07--
 
---===============1740394962015355806==
+
+--===============3309507783022417474==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
+_______________________________________________
+linux-arm-kernel mailing list
+linux-arm-kernel@lists.infradead.org
+http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
 
---===============1740394962015355806==--
+--===============3309507783022417474==--
