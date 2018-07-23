@@ -1,21 +1,20 @@
-From: Sanyog Kale <sanyog.r.kale@intel.com>
-Subject: Re: [PATCH v6 07/10] soundwire: keep track of Masters
- in a stream
-Date: Mon, 23 Jul 2018 09:30:42 +0530
-Message-ID: <20180723040042.GB20770@buildpc-HP-Z230>
-References: <20180716184713.13356-1-sanyog.r.kale@intel.com>
- <20180716184713.13356-8-sanyog.r.kale@intel.com>
- <4a8e46a4-4010-aa70-a3d4-5c5d3faf5245@linux.intel.com>
- <20180720044317.GP3219@vkoul-mobl>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH] ASoC: AMD: Add a fix voltage regulator for
+ DA7219 and ADAU7002
+Date: Mon, 23 Jul 2018 10:56:44 +0530
+Message-ID: <50343cff-bad4-7677-851f-f0b818ae7b29@amd.com>
+References: <1532068715-2992-1-git-send-email-akshu.agrawal@amd.com>
+ <20180720121816.GD10784@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 808F126763C
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 05:59:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180720044317.GP3219@vkoul-mobl>
+Received: from NAM04-BN3-obe.outbound.protection.outlook.com
+ (mail-eopbgr680051.outbound.protection.outlook.com [40.107.68.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id E09DA26763C
+ for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 07:27:12 +0200 (CEST)
+In-Reply-To: <20180720121816.GD10784@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,39 +24,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod <vkoul@kernel.org>
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, shreyas.nc@intel.com
+To: Mark Brown <broonie@kernel.org>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda,
+ Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com, Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Jul 20, 2018 at 10:13:17AM +0530, Vinod wrote:
-> On 19-07-18, 10:06, Pierre-Louis Bossart wrote:
-> > On 7/16/18 1:47 PM, Sanyog Kale wrote:
-> > > From: Shreyas NC <shreyas.nc@intel.com>
-> > > 
-> > > A multi link bankswitch can be done if the hardware supports and
-> > > the stream is handled by multiple Master(s).
-> > > 
-> > > This preparatory patch adds support to track m_rt in a stream.
-> > 
-> > The order of the patches seems off, you are adding the definition of
-> > m_rt_count in patch 7 but using it in patch 6, that'll break git bisect.
-> > What am i missing?
-> > 
-> > It'd also make more sense to have the reference counts in the same patch,
-> > it's hard to track otherwise, so maybe one patch to add the definitions and
-> > inits and the second to increase/decrease+use the value as needed.
-> 
-> Also it would help to have fixes first, so they go in and the bigger
-> changes later. That is how a series should be built typically.
->
 
-Ok. Will take care in next update.
 
-> -- 
-> ~Vinod
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+On 7/20/2018 5:48 PM, Mark Brown wrote:
+> On Fri, Jul 20, 2018 at 02:38:11PM +0800, Akshu Agrawal wrote:
+> =
 
--- 
+>>  static int cz_probe(struct platform_device *pdev)
+>>  {
+>>  	int ret;
+>>  	struct snd_soc_card *card;
+>>  	struct acp_platform_info *machine;
+>> +	static bool regulators_registered;
+>> +
+>> +	if (!regulators_registered) {
+>> +		ret =3D platform_device_register(&acp_da7219_regulator);
+>> +		if (ret) {
+>> +			dev_err(&pdev->dev, "Failed to register regulator: %d\n",
+>> +				ret);
+>> +			return ret;
+>> +		}
+>> +		regulators_registered =3D true;
+>> +	}
+> =
+
+> You should be unregistering the regulator in your remove function, not
+> doing this hack here.  I'd also expect to see the card made the parent
+> of the device that gets registered.
+> =
+
+
+This approach shows inconsistencies and in some boot cycles da7219 fails
+to get regulator. Form the logs (below) it shows time gap between the
+time we call =93platform_device_register(&acp_da7219_regulator);=94 and when
+the regulator actually gets registered.
+
+[   12.594237] regulator registered
+**print after calling =93platform_device_register(&acp_da7219_regulator);=
+=94
+...
+[   13.583689] da7219 i2c-DLGS7219:00: i2c-DLGS7219:00 supply VDD not
+found, using dummy regulator
+[   13.593818] da7219 i2c-DLGS7219:00: i2c-DLGS7219:00 supply VDDMIC not
+found, using dummy regulator
+[   13.603242] da7219 i2c-DLGS7219:00: i2c-DLGS7219:00 supply VDDIO not
+found, using dummy regulator
+[   13.612626] da7219 i2c-DLGS7219:00: Invalid VDDIO voltage
+**Above DA7219 gets probed and does not find the regulator**
+...
+[   13.750894] reg_fixed_voltage_probe: Supply -> reg-fixed-1.8V
+[   13.766746] reg-fixed-1.8V supplying 1800000uV
+**Regulator actually gets registered**
+
+Alternate and consistent approach to this is pushed by Daniel here:
+https://patchwork.kernel.org/patch/10539485/
+
+Thanks,
+Akshu
