@@ -1,87 +1,316 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 00/12] mfd: Add support to WCD9335 Audio Codec
-Date: Mon, 23 Jul 2018 16:53:58 +0100
-Message-ID: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 03/12] mfd: wcd9335: add wcd irq support
+Date: Mon, 23 Jul 2018 16:54:01 +0100
+Message-ID: <20180723155410.9494-4-srinivas.kandagatla@linaro.org>
+References: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
 Cc: mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC.
-It is integrated in multiple Qualcomm SoCs like: MSM8996, MSM8976,
-and MSM8956 chipsets.
+WCD9335 supports two lines of irqs INTR1 and INTR2.
+Mutiple interrupts are muxed via these lines.
+INTR1 consists of all possible interrupt sources like:
+Ear OCP, HPH OCP, MBHC, MAD, VBAT, and SVA
+INTR2 is a subset of first interrupt sources like MAD, VBAT, and SVA
 
-WCD9335 had multiple functional blocks, like: Soundwire controller,
-interrupt mux, pin controller, Audio codec, MBHC, MAD(Mic activity Detection),
-Ultrasonic proximity and pen detection, Battery-voltage monitoring and
-Codec processing engine.
-
-Currently this patchset has been only tested with SLIMbus interface due
-to hardware avaiablity, but it can be easily made to work with both SLIMbus
-and I2C/I2S.    
-
-This patchset adds very basic playback and capture support witout much
-fancy features. New features will be added once the basic support is in.
-This patchset is tested on top of linux-next on DB820c for both playback
-and capture paths.
-
-This patchset also depends on the SLIMbus Stream apis which is already merged
-via char-misc tree for 4.19.
-
-Some parts of the code has been inherited from Qualcomm andriod kernel,
-so credits to various authors.
-
-WCD9335 can be interfaced via I2S/I2C or SLIMbus. 
-
-Here is my test branch incase someone want to try this out:
-https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=wcd9335
-
-Thanks,
-Srini
-
-Srinivas Kandagatla (12):
-  mfd: dt-bindings: Add wcd9335 mfd bindings
-  mfd: wcd9335: add support to wcd9335 core
-  mfd: wcd9335: add wcd irq support
-  ASoC: dt-bindings: add dt bindings for wcd9335 audio codec
-  ASoC: core: add support to snd_soc_dai_get_channel_map()
-  ASoC: wcd9335: add support to wcd9335 codec
-  ASoC: wcd9335: add CLASS-H Controller support
-  ASoC: wcd9335: add basic controls
-  ASoC: wcd9335: add playback dapm widgets
-  ASoC: wcd9335: add capture dapm widgets
-  ASoC: wcd9335: add audio routings
-  ASoC: apq8096: Add support to Analog audio via WCD9335 slim
-
- .../devicetree/bindings/mfd/qcom,wcd9335.txt       |  130 +
- .../devicetree/bindings/sound/qcom,wcd9335.txt     |   21 +
- drivers/mfd/Kconfig                                |   18 +
- drivers/mfd/Makefile                               |    4 +
- drivers/mfd/wcd9335-core.c                         |  278 ++
- drivers/mfd/wcd9335-irq.c                          |  172 +
- include/dt-bindings/mfd/wcd9335.h                  |   43 +
- include/linux/mfd/wcd9335/registers.h              |  580 +++
- include/linux/mfd/wcd9335/wcd9335.h                |   43 +
- include/sound/soc-dai.h                            |    8 +
- sound/soc/codecs/Kconfig                           |    5 +
- sound/soc/codecs/Makefile                          |    2 +
- sound/soc/codecs/wcd-clsh.c                        | 1010 ++++
- sound/soc/codecs/wcd-clsh.h                        |   69 +
- sound/soc/codecs/wcd9335.c                         | 4981 ++++++++++++++++++++
- sound/soc/qcom/apq8096.c                           |   68 +
- sound/soc/soc-core.c                               |   22 +
- 17 files changed, 7454 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/qcom,wcd9335.txt
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
- create mode 100644 drivers/mfd/wcd9335-core.c
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ drivers/mfd/Makefile                |   2 +-
+ drivers/mfd/wcd9335-core.c          |   9 ++
+ drivers/mfd/wcd9335-irq.c           | 172 ++++++++++++++++++++++++++++++++++++
+ include/dt-bindings/mfd/wcd9335.h   |  43 +++++++++
+ include/linux/mfd/wcd9335/wcd9335.h |   3 +
+ 5 files changed, 228 insertions(+), 1 deletion(-)
  create mode 100644 drivers/mfd/wcd9335-irq.c
  create mode 100644 include/dt-bindings/mfd/wcd9335.h
- create mode 100644 include/linux/mfd/wcd9335/registers.h
- create mode 100644 include/linux/mfd/wcd9335/wcd9335.h
- create mode 100644 sound/soc/codecs/wcd-clsh.c
- create mode 100644 sound/soc/codecs/wcd-clsh.h
- create mode 100644 sound/soc/codecs/wcd9335.c
 
+diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+index a4697370640b..210875afe78a 100644
+--- a/drivers/mfd/Makefile
++++ b/drivers/mfd/Makefile
+@@ -58,7 +58,7 @@ obj-$(CONFIG_MFD_ARIZONA)	+= cs47l24-tables.o
+ endif
+ 
+ obj-$(CONFIG_MFD_WCD9335)	+= wcd9335.o
+-wcd9335-objs			:= wcd9335-core.o
++wcd9335-objs			:= wcd9335-core.o wcd9335-irq.o
+ 
+ obj-$(CONFIG_MFD_WM8400)	+= wm8400-core.o
+ wm831x-objs			:= wm831x-core.o wm831x-irq.o wm831x-otp.o
+diff --git a/drivers/mfd/wcd9335-core.c b/drivers/mfd/wcd9335-core.c
+index ccdd27c3a351..7d478d87e16f 100644
+--- a/drivers/mfd/wcd9335-core.c
++++ b/drivers/mfd/wcd9335-core.c
+@@ -244,12 +244,20 @@ static int wcd9335_slim_status(struct slim_device *sdev,
+ 		return ret;
+ 	}
+ 
++	wcd9335_irq_init(wcd);
+ 	wcd->slim_ifd = wcd->slim_ifd;
+ 
+ 	return mfd_add_devices(wcd->dev, 0, wcd9335_devices,
+ 			       ARRAY_SIZE(wcd9335_devices), NULL, 0, NULL);
+ }
+ 
++static void wcd9335_slim_remove(struct slim_device *sdev)
++{
++	struct wcd9335 *wcd = dev_get_drvdata(&sdev->dev);
++
++	wcd9335_irq_exit(wcd);
++}
++
+ static const struct slim_device_id wcd9335_slim_id[] = {
+ 	{0x217, 0x1a0, 0x1, 0x0},
+ 	{}
+@@ -260,6 +268,7 @@ static struct slim_driver wcd9335_slim_driver = {
+ 		.name = "wcd9335-slim",
+ 	},
+ 	.probe = wcd9335_slim_probe,
++	.remove = wcd9335_slim_remove,
+ 	.device_status = wcd9335_slim_status,
+ 	.id_table = wcd9335_slim_id,
+ };
+diff --git a/drivers/mfd/wcd9335-irq.c b/drivers/mfd/wcd9335-irq.c
+new file mode 100644
+index 000000000000..84098c89419b
+--- /dev/null
++++ b/drivers/mfd/wcd9335-irq.c
+@@ -0,0 +1,172 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2018, Linaro Limited
++//
++#include <linux/gpio.h>
++#include <linux/interrupt.h>
++#include <linux/regmap.h>
++#include <linux/of_irq.h>
++#include <dt-bindings/mfd/wcd9335.h>
++#include <linux/mfd/wcd9335/wcd9335.h>
++#include <linux/mfd/wcd9335/registers.h>
++
++static const struct regmap_irq wcd9335_irqs[] = {
++	/* INTR_REG 0 */
++	[WCD9335_IRQ_SLIMBUS] = {
++		.reg_offset = 0,
++		.mask = BIT(0),
++	},
++	[WCD9335_IRQ_FLL_LOCK_LOSS] = {
++		.reg_offset = 0,
++		.mask = BIT(1),
++	},
++	[WCD9335_IRQ_HPH_PA_OCPL_FAULT] = {
++		.reg_offset = 0,
++		.mask = BIT(2),
++	},
++	[WCD9335_IRQ_HPH_PA_OCPR_FAULT] = {
++		.reg_offset = 0,
++		.mask = BIT(3),
++	},
++	[WCD9335_IRQ_EAR_PA_OCP_FAULT] = {
++		.reg_offset = 0,
++		.mask = BIT(4),
++	},
++	[WCD9335_IRQ_HPH_PA_CNPL_COMPLETE] = {
++		.reg_offset = 0,
++		.mask = BIT(5),
++	},
++	[WCD9335_IRQ_HPH_PA_CNPR_COMPLETE] = {
++		.reg_offset = 0,
++		.mask = BIT(6),
++	},
++	[WCD9335_IRQ_EAR_PA_CNP_COMPLETE] = {
++		.reg_offset = 0,
++		.mask = BIT(7),
++	},
++	/* INTR_REG 1 */
++	[WCD9335_IRQ_MBHC_SW_DET] = {
++		.reg_offset = 1,
++		.mask = BIT(0),
++	},
++	[WCD9335_IRQ_MBHC_ELECT_INS_REM_DET] = {
++		.reg_offset = 1,
++		.mask = BIT(1),
++	},
++	[WCD9335_IRQ_MBHC_BUTTON_PRESS_DET] = {
++		.reg_offset = 1,
++		.mask = BIT(2),
++	},
++	[WCD9335_IRQ_MBHC_BUTTON_RELEASE_DET] = {
++		.reg_offset = 1,
++		.mask = BIT(3),
++	},
++	[WCD9335_IRQ_MBHC_ELECT_INS_REM_LEG_DET] = {
++		.reg_offset = 1,
++		.mask = BIT(4),
++	},
++	/* INTR_REG 2 */
++	[WCD9335_IRQ_LINE_PA1_CNP_COMPLETE] = {
++		.reg_offset = 2,
++		.mask = BIT(0),
++	},
++	[WCD9335_IRQ_LINE_PA2_CNP_COMPLETE] = {
++		.reg_offset = 2,
++		.mask = BIT(1),
++	},
++	[WCD9335_IRQ_LINE_PA3_CNP_COMPLETE] = {
++		.reg_offset = 2,
++		.mask = BIT(2),
++	},
++	[WCD9335_IRQ_LINE_PA4_CNP_COMPLETE] = {
++		.reg_offset = 2,
++		.mask = BIT(3),
++	},
++	[WCD9335_IRQ_SOUNDWIRE] = {
++		.reg_offset = 2,
++		.mask = BIT(4),
++	},
++	[WCD9335_IRQ_VDD_DIG_RAMP_COMPLETE] = {
++		.reg_offset = 2,
++		.mask = BIT(5),
++	},
++	[WCD9335_IRQ_RCO_ERROR] = {
++		.reg_offset = 2,
++		.mask = BIT(6),
++	},
++	[WCD9335_IRQ_SVA_ERROR] = {
++		.reg_offset = 2,
++		.mask = BIT(7),
++	},
++	/* INTR_REG 3 */
++	[WCD9335_IRQ_MAD_AUDIO] = {
++		.reg_offset = 3,
++		.mask = BIT(0),
++	},
++	[WCD9335_IRQ_MAD_BEACON] = {
++		.reg_offset = 3,
++		.mask = BIT(1),
++	},
++	[WCD9335_IRQ_MAD_ULTRASOUND] = {
++		.reg_offset = 3,
++		.mask = BIT(2),
++	},
++	[WCD9335_IRQ_VBAT_ATTACK] = {
++		.reg_offset = 3,
++		.mask = BIT(3),
++	},
++	[WCD9335_IRQ_VBAT_RESTORE] = {
++		.reg_offset = 3,
++		.mask = BIT(4),
++	},
++	[WCD9335_IRQ_SVA_OUTBOX1] = {
++		.reg_offset = 3,
++		.mask = BIT(5),
++	},
++	[WCD9335_IRQ_SVA_OUTBOX2] = {
++		.reg_offset = 3,
++		.mask = BIT(6),
++	},
++};
++
++static const struct regmap_irq_chip wcd9335_regmap_irq1_chip = {
++	.name = "wcd9335_pin1_irq",
++	.status_base = WCD9335_INTR_PIN1_STATUS0,
++	.mask_base = WCD9335_INTR_PIN1_MASK0,
++	.ack_base = WCD9335_INTR_PIN1_CLEAR0,
++	.type_base = WCD9335_INTR_LEVEL0,
++	.num_regs = 4,
++	.irqs = wcd9335_irqs,
++	.num_irqs = ARRAY_SIZE(wcd9335_irqs),
++};
++
++int wcd9335_irq_init(struct wcd9335 *wcd)
++{
++	int ret;
++	/*
++	 * INTR1 consists of all possible interrupt sources Ear OCP,
++	 * HPH OCP, MBHC, MAD, VBAT, and SVA
++	 * INTR2 is a subset of first interrupt sources MAD, VBAT, and SVA
++	 */
++	wcd->intr1 = of_irq_get_byname(wcd->dev->of_node, "intr1");
++	if (wcd->intr1 < 0 || wcd->intr1 == -EPROBE_DEFER) {
++		dev_err(wcd->dev, "Unable to configure irq\n");
++		return wcd->intr1;
++	}
++
++	ret = regmap_add_irq_chip(wcd->regmap, wcd->intr1,
++				 IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
++				 0, &wcd9335_regmap_irq1_chip,
++				 &wcd->irq_data);
++	if (ret != 0) {
++		dev_err(wcd->dev, "Failed to register IRQ chip: %d\n", ret);
++		return ret;
++	}
++
++	return 0;
++}
++
++int wcd9335_irq_exit(struct wcd9335 *wcd)
++{
++	regmap_del_irq_chip(wcd->intr1, wcd->irq_data);
++	return 0;
++}
+diff --git a/include/dt-bindings/mfd/wcd9335.h b/include/dt-bindings/mfd/wcd9335.h
+new file mode 100644
+index 000000000000..17f985be8f52
+--- /dev/null
++++ b/include/dt-bindings/mfd/wcd9335.h
+@@ -0,0 +1,43 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * This header provides macros for WCD9335 device bindings.
++ *
++ * Copyright (c) 2018, Linaro Limited
++ */
++
++#ifndef _DT_BINDINGS_MFD_WCD9335_H
++#define _DT_BINDINGS_MFD_WCD9335_H
++
++#define	WCD9335_IRQ_SLIMBUS			1
++#define	WCD9335_IRQ_FLL_LOCK_LOSS		2
++#define	WCD9335_IRQ_HPH_PA_OCPL_FAULT		3
++#define	WCD9335_IRQ_HPH_PA_OCPR_FAULT		4
++#define	WCD9335_IRQ_EAR_PA_OCP_FAULT		5
++#define	WCD9335_IRQ_HPH_PA_CNPL_COMPLETE	6
++#define	WCD9335_IRQ_HPH_PA_CNPR_COMPLETE	7
++#define	WCD9335_IRQ_EAR_PA_CNP_COMPLETE		8
++#define	WCD9335_IRQ_MBHC_SW_DET			9
++#define	WCD9335_IRQ_MBHC_ELECT_INS_REM_DET	10
++#define	WCD9335_IRQ_MBHC_BUTTON_PRESS_DET	11
++#define	WCD9335_IRQ_MBHC_BUTTON_RELEASE_DET	12
++#define	WCD9335_IRQ_MBHC_ELECT_INS_REM_LEG_DET	13
++#define	WCD9335_IRQ_RESERVED_0			14
++#define	WCD9335_IRQ_RESERVED_1			15
++#define	WCD9335_IRQ_RESERVED_2			16
++#define	WCD9335_IRQ_LINE_PA1_CNP_COMPLETE	17
++#define	WCD9335_IRQ_LINE_PA2_CNP_COMPLETE	18
++#define	WCD9335_IRQ_LINE_PA3_CNP_COMPLETE	19
++#define	WCD9335_IRQ_LINE_PA4_CNP_COMPLETE	20
++#define	WCD9335_IRQ_SOUNDWIRE			21
++#define	WCD9335_IRQ_VDD_DIG_RAMP_COMPLETE	22
++#define	WCD9335_IRQ_RCO_ERROR			23
++#define	WCD9335_IRQ_SVA_ERROR			24
++#define	WCD9335_IRQ_MAD_AUDIO			25
++#define	WCD9335_IRQ_MAD_BEACON			26
++#define	WCD9335_IRQ_MAD_ULTRASOUND		27
++#define	WCD9335_IRQ_VBAT_ATTACK			28
++#define	WCD9335_IRQ_VBAT_RESTORE		29
++#define	WCD9335_IRQ_SVA_OUTBOX1			30
++#define	WCD9335_IRQ_SVA_OUTBOX2			31
++
++#endif /* _DT_BINDINGS_MFD_WCD9335_H */
+diff --git a/include/linux/mfd/wcd9335/wcd9335.h b/include/linux/mfd/wcd9335/wcd9335.h
+index 6b7fa6a66d8f..ac0853625c72 100644
+--- a/include/linux/mfd/wcd9335/wcd9335.h
++++ b/include/linux/mfd/wcd9335/wcd9335.h
+@@ -37,4 +37,7 @@ struct wcd9335 {
+ 	struct regulator_bulk_data supplies[WCD9335_MAX_SUPPLY];
+ };
+ 
++extern int wcd9335_irq_init(struct wcd9335 *wcd);
++extern int wcd9335_irq_exit(struct wcd9335 *wcd);
++
+ #endif /* __WCD9335_H__ */
 -- 
 2.16.2
