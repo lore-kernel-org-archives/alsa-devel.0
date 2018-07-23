@@ -1,98 +1,122 @@
-From: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Subject: [RESEND][PATCH] ASoC: Intel: Power down links before
-	turning off display audio power
-Date: Mon, 23 Jul 2018 18:32:11 +0530
-Message-ID: <1532350931-7324-1-git-send-email-sriramx.periyasamy@intel.com>
+From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Subject: RE: [PATCH v2] ASoC: da7219: Allow pdata to specify a VDDIO
+Date: Mon, 23 Jul 2018 14:41:26 +0000
+Message-ID: <2E89032DDAA8B9408CB92943514A0337019830B8F8@SW-EX-MBX01.diasemi.com>
+References: <20180722232822.34641-1-djkurtz@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id EAB77267786
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 15:06:49 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA ML <alsa-devel@alsa-project.org>, Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Patches Audio <patches.audio@intel.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180722232822.34641-1-djkurtz@chromium.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Daniel Kurtz <djkurtz@chromium.org>, Mark Brown <broonie@kernel.org>
+Cc: Akshu Agrawal <akshu.agrawal@amd.com>, Support Opensource <Support.Opensource@diasemi.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, "moderated list:SOUND" <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On certain platforms, Display HDMI HDA codec was not going to sleep state
-after the use when links are powered down after turning off the display
-power. As per the HW recommendation, links are powered down before turning
-off the display power to ensure that the codec goes to sleep state.
+On 23 July 2018 00:28, Daniel Kurtz wrote:
 
-Signed-off-by: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
----
- sound/soc/codecs/hdac_hdmi.c  | 12 +++++-------
- sound/soc/intel/skylake/skl.c | 11 ++++++-----
- 2 files changed, 11 insertions(+), 12 deletions(-)
+> Some systems do not have software controllable regulators driving the
+> DA7219's supplies, nor can they use device tree to create "always-on fixed
+> regulators" to easily pretend like they do.
+> 
+> On these systems the call to devm_regulator_bulk_get() just creates
+> a set of dummy registers.  Calling regulator_get_voltage() on a dummy
+> regulator just returns -EINVAL, in which case the DA7219 is always set up
+> to use the default VDDIO voltage range of 2.5-3.6V.
+> 
+> Provide a new device property to let such systems specify a different
+> VDDIO if needed (e.g., 1.8V).
 
-diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
-index 0cdceca2b216..c98c4c2babc9 100644
---- a/sound/soc/codecs/hdac_hdmi.c
-+++ b/sound/soc/codecs/hdac_hdmi.c
-@@ -2235,12 +2235,6 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 	 */
- 	snd_hdac_codec_read(hdev, hdev->afg, 0,	AC_VERB_SET_POWER_STATE,
- 							AC_PWRST_D3);
--	err = snd_hdac_display_power(bus, false);
--	if (err < 0) {
--		dev_err(bus->dev, "Cannot turn on display power on i915\n");
--		return err;
--	}
--
- 	hlink = snd_hdac_ext_bus_get_link(ebus, dev_name(dev));
- 	if (!hlink) {
- 		dev_err(dev, "hdac link not found\n");
-@@ -2249,7 +2243,11 @@ static int hdac_hdmi_runtime_suspend(struct device *dev)
- 
- 	snd_hdac_ext_bus_link_put(ebus, hlink);
- 
--	return 0;
-+	err = snd_hdac_display_power(bus, false);
-+	if (err < 0)
-+		dev_err(bus->dev, "Cannot turn off display power on i915\n");
-+
-+	return err;
- }
- 
- static int hdac_hdmi_runtime_resume(struct device *dev)
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index 670ff9aaca55..c62e474717ff 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -762,6 +762,12 @@ static void skl_probe_work(struct work_struct *work)
- 		}
- 	}
- 
-+	/*
-+	 * we are done probing so decrement link counts
-+	 */
-+	list_for_each_entry(hlink, &ebus->hlink_list, list)
-+		snd_hdac_ext_bus_link_put(ebus, hlink);
-+
- 	if (IS_ENABLED(CONFIG_SND_SOC_HDAC_HDMI)) {
- 		err = snd_hdac_display_power(bus, false);
- 		if (err < 0) {
-@@ -771,11 +777,6 @@ static void skl_probe_work(struct work_struct *work)
- 		}
- 	}
- 
--	/*
--	 * we are done probing so decrement link counts
--	 */
--	list_for_each_entry(hlink, &ebus->hlink_list, list)
--		snd_hdac_ext_bus_link_put(ebus, hlink);
- 
- 	/* configure PM */
- 	pm_runtime_put_noidle(bus->dev);
--- 
-2.7.4
+I'm not sure what the general view on this is. In the past it was suggested
+the regulator framework was the way to go to pass this kind of information,
+but obviously ACPI platforms don't tend to use it.
+
+Mark, what is your feeling on this? Would you be in favour of some kind of 
+fixed voltage regulator representation, similar to the patch for the AMD
+platform (ASoC: AMD: Add a fix voltage regulator for DA7219 and ADAU7002),
+albeit tweaked to avoid asynchronous probe() issues, or is this a reasonable
+route? Personally in my mind, and in an ideal world, I'd prefer just one method
+for retrieving this data in the codec driver, but that may not be sensible.
+
+> 
+> Signed-off-by: Daniel Kurtz <djkurtz@chromium.org>
+> ---
+> Changes for v2:
+>  - fix to use device_property_read_u32()
+> 
+>  include/sound/da7219.h    |  2 ++
+>  sound/soc/codecs/da7219.c | 19 +++++++++++++------
+>  2 files changed, 15 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/sound/da7219.h b/include/sound/da7219.h
+> index 1bfcb16f2d10ab..16ab125ad4adbf 100644
+> --- a/include/sound/da7219.h
+> +++ b/include/sound/da7219.h
+> @@ -38,6 +38,8 @@ struct da7219_pdata {
+> 
+>  	const char *dai_clks_name;
+> 
+> +	u32 vddio;
+> +
+>  	/* Mic */
+>  	enum da7219_micbias_voltage micbias_lvl;
+>  	enum da7219_mic_amp_in_sel mic_amp_in_sel;
+> diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+> index 980a6a8bf56d38..9893920b26f41f 100644
+> --- a/sound/soc/codecs/da7219.c
+> +++ b/sound/soc/codecs/da7219.c
+> @@ -1634,6 +1634,9 @@ static struct da7219_pdata *da7219_fw_to_pdata(struct
+> snd_soc_component *compone
+>  	else
+>  		pdata->mic_amp_in_sel = DA7219_MIC_AMP_IN_SEL_DIFF;
+> 
+> +	if (device_property_read_u32(dev, "dlg,vddio", &of_val32) >= 0)
+> +		pdata->vddio = of_val32;
+> +
+>  	return pdata;
+>  }
+> 
+> @@ -1717,8 +1720,12 @@ static int da7219_handle_supplies(struct
+> snd_soc_component *component)
+>  	/* Determine VDDIO voltage provided */
+>  	vddio = da7219->supplies[DA7219_SUPPLY_VDDIO].consumer;
+>  	ret = regulator_get_voltage(vddio);
+> +	/* If regulator_get_voltage() fails, try to use vddio from pdata. */
+> +	if (ret < 0 && da7219->pdata)
+> +		ret = da7219->pdata->vddio;
+>  	if (ret < 1200000)
+> -		dev_warn(component->dev, "Invalid VDDIO voltage\n");
+> +		dev_warn(component->dev, "Invalid VDDIO voltage: %d mV\n",
+> +			 ret);
+>  	else if (ret < 2800000)
+>  		io_voltage_lvl = DA7219_IO_VOLTAGE_LEVEL_1_2V_2_8V;
+> 
+> @@ -1872,6 +1879,11 @@ static int da7219_probe(struct snd_soc_component
+> *component)
+>  	mutex_init(&da7219->ctrl_lock);
+>  	mutex_init(&da7219->pll_lock);
+> 
+> +	/* Handle DT/ACPI/Platform data */
+> +	da7219->pdata = dev_get_platdata(component->dev);
+> +	if (!da7219->pdata)
+> +		da7219->pdata = da7219_fw_to_pdata(component);
+> +
+>  	/* Regulator configuration */
+>  	ret = da7219_handle_supplies(component);
+>  	if (ret)
+> @@ -1897,11 +1909,6 @@ static int da7219_probe(struct snd_soc_component
+> *component)
+>  		break;
+>  	}
+> 
+> -	/* Handle DT/ACPI/Platform data */
+> -	da7219->pdata = dev_get_platdata(component->dev);
+> -	if (!da7219->pdata)
+> -		da7219->pdata = da7219_fw_to_pdata(component);
+> -
+>  	da7219_handle_pdata(component);
+> 
+>  	/* Check if MCLK provided */
+> --
+> 2.18.0.233.g985f88cf7e-goog
