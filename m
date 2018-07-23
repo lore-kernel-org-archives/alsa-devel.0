@@ -1,179 +1,431 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 01/12] mfd: dt-bindings: Add wcd9335 mfd
-	bindings
-Date: Mon, 23 Jul 2018 16:53:59 +0100
-Message-ID: <20180723155410.9494-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 08/12] ASoC: wcd9335: add basic controls
+Date: Mon, 23 Jul 2018 16:54:06 +0100
+Message-ID: <20180723155410.9494-9-srinivas.kandagatla@linaro.org>
 References: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 6497226739D
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 17:58:17 +0200 (CEST)
-Received: by mail-wm0-f65.google.com with SMTP id o18-v6so1766221wmc.0
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 08:58:17 -0700 (PDT)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC, supports
-Qualcomm Technologies, Inc. (QTI) multimedia solutions, including
-the MSM8996, MSM8976, and MSM8956 chipsets. It has in-build
-Soundwire controller, interrupt mux. It supports both I2S/I2C and
-SLIMbus audio interfaces.
+This patch adds basic controls found in wcd9335 codec.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../devicetree/bindings/mfd/qcom,wcd9335.txt       | 130 +++++++++++++++++++++
- 1 file changed, 130 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/mfd/qcom,wcd9335.txt
+ sound/soc/codecs/wcd9335.c | 371 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 371 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/mfd/qcom,wcd9335.txt b/Documentation/devicetree/bindings/mfd/qcom,wcd9335.txt
-new file mode 100644
-index 000000000000..1f8c9e8d4e3d
---- /dev/null
-+++ b/Documentation/devicetree/bindings/mfd/qcom,wcd9335.txt
-@@ -0,0 +1,130 @@
-+QCOM WCD9335 Codec
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index 7fe746271e48..e1f63d8cc7d4 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -104,6 +104,18 @@ enum {
+ 	NUM_CODEC_DAIS,
+ };
+ 
++enum {
++	COMPANDER_1, /* HPH_L */
++	COMPANDER_2, /* HPH_R */
++	COMPANDER_3, /* LO1_DIFF */
++	COMPANDER_4, /* LO2_DIFF */
++	COMPANDER_5, /* LO3_SE */
++	COMPANDER_6, /* LO4_SE */
++	COMPANDER_7, /* SWR SPK CH1 */
++	COMPANDER_8, /* SWR SPK CH2 */
++	COMPANDER_MAX,
++};
 +
-+Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC, supports
-+Qualcomm Technologies, Inc. (QTI) multimedia solutions, including
-+the MSM8996, MSM8976, and MSM8956 chipsets. It has in-build
-+Soundwire controller, interrupt mux. It supports both I2S/I2C and
-+SLIMbus audio interfaces.
+ enum {
+ 	INTn_2_INP_SEL_ZERO = 0,
+ 	INTn_2_INP_SEL_RX0,
+@@ -184,6 +196,7 @@ struct wcd9335_codec {
+ 
+ 	struct wcd_clsh_ctrl *clsh_ctrl;
+ 	u32 hph_mode;
++	int comp_enabled[COMPANDER_MAX];
+ };
+ 
+ static const struct wcd9335_slim_ch wcd9335_rx_chs[WCD9335_RX_MAX] = {
+@@ -295,6 +308,118 @@ static const struct wcd9335_reg_mask_val wcd9335_codec_reg_init_common_val[] = {
+ 	{WCD9335_VBADC_IBIAS_FE, 0x0C, 0x08},
+ };
+ 
++/* Cutoff frequency for high pass filter */
++static const char * const cf_text[] = {
++	"CF_NEG_3DB_4HZ", "CF_NEG_3DB_75HZ", "CF_NEG_3DB_150HZ"
++};
 +
-+Required properties with SLIMbus Interface:
++static const char * const rx_cf_text[] = {
++	"CF_NEG_3DB_4HZ", "CF_NEG_3DB_75HZ", "CF_NEG_3DB_150HZ",
++	"CF_NEG_3DB_0P48HZ"
++};
 +
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: For SLIMbus interface it should be "slimMID,PID",
-+		    textual representation of Manufacturer ID, Product Code,
-+		    shall be in lower case hexadecimal with leading zeroes
-+		    suppressed.  Refer to slimbus/bus.txt for details.
-+		    Should be:
-+		    "slim217,1a0" for MSM8996 and APQ8096 SoCs with SLIMbus.
++static const char * const wcd9335_ear_pa_gain_text[] = {
++	"G_6_DB", "G_4P5_DB", "G_3_DB", "G_1P5_DB",
++	"G_0_DB", "G_M2P5_DB", "UNDEFINED", "G_M12_DB"
++};
 +
-+- reg
-+	Usage: required
-+	Value type: <u32 u32>
-+	Definition: Should be ('Device index', 'Instance ID')
++static const char * const rx_hph_mode_mux_text[] = {
++	"CLS_H_INVALID", "CLS_H_HIFI", "CLS_H_LP", "CLS_AB", "CLS_H_LOHIFI"
++};
 +
-+- interrupts
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: Interrupts via WCD INTR1 and INTR2 pins
++static const DECLARE_TLV_DB_SCALE(digital_gain, 0, 1, 0);
++static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
++static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
 +
-+- interrupt-names:
-+	Usage: required
-+	Value type: <String array>
-+	Definition: Interrupt names of WCD INTR1 and INTR2
-+	Should be: "intr1", "intr2"
++static const struct soc_enum wcd9335_ear_pa_gain_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(wcd9335_ear_pa_gain_text),
++			wcd9335_ear_pa_gain_text);
 +
-+- reset-gpio:
-+	Usage: required
-+	Value type: <String Array>
-+	Definition: Reset gpio line
++static const struct soc_enum cf_dec0_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX0_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- qcom,ifd:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: SLIM interface device
++static const struct soc_enum cf_dec1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX1_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- clocks:
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: See clock-bindings.txt section "consumers". List of
-+                three clock specifiers for mclk, mclk2 and slimbus clock.
++static const struct soc_enum cf_dec2_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX2_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- clock-names:
-+	Usage: required
-+	Value type: <string>
-+	Definition: Must contain "mclk", "mclk2" and "slimbus" strings.
++static const struct soc_enum cf_dec3_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX3_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- vdd-buck-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V buck supply
++static const struct soc_enum cf_dec4_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX4_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- vdd-buck-sido-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V SIDO buck supply
++static const struct soc_enum cf_dec5_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX5_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- vdd-rx-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V rx supply
++static const struct soc_enum cf_dec6_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX6_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- vdd-tx-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V tx supply
++static const struct soc_enum cf_dec7_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX7_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- vdd-vbat-supply:
-+	Usage: Optional
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the vbat supply
++static const struct soc_enum cf_dec8_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX8_TX_PATH_CFG0, 5, 3, cf_text);
 +
-+- vdd-micbias-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the micbias supply
++static const struct soc_enum cf_int0_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX0_RX_PATH_CFG2, 0, 4, rx_cf_text);
 +
-+- vdd-io-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V io supply
++static SOC_ENUM_SINGLE_DECL(cf_int0_2_enum, WCD9335_CDC_RX0_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
 +
-+- interrupt-controller:
-+	Usage: required
-+	Definition: Indicating that this is a interrupt controller
++static const struct soc_enum cf_int1_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX1_RX_PATH_CFG2, 0, 4, rx_cf_text);
 +
-+- #interrupt-cells:
-+	Usage: required
-+	Value type: <int>
-+	Definition: should be 1
++static SOC_ENUM_SINGLE_DECL(cf_int1_2_enum, WCD9335_CDC_RX1_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
 +
-+= WCD9335 Child devices
-+Each subnode of WCD9335 represents a functional blocks like
-+"audio codec", "soundwire Controller" of WCD. The name of the
-+nodes are not important. The properties of these nodes are
-+defined by the individual bindings for the specific device.
++static const struct soc_enum cf_int2_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX2_RX_PATH_CFG2, 0, 4, rx_cf_text);
 +
-+Example:
++static SOC_ENUM_SINGLE_DECL(cf_int2_2_enum, WCD9335_CDC_RX2_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
 +
-+wcd9335@1 {
-+	compatible = "slim217,1a0";
-+	reg  = <1 0>;
-+	interrupts = <&msmgpio 54 IRQ_TYPE_LEVEL_HIGH>;
-+	interrupt-names = "intr2"
-+	reset-gpio = <&msmgpio 64 0>;
-+	qcom,ifd  = <&wc9335_ifd>;
-+	clock-names = "mclk", "native";
-+	clocks = <&rpmcc RPM_SMD_DIV_CLK1>,
-+		 <&rpmcc RPM_SMD_BB_CLK1>;
-+	vdd-buck-supply = <&pm8994_s4>;
-+	vdd-rx-supply = <&pm8994_s4>;
-+	vdd-buck-sido-supply = <&pm8994_s4>;
-+	vdd-tx-supply = <&pm8994_s4>;
-+	vdd-io-supply = <&pm8994_s4>;
++static const struct soc_enum cf_int3_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX3_RX_PATH_CFG2, 0, 4, rx_cf_text);
 +
-+	codec {
-+		compatible = "qcom,wcd9335-codec";
-+		#sound-dai-cells = <1>;
-+	};
++static SOC_ENUM_SINGLE_DECL(cf_int3_2_enum, WCD9335_CDC_RX3_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int4_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX4_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int4_2_enum, WCD9335_CDC_RX4_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int5_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX5_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int5_2_enum, WCD9335_CDC_RX5_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int6_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX6_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int6_2_enum, WCD9335_CDC_RX6_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int7_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX7_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int7_2_enum, WCD9335_CDC_RX7_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int8_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX8_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int8_2_enum, WCD9335_CDC_RX8_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum rx_hph_mode_mux_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_hph_mode_mux_text),
++			    rx_hph_mode_mux_text);
++
+ static int wcd9335_set_mix_interpolator_rate(struct snd_soc_dai *dai,
+ 					     int rate_val,
+ 					     u32 rate)
+@@ -670,6 +795,250 @@ static struct snd_soc_dai_driver wcd9335_slim_dai[] = {
+ 	},
+ };
+ 
++static int wcd9335_get_compander(struct snd_kcontrol *kc,
++			       struct snd_ctl_elem_value *ucontrol)
++{
++
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	int comp = ((struct soc_mixer_control *)kc->private_value)->shift;
++	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++
++	ucontrol->value.integer.value[0] = wcd->comp_enabled[comp];
++	return 0;
 +}
++
++static int wcd9335_set_compander(struct snd_kcontrol *kc,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++	int comp = ((struct soc_mixer_control *) kc->private_value)->shift;
++	int value = ucontrol->value.integer.value[0];
++	int sel;
++
++	wcd->comp_enabled[comp] = value;
++	sel = value ? WCD9335_HPH_GAIN_SRC_SEL_COMPANDER :
++		WCD9335_HPH_GAIN_SRC_SEL_REGISTER;
++
++	/* Any specific register configuration for compander */
++	switch (comp) {
++	case COMPANDER_1:
++		/* Set Gain Source Select based on compander enable/disable */
++		snd_soc_component_update_bits(component, WCD9335_HPH_L_EN,
++				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
++		break;
++	case COMPANDER_2:
++		snd_soc_component_update_bits(component, WCD9335_HPH_R_EN,
++				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
++		break;
++	case COMPANDER_3:
++		break;
++	case COMPANDER_4:
++		break;
++	case COMPANDER_5:
++		snd_soc_component_update_bits(component, WCD9335_SE_LO_LO3_GAIN,
++				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
++		break;
++	case COMPANDER_6:
++		snd_soc_component_update_bits(component, WCD9335_SE_LO_LO4_GAIN,
++				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
++		break;
++	case COMPANDER_7:
++		break;
++	case COMPANDER_8:
++		break;
++	default:
++		/*
++		 * if compander is not enabled for any interpolator,
++		 * it does not cause any audio failure, so do not
++		 * return error in this case, but just print a log
++		 */
++		dev_warn(component->dev, "%s: unknown compander: %d\n",
++			__func__, comp);
++	};
++	return 0;
++}
++
++static int wcd9335_rx_hph_mode_get(struct snd_kcontrol *kc,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++
++	ucontrol->value.integer.value[0] = wcd->hph_mode;
++
++	return 0;
++}
++
++static int wcd9335_rx_hph_mode_put(struct snd_kcontrol *kc,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++	u32 mode_val;
++
++	mode_val = ucontrol->value.enumerated.item[0];
++
++	if (mode_val == 0) {
++		dev_err(wcd->dev, "Invalid HPH Mode, default to ClSH HiFi\n");
++		mode_val = CLS_H_HIFI;
++	}
++	wcd->hph_mode = mode_val;
++
++	return 0;
++}
++
++static int wcd9335_ear_pa_gain_get(struct snd_kcontrol *kc,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	int ear_pa_gain;
++
++	ear_pa_gain = snd_soc_component_read32(component, WCD9335_ANA_EAR);
++	ear_pa_gain = (ear_pa_gain & 0x70) >> 4;
++	ucontrol->value.integer.value[0] = ear_pa_gain;
++
++	return 0;
++}
++
++static int wcd9335_ear_pa_gain_put(struct snd_kcontrol *kc,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	u8 ear_pa_gain;
++
++	ear_pa_gain =  ucontrol->value.integer.value[0] << 4;
++	snd_soc_component_update_bits(component, WCD9335_ANA_EAR,
++					0x70, ear_pa_gain);
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new wcd9335_snd_controls[] = {
++	/* -84dB min - 40dB max */
++	SOC_SINGLE_SX_TLV("RX0 Digital Volume", WCD9335_CDC_RX0_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX1 Digital Volume", WCD9335_CDC_RX1_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX2 Digital Volume", WCD9335_CDC_RX2_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX3 Digital Volume", WCD9335_CDC_RX3_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX4 Digital Volume", WCD9335_CDC_RX4_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX5 Digital Volume", WCD9335_CDC_RX5_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX6 Digital Volume", WCD9335_CDC_RX6_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX7 Digital Volume", WCD9335_CDC_RX7_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX8 Digital Volume", WCD9335_CDC_RX8_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX0 Mix Digital Volume",
++			  WCD9335_CDC_RX0_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX1 Mix Digital Volume",
++			  WCD9335_CDC_RX1_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX2 Mix Digital Volume",
++			  WCD9335_CDC_RX2_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX3 Mix Digital Volume",
++			  WCD9335_CDC_RX3_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX4 Mix Digital Volume",
++			  WCD9335_CDC_RX4_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX5 Mix Digital Volume",
++			  WCD9335_CDC_RX5_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX6 Mix Digital Volume",
++			  WCD9335_CDC_RX6_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX7 Mix Digital Volume",
++			  WCD9335_CDC_RX7_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX8 Mix Digital Volume",
++			  WCD9335_CDC_RX8_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_ENUM("RX INT0_1 HPF cut off", cf_int0_1_enum),
++	SOC_ENUM("RX INT0_2 HPF cut off", cf_int0_2_enum),
++	SOC_ENUM("RX INT1_1 HPF cut off", cf_int1_1_enum),
++	SOC_ENUM("RX INT1_2 HPF cut off", cf_int1_2_enum),
++	SOC_ENUM("RX INT2_1 HPF cut off", cf_int2_1_enum),
++	SOC_ENUM("RX INT2_2 HPF cut off", cf_int2_2_enum),
++	SOC_ENUM("RX INT3_1 HPF cut off", cf_int3_1_enum),
++	SOC_ENUM("RX INT3_2 HPF cut off", cf_int3_2_enum),
++	SOC_ENUM("RX INT4_1 HPF cut off", cf_int4_1_enum),
++	SOC_ENUM("RX INT4_2 HPF cut off", cf_int4_2_enum),
++	SOC_ENUM("RX INT5_1 HPF cut off", cf_int5_1_enum),
++	SOC_ENUM("RX INT5_2 HPF cut off", cf_int5_2_enum),
++	SOC_ENUM("RX INT6_1 HPF cut off", cf_int6_1_enum),
++	SOC_ENUM("RX INT6_2 HPF cut off", cf_int6_2_enum),
++	SOC_ENUM("RX INT7_1 HPF cut off", cf_int7_1_enum),
++	SOC_ENUM("RX INT7_2 HPF cut off", cf_int7_2_enum),
++	SOC_ENUM("RX INT8_1 HPF cut off", cf_int8_1_enum),
++	SOC_ENUM("RX INT8_2 HPF cut off", cf_int8_2_enum),
++	SOC_SINGLE_EXT("COMP1 Switch", SND_SOC_NOPM, COMPANDER_1, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP2 Switch", SND_SOC_NOPM, COMPANDER_2, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP3 Switch", SND_SOC_NOPM, COMPANDER_3, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP4 Switch", SND_SOC_NOPM, COMPANDER_4, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP5 Switch", SND_SOC_NOPM, COMPANDER_5, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP6 Switch", SND_SOC_NOPM, COMPANDER_6, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP7 Switch", SND_SOC_NOPM, COMPANDER_7, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP8 Switch", SND_SOC_NOPM, COMPANDER_8, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_ENUM_EXT("RX HPH Mode", rx_hph_mode_mux_enum,
++		       wcd9335_rx_hph_mode_get, wcd9335_rx_hph_mode_put),
++
++	/* Gain Controls */
++	SOC_ENUM_EXT("EAR PA Gain", wcd9335_ear_pa_gain_enum,
++		wcd9335_ear_pa_gain_get, wcd9335_ear_pa_gain_put),
++
++	SOC_SINGLE_TLV("HPHL Volume", WCD9335_HPH_L_EN, 0, 20, 1,
++		line_gain),
++	SOC_SINGLE_TLV("HPHR Volume", WCD9335_HPH_R_EN, 0, 20, 1,
++		line_gain),
++	SOC_SINGLE_TLV("LINEOUT1 Volume", WCD9335_DIFF_LO_LO1_COMPANDER,
++			3, 16, 1, line_gain),
++	SOC_SINGLE_TLV("LINEOUT2 Volume", WCD9335_DIFF_LO_LO2_COMPANDER,
++			3, 16, 1, line_gain),
++	SOC_SINGLE_TLV("LINEOUT3 Volume", WCD9335_SE_LO_LO3_GAIN, 0, 20, 1,
++			line_gain),
++	SOC_SINGLE_TLV("LINEOUT4 Volume", WCD9335_SE_LO_LO4_GAIN, 0, 20, 1,
++			line_gain),
++
++	SOC_SINGLE_TLV("ADC1 Volume", WCD9335_ANA_AMIC1, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC2 Volume", WCD9335_ANA_AMIC2, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC3 Volume", WCD9335_ANA_AMIC3, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC4 Volume", WCD9335_ANA_AMIC4, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC5 Volume", WCD9335_ANA_AMIC5, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC6 Volume", WCD9335_ANA_AMIC6, 0, 20, 0,
++			analog_gain),
++
++	SOC_ENUM("TX0 HPF cut off", cf_dec0_enum),
++	SOC_ENUM("TX1 HPF cut off", cf_dec1_enum),
++	SOC_ENUM("TX2 HPF cut off", cf_dec2_enum),
++	SOC_ENUM("TX3 HPF cut off", cf_dec3_enum),
++	SOC_ENUM("TX4 HPF cut off", cf_dec4_enum),
++	SOC_ENUM("TX5 HPF cut off", cf_dec5_enum),
++	SOC_ENUM("TX6 HPF cut off", cf_dec6_enum),
++	SOC_ENUM("TX7 HPF cut off", cf_dec7_enum),
++	SOC_ENUM("TX8 HPF cut off", cf_dec8_enum),
++};
++
+ static irqreturn_t wcd9335_slimbus_irq(int irq, void *data)
+ {
+ 	struct wcd9335_codec *wcd = data;
+@@ -1119,6 +1488,8 @@ static const struct snd_soc_component_driver wcd9335_component_drv = {
+ 	.probe = wcd9335_codec_probe,
+ 	.remove = wcd9335_codec_remove,
+ 	.set_sysclk = wcd9335_codec_set_sysclk,
++	.controls = wcd9335_snd_controls,
++	.num_controls = ARRAY_SIZE(wcd9335_snd_controls),
+ };
+ 
+ static int wcd9335_probe(struct platform_device *pdev)
 -- 
 2.16.2
