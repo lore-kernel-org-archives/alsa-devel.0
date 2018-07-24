@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: imx-sgtl5000: Switch to SPDX
-	identifier" to the asoc tree
-Date: Tue, 24 Jul 2018 17:02:08 +0100 (BST)
-Message-ID: <20180724160208.DB1001123A86@debutante.sirena.org.uk>
-References: <1532436513-19283-4-git-send-email-fabio.estevam@nxp.com>
+Subject: Applied "ASoC: fsl_utils: Switch to SPDX identifier"
+	to the asoc tree
+Date: Tue, 24 Jul 2018 17:02:16 +0100 (BST)
+Message-ID: <20180724160216.DFB3B1123A86@debutante.sirena.org.uk>
+References: <1532436513-19283-3-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2C5CB26733D
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 18:02:09 +0200 (CEST)
-In-Reply-To: <1532436513-19283-4-git-send-email-fabio.estevam@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8E70126772E
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 18:02:17 +0200 (CEST)
+In-Reply-To: <1532436513-19283-3-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: imx-sgtl5000: Switch to SPDX identifier
+   ASoC: fsl_utils: Switch to SPDX identifier
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 6b24e03ecf1ce188071d142115233b10ed8767b2 Mon Sep 17 00:00:00 2001
+>From ad47191a72ca0a95327e8bb16155e5e216f1d97d Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Tue, 24 Jul 2018 09:48:33 -0300
-Subject: [PATCH] ASoC: imx-sgtl5000: Switch to SPDX identifier
+Date: Tue, 24 Jul 2018 09:48:32 -0300
+Subject: [PATCH] ASoC: fsl_utils: Switch to SPDX identifier
 
 Adopt the SPDX license identifier headers to ease license compliance
 management.
@@ -64,31 +64,55 @@ management.
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/imx-sgtl5000.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+ sound/soc/fsl/fsl_utils.c | 18 +++++++-----------
+ sound/soc/fsl/fsl_utils.h |  7 ++-----
+ 2 files changed, 9 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index b99e0b5e00e9..c29200cf755a 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -1,14 +1,7 @@
--/*
-- * Copyright 2012 Freescale Semiconductor, Inc.
-- * Copyright 2012 Linaro Ltd.
+diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
+index 7592b0406370..7f0fa4b52223 100644
+--- a/sound/soc/fsl/fsl_utils.c
++++ b/sound/soc/fsl/fsl_utils.c
+@@ -1,14 +1,10 @@
+-/**
+- * Freescale ALSA SoC Machine driver utility
 - *
-- * The code contained herein is licensed under the GNU General Public
-- * License. You may obtain a copy of the GNU General Public License
-- * Version 2 or later at the following locations:
+- * Author: Timur Tabi <timur@freescale.com>
 - *
-- * http://www.opensource.org/licenses/gpl-license.html
-- * http://www.gnu.org/copyleft/gpl.html
+- * Copyright 2010 Freescale Semiconductor, Inc.
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
 - */
-+// SPDX-License-Identifier: GPL-2.0+
++// SPDX-License-Identifier: GPL-2.0
 +//
-+// Copyright 2012 Freescale Semiconductor, Inc.
-+// Copyright 2012 Linaro Ltd.
++// Freescale ALSA SoC Machine driver utility
++//
++// Author: Timur Tabi <timur@freescale.com>
++//
++// Copyright 2010 Freescale Semiconductor, Inc.
  
  #include <linux/module.h>
- #include <linux/of.h>
+ #include <linux/of_address.h>
+diff --git a/sound/soc/fsl/fsl_utils.h b/sound/soc/fsl/fsl_utils.h
+index 1687b66ef18e..c5dc2a14b492 100644
+--- a/sound/soc/fsl/fsl_utils.h
++++ b/sound/soc/fsl/fsl_utils.h
+@@ -1,13 +1,10 @@
+-/**
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
+  * Freescale ALSA SoC Machine driver utility
+  *
+  * Author: Timur Tabi <timur@freescale.com>
+  *
+  * Copyright 2010 Freescale Semiconductor, Inc.
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2.  This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+  */
+ 
+ #ifndef _FSL_UTILS_H
 -- 
 2.18.0
