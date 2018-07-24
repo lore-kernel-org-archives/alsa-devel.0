@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: add support to
-	snd_soc_dai_get_channel_map()" to the asoc tree
-Date: Tue, 24 Jul 2018 12:50:37 +0100 (BST)
-Message-ID: <20180724115037.3DF0E440078@finisterre.ee.mobilebroadband>
-References: <20180723155410.9494-6-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: rt5514: Fix the issue of the delay
+	volume applied" to the asoc tree
+Date: Tue, 24 Jul 2018 12:50:42 +0100 (BST)
+Message-ID: <20180724115042.4B1B8440078@finisterre.ee.mobilebroadband>
+References: <1532418563-26569-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A488726733D
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 13:50:40 +0200 (CEST)
-In-Reply-To: <20180723155410.9494-6-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 03A7A26772E
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 13:50:43 +0200 (CEST)
+In-Reply-To: <1532418563-26569-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org, lee.jones@linaro.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: core: add support to snd_soc_dai_get_channel_map()
+   ASoC: rt5514: Fix the issue of the delay volume applied
 
 has been applied to the asoc tree at
 
@@ -53,81 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 467b061f1ac80f323bedb56d20a24f7bc0d2cec5 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Mon, 23 Jul 2018 16:54:03 +0100
-Subject: [PATCH] ASoC: core: add support to snd_soc_dai_get_channel_map()
+>From d96f8bd28cd0bae3e6702ae90df593628ef6906f Mon Sep 17 00:00:00 2001
+From: Oder Chiou <oder_chiou@realtek.com>
+Date: Tue, 24 Jul 2018 15:49:23 +0800
+Subject: [PATCH] ASoC: rt5514: Fix the issue of the delay volume applied
 
-On Qualcomm platforms, specifically with SLIMbus interfaced codecs,
-the codec slim channel numbers are passed to DSP while configuring
-the slim audio path. Having get_channel_map() would allow dais to
-share such information across multiple dais.
+The patch fixes the issue of the delay volume applied.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dai.h |  8 ++++++++
- sound/soc/soc-core.c    | 22 ++++++++++++++++++++++
- 2 files changed, 30 insertions(+)
+ sound/soc/codecs/rt5514.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/sound/soc-dai.h b/include/sound/soc-dai.h
-index a14bc0608ae9..f5d70041108f 100644
---- a/include/sound/soc-dai.h
-+++ b/include/sound/soc-dai.h
-@@ -138,6 +138,11 @@ int snd_soc_dai_set_tristate(struct snd_soc_dai *dai, int tristate);
- int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
- 			     int direction);
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index 1570b91bf018..dca82dd6e3bf 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -64,8 +64,8 @@ static const struct reg_sequence rt5514_patch[] = {
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_ADCFED,	0x00000800},
+ 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+-	{RT5514_DOWNFILTER0_CTRL3,	0x10000362},
+-	{RT5514_DOWNFILTER1_CTRL3,	0x10000362},
++	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
++	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
+ };
  
-+
-+int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
-+		unsigned int *tx_num, unsigned int *tx_slot,
-+		unsigned int *rx_num, unsigned int *rx_slot);
-+
- int snd_soc_dai_is_dummy(struct snd_soc_dai *dai);
- 
- struct snd_soc_dai_ops {
-@@ -165,6 +170,9 @@ struct snd_soc_dai_ops {
- 	int (*set_channel_map)(struct snd_soc_dai *dai,
- 		unsigned int tx_num, unsigned int *tx_slot,
- 		unsigned int rx_num, unsigned int *rx_slot);
-+	int (*get_channel_map)(struct snd_soc_dai *dai,
-+			unsigned int *tx_num, unsigned int *tx_slot,
-+			unsigned int *rx_num, unsigned int *rx_slot);
- 	int (*set_tristate)(struct snd_soc_dai *dai, int tristate);
- 
- 	int (*set_sdw_stream)(struct snd_soc_dai *dai,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index ad5b0ef16d82..81b27923303d 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2679,6 +2679,28 @@ int snd_soc_dai_set_channel_map(struct snd_soc_dai *dai,
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_set_channel_map);
- 
-+/**
-+ * snd_soc_dai_get_channel_map - Get DAI audio channel map
-+ * @dai: DAI
-+ * @tx_num: how many TX channels
-+ * @tx_slot: pointer to an array which imply the TX slot number channel
-+ *           0~num-1 uses
-+ * @rx_num: how many RX channels
-+ * @rx_slot: pointer to an array which imply the RX slot number channel
-+ *           0~num-1 uses
-+ */
-+int snd_soc_dai_get_channel_map(struct snd_soc_dai *dai,
-+	unsigned int *tx_num, unsigned int *tx_slot,
-+	unsigned int *rx_num, unsigned int *rx_slot)
-+{
-+	if (dai->driver->ops->get_channel_map)
-+		return dai->driver->ops->get_channel_map(dai, tx_num, tx_slot,
-+			rx_num, rx_slot);
-+	else
-+		return -ENOTSUPP;
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_dai_get_channel_map);
-+
- /**
-  * snd_soc_dai_set_tristate - configure DAI system or master clock.
-  * @dai: DAI
+ static const struct reg_default rt5514_reg[] = {
+@@ -92,10 +92,10 @@ static const struct reg_default rt5514_reg[] = {
+ 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+ 	{RT5514_DOWNFILTER0_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER0_CTRL2,	0x00020c2f},
+-	{RT5514_DOWNFILTER0_CTRL3,	0x10000362},
++	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
+ 	{RT5514_DOWNFILTER1_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER1_CTRL2,	0x00020c2f},
+-	{RT5514_DOWNFILTER1_CTRL3,	0x10000362},
++	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_LDO18_16,	0x02000345},
+ 	{RT5514_ANA_CTRL_ADC12,		0x0000a2a8},
 -- 
 2.18.0
