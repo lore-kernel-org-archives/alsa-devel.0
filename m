@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: axg-spdifout: select
-	SND_PCM_IEC958" to the asoc tree
-Date: Tue, 24 Jul 2018 12:50:47 +0100 (BST)
-Message-ID: <20180724115047.72DDE440078@finisterre.ee.mobilebroadband>
-References: <20180724093705.1691747-1-arnd@arndb.de>
+Subject: Applied "ASoC: trace: remove snd_soc_codec" to the
+	asoc tree
+Date: Tue, 24 Jul 2018 12:51:49 +0100 (BST)
+Message-ID: <20180724115149.48D72440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C41B7267759
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 13:50:48 +0200 (CEST)
-In-Reply-To: <20180724093705.1691747-1-arnd@arndb.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id DD77E26733D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 13:51:50 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: axg-spdifout: select SND_PCM_IEC958
+   ASoC: trace: remove snd_soc_codec
 
 has been applied to the asoc tree at
 
@@ -53,38 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From a241c3d95b8b985834d218eedde3923ed683e862 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Tue, 24 Jul 2018 11:36:45 +0200
-Subject: [PATCH] ASoC: meson: axg-spdifout: select SND_PCM_IEC958
+>From 211b4415ecb254e167837206756dea123342689c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Wed, 28 Mar 2018 02:18:13 +0000
+Subject: [PATCH] ASoC: trace: remove snd_soc_codec
 
-When CONFIG_SND_PCM_IEC958 is disabled, we get a link error for the
-new driver:
+snd_soc_codec is replaced to snd_soc_component,
+and it is not used in this file.
+Let's remove it
 
-sound/soc/meson/axg-spdifout.o: In function `axg_spdifout_hw_params':
-axg-spdifout.c:(.text+0x650): undefined reference to `snd_pcm_create_iec958_consumer_hw_params'
-
-The other users use 'select', so we should do the same here.
-
-Fixes: 53eb4b7aaa04 ("ASoC: meson: add axg spdif output")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ include/trace/events/asoc.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index 4cf93c05a982..8af8bc358a90 100644
---- a/sound/soc/meson/Kconfig
-+++ b/sound/soc/meson/Kconfig
-@@ -56,6 +56,7 @@ config SND_MESON_AXG_SOUND_CARD
+diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
+index ccd1a3bdff46..40c300fe704d 100644
+--- a/include/trace/events/asoc.h
++++ b/include/trace/events/asoc.h
+@@ -12,7 +12,6 @@
+ #define DAPM_ARROW(dir) (((dir) == SND_SOC_DAPM_DIR_OUT) ? "->" : "<-")
  
- config SND_MESON_AXG_SPDIFOUT
- 	tristate "Amlogic AXG SPDIF Output Support"
-+	select SND_PCM_IEC958
- 	imply SND_SOC_SPDIF
- 	help
- 	  Select Y or M to add support for SPDIF output serializer embedded
+ struct snd_soc_jack;
+-struct snd_soc_codec;
+ struct snd_soc_card;
+ struct snd_soc_dapm_widget;
+ struct snd_soc_dapm_path;
 -- 
 2.18.0
