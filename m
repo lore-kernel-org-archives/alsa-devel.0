@@ -1,299 +1,116 @@
-From: Christopher Head <alsa@chead.ca>
-Subject: Re: Incorrect name of PCM
-Date: Mon, 23 Jul 2018 20:17:22 -0700
-Message-ID: <20180723201722.2f96a07c@amdahl.home.chead.ca>
-References: <20180722083850.5283c197@amdahl.home.chead.ca>
- <s5h7elm1k39.wl-tiwai@suse.de>
- <3E9578B3-156B-40D9-BC11-F8D11B73E722@chead.ca>
- <s5hsh4a3p34.wl-tiwai@suse.de>
- <56F88318-0461-4587-AE9D-A885BB121ADC@chead.ca>
- <s5hin55zw8b.wl-tiwai@suse.de>
+From: "Dae R. Jeong" <threeearcat@gmail.com>
+Subject: WARNING in port_delete
+Date: Tue, 24 Jul 2018 12:36:08 +0900
+Message-ID: <20180724033608.GA17607@dragonet>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6822513002455025570=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lovelace.chead.ca (lovelace.chead.ca [162.223.226.168])
- by alsa0.perex.cz (Postfix) with ESMTP id C968D267637
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 05:17:55 +0200 (CEST)
-In-Reply-To: <s5hin55zw8b.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
+To: perex@perex.cz, tiwai@suse.com, colin.king@canonical.com
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lifeasageek@gmail.com, kt0755@gmail.com, bammanag@purdue.edu
 List-Id: alsa-devel@alsa-project.org
 
---===============6822513002455025570==
-Content-Type: multipart/signed; micalg=pgp-sha256;
- boundary="Sig_/u6KP6WCz/+Hf_oIva0wqMzO"; protocol="application/pgp-signature"
+Reporting the crash: WARNING in port_delete
 
---Sig_/u6KP6WCz/+Hf_oIva0wqMzO
-Content-Type: multipart/mixed; boundary="MP_/d00amWHamg+Jqb90XKFwczW"
-
---MP_/d00amWHamg+Jqb90XKFwczW
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
-
-On Mon, 23 Jul 2018 19:40:36 +0200
-Takashi Iwai <tiwai@suse.de> wrote:
-
-> OK, then another possibility is a BIOS bug.  BIOS declares the pin as
-> HDMI incorrectly although it's a SPDIF.
-
-That would appear to be the case. According to the VT1708S datasheet,
-the typical application is for digital output widget node 0x12,
-attached to pin complex node 0x20, to be used for S/PDIF, and digital
-output widget node 0x15, attached to pin complex node 0x21, to be used
-for HDMI. The datasheet=E2=80=99s default values for the Configuration Defa=
-ult
-words for the two pin complex nodes agree with that configuration. This
-also appears to be how my motherboard is configured.
-
-However, I have attached /proc/asound/card0/codec#0; this file states
-that node 0x20 is HDMI and 0x21 is S/PDIF, and having decoded the raw
-words based on the Intel HDA specification revision 1.0a, I agree that
-the kernel is decoding them correctly. I assume the kernel driver
-doesn=E2=80=99t change these words, which means the information I=E2=80=99m=
- seeing
-there, since it=E2=80=99s not the codec default, must have been put there by
-the BIOS, apparently erroneously.
-
-Is this something that the ALSA project wants to (or even can) add a
-quirk for? I am already running the most recent BIOS available.
---=20
-Christopher Head
-
---MP_/d00amWHamg+Jqb90XKFwczW
-Content-Type: application/octet-stream; name=codec#0
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename=codec#0
-
-Q29kZWM6IFZJQSBWVDE3MDhTCkFkZHJlc3M6IDAKQUZHIEZ1bmN0aW9uIElkOiAweDEgKHVuc29s
-IDApClZlbmRvciBJZDogMHgxMTA2MDM5NwpTdWJzeXN0ZW0gSWQ6IDB4MTA0Mzg0MTUKUmV2aXNp
-b24gSWQ6IDB4MTAwMDAwCk5vIE1vZGVtIEZ1bmN0aW9uIEdyb3VwIGZvdW5kCkRlZmF1bHQgUENN
-OgogICAgcmF0ZXMgWzB4MF06CiAgICBiaXRzIFsweDBdOgogICAgZm9ybWF0cyBbMHgwXToKRGVm
-YXVsdCBBbXAtSW4gY2FwczogTi9BCkRlZmF1bHQgQW1wLU91dCBjYXBzOiBOL0EKU3RhdGUgb2Yg
-QUZHIG5vZGUgMHgwMToKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0
-aW5nPUQwLCBhY3R1YWw9RDAKR1BJTzogaW89MSwgbz0wLCBpPTAsIHVuc29saWNpdGVkPTEsIHdh
-a2U9MAogIElPWzBdOiBlbmFibGU9MCwgZGlyPTAsIHdha2U9MCwgc3RpY2t5PTAsIGRhdGE9MCwg
-dW5zb2w9MApOb2RlIDB4MTAgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MWQ6IFN0ZXJlbyBBbXAt
-T3V0CiAgQ29udHJvbDogbmFtZT0iRnJvbnQgUGxheWJhY2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2
-aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBEZXZp
-Y2U6IG5hbWU9IlZUMTcwOFMgQW5hbG9nIiwgdHlwZT0iQXVkaW8iLCBkZXZpY2U9MAogIEFtcC1P
-dXQgY2Fwczogb2ZzPTB4MmEsIG5zdGVwcz0weDJhLCBzdGVwc2l6ZT0weDA1LCBtdXRlPTAKICBB
-bXAtT3V0IHZhbHM6ICBbMHgwMCAweDAwXQogIENvbnZlcnRlcjogc3RyZWFtPTAsIGNoYW5uZWw9
-MAogIFBDTToKICAgIHJhdGVzIFsweDVlMF06IDQ0MTAwIDQ4MDAwIDg4MjAwIDk2MDAwIDE5MjAw
-MAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06IFBDTQogIFBvd2Vy
-IHN0YXRlczogIEQwIEQxIEQyIEQzCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMApOb2Rl
-IDB4MTEgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MWQ6IFN0ZXJlbyBBbXAtT3V0CiAgQ29udHJv
-bDogbmFtZT0iU3Vycm91bmQgUGxheWJhY2sgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAg
-IENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBBbXAtT3V0IGNhcHM6
-IG9mcz0weDJhLCBuc3RlcHM9MHgyYSwgc3RlcHNpemU9MHgwNSwgbXV0ZT0wCiAgQW1wLU91dCB2
-YWxzOiAgWzB4MDAgMHgwMF0KICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBQQ006
-CiAgICByYXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAKICAgIGJp
-dHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6
-ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDEyIFtB
-dWRpbyBPdXRwdXRdIHdjYXBzIDB4NjExOiBTdGVyZW8gRGlnaXRhbAogIENvbnRyb2w6IG5hbWU9
-IklFQzk1OCBQbGF5YmFjayBDb24gTWFzayIsIGluZGV4PTAsIGRldmljZT0wCiAgQ29udHJvbDog
-bmFtZT0iSUVDOTU4IFBsYXliYWNrIFBybyBNYXNrIiwgaW5kZXg9MCwgZGV2aWNlPTAKICBDb250
-cm9sOiBuYW1lPSJJRUM5NTggUGxheWJhY2sgRGVmYXVsdCIsIGluZGV4PTAsIGRldmljZT0wCiAg
-Q29udHJvbDogbmFtZT0iSUVDOTU4IFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0w
-CiAgQ29udHJvbDogbmFtZT0iSUVDOTU4IERlZmF1bHQgUENNIFBsYXliYWNrIFN3aXRjaCIsIGlu
-ZGV4PTAsIGRldmljZT0wCiAgRGV2aWNlOiBuYW1lPSJWVDE3MDhTIERpZ2l0YWwiLCB0eXBlPSJI
-RE1JIiwgZGV2aWNlPTMKICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBEaWdpdGFs
-OiBFbmFibGVkIEdlbkxldmVsCiAgRGlnaXRhbCBjYXRlZ29yeTogMHgyCiAgSUVDIENvZGluZyBU
-eXBlOiAweDAKICBQQ006CiAgICByYXRlcyBbMHg1ZTBdOiA0NDEwMCA0ODAwMCA4ODIwMCA5NjAw
-MCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3JtYXRzIFsweDFdOiBQQ00K
-ICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9
-RDAKTm9kZSAweDEzIFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBBbXAtSW4K
-ICBDb250cm9sOiBuYW1lPSJDYXB0dXJlIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBD
-b250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJD
-YXB0dXJlIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9Mywg
-ZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBEZXZpY2U6IG5hbWU9IlZUMTcwOFMgQW5hbG9nIiwgdHlw
-ZT0iQXVkaW8iLCBkZXZpY2U9MAogIEFtcC1JbiBjYXBzOiBvZnM9MHgwYiwgbnN0ZXBzPTB4MWYs
-IHN0ZXBzaXplPTB4MDUsIG11dGU9MQogIEFtcC1JbiB2YWxzOiAgWzB4MTIgMHgxMl0KICBDb252
-ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFubmVsPTAKICBTREktU2VsZWN0OiAwCiAgUENNOgogICAgcmF0
-ZXMgWzB4NTYwXTogNDQxMDAgNDgwMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAy
-MCAyNAogICAgZm9ybWF0cyBbMHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMK
-ICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTcK
-Tm9kZSAweDE0IFtBdWRpbyBJbnB1dF0gd2NhcHMgMHgxMDA1MWI6IFN0ZXJlbyBBbXAtSW4KICBB
-bXAtSW4gY2Fwczogb2ZzPTB4MGIsIG5zdGVwcz0weDFmLCBzdGVwc2l6ZT0weDA1LCBtdXRlPTEK
-ICBBbXAtSW4gdmFsczogIFsweDhiIDB4OGJdCiAgQ29udmVydGVyOiBzdHJlYW09MCwgY2hhbm5l
-bD0wCiAgU0RJLVNlbGVjdDogMAogIFBDTToKICAgIHJhdGVzIFsweDU2MF06IDQ0MTAwIDQ4MDAw
-IDk2MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1hdHMgWzB4MV06
-IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFj
-dHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDFlCk5vZGUgMHgxNSBbQXVkaW8gT3V0cHV0
-XSB3Y2FwcyAweDYxMTogU3RlcmVvIERpZ2l0YWwKICBDb252ZXJ0ZXI6IHN0cmVhbT0wLCBjaGFu
-bmVsPTAKICBEaWdpdGFsOiBFbmFibGVkIEdlbkxldmVsCiAgRGlnaXRhbCBjYXRlZ29yeTogMHgy
-CiAgSUVDIENvZGluZyBUeXBlOiAweDAKICBQQ006CiAgICByYXRlcyBbMHg1ZTBdOiA0NDEwMCA0
-ODAwMCA4ODIwMCA5NjAwMCAxOTIwMDAKICAgIGJpdHMgWzB4ZV06IDE2IDIwIDI0CiAgICBmb3Jt
-YXRzIFsweDFdOiBQQ00KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0
-aW5nPUQwLCBhY3R1YWw9RDAKTm9kZSAweDE2IFtBdWRpbyBNaXhlcl0gd2NhcHMgMHgyMDA1MGI6
-IFN0ZXJlbyBBbXAtSW4KICBDb250cm9sOiBuYW1lPSJSZWFyIE1pYyBQbGF5YmFjayBWb2x1bWUi
-LCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTIs
-IG9mcz0wCiAgQ29udHJvbDogbmFtZT0iUmVhciBNaWMgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9
-MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9SW4sIGlkeD0yLCBvZnM9MAog
-IENvbnRyb2w6IG5hbWU9IkZyb250IE1pYyBQbGF5YmFjayBWb2x1bWUiLCBpbmRleD0wLCBkZXZp
-Y2U9MAogICAgQ29udHJvbEFtcDogY2hzPTMsIGRpcj1JbiwgaWR4PTQsIG9mcz0wCiAgQ29udHJv
-bDogbmFtZT0iRnJvbnQgTWljIFBsYXliYWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAg
-ICBDb250cm9sQW1wOiBjaHM9MywgZGlyPUluLCBpZHg9NCwgb2ZzPTAKICBDb250cm9sOiBuYW1l
-PSJMaW5lIFBsYXliYWNrIFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1w
-OiBjaHM9MywgZGlyPUluLCBpZHg9Mywgb2ZzPTAKICBDb250cm9sOiBuYW1lPSJMaW5lIFBsYXli
-YWNrIFN3aXRjaCIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGly
-PUluLCBpZHg9Mywgb2ZzPTAKICBBbXAtSW4gY2Fwczogb2ZzPTB4MTcsIG5zdGVwcz0weDFmLCBz
-dGVwc2l6ZT0weDA1LCBtdXRlPTEKICBBbXAtSW4gdmFsczogIFsweDE3IDB4MTddIFsweDgwIDB4
-ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgwIDB4ODBdIFsweDgw
-IDB4ODBdCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dlcjogc2V0dGluZz1EMCwg
-YWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogNwogICAgIDB4MTAgMHgxZiAweDFhIDB4MWIgMHgxZSAw
-eDFkIDB4MjUKTm9kZSAweDE3IFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDA1MDE6IFN0ZXJl
-bwogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVh
-bD1EMAogIENvbm5lY3Rpb246IDYKICAgICAweDFmIDB4MWEgMHgxYiAweDFlKiAweDFkIDB4MTYK
-Tm9kZSAweDE4IFtBdWRpbyBTZWxlY3Rvcl0gd2NhcHMgMHgzMDA1MGQ6IFN0ZXJlbyBBbXAtT3V0
-CiAgQ29udHJvbDogbmFtZT0iU3Vycm91bmQgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2
-aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBBbXAt
-T3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAg
-QW1wLU91dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMwog
-IFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxMQpO
-b2RlIDB4MTkgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4MTogU3RlcmVvCiAgUGluY2FwIDB4
-MDAwMDAwMTQ6IE9VVCBEZXRlY3QKICBQaW4gRGVmYXVsdCAweDQxMDExMGYwOiBbTi9BXSBMaW5l
-IE91dCBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBCbGFjawogICAgRGVmQXNz
-b2NpYXRpb24gPSAweGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgVW5zb2xp
-Y2l0ZWQ6IHRhZz0wMCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQ
-b3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTgKTm9k
-ZSAweDFhIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1ODE6IFN0ZXJlbwogIENvbnRyb2w6IG5h
-bWU9IlJlYXIgTWljIEJvb3N0IFZvbHVtZSIsIGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9s
-QW1wOiBjaHM9MywgZGlyPUluLCBpZHg9MCwgb2ZzPTAKICBQaW5jYXAgMHgwMDAwMjMzNDogSU4g
-T1VUIERldGVjdAogICAgVnJlZiBjYXBzOiBISVogNTAgMTAwCiAgUGluIERlZmF1bHQgMHgwMWEx
-OTAzNjogW0phY2tdIE1pYyBhdCBFeHQgUmVhcgogICAgQ29ubiA9IDEvOCwgQ29sb3IgPSBQaW5r
-CiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MywgU2VxdWVuY2UgPSAweDYKICBQaW4tY3RsczogMHgy
-MTogSU4gVlJFRl81MAogIFVuc29saWNpdGVkOiB0YWc9MDMsIGVuYWJsZWQ9MQogIFBvd2VyIHN0
-YXRlczogIEQwIEQxIEQyIEQzCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5l
-Y3Rpb246IDEKICAgICAweDI2Ck5vZGUgMHgxYiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNTgx
-OiBTdGVyZW8KICBQaW5jYXAgMHgwMDAwMjMzNDogSU4gT1VUIERldGVjdAogICAgVnJlZiBjYXBz
-OiBISVogNTAgMTAwCiAgUGluIERlZmF1bHQgMHgwMTgxMzAzZTogW0phY2tdIExpbmUgSW4gYXQg
-RXh0IFJlYXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gQmx1ZQogICAgRGVmQXNzb2NpYXRpb24g
-PSAweDMsIFNlcXVlbmNlID0gMHhlCiAgUGluLWN0bHM6IDB4MjA6IElOIFZSRUZfSElaCiAgVW5z
-b2xpY2l0ZWQ6IHRhZz0wNSwgZW5hYmxlZD0xCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMK
-ICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MTgK
-Tm9kZSAweDFjIFtQaW4gQ29tcGxleF0gd2NhcHMgMHg0MDA1OGQ6IFN0ZXJlbyBBbXAtT3V0CiAg
-Q29udHJvbDogbmFtZT0iRnJvbnQgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2aWNlPTAK
-ICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBBbXAtT3V0IGNh
-cHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAgQW1wLU91
-dCB2YWxzOiAgWzB4ODAgMHg4MF0KICBQaW5jYXAgMHgwMDAxMDAxYzogT1VUIEhQIEVBUEQgRGV0
-ZWN0CiAgRUFQRCAweDI6IEVBUEQKICBQaW4gRGVmYXVsdCAweDAxMDE0MDEwOiBbSmFja10gTGlu
-ZSBPdXQgYXQgRXh0IFJlYXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gR3JlZW4KICAgIERlZkFz
-c29jaWF0aW9uID0gMHgxLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAweDQwOiBPVVQKICBV
-bnNvbGljaXRlZDogdGFnPTAxLCBlbmFibGVkPTEKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBE
-MwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgx
-NgpOb2RlIDB4MWQgW1BpbiBDb21wbGV4XSB3Y2FwcyAweDQwMDU4ZDogU3RlcmVvIEFtcC1PdXQK
-ICBDb250cm9sOiBuYW1lPSJIZWFkcGhvbmUgUGxheWJhY2sgU3dpdGNoIiwgaW5kZXg9MCwgZGV2
-aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBkaXI9T3V0LCBpZHg9MCwgb2ZzPTAKICBBbXAt
-T3V0IGNhcHM6IG9mcz0weDAwLCBuc3RlcHM9MHgwMCwgc3RlcHNpemU9MHgwMCwgbXV0ZT0xCiAg
-QW1wLU91dCB2YWxzOiAgWzB4MDAgMHgwMF0KICBQaW5jYXAgMHgwMDAwMjMzYzogSU4gT1VUIEhQ
-IERldGVjdAogICAgVnJlZiBjYXBzOiBISVogNTAgMTAwCiAgUGluIERlZmF1bHQgMHgwMjIxNDAx
-ZjogW0phY2tdIEhQIE91dCBhdCBFeHQgRnJvbnQKICAgIENvbm4gPSAxLzgsIENvbG9yID0gR3Jl
-ZW4KICAgIERlZkFzc29jaWF0aW9uID0gMHgxLCBTZXF1ZW5jZSA9IDB4ZgogIFBpbi1jdGxzOiAw
-eGMwOiBPVVQgSFAgVlJFRl9ISVoKICBVbnNvbGljaXRlZDogdGFnPTAyLCBlbmFibGVkPTEKICBQ
-b3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0aW5nPUQwLCBhY3R1YWw9RDAK
-ICBDb25uZWN0aW9uOiAyCiAgICAgMHgxNiAweDI1KgpOb2RlIDB4MWUgW1BpbiBDb21wbGV4XSB3
-Y2FwcyAweDQwMDU4ZDogU3RlcmVvIEFtcC1PdXQKICBDb250cm9sOiBuYW1lPSJGcm9udCBNaWMg
-Qm9vc3QgVm9sdW1lIiwgaW5kZXg9MCwgZGV2aWNlPTAKICAgIENvbnRyb2xBbXA6IGNocz0zLCBk
-aXI9SW4sIGlkeD0wLCBvZnM9MAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAw
-LCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAweDgwXQogIFBp
-bmNhcCAweDAwMDAyMzNjOiBJTiBPVVQgSFAgRGV0ZWN0CiAgICBWcmVmIGNhcHM6IEhJWiA1MCAx
-MDAKICBQaW4gRGVmYXVsdCAweDAyYTE5MDM3OiBbSmFja10gTWljIGF0IEV4dCBGcm9udAogICAg
-Q29ubiA9IDEvOCwgQ29sb3IgPSBQaW5rCiAgICBEZWZBc3NvY2lhdGlvbiA9IDB4MywgU2VxdWVu
-Y2UgPSAweDcKICBQaW4tY3RsczogMHgyMTogSU4gVlJFRl81MAogIFVuc29saWNpdGVkOiB0YWc9
-MDQsIGVuYWJsZWQ9MQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzCiAgUG93ZXI6IHNldHRp
-bmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDIKICAgICAweDE2KiAweDI1Ck5vZGUgMHgx
-ZiBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNDAxOiBTdGVyZW8KICBQaW5jYXAgMHgwMDAwMDAy
-MDogSU4KICBQaW4gRGVmYXVsdCAweDUwMzcwMWYwOiBbTi9BXSBDRCBhdCBJbnQgTi9BCiAgICBD
-b25uID0gQW5hbG9nLCBDb2xvciA9IFVua25vd24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBT
-ZXF1ZW5jZSA9IDB4MAogICAgTWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0bHM6IDB4MDA6CiAg
-UG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dlcjogc2V0dGluZz1EMCwgYWN0dWFsPUQw
-Ck5vZGUgMHgyMCBbUGluIENvbXBsZXhdIHdjYXBzIDB4NDAwNzAxOiBTdGVyZW8gRGlnaXRhbAog
-IFBpbmNhcCAweDAwMDAwMDEwOiBPVVQKICBQaW4gRGVmYXVsdCAweDE4NTYwMGYwOiBbSmFja10g
-RGlnaXRhbCBPdXQgYXQgSW50IEhETUkKICAgIENvbm4gPSBEaWdpdGFsLCBDb2xvciA9IFVua25v
-d24KICAgIERlZkFzc29jaWF0aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogIFBpbi1jdGxzOiAw
-eDQwOiBPVVQKICBQb3dlciBzdGF0ZXM6ICBEMCBEMSBEMiBEMwogIFBvd2VyOiBzZXR0aW5nPUQw
-LCBhY3R1YWw9RDAKICBDb25uZWN0aW9uOiAxCiAgICAgMHgxMgpOb2RlIDB4MjEgW1BpbiBDb21w
-bGV4XSB3Y2FwcyAweDQwMDcwMTogU3RlcmVvIERpZ2l0YWwKICBQaW5jYXAgMHgwMDAwMDAxMDog
-T1VUCiAgUGluIERlZmF1bHQgMHgwNzQ1MTFmMDogW0phY2tdIFNQRElGIE91dCBhdCBFeHQgUmVh
-ciBQYW5lbAogICAgQ29ubiA9IE9wdGljYWwsIENvbG9yID0gQmxhY2sKICAgIERlZkFzc29jaWF0
-aW9uID0gMHhmLCBTZXF1ZW5jZSA9IDB4MAogICAgTWlzYyA9IE5PX1BSRVNFTkNFCiAgUGluLWN0
-bHM6IDB4NDA6IE9VVAogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzCiAgUG93ZXI6IHNldHRp
-bmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDE1Ck5vZGUgMHgyMiBbUGlu
-IENvbXBsZXhdIHdjYXBzIDB4NDAwNTgxOiBTdGVyZW8KICBQaW5jYXAgMHgwMDAwMDAxNDogT1VU
-IERldGVjdAogIFBpbiBEZWZhdWx0IDB4NDEwMTYwZjA6IFtOL0FdIExpbmUgT3V0IGF0IEV4dCBS
-ZWFyCiAgICBDb25uID0gMS84LCBDb2xvciA9IE9yYW5nZQogICAgRGVmQXNzb2NpYXRpb24gPSAw
-eGYsIFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgVW5zb2xpY2l0ZWQ6IHRhZz0w
-MCwgZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dlcjogc2V0dGlu
-Zz1EMCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MjYKTm9kZSAweDIzIFtQaW4g
-Q29tcGxleF0gd2NhcHMgMHg0MDA1ODE6IFN0ZXJlbwogIFBpbmNhcCAweDAwMDAwMDE0OiBPVVQg
-RGV0ZWN0CiAgUGluIERlZmF1bHQgMHg0MTAxMjBmMDogW04vQV0gTGluZSBPdXQgYXQgRXh0IFJl
-YXIKICAgIENvbm4gPSAxLzgsIENvbG9yID0gR3JleQogICAgRGVmQXNzb2NpYXRpb24gPSAweGYs
-IFNlcXVlbmNlID0gMHgwCiAgUGluLWN0bHM6IDB4MDA6CiAgVW5zb2xpY2l0ZWQ6IHRhZz0wMCwg
-ZW5hYmxlZD0wCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dlcjogc2V0dGluZz1E
-MCwgYWN0dWFsPUQwCiAgQ29ubmVjdGlvbjogMQogICAgIDB4MjcKTm9kZSAweDI0IFtBdWRpbyBP
-dXRwdXRdIHdjYXBzIDB4NDFkOiBTdGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9IkNlbnRl
-ciBQbGF5YmFjayBWb2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hz
-PTEsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAogIENvbnRyb2w6IG5hbWU9IkxGRSBQbGF5YmFjayBW
-b2x1bWUiLCBpbmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTIsIGRpcj1PdXQs
-IGlkeD0wLCBvZnM9MAogIEFtcC1PdXQgY2Fwczogb2ZzPTB4MmEsIG5zdGVwcz0weDJhLCBzdGVw
-c2l6ZT0weDA1LCBtdXRlPTAKICBBbXAtT3V0IHZhbHM6ICBbMHgwMCAweDAwXQogIENvbnZlcnRl
-cjogc3RyZWFtPTAsIGNoYW5uZWw9MAogIFBDTToKICAgIHJhdGVzIFsweDVlMF06IDQ0MTAwIDQ4
-MDAwIDg4MjAwIDk2MDAwIDE5MjAwMAogICAgYml0cyBbMHhlXTogMTYgMjAgMjQKICAgIGZvcm1h
-dHMgWzB4MV06IFBDTQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzCiAgUG93ZXI6IHNldHRp
-bmc9RDAsIGFjdHVhbD1EMApOb2RlIDB4MjUgW0F1ZGlvIE91dHB1dF0gd2NhcHMgMHg0MWQ6IFN0
-ZXJlbyBBbXAtT3V0CiAgQ29udHJvbDogbmFtZT0iSGVhZHBob25lIFBsYXliYWNrIFZvbHVtZSIs
-IGluZGV4PTAsIGRldmljZT0wCiAgICBDb250cm9sQW1wOiBjaHM9MywgZGlyPU91dCwgaWR4PTAs
-IG9mcz0wCiAgRGV2aWNlOiBuYW1lPSJWVDE3MDhTIEFsdCBBbmFsb2ciLCB0eXBlPSJBdWRpbyIs
-IGRldmljZT0yCiAgQW1wLU91dCBjYXBzOiBvZnM9MHgyYSwgbnN0ZXBzPTB4MmEsIHN0ZXBzaXpl
-PTB4MDUsIG11dGU9MAogIEFtcC1PdXQgdmFsczogIFsweDFjIDB4MWNdCiAgQ29udmVydGVyOiBz
-dHJlYW09MCwgY2hhbm5lbD0wCiAgUENNOgogICAgcmF0ZXMgWzB4NWUwXTogNDQxMDAgNDgwMDAg
-ODgyMDAgOTYwMDAgMTkyMDAwCiAgICBiaXRzIFsweGVdOiAxNiAyMCAyNAogICAgZm9ybWF0cyBb
-MHgxXTogUENNCiAgUG93ZXIgc3RhdGVzOiAgRDAgRDEgRDIgRDMKICBQb3dlcjogc2V0dGluZz1E
-MCwgYWN0dWFsPUQwCk5vZGUgMHgyNiBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwNTBkOiBT
-dGVyZW8gQW1wLU91dAogIENvbnRyb2w6IG5hbWU9IkNlbnRlciBQbGF5YmFjayBTd2l0Y2giLCBp
-bmRleD0wLCBkZXZpY2U9MAogICAgQ29udHJvbEFtcDogY2hzPTEsIGRpcj1PdXQsIGlkeD0wLCBv
-ZnM9MAogIENvbnRyb2w6IG5hbWU9IkxGRSBQbGF5YmFjayBTd2l0Y2giLCBpbmRleD0wLCBkZXZp
-Y2U9MAogICAgQ29udHJvbEFtcDogY2hzPTIsIGRpcj1PdXQsIGlkeD0wLCBvZnM9MAogIEFtcC1P
-dXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRlPTEKICBB
-bXAtT3V0IHZhbHM6ICBbMHg4MCAweDgwXQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQyIEQzCiAg
-UG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAweDI0Ck5v
-ZGUgMHgyNyBbQXVkaW8gU2VsZWN0b3JdIHdjYXBzIDB4MzAwNTBkOiBTdGVyZW8gQW1wLU91dAog
-IEFtcC1PdXQgY2Fwczogb2ZzPTB4MDAsIG5zdGVwcz0weDAwLCBzdGVwc2l6ZT0weDAwLCBtdXRl
-PTEKICBBbXAtT3V0IHZhbHM6ICBbMHg4MCAweDgwXQogIFBvd2VyIHN0YXRlczogIEQwIEQxIEQy
-IEQzCiAgUG93ZXI6IHNldHRpbmc9RDAsIGFjdHVhbD1EMAogIENvbm5lY3Rpb246IDEKICAgICAw
-eDI1Cg==
-
---MP_/d00amWHamg+Jqb90XKFwczW--
-
---Sig_/u6KP6WCz/+Hf_oIva0wqMzO
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYIAB0WIQQl7biEw6IqP57fjDtLFNZko10+CwUCW1aaQgAKCRBLFNZko10+
-C1uxAP9hIh0XrgCu1yqYTyeWhhKZCIkaG+ydwwmB2z3dgm3mnwEAx9aVVrzbKaYB
-WFeMTuxq+qu7SMwtAz2liwBQAJs/Ogs=
-=oKyM
------END PGP SIGNATURE-----
-
---Sig_/u6KP6WCz/+Hf_oIva0wqMzO--
-
---===============6822513002455025570==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+This crash has been found in v4.18-rc3 using RaceFuzzer (a modified
+version of Syzkaller), which we descrbie more at the end of this
+report. Our analysis shows that the race occurs when invoking two close
+syscalls concurrently.
 
 
---===============6822513002455025570==--
+The executed program is as follows:
+r0 = open("/dev/snd/seq", 0x0, 0x0)
+ioctl(r0, SNDRV_SEQ_IOCTL_CREATE_PORT, {{0x80}, "706f72943000000000000000000000000000000000000000000000000000000000233f770800000000000000000000000000000000000000001000", 0xffffffffffffffff, 0xfffffffffffffbff})
+r1 = openat(AT_FDCWD, "/dev/sequencer2", 0x8402, 0x0)
+close(r0)
+close(r1)
+
+and two threads executed the program as follows:
+Thread0                                     Thread1
+open("/dev/snd/seq")
+ioctl(r0, SNDRV_SEQ_IOCTL_CREATE_PORT)
+openat("/dev/sequencer2")
+close(r0)                                   close(r1)
+
+(Note that two close() syscalls were exeuted after openat() syscall, and
+two close() syscalls were executed concurrently.)
+
+
+Crash log:
+==================================================================
+WARNING: CPU: 1 PID: 32519 at /home/daeryong/workspace/race-fuzzer/kernels_repo/kernel_v4.18-rc3/sound/core/seq/seq_ports.c:275 port_delete+0xde/0xf0 sound/core/seq/seq_ports.c:275
+Kernel panic - not syncing: panic_on_warn set ...
+
+CPU: 1 PID: 32519 Comm: syz-executor0 Not tainted 4.18.0-rc3 #1
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x16e/0x22c lib/dump_stack.c:113
+ panic+0x1a8/0x3a7 kernel/panic.c:184
+ __warn+0x191/0x1a0 kernel/panic.c:536
+ report_bug+0x132/0x1b0 lib/bug.c:186
+ fixup_bug.part.10+0x28/0x50 arch/x86/kernel/traps.c:178
+ fixup_bug arch/x86/kernel/traps.c:247 [inline]
+ do_error_trap+0x284/0x2c0 arch/x86/kernel/traps.c:296
+ do_invalid_op+0x1b/0x20 arch/x86/kernel/traps.c:316
+ invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:992
+RIP: 0010:port_delete+0xde/0xf0 sound/core/seq/seq_ports.c:275
+Code: 00 00 e8 b5 68 d2 fd 8b 83 58 01 00 00 85 c0 75 1d e8 86 5c ae fd 48 89 df e8 3e 52 d2 fd 31 c0 5b 41 5c 5d c3 e8 72 5c ae fd <0f> 0b eb c8 e8 69 5c ae fd 0f 0b eb da 0f 1f 44 00 00 55 48 89 e5 
+RSP: 0018:ffff8801d635f900 EFLAGS: 00010216
+RAX: 0000000000040000 RBX: ffff8801da196900 RCX: ffffffff839b86ee
+RDX: 0000000000005e94 RSI: ffffc90002640000 RDI: ffff8801da196978
+RBP: ffff8801d635f910 R08: 0000000000000098 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: ffffffff839ba820
+R13: ffff8801da196950 R14: ffff8801ed5bc080 R15: ffff8801da196958
+ snd_seq_delete_port+0x2b0/0x2d0 sound/core/seq/seq_ports.c:303
+ snd_seq_ioctl_delete_port+0x5b/0xa0 sound/core/seq/seq_clientmgr.c:1325
+ snd_seq_kernel_client_ctl+0xd4/0xf0 sound/core/seq/seq_clientmgr.c:2361
+ snd_seq_event_port_detach+0xcb/0x120 sound/core/seq/seq_ports.c:705
+ delete_port+0x3a/0x70 sound/core/seq/oss/seq_oss_init.c:354
+ snd_seq_oss_release+0x7c/0x90 sound/core/seq/oss/seq_oss_init.c:433
+ odev_release+0x40/0x60 sound/core/seq/oss/seq_oss.c:153
+ __fput+0x234/0x470 fs/file_table.c:209
+ ____fput+0x15/0x20 fs/file_table.c:243
+ task_work_run+0x15a/0x1c0 kernel/task_work.c:113
+ tracehook_notify_resume include/linux/tracehook.h:192 [inline]
+ exit_to_usermode_loop+0x2a3/0x2b0 arch/x86/entry/common.c:166
+ prepare_exit_to_usermode arch/x86/entry/common.c:197 [inline]
+ syscall_return_slowpath arch/x86/entry/common.c:268 [inline]
+ do_syscall_64+0x485/0x4b0 arch/x86/entry/common.c:293
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x456469
+Code: 1d ba fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 eb b9 fb ff c3 66 2e 0f 1f 84 00 00 00 00 
+RSP: 002b:00007fe9a8936b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 000000000072bfa0 RCX: 0000000000456469
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000014
+RBP: 0000000000000054 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007fe9a89376d4
+R13: 00000000ffffffff R14: 00000000006f5880 R15: 0000000000000000
+Dumping ftrace buffer:
+   (ftrace buffer empty)
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+= About RaceFuzzer
+
+RaceFuzzer is a customized version of Syzkaller, specifically tailored
+to find race condition bugs in the Linux kernel. While we leverage
+many different technique, the notable feature of RaceFuzzer is in
+leveraging a custom hypervisor (QEMU/KVM) to interleave the
+scheduling. In particular, we modified the hypervisor to intentionally
+stall a per-core execution, which is similar to supporting per-core
+breakpoint functionality. This allows RaceFuzzer to force the kernel
+to deterministically trigger racy condition (which may rarely happen
+in practice due to randomness in scheduling).
+
+RaceFuzzer's C repro always pinpoints two racy syscalls. Since C
+repro's scheduling synchronization should be performed at the user
+space, its reproducibility is limited (reproduction may take from 1
+second to 10 minutes (or even more), depending on a bug). This is
+because, while RaceFuzzer precisely interleaves the scheduling at the
+kernel's instruction level when finding this bug, C repro cannot fully
+utilize such a feature. Please disregard all code related to
+"should_hypercall" in the C repro, as this is only for our debugging
+purposes using our own hypervisor.
