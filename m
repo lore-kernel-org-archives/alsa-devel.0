@@ -1,18 +1,18 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 01/11] ASoC: SOF: Add Sound Open Firmware
- driver core
-Date: Tue, 24 Jul 2018 10:57:42 -0500
-Message-ID: <8d2bad29-b498-fa03-8c95-53b7ebd5f83b@linux.intel.com>
-References: <20180719185335.30912-1-liam.r.girdwood@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: imx-sgtl5000: Switch to SPDX
+	identifier" to the asoc tree
+Date: Tue, 24 Jul 2018 17:02:08 +0100 (BST)
+Message-ID: <20180724160208.DB1001123A86@debutante.sirena.org.uk>
+References: <1532436513-19283-4-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AE02267715
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 17:57:45 +0200 (CEST)
-In-Reply-To: <20180719185335.30912-1-liam.r.girdwood@linux.intel.com>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2C5CB26733D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 18:02:09 +0200 (CEST)
+In-Reply-To: <1532436513-19283-4-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,47 +22,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>
+To: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: nicoleotsuka@gmail.com, alsa-devel@alsa-project.org, broonie@kernel.org, timur@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-d2Ugc2VlbSB0byBoYXZlIGEgbmV3IDAtZGF5IHJlcG9ydCB3aXRoIHJhbmRjb25maWcgcmVsYXRl
-ZCB0byB0aGUgCnBhZ2Uvc2didWZmZXIgbWFuYWdlbWVudC4gTm90IHN1cmUgd2h5IGl0IHdhc24n
-dCBzZWVuIGJlZm9yZSwgSSd2ZSAKYWxyZWFkeSBmaXhlZCBxdWl0ZSBhIGZldyBleG90aWMgY29u
-ZmlndXJhdGlvbnMgZm9yIG5vbi1JbnRlbCB0YXJnZXRzLgoKc291bmQvc29jL3NvZi9jb3JlLmM6
-IEluIGZ1bmN0aW9uICdzbmRfc29mX2NyZWF0ZV9wYWdlX3RhYmxlJzoKc291bmQvc29jL3NvZi9j
-b3JlLmM6MjAxOjEwOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2YgZnVuY3Rpb24gCidz
-bmRfc2didWZfYWxpZ25lZF9wYWdlcycgWy1XZXJyb3I9aW1wbGljaXQtZnVuY3Rpb24tZGVjbGFy
-YXRpb25dCiDCoCBwYWdlcyA9IHNuZF9zZ2J1Zl9hbGlnbmVkX3BhZ2VzKHNpemUpOwogwqDCoMKg
-wqDCoMKgwqDCoMKgIF4KTG9va2luZyBhdCB0aGUgY29kZToKPiArc3RhdGljIGlubGluZSB1bnNp
-Z25lZCBpbnQgc29mX2dldF9wYWdlcyhzaXplX3Qgc2l6ZSkKPiArewo+ICsJcmV0dXJuIChzaXpl
-ICsgUEFHRV9TSVpFIC0gMSkgPj4gUEFHRV9TSElGVDsKPiArfQp0aGlzIGlubGluZSBkb2Vzbid0
-IHNlZW0gdG8gYmUgdXNlZCBidXQgZHVwbGljYXRlcyB0aGUgY29kZSBmcm9tCgpzdGF0aWMgaW5s
-aW5lIHVuc2lnbmVkIGludCBzbmRfc2didWZfYWxpZ25lZF9wYWdlcyhzaXplX3Qgc2l6ZSkKewog
-wqDCoMKgIHJldHVybiAoc2l6ZSArIFBBR0VfU0laRSAtIDEpID4+IFBBR0VfU0hJRlQ7Cn0KCndo
-aWNoIGlzIHVzZWQgYmVsb3cKPiAraW50IHNuZF9zb2ZfY3JlYXRlX3BhZ2VfdGFibGUoc3RydWN0
-IHNuZF9zb2ZfZGV2ICpzZGV2LAo+ICsJCQkgICAgICBzdHJ1Y3Qgc25kX2RtYV9idWZmZXIgKmRt
-YWIsCj4gKwkJCSAgICAgIHVuc2lnbmVkIGNoYXIgKnBhZ2VfdGFibGUsIHNpemVfdCBzaXplKQo+
-ICt7Cj4gKwlpbnQgaSwgcGFnZXM7Cj4gKwo+ICsJcGFnZXMgPSBzbmRfc2didWZfYWxpZ25lZF9w
-YWdlcyhzaXplKTsKdGhpcyBjb2RlIGRvZXNuJ3QgY29tcGlsZSB1bmxlc3MgQ09ORklHX1NORF9E
-TUFfU0dCVUYgaXMgZGVmaW5lZCAoaXQgaXMgCnNldCBmb3IgdGhlIGludGVsLXNwZWNpZmljIGNv
-ZGUgYnV0IG5vdCBmb3IgdGhlIFNPRiBjb3JlKS4gV2UgY2FuIGZpeCAKdGhpcyBpbiBkaWZmZXJl
-bnQgd2F5cwowLiByZXF1aXJlIFNORF9DTURfU0dCVUYgZm9yIHRoZSBjb3JlIC0gbGlrZWx5IG5v
-dCBkZXNpcmFibGUKMS4gdXNlIHNvZl9nZXRfcGFnZXMoKQoyLiBjaGFuZ2UgaW5jbHVkZS9zb3Vu
-ZC9tZW1hbGxvYy5oIHRvIG1ha2Ugc3VyZSB0aGlzIApzbmRfc2didWZfYWxpZ25lZF9wYWdlcygp
-IGlubGluZSBpcyBhdmFpbGFibGUgd2hldGhlciAKQ09ORklHX1NORF9ETUFfU0dCVUYgaXMgZGVm
-aW5lZCBvciBub3QgLSBtYXliZSBtYWtpbmcgc3VyZSB3aGlsZSB3ZSBhcmUgCmF0IGl0IHRoYXQg
-dGhlIG1hbGxvYyBhbmQgZnJlZSBmdW5jdGlvbnMgYXJlIGVtcHR5IHN0YXRpYyBpbmxpbmVzPwoK
-VGhvdWdodHM/ClRoYW5rcwotUGllcnJlCgo+ICsKPiArCWRldl9kYmcoc2Rldi0+ZGV2LCAiZ2Vu
-ZXJhdGluZyBwYWdlIHRhYmxlIGZvciAlcCBzaXplIDB4JXp4IHBhZ2VzICVkXG4iLAo+ICsJCWRt
-YWItPmFyZWEsIHNpemUsIHBhZ2VzKTsKPiArCj4gKwlmb3IgKGkgPSAwOyBpIDwgcGFnZXM7IGkr
-Kykgewo+ICsJCXUzMiBpZHggPSAoKChpIDw8IDIpICsgaSkpID4+IDE7Cj4gKwkJdTMyIHBmbiA9
-IHNuZF9zZ2J1Zl9nZXRfYWRkcihkbWFiLCBpICogUEFHRV9TSVpFKSA+PiBQQUdFX1NISUZUOwo+
-ICsJCXUzMiAqcGdfdGFibGU7Cj4gKwo+ICsJCWRldl9kYmcoc2Rldi0+ZGV2LCAicGZuIGkgJWkg
-aWR4ICVkIHBmbiAleFxuIiwgaSwgaWR4LCBwZm4pOwo+ICsKPiArCQlwZ190YWJsZSA9ICh1MzIg
-KikocGFnZV90YWJsZSArIGlkeCk7Cj4gKwo+ICsJCWlmIChpICYgMSkKPiArCQkJKnBnX3RhYmxl
-IHw9IChwZm4gPDwgNCk7Cj4gKwkJZWxzZQo+ICsJCQkqcGdfdGFibGUgfD0gcGZuOwo+ICsJfQo+
-ICsKPiArCXJldHVybiBwYWdlczsKPiArfQoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+The patch
+
+   ASoC: imx-sgtl5000: Switch to SPDX identifier
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 6b24e03ecf1ce188071d142115233b10ed8767b2 Mon Sep 17 00:00:00 2001
+From: Fabio Estevam <fabio.estevam@nxp.com>
+Date: Tue, 24 Jul 2018 09:48:33 -0300
+Subject: [PATCH] ASoC: imx-sgtl5000: Switch to SPDX identifier
+
+Adopt the SPDX license identifier headers to ease license compliance
+management.
+
+Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/fsl/imx-sgtl5000.c | 15 ++++-----------
+ 1 file changed, 4 insertions(+), 11 deletions(-)
+
+diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
+index b99e0b5e00e9..c29200cf755a 100644
+--- a/sound/soc/fsl/imx-sgtl5000.c
++++ b/sound/soc/fsl/imx-sgtl5000.c
+@@ -1,14 +1,7 @@
+-/*
+- * Copyright 2012 Freescale Semiconductor, Inc.
+- * Copyright 2012 Linaro Ltd.
+- *
+- * The code contained herein is licensed under the GNU General Public
+- * License. You may obtain a copy of the GNU General Public License
+- * Version 2 or later at the following locations:
+- *
+- * http://www.opensource.org/licenses/gpl-license.html
+- * http://www.gnu.org/copyleft/gpl.html
+- */
++// SPDX-License-Identifier: GPL-2.0+
++//
++// Copyright 2012 Freescale Semiconductor, Inc.
++// Copyright 2012 Linaro Ltd.
+ 
+ #include <linux/module.h>
+ #include <linux/of.h>
+-- 
+2.18.0
