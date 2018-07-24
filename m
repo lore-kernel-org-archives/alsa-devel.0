@@ -1,29 +1,90 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 01/12] mfd: dt-bindings: Add wcd9335 mfd bindings
-Date: Tue, 24 Jul 2018 12:50:47 +0100
-Message-ID: <12921bb5-4a69-274c-0735-beb9cc9f843b@linaro.org>
-References: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
- <20180723155410.9494-2-srinivas.kandagatla@linaro.org>
- <20180724055620.GJ3219@vkoul-mobl>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: meson: axg-spdifout: select
+	SND_PCM_IEC958" to the asoc tree
+Date: Tue, 24 Jul 2018 12:50:47 +0100 (BST)
+Message-ID: <20180724115047.72DDE440078@finisterre.ee.mobilebroadband>
+References: <20180724093705.1691747-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180724055620.GJ3219@vkoul-mobl>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod <vkoul@kernel.org>
-Cc: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id C41B7267759
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 13:50:48 +0200 (CEST)
+In-Reply-To: <20180724093705.1691747-1-arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: meson: axg-spdifout: select SND_PCM_IEC958
 
-On 24/07/18 06:56, Vinod wrote:
-> On 23-07-18, 16:53, Srinivas Kandagatla wrote:
->> Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC, supports
->> Qualcomm Technologies, Inc. (QTI) multimedia solutions, including
->> the MSM8996, MSM8976, and MSM8956 chipsets. It has in-build
-> 
-> in-built perhaps?
-> 
-Yep, will do that in next version as part of codec bindings!!
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From a241c3d95b8b985834d218eedde3923ed683e862 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Tue, 24 Jul 2018 11:36:45 +0200
+Subject: [PATCH] ASoC: meson: axg-spdifout: select SND_PCM_IEC958
+
+When CONFIG_SND_PCM_IEC958 is disabled, we get a link error for the
+new driver:
+
+sound/soc/meson/axg-spdifout.o: In function `axg_spdifout_hw_params':
+axg-spdifout.c:(.text+0x650): undefined reference to `snd_pcm_create_iec958_consumer_hw_params'
+
+The other users use 'select', so we should do the same here.
+
+Fixes: 53eb4b7aaa04 ("ASoC: meson: add axg spdif output")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/meson/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
+index 4cf93c05a982..8af8bc358a90 100644
+--- a/sound/soc/meson/Kconfig
++++ b/sound/soc/meson/Kconfig
+@@ -56,6 +56,7 @@ config SND_MESON_AXG_SOUND_CARD
+ 
+ config SND_MESON_AXG_SPDIFOUT
+ 	tristate "Amlogic AXG SPDIF Output Support"
++	select SND_PCM_IEC958
+ 	imply SND_SOC_SPDIF
+ 	help
+ 	  Select Y or M to add support for SPDIF output serializer embedded
+-- 
+2.18.0
