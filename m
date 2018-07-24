@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: trace: remove snd_soc_codec" to the
+Subject: Applied "ASoC: doc: replace codec to component" to the
 	asoc tree
-Date: Tue, 24 Jul 2018 12:51:49 +0100 (BST)
-Message-ID: <20180724115149.48D72440078@finisterre.ee.mobilebroadband>
+Date: Tue, 24 Jul 2018 12:52:52 +0100 (BST)
+Message-ID: <20180724115252.8BA17440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DD77E26733D
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 13:51:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5422726733D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 13:52:53 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: trace: remove snd_soc_codec
+   ASoC: doc: replace codec to component
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,39 @@ to this mail.
 Thanks,
 Mark
 
->From 211b4415ecb254e167837206756dea123342689c Mon Sep 17 00:00:00 2001
+>From a3ac7727f3a226b0569431de62a4e9bb4c770b2b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 28 Mar 2018 02:18:13 +0000
-Subject: [PATCH] ASoC: trace: remove snd_soc_codec
+Date: Wed, 28 Mar 2018 02:14:22 +0000
+Subject: [PATCH] ASoC: doc: replace codec to component
 
-snd_soc_codec is replaced to snd_soc_component,
-and it is not used in this file.
-Let's remove it
+Now we can replace Codec to Component. Let's do it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/trace/events/asoc.h | 1 -
- 1 file changed, 1 deletion(-)
+ Documentation/sound/soc/codec.rst | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/include/trace/events/asoc.h b/include/trace/events/asoc.h
-index ccd1a3bdff46..40c300fe704d 100644
---- a/include/trace/events/asoc.h
-+++ b/include/trace/events/asoc.h
-@@ -12,7 +12,6 @@
- #define DAPM_ARROW(dir) (((dir) == SND_SOC_DAPM_DIR_OUT) ? "->" : "<-")
+diff --git a/Documentation/sound/soc/codec.rst b/Documentation/sound/soc/codec.rst
+index f87612b94812..58f625fe3d39 100644
+--- a/Documentation/sound/soc/codec.rst
++++ b/Documentation/sound/soc/codec.rst
+@@ -179,12 +179,12 @@ i.e.
  
- struct snd_soc_jack;
--struct snd_soc_codec;
- struct snd_soc_card;
- struct snd_soc_dapm_widget;
- struct snd_soc_dapm_path;
+   static int wm8974_mute(struct snd_soc_dai *dai, int mute)
+   {
+-	struct snd_soc_codec *codec = dai->codec;
+-	u16 mute_reg = snd_soc_read(codec, WM8974_DAC) & 0xffbf;
++	struct snd_soc_component *component = dai->component;
++	u16 mute_reg = snd_soc_component_read32(component, WM8974_DAC) & 0xffbf;
+ 
+ 	if (mute)
+-		snd_soc_write(codec, WM8974_DAC, mute_reg | 0x40);
++		snd_soc_component_write(component, WM8974_DAC, mute_reg | 0x40);
+ 	else
+-		snd_soc_write(codec, WM8974_DAC, mute_reg);
++		snd_soc_component_write(component, WM8974_DAC, mute_reg);
+ 	return 0;
+   }
 -- 
 2.18.0
