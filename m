@@ -1,17 +1,18 @@
-From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH 4/4] ASoC: imx-sgtl5000: Switch to SPDX
-	identifier
-Date: Tue, 24 Jul 2018 09:48:33 -0300
-Message-ID: <1532436513-19283-4-git-send-email-fabio.estevam@nxp.com>
-References: <1532436513-19283-1-git-send-email-fabio.estevam@nxp.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: rt5651: add Volume to the name
+ of volume control
+Date: Tue, 24 Jul 2018 15:40:47 +0100
+Message-ID: <20180724144047.GE13268@sirena.org.uk>
+References: <1532051300-11884-1-git-send-email-bardliao@realtek.com>
+ <ABFD875FF5FB574BA706497D987D48D702846306@RTITMBSV02.realtek.com.tw>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2704429113833114143=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- by alsa0.perex.cz (Postfix) with ESMTP id 45B952676CF
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 14:47:41 +0200 (CEST)
-In-Reply-To: <1532436513-19283-1-git-send-email-fabio.estevam@nxp.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 31D8826733D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 16:40:49 +0200 (CEST)
+In-Reply-To: <ABFD875FF5FB574BA706497D987D48D702846306@RTITMBSV02.realtek.com.tw>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,40 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: nicoleotsuka@gmail.com, Fabio Estevam <fabio.estevam@nxp.com>, alsa-devel@alsa-project.org, timur@kernel.org
+To: Bard Liao <bardliao@realtek.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "hdegoede@redhat.com" <hdegoede@redhat.com>, Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
-Adopt the SPDX license identifier headers to ease license compliance
-management.
 
-Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
----
- sound/soc/fsl/imx-sgtl5000.c | 15 ++++-----------
- 1 file changed, 4 insertions(+), 11 deletions(-)
+--===============2704429113833114143==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="EXKGNeO8l0xGFBjy"
+Content-Disposition: inline
 
-diff --git a/sound/soc/fsl/imx-sgtl5000.c b/sound/soc/fsl/imx-sgtl5000.c
-index b99e0b5..c29200c 100644
---- a/sound/soc/fsl/imx-sgtl5000.c
-+++ b/sound/soc/fsl/imx-sgtl5000.c
-@@ -1,14 +1,7 @@
--/*
-- * Copyright 2012 Freescale Semiconductor, Inc.
-- * Copyright 2012 Linaro Ltd.
-- *
-- * The code contained herein is licensed under the GNU General Public
-- * License. You may obtain a copy of the GNU General Public License
-- * Version 2 or later at the following locations:
-- *
-- * http://www.opensource.org/licenses/gpl-license.html
-- * http://www.gnu.org/copyleft/gpl.html
-- */
-+// SPDX-License-Identifier: GPL-2.0+
-+//
-+// Copyright 2012 Freescale Semiconductor, Inc.
-+// Copyright 2012 Linaro Ltd.
- 
- #include <linux/module.h>
- #include <linux/of.h>
--- 
-2.7.4
+
+--EXKGNeO8l0xGFBjy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Jul 24, 2018 at 01:49:48AM +0000, Bard Liao wrote:
+
+> Please ignore these patches. There is no significant advantage of
+> adding "Volume" to the control name. To prevent breaking the
+> configuration files on user space, we should find out all projects
+> which are using these controls and modify them. It will take time.
+> So I think it is better to leave it as it is.
+
+The RT5631 doesn't appear to have any users except Arndale, certainly no
+x86 users?
+
+--EXKGNeO8l0xGFBjy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltXOm4ACgkQJNaLcl1U
+h9D6qQf7BjS659iN/cwUiS8gJrX2jkTJbJ4qNhVDFP6v0jCaCvMr+OjBYa1nwhd6
+ZGC6tSiNqVoQ07lJG064IzsSg1kTlOu5JRzYXANccZuj2X7kIJvYugKFme7Z4jMa
+YEyIZcIKGLBsu1IOc9dpB/xOav0PXBak5pd2F+f1P9N+4vGbeb8yhSC+nhGyAbXL
+zYWG+Obk9L7FAAC2HCzumFJDQQAjzdfHESQvRGj/9IsCklUWFPIqp/qn35T8bdPD
+ca0JATx1YcoHdnCqBtFD5u6ouazyrEhlKJY0mAj2BuEg6Gar4/6TxKs0IHCuD+fl
+iHdZc24TmeF0om1flR4t9IUEnuoQBw==
+=lZWC
+-----END PGP SIGNATURE-----
+
+--EXKGNeO8l0xGFBjy--
+
+--===============2704429113833114143==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2704429113833114143==--
