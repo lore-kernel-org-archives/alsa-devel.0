@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsl_asrc: Switch to SPDX identifier" to
-	the asoc tree
-Date: Tue, 24 Jul 2018 17:02:26 +0100 (BST)
-Message-ID: <20180724160226.8F2AB1123A86@debutante.sirena.org.uk>
-References: <1532436513-19283-2-git-send-email-fabio.estevam@nxp.com>
+Subject: Applied "ASoC: fsl-asoc-card: Switch to SPDX
+	identifier" to the asoc tree
+Date: Tue, 24 Jul 2018 17:02:36 +0100 (BST)
+Message-ID: <20180724160236.498051123A86@debutante.sirena.org.uk>
+References: <1532436513-19283-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 495D02676CF
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 18:02:27 +0200 (CEST)
-In-Reply-To: <1532436513-19283-2-git-send-email-fabio.estevam@nxp.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 162E926776E
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 18:02:36 +0200 (CEST)
+In-Reply-To: <1532436513-19283-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsl_asrc: Switch to SPDX identifier
+   ASoC: fsl-asoc-card: Switch to SPDX identifier
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 2ba28053686334075c8c8bff6c4f6e3fc9ac51ae Mon Sep 17 00:00:00 2001
+>From aa624a0a9243460b9037889a05663d3b9a9e8f99 Mon Sep 17 00:00:00 2001
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Date: Tue, 24 Jul 2018 09:48:31 -0300
-Subject: [PATCH] ASoC: fsl_asrc: Switch to SPDX identifier
+Date: Tue, 24 Jul 2018 09:48:30 -0300
+Subject: [PATCH] ASoC: fsl-asoc-card: Switch to SPDX identifier
 
 Adopt the SPDX license identifier headers to ease license compliance
 management.
@@ -64,18 +64,16 @@ management.
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_asrc.c     | 18 +++++++-----------
- sound/soc/fsl/fsl_asrc.h     |  5 +----
- sound/soc/fsl/fsl_asrc_dma.c | 18 +++++++-----------
- 3 files changed, 15 insertions(+), 26 deletions(-)
+ sound/soc/fsl/fsl-asoc-card.c | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
-index adfb8135d739..528e8b108422 100644
---- a/sound/soc/fsl/fsl_asrc.c
-+++ b/sound/soc/fsl/fsl_asrc.c
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 4a6750aa3637..07808c6d5461 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
 @@ -1,14 +1,10 @@
 -/*
-- * Freescale ASRC ALSA SoC Digital Audio Interface (DAI) driver
+- * Freescale Generic ASoC Sound Card driver with ASRC
 - *
 - * Copyright (C) 2014 Freescale Semiconductor, Inc.
 - *
@@ -87,58 +85,13 @@ index adfb8135d739..528e8b108422 100644
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// Freescale ASRC ALSA SoC Digital Audio Interface (DAI) driver
++// Freescale Generic ASoC Sound Card driver with ASRC
 +//
 +// Copyright (C) 2014 Freescale Semiconductor, Inc.
 +//
 +// Author: Nicolin Chen <nicoleotsuka@gmail.com>
  
  #include <linux/clk.h>
- #include <linux/delay.h>
-diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
-index d558dd5499a5..c60075112570 100644
---- a/sound/soc/fsl/fsl_asrc.h
-+++ b/sound/soc/fsl/fsl_asrc.h
-@@ -1,13 +1,10 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
- /*
-  * fsl_asrc.h - Freescale ASRC ALSA SoC header file
-  *
-  * Copyright (C) 2014 Freescale Semiconductor, Inc.
-  *
-  * Author: Nicolin Chen <nicoleotsuka@gmail.com>
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2. This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
-  */
- 
- #ifndef _FSL_ASRC_H
-diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
-index 565e16d8fe85..1033ac6631b0 100644
---- a/sound/soc/fsl/fsl_asrc_dma.c
-+++ b/sound/soc/fsl/fsl_asrc_dma.c
-@@ -1,14 +1,10 @@
--/*
-- * Freescale ASRC ALSA SoC Platform (DMA) driver
-- *
-- * Copyright (C) 2014 Freescale Semiconductor, Inc.
-- *
-- * Author: Nicolin Chen <nicoleotsuka@gmail.com>
-- *
-- * This file is licensed under the terms of the GNU General Public License
-- * version 2. This program is licensed "as is" without any warranty of any
-- * kind, whether express or implied.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// Freescale ASRC ALSA SoC Platform (DMA) driver
-+//
-+// Copyright (C) 2014 Freescale Semiconductor, Inc.
-+//
-+// Author: Nicolin Chen <nicoleotsuka@gmail.com>
- 
- #include <linux/dma-mapping.h>
- #include <linux/module.h>
+ #include <linux/i2c.h>
 -- 
 2.18.0
