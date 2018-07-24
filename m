@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH 5/6] ASoC: Intel: Atom: simplify iomem address
-	and casts
-Date: Tue, 24 Jul 2018 16:12:47 -0500
-Message-ID: <20180724211248.29427-6-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH 2/6] ASoC: Intel: Haswell: fix endianness
+	handling
+Date: Tue, 24 Jul 2018 16:12:44 -0500
+Message-ID: <20180724211248.29427-3-pierre-louis.bossart@linux.intel.com>
 References: <20180724211248.29427-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 088D126770A
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 23:13:01 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DB94B267711
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 23:12:59 +0200 (CEST)
 In-Reply-To: <20180724211248.29427-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,79 +25,142 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Simplify code and add relevant casts to make Sparse warnings go away
+Make all Sparse warnings go away by using le16/32_to_cpu.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/atom/sst/sst_drv_interface.c | 29 ++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
+ sound/soc/intel/haswell/sst-haswell-dsp.c | 53 +++++++++++++++++--------------
+ 1 file changed, 29 insertions(+), 24 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
-index 6a8b253c58d2..5455d6e0ab53 100644
---- a/sound/soc/intel/atom/sst/sst_drv_interface.c
-+++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
-@@ -266,17 +266,15 @@ static int sst_cdev_ack(struct device *dev, unsigned int str_id,
- 	stream->cumm_bytes += bytes;
- 	dev_dbg(dev, "bytes copied %d inc by %ld\n", stream->cumm_bytes, bytes);
+diff --git a/sound/soc/intel/haswell/sst-haswell-dsp.c b/sound/soc/intel/haswell/sst-haswell-dsp.c
+index b2bec36d074c..a28220e67cdf 100644
+--- a/sound/soc/intel/haswell/sst-haswell-dsp.c
++++ b/sound/soc/intel/haswell/sst-haswell-dsp.c
+@@ -93,29 +93,31 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
+ 	struct sst_module_template template;
+ 	int count, ret;
+ 	void __iomem *ram;
++	int type = le16_to_cpu(module->type);
++	int entry_point = le32_to_cpu(module->entry_point);
  
--	memcpy_fromio(&fw_tstamp,
--		((void *)(ctx->mailbox + ctx->tstamp)
--		+(str_id * sizeof(fw_tstamp))),
--		sizeof(fw_tstamp));
-+	addr =  ((void __iomem *)(ctx->mailbox + ctx->tstamp)) +
-+		(str_id * sizeof(fw_tstamp));
-+
-+	memcpy_fromio(&fw_tstamp, addr, sizeof(fw_tstamp));
+ 	/* TODO: allowed module types need to be configurable */
+-	if (module->type != SST_HSW_MODULE_BASE_FW
+-		&& module->type != SST_HSW_MODULE_PCM_SYSTEM
+-		&& module->type != SST_HSW_MODULE_PCM
+-		&& module->type != SST_HSW_MODULE_PCM_REFERENCE
+-		&& module->type != SST_HSW_MODULE_PCM_CAPTURE
+-		&& module->type != SST_HSW_MODULE_WAVES
+-		&& module->type != SST_HSW_MODULE_LPAL)
++	if (type != SST_HSW_MODULE_BASE_FW &&
++	    type != SST_HSW_MODULE_PCM_SYSTEM &&
++	    type != SST_HSW_MODULE_PCM &&
++	    type != SST_HSW_MODULE_PCM_REFERENCE &&
++	    type != SST_HSW_MODULE_PCM_CAPTURE &&
++	    type != SST_HSW_MODULE_WAVES &&
++	    type != SST_HSW_MODULE_LPAL)
+ 		return 0;
  
- 	fw_tstamp.bytes_copied = stream->cumm_bytes;
- 	dev_dbg(dev, "bytes sent to fw %llu inc by %ld\n",
- 			fw_tstamp.bytes_copied, bytes);
+ 	dev_dbg(dsp->dev, "new module sign 0x%s size 0x%x blocks 0x%x type 0x%x\n",
+ 		module->signature, module->mod_size,
+-		module->blocks, module->type);
+-	dev_dbg(dsp->dev, " entrypoint 0x%x\n", module->entry_point);
++		module->blocks, type);
++	dev_dbg(dsp->dev, " entrypoint 0x%x\n", entry_point);
+ 	dev_dbg(dsp->dev, " persistent 0x%x scratch 0x%x\n",
+ 		module->info.persistent_size, module->info.scratch_size);
  
--	addr =  ((void *)(ctx->mailbox + ctx->tstamp)) +
--			(str_id * sizeof(fw_tstamp));
- 	offset =  offsetof(struct snd_sst_tstamp, bytes_copied);
- 	sst_shim_write(addr, offset, fw_tstamp.bytes_copied);
- 	return 0;
-@@ -360,11 +358,12 @@ static int sst_cdev_tstamp(struct device *dev, unsigned int str_id,
- 	struct snd_sst_tstamp fw_tstamp = {0,};
- 	struct stream_info *stream;
- 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+	void __iomem *addr;
-+
-+	addr = (void __iomem *)(ctx->mailbox + ctx->tstamp) +
-+		(str_id * sizeof(fw_tstamp));
+ 	memset(&template, 0, sizeof(template));
+-	template.id = module->type;
+-	template.entry = module->entry_point - 4;
+-	template.persistent_size = module->info.persistent_size;
+-	template.scratch_size = module->info.scratch_size;
++	template.id = type;
++	template.entry = entry_point - 4;
++	template.persistent_size = le32_to_cpu(module->info.persistent_size);
++	template.scratch_size = le32_to_cpu(module->info.scratch_size);
  
--	memcpy_fromio(&fw_tstamp,
--		((void *)(ctx->mailbox + ctx->tstamp)
--		+(str_id * sizeof(fw_tstamp))),
--		sizeof(fw_tstamp));
-+	memcpy_fromio(&fw_tstamp, addr, sizeof(fw_tstamp));
+ 	mod = sst_module_new(fw, &template, NULL);
+ 	if (mod == NULL)
+@@ -123,26 +125,26 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
  
- 	stream = get_stream_info(ctx, str_id);
- 	if (!stream)
-@@ -530,6 +529,7 @@ static int sst_read_timestamp(struct device *dev, struct pcm_stream_info *info)
- 	struct snd_sst_tstamp fw_tstamp;
- 	unsigned int str_id;
- 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
-+	void __iomem *addr;
+ 	block = (void *)module + sizeof(*module);
  
- 	str_id = info->str_id;
- 	stream = get_stream_info(ctx, str_id);
-@@ -540,10 +540,11 @@ static int sst_read_timestamp(struct device *dev, struct pcm_stream_info *info)
+-	for (count = 0; count < module->blocks; count++) {
++	for (count = 0; count < le32_to_cpu(module->blocks); count++) {
+ 
+-		if (block->size <= 0) {
++		if (le32_to_cpu(block->size) <= 0) {
+ 			dev_err(dsp->dev,
+ 				"error: block %d size invalid\n", count);
+ 			sst_module_free(mod);
+ 			return -EINVAL;
+ 		}
+ 
+-		switch (block->type) {
++		switch (le32_to_cpu(block->type)) {
+ 		case SST_HSW_IRAM:
+ 			ram = dsp->addr.lpe;
+-			mod->offset =
+-				block->ram_offset + dsp->addr.iram_offset;
++			mod->offset = le32_to_cpu(block->ram_offset) +
++				dsp->addr.iram_offset;
+ 			mod->type = SST_MEM_IRAM;
+ 			break;
+ 		case SST_HSW_DRAM:
+ 		case SST_HSW_REGS:
+ 			ram = dsp->addr.lpe;
+-			mod->offset = block->ram_offset;
++			mod->offset = le32_to_cpu(block->ram_offset);
+ 			mod->type = SST_MEM_DRAM;
+ 			break;
+ 		default:
+@@ -152,7 +154,7 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
+ 			return -EINVAL;
+ 		}
+ 
+-		mod->size = block->size;
++		mod->size = le32_to_cpu(block->size);
+ 		mod->data = (void *)block + sizeof(*block);
+ 		mod->data_offset = mod->data - fw->dma_buf;
+ 
+@@ -169,7 +171,8 @@ static int hsw_parse_module(struct sst_dsp *dsp, struct sst_fw *fw,
+ 			return ret;
+ 		}
+ 
+-		block = (void *)block + sizeof(*block) + block->size;
++		block = (void *)block + sizeof(*block) +
++			le32_to_cpu(block->size);
+ 	}
+ 	mod->state = SST_MODULE_STATE_LOADED;
+ 
+@@ -188,7 +191,8 @@ static int hsw_parse_fw_image(struct sst_fw *sst_fw)
+ 
+ 	/* verify FW */
+ 	if ((strncmp(header->signature, SST_HSW_FW_SIGN, 4) != 0) ||
+-		(sst_fw->size != header->file_size + sizeof(*header))) {
++	    (sst_fw->size !=
++	     le32_to_cpu(header->file_size) + sizeof(*header))) {
+ 		dev_err(dsp->dev, "error: invalid fw sign/filesize mismatch\n");
  		return -EINVAL;
- 	substream = stream->pcm_substream;
+ 	}
+@@ -199,7 +203,7 @@ static int hsw_parse_fw_image(struct sst_fw *sst_fw)
  
--	memcpy_fromio(&fw_tstamp,
--		((void *)(ctx->mailbox + ctx->tstamp)
--			+ (str_id * sizeof(fw_tstamp))),
--		sizeof(fw_tstamp));
-+	addr = (void __iomem *)(ctx->mailbox + ctx->tstamp) +
-+		(str_id * sizeof(fw_tstamp));
-+
-+	memcpy_fromio(&fw_tstamp, addr, sizeof(fw_tstamp));
-+
- 	return sst_calc_tstamp(ctx, info, substream, &fw_tstamp);
- }
+ 	/* parse each module */
+ 	module = (void *)sst_fw->dma_buf + sizeof(*header);
+-	for (count = 0; count < header->modules; count++) {
++	for (count = 0; count < le32_to_cpu(header->modules); count++) {
  
+ 		/* module */
+ 		ret = hsw_parse_module(dsp, sst_fw, module);
+@@ -207,7 +211,8 @@ static int hsw_parse_fw_image(struct sst_fw *sst_fw)
+ 			dev_err(dsp->dev, "error: invalid module %d\n", count);
+ 			return ret;
+ 		}
+-		module = (void *)module + sizeof(*module) + module->mod_size;
++		module = (void *)module + sizeof(*module) +
++			le32_to_cpu(module->mod_size);
+ 	}
+ 
+ 	return 0;
 -- 
 2.14.1
