@@ -1,15 +1,15 @@
 From: Fabio Estevam <fabio.estevam@nxp.com>
-Subject: [PATCH 3/4] ASoC: fsl_utils: Switch to SPDX identifier
-Date: Tue, 24 Jul 2018 09:48:32 -0300
-Message-ID: <1532436513-19283-3-git-send-email-fabio.estevam@nxp.com>
+Subject: [PATCH 2/4] ASoC: fsl_asrc: Switch to SPDX identifier
+Date: Tue, 24 Jul 2018 09:48:31 -0300
+Message-ID: <1532436513-19283-2-git-send-email-fabio.estevam@nxp.com>
 References: <1532436513-19283-1-git-send-email-fabio.estevam@nxp.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from inva020.nxp.com (inva020.nxp.com [92.121.34.13])
- by alsa0.perex.cz (Postfix) with ESMTP id BB22826763A
- for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 14:47:39 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FF1D26733D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 14:47:38 +0200 (CEST)
 In-Reply-To: <1532436513-19283-1-git-send-email-fabio.estevam@nxp.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -29,55 +29,81 @@ management.
 
 Signed-off-by: Fabio Estevam <fabio.estevam@nxp.com>
 ---
- sound/soc/fsl/fsl_utils.c | 18 +++++++-----------
- sound/soc/fsl/fsl_utils.h |  7 ++-----
- 2 files changed, 9 insertions(+), 16 deletions(-)
+ sound/soc/fsl/fsl_asrc.c     | 18 +++++++-----------
+ sound/soc/fsl/fsl_asrc.h     |  5 +----
+ sound/soc/fsl/fsl_asrc_dma.c | 18 +++++++-----------
+ 3 files changed, 15 insertions(+), 26 deletions(-)
 
-diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-index 7592b04..7f0fa4b 100644
---- a/sound/soc/fsl/fsl_utils.c
-+++ b/sound/soc/fsl/fsl_utils.c
+diff --git a/sound/soc/fsl/fsl_asrc.c b/sound/soc/fsl/fsl_asrc.c
+index adfb813..528e8b1 100644
+--- a/sound/soc/fsl/fsl_asrc.c
++++ b/sound/soc/fsl/fsl_asrc.c
 @@ -1,14 +1,10 @@
--/**
-- * Freescale ALSA SoC Machine driver utility
+-/*
+- * Freescale ASRC ALSA SoC Digital Audio Interface (DAI) driver
 - *
-- * Author: Timur Tabi <timur@freescale.com>
+- * Copyright (C) 2014 Freescale Semiconductor, Inc.
 - *
-- * Copyright 2010 Freescale Semiconductor, Inc.
+- * Author: Nicolin Chen <nicoleotsuka@gmail.com>
 - *
 - * This file is licensed under the terms of the GNU General Public License
-- * version 2.  This program is licensed "as is" without any warranty of any
+- * version 2. This program is licensed "as is" without any warranty of any
 - * kind, whether express or implied.
 - */
 +// SPDX-License-Identifier: GPL-2.0
 +//
-+// Freescale ALSA SoC Machine driver utility
++// Freescale ASRC ALSA SoC Digital Audio Interface (DAI) driver
 +//
-+// Author: Timur Tabi <timur@freescale.com>
++// Copyright (C) 2014 Freescale Semiconductor, Inc.
 +//
-+// Copyright 2010 Freescale Semiconductor, Inc.
++// Author: Nicolin Chen <nicoleotsuka@gmail.com>
  
- #include <linux/module.h>
- #include <linux/of_address.h>
-diff --git a/sound/soc/fsl/fsl_utils.h b/sound/soc/fsl/fsl_utils.h
-index 1687b66..c5dc2a14 100644
---- a/sound/soc/fsl/fsl_utils.h
-+++ b/sound/soc/fsl/fsl_utils.h
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+diff --git a/sound/soc/fsl/fsl_asrc.h b/sound/soc/fsl/fsl_asrc.h
+index d558dd5..c600751 100644
+--- a/sound/soc/fsl/fsl_asrc.h
++++ b/sound/soc/fsl/fsl_asrc.h
 @@ -1,13 +1,10 @@
--/**
 +/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-  * Freescale ALSA SoC Machine driver utility
+ /*
+  * fsl_asrc.h - Freescale ASRC ALSA SoC header file
   *
-  * Author: Timur Tabi <timur@freescale.com>
+  * Copyright (C) 2014 Freescale Semiconductor, Inc.
   *
-  * Copyright 2010 Freescale Semiconductor, Inc.
+  * Author: Nicolin Chen <nicoleotsuka@gmail.com>
 - *
 - * This file is licensed under the terms of the GNU General Public License
-- * version 2.  This program is licensed "as is" without any warranty of any
+- * version 2. This program is licensed "as is" without any warranty of any
 - * kind, whether express or implied.
   */
  
- #ifndef _FSL_UTILS_H
+ #ifndef _FSL_ASRC_H
+diff --git a/sound/soc/fsl/fsl_asrc_dma.c b/sound/soc/fsl/fsl_asrc_dma.c
+index 565e16d8..1033ac6 100644
+--- a/sound/soc/fsl/fsl_asrc_dma.c
++++ b/sound/soc/fsl/fsl_asrc_dma.c
+@@ -1,14 +1,10 @@
+-/*
+- * Freescale ASRC ALSA SoC Platform (DMA) driver
+- *
+- * Copyright (C) 2014 Freescale Semiconductor, Inc.
+- *
+- * Author: Nicolin Chen <nicoleotsuka@gmail.com>
+- *
+- * This file is licensed under the terms of the GNU General Public License
+- * version 2. This program is licensed "as is" without any warranty of any
+- * kind, whether express or implied.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// Freescale ASRC ALSA SoC Platform (DMA) driver
++//
++// Copyright (C) 2014 Freescale Semiconductor, Inc.
++//
++// Author: Nicolin Chen <nicoleotsuka@gmail.com>
+ 
+ #include <linux/dma-mapping.h>
+ #include <linux/module.h>
 -- 
 2.7.4
