@@ -1,35 +1,76 @@
-From: jbrunet@baylibre.com
-Subject: Re: [PATCH] ASoC: meson: axg-spdifout: select SND_PCM_IEC958
-Date: Tue, 24 Jul 2018 12:03:10 +0200
-Message-ID: <59fdcf671ffd0ef60e4d982ba269f853089ee7da.camel@baylibre.com>
-References: <20180724093705.1691747-1-arnd@arndb.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 04/12] ASoC: dt-bindings: add dt bindings
+ for wcd9335 audio codec
+Date: Tue, 24 Jul 2018 12:06:02 +0100
+Message-ID: <20180724110602.GA2414@sirena.org.uk>
+References: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
+ <20180723155410.9494-5-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180724093705.1691747-1-arnd@arndb.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Arnd Bergmann <arnd@arndb.de>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Carlo Caione <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0377635192697576546=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 695CD26733D
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 13:06:06 +0200 (CEST)
+In-Reply-To: <20180723155410.9494-5-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, vkoul@kernel.org, robh+dt@kernel.org, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-07-24 at 11:36 +0200, Arnd Bergmann wrote:
-> When CONFIG_SND_PCM_IEC958 is disabled, we get a link error for the
-> new driver:
-> 
-> sound/soc/meson/axg-spdifout.o: In function `axg_spdifout_hw_params':
-> axg-spdifout.c:(.text+0x650): undefined reference to
-> `snd_pcm_create_iec958_consumer_hw_params'
 
-I used arm64 defconfig to do all my test and this symbol was selected
-by the HDMI codec driver, which is probably why missed it. 
+--===============0377635192697576546==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XsQoSWH+UP9D9v3l"
+Content-Disposition: inline
 
-Thanks a lot for fixing the problem Arnd.
 
-> 
-> The other users use 'select', so we should do the same here.
-> 
-> Fixes: 53eb4b7aaa04 ("ASoC: meson: add axg spdif output")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+--XsQoSWH+UP9D9v3l
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Acked-by: Jerome Brunet <jbrunet@baylibre.com>
+On Mon, Jul 23, 2018 at 04:54:02PM +0100, Srinivas Kandagatla wrote:
+> This patch adds bindings for wcd9335 audio codec which can support both SLIMbus
+> and I2S/I2C interface.
+
+...
+
+> +Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC,
+> +It supports both I2S/I2C and SLIMbus audio interfaces.
+
+This is a standalone audio CODEC but it also has a MFD binding?  I'd
+have just expected a single binding for a single device.
+
+--XsQoSWH+UP9D9v3l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltXCBkACgkQJNaLcl1U
+h9DjUQgAhEc7q7FN5HJ0PcoeN33FJ2gHFVad+B5osDVH7AtT2KJYhuyKyooPmCKf
+G7AoBrcpFbPac9r0AkPW6EwwjEbNKHKUuZplf+vTX9dpBceUivyjDMXS3oykxt00
+EauORHigaj8nADXX/dq8uRuMn5Tv5NGJNfSzWJsw9FPJRsVKzduaT7wbTLiPAbeO
+37hN9sO58B1OFPVkQHInWOlhzCsNMFlvtRBR2EDmegxqb4DolDllJza1u+nwWHIm
+2hbHe+VgPvy/9LRZ2T2G0kdETrY/oI2L/noucOlLqWbCftHn0b99CY1DkcsYsh8j
+sdwGSE68wbIh8lw3V9zA3+brtjpWuA==
+=opx9
+-----END PGP SIGNATURE-----
+
+--XsQoSWH+UP9D9v3l--
+
+--===============0377635192697576546==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0377635192697576546==--
