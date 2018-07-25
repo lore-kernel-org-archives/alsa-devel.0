@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/14] ALSA: intel8x0m: Proper endian notations
-Date: Wed, 25 Jul 2018 23:24:08 +0200
-Message-ID: <20180725212414.19795-9-tiwai@suse.de>
+Subject: [PATCH 11/14] ALSA: bt87x: Proper endian notations
+Date: Wed, 25 Jul 2018 23:24:11 +0200
+Message-ID: <20180725212414.19795-12-tiwai@suse.de>
 References: <20180725212414.19795-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 908AF267762
+ by alsa0.perex.cz (Postfix) with ESMTP id 941A7267799
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:24:17 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 4EBCEAE8B
+ by mx1.suse.de (Postfix) with ESMTP id 67BB8B089
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:24:16 +0000 (UTC)
 In-Reply-To: <20180725212414.19795-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,47 +26,37 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The BD address tables in intel8x0m driver are in little-endian, hence
-they should be represented as __le32 instead u32.
+The RISC data in bt87x is in little-endian, hence we should define it
+with __le32 properly.
 
-Spotted by sparse, warnings like:
-  sound/pci/intel8x0m.c:406:40: warning: incorrect type in assignment (different base types)
+Spotted by sparse, a warning like:
+  sound/pci/bt87x.c:240:17: warning: incorrect type in assignment (different base types)
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/intel8x0m.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/pci/bt87x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/intel8x0m.c b/sound/pci/intel8x0m.c
-index 3a4769a97d29..943a726b1c1b 100644
---- a/sound/pci/intel8x0m.c
-+++ b/sound/pci/intel8x0m.c
-@@ -168,7 +168,7 @@ enum { ALID_MDMIN, ALID_MDMOUT, ALID_MDMLAST = ALID_MDMOUT };
- struct ichdev {
- 	unsigned int ichd;			/* ich device number */
- 	unsigned long reg_offset;		/* offset to bmaddr */
--	u32 *bdbar;				/* CPU address (32bit) */
-+	__le32 *bdbar;				/* CPU address (32bit) */
- 	unsigned int bdbar_addr;		/* PCI bus address (32bit) */
- 	struct snd_pcm_substream *substream;
- 	unsigned int physbuf;			/* physical address (32bit) */
-@@ -395,7 +395,7 @@ static unsigned short snd_intel8x0m_codec_read(struct snd_ac97 *ac97,
- static void snd_intel8x0m_setup_periods(struct intel8x0m *chip, struct ichdev *ichdev)
+diff --git a/sound/pci/bt87x.c b/sound/pci/bt87x.c
+index d8ade8771a32..ba971042f871 100644
+--- a/sound/pci/bt87x.c
++++ b/sound/pci/bt87x.c
+@@ -228,14 +228,14 @@ static int snd_bt87x_create_risc(struct snd_bt87x *chip, struct snd_pcm_substrea
+ 			       	 unsigned int periods, unsigned int period_bytes)
  {
- 	int idx;
--	u32 *bdbar = ichdev->bdbar;
-+	__le32 *bdbar = ichdev->bdbar;
- 	unsigned long port = ichdev->reg_offset;
+ 	unsigned int i, offset;
+-	u32 *risc;
++	__le32 *risc;
  
- 	iputdword(chip, port + ICH_REG_OFF_BDBAR, ichdev->bdbar_addr);
-@@ -1217,7 +1217,7 @@ static int snd_intel8x0m_create(struct snd_card *card,
- 	int_sta_masks = 0;
- 	for (i = 0; i < chip->bdbars_count; i++) {
- 		ichdev = &chip->ichd[i];
--		ichdev->bdbar = ((u32 *)chip->bdbars.area) + (i * ICH_MAX_FRAGS * 2);
-+		ichdev->bdbar = ((__le32 *)chip->bdbars.area) + (i * ICH_MAX_FRAGS * 2);
- 		ichdev->bdbar_addr = chip->bdbars.addr + (i * sizeof(u32) * ICH_MAX_FRAGS * 2);
- 		int_sta_masks |= ichdev->int_sta_mask;
+ 	if (chip->dma_risc.area == NULL) {
+ 		if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(chip->pci),
+ 					PAGE_ALIGN(MAX_RISC_SIZE), &chip->dma_risc) < 0)
+ 			return -ENOMEM;
  	}
+-	risc = (u32 *)chip->dma_risc.area;
++	risc = (__le32 *)chip->dma_risc.area;
+ 	offset = 0;
+ 	*risc++ = cpu_to_le32(RISC_SYNC | RISC_SYNC_FM1);
+ 	*risc++ = cpu_to_le32(0);
 -- 
 2.18.0
