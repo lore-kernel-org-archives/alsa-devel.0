@@ -1,19 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 09/10] ALSA: sb: Fix sparse warning wrt PCM
-	format type
-Date: Wed, 25 Jul 2018 23:19:44 +0200
-Message-ID: <20180725211945.19222-10-tiwai@suse.de>
+Subject: [PATCH 08/10] ALSA: sb: Fix PCM format bit calculation
+Date: Wed, 25 Jul 2018 23:19:43 +0200
+Message-ID: <20180725211945.19222-9-tiwai@suse.de>
 References: <20180725211945.19222-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B3A3267795
+ by alsa0.perex.cz (Postfix) with ESMTP id 7B5A0267796
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:19:55 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 0B2F8B381
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:19:54 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id F3814B380
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:19:53 +0000 (UTC)
 In-Reply-To: <20180725211945.19222-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,63 +26,59 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The PCM format type is with __bitwise, and it can't be converted from
-integer implicitly.  Instead of an ugly cast, declare the function
-argument of snd_sb_csp_autoload() with the proper snd_pcm_format_t
-type.
+The PCM format type in snd_pcm_format_t can't be treated as integer
+implicitly since it's with __bitwise.  We have already a helper
+function to get the bit index of the given type, and use it in each
+place instead.
 
-This fixes the sparse warnings like:
-  sound/isa/sb/sb16_csp.c:743:22: warning: restricted snd_pcm_format_t degrades to integer
+This fixes sparse warnings like:
+  sound/isa/sb/sb16_main.c:61:44: warning: restricted snd_pcm_format_t degrades to integer
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/sb16_csp.h | 2 +-
- sound/isa/sb/sb16_csp.c  | 6 +++---
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ sound/isa/sb/sb16_main.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/include/sound/sb16_csp.h b/include/sound/sb16_csp.h
-index c7c7788005e4..7817e88bd08d 100644
---- a/include/sound/sb16_csp.h
-+++ b/include/sound/sb16_csp.h
-@@ -46,7 +46,7 @@ enum {
- struct snd_sb_csp_ops {
- 	int (*csp_use) (struct snd_sb_csp * p);
- 	int (*csp_unuse) (struct snd_sb_csp * p);
--	int (*csp_autoload) (struct snd_sb_csp * p, int pcm_sfmt, int play_rec_mode);
-+	int (*csp_autoload) (struct snd_sb_csp * p, snd_pcm_format_t pcm_sfmt, int play_rec_mode);
- 	int (*csp_start) (struct snd_sb_csp * p, int sample_width, int channels);
- 	int (*csp_stop) (struct snd_sb_csp * p);
- 	int (*csp_qsound_transfer) (struct snd_sb_csp * p);
-diff --git a/sound/isa/sb/sb16_csp.c b/sound/isa/sb/sb16_csp.c
-index fa5780bb0c68..2210e7c72787 100644
---- a/sound/isa/sb/sb16_csp.c
-+++ b/sound/isa/sb/sb16_csp.c
-@@ -93,7 +93,7 @@ static int snd_sb_csp_riff_load(struct snd_sb_csp * p,
- 				struct snd_sb_csp_microcode __user * code);
- static int snd_sb_csp_unload(struct snd_sb_csp * p);
- static int snd_sb_csp_load_user(struct snd_sb_csp * p, const unsigned char __user *buf, int size, int load_flags);
--static int snd_sb_csp_autoload(struct snd_sb_csp * p, int pcm_sfmt, int play_rec_mode);
-+static int snd_sb_csp_autoload(struct snd_sb_csp * p, snd_pcm_format_t pcm_sfmt, int play_rec_mode);
- static int snd_sb_csp_check_version(struct snd_sb_csp * p);
+diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
+index 3e39ba220c39..11ed4a6e5bf1 100644
+--- a/sound/isa/sb/sb16_main.c
++++ b/sound/isa/sb/sb16_main.c
+@@ -49,6 +49,9 @@ MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+ MODULE_DESCRIPTION("Routines for control of 16-bit SoundBlaster cards and clones");
+ MODULE_LICENSE("GPL");
  
- static int snd_sb_csp_use(struct snd_sb_csp * p);
-@@ -726,7 +726,7 @@ static int snd_sb_csp_firmware_load(struct snd_sb_csp *p, int index, int flags)
-  * autoload hardware codec if necessary
-  * return 0 if CSP is loaded and ready to run (p->running != 0)
-  */
--static int snd_sb_csp_autoload(struct snd_sb_csp * p, int pcm_sfmt, int play_rec_mode)
-+static int snd_sb_csp_autoload(struct snd_sb_csp * p, snd_pcm_format_t pcm_sfmt, int play_rec_mode)
++#define runtime_format_bits(runtime) \
++	((unsigned int)pcm_format_to_bits((runtime)->format))
++
+ #ifdef CONFIG_SND_SB16_CSP
+ static void snd_sb16_csp_playback_prepare(struct snd_sb *chip, struct snd_pcm_runtime *runtime)
  {
- 	unsigned long flags;
- 	int err = 0;
-@@ -736,7 +736,7 @@ static int snd_sb_csp_autoload(struct snd_sb_csp * p, int pcm_sfmt, int play_rec
- 		return -EBUSY;
- 
- 	/* autoload microcode only if requested hardware codec is not already loaded */
--	if (((1 << pcm_sfmt) & p->acc_format) && (play_rec_mode & p->mode)) {
-+	if (((1U << (__force int)pcm_sfmt) & p->acc_format) && (play_rec_mode & p->mode)) {
- 		p->running = SNDRV_SB_CSP_ST_AUTO;
- 	} else {
- 		switch (pcm_sfmt) {
+@@ -58,7 +61,7 @@ static void snd_sb16_csp_playback_prepare(struct snd_sb *chip, struct snd_pcm_ru
+ 		if (csp->running & SNDRV_SB_CSP_ST_LOADED) {
+ 			/* manually loaded codec */
+ 			if ((csp->mode & SNDRV_SB_CSP_MODE_DSP_WRITE) &&
+-			    ((1U << runtime->format) == csp->acc_format)) {
++			    (runtime_format_bits(runtime) == csp->acc_format)) {
+ 				/* Supported runtime PCM format for playback */
+ 				if (csp->ops.csp_use(csp) == 0) {
+ 					/* If CSP was successfully acquired */
+@@ -66,7 +69,7 @@ static void snd_sb16_csp_playback_prepare(struct snd_sb *chip, struct snd_pcm_ru
+ 				}
+ 			} else if ((csp->mode & SNDRV_SB_CSP_MODE_QSOUND) && (csp->q_enabled)) {
+ 				/* QSound decoder is loaded and enabled */
+-				if ((1 << runtime->format) & (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_U8 |
++				if (runtime_format_bits(runtime) & (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_U8 |
+ 							      SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U16_LE)) {
+ 					/* Only for simple PCM formats */
+ 					if (csp->ops.csp_use(csp) == 0) {
+@@ -106,7 +109,7 @@ static void snd_sb16_csp_capture_prepare(struct snd_sb *chip, struct snd_pcm_run
+ 		if (csp->running & SNDRV_SB_CSP_ST_LOADED) {
+ 			/* manually loaded codec */
+ 			if ((csp->mode & SNDRV_SB_CSP_MODE_DSP_READ) &&
+-			    ((1U << runtime->format) == csp->acc_format)) {
++			    (runtime_format_bits(runtime) == csp->acc_format)) {
+ 				/* Supported runtime PCM format for capture */
+ 				if (csp->ops.csp_use(csp) == 0) {
+ 					/* If CSP was successfully acquired */
 -- 
 2.18.0
