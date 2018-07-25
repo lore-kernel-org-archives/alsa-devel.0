@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Atom: fix inversion between
-	__iowrite32 and __ioread32" to the asoc tree
-Date: Wed, 25 Jul 2018 17:40:02 +0100 (BST)
-Message-ID: <20180725164002.7D9801123B08@debutante.sirena.org.uk>
-References: <20180724211248.29427-7-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Atom: simplify iomem address and
+	casts" to the asoc tree
+Date: Wed, 25 Jul 2018 17:40:13 +0100 (BST)
+Message-ID: <20180725164013.55AEB1123B08@debutante.sirena.org.uk>
+References: <20180724211248.29427-6-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4253E267757
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:40:04 +0200 (CEST)
-In-Reply-To: <20180724211248.29427-7-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 45B0F267796
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:40:15 +0200 (CEST)
+In-Reply-To: <20180724211248.29427-6-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Atom: fix inversion between __iowrite32 and __ioread32
+   ASoC: Intel: Atom: simplify iomem address and casts
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,85 @@ to this mail.
 Thanks,
 Mark
 
->From 9a0daaab31e9e39047ced79409313c34dae4635a Mon Sep 17 00:00:00 2001
+>From ce1cfe295abaa7436f9049bcb2562c843089abfc Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 24 Jul 2018 16:12:48 -0500
-Subject: [PATCH] ASoC: Intel: Atom: fix inversion between __iowrite32 and
- __ioread32
+Date: Tue, 24 Jul 2018 16:12:47 -0500
+Subject: [PATCH] ASoC: Intel: Atom: simplify iomem address and casts
 
-This looks like a copy/paste issue, but clearly there is an inversion
-that is obvious when checking the arguments.
-
-Detected with Sparse - now that we have fewer warnings this one was
-easy to find.
+Simplify code and add relevant casts to make Sparse warnings go away
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/atom/sst/sst_loader.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/intel/atom/sst/sst_drv_interface.c | 29 ++++++++++----------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
-diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
-index a686eef2cf7f..27413ebae956 100644
---- a/sound/soc/intel/atom/sst/sst_loader.c
-+++ b/sound/soc/intel/atom/sst/sst_loader.c
-@@ -44,15 +44,15 @@ void memcpy32_toio(void __iomem *dst, const void *src, int count)
- 	/* __iowrite32_copy uses 32-bit count values so divide by 4 for
- 	 * right count in words
- 	 */
--	__iowrite32_copy(dst, src, count/4);
-+	__iowrite32_copy(dst, src, count / 4);
+diff --git a/sound/soc/intel/atom/sst/sst_drv_interface.c b/sound/soc/intel/atom/sst/sst_drv_interface.c
+index 6a8b253c58d2..5455d6e0ab53 100644
+--- a/sound/soc/intel/atom/sst/sst_drv_interface.c
++++ b/sound/soc/intel/atom/sst/sst_drv_interface.c
+@@ -266,17 +266,15 @@ static int sst_cdev_ack(struct device *dev, unsigned int str_id,
+ 	stream->cumm_bytes += bytes;
+ 	dev_dbg(dev, "bytes copied %d inc by %ld\n", stream->cumm_bytes, bytes);
+ 
+-	memcpy_fromio(&fw_tstamp,
+-		((void *)(ctx->mailbox + ctx->tstamp)
+-		+(str_id * sizeof(fw_tstamp))),
+-		sizeof(fw_tstamp));
++	addr =  ((void __iomem *)(ctx->mailbox + ctx->tstamp)) +
++		(str_id * sizeof(fw_tstamp));
++
++	memcpy_fromio(&fw_tstamp, addr, sizeof(fw_tstamp));
+ 
+ 	fw_tstamp.bytes_copied = stream->cumm_bytes;
+ 	dev_dbg(dev, "bytes sent to fw %llu inc by %ld\n",
+ 			fw_tstamp.bytes_copied, bytes);
+ 
+-	addr =  ((void *)(ctx->mailbox + ctx->tstamp)) +
+-			(str_id * sizeof(fw_tstamp));
+ 	offset =  offsetof(struct snd_sst_tstamp, bytes_copied);
+ 	sst_shim_write(addr, offset, fw_tstamp.bytes_copied);
+ 	return 0;
+@@ -360,11 +358,12 @@ static int sst_cdev_tstamp(struct device *dev, unsigned int str_id,
+ 	struct snd_sst_tstamp fw_tstamp = {0,};
+ 	struct stream_info *stream;
+ 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++	void __iomem *addr;
++
++	addr = (void __iomem *)(ctx->mailbox + ctx->tstamp) +
++		(str_id * sizeof(fw_tstamp));
+ 
+-	memcpy_fromio(&fw_tstamp,
+-		((void *)(ctx->mailbox + ctx->tstamp)
+-		+(str_id * sizeof(fw_tstamp))),
+-		sizeof(fw_tstamp));
++	memcpy_fromio(&fw_tstamp, addr, sizeof(fw_tstamp));
+ 
+ 	stream = get_stream_info(ctx, str_id);
+ 	if (!stream)
+@@ -530,6 +529,7 @@ static int sst_read_timestamp(struct device *dev, struct pcm_stream_info *info)
+ 	struct snd_sst_tstamp fw_tstamp;
+ 	unsigned int str_id;
+ 	struct intel_sst_drv *ctx = dev_get_drvdata(dev);
++	void __iomem *addr;
+ 
+ 	str_id = info->str_id;
+ 	stream = get_stream_info(ctx, str_id);
+@@ -540,10 +540,11 @@ static int sst_read_timestamp(struct device *dev, struct pcm_stream_info *info)
+ 		return -EINVAL;
+ 	substream = stream->pcm_substream;
+ 
+-	memcpy_fromio(&fw_tstamp,
+-		((void *)(ctx->mailbox + ctx->tstamp)
+-			+ (str_id * sizeof(fw_tstamp))),
+-		sizeof(fw_tstamp));
++	addr = (void __iomem *)(ctx->mailbox + ctx->tstamp) +
++		(str_id * sizeof(fw_tstamp));
++
++	memcpy_fromio(&fw_tstamp, addr, sizeof(fw_tstamp));
++
+ 	return sst_calc_tstamp(ctx, info, substream, &fw_tstamp);
  }
  
- void memcpy32_fromio(void *dst, const void __iomem *src, int count)
- {
--	/* __iowrite32_copy uses 32-bit count values so divide by 4 for
-+	/* __ioread32_copy uses 32-bit count values so divide by 4 for
- 	 * right count in words
- 	 */
--	__iowrite32_copy(dst, src, count/4);
-+	__ioread32_copy(dst, src, count / 4);
- }
- 
- /**
 -- 
 2.18.0
