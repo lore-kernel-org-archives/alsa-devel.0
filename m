@@ -1,14 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 0/6] ASoC: PCM format type conversion fixes
-Date: Wed, 25 Jul 2018 23:17:16 +0200
-Message-ID: <20180725211722.18944-1-tiwai@suse.de>
+Subject: [PATCH 2/6] ASoC: doc: Replace open code with
+	params_set_format()
+Date: Wed, 25 Jul 2018 23:17:18 +0200
+Message-ID: <20180725211722.18944-3-tiwai@suse.de>
+References: <20180725211722.18944-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3473226775C
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:17:27 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 36A5E26776E
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:17:28 +0200 (CEST)
+In-Reply-To: <20180725211722.18944-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,40 +25,30 @@ To: alsa-devel@alsa-project.org
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The example code in dpcm.rst contains an open code calling
+snd_mask_set(), and this can be better represented with
+params_set_format() instead.  This automatically fixes the sparse
+warning about snd_pcm_format_t handling, too.
 
-the PCM format is a fixed type with __bitwise, and it needs cast or
-other trick to deal with integer.  This is a series of such fixes for
-ASoC.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ Documentation/sound/soc/dpcm.rst | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-
-Takashi
-
-===
-
-Takashi Iwai (6):
-  ALSA: pcm: Add snd_mask_set_format() helper for standard usages
-  ASoC: doc: Replace open code with params_set_format()
-  ASoC: intel: Fix snd_pcm_format_t handling
-  ASoC: fsl: Use snd_mask_set_format()
-  ASoC: pcm186x: Declare PCM format with snd_pcm_format_t
-  ASoC: dmaengine: Use standard pcm_format_to_bits() macro
-
- Documentation/sound/soc/dpcm.rst                    |  4 +---
- include/sound/pcm_params.h                          | 10 ++++++++--
- sound/soc/codecs/pcm186x.c                          |  2 +-
- sound/soc/fsl/fsl-asoc-card.c                       |  2 +-
- sound/soc/intel/boards/bdw-rt5677.c                 |  4 +---
- sound/soc/intel/boards/bxt_da7219_max98357a.c       |  2 +-
- sound/soc/intel/boards/bxt_rt298.c                  |  2 +-
- sound/soc/intel/boards/kbl_da7219_max98357a.c       |  2 +-
- sound/soc/intel/boards/kbl_rt5663_max98927.c        |  4 ++--
- sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c |  4 ++--
- sound/soc/intel/boards/skl_nau88l25_max98357a.c     |  2 +-
- sound/soc/intel/boards/skl_nau88l25_ssm4567.c       |  2 +-
- sound/soc/intel/boards/skl_rt286.c                  |  2 +-
- sound/soc/soc-generic-dmaengine-pcm.c               |  2 +-
- 14 files changed, 23 insertions(+), 21 deletions(-)
-
+diff --git a/Documentation/sound/soc/dpcm.rst b/Documentation/sound/soc/dpcm.rst
+index 395e5a516282..fe61e02277f8 100644
+--- a/Documentation/sound/soc/dpcm.rst
++++ b/Documentation/sound/soc/dpcm.rst
+@@ -254,9 +254,7 @@ configuration.
+ 	channels->min = channels->max = 2;
+ 
+ 	/* set DAI0 to 16 bit */
+-	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
+-				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
+-				    SNDRV_PCM_FORMAT_S16_LE);
++	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
+ 	return 0;
+   }
+ 
 -- 
 2.18.0
