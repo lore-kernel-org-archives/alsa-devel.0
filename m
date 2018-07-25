@@ -1,16 +1,20 @@
-From: Christopher Head <chead@chead.ca>
-Subject: Re: Incorrect name of PCM
-Date: Mon, 23 Jul 2018 09:11:38 -0700
-Message-ID: <3E9578B3-156B-40D9-BC11-F8D11B73E722@chead.ca>
-References: <20180722083850.5283c197@amdahl.home.chead.ca>
- <s5h7elm1k39.wl-tiwai@suse.de>
+From: JCruk <jcrukley@gmail.com>
+Subject: [PATCH] Added support for Encore mDSD and Topping DX7s
+	XMOS USB DACs
+Date: Wed, 25 Jul 2018 12:19:53 -0400
+Message-ID: <1532535593-32167-1-git-send-email-jcrukley@gmail.com>
+References: <s5hbmav1emu.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0647791902746471408=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lovelace.chead.ca (lovelace.chead.ca [162.223.226.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C2A426720C
- for <alsa-devel@alsa-project.org>; Mon, 23 Jul 2018 18:11:56 +0200 (CEST)
-In-Reply-To: <s5h7elm1k39.wl-tiwai@suse.de>
+Received: from mail-it0-f67.google.com (mail-it0-f67.google.com
+ [209.85.214.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FE7C2675D4
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:20:08 +0200 (CEST)
+Received: by mail-it0-f67.google.com with SMTP id 72-v6so9495849itw.3
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 09:20:08 -0700 (PDT)
+In-Reply-To: <s5hbmav1emu.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,74 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz
+Cc: JCruk <jcrukley@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============0647791902746471408==
-Content-Transfer-Encoding: 7bit
-Content-Type: multipart/signed; boundary="----QWSH8KD9UEGGPPTN5ZVR27EQE4OUZ9";
-  protocol="application/pgp-signature"; micalg="pgp-sha512"
+Signed-off-by: JCruk <jcrukley@gmail.com>
+---
+ sound/usb/quirks.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-------QWSH8KD9UEGGPPTN5ZVR27EQE4OUZ9
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
- charset=utf-8
-
-On July 23, 2018 12:34:34 AM PDT, Takashi Iwai <tiwai@suse=2Ede> wrote:
->
->For playing via HDMI on your machine, you'd need to pass as "aplay -L"
->shows, one of the following:
->
->> hdmi:CARD=3DNVidia,DEV=3D0
->>     HDA NVidia, HDMI 0
->>     HDMI Audio Output
->> hdmi:CARD=3DNVidia,DEV=3D1
->>     HDA NVidia, HDMI 1
->>     HDMI Audio Output
->> hdmi:CARD=3DNVidia,DEV=3D2
->>     HDA NVidia, HDMI 2
->>     HDMI Audio Output
->> hdmi:CARD=3DNVidia,DEV=3D3
->>     HDA NVidia, HDMI 3
->>     HDMI Audio Output
->
->The device number depends on the HDMI port you plugged in=2E
->The above can be in a shorter form like "hdmi:1,0", too=2E
-
-Hi,
-Thanks for responding=2E Did you miss this part of the aplay -L output?
-
-hdmi:CARD=3DPCH,DEV=3D0
-HDA Intel PCH, VT1708S Digital
-HDMI Audio Output
-
-This is the part I think is wrong, not the parts mentioning the NVidia HDM=
-I outputs=2E
-
-Thanks,
-
---=20
-Christopher Head
-------QWSH8KD9UEGGPPTN5ZVR27EQE4OUZ9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iIEEABYKACkiHENocmlzdG9waGVyIEhlYWQgPGNoZWFkQGNoZWFkLmNhPgUCW1X+
-OgAKCRBlX9lfCltNgcPfAQCH1B+tTU/BoGU+mhf32ENRC2LEIW2uTkx46WwmSsyg
-BwEAy+Gus4EaZYw2UDeIh//6rIp/OmuABMi+Vdk3dtqm4Ac=
-=QeCV
------END PGP SIGNATURE-----
-
-------QWSH8KD9UEGGPPTN5ZVR27EQE4OUZ9--
-
---===============0647791902746471408==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0647791902746471408==--
+diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
+index 02b6cc0..7683d33 100644
+--- a/sound/usb/quirks.c
++++ b/sound/usb/quirks.c
+@@ -1373,6 +1373,8 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
+ 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
+ 		break;
+ 
++	case USB_ID(0x152a, 0x8750): /* Topping DX7s */
++	case USB_ID(0x16d0, 0x09dd): /* Encore mDSD */
+ 	case USB_ID(0x0d8c, 0x0316): /* Hegel HD12 DSD */
+ 	case USB_ID(0x16b0, 0x06b2): /* NuPrime DAC-10 */
+ 	case USB_ID(0x16d0, 0x0733): /* Furutech ADL Stratos */
+-- 
+2.7.4
