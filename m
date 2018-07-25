@@ -1,21 +1,18 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH v4 3/8] ASoC: Intel: Boards: Machine driver
- for SKL+ w/ HDAudio codecs
-Date: Wed, 25 Jul 2018 21:52:08 +0530
-Message-ID: <20180725162208.GW3661@vkoul-mobl>
-References: <20180725005055.18138-1-pierre-louis.bossart@linux.intel.com>
- <20180725005055.18138-4-pierre-louis.bossart@linux.intel.com>
- <20180725111145.GM3661@vkoul-mobl>
- <c9577eef-3b32-e1b9-17e2-0bedce8109c8@linux.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 12/12] ASoC: apq8096: Add support to Analog
+ audio via WCD9335 slim
+Date: Wed, 25 Jul 2018 17:24:55 +0100
+Message-ID: <20180725162455.GC6315@sirena.org.uk>
+References: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
+ <20180723155410.9494-13-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============4212930171213953266=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 544FF26774A
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:22:18 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <c9577eef-3b32-e1b9-17e2-0bedce8109c8@linux.intel.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E901126774A
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:24:58 +0200 (CEST)
+In-Reply-To: <20180723155410.9494-13-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,50 +22,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, vkoul@kernel.org, robh+dt@kernel.org, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-On 25-07-18, 09:10, Pierre-Louis Bossart wrote:
-> On 7/25/18 6:11 AM, Vinod wrote:
 
-> > > +		.dpcm_playback = 1,
-> > > +		.no_pcm = 1,
-> > > +	},
-> > > +	{
-> > > +		.name = "iDisp2",
-> > > +		.id = 2,
-> > > +		.cpu_dai_name = "iDisp2 Pin",
-> > > +		.codec_name = "ehdaudio0D2",
-> > > +		.codec_dai_name = "intel-hdmi-hifi2",
-> > > +		.platform_name = "0000:00:1f.3",
-> > > +		.dpcm_playback = 1,
-> > > +		.no_pcm = 1,
-> > > +	},
-> > > +	{
-> > > +		.name = "iDisp3",
-> > > +		.id = 3,
-> > 
-> > shouldn't this be queried. not all will have 3 links
-> 
-> Not that I know of. I've always seen SKL+ with 3 audio streams to iDisp.
+--===============4212930171213953266==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="NKoe5XOeduwbEQHU"
+Content-Disposition: inline
 
-IIRC later ones (after KBL) have 5 CVTs and 4 pins (or vice-versa)
 
-> > > +static struct platform_driver skl_hda_audio = {
-> > > +	.probe = skl_hda_audio_probe,
-> > > +	.driver = {
-> > > +		.name = "skl_hda_dsp_generic",
-> > 
-> > who creates this pdev, is it the board details (mach name?)
-> 
-> Not sure I understand your question, this part is similar to all other Intel
-> machine drivers and the way by with the probe happens is also similar. There
-> is nothing new here, the skylake platform driver finds an entry in a table,
-> gets the driver name and creates the relevant device.
+--NKoe5XOeduwbEQHU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Okay sounds good. I was curious if the generic machine device is created
-generically or use the tables..
+On Mon, Jul 23, 2018 at 04:54:10PM +0100, Srinivas Kandagatla wrote:
+> This patch adds support Analog audio via WCD9335 Codec connected via SLIMBus.
+> Tested it on DB820c.
 
--- 
-~Vinod
+This looks good as do the other patches I didn't explicitly comment on.
+
+--NKoe5XOeduwbEQHU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltYpFcACgkQJNaLcl1U
+h9AYRQf+MlUMS9lvwVmMrSYMa3FS+HFCLO01K7ckUMy9KOIoYIzpEnhXlK7NN2dH
+aIjGIBNJcYBrKlzQTg859xt9XX2LE+lnxwVPIF7lPz/czeIPsYkCdg28GtzEDF0q
+RGK1yc6yBoNjIOpQtpu7KSdGlz08Ve3YcfOqZvT3CLyvHqwol8ath8MJuBKOsIu5
+susi5HEu9xeLH4/MSviqja5VDmaqQGIMes7mlJPa99GrjWWNCbrabv1MVc3JGwzF
+4qgv+xS8wjnQxvXRY6hWQGBOK0wMRHaECdLVS2aZZ1Qjrp86TGFSvsHnIWcK83Kh
+gcaNIBmlVZxTmUgObR4oCrXErF8I8w==
+=uYAY
+-----END PGP SIGNATURE-----
+
+--NKoe5XOeduwbEQHU--
+
+--===============4212930171213953266==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4212930171213953266==--
