@@ -1,19 +1,19 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 1/6] ASoC: Intel: boards: cleanup
- snd_mask_set usage
-Date: Wed, 25 Jul 2018 08:54:54 -0500
-Message-ID: <1429709c-2ac3-be3a-c3da-b02a9b2c856c@linux.intel.com>
-References: <20180724211248.29427-1-pierre-louis.bossart@linux.intel.com>
- <20180724211248.29427-2-pierre-louis.bossart@linux.intel.com>
- <s5h7eljyj2a.wl-tiwai@suse.de>
+Subject: Re: [PATCH 01/11] ASoC: SOF: Add Sound Open Firmware
+ driver core
+Date: Wed, 25 Jul 2018 08:57:40 -0500
+Message-ID: <452cc12a-6c7d-e6e8-bc9b-b896f892b9a0@linux.intel.com>
+References: <20180719185335.30912-1-liam.r.girdwood@linux.intel.com>
+ <8d2bad29-b498-fa03-8c95-53b7ebd5f83b@linux.intel.com>
+ <s5hva93wyvz.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 8954D2675D4
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 15:57:06 +0200 (CEST)
-In-Reply-To: <s5h7eljyj2a.wl-tiwai@suse.de>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6BAB52675D4
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 16:00:51 +0200 (CEST)
+In-Reply-To: <s5hva93wyvz.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,63 +25,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/25/18 12:34 AM, Takashi Iwai wrote:
-> On Tue, 24 Jul 2018 23:12:43 +0200,
-> Pierre-Louis Bossart wrote:
->>
->> Sparse reports a ton of warnings when snd_mask_set is used (see
->> e.g. below). Fix by adding the right typecast with the __force
->> attribute. The code is less readable but with fewer warnings it's
->> easier to track the real issues and improve the rest of the code.
->>
->>   CHECK   sound/soc/intel/boards/skl_nau88l25_max98357a.c
->> sound/soc/intel/boards/skl_nau88l25_max98357a.c:160:27: warning: incorrect type in argument 2 (different base types)
->> sound/soc/intel/boards/skl_nau88l25_max98357a.c:160:27:    expected unsigned int [unsigned] val
->> sound/soc/intel/boards/skl_nau88l25_max98357a.c:160:27:    got restricted snd_pcm_format_t [usertype] <noident>
->>
->> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
->> ---
->>   sound/soc/intel/boards/bdw-rt5677.c                 | 2 +-
->>   sound/soc/intel/boards/bxt_da7219_max98357a.c       | 2 +-
->>   sound/soc/intel/boards/bxt_rt298.c                  | 2 +-
->>   sound/soc/intel/boards/glk_rt5682_max98357a.c       | 2 +-
->>   sound/soc/intel/boards/kbl_da7219_max98357a.c       | 2 +-
->>   sound/soc/intel/boards/kbl_rt5663_max98927.c        | 6 ++++--
->>   sound/soc/intel/boards/kbl_rt5663_rt5514_max98927.c | 6 ++++--
->>   sound/soc/intel/boards/skl_nau88l25_max98357a.c     | 2 +-
->>   sound/soc/intel/boards/skl_nau88l25_ssm4567.c       | 2 +-
->>   sound/soc/intel/boards/skl_rt286.c                  | 2 +-
->>   10 files changed, 16 insertions(+), 12 deletions(-)
->>
->> diff --git a/sound/soc/intel/boards/bdw-rt5677.c b/sound/soc/intel/boards/bdw-rt5677.c
->> index 6ea360f33575..17037892c16b 100644
->> --- a/sound/soc/intel/boards/bdw-rt5677.c
->> +++ b/sound/soc/intel/boards/bdw-rt5677.c
->> @@ -156,7 +156,7 @@ static int broadwell_ssp0_fixup(struct snd_soc_pcm_runtime *rtd,
->>   	/* set SSP0 to 16 bit */
->>   	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
->>   				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
->> -				    SNDRV_PCM_FORMAT_S16_LE);
->> +				(__force unsigned int)SNDRV_PCM_FORMAT_S16_LE);
-> 
-> I believe we should provide a specific type of snd_mask_set(), e.g.
-> snd_mask_set_format(), snd_mask_set_access(), etc, which receives the
-> right type as the argument, instead of this kind of ugly cast.
-
-I agree it's ugly, I was indeed hoping we'd fix this in a nicer way.
-
-> 
-> Will cook up the patch later.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+T24gNy8yNS8xOCAyOjM2IEFNLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gT24gVHVlLCAyNCBKdWwg
+MjAxOCAxNzo1Nzo0MiArMDIwMCwKPiBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPj4KPj4g
+d2Ugc2VlbSB0byBoYXZlIGEgbmV3IDAtZGF5IHJlcG9ydCB3aXRoIHJhbmRjb25maWcgcmVsYXRl
+ZCB0byB0aGUKPj4gcGFnZS9zZ2J1ZmZlciBtYW5hZ2VtZW50LiBOb3Qgc3VyZSB3aHkgaXQgd2Fz
+bid0IHNlZW4gYmVmb3JlLCBJJ3ZlCj4+IGFscmVhZHkgZml4ZWQgcXVpdGUgYSBmZXcgZXhvdGlj
+IGNvbmZpZ3VyYXRpb25zIGZvciBub24tSW50ZWwgdGFyZ2V0cy4KPj4KPj4gc291bmQvc29jL3Nv
+Zi9jb3JlLmM6IEluIGZ1bmN0aW9uICdzbmRfc29mX2NyZWF0ZV9wYWdlX3RhYmxlJzoKPj4gc291
+bmQvc29jL3NvZi9jb3JlLmM6MjAxOjEwOiBlcnJvcjogaW1wbGljaXQgZGVjbGFyYXRpb24gb2Yg
+ZnVuY3Rpb24KPj4gJ3NuZF9zZ2J1Zl9hbGlnbmVkX3BhZ2VzJyBbLVdlcnJvcj1pbXBsaWNpdC1m
+dW5jdGlvbi1kZWNsYXJhdGlvbl0KPj4gIMKgIHBhZ2VzID0gc25kX3NnYnVmX2FsaWduZWRfcGFn
+ZXMoc2l6ZSk7Cj4+ICDCoMKgwqDCoMKgwqDCoMKgwqAgXgo+PiBMb29raW5nIGF0IHRoZSBjb2Rl
+Ogo+Pj4gK3N0YXRpYyBpbmxpbmUgdW5zaWduZWQgaW50IHNvZl9nZXRfcGFnZXMoc2l6ZV90IHNp
+emUpCj4+PiArewo+Pj4gKwlyZXR1cm4gKHNpemUgKyBQQUdFX1NJWkUgLSAxKSA+PiBQQUdFX1NI
+SUZUOwo+Pj4gK30KPj4gdGhpcyBpbmxpbmUgZG9lc24ndCBzZWVtIHRvIGJlIHVzZWQgYnV0IGR1
+cGxpY2F0ZXMgdGhlIGNvZGUgZnJvbQo+Pgo+PiBzdGF0aWMgaW5saW5lIHVuc2lnbmVkIGludCBz
+bmRfc2didWZfYWxpZ25lZF9wYWdlcyhzaXplX3Qgc2l6ZSkKPj4gewo+PiAgwqDCoMKgIHJldHVy
+biAoc2l6ZSArIFBBR0VfU0laRSAtIDEpID4+IFBBR0VfU0hJRlQ7Cj4+IH0KPj4KPj4gd2hpY2gg
+aXMgdXNlZCBiZWxvdwo+Pj4gK2ludCBzbmRfc29mX2NyZWF0ZV9wYWdlX3RhYmxlKHN0cnVjdCBz
+bmRfc29mX2RldiAqc2RldiwKPj4+ICsJCQkgICAgICBzdHJ1Y3Qgc25kX2RtYV9idWZmZXIgKmRt
+YWIsCj4+PiArCQkJICAgICAgdW5zaWduZWQgY2hhciAqcGFnZV90YWJsZSwgc2l6ZV90IHNpemUp
+Cj4+PiArewo+Pj4gKwlpbnQgaSwgcGFnZXM7Cj4+PiArCj4+PiArCXBhZ2VzID0gc25kX3NnYnVm
+X2FsaWduZWRfcGFnZXMoc2l6ZSk7Cj4+IHRoaXMgY29kZSBkb2Vzbid0IGNvbXBpbGUgdW5sZXNz
+IENPTkZJR19TTkRfRE1BX1NHQlVGIGlzIGRlZmluZWQgKGl0Cj4+IGlzIHNldCBmb3IgdGhlIGlu
+dGVsLXNwZWNpZmljIGNvZGUgYnV0IG5vdCBmb3IgdGhlIFNPRiBjb3JlKS4gV2UgY2FuCj4+IGZp
+eCB0aGlzIGluIGRpZmZlcmVudCB3YXlzCj4+IDAuIHJlcXVpcmUgU05EX0NNRF9TR0JVRiBmb3Ig
+dGhlIGNvcmUgLSBsaWtlbHkgbm90IGRlc2lyYWJsZQo+PiAxLiB1c2Ugc29mX2dldF9wYWdlcygp
+Cj4+IDIuIGNoYW5nZSBpbmNsdWRlL3NvdW5kL21lbWFsbG9jLmggdG8gbWFrZSBzdXJlIHRoaXMK
+Pj4gc25kX3NnYnVmX2FsaWduZWRfcGFnZXMoKSBpbmxpbmUgaXMgYXZhaWxhYmxlIHdoZXRoZXIK
+Pj4gQ09ORklHX1NORF9ETUFfU0dCVUYgaXMgZGVmaW5lZCBvciBub3QgLSBtYXliZSBtYWtpbmcg
+c3VyZSB3aGlsZSB3ZQo+PiBhcmUgYXQgaXQgdGhhdCB0aGUgbWFsbG9jIGFuZCBmcmVlIGZ1bmN0
+aW9ucyBhcmUgZW1wdHkgc3RhdGljIGlubGluZXM/Cj4gCj4gVGhlIGxhdHRlciBzb3VuZHMgbGlr
+ZSBhIGJldHRlciBjaG9pY2UgdG8gbWUuCj4gSnVzdCBtb3ZlIHRoZSBmdW5jdGlvbiB0byBvdXRz
+aWRlIGlmZGVmLgoKV2lsbCBkbywgdGhhbmtzIGZvciB0aGUgZmVlZGJhY2suCi1QaWVycmUKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
