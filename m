@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 07/12] ALSA: opl3: Declare common variables
-	properly
-Date: Wed, 25 Jul 2018 23:00:52 +0200
-Message-ID: <20180725210057.18017-8-tiwai@suse.de>
+Subject: [PATCH 12/12] ALSA: emu10k1: Fix missing __force
+	annotation for user/kernel pointer cast
+Date: Wed, 25 Jul 2018 23:00:57 +0200
+Message-ID: <20180725210057.18017-13-tiwai@suse.de>
 References: <20180725210057.18017-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B0BDE267786
+ by alsa0.perex.cz (Postfix) with ESMTP id D4A5D26778A
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:01:05 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id AC03EB0A5
+ by mx1.suse.de (Postfix) with ESMTP id E1351B381
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:01:03 +0000 (UTC)
 In-Reply-To: <20180725210057.18017-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,106 +27,114 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Move the declarations of common variables into opl3_voice.h instead of
-declaring at each file multiple times, which was error-prone.
+The cast between user-space and kernel-space needs an explicit __force
+prefix, but it's missing in many places in emu10k1 driver code.
 
-This fixes sparse warnings like:
-  sound/drivers/opl3/opl3_synth.c:51:6: warning: symbol 'snd_opl3_regmap' was not declared. Should it be static?
+Spotted by sparse as a warning like:
+  sound/pci/emu10k1/emufx.c:529:33: warning: cast removes address space of expression
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/drivers/opl3/opl3_drums.c | 2 --
- sound/drivers/opl3/opl3_lib.c   | 3 +--
- sound/drivers/opl3/opl3_midi.c  | 4 ----
- sound/drivers/opl3/opl3_oss.c   | 2 --
- sound/drivers/opl3/opl3_synth.c | 1 +
- sound/drivers/opl3/opl3_voice.h | 4 ++++
- 6 files changed, 6 insertions(+), 10 deletions(-)
+ sound/pci/emu10k1/emufx.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-diff --git a/sound/drivers/opl3/opl3_drums.c b/sound/drivers/opl3/opl3_drums.c
-index 73694380734a..14929822956c 100644
---- a/sound/drivers/opl3/opl3_drums.c
-+++ b/sound/drivers/opl3/opl3_drums.c
-@@ -21,8 +21,6 @@
+diff --git a/sound/pci/emu10k1/emufx.c b/sound/pci/emu10k1/emufx.c
+index de2ecbe95d6c..90713741c2dc 100644
+--- a/sound/pci/emu10k1/emufx.c
++++ b/sound/pci/emu10k1/emufx.c
+@@ -526,7 +526,7 @@ static int snd_emu10k1_gpr_poke(struct snd_emu10k1 *emu,
+ 		if (!test_bit(gpr, icode->gpr_valid))
+ 			continue;
+ 		if (in_kernel)
+-			val = *(u32 *)&icode->gpr_map[gpr];
++			val = *(__force u32 *)&icode->gpr_map[gpr];
+ 		else if (get_user(val, &icode->gpr_map[gpr]))
+ 			return -EFAULT;
+ 		snd_emu10k1_ptr_write(emu, emu->gpr_base + gpr, 0, val);
+@@ -560,8 +560,8 @@ static int snd_emu10k1_tram_poke(struct snd_emu10k1 *emu,
+ 		if (!test_bit(tram, icode->tram_valid))
+ 			continue;
+ 		if (in_kernel) {
+-			val = *(u32 *)&icode->tram_data_map[tram];
+-			addr = *(u32 *)&icode->tram_addr_map[tram];
++			val = *(__force u32 *)&icode->tram_data_map[tram];
++			addr = *(__force u32 *)&icode->tram_addr_map[tram];
+ 		} else {
+ 			if (get_user(val, &icode->tram_data_map[tram]) ||
+ 			    get_user(addr, &icode->tram_addr_map[tram]))
+@@ -611,8 +611,8 @@ static int snd_emu10k1_code_poke(struct snd_emu10k1 *emu,
+ 		if (!test_bit(pc / 2, icode->code_valid))
+ 			continue;
+ 		if (in_kernel) {
+-			lo = *(u32 *)&icode->code[pc + 0];
+-			hi = *(u32 *)&icode->code[pc + 1];
++			lo = *(__force u32 *)&icode->code[pc + 0];
++			hi = *(__force u32 *)&icode->code[pc + 1];
+ 		} else {
+ 			if (get_user(lo, &icode->code[pc + 0]) ||
+ 			    get_user(hi, &icode->code[pc + 1]))
+@@ -666,7 +666,7 @@ static unsigned int *copy_tlv(const unsigned int __user *_tlv, bool in_kernel)
+ 	if (!_tlv)
+ 		return NULL;
+ 	if (in_kernel)
+-		memcpy(data, (void *)_tlv, sizeof(data));
++		memcpy(data, (__force void *)_tlv, sizeof(data));
+ 	else if (copy_from_user(data, _tlv, sizeof(data)))
+ 		return NULL;
+ 	if (data[1] >= MAX_TLV_SIZE)
+@@ -676,7 +676,7 @@ static unsigned int *copy_tlv(const unsigned int __user *_tlv, bool in_kernel)
+ 		return NULL;
+ 	memcpy(tlv, data, sizeof(data));
+ 	if (in_kernel) {
+-		memcpy(tlv + 2, (void *)(_tlv + 2),  data[1]);
++		memcpy(tlv + 2, (__force void *)(_tlv + 2),  data[1]);
+ 	} else if (copy_from_user(tlv + 2, _tlv + 2, data[1])) {
+ 		kfree(tlv);
+ 		return NULL;
+@@ -693,7 +693,7 @@ static int copy_gctl(struct snd_emu10k1 *emu,
  
- #include "opl3_voice.h"
+ 	if (emu->support_tlv) {
+ 		if (in_kernel)
+-			memcpy(gctl, (void *)&_gctl[idx], sizeof(*gctl));
++			memcpy(gctl, (__force void *)&_gctl[idx], sizeof(*gctl));
+ 		else if (copy_from_user(gctl, &_gctl[idx], sizeof(*gctl)))
+ 			return -EFAULT;
+ 		return 0;
+@@ -701,7 +701,7 @@ static int copy_gctl(struct snd_emu10k1 *emu,
  
--extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
--
- static char snd_opl3_drum_table[47] =
- {
- 	OPL3_BASSDRUM_ON,  OPL3_BASSDRUM_ON,  OPL3_HIHAT_ON,	/* 35 - 37 */
-diff --git a/sound/drivers/opl3/opl3_lib.c b/sound/drivers/opl3/opl3_lib.c
-index 588963d6be28..1a5355b747ec 100644
---- a/sound/drivers/opl3/opl3_lib.c
-+++ b/sound/drivers/opl3/opl3_lib.c
-@@ -31,13 +31,12 @@
- #include <linux/slab.h>
- #include <linux/ioport.h>
- #include <sound/minors.h>
-+#include "opl3_voice.h"
- 
- MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>, Hannu Savolainen 1993-1996, Rob Hooft");
- MODULE_DESCRIPTION("Routines for control of AdLib FM cards (OPL2/OPL3/OPL4 chips)");
- MODULE_LICENSE("GPL");
- 
--extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
--
- static void snd_opl2_command(struct snd_opl3 * opl3, unsigned short cmd, unsigned char val)
- {
- 	unsigned long flags;
-diff --git a/sound/drivers/opl3/opl3_midi.c b/sound/drivers/opl3/opl3_midi.c
-index 71cd5a2fbe82..471916ca0b6b 100644
---- a/sound/drivers/opl3/opl3_midi.c
-+++ b/sound/drivers/opl3/opl3_midi.c
-@@ -25,10 +25,6 @@
- #include "opl3_voice.h"
- #include <sound/asoundef.h>
- 
--extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
--
--extern bool use_internal_drums;
--
- static void snd_opl3_note_off_unsafe(void *p, int note, int vel,
- 				     struct snd_midi_channel *chan);
- /*
-diff --git a/sound/drivers/opl3/opl3_oss.c b/sound/drivers/opl3/opl3_oss.c
-index 8a0ce3f43f42..869220ced4ed 100644
---- a/sound/drivers/opl3/opl3_oss.c
-+++ b/sound/drivers/opl3/opl3_oss.c
-@@ -29,8 +29,6 @@ static int snd_opl3_reset_seq_oss(struct snd_seq_oss_arg *arg);
- 
- /* operators */
- 
--extern struct snd_midi_op opl3_ops;
--
- static struct snd_seq_oss_callback oss_callback = {
- 	.owner = 	THIS_MODULE,
- 	.open =		snd_opl3_open_seq_oss,
-diff --git a/sound/drivers/opl3/opl3_synth.c b/sound/drivers/opl3/opl3_synth.c
-index 42920a243328..d522925fc5c0 100644
---- a/sound/drivers/opl3/opl3_synth.c
-+++ b/sound/drivers/opl3/opl3_synth.c
-@@ -24,6 +24,7 @@
- #include <linux/nospec.h>
- #include <sound/opl3.h>
- #include <sound/asound_fm.h>
-+#include "opl3_voice.h"
- 
- #if IS_ENABLED(CONFIG_SND_SEQUENCER)
- #define OPL3_SUPPORT_SYNTH
-diff --git a/sound/drivers/opl3/opl3_voice.h b/sound/drivers/opl3/opl3_voice.h
-index a2445163008e..5b02bd49fde4 100644
---- a/sound/drivers/opl3/opl3_voice.h
-+++ b/sound/drivers/opl3/opl3_voice.h
-@@ -52,4 +52,8 @@ void snd_opl3_free_seq_oss(struct snd_opl3 *opl3);
- #define snd_opl3_free_seq_oss(opl3) /* NOP */
- #endif
- 
-+extern char snd_opl3_regmap[MAX_OPL2_VOICES][4];
-+extern bool use_internal_drums;
-+extern struct snd_midi_op opl3_ops;
-+
- #endif
+ 	octl = (struct snd_emu10k1_fx8010_control_old_gpr __user *)_gctl;
+ 	if (in_kernel)
+-		memcpy(gctl, (void *)&octl[idx], sizeof(*octl));
++		memcpy(gctl, (__force void *)&octl[idx], sizeof(*octl));
+ 	else if (copy_from_user(gctl, &octl[idx], sizeof(*octl)))
+ 		return -EFAULT;
+ 	gctl->tlv = NULL;
+@@ -735,7 +735,7 @@ static int snd_emu10k1_verify_controls(struct snd_emu10k1 *emu,
+ 	for (i = 0, _id = icode->gpr_del_controls;
+ 	     i < icode->gpr_del_control_count; i++, _id++) {
+ 		if (in_kernel)
+-			id = *(struct snd_ctl_elem_id *)_id;
++			id = *(__force struct snd_ctl_elem_id *)_id;
+ 		else if (copy_from_user(&id, _id, sizeof(id)))
+ 	     		return -EFAULT;
+ 		if (snd_emu10k1_look_for_ctl(emu, &id) == NULL)
+@@ -833,7 +833,7 @@ static int snd_emu10k1_add_controls(struct snd_emu10k1 *emu,
+ 		knew.device = gctl->id.device;
+ 		knew.subdevice = gctl->id.subdevice;
+ 		knew.info = snd_emu10k1_gpr_ctl_info;
+-		knew.tlv.p = copy_tlv(gctl->tlv, in_kernel);
++		knew.tlv.p = copy_tlv((__force const unsigned int __user *)gctl->tlv, in_kernel);
+ 		if (knew.tlv.p)
+ 			knew.access = SNDRV_CTL_ELEM_ACCESS_READWRITE |
+ 				SNDRV_CTL_ELEM_ACCESS_TLV_READ;
+@@ -897,7 +897,7 @@ static int snd_emu10k1_del_controls(struct snd_emu10k1 *emu,
+ 	for (i = 0, _id = icode->gpr_del_controls;
+ 	     i < icode->gpr_del_control_count; i++, _id++) {
+ 		if (in_kernel)
+-			id = *(struct snd_ctl_elem_id *)_id;
++			id = *(__force struct snd_ctl_elem_id *)_id;
+ 		else if (copy_from_user(&id, _id, sizeof(id)))
+ 			return -EFAULT;
+ 		down_write(&card->controls_rwsem);
 -- 
 2.18.0
