@@ -1,52 +1,103 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Subject: Re: [PATCH] ASoC: AMD: Add a fix voltage regulator for
- DA7219 and ADAU7002
-Date: Wed, 25 Jul 2018 14:30:04 +0530
-Message-ID: <343d6aa1-0687-a6d3-fb1a-3f1365db1e6a@amd.com>
-References: <1532068715-2992-1-git-send-email-akshu.agrawal@amd.com>
- <20180720121816.GD10784@sirena.org.uk>
- <50343cff-bad4-7677-851f-f0b818ae7b29@amd.com>
- <20180724171428.GQ13268@sirena.org.uk>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [PATCH v2] ASoC: AMD: Add a fix voltage regulator for DA7219 and ADAU7002
+Date: Wed, 25 Jul 2018 17:00:59 +0800
+Message-ID: <1532509274-8280-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from NAM05-DM3-obe.outbound.protection.outlook.com
- (mail-eopbgr730042.outbound.protection.outlook.com [40.107.73.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 88EDE26739D
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 11:00:29 +0200 (CEST)
-In-Reply-To: <20180724171428.GQ13268@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com, Dylan Reid <dgreid@chromium.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: djkurtz@chromium.org, akshu.agrawal@amd.com, Alexander.Deucher@amd.com, Adam Thomson <Adam.Thomson.Opensource@diasemi.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alex Deucher <alexander.deucher@amd.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Wei Yongjun <weiyongjun1@huawei.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiA3LzI0LzIwMTggMTA6NDQgUE0sIE1hcmsgQnJvd24gd3JvdGU6Cj4gT24gTW9uLCBKdWwg
-MjMsIDIwMTggYXQgMTA6NTY6NDRBTSArMDUzMCwgQWdyYXdhbCwgQWtzaHUgd3JvdGU6Cj4gCj4+
-IFRoaXMgYXBwcm9hY2ggc2hvd3MgaW5jb25zaXN0ZW5jaWVzIGFuZCBpbiBzb21lIGJvb3QgY3lj
-bGVzIGRhNzIxOSBmYWlscwo+PiB0byBnZXQgcmVndWxhdG9yLiBGb3JtIHRoZSBsb2dzIChiZWxv
-dykgaXQgc2hvd3MgdGltZSBnYXAgYmV0d2VlbiB0aGUKPj4gdGltZSB3ZSBjYWxsIOKAnHBsYXRm
-b3JtX2RldmljZV9yZWdpc3RlcigmYWNwX2RhNzIxOV9yZWd1bGF0b3IpO+KAnSBhbmQgd2hlbgo+
-PiB0aGUgcmVndWxhdG9yIGFjdHVhbGx5IGdldHMgcmVnaXN0ZXJlZC4KPiAKPiBUaGlzIGhhY2sg
-aXNuJ3QgZ29pbmcgdG8gaGVscCB3aXRoIHRoYXQgQUZBSUNULCB5b3UncmUgc3RpbGwgcmVnaXN0
-ZXJpbmcKPiBhIHBsYXRmb3JtIGRldmljZSBhbmQgcmVseWluZyBvbiBpdCBhcHBlYXJpbmcgaW4g
-dGltZT8gIEl0IGp1c3QKPiByZWdpc3RlcnMgbGVzcyBvZnRlbi4KClllcywgSSBhZ3JlZSBhbmQg
-YnkgInRoaXMgYXBwcm9hY2giIEkgYWxzbyBtZWFudCByZWdpc3RlcmluZyBwbGF0Zm9ybQpkZXZp
-Y2UgYW5kIHdhaXRpbmcgZm9yIGl0cyBwcm9iZSB0byBoYXBwZW4uCgpJbnN0ZWFkIG9mIGFkZGlu
-ZyBhIHBsYXRmb3JtIGRldmljZSB0byB0aGUgcmVnLWZpeGVkLXZvbHRhZ2UsIHdlIGNhbgpyZWdp
-c3RlciBhIHJlZ3VsYXRvciBhbmQgdGh1cyBub3Qgd2FpdCBmb3IgdGhlIHByb2JlIHRvIG9jY3Vy
-LgpQdXNoaW5nIGEgdjIgd2l0aCB0aGlzIGNoYW5nZSB3aGljaCBoYXMgY29uc2lzdGVudCBiZWhh
-dmlvci4KClRoYW5rcywKQWtzaHUKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+DA7219 for our platform need to be configured for 1.8V.
+Hence, we add a volatge regulator with supplies
+of 1.8V in the machine driver.
+
+Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+ sound/soc/amd/Kconfig                |  1 +
+ sound/soc/amd/acp-da7219-max98357a.c | 43 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+)
+
+diff --git a/sound/soc/amd/Kconfig b/sound/soc/amd/Kconfig
+index 6cbf9cf..58c1dcb 100644
+--- a/sound/soc/amd/Kconfig
++++ b/sound/soc/amd/Kconfig
+@@ -8,6 +8,7 @@ config SND_SOC_AMD_CZ_DA7219MX98357_MACH
+ 	select SND_SOC_DA7219
+ 	select SND_SOC_MAX98357A
+ 	select SND_SOC_ADAU7002
++	select REGULATOR
+ 	depends on SND_SOC_AMD_ACP && I2C
+ 	help
+ 	 This option enables machine driver for DA7219 and MAX9835.
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index f42606e..cd3cf6e 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -32,6 +32,8 @@
+ #include <linux/clk.h>
+ #include <linux/gpio.h>
+ #include <linux/module.h>
++#include <linux/regulator/machine.h>
++#include <linux/regulator/driver.h>
+ #include <linux/i2c.h>
+ #include <linux/input.h>
+ #include <linux/acpi.h>
+@@ -320,11 +322,52 @@ static void cz_dmic_shutdown(struct snd_pcm_substream *substream)
+ 	.num_controls = ARRAY_SIZE(cz_mc_controls),
+ };
+ 
++static struct regulator_consumer_supply acp_da7219_supplies[] = {
++	REGULATOR_SUPPLY("VDD", "i2c-DLGS7219:00"),
++	REGULATOR_SUPPLY("VDDMIC", "i2c-DLGS7219:00"),
++	REGULATOR_SUPPLY("VDDIO", "i2c-DLGS7219:00"),
++	REGULATOR_SUPPLY("IOVDD", "ADAU7002:00"),
++};
++
++static struct regulator_init_data acp_da7219_data = {
++	.constraints = {
++		.always_on = 1,
++	},
++	.num_consumer_supplies = ARRAY_SIZE(acp_da7219_supplies),
++	.consumer_supplies = acp_da7219_supplies,
++};
++
++static struct regulator_config acp_da7219_cfg = {
++	.init_data = &acp_da7219_data,
++};
++
++static struct regulator_ops acp_da7219_ops = {
++};
++
++static struct regulator_desc acp_da7219_desc = {
++	.name = "reg-fixed-1.8V",
++	.type = REGULATOR_VOLTAGE,
++	.owner = THIS_MODULE,
++	.ops = &acp_da7219_ops,
++	.fixed_uV = 1800000, /* 1.8V */
++	.n_voltages = 1,
++};
++
+ static int cz_probe(struct platform_device *pdev)
+ {
+ 	int ret;
+ 	struct snd_soc_card *card;
+ 	struct acp_platform_info *machine;
++	struct regulator_dev *rdev;
++
++	acp_da7219_cfg.dev = &pdev->dev;
++	rdev = devm_regulator_register(&pdev->dev, &acp_da7219_desc,
++				       &acp_da7219_cfg);
++	if (IS_ERR(rdev)) {
++		dev_err(&pdev->dev, "Failed to register regulator: %d\n",
++			ret);
++		return -EINVAL;
++	}
+ 
+ 	machine = devm_kzalloc(&pdev->dev, sizeof(struct acp_platform_info),
+ 			       GFP_KERNEL);
+-- 
+1.9.1
