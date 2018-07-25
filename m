@@ -1,19 +1,17 @@
-From: Jeff Crukley <jcrukley@gmail.com>
-Subject: [PATCH] Added support for Encore mDSD USB DAC
-Date: Wed, 25 Jul 2018 15:05:01 -0400
-Message-ID: <1532545501-26129-1-git-send-email-jcrukley@gmail.com>
-References: <s5hh8knw4r2.wl-tiwai@suse.de>
+From: Yoshihiro Kaneko <ykaneko0929@gmail.com>
+Subject: [PATCH] ASoC: rsnd: Document R-Car M3-N support
+Date: Thu, 26 Jul 2018 05:40:15 +0900
+Message-ID: <1532551215-14868-1-git-send-email-ykaneko0929@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
- [209.85.214.66])
- by alsa0.perex.cz (Postfix) with ESMTP id B88A026774A
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:05:21 +0200 (CEST)
-Received: by mail-it0-f66.google.com with SMTP id p4-v6so10261724itf.2
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 12:05:21 -0700 (PDT)
-In-Reply-To: <s5hh8knw4r2.wl-tiwai@suse.de>
+Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
+ [209.85.160.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C33A267763
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 22:40:58 +0200 (CEST)
+Received: by mail-pl0-f66.google.com with SMTP id j8-v6so3707061pll.12
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 13:40:58 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,31 +21,37 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de, perex@perex.cz
-Cc: JCruk <jcrukley@gmail.com>
+To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon Horman <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
-From: JCruk <jcrukley@gmail.com>
+From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 
-This patch adds native DSD playback support for the Encore mDSD USB DAC by
-specifying the vendor and product ID's
+Document support for the sound modules in the Renesas M3-N (r8a77965)
+SoC.
 
-Signed-off-by: Jeff Crukley <jcrukley@gmail.com>
+No driver update is needed.
+
+Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
 ---
- sound/usb/quirks.c | 1 +
+
+This patch is based on the devel branch of Simon Horman's renesas tree.
+
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index 02b6cc0..6fbafce 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1373,6 +1373,7 @@ u64 snd_usb_interface_dsd_format_quirks(struct snd_usb_audio *chip,
- 			return SNDRV_PCM_FMTBIT_DSD_U32_BE;
- 		break;
- 
-+	case USB_ID(0x16d0, 0x09dd): /* Encore mDSD */
- 	case USB_ID(0x0d8c, 0x0316): /* Hegel HD12 DSD */
- 	case USB_ID(0x16b0, 0x06b2): /* NuPrime DAC-10 */
- 	case USB_ID(0x16d0, 0x0733): /* Furutech ADL Stratos */
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index b86d790..9e764270 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -352,6 +352,7 @@ Required properties:
+ 				    - "renesas,rcar_sound-r8a7794" (R-Car E2)
+ 				    - "renesas,rcar_sound-r8a7795" (R-Car H3)
+ 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
++				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
+ - reg				: Should contain the register physical address.
+ 				  required register is
+ 				   SRU/ADG/SSI      if generation1
 -- 
-2.7.4
+1.9.1
