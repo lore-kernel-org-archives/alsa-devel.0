@@ -1,18 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 00/10] ALSA: yet more PCM format type
-	conversion fixes
-Date: Wed, 25 Jul 2018 23:19:35 +0200
-Message-ID: <20180725211945.19222-1-tiwai@suse.de>
+Subject: [PATCH 03/10] ALSA: pcm: Fix sparse warning wrt PCM
+	format type
+Date: Wed, 25 Jul 2018 23:19:38 +0200
+Message-ID: <20180725211945.19222-4-tiwai@suse.de>
+References: <20180725211945.19222-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E731267766
+ by alsa0.perex.cz (Postfix) with ESMTP id 5783B267784
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:19:54 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 985D7B062
+ by mx1.suse.de (Postfix) with ESMTP id C2A75B089
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:19:53 +0000 (UTC)
+In-Reply-To: <20180725211945.19222-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,42 +27,29 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The PCM format type is with __bitwise, hence it needs the explicit
+cast with __force.  It's ugly, but there is a reason for that cost...
 
-this is a series of similar fixes as the previous patchset for ASoC,
-covering other ALSA drivers to deal with PCM format type properly.
+This fixes the sparse warning:
+  sound/core/oss/pcm_oss.c:1854:55: warning: incorrect type in argument 1 (different base types)
 
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/oss/pcm_oss.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Takashi
-
-===
-
-Takashi Iwai (10):
-  ALSA: hda: Fix implicit PCM format type conversion
-  ALSA: riptide: Fix PCM format type conversion
-  ALSA: pcm: Fix sparse warning wrt PCM format type
-  ALSA: ad1816a: Fix sparse warning wrt PCM format type
-  ALSA: au88x0: Fix sparse warning wrt PCM format type
-  ALSA: asihpi: Fix PCM format notations
-  ALSA: wss: Fix sparse warning wrt PCM format type
-  ALSA: sb: Fix PCM format bit calculation
-  ALSA: sb: Fix sparse warning wrt PCM format type
-  ALSA: xen: Use standard pcm_format_to_bits() for ALSA format bits
-
- include/sound/hdaudio.h         |  3 ++-
- include/sound/sb16_csp.h        |  2 +-
- sound/core/oss/pcm_oss.c        |  2 +-
- sound/hda/hdac_device.c         |  2 +-
- sound/isa/ad1816a/ad1816a_lib.c |  3 ++-
- sound/isa/sb/sb16_csp.c         |  6 +++---
- sound/isa/sb/sb16_main.c        |  9 ++++++---
- sound/isa/wss/wss_lib.c         |  2 +-
- sound/pci/asihpi/asihpi.c       | 24 +++++++++++++-----------
- sound/pci/au88x0/au88x0.h       |  2 +-
- sound/pci/au88x0/au88x0_core.c  |  2 +-
- sound/pci/riptide/riptide.c     |  2 +-
- sound/xen/xen_snd_front_alsa.c  |  4 ++--
- 13 files changed, 35 insertions(+), 28 deletions(-)
-
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index 905a53c1cde5..f8d4a419f3af 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -1851,7 +1851,7 @@ static int snd_pcm_oss_get_formats(struct snd_pcm_oss_file *pcm_oss_file)
+ 	format_mask = hw_param_mask_c(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	for (fmt = 0; fmt < 32; ++fmt) {
+ 		if (snd_mask_test(format_mask, fmt)) {
+-			int f = snd_pcm_oss_format_to(fmt);
++			int f = snd_pcm_oss_format_to((__force snd_pcm_format_t)fmt);
+ 			if (f >= 0)
+ 				formats |= f;
+ 		}
 -- 
 2.18.0
