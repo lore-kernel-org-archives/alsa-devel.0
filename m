@@ -1,17 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/3] ALSA: vx222: Fix invalid endian conversions
-Date: Wed, 25 Jul 2018 22:54:25 +0200
-Message-ID: <20180725205427.16907-1-tiwai@suse.de>
+Subject: [PATCH 04/12] ALSA: hda/ca0132 - Use NULL instead of 0
+Date: Wed, 25 Jul 2018 23:00:49 +0200
+Message-ID: <20180725210057.18017-5-tiwai@suse.de>
+References: <20180725210057.18017-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 968BE26775C
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 22:54:29 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 848F726775C
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:01:04 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2CFA9ACB1
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 20:54:29 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 8E909B068
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:01:03 +0000 (UTC)
+In-Reply-To: <20180725210057.18017-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +26,32 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The endian conversions used in vx2_dma_read() and vx2_dma_write() are
-superfluous and even wrong on big-endian machines, as inl() and outl()
-already do conversions.  Kill them.
+Use NULL for initializing the snd_kcontrol_new.tlv field, instead of
+0, as warned by sparse:
+  sound/pci/hda/patch_ca0132.c:5519:22: warning: Using plain integer as NULL pointer
 
-Spotted by sparse, a warning like:
-  sound/pci/vx222/vx222_ops.c:278:30: warning: incorrect type in argument 1 (different base types)
+Also, the driver does the same initialization twice, once for
+knew.tlv.c and another for knew.tlv.p while both point to the same
+address (these are union).  Drop the latter superfluous one.
 
-Cc: <stable@vger.kernel.org>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/vx222/vx222_ops.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/pci/vx222/vx222_ops.c b/sound/pci/vx222/vx222_ops.c
-index d4298af6d3ee..c0d0bf44f365 100644
---- a/sound/pci/vx222/vx222_ops.c
-+++ b/sound/pci/vx222/vx222_ops.c
-@@ -275,7 +275,7 @@ static void vx2_dma_write(struct vx_core *chip, struct snd_pcm_runtime *runtime,
- 		length >>= 2; /* in 32bit words */
- 		/* Transfer using pseudo-dma. */
- 		for (; length > 0; length--) {
--			outl(cpu_to_le32(*addr), port);
-+			outl(*addr, port);
- 			addr++;
- 		}
- 		addr = (u32 *)runtime->dma_area;
-@@ -285,7 +285,7 @@ static void vx2_dma_write(struct vx_core *chip, struct snd_pcm_runtime *runtime,
- 	count >>= 2; /* in 32bit words */
- 	/* Transfer using pseudo-dma. */
- 	for (; count > 0; count--) {
--		outl(cpu_to_le32(*addr), port);
-+		outl(*addr, port);
- 		addr++;
- 	}
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 321e95c409c1..27d3388cd2a2 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -5516,8 +5516,7 @@ static int ca0132_alt_add_effect_slider(struct hda_codec *codec, hda_nid_t nid,
  
-@@ -313,7 +313,7 @@ static void vx2_dma_read(struct vx_core *chip, struct snd_pcm_runtime *runtime,
- 		length >>= 2; /* in 32bit words */
- 		/* Transfer using pseudo-dma. */
- 		for (; length > 0; length--)
--			*addr++ = le32_to_cpu(inl(port));
-+			*addr++ = inl(port);
- 		addr = (u32 *)runtime->dma_area;
- 		pipe->hw_ptr = 0;
- 	}
-@@ -321,7 +321,7 @@ static void vx2_dma_read(struct vx_core *chip, struct snd_pcm_runtime *runtime,
- 	count >>= 2; /* in 32bit words */
- 	/* Transfer using pseudo-dma. */
- 	for (; count > 0; count--)
--		*addr++ = le32_to_cpu(inl(port));
-+		*addr++ = inl(port);
+ 	sprintf(namestr, "FX: %s %s Volume", pfx, dirstr[dir]);
  
- 	vx2_release_pseudo_dma(chip);
- }
+-	knew.tlv.c = 0;
+-	knew.tlv.p = 0;
++	knew.tlv.c = NULL;
+ 
+ 	switch (nid) {
+ 	case XBASS_XOVER:
 -- 
 2.18.0
