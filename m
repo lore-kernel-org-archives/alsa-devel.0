@@ -1,20 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 02/10] ALSA: riptide: Fix PCM format type
-	conversion
-Date: Wed, 25 Jul 2018 23:19:37 +0200
-Message-ID: <20180725211945.19222-3-tiwai@suse.de>
-References: <20180725211945.19222-1-tiwai@suse.de>
+Subject: [PATCH 00/10] ALSA: yet more PCM format type
+	conversion fixes
+Date: Wed, 25 Jul 2018 23:19:35 +0200
+Message-ID: <20180725211945.19222-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 2D81926775C
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E731267766
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:19:54 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id B325FB082
+ by mx1.suse.de (Postfix) with ESMTP id 985D7B062
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:19:53 +0000 (UTC)
-In-Reply-To: <20180725211945.19222-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,29 +25,42 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The PCM format type is with __bitwise, hence it needs to be explicitly
-declared as snd_pcm_format_t, as warned by sparse:
-  sound/pci/riptide/riptide.c:1028:34: warning: incorrect type in argument 1 (different base types)
-  sound/pci/riptide/riptide.c:1028:34:    expected restricted snd_pcm_format_t [usertype] format
-  sound/pci/riptide/riptide.c:1028:34:    got unsigned char [unsigned] format
+Hi,
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/riptide/riptide.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+this is a series of similar fixes as the previous patchset for ASoC,
+covering other ALSA drivers to deal with PCM format type properly.
 
-diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
-index 44f3b48d47b1..9d2b2ef15c6b 100644
---- a/sound/pci/riptide/riptide.c
-+++ b/sound/pci/riptide/riptide.c
-@@ -1017,7 +1017,7 @@ getsamplerate(struct cmdif *cif, unsigned char *intdec, unsigned int *rate)
- static int
- setsampleformat(struct cmdif *cif,
- 		unsigned char mixer, unsigned char id,
--		unsigned char channels, unsigned char format)
-+		unsigned char channels, snd_pcm_format_t format)
- {
- 	unsigned char w, ch, sig, order;
- 
+
+Takashi
+
+===
+
+Takashi Iwai (10):
+  ALSA: hda: Fix implicit PCM format type conversion
+  ALSA: riptide: Fix PCM format type conversion
+  ALSA: pcm: Fix sparse warning wrt PCM format type
+  ALSA: ad1816a: Fix sparse warning wrt PCM format type
+  ALSA: au88x0: Fix sparse warning wrt PCM format type
+  ALSA: asihpi: Fix PCM format notations
+  ALSA: wss: Fix sparse warning wrt PCM format type
+  ALSA: sb: Fix PCM format bit calculation
+  ALSA: sb: Fix sparse warning wrt PCM format type
+  ALSA: xen: Use standard pcm_format_to_bits() for ALSA format bits
+
+ include/sound/hdaudio.h         |  3 ++-
+ include/sound/sb16_csp.h        |  2 +-
+ sound/core/oss/pcm_oss.c        |  2 +-
+ sound/hda/hdac_device.c         |  2 +-
+ sound/isa/ad1816a/ad1816a_lib.c |  3 ++-
+ sound/isa/sb/sb16_csp.c         |  6 +++---
+ sound/isa/sb/sb16_main.c        |  9 ++++++---
+ sound/isa/wss/wss_lib.c         |  2 +-
+ sound/pci/asihpi/asihpi.c       | 24 +++++++++++++-----------
+ sound/pci/au88x0/au88x0.h       |  2 +-
+ sound/pci/au88x0/au88x0_core.c  |  2 +-
+ sound/pci/riptide/riptide.c     |  2 +-
+ sound/xen/xen_snd_front_alsa.c  |  4 ++--
+ 13 files changed, 35 insertions(+), 28 deletions(-)
+
 -- 
 2.18.0
