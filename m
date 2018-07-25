@@ -1,20 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: rt5651: add Volume to the name
- of volume control
-Date: Wed, 25 Jul 2018 17:13:23 +0100
-Message-ID: <20180725161323.GB6315@sirena.org.uk>
-References: <1532051300-11884-1-git-send-email-bardliao@realtek.com>
- <ABFD875FF5FB574BA706497D987D48D702846306@RTITMBSV02.realtek.com.tw>
- <20180724144047.GE13268@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D702846FDA@RTITMBSV02.realtek.com.tw>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH v4 3/8] ASoC: Intel: Boards: Machine driver
+ for SKL+ w/ HDAudio codecs
+Date: Wed, 25 Jul 2018 21:52:08 +0530
+Message-ID: <20180725162208.GW3661@vkoul-mobl>
+References: <20180725005055.18138-1-pierre-louis.bossart@linux.intel.com>
+ <20180725005055.18138-4-pierre-louis.bossart@linux.intel.com>
+ <20180725111145.GM3661@vkoul-mobl>
+ <c9577eef-3b32-e1b9-17e2-0bedce8109c8@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3671844928700622742=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EB1532675D4
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:13:26 +0200 (CEST)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D702846FDA@RTITMBSV02.realtek.com.tw>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id 544FF26774A
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:22:18 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <c9577eef-3b32-e1b9-17e2-0bedce8109c8@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,53 +25,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, Jack Yu <jack.yu@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "hdegoede@redhat.com" <hdegoede@redhat.com>, Shuming =?utf-8?B?W+iMg+abuOmKmF0=?= <shumingf@realtek.com>, "Flove(HsinFu)" <flove@realtek.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 25-07-18, 09:10, Pierre-Louis Bossart wrote:
+> On 7/25/18 6:11 AM, Vinod wrote:
 
---===============3671844928700622742==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="VrqPEDrXMn8OVzN4"
-Content-Disposition: inline
+> > > +		.dpcm_playback = 1,
+> > > +		.no_pcm = 1,
+> > > +	},
+> > > +	{
+> > > +		.name = "iDisp2",
+> > > +		.id = 2,
+> > > +		.cpu_dai_name = "iDisp2 Pin",
+> > > +		.codec_name = "ehdaudio0D2",
+> > > +		.codec_dai_name = "intel-hdmi-hifi2",
+> > > +		.platform_name = "0000:00:1f.3",
+> > > +		.dpcm_playback = 1,
+> > > +		.no_pcm = 1,
+> > > +	},
+> > > +	{
+> > > +		.name = "iDisp3",
+> > > +		.id = 3,
+> > 
+> > shouldn't this be queried. not all will have 3 links
+> 
+> Not that I know of. I've always seen SKL+ with 3 audio streams to iDisp.
 
+IIRC later ones (after KBL) have 5 CVTs and 4 pins (or vice-versa)
 
---VrqPEDrXMn8OVzN4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> > > +static struct platform_driver skl_hda_audio = {
+> > > +	.probe = skl_hda_audio_probe,
+> > > +	.driver = {
+> > > +		.name = "skl_hda_dsp_generic",
+> > 
+> > who creates this pdev, is it the board details (mach name?)
+> 
+> Not sure I understand your question, this part is similar to all other Intel
+> machine drivers and the way by with the probe happens is also similar. There
+> is nothing new here, the skylake platform driver finds an entry in a table,
+> gets the driver name and creates the relevant device.
 
-On Wed, Jul 25, 2018 at 02:01:21AM +0000, Bard Liao wrote:
+Okay sounds good. I was curious if the generic machine device is created
+generically or use the tables..
 
-> > The RT5631 doesn't appear to have any users except Arndale, certainly no
-> > x86 users?
-
-> As far as I know, there is no x86 users using RT5631.
-
-OK, I think it's probably safe to apply that one then as I'm not seeing
-any in tree users except that Arndale expansion.
-
---VrqPEDrXMn8OVzN4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltYoaMACgkQJNaLcl1U
-h9CWrwf9G+QW2BAfzKuqFX0/DUWDaSPxlAqgZzBfBui3iI9AKsaGW0o8NeYHEyCG
-mtE5BSiJSQbTvxdDpVahoUWtC1ybsClKefEGhMwc08T4WdHodlaIThzA4Is4v7DL
-Kk/SQprokDoPvBPO0q5migzK+dEZaeycqh3CILXffG2qKleQl8ScN8jabEStA8T9
-28xTjYPVigijRbqgc/TLvY78pKQ7ppwJgIK++whndsnXUd3Szx1x3AFajC7gbA93
-15SDMMLb2++44IVnJfla+fIC4Ko0DhfrceEMcgPm9wNt7Zgsa2Stnv1qLCNRZ3lh
-49mEkjEuvQ4AZN19XOqBBCT3/Debbg==
-=462E
------END PGP SIGNATURE-----
-
---VrqPEDrXMn8OVzN4--
-
---===============3671844928700622742==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3671844928700622742==--
+-- 
+~Vinod
