@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 09/14] ALSA: maestro3: Proper endian notations
-Date: Wed, 25 Jul 2018 23:24:09 +0200
-Message-ID: <20180725212414.19795-10-tiwai@suse.de>
+Subject: [PATCH 13/14] ALSA: atiixp_modem: Proper endian
+	notations
+Date: Wed, 25 Jul 2018 23:24:13 +0200
+Message-ID: <20180725212414.19795-14-tiwai@suse.de>
 References: <20180725212414.19795-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B16762677A1
+ by alsa0.perex.cz (Postfix) with ESMTP id C641D26778D
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:24:17 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 53C3CB078
+ by mx1.suse.de (Postfix) with ESMTP id 80599B0B0
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:24:16 +0000 (UTC)
 In-Reply-To: <20180725212414.19795-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,47 +27,33 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The ASSP data passed to maestro3 driver is in little-endian format,
-hence the data pointer should be with __le16.
+The DMA address table in atiixp modem driver is in little-endian,
+hence we should define it with __le32 properly.
 
-Spotted by sparse, warnings like:
-  sound/pci/maestro3.c:2128:35: warning: cast to restricted __le16
+Spotted by sparse, a warning like:
+  sound/pci/atiixp_modem.c:360:28: warning: incorrect type in assignment (different base types)
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/maestro3.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/pci/atiixp_modem.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
-index 224e942f556d..62962178a9d7 100644
---- a/sound/pci/maestro3.c
-+++ b/sound/pci/maestro3.c
-@@ -2103,7 +2103,7 @@ static const u16 minisrc_lpf[MINISRC_LPF_LEN] = {
- static void snd_m3_assp_init(struct snd_m3 *chip)
- {
- 	unsigned int i;
--	const u16 *data;
-+	const __le16 *data;
+diff --git a/sound/pci/atiixp_modem.c b/sound/pci/atiixp_modem.c
+index a586635664e0..dc1de860cedf 100644
+--- a/sound/pci/atiixp_modem.c
++++ b/sound/pci/atiixp_modem.c
+@@ -183,10 +183,10 @@ struct atiixp_modem;
+  */
  
- 	/* zero kernel data */
- 	for (i = 0; i < (REV_B_DATA_MEMORY_UNIT_LENGTH * NUM_UNITS_KERNEL_DATA) / 2; i++)
-@@ -2121,7 +2121,7 @@ static void snd_m3_assp_init(struct snd_m3 *chip)
- 			  KDATA_DMA_XFER0);
+ struct atiixp_dma_desc {
+-	u32 addr;	/* DMA buffer address */
++	__le32 addr;	/* DMA buffer address */
+ 	u16 status;	/* status bits */
+ 	u16 size;	/* size of the packet in dwords */
+-	u32 next;	/* address of the next packet descriptor */
++	__le32 next;	/* address of the next packet descriptor */
+ };
  
- 	/* write kernel into code memory.. */
--	data = (const u16 *)chip->assp_kernel_image->data;
-+	data = (const __le16 *)chip->assp_kernel_image->data;
- 	for (i = 0 ; i * 2 < chip->assp_kernel_image->size; i++) {
- 		snd_m3_assp_write(chip, MEMTYPE_INTERNAL_CODE, 
- 				  REV_B_CODE_MEMORY_BEGIN + i,
-@@ -2134,7 +2134,7 @@ static void snd_m3_assp_init(struct snd_m3 *chip)
- 	 * drop it there.  It seems that the minisrc doesn't
- 	 * need vectors, so we won't bother with them..
- 	 */
--	data = (const u16 *)chip->assp_minisrc_image->data;
-+	data = (const __le16 *)chip->assp_minisrc_image->data;
- 	for (i = 0; i * 2 < chip->assp_minisrc_image->size; i++) {
- 		snd_m3_assp_write(chip, MEMTYPE_INTERNAL_CODE, 
- 				  0x400 + i, le16_to_cpu(data[i]));
+ /*
 -- 
 2.18.0
