@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: common: make sst_dma functions
-	static" to the asoc tree
-Date: Wed, 25 Jul 2018 17:40:21 +0100 (BST)
-Message-ID: <20180725164022.00F191123B08@debutante.sirena.org.uk>
-References: <20180724211248.29427-5-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: Intel: Skylake: BDL definitions should
+	be __le32" to the asoc tree
+Date: Wed, 25 Jul 2018 17:40:29 +0100 (BST)
+Message-ID: <20180725164029.5A36C1123B08@debutante.sirena.org.uk>
+References: <20180724211248.29427-4-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5F14026779B
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:40:22 +0200 (CEST)
-In-Reply-To: <20180724211248.29427-5-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id EA642267750
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:40:29 +0200 (CEST)
+In-Reply-To: <20180724211248.29427-4-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: common: make sst_dma functions static
+   ASoC: Intel: Skylake: BDL definitions should be __le32
 
 has been applied to the asoc tree at
 
@@ -53,54 +53,67 @@ to this mail.
 Thanks,
 Mark
 
->From ef3cb7423358ff0cadacb76f26e3e1f4da8be4ce Mon Sep 17 00:00:00 2001
+>From 86efd35ec1e34094914494dacb83077e5df2d1b8 Mon Sep 17 00:00:00 2001
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Tue, 24 Jul 2018 16:12:46 -0500
-Subject: [PATCH] ASoC: Intel: common: make sst_dma functions static
+Date: Tue, 24 Jul 2018 16:12:45 -0500
+Subject: [PATCH] ASoC: Intel: Skylake: BDL definitions should be __le32
 
-sst_dma_new and sst_dma_free are not used in any other file and don't
-have a prototype. Move to static functions and remove
-EXPORT_SYMBOL_GPL statement.
-
-Reported by sparse warnings.
+Make sure definitions are consistent with usage.
+Detected with Sparse.
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/common/sst-firmware.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-sst-cldma.c | 8 ++++----
+ sound/soc/intel/skylake/skl-sst-cldma.h | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
-index 657afc02f1c4..11041aedea31 100644
---- a/sound/soc/intel/common/sst-firmware.c
-+++ b/sound/soc/intel/common/sst-firmware.c
-@@ -270,7 +270,7 @@ void sst_dsp_dma_put_channel(struct sst_dsp *dsp)
- }
- EXPORT_SYMBOL_GPL(sst_dsp_dma_put_channel);
- 
--int sst_dma_new(struct sst_dsp *sst)
-+static int sst_dma_new(struct sst_dsp *sst)
+diff --git a/sound/soc/intel/skylake/skl-sst-cldma.c b/sound/soc/intel/skylake/skl-sst-cldma.c
+index d2b1d60fec02..5bc0d38da7e3 100644
+--- a/sound/soc/intel/skylake/skl-sst-cldma.c
++++ b/sound/soc/intel/skylake/skl-sst-cldma.c
+@@ -83,9 +83,9 @@ static void skl_cldma_stream_clear(struct sst_dsp  *ctx)
+ /* Code loader helper APIs */
+ static void skl_cldma_setup_bdle(struct sst_dsp *ctx,
+ 		struct snd_dma_buffer *dmab_data,
+-		u32 **bdlp, int size, int with_ioc)
++		__le32 **bdlp, int size, int with_ioc)
  {
- 	struct sst_pdata *sst_pdata = sst->pdata;
- 	struct sst_dma *dma;
-@@ -320,9 +320,8 @@ int sst_dma_new(struct sst_dsp *sst)
- 	devm_kfree(sst->dev, dma);
- 	return ret;
- }
--EXPORT_SYMBOL(sst_dma_new);
+-	u32 *bdl = *bdlp;
++	__le32 *bdl = *bdlp;
  
--void sst_dma_free(struct sst_dma *dma)
-+static void sst_dma_free(struct sst_dma *dma)
+ 	ctx->cl_dev.frags = 0;
+ 	while (size > 0) {
+@@ -330,7 +330,7 @@ void skl_cldma_process_intr(struct sst_dsp *ctx)
+ int skl_cldma_prepare(struct sst_dsp *ctx)
  {
+ 	int ret;
+-	u32 *bdl;
++	__le32 *bdl;
  
- 	if (dma == NULL)
-@@ -335,7 +334,6 @@ void sst_dma_free(struct sst_dma *dma)
- 		dw_remove(dma->chip);
+ 	ctx->cl_dev.bufsize = SKL_MAX_BUFFER_SIZE;
  
- }
--EXPORT_SYMBOL(sst_dma_free);
+@@ -359,7 +359,7 @@ int skl_cldma_prepare(struct sst_dsp *ctx)
+ 		ctx->dsp_ops.free_dma_buf(ctx->dev, &ctx->cl_dev.dmab_data);
+ 		return ret;
+ 	}
+-	bdl = (u32 *)ctx->cl_dev.dmab_bdl.area;
++	bdl = (__le32 *)ctx->cl_dev.dmab_bdl.area;
  
- /* create new generic firmware object */
- struct sst_fw *sst_fw_new(struct sst_dsp *dsp, 
+ 	/* Allocate BDLs */
+ 	ctx->cl_dev.ops.cl_setup_bdle(ctx, &ctx->cl_dev.dmab_data,
+diff --git a/sound/soc/intel/skylake/skl-sst-cldma.h b/sound/soc/intel/skylake/skl-sst-cldma.h
+index 5b730a1a0ae4..ec736921a083 100644
+--- a/sound/soc/intel/skylake/skl-sst-cldma.h
++++ b/sound/soc/intel/skylake/skl-sst-cldma.h
+@@ -203,7 +203,7 @@ struct sst_dsp;
+ struct skl_cl_dev_ops {
+ 	void (*cl_setup_bdle)(struct sst_dsp *ctx,
+ 			struct snd_dma_buffer *dmab_data,
+-			u32 **bdlp, int size, int with_ioc);
++			__le32 **bdlp, int size, int with_ioc);
+ 	void (*cl_setup_controller)(struct sst_dsp *ctx,
+ 			struct snd_dma_buffer *dmab_bdl,
+ 			unsigned int max_size, u32 page_count);
 -- 
 2.18.0
