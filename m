@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 03/14] ALSA: hda: Proper endian notations for
-	BDL pointers
-Date: Wed, 25 Jul 2018 23:24:03 +0200
-Message-ID: <20180725212414.19795-4-tiwai@suse.de>
+Subject: [PATCH 07/14] ALSA: intel8x0: Proper endian notations
+Date: Wed, 25 Jul 2018 23:24:07 +0200
+Message-ID: <20180725212414.19795-8-tiwai@suse.de>
 References: <20180725212414.19795-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 695B7267766
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:24:16 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8EE2026775C
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:24:17 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 35969ADA4
+ by mx1.suse.de (Postfix) with ESMTP id 4C86EAE86
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:24:16 +0000 (UTC)
 In-Reply-To: <20180725212414.19795-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,38 +26,47 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The BDL pointer used in snd_hdac_dsp_prepare() should be declared as
-__le32, as warned by sparse:
-  sound/hda/hdac_stream.c:655:47: warning: incorrect type in argument 4 (different base types)
-  sound/hda/hdac_stream.c:655:47:    expected restricted __le32 [usertype] **bdlp
-  sound/hda/hdac_stream.c:655:47:    got unsigned int [usertype] **<noident>
+The BD address tables in intel8x0 driver are in little-endian, hence
+they should be represented as __le32 instead u32.
+
+Spotted by sparse, warnings like:
+  sound/pci/intel8x0.c:688:40: warning: incorrect type in assignment (different base types)
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/hda/hdac_stream.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/intel8x0.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/hda/hdac_stream.c b/sound/hda/hdac_stream.c
-index e1472c7ab6c1..eee422390d8e 100644
---- a/sound/hda/hdac_stream.c
-+++ b/sound/hda/hdac_stream.c
-@@ -621,7 +621,7 @@ int snd_hdac_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
- 			 unsigned int byte_size, struct snd_dma_buffer *bufp)
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index 4c24346340f4..5ee468d1aefe 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -351,7 +351,7 @@ enum {
+ struct ichdev {
+ 	unsigned int ichd;			/* ich device number */
+ 	unsigned long reg_offset;		/* offset to bmaddr */
+-	u32 *bdbar;				/* CPU address (32bit) */
++	__le32 *bdbar;				/* CPU address (32bit) */
+ 	unsigned int bdbar_addr;		/* PCI bus address (32bit) */
+ 	struct snd_pcm_substream *substream;
+ 	unsigned int physbuf;			/* physical address (32bit) */
+@@ -677,7 +677,7 @@ static void snd_intel8x0_ali_codec_write(struct snd_ac97 *ac97, unsigned short r
+ static void snd_intel8x0_setup_periods(struct intel8x0 *chip, struct ichdev *ichdev) 
  {
- 	struct hdac_bus *bus = azx_dev->bus;
--	u32 *bdl;
-+	__le32 *bdl;
- 	int err;
+ 	int idx;
+-	u32 *bdbar = ichdev->bdbar;
++	__le32 *bdbar = ichdev->bdbar;
+ 	unsigned long port = ichdev->reg_offset;
  
- 	snd_hdac_dsp_lock(azx_dev);
-@@ -651,7 +651,7 @@ int snd_hdac_dsp_prepare(struct hdac_stream *azx_dev, unsigned int format,
- 	snd_hdac_stream_writel(azx_dev, SD_BDLPU, 0);
- 
- 	azx_dev->frags = 0;
--	bdl = (u32 *)azx_dev->bdl.area;
-+	bdl = (__le32 *)azx_dev->bdl.area;
- 	err = setup_bdle(bus, bufp, azx_dev, &bdl, 0, byte_size, 0);
- 	if (err < 0)
- 		goto error;
+ 	iputdword(chip, port + ICH_REG_OFF_BDBAR, ichdev->bdbar_addr);
+@@ -3143,7 +3143,7 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	int_sta_masks = 0;
+ 	for (i = 0; i < chip->bdbars_count; i++) {
+ 		ichdev = &chip->ichd[i];
+-		ichdev->bdbar = ((u32 *)chip->bdbars.area) +
++		ichdev->bdbar = ((__le32 *)chip->bdbars.area) +
+ 			(i * ICH_MAX_FRAGS * 2);
+ 		ichdev->bdbar_addr = chip->bdbars.addr +
+ 			(i * sizeof(u32) * ICH_MAX_FRAGS * 2);
 -- 
 2.18.0
