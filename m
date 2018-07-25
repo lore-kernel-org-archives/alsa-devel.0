@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 01/12] ALSA: usb-audio: Fix multiple
-	definitions in AU0828_DEVICE() macro
-Date: Wed, 25 Jul 2018 23:00:46 +0200
-Message-ID: <20180725210057.18017-2-tiwai@suse.de>
+Subject: [PATCH 08/12] ALSA: usb-audio: Declare the common
+	variable in header file
+Date: Wed, 25 Jul 2018 23:00:53 +0200
+Message-ID: <20180725210057.18017-9-tiwai@suse.de>
 References: <20180725210057.18017-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 85AEB26776E
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:01:04 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id AD48B26775C
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:01:05 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 62109B064
+ by mx1.suse.de (Postfix) with ESMTP id ADDE0B0B0
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:01:03 +0000 (UTC)
 In-Reply-To: <20180725210057.18017-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,35 +27,41 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-AU0828_DEVICE() macro in quirks-table.h uses USB_DEVICE_VENDOR_SPEC()
-for expanding idVendor and idProduct fields.  However, the latter
-macro adds also match_flags and bInterfaceClass, which are different
-from the values AU0828_DEVICE() macro sets after that.
+Declare snd_usb_feature_unit_ctl properly in mixer.h.  Otherwise it's
+error-prone.
 
-For fixing them, just expand idVendor and idProduct fields manually in
-AU0828_DEVICE().
-
-This fixes sparse warnings like:
-  sound/usb/quirks-table.h:2892:1: warning: Initializer entry defined twice
+This fixes the sparse warning:
+  sound/usb/mixer.c:1464:25: warning: symbol 'snd_usb_feature_unit_ctl' was not declared. Should it be static?
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/usb/quirks-table.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/usb/mixer.h        | 2 ++
+ sound/usb/mixer_quirks.c | 2 --
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 8aac48f9c322..08aa78007020 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2875,7 +2875,8 @@ YAMAHA_DEVICE(0x7010, "UB99"),
-  */
+diff --git a/sound/usb/mixer.h b/sound/usb/mixer.h
+index e02653465e29..3d12af8bf191 100644
+--- a/sound/usb/mixer.h
++++ b/sound/usb/mixer.h
+@@ -109,4 +109,6 @@ int snd_usb_get_cur_mix_value(struct usb_mixer_elem_info *cval,
  
- #define AU0828_DEVICE(vid, pid, vname, pname) { \
--	USB_DEVICE_VENDOR_SPEC(vid, pid), \
-+	.idVendor = vid, \
-+	.idProduct = pid, \
- 	.match_flags = USB_DEVICE_ID_MATCH_DEVICE | \
- 		       USB_DEVICE_ID_MATCH_INT_CLASS | \
- 		       USB_DEVICE_ID_MATCH_INT_SUBCLASS, \
+ extern void snd_usb_mixer_elem_free(struct snd_kcontrol *kctl);
+ 
++extern struct snd_kcontrol_new *snd_usb_feature_unit_ctl;
++
+ #endif /* __USBMIXER_H */
+diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
+index e82a72fea9a1..cbfb48bdea51 100644
+--- a/sound/usb/mixer_quirks.c
++++ b/sound/usb/mixer_quirks.c
+@@ -47,8 +47,6 @@
+ #include "mixer_us16x08.h"
+ #include "helper.h"
+ 
+-extern struct snd_kcontrol_new *snd_usb_feature_unit_ctl;
+-
+ struct std_mono_table {
+ 	unsigned int unitid, control, cmask;
+ 	int val_type;
 -- 
 2.18.0
