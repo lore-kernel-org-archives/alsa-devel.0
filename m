@@ -1,160 +1,88 @@
-From: "Qu, Jim" <Jim.Qu-5C7GfCeVMHo@public.gmane.org>
-Subject: =?gb2312?B?tPC4tDogW1BBVENIIDMvNF0gZHJtL3JhZGVvbjogQWRkIGF1ZGlvIGNvbXBv?=
- =?gb2312?Q?nent_support?=
-Date: Wed, 25 Jul 2018 03:32:52 +0000
-Message-ID: <DM3PR12MB0873B23B1B964A05FD647AF599540@DM3PR12MB0873.namprd12.prod.outlook.com>
-References: <20180723145030.25133-1-tiwai@suse.de>,
- <20180723145030.25133-4-tiwai@suse.de>
+From: Jamey Kirby <kirby.jamey@gmail.com>
+Subject: Building alsa-utils, adding changes
+Date: Wed, 25 Jul 2018 00:28:10 -0400
+Message-ID: <CAJze_PuWQCa1wAOjHbVgn=s4wDt4ixtUAhvPR1i-6VWwvD+xKQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-In-Reply-To: <20180723145030.25133-4-tiwai-l3A5Bk7waGM@public.gmane.org>
-Content-Language: zh-CN
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/amd-gfx>
-List-Post: <mailto:amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-List-Help: <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/amd-gfx>,
- <mailto:amd-gfx-request-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org?subject=subscribe>
-Errors-To: amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org
-Sender: "amd-gfx" <amd-gfx-bounces-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
-To: Takashi Iwai <tiwai-l3A5Bk7waGM@public.gmane.org>, "alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org" <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>
-Cc: "dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>, "amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org" <amd-gfx-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com
+ [209.85.167.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 516522676D4
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 06:28:22 +0200 (CEST)
+Received: by mail-lf1-f42.google.com with SMTP id n96-v6so4463274lfi.1
+ for <alsa-devel@alsa-project.org>; Tue, 24 Jul 2018 21:28:22 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgVGFrYXNoaSBsd2FpLA0KDQpTb3JyeSwgSSBoYXZlIHRvIHVzZSBvdXRsb29rIGFnYWluLCBz
-aW5jZSBteSBtYWlsIGNsaWVudCBoYWQgc29tZSBwcm9ibGVtcyB0aGF0IGRpZCBub3QgcmVjZWl2
-ZSB0aGVzZSBzZXJpZXMgcGF0Y2hlcy4NCg0KU2VlIHRoZSBjb21tYW5kcyBpbiBsaW5lLg0KDQpU
-aGFua3MNCkppbVF1DQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18N
-CuWPkeS7tuS6ujogYW1kLWdmeCA8YW1kLWdmeC1ib3VuY2VzQGxpc3RzLmZyZWVkZXNrdG9wLm9y
-Zz4g5Luj6KGoIFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT4NCuWPkemAgeaXtumXtDogMjAx
-OOW5tDfmnIgyM+aXpSAyMjo1MA0K5pS25Lu25Lq6OiBhbHNhLWRldmVsQGFsc2EtcHJvamVjdC5v
-cmcNCuaKhOmAgTogYW1kLWdmeEBsaXN0cy5mcmVlZGVza3RvcC5vcmc7IGRyaS1kZXZlbEBsaXN0
-cy5mcmVlZGVza3RvcC5vcmcNCuS4u+mimDogW1BBVENIIDMvNF0gZHJtL3JhZGVvbjogQWRkIGF1
-ZGlvIGNvbXBvbmVudCBzdXBwb3J0DQoNClRoaXMgcGF0Y2ggaW50cm9kdWNlcyB0aGUgSERNSSBh
-dWRpbyBjb21wb25lbnQgYmluZGluZyBsaWtlIHdoYXQgaTkxNQ0KZG9lcyB0byByYWRlb24gZHJp
-dmVyLiAgVW5saWtlIGk5MTUsIHdlIG5lZWQgb25seSB0aGUgaG90cGx1Zw0Kbm90aWZpY2F0aW9u
-IGFuZCB0aGUgRUxEIHF1ZXJ5LCBoZW5jZSB0aGUgY29kZSBpcyByZWxhdGl2ZWx5IHNpbXBsZSwN
-Cmp1c3QgYWRkaW5nIHRoZSBob29rIGF0IHJhZGVvbl9hdWRpb19lbmFibGUoKSBhbmQgZ2l2aW5n
-IHRoZSBlbGQgcXVlcnkNCmJ5IGNvcHlpbmcgdGhlIGNvbm5lY3Rvci0+ZWxkIGNvbnRlbnRzLg0K
-DQpTaWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+DQotLS0NCiBkcml2
-ZXJzL2dwdS9kcm0vS2NvbmZpZyAgICAgICAgICAgICAgIHwgIDEgKw0KIGRyaXZlcnMvZ3B1L2Ry
-bS9yYWRlb24vcmFkZW9uLmggICAgICAgfCAgMyArDQogZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9y
-YWRlb25fYXVkaW8uYyB8IDc5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKw0KIDMgZmlsZXMg
-Y2hhbmdlZCwgODMgaW5zZXJ0aW9ucygrKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
-L0tjb25maWcgYi9kcml2ZXJzL2dwdS9kcm0vS2NvbmZpZw0KaW5kZXggMmE3MmQyZmViNzZkLi4y
-YzcxMTJkZGZlZDQgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL2dwdS9kcm0vS2NvbmZpZw0KKysrIGIv
-ZHJpdmVycy9ncHUvZHJtL0tjb25maWcNCkBAIC0xNzAsNiArMTcwLDcgQEAgY29uZmlnIERSTV9S
-QURFT04NCiAgICAgICAgc2VsZWN0IEJBQ0tMSUdIVF9DTEFTU19ERVZJQ0UNCiAgICAgICAgc2Vs
-ZWN0IEJBQ0tMSUdIVF9MQ0RfU1VQUE9SVA0KICAgICAgICBzZWxlY3QgSU5URVJWQUxfVFJFRQ0K
-KyAgICAgICBzZWxlY3QgU05EX0hEQV9DT01QT05FTlQgaWYgU05EX0hEQV9DT1JFDQogICAgICAg
-IGhlbHANCiAgICAgICAgICBDaG9vc2UgdGhpcyBvcHRpb24gaWYgeW91IGhhdmUgYW4gQVRJIFJh
-ZGVvbiBncmFwaGljcyBjYXJkLiAgVGhlcmUNCiAgICAgICAgICBhcmUgYm90aCBQQ0kgYW5kIEFH
-UCB2ZXJzaW9ucy4gIFlvdSBkb24ndCBuZWVkIHRvIGNob29zZSB0aGlzIHRvDQpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9yYWRlb24uaCBiL2RyaXZlcnMvZ3B1L2RybS9yYWRl
-b24vcmFkZW9uLmgNCmluZGV4IDRhMmViNDA5YWFjYy4uZmFkNThkZjBiZjE5IDEwMDY0NA0KLS0t
-IGEvZHJpdmVycy9ncHUvZHJtL3JhZGVvbi9yYWRlb24uaA0KKysrIGIvZHJpdmVycy9ncHUvZHJt
-L3JhZGVvbi9yYWRlb24uaA0KQEAgLTc1LDYgKzc1LDcgQEANCiAjaW5jbHVkZSA8ZHJtL3R0bS90
-dG1fZXhlY2J1Zl91dGlsLmg+DQoNCiAjaW5jbHVkZSA8ZHJtL2RybV9nZW0uaD4NCisjaW5jbHVk
-ZSA8ZHJtL2RybV9hdWRpb19jb21wb25lbnQuaD4NCg0KICNpbmNsdWRlICJyYWRlb25fZmFtaWx5
-LmgiDQogI2luY2x1ZGUgInJhZGVvbl9tb2RlLmgiDQpAQCAtMTc2MCw2ICsxNzYxLDggQEAgc3Ry
-dWN0IHI2MDBfYXVkaW8gew0KICAgICAgICBzdHJ1Y3QgcmFkZW9uX2F1ZGlvX2Z1bmNzICpoZG1p
-X2Z1bmNzOw0KICAgICAgICBzdHJ1Y3QgcmFkZW9uX2F1ZGlvX2Z1bmNzICpkcF9mdW5jczsNCiAg
-ICAgICAgc3RydWN0IHJhZGVvbl9hdWRpb19iYXNpY19mdW5jcyAqZnVuY3M7DQorICAgICAgIHN0
-cnVjdCBkcm1fYXVkaW9fY29tcG9uZW50ICpjb21wb25lbnQ7DQorICAgICAgIGJvb2wgY29tcG9u
-ZW50X3JlZ2lzdGVyZWQ7DQogfTsNCg0KIC8qDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9ncHUvZHJt
-L3JhZGVvbi9yYWRlb25fYXVkaW8uYyBiL2RyaXZlcnMvZ3B1L2RybS9yYWRlb24vcmFkZW9uX2F1
-ZGlvLmMNCmluZGV4IDc3MGUzMWY1ZmQxYi4uNThlMTQ5YjdhN2E0IDEwMDY0NA0KLS0tIGEvZHJp
-dmVycy9ncHUvZHJtL3JhZGVvbi9yYWRlb25fYXVkaW8uYw0KKysrIGIvZHJpdmVycy9ncHUvZHJt
-L3JhZGVvbi9yYWRlb25fYXVkaW8uYw0KQEAgLTIzLDYgKzIzLDcgQEANCiAgKi8NCg0KICNpbmNs
-dWRlIDxsaW51eC9nY2QuaD4NCisjaW5jbHVkZSA8bGludXgvY29tcG9uZW50Lmg+DQogI2luY2x1
-ZGUgPGRybS9kcm1QLmg+DQogI2luY2x1ZGUgPGRybS9kcm1fY3J0Yy5oPg0KICNpbmNsdWRlICJy
-YWRlb24uaCINCkBAIC0yNDgsNiArMjQ5LDcgQEAgc3RhdGljIHZvaWQgcmFkZW9uX2F1ZGlvX2Vu
-YWJsZShzdHJ1Y3QgcmFkZW9uX2RldmljZSAqcmRldiwNCiAgICAgICAgc3RydWN0IGRybV9lbmNv
-ZGVyICplbmNvZGVyOw0KICAgICAgICBzdHJ1Y3QgcmFkZW9uX2VuY29kZXIgKnJhZGVvbl9lbmNv
-ZGVyOw0KICAgICAgICBzdHJ1Y3QgcmFkZW9uX2VuY29kZXJfYXRvbV9kaWcgKmRpZzsNCisgICAg
-ICAgc3RydWN0IGRybV9hdWRpb19jb21wb25lbnQgKmFjb21wID0gcmRldi0+YXVkaW8uY29tcG9u
-ZW50Ow0KICAgICAgICBpbnQgcGluX2NvdW50ID0gMDsNCg0KICAgICAgICBpZiAoIXBpbikNCkBA
-IC0yNjksNiArMjcxLDEwIEBAIHN0YXRpYyB2b2lkIHJhZGVvbl9hdWRpb19lbmFibGUoc3RydWN0
-IHJhZGVvbl9kZXZpY2UgKnJkZXYsDQoNCiAgICAgICAgaWYgKHJkZXYtPmF1ZGlvLmZ1bmNzLT5l
-bmFibGUpDQogICAgICAgICAgICAgICAgcmRldi0+YXVkaW8uZnVuY3MtPmVuYWJsZShyZGV2LCBw
-aW4sIGVuYWJsZV9tYXNrKTsNCisNCisgICAgICAgaWYgKGFjb21wICYmIGFjb21wLT5hdWRpb19v
-cHMgJiYgYWNvbXAtPmF1ZGlvX29wcy0+cGluX2VsZF9ub3RpZnkpDQorICAgICAgICAgICAgICAg
-YWNvbXAtPmF1ZGlvX29wcy0+cGluX2VsZF9ub3RpZnkoYWNvbXAtPmF1ZGlvX29wcy0+YXVkaW9f
-cHRyLA0KKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBp
-bi0+aWQsIC0xKTsNCg0KPj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+
-Pj4+Pj4+Pj4+Pj4+Pj4+Pj4NCkppbTogcmFkZW9uX2F1ZGlvX2VuYWJsZSgpIGNhbiBlbmFibGUg
-YXVkaW9zIGFuZCBhbHNvIGRpc2FibGUgdGhlbSwgc28gZWxkIG5vaXRmeSBjYWxsYmFjayBzaG91
-bGQgYmUgY2FsbGVkIHdoZW4gZW5hYmxlX21hc2sgaXMgdHJ1ZS4NCg0KSmltUXUNClRoYW5rcw0K
-Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+
-Pj4NCg0KIH0NCg0KIHN0YXRpYyB2b2lkIHJhZGVvbl9hdWRpb19pbnRlcmZhY2VfaW5pdChzdHJ1
-Y3QgcmFkZW9uX2RldmljZSAqcmRldikNCkBAIC0yOTIsNiArMjk4LDcxIEBAIHN0YXRpYyB2b2lk
-IHJhZGVvbl9hdWRpb19pbnRlcmZhY2VfaW5pdChzdHJ1Y3QgcmFkZW9uX2RldmljZSAqcmRldikN
-CiAgICAgICAgfQ0KIH0NCg0KK3N0YXRpYyBpbnQgcmFkZW9uX2F1ZGlvX2NvbXBvbmVudF9nZXRf
-ZWxkKHN0cnVjdCBkZXZpY2UgKmtkZXYsIGludCBwb3J0LA0KKyAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgaW50IHBpcGUsIGJvb2wgKmVuYWJsZWQsDQorICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB1bnNpZ25lZCBjaGFyICpidWYsIGludCBt
-YXhfYnl0ZXMpDQorew0KKyAgICAgICBzdHJ1Y3QgZHJtX2RldmljZSAqZGV2ID0gZGV2X2dldF9k
-cnZkYXRhKGtkZXYpOw0KKyAgICAgICBzdHJ1Y3QgZHJtX2VuY29kZXIgKmVuY29kZXI7DQorICAg
-ICAgIHN0cnVjdCByYWRlb25fZW5jb2RlciAqcmFkZW9uX2VuY29kZXI7DQorICAgICAgIHN0cnVj
-dCByYWRlb25fZW5jb2Rlcl9hdG9tX2RpZyAqZGlnOw0KKyAgICAgICBzdHJ1Y3QgZHJtX2Nvbm5l
-Y3RvciAqY29ubmVjdG9yOw0KKyAgICAgICBpbnQgcmV0ID0gMDsNCisNCisgICAgICAgKmVuYWJs
-ZWQgPSAwOw0KKyAgICAgICBsaXN0X2Zvcl9lYWNoX2VudHJ5KGVuY29kZXIsICZkZXYtPm1vZGVf
-Y29uZmlnLmVuY29kZXJfbGlzdCwgaGVhZCkgew0KKyAgICAgICAgICAgICAgIGlmICghcmFkZW9u
-X2VuY29kZXJfaXNfZGlnaXRhbChlbmNvZGVyKSkNCisgICAgICAgICAgICAgICAgICAgICAgIGNv
-bnRpbnVlOw0KKyAgICAgICAgICAgICAgIHJhZGVvbl9lbmNvZGVyID0gdG9fcmFkZW9uX2VuY29k
-ZXIoZW5jb2Rlcik7DQorICAgICAgICAgICAgICAgZGlnID0gcmFkZW9uX2VuY29kZXItPmVuY19w
-cml2Ow0KKyAgICAgICAgICAgICAgIGlmICghZGlnLT5waW4gfHwgZGlnLT5waW4tPmlkICE9IHBv
-cnQpDQorICAgICAgICAgICAgICAgICAgICAgICBjb250aW51ZTsNCisgICAgICAgICAgICAgICBj
-b25uZWN0b3IgPSByYWRlb25fZ2V0X2Nvbm5lY3Rvcl9mb3JfZW5jb2RlcihlbmNvZGVyKTsNCisg
-ICAgICAgICAgICAgICAqZW5hYmxlZCA9ICEhY29ubmVjdG9yOw0KKyAgICAgICAgICAgICAgIGlm
-IChjb25uZWN0b3IpIHsNCisgICAgICAgICAgICAgICAgICAgICAgIHJldCA9IGRybV9lbGRfc2l6
-ZShjb25uZWN0b3ItPmVsZCk7DQorICAgICAgICAgICAgICAgICAgICAgICBtZW1jcHkoYnVmLCBj
-b25uZWN0b3ItPmVsZCwgbWluKG1heF9ieXRlcywgcmV0KSk7DQorICAgICAgICAgICAgICAgICAg
-ICAgICBicmVhazsNCisgICAgICAgICAgICAgICB9DQorICAgICAgIH0NCisNCisgICAgICAgcmV0
-dXJuIHJldDsNCit9DQorDQorc3RhdGljIGNvbnN0IHN0cnVjdCBkcm1fYXVkaW9fY29tcG9uZW50
-X29wcyByYWRlb25fYXVkaW9fY29tcG9uZW50X29wcyA9IHsNCisgICAgICAgLmdldF9lbGQgPSBy
-YWRlb25fYXVkaW9fY29tcG9uZW50X2dldF9lbGQsDQorfTsNCisNCitzdGF0aWMgaW50IHJhZGVv
-bl9hdWRpb19jb21wb25lbnRfYmluZChzdHJ1Y3QgZGV2aWNlICprZGV2LA0KKyAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0IGRldmljZSAqaGRhX2tkZXYsIHZvaWQg
-KmRhdGEpDQorew0KKyAgICAgICBzdHJ1Y3QgZHJtX2RldmljZSAqZGV2ID0gZGV2X2dldF9kcnZk
-YXRhKGtkZXYpOw0KKyAgICAgICBzdHJ1Y3QgcmFkZW9uX2RldmljZSAqcmRldiA9IGRldi0+ZGV2
-X3ByaXZhdGU7DQorICAgICAgIHN0cnVjdCBkcm1fYXVkaW9fY29tcG9uZW50ICphY29tcCA9IGRh
-dGE7DQorDQorICAgICAgIGFjb21wLT5vcHMgPSAmcmFkZW9uX2F1ZGlvX2NvbXBvbmVudF9vcHM7
-DQorICAgICAgIGFjb21wLT5kZXYgPSBrZGV2Ow0KKyAgICAgICByZGV2LT5hdWRpby5jb21wb25l
-bnQgPSBhY29tcDsNCisgICAgICAgcmV0dXJuIDA7DQorfQ0KKw0KK3N0YXRpYyB2b2lkIHJhZGVv
-bl9hdWRpb19jb21wb25lbnRfdW5iaW5kKHN0cnVjdCBkZXZpY2UgKmtkZXYsDQorICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBzdHJ1Y3QgZGV2aWNlICpoZGFfa2Rldiwg
-dm9pZCAqZGF0YSkNCit7DQorICAgICAgIHN0cnVjdCBkcm1fZGV2aWNlICpkZXYgPSBkZXZfZ2V0
-X2RydmRhdGEoa2Rldik7DQorICAgICAgIHN0cnVjdCByYWRlb25fZGV2aWNlICpyZGV2ID0gZGV2
-LT5kZXZfcHJpdmF0ZTsNCisgICAgICAgc3RydWN0IGRybV9hdWRpb19jb21wb25lbnQgKmFjb21w
-ID0gZGF0YTsNCisNCisgICAgICAgYWNvbXAtPm9wcyA9IE5VTEw7DQorICAgICAgIGFjb21wLT5k
-ZXYgPSBOVUxMOw0KKyAgICAgICByZGV2LT5hdWRpby5jb21wb25lbnQgPSBOVUxMOw0KK30NCisN
-CitzdGF0aWMgY29uc3Qgc3RydWN0IGNvbXBvbmVudF9vcHMgcmFkZW9uX2F1ZGlvX2NvbXBvbmVu
-dF9iaW5kX29wcyA9IHsNCisgICAgICAgLmJpbmQgICA9IHJhZGVvbl9hdWRpb19jb21wb25lbnRf
-YmluZCwNCisgICAgICAgLnVuYmluZCA9IHJhZGVvbl9hdWRpb19jb21wb25lbnRfdW5iaW5kLA0K
-K307DQorDQogc3RhdGljIGludCByYWRlb25fYXVkaW9fY2hpcHNldF9zdXBwb3J0ZWQoc3RydWN0
-IHJhZGVvbl9kZXZpY2UgKnJkZXYpDQogew0KICAgICAgICByZXR1cm4gQVNJQ19JU19EQ0UyKHJk
-ZXYpICYmICFBU0lDX0lTX05PRENFKHJkZXYpOw0KQEAgLTMzOCw2ICs0MDksOSBAQCBpbnQgcmFk
-ZW9uX2F1ZGlvX2luaXQoc3RydWN0IHJhZGVvbl9kZXZpY2UgKnJkZXYpDQogICAgICAgIGZvciAo
-aSA9IDA7IGkgPCByZGV2LT5hdWRpby5udW1fcGluczsgaSsrKQ0KICAgICAgICAgICAgICAgIHJh
-ZGVvbl9hdWRpb19lbmFibGUocmRldiwgJnJkZXYtPmF1ZGlvLnBpbltpXSwgMCk7DQoNCisgICAg
-ICAgaWYgKCFjb21wb25lbnRfYWRkKHJkZXYtPmRldiwgJnJhZGVvbl9hdWRpb19jb21wb25lbnRf
-YmluZF9vcHMpKQ0KKyAgICAgICAgICAgICAgIHJkZXYtPmF1ZGlvLmNvbXBvbmVudF9yZWdpc3Rl
-cmVkID0gdHJ1ZTsNCisNCiAgICAgICAgcmV0dXJuIDA7DQogfQ0KDQpAQCAtNDkwLDYgKzU2NCwx
-MSBAQCB2b2lkIHJhZGVvbl9hdWRpb19maW5pKHN0cnVjdCByYWRlb25fZGV2aWNlICpyZGV2KQ0K
-ICAgICAgICAgICAgICAgIHJhZGVvbl9hdWRpb19lbmFibGUocmRldiwgJnJkZXYtPmF1ZGlvLnBp
-bltpXSwgMCk7DQoNCiAgICAgICAgcmRldi0+YXVkaW8uZW5hYmxlZCA9IGZhbHNlOw0KKw0KKyAg
-ICAgICBpZiAocmRldi0+YXVkaW8uY29tcG9uZW50X3JlZ2lzdGVyZWQpIHsNCisgICAgICAgICAg
-ICAgICBjb21wb25lbnRfZGVsKHJkZXYtPmRldiwgJnJhZGVvbl9hdWRpb19jb21wb25lbnRfYmlu
-ZF9vcHMpOw0KKyAgICAgICAgICAgICAgIHJkZXYtPmF1ZGlvLmNvbXBvbmVudF9yZWdpc3RlcmVk
-ID0gZmFsc2U7DQorICAgICAgIH0NCiB9DQoNCiBzdGF0aWMgdm9pZCByYWRlb25fYXVkaW9fc2V0
-X2R0byhzdHJ1Y3QgZHJtX2VuY29kZXIgKmVuY29kZXIsIHVuc2lnbmVkIGludCBjbG9jaykNCi0t
-DQoyLjE4LjANCg0KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18NCmFtZC1nZnggbWFpbGluZyBsaXN0DQphbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZw0K
-aHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbWQtZ2Z4DQpf
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwphbWQtZ2Z4IG1h
-aWxpbmcgbGlzdAphbWQtZ2Z4QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZy
-ZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2FtZC1nZngK
+I have been working with alsa for a while. We use it to archive content
+from our radio station. I am using arecord.
+
+Build problem:
+
+1) I cloned alsa-utils from github
+2) Spent two hours on Google trying to figure out how to build the darn
+thing.
+3) I am running Ubuntu Server 18.0 with build-essentials installed.
+4) I get errors that I do not know how to fix when I try to setup
+./configure.
+5) I just need to make a build. What do I need to do?
+
+Feature:
+
+I am adding a feature. In the loop for capture(), when a new file is
+opened, I want to close the old file (when doing continuous recording). I
+added a new CLI parameter -K. When this is set, the capture() loop will
+close the old file before opening the new file.
+
+This is an issue for me for two reasons:
+
+1) When will i run out of file handles? I capture one hour files
+continuously. After 10 hours, I see that all the capture files are still
+open?
+2) I need to be notified when the file is closed so that I can do
+post-processing of rht capture. I've tried inotifywait in a script, and in
+another script I tried lsof. lsof works great, but the files are open,.
+See, the main issue is that I need to know when each file completes so that
+I can post process.
+
+Here is my post process script outline:
+
+#!/bin/bash
+
+for f in $HOME/vboxshare/jkirby/newarc/*.raw
+  do
+    filename=$(basename $f)
+    open=$(lsof -t $f | wc -w)
+    if [ $open -lt 1 ]
+      then
+        echo "$filename is closed"
+        echo "Do post processing here"
+      else
+        echo "$filename is open by $open processe(s)"
+    fi
+  done
+
+If I could close the file before or after the previous file is closed, I
+can do my work. Otherwise, I have no way to know if the file is open and
+being processed or not.
+
+So, I've made the changes, I just need to build the darn thing.
+
+Thanks for any advice or help.
+
+-- 
+Jamey Kirby
+Disrupting the establishment since 1964
+
+*This is a personal email account and as such, emails are not subject to
+archiving. Nothing else really matters.*
