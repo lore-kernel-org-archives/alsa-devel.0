@@ -1,15 +1,14 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ALSA: memalloc: declare
-	snd_sgbuf_aligned_pages() unconditionally
-Date: Wed, 25 Jul 2018 15:15:56 -0500
-Message-ID: <20180725201556.21136-1-pierre-louis.bossart@linux.intel.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ASoC: zte: Fix incorrect PCM format bit usages
+Date: Wed, 25 Jul 2018 22:40:49 +0200
+Message-ID: <20180725204049.28859-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 378FF26774B
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 22:16:59 +0200 (CEST)
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB96D26774B
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 22:40:52 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,52 +19,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Baoyou Xie <baoyou.xie@linaro.org>, Jun Nie <jun.nie@linaro.org>, Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Make this helper inline function available for all platforms. This
-helps solve 0-day compilation issues when CONFIG_SND_DMA_SGBUF is not
-defined.
+zx-tdm driver sets the DAI driver definitions with the format bits
+wrongly set with SNDRV_PCM_FORMAT_*, instead of SNDRV_PCM_FMTBIT_*.
 
-Reported-by: kbuild test robot <lkp@intel.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+This patch corrects the definitions.
+
+Spotted by a sparse warning:
+  sound/soc/zte/zx-tdm.c:363:35: warning: restricted snd_pcm_format_t degrades to integer
+
+Fixes: 870e0ddc4345 ("ASoC: zx-tdm: add zte's tdm controller driver")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/memalloc.h | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ sound/soc/zte/zx-tdm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index 9c3db3dce32b..c669900e6cbe 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -67,6 +67,14 @@ struct snd_dma_buffer {
- 	void *private_data;	/* private for allocator; don't touch */
- };
+diff --git a/sound/soc/zte/zx-tdm.c b/sound/soc/zte/zx-tdm.c
+index dc955272f58b..389272eeba9a 100644
+--- a/sound/soc/zte/zx-tdm.c
++++ b/sound/soc/zte/zx-tdm.c
+@@ -144,8 +144,8 @@ static void zx_tdm_rx_dma_en(struct zx_tdm_info *tdm, bool on)
+ #define ZX_TDM_RATES	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000)
  
-+/*
-+ * return the pages matching with the given byte size
-+ */
-+static inline unsigned int snd_sgbuf_aligned_pages(size_t size)
-+{
-+	return (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
-+}
-+
- #ifdef CONFIG_SND_DMA_SGBUF
- /*
-  * Scatter-Gather generic device pages
-@@ -90,14 +98,6 @@ struct snd_sg_buf {
- 	struct device *dev;
- };
+ #define ZX_TDM_FMTBIT \
+-	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_MU_LAW | \
+-	SNDRV_PCM_FORMAT_A_LAW)
++	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_MU_LAW | \
++	SNDRV_PCM_FMTBIT_A_LAW)
  
--/*
-- * return the pages matching with the given byte size
-- */
--static inline unsigned int snd_sgbuf_aligned_pages(size_t size)
--{
--	return (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
--}
--
- /*
-  * return the physical address at the corresponding offset
-  */
+ static int zx_tdm_dai_probe(struct snd_soc_dai *dai)
+ {
 -- 
-2.14.1
+2.18.0
