@@ -1,17 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 06/14] ALSA: lola: Proper endian notations
-Date: Wed, 25 Jul 2018 23:24:06 +0200
-Message-ID: <20180725212414.19795-7-tiwai@suse.de>
+Subject: [PATCH 09/14] ALSA: maestro3: Proper endian notations
+Date: Wed, 25 Jul 2018 23:24:09 +0200
+Message-ID: <20180725212414.19795-10-tiwai@suse.de>
 References: <20180725212414.19795-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id B11AC26779F
+ by alsa0.perex.cz (Postfix) with ESMTP id B16762677A1
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:24:17 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 48D66AE31
+ by mx1.suse.de (Postfix) with ESMTP id 53C3CB078
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:24:16 +0000 (UTC)
 In-Reply-To: <20180725212414.19795-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,97 +26,47 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The BDL entries in lola driver are little-endian while we code them as
-u32.  This leads to sparse warnings like:
-  sound/pci/lola/lola.c:105:40: warning: incorrect type in assignment (different base types)
-  sound/pci/lola/lola.c:105:40:    expected unsigned int [unsigned] [usertype] <noident>
-  sound/pci/lola/lola.c:105:40:    got restricted __le32 [usertype] <noident>
+The ASSP data passed to maestro3 driver is in little-endian format,
+hence the data pointer should be with __le16.
 
-This patch fixes the declarations to the proper __le32 type.
-
-Also, there was a typo in the original code, where __user was used
-that was intended as __iomem.  This was caused also by sparse:
-  sound/pci/lola/lola_mixer.c:132:27: warning: incorrect type in assignment (different address spaces)
-Fixed in this patch as well.
+Spotted by sparse, warnings like:
+  sound/pci/maestro3.c:2128:35: warning: cast to restricted __le16
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/lola/lola.c     | 4 ++--
- sound/pci/lola/lola.h     | 4 ++--
- sound/pci/lola/lola_pcm.c | 8 ++++----
- 3 files changed, 8 insertions(+), 8 deletions(-)
+ sound/pci/maestro3.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/pci/lola/lola.c b/sound/pci/lola/lola.c
-index 9ff600084973..254f24366892 100644
---- a/sound/pci/lola/lola.c
-+++ b/sound/pci/lola/lola.c
-@@ -369,9 +369,9 @@ static int setup_corb_rirb(struct lola *chip)
- 		return err;
- 
- 	chip->corb.addr = chip->rb.addr;
--	chip->corb.buf = (u32 *)chip->rb.area;
-+	chip->corb.buf = (__le32 *)chip->rb.area;
- 	chip->rirb.addr = chip->rb.addr + 2048;
--	chip->rirb.buf = (u32 *)(chip->rb.area + 2048);
-+	chip->rirb.buf = (__le32 *)(chip->rb.area + 2048);
- 
- 	/* disable ringbuffer DMAs */
- 	lola_writeb(chip, BAR0, RIRBCTL, 0);
-diff --git a/sound/pci/lola/lola.h b/sound/pci/lola/lola.h
-index f0b100059efd..bd852fed8bb6 100644
---- a/sound/pci/lola/lola.h
-+++ b/sound/pci/lola/lola.h
-@@ -220,7 +220,7 @@ struct lola_bar {
- 
- /* CORB/RIRB */
- struct lola_rb {
--	u32 *buf;		/* CORB/RIRB buffer, 8 byte per each entry */
-+	__le32 *buf;		/* CORB/RIRB buffer, 8 byte per each entry */
- 	dma_addr_t addr;	/* physical address of CORB/RIRB buffer */
- 	unsigned short rp, wp;	/* read/write pointers */
- 	int cmds;		/* number of pending requests */
-@@ -275,7 +275,7 @@ struct lola_mixer_array {
- struct lola_mixer_widget {
- 	unsigned int nid;
- 	unsigned int caps;
--	struct lola_mixer_array __user *array;
-+	struct lola_mixer_array __iomem *array;
- 	struct lola_mixer_array *array_saved;
- 	unsigned int src_stream_outs;
- 	unsigned int src_phys_ins;
-diff --git a/sound/pci/lola/lola_pcm.c b/sound/pci/lola/lola_pcm.c
-index 310b26a756c9..e70276c3ea20 100644
---- a/sound/pci/lola/lola_pcm.c
-+++ b/sound/pci/lola/lola_pcm.c
-@@ -316,10 +316,10 @@ static int lola_pcm_hw_free(struct snd_pcm_substream *substream)
-  * set up a BDL entry
-  */
- static int setup_bdle(struct snd_pcm_substream *substream,
--		      struct lola_stream *str, u32 **bdlp,
-+		      struct lola_stream *str, __le32 **bdlp,
- 		      int ofs, int size)
+diff --git a/sound/pci/maestro3.c b/sound/pci/maestro3.c
+index 224e942f556d..62962178a9d7 100644
+--- a/sound/pci/maestro3.c
++++ b/sound/pci/maestro3.c
+@@ -2103,7 +2103,7 @@ static const u16 minisrc_lpf[MINISRC_LPF_LEN] = {
+ static void snd_m3_assp_init(struct snd_m3 *chip)
  {
--	u32 *bdl = *bdlp;
-+	__le32 *bdl = *bdlp;
+ 	unsigned int i;
+-	const u16 *data;
++	const __le16 *data;
  
- 	while (size > 0) {
- 		dma_addr_t addr;
-@@ -355,14 +355,14 @@ static int lola_setup_periods(struct lola *chip, struct lola_pcm *pcm,
- 			      struct snd_pcm_substream *substream,
- 			      struct lola_stream *str)
- {
--	u32 *bdl;
-+	__le32 *bdl;
- 	int i, ofs, periods, period_bytes;
+ 	/* zero kernel data */
+ 	for (i = 0; i < (REV_B_DATA_MEMORY_UNIT_LENGTH * NUM_UNITS_KERNEL_DATA) / 2; i++)
+@@ -2121,7 +2121,7 @@ static void snd_m3_assp_init(struct snd_m3 *chip)
+ 			  KDATA_DMA_XFER0);
  
- 	period_bytes = str->period_bytes;
- 	periods = str->bufsize / period_bytes;
- 
- 	/* program the initial BDL entries */
--	bdl = (u32 *)(pcm->bdl.area + LOLA_BDL_ENTRY_SIZE * str->index);
-+	bdl = (__le32 *)(pcm->bdl.area + LOLA_BDL_ENTRY_SIZE * str->index);
- 	ofs = 0;
- 	str->frags = 0;
- 	for (i = 0; i < periods; i++) {
+ 	/* write kernel into code memory.. */
+-	data = (const u16 *)chip->assp_kernel_image->data;
++	data = (const __le16 *)chip->assp_kernel_image->data;
+ 	for (i = 0 ; i * 2 < chip->assp_kernel_image->size; i++) {
+ 		snd_m3_assp_write(chip, MEMTYPE_INTERNAL_CODE, 
+ 				  REV_B_CODE_MEMORY_BEGIN + i,
+@@ -2134,7 +2134,7 @@ static void snd_m3_assp_init(struct snd_m3 *chip)
+ 	 * drop it there.  It seems that the minisrc doesn't
+ 	 * need vectors, so we won't bother with them..
+ 	 */
+-	data = (const u16 *)chip->assp_minisrc_image->data;
++	data = (const __le16 *)chip->assp_minisrc_image->data;
+ 	for (i = 0; i * 2 < chip->assp_minisrc_image->size; i++) {
+ 		snd_m3_assp_write(chip, MEMTYPE_INTERNAL_CODE, 
+ 				  0x400 + i, le16_to_cpu(data[i]));
 -- 
 2.18.0
