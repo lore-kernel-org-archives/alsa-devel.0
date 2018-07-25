@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: fix widget handling" to
-	the asoc tree
-Date: Wed, 25 Jul 2018 17:39:55 +0100 (BST)
-Message-ID: <20180725163955.932741123B08@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: Atom: fix inversion between
+	__iowrite32 and __ioread32" to the asoc tree
+Date: Wed, 25 Jul 2018 17:40:02 +0100 (BST)
+Message-ID: <20180725164002.7D9801123B08@debutante.sirena.org.uk>
+References: <20180724211248.29427-7-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8054226774B
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:40:03 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 4253E267757
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 18:40:04 +0200 (CEST)
+In-Reply-To: <20180724211248.29427-7-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: fix widget handling
+   ASoC: Intel: Atom: fix inversion between __iowrite32 and __ioread32
 
 has been applied to the asoc tree at
 
@@ -52,33 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From fe65324e3f5205072a2d55ac9c63ec77155fa528 Mon Sep 17 00:00:00 2001
-From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Date: Tue, 24 Jul 2018 19:50:48 -0500
-Subject: [PATCH] ASoC: Intel: Skylake: fix widget handling
+>From 9a0daaab31e9e39047ced79409313c34dae4635a Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Tue, 24 Jul 2018 16:12:48 -0500
+Subject: [PATCH] ASoC: Intel: Atom: fix inversion between __iowrite32 and
+ __ioread32
 
-include DAPM Mux and output widgets into the list.
+This looks like a copy/paste issue, but clearly there is an inversion
+that is obvious when checking the arguments.
 
-Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
+Detected with Sparse - now that we have fewer warnings this one was
+easy to find.
+
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-topology.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/soc/intel/atom/sst/sst_loader.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
-index 647e52aecdc3..9845d853644c 100644
---- a/sound/soc/intel/skylake/skl-topology.c
-+++ b/sound/soc/intel/skylake/skl-topology.c
-@@ -108,6 +108,9 @@ static int is_skl_dsp_widget_type(struct snd_soc_dapm_widget *w,
- 	case snd_soc_dapm_aif_out:
- 	case snd_soc_dapm_dai_out:
- 	case snd_soc_dapm_switch:
-+	case snd_soc_dapm_output:
-+	case snd_soc_dapm_mux:
-+
- 		return false;
- 	default:
- 		return true;
+diff --git a/sound/soc/intel/atom/sst/sst_loader.c b/sound/soc/intel/atom/sst/sst_loader.c
+index a686eef2cf7f..27413ebae956 100644
+--- a/sound/soc/intel/atom/sst/sst_loader.c
++++ b/sound/soc/intel/atom/sst/sst_loader.c
+@@ -44,15 +44,15 @@ void memcpy32_toio(void __iomem *dst, const void *src, int count)
+ 	/* __iowrite32_copy uses 32-bit count values so divide by 4 for
+ 	 * right count in words
+ 	 */
+-	__iowrite32_copy(dst, src, count/4);
++	__iowrite32_copy(dst, src, count / 4);
+ }
+ 
+ void memcpy32_fromio(void *dst, const void __iomem *src, int count)
+ {
+-	/* __iowrite32_copy uses 32-bit count values so divide by 4 for
++	/* __ioread32_copy uses 32-bit count values so divide by 4 for
+ 	 * right count in words
+ 	 */
+-	__iowrite32_copy(dst, src, count/4);
++	__ioread32_copy(dst, src, count / 4);
+ }
+ 
+ /**
 -- 
 2.18.0
