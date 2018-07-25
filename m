@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 2/8] ASoC: Intel: common: add table for
-	HDA-based platforms
-Date: Tue, 24 Jul 2018 19:50:49 -0500
-Message-ID: <20180725005055.18138-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 4/8] ASoC: Intel: Skylake: use HDAudio if
+	ACPI enumeration fails
+Date: Tue, 24 Jul 2018 19:50:51 -0500
+Message-ID: <20180725005055.18138-5-pierre-louis.bossart@linux.intel.com>
 References: <20180725005055.18138-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 69270267727
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 02:52:32 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 45B63267715
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 02:52:34 +0200 (CEST)
 In-Reply-To: <20180725005055.18138-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,104 +22,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Expose a table containing machine driver information for HDAudio-based
-platforms handled by ASoC on Intel hardware.
+From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
-We only set constant values that are valid across multiple
-platforms. The firmware name used by the DSP will be set dynamically
-for each platform.
+When no I2S based codec entries are found in the BIOS, check if there are
+any HDA codecs detected on the bus. Based on the number of codecs found
+take appropriate action in machine driver. If there are two HDA codecs
+i.e. iDisp + HDA found on the bus, register DAIs and DAI links for both.
+If only one codec i.e. iDisp is found then load only iDisp machine driver.
 
-The table is made of a single entry for now, if we need more
-complicated set-up where HDAudio is mixed with ACPI-enumerated devices
-(I2C, SoundWire) then we'd expect the differentiation to be handled
-through information provided by the BIOS (as done for KBL
-Chromebooks).
-
+Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc-acpi-intel-match.h              |  6 ++++
- sound/soc/intel/common/Makefile                   |  3 +-
- sound/soc/intel/common/soc-acpi-intel-hda-match.c | 40 +++++++++++++++++++++++
- 3 files changed, 48 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-hda-match.c
+ sound/soc/intel/skylake/skl.c | 38 +++++++++++++++++++++++++++++++++-----
+ 1 file changed, 33 insertions(+), 5 deletions(-)
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index bb1d24b703fb..f48f59e5b7b0 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -25,4 +25,10 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index dce649485649..c83194de4aed 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -472,6 +472,25 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+ 						{.name = "ssp5_sclkfs"},
+ };
  
-+/*
-+ * generic table used for HDA codec-based platforms, possibly with
-+ * additional ACPI-enumerated codecs
-+ */
-+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[];
++static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
++					struct snd_soc_acpi_mach *machines)
++{
++	struct hdac_bus *bus = skl_to_bus(skl);
++	struct snd_soc_acpi_mach *mach;
 +
- #endif
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index 915a34cdc8ac..c1f50a079d34 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -7,7 +7,8 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
- 	soc-acpi-intel-hsw-bdw-match.o \
- 	soc-acpi-intel-skl-match.o soc-acpi-intel-kbl-match.o \
- 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
--	soc-acpi-intel-cnl-match.o
-+	soc-acpi-intel-cnl-match.o \
-+	soc-acpi-intel-hda-match.o
++	/* check if we have any codecs detected on bus */
++	if (bus->codec_mask == 0)
++		return NULL;
++
++	/* point to common table */
++	mach = snd_soc_acpi_intel_hda_machines;
++
++	/* all entries in the machine table use the same firmware */
++	mach->fw_filename = machines->fw_filename;
++
++	return mach;
++}
++
+ static int skl_find_machine(struct skl *skl, void *driver_data)
+ {
+ 	struct hdac_bus *bus = skl_to_bus(skl);
+@@ -479,9 +498,13 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+ 	struct skl_machine_pdata *pdata;
  
- obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
- obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-new file mode 100644
-index 000000000000..40ce8d4e9b22
---- /dev/null
-+++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * soc-apci-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
-+ *
-+ * Copyright (c) 2018, Intel Corporation.
-+ *
-+ */
-+
-+#include <sound/soc-acpi.h>
-+#include <sound/soc-acpi-intel-match.h>
-+#include "../skylake/skl.h"
-+
-+static struct skl_machine_pdata hda_pdata = {
-+	.use_tplg_pcm = true,
-+};
-+
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
-+	{
-+		/* .id is not used in this file */
-+		.drv_name = "skl_hda_dsp_generic",
-+
-+		/* .fw_filename is dynamically set in skylake driver */
-+
-+		/* .sof_fw_filename is dynamically set in sof/intel driver */
-+
-+		.sof_tplg_filename = "intel/sof-hda-generic.tplg",
-+
-+		/*
-+		 * .machine_quirk and .quirk_data are not used here but
-+		 * can be used if we need a more complicated machine driver
-+		 * combining HDA+other device (e.g. DMIC).
-+		 */
-+		.pdata = &hda_pdata,
-+	},
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_hda_machines);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Intel Common ACPI Match module");
+ 	mach = snd_soc_acpi_find_machine(mach);
+-	if (mach == NULL) {
+-		dev_err(bus->dev, "No matching machine driver found\n");
+-		return -ENODEV;
++	if (!mach) {
++		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
++		mach = skl_find_hda_machine(skl, driver_data);
++		if (!mach) {
++			dev_err(bus->dev, "No matching machine driver found\n");
++			return -ENODEV;
++		}
+ 	}
+ 
+ 	skl->mach = mach;
+@@ -498,8 +521,9 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+ 
+ static int skl_machine_device_register(struct skl *skl)
+ {
+-	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct snd_soc_acpi_mach *mach = skl->mach;
++	struct hdac_bus *bus = skl_to_bus(skl);
++	struct skl_machine_pdata *pdata;
+ 	struct platform_device *pdev;
+ 	int ret;
+ 
+@@ -516,8 +540,12 @@ static int skl_machine_device_register(struct skl *skl)
+ 		return -EIO;
+ 	}
+ 
+-	if (mach->pdata)
++	if (mach->pdata) {
++		pdata = (struct skl_machine_pdata *)mach->pdata;
++		pdata->platform = dev_name(bus->dev);
++		pdata->codec_mask = bus->codec_mask;
+ 		dev_set_drvdata(&pdev->dev, mach->pdata);
++	}
+ 
+ 	skl->i2s_dev = pdev;
+ 
 -- 
 2.14.1
