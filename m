@@ -1,18 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 08/10] ALSA: sb: Fix PCM format bit calculation
-Date: Wed, 25 Jul 2018 23:19:43 +0200
-Message-ID: <20180725211945.19222-9-tiwai@suse.de>
+Subject: [PATCH 10/10] ALSA: xen: Use standard
+	pcm_format_to_bits() for ALSA format bits
+Date: Wed, 25 Jul 2018 23:19:45 +0200
+Message-ID: <20180725211945.19222-11-tiwai@suse.de>
 References: <20180725211945.19222-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 7B5A0267796
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BB2126779C
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:19:55 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id F3814B380
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:19:53 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 16849B382
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:19:54 +0000 (UTC)
 In-Reply-To: <20180725211945.19222-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,59 +27,40 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The PCM format type in snd_pcm_format_t can't be treated as integer
-implicitly since it's with __bitwise.  We have already a helper
-function to get the bit index of the given type, and use it in each
-place instead.
+The open codes with the bit shift in xen_snd_front_alsa.c give sparse
+warnings as the PCM format type is with __bitwise.
+There is already a standard macro to get the format bits, so let's use
+it instead.
 
 This fixes sparse warnings like:
-  sound/isa/sb/sb16_main.c:61:44: warning: restricted snd_pcm_format_t degrades to integer
+  sound/xen/xen_snd_front_alsa.c:191:47: warning: restricted snd_pcm_format_t degrades to integer
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/isa/sb/sb16_main.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ sound/xen/xen_snd_front_alsa.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/isa/sb/sb16_main.c b/sound/isa/sb/sb16_main.c
-index 3e39ba220c39..11ed4a6e5bf1 100644
---- a/sound/isa/sb/sb16_main.c
-+++ b/sound/isa/sb/sb16_main.c
-@@ -49,6 +49,9 @@ MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
- MODULE_DESCRIPTION("Routines for control of 16-bit SoundBlaster cards and clones");
- MODULE_LICENSE("GPL");
+diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
+index 5a2bd70a2fa1..129180e17db1 100644
+--- a/sound/xen/xen_snd_front_alsa.c
++++ b/sound/xen/xen_snd_front_alsa.c
+@@ -188,7 +188,7 @@ static u64 to_sndif_formats_mask(u64 alsa_formats)
  
-+#define runtime_format_bits(runtime) \
-+	((unsigned int)pcm_format_to_bits((runtime)->format))
-+
- #ifdef CONFIG_SND_SB16_CSP
- static void snd_sb16_csp_playback_prepare(struct snd_sb *chip, struct snd_pcm_runtime *runtime)
- {
-@@ -58,7 +61,7 @@ static void snd_sb16_csp_playback_prepare(struct snd_sb *chip, struct snd_pcm_ru
- 		if (csp->running & SNDRV_SB_CSP_ST_LOADED) {
- 			/* manually loaded codec */
- 			if ((csp->mode & SNDRV_SB_CSP_MODE_DSP_WRITE) &&
--			    ((1U << runtime->format) == csp->acc_format)) {
-+			    (runtime_format_bits(runtime) == csp->acc_format)) {
- 				/* Supported runtime PCM format for playback */
- 				if (csp->ops.csp_use(csp) == 0) {
- 					/* If CSP was successfully acquired */
-@@ -66,7 +69,7 @@ static void snd_sb16_csp_playback_prepare(struct snd_sb *chip, struct snd_pcm_ru
- 				}
- 			} else if ((csp->mode & SNDRV_SB_CSP_MODE_QSOUND) && (csp->q_enabled)) {
- 				/* QSound decoder is loaded and enabled */
--				if ((1 << runtime->format) & (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_U8 |
-+				if (runtime_format_bits(runtime) & (SNDRV_PCM_FMTBIT_S8 | SNDRV_PCM_FMTBIT_U8 |
- 							      SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U16_LE)) {
- 					/* Only for simple PCM formats */
- 					if (csp->ops.csp_use(csp) == 0) {
-@@ -106,7 +109,7 @@ static void snd_sb16_csp_capture_prepare(struct snd_sb *chip, struct snd_pcm_run
- 		if (csp->running & SNDRV_SB_CSP_ST_LOADED) {
- 			/* manually loaded codec */
- 			if ((csp->mode & SNDRV_SB_CSP_MODE_DSP_READ) &&
--			    ((1U << runtime->format) == csp->acc_format)) {
-+			    (runtime_format_bits(runtime) == csp->acc_format)) {
- 				/* Supported runtime PCM format for capture */
- 				if (csp->ops.csp_use(csp) == 0) {
- 					/* If CSP was successfully acquired */
+ 	mask = 0;
+ 	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
+-		if (1 << ALSA_SNDIF_FORMATS[i].alsa & alsa_formats)
++		if (pcm_format_to_bits(ALSA_SNDIF_FORMATS[i].alsa) & alsa_formats)
+ 			mask |= 1 << ALSA_SNDIF_FORMATS[i].sndif;
+ 
+ 	return mask;
+@@ -202,7 +202,7 @@ static u64 to_alsa_formats_mask(u64 sndif_formats)
+ 	mask = 0;
+ 	for (i = 0; i < ARRAY_SIZE(ALSA_SNDIF_FORMATS); i++)
+ 		if (1 << ALSA_SNDIF_FORMATS[i].sndif & sndif_formats)
+-			mask |= 1 << ALSA_SNDIF_FORMATS[i].alsa;
++			mask |= pcm_format_to_bits(ALSA_SNDIF_FORMATS[i].alsa);
+ 
+ 	return mask;
+ }
 -- 
 2.18.0
