@@ -1,16 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v4 6/8] ASoC: Intel: Skylake: use hda_bus
-	instead of hdac_bus
-Date: Tue, 24 Jul 2018 19:50:53 -0500
-Message-ID: <20180725005055.18138-7-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v4 5/8] ASoC: Intel: Skylake: add HDA BE DAIs
+Date: Tue, 24 Jul 2018 19:50:52 -0500
+Message-ID: <20180725005055.18138-6-pierre-louis.bossart@linux.intel.com>
 References: <20180725005055.18138-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 36CA126774B
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 02:52:35 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id EAF1626774A
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 02:52:34 +0200 (CEST)
 In-Reply-To: <20180725005055.18138-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,99 +26,112 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
-Use hda_bus instead of hdac_bus in the SKL ASoC platform driver to enable
-reuse of legacy HDA codec drivers.
+Add support for HDA BE DAIs in SKL platform driver.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 10 +++++++++-
- sound/soc/intel/skylake/skl.h | 10 +++++++---
- 2 files changed, 16 insertions(+), 4 deletions(-)
+ sound/soc/intel/skylake/skl-pcm.c | 70 ++++++++++++++++++++++++++++++++-------
+ 1 file changed, 58 insertions(+), 12 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index c83194de4aed..57af55ca785e 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -36,6 +36,7 @@
- #include "skl.h"
- #include "skl-sst-dsp.h"
- #include "skl-sst-ipc.h"
-+#include "../../../pci/hda/hda_codec.h"
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 823e39103edd..00b7a91b18c9 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -32,6 +32,7 @@
+ #define HDA_MONO 1
+ #define HDA_STEREO 2
+ #define HDA_QUAD 4
++#define HDA_MAX 8
  
- /*
-  * initialize the PCI registers
-@@ -673,7 +674,7 @@ static int probe_codec(struct hdac_bus *bus, int addr)
- 	mutex_unlock(&bus->cmd_mutex);
- 	if (res == -1)
- 		return -EIO;
--	dev_dbg(bus->dev, "codec #%d probed OK\n", addr);
-+	dev_dbg(bus->dev, "codec #%d probed OK: %x\n", addr, res);
+ static const struct snd_pcm_hardware azx_pcm_hw = {
+ 	.info =			(SNDRV_PCM_INFO_MMAP |
+@@ -569,7 +570,10 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 	stream_tag = hdac_stream(link_dev)->stream_tag;
  
- 	hdev = devm_kzalloc(&skl->pci->dev, sizeof(*hdev), GFP_KERNEL);
- 	if (!hdev)
-@@ -816,6 +817,7 @@ static int skl_create(struct pci_dev *pci,
+ 	/* set the stream tag in the codec dai dma params  */
+-	snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
++	else
++		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
+ 
+ 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
+ 	p_params.ch = params_channels(params);
+@@ -995,21 +999,63 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	},
+ },
  {
- 	struct skl *skl;
- 	struct hdac_bus *bus;
-+	struct hda_bus *hbus;
- 
- 	int err;
- 
-@@ -831,6 +833,7 @@ static int skl_create(struct pci_dev *pci,
- 		return -ENOMEM;
- 	}
- 
-+	hbus = skl_to_hbus(skl);
- 	bus = skl_to_bus(skl);
- 	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, NULL);
- 	bus->use_posbuf = 1;
-@@ -838,6 +841,11 @@ static int skl_create(struct pci_dev *pci,
- 	INIT_WORK(&skl->probe_work, skl_probe_work);
- 	bus->bdl_pos_adj = 0;
- 
-+	mutex_init(&hbus->prepare_mutex);
-+	hbus->pci = pci;
-+	hbus->mixer_assigned = -1;
-+	hbus->modelname = "sklbus";
-+
- 	*rskl = skl;
- 
- 	return 0;
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 4105a9371b64..803cce47ffb2 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -26,6 +26,7 @@
- #include <sound/soc.h>
- #include "skl-nhlt.h"
- #include "skl-ssp-clk.h"
-+#include "../../../pci/hda/hda_codec.h"
- 
- #define SKL_SUSPEND_DELAY 2000
- 
-@@ -71,7 +72,7 @@ struct skl_fw_config {
+-	.name = "HD-Codec Pin",
++	.name = "Analog CPU DAI",
+ 	.ops = &skl_link_dai_ops,
+ 	.playback = {
+-		.stream_name = "HD-Codec Tx",
+-		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.stream_name = "Analog CPU Playback",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
+ 	},
+ 	.capture = {
+-		.stream_name = "HD-Codec Rx",
+-		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.stream_name = "Analog CPU Capture",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
++	.name = "Alt Analog CPU DAI",
++	.ops = &skl_link_dai_ops,
++	.playback = {
++		.stream_name = "Alt Analog CPU Playback",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.capture = {
++		.stream_name = "Alt Analog CPU Capture",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
++	.name = "Digital CPU DAI",
++	.ops = &skl_link_dai_ops,
++	.playback = {
++		.stream_name = "Digital CPU Playback",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.capture = {
++		.stream_name = "Digital CPU Capture",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
+ 	},
+ },
  };
- 
- struct skl {
--	struct hdac_bus hbus;
-+	struct hda_bus hbus;
- 	struct pci_dev *pci;
- 
- 	unsigned int init_done:1; /* delayed init status */
-@@ -105,8 +106,11 @@ struct skl {
- 	struct snd_soc_acpi_mach *mach;
- };
- 
--#define skl_to_bus(s)  (&(s)->hbus)
--#define bus_to_skl(bus) container_of(bus, struct skl, hbus)
-+#define skl_to_bus(s)  (&(s)->hbus.core)
-+#define bus_to_skl(bus) container_of(bus, struct skl, hbus.core)
-+
-+#define skl_to_hbus(s) (&(s)->hbus)
-+#define hbus_to_skl(hbus) container_of((hbus), struct skl, (hbus))
- 
- /* to pass dai dma data */
- struct skl_dma_params {
 -- 
 2.14.1
