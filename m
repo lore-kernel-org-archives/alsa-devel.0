@@ -1,17 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 00/14] ALSA: Proper endian notations
-Date: Wed, 25 Jul 2018 23:24:00 +0200
-Message-ID: <20180725212414.19795-1-tiwai@suse.de>
+Subject: [PATCH 04/14] ALSA: riptide: Properly endian notations
+Date: Wed, 25 Jul 2018 23:24:04 +0200
+Message-ID: <20180725212414.19795-5-tiwai@suse.de>
+References: <20180725212414.19795-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8F14626778A
+ by alsa0.perex.cz (Postfix) with ESMTP id 7129F26776E
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:24:16 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 1138FACCA
+ by mx1.suse.de (Postfix) with ESMTP id 37CBFADCB
  for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:24:16 +0000 (UTC)
+In-Reply-To: <20180725212414.19795-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,58 +26,34 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The SG descriptor of Riptide contains the little-endian values, hence
+we need to define with __le32 properly.  This fixes sparse warnings
+like:
+  sound/pci/riptide/riptide.c:1112:40: warning: cast to restricted __le32
 
-this is a patchset for correcting the integer types to the endian-wise
-ones, as caught by sparse.  Just cosmetic fixes for catching future
-bugs, no functional change by itself.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/pci/riptide/riptide.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-
-Takashi
-
-===
-
-Takashi Iwai (14):
-  ALSA: ymfpci: Proper endian notations
-  ALSA: trident: Proper endian notations
-  ALSA: hda: Proper endian notations for BDL pointers
-  ALSA: riptide: Properly endian notations
-  ALSA: mixart: Proper endian notations
-  ALSA: lola: Proper endian notations
-  ALSA: intel8x0: Proper endian notations
-  ALSA: intel8x0m: Proper endian notations
-  ALSA: maestro3: Proper endian notations
-  ALSA: echoaudio: Proper endian notations
-  ALSA: bt87x: Proper endian notations
-  ALSA: atiixp: Proper endian notations
-  ALSA: atiixp_modem: Proper endian notations
-  ALSA: sb: Proper endian notations
-
- sound/hda/hdac_stream.c             |  4 +-
- sound/isa/sb/sb16_csp.c             | 30 +++++------
- sound/pci/atiixp.c                  |  4 +-
- sound/pci/atiixp_modem.c            |  4 +-
- sound/pci/bt87x.c                   |  4 +-
- sound/pci/echoaudio/echoaudio.h     |  2 +-
- sound/pci/echoaudio/echoaudio_3g.c  | 14 +++---
- sound/pci/echoaudio/echoaudio_dsp.c |  6 +--
- sound/pci/echoaudio/echoaudio_dsp.h | 50 +++++++++---------
- sound/pci/echoaudio/echoaudio_gml.c |  8 +--
- sound/pci/intel8x0.c                |  6 +--
- sound/pci/intel8x0m.c               |  6 +--
- sound/pci/lola/lola.c               |  4 +-
- sound/pci/lola/lola.h               |  4 +-
- sound/pci/lola/lola_pcm.c           |  8 +--
- sound/pci/maestro3.c                |  6 +--
- sound/pci/mixart/mixart_core.c      |  4 +-
- sound/pci/mixart/mixart_hwdep.c     | 42 ++++++++--------
- sound/pci/mixart/mixart_hwdep.h     |  8 +--
- sound/pci/riptide/riptide.c         |  8 +--
- sound/pci/trident/trident.h         |  2 +-
- sound/pci/trident/trident_main.c    |  2 +-
- sound/pci/ymfpci/ymfpci.h           | 78 ++++++++++++++---------------
- sound/pci/ymfpci/ymfpci_main.c      |  6 +--
- 24 files changed, 157 insertions(+), 153 deletions(-)
-
+diff --git a/sound/pci/riptide/riptide.c b/sound/pci/riptide/riptide.c
+index 9d2b2ef15c6b..23017e3bc76c 100644
+--- a/sound/pci/riptide/riptide.c
++++ b/sound/pci/riptide/riptide.c
+@@ -470,10 +470,10 @@ struct snd_riptide {
+ };
+ 
+ struct sgd {			/* scatter gather desriptor */
+-	u32 dwNextLink;
+-	u32 dwSegPtrPhys;
+-	u32 dwSegLen;
+-	u32 dwStat_Ctl;
++	__le32 dwNextLink;
++	__le32 dwSegPtrPhys;
++	__le32 dwSegLen;
++	__le32 dwStat_Ctl;
+ };
+ 
+ struct pcmhw {			/* pcm descriptor */
 -- 
 2.18.0
