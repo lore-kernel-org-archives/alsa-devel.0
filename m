@@ -1,22 +1,20 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH 14/15] ASoC: meson: add axg sound card DT
- binding documentation
-Date: Wed, 25 Jul 2018 13:06:19 -0600
-Message-ID: <20180725190619.GA20234@rob-hp-laptop>
-References: <20180717153643.8806-1-jbrunet@baylibre.com>
- <20180717153643.8806-18-jbrunet@baylibre.com>
+From: Jamey Kirby <kirby.jamey@gmail.com>
+Subject: Re: Need some help building alsa-utils
+Date: Wed, 25 Jul 2018 15:41:49 -0400
+Message-ID: <CAJze_PvDAE7oqaK4MSR4e9UBYhRKkEO39wsLBEXyigpxAvry0w@mail.gmail.com>
+References: <CAJze_PuEnezXojtMRmSf5yOtRja5XFKSiuT8q=mKKhWjdeLs4g@mail.gmail.com>
+ <CAJze_Pvta=1wOe0bPir-ibBjViAGszY9mcjqGm6RJ+vZjS50Sg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
- [209.85.214.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 9539A26774B
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:06:21 +0200 (CEST)
-Received: by mail-it0-f68.google.com with SMTP id e14-v6so1966106itf.1
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 12:06:21 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <20180717153643.8806-18-jbrunet@baylibre.com>
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com
+ [209.85.167.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 891F826774B
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 21:42:02 +0200 (CEST)
+Received: by mail-lf1-f41.google.com with SMTP id u14-v6so6252750lfu.0
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 12:42:02 -0700 (PDT)
+In-Reply-To: <CAJze_Pvta=1wOe0bPir-ibBjViAGszY9mcjqGm6RJ+vZjS50Sg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,165 +24,202 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Jul 17, 2018 at 05:36:41PM +0200, Jerome Brunet wrote:
-> Add the DT binding documentation for axg sound card
+Issue resolved:
 
-I see Mark already applied, but...
+1) Old version from GitHub. Replaced with one from alsa org.
+2) Ran ./gitcompile
 
-> 
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-> ---
->  .../bindings/sound/amlogic,axg-sound-card.txt      | 124 +++++++++++++++++++++
->  1 file changed, 124 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.txt
-> new file mode 100644
-> index 000000000000..39e005da0407
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-sound-card.txt
-> @@ -0,0 +1,124 @@
-> +Amlogic AXG sound card:
-> +
-> +Required properties:
-> +
-> +- compatible: "amlogic,axg-sound-card"
-> +- amlogic,name : User specified audio sound card name, one string
+All is well.
 
-Just using "model" for new bindings.
 
-> +
-> +Optional properties:
-> +
-> +- amlogic,aux-devs : List of phandles pointing to auxiliary devices
-> +- amlogic,widgets : Please refer to widgets.txt.
-> +- amlogic,routing : A list of the connections between audio components.
+On Wed, Jul 25, 2018 at 2:47 PM Jamey Kirby <kirby.jamey@gmail.com> wrote:
 
-audio-routing IIRC
-
-> +
-> +Subnodes:
-> +
-> +- amlogic,dai-link: Container for dai-link level properties and the
-> +		    CODEC sub-nodes. There should be at least one (and
-> +		    probably) subnode of this type.
-
-Just 'dai-link'
-
-> +
-> +Required dai-link properties:
-> +
-> +- sound-dai: phandle and port of the CPU DAI.
-> +
-> +Required TDM Backend dai-link properties:
-> +- dai-format : CPU/CODEC common audio format
-> +
-> +Optional TDM Backend dai-link properties:
-> +- dai-tdm-slot-rx-mask-{0,1,2,3}: Receive direction slot masks
-> +- dai-tdm-slot-tx-mask-{0,1,2,3}: Transmit direction slot masks
-> +				  When omitted, mask is assumed to have to no
-> +				  slots. A valid must have at one slot, so at
-> +				  least one these mask should be provided with
-> +				  an enabled slot.
-> +- dai-tdm-slot-num : Please refer to tdm-slot.txt.
-> +		     If omitted, slot number is set to accommodate the largest
-> +		     mask provided.
-> +- dai-tdm-slot-width : Please refer to tdm-slot.txt. default to 32 if omitted.
-> +- mclk-fs : Multiplication factor between stream rate and mclk
-> +
-> +Backend dai-link subnodes:
-> +
-> +- codec: dai-link representing backend links should have at least one subnode.
-> +	 One subnode for each codec of the dai-link.
-> +	 dai-link representing frontend links have no codec, therefore have no
-> +	 subnodes
-> +
-> +Required codec subnodes properties:
-> +
-> +- sound-dai: phandle and port of the CODEC DAI.
-> +
-> +Optional codec subnodes properties:
-> +
-> +- dai-tdm-slot-tx-mask : Please refer to tdm-slot.txt.
-> +- dai-tdm-slot-rx-mask : Please refer to tdm-slot.txt.
-> +
-> +Example:
-> +
-> +sound {
-> +	compatible = "amlogic,axg-sound-card";
-> +	amlogic,name = "AXG-S420";
-> +	amlogic,aux-devs = <&tdmin_a>, <&tdmout_c>;
-> +	amlogic,widgets = "Line", "Lineout",
-> +			  "Line", "Linein",
-> +			  "Speaker", "Speaker1 Left",
-> +			  "Speaker", "Speaker1 Right";
-> +			  "Speaker", "Speaker2 Left",
-> +			  "Speaker", "Speaker2 Right";
-> +	amlogic,routing = "TDMOUT_C IN 0", "FRDDR_A OUT 2",
-> +			  "SPDIFOUT IN 0", "FRDDR_A OUT 3",
-> +			  "TDM_C Playback", "TDMOUT_C OUT",
-> +			  "TDMIN_A IN 2", "TDM_C Capture",
-> +			  "TDMIN_A IN 5", "TDM_C Loopback",
-> +			  "TODDR_A IN 0", "TDMIN_A OUT",
-> +			  "Lineout", "Lineout AOUTL",
-> +			  "Lineout", "Lineout AOUTR",
-> +			  "Speaker1 Left", "SPK1 OUT_A",
-> +			  "Speaker2 Left", "SPK2 OUT_A",
-> +			  "Speaker1 Right", "SPK1 OUT_B",
-> +			  "Speaker2 Right", "SPK2 OUT_B",
-> +			  "Linein AINL", "Linein",
-> +			  "Linein AINR", "Linein";
-> +
-> +	amlogic,dai-link@0 {
-> +		sound-dai = <&frddr_a>;
-> +	};
-> +
-> +	amlogic,dai-link@1 {
-> +		sound-dai = <&toddr_a>;
-> +	};
-> +
-> +	amlogic,dai-link@2 {
-> +		sound-dai = <&tdmif_c>;
-> +		dai-format = "i2s";
-> +		dai-tdm-slot-tx-mask-2 = <1 1>;
-> +		dai-tdm-slot-tx-mask-3 = <1 1>;
-> +		dai-tdm-slot-rx-mask-1 = <1 1>;
-> +		mclk-fs = <256>;
-> +
-> +		codec@0 {
-> +			sound-dai = <&lineout>;
-> +		};
-> +
-> +		codec@1 {
-> +			sound-dai = <&speaker_amp1>;
-> +		};
-> +
-> +		codec@2 {
-> +			sound-dai = <&speaker_amp2>;
-> +		};
-> +
-> +		codec@3 {
-> +			sound-dai = <&linein>;
-> +		};
-> +
-> +	};
-> +
-> +	amlogic,dai-link@4 {
-> +		sound-dai = <&spdifout>;
-> +
-> +		codec {
-> +			sound-dai = <&spdif_dit>;
-> +		};
-> +	};
-> +};
-> -- 
-> 2.14.4
-> 
+> I have made progress. I am not at this point, and do not know what to do:
+>
+> checking for a BSD-compatible install... /usr/bin/install -c
+> checking whether build environment is sane... yes
+> checking for a thread-safe mkdir -p... /bin/mkdir -p
+> checking for gawk... gawk
+> checking whether make sets $(MAKE)... yes
+> checking whether make supports nested variables... yes
+> checking for a sed that does not truncate output... /bin/sed
+> checking whether NLS is requested... yes
+> checking for msgfmt... /usr/bin/msgfmt
+> checking for gmsgfmt... /usr/bin/msgfmt
+> checking for xgettext... /usr/bin/xgettext
+> checking for msgmerge... /usr/bin/msgmerge
+> checking for style of include used by make... GNU
+> checking for gcc... gcc
+> checking whether the C compiler works... yes
+> checking for C compiler default output file name... a.out
+> checking for suffix of executables...
+> checking whether we are cross compiling... no
+> checking for suffix of object files... o
+> checking whether we are using the GNU C compiler... yes
+> checking whether gcc accepts -g... yes
+> checking for gcc option to accept ISO C89... none needed
+> checking whether gcc understands -c and -o together... yes
+> checking dependency style of gcc... gcc3
+> checking build system type... x86_64-pc-linux-gnu
+> checking host system type... x86_64-pc-linux-gnu
+> checking for ld used by gcc... /usr/bin/x86_64-linux-gnu-ld
+> checking if the linker (/usr/bin/x86_64-linux-gnu-ld) is GNU ld... yes
+> checking for shared library run path origin... /bin/bash: ./config.rpath:
+> No such file or directory
+> done
+> checking how to run the C preprocessor... gcc -E
+> checking for grep that handles long lines and -e... /bin/grep
+> checking for egrep... /bin/grep -E
+> checking for CFPreferencesCopyAppValue... no
+> checking for CFLocaleCopyCurrent... no
+> checking for GNU gettext in libc... yes
+> checking whether to use NLS... yes
+> checking where the gettext function comes from... libc
+> checking for cross-compiler... gcc
+> checking for gcc... (cached) gcc
+> checking whether we are using the GNU C compiler... (cached) yes
+> checking whether gcc accepts -g... (cached) yes
+> checking for gcc option to accept ISO C89... (cached) none needed
+> checking whether gcc understands -c and -o together... (cached) yes
+> checking dependency style of gcc... (cached) gcc3
+> checking whether ln -s works... yes
+> checking for ALSA CFLAGS...
+> checking for ALSA LDFLAGS...  -lasound -lm -ldl -lpthread
+> checking for libasound headers version >= 1.0.16... found.
+> checking for snd_ctl_open in -lasound... yes
+> checking for alsa/pcm.h... yes
+> checking for alsa/mixer.h... yes
+> checking for alsa/rawmidi.h... yes
+> checking for alsa/seq.h... yes
+> checking for librt... checking for clock_gettime in -lrt... yes
+> checking for xmlto... yes
+> checking for ANSI C header files... yes
+> checking for ncursesw5-config... no
+> checking for initscr in -lncursesw... no
+> checking for ncurses5-config... yes
+> checking for curses library... ncurses
+> checking for curses header name... <ncurses.h>
+> checking for curses compiler flags... -D_GNU_SOURCE -D_DEFAULT_SOURCE
+> checking for curses NLS support... no
+> checking for sys/types.h... yes
+> checking for sys/stat.h... yes
+> checking for stdlib.h... yes
+> checking for string.h... yes
+> checking for memory.h... yes
+> checking for strings.h... yes
+> checking for inttypes.h... yes
+> checking for stdint.h... yes
+> checking for unistd.h... yes
+> checking panel.h usability... yes
+> checking panel.h presence... yes
+> checking for panel.h... yes
+> checking menu.h usability... yes
+> checking menu.h presence... yes
+> checking for menu.h... yes
+> checking form.h usability... yes
+> checking form.h presence... yes
+> checking for form.h... yes
+> checking for new_panel in -lpanel... yes
+> checking for new_menu in -lmenu... yes
+> checking for new_form in -lform... yes
+> checking for curses linker flags... -lform -lmenu -lpanel -lncurses -ltinfo
+> checking for an ANSI C-conforming const... yes
+> checking for inline... inline
+> checking whether time.h and sys/time.h may both be included... yes
+> checking whether gcc needs -traditional... no
+> checking for special C compiler options needed for large files... no
+> checking for _FILE_OFFSET_BITS value needed for large files... no
+> checking that generated files are newer than configure... done
+> configure: creating ./config.status
+> config.status: error: cannot find input file: `Makefile.in'
+>
+> I'd like to get this built and tested. If it works out, i'd like to
+> contribute my changes to alsa-utils to the repository.
+>
+>
+> On Wed, Jul 25, 2018 at 12:31 AM Jamey Kirby <kirby.jamey@gmail.com>
+> wrote:
+>
+>> I have been working with alsa for a while. We use it to archive
+>> content from our radio station. I am using arecord.
+>>
+>> Build problem:
+>>
+>> 1) I cloned alsa-utils from github
+>> 2) Spent two hours on Google trying to figure out how to build the darn
+>> thing.
+>> 3) I am running Ubuntu Server 18.0 with build-essentials installed.
+>> 4) I get errors that I do not know how to fix when I try to setup
+>> ./configure.
+>> 5) I just need to make a build. What do I need to do?
+>>
+>> Feature:
+>>
+>> I am adding a feature. In the loop for capture(), when a new file is
+>> opened, I want to close the old file (when doing continuous
+>> recording). I added a new CLI parameter -K. When this is set, the
+>> capture() loop will close the old file before opening the new file.
+>>
+>> This is an issue for me for two reasons:
+>>
+>> 1) When will i run out of file handles? I capture one hour files
+>> continuously. After 10 hours, I see that all the capture files are
+>> still open?
+>> 2) I need to be notified when the file is closed so that I can do
+>> post-processing of rht capture. I've tried inotifywait in a script,
+>> and in another script I tried lsof. lsof works great, but the files
+>> are open,. See, the main issue is that I need to know when each file
+>> completes so that I can post process.
+>>
+>> Here is my post process script outline:
+>>
+>> #!/bin/bash
+>>
+>> for f in $HOME/vboxshare/jkirby/newarc/*.raw
+>>   do
+>>     filename=$(basename $f)
+>>     open=$(lsof -t $f | wc -w)
+>>     if [ $open -lt 1 ]
+>>       then
+>>         echo "$filename is closed"
+>>         echo "Do post processing here"
+>>       else
+>>         echo "$filename is open by $open processe(s)"
+>>     fi
+>>   done
+>>
+>> If I could close the file before or after the previous file is closed,
+>> I can do my work. Otherwise, I have no way to know if the file is open
+>> and being processed or not.
+>>
+>> So, I've made the changes, I just need to build the darn thing.
+>>
+>> Thanks for any advice or help.
+>>
+>> --
+>> Jamey Kirby
+>> Disrupting the establishment since 1964
+>>
+>> This is a personal email account and as such, emails are not subject
+>> to archiving. Nothing else really matters.
+>>
+>
+>
 > --
-> To unsubscribe from this list: send the line "unsubscribe devicetree" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Jamey Kirby
+> Disrupting the establishment since 1964
+>
+> *This is a personal email account and as such, emails are not subject to
+> archiving. Nothing else really matters.*
+>
+
+
+-- 
+Jamey Kirby
+Disrupting the establishment since 1964
+
+*This is a personal email account and as such, emails are not subject to
+archiving. Nothing else really matters.*
