@@ -1,16 +1,16 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/6] ALSA: pcm: Add snd_mask_set_format()
-	helper for standard usages
-Date: Wed, 25 Jul 2018 23:17:17 +0200
-Message-ID: <20180725211722.18944-2-tiwai@suse.de>
+Subject: [PATCH 5/6] ASoC: pcm186x: Declare PCM format with
+	snd_pcm_format_t
+Date: Wed, 25 Jul 2018 23:17:21 +0200
+Message-ID: <20180725211722.18944-6-tiwai@suse.de>
 References: <20180725211722.18944-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 359CF267762
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:17:27 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 66638267786
+ for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 23:17:29 +0200 (CEST)
 In-Reply-To: <20180725211722.18944-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,47 +25,29 @@ To: alsa-devel@alsa-project.org
 Cc: Nicolin Chen <nicoleotsuka@gmail.com>, Lars-Peter Clausen <lars@metafoo.de>, Timur Tabi <timur@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Many drivers calling snd_mask_set() need to do ugly cast with __force
-for shutting up the sparse warnings.  Actually almost all of them are
-about setting the format, so it's far better to provide a common
-helper snd_mask_set_format() to pass SNDRV_PCM_FORMAT_* directly
-without the cast.
+The PCM format type is with __bitwise, so we should use the dedicated
+snd_pcm_format_t instead of int.
 
-There are a few other calls of snd_mask_set(), but they are in the PCM
-core code, so we leave them for now.
+This fixes the sparse warning like:
+  sound/soc/codecs/pcm186x.c:268:44: warning: incorrect type in initializer (different base types)
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/pcm_params.h | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/codecs/pcm186x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/pcm_params.h b/include/sound/pcm_params.h
-index c704357775fc..2dd37cada7c0 100644
---- a/include/sound/pcm_params.h
-+++ b/include/sound/pcm_params.h
-@@ -87,6 +87,13 @@ static inline void snd_mask_set(struct snd_mask *mask, unsigned int val)
- 	mask->bits[MASK_OFS(val)] |= MASK_BIT(val);
- }
- 
-+/* Most of drivers need only this one */
-+static inline void snd_mask_set_format(struct snd_mask *mask,
-+				       snd_pcm_format_t format)
-+{
-+	snd_mask_set(mask, (__force unsigned int)format);
-+}
-+
- static inline void snd_mask_reset(struct snd_mask *mask, unsigned int val)
- {
- 	mask->bits[MASK_OFS(val)] &= ~MASK_BIT(val);
-@@ -369,8 +376,7 @@ static inline int params_physical_width(const struct snd_pcm_hw_params *p)
- static inline void
- params_set_format(struct snd_pcm_hw_params *p, snd_pcm_format_t fmt)
- {
--	snd_mask_set(hw_param_mask(p, SNDRV_PCM_HW_PARAM_FORMAT),
--		(__force int)fmt);
-+	snd_mask_set_format(hw_param_mask(p, SNDRV_PCM_HW_PARAM_FORMAT), fmt);
- }
- 
- #endif /* __SOUND_PCM_PARAMS_H */
+diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
+index 88fde70b1e9e..690c26e7389e 100644
+--- a/sound/soc/codecs/pcm186x.c
++++ b/sound/soc/codecs/pcm186x.c
+@@ -265,7 +265,7 @@ static int pcm186x_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct pcm186x_priv *priv = snd_soc_component_get_drvdata(component);
+ 	unsigned int rate = params_rate(params);
+-	unsigned int format = params_format(params);
++	snd_pcm_format_t format = params_format(params);
+ 	unsigned int width = params_width(params);
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int div_lrck;
 -- 
 2.18.0
