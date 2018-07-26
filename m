@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm186x: Declare PCM format with
-	snd_pcm_format_t" to the asoc tree
-Date: Thu, 26 Jul 2018 17:11:20 +0100 (BST)
-Message-ID: <20180726161120.DAAFE44007E@finisterre.ee.mobilebroadband>
-References: <20180725211722.18944-6-tiwai@suse.de>
+Subject: Applied "ASoC: dmaengine: Use standard
+	pcm_format_to_bits() macro" to the asoc tree
+Date: Thu, 26 Jul 2018 17:11:12 +0100 (BST)
+Message-ID: <20180726161112.4F75744007A@finisterre.ee.mobilebroadband>
+References: <20180725211722.18944-7-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9857226779C
+ by alsa0.perex.cz (Postfix) with ESMTP id 9A86926779F
  for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 20:22:42 +0200 (CEST)
-In-Reply-To: <20180725211722.18944-6-tiwai@suse.de>
+In-Reply-To: <20180725211722.18944-7-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm186x: Declare PCM format with snd_pcm_format_t
+   ASoC: dmaengine: Use standard pcm_format_to_bits() macro
 
 has been applied to the asoc tree at
 
@@ -53,35 +53,36 @@ to this mail.
 Thanks,
 Mark
 
->From 79b8a50813a80ac15fdcdc96674098dee15eaaf5 Mon Sep 17 00:00:00 2001
+>From 8adf3df4156345f1edcdfa8c7f7beeb0de351ce2 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 25 Jul 2018 23:17:21 +0200
-Subject: [PATCH] ASoC: pcm186x: Declare PCM format with snd_pcm_format_t
+Date: Wed, 25 Jul 2018 23:17:22 +0200
+Subject: [PATCH] ASoC: dmaengine: Use standard pcm_format_to_bits() macro
 
-The PCM format type is with __bitwise, so we should use the dedicated
-snd_pcm_format_t instead of int.
+The conversion from PCM format type to bits needs an explicit cast,
+and it'll be uglier.  Since we have a standard macro for that, let's
+use it instead.
 
-This fixes the sparse warning like:
-  sound/soc/codecs/pcm186x.c:268:44: warning: incorrect type in initializer (different base types)
+This patch fixes the sparse warning:
+  sound/soc/soc-generic-dmaengine-pcm.c:200:63: warning: restricted snd_pcm_format_t degrades to integer
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm186x.c | 2 +-
+ sound/soc/soc-generic-dmaengine-pcm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
-index 88fde70b1e9e..690c26e7389e 100644
---- a/sound/soc/codecs/pcm186x.c
-+++ b/sound/soc/codecs/pcm186x.c
-@@ -265,7 +265,7 @@ static int pcm186x_hw_params(struct snd_pcm_substream *substream,
- 	struct snd_soc_component *component = dai->component;
- 	struct pcm186x_priv *priv = snd_soc_component_get_drvdata(component);
- 	unsigned int rate = params_rate(params);
--	unsigned int format = params_format(params);
-+	snd_pcm_format_t format = params_format(params);
- 	unsigned int width = params_width(params);
- 	unsigned int channels = params_channels(params);
- 	unsigned int div_lrck;
+diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
+index 120f7b39e256..52fd7af952a5 100644
+--- a/sound/soc/soc-generic-dmaengine-pcm.c
++++ b/sound/soc/soc-generic-dmaengine-pcm.c
+@@ -188,7 +188,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
+ 			case 32:
+ 			case 64:
+ 				if (addr_widths & (1 << (bits / 8)))
+-					hw.formats |= (1LL << i);
++					hw.formats |= pcm_format_to_bits(i);
+ 				break;
+ 			default:
+ 				/* Unsupported types */
 -- 
 2.18.0
