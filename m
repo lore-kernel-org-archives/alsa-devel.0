@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v4 7/8] ASoC: hdac_hda: add asoc extension
- for legacy HDA codec drivers
-Date: Thu, 26 Jul 2018 15:58:12 +0100
-Message-ID: <20180726145812.GG2414@sirena.org.uk>
-References: <20180725005055.18138-1-pierre-louis.bossart@linux.intel.com>
- <20180725005055.18138-8-pierre-louis.bossart@linux.intel.com>
- <20180725114745.GN3661@vkoul-mobl>
- <bdff9535-3443-41e3-5866-698253eb28bc@linux.intel.com>
- <20180725162914.GX3661@vkoul-mobl>
+Subject: Applied "ASoC: dapm: Use int for format bit position"
+	to the asoc tree
+Date: Thu, 26 Jul 2018 16:01:01 +0100 (BST)
+Message-ID: <20180726150101.76907440078@finisterre.ee.mobilebroadband>
+References: <20180725204326.15331-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8518749236159156536=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ECE8426739D
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 16:58:16 +0200 (CEST)
-In-Reply-To: <20180725162914.GX3661@vkoul-mobl>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B78126739D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 17:01:05 +0200 (CEST)
+In-Reply-To: <20180725204326.15331-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,62 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vinod <vkoul@kernel.org>
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============8518749236159156536==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3607uds81ZQvwCD0"
-Content-Disposition: inline
+   ASoC: dapm: Use int for format bit position
 
+has been applied to the asoc tree at
 
---3607uds81ZQvwCD0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Jul 25, 2018 at 09:59:14PM +0530, Vinod wrote:
-> On 25-07-18, 09:27, Pierre-Louis Bossart wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > > > +/* SPDX-License-Identifier: GPL-2.0 */
-> > > > +/*
-> > > > + * Copyright(c) 2015-17 Intel Corporation.
-> > > > + */
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> > > same patch different style ;/
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-> > ok. Checkpatch reports different things for SPDX but I'll align on the C++
-> > version.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> Yeah we still have bunch of versions floating out. Only consensus seems
-> to be for SPDX line in C99 style. So pick one you like and be consistent
-> with it.
+Thanks,
+Mark
 
-Headers are a C comment as they might be included by non-C stuff.
+>From 3ba66feb59810e2ce616da0c4f1a5230c74768a8 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 25 Jul 2018 22:43:26 +0200
+Subject: [PATCH] ASoC: dapm: Use int for format bit position
 
---3607uds81ZQvwCD0
-Content-Type: application/pgp-signature; name="signature.asc"
+fmt in snd_soc_dai_link_event() contains the format bit position, not
+the format bit itself.  Hence it can be a simple integer instead of
+the explicit u64.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-dapm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltZ4YMACgkQJNaLcl1U
-h9Abpgf9HqSyF5JXITkv7o+G1ElwNB1ZnKw5AG90IqS0WvNizX1hAz+r648PBIqM
-go0B1jd9tvYuPdpTTtet7pExvabuGjk7wnt0aMVsOYFDDIFcp57HThulfOFSvoCX
-4FSjSs28EbLBdLqMkUmdYRRghJc0qZB8vIDnYeL6iPfM6du14F1iDQaEsBZeIEYg
-fAIv6KjiKiYrYmHUMKsbm0l5H5tJNDp+wvoLEmnvQUvpU3JxXoLvjt5+QMUes39k
-9DzHH7bdQj9duf6rO3RJRsRSlyrG83FGNzUUk6zygm/GHnlm8oFDGbvEnhCf1Owi
-0xXCRylOHA7rEv2isRNUYaixKwdVrw==
-=U4ZP
------END PGP SIGNATURE-----
-
---3607uds81ZQvwCD0--
-
---===============8518749236159156536==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8518749236159156536==--
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 0602b2888d52..7e96793050c9 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3656,7 +3656,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_pcm_substream substream;
+ 	struct snd_pcm_hw_params *params = NULL;
+ 	struct snd_pcm_runtime *runtime = NULL;
+-	u64 fmt;
++	unsigned int fmt;
+ 	int ret;
+ 
+ 	if (WARN_ON(!config) ||
+-- 
+2.18.0
