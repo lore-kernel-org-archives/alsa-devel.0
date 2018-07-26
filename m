@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: doc: Replace open code with
-	params_set_format()" to the asoc tree
-Date: Thu, 26 Jul 2018 17:11:47 +0100 (BST)
-Message-ID: <20180726161147.63863440085@finisterre.ee.mobilebroadband>
-References: <20180725211722.18944-3-tiwai@suse.de>
+Subject: Applied "ASoC: pcm186x: Declare PCM format with
+	snd_pcm_format_t" to the asoc tree
+Date: Thu, 26 Jul 2018 17:11:20 +0100 (BST)
+Message-ID: <20180726161120.DAAFE44007E@finisterre.ee.mobilebroadband>
+References: <20180725211722.18944-6-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 972E52673A0
+ by alsa0.perex.cz (Postfix) with ESMTP id 9857226779C
  for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 20:22:42 +0200 (CEST)
-In-Reply-To: <20180725211722.18944-3-tiwai@suse.de>
+In-Reply-To: <20180725211722.18944-6-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: doc: Replace open code with params_set_format()
+   ASoC: pcm186x: Declare PCM format with snd_pcm_format_t
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 533a9274850b041b32fbe6d1df58a5c5b0b9e652 Mon Sep 17 00:00:00 2001
+>From 79b8a50813a80ac15fdcdc96674098dee15eaaf5 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 25 Jul 2018 23:17:18 +0200
-Subject: [PATCH] ASoC: doc: Replace open code with params_set_format()
+Date: Wed, 25 Jul 2018 23:17:21 +0200
+Subject: [PATCH] ASoC: pcm186x: Declare PCM format with snd_pcm_format_t
 
-The example code in dpcm.rst contains an open code calling
-snd_mask_set(), and this can be better represented with
-params_set_format() instead.  This automatically fixes the sparse
-warning about snd_pcm_format_t handling, too.
+The PCM format type is with __bitwise, so we should use the dedicated
+snd_pcm_format_t instead of int.
+
+This fixes the sparse warning like:
+  sound/soc/codecs/pcm186x.c:268:44: warning: incorrect type in initializer (different base types)
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/sound/soc/dpcm.rst | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/codecs/pcm186x.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/sound/soc/dpcm.rst b/Documentation/sound/soc/dpcm.rst
-index 395e5a516282..fe61e02277f8 100644
---- a/Documentation/sound/soc/dpcm.rst
-+++ b/Documentation/sound/soc/dpcm.rst
-@@ -254,9 +254,7 @@ configuration.
- 	channels->min = channels->max = 2;
- 
- 	/* set DAI0 to 16 bit */
--	snd_mask_set(&params->masks[SNDRV_PCM_HW_PARAM_FORMAT -
--				    SNDRV_PCM_HW_PARAM_FIRST_MASK],
--				    SNDRV_PCM_FORMAT_S16_LE);
-+	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
- 	return 0;
-   }
- 
+diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
+index 88fde70b1e9e..690c26e7389e 100644
+--- a/sound/soc/codecs/pcm186x.c
++++ b/sound/soc/codecs/pcm186x.c
+@@ -265,7 +265,7 @@ static int pcm186x_hw_params(struct snd_pcm_substream *substream,
+ 	struct snd_soc_component *component = dai->component;
+ 	struct pcm186x_priv *priv = snd_soc_component_get_drvdata(component);
+ 	unsigned int rate = params_rate(params);
+-	unsigned int format = params_format(params);
++	snd_pcm_format_t format = params_format(params);
+ 	unsigned int width = params_width(params);
+ 	unsigned int channels = params_channels(params);
+ 	unsigned int div_lrck;
 -- 
 2.18.0
