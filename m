@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Document R-Car M3-N support" to
-	the asoc tree
-Date: Thu, 26 Jul 2018 16:01:32 +0100 (BST)
-Message-ID: <20180726150132.CA0D7440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: meson: align axg card driver with DT
+	bindings documentation" to the asoc tree
+Date: Thu, 26 Jul 2018 16:01:39 +0100 (BST)
+Message-ID: <20180726150139.F013E440078@finisterre.ee.mobilebroadband>
+References: <20180726124544.14740-4-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 576B4267791
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 17:01:34 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 38A452677A1
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 17:01:41 +0200 (CEST)
+In-Reply-To: <20180726124544.14740-4-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Yoshihiro Kaneko <ykaneko0929@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Rob Herring <robh@kernel.org>, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Document R-Car M3-N support
+   ASoC: meson: align axg card driver with DT bindings documentation
 
 has been applied to the asoc tree at
 
@@ -52,36 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 150a6dc8fc764c1912fa2a46e18d1505dfd3536f Mon Sep 17 00:00:00 2001
-From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Date: Thu, 26 Jul 2018 05:40:15 +0900
-Subject: [PATCH] ASoC: rsnd: Document R-Car M3-N support
+>From 435857e015dc7b337c5f21d195ac2e4ffd694283 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Thu, 26 Jul 2018 14:45:44 +0200
+Subject: [PATCH] ASoC: meson: align axg card driver with DT bindings
+ documentation
 
-Document support for the sound modules in the Renesas M3-N (r8a77965)
-SoC.
+Drop amlogic prefix in front of the generic DT properties and change
+property "name" to "model".
 
-No driver update is needed.
-
-Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
-Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/meson/axg-card.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index b86d790f630f..9e764270c36b 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -352,6 +352,7 @@ Required properties:
- 				    - "renesas,rcar_sound-r8a7794" (R-Car E2)
- 				    - "renesas,rcar_sound-r8a7795" (R-Car H3)
- 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
-+				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
- - reg				: Should contain the register physical address.
- 				  required register is
- 				   SRU/ADG/SSI      if generation1
+diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+index d6d1081d94ad..2914ba0d965b 100644
+--- a/sound/soc/meson/axg-card.c
++++ b/sound/soc/meson/axg-card.c
+@@ -123,7 +123,7 @@ static int axg_card_add_aux_devices(struct snd_soc_card *card)
+ 	struct snd_soc_aux_dev *aux;
+ 	int num, i;
+ 
+-	num = of_count_phandle_with_args(node, PREFIX "aux-devs", NULL);
++	num = of_count_phandle_with_args(node, "audio-aux-devs", NULL);
+ 	if (num == -ENOENT) {
+ 		/*
+ 		 * It is ok to have no auxiliary devices but for this card it
+@@ -144,8 +144,8 @@ static int axg_card_add_aux_devices(struct snd_soc_card *card)
+ 	card->num_aux_devs = num;
+ 
+ 	for (i = 0; i < card->num_aux_devs; i++, aux++) {
+-		aux->codec_of_node = of_parse_phandle(node,
+-						      PREFIX "aux-devs", i);
++		aux->codec_of_node =
++			of_parse_phandle(node, "audio-aux-devs", i);
+ 		if (!aux->codec_of_node)
+ 			return -EINVAL;
+ 	}
+@@ -610,18 +610,18 @@ static int axg_card_probe(struct platform_device *pdev)
+ 	priv->card.owner = THIS_MODULE;
+ 	priv->card.dev = dev;
+ 
+-	ret = snd_soc_of_parse_card_name(&priv->card, PREFIX "name");
++	ret = snd_soc_of_parse_card_name(&priv->card, "model");
+ 	if (ret < 0)
+ 		return ret;
+ 
+-	ret = axg_card_parse_of_optional(&priv->card, PREFIX "routing",
++	ret = axg_card_parse_of_optional(&priv->card, "audio-routing",
+ 					 snd_soc_of_parse_audio_routing);
+ 	if (ret) {
+ 		dev_err(dev, "error while parsing routing\n");
+ 		return ret;
+ 	}
+ 
+-	ret = axg_card_parse_of_optional(&priv->card, PREFIX "widgets",
++	ret = axg_card_parse_of_optional(&priv->card, "audio-widgets",
+ 					 snd_soc_of_parse_audio_simple_widgets);
+ 	if (ret) {
+ 		dev_err(dev, "error while parsing widgets\n");
 -- 
 2.18.0
