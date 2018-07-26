@@ -1,7 +1,7 @@
 From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH] ASoC: AMD: Fix build warning
-Date: Thu, 26 Jul 2018 13:55:48 +0800
-Message-ID: <1532584572-8362-1-git-send-email-akshu.agrawal@amd.com>
+Subject: [PATCH v2] ASoC: AMD: Fix build warning
+Date: Thu, 26 Jul 2018 14:04:08 +0800
+Message-ID: <1532585060-26060-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -19,11 +19,12 @@ ret);
 
 Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 ---
+v2: closing braces missing
  sound/soc/amd/acp-da7219-max98357a.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
-index cd3cf6e..48c1d94 100644
+index cd3cf6e..8e3275a 100644
 --- a/sound/soc/amd/acp-da7219-max98357a.c
 +++ b/sound/soc/amd/acp-da7219-max98357a.c
 @@ -365,7 +365,7 @@ static int cz_probe(struct platform_device *pdev)
@@ -31,7 +32,7 @@ index cd3cf6e..48c1d94 100644
  	if (IS_ERR(rdev)) {
  		dev_err(&pdev->dev, "Failed to register regulator: %d\n",
 -			ret);
-+			(int)PTR_ERR(rdev);
++			(int)PTR_ERR(rdev));
  		return -EINVAL;
  	}
  
