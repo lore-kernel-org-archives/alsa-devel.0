@@ -1,135 +1,51 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: BUG: soft lockup in snd_virmidi_output_trigger
-Date: Thu, 26 Jul 2018 14:58:59 +0200
-Message-ID: <CACT4Y+Z10MY4W1NL7o0NzzHnLeTKJc_3bLVabaUGtONTuB00dw@mail.gmail.com>
-References: <20180726055326.GA12625@dragonet> <s5hva92yxda.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: trident: Suppress gcc string warning
+Date: Thu, 26 Jul 2018 15:02:57 +0200
+Message-ID: <20180726130257.30812-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hva92yxda.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "Dae R. Jeong" <threeearcat@gmail.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, kt0755@gmail.com, syzkaller <syzkaller@googlegroups.com>, bammanag@purdue.edu, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 307D726739D
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 15:02:59 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 9CBC7AE8F
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 13:02:59 +0000 (UTC)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 26, 2018 at 2:50 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Thu, 26 Jul 2018 07:53:26 +0200,
->  Dae R. Jeong  wrote:
->>
->> Reporting the crash: BUG: soft lockup in snd_virmidi_output_trigger
->>
->> This crash has been found in v4.18-rc3 using RaceFuzzer (a modified
->> version of Syzkaller), which we describe more at the end of this
->> report.
->>
->> Note that this bug is previously reported by Syzkaller a few month ago.
->> (https://syzkaller.appspot.com/bug?id=642c927972318775e0ea1b4779ccd8624ce9e6f5)
->> Nonetheless, the crash still can be detected. We guess that the crash has
->> not fixed yet.
->> We report the crash log and the attached reproducer with a hope that they are
->> helpful to diagnose the crash and to fix a bug.
->>
->> C Reproducer:
->> https://kiwi.cs.purdue.edu/static/race-fuzzer/repro-dab082.c
->>
->> Kernel config:
->> https://kiwi.cs.purdue.edu/static/race-fuzzer/config-dab082
->>
->> (Please disregard all code related to "should_hypercall" in the C repro,
->> as this is only for our debugging purposes using our own hypervisor.)
->>
->>
->> Crash log:
->> ==================================================================
->> watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [syz-executor0:24261]
->> Modules linked in:
->> irq event stamp: 6692
->> hardirqs last  enabled at (6691): [<ffffffff84eb1f12>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
->> hardirqs last  enabled at (6691): [<ffffffff84eb1f12>] _raw_spin_unlock_irqrestore+0x62/0x90 kernel/locking/spinlock.c:184
->> hardirqs last disabled at (6692): [<ffffffff85000905>] interrupt_entry+0xb5/0xf0 arch/x86/entry/entry_64.S:625
->> softirqs last  enabled at (1468): [<ffffffff852005ff>] __do_softirq+0x5ff/0x7f4 kernel/softirq.c:314
->> softirqs last disabled at (1455): [<ffffffff8130de56>] invoke_softirq kernel/softirq.c:368 [inline]
->> softirqs last disabled at (1455): [<ffffffff8130de56>] irq_exit+0x126/0x130 kernel/softirq.c:408
->> CPU: 1 PID: 24261 Comm: syz-executor0 Not tainted 4.18.0-rc3 #1
->> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
->> RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:783 [inline]
->> RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
->> RIP: 0010:_raw_spin_unlock_irqrestore+0x7d/0x90 kernel/locking/spinlock.c:184
->> Code: 0d c8 ce 16 7b 5b 41 5c 5d c3 e8 3e 0f 52 fc 48 c7 c7 68 b0 71 86 e8 62 4c 8d fc 48 83 3d 42 91 86 01 00 74 0e 48 89 df 57 9d <0f> 1f 44 00 00 eb cd 0f 0b 0f 0b 0f 1f 84 00 00 00 00 00 55 48 89
->> RSP: 0018:ffff8801b8e4f7e8 EFLAGS: 00000282 ORIG_RAX: ffffffffffffff13
->> RAX: 0000000000000000 RBX: 0000000000000282 RCX: ffffffff84eb1f1e
->> RDX: dffffc0000000000 RSI: dffffc0000000000 RDI: 0000000000000282
->> RBP: ffff8801b8e4f7f8 R08: ffffed002573a06a R09: 0000000000000000
->> R10: 0000000000000000 R11: 0000000000000000 R12: ffff88012b9d0348
->> R13: ffff8801e6417580 R14: ffff8801b8e4f868 R15: ffff8801e64175a8
->> FS:  00007f3447a49700(0000) GS:ffff8801f6d00000(0000) knlGS:0000000000000000
->> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> CR2: 00007f3447a48db8 CR3: 00000001ee58d000 CR4: 00000000000006e0
->> Call Trace:
->>  spin_unlock_irqrestore include/linux/spinlock.h:365 [inline]
->>  snd_virmidi_output_trigger+0x37d/0x420 sound/core/seq/seq_virmidi.c:205
->>  snd_rawmidi_output_trigger sound/core/rawmidi.c:150 [inline]
->>  snd_rawmidi_kernel_write1+0x383/0x410 sound/core/rawmidi.c:1288
->>  snd_rawmidi_write+0x249/0xa50 sound/core/rawmidi.c:1338
->
-> This seems to be a long loop in snd_virmidi_output_trigger processed
-> in a spinlock.  The below patch puts a cond_resched() for avoiding the
-> possible stalls, and it seems working.
->
-> Let me know if this works for you.
->
->
-> thanks,
->
-> Takashi
->
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: virmidi: Fix too long output trigger loop
->
-> The virmidi output trigger tries to parse the all available bytes and
-> process sequencer events as much as possible.  In a normal situation,
-> this is supposed to be relatively short, but a program may give a huge
-> buffer and it'll take a long time in a single spin lock, which may
-> eventually lead to a soft lockup.
->
-> This patch simply adds a workaround, a cond_resched() call in the loop
-> if applicable.  A better solution would be to move the event processor
-> into a work, but let's put a duct-tape quickly at first.
->
-> Reported-by: Dae R. Jeong <threeearcat@gmail.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/seq/seq_virmidi.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-> index 289ae6bb81d9..65549d41533e 100644
-> --- a/sound/core/seq/seq_virmidi.c
-> +++ b/sound/core/seq/seq_virmidi.c
-> @@ -163,6 +163,7 @@ static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream,
->         int count, res;
->         unsigned char buf[32], *pbuf;
->         unsigned long flags;
-> +       bool check_resched = !in_atomic();
->
->         if (up) {
->                 vmidi->trigger = 1;
-> @@ -200,6 +201,11 @@ static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream,
->                                         vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
->                                 }
->                         }
-> +                       if (!check_resched)
-> +                               continue;
-> +                       spin_unlock_irqrestore(&substream->runtime->lock, flags);
-> +                       cond_resched();
-> +                       spin_lock_irqsave(&substream->runtime->lock, flags);
->                 }
->         out:
->                 spin_unlock_irqrestore(&substream->runtime->lock, flags);
-
-
-
-Just in case: is it a killable loop? It seems that user can make
-kernel stuck there almost infinitely.
+VGhlIG1lZGRsZXNvbWUgZ2NjIHdhcm5zIGFib3V0IHRoZSBwb3NzaWJsZSBzaG9ydG5hbWUgc3Ry
+aW5nIGluCnRyaWRlbnQgZHJpdmVyIGNvZGU6CiAgc291bmQvcGNpL3RyaWRlbnQvdHJpZGVudC5j
+OiBJbiBmdW5jdGlvbiDigJhzbmRfdHJpZGVudF9wcm9iZeKAmToKICBzb3VuZC9wY2kvdHJpZGVu
+dC90cmlkZW50LmM6MTI2OjI6IHdhcm5pbmc6IOKAmHN0cmNhdOKAmSBhY2Nlc3NpbmcgMTcgb3Ig
+bW9yZSBieXRlcyBhdCBvZmZzZXRzIDM2IGFuZCAyMCBtYXkgb3ZlcmxhcCAxIGJ5dGUgYXQgb2Zm
+c2V0IDM2IFstV3Jlc3RyaWN0XQogIHN0cmNhdChjYXJkLT5zaG9ydG5hbWUsIGNhcmQtPmRyaXZl
+cik7CgpJdCBoYXBwZW5zIHNpbmNlIGdjYyBjYWxjdWxhdGVzIHRoZSBwb3NzaWJsZSBzdHJpbmcg
+c2l6ZSBmcm9tCmNhcmQtPmRyaXZlciwgYnV0IHRoaXMgY2FuJ3QgYmUgdHJ1ZSBzaW5jZSB3ZSBk
+aWQgc2V0IHRoZSBzdHJpbmcganVzdApiZWZvcmUgdGhhdCwgYW5kIHRoZXkgYXJlIG11Y2ggc2hv
+cnRlci4KCkZvciBzaHV0dGluZyBpdCB1cCwgdXNlIHRoZSBleGFjdGx5IHNhbWUgc3RyaW5nIHNl
+dCB0byBjYXJkLT5kcml2ZXIKZm9yIHN0cmNhdCgpIHRvIGNhcmQtPnNob3J0bmFtZSwgdG9vLgoK
+U2lnbmVkLW9mZi1ieTogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgotLS0KIHNvdW5kL3Bj
+aS90cmlkZW50L3RyaWRlbnQuYyB8IDIgKy0KIDEgZmlsZSBjaGFuZ2VkLCAxIGluc2VydGlvbigr
+KSwgMSBkZWxldGlvbigtKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3BjaS90cmlkZW50L3RyaWRlbnQu
+YyBiL3NvdW5kL3BjaS90cmlkZW50L3RyaWRlbnQuYwppbmRleCBjZWRmMTNiNjQ4MDMuLjJmMThi
+MWNkYzJjZCAxMDA2NDQKLS0tIGEvc291bmQvcGNpL3RyaWRlbnQvdHJpZGVudC5jCisrKyBiL3Nv
+dW5kL3BjaS90cmlkZW50L3RyaWRlbnQuYwpAQCAtMTIzLDcgKzEyMyw3IEBAIHN0YXRpYyBpbnQg
+c25kX3RyaWRlbnRfcHJvYmUoc3RydWN0IHBjaV9kZXYgKnBjaSwKIAl9IGVsc2UgewogCQlzdHJj
+cHkoY2FyZC0+c2hvcnRuYW1lLCAiVHJpZGVudCAiKTsKIAl9Ci0Jc3RyY2F0KGNhcmQtPnNob3J0
+bmFtZSwgY2FyZC0+ZHJpdmVyKTsKKwlzdHJjYXQoY2FyZC0+c2hvcnRuYW1lLCBzdHIpOwogCXNw
+cmludGYoY2FyZC0+bG9uZ25hbWUsICIlcyBQQ0kgQXVkaW8gYXQgMHglbHgsIGlycSAlZCIsCiAJ
+CWNhcmQtPnNob3J0bmFtZSwgdHJpZGVudC0+cG9ydCwgdHJpZGVudC0+aXJxKTsKIAotLSAKMi4x
+OC4wCgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNh
+LWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21h
+aWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
