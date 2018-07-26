@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dmaengine: Use standard
-	pcm_format_to_bits() macro" to the asoc tree
-Date: Thu, 26 Jul 2018 17:11:12 +0100 (BST)
-Message-ID: <20180726161112.4F75744007A@finisterre.ee.mobilebroadband>
-References: <20180725211722.18944-7-tiwai@suse.de>
+Subject: Applied "ASoC: fsl: Use snd_mask_set_format()" to the
+	asoc tree
+Date: Thu, 26 Jul 2018 17:11:29 +0100 (BST)
+Message-ID: <20180726161129.E893E440080@finisterre.ee.mobilebroadband>
+References: <20180725211722.18944-5-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A86926779F
+ by alsa0.perex.cz (Postfix) with ESMTP id 9972626779D
  for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 20:22:42 +0200 (CEST)
-In-Reply-To: <20180725211722.18944-7-tiwai@suse.de>
+In-Reply-To: <20180725211722.18944-5-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dmaengine: Use standard pcm_format_to_bits() macro
+   ASoC: fsl: Use snd_mask_set_format()
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,32 @@ to this mail.
 Thanks,
 Mark
 
->From 8adf3df4156345f1edcdfa8c7f7beeb0de351ce2 Mon Sep 17 00:00:00 2001
+>From ebc22af0c9268dc4032326c20b02f2f227203330 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 25 Jul 2018 23:17:22 +0200
-Subject: [PATCH] ASoC: dmaengine: Use standard pcm_format_to_bits() macro
+Date: Wed, 25 Jul 2018 23:17:20 +0200
+Subject: [PATCH] ASoC: fsl: Use snd_mask_set_format()
 
-The conversion from PCM format type to bits needs an explicit cast,
-and it'll be uglier.  Since we have a standard macro for that, let's
-use it instead.
-
-This patch fixes the sparse warning:
-  sound/soc/soc-generic-dmaengine-pcm.c:200:63: warning: restricted snd_pcm_format_t degrades to integer
+Use the new helper function snd_mask_set_format() for avoiding the
+ugly cast with __force prefix.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-generic-dmaengine-pcm.c | 2 +-
+ sound/soc/fsl/fsl-asoc-card.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-generic-dmaengine-pcm.c b/sound/soc/soc-generic-dmaengine-pcm.c
-index 120f7b39e256..52fd7af952a5 100644
---- a/sound/soc/soc-generic-dmaengine-pcm.c
-+++ b/sound/soc/soc-generic-dmaengine-pcm.c
-@@ -188,7 +188,7 @@ static int dmaengine_pcm_set_runtime_hwparams(struct snd_pcm_substream *substrea
- 			case 32:
- 			case 64:
- 				if (addr_widths & (1 << (bits / 8)))
--					hw.formats |= (1LL << i);
-+					hw.formats |= pcm_format_to_bits(i);
- 				break;
- 			default:
- 				/* Unsupported types */
+diff --git a/sound/soc/fsl/fsl-asoc-card.c b/sound/soc/fsl/fsl-asoc-card.c
+index 07808c6d5461..44433b20435c 100644
+--- a/sound/soc/fsl/fsl-asoc-card.c
++++ b/sound/soc/fsl/fsl-asoc-card.c
+@@ -195,7 +195,7 @@ static int be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+ 
+ 	mask = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+ 	snd_mask_none(mask);
+-	snd_mask_set(mask, (__force int)priv->asrc_format);
++	snd_mask_set_format(mask, priv->asrc_format);
+ 
+ 	return 0;
+ }
 -- 
 2.18.0
