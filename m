@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: zte: Fix incorrect PCM format bit usages" to the asoc tree
-Date: Thu, 26 Jul 2018 16:01:21 +0100 (BST)
-Message-ID: <20180726150121.3B822440078@finisterre.ee.mobilebroadband>
-References: <20180725204049.28859-1-tiwai@suse.de>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180725204049.28859-1-tiwai@suse.de>
-Sender: stable-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: stable@vger.kernel.org, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Baoyou Xie <baoyou.xie@linaro.org>, Jun Nie <jun.nie@linaro.org>Mark Brown <broonie@kernel.org>, Shawn Guo <shawnguo@kernel.org>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: rsnd: Document R-Car M3-N support" to
+	the asoc tree
+Date: Thu, 26 Jul 2018 16:01:32 +0100 (BST)
+Message-ID: <20180726150132.CA0D7440078@finisterre.ee.mobilebroadband>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 576B4267791
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 17:01:34 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Yoshihiro Kaneko <ykaneko0929@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: zte: Fix incorrect PCM format bit usages
+   ASoC: rsnd: Document R-Car M3-N support
 
 has been applied to the asoc tree at
 
@@ -37,41 +52,36 @@ to this mail.
 Thanks,
 Mark
 
->From c889a45d229938a94b50aadb819def8bb11a6a54 Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Wed, 25 Jul 2018 22:40:49 +0200
-Subject: [PATCH] ASoC: zte: Fix incorrect PCM format bit usages
+>From 150a6dc8fc764c1912fa2a46e18d1505dfd3536f Mon Sep 17 00:00:00 2001
+From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Date: Thu, 26 Jul 2018 05:40:15 +0900
+Subject: [PATCH] ASoC: rsnd: Document R-Car M3-N support
 
-zx-tdm driver sets the DAI driver definitions with the format bits
-wrongly set with SNDRV_PCM_FORMAT_*, instead of SNDRV_PCM_FMTBIT_*.
+Document support for the sound modules in the Renesas M3-N (r8a77965)
+SoC.
 
-This patch corrects the definitions.
+No driver update is needed.
 
-Spotted by a sparse warning:
-  sound/soc/zte/zx-tdm.c:363:35: warning: restricted snd_pcm_format_t degrades to integer
-
-Fixes: 870e0ddc4345 ("ASoC: zx-tdm: add zte's tdm controller driver")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
+Acked-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/zte/zx-tdm.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/zte/zx-tdm.c b/sound/soc/zte/zx-tdm.c
-index dc955272f58b..389272eeba9a 100644
---- a/sound/soc/zte/zx-tdm.c
-+++ b/sound/soc/zte/zx-tdm.c
-@@ -144,8 +144,8 @@ static void zx_tdm_rx_dma_en(struct zx_tdm_info *tdm, bool on)
- #define ZX_TDM_RATES	(SNDRV_PCM_RATE_8000 | SNDRV_PCM_RATE_16000)
- 
- #define ZX_TDM_FMTBIT \
--	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FORMAT_MU_LAW | \
--	SNDRV_PCM_FORMAT_A_LAW)
-+	(SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_MU_LAW | \
-+	SNDRV_PCM_FMTBIT_A_LAW)
- 
- static int zx_tdm_dai_probe(struct snd_soc_dai *dai)
- {
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index b86d790f630f..9e764270c36b 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -352,6 +352,7 @@ Required properties:
+ 				    - "renesas,rcar_sound-r8a7794" (R-Car E2)
+ 				    - "renesas,rcar_sound-r8a7795" (R-Car H3)
+ 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
++				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
+ - reg				: Should contain the register physical address.
+ 				  required register is
+ 				   SRU/ADG/SSI      if generation1
 -- 
 2.18.0
