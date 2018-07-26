@@ -1,16 +1,16 @@
 From: Shreyas NC <shreyas.nc@intel.com>
-Subject: [PATCH v7 03/10] soundwire: Fix acquiring bus lock
-	twice during master release
-Date: Thu, 26 Jul 2018 17:12:35 +0530
-Message-ID: <1532605362-19282-4-git-send-email-shreyas.nc@intel.com>
+Subject: [PATCH v7 04/10] Documentation: soundwire: Add
+	documentation for multi link
+Date: Thu, 26 Jul 2018 17:12:36 +0530
+Message-ID: <1532605362-19282-5-git-send-email-shreyas.nc@intel.com>
 References: <1532605362-19282-1-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id D5EA226779D
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 13:44:34 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E3D4926778A
+ for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 13:44:35 +0200 (CEST)
 In-Reply-To: <1532605362-19282-1-git-send-email-shreyas.nc@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,36 +27,54 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Sanyog Kale <sanyog.r.kale@intel.com>
 
-As part of sdw_stream_remove_master(), sdw_stream_remove_slave() is called
-which results in bus lock being acquired twice.
-
-So, fix it by performing specific Slave remove operations in
-sdw_release_master_stream() instead of calling sdw_stream_remove_slave().
+Add example and documentation to describe multi link streams
 
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Sanyog Kale <sanyog.r.kale@intel.com>
+Signed-off-by: Vinod Koul <vkoul@kernel.org>
 Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
 ---
- drivers/soundwire/stream.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ Documentation/driver-api/soundwire/stream.rst | 28 +++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
-index eaaa180..28d4147 100644
---- a/drivers/soundwire/stream.c
-+++ b/drivers/soundwire/stream.c
-@@ -899,9 +899,10 @@ static void sdw_release_master_stream(struct sdw_stream_runtime *stream)
- 	struct sdw_master_runtime *m_rt = stream->m_rt;
- 	struct sdw_slave_runtime *s_rt, *_s_rt;
+diff --git a/Documentation/driver-api/soundwire/stream.rst b/Documentation/driver-api/soundwire/stream.rst
+index 29121aa..19482ee 100644
+--- a/Documentation/driver-api/soundwire/stream.rst
++++ b/Documentation/driver-api/soundwire/stream.rst
+@@ -101,6 +101,34 @@ interface. ::
+ 	+--------------------+                             |                |
+ 							   +----------------+
  
--	list_for_each_entry_safe(s_rt, _s_rt,
--			&m_rt->slave_rt_list, m_rt_node)
--		sdw_stream_remove_slave(s_rt->slave, stream);
-+	list_for_each_entry_safe(s_rt, _s_rt, &m_rt->slave_rt_list, m_rt_node) {
-+		sdw_slave_port_release(s_rt->slave->bus, s_rt->slave, stream);
-+		sdw_release_slave_stream(s_rt->slave, stream);
-+	}
++Example 5: Stereo Stream with L and R channel is rendered by 2 Masters, each
++rendering one channel, and is received by two different Slaves, each
++receiving one channel. Both Masters and both Slaves are using single port. ::
++
++	+---------------+                    Clock Signal  +---------------+
++	|    Master     +----------------------------------+     Slave     |
++	|   Interface   |                                  |   Interface   |
++	|       1       |                                  |       1       |
++	|               |                     Data Signal  |               |
++	|       L       +----------------------------------+       L       |
++	|     (Data)    |     Data Direction               |     (Data)    |
++	+---------------+  +----------------------->       +---------------+
++
++	+---------------+                    Clock Signal  +---------------+
++	|    Master     +----------------------------------+     Slave     |
++	|   Interface   |                                  |   Interface   |
++	|       2       |                                  |       2       |
++	|               |                     Data Signal  |               |
++	|       R       +----------------------------------+       R       |
++	|     (Data)    |     Data Direction               |     (Data)    |
++	+---------------+  +----------------------->       +---------------+
++
++Note: In multi-link cases like above, to lock, one would acquire a global
++lock and then go on locking bus instances. But, in this case the caller
++framework(ASoC DPCM) guarantees that stream operations on a card are
++always serialized. So, there is no race condition and hence no need for
++global lock.
++
+ SoundWire Stream Management flow
+ ================================
  
- 	list_del(&m_rt->bus_node);
- }
 -- 
 2.7.4
