@@ -1,18 +1,18 @@
 From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] sound: usb: quirks: Replace mdelay() with
-	msleep() and usleep_range()
-Date: Fri, 27 Jul 2018 16:55:28 +0800
-Message-ID: <20180727085528.5802-1-baijiaju1990@gmail.com>
+Subject: [PATCH] sound: pci: cthw20k1: Replace mdelay() with
+	msleep()
+Date: Fri, 27 Jul 2018 16:57:56 +0800
+Message-ID: <20180727085756.12440-1-baijiaju1990@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
- [209.85.160.66])
- by alsa0.perex.cz (Postfix) with ESMTP id CEEF926775C
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 10:55:37 +0200 (CEST)
-Received: by mail-pl0-f66.google.com with SMTP id m1-v6so2042482plt.6
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 01:55:37 -0700 (PDT)
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 76A6526775C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 10:58:04 +0200 (CEST)
+Received: by mail-pg1-f195.google.com with SMTP id y5-v6so2865866pgv.1
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 01:58:04 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,87 +22,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: perex@perex.cz, tiwai@suse.com, jussi@sonarnerd.net, nob77413@gmail.com, kai.heng.feng@canonical.com, elfring@users.sourceforge.net, daniel@zonque.org, ruslan.bilovol@gmail.com
+To: perex@perex.cz, tiwai@suse.com, bhumirks@gmail.com
 Cc: alsa-devel@alsa-project.org, Jia-Ju Bai <baijiaju1990@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-snd_usb_select_mode_quirk(), snd_usb_set_interface_quirk() and 
-snd_usb_ctl_msg_quirk() are never called in atomic context.
-They call mdelay() to busily wait, which is not necessary.
-mdelay() can be replaced with msleep() and usleep_range().
+hw_pll_init(), hw_reset_dac() and hw_card_init() are never 
+called in atomic context.
+They calls mdelay() to busily wait, which is not necessary.
+mdelay() can be replaced with msleep().
 
 This is found by a static analysis tool named DCNS written by myself.
 
 Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
 ---
- sound/usb/quirks.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
+ sound/pci/ctxfi/cthw20k1.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/usb/quirks.c b/sound/usb/quirks.c
-index acbeb52f6fd6..9eed650c54d4 100644
---- a/sound/usb/quirks.c
-+++ b/sound/usb/quirks.c
-@@ -1181,7 +1181,7 @@ int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
- 		if (err < 0)
- 			return err;
+diff --git a/sound/pci/ctxfi/cthw20k1.c b/sound/pci/ctxfi/cthw20k1.c
+index 8e6eb9d7984b..6a051a1c3724 100644
+--- a/sound/pci/ctxfi/cthw20k1.c
++++ b/sound/pci/ctxfi/cthw20k1.c
+@@ -1319,7 +1319,7 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
+ 			break;
  
--		mdelay(20); /* Delay needed after setting the interface */
-+		msleep(20); /* Delay needed after setting the interface */
- 
- 		/* Vendor mode switch cmd is required. */
- 		if (fmt->formats & SNDRV_PCM_FMTBIT_DSD_U32_BE) {
-@@ -1202,7 +1202,7 @@ int snd_usb_select_mode_quirk(struct snd_usb_substream *subs,
- 				return err;
- 
- 		}
--		mdelay(20);
-+		msleep(20);
+ 		hw_write_20kx(hw, PLLCTL, pllctl);
+-		mdelay(40);
++		msleep(40);
  	}
- 	return 0;
- }
-@@ -1249,7 +1249,7 @@ void snd_usb_set_interface_quirk(struct usb_device *dev)
- 	switch (USB_ID_VENDOR(chip->usb_id)) {
- 	case 0x23ba: /* Playback Design */
- 	case 0x0644: /* TEAC Corp. */
--		mdelay(50);
-+		msleep(50);
- 		break;
- 	}
- }
-@@ -1269,7 +1269,7 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 	 */
- 	if (USB_ID_VENDOR(chip->usb_id) == 0x23ba &&
- 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
--		mdelay(20);
-+		msleep(20);
+ 	if (i >= 3) {
+ 		dev_alert(hw->card->dev, "PLL initialization failed!!!\n");
+@@ -1407,7 +1407,7 @@ static int hw_reset_dac(struct hw *hw)
+ 	/* To be effective, need to reset the DAC twice. */
+ 	for (i = 0; i < 2;  i++) {
+ 		/* set gpio */
+-		mdelay(100);
++		msleep(100);
+ 		gpioorg = (u16)hw_read_20kx(hw, GPIO);
+ 		gpioorg &= 0xfffd;
+ 		hw_write_20kx(hw, GPIO, gpioorg);
+@@ -2030,7 +2030,7 @@ static int hw_card_init(struct hw *hw, struct card_conf *info)
+ 	hw_write_20kx(hw, GIE, 0);
+ 	/* Reset all SRC pending interrupts */
+ 	hw_write_20kx(hw, SRCIP, 0);
+-	mdelay(30);
++	msleep(30);
  
- 	/*
- 	 * "TEAC Corp." products need a 20ms delay after each
-@@ -1277,14 +1277,14 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 	 */
- 	if (USB_ID_VENDOR(chip->usb_id) == 0x0644 &&
- 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
--		mdelay(20);
-+		msleep(20);
- 
- 	/* ITF-USB DSD based DACs functionality need a delay
- 	 * after each class compliant request
- 	 */
- 	if (is_itf_usb_dsd_dac(chip->usb_id)
- 	    && (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
--		mdelay(20);
-+		msleep(20);
- 
- 	/* Zoom R16/24, Logitech H650e, Jabra 550a needs a tiny delay here,
- 	 * otherwise requests like get/set frequency return as failed despite
-@@ -1294,7 +1294,7 @@ void snd_usb_ctl_msg_quirk(struct usb_device *dev, unsigned int pipe,
- 	     chip->usb_id == USB_ID(0x046d, 0x0a46) ||
- 	     chip->usb_id == USB_ID(0x0b0e, 0x0349)) &&
- 	    (requesttype & USB_TYPE_MASK) == USB_TYPE_CLASS)
--		mdelay(1);
-+		usleep_range(1000, 2000);
- }
- 
- /*
+ 	/* Detect the card ID and configure GPIO accordingly. */
+ 	switch (hw->model) {
 -- 
 2.17.0
