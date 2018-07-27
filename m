@@ -1,104 +1,53 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH 08/12] ASoC: wcd9335: add basic controls
-Date: Fri, 27 Jul 2018 10:55:11 +0100
-Message-ID: <01645941-995f-60ef-5bb1-27811547a555@linaro.org>
-References: <20180723155410.9494-1-srinivas.kandagatla@linaro.org>
- <20180723155410.9494-9-srinivas.kandagatla@linaro.org>
- <20180725120407.GO3661@vkoul-mobl>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [PATCH] ASoC: soc-pcm: Use delay set in pointer function
+Date: Fri, 27 Jul 2018 18:13:42 +0800
+Message-ID: <1532686422-1790-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180725120407.GO3661@vkoul-mobl>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Vinod <vkoul@kernel.org>
-Cc: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: djkurtz@chromium.org, akshu.agrawal@amd.com, Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks Vinod for review comments,
+There are cases where a pointer function populates
+runtime->delay, such as:
+./sound/pci/hda/hda_controller.c
+./sound/soc/intel/atom/sst-mfld-platform-pcm.c
 
-On 25/07/18 13:04, Vinod wrote:
-> On 23-07-18, 16:54, Srinivas Kandagatla wrote:
-> 
->> +static int wcd9335_set_compander(struct snd_kcontrol *kc,
->> +				 struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
->> +	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
->> +	int comp = ((struct soc_mixer_control *) kc->private_value)->shift;
->> +	int value = ucontrol->value.integer.value[0];
->> +	int sel;
->> +
->> +	wcd->comp_enabled[comp] = value;
->> +	sel = value ? WCD9335_HPH_GAIN_SRC_SEL_COMPANDER :
->> +		WCD9335_HPH_GAIN_SRC_SEL_REGISTER;
->> +
->> +	/* Any specific register configuration for compander */
->> +	switch (comp) {
->> +	case COMPANDER_1:
->> +		/* Set Gain Source Select based on compander enable/disable */
->> +		snd_soc_component_update_bits(component, WCD9335_HPH_L_EN,
->> +				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
->> +		break;
->> +	case COMPANDER_2:
->> +		snd_soc_component_update_bits(component, WCD9335_HPH_R_EN,
->> +				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
->> +		break;
->> +	case COMPANDER_3:
->> +		break;
->> +	case COMPANDER_4:
->> +		break;
->> +	case COMPANDER_5:
->> +		snd_soc_component_update_bits(component, WCD9335_SE_LO_LO3_GAIN,
->> +				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
->> +		break;
->> +	case COMPANDER_6:
->> +		snd_soc_component_update_bits(component, WCD9335_SE_LO_LO4_GAIN,
->> +				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
->> +		break;
->> +	case COMPANDER_7:
->> +		break;
->> +	case COMPANDER_8:
->> +		break;
-> 
-> why not do:
-> 
->          case COMPANDER_3:
->          case COMPANDER_4:
->          case COMPANDER_7:
->          case COMPANDER_8:
->                  break;
-> 
-> thereby clubbing all the ones not handled together..
-> 
-I removed the un-handled ones in v2.
+Also, in some cases cpu dai used is generic and the pcm
+driver needs to set delay.
 
->> +static int wcd9335_rx_hph_mode_get(struct snd_kcontrol *kc,
->> +				 struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
->> +	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
->> +
->> +	ucontrol->value.integer.value[0] = wcd->hph_mode;
-> 
-> i think this is an enum so shouldn't value.enumerated.item[0] be used?
-> 
-Yep, there are one more instances like this, i fixed this in v2.
->> +
->> +	return 0;
->> +}
->> +
->> +static int wcd9335_rx_hph_mode_put(struct snd_kcontrol *kc,
->> +				 struct snd_ctl_elem_value *ucontrol)
->> +{
->> +	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
->> +	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
->> +	u32 mode_val;
->> +
->> +	mode_val = ucontrol->value.enumerated.item[0];
-> 
-> yaaay
+This delay was getting lost and was overwritten by delays
+from codec or cpu dai delay function if exposed.
 
---srini
-> 
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+ sound/soc/soc-pcm.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 98be04b..b1a2bc2 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1179,6 +1179,9 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ 	snd_pcm_sframes_t codec_delay = 0;
+ 	int i;
+ 
++	/* clearing the previous delay */
++	runtime->delay = 0;
++
+ 	for_each_rtdcom(rtd, rtdcom) {
+ 		component = rtdcom->component;
+ 
+@@ -1203,7 +1206,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+ 	}
+ 	delay += codec_delay;
+ 
+-	runtime->delay = delay;
++	runtime->delay += delay;
+ 
+ 	return offset;
+ }
+-- 
+1.9.1
