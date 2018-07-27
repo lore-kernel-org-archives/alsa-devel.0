@@ -1,16 +1,15 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v5 2/8] ASoC: Intel: common: add table for
-	HDA-based platforms
-Date: Fri, 27 Jul 2018 18:05:48 -0500
-Message-ID: <20180727230554.31027-3-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v5 5/8] ASoC: Intel: Skylake: add HDA BE DAIs
+Date: Fri, 27 Jul 2018 18:05:51 -0500
+Message-ID: <20180727230554.31027-6-pierre-louis.bossart@linux.intel.com>
 References: <20180727230554.31027-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id D322F267759
- for <alsa-devel@alsa-project.org>; Sat, 28 Jul 2018 01:06:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B4844267766
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jul 2018 01:06:24 +0200 (CEST)
 In-Reply-To: <20180727230554.31027-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,104 +21,117 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Expose a table containing machine driver information for HDAudio-based
-platforms handled by ASoC on Intel hardware.
+From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
-We only set constant values that are valid across multiple
-platforms. The firmware name used by the DSP will be set dynamically
-for each platform.
+Add support for HDA BE DAIs in SKL platform driver.
 
-The table is made of a single entry for now, if we need more
-complicated set-up where HDAudio is mixed with ACPI-enumerated devices
-(I2C, SoundWire) then we'd expect the differentiation to be handled
-through information provided by the BIOS (as done for KBL
-Chromebooks).
-
+Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- include/sound/soc-acpi-intel-match.h              |  6 ++++
- sound/soc/intel/common/Makefile                   |  3 +-
- sound/soc/intel/common/soc-acpi-intel-hda-match.c | 40 +++++++++++++++++++++++
- 3 files changed, 48 insertions(+), 1 deletion(-)
- create mode 100644 sound/soc/intel/common/soc-acpi-intel-hda-match.c
+ sound/soc/intel/skylake/skl-pcm.c | 70 ++++++++++++++++++++++++++++++++-------
+ 1 file changed, 58 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
-index bb1d24b703fb..f48f59e5b7b0 100644
---- a/include/sound/soc-acpi-intel-match.h
-+++ b/include/sound/soc-acpi-intel-match.h
-@@ -25,4 +25,10 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[];
- extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 823e39103edd..00b7a91b18c9 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -32,6 +32,7 @@
+ #define HDA_MONO 1
+ #define HDA_STEREO 2
+ #define HDA_QUAD 4
++#define HDA_MAX 8
  
-+/*
-+ * generic table used for HDA codec-based platforms, possibly with
-+ * additional ACPI-enumerated codecs
-+ */
-+extern struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[];
-+
- #endif
-diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
-index 915a34cdc8ac..c1f50a079d34 100644
---- a/sound/soc/intel/common/Makefile
-+++ b/sound/soc/intel/common/Makefile
-@@ -7,7 +7,8 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
- 	soc-acpi-intel-hsw-bdw-match.o \
- 	soc-acpi-intel-skl-match.o soc-acpi-intel-kbl-match.o \
- 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
--	soc-acpi-intel-cnl-match.o
-+	soc-acpi-intel-cnl-match.o \
-+	soc-acpi-intel-hda-match.o
+ static const struct snd_pcm_hardware azx_pcm_hw = {
+ 	.info =			(SNDRV_PCM_INFO_MMAP |
+@@ -569,7 +570,10 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
+ 	stream_tag = hdac_stream(link_dev)->stream_tag;
  
- obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
- obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
-diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-new file mode 100644
-index 000000000000..40ce8d4e9b22
---- /dev/null
-+++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
-@@ -0,0 +1,40 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * soc-apci-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
-+ *
-+ * Copyright (c) 2018, Intel Corporation.
-+ *
-+ */
-+
-+#include <sound/soc-acpi.h>
-+#include <sound/soc-acpi-intel-match.h>
-+#include "../skylake/skl.h"
-+
-+static struct skl_machine_pdata hda_pdata = {
-+	.use_tplg_pcm = true,
-+};
-+
-+struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
-+	{
-+		/* .id is not used in this file */
-+		.drv_name = "skl_hda_dsp_generic",
-+
-+		/* .fw_filename is dynamically set in skylake driver */
-+
-+		/* .sof_fw_filename is dynamically set in sof/intel driver */
-+
-+		.sof_tplg_filename = "intel/sof-hda-generic.tplg",
-+
-+		/*
-+		 * .machine_quirk and .quirk_data are not used here but
-+		 * can be used if we need a more complicated machine driver
-+		 * combining HDA+other device (e.g. DMIC).
-+		 */
-+		.pdata = &hda_pdata,
+ 	/* set the stream tag in the codec dai dma params  */
+-	snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
++	else
++		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
+ 
+ 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
+ 	p_params.ch = params_channels(params);
+@@ -995,21 +999,63 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
+ 	},
+ },
+ {
+-	.name = "HD-Codec Pin",
++	.name = "Analog CPU DAI",
+ 	.ops = &skl_link_dai_ops,
+ 	.playback = {
+-		.stream_name = "HD-Codec Tx",
+-		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.stream_name = "Analog CPU Playback",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
+ 	},
+ 	.capture = {
+-		.stream_name = "HD-Codec Rx",
+-		.channels_min = HDA_STEREO,
+-		.channels_max = HDA_STEREO,
+-		.rates = SNDRV_PCM_RATE_48000,
+-		.formats = SNDRV_PCM_FMTBIT_S16_LE,
++		.stream_name = "Analog CPU Capture",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
 +	},
-+	{},
-+};
-+EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_hda_machines);
-+
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Intel Common ACPI Match module");
++},
++{
++	.name = "Alt Analog CPU DAI",
++	.ops = &skl_link_dai_ops,
++	.playback = {
++		.stream_name = "Alt Analog CPU Playback",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.capture = {
++		.stream_name = "Alt Analog CPU Capture",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++},
++{
++	.name = "Digital CPU DAI",
++	.ops = &skl_link_dai_ops,
++	.playback = {
++		.stream_name = "Digital CPU Playback",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
++	},
++	.capture = {
++		.stream_name = "Digital CPU Capture",
++		.channels_min = HDA_MONO,
++		.channels_max = HDA_MAX,
++		.rates = SNDRV_PCM_RATE_8000_192000,
++		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
++			SNDRV_PCM_FMTBIT_S32_LE,
+ 	},
+ },
+ };
 -- 
 2.14.1
