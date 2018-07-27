@@ -1,17 +1,19 @@
-From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-Subject: [PATCH 3/4] ASoC: tegra: Allow 32-bit and 24-bit
-	samples
-Date: Fri, 27 Jul 2018 13:59:30 +0100
-Message-ID: <20180727125931.9794-4-jorge.sanjuan@codethink.co.uk>
-References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH] ALSA: memalloc: declare
+ snd_sgbuf_aligned_pages() unconditionally
+Date: Fri, 27 Jul 2018 09:54:20 -0500
+Message-ID: <60099a07-aedd-e1c3-e0f1-6af46da69901@linux.intel.com>
+References: <20180725201556.21136-1-pierre-louis.bossart@linux.intel.com>
+ <201807262256.hwoGoA35%fengguang.wu@intel.com> <s5hfu05uuts.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from imap1.codethink.co.uk (imap1.codethink.co.uk [176.9.8.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 0465C2675FC
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 14:59:38 +0200 (CEST)
-In-Reply-To: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8B9E026720C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 16:54:30 +0200 (CEST)
+In-Reply-To: <s5hfu05uuts.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,64 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: lgirdwood@gmail.com, broonie@kernel.org
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, jonathanh@nvidia.com, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, kbuild test robot <lkp@intel.com>
+Cc: liam.r.girdwood@linux.intel.com, vkoul@kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Edward Cragg <edward.cragg@codethink.co.uk>
+On 7/27/18 12:11 AM, Takashi Iwai wrote:
+> On Thu, 26 Jul 2018 16:51:55 +0200,
+> kbuild test robot wrote:
+>>
+>> Hi Pierre-Louis,
+>>
+>> I love your patch! Yet something to improve:
+>>
+>> [auto build test ERROR on sound/for-next]
+>> [also build test ERROR on v4.18-rc6 next-20180725]
+>> [if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+>>
+>> url:    https://github.com/0day-ci/linux/commits/Pierre-Louis-Bossart/ALSA-memalloc-declare-snd_sgbuf_aligned_pages-unconditionally/20180726-192035
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git for-next
+>> config: alpha-allyesconfig (attached as .config)
+>> compiler: alpha-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
+>> reproduce:
+>>          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>>          chmod +x ~/bin/make.cross
+>>          # save the attached .config to linux build tree
+>>          GCC_VERSION=7.2.0 make.cross ARCH=alpha
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>     In file included from include/sound/pcm.h:27:0,
+>>                      from sound/core/pcm_iec958.c:11:
+>>     include/sound/memalloc.h: In function 'snd_sgbuf_aligned_pages':
+>>>> include/sound/memalloc.h:75:17: error: 'PAGE_SIZE' undeclared (first use in this function); did you mean 'TASK_SIZE'?
+>>       return (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
+>>                      ^~~~~~~~~
+>>                      TASK_SIZE
+> 
+> OK, we need to include <asm/page.h> in this header file.
+> 
+> Pierre, care to resend with the fix?
 
-The tegra3 audio can support 32 and 24 bit sample sizes so add
-the option to the tegra30_i2s_hw_params to configure the S32_LE/S24_LE
-format when requested.
-
-Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
-[jorge.sanjuan@codethink.co.uk: Squashed multiple patches]
-Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
----
- sound/soc/tegra/tegra30_i2s.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-index ff1996f215ed..e26c19ef7439 100644
---- a/sound/soc/tegra/tegra30_i2s.c
-+++ b/sound/soc/tegra/tegra30_i2s.c
-@@ -150,6 +150,15 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
- 		val = TEGRA30_I2S_CTRL_BIT_SIZE_16;
- 		sample_size = 16;
- 		break;
-+	case SNDRV_PCM_FORMAT_S24_LE:
-+		val = TEGRA30_I2S_CTRL_BIT_SIZE_24;
-+		audio_bits = TEGRA30_AUDIOCIF_BITS_24;
-+		sample_size = 24;
-+		break;
-+	case SNDRV_PCM_FORMAT_S32_LE:
-+		val = TEGRA30_I2S_CTRL_BIT_SIZE_32;
-+		sample_size = 32;
-+		break;
- 	default:
- 		return -EINVAL;
- 	}
-@@ -322,14 +331,18 @@ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_96000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE |
-+			   SNDRV_PCM_FMTBIT_S24_LE |
-+			   SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_96000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S32_LE |
-+			   SNDRV_PCM_FMTBIT_S24_LE |
-+			   SNDRV_PCM_FMTBIT_S16_LE,
- 	},
- 	.ops = &tegra30_i2s_dai_ops,
- 	.symmetric_rates = 1,
--- 
-2.11.0
+yes, will do later today.
