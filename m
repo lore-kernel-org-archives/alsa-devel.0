@@ -1,66 +1,63 @@
-From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Subject: [PATCH] ASoC: uniphier: change functions to static
-Date: Fri, 27 Jul 2018 11:37:44 +0900
-Message-ID: <20180727023744.7865-1-suzuki.katsuhiro@socionext.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
-Cc: Masami Hiramatsu <masami.hiramatsu@linaro.org>, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+From: Shreyas Nc <shreyas.nc@intel.com>
+Subject: Re: [PATCH v7 09/10] soundwire: Add support for multi
+ link bank switch
+Date: Fri, 27 Jul 2018 08:52:47 +0530
+Message-ID: <20180727032242.GA3269@snc-desk>
+References: <1532605362-19282-1-git-send-email-shreyas.nc@intel.com>
+ <1532605362-19282-10-git-send-email-shreyas.nc@intel.com>
+ <ffec253d-427d-44dd-522e-f0ffd08dfae6@linux.intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id C724E26778A
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 05:24:12 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <ffec253d-427d-44dd-522e-f0ffd08dfae6@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, vkoul@kernel.org, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch changes some functions that are not used by other objects
-to static.
+> >+		ret = sdw_transfer_defer(bus, wr_msg, &bus->defer_msg);
+> >+	else
+> >+		ret = sdw_transfer(bus, wr_msg);
+> >+
+> >  	if (ret < 0) {
+> >  		dev_err(bus->dev, "Slave frame_ctrl reg write failed");
+> >  		goto error;
+> >  	}
+> >-	kfree(wr_msg);
+> >-	kfree(wbuf);
+> >-	bus->defer_msg.msg = NULL;
+> >-	bus->params.curr_bank = !bus->params.curr_bank;
+> >-	bus->params.next_bank = !bus->params.next_bank;
+> >+	if (!bus->multi_link) {
+> >+		kfree(wr_msg);
+> >+		kfree(wbuf);
+> >+		bus->defer_msg.msg = NULL;
+> >+		bus->params.curr_bank = !bus->params.curr_bank;
+> >+		bus->params.next_bank = !bus->params.next_bank;
+> >+	}
+> 
+> Should this test be extended to the case where the bus can support
+> multi-link but m_rt_count ==1
+> should it be
+> if (!multi_link)
+> ?
+>
+Sure, makes sense to add the right check.
+v8 on its way ..
 
-Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
----
- sound/soc/uniphier/aio-core.c | 6 +++---
- sound/soc/uniphier/aio.h      | 3 ---
- 2 files changed, 3 insertions(+), 6 deletions(-)
+--Shreyas
 
-diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
-index 8b09bbb0f8d0..9bcba06ba52e 100644
---- a/sound/soc/uniphier/aio-core.c
-+++ b/sound/soc/uniphier/aio-core.c
-@@ -327,7 +327,7 @@ static int aio_port_set_ch(struct uniphier_aio_sub *sub)
-  *
-  * Return: Zero if successful, otherwise a negative value on error.
-  */
--int aio_port_set_rate(struct uniphier_aio_sub *sub, int rate)
-+static int aio_port_set_rate(struct uniphier_aio_sub *sub, int rate)
- {
- 	struct regmap *r = sub->aio->chip->regmap;
- 	struct device *dev = &sub->aio->chip->pdev->dev;
-@@ -446,7 +446,7 @@ int aio_port_set_rate(struct uniphier_aio_sub *sub, int rate)
-  *
-  * Return: Zero if successful, otherwise a negative value on error.
-  */
--int aio_port_set_fmt(struct uniphier_aio_sub *sub)
-+static int aio_port_set_fmt(struct uniphier_aio_sub *sub)
- {
- 	struct regmap *r = sub->aio->chip->regmap;
- 	struct device *dev = &sub->aio->chip->pdev->dev;
-@@ -511,7 +511,7 @@ int aio_port_set_fmt(struct uniphier_aio_sub *sub)
-  *
-  * Return: Zero if successful, otherwise a negative value on error.
-  */
--int aio_port_set_clk(struct uniphier_aio_sub *sub)
-+static int aio_port_set_clk(struct uniphier_aio_sub *sub)
- {
- 	struct uniphier_aio_chip *chip = sub->aio->chip;
- 	struct device *dev = &sub->aio->chip->pdev->dev;
-diff --git a/sound/soc/uniphier/aio.h b/sound/soc/uniphier/aio.h
-index 23a5c3c68658..ca6ccbae0ee8 100644
---- a/sound/soc/uniphier/aio.h
-+++ b/sound/soc/uniphier/aio.h
-@@ -325,9 +325,6 @@ int aio_chip_set_pll(struct uniphier_aio_chip *chip, int pll_id,
- void aio_chip_init(struct uniphier_aio_chip *chip);
- int aio_init(struct uniphier_aio_sub *sub);
- void aio_port_reset(struct uniphier_aio_sub *sub);
--int aio_port_set_rate(struct uniphier_aio_sub *sub, int rate);
--int aio_port_set_fmt(struct uniphier_aio_sub *sub);
--int aio_port_set_clk(struct uniphier_aio_sub *sub);
- int aio_port_set_param(struct uniphier_aio_sub *sub, int pass_through,
- 		       const struct snd_pcm_hw_params *params);
- void aio_port_set_enable(struct uniphier_aio_sub *sub, int enable);
 -- 
-2.18.0
