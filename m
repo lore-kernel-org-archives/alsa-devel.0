@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 03/10] mfd: wcd9335: add wcd irq support
-Date: Fri, 27 Jul 2018 13:17:59 +0100
-Message-ID: <20180727121806.18209-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 06/10] ASoC: wcd9335: add basic controls
+Date: Fri, 27 Jul 2018 13:18:02 +0100
+Message-ID: <20180727121806.18209-7-srinivas.kandagatla@linaro.org>
 References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
@@ -10,307 +10,409 @@ To: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
 Cc: mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-WCD9335 supports two lines of irqs INTR1 and INTR2.
-Multiple interrupts are muxed via these lines.
-INTR1 consists of all possible interrupt sources like:
-Ear OCP, HPH OCP, MBHC, MAD, VBAT, and SVA
-INTR2 is a subset of first interrupt sources like MAD, VBAT, and SVA
+This patch adds basic controls found in wcd9335 codec.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/mfd/Makefile                |   2 +-
- drivers/mfd/wcd9335-core.c          |   9 ++
- drivers/mfd/wcd9335-irq.c           | 172 ++++++++++++++++++++++++++++++++++++
- include/dt-bindings/mfd/wcd9335.h   |  43 +++++++++
- include/linux/mfd/wcd9335/wcd9335.h |   3 +
- 5 files changed, 228 insertions(+), 1 deletion(-)
- create mode 100644 drivers/mfd/wcd9335-irq.c
- create mode 100644 include/dt-bindings/mfd/wcd9335.h
+ sound/soc/codecs/wcd9335.c | 358 +++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 358 insertions(+)
 
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index a4697370640b..210875afe78a 100644
---- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -58,7 +58,7 @@ obj-$(CONFIG_MFD_ARIZONA)	+= cs47l24-tables.o
- endif
+diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+index 06c73699f16f..36912838c7c5 100644
+--- a/sound/soc/codecs/wcd9335.c
++++ b/sound/soc/codecs/wcd9335.c
+@@ -104,6 +104,18 @@ enum {
+ 	NUM_CODEC_DAIS,
+ };
  
- obj-$(CONFIG_MFD_WCD9335)	+= wcd9335.o
--wcd9335-objs			:= wcd9335-core.o
-+wcd9335-objs			:= wcd9335-core.o wcd9335-irq.o
- 
- obj-$(CONFIG_MFD_WM8400)	+= wm8400-core.o
- wm831x-objs			:= wm831x-core.o wm831x-irq.o wm831x-otp.o
-diff --git a/drivers/mfd/wcd9335-core.c b/drivers/mfd/wcd9335-core.c
-index 8f746901f4e9..6299dfb63aca 100644
---- a/drivers/mfd/wcd9335-core.c
-+++ b/drivers/mfd/wcd9335-core.c
-@@ -243,12 +243,20 @@ static int wcd9335_slim_status(struct slim_device *sdev,
- 		return ret;
- 	}
- 
-+	wcd9335_irq_init(wcd);
- 	wcd->slim_ifd = wcd->slim_ifd;
- 
- 	return mfd_add_devices(wcd->dev, 0, wcd9335_devices,
- 			       ARRAY_SIZE(wcd9335_devices), NULL, 0, NULL);
- }
- 
-+static void wcd9335_slim_remove(struct slim_device *sdev)
-+{
-+	struct wcd9335 *wcd = dev_get_drvdata(&sdev->dev);
++enum {
++	COMPANDER_1, /* HPH_L */
++	COMPANDER_2, /* HPH_R */
++	COMPANDER_3, /* LO1_DIFF */
++	COMPANDER_4, /* LO2_DIFF */
++	COMPANDER_5, /* LO3_SE */
++	COMPANDER_6, /* LO4_SE */
++	COMPANDER_7, /* SWR SPK CH1 */
++	COMPANDER_8, /* SWR SPK CH2 */
++	COMPANDER_MAX,
++};
 +
-+	wcd9335_irq_exit(wcd);
-+}
+ enum {
+ 	INTn_2_INP_SEL_ZERO = 0,
+ 	INTn_2_INP_SEL_RX0,
+@@ -184,6 +196,7 @@ struct wcd9335_codec {
+ 
+ 	struct wcd_clsh_ctrl *clsh_ctrl;
+ 	u32 hph_mode;
++	int comp_enabled[COMPANDER_MAX];
+ };
+ 
+ static const struct wcd9335_slim_ch wcd9335_rx_chs[WCD9335_RX_MAX] = {
+@@ -295,6 +308,118 @@ static const struct wcd9335_reg_mask_val wcd9335_codec_reg_init_common_val[] = {
+ 	{WCD9335_VBADC_IBIAS_FE, 0x0C, 0x08},
+ };
+ 
++/* Cutoff frequency for high pass filter */
++static const char * const cf_text[] = {
++	"CF_NEG_3DB_4HZ", "CF_NEG_3DB_75HZ", "CF_NEG_3DB_150HZ"
++};
 +
- static const struct slim_device_id wcd9335_slim_id[] = {
- 	{0x217, 0x1a0, 0x1, 0x0},
- 	{}
-@@ -259,6 +267,7 @@ static struct slim_driver wcd9335_slim_driver = {
- 		.name = "wcd9335-slim",
++static const char * const rx_cf_text[] = {
++	"CF_NEG_3DB_4HZ", "CF_NEG_3DB_75HZ", "CF_NEG_3DB_150HZ",
++	"CF_NEG_3DB_0P48HZ"
++};
++
++static const char * const wcd9335_ear_pa_gain_text[] = {
++	"G_6_DB", "G_4P5_DB", "G_3_DB", "G_1P5_DB",
++	"G_0_DB", "G_M2P5_DB", "UNDEFINED", "G_M12_DB"
++};
++
++static const char * const rx_hph_mode_mux_text[] = {
++	"CLS_H_INVALID", "CLS_H_HIFI", "CLS_H_LP", "CLS_AB", "CLS_H_LOHIFI"
++};
++
++static const DECLARE_TLV_DB_SCALE(digital_gain, 0, 1, 0);
++static const DECLARE_TLV_DB_SCALE(line_gain, 0, 7, 1);
++static const DECLARE_TLV_DB_SCALE(analog_gain, 0, 25, 1);
++
++static const struct soc_enum wcd9335_ear_pa_gain_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(wcd9335_ear_pa_gain_text),
++			wcd9335_ear_pa_gain_text);
++
++static const struct soc_enum cf_dec0_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX0_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_dec1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX1_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_dec2_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX2_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_dec3_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX3_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_dec4_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX4_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_dec5_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX5_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_dec6_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX6_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_dec7_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX7_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_dec8_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_TX8_TX_PATH_CFG0, 5, 3, cf_text);
++
++static const struct soc_enum cf_int0_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX0_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int0_2_enum, WCD9335_CDC_RX0_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int1_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX1_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int1_2_enum, WCD9335_CDC_RX1_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int2_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX2_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int2_2_enum, WCD9335_CDC_RX2_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int3_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX3_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int3_2_enum, WCD9335_CDC_RX3_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int4_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX4_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int4_2_enum, WCD9335_CDC_RX4_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int5_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX5_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int5_2_enum, WCD9335_CDC_RX5_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int6_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX6_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int6_2_enum, WCD9335_CDC_RX6_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int7_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX7_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int7_2_enum, WCD9335_CDC_RX7_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum cf_int8_1_enum =
++	SOC_ENUM_SINGLE(WCD9335_CDC_RX8_RX_PATH_CFG2, 0, 4, rx_cf_text);
++
++static SOC_ENUM_SINGLE_DECL(cf_int8_2_enum, WCD9335_CDC_RX8_RX_PATH_MIX_CFG, 2,
++		     rx_cf_text);
++
++static const struct soc_enum rx_hph_mode_mux_enum =
++	SOC_ENUM_SINGLE_EXT(ARRAY_SIZE(rx_hph_mode_mux_text),
++			    rx_hph_mode_mux_text);
++
+ static int wcd9335_set_mix_interpolator_rate(struct snd_soc_dai *dai,
+ 					     int rate_val,
+ 					     u32 rate)
+@@ -670,6 +795,237 @@ static struct snd_soc_dai_driver wcd9335_slim_dais[] = {
  	},
- 	.probe = wcd9335_slim_probe,
-+	.remove = wcd9335_slim_remove,
- 	.device_status = wcd9335_slim_status,
- 	.id_table = wcd9335_slim_id,
- };
-diff --git a/drivers/mfd/wcd9335-irq.c b/drivers/mfd/wcd9335-irq.c
-new file mode 100644
-index 000000000000..84098c89419b
---- /dev/null
-+++ b/drivers/mfd/wcd9335-irq.c
-@@ -0,0 +1,172 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright (c) 2018, Linaro Limited
-+//
-+#include <linux/gpio.h>
-+#include <linux/interrupt.h>
-+#include <linux/regmap.h>
-+#include <linux/of_irq.h>
-+#include <dt-bindings/mfd/wcd9335.h>
-+#include <linux/mfd/wcd9335/wcd9335.h>
-+#include <linux/mfd/wcd9335/registers.h>
-+
-+static const struct regmap_irq wcd9335_irqs[] = {
-+	/* INTR_REG 0 */
-+	[WCD9335_IRQ_SLIMBUS] = {
-+		.reg_offset = 0,
-+		.mask = BIT(0),
-+	},
-+	[WCD9335_IRQ_FLL_LOCK_LOSS] = {
-+		.reg_offset = 0,
-+		.mask = BIT(1),
-+	},
-+	[WCD9335_IRQ_HPH_PA_OCPL_FAULT] = {
-+		.reg_offset = 0,
-+		.mask = BIT(2),
-+	},
-+	[WCD9335_IRQ_HPH_PA_OCPR_FAULT] = {
-+		.reg_offset = 0,
-+		.mask = BIT(3),
-+	},
-+	[WCD9335_IRQ_EAR_PA_OCP_FAULT] = {
-+		.reg_offset = 0,
-+		.mask = BIT(4),
-+	},
-+	[WCD9335_IRQ_HPH_PA_CNPL_COMPLETE] = {
-+		.reg_offset = 0,
-+		.mask = BIT(5),
-+	},
-+	[WCD9335_IRQ_HPH_PA_CNPR_COMPLETE] = {
-+		.reg_offset = 0,
-+		.mask = BIT(6),
-+	},
-+	[WCD9335_IRQ_EAR_PA_CNP_COMPLETE] = {
-+		.reg_offset = 0,
-+		.mask = BIT(7),
-+	},
-+	/* INTR_REG 1 */
-+	[WCD9335_IRQ_MBHC_SW_DET] = {
-+		.reg_offset = 1,
-+		.mask = BIT(0),
-+	},
-+	[WCD9335_IRQ_MBHC_ELECT_INS_REM_DET] = {
-+		.reg_offset = 1,
-+		.mask = BIT(1),
-+	},
-+	[WCD9335_IRQ_MBHC_BUTTON_PRESS_DET] = {
-+		.reg_offset = 1,
-+		.mask = BIT(2),
-+	},
-+	[WCD9335_IRQ_MBHC_BUTTON_RELEASE_DET] = {
-+		.reg_offset = 1,
-+		.mask = BIT(3),
-+	},
-+	[WCD9335_IRQ_MBHC_ELECT_INS_REM_LEG_DET] = {
-+		.reg_offset = 1,
-+		.mask = BIT(4),
-+	},
-+	/* INTR_REG 2 */
-+	[WCD9335_IRQ_LINE_PA1_CNP_COMPLETE] = {
-+		.reg_offset = 2,
-+		.mask = BIT(0),
-+	},
-+	[WCD9335_IRQ_LINE_PA2_CNP_COMPLETE] = {
-+		.reg_offset = 2,
-+		.mask = BIT(1),
-+	},
-+	[WCD9335_IRQ_LINE_PA3_CNP_COMPLETE] = {
-+		.reg_offset = 2,
-+		.mask = BIT(2),
-+	},
-+	[WCD9335_IRQ_LINE_PA4_CNP_COMPLETE] = {
-+		.reg_offset = 2,
-+		.mask = BIT(3),
-+	},
-+	[WCD9335_IRQ_SOUNDWIRE] = {
-+		.reg_offset = 2,
-+		.mask = BIT(4),
-+	},
-+	[WCD9335_IRQ_VDD_DIG_RAMP_COMPLETE] = {
-+		.reg_offset = 2,
-+		.mask = BIT(5),
-+	},
-+	[WCD9335_IRQ_RCO_ERROR] = {
-+		.reg_offset = 2,
-+		.mask = BIT(6),
-+	},
-+	[WCD9335_IRQ_SVA_ERROR] = {
-+		.reg_offset = 2,
-+		.mask = BIT(7),
-+	},
-+	/* INTR_REG 3 */
-+	[WCD9335_IRQ_MAD_AUDIO] = {
-+		.reg_offset = 3,
-+		.mask = BIT(0),
-+	},
-+	[WCD9335_IRQ_MAD_BEACON] = {
-+		.reg_offset = 3,
-+		.mask = BIT(1),
-+	},
-+	[WCD9335_IRQ_MAD_ULTRASOUND] = {
-+		.reg_offset = 3,
-+		.mask = BIT(2),
-+	},
-+	[WCD9335_IRQ_VBAT_ATTACK] = {
-+		.reg_offset = 3,
-+		.mask = BIT(3),
-+	},
-+	[WCD9335_IRQ_VBAT_RESTORE] = {
-+		.reg_offset = 3,
-+		.mask = BIT(4),
-+	},
-+	[WCD9335_IRQ_SVA_OUTBOX1] = {
-+		.reg_offset = 3,
-+		.mask = BIT(5),
-+	},
-+	[WCD9335_IRQ_SVA_OUTBOX2] = {
-+		.reg_offset = 3,
-+		.mask = BIT(6),
-+	},
-+};
-+
-+static const struct regmap_irq_chip wcd9335_regmap_irq1_chip = {
-+	.name = "wcd9335_pin1_irq",
-+	.status_base = WCD9335_INTR_PIN1_STATUS0,
-+	.mask_base = WCD9335_INTR_PIN1_MASK0,
-+	.ack_base = WCD9335_INTR_PIN1_CLEAR0,
-+	.type_base = WCD9335_INTR_LEVEL0,
-+	.num_regs = 4,
-+	.irqs = wcd9335_irqs,
-+	.num_irqs = ARRAY_SIZE(wcd9335_irqs),
-+};
-+
-+int wcd9335_irq_init(struct wcd9335 *wcd)
-+{
-+	int ret;
-+	/*
-+	 * INTR1 consists of all possible interrupt sources Ear OCP,
-+	 * HPH OCP, MBHC, MAD, VBAT, and SVA
-+	 * INTR2 is a subset of first interrupt sources MAD, VBAT, and SVA
-+	 */
-+	wcd->intr1 = of_irq_get_byname(wcd->dev->of_node, "intr1");
-+	if (wcd->intr1 < 0 || wcd->intr1 == -EPROBE_DEFER) {
-+		dev_err(wcd->dev, "Unable to configure irq\n");
-+		return wcd->intr1;
-+	}
-+
-+	ret = regmap_add_irq_chip(wcd->regmap, wcd->intr1,
-+				 IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-+				 0, &wcd9335_regmap_irq1_chip,
-+				 &wcd->irq_data);
-+	if (ret != 0) {
-+		dev_err(wcd->dev, "Failed to register IRQ chip: %d\n", ret);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
-+int wcd9335_irq_exit(struct wcd9335 *wcd)
-+{
-+	regmap_del_irq_chip(wcd->intr1, wcd->irq_data);
-+	return 0;
-+}
-diff --git a/include/dt-bindings/mfd/wcd9335.h b/include/dt-bindings/mfd/wcd9335.h
-new file mode 100644
-index 000000000000..61b6a11da00d
---- /dev/null
-+++ b/include/dt-bindings/mfd/wcd9335.h
-@@ -0,0 +1,43 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * This header provides macros for WCD9335 device bindings.
-+ *
-+ * Copyright (c) 2018, Linaro Limited
-+ */
-+
-+#ifndef _DT_BINDINGS_MFD_WCD9335_H
-+#define _DT_BINDINGS_MFD_WCD9335_H
-+
-+#define	WCD9335_IRQ_SLIMBUS			0
-+#define	WCD9335_IRQ_FLL_LOCK_LOSS		1
-+#define	WCD9335_IRQ_HPH_PA_OCPL_FAULT		2
-+#define	WCD9335_IRQ_HPH_PA_OCPR_FAULT		3
-+#define	WCD9335_IRQ_EAR_PA_OCP_FAULT		4
-+#define	WCD9335_IRQ_HPH_PA_CNPL_COMPLETE	5
-+#define	WCD9335_IRQ_HPH_PA_CNPR_COMPLETE	6
-+#define	WCD9335_IRQ_EAR_PA_CNP_COMPLETE		7
-+#define	WCD9335_IRQ_MBHC_SW_DET			8
-+#define	WCD9335_IRQ_MBHC_ELECT_INS_REM_DET	9
-+#define	WCD9335_IRQ_MBHC_BUTTON_PRESS_DET	10
-+#define	WCD9335_IRQ_MBHC_BUTTON_RELEASE_DET	11
-+#define	WCD9335_IRQ_MBHC_ELECT_INS_REM_LEG_DET	12
-+#define	WCD9335_IRQ_RESERVED_0			13
-+#define	WCD9335_IRQ_RESERVED_1			14
-+#define	WCD9335_IRQ_RESERVED_2			15
-+#define	WCD9335_IRQ_LINE_PA1_CNP_COMPLETE	16
-+#define	WCD9335_IRQ_LINE_PA2_CNP_COMPLETE	17
-+#define	WCD9335_IRQ_LINE_PA3_CNP_COMPLETE	18
-+#define	WCD9335_IRQ_LINE_PA4_CNP_COMPLETE	19
-+#define	WCD9335_IRQ_SOUNDWIRE			20
-+#define	WCD9335_IRQ_VDD_DIG_RAMP_COMPLETE	21
-+#define	WCD9335_IRQ_RCO_ERROR			22
-+#define	WCD9335_IRQ_SVA_ERROR			23
-+#define	WCD9335_IRQ_MAD_AUDIO			24
-+#define	WCD9335_IRQ_MAD_BEACON			25
-+#define	WCD9335_IRQ_MAD_ULTRASOUND		26
-+#define	WCD9335_IRQ_VBAT_ATTACK			27
-+#define	WCD9335_IRQ_VBAT_RESTORE		28
-+#define	WCD9335_IRQ_SVA_OUTBOX1			29
-+#define	WCD9335_IRQ_SVA_OUTBOX2			30
-+
-+#endif /* _DT_BINDINGS_MFD_WCD9335_H */
-diff --git a/include/linux/mfd/wcd9335/wcd9335.h b/include/linux/mfd/wcd9335/wcd9335.h
-index b9d2f7af243a..1479bfe75f23 100644
---- a/include/linux/mfd/wcd9335/wcd9335.h
-+++ b/include/linux/mfd/wcd9335/wcd9335.h
-@@ -39,4 +39,7 @@ struct wcd9335 {
- 	struct regulator_bulk_data supplies[WCD9335_MAX_SUPPLY];
  };
  
-+extern int wcd9335_irq_init(struct wcd9335 *wcd);
-+extern int wcd9335_irq_exit(struct wcd9335 *wcd);
++static int wcd9335_get_compander(struct snd_kcontrol *kc,
++			       struct snd_ctl_elem_value *ucontrol)
++{
 +
- #endif /* __WCD9335_H__ */
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	int comp = ((struct soc_mixer_control *)kc->private_value)->shift;
++	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++
++	ucontrol->value.integer.value[0] = wcd->comp_enabled[comp];
++	return 0;
++}
++
++static int wcd9335_set_compander(struct snd_kcontrol *kc,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++	int comp = ((struct soc_mixer_control *) kc->private_value)->shift;
++	int value = ucontrol->value.integer.value[0];
++	int sel;
++
++	wcd->comp_enabled[comp] = value;
++	sel = value ? WCD9335_HPH_GAIN_SRC_SEL_COMPANDER :
++		WCD9335_HPH_GAIN_SRC_SEL_REGISTER;
++
++	/* Any specific register configuration for compander */
++	switch (comp) {
++	case COMPANDER_1:
++		/* Set Gain Source Select based on compander enable/disable */
++		snd_soc_component_update_bits(component, WCD9335_HPH_L_EN,
++				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
++		break;
++	case COMPANDER_2:
++		snd_soc_component_update_bits(component, WCD9335_HPH_R_EN,
++				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
++		break;
++	case COMPANDER_5:
++		snd_soc_component_update_bits(component, WCD9335_SE_LO_LO3_GAIN,
++				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
++		break;
++	case COMPANDER_6:
++		snd_soc_component_update_bits(component, WCD9335_SE_LO_LO4_GAIN,
++				      WCD9335_HPH_GAIN_SRC_SEL_MASK, sel);
++		break;
++	default:
++		break;
++	};
++
++	return 0;
++}
++
++static int wcd9335_rx_hph_mode_get(struct snd_kcontrol *kc,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++
++	ucontrol->value.enumerated.item[0] = wcd->hph_mode;
++
++	return 0;
++}
++
++static int wcd9335_rx_hph_mode_put(struct snd_kcontrol *kc,
++				 struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	struct wcd9335_codec *wcd = dev_get_drvdata(component->dev);
++	u32 mode_val;
++
++	mode_val = ucontrol->value.enumerated.item[0];
++
++	if (mode_val == 0) {
++		dev_err(wcd->dev, "Invalid HPH Mode, default to ClSH HiFi\n");
++		mode_val = CLS_H_HIFI;
++	}
++	wcd->hph_mode = mode_val;
++
++	return 0;
++}
++
++static int wcd9335_ear_pa_gain_get(struct snd_kcontrol *kc,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	int ear_pa_gain;
++
++	ear_pa_gain = snd_soc_component_read32(component, WCD9335_ANA_EAR);
++	ear_pa_gain = (ear_pa_gain & 0x70) >> 4;
++	ucontrol->value.enumerated.item[0] = ear_pa_gain;
++
++	return 0;
++}
++
++static int wcd9335_ear_pa_gain_put(struct snd_kcontrol *kc,
++				   struct snd_ctl_elem_value *ucontrol)
++{
++	struct snd_soc_component *component = snd_soc_kcontrol_component(kc);
++	u8 ear_pa_gain;
++
++	ear_pa_gain =  ucontrol->value.enumerated.item[0] << 4;
++	snd_soc_component_update_bits(component, WCD9335_ANA_EAR,
++					0x70, ear_pa_gain);
++
++	return 0;
++}
++
++static const struct snd_kcontrol_new wcd9335_snd_controls[] = {
++	/* -84dB min - 40dB max */
++	SOC_SINGLE_SX_TLV("RX0 Digital Volume", WCD9335_CDC_RX0_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX1 Digital Volume", WCD9335_CDC_RX1_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX2 Digital Volume", WCD9335_CDC_RX2_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX3 Digital Volume", WCD9335_CDC_RX3_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX4 Digital Volume", WCD9335_CDC_RX4_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX5 Digital Volume", WCD9335_CDC_RX5_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX6 Digital Volume", WCD9335_CDC_RX6_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX7 Digital Volume", WCD9335_CDC_RX7_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX8 Digital Volume", WCD9335_CDC_RX8_RX_VOL_CTL,
++		0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX0 Mix Digital Volume",
++			  WCD9335_CDC_RX0_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX1 Mix Digital Volume",
++			  WCD9335_CDC_RX1_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX2 Mix Digital Volume",
++			  WCD9335_CDC_RX2_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX3 Mix Digital Volume",
++			  WCD9335_CDC_RX3_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX4 Mix Digital Volume",
++			  WCD9335_CDC_RX4_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX5 Mix Digital Volume",
++			  WCD9335_CDC_RX5_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX6 Mix Digital Volume",
++			  WCD9335_CDC_RX6_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX7 Mix Digital Volume",
++			  WCD9335_CDC_RX7_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_SINGLE_SX_TLV("RX8 Mix Digital Volume",
++			  WCD9335_CDC_RX8_RX_VOL_MIX_CTL,
++			  0, -84, 40, digital_gain),
++	SOC_ENUM("RX INT0_1 HPF cut off", cf_int0_1_enum),
++	SOC_ENUM("RX INT0_2 HPF cut off", cf_int0_2_enum),
++	SOC_ENUM("RX INT1_1 HPF cut off", cf_int1_1_enum),
++	SOC_ENUM("RX INT1_2 HPF cut off", cf_int1_2_enum),
++	SOC_ENUM("RX INT2_1 HPF cut off", cf_int2_1_enum),
++	SOC_ENUM("RX INT2_2 HPF cut off", cf_int2_2_enum),
++	SOC_ENUM("RX INT3_1 HPF cut off", cf_int3_1_enum),
++	SOC_ENUM("RX INT3_2 HPF cut off", cf_int3_2_enum),
++	SOC_ENUM("RX INT4_1 HPF cut off", cf_int4_1_enum),
++	SOC_ENUM("RX INT4_2 HPF cut off", cf_int4_2_enum),
++	SOC_ENUM("RX INT5_1 HPF cut off", cf_int5_1_enum),
++	SOC_ENUM("RX INT5_2 HPF cut off", cf_int5_2_enum),
++	SOC_ENUM("RX INT6_1 HPF cut off", cf_int6_1_enum),
++	SOC_ENUM("RX INT6_2 HPF cut off", cf_int6_2_enum),
++	SOC_ENUM("RX INT7_1 HPF cut off", cf_int7_1_enum),
++	SOC_ENUM("RX INT7_2 HPF cut off", cf_int7_2_enum),
++	SOC_ENUM("RX INT8_1 HPF cut off", cf_int8_1_enum),
++	SOC_ENUM("RX INT8_2 HPF cut off", cf_int8_2_enum),
++	SOC_SINGLE_EXT("COMP1 Switch", SND_SOC_NOPM, COMPANDER_1, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP2 Switch", SND_SOC_NOPM, COMPANDER_2, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP3 Switch", SND_SOC_NOPM, COMPANDER_3, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP4 Switch", SND_SOC_NOPM, COMPANDER_4, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP5 Switch", SND_SOC_NOPM, COMPANDER_5, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP6 Switch", SND_SOC_NOPM, COMPANDER_6, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP7 Switch", SND_SOC_NOPM, COMPANDER_7, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_SINGLE_EXT("COMP8 Switch", SND_SOC_NOPM, COMPANDER_8, 1, 0,
++		       wcd9335_get_compander, wcd9335_set_compander),
++	SOC_ENUM_EXT("RX HPH Mode", rx_hph_mode_mux_enum,
++		       wcd9335_rx_hph_mode_get, wcd9335_rx_hph_mode_put),
++
++	/* Gain Controls */
++	SOC_ENUM_EXT("EAR PA Gain", wcd9335_ear_pa_gain_enum,
++		wcd9335_ear_pa_gain_get, wcd9335_ear_pa_gain_put),
++
++	SOC_SINGLE_TLV("HPHL Volume", WCD9335_HPH_L_EN, 0, 20, 1,
++		line_gain),
++	SOC_SINGLE_TLV("HPHR Volume", WCD9335_HPH_R_EN, 0, 20, 1,
++		line_gain),
++	SOC_SINGLE_TLV("LINEOUT1 Volume", WCD9335_DIFF_LO_LO1_COMPANDER,
++			3, 16, 1, line_gain),
++	SOC_SINGLE_TLV("LINEOUT2 Volume", WCD9335_DIFF_LO_LO2_COMPANDER,
++			3, 16, 1, line_gain),
++	SOC_SINGLE_TLV("LINEOUT3 Volume", WCD9335_SE_LO_LO3_GAIN, 0, 20, 1,
++			line_gain),
++	SOC_SINGLE_TLV("LINEOUT4 Volume", WCD9335_SE_LO_LO4_GAIN, 0, 20, 1,
++			line_gain),
++
++	SOC_SINGLE_TLV("ADC1 Volume", WCD9335_ANA_AMIC1, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC2 Volume", WCD9335_ANA_AMIC2, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC3 Volume", WCD9335_ANA_AMIC3, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC4 Volume", WCD9335_ANA_AMIC4, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC5 Volume", WCD9335_ANA_AMIC5, 0, 20, 0,
++			analog_gain),
++	SOC_SINGLE_TLV("ADC6 Volume", WCD9335_ANA_AMIC6, 0, 20, 0,
++			analog_gain),
++
++	SOC_ENUM("TX0 HPF cut off", cf_dec0_enum),
++	SOC_ENUM("TX1 HPF cut off", cf_dec1_enum),
++	SOC_ENUM("TX2 HPF cut off", cf_dec2_enum),
++	SOC_ENUM("TX3 HPF cut off", cf_dec3_enum),
++	SOC_ENUM("TX4 HPF cut off", cf_dec4_enum),
++	SOC_ENUM("TX5 HPF cut off", cf_dec5_enum),
++	SOC_ENUM("TX6 HPF cut off", cf_dec6_enum),
++	SOC_ENUM("TX7 HPF cut off", cf_dec7_enum),
++	SOC_ENUM("TX8 HPF cut off", cf_dec8_enum),
++};
++
+ static irqreturn_t wcd9335_slimbus_irq(int irq, void *data)
+ {
+ 	struct wcd9335_codec *wcd = data;
+@@ -1119,6 +1475,8 @@ static const struct snd_soc_component_driver wcd9335_component_drv = {
+ 	.probe = wcd9335_codec_probe,
+ 	.remove = wcd9335_codec_remove,
+ 	.set_sysclk = wcd9335_codec_set_sysclk,
++	.controls = wcd9335_snd_controls,
++	.num_controls = ARRAY_SIZE(wcd9335_snd_controls),
+ };
+ 
+ static int wcd9335_probe(struct platform_device *pdev)
 -- 
 2.16.2
