@@ -1,57 +1,79 @@
-From: Yoshihiro Kaneko <ykaneko0929@gmail.com>
-Subject: [PATCH] ASoC: rsnd: Document R-Car M3-N support
-Date: Thu, 26 Jul 2018 05:40:15 +0900
-Message-ID: <1532551215-14868-1-git-send-email-ykaneko0929@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
- [209.85.160.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C33A267763
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 22:40:58 +0200 (CEST)
-Received: by mail-pl0-f66.google.com with SMTP id j8-v6so3707061pll.12
- for <alsa-devel@alsa-project.org>; Wed, 25 Jul 2018 13:40:58 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon Horman <horms@verge.net.au>
+From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH 2/4] ASoC: tegra: Add a TDM configuration callback
+Date: Fri, 27 Jul 2018 13:59:29 +0100
+Message-ID: <20180727125931.9794-3-jorge.sanjuan@codethink.co.uk>
+References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org
+Cc: jonathanh@nvidia.com, thierry.reding@gmail.com, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kernel@lists.codethink.co.uk
 List-Id: alsa-devel@alsa-project.org
 
-From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+From: Edward Cragg <edward.cragg@codethink.co.uk>
 
-Document support for the sound modules in the Renesas M3-N (r8a77965)
-SoC.
+Add a callback to configure TDM settings for the Tegra30
+I2S ASoC 'platform' driver.
 
-No driver update is needed.
-
-Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
+Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
+[jorge.sanjuan@codethink.co.uk: Style fixes]
+Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
 ---
+ sound/soc/tegra/tegra30_i2s.c | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
 
-This patch is based on the devel branch of Simon Horman's renesas tree.
-
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index b86d790..9e764270 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -352,6 +352,7 @@ Required properties:
- 				    - "renesas,rcar_sound-r8a7794" (R-Car E2)
- 				    - "renesas,rcar_sound-r8a7795" (R-Car H3)
- 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
-+				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
- - reg				: Should contain the register physical address.
- 				  required register is
- 				   SRU/ADG/SSI      if generation1
+diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+index 0b176ea24914..ff1996f215ed 100644
+--- a/sound/soc/tegra/tegra30_i2s.c
++++ b/sound/soc/tegra/tegra30_i2s.c
+@@ -265,6 +265,39 @@ static int tegra30_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+ 	return 0;
+ }
+ 
++static int tegra30_i2s_set_tdm(struct snd_soc_dai *dai,
++			       unsigned int tx_mask, unsigned int rx_mask,
++			       int slots, int slot_width)
++{
++	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
++	unsigned int mask = 0, val = 0;
++
++	dev_dbg(dai->dev, "%s: setting TDM: tx_mask: 0x%08x rx_mask: 0x%08x"
++		"slots: 0x%08x width: %d\n",
++		__func__, tx_mask, rx_mask, slots, slot_width);
++
++	/* Set up slots and tx/rx masks */
++	mask = TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK |
++	       TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_MASK |
++	       TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_MASK;
++
++	val = (tx_mask << TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_SHIFT) |
++	      (rx_mask << TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_SHIFT) |
++	      ((slots - 1) << TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_SHIFT);
++
++	pm_runtime_get_sync(dai->dev);
++	regmap_update_bits(i2s->regmap, TEGRA30_I2S_SLOT_CTRL, mask, val);
++
++	/* Set FSYNC width */
++	mask = TEGRA30_I2S_CH_CTRL_FSYNC_WIDTH_MASK;
++	val = (slot_width - 1) << TEGRA30_I2S_CH_CTRL_FSYNC_WIDTH_SHIFT;
++
++	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CH_CTRL, mask, val);
++	pm_runtime_put(dai->dev);
++
++	return 0;
++}
++
+ static int tegra30_i2s_probe(struct snd_soc_dai *dai)
+ {
+ 	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+@@ -279,6 +312,7 @@ static const struct snd_soc_dai_ops tegra30_i2s_dai_ops = {
+ 	.set_fmt	= tegra30_i2s_set_fmt,
+ 	.hw_params	= tegra30_i2s_hw_params,
+ 	.trigger	= tegra30_i2s_trigger,
++	.set_tdm_slot	= tegra30_i2s_set_tdm,
+ };
+ 
+ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
 -- 
-1.9.1
+2.11.0
