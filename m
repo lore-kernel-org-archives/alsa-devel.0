@@ -1,49 +1,48 @@
-From: debian@callistix.net
-Subject: Support for Focusrite 18i20 audio interface
-Date: Fri, 27 Jul 2018 19:59:57 +0200
-Message-ID: <20180727175956.GA7620@callistix.net>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from squirrel.callistix.net (squirrel.callistix.net
- [108.161.133.212])
- by alsa0.perex.cz (Postfix) with ESMTP id A46812675D4
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 20:00:23 +0200 (CEST)
-Received: from callistix.net (unknown [37.223.38.81])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
- (No client certificate requested)
- by squirrel.callistix.net (Postfix) with ESMTPSA id A0A3AD2898
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 20:00:19 +0200 (CEST)
-Content-Disposition: inline
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+From: Park Ju Hyung <qkrwngud825@gmail.com>
+Subject: [PATCH 1/2] ALSA: hda - Turn CX8200 into D3 as well upon reboot
+Date: Sat, 28 Jul 2018 03:16:21 +0900
+Message-ID: <20180727181621.7188-1-qkrwngud825@gmail.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: tiwai@suse.com, alsa-devel@alsa-project.org
+Cc: Park Ju Hyung <qkrwngud825@gmail.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi everyone,
+As an equivalent codec with CX20724,
+CX8200 is also subject to the reboot bug.
 
-I own a Focusrite Scarlett 18i20 2nd Gen audio interface.
-The inputs and outputs are supported by alsa out of the box, with jack all of them are visible and patchable.
+Late 2017 and 2018 LG Gram and some HP Spectre laptops are known victims
+to this issue, causing extremely loud noises upon reboot.
 
-But there are some functions which are not exposed by alsa, which include:
+Now that we know that this bug is subject to multiple codecs,
+fix the comment as well.
 
-- low latency monitoring, apparently you are supposed to be able to patch any input to any headphone output
-- selection of sample rates
+Signed-off-by: Park Ju Hyung <qkrwngud825@gmail.com>
+Cc: <stable@vger.kernel.org>
+---
+ sound/pci/hda/patch_conexant.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Is someone working on adding this functionality?
-
-As an owner of this hardware I would be able to support any dev who's willing to work on this.
-
-
-User manuals: https://us.focusrite.com/downloads?product=Scarlett+18i20
-
-Best regards,
-vitaminx
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index f641c20095f7..909a880f5e01 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -211,6 +211,7 @@ static void cx_auto_reboot_notify(struct hda_codec *codec)
+ 	struct conexant_spec *spec = codec->spec;
+ 
+ 	switch (codec->core.vendor_id) {
++	case 0x14f12008: /* CX8200 */
+ 	case 0x14f150f2: /* CX20722 */
+ 	case 0x14f150f4: /* CX20724 */
+ 		break;
+@@ -218,7 +219,7 @@ static void cx_auto_reboot_notify(struct hda_codec *codec)
+ 		return;
+ 	}
+ 
+-	/* Turn the CX20722 codec into D3 to avoid spurious noises
++	/* Turn the problematic codec into D3 to avoid spurious noises
+ 	   from the internal speaker during (and after) reboot */
+ 	cx_auto_turn_eapd(codec, spec->num_eapds, spec->eapds, false);
+ 
+-- 
+2.18.0
