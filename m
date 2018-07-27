@@ -1,14 +1,17 @@
 From: Shreyas NC <shreyas.nc@intel.com>
-Subject: [PATCH v8 00/10] soundwire: Add multi link support
-Date: Fri, 27 Jul 2018 14:44:07 +0530
-Message-ID: <1532682857-604-1-git-send-email-shreyas.nc@intel.com>
+Subject: [PATCH v8 01/10] soundwire: Fix duplicate stream state
+	assignment
+Date: Fri, 27 Jul 2018 14:44:08 +0530
+Message-ID: <1532682857-604-2-git-send-email-shreyas.nc@intel.com>
+References: <1532682857-604-1-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id CEA2526775C
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 11:14:24 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id F216F2677A5
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 11:14:26 +0200 (CEST)
+In-Reply-To: <1532682857-604-1-git-send-email-shreyas.nc@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,60 +25,54 @@ To: alsa-devel@alsa-project.org
 Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Currently, in the SoundWire subsystem, the concept of stream is limited
-to a Master and one or more Slaves(Codecs). This series aims to add
-support for multiple Master(s) sharing the same reference clock and
-synchronized in the hardware.
+For a SoundWire stream it is expected that a Slave is added to the
+stream before Master is added.
 
-This patch series adds:
- - Fix to avoid duplicate stream state assignment
- - Avoid incorrect stream release after configuring Master
- - Fix to avoid bus lock acquired twice
- - Helpers to lock bus instances part of the stream
- - Boiler plate conversion of code to support a list of Master runtime
- - Support multi link bank switch to support synchronization between
-   multiple masters
- - Add Intel platform ops for pre/post bank switch
+So, move the stream state to CONFIGURED after the first Slave is
+added and remove the stream state assignment for Master add.
+Along with these changes, add additional comments to explain the same.
 
-Additionally, as suggested by Vinod, the generic fixes are arranged
-at the top of the series followed by the Documentation patch for
-multi link support and then the multi link patches.
+Signed-off-by: Shreyas NC <shreyas.nc@intel.com>
+---
+ drivers/soundwire/stream.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-changes in v8:
- - Check both m_rt_count and bus->multi_link flag for clean up after
-   single instance bankswitch as suggested by Pierre.
-
-changes in v7:
- - Fix the git bisect issue pointed by Pierre. Now, the initialization
-   of the m_rt_count and its modification/usage is split into 2 patches.
-   While the declaration and initialization is in one patch,
-   modification of the refcount and usage is in the multilink bankswitch
-   patch.
- - Re-arrange the patches as suggested by Vinod
-
-Sanyog Kale (3):
-  soundwire: Fix acquiring bus lock twice during master release
-  Documentation: soundwire: Add documentation for multi link
-  soundwire: Add support to lock across bus instances
-
-Shreyas NC (6):
-  soundwire: Fix duplicate stream state assignment
-  soundwire: Fix incorrect exit after configuring stream
-  soundwire: Initialize completion for defer messages
-  soundwire: keep track of Masters in a stream
-  soundwire: Add support for multi link bank switch
-  soundwire: intel: Add pre/post bank switch ops
-
-Vinod Koul (1):
-  soundwire: Handle multiple master instances in a stream
-
- Documentation/driver-api/soundwire/stream.rst |  28 ++
- drivers/soundwire/bus.c                       |   6 +
- drivers/soundwire/bus.h                       |   4 +
- drivers/soundwire/intel.c                     |  65 ++++
- drivers/soundwire/stream.c                    | 511 +++++++++++++++++++-------
- include/linux/soundwire/sdw.h                 |  12 +-
- 6 files changed, 489 insertions(+), 137 deletions(-)
-
+diff --git a/drivers/soundwire/stream.c b/drivers/soundwire/stream.c
+index 8974a0f..e6ee4ba 100644
+--- a/drivers/soundwire/stream.c
++++ b/drivers/soundwire/stream.c
+@@ -1123,8 +1123,6 @@ int sdw_stream_add_master(struct sdw_bus *bus,
+ 	if (ret)
+ 		goto stream_error;
+ 
+-	stream->state = SDW_STREAM_CONFIGURED;
+-
+ stream_error:
+ 	sdw_release_master_stream(stream);
+ error:
+@@ -1141,6 +1139,10 @@ EXPORT_SYMBOL(sdw_stream_add_master);
+  * @stream: SoundWire stream
+  * @port_config: Port configuration for audio stream
+  * @num_ports: Number of ports
++ *
++ * It is expected that Slave is added before adding Master
++ * to the Stream.
++ *
+  */
+ int sdw_stream_add_slave(struct sdw_slave *slave,
+ 		struct sdw_stream_config *stream_config,
+@@ -1186,6 +1188,12 @@ int sdw_stream_add_slave(struct sdw_slave *slave,
+ 	if (ret)
+ 		goto stream_error;
+ 
++	/*
++	 * Change stream state to CONFIGURED on first Slave add.
++	 * Bus is not aware of number of Slave(s) in a stream at this
++	 * point so cannot depend on all Slave(s) to be added in order to
++	 * change stream state to CONFIGURED.
++	 */
+ 	stream->state = SDW_STREAM_CONFIGURED;
+ 	goto error;
+ 
 -- 
 2.7.4
