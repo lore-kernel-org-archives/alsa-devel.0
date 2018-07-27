@@ -1,75 +1,81 @@
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [PATCH] sound: pci: cthw20k2: Replace mdelay() with msleep() and usleep_range()
-Date: Fri, 27 Jul 2018 17:01:43 +0800
-Message-ID: <20180727090143.18686-1-baijiaju1990@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, bhumirks@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Jia-Ju Bai <baijiaju1990@gmail.com>
+From: Shreyas NC <shreyas.nc@intel.com>
+Subject: [PATCH v8 00/10] soundwire: Add multi link support
+Date: Fri, 27 Jul 2018 14:44:07 +0530
+Message-ID: <1532682857-604-1-git-send-email-shreyas.nc@intel.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id CEA2526775C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 11:14:24 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, Shreyas NC <shreyas.nc@intel.com>, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-hw_pll_init(), hw_dac_stop(), hw_dac_start() and hw_adc_init() 
-are never called in atomic context.
-They call mdelay() to busily wait, which is not necessary.
-mdelay() can be replaced with msleep().
+Currently, in the SoundWire subsystem, the concept of stream is limited
+to a Master and one or more Slaves(Codecs). This series aims to add
+support for multiple Master(s) sharing the same reference clock and
+synchronized in the hardware.
 
-This is found by a static analysis tool named DCNS written by myself.
+This patch series adds:
+ - Fix to avoid duplicate stream state assignment
+ - Avoid incorrect stream release after configuring Master
+ - Fix to avoid bus lock acquired twice
+ - Helpers to lock bus instances part of the stream
+ - Boiler plate conversion of code to support a list of Master runtime
+ - Support multi link bank switch to support synchronization between
+   multiple masters
+ - Add Intel platform ops for pre/post bank switch
 
-Signed-off-by: Jia-Ju Bai <baijiaju1990@gmail.com>
----
- sound/pci/ctxfi/cthw20k2.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Additionally, as suggested by Vinod, the generic fixes are arranged
+at the top of the series followed by the Documentation patch for
+multi link support and then the multi link patches.
 
-diff --git a/sound/pci/ctxfi/cthw20k2.c b/sound/pci/ctxfi/cthw20k2.c
-index b866d6b2c923..3c966fafc754 100644
---- a/sound/pci/ctxfi/cthw20k2.c
-+++ b/sound/pci/ctxfi/cthw20k2.c
-@@ -1316,12 +1316,12 @@ static int hw_pll_init(struct hw *hw, unsigned int rsr)
- 	set_field(&pllctl, PLLCTL_FD, 48000 == rsr ? 16 - 4 : 147 - 4);
- 	set_field(&pllctl, PLLCTL_RD, 48000 == rsr ? 1 - 1 : 10 - 1);
- 	hw_write_20kx(hw, PLL_CTL, pllctl);
--	mdelay(40);
-+	msleep(40);
- 
- 	pllctl = hw_read_20kx(hw, PLL_CTL);
- 	set_field(&pllctl, PLLCTL_FD, 48000 == rsr ? 16 - 2 : 147 - 2);
- 	hw_write_20kx(hw, PLL_CTL, pllctl);
--	mdelay(40);
-+	msleep(40);
- 
- 	for (i = 0; i < 1000; i++) {
- 		pllstat = hw_read_20kx(hw, PLL_STAT);
-@@ -1584,7 +1584,7 @@ static void hw_dac_stop(struct hw *hw)
- 	data = hw_read_20kx(hw, GPIO_DATA);
- 	data &= 0xFFFFFFFD;
- 	hw_write_20kx(hw, GPIO_DATA, data);
--	mdelay(10);
-+	usleep_range(10000, 11000);
- }
- 
- static void hw_dac_start(struct hw *hw)
-@@ -1593,7 +1593,7 @@ static void hw_dac_start(struct hw *hw)
- 	data = hw_read_20kx(hw, GPIO_DATA);
- 	data |= 0x2;
- 	hw_write_20kx(hw, GPIO_DATA, data);
--	mdelay(50);
-+	msleep(50);
- }
- 
- static void hw_dac_reset(struct hw *hw)
-@@ -1864,11 +1864,11 @@ static int hw_adc_init(struct hw *hw, const struct adc_conf *info)
- 		hw_write_20kx(hw, GPIO_DATA, data);
- 	}
- 
--	mdelay(10);
-+	usleep_range(10000, 11000);
- 	/* Return the ADC to normal operation. */
- 	data |= (0x1 << 15);
- 	hw_write_20kx(hw, GPIO_DATA, data);
--	mdelay(50);
-+	msleep(50);
- 
- 	/* I2C write to register offset 0x0B to set ADC LRCLK polarity */
- 	/* invert bit, interface format to I2S, word length to 24-bit, */
+changes in v8:
+ - Check both m_rt_count and bus->multi_link flag for clean up after
+   single instance bankswitch as suggested by Pierre.
+
+changes in v7:
+ - Fix the git bisect issue pointed by Pierre. Now, the initialization
+   of the m_rt_count and its modification/usage is split into 2 patches.
+   While the declaration and initialization is in one patch,
+   modification of the refcount and usage is in the multilink bankswitch
+   patch.
+ - Re-arrange the patches as suggested by Vinod
+
+Sanyog Kale (3):
+  soundwire: Fix acquiring bus lock twice during master release
+  Documentation: soundwire: Add documentation for multi link
+  soundwire: Add support to lock across bus instances
+
+Shreyas NC (6):
+  soundwire: Fix duplicate stream state assignment
+  soundwire: Fix incorrect exit after configuring stream
+  soundwire: Initialize completion for defer messages
+  soundwire: keep track of Masters in a stream
+  soundwire: Add support for multi link bank switch
+  soundwire: intel: Add pre/post bank switch ops
+
+Vinod Koul (1):
+  soundwire: Handle multiple master instances in a stream
+
+ Documentation/driver-api/soundwire/stream.rst |  28 ++
+ drivers/soundwire/bus.c                       |   6 +
+ drivers/soundwire/bus.h                       |   4 +
+ drivers/soundwire/intel.c                     |  65 ++++
+ drivers/soundwire/stream.c                    | 511 +++++++++++++++++++-------
+ include/linux/soundwire/sdw.h                 |  12 +-
+ 6 files changed, 489 insertions(+), 137 deletions(-)
+
 -- 
-2.17.0
+2.7.4
