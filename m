@@ -1,155 +1,68 @@
-From: "Dae R. Jeong" <threeearcat@gmail.com>
-Subject: Re: BUG: soft lockup in snd_virmidi_output_trigger
-Date: Fri, 27 Jul 2018 13:13:22 +0900
-Message-ID: <20180727041322.GA13067@dragonet>
-References: <20180726055326.GA12625@dragonet>
- <s5hva92yxda.wl-tiwai@suse.de>
+From: jimqu <jimqu@amd.com>
+Subject: =?UTF-8?Q?Re:_y4T=ef=bf=bdTCH_4/4]_drm/amdgpu:_Add_audio_component_?=
+ =?UTF-8?Q?support?=
+Date: Fri, 27 Jul 2018 12:55:37 +0800
+Message-ID: <59127124-e870-f6a6-2991-19616fd32163@amd.com>
+References: <20180723145030.25133-1-tiwai@suse.de>
+ <s5h4lgnyijr.wl-tiwai@suse.de> <16a47d85-4d09-2087-1959-fd9a039140c9@amd.com>
+ <s5hr2jrwwu8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f68.google.com (mail-pl0-f68.google.com
- [209.85.160.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 086CA26778A
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 06:13:29 +0200 (CEST)
-Received: by mail-pl0-f68.google.com with SMTP id m1-v6so1745756plt.6
- for <alsa-devel@alsa-project.org>; Thu, 26 Jul 2018 21:13:29 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <s5hva92yxda.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <s5hr2jrwwu8.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
 To: Takashi Iwai <tiwai@suse.de>
-Cc: bammanag@purdue.edu, alsa-devel@alsa-project.org, kt0755@gmail.com, linux-kernel@vger.kernel.org, syzkaller@googlegroups.com
+Cc: "Qu, Jim" <Jim.Qu@amd.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>, "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Jul 26, 2018 at 02:50:25PM +0200, Takashi Iwai wrote:
-> On Thu, 26 Jul 2018 07:53:26 +0200,
->  Dae R. Jeong  wrote:
-> > 
-> > Reporting the crash: BUG: soft lockup in snd_virmidi_output_trigger
-> > 
-> > This crash has been found in v4.18-rc3 using RaceFuzzer (a modified
-> > version of Syzkaller), which we describe more at the end of this
-> > report.
-> > 
-> > Note that this bug is previously reported by Syzkaller a few month ago.
-> > (https://syzkaller.appspot.com/bug?id=642c927972318775e0ea1b4779ccd8624ce9e6f5)
-> > Nonetheless, the crash still can be detected. We guess that the crash has
-> > not fixed yet.
-> > We report the crash log and the attached reproducer with a hope that they are
-> > helpful to diagnose the crash and to fix a bug.
-> > 
-> > C Reproducer:
-> > https://kiwi.cs.purdue.edu/static/race-fuzzer/repro-dab082.c
-> > 
-> > Kernel config:
-> > https://kiwi.cs.purdue.edu/static/race-fuzzer/config-dab082
-> > 
-> > (Please disregard all code related to "should_hypercall" in the C repro,
-> > as this is only for our debugging purposes using our own hypervisor.)
-> > 
-> > 
-> > Crash log:
-> > ==================================================================
-> > watchdog: BUG: soft lockup - CPU#1 stuck for 22s! [syz-executor0:24261]
-> > Modules linked in:
-> > irq event stamp: 6692
-> > hardirqs last  enabled at (6691): [<ffffffff84eb1f12>] __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-> > hardirqs last  enabled at (6691): [<ffffffff84eb1f12>] _raw_spin_unlock_irqrestore+0x62/0x90 kernel/locking/spinlock.c:184
-> > hardirqs last disabled at (6692): [<ffffffff85000905>] interrupt_entry+0xb5/0xf0 arch/x86/entry/entry_64.S:625
-> > softirqs last  enabled at (1468): [<ffffffff852005ff>] __do_softirq+0x5ff/0x7f4 kernel/softirq.c:314
-> > softirqs last disabled at (1455): [<ffffffff8130de56>] invoke_softirq kernel/softirq.c:368 [inline]
-> > softirqs last disabled at (1455): [<ffffffff8130de56>] irq_exit+0x126/0x130 kernel/softirq.c:408
-> > CPU: 1 PID: 24261 Comm: syz-executor0 Not tainted 4.18.0-rc3 #1
-> > Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.8.2-0-g33fbe13 by qemu-project.org 04/01/2014
-> > RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:783 [inline]
-> > RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-> > RIP: 0010:_raw_spin_unlock_irqrestore+0x7d/0x90 kernel/locking/spinlock.c:184
-> > Code: 0d c8 ce 16 7b 5b 41 5c 5d c3 e8 3e 0f 52 fc 48 c7 c7 68 b0 71 86 e8 62 4c 8d fc 48 83 3d 42 91 86 01 00 74 0e 48 89 df 57 9d <0f> 1f 44 00 00 eb cd 0f 0b 0f 0b 0f 1f 84 00 00 00 00 00 55 48 89 
-> > RSP: 0018:ffff8801b8e4f7e8 EFLAGS: 00000282 ORIG_RAX: ffffffffffffff13
-> > RAX: 0000000000000000 RBX: 0000000000000282 RCX: ffffffff84eb1f1e
-> > RDX: dffffc0000000000 RSI: dffffc0000000000 RDI: 0000000000000282
-> > RBP: ffff8801b8e4f7f8 R08: ffffed002573a06a R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000000 R12: ffff88012b9d0348
-> > R13: ffff8801e6417580 R14: ffff8801b8e4f868 R15: ffff8801e64175a8
-> > FS:  00007f3447a49700(0000) GS:ffff8801f6d00000(0000) knlGS:0000000000000000
-> > CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > CR2: 00007f3447a48db8 CR3: 00000001ee58d000 CR4: 00000000000006e0
-> > Call Trace:
-> >  spin_unlock_irqrestore include/linux/spinlock.h:365 [inline]
-> >  snd_virmidi_output_trigger+0x37d/0x420 sound/core/seq/seq_virmidi.c:205
-> >  snd_rawmidi_output_trigger sound/core/rawmidi.c:150 [inline]
-> >  snd_rawmidi_kernel_write1+0x383/0x410 sound/core/rawmidi.c:1288
-> >  snd_rawmidi_write+0x249/0xa50 sound/core/rawmidi.c:1338
-> 
-> This seems to be a long loop in snd_virmidi_output_trigger processed
-> in a spinlock.  The below patch puts a cond_resched() for avoiding the
-> possible stalls, and it seems working.
-> 
-> Let me know if this works for you.
-> 
-> 
-> thanks,
-> 
-> Takashi
-> 
-> -- 8< --
-> From: Takashi Iwai <tiwai@suse.de>
-> Subject: [PATCH] ALSA: virmidi: Fix too long output trigger loop
-> 
-> The virmidi output trigger tries to parse the all available bytes and
-> process sequencer events as much as possible.  In a normal situation,
-> this is supposed to be relatively short, but a program may give a huge
-> buffer and it'll take a long time in a single spin lock, which may
-> eventually lead to a soft lockup.
-> 
-> This patch simply adds a workaround, a cond_resched() call in the loop
-> if applicable.  A better solution would be to move the event processor
-> into a work, but let's put a duct-tape quickly at first.
-> 
-> Reported-by: Dae R. Jeong <threeearcat@gmail.com>
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> ---
->  sound/core/seq/seq_virmidi.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-> index 289ae6bb81d9..65549d41533e 100644
-> --- a/sound/core/seq/seq_virmidi.c
-> +++ b/sound/core/seq/seq_virmidi.c
-> @@ -163,6 +163,7 @@ static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream,
->  	int count, res;
->  	unsigned char buf[32], *pbuf;
->  	unsigned long flags;
-> +	bool check_resched = !in_atomic();
->  
->  	if (up) {
->  		vmidi->trigger = 1;
-> @@ -200,6 +201,11 @@ static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream,
->  					vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
->  				}
->  			}
-> +			if (!check_resched)
-> +				continue;
-> +			spin_unlock_irqrestore(&substream->runtime->lock, flags);
-> +			cond_resched();
-> +			spin_lock_irqsave(&substream->runtime->lock, flags);
->  		}
->  	out:
->  		spin_unlock_irqrestore(&substream->runtime->lock, flags);
-> -- 
-> 2.18.0
-> 
-
-I tested it and it worked.
-Thanks a lot!
-
-Dae R. Jeong
+CgpPbiAyMDE45bm0MDfmnIgyNeaXpSAxNjoyMCwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+IE9uIFdl
+ZCwgMjUgSnVsIDIwMTggMTA6MDI6MzQgKzAyMDAsCj4gamltcXUgd3JvdGU6Cj4+Cj4+Cj4+IE9u
+IDIwMTjlubQwN+aciDI15pelIDEzOjQ2LCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+PiBPbiBXZWQs
+IDI1IEp1bCAyMDE4IDA3OjM4OjM3ICswMjAwLAo+Pj4gUXUsIEppbSB3cm90ZToKPj4+PiBKaW06
+IEp1c3QgbGlrZSBBbGV4IHNhaWQsIHdlIHdhbnQgZHJpdmVyIGNhbiBnZXQgZWxkIGluZm8gd2hl
+biBob3RwbHVnIGluIG5ldyBkZXZpY2UuIGFtZGdwdSBkcml2ZXIgaXMgYSBiaXQgZGlmZmVyZW5j
+ZSBmcm9tIHJhZGVvbiBkcml2ZXIsIGl0IGlzIG5vdCBhIHN1aXRhYmxlIHBsYWNlIHRvIGNhbGwg
+bm90aWZ5KCkgZnVuY3Rpb24gaW4gKl9hdWRpb19lbmFibGUoKSAsIHNpbmNlIHRoZXkgYXJlIG5v
+dCBpbiB0aGUgaG90cGx1ZyBwcm9jZXNzIGNvbnRleHQgbGlrZSB0aGVtIGluIHJhZGVvbiBkcml2
+ZXIsIGJ1dCB0aGUgbW9kZSBzZXR0aW5nLgo+Pj4+Cj4+Pj4gSU1PLCB0aGUgcmlnaHQgcGxhY2Ug
+dG8gY2FsbCBub3RpZnkoKSBmdW5jdGlvbiBpcyBhbHNvIGluIHRoZSBhbWRncHVfY29ubmVjdG9y
+X3h4eHhfZGV0ZWN0KCkgaW4gYW1kZ3B1X2Nvbm5lY3Rvci5jLgo+Pj4gSG0sIGJ1dCBieSB0aGUg
+bW9kZXNldHRpbmcsIGl0IGFjdHVhbGx5IGVuYWJsZXMgLyBkaXNhYmxlcyB0aGUgYXVkaW8KPj4+
+IGFzIHdlbGwsIG5vPyAgSWYgc28sIHRoZSBub3RpZmllciBpcyBleGFjdGx5IGZvciB0aGF0IHB1
+cnBvc2UuICBUaGUKPj4+IGF1ZGlvIGRyaXZlciBuZWVkcyB0byBrbm93IG5vdCBvbmx5IGFib3V0
+IHRoZSBwaHlzaWNhbCBjb25uZWN0aW9uIGJ1dAo+Pj4gd2hldGhlciB0aGUgYXVkaW8gY2FuIGJl
+IGFjdHVhbGx5IGRyaXZlbi4KPj4+Cj4+PiBUaGF0IGlzLCBldmVuIGlmIHRoZSBtb25pdG9yIGlz
+IGNvbm5lY3RlZCwgdGhlIGF1ZGlvIHdvbid0IGNvbWUgb3V0IGlmCj4+PiB0aGUgbW9kZSBpcyBv
+ZmYuICBUaGF0IGlzIGVxdWl2YWxlbnQgd2l0aCB0aGUgdW5wbHVnZ2VkIHN0YXRlIGZvciB0aGUK
+Pj4+IGF1ZGlvIGRyaXZlci4KPj4+Cj4+PiBUaGUgaTkxNSBkcml2ZXIgZGVhbHMgd2l0aCB0aGUg
+bm90aWZpZXIganVzdCBsaWtlIHRoZSBhYm92ZSwgc28gdGhlCj4+PiBiZWhhdmlvciBpcyBpbnRl
+bnRpb25hbC4KPj4+Cj4+Pgo+Pj4gdGhhbmtzLAo+Pj4KPj4+IFRha2FzaGkKPj4gSSBhbSBhZnJh
+aWQgaWYgZGV2aWNlIGhvdHBsdWcgb3V0LCBob3cgaXMgYXVkaW8gc3RhdGUgaWYgaXQgZm9sbG93
+IHVwCj4+IGVsZCBpbmZvPyBTaW5jZSB0aGUgbW9kZXNldHRpbmcgaXMgbmV2ZXIgcGVyZm9ybWVk
+IGZvciB0aGUgZGlzcGxheQo+PiB3aGljaCBpcyBwbHVnZ2VkIG91dCwgc28gdGhlcmUgaXMgbm8g
+bm90aWZ5KCkgY2FsbCBvbiBpdC4KPiBJbiBwcmluY2lwbGUsIHRoZSBIRE1JIGF1ZGlvIGp1c3Qg
+bmVlZHMgdG8gZm9sbG93cyB0aGUgdmlkZW8gc3RhdGUsCj4gYW5kIGl0IGRvZXNuJ3QgbmVlZCB0
+byBjYXJlIGFjdHVhbCBwaHlzaWNhbCBjb25uZWN0aW9ucy4gIEFzIGxvbmcgYXMKPiB2aWRlbyBj
+YW4gZ28gb3V0LCBpdCdzIGZpbmUsIGF1ZGlvIGNhbiwgdG9vLiAgV2hlbiB2aWRlbyBpcyBkaXNh
+YmxlZAo+IChldmVuIGlmIGNvbm5lY3RlZCksIGF1ZGlvIGNhbid0IGJlIHVzZWQgYXMgd2VsbCwg
+c28gaXQgbXVzdCBmb2xsb3cgdG8KPiBvZmYsIHRvby4gIFRoZSBub3RpZmllciBpcyB1c2VkIHRv
+IGZvbGxvdyB0aGlzIHZpZGVvIHN0YXRlIGNoYW5nZS4KPgo+IFByYWN0aWNhbGx5IHNlZW4sIHRo
+ZSB1c2VyLXNwYWNlIHNoYWxsIHN3aXRjaCBvZmYgdGhlIHZpZGVvCj4gYWNjb3JkaW5nbHkgdXBv
+biBob3QgdW5wbHVnLCB0aGVuIHRoZSBhdWRpbyBub3RpZmllciBpcyBzZW50LCBhbmQgdGhlCj4g
+YXVkaW8gZ2V0cyBvZmYsIHRvby4KPgo+Cj4gdGhhbmtzLAo+Cj4gVGFrYXNoaQoKT2ssIHRoYXQg
+bWVhbnMgdGhlcmUgYXJlIG90aGVyIGNvZGUgcGF0aGVzIHRvIHVwZGF0ZSBhdWRpbyBzdGF0ZS4g
+CkFueXdheSwgZm9yIHBhdGNoIDMvNCBBY2tlZC1ieTogSmltIFF1IDxKaW0uUXVAYW1kLmNvbT4K
+VGhlcmUgbWF5IGJlIG90aGVyIGNvbmNlcm5zIGZyb20gQWxleC9DaHJpc3RpYW4uCgpUaGFua3MK
+SmltUXUKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCmRy
+aS1kZXZlbCBtYWlsaW5nIGxpc3QKZHJpLWRldmVsQGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRw
+czovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZvL2RyaS1kZXZlbAo=
