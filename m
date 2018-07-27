@@ -1,64 +1,92 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: soc-pcm: Use delay set in pointer
- function
-Date: Fri, 27 Jul 2018 10:09:08 -0500
-Message-ID: <66c8b8c4-bdd0-0129-5e5b-850890cfdb8d@linux.intel.com>
-References: <1532686422-1790-1-git-send-email-akshu.agrawal@amd.com>
+Subject: Re: [PATCH v8 00/10] soundwire: Add multi link support
+Date: Fri, 27 Jul 2018 10:12:29 -0500
+Message-ID: <8a155a5e-f0d2-aae3-2331-353c43afdaaf@linux.intel.com>
+References: <1532682857-604-1-git-send-email-shreyas.nc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1532686422-1790-1-git-send-email-akshu.agrawal@amd.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id B006C26720C
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 17:12:32 +0200 (CEST)
+In-Reply-To: <1532682857-604-1-git-send-email-shreyas.nc@intel.com>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Shreyas NC <shreyas.nc@intel.com>, alsa-devel@alsa-project.org
+Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, vkoul@kernel.org, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-On 7/27/18 5:13 AM, Akshu Agrawal wrote:
-> There are cases where a pointer function populates
-> runtime->delay, such as:
-> ./sound/pci/hda/hda_controller.c
-> ./sound/soc/intel/atom/sst-mfld-platform-pcm.c
+On 7/27/18 4:14 AM, Shreyas NC wrote:
+> Currently, in the SoundWire subsystem, the concept of stream is limited
+> to a Master and one or more Slaves(Codecs). This series aims to add
+> support for multiple Master(s) sharing the same reference clock and
+> synchronized in the hardware.
 > 
-> Also, in some cases cpu dai used is generic and the pcm
-> driver needs to set delay.
+> This patch series adds:
+>   - Fix to avoid duplicate stream state assignment
+>   - Avoid incorrect stream release after configuring Master
+>   - Fix to avoid bus lock acquired twice
+>   - Helpers to lock bus instances part of the stream
+>   - Boiler plate conversion of code to support a list of Master runtime
+>   - Support multi link bank switch to support synchronization between
+>     multiple masters
+>   - Add Intel platform ops for pre/post bank switch
 > 
-> This delay was getting lost and was overwritten by delays
-> from codec or cpu dai delay function if exposed.
+> Additionally, as suggested by Vinod, the generic fixes are arranged
+> at the top of the series followed by the Documentation patch for
+> multi link support and then the multi link patches.
 
-Humm, yes the runtime->delay set in the .pointer function would be lost 
-without this change, but the delay would still be provided in the 
-followup call to .delay.
-With your change, the same delay will be accounted for twice?
+Looks good!
+
+All patches
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+
+
+Thanks Shreyas and Sanyog for the updates and taking care of the comments.
 
 > 
-> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-> ---
->   sound/soc/soc-pcm.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
+> changes in v8:
+>   - Check both m_rt_count and bus->multi_link flag for clean up after
+>     single instance bankswitch as suggested by Pierre.
 > 
-> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-> index 98be04b..b1a2bc2 100644
-> --- a/sound/soc/soc-pcm.c
-> +++ b/sound/soc/soc-pcm.c
-> @@ -1179,6 +1179,9 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->   	snd_pcm_sframes_t codec_delay = 0;
->   	int i;
->   
-> +	/* clearing the previous delay */
-> +	runtime->delay = 0;
-> +
->   	for_each_rtdcom(rtd, rtdcom) {
->   		component = rtdcom->component;
->   
-> @@ -1203,7 +1206,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->   	}
->   	delay += codec_delay;
->   
-> -	runtime->delay = delay;
-> +	runtime->delay += delay;
->   
->   	return offset;
->   }
+> changes in v7:
+>   - Fix the git bisect issue pointed by Pierre. Now, the initialization
+>     of the m_rt_count and its modification/usage is split into 2 patches.
+>     While the declaration and initialization is in one patch,
+>     modification of the refcount and usage is in the multilink bankswitch
+>     patch.
+>   - Re-arrange the patches as suggested by Vinod
+> 
+> Sanyog Kale (3):
+>    soundwire: Fix acquiring bus lock twice during master release
+>    Documentation: soundwire: Add documentation for multi link
+>    soundwire: Add support to lock across bus instances
+> 
+> Shreyas NC (6):
+>    soundwire: Fix duplicate stream state assignment
+>    soundwire: Fix incorrect exit after configuring stream
+>    soundwire: Initialize completion for defer messages
+>    soundwire: keep track of Masters in a stream
+>    soundwire: Add support for multi link bank switch
+>    soundwire: intel: Add pre/post bank switch ops
+> 
+> Vinod Koul (1):
+>    soundwire: Handle multiple master instances in a stream
+> 
+>   Documentation/driver-api/soundwire/stream.rst |  28 ++
+>   drivers/soundwire/bus.c                       |   6 +
+>   drivers/soundwire/bus.h                       |   4 +
+>   drivers/soundwire/intel.c                     |  65 ++++
+>   drivers/soundwire/stream.c                    | 511 +++++++++++++++++++-------
+>   include/linux/soundwire/sdw.h                 |  12 +-
+>   6 files changed, 489 insertions(+), 137 deletions(-)
 > 
