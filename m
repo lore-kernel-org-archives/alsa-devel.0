@@ -1,80 +1,152 @@
-From: Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume
- control
-Date: Fri, 27 Jul 2018 14:01:44 +0200
-Message-ID: <2ea3aaa5-cba7-901b-f0cf-782ce4ebd1c5@redhat.com>
-References: <20180718205542.12364-1-hdegoede@redhat.com>
- <20180718205542.12364-2-hdegoede@redhat.com>
- <20180719150234.GE27938@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D7028430F3@RTITMBSV02.realtek.com.tw>
- <f38e30f0-182b-484e-8de1-a9fd0db4663c@linux.intel.com>
- <ABFD875FF5FB574BA706497D987D48D70284323D@RTITMBSV02.realtek.com.tw>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f66.google.com (mail-ed1-f66.google.com
- [209.85.208.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 709F62677B0
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 14:01:47 +0200 (CEST)
-Received: by mail-ed1-f66.google.com with SMTP id x5-v6so3762458edr.0
- for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 05:01:47 -0700 (PDT)
-In-Reply-To: <ABFD875FF5FB574BA706497D987D48D70284323D@RTITMBSV02.realtek.com.tw>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Bard Liao <bardliao@realtek.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Carlo Caione <carlo@endlessm.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 01/10] ASoC: dt-bindings: add dt bindings for wcd9335 audio codec
+Date: Fri, 27 Jul 2018 13:17:57 +0100
+Message-ID: <20180727121806.18209-2-srinivas.kandagatla@linaro.org>
+References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
+Cc: mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This patch adds bindings for wcd9335 audio codec which can support both SLIMbus
+and I2S/I2C interface.
 
-On 07/20/2018 04:53 AM, Bard Liao wrote:
->> -----Original Message-----
->> From: Pierre-Louis Bossart [mailto:pierre-louis.bossart@linux.intel.com]
->> Sent: Friday, July 20, 2018 9:40 AM
->> To: Bard Liao; Mark Brown; Hans de Goede
->> Cc: Liam Girdwood; Oder Chiou; alsa-devel@alsa-project.org; Carlo Caione
->> Subject: Re: [alsa-devel] [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume
->> control
->>
->> On 07/19/2018 08:31 PM, Bard Liao wrote:
->>>> -----Original Message-----
->>>> From: Mark Brown [mailto:broonie@kernel.org]
->>>> Sent: Thursday, July 19, 2018 11:03 PM
->>>> To: Hans de Goede
->>>> Cc: Liam Girdwood; Bard Liao; Oder Chiou; Pierre-Louis Bossart; Carlo
->> Caione;
->>>> alsa-devel@alsa-project.org
->>>> Subject: Re: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume control
->>>>
->>>> On Wed, Jul 18, 2018 at 10:55:37PM +0200, Hans de Goede wrote:
->>>>
->>>>> +	/* IN1/IN2/IN3 Control */
->>>>>    	SOC_SINGLE_TLV("IN1 Boost", RT5651_IN1_IN2,
->>>>>    		RT5651_BST_SFT1, 8, 0, bst_tlv),
->>>>>    	SOC_SINGLE_TLV("IN2 Boost", RT5651_IN1_IN2,
->>>>>    		RT5651_BST_SFT2, 8, 0, bst_tlv),
->>>>> +	SOC_SINGLE_TLV("IN3 Boost", RT5651_IN3,
->>>>> +		RT5651_BST_SFT1, 8, 0, bst_tlv),
->>>> These should all have Volume added to the name however that's a
->>>> preexisting bug so not a blocker on this.
->>> I will add "Volume" to the name for all of them.
->> isn't this going to break userspace configs if we change the name of
->> controls?
-> 
-> Yes, it should be modified, too.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../devicetree/bindings/sound/qcom,wcd9335.txt     | 123 +++++++++++++++++++++
+ 1 file changed, 123 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
 
-Or we just live with the  "Volume" part missing for these 3 and don't
-break users existing setup for no good reason.
-
-Regards,
-
-Hans
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
+new file mode 100644
+index 000000000000..1d8d49e30af7
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
+@@ -0,0 +1,123 @@
++QCOM WCD9335 Codec
++
++Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC, supports
++Qualcomm Technologies, Inc. (QTI) multimedia solutions, including
++the MSM8996, MSM8976, and MSM8956 chipsets. It has in-built
++Soundwire controller, interrupt mux. It supports both I2S/I2C and
++SLIMbus audio interfaces.
++
++Required properties with SLIMbus Interface:
++
++- compatible:
++	Usage: required
++	Value type: <stringlist>
++	Definition: For SLIMbus interface it should be "slimMID,PID",
++		    textual representation of Manufacturer ID, Product Code,
++		    shall be in lower case hexadecimal with leading zeroes
++		    suppressed.  Refer to slimbus/bus.txt for details.
++		    Should be:
++		    "slim217,1a0" for MSM8996 and APQ8096 SoCs with SLIMbus.
++
++- reg
++	Usage: required
++	Value type: <u32 u32>
++	Definition: Should be ('Device index', 'Instance ID')
++
++- interrupts
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: Interrupts via WCD INTR1 and INTR2 pins
++
++- interrupt-names:
++	Usage: required
++	Value type: <String array>
++	Definition: Interrupt names of WCD INTR1 and INTR2
++	Should be: "intr1", "intr2"
++
++- reset-gpio:
++	Usage: required
++	Value type: <String Array>
++	Definition: Reset gpio line
++
++- qcom,ifd:
++	Usage: required
++	Value type: <phandle>
++	Definition: SLIM interface device
++
++- clocks:
++	Usage: required
++	Value type: <prop-encoded-array>
++	Definition: See clock-bindings.txt section "consumers". List of
++                three clock specifiers for mclk, mclk2 and slimbus clock.
++
++- clock-names:
++	Usage: required
++	Value type: <string>
++	Definition: Must contain "mclk", "mclk2" and "slimbus" strings.
++
++- vdd-buck-supply:
++	Usage: required
++	Value type: <phandle>
++	Definition: Should contain a reference to the 1.8V buck supply
++
++- vdd-buck-sido-supply:
++	Usage: required
++	Value type: <phandle>
++	Definition: Should contain a reference to the 1.8V SIDO buck supply
++
++- vdd-rx-supply:
++	Usage: required
++	Value type: <phandle>
++	Definition: Should contain a reference to the 1.8V rx supply
++
++- vdd-tx-supply:
++	Usage: required
++	Value type: <phandle>
++	Definition: Should contain a reference to the 1.8V tx supply
++
++- vdd-vbat-supply:
++	Usage: Optional
++	Value type: <phandle>
++	Definition: Should contain a reference to the vbat supply
++
++- vdd-micbias-supply:
++	Usage: required
++	Value type: <phandle>
++	Definition: Should contain a reference to the micbias supply
++
++- vdd-io-supply:
++	Usage: required
++	Value type: <phandle>
++	Definition: Should contain a reference to the 1.8V io supply
++
++- interrupt-controller:
++	Usage: required
++	Definition: Indicating that this is a interrupt controller
++
++- #interrupt-cells:
++	Usage: required
++	Value type: <int>
++	Definition: should be 1
++
++#sound-dai-cells
++	Usage: required
++	Value type: <u32>
++	Definition: Must be 1
++
++codec@1{
++	compatible = "slim217,1a0";
++	reg  = <1 0>;
++	interrupts = <&msmgpio 54 IRQ_TYPE_LEVEL_HIGH>;
++	interrupt-names = "intr2"
++	reset-gpio = <&msmgpio 64 0>;
++	qcom,ifd  = <&wc9335_ifd>;
++	clock-names = "mclk", "native";
++	clocks = <&rpmcc RPM_SMD_DIV_CLK1>,
++		 <&rpmcc RPM_SMD_BB_CLK1>;
++	vdd-buck-supply = <&pm8994_s4>;
++	vdd-rx-supply = <&pm8994_s4>;
++	vdd-buck-sido-supply = <&pm8994_s4>;
++	vdd-tx-supply = <&pm8994_s4>;
++	vdd-io-supply = <&pm8994_s4>;
++	#sound-dai-cells = <1>;
++}
+-- 
+2.16.2
