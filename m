@@ -1,152 +1,106 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 01/10] ASoC: dt-bindings: add dt bindings for wcd9335 audio codec
-Date: Fri, 27 Jul 2018 13:17:57 +0100
-Message-ID: <20180727121806.18209-2-srinivas.kandagatla@linaro.org>
-References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH v2 00/10] ASoC: Add support to WCD9335 Audio
+	Codec
+Date: Fri, 27 Jul 2018 13:17:56 +0100
+Message-ID: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com
+ [209.85.221.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 02C772677B0
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 14:20:23 +0200 (CEST)
+Received: by mail-wr1-f65.google.com with SMTP id h10-v6so4854580wre.6
+ for <alsa-devel@alsa-project.org>; Fri, 27 Jul 2018 05:20:23 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
-Cc: mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org, srinivas.kandagatla@linaro.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org, srinivas.kandagatla@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds bindings for wcd9335 audio codec which can support both SLIMbus
-and I2S/I2C interface.
+Thankyou for reviewing v1 patchset, here is v2 addressing comments from v1.
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- .../devicetree/bindings/sound/qcom,wcd9335.txt     | 123 +++++++++++++++++++++
- 1 file changed, 123 insertions(+)
+Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC.
+It is integrated in multiple Qualcomm SoCs like: MSM8996, MSM8976,
+and MSM8956 chipsets.
+
+WCD9335 had multiple functional blocks, like: Soundwire controller,
+interrupt mux, pin controller, Audio codec, MBHC, MAD(Mic activity Detection),
+Ultrasonic proximity and pen detection, Battery-voltage monitoring and
+Codec processing engine.
+
+Currently this patchset has been only tested with SLIMbus interface due
+to hardware avaiablity, but it can be easily made to work with both SLIMbus
+and I2C/I2S.    
+
+This patchset adds very basic playback and capture support witout much
+fancy features. New features will be added once the basic support is in.
+This patchset is tested on top of linux-next on DB820c for both playback
+and capture paths.
+
+This patchset also depends on the SLIMbus Stream apis which is already merged
+via char-misc tree for 4.19.
+
+Some parts of the code has been inherited from Qualcomm andriod kernel,
+so credits to various authors.
+
+WCD9335 can be interfaced via I2S/I2C or SLIMbus. 
+
+Here is my test branch incase someone want to try this out:
+https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=wcd9335
+
+Thanks,
+Srini
+
+Changes since v1 (https://lkml.org/lkml/2018/7/23/889)
+	- Fixed dt bindings as suggested by Mark B.
+	- cleanup CLASS-H code, remove un-used states.
+	- Various cleanup suggested by Vinod.
+
+Srinivas Kandagatla (10):
+  ASoC: dt-bindings: add dt bindings for wcd9335 audio codec
+  mfd: wcd9335: add support to wcd9335 core
+  mfd: wcd9335: add wcd irq support
+  ASoC: wcd9335: add support to wcd9335 codec
+  ASoC: wcd9335: add CLASS-H Controller support
+  ASoC: wcd9335: add basic controls
+  ASoC: wcd9335: add playback dapm widgets
+  ASoC: wcd9335: add capture dapm widgets
+  ASoC: wcd9335: add audio routings
+  ASoC: apq8096: add support to Analog audio via WCD9335 slim
+
+ .../devicetree/bindings/sound/qcom,wcd9335.txt     |  123 +
+ drivers/mfd/Kconfig                                |   18 +
+ drivers/mfd/Makefile                               |    4 +
+ drivers/mfd/wcd9335-core.c                         |  277 ++
+ drivers/mfd/wcd9335-irq.c                          |  172 +
+ include/dt-bindings/mfd/wcd9335.h                  |   43 +
+ include/linux/mfd/wcd9335/registers.h              |  580 +++
+ include/linux/mfd/wcd9335/wcd9335.h                |   45 +
+ sound/soc/codecs/Kconfig                           |    5 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/wcd-clsh.c                        |  605 +++
+ sound/soc/codecs/wcd-clsh.h                        |   49 +
+ sound/soc/codecs/wcd9335.c                         | 4963 ++++++++++++++++++++
+ sound/soc/qcom/apq8096.c                           |   68 +
+ 14 files changed, 6954 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
+ create mode 100644 drivers/mfd/wcd9335-core.c
+ create mode 100644 drivers/mfd/wcd9335-irq.c
+ create mode 100644 include/dt-bindings/mfd/wcd9335.h
+ create mode 100644 include/linux/mfd/wcd9335/registers.h
+ create mode 100644 include/linux/mfd/wcd9335/wcd9335.h
+ create mode 100644 sound/soc/codecs/wcd-clsh.c
+ create mode 100644 sound/soc/codecs/wcd-clsh.h
+ create mode 100644 sound/soc/codecs/wcd9335.c
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
-new file mode 100644
-index 000000000000..1d8d49e30af7
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
-@@ -0,0 +1,123 @@
-+QCOM WCD9335 Codec
-+
-+Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC, supports
-+Qualcomm Technologies, Inc. (QTI) multimedia solutions, including
-+the MSM8996, MSM8976, and MSM8956 chipsets. It has in-built
-+Soundwire controller, interrupt mux. It supports both I2S/I2C and
-+SLIMbus audio interfaces.
-+
-+Required properties with SLIMbus Interface:
-+
-+- compatible:
-+	Usage: required
-+	Value type: <stringlist>
-+	Definition: For SLIMbus interface it should be "slimMID,PID",
-+		    textual representation of Manufacturer ID, Product Code,
-+		    shall be in lower case hexadecimal with leading zeroes
-+		    suppressed.  Refer to slimbus/bus.txt for details.
-+		    Should be:
-+		    "slim217,1a0" for MSM8996 and APQ8096 SoCs with SLIMbus.
-+
-+- reg
-+	Usage: required
-+	Value type: <u32 u32>
-+	Definition: Should be ('Device index', 'Instance ID')
-+
-+- interrupts
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: Interrupts via WCD INTR1 and INTR2 pins
-+
-+- interrupt-names:
-+	Usage: required
-+	Value type: <String array>
-+	Definition: Interrupt names of WCD INTR1 and INTR2
-+	Should be: "intr1", "intr2"
-+
-+- reset-gpio:
-+	Usage: required
-+	Value type: <String Array>
-+	Definition: Reset gpio line
-+
-+- qcom,ifd:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: SLIM interface device
-+
-+- clocks:
-+	Usage: required
-+	Value type: <prop-encoded-array>
-+	Definition: See clock-bindings.txt section "consumers". List of
-+                three clock specifiers for mclk, mclk2 and slimbus clock.
-+
-+- clock-names:
-+	Usage: required
-+	Value type: <string>
-+	Definition: Must contain "mclk", "mclk2" and "slimbus" strings.
-+
-+- vdd-buck-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V buck supply
-+
-+- vdd-buck-sido-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V SIDO buck supply
-+
-+- vdd-rx-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V rx supply
-+
-+- vdd-tx-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V tx supply
-+
-+- vdd-vbat-supply:
-+	Usage: Optional
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the vbat supply
-+
-+- vdd-micbias-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the micbias supply
-+
-+- vdd-io-supply:
-+	Usage: required
-+	Value type: <phandle>
-+	Definition: Should contain a reference to the 1.8V io supply
-+
-+- interrupt-controller:
-+	Usage: required
-+	Definition: Indicating that this is a interrupt controller
-+
-+- #interrupt-cells:
-+	Usage: required
-+	Value type: <int>
-+	Definition: should be 1
-+
-+#sound-dai-cells
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Must be 1
-+
-+codec@1{
-+	compatible = "slim217,1a0";
-+	reg  = <1 0>;
-+	interrupts = <&msmgpio 54 IRQ_TYPE_LEVEL_HIGH>;
-+	interrupt-names = "intr2"
-+	reset-gpio = <&msmgpio 64 0>;
-+	qcom,ifd  = <&wc9335_ifd>;
-+	clock-names = "mclk", "native";
-+	clocks = <&rpmcc RPM_SMD_DIV_CLK1>,
-+		 <&rpmcc RPM_SMD_BB_CLK1>;
-+	vdd-buck-supply = <&pm8994_s4>;
-+	vdd-rx-supply = <&pm8994_s4>;
-+	vdd-buck-sido-supply = <&pm8994_s4>;
-+	vdd-tx-supply = <&pm8994_s4>;
-+	vdd-io-supply = <&pm8994_s4>;
-+	#sound-dai-cells = <1>;
-+}
 -- 
 2.16.2
