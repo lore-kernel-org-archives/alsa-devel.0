@@ -1,20 +1,17 @@
-From: Ladislav Michl <ladis@linux-mips.org>
-Subject: [PATCH] ASoC: wm8988: fix typo in rate constraints
-Date: Sat, 28 Jul 2018 14:30:17 +0200
-Message-ID: <20180728123017.GA28930@lenoch>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v2] ALSA: memalloc: declare
+ snd_sgbuf_aligned_pages() unconditionally
+Date: Sat, 28 Jul 2018 15:48:43 +0100
+Message-ID: <20180728144843.GO2414@sirena.org.uk>
+References: <20180727162805.20785-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5725456608546737335=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cvs.linux-mips.org (eddie.linux-mips.org [148.251.95.138])
- by alsa0.perex.cz (Postfix) with ESMTP id AB7A126775C
- for <alsa-devel@alsa-project.org>; Sat, 28 Jul 2018 14:30:22 +0200 (CEST)
-Received: (from localhost user: 'ladis' uid#1021 fake: STDIN
- (ladis@eddie.linux-mips.org)) by eddie.linux-mips.org
- id S23992066AbeG1MaVkFxPo (ORCPT
- <rfc822;alsa-devel@alsa-project.org>);
- Sat, 28 Jul 2018 14:30:21 +0200
-Content-Disposition: inline
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4534B26775C
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jul 2018 16:48:47 +0200 (CEST)
+In-Reply-To: <20180727162805.20785-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,38 +21,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Remove duplicated entry and add missing zero in rate constraints.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
----
- sound/soc/codecs/wm8988.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+--===============5725456608546737335==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="BtmVPk+Smchi6n7w"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
-index 62200117444b..6e52c6a8bab3 100644
---- a/sound/soc/codecs/wm8988.c
-+++ b/sound/soc/codecs/wm8988.c
-@@ -522,7 +522,7 @@ static inline int get_coeff(int mclk, int rate)
- /* The set of rates we can generate from the above for each SYSCLK */
- 
- static const unsigned int rates_12288[] = {
--	8000, 12000, 16000, 24000, 24000, 32000, 48000, 96000,
-+	8000, 12000, 16000, 24000, 32000, 48000, 96000,
- };
- 
- static const struct snd_pcm_hw_constraint_list constraints_12288 = {
-@@ -540,7 +540,7 @@ static const struct snd_pcm_hw_constraint_list constraints_112896 = {
- };
- 
- static const unsigned int rates_12[] = {
--	8000, 11025, 12000, 16000, 22050, 2400, 32000, 41100, 48000,
-+	8000, 11025, 12000, 16000, 22050, 24000, 32000, 41100, 48000,
- 	48000, 88235, 96000,
- };
- 
--- 
-2.18.0
+
+--BtmVPk+Smchi6n7w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Jul 27, 2018 at 11:28:05AM -0500, Pierre-Louis Bossart wrote:
+> Make this helper inline function available for all platforms. This
+> helps solve 0-day compilation issues when CONFIG_SND_DMA_SGBUF is not
+> defined.
+
+Please do not submit new versions of already applied patches, please
+submit incremental updates to the existing code.  Modifying existing
+commits creates problems for other users building on top of those
+commits so it's best practice to only change pubished git commits if
+absolutely essential.
+
+--BtmVPk+Smchi6n7w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltcgkoACgkQJNaLcl1U
+h9Cahgf+PucwHtRtpl2kRpHnT8cCK2dGVAHxLdmmnPlbVyiKdq0kLJTGXSzQAf/w
+lACYp1VxB7RHWlmVe7oGkVQw7uOVyYGNS/+JqBhlb03SLhC6+orxNZnoyfjaRIWr
+xPvaRbNofCV03gfqX+RRKseOkc/DrebiUm0yyFGtYIVYLuOE93YNjqvYgRnOynbp
+3bITR1eNyU7UVLKDmzgaOUyKalTh+3n3dzMM0s0I7je14pT5XBc+Oyi3oB7BOjTu
+GGQnGHjx7JsRD2Sg11tp9wUjTRfXIxoAYaWzGRBjQH1N5xTgsFCyCogMbFZHGMoc
+G0yrh4RVlsCMkqQa0XZ0IsLsBts/jw==
+=4yHJ
+-----END PGP SIGNATURE-----
+
+--BtmVPk+Smchi6n7w--
+
+--===============5725456608546737335==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5725456608546737335==--
