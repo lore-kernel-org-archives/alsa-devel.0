@@ -1,17 +1,17 @@
 From: <gregkh@linuxfoundation.org>
 Subject: Patch "ASoC: topology: Add missing clock gating
 	parameter when parsing hw_configs" has been added to the
-	4.14-stable tree
-Date: Sat, 28 Jul 2018 12:07:16 +0200
-Message-ID: <1532772436216125@kroah.com>
+	4.17-stable tree
+Date: Sat, 28 Jul 2018 12:07:41 +0200
+Message-ID: <15327724611553@kroah.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
  [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 53B3326775C
- for <alsa-devel@alsa-project.org>; Sat, 28 Jul 2018 12:11:53 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 09507267762
+ for <alsa-devel@alsa-project.org>; Sat, 28 Jul 2018 12:24:10 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,18 +30,18 @@ This is a note to let you know that I've just added the patch titled
 
     ASoC: topology: Add missing clock gating parameter when parsing hw_configs
 
-to the 4.14-stable tree which can be found at:
+to the 4.17-stable tree which can be found at:
     http://www.kernel.org/git/?p=linux/kernel/git/stable/stable-queue.git;a=summary
 
 The filename of the patch is:
      asoc-topology-add-missing-clock-gating-parameter-when-parsing-hw_configs.patch
-and it can be found in the queue-4.14 subdirectory.
+and it can be found in the queue-4.17 subdirectory.
 
 If you, or anyone else, feels it should not be added to the stable tree,
 please let <stable@vger.kernel.org> know about it.
 
 
->From foo@baz Sat Jul 28 10:25:26 CEST 2018
+>From foo@baz Sat Jul 28 10:14:31 CEST 2018
 From: Kirill Marinushkin <k.marinushkin@gmail.com>
 Date: Wed, 4 Apr 2018 06:19:38 +0200
 Subject: ASoC: topology: Add missing clock gating parameter when parsing hw_configs
@@ -127,7 +127,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
 --- a/sound/soc/soc-topology.c
 +++ b/sound/soc/soc-topology.c
-@@ -1997,6 +1997,13 @@ static void set_link_hw_format(struct sn
+@@ -2006,6 +2006,13 @@ static void set_link_hw_format(struct sn
  
  		link->dai_fmt = hw_config->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
  
@@ -145,5 +145,5 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 Patches currently in stable-queue which might be from k.marinushkin@gmail.com are
 
-queue-4.14/asoc-topology-fix-bclk-and-fsync-inversion-in-set_link_hw_format.patch
-queue-4.14/asoc-topology-add-missing-clock-gating-parameter-when-parsing-hw_configs.patch
+queue-4.17/asoc-topology-fix-bclk-and-fsync-inversion-in-set_link_hw_format.patch
+queue-4.17/asoc-topology-add-missing-clock-gating-parameter-when-parsing-hw_configs.patch
