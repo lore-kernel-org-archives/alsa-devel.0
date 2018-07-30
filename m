@@ -1,93 +1,73 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [alsa-devel] [PATCH] ASoC: soc-pcm: Use delay set in pointer
- function
-Date: Mon, 30 Jul 2018 10:15:44 -0500
-Message-ID: <dd4d3dc6-88f3-d53f-cd5c-5035c80be3da@linux.intel.com>
-References: <1532686422-1790-1-git-send-email-akshu.agrawal@amd.com>
- <66c8b8c4-bdd0-0129-5e5b-850890cfdb8d@linux.intel.com>
- <e0990b62-897c-6dc7-8ac9-296932c505b7@amd.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 08/11] ASoC: SOF: Add DSP HW abstraction
+	operations
+Date: Mon, 30 Jul 2018 16:21:05 +0100
+Message-ID: <20180730152105.GL5789@sirena.org.uk>
+References: <20180719185335.30912-1-liam.r.girdwood@linux.intel.com>
+ <20180719185335.30912-8-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <e0990b62-897c-6dc7-8ac9-296932c505b7@amd.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, open list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com
+Content-Type: multipart/mixed; boundary="===============2627768520434637349=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DE882673A0
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 17:21:06 +0200 (CEST)
+In-Reply-To: <20180719185335.30912-8-liam.r.girdwood@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 7/27/18 11:28 PM, Agrawal, Akshu wrote:
-> 
-> 
-> On 7/27/2018 8:39 PM, Pierre-Louis Bossart wrote:
->> On 7/27/18 5:13 AM, Akshu Agrawal wrote:
->>> There are cases where a pointer function populates
->>> runtime->delay, such as:
->>> ./sound/pci/hda/hda_controller.c
->>> ./sound/soc/intel/atom/sst-mfld-platform-pcm.c
->>>
->>> Also, in some cases cpu dai used is generic and the pcm
->>> driver needs to set delay.
->>>
->>> This delay was getting lost and was overwritten by delays
->>> from codec or cpu dai delay function if exposed.
->>
->> Humm, yes the runtime->delay set in the .pointer function would be lost
->> without this change, but the delay would still be provided in the
->> followup call to .delay.
->> With your change, the same delay will be accounted for twice?
->>
-> 
-> It will not be accounted twice because no driver which is setting
-> runtime->delay is defining .delay op for cpu_dai. Vice versa is also
-> true, the drivers which define .delay for cpu_dai don't set
-> runtime->delay. And I think this is expected from drivers else it would
-> be a bug from their side.
 
-what do you mean my 'no driver'? Can you clarify if this is based on 
-analysis of the code or by-design. I don't recall having seen any 
-guidelines on this topic, and it's quite likely that different people 
-have different interpretation on how delay is supposed to be reported.
+--===============2627768520434637349==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="f54savKjS/tSNRaU"
+Content-Disposition: inline
 
-> 
-> .delay for codec_dai anyway is different and has to be accounted for.
-> 
-> Thanks,
-> Akshu
->>>
->>> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
->>> ---
->>>    sound/soc/soc-pcm.c | 5 ++++-
->>>    1 file changed, 4 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
->>> index 98be04b..b1a2bc2 100644
->>> --- a/sound/soc/soc-pcm.c
->>> +++ b/sound/soc/soc-pcm.c
->>> @@ -1179,6 +1179,9 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->>>    	snd_pcm_sframes_t codec_delay = 0;
->>>    	int i;
->>>    
->>> +	/* clearing the previous delay */
->>> +	runtime->delay = 0;
->>> +
->>>    	for_each_rtdcom(rtd, rtdcom) {
->>>    		component = rtdcom->component;
->>>    
->>> @@ -1203,7 +1206,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
->>>    	}
->>>    	delay += codec_delay;
->>>    
->>> -	runtime->delay = delay;
->>> +	runtime->delay += delay;
->>>    
->>>    	return offset;
->>>    }
->>>
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
+
+--f54savKjS/tSNRaU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jul 19, 2018 at 07:53:32PM +0100, Liam Girdwood wrote:
+
+> +int snd_sof_pci_update_bits_unlocked(struct snd_sof_dev *sdev, u32 offset,
+> +				     u32 mask, u32 value)
+> +{
+
+This stuff all looks a lot like regmap (we'd need a regmap-pci but I'm
+sure some other things could use it).
+
+--f54savKjS/tSNRaU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltfLOEACgkQJNaLcl1U
+h9D8Vgf/dyt+hWoRQi3PgLTYm6OUezp2lh00RiIEOowW03Z6Sr8zcQbSIeDzfsON
+5QXqBViTzHzduAB1S1QL2Oh5kXBJsxXspTL4md5sLgQe14gxdZqrl2EEfXQACxny
+a709EOWuAioCMDYUew1lOQg2Uts+P4P+5mwwFSGuqXapZiz+4A29hihBj+WkqmZN
+kiJfiF4zO42aEkg2tnQHmWJuz3edvbgtFevKQJqHUH6RdjLucu48p9zgSYS5x2xF
+7eRAtcXmclLOXL0RoTRzSVZSugUowpGlVN6Rvymysu5eqnugJC+6JDgNPduoKMAD
+YrjG7829Lcl7Ghyj+3YalAHEwSuSlA==
+=rVDC
+-----END PGP SIGNATURE-----
+
+--f54savKjS/tSNRaU--
+
+--===============2627768520434637349==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2627768520434637349==--
