@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v0 3/3] ASoC: max9867: Fix volume controls
-Date: Mon, 30 Jul 2018 11:57:51 +0100
-Message-ID: <20180730105751.GJ5789@sirena.org.uk>
-References: <20180728154134.GA9665@lenoch> <20180728154415.GD9665@lenoch>
- <20180730101115.GD5789@sirena.org.uk>
- <20180730104503.GA7186@lenoch>
+Subject: Applied "ASoC: uniphier: change functions to static"
+	to the asoc tree
+Date: Mon, 30 Jul 2018 12:03:01 +0100 (BST)
+Message-ID: <20180730110301.72F1F1124216@debutante.sirena.org.uk>
+References: <20180727023744.7865-1-suzuki.katsuhiro@socionext.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2718743733420761044=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A140026779C
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 12:57:52 +0200 (CEST)
-In-Reply-To: <20180730104503.GA7186@lenoch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 83C722673A0
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:03 +0200 (CEST)
+In-Reply-To: <20180727023744.7865-1-suzuki.katsuhiro@socionext.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,80 +22,96 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, anish kumar <yesanishhere@gmail.com>
+To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Cc: alsa-devel@alsa-project.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org, Jassi Brar <jaswinder.singh@linaro.org>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2718743733420761044==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="j+MD90OnwjQyWNYt"
-Content-Disposition: inline
+   ASoC: uniphier: change functions to static
 
+has been applied to the asoc tree at
 
---j+MD90OnwjQyWNYt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Mon, Jul 30, 2018 at 12:45:03PM +0200, Ladislav Michl wrote:
-> On Mon, Jul 30, 2018 at 11:11:15AM +0100, Mark Brown wrote:
-> > On Sat, Jul 28, 2018 at 05:44:15PM +0200, Ladislav Michl wrote:
-> > > Build proper audio paths and fix volume controls to match datasheet.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > This sounds like it should be split up into separate patches for at
-> > least the routing and volume control stuff.  It also needs a bit of a
-> > better changelog as I'm not sure what the issues with the volume
-> > controls were or what was improper about the old audio paths.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Oh well, will do. Perhaps driver author wants to step in and describe
-> setup driver was tested with. This is not meant as an offense, but
-> it does really look like code was copied over from other drivers
-> (sometimes without renaming) until it compiled and then submitted.
-> As it is I'm unable to play or record anything as power domains
-> are not enabled, but there still is a chance I'm doing something
-> wrong.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-It wouldn't be the first driver that was used mainly for one use case
-and not fully tested, people don't always even have the hardware wired
-up to cover everything and try to write things blind from the datasheet
-for completeness.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> > >  I'm still unsure about control names, please see yet unaswered mail
-> > >  here: https://www.spinics.net/lists/alsa-devel/msg80006.html
+Thanks,
+Mark
 
-> > Always CC maintainers on mails - you really shouldn't rely on anyone
-> > seeing anything that only goes to the lists, they're quite high volume.
+>From d8504acca759ae672c6d34d49a33d54ace094cbb Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Fri, 27 Jul 2018 11:37:44 +0900
+Subject: [PATCH] ASoC: uniphier: change functions to static
 
-> Well, in this case I decided to sent general question to the list in a
-> hope anyone with enough knowledge could answer that... But point taken,
-> will Cc maintaniners next time.
+This patch changes some functions that are not used by other objects
+to static.
 
-Yeah, it's good to send to the list in case someone else chimes in but
-the copy to maintainers helps a lot still even for things that are just
-discussions.
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/uniphier/aio-core.c | 6 +++---
+ sound/soc/uniphier/aio.h      | 3 ---
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
---j+MD90OnwjQyWNYt
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlte7y8ACgkQJNaLcl1U
-h9AWngf+IG1fTd1y+cj/qXblgd+ZGnxuSBCKAjH1RUZrxhpM9YFf/30A0yMjx6Q4
-3ogoLMRU2B226v3VIkT+Vkz1I4zjW91kPM6TVWG+JFmgQtdu8qREdjqgBzPrsGe0
-cpk125lLpwRmFtnqdJHw9lIZa2ih4rPtSZLVSFm+MmbCDjbKec6eIzbfsDx8RPma
-SgIoOWGiybLs0GQIo5IDK2ZAuCRKHLte1JZrimtI7iyOUoidpxOm2yW6l+99kDVr
-btto+O9VZbJsZ/AJkgJlWwtXZE6E9lkrKFuQwHKkHZcmm9tmRptHkN9os1CQHXcM
-Mgh4pHfyuF+DY/kvYo620HoDIzk37w==
-=JnBo
------END PGP SIGNATURE-----
-
---j+MD90OnwjQyWNYt--
-
---===============2718743733420761044==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============2718743733420761044==--
+diff --git a/sound/soc/uniphier/aio-core.c b/sound/soc/uniphier/aio-core.c
+index 8b09bbb0f8d0..9bcba06ba52e 100644
+--- a/sound/soc/uniphier/aio-core.c
++++ b/sound/soc/uniphier/aio-core.c
+@@ -327,7 +327,7 @@ static int aio_port_set_ch(struct uniphier_aio_sub *sub)
+  *
+  * Return: Zero if successful, otherwise a negative value on error.
+  */
+-int aio_port_set_rate(struct uniphier_aio_sub *sub, int rate)
++static int aio_port_set_rate(struct uniphier_aio_sub *sub, int rate)
+ {
+ 	struct regmap *r = sub->aio->chip->regmap;
+ 	struct device *dev = &sub->aio->chip->pdev->dev;
+@@ -446,7 +446,7 @@ int aio_port_set_rate(struct uniphier_aio_sub *sub, int rate)
+  *
+  * Return: Zero if successful, otherwise a negative value on error.
+  */
+-int aio_port_set_fmt(struct uniphier_aio_sub *sub)
++static int aio_port_set_fmt(struct uniphier_aio_sub *sub)
+ {
+ 	struct regmap *r = sub->aio->chip->regmap;
+ 	struct device *dev = &sub->aio->chip->pdev->dev;
+@@ -511,7 +511,7 @@ int aio_port_set_fmt(struct uniphier_aio_sub *sub)
+  *
+  * Return: Zero if successful, otherwise a negative value on error.
+  */
+-int aio_port_set_clk(struct uniphier_aio_sub *sub)
++static int aio_port_set_clk(struct uniphier_aio_sub *sub)
+ {
+ 	struct uniphier_aio_chip *chip = sub->aio->chip;
+ 	struct device *dev = &sub->aio->chip->pdev->dev;
+diff --git a/sound/soc/uniphier/aio.h b/sound/soc/uniphier/aio.h
+index 23a5c3c68658..ca6ccbae0ee8 100644
+--- a/sound/soc/uniphier/aio.h
++++ b/sound/soc/uniphier/aio.h
+@@ -325,9 +325,6 @@ int aio_chip_set_pll(struct uniphier_aio_chip *chip, int pll_id,
+ void aio_chip_init(struct uniphier_aio_chip *chip);
+ int aio_init(struct uniphier_aio_sub *sub);
+ void aio_port_reset(struct uniphier_aio_sub *sub);
+-int aio_port_set_rate(struct uniphier_aio_sub *sub, int rate);
+-int aio_port_set_fmt(struct uniphier_aio_sub *sub);
+-int aio_port_set_clk(struct uniphier_aio_sub *sub);
+ int aio_port_set_param(struct uniphier_aio_sub *sub, int pass_through,
+ 		       const struct snd_pcm_hw_params *params);
+ void aio_port_set_enable(struct uniphier_aio_sub *sub, int enable);
+-- 
+2.18.0
