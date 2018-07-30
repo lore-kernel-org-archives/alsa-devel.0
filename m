@@ -1,88 +1,93 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/4] ASoC: tegra: Add a TDM configuration
-	callback
-Date: Mon, 30 Jul 2018 16:07:49 +0100
-Message-ID: <20180730150749.GK5789@sirena.org.uk>
-References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
- <20180727125931.9794-3-jorge.sanjuan@codethink.co.uk>
- <2392df6f-12bc-74fe-ec0f-50dbb7b9a33a@nvidia.com>
- <20180730101800.GF5789@sirena.org.uk>
- <2a91268d-351b-d342-42bd-8ffbf33a316e@nvidia.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [alsa-devel] [PATCH] ASoC: soc-pcm: Use delay set in pointer
+ function
+Date: Mon, 30 Jul 2018 10:15:44 -0500
+Message-ID: <dd4d3dc6-88f3-d53f-cd5c-5035c80be3da@linux.intel.com>
+References: <1532686422-1790-1-git-send-email-akshu.agrawal@amd.com>
+ <66c8b8c4-bdd0-0129-5e5b-850890cfdb8d@linux.intel.com>
+ <e0990b62-897c-6dc7-8ac9-296932c505b7@amd.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0007691884723473734=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4978B2677A2
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 17:07:51 +0200 (CEST)
-In-Reply-To: <2a91268d-351b-d342-42bd-8ffbf33a316e@nvidia.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <e0990b62-897c-6dc7-8ac9-296932c505b7@amd.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, open list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
+On 7/27/18 11:28 PM, Agrawal, Akshu wrote:
+> 
+> 
+> On 7/27/2018 8:39 PM, Pierre-Louis Bossart wrote:
+>> On 7/27/18 5:13 AM, Akshu Agrawal wrote:
+>>> There are cases where a pointer function populates
+>>> runtime->delay, such as:
+>>> ./sound/pci/hda/hda_controller.c
+>>> ./sound/soc/intel/atom/sst-mfld-platform-pcm.c
+>>>
+>>> Also, in some cases cpu dai used is generic and the pcm
+>>> driver needs to set delay.
+>>>
+>>> This delay was getting lost and was overwritten by delays
+>>> from codec or cpu dai delay function if exposed.
+>>
+>> Humm, yes the runtime->delay set in the .pointer function would be lost
+>> without this change, but the delay would still be provided in the
+>> followup call to .delay.
+>> With your change, the same delay will be accounted for twice?
+>>
+> 
+> It will not be accounted twice because no driver which is setting
+> runtime->delay is defining .delay op for cpu_dai. Vice versa is also
+> true, the drivers which define .delay for cpu_dai don't set
+> runtime->delay. And I think this is expected from drivers else it would
+> be a bug from their side.
 
---===============0007691884723473734==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="T4Djgzn3z2HSNnx0"
-Content-Disposition: inline
+what do you mean my 'no driver'? Can you clarify if this is based on 
+analysis of the code or by-design. I don't recall having seen any 
+guidelines on this topic, and it's quite likely that different people 
+have different interpretation on how delay is supposed to be reported.
 
-
---T4Djgzn3z2HSNnx0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Mon, Jul 30, 2018 at 03:04:46PM +0100, Jon Hunter wrote:
-> On 30/07/18 11:18, Mark Brown wrote:
-
-> > DSP modes only care about the rising edge of the LRCLK, the pulse can be
-> > any width without causing interoperability problems.
-
-> OK, thanks I was not able to find a spec that defines this, but I saw a
-> lot of codecs use a single bit clock width. So then equally making the
-> default '1' should also be fine.
-
-There's not really a spec for this, it's just what tends to be
-implemented.
-
-> I still do not like configuring the fsync width in this function. The
-> fsync width needs to be configured for both DSP modes and normal I2S
-> modes and so it seems it would be more appropriate to do this in the
-> hw_params function for this driver.
-
-You *could* just always use the I2S width, it's going to look odd when
-people use a scope but it will work most of the time.
-
---T4Djgzn3z2HSNnx0
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltfKcQACgkQJNaLcl1U
-h9BB0Af+IyXKfsxp1Wb1UfKoIPDIVgYtmwl+1Y8/bfWN3+FAgD2w+KKS2NA5mRBg
-WpXyuoJ1JxIj4016p+YX1JBtzQKAULHGaEK/GjWGHbh0e6hlG6uKgnAXTD2bGBjT
-vz0SanSzblF0DTUHzH4gZHc+/K8TK/LUWjLdDmrOFePZ+Uk83fCDbtPuJWPQ4t/B
-b57efuww3wXP0tAKIKFAtW+trIWXhByODi/tjqsR2VFE9gcUIsgpPtiq+dkbhPDb
-3GJMrdExpTTIh5oG3oBu+8MyhJxw/Km6djZrC5cXPUXCV4B/dg0Y7TXcIRn5/lDI
-8gaHajCblyhEYmfxnF+8ybq0yjffag==
-=Bfke
------END PGP SIGNATURE-----
-
---T4Djgzn3z2HSNnx0--
-
---===============0007691884723473734==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0007691884723473734==--
+> 
+> .delay for codec_dai anyway is different and has to be accounted for.
+> 
+> Thanks,
+> Akshu
+>>>
+>>> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+>>> ---
+>>>    sound/soc/soc-pcm.c | 5 ++++-
+>>>    1 file changed, 4 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+>>> index 98be04b..b1a2bc2 100644
+>>> --- a/sound/soc/soc-pcm.c
+>>> +++ b/sound/soc/soc-pcm.c
+>>> @@ -1179,6 +1179,9 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+>>>    	snd_pcm_sframes_t codec_delay = 0;
+>>>    	int i;
+>>>    
+>>> +	/* clearing the previous delay */
+>>> +	runtime->delay = 0;
+>>> +
+>>>    	for_each_rtdcom(rtd, rtdcom) {
+>>>    		component = rtdcom->component;
+>>>    
+>>> @@ -1203,7 +1206,7 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
+>>>    	}
+>>>    	delay += codec_delay;
+>>>    
+>>> -	runtime->delay = delay;
+>>> +	runtime->delay += delay;
+>>>    
+>>>    	return offset;
+>>>    }
+>>>
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
