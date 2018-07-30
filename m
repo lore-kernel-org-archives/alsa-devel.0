@@ -1,27 +1,27 @@
-From: fulgor fulgor <l.vanwinnendaele@gmail.com>
-Subject: how could unsubscribe ?
-Date: Mon, 30 Jul 2018 21:00:08 +0200
-Message-ID: <CALmBKtnmYM8mjdTr=8yK5JpY=Ba2SMksqBRa9u6Ljn-W4pcnpQ@mail.gmail.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v4 1/4] ASoC: qcom: dt-bindings: Add sdm845 machine
+ bindings
+Date: Mon, 30 Jul 2018 15:51:26 -0600
+Message-ID: <20180730215126.GA2167@rob-hp-laptop>
+References: <1532945454-10437-1-git-send-email-rohitkr@codeaurora.org>
+ <1532945454-10437-2-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f171.google.com (mail-qk0-f171.google.com
- [209.85.220.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 0AA892673A0
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 21:00:20 +0200 (CEST)
-Received: by mail-qk0-f171.google.com with SMTP id t79-v6so8573567qke.4
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 12:00:20 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1532945454-10437-2-git-send-email-rohitkr@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rohit kumar <rohitkr@codeaurora.org>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-how could unsubscribe ?
+On Mon, Jul 30, 2018 at 03:40:51PM +0530, Rohit kumar wrote:
+> Add devicetree bindings documentation file for SDM845 sound card.
+> 
+> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,sdm845.txt      | 80 ++++++++++++++++++++++
+>  1 file changed, 80 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+
+Reviewed-by: Rob Herring <robh@kernel.org>
