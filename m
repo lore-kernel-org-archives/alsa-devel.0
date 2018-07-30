@@ -1,76 +1,66 @@
 From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH v2 02/10] mfd: wcd9335: add support to wcd9335 core
-Date: Mon, 30 Jul 2018 09:42:23 +0530
-Message-ID: <20180730041223.GD3661@vkoul-mobl>
+Subject: Re: [PATCH v2 00/10] ASoC: Add support to WCD9335
+	Audio Codec
+Date: Mon, 30 Jul 2018 10:19:50 +0530
+Message-ID: <20180730044950.GE3661@vkoul-mobl>
 References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
- <20180727121806.18209-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1F692676DD
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 06:50:00 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20180727121806.18209-3-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com, broonie@kernel.org, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
 On 27-07-18, 13:17, Srinivas Kandagatla wrote:
-> +obj-$(CONFIG_MFD_WCD9335)	+= wcd9335.o
-> +wcd9335-objs			:= wcd9335-core.o
-> +
+> Thankyou for reviewing v1 patchset, here is v2 addressing comments from v1.
+> 
+> Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC.
+> It is integrated in multiple Qualcomm SoCs like: MSM8996, MSM8976,
+> and MSM8956 chipsets.
+> 
+> WCD9335 had multiple functional blocks, like: Soundwire controller,
+> interrupt mux, pin controller, Audio codec, MBHC, MAD(Mic activity Detection),
+> Ultrasonic proximity and pen detection, Battery-voltage monitoring and
+> Codec processing engine.
+> 
+> Currently this patchset has been only tested with SLIMbus interface due
+> to hardware avaiablity, but it can be easily made to work with both SLIMbus
+> and I2C/I2S.    
+> 
+> This patchset adds very basic playback and capture support witout much
+> fancy features. New features will be added once the basic support is in.
+> This patchset is tested on top of linux-next on DB820c for both playback
+> and capture paths.
+> 
+> This patchset also depends on the SLIMbus Stream apis which is already merged
+> via char-misc tree for 4.19.
+> 
+> Some parts of the code has been inherited from Qualcomm andriod kernel,
+> so credits to various authors.
+> 
+> WCD9335 can be interfaced via I2S/I2C or SLIMbus. 
+> 
+> Here is my test branch incase someone want to try this out:
+> https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=wcd9335
 
-no slimbus objs?
+Apart from the few nitpicks I noticed, this looks good to me, so:
 
-> +static int wcd9335_bring_up(struct wcd9335 *wcd)
-> +{
-> +	struct regmap *rm = wcd->regmap;
-> +	int val, byte0;
-> +	int ret = 0;
-> +
-> +	regmap_read(rm, WCD9335_CHIP_TIER_CTRL_EFUSE_VAL_OUT0, &val);
-> +	regmap_read(rm, WCD9335_CHIP_TIER_CTRL_CHIP_ID_BYTE0, &byte0);
-> +
-> +	if ((val < 0) || (byte0 < 0)) {
-> +		dev_err(wcd->dev, "wcd9335 codec version detection fail!\n");
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (byte0 == 0x1) {
-> +		dev_info(wcd->dev, "wcd9335 codec version is v2.0\n");
-> +		wcd->version = WCD9335_VERSION_2_0;
-> +		regmap_write(rm, WCD9335_CODEC_RPM_RST_CTL, 0x01);
-> +		regmap_write(rm, WCD9335_SIDO_SIDO_TEST_2, 0x00);
-> +		regmap_write(rm, WCD9335_SIDO_SIDO_CCL_8, 0x6F);
-> +		regmap_write(rm, WCD9335_BIAS_VBG_FINE_ADJ, 0x65);
-> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x5);
-> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x7);
-> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x3);
-> +		regmap_write(rm, WCD9335_CODEC_RPM_RST_CTL, 0x3);
-> +	} else {
-> +		dev_err(wcd->dev, "wcd9335 codec version not supported\n");
-> +		ret = -EINVAL;
-> +	}
-> +
-> +	return ret;
-
-we can do return 0 and remove the variable as it is not used anywhere
-else.
-
-> +static int wcd9335_slim_probe(struct slim_device *slim)
-> +{
-> +	struct device *dev = &slim->dev;
-> +	struct wcd9335 *wcd;
-> +	int ret = 0;
-> +
-> +	/* Interface device */
-> +	if (slim->e_addr.dev_index == 0)
-> +		return 0;
-> +
-> +	wcd = devm_kzalloc(dev, sizeof(*wcd), GFP_KERNEL);
-> +	if (!wcd)
-> +		return	-ENOMEM;
-                      ^^
-double space
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
 
 -- 
 ~Vinod
