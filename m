@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ALSA: memalloc: Fix missing PAGE_SIZE
-	definition" to the asoc tree
-Date: Mon, 30 Jul 2018 12:04:25 +0100 (BST)
-Message-ID: <20180730110425.6AD481124216@debutante.sirena.org.uk>
-References: <20180730064640.3846-1-tiwai@suse.de>
+Subject: Applied "ASoC: wm8988: fix typo in rate constraints"
+	to the asoc tree
+Date: Mon, 30 Jul 2018 12:04:36 +0100 (BST)
+Message-ID: <20180730110436.24A8A1124216@debutante.sirena.org.uk>
+References: <20180728123017.GA28930@lenoch>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B8B792677A5
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:04:29 +0200 (CEST)
-In-Reply-To: <20180730064640.3846-1-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id A1C1C267763
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:04:36 +0200 (CEST)
+In-Reply-To: <20180728123017.GA28930@lenoch>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild test robot <lkp@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ALSA: memalloc: Fix missing PAGE_SIZE definition
+   ASoC: wm8988: fix typo in rate constraints
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 345a9ca37aa69bb3133c1a8390a71f993abcef0c Mon Sep 17 00:00:00 2001
-From: Takashi Iwai <tiwai@suse.de>
-Date: Mon, 30 Jul 2018 08:46:40 +0200
-Subject: [PATCH] ALSA: memalloc: Fix missing PAGE_SIZE definition
+>From c9c9780d8fa526a124933134a7e4041fa09662f6 Mon Sep 17 00:00:00 2001
+From: Ladislav Michl <ladis@linux-mips.org>
+Date: Sat, 28 Jul 2018 14:30:17 +0200
+Subject: [PATCH] ASoC: wm8988: fix typo in rate constraints
 
-The recent fix moved the inline snd_sgbuf_aligned_pages() outside the
-ifdef, and this triggered a build error on some architectures due to
-the undefined PAGE_SIZE, as spotted by 0day bot.
-Fix it by adding the missing header inclusion.
+Remove duplicated entry and add missing zero in rate constraints.
 
-Fixes: 4cae99d9b530 ("ALSA: memalloc: declare snd_sgbuf_aligned_pages() unconditionally")
-Reported-by: kbuild test robot <lkp@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
+Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/memalloc.h | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/wm8988.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index c669900e6cbe..67561b997915 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -24,6 +24,8 @@
- #ifndef __SOUND_MEMALLOC_H
- #define __SOUND_MEMALLOC_H
+diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
+index 62200117444b..6e52c6a8bab3 100644
+--- a/sound/soc/codecs/wm8988.c
++++ b/sound/soc/codecs/wm8988.c
+@@ -522,7 +522,7 @@ static inline int get_coeff(int mclk, int rate)
+ /* The set of rates we can generate from the above for each SYSCLK */
  
-+#include <asm/page.h>
-+
- struct device;
+ static const unsigned int rates_12288[] = {
+-	8000, 12000, 16000, 24000, 24000, 32000, 48000, 96000,
++	8000, 12000, 16000, 24000, 32000, 48000, 96000,
+ };
  
- /*
+ static const struct snd_pcm_hw_constraint_list constraints_12288 = {
+@@ -540,7 +540,7 @@ static const struct snd_pcm_hw_constraint_list constraints_112896 = {
+ };
+ 
+ static const unsigned int rates_12[] = {
+-	8000, 11025, 12000, 16000, 22050, 2400, 32000, 41100, 48000,
++	8000, 11025, 12000, 16000, 22050, 24000, 32000, 41100, 48000,
+ 	48000, 88235, 96000,
+ };
+ 
 -- 
 2.18.0
