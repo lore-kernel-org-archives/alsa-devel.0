@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: ak4613: convert to SPDX identifiers" to
+Subject: Applied "ASoC: da7210: convert to SPDX identifiers" to
 	the asoc tree
-Date: Mon, 30 Jul 2018 12:03:47 +0100 (BST)
-Message-ID: <20180730110347.45D511124216@debutante.sirena.org.uk>
-References: <87k1pdkvw6.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 30 Jul 2018 12:03:56 +0100 (BST)
+Message-ID: <20180730110356.E462F1124216@debutante.sirena.org.uk>
+References: <87lg9tkvws.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E557B2677CD
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:47 +0200 (CEST)
-In-Reply-To: <87k1pdkvw6.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5213B26779F
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:57 +0200 (CEST)
+In-Reply-To: <87lg9tkvws.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: ak4613: convert to SPDX identifiers
+   ASoC: da7210: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,50 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From e028937c77f44bb38cdbc464afce2bf41d96006b Mon Sep 17 00:00:00 2001
+>From c0ca5604d43233b0f5cfb793be9638af21f5535d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Jul 2018 07:53:08 +0000
-Subject: [PATCH] ASoC: ak4613: convert to SPDX identifiers
+Date: Mon, 30 Jul 2018 07:52:46 +0000
+Subject: [PATCH] ASoC: da7210: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/ak4613.c | 26 +++++++++++---------------
- 1 file changed, 11 insertions(+), 15 deletions(-)
+ sound/soc/codecs/da7210.c | 27 +++++++++++----------------
+ 1 file changed, 11 insertions(+), 16 deletions(-)
 
-diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
-index 8523ff9351cf..c1181a20714d 100644
---- a/sound/soc/codecs/ak4613.c
-+++ b/sound/soc/codecs/ak4613.c
-@@ -1,18 +1,14 @@
+diff --git a/sound/soc/codecs/da7210.c b/sound/soc/codecs/da7210.c
+index a664111b7184..e172913d04a4 100644
+--- a/sound/soc/codecs/da7210.c
++++ b/sound/soc/codecs/da7210.c
+@@ -1,19 +1,14 @@
 -/*
-- * ak4613.c  --  Asahi Kasei ALSA Soc Audio driver
+- * DA7210 ALSA Soc codec driver
 - *
-- * Copyright (C) 2015 Renesas Electronics Corporation
-- * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+- * Copyright (c) 2009 Dialog Semiconductor
+- * Written by David Chen <Dajun.chen@diasemi.com>
 - *
-- * Based on ak4642.c by Kuninori Morimoto
-- * Based on wm8731.c by Richard Purdie
-- * Based on ak4535.c by Richard Purdie
-- * Based on wm8753.c by Liam Girdwood
+- * Copyright (C) 2009 Renesas Solutions Corp.
+- * Cleanups by Kuninori Morimoto <morimoto.kuninori@renesas.com>
 - *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
+- * Tested on SuperH Ecovec24 board with S16/S24 LE in 48KHz using I2S
+- *
+- * This program is free software; you can redistribute  it and/or modify it
+- * under  the terms of  the GNU General  Public License as published by the
+- * Free Software Foundation;  either version 2 of the  License, or (at your
+- * option) any later version.
 - */
-+// SPDX-License-Identifier: GPL-2.0
++// SPDX-License-Identifier: GPL-2.0+
 +//
-+// ak4613.c  --  Asahi Kasei ALSA Soc Audio driver
++// DA7210 ALSA Soc codec driver
 +//
-+// Copyright (C) 2015 Renesas Electronics Corporation
-+// Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++// Copyright (c) 2009 Dialog Semiconductor
++// Written by David Chen <Dajun.chen@diasemi.com>
 +//
-+// Based on ak4642.c by Kuninori Morimoto
-+// Based on wm8731.c by Richard Purdie
-+// Based on ak4535.c by Richard Purdie
-+// Based on wm8753.c by Liam Girdwood
++// Copyright (C) 2009 Renesas Solutions Corp.
++// Cleanups by Kuninori Morimoto <morimoto.kuninori@renesas.com>
++//
++// Tested on SuperH Ecovec24 board with S16/S24 LE in 48KHz using I2S
  
- #include <linux/clk.h>
  #include <linux/delay.h>
+ #include <linux/i2c.h>
 -- 
 2.18.0
