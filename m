@@ -1,20 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/2] ALSA: seq: virmidi: Use
-	READ_ONCE/WRITE_ONCE() macros
-Date: Mon, 30 Jul 2018 18:52:30 +0200
-Message-ID: <20180730165230.10388-2-tiwai@suse.de>
-References: <20180730165230.10388-1-tiwai@suse.de>
+Subject: [PATCH 1/2] ALSA: seq: virmidi: Offload the output
+	event processing
+Date: Mon, 30 Jul 2018 18:52:29 +0200
+Message-ID: <20180730165230.10388-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F3C7A26779C
+ by alsa0.perex.cz (Postfix) with ESMTP id 021A426779D
  for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 18:52:37 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 20F79AF3A
+ by mx1.suse.de (Postfix) with ESMTP id 1AF40AEE2
  for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 16:52:37 +0000 (UTC)
-In-Reply-To: <20180730165230.10388-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,81 +25,179 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The trigger flag in vmidi object can be referred in different contexts
-concurrently, hence it's better to be put with READ_ONCE() and
-WRITE_ONCE() macros to assure the accesses.
+The virmidi sequencer stuff tries to translate the rawmidi bytes to
+sequencer events and deliver the packets at trigger callback.  The
+amount of the whole process of these translations and deliveries
+depends on the incoming rawmidi bytes, and we have no limit for that;
+this was the cause of a CPU soft lockup that had been reported and
+fixed recently.
+
+Although we've fixed the soft lockup by putting the temporary unlock
+and cond_resched(), it's rather a quick band aid.  In this patch,
+meanwhile, the event parsing and delivery process is offloaded to a
+dedicated work, and the trigger callback just kicks it off.  It has
+three merits, at least:
+
+- The processing is always done in a sleepable context, which can
+  assure the event delivery with non-atomic flag without hackish
+  is_atomic() usage.
+
+- Other relevant codes can be simplified, reducing the lines
+
+- It makes me happier
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/seq_virmidi.h  |  2 +-
- sound/core/seq/seq_virmidi.c | 14 +++++---------
- 2 files changed, 6 insertions(+), 10 deletions(-)
+ include/sound/seq_virmidi.h  |   1 +
+ sound/core/seq/seq_virmidi.c | 100 ++++++++++++++++-------------------
+ 2 files changed, 47 insertions(+), 54 deletions(-)
 
 diff --git a/include/sound/seq_virmidi.h b/include/sound/seq_virmidi.h
-index d488dcfa3a4e..796ce7772213 100644
+index 695257ae64ac..d488dcfa3a4e 100644
 --- a/include/sound/seq_virmidi.h
 +++ b/include/sound/seq_virmidi.h
-@@ -36,7 +36,7 @@ struct snd_virmidi {
- 	int seq_mode;
- 	int client;
- 	int port;
--	unsigned int trigger: 1;
-+	bool trigger;
- 	struct snd_midi_event *parser;
+@@ -41,6 +41,7 @@ struct snd_virmidi {
  	struct snd_seq_event event;
  	struct snd_virmidi_dev *rdev;
+ 	struct snd_rawmidi_substream *substream;
++	struct work_struct output_work;
+ };
+ 
+ #define SNDRV_VIRMIDI_SUBSCRIBE		(1<<0)
 diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index 67ea5d62cebc..03ac5e72dbe6 100644
+index 8ebbca554e99..67ea5d62cebc 100644
 --- a/sound/core/seq/seq_virmidi.c
 +++ b/sound/core/seq/seq_virmidi.c
-@@ -89,7 +89,7 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 	else
- 		down_read(&rdev->filelist_sem);
- 	list_for_each_entry(vmidi, &rdev->filelist, list) {
--		if (!vmidi->trigger)
-+		if (!READ_ONCE(vmidi->trigger))
- 			continue;
- 		if (ev->type == SNDRV_SEQ_EVENT_SYSEX) {
- 			if ((ev->flags & SNDRV_SEQ_EVENT_LENGTH_MASK) != SNDRV_SEQ_EVENT_LENGTH_VARIABLE)
-@@ -147,11 +147,7 @@ static void snd_virmidi_input_trigger(struct snd_rawmidi_substream *substream, i
+@@ -154,70 +154,58 @@ static void snd_virmidi_input_trigger(struct snd_rawmidi_substream *substream, i
+ 	}
+ }
+ 
+-/*
+- * trigger rawmidi stream for output
++/* process rawmidi bytes and send events;
++ * we need no lock here for vmidi->event since it's handled only in this work
+  */
+-static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream, int up)
++static void snd_vmidi_output_work(struct work_struct *work)
  {
- 	struct snd_virmidi *vmidi = substream->runtime->private_data;
+-	struct snd_virmidi *vmidi = substream->runtime->private_data;
+-	int count, res;
+-	unsigned char buf[32], *pbuf;
+-	unsigned long flags;
+-	bool check_resched = !in_atomic();
++	struct snd_virmidi *vmidi;
++	struct snd_rawmidi_substream *substream;
++	unsigned char input;
++	int ret;
++
++	vmidi = container_of(work, struct snd_virmidi, output_work);
++	substream = vmidi->substream;
++
++	/* discard the outputs in dispatch mode unless subscribed */
++	if (vmidi->seq_mode == SNDRV_VIRMIDI_SEQ_DISPATCH &&
++	    !(vmidi->rdev->flags & SNDRV_VIRMIDI_SUBSCRIBE)) {
++		while (!snd_rawmidi_transmit_empty(substream))
++			snd_rawmidi_transmit_ack(substream, 1);
++		return;
++	}
  
 -	if (up) {
 -		vmidi->trigger = 1;
+-		if (vmidi->seq_mode == SNDRV_VIRMIDI_SEQ_DISPATCH &&
+-		    !(vmidi->rdev->flags & SNDRV_VIRMIDI_SUBSCRIBE)) {
+-			while (snd_rawmidi_transmit(substream, buf,
+-						    sizeof(buf)) > 0) {
+-				/* ignored */
+-			}
+-			return;
+-		}
+-		spin_lock_irqsave(&substream->runtime->lock, flags);
++	while (vmidi->trigger) {
++		if (snd_rawmidi_transmit(substream, &input, 1) != 1)
++			break;
++		if (snd_midi_event_encode_byte(vmidi->parser, input,
++					       &vmidi->event) <= 0)
++			continue;
+ 		if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
+-			if (snd_seq_kernel_client_dispatch(vmidi->client, &vmidi->event, in_atomic(), 0) < 0)
+-				goto out;
++			ret = snd_seq_kernel_client_dispatch(vmidi->client,
++							     &vmidi->event,
++							     false, 0);
+ 			vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
+-		}
+-		while (1) {
+-			count = __snd_rawmidi_transmit_peek(substream, buf, sizeof(buf));
+-			if (count <= 0)
++			if (ret < 0)
+ 				break;
+-			pbuf = buf;
+-			while (count > 0) {
+-				res = snd_midi_event_encode(vmidi->parser, pbuf, count, &vmidi->event);
+-				if (res < 0) {
+-					snd_midi_event_reset_encode(vmidi->parser);
+-					continue;
+-				}
+-				__snd_rawmidi_transmit_ack(substream, res);
+-				pbuf += res;
+-				count -= res;
+-				if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
+-					if (snd_seq_kernel_client_dispatch(vmidi->client, &vmidi->event, in_atomic(), 0) < 0)
+-						goto out;
+-					vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
+-				}
+-			}
+-			if (!check_resched)
+-				continue;
+-			/* do temporary unlock & cond_resched() for avoiding
+-			 * CPU soft lockup, which may happen via a write from
+-			 * a huge rawmidi buffer
+-			 */
+-			spin_unlock_irqrestore(&substream->runtime->lock, flags);
+-			cond_resched();
+-			spin_lock_irqsave(&substream->runtime->lock, flags);
+ 		}
+-	out:
+-		spin_unlock_irqrestore(&substream->runtime->lock, flags);
 -	} else {
 -		vmidi->trigger = 0;
--	}
-+	WRITE_ONCE(vmidi->trigger, !!up);
- }
- 
- /* process rawmidi bytes and send events;
-@@ -175,7 +171,7 @@ static void snd_vmidi_output_work(struct work_struct *work)
- 		return;
++		/* rawmidi input might be huge, allow to have a break */
++		cond_resched();
  	}
- 
--	while (vmidi->trigger) {
-+	while (READ_ONCE(vmidi->trigger)) {
- 		if (snd_rawmidi_transmit(substream, &input, 1) != 1)
- 			break;
- 		if (snd_midi_event_encode_byte(vmidi->parser, input,
-@@ -201,7 +197,7 @@ static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream,
- {
- 	struct snd_virmidi *vmidi = substream->runtime->private_data;
- 
--	vmidi->trigger = !!up;
-+	WRITE_ONCE(vmidi->trigger, !!up);
- 	if (up)
- 		queue_work(system_highpri_wq, &vmidi->output_work);
  }
-@@ -289,7 +285,7 @@ static int snd_virmidi_output_close(struct snd_rawmidi_substream *substream)
+ 
++/*
++ * trigger rawmidi stream for output
++ */
++static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream, int up)
++{
++	struct snd_virmidi *vmidi = substream->runtime->private_data;
++
++	vmidi->trigger = !!up;
++	if (up)
++		queue_work(system_highpri_wq, &vmidi->output_work);
++}
++
+ /*
+  * open rawmidi handle for input
+  */
+@@ -270,6 +258,7 @@ static int snd_virmidi_output_open(struct snd_rawmidi_substream *substream)
+ 	vmidi->port = rdev->port;
+ 	snd_virmidi_init_event(vmidi, &vmidi->event);
+ 	vmidi->rdev = rdev;
++	INIT_WORK(&vmidi->output_work, snd_vmidi_output_work);
+ 	runtime->private_data = vmidi;
+ 	return 0;
+ }
+@@ -299,6 +288,9 @@ static int snd_virmidi_input_close(struct snd_rawmidi_substream *substream)
+ static int snd_virmidi_output_close(struct snd_rawmidi_substream *substream)
  {
  	struct snd_virmidi *vmidi = substream->runtime->private_data;
- 
--	vmidi->trigger = 0; /* to be sure */
-+	WRITE_ONCE(vmidi->trigger, false); /* to be sure */
- 	cancel_work_sync(&vmidi->output_work);
++
++	vmidi->trigger = 0; /* to be sure */
++	cancel_work_sync(&vmidi->output_work);
  	snd_midi_event_free(vmidi->parser);
  	substream->runtime->private_data = NULL;
+ 	kfree(vmidi);
 -- 
 2.18.0
