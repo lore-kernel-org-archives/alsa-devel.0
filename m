@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra_alc5632: fix device_node
-	refcounting" to the asoc tree
-Date: Mon, 30 Jul 2018 12:03:30 +0100 (BST)
-Message-ID: <20180730110330.9BF2C1124216@debutante.sirena.org.uk>
+Subject: Applied "ASoC: sh: Kconfig: convert to SPDX
+	identifiers" to the asoc tree
+Date: Mon, 30 Jul 2018 12:03:38 +0100 (BST)
+Message-ID: <20180730110338.197261124216@debutante.sirena.org.uk>
+References: <87efflkvk3.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9CC852677BA
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:31 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 66FC526779F
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:39 +0200 (CEST)
+In-Reply-To: <87efflkvk3.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tegra_alc5632: fix device_node refcounting
+   ASoC: sh: Kconfig: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -52,74 +53,28 @@ to this mail.
 Thanks,
 Mark
 
->From 4321723648b0abb456f7a9af51bb09a4ec60799d Mon Sep 17 00:00:00 2001
-From: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Date: Sat, 28 Jul 2018 00:06:59 +0300
-Subject: [PATCH] ASoC: tegra_alc5632: fix device_node refcounting
+>From 7464d3faf62a5adcb99f4f8ea9baabda78aed4aa Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 30 Jul 2018 08:00:22 +0000
+Subject: [PATCH] ASoC: sh: Kconfig: convert to SPDX identifiers
 
-tegra_alc5632_probe() increments reference count of device nodes
-with of_parse_phandle(), but there is no code decrementing them
-in the driver.
+By default all files without license information are under the default
+license of the kernel, which is GPL version 2.
 
-The patch adds of_node_put() to tegra_alc5632_remove() and
-to error handling paths in the probe.
-
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra_alc5632.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/sh/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
-index 5197d6b18cb6..98d87801d57a 100644
---- a/sound/soc/tegra/tegra_alc5632.c
-+++ b/sound/soc/tegra/tegra_alc5632.c
-@@ -190,14 +190,14 @@ static int tegra_alc5632_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev,
- 			"Property 'nvidia,i2s-controller' missing or invalid\n");
- 		ret = -EINVAL;
--		goto err;
-+		goto err_put_codec_of_node;
- 	}
- 
- 	tegra_alc5632_dai.platform_of_node = tegra_alc5632_dai.cpu_of_node;
- 
- 	ret = tegra_asoc_utils_init(&alc5632->util_data, &pdev->dev);
- 	if (ret)
--		goto err;
-+		goto err_put_cpu_of_node;
- 
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
-@@ -210,6 +210,13 @@ static int tegra_alc5632_probe(struct platform_device *pdev)
- 
- err_fini_utils:
- 	tegra_asoc_utils_fini(&alc5632->util_data);
-+err_put_cpu_of_node:
-+	of_node_put(tegra_alc5632_dai.cpu_of_node);
-+	tegra_alc5632_dai.cpu_of_node = NULL;
-+	tegra_alc5632_dai.platform_of_node = NULL;
-+err_put_codec_of_node:
-+	of_node_put(tegra_alc5632_dai.codec_of_node);
-+	tegra_alc5632_dai.codec_of_node = NULL;
- err:
- 	return ret;
- }
-@@ -223,6 +230,12 @@ static int tegra_alc5632_remove(struct platform_device *pdev)
- 
- 	tegra_asoc_utils_fini(&machine->util_data);
- 
-+	of_node_put(tegra_alc5632_dai.cpu_of_node);
-+	tegra_alc5632_dai.cpu_of_node = NULL;
-+	tegra_alc5632_dai.platform_of_node = NULL;
-+	of_node_put(tegra_alc5632_dai.codec_of_node);
-+	tegra_alc5632_dai.codec_of_node = NULL;
-+
- 	return 0;
- }
+diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
+index 0ae0800bf3a8..dc20f0f7080a 100644
+--- a/sound/soc/sh/Kconfig
++++ b/sound/soc/sh/Kconfig
+@@ -1,3 +1,4 @@
++# SPDX-License-Identifier: GPL-2.0
+ menu "SoC Audio support for Renesas SoCs"
+ 	depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
  
 -- 
 2.18.0
