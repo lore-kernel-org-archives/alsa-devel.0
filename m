@@ -1,203 +1,46 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 1/2] ALSA: seq: virmidi: Offload the output
-	event processing
-Date: Mon, 30 Jul 2018 18:52:29 +0200
-Message-ID: <20180730165230.10388-1-tiwai@suse.de>
+From: Ben Dooks <ben.dooks@codethink.co.uk>
+Subject: Re: [PATCH 0/4] ASoC: Tegra30 TDM support
+Date: Mon, 30 Jul 2018 18:22:08 +0100
+Message-ID: <e7961b55c10610a7e137edee2995add9@codethink.co.uk>
+References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 021A426779D
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 18:52:37 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 1AF40AEE2
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 16:52:37 +0000 (UTC)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, jonathanh@nvidia.com, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The virmidi sequencer stuff tries to translate the rawmidi bytes to
-sequencer events and deliver the packets at trigger callback.  The
-amount of the whole process of these translations and deliveries
-depends on the incoming rawmidi bytes, and we have no limit for that;
-this was the cause of a CPU soft lockup that had been reported and
-fixed recently.
 
-Although we've fixed the soft lockup by putting the temporary unlock
-and cond_resched(), it's rather a quick band aid.  In this patch,
-meanwhile, the event parsing and delivery process is offloaded to a
-dedicated work, and the trigger callback just kicks it off.  It has
-three merits, at least:
 
-- The processing is always done in a sleepable context, which can
-  assure the event delivery with non-atomic flag without hackish
-  is_atomic() usage.
+On 2018-07-27 13:59, Jorge Sanjuan wrote:
+> This patchset adds support for TDM audio on Tegra30 hardware.
+> It adds the DAI's `set_tdm_slot` callback and enables a tegra
+> pcm to have up to 8 channels.
+> 
+> It also includes support for other audio formats supported by
+> the Tegra30 HW and fixes a broken macro needed for setting the
+> TDM on the registers.
+> 
+> Based on Linux 4.18-rc3 tag.
+> 
+> Edward Cragg (4):
+>   ASoC: tegra: i2s: Fix typo/broken macro
+>   ASoC: tegra: Add a TDM configuration callback
+>   ASoC: tegra: Allow 32-bit and 24-bit samples
+>   ASoC: tegra: i2s: Add support for more than 2 channels
+> 
+>  sound/soc/tegra/tegra30_i2s.c | 72 
+> ++++++++++++++++++++++++++++++++++++-------
+>  sound/soc/tegra/tegra30_i2s.h |  2 +-
+>  2 files changed, 62 insertions(+), 12 deletions(-)
 
-- Other relevant codes can be simplified, reducing the lines
+Just as a note, Ed Cragg has moved on from Codethink and I've not
+got a new address for him. We've been cleaning some of the work Ed,
+Jorge, Terry and myself have been doing.
 
-- It makes me happier
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/seq_virmidi.h  |   1 +
- sound/core/seq/seq_virmidi.c | 100 ++++++++++++++++-------------------
- 2 files changed, 47 insertions(+), 54 deletions(-)
-
-diff --git a/include/sound/seq_virmidi.h b/include/sound/seq_virmidi.h
-index 695257ae64ac..d488dcfa3a4e 100644
---- a/include/sound/seq_virmidi.h
-+++ b/include/sound/seq_virmidi.h
-@@ -41,6 +41,7 @@ struct snd_virmidi {
- 	struct snd_seq_event event;
- 	struct snd_virmidi_dev *rdev;
- 	struct snd_rawmidi_substream *substream;
-+	struct work_struct output_work;
- };
- 
- #define SNDRV_VIRMIDI_SUBSCRIBE		(1<<0)
-diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index 8ebbca554e99..67ea5d62cebc 100644
---- a/sound/core/seq/seq_virmidi.c
-+++ b/sound/core/seq/seq_virmidi.c
-@@ -154,70 +154,58 @@ static void snd_virmidi_input_trigger(struct snd_rawmidi_substream *substream, i
- 	}
- }
- 
--/*
-- * trigger rawmidi stream for output
-+/* process rawmidi bytes and send events;
-+ * we need no lock here for vmidi->event since it's handled only in this work
-  */
--static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream, int up)
-+static void snd_vmidi_output_work(struct work_struct *work)
- {
--	struct snd_virmidi *vmidi = substream->runtime->private_data;
--	int count, res;
--	unsigned char buf[32], *pbuf;
--	unsigned long flags;
--	bool check_resched = !in_atomic();
-+	struct snd_virmidi *vmidi;
-+	struct snd_rawmidi_substream *substream;
-+	unsigned char input;
-+	int ret;
-+
-+	vmidi = container_of(work, struct snd_virmidi, output_work);
-+	substream = vmidi->substream;
-+
-+	/* discard the outputs in dispatch mode unless subscribed */
-+	if (vmidi->seq_mode == SNDRV_VIRMIDI_SEQ_DISPATCH &&
-+	    !(vmidi->rdev->flags & SNDRV_VIRMIDI_SUBSCRIBE)) {
-+		while (!snd_rawmidi_transmit_empty(substream))
-+			snd_rawmidi_transmit_ack(substream, 1);
-+		return;
-+	}
- 
--	if (up) {
--		vmidi->trigger = 1;
--		if (vmidi->seq_mode == SNDRV_VIRMIDI_SEQ_DISPATCH &&
--		    !(vmidi->rdev->flags & SNDRV_VIRMIDI_SUBSCRIBE)) {
--			while (snd_rawmidi_transmit(substream, buf,
--						    sizeof(buf)) > 0) {
--				/* ignored */
--			}
--			return;
--		}
--		spin_lock_irqsave(&substream->runtime->lock, flags);
-+	while (vmidi->trigger) {
-+		if (snd_rawmidi_transmit(substream, &input, 1) != 1)
-+			break;
-+		if (snd_midi_event_encode_byte(vmidi->parser, input,
-+					       &vmidi->event) <= 0)
-+			continue;
- 		if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
--			if (snd_seq_kernel_client_dispatch(vmidi->client, &vmidi->event, in_atomic(), 0) < 0)
--				goto out;
-+			ret = snd_seq_kernel_client_dispatch(vmidi->client,
-+							     &vmidi->event,
-+							     false, 0);
- 			vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
--		}
--		while (1) {
--			count = __snd_rawmidi_transmit_peek(substream, buf, sizeof(buf));
--			if (count <= 0)
-+			if (ret < 0)
- 				break;
--			pbuf = buf;
--			while (count > 0) {
--				res = snd_midi_event_encode(vmidi->parser, pbuf, count, &vmidi->event);
--				if (res < 0) {
--					snd_midi_event_reset_encode(vmidi->parser);
--					continue;
--				}
--				__snd_rawmidi_transmit_ack(substream, res);
--				pbuf += res;
--				count -= res;
--				if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
--					if (snd_seq_kernel_client_dispatch(vmidi->client, &vmidi->event, in_atomic(), 0) < 0)
--						goto out;
--					vmidi->event.type = SNDRV_SEQ_EVENT_NONE;
--				}
--			}
--			if (!check_resched)
--				continue;
--			/* do temporary unlock & cond_resched() for avoiding
--			 * CPU soft lockup, which may happen via a write from
--			 * a huge rawmidi buffer
--			 */
--			spin_unlock_irqrestore(&substream->runtime->lock, flags);
--			cond_resched();
--			spin_lock_irqsave(&substream->runtime->lock, flags);
- 		}
--	out:
--		spin_unlock_irqrestore(&substream->runtime->lock, flags);
--	} else {
--		vmidi->trigger = 0;
-+		/* rawmidi input might be huge, allow to have a break */
-+		cond_resched();
- 	}
- }
- 
-+/*
-+ * trigger rawmidi stream for output
-+ */
-+static void snd_virmidi_output_trigger(struct snd_rawmidi_substream *substream, int up)
-+{
-+	struct snd_virmidi *vmidi = substream->runtime->private_data;
-+
-+	vmidi->trigger = !!up;
-+	if (up)
-+		queue_work(system_highpri_wq, &vmidi->output_work);
-+}
-+
- /*
-  * open rawmidi handle for input
-  */
-@@ -270,6 +258,7 @@ static int snd_virmidi_output_open(struct snd_rawmidi_substream *substream)
- 	vmidi->port = rdev->port;
- 	snd_virmidi_init_event(vmidi, &vmidi->event);
- 	vmidi->rdev = rdev;
-+	INIT_WORK(&vmidi->output_work, snd_vmidi_output_work);
- 	runtime->private_data = vmidi;
- 	return 0;
- }
-@@ -299,6 +288,9 @@ static int snd_virmidi_input_close(struct snd_rawmidi_substream *substream)
- static int snd_virmidi_output_close(struct snd_rawmidi_substream *substream)
- {
- 	struct snd_virmidi *vmidi = substream->runtime->private_data;
-+
-+	vmidi->trigger = 0; /* to be sure */
-+	cancel_work_sync(&vmidi->output_work);
- 	snd_midi_event_free(vmidi->parser);
- 	substream->runtime->private_data = NULL;
- 	kfree(vmidi);
 -- 
-2.18.0
+Ben
