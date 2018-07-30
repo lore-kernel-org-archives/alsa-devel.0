@@ -1,135 +1,43 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH 4/4] ASoC: tegra: i2s: Add support for more
- than 2 channels
-Date: Mon, 30 Jul 2018 10:46:14 +0100
-Message-ID: <d81d5c3c-2b2f-308f-d98e-d39c5d5d147f@nvidia.com>
-References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
- <20180727125931.9794-5-jorge.sanjuan@codethink.co.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hqemgate16.nvidia.com (hqemgate16.nvidia.com [216.228.121.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EE5A267365
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 11:46:19 +0200 (CEST)
-In-Reply-To: <20180727125931.9794-5-jorge.sanjuan@codethink.co.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, lgirdwood@gmail.com, broonie@kernel.org
-Cc: linux-tegra@vger.kernel.org, linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, thierry.reding@gmail.com, linux-kernel@vger.kernel.org
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH v4 0/4] Add support for audio on SDM845 SoC
+Date: Mon, 30 Jul 2018 15:40:50 +0530
+Message-ID: <1532945454-10437-1-git-send-email-rohitkr@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
+This provides initial patchset to support audio on
+Qualcomm Techonologies Inc. SDM845 SoC. Currently, it supports
+audio playback/capture over Primary MI2S and Quaternary
+TDM ports.
 
-On 27/07/18 13:59, Jorge Sanjuan wrote:
-> From: Edward Cragg <edward.cragg@codethink.co.uk>
-> 
-> The CIF configuration and clock setting is currently hard coded for 2
-> channels. Since the hardware is capable of supporting 1-8 channels add
-> support for reading the channel count from the supplied parameters to
-> allow for better TDM support. It seems the original implementation of this
-> driver was fixed at 2 channels for simplicity, and not implementing TDM.
-> 
-> Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
-> Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
-> ---
->  sound/soc/tegra/tegra30_i2s.c | 21 ++++++++++++---------
->  1 file changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
-> index e26c19ef7439..0f240d7989d0 100644
-> --- a/sound/soc/tegra/tegra30_i2s.c
-> +++ b/sound/soc/tegra/tegra30_i2s.c
-> @@ -138,16 +138,17 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
->  	struct device *dev = dai->dev;
->  	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
->  	unsigned int mask, val, reg;
-> -	int ret, sample_size, srate, i2sclock, bitcnt;
-> +	int ret, sample_size, srate, i2sclock, bitcnt, audio_bits, channels;
->  	struct tegra30_ahub_cif_conf cif_conf;
->  
-> -	if (params_channels(params) != 2)
-> +	if (params_channels(params) > 8)
->  		return -EINVAL;
+Changes since v3:
+- Added Module_license in common.c
+- Merged apq8096.c machine driver change with common api patch
+- Addressed comments by Srinivas, Mark and Vinod.
 
-For normal I2S mode, channels should always be 2 and so it could be worth checking
-if we are using TDM mode here or not.
+Rohit kumar (4):
+  ASoC: qcom: dt-bindings: Add sdm845 machine bindings
+  ASoC: dt-bindings: Update dt binding name for apq8096
+  ASoC: qcom: Add support to parse common audio device nodes
+  ASoC: qcom: add sdm845 sound card support
 
->  
->  	mask = TEGRA30_I2S_CTRL_BIT_SIZE_MASK;
->  	switch (params_format(params)) {
->  	case SNDRV_PCM_FORMAT_S16_LE:
->  		val = TEGRA30_I2S_CTRL_BIT_SIZE_16;
-> +		audio_bits = TEGRA30_AUDIOCIF_BITS_16;
->  		sample_size = 16;
->  		break;
->  	case SNDRV_PCM_FORMAT_S24_LE:
-> @@ -157,6 +158,7 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
->  		break;
->  	case SNDRV_PCM_FORMAT_S32_LE:
->  		val = TEGRA30_I2S_CTRL_BIT_SIZE_32;
-> +		audio_bits = TEGRA30_AUDIOCIF_BITS_32;
->  		sample_size = 32;
->  		break;
->  	default:
-> @@ -166,9 +168,10 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
->  	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CTRL, mask, val);
->  
->  	srate = params_rate(params);
-> +	channels = params_channels(params);
->  
->  	/* Final "* 2" required by Tegra hardware */
-> -	i2sclock = srate * params_channels(params) * sample_size * 2;
-> +	i2sclock = srate * channels * sample_size * 2;
->  
->  	bitcnt = (i2sclock / (2 * srate)) - 1;
->  	if (bitcnt < 0 || bitcnt > TEGRA30_I2S_TIMING_CHANNEL_BIT_COUNT_MASK_US)
-> @@ -188,10 +191,10 @@ static int tegra30_i2s_hw_params(struct snd_pcm_substream *substream,
->  	regmap_write(i2s->regmap, TEGRA30_I2S_TIMING, val);
->  
->  	cif_conf.threshold = 0;
-> -	cif_conf.audio_channels = 2;
-> -	cif_conf.client_channels = 2;
-> -	cif_conf.audio_bits = TEGRA30_AUDIOCIF_BITS_16;
-> -	cif_conf.client_bits = TEGRA30_AUDIOCIF_BITS_16;
-> +	cif_conf.audio_channels = channels;
-> +	cif_conf.client_channels = channels;
-> +	cif_conf.audio_bits = audio_bits;
-> +	cif_conf.client_bits = audio_bits;
->  	cif_conf.expand = 0;
->  	cif_conf.stereo_conv = 0;
->  	cif_conf.replicate = 0;
-> @@ -329,7 +332,7 @@ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
->  	.playback = {
->  		.stream_name = "Playback",
->  		.channels_min = 2,
-> -		.channels_max = 2,
-> +		.channels_max = 8,
->  		.rates = SNDRV_PCM_RATE_8000_96000,
->  		.formats = SNDRV_PCM_FMTBIT_S32_LE |
->  			   SNDRV_PCM_FMTBIT_S24_LE |
-> @@ -338,7 +341,7 @@ static const struct snd_soc_dai_driver tegra30_i2s_dai_template = {
->  	.capture = {
->  		.stream_name = "Capture",
->  		.channels_min = 2,
-> -		.channels_max = 2,
-> +		.channels_max = 8,
->  		.rates = SNDRV_PCM_RATE_8000_96000,
->  		.formats = SNDRV_PCM_FMTBIT_S32_LE |
->  			   SNDRV_PCM_FMTBIT_S24_LE |
-> 
-
-Otherwise, assuming that you fix patch 3/4 and rebase this one, looks good to me.
-
-Cheers
-Jon
+ .../devicetree/bindings/sound/qcom,apq8096.txt     |  15 +-
+ .../devicetree/bindings/sound/qcom,sdm845.txt      |  80 ++++++
+ sound/soc/qcom/Kconfig                             |   8 +
+ sound/soc/qcom/Makefile                            |   4 +-
+ sound/soc/qcom/apq8096.c                           | 111 +-------
+ sound/soc/qcom/common.c                            | 112 ++++++++
+ sound/soc/qcom/common.h                            |  12 +
+ sound/soc/qcom/sdm845.c                            | 286 +++++++++++++++++++++
+ 8 files changed, 525 insertions(+), 103 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+ create mode 100644 sound/soc/qcom/common.c
+ create mode 100644 sound/soc/qcom/common.h
+ create mode 100644 sound/soc/qcom/sdm845.c
 
 -- 
-nvpublic
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
