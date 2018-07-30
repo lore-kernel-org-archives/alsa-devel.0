@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sh: Kconfig: convert to SPDX
-	identifiers" to the asoc tree
-Date: Mon, 30 Jul 2018 12:03:38 +0100 (BST)
-Message-ID: <20180730110338.197261124216@debutante.sirena.org.uk>
-References: <87efflkvk3.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: ak4613: convert to SPDX identifiers" to
+	the asoc tree
+Date: Mon, 30 Jul 2018 12:03:47 +0100 (BST)
+Message-ID: <20180730110347.45D511124216@debutante.sirena.org.uk>
+References: <87k1pdkvw6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 66FC526779F
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:39 +0200 (CEST)
-In-Reply-To: <87efflkvk3.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E557B2677CD
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:47 +0200 (CEST)
+In-Reply-To: <87k1pdkvw6.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sh: Kconfig: convert to SPDX identifiers
+   ASoC: ak4613: convert to SPDX identifiers
 
 has been applied to the asoc tree at
 
@@ -53,28 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From 7464d3faf62a5adcb99f4f8ea9baabda78aed4aa Mon Sep 17 00:00:00 2001
+>From e028937c77f44bb38cdbc464afce2bf41d96006b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 30 Jul 2018 08:00:22 +0000
-Subject: [PATCH] ASoC: sh: Kconfig: convert to SPDX identifiers
-
-By default all files without license information are under the default
-license of the kernel, which is GPL version 2.
+Date: Mon, 30 Jul 2018 07:53:08 +0000
+Subject: [PATCH] ASoC: ak4613: convert to SPDX identifiers
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/ak4613.c | 26 +++++++++++---------------
+ 1 file changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/sound/soc/sh/Kconfig b/sound/soc/sh/Kconfig
-index 0ae0800bf3a8..dc20f0f7080a 100644
---- a/sound/soc/sh/Kconfig
-+++ b/sound/soc/sh/Kconfig
-@@ -1,3 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
- menu "SoC Audio support for Renesas SoCs"
- 	depends on SUPERH || ARCH_RENESAS || COMPILE_TEST
+diff --git a/sound/soc/codecs/ak4613.c b/sound/soc/codecs/ak4613.c
+index 8523ff9351cf..c1181a20714d 100644
+--- a/sound/soc/codecs/ak4613.c
++++ b/sound/soc/codecs/ak4613.c
+@@ -1,18 +1,14 @@
+-/*
+- * ak4613.c  --  Asahi Kasei ALSA Soc Audio driver
+- *
+- * Copyright (C) 2015 Renesas Electronics Corporation
+- * Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+- *
+- * Based on ak4642.c by Kuninori Morimoto
+- * Based on wm8731.c by Richard Purdie
+- * Based on ak4535.c by Richard Purdie
+- * Based on wm8753.c by Liam Girdwood
+- *
+- * This program is free software; you can redistribute it and/or modify
+- * it under the terms of the GNU General Public License version 2 as
+- * published by the Free Software Foundation.
+- */
++// SPDX-License-Identifier: GPL-2.0
++//
++// ak4613.c  --  Asahi Kasei ALSA Soc Audio driver
++//
++// Copyright (C) 2015 Renesas Electronics Corporation
++// Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
++//
++// Based on ak4642.c by Kuninori Morimoto
++// Based on wm8731.c by Richard Purdie
++// Based on ak4535.c by Richard Purdie
++// Based on wm8753.c by Liam Girdwood
  
+ #include <linux/clk.h>
+ #include <linux/delay.h>
 -- 
 2.18.0
