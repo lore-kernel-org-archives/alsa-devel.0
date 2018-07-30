@@ -1,74 +1,88 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v0 1/3] ASoC: max9867: Take device out of
-	shutdown
-Date: Mon, 30 Jul 2018 10:23:46 +0100
-Message-ID: <20180730092346.GC5789@sirena.org.uk>
-References: <20180728154134.GA9665@lenoch>
- <20180728154226.GB9665@lenoch>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH 2/4] ASoC: tegra: Add a TDM configuration callback
+Date: Mon, 30 Jul 2018 10:31:16 +0100
+Message-ID: <2392df6f-12bc-74fe-ec0f-50dbb7b9a33a@nvidia.com>
+References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
+ <20180727125931.9794-3-jorge.sanjuan@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0773813968567533348=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 447DC26779B
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 11:23:46 +0200 (CEST)
-In-Reply-To: <20180728154226.GB9665@lenoch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, anish kumar <yesanishhere@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180727125931.9794-3-jorge.sanjuan@codethink.co.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, lgirdwood@gmail.com, broonie@kernel.org
+Cc: thierry.reding@gmail.com, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kernel@lists.codethink.co.uk
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0773813968567533348==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="KDt/GgjP6HVcx58l"
-Content-Disposition: inline
+On 27/07/18 13:59, Jorge Sanjuan wrote:
+> From: Edward Cragg <edward.cragg@codethink.co.uk>
+> 
+> Add a callback to configure TDM settings for the Tegra30
+> I2S ASoC 'platform' driver.
+> 
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
+> [jorge.sanjuan@codethink.co.uk: Style fixes]
+> Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+> ---
+>  sound/soc/tegra/tegra30_i2s.c | 34 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 34 insertions(+)
+> 
+> diff --git a/sound/soc/tegra/tegra30_i2s.c b/sound/soc/tegra/tegra30_i2s.c
+> index 0b176ea24914..ff1996f215ed 100644
+> --- a/sound/soc/tegra/tegra30_i2s.c
+> +++ b/sound/soc/tegra/tegra30_i2s.c
+> @@ -265,6 +265,39 @@ static int tegra30_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+>  	return 0;
+>  }
+>  
+> +static int tegra30_i2s_set_tdm(struct snd_soc_dai *dai,
+> +			       unsigned int tx_mask, unsigned int rx_mask,
+> +			       int slots, int slot_width)
+> +{
+> +	struct tegra30_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> +	unsigned int mask = 0, val = 0;
+> +
+> +	dev_dbg(dai->dev, "%s: setting TDM: tx_mask: 0x%08x rx_mask: 0x%08x"
+> +		"slots: 0x%08x width: %d\n",
+> +		__func__, tx_mask, rx_mask, slots, slot_width);
+> +
+> +	/* Set up slots and tx/rx masks */
+> +	mask = TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK |
+> +	       TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_MASK |
+> +	       TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_MASK;
+> +
+> +	val = (tx_mask << TEGRA30_I2S_SLOT_CTRL_TX_SLOT_ENABLES_SHIFT) |
+> +	      (rx_mask << TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_SHIFT) |
+> +	      ((slots - 1) << TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_SHIFT);
+> +
+> +	pm_runtime_get_sync(dai->dev);
+> +	regmap_update_bits(i2s->regmap, TEGRA30_I2S_SLOT_CTRL, mask, val);
+> +
+> +	/* Set FSYNC width */
+> +	mask = TEGRA30_I2S_CH_CTRL_FSYNC_WIDTH_MASK;
+> +	val = (slot_width - 1) << TEGRA30_I2S_CH_CTRL_FSYNC_WIDTH_SHIFT;
+> +
+> +	regmap_update_bits(i2s->regmap, TEGRA30_I2S_CH_CTRL, mask, val);
+> +	pm_runtime_put(dai->dev);
+> +
+> +	return 0;
+> +}
+> +
 
+Looking at the TRM for Tegra30 and Tegra124, the I2S_SLOT_CTRL register is different
+where for Tegra30 the 'TOTAL_SLOTS' bit are in position 18:16, but for Tegra124 they
+are 3:0. This driver supports both Tegra30 and Tegra124, and so this function will
+need to handle both.
 
---KDt/GgjP6HVcx58l
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+It can be quite common for the fsync-width for DSP modes to be a single clock and so 
+I am not sure that is makes sense to set this here always to the slot width. It maybe
+worth considering add a DT property for specifying the fsync width.
 
-On Sat, Jul 28, 2018 at 05:42:26PM +0200, Ladislav Michl wrote:
-> Move device enable to probe function to make line bypass
-> and mic sidetone work. Doing that from prepare callback
-> lets only DAC to produce output.
-> While here move suspend and resume functions to the more
-> common place.
+Cheers
+Jon
 
-It'd be better to move this to DAPM so that the device is enabled only
-when one of the paths in use - do it from set_bias_level().
-
---KDt/GgjP6HVcx58l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlte2SEACgkQJNaLcl1U
-h9CIzgf+N3tzxVuMbIzSQp1M9LTIvYPKXguBZsop4MTrdW+ilgZTYt8Tyg+10J/s
-B3LvEI3gv6nFggHcKEE5MrulW93XtV6STW/vC3EbmTqdt0SC8S8pivnG01+MKu6Q
-tiOWPE7nRRxIL1zb2qeHWts4p9t7zO/DjOn0CXAM5G5VX27SeCXgUY6ZTS6sazLM
-d71Er9O5K3jfuxD+b2MPNA6txaYEMn7mE3yD/zyC3TyElr0pJ2VhQLyQdUayka7+
-aEYFOtRqSzorGCuNiotMmiXRTsngwl5v6crYVxe8uJO5ABM8J6+fGr9hA4Fi5EBV
-hZZLISmquKJnrGoFy62yZkaSo6nQNw==
-=ViWk
------END PGP SIGNATURE-----
-
---KDt/GgjP6HVcx58l--
-
---===============0773813968567533348==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0773813968567533348==--
+-- 
+nvpublic
