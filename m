@@ -1,43 +1,79 @@
-From: Rohit kumar <rohitkr@codeaurora.org>
-Subject: [PATCH v4 0/4] Add support for audio on SDM845 SoC
-Date: Mon, 30 Jul 2018 15:40:50 +0530
-Message-ID: <1532945454-10437-1-git-send-email-rohitkr@codeaurora.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Rohit kumar <rohitkr@codeaurora.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v0 3/3] ASoC: max9867: Fix volume controls
+Date: Mon, 30 Jul 2018 11:11:15 +0100
+Message-ID: <20180730101115.GD5789@sirena.org.uk>
+References: <20180728154134.GA9665@lenoch>
+ <20180728154415.GD9665@lenoch>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="===============7755700708803966733=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF34A26779F
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 12:11:16 +0200 (CEST)
+In-Reply-To: <20180728154415.GD9665@lenoch>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Ladislav Michl <ladis@linux-mips.org>
+Cc: alsa-devel@alsa-project.org, anish kumar <yesanishhere@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This provides initial patchset to support audio on
-Qualcomm Techonologies Inc. SDM845 SoC. Currently, it supports
-audio playback/capture over Primary MI2S and Quaternary
-TDM ports.
 
-Changes since v3:
-- Added Module_license in common.c
-- Merged apq8096.c machine driver change with common api patch
-- Addressed comments by Srinivas, Mark and Vinod.
+--===============7755700708803966733==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="qGV0fN9tzfkG3CxV"
+Content-Disposition: inline
 
-Rohit kumar (4):
-  ASoC: qcom: dt-bindings: Add sdm845 machine bindings
-  ASoC: dt-bindings: Update dt binding name for apq8096
-  ASoC: qcom: Add support to parse common audio device nodes
-  ASoC: qcom: add sdm845 sound card support
 
- .../devicetree/bindings/sound/qcom,apq8096.txt     |  15 +-
- .../devicetree/bindings/sound/qcom,sdm845.txt      |  80 ++++++
- sound/soc/qcom/Kconfig                             |   8 +
- sound/soc/qcom/Makefile                            |   4 +-
- sound/soc/qcom/apq8096.c                           | 111 +-------
- sound/soc/qcom/common.c                            | 112 ++++++++
- sound/soc/qcom/common.h                            |  12 +
- sound/soc/qcom/sdm845.c                            | 286 +++++++++++++++++++++
- 8 files changed, 525 insertions(+), 103 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,sdm845.txt
- create mode 100644 sound/soc/qcom/common.c
- create mode 100644 sound/soc/qcom/common.h
- create mode 100644 sound/soc/qcom/sdm845.c
+--qGV0fN9tzfkG3CxV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+On Sat, Jul 28, 2018 at 05:44:15PM +0200, Ladislav Michl wrote:
+> Build proper audio paths and fix volume controls to match datasheet.
+
+This sounds like it should be split up into separate patches for at
+least the routing and volume control stuff.  It also needs a bit of a
+better changelog as I'm not sure what the issues with the volume
+controls were or what was improper about the old audio paths.
+
+> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+> ---
+>  I'm still unsure about control names, please see yet unaswered mail
+>  here: https://www.spinics.net/lists/alsa-devel/msg80006.html
+
+Always CC maintainers on mails - you really shouldn't rely on anyone
+seeing anything that only goes to the lists, they're quite high volume.
+
+--qGV0fN9tzfkG3CxV
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlte5EIACgkQJNaLcl1U
+h9BQMwf8DBJYpdjjj3PvJaJOWfS0KR/O0t1EAHBkvE/Y2IRVnjFlLhVxLDRZXaOG
+ghhu8/FFetCnG3woFn/EmGAD2Vk3pvIe5lXbieWSG52fF6E0+iSjQx3Bb1SwUoFD
+GdwoRGaeqKy/q/v64fkABmkEYzCUMsUeyafYI9IWV1py5nbMBQRS1PvNOf4Qg7O0
++8lTu0emry2whse/prRy4mQfaV2tOTs4yfjUouyMsI0BL2m0XI/OrEFAn0bM8U/X
+Zt6+5AgaJDFUuttK6GMzKIHtnCyOFCbRbbSdP84Xu76b7yGp0+22C5c7Gkugkeuo
+yAzsYrGGwL3ROPV17+5LLGbyIJ/6IA==
+=OE8a
+-----END PGP SIGNATURE-----
+
+--qGV0fN9tzfkG3CxV--
+
+--===============7755700708803966733==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7755700708803966733==--
