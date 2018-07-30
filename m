@@ -1,66 +1,75 @@
-From: Ben Dooks <ben@trinity.fluff.org>
-Subject: Re: [PATCH 2/4] ASoC: tegra: Add a TDM configuration
- callback
-Date: Mon, 30 Jul 2018 10:04:42 +0100
-Message-ID: <20180730090441.GE28143@trinity.fluff.org>
-References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
- <20180727125931.9794-3-jorge.sanjuan@codethink.co.uk>
- <20180730084908.GB5789@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from trinity.fluff.org (trinity.fluff.org [89.16.178.74])
- by alsa0.perex.cz (Postfix) with ESMTP id 243E2267365
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 11:04:44 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180730084908.GB5789@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, thierry.reding@gmail.com, linux-tegra@vger.kernel.org, jonathanh@nvidia.com
+From: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Subject: [PATCH v2 0/4] usb-audio: Add UAC3 Power Domains
+Date: Mon, 30 Jul 2018 10:23:32 +0100
+Message-ID: <20180730092336.18741-1-jorge.sanjuan@codethink.co.uk>
+References: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Jul 30, 2018 at 09:49:08AM +0100, Mark Brown wrote:
-> On Fri, Jul 27, 2018 at 01:59:29PM +0100, Jorge Sanjuan wrote:
-> > From: Edward Cragg <edward.cragg@codethink.co.uk>
-> > 
-> > Add a callback to configure TDM settings for the Tegra30
-> > I2S ASoC 'platform' driver.
-> > 
-> > Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
-> > Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
-> 
-> This says it was britten by Edward but there's a signoff from Ben before
-> his?
+This is what's new in this v2:
+ - Fixes build error reported by kbuild for multiple configs 
+   (missing include of linux/slab.h).
+ - Makes function `snd_usb_add_audio_stream_v3` static for now
+   as no one is using it outside sound/usb/stream.c (suggested
+   by kbuild).
+ - Re-organization of patches so the bit that is not tied up
+   to usb's runtime PM (See patch: "ALSA: usb-audio: Operate
+   UAC3 Power Domains in PCM callbacks") is the last patch of
+   the series. This is likely to need feature improvements to
+   tie it up to runtime PM.
 
-Editing accdient, I was originally going to submit this series.
+This patchset adds support for UAC3 Power Domains. This feature
+of the USB audio class 3 allows the host to notify the device 
+what it is making use of so power comsumption can be optimized.
+
+This proposal implements this feature for Power Domains
+that include an Input/Output Terminal associated to an
+audio Streaming interface. This is the main usage of this
+feature according to the spec. For that reason, the logic
+for the Power Domain state change has been implemented
+within the ALSA PCMs logic and the suspend/resume callbacks
+of the usb_driver. The behaviour would be as follows:
+
+* Power Domain State D0: A Power Domain will reach this state
+  only when the audio substream associated to that domain is
+  being used (i,e. Audio playback/capture is happening).
+* Power Domain State D1: This is the Idle state where the driver
+  is going to always want to be in order to reduce power
+  consumption.
+* Power Domain State D2: This state is only set when the usb driver
+  asumes the device is not going to be used anymore and hence, it
+  wont care about getting any interrupts from the device. This
+  will only happen when power level is set to "auto" in sysfs
+  so the usb driver gets suspended when the interfaces are not in use.
  
-> > +	dev_dbg(dai->dev, "%s: setting TDM: tx_mask: 0x%08x rx_mask: 0x%08x"
-> > +		"slots: 0x%08x width: %d\n",
-> > +		__func__, tx_mask, rx_mask, slots, slot_width);
-> 
-> Please don't split log messages over lines, it makes it harder to grep
-> for them.  Just use a long line.
-> 
-> I'm also not seeing any validation of the parameters?
+NOTE: The way this has been implemented will always try to put the 
+Power Domain in state D1 if the Power Domain exists. The patch
+"ALSA: usb-audio: Operate UAC3 Power Domains in PCM callbacks"
+puts the logic for doing so inside the PCM's logic. Something to
+improve on that is to also tie up those D1<->D0 state changes
+to runtime PM maybe.
 
+Jorge Sanjuan (4):
+  ALSA: usb-audio: Initial Power Domain support
+  ALSA: usb-audio: AudioStreaming Power Domain parsing
+  ALSA: usb-audio: Add UAC3 Power Domains to suspend/resume
+  ALSA: usb-audio: Operate UAC3 Power Domains in PCM callbacks
 
-
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-
+ include/linux/usb/audio-v3.h |   4 ++
+ sound/usb/Makefile           |   1 +
+ sound/usb/card.c             |   9 ++++
+ sound/usb/card.h             |   2 +
+ sound/usb/pcm.c              |  64 +++++++++++++++++++++--
+ sound/usb/pcm.h              |   2 +
+ sound/usb/power.c            | 118 +++++++++++++++++++++++++++++++++++++++++++
+ sound/usb/power.h            |  19 +++++++
+ sound/usb/stream.c           |  70 ++++++++++++++++++++++---
+ 9 files changed, 278 insertions(+), 11 deletions(-)
+ create mode 100644 sound/usb/power.c
 
 -- 
-Ben Dooks, ben@fluff.org, http://www.fluff.org/ben/
-
-Large Hadron Colada: A large Pina Colada that makes the universe disappear.
+2.11.0
