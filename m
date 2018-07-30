@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sirf: Fix potential NULL pointer
-	dereference" to the asoc tree
-Date: Mon, 30 Jul 2018 12:03:21 +0100 (BST)
-Message-ID: <20180730110321.388881124216@debutante.sirena.org.uk>
-References: <20180726204910.GA1635@embeddedor.com>
+Subject: Applied "ASoC: tegra_alc5632: fix device_node
+	refcounting" to the asoc tree
+Date: Mon, 30 Jul 2018 12:03:30 +0100 (BST)
+Message-ID: <20180730110330.9BF2C1124216@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C19B72677AC
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:25 +0200 (CEST)
-In-Reply-To: <20180726204910.GA1635@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9CC852677BA
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:03:31 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Barry Song <baohua@kernel.org>, alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, stable@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jon Hunter <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sirf: Fix potential NULL pointer dereference
+   ASoC: tegra_alc5632: fix device_node refcounting
 
 has been applied to the asoc tree at
 
@@ -52,45 +52,74 @@ to this mail.
 Thanks,
 Mark
 
->From ae1c696a480c67c45fb23b35162183f72c6be0e1 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Thu, 26 Jul 2018 15:49:10 -0500
-Subject: [PATCH] ASoC: sirf: Fix potential NULL pointer dereference
+>From 4321723648b0abb456f7a9af51bb09a4ec60799d Mon Sep 17 00:00:00 2001
+From: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Date: Sat, 28 Jul 2018 00:06:59 +0300
+Subject: [PATCH] ASoC: tegra_alc5632: fix device_node refcounting
 
-There is a potential execution path in which function
-platform_get_resource() returns NULL. If this happens,
-we will end up having a NULL pointer dereference.
+tegra_alc5632_probe() increments reference count of device nodes
+with of_parse_phandle(), but there is no code decrementing them
+in the driver.
 
-Fix this by replacing devm_ioremap with devm_ioremap_resource,
-which has the NULL check and the memory region request.
+The patch adds of_node_put() to tegra_alc5632_remove() and
+to error handling paths in the probe.
 
-This code was detected with the help of Coccinelle.
+Found by Linux Driver Verification project (linuxtesting.org).
 
-Cc: stable@vger.kernel.org
-Fixes: 2bd8d1d5cf89 ("ASoC: sirf: Add audio usp interface driver")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Alexey Khoroshilov <khoroshilov@ispras.ru>
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sirf/sirf-usp.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
+ sound/soc/tegra/tegra_alc5632.c | 17 +++++++++++++++--
+ 1 file changed, 15 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/sirf/sirf-usp.c b/sound/soc/sirf/sirf-usp.c
-index 77e7dcf969d0..d70fcd4a1adf 100644
---- a/sound/soc/sirf/sirf-usp.c
-+++ b/sound/soc/sirf/sirf-usp.c
-@@ -370,10 +370,9 @@ static int sirf_usp_pcm_probe(struct platform_device *pdev)
- 	platform_set_drvdata(pdev, usp);
+diff --git a/sound/soc/tegra/tegra_alc5632.c b/sound/soc/tegra/tegra_alc5632.c
+index 5197d6b18cb6..98d87801d57a 100644
+--- a/sound/soc/tegra/tegra_alc5632.c
++++ b/sound/soc/tegra/tegra_alc5632.c
+@@ -190,14 +190,14 @@ static int tegra_alc5632_probe(struct platform_device *pdev)
+ 		dev_err(&pdev->dev,
+ 			"Property 'nvidia,i2s-controller' missing or invalid\n");
+ 		ret = -EINVAL;
+-		goto err;
++		goto err_put_codec_of_node;
+ 	}
  
- 	mem_res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	base = devm_ioremap(&pdev->dev, mem_res->start,
--		resource_size(mem_res));
--	if (base == NULL)
--		return -ENOMEM;
-+	base = devm_ioremap_resource(&pdev->dev, mem_res);
-+	if (IS_ERR(base))
-+		return PTR_ERR(base);
- 	usp->regmap = devm_regmap_init_mmio(&pdev->dev, base,
- 					    &sirf_usp_regmap_config);
- 	if (IS_ERR(usp->regmap))
+ 	tegra_alc5632_dai.platform_of_node = tegra_alc5632_dai.cpu_of_node;
+ 
+ 	ret = tegra_asoc_utils_init(&alc5632->util_data, &pdev->dev);
+ 	if (ret)
+-		goto err;
++		goto err_put_cpu_of_node;
+ 
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+@@ -210,6 +210,13 @@ static int tegra_alc5632_probe(struct platform_device *pdev)
+ 
+ err_fini_utils:
+ 	tegra_asoc_utils_fini(&alc5632->util_data);
++err_put_cpu_of_node:
++	of_node_put(tegra_alc5632_dai.cpu_of_node);
++	tegra_alc5632_dai.cpu_of_node = NULL;
++	tegra_alc5632_dai.platform_of_node = NULL;
++err_put_codec_of_node:
++	of_node_put(tegra_alc5632_dai.codec_of_node);
++	tegra_alc5632_dai.codec_of_node = NULL;
+ err:
+ 	return ret;
+ }
+@@ -223,6 +230,12 @@ static int tegra_alc5632_remove(struct platform_device *pdev)
+ 
+ 	tegra_asoc_utils_fini(&machine->util_data);
+ 
++	of_node_put(tegra_alc5632_dai.cpu_of_node);
++	tegra_alc5632_dai.cpu_of_node = NULL;
++	tegra_alc5632_dai.platform_of_node = NULL;
++	of_node_put(tegra_alc5632_dai.codec_of_node);
++	tegra_alc5632_dai.codec_of_node = NULL;
++
+ 	return 0;
+ }
+ 
 -- 
 2.18.0
