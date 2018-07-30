@@ -1,23 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume
- control
-Date: Mon, 30 Jul 2018 09:28:21 +0100
-Message-ID: <20180730082821.GA5789@sirena.org.uk>
-References: <20180718205542.12364-1-hdegoede@redhat.com>
- <20180718205542.12364-2-hdegoede@redhat.com>
- <20180719150234.GE27938@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D7028430F3@RTITMBSV02.realtek.com.tw>
- <f38e30f0-182b-484e-8de1-a9fd0db4663c@linux.intel.com>
- <ABFD875FF5FB574BA706497D987D48D70284323D@RTITMBSV02.realtek.com.tw>
- <2ea3aaa5-cba7-901b-f0cf-782ce4ebd1c5@redhat.com>
+Subject: Re: [PATCH 2/4] ASoC: tegra: Add a TDM configuration
+	callback
+Date: Mon, 30 Jul 2018 09:49:08 +0100
+Message-ID: <20180730084908.GB5789@sirena.org.uk>
+References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
+ <20180727125931.9794-3-jorge.sanjuan@codethink.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3966090117657169229=="
+Content-Type: multipart/mixed; boundary="===============3702962846655915520=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 59E7D267365
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 10:28:25 +0200 (CEST)
-In-Reply-To: <2ea3aaa5-cba7-901b-f0cf-782ce4ebd1c5@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C614267365
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 10:49:10 +0200 (CEST)
+In-Reply-To: <20180727125931.9794-3-jorge.sanjuan@codethink.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,53 +22,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Carlo Caione <carlo@endlessm.com>, Bard Liao <bardliao@realtek.com>
+To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, thierry.reding@gmail.com, linux-tegra@vger.kernel.org, jonathanh@nvidia.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3966090117657169229==
+--===============3702962846655915520==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+	protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
 Content-Disposition: inline
 
 
---9jxsPFA5p3P2qPhR
+--SkvwRMAIpAhPCcCJ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 27, 2018 at 02:01:44PM +0200, Hans de Goede wrote:
+On Fri, Jul 27, 2018 at 01:59:29PM +0100, Jorge Sanjuan wrote:
+> From: Edward Cragg <edward.cragg@codethink.co.uk>
+>=20
+> Add a callback to configure TDM settings for the Tegra30
+> I2S ASoC 'platform' driver.
+>=20
+> Signed-off-by: Ben Dooks <ben.dooks@codethink.co.uk>
+> Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
 
-> > Yes, it should be modified, too.
+This says it was britten by Edward but there's a signoff from Ben before
+his?
 
-> Or we just live with the  "Volume" part missing for these 3 and don't
-> break users existing setup for no good reason.
+> +	dev_dbg(dai->dev, "%s: setting TDM: tx_mask: 0x%08x rx_mask: 0x%08x"
+> +		"slots: 0x%08x width: %d\n",
+> +		__func__, tx_mask, rx_mask, slots, slot_width);
 
-You're a few days behind the discussion on the patch series doing
-this...
+Please don't split log messages over lines, it makes it harder to grep
+for them.  Just use a long line.
 
---9jxsPFA5p3P2qPhR
+I'm also not seeing any validation of the parameters?
+
+--SkvwRMAIpAhPCcCJ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltezCMACgkQJNaLcl1U
-h9DJ1Qf/T59f1AIPfskmQf9EVp9067w1HpfsVCODGBEYIO1nq38YsxyMqjHOMWH+
-C9tFdIn9DqGMgYlllMZC9bBcpL7HV1jhQmw9tVTJwBkw9rcfHCu8hGCZhhsAuG8f
-KwIdiseN1x8EPGQSVVFz87vH/9+kxiTfb7hPK7FHDOYG3x/94z1VI6BZ2pSd79W1
-6ZXeTSR/me9dIlhYYaSylrXj2B/OBWrsHWYJ9CtTG++FBNSSTdlFiosYkpYacjej
-OBfvCXlCxoRWZcANoUwgFTmhO8YDFvW10gbO6W7l/Ghd6B6b41BGC+336dxtmgpC
-uHrNfFWJjQZbnT4Vef1FW/qPsG0MJQ==
-=S5hG
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlte0QQACgkQJNaLcl1U
+h9BuNAf/cfHPyby2vIiYiBtKNjYyarPLvjsq0p2Q2DrR4uZY3N47QsCyaOYBw7BU
+715N9S7k42wEkRpVzHXzYj2MzCj9Zvc2fJCRfnbWWCSUT75cRfzRZi2z8g7yBCsB
+cFe/IpO48eFpMBNOlGQbTqa40dtu6SXRMAEa8q63aS34tq35lzB2hEt/WDwdO+J0
+XiMXF7Cq9VxDKjOnTW7SOxu5PB2iCTvRSWxr/ts1Ij1cQl1emawM6bsfZeLJxBf/
+DFEfvWY0I/U/MUftupOUqA1HSpYrUQ0ADhu8QzY4Kxvj3tPR4DGGj5vA50C8GBjS
+VE6qk2lVUgz4pLECIh6wdo8+uIvEtA==
+=aGL7
 -----END PGP SIGNATURE-----
 
---9jxsPFA5p3P2qPhR--
+--SkvwRMAIpAhPCcCJ--
 
---===============3966090117657169229==
+--===============3702962846655915520==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3966090117657169229==--
+--===============3702962846655915520==--
