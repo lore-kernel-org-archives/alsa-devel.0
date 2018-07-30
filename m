@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8988: fix typo in rate constraints"
-	to the asoc tree
-Date: Mon, 30 Jul 2018 12:04:36 +0100 (BST)
-Message-ID: <20180730110436.24A8A1124216@debutante.sirena.org.uk>
-References: <20180728123017.GA28930@lenoch>
+Subject: Applied "ASoC: tegra: i2s: Fix typo/broken macro" to
+	the asoc tree
+Date: Mon, 30 Jul 2018 12:04:45 +0100 (BST)
+Message-ID: <20180730110445.5F46B1124216@debutante.sirena.org.uk>
+References: <20180727125931.9794-2-jorge.sanjuan@codethink.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A1C1C267763
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:04:36 +0200 (CEST)
-In-Reply-To: <20180728123017.GA28930@lenoch>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E7E02677C6
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 13:04:46 +0200 (CEST)
+In-Reply-To: <20180727125931.9794-2-jorge.sanjuan@codethink.co.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Edward Cragg <edward.cragg@codethink.co.uk>
+Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, broonie@kernel.org, thierry.reding@gmail.com, linux-tegra@vger.kernel.org, jonathanh@nvidia.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8988: fix typo in rate constraints
+   ASoC: tegra: i2s: Fix typo/broken macro
 
 has been applied to the asoc tree at
 
@@ -53,40 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From c9c9780d8fa526a124933134a7e4041fa09662f6 Mon Sep 17 00:00:00 2001
-From: Ladislav Michl <ladis@linux-mips.org>
-Date: Sat, 28 Jul 2018 14:30:17 +0200
-Subject: [PATCH] ASoC: wm8988: fix typo in rate constraints
+>From 279fef50b607f9cee94f10bae84f6730e97ccd7c Mon Sep 17 00:00:00 2001
+From: Edward Cragg <edward.cragg@codethink.co.uk>
+Date: Fri, 27 Jul 2018 13:59:28 +0100
+Subject: [PATCH] ASoC: tegra: i2s: Fix typo/broken macro
 
-Remove duplicated entry and add missing zero in rate constraints.
+Fix typo in macro TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK.
 
-Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
+Signed-off-by: Edward Cragg <edward.cragg@codethink.co.uk>
+Signed-off-by: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>
+Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8988.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/tegra/tegra30_i2s.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8988.c b/sound/soc/codecs/wm8988.c
-index 62200117444b..6e52c6a8bab3 100644
---- a/sound/soc/codecs/wm8988.c
-+++ b/sound/soc/codecs/wm8988.c
-@@ -522,7 +522,7 @@ static inline int get_coeff(int mclk, int rate)
- /* The set of rates we can generate from the above for each SYSCLK */
+diff --git a/sound/soc/tegra/tegra30_i2s.h b/sound/soc/tegra/tegra30_i2s.h
+index 774fc6ad2026..2e561e946de2 100644
+--- a/sound/soc/tegra/tegra30_i2s.h
++++ b/sound/soc/tegra/tegra30_i2s.h
+@@ -173,7 +173,7 @@
+ /* Number of slots in frame, minus 1 */
+ #define TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_SHIFT		16
+ #define TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK_US	7
+-#define TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK		(TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOT_MASK_US << TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOT_SHIFT)
++#define TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK		(TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_MASK_US << TEGRA30_I2S_SLOT_CTRL_TOTAL_SLOTS_SHIFT)
  
- static const unsigned int rates_12288[] = {
--	8000, 12000, 16000, 24000, 24000, 32000, 48000, 96000,
-+	8000, 12000, 16000, 24000, 32000, 48000, 96000,
- };
- 
- static const struct snd_pcm_hw_constraint_list constraints_12288 = {
-@@ -540,7 +540,7 @@ static const struct snd_pcm_hw_constraint_list constraints_112896 = {
- };
- 
- static const unsigned int rates_12[] = {
--	8000, 11025, 12000, 16000, 22050, 2400, 32000, 41100, 48000,
-+	8000, 11025, 12000, 16000, 22050, 24000, 32000, 41100, 48000,
- 	48000, 88235, 96000,
- };
- 
+ /* TDM mode slot enable bitmask */
+ #define TEGRA30_I2S_SLOT_CTRL_RX_SLOT_ENABLES_SHIFT	8
 -- 
 2.18.0
