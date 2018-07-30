@@ -1,58 +1,76 @@
-From: Bard Liao <bardliao@realtek.com>
-Subject: Re: [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume
-	control
-Date: Mon, 30 Jul 2018 01:58:50 +0000
-Message-ID: <ABFD875FF5FB574BA706497D987D48D70284CA61@RTITMBSV02.realtek.com.tw>
-References: <20180718205542.12364-1-hdegoede@redhat.com>
- <20180718205542.12364-2-hdegoede@redhat.com>
- <20180719150234.GE27938@sirena.org.uk>
- <ABFD875FF5FB574BA706497D987D48D7028430F3@RTITMBSV02.realtek.com.tw>
- <f38e30f0-182b-484e-8de1-a9fd0db4663c@linux.intel.com>
- <ABFD875FF5FB574BA706497D987D48D70284323D@RTITMBSV02.realtek.com.tw>
- <2ea3aaa5-cba7-901b-f0cf-782ce4ebd1c5@redhat.com>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH v2 02/10] mfd: wcd9335: add support to wcd9335 core
+Date: Mon, 30 Jul 2018 09:42:23 +0530
+Message-ID: <20180730041223.GD3661@vkoul-mobl>
+References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+ <20180727121806.18209-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 402262676DD
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 03:58:59 +0200 (CEST)
-In-Reply-To: <2ea3aaa5-cba7-901b-f0cf-782ce4ebd1c5@redhat.com>
-Content-Language: zh-TW
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Oder Chiou <oder_chiou@realtek.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, Carlo Caione <carlo@endlessm.com>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180727121806.18209-3-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-> -----Original Message-----
-> From: Hans de Goede [mailto:hdegoede@redhat.com]
-> Sent: Friday, July 27, 2018 8:02 PM
-> To: Bard Liao; Pierre-Louis Bossart; Mark Brown
-> Cc: Liam Girdwood; Oder Chiou; alsa-devel@alsa-project.org; Carlo Caione
-> Subject: Re: [alsa-devel] [PATCH 1/6] ASoC: rt5651: Add IN3 Boost volume
-> control
-> 
-> >> isn't this going to break userspace configs if we change the name of
-> >> controls?
-> >
-> > Yes, it should be modified, too.
-> 
-> Or we just live with the  "Volume" part missing for these 3 and don't
-> break users existing setup for no good reason.
+On 27-07-18, 13:17, Srinivas Kandagatla wrote:
+> +obj-$(CONFIG_MFD_WCD9335)	+= wcd9335.o
+> +wcd9335-objs			:= wcd9335-core.o
+> +
 
-Agree.
+no slimbus objs?
 
-> 
-> Regards,
-> 
-> Hans
-> 
-> ------Please consider the environment before printing this e-mail.
+> +static int wcd9335_bring_up(struct wcd9335 *wcd)
+> +{
+> +	struct regmap *rm = wcd->regmap;
+> +	int val, byte0;
+> +	int ret = 0;
+> +
+> +	regmap_read(rm, WCD9335_CHIP_TIER_CTRL_EFUSE_VAL_OUT0, &val);
+> +	regmap_read(rm, WCD9335_CHIP_TIER_CTRL_CHIP_ID_BYTE0, &byte0);
+> +
+> +	if ((val < 0) || (byte0 < 0)) {
+> +		dev_err(wcd->dev, "wcd9335 codec version detection fail!\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (byte0 == 0x1) {
+> +		dev_info(wcd->dev, "wcd9335 codec version is v2.0\n");
+> +		wcd->version = WCD9335_VERSION_2_0;
+> +		regmap_write(rm, WCD9335_CODEC_RPM_RST_CTL, 0x01);
+> +		regmap_write(rm, WCD9335_SIDO_SIDO_TEST_2, 0x00);
+> +		regmap_write(rm, WCD9335_SIDO_SIDO_CCL_8, 0x6F);
+> +		regmap_write(rm, WCD9335_BIAS_VBG_FINE_ADJ, 0x65);
+> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x5);
+> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x7);
+> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x3);
+> +		regmap_write(rm, WCD9335_CODEC_RPM_RST_CTL, 0x3);
+> +	} else {
+> +		dev_err(wcd->dev, "wcd9335 codec version not supported\n");
+> +		ret = -EINVAL;
+> +	}
+> +
+> +	return ret;
+
+we can do return 0 and remove the variable as it is not used anywhere
+else.
+
+> +static int wcd9335_slim_probe(struct slim_device *slim)
+> +{
+> +	struct device *dev = &slim->dev;
+> +	struct wcd9335 *wcd;
+> +	int ret = 0;
+> +
+> +	/* Interface device */
+> +	if (slim->e_addr.dev_index == 0)
+> +		return 0;
+> +
+> +	wcd = devm_kzalloc(dev, sizeof(*wcd), GFP_KERNEL);
+> +	if (!wcd)
+> +		return	-ENOMEM;
+                      ^^
+double space
+
+-- 
+~Vinod
