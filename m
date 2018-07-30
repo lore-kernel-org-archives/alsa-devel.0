@@ -1,49 +1,88 @@
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Subject: Re: [PATCH v2 2/6] dt-bindings: mmc: rockchip-dw-mshc: add
- description for px30
-Date: Mon, 30 Jul 2018 17:06:32 +0200
-Message-ID: <CAPDyKFo2GmxKwXDTOxnNY_wb4ydmVjGAZD3=bZYLhfEvjmGyXQ@mail.gmail.com>
-References: <1532337924-4185-1-git-send-email-cl@rock-chips.com> <1532337924-4185-3-git-send-email-cl@rock-chips.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/4] ASoC: tegra: Add a TDM configuration
+	callback
+Date: Mon, 30 Jul 2018 16:07:49 +0100
+Message-ID: <20180730150749.GK5789@sirena.org.uk>
+References: <20180727125931.9794-1-jorge.sanjuan@codethink.co.uk>
+ <20180727125931.9794-3-jorge.sanjuan@codethink.co.uk>
+ <2392df6f-12bc-74fe-ec0f-50dbb7b9a33a@nvidia.com>
+ <20180730101800.GF5789@sirena.org.uk>
+ <2a91268d-351b-d342-42bd-8ffbf33a316e@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1532337924-4185-3-git-send-email-cl@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: cl@rock-chips.com
-Cc: Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, klaus.goger@theobroma-systems.com, hjc@rock-chips.com, jagan@amarulasolutions.com, djw@t-chip.com.cn, jacob-chen@iotwrt.com, devicetree@vger.kernel.org, Linux ARM <linux-arm-kernel@lists.infradead.org>, "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>, Frank Wang <frank.wang@rock-chips.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will.deacon@arm.com>
+Content-Type: multipart/mixed; boundary="===============0007691884723473734=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4978B2677A2
+ for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 17:07:51 +0200 (CEST)
+In-Reply-To: <2a91268d-351b-d342-42bd-8ffbf33a316e@nvidia.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: linux-kernel@lists.codethink.co.uk, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, thierry.reding@gmail.com, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 23 July 2018 at 11:25,  <cl@rock-chips.com> wrote:
-> From: Liang Chen <cl@rock-chips.com>
->
-> Add "rockchip,px30-dw-mshc", "rockchip,rk3288-dw-mshc" for
-> dwmmc on px30 platform.
->
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
 
-Thanks, applied for next!
+--===============0007691884723473734==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="T4Djgzn3z2HSNnx0"
+Content-Disposition: inline
 
-Kind regards
-Uffe
 
-> ---
->  Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.txt | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.txt b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.txt
-> index 8ce49b2..6f629b1 100644
-> --- a/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.txt
-> +++ b/Documentation/devicetree/bindings/mmc/rockchip-dw-mshc.txt
-> @@ -14,6 +14,7 @@ Required Properties:
->                                                         before RK3288
->         - "rockchip,rk3288-dw-mshc": for Rockchip RK3288
->         - "rockchip,rv1108-dw-mshc", "rockchip,rk3288-dw-mshc": for Rockchip RV1108
-> +       - "rockchip,px30-dw-mshc", "rockchip,rk3288-dw-mshc": for Rockchip PX30
->         - "rockchip,rk3036-dw-mshc", "rockchip,rk3288-dw-mshc": for Rockchip RK3036
->         - "rockchip,rk3228-dw-mshc", "rockchip,rk3288-dw-mshc": for Rockchip RK322x
->         - "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc": for Rockchip RK3328
-> --
-> 1.9.1
->
->
+--T4Djgzn3z2HSNnx0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Mon, Jul 30, 2018 at 03:04:46PM +0100, Jon Hunter wrote:
+> On 30/07/18 11:18, Mark Brown wrote:
+
+> > DSP modes only care about the rising edge of the LRCLK, the pulse can be
+> > any width without causing interoperability problems.
+
+> OK, thanks I was not able to find a spec that defines this, but I saw a
+> lot of codecs use a single bit clock width. So then equally making the
+> default '1' should also be fine.
+
+There's not really a spec for this, it's just what tends to be
+implemented.
+
+> I still do not like configuring the fsync width in this function. The
+> fsync width needs to be configured for both DSP modes and normal I2S
+> modes and so it seems it would be more appropriate to do this in the
+> hw_params function for this driver.
+
+You *could* just always use the I2S width, it's going to look odd when
+people use a scope but it will work most of the time.
+
+--T4Djgzn3z2HSNnx0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltfKcQACgkQJNaLcl1U
+h9BB0Af+IyXKfsxp1Wb1UfKoIPDIVgYtmwl+1Y8/bfWN3+FAgD2w+KKS2NA5mRBg
+WpXyuoJ1JxIj4016p+YX1JBtzQKAULHGaEK/GjWGHbh0e6hlG6uKgnAXTD2bGBjT
+vz0SanSzblF0DTUHzH4gZHc+/K8TK/LUWjLdDmrOFePZ+Uk83fCDbtPuJWPQ4t/B
+b57efuww3wXP0tAKIKFAtW+trIWXhByODi/tjqsR2VFE9gcUIsgpPtiq+dkbhPDb
+3GJMrdExpTTIh5oG3oBu+8MyhJxw/Km6djZrC5cXPUXCV4B/dg0Y7TXcIRn5/lDI
+8gaHajCblyhEYmfxnF+8ybq0yjffag==
+=Bfke
+-----END PGP SIGNATURE-----
+
+--T4Djgzn3z2HSNnx0--
+
+--===============0007691884723473734==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0007691884723473734==--
