@@ -1,7 +1,7 @@
 From: Takashi Iwai <tiwai@suse.de>
 Subject: Re: [PATCH v2 1/4] ALSA: usb-audio: Initial Power Domain support
-Date: Mon, 30 Jul 2018 15:01:14 +0200
-Message-ID: <s5hd0v4x4h1.wl-tiwai@suse.de>
+Date: Mon, 30 Jul 2018 15:03:22 +0200
+Message-ID: <s5hbmaox4dh.wl-tiwai@suse.de>
 References: <20180719112215.4219-1-jorge.sanjuan@codethink.co.uk>
         <20180730092336.18741-1-jorge.sanjuan@codethink.co.uk>
         <20180730092336.18741-2-jorge.sanjuan@codethink.co.uk>
@@ -17,34 +17,20 @@ List-Id: alsa-devel@alsa-project.org
 On Mon, 30 Jul 2018 11:23:33 +0200,
 Jorge Sanjuan wrote:
 > 
-> diff --git a/sound/usb/power.c b/sound/usb/power.c
-> new file mode 100644
-> index 000000000000..ce3fea2bd030
-> --- /dev/null
-> +++ b/sound/usb/power.c
-> @@ -0,0 +1,118 @@
-> +/*
-> + *   UAC3 Power Domain state management functions
-> + *
-> + *   This program is free software; you can redistribute it and/or modify
-> + *   it under the terms of the GNU General Public License as published by
-> + *   the Free Software Foundation; either version 2 of the License, or
-> + *   (at your option) any later version.
-> + *
-> + *   This program is distributed in the hope that it will be useful,
-> + *   but WITHOUT ANY WARRANTY; without even the implied warranty of
-> + *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-> + *   GNU General Public License for more details.
-> + *
-> + *   You should have received a copy of the GNU General Public License
-> + *   along with this program; if not, write to the Free Software
-> + *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA
-> + *
-> + */
+> diff --git a/include/linux/usb/audio-v3.h b/include/linux/usb/audio-v3.h
+> index 334bfa6dfb47..786e5939d831 100644
+> --- a/include/linux/usb/audio-v3.h
+> +++ b/include/linux/usb/audio-v3.h
+> @@ -447,4 +447,8 @@ struct uac3_interrupt_data_msg {
+>  /* BADD sample rate is always fixed to 48kHz */
+>  #define UAC3_BADD_SAMPLING_RATE				48000
+>  
+> +/* BADD power domains recovery times */
+> +#define UAC3_BADD_PD_RECOVER_D1D0			0x0258
+> +#define UAC3_BADD_PD_RECOVER_D2D0			0x1770
 
-For a new code, let's use the simpler SPDX form.
+Please put the unit for these values.  I guess they don't need to be
+hex?
 
-
-thanks,
 
 Takashi
