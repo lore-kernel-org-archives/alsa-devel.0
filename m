@@ -1,79 +1,109 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v0 3/3] ASoC: max9867: Fix volume controls
-Date: Mon, 30 Jul 2018 11:11:15 +0100
-Message-ID: <20180730101115.GD5789@sirena.org.uk>
-References: <20180728154134.GA9665@lenoch>
- <20180728154415.GD9665@lenoch>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7755700708803966733=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CF34A26779F
- for <alsa-devel@alsa-project.org>; Mon, 30 Jul 2018 12:11:16 +0200 (CEST)
-In-Reply-To: <20180728154415.GD9665@lenoch>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Ladislav Michl <ladis@linux-mips.org>
-Cc: alsa-devel@alsa-project.org, anish kumar <yesanishhere@gmail.com>
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH v4 1/4] ASoC: qcom: dt-bindings: Add sdm845 machine bindings
+Date: Mon, 30 Jul 2018 15:40:51 +0530
+Message-ID: <1532945454-10437-2-git-send-email-rohitkr@codeaurora.org>
+References: <1532945454-10437-1-git-send-email-rohitkr@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1532945454-10437-1-git-send-email-rohitkr@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
+Add devicetree bindings documentation file for SDM845 sound card.
 
---===============7755700708803966733==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qGV0fN9tzfkG3CxV"
-Content-Disposition: inline
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+---
+ .../devicetree/bindings/sound/qcom,sdm845.txt      | 80 ++++++++++++++++++++++
+ 1 file changed, 80 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sdm845.txt
 
-
---qGV0fN9tzfkG3CxV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, Jul 28, 2018 at 05:44:15PM +0200, Ladislav Michl wrote:
-> Build proper audio paths and fix volume controls to match datasheet.
-
-This sounds like it should be split up into separate patches for at
-least the routing and volume control stuff.  It also needs a bit of a
-better changelog as I'm not sure what the issues with the volume
-controls were or what was improper about the old audio paths.
-
-> Signed-off-by: Ladislav Michl <ladis@linux-mips.org>
-> ---
->  I'm still unsure about control names, please see yet unaswered mail
->  here: https://www.spinics.net/lists/alsa-devel/msg80006.html
-
-Always CC maintainers on mails - you really shouldn't rely on anyone
-seeing anything that only goes to the lists, they're quite high volume.
-
---qGV0fN9tzfkG3CxV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlte5EIACgkQJNaLcl1U
-h9BQMwf8DBJYpdjjj3PvJaJOWfS0KR/O0t1EAHBkvE/Y2IRVnjFlLhVxLDRZXaOG
-ghhu8/FFetCnG3woFn/EmGAD2Vk3pvIe5lXbieWSG52fF6E0+iSjQx3Bb1SwUoFD
-GdwoRGaeqKy/q/v64fkABmkEYzCUMsUeyafYI9IWV1py5nbMBQRS1PvNOf4Qg7O0
-+8lTu0emry2whse/prRy4mQfaV2tOTs4yfjUouyMsI0BL2m0XI/OrEFAn0bM8U/X
-Zt6+5AgaJDFUuttK6GMzKIHtnCyOFCbRbbSdP84Xu76b7yGp0+22C5c7Gkugkeuo
-yAzsYrGGwL3ROPV17+5LLGbyIJ/6IA==
-=OE8a
------END PGP SIGNATURE-----
-
---qGV0fN9tzfkG3CxV--
-
---===============7755700708803966733==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7755700708803966733==--
+diff --git a/Documentation/devicetree/bindings/sound/qcom,sdm845.txt b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+new file mode 100644
+index 0000000..408c483
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+@@ -0,0 +1,80 @@
++* Qualcomm Technologies Inc. SDM845 ASoC sound card driver
++
++This binding describes the SDM845 sound card, which uses qdsp for audio.
++
++- compatible:
++	Usage: required
++	Value type: <stringlist>
++	Definition: must be "qcom,sdm845-sndcard"
++
++- audio-routing:
++	Usage: Optional
++	Value type: <stringlist>
++	Definition:  A list of the connections between audio components.
++		  Each entry is a pair of strings, the first being the
++		  connection's sink, the second being the connection's
++		  source. Valid names could be power supplies, MicBias
++		  of codec and the jacks on the board.
++
++- model:
++	Usage: required
++	Value type: <stringlist>
++	Definition: The user-visible name of this sound card.
++
++= dailinks
++Each subnode of sndcard represents either a dailink, and subnodes of each
++dailinks would be cpu/codec/platform dais.
++
++- link-name:
++	Usage: required
++	Value type: <string>
++	Definition: User friendly name for dai link
++
++= CPU, PLATFORM, CODEC dais subnodes
++- cpu:
++	Usage: required
++	Value type: <subnode>
++	Definition: cpu dai sub-node
++
++- codec:
++	Usage: required
++	Value type: <subnode>
++	Definition: codec dai sub-node
++
++- platform:
++	Usage: Optional
++	Value type: <subnode>
++	Definition: platform dai sub-node
++
++- sound-dai:
++	Usage: required
++	Value type: <phandle>
++	Definition: dai phandle/s and port of CPU/CODEC/PLATFORM node.
++
++Example:
++
++audio {
++	compatible = "qcom,sdm845-sndcard";
++	model = "sdm845-snd-card";
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pri_mi2s_active &pri_mi2s_ws_active>;
++	pinctrl-1 = <&pri_mi2s_sleep &pri_mi2s_ws_sleep>;
++
++	mm1-dai-link {
++		link-name = "MultiMedia1";
++		cpu {
++			sound-dai = <&q6asmdai MSM_FRONTEND_DAI_MULTIMEDIA1>;
++		};
++	};
++
++	pri-mi2s-dai-link {
++		link-name = "PRI MI2S Playback";
++		cpu {
++			sound-dai = <&q6afedai PRIMARY_MI2S_RX>;
++		};
++
++		platform {
++			sound-dai = <&q6routing>;
++		};
++	};
++};
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
