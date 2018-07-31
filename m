@@ -1,21 +1,24 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: Re: [asoc:for-4.19 199/204]
- sound/soc//meson/axg-tdm-interface.c:225:8: error: implicit declaration of
- function 'clk_set_duty_cycle'; did you mean 'clk_set_rate'?
-Date: Tue, 31 Jul 2018 10:39:03 +0200
-Message-ID: <1c2a42498ea90428fb6504414154fe3663258ed6.camel@baylibre.com>
-References: <201807210204.l9GJCtSI%fengguang.wu@intel.com>
- <1532112058.26720.62.camel@baylibre.com>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: Use delay set in pointer
+ function
+Date: Tue, 31 Jul 2018 14:36:59 +0530
+Message-ID: <5b3249cb-6212-6a14-b644-7548cf0ad00c@amd.com>
+References: <1532686422-1790-1-git-send-email-akshu.agrawal@amd.com>
+ <66c8b8c4-bdd0-0129-5e5b-850890cfdb8d@linux.intel.com>
+ <e0990b62-897c-6dc7-8ac9-296932c505b7@amd.com>
+ <dd4d3dc6-88f3-d53f-cd5c-5035c80be3da@linux.intel.com>
+ <s5hy3dsviwq.wl-tiwai@suse.de> <20180730155030.GP5789@sirena.org.uk>
+ <7a88c7b4-d31d-b044-bb8e-a866d49d1256@amd.com> <s5hwotc0y6v.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id B644B2676E2
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2018 10:39:05 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id s9-v6so2110049wmh.3
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2018 01:39:05 -0700 (PDT)
-In-Reply-To: <1532112058.26720.62.camel@baylibre.com>
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com
+ (mail-cys01nam02on0060.outbound.protection.outlook.com [104.47.37.60])
+ by alsa0.perex.cz (Postfix) with ESMTP id 330482676E2
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2018 11:07:24 +0200 (CEST)
+In-Reply-To: <s5hwotc0y6v.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,133 +28,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Michael Turquette <mturquette@baylibre.com>
-Cc: "open list:ARM/Amlogic Meson..." <linux-amlogic@lists.infradead.org>, alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, djkurtz@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Alexander.Deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 2018-07-20 at 20:40 +0200, Jerome Brunet wrote:
-> On Sat, 2018-07-21 at 02:12 +0800, kbuild test robot wrote:
-> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-4.19
-> > head:   a8e43c21a8a32a3af4abc605b6ebcab039f28e00
-> > commit: c41c2a355b86368608377eaf3df442ec0f342f1e [199/204] ASoC: meson: add tdm output driver
-> > config: m68k-allyesconfig (attached as .config)
-> > compiler: m68k-linux-gnu-gcc (Debian 7.2.0-11) 7.2.0
-> > reproduce:
-> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
-> >         chmod +x ~/bin/make.cross
-> >         git checkout c41c2a355b86368608377eaf3df442ec0f342f1e
-> >         # save the attached .config to linux build tree
-> >         GCC_VERSION=7.2.0 make.cross ARCH=m68k 
-> > 
-> > All errors (new ones prefixed by >>):
-> > 
-> >    sound/soc//meson/axg-tdm-interface.c: In function 'axg_tdm_iface_set_lrclk':
-> > > > sound/soc//meson/axg-tdm-interface.c:225:8: error: implicit declaration of function 'clk_set_duty_cycle'; did you mean 'clk_set_rate'? [-Werror=implicit-function-declaration]
-> > 
-> >      ret = clk_set_duty_cycle(iface->lrclk, ratio_num, 2);
-> 
-> Hi Mark,
-> 
-> I'm really sorry about this. I completely forgot this dependency.
-> It has been accepted in clk early in this cycle and it should be sent to Linus
-> during the next merge window. Mike and Stephen have topic branch with related
-> change:
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/clk/linux.git clk-core-duty-cycle
-> 
-> commit:
-> 9fba738a53dd ("clk: add duty cycle support") 
-> 
-> Again, sorry about this.
-> Regards
-> Jerome
 
-Hi Mark,
 
-I see that kbuild-robot pick up this problem again this morning. I was wondering
-if you were expecting anything else from me on this ?
-
-The commit adding the duty-cycle feature in CCF is directly based on v4.18-rc1
-Do you plan on pulling this in your branch ? or wait for dependency to be sorted
-out during the merge window maybe ?
-
-If there is anything I can do to help, please let me know.
-
-Best Regards
-Jerome
-
+On 7/31/2018 11:00 AM, Takashi Iwai wrote:
+> On Tue, 31 Jul 2018 03:25:06 +0200,
+> Agrawal, Akshu wrote:
+>>
+>>
+>>
+>> On 7/30/2018 9:20 PM, Mark Brown wrote:
+>>> On Mon, Jul 30, 2018 at 05:32:21PM +0200, Takashi Iwai wrote:
+>>>
+>>>> That said, if delay callback of CPU dai provides the additional delay,
+>>>> the patch does correct thing.  OTOH, if CPU dai provides the base
+>>>> delay instead, we need to clarify that it's rather a must; the delay
+>>>> calculation in pointer callback becomes bogus in this scenario.
+>>>
+>>> Part of the theory here is that every component might have a delay
+>>> independently of the rest and we need to add them all together to figure
+>>> out what the system as a whole will see.  Personally I'd rather just
+>>> have everything use a callack consistently to avoid confusion.
+>>>
+>>
+>> For consistency we can add a delay callback in snd_pcm_ops and modify
+>> the drivers which directly assigning runtime->delay to use the callback.
 > 
-> >            ^~~~~~~~~~~~~~~~~~
-> >            clk_set_rate
-> >    cc1: some warnings being treated as errors
-> > 
-> > vim +225 sound/soc//meson/axg-tdm-interface.c
-> > 
-> > d60e4f1e Jerome Brunet 2018-07-17  188  
-> > d60e4f1e Jerome Brunet 2018-07-17  189  static int axg_tdm_iface_set_lrclk(struct snd_soc_dai *dai,
-> > d60e4f1e Jerome Brunet 2018-07-17  190  				   struct snd_pcm_hw_params *params)
-> > d60e4f1e Jerome Brunet 2018-07-17  191  {
-> > d60e4f1e Jerome Brunet 2018-07-17  192  	struct axg_tdm_iface *iface = snd_soc_dai_get_drvdata(dai);
-> > d60e4f1e Jerome Brunet 2018-07-17  193  	unsigned int ratio_num;
-> > d60e4f1e Jerome Brunet 2018-07-17  194  	int ret;
-> > d60e4f1e Jerome Brunet 2018-07-17  195  
-> > d60e4f1e Jerome Brunet 2018-07-17  196  	ret = clk_set_rate(iface->lrclk, params_rate(params));
-> > d60e4f1e Jerome Brunet 2018-07-17  197  	if (ret) {
-> > d60e4f1e Jerome Brunet 2018-07-17  198  		dev_err(dai->dev, "setting sample clock failed: %d\n", ret);
-> > d60e4f1e Jerome Brunet 2018-07-17  199  		return ret;
-> > d60e4f1e Jerome Brunet 2018-07-17  200  	}
-> > d60e4f1e Jerome Brunet 2018-07-17  201  
-> > d60e4f1e Jerome Brunet 2018-07-17  202  	switch (iface->fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
-> > d60e4f1e Jerome Brunet 2018-07-17  203  	case SND_SOC_DAIFMT_I2S:
-> > d60e4f1e Jerome Brunet 2018-07-17  204  	case SND_SOC_DAIFMT_LEFT_J:
-> > d60e4f1e Jerome Brunet 2018-07-17  205  	case SND_SOC_DAIFMT_RIGHT_J:
-> > d60e4f1e Jerome Brunet 2018-07-17  206  		/* 50% duty cycle ratio */
-> > d60e4f1e Jerome Brunet 2018-07-17  207  		ratio_num = 1;
-> > d60e4f1e Jerome Brunet 2018-07-17  208  		break;
-> > d60e4f1e Jerome Brunet 2018-07-17  209  
-> > d60e4f1e Jerome Brunet 2018-07-17  210  	case SND_SOC_DAIFMT_DSP_A:
-> > d60e4f1e Jerome Brunet 2018-07-17  211  	case SND_SOC_DAIFMT_DSP_B:
-> > d60e4f1e Jerome Brunet 2018-07-17  212  		/*
-> > d60e4f1e Jerome Brunet 2018-07-17  213  		 * A zero duty cycle ratio will result in setting the mininum
-> > d60e4f1e Jerome Brunet 2018-07-17  214  		 * ratio possible which, for this clock, is 1 cycle of the
-> > d60e4f1e Jerome Brunet 2018-07-17  215  		 * parent bclk clock high and the rest low, This is exactly
-> > d60e4f1e Jerome Brunet 2018-07-17  216  		 * what we want here.
-> > d60e4f1e Jerome Brunet 2018-07-17  217  		 */
-> > d60e4f1e Jerome Brunet 2018-07-17  218  		ratio_num = 0;
-> > d60e4f1e Jerome Brunet 2018-07-17  219  		break;
-> > d60e4f1e Jerome Brunet 2018-07-17  220  
-> > d60e4f1e Jerome Brunet 2018-07-17  221  	default:
-> > d60e4f1e Jerome Brunet 2018-07-17  222  		return -EINVAL;
-> > d60e4f1e Jerome Brunet 2018-07-17  223  	}
-> > d60e4f1e Jerome Brunet 2018-07-17  224  
-> > d60e4f1e Jerome Brunet 2018-07-17 @225  	ret = clk_set_duty_cycle(iface->lrclk, ratio_num, 2);
-> > d60e4f1e Jerome Brunet 2018-07-17  226  	if (ret) {
-> > d60e4f1e Jerome Brunet 2018-07-17  227  		dev_err(dai->dev,
-> > d60e4f1e Jerome Brunet 2018-07-17  228  			"setting sample clock duty cycle failed: %d\n", ret);
-> > d60e4f1e Jerome Brunet 2018-07-17  229  		return ret;
-> > d60e4f1e Jerome Brunet 2018-07-17  230  	}
-> > d60e4f1e Jerome Brunet 2018-07-17  231  
-> > d60e4f1e Jerome Brunet 2018-07-17  232  	/* Set sample clock inversion */
-> > d60e4f1e Jerome Brunet 2018-07-17  233  	ret = clk_set_phase(iface->lrclk,
-> > d60e4f1e Jerome Brunet 2018-07-17  234  			    axg_tdm_lrclk_invert(iface->fmt) ? 180 : 0);
-> > d60e4f1e Jerome Brunet 2018-07-17  235  	if (ret) {
-> > d60e4f1e Jerome Brunet 2018-07-17  236  		dev_err(dai->dev,
-> > d60e4f1e Jerome Brunet 2018-07-17  237  			"setting sample clock phase failed: %d\n", ret);
-> > d60e4f1e Jerome Brunet 2018-07-17  238  		return ret;
-> > d60e4f1e Jerome Brunet 2018-07-17  239  	}
-> > d60e4f1e Jerome Brunet 2018-07-17  240  
-> > d60e4f1e Jerome Brunet 2018-07-17  241  	return 0;
-> > d60e4f1e Jerome Brunet 2018-07-17  242  }
-> > d60e4f1e Jerome Brunet 2018-07-17  243  
-> > 
-> > :::::: The code at line 225 was first introduced by commit
-> > :::::: d60e4f1e4be5e2dfb55fb084b119aed094227a35 ASoC: meson: add tdm interface driver
-> > 
-> > :::::: TO: Jerome Brunet <jbrunet@baylibre.com>
-> > :::::: CC: Mark Brown <broonie@kernel.org>
-> > 
-> > ---
-> > 0-DAY kernel test infrastructure                Open Source Technology Center
-> > https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+> No, ALSA PCM ops definition is fine.  The delay calculation is
+> basically tied with the position, hence it has to be set together, and
+> that's the pointer callback.
 > 
+> Judging from the call pattern, the current design of ASoC delay
+> callback implies that the return value is more or less constant, which
+> can be accumulated on top of the base value.  So your patch is natural
+> from that POV.
 > 
+> OTOH, if the CPU dai can really provide a dynamic value that is
+> strictly tied with pointer, CPU dai itself should provide the pointer
+> callback that covers both the pointer and the base delay, and it
+> should be used instead of component pointer callback.
+> 
+
+Not sure if all cpu dai can provide the base delay and thus require
+component pointer callback for it. For example, in case of AMD, it uses
+designware cpu dai which is a common code.
+
+>> Apart from the 2 drivers mentioned in commit message I also found
+>> sound/usb to be doing the same and its delay getting lost.
+> 
+> The USB driver hasn't been used in ASoC, no?
+> 
+
+Don't know, was looking who all might have been impacted by this.
+
+Thanks,
+Akshu
