@@ -1,64 +1,183 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 06/10] ASoC: wcd9335: add basic controls
-Date: Tue, 31 Jul 2018 18:16:54 +0100
-Message-ID: <20180731171654.GL5719@sirena.org.uk>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 01/10] ASoC: dt-bindings: add dt
+ bindings for wcd9335 audio codec
+Date: Tue, 31 Jul 2018 14:43:15 -0600
+Message-ID: <20180731204315.GA5265@rob-hp-laptop>
 References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
- <20180727121806.18209-7-srinivas.kandagatla@linaro.org>
+ <20180727121806.18209-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="hTKW8p8tUZ/8vLMe"
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-io0-f196.google.com (mail-io0-f196.google.com
+ [209.85.223.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id DC800267763
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2018 22:43:18 +0200 (CEST)
+Received: by mail-io0-f196.google.com with SMTP id i18-v6so14194640ioj.13
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2018 13:43:18 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <20180727121806.18209-7-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20180727121806.18209-2-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: lee.jones@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, tiwai@suse.com, vkoul@kernel.org, broonie@kernel.org, lee.jones@linaro.org
 List-Id: alsa-devel@alsa-project.org
 
+On Fri, Jul 27, 2018 at 01:17:57PM +0100, Srinivas Kandagatla wrote:
+> This patch adds bindings for wcd9335 audio codec which can support both SLIMbus
+> and I2S/I2C interface.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,wcd9335.txt     | 123 +++++++++++++++++++++
+>  1 file changed, 123 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
+> new file mode 100644
+> index 000000000000..1d8d49e30af7
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
+> @@ -0,0 +1,123 @@
+> +QCOM WCD9335 Codec
+> +
+> +Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC, supports
+> +Qualcomm Technologies, Inc. (QTI) multimedia solutions, including
+> +the MSM8996, MSM8976, and MSM8956 chipsets. It has in-built
+> +Soundwire controller, interrupt mux. It supports both I2S/I2C and
+> +SLIMbus audio interfaces.
+> +
+> +Required properties with SLIMbus Interface:
+> +
+> +- compatible:
+> +	Usage: required
+> +	Value type: <stringlist>
+> +	Definition: For SLIMbus interface it should be "slimMID,PID",
+> +		    textual representation of Manufacturer ID, Product Code,
+> +		    shall be in lower case hexadecimal with leading zeroes
+> +		    suppressed.  Refer to slimbus/bus.txt for details.
+> +		    Should be:
+> +		    "slim217,1a0" for MSM8996 and APQ8096 SoCs with SLIMbus.
+> +
+> +- reg
+> +	Usage: required
+> +	Value type: <u32 u32>
+> +	Definition: Should be ('Device index', 'Instance ID')
+> +
+> +- interrupts
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: Interrupts via WCD INTR1 and INTR2 pins
+> +
+> +- interrupt-names:
+> +	Usage: required
+> +	Value type: <String array>
+> +	Definition: Interrupt names of WCD INTR1 and INTR2
+> +	Should be: "intr1", "intr2"
+> +
+> +- reset-gpio:
 
---hTKW8p8tUZ/8vLMe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+reset-gpios
 
-On Fri, Jul 27, 2018 at 01:18:02PM +0100, Srinivas Kandagatla wrote:
+> +	Usage: required
+> +	Value type: <String Array>
+> +	Definition: Reset gpio line
+> +
+> +- qcom,ifd:
+> +	Usage: required
+> +	Value type: <phandle>
+> +	Definition: SLIM interface device
 
-> +static const char * const wcd9335_ear_pa_gain_text[] = {
-> +	"G_6_DB", "G_4P5_DB", "G_3_DB", "G_1P5_DB",
-> +	"G_0_DB", "G_M2P5_DB", "UNDEFINED", "G_M12_DB"
-> +};
+Wouldn't this be the parent?
 
-This is fairly clearly a volume control so shouldn't be an enum.  I
-don't think we have a standard control that enables you to skip values
-in a regular volume control (we do for enums which you should've used
-rather than having the undefined entry) so you'd have to have custom get
-and put operators but that's better than abusing an enum.
+> +
+> +- clocks:
+> +	Usage: required
+> +	Value type: <prop-encoded-array>
+> +	Definition: See clock-bindings.txt section "consumers". List of
+> +                three clock specifiers for mclk, mclk2 and slimbus clock.
+> +
+> +- clock-names:
+> +	Usage: required
+> +	Value type: <string>
+> +	Definition: Must contain "mclk", "mclk2" and "slimbus" strings.
+> +
+> +- vdd-buck-supply:
+> +	Usage: required
+> +	Value type: <phandle>
+> +	Definition: Should contain a reference to the 1.8V buck supply
+> +
+> +- vdd-buck-sido-supply:
+> +	Usage: required
+> +	Value type: <phandle>
+> +	Definition: Should contain a reference to the 1.8V SIDO buck supply
+> +
+> +- vdd-rx-supply:
+> +	Usage: required
+> +	Value type: <phandle>
+> +	Definition: Should contain a reference to the 1.8V rx supply
+> +
+> +- vdd-tx-supply:
+> +	Usage: required
+> +	Value type: <phandle>
+> +	Definition: Should contain a reference to the 1.8V tx supply
+> +
+> +- vdd-vbat-supply:
+> +	Usage: Optional
+> +	Value type: <phandle>
+> +	Definition: Should contain a reference to the vbat supply
+> +
+> +- vdd-micbias-supply:
+> +	Usage: required
+> +	Value type: <phandle>
+> +	Definition: Should contain a reference to the micbias supply
+> +
+> +- vdd-io-supply:
+> +	Usage: required
+> +	Value type: <phandle>
+> +	Definition: Should contain a reference to the 1.8V io supply
+> +
+> +- interrupt-controller:
+> +	Usage: required
+> +	Definition: Indicating that this is a interrupt controller
+> +
+> +- #interrupt-cells:
+> +	Usage: required
+> +	Value type: <int>
+> +	Definition: should be 1
+> +
+> +#sound-dai-cells
+> +	Usage: required
+> +	Value type: <u32>
+> +	Definition: Must be 1
+> +
+> +codec@1{
 
-> +static const char * const rx_hph_mode_mux_text[] = {
-> +	"CLS_H_INVALID", "CLS_H_HIFI", "CLS_H_LP", "CLS_AB", "CLS_H_LOHIFI"
-> +};
+audio-codec@1
 
-Use a SOC_VALUE_ENUM to hide the invalid option from users.
-
-> +	wcd->comp_enabled[comp] = value;
-> +	sel = value ? WCD9335_HPH_GAIN_SRC_SEL_COMPANDER :
-> +		WCD9335_HPH_GAIN_SRC_SEL_REGISTER;
-
-Just write normal if statements unless there's a reason not to, it's
-easier to read.
-
---hTKW8p8tUZ/8vLMe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltgmYYACgkQJNaLcl1U
-h9Adxgf+MFHKxg2WF8v6N+AeOWmjQ3J0XB/mq1WgTIgaPnJwCEbIPpDUhpq4DGdW
-LDcrzKwVlNkeoGkubTMFqlDEGU37VKRNLKHZ5iydaNdVdnkN0AGmoY/70wfYA9Av
-WN8I5pN+v5r1AlorDMLn/XwivKMOp2ekAhDYR7IC3bctHnG6yl8n/AxBCRH0vAhq
-fQVg3GT4Ezd6X3GQJaFg12TLIBk5NfCJnjTD0i4M4g8oSsOywWnfaaYZ8TBhIx3g
-DTX80aK69lqEDYB0tP/gW4Sqr5Hz1JmkPXG17YND/BvDBWUlFp3HunKy4m3Z+yWH
-8rNVq0I2fbE2AZCNeaYb1Ck0ObH6GA==
-=UnyX
------END PGP SIGNATURE-----
-
---hTKW8p8tUZ/8vLMe--
+> +	compatible = "slim217,1a0";
+> +	reg  = <1 0>;
+> +	interrupts = <&msmgpio 54 IRQ_TYPE_LEVEL_HIGH>;
+> +	interrupt-names = "intr2"
+> +	reset-gpio = <&msmgpio 64 0>;
+> +	qcom,ifd  = <&wc9335_ifd>;
+> +	clock-names = "mclk", "native";
+> +	clocks = <&rpmcc RPM_SMD_DIV_CLK1>,
+> +		 <&rpmcc RPM_SMD_BB_CLK1>;
+> +	vdd-buck-supply = <&pm8994_s4>;
+> +	vdd-rx-supply = <&pm8994_s4>;
+> +	vdd-buck-sido-supply = <&pm8994_s4>;
+> +	vdd-tx-supply = <&pm8994_s4>;
+> +	vdd-io-supply = <&pm8994_s4>;
+> +	#sound-dai-cells = <1>;
+> +}
+> -- 
+> 2.16.2
+> 
