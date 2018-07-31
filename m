@@ -1,26 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: soc-pcm: Use delay set in pointer
- function
-Date: Tue, 31 Jul 2018 15:40:52 +0100
-Message-ID: <20180731144052.GF5719@sirena.org.uk>
-References: <7a88c7b4-d31d-b044-bb8e-a866d49d1256@amd.com>
- <s5hwotc0y6v.wl-tiwai@suse.de>
- <5b3249cb-6212-6a14-b644-7548cf0ad00c@amd.com>
- <s5ha7q721vs.wl-tiwai@suse.de>
- <20180731101943.GB5719@sirena.org.uk>
- <s5heffjr8ys.wl-tiwai@suse.de>
- <20180731131246.GC5719@sirena.org.uk>
- <s5hin4vpm80.wl-tiwai@suse.de>
- <20180731135115.GD5719@sirena.org.uk>
- <s5hd0v3pkyj.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v5 8/8] ASoC: Intel: Skylake: add option to
+ control HDAudio + DSP usage
+Date: Tue, 31 Jul 2018 09:06:54 -0700
+Message-ID: <5f73f810-6fe5-bad9-81fb-fd587ef39e8c@linux.intel.com>
+References: <20180727230554.31027-1-pierre-louis.bossart@linux.intel.com>
+ <20180727230554.31027-9-pierre-louis.bossart@linux.intel.com>
+ <s5hbmanr895.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4182362663285766251=="
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 21F55267763
- for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2018 16:40:55 +0200 (CEST)
-In-Reply-To: <s5hd0v3pkyj.wl-tiwai@suse.de>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 30E85267763
+ for <alsa-devel@alsa-project.org>; Tue, 31 Jul 2018 18:07:08 +0200 (CEST)
+In-Reply-To: <s5hbmanr895.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,52 +25,107 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Alexander.Deucher@amd.com, "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On 7/31/18 3:48 AM, Takashi Iwai wrote:
+> On Sat, 28 Jul 2018 01:05:54 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>> Add two options to explicitly enable HDAudio + DSP usage and force its
+>> use
+>>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   sound/soc/intel/Kconfig       | 19 +++++++++++++++++++
+>>   sound/soc/intel/skylake/skl.c |  7 ++++++-
+>>   2 files changed, 25 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+>> index 0caa1f4eb94d..93c3693cdf13 100644
+>> --- a/sound/soc/intel/Kconfig
+>> +++ b/sound/soc/intel/Kconfig
+>> @@ -117,6 +117,25 @@ config SND_SOC_INTEL_SKYLAKE
+>>   	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+>>   	  then enable this option by saying Y or m.
+>>   
+>> +config SND_SOC_INTEL_SKYLAKE_HDA_DSP
+>> +	bool "Enable HDAudio Codec + DSP support"
+>> +	depends on SND_SOC_INTEL_SKYLAKE
+>> +	help
+>> +	  If you have a Intel Skylake+ platform with the DSP enabled in
+>> +	  the BIOS and an HDAudio codec, then enable this option by saying Y
+>> +	  This option will only have an effect if there are no ACPI-enumerated
+>> +	  audio devices (I2C, SoundWire).
+> 
+> IMO, the change needed for this config should be folded into the patch
+> 4 "ASoC: Intel: Skylake: use HDAudio if ACPI enumeration fails").
 
---===============4182362663285766251==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="eDB11BtaWSyaBkpc"
-Content-Disposition: inline
+Yes, agreed.
+> 
+> 
+>> +config SND_SOC_INTEL_SKYLAKE_FORCE_HDA_DSP
+>> +	bool "Force HDAudio Codec + DSP support"
+>> +	depends on SND_SOC_INTEL_SKYLAKE_HDA_DSP
+>> +	help
+>> +	  If you have a Intel Skylake+ platform with the DSP enabled in
+>> +	  the BIOS and an HDAudio codec, then enable this option by saying Y
+>> +	  This option will ignore information from the BIOS and force the use
+>> +	  of the HDaudio codec, if present.
+>> +	  This is a debug option not recommended for distros.
+> 
+> ... and this one is better to be a module option.
+> Distros tend to enable all possible options, and this may be set
+> unnecessarily.  If any, this kconfig should be only toggling the
+> default option value.
 
+Sorry, I don't get this one. this wouldn't change anything between 
+built-in or module, it's just a yes/no answer to ignore ACPI stuff. the 
+default is also no and there is a clear statement not to include it 
+except for debug.
+We have a similar option for SOF to bypass all ACPI information and go 
+straight to 'nocodec' mode.
 
---eDB11BtaWSyaBkpc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> 
+> Just another nitpicking:
+> 
+>> @@ -474,6 +474,7 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+>>   						{.name = "ssp5_sclkfs"},
+>>   };
+>>   
+>> +#if IS_ENABLED(CONFIG_SND_SOC_INTEL_SKYLAKE_HDA_DSP)
+>>   static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
+>>   					struct snd_soc_acpi_mach *machines)
+>>   {
+>> @@ -492,6 +493,7 @@ static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
+>>   
+>>   	return mach;
+>>   }
+>> +#endif
+> 
+> Defining a dumb skl_find_hda_machine() returning NULL as #else would
+> reduce one more ifdef.  Also, CONFIG_SND_SOC_INTEL_SKYLAKE_HDA_DSP is
+> a bool, so it can be a simple ifdef without IS_ENABLED().
+> 
+> #ifdef CONFIG_SND_SOC_INTEL_SKYLAKE_HDA_DSP
+> static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
+>   					struct snd_soc_acpi_mach *machines)
+> {
+> 	....
+> }
+> #else
+> static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
+>   					struct snd_soc_acpi_mach *machines)
+> {
+> 	return NULL;
+> }
+> #endif
 
-On Tue, Jul 31, 2018 at 03:56:52PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+yes, thanks for the suggestion.
 
-> > Yes.  I'm saying that if the CPU DAI thinks it can figure out the base
-> > delay something is confused.
-
-> Then basically Akshu's patch does the correct thing, I suppose.
-
-I think so.  Could perhaps do with a little clarification though.
-
---eDB11BtaWSyaBkpc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltgdPMACgkQJNaLcl1U
-h9C+jwf/bx01Tp500sjkgbIdsaxeTZg926yRoXNkQsXYnb2f/Tl7JW3vKpEBrYUl
-tYubOD9m/3XZ7tJOrfn37h03VL4R/Y7Ykx2s3cCDutdiGzaDLMktAxd1c9I9/m/Y
-Sp0BS0HJM5rgLk14PObW3E4xxsuxURg6WMP1HRX6Xps1A4yDP6hakNv9fpEHQ6fb
-YJuj+zMk3f8feeVIWkMl3HlCTaIRz2dMEfJEZnxfdhW82BMv7HQAlIVWg/axGlWI
-gSWxMqARvCOTWGrIvJjRiD1wtI8+MnDGHAe758TC9jcoeXQ0JoxkFIyDbPH6SRZ9
-RkdpuibywAcb3hmc7DSIDGJGH4dXmg==
-=bkPk
------END PGP SIGNATURE-----
-
---eDB11BtaWSyaBkpc--
-
---===============4182362663285766251==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4182362663285766251==--
+> 	
+> 
+> thanks,
+> 
+> Takashi
+> 
