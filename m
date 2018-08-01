@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/5] ALSA: seq: Remove dead codes
-Date: Wed,  1 Aug 2018 18:11:57 +0200
-Message-ID: <20180801161200.3930-3-tiwai@suse.de>
+Subject: [PATCH 1/5] ALSA: seq: Minor cleanup of MIDI event
+	parser helpers
+Date: Wed,  1 Aug 2018 18:11:56 +0200
+Message-ID: <20180801161200.3930-2-tiwai@suse.de>
 References: <20180801161200.3930-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B32B2677D7
+ by alsa0.perex.cz (Postfix) with ESMTP id 9926B2677C5
  for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 18:12:02 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 22CCEAD1E
+ by mx1.suse.de (Postfix) with ESMTP id 109ECACFB
  for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 16:12:02 +0000 (UTC)
 In-Reply-To: <20180801161200.3930-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,218 +27,184 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-There are a few functions that have been commented out for ages.
-And also there are functions that do nothing but placeholders.
-Let's kill them.
+snd_midi_event_encode_byte() can never fail, and it can return rather
+true/false.  Change the return type to bool, adjust the argument to
+receive a MIDI byte as unsigned char, and adjust the comment
+accordingly.  This allows callers to drop error checks, which
+simplifies the code.
+
+Meanwhile, snd_midi_event_encode() helper is used only in seq_midi.c,
+and it can be better folded into it.  This will reduce the total
+amount of lines in the end.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/seq.c            |  7 -----
- sound/core/seq/seq_memory.c     | 12 ---------
- sound/core/seq/seq_memory.h     |  6 -----
- sound/core/seq/seq_midi_emul.c  | 12 ---------
- sound/core/seq/seq_midi_event.c | 45 ---------------------------------
- sound/core/seq/seq_virmidi.c    | 33 ------------------------
- 6 files changed, 115 deletions(-)
+ include/sound/seq_midi_event.h    |  6 ++---
+ sound/core/seq/oss/seq_oss_midi.c |  2 +-
+ sound/core/seq/seq_midi.c         | 24 ++++++++----------
+ sound/core/seq/seq_midi_event.c   | 42 ++++++-------------------------
+ sound/core/seq/seq_virmidi.c      |  4 +--
+ 5 files changed, 22 insertions(+), 56 deletions(-)
 
-diff --git a/sound/core/seq/seq.c b/sound/core/seq/seq.c
-index 639544b4fb04..e685eccdc741 100644
---- a/sound/core/seq/seq.c
-+++ b/sound/core/seq/seq.c
-@@ -87,10 +87,6 @@ static int __init alsa_seq_init(void)
- 	if ((err = client_init_data()) < 0)
- 		goto error;
+diff --git a/include/sound/seq_midi_event.h b/include/sound/seq_midi_event.h
+index e40f43e6fc7b..2f135bccf457 100644
+--- a/include/sound/seq_midi_event.h
++++ b/include/sound/seq_midi_event.h
+@@ -43,10 +43,8 @@ void snd_midi_event_free(struct snd_midi_event *dev);
+ void snd_midi_event_reset_encode(struct snd_midi_event *dev);
+ void snd_midi_event_reset_decode(struct snd_midi_event *dev);
+ void snd_midi_event_no_status(struct snd_midi_event *dev, int on);
+-/* encode from byte stream - return number of written bytes if success */
+-long snd_midi_event_encode(struct snd_midi_event *dev, unsigned char *buf, long count,
+-			   struct snd_seq_event *ev);
+-int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c, struct snd_seq_event *ev);
++bool snd_midi_event_encode_byte(struct snd_midi_event *dev, unsigned char c,
++				struct snd_seq_event *ev);
+ /* decode from event to bytes - return number of written bytes if success */
+ long snd_midi_event_decode(struct snd_midi_event *dev, unsigned char *buf, long count,
+ 			   struct snd_seq_event *ev);
+diff --git a/sound/core/seq/oss/seq_oss_midi.c b/sound/core/seq/oss/seq_oss_midi.c
+index 9debd1b8fd28..0d5f8b16d057 100644
+--- a/sound/core/seq/oss/seq_oss_midi.c
++++ b/sound/core/seq/oss/seq_oss_midi.c
+@@ -637,7 +637,7 @@ snd_seq_oss_midi_putc(struct seq_oss_devinfo *dp, int dev, unsigned char c, stru
  
--	/* init memory, room for selected events */
--	if ((err = snd_sequencer_memory_init()) < 0)
--		goto error;
--
- 	/* init event queues */
- 	if ((err = snd_seq_queues_init()) < 0)
- 		goto error;
-@@ -126,9 +122,6 @@ static void __exit alsa_seq_exit(void)
- 	/* unregister sequencer device */
- 	snd_sequencer_device_done();
+ 	if ((mdev = get_mididev(dp, dev)) == NULL)
+ 		return -ENODEV;
+-	if (snd_midi_event_encode_byte(mdev->coder, c, ev) > 0) {
++	if (snd_midi_event_encode_byte(mdev->coder, c, ev)) {
+ 		snd_seq_oss_fill_addr(dp, ev, mdev->client, mdev->port);
+ 		snd_use_lock_free(&mdev->use_lock);
+ 		return 0;
+diff --git a/sound/core/seq/seq_midi.c b/sound/core/seq/seq_midi.c
+index 5dd0ee258359..9e0dabd3ce5f 100644
+--- a/sound/core/seq/seq_midi.c
++++ b/sound/core/seq/seq_midi.c
+@@ -78,7 +78,7 @@ static void snd_midi_input_event(struct snd_rawmidi_substream *substream)
+ 	struct seq_midisynth *msynth;
+ 	struct snd_seq_event ev;
+ 	char buf[16], *pbuf;
+-	long res, count;
++	long res;
  
--	/* release event memory */
--	snd_sequencer_memory_done();
--
- 	snd_seq_autoload_exit();
+ 	if (substream == NULL)
+ 		return;
+@@ -94,19 +94,15 @@ static void snd_midi_input_event(struct snd_rawmidi_substream *substream)
+ 		if (msynth->parser == NULL)
+ 			continue;
+ 		pbuf = buf;
+-		while (res > 0) {
+-			count = snd_midi_event_encode(msynth->parser, pbuf, res, &ev);
+-			if (count < 0)
+-				break;
+-			pbuf += count;
+-			res -= count;
+-			if (ev.type != SNDRV_SEQ_EVENT_NONE) {
+-				ev.source.port = msynth->seq_port;
+-				ev.dest.client = SNDRV_SEQ_ADDRESS_SUBSCRIBERS;
+-				snd_seq_kernel_client_dispatch(msynth->seq_client, &ev, 1, 0);
+-				/* clear event and reset header */
+-				memset(&ev, 0, sizeof(ev));
+-			}
++		while (res-- > 0) {
++			if (!snd_midi_event_encode_byte(msynth->parser,
++							*pbuf++, &ev))
++				continue;
++			ev.source.port = msynth->seq_port;
++			ev.dest.client = SNDRV_SEQ_ADDRESS_SUBSCRIBERS;
++			snd_seq_kernel_client_dispatch(msynth->seq_client, &ev, 1, 0);
++			/* clear event and reset header */
++			memset(&ev, 0, sizeof(ev));
+ 		}
+ 	}
  }
- 
-diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
-index a4c8543176b2..5b0388202bac 100644
---- a/sound/core/seq/seq_memory.c
-+++ b/sound/core/seq/seq_memory.c
-@@ -504,18 +504,6 @@ int snd_seq_pool_delete(struct snd_seq_pool **ppool)
- 	return 0;
- }
- 
--/* initialize sequencer memory */
--int __init snd_sequencer_memory_init(void)
--{
--	return 0;
--}
--
--/* release sequencer memory */
--void __exit snd_sequencer_memory_done(void)
--{
--}
--
--
- /* exported to seq_clientmgr.c */
- void snd_seq_info_pool(struct snd_info_buffer *buffer,
- 		       struct snd_seq_pool *pool, char *space)
-diff --git a/sound/core/seq/seq_memory.h b/sound/core/seq/seq_memory.h
-index 3abe306c394a..1292fe91f02e 100644
---- a/sound/core/seq/seq_memory.h
-+++ b/sound/core/seq/seq_memory.h
-@@ -94,12 +94,6 @@ struct snd_seq_pool *snd_seq_pool_new(int poolsize);
- /* remove pool */
- int snd_seq_pool_delete(struct snd_seq_pool **pool);
- 
--/* init memory */
--int snd_sequencer_memory_init(void);
--            
--/* release event memory */
--void snd_sequencer_memory_done(void);
--
- /* polling */
- int snd_seq_pool_poll_wait(struct snd_seq_pool *pool, struct file *file, poll_table *wait);
- 
-diff --git a/sound/core/seq/seq_midi_emul.c b/sound/core/seq/seq_midi_emul.c
-index 288f839a554b..f9f21331aeea 100644
---- a/sound/core/seq/seq_midi_emul.c
-+++ b/sound/core/seq/seq_midi_emul.c
-@@ -728,15 +728,3 @@ void snd_midi_channel_free_set(struct snd_midi_channel_set *chset)
- 	kfree(chset);
- }
- EXPORT_SYMBOL(snd_midi_channel_free_set);
--
--static int __init alsa_seq_midi_emul_init(void)
--{
--	return 0;
--}
--
--static void __exit alsa_seq_midi_emul_exit(void)
--{
--}
--
--module_init(alsa_seq_midi_emul_init)
--module_exit(alsa_seq_midi_emul_exit)
 diff --git a/sound/core/seq/seq_midi_event.c b/sound/core/seq/seq_midi_event.c
-index 53c0dfab90d6..b11419537062 100644
+index 90bbbdbeba03..53c0dfab90d6 100644
 --- a/sound/core/seq/seq_midi_event.c
 +++ b/sound/core/seq/seq_midi_event.c
-@@ -175,45 +175,12 @@ void snd_midi_event_reset_decode(struct snd_midi_event *dev)
+@@ -214,45 +214,17 @@ int snd_midi_event_resize_buffer(struct snd_midi_event *dev, int bufsize)
  }
- EXPORT_SYMBOL(snd_midi_event_reset_decode);
- 
--#if 0
--void snd_midi_event_init(struct snd_midi_event *dev)
--{
--	snd_midi_event_reset_encode(dev);
--	snd_midi_event_reset_decode(dev);
--}
--#endif  /*  0  */
--
- void snd_midi_event_no_status(struct snd_midi_event *dev, int on)
- {
- 	dev->nostat = on ? 1 : 0;
- }
- EXPORT_SYMBOL(snd_midi_event_no_status);
+ #endif  /*  0  */
  
 -/*
-- * resize buffer
+- *  read bytes and encode to sequencer event if finished
+- *  return the size of encoded bytes
 - */
--#if 0
--int snd_midi_event_resize_buffer(struct snd_midi_event *dev, int bufsize)
+-long snd_midi_event_encode(struct snd_midi_event *dev, unsigned char *buf, long count,
+-			   struct snd_seq_event *ev)
 -{
--	unsigned char *new_buf, *old_buf;
--	unsigned long flags;
+-	long result = 0;
+-	int rc;
 -
--	if (bufsize == dev->bufsize)
--		return 0;
--	new_buf = kmalloc(bufsize, GFP_KERNEL);
--	if (new_buf == NULL)
--		return -ENOMEM;
--	spin_lock_irqsave(&dev->lock, flags);
--	old_buf = dev->buf;
--	dev->buf = new_buf;
--	dev->bufsize = bufsize;
--	reset_encode(dev);
--	spin_unlock_irqrestore(&dev->lock, flags);
--	kfree(old_buf);
--	return 0;
+-	ev->type = SNDRV_SEQ_EVENT_NONE;
+-
+-	while (count-- > 0) {
+-		rc = snd_midi_event_encode_byte(dev, *buf++, ev);
+-		result++;
+-		if (rc < 0)
+-			return rc;
+-		else if (rc > 0)
+-			return result;
+-	}
+-
+-	return result;
 -}
--#endif  /*  0  */
+-EXPORT_SYMBOL(snd_midi_event_encode);
 -
  /*
   *  read one byte and encode to sequencer event:
-  *  return true if MIDI bytes are encoded to an event
-@@ -503,15 +470,3 @@ static int extra_decode_xrpn(struct snd_midi_event *dev, unsigned char *buf,
+- *  return 1 if MIDI bytes are encoded to an event
+- *         0 data is not finished
+- *         negative for error
++ *  return true if MIDI bytes are encoded to an event
++ *         false data is not finished
+  */
+-int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c,
+-			       struct snd_seq_event *ev)
++bool snd_midi_event_encode_byte(struct snd_midi_event *dev, unsigned char c,
++				struct snd_seq_event *ev)
+ {
+-	int rc = 0;
++	bool rc = false;
+ 	unsigned long flags;
+ 
+-	c &= 0xff;
+-
+ 	if (c >= MIDI_CMD_COMMON_CLOCK) {
+ 		/* real-time event */
+ 		ev->type = status_event[ST_SPECIAL + c - 0xf0].event;
+@@ -293,7 +265,7 @@ int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c,
+ 			status_event[dev->type].encode(dev, ev);
+ 		if (dev->type >= ST_SPECIAL)
+ 			dev->type = ST_INVALID;
+-		rc = 1;
++		rc = true;
+ 	} else 	if (dev->type == ST_SYSEX) {
+ 		if (c == MIDI_CMD_COMMON_SYSEX_END ||
+ 		    dev->read >= dev->bufsize) {
+@@ -306,7 +278,7 @@ int snd_midi_event_encode_byte(struct snd_midi_event *dev, int c,
+ 				dev->read = 0; /* continue to parse */
+ 			else
+ 				reset_encode(dev); /* all parsed */
+-			rc = 1;
++			rc = true;
+ 		}
  	}
- 	return idx;
- }
--
--static int __init alsa_seq_midi_event_init(void)
--{
--	return 0;
--}
--
--static void __exit alsa_seq_midi_event_exit(void)
--{
--}
--
--module_init(alsa_seq_midi_event_init)
--module_exit(alsa_seq_midi_event_exit)
+ 
 diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index 0c84926eb726..a2f1c6b58693 100644
+index 03ac5e72dbe6..0c84926eb726 100644
 --- a/sound/core/seq/seq_virmidi.c
 +++ b/sound/core/seq/seq_virmidi.c
-@@ -109,23 +109,6 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
- 	return 0;
- }
- 
--/*
-- * receive an event from the remote virmidi port
-- *
-- * for rawmidi inputs, you can call this function from the event
-- * handler of a remote port which is attached to the virmidi via
-- * SNDRV_VIRMIDI_SEQ_ATTACH.
-- */
--#if 0
--int snd_virmidi_receive(struct snd_rawmidi *rmidi, struct snd_seq_event *ev)
--{
--	struct snd_virmidi_dev *rdev;
--
--	rdev = rmidi->private_data;
--	return snd_virmidi_dev_receive_event(rdev, ev, true);
--}
--#endif  /*  0  */
--
- /*
-  * event handler of virmidi port
-  */
-@@ -544,19 +527,3 @@ int snd_virmidi_new(struct snd_card *card, int device, struct snd_rawmidi **rrmi
- 	return 0;
- }
- EXPORT_SYMBOL(snd_virmidi_new);
--
--/*
-- *  ENTRY functions
-- */
--
--static int __init alsa_virmidi_init(void)
--{
--	return 0;
--}
--
--static void __exit alsa_virmidi_exit(void)
--{
--}
--
--module_init(alsa_virmidi_init)
--module_exit(alsa_virmidi_exit)
+@@ -174,8 +174,8 @@ static void snd_vmidi_output_work(struct work_struct *work)
+ 	while (READ_ONCE(vmidi->trigger)) {
+ 		if (snd_rawmidi_transmit(substream, &input, 1) != 1)
+ 			break;
+-		if (snd_midi_event_encode_byte(vmidi->parser, input,
+-					       &vmidi->event) <= 0)
++		if (!snd_midi_event_encode_byte(vmidi->parser, input,
++						&vmidi->event))
+ 			continue;
+ 		if (vmidi->event.type != SNDRV_SEQ_EVENT_NONE) {
+ 			ret = snd_seq_kernel_client_dispatch(vmidi->client,
 -- 
 2.18.0
