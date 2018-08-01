@@ -1,80 +1,61 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH v5 8/8] ASoC: Intel: Skylake: add option to
- control HDAudio + DSP usage
-Date: Wed, 1 Aug 2018 07:50:06 -0700
-Message-ID: <b3bf46c2-01ed-ba28-b96c-6c670d607846@linux.intel.com>
-References: <20180727230554.31027-1-pierre-louis.bossart@linux.intel.com>
- <20180727230554.31027-9-pierre-louis.bossart@linux.intel.com>
- <s5hbmanr895.wl-tiwai@suse.de>
- <5f73f810-6fe5-bad9-81fb-fd587ef39e8c@linux.intel.com>
- <20180731162000.GJ5719@sirena.org.uk>
+Subject: Re: [alsa-devel] [PATCH 9/9] ALSA: intel_hdmi: remove redundant
+ variable cfg_val
+Date: Wed, 1 Aug 2018 07:55:02 -0700
+Message-ID: <105efe0e-237e-dba0-3bfe-0f88b9ccd152@linux.intel.com>
+References: <20180801104742.4328-1-colin.king@canonical.com>
+ <20180801104742.4328-10-colin.king@canonical.com>
+ <s5hin4unyh0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id A8B062677AA
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 16:51:08 +0200 (CEST)
-In-Reply-To: <20180731162000.GJ5719@sirena.org.uk>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hin4unyh0.wl-tiwai@suse.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, Alexandre Torgue <alexandre.torgue@st.com>, kernel-janitors@vger.kernel.org, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Colin King <colin.king@canonical.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Jaya Kumar <jayakumar.alsa@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 7/31/18 9:20 AM, Mark Brown wrote:
-> On Tue, Jul 31, 2018 at 09:06:54AM -0700, Pierre-Louis Bossart wrote:
->> On 7/31/18 3:48 AM, Takashi Iwai wrote:
->>> Pierre-Louis Bossart wrote:
+On 8/1/18 4:00 AM, Takashi Iwai wrote:
+> On Wed, 01 Aug 2018 12:47:42 +0200,
+> Colin King wrote:
+>>
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Variable cfg_val is being assigned but is never used hence it is
+>> redundant and can be removed.
+>>
+>> Cleans up clang warning:
+>> warning: variable 'cfg_val' set but not used [-Wunused-but-set-variable]
+>>
+>> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+>> ---
+>>   sound/x86/intel_hdmi_audio.c | 2 --
+>>   1 file changed, 2 deletions(-)
+>>
+>> diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+>> index edc9f5a34eff..fa7dca5a68c8 100644
+>> --- a/sound/x86/intel_hdmi_audio.c
+>> +++ b/sound/x86/intel_hdmi_audio.c
+>> @@ -290,7 +290,6 @@ static void had_reset_audio(struct snd_intelhad *intelhaddata)
+>>   static int had_prog_status_reg(struct snd_pcm_substream *substream,
+>>   			struct snd_intelhad *intelhaddata)
+>>   {
+>> -	union aud_cfg cfg_val = {.regval = 0};
+>>   	union aud_ch_status_0 ch_stat0 = {.regval = 0};
+>>   	union aud_ch_status_1 ch_stat1 = {.regval = 0};
+>>   
+>> @@ -298,7 +297,6 @@ static int had_prog_status_reg(struct snd_pcm_substream *substream,
+>>   					  IEC958_AES0_NONAUDIO) >> 1;
+>>   	ch_stat0.regx.clk_acc = (intelhaddata->aes_bits &
+>>   					  IEC958_AES3_CON_CLOCK) >> 4;
+>> -	cfg_val.regx.val_bit = ch_stat0.regx.lpcm_id;
 > 
->>>> +config SND_SOC_INTEL_SKYLAKE_FORCE_HDA_DSP
->>>> +	bool "Force HDAudio Codec + DSP support"
->>>> +	depends on SND_SOC_INTEL_SKYLAKE_HDA_DSP
->>>> +	help
->>>> +	  If you have a Intel Skylake+ platform with the DSP enabled in
->>>> +	  the BIOS and an HDAudio codec, then enable this option by saying Y
->>>> +	  This option will ignore information from the BIOS and force the use
->>>> +	  of the HDaudio codec, if present.
->>>> +	  This is a debug option not recommended for distros.
-> 
->>> ... and this one is better to be a module option.
->>> Distros tend to enable all possible options, and this may be set
->>> unnecessarily.  If any, this kconfig should be only toggling the
->>> default option value.
-> 
->> Sorry, I don't get this one. this wouldn't change anything between built-in
->> or module, it's just a yes/no answer to ignore ACPI stuff. the default is
->> also no and there is a clear statement not to include it except for debug.
->> We have a similar option for SOF to bypass all ACPI information and go
->> straight to 'nocodec' mode.
-> 
-> Debug options like these are really a lot more useful as something
-> runtime selectable with something like a module parameter as Takashi
-> suggests - an innatentive distro maintainer could easily enable it by
-> mistake when going through a bunch of new options in a new kernel
-> release and if someone needs it for debugging purposes in a distro
-> context it's a real pain to have to rebuild the kernel.
+> Actually this made me wonder what is the definition of val_bit.
+> It seems always 1 in the current code after the commit 964ca8083c02.
+> Pierre?
 
-Ah yes, I get it now and yes it's probably a better idea to have a 
-kernel parameter. I saw multiple cases of distros such as Arch enabling 
-the baytrail nocodec mode and it's not straightforward to reach all 
-maintainers of all distros.
-Will fix, thanks for the feedback.
-
-> 
-> It's also a bit confusing as the config text says:
-> 
->>>> +	  If you have a Intel Skylake+ platform with the DSP enabled in
->>>> +	  the BIOS and an HDAudio codec, then enable this option by saying Y
-> 
-> which sounds like people should turn it on, the bit about it being a
-> debug option is quite deep in the text.
-> 
+I'll look into it, give me a couple of days. I vaguely remember this is 
+the AES validity bit but I am not sure why it's set with a pcm id, looks 
+like a mixup.
