@@ -1,7 +1,7 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH 8/9] ALSA: usb-audio: remove redundant pointer 'urb'
-Date: Wed,  1 Aug 2018 11:47:41 +0100
-Message-ID: <20180801104742.4328-9-colin.king@canonical.com>
+Subject: [PATCH 9/9] ALSA: intel_hdmi: remove redundant variable cfg_val
+Date: Wed,  1 Aug 2018 11:47:42 +0100
+Message-ID: <20180801104742.4328-10-colin.king@canonical.com>
 References: <20180801104742.4328-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -15,36 +15,36 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-Pointer 'urb' is being assigned but is never used hence it is
+Variable cfg_val is being assigned but is never used hence it is
 redundant and can be removed.
 
 Cleans up clang warning:
-warning: variable 'urb' set but not used [-Wunused-but-set-variable]
+warning: variable 'cfg_val' set but not used [-Wunused-but-set-variable]
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/usb/endpoint.c | 2 --
+ sound/x86/intel_hdmi_audio.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index c90607ebe155..d86be8bfe412 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -325,7 +325,6 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
- 		unsigned long flags;
- 		struct snd_usb_packet_info *uninitialized_var(packet);
- 		struct snd_urb_ctx *ctx = NULL;
--		struct urb *urb;
- 		int err, i;
+diff --git a/sound/x86/intel_hdmi_audio.c b/sound/x86/intel_hdmi_audio.c
+index edc9f5a34eff..fa7dca5a68c8 100644
+--- a/sound/x86/intel_hdmi_audio.c
++++ b/sound/x86/intel_hdmi_audio.c
+@@ -290,7 +290,6 @@ static void had_reset_audio(struct snd_intelhad *intelhaddata)
+ static int had_prog_status_reg(struct snd_pcm_substream *substream,
+ 			struct snd_intelhad *intelhaddata)
+ {
+-	union aud_cfg cfg_val = {.regval = 0};
+ 	union aud_ch_status_0 ch_stat0 = {.regval = 0};
+ 	union aud_ch_status_1 ch_stat1 = {.regval = 0};
  
- 		spin_lock_irqsave(&ep->lock, flags);
-@@ -345,7 +344,6 @@ static void queue_pending_output_urbs(struct snd_usb_endpoint *ep)
- 			return;
+@@ -298,7 +297,6 @@ static int had_prog_status_reg(struct snd_pcm_substream *substream,
+ 					  IEC958_AES0_NONAUDIO) >> 1;
+ 	ch_stat0.regx.clk_acc = (intelhaddata->aes_bits &
+ 					  IEC958_AES3_CON_CLOCK) >> 4;
+-	cfg_val.regx.val_bit = ch_stat0.regx.lpcm_id;
  
- 		list_del_init(&ctx->ready_list);
--		urb = ctx->urb;
- 
- 		/* copy over the length information */
- 		for (i = 0; i < packet->packets; i++)
+ 	switch (substream->runtime->rate) {
+ 	case AUD_SAMPLE_RATE_32:
 -- 
 2.17.1
