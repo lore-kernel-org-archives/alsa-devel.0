@@ -1,18 +1,17 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/5] ALSA: seq: Fix leftovers at probe error
-	path
-Date: Wed,  1 Aug 2018 18:11:58 +0200
-Message-ID: <20180801161200.3930-4-tiwai@suse.de>
+Subject: [PATCH 2/5] ALSA: seq: Remove dead codes
+Date: Wed,  1 Aug 2018 18:11:57 +0200
+Message-ID: <20180801161200.3930-3-tiwai@suse.de>
 References: <20180801161200.3930-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 9A2D92677D5
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B32B2677D7
  for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 18:12:02 +0200 (CEST)
 Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 2760FAD38
+ by mx1.suse.de (Postfix) with ESMTP id 22CCEAD1E
  for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 16:12:02 +0000 (UTC)
 In-Reply-To: <20180801161200.3930-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,175 +26,218 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The sequencer core module doesn't call some destructors in the error
-path of the init code, which may leave some resources.
-
-This patch mainly fix these leaks by calling the destructors
-appropriately at alsa_seq_init().  Also the patch brings a few
-cleanups along with it, namely:
-
-- Expand the old "if ((err = xxx) < 0)" coding style
-- Get rid of empty seq_queue_init() and its caller
-- Change snd_seq_info_done() to void
-
-Last but not least, a couple of functions lose __exit annotation since
-they are called also in alsa_seq_init().
-
-No functional changes but minor code cleanups.
+There are a few functions that have been commented out for ages.
+And also there are functions that do nothing but placeholders.
+Let's kill them.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/core/seq/seq.c           | 26 ++++++++++++++++----------
- sound/core/seq/seq_clientmgr.c |  2 +-
- sound/core/seq/seq_info.c      | 10 ++--------
- sound/core/seq/seq_info.h      |  6 +++---
- sound/core/seq/seq_queue.c     | 12 +-----------
- sound/core/seq/seq_queue.h     |  3 ---
- 6 files changed, 23 insertions(+), 36 deletions(-)
+ sound/core/seq/seq.c            |  7 -----
+ sound/core/seq/seq_memory.c     | 12 ---------
+ sound/core/seq/seq_memory.h     |  6 -----
+ sound/core/seq/seq_midi_emul.c  | 12 ---------
+ sound/core/seq/seq_midi_event.c | 45 ---------------------------------
+ sound/core/seq/seq_virmidi.c    | 33 ------------------------
+ 6 files changed, 115 deletions(-)
 
 diff --git a/sound/core/seq/seq.c b/sound/core/seq/seq.c
-index e685eccdc741..7de98d71f2aa 100644
+index 639544b4fb04..e685eccdc741 100644
 --- a/sound/core/seq/seq.c
 +++ b/sound/core/seq/seq.c
-@@ -84,26 +84,32 @@ static int __init alsa_seq_init(void)
- {
- 	int err;
+@@ -87,10 +87,6 @@ static int __init alsa_seq_init(void)
+ 	if ((err = client_init_data()) < 0)
+ 		goto error;
  
--	if ((err = client_init_data()) < 0)
+-	/* init memory, room for selected events */
+-	if ((err = snd_sequencer_memory_init()) < 0)
 -		goto error;
 -
--	/* init event queues */
--	if ((err = snd_seq_queues_init()) < 0)
-+	err = client_init_data();
-+	if (err < 0)
+ 	/* init event queues */
+ 	if ((err = snd_seq_queues_init()) < 0)
  		goto error;
+@@ -126,9 +122,6 @@ static void __exit alsa_seq_exit(void)
+ 	/* unregister sequencer device */
+ 	snd_sequencer_device_done();
  
- 	/* register sequencer device */
--	if ((err = snd_sequencer_device_init()) < 0)
-+	err = snd_sequencer_device_init();
-+	if (err < 0)
- 		goto error;
- 
- 	/* register proc interface */
--	if ((err = snd_seq_info_init()) < 0)
--		goto error;
-+	err = snd_seq_info_init();
-+	if (err < 0)
-+		goto error_device;
- 
- 	/* register our internal client */
--	if ((err = snd_seq_system_client_init()) < 0)
--		goto error;
-+	err = snd_seq_system_client_init();
-+	if (err < 0)
-+		goto error_info;
- 
- 	snd_seq_autoload_init();
-+	return 0;
-+
-+ error_info:
-+	snd_seq_info_done();
-+ error_device:
-+	snd_sequencer_device_done();
-  error:
- 	return err;
- }
-diff --git a/sound/core/seq/seq_clientmgr.c b/sound/core/seq/seq_clientmgr.c
-index 6fd4b074b206..a0b768e2f697 100644
---- a/sound/core/seq/seq_clientmgr.c
-+++ b/sound/core/seq/seq_clientmgr.c
-@@ -2543,7 +2543,7 @@ int __init snd_sequencer_device_init(void)
- /* 
-  * unregister sequencer device 
-  */
--void __exit snd_sequencer_device_done(void)
-+void snd_sequencer_device_done(void)
- {
- 	snd_unregister_device(&seq_dev);
- 	put_device(&seq_dev);
-diff --git a/sound/core/seq/seq_info.c b/sound/core/seq/seq_info.c
-index 97015447b9b3..b27fedd435b6 100644
---- a/sound/core/seq/seq_info.c
-+++ b/sound/core/seq/seq_info.c
-@@ -50,7 +50,7 @@ create_info_entry(char *name, void (*read)(struct snd_info_entry *,
- 	return entry;
+-	/* release event memory */
+-	snd_sequencer_memory_done();
+-
+ 	snd_seq_autoload_exit();
  }
  
--static void free_info_entries(void)
-+void snd_seq_info_done(void)
- {
- 	snd_info_free_entry(queues_entry);
- 	snd_info_free_entry(clients_entry);
-@@ -70,12 +70,6 @@ int __init snd_seq_info_init(void)
+diff --git a/sound/core/seq/seq_memory.c b/sound/core/seq/seq_memory.c
+index a4c8543176b2..5b0388202bac 100644
+--- a/sound/core/seq/seq_memory.c
++++ b/sound/core/seq/seq_memory.c
+@@ -504,18 +504,6 @@ int snd_seq_pool_delete(struct snd_seq_pool **ppool)
  	return 0;
+ }
  
-  error:
--	free_info_entries();
-+	snd_seq_info_done();
- 	return -ENOMEM;
+-/* initialize sequencer memory */
+-int __init snd_sequencer_memory_init(void)
+-{
+-	return 0;
+-}
+-
+-/* release sequencer memory */
+-void __exit snd_sequencer_memory_done(void)
+-{
+-}
+-
+-
+ /* exported to seq_clientmgr.c */
+ void snd_seq_info_pool(struct snd_info_buffer *buffer,
+ 		       struct snd_seq_pool *pool, char *space)
+diff --git a/sound/core/seq/seq_memory.h b/sound/core/seq/seq_memory.h
+index 3abe306c394a..1292fe91f02e 100644
+--- a/sound/core/seq/seq_memory.h
++++ b/sound/core/seq/seq_memory.h
+@@ -94,12 +94,6 @@ struct snd_seq_pool *snd_seq_pool_new(int poolsize);
+ /* remove pool */
+ int snd_seq_pool_delete(struct snd_seq_pool **pool);
+ 
+-/* init memory */
+-int snd_sequencer_memory_init(void);
+-            
+-/* release event memory */
+-void snd_sequencer_memory_done(void);
+-
+ /* polling */
+ int snd_seq_pool_poll_wait(struct snd_seq_pool *pool, struct file *file, poll_table *wait);
+ 
+diff --git a/sound/core/seq/seq_midi_emul.c b/sound/core/seq/seq_midi_emul.c
+index 288f839a554b..f9f21331aeea 100644
+--- a/sound/core/seq/seq_midi_emul.c
++++ b/sound/core/seq/seq_midi_emul.c
+@@ -728,15 +728,3 @@ void snd_midi_channel_free_set(struct snd_midi_channel_set *chset)
+ 	kfree(chset);
+ }
+ EXPORT_SYMBOL(snd_midi_channel_free_set);
+-
+-static int __init alsa_seq_midi_emul_init(void)
+-{
+-	return 0;
+-}
+-
+-static void __exit alsa_seq_midi_emul_exit(void)
+-{
+-}
+-
+-module_init(alsa_seq_midi_emul_init)
+-module_exit(alsa_seq_midi_emul_exit)
+diff --git a/sound/core/seq/seq_midi_event.c b/sound/core/seq/seq_midi_event.c
+index 53c0dfab90d6..b11419537062 100644
+--- a/sound/core/seq/seq_midi_event.c
++++ b/sound/core/seq/seq_midi_event.c
+@@ -175,45 +175,12 @@ void snd_midi_event_reset_decode(struct snd_midi_event *dev)
+ }
+ EXPORT_SYMBOL(snd_midi_event_reset_decode);
+ 
+-#if 0
+-void snd_midi_event_init(struct snd_midi_event *dev)
+-{
+-	snd_midi_event_reset_encode(dev);
+-	snd_midi_event_reset_decode(dev);
+-}
+-#endif  /*  0  */
+-
+ void snd_midi_event_no_status(struct snd_midi_event *dev, int on)
+ {
+ 	dev->nostat = on ? 1 : 0;
+ }
+ EXPORT_SYMBOL(snd_midi_event_no_status);
+ 
+-/*
+- * resize buffer
+- */
+-#if 0
+-int snd_midi_event_resize_buffer(struct snd_midi_event *dev, int bufsize)
+-{
+-	unsigned char *new_buf, *old_buf;
+-	unsigned long flags;
+-
+-	if (bufsize == dev->bufsize)
+-		return 0;
+-	new_buf = kmalloc(bufsize, GFP_KERNEL);
+-	if (new_buf == NULL)
+-		return -ENOMEM;
+-	spin_lock_irqsave(&dev->lock, flags);
+-	old_buf = dev->buf;
+-	dev->buf = new_buf;
+-	dev->bufsize = bufsize;
+-	reset_encode(dev);
+-	spin_unlock_irqrestore(&dev->lock, flags);
+-	kfree(old_buf);
+-	return 0;
+-}
+-#endif  /*  0  */
+-
+ /*
+  *  read one byte and encode to sequencer event:
+  *  return true if MIDI bytes are encoded to an event
+@@ -503,15 +470,3 @@ static int extra_decode_xrpn(struct snd_midi_event *dev, unsigned char *buf,
+ 	}
+ 	return idx;
  }
 -
--int __exit snd_seq_info_done(void)
+-static int __init alsa_seq_midi_event_init(void)
 -{
--	free_info_entries();
--	return 0;
--}
-diff --git a/sound/core/seq/seq_info.h b/sound/core/seq/seq_info.h
-index f8549f81a645..2cdf8f6e63f5 100644
---- a/sound/core/seq/seq_info.h
-+++ b/sound/core/seq/seq_info.h
-@@ -30,11 +30,11 @@ void snd_seq_info_queues_read(struct snd_info_entry *entry, struct snd_info_buff
- 
- 
- #ifdef CONFIG_SND_PROC_FS
--int snd_seq_info_init( void );
--int snd_seq_info_done( void );
-+int snd_seq_info_init(void);
-+void snd_seq_info_done(void);
- #else
- static inline int snd_seq_info_init(void) { return 0; }
--static inline int snd_seq_info_done(void) { return 0; }
-+static inline void snd_seq_info_done(void) {}
- #endif
- 
- #endif
-diff --git a/sound/core/seq/seq_queue.c b/sound/core/seq/seq_queue.c
-index b377f5048352..3b3ac96f1f5f 100644
---- a/sound/core/seq/seq_queue.c
-+++ b/sound/core/seq/seq_queue.c
-@@ -159,18 +159,8 @@ static void queue_delete(struct snd_seq_queue *q)
- 
- /*----------------------------------------------------------------*/
- 
--/* setup queues */
--int __init snd_seq_queues_init(void)
--{
--	/*
--	memset(queue_list, 0, sizeof(queue_list));
--	num_queues = 0;
--	*/
 -	return 0;
 -}
 -
- /* delete all existing queues */
--void __exit snd_seq_queues_delete(void)
-+void snd_seq_queues_delete(void)
- {
- 	int i;
- 
-diff --git a/sound/core/seq/seq_queue.h b/sound/core/seq/seq_queue.h
-index 719093489a2c..76db43b79a2b 100644
---- a/sound/core/seq/seq_queue.h
-+++ b/sound/core/seq/seq_queue.h
-@@ -63,9 +63,6 @@ struct snd_seq_queue {
- /* get the number of current queues */
- int snd_seq_queue_get_cur_queues(void);
- 
--/* init queues structure */
--int snd_seq_queues_init(void);
+-static void __exit alsa_seq_midi_event_exit(void)
+-{
+-}
 -
- /* delete queues */ 
- void snd_seq_queues_delete(void);
+-module_init(alsa_seq_midi_event_init)
+-module_exit(alsa_seq_midi_event_exit)
+diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
+index 0c84926eb726..a2f1c6b58693 100644
+--- a/sound/core/seq/seq_virmidi.c
++++ b/sound/core/seq/seq_virmidi.c
+@@ -109,23 +109,6 @@ static int snd_virmidi_dev_receive_event(struct snd_virmidi_dev *rdev,
+ 	return 0;
+ }
  
+-/*
+- * receive an event from the remote virmidi port
+- *
+- * for rawmidi inputs, you can call this function from the event
+- * handler of a remote port which is attached to the virmidi via
+- * SNDRV_VIRMIDI_SEQ_ATTACH.
+- */
+-#if 0
+-int snd_virmidi_receive(struct snd_rawmidi *rmidi, struct snd_seq_event *ev)
+-{
+-	struct snd_virmidi_dev *rdev;
+-
+-	rdev = rmidi->private_data;
+-	return snd_virmidi_dev_receive_event(rdev, ev, true);
+-}
+-#endif  /*  0  */
+-
+ /*
+  * event handler of virmidi port
+  */
+@@ -544,19 +527,3 @@ int snd_virmidi_new(struct snd_card *card, int device, struct snd_rawmidi **rrmi
+ 	return 0;
+ }
+ EXPORT_SYMBOL(snd_virmidi_new);
+-
+-/*
+- *  ENTRY functions
+- */
+-
+-static int __init alsa_virmidi_init(void)
+-{
+-	return 0;
+-}
+-
+-static void __exit alsa_virmidi_exit(void)
+-{
+-}
+-
+-module_init(alsa_virmidi_init)
+-module_exit(alsa_virmidi_exit)
 -- 
 2.18.0
