@@ -1,71 +1,102 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RESEND][PATCH] ASoC: Intel: Power down links
- before turning off display audio power
-Date: Wed, 1 Aug 2018 18:13:20 +0100
-Message-ID: <20180801171320.GI5509@sirena.org.uk>
-References: <1532350931-7324-1-git-send-email-sriramx.periyasamy@intel.com>
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: [PATCH 4.14 210/246] ASoC: topology: Fix bclk and fsync inversion in set_link_hw_format()
+Date: Wed,  1 Aug 2018 18:52:00 +0200
+Message-ID: <20180801165021.759713370@linuxfoundation.org>
+References: <20180801165011.700991984@linuxfoundation.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6362772438309078520=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 39E3C2677A3
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 19:13:29 +0200 (CEST)
-In-Reply-To: <1532350931-7324-1-git-send-email-sriramx.periyasamy@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Sriram Periyasamy <sriramx.periyasamy@intel.com>
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Patches Audio <patches.audio@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180801165011.700991984@linuxfoundation.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org, Kirill Marinushkin <k.marinushkin@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Pan Xiuli <xiuli.pan@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.de>, Mark Brown <broonie@kernel.org>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org, Sasha Levin <alexander.levin@microsoft.com>
 List-Id: alsa-devel@alsa-project.org
 
+4.14-stable review patch.  If anyone has any objections, please let me know.
 
---===============6362772438309078520==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="YrQNB5Deg1WGKZi3"
-Content-Disposition: inline
+------------------
 
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
 
---YrQNB5Deg1WGKZi3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+[ Upstream commit a941e2fab3207cb0d57dc4ec47b1b12c8ea78b84 ]
 
-On Mon, Jul 23, 2018 at 06:32:11PM +0530, Sriram Periyasamy wrote:
-> On certain platforms, Display HDMI HDA codec was not going to sleep state
-> after the use when links are powered down after turning off the display
-> power. As per the HW recommendation, links are powered down before turning
-> off the display power to ensure that the codec goes to sleep state.
+The values of bclk and fsync are inverted WRT the codec. But the existing
+solution already works for Broadwell, see the alsa-lib config:
 
-Pierre?
+`alsa-lib/src/conf/topology/broadwell/broadwell.conf`
 
---YrQNB5Deg1WGKZi3
-Content-Type: application/pgp-signature; name="signature.asc"
+This commit provides the backwards-compatible solution to fix this misuse.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Tested-by: Pan Xiuli <xiuli.pan@linux.intel.com>
+Tested-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.de>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/uapi/sound/asoc.h |   16 ++++++++++++++--
+ sound/soc/soc-topology.c  |   12 +++++++-----
+ 2 files changed, 21 insertions(+), 7 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlth6i8ACgkQJNaLcl1U
-h9ByjQf9HJ44+026+s/Gsa1O0BrwFD4A+qwH9PUXsS4y5zsBktw5jbPY7yrzUVq/
-zOTQZUgRpWKDXoSeevxzNHkndApIvfMWZbPC2s6C/n4cv0Y44ghe0qmC6V112YMn
-7BYfUT5b7UsQkx/yW13oeNlC7a8oCI2ej/JVp/b/vaw6h+b+DTsuMrWGMt5wt/J/
-lgi5SQ1pg7Vk82ow/LMfbkR1hd0C+ARcB9IzK09V0pu+b/uoZd+G9uK14SIpCFfD
-ga3oE4evPzgXr53Hh25/YM7NYm3tKyHmEa/r+iO+mHfe/8EeVNwMnMEbqrd0ZxsW
-QxyIkp/OnkxeV2syKBcMd/umWrEe9w==
-=SXFM
------END PGP SIGNATURE-----
-
---YrQNB5Deg1WGKZi3--
-
---===============6362772438309078520==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============6362772438309078520==--
+--- a/include/uapi/sound/asoc.h
++++ b/include/uapi/sound/asoc.h
+@@ -160,6 +160,18 @@
+ #define SND_SOC_TPLG_LNK_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
+ #define SND_SOC_TPLG_LNK_FLGBIT_VOICE_WAKEUP            (1 << 3)
+ 
++/* DAI topology BCLK parameter
++ * For the backwards capability, by default codec is bclk master
++ */
++#define SND_SOC_TPLG_BCLK_CM         0 /* codec is bclk master */
++#define SND_SOC_TPLG_BCLK_CS         1 /* codec is bclk slave */
++
++/* DAI topology FSYNC parameter
++ * For the backwards capability, by default codec is fsync master
++ */
++#define SND_SOC_TPLG_FSYNC_CM         0 /* codec is fsync master */
++#define SND_SOC_TPLG_FSYNC_CS         1 /* codec is fsync slave */
++
+ /*
+  * Block Header.
+  * This header precedes all object and object arrays below.
+@@ -315,8 +327,8 @@ struct snd_soc_tplg_hw_config {
+ 	__u8 clock_gated;	/* 1 if clock can be gated to save power */
+ 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
+ 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
+-	__u8 bclk_master;	/* 1 for master of BCLK, 0 for slave */
+-	__u8 fsync_master;	/* 1 for master of FSYNC, 0 for slave */
++	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
++	__u8 fsync_master;	/* SND_SOC_TPLG_FSYNC_ value */
+ 	__u8 mclk_direction;    /* 0 for input, 1 for output */
+ 	__le16 reserved;	/* for 32bit alignment */
+ 	__le32 mclk_rate;	/* MCLK or SYSCLK freqency in Hz */
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -2010,13 +2010,15 @@ static void set_link_hw_format(struct sn
+ 			link->dai_fmt |= SND_SOC_DAIFMT_IB_IF;
+ 
+ 		/* clock masters */
+-		bclk_master = hw_config->bclk_master;
+-		fsync_master = hw_config->fsync_master;
+-		if (!bclk_master && !fsync_master)
++		bclk_master = (hw_config->bclk_master ==
++			       SND_SOC_TPLG_BCLK_CM);
++		fsync_master = (hw_config->fsync_master ==
++				SND_SOC_TPLG_FSYNC_CM);
++		if (bclk_master && fsync_master)
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
+-		else if (bclk_master && !fsync_master)
+-			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
+ 		else if (!bclk_master && fsync_master)
++			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFM;
++		else if (bclk_master && !fsync_master)
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBM_CFS;
+ 		else
+ 			link->dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
