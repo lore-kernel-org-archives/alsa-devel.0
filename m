@@ -1,66 +1,60 @@
 From: Colin King <colin.king@canonical.com>
-Subject: [PATCH 1/9] ALSA: asihpi: remove redundant variable
-	max_streams
-Date: Wed,  1 Aug 2018 11:47:34 +0100
-Message-ID: <20180801104742.4328-2-colin.king@canonical.com>
+Subject: [PATCH 7/9] ASoC: stm32: remove redundant pointers 'priv' and 'rtd'
+Date: Wed,  1 Aug 2018 11:47:40 +0100
+Message-ID: <20180801104742.4328-8-colin.king@canonical.com>
 References: <20180801104742.4328-1-colin.king@canonical.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id AB66B267803
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 12:47:49 +0200 (CEST)
+Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
 In-Reply-To: <20180801104742.4328-1-colin.king@canonical.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
+List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
+List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
+List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
+List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
+ <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
+Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
+Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
 To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jaya Kumar <jayakumar.alsa@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Olivier Moysan <olivier.moysan@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 From: Colin Ian King <colin.king@canonical.com>
 
-Variable max_streams is being assigned but is never used hence it is
-redundant and can be removed.
+Pointer 'priv' is assigned and not used, removing this allows
+the removal of pointer 'rtd'.
 
 Cleans up clang warning:
-warning: variable 'max_streams' set but not used [-Wunused-but-set-variable]
+warning: variable 'priv' set but not used [-Wunused-but-set-variable]
 
 Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/pci/asihpi/hpi6205.c | 5 -----
- 1 file changed, 5 deletions(-)
+ sound/soc/stm/stm32_adfsdm.c | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/sound/pci/asihpi/hpi6205.c b/sound/pci/asihpi/hpi6205.c
-index 8d5abfa4e24b..2864698436a5 100644
---- a/sound/pci/asihpi/hpi6205.c
-+++ b/sound/pci/asihpi/hpi6205.c
-@@ -635,7 +635,6 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
- 	{
- 		struct hpi_message hm;
- 		struct hpi_response hr;
--		u32 max_streams;
+diff --git a/sound/soc/stm/stm32_adfsdm.c b/sound/soc/stm/stm32_adfsdm.c
+index 0e9373064032..706ff005234f 100644
+--- a/sound/soc/stm/stm32_adfsdm.c
++++ b/sound/soc/stm/stm32_adfsdm.c
+@@ -269,16 +269,10 @@ static int stm32_adfsdm_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ static void stm32_adfsdm_pcm_free(struct snd_pcm *pcm)
+ {
+ 	struct snd_pcm_substream *substream;
+-	struct snd_soc_pcm_runtime *rtd;
+-	struct stm32_adfsdm_priv *priv;
  
- 		HPI_DEBUG_LOG(VERBOSE, "init ADAPTER_GET_INFO\n");
- 		memset(&hm, 0, sizeof(hm));
-@@ -660,10 +659,6 @@ static u16 create_adapter_obj(struct hpi_adapter_obj *pao,
- 		pao->type = hr.u.ax.info.adapter_type;
- 		pao->index = hr.u.ax.info.adapter_index;
- 
--		max_streams =
--			hr.u.ax.info.num_outstreams +
--			hr.u.ax.info.num_instreams;
+ 	substream = pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream;
+-	if (substream) {
+-		rtd = substream->private_data;
+-		priv = snd_soc_dai_get_drvdata(rtd->cpu_dai);
 -
- 		HPI_DEBUG_LOG(VERBOSE,
- 			"got adapter info type %x index %d serial %d\n",
- 			hr.u.ax.info.adapter_type, hr.u.ax.info.adapter_index,
++	if (substream)
+ 		snd_pcm_lib_preallocate_free_for_all(pcm);
+-	}
+ }
+ 
+ static struct snd_soc_component_driver stm32_adfsdm_soc_platform = {
 -- 
 2.17.1
