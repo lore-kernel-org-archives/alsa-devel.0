@@ -1,60 +1,52 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: Re: [PATCH v4 4/4] ASoC: qcom: add sdm845 sound card support
-Date: Wed, 1 Aug 2018 11:46:48 +0800
-Message-ID: <201808011127.1snVqYkN%fengguang.wu@intel.com>
-References: <1532945454-10437-5-git-send-email-rohitkr@codeaurora.org>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: Re: [PATCH] ASoC: soc-pcm: Use delay set in pointer
+ function
+Date: Wed, 1 Aug 2018 09:31:10 +0530
+Message-ID: <12bd6a6d-53ec-46f6-7f0e-af20e219d630@amd.com>
+References: <7a88c7b4-d31d-b044-bb8e-a866d49d1256@amd.com>
+ <s5hwotc0y6v.wl-tiwai@suse.de> <5b3249cb-6212-6a14-b644-7548cf0ad00c@amd.com>
+ <s5ha7q721vs.wl-tiwai@suse.de> <20180731101943.GB5719@sirena.org.uk>
+ <s5heffjr8ys.wl-tiwai@suse.de> <20180731131246.GC5719@sirena.org.uk>
+ <s5hin4vpm80.wl-tiwai@suse.de> <20180731135115.GD5719@sirena.org.uk>
+ <s5hd0v3pkyj.wl-tiwai@suse.de> <20180731144052.GF5719@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1532945454-10437-5-git-send-email-rohitkr@codeaurora.org>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: kbuild-all@01.org, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com
+ (mail-eopbgr730066.outbound.protection.outlook.com [40.107.73.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D29E26779F
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 06:01:36 +0200 (CEST)
+In-Reply-To: <20180731144052.GF5719@sirena.org.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
+Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, djkurtz@chromium.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Alexander.Deucher@amd.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Rohit,
-
-Thank you for the patch! Perhaps something to improve:
-
-[auto build test WARNING on asoc/for-next]
-[also build test WARNING on next-20180731]
-[cannot apply to v4.18-rc7]
-[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
-
-url:    https://github.com/0day-ci/linux/commits/Rohit-kumar/Add-support-for-audio-on-SDM845-SoC/20180801-082203
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
-reproduce:
-        # apt-get install sparse
-        make ARCH=x86_64 allmodconfig
-        make C=1 CF=-D__CHECK_ENDIAN__
 
 
-sparse warnings: (new ones prefixed by >>)
+On 7/31/2018 8:10 PM, Mark Brown wrote:
+> On Tue, Jul 31, 2018 at 03:56:52PM +0200, Takashi Iwai wrote:
+>> Mark Brown wrote:
+> 
+>>> Yes.  I'm saying that if the CPU DAI thinks it can figure out the base
+>>> delay something is confused.
+> 
+>> Then basically Akshu's patch does the correct thing, I suppose.
+> 
+> I think so.  Could perhaps do with a little clarification though.
+> 
 
->> sound/soc/qcom/sdm845.c:193:27: sparse: incorrect type in argument 2 (different base types) @@    expected unsigned int [unsigned] val @@    got restricted snd_unsigned int [unsigned] val @@
-   sound/soc/qcom/sdm845.c:193:27:    expected unsigned int [unsigned] val
-   sound/soc/qcom/sdm845.c:193:27:    got restricted snd_pcm_format_t [usertype] <noident>
+Ok Mark, I will submit a v2 which makes it more clear on the intent.
 
-vim +193 sound/soc/qcom/sdm845.c
-
-   181	
-   182	static int sdm845_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-   183					struct snd_pcm_hw_params *params)
-   184	{
-   185		struct snd_interval *rate = hw_param_interval(params,
-   186						SNDRV_PCM_HW_PARAM_RATE);
-   187		struct snd_interval *channels = hw_param_interval(params,
-   188						SNDRV_PCM_HW_PARAM_CHANNELS);
-   189		struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-   190	
-   191		rate->min = rate->max = DEFAULT_SAMPLE_RATE_48K;
-   192		channels->min = channels->max = 2;
- > 193		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S16_LE);
-   194	
-   195		return 0;
-   196	}
-   197	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+Thanks,
+Akshu
