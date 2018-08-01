@@ -1,7 +1,7 @@
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 09/11] ASoC: wm8995: Mark expected switch fall-through
-Date: Wed, 1 Aug 2018 14:54:45 -0500
-Message-ID: <b2976350f2da42abc47181ccab097c8da856db87.1533151956.git.gustavo@embeddedor.com>
+Subject: [PATCH 10/11] ASoC: wm9081: Mark expected switch fall-through
+Date: Wed, 1 Aug 2018 14:55:26 -0500
+Message-ID: <f60c2b307101015543b66b271e1124e3d0df6d22.1533151956.git.gustavo@embeddedor.com>
 References: <cover.1533151956.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -16,23 +16,23 @@ List-Id: alsa-devel@alsa-project.org
 In preparation to enabling -Wimplicit-fallthrough, mark switch cases
 where we are expecting to fall through.
 
-Addresses-Coverity-ID: 115045 ("Missing break in switch")
+Addresses-Coverity-ID: 1357430 ("Missing break in switch")
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- sound/soc/codecs/wm8995.c | 1 +
+ sound/soc/codecs/wm9081.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index 60e2278..68c99fe 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -1465,6 +1465,7 @@ static int wm8995_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/codecs/wm9081.c b/sound/soc/codecs/wm9081.c
+index 5a0ea7b..399255d1 100644
+--- a/sound/soc/codecs/wm9081.c
++++ b/sound/soc/codecs/wm9081.c
+@@ -933,6 +933,7 @@ static int wm9081_set_dai_fmt(struct snd_soc_dai *dai,
  	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
  	case SND_SOC_DAIFMT_DSP_B:
- 		aif |= WM8995_AIF1_LRCLK_INV;
+ 		aif2 |= WM9081_AIF_LRCLK_INV;
 +		/* fall through */
  	case SND_SOC_DAIFMT_DSP_A:
- 		aif |= (0x3 << WM8995_AIF1_FMT_SHIFT);
+ 		aif2 |= 0x3;
  		break;
 -- 
 2.7.4
