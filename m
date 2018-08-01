@@ -1,38 +1,54 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 11/11] ASoC: wm8994: Mark expected switch fall-through
-Date: Wed, 1 Aug 2018 14:56:16 -0500
-Message-ID: <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
-References: <cover.1533151956.git.gustavo@embeddedor.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 03/10] mfd: wcd9335: add wcd irq support
+Date: Wed, 1 Aug 2018 16:17:45 -0600
+Message-ID: <CAL_JsqJqCvWBqCfiS7dQMSzJ_FZDtAMJ8OQZvdGSJhsX0eYr6w@mail.gmail.com>
+References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+ <20180727121806.18209-4-srinivas.kandagatla@linaro.org> <20180731204536.GA7241@rob-hp-laptop>
+ <d31d8f54-18b0-118f-eb25-7b92d5bf9842@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cover.1533151956.git.gustavo@embeddedor.com>
+In-Reply-To: <d31d8f54-18b0-118f-eb25-7b92d5bf9842@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, patches@opensource.cirrus.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Banajit Goswami <bgoswami@codeaurora.org>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vinod <vkoul@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch cases
-where we are expecting to fall through.
+On Wed, Aug 1, 2018 at 2:57 AM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+> Thanks for the review,
+>
+> On 31/07/18 21:45, Rob Herring wrote:
+> > On Fri, Jul 27, 2018 at 01:17:59PM +0100, Srinivas Kandagatla wrote:
+> >> WCD9335 supports two lines of irqs INTR1 and INTR2.
+> >> Multiple interrupts are muxed via these lines.
+> >> INTR1 consists of all possible interrupt sources like:
+> >> Ear OCP, HPH OCP, MBHC, MAD, VBAT, and SVA
+> >> INTR2 is a subset of first interrupt sources like MAD, VBAT, and SVA
+> >>
+> >> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> >> ---
+> >>   drivers/mfd/Makefile                |   2 +-
+> >>   drivers/mfd/wcd9335-core.c          |   9 ++
+> >>   drivers/mfd/wcd9335-irq.c           | 172 ++++++++++++++++++++++++++++++++++++
+> >>   include/dt-bindings/mfd/wcd9335.h   |  43 +++++++++
+> >
+> > I'm confused why these are defined here. The binding for the wc9335 is
+> > not an interrupt-controller.
+>
+> I can move this defines to include/linux/mfd/wcd9335/wcd9335.h as there
+> are no active users for this, but I  was hoping that these can be used
+> in DT in future.
+>
+> WCD9335 is an interrupt controller too. It muxes multiple interrupts via
+> a gpio line interrupt.
+>
+> I did mention this in the bindings.
 
-Addresses-Coverity-ID: 115050 ("Missing break in switch")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
----
- sound/soc/codecs/wm8994.c | 1 +
- 1 file changed, 1 insertion(+)
+Then the header belongs in the binding patch.
 
-diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-index 7fdfdf3..62f8c5b 100644
---- a/sound/soc/codecs/wm8994.c
-+++ b/sound/soc/codecs/wm8994.c
-@@ -2432,6 +2432,7 @@ static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
- 			snd_soc_component_update_bits(component, WM8994_POWER_MANAGEMENT_2,
- 					    WM8994_OPCLK_ENA, 0);
- 		}
-+		/* fall through */
- 
- 	default:
- 		return -EINVAL;
--- 
-2.7.4
+I don't recall child nodes being defined though and you don't need to
+be a interrupt-controller (in DT) without them.
+
+Rob
