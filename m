@@ -1,88 +1,60 @@
-From: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Subject: Re: A bug about cache inconsistency report
-Date: Wed, 1 Aug 2018 02:05:18 +0000
-Message-ID: <368829a592844235b67ecf67717cbfad@zhaoxin.com>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH v4 4/4] ASoC: qcom: add sdm845 sound card support
+Date: Wed, 1 Aug 2018 11:46:48 +0800
+Message-ID: <201808011127.1snVqYkN%fengguang.wu@intel.com>
+References: <1532945454-10437-5-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ZXSHCAS2.zhaoxin.com (unknown [203.148.12.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 343FB26779D
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 04:05:21 +0200 (CEST)
-Content-Language: zh-CN
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1532945454-10437-5-git-send-email-rohitkr@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: kbuild-all@01.org, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-SSBkaWQgbW9yZSB0ZXN0IGJhc2Ugb24gZGlmZmVyZW50IEludGVsIHBsYXRmb3JtLCBhbmQgcmVz
-dWx0IGlzIHRoZSBzYW1lLg0KTWF5YmUgSSBtYWRlIHNvbWUgbWlzdGFrZT8gQ2FuIHlvdSBkbyB0
-aGUgdGVzdCBpbiB5b3VycyAgcGxhdGZvcm0/DQoNCg0KVGhhbmsgeW91IQ0KSGFucw0KDQotLS0t
-LemCruS7tuWOn+S7ti0tLS0tDQrlj5Hku7bkuro6IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2Fp
-QHN1c2UuZGVdDQrlj5HpgIHml7bpl7Q6IDMxIEp1bHkgMjAxOCAyMTo1NQ0K5pS25Lu25Lq6OiBI
-YW5zIEh1KFNILVJEKSA8SGFuc0h1QHpoYW94aW4uY29tPg0K5oqE6YCBOiAnYWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnJyA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0K5Li76aKYOiBS
-ZTog562U5aSNOiBbYWxzYS1kZXZlbF0gQSBidWcgYWJvdXQgY2FjaGUgaW5jb25zaXN0ZW5jeSBy
-ZXBvcnQNCg0KT24gVHVlLCAzMSBKdWwgMjAxOCAxNTo1MTowNiArMDIwMCwNCkhhbnMgSHUoU0gt
-UkQpIHdyb3RlOg0KPg0KPiBJIGRpZCB0aGUgdGVzdCBhbmQgT29wcyByZXBvcnQgd2hlbiBpbnN0
-YWxsIGRyaXZlciggYm90aCBzbm9vcCBhbmQNCj4gbm9uLXNub29wIG1vZGUpDQoNCkkgZG9uJ3Qg
-dW5kZXJzdGFuZC4gIERpZCBteSBvbmUtbGluZXIgY2hhbmdlIHRoZSBiZWhhdmlvciBvciBub3Q/
-DQoNCg0KdGhhbmtzLA0KDQpUYWthc2hpDQoNCj4NCj4gLS0tLS3pgq7ku7bljp/ku7YtLS0tLQ0K
-PiDlj5Hku7bkuro6IFRha2FzaGkgSXdhaSBbbWFpbHRvOnRpd2FpQHN1c2UuZGVdDQo+IOWPkemA
-geaXtumXtDogMzEgSnVseSAyMDE4IDE5OjU5DQo+IOaUtuS7tuS6ujogSGFucyBIdShTSC1SRCkg
-PEhhbnNIdUB6aGFveGluLmNvbT4NCj4g5oqE6YCBOiAnYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnJyA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0KPiDkuLvpopg6IFJlOiBbYWxzYS1k
-ZXZlbF0gQSBidWcgYWJvdXQgY2FjaGUgaW5jb25zaXN0ZW5jeSByZXBvcnQNCj4NCj4gT24gVHVl
-LCAzMSBKdWwgMjAxOCAxMjo1MjowNCArMDIwMCwNCj4gSGFucyBIdShTSC1SRCkgd3JvdGU6DQo+
-ID4NCj4gPiBIaSBBbGwsDQo+ID4NCj4gPiAgICAgICAgICAgICAgICBUcnkgc2VuZCBhbiBlbWFp
-bC4NCj4gPg0KPiA+ICAgICAgICAgICAgICAgIEFwcGVhcmFuY2U6DQo+ID4gd2hlbiB1c2Ugbm9u
-LXNub29wICsgaW9jdGwgcGF0aCBjb21iaW5hdGlvbiwgYW4gaXNzdWUgb2NjdXJzOg0KPiA+IHVz
-YWdlOiBhcGxheSAtRCBwbHVnaHc6MCwwIDQ0MTAwX1MxNl9MRV8yYy53YXYgVWJ1bnR1LCBpdA0K
-PiA+IHBlcmZvcm1hbmNlIGludGVybWl0dGVudGx5IG5vaXNlOw0KPiA+DQo+ID4gUm9vdCBjYXNl
-Og0KPiA+ICAgICAgICAgICAgICAgIEZ1bmN0aW9uIHNldF9wYWdlc19hcnJheV93YyBtYXJrZWQg
-dGhlIFBURSBvZiB0aGUgb3JpZ2luYWwgYWRkcmVzczsgRnVuY3Rpb24gc2V0X21lbW9yeV93YyBt
-YXJrZWQgdGhlIFBURSBib3RoIG9yaWdpbmFsIGFuZCBhZnRlciB2bWFwZWQgYWRkcmVzcy4NCj4g
-PiBbY2lkOmltYWdlMDAyLnBuZ0AwMUQ0MjhGRi45MjYyMTUyMF0NCj4gPiBIb3dldmVyLCBjYWNo
-ZSBvciBub3QgaW4gdHJhbnNtaXNzaW9uIHByb2Nlc3MgaXMgYmFzZWQgb24gdGhlIFBURSBvZiB0
-aGUgbGF0ZXIsIGFuZCB0aGUgc2V0X3BhZ2VzX2FycmF5X3djIGRpZCd0IG1hcmsgaXQsIHNvIGEg
-Y2FjaGUgaW5jb25zaXN0ZW5jeSBpc3N1ZSBvY2N1cnMuDQo+ID4NCj4gPiAgICAgICAgICAgICAg
-ICBSZWxhdGVkIGJ1ZzoNCj4gPiAgICAgICAgICAgICAgICBTSEExIElEOiA5ZGRmMWFlYjIxMzRl
-NzIyNzVjOTdhMmM2ZmYyZTNlYjA0ZjJmMjdhDQo+DQo+IE9LLCBzbyBkaWQgeW91IGNvbmZpcm0g
-dGhhdCBkcm9wcGluZyB0aGUgU0cgYnVmZmVyIHN1cHBvcnQgImZpeGVzIiB0aGUgbm9pc2UgcHJv
-YmxlbSBvbiB5b3VyIHN5c3RlbT8gIFRoZSBlYXNpZXN0IHRlc3Qgd291bGQgYmUgbGlrZToNCj4N
-Cj4gLS0tIGEvc291bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5jDQo+ICsrKyBiL3NvdW5kL3Bj
-aS9oZGEvaGRhX2NvbnRyb2xsZXIuYw0KPiBAQCAtNzcwLDcgKzc3MCw3IEBAIGludCBzbmRfaGRh
-X2F0dGFjaF9wY21fc3RyZWFtKHN0cnVjdCBoZGFfYnVzDQo+ICpfYnVzLCBzdHJ1Y3QgaGRhX2Nv
-ZGVjICpjb2RlYywgIHNpemUgPSBDT05GSUdfU05EX0hEQV9QUkVBTExPQ19TSVpFICoNCj4gMTAy
-NDsgIGlmIChzaXplID4gTUFYX1BSRUFMTE9DX1NJWkUpICBzaXplID0gTUFYX1BSRUFMTE9DX1NJ
-WkU7DQo+IC1zbmRfcGNtX2xpYl9wcmVhbGxvY2F0ZV9wYWdlc19mb3JfYWxsKHBjbSwgU05EUlZf
-RE1BX1RZUEVfREVWX1NHLA0KPiArc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXNfZm9yX2Fs
-bChwY20sIFNORFJWX0RNQV9UWVBFX0RFViwNCj4gICAgICAgIGNoaXAtPmNhcmQtPmRldiwNCj4g
-ICAgICAgIHNpemUsIE1BWF9QUkVBTExPQ19TSVpFKTsNCj4gIHJldHVybiAwOw0KPg0KPg0KPiB0
-aGFua3MsDQo+DQo+IFRha2FzaGkNCj4NCj4NCj4g5L+d5a+G5aOw5piO77yaDQo+IOacrOmCruS7
-tuWQq+acieS/neWvhuaIluS4k+acieS/oeaBr++8jOS7heS+m+aMh+WumuaUtuS7tuS6uuS9v+eU
-qOOAguS4peemgeWvueacrOmCruS7tuaIluWFtuWGheWuueWBmuS7u+S9leacque7j+aOiOadg+ea
-hOafpemYheOAgeS9v+eUqOOAgeWkjeWItuaIlui9rOWPkeOAgg0KPiBDT05GSURFTlRJQUwgTk9U
-RToNCj4gVGhpcyBlbWFpbCBjb250YWlucyBjb25maWRlbnRpYWwgb3IgbGVnYWxseSBwcml2aWxl
-Z2VkIGluZm9ybWF0aW9uIGFuZCBpcyBmb3IgdGhlIHNvbGUgdXNlIG9mIGl0cyBpbnRlbmRlZCBy
-ZWNpcGllbnQuIEFueSB1bmF1dGhvcml6ZWQgcmV2aWV3LCB1c2UsIGNvcHlpbmcgb3IgZm9yd2Fy
-ZGluZyBvZiB0aGlzIGVtYWlsIG9yIHRoZSBjb250ZW50IG9mIHRoaXMgZW1haWwgaXMgc3RyaWN0
-bHkgcHJvaGliaXRlZC4NCg0KDQrkv53lr4blo7DmmI7vvJoNCuacrOmCruS7tuWQq+acieS/neWv
-huaIluS4k+acieS/oeaBr++8jOS7heS+m+aMh+WumuaUtuS7tuS6uuS9v+eUqOOAguS4peemgeWv
-ueacrOmCruS7tuaIluWFtuWGheWuueWBmuS7u+S9leacque7j+aOiOadg+eahOafpemYheOAgeS9
-v+eUqOOAgeWkjeWItuaIlui9rOWPkeOAgg0KQ09ORklERU5USUFMIE5PVEU6DQpUaGlzIGVtYWls
-IGNvbnRhaW5zIGNvbmZpZGVudGlhbCBvciBsZWdhbGx5IHByaXZpbGVnZWQgaW5mb3JtYXRpb24g
-YW5kIGlzIGZvciB0aGUgc29sZSB1c2Ugb2YgaXRzIGludGVuZGVkIHJlY2lwaWVudC4gQW55IHVu
-YXV0aG9yaXplZCByZXZpZXcsIHVzZSwgY29weWluZyBvciBmb3J3YXJkaW5nIG9mIHRoaXMgZW1h
-aWwgb3IgdGhlIGNvbnRlbnQgb2YgdGhpcyBlbWFpbCBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLg0K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi Rohit,
+
+Thank you for the patch! Perhaps something to improve:
+
+[auto build test WARNING on asoc/for-next]
+[also build test WARNING on next-20180731]
+[cannot apply to v4.18-rc7]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Rohit-kumar/Add-support-for-audio-on-SDM845-SoC/20180801-082203
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+reproduce:
+        # apt-get install sparse
+        make ARCH=x86_64 allmodconfig
+        make C=1 CF=-D__CHECK_ENDIAN__
+
+
+sparse warnings: (new ones prefixed by >>)
+
+>> sound/soc/qcom/sdm845.c:193:27: sparse: incorrect type in argument 2 (different base types) @@    expected unsigned int [unsigned] val @@    got restricted snd_unsigned int [unsigned] val @@
+   sound/soc/qcom/sdm845.c:193:27:    expected unsigned int [unsigned] val
+   sound/soc/qcom/sdm845.c:193:27:    got restricted snd_pcm_format_t [usertype] <noident>
+
+vim +193 sound/soc/qcom/sdm845.c
+
+   181	
+   182	static int sdm845_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+   183					struct snd_pcm_hw_params *params)
+   184	{
+   185		struct snd_interval *rate = hw_param_interval(params,
+   186						SNDRV_PCM_HW_PARAM_RATE);
+   187		struct snd_interval *channels = hw_param_interval(params,
+   188						SNDRV_PCM_HW_PARAM_CHANNELS);
+   189		struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+   190	
+   191		rate->min = rate->max = DEFAULT_SAMPLE_RATE_48K;
+   192		channels->min = channels->max = 2;
+ > 193		snd_mask_set(fmt, SNDRV_PCM_FORMAT_S16_LE);
+   194	
+   195		return 0;
+   196	}
+   197	
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
