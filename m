@@ -1,18 +1,17 @@
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: [PATCH 4.17 290/336] ASoC: topology: Add missing clock
-	gating parameter when parsing hw_configs
-Date: Wed,  1 Aug 2018 18:50:25 +0200
-Message-ID: <20180801165040.119336345@linuxfoundation.org>
-References: <20180801165028.930831994@linuxfoundation.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [RESEND][PATCH] ASoC: Intel: Power down links
+ before turning off display audio power
+Date: Wed, 1 Aug 2018 18:13:20 +0100
+Message-ID: <20180801171320.GI5509@sirena.org.uk>
+References: <1532350931-7324-1-git-send-email-sriramx.periyasamy@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============6362772438309078520=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.linuxfoundation.org (mail.linuxfoundation.org
- [140.211.169.12])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C0D72676E2
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 19:10:51 +0200 (CEST)
-In-Reply-To: <20180801165028.930831994@linuxfoundation.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39E3C2677A3
+ for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 19:13:29 +0200 (CEST)
+In-Reply-To: <1532350931-7324-1-git-send-email-sriramx.periyasamy@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,106 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: Sasha Levin <alexander.levin@microsoft.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.de>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Pan Xiuli <xiuli.pan@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, stable@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Kirill Marinushkin <k.marinushkin@gmail.com>
+To: Sriram Periyasamy <sriramx.periyasamy@intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, ALSA ML <alsa-devel@alsa-project.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Patches Audio <patches.audio@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-4.17-stable review patch.  If anyone has any objections, please let me know.
 
-------------------
+--===============6362772438309078520==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="YrQNB5Deg1WGKZi3"
+Content-Disposition: inline
 
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
 
-[ Upstream commit 933e1c4a667103c4d10ebdc9505a0a6abd8c3fbd ]
+--YrQNB5Deg1WGKZi3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Clock gating parameter is a part of `dai_fmt`. It is supported by
-`alsa-lib` when creating a topology binary file, but ignored by kernel
-when loading this topology file.
+On Mon, Jul 23, 2018 at 06:32:11PM +0530, Sriram Periyasamy wrote:
+> On certain platforms, Display HDMI HDA codec was not going to sleep state
+> after the use when links are powered down after turning off the display
+> power. As per the HW recommendation, links are powered down before turning
+> off the display power to ensure that the codec goes to sleep state.
 
-After applying this commit, the clock gating parameter is not ignored any
-more. This solution is backwards compatible. The existing behaviour is
-not broken, because by default the parameter value is 0 and is ignored.
+Pierre?
 
-snd_soc_tplg_hw_config.clock_gated = 0 => no effect
-snd_soc_tplg_hw_config.clock_gated = 1 => SND_SOC_DAIFMT_GATED
-snd_soc_tplg_hw_config.clock_gated = 2 => SND_SOC_DAIFMT_CONT
+--YrQNB5Deg1WGKZi3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-For example, the following config, based on
-alsa-lib/src/conf/topology/broadwell/broadwell.conf, is now supported:
+-----BEGIN PGP SIGNATURE-----
 
-~~~~
-SectionHWConfig."CodecHWConfig" {
-        id "1"
-        format "I2S"            # physical audio format.
-        pm_gate_clocks "true"   # clock can be gated
-}
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlth6i8ACgkQJNaLcl1U
+h9ByjQf9HJ44+026+s/Gsa1O0BrwFD4A+qwH9PUXsS4y5zsBktw5jbPY7yrzUVq/
+zOTQZUgRpWKDXoSeevxzNHkndApIvfMWZbPC2s6C/n4cv0Y44ghe0qmC6V112YMn
+7BYfUT5b7UsQkx/yW13oeNlC7a8oCI2ej/JVp/b/vaw6h+b+DTsuMrWGMt5wt/J/
+lgi5SQ1pg7Vk82ow/LMfbkR1hd0C+ARcB9IzK09V0pu+b/uoZd+G9uK14SIpCFfD
+ga3oE4evPzgXr53Hh25/YM7NYm3tKyHmEa/r+iO+mHfe/8EeVNwMnMEbqrd0ZxsW
+QxyIkp/OnkxeV2syKBcMd/umWrEe9w==
+=SXFM
+-----END PGP SIGNATURE-----
 
-SectionLink."Codec" {
+--YrQNB5Deg1WGKZi3--
 
-        # used for binding to the physical link
-        id "0"
+--===============6362772438309078520==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-        hw_configs [
-                "CodecHWConfig"
-        ]
 
-        default_hw_conf_id "1"
-}
-~~~~
-
-Signed-off-by: Kirill Marinushkin <k.marinushkin@gmail.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Pan Xiuli <xiuli.pan@linux.intel.com>
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <alexander.levin@microsoft.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- include/uapi/sound/asoc.h |    7 ++++++-
- sound/soc/soc-topology.c  |    7 +++++++
- 2 files changed, 13 insertions(+), 1 deletion(-)
-
---- a/include/uapi/sound/asoc.h
-+++ b/include/uapi/sound/asoc.h
-@@ -139,6 +139,11 @@
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_CHANNELS      (1 << 1)
- #define SND_SOC_TPLG_DAI_FLGBIT_SYMMETRIC_SAMPLEBITS    (1 << 2)
- 
-+/* DAI clock gating */
-+#define SND_SOC_TPLG_DAI_CLK_GATE_UNDEFINED	0
-+#define SND_SOC_TPLG_DAI_CLK_GATE_GATED	1
-+#define SND_SOC_TPLG_DAI_CLK_GATE_CONT		2
-+
- /* DAI physical PCM data formats.
-  * Add new formats to the end of the list.
-  */
-@@ -324,7 +329,7 @@ struct snd_soc_tplg_hw_config {
- 	__le32 size;            /* in bytes of this structure */
- 	__le32 id;		/* unique ID - - used to match */
- 	__le32 fmt;		/* SND_SOC_DAI_FORMAT_ format value */
--	__u8 clock_gated;	/* 1 if clock can be gated to save power */
-+	__u8 clock_gated;	/* SND_SOC_TPLG_DAI_CLK_GATE_ value */
- 	__u8 invert_bclk;	/* 1 for inverted BCLK, 0 for normal */
- 	__u8 invert_fsync;	/* 1 for inverted frame clock, 0 for normal */
- 	__u8 bclk_master;	/* SND_SOC_TPLG_BCLK_ value */
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -2006,6 +2006,13 @@ static void set_link_hw_format(struct sn
- 
- 		link->dai_fmt = hw_config->fmt & SND_SOC_DAIFMT_FORMAT_MASK;
- 
-+		/* clock gating */
-+		if (hw_config->clock_gated == SND_SOC_TPLG_DAI_CLK_GATE_GATED)
-+			link->dai_fmt |= SND_SOC_DAIFMT_GATED;
-+		else if (hw_config->clock_gated ==
-+			 SND_SOC_TPLG_DAI_CLK_GATE_CONT)
-+			link->dai_fmt |= SND_SOC_DAIFMT_CONT;
-+
- 		/* clock signal polarity */
- 		invert_bclk = hw_config->invert_bclk;
- 		invert_fsync = hw_config->invert_fsync;
+--===============6362772438309078520==--
