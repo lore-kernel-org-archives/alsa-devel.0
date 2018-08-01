@@ -1,58 +1,41 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 05/10] ASoC: wcd9335: add CLASS-H Controller support
-Date: Wed, 1 Aug 2018 09:57:31 +0100
-Message-ID: <9f2ae979-1af1-2d80-f403-9220ec5c89a2@linaro.org>
-References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
- <20180727121806.18209-6-srinivas.kandagatla@linaro.org>
- <20180731170557.GK5719@sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH v5 0/4] Add support for audio on SDM845 SoC
+Date: Wed,  1 Aug 2018 14:31:05 +0530
+Message-ID: <1533114069-16570-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180731170557.GK5719@sirena.org.uk>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: lee.jones@linaro.org, robh+dt@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
+To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, plai@codeaurora.org, bgoswami@codeaurora.org, perex@perex.cz, srinivas.kandagatla@linaro.org, tiwai@suse.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the review,
+This provides initial patchset to support audio on
+Qualcomm Techonologies Inc. SDM845 SoC. Currently, it supports
+audio playback/capture over Primary MI2S and Quaternary
+TDM ports.
 
-On 31/07/18 18:05, Mark Brown wrote:
-> On Fri, Jul 27, 2018 at 01:18:01PM +0100, Srinivas Kandagatla wrote:
-> 
->> +	res_val = WCD9XXX_CLASSH_CTRL_VCL_VREF_FILT_R_0KOHM;
->> +	switch (mode) {
->> +	case CLS_H_NORMAL:
->> +		res_val = WCD9XXX_CLASSH_CTRL_VCL_VREF_FILT_R_50KOHM;
->> +		val = WCD9XXX_A_ANA_HPH_PWR_LEVEL_NORMAL;
->> +		gain = DAC_GAIN_0DB;
->> +		ipeak = WCD9XXX_CLASSH_CTRL_CCL_1_DELTA_IPEAK_50MA;
->> +		break;
->> +	case CLS_AB:
->> +		val = WCD9XXX_A_ANA_HPH_PWR_LEVEL_NORMAL;
->> +		gain = DAC_GAIN_0DB;
->> +		ipeak = WCD9XXX_CLASSH_CTRL_CCL_1_DELTA_IPEAK_50MA;
->> +		break;
->> +	case CLS_H_HIFI:
->> +		val = WCD9XXX_A_ANA_HPH_PWR_LEVEL_UHQA;
->> +		gain = DAC_GAIN_M0P2DB;
->> +		ipeak = WCD9XXX_CLASSH_CTRL_CCL_1_DELTA_IPEAK_50MA;
->> +		break;
->> +	case CLS_H_LP:
->> +		val = WCD9XXX_A_ANA_HPH_PWR_LEVEL_LP;
->> +		ipeak = WCD9XXX_CLASSH_CTRL_CCL_1_DELTA_IPEAK_30MA;
->> +		break;
->> +	};
-> 
-> This is missing a default case for error checking, and you don't need
-> the semicolon at the end either.
-These states are validated before any calls are made to these functions.
+Changes since v4:
+- Used snd_mask_set_format() instead of snd_mask_set() to avoid sparse warning.
 
-However I agree without on default case for error checking and ;
-I will fix this in next version.
+Rohit kumar (4):
+  ASoC: qcom: dt-bindings: Add sdm845 machine bindings
+  ASoC: dt-bindings: Update dt binding name for apq8096
+  ASoC: qcom: Add support to parse common audio device nodes
+  ASoC: qcom: add sdm845 sound card support
 
-thanks,
-srini
+ .../devicetree/bindings/sound/qcom,apq8096.txt     |  15 +-
+ .../devicetree/bindings/sound/qcom,sdm845.txt      |  80 ++++++
+ sound/soc/qcom/Kconfig                             |   8 +
+ sound/soc/qcom/Makefile                            |   4 +-
+ sound/soc/qcom/apq8096.c                           | 111 +-------
+ sound/soc/qcom/common.c                            | 112 ++++++++
+ sound/soc/qcom/common.h                            |  12 +
+ sound/soc/qcom/sdm845.c                            | 286 +++++++++++++++++++++
+ 8 files changed, 525 insertions(+), 103 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,sdm845.txt
+ create mode 100644 sound/soc/qcom/common.c
+ create mode 100644 sound/soc/qcom/common.h
+ create mode 100644 sound/soc/qcom/sdm845.c
 
-> 
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
