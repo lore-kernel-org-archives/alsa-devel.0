@@ -1,55 +1,64 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: Applied "ASoC: wcd9335: add CLASS-H Controller
- support" to the asoc tree
-Date: Wed, 1 Aug 2018 13:26:52 +0100
-Message-ID: <d7c2e466-9f60-9347-bc62-7ed0dc3df91b@linaro.org>
-References: <20180801112000.DC6B51124241@debutante.sirena.org.uk>
+From: Walter Harms <wharms@bfs.de>
+Subject: re: [PATCH 3/9] ALSA: emu10k1: remove redundant variable attn
+Date: Wed, 1 Aug 2018 15:03:45 +0200 (CEST)
+Message-ID: <220787354.139798.1533128625826@ox-groupware.bfs.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f48.google.com (mail-wm0-f48.google.com [74.125.82.48])
- by alsa0.perex.cz (Postfix) with ESMTP id 02F902677D3
- for <alsa-devel@alsa-project.org>; Wed,  1 Aug 2018 14:26:54 +0200 (CEST)
-Received: by mail-wm0-f48.google.com with SMTP id f21-v6so6765034wmc.5
- for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2018 05:26:54 -0700 (PDT)
-In-Reply-To: <20180801112000.DC6B51124241@debutante.sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, vkoul@kernel.org, robh+dt@kernel.org, lee.jones@linaro.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jaya Kumar <jayakumar.alsa@gmail.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+From: Colin Ian King <colin.king@canonical.com>
 
-On 01/08/18 12:20, Mark Brown wrote:
->   snd-soc-wm0010-objs := wm0010.o
-> diff --git a/sound/soc/codecs/wcd-clsh.c b/sound/soc/codecs/wcd-clsh.c
-> new file mode 100644
-> index 000000000000..2393456cbd97
-> --- /dev/null
-> +++ b/sound/soc/codecs/wcd-clsh.c
-> @@ -0,0 +1,605 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2015-2016, The Linux Foundation. All rights reserved.
-> +// Copyright (c) 2017-2018, Linaro Limited
-> +
-> +#include <linux/slab.h>
-> +#include <sound/soc.h>
-> +#include <linux/kernel.h>
-> +#include <linux/delay.h>
-> +#include <linux/mfd/wcd9335/wcd9335.h>
-> +#include <linux/mfd/wcd9335/registers.h>
-Without the "[PATCH v2 02/10] mfd: wcd9335: add support to wcd9335 core" 
-It would break the build.
+Variable attn is being assigned but is never used hence it is
+redundant and can be removed.
+
+Cleans up clang warning:
+warning: variable 'attn' set but not used [-Wunused-but-set-variable]
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/pci/emu10k1/emupcm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 69f9b100bd24..26f6eda3e766 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -290,7 +290,7 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1
+*emu,
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	unsigned int silent_page, tmp;
+ 	int voice, stereo, w_16;
+-	unsigned char attn, send_amount[8];
++	unsigned char send_amount[8];
+ 	unsigned char send_routing[8];
+ 	unsigned long flags;
+ 	unsigned int pitch_target;
+@@ -313,7 +313,6 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1
+*emu,
+  	/* volume parameters */
+ 	if (extra) {
+-		attn = 0;
+ 		memset(send_routing, 0, sizeof(send_routing));
+ 		send_routing[0] = 0;
+ 		send_routing[1] = 1;
 
 
---srini
+IMHO, this code is a bit fishy.
+The memset() sould go in the init section
+and in the else branch tmp is set, maybe its an idea
+to set it here also (for symmetry)
+just my 2 cents,
+
+re,
+ wh
+
+
+
+-- 
+2.17.1
+
