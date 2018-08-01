@@ -1,55 +1,51 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH v2] ASoC: soc-pcm: Use delay set in component pointer function
-Date: Wed,  1 Aug 2018 15:37:33 +0530
-Message-ID: <1533118054-14509-1-git-send-email-akshu.agrawal@amd.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH 3/9] ALSA: emu10k1: remove redundant variable attn
+Date: Wed,  1 Aug 2018 11:47:36 +0100
+Message-ID: <20180801104742.4328-4-colin.king@canonical.com>
+References: <20180801104742.4328-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180801104742.4328-1-colin.king@canonical.com>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: djkurtz@chromium.org, akshu.agrawal@amd.com, Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC
-        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Jaya Kumar <jayakumar.alsa@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Olivier Moysan <olivier.moysan@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Take into account the base delay set in pointer callback.
+From: Colin Ian King <colin.king@canonical.com>
 
-There are cases where a pointer function populates
-runtime->delay, such as:
-./sound/pci/hda/hda_controller.c
-./sound/soc/intel/atom/sst-mfld-platform-pcm.c
+Variable attn is being assigned but is never used hence it is
+redundant and can be removed.
 
-This delay was getting lost and was overwritten by delays
-from codec or cpu dai delay function if exposed.
+Cleans up clang warning:
+warning: variable 'attn' set but not used [-Wunused-but-set-variable]
 
-Now,
-Total delay = base delay + cpu_dai delay + codec_dai delay
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- sound/soc/soc-pcm.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/pci/emu10k1/emupcm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 98be04b..e8b98bfd 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1179,6 +1179,9 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
- 	snd_pcm_sframes_t codec_delay = 0;
- 	int i;
+diff --git a/sound/pci/emu10k1/emupcm.c b/sound/pci/emu10k1/emupcm.c
+index 69f9b100bd24..26f6eda3e766 100644
+--- a/sound/pci/emu10k1/emupcm.c
++++ b/sound/pci/emu10k1/emupcm.c
+@@ -290,7 +290,7 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	unsigned int silent_page, tmp;
+ 	int voice, stereo, w_16;
+-	unsigned char attn, send_amount[8];
++	unsigned char send_amount[8];
+ 	unsigned char send_routing[8];
+ 	unsigned long flags;
+ 	unsigned int pitch_target;
+@@ -313,7 +313,6 @@ static void snd_emu10k1_pcm_init_voice(struct snd_emu10k1 *emu,
  
-+	/* clearing the previous total delay */
-+	runtime->delay = 0;
-+
- 	for_each_rtdcom(rtd, rtdcom) {
- 		component = rtdcom->component;
- 
-@@ -1190,6 +1193,8 @@ static snd_pcm_uframes_t soc_pcm_pointer(struct snd_pcm_substream *substream)
- 		offset = component->driver->ops->pointer(substream);
- 		break;
- 	}
-+	/* base delay if assigned in pointer callback */
-+	delay = runtime->delay;
- 
- 	if (cpu_dai->driver->ops->delay)
- 		delay += cpu_dai->driver->ops->delay(substream, cpu_dai);
+ 	/* volume parameters */
+ 	if (extra) {
+-		attn = 0;
+ 		memset(send_routing, 0, sizeof(send_routing));
+ 		send_routing[0] = 0;
+ 		send_routing[1] = 1;
 -- 
-1.9.1
+2.17.1
