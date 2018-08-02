@@ -1,35 +1,41 @@
-From: Rohit kumar <rohitkr@codeaurora.org>
-Subject: [PATCH] ASoC: qcom: Fix unmet dependency warning for SND_SOC_SDM845
-Date: Thu,  2 Aug 2018 12:32:59 +0530
-Message-ID: <1533193379-1125-1-git-send-email-rohitkr@codeaurora.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 01/10] ASoC: dt-bindings: add dt bindings for wcd9335
+ audio codec
+Date: Thu, 2 Aug 2018 08:33:47 +0100
+Message-ID: <4c821ce9-6268-150f-2ab0-358f5b312ec0@linaro.org>
+References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+ <20180727121806.18209-2-srinivas.kandagatla@linaro.org>
+ <20180731204315.GA5265@rob-hp-laptop>
+ <53a4e82c-7270-fdbd-a2ea-efbfc2d747a2@linaro.org>
+ <CAL_JsqKcxB2NZR94BP9-Qc8AAFsySPoADm2UA_ZV8V7JdP8-wQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <CAL_JsqKcxB2NZR94BP9-Qc8AAFsySPoADm2UA_ZV8V7JdP8-wQ@mail.gmail.com>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: plai@codeaurora.org, bgoswami@codeaurora.org, sfr@canb.auug.org.au, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com
-Cc: Rohit kumar <rohitkr@codeaurora.org>
+To: Rob Herring <robh@kernel.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Banajit Goswami <bgoswami@codeaurora.org>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vinod <vkoul@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add DEPENDS_ON QCOM_APR for SND_SOC_SDM845 to fix the
-warning: unmet direct dependencies detected for
-SND_SOC_QDSP6.
+Thanks for review,
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
----
- sound/soc/qcom/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
+On 01/08/18 23:20, Rob Herring wrote:
+>>>> +- qcom,ifd:
+>>>> +    Usage: required
+>>>> +    Value type: <phandle>
+>>>> +    Definition: SLIM interface device
+>>> Wouldn't this be the parent?
+>>>
+>> No, Interface device is just like other slim device and is part of
+>> SLIMbus Component and has a unique address. Every SLIMbus component has
+>> one interface device.
+> I still don't understand what this means. If this is SLIMbus specific,
+> then maybe it should be named that way? Or it is QCom specific?
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 3507308..5f03312 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -93,6 +93,7 @@ config SND_SOC_MSM8996
- 
- config SND_SOC_SDM845
- 	tristate "SoC Machine driver for SDM845 boards"
-+	depends on QCOM_APR
- 	select SND_SOC_QDSP6
- 	help
- 	  To add support for audio on Qualcomm Technologies Inc.
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+It is SLIMbus specific, I will rename this to "slim,ifd" in next version 
+which makes it clear!
+
+thanks,
+srini
