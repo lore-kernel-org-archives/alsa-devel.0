@@ -1,14 +1,63 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 3/3] ASoC: core: remove support for card rebind using component framework
-Date: Thu,  2 Aug 2018 16:03:38 +0100
-Message-ID: <20180802150338.24538-4-srinivas.kandagatla@linaro.org>
-References: <20180802150338.24538-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180802150338.24538-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
-Cc: perex@perex.cz, tiwai@suse.com, vkoul@kernel.org, linux-kernel@vger.kernel.org, rohitkr@codeaurora.org, bgoswami@codeaurora.org, stefan.wahren@i2se.com, guillaume.tucker@collabora.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: core: remove support for card rebind
+	using component framework" to the asoc tree
+Date: Thu,  2 Aug 2018 17:20:48 +0100 (BST)
+Message-ID: <20180802162049.00EB01121BE5@debutante.sirena.org.uk>
+References: <20180802150338.24538-4-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id EB0EE2677D8
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 18:20:51 +0200 (CEST)
+In-Reply-To: <20180802150338.24538-4-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: stefan.wahren@i2se.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, guillaume.tucker@collabora.com, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org, broonie@kernel.org, rohitkr@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
+
+The patch
+
+   ASoC: core: remove support for card rebind using component framework
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 611cbc8799b672f41b6ba7afed758ad9efb959a7 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Thu, 2 Aug 2018 16:03:38 +0100
+Subject: [PATCH] ASoC: core: remove support for card rebind using component
+ framework
 
 DRM based audio components get registered inside the component framework
 bind callback. However component framework has a big mutex lock taken for
@@ -23,9 +72,10 @@ Revert this change till we sort out the mutex issue.
 Reported-by: Guillaume Tucker <guillaume.tucker@collabora.com>
 Reported-by: Stefan Wahren <stefan.wahren@i2se.com>
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  7 ------
- sound/soc/soc-core.c | 62 ----------------------------------------------------
+ include/sound/soc.h  |  7 -----
+ sound/soc/soc-core.c | 62 --------------------------------------------
  2 files changed, 69 deletions(-)
 
 diff --git a/include/sound/soc.h b/include/sound/soc.h
@@ -176,4 +226,4 @@ index 81b27923303d..82eb3868be67 100644
  	}
  
 -- 
-2.16.2
+2.18.0
