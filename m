@@ -1,43 +1,53 @@
-From: Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 01/10] ASoC: dt-bindings: add dt bindings for wcd9335
- audio codec
-Date: Thu, 2 Aug 2018 08:07:33 -0600
-Message-ID: <CAL_JsqJKXfnCggFK3QC4Q2+-ZCGKdASJ87e=s6AUq4kYA-GWjg@mail.gmail.com>
-References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
- <20180727121806.18209-2-srinivas.kandagatla@linaro.org> <20180731204315.GA5265@rob-hp-laptop>
- <53a4e82c-7270-fdbd-a2ea-efbfc2d747a2@linaro.org> <CAL_JsqKcxB2NZR94BP9-Qc8AAFsySPoADm2UA_ZV8V7JdP8-wQ@mail.gmail.com>
- <4c821ce9-6268-150f-2ab0-358f5b312ec0@linaro.org>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] ALSA: usb-audio: Fix wrong sizeof argument
+Date: Thu, 2 Aug 2018 09:17:23 -0500
+Message-ID: <20180802141723.GA7258@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <4c821ce9-6268-150f-2ab0-358f5b312ec0@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Banajit Goswami <bgoswami@codeaurora.org>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vinod <vkoul@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gateway34.websitewelcome.com (gateway34.websitewelcome.com
+ [192.185.148.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5A4672677D8
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 16:18:17 +0200 (CEST)
+Received: from cm15.websitewelcome.com (cm15.websitewelcome.com [100.42.49.9])
+ by gateway34.websitewelcome.com (Postfix) with ESMTP id 12E895337B
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 09:18:17 -0500 (CDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jorge Sanjuan <jorge.sanjuan@codethink.co.uk>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 2, 2018 at 1:33 AM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
-> Thanks for review,
->
-> On 01/08/18 23:20, Rob Herring wrote:
-> >>>> +- qcom,ifd:
-> >>>> +    Usage: required
-> >>>> +    Value type: <phandle>
-> >>>> +    Definition: SLIM interface device
-> >>> Wouldn't this be the parent?
-> >>>
-> >> No, Interface device is just like other slim device and is part of
-> >> SLIMbus Component and has a unique address. Every SLIMbus component has
-> >> one interface device.
-> > I still don't understand what this means. If this is SLIMbus specific,
-> > then maybe it should be named that way? Or it is QCom specific?
->
-> It is SLIMbus specific, I will rename this to "slim,ifd" in next version
-> which makes it clear!
+The correct argument to be passed to kzalloc is sizeof(*pd)
 
-'slim' is not a vendor. So 'slim-ifc-dev' perhaps. Unless IFD is a
-well known acronym for someone familiar with SLIMbus.
+Addresses-Coverity-ID: 1472224 ("Wrong sizeof argument")
+Fixes: 7edf3b5e6a45 ("ALSA: usb-audio: AudioStreaming Power Domain parsing")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ sound/usb/stream.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Rob
+diff --git a/sound/usb/stream.c b/sound/usb/stream.c
+index 8fe3b0e..67cf849 100644
+--- a/sound/usb/stream.c
++++ b/sound/usb/stream.c
+@@ -1037,7 +1037,7 @@ snd_usb_get_audioformat_uac3(struct snd_usb_audio *chip,
+ 		fp->rate_max = UAC3_BADD_SAMPLING_RATE;
+ 		fp->rates = SNDRV_PCM_RATE_CONTINUOUS;
+ 
+-		pd = kzalloc(sizeof(pd), GFP_KERNEL);
++		pd = kzalloc(sizeof(*pd), GFP_KERNEL);
+ 		if (!pd) {
+ 			kfree(fp->rate_table);
+ 			kfree(fp);
+-- 
+2.7.4
