@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Mark expected switch
+Subject: Applied "ASoC: rt5640: Mark expected switch
 	fall-through" to the asoc tree
-Date: Thu,  2 Aug 2018 11:11:57 +0100 (BST)
-Message-ID: <20180802101157.2BB631124241@debutante.sirena.org.uk>
-References: <e23dbec89964bff8832d5ff4ae5a50fd1a6c185f.1533151956.git.gustavo@embeddedor.com>
+Date: Thu,  2 Aug 2018 11:12:06 +0100 (BST)
+Message-ID: <20180802101206.185311124241@debutante.sirena.org.uk>
+References: <797d14078a5e024360e27285f5f61d6319041d21.1533151956.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C9CA32677CD
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:11:58 +0200 (CEST)
-In-Reply-To: <e23dbec89964bff8832d5ff4ae5a50fd1a6c185f.1533151956.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C460B2677FC
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:12:06 +0200 (CEST)
+In-Reply-To: <797d14078a5e024360e27285f5f61d6319041d21.1533151956.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5677: Mark expected switch fall-through
+   ASoC: rt5640: Mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,41 @@ to this mail.
 Thanks,
 Mark
 
->From 43a26bd026dab09a8b28c40e94ba534a52375b20 Mon Sep 17 00:00:00 2001
+>From 065dcc270af66acb4226b49f635b41a054b663d4 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Wed, 1 Aug 2018 14:50:20 -0500
-Subject: [PATCH] ASoC: rt5677: Mark expected switch fall-through
+Date: Wed, 1 Aug 2018 14:49:13 -0500
+Subject: [PATCH] ASoC: rt5640: Mark expected switch fall-through
 
 In preparation to enabling -Wimplicit-fallthrough, mark switch cases
 where we are expecting to fall through.
 
-Addresses-Coverity-ID: 1271174 ("Missing break in switch")
+Addresses-Coverity-ID: 1056547 ("Missing break in switch")
+Addresses-Coverity-ID: 1056548 ("Missing break in switch")
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5677.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt5640.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 8a0181a2db08..922becfee59b 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -4417,6 +4417,7 @@ static int rt5677_set_tdm_slot(struct snd_soc_dai *dai, unsigned int tx_mask,
- 		break;
- 	case 25:
- 		slot_width_25 = 0x8080;
-+		/* fall through */
- 	case 24:
- 		val |= (2 << 8);
- 		break;
+diff --git a/sound/soc/codecs/rt5640.c b/sound/soc/codecs/rt5640.c
+index 8bf8d360c25f..27770143ae8f 100644
+--- a/sound/soc/codecs/rt5640.c
++++ b/sound/soc/codecs/rt5640.c
+@@ -1665,6 +1665,7 @@ static int get_sdp_info(struct snd_soc_component *component, int dai_id)
+ 			break;
+ 		case RT5640_IF_113:
+ 			ret |= RT5640_U_IF1;
++			/* fall through */
+ 		case RT5640_IF_312:
+ 		case RT5640_IF_213:
+ 			ret |= RT5640_U_IF2;
+@@ -1680,6 +1681,7 @@ static int get_sdp_info(struct snd_soc_component *component, int dai_id)
+ 			break;
+ 		case RT5640_IF_223:
+ 			ret |= RT5640_U_IF1;
++			/* fall through */
+ 		case RT5640_IF_123:
+ 		case RT5640_IF_321:
+ 			ret |= RT5640_U_IF2;
 -- 
 2.18.0
