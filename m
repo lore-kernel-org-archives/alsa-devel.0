@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: smd845: remove auto rebinding" to the
+Subject: Applied "ASoC: apq8096: remove auto rebinding" to the
 	asoc tree
-Date: Thu,  2 Aug 2018 17:20:57 +0100 (BST)
-Message-ID: <20180802162057.3C32E1121BE5@debutante.sirena.org.uk>
-References: <20180802150338.24538-3-srinivas.kandagatla@linaro.org>
+Date: Thu,  2 Aug 2018 17:21:05 +0100 (BST)
+Message-ID: <20180802162105.167501121BE5@debutante.sirena.org.uk>
+References: <20180802150338.24538-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BF9102677E3
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 18:20:58 +0200 (CEST)
-In-Reply-To: <20180802150338.24538-3-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3DEB62677D8
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 18:21:06 +0200 (CEST)
+In-Reply-To: <20180802150338.24538-2-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: smd845: remove auto rebinding
+   ASoC: apq8096: remove auto rebinding
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 62121debfb31a8700e387bd2987779b3a98bc520 Mon Sep 17 00:00:00 2001
+>From 1eb576881ff884dd6d10272b96cc336d156492c2 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Thu, 2 Aug 2018 16:03:37 +0100
-Subject: [PATCH] ASoC: smd845: remove auto rebinding
+Date: Thu, 2 Aug 2018 16:03:36 +0100
+Subject: [PATCH] ASoC: apq8096: remove auto rebinding
 
 Remove auto rebinding support, as component framework can deadlock
 in few usecases if we are trying to add new/remove component within
@@ -68,14 +68,14 @@ framework stuff in q6dsp remains removed.
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/sdm845.c | 2 --
+ sound/soc/qcom/apq8096.c | 2 --
  1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index bf4ec4646906..be0cb1122036 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -226,7 +226,6 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
+diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
+index 1e4a90d59228..6ee7e66cbaaa 100644
+--- a/sound/soc/qcom/apq8096.c
++++ b/sound/soc/qcom/apq8096.c
+@@ -48,7 +48,6 @@ static int apq8096_platform_probe(struct platform_device *pdev)
  		return -ENOMEM;
  
  	card->dev = dev;
@@ -83,13 +83,13 @@ index bf4ec4646906..be0cb1122036 100644
  	dev_set_drvdata(dev, card);
  	ret = qcom_snd_parse_of(card);
  	if (ret) {
-@@ -258,7 +257,6 @@ static int sdm845_snd_platform_remove(struct platform_device *pdev)
+@@ -74,7 +73,6 @@ static int apq8096_platform_remove(struct platform_device *pdev)
+ {
  	struct snd_soc_card *card = dev_get_drvdata(&pdev->dev);
- 	struct sdm845_snd_data *data = snd_soc_card_get_drvdata(card);
  
 -	card->auto_bind = false;
  	snd_soc_unregister_card(card);
  	kfree(card->dai_link);
- 	kfree(data);
+ 	kfree(card);
 -- 
 2.18.0
