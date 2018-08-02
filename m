@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: Fix unmet dependency warning for
-	SND_SOC_SDM845" to the asoc tree
-Date: Thu,  2 Aug 2018 11:10:26 +0100 (BST)
-Message-ID: <20180802101026.E72121124241@debutante.sirena.org.uk>
-References: <1533193379-1125-1-git-send-email-rohitkr@codeaurora.org>
+Subject: Applied "ASoC: wm8994: Mark expected switch
+	fall-through" to the asoc tree
+Date: Thu,  2 Aug 2018 11:10:36 +0100 (BST)
+Message-ID: <20180802101037.013D71124241@debutante.sirena.org.uk>
+References: <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 227CF2677CD
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:10:30 +0200 (CEST)
-In-Reply-To: <1533193379-1125-1-git-send-email-rohitkr@codeaurora.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 799EE2677E3
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:10:38 +0200 (CEST)
+In-Reply-To: <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit kumar <rohitkr@codeaurora.org>
-Cc: rohkumar@qti.qualcomm.com, sfr@canb.auug.org.au, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: Fix unmet dependency warning for SND_SOC_SDM845
+   ASoC: wm8994: Mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -53,33 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From 73edbe42582207ff8f47168f05124376394aa643 Mon Sep 17 00:00:00 2001
-From: Rohit kumar <rohitkr@codeaurora.org>
-Date: Thu, 2 Aug 2018 12:32:59 +0530
-Subject: [PATCH] ASoC: qcom: Fix unmet dependency warning for SND_SOC_SDM845
+>From 2cea1542859bc812f1ec51ea71c06e927e5b922e Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Wed, 1 Aug 2018 14:56:16 -0500
+Subject: [PATCH] ASoC: wm8994: Mark expected switch fall-through
 
-Add DEPENDS_ON QCOM_APR for SND_SOC_SDM845 to fix the
-warning: unmet direct dependencies detected for
-SND_SOC_QDSP6.
+In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+where we are expecting to fall through.
 
-Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Addresses-Coverity-ID: 115050 ("Missing break in switch")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/Kconfig | 1 +
+ sound/soc/codecs/wm8994.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 350730839c6f..5f03312ef007 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -93,6 +93,7 @@ config SND_SOC_MSM8996
+diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+index 7fdfdf3f6e67..62f8c5b9ba92 100644
+--- a/sound/soc/codecs/wm8994.c
++++ b/sound/soc/codecs/wm8994.c
+@@ -2432,6 +2432,7 @@ static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
+ 			snd_soc_component_update_bits(component, WM8994_POWER_MANAGEMENT_2,
+ 					    WM8994_OPCLK_ENA, 0);
+ 		}
++		/* fall through */
  
- config SND_SOC_SDM845
- 	tristate "SoC Machine driver for SDM845 boards"
-+	depends on QCOM_APR
- 	select SND_SOC_QDSP6
- 	help
- 	  To add support for audio on Qualcomm Technologies Inc.
+ 	default:
+ 		return -EINVAL;
 -- 
 2.18.0
