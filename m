@@ -1,18 +1,17 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Re: bug report. Envy24 based card (terratec ews88d)
- won't slave to external clock via s/pdif.
-Date: Fri, 3 Aug 2018 08:29:58 +0200
-Message-ID: <dce55863-8fb7-3567-be95-b23c96ced513@ivitera.com>
-References: <CAFO8paF9fKtf1RNNK9iaUheto7Orx1VyBsVqA_dWoM3qbpoeZQ@mail.gmail.com>
+From: Chakravarthi Pradeep <doubleq7@gmail.com>
+Subject: ALSA queries
+Date: Thu, 2 Aug 2018 20:01:13 +0530
+Message-ID: <CALW20Z3Bhp6Bhx8qWWcfcF9wcOSGV_V+KC5ct+ovFQ=o2HeoAw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id 383EA2677DA
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 08:30:02 +0200 (CEST)
-In-Reply-To: <CAFO8paF9fKtf1RNNK9iaUheto7Orx1VyBsVqA_dWoM3qbpoeZQ@mail.gmail.com>
-Content-Language: en-US
+Received: from mail-qk0-f180.google.com (mail-qk0-f180.google.com
+ [209.85.220.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A1882677D4
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 16:31:29 +0200 (CEST)
+Received: by mail-qk0-f180.google.com with SMTP id z74-v6so1665384qkb.10
+ for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2018 07:31:28 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,30 +21,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Tobias Eklund <tobias.h.e.eklund@gmail.com>, alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 2.8.2018 v 22:03 Tobias Eklund napsal(a):
-> Hi,
-> 
-> when trying to clock my terratec ews88d from an apogee rosetta AD it just
-> won't. The s/pdif input works but the card won't lock to the s/pdif clock
-> but rather stay at whatever setting it was at before i change to s/pdif in
-> envy24control or mudita24.
-> 
+I'm working on ALSA driver for PCIe card. My ALSA driver and it's
+initializing struct snd_pcm_hardware with below parameter.
 
-Hi,
+/************************ code  start
+************************************************/
+static struct snd_pcm_hardware audio_pcm_hardware = {
+.info = (SNDRV_PCM_INFO_INTERLEAVED  | SNDRV_PCM_INFO_MMAP |
+SNDRV_PCM_INFO_MMAP_VALID |
+SNDRV_PCM_INFO_BLOCK_TRANSFER |
+SNDRV_PCM_INFO_RESUME ),
+.formats  =       (SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S24_LE),
+.rates  = (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
+SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000),
+.rate_min  = 44100,
+.rate_max  = 192000,
+.channels_min  = 2,
+.channels_max  = 8,
+.buffer_bytes_max  = 76800, /*75 kbytes */
+.period_bytes_min  = 512,//4410, /* (channel (2) * sample_rate (44100)
+* bit width (24)) / (60 * 8)  */
+.period_bytes_max  = 16*1024,
+.periods_min  = 10,
+.periods_max  = 255,
 
-I do not see any implementation of incoming rate monitoring in the 
-EWS88D source code 
-https://github.com/torvalds/linux/blob/c0da4fa0d1a54495d6055c009ac46b76d1da2c86/sound/pci/ice1712/ews.c 
-I do not think the driver covers these features.
+};
+/************************ code  end
+************************************************/
 
-If you want to add the functionality, look e.g. at how Juli  does the 
-incoming rate monitoring  (juli.c, scheduled task in ak4114 
-https://elixir.bootlin.com/linux/latest/source/sound/i2c/other/ak4114.c#L617 
-). Unfortunately the code for checking is rather complex.
+1) I did not understand what is significance of periods_min ,
+period_bytes_min ,  period_bytes_max and periods_max. Can you please
+tell me what is importance of these parameter and what value should be
+mentioned according into ALSA.
 
-With regards,
+2) snd_pcm_ops trigger callback is getting called in the driver when
+application sends "start" command. But ALSA driver is stopping by
+itself after one frame is copied to ALSA framework, without waiting
+for "stop" command.
 
-Pavel.
+For instance:
+In trigger callback , I'm getting these logs after one frame is copied.
+Trigger:Start (When Play button is selected/clicked in application,
+Start command is sent to ALSA driver)
+Dma transfer is completed.
+Trigger:Stop. (When Stop button is selected/clicked in application,
+Stop command is sent to ALSA driver. But stop button is not clicked in
+this case)
+
+Thanks in advance.
+
+-- 
+Thanks and Regards
+Chakravarthi Pradeep.K
+Ph: 91 9980434900
