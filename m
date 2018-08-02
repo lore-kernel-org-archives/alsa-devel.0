@@ -1,113 +1,464 @@
-From: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Subject: Re: A bug about cache inconsistency report
-Date: Thu, 2 Aug 2018 08:22:29 +0000
-Message-ID: <12ceb41dedc54433bc7331f4378af9ba@zhaoxin.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2 02/10] mfd: wcd9335: add support to wcd9335 core
+Date: Thu, 2 Aug 2018 09:33:51 +0100
+Message-ID: <20180802083351.GN4662@dell>
+References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+ <20180727121806.18209-3-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ZXSHCAS2.zhaoxin.com (unknown [203.148.12.82])
- by alsa0.perex.cz (Postfix) with ESMTP id BC6E32677C9
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 10:22:36 +0200 (CEST)
-Content-Language: zh-CN
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180727121806.18209-3-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-MS4gbm9pc2UgcmVsYXRlIHRlc3Q6DQo4MDg2OjFDMjAgICBub2lzZSA7DQo4MDg2OkExNzAgICBv
-azsNCjgwODY6OEQyMCAgIG9rOw0KU2VlbXMgdGhpcyBpc3N1ZSByZWxhdGVkIHRvIHRoZSBIREEg
-Q2FyZCB2ZXJzaW9uDQoNCjIuIGNoYW5nZSAqX1NHIHJlbGF0ZSB0ZXN0Og0KQm90aCBhYm92ZSBw
-bGF0Zm9ybSByZXBvcnQgT29wcw0KDQpUaGFua3MNCkhhbnMNCg0KLS0tLS3pgq7ku7bljp/ku7Yt
-LS0tLQ0K5Y+R5Lu25Lq6OiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0K5Y+R
-6YCB5pe26Ze0OiAwMSBBdWd1c3QgMjAxOCAxMjo0NQ0K5pS25Lu25Lq6OiBIYW5zIEh1KFNILVJE
-KSA8SGFuc0h1QHpoYW94aW4uY29tPg0K5oqE6YCBOiAnYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
-b3JnJyA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0K5Li76aKYOiBSZTogW2Fsc2EtZGV2
-ZWxdIEEgYnVnIGFib3V0IGNhY2hlIGluY29uc2lzdGVuY3kgcmVwb3J0DQoNCk9uIFdlZCwgMDEg
-QXVnIDIwMTggMDQ6MDU6MTggKzAyMDAsDQpIYW5zIEh1KFNILVJEKSB3cm90ZToNCj4NCj4gSSBk
-aWQgbW9yZSB0ZXN0IGJhc2Ugb24gZGlmZmVyZW50IEludGVsIHBsYXRmb3JtLCBhbmQgcmVzdWx0
-IGlzIHRoZSBzYW1lLg0KDQpXaGljaCBwbGF0Zm9ybSBkaWQgeW91IHRlc3QgZXhhY3RseT8NCg0K
-PiBNYXliZSBJIG1hZGUgc29tZSBtaXN0YWtlPyBDYW4geW91IGRvIHRoZSB0ZXN0IGluIHlvdXJz
-ICBwbGF0Zm9ybT8NCg0KVGhlIG5lZ2F0aXZlIHRlc3QgcmVzdWx0IGltcGxpZXMgdGhhdCB0aGUg
-YW5hbHlzaXMgaXNuJ3QgcmlnaHQuDQpBY3R1YWxseSBJIGhhdmVuJ3Qgc2VlbiB0aGF0IHByb2Js
-ZW0gb24gbXkgdGVzdCBtYWNoaW5lcy4NCg0KQlRXLCBwbGVhc2UgYXZvaWQgdG9wLXBvc3Rpbmcu
-DQoNCg0KdGhhbmtzLA0KDQpUYWthc2hpDQoNCj4NCj4gVGhhbmsgeW91IQ0KPiBIYW5zDQo+DQo+
-IC0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCj4g5Y+R5Lu25Lq6OiBUYWthc2hpIEl3YWkgW21haWx0
-bzp0aXdhaUBzdXNlLmRlXQ0KPiDlj5HpgIHml7bpl7Q6IDMxIEp1bHkgMjAxOCAyMTo1NQ0KPiDm
-lLbku7bkuro6IEhhbnMgSHUoU0gtUkQpIDxIYW5zSHVAemhhb3hpbi5jb20+DQo+IOaKhOmAgTog
-J2Fsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZycgPGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
-Zz4NCj4g5Li76aKYOiBSZTog562U5aSNOiBbYWxzYS1kZXZlbF0gQSBidWcgYWJvdXQgY2FjaGUg
-aW5jb25zaXN0ZW5jeSByZXBvcnQNCj4NCj4gT24gVHVlLCAzMSBKdWwgMjAxOCAxNTo1MTowNiAr
-MDIwMCwNCj4gSGFucyBIdShTSC1SRCkgd3JvdGU6DQo+ID4NCj4gPiBJIGRpZCB0aGUgdGVzdCBh
-bmQgT29wcyByZXBvcnQgd2hlbiBpbnN0YWxsIGRyaXZlciggYm90aCBzbm9vcCBhbmQNCj4gPiBu
-b24tc25vb3AgbW9kZSkNCj4NCj4gSSBkb24ndCB1bmRlcnN0YW5kLiAgRGlkIG15IG9uZS1saW5l
-ciBjaGFuZ2UgdGhlIGJlaGF2aW9yIG9yIG5vdD8NCj4NCj4NCj4gdGhhbmtzLA0KPg0KPiBUYWth
-c2hpDQo+DQo+ID4NCj4gPiAtLS0tLemCruS7tuWOn+S7ti0tLS0tDQo+ID4g5Y+R5Lu25Lq6OiBU
-YWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0KPiA+IOWPkemAgeaXtumXtDogMzEg
-SnVseSAyMDE4IDE5OjU5DQo+ID4g5pS25Lu25Lq6OiBIYW5zIEh1KFNILVJEKSA8SGFuc0h1QHpo
-YW94aW4uY29tPg0KPiA+IOaKhOmAgTogJ2Fsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZycgPGFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4NCj4gPiDkuLvpopg6IFJlOiBbYWxzYS1kZXZlbF0g
-QSBidWcgYWJvdXQgY2FjaGUgaW5jb25zaXN0ZW5jeSByZXBvcnQNCj4gPg0KPiA+IE9uIFR1ZSwg
-MzEgSnVsIDIwMTggMTI6NTI6MDQgKzAyMDAsDQo+ID4gSGFucyBIdShTSC1SRCkgd3JvdGU6DQo+
-ID4gPg0KPiA+ID4gSGkgQWxsLA0KPiA+ID4NCj4gPiA+ICAgICAgICAgICAgICAgIFRyeSBzZW5k
-IGFuIGVtYWlsLg0KPiA+ID4NCj4gPiA+ICAgICAgICAgICAgICAgIEFwcGVhcmFuY2U6DQo+ID4g
-PiB3aGVuIHVzZSBub24tc25vb3AgKyBpb2N0bCBwYXRoIGNvbWJpbmF0aW9uLCBhbiBpc3N1ZSBv
-Y2N1cnM6DQo+ID4gPiB1c2FnZTogYXBsYXkgLUQgcGx1Z2h3OjAsMCA0NDEwMF9TMTZfTEVfMmMu
-d2F2IFVidW50dSwgaXQNCj4gPiA+IHBlcmZvcm1hbmNlIGludGVybWl0dGVudGx5IG5vaXNlOw0K
-PiA+ID4NCj4gPiA+IFJvb3QgY2FzZToNCj4gPiA+ICAgICAgICAgICAgICAgIEZ1bmN0aW9uIHNl
-dF9wYWdlc19hcnJheV93YyBtYXJrZWQgdGhlIFBURSBvZiB0aGUgb3JpZ2luYWwgYWRkcmVzczsg
-RnVuY3Rpb24gc2V0X21lbW9yeV93YyBtYXJrZWQgdGhlIFBURSBib3RoIG9yaWdpbmFsIGFuZCBh
-ZnRlciB2bWFwZWQgYWRkcmVzcy4NCj4gPiA+IFtjaWQ6aW1hZ2UwMDIucG5nQDAxRDQyOEZGLjky
-NjIxNTIwXQ0KPiA+ID4gSG93ZXZlciwgY2FjaGUgb3Igbm90IGluIHRyYW5zbWlzc2lvbiBwcm9j
-ZXNzIGlzIGJhc2VkIG9uIHRoZSBQVEUgb2YgdGhlIGxhdGVyLCBhbmQgdGhlIHNldF9wYWdlc19h
-cnJheV93YyBkaWQndCBtYXJrIGl0LCBzbyBhIGNhY2hlIGluY29uc2lzdGVuY3kgaXNzdWUgb2Nj
-dXJzLg0KPiA+ID4NCj4gPiA+ICAgICAgICAgICAgICAgIFJlbGF0ZWQgYnVnOg0KPiA+ID4gICAg
-ICAgICAgICAgICAgU0hBMSBJRDogOWRkZjFhZWIyMTM0ZTcyMjc1Yzk3YTJjNmZmMmUzZWIwNGYy
-ZjI3YQ0KPiA+DQo+ID4gT0ssIHNvIGRpZCB5b3UgY29uZmlybSB0aGF0IGRyb3BwaW5nIHRoZSBT
-RyBidWZmZXIgc3VwcG9ydCAiZml4ZXMiIHRoZSBub2lzZSBwcm9ibGVtIG9uIHlvdXIgc3lzdGVt
-PyAgVGhlIGVhc2llc3QgdGVzdCB3b3VsZCBiZSBsaWtlOg0KPiA+DQo+ID4gLS0tIGEvc291bmQv
-cGNpL2hkYS9oZGFfY29udHJvbGxlci5jDQo+ID4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfY29u
-dHJvbGxlci5jDQo+ID4gQEAgLTc3MCw3ICs3NzAsNyBAQCBpbnQgc25kX2hkYV9hdHRhY2hfcGNt
-X3N0cmVhbShzdHJ1Y3QgaGRhX2J1cw0KPiA+ICpfYnVzLCBzdHJ1Y3QgaGRhX2NvZGVjICpjb2Rl
-YywgIHNpemUgPSBDT05GSUdfU05EX0hEQV9QUkVBTExPQ19TSVpFDQo+ID4gKiAxMDI0OyAgaWYg
-KHNpemUgPiBNQVhfUFJFQUxMT0NfU0laRSkgIHNpemUgPSBNQVhfUFJFQUxMT0NfU0laRTsNCj4g
-PiAtc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXNfZm9yX2FsbChwY20sIFNORFJWX0RNQV9U
-WVBFX0RFVl9TRywNCj4gPiArc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXNfZm9yX2FsbChw
-Y20sIFNORFJWX0RNQV9UWVBFX0RFViwNCj4gPiAgICAgICAgY2hpcC0+Y2FyZC0+ZGV2LA0KPiA+
-ICAgICAgICBzaXplLCBNQVhfUFJFQUxMT0NfU0laRSk7DQo+ID4gIHJldHVybiAwOw0KPiA+DQo+
-ID4NCj4gPiB0aGFua3MsDQo+ID4NCj4gPiBUYWthc2hpDQo+ID4NCj4gPg0KPiA+IOS/neWvhuWj
-sOaYju+8mg0KPiA+IOacrOmCruS7tuWQq+acieS/neWvhuaIluS4k+acieS/oeaBr++8jOS7heS+
-m+aMh+WumuaUtuS7tuS6uuS9v+eUqOOAguS4peemgeWvueacrOmCruS7tuaIluWFtuWGheWuueWB
-muS7u+S9leacque7j+aOiOadg+eahOafpemYheOAgeS9v+eUqOOAgeWkjeWItuaIlui9rOWPkeOA
-gg0KPiA+IENPTkZJREVOVElBTCBOT1RFOg0KPiA+IFRoaXMgZW1haWwgY29udGFpbnMgY29uZmlk
-ZW50aWFsIG9yIGxlZ2FsbHkgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiBhbmQgaXMgZm9yIHRoZSBz
-b2xlIHVzZSBvZiBpdHMgaW50ZW5kZWQgcmVjaXBpZW50LiBBbnkgdW5hdXRob3JpemVkIHJldmll
-dywgdXNlLCBjb3B5aW5nIG9yIGZvcndhcmRpbmcgb2YgdGhpcyBlbWFpbCBvciB0aGUgY29udGVu
-dCBvZiB0aGlzIGVtYWlsIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuDQo+DQo+DQo+IOS/neWvhuWj
-sOaYju+8mg0KPiDmnKzpgq7ku7blkKvmnInkv53lr4bmiJbkuJPmnInkv6Hmga/vvIzku4Xkvpvm
-jIflrprmlLbku7bkurrkvb/nlKjjgILkuKXnpoHlr7nmnKzpgq7ku7bmiJblhbblhoXlrrnlgZrk
-u7vkvZXmnKrnu4/mjojmnYPnmoTmn6XpmIXjgIHkvb/nlKjjgIHlpI3liLbmiJbovazlj5HjgIIN
-Cj4gQ09ORklERU5USUFMIE5PVEU6DQo+IFRoaXMgZW1haWwgY29udGFpbnMgY29uZmlkZW50aWFs
-IG9yIGxlZ2FsbHkgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiBhbmQgaXMgZm9yIHRoZSBzb2xlIHVz
-ZSBvZiBpdHMgaW50ZW5kZWQgcmVjaXBpZW50LiBBbnkgdW5hdXRob3JpemVkIHJldmlldywgdXNl
-LCBjb3B5aW5nIG9yIGZvcndhcmRpbmcgb2YgdGhpcyBlbWFpbCBvciB0aGUgY29udGVudCBvZiB0
-aGlzIGVtYWlsIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuDQoNCg0K5L+d5a+G5aOw5piO77yaDQrm
-nKzpgq7ku7blkKvmnInkv53lr4bmiJbkuJPmnInkv6Hmga/vvIzku4XkvpvmjIflrprmlLbku7bk
-urrkvb/nlKjjgILkuKXnpoHlr7nmnKzpgq7ku7bmiJblhbblhoXlrrnlgZrku7vkvZXmnKrnu4/m
-jojmnYPnmoTmn6XpmIXjgIHkvb/nlKjjgIHlpI3liLbmiJbovazlj5HjgIINCkNPTkZJREVOVElB
-TCBOT1RFOg0KVGhpcyBlbWFpbCBjb250YWlucyBjb25maWRlbnRpYWwgb3IgbGVnYWxseSBwcml2
-aWxlZ2VkIGluZm9ybWF0aW9uIGFuZCBpcyBmb3IgdGhlIHNvbGUgdXNlIG9mIGl0cyBpbnRlbmRl
-ZCByZWNpcGllbnQuIEFueSB1bmF1dGhvcml6ZWQgcmV2aWV3LCB1c2UsIGNvcHlpbmcgb3IgZm9y
-d2FyZGluZyBvZiB0aGlzIGVtYWlsIG9yIHRoZSBjb250ZW50IG9mIHRoaXMgZW1haWwgaXMgc3Ry
-aWN0bHkgcHJvaGliaXRlZC4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
-Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
-YS1kZXZlbAo=
+On Fri, 27 Jul 2018, Srinivas Kandagatla wrote:
+
+> Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC,
+> It has mulitple blocks like Soundwire controller, codec,
+> Codec processing engine, ClassH controller, interrupt mux.
+> It supports both I2S/I2C and SLIMbus audio interfaces.
+> 
+> This patch adds support to SLIMbus audio interface.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/mfd/Kconfig                   |  18 ++
+>  drivers/mfd/Makefile                  |   4 +
+>  drivers/mfd/wcd9335-core.c            | 268 ++++++++++++++++
+>  include/linux/mfd/wcd9335/registers.h | 580 ++++++++++++++++++++++++++++++++++
+>  include/linux/mfd/wcd9335/wcd9335.h   |  42 +++
+>  5 files changed, 912 insertions(+)
+>  create mode 100644 drivers/mfd/wcd9335-core.c
+>  create mode 100644 include/linux/mfd/wcd9335/registers.h
+>  create mode 100644 include/linux/mfd/wcd9335/wcd9335.h
+> 
+> diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
+> index f3fa516011ec..6e5b5f3cfe20 100644
+> --- a/drivers/mfd/Kconfig
+> +++ b/drivers/mfd/Kconfig
+> @@ -1807,6 +1807,24 @@ config MFD_WM97xx
+>  	  support for the WM97xx, in order to use the actual functionaltiy of
+>  	  the device other drivers must be enabled.
+>  
+> +config MFD_WCD9335
+> +	tristate
+> +	select MFD_CORE
+> +	select REGMAP
+> +	select REGMAP_IRQ
+> +
+> +config MFD_WCD9335_SLIM
+> +	tristate "Qualcomm WCD9335 with SLIMbus"
+> +	select MFD_WCD9335
+> +	select REGMAP_SLIMBUS
+> +	depends on SLIMBUS
+> +	help
+> +	The WCD9335 is a standalone Hi-Fi audio codec IC, supports
+
+s/codec/CODEC/
+
+> +	Qualcomm Technologies, Inc. (QTI) multimedia solutions, including
+> +	the MSM8996, MSM8976, and MSM8956 chipsets. It has inbuild
+
+s/inbuild/in-built/
+
+> +	Soundwire controller, interrupt mux. It supports both I2S/I2C and
+> +	SLIMbus audio interfaces. This option selects SLIMbus audio interface.
+
+The help should be indented.
+
+>  config MFD_STW481X
+>  	tristate "Support for ST Microelectronics STw481x"
+>  	depends on I2C && (ARCH_NOMADIK || COMPILE_TEST)
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index 2852a6042ecf..a4697370640b 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -56,6 +56,10 @@ endif
+>  ifeq ($(CONFIG_MFD_CS47L24),y)
+>  obj-$(CONFIG_MFD_ARIZONA)	+= cs47l24-tables.o
+>  endif
+> +
+> +obj-$(CONFIG_MFD_WCD9335)	+= wcd9335.o
+> +wcd9335-objs			:= wcd9335-core.o
+> +
+>  obj-$(CONFIG_MFD_WM8400)	+= wm8400-core.o
+>  wm831x-objs			:= wm831x-core.o wm831x-irq.o wm831x-otp.o
+>  wm831x-objs			+= wm831x-auxadc.o
+> diff --git a/drivers/mfd/wcd9335-core.c b/drivers/mfd/wcd9335-core.c
+> new file mode 100644
+> index 000000000000..8f746901f4e9
+> --- /dev/null
+> +++ b/drivers/mfd/wcd9335-core.c
+> @@ -0,0 +1,268 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2018, Linaro Limited
+> +
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/slimbus.h>
+> +#include <linux/regmap.h>
+> +#include <linux/of.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/clk.h>
+> +#include <linux/gpio.h>
+> +#include <linux/mfd/core.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regulator/consumer.h>
+> +#include <linux/mfd/wcd9335/wcd9335.h>
+> +#include <linux/mfd/wcd9335/registers.h>
+
+Alphabetical.
+
+> +static const struct regmap_range_cfg wcd9335_ranges[] = {
+> +	{	.name = "WCD9335",
+
+What is that?  New line please.
+
+> +		.range_min =  0x0,
+> +		.range_max =  WCD9335_MAX_REGISTER,
+> +		.selector_reg = WCD9335_REG(0x0, 0),
+> +		.selector_mask = 0xff,
+> +		.selector_shift = 0,
+> +		.window_start = 0x0,
+> +		.window_len = 0x1000,
+> +	},
+> +};
+> +
+> +static struct regmap_config wcd9335_regmap_config = {
+> +	.reg_bits = 16,
+> +	.val_bits = 8,
+> +	.cache_type = REGCACHE_RBTREE,
+> +	.max_register = WCD9335_MAX_REGISTER,
+> +	.can_multi_write = true,
+> +	.ranges = wcd9335_ranges,
+> +	.num_ranges = ARRAY_SIZE(wcd9335_ranges),
+> +};
+> +
+> +static const struct regmap_range_cfg wcd9335_ifd_ranges[] = {
+> +	{	.name = "WCD9335-IFD",
+
+As above.
+
+> +		.range_min =  0x0,
+> +		.range_max = WCD9335_REG(0, 0x7ff),
+> +		.selector_reg = WCD9335_REG(0, 0x0),
+> +		.selector_mask = 0xff,
+> +		.selector_shift = 0,
+> +		.window_start = 0x0,
+> +		.window_len = 0x1000,
+> +	},
+> +};
+> +
+> +static struct regmap_config wcd9335_ifd_regmap_config = {
+> +	.reg_bits = 16,
+> +	.val_bits = 8,
+> +	.can_multi_write = true,
+> +	.max_register = WCD9335_REG(0, 0x7FF),
+> +	.ranges = wcd9335_ifd_ranges,
+> +	.num_ranges = ARRAY_SIZE(wcd9335_ifd_ranges),
+> +};
+> +
+> +static int wcd9335_parse_dt(struct wcd9335 *wcd)
+> +{
+> +	struct device *dev = wcd->dev;
+> +	struct device_node *np = dev->of_node;
+> +	int ret;
+> +
+> +	wcd->reset_gpio = of_get_named_gpio(np,	"reset-gpio", 0);
+> +	if (wcd->reset_gpio < 0) {
+> +		dev_err(dev, "Reset gpio missing in DT\n");
+
+s/gpio/GPIO/
+
+s/missing in DT/missing from DT/
+
+> +		return wcd->reset_gpio;
+> +	}
+> +
+> +	wcd->mclk = devm_clk_get(dev, "mclk");
+> +	if (IS_ERR(wcd->mclk)) {
+> +		dev_err(dev, "mclk not found\n");
+> +		return PTR_ERR(wcd->mclk);
+> +	}
+> +
+> +	wcd->native_clk = devm_clk_get(dev, "slimbus");
+> +	if (IS_ERR(wcd->native_clk)) {
+> +		dev_err(dev, "slimbus clk not found\n");
+
+Any reason for abbreviating 'clock' in the error message?
+
+> +		return PTR_ERR(wcd->native_clk);
+> +	}
+> +
+> +	wcd->supplies[0].supply = "vdd-buck";
+> +	wcd->supplies[1].supply = "vdd-buck-sido";
+> +	wcd->supplies[2].supply = "vdd-tx";
+> +	wcd->supplies[3].supply = "vdd-rx";
+> +	wcd->supplies[4].supply = "vdd-io";
+> +
+> +	ret = regulator_bulk_get(dev, WCD9335_MAX_SUPPLY, wcd->supplies);
+> +	if (ret != 0) {
+
+"if (ret)"
+
+Same for all.  I won't comment on the others.
+
+> +		dev_err(dev, "Failed to get supplies: err = %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int wcd9335_power_on_reset(struct wcd9335 *wcd)
+> +{
+> +	struct device *dev = wcd->dev;
+> +	int ret;
+> +
+> +	ret = regulator_bulk_enable(WCD9335_MAX_SUPPLY, wcd->supplies);
+> +	if (ret != 0) {
+> +		dev_err(dev, "Failed to get supplies: err = %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * For WCD9335, it takes about 600us for the Vout_A and
+> +	 * Vout_D to be ready after BUCK_SIDO is powered up.
+> +	 * SYS_RST_N shouldn't be pulled high during this time
+> +	 */
+> +	usleep_range(600, 650);
+> +
+> +	gpio_direction_output(wcd->reset_gpio, 0);
+> +	msleep(20);
+
+What's this for?  Why can't you just:
+
+  gpio_direction_output(wcd->reset_gpio, 1);
+
+... and drop the next 2 lines?
+
+> +	gpio_set_value(wcd->reset_gpio, 1);
+> +	msleep(20);
+> +
+> +	return 0;
+> +}
+> +
+> +static int wcd9335_bring_up(struct wcd9335 *wcd)
+> +{
+> +	struct regmap *rm = wcd->regmap;
+> +	int val, byte0;
+> +	int ret = 0;
+> +
+> +	regmap_read(rm, WCD9335_CHIP_TIER_CTRL_EFUSE_VAL_OUT0, &val);
+> +	regmap_read(rm, WCD9335_CHIP_TIER_CTRL_CHIP_ID_BYTE0, &byte0);
+> +
+> +	if ((val < 0) || (byte0 < 0)) {
+> +		dev_err(wcd->dev, "wcd9335 codec version detection fail!\n");
+
+s/wcd9335 codec/WCD9335 CODEC/ ?
+
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (byte0 == 0x1) {
+> +		dev_info(wcd->dev, "wcd9335 codec version is v2.0\n");
+> +		wcd->version = WCD9335_VERSION_2_0;
+> +		regmap_write(rm, WCD9335_CODEC_RPM_RST_CTL, 0x01);
+> +		regmap_write(rm, WCD9335_SIDO_SIDO_TEST_2, 0x00);
+> +		regmap_write(rm, WCD9335_SIDO_SIDO_CCL_8, 0x6F);
+> +		regmap_write(rm, WCD9335_BIAS_VBG_FINE_ADJ, 0x65);
+> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x5);
+> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x7);
+> +		regmap_write(rm, WCD9335_CODEC_RPM_PWR_CDC_DIG_HM_CTL, 0x3);
+> +		regmap_write(rm, WCD9335_CODEC_RPM_RST_CTL, 0x3);
+> +	} else {
+> +		dev_err(wcd->dev, "wcd9335 codec version not supported\n");
+
+As above.
+
+> +		ret = -EINVAL;
+
+Why not just
+
+  return -EINVAL;
+
+Then you can just return 0 and avoid pre-initialising ret.
+
+> +	}
+> +
+> +	return ret;
+> +}
+> +
+> +static int wcd9335_slim_probe(struct slim_device *slim)
+> +{
+> +	struct device *dev = &slim->dev;
+> +	struct wcd9335 *wcd;
+> +	int ret = 0;
+
+Why pre-initialise?
+
+> +	/* Interface device */
+> +	if (slim->e_addr.dev_index == 0)
+
+Is 0 the parent?  I think 0 needs defining for clarity.
+
+> +		return 0;
+> +
+> +	wcd = devm_kzalloc(dev, sizeof(*wcd), GFP_KERNEL);
+> +	if (!wcd)
+> +		return	-ENOMEM;
+> +
+> +	wcd->dev = dev;
+
+'\n' here.
+
+> +	ret = wcd9335_parse_dt(wcd);
+> +	if (ret) {
+> +		dev_err(dev, "Error parsing DT (%d)\n", ret);
+
+This format changes from message to message.
+
+Please pick one and stick with it.
+
+I personally like: "<MESSAGE>: %d", ret
+
+> +		return ret;
+> +	}
+> +
+> +	ret = wcd9335_power_on_reset(wcd);
+> +	if (ret) {
+> +		dev_err(dev, "Error Powering\n");
+
+I think this is superflouous since you already printed a message.
+
+> +		return ret;
+> +	}
+> +
+> +	wcd->regmap = regmap_init_slimbus(slim, &wcd9335_regmap_config);
+> +	if (IS_ERR(wcd->regmap)) {
+> +		ret = PTR_ERR(wcd->regmap);
+> +		dev_err(dev, "Failed to allocate register map:%d\n", ret);
+
+A different format again.  Ensure there is a ' ' after the ':'.
+
+> +		return ret;
+> +	}
+> +
+> +	dev_set_drvdata(dev, wcd);
+
+Probably nicer to do this at the very end - after a '\n'.
+
+> +	wcd->slim = slim;
+> +	wcd->intf_type = WCD9335_INTERFACE_TYPE_SLIMBUS;
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct mfd_cell wcd9335_devices[] = {
+> +	{
+> +		.name = "wcd9335-codec",
+> +	},
+> +};
+
+When are you going to add the other devices?
+
+By the way, one line entries should be placed on one line.
+
+> +	{ .name = "wcd9335-codec" },
+
+> +static int wcd9335_slim_status(struct slim_device *sdev,
+> +				 enum slim_device_status s)
+
+'s' is not a good variable name.  Suggest 'status'.
+
+> +{
+> +	struct device_node *ifd_np;
+
+What's 'ifd'?
+
+> +	struct wcd9335 *wcd;
+> +	struct device *dev;
+> +	int ret;
+> +
+> +	/* Interface device */
+
+As previously suggested just define the device ID and drop the
+comment.
+
+> +	if (sdev->e_addr.dev_index == 0)
+> +		return 0;
+> +
+> +	wcd = dev_get_drvdata(&sdev->dev);
+> +	dev = wcd->dev;
+
+Odd.  You do to the effort of assigning this and use 'wcd->dev' at
+most call sites anyway.  I'd drop 'dev' and just use it from 'wcd'
+everywhere.
+
+> +	ifd_np = of_parse_phandle(wcd->dev->of_node, "qcom,ifd", 0);
+> +	if (!ifd_np) {
+> +		dev_err(wcd->dev, "No Interface device found\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	wcd->slim_ifd = of_slim_get_device(sdev->ctrl, ifd_np);
+> +	if (!wcd->slim_ifd) {
+> +		dev_err(wcd->dev, "Unable to get SLIM Interface device\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	wcd->ifd_regmap = regmap_init_slimbus(wcd->slim_ifd,
+> +					      &wcd9335_ifd_regmap_config);
+> +	if (IS_ERR(wcd->ifd_regmap)) {
+> +		dev_err(dev, "Failed to allocate register map\n");
+> +		return PTR_ERR(wcd->ifd_regmap);
+> +	}
+> +
+> +	ret = wcd9335_bring_up(wcd);
+> +	if (ret) {
+> +		dev_err(dev, "Failed to bringup WCD9335\n");
+> +		return ret;
+> +	}
+> +
+> +	wcd->slim_ifd = wcd->slim_ifd;
+
+Am I missing something?
+
+> +	return mfd_add_devices(wcd->dev, 0, wcd9335_devices,
+> +			       ARRAY_SIZE(wcd9335_devices), NULL, 0, NULL);
+
+No error message if it were to fail?
+
+> +}
+> +
+> +static const struct slim_device_id wcd9335_slim_id[] = {
+> +	{0x217, 0x1a0, 0x1, 0x0},
+
+Well that's just horrific.  Can't these be defined?
+
+> +	{}
+> +};
+> +
+> +static struct slim_driver wcd9335_slim_driver = {
+> +	.driver = {
+> +		.name = "wcd9335-slim",
+> +	},
+> +	.probe = wcd9335_slim_probe,
+> +	.device_status = wcd9335_slim_status,
+> +	.id_table = wcd9335_slim_id,
+> +};
+> +
+> +module_slim_driver(wcd9335_slim_driver);
+> +MODULE_DESCRIPTION("WCD9335 slim driver");
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/include/linux/mfd/wcd9335/registers.h b/include/linux/mfd/wcd9335/registers.h
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
