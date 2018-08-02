@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8904: Mark expected switch
+Subject: Applied "ASoC: wm8960: Mark expected switch
 	fall-through" to the asoc tree
-Date: Thu,  2 Aug 2018 11:11:26 +0100 (BST)
-Message-ID: <20180802101126.CA7141124241@debutante.sirena.org.uk>
-References: <83b523e449805ffb65f43443ce2aac4a97880e64.1533151956.git.gustavo@embeddedor.com>
+Date: Thu,  2 Aug 2018 11:11:37 +0100 (BST)
+Message-ID: <20180802101137.4F25A1124241@debutante.sirena.org.uk>
+References: <b473ea056634ccb9316146590c7ed4d9efc14368.1533151956.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 8A1AF2677BC
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:11:27 +0200 (CEST)
-In-Reply-To: <83b523e449805ffb65f43443ce2aac4a97880e64.1533151956.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B4212677CD
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:11:38 +0200 (CEST)
+In-Reply-To: <b473ea056634ccb9316146590c7ed4d9efc14368.1533151956.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8904: Mark expected switch fall-through
+   ASoC: wm8960: Mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From da41787b9f319a7a23fcc8cf65c6ad646803962e Mon Sep 17 00:00:00 2001
+>From 3eb7dbc6d844d2033271434d02ff90ac9b19e393 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Wed, 1 Aug 2018 14:52:41 -0500
-Subject: [PATCH] ASoC: wm8904: Mark expected switch fall-through
+Date: Wed, 1 Aug 2018 14:51:59 -0500
+Subject: [PATCH] ASoC: wm8960: Mark expected switch fall-through
 
 In preparation to enabling -Wimplicit-fallthrough, mark switch cases
 where we are expecting to fall through.
 
-Addresses-Coverity-ID: 115042 ("Missing break in switch")
+Addresses-Coverity-ID: 115041 ("Missing break in switch")
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8904.c | 1 +
+ sound/soc/codecs/wm8960.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 9037a35b931d..1965635ec07c 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -1455,6 +1455,7 @@ static int wm8904_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
- 	case SND_SOC_DAIFMT_DSP_B:
- 		aif1 |= 0x3 | WM8904_AIF_LRCLK_INV;
+diff --git a/sound/soc/codecs/wm8960.c b/sound/soc/codecs/wm8960.c
+index c30f5aa392c6..8dc1f3d6a988 100644
+--- a/sound/soc/codecs/wm8960.c
++++ b/sound/soc/codecs/wm8960.c
+@@ -839,6 +839,7 @@ static int wm8960_hw_params(struct snd_pcm_substream *substream,
+ 			iface |= 0x000c;
+ 			break;
+ 		}
 +		/* fall through */
- 	case SND_SOC_DAIFMT_DSP_A:
- 		aif1 |= 0x3;
- 		break;
+ 	default:
+ 		dev_err(component->dev, "unsupported width %d\n",
+ 			params_width(params));
 -- 
 2.18.0
