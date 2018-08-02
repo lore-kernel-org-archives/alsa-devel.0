@@ -1,29 +1,43 @@
-From: Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH v3 1/4] dt-bindings: usb: dwc2: add description for px30
-Date: Thu, 02 Aug 2018 15:03:15 +0200
-Message-ID: <1906917.Z0b3HQLJhP@phil>
-References: <1533113116-8820-1-git-send-email-cl@rock-chips.com> <1533113116-8820-2-git-send-email-cl@rock-chips.com>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v2 01/10] ASoC: dt-bindings: add dt bindings for wcd9335
+ audio codec
+Date: Thu, 2 Aug 2018 08:07:33 -0600
+Message-ID: <CAL_JsqJKXfnCggFK3QC4Q2+-ZCGKdASJ87e=s6AUq4kYA-GWjg@mail.gmail.com>
+References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+ <20180727121806.18209-2-srinivas.kandagatla@linaro.org> <20180731204315.GA5265@rob-hp-laptop>
+ <53a4e82c-7270-fdbd-a2ea-efbfc2d747a2@linaro.org> <CAL_JsqKcxB2NZR94BP9-Qc8AAFsySPoADm2UA_ZV8V7JdP8-wQ@mail.gmail.com>
+ <4c821ce9-6268-150f-2ab0-358f5b312ec0@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1533113116-8820-2-git-send-email-cl@rock-chips.com>
+In-Reply-To: <4c821ce9-6268-150f-2ab0-358f5b312ec0@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: cl@rock-chips.com
-Cc: robh+dt@kernel.org, mark.rutland@arm.com, klaus.goger@theobroma-systems.com, hjc@rock-chips.com, jagan@amarulasolutions.com, djw@t-chip.com.cn, jacob-chen@iotwrt.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, frank.wang@rock-chips.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, catalin.marinas@arm.com, will.deacon@arm.com, yamada.masahiro@socionext.com, arnd@arndb.de, zhangqing@rock-chips.com, shawn.lin@rock-chips.com, kever.yang@rock-chips.com, david.wu@rock-chips.com, huangtao@rock-chips.com, tony.xie@rock-chips.com, sugar.zhang@rock-chips.com, huibin.hong@rock-chips.com
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Banajit Goswami <bgoswami@codeaurora.org>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vinod <vkoul@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Am Mittwoch, 1. August 2018, 10:45:13 CEST schrieb cl@rock-chips.com:
-> From: Liang Chen <cl@rock-chips.com>
-> 
-> This patch adds the compatible of dwc2 for PX30 SoCs.
-> 
-> Acked-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
+On Thu, Aug 2, 2018 at 1:33 AM Srinivas Kandagatla
+<srinivas.kandagatla@linaro.org> wrote:
+>
+> Thanks for review,
+>
+> On 01/08/18 23:20, Rob Herring wrote:
+> >>>> +- qcom,ifd:
+> >>>> +    Usage: required
+> >>>> +    Value type: <phandle>
+> >>>> +    Definition: SLIM interface device
+> >>> Wouldn't this be the parent?
+> >>>
+> >> No, Interface device is just like other slim device and is part of
+> >> SLIMbus Component and has a unique address. Every SLIMbus component has
+> >> one interface device.
+> > I still don't understand what this means. If this is SLIMbus specific,
+> > then maybe it should be named that way? Or it is QCom specific?
+>
+> It is SLIMbus specific, I will rename this to "slim,ifd" in next version
+> which makes it clear!
 
-I've split out the dwc2 things from the px30 dts and readded them
-in a new series and also moved the binding addition over there [0]
+'slim' is not a vendor. So 'slim-ifc-dev' perhaps. Unless IFD is a
+well known acronym for someone familiar with SLIMbus.
 
-Heiko
-
-[0] https://patchwork.kernel.org/cover/10553569/
+Rob
