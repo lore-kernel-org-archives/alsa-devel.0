@@ -1,18 +1,17 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v2 01/10] ASoC: dt-bindings: add dt bindings for wcd9335
- audio codec
-Date: Thu, 2 Aug 2018 08:33:47 +0100
-Message-ID: <4c821ce9-6268-150f-2ab0-358f5b312ec0@linaro.org>
+Subject: Re: [PATCH v2 03/10] mfd: wcd9335: add wcd irq support
+Date: Thu, 2 Aug 2018 08:34:55 +0100
+Message-ID: <292fb788-fa5a-8106-efbb-e1fa825f5697@linaro.org>
 References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
- <20180727121806.18209-2-srinivas.kandagatla@linaro.org>
- <20180731204315.GA5265@rob-hp-laptop>
- <53a4e82c-7270-fdbd-a2ea-efbfc2d747a2@linaro.org>
- <CAL_JsqKcxB2NZR94BP9-Qc8AAFsySPoADm2UA_ZV8V7JdP8-wQ@mail.gmail.com>
+ <20180727121806.18209-4-srinivas.kandagatla@linaro.org>
+ <20180731204536.GA7241@rob-hp-laptop>
+ <d31d8f54-18b0-118f-eb25-7b92d5bf9842@linaro.org>
+ <CAL_JsqJqCvWBqCfiS7dQMSzJ_FZDtAMJ8OQZvdGSJhsX0eYr6w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAL_JsqKcxB2NZR94BP9-Qc8AAFsySPoADm2UA_ZV8V7JdP8-wQ@mail.gmail.com>
+In-Reply-To: <CAL_JsqJqCvWBqCfiS7dQMSzJ_FZDtAMJ8OQZvdGSJhsX0eYr6w@mail.gmail.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Rob Herring <robh@kernel.org>
@@ -21,21 +20,48 @@ List-Id: alsa-devel@alsa-project.org
 
 Thanks for review,
 
-On 01/08/18 23:20, Rob Herring wrote:
->>>> +- qcom,ifd:
->>>> +    Usage: required
->>>> +    Value type: <phandle>
->>>> +    Definition: SLIM interface device
->>> Wouldn't this be the parent?
+On 01/08/18 23:17, Rob Herring wrote:
+> On Wed, Aug 1, 2018 at 2:57 AM Srinivas Kandagatla
+> <srinivas.kandagatla@linaro.org> wrote:
+>>
+>> Thanks for the review,
+>>
+>> On 31/07/18 21:45, Rob Herring wrote:
+>>> On Fri, Jul 27, 2018 at 01:17:59PM +0100, Srinivas Kandagatla wrote:
+>>>> WCD9335 supports two lines of irqs INTR1 and INTR2.
+>>>> Multiple interrupts are muxed via these lines.
+>>>> INTR1 consists of all possible interrupt sources like:
+>>>> Ear OCP, HPH OCP, MBHC, MAD, VBAT, and SVA
+>>>> INTR2 is a subset of first interrupt sources like MAD, VBAT, and SVA
+>>>>
+>>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>>> ---
+>>>>    drivers/mfd/Makefile                |   2 +-
+>>>>    drivers/mfd/wcd9335-core.c          |   9 ++
+>>>>    drivers/mfd/wcd9335-irq.c           | 172 ++++++++++++++++++++++++++++++++++++
+>>>>    include/dt-bindings/mfd/wcd9335.h   |  43 +++++++++
 >>>
->> No, Interface device is just like other slim device and is part of
->> SLIMbus Component and has a unique address. Every SLIMbus component has
->> one interface device.
-> I still don't understand what this means. If this is SLIMbus specific,
-> then maybe it should be named that way? Or it is QCom specific?
+>>> I'm confused why these are defined here. The binding for the wc9335 is
+>>> not an interrupt-controller.
+>>
+>> I can move this defines to include/linux/mfd/wcd9335/wcd9335.h as there
+>> are no active users for this, but I  was hoping that these can be used
+>> in DT in future.
+>>
+>> WCD9335 is an interrupt controller too. It muxes multiple interrupts via
+>> a gpio line interrupt.
+>>
+>> I did mention this in the bindings.
+> 
+> Then the header belongs in the binding patch.
+> 
+> I don't recall child nodes being defined though and you don't need to
+> be a interrupt-controller (in DT) without them.
 
-It is SLIMbus specific, I will rename this to "slim,ifd" in next version 
-which makes it clear!
+Sure, I will fix it in next version.
 
-thanks,
+Thanks,
 srini
+> 
+> Rob
+> 
