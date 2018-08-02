@@ -1,43 +1,35 @@
-From: Heiko Stuebner <heiko@sntech.de>
-Subject: Re: [PATCH v3 3/4] arm64: dts: rockchip: add core dtsi file for PX30 SoCs
-Date: Thu, 02 Aug 2018 13:58:51 +0200
-Message-ID: <5420010.G1GNdo6K2G@phil>
-References: <1533113116-8820-1-git-send-email-cl@rock-chips.com> <1533113116-8820-4-git-send-email-cl@rock-chips.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1533113116-8820-4-git-send-email-cl@rock-chips.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: cl@rock-chips.com
-Cc: robh+dt@kernel.org, mark.rutland@arm.com, klaus.goger@theobroma-systems.com, hjc@rock-chips.com, jagan@amarulasolutions.com, djw@t-chip.com.cn, jacob-chen@iotwrt.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, ulf.hansson@linaro.org, linux-mmc@vger.kernel.org, frank.wang@rock-chips.com, lgirdwood@gmail.com, broonie@kernel.org, alsa-devel@alsa-project.org, gregkh@linuxfoundation.org, catalin.marinas@arm.com, will.deacon@arm.com, yamada.masahiro@socionext.com, arnd@arndb.de, zhangqing@rock-chips.com, shawn.lin@rock-chips.com, kever.yang@rock-chips.com, david.wu@rock-chips.com, huangtao@rock-chips.com, tony.xie@rock-chips.com, sugar.zhang@rock-chips.com, huibin.hong@rock-chips.com
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] ALSA: hda: Correct Asrock B85M-ITX power_save blacklist entry
+Date: Thu,  2 Aug 2018 14:04:45 +0200
+Message-ID: <20180802120445.4608-1-hdegoede@redhat.com>
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I added the subsys product-id for the HDMI HDA device rather then for
+the PCH one, this commit fixes this.
 
-Am Mittwoch, 1. August 2018, 10:45:15 CEST schrieb cl@rock-chips.com:
-> From: Liang Chen <cl@rock-chips.com>
-> 
-> This patch adds core dtsi file for Rockchip PX30 SoCs.
-> 
-> Signed-off-by: Liang Chen <cl@rock-chips.com>
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1525104
+Cc: stable@vger.kernel.org
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+ sound/pci/hda/hda_intel.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-applied with the following changes:
-- some reordering
-- cpu properties should be present in all cpu nodes (clocks etc)
-- added dma-names to uarts
-- dropped #dma-cells from uarts+spi (only for dma-controllers)
-- dropped phy-names from usb nodes without actual phys
-  (please readd once you have phy support)
-- dropped the gamma_lut + reg-names and spanned the
-  registers till below the iommu, similar to all other socs we have
-- dropped the high_speed pinctrl state from the spi nodes
-  (not part of mainline dt-binding)
-- dropped peripherals-req-type-burst from the dmac
-  (not part of mainline dt-binding)
-- split out dwc2 into separate patch to be applied once the binding lands
-- set #sound-dai-cells in px30.dtsi ... property of the i2s controller
-  and doesn't change per board
-
-
-Heiko
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 1ae1850b3bfd..647ae1a71e10 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2207,7 +2207,7 @@ static int azx_probe(struct pci_dev *pci,
+  */
+ static struct snd_pci_quirk power_save_blacklist[] = {
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+-	SND_PCI_QUIRK(0x1849, 0x0c0c, "Asrock B85M-ITX", 0),
++	SND_PCI_QUIRK(0x1849, 0xc892, "Asrock B85M-ITX", 0),
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+ 	SND_PCI_QUIRK(0x1849, 0x7662, "Asrock H81M-HDS", 0),
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+-- 
+2.18.0
