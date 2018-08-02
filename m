@@ -1,17 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: AMD: Make ACP->SYSMEM DMA non
-	circular
-Date: Thu, 2 Aug 2018 10:56:17 +0100
-Message-ID: <20180802095617.GC9117@sirena.org.uk>
-References: <1533192134-11626-1-git-send-email-akshu.agrawal@amd.com>
+From: Lee Jones <lee.jones@linaro.org>
+Subject: Re: [PATCH v2 02/10] mfd: wcd9335: add support to
+	wcd9335 core
+Date: Thu, 2 Aug 2018 10:57:41 +0100
+Message-ID: <20180802095741.GP4662@dell>
+References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
+ <20180727121806.18209-3-srinivas.kandagatla@linaro.org>
+ <20180802083351.GN4662@dell>
+ <9a33e0ce-a385-cdad-f610-655562bec1f5@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8545287499487437743=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 298162677C8
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 11:56:21 +0200 (CEST)
-In-Reply-To: <1533192134-11626-1-git-send-email-akshu.agrawal@amd.com>
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
+ [209.85.221.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8FD4B2677C8
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 11:57:44 +0200 (CEST)
+Received: by mail-wr1-f66.google.com with SMTP id h15-v6so1473863wrs.7
+ for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2018 02:57:44 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <9a33e0ce-a385-cdad-f610-655562bec1f5@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,55 +28,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com, Guenter Roeck <linux@roeck-us.net>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org, tiwai@suse.com, vkoul@kernel.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============8545287499487437743==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="i7F3eY7HS/tUJxUd"
-Content-Disposition: inline
-
-
---i7F3eY7HS/tUJxUd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Thu, Aug 02, 2018 at 12:11:54PM +0530, Akshu Agrawal wrote:
-> In capture case we don't want ACP to SYSMEM dma
-> to be circular. This is because if an in place DSP
-> filter is applied to captured output then circular DMA
-> can overwrite the filter value with stale data.
-
-Isn't that just a problem with userspace not giving itself enough buffer
-to get the in place processing done before we loop round again.  This
-will simply change the type of error, it won't actually fix anything
-AFAICT but perhaps I'm missing something.
-
---i7F3eY7HS/tUJxUd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlti1UAACgkQJNaLcl1U
-h9D2ygf/ehYWjpfDi7yutUUdHpYQ9PM67mlWd/w7NnlZGvfY+fKwzKqv9hy1hqVR
-zUqMxTLbqqsnMxwVusEfLYpF5Ckznh/EQhgFBxGbS6Ocz0e2kGN128VD2LyziboI
-QWV8qp49MiBiVexgXDHpbyPw+SmnbvQyViCBqm3X8GZJkqWIUzBnCINr4fqqXAv0
-Cc3DbDYs993W0Say2R95fec+DJb8jQ4MZD9nRAq0JV8kuoHW4A0Wiim8O21ELuH+
-n+k9SNr/OboKeR8V/j9slWWLXGRioA31DSfatLTK3KTNRPjyIZ+x4Ce4X+D8nEm7
-m4n2zRDoDbSkIYQh/uhMbmlxgGTUsg==
-=PhBU
------END PGP SIGNATURE-----
-
---i7F3eY7HS/tUJxUd--
-
---===============8545287499487437743==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============8545287499487437743==--
+T24gVGh1LCAwMiBBdWcgMjAxOCwgU3Jpbml2YXMgS2FuZGFnYXRsYSB3cm90ZToKPiBPbiAwMi8w
+OC8xOCAwOTozMywgTGVlIEpvbmVzIHdyb3RlOgo+ID4gT24gRnJpLCAyNyBKdWwgMjAxOCwgU3Jp
+bml2YXMgS2FuZGFnYXRsYSB3cm90ZToKPiA+IAo+ID4gPiBRdWFsY29tbSBXQ0Q5MzM1IENvZGVj
+IGlzIGEgc3RhbmRhbG9uZSBIaS1GaSBhdWRpbyBjb2RlYyBJQywKPiA+ID4gSXQgaGFzIG11bGl0
+cGxlIGJsb2NrcyBsaWtlIFNvdW5kd2lyZSBjb250cm9sbGVyLCBjb2RlYywKPiA+ID4gQ29kZWMg
+cHJvY2Vzc2luZyBlbmdpbmUsIENsYXNzSCBjb250cm9sbGVyLCBpbnRlcnJ1cHQgbXV4Lgo+ID4g
+PiBJdCBzdXBwb3J0cyBib3RoIEkyUy9JMkMgYW5kIFNMSU1idXMgYXVkaW8gaW50ZXJmYWNlcy4K
+PiA+ID4gCj4gPiA+IFRoaXMgcGF0Y2ggYWRkcyBzdXBwb3J0IHRvIFNMSU1idXMgYXVkaW8gaW50
+ZXJmYWNlLgo+ID4gPiAKPiA+ID4gU2lnbmVkLW9mZi1ieTogU3Jpbml2YXMgS2FuZGFnYXRsYSA8
+c3Jpbml2YXMua2FuZGFnYXRsYUBsaW5hcm8ub3JnPgo+ID4gPiAtLS0KPiA+ID4gICBkcml2ZXJz
+L21mZC9LY29uZmlnICAgICAgICAgICAgICAgICAgIHwgIDE4ICsrCj4gPiA+ICAgZHJpdmVycy9t
+ZmQvTWFrZWZpbGUgICAgICAgICAgICAgICAgICB8ICAgNCArCj4gPiA+ICAgZHJpdmVycy9tZmQv
+d2NkOTMzNS1jb3JlLmMgICAgICAgICAgICB8IDI2OCArKysrKysrKysrKysrKysrCj4gPiA+ICAg
+aW5jbHVkZS9saW51eC9tZmQvd2NkOTMzNS9yZWdpc3RlcnMuaCB8IDU4MCArKysrKysrKysrKysr
+KysrKysrKysrKysrKysrKysrKysrCj4gPiA+ICAgaW5jbHVkZS9saW51eC9tZmQvd2NkOTMzNS93
+Y2Q5MzM1LmggICB8ICA0MiArKysKPiA+ID4gICA1IGZpbGVzIGNoYW5nZWQsIDkxMiBpbnNlcnRp
+b25zKCspCj4gPiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvbWZkL3djZDkzMzUtY29y
+ZS5jCj4gPiA+ICAgY3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvbGludXgvbWZkL3djZDkzMzUv
+cmVnaXN0ZXJzLmgKPiA+ID4gICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS9saW51eC9tZmQv
+d2NkOTMzNS93Y2Q5MzM1LmgKPiA+ID4gCj4gPiA+IGRpZmYgLS1naXQgYS9kcml2ZXJzL21mZC9L
+Y29uZmlnIGIvZHJpdmVycy9tZmQvS2NvbmZpZwo+ID4gPiBpbmRleCBmM2ZhNTE2MDExZWMuLjZl
+NWI1ZjNjZmUyMCAxMDA2NDQKPiA+ID4gLS0tIGEvZHJpdmVycy9tZmQvS2NvbmZpZwo+ID4gPiAr
+KysgYi9kcml2ZXJzL21mZC9LY29uZmlnCj4gPiA+IEBAIC0xODA3LDYgKzE4MDcsMjQgQEAgY29u
+ZmlnIE1GRF9XTTk3eHgKPiA+ID4gICAJICBzdXBwb3J0IGZvciB0aGUgV005N3h4LCBpbiBvcmRl
+ciB0byB1c2UgdGhlIGFjdHVhbCBmdW5jdGlvbmFsdGl5IG9mCj4gPiA+ICAgCSAgdGhlIGRldmlj
+ZSBvdGhlciBkcml2ZXJzIG11c3QgYmUgZW5hYmxlZC4KPiA+ID4gK2NvbmZpZyBNRkRfV0NEOTMz
+NQo+ID4gPiArCXRyaXN0YXRlCj4gPiA+ICsJc2VsZWN0IE1GRF9DT1JFCj4gPiA+ICsJc2VsZWN0
+IFJFR01BUAo+ID4gPiArCXNlbGVjdCBSRUdNQVBfSVJRCj4gPiA+ICsKPiA+ID4gK2NvbmZpZyBN
+RkRfV0NEOTMzNV9TTElNCj4gPiA+ICsJdHJpc3RhdGUgIlF1YWxjb21tIFdDRDkzMzUgd2l0aCBT
+TElNYnVzIgo+ID4gPiArCXNlbGVjdCBNRkRfV0NEOTMzNQo+ID4gPiArCXNlbGVjdCBSRUdNQVBf
+U0xJTUJVUwo+ID4gPiArCWRlcGVuZHMgb24gU0xJTUJVUwo+ID4gPiArCWhlbHAKPiA+ID4gKwlU
+aGUgV0NEOTMzNSBpcyBhIHN0YW5kYWxvbmUgSGktRmkgYXVkaW8gY29kZWMgSUMsIHN1cHBvcnRz
+Cj4gPiAKPiA+IHMvY29kZWMvQ09ERUMvCj4gWWVwLgoKSWYgeW91IGFncmVlIHdpdGggc29tZXRo
+aW5nLCBiZXN0IGp1c3QgdG8gc25pcCBpdC4KCk5vIG5lZWQgdG8gcmVwbHkgYXQgYWxsIGlmIHlv
+dSBhZ3JlZSB3aXRoIGV2ZXJ5dGhpbmcuCgpbLi4uXQoKPiA+ID4gK3N0YXRpYyBpbnQgd2NkOTMz
+NV9wb3dlcl9vbl9yZXNldChzdHJ1Y3Qgd2NkOTMzNSAqd2NkKQo+ID4gPiArewo+ID4gPiArCXN0
+cnVjdCBkZXZpY2UgKmRldiA9IHdjZC0+ZGV2Owo+ID4gPiArCWludCByZXQ7Cj4gPiA+ICsKPiA+
+ID4gKwlyZXQgPSByZWd1bGF0b3JfYnVsa19lbmFibGUoV0NEOTMzNV9NQVhfU1VQUExZLCB3Y2Qt
+PnN1cHBsaWVzKTsKPiA+ID4gKwlpZiAocmV0ICE9IDApIHsKPiA+ID4gKwkJZGV2X2VycihkZXYs
+ICJGYWlsZWQgdG8gZ2V0IHN1cHBsaWVzOiBlcnIgPSAlZFxuIiwgcmV0KTsKPiA+ID4gKwkJcmV0
+dXJuIHJldDsKPiA+ID4gKwl9Cj4gPiA+ICsKPiA+ID4gKwkvKgo+ID4gPiArCSAqIEZvciBXQ0Q5
+MzM1LCBpdCB0YWtlcyBhYm91dCA2MDB1cyBmb3IgdGhlIFZvdXRfQSBhbmQKPiA+ID4gKwkgKiBW
+b3V0X0QgdG8gYmUgcmVhZHkgYWZ0ZXIgQlVDS19TSURPIGlzIHBvd2VyZWQgdXAuCj4gPiA+ICsJ
+ICogU1lTX1JTVF9OIHNob3VsZG4ndCBiZSBwdWxsZWQgaGlnaCBkdXJpbmcgdGhpcyB0aW1lCj4g
+PiA+ICsJICovCj4gPiA+ICsJdXNsZWVwX3JhbmdlKDYwMCwgNjUwKTsKPiA+ID4gKwo+ID4gPiAr
+CWdwaW9fZGlyZWN0aW9uX291dHB1dCh3Y2QtPnJlc2V0X2dwaW8sIDApOwo+ID4gPiArCW1zbGVl
+cCgyMCk7Cj4gPiAKPiA+IFdoYXQncyB0aGlzIGZvcj8gIFdoeSBjYW4ndCB5b3UganVzdDoKPiA+
+IAo+IFRoaXMgaXMganVzdCBtYWtpbmcgc3VyZSB0aGF0IHJlc2V0IGxpbmUgaXMgbG93IGJlZm9y
+ZSBhY3R1YWwgdGhlIGNoaXAgaXMKPiB0YWtlbiBvdXQgb2YgcmVzZXQuCgpJZiBpdCBjb25mdXNl
+ZCBtZSwgaXQgbWlnaHQgY29uZnVzZSBvdGhlcnMuCgpCZXN0IHRvIGFkZCBhIGNvbW1lbnQgdG8g
+dGhlIHR1bmUgb2Y6CgogICJUb2dnbGUgcmVzZXQgbGluZSBvZmYvb24gdG8gZW5zdXJlIC4uLiAi
+Cgo+ID4gICAgZ3Bpb19kaXJlY3Rpb25fb3V0cHV0KHdjZC0+cmVzZXRfZ3BpbywgMSk7Cj4gPiAK
+PiA+IC4uLiBhbmQgZHJvcCB0aGUgbmV4dCAyIGxpbmVzPwoKWy4uLl0KCj4gPiA+ICtzdGF0aWMg
+Y29uc3Qgc3RydWN0IG1mZF9jZWxsIHdjZDkzMzVfZGV2aWNlc1tdID0gewo+ID4gPiArCXsKPiA+
+ID4gKwkJLm5hbWUgPSAid2NkOTMzNS1jb2RlYyIsCj4gPiA+ICsJfSwKPiA+ID4gK307Cj4gPiAK
+PiA+IFdoZW4gYXJlIHlvdSBnb2luZyB0byBhZGQgdGhlIG90aGVyIGRldmljZXM/Cj4gPiAKPiBX
+ZSBhcmUgdHJ5aW5nIHRvIHNvcnQgb2YgaHcgc2V0dXAgdG8gdGVzdCBvdGhlciBkZXZpY2VzIGxp
+a2Ugc291bmR3aXJlCj4gY29udHJvbGxlciwgd2lsbCBhZGQgdGhlc2Ugb25jZSB3ZSBhcmUgaW4g
+YSBwb3NpdGlvbiB0byB0ZXN0IHRoZW0uCgpFbnN1cmUgdGhhdCB5b3UgZG8sIG9yIEknbGwgcmV2
+ZXJ0IHRoZSB3aG9sZSBkcml2ZXIgYXMgIm5vdCBhbiBNRkQiIDopCgo+ID4gQnkgdGhlIHdheSwg
+b25lIGxpbmUgZW50cmllcyBzaG91bGQgYmUgcGxhY2VkIG9uIG9uZSBsaW5lLgo+ID4gCj4gPiA+
+ICsJeyAubmFtZSA9ICJ3Y2Q5MzM1LWNvZGVjIiB9LAoKWy4uLl0KCj4gPiA+ICtzdGF0aWMgaW50
+IHdjZDkzMzVfc2xpbV9zdGF0dXMoc3RydWN0IHNsaW1fZGV2aWNlICpzZGV2LAo+ID4gPiArCQkJ
+CSBlbnVtIHNsaW1fZGV2aWNlX3N0YXR1cyBzKQo+ID4gCj4gPiAncycgaXMgbm90IGEgZ29vZCB2
+YXJpYWJsZSBuYW1lLiAgU3VnZ2VzdCAnc3RhdHVzJy4KPiA+IAo+IEFncmVlZCEKPiA+ID4gK3sK
+PiA+ID4gKwlzdHJ1Y3QgZGV2aWNlX25vZGUgKmlmZF9ucDsKPiA+IAo+ID4gV2hhdCdzICdpZmQn
+Pwo+ID4gCj4gU0xJTWJ1cyBJbnRlcmZhY2UgZGV2aWNlLgoKVGhhdCdzIGEgdGVycmlibGUgdmFy
+aWFibGUgbmFtZS4gOikKCi0tIApMZWUgSm9uZXMgW+adjueQvOaWr10KTGluYXJvIFNlcnZpY2Vz
+IFRlY2huaWNhbCBMZWFkCkxpbmFyby5vcmcg4pSCIE9wZW4gc291cmNlIHNvZnR3YXJlIGZvciBB
+Uk0gU29DcwpGb2xsb3cgTGluYXJvOiBGYWNlYm9vayB8IFR3aXR0ZXIgfCBCbG9nCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
