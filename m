@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fsi: convert to SPDX identifiers" to
-	the asoc tree
-Date: Thu,  2 Aug 2018 11:10:17 +0100 (BST)
-Message-ID: <20180802101017.279DC1124241@debutante.sirena.org.uk>
-References: <877el9ee9a.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: qcom: Fix unmet dependency warning for
+	SND_SOC_SDM845" to the asoc tree
+Date: Thu,  2 Aug 2018 11:10:26 +0100 (BST)
+Message-ID: <20180802101026.E72121124241@debutante.sirena.org.uk>
+References: <1533193379-1125-1-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6CD442677BC
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:10:18 +0200 (CEST)
-In-Reply-To: <877el9ee9a.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 227CF2677CD
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:10:30 +0200 (CEST)
+In-Reply-To: <1533193379-1125-1-git-send-email-rohitkr@codeaurora.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Rohit kumar <rohitkr@codeaurora.org>
+Cc: rohkumar@qti.qualcomm.com, sfr@canb.auug.org.au, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fsi: convert to SPDX identifiers
+   ASoC: qcom: Fix unmet dependency warning for SND_SOC_SDM845
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,33 @@ to this mail.
 Thanks,
 Mark
 
->From fdec79c18b08c68cfa079f2d3ee23c5a120a2eda Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 2 Aug 2018 01:47:30 +0000
-Subject: [PATCH] ASoC: fsi: convert to SPDX identifiers
+>From 73edbe42582207ff8f47168f05124376394aa643 Mon Sep 17 00:00:00 2001
+From: Rohit kumar <rohitkr@codeaurora.org>
+Date: Thu, 2 Aug 2018 12:32:59 +0530
+Subject: [PATCH] ASoC: qcom: Fix unmet dependency warning for SND_SOC_SDM845
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Add DEPENDS_ON QCOM_APR for SND_SOC_SDM845 to fix the
+warning: unmet direct dependencies detected for
+SND_SOC_QDSP6.
+
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/sh_fsi.h | 13 +++++--------
- 1 file changed, 5 insertions(+), 8 deletions(-)
+ sound/soc/qcom/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/sound/sh_fsi.h b/include/sound/sh_fsi.h
-index 7a9710b4b799..89eafe23ef88 100644
---- a/include/sound/sh_fsi.h
-+++ b/include/sound/sh_fsi.h
-@@ -1,16 +1,13 @@
--#ifndef __SOUND_FSI_H
--#define __SOUND_FSI_H
--
--/*
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-  * Fifo-attached Serial Interface (FSI) support for SH7724
-  *
-  * Copyright (C) 2009 Renesas Solutions Corp.
-  * Kuninori Morimoto <morimoto.kuninori@renesas.com>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-  */
-+#ifndef __SOUND_FSI_H
-+#define __SOUND_FSI_H
-+
- #include <linux/clk.h>
- #include <sound/soc.h>
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 350730839c6f..5f03312ef007 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -93,6 +93,7 @@ config SND_SOC_MSM8996
  
+ config SND_SOC_SDM845
+ 	tristate "SoC Machine driver for SDM845 boards"
++	depends on QCOM_APR
+ 	select SND_SOC_QDSP6
+ 	help
+ 	  To add support for audio on Qualcomm Technologies Inc.
 -- 
 2.18.0
