@@ -1,67 +1,257 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+From: Lee Jones <lee.jones@linaro.org>
 Subject: Re: [PATCH v2 03/10] mfd: wcd9335: add wcd irq support
-Date: Thu, 2 Aug 2018 08:34:55 +0100
-Message-ID: <292fb788-fa5a-8106-efbb-e1fa825f5697@linaro.org>
+Date: Thu, 2 Aug 2018 09:05:25 +0100
+Message-ID: <20180802080525.GM4662@dell>
 References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
  <20180727121806.18209-4-srinivas.kandagatla@linaro.org>
- <20180731204536.GA7241@rob-hp-laptop>
- <d31d8f54-18b0-118f-eb25-7b92d5bf9842@linaro.org>
- <CAL_JsqJqCvWBqCfiS7dQMSzJ_FZDtAMJ8OQZvdGSJhsX0eYr6w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAL_JsqJqCvWBqCfiS7dQMSzJ_FZDtAMJ8OQZvdGSJhsX0eYr6w@mail.gmail.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <20180727121806.18209-4-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Rob Herring <robh@kernel.org>
-Cc: Lee Jones <lee.jones@linaro.org>, Mark Brown <broonie@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Banajit Goswami <bgoswami@codeaurora.org>, devicetree@vger.kernel.org, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, Vinod <vkoul@kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for review,
+On Fri, 27 Jul 2018, Srinivas Kandagatla wrote:
 
-On 01/08/18 23:17, Rob Herring wrote:
-> On Wed, Aug 1, 2018 at 2:57 AM Srinivas Kandagatla
-> <srinivas.kandagatla@linaro.org> wrote:
->>
->> Thanks for the review,
->>
->> On 31/07/18 21:45, Rob Herring wrote:
->>> On Fri, Jul 27, 2018 at 01:17:59PM +0100, Srinivas Kandagatla wrote:
->>>> WCD9335 supports two lines of irqs INTR1 and INTR2.
->>>> Multiple interrupts are muxed via these lines.
->>>> INTR1 consists of all possible interrupt sources like:
->>>> Ear OCP, HPH OCP, MBHC, MAD, VBAT, and SVA
->>>> INTR2 is a subset of first interrupt sources like MAD, VBAT, and SVA
->>>>
->>>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>>> ---
->>>>    drivers/mfd/Makefile                |   2 +-
->>>>    drivers/mfd/wcd9335-core.c          |   9 ++
->>>>    drivers/mfd/wcd9335-irq.c           | 172 ++++++++++++++++++++++++++++++++++++
->>>>    include/dt-bindings/mfd/wcd9335.h   |  43 +++++++++
->>>
->>> I'm confused why these are defined here. The binding for the wc9335 is
->>> not an interrupt-controller.
->>
->> I can move this defines to include/linux/mfd/wcd9335/wcd9335.h as there
->> are no active users for this, but I  was hoping that these can be used
->> in DT in future.
->>
->> WCD9335 is an interrupt controller too. It muxes multiple interrupts via
->> a gpio line interrupt.
->>
->> I did mention this in the bindings.
+> WCD9335 supports two lines of irqs INTR1 and INTR2.
+> Multiple interrupts are muxed via these lines.
+> INTR1 consists of all possible interrupt sources like:
+> Ear OCP, HPH OCP, MBHC, MAD, VBAT, and SVA
+> INTR2 is a subset of first interrupt sources like MAD, VBAT, and SVA
 > 
-> Then the header belongs in the binding patch.
-> 
-> I don't recall child nodes being defined though and you don't need to
-> be a interrupt-controller (in DT) without them.
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  drivers/mfd/Makefile                |   2 +-
+>  drivers/mfd/wcd9335-core.c          |   9 ++
+>  drivers/mfd/wcd9335-irq.c           | 172 ++++++++++++++++++++++++++++++++++++
 
-Sure, I will fix it in next version.
+Any particular reason for separating out IRQ handling?
 
-Thanks,
-srini
+>  include/dt-bindings/mfd/wcd9335.h   |  43 +++++++++
+>  include/linux/mfd/wcd9335/wcd9335.h |   3 +
+>  5 files changed, 228 insertions(+), 1 deletion(-)
+>  create mode 100644 drivers/mfd/wcd9335-irq.c
+>  create mode 100644 include/dt-bindings/mfd/wcd9335.h
 > 
-> Rob
-> 
+> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
+> index a4697370640b..210875afe78a 100644
+> --- a/drivers/mfd/Makefile
+> +++ b/drivers/mfd/Makefile
+> @@ -58,7 +58,7 @@ obj-$(CONFIG_MFD_ARIZONA)	+= cs47l24-tables.o
+>  endif
+>  
+>  obj-$(CONFIG_MFD_WCD9335)	+= wcd9335.o
+> -wcd9335-objs			:= wcd9335-core.o
+> +wcd9335-objs			:= wcd9335-core.o wcd9335-irq.o
+>  
+>  obj-$(CONFIG_MFD_WM8400)	+= wm8400-core.o
+>  wm831x-objs			:= wm831x-core.o wm831x-irq.o wm831x-otp.o
+> diff --git a/drivers/mfd/wcd9335-core.c b/drivers/mfd/wcd9335-core.c
+> index 8f746901f4e9..6299dfb63aca 100644
+> --- a/drivers/mfd/wcd9335-core.c
+> +++ b/drivers/mfd/wcd9335-core.c
+> @@ -243,12 +243,20 @@ static int wcd9335_slim_status(struct slim_device *sdev,
+>  		return ret;
+>  	}
+>  
+> +	wcd9335_irq_init(wcd);
+
+Why don't you check the return value?
+
+What happens if it defers?
+
+>  	wcd->slim_ifd = wcd->slim_ifd;
+>  
+>  	return mfd_add_devices(wcd->dev, 0, wcd9335_devices,
+>  			       ARRAY_SIZE(wcd9335_devices), NULL, 0, NULL);
+>  }
+>  
+> +static void wcd9335_slim_remove(struct slim_device *sdev)
+> +{
+> +	struct wcd9335 *wcd = dev_get_drvdata(&sdev->dev);
+> +
+> +	wcd9335_irq_exit(wcd);
+> +}
+> +
+>  static const struct slim_device_id wcd9335_slim_id[] = {
+>  	{0x217, 0x1a0, 0x1, 0x0},
+>  	{}
+> @@ -259,6 +267,7 @@ static struct slim_driver wcd9335_slim_driver = {
+>  		.name = "wcd9335-slim",
+>  	},
+>  	.probe = wcd9335_slim_probe,
+> +	.remove = wcd9335_slim_remove,
+>  	.device_status = wcd9335_slim_status,
+>  	.id_table = wcd9335_slim_id,
+>  };
+> diff --git a/drivers/mfd/wcd9335-irq.c b/drivers/mfd/wcd9335-irq.c
+> new file mode 100644
+> index 000000000000..84098c89419b
+> --- /dev/null
+> +++ b/drivers/mfd/wcd9335-irq.c
+> @@ -0,0 +1,172 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +// Copyright (c) 2018, Linaro Limited
+> +//
+
+Blank line?
+
+> +#include <linux/gpio.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/regmap.h>
+> +#include <linux/of_irq.h>
+> +#include <dt-bindings/mfd/wcd9335.h>
+> +#include <linux/mfd/wcd9335/wcd9335.h>
+> +#include <linux/mfd/wcd9335/registers.h>
+
+Please place in alphabetical order.
+
+> +static const struct regmap_irq wcd9335_irqs[] = {
+> +	/* INTR_REG 0 */
+> +	[WCD9335_IRQ_SLIMBUS] = {
+> +		.reg_offset = 0,
+> +		.mask = BIT(0),
+> +	},
+
+[snipped approx 1,000,000 entries]
+
+> +	[WCD9335_IRQ_SVA_OUTBOX2] = {
+> +		.reg_offset = 3,
+> +		.mask = BIT(6),
+> +	},
+> +};
+
+Please use REGMAP_IRQ_REG() to significantly reduce the diff.
+
+> +static const struct regmap_irq_chip wcd9335_regmap_irq1_chip = {
+> +	.name = "wcd9335_pin1_irq",
+> +	.status_base = WCD9335_INTR_PIN1_STATUS0,
+> +	.mask_base = WCD9335_INTR_PIN1_MASK0,
+> +	.ack_base = WCD9335_INTR_PIN1_CLEAR0,
+> +	.type_base = WCD9335_INTR_LEVEL0,
+> +	.num_regs = 4,
+> +	.irqs = wcd9335_irqs,
+> +	.num_irqs = ARRAY_SIZE(wcd9335_irqs),
+> +};
+> +
+> +int wcd9335_irq_init(struct wcd9335 *wcd)
+> +{
+> +	int ret;
+
+'\n' here.
+
+> +	/*
+> +	 * INTR1 consists of all possible interrupt sources Ear OCP,
+> +	 * HPH OCP, MBHC, MAD, VBAT, and SVA
+> +	 * INTR2 is a subset of first interrupt sources MAD, VBAT, and SVA
+> +	 */
+> +	wcd->intr1 = of_irq_get_byname(wcd->dev->of_node, "intr1");
+> +	if (wcd->intr1 < 0 || wcd->intr1 == -EPROBE_DEFER) {
+> +		dev_err(wcd->dev, "Unable to configure irq\n");
+
+Nit: s/irq/IRQ/
+
+Do you really want to issue an error message for -EPROBE_DEFER?
+
+This maybe confusing if it is initiated later.
+
+> +		return wcd->intr1;
+> +	}
+> +
+> +	ret = regmap_add_irq_chip(wcd->regmap, wcd->intr1,
+> +				 IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
+> +				 0, &wcd9335_regmap_irq1_chip,
+> +				 &wcd->irq_data);
+> +	if (ret != 0) {
+
+"if (ret)"
+
+> +		dev_err(wcd->dev, "Failed to register IRQ chip: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +int wcd9335_irq_exit(struct wcd9335 *wcd)
+> +{
+> +	regmap_del_irq_chip(wcd->intr1, wcd->irq_data);
+
+'\n' here.
+
+> +	return 0;
+> +}
+
+Or better still, make this a void and remove the superfluous return.
+
+> diff --git a/include/dt-bindings/mfd/wcd9335.h b/include/dt-bindings/mfd/wcd9335.h
+> new file mode 100644
+> index 000000000000..61b6a11da00d
+> --- /dev/null
+> +++ b/include/dt-bindings/mfd/wcd9335.h
+> @@ -0,0 +1,43 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * This header provides macros for WCD9335 device bindings.
+> + *
+> + * Copyright (c) 2018, Linaro Limited
+> + */
+> +
+> +#ifndef _DT_BINDINGS_MFD_WCD9335_H
+> +#define _DT_BINDINGS_MFD_WCD9335_H
+> +
+> +#define	WCD9335_IRQ_SLIMBUS			0
+> +#define	WCD9335_IRQ_FLL_LOCK_LOSS		1
+> +#define	WCD9335_IRQ_HPH_PA_OCPL_FAULT		2
+> +#define	WCD9335_IRQ_HPH_PA_OCPR_FAULT		3
+> +#define	WCD9335_IRQ_EAR_PA_OCP_FAULT		4
+> +#define	WCD9335_IRQ_HPH_PA_CNPL_COMPLETE	5
+> +#define	WCD9335_IRQ_HPH_PA_CNPR_COMPLETE	6
+> +#define	WCD9335_IRQ_EAR_PA_CNP_COMPLETE		7
+> +#define	WCD9335_IRQ_MBHC_SW_DET			8
+> +#define	WCD9335_IRQ_MBHC_ELECT_INS_REM_DET	9
+> +#define	WCD9335_IRQ_MBHC_BUTTON_PRESS_DET	10
+> +#define	WCD9335_IRQ_MBHC_BUTTON_RELEASE_DET	11
+> +#define	WCD9335_IRQ_MBHC_ELECT_INS_REM_LEG_DET	12
+> +#define	WCD9335_IRQ_RESERVED_0			13
+> +#define	WCD9335_IRQ_RESERVED_1			14
+> +#define	WCD9335_IRQ_RESERVED_2			15
+> +#define	WCD9335_IRQ_LINE_PA1_CNP_COMPLETE	16
+> +#define	WCD9335_IRQ_LINE_PA2_CNP_COMPLETE	17
+> +#define	WCD9335_IRQ_LINE_PA3_CNP_COMPLETE	18
+> +#define	WCD9335_IRQ_LINE_PA4_CNP_COMPLETE	19
+> +#define	WCD9335_IRQ_SOUNDWIRE			20
+> +#define	WCD9335_IRQ_VDD_DIG_RAMP_COMPLETE	21
+> +#define	WCD9335_IRQ_RCO_ERROR			22
+> +#define	WCD9335_IRQ_SVA_ERROR			23
+> +#define	WCD9335_IRQ_MAD_AUDIO			24
+> +#define	WCD9335_IRQ_MAD_BEACON			25
+> +#define	WCD9335_IRQ_MAD_ULTRASOUND		26
+> +#define	WCD9335_IRQ_VBAT_ATTACK			27
+> +#define	WCD9335_IRQ_VBAT_RESTORE		28
+> +#define	WCD9335_IRQ_SVA_OUTBOX1			29
+> +#define	WCD9335_IRQ_SVA_OUTBOX2			30
+> +
+> +#endif /* _DT_BINDINGS_MFD_WCD9335_H */
+> diff --git a/include/linux/mfd/wcd9335/wcd9335.h b/include/linux/mfd/wcd9335/wcd9335.h
+> index b9d2f7af243a..1479bfe75f23 100644
+> --- a/include/linux/mfd/wcd9335/wcd9335.h
+> +++ b/include/linux/mfd/wcd9335/wcd9335.h
+> @@ -39,4 +39,7 @@ struct wcd9335 {
+>  	struct regulator_bulk_data supplies[WCD9335_MAX_SUPPLY];
+>  };
+>  
+> +extern int wcd9335_irq_init(struct wcd9335 *wcd);
+> +extern int wcd9335_irq_exit(struct wcd9335 *wcd);
+> +
+>  #endif /* __WCD9335_H__ */
+
+-- 
+Lee Jones [李琼斯]
+Linaro Services Technical Lead
+Linaro.org │ Open source software for ARM SoCs
+Follow Linaro: Facebook | Twitter | Blog
