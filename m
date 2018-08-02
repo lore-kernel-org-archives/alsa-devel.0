@@ -1,46 +1,107 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: Applied "ASoC: wcd9335: add support to wcd9335
- codec" to the asoc tree
-Date: Thu, 2 Aug 2018 07:32:26 +0100
-Message-ID: <20180802063226.GK4662@dell>
-References: <20180801112011.33C511124241@debutante.sirena.org.uk>
- <2b90faa5-6fd9-f769-183e-23cb59bf460e@linaro.org>
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Subject: [PATCH 1/3] ASoC: AMD: Make ACP->SYSMEM DMA non circular
+Date: Thu,  2 Aug 2018 12:11:54 +0530
+Message-ID: <1533192134-11626-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 823D12676E2
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 08:32:29 +0200 (CEST)
-Received: by mail-wm0-f43.google.com with SMTP id f21-v6so1117690wmc.5
- for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2018 23:32:29 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <2b90faa5-6fd9-f769-183e-23cb59bf460e@linaro.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: djkurtz@chromium.org, akshu.agrawal@amd.com, Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC
+        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAwMSBBdWcgMjAxOCwgU3Jpbml2YXMgS2FuZGFnYXRsYSB3cm90ZToKCj4gSGkgTWFy
-aywKPiAKPiBPbiAwMS8wOC8xOCAxMjoyMCwgTWFyayBCcm93biB3cm90ZToKPiA+ICsjaW5jbHVk
-ZSA8c291bmQvc29jLmg+Cj4gPiArI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KPiA+ICsj
-aW5jbHVkZSA8c291bmQvc29jLWRhcG0uaD4KPiA+ICsjaW5jbHVkZSA8c291bmQvdGx2Lmg+Cj4g
-PiArI2luY2x1ZGUgPHNvdW5kL2luZm8uaD4KPiA+ICsjaW5jbHVkZSA8ZHQtYmluZGluZ3MvbWZk
-L3djZDkzMzUuaD4KPiA+ICsjaW5jbHVkZSA8bGludXgvbWZkL3djZDkzMzUvd2NkOTMzNS5oPgo+
-ID4gKyNpbmNsdWRlIDxsaW51eC9tZmQvd2NkOTMzNS9yZWdpc3RlcnMuaD4KPiAKPiBXaXRob3V0
-IHRoZSAiW1BBVENIIHYyIDAyLzEwXSBtZmQ6IHdjZDkzMzU6IGFkZCBzdXBwb3J0IHRvIHdjZDkz
-MzUgY29yZSIgSXQKPiB3b3VsZCBicmVhayB0aGUgYnVpbGQuCgpUaGlzIGZpbGUgc2hvdWxkIG5v
-dCBiZSBidWlsdCB3aXRob3V0IDAyLzEwLgoKLS0gCkxlZSBKb25lcyBb5p2O55C85pavXQpMaW5h
-cm8gU2VydmljZXMgVGVjaG5pY2FsIExlYWQKTGluYXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29m
-dHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJs
-b2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+In capture case we don't want ACP to SYSMEM dma
+to be circular. This is because if an in place DSP
+filter is applied to captured output then circular DMA
+can overwrite the filter value with stale data.
+
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+ sound/soc/amd/acp-pcm-dma.c | 36 +++++++++++++++++++++++++++++++-----
+ 1 file changed, 31 insertions(+), 5 deletions(-)
+
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 94bcf69..816abd6 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -400,7 +400,7 @@ static void acp_dma_cap_channel_disable(void __iomem *acp_mmio,
+ }
+ 
+ /* Start a given DMA channel transfer */
+-static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
++static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num, bool is_circular)
+ {
+ 	u32 dma_ctrl;
+ 
+@@ -429,8 +429,11 @@ static void acp_dma_start(void __iomem *acp_mmio, u16 ch_num)
+ 		break;
+ 	}
+ 
+-	/* circular for both DMA channel */
+-	dma_ctrl |= ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
++	/* enable for ACP to SRAM DMA channel */
++	if (is_circular == true)
++		dma_ctrl |= ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
++	else
++		dma_ctrl &= ~ACP_DMA_CNTL_0__Circular_DMA_En_MASK;
+ 
+ 	acp_reg_write(dma_ctrl, acp_mmio, mmACP_DMA_CNTL_0 + ch_num);
+ }
+@@ -674,6 +677,7 @@ static int acp_deinit(void __iomem *acp_mmio)
+ /* ACP DMA irq handler routine for playback, capture usecases */
+ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ {
++	u16 dscr_idx;
+ 	u32 intr_flag, ext_intr_status;
+ 	struct audio_drv_data *irq_data;
+ 	void __iomem *acp_mmio;
+@@ -705,6 +709,15 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ 
+ 	if ((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) != 0) {
+ 		valid_irq = true;
++		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_14) ==
++				CAPTURE_START_DMA_DESCR_CH15)
++			dscr_idx = CAPTURE_END_DMA_DESCR_CH14;
++		else
++			dscr_idx = CAPTURE_START_DMA_DESCR_CH14;
++		config_acp_dma_channel(acp_mmio, ACP_TO_SYSRAM_CH_NUM, dscr_idx,
++				       1, 0);
++		acp_dma_start(acp_mmio, ACP_TO_SYSRAM_CH_NUM, false);
++
+ 		snd_pcm_period_elapsed(irq_data->capture_i2ssp_stream);
+ 		acp_reg_write((intr_flag & BIT(I2S_TO_ACP_DMA_CH_NUM)) << 16,
+ 			      acp_mmio, mmACP_EXTERNAL_INTR_STAT);
+@@ -712,6 +725,17 @@ static irqreturn_t dma_irq_handler(int irq, void *arg)
+ 
+ 	if ((intr_flag & BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) != 0) {
+ 		valid_irq = true;
++		if (acp_reg_read(acp_mmio, mmACP_DMA_CUR_DSCR_10) ==
++			CAPTURE_START_DMA_DESCR_CH11)
++			dscr_idx = CAPTURE_END_DMA_DESCR_CH10;
++		else
++			dscr_idx = CAPTURE_START_DMA_DESCR_CH10;
++		config_acp_dma_channel(acp_mmio,
++				       ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM,
++				       dscr_idx, 1, 0);
++		acp_dma_start(acp_mmio, ACP_TO_SYSRAM_BT_INSTANCE_CH_NUM,
++			      false);
++
+ 		snd_pcm_period_elapsed(irq_data->capture_i2sbt_stream);
+ 		acp_reg_write((intr_flag &
+ 			      BIT(I2S_TO_ACP_DMA_BT_INSTANCE_CH_NUM)) << 16,
+@@ -1053,9 +1077,11 @@ static int acp_dma_trigger(struct snd_pcm_substream *substream, int cmd)
+ 				acp_dma_cap_channel_enable(rtd->acp_mmio,
+ 							   CAP_CHANNEL1);
+ 			}
++			acp_dma_start(rtd->acp_mmio, rtd->ch1, true);
++		} else {
++			acp_dma_start(rtd->acp_mmio, rtd->ch1, true);
++			acp_dma_start(rtd->acp_mmio, rtd->ch2, true);
+ 		}
+-		acp_dma_start(rtd->acp_mmio, rtd->ch1);
+-		acp_dma_start(rtd->acp_mmio, rtd->ch2);
+ 		ret = 0;
+ 		break;
+ 	case SNDRV_PCM_TRIGGER_STOP:
+-- 
+1.9.1
