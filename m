@@ -1,257 +1,113 @@
-From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: [PATCH v2 03/10] mfd: wcd9335: add wcd irq support
-Date: Thu, 2 Aug 2018 09:05:25 +0100
-Message-ID: <20180802080525.GM4662@dell>
-References: <20180727121806.18209-1-srinivas.kandagatla@linaro.org>
- <20180727121806.18209-4-srinivas.kandagatla@linaro.org>
+From: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
+Subject: Re: A bug about cache inconsistency report
+Date: Thu, 2 Aug 2018 08:22:29 +0000
+Message-ID: <12ceb41dedc54433bc7331f4378af9ba@zhaoxin.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180727121806.18209-4-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, tiwai@suse.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from ZXSHCAS2.zhaoxin.com (unknown [203.148.12.82])
+ by alsa0.perex.cz (Postfix) with ESMTP id BC6E32677C9
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 10:22:36 +0200 (CEST)
+Content-Language: zh-CN
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, 27 Jul 2018, Srinivas Kandagatla wrote:
-
-> WCD9335 supports two lines of irqs INTR1 and INTR2.
-> Multiple interrupts are muxed via these lines.
-> INTR1 consists of all possible interrupt sources like:
-> Ear OCP, HPH OCP, MBHC, MAD, VBAT, and SVA
-> INTR2 is a subset of first interrupt sources like MAD, VBAT, and SVA
-> 
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  drivers/mfd/Makefile                |   2 +-
->  drivers/mfd/wcd9335-core.c          |   9 ++
->  drivers/mfd/wcd9335-irq.c           | 172 ++++++++++++++++++++++++++++++++++++
-
-Any particular reason for separating out IRQ handling?
-
->  include/dt-bindings/mfd/wcd9335.h   |  43 +++++++++
->  include/linux/mfd/wcd9335/wcd9335.h |   3 +
->  5 files changed, 228 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/mfd/wcd9335-irq.c
->  create mode 100644 include/dt-bindings/mfd/wcd9335.h
-> 
-> diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-> index a4697370640b..210875afe78a 100644
-> --- a/drivers/mfd/Makefile
-> +++ b/drivers/mfd/Makefile
-> @@ -58,7 +58,7 @@ obj-$(CONFIG_MFD_ARIZONA)	+= cs47l24-tables.o
->  endif
->  
->  obj-$(CONFIG_MFD_WCD9335)	+= wcd9335.o
-> -wcd9335-objs			:= wcd9335-core.o
-> +wcd9335-objs			:= wcd9335-core.o wcd9335-irq.o
->  
->  obj-$(CONFIG_MFD_WM8400)	+= wm8400-core.o
->  wm831x-objs			:= wm831x-core.o wm831x-irq.o wm831x-otp.o
-> diff --git a/drivers/mfd/wcd9335-core.c b/drivers/mfd/wcd9335-core.c
-> index 8f746901f4e9..6299dfb63aca 100644
-> --- a/drivers/mfd/wcd9335-core.c
-> +++ b/drivers/mfd/wcd9335-core.c
-> @@ -243,12 +243,20 @@ static int wcd9335_slim_status(struct slim_device *sdev,
->  		return ret;
->  	}
->  
-> +	wcd9335_irq_init(wcd);
-
-Why don't you check the return value?
-
-What happens if it defers?
-
->  	wcd->slim_ifd = wcd->slim_ifd;
->  
->  	return mfd_add_devices(wcd->dev, 0, wcd9335_devices,
->  			       ARRAY_SIZE(wcd9335_devices), NULL, 0, NULL);
->  }
->  
-> +static void wcd9335_slim_remove(struct slim_device *sdev)
-> +{
-> +	struct wcd9335 *wcd = dev_get_drvdata(&sdev->dev);
-> +
-> +	wcd9335_irq_exit(wcd);
-> +}
-> +
->  static const struct slim_device_id wcd9335_slim_id[] = {
->  	{0x217, 0x1a0, 0x1, 0x0},
->  	{}
-> @@ -259,6 +267,7 @@ static struct slim_driver wcd9335_slim_driver = {
->  		.name = "wcd9335-slim",
->  	},
->  	.probe = wcd9335_slim_probe,
-> +	.remove = wcd9335_slim_remove,
->  	.device_status = wcd9335_slim_status,
->  	.id_table = wcd9335_slim_id,
->  };
-> diff --git a/drivers/mfd/wcd9335-irq.c b/drivers/mfd/wcd9335-irq.c
-> new file mode 100644
-> index 000000000000..84098c89419b
-> --- /dev/null
-> +++ b/drivers/mfd/wcd9335-irq.c
-> @@ -0,0 +1,172 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright (c) 2018, Linaro Limited
-> +//
-
-Blank line?
-
-> +#include <linux/gpio.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/regmap.h>
-> +#include <linux/of_irq.h>
-> +#include <dt-bindings/mfd/wcd9335.h>
-> +#include <linux/mfd/wcd9335/wcd9335.h>
-> +#include <linux/mfd/wcd9335/registers.h>
-
-Please place in alphabetical order.
-
-> +static const struct regmap_irq wcd9335_irqs[] = {
-> +	/* INTR_REG 0 */
-> +	[WCD9335_IRQ_SLIMBUS] = {
-> +		.reg_offset = 0,
-> +		.mask = BIT(0),
-> +	},
-
-[snipped approx 1,000,000 entries]
-
-> +	[WCD9335_IRQ_SVA_OUTBOX2] = {
-> +		.reg_offset = 3,
-> +		.mask = BIT(6),
-> +	},
-> +};
-
-Please use REGMAP_IRQ_REG() to significantly reduce the diff.
-
-> +static const struct regmap_irq_chip wcd9335_regmap_irq1_chip = {
-> +	.name = "wcd9335_pin1_irq",
-> +	.status_base = WCD9335_INTR_PIN1_STATUS0,
-> +	.mask_base = WCD9335_INTR_PIN1_MASK0,
-> +	.ack_base = WCD9335_INTR_PIN1_CLEAR0,
-> +	.type_base = WCD9335_INTR_LEVEL0,
-> +	.num_regs = 4,
-> +	.irqs = wcd9335_irqs,
-> +	.num_irqs = ARRAY_SIZE(wcd9335_irqs),
-> +};
-> +
-> +int wcd9335_irq_init(struct wcd9335 *wcd)
-> +{
-> +	int ret;
-
-'\n' here.
-
-> +	/*
-> +	 * INTR1 consists of all possible interrupt sources Ear OCP,
-> +	 * HPH OCP, MBHC, MAD, VBAT, and SVA
-> +	 * INTR2 is a subset of first interrupt sources MAD, VBAT, and SVA
-> +	 */
-> +	wcd->intr1 = of_irq_get_byname(wcd->dev->of_node, "intr1");
-> +	if (wcd->intr1 < 0 || wcd->intr1 == -EPROBE_DEFER) {
-> +		dev_err(wcd->dev, "Unable to configure irq\n");
-
-Nit: s/irq/IRQ/
-
-Do you really want to issue an error message for -EPROBE_DEFER?
-
-This maybe confusing if it is initiated later.
-
-> +		return wcd->intr1;
-> +	}
-> +
-> +	ret = regmap_add_irq_chip(wcd->regmap, wcd->intr1,
-> +				 IRQF_TRIGGER_HIGH | IRQF_ONESHOT,
-> +				 0, &wcd9335_regmap_irq1_chip,
-> +				 &wcd->irq_data);
-> +	if (ret != 0) {
-
-"if (ret)"
-
-> +		dev_err(wcd->dev, "Failed to register IRQ chip: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +int wcd9335_irq_exit(struct wcd9335 *wcd)
-> +{
-> +	regmap_del_irq_chip(wcd->intr1, wcd->irq_data);
-
-'\n' here.
-
-> +	return 0;
-> +}
-
-Or better still, make this a void and remove the superfluous return.
-
-> diff --git a/include/dt-bindings/mfd/wcd9335.h b/include/dt-bindings/mfd/wcd9335.h
-> new file mode 100644
-> index 000000000000..61b6a11da00d
-> --- /dev/null
-> +++ b/include/dt-bindings/mfd/wcd9335.h
-> @@ -0,0 +1,43 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * This header provides macros for WCD9335 device bindings.
-> + *
-> + * Copyright (c) 2018, Linaro Limited
-> + */
-> +
-> +#ifndef _DT_BINDINGS_MFD_WCD9335_H
-> +#define _DT_BINDINGS_MFD_WCD9335_H
-> +
-> +#define	WCD9335_IRQ_SLIMBUS			0
-> +#define	WCD9335_IRQ_FLL_LOCK_LOSS		1
-> +#define	WCD9335_IRQ_HPH_PA_OCPL_FAULT		2
-> +#define	WCD9335_IRQ_HPH_PA_OCPR_FAULT		3
-> +#define	WCD9335_IRQ_EAR_PA_OCP_FAULT		4
-> +#define	WCD9335_IRQ_HPH_PA_CNPL_COMPLETE	5
-> +#define	WCD9335_IRQ_HPH_PA_CNPR_COMPLETE	6
-> +#define	WCD9335_IRQ_EAR_PA_CNP_COMPLETE		7
-> +#define	WCD9335_IRQ_MBHC_SW_DET			8
-> +#define	WCD9335_IRQ_MBHC_ELECT_INS_REM_DET	9
-> +#define	WCD9335_IRQ_MBHC_BUTTON_PRESS_DET	10
-> +#define	WCD9335_IRQ_MBHC_BUTTON_RELEASE_DET	11
-> +#define	WCD9335_IRQ_MBHC_ELECT_INS_REM_LEG_DET	12
-> +#define	WCD9335_IRQ_RESERVED_0			13
-> +#define	WCD9335_IRQ_RESERVED_1			14
-> +#define	WCD9335_IRQ_RESERVED_2			15
-> +#define	WCD9335_IRQ_LINE_PA1_CNP_COMPLETE	16
-> +#define	WCD9335_IRQ_LINE_PA2_CNP_COMPLETE	17
-> +#define	WCD9335_IRQ_LINE_PA3_CNP_COMPLETE	18
-> +#define	WCD9335_IRQ_LINE_PA4_CNP_COMPLETE	19
-> +#define	WCD9335_IRQ_SOUNDWIRE			20
-> +#define	WCD9335_IRQ_VDD_DIG_RAMP_COMPLETE	21
-> +#define	WCD9335_IRQ_RCO_ERROR			22
-> +#define	WCD9335_IRQ_SVA_ERROR			23
-> +#define	WCD9335_IRQ_MAD_AUDIO			24
-> +#define	WCD9335_IRQ_MAD_BEACON			25
-> +#define	WCD9335_IRQ_MAD_ULTRASOUND		26
-> +#define	WCD9335_IRQ_VBAT_ATTACK			27
-> +#define	WCD9335_IRQ_VBAT_RESTORE		28
-> +#define	WCD9335_IRQ_SVA_OUTBOX1			29
-> +#define	WCD9335_IRQ_SVA_OUTBOX2			30
-> +
-> +#endif /* _DT_BINDINGS_MFD_WCD9335_H */
-> diff --git a/include/linux/mfd/wcd9335/wcd9335.h b/include/linux/mfd/wcd9335/wcd9335.h
-> index b9d2f7af243a..1479bfe75f23 100644
-> --- a/include/linux/mfd/wcd9335/wcd9335.h
-> +++ b/include/linux/mfd/wcd9335/wcd9335.h
-> @@ -39,4 +39,7 @@ struct wcd9335 {
->  	struct regulator_bulk_data supplies[WCD9335_MAX_SUPPLY];
->  };
->  
-> +extern int wcd9335_irq_init(struct wcd9335 *wcd);
-> +extern int wcd9335_irq_exit(struct wcd9335 *wcd);
-> +
->  #endif /* __WCD9335_H__ */
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+MS4gbm9pc2UgcmVsYXRlIHRlc3Q6DQo4MDg2OjFDMjAgICBub2lzZSA7DQo4MDg2OkExNzAgICBv
+azsNCjgwODY6OEQyMCAgIG9rOw0KU2VlbXMgdGhpcyBpc3N1ZSByZWxhdGVkIHRvIHRoZSBIREEg
+Q2FyZCB2ZXJzaW9uDQoNCjIuIGNoYW5nZSAqX1NHIHJlbGF0ZSB0ZXN0Og0KQm90aCBhYm92ZSBw
+bGF0Zm9ybSByZXBvcnQgT29wcw0KDQpUaGFua3MNCkhhbnMNCg0KLS0tLS3pgq7ku7bljp/ku7Yt
+LS0tLQ0K5Y+R5Lu25Lq6OiBUYWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0K5Y+R
+6YCB5pe26Ze0OiAwMSBBdWd1c3QgMjAxOCAxMjo0NQ0K5pS25Lu25Lq6OiBIYW5zIEh1KFNILVJE
+KSA8SGFuc0h1QHpoYW94aW4uY29tPg0K5oqE6YCBOiAnYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnJyA8YWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnPg0K5Li76aKYOiBSZTogW2Fsc2EtZGV2
+ZWxdIEEgYnVnIGFib3V0IGNhY2hlIGluY29uc2lzdGVuY3kgcmVwb3J0DQoNCk9uIFdlZCwgMDEg
+QXVnIDIwMTggMDQ6MDU6MTggKzAyMDAsDQpIYW5zIEh1KFNILVJEKSB3cm90ZToNCj4NCj4gSSBk
+aWQgbW9yZSB0ZXN0IGJhc2Ugb24gZGlmZmVyZW50IEludGVsIHBsYXRmb3JtLCBhbmQgcmVzdWx0
+IGlzIHRoZSBzYW1lLg0KDQpXaGljaCBwbGF0Zm9ybSBkaWQgeW91IHRlc3QgZXhhY3RseT8NCg0K
+PiBNYXliZSBJIG1hZGUgc29tZSBtaXN0YWtlPyBDYW4geW91IGRvIHRoZSB0ZXN0IGluIHlvdXJz
+ICBwbGF0Zm9ybT8NCg0KVGhlIG5lZ2F0aXZlIHRlc3QgcmVzdWx0IGltcGxpZXMgdGhhdCB0aGUg
+YW5hbHlzaXMgaXNuJ3QgcmlnaHQuDQpBY3R1YWxseSBJIGhhdmVuJ3Qgc2VlbiB0aGF0IHByb2Js
+ZW0gb24gbXkgdGVzdCBtYWNoaW5lcy4NCg0KQlRXLCBwbGVhc2UgYXZvaWQgdG9wLXBvc3Rpbmcu
+DQoNCg0KdGhhbmtzLA0KDQpUYWthc2hpDQoNCj4NCj4gVGhhbmsgeW91IQ0KPiBIYW5zDQo+DQo+
+IC0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCj4g5Y+R5Lu25Lq6OiBUYWthc2hpIEl3YWkgW21haWx0
+bzp0aXdhaUBzdXNlLmRlXQ0KPiDlj5HpgIHml7bpl7Q6IDMxIEp1bHkgMjAxOCAyMTo1NQ0KPiDm
+lLbku7bkuro6IEhhbnMgSHUoU0gtUkQpIDxIYW5zSHVAemhhb3hpbi5jb20+DQo+IOaKhOmAgTog
+J2Fsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZycgPGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9y
+Zz4NCj4g5Li76aKYOiBSZTog562U5aSNOiBbYWxzYS1kZXZlbF0gQSBidWcgYWJvdXQgY2FjaGUg
+aW5jb25zaXN0ZW5jeSByZXBvcnQNCj4NCj4gT24gVHVlLCAzMSBKdWwgMjAxOCAxNTo1MTowNiAr
+MDIwMCwNCj4gSGFucyBIdShTSC1SRCkgd3JvdGU6DQo+ID4NCj4gPiBJIGRpZCB0aGUgdGVzdCBh
+bmQgT29wcyByZXBvcnQgd2hlbiBpbnN0YWxsIGRyaXZlciggYm90aCBzbm9vcCBhbmQNCj4gPiBu
+b24tc25vb3AgbW9kZSkNCj4NCj4gSSBkb24ndCB1bmRlcnN0YW5kLiAgRGlkIG15IG9uZS1saW5l
+ciBjaGFuZ2UgdGhlIGJlaGF2aW9yIG9yIG5vdD8NCj4NCj4NCj4gdGhhbmtzLA0KPg0KPiBUYWth
+c2hpDQo+DQo+ID4NCj4gPiAtLS0tLemCruS7tuWOn+S7ti0tLS0tDQo+ID4g5Y+R5Lu25Lq6OiBU
+YWthc2hpIEl3YWkgW21haWx0bzp0aXdhaUBzdXNlLmRlXQ0KPiA+IOWPkemAgeaXtumXtDogMzEg
+SnVseSAyMDE4IDE5OjU5DQo+ID4g5pS25Lu25Lq6OiBIYW5zIEh1KFNILVJEKSA8SGFuc0h1QHpo
+YW94aW4uY29tPg0KPiA+IOaKhOmAgTogJ2Fsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZycgPGFs
+c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4NCj4gPiDkuLvpopg6IFJlOiBbYWxzYS1kZXZlbF0g
+QSBidWcgYWJvdXQgY2FjaGUgaW5jb25zaXN0ZW5jeSByZXBvcnQNCj4gPg0KPiA+IE9uIFR1ZSwg
+MzEgSnVsIDIwMTggMTI6NTI6MDQgKzAyMDAsDQo+ID4gSGFucyBIdShTSC1SRCkgd3JvdGU6DQo+
+ID4gPg0KPiA+ID4gSGkgQWxsLA0KPiA+ID4NCj4gPiA+ICAgICAgICAgICAgICAgIFRyeSBzZW5k
+IGFuIGVtYWlsLg0KPiA+ID4NCj4gPiA+ICAgICAgICAgICAgICAgIEFwcGVhcmFuY2U6DQo+ID4g
+PiB3aGVuIHVzZSBub24tc25vb3AgKyBpb2N0bCBwYXRoIGNvbWJpbmF0aW9uLCBhbiBpc3N1ZSBv
+Y2N1cnM6DQo+ID4gPiB1c2FnZTogYXBsYXkgLUQgcGx1Z2h3OjAsMCA0NDEwMF9TMTZfTEVfMmMu
+d2F2IFVidW50dSwgaXQNCj4gPiA+IHBlcmZvcm1hbmNlIGludGVybWl0dGVudGx5IG5vaXNlOw0K
+PiA+ID4NCj4gPiA+IFJvb3QgY2FzZToNCj4gPiA+ICAgICAgICAgICAgICAgIEZ1bmN0aW9uIHNl
+dF9wYWdlc19hcnJheV93YyBtYXJrZWQgdGhlIFBURSBvZiB0aGUgb3JpZ2luYWwgYWRkcmVzczsg
+RnVuY3Rpb24gc2V0X21lbW9yeV93YyBtYXJrZWQgdGhlIFBURSBib3RoIG9yaWdpbmFsIGFuZCBh
+ZnRlciB2bWFwZWQgYWRkcmVzcy4NCj4gPiA+IFtjaWQ6aW1hZ2UwMDIucG5nQDAxRDQyOEZGLjky
+NjIxNTIwXQ0KPiA+ID4gSG93ZXZlciwgY2FjaGUgb3Igbm90IGluIHRyYW5zbWlzc2lvbiBwcm9j
+ZXNzIGlzIGJhc2VkIG9uIHRoZSBQVEUgb2YgdGhlIGxhdGVyLCBhbmQgdGhlIHNldF9wYWdlc19h
+cnJheV93YyBkaWQndCBtYXJrIGl0LCBzbyBhIGNhY2hlIGluY29uc2lzdGVuY3kgaXNzdWUgb2Nj
+dXJzLg0KPiA+ID4NCj4gPiA+ICAgICAgICAgICAgICAgIFJlbGF0ZWQgYnVnOg0KPiA+ID4gICAg
+ICAgICAgICAgICAgU0hBMSBJRDogOWRkZjFhZWIyMTM0ZTcyMjc1Yzk3YTJjNmZmMmUzZWIwNGYy
+ZjI3YQ0KPiA+DQo+ID4gT0ssIHNvIGRpZCB5b3UgY29uZmlybSB0aGF0IGRyb3BwaW5nIHRoZSBT
+RyBidWZmZXIgc3VwcG9ydCAiZml4ZXMiIHRoZSBub2lzZSBwcm9ibGVtIG9uIHlvdXIgc3lzdGVt
+PyAgVGhlIGVhc2llc3QgdGVzdCB3b3VsZCBiZSBsaWtlOg0KPiA+DQo+ID4gLS0tIGEvc291bmQv
+cGNpL2hkYS9oZGFfY29udHJvbGxlci5jDQo+ID4gKysrIGIvc291bmQvcGNpL2hkYS9oZGFfY29u
+dHJvbGxlci5jDQo+ID4gQEAgLTc3MCw3ICs3NzAsNyBAQCBpbnQgc25kX2hkYV9hdHRhY2hfcGNt
+X3N0cmVhbShzdHJ1Y3QgaGRhX2J1cw0KPiA+ICpfYnVzLCBzdHJ1Y3QgaGRhX2NvZGVjICpjb2Rl
+YywgIHNpemUgPSBDT05GSUdfU05EX0hEQV9QUkVBTExPQ19TSVpFDQo+ID4gKiAxMDI0OyAgaWYg
+KHNpemUgPiBNQVhfUFJFQUxMT0NfU0laRSkgIHNpemUgPSBNQVhfUFJFQUxMT0NfU0laRTsNCj4g
+PiAtc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXNfZm9yX2FsbChwY20sIFNORFJWX0RNQV9U
+WVBFX0RFVl9TRywNCj4gPiArc25kX3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXNfZm9yX2FsbChw
+Y20sIFNORFJWX0RNQV9UWVBFX0RFViwNCj4gPiAgICAgICAgY2hpcC0+Y2FyZC0+ZGV2LA0KPiA+
+ICAgICAgICBzaXplLCBNQVhfUFJFQUxMT0NfU0laRSk7DQo+ID4gIHJldHVybiAwOw0KPiA+DQo+
+ID4NCj4gPiB0aGFua3MsDQo+ID4NCj4gPiBUYWthc2hpDQo+ID4NCj4gPg0KPiA+IOS/neWvhuWj
+sOaYju+8mg0KPiA+IOacrOmCruS7tuWQq+acieS/neWvhuaIluS4k+acieS/oeaBr++8jOS7heS+
+m+aMh+WumuaUtuS7tuS6uuS9v+eUqOOAguS4peemgeWvueacrOmCruS7tuaIluWFtuWGheWuueWB
+muS7u+S9leacque7j+aOiOadg+eahOafpemYheOAgeS9v+eUqOOAgeWkjeWItuaIlui9rOWPkeOA
+gg0KPiA+IENPTkZJREVOVElBTCBOT1RFOg0KPiA+IFRoaXMgZW1haWwgY29udGFpbnMgY29uZmlk
+ZW50aWFsIG9yIGxlZ2FsbHkgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiBhbmQgaXMgZm9yIHRoZSBz
+b2xlIHVzZSBvZiBpdHMgaW50ZW5kZWQgcmVjaXBpZW50LiBBbnkgdW5hdXRob3JpemVkIHJldmll
+dywgdXNlLCBjb3B5aW5nIG9yIGZvcndhcmRpbmcgb2YgdGhpcyBlbWFpbCBvciB0aGUgY29udGVu
+dCBvZiB0aGlzIGVtYWlsIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuDQo+DQo+DQo+IOS/neWvhuWj
+sOaYju+8mg0KPiDmnKzpgq7ku7blkKvmnInkv53lr4bmiJbkuJPmnInkv6Hmga/vvIzku4Xkvpvm
+jIflrprmlLbku7bkurrkvb/nlKjjgILkuKXnpoHlr7nmnKzpgq7ku7bmiJblhbblhoXlrrnlgZrk
+u7vkvZXmnKrnu4/mjojmnYPnmoTmn6XpmIXjgIHkvb/nlKjjgIHlpI3liLbmiJbovazlj5HjgIIN
+Cj4gQ09ORklERU5USUFMIE5PVEU6DQo+IFRoaXMgZW1haWwgY29udGFpbnMgY29uZmlkZW50aWFs
+IG9yIGxlZ2FsbHkgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiBhbmQgaXMgZm9yIHRoZSBzb2xlIHVz
+ZSBvZiBpdHMgaW50ZW5kZWQgcmVjaXBpZW50LiBBbnkgdW5hdXRob3JpemVkIHJldmlldywgdXNl
+LCBjb3B5aW5nIG9yIGZvcndhcmRpbmcgb2YgdGhpcyBlbWFpbCBvciB0aGUgY29udGVudCBvZiB0
+aGlzIGVtYWlsIGlzIHN0cmljdGx5IHByb2hpYml0ZWQuDQoNCg0K5L+d5a+G5aOw5piO77yaDQrm
+nKzpgq7ku7blkKvmnInkv53lr4bmiJbkuJPmnInkv6Hmga/vvIzku4XkvpvmjIflrprmlLbku7bk
+urrkvb/nlKjjgILkuKXnpoHlr7nmnKzpgq7ku7bmiJblhbblhoXlrrnlgZrku7vkvZXmnKrnu4/m
+jojmnYPnmoTmn6XpmIXjgIHkvb/nlKjjgIHlpI3liLbmiJbovazlj5HjgIINCkNPTkZJREVOVElB
+TCBOT1RFOg0KVGhpcyBlbWFpbCBjb250YWlucyBjb25maWRlbnRpYWwgb3IgbGVnYWxseSBwcml2
+aWxlZ2VkIGluZm9ybWF0aW9uIGFuZCBpcyBmb3IgdGhlIHNvbGUgdXNlIG9mIGl0cyBpbnRlbmRl
+ZCByZWNpcGllbnQuIEFueSB1bmF1dGhvcml6ZWQgcmV2aWV3LCB1c2UsIGNvcHlpbmcgb3IgZm9y
+d2FyZGluZyBvZiB0aGlzIGVtYWlsIG9yIHRoZSBjb250ZW50IG9mIHRoaXMgZW1haWwgaXMgc3Ry
+aWN0bHkgcHJvaGliaXRlZC4NCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0
+Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxz
+YS1kZXZlbAo=
