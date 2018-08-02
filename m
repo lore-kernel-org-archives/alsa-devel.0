@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8995: Mark expected switch
+Subject: Applied "ASoC: wm8962: Mark expected switch
 	fall-through" to the asoc tree
-Date: Thu,  2 Aug 2018 11:10:55 +0100 (BST)
-Message-ID: <20180802101055.E8C6D1124241@debutante.sirena.org.uk>
-References: <b2976350f2da42abc47181ccab097c8da856db87.1533151956.git.gustavo@embeddedor.com>
+Date: Thu,  2 Aug 2018 11:11:04 +0100 (BST)
+Message-ID: <20180802101104.D6F891124241@debutante.sirena.org.uk>
+References: <fe496d04e294d9dd6b5839bbba49c706e58e4cb7.1533151956.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 69E3A2677E3
- for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:10:56 +0200 (CEST)
-In-Reply-To: <b2976350f2da42abc47181ccab097c8da856db87.1533151956.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B255A2677F7
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 12:11:05 +0200 (CEST)
+In-Reply-To: <fe496d04e294d9dd6b5839bbba49c706e58e4cb7.1533151956.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8995: Mark expected switch fall-through
+   ASoC: wm8962: Mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From af5d1d5d4ba71164711025e077511ad48d5690e9 Mon Sep 17 00:00:00 2001
+>From a9531ab151117e976544e0dc74a9bc8cbd01145f Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Wed, 1 Aug 2018 14:54:45 -0500
-Subject: [PATCH] ASoC: wm8995: Mark expected switch fall-through
+Date: Wed, 1 Aug 2018 14:54:03 -0500
+Subject: [PATCH] ASoC: wm8962: Mark expected switch fall-through
 
 In preparation to enabling -Wimplicit-fallthrough, mark switch cases
 where we are expecting to fall through.
 
-Addresses-Coverity-ID: 115045 ("Missing break in switch")
+Addresses-Coverity-ID: 115043 ("Missing break in switch")
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8995.c | 1 +
+ sound/soc/codecs/wm8962.c | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm8995.c b/sound/soc/codecs/wm8995.c
-index 60e227832331..68c99fe37097 100644
---- a/sound/soc/codecs/wm8995.c
-+++ b/sound/soc/codecs/wm8995.c
-@@ -1465,6 +1465,7 @@ static int wm8995_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/codecs/wm8962.c b/sound/soc/codecs/wm8962.c
+index a11e9d6bf950..efd8910b1ff7 100644
+--- a/sound/soc/codecs/wm8962.c
++++ b/sound/soc/codecs/wm8962.c
+@@ -2649,6 +2649,7 @@ static int wm8962_set_dai_fmt(struct snd_soc_dai *dai, unsigned int fmt)
  	switch (fmt & SND_SOC_DAIFMT_FORMAT_MASK) {
  	case SND_SOC_DAIFMT_DSP_B:
- 		aif |= WM8995_AIF1_LRCLK_INV;
+ 		aif0 |= WM8962_LRCLK_INV | 3;
 +		/* fall through */
  	case SND_SOC_DAIFMT_DSP_A:
- 		aif |= (0x3 << WM8995_AIF1_FMT_SHIFT);
- 		break;
+ 		aif0 |= 3;
+ 
 -- 
 2.18.0
