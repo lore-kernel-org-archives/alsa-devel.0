@@ -1,52 +1,46 @@
 From: Lee Jones <lee.jones@linaro.org>
-Subject: Re: Applied "ASoC: wcd9335: add CLASS-H Controller support" to the
- asoc tree
-Date: Thu, 2 Aug 2018 07:31:30 +0100
-Message-ID: <20180802063130.GJ4662@dell>
-References: <20180801112000.DC6B51124241@debutante.sirena.org.uk>
- <d7c2e466-9f60-9347-bc62-7ed0dc3df91b@linaro.org>
+Subject: Re: Applied "ASoC: wcd9335: add support to wcd9335
+ codec" to the asoc tree
+Date: Thu, 2 Aug 2018 07:32:26 +0100
+Message-ID: <20180802063226.GK4662@dell>
+References: <20180801112011.33C511124241@debutante.sirena.org.uk>
+ <2b90faa5-6fd9-f769-183e-23cb59bf460e@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wm0-f43.google.com (mail-wm0-f43.google.com [74.125.82.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 823D12676E2
+ for <alsa-devel@alsa-project.org>; Thu,  2 Aug 2018 08:32:29 +0200 (CEST)
+Received: by mail-wm0-f43.google.com with SMTP id f21-v6so1117690wmc.5
+ for <alsa-devel@alsa-project.org>; Wed, 01 Aug 2018 23:32:29 -0700 (PDT)
 Content-Disposition: inline
-In-Reply-To: <d7c2e466-9f60-9347-bc62-7ed0dc3df91b@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <2b90faa5-6fd9-f769-183e-23cb59bf460e@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: Mark Brown <broonie@kernel.org>, robh+dt@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, robh+dt@kernel.org, lgirdwood@gmail.com, vkoul@kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, 01 Aug 2018, Srinivas Kandagatla wrote:
-
-> Hi Mark,
-> 
-> On 01/08/18 12:20, Mark Brown wrote:
-> >   snd-soc-wm0010-objs := wm0010.o
-> > diff --git a/sound/soc/codecs/wcd-clsh.c b/sound/soc/codecs/wcd-clsh.c
-> > new file mode 100644
-> > index 000000000000..2393456cbd97
-> > --- /dev/null
-> > +++ b/sound/soc/codecs/wcd-clsh.c
-> > @@ -0,0 +1,605 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +// Copyright (c) 2015-2016, The Linux Foundation. All rights reserved.
-> > +// Copyright (c) 2017-2018, Linaro Limited
-> > +
-> > +#include <linux/slab.h>
-> > +#include <sound/soc.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/delay.h>
-> > +#include <linux/mfd/wcd9335/wcd9335.h>
-> > +#include <linux/mfd/wcd9335/registers.h>
-> Without the "[PATCH v2 02/10] mfd: wcd9335: add support to wcd9335 core" It
-> would break the build.
-
-This is not a run-time dependency.
-
-Without 02/10 there is no build. :)
-
--- 
-Lee Jones [李琼斯]
-Linaro Services Technical Lead
-Linaro.org │ Open source software for ARM SoCs
-Follow Linaro: Facebook | Twitter | Blog
+T24gV2VkLCAwMSBBdWcgMjAxOCwgU3Jpbml2YXMgS2FuZGFnYXRsYSB3cm90ZToKCj4gSGkgTWFy
+aywKPiAKPiBPbiAwMS8wOC8xOCAxMjoyMCwgTWFyayBCcm93biB3cm90ZToKPiA+ICsjaW5jbHVk
+ZSA8c291bmQvc29jLmg+Cj4gPiArI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KPiA+ICsj
+aW5jbHVkZSA8c291bmQvc29jLWRhcG0uaD4KPiA+ICsjaW5jbHVkZSA8c291bmQvdGx2Lmg+Cj4g
+PiArI2luY2x1ZGUgPHNvdW5kL2luZm8uaD4KPiA+ICsjaW5jbHVkZSA8ZHQtYmluZGluZ3MvbWZk
+L3djZDkzMzUuaD4KPiA+ICsjaW5jbHVkZSA8bGludXgvbWZkL3djZDkzMzUvd2NkOTMzNS5oPgo+
+ID4gKyNpbmNsdWRlIDxsaW51eC9tZmQvd2NkOTMzNS9yZWdpc3RlcnMuaD4KPiAKPiBXaXRob3V0
+IHRoZSAiW1BBVENIIHYyIDAyLzEwXSBtZmQ6IHdjZDkzMzU6IGFkZCBzdXBwb3J0IHRvIHdjZDkz
+MzUgY29yZSIgSXQKPiB3b3VsZCBicmVhayB0aGUgYnVpbGQuCgpUaGlzIGZpbGUgc2hvdWxkIG5v
+dCBiZSBidWlsdCB3aXRob3V0IDAyLzEwLgoKLS0gCkxlZSBKb25lcyBb5p2O55C85pavXQpMaW5h
+cm8gU2VydmljZXMgVGVjaG5pY2FsIExlYWQKTGluYXJvLm9yZyDilIIgT3BlbiBzb3VyY2Ugc29m
+dHdhcmUgZm9yIEFSTSBTb0NzCkZvbGxvdyBMaW5hcm86IEZhY2Vib29rIHwgVHdpdHRlciB8IEJs
+b2cKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
