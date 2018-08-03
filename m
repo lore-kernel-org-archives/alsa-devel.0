@@ -1,55 +1,50 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ASoC: smd845: fix memory leak
-Date: Fri, 3 Aug 2018 08:42:11 -0500
-Message-ID: <20180803134211.GA24593@embeddedor.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] [ALSA] sound/isa/gus: fix spelling mistake
+	"acumulator" -> "accumulator"
+Date: Fri,  3 Aug 2018 14:47:56 +0100
+Message-ID: <20180803134756.2889-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rohit kumar <rohitkr@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, Banajit Goswami <bgoswami@codeaurora.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7658D2677A8
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 15:48:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In case memory resources for *card* were allocated, release them before
-return.
+From: Colin Ian King <colin.king@canonical.com>
 
-Addresses-Coverity-ID: 1472244 ("Resource leak")
-Fixes: 6b1687bf76ef ("ASoC: qcom: add sdm845 sound card support")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Trivial spelling mistake fix in debug message
+
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-NOTE: Notice that there are many places in which the return values of
-      functions snd_soc_dai_set_sysclk() and snd_soc_dai_set_fmt() are
-      not being checked. I wonder if this is intentional. Otherwise, I
-      can send a patch for that. Please, confirm. Thanks!
+ sound/isa/gus/gus_io.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
- sound/soc/qcom/sdm845.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index be0cb11..c1adb77 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -222,8 +222,10 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 
- 	/* Allocate the private data */
- 	data = kzalloc(sizeof(*data), GFP_KERNEL);
--	if (!data)
--		return -ENOMEM;
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto data_alloc_fail;
-+	}
- 
- 	card->dev = dev;
- 	dev_set_drvdata(dev, card);
-@@ -248,6 +250,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 	kfree(card->dai_link);
- parse_dt_fail:
- 	kfree(data);
-+data_alloc_fail:
- 	kfree(card);
- 	return ret;
- }
+diff --git a/sound/isa/gus/gus_io.c b/sound/isa/gus/gus_io.c
+index ca79878d8d8c..2fd32ef22c30 100644
+--- a/sound/isa/gus/gus_io.c
++++ b/sound/isa/gus/gus_io.c
+@@ -461,7 +461,7 @@ void snd_gf1_print_voice_registers(struct snd_gus_card * gus)
+ 			printk(KERN_INFO " -%i- GFA1 effect address         = 0x%x\n", voice, snd_gf1_i_read_addr(gus, 0x11, ctrl & 4));
+ 			printk(KERN_INFO " -%i- GFA1 effect volume          = 0x%x\n", voice, snd_gf1_i_read16(gus, 0x16));
+ 			printk(KERN_INFO " -%i- GFA1 effect volume final    = 0x%x\n", voice, snd_gf1_i_read16(gus, 0x1d));
+-			printk(KERN_INFO " -%i- GFA1 effect acumulator      = 0x%x\n", voice, snd_gf1_i_read8(gus, 0x14));
++			printk(KERN_INFO " -%i- GFA1 effect accumulator     = 0x%x\n", voice, snd_gf1_i_read8(gus, 0x14));
+ 		}
+ 		if (mode & 0x20) {
+ 			printk(KERN_INFO " -%i- GFA1 left offset            = 0x%x (%i)\n", voice, snd_gf1_i_read16(gus, 0x13), snd_gf1_i_read16(gus, 0x13) >> 4);
 -- 
-2.7.4
+2.17.1
