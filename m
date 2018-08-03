@@ -1,45 +1,83 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH 11/11] ASoC: wm8994: Mark expected switch fall-through
-Date: Fri, 3 Aug 2018 11:56:12 -0500
-Message-ID: <684a4fe9-6818-d19c-e7b7-fb8d592a0cee@embeddedor.com>
-References: <cover.1533151956.git.gustavo@embeddedor.com>
- <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
- <30613.1533313609@turing-police.cc.vt.edu>
- <85d918a5-6a14-ead0-4d0e-d63b5e43ad81@embeddedor.com>
- <20180803164504.GF6591@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: samsung: i2s: Mark expected switch
+	fall-through" to the asoc tree
+Date: Fri,  3 Aug 2018 18:00:55 +0100 (BST)
+Message-ID: <20180803170055.6F1BD1123AA1@debutante.sirena.org.uk>
+References: <6be766c659c7c31362c018b75970a0755ac756eb.1533312229.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180803164504.GF6591@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: valdis.kletnieks@vt.edu, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 70E582677A8
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:00:57 +0200 (CEST)
+In-Reply-To: <6be766c659c7c31362c018b75970a0755ac756eb.1533312229.git.gustavo@embeddedor.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
+   ASoC: samsung: i2s: Mark expected switch fall-through
 
-On 08/03/2018 11:45 AM, Mark Brown wrote:
-> On Fri, Aug 03, 2018 at 11:41:39AM -0500, Gustavo A. R. Silva wrote:
->> On 08/03/2018 11:26 AM, valdis.kletnieks@vt.edu wrote:
->>> On Wed, 01 Aug 2018 14:56:16 -0500, "Gustavo A. R. Silva" said:
-> 
->>> Wait, what? This looks like the sort of bug -Wimplicit-fallthrough is supposed
->>> to catch.  Unless for 'case WM8994_SYSCLK_OPCLK:' we actually do want to do a
->>> whole bunch of snd_soc_component_update_bits() calls and then return -EINVAL
->>> whether or not that case succeeded?
-> 
->> Yeah, it seems like a bug. Can someone confirm this?
-> 
->> Notice that this code has been there since 2010.
-> 
-> Basically nobody ever uses OPCLK so I'd be susprised if anyone ever
-> noticed.
-> 
+has been applied to the asoc tree at
 
-I see. I wonder what's the best approach in this case. Should that code be removed instead of 'fixed'?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Thanks
---
-Gustavo
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 5019027a566de4986a7f66017cf0d6d794fc155f Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Fri, 3 Aug 2018 11:33:57 -0500
+Subject: [PATCH] ASoC: samsung: i2s: Mark expected switch fall-through
+
+In preparation to enabling -Wimplicit-fallthrough, mark switch cases
+where we are expecting to fall through.
+
+Addresses-Coverity-ID: 1381093 ("Missing break in switch")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/samsung/i2s.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
+index f914ed45db7d..d6c62aa13041 100644
+--- a/sound/soc/samsung/i2s.c
++++ b/sound/soc/samsung/i2s.c
+@@ -710,6 +710,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
+ 	switch (params_channels(params)) {
+ 	case 6:
+ 		val |= MOD_DC2_EN;
++		/* fall through */
+ 	case 4:
+ 		val |= MOD_DC1_EN;
+ 		break;
+-- 
+2.18.0
