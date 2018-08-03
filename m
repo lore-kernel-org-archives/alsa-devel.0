@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: samsung: i2s: Mark expected switch
-	fall-through" to the asoc tree
-Date: Fri,  3 Aug 2018 18:00:55 +0100 (BST)
-Message-ID: <20180803170055.6F1BD1123AA1@debutante.sirena.org.uk>
-References: <6be766c659c7c31362c018b75970a0755ac756eb.1533312229.git.gustavo@embeddedor.com>
+Subject: Applied "ASoC: omap-dmic: Mark expected switch
+	fall-throughs" to the asoc tree
+Date: Fri,  3 Aug 2018 18:01:03 +0100 (BST)
+Message-ID: <20180803170103.F41AD1123AA1@debutante.sirena.org.uk>
+References: <e75dd38f324254c9c002b9a90b513aa8504dd639.1533312229.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 70E582677A8
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:00:57 +0200 (CEST)
-In-Reply-To: <6be766c659c7c31362c018b75970a0755ac756eb.1533312229.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 364A22677D4
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:01:05 +0200 (CEST)
+In-Reply-To: <e75dd38f324254c9c002b9a90b513aa8504dd639.1533312229.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Sangbeom Kim <sbkim73@samsung.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: samsung: i2s: Mark expected switch fall-through
+   ASoC: omap-dmic: Mark expected switch fall-throughs
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,36 @@ to this mail.
 Thanks,
 Mark
 
->From 5019027a566de4986a7f66017cf0d6d794fc155f Mon Sep 17 00:00:00 2001
+>From a773c3b6be185d171e2755ac715e8b1ea099ebbc Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Fri, 3 Aug 2018 11:33:57 -0500
-Subject: [PATCH] ASoC: samsung: i2s: Mark expected switch fall-through
+Date: Fri, 3 Aug 2018 11:31:48 -0500
+Subject: [PATCH] ASoC: omap-dmic: Mark expected switch fall-throughs
 
 In preparation to enabling -Wimplicit-fallthrough, mark switch cases
 where we are expecting to fall through.
 
-Addresses-Coverity-ID: 1381093 ("Missing break in switch")
+Addresses-Coverity-ID: 1468847 ("Missing break in switch")
+Addresses-Coverity-ID: 1468849 ("Missing break in switch")
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/samsung/i2s.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/omap/omap-dmic.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/samsung/i2s.c b/sound/soc/samsung/i2s.c
-index f914ed45db7d..d6c62aa13041 100644
---- a/sound/soc/samsung/i2s.c
-+++ b/sound/soc/samsung/i2s.c
-@@ -710,6 +710,7 @@ static int i2s_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_channels(params)) {
+diff --git a/sound/soc/omap/omap-dmic.c b/sound/soc/omap/omap-dmic.c
+index 51dd7c65096b..fe966272bd0c 100644
+--- a/sound/soc/omap/omap-dmic.c
++++ b/sound/soc/omap/omap-dmic.c
+@@ -213,8 +213,10 @@ static int omap_dmic_dai_hw_params(struct snd_pcm_substream *substream,
+ 	switch (channels) {
  	case 6:
- 		val |= MOD_DC2_EN;
+ 		dmic->ch_enabled |= OMAP_DMIC_UP3_ENABLE;
 +		/* fall through */
  	case 4:
- 		val |= MOD_DC1_EN;
+ 		dmic->ch_enabled |= OMAP_DMIC_UP2_ENABLE;
++		/* fall through */
+ 	case 2:
+ 		dmic->ch_enabled |= OMAP_DMIC_UP1_ENABLE;
  		break;
 -- 
 2.18.0
