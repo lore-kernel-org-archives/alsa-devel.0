@@ -1,58 +1,57 @@
-From: valdis.kletnieks@vt.edu
-Subject: Re: [PATCH 11/11] ASoC: wm8994: Mark expected switch fall-through
-Date: Fri, 03 Aug 2018 12:26:49 -0400
-Message-ID: <30613.1533313609@turing-police.cc.vt.edu>
-References: <cover.1533151956.git.gustavo@embeddedor.com>
- <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH 0/7] ASoC: Mark expected switch fall-throughs
+Date: Fri, 3 Aug 2018 11:26:59 -0500
+Message-ID: <cover.1533312229.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1533313609_3353P";
-         micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from gateway34.websitewelcome.com (gateway34.websitewelcome.com
+ [192.185.148.212])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8D3EF2677CC
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 18:27:02 +0200 (CEST)
+Received: from cm16.websitewelcome.com (cm16.websitewelcome.com [100.42.49.19])
+ by gateway34.websitewelcome.com (Postfix) with ESMTP id BE8DC10DB7A3
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 11:27:01 -0500 (CDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-kernel@vger.kernel.org, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, linuxppc-dev@lists.ozlabs.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Jarkko Nikula <jarkko.nikula@bitmer.com>, linux-omap@vger.kernel.org, Krzysztof Kozlowski <krzk@kernel.org>, Sangbeom Kim <sbkim73@samsung.com>, Sylwester Nawrocki <s.nawrocki@samsung.com>
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
---==_Exmh_1533313609_3353P
-Content-Type: text/plain; charset=us-ascii
+Hi all,
 
-On Wed, 01 Aug 2018 14:56:16 -0500, "Gustavo A. R. Silva" said:
+In preparation to enabling -Wimplicit-fallthrough, this patchset aims
+to add some annotations in order to mark switch cases where we are
+expecting to fall through.
 
-> diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
-> index 7fdfdf3..62f8c5b 100644
-> --- a/sound/soc/codecs/wm8994.c
-> +++ b/sound/soc/codecs/wm8994.c
-> @@ -2432,6 +2432,7 @@ static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
->  			snd_soc_component_update_bits(component, WM8994_POWER_MANAGEMENT_2,
->  					    WM8994_OPCLK_ENA, 0);
->  		}
-> +		/* fall through */
->
->  	default:
->  		return -EINVAL;
+Thanks
 
-Wait, what? This looks like the sort of bug -Wimplicit-fallthrough is supposed
-to catch.  Unless for 'case WM8994_SYSCLK_OPCLK:' we actually do want to do a
-whole bunch of snd_soc_component_update_bits() calls and then return -EINVAL
-whether or not that case succeeded?
+Gustavo A. R. Silva (7):
+  ASoC: davinci-i2s: mark expected switch fall-through
+  ASoC: fsl_esai: Mark expected switch fall-through
+  ASoC: Intel: skl-pcm: Mark expected switch fall-through
+  ASoC: omap-dmic: Mark expected switch fall-throughs
+  ASoC: omap-mcpdm: MArk expected switch fall-throughs
+  ASoC: samsung: i2s: Mark expected switch fall-through
+  ASoC: core: mark expected switch fall-through
 
+ sound/soc/davinci/davinci-i2s.c   | 1 +
+ sound/soc/fsl/fsl_esai.c          | 1 +
+ sound/soc/intel/skylake/skl-pcm.c | 1 +
+ sound/soc/omap/omap-dmic.c        | 2 ++
+ sound/soc/omap/omap-mcpdm.c       | 4 ++++
+ sound/soc/samsung/i2s.c           | 1 +
+ sound/soc/soc-core.c              | 1 +
+ 7 files changed, 11 insertions(+)
 
-
---==_Exmh_1533313609_3353P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Comment: Exmh version 2.8.0 04/21/2017
-
-iQEVAwUBW2SCSY0DS38y7CIcAQLkVAgAnBZwfgNeHjXkgKpbmkH97cvtiknlB8cM
-XzXz8o32fyAfDSWNJFRaymMPigJ0+PnyiEqX0Tcr9dMcwBOzLEBkvVC2BWxNkD80
-KwnnE6hJfT/oVg4Ugn6UFboqkqTHMeu3np5WysjFH++2l53Zp0MxNWpZAV/qYo+4
-31eysJLdoWVgspMESFkMu9wJyBiM2sNRHu1dDUM95CfgmLnQVUAfNhmhdg+JQTJu
-RTLdNrTcxbV47Dac3giaatfk0cTjJ7b8Qp+N9r7EQlucvcQzsemgvI/8YMo96e89
-l1FtSzU0VtZyYk5CDXLKs4OXNSVaojXyfIFfp5jojFhYmDetDoSl3A==
-=x0wR
------END PGP SIGNATURE-----
-
---==_Exmh_1533313609_3353P--
+-- 
+2.7.4
