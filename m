@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap-mcpdm: Mark expected switch
-	fall-throughs" to the asoc tree
-Date: Fri,  3 Aug 2018 18:01:31 +0100 (BST)
-Message-ID: <20180803170131.EC7431123AA1@debutante.sirena.org.uk>
-References: <720fbf880f4edfb57379278056f45fc639775ad3.1533312229.git.gustavo@embeddedor.com>
+Subject: Applied "ASoC: davinci-i2s: mark expected switch
+	fall-through" to the asoc tree
+Date: Fri,  3 Aug 2018 18:01:42 +0100 (BST)
+Message-ID: <20180803170142.7EC471123AA1@debutante.sirena.org.uk>
+References: <7c1e135b84edc1ae9c6b121794ee35b8e35ce7e3.1533312229.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D289A2677DA
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:01:32 +0200 (CEST)
-In-Reply-To: <720fbf880f4edfb57379278056f45fc639775ad3.1533312229.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 07F922677BC
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:01:43 +0200 (CEST)
+In-Reply-To: <7c1e135b84edc1ae9c6b121794ee35b8e35ce7e3.1533312229.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Mark Brown <broonie@kernel.org>, linux-omap@vger.kernel.org, Jarkko Nikula <jarkko.nikula@bitmer.com>
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap-mcpdm: Mark expected switch fall-throughs
+   ASoC: davinci-i2s: mark expected switch fall-through
 
 has been applied to the asoc tree at
 
@@ -52,47 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From 85c81941d5033fc8a68646823d3157840c9de8b3 Mon Sep 17 00:00:00 2001
+>From 3b7c88fcc2873eba64f9e8cef34c4af0cba20887 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Fri, 3 Aug 2018 11:32:52 -0500
-Subject: [PATCH] ASoC: omap-mcpdm: Mark expected switch fall-throughs
+Date: Fri, 3 Aug 2018 11:28:24 -0500
+Subject: [PATCH] ASoC: davinci-i2s: mark expected switch fall-through
 
 In preparation to enabling -Wimplicit-fallthrough, mark switch cases
 where we are expecting to fall through.
 
-Addresses-Coverity-ID: 1369526 ("Missing break in switch")
-Addresses-Coverity-ID: 1369529 ("Missing break in switch")
-Addresses-Coverity-ID: 1451415 ("Missing break in switch")
-Addresses-Coverity-ID: 115103 ("Missing break in switch")
+Addresses-Coverity-ID: 1364478 ("Missing break in switch")
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/omap-mcpdm.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/davinci/davinci-i2s.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/omap/omap-mcpdm.c b/sound/soc/omap/omap-mcpdm.c
-index 0e97360f9890..4c1be36c2207 100644
---- a/sound/soc/omap/omap-mcpdm.c
-+++ b/sound/soc/omap/omap-mcpdm.c
-@@ -310,15 +310,19 @@ static int omap_mcpdm_dai_hw_params(struct snd_pcm_substream *substream,
- 			/* up to 3 channels for capture */
- 			return -EINVAL;
- 		link_mask |= 1 << 4;
+diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
+index 807040bb3921..a3206e65e5e5 100644
+--- a/sound/soc/davinci/davinci-i2s.c
++++ b/sound/soc/davinci/davinci-i2s.c
+@@ -340,6 +340,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
+ 		 * rate is lowered.
+ 		 */
+ 		inv_fs = true;
 +		/* fall through */
- 	case 4:
- 		if (stream == SNDRV_PCM_STREAM_CAPTURE)
- 			/* up to 3 channels for capture */
- 			return -EINVAL;
- 		link_mask |= 1 << 3;
-+		/* fall through */
- 	case 3:
- 		link_mask |= 1 << 2;
-+		/* fall through */
- 	case 2:
- 		link_mask |= 1 << 1;
-+		/* fall through */
- 	case 1:
- 		link_mask |= 1 << 0;
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		dev->mode = MOD_DSP_A;
  		break;
 -- 
 2.18.0
