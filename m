@@ -1,93 +1,58 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 6/6] ALSA: synth: Remove empty init and exit
-Date: Fri,  3 Aug 2018 16:33:38 +0200
-Message-ID: <20180803143338.5363-7-tiwai@suse.de>
-References: <20180803143338.5363-1-tiwai@suse.de>
+From: valdis.kletnieks@vt.edu
+Subject: Re: [PATCH 11/11] ASoC: wm8994: Mark expected switch fall-through
+Date: Fri, 03 Aug 2018 12:26:49 -0400
+Message-ID: <30613.1533313609@turing-police.cc.vt.edu>
+References: <cover.1533151956.git.gustavo@embeddedor.com>
+ <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; boundary="==_Exmh_1533313609_3353P";
+         micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E5CF2677CD
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 16:33:45 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 3614FAF9D
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 14:33:43 +0000 (UTC)
-In-Reply-To: <20180803143338.5363-1-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-For a sake of code simplification, remove the init and the exit
-entries that do nothing.
+--==_Exmh_1533313609_3353P
+Content-Type: text/plain; charset=us-ascii
 
-Notes for readers: actually it's OK to remove *both* init and exit,
-but not OK to remove the exit entry.  By removing only the exit while
-keeping init, the module becomes permanently loaded; i.e. you cannot
-unload it any longer!
+On Wed, 01 Aug 2018 14:56:16 -0500, "Gustavo A. R. Silva" said:
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/synth/emux/emux.c | 17 -----------------
- sound/synth/util_mem.c  | 16 ----------------
- 2 files changed, 33 deletions(-)
+> diff --git a/sound/soc/codecs/wm8994.c b/sound/soc/codecs/wm8994.c
+> index 7fdfdf3..62f8c5b 100644
+> --- a/sound/soc/codecs/wm8994.c
+> +++ b/sound/soc/codecs/wm8994.c
+> @@ -2432,6 +2432,7 @@ static int wm8994_set_dai_sysclk(struct snd_soc_dai *dai,
+>  			snd_soc_component_update_bits(component, WM8994_POWER_MANAGEMENT_2,
+>  					    WM8994_OPCLK_ENA, 0);
+>  		}
+> +		/* fall through */
+>
+>  	default:
+>  		return -EINVAL;
 
-diff --git a/sound/synth/emux/emux.c b/sound/synth/emux/emux.c
-index b840ff2dcfbb..64f3141a3e1b 100644
---- a/sound/synth/emux/emux.c
-+++ b/sound/synth/emux/emux.c
-@@ -163,20 +163,3 @@ int snd_emux_free(struct snd_emux *emu)
- }
- 
- EXPORT_SYMBOL(snd_emux_free);
--
--
--/*
-- *  INIT part
-- */
--
--static int __init alsa_emux_init(void)
--{
--	return 0;
--}
--
--static void __exit alsa_emux_exit(void)
--{
--}
--
--module_init(alsa_emux_init)
--module_exit(alsa_emux_exit)
-diff --git a/sound/synth/util_mem.c b/sound/synth/util_mem.c
-index 8e34bc4e07ec..4bd1e98200d2 100644
---- a/sound/synth/util_mem.c
-+++ b/sound/synth/util_mem.c
-@@ -193,19 +193,3 @@ EXPORT_SYMBOL(snd_util_mem_avail);
- EXPORT_SYMBOL(__snd_util_mem_alloc);
- EXPORT_SYMBOL(__snd_util_mem_free);
- EXPORT_SYMBOL(__snd_util_memblk_new);
--
--/*
-- *  INIT part
-- */
--
--static int __init alsa_util_mem_init(void)
--{
--	return 0;
--}
--
--static void __exit alsa_util_mem_exit(void)
--{
--}
--
--module_init(alsa_util_mem_init)
--module_exit(alsa_util_mem_exit)
--- 
-2.18.0
+Wait, what? This looks like the sort of bug -Wimplicit-fallthrough is supposed
+to catch.  Unless for 'case WM8994_SYSCLK_OPCLK:' we actually do want to do a
+whole bunch of snd_soc_component_update_bits() calls and then return -EINVAL
+whether or not that case succeeded?
+
+
+
+--==_Exmh_1533313609_3353P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.8.0 04/21/2017
+
+iQEVAwUBW2SCSY0DS38y7CIcAQLkVAgAnBZwfgNeHjXkgKpbmkH97cvtiknlB8cM
+XzXz8o32fyAfDSWNJFRaymMPigJ0+PnyiEqX0Tcr9dMcwBOzLEBkvVC2BWxNkD80
+KwnnE6hJfT/oVg4Ugn6UFboqkqTHMeu3np5WysjFH++2l53Zp0MxNWpZAV/qYo+4
+31eysJLdoWVgspMESFkMu9wJyBiM2sNRHu1dDUM95CfgmLnQVUAfNhmhdg+JQTJu
+RTLdNrTcxbV47Dac3giaatfk0cTjJ7b8Qp+N9r7EQlucvcQzsemgvI/8YMo96e89
+l1FtSzU0VtZyYk5CDXLKs4OXNSVaojXyfIFfp5jojFhYmDetDoSl3A==
+=x0wR
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1533313609_3353P--
