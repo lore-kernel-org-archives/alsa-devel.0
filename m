@@ -1,18 +1,22 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bxt: Use refcap device for mono
-	recording" to the asoc tree
-Date: Fri,  3 Aug 2018 10:51:48 +0100 (BST)
-Message-ID: <20180803095148.876AF1123999@debutante.sirena.org.uk>
-References: <1533252091-31918-1-git-send-email-yong.zhi@intel.com>
+From: Yu-hsuan Hsu <yuhsuan@google.com>
+Subject: Re: A question about period
+Date: Fri, 3 Aug 2018 18:04:34 +0800
+Message-ID: <CAEy1m_Ax7ZvvXF__4Qr_bt0mbAa8Z+8zFuzyQrQSC8PbDBVU-A@mail.gmail.com>
+References: <CAEy1m_DhdnfaRQADr4DaurCNnCi0fmCna5tJXEk9dA+KQ8jfcw@mail.gmail.com>
+ <s5ha7q3x5wy.wl-tiwai@suse.de>
+ <CAEy1m_CgOCi4sUcju7Ydzt+iGHHg+0ZHjc-m2W2QJdKVSaHVCg@mail.gmail.com>
+ <s5hlg9nkg2x.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 251742673A0
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 11:52:02 +0200 (CEST)
-In-Reply-To: <1533252091-31918-1-git-send-email-yong.zhi@intel.com>
+Received: from mail-oi0-f46.google.com (mail-oi0-f46.google.com
+ [209.85.218.46])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF2D9267763
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 12:04:47 +0200 (CEST)
+Received: by mail-oi0-f46.google.com with SMTP id 8-v6so8918502oip.0
+ for <alsa-devel@alsa-project.org>; Fri, 03 Aug 2018 03:04:47 -0700 (PDT)
+In-Reply-To: <s5hlg9nkg2x.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +26,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yong Zhi <yong.zhi@intel.com>
-Cc: alsa-devel@alsa-project.org, harshapriya.n@intel.com, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, naveen.m@intel.com, jenny.tc@intel.com
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+For example, we can set period_size 32 to one device. But the device
+consumes 40 frames each time. Can we said it support period_size 32? I
+found many devices have this situation.
 
-   ASoC: Intel: bxt: Use refcap device for mono recording
+On Fri, Aug 3, 2018 at 4:30 PM Takashi Iwai <tiwai@suse.de> wrote:
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 26a6dce8ef99b0199e7682d1c203cf7d0b5fd5b0 Mon Sep 17 00:00:00 2001
-From: Yong Zhi <yong.zhi@intel.com>
-Date: Thu, 2 Aug 2018 18:21:31 -0500
-Subject: [PATCH] ASoC: Intel: bxt: Use refcap device for mono recording
-
-The refcap capture device supports mono recording only, this patch
-adds the channel constraints.
-
-Signed-off-by: Yong Zhi <yong.zhi@intel.com>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/intel/boards/bxt_da7219_max98357a.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-index be6e4b40bf03..6f052fc8d1e2 100644
---- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
-+++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
-@@ -324,8 +324,22 @@ static const struct snd_pcm_hw_constraint_list constraints_16000 = {
- 	.list  = rates_16000,
- };
- 
-+static const unsigned int ch_mono[] = {
-+	1,
-+};
-+
-+static const struct snd_pcm_hw_constraint_list constraints_refcap = {
-+	.count = ARRAY_SIZE(ch_mono),
-+	.list  = ch_mono,
-+};
-+
- static int broxton_refcap_startup(struct snd_pcm_substream *substream)
- {
-+	substream->runtime->hw.channels_max = 1;
-+	snd_pcm_hw_constraint_list(substream->runtime, 0,
-+				   SNDRV_PCM_HW_PARAM_CHANNELS,
-+				   &constraints_refcap);
-+
- 	return snd_pcm_hw_constraint_list(substream->runtime, 0,
- 			SNDRV_PCM_HW_PARAM_RATE,
- 			&constraints_16000);
--- 
-2.18.0
+> On Fri, 03 Aug 2018 10:09:30 +0200,
+> Yu-hsuan Hsu wrote:
+> >
+> > Thank for your answer!
+> >
+> > The other question is if we set period_size to N, but the frames it
+> > consumes once is 5N.
+>
+> Then the assumption is wrong.  How the hardware can issue an IRQ at N
+> consumption while it processes for 5N in once?
+>
+>
+> Takashi
+>
+> > Can it said it supports period_size N? How do we check
+> > whether the period_size can be set correctly?
+> >
+> > On Fri, Aug 3, 2018 at 3:31 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > On Fri, 03 Aug 2018 08:28:37 +0200,
+> > > Yu-hsuan Hsu wrote:
+> > > >
+> > > > Hi all,
+> > > >
+> > > > I have a question about the period we set in hw_params. I found
+> different
+> > > > boards may have different explanations about it. I have two guesses
+> about
+> > > > its meaning.
+> > > >
+> > > > 1. The period_size is the size of each hardware's consumption. If we
+> set
+> > > > period size to N, the pcm will consume N frames each time.
+> > > >
+> > > > 2. The period_size is the size to control when hardware call
+> interrupt.
+> > > If
+> > > > we set period size to N, the pcm consume frames in its step. When the
+> > > > number of frames it consumes more than N, it will call interrupt.
+> > >
+> > > 2 is the correct answer.
+> > >
+> > >
+> > > HTH,
+> > >
+> > > Takashi
+> > >
+> > > > We can use snd_pcm_avail function to check the real available frames
+> in
+> > > > the device. If guess 1 is correct, the size of consumption should be
+> > > fixed.
+> > > > Else, setting period_size is nothing to do with hardware's
+> > > > consumption. I've checked some boards and found that each board has
+> > > > different behavior (Most of them meet guess 2). I'm confuse which
+> one is
+> > > > correct. Thanks!
+> > > > _______________________________________________
+> > > > Alsa-devel mailing list
+> > > > Alsa-devel@alsa-project.org
+> > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > >
+> > >
+> > [2  <text/html; UTF-8 (quoted-printable)>]
+> >
+>
