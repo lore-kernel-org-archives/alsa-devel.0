@@ -1,143 +1,52 @@
-From: Yu-hsuan Hsu <yuhsuan@google.com>
-Subject: Re: A question about period
-Date: Sat, 4 Aug 2018 01:24:05 +0800
-Message-ID: <CAEy1m_CWn6rqUV-VvX-2PS7R9_424WFe9x0rAdUBzAb6Me6oPw@mail.gmail.com>
-References: <CAEy1m_DhdnfaRQADr4DaurCNnCi0fmCna5tJXEk9dA+KQ8jfcw@mail.gmail.com>
- <s5ha7q3x5wy.wl-tiwai@suse.de>
- <CAEy1m_CgOCi4sUcju7Ydzt+iGHHg+0ZHjc-m2W2QJdKVSaHVCg@mail.gmail.com>
- <s5hlg9nkg2x.wl-tiwai@suse.de>
- <CAEy1m_Ax7ZvvXF__4Qr_bt0mbAa8Z+8zFuzyQrQSC8PbDBVU-A@mail.gmail.com>
- <s5h600rkb9z.wl-tiwai@suse.de>
+From: valdis.kletnieks@vt.edu
+Subject: Re: [PATCH 11/11] ASoC: wm8994: Mark expected switch fall-through
+Date: Fri, 03 Aug 2018 13:55:18 -0400
+Message-ID: <39703.1533318918@turing-police.cc.vt.edu>
+References: <cover.1533151956.git.gustavo@embeddedor.com> <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com> <30613.1533313609@turing-police.cc.vt.edu> <85d918a5-6a14-ead0-4d0e-d63b5e43ad81@embeddedor.com> <20180803164504.GF6591@sirena.org.uk>
+ <684a4fe9-6818-d19c-e7b7-fb8d592a0cee@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: multipart/signed; boundary="==_Exmh_1533318918_3353P";
+         micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
- [209.85.218.41])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C9032677A8
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:24:18 +0200 (CEST)
-Received: by mail-oi0-f41.google.com with SMTP id y207-v6so11063158oie.13
- for <alsa-devel@alsa-project.org>; Fri, 03 Aug 2018 10:24:17 -0700 (PDT)
-In-Reply-To: <s5h600rkb9z.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <684a4fe9-6818-d19c-e7b7-fb8d592a0cee@embeddedor.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-Sorry for my unclear question. The device usually provide the range of
-period_size to us, such as 16 to 1024 (We can get it from
-snd_pcm_hw_params_get_period_size_min and max). It means we can choose
-period_size 16 for this hardware device. However, the device only consumes
-40 frames at each time. It only issue IRQ after it consumes 40 frames. My
-question is, whether it can support period_size 16 as it said? Or it need
-to change the range of period_size it provides.
+--==_Exmh_1533318918_3353P
+Content-Type: text/plain; charset=us-ascii
 
-Thank you for your patience and assistance.
+On Fri, 03 Aug 2018 11:56:12 -0500, "Gustavo A. R. Silva" said:
+> On 08/03/2018 11:45 AM, Mark Brown wrote:
+> > Basically nobody ever uses OPCLK so I'd be susprised if anyone ever
+> > noticed.
 
-yuhsuan
+I wonder if nobody uses it because any attempts to do so get an error? :)
 
+> I see. I wonder what's the best approach in this case. Should that code be
+> removed instead of 'fixed'?
 
-On Fri, Aug 3, 2018 at 6:14 PM Takashi Iwai <tiwai@suse.de> wrote:
+I'm thinking that's a spot that needs a 'break;' added.
 
-> On Fri, 03 Aug 2018 12:04:34 +0200,
-> Yu-hsuan Hsu wrote:
-> >
-> > For example, we can set period_size 32 to one device. But the device
-> > consumes 40 frames each time. Can we said it support period_size 32? I
-> > found many devices have this situation.
->
-> The question remains: how can the hardware issue an IRQ of period size
-> 32 while it can consume 40 frames at each time?
->
-> As you asked in the first post, the period size is the size where the
-> hardware notifies the update.  Your description above doesn't match
-> with the definition...
->
->
-> Takashi
->
-> >
-> > On Fri, Aug 3, 2018 at 4:30 PM Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > > On Fri, 03 Aug 2018 10:09:30 +0200,
-> > > Yu-hsuan Hsu wrote:
-> > > >
-> > > > Thank for your answer!
-> > > >
-> > > > The other question is if we set period_size to N, but the frames it
-> > > > consumes once is 5N.
-> > >
-> > > Then the assumption is wrong.  How the hardware can issue an IRQ at N
-> > > consumption while it processes for 5N in once?
-> > >
-> > >
-> > > Takashi
-> > >
-> > > > Can it said it supports period_size N? How do we check
-> > > > whether the period_size can be set correctly?
-> > > >
-> > > > On Fri, Aug 3, 2018 at 3:31 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > >
-> > > > > On Fri, 03 Aug 2018 08:28:37 +0200,
-> > > > > Yu-hsuan Hsu wrote:
-> > > > > >
-> > > > > > Hi all,
-> > > > > >
-> > > > > > I have a question about the period we set in hw_params. I found
-> > > different
-> > > > > > boards may have different explanations about it. I have two
-> guesses
-> > > about
-> > > > > > its meaning.
-> > > > > >
-> > > > > > 1. The period_size is the size of each hardware's consumption.
-> If we
-> > > set
-> > > > > > period size to N, the pcm will consume N frames each time.
-> > > > > >
-> > > > > > 2. The period_size is the size to control when hardware call
-> > > interrupt.
-> > > > > If
-> > > > > > we set period size to N, the pcm consume frames in its step.
-> When the
-> > > > > > number of frames it consumes more than N, it will call interrupt.
-> > > > >
-> > > > > 2 is the correct answer.
-> > > > >
-> > > > >
-> > > > > HTH,
-> > > > >
-> > > > > Takashi
-> > > > >
-> > > > > > We can use snd_pcm_avail function to check the real available
-> frames
-> > > in
-> > > > > > the device. If guess 1 is correct, the size of consumption
-> should be
-> > > > > fixed.
-> > > > > > Else, setting period_size is nothing to do with hardware's
-> > > > > > consumption. I've checked some boards and found that each board
-> has
-> > > > > > different behavior (Most of them meet guess 2). I'm confuse which
-> > > one is
-> > > > > > correct. Thanks!
-> > > > > > _______________________________________________
-> > > > > > Alsa-devel mailing list
-> > > > > > Alsa-devel@alsa-project.org
-> > > > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > > > > >
-> > > > >
-> > > > [2  <text/html; UTF-8 (quoted-printable)>]
-> > > >
-> > >
-> > [2  <text/html; UTF-8 (quoted-printable)>]
-> >
->
+Of course, my understanding of that code is limited to looking at the first 10
+patches and the fall-through hit something reasonable, and then the last
+one did a fall-through to an error return.
+
+--==_Exmh_1533318918_3353P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Comment: Exmh version 2.8.0 04/21/2017
+
+iQEVAwUBW2SXBo0DS38y7CIcAQLLbAf8CUAP8aa3NdO4Wi8ii4C5O+Q0r2dJHb0z
+TDLpH9cM0ZgU22oXebcJDLfuGUAAP1lT6rrxb3WfDHgEeMhLNq8tGvz0CqlJny+2
+zcPUFd5IPOGfRw2PBArMNj1CECLwIGUBJODtyR0D/kCOSFpXyqCVAl3sIrimFntN
+N1pVU6H474DFVRlebm3sKNJp+HYl8TfWN5drGmLsLxWkRy69OXUDQjz4J2UaCcN1
+psMKJDo3PcIzariYZsFwZnU/FwanKzwUAsEP9cAE2GrCt5hyne1JLl2L+4FXn3lr
+0xWFcWbe8+hwHBGcG8KYukx9e7iP67bYM8ABPuPh2CtHQjQXKqnnMQ==
+=8jtF
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1533318918_3353P--
