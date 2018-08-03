@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: davinci-i2s: mark expected switch
-	fall-through" to the asoc tree
-Date: Fri,  3 Aug 2018 18:01:42 +0100 (BST)
-Message-ID: <20180803170142.7EC471123AA1@debutante.sirena.org.uk>
-References: <7c1e135b84edc1ae9c6b121794ee35b8e35ce7e3.1533312229.git.gustavo@embeddedor.com>
+Subject: Applied "ASoC: smd845: fix memory leak" to the asoc
+	tree
+Date: Fri,  3 Aug 2018 18:01:53 +0100 (BST)
+Message-ID: <20180803170153.2FC2C1123AA1@debutante.sirena.org.uk>
+References: <20180803134211.GA24593@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 07F922677BC
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:01:43 +0200 (CEST)
-In-Reply-To: <7c1e135b84edc1ae9c6b121794ee35b8e35ce7e3.1533312229.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B17632677E7
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:01:53 +0200 (CEST)
+In-Reply-To: <20180803134211.GA24593@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: davinci-i2s: mark expected switch fall-through
+   ASoC: smd845: fix memory leak
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,46 @@ to this mail.
 Thanks,
 Mark
 
->From 3b7c88fcc2873eba64f9e8cef34c4af0cba20887 Mon Sep 17 00:00:00 2001
+>From 8530ebf1079ccc84ffa32d970cdcae168b2f3684 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Fri, 3 Aug 2018 11:28:24 -0500
-Subject: [PATCH] ASoC: davinci-i2s: mark expected switch fall-through
+Date: Fri, 3 Aug 2018 08:42:11 -0500
+Subject: [PATCH] ASoC: smd845: fix memory leak
 
-In preparation to enabling -Wimplicit-fallthrough, mark switch cases
-where we are expecting to fall through.
+In case memory resources for *card* were allocated, release them before
+return.
 
-Addresses-Coverity-ID: 1364478 ("Missing break in switch")
+Addresses-Coverity-ID: 1472244 ("Resource leak")
+Fixes: 6b1687bf76ef ("ASoC: qcom: add sdm845 sound card support")
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/davinci/davinci-i2s.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/qcom/sdm845.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/davinci/davinci-i2s.c b/sound/soc/davinci/davinci-i2s.c
-index 807040bb3921..a3206e65e5e5 100644
---- a/sound/soc/davinci/davinci-i2s.c
-+++ b/sound/soc/davinci/davinci-i2s.c
-@@ -340,6 +340,7 @@ static int davinci_i2s_set_dai_fmt(struct snd_soc_dai *cpu_dai,
- 		 * rate is lowered.
- 		 */
- 		inv_fs = true;
-+		/* fall through */
- 	case SND_SOC_DAIFMT_DSP_A:
- 		dev->mode = MOD_DSP_A;
- 		break;
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index be0cb1122036..c1adb77230eb 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -222,8 +222,10 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
+ 
+ 	/* Allocate the private data */
+ 	data = kzalloc(sizeof(*data), GFP_KERNEL);
+-	if (!data)
+-		return -ENOMEM;
++	if (!data) {
++		ret = -ENOMEM;
++		goto data_alloc_fail;
++	}
+ 
+ 	card->dev = dev;
+ 	dev_set_drvdata(dev, card);
+@@ -248,6 +250,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
+ 	kfree(card->dai_link);
+ parse_dt_fail:
+ 	kfree(data);
++data_alloc_fail:
+ 	kfree(card);
+ 	return ret;
+ }
 -- 
 2.18.0
