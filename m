@@ -1,17 +1,18 @@
-From: Yu-hsuan Hsu <yuhsuan@google.com>
-Subject: A question about period
-Date: Fri, 3 Aug 2018 14:28:37 +0800
-Message-ID: <CAEy1m_DhdnfaRQADr4DaurCNnCi0fmCna5tJXEk9dA+KQ8jfcw@mail.gmail.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re: bug report. Envy24 based card (terratec ews88d)
+ won't slave to external clock via s/pdif.
+Date: Fri, 3 Aug 2018 08:29:58 +0200
+Message-ID: <dce55863-8fb7-3567-be95-b23c96ced513@ivitera.com>
+References: <CAFO8paF9fKtf1RNNK9iaUheto7Orx1VyBsVqA_dWoM3qbpoeZQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f44.google.com (mail-oi0-f44.google.com
- [209.85.218.44])
- by alsa0.perex.cz (Postfix) with ESMTP id 769E52677D8
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 08:28:50 +0200 (CEST)
-Received: by mail-oi0-f44.google.com with SMTP id m11-v6so8017233oic.2
- for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2018 23:28:50 -0700 (PDT)
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 383EA2677DA
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 08:30:02 +0200 (CEST)
+In-Reply-To: <CAFO8paF9fKtf1RNNK9iaUheto7Orx1VyBsVqA_dWoM3qbpoeZQ@mail.gmail.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,25 +22,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Tobias Eklund <tobias.h.e.eklund@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Dne 2.8.2018 v 22:03 Tobias Eklund napsal(a):
+> Hi,
+> 
+> when trying to clock my terratec ews88d from an apogee rosetta AD it just
+> won't. The s/pdif input works but the card won't lock to the s/pdif clock
+> but rather stay at whatever setting it was at before i change to s/pdif in
+> envy24control or mudita24.
+> 
 
-I have a question about the period we set in hw_params. I found different
-boards may have different explanations about it. I have two guesses about
-its meaning.
+Hi,
 
-1. The period_size is the size of each hardware's consumption. If we set
-period size to N, the pcm will consume N frames each time.
+I do not see any implementation of incoming rate monitoring in the 
+EWS88D source code 
+https://github.com/torvalds/linux/blob/c0da4fa0d1a54495d6055c009ac46b76d1da2c86/sound/pci/ice1712/ews.c 
+I do not think the driver covers these features.
 
-2. The period_size is the size to control when hardware call interrupt. If
-we set period size to N, the pcm consume frames in its step. When the
-number of frames it consumes more than N, it will call interrupt.
+If you want to add the functionality, look e.g. at how Juli  does the 
+incoming rate monitoring  (juli.c, scheduled task in ak4114 
+https://elixir.bootlin.com/linux/latest/source/sound/i2c/other/ak4114.c#L617 
+). Unfortunately the code for checking is rather complex.
 
-We can use snd_pcm_avail function to check the real available frames in
-the device. If guess 1 is correct, the size of consumption should be fixed.
-Else, setting period_size is nothing to do with hardware's
-consumption. I've checked some boards and found that each board has
-different behavior (Most of them meet guess 2). I'm confuse which one is
-correct. Thanks!
+With regards,
+
+Pavel.
