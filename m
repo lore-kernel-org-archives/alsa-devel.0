@@ -1,18 +1,24 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: smd845: fix memory leak" to the asoc
-	tree
-Date: Fri,  3 Aug 2018 18:01:53 +0100 (BST)
-Message-ID: <20180803170153.2FC2C1123AA1@debutante.sirena.org.uk>
-References: <20180803134211.GA24593@embeddedor.com>
+From: Yu-hsuan Hsu <yuhsuan@google.com>
+Subject: Re: A question about period
+Date: Sat, 4 Aug 2018 01:24:05 +0800
+Message-ID: <CAEy1m_CWn6rqUV-VvX-2PS7R9_424WFe9x0rAdUBzAb6Me6oPw@mail.gmail.com>
+References: <CAEy1m_DhdnfaRQADr4DaurCNnCi0fmCna5tJXEk9dA+KQ8jfcw@mail.gmail.com>
+ <s5ha7q3x5wy.wl-tiwai@suse.de>
+ <CAEy1m_CgOCi4sUcju7Ydzt+iGHHg+0ZHjc-m2W2QJdKVSaHVCg@mail.gmail.com>
+ <s5hlg9nkg2x.wl-tiwai@suse.de>
+ <CAEy1m_Ax7ZvvXF__4Qr_bt0mbAa8Z+8zFuzyQrQSC8PbDBVU-A@mail.gmail.com>
+ <s5h600rkb9z.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B17632677E7
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:01:53 +0200 (CEST)
-In-Reply-To: <20180803134211.GA24593@embeddedor.com>
+Received: from mail-oi0-f41.google.com (mail-oi0-f41.google.com
+ [209.85.218.41])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C9032677A8
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 19:24:18 +0200 (CEST)
+Received: by mail-oi0-f41.google.com with SMTP id y207-v6so11063158oie.13
+ for <alsa-devel@alsa-project.org>; Fri, 03 Aug 2018 10:24:17 -0700 (PDT)
+In-Reply-To: <s5h600rkb9z.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,76 +28,116 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Patrick Lai <plai@codeaurora.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rohit kumar <rohitkr@codeaurora.org>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Sorry for my unclear question. The device usually provide the range of
+period_size to us, such as 16 to 1024 (We can get it from
+snd_pcm_hw_params_get_period_size_min and max). It means we can choose
+period_size 16 for this hardware device. However, the device only consumes
+40 frames at each time. It only issue IRQ after it consumes 40 frames. My
+question is, whether it can support period_size 16 as it said? Or it need
+to change the range of period_size it provides.
 
-   ASoC: smd845: fix memory leak
+Thank you for your patience and assistance.
 
-has been applied to the asoc tree at
+yuhsuan
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Fri, Aug 3, 2018 at 6:14 PM Takashi Iwai <tiwai@suse.de> wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 8530ebf1079ccc84ffa32d970cdcae168b2f3684 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Fri, 3 Aug 2018 08:42:11 -0500
-Subject: [PATCH] ASoC: smd845: fix memory leak
-
-In case memory resources for *card* were allocated, release them before
-return.
-
-Addresses-Coverity-ID: 1472244 ("Resource leak")
-Fixes: 6b1687bf76ef ("ASoC: qcom: add sdm845 sound card support")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/sdm845.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-index be0cb1122036..c1adb77230eb 100644
---- a/sound/soc/qcom/sdm845.c
-+++ b/sound/soc/qcom/sdm845.c
-@@ -222,8 +222,10 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 
- 	/* Allocate the private data */
- 	data = kzalloc(sizeof(*data), GFP_KERNEL);
--	if (!data)
--		return -ENOMEM;
-+	if (!data) {
-+		ret = -ENOMEM;
-+		goto data_alloc_fail;
-+	}
- 
- 	card->dev = dev;
- 	dev_set_drvdata(dev, card);
-@@ -248,6 +250,7 @@ static int sdm845_snd_platform_probe(struct platform_device *pdev)
- 	kfree(card->dai_link);
- parse_dt_fail:
- 	kfree(data);
-+data_alloc_fail:
- 	kfree(card);
- 	return ret;
- }
--- 
-2.18.0
+> On Fri, 03 Aug 2018 12:04:34 +0200,
+> Yu-hsuan Hsu wrote:
+> >
+> > For example, we can set period_size 32 to one device. But the device
+> > consumes 40 frames each time. Can we said it support period_size 32? I
+> > found many devices have this situation.
+>
+> The question remains: how can the hardware issue an IRQ of period size
+> 32 while it can consume 40 frames at each time?
+>
+> As you asked in the first post, the period size is the size where the
+> hardware notifies the update.  Your description above doesn't match
+> with the definition...
+>
+>
+> Takashi
+>
+> >
+> > On Fri, Aug 3, 2018 at 4:30 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > On Fri, 03 Aug 2018 10:09:30 +0200,
+> > > Yu-hsuan Hsu wrote:
+> > > >
+> > > > Thank for your answer!
+> > > >
+> > > > The other question is if we set period_size to N, but the frames it
+> > > > consumes once is 5N.
+> > >
+> > > Then the assumption is wrong.  How the hardware can issue an IRQ at N
+> > > consumption while it processes for 5N in once?
+> > >
+> > >
+> > > Takashi
+> > >
+> > > > Can it said it supports period_size N? How do we check
+> > > > whether the period_size can be set correctly?
+> > > >
+> > > > On Fri, Aug 3, 2018 at 3:31 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > >
+> > > > > On Fri, 03 Aug 2018 08:28:37 +0200,
+> > > > > Yu-hsuan Hsu wrote:
+> > > > > >
+> > > > > > Hi all,
+> > > > > >
+> > > > > > I have a question about the period we set in hw_params. I found
+> > > different
+> > > > > > boards may have different explanations about it. I have two
+> guesses
+> > > about
+> > > > > > its meaning.
+> > > > > >
+> > > > > > 1. The period_size is the size of each hardware's consumption.
+> If we
+> > > set
+> > > > > > period size to N, the pcm will consume N frames each time.
+> > > > > >
+> > > > > > 2. The period_size is the size to control when hardware call
+> > > interrupt.
+> > > > > If
+> > > > > > we set period size to N, the pcm consume frames in its step.
+> When the
+> > > > > > number of frames it consumes more than N, it will call interrupt.
+> > > > >
+> > > > > 2 is the correct answer.
+> > > > >
+> > > > >
+> > > > > HTH,
+> > > > >
+> > > > > Takashi
+> > > > >
+> > > > > > We can use snd_pcm_avail function to check the real available
+> frames
+> > > in
+> > > > > > the device. If guess 1 is correct, the size of consumption
+> should be
+> > > > > fixed.
+> > > > > > Else, setting period_size is nothing to do with hardware's
+> > > > > > consumption. I've checked some boards and found that each board
+> has
+> > > > > > different behavior (Most of them meet guess 2). I'm confuse which
+> > > one is
+> > > > > > correct. Thanks!
+> > > > > > _______________________________________________
+> > > > > > Alsa-devel mailing list
+> > > > > > Alsa-devel@alsa-project.org
+> > > > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > > > >
+> > > > >
+> > > > [2  <text/html; UTF-8 (quoted-printable)>]
+> > > >
+> > >
+> > [2  <text/html; UTF-8 (quoted-printable)>]
+> >
+>
