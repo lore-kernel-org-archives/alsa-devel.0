@@ -1,19 +1,19 @@
-From: Chakravarthi Pradeep <doubleq7@gmail.com>
-Subject: Re: ALSA queries
-Date: Fri, 3 Aug 2018 08:46:32 +0530
-Message-ID: <CALW20Z0YN+HOWnOAJ3ZRGz6TZZh26fCepn8o-OnsMFZMLFvXmA@mail.gmail.com>
-References: <CALW20Z3Bhp6Bhx8qWWcfcF9wcOSGV_V+KC5ct+ovFQ=o2HeoAw@mail.gmail.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v2] ASoC: Intel: bxt: Use refcap device for
+ mono recording
+Date: Thu, 2 Aug 2018 22:08:55 -0700
+Message-ID: <24fa2f1b-c2f9-2739-2970-e35de5b02a35@linux.intel.com>
+References: <1533143039-5428-1-git-send-email-yong.zhi@intel.com>
+ <1533252091-31918-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f177.google.com (mail-qk0-f177.google.com
- [209.85.220.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B2E12677D8
- for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 05:52:48 +0200 (CEST)
-Received: by mail-qk0-f177.google.com with SMTP id v17-v6so3135394qkb.11
- for <alsa-devel@alsa-project.org>; Thu, 02 Aug 2018 20:52:47 -0700 (PDT)
-In-Reply-To: <CALW20Z3Bhp6Bhx8qWWcfcF9wcOSGV_V+KC5ct+ovFQ=o2HeoAw@mail.gmail.com>
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CF0A2677D8
+ for <alsa-devel@alsa-project.org>; Fri,  3 Aug 2018 07:08:58 +0200 (CEST)
+In-Reply-To: <1533252091-31918-1-git-send-email-yong.zhi@intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +23,52 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Yong Zhi <yong.zhi@intel.com>, broonie@kernel.org
+Cc: harshapriya.n@intel.com, naveen.m@intel.com, alsa-devel@alsa-project.org, vkoul@kernel.org, jenny.tc@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Dear ALSA Developers Team,
+On 8/2/18 4:21 PM, Yong Zhi wrote:
+> The refcap capture device supports mono recording only, this patch
+> adds the channel constraints.
+> 
+> Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+> Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+> ---
+> Changes since v1:
+> - Remove renaming of "Refcap".
+> - Add Reviewed-by tag.
 
+LGTM, thanks.
 
-I'm working on ALSA driver for PCIe card. My ALSA driver and it's
-> initializing struct snd_pcm_hardware with below parameter.
->
-> /************************ code  start
-> ************************************************/
-> static struct snd_pcm_hardware audio_pcm_hardware = {
-> .info = (SNDRV_PCM_INFO_INTERLEAVED  | SNDRV_PCM_INFO_MMAP |
-> SNDRV_PCM_INFO_MMAP_VALID |
-> SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> SNDRV_PCM_INFO_RESUME ),
-> .formats  =       (SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S24_LE),
-> .rates  = (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-> SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000),
-> .rate_min  = 44100,
-> .rate_max  = 192000,
-> .channels_min  = 2,
-> .channels_max  = 8,
-> .buffer_bytes_max  = 76800, /*75 kbytes */
-> .period_bytes_min  = 512,//4410, /* (channel (2) * sample_rate (44100)
-> * bit width (24)) / (60 * 8)  */
-> .period_bytes_max  = 16*1024,
-> .periods_min  = 10,
-> .periods_max  = 255,
->
-> };
-> /************************ code  end
-> ************************************************/
->
-> 1) I did not understand what is significance of periods_min ,
-> period_bytes_min ,  period_bytes_max and periods_max. Can you please
-> tell me what is importance of these parameter and what value should be
-> mentioned according into ALSA.
->
-> 2) snd_pcm_ops trigger callback is getting called in the driver when
-> application sends "start" command. But ALSA driver is stopping by
-> itself after one frame is copied to ALSA framework, without waiting
-> for "stop" command.
->
-> For instance:
-> In trigger callback , I'm getting these logs after one frame is copied.
-> Trigger:Start (When Play button is selected/clicked in application,
-> Start command is sent to ALSA driver)
-> Dma transfer is completed.
-> Trigger:Stop. (When Stop button is selected/clicked in application,
-> Stop command is sent to ALSA driver. But stop button is not clicked in
-> this case)
->
-> Thanks in advance.
->
-> --
-> Thanks and Regards
-> Chakravarthi Pradeep.K
-> Ph: 91 9980434900
->
+> 
+>   sound/soc/intel/boards/bxt_da7219_max98357a.c | 14 ++++++++++++++
+>   1 file changed, 14 insertions(+)
+> 
+> diff --git a/sound/soc/intel/boards/bxt_da7219_max98357a.c b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> index be6e4b40bf03..6f052fc8d1e2 100644
+> --- a/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> +++ b/sound/soc/intel/boards/bxt_da7219_max98357a.c
+> @@ -324,8 +324,22 @@ static const struct snd_pcm_hw_constraint_list constraints_16000 = {
+>   	.list  = rates_16000,
+>   };
+>   
+> +static const unsigned int ch_mono[] = {
+> +	1,
+> +};
+> +
+> +static const struct snd_pcm_hw_constraint_list constraints_refcap = {
+> +	.count = ARRAY_SIZE(ch_mono),
+> +	.list  = ch_mono,
+> +};
+> +
+>   static int broxton_refcap_startup(struct snd_pcm_substream *substream)
+>   {
+> +	substream->runtime->hw.channels_max = 1;
+> +	snd_pcm_hw_constraint_list(substream->runtime, 0,
+> +				   SNDRV_PCM_HW_PARAM_CHANNELS,
+> +				   &constraints_refcap);
+> +
+>   	return snd_pcm_hw_constraint_list(substream->runtime, 0,
+>   			SNDRV_PCM_HW_PARAM_RATE,
+>   			&constraints_16000);
+> 
