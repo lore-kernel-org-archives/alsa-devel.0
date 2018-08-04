@@ -1,51 +1,42 @@
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 00/12] ASoC: codecs: use true and false for boolean values
-Date: Sat, 4 Aug 2018 16:48:13 -0500
-Message-ID: <cover.1533418275.git.gustavo@embeddedor.com>
+Subject: [PATCH 01/12] ASoC: max9850: use true and false for boolean values
+Date: Sat, 4 Aug 2018 16:49:02 -0500
+Message-ID: <99d07804559a7dfd13658f76b2071aef32b92204.1533418275.git.gustavo@embeddedor.com>
+References: <cover.1533418275.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <cover.1533418275.git.gustavo@embeddedor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org
-Cc: patches@opensource.cirrus.com, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Support Opensource <support.opensource@diasemi.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+Return statements in functions returning bool should use true or false
+instead of an integer value.
 
-This patchset aims to replace the use of integer values with a
-proper true or false in return statements for functions returning
-bool.
+This code was detected with the help of Coccinelle.
 
-Thanks
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ sound/soc/codecs/max9850.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Gustavo A. R. Silva (12):
-  ASoC: max9850: use true and false for boolean values
-  ASoC: rt5631: use true and false for boolean values
-  ASoC: tda7419: use true and false for boolean values
-  ASoC: wm8990: use true and false for boolean values
-  ASoC: cs4270: use true and false for boolean values
-  ASoC: wm8996: use true and false for boolean values
-  ASoC: da7219: use true and false for boolean values
-  ASoC: twl6040: use true and false for boolean values
-  ASoC: da7213: use true and false for boolean values
-  ASoC: wm5100-tables: use true and false for boolean values
-  ASoC: da9055: use true and false for boolean values
-  ASoC: wm8903: use true and false for boolean values
-
- sound/soc/codecs/cs4270.c        |  2 +-
- sound/soc/codecs/da7213.c        |  4 ++--
- sound/soc/codecs/da7219.c        |  4 ++--
- sound/soc/codecs/da9055.c        |  4 ++--
- sound/soc/codecs/max9850.c       |  4 ++--
- sound/soc/codecs/rt5631.c        |  8 ++++----
- sound/soc/codecs/tda7419.c       |  4 ++--
- sound/soc/codecs/twl6040.c       |  2 +-
- sound/soc/codecs/wm5100-tables.c | 12 ++++++------
- sound/soc/codecs/wm8903.c        |  4 ++--
- sound/soc/codecs/wm8990.c        |  4 ++--
- sound/soc/codecs/wm8996.c        |  8 ++++----
- 12 files changed, 30 insertions(+), 30 deletions(-)
-
+diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
+index 74d7f52..6e61345 100644
+--- a/sound/soc/codecs/max9850.c
++++ b/sound/soc/codecs/max9850.c
+@@ -52,9 +52,9 @@ static bool max9850_volatile_register(struct device *dev, unsigned int reg)
+ 	switch (reg) {
+ 	case MAX9850_STATUSA:
+ 	case MAX9850_STATUSB:
+-		return 1;
++		return true;
+ 	default:
+-		return 0;
++		return false;
+ 	}
+ }
+ 
 -- 
 2.7.4
