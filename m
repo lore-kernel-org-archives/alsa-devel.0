@@ -1,7 +1,7 @@
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 04/12] ASoC: wm8990: use true and false for boolean values
-Date: Sat, 4 Aug 2018 16:51:01 -0500
-Message-ID: <3d81e99b93dbe0d5b84083d3fdf6c86b44f210ef.1533418275.git.gustavo@embeddedor.com>
+Subject: [PATCH 05/12] ASoC: cs4270: use true and false for boolean values
+Date: Sat, 4 Aug 2018 16:52:01 -0500
+Message-ID: <b499e94ee4c9cd58b2cf07888f7723daf3a40a7f.1533418275.git.gustavo@embeddedor.com>
 References: <cover.1533418275.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -10,7 +10,7 @@ Content-Disposition: inline
 In-Reply-To: <cover.1533418275.git.gustavo@embeddedor.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org
-Cc: patches@opensource.cirrus.com
+Cc: Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
 Return statements in functions returning bool should use true or false
@@ -20,24 +20,21 @@ This code was detected with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- sound/soc/codecs/wm8990.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/cs4270.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8990.c b/sound/soc/codecs/wm8990.c
-index 411b9ee..457bc43 100644
---- a/sound/soc/codecs/wm8990.c
-+++ b/sound/soc/codecs/wm8990.c
-@@ -40,9 +40,9 @@ static bool wm8990_volatile_register(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/cs4270.c b/sound/soc/codecs/cs4270.c
+index 2a7a416..3c266ee 100644
+--- a/sound/soc/codecs/cs4270.c
++++ b/sound/soc/codecs/cs4270.c
+@@ -219,7 +219,7 @@ static bool cs4270_reg_is_volatile(struct device *dev, unsigned int reg)
  {
- 	switch (reg) {
- 	case WM8990_RESET:
+ 	/* Unreadable registers are considered volatile */
+ 	if ((reg < CS4270_FIRSTREG) || (reg > CS4270_LASTREG))
 -		return 1;
 +		return true;
- 	default:
--		return 0;
-+		return false;
- 	}
- }
  
+ 	return reg == CS4270_CHIPID;
+ }
 -- 
 2.7.4
