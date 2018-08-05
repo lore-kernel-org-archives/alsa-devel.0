@@ -1,20 +1,20 @@
-From: Chakravarthi Pradeep <doubleq7@gmail.com>
-Subject: Fwd:  ALSA queries
-Date: Sun, 5 Aug 2018 23:39:47 +0530
-Message-ID: <CALW20Z27m4gjzJzL-Jc11SzE70u05oV1uoKdj5T2Gk+ABVD1ig@mail.gmail.com>
-References: <CALW20Z3Bhp6Bhx8qWWcfcF9wcOSGV_V+KC5ct+ovFQ=o2HeoAw@mail.gmail.com>
- <s5h8t5nx5qs.wl-tiwai@suse.de>
- <CALW20Z1YFqnbUE51Wbm38VaNL2Yr4osyMeGJmHrabfQvAY_1VQ@mail.gmail.com>
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: Re: Spectre x360 fixing the top speakers (again)
+Date: Sun, 5 Aug 2018 14:14:47 -0400
+Message-ID: <CAM8Agx3S6DcTnGtxodqbQZy+e7_pzB387NPQeQ5qQiydNJPjxw@mail.gmail.com>
+References: <b34c110f-b5a0-6c02-4ad6-efb1990492bd@gmail.com>
+ <s5h600ou4x8.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="000000000000957e420572b41986"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk0-f176.google.com (mail-qk0-f176.google.com
- [209.85.220.176])
- by alsa0.perex.cz (Postfix) with ESMTP id 32C1B267365
- for <alsa-devel@alsa-project.org>; Sun,  5 Aug 2018 20:12:13 +0200 (CEST)
-Received: by mail-qk0-f176.google.com with SMTP id c192-v6so7393175qkg.12
- for <alsa-devel@alsa-project.org>; Sun, 05 Aug 2018 11:12:13 -0700 (PDT)
-In-Reply-To: <CALW20Z1YFqnbUE51Wbm38VaNL2Yr4osyMeGJmHrabfQvAY_1VQ@mail.gmail.com>
+Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
+ [209.85.218.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id A25622676A0
+ for <alsa-devel@alsa-project.org>; Sun,  5 Aug 2018 20:14:48 +0200 (CEST)
+Received: by mail-oi0-f45.google.com with SMTP id n21-v6so18405869oig.3
+ for <alsa-devel@alsa-project.org>; Sun, 05 Aug 2018 11:14:48 -0700 (PDT)
+In-Reply-To: <s5h600ou4x8.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,374 +24,94 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
+To: Takashi Iwai <tiwai@suse.de>
+Cc: tom@decompile.me.uk, alsa-devel@alsa-project.org, Kailang <kailang@realtek.com>, "Alex G." <mr.nuke.me@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
---000000000000957e420572b41986
-Content-Type: text/plain; charset="UTF-8"
+Hi!
 
----------- Forwarded message ---------
-From: Chakravarthi Pradeep <doubleq7@gmail.com>
-Date: Sun 5 Aug, 2018, 14:19
-Subject: Re: [alsa-devel] ALSA queries
-To: <tiwai@suse.de>
+Seeing that you're lacking knowledge of specific vendor verbs, this
+may be a place where my program QemuHDADump could be effective. You
+can find it on Github. It will dump the verbs used from a virtual
+machine into a file. From there, you can probably see what's going on.
+I'd be willing to look through the dump for you to see if there's
+anything that looks unusual. I used this on the Sound Blaster cards
+from Creative that weren't working, so I'm sure it could work in your
+situation, too.
 
+Not sure if commenting on mailing list threads like this is alright -
+if it isn't, let me know.
 
-Hello Takashi,
-
-Thanks for your reply.
-
- periods_min = the minimal number of periods
- period_bytes_min = the minimal size of bytes for one period
- period_bytes_max = the maximal size of bytes for one period
-
-
-periods_min = the minimal number of periods :  what is meaning of
-periods , is it minimal number of interrupts ?
-period_bytes_min = the minimal size of bytes for one period : it
-means, minimal size of bytes per interrupt in case of device, Is it
-correct ?
-what about period_max ?
-
-It's most likely the ALSA PCM core's safety stop; your driver seem to
-have missed snd_pcm_period_elapsed() calls, so the hwptr isn't
-updated, resulting in XRUN.  ALSA PCM core checks such XRUN condition
-with the own timer.
-
-I'm attaching my driver thread along with this mail. Can you please
-let me know if I have missed something in audio thread. ?. How to make
-sure in driver that, trigger stop should be called only when stop
-command is sent from application.
-
-I'm getting cut cut cut ... noise along with audio in VLC application.
-Initially for 2 or 4 seconds, cut cut cut noise is not heard in VLC
-application, However after almost after 5 sec ,I can hear cut cut cut
-noise in VLC application. With my analysis, hwptr is getting updated
-properly however I have doubt in app_ptr. I'm attaching the excl sheet
-with hw_ptr,app_ptr and buf_pos values.
-
-How to remove the cut cut cut ... noise in audio ?
-
-Regards,
-Chakravarthi
-
-On Fri, Aug 3, 2018 at 1:05 PM Takashi Iwai <tiwai@suse.de> wrote:
+On Sun, Aug 5, 2018 at 12:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> On Sun, 05 Aug 2018 18:28:57 +0200,
+>  Alex G.  wrote:
+>>
+>> It's only been since 4.18-rc2 that the speaker issue on the x360 [1]
+>> was resolved. I didn't even know I had four speakers until seeing that
+>> bug report. My HP Spectre x360 (13-ae0xx) has the same issue as the
+>> original x360 with Bang speakers.
+>>
+>> The subsystem PCI ID is different [103c:83b9]. Of the two fixes
+>> developed in [1], only the mute led fix works when the PCI id is added
+>> to patch-realtek. If I try to add the full ALC295_FIXUP_HP_X360 fix,
+>> there's no audio coming out at all.
+>>
+>> One thing I tried was to boot W10 virtual machine and redirect the
+>> audio PCI device to the VM:
+>> 0:1f.3 Audio device: Intel Corporation Sunrise Point-LP HD Audio (rev 21)
+>> It all worked in the VM, but as soon as I shut it down and tried to
+>> play audio from linux, the top speakers still didn't work. The
+>> difference being that PAVUcontrol could see a "4.0 output"
+>> configuration. The same issue: audio sent to the bottom speakers was
+>> heard, but audio sent to the top speakers was not.
+>>
+>> Since I'm likely going to have to change _everything_ anyway, here's
+>> what I'm trying to achieve:
+>>
+>>
+>> 1) Make the top speakers great again. Whether they produce the same
+>> sound as the bottom speakers, or have their own audio channel, I don't
+>> care that much.
 >
-> On Thu, 02 Aug 2018 16:31:13 +0200,
-> Chakravarthi Pradeep wrote:
-> >
-> > I'm working on ALSA driver for PCIe card. My ALSA driver and it's
-> > initializing struct snd_pcm_hardware with below parameter.
-> >
-> > /************************ code  start
-> > ************************************************/
-> > static struct snd_pcm_hardware audio_pcm_hardware = {
-> > .info = (SNDRV_PCM_INFO_INTERLEAVED  | SNDRV_PCM_INFO_MMAP |
-> > SNDRV_PCM_INFO_MMAP_VALID |
-> > SNDRV_PCM_INFO_BLOCK_TRANSFER |
-> > SNDRV_PCM_INFO_RESUME ),
-> > .formats  =       (SNDRV_PCM_FORMAT_S16_LE | SNDRV_PCM_FORMAT_S24_LE),
-> > .rates  = (SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |
-> > SNDRV_PCM_RATE_96000 | SNDRV_PCM_RATE_192000),
-> > .rate_min  = 44100,
-> > .rate_max  = 192000,
-> > .channels_min  = 2,
-> > .channels_max  = 8,
-> > .buffer_bytes_max  = 76800, /*75 kbytes */
-> > .period_bytes_min  = 512,//4410, /* (channel (2) * sample_rate (44100)
-> > * bit width (24)) / (60 * 8)  */
-> > .period_bytes_max  = 16*1024,
-> > .periods_min  = 10,
-> > .periods_max  = 255,
-> >
-> > };
-> > /************************ code  end
-> > ************************************************/
-> >
-> > 1) I did not understand what is significance of periods_min ,
-> > period_bytes_min ,  period_bytes_max and periods_max. Can you please
-> > tell me what is importance of these parameter and what value should be
-> > mentioned according into ALSA.
+> Well, "again" -- you have never got it working on Linux, right?
 >
-> These three defines the values your hardware may accept:
->  periods_min = the minimal number of periods
->  period_bytes_min = the minimal size of bytes for one period
->  period_bytes_max = the maximal size of bytes for one period
+> The top speaker thing is likely the missing initialization of I2S amp,
+> EQ or DRC, which seem to be done via vendor-specific COEF verbs.
+> The Windows VM work just because these initializations are done in
+> Windows side.  You'd need to get these init verbs, but it's a tough
+> issue.  The best would be to get the proper data from the vendor.
+> Unfortunately HP seems have zero interest in supporting the device on
+> Linux at all.  Luckily we've got the data kindly from Realtek at the
+> previous time for one x360 model after Tom's great effort.
 >
-> > 2) snd_pcm_ops trigger callback is getting called in the driver when
-> > application sends "start" command. But ALSA driver is stopping by
-> > itself after one frame is copied to ALSA framework, without waiting
-> > for "stop" command.
-> >
-> > For instance:
-> > In trigger callback , I'm getting these logs after one frame is copied.
-> > Trigger:Start (When Play button is selected/clicked in application,
-> > Start command is sent to ALSA driver)
-> > Dma transfer is completed.
-> > Trigger:Stop. (When Stop button is selected/clicked in application,
-> > Stop command is sent to ALSA driver. But stop button is not clicked in
-> > this case)
+> Hopefully Kailang (Cc'ed here) may ask his colleagues and get some
+> info...
 >
-> It's most likely the ALSA PCM core's safety stop; your driver seem to
-> have missed snd_pcm_period_elapsed() calls, so the hwptr isn't
-> updated, resulting in XRUN.  ALSA PCM core checks such XRUN condition
-> with the own timer.
+>
+>> 2) Be able to use the speakers when something is plugged in the
+>> headphone jack. Right now it's stupid. I try to plug in a microphone
+>> (with the proper TRRS jack), and the speakers die. I haven't seen this
+>> before. I was playing with HDA-Analyzer and was able to get speaker
+>> sounds with a dummy plugged in the jack, so I know it's possible. I
+>> don't remember how I did it, and it only worked once.
+>
+> The TRRS handling is again very much vendor-specific, and most likely
+> one of the existing methods may fit.  Check the headset-related
+> helpers and callbacks in patch_realtek.c.
 >
 >
 > Takashi
-
-
-
--- 
-Thanks and Regards
-Chakravarthi Pradeep.K
-Ph: 91 9980434900
-
---000000000000957e420572b41986
-Content-Type: text/x-c-code; charset="US-ASCII"; name="audio_thread.c"
-Content-Disposition: attachment; filename="audio_thread.c"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jkgknky30>
-X-Attachment-Id: f_jkgknky30
-
-c3RhdGljIGludCB1aGRjX2F1ZGlvX3RocmVhZCh2b2lkICpkYXRhKQ0Kew0KCWNoYXIgKmF1ZGlv
-X2ZyYW1lID0gTlVMTDsNCglpbnQgY291bnQgPSAwOw0KCXVoZGNfdDNfY2FyZF9kcml2ZXIgKmRy
-diA9ICh1aGRjX3QzX2NhcmRfZHJpdmVyICopZGF0YTsNCglzdHJ1Y3Qgc25kX3BjbV9ydW50aW1l
-ICpydW50aW1lID0gZHJ2LT5zdWJzdHJlYW0tPnJ1bnRpbWU7DQoNCgkNCglhdWRpb19mcmFtZSA9
-IGttYWxsb2MoTUFYX0FVRElPX1NJWkUsIEdGUF9ETUEpOwkNCglpZighYXVkaW9fZnJhbWUpDQoJ
-ew0KCQlyZXR1cm4gLUVOT01FTTsNCgl9DQoJd2hpbGUoMSkNCgl7DQoNCgkJaWYgKGt0aHJlYWRf
-c2hvdWxkX3N0b3AoKSkNCgkJew0KCQkJZGJnX2Fsc2EoICIjIyMjIyMgJXMgJWRcbiIsX19GVU5D
-VElPTl9fLF9fTElORV9fKTsNCgkJCWJyZWFrOw0KCQl9DQoJCWRiZ19hbHNhKCAiIyMjIyMjIFdh
-aXRpbmcgZm9yIGF1ZGlvIHNpZ25hbCAlc18lZFxuIixfX0ZVTkNUSU9OX18sX19MSU5FX18pOw0K
-CQl3YWl0X2V2ZW50X2ludGVycnVwdGlibGUgKGF1ZGlvX2ludGVycnVwdCwgKGF0b21pY19yZWFk
-ICgmYXVkaW9fZGF0YV9yZWFkeSkpKTsNCgkJYXRvbWljX3NldCAoJmF1ZGlvX2RhdGFfcmVhZHks
-IDApOw0KCQlnX2NvdW50ID0gZ2V0X2F1ZGlvX3NpemUoZ190ZW1wX2xybyk7DQoJCWNvdW50ID0g
-Z19jb3VudDsNCgkJcHJpbnRrKCAiIyMjIyMjYXVkaW8gc2lnbmFsIHJlY2VpdmVkIGFuZCBhdWRp
-byBzaXplOiVkIHJ1bnRpbWUtPnBlcmlvZF9zaXplOiVkICAlc18lZFxuIixnX2NvdW50LHJ1bnRp
-bWUtPnBlcmlvZF9zaXplLF9fZnVuY19fLF9fTElORV9fKTsJCQ0KCQkNCgkJLyogZG1hIHJlYWQg
-aXMgZG9uZSBoZXJlICovDQoJCS8qIGF1ZGlvX2ZyYW1lIGNvbnRhaW5zIGF1ZGlvIGRhdGEgKi8N
-CgkJbWVtY3B5KGRydi0+c3Vic3RyZWFtLT5ydW50aW1lLT5kbWFfYXJlYSArIGRydi0+YnVmX3Bv
-cyAsYXVkaW9fZnJhbWUsY291bnQpOw0KDQoJCS8qIHVwZGF0ZSB0aGUgYnVmX3BvcyAqLw0KCQkv
-LyBoZXJlIHRoZSAoYXV0bylpbmNyZWFzZSBvZiBidWZfcG9zIGlzIGhhbmRsZWQNCgkJZHJ2LT5i
-dWZfcG9zICs9IGNvdW50Ow0KCQlkcnYtPmJ1Zl9wb3MgJT0gZHJ2LT5wY21fYnVmZmVyX3NpemU7
-DQoJDQoJCQ0KCQlwcmludGsoIlxuXG5cbiBod3B0cj0lZCBhcHBsPSVkIHBvcz0lZFxuIiwNCgkJ
-CShpbnQpZnJhbWVzX3RvX2J5dGVzKHJ1bnRpbWUscnVudGltZS0+c3RhdHVzLT5od19wdHIpLChp
-bnQpZnJhbWVzX3RvX2J5dGVzKHJ1bnRpbWUsIHJ1bnRpbWUtPmNvbnRyb2wtPmFwcGxfcHRyKSxk
-cnYtPmJ1Zl9wb3MpOw0KCQkvKiBCZWxvdyBsaW5lIG5lZWRzIHRvIGJlIHVuY29tbWVudGVkIGZv
-ciBwb2ludGVyIHRvIGJlIHVwZGF0ZWQgaW4gdGhlIGFsc2EgbGliICovDQoJCXNuZF9wY21fcGVy
-aW9kX2VsYXBzZWQoZHJ2LT5zdWJzdHJlYW0pOw0KCQkNCgkJdHJ5X3RvX2ZyZWV6ZSgpOw0KDQoJ
-fQ0KDQoJa2ZyZWUoYXVkaW9fZnJhbWUpOw0KCWF1ZGlvX2ZyYW1lID0gTlVMTDsNCgkNCglyZXR1
-cm4gMCA7DQoNCn0NCg==
---000000000000957e420572b41986
-Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;
-	name="hwptr_app_ptr_buf_pos_analysis.xlsx"
-Content-Disposition: attachment;
-	filename="hwptr_app_ptr_buf_pos_analysis.xlsx"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jkglilfe1>
-X-Attachment-Id: f_jkglilfe1
-
-UEsDBBQABgAIAAAAIQCeLGxvawEAABAFAAATAAgCW0NvbnRlbnRfVHlwZXNdLnhtbCCiBAIooAAC
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACs
-lMFOwzAMhu9IvEOVK2qzcUAIrdthwBEmMR4gJO4aLU2iOBvb2+NmY0KorELrpVEb+/+/uHYms11j
-si0E1M6WbFyMWAZWOqXtqmTvy+f8nmUYhVXCOAsl2wOy2fT6arLce8CMsi2WrI7RP3COsoZGYOE8
-WNqpXGhEpNew4l7ItVgBvx2N7rh0NoKNeWw12HTyCJXYmJg97ejzgSSAQZbND4GtV8mE90ZLEYmU
-b6365ZIfHQrKTDFYa483hMF4p0O787fBMe+VShO0gmwhQnwRDWHwneGfLqw/nFsX50U6KF1VaQnK
-yU1DFSjQBxAKa4DYmCKtRSO0/eY+45+CkadlPDBIe74k3MMR6X8DT8/LEZJMjyHGvQEcuuxJtM+5
-FgHUWww0GYMD/NTu4ZDCyHlNLTJwEU665/ypbxfBeaQJDvB/gO8RbbNzT0IQoobTkHY1+8mRpv/i
-E0N7vyhQHd483WfTLwAAAP//AwBQSwMEFAAGAAgAAAAhALVVMCP0AAAATAIAAAsACAJfcmVscy8u
-cmVscyCiBAIooAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-AAAAAAAAAAAAAACskk1PwzAMhu9I/IfI99XdkBBCS3dBSLshVH6ASdwPtY2jJBvdvyccEFQagwNH
-f71+/Mrb3TyN6sgh9uI0rIsSFDsjtnethpf6cXUHKiZylkZxrOHEEXbV9dX2mUdKeSh2vY8qq7io
-oUvJ3yNG0/FEsRDPLlcaCROlHIYWPZmBWsZNWd5i+K4B1UJT7a2GsLc3oOqTz5t/15am6Q0/iDlM
-7NKZFchzYmfZrnzIbCH1+RpVU2g5abBinnI6InlfZGzA80SbvxP9fC1OnMhSIjQS+DLPR8cloPV/
-WrQ08cudecQ3CcOryPDJgosfqN4BAAD//wMAUEsDBBQABgAIAAAAIQCSB5TsBAEAAD8DAAAaAAgB
-eGwvX3JlbHMvd29ya2Jvb2sueG1sLnJlbHMgogQBKKAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-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
-bFBLBQYAAAAACwALAL4CAACuKAAAAAA=
---000000000000957e420572b41986
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---000000000000957e420572b41986--
+>
+>> 3) (optional) see if there's a way to use the jack as a line in or
+>> stereo mic in.
+>>
+>> I'm not sure where to start.
+>>
+>> Alex
+>>
+>> [1] https://bugzilla.kernel.org/show_bug.cgi?id=189331
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
