@@ -1,20 +1,26 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: Spectre x360 fixing the top speakers (again)
-Date: Sun, 5 Aug 2018 14:14:47 -0400
-Message-ID: <CAM8Agx3S6DcTnGtxodqbQZy+e7_pzB387NPQeQ5qQiydNJPjxw@mail.gmail.com>
-References: <b34c110f-b5a0-6c02-4ad6-efb1990492bd@gmail.com>
- <s5h600ou4x8.wl-tiwai@suse.de>
+From: David Ulricht <david.ulricht434@gmail.com>
+Subject: Re: CS8409 Macbook Pro 2016 2017
+Date: Sun, 5 Aug 2018 21:58:59 +0300
+Message-ID: <CALbf9MzMsogqx8+hco7p9rRqxBy8iLD4emr==6DO6PLxP3iBEw@mail.gmail.com>
+References: <CALbf9MzcxBqkBP4mbUKht72Ga6VnTubeiHcTr2joEf7i-enxFQ@mail.gmail.com>
+ <s5h7el6vd91.wl-tiwai@suse.de>
+ <CALbf9Mw=Y5ddFZDZQ4_mfYCHxKb9XFHN3v5ge0JaTca7NLMM7A@mail.gmail.com>
+ <s5hzhy2t7ww.wl-tiwai@suse.de>
+ <CALbf9MwN4pEk26R9c2-UMxzvLXQ3OOBTcqgdSvXeFb-dw7-Wnw@mail.gmail.com>
+ <s5hwot6t5qz.wl-tiwai@suse.de>
+ <CALbf9MzYvcz+d0HKmvc60WhTHVpiuTK8O66qNH3Xcuo5j3uU9Q@mail.gmail.com>
+ <s5h1sbcu1t1.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f45.google.com (mail-oi0-f45.google.com
- [209.85.218.45])
- by alsa0.perex.cz (Postfix) with ESMTP id A25622676A0
- for <alsa-devel@alsa-project.org>; Sun,  5 Aug 2018 20:14:48 +0200 (CEST)
-Received: by mail-oi0-f45.google.com with SMTP id n21-v6so18405869oig.3
- for <alsa-devel@alsa-project.org>; Sun, 05 Aug 2018 11:14:48 -0700 (PDT)
-In-Reply-To: <s5h600ou4x8.wl-tiwai@suse.de>
+Received: from mail-oi0-f51.google.com (mail-oi0-f51.google.com
+ [209.85.218.51])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B16D2673A0
+ for <alsa-devel@alsa-project.org>; Sun,  5 Aug 2018 20:59:01 +0200 (CEST)
+Received: by mail-oi0-f51.google.com with SMTP id 13-v6so18496549ois.1
+ for <alsa-devel@alsa-project.org>; Sun, 05 Aug 2018 11:59:01 -0700 (PDT)
+In-Reply-To: <s5h1sbcu1t1.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,93 +31,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: tom@decompile.me.uk, alsa-devel@alsa-project.org, Kailang <kailang@realtek.com>, "Alex G." <mr.nuke.me@gmail.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi!
+>
+>
+> OK, then it's not about GPIO, something else.
+> It's hard to know without the datasheet...
 
-Seeing that you're lacking knowledge of specific vendor verbs, this
-may be a place where my program QemuHDADump could be effective. You
-can find it on Github. It will dump the verbs used from a virtual
-machine into a file. From there, you can probably see what's going on.
-I'd be willing to look through the dump for you to see if there's
-anything that looks unusual. I used this on the Sound Blaster cards
-from Creative that weren't working, so I'm sure it could work in your
-situation, too.
 
-Not sure if commenting on mailing list threads like this is alright -
-if it isn't, let me know.
+Can't we get a little help from Cirrus Logic, unofficially not breaking NDA
+someone from them to pretend to be a noob that tried few things and
+actually give us some hints?
+Doubt they will drop us the datasheet.
 
-On Sun, Aug 5, 2018 at 12:57 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Sun, 05 Aug 2018 18:28:57 +0200,
->  Alex G.  wrote:
->>
->> It's only been since 4.18-rc2 that the speaker issue on the x360 [1]
->> was resolved. I didn't even know I had four speakers until seeing that
->> bug report. My HP Spectre x360 (13-ae0xx) has the same issue as the
->> original x360 with Bang speakers.
->>
->> The subsystem PCI ID is different [103c:83b9]. Of the two fixes
->> developed in [1], only the mute led fix works when the PCI id is added
->> to patch-realtek. If I try to add the full ALC295_FIXUP_HP_X360 fix,
->> there's no audio coming out at all.
->>
->> One thing I tried was to boot W10 virtual machine and redirect the
->> audio PCI device to the VM:
->> 0:1f.3 Audio device: Intel Corporation Sunrise Point-LP HD Audio (rev 21)
->> It all worked in the VM, but as soon as I shut it down and tried to
->> play audio from linux, the top speakers still didn't work. The
->> difference being that PAVUcontrol could see a "4.0 output"
->> configuration. The same issue: audio sent to the bottom speakers was
->> heard, but audio sent to the top speakers was not.
->>
->> Since I'm likely going to have to change _everything_ anyway, here's
->> what I'm trying to achieve:
->>
->>
->> 1) Make the top speakers great again. Whether they produce the same
->> sound as the bottom speakers, or have their own audio channel, I don't
->> care that much.
+
+> Yes, NID 0x01 is usually the right value, which means AFG.
 >
-> Well, "again" -- you have never got it working on Linux, right?
+> At least I understood correctly and learned something.
+Then what comes to mind is that my [pincfg] might be wrong or actually not
+applying correctly in the driver if I cannot verify it from the codec#0
+file as you said, you sure the C code of that generic Cirrus Logic won't
+interfere somehow ?
+What comes to my mind is some type of simple test C code that sends to the
+device some continuous sound from C code using the [pincfg] I got from
+Windows, do you happen to have that ?
+Do those codecs have this Beep sound that is present in the codec#0 as an
+output device, can't we try to make the sound card beep ? Anything to prove
+we can interact with it somehow.
+
+
+
+> BTW, I noticed that there is some downstream patch.  Is it the repo
+> you mentioned earlier?
+>   https://github.com/joelkraehemann/hda-tool/blob/
+> master/patch_cirrus.c.patch
 >
-> The top speaker thing is likely the missing initialization of I2S amp,
-> EQ or DRC, which seem to be done via vendor-specific COEF verbs.
-> The Windows VM work just because these initializations are done in
-> Windows side.  You'd need to get these init verbs, but it's a tough
-> issue.  The best would be to get the proper data from the vendor.
-> Unfortunately HP seems have zero interest in supporting the device on
-> Linux at all.  Luckily we've got the data kindly from Realtek at the
-> previous time for one x360 model after Tom's great effort.
+> Did you try that?
 >
-> Hopefully Kailang (Cc'ed here) may ask his colleagues and get some
-> info...
->
->
->> 2) Be able to use the speakers when something is plugged in the
->> headphone jack. Right now it's stupid. I try to plug in a microphone
->> (with the proper TRRS jack), and the speakers die. I haven't seen this
->> before. I was playing with HDA-Analyzer and was able to get speaker
->> sounds with a dummy plugged in the jack, so I know it's possible. I
->> don't remember how I did it, and it only worked once.
->
-> The TRRS handling is again very much vendor-specific, and most likely
-> one of the existing methods may fit.  Check the headset-related
-> helpers and callbacks in patch_realtek.c.
->
->
-> Takashi
->
->> 3) (optional) see if there's a way to use the jack as a line in or
->> stereo mic in.
->>
->> I'm not sure where to start.
->>
->> Alex
->>
->> [1] https://bugzilla.kernel.org/show_bug.cgi?id=189331
->>
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+
+Not really, I have checked his posts in the bugzilla and he says that this
+is the fixups for iMac27 and the card there is slightly different, and he
+mentioned December 2017 that none of he tried works, and the code age is
+earlier.
+Plus I don't see a single place where he uses my [pincfg] e.g. 0x24 and
+0x25 for speakers, he mentioned he tried 0x2b 0x2c if not mistaken, and
+think that are the speakers.
+https://bugzilla.kernel.org/show_bug.cgi?id=195671
+He mentions that he thinks its integrated circuit MAX98357BEWL.Which I
+can't confirm but well it might be.
+
+I tried to get to debug Windows kernel driver but happens that the Macbook
+pro 2017 13 nontb has only 2 Thunderbolt3 ports, and to debug the kernel
+drive you need a supported Ethernet device officially by microsoft, and
+mine usb-c ethernet is a new Realtek that is not supported, I'll need to
+find a usb2,3 ethernet that has a supported chip which might be difficult,
+no guarantee I will understand anything from the windows kernel debugging.
+
+Note that when you insert Thunderbolt3 adapter, that has HDMI adapter, the
+Audio over HDMI is working, multiple sources confirmed this.
+I suspect that the kernel enables HDMI audio and apple might have
+integrated hardware automatic switch when you enable HDMI internal sound
+card turns off, is there any way that I can prohibit HDMI audio codec#2 not
+even to load during kernel boot?
+Is that even possible to disable the HDMI audio if it comes from the i915
+video card ? Does the above make sense at all ?
