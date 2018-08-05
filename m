@@ -1,22 +1,12 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH 12/12] ASoC: wm8903: use true and false for
-	boolean values
-Date: Sat, 4 Aug 2018 16:56:02 -0500
-Message-ID: <a5b8afe476543dc45d3049b72b5dc718fbe1a010.1533418275.git.gustavo@embeddedor.com>
-References: <cover.1533418275.git.gustavo@embeddedor.com>
+From: net147@gmail.com
+Subject: [PATCH] alsabat: Allow custom sample format for round
+	trip latency test
+Date: Sun,  5 Aug 2018 13:59:35 +1000
+Message-ID: <5b6676ab.1c69fb81.29f70.d84d@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway20.websitewelcome.com (gateway20.websitewelcome.com
- [192.185.47.18])
- by alsa0.perex.cz (Postfix) with ESMTP id 009C72677CE
- for <alsa-devel@alsa-project.org>; Sat,  4 Aug 2018 23:56:04 +0200 (CEST)
-Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
- by gateway20.websitewelcome.com (Postfix) with ESMTP id 31B33400C5D2B
- for <alsa-devel@alsa-project.org>; Sat,  4 Aug 2018 16:56:04 -0500 (CDT)
-Content-Disposition: inline
-In-Reply-To: <cover.1533418275.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,36 +16,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org
-Cc: patches@opensource.cirrus.com
+To: patch@alsa-project.org
+Cc: alsa-devel@alsa-project.org, Jonathan Liu <net147@gmail.com>, Zhang Vivian <vivian.zhang@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Return statements in functions returning bool should use true or false
-instead of an integer value.
+From: Jonathan Liu <net147@gmail.com>
 
-This code was detected with the help of Coccinelle.
+Setting the format to BAT_PCM_FORMAT_S16_LE in the round trip latency
+test initialization is redundant as it is already set by default to
+BAT_PCM_FORMAT_S16_LE unless a sample format is specified on the command
+line.
 
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Signed-off-by: Jonathan Liu <net147@gmail.com>
 ---
- sound/soc/codecs/wm8903.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ bat/latencytest.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index 7b8b6ef..6cb3c15 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -251,10 +251,10 @@ static bool wm8903_volatile_register(struct device *dev, unsigned int reg)
- 	case WM8903_DC_SERVO_READBACK_2:
- 	case WM8903_DC_SERVO_READBACK_3:
- 	case WM8903_DC_SERVO_READBACK_4:
--		return 1;
-+		return true;
- 
- 	default:
--		return 0;
-+		return false;
- 	}
+diff --git a/bat/latencytest.c b/bat/latencytest.c
+index fae191c..ec3abe2 100644
+--- a/bat/latencytest.c
++++ b/bat/latencytest.c
+@@ -178,7 +178,6 @@ void roundtrip_latency_init(struct bat *bat)
+ 	bat->latency.is_playing = false;
+ 	bat->latency.error = 0;
+ 	bat->latency.xrun_error = false;
+-	bat->format = BAT_PCM_FORMAT_S16_LE;
+ 	bat->frames = LATENCY_TEST_TIME_LIMIT * bat->rate;
+ 	bat->periods_played = 0;
  }
- 
 -- 
-2.7.4
+2.18.0
