@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7219: use true and false for boolean
+Subject: Applied "ASoC: wm8996: use true and false for boolean
 	values" to the asoc tree
-Date: Mon,  6 Aug 2018 12:41:53 +0100 (BST)
-Message-ID: <20180806114153.3864C1124240@debutante.sirena.org.uk>
-References: <aa152e8c761cf717f221fd04642efef48142f7f5.1533418275.git.gustavo@embeddedor.com>
+Date: Mon,  6 Aug 2018 12:42:03 +0100 (BST)
+Message-ID: <20180806114203.B55911124240@debutante.sirena.org.uk>
+References: <d6c8a37703ecad97a48f5ba080ceec38697d100e.1533418275.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AC119267833
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:41:53 +0200 (CEST)
-In-Reply-To: <aa152e8c761cf717f221fd04642efef48142f7f5.1533418275.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D880926782A
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:42:04 +0200 (CEST)
+In-Reply-To: <d6c8a37703ecad97a48f5ba080ceec38697d100e.1533418275.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, patches@opensource.cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7219: use true and false for boolean values
+   ASoC: wm8996: use true and false for boolean values
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 965afd3c1dbaf293bfa9452aaf0a7e53d78d07f3 Mon Sep 17 00:00:00 2001
+>From eb086306bc6b42dc2c538ec2350d44a82d1a835b Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Sat, 4 Aug 2018 16:53:10 -0500
-Subject: [PATCH] ASoC: da7219: use true and false for boolean values
+Date: Sat, 4 Aug 2018 16:52:35 -0500
+Subject: [PATCH] ASoC: wm8996: use true and false for boolean values
 
 Return statements in functions returning bool should use true or false
 instead of an integer value.
@@ -63,19 +63,32 @@ instead of an integer value.
 This code was detected with the help of Coccinelle.
 
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm8996.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index 980a6a8bf56d..c0144f2f8174 100644
---- a/sound/soc/codecs/da7219.c
-+++ b/sound/soc/codecs/da7219.c
-@@ -2143,9 +2143,9 @@ static bool da7219_volatile_register(struct device *dev, unsigned int reg)
- 	case DA7219_ACCDET_IRQ_EVENT_B:
- 	case DA7219_ACCDET_CONFIG_8:
- 	case DA7219_SYSTEM_STATUS:
+diff --git a/sound/soc/codecs/wm8996.c b/sound/soc/codecs/wm8996.c
+index 78a408236cfb..91711f8958c5 100644
+--- a/sound/soc/codecs/wm8996.c
++++ b/sound/soc/codecs/wm8996.c
+@@ -1498,9 +1498,9 @@ static bool wm8996_readable_register(struct device *dev, unsigned int reg)
+ 	case WM8996_RIGHT_PDM_SPEAKER:
+ 	case WM8996_PDM_SPEAKER_MUTE_SEQUENCE:
+ 	case WM8996_PDM_SPEAKER_VOLUME:
+-		return 1;
++		return true;
+ 	default:
+-		return 0;
++		return false;
+ 	}
+ }
+ 
+@@ -1522,9 +1522,9 @@ static bool wm8996_volatile_register(struct device *dev, unsigned int reg)
+ 	case WM8996_MIC_DETECT_3:
+ 	case WM8996_HEADPHONE_DETECT_1:
+ 	case WM8996_HEADPHONE_DETECT_2:
 -		return 1;
 +		return true;
  	default:
