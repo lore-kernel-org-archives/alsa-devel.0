@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5631: use true and false for boolean
+Subject: Applied "ASoC: max9850: use true and false for boolean
 	values" to the asoc tree
-Date: Mon,  6 Aug 2018 12:43:29 +0100 (BST)
-Message-ID: <20180806114329.765BE1124240@debutante.sirena.org.uk>
-References: <76b053970c83ca02ef016b39108754b4bf83527a.1533418275.git.gustavo@embeddedor.com>
+Date: Mon,  6 Aug 2018 12:43:39 +0100 (BST)
+Message-ID: <20180806114339.A81101124240@debutante.sirena.org.uk>
+References: <99d07804559a7dfd13658f76b2071aef32b92204.1533418275.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D7D862676A3
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:43:30 +0200 (CEST)
-In-Reply-To: <76b053970c83ca02ef016b39108754b4bf83527a.1533418275.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C36D2676A3
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:43:40 +0200 (CEST)
+In-Reply-To: <99d07804559a7dfd13658f76b2071aef32b92204.1533418275.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5631: use true and false for boolean values
+   ASoC: max9850: use true and false for boolean values
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 508e8641f89cc89554adbec3ce59bcd28a4ced4b Mon Sep 17 00:00:00 2001
+>From 038541dae968dbef99edca4b22bbb2a7b4afdc83 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Sat, 4 Aug 2018 16:49:55 -0500
-Subject: [PATCH] ASoC: rt5631: use true and false for boolean values
+Date: Sat, 4 Aug 2018 16:49:02 -0500
+Subject: [PATCH] ASoC: max9850: use true and false for boolean values
 
 Return statements in functions returning bool should use true or false
 instead of an integer value.
@@ -65,29 +65,17 @@ This code was detected with the help of Coccinelle.
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5631.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ sound/soc/codecs/max9850.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
-index e52e4670cf65..865f49ac38dd 100644
---- a/sound/soc/codecs/rt5631.c
-+++ b/sound/soc/codecs/rt5631.c
-@@ -105,9 +105,9 @@ static bool rt5631_volatile_register(struct device *dev, unsigned int reg)
- 	case RT5631_INDEX_ADD:
- 	case RT5631_INDEX_DATA:
- 	case RT5631_EQ_CTRL:
--		return 1;
-+		return true;
- 	default:
--		return 0;
-+		return false;
- 	}
- }
- 
-@@ -164,9 +164,9 @@ static bool rt5631_readable_register(struct device *dev, unsigned int reg)
- 	case RT5631_VENDOR_ID:
- 	case RT5631_VENDOR_ID1:
- 	case RT5631_VENDOR_ID2:
+diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
+index 74d7f52c7e73..6e6134589588 100644
+--- a/sound/soc/codecs/max9850.c
++++ b/sound/soc/codecs/max9850.c
+@@ -52,9 +52,9 @@ static bool max9850_volatile_register(struct device *dev, unsigned int reg)
+ 	switch (reg) {
+ 	case MAX9850_STATUSA:
+ 	case MAX9850_STATUSB:
 -		return 1;
 +		return true;
  	default:
