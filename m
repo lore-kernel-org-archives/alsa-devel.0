@@ -1,78 +1,34 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/5] ASoC: qcom: make common.c as proper module
-Date: Mon,  6 Aug 2018 11:12:05 +0100
-Message-ID: <20180806101209.15167-2-srinivas.kandagatla@linaro.org>
-References: <20180806101209.15167-1-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 0/5] ASoC: qcom: few trival fixes
+Date: Mon,  6 Aug 2018 11:12:04 +0100
+Message-ID: <20180806101209.15167-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180806101209.15167-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, lgirdwood@gmail.com, alsa-devel@alsa-project.org
 Cc: perex@perex.cz, tiwai@suse.com, vkoul@kernel.org, linux-kernel@vger.kernel.org, rohitkr@codeaurora.org, bgoswami@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch converts common helper functions in to proper module
-and also fixes below warning.
+This patchset have few trivial fixes, 3 of them to do with cleaning up the
+unused header files, 1 patch is to do with fixing warning on common.c and
+other is to add missing AIF_IN dapm for slim tx ports.
 
-WARNING: sound/soc/qcom/snd-soc-sdm845: 'qcom_snd_parse_of' exported twice.
-Previous export was in sound/soc/qcom/snd-soc-apq8096.ko
+Thanks,
+srini
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- sound/soc/qcom/Kconfig  | 5 +++++
- sound/soc/qcom/Makefile | 6 ++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
+Srinivas Kandagatla (5):
+  ASoC: qcom: make common.c as proper module
+  ASoC: apq8096: remove unused header files
+  ASoC: sdm845: remove unused header files
+  ASoC: qcom: remove unused header files from common.h
+  ASoC: qdsp6: q6afe-dai: add SLIM tx AIF_IN dapm
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 5f03312ef007..2a4c912d1e48 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -41,6 +41,9 @@ config SND_SOC_APQ8016_SBC
-           APQ8016 SOC-based systems.
-           Say Y if you want to use audio devices on MI2S.
- 
-+config SND_SOC_QCOM_COMMON
-+	tristate
-+
- config SND_SOC_QDSP6_COMMON
- 	tristate
- 
-@@ -86,6 +89,7 @@ config SND_SOC_MSM8996
- 	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
- 	depends on QCOM_APR
- 	select SND_SOC_QDSP6
-+	select SND_SOC_QCOM_COMMON
- 	help
-           Support for Qualcomm Technologies LPASS audio block in
-           APQ8096 SoC-based systems.
-@@ -95,6 +99,7 @@ config SND_SOC_SDM845
- 	tristate "SoC Machine driver for SDM845 boards"
- 	depends on QCOM_APR
- 	select SND_SOC_QDSP6
-+	select SND_SOC_QCOM_COMMON
- 	help
- 	  To add support for audio on Qualcomm Technologies Inc.
- 	  SDM845 SoC-based systems.
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index f0e94d48ba98..41b2c7a23a4d 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -13,13 +13,15 @@ obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
- # Machine
- snd-soc-storm-objs := storm.o
- snd-soc-apq8016-sbc-objs := apq8016_sbc.o
--snd-soc-apq8096-objs := apq8096.o common.o
--snd-soc-sdm845-objs := sdm845.o common.o
-+snd-soc-apq8096-objs := apq8096.o
-+snd-soc-sdm845-objs := sdm845.o
-+snd-soc-qcom-common-objs := common.o
- 
- obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
- obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
- obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
- obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
-+obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
- 
- #DSP lib
- obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
+ sound/soc/qcom/Kconfig           | 5 +++++
+ sound/soc/qcom/Makefile          | 6 ++++--
+ sound/soc/qcom/apq8096.c         | 2 --
+ sound/soc/qcom/common.h          | 1 -
+ sound/soc/qcom/qdsp6/q6afe-dai.c | 7 +++++++
+ sound/soc/qcom/sdm845.c          | 2 --
+ 6 files changed, 16 insertions(+), 7 deletions(-)
+
 -- 
 2.16.2
