@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Set delay value for the capture
-	case" to the asoc tree
-Date: Mon,  6 Aug 2018 17:06:06 +0100 (BST)
-Message-ID: <20180806160606.8E541440078@finisterre.ee.mobilebroadband>
-References: <1533540439-18735-3-git-send-email-akshu.agrawal@amd.com>
+Subject: Applied "ASoC: AMD: Modified DMA pointer for capture"
+	to the asoc tree
+Date: Mon,  6 Aug 2018 17:06:14 +0100 (BST)
+Message-ID: <20180806160614.EEA7E440078@finisterre.ee.mobilebroadband>
+References: <1533540439-18735-2-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E9282677A2
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 18:06:08 +0200 (CEST)
-In-Reply-To: <1533540439-18735-3-git-send-email-akshu.agrawal@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 75446267857
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 18:06:17 +0200 (CEST)
+In-Reply-To: <1533540439-18735-2-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,14 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, open list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "Mukunda, , Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, akshu.agrawal@amd.com, Guenter Roeck <linux@roeck-us.net>
+To: Mukunda@sirena.org.uk
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Takashi Iwai <tiwai@suse.com>, open list <linux-kernel@vger.kernel.org>, djkurtz@chromium.org, akshu.agrawal@amd.com, Mark Brown <broonie@kernel.org>, "Mukunda, ,
+ Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Set delay value for the capture case
+   ASoC: AMD: Modified DMA pointer for capture
 
 has been applied to the asoc tree at
 
@@ -52,68 +54,97 @@ to this mail.
 Thanks,
 Mark
 
->From c21c834adb5bc81e7081aa93ac50619c6d060506 Mon Sep 17 00:00:00 2001
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Date: Mon, 6 Aug 2018 12:57:16 +0530
-Subject: [PATCH] ASoC: AMD: Set delay value for the capture case
+>From 662fb3efe7ee835f0eeba6bc63b81e82a97fc312 Mon Sep 17 00:00:00 2001
+From: "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>
+Date: Mon, 6 Aug 2018 12:57:15 +0530
+Subject: [PATCH] ASoC: AMD: Modified DMA pointer for capture
 
-ACP->SYSMEM DMA happens at every I2S->SYSMEM period
-completion. Thus, there is delay of x frames till
-I2S->SYSMEM reaches a period length. This delay is
-communicated to user space.
+Give position on ACP->SYSMEM DMA channel for
+the number of bytes that have been transferred on
+the basis of current descriptor under service.
 
+Signed-off-by: Vijendar Mukunda <Vijendar.Mukunda@amd.com>
 Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ sound/soc/amd/acp-pcm-dma.c | 31 ++++++++++++++++++-------------
+ sound/soc/amd/acp.h         |  1 +
+ 2 files changed, 19 insertions(+), 13 deletions(-)
 
 diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 32f27c5e4d93..e359938e3d7e 100644
+index 816abd65a6ed..32f27c5e4d93 100644
 --- a/sound/soc/amd/acp-pcm-dma.c
 +++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -922,6 +922,10 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+@@ -922,10 +922,7 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
  			rtd->destination = FROM_BLUETOOTH;
  			rtd->dma_dscr_idx_1 = CAPTURE_START_DMA_DESCR_CH10;
  			rtd->dma_dscr_idx_2 = CAPTURE_START_DMA_DESCR_CH11;
-+			rtd->byte_cnt_high_reg_offset =
-+					mmACP_I2S_BT_RECEIVE_BYTE_CNT_HIGH;
-+			rtd->byte_cnt_low_reg_offset =
-+					mmACP_I2S_BT_RECEIVE_BYTE_CNT_LOW;
- 			rtd->dma_curr_dscr = mmACP_DMA_CUR_DSCR_11;
+-			rtd->byte_cnt_high_reg_offset =
+-					mmACP_I2S_BT_RECEIVE_BYTE_CNT_HIGH;
+-			rtd->byte_cnt_low_reg_offset =
+-					mmACP_I2S_BT_RECEIVE_BYTE_CNT_LOW;
++			rtd->dma_curr_dscr = mmACP_DMA_CUR_DSCR_11;
  			adata->capture_i2sbt_stream = substream;
  			break;
-@@ -942,6 +946,10 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
+ 		case I2S_SP_INSTANCE:
+@@ -945,10 +942,7 @@ static int acp_dma_hw_params(struct snd_pcm_substream *substream,
  			rtd->destination = FROM_ACP_I2S_1;
  			rtd->dma_dscr_idx_1 = CAPTURE_START_DMA_DESCR_CH14;
  			rtd->dma_dscr_idx_2 = CAPTURE_START_DMA_DESCR_CH15;
-+			rtd->byte_cnt_high_reg_offset =
-+					mmACP_I2S_RECEIVED_BYTE_CNT_HIGH;
-+			rtd->byte_cnt_low_reg_offset =
-+					mmACP_I2S_RECEIVED_BYTE_CNT_LOW;
- 			rtd->dma_curr_dscr = mmACP_DMA_CUR_DSCR_15;
+-			rtd->byte_cnt_high_reg_offset =
+-					mmACP_I2S_RECEIVED_BYTE_CNT_HIGH;
+-			rtd->byte_cnt_low_reg_offset =
+-					mmACP_I2S_RECEIVED_BYTE_CNT_LOW;
++			rtd->dma_curr_dscr = mmACP_DMA_CUR_DSCR_15;
  			adata->capture_i2ssp_stream = substream;
  		}
-@@ -997,7 +1005,7 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 	}
+@@ -1002,6 +996,8 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 	u32 buffersize;
  	u32 pos = 0;
  	u64 bytescount = 0;
- 	u16 dscr;
--	u32 period_bytes;
-+	u32 period_bytes, delay;
++	u16 dscr;
++	u32 period_bytes;
  
  	struct snd_pcm_runtime *runtime = substream->runtime;
  	struct audio_substream_data *rtd = runtime->private_data;
-@@ -1012,6 +1020,11 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
- 			pos = period_bytes;
- 		else
- 			pos = 0;
+@@ -1009,11 +1005,20 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+ 	if (!rtd)
+ 		return -EINVAL;
+ 
+-	buffersize = frames_to_bytes(runtime, runtime->buffer_size);
+-	bytescount = acp_get_byte_count(rtd);
+-
+-	bytescount -= rtd->bytescount;
+-	pos = do_div(bytescount, buffersize);
++	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
++		period_bytes = frames_to_bytes(runtime, runtime->period_size);
++		dscr = acp_reg_read(rtd->acp_mmio, rtd->dma_curr_dscr);
++		if (dscr == rtd->dma_dscr_idx_1)
++			pos = period_bytes;
++		else
++			pos = 0;
++	} else {
++		buffersize = frames_to_bytes(runtime, runtime->buffer_size);
 +		bytescount = acp_get_byte_count(rtd);
 +		if (bytescount > rtd->bytescount)
 +			bytescount -= rtd->bytescount;
-+		delay = do_div(bytescount, period_bytes);
-+		runtime->delay = bytes_to_frames(runtime, delay);
- 	} else {
- 		buffersize = frames_to_bytes(runtime, runtime->buffer_size);
- 		bytescount = acp_get_byte_count(rtd);
++		pos = do_div(bytescount, buffersize);
++	}
+ 	return bytes_to_frames(runtime, pos);
+ }
+ 
+diff --git a/sound/soc/amd/acp.h b/sound/soc/amd/acp.h
+index 0a2240bff62e..be3963e8f4fa 100644
+--- a/sound/soc/amd/acp.h
++++ b/sound/soc/amd/acp.h
+@@ -138,6 +138,7 @@ struct audio_substream_data {
+ 	u32 sram_bank;
+ 	u32 byte_cnt_high_reg_offset;
+ 	u32 byte_cnt_low_reg_offset;
++	u32 dma_curr_dscr;
+ 	uint64_t size;
+ 	u64 bytescount;
+ 	void __iomem *acp_mmio;
 -- 
 2.18.0
