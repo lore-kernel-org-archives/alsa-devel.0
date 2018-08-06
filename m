@@ -1,21 +1,26 @@
-From: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Subject: =?utf-8?b?562U5aSNOiDnrZTlpI06IOetlOWkjTogIEEgYnVn?=
- =?utf-8?q?_about_cache_inconsistency_report?=
-Date: Mon, 6 Aug 2018 04:01:34 +0000
-Message-ID: <6da6ea670ec84b438f59d1d91070903c@zhaoxin.com>
-References: <12ceb41dedc54433bc7331f4378af9ba@zhaoxin.com>
- <s5hd0v1m9ta.wl-tiwai@suse.de>	<52fa69af57704bb2984baa113d15b1f2@zhaoxin.com>
- <s5h1sbhm1dn.wl-tiwai@suse.de>	<fd1d78d3a46845f2867fbc79deabe066@zhaoxin.com>
- <s5h8t5olttt.wl-tiwai@suse.de>
+From: Yu-hsuan Hsu <yuhsuan@google.com>
+Subject: Re: A question about period
+Date: Mon, 6 Aug 2018 13:57:16 +0800
+Message-ID: <CAEy1m_DEB_YAX+UEp=AU2TQ7jQTR7+rmjJzXL0q56np0TPgOtw@mail.gmail.com>
+References: <CAEy1m_DhdnfaRQADr4DaurCNnCi0fmCna5tJXEk9dA+KQ8jfcw@mail.gmail.com>
+ <s5ha7q3x5wy.wl-tiwai@suse.de>
+ <CAEy1m_CgOCi4sUcju7Ydzt+iGHHg+0ZHjc-m2W2QJdKVSaHVCg@mail.gmail.com>
+ <s5hlg9nkg2x.wl-tiwai@suse.de>
+ <CAEy1m_Ax7ZvvXF__4Qr_bt0mbAa8Z+8zFuzyQrQSC8PbDBVU-A@mail.gmail.com>
+ <s5h600rkb9z.wl-tiwai@suse.de>
+ <CAEy1m_CWn6rqUV-VvX-2PS7R9_424WFe9x0rAdUBzAb6Me6oPw@mail.gmail.com>
+ <s5hr2jfuwrs.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ZXSHCAS2.zhaoxin.com (unknown [203.148.12.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B3AE2673A0
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 06:01:45 +0200 (CEST)
-In-Reply-To: <s5h8t5olttt.wl-tiwai@suse.de>
-Content-Language: zh-CN
+Received: from mail-oi0-f53.google.com (mail-oi0-f53.google.com
+ [209.85.218.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0380C26770D
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 07:57:29 +0200 (CEST)
+Received: by mail-oi0-f53.google.com with SMTP id q11-v6so20053771oic.12
+ for <alsa-devel@alsa-project.org>; Sun, 05 Aug 2018 22:57:29 -0700 (PDT)
+In-Reply-To: <s5hr2jfuwrs.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,99 +30,148 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "Tony W. Wang(BJ-RD)" <TonyWWang@zhaoxin.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "Tim
- Guo(BJ-RD)" <TimGuo@zhaoxin.com>, "Annie Liu(BJ-RD)" <AnnieLiu@zhaoxin.com>
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-DQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCuWPkeS7tuS6ujogVGFrYXNoaSBJd2FpIFttYWls
-dG86dGl3YWlAc3VzZS5kZV0NCuWPkemAgeaXtumXtDogMDIgQXVndXN0IDIwMTggMjI6MzYNCuaU
-tuS7tuS6ujogSGFucyBIdShTSC1SRCkgPEhhbnNIdUB6aGFveGluLmNvbT4NCuaKhOmAgTogJ2Fs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZycgPGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4N
-CuS4u+mimDogUmU6IOetlOWkjTog562U5aSNOiBbYWxzYS1kZXZlbF0gQSBidWcgYWJvdXQgY2Fj
-aGUgaW5jb25zaXN0ZW5jeSByZXBvcnQNCg0KT24gVGh1LCAwMiBBdWcgMjAxOCAxNTo1OTozMSAr
-MDIwMCwNCkhhbnMgSHUoU0gtUkQpIHdyb3RlOg0KPg0KPiA+IDEuIG5vaXNlIHJlbGF0ZSB0ZXN0
-Og0KPiA+IFdoZW4gSSBhbm5vdGF0ZSB0aGUgcmV0dXJuIGFmdGVyIHNldF9wYWdlc19hcnJheV93
-YywgdGhlbg0KPiA+IHNldF9tZW1vcnlfd2Mgd29ya3MsIG5vaXNlIGRpc2FwcGVhciBzdGF0aWMg
-dm9pZA0KPiA+IF9fbWFya19wYWdlc193YyhzdHJ1Y3QgYXp4ICpjaGlwLCBzdHJ1Y3Qgc25kX2Rt
-YV9idWZmZXIgKmRtYWIsIGJvb2wNCj4gPiBvbikgeyAuLi4NCj4gPiBzZXRfcGFnZXNfYXJyYXlf
-d2Ioc2didWYtPnBhZ2VfdGFibGUsIHNnYnVmLT5wYWdlcyk7IC8vcmV0dXJuOyB9DQo+ID4gI2Vu
-ZGlmDQo+DQo+ID4gc2V0X21lbW9yeV91YygpIHBlcmZvcm1zIF9fcGEoKSBmb3IgdGhlIGdpdmVu
-IGFkZHJlc3MsIGFuZCBpbiB0aGlzIGNhc2UsIGl0J3Mgdm1hcHBlZCBhZGRyZXNzLiAgU29tZXRo
-aW5nIGJvZ3VzIGluIHlvdXIgdGVzdCwgSSdtIGFmcmFpZC4NCj4NCj4gW0hhbnM6XSBJIGtub3cg
-X19wYSgpIGhhbmRsZSB0aGUgdm1hcHBlZCBhZGRyZXNzIGlzIHdyb25nLCB0aGF0IHdoeSBJIGRv
-bid0IGtub3cgaG93IHRvIGZpeCB0aGUgcHJvYmxlbSwgSSB0cnkgdGhpcyBiZWNhdXNlIEkgc2Vl
-IGtlcm5lbCBvbGRlciB0aGFuIDMuNy42LiBbYm9ndXM/IHByZXRlbmRpbmcgdG8gYmUgcmVhbCBv
-ciBnZW51aW5lP10gbm8gbm8gbm8sIGJ1dCB0aGUgbm9pc2UgcHJvYmxlbSBtYWNoaW5lKDgwODY6
-MWMyMCkgaW4gYW5vdGhlciBjaXR5LCBJIHdpbGwgbWFrZSBzdXJlIGl0IGFnYWluLg0KDQo+SSBt
-ZWFudCBhYm91dCB0aGUgcmVsaWFiaWxpdHkgb2YgdGhlIHRlc3QgcmVzdWx0LiAgT3Igd2hldGhl
-ciB3ZSdyZSBoZWFkaW5nIHRvIGEgd3JvbmcgZmlzaC4NCj5JbiBhbnl3YXksIHdoaWNoIGtlcm5l
-bCB2ZXJzaW9uIGFyZSB5b3UgdGVzdGluZz8gIEFuZCBleGFjdGx5IHdoYXQgaXMgeW91ciBwcm9i
-bGVtPyAgV2hpY2ggbWFjaGluZSwgd2hpY2ggaGFyZHdhcmUgc2V0dXAgKGNvZGVjLCBldGMpIGFu
-ZCB3aGljaCBvdXRwdXQsIGFuZCBob3cgaXMgdGhlIHNvdW5kIGJhY2tlbmQgKFB1bHNlQXVkaW8g
-b3IgZGlyZWN0IEFMU0Egd3JpdGUpPw0KDQpbSGFuczpdIE9TOiBVYnVudHUgMTcuMTAgKyA0LjEz
-LjAtMjEtZ2VuZXJpYyAob3IgYW55IG9uZSBhZnRlciAzLjcuNikuDQpIVzogbW90aGVyIGJvYXJk
-IGlzIERlbGwgMDQyUDQ5LCBIREEgY29udHJvbGxlciBpcyA4MDg2OjFjMjAsIGNvZGVjIGlzIGN4
-MjA2NDEuDQpPdXRwdXQgYW5kIHNvdW5kIGJhY2tlbmQ6IEV4Y2VwdCB0aGUgY29tbWFuZCBiZWxv
-dywgYW55dGhpbmcgb3RoZXIgaXMgZGVmYXVsdCBzZXR0aW5nLg0KDQpQcm9ibGVtKHdoYXQgSSBo
-YXZlIGRvbmUgYW5kIGZvdW5kKTogV2hlbiBzeXN0ZW0gc2V0dXAsIEkgYWRkICJtb2Rwcm9iZSBz
-bmQtaGFkLWludGVsLnNub29wPTAiIGluIGdydWIsIGFmdGVyIHNldHVwLCBleGVjdXRlIGNvbW1h
-bmQgImFwbGF5IC1EIHBsdWdodzowLDAgNDQuMWtfMTZiXzJjLndhdiIsIHRoZW4gSSBoZWFyIG11
-c2ljIHdpdGggbm9pc2UuIFRoZSByZWFzb24gY2F1c2UgdGhpcyBpcyB0aGUgYnVmZmVyIGFkZHJl
-c3Mgc2hvdWxkIGJlZW4gbWFyayBhcyBXQyB0eXBlIGFuZCB0aGUgX19tYXJrX3BhZ2VzX3djIHdh
-cyBwYXRjaGVkIGZvciB0aGlzLCBidXQgaWYgZGVmaW5lIENPTkZJR19TTkRfRE1BX1NHQlVGLCB0
-aGUgYWN0dWFsIG1hcmtlZCBhZGRyZXNzIGlzIHRoZSBhZGRyZXNzIGJlZm9yZSB2bWFwcGVkKDB4
-ZmZmZjg4Ki4uLiopLCBob3dldmVyIHRoZSBhZGRyZXNzIHVzZWQgaW4gc25kX3BjbV9saWJfd3Jp
-dGVfdHJhbnNmZXIoKSBpcyB0aGUgYWRkcmVzcyBhZnRlciB2bWFwcGVkKDB4ZmZmZmM5Ki4uLiop
-LCBzbyB0aGUgbWFyayBkaWRuJ3Qgd29yayBhbmQgY2FjaGUgaW5jb25zaXN0ZW5jeSBvY2N1cihu
-b2lzZSkuDQoNCj4gPiBBbmQgbW9yZW92ZXIsIGFsbCBJbnRlbCBjaGlwc2V0cyBkbyB3b3JrIHdp
-dGggc25vb3Bpbmcgd2VsbCwgQUZBSUsuDQo+IFtIYW5zOl0geWVzLCBhbGwgSW50ZWwgY2hpcHNl
-dHMgZG8gd29yayB3aXRoIHNub29waW5nIHdlbGwgaGVyZSB0b28uIEFuZCB0aGUgcHJvYmxlbSBj
-YXNlIGhlcmUgaXMgIm5vbi1zbm9vcCIrImFwbGF5IC1EIHBsdWdodzoqLioiKyI0NC4xayAxNmJp
-dCIrIjgwODY6MWMyMCIsIEkgd2lsbCBzZWUgaWYgSSBjYW4gZmluZCBtb3JlIG1hY2hpbmUgZG8g
-dGhlIHRlc3QuDQo+QWgsIHNvIHlvdSBleHBsaWNpdGx5IHRlc3Qgd2l0aCBub24tc25vb3AgbW9k
-ZSBmb3IgdGhpcyBjaGlwc2V0Pw0KPkZvciB3aGF0IHB1cnBvc2UuLi4/DQoNCltIYW5zOl0gWWVz
-LCBJJ3ZlIGJlZW4gdGVzdGluZyBhIEhEQSBjb250cm9sbGVyIHJlY2VudGx5KHByZWRlY2Vzc29y
-IGlzIFZJQSksIGl0IGhhcyB0aGUgc2FtZSBwcm9ibGVtLiBJIHdhbnQgdG8gZmlndXJlIG91dCBp
-ZiBpdCBpcyBoYXJkd2FyZSdzIHByb2JsZW0gb3Igbm90Lg0KDQpbSGFuczpdIEkgZGlkIHRoZSBz
-YW1lIHRlc3Qgb24gYW5vdGhlciBwbGF0Zm9ybSg4MDg2OkExNzApLCBpdCBkbyB3b3JrIHdpdGgg
-bm9uLXNub29wIHdlbGwuICBJbiBhZGRpdGlvbiwgSSBkaWQgc3VjaCBhIGNoYW5nZSwgb25lbGlu
-ZXIsIHRoZSBwdXJwb3NlIGlzIHRvIG1hcmsgbm90aGluZywgYW5kIGl0IHN0aWxsIGRvIHdvcmsg
-d2l0aCBub24tc25vb3Agd2VsbCwgdGhpcyAgc3VwcG9zZWQgdG8gYmUgcmlnaHQ/DQoNCi0tLSBh
-L3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMNCisrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVs
-LmMNCiNpZmRlZiBDT05GSUdfWDg2DQpzdGF0aWMgdm9pZCBfX21hcmtfcGFnZXNfd2Moc3RydWN0
-IGF6eCAqY2hpcCwgc3RydWN0IHNuZF9kbWFfYnVmZmVyICpkbWFiLCBib29sIG9uKQ0Kew0KaW50
-IHBhZ2VzOw0KK3JldHVybjsNCg0KDQoNCj4gPiAyLiBjaGFuZ2UgKl9TRyByZWxhdGUgdGVzdDoN
-Cj4gPiBKdXN0IGZvbGxvd2VkIHlvdXIgcHJvcG9zYWwNCj4gPiAtc25kX3BjbV9saWJfcHJlYWxs
-b2NhdGVfcGFnZXNfZm9yX2FsbChwY20sIFNORFJWX0RNQV9UWVBFX0RFVl9TRywNCj4gPiArc25k
-X3BjbV9saWJfcHJlYWxsb2NhdGVfcGFnZXNfZm9yX2FsbChwY20sIFNORFJWX0RNQV9UWVBFX0RF
-ViwNCj4NCj4gPk9LLCB5b3UgbmVlZCBvbmUgbW9yZSBvbmVsaW5lcjoNCj4NCj4gPmRpZmYgLS1n
-aXQgYS9zb3VuZC9wY2kvaGRhL2hkYV9jb250cm9sbGVyLmMNCj4gPmIvc291bmQvcGNpL2hkYS9o
-ZGFfY29udHJvbGxlci5jIGluZGV4IGExMmU1OTRkNGUzYi4uMmVhZWQ0OTU2ZTdmDQo+ID4xMDA2
-NDQNCj4gPi0tLSBhL3NvdW5kL3BjaS9oZGEvaGRhX2NvbnRyb2xsZXIuYw0KPiA+KysrIGIvc291
-bmQvcGNpL2hkYS9oZGFfY29udHJvbGxlci5jDQo+ID5AQCAtNzA3LDcgKzcwNyw3IEBAIHN0YXRp
-YyBjb25zdCBzdHJ1Y3Qgc25kX3BjbV9vcHMgYXp4X3BjbV9vcHMgPSB7DQo+ICA+LnBvaW50ZXIg
-PSBhenhfcGNtX3BvaW50ZXIsDQo+ICA+LmdldF90aW1lX2luZm8gPSAgYXp4X2dldF90aW1lX2lu
-Zm8sICA+Lm1tYXAgPSBhenhfcGNtX21tYXAsDQo+ID4tLnBhZ2UgPSBzbmRfcGNtX3NnYnVmX29w
-c19wYWdlLA0KPiA+Ky8vIC5wYWdlID0gc25kX3BjbV9zZ2J1Zl9vcHNfcGFnZSwNCj4gPiB9Ow0K
-Pg0KPiA+IHN0YXRpYyB2b2lkIGF6eF9wY21fZnJlZShzdHJ1Y3Qgc25kX3BjbSAqcGNtKQ0KPiBb
-SGFucyA6XSBJIGRpZCB0aGlzLCBhbmQgdGhlIE9vcHMgcmVwb3J0IGFzIHRoZSBzYW1lLg0KDQo+
-TXkgYmFkLCB0aGVyZSBhcmUgb3RoZXIgU0ctYnVmZmVyIGNvZGVzIGluIHNvdW5kL2hkYS8qLCB0
-b28uDQoNCj5TbyBzY3JhdGNoIHRoZXNlIHR3byBvbmVsaW5lcnMuICBUaGUgb25seSB0aGluZyB5
-b3UnZCBuZWVkIGlzIHRoZSBiaWctaGFtbWVyIGNoYW5nZSAoYWdhaW4gb25lbGluZXIgOikNCg0K
-Pi0tLSBhL3NvdW5kL2NvcmUvS2NvbmZpZw0KPisrKyBiL3NvdW5kL2NvcmUvS2NvbmZpZw0KPkBA
-IC0xODEsNyArMTgxLDcgQEAgY29uZmlnIFNORF9WTUFTVEVSDQogPmJvb2wNCj4NCj4gY29uZmln
-IFNORF9ETUFfU0dCVUYNCj4tZGVmX2Jvb2wgeQ0KPitkZWZfYm9vbCBuDQo+IGRlcGVuZHMgb24g
-WDg2DQoNCj4gc291cmNlICJzb3VuZC9jb3JlL3NlcS9LY29uZmlnIg0KDQpbSGFucyA6XSBJZiB0
-aGlzLCBBbGwgdGhlIHBsYXRmb3JtIGFyZSBhbGwgcmlnaHQuDQoNCg0KVGhhbmsgeW91LA0KDQpI
-YW5zDQoNCg0K5L+d5a+G5aOw5piO77yaDQrmnKzpgq7ku7blkKvmnInkv53lr4bmiJbkuJPmnInk
-v6Hmga/vvIzku4XkvpvmjIflrprmlLbku7bkurrkvb/nlKjjgILkuKXnpoHlr7nmnKzpgq7ku7bm
-iJblhbblhoXlrrnlgZrku7vkvZXmnKrnu4/mjojmnYPnmoTmn6XpmIXjgIHkvb/nlKjjgIHlpI3l
-iLbmiJbovazlj5HjgIINCkNPTkZJREVOVElBTCBOT1RFOg0KVGhpcyBlbWFpbCBjb250YWlucyBj
-b25maWRlbnRpYWwgb3IgbGVnYWxseSBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIGFuZCBpcyBmb3Ig
-dGhlIHNvbGUgdXNlIG9mIGl0cyBpbnRlbmRlZCByZWNpcGllbnQuIEFueSB1bmF1dGhvcml6ZWQg
-cmV2aWV3LCB1c2UsIGNvcHlpbmcgb3IgZm9yd2FyZGluZyBvZiB0aGlzIGVtYWlsIG9yIHRoZSBj
-b250ZW50IG9mIHRoaXMgZW1haWwgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4NCl9fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBs
-aXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2pl
-Y3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Got it! Thank you very much.
+There are many drivers has this problem.
+
+yuhsuan
+
+On Sat, Aug 4, 2018 at 2:31 AM Takashi Iwai <tiwai@suse.de> wrote:
+
+> On Fri, 03 Aug 2018 19:24:05 +0200,
+> Yu-hsuan Hsu wrote:
+> >
+> > Sorry for my unclear question. The device usually provide the range of
+> > period_size to us, such as 16 to 1024 (We can get it from
+> > snd_pcm_hw_params_get_period_size_min and max). It means we can choose
+> > period_size 16 for this hardware device. However, the device only
+> consumes
+> > 40 frames at each time.
+> > It only issue IRQ after it consumes 40 frames. My
+> > question is, whether it can support period_size 16 as it said? Or it need
+> > to change the range of period_size it provides.
+>
+> In that case, allowing period_size = 16 is obviously wrong.
+> The practical minimum of period size is 40.  This must be set up via
+> either snd_pcm_hardware or some hw_constraints.
+>
+>
+> Takashi
+>
+> >
+> > Thank you for your patience and assistance.
+> >
+> > yuhsuan
+> >
+> >
+> > On Fri, Aug 3, 2018 at 6:14 PM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > On Fri, 03 Aug 2018 12:04:34 +0200,
+> > > Yu-hsuan Hsu wrote:
+> > > >
+> > > > For example, we can set period_size 32 to one device. But the device
+> > > > consumes 40 frames each time. Can we said it support period_size 32?
+> I
+> > > > found many devices have this situation.
+> > >
+> > > The question remains: how can the hardware issue an IRQ of period size
+> > > 32 while it can consume 40 frames at each time?
+> > >
+> > > As you asked in the first post, the period size is the size where the
+> > > hardware notifies the update.  Your description above doesn't match
+> > > with the definition...
+> > >
+> > >
+> > > Takashi
+> > >
+> > > >
+> > > > On Fri, Aug 3, 2018 at 4:30 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > >
+> > > > > On Fri, 03 Aug 2018 10:09:30 +0200,
+> > > > > Yu-hsuan Hsu wrote:
+> > > > > >
+> > > > > > Thank for your answer!
+> > > > > >
+> > > > > > The other question is if we set period_size to N, but the frames
+> it
+> > > > > > consumes once is 5N.
+> > > > >
+> > > > > Then the assumption is wrong.  How the hardware can issue an IRQ
+> at N
+> > > > > consumption while it processes for 5N in once?
+> > > > >
+> > > > >
+> > > > > Takashi
+> > > > >
+> > > > > > Can it said it supports period_size N? How do we check
+> > > > > > whether the period_size can be set correctly?
+> > > > > >
+> > > > > > On Fri, Aug 3, 2018 at 3:31 PM Takashi Iwai <tiwai@suse.de>
+> wrote:
+> > > > > >
+> > > > > > > On Fri, 03 Aug 2018 08:28:37 +0200,
+> > > > > > > Yu-hsuan Hsu wrote:
+> > > > > > > >
+> > > > > > > > Hi all,
+> > > > > > > >
+> > > > > > > > I have a question about the period we set in hw_params. I
+> found
+> > > > > different
+> > > > > > > > boards may have different explanations about it. I have two
+> > > guesses
+> > > > > about
+> > > > > > > > its meaning.
+> > > > > > > >
+> > > > > > > > 1. The period_size is the size of each hardware's
+> consumption.
+> > > If we
+> > > > > set
+> > > > > > > > period size to N, the pcm will consume N frames each time.
+> > > > > > > >
+> > > > > > > > 2. The period_size is the size to control when hardware call
+> > > > > interrupt.
+> > > > > > > If
+> > > > > > > > we set period size to N, the pcm consume frames in its step.
+> > > When the
+> > > > > > > > number of frames it consumes more than N, it will call
+> interrupt.
+> > > > > > >
+> > > > > > > 2 is the correct answer.
+> > > > > > >
+> > > > > > >
+> > > > > > > HTH,
+> > > > > > >
+> > > > > > > Takashi
+> > > > > > >
+> > > > > > > > We can use snd_pcm_avail function to check the real available
+> > > frames
+> > > > > in
+> > > > > > > > the device. If guess 1 is correct, the size of consumption
+> > > should be
+> > > > > > > fixed.
+> > > > > > > > Else, setting period_size is nothing to do with hardware's
+> > > > > > > > consumption. I've checked some boards and found that each
+> board
+> > > has
+> > > > > > > > different behavior (Most of them meet guess 2). I'm confuse
+> which
+> > > > > one is
+> > > > > > > > correct. Thanks!
+> > > > > > > > _______________________________________________
+> > > > > > > > Alsa-devel mailing list
+> > > > > > > > Alsa-devel@alsa-project.org
+> > > > > > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> > > > > > > >
+> > > > > > >
+> > > > > > [2  <text/html; UTF-8 (quoted-printable)>]
+> > > > > >
+> > > > >
+> > > > [2  <text/html; UTF-8 (quoted-printable)>]
+> > > >
+> > >
+> > [2  <text/html; UTF-8 (quoted-printable)>]
+> >
+>
