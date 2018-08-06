@@ -1,18 +1,25 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: make common.c as proper module"
-	to the asoc tree
-Date: Mon,  6 Aug 2018 12:51:01 +0100 (BST)
-Message-ID: <20180806115101.1147E1124240@debutante.sirena.org.uk>
-References: <20180806101209.15167-2-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 11/11] ASoC: wm8994: Mark expected switch
+	fall-through
+Date: Mon, 6 Aug 2018 12:52:56 +0100
+Message-ID: <20180806115256.GC17525@sirena.org.uk>
+References: <cover.1533151956.git.gustavo@embeddedor.com>
+ <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
+ <30613.1533313609@turing-police.cc.vt.edu>
+ <85d918a5-6a14-ead0-4d0e-d63b5e43ad81@embeddedor.com>
+ <20180803164504.GF6591@sirena.org.uk>
+ <684a4fe9-6818-d19c-e7b7-fb8d592a0cee@embeddedor.com>
+ <39703.1533318918@turing-police.cc.vt.edu>
+ <20180806113426.GA17525@sirena.org.uk>
+ <e839abf4-cf54-fe2e-7eb8-57b12106b586@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============1366592929824906061=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B4D00267858
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:51:01 +0200 (CEST)
-In-Reply-To: <20180806101209.15167-2-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id B81D3267820
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:52:58 +0200 (CEST)
+In-Reply-To: <e839abf4-cf54-fe2e-7eb8-57b12106b586@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,106 +29,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org, rohitkr@codeaurora.org
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: alsa-devel@alsa-project.org, valdis.kletnieks@vt.edu, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: qcom: make common.c as proper module
+--===============1366592929824906061==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="96YOpH+ONegL0A3E"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--96YOpH+ONegL0A3E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Aug 06, 2018 at 06:48:13AM -0500, Gustavo A. R. Silva wrote:
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+Please fix your mail client to word wrap within paragraphs at something
+substantially less than 80 columns.  Doing this makes your messages much
+easier to read and reply to.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> OK. I'll send a patch for this. But I wonder what's the best approach in this case,
+> so the fix can also be applied to stable.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Just send a patch, a fixup can be done when the backport fails.
 
-Thanks,
-Mark
+--96YOpH+ONegL0A3E
+Content-Type: application/pgp-signature; name="signature.asc"
 
->From 8e3684f66e15c354dba5544c2af8ce973ed40cf6 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Mon, 6 Aug 2018 11:12:05 +0100
-Subject: [PATCH] ASoC: qcom: make common.c as proper module
+-----BEGIN PGP SIGNATURE-----
 
-This patch converts common helper functions in to proper module
-and also fixes below warning.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAltoNpgACgkQJNaLcl1U
+h9Da6gf/dukgSwGIXxOxmgpBKOx6lqhNe2fZpx7a+q15BfKjqHYs6BQAN2HgVFxH
+rpqZAEaBqAbwzWl19VCVR6mOg1837QyZuLtydHnQRtiJXl+vvDUCvhu8a/ARWINu
+FBYCwHqKKWb8YMsYvzCq5HNYu5v4dIzTeqrTBXrz0XPvJ5Us/r2big1mQXy1jhLl
+FqA9wUOtXX/ItN2I5zOkseOlwiMW68fgLkEK3FqnaWWlTEuCpvEE0TA5P8ubFiK5
+3y+Em38HkQpeKa9P2MBU2iWldO8wxc02/v5F3zCqDAiUQdNVPC3ahHR8BkQ8Y4Kl
+T8pJfB6IFydPp/rAmQBcGML+DegYhQ==
+=v3dR
+-----END PGP SIGNATURE-----
 
-WARNING: sound/soc/qcom/snd-soc-sdm845: 'qcom_snd_parse_of' exported twice.
-Previous export was in sound/soc/qcom/snd-soc-apq8096.ko
+--96YOpH+ONegL0A3E--
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/Kconfig  | 5 +++++
- sound/soc/qcom/Makefile | 6 ++++--
- 2 files changed, 9 insertions(+), 2 deletions(-)
+--===============1366592929824906061==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
-index 5f03312ef007..2a4c912d1e48 100644
---- a/sound/soc/qcom/Kconfig
-+++ b/sound/soc/qcom/Kconfig
-@@ -41,6 +41,9 @@ config SND_SOC_APQ8016_SBC
-           APQ8016 SOC-based systems.
-           Say Y if you want to use audio devices on MI2S.
- 
-+config SND_SOC_QCOM_COMMON
-+	tristate
-+
- config SND_SOC_QDSP6_COMMON
- 	tristate
- 
-@@ -86,6 +89,7 @@ config SND_SOC_MSM8996
- 	tristate "SoC Machine driver for MSM8996 and APQ8096 boards"
- 	depends on QCOM_APR
- 	select SND_SOC_QDSP6
-+	select SND_SOC_QCOM_COMMON
- 	help
-           Support for Qualcomm Technologies LPASS audio block in
-           APQ8096 SoC-based systems.
-@@ -95,6 +99,7 @@ config SND_SOC_SDM845
- 	tristate "SoC Machine driver for SDM845 boards"
- 	depends on QCOM_APR
- 	select SND_SOC_QDSP6
-+	select SND_SOC_QCOM_COMMON
- 	help
- 	  To add support for audio on Qualcomm Technologies Inc.
- 	  SDM845 SoC-based systems.
-diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
-index f0e94d48ba98..41b2c7a23a4d 100644
---- a/sound/soc/qcom/Makefile
-+++ b/sound/soc/qcom/Makefile
-@@ -13,13 +13,15 @@ obj-$(CONFIG_SND_SOC_LPASS_APQ8016) += snd-soc-lpass-apq8016.o
- # Machine
- snd-soc-storm-objs := storm.o
- snd-soc-apq8016-sbc-objs := apq8016_sbc.o
--snd-soc-apq8096-objs := apq8096.o common.o
--snd-soc-sdm845-objs := sdm845.o common.o
-+snd-soc-apq8096-objs := apq8096.o
-+snd-soc-sdm845-objs := sdm845.o
-+snd-soc-qcom-common-objs := common.o
- 
- obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
- obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
- obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
- obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
-+obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
- 
- #DSP lib
- obj-$(CONFIG_SND_SOC_QDSP6) += qdsp6/
--- 
-2.18.0
+
+--===============1366592929824906061==--
