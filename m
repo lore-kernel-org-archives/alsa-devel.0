@@ -1,26 +1,18 @@
-From: Yu-hsuan Hsu <yuhsuan@google.com>
-Subject: Re: A question about period
-Date: Mon, 6 Aug 2018 13:57:16 +0800
-Message-ID: <CAEy1m_DEB_YAX+UEp=AU2TQ7jQTR7+rmjJzXL0q56np0TPgOtw@mail.gmail.com>
-References: <CAEy1m_DhdnfaRQADr4DaurCNnCi0fmCna5tJXEk9dA+KQ8jfcw@mail.gmail.com>
- <s5ha7q3x5wy.wl-tiwai@suse.de>
- <CAEy1m_CgOCi4sUcju7Ydzt+iGHHg+0ZHjc-m2W2QJdKVSaHVCg@mail.gmail.com>
- <s5hlg9nkg2x.wl-tiwai@suse.de>
- <CAEy1m_Ax7ZvvXF__4Qr_bt0mbAa8Z+8zFuzyQrQSC8PbDBVU-A@mail.gmail.com>
- <s5h600rkb9z.wl-tiwai@suse.de>
- <CAEy1m_CWn6rqUV-VvX-2PS7R9_424WFe9x0rAdUBzAb6Me6oPw@mail.gmail.com>
- <s5hr2jfuwrs.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: dice: fix wrong copy to rx parameters
+	for Alesis iO26
+Date: Mon,  6 Aug 2018 16:14:06 +0900
+Message-ID: <20180806071406.24684-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f53.google.com (mail-oi0-f53.google.com
- [209.85.218.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 0380C26770D
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 07:57:29 +0200 (CEST)
-Received: by mail-oi0-f53.google.com with SMTP id q11-v6so20053771oic.12
- for <alsa-devel@alsa-project.org>; Sun, 05 Aug 2018 22:57:29 -0700 (PDT)
-In-Reply-To: <s5hr2jfuwrs.wl-tiwai@suse.de>
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
+ [209.85.210.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7218F267692
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 09:14:15 +0200 (CEST)
+Received: by mail-pf1-f196.google.com with SMTP id u24-v6so6396108pfn.13
+ for <alsa-devel@alsa-project.org>; Mon, 06 Aug 2018 00:14:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,148 +22,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-Got it! Thank you very much.
-There are many drivers has this problem.
+A commit 28b208f600a3 ('ALSA: dice: add parameters of stream formats for
+models produced by Alesis') adds wrong copy to rx parameters instead of
+tx parameters for Alesis iO26.
 
-yuhsuan
+This commit fixes the bug for v4.18-rc8.
 
-On Sat, Aug 4, 2018 at 2:31 AM Takashi Iwai <tiwai@suse.de> wrote:
+Fixes: 28b208f600a3 ('ALSA: dice: add parameters of stream formats for models produced by Alesis')
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/dice/dice-alesis.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> On Fri, 03 Aug 2018 19:24:05 +0200,
-> Yu-hsuan Hsu wrote:
-> >
-> > Sorry for my unclear question. The device usually provide the range of
-> > period_size to us, such as 16 to 1024 (We can get it from
-> > snd_pcm_hw_params_get_period_size_min and max). It means we can choose
-> > period_size 16 for this hardware device. However, the device only
-> consumes
-> > 40 frames at each time.
-> > It only issue IRQ after it consumes 40 frames. My
-> > question is, whether it can support period_size 16 as it said? Or it need
-> > to change the range of period_size it provides.
->
-> In that case, allowing period_size = 16 is obviously wrong.
-> The practical minimum of period size is 40.  This must be set up via
-> either snd_pcm_hardware or some hw_constraints.
->
->
-> Takashi
->
-> >
-> > Thank you for your patience and assistance.
-> >
-> > yuhsuan
-> >
-> >
-> > On Fri, Aug 3, 2018 at 6:14 PM Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > > On Fri, 03 Aug 2018 12:04:34 +0200,
-> > > Yu-hsuan Hsu wrote:
-> > > >
-> > > > For example, we can set period_size 32 to one device. But the device
-> > > > consumes 40 frames each time. Can we said it support period_size 32?
-> I
-> > > > found many devices have this situation.
-> > >
-> > > The question remains: how can the hardware issue an IRQ of period size
-> > > 32 while it can consume 40 frames at each time?
-> > >
-> > > As you asked in the first post, the period size is the size where the
-> > > hardware notifies the update.  Your description above doesn't match
-> > > with the definition...
-> > >
-> > >
-> > > Takashi
-> > >
-> > > >
-> > > > On Fri, Aug 3, 2018 at 4:30 PM Takashi Iwai <tiwai@suse.de> wrote:
-> > > >
-> > > > > On Fri, 03 Aug 2018 10:09:30 +0200,
-> > > > > Yu-hsuan Hsu wrote:
-> > > > > >
-> > > > > > Thank for your answer!
-> > > > > >
-> > > > > > The other question is if we set period_size to N, but the frames
-> it
-> > > > > > consumes once is 5N.
-> > > > >
-> > > > > Then the assumption is wrong.  How the hardware can issue an IRQ
-> at N
-> > > > > consumption while it processes for 5N in once?
-> > > > >
-> > > > >
-> > > > > Takashi
-> > > > >
-> > > > > > Can it said it supports period_size N? How do we check
-> > > > > > whether the period_size can be set correctly?
-> > > > > >
-> > > > > > On Fri, Aug 3, 2018 at 3:31 PM Takashi Iwai <tiwai@suse.de>
-> wrote:
-> > > > > >
-> > > > > > > On Fri, 03 Aug 2018 08:28:37 +0200,
-> > > > > > > Yu-hsuan Hsu wrote:
-> > > > > > > >
-> > > > > > > > Hi all,
-> > > > > > > >
-> > > > > > > > I have a question about the period we set in hw_params. I
-> found
-> > > > > different
-> > > > > > > > boards may have different explanations about it. I have two
-> > > guesses
-> > > > > about
-> > > > > > > > its meaning.
-> > > > > > > >
-> > > > > > > > 1. The period_size is the size of each hardware's
-> consumption.
-> > > If we
-> > > > > set
-> > > > > > > > period size to N, the pcm will consume N frames each time.
-> > > > > > > >
-> > > > > > > > 2. The period_size is the size to control when hardware call
-> > > > > interrupt.
-> > > > > > > If
-> > > > > > > > we set period size to N, the pcm consume frames in its step.
-> > > When the
-> > > > > > > > number of frames it consumes more than N, it will call
-> interrupt.
-> > > > > > >
-> > > > > > > 2 is the correct answer.
-> > > > > > >
-> > > > > > >
-> > > > > > > HTH,
-> > > > > > >
-> > > > > > > Takashi
-> > > > > > >
-> > > > > > > > We can use snd_pcm_avail function to check the real available
-> > > frames
-> > > > > in
-> > > > > > > > the device. If guess 1 is correct, the size of consumption
-> > > should be
-> > > > > > > fixed.
-> > > > > > > > Else, setting period_size is nothing to do with hardware's
-> > > > > > > > consumption. I've checked some boards and found that each
-> board
-> > > has
-> > > > > > > > different behavior (Most of them meet guess 2). I'm confuse
-> which
-> > > > > one is
-> > > > > > > > correct. Thanks!
-> > > > > > > > _______________________________________________
-> > > > > > > > Alsa-devel mailing list
-> > > > > > > > Alsa-devel@alsa-project.org
-> > > > > > > > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> > > > > > > >
-> > > > > > >
-> > > > > > [2  <text/html; UTF-8 (quoted-printable)>]
-> > > > > >
-> > > > >
-> > > > [2  <text/html; UTF-8 (quoted-printable)>]
-> > > >
-> > >
-> > [2  <text/html; UTF-8 (quoted-printable)>]
-> >
->
+diff --git a/sound/firewire/dice/dice-alesis.c b/sound/firewire/dice/dice-alesis.c
+index b2efb1c71a98..218292bdace6 100644
+--- a/sound/firewire/dice/dice-alesis.c
++++ b/sound/firewire/dice/dice-alesis.c
+@@ -37,7 +37,7 @@ int snd_dice_detect_alesis_formats(struct snd_dice *dice)
+ 				MAX_STREAMS * SND_DICE_RATE_MODE_COUNT *
+ 				sizeof(unsigned int));
+ 	} else {
+-		memcpy(dice->rx_pcm_chs, alesis_io26_tx_pcm_chs,
++		memcpy(dice->tx_pcm_chs, alesis_io26_tx_pcm_chs,
+ 				MAX_STREAMS * SND_DICE_RATE_MODE_COUNT *
+ 				sizeof(unsigned int));
+ 	}
+-- 
+2.17.1
