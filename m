@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tda7419: use true and false for boolean
+Subject: Applied "ASoC: rt5631: use true and false for boolean
 	values" to the asoc tree
-Date: Mon,  6 Aug 2018 12:43:19 +0100 (BST)
-Message-ID: <20180806114319.2DFE01124240@debutante.sirena.org.uk>
+Date: Mon,  6 Aug 2018 12:43:29 +0100 (BST)
+Message-ID: <20180806114329.765BE1124240@debutante.sirena.org.uk>
+References: <76b053970c83ca02ef016b39108754b4bf83527a.1533418275.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CB0722676A3
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:43:19 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id D7D862676A3
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:43:30 +0200 (CEST)
+In-Reply-To: <76b053970c83ca02ef016b39108754b4bf83527a.1533418275.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tda7419: use true and false for boolean values
+   ASoC: rt5631: use true and false for boolean values
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 10754bfc051256ab922b818de3ddd11391862a5f Mon Sep 17 00:00:00 2001
+>From 508e8641f89cc89554adbec3ce59bcd28a4ced4b Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Sat, 4 Aug 2018 16:50:27 -0500
-Subject: [PATCH] ASoC: tda7419: use true and false for boolean values
+Date: Sat, 4 Aug 2018 16:49:55 -0500
+Subject: [PATCH] ASoC: rt5631: use true and false for boolean values
 
 Return statements in functions returning bool should use true or false
 instead of an integer value.
@@ -65,24 +65,36 @@ This code was detected with the help of Coccinelle.
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tda7419.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5631.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/tda7419.c b/sound/soc/codecs/tda7419.c
-index 225c210ac38f..7f3b79c5a563 100644
---- a/sound/soc/codecs/tda7419.c
-+++ b/sound/soc/codecs/tda7419.c
-@@ -142,9 +142,9 @@ struct tda7419_vol_control {
- static inline bool tda7419_vol_is_stereo(struct tda7419_vol_control *tvc)
- {
- 	if (tvc->reg == tvc->rreg)
+diff --git a/sound/soc/codecs/rt5631.c b/sound/soc/codecs/rt5631.c
+index e52e4670cf65..865f49ac38dd 100644
+--- a/sound/soc/codecs/rt5631.c
++++ b/sound/soc/codecs/rt5631.c
+@@ -105,9 +105,9 @@ static bool rt5631_volatile_register(struct device *dev, unsigned int reg)
+ 	case RT5631_INDEX_ADD:
+ 	case RT5631_INDEX_DATA:
+ 	case RT5631_EQ_CTRL:
+-		return 1;
++		return true;
+ 	default:
 -		return 0;
 +		return false;
- 
--	return 1;
-+	return true;
+ 	}
  }
  
- static int tda7419_vol_info(struct snd_kcontrol *kcontrol,
+@@ -164,9 +164,9 @@ static bool rt5631_readable_register(struct device *dev, unsigned int reg)
+ 	case RT5631_VENDOR_ID:
+ 	case RT5631_VENDOR_ID1:
+ 	case RT5631_VENDOR_ID2:
+-		return 1;
++		return true;
+ 	default:
+-		return 0;
++		return false;
+ 	}
+ }
+ 
 -- 
 2.18.0
