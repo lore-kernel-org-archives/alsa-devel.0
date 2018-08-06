@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6afe-dai: add SLIM tx AIF_IN
-	dapm" to the asoc tree
-Date: Mon,  6 Aug 2018 12:50:23 +0100 (BST)
-Message-ID: <20180806115023.F111F1124240@debutante.sirena.org.uk>
-References: <20180806101209.15167-6-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: qcom: remove unused header files from
+	common.h" to the asoc tree
+Date: Mon,  6 Aug 2018 12:50:33 +0100 (BST)
+Message-ID: <20180806115033.1171F1124240@debutante.sirena.org.uk>
+References: <20180806101209.15167-5-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BE7502676A3
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:50:25 +0200 (CEST)
-In-Reply-To: <20180806101209.15167-6-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id A8212267842
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:50:33 +0200 (CEST)
+In-Reply-To: <20180806101209.15167-5-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6afe-dai: add SLIM tx AIF_IN dapm
+   ASoC: qcom: remove unused header files from common.h
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,30 @@ to this mail.
 Thanks,
 Mark
 
->From 0961503412e3e13d82f885f9fb3af527edd58e47 Mon Sep 17 00:00:00 2001
+>From d72117d0c89a3f5657ef91d5eef31337964e3cb2 Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Mon, 6 Aug 2018 11:12:09 +0100
-Subject: [PATCH] ASoC: qdsp6: q6afe-dai: add SLIM tx AIF_IN dapm
+Date: Mon, 6 Aug 2018 11:12:08 +0100
+Subject: [PATCH] ASoC: qcom: remove unused header files from common.h
 
-Add missing AIF_IN dapm for slim tx ports.
+This patch removes unused header files from common.h.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6afe-dai.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/qcom/common.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6afe-dai.c b/sound/soc/qcom/qdsp6/q6afe-dai.c
-index e988692a3ced..139d24be3fb9 100644
---- a/sound/soc/qcom/qdsp6/q6afe-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6afe-dai.c
-@@ -1117,6 +1117,13 @@ static const struct snd_soc_dapm_widget q6afe_dai_widgets[] = {
- 	SND_SOC_DAPM_AIF_OUT("SLIMBUS_4_RX", "Slimbus4 Playback", 0, 0, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SLIMBUS_5_RX", "Slimbus5 Playback", 0, 0, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("SLIMBUS_6_RX", "Slimbus6 Playback", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_0_TX", "Slimbus Capture", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_1_TX", "Slimbus1 Capture", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_2_TX", "Slimbus2 Capture", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_3_TX", "Slimbus3 Capture", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_4_TX", "Slimbus4 Capture", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_5_TX", "Slimbus5 Capture", 0, 0, 0, 0),
-+	SND_SOC_DAPM_AIF_IN("SLIMBUS_6_TX", "Slimbus6 Capture", 0, 0, 0, 0),
- 	SND_SOC_DAPM_AIF_OUT("QUAT_MI2S_RX", "Quaternary MI2S Playback",
- 						0, 0, 0, 0),
- 	SND_SOC_DAPM_AIF_IN("QUAT_MI2S_TX", "Quaternary MI2S Capture",
+diff --git a/sound/soc/qcom/common.h b/sound/soc/qcom/common.h
+index ad5d2cf27459..f05c05b12bd7 100644
+--- a/sound/soc/qcom/common.h
++++ b/sound/soc/qcom/common.h
+@@ -4,7 +4,6 @@
+ #ifndef __QCOM_SND_COMMON_H__
+ #define __QCOM_SND_COMMON_H__
+ 
+-#include <linux/component.h>
+ #include <sound/soc.h>
+ 
+ int qcom_snd_parse_of(struct snd_soc_card *card);
 -- 
 2.18.0
