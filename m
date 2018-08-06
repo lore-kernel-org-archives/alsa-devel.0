@@ -1,88 +1,51 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max9850: use true and false for boolean
-	values" to the asoc tree
-Date: Mon,  6 Aug 2018 12:43:39 +0100 (BST)
-Message-ID: <20180806114339.A81101124240@debutante.sirena.org.uk>
-References: <99d07804559a7dfd13658f76b2071aef32b92204.1533418275.git.gustavo@embeddedor.com>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: Re: [PATCH 11/11] ASoC: wm8994: Mark expected switch fall-through
+Date: Mon, 6 Aug 2018 06:48:13 -0500
+Message-ID: <e839abf4-cf54-fe2e-7eb8-57b12106b586@embeddedor.com>
+References: <cover.1533151956.git.gustavo@embeddedor.com>
+ <8e3df79b1dca92d49fd9d5c97391d31814ab40f9.1533151956.git.gustavo@embeddedor.com>
+ <30613.1533313609@turing-police.cc.vt.edu>
+ <85d918a5-6a14-ead0-4d0e-d63b5e43ad81@embeddedor.com>
+ <20180803164504.GF6591@sirena.org.uk>
+ <684a4fe9-6818-d19c-e7b7-fb8d592a0cee@embeddedor.com>
+ <39703.1533318918@turing-police.cc.vt.edu>
+ <20180806113426.GA17525@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1C36D2676A3
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:43:40 +0200 (CEST)
-In-Reply-To: <99d07804559a7dfd13658f76b2071aef32b92204.1533418275.git.gustavo@embeddedor.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180806113426.GA17525@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>, valdis.kletnieks@vt.edu
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: max9850: use true and false for boolean values
 
-has been applied to the asoc tree at
+On 08/06/2018 06:34 AM, Mark Brown wrote:
+> On Fri, Aug 03, 2018 at 01:55:18PM -0400, valdis.kletnieks@vt.edu wrote:
+>> On Fri, 03 Aug 2018 11:56:12 -0500, "Gustavo A. R. Silva" said:
+>>> On 08/03/2018 11:45 AM, Mark Brown wrote:
+>>>> Basically nobody ever uses OPCLK so I'd be susprised if anyone ever
+>>>> noticed.
+> 
+>> I wonder if nobody uses it because any attempts to do so get an error? :)
+> 
+> No, nobody ever physically wires up an OPCLK.  If one was there it'd be
+> unavoidable.
+> 
+>>> I see. I wonder what's the best approach in this case. Should that code be
+>>> removed instead of 'fixed'?
+> 
+>> I'm thinking that's a spot that needs a 'break;' added.
+> 
+> Yes.
+> 
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+OK. I'll send a patch for this. But I wonder what's the best approach in this case,
+so the fix can also be applied to stable.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 038541dae968dbef99edca4b22bbb2a7b4afdc83 Mon Sep 17 00:00:00 2001
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Sat, 4 Aug 2018 16:49:02 -0500
-Subject: [PATCH] ASoC: max9850: use true and false for boolean values
-
-Return statements in functions returning bool should use true or false
-instead of an integer value.
-
-This code was detected with the help of Coccinelle.
-
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/max9850.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/sound/soc/codecs/max9850.c b/sound/soc/codecs/max9850.c
-index 74d7f52c7e73..6e6134589588 100644
---- a/sound/soc/codecs/max9850.c
-+++ b/sound/soc/codecs/max9850.c
-@@ -52,9 +52,9 @@ static bool max9850_volatile_register(struct device *dev, unsigned int reg)
- 	switch (reg) {
- 	case MAX9850_STATUSA:
- 	case MAX9850_STATUSB:
--		return 1;
-+		return true;
- 	default:
--		return 0;
-+		return false;
- 	}
- }
- 
--- 
-2.18.0
+Thanks
+--
+Gustavo
