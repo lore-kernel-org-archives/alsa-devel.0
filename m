@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: remove unused header files from
-	common.h" to the asoc tree
-Date: Mon,  6 Aug 2018 12:50:33 +0100 (BST)
-Message-ID: <20180806115033.1171F1124240@debutante.sirena.org.uk>
-References: <20180806101209.15167-5-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: sdm845: remove unused header files" to
+	the asoc tree
+Date: Mon,  6 Aug 2018 12:50:43 +0100 (BST)
+Message-ID: <20180806115043.1C2AB1124240@debutante.sirena.org.uk>
+References: <20180806101209.15167-4-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A8212267842
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:50:33 +0200 (CEST)
-In-Reply-To: <20180806101209.15167-5-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id AA413267857
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:50:43 +0200 (CEST)
+In-Reply-To: <20180806101209.15167-4-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: remove unused header files from common.h
+   ASoC: sdm845: remove unused header files
 
 has been applied to the asoc tree at
 
@@ -53,30 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From d72117d0c89a3f5657ef91d5eef31337964e3cb2 Mon Sep 17 00:00:00 2001
+>From 846b2c96808cc7cdf4e0619d00604b3edd15b35a Mon Sep 17 00:00:00 2001
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Mon, 6 Aug 2018 11:12:08 +0100
-Subject: [PATCH] ASoC: qcom: remove unused header files from common.h
+Date: Mon, 6 Aug 2018 11:12:07 +0100
+Subject: [PATCH] ASoC: sdm845: remove unused header files
 
-This patch removes unused header files from common.h.
+This patch removes unused header files from the driver.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/common.h | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/qcom/sdm845.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/sound/soc/qcom/common.h b/sound/soc/qcom/common.h
-index ad5d2cf27459..f05c05b12bd7 100644
---- a/sound/soc/qcom/common.h
-+++ b/sound/soc/qcom/common.h
-@@ -4,7 +4,6 @@
- #ifndef __QCOM_SND_COMMON_H__
- #define __QCOM_SND_COMMON_H__
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index c1adb77230eb..2a781d87ee65 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -5,11 +5,9 @@
  
--#include <linux/component.h>
- #include <sound/soc.h>
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+-#include <linux/atomic.h>
+ #include <linux/of_device.h>
+ #include <sound/pcm.h>
+ #include <sound/pcm_params.h>
+-#include <linux/soc/qcom/apr.h>
+ #include "common.h"
+ #include "qdsp6/q6afe.h"
  
- int qcom_snd_parse_of(struct snd_soc_card *card);
 -- 
 2.18.0
