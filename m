@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: da7213: use true and false for boolean
+Subject: Applied "ASoC: da7219: use true and false for boolean
 	values" to the asoc tree
-Date: Mon,  6 Aug 2018 12:41:36 +0100 (BST)
-Message-ID: <20180806114136.993FC1124240@debutante.sirena.org.uk>
-References: <054adeac54eba2831e2433d71f385841034faf52.1533418275.git.gustavo@embeddedor.com>
+Date: Mon,  6 Aug 2018 12:41:53 +0100 (BST)
+Message-ID: <20180806114153.3864C1124240@debutante.sirena.org.uk>
+References: <aa152e8c761cf717f221fd04642efef48142f7f5.1533418275.git.gustavo@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 55F0F267833
- for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:41:37 +0200 (CEST)
-In-Reply-To: <054adeac54eba2831e2433d71f385841034faf52.1533418275.git.gustavo@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id AC119267833
+ for <alsa-devel@alsa-project.org>; Mon,  6 Aug 2018 13:41:53 +0200 (CEST)
+In-Reply-To: <aa152e8c761cf717f221fd04642efef48142f7f5.1533418275.git.gustavo@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: da7213: use true and false for boolean values
+   ASoC: da7219: use true and false for boolean values
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 1752a35acd8e837463fb7b7d9492b18e2a2ed5e3 Mon Sep 17 00:00:00 2001
+>From 965afd3c1dbaf293bfa9452aaf0a7e53d78d07f3 Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Sat, 4 Aug 2018 16:54:10 -0500
-Subject: [PATCH] ASoC: da7213: use true and false for boolean values
+Date: Sat, 4 Aug 2018 16:53:10 -0500
+Subject: [PATCH] ASoC: da7219: use true and false for boolean values
 
 Return statements in functions returning bool should use true or false
 instead of an integer value.
@@ -65,17 +65,17 @@ This code was detected with the help of Coccinelle.
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7213.c | 4 ++--
+ sound/soc/codecs/da7219.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/da7213.c b/sound/soc/codecs/da7213.c
-index 54cb5f24969f..92d006a5283e 100644
---- a/sound/soc/codecs/da7213.c
-+++ b/sound/soc/codecs/da7213.c
-@@ -1140,9 +1140,9 @@ static bool da7213_volatile_register(struct device *dev, unsigned int reg)
- 	case DA7213_ALC_OFFSET_AUTO_M_R:
- 	case DA7213_ALC_OFFSET_AUTO_U_R:
- 	case DA7213_ALC_CIC_OP_LVL_DATA:
+diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
+index 980a6a8bf56d..c0144f2f8174 100644
+--- a/sound/soc/codecs/da7219.c
++++ b/sound/soc/codecs/da7219.c
+@@ -2143,9 +2143,9 @@ static bool da7219_volatile_register(struct device *dev, unsigned int reg)
+ 	case DA7219_ACCDET_IRQ_EVENT_B:
+ 	case DA7219_ACCDET_CONFIG_8:
+ 	case DA7219_SYSTEM_STATUS:
 -		return 1;
 +		return true;
  	default:
