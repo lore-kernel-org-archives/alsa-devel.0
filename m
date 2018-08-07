@@ -1,18 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: compress: make BE and FE order inline
-	with dpcm" to the asoc tree
-Date: Tue,  7 Aug 2018 15:39:58 +0100 (BST)
-Message-ID: <20180807143958.7DCBE112433B@debutante.sirena.org.uk>
-References: <20180803123003.13444-1-srinivas.kandagatla@linaro.org>
+From: Yong Zhi <yong.zhi@intel.com>
+Subject: [PATCH] ASoC: Intel: hdac_hdmi: Add sampling
+	frequencies constraint
+Date: Tue,  7 Aug 2018 09:56:05 -0500
+Message-ID: <1533653765-26080-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C1EA267692
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2018 16:40:05 +0200 (CEST)
-In-Reply-To: <20180803123003.13444-1-srinivas.kandagatla@linaro.org>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 69C2B267692
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2018 16:56:19 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,208 +19,89 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, ckeepax@opensource.cirrus.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, ramesh.babu@intel.com, pierre-louis.bossart@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, rohitkr@codeaurora.org, namartax.kohli@intel.com
+To: broonie@kernel.org, pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org, harshapriya.n@intel.com, vkoul@kernel.org, naveen.m@intel.com, sanyog.r.kale@intel.com, Yong Zhi <yong.zhi@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+Playback of 44.1Khz contents with HDMI plugged returns
+"Invalid pipe config".
 
-   ASoC: compress: make BE and FE order inline with dpcm
+This patch adds rate constraint to allow user space SRC
+to do the converting.
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0b0722e191757ca6851382d78c15277ca9c5c211 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Fri, 3 Aug 2018 13:30:03 +0100
-Subject: [PATCH] ASoC: compress: make BE and FE order inline with dpcm
-
-For some reason order of startup/hw_params/prepare are reversed
-in dynamic compress usecase when compared to dpcm usecase. This is
-a issue with platforms like QCOM where it expects the BE to be
-initialized before FE.
-
-Interestingly the compress trigger callback order is inline with dpcm.
-
-Am not 100% sure why the compress audio case has been reversed.
-This patch is making the order inline with dpcm.
-
-If the reverse ordering is just co-incendental then this change
-makes sense and will avoid inventing some new mechanism to cope
-with ordering.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
 ---
- sound/soc/soc-compress.c | 96 +++++++++++++++++++---------------------
- 1 file changed, 46 insertions(+), 50 deletions(-)
+ sound/soc/codecs/hdac_hdmi.c | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
-diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
-index b9e1673fea51..409d082e80d1 100644
---- a/sound/soc/soc-compress.c
-+++ b/sound/soc/soc-compress.c
-@@ -140,6 +140,30 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 		stream = SNDRV_PCM_STREAM_CAPTURE;
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 7b8533abf637..b222a2e91463 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -288,6 +288,38 @@ static unsigned int sad_sample_bits_lpcm(const u8 *sad)
+ 	return (sad[2] & 7);
+ }
  
- 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
-+	fe->dpcm[stream].runtime = fe_substream->runtime;
++/**
++ * sad_sample_rates_lpcm - Find supported sampling frequencies
++ *
++ * @sad: pointer to CEA_SADs entry byte 2 which details sampling frequencies
++ *	 supported according to CEA-861 EDID V3. In little endian byte order.
++ *
++ *	 bit 7: Reserved (0)
++ *	 bit 6: 192kHz
++ *	 bit 5: 176kHz
++ *	 bit 4: 96kHz
++ *	 bit 3: 88kHz
++ *	 bit 2: 48kHz
++ *	 bit 1: 44kHz
++ *	 bit 0: 32kHz
++ *
++ * Return: bitmask of supported sampling frequencies.
++ */
++static u8 sad_sample_rates_lpcm(const u8 *sad)
++{
++	return (sad[1] & 0x7F);
++}
 +
-+	ret = dpcm_path_get(fe, stream, &list);
-+	if (ret < 0)
-+		goto be_err;
-+	else if (ret == 0)
-+		dev_dbg(fe->dev, "Compress ASoC: %s no valid %s route\n",
-+			fe->dai_link->name, stream ? "capture" : "playback");
-+	/* calculate valid and active FE <-> BE dpcms */
-+	dpcm_process_paths(fe, stream, &list, 1);
-+	fe->dpcm[stream].runtime = fe_substream->runtime;
++static const unsigned int cea_sampling_freqs[7] = {
++	SNDRV_PCM_RATE_32000,	/* 0:  32000Hz */
++	SNDRV_PCM_RATE_44100,	/* 1:  44100Hz */
++	SNDRV_PCM_RATE_48000,	/* 2:  48000Hz */
++	SNDRV_PCM_RATE_88200,	/* 3:  88200Hz */
++	SNDRV_PCM_RATE_96000,	/* 4:  96000Hz */
++	SNDRV_PCM_RATE_176400,	/* 5: 176400Hz */
++	SNDRV_PCM_RATE_192000,	/* 6: 192000Hz */
++};
 +
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
-+
-+	ret = dpcm_be_dai_startup(fe, stream);
-+	if (ret < 0) {
-+		/* clean up all links */
-+		list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be)
-+			dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
-+
-+		dpcm_be_disconnect(fe, stream);
-+		fe->dpcm[stream].runtime = NULL;
-+		goto out;
-+	}
+ static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
+ 						void *eld)
+ {
+@@ -301,6 +333,8 @@ static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
  
- 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->startup) {
- 		ret = cpu_dai->driver->cops->startup(cstream, cpu_dai);
-@@ -153,7 +177,7 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 	for (i = drm_eld_sad_count(eld_buf); i > 0; i--, sad += 3) {
+ 		if (sad_format(sad) == 1) { /* AUDIO_CODING_TYPE_LPCM */
++			unsigned int rates = 0;
++			u8 sad_rates, j;
  
- 	ret = soc_compr_components_open(cstream, &component);
- 	if (ret < 0)
--		goto machine_err;
-+		goto open_err;
- 
- 	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->startup) {
- 		ret = fe->dai_link->compr_ops->startup(cstream);
-@@ -164,31 +188,6 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 			/*
+ 			 * the controller support 20 and 24 bits in 32 bit
+@@ -308,6 +342,16 @@ static int hdac_hdmi_eld_limit_formats(struct snd_pcm_runtime *runtime,
+ 			 */
+ 			if (sad_sample_bits_lpcm(sad) & 0x6)
+ 				formats |= SNDRV_PCM_FMTBIT_S32;
++
++			sad_rates = sad_sample_rates_lpcm(sad);
++			/* Filter out 44.1, 88.2 and 176.4Khz */
++			for (j = 0; j < 7; j += 2)
++				if (sad_rates & BIT(j))
++					rates |= cea_sampling_freqs[j];
++
++			snd_pcm_hw_constraint_mask64(runtime,
++						     SNDRV_PCM_HW_PARAM_RATE,
++						     rates);
  		}
  	}
  
--	fe->dpcm[stream].runtime = fe_substream->runtime;
--
--	ret = dpcm_path_get(fe, stream, &list);
--	if (ret < 0)
--		goto fe_err;
--	else if (ret == 0)
--		dev_dbg(fe->dev, "Compress ASoC: %s no valid %s route\n",
--			fe->dai_link->name, stream ? "capture" : "playback");
--
--	/* calculate valid and active FE <-> BE dpcms */
--	dpcm_process_paths(fe, stream, &list, 1);
--
--	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
--
--	ret = dpcm_be_dai_startup(fe, stream);
--	if (ret < 0) {
--		/* clean up all links */
--		list_for_each_entry(dpcm, &fe->dpcm[stream].be_clients, list_be)
--			dpcm->state = SND_SOC_DPCM_LINK_STATE_FREE;
--
--		dpcm_be_disconnect(fe, stream);
--		fe->dpcm[stream].runtime = NULL;
--		goto path_err;
--	}
--
- 	dpcm_clear_pending_state(fe, stream);
- 	dpcm_path_put(&list);
- 
-@@ -201,17 +200,14 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
- 
- 	return 0;
- 
--path_err:
--	dpcm_path_put(&list);
--fe_err:
--	if (fe->dai_link->compr_ops && fe->dai_link->compr_ops->shutdown)
--		fe->dai_link->compr_ops->shutdown(cstream);
- machine_err:
- 	soc_compr_components_free(cstream, component);
--
-+open_err:
- 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->shutdown)
- 		cpu_dai->driver->cops->shutdown(cstream, cpu_dai);
- out:
-+	dpcm_path_put(&list);
-+be_err:
- 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
- 	mutex_unlock(&fe->card->mutex);
- 	return ret;
-@@ -551,6 +547,24 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
- 
- 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
- 
-+	/*
-+	 * Create an empty hw_params for the BE as the machine driver must
-+	 * fix this up to match DSP decoder and ASRC configuration.
-+	 * I.e. machine driver fixup for compressed BE is mandatory.
-+	 */
-+	memset(&fe->dpcm[fe_substream->stream].hw_params, 0,
-+		sizeof(struct snd_pcm_hw_params));
-+
-+	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
-+
-+	ret = dpcm_be_dai_hw_params(fe, stream);
-+	if (ret < 0)
-+		goto out;
-+
-+	ret = dpcm_be_dai_prepare(fe, stream);
-+	if (ret < 0)
-+		goto out;
-+
- 	if (cpu_dai->driver->cops && cpu_dai->driver->cops->set_params) {
- 		ret = cpu_dai->driver->cops->set_params(cstream, params, cpu_dai);
- 		if (ret < 0)
-@@ -577,24 +591,6 @@ static int soc_compr_set_params_fe(struct snd_compr_stream *cstream,
- 			goto out;
- 	}
- 
--	/*
--	 * Create an empty hw_params for the BE as the machine driver must
--	 * fix this up to match DSP decoder and ASRC configuration.
--	 * I.e. machine driver fixup for compressed BE is mandatory.
--	 */
--	memset(&fe->dpcm[fe_substream->stream].hw_params, 0,
--		sizeof(struct snd_pcm_hw_params));
--
--	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
--
--	ret = dpcm_be_dai_hw_params(fe, stream);
--	if (ret < 0)
--		goto out;
--
--	ret = dpcm_be_dai_prepare(fe, stream);
--	if (ret < 0)
--		goto out;
--
- 	dpcm_dapm_stream_event(fe, stream, SND_SOC_DAPM_STREAM_START);
- 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_PREPARE;
- 
 -- 
-2.18.0
+2.7.4
