@@ -1,37 +1,28 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: [PATCH v8 00/10] soundwire: Add multi link support
-Date: Tue, 7 Aug 2018 12:21:45 +0530
-Message-ID: <20180807065145.GH2395@vkoul-mobl>
-References: <1532682857-604-1-git-send-email-shreyas.nc@intel.com>
+From: Chen-Yu Tsai <wens@csie.org>
+Subject: Re: [PATCH v4 23/26] devicetree: fix a series of wrong file references
+Date: Tue, 7 Aug 2018 15:04:35 +0800
+Message-ID: <CAGb2v65+6zV1E--KvD3Si=XNmDE3oaZ2hBxvm86KjTwUv9BnSw@mail.gmail.com>
+References: <cover.1529079119.git.mchehab+samsung@kernel.org> <266e5f874b36aa83f3327879d85921fab52d5461.1529079120.git.mchehab+samsung@kernel.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id B37E926786B
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2018 08:51:54 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1532682857-604-1-git-send-email-shreyas.nc@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Shreyas NC <shreyas.nc@intel.com>
-Cc: patches.audio@intel.com, gregkh@linuxfoundation.org, alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <266e5f874b36aa83f3327879d85921fab52d5461.1529079120.git.mchehab+samsung@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc: Linux Doc Mailing List <linux-doc@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>, Mauro Carvalho Chehab <mchehab@infradead.org>, linux-kernel <linux-kernel@vger.kernel.org>, Dmitry Torokhov <dmitry.torokhov@gmail.com>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Lee Jones <lee.jones@linaro.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Zhou Wang <wangzhou1@hisilicon.com>, Bjorn Helgaas <bhelgaas@google.com>, Xiaowei Song <songxiaowei@hisilicon.com>, Binghui Wang <wangbinghui@hisilicon.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, linux-input@vger.kernel.org, devicetree <devicetree@vger.kernel.>
 List-Id: alsa-devel@alsa-project.org
 
-On 27-07-18, 14:44, Shreyas NC wrote:
-> Currently, in the SoundWire subsystem, the concept of stream is limited
-> to a Master and one or more Slaves(Codecs). This series aims to add
-> support for multiple Master(s) sharing the same reference clock and
-> synchronized in the hardware.
+On Sat, Jun 16, 2018 at 12:30 AM, Mauro Carvalho Chehab
+<mchehab+samsung@kernel.org> wrote:
+> As files got renamed, their references broke.
+>
+> Manually fix a series of broken refs at the DT bindings.
+>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> ---
+>  .../devicetree/bindings/input/rmi4/rmi_2d_sensor.txt |  2 +-
+>  Documentation/devicetree/bindings/mfd/sun6i-prcm.txt |  2 +-
 
-Applied all, thanks
+If still applicable,
 
--- 
-~Vinod
+Acked-by: Chen-Yu Tsai <wens@csie.org>
