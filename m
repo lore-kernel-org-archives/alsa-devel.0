@@ -1,20 +1,35 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [bug report] slimbus: ngd: Add qcom SLIMBus NGD
-	driver
-Date: Tue, 7 Aug 2018 13:33:19 +0100
-Message-ID: <64011262-591f-751d-c318-59209059a603@linaro.org>
-References: <20180807120707.3yjy6ggguk3frtrr@kili.mountain>
+From: Chakravarthi Pradeep <doubleq7@gmail.com>
+Subject: Re: Fwd:  ALSA queries
+Date: Tue, 7 Aug 2018 18:42:08 +0530
+Message-ID: <CALW20Z2Gdk3aT1-7X6qU1r7Fq01fnkBY1eo97EawCdduQB2UEw@mail.gmail.com>
+References: <CALW20Z3Bhp6Bhx8qWWcfcF9wcOSGV_V+KC5ct+ovFQ=o2HeoAw@mail.gmail.com>
+ <s5h8t5nx5qs.wl-tiwai@suse.de>
+ <CALW20Z1YFqnbUE51Wbm38VaNL2Yr4osyMeGJmHrabfQvAY_1VQ@mail.gmail.com>
+ <CALW20Z27m4gjzJzL-Jc11SzE70u05oV1uoKdj5T2Gk+ABVD1ig@mail.gmail.com>
+ <s5htvo8smce.wl-tiwai@suse.de>
+ <CALW20Z08N9pOG6W_FCBSz8DO92ZNTHnRYSY=ausL1tgij9-tOQ@mail.gmail.com>
+ <s5hbmafhd3t.wl-tiwai@suse.de>
+ <CALW20Z3PrdQwB2orP3aXx9TqEeh_AKizEC+oPQ8B66FbBSOYEg@mail.gmail.com>
+ <s5hk1p37h8t.wl-tiwai@suse.de>
+ <CALW20Z2_vxVxjT_bCf2fZDPuuAt1hZyOVF+jusm+9YCLc=ppfQ@mail.gmail.com>
+ <s5h36vr7bsk.wl-tiwai@suse.de>
+ <CALW20Z2OzysCHqtpbJCnDvQ3hho5kk=fwJF_q-fRVGMVDTGOTQ@mail.gmail.com>
+ <s5hzhxy4c4y.wl-tiwai@suse.de>
+ <CALW20Z30cz6HUKCqStsyvtfp=2UYKm8SBVvwvsuOA+zrgGJWjA@mail.gmail.com>
+ <s5hwot24brq.wl-tiwai@suse.de>
+ <CALW20Z04fL4xeFwwHBVRKhJVndL66muLXdCDhoEmAW+YGHh+tA@mail.gmail.com>
+ <s5htvo64bfi.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
- by alsa0.perex.cz (Postfix) with ESMTP id 46274267692
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2018 14:33:21 +0200 (CEST)
-Received: by mail-wm0-f68.google.com with SMTP id r24-v6so14243864wmh.0
- for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2018 05:33:21 -0700 (PDT)
-In-Reply-To: <20180807120707.3yjy6ggguk3frtrr@kili.mountain>
-Content-Language: en-US
+Received: from mail-qk0-f195.google.com (mail-qk0-f195.google.com
+ [209.85.220.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50E01267692
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2018 15:12:25 +0200 (CEST)
+Received: by mail-qk0-f195.google.com with SMTP id v17-v6so11289467qkb.11
+ for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2018 06:12:24 -0700 (PDT)
+In-Reply-To: <s5htvo64bfi.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,54 +39,153 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
+To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Dan,
+Dear Takashi,
 
-Thanks for the sharing out this warning msg.
+Thanks for your reply.
 
-On 07/08/18 13:07, Dan Carpenter wrote:
-> Hello Srinivas Kandagatla,
-> 
-> This is a semi-automatic email about new static checker warnings.
-> 
-> The patch 917809e2280b: "slimbus: ngd: Add qcom SLIMBus NGD driver"
-> from Jun 19, 2018, leads to the following Smatch complaint:
-> 
->      drivers/slimbus/qcom-ngd-ctrl.c:867 qcom_slim_ngd_xfer_msg()
->       warn: variable dereferenced before check 'txn->msg' (see line 791)
-> 
-> drivers/slimbus/qcom-ngd-ctrl.c
->     790	
->     791		if (txn->msg->num_bytes > SLIM_MSGQ_BUF_LEN ||
->                      ^^^^^^^^^
-> Dereference
-> 
->     792				txn->rl > SLIM_MSGQ_BUF_LEN) {
->     793			dev_err(ctrl->dev, "msg exeeds HW limit\n");
+> The "period" in ALSA PCM definition represents the interval time (or
+> frames) of the periodical interrupts on the ring buffer.  If the irq
+> is issued for each 256 frames while the ring buffer size is 1024
+> frames, periods = 1024/256 = 4.  The periods_min defines the minimal
+> number of periods the hardware may accept.
 
-...
->     866	
->     867		if (txn->msg && txn->msg->wbuf)
->                      ^^^^^^^^
-> This check is too late.
+Is it  256 frames or  256 bytes ?
 
-To be honest this function should not be invoked with txn->msg being 
-NULL. I can see that slim_val_inf_sanity() enforces this, but we can add 
-an additional check in slim_do_transfer() for this not to happen in case 
-  slim_do_transfer() is invoked directly.
 
-Check in this ngd driver is totally redundant.
-I will try to send a cleanup patch for this once rc1 is out.
+fuser -v /dev/snd/* output is
+                                         USER
+  PID   ACCESS    COMMAND
+/dev/snd/controlC0         Dell                                   1815
+F.....           pulseaudio
 
-thanks,
-srini
-> 
->     868			memcpy(puc, txn->msg->wbuf, txn->msg->num_bytes);
->     869	
-> 
-> regards,
-> dan carpenter
-> 
+Regards,
+Chakravarthi
+On Tue, Aug 7, 2018 at 5:48 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Tue, 07 Aug 2018 14:14:35 +0200,
+> Chakravarthi Pradeep wrote:
+> >
+> > Dear Takashi,
+> >
+> > I would like you to review my driver, kindly tell me whether is it
+> > possible to review it. If yes, can you please share me git link where
+> > I can upload my driver for review .
+>
+> Chakravarthi, this is no "review" but an action called "debug".
+> I can't waste my time for that, and you need to figure out the issue
+> in your side.
+>
+> Track the code and the PCM stream state.  There are no many places
+> that call the stop.  Use the source, Luke.
+>
+>
+> Takashi
+>
+> >
+> > Regards,
+> > Chakravarthi
+> > On Tue, Aug 7, 2018 at 5:41 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > On Tue, 07 Aug 2018 14:08:05 +0200,
+> > > Chakravarthi Pradeep wrote:
+> > > >
+> > > > Dear Takashi,
+> > > >
+> > > > In previous mail you have mentioned
+> > > > > So, either the measurement is wrong, or the stream is already screwed
+> > > > > up at the time you call snd_pcm_period_elapsed().
+> > > >
+> > > > what it means "measurement is wrong"  and how to make that measurement
+> > > > is correct ?
+> > >
+> > > See what I wrote: "either".  I can't exclude the possibility that you
+> > > are measuring the code calls incorrectly, of course.  This is one
+> > > case.  Another case would be the incorrect state that is already
+> > > screwed up at the time of snd_pcm_period_elapsed() call.
+> > >
+> > >
+> > > Takashi
+> > >
+> > >
+> > > > Regards,
+> > > > Chakravarthi
+> > > > On Tue, Aug 7, 2018 at 5:33 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > > > >
+> > > > > On Tue, 07 Aug 2018 13:59:46 +0200,
+> > > > > Chakravarthi Pradeep wrote:
+> > > > > >
+> > > > > > Dear Takashi,
+> > > > > >
+> > > > > > Trigger stop is getting called , because of this hwptr is zero and
+> > > > > > pointer call back is not getting called. Below is my log from driver.
+> > > > > >
+> > > > > > [  838.491681] Trigger:Start
+> > > > > > [  839.522233] hwptr=0 buf_pos:3456
+> > > > > > [  839.522244] buf_pos :3456 bytes_to_frames:864 uhdc_audio_pcm_pointer_253
+> > > > > > [  839.522249] Trigger:Stop
+> > > > >
+> > > > > Then you need to figure out the code path of the trigger stop.
+> > > > >
+> > > > > > In normal scenario, Trigger stop is not getting called and audio was
+> > > > > > able to render in the VLC application. Below log for normal scenario,
+> > > > > > [  802.785893] Trigger:Start
+> > > > > > [  814.288309] hwptr=0 buf_pos:6272
+> > > > > > [  814.288323] buf_pos :6272 bytes_to_frames:1568 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.288362] buf_pos :6272 bytes_to_frames:1568 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.288378] buf_pos :6272 bytes_to_frames:1568 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.305079] hwptr=6272 buf_pos:9472
+> > > > > > [  814.305091] buf_pos :9472 bytes_to_frames:2368 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.321741] hwptr=9472 buf_pos:12672
+> > > > > > [  814.321748] buf_pos :12672 bytes_to_frames:3168 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.321777] buf_pos :12672 bytes_to_frames:3168 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.321785] buf_pos :12672 bytes_to_frames:3168 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.338452] hwptr=12672 buf_pos:15872
+> > > > > > [  814.338459] buf_pos :15872 bytes_to_frames:3968 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.355242] hwptr=15872 buf_pos:19072
+> > > > > > [  814.355248] buf_pos :19072 bytes_to_frames:4768 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.355288] buf_pos :19072 bytes_to_frames:4768 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.355294] buf_pos :19072 bytes_to_frames:4768 uhdc_audio_pcm_pointer_253
+> > > > > > [  814.371822] hwptr=19072 buf_pos:22272
+> > > > > > ...
+> > > > > > ...
+> > > > > > [  830.739031] Trigger:Stop
+> > > > > >
+> > > > > >
+> > > > > > I can not do rmmod for ALSA driver. If I do sudo rmmod mydriver then it says
+> > > > > > "rmmod: ERROR: Module mydriver is in use"
+> > > > > >
+> > > > > > How can I remove mydriver module from linux kernel ?
+> > > > >
+> > > > > Likely some program is using the sound device.  For example, a mixer
+> > > > > applet or PulseAudio keeps opening the control device.
+> > > > > Check it via "fuser -v /dev/snd/*"
+> > > > >
+> > > > >
+> > > > > Takashi
+> > > >
+> > > >
+> > > >
+> > > > --
+> > > > Thanks and Regards
+> > > > Chakravarthi Pradeep.K
+> > > > Ph: 91 9980434900
+> > > >
+> >
+> >
+> >
+> > --
+> > Thanks and Regards
+> > Chakravarthi Pradeep.K
+> > Ph: 91 9980434900
+> >
+
+
+
+-- 
+Thanks and Regards
+Chakravarthi Pradeep.K
+Ph: 91 9980434900
