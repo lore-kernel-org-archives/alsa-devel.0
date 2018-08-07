@@ -1,89 +1,35 @@
-From: "Zhi, Yong" <yong.zhi@intel.com>
-Subject: Re: [PATCH] ASoC: Intel: hdac_hdmi: Add
-	sampling	frequencies constraint
-Date: Tue, 7 Aug 2018 16:01:45 +0000
-Message-ID: <C193D76D23A22742993887E6D207B54D3420A502@ORSMSX106.amr.corp.intel.com>
-References: <1533653765-26080-1-git-send-email-yong.zhi@intel.com>
- <s5hzhxy2oc5.wl-tiwai@suse.de>
- <C193D76D23A22742993887E6D207B54D3420A4AB@ORSMSX106.amr.corp.intel.com>
- <s5htvo62nh8.wl-tiwai@suse.de>
+From: Matthias Kaehlcke <mka@chromium.org>
+Subject: [PATCH] ASoC: rt5677: Remove bogus device id from rt5677_of_match
+Date: Tue,  7 Aug 2018 09:22:34 -0700
+Message-ID: <20180807162234.205212-1-mka@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 83BB1267692
- for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2018 18:01:48 +0200 (CEST)
-In-Reply-To: <s5htvo62nh8.wl-tiwai@suse.de>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "N,
- Harshapriya" <harshapriya.n@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "vkoul@kernel.org" <vkoul@kernel.org>, "broonie@kernel.org" <broonie@kernel.org>, "M, Naveen" <naveen.m@intel.com>, "Kale, Sanyog R" <sanyog.r.kale@intel.com>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Guenter Roeck <groeck@chromium.org>, Nicolas Boichat <drinkcat@chromium.org>, Matthias Kaehlcke <mka@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi, Takashi,
+The initializer of rt5677_of_match contains a bogus device id
+(enum type) for the 'type' field (char []). Remove it.
 
-> -----Original Message-----
-> From: Takashi Iwai [mailto:tiwai@suse.de]
-> Sent: Tuesday, August 7, 2018 10:41 AM
-> To: Zhi, Yong <yong.zhi@intel.com>
-> Cc: broonie@kernel.org; pierre-louis.bossart@linux.intel.com; alsa-
-> devel@alsa-project.org; N, Harshapriya <harshapriya.n@intel.com>;
-> vkoul@kernel.org; M, Naveen <naveen.m@intel.com>; Kale, Sanyog R
-> <sanyog.r.kale@intel.com>
-> Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: hdac_hdmi: Add sampling
-> frequencies constraint
-> 
-> On Tue, 07 Aug 2018 17:36:12 +0200,
-> Zhi, Yong wrote:
-> >
-> > Hi, Takashi,
-> >
-> > Thanks for the review.
-> >
-> > > -----Original Message-----
-> > > From: Takashi Iwai [mailto:tiwai@suse.de]
-> > > Sent: Tuesday, August 7, 2018 10:23 AM
-> > > To: Zhi, Yong <yong.zhi@intel.com>
-> > > Cc: broonie@kernel.org; pierre-louis.bossart@linux.intel.com; alsa-
-> > > devel@alsa-project.org; N, Harshapriya <harshapriya.n@intel.com>;
-> > > vkoul@kernel.org; M, Naveen <naveen.m@intel.com>; Kale, Sanyog R
-> > > <sanyog.r.kale@intel.com>
-> > > Subject: Re: [alsa-devel] [PATCH] ASoC: Intel: hdac_hdmi: Add
-> > > sampling frequencies constraint
-> > >
-> > > On Tue, 07 Aug 2018 16:56:05 +0200,
-> > > Yong Zhi wrote:
-> > > >
-> > > > Playback of 44.1Khz contents with HDMI plugged returns "Invalid
-> > > > pipe config".
-> > >
-> > > Why?  Is it a limitation of i915 graphics side?
-> > > If it's a generic issue, we'd need to fix also in the legacy HDMI driver, too.
-> > >
-> >
-> > The HDMI paths in DFW topology are configured for 48Khz operation.
-> 
-> OK, so it's specific to this driver, not for the legacy configuration, so far.
-> 
-> What if the legacy HDMI codec driver is used on top of Intel SST (as the
-> recent patchset "Enable HDA Codec support on Intel Platforms")?
-> The legacy HDMI codec driver isn't enabled there, but in theory it can be.  I
-> suppose that a similar workaround is required, right?
-> 
-> 
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+---
+ sound/soc/codecs/rt5677.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Think so if that's the case, but I am far from expert on this topic :)
-
-> thanks,
-> 
-> Takashi
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 8a0181a2db08..7dab53b35cbf 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -5007,7 +5007,7 @@ static const struct regmap_config rt5677_regmap = {
+ };
+ 
+ static const struct of_device_id rt5677_of_match[] = {
+-	{ .compatible = "realtek,rt5677", RT5677 },
++	{ .compatible = "realtek,rt5677", },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, rt5677_of_match);
+-- 
+2.18.0.597.ga71716f1ad-goog
