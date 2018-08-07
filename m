@@ -1,56 +1,70 @@
-From: Guenter Roeck <groeck@google.com>
-Subject: Re: [PATCH v2] ASoC: rt5677: Fix initialization of rt5677_of_match.data
-Date: Tue, 7 Aug 2018 10:29:25 -0700
-Message-ID: <CABXOdTdTqzsvDfXyrCBY98iP+icj_g=Rig5Lb1Rq0MMQPBGZ2Q@mail.gmail.com>
-References: <20180807171940.150507-1-mka@chromium.org>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH] ASoC: wm_adsp: Correct DSP pointer for
+	preloader control
+Date: Tue, 7 Aug 2018 18:30:42 +0100
+Message-ID: <20180807173042.22501-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180807171940.150507-1-mka@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: bardliao@realtek.com, oder_chiou@realtek.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel <linux-kernel@vger.kernel.org>, Guenter Roeck <groeck@chromium.org>, Nicolas Boichat <drinkcat@chromium.org>, andriy.shevchenko@linux.intel.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E10A267898
+ for <alsa-devel@alsa-project.org>; Tue,  7 Aug 2018 19:30:45 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: ajit.pandey@cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Aug 7, 2018 at 10:19 AM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> The driver expects to find the device id in rt5677_of_match.data, however
-> it is currently assigned to rt5677_of_match.type. Fix this.
->
-> The problem was found with the help of clang:
->   sound/soc/codecs/rt5677.c:5010:36: warning: expression which evaluates to
->   zero treated as a null pointer constant of type 'const void *'
->   [-Wnon-literal-null-conversion]
->     { .compatible = "realtek,rt5677", RT5677 },
->                                       ^~~~~~
->
-> Fixes: ddc9e69b9dc2 ("ASoC: rt5677: Hide platform data in the module sources")
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+From: Ajit Pandey <ajit.pandey@cirrus.com>
 
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
+The offset of the DSP core needs to be taken into account for the DSP
+preloader control get and put. Currently the dsp->preloaded variable
+will only ever be read/updated on the first DSP, whilst this doesn't
+affect the operation of the control the readback will be incorrect.
 
-> --
-> Changes in v2:
-> - assign device id to data instead of 'type'
-> - updated subject and commit message
-> - added: 'Fixes' tag
-> ---
->  sound/soc/codecs/rt5677.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-> index 8a0181a2db08..47feef30dadb 100644
-> --- a/sound/soc/codecs/rt5677.c
-> +++ b/sound/soc/codecs/rt5677.c
-> @@ -5007,7 +5007,7 @@ static const struct regmap_config rt5677_regmap = {
->  };
->
->  static const struct of_device_id rt5677_of_match[] = {
-> -       { .compatible = "realtek,rt5677", RT5677 },
-> +       { .compatible = "realtek,rt5677", .data = (const void *)RT5677 },
->         { }
->  };
->  MODULE_DEVICE_TABLE(of, rt5677_of_match);
-> --
-> 2.18.0.597.ga71716f1ad-goog
->
+Signed-off-by: Ajit Pandey <ajit.pandey@cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 3bc1bb5504a1..ae131376cea1 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2665,7 +2665,10 @@ int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
+ 			   struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+-	struct wm_adsp *dsp = snd_soc_component_get_drvdata(component);
++	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct wm_adsp *dsp = &dsps[mc->shift - 1];
+ 
+ 	ucontrol->value.integer.value[0] = dsp->preloaded;
+ 
+@@ -2677,10 +2680,11 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
+ 			   struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+-	struct wm_adsp *dsp = snd_soc_component_get_drvdata(component);
++	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
++	struct wm_adsp *dsp = &dsps[mc->shift - 1];
+ 	char preload[32];
+ 
+ 	snprintf(preload, ARRAY_SIZE(preload), "DSP%u Preload", mc->shift);
+-- 
+2.11.0
