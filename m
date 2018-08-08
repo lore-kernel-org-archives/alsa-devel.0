@@ -1,17 +1,34 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Correct DSP pointer for preloader control" to the asoc tree
-Date: Wed,  8 Aug 2018 12:07:55 +0100 (BST)
-Message-ID: <20180808110755.C5AD61124340@debutante.sirena.org.uk>
-References: <20180807173042.22501-1-ckeepax@opensource.cirrus.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <20180807173042.22501-1-ckeepax@opensource.cirrus.com>
-Sender: stable-owner@vger.kernel.org
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, ajit.pandey@cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.comalsa-devel@alsa-project.org
+Subject: Applied "ASoC: rt5677: Fix initialization of
+	rt5677_of_match.data" to the asoc tree
+Date: Wed,  8 Aug 2018 12:08:03 +0100 (BST)
+Message-ID: <20180808110803.1F0861124340@debutante.sirena.org.uk>
+References: <20180807171940.150507-1-mka@chromium.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2DD62678EC
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 13:08:05 +0200 (CEST)
+In-Reply-To: <20180807171940.150507-1-mka@chromium.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Nicolas Boichat <drinkcat@chromium.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Guenter Roeck <groeck@chromium.org>, Bard Liao <bardliao@realtek.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Correct DSP pointer for preloader control
+   ASoC: rt5677: Fix initialization of rt5677_of_match.data
 
 has been applied to the asoc tree at
 
@@ -36,52 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From b1470d4ce77c2d60661c7d5325d4fb8063e15ff8 Mon Sep 17 00:00:00 2001
-From: Ajit Pandey <ajit.pandey@cirrus.com>
-Date: Tue, 7 Aug 2018 18:30:42 +0100
-Subject: [PATCH] ASoC: wm_adsp: Correct DSP pointer for preloader control
+>From f861e3e28a3016a2064d9f600eaa92a530b732b4 Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Tue, 7 Aug 2018 10:19:40 -0700
+Subject: [PATCH] ASoC: rt5677: Fix initialization of rt5677_of_match.data
 
-The offset of the DSP core needs to be taken into account for the DSP
-preloader control get and put. Currently the dsp->preloaded variable
-will only ever be read/updated on the first DSP, whilst this doesn't
-affect the operation of the control the readback will be incorrect.
+The driver expects to find the device id in rt5677_of_match.data, however
+it is currently assigned to rt5677_of_match.type. Fix this.
 
-Signed-off-by: Ajit Pandey <ajit.pandey@cirrus.com>
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+The problem was found with the help of clang:
+  sound/soc/codecs/rt5677.c:5010:36: warning: expression which evaluates to
+  zero treated as a null pointer constant of type 'const void *'
+  [-Wnon-literal-null-conversion]
+    { .compatible = "realtek,rt5677", RT5677 },
+                                      ^~~~~~
+
+Fixes: ddc9e69b9dc2 ("ASoC: rt5677: Hide platform data in the module sources")
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
+Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/wm_adsp.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5677.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index 4e7f8525449e..08dc82770273 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -2643,7 +2643,10 @@ int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
- 			   struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
--	struct wm_adsp *dsp = snd_soc_component_get_drvdata(component);
-+	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
-+	struct soc_mixer_control *mc =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct wm_adsp *dsp = &dsps[mc->shift - 1];
+diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
+index 922becfee59b..9b7a1833d331 100644
+--- a/sound/soc/codecs/rt5677.c
++++ b/sound/soc/codecs/rt5677.c
+@@ -5008,7 +5008,7 @@ static const struct regmap_config rt5677_regmap = {
+ };
  
- 	ucontrol->value.integer.value[0] = dsp->preloaded;
- 
-@@ -2655,10 +2658,11 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
- 			   struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
--	struct wm_adsp *dsp = snd_soc_component_get_drvdata(component);
-+	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
- 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
- 	struct soc_mixer_control *mc =
- 		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct wm_adsp *dsp = &dsps[mc->shift - 1];
- 	char preload[32];
- 
- 	snprintf(preload, ARRAY_SIZE(preload), "DSP%u Preload", mc->shift);
+ static const struct of_device_id rt5677_of_match[] = {
+-	{ .compatible = "realtek,rt5677", RT5677 },
++	{ .compatible = "realtek,rt5677", .data = (const void *)RT5677 },
+ 	{ }
+ };
+ MODULE_DEVICE_TABLE(of, rt5677_of_match);
 -- 
 2.18.0
