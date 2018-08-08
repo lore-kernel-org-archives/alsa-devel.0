@@ -1,7 +1,7 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 10/11] ALSA: hda/ca0132 - Change mixer controls for Recon3D
-Date: Wed,  8 Aug 2018 13:34:21 -0400
-Message-ID: <1533749663-8200-11-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 11/11] ALSA: hda/ca0132 - Add exit commands for Recon3D
+Date: Wed,  8 Aug 2018 13:34:22 -0400
+Message-ID: <1533749663-8200-12-git-send-email-conmanx360@gmail.com>
 References: <1533749663-8200-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1533749663-8200-1-git-send-email-conmanx360@gmail.com>
@@ -9,58 +9,80 @@ Sender: linux-kernel-owner@vger.kernel.org
 Cc: Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds changes to setup the Recon3D's mixer controls.
+This patch adds exit functions for the Recon3D, and cleans up the
+current exit function.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 30 ++++++++++++++++--------------
+ 1 file changed, 16 insertions(+), 14 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 18b97df..6f288d7 100644
+index 6f288d7..61ab735 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -5781,11 +5781,11 @@ static const struct snd_kcontrol_new ca0132_mixer[] = {
- };
+@@ -6969,7 +6969,7 @@ static void sbz_set_pin_ctl_default(struct hda_codec *codec)
+ 				AC_VERB_SET_PIN_WIDGET_CONTROL, 0x00);
+ }
  
- /*
-- * SBZ specific control mixer. Removes auto-detect for mic, and adds surround
-- * controls. Also sets both the Front Playback and Capture Volume controls to
-- * alt so they set the DSP's decibel level.
-+ * Desktop specific control mixer. Removes auto-detect for mic, and adds
-+ * surround controls. Also sets both the Front Playback and Capture Volume
-+ * controls to alt so they set the DSP's decibel level.
-  */
--static const struct snd_kcontrol_new sbz_mixer[] = {
-+static const struct snd_kcontrol_new desktop_mixer[] = {
- 	CA0132_ALT_CODEC_VOL("Front Playback Volume", 0x02, HDA_OUTPUT),
- 	CA0132_CODEC_MUTE("Front Playback Switch", VNID_SPK, HDA_OUTPUT),
- 	HDA_CODEC_VOLUME("Surround Playback Volume", 0x04, 0, HDA_OUTPUT),
-@@ -5856,8 +5856,8 @@ static int ca0132_build_controls(struct hda_codec *codec)
- 	 */
- 	num_fx = OUT_EFFECTS_COUNT + IN_EFFECTS_COUNT;
- 	for (i = 0; i < num_fx; i++) {
--		/* SBZ breaks if Echo Cancellation is used */
--		if (spec->quirk == QUIRK_SBZ) {
-+		/* SBZ and R3D break if Echo Cancellation is used. */
-+		if (spec->quirk == QUIRK_SBZ || spec->quirk == QUIRK_R3D) {
- 			if (i == (ECHO_CANCELLATION - IN_EFFECT_START_NID +
- 						OUT_EFFECTS_COUNT))
- 				continue;
-@@ -7609,9 +7609,13 @@ static int patch_ca0132(struct hda_codec *codec)
- 	/* Set which mixers each quirk uses. */
- 	switch (spec->quirk) {
+-static void sbz_clear_unsolicited(struct hda_codec *codec)
++static void ca0132_clear_unsolicited(struct hda_codec *codec)
+ {
+ 	hda_nid_t pins[7] = {0x0B, 0x0E, 0x0F, 0x10, 0x11, 0x12, 0x13};
+ 	unsigned int i;
+@@ -7022,21 +7022,22 @@ static void sbz_exit_chip(struct hda_codec *codec)
+ 
+ 	chipio_set_control_param(codec, 0x0D, 0x24);
+ 
+-	sbz_clear_unsolicited(codec);
++	ca0132_clear_unsolicited(codec);
+ 	sbz_set_pin_ctl_default(codec);
+ 
+ 	snd_hda_codec_write(codec, 0x0B, 0,
+ 		AC_VERB_SET_EAPD_BTLENABLE, 0x00);
+ 
+-	if (dspload_is_loaded(codec))
+-		dsp_reset(codec);
+-
+-	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
+-		VENDOR_CHIPIO_CT_EXTENSIONS_ENABLE, 0x00);
+-
+ 	sbz_region2_exit(codec);
+ }
+ 
++static void r3d_exit_chip(struct hda_codec *codec)
++{
++	ca0132_clear_unsolicited(codec);
++	snd_hda_codec_write(codec, 0x01, 0, 0x793, 0x00);
++	snd_hda_codec_write(codec, 0x01, 0, 0x794, 0x5b);
++}
++
+ static void ca0132_exit_chip(struct hda_codec *codec)
+ {
+ 	/* put any chip cleanup stuffs here. */
+@@ -7382,16 +7383,17 @@ static void ca0132_free(struct hda_codec *codec)
  	case QUIRK_SBZ:
--		spec->mixers[0] = sbz_mixer;
-+		spec->mixers[0] = desktop_mixer;
- 		snd_hda_codec_set_name(codec, "Sound Blaster Z");
+ 		sbz_exit_chip(codec);
  		break;
 +	case QUIRK_R3D:
-+		spec->mixers[0] = desktop_mixer;
-+		snd_hda_codec_set_name(codec, "Recon3D");
++		r3d_exit_chip(codec);
 +		break;
  	case QUIRK_R3DI:
- 		spec->mixers[0] = r3di_mixer;
- 		snd_hda_codec_set_name(codec, "Recon3Di");
+ 		r3di_gpio_shutdown(codec);
+-		snd_hda_sequence_write(codec, spec->base_exit_verbs);
+-		ca0132_exit_chip(codec);
+-		break;
+-	default:
+-		snd_hda_sequence_write(codec, spec->base_exit_verbs);
+-		ca0132_exit_chip(codec);
+ 		break;
+ 	}
++
++	snd_hda_sequence_write(codec, spec->base_exit_verbs);
++	ca0132_exit_chip(codec);
++
+ 	snd_hda_power_down(codec);
+ 	if (spec->mem_base)
+ 		iounmap(spec->mem_base);
 -- 
 2.7.4
