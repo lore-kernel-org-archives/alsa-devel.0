@@ -1,15 +1,18 @@
-From: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Subject: Re: A bug about cache inconsistency report
-Date: Wed, 8 Aug 2018 11:07:06 +0000
-Message-ID: <7724166a600340619f747586b24b1004@zhaoxin.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max98373: Added software reset register
+	to readable registers" to the asoc tree
+Date: Wed,  8 Aug 2018 12:07:47 +0100 (BST)
+Message-ID: <20180808110747.7170C1124340@debutante.sirena.org.uk>
+References: <20180808030638.8085-1-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ZXSHCAS2.zhaoxin.com (unknown [203.148.12.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 438B32673A0
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 13:07:14 +0200 (CEST)
-Content-Language: zh-CN
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B259C2678DA
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 13:07:51 +0200 (CEST)
+In-Reply-To: <20180808030638.8085-1-ryans.lee@maximintegrated.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,72 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "Tony W. Wang(BJ-RD)" <TonyWWang@zhaoxin.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "Tim
- Guo(BJ-RD)" <TimGuo@zhaoxin.com>, "Annie Liu(BJ-RD)" <AnnieLiu@zhaoxin.com>
+Cc: alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-PiA+ID4gPiA+VGhlbiB0aGUgbmV4dCBzdGVwIHdvdWxkIGJlIHRvIGZha2Ugc2ctYnVmZmVyIGZy
-b20gdGhpcw0KPiA+ID4gPiA+c3RyYWlnaHQgYnVmZmVyLiAgUmV2ZXJ0IHRoZSBhYm92ZSwgYW5k
-IG1vZGlmeSBzZ2J1Zi5jIHRvIHRoZSBmb2xsb3dpbmc6DQo+ID4gPiA+ID4tIEFsbG9jYXRlIGEg
-bGFyZ2UgY29udGludW91cyBidWZmZXINCj4gPiA+ID4gPi0gQXNzaWduIGVhY2ggcGFnZSBpbiB0
-aGlzIGxhcmdlIGJ1ZmZlcg0KPiA+ID4gPg0KPiA+ID4gPiA+SWYgdGhpcyBzdGlsbCB3b3Jrcywg
-aXQncyBub3QgYWJvdXQgdm1hcCwgYnV0IGl0IGp1c3QgbWVhbnMNCj4gPiA+ID4gPnRoYXQgdGhl
-IHBoeXNpY2FsbHkgb3JkZXJlZCBwYWdlcyBkbyBtYXR0ZXIgLS0gaW1wbGljaXRseQ0KPiA+ID4g
-PiA+c2hvd2luZyB0aGF0IHRoZSBzbm9vcGluZyBiZWhhdmlvciBpc24ndCBwcm9wZXJseSB0dXJu
-ZWQgb24gLyBvZmYgb24gdGhlIGNvbnRyb2xsZXIuDQo+ID4gPiA+DQo+ID4gPiA+IFRvIGZha2Ug
-U0ctYnVmZmVyLCBJIGRpZCB0aGlzIHRlc3Q6IHJlc3RvcmUgYWxsIHRoZSBjb2RlcyB0byB0aGUg
-b3JpZ2luYWwsIHRoZW4gYWRkZWQgc29tZSBjb2RlcyBpbiBzbmRfbWFsbG9jX3NnYnVmX3BhZ2Vz
-KCkgbGlrZSBiZWxvdywgdGhlIHJlc3VsdCBpcyBiYWRseSBuaW9zZS4NCj4gPiA+DQo+ID4gPiA+
-Tm90IHJlYWxseSB3aGF0IEkgbWVhbnQuICBSYXRoZXIgc29tZXRoaW5nIGxpa2UgYmVsb3cgKHRv
-dGFsbHkgdW50ZXN0ZWQpLg0KPiA+ID4NCj4gPiA+IFtIYW5zIDpdIEkga25vdyB3aGF0IHlvdSBt
-ZWFuIG5vdyBhbmQgY29tcGxldGUgY29kZSBsaWtlIGJlbG93LCBidXQgdGhlIHJlc3VsdCBpcyBz
-dGlsbCBub2lzZS4NCj4gPg0KPiA+ID5PSywgc28gaW5kZWVkIHRoZSB2bWFwcGVkIGFkZHJlc3Mg
-ZG9lcyBzZWVtIG1hdHRlci4gIEludGVyZXN0aW5nLg0KPiA+ID5XaGF0IGtpbmQgb2YgdXNlciBh
-Y2Nlc3MgZG9lcyBwcm9kdWNlIHRoZSBub2lzZT8gIERvZXMgaXQgdmlhIGFwbGF5IG1tYXAgbW9k
-ZSwgdG9vPw0KPiA+DQo+ID4gPkluIGFueXdheSwgaWYgdGhlIHZtYXAgaXMgYSBwcm9ibGVtLCBp
-dCBtaWdodCBiZSB3b3JrZWQgYXJvdW5kIGEgcGF0Y2ggbGlrZSBiZWxvdyAoYWdhaW4gdG90YWxs
-eSB1bnRlc3RlZCBhbmQgbm90IHN1cmUgd2hldGhlciBpdCdzIGNvcnJlY3QpLg0KPiA+DQo+ID4g
-W0hhbnMgOl0gQXMgSSBrbm93LCBJbiB0aGUgaGFyZHdhcmUgbGF5ZXIgSERBQ+KAmXMgc3RyZWFt
-IGhhdmUgdHdvIGRhdGEgdHJhbnNwb3J0IHBhdGggOiBub24tc25vb3AgJiBzbm9vcDsgSW4gdGhl
-IHNvZnR3YXJlIGxheWVyIEFMU0EtRHJpdmVyIGhhdmUgdHdvIGRhdGEgdHJhbnNwb3J0IHBhdGgg
-OiBtbWFwICYgbm90IG1tYXAodGVzdCBzaG93cywgaXQgaXMgZGVwZW5kZW50IG9uIHdhdidzIGZv
-cm1hdCBvciBtbWFwX2ZsYWcgaW4gYXBsYXkuYykuIFdoZW4gaGFyZHdhcmUgYXQgbm9uLXNub29w
-IG1vZGUsIHdpdGhvdXQgaGFyZHdhcmUgbW9kdWxlJ3MgaGVscCwgc29mdHdhcmUgbXVzdCBtYXJr
-IHRoZSBtZW0gdG8gdW5jYWNoZWFibGUgdHlwZTogd2hlbiBtbWFwIHVzZWQsIHRoZSBtYXJrIGFj
-dGlvbiBoYXBwZW5lZCBhdCBwY21fbW1hcF9wcmVwYXJlKCksIHRoZSBub3QtbW1hcCBtb2RlJ3Mg
-bWFyayBhY3Rpb24gaGFwcGVuZWQgYXQgX19tYXJrX3BhZ2VzX3djKCkuIEFuZCB3aGVuIGF0IG5v
-dC1tbWFwIG1vZGUsIHRoZSB2bWFwcGVkIGFkZHJlc3MgZGlyZWN0bHkgdXNlZCBpbiBzbmRfcGNt
-X2xpYl93cml0ZV90cmFuc2ZlcigpIC0+IGNvcHlfZnJvbV91c2VyKCkuDQo+DQo+DQo+ID5XZWxs
-LCB0aGF0J3MgdXN1YWxseSBubyBwcm9ibGVtIHJlZ2FyZGluZyB0aGF0IGNhY2hlIGNvaGVyZW5j
-eS4NCj4gPkF0IGxlYXN0IGl0IGhhc24ndCBiZWVuIGFueSBpc3N1ZSB3aXRoIEludGVsIGFuZCBB
-TUQgQ1BVcy4NCj4gPkRvZXMgdGhlIHByb2JsZW0gaGFwcGVuIHdpdGggSW50ZWwgQ1BVIGluc3Rl
-YWQgb2YgVklBPw0KPg0KPiBbSGFucyA6XSBJIGRvbid0IGhhdmUgZW5vdWdoIEludGVsL0FNRCBt
-YWNoaW5lIGhlcmUsIHVwIHRvIG5vdywgb25seSBmaW5kIG9uZSBJbnRlbCdzIDogSFc6IG1vdGhl
-ciBib2FyZCBpcyBEZWxsIDA0MlA0OSwgSERBIGNvbnRyb2xsZXIgaXMgODA4NjoxYzIwLCBjb2Rl
-YyBpcyBjeDIwNjQxLg0KDQo+QW5kIHRoZSBzYW1lIGlzc3VlIGlzIHNlZW4gb24gdGhhdCBtYWNo
-aW5lPw0KDQpbSGFucyA6XSBZZXMNCg0KVGhhbmtzLA0KDQpIYW5zDQoNCj4gPiBZZXMsIG9mIGNv
-dXJzZSwgdGhpcyBwYXRoIGNvbWJpbmF0aW9ucyhub24tc25vb3AgKyBub3QtbW1hcCkgdW5saWtl
-bHkgYmUgdXNlZCBieSBtb3N0IG11c2ljIHBsYXllcnMuDQo+ID4NCj4gPiBbSGFucyA6XSBJIGNv
-bXBsZXRlIHRoZSBwYXRjaCBpbiB5b3VyIGxhc3QgbWFpbCBsaWtlIGJlbG93LCBub3QgdXNlZCB0
-aGUgdnVubWFwICYgcmUtdm1hcCB3YXkoaXQgaGFzIGEgbGl0dGxlIHByb2JsZW0pLiBSZXN1bHQg
-aXMgT0sgbm93KG5vIG5vaXNlIGFueW1vcmUpLg0KPg0KPiA+V2hhdCBwcm9ibGVtIGRpZCB5b3Ug
-Z2V0IHdpdGggdnVubWFwIC8gdm1hcD8NCj4NCj4gW0hhbnMgOl0gaWYgcGF0Y2ggbGlrZSBiZWxv
-dywgZXZlbiB0aGUgbmV3IHZtYXBwZWQgYWRkcmVzcyBuZXdfYXJlYSBiZSBhc3NpZ25lZCB0byBk
-bWFiLT5hcmVhLCBpdCB3aWxsIG5vdCB1c2UgdGhpcyB0aW1lLCBidXQgbmV4dC4gVGhpcyB0aW1l
-IHVzZWQgZG1hYi0+YXJlYSBzdGlsbCB0aGUgbGFzdCBvbmUsIGJ1dCB0aGUgb2xkIG9uZSBoYWQg
-YmVlbiB2dW5tYXAsIHNvIE9vcHMgcmVwb3J0ZWQuDQoNCj5UaGF0J3MgYmFkLiAgQnV0IHRoZSBw
-cm9ibGVtIGlzbid0IGFzIHlvdSBndWVzc2VkLCBJIGd1ZXNzLg0KPlRoZSBhbGxvY2F0b3IgcmUt
-dXNlcyB0aGUgcHJlLWFsbG9jYXRlZCBidWZmZXIgaWYgYXZhaWxhYmxlLCBhbmQgdGhpcyBtYWtl
-cyB0aGluZ3MgaW5jb25zaXN0ZW50LiAgSSdsbCBjb29rIGxhdGVyLg0KDQoNCuS/neWvhuWjsOaY
-ju+8mg0K5pys6YKu5Lu25ZCr5pyJ5L+d5a+G5oiW5LiT5pyJ5L+h5oGv77yM5LuF5L6b5oyH5a6a
-5pS25Lu25Lq65L2/55So44CC5Lil56aB5a+55pys6YKu5Lu25oiW5YW25YaF5a655YGa5Lu75L2V
-5pyq57uP5o6I5p2D55qE5p+l6ZiF44CB5L2/55So44CB5aSN5Yi25oiW6L2s5Y+R44CCDQpDT05G
-SURFTlRJQUwgTk9URToNClRoaXMgZW1haWwgY29udGFpbnMgY29uZmlkZW50aWFsIG9yIGxlZ2Fs
-bHkgcHJpdmlsZWdlZCBpbmZvcm1hdGlvbiBhbmQgaXMgZm9yIHRoZSBzb2xlIHVzZSBvZiBpdHMg
-aW50ZW5kZWQgcmVjaXBpZW50LiBBbnkgdW5hdXRob3JpemVkIHJldmlldywgdXNlLCBjb3B5aW5n
-IG9yIGZvcndhcmRpbmcgb2YgdGhpcyBlbWFpbCBvciB0aGUgY29udGVudCBvZiB0aGlzIGVtYWls
-IGlzIHN0cmljdGx5IHByb2hpYml0ZWQuDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: max98373: Added software reset register to readable registers
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 0717edbdfed61b4c1e8291140f78882d3a481042 Mon Sep 17 00:00:00 2001
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Date: Tue, 7 Aug 2018 20:06:38 -0700
+Subject: [PATCH] ASoC: max98373: Added software reset register to readable
+ registers
+
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/max98373.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index a92586106932..92b7125ea169 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -488,6 +488,7 @@ static const DECLARE_TLV_DB_RANGE(max98373_bde_gain_tlv,
+ static bool max98373_readable_register(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
++	case MAX98373_R2000_SW_RESET:
+ 	case MAX98373_R2001_INT_RAW1 ... MAX98373_R200C_INT_EN3:
+ 	case MAX98373_R2010_IRQ_CTRL:
+ 	case MAX98373_R2014_THERM_WARN_THRESH
+-- 
+2.18.0
