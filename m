@@ -1,8 +1,7 @@
 From: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>
-Subject: [PATCH - hwmixvolume 7/9] hwmixvolume: switch the
-	shebang to python, as it is now compatible with both 2 and 3
-Date: Wed,  8 Aug 2018 17:56:35 +0200
-Message-ID: <20180808155637.5592-8-linkmauve@jabberfr.org>
+Subject: [PATCH - hwmixvolume 8/9] hwmixvolume: add my copyright
+Date: Wed,  8 Aug 2018 17:56:36 +0200
+Message-ID: <20180808155637.5592-9-linkmauve@jabberfr.org>
 References: <20180808155637.5592-1-linkmauve@jabberfr.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -25,14 +24,16 @@ List-Id: alsa-devel@alsa-project.org
 Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
 
 diff --git a/hwmixvolume/hwmixvolume b/hwmixvolume/hwmixvolume
-index ec2d05d..7b90613 100755
+index 7b90613..c34904e 100755
 --- a/hwmixvolume/hwmixvolume
 +++ b/hwmixvolume/hwmixvolume
-@@ -1,4 +1,4 @@
--#!/usr/bin/python2
-+#!/usr/bin/env python
+@@ -2,6 +2,7 @@
  
  # hwmixvolume - ALSA hardware mixer volume control applet
  # Copyright (c) 2009-2010 Clemens Ladisch
++# Copyright (c) 2018 Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+ #
+ # Permission to use, copy, modify, and/or distribute this software for any
+ # purpose with or without fee is hereby granted, provided that the above
 -- 
 2.18.0
