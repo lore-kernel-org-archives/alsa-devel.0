@@ -1,16 +1,21 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: Re: ASoC: pxa: possible regressions
-Date: Wed, 8 Aug 2018 07:38:16 +0200
-Message-ID: <58f65d89-c342-026f-6e24-a67fcd625a26@zonque.org>
-References: <5be00a36-d54b-e8ab-2d5f-4c1870f14aac@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH 04/14] conf/ucm: bytcr-rt5651: Configure
+ all volumes at 0dB
+Date: Wed, 8 Aug 2018 11:02:49 +0200
+Message-ID: <19f0d71a-0f19-8d57-7f6a-46967b9c3762@redhat.com>
+References: <20180720072741.4632-1-hdegoede@redhat.com>
+ <20180720072741.4632-5-hdegoede@redhat.com>
+ <0deb9e4d-974f-a01f-a567-912463ef5d90@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C448267898
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 07:38:17 +0200 (CEST)
-In-Reply-To: <5be00a36-d54b-e8ab-2d5f-4c1870f14aac@gmail.com>
+Received: from mail-wm0-f65.google.com (mail-wm0-f65.google.com [74.125.82.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4F0B326786A
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 11:02:51 +0200 (CEST)
+Received: by mail-wm0-f65.google.com with SMTP id t25-v6so1930922wmi.3
+ for <alsa-devel@alsa-project.org>; Wed, 08 Aug 2018 02:02:51 -0700 (PDT)
+In-Reply-To: <0deb9e4d-974f-a01f-a567-912463ef5d90@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,162 +26,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Cvek <petrcvekcz@gmail.com>, broonie@kernel.org, philipp.zabel@gmail.com, haojian.zhuang@gmail.com, Robert Jarzmik <robert.jarzmik@free.fr>, lgirdwood@gmail.com
-Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Petr,
-
-On Wednesday, August 08, 2018 04:24 AM, Petr Cvek wrote:
-> I was trying to update my system (PXA Magician) to 4.18-next and i've
-> ran into few problems with sound.
-
-Ah, so you have a Magician platform, that's very good!
-
-> My setup has only a few changes from
-> vanilla (change to using devm_snd_soc_register_card+devm_gpio_request).
-
-Care to share these changes, or ideally rebase them on top of 4.18-next 
-for mainline inclusion? Also, I'm curious what mainline version you used 
-to be based on that worked for you.
-
-> I've started digging around:
-
-Thanks for that. Are you also willing to send patches to fix things once 
-they work for you?
-
-> 1) unimportant goto
-> 
-> Commit 7afd1b0b2ef9a812095 ("ASoC: pxa: move some functions to
-> pxa2xx-lib") is this construct necessary?
-> 
-> 	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
-> 		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
-> 			SNDRV_PCM_STREAM_CAPTURE);
-> 		if (ret)
-> 			goto out;
-> 	}
->    out:
-> 	return ret;
-> 
-> After calling pxa2xx_pcm_preallocate_dma_buffer() the code will jump to
-> out anyway.
-
-True. That's a cosmetic cleanup which can go in for 4.19. Would you want 
-to send a patch after the merge window?
-
-> 2) wrong units (sample rate vs osc rate)
-> 
-> Commit 05739375f1c0a1048 ("ASoC: pxa-ssp: remove .set_pll() and
-> .set_clkdiv() callbacks"). The function pxa_ssp_hw_params() get's called
-> with sample rate so:
-> 
-> 	/* The values in the table are for 16 bits */
-> 	if (width == 32)
-> 		acds--;
-> 
-> 	ret = pxa_ssp_set_pll(priv, bclk);
-> 	if (ret < 0)
-> 		return ret;
-> 
-> 	ssacd = pxa_ssp_read_reg(ssp, SSACD);
-> 	ssacd &= ~(SSACD_ACDS(7) | SSACD_SCDB_1X);
-> 
-> pxa_ssp_set_pll() will try to set something like 8000, 44100, ... and
-> not the speed of an oscilator. The line should be probably:
-> 
-> 	ret = pxa_ssp_set_pll(priv, m->pll);
-> 
-> and there is a previous call to pxa_ssp_set_pll():
-
-Ah, yes. Does changing that fix it for you?
-
-The changes in that machine driver where done blindly because I don't 
-have Magician hardware, and I really don't like doing things that way.
-
-> 3) setup fails
-> 
-> Recent changes in ASoC PXA DMA are causing a fail of a condition in
-> pxa_ssp_hw_params():
-> 
-> 	if ((sscr0 & SSCR0_MOD) && !ttsa) {
-
-What are the values of sscr0 and ttsa in your case? Can you cross-check 
-that with a kernel that doesn't have my recent changes?
-
-> 		dev_err(&ssp->pdev->dev, "No TDM timeslot configured\n");
-> 		return -EINVAL;
-> 	}
-> 
-> It seems the SSCR0_MOD flag is set in the fall through switch statement
-> in pxa_ssp_configure_dai_fmt():
-> 
-> 	case SND_SOC_DAIFMT_DSP_A:
-> 		sspsp |= SSPSP_FSRT;
-> 		/* fall through */
-> 	case SND_SOC_DAIFMT_DSP_B:
-> 		sscr0 |= SSCR0_MOD | SSCR0_PSP;
-> 		sscr1 |= SSCR1_TRAIL | SSCR1_RWOT;
-> 		break;
-> 
-> the switch statement is an old code and it worked in the past versions.
-
-Yes, it was merely moved to some location that is called earlier. This 
-was fixing a regression caused by a8bd0ee558714 ("ASoC: raumfeld: Use 
-static DAI format setup"), so supposedly, all PXA sound was broken since 
-v4.0.
-
-> 4) names are not unique
-> 
-> The initialization of magician_dai structure wants to have (at least in
-> the past versions) for the .name item:
-> 
-> 	static struct snd_soc_dai_link magician_dai[] = {
-> 	{
-> 		.name = "uda1380",
-> 		.stream_name = "UDA1380 Playback",
-> 		.cpu_dai_name = "pxa-ssp-dai.0",
-> 		...
-> 	{
-> 		.name = "uda1380",
-> 		.stream_name = "UDA1380 Capture",
-> 		.cpu_dai_name = "pxa2xx-i2s",
-> 
-> my personal branch has them named as "uda1380_playback" and
-> "uda1380_capture".
-
-Care to send a patch for that as well, please?
-
-> 5) Unbalanced references
-> 
-> When trying to play a sound (with quick-and-dirty workarounds for
-> problems above):
-> 
->     # cat /dev/urandom | aplay -
-> 
-> the system will crash when terminating aplay (stopping playback). The
-> backtrace:
-
-So you did hear a sound?
-
-[...]
-
-> I've only managed to discover there are two calls of
-> pxa2xx_soc_pcm_new() (where DMA buffer is allocated) for both dai links:
-> 
-> 	magician-audio magician-audio: uda1380-hifi-playback <-> pxa-ssp-dai.0
-> mapping ok
-> 	...
-> 	magician-audio magician-audio: uda1380-hifi-capture <-> pxa2xx-i2s
-> mapping ok
-> 
-> but I don't know if this information is relevant.
-
-That seems fine. The question is why there are are unbalanced calls to 
-snd_dmaengine_pcm_close_release_chan(). Could you dig a bit further 
-maybe and add some printk()?
-
-Thanks for helping fix these regressions!
-
-
-Daniel
+SGkgUGllcnJlLUxvdWlzLAoKVGhhbmsgeW91IGZvciB0aGUgcmV2aWV3cy4KCk9uIDIwLTA3LTE4
+IDE1OjQ4LCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPiBPbiA3LzIwLzE4IDI6MjcgQU0s
+IEhhbnMgZGUgR29lZGUgd3JvdGU6Cj4+IFRoZSB2b2x1bWVzIGFyZSB0YWtlbiBmcm9tIHRoaXMg
+Y29tbWl0Ogo+PiBodHRwczovL2dpdGh1Yi5jb20vcGxib3NzYXJ0L1VDTS9jb21taXQvNzUzZTI0
+MzBjZDBlNmNhZmJmMTBjNmIyOWI2ODlkYmQzMmFjNTI1MAo+Pgo+PiBUaGF0IGNvbW1pdCBhbHNv
+IGFkZHMgbGluZS1pbiBzdXBwb3J0LCBzbyBpdCBoYXMgbm90IGJlZW4KPj4gdGFrZW4gaW4gaXRz
+IGVudGlyZXR5Lgo+IAo+IFdhcyB0aGVyZSBhbnl0aGluZyB3cm9uZyB3aXRoIHRoZSBsaW5lLWlu
+PyBJdCdzIGJlZW4gYSB3aGlsZSBhbmQgSSBmcmllZCBteSBib2FyZCBidXQgSSB0aGluayBpdCB3
+b3JrZWQgb2suIFRoZSBzZXR0aW5ncyBjYW1lIGZyb20gQmFyZCBMaWFvLgoKSSBkb24ndCBoYXZl
+IGFueSBkZXZpY2VzIHdpdGggYSBsaW5lLWluIHNvIEkgY291bGQgbm90IHRlc3QsCmFsc28gbGlu
+ZS1pbiBzdXBwb3J0IHJlYWxseSBzaG91bGQgYmUgYWRkZWQgaW4gYSBkaWZmZXJlbnQKY29tbWl0
+IGFuZCBtaXhlZCBpbiB3aXRoIHRoZSAwRGIgY2hhbmdlcy4KCkkgYmVsaWV2ZSBpdCBpcyBiZXN0
+IGlmIHNvbWVvbmUgd2hvIGNhbiBhY3R1YWxseSB0ZXN0IHRoaXMKYWRkcyBsaW5lLWluIHN1cHBv
+cnQgb24gdG9wIG9mIHRoaXMgc2VyaWVzLgoKUmVnYXJkcywKCkhhbnMKCgoKPiAKPj4KPj4gU2ln
+bmVkLW9mZi1ieTogSGFucyBkZSBHb2VkZSA8aGRlZ29lZGVAcmVkaGF0LmNvbT4KPj4gLS0tCj4+
+IMKgIHNyYy9jb25mL3VjbS9ieXRjci1ydDU2NTEvYnl0Y3ItcnQ1NjUxLmNvbmYgfCAxMCArKysr
+KysrLS0tCj4+IMKgIDEgZmlsZSBjaGFuZ2VkLCA3IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25z
+KC0pCj4+Cj4+IGRpZmYgLS1naXQgYS9zcmMvY29uZi91Y20vYnl0Y3ItcnQ1NjUxL2J5dGNyLXJ0
+NTY1MS5jb25mIGIvc3JjL2NvbmYvdWNtL2J5dGNyLXJ0NTY1MS9ieXRjci1ydDU2NTEuY29uZgo+
+PiBpbmRleCA1ZGNiMTFlNi4uZDZlOGU0OGQgMTAwNjQ0Cj4+IC0tLSBhL3NyYy9jb25mL3VjbS9i
+eXRjci1ydDU2NTEvYnl0Y3ItcnQ1NjUxLmNvbmYKPj4gKysrIGIvc3JjL2NvbmYvdWNtL2J5dGNy
+LXJ0NTY1MS9ieXRjci1ydDU2NTEuY29uZgo+PiBAQCAtMTE3LDE2ICsxMTcsMTMgQEAgU2VjdGlv
+bkRlZmF1bHRzIFsKPj4gwqDCoMKgwqDCoCBjc2V0ICJuYW1lPSdzcHJvdF9sb29wX291dCBtaXgg
+MCBzcHJvdF9sb29wX2luIFN3aXRjaCcgb2ZmIgo+PiDCoMKgwqDCoMKgICMgZGVmYXVsdCBzdGF0
+ZQo+PiAtwqDCoMKgIGNzZXQgIm5hbWU9J0FEQyBDYXB0dXJlIFZvbHVtZScgMTI2Igo+PiDCoMKg
+wqDCoMKgIGNzZXQgIm5hbWU9J0hQTyBNSVggREFDMSBTd2l0Y2gnIG9uIgo+PiDCoMKgwqDCoMKg
+IGNzZXQgIm5hbWU9J0hQTyBNSVggSFBWT0wgU3dpdGNoJyBvZmYiCj4+IC3CoMKgwqAgY3NldCAi
+bmFtZT0nSFAgUGxheWJhY2sgVm9sdW1lJyAwIgo+PiDCoMKgwqDCoMKgIGNzZXQgIm5hbWU9J0hQ
+TyBMIFBsYXliYWNrIFN3aXRjaCcgb2ZmIgo+PiDCoMKgwqDCoMKgIGNzZXQgIm5hbWU9J0hQTyBS
+IFBsYXliYWNrIFN3aXRjaCcgb2ZmIgo+PiDCoMKgwqDCoMKgIGNzZXQgIm5hbWU9J0hQT1ZPTCBM
+IFN3aXRjaCcgb24iCj4+IMKgwqDCoMKgwqAgY3NldCAibmFtZT0nSFBPVk9MIFIgU3dpdGNoJyBv
+biIKPj4gwqDCoMKgwqDCoCBjc2V0ICJuYW1lPSdJRjEgQVNSQyBTd2l0Y2gnIG9uIgo+PiAtwqDC
+oMKgIGNzZXQgIm5hbWU9J0lOIENhcHR1cmUgVm9sdW1lJyAyNyIKPj4gwqDCoMKgwqDCoCBjc2V0
+ICJuYW1lPSdJTjIgQm9vc3QnIDEiCj4+IMKgwqDCoMKgwqAgY3NldCAibmFtZT0nSU4xIEJvb3N0
+JyAxIgo+PiDCoMKgwqDCoMKgIGNzZXQgIm5hbWU9J0xPVVQgTCBQbGF5YmFjayBTd2l0Y2gnIG9u
+Igo+PiBAQCAtMTQ1LDYgKzE0MiwxMyBAQCBTZWN0aW9uRGVmYXVsdHMgWwo+PiDCoMKgwqDCoMKg
+IGNzZXQgIm5hbWU9J0hlYWRwaG9uZSBTd2l0Y2gnIG9mZiIKPj4gwqDCoMKgwqDCoCBjc2V0ICJu
+YW1lPSdTcGVha2VyIFN3aXRjaCcgb2ZmIgo+PiArwqDCoMKgICMgdm9sdW1lcyBmb3IgMGRCCj4+
+ICvCoMKgwqAgY3NldCAibmFtZT0nT1VUIFBsYXliYWNrIFZvbHVtZScgMzEiCj4+ICvCoMKgwqAg
+Y3NldCAibmFtZT0nSFAgUGxheWJhY2sgVm9sdW1lJyAzMSIKPj4gK8KgwqDCoCBjc2V0ICJuYW1l
+PSdJTiBDYXB0dXJlIFZvbHVtZScgMjMiCj4+ICvCoMKgwqAgY3NldCAibmFtZT0nQURDIENhcHR1
+cmUgVm9sdW1lJyA0NyIKPj4gK8KgwqDCoCBjc2V0ICJuYW1lPSdEQUMxIFBsYXliYWNrIFZvbHVt
+ZScgMTc1Igo+PiArCj4+IMKgwqDCoMKgwqAgIyBpbnB1dAo+PiDCoMKgwqDCoMKgIGNzZXQgIm5h
+bWU9J1N0ZXJlbzEgQURDIEwxIE11eCcgQURDIgo+PiDCoMKgwqDCoMKgIGNzZXQgIm5hbWU9J1N0
+ZXJlbzEgQURDIFIxIE11eCcgQURDIgo+Pgo+IApfX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
+c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
+c3RpbmZvL2Fsc2EtZGV2ZWwK
