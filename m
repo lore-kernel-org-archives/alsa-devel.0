@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 10/13] conf/ucm: bytcr-rt5651: Add mono
-	speaker output profile
-Date: Wed,  8 Aug 2018 11:05:40 +0200
-Message-ID: <20180808090543.15181-10-hdegoede@redhat.com>
+Subject: [PATCH v2 11/13] conf/ucm: bytcr-rt5651: Add long-name
+	UCM profiles
+Date: Wed,  8 Aug 2018 11:05:41 +0200
+Message-ID: <20180808090543.15181-11-hdegoede@redhat.com>
 References: <20180808090543.15181-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id A72BC2678D3
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 11:05:54 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8711F2678D4
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 11:05:55 +0200 (CEST)
 In-Reply-To: <20180808090543.15181-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,135 +25,377 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Many rt5651 devices only have a single speaker and even though there is
-some external mixing done on the PCB, the quality of that mixing is quite
-poor and various sounds come out garbled when relying on the on PCB mixing.
+After recent kernel work, the kernel now sets a long-name for bytcr-rt5651
+boards which indicates if a single (mono) speaker or stereo speakers are
+used and if in1, in2, or in1 and 2 are used for the internal mic(s) (the
+headset mic sofar is always on in3).
 
-Using the codecs builtin mixer to mix left + right to the left output works
-much better. This commits adds a new MonoSpeaker.conf output profile which
-allows this.
+This commit adds UCM profiles for bytcr-rt5651 boards using these new
+long-names, based on the generic bytcr-rt5651 profile.
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- src/conf/ucm/bytcr-rt5651/HiFi.conf           |  2 +-
- src/conf/ucm/rt5651/EnableSeq.conf            |  2 ++
- src/conf/ucm/rt5651/HeadPhones.conf           |  1 +
- src/conf/ucm/rt5651/Makefile.am               |  2 +-
- .../rt5651/{Speaker.conf => MonoSpeaker.conf} | 20 ++++++++++++-------
- src/conf/ucm/rt5651/Speaker.conf              |  1 +
- 6 files changed, 19 insertions(+), 9 deletions(-)
- copy src/conf/ucm/rt5651/{Speaker.conf => MonoSpeaker.conf} (52%)
+ configure.ac                                  |  5 ++++
+ src/conf/ucm/Makefile.am                      |  5 ++++
+ .../bytcr-rt5651-mono-spk-in1-mic/HiFi.conf   | 27 +++++++++++++++++++
+ .../bytcr-rt5651-mono-spk-in1-mic/Makefile.am |  4 +++
+ .../bytcr-rt5651-mono-spk-in1-mic.conf        | 10 +++++++
+ .../bytcr-rt5651-mono-spk-in2-mic/HiFi.conf   | 27 +++++++++++++++++++
+ .../bytcr-rt5651-mono-spk-in2-mic/Makefile.am |  4 +++
+ .../bytcr-rt5651-mono-spk-in2-mic.conf        | 10 +++++++
+ .../bytcr-rt5651-stereo-spk-in1-mic/HiFi.conf | 27 +++++++++++++++++++
+ .../Makefile.am                               |  4 +++
+ .../bytcr-rt5651-stereo-spk-in1-mic.conf      | 10 +++++++
+ .../HiFi.conf                                 | 27 +++++++++++++++++++
+ .../Makefile.am                               |  4 +++
+ .../bytcr-rt5651-stereo-spk-in12-mic.conf     | 10 +++++++
+ .../bytcr-rt5651-stereo-spk-in2-mic/HiFi.conf | 27 +++++++++++++++++++
+ .../Makefile.am                               |  4 +++
+ .../bytcr-rt5651-stereo-spk-in2-mic.conf      | 10 +++++++
+ 17 files changed, 215 insertions(+)
+ create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/HiFi.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/Makefile.am
+ create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/bytcr-rt5651-mono-spk-in1-mic.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/HiFi.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/Makefile.am
+ create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/bytcr-rt5651-mono-spk-in2-mic.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/HiFi.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/Makefile.am
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/bytcr-rt5651-stereo-spk-in1-mic.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/HiFi.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/Makefile.am
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/bytcr-rt5651-stereo-spk-in12-mic.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/HiFi.conf
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/Makefile.am
+ create mode 100644 src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/bytcr-rt5651-stereo-spk-in2-mic.conf
 
-diff --git a/src/conf/ucm/bytcr-rt5651/HiFi.conf b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-index 961b2604..8733403c 100644
---- a/src/conf/ucm/bytcr-rt5651/HiFi.conf
-+++ b/src/conf/ucm/bytcr-rt5651/HiFi.conf
-@@ -21,9 +21,9 @@ SectionVerb {
- }
- 
- <rt5651/Speaker.conf>
+diff --git a/configure.ac b/configure.ac
+index 85a6be80..9fb7218c 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -729,6 +729,11 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
+ 	  src/conf/ucm/bytcr-rt5640-stereo-spk-in1-mic/Makefile \
+ 	  src/conf/ucm/bytcr-rt5640-stereo-spk-in3-mic/Makefile \
+ 	  src/conf/ucm/bytcr-rt5651/Makefile \
++	  src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/Makefile \
++	  src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/Makefile \
++	  src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/Makefile \
++	  src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/Makefile \
++	  src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/Makefile \
+ 	  src/conf/ucm/chtnau8824/Makefile \
+ 	  src/conf/ucm/chtrt5645/Makefile \
+ 	  src/conf/ucm/chtrt5645-mono-speaker-analog-mic/Makefile \
+diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
+index 669e98d5..1246e7ae 100644
+--- a/src/conf/ucm/Makefile.am
++++ b/src/conf/ucm/Makefile.am
+@@ -11,6 +11,11 @@ bytcr-rt5640-stereo-spk-dmic1-mic \
+ bytcr-rt5640-stereo-spk-in1-mic \
+ bytcr-rt5640-stereo-spk-in3-mic \
+ bytcr-rt5651 \
++bytcr-rt5651-mono-spk-in1-mic \
++bytcr-rt5651-mono-spk-in2-mic \
++bytcr-rt5651-stereo-spk-in1-mic \
++bytcr-rt5651-stereo-spk-in2-mic \
++bytcr-rt5651-stereo-spk-in12-mic \
+ chtnau8824 \
+ chtrt5645 \
+ chtrt5645-mono-speaker-analog-mic \
+diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/HiFi.conf
+new file mode 100644
+index 00000000..dd5b35fc
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/HiFi.conf
+@@ -0,0 +1,27 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++<searchdir:ucm>
++
++SectionVerb {
++	EnableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformEnableSeq.conf>
++		<rt5651/EnableSeq.conf>
++	]
++
++	DisableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformDisableSeq.conf>
++	]
++
++	Value {
++		PlaybackPCM "hw:bytcrrt5651"
++		CapturePCM "hw:bytcrrt5651"
++	}
++}
++
 +<rt5651/MonoSpeaker.conf>
- <rt5651/HeadPhones.conf>
- 
--
- <rt5651/IN1-InternalMic.conf>
- <rt5651/IN2-InternalMic.conf>
- <rt5651/IN12-InternalMic.conf>
-diff --git a/src/conf/ucm/rt5651/EnableSeq.conf b/src/conf/ucm/rt5651/EnableSeq.conf
-index 37bffecb..6fb3c1f2 100644
---- a/src/conf/ucm/rt5651/EnableSeq.conf
-+++ b/src/conf/ucm/rt5651/EnableSeq.conf
-@@ -11,6 +11,8 @@ cset "name='IF1 ASRC Switch' on"
- cset "name='LOUT L Playback Switch' off"
- cset "name='LOUT R Playback Switch' off"
- cset "name='Stereo DAC MIXL DAC L1 Switch' on"
-+cset "name='Stereo DAC MIXL DAC R1 Switch' off"
-+cset "name='Stereo DAC MIXR DAC L1 Switch' off"
- cset "name='Stereo DAC MIXR DAC R1 Switch' on"
- cset "name='Stereo1 ADC MIXR ADC1 Switch' on"
- cset "name='Stereo1 ADC MIXR ADC2 Switch' on"
-diff --git a/src/conf/ucm/rt5651/HeadPhones.conf b/src/conf/ucm/rt5651/HeadPhones.conf
-index b9323a36..eaf5fdfc 100644
---- a/src/conf/ucm/rt5651/HeadPhones.conf
-+++ b/src/conf/ucm/rt5651/HeadPhones.conf
-@@ -3,6 +3,7 @@ SectionDevice."Headphones" {
- 
- 	ConflictingDevice [
- 		"Speaker"
-+		"MonoSpeaker"
- 	]
- 
- 	EnableSequence [
-diff --git a/src/conf/ucm/rt5651/Makefile.am b/src/conf/ucm/rt5651/Makefile.am
-index abd45ad7..a9600ed6 100644
---- a/src/conf/ucm/rt5651/Makefile.am
-+++ b/src/conf/ucm/rt5651/Makefile.am
-@@ -2,5 +2,5 @@ alsaconfigdir = @ALSA_CONFIG_DIR@
- ucmdir = $(alsaconfigdir)/ucm/rt5651
- ucm_DATA = EnableSeq.conf HeadPhones.conf IN1-InternalMic.conf \
- 	   IN2-InternalMic.conf IN12-InternalMic.conf IN3-HeadsetMic.conf \
--	   Speaker.conf
-+	   Speaker.conf MonoSpeaker.conf
- EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/rt5651/Speaker.conf b/src/conf/ucm/rt5651/MonoSpeaker.conf
-similarity index 52%
-copy from src/conf/ucm/rt5651/Speaker.conf
-copy to src/conf/ucm/rt5651/MonoSpeaker.conf
-index 44168cc5..0c3492fb 100644
---- a/src/conf/ucm/rt5651/Speaker.conf
-+++ b/src/conf/ucm/rt5651/MonoSpeaker.conf
-@@ -1,15 +1,20 @@
--SectionDevice."Speaker" {
--	Comment "Speakers"
-+SectionDevice."MonoSpeaker" {
-+	Comment "Mono Speaker"
- 
- 	ConflictingDevice [
-+		"Speaker"
- 		"Headphones"
- 	]
- 
- 	EnableSequence [
- 		cdev "hw:bytcrrt5651"
++<rt5651/HeadPhones.conf>
 +
-+		# Map left and right input on left
-+		cset "name='Stereo DAC MIXR DAC R1 Switch' off"
-+		cset "name='Stereo DAC MIXL DAC R1 Switch' on"
++<rt5651/IN1-InternalMic.conf>
++<rt5651/IN3-HeadsetMic.conf>
+diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/Makefile.am b/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/Makefile.am
+new file mode 100644
+index 00000000..3c5ad289
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/bytcr-rt5651-mono-spk-in1-mic
++ucm_DATA = bytcr-rt5651-mono-spk-in1-mic.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/bytcr-rt5651-mono-spk-in1-mic.conf b/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/bytcr-rt5651-mono-spk-in1-mic.conf
+new file mode 100644
+index 00000000..a2f584e8
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/bytcr-rt5651-mono-spk-in1-mic.conf
+@@ -0,0 +1,10 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
 +
- 		cset "name='Speaker Switch' on"
- 		cset "name='LOUT L Playback Switch' on"
--		cset "name='LOUT R Playback Switch' on"
- 		# Done after turning the speaker on to keep the bias and clk on
- 		cset "name='Headphone Switch' off"
- 		cset "name='HPO L Playback Switch' off"
-@@ -18,10 +23,11 @@ SectionDevice."Speaker" {
- 
- 	DisableSequence [
- 		cdev "hw:bytcrrt5651"
--		# This is done by the Headphones EnableSequence, so that the
--		# Platform Clock and BIAS do not temporarily get turned off
--		# as that breaks audio-streams which are playing when
--		# switching between Speaker/Headphone
-+		# Disabling the  switches is done by the Speaker EnableSeq
++SectionUseCase."HiFi" {
++	File "../bytcr-rt5651-mono-spk-in1-mic/HiFi.conf"
++	Comment "Play HiFi quality Music"
++}
 +
-+		# Undo mono mapping
-+		cset "name='Stereo DAC MIXL DAC R1 Switch' off"
-+		cset "name='Stereo DAC MIXR DAC R1 Switch' on"
- 	]
- 
- 	Value {
-diff --git a/src/conf/ucm/rt5651/Speaker.conf b/src/conf/ucm/rt5651/Speaker.conf
-index 44168cc5..c1091523 100644
---- a/src/conf/ucm/rt5651/Speaker.conf
-+++ b/src/conf/ucm/rt5651/Speaker.conf
-@@ -2,6 +2,7 @@ SectionDevice."Speaker" {
- 	Comment "Speakers"
- 
- 	ConflictingDevice [
-+		"MonoSpeaker"
- 		"Headphones"
- 	]
- 
++SectionDefaults [
++	cdev "hw:bytcrrt5651"
++]
+diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/HiFi.conf
+new file mode 100644
+index 00000000..9f56c077
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/HiFi.conf
+@@ -0,0 +1,27 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++<searchdir:ucm>
++
++SectionVerb {
++	EnableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformEnableSeq.conf>
++		<rt5651/EnableSeq.conf>
++	]
++
++	DisableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformDisableSeq.conf>
++	]
++
++	Value {
++		PlaybackPCM "hw:bytcrrt5651"
++		CapturePCM "hw:bytcrrt5651"
++	}
++}
++
++<rt5651/MonoSpeaker.conf>
++<rt5651/HeadPhones.conf>
++
++<rt5651/IN2-InternalMic.conf>
++<rt5651/IN3-HeadsetMic.conf>
+diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/Makefile.am b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/Makefile.am
+new file mode 100644
+index 00000000..38ee13b9
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/bytcr-rt5651-mono-spk-in2-mic
++ucm_DATA = bytcr-rt5651-mono-spk-in2-mic.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/bytcr-rt5651-mono-spk-in2-mic.conf b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/bytcr-rt5651-mono-spk-in2-mic.conf
+new file mode 100644
+index 00000000..4ad36ec3
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/bytcr-rt5651-mono-spk-in2-mic.conf
+@@ -0,0 +1,10 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++SectionUseCase."HiFi" {
++	File "../bytcr-rt5651-mono-spk-in2-mic/HiFi.conf"
++	Comment "Play HiFi quality Music"
++}
++
++SectionDefaults [
++	cdev "hw:bytcrrt5651"
++]
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/HiFi.conf
+new file mode 100644
+index 00000000..e2a579ab
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/HiFi.conf
+@@ -0,0 +1,27 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++<searchdir:ucm>
++
++SectionVerb {
++	EnableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformEnableSeq.conf>
++		<rt5651/EnableSeq.conf>
++	]
++
++	DisableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformDisableSeq.conf>
++	]
++
++	Value {
++		PlaybackPCM "hw:bytcrrt5651"
++		CapturePCM "hw:bytcrrt5651"
++	}
++}
++
++<rt5651/Speaker.conf>
++<rt5651/HeadPhones.conf>
++
++<rt5651/IN1-InternalMic.conf>
++<rt5651/IN3-HeadsetMic.conf>
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/Makefile.am b/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/Makefile.am
+new file mode 100644
+index 00000000..40691994
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/bytcr-rt5651-stereo-spk-in1-mic
++ucm_DATA = bytcr-rt5651-stereo-spk-in1-mic.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/bytcr-rt5651-stereo-spk-in1-mic.conf b/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/bytcr-rt5651-stereo-spk-in1-mic.conf
+new file mode 100644
+index 00000000..40d871be
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/bytcr-rt5651-stereo-spk-in1-mic.conf
+@@ -0,0 +1,10 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++SectionUseCase."HiFi" {
++	File "../bytcr-rt5651-stereo-spk-in1-mic/HiFi.conf"
++	Comment "Play HiFi quality Music"
++}
++
++SectionDefaults [
++	cdev "hw:bytcrrt5651"
++]
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/HiFi.conf
+new file mode 100644
+index 00000000..ae52e719
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/HiFi.conf
+@@ -0,0 +1,27 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++<searchdir:ucm>
++
++SectionVerb {
++	EnableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformEnableSeq.conf>
++		<rt5651/EnableSeq.conf>
++	]
++
++	DisableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformDisableSeq.conf>
++	]
++
++	Value {
++		PlaybackPCM "hw:bytcrrt5651"
++		CapturePCM "hw:bytcrrt5651"
++	}
++}
++
++<rt5651/Speaker.conf>
++<rt5651/HeadPhones.conf>
++
++<rt5651/IN12-InternalMic.conf>
++<rt5651/IN3-HeadsetMic.conf>
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/Makefile.am b/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/Makefile.am
+new file mode 100644
+index 00000000..12514945
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/bytcr-rt5651-stereo-spk-in12-mic
++ucm_DATA = bytcr-rt5651-stereo-spk-in12-mic.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/bytcr-rt5651-stereo-spk-in12-mic.conf b/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/bytcr-rt5651-stereo-spk-in12-mic.conf
+new file mode 100644
+index 00000000..56bf3f07
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/bytcr-rt5651-stereo-spk-in12-mic.conf
+@@ -0,0 +1,10 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++SectionUseCase."HiFi" {
++	File "../bytcr-rt5651-stereo-spk-in12-mic/HiFi.conf"
++	Comment "Play HiFi quality Music"
++}
++
++SectionDefaults [
++	cdev "hw:bytcrrt5651"
++]
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/HiFi.conf b/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/HiFi.conf
+new file mode 100644
+index 00000000..a73ff5f8
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/HiFi.conf
+@@ -0,0 +1,27 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++<searchdir:ucm>
++
++SectionVerb {
++	EnableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformEnableSeq.conf>
++		<rt5651/EnableSeq.conf>
++	]
++
++	DisableSequence [
++		cdev "hw:bytcrrt5651"
++		<bytcr/PlatformDisableSeq.conf>
++	]
++
++	Value {
++		PlaybackPCM "hw:bytcrrt5651"
++		CapturePCM "hw:bytcrrt5651"
++	}
++}
++
++<rt5651/Speaker.conf>
++<rt5651/HeadPhones.conf>
++
++<rt5651/IN2-InternalMic.conf>
++<rt5651/IN3-HeadsetMic.conf>
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/Makefile.am b/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/Makefile.am
+new file mode 100644
+index 00000000..9b06afd1
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/Makefile.am
+@@ -0,0 +1,4 @@
++alsaconfigdir = @ALSA_CONFIG_DIR@
++ucmdir = $(alsaconfigdir)/ucm/bytcr-rt5651-stereo-spk-in2-mic
++ucm_DATA = bytcr-rt5651-stereo-spk-in2-mic.conf HiFi.conf
++EXTRA_DIST = $(ucm_DATA)
+diff --git a/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/bytcr-rt5651-stereo-spk-in2-mic.conf b/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/bytcr-rt5651-stereo-spk-in2-mic.conf
+new file mode 100644
+index 00000000..84e86e42
+--- /dev/null
++++ b/src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/bytcr-rt5651-stereo-spk-in2-mic.conf
+@@ -0,0 +1,10 @@
++# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
++
++SectionUseCase."HiFi" {
++	File "../bytcr-rt5651-stereo-spk-in2-mic/HiFi.conf"
++	Comment "Play HiFi quality Music"
++}
++
++SectionDefaults [
++	cdev "hw:bytcrrt5651"
++]
 -- 
 2.18.0
