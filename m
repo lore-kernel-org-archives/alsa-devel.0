@@ -1,16 +1,16 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 12/13] conf/ucm: bytcr-rt5651: Add
-	bytcr-rt5651-mono-spk-in2-mic-hp-swapped config
-Date: Wed,  8 Aug 2018 11:05:42 +0200
-Message-ID: <20180808090543.15181-12-hdegoede@redhat.com>
+Subject: [PATCH v2 13/13] conf/ucm: bytcr-rt5640: Improve human
+	readable input/output names
+Date: Wed,  8 Aug 2018 11:05:43 +0200
+Message-ID: <20180808090543.15181-13-hdegoede@redhat.com>
 References: <20180808090543.15181-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id 8817F2678D7
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 11:05:56 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6B2502678D4
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 11:05:57 +0200 (CEST)
 In-Reply-To: <20180808090543.15181-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,170 +25,102 @@ To: alsa-devel@alsa-project.org
 Cc: Takashi Iwai <tiwai@suse.de>, Hans de Goede <hdegoede@redhat.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add a longname profile for devices with a mono speaker, the Internal Mic
-hooked up to IN2 and the left and right channels of their headphones
-output swapped.
+The Comment field is displayed tot the end user in various UIs as such
+names like MonoSpeaker and DigitalMics without any spaces are no good.
+
+Also the names themselves as well as how they get displayed in the
+typical UI (in separate input / output tabs) makes the adding of
+playback and capture to the comment superfluous and this looks weird
+in the UI, so drop it.
 
 Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- configure.ac                                  |  1 +
- src/conf/ucm/Makefile.am                      |  1 +
- .../HiFi.conf                                 | 27 ++++++++++++
- .../Makefile.am                               |  4 ++
- ...cr-rt5651-mono-spk-in2-mic-hp-swapped.conf | 10 +++++
- src/conf/ucm/rt5651/HeadPhones-swapped.conf   | 42 +++++++++++++++++++
- src/conf/ucm/rt5651/Makefile.am               |  6 +--
- 7 files changed, 88 insertions(+), 3 deletions(-)
- create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/HiFi.conf
- create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/Makefile.am
- create mode 100644 src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/bytcr-rt5651-mono-spk-in2-mic-hp-swapped.conf
- create mode 100644 src/conf/ucm/rt5651/HeadPhones-swapped.conf
+ src/conf/ucm/rt5640/DigitalMics.conf     | 2 +-
+ src/conf/ucm/rt5640/HeadPhones.conf      | 2 +-
+ src/conf/ucm/rt5640/HeadsetMic.conf      | 2 +-
+ src/conf/ucm/rt5640/IN1-InternalMic.conf | 2 +-
+ src/conf/ucm/rt5640/IN3-InternalMic.conf | 2 +-
+ src/conf/ucm/rt5640/MonoSpeaker.conf     | 2 +-
+ src/conf/ucm/rt5640/Speaker.conf         | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/configure.ac b/configure.ac
-index 9fb7218c..97d61abd 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -731,6 +731,7 @@ AC_OUTPUT(Makefile doc/Makefile doc/pictures/Makefile doc/doxygen.cfg \
- 	  src/conf/ucm/bytcr-rt5651/Makefile \
- 	  src/conf/ucm/bytcr-rt5651-mono-spk-in1-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic/Makefile \
-+	  src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/Makefile \
- 	  src/conf/ucm/bytcr-rt5651-stereo-spk-in1-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5651-stereo-spk-in2-mic/Makefile \
- 	  src/conf/ucm/bytcr-rt5651-stereo-spk-in12-mic/Makefile \
-diff --git a/src/conf/ucm/Makefile.am b/src/conf/ucm/Makefile.am
-index 1246e7ae..7cdc6176 100644
---- a/src/conf/ucm/Makefile.am
-+++ b/src/conf/ucm/Makefile.am
-@@ -13,6 +13,7 @@ bytcr-rt5640-stereo-spk-in3-mic \
- bytcr-rt5651 \
- bytcr-rt5651-mono-spk-in1-mic \
- bytcr-rt5651-mono-spk-in2-mic \
-+bytcr-rt5651-mono-spk-in2-mic-hp-swapped \
- bytcr-rt5651-stereo-spk-in1-mic \
- bytcr-rt5651-stereo-spk-in2-mic \
- bytcr-rt5651-stereo-spk-in12-mic \
-diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/HiFi.conf b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/HiFi.conf
-new file mode 100644
-index 00000000..777ed783
---- /dev/null
-+++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/HiFi.conf
-@@ -0,0 +1,27 @@
-+# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
-+
-+<searchdir:ucm>
-+
-+SectionVerb {
-+	EnableSequence [
-+		cdev "hw:bytcrrt5651"
-+		<bytcr/PlatformEnableSeq.conf>
-+		<rt5651/EnableSeq.conf>
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytcrrt5651"
-+		<bytcr/PlatformDisableSeq.conf>
-+	]
-+
-+	Value {
-+		PlaybackPCM "hw:bytcrrt5651"
-+		CapturePCM "hw:bytcrrt5651"
-+	}
-+}
-+
-+<rt5651/MonoSpeaker.conf>
-+<rt5651/HeadPhones-swapped.conf>
-+
-+<rt5651/IN2-InternalMic.conf>
-+<rt5651/IN3-HeadsetMic.conf>
-diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/Makefile.am b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/Makefile.am
-new file mode 100644
-index 00000000..862d38b9
---- /dev/null
-+++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/Makefile.am
-@@ -0,0 +1,4 @@
-+alsaconfigdir = @ALSA_CONFIG_DIR@
-+ucmdir = $(alsaconfigdir)/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped
-+ucm_DATA = bytcr-rt5651-mono-spk-in2-mic-hp-swapped.conf HiFi.conf
-+EXTRA_DIST = $(ucm_DATA)
-diff --git a/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/bytcr-rt5651-mono-spk-in2-mic-hp-swapped.conf b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/bytcr-rt5651-mono-spk-in2-mic-hp-swapped.conf
-new file mode 100644
-index 00000000..916fbc19
---- /dev/null
-+++ b/src/conf/ucm/bytcr-rt5651-mono-spk-in2-mic-hp-swapped/bytcr-rt5651-mono-spk-in2-mic-hp-swapped.conf
-@@ -0,0 +1,10 @@
-+# Adapted from https://github.com/plbossart/UCM/tree/master/bytcr-rt5651
-+
-+SectionUseCase."HiFi" {
-+	File "../bytcr-rt5651-mono-spk-in2-mic-hp-swapped/HiFi.conf"
-+	Comment "Play HiFi quality Music"
-+}
-+
-+SectionDefaults [
-+	cdev "hw:bytcrrt5651"
-+]
-diff --git a/src/conf/ucm/rt5651/HeadPhones-swapped.conf b/src/conf/ucm/rt5651/HeadPhones-swapped.conf
-new file mode 100644
-index 00000000..e79b40a7
---- /dev/null
-+++ b/src/conf/ucm/rt5651/HeadPhones-swapped.conf
-@@ -0,0 +1,42 @@
-+SectionDevice."Headphones" {
+diff --git a/src/conf/ucm/rt5640/DigitalMics.conf b/src/conf/ucm/rt5640/DigitalMics.conf
+index c7d54099..06b42f16 100644
+--- a/src/conf/ucm/rt5640/DigitalMics.conf
++++ b/src/conf/ucm/rt5640/DigitalMics.conf
+@@ -1,5 +1,5 @@
+ SectionDevice."DigitalMics" {
+-	Comment "DigitalMics capture"
++	Comment "Internal Digital Microphones"
+ 
+ 	ConflictingDevice [
+ 		"IN1-InternalMics"
+diff --git a/src/conf/ucm/rt5640/HeadPhones.conf b/src/conf/ucm/rt5640/HeadPhones.conf
+index 0e7149e5..38f37a6f 100644
+--- a/src/conf/ucm/rt5640/HeadPhones.conf
++++ b/src/conf/ucm/rt5640/HeadPhones.conf
+@@ -1,5 +1,5 @@
+ SectionDevice."Headphones" {
+-	Comment "Headphones playback"
 +	Comment "Headphones"
-+
-+	ConflictingDevice [
-+		"Speaker"
-+		"MonoSpeaker"
-+	]
-+
-+	EnableSequence [
-+		cdev "hw:bytcrrt5651"
-+
-+		# Swap left and right
-+		cset "name='Stereo DAC MIXL DAC R1 Switch' on"
-+		cset "name='Stereo DAC MIXL DAC L1 Switch' off"
-+		cset "name='Stereo DAC MIXR DAC L1 Switch' on"
-+		cset "name='Stereo DAC MIXR DAC R1 Switch' off"
-+
-+		cset "name='Headphone Switch' on"
-+		cset "name='HPO L Playback Switch' on"
-+		cset "name='HPO R Playback Switch' on"
-+		# Done after turning the HP on to keep the bias and clk on
-+		cset "name='Speaker Switch' off"
-+		cset "name='LOUT L Playback Switch' off"
-+		cset "name='LOUT R Playback Switch' off"
-+	]
-+
-+	DisableSequence [
-+		cdev "hw:bytcrrt5651"
-+		# Disabling the HP switches is done by the Speaker EnableSeq
-+
-+		# Unswap left and right
-+		cset "name='Stereo DAC MIXL DAC L1 Switch' on"
-+		cset "name='Stereo DAC MIXL DAC R1 Switch' off"
-+		cset "name='Stereo DAC MIXR DAC R1 Switch' on"
-+		cset "name='Stereo DAC MIXR DAC L1 Switch' off"
-+	]
-+
-+	Value {
-+		PlaybackChannels "2"
-+		JackControl "Headphone Jack"
-+	}
-+}
-diff --git a/src/conf/ucm/rt5651/Makefile.am b/src/conf/ucm/rt5651/Makefile.am
-index a9600ed6..acc8ea49 100644
---- a/src/conf/ucm/rt5651/Makefile.am
-+++ b/src/conf/ucm/rt5651/Makefile.am
-@@ -1,6 +1,6 @@
- alsaconfigdir = @ALSA_CONFIG_DIR@
- ucmdir = $(alsaconfigdir)/ucm/rt5651
--ucm_DATA = EnableSeq.conf HeadPhones.conf IN1-InternalMic.conf \
--	   IN2-InternalMic.conf IN12-InternalMic.conf IN3-HeadsetMic.conf \
--	   Speaker.conf MonoSpeaker.conf
-+ucm_DATA = EnableSeq.conf HeadPhones.conf HeadPhones-swapped.conf \
-+	   IN1-InternalMic.conf IN2-InternalMic.conf IN12-InternalMic.conf \
-+	   IN3-HeadsetMic.conf Speaker.conf MonoSpeaker.conf
- EXTRA_DIST = $(ucm_DATA)
+ 
+ 	ConflictingDevice [
+ 		"Speaker"
+diff --git a/src/conf/ucm/rt5640/HeadsetMic.conf b/src/conf/ucm/rt5640/HeadsetMic.conf
+index 4d54eed0..567d4122 100644
+--- a/src/conf/ucm/rt5640/HeadsetMic.conf
++++ b/src/conf/ucm/rt5640/HeadsetMic.conf
+@@ -1,5 +1,5 @@
+ SectionDevice."HeadsetMic" {
+-	Comment "Headset Mic capture"
++	Comment "Headset Microphone"
+ 
+ 	ConflictingDevice [
+ 		"IN1-InternalMics"
+diff --git a/src/conf/ucm/rt5640/IN1-InternalMic.conf b/src/conf/ucm/rt5640/IN1-InternalMic.conf
+index d18c21db..3bf31e64 100644
+--- a/src/conf/ucm/rt5640/IN1-InternalMic.conf
++++ b/src/conf/ucm/rt5640/IN1-InternalMic.conf
+@@ -1,5 +1,5 @@
+ SectionDevice."IN1-InternalMics" {
+-	Comment "Internal IN1 analog Mic capture"
++	Comment "Internal Microphone on IN1"
+ 
+ 	ConflictingDevice [
+ 		"DigitalMics"
+diff --git a/src/conf/ucm/rt5640/IN3-InternalMic.conf b/src/conf/ucm/rt5640/IN3-InternalMic.conf
+index 17d85229..e1a6c49b 100644
+--- a/src/conf/ucm/rt5640/IN3-InternalMic.conf
++++ b/src/conf/ucm/rt5640/IN3-InternalMic.conf
+@@ -1,5 +1,5 @@
+ SectionDevice."IN3-InternalMics" {
+-	Comment "Internal IN3 analog Mic capture"
++	Comment "Internal Microphone on IN3"
+ 
+ 	ConflictingDevice [
+ 		"DigitalMics"
+diff --git a/src/conf/ucm/rt5640/MonoSpeaker.conf b/src/conf/ucm/rt5640/MonoSpeaker.conf
+index 0fb54030..58ab7807 100644
+--- a/src/conf/ucm/rt5640/MonoSpeaker.conf
++++ b/src/conf/ucm/rt5640/MonoSpeaker.conf
+@@ -1,5 +1,5 @@
+ SectionDevice."MonoSpeaker" {
+-	Comment "MonoSpeaker playback"
++	Comment "Mono Speaker"
+ 
+ 	ConflictingDevice [
+ 		"Headphones"
+diff --git a/src/conf/ucm/rt5640/Speaker.conf b/src/conf/ucm/rt5640/Speaker.conf
+index b745ed06..a7df9fbf 100644
+--- a/src/conf/ucm/rt5640/Speaker.conf
++++ b/src/conf/ucm/rt5640/Speaker.conf
+@@ -1,5 +1,5 @@
+ SectionDevice."Speaker" {
+-	Comment "Speaker playback"
++	Comment "Speakers"
+ 
+ 	ConflictingDevice [
+ 		"Headphones"
 -- 
 2.18.0
