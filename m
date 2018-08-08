@@ -1,7 +1,7 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 05/11] ALSA: hda/ca0132 - Add Recon3D pincfg
-Date: Wed,  8 Aug 2018 13:34:16 -0400
-Message-ID: <1533749663-8200-6-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 06/11] ALSA: hda/ca0132 - Add bool variable to enable/disable pci region2 mmio
+Date: Wed,  8 Aug 2018 13:34:17 -0400
+Message-ID: <1533749663-8200-7-git-send-email-conmanx360@gmail.com>
 References: <1533749663-8200-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1533749663-8200-1-git-send-email-conmanx360@gmail.com>
@@ -9,57 +9,84 @@ Sender: linux-kernel-owner@vger.kernel.org
 Cc: Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds pin configs from the Recon3D, taken from the Window's
-driver.
+This patch adds the ability to choose whether or not to map the pci
+region2, which is used for things such as GPIO on the Recon3D and Sound
+Blaster Z.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 26 ++++++++++++++++++++++++--
- 1 file changed, 24 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 32 +++++++++++++++++++-------------
+ 1 file changed, 19 insertions(+), 13 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index bec31b2..2ee9549 100644
+index 2ee9549..b35b179 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -1026,6 +1026,21 @@ static const struct hda_pintbl sbz_pincfgs[] = {
- 	{}
- };
+@@ -965,9 +965,11 @@ struct ca0132_spec {
+ 	long cur_ctl_vals[TUNING_CTLS_COUNT];
+ #endif
+ 	/*
+-	 * Sound Blaster Z PCI region 2 iomem, used for input and output
+-	 * switching, and other unknown commands.
++	 * The Recon3D, Sound Blaster Z, Sound Blaster ZxR, and Sound Blaster
++	 * AE-5 all use PCI region 2 to toggle GPIO and other currently unknown
++	 * things.
+ 	 */
++	bool use_pci_mmio;
+ 	void __iomem *mem_base;
  
-+/* Recon3D pin configs taken from Windows Driver */
-+static const struct hda_pintbl r3d_pincfgs[] = {
-+	{ 0x0b, 0x01014110 }, /* Port G -- Lineout FRONT L/R */
-+	{ 0x0c, 0x014510f0 }, /* SPDIF Out 1 */
-+	{ 0x0d, 0x014510f0 }, /* Digital Out */
-+	{ 0x0e, 0x01c520f0 }, /* SPDIF In */
-+	{ 0x0f, 0x0221401f }, /* Port A -- BackPanel HP */
-+	{ 0x10, 0x01016011 }, /* Port D -- Center/LFE or FP Hp */
-+	{ 0x11, 0x01011014 }, /* Port B -- LineMicIn2 / Rear L/R */
-+	{ 0x12, 0x02a090f0 }, /* Port C -- LineIn1 */
-+	{ 0x13, 0x908700f0 }, /* What U Hear In*/
-+	{ 0x18, 0x50d000f0 }, /* N/A */
-+	{}
-+};
-+
- /* Recon3D integrated pin configs taken from Windows Driver */
- static const struct hda_pintbl r3di_pincfgs[] = {
- 	{ 0x0b, 0x01014110 }, /* Port G -- Lineout FRONT L/R */
-@@ -7397,8 +7412,15 @@ static void ca0132_config(struct hda_codec *codec)
- 		spec->unsol_tag_amic1 = 0x11;
+ 	/*
+@@ -7563,16 +7565,6 @@ static int patch_ca0132(struct hda_codec *codec)
+ 	else
+ 		spec->quirk = QUIRK_NONE;
+ 
+-	/* Setup BAR Region 2 for Sound Blaster Z */
+-	if (spec->quirk == QUIRK_SBZ) {
+-		spec->mem_base = pci_iomap(codec->bus->pci, 2, 0xC20);
+-		if (spec->mem_base == NULL) {
+-			codec_warn(codec, "pci_iomap failed!");
+-			codec_info(codec, "perhaps this is not an SBZ?");
+-			spec->quirk = QUIRK_NONE;
+-		}
+-	}
+-
+ 	spec->dsp_state = DSP_DOWNLOAD_INIT;
+ 	spec->num_mixers = 1;
+ 
+@@ -7591,19 +7583,33 @@ static int patch_ca0132(struct hda_codec *codec)
  		break;
- 	case QUIRK_SBZ:
--		codec_dbg(codec, "%s: QUIRK_SBZ applied.\n", __func__);
--		snd_hda_apply_pincfgs(codec, sbz_pincfgs);
-+	case QUIRK_R3D:
-+		if (spec->quirk == QUIRK_SBZ) {
-+			codec_dbg(codec, "%s: QUIRK_SBZ applied.\n", __func__);
-+			snd_hda_apply_pincfgs(codec, sbz_pincfgs);
-+		}
-+		if (spec->quirk == QUIRK_R3D) {
-+			codec_dbg(codec, "%s: QUIRK_R3D applied.\n", __func__);
-+			snd_hda_apply_pincfgs(codec, r3d_pincfgs);
-+		}
+ 	}
  
- 		spec->num_outputs = 2;
- 		spec->out_pins[0] = 0x0B; /* Line out */
+-	/* Setup whether or not to use alt functions/controls */
++	/* Setup whether or not to use alt functions/controls/pci_mmio */
+ 	switch (spec->quirk) {
+ 	case QUIRK_SBZ:
++		spec->use_alt_controls = true;
++		spec->use_alt_functions = true;
++		spec->use_pci_mmio = true;
++		break;
+ 	case QUIRK_R3DI:
+ 		spec->use_alt_controls = true;
+ 		spec->use_alt_functions = true;
++		spec->use_pci_mmio = false;
+ 		break;
+ 	default:
+ 		spec->use_alt_controls = false;
+ 		spec->use_alt_functions = false;
++		spec->use_pci_mmio = false;
+ 		break;
+ 	}
+ 
++	if (spec->use_pci_mmio) {
++		spec->mem_base = pci_iomap(codec->bus->pci, 2, 0xC20);
++		if (spec->mem_base == NULL) {
++			codec_warn(codec, "pci_iomap failed! Setting quirk to QUIRK_NONE.");
++			spec->quirk = QUIRK_NONE;
++		}
++	}
++
+ 	spec->base_init_verbs = ca0132_base_init_verbs;
+ 	spec->base_exit_verbs = ca0132_base_exit_verbs;
+ 
 -- 
 2.7.4
