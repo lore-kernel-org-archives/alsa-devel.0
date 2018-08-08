@@ -1,57 +1,150 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 00/11] Add Recon3D support + Driver cleanup
-Date: Wed,  8 Aug 2018 13:34:11 -0400
-Message-ID: <1533749663-8200-1-git-send-email-conmanx360@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f65.google.com (mail-it0-f65.google.com
- [209.85.214.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 9316E2678C4
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 19:35:06 +0200 (CEST)
-Received: by mail-it0-f65.google.com with SMTP id j81-v6so4568436ite.0
- for <alsa-devel@alsa-project.org>; Wed, 08 Aug 2018 10:35:06 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, Takashi Iwai <tiwai@suse.com>, Connor McAdams <conmanx360@gmail.com>
+Subject: [PATCH 01/11] ALSA: hda/ca0132 - Create mmio gpio function to make code clearer
+Date: Wed,  8 Aug 2018 13:34:12 -0400
+Message-ID: <1533749663-8200-2-git-send-email-conmanx360@gmail.com>
+References: <1533749663-8200-1-git-send-email-conmanx360@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1533749663-8200-1-git-send-email-conmanx360@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: Connor McAdams <conmanx360@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds support for the Recon3D PCI-E card. I have
-personally tested it on a Recon3D that was sent to me, and included
-that PCI ID in the quirk table.
+This patch adds a new function, ca0132_mmio_gpio_set, to clear up what
+is going on with writes to mmio region 0x320.
 
-Much of this patch series renames Recon3Di functions to just r3d
-because both cards behave similarly.
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+---
+ sound/pci/hda/patch_ca0132.c | 62 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 38 insertions(+), 24 deletions(-)
 
-Aside from that, I do have a question- If the PCI ID's are included in
-the Window's driver .inf file, would I be good to add them in as
-quirks? Or should I wait for someone with the card to test it, and
-then add it once I know it works on that specific card?
-
-Connor McAdams (11):
-  ALSA: hda/ca0132 - Create mmio gpio function to make code clearer
-  ALSA: hda/ca0132 - Clean up ca0132_init function.
-  ALSA: hda/ca0132 - Add alt_functions unsolicited response
-  ALSA: hda/ca0132 - Add quirk ID and enum for Recon3D
-  ALSA: hda/ca0132 - Add Recon3D pincfg
-  ALSA: hda/ca0132 - Add bool variable to enable/disable pci region2
-    mmio
-  ALSA: hda/ca0132 - Add Recon3D startup functions and setup
-  ALSA: hda/ca0132 - Add DSP setup defaults for Recon3D
-  ALSA: hda/ca0132 - Add Recon3D input and output select commands
-  ALSA: hda/ca0132 - Change mixer controls for Recon3D
-  ALSA: hda/ca0132 - Add exit commands for Recon3D
-
- sound/pci/hda/patch_ca0132.c | 276 ++++++++++++++++++++++++++++---------------
- 1 file changed, 180 insertions(+), 96 deletions(-)
-
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 321e95c..9a92a64 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -3073,6 +3073,24 @@ static bool dspload_wait_loaded(struct hda_codec *codec)
+  */
+ 
+ /*
++ * For cards with PCI-E region2 (Sound Blaster Z/ZxR, Recon3D, and AE-5)
++ * the mmio address 0x320 is used to set GPIO pins. The format for the data
++ * The first eight bits are just the number of the pin. So far, I've only seen
++ * this number go to 7.
++ */
++static void ca0132_mmio_gpio_set(struct hda_codec *codec, unsigned int gpio_pin,
++		bool enable)
++{
++	struct ca0132_spec *spec = codec->spec;
++	unsigned short gpio_data;
++
++	gpio_data = gpio_pin & 0xF;
++	gpio_data |= ((enable << 8) & 0x100);
++
++	writew(gpio_data, spec->mem_base + 0x320);
++}
++
++/*
+  * Sets up the GPIO pins so that they are discoverable. If this isn't done,
+  * the card shows as having no GPIO pins.
+  */
+@@ -3947,9 +3965,9 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
+ 		/*speaker out config*/
+ 		switch (spec->quirk) {
+ 		case QUIRK_SBZ:
+-			writew(0x0007, spec->mem_base + 0x320);
+-			writew(0x0104, spec->mem_base + 0x320);
+-			writew(0x0101, spec->mem_base + 0x320);
++			ca0132_mmio_gpio_set(codec, 7, false);
++			ca0132_mmio_gpio_set(codec, 4, true);
++			ca0132_mmio_gpio_set(codec, 1, true);
+ 			chipio_set_control_param(codec, 0x0D, 0x18);
+ 			break;
+ 		case QUIRK_R3DI:
+@@ -3983,9 +4001,9 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
+ 		/* Headphone out config*/
+ 		switch (spec->quirk) {
+ 		case QUIRK_SBZ:
+-			writew(0x0107, spec->mem_base + 0x320);
+-			writew(0x0104, spec->mem_base + 0x320);
+-			writew(0x0001, spec->mem_base + 0x320);
++			ca0132_mmio_gpio_set(codec, 7, true);
++			ca0132_mmio_gpio_set(codec, 4, true);
++			ca0132_mmio_gpio_set(codec, 1, false);
+ 			chipio_set_control_param(codec, 0x0D, 0x12);
+ 			break;
+ 		case QUIRK_R3DI:
+@@ -4025,9 +4043,9 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
+ 		/* Surround out config*/
+ 		switch (spec->quirk) {
+ 		case QUIRK_SBZ:
+-			writew(0x0007, spec->mem_base + 0x320);
+-			writew(0x0104, spec->mem_base + 0x320);
+-			writew(0x0101, spec->mem_base + 0x320);
++			ca0132_mmio_gpio_set(codec, 7, false);
++			ca0132_mmio_gpio_set(codec, 4, true);
++			ca0132_mmio_gpio_set(codec, 1, true);
+ 			chipio_set_control_param(codec, 0x0D, 0x18);
+ 			break;
+ 		case QUIRK_R3DI:
+@@ -4291,7 +4309,7 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 	case REAR_MIC:
+ 		switch (spec->quirk) {
+ 		case QUIRK_SBZ:
+-			writew(0x0000, spec->mem_base + 0x320);
++			ca0132_mmio_gpio_set(codec, 0, false);
+ 			tmp = FLOAT_THREE;
+ 			break;
+ 		case QUIRK_R3DI:
+@@ -4323,7 +4341,7 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 		ca0132_mic_boost_set(codec, 0);
+ 		switch (spec->quirk) {
+ 		case QUIRK_SBZ:
+-			writew(0x0000, spec->mem_base + 0x320);
++			ca0132_mmio_gpio_set(codec, 0, false);
+ 			break;
+ 		case QUIRK_R3DI:
+ 			r3di_gpio_mic_set(codec, R3DI_REAR_MIC);
+@@ -4349,8 +4367,8 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
+ 	case FRONT_MIC:
+ 		switch (spec->quirk) {
+ 		case QUIRK_SBZ:
+-			writew(0x0100, spec->mem_base + 0x320);
+-			writew(0x0005, spec->mem_base + 0x320);
++			ca0132_mmio_gpio_set(codec, 0, true);
++			ca0132_mmio_gpio_set(codec, 5, false);
+ 			tmp = FLOAT_THREE;
+ 			break;
+ 		case QUIRK_R3DI:
+@@ -6891,16 +6909,12 @@ static void sbz_region2_exit(struct hda_codec *codec)
+ 		writeb(0x0, spec->mem_base + 0x100);
+ 	for (i = 0; i < 8; i++)
+ 		writeb(0xb3, spec->mem_base + 0x304);
+-	/*
+-	 * I believe these are GPIO, with the right most hex digit being the
+-	 * gpio pin, and the second digit being on or off. We see this more in
+-	 * the input/output select functions.
+-	 */
+-	writew(0x0000, spec->mem_base + 0x320);
+-	writew(0x0001, spec->mem_base + 0x320);
+-	writew(0x0104, spec->mem_base + 0x320);
+-	writew(0x0005, spec->mem_base + 0x320);
+-	writew(0x0007, spec->mem_base + 0x320);
++
++	ca0132_mmio_gpio_set(codec, 0, false);
++	ca0132_mmio_gpio_set(codec, 1, false);
++	ca0132_mmio_gpio_set(codec, 4, true);
++	ca0132_mmio_gpio_set(codec, 5, false);
++	ca0132_mmio_gpio_set(codec, 7, false);
+ }
+ 
+ static void sbz_set_pin_ctl_default(struct hda_codec *codec)
+@@ -7237,7 +7251,7 @@ static int ca0132_init(struct hda_codec *codec)
+ 	ca0132_refresh_widget_caps(codec);
+ 
+ 	if (spec->quirk == QUIRK_SBZ)
+-		writew(0x0107, spec->mem_base + 0x320);
++		ca0132_mmio_gpio_set(codec, 7, true);
+ 
+ 	switch (spec->quirk) {
+ 	case QUIRK_R3DI:
 -- 
 2.7.4
