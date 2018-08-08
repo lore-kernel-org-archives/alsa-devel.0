@@ -1,8 +1,8 @@
 From: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>
-Subject: [PATCH - hwmixvolume 4/9] hwmixvolume: use a with
-	context to open files
-Date: Wed,  8 Aug 2018 17:56:32 +0200
-Message-ID: <20180808155637.5592-5-linkmauve@jabberfr.org>
+Subject: [PATCH - hwmixvolume 5/9] hwmixvolume: replace
+	deprecated Gtk.HScale with Gtk.Scale
+Date: Wed,  8 Aug 2018 17:56:33 +0200
+Message-ID: <20180808155637.5592-6-linkmauve@jabberfr.org>
 References: <20180808155637.5592-1-linkmauve@jabberfr.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -25,41 +25,26 @@ List-Id: alsa-devel@alsa-project.org
 Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
 
 diff --git a/hwmixvolume/hwmixvolume b/hwmixvolume/hwmixvolume
-index 267228c..e82f32d 100755
+index e82f32d..af0c1e0 100755
 --- a/hwmixvolume/hwmixvolume
 +++ b/hwmixvolume/hwmixvolume
-@@ -138,26 +138,20 @@ class Stream:
-             subdevice = info.index
-         filename = "/proc/asound/card%d/pcm%dp/sub%d/status" % (card, device, subdevice)
-         try:
--            f = open(filename, "r")
-+            with open(filename, "r") as f:
-+                for line in f.readlines():
-+                    if line[:9] == "owner_pid":
-+                        return int(line.split(':')[1].strip())
-         except IOError:
-             return None
--        try:
--            for line in f.readlines():
--                if line[:9] == "owner_pid":
--                    return int(line.split(':')[1].strip())
--        finally:
--            f.close()
-         return None
- 
-     def get_pid_cmdline(self, pid):
-         try:
--            f = open("/proc/%d/cmdline" % pid, "r")
-+            with open("/proc/%d/cmdline" % pid, "r") as f:
-+                cmdline = f.read()
-         except IOError:
-             return None
--        try:
--            cmdline = f.read()
--        finally:
--            f.close()
-         return cmdline.replace('\x00', ' ').strip()
- 
- class MixerWindow(Gtk.Window):
+@@ -69,7 +69,7 @@ class Stream:
+                     step_incr=1,
+                     page_incr=(info.max-info.min+1)/8)
+             adj.connect('value-changed', self.update_ctl_from_scale, i)
+-            scale = Gtk.HScale(adj)
++            scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL, adjustment=adj)
+             scale.set_draw_value(False)
+             self.parent.scales_vbox.add(scale)
+             self.scales.append(scale)
+@@ -207,7 +207,7 @@ class MixerWindow(Gtk.Window):
+         label.set_single_line_mode(True)
+         line_height = label.size_request().height
+         label.destroy()
+-        scale = Gtk.HScale()
++        scale = Gtk.Scale(orientation=Gtk.Orientation.HORIZONTAL)
+         scale.set_draw_value(False)
+         line_height += scale.size_request().height
+         scale.destroy()
 -- 
 2.18.0
