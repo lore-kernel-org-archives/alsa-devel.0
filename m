@@ -1,239 +1,57 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Declare firmware controls from codec driver" to the asoc tree
-Date: Wed,  8 Aug 2018 17:41:53 +0100 (BST)
-Message-ID: <20180808164153.AA4341124340@debutante.sirena.org.uk>
-References: <20180808161339.17402-1-rf@opensource.cirrus.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180808161339.17402-1-rf@opensource.cirrus.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: Mark Brown <broonie@kernel.org>broonie@kernel.org, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: [PATCH 00/11] Add Recon3D support + Driver cleanup
+Date: Wed,  8 Aug 2018 13:34:11 -0400
+Message-ID: <1533749663-8200-1-git-send-email-conmanx360@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f65.google.com (mail-it0-f65.google.com
+ [209.85.214.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9316E2678C4
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 19:35:06 +0200 (CEST)
+Received: by mail-it0-f65.google.com with SMTP id j81-v6so4568436ite.0
+ for <alsa-devel@alsa-project.org>; Wed, 08 Aug 2018 10:35:06 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, Takashi Iwai <tiwai@suse.com>, Connor McAdams <conmanx360@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This patch series adds support for the Recon3D PCI-E card. I have
+personally tested it on a Recon3D that was sent to me, and included
+that PCI ID in the quirk table.
 
-   ASoC: wm_adsp: Declare firmware controls from codec driver
+Much of this patch series renames Recon3Di functions to just r3d
+because both cards behave similarly.
 
-has been applied to the asoc tree at
+Aside from that, I do have a question- If the PCI ID's are included in
+the Window's driver .inf file, would I be good to add them in as
+quirks? Or should I wait for someone with the card to test it, and
+then add it once I know it works on that specific card?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Connor McAdams (11):
+  ALSA: hda/ca0132 - Create mmio gpio function to make code clearer
+  ALSA: hda/ca0132 - Clean up ca0132_init function.
+  ALSA: hda/ca0132 - Add alt_functions unsolicited response
+  ALSA: hda/ca0132 - Add quirk ID and enum for Recon3D
+  ALSA: hda/ca0132 - Add Recon3D pincfg
+  ALSA: hda/ca0132 - Add bool variable to enable/disable pci region2
+    mmio
+  ALSA: hda/ca0132 - Add Recon3D startup functions and setup
+  ALSA: hda/ca0132 - Add DSP setup defaults for Recon3D
+  ALSA: hda/ca0132 - Add Recon3D input and output select commands
+  ALSA: hda/ca0132 - Change mixer controls for Recon3D
+  ALSA: hda/ca0132 - Add exit commands for Recon3D
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+ sound/pci/hda/patch_ca0132.c | 276 ++++++++++++++++++++++++++++---------------
+ 1 file changed, 180 insertions(+), 96 deletions(-)
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 0a047f07525fecfa8f6fccc5d30afff7e816de8d Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Date: Wed, 8 Aug 2018 17:13:38 +0100
-Subject: [PATCH] ASoC: wm_adsp: Declare firmware controls from codec driver
-
-To allow for more flexibility in naming of DSP-type cores
-move the creation of the firmware controls to the codec
-drivers instead of having a hardcoded list in wm_adsp.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/cs47l24.c |  3 +++
- sound/soc/codecs/wm2200.c  | 10 ++++------
- sound/soc/codecs/wm5102.c  |  2 ++
- sound/soc/codecs/wm5110.c  |  5 +++++
- sound/soc/codecs/wm_adsp.c | 35 +++++++++--------------------------
- sound/soc/codecs/wm_adsp.h | 10 +++++++++-
- 6 files changed, 32 insertions(+), 33 deletions(-)
-
-diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
-index 0da52ead91e0..45e50fe3bf25 100644
---- a/sound/soc/codecs/cs47l24.c
-+++ b/sound/soc/codecs/cs47l24.c
-@@ -235,6 +235,9 @@ ARIZONA_MIXER_CONTROLS("AIF2TX6", ARIZONA_AIF2TX6MIX_INPUT_1_SOURCE),
- 
- ARIZONA_MIXER_CONTROLS("AIF3TX1", ARIZONA_AIF3TX1MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("AIF3TX2", ARIZONA_AIF3TX2MIX_INPUT_1_SOURCE),
-+
-+WM_ADSP_FW_CONTROL("DSP2", 1),
-+WM_ADSP_FW_CONTROL("DSP3", 2),
- };
- 
- ARIZONA_MIXER_ENUMS(EQ1, ARIZONA_EQ1MIX_INPUT_1_SOURCE);
-diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
-index 3663b9fd4d65..deff65161504 100644
---- a/sound/soc/codecs/wm2200.c
-+++ b/sound/soc/codecs/wm2200.c
-@@ -1180,6 +1180,9 @@ SOC_DOUBLE_R_TLV("OUT2 Digital Volume", WM2200_DAC_DIGITAL_VOLUME_2L,
- SOC_DOUBLE("OUT2 Switch", WM2200_PDM_1, WM2200_SPK1L_MUTE_SHIFT,
- 	   WM2200_SPK1R_MUTE_SHIFT, 1, 1),
- SOC_ENUM("RxANC Src", wm2200_rxanc_input_sel),
-+
-+WM_ADSP_FW_CONTROL("DSP1", 0),
-+WM_ADSP_FW_CONTROL("DSP2", 1),
- };
- 
- WM2200_MIXER_ENUMS(OUT1L, WM2200_OUT1LMIX_INPUT_1_SOURCE);
-@@ -1553,15 +1556,10 @@ static const struct snd_soc_dapm_route wm2200_dapm_routes[] = {
- static int wm2200_probe(struct snd_soc_component *component)
- {
- 	struct wm2200_priv *wm2200 = snd_soc_component_get_drvdata(component);
--	int ret;
- 
- 	wm2200->component = component;
- 
--	ret = snd_soc_add_component_controls(component, wm_adsp_fw_controls, 2);
--	if (ret != 0)
--		return ret;
--
--	return ret;
-+	return 0;
- }
- 
- static int wm2200_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
-index a01a0c0e01eb..7e817e1877c2 100644
---- a/sound/soc/codecs/wm5102.c
-+++ b/sound/soc/codecs/wm5102.c
-@@ -985,6 +985,8 @@ ARIZONA_MIXER_CONTROLS("SLIMTX5", ARIZONA_SLIMTX5MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SLIMTX6", ARIZONA_SLIMTX6MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SLIMTX7", ARIZONA_SLIMTX7MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SLIMTX8", ARIZONA_SLIMTX8MIX_INPUT_1_SOURCE),
-+
-+WM_ADSP_FW_CONTROL("DSP1", 0),
- };
- 
- ARIZONA_MIXER_ENUMS(EQ1, ARIZONA_EQ1MIX_INPUT_1_SOURCE);
-diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
-index 00c735c585d9..b0789a03d699 100644
---- a/sound/soc/codecs/wm5110.c
-+++ b/sound/soc/codecs/wm5110.c
-@@ -927,6 +927,11 @@ ARIZONA_MIXER_CONTROLS("SLIMTX5", ARIZONA_SLIMTX5MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SLIMTX6", ARIZONA_SLIMTX6MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SLIMTX7", ARIZONA_SLIMTX7MIX_INPUT_1_SOURCE),
- ARIZONA_MIXER_CONTROLS("SLIMTX8", ARIZONA_SLIMTX8MIX_INPUT_1_SOURCE),
-+
-+WM_ADSP_FW_CONTROL("DSP1", 0),
-+WM_ADSP_FW_CONTROL("DSP2", 1),
-+WM_ADSP_FW_CONTROL("DSP3", 2),
-+WM_ADSP_FW_CONTROL("DSP4", 3),
- };
- 
- ARIZONA_MIXER_ENUMS(EQ1, ARIZONA_EQ1MIX_INPUT_1_SOURCE);
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index e39b0e0b04df..fbd0515c49d7 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -684,8 +684,8 @@ static inline void wm_adsp_debugfs_clear(struct wm_adsp *dsp)
- }
- #endif
- 
--static int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
--			  struct snd_ctl_elem_value *ucontrol)
-+int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
-+		   struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-@@ -695,9 +695,10 @@ static int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
- 
- 	return 0;
- }
-+EXPORT_SYMBOL_GPL(wm_adsp_fw_get);
- 
--static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
--			  struct snd_ctl_elem_value *ucontrol)
-+int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
-+		   struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
- 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
-@@ -721,8 +722,9 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
- 
- 	return ret;
- }
-+EXPORT_SYMBOL_GPL(wm_adsp_fw_put);
- 
--static const struct soc_enum wm_adsp_fw_enum[] = {
-+const struct soc_enum wm_adsp_fw_enum[] = {
- 	SOC_ENUM_SINGLE(0, 0, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
- 	SOC_ENUM_SINGLE(0, 1, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
- 	SOC_ENUM_SINGLE(0, 2, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
-@@ -731,24 +733,7 @@ static const struct soc_enum wm_adsp_fw_enum[] = {
- 	SOC_ENUM_SINGLE(0, 5, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
- 	SOC_ENUM_SINGLE(0, 6, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
- };
--
--const struct snd_kcontrol_new wm_adsp_fw_controls[] = {
--	SOC_ENUM_EXT("DSP1 Firmware", wm_adsp_fw_enum[0],
--		     wm_adsp_fw_get, wm_adsp_fw_put),
--	SOC_ENUM_EXT("DSP2 Firmware", wm_adsp_fw_enum[1],
--		     wm_adsp_fw_get, wm_adsp_fw_put),
--	SOC_ENUM_EXT("DSP3 Firmware", wm_adsp_fw_enum[2],
--		     wm_adsp_fw_get, wm_adsp_fw_put),
--	SOC_ENUM_EXT("DSP4 Firmware", wm_adsp_fw_enum[3],
--		     wm_adsp_fw_get, wm_adsp_fw_put),
--	SOC_ENUM_EXT("DSP5 Firmware", wm_adsp_fw_enum[4],
--		     wm_adsp_fw_get, wm_adsp_fw_put),
--	SOC_ENUM_EXT("DSP6 Firmware", wm_adsp_fw_enum[5],
--		     wm_adsp_fw_get, wm_adsp_fw_put),
--	SOC_ENUM_EXT("DSP7 Firmware", wm_adsp_fw_enum[6],
--		     wm_adsp_fw_get, wm_adsp_fw_put),
--};
--EXPORT_SYMBOL_GPL(wm_adsp_fw_controls);
-+EXPORT_SYMBOL_GPL(wm_adsp_fw_enum);
- 
- static struct wm_adsp_region const *wm_adsp_find_region(struct wm_adsp *dsp,
- 							int type)
-@@ -2884,9 +2869,7 @@ int wm_adsp2_component_probe(struct wm_adsp *dsp, struct snd_soc_component *comp
- 
- 	dsp->component = component;
- 
--	return snd_soc_add_component_controls(component,
--					  &wm_adsp_fw_controls[dsp->num - 1],
--					  1);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(wm_adsp2_component_probe);
- 
-diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
-index bc6d359f0533..8d58cb9d9bb9 100644
---- a/sound/soc/codecs/wm_adsp.h
-+++ b/sound/soc/codecs/wm_adsp.h
-@@ -121,7 +121,11 @@ struct wm_adsp {
- 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
- 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
- 
--extern const struct snd_kcontrol_new wm_adsp_fw_controls[];
-+#define WM_ADSP_FW_CONTROL(dspname, num) \
-+	SOC_ENUM_EXT(dspname " Firmware", wm_adsp_fw_enum[num], \
-+		     wm_adsp_fw_get, wm_adsp_fw_put)
-+
-+extern const struct soc_enum wm_adsp_fw_enum[];
- 
- int wm_adsp1_init(struct wm_adsp *dsp);
- int wm_adsp2_init(struct wm_adsp *dsp);
-@@ -144,6 +148,10 @@ int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
- 			   struct snd_ctl_elem_value *ucontrol);
- int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
- 			   struct snd_ctl_elem_value *ucontrol);
-+int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
-+		   struct snd_ctl_elem_value *ucontrol);
-+int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
-+		   struct snd_ctl_elem_value *ucontrol);
- 
- int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream);
- int wm_adsp_compr_free(struct snd_compr_stream *stream);
 -- 
-2.18.0
+2.7.4
