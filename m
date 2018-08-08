@@ -1,111 +1,174 @@
-From: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Subject: =?utf-8?b?562U5aSNOiDnrZTlpI06ICBBIGJ1ZyBhYm91dCBj?=
- =?utf-8?q?ache_inconsistency_report?=
-Date: Wed, 8 Aug 2018 09:54:57 +0000
-Message-ID: <111052bde8274ccba860a068b5e078e5@zhaoxin.com>
-References: <fb2860d52b724849a9eab36386e8aa5a@zhaoxin.com>
- <s5hmuty5y0l.wl-tiwai@suse.de>	<e9ee508d2db4499387d1a2d175ca269d@zhaoxin.com>
- <s5h1sba5quc.wl-tiwai@suse.de>
+From: Chen-Yu Tsai <wens-jdAy2FN1RRM@public.gmane.org>
+Subject: Re: [BUG] On Allwinner A20 Board Cubietruck distorted
+ SPDIF opical output
+Date: Wed, 8 Aug 2018 17:59:36 +0800
+Message-ID: <CAGb2v66EO6Z39_ZHLP8yjunNhDpQKCQnfDHHQWYnQ_1+QgjdCA@mail.gmail.com>
+References: <CAJnOVskuR6WG5tBVNT30t+k3y4hPR6VnQ=p_QQdBe3fuTWEf_Q@mail.gmail.com>
+ <CAEKpxB=0ahGP=bnFAKDZatLLphADMig4P2Bkpkao-jzE9ORkEg@mail.gmail.com>
+ <CAJnOVskcERpto7ztKcCDWKG9NMcgSjcM867bCgkcxG86sZ2MFw@mail.gmail.com>
+ <CAJnOVs=kK+nPOHfWzAU0q1Nzu7XLwY6HojaZLHXeW1n71YG2wg@mail.gmail.com>
+ <20180521131719.eyrmikexh7jsjrnu@flea> <CAJnOVske_kAmib1eKhkJJouYZE_1M4uwM-VVuBfThHvwVRmMrQ@mail.gmail.com>
+ <CAEKpxB=pLzAH0-c4VCUYAa6EbvswfGGz3nxGez5fj6_hJ8mKQg@mail.gmail.com>
+ <CAEKpxBmDhEerr4CLAZEHGvj1eEce+yBV+fMUK6n6dDeOSLR+4A@mail.gmail.com>
+ <CAJnOVsnEwcVmd4Usmf2fVSJb=YQ2yCSKk2ZJHw_NUvAXkF4e+A@mail.gmail.com>
+ <CAJnOVs=sCDUq=QZiW1+3AYQuksP+JLeoB8Lp218ihzBec2wR0w@mail.gmail.com> <CAJnOVskDp1L9Kmv=eS1f9g6wZ1X1jh_kCzGh2D8H9-30SQBtzQ@mail.gmail.com>
+Reply-To: wens-jdAy2FN1RRM@public.gmane.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ZXSHCAS2.zhaoxin.com (unknown [203.148.12.82])
- by alsa0.perex.cz (Postfix) with ESMTP id 7C7562678C6
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 11:55:01 +0200 (CEST)
-In-Reply-To: <s5h1sba5quc.wl-tiwai@suse.de>
-Content-Language: zh-CN
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>, "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Cc: "Tony W. Wang(BJ-RD)" <TonyWWang@zhaoxin.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "Tim
- Guo(BJ-RD)" <TimGuo@zhaoxin.com>, "Annie Liu(BJ-RD)" <AnnieLiu@zhaoxin.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-sunxi+bncBCMILY6JWQBBBH76VLNQKGQE5BPLXJI-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+Sender: linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org
+In-Reply-To: <CAJnOVskDp1L9Kmv=eS1f9g6wZ1X1jh_kCzGh2D8H9-30SQBtzQ-JsoAwUIsXosN+BqQ9rBEUg@public.gmane.org>
+List-Post: <https://groups.google.com/group/linux-sunxi/post>, <mailto:linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Help: <https://groups.google.com/support/>, <mailto:linux-sunxi+help-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Archive: <https://groups.google.com/group/linux-sunxi
+List-Subscribe: <https://groups.google.com/group/linux-sunxi/subscribe>, <mailto:linux-sunxi+subscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
+List-Unsubscribe: <mailto:googlegroups-manage+1076902468213+unsubscribe-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>,
+ <https://groups.google.com/group/linux-sunxi/subscribe>
+To: Markus Mitsch <markusmitsch86-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>
+Cc: Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>, Linux-ALSA <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, linux-sunxi <linux-sunxi-/JYPxA39Uh5TLH3MbocFFw@public.gmane.org>
 List-Id: alsa-devel@alsa-project.org
 
-PiA+ID5UaGVuIHRoZSBuZXh0IHN0ZXAgd291bGQgYmUgdG8gZmFrZSBzZy1idWZmZXIgZnJvbSB0
-aGlzIHN0cmFpZ2h0DQo+ID4gPmJ1ZmZlci4gIFJldmVydCB0aGUgYWJvdmUsIGFuZCBtb2RpZnkg
-c2didWYuYyB0byB0aGUgZm9sbG93aW5nOg0KPiA+ID4tIEFsbG9jYXRlIGEgbGFyZ2UgY29udGlu
-dW91cyBidWZmZXINCj4gPiA+LSBBc3NpZ24gZWFjaCBwYWdlIGluIHRoaXMgbGFyZ2UgYnVmZmVy
-DQo+ID4NCj4gPiA+SWYgdGhpcyBzdGlsbCB3b3JrcywgaXQncyBub3QgYWJvdXQgdm1hcCwgYnV0
-IGl0IGp1c3QgbWVhbnMgdGhhdA0KPiA+ID50aGUgcGh5c2ljYWxseSBvcmRlcmVkIHBhZ2VzIGRv
-IG1hdHRlciAtLSBpbXBsaWNpdGx5IHNob3dpbmcgdGhhdA0KPiA+ID50aGUgc25vb3BpbmcgYmVo
-YXZpb3IgaXNuJ3QgcHJvcGVybHkgdHVybmVkIG9uIC8gb2ZmIG9uIHRoZSBjb250cm9sbGVyLg0K
-PiA+DQo+ID4gVG8gZmFrZSBTRy1idWZmZXIsIEkgZGlkIHRoaXMgdGVzdDogcmVzdG9yZSBhbGwg
-dGhlIGNvZGVzIHRvIHRoZSBvcmlnaW5hbCwgdGhlbiBhZGRlZCBzb21lIGNvZGVzIGluIHNuZF9t
-YWxsb2Nfc2didWZfcGFnZXMoKSBsaWtlIGJlbG93LCB0aGUgcmVzdWx0IGlzIGJhZGx5IG5pb3Nl
-Lg0KPg0KPiA+Tm90IHJlYWxseSB3aGF0IEkgbWVhbnQuICBSYXRoZXIgc29tZXRoaW5nIGxpa2Ug
-YmVsb3cgKHRvdGFsbHkgdW50ZXN0ZWQpLg0KPg0KPiBbSGFucyA6XSBJIGtub3cgd2hhdCB5b3Ug
-bWVhbiBub3cgYW5kIGNvbXBsZXRlIGNvZGUgbGlrZSBiZWxvdywgYnV0IHRoZSByZXN1bHQgaXMg
-c3RpbGwgbm9pc2UuDQoNCj5PSywgc28gaW5kZWVkIHRoZSB2bWFwcGVkIGFkZHJlc3MgZG9lcyBz
-ZWVtIG1hdHRlci4gIEludGVyZXN0aW5nLg0KPldoYXQga2luZCBvZiB1c2VyIGFjY2VzcyBkb2Vz
-IHByb2R1Y2UgdGhlIG5vaXNlPyAgRG9lcyBpdCB2aWEgYXBsYXkgbW1hcCBtb2RlLCB0b28/DQoN
-Cj5JbiBhbnl3YXksIGlmIHRoZSB2bWFwIGlzIGEgcHJvYmxlbSwgaXQgbWlnaHQgYmUgd29ya2Vk
-IGFyb3VuZCBhIHBhdGNoIGxpa2UgYmVsb3cgKGFnYWluIHRvdGFsbHkgdW50ZXN0ZWQgYW5kIG5v
-dCBzdXJlIHdoZXRoZXIgaXQncyBjb3JyZWN0KS4NCg0KW0hhbnMgOl0gQXMgSSBrbm93LCBJbiB0
-aGUgaGFyZHdhcmUgbGF5ZXIgSERBQ+KAmXMgc3RyZWFtIGhhdmUgdHdvIGRhdGEgdHJhbnNwb3J0
-IHBhdGggOiBub24tc25vb3AgJiBzbm9vcDsgSW4gdGhlIHNvZnR3YXJlIGxheWVyIEFMU0EtRHJp
-dmVyIGhhdmUgdHdvIGRhdGEgdHJhbnNwb3J0IHBhdGggOiBtbWFwICYgbm90IG1tYXAodGVzdCBz
-aG93cywgaXQgaXMgZGVwZW5kZW50IG9uIHdhdidzIGZvcm1hdCBvciBtbWFwX2ZsYWcgaW4gYXBs
-YXkuYykuIFdoZW4gaGFyZHdhcmUgYXQgbm9uLXNub29wIG1vZGUsIHdpdGhvdXQgaGFyZHdhcmUg
-bW9kdWxlJ3MgaGVscCwgc29mdHdhcmUgbXVzdCBtYXJrIHRoZSBtZW0gdG8gdW5jYWNoZWFibGUg
-dHlwZTogd2hlbiBtbWFwIHVzZWQsIHRoZSBtYXJrIGFjdGlvbiBoYXBwZW5lZCBhdCBwY21fbW1h
-cF9wcmVwYXJlKCksIHRoZSBub3QtbW1hcCBtb2RlJ3MgbWFyayBhY3Rpb24gaGFwcGVuZWQgYXQg
-X19tYXJrX3BhZ2VzX3djKCkuIEFuZCB3aGVuIGF0IG5vdC1tbWFwIG1vZGUsIHRoZSB2bWFwcGVk
-IGFkZHJlc3MgZGlyZWN0bHkgdXNlZCBpbiBzbmRfcGNtX2xpYl93cml0ZV90cmFuc2ZlcigpIC0+
-IGNvcHlfZnJvbV91c2VyKCkuDQpZZXMsIG9mIGNvdXJzZSwgdGhpcyBwYXRoIGNvbWJpbmF0aW9u
-cyhub24tc25vb3AgKyBub3QtbW1hcCkgdW5saWtlbHkgYmUgdXNlZCBieSBtb3N0IG11c2ljIHBs
-YXllcnMuDQoNCltIYW5zIDpdIEkgY29tcGxldGUgdGhlIHBhdGNoIGluIHlvdXIgbGFzdCBtYWls
-IGxpa2UgYmVsb3csIG5vdCB1c2VkIHRoZSB2dW5tYXAgJiByZS12bWFwIHdheShpdCBoYXMgYSBs
-aXR0bGUgcHJvYmxlbSkuIFJlc3VsdCBpcyBPSyBub3cobm8gbm9pc2UgYW55bW9yZSkuDQoNCi0t
-LSBhL3NvdW5kL3BjaS9oZGEvaGRhX2ludGVsLmMNCisrKyBiL3NvdW5kL3BjaS9oZGEvaGRhX2lu
-dGVsLmMNCiNpZmRlZiBDT05GSUdfWDg2DQorI2lmZGVmIENPTkZJR19TTkRfRE1BX1NHQlVGDQor
-I2luY2x1ZGUgPGxpbnV4L3ZtYWxsb2MuaD4NCisjaW5jbHVkZSA8bGludXgvc2NoZWQuaD4NCisj
-aW5jbHVkZSA8YXNtL3BhcmF2aXJ0Lmg+DQorDQorc3RhdGljIGludCBiYWRfYWRkcmVzcyh2b2lk
-ICpwKQ0KK3sNCit1bnNpZ25lZCBsb25nIGR1bW15Ow0KKw0KK3JldHVybiBwcm9iZV9rZXJuZWxf
-YWRkcmVzcygodW5zaWduZWQgbG9uZyAqKXAsIGR1bW15KTsNCit9DQorDQorc3RhdGljIHB0ZV90
-ICogZHVtcF9wdGUodW5zaWduZWQgbG9uZyBhZGRyZXNzKQ0KK3sNCitwZ2RfdCAqYmFzZSA9IF9f
-dmEocmVhZF9jcjMoKSAmIFBIWVNJQ0FMX1BBR0VfTUFTSyk7DQorcGdkX3QgKnBnZCA9IGJhc2Ug
-KyBwZ2RfaW5kZXgoYWRkcmVzcyk7DQorcHVkX3QgKnB1ZDsNCitwbWRfdCAqcG1kOw0KK3B0ZV90
-ICpwdGU7DQorDQoraWYgKGJhZF9hZGRyZXNzKHBnZCkpDQorZ290byBiYWQ7DQorDQoraWYgKCFw
-Z2RfcHJlc2VudCgqcGdkKSkNCitnb3RvIGJhZDsNCisNCitwdWQgPSBwdWRfb2Zmc2V0KHBnZCwg
-YWRkcmVzcyk7DQoraWYgKGJhZF9hZGRyZXNzKHB1ZCkpDQorZ290byBiYWQ7DQorDQoraWYgKCFw
-dWRfcHJlc2VudCgqcHVkKSB8fCBwdWRfbGFyZ2UoKnB1ZCkpDQorZ290byBiYWQ7DQorDQorcG1k
-ID0gcG1kX29mZnNldChwdWQsIGFkZHJlc3MpOw0KK2lmIChiYWRfYWRkcmVzcyhwbWQpKQ0KK2dv
-dG8gYmFkOw0KKw0KK2lmICghcG1kX3ByZXNlbnQoKnBtZCkgfHwgcG1kX2xhcmdlKCpwbWQpKQ0K
-K2dvdG8gYmFkOw0KKw0KK3B0ZSA9IHB0ZV9vZmZzZXRfa2VybmVsKHBtZCwgYWRkcmVzcyk7DQor
-aWYgKGJhZF9hZGRyZXNzKHB0ZSkpDQorZ290byBiYWQ7DQorDQorcmV0dXJuIHB0ZTsNCitiYWQ6
-DQorcmV0dXJuIE5VTEw7DQorfQ0KKyNlbmRpZg0KIHN0YXRpYyB2b2lkIF9fbWFya19wYWdlc193
-YyhzdHJ1Y3QgYXp4ICpjaGlwLCBzdHJ1Y3Qgc25kX2RtYV9idWZmZXIgKmRtYWIsIGJvb2wgb24p
-DQogew0KIGludCBwYWdlczsNCkBAIC00MTAsMTIgKzQ1OSwyOCBAQCBzdGF0aWMgdm9pZCBfX21h
-cmtfcGFnZXNfd2Moc3RydWN0IGF6eCAqY2hpcCwgc3RydWN0IHNuZF9kbWFfYnVmZmVyICpkbWFi
-LCBib29sDQogI2lmZGVmIENPTkZJR19TTkRfRE1BX1NHQlVGDQogaWYgKGRtYWItPmRldi50eXBl
-ID09IFNORFJWX0RNQV9UWVBFX0RFVl9TRykgew0KIHN0cnVjdCBzbmRfc2dfYnVmICpzZ2J1ZiA9
-IGRtYWItPnByaXZhdGVfZGF0YTsNCitwZ3Byb3RfdCBwcm90Ow0KK2ludCBpOw0KK3Vuc2lnbmVk
-IGxvbmcgYWRkcjsNCitwdGVfdCAqIHB0ZTsNCiBpZiAoY2hpcC0+ZHJpdmVyX3R5cGUgPT0gQVpY
-X0RSSVZFUl9DTUVESUEpDQogcmV0dXJuOyAvKiBkZWFsIHdpdGggb25seSBDT1JCL1JJUkIgYnVm
-ZmVycyAqLw0KLWlmIChvbikNCitpZiAob24pew0KIHNldF9wYWdlc19hcnJheV93YyhzZ2J1Zi0+
-cGFnZV90YWJsZSwgc2didWYtPnBhZ2VzKTsNCi1lbHNlDQorcHJvdCA9IHBncHJvdF93cml0ZWNv
-bWJpbmUoUEFHRV9LRVJORUwpOw0KK30NCitlbHNlew0KIHNldF9wYWdlc19hcnJheV93YihzZ2J1
-Zi0+cGFnZV90YWJsZSwgc2didWYtPnBhZ2VzKTsNCitwcm90ID0gUEFHRV9LRVJORUw7DQorfQ0K
-K2ZvciAoaSA9IDA7IGkgPCBzZ2J1Zi0+cGFnZXM7IGkgKyspDQorew0KK2FkZHIgPSAodW5zaWdu
-ZWQgbG9uZylkbWFiLT5hcmVhICsgUEFHRV9TSVpFICogaTsNCitwdGUgPSBkdW1wX3B0ZShhZGRy
-KTsNCitpZiAocHRlKQ0KK3NldF9wdGVfYXQoJmluaXRfbW0sIGFkZHIsIHB0ZSwgbWtfcHRlKHNn
-YnVmLT5wYWdlX3RhYmxlW2ldLCBwcm90KSk7DQorZWxzZSBXQVJOX09OKDEpOw0KK30NCiByZXR1
-cm47DQogfQ0KICNlbmRpZg0KDQoNCuS/neWvhuWjsOaYju+8mg0K5pys6YKu5Lu25ZCr5pyJ5L+d
-5a+G5oiW5LiT5pyJ5L+h5oGv77yM5LuF5L6b5oyH5a6a5pS25Lu25Lq65L2/55So44CC5Lil56aB
-5a+55pys6YKu5Lu25oiW5YW25YaF5a655YGa5Lu75L2V5pyq57uP5o6I5p2D55qE5p+l6ZiF44CB
-5L2/55So44CB5aSN5Yi25oiW6L2s5Y+R44CCDQpDT05GSURFTlRJQUwgTk9URToNClRoaXMgZW1h
-aWwgY29udGFpbnMgY29uZmlkZW50aWFsIG9yIGxlZ2FsbHkgcHJpdmlsZWdlZCBpbmZvcm1hdGlv
-biBhbmQgaXMgZm9yIHRoZSBzb2xlIHVzZSBvZiBpdHMgaW50ZW5kZWQgcmVjaXBpZW50LiBBbnkg
-dW5hdXRob3JpemVkIHJldmlldywgdXNlLCBjb3B5aW5nIG9yIGZvcndhcmRpbmcgb2YgdGhpcyBl
-bWFpbCBvciB0aGUgY29udGVudCBvZiB0aGlzIGVtYWlsIGlzIHN0cmljdGx5IHByb2hpYml0ZWQu
-DQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRl
-dmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxt
-YW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+On Sun, Jun 10, 2018 at 1:46 AM, Markus Mitsch
+<markusmitsch86-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org> wrote:
+> hi.
+>
+> i posted my answer wrong so here is my finding:
+> i made the output work by disabling the sigma delta modulation.
+> after compiling the kernel  i can output through spdif with any rate.
+
+So it seems that the default mid-level bias current setting for PLL2
+interferes with sigma-delta modulation. Similarly, the VCO bias setting
+also interferes.
+
+Try zeroing out bits 16 ~ 25 in the PLL2 tuning register (0x01c2000c)
+with sigma delta on, and see if that fixes things.
+
+I'll send out a patch later.
+
+ChenYu
+
+> greetings
+> markus
+>
+> 2018-05-26 18:38 GMT+02:00 Markus Mitsch <markusmitsch86-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>:
+>> 2018-05-26 16:57 GMT+02:00 Markus Mitsch <markusmitsch86-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>:
+>>> 2018-05-23 17:12 GMT+02:00 Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>:
+>>>> Hi All,
+>>>> I can see that the problem was introduced somewhere here
+>>>>
+>>>> DOESN'T WORK
+>>>> ffc3eb6f3a83 Merge tag 'sunxi-clk-for-4.15' of
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/sunxi/linux into
+>>>> clk-next
+>>>> ae74ac082886 Merge tag 'clk-v4.15-exynos-pm' of
+>>>> git://git.kernel.org/pub/scm/linux/kernel/git/snawrocki/clk into
+>>>> clk-next
+>>>> faa865f18cb7 Merge tag 'clk-v4.15-samsung' of
+>>>> git://git.kernel.org/pub/scm/linux/kernel/git/snawrocki/clk into
+>>>> clk-next
+>>>> f09a6b86fdae Merge tag 'clk-renesas-for-v4.15-tag1' of
+>>>> git://git.kernel.org/pub/scm/linux/kernel/git/geert/renesas-drivers
+>>>> into clk-next
+>>>> 4328a2186e51 clk: sunxi-ng: sun4i: Export video PLLs
+>>>> 553c7d5ba2fe clk: sunxi-ng: Add A83T display clocks
+>>>> 7679eb20353d clk: samsung: Add a separate driver for Exynos4412 ISP clocks
+>>>> 8ca8ac102484 clk: samsung: Add dt bindings for Exynos4412 ISP clock controller
+>>>> 75920aac275a clk: samsung: Instantiate Exynos4412 ISP clocks only when available
+>>>> 24ea78a09f89 clk: sunxi-ng: sun8i: a23: Use sigma-delta modulation for audio PLL
+>>>> ee6501d69217 clk: sunxi-ng: sun6i: Use sigma-delta modulation for audio PLL
+>>>> 042f7f8f9715 clk: sunxi-ng: sun5i: Use sigma-delta modulation for audio PLL
+>>>> de3448519194 clk: sunxi-ng: sun4i: Use sigma-delta modulation for audio PLL
+>>>> a5e3e2b2ef85 clk: sunxi-ng: sun8i: h3: Use sigma-delta modulation for audio PLL
+>>>> 392ba5fafcdf clk: sunxi-ng: nm: Add support for sigma-delta modulation
+>>>> 05d2eaac96d4 clk: sunxi-ng: Add sigma-delta modulation support
+>>>> 4cdbc40d64d4 clk: sunxi-ng: nm: Check if requested rate is supported
+>>>> by fractional clock
+>>>> d51fe3ba9773 clk: sunxi-ng: sun5i: Fix bit offset of audio PLL post-divider
+>>>> 4e8975cbb516 clk: samsung: exynos5433: mark PM functions as __maybe_unused
+>>>> a4f21e9ceb5c clk: samsung: Remove obsolete clkdev alias support
+>>>> 45d882daf88a clk: samsung: Add explicit MPLL, EPLL clkdev aliases in
+>>>> S3C2443 driver
+>>>> cd05417f728b clk: samsung: Rework clkdev alias handling in S3C2443 driver
+>>>> efea8d377184 clk: samsung: Rework clkdev alias handling in Exynos5440 driver
+>>>> 36ba48240b19 clk: samsung: Drop useless alias in Exynos5420 clk driver
+>>>> 29964890f31c clk: samsung: Remove clkdev alias support in Exynos5250 clk driver
+>>>> 6de08891c896 clk: samsung: Remove double assignment of CLK_ARM_CLK in
+>>>> Exynos4 driver
+>>>> 58f4a5ff3a62 clk: samsung: Remove clkdev alias support in Exynos4 clk driver
+>>>> c9194fb623b0 clk: samsung: Remove support for obsolete Exynos4212 CPU clock
+>>>> d5cd103b06f9 clk: samsung: Remove support for Exynos4212 SoCs in
+>>>> Exynos CLKOUT driver
+>>>> 7c4f63ec94a1 clk: sunxi-ng: a83t: Fix invalid csi-mclk mux offset
+>>>> WORKS
+>>>> 0a4e632b6f9d Merge branch 'clk-fixes' into clk-next
+>>>>
+>>>> BR,
+>>>> CK
+>>>>
+>>>>
+>>>> On 22 May 2018 at 21:27, Code Kipper <codekipper-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+>>>>> Hi Markus,
+>>>>> I've been able to reproduce this on my A31 board with linux-next(plays
+>>>>> at 44100 but not at 96K)so it is an issue. I also tested the same code
+>>>>> on my A64 and it worked fine, The blocks are very similar so it maybe
+>>>>> a clocking issue, I'll look into this.
+>>>>> BR,
+>>>>> CK
+>>>>>
+>>>>> On 21 May 2018 at 20:17, Markus Mitsch <markusmitsch86-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org> wrote:
+>>>>>> 2018-05-21 15:17 GMT+02:00 Maxime Ripard <maxime.ripard-LDxbnhwyfcJBDgjK7y7TUQ@public.gmane.org>:
+>>>>>>> On Mon, May 21, 2018 at 02:43:55PM +0200, Markus Mitsch wrote:
+>>>>>>>> 2018-05-21 11:43 GMT+02:00 Markus Mitsch <markusmitsch86-gM/Ye1E23mwN+BqQ9rBEUg@public.gmane.org>:
+>>>>>>>> >>> Hello,
+>>>>>>>> >>>
+>>>>>>>> >>> i have a new problem. if i want to output sound from optical i get
+>>>>>>>> >>> distorted sound. At 44.1 khz its like an old vinly, but at 48 khz and
+>>>>>>>> >>> higher it is very bad. thanks in advance for your time.
+>>>>>>>> >
+>>>>>>>> >> Hi Markus,
+>>>>>>>> >> I haven't tested it for a while but when I did it worked as high as
+>>>>>>>> >> 96K with no issues. Does it work ok with the original cubietruck
+>>>>>>>> >> software?,
+>>>>>>>> >> CK
+>>>>>>>> >
+>>>>>>>> > Hello,
+>>>>>>>> > i am using arch linux with mainline kernel 4.16.8. parhaps i can try
+>>>>>>>> > today with official image.
+>>>>>>>> > mfg
+>>>>>>>>
+>>>>>>>> Hi.
+>>>>>>>> So, with debian image from 2014 with 3.4.79 kernel the sound is clear
+>>>>>>>> up to 96 khz.
+>>>>>>>
+>>>>>>> You said that it is a new problem, when was it introduced? Could you
+>>>>>>> bisect the issue?
+>>>>>>>
+>>>>>>> Maxime
+>>>>>>
+>>>>>> Hello.
+>>>>>> I dont know since when this problem appears. When saying "new" i
+>>>>>> refered to my older post. I tried to look into the dts file and the
+>>>>>> code
+>>>>>> but i am afraid this is a bit too high for me. I can say that the
+>>>>>> analog output works, even at high sampling rates.
+>>>>>> And I have read something about a clock source could be the problem.
+>>>>>> I'm sorry I can't tell you any more.
+>>>>>>
+>>>>>> mfg
+>>>>>> Markus
+>>>
+>>> Hello,
+>>> i tried undoing part of the commit
+>>> de3448519194 clk: sunxi-ng: sun4i: Use sigma-delta modulation for audio PLL
+>>> by setting the value for the divider from 1 to 4 again on both places.
+>>> with no success.
+>>>
+>>> markus
+>>
+>> i now had a little success. the output works!!
+>> i disabled the sigma-delta support by making
+>> ccu_sdm_helper_enable in drivers/clk/sunxi-ng/ccu_sdm.c  return imediately.
+>>
+>> markus
