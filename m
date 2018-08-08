@@ -1,18 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5677: Fix initialization of
-	rt5677_of_match.data" to the asoc tree
-Date: Wed,  8 Aug 2018 12:08:03 +0100 (BST)
-Message-ID: <20180808110803.1F0861124340@debutante.sirena.org.uk>
-References: <20180807171940.150507-1-mka@chromium.org>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 1/2] ASoC: wm_adsp: Declare firmware controls
+	from codec driver
+Date: Wed, 8 Aug 2018 17:13:38 +0100
+Message-ID: <20180808161339.17402-1-rf@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D2DD62678EC
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 13:08:05 +0200 (CEST)
-In-Reply-To: <20180807171940.150507-1-mka@chromium.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id D2E652678C4
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 18:13:55 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +20,201 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matthias Kaehlcke <mka@chromium.org>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Nicolas Boichat <drinkcat@chromium.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Guenter Roeck <groeck@chromium.org>, Bard Liao <bardliao@realtek.com>, Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+To allow for more flexibility in naming of DSP-type cores
+move the creation of the firmware controls to the codec
+drivers instead of having a hardcoded list in wm_adsp.
 
-   ASoC: rt5677: Fix initialization of rt5677_of_match.data
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From f861e3e28a3016a2064d9f600eaa92a530b732b4 Mon Sep 17 00:00:00 2001
-From: Matthias Kaehlcke <mka@chromium.org>
-Date: Tue, 7 Aug 2018 10:19:40 -0700
-Subject: [PATCH] ASoC: rt5677: Fix initialization of rt5677_of_match.data
-
-The driver expects to find the device id in rt5677_of_match.data, however
-it is currently assigned to rt5677_of_match.type. Fix this.
-
-The problem was found with the help of clang:
-  sound/soc/codecs/rt5677.c:5010:36: warning: expression which evaluates to
-  zero treated as a null pointer constant of type 'const void *'
-  [-Wnon-literal-null-conversion]
-    { .compatible = "realtek,rt5677", RT5677 },
-                                      ^~~~~~
-
-Fixes: ddc9e69b9dc2 ("ASoC: rt5677: Hide platform data in the module sources")
-Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-Reviewed-by: Guenter Roeck <groeck@chromium.org>
-Acked-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 ---
- sound/soc/codecs/rt5677.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/cs47l24.c |  3 +++
+ sound/soc/codecs/wm2200.c  | 10 ++++------
+ sound/soc/codecs/wm5102.c  |  2 ++
+ sound/soc/codecs/wm5110.c  |  5 +++++
+ sound/soc/codecs/wm_adsp.c | 35 +++++++++--------------------------
+ sound/soc/codecs/wm_adsp.h | 10 +++++++++-
+ 6 files changed, 32 insertions(+), 33 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5677.c b/sound/soc/codecs/rt5677.c
-index 922becfee59b..9b7a1833d331 100644
---- a/sound/soc/codecs/rt5677.c
-+++ b/sound/soc/codecs/rt5677.c
-@@ -5008,7 +5008,7 @@ static const struct regmap_config rt5677_regmap = {
+diff --git a/sound/soc/codecs/cs47l24.c b/sound/soc/codecs/cs47l24.c
+index 0da52ead91e0..45e50fe3bf25 100644
+--- a/sound/soc/codecs/cs47l24.c
++++ b/sound/soc/codecs/cs47l24.c
+@@ -235,6 +235,9 @@ ARIZONA_MIXER_CONTROLS("AIF2TX6", ARIZONA_AIF2TX6MIX_INPUT_1_SOURCE),
+ 
+ ARIZONA_MIXER_CONTROLS("AIF3TX1", ARIZONA_AIF3TX1MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("AIF3TX2", ARIZONA_AIF3TX2MIX_INPUT_1_SOURCE),
++
++WM_ADSP_FW_CONTROL("DSP2", 1),
++WM_ADSP_FW_CONTROL("DSP3", 2),
  };
  
- static const struct of_device_id rt5677_of_match[] = {
--	{ .compatible = "realtek,rt5677", RT5677 },
-+	{ .compatible = "realtek,rt5677", .data = (const void *)RT5677 },
- 	{ }
+ ARIZONA_MIXER_ENUMS(EQ1, ARIZONA_EQ1MIX_INPUT_1_SOURCE);
+diff --git a/sound/soc/codecs/wm2200.c b/sound/soc/codecs/wm2200.c
+index 3663b9fd4d65..deff65161504 100644
+--- a/sound/soc/codecs/wm2200.c
++++ b/sound/soc/codecs/wm2200.c
+@@ -1180,6 +1180,9 @@ SOC_DOUBLE_R_TLV("OUT2 Digital Volume", WM2200_DAC_DIGITAL_VOLUME_2L,
+ SOC_DOUBLE("OUT2 Switch", WM2200_PDM_1, WM2200_SPK1L_MUTE_SHIFT,
+ 	   WM2200_SPK1R_MUTE_SHIFT, 1, 1),
+ SOC_ENUM("RxANC Src", wm2200_rxanc_input_sel),
++
++WM_ADSP_FW_CONTROL("DSP1", 0),
++WM_ADSP_FW_CONTROL("DSP2", 1),
  };
- MODULE_DEVICE_TABLE(of, rt5677_of_match);
+ 
+ WM2200_MIXER_ENUMS(OUT1L, WM2200_OUT1LMIX_INPUT_1_SOURCE);
+@@ -1553,15 +1556,10 @@ static const struct snd_soc_dapm_route wm2200_dapm_routes[] = {
+ static int wm2200_probe(struct snd_soc_component *component)
+ {
+ 	struct wm2200_priv *wm2200 = snd_soc_component_get_drvdata(component);
+-	int ret;
+ 
+ 	wm2200->component = component;
+ 
+-	ret = snd_soc_add_component_controls(component, wm_adsp_fw_controls, 2);
+-	if (ret != 0)
+-		return ret;
+-
+-	return ret;
++	return 0;
+ }
+ 
+ static int wm2200_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+diff --git a/sound/soc/codecs/wm5102.c b/sound/soc/codecs/wm5102.c
+index a01a0c0e01eb..7e817e1877c2 100644
+--- a/sound/soc/codecs/wm5102.c
++++ b/sound/soc/codecs/wm5102.c
+@@ -985,6 +985,8 @@ ARIZONA_MIXER_CONTROLS("SLIMTX5", ARIZONA_SLIMTX5MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("SLIMTX6", ARIZONA_SLIMTX6MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("SLIMTX7", ARIZONA_SLIMTX7MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("SLIMTX8", ARIZONA_SLIMTX8MIX_INPUT_1_SOURCE),
++
++WM_ADSP_FW_CONTROL("DSP1", 0),
+ };
+ 
+ ARIZONA_MIXER_ENUMS(EQ1, ARIZONA_EQ1MIX_INPUT_1_SOURCE);
+diff --git a/sound/soc/codecs/wm5110.c b/sound/soc/codecs/wm5110.c
+index 00c735c585d9..b0789a03d699 100644
+--- a/sound/soc/codecs/wm5110.c
++++ b/sound/soc/codecs/wm5110.c
+@@ -927,6 +927,11 @@ ARIZONA_MIXER_CONTROLS("SLIMTX5", ARIZONA_SLIMTX5MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("SLIMTX6", ARIZONA_SLIMTX6MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("SLIMTX7", ARIZONA_SLIMTX7MIX_INPUT_1_SOURCE),
+ ARIZONA_MIXER_CONTROLS("SLIMTX8", ARIZONA_SLIMTX8MIX_INPUT_1_SOURCE),
++
++WM_ADSP_FW_CONTROL("DSP1", 0),
++WM_ADSP_FW_CONTROL("DSP2", 1),
++WM_ADSP_FW_CONTROL("DSP3", 2),
++WM_ADSP_FW_CONTROL("DSP4", 3),
+ };
+ 
+ ARIZONA_MIXER_ENUMS(EQ1, ARIZONA_EQ1MIX_INPUT_1_SOURCE);
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index ae131376cea1..1c12c78dbcce 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -684,8 +684,8 @@ static inline void wm_adsp_debugfs_clear(struct wm_adsp *dsp)
+ }
+ #endif
+ 
+-static int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
+-			  struct snd_ctl_elem_value *ucontrol)
++int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
++		   struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+@@ -695,9 +695,10 @@ static int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(wm_adsp_fw_get);
+ 
+-static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+-			  struct snd_ctl_elem_value *ucontrol)
++int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
++		   struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+ 	struct soc_enum *e = (struct soc_enum *)kcontrol->private_value;
+@@ -721,8 +722,9 @@ static int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
+ 
+ 	return ret;
+ }
++EXPORT_SYMBOL_GPL(wm_adsp_fw_put);
+ 
+-static const struct soc_enum wm_adsp_fw_enum[] = {
++const struct soc_enum wm_adsp_fw_enum[] = {
+ 	SOC_ENUM_SINGLE(0, 0, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+ 	SOC_ENUM_SINGLE(0, 1, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+ 	SOC_ENUM_SINGLE(0, 2, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+@@ -731,24 +733,7 @@ static const struct soc_enum wm_adsp_fw_enum[] = {
+ 	SOC_ENUM_SINGLE(0, 5, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+ 	SOC_ENUM_SINGLE(0, 6, ARRAY_SIZE(wm_adsp_fw_text), wm_adsp_fw_text),
+ };
+-
+-const struct snd_kcontrol_new wm_adsp_fw_controls[] = {
+-	SOC_ENUM_EXT("DSP1 Firmware", wm_adsp_fw_enum[0],
+-		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM_EXT("DSP2 Firmware", wm_adsp_fw_enum[1],
+-		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM_EXT("DSP3 Firmware", wm_adsp_fw_enum[2],
+-		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM_EXT("DSP4 Firmware", wm_adsp_fw_enum[3],
+-		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM_EXT("DSP5 Firmware", wm_adsp_fw_enum[4],
+-		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM_EXT("DSP6 Firmware", wm_adsp_fw_enum[5],
+-		     wm_adsp_fw_get, wm_adsp_fw_put),
+-	SOC_ENUM_EXT("DSP7 Firmware", wm_adsp_fw_enum[6],
+-		     wm_adsp_fw_get, wm_adsp_fw_put),
+-};
+-EXPORT_SYMBOL_GPL(wm_adsp_fw_controls);
++EXPORT_SYMBOL_GPL(wm_adsp_fw_enum);
+ 
+ static struct wm_adsp_region const *wm_adsp_find_region(struct wm_adsp *dsp,
+ 							int type)
+@@ -2890,9 +2875,7 @@ int wm_adsp2_component_probe(struct wm_adsp *dsp, struct snd_soc_component *comp
+ 
+ 	dsp->component = component;
+ 
+-	return snd_soc_add_component_controls(component,
+-					  &wm_adsp_fw_controls[dsp->num - 1],
+-					  1);
++	return 0;
+ }
+ EXPORT_SYMBOL_GPL(wm_adsp2_component_probe);
+ 
+diff --git a/sound/soc/codecs/wm_adsp.h b/sound/soc/codecs/wm_adsp.h
+index bc6d359f0533..8d58cb9d9bb9 100644
+--- a/sound/soc/codecs/wm_adsp.h
++++ b/sound/soc/codecs/wm_adsp.h
+@@ -121,7 +121,11 @@ struct wm_adsp {
+ 	.reg = SND_SOC_NOPM, .shift = num, .event = wm_adsp2_event, \
+ 	.event_flags = SND_SOC_DAPM_POST_PMU | SND_SOC_DAPM_PRE_PMD }
+ 
+-extern const struct snd_kcontrol_new wm_adsp_fw_controls[];
++#define WM_ADSP_FW_CONTROL(dspname, num) \
++	SOC_ENUM_EXT(dspname " Firmware", wm_adsp_fw_enum[num], \
++		     wm_adsp_fw_get, wm_adsp_fw_put)
++
++extern const struct soc_enum wm_adsp_fw_enum[];
+ 
+ int wm_adsp1_init(struct wm_adsp *dsp);
+ int wm_adsp2_init(struct wm_adsp *dsp);
+@@ -144,6 +148,10 @@ int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
+ 			   struct snd_ctl_elem_value *ucontrol);
+ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
+ 			   struct snd_ctl_elem_value *ucontrol);
++int wm_adsp_fw_get(struct snd_kcontrol *kcontrol,
++		   struct snd_ctl_elem_value *ucontrol);
++int wm_adsp_fw_put(struct snd_kcontrol *kcontrol,
++		   struct snd_ctl_elem_value *ucontrol);
+ 
+ int wm_adsp_compr_open(struct wm_adsp *dsp, struct snd_compr_stream *stream);
+ int wm_adsp_compr_free(struct snd_compr_stream *stream);
 -- 
-2.18.0
+2.11.0
