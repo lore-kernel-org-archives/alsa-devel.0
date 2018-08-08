@@ -1,33 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98373: Added software reset register
-	to readable registers" to the asoc tree
-Date: Wed,  8 Aug 2018 12:07:47 +0100 (BST)
-Message-ID: <20180808110747.7170C1124340@debutante.sirena.org.uk>
-References: <20180808030638.8085-1-ryans.lee@maximintegrated.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B259C2678DA
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 13:07:51 +0200 (CEST)
-In-Reply-To: <20180808030638.8085-1-ryans.lee@maximintegrated.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+Subject: Applied "ASoC: wm_adsp: Correct DSP pointer for preloader control" to the asoc tree
+Date: Wed,  8 Aug 2018 12:07:55 +0100 (BST)
+Message-ID: <20180808110755.C5AD61124340@debutante.sirena.org.uk>
+References: <20180807173042.22501-1-ckeepax@opensource.cirrus.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <20180807173042.22501-1-ckeepax@opensource.cirrus.com>
+Sender: stable-owner@vger.kernel.org
+Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgbroonie@kernel.org, ajit.pandey@cirrus.com, patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.comalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98373: Added software reset register to readable registers
+   ASoC: wm_adsp: Correct DSP pointer for preloader control
 
 has been applied to the asoc tree at
 
@@ -52,29 +36,52 @@ to this mail.
 Thanks,
 Mark
 
->From 0717edbdfed61b4c1e8291140f78882d3a481042 Mon Sep 17 00:00:00 2001
-From: Ryan Lee <ryans.lee@maximintegrated.com>
-Date: Tue, 7 Aug 2018 20:06:38 -0700
-Subject: [PATCH] ASoC: max98373: Added software reset register to readable
- registers
+>From b1470d4ce77c2d60661c7d5325d4fb8063e15ff8 Mon Sep 17 00:00:00 2001
+From: Ajit Pandey <ajit.pandey@cirrus.com>
+Date: Tue, 7 Aug 2018 18:30:42 +0100
+Subject: [PATCH] ASoC: wm_adsp: Correct DSP pointer for preloader control
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+The offset of the DSP core needs to be taken into account for the DSP
+preloader control get and put. Currently the dsp->preloaded variable
+will only ever be read/updated on the first DSP, whilst this doesn't
+affect the operation of the control the readback will be incorrect.
+
+Signed-off-by: Ajit Pandey <ajit.pandey@cirrus.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/max98373.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/wm_adsp.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index a92586106932..92b7125ea169 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -488,6 +488,7 @@ static const DECLARE_TLV_DB_RANGE(max98373_bde_gain_tlv,
- static bool max98373_readable_register(struct device *dev, unsigned int reg)
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 4e7f8525449e..08dc82770273 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -2643,7 +2643,10 @@ int wm_adsp2_preloader_get(struct snd_kcontrol *kcontrol,
+ 			   struct snd_ctl_elem_value *ucontrol)
  {
- 	switch (reg) {
-+	case MAX98373_R2000_SW_RESET:
- 	case MAX98373_R2001_INT_RAW1 ... MAX98373_R200C_INT_EN3:
- 	case MAX98373_R2010_IRQ_CTRL:
- 	case MAX98373_R2014_THERM_WARN_THRESH
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+-	struct wm_adsp *dsp = snd_soc_component_get_drvdata(component);
++	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
++	struct soc_mixer_control *mc =
++		(struct soc_mixer_control *)kcontrol->private_value;
++	struct wm_adsp *dsp = &dsps[mc->shift - 1];
+ 
+ 	ucontrol->value.integer.value[0] = dsp->preloaded;
+ 
+@@ -2655,10 +2658,11 @@ int wm_adsp2_preloader_put(struct snd_kcontrol *kcontrol,
+ 			   struct snd_ctl_elem_value *ucontrol)
+ {
+ 	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
+-	struct wm_adsp *dsp = snd_soc_component_get_drvdata(component);
++	struct wm_adsp *dsps = snd_soc_component_get_drvdata(component);
+ 	struct snd_soc_dapm_context *dapm = snd_soc_component_get_dapm(component);
+ 	struct soc_mixer_control *mc =
+ 		(struct soc_mixer_control *)kcontrol->private_value;
++	struct wm_adsp *dsp = &dsps[mc->shift - 1];
+ 	char preload[32];
+ 
+ 	snprintf(preload, ARRAY_SIZE(preload), "DSP%u Preload", mc->shift);
 -- 
 2.18.0
