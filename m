@@ -1,20 +1,16 @@
-From: "Alex G." <mr.nuke.me@gmail.com>
-Subject: Re: Spectre x360 fixing the top speakers (again)
-Date: Tue, 7 Aug 2018 22:55:42 -0500
-Message-ID: <b0769dfe-6954-6dac-37b6-d11073a8d801@gmail.com>
-References: <b34c110f-b5a0-6c02-4ad6-efb1990492bd@gmail.com>
- <s5h600ou4x8.wl-tiwai@suse.de>
+From: Daniel Mack <daniel@zonque.org>
+Subject: Re: ASoC: pxa: possible regressions
+Date: Wed, 8 Aug 2018 07:38:16 +0200
+Message-ID: <58f65d89-c342-026f-6e24-a67fcd625a26@zonque.org>
+References: <5be00a36-d54b-e8ab-2d5f-4c1870f14aac@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
- [209.85.214.68])
- by alsa0.perex.cz (Postfix) with ESMTP id B72EA267898
- for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 05:55:45 +0200 (CEST)
-Received: by mail-it0-f68.google.com with SMTP id d10-v6so1762782itj.5
- for <alsa-devel@alsa-project.org>; Tue, 07 Aug 2018 20:55:45 -0700 (PDT)
-In-Reply-To: <s5h600ou4x8.wl-tiwai@suse.de>
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C448267898
+ for <alsa-devel@alsa-project.org>; Wed,  8 Aug 2018 07:38:17 +0200 (CEST)
+In-Reply-To: <5be00a36-d54b-e8ab-2d5f-4c1870f14aac@gmail.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,95 +21,162 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: tom@decompile.me.uk, alsa-devel@alsa-project.org, Kailang <kailang@realtek.com>
+To: Petr Cvek <petrcvekcz@gmail.com>, broonie@kernel.org, philipp.zabel@gmail.com, haojian.zhuang@gmail.com, Robert Jarzmik <robert.jarzmik@free.fr>, lgirdwood@gmail.com
+Cc: alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/05/2018 11:57 AM, Takashi Iwai wrote:
-> On Sun, 05 Aug 2018 18:28:57 +0200,
->   Alex G.  wrote:
->>
->> It's only been since 4.18-rc2 that the speaker issue on the x360 [1]
->> was resolved. I didn't even know I had four speakers until seeing that
->> bug report. My HP Spectre x360 (13-ae0xx) has the same issue as the
->> original x360 with Bang speakers.
->>
->> The subsystem PCI ID is different [103c:83b9]. Of the two fixes
->> developed in [1], only the mute led fix works when the PCI id is added
->> to patch-realtek. If I try to add the full ALC295_FIXUP_HP_X360 fix,
->> there's no audio coming out at all.
->>
->> One thing I tried was to boot W10 virtual machine and redirect the
->> audio PCI device to the VM:
->> 0:1f.3 Audio device: Intel Corporation Sunrise Point-LP HD Audio (rev 21)
->> It all worked in the VM, but as soon as I shut it down and tried to
->> play audio from linux, the top speakers still didn't work. The
->> difference being that PAVUcontrol could see a "4.0 output"
->> configuration. The same issue: audio sent to the bottom speakers was
->> heard, but audio sent to the top speakers was not.
->>
->> Since I'm likely going to have to change _everything_ anyway, here's
->> what I'm trying to achieve:
->>
->>
->> 1) Make the top speakers great again. Whether they produce the same
->> sound as the bottom speakers, or have their own audio channel, I don't
->> care that much.
+Hi Petr,
+
+On Wednesday, August 08, 2018 04:24 AM, Petr Cvek wrote:
+> I was trying to update my system (PXA Magician) to 4.18-next and i've
+> ran into few problems with sound.
+
+Ah, so you have a Magician platform, that's very good!
+
+> My setup has only a few changes from
+> vanilla (change to using devm_snd_soc_register_card+devm_gpio_request).
+
+Care to share these changes, or ideally rebase them on top of 4.18-next 
+for mainline inclusion? Also, I'm curious what mainline version you used 
+to be based on that worked for you.
+
+> I've started digging around:
+
+Thanks for that. Are you also willing to send patches to fix things once 
+they work for you?
+
+> 1) unimportant goto
 > 
-> Well, "again" -- you have never got it working on Linux, right?
-
-"Again" in the sense that HP f'd it up again, the same way they did with 
-the original x360. And I say f'd instead of messed up, because even in 
-windows, two outputs show up, but only one of them produces any sound 
-(out of all four speakers).
-
-> The top speaker thing is likely the missing initialization of I2S amp,
-> EQ or DRC, which seem to be done via vendor-specific COEF verbs.
-
-I2S amp? I was under the impression the codec has a DAC for that. This 
-isn't really making much sense.
-
-> The Windows VM work just because these initializations are done in
-> Windows side.  You'd need to get these init verbs, but it's a tough
-> issue.  The best would be to get the proper data from the vendor.
-> Unfortunately HP seems have zero interest in supporting the device on
-> Linux at all.  Luckily we've got the data kindly from Realtek at the
-> previous time for one x360 model after Tom's great effort.
-
-If the VM configures the magic to a working state, shouldn't it stay 
-working after the VM is killed and linux takes over? I don't see 
-anything to to de-init the work the windows driver has done.
-
-> Hopefully Kailang (Cc'ed here) may ask his colleagues and get some
-> info...
+> Commit 7afd1b0b2ef9a812095 ("ASoC: pxa: move some functions to
+> pxa2xx-lib") is this construct necessary?
 > 
+> 	if (pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream) {
+> 		ret = pxa2xx_pcm_preallocate_dma_buffer(pcm,
+> 			SNDRV_PCM_STREAM_CAPTURE);
+> 		if (ret)
+> 			goto out;
+> 	}
+>    out:
+> 	return ret;
 > 
->> 2) Be able to use the speakers when something is plugged in the
->> headphone jack. Right now it's stupid. I try to plug in a microphone
->> (with the proper TRRS jack), and the speakers die. I haven't seen this
->> before. I was playing with HDA-Analyzer and was able to get speaker
->> sounds with a dummy plugged in the jack, so I know it's possible. I
->> don't remember how I did it, and it only worked once.
+> After calling pxa2xx_pcm_preallocate_dma_buffer() the code will jump to
+> out anyway.
+
+True. That's a cosmetic cleanup which can go in for 4.19. Would you want 
+to send a patch after the merge window?
+
+> 2) wrong units (sample rate vs osc rate)
 > 
-> The TRRS handling is again very much vendor-specific, and most likely
-> one of the existing methods may fit.  Check the headset-related
-> helpers and callbacks in patch_realtek.c.
-
-Ah. I was hoping it might be as simple as figuring out how to drive the 
-EAPD lines. I did have this somewhat working messing around with 
-HDA-analyzer, but... and here's the rub... I haven't found a consistent 
-way to do it.
-
-Alex
-
-> Takashi
+> Commit 05739375f1c0a1048 ("ASoC: pxa-ssp: remove .set_pll() and
+> .set_clkdiv() callbacks"). The function pxa_ssp_hw_params() get's called
+> with sample rate so:
 > 
->> 3) (optional) see if there's a way to use the jack as a line in or
->> stereo mic in.
->>
->> I'm not sure where to start.
->>
->> Alex
->>
->> [1] https://bugzilla.kernel.org/show_bug.cgi?id=189331
->>
+> 	/* The values in the table are for 16 bits */
+> 	if (width == 32)
+> 		acds--;
+> 
+> 	ret = pxa_ssp_set_pll(priv, bclk);
+> 	if (ret < 0)
+> 		return ret;
+> 
+> 	ssacd = pxa_ssp_read_reg(ssp, SSACD);
+> 	ssacd &= ~(SSACD_ACDS(7) | SSACD_SCDB_1X);
+> 
+> pxa_ssp_set_pll() will try to set something like 8000, 44100, ... and
+> not the speed of an oscilator. The line should be probably:
+> 
+> 	ret = pxa_ssp_set_pll(priv, m->pll);
+> 
+> and there is a previous call to pxa_ssp_set_pll():
+
+Ah, yes. Does changing that fix it for you?
+
+The changes in that machine driver where done blindly because I don't 
+have Magician hardware, and I really don't like doing things that way.
+
+> 3) setup fails
+> 
+> Recent changes in ASoC PXA DMA are causing a fail of a condition in
+> pxa_ssp_hw_params():
+> 
+> 	if ((sscr0 & SSCR0_MOD) && !ttsa) {
+
+What are the values of sscr0 and ttsa in your case? Can you cross-check 
+that with a kernel that doesn't have my recent changes?
+
+> 		dev_err(&ssp->pdev->dev, "No TDM timeslot configured\n");
+> 		return -EINVAL;
+> 	}
+> 
+> It seems the SSCR0_MOD flag is set in the fall through switch statement
+> in pxa_ssp_configure_dai_fmt():
+> 
+> 	case SND_SOC_DAIFMT_DSP_A:
+> 		sspsp |= SSPSP_FSRT;
+> 		/* fall through */
+> 	case SND_SOC_DAIFMT_DSP_B:
+> 		sscr0 |= SSCR0_MOD | SSCR0_PSP;
+> 		sscr1 |= SSCR1_TRAIL | SSCR1_RWOT;
+> 		break;
+> 
+> the switch statement is an old code and it worked in the past versions.
+
+Yes, it was merely moved to some location that is called earlier. This 
+was fixing a regression caused by a8bd0ee558714 ("ASoC: raumfeld: Use 
+static DAI format setup"), so supposedly, all PXA sound was broken since 
+v4.0.
+
+> 4) names are not unique
+> 
+> The initialization of magician_dai structure wants to have (at least in
+> the past versions) for the .name item:
+> 
+> 	static struct snd_soc_dai_link magician_dai[] = {
+> 	{
+> 		.name = "uda1380",
+> 		.stream_name = "UDA1380 Playback",
+> 		.cpu_dai_name = "pxa-ssp-dai.0",
+> 		...
+> 	{
+> 		.name = "uda1380",
+> 		.stream_name = "UDA1380 Capture",
+> 		.cpu_dai_name = "pxa2xx-i2s",
+> 
+> my personal branch has them named as "uda1380_playback" and
+> "uda1380_capture".
+
+Care to send a patch for that as well, please?
+
+> 5) Unbalanced references
+> 
+> When trying to play a sound (with quick-and-dirty workarounds for
+> problems above):
+> 
+>     # cat /dev/urandom | aplay -
+> 
+> the system will crash when terminating aplay (stopping playback). The
+> backtrace:
+
+So you did hear a sound?
+
+[...]
+
+> I've only managed to discover there are two calls of
+> pxa2xx_soc_pcm_new() (where DMA buffer is allocated) for both dai links:
+> 
+> 	magician-audio magician-audio: uda1380-hifi-playback <-> pxa-ssp-dai.0
+> mapping ok
+> 	...
+> 	magician-audio magician-audio: uda1380-hifi-capture <-> pxa2xx-i2s
+> mapping ok
+> 
+> but I don't know if this information is relevant.
+
+That seems fine. The question is why there are are unbalanced calls to 
+snd_dmaengine_pcm_close_release_chan(). Could you dig a bit further 
+maybe and add some printk()?
+
+Thanks for helping fix these regressions!
+
+
+Daniel
