@@ -1,37 +1,145 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [alsa-devel] [PATCH] ASoC: adau1761: Mark expected switch
- fall-though
-Date: Thu, 9 Aug 2018 13:19:11 +0200
-Message-ID: <4934d9ae-96df-288b-2a7c-76aaa89246fe@metafoo.de>
-References: <20180808192213.GA27872@embeddedor.com>
- <20180809093100.GC6132@sirena.org.uk>
+From: Chakravarthi Pradeep <doubleq7@gmail.com>
+Subject: Re: Fwd:  ALSA queries
+Date: Thu, 9 Aug 2018 16:49:53 +0530
+Message-ID: <CALW20Z0wy_=J0sXx3erh7hg8iRGgMaJ+PfoDDFdMDSsS1EY+Gg@mail.gmail.com>
+References: <CALW20Z3Bhp6Bhx8qWWcfcF9wcOSGV_V+KC5ct+ovFQ=o2HeoAw@mail.gmail.com>
+ <s5h8t5nx5qs.wl-tiwai@suse.de>
+ <CALW20Z1YFqnbUE51Wbm38VaNL2Yr4osyMeGJmHrabfQvAY_1VQ@mail.gmail.com>
+ <CALW20Z27m4gjzJzL-Jc11SzE70u05oV1uoKdj5T2Gk+ABVD1ig@mail.gmail.com>
+ <s5htvo8smce.wl-tiwai@suse.de>
+ <CALW20Z08N9pOG6W_FCBSz8DO92ZNTHnRYSY=ausL1tgij9-tOQ@mail.gmail.com>
+ <s5hbmafhd3t.wl-tiwai@suse.de>
+ <CALW20Z3PrdQwB2orP3aXx9TqEeh_AKizEC+oPQ8B66FbBSOYEg@mail.gmail.com>
+ <s5hk1p37h8t.wl-tiwai@suse.de>
+ <CALW20Z2_vxVxjT_bCf2fZDPuuAt1hZyOVF+jusm+9YCLc=ppfQ@mail.gmail.com>
+ <s5h36vr7bsk.wl-tiwai@suse.de>
+ <CALW20Z2OzysCHqtpbJCnDvQ3hho5kk=fwJF_q-fRVGMVDTGOTQ@mail.gmail.com>
+ <s5hzhxy4c4y.wl-tiwai@suse.de>
+ <CALW20Z30cz6HUKCqStsyvtfp=2UYKm8SBVvwvsuOA+zrgGJWjA@mail.gmail.com>
+ <s5hwot24brq.wl-tiwai@suse.de>
+ <CALW20Z04fL4xeFwwHBVRKhJVndL66muLXdCDhoEmAW+YGHh+tA@mail.gmail.com>
+ <s5htvo64bfi.wl-tiwai@suse.de>
+ <CALW20Z2Gdk3aT1-7X6qU1r7Fq01fnkBY1eo97EawCdduQB2UEw@mail.gmail.com>
+ <s5hmuty48sn.wl-tiwai@suse.de>
+ <CALW20Z0x0a3A9S4DMq314jgSDa5LODJDiJi9HpcJ3WQv2pWz2A@mail.gmail.com>
+ <s5hh8k647i5.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180809093100.GC6132@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f178.google.com (mail-qt0-f178.google.com
+ [209.85.216.178])
+ by alsa0.perex.cz (Postfix) with ESMTP id 007282677DA
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2018 13:20:09 +0200 (CEST)
+Received: by mail-qt0-f178.google.com with SMTP id y5-v6so5985058qti.12
+ for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2018 04:20:09 -0700 (PDT)
+In-Reply-To: <s5hh8k647i5.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/09/2018 11:31 AM, Mark Brown wrote:
-> On Wed, Aug 08, 2018 at 02:22:13PM -0500, Gustavo A. R. Silva wrote:
-> 
->> @@ -518,7 +518,8 @@ static int adau1761_setup_digmic_jackdetect(struct snd_soc_component *component)
->>  			ARRAY_SIZE(adau1761_jack_detect_controls));
->>  		if (ret)
->>  			return ret;
->> -	case ADAU1761_DIGMIC_JACKDET_PIN_MODE_NONE: /* fallthrough */
->> +		/* fall through */
->> +	case ADAU1761_DIGMIC_JACKDET_PIN_MODE_NONE:
->>  		ret = snd_soc_dapm_add_routes(dapm, adau1761_no_dmic_routes,
->>  			ARRAY_SIZE(adau1761_no_dmic_routes));
->>  		if (ret)
-> 
-> Again, are you *sure* here?
+Hi Takashi,
 
-Well, it says so in the comment next to it :)
+How to enable log from ALSA lib core or ALSA core , so that I will
+come to know why trigger stop call back is getting called back by
+itself.
 
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+ring bufffer size is 57600 and minimum bytes device generates per
+period is 3200(bytes). I have read one frame is 4 bytes from below
+link.
+https://www.alsa-project.org/main/index.php/FramesPeriods
+So is it correct to give below values to snd_pcm_hardware
+.period_bytes_min = 3200 /* per interrupt device provides minimum 3200
+bytes of data*/
+.periods_min = 72 /* 3200/4 /* 4 is because of (2 (channel )*  (16 bits/2)) */
+
+Regards,
+Chakravarthi
+On Tue, Aug 7, 2018 at 7:13 PM Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Tue, 07 Aug 2018 15:36:22 +0200,
+> Chakravarthi Pradeep wrote:
+> >
+> > >In the case above it's in frames.  But it can be defined in bytes
+> > >depending on the hardware spec.  Some hardware defines in the time
+> > >unit (like msec), too.
+> >
+> > Can you please tell me how to define in bytes ?
+>
+> Read the source before asking like this.  If not found, read the
+> source again.  If still it's not fulfilled, ask more specific
+> questions.
+>
+> The driver doesn't define it.  Rather the driver lets ALSA PCM core
+> choose the parameters given from user-space.  But some parameters
+> might not fit with the requirement of your hardware.  For satisfying
+> it, the driver may give hw constraints to PCM core beforehand,
+> typically set in the open callback.
+>
+> > >Now you know it.  And remember that PA is often die-hard.
+> > So it means that I can not do rmmod until pulseaudio is removed , is
+> > it correct ?
+>
+> Yes.  You cannot rmmod during any program is accessing to the sound
+> device, not only PA.
+>
+>
+> Takashi
+>
+> > Regards,
+> > Chakravarthi
+> > On Tue, Aug 7, 2018 at 6:45 PM Takashi Iwai <tiwai@suse.de> wrote:
+> > >
+> > > On Tue, 07 Aug 2018 15:12:08 +0200,
+> > > Chakravarthi Pradeep wrote:
+> > > >
+> > > > Dear Takashi,
+> > > >
+> > > > Thanks for your reply.
+> > > >
+> > > > > The "period" in ALSA PCM definition represents the interval time (or
+> > > > > frames) of the periodical interrupts on the ring buffer.  If the irq
+> > > > > is issued for each 256 frames while the ring buffer size is 1024
+> > > > > frames, periods = 1024/256 = 4.  The periods_min defines the minimal
+> > > > > number of periods the hardware may accept.
+> > > >
+> > > > Is it  256 frames or  256 bytes ?
+> > >
+> > > In the case above it's in frames.  But it can be defined in bytes
+> > > depending on the hardware spec.  Some hardware defines in the time
+> > > unit (like msec), too.
+> > >
+> > > > fuser -v /dev/snd/* output is
+> > > >                                          USER
+> > > >   PID   ACCESS    COMMAND
+> > > > /dev/snd/controlC0         Dell                                   1815
+> > > > F.....           pulseaudio
+> > >
+> > > Now you know it.  And remember that PA is often die-hard.
+> > >
+> > >
+> > > Takashi
+> >
+> >
+> >
+> > --
+> > Thanks and Regards
+> > Chakravarthi Pradeep.K
+> > Ph: 91 9980434900
+> >
+
+
+
+-- 
+Thanks and Regards
+Chakravarthi Pradeep.K
+Ph: 91 9980434900
