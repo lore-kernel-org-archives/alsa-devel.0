@@ -1,8 +1,7 @@
 From: Joseph Spencer <joespenceris@gmail.com>
-Subject: Re: : Possible issue with udev rules: Help with TASCAM
-	US-122
-Date: Thu, 9 Aug 2018 11:49:31 -0700
-Message-ID: <CAMvaF70xN-GjYqO4PzwYwTTaTye7RLJ7yA5VCLRET_j+gEtzBg@mail.gmail.com>
+Subject: Re: : alsa-info.sh output: Help with TASCAM US-122
+Date: Thu, 9 Aug 2018 14:26:13 -0700
+Message-ID: <CAMvaF70MfRezPx-F7otNQc5vAZMDkgSfM1F7CCNyzhMRyHv8Hw@mail.gmail.com>
 References: <CAMvaF73QrtaSAUNFJW7Dy-=EdaaS=F+H-mECdbfvbaC8ZTqzvA@mail.gmail.com>
  <s5h4lg8u4hl.wl-tiwai@suse.de>
  <CAMvaF70_2Y5C-1J2e3ucj-zStU2NG2ehZJ02=Ztt7oicjOAEag@mail.gmail.com>
@@ -17,10 +16,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com
  [209.85.167.52])
- by alsa0.perex.cz (Postfix) with ESMTP id 668A6267920
- for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2018 20:49:43 +0200 (CEST)
-Received: by mail-lf1-f52.google.com with SMTP id a4-v6so4846927lff.5
- for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2018 11:49:43 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id 622FF2677CD
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2018 23:26:26 +0200 (CEST)
+Received: by mail-lf1-f52.google.com with SMTP id a4-v6so5143289lff.5
+ for <alsa-devel@alsa-project.org>; Thu, 09 Aug 2018 14:26:26 -0700 (PDT)
 In-Reply-To: <CAMvaF72WEnXRm-ovR3TbH89jywhcbNE32=9O73w6hG-iWryX8g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -35,43 +34,7 @@ To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-I commented out the rule for the fpga loader, and now I'm seeing this, is
-this expected?
-
-Aug 09 11:47:59 localhost.localdomain kernel: usb 3-1: new full-speed USB
-device number 22 using xhci_hcd
-Aug 09 11:47:59 localhost.localdomain kernel: usb 3-1: New USB device
-found, idVendor=1604, idProduct=8006, bcdDevice= 1.00
-Aug 09 11:47:59 localhost.localdomain kernel: usb 3-1: New USB device
-strings: Mfr=0, Product=0, SerialNumber=0
-Aug 09 11:47:59 localhost.localdomain /lib/udev/tascam_fw[10800]: load
-/usr/share/alsa/firmware/usx2yloader/us122fw.ihx for 1604/8006/100 to
-/dev/bus/usb/003/022
-Aug 09 11:47:59 localhost.localdomain upowerd[3378]: unhandled action
-'bind' on /sys/devices/pci0000:00/0000:00:14.0/usb3/3-1
-Aug 09 11:47:59 localhost.localdomain kernel: usb 3-1: USB disconnect,
-device number 22
-Aug 09 11:47:59 localhost.localdomain upowerd[3378]: unhandled action
-'unbind' on /sys/devices/pci0000:00/0000:00:14.0/usb3/3-1
-Aug 09 11:48:01 localhost.localdomain kernel: usb 3-1: new full-speed USB
-device number 23 using xhci_hcd
-Aug 09 11:48:01 localhost.localdomain kernel: usb 3-1: New USB device
-found, idVendor=1604, idProduct=8007, bcdDevice= 0.01
-Aug 09 11:48:01 localhost.localdomain kernel: usb 3-1: New USB device
-strings: Mfr=0, Product=0, SerialNumber=0
-Aug 09 11:48:01 localhost.localdomain upowerd[3378]: unhandled action
-'bind' on /sys/devices/pci0000:00/0000:00:14.0/usb3/3-1/3-1:1.0
-Aug 09 11:48:01 localhost.localdomain upowerd[3378]: unhandled action
-'bind' on /sys/devices/pci0000:00/0000:00:14.0/usb3/3-1
-Aug 09 11:48:01 localhost.localdomain pulseaudio[2191]: E: [pulseaudio]
-module-alsa-card.c: Failed to find a working profile.
-Aug 09 11:48:01 localhost.localdomain pulseaudio[2191]: E: [pulseaudio]
-module.c: Failed to load module "module-alsa-card" (argument:
-"device_id="1" name="usb-1604_8007-00"
-card_name="alsa_card.usb-1604_8007-00" namereg_fail=false tsched=yes
-fixed_latency_range=no ignore_dB=no deferred_volume=yes use_ucm=yes
-card_properties="module-udev-detect.discovered=1""): initialization failed.
-
+http://www.alsa-project.org/db/?f=b200856483f8e72c39989330fb82a367262a538b
 
 Joe Spencer
 602.777.2307
