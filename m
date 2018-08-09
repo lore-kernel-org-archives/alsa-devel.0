@@ -1,14 +1,22 @@
-From: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>
-Subject: [PATCH - hwmixvolume 9/9] hwmixvolume: mention the new
-	dependencies in the README
-Date: Wed,  8 Aug 2018 17:56:37 +0200
-Message-ID: <20180808155637.5592-10-linkmauve@jabberfr.org>
-References: <20180808155637.5592-1-linkmauve@jabberfr.org>
+From: Susan Cragin <susancragin@earthlink.net>
+Subject: alsa bug - Martel Electronics USB soundcard recording
+ sampling rate not automatically detected
+Date: Thu, 9 Aug 2018 11:11:35 -0400 (GMT-04:00)
+Message-ID: <2109591296.3392.1533827496340@wamui-koala.atl.sa.earthlink.net>
+Reply-To: Susan Cragin <susancragin@earthlink.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180808155637.5592-1-linkmauve@jabberfr.org>
+Received: from elasmtp-kukur.atl.sa.earthlink.net
+ (elasmtp-kukur.atl.sa.earthlink.net [209.86.89.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id B9B8C26791D
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2018 17:11:40 +0200 (CEST)
+Received: from [209.86.224.158] (helo=wamui-koala.atl.sa.earthlink.net)
+ by elasmtp-kukur.atl.sa.earthlink.net with esmtpsa
+ (TLSv1.2:ECDHE-RSA-AES128-SHA256:128) (Exim 4)
+ (envelope-from <susancragin@earthlink.net>) id 1fnmbC-0006Jm-3F
+ for alsa-devel@alsa-project.org; Thu, 09 Aug 2018 11:11:38 -0400
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,22 +26,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>, Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>, alsa-devel@alsa-project.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-U2lnbmVkLW9mZi1ieTogRW1tYW51ZWwgR2lsIFBleXJvdCA8bGlua21hdXZlQGxpbmttYXV2ZS5m
-cj4KCmRpZmYgLS1naXQgYS9od21peHZvbHVtZS9SRUFETUUgYi9od21peHZvbHVtZS9SRUFETUUK
-aW5kZXggOTg4NGVjMi4uZGIxYjg3NCAxMDA2NDQKLS0tIGEvaHdtaXh2b2x1bWUvUkVBRE1FCisr
-KyBiL2h3bWl4dm9sdW1lL1JFQURNRQpAQCAtOCw3ICs4LDggQEAgdGhhdCB1c2UgaGFyZHdhcmUg
-bWl4aW5nLCBpLmUuLCB0aG9zZSBiYXNlZCBvbiB0aGUgZm9sbG93aW5nIGNoaXBzOgogKiBZYW1h
-aGEgRFMtMSAoWU1GLTcyNC83NDAvNzQ0Lzc1NCkgKGRyaXZlcjogc25kLXltZnBjaSkKIAogCi1U
-aGlzIHRvb2wgcmVxdWlyZXMgUHl0aG9uLCBweWd0aywgYW5kIGFsc2EtcHl0b24gMS4wLjIyIG9y
-IGxhdGVyLgorVGhpcyB0b29sIHJlcXVpcmVzIFB5dGhvbiwgUHlHT2JqZWN0LCBHVEsrwqAzLjAg
-b3IgbGF0ZXIsIGFuZCBhbHNhLXB5dG9uIDEuMC4yMgorb3IgbGF0ZXIuCiAKIEl0IGlzIHJlY29t
-bWVuZGVkIHRvIHVzZSBhdCBsZWFzdCBMaW51eCBrZXJuZWwgMi42LjMyIG9yIGFsc2EtZHJpdmVy
-IDEuMC4yMjsKIG90aGVyd2lzZSwgdGhlIG5hbWUgb2YgdGhlIHByb2dyYW0gdGhhdCBpcyB1c2lu
-ZyBhIHN0cmVhbSBjYW5ub3QgYmUgc2hvd24uCi0tIAoyLjE4LjAKCl9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFs
-c2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3Jn
-L21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+I run Dragon NaturallySpeaking through wine. 
+The program works great with my old Logitech USB soundcard.
+
+But I just bought a new state-of-the-art dragon-optimized USB soundcard and stenomask, and the correct sampling rate cannot be automatically selected. 
+
+Under proc/asound the device is described as EarMicrophone
+
+/tmp/alsa-info.txt.RjFRV2vThr
