@@ -1,15 +1,63 @@
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: da7219: Add delays to capture path to
+	remove DC offset noise" to the asoc tree
+Date: Thu,  9 Aug 2018 11:15:27 +0100 (BST)
+Message-ID: <20180809101527.6168A1124347@debutante.sirena.org.uk>
+References: <20180809094850.F1B623FB9D@swsrvapps-01.diasemi.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id CF0152677DA
+ for <alsa-devel@alsa-project.org>; Thu,  9 Aug 2018 12:15:29 +0200 (CEST)
+In-Reply-To: <20180809094850.F1B623FB9D@swsrvapps-01.diasemi.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Cc: alsa-devel@alsa-project.org, Support Opensource <support.opensource@diasemi.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+List-Id: alsa-devel@alsa-project.org
+
+The patch
+
+   ASoC: da7219: Add delays to capture path to remove DC offset noise
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 17c81d2f5a59929c73a2a19fd49fe0b068fda76f Mon Sep 17 00:00:00 2001
 From: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Date: Thu, 9 Aug 2018 10:48:50 +0100
 Subject: [PATCH] ASoC: da7219: Add delays to capture path to remove DC offset
  noise
-Date: Thu, 9 Aug 2018 10:48:50 +0100
-Message-ID: <20180809094850.F1B623FB9D@swsrvapps-01.diasemi.com>
-Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Jaroslav Kysela <perex@perex.cz>
-Cc: Support Opensource <support.opensource@diasemi.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
-List-Id: alsa-devel@alsa-project.org
 
 On some platforms it has been noted that a pop noise can be
 witnessed when capturing audio, mainly for first time after a
@@ -23,14 +71,15 @@ Mic Bias voltage, and is only applied the first time after a
 headset jack is inserted.
 
 Signed-off-by: Adam Thomson <Adam.Thomson.Opensource@diasemi.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/da7219-aad.c |  5 +++++
- sound/soc/codecs/da7219.c     | 44 +++++++++++++++++++++++++++++++++++++------
- sound/soc/codecs/da7219.h     |  8 ++++++--
+ sound/soc/codecs/da7219-aad.c |  5 ++++
+ sound/soc/codecs/da7219.c     | 44 ++++++++++++++++++++++++++++++-----
+ sound/soc/codecs/da7219.h     |  8 +++++--
  3 files changed, 49 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/da7219-aad.c b/sound/soc/codecs/da7219-aad.c
-index a49ab75..2c7d508 100644
+index a49ab751a036..2c7d5088e6f2 100644
 --- a/sound/soc/codecs/da7219-aad.c
 +++ b/sound/soc/codecs/da7219-aad.c
 @@ -59,6 +59,7 @@ static void da7219_aad_btn_det_work(struct work_struct *work)
@@ -60,10 +109,10 @@ index a49ab75..2c7d508 100644
  			snd_soc_dapm_disable_pin(dapm, "Mic Bias");
  			snd_soc_dapm_sync(dapm);
 diff --git a/sound/soc/codecs/da7219.c b/sound/soc/codecs/da7219.c
-index c0144f2..e46e9f4 100644
+index c0144f2f8174..e46e9f4bc994 100644
 --- a/sound/soc/codecs/da7219.c
 +++ b/sound/soc/codecs/da7219.c
-@@ -768,6 +768,30 @@ static int da7219_tonegen_freq_put(struct snd_kcontrol *kcontrol,
+@@ -768,6 +768,30 @@ static const struct snd_kcontrol_new da7219_st_out_filtr_mix_controls[] = {
   * DAPM Events
   */
  
@@ -94,7 +143,7 @@ index c0144f2..e46e9f4 100644
  static int da7219_dai_event(struct snd_soc_dapm_widget *w,
  			    struct snd_kcontrol *kcontrol, int event)
  {
-@@ -937,12 +961,12 @@ static int da7219_gain_ramp_event(struct snd_soc_dapm_widget *w,
+@@ -937,12 +961,12 @@ static const struct snd_soc_dapm_widget da7219_dapm_widgets[] = {
  	SND_SOC_DAPM_INPUT("MIC"),
  
  	/* Input PGAs */
@@ -129,7 +178,7 @@ index c0144f2..e46e9f4 100644
  		switch (pdata->mic_amp_in_sel) {
  		case DA7219_MIC_AMP_IN_SEL_DIFF:
 diff --git a/sound/soc/codecs/da7219.h b/sound/soc/codecs/da7219.h
-index 1b00023..3a00686 100644
+index 1b00023e33cd..3a006862f0e7 100644
 --- a/sound/soc/codecs/da7219.h
 +++ b/sound/soc/codecs/da7219.h
 @@ -781,8 +781,10 @@
@@ -155,4 +204,4 @@ index 1b00023..3a00686 100644
  };
  
 -- 
-1.9.1
+2.18.0
