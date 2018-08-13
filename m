@@ -1,15 +1,17 @@
 From: Robert Rosengren <robert.rosengren@axis.com>
-Subject: [PATCH v2 1/2] ASoC: adau17x1: Unused exported
-	functions changed to internal
-Date: Mon, 13 Aug 2018 09:33:58 +0200
-Message-ID: <20180813073359.3374-1-robertr@axis.com>
+Subject: [PATCH v2 2/2] ASoC: adau17x1: Implemented safeload
+	support
+Date: Mon, 13 Aug 2018 09:33:59 +0200
+Message-ID: <20180813073359.3374-2-robertr@axis.com>
+References: <20180813073359.3374-1-robertr@axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 465F126763C
- for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2018 09:34:07 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 1360526763C
+ for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2018 09:34:11 +0200 (CEST)
+In-Reply-To: <20180813073359.3374-1-robertr@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,81 +22,121 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Robert Rosengren <robertr@axis.com>
+Cc: alsa-devel@alsa-project.org, Robert Rosengren <robertr@axis.com>, Danny Smith <dannys@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
-adau17x1_setup_firmware and adau17x1_has_dsp is only used internally, so
-making them static instead of exported.
+From: Danny Smith <dannys@axis.com>
 
-Change-Id: I4882513ab457966b0371ac2c1024550ca6edbe0c
+Safeload support has been implemented which is used
+when updating for instance filter parameters using
+alsa controls. Without safeload support audio can
+become distorted during update.
+
+Signed-off-by: Danny Smith <dannys@axis.com>
 Signed-off-by: Robert Rosengren <robertr@axis.com>
 ---
- sound/soc/codecs/adau17x1.c | 9 +++++----
- sound/soc/codecs/adau17x1.h | 4 ----
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ sound/soc/codecs/adau17x1.c | 68 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 66 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 57169b8ff14e..2f2afb4c0c88 100644
+index 2f2afb4c0c88..6d0b2261c959 100644
 --- a/sound/soc/codecs/adau17x1.c
 +++ b/sound/soc/codecs/adau17x1.c
-@@ -60,6 +60,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
- 	SOC_ENUM("Mic Bias Mode", adau17x1_mic_bias_mode_enum),
- };
+@@ -26,6 +26,10 @@
+ #include "adau17x1.h"
+ #include "adau-utils.h"
  
-+static int adau17x1_setup_firmware(struct snd_soc_component *component,
-+	unsigned int rate);
++#define ADAU17X1_SAFELOAD_TARGET_ADDRESS 0x0006
++#define ADAU17X1_SAFELOAD_TRIGGER 0x0007
++#define ADAU17X1_SAFELOAD_DATA(i) (0x0001 + (i))
 +
- static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-@@ -313,7 +316,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
- 	{ "Capture", NULL, "Right Decimator" },
+ static const char * const adau17x1_capture_mixer_boost_text[] = {
+ 	"Normal operation", "Boost Level 1", "Boost Level 2", "Boost Level 3",
  };
- 
--bool adau17x1_has_dsp(struct adau *adau)
-+static bool adau17x1_has_dsp(struct adau *adau)
- {
- 	switch (adau->type) {
- 	case ADAU1761:
-@@ -324,7 +327,6 @@ bool adau17x1_has_dsp(struct adau *adau)
- 		return false;
+@@ -328,6 +332,17 @@ static bool adau17x1_has_dsp(struct adau *adau)
  	}
  }
--EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
  
++static bool adau17x1_has_safeload(struct adau *adau)
++{
++	switch (adau->type) {
++	case ADAU1761:
++	case ADAU1781:
++		return true;
++	default:
++		return false;
++	}
++}
++
  static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
  	int source, unsigned int freq_in, unsigned int freq_out)
-@@ -836,7 +838,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
- }
- EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
- 
--int adau17x1_setup_firmware(struct snd_soc_component *component,
-+static int adau17x1_setup_firmware(struct snd_soc_component *component,
- 	unsigned int rate)
  {
- 	int ret;
-@@ -880,7 +882,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
- 
- 	return ret;
+@@ -958,6 +973,50 @@ int adau17x1_resume(struct snd_soc_component *component)
  }
--EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
+ EXPORT_SYMBOL_GPL(adau17x1_resume);
  
- int adau17x1_add_widgets(struct snd_soc_component *component)
- {
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index e6fe87beec07..98a3b6f5bc96 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -68,10 +68,6 @@ int adau17x1_resume(struct snd_soc_component *component);
++static int adau17x1_safeload(struct sigmadsp *sigmadsp, unsigned int addr,
++	const uint8_t bytes[], size_t len)
++{
++	uint8_t buf[4];
++	unsigned int i;
++	int ret;
++
++	/* target address is offset by 1 */
++	unsigned int addr_offset = addr - 1;
++
++	/* write safeload addresses */
++	for (i = 0; i < len / 4; i++) {
++		memcpy(buf, bytes + i * 4, 4);
++		ret = regmap_raw_write(sigmadsp->control_data,
++			ADAU17X1_SAFELOAD_DATA(i), buf, 4);
++		if (ret < 0)
++			return ret;
++	}
++
++	/* write target address */
++	buf[0] = (addr_offset >> 24) & 0xff;
++	buf[1] = (addr_offset >> 16) & 0xff;
++	buf[2] = (addr_offset >> 8) & 0xff;
++	buf[3] = (addr_offset) & 0xff;
++	ret = regmap_raw_write(sigmadsp->control_data,
++		ADAU17X1_SAFELOAD_TARGET_ADDRESS, buf, 4);
++	if (ret < 0)
++		return ret;
++
++	/* write nbr of words to trigger address */
++	buf[0] = 0x00;
++	buf[1] = 0x00;
++	buf[2] = 0x00;
++	buf[3] = i & 0xff;
++	ret = regmap_raw_write(sigmadsp->control_data,
++		ADAU17X1_SAFELOAD_TRIGGER, buf, 4);
++
++	return ret;
++}
++
++static const struct sigmadsp_ops adau17x1_sigmadsp_ops = {
++	.safeload = adau17x1_safeload,
++};
++
+ int adau17x1_probe(struct device *dev, struct regmap *regmap,
+ 	enum adau17x1_type type, void (*switch_mode)(struct device *dev),
+ 	const char *firmware_name)
+@@ -1003,8 +1062,13 @@ int adau17x1_probe(struct device *dev, struct regmap *regmap,
+ 	dev_set_drvdata(dev, adau);
  
- extern const struct snd_soc_dai_ops adau17x1_dai_ops;
- 
--int adau17x1_setup_firmware(struct snd_soc_component *component,
--	unsigned int rate);
--bool adau17x1_has_dsp(struct adau *adau);
--
- #define ADAU17X1_CLOCK_CONTROL			0x4000
- #define ADAU17X1_PLL_CONTROL			0x4002
- #define ADAU17X1_REC_POWER_MGMT			0x4009
+ 	if (firmware_name) {
+-		adau->sigmadsp = devm_sigmadsp_init_regmap(dev, regmap, NULL,
+-			firmware_name);
++		if (adau17x1_has_safeload(adau)) {
++			adau->sigmadsp = devm_sigmadsp_init_regmap(dev, regmap,
++				&adau17x1_sigmadsp_ops, firmware_name);
++		} else {
++			adau->sigmadsp = devm_sigmadsp_init_regmap(dev, regmap,
++				NULL, firmware_name);
++		}
+ 		if (IS_ERR(adau->sigmadsp)) {
+ 			dev_warn(dev, "Could not find firmware file: %ld\n",
+ 				PTR_ERR(adau->sigmadsp));
 -- 
 2.11.0
