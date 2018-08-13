@@ -1,87 +1,83 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for
- 2 more devices
-Date: Mon, 13 Aug 2018 10:52:30 -0500
-Message-ID: <698987a0-8f09-d7a7-7e03-d28c0d56db87@linux.intel.com>
-References: <20180812114206.10826-1-hdegoede@redhat.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [RFC PATCH] ASoC: core: Optimise suspend/resume of DAPM widgets
+Date: Mon, 13 Aug 2018 19:19:16 +0100
+Message-ID: <7ba86328-5bb6-5280-df6f-9937173fb2ab@nvidia.com>
+References: <1533301025-19980-1-git-send-email-jonathanh@nvidia.com>
+ <20180803163605.GD6591@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="windows-1252"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id F3EDD2677AE
- for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2018 17:52:53 +0200 (CEST)
-In-Reply-To: <20180812114206.10826-1-hdegoede@redhat.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180803163605.GD6591@sirena.org.uk>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>, Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 8/12/18 6:42 AM, Hans de Goede wrote:
-> Add quirks to select the right input-map, jack-detect pin, etc. for:
-> 
-> Linx Linx7 tablet
-> Onda V975w tablet
-> 
-> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+On 03/08/18 17:36, Mark Brown wrote:
+> On Fri, Aug 03, 2018 at 01:57:05PM +0100, Jon Hunter wrote:
+> 
+>> For soundcards that have several DAI links and many DAPM widgets the
+>> time taken for snd_soc_suspend to execute has been observed to be
+>> several milliseconds. The time is largely spent executing
+>> dapm_power_widgets() for each for the DAI links that need to be
+>> suspended. Given that dapm_power_widgets() is called again after
+>> suspending/resuming the DAI links, one way to optimise the
+>> suspend/resume time is to avoid calling dapm_power_widgets() for
+>> each DAI link and reduces the suspend time significantly.
+> 
+> It's a bit alarming that dapm_power_widgets() is taking substantial
+> enough time to be worth worring about - it's *supposed* to be relatively
+> well optimized so it's effectively free.  It'll never be quite free, but
+> close enough.  The goal is that if nothing changes we end up testing a
+> few nodes at most before we figure out that nothing changed state and
+> stop.  Do you have any idea what it's spending its time on, we do call
+> it a lot so if there's any optimization opportunties there we can
+> probably get a lot of benefit out of them.
 
-> ---
->   sound/soc/intel/boards/bytcr_rt5640.c | 26 ++++++++++++++++++++++++++
->   1 file changed, 26 insertions(+)
+Sorry for the delay, I was out last week.
+
+I had taken some ftrace graphs but there was not one thing that really
+stood out. Looking again it seems that each call to
+async_schedule_domain() can take tens of uS and so it there are a lot of
+DAPM widgets (100+) this can take some time. I will dig into it a bit
+further.
+
+> One thing that it occurs to me might help is to start the suspend
+> process by powering down all the input and output widgets that aren't
+> ignoring suspend in one operation, that should hopefully have the effect
+> of ensuring that most of the system that's going to get powered down
+> does so on the first pass through.
+
+If the async_schedule_domain() calls are the problem, then it may not
+help as we call that for all dapms apart from the card->dapm.
+
+>> Please note that this has been observed on the Tegra210 Jetson TX1
+>> platform which is not currently supported in the mainline for audio
+>> but has been tested with out-of-tree patches to enable I2S audio.
 > 
-> diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-> index d32844f94d74..b6dc524830b2 100644
-> --- a/sound/soc/intel/boards/bytcr_rt5640.c
-> +++ b/sound/soc/intel/boards/bytcr_rt5640.c
-> @@ -575,6 +575,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->   					BYT_RT5640_MONO_SPEAKER |
->   					BYT_RT5640_MCLK_EN),
->   	},
-> +	{	/* Linx Linx7 tablet */
-> +		.matches = {
-> +			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LINX"),
-> +			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "LINX7"),
-> +		},
-> +		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-> +					BYT_RT5640_MONO_SPEAKER |
-> +					BYT_RT5640_JD_NOT_INV |
-> +					BYT_RT5640_SSP0_AIF1 |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->   	{	/* MSI S100 tablet */
->   		.matches = {
->   			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
-> @@ -602,6 +613,21 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
->   					BYT_RT5640_SSP0_AIF1 |
->   					BYT_RT5640_MCLK_EN),
->   	},
-> +	{	/* Onda v975w */
-> +		.matches = {
-> +			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-> +			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Aptio CRB"),
-> +			/* The above are too generic, also match BIOS info */
-> +			DMI_EXACT_MATCH(DMI_BIOS_VERSION, "5.6.5"),
-> +			DMI_EXACT_MATCH(DMI_BIOS_DATE, "07/25/2014"),
-> +		},
-> +		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-> +					BYT_RT5640_JD_SRC_JD2_IN4N |
-> +					BYT_RT5640_OVCD_TH_2000UA |
-> +					BYT_RT5640_OVCD_SF_0P75 |
-> +					BYT_RT5640_DIFF_MIC |
-> +					BYT_RT5640_MCLK_EN),
-> +	},
->   	{	/* Pipo W4 */
->   		.matches = {
->   			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+> If someone could get the platform booting reliably in -next that'd be
+> good but that's a separate issue...
+
+Yes I plan to work on that in the next few months.
+
+>> In the resume path, it is not clear if there could be any issues from
+>> not sync'ing the DAPM power state until after unmuting and resuming
+>> the CPU DAI drivers, because this will happen later with this change.
 > 
+> This is a definite problem, we want to have the audio path powered up
+> before we start playing audio otherwise we loose the start of the audio
+> which may be important.
+
+I was thinking I could add another call to snd_soc_dapm_sync() after
+resuming the streams to address that. However, maybe I need to dig into
+this a bit more to understand exactly why dapm_power_widgets() takes so
+long.
+
+Cheers
+Jon
+
+-- 
+nvpublic
