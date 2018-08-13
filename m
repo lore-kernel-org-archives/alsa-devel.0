@@ -1,19 +1,15 @@
-From: "Hans Hu(SH-RD)" <HansHu@zhaoxin.com>
-Subject: =?utf-8?b?562U5aSNOiAgQSBidWcgYWJvdXQgY2FjaGUgaW5j?=
- =?utf-8?q?onsistency_report?=
-Date: Mon, 13 Aug 2018 06:06:21 +0000
-Message-ID: <06ceaeb8dc6d44b2bc1eb09930c7db02@zhaoxin.com>
-References: <7724166a600340619f747586b24b1004@zhaoxin.com>
- <s5hy3de1cdl.wl-tiwai@suse.de>
+From: Robert Rosengren <robert.rosengren@axis.com>
+Subject: [PATCH v2 1/2] ASoC: adau17x1: Unused exported
+	functions changed to internal
+Date: Mon, 13 Aug 2018 09:33:58 +0200
+Message-ID: <20180813073359.3374-1-robertr@axis.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from ZXSHCAS1.zhaoxin.com (unknown [203.148.12.81])
- by alsa0.perex.cz (Postfix) with ESMTP id AD9462676AD
- for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2018 08:06:30 +0200 (CEST)
-In-Reply-To: <s5hy3de1cdl.wl-tiwai@suse.de>
-Content-Language: zh-CN
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 465F126763C
+ for <alsa-devel@alsa-project.org>; Mon, 13 Aug 2018 09:34:07 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,68 +19,82 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: 'Takashi Iwai' <tiwai@suse.de>
-Cc: "Tony W. Wang(BJ-RD)" <TonyWWang@zhaoxin.com>, "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "Tim
- Guo(BJ-RD)" <TimGuo@zhaoxin.com>, "Annie Liu(BJ-RD)" <AnnieLiu@zhaoxin.com>
+To: Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Robert Rosengren <robertr@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
-PiA+ID4gPiA+ID5UaGVuIHRoZSBuZXh0IHN0ZXAgd291bGQgYmUgdG8gZmFrZSBzZy1idWZmZXIg
-ZnJvbSB0aGlzDQo+ID4gPiA+ID4gPnN0cmFpZ2h0IGJ1ZmZlci4gIFJldmVydCB0aGUgYWJvdmUs
-IGFuZCBtb2RpZnkgc2didWYuYyB0byB0aGUgZm9sbG93aW5nOg0KPiA+ID4gPiA+ID4tIEFsbG9j
-YXRlIGEgbGFyZ2UgY29udGludW91cyBidWZmZXINCj4gPiA+ID4gPiA+LSBBc3NpZ24gZWFjaCBw
-YWdlIGluIHRoaXMgbGFyZ2UgYnVmZmVyDQo+ID4gPiA+ID4NCj4gPiA+ID4gPiA+SWYgdGhpcyBz
-dGlsbCB3b3JrcywgaXQncyBub3QgYWJvdXQgdm1hcCwgYnV0IGl0IGp1c3QgbWVhbnMNCj4gPiA+
-ID4gPiA+dGhhdCB0aGUgcGh5c2ljYWxseSBvcmRlcmVkIHBhZ2VzIGRvIG1hdHRlciAtLSBpbXBs
-aWNpdGx5DQo+ID4gPiA+ID4gPnNob3dpbmcgdGhhdCB0aGUgc25vb3BpbmcgYmVoYXZpb3IgaXNu
-J3QgcHJvcGVybHkgdHVybmVkIG9uIC8gb2ZmIG9uIHRoZSBjb250cm9sbGVyLg0KPiA+ID4gPiA+
-DQo+ID4gPiA+ID4gVG8gZmFrZSBTRy1idWZmZXIsIEkgZGlkIHRoaXMgdGVzdDogcmVzdG9yZSBh
-bGwgdGhlIGNvZGVzIHRvIHRoZSBvcmlnaW5hbCwgdGhlbiBhZGRlZCBzb21lIGNvZGVzIGluIHNu
-ZF9tYWxsb2Nfc2didWZfcGFnZXMoKSBsaWtlIGJlbG93LCB0aGUgcmVzdWx0IGlzIGJhZGx5IG5p
-b3NlLg0KPiA+ID4gPg0KPiA+ID4gPiA+Tm90IHJlYWxseSB3aGF0IEkgbWVhbnQuICBSYXRoZXIg
-c29tZXRoaW5nIGxpa2UgYmVsb3cgKHRvdGFsbHkgdW50ZXN0ZWQpLg0KPiA+ID4gPg0KPiA+ID4g
-PiBbSGFucyA6XSBJIGtub3cgd2hhdCB5b3UgbWVhbiBub3cgYW5kIGNvbXBsZXRlIGNvZGUgbGlr
-ZSBiZWxvdywgYnV0IHRoZSByZXN1bHQgaXMgc3RpbGwgbm9pc2UuDQo+ID4gPg0KPiA+ID4gPk9L
-LCBzbyBpbmRlZWQgdGhlIHZtYXBwZWQgYWRkcmVzcyBkb2VzIHNlZW0gbWF0dGVyLiAgSW50ZXJl
-c3RpbmcuDQo+ID4gPiA+V2hhdCBraW5kIG9mIHVzZXIgYWNjZXNzIGRvZXMgcHJvZHVjZSB0aGUg
-bm9pc2U/ICBEb2VzIGl0IHZpYSBhcGxheSBtbWFwIG1vZGUsIHRvbz8NCj4gPiA+DQo+ID4gPiA+
-SW4gYW55d2F5LCBpZiB0aGUgdm1hcCBpcyBhIHByb2JsZW0sIGl0IG1pZ2h0IGJlIHdvcmtlZCBh
-cm91bmQgYSBwYXRjaCBsaWtlIGJlbG93IChhZ2FpbiB0b3RhbGx5IHVudGVzdGVkIGFuZCBub3Qg
-c3VyZSB3aGV0aGVyIGl0J3MgY29ycmVjdCkuDQo+ID4gPg0KPiA+ID4gW0hhbnMgOl0gQXMgSSBr
-bm93LCBJbiB0aGUgaGFyZHdhcmUgbGF5ZXIgSERBQ+KAmXMgc3RyZWFtIGhhdmUgdHdvIGRhdGEg
-dHJhbnNwb3J0IHBhdGggOiBub24tc25vb3AgJiBzbm9vcDsgSW4gdGhlIHNvZnR3YXJlIGxheWVy
-IEFMU0EtRHJpdmVyIGhhdmUgdHdvIGRhdGEgdHJhbnNwb3J0IHBhdGggOiBtbWFwICYgbm90IG1t
-YXAodGVzdCBzaG93cywgaXQgaXMgZGVwZW5kZW50IG9uIHdhdidzIGZvcm1hdCBvciBtbWFwX2Zs
-YWcgaW4gYXBsYXkuYykuIFdoZW4gaGFyZHdhcmUgYXQgbm9uLXNub29wIG1vZGUsIHdpdGhvdXQg
-aGFyZHdhcmUgbW9kdWxlJ3MgaGVscCwgc29mdHdhcmUgbXVzdCBtYXJrIHRoZSBtZW0gdG8gdW5j
-YWNoZWFibGUgdHlwZTogd2hlbiBtbWFwIHVzZWQsIHRoZSBtYXJrIGFjdGlvbiBoYXBwZW5lZCBh
-dCBwY21fbW1hcF9wcmVwYXJlKCksIHRoZSBub3QtbW1hcCBtb2RlJ3MgbWFyayBhY3Rpb24gaGFw
-cGVuZWQgYXQgX19tYXJrX3BhZ2VzX3djKCkuIEFuZCB3aGVuIGF0IG5vdC1tbWFwIG1vZGUsIHRo
-ZSB2bWFwcGVkIGFkZHJlc3MgZGlyZWN0bHkgdXNlZCBpbiBzbmRfcGNtX2xpYl93cml0ZV90cmFu
-c2ZlcigpIC0+IGNvcHlfZnJvbV91c2VyKCkuDQo+ID4NCj4gPg0KPiA+ID5XZWxsLCB0aGF0J3Mg
-dXN1YWxseSBubyBwcm9ibGVtIHJlZ2FyZGluZyB0aGF0IGNhY2hlIGNvaGVyZW5jeS4NCj4gPiA+
-QXQgbGVhc3QgaXQgaGFzbid0IGJlZW4gYW55IGlzc3VlIHdpdGggSW50ZWwgYW5kIEFNRCBDUFVz
-Lg0KPiA+ID5Eb2VzIHRoZSBwcm9ibGVtIGhhcHBlbiB3aXRoIEludGVsIENQVSBpbnN0ZWFkIG9m
-IFZJQT8NCj4gPg0KPiA+IFtIYW5zIDpdIEkgZG9uJ3QgaGF2ZSBlbm91Z2ggSW50ZWwvQU1EIG1h
-Y2hpbmUgaGVyZSwgdXAgdG8gbm93LCBvbmx5IGZpbmQgb25lIEludGVsJ3MgOiBIVzogbW90aGVy
-IGJvYXJkIGlzIERlbGwgMDQyUDQ5LCBIREEgY29udHJvbGxlciBpcyA4MDg2OjFjMjAsIGNvZGVj
-IGlzIGN4MjA2NDEuDQo+DQo+ID5BbmQgdGhlIHNhbWUgaXNzdWUgaXMgc2VlbiBvbiB0aGF0IG1h
-Y2hpbmU/DQo+DQo+IFtIYW5zIDpdIFllcw0KDQo+T0ssIHRoZW4gbGV0J3MgZml4IGl0IHByb3Bl
-cmx5Lg0KDQo+SSBtYW5hZ2VkIHRvIGFkZCB0aGUgbm9uLWNhY2hlZCB0eXBlIGJ1ZmZlciBhbGxv
-Y2F0aW9ucyBpbiB0aGUgbWVtYWxsb2MuYywgc28gdGhhdCB3ZSBjYW4gcmVkdWNlIGxvdHMgb2Yg
-Y29kZXMgaW4gZWFjaCBkcml2ZXIgc2lkZS4NCg0KPlRoZSBwYXRjaGVzIGFyZSBwdXNoZWQgdG8g
-dG9waWMvbWVtYWxsb2MtdWMgYnJhbmNoIG9mIG15IHNvdW5kIGdpdCB0cmVlLiAgUGxlYXNlIGdp
-dmUgaXQgYSB0cnkgYW5kIHJlcG9ydCBiYWNrIHdoZXRoZXIgaXQgd29ya3MgZm9yIHlvdS4NCg0K
-PlNpbmNlIHN1Y2ggYSBjaGFuZ2UgaW4gdGhlIGNvcmUgY29kZSB3b3VsZCBhZmZlY3QgbWFueSBk
-cml2ZXJzLCBJJ2xsIHBvc3Rwb25lIHRoaXMgZm9yIDQuMjAsIGluIGFueXdheS4NCg0KDQpbSGFu
-cyA6XSBUaGlzIHBhdGNoIHdvcmtzIGZvciBtZS4NCg0KVGhhbmsgeW91IQ0KDQpIYW5zDQoNCg0K
-5L+d5a+G5aOw5piO77yaDQrmnKzpgq7ku7blkKvmnInkv53lr4bmiJbkuJPmnInkv6Hmga/vvIzk
-u4XkvpvmjIflrprmlLbku7bkurrkvb/nlKjjgILkuKXnpoHlr7nmnKzpgq7ku7bmiJblhbblhoXl
-rrnlgZrku7vkvZXmnKrnu4/mjojmnYPnmoTmn6XpmIXjgIHkvb/nlKjjgIHlpI3liLbmiJbovazl
-j5HjgIINCkNPTkZJREVOVElBTCBOT1RFOg0KVGhpcyBlbWFpbCBjb250YWlucyBjb25maWRlbnRp
-YWwgb3IgbGVnYWxseSBwcml2aWxlZ2VkIGluZm9ybWF0aW9uIGFuZCBpcyBmb3IgdGhlIHNvbGUg
-dXNlIG9mIGl0cyBpbnRlbmRlZCByZWNpcGllbnQuIEFueSB1bmF1dGhvcml6ZWQgcmV2aWV3LCB1
-c2UsIGNvcHlpbmcgb3IgZm9yd2FyZGluZyBvZiB0aGlzIGVtYWlsIG9yIHRoZSBjb250ZW50IG9m
-IHRoaXMgZW1haWwgaXMgc3RyaWN0bHkgcHJvaGliaXRlZC4NCl9fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21h
-aWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+adau17x1_setup_firmware and adau17x1_has_dsp is only used internally, so
+making them static instead of exported.
+
+Change-Id: I4882513ab457966b0371ac2c1024550ca6edbe0c
+Signed-off-by: Robert Rosengren <robertr@axis.com>
+---
+ sound/soc/codecs/adau17x1.c | 9 +++++----
+ sound/soc/codecs/adau17x1.h | 4 ----
+ 2 files changed, 5 insertions(+), 8 deletions(-)
+
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 57169b8ff14e..2f2afb4c0c88 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -60,6 +60,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
+ 	SOC_ENUM("Mic Bias Mode", adau17x1_mic_bias_mode_enum),
+ };
+ 
++static int adau17x1_setup_firmware(struct snd_soc_component *component,
++	unsigned int rate);
++
+ static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -313,7 +316,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
+ 	{ "Capture", NULL, "Right Decimator" },
+ };
+ 
+-bool adau17x1_has_dsp(struct adau *adau)
++static bool adau17x1_has_dsp(struct adau *adau)
+ {
+ 	switch (adau->type) {
+ 	case ADAU1761:
+@@ -324,7 +327,6 @@ bool adau17x1_has_dsp(struct adau *adau)
+ 		return false;
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
+ 
+ static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
+ 	int source, unsigned int freq_in, unsigned int freq_out)
+@@ -836,7 +838,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
+ 
+-int adau17x1_setup_firmware(struct snd_soc_component *component,
++static int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 	unsigned int rate)
+ {
+ 	int ret;
+@@ -880,7 +882,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
+ 
+ int adau17x1_add_widgets(struct snd_soc_component *component)
+ {
+diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
+index e6fe87beec07..98a3b6f5bc96 100644
+--- a/sound/soc/codecs/adau17x1.h
++++ b/sound/soc/codecs/adau17x1.h
+@@ -68,10 +68,6 @@ int adau17x1_resume(struct snd_soc_component *component);
+ 
+ extern const struct snd_soc_dai_ops adau17x1_dai_ops;
+ 
+-int adau17x1_setup_firmware(struct snd_soc_component *component,
+-	unsigned int rate);
+-bool adau17x1_has_dsp(struct adau *adau);
+-
+ #define ADAU17X1_CLOCK_CONTROL			0x4000
+ #define ADAU17X1_PLL_CONTROL			0x4002
+ #define ADAU17X1_REC_POWER_MGMT			0x4009
+-- 
+2.11.0
