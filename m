@@ -1,15 +1,15 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH - hwmixvolume 9/9] hwmixvolume: mention the
- new dependencies in the README
-Date: Tue, 14 Aug 2018 12:43:15 +0900
-Message-ID: <8f5b6724-5146-7551-36dc-a16ac80a7541@sakamocchi.jp>
+Subject: Re: [PATCH - hwmixvolume 4/9] hwmixvolume: use a with
+ context to open files
+Date: Tue, 14 Aug 2018 12:59:33 +0900
+Message-ID: <f72c8a97-542f-85e6-de3d-3ee121f4aa72@sakamocchi.jp>
 References: <20180808155637.5592-1-linkmauve@jabberfr.org>
- <20180808155637.5592-10-linkmauve@jabberfr.org>
+ <20180808155637.5592-5-linkmauve@jabberfr.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180808155637.5592-10-linkmauve@jabberfr.org>
+In-Reply-To: <20180808155637.5592-5-linkmauve@jabberfr.org>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,21 +24,68 @@ To: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>, patch@alsa-project.org
 Cc: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBBdWcgOSAyMDE4IDAwOjU2LCBFbW1hbnVlbCBHaWwgUGV5cm90IHdyb3RlOgo+IFNp
-Z25lZC1vZmYtYnk6IEVtbWFudWVsIEdpbCBQZXlyb3QgPGxpbmttYXV2ZUBsaW5rbWF1dmUuZnI+
-Cj4gCj4gZGlmZiAtLWdpdCBhL2h3bWl4dm9sdW1lL1JFQURNRSBiL2h3bWl4dm9sdW1lL1JFQURN
-RQo+IGluZGV4IDk4ODRlYzIuLmRiMWI4NzQgMTAwNjQ0Cj4gLS0tIGEvaHdtaXh2b2x1bWUvUkVB
-RE1FCj4gKysrIGIvaHdtaXh2b2x1bWUvUkVBRE1FCj4gQEAgLTgsNyArOCw4IEBAIHRoYXQgdXNl
-IGhhcmR3YXJlIG1peGluZywgaS5lLiwgdGhvc2UgYmFzZWQgb24gdGhlIGZvbGxvd2luZyBjaGlw
-czoKPiAgICogWWFtYWhhIERTLTEgKFlNRi03MjQvNzQwLzc0NC83NTQpIChkcml2ZXI6IHNuZC15
-bWZwY2kpCj4gICAKPiAgIAo+IC1UaGlzIHRvb2wgcmVxdWlyZXMgUHl0aG9uLCBweWd0aywgYW5k
-IGFsc2EtcHl0b24gMS4wLjIyIG9yIGxhdGVyLgo+ICtUaGlzIHRvb2wgcmVxdWlyZXMgUHl0aG9u
-LCBQeUdPYmplY3QsIEdUSyvCoDMuMCBvciBsYXRlciwgYW5kIGFsc2EtcHl0b24gMS4wLjIyCj4g
-K29yIGxhdGVyLgo+ICAgCj4gICBJdCBpcyByZWNvbW1lbmRlZCB0byB1c2UgYXQgbGVhc3QgTGlu
-dXgga2VybmVsIDIuNi4zMiBvciBhbHNhLWRyaXZlciAxLjAuMjI7Cj4gICBvdGhlcndpc2UsIHRo
-ZSBuYW1lIG9mIHRoZSBwcm9ncmFtIHRoYXQgaXMgdXNpbmcgYSBzdHJlYW0gY2Fubm90IGJlIHNo
-b3duLgoKcy9hbHNhLXB5dG9uL2Fsc2EtcHl0aG9uLwoKVGhpcyBpcyBhIHR5cG8gaW4gb3JpZ2lu
-YWwgY29kZSwgYnV0IGl0J3MgYmV0dGVyIHRvIGZpeCBub3cuCgoKVGhhbmtzCgpUYWthc2hpIFNh
-a2Ftb3RvCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi,
+
+On Aug 9 2018 00:56, Emmanuel Gil Peyrot wrote:
+> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> 
+> diff --git a/hwmixvolume/hwmixvolume b/hwmixvolume/hwmixvolume
+> index 267228c..e82f32d 100755
+> --- a/hwmixvolume/hwmixvolume
+> +++ b/hwmixvolume/hwmixvolume
+> @@ -138,26 +138,20 @@ class Stream:
+>               subdevice = info.index
+>           filename = "/proc/asound/card%d/pcm%dp/sub%d/status" % (card, device, subdevice)
+>           try:
+> -            f = open(filename, "r")
+> +            with open(filename, "r") as f:
+> +                for line in f.readlines():
+> +                    if line[:9] == "owner_pid":
+> +                        return int(line.split(':')[1].strip())
+
+I'm not oppose to use with (far from it I greatly prefer it.), however 
+the with statement was firstly supported in Python 2.5:
+https://docs.python.org/3.6/whatsnew/2.5.html#what-s-new-in-python-2-5
+
+This mean that you drop python 2.4 or former, in this point I have no 
+objections because it was already unsupported.
+
+If you use Python 2.5 or later, you can use 'file()' instead of 
+'open()'. Furthermore, FILE object returned by 'file()' (or 'open()') 
+supports 'iterator' and you have no need to call '.readlines()' anymore,
+thus:
+
+```
+ > +            with file(filename, "r") as f:
+ > +                for line in f:
+...
+```
+
+>           except IOError:
+>               return None
+> -        try:
+> -            for line in f.readlines():
+> -                if line[:9] == "owner_pid":
+> -                    return int(line.split(':')[1].strip())
+> -        finally:
+> -            f.close()
+>           return None
+>   
+>       def get_pid_cmdline(self, pid):
+>           try:
+> -            f = open("/proc/%d/cmdline" % pid, "r")
+> +            with open("/proc/%d/cmdline" % pid, "r") as f:
+> +                cmdline = f.read()
+>           except IOError:
+>               return None
+> -        try:
+> -            cmdline = f.read()
+> -        finally:
+> -            f.close()
+>           return cmdline.replace('\x00', ' ').strip()
+>   
+>   class MixerWindow(Gtk.Window):
+
+Regards
+
+Takashi Sakamoto
