@@ -1,18 +1,19 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: BUG of new AC97 bus layer
-Date: Tue, 14 Aug 2018 09:25:13 +0200
-Message-ID: <871sb1qujq.fsf@belgarion.home>
-References: <6117abb0-2d0c-2442-0cd8-5a2ff8ddbaad@163.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ASoC: wm9712: fix replace codec to
+	component
+Date: Tue, 14 Aug 2018 09:12:43 +0100
+Message-ID: <20180814081243.GM32322@imbe.wolfsonmicro.main>
+References: <20180813223556.16262-1-marcel@ziswiler.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp10.smtpout.orange.fr
- [80.12.242.132])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A1762676B4
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 09:25:22 +0200 (CEST)
-In-Reply-To: <6117abb0-2d0c-2442-0cd8-5a2ff8ddbaad@163.com> (Lihua Yao's
- message of "Sun, 12 Aug 2018 21:40:08 +0800")
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54E292676B4
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 10:12:48 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180813223556.16262-1-marcel@ziswiler.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,23 +23,44 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lihua Yao <ylhuajnu@163.com>
-Cc: Alsa-devel@alsa-project.org
+To: Marcel Ziswiler <marcel@ziswiler.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Fabio Estevam <fabio.estevam@nxp.com>, Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>
 List-Id: alsa-devel@alsa-project.org
 
-TGlodWEgWWFvIDx5bGh1YWpudUAxNjMuY29tPiB3cml0ZXM6Cgo+IEhpIFJvYmVydDsKPgo+IEkg
-YW0gcGxheWluZyB3aXRoIEFDOTcrV005NzE0IG9mIFRJTlk2NDEwIGJvYXJkLiBJIGhhZCBtYWRl
-IGl0IHRvIHJldHJpZXZlCj4KPiBXTTg5MTQncyB2ZW5kb3IgaWQgYnV0wqAgYSBCVUcgYXQgcHJv
-YmluZyBXTTk3eHggTUZEIGRldmljZS4KPgo+IEFmdGVyIGRpZ2dpbmcsIEkgdGhvdWdodCB0aGUg
-b2ZmZW5kaW5nIGNvZGUgaXMgJ3N0cnVjdHVyZSBhc3NpZ25tZW50JyBhdCBsaW5lIDc0Lgo+Cj4g
-Qm90aCBhYzk3LT5kZXYgYW5kIGFkZXYtPmRldiBhcmUgb2JqZWN0cyBvZiB0eXBlICdzdHJ1Y3Qg
-ZGV2aWNlJyByYXRoZXIgdGhhbgo+Cj4gJ3N0cnVjdCBkZXZpY2UgKicuCkhpIExpaHVhIFlhbywK
-ClRoYW5rcyBmb3IgdGhlIHJlcG9ydCwgSSBuZXZlciB0cmlnZ2VyZWQgdGhpcyBlcnJvciwgYnV0
-IHRoZXJlIGlzIGFuIGJ1ZwppbmRlZWQuIEFzIHRvIHlvdXIgcXVpY2sgaGFjaywgd291bGQgeW91
-IG1pbmQgc3VibWl0dGluZyBhIHBhdGNoID8gT2YgY291cnNlLAp5b3UnbGwgaGF2ZSB0byBjb21w
-bGV0ZSBpdCB0byBoYXZlIGRldmljZV9hZGQoKSBhbmQgZGV2aWNlX3B1dCgpIGluIHRoZSByZWxl
-YXNlCnJvdXRpbmUsIGFuZCBhZGQgYSBwYXJlbnRob29kIHRvIHRoZSBhZGV2LT5kZXYgZGV2aWNl
-LgoKQ2hlZXJzLgoKLS0gClJvYmVydApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2Fsc2EtZGV2ZWwK
+On Tue, Aug 14, 2018 at 12:35:56AM +0200, Marcel Ziswiler wrote:
+> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> 
+> Since commit 143b44845d87 ("ASoC: wm9712: replace codec to component")
+> "wm9712-codec" got renamed to "wm9712-component", however, this change
+> never got propagated down to the actual board/platform drivers. E.g. on
+> Colibri T20 this lead to the following spew upon boot with sound/touch
+> being broken:
+> 
+> [    2.214121] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
+> [    2.222137] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
+> ...
+> [    2.344384] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
+> [    2.351885] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
+> ...
+> [    2.668339] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
+> [    2.675811] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
+> ...
+> [    3.208408] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
+> [    3.216312] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
+> ...
+> [    3.235397] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
+> [    3.248938] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
+> ...
+> [   14.970443] ALSA device list:
+> [   14.996628]   No soundcards found.
+> 
+> This commit finally fixes this again.
+> 
+> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> 
+> ---
+
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+
+Thanks,
+Charles
