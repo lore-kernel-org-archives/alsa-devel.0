@@ -1,18 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Unused exported functions
-	changed to internal" to the asoc tree
-Date: Tue, 14 Aug 2018 15:25:39 +0100 (BST)
-Message-ID: <20180814142539.DADB41124449@debutante.sirena.org.uk>
-References: <20180813073359.3374-1-robertr@axis.com>
+Subject: Re: [RFC PATCH] ASoC: core: Optimise suspend/resume of
+	DAPM widgets
+Date: Tue, 14 Aug 2018 15:40:04 +0100
+Message-ID: <20180814144004.GD5810@sirena.org.uk>
+References: <1533301025-19980-1-git-send-email-jonathanh@nvidia.com>
+ <20180803163605.GD6591@sirena.org.uk>
+ <7ba86328-5bb6-5280-df6f-9937173fb2ab@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5358409178770170642=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C8E6126781F
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 16:25:40 +0200 (CEST)
-In-Reply-To: <20180813073359.3374-1-robertr@axis.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 419B126770B
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 16:40:06 +0200 (CEST)
+In-Reply-To: <7ba86328-5bb6-5280-df6f-9937173fb2ab@nvidia.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,116 +23,73 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Rosengren <robert.rosengren@axis.com>
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Robert Rosengren <robertr@axis.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
+To: Jon Hunter <jonathanh@nvidia.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: adau17x1: Unused exported functions changed to internal
+--===============5358409178770170642==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="osDK9TLjxFScVI/L"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--osDK9TLjxFScVI/L
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Aug 13, 2018 at 07:19:16PM +0100, Jon Hunter wrote:
+>=20
+> I had taken some ftrace graphs but there was not one thing that really
+> stood out. Looking again it seems that each call to
+> async_schedule_domain() can take tens of uS and so it there are a lot of
+> DAPM widgets (100+) this can take some time. I will dig into it a bit
+> further.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+We don't call that per widget, we call that per context.  We might have
+a lot of contexts but it's definitely not number of widgets level.
+Perhaps what we need there is something which remembers if we actually
+changed anything in each context and/or there's relevant operations and
+then doesn't do this if not, we're working on the basis that these
+operations are fairly cheap.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+> > One thing that it occurs to me might help is to start the suspend
+> > process by powering down all the input and output widgets that aren't
+> > ignoring suspend in one operation, that should hopefully have the effect
+> > of ensuring that most of the system that's going to get powered down
+> > does so on the first pass through.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> If the async_schedule_domain() calls are the problem, then it may not
+> help as we call that for all dapms apart from the card->dapm.
 
-Thanks,
-Mark
+No, we actually need to run the operations on all contexts - they can
+all do things if they want to.  We just want them all to run in parallel
+so if we are doing things like waiting for capacitors to charge we don't
+do it in series.
 
->From 164c0f6454186d1b0e22c27dfe3d3d59fc80f979 Mon Sep 17 00:00:00 2001
-From: Robert Rosengren <robert.rosengren@axis.com>
-Date: Mon, 13 Aug 2018 09:33:58 +0200
-Subject: [PATCH] ASoC: adau17x1: Unused exported functions changed to internal
+--osDK9TLjxFScVI/L
+Content-Type: application/pgp-signature; name="signature.asc"
 
-adau17x1_setup_firmware and adau17x1_has_dsp is only used internally, so
-making them static instead of exported.
+-----BEGIN PGP SIGNATURE-----
 
-Change-Id: I4882513ab457966b0371ac2c1024550ca6edbe0c
-Signed-off-by: Robert Rosengren <robertr@axis.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/adau17x1.c | 9 +++++----
- sound/soc/codecs/adau17x1.h | 4 ----
- 2 files changed, 5 insertions(+), 8 deletions(-)
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlty6cQACgkQJNaLcl1U
+h9Cu4ggAhNYHM3NFIKtqdn0xYhoxvkssFh3GROehNT3p06HwwvCytbNXsyT7VelC
+4Tmf1pktMnBs+Lg+jOIFTY/rGqPr/+xk4DYbNwUDd3B3+jSnrTWixh+GTdXmPiuB
+SRzgOZznTocV3E6Fmz+DIVJ9QKfaIWZQjZfCS8eqG1Qmru4BPXxjrvRqprXG3SDJ
+6NxbQGQCW9Nc3szoVXPuXbUV1FlQPFfApa4cABsl/1qAPFq3NEJLky+GUbM0N6X7
+ajW7CmOBAs4MfuDjN7/sB2qmj5blfC/Bp1rEb77CzjaptLNJLzY0XQj1o4+T5O7u
+Cnk0bQZUQlukZCuQmrNnVwd1+pT0mA==
+=ANgL
+-----END PGP SIGNATURE-----
 
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 57169b8ff14e..2f2afb4c0c88 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -60,6 +60,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
- 	SOC_ENUM("Mic Bias Mode", adau17x1_mic_bias_mode_enum),
- };
- 
-+static int adau17x1_setup_firmware(struct snd_soc_component *component,
-+	unsigned int rate);
-+
- static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-@@ -313,7 +316,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
- 	{ "Capture", NULL, "Right Decimator" },
- };
- 
--bool adau17x1_has_dsp(struct adau *adau)
-+static bool adau17x1_has_dsp(struct adau *adau)
- {
- 	switch (adau->type) {
- 	case ADAU1761:
-@@ -324,7 +327,6 @@ bool adau17x1_has_dsp(struct adau *adau)
- 		return false;
- 	}
- }
--EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
- 
- static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
- 	int source, unsigned int freq_in, unsigned int freq_out)
-@@ -836,7 +838,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
- }
- EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
- 
--int adau17x1_setup_firmware(struct snd_soc_component *component,
-+static int adau17x1_setup_firmware(struct snd_soc_component *component,
- 	unsigned int rate)
- {
- 	int ret;
-@@ -880,7 +882,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
- 
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
- 
- int adau17x1_add_widgets(struct snd_soc_component *component)
- {
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index e6fe87beec07..98a3b6f5bc96 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -68,10 +68,6 @@ int adau17x1_resume(struct snd_soc_component *component);
- 
- extern const struct snd_soc_dai_ops adau17x1_dai_ops;
- 
--int adau17x1_setup_firmware(struct snd_soc_component *component,
--	unsigned int rate);
--bool adau17x1_has_dsp(struct adau *adau);
--
- #define ADAU17X1_CLOCK_CONTROL			0x4000
- #define ADAU17X1_PLL_CONTROL			0x4002
- #define ADAU17X1_REC_POWER_MGMT			0x4009
--- 
-2.18.0
+--osDK9TLjxFScVI/L--
+
+--===============5358409178770170642==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5358409178770170642==--
