@@ -1,78 +1,318 @@
-From: syzbot <syzbot+ec5f605c91812d200367@syzkaller.appspotmail.com>
-Subject: WARNING in __snd_rawmidi_transmit_ack (2)
-Date: Tue, 14 Aug 2018 07:20:02 -0700
-Message-ID: <000000000000e1226c057365e75d@google.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: uapi: fix sound/skl-tplg-interface.h
+	userspace compilation errors" to the asoc tree
+Date: Tue, 14 Aug 2018 15:25:14 +0100 (BST)
+Message-ID: <20180814142514.DF0231124449@debutante.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E68E926770B
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 16:25:15 +0200 (CEST)
+In-Reply-To: 
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Dmitry V. Levin" <ldv@altlinux.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+The patch
 
-syzbot found the following crash on:
+   ASoC: uapi: fix sound/skl-tplg-interface.h userspace compilation errors
 
-HEAD commit:    4e8b38549b50 Add linux-next specific files for 20180814
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f5e78c400000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=18edf0289d1b5ab
-dashboard link: https://syzkaller.appspot.com/bug?extid=ec5f605c91812d200367
-compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
-syzkaller repro:https://syzkaller.appspot.com/x/repro.syz?x=12f8c6d2400000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16976b72400000
+has been applied to the asoc tree at
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+ec5f605c91812d200367@syzkaller.appspotmail.com
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-WARNING: CPU: 1 PID: 1691 at sound/core/rawmidi.c:1170  
-__snd_rawmidi_transmit_ack+0x263/0x2f0 sound/core/rawmidi.c:1170
-Kernel panic - not syncing: panic_on_warn set ...
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-CPU: 1 PID: 1691 Comm: kworker/1:1H Not tainted 4.18.0-next-20180814+ #38
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Workqueue: events_highpri snd_vmidi_output_work
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x1c9/0x2b4 lib/dump_stack.c:113
-  panic+0x238/0x4e7 kernel/panic.c:184
-  __warn.cold.8+0x163/0x1ba kernel/panic.c:536
-  report_bug+0x252/0x2d0 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:178 [inline]
-  do_error_trap+0x1fc/0x4d0 arch/x86/kernel/traps.c:296
-  do_invalid_op+0x1b/0x20 arch/x86/kernel/traps.c:316
-  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:996
-RIP: 0010:__snd_rawmidi_transmit_ack+0x263/0x2f0 sound/core/rawmidi.c:1170
-Code: ba 01 00 00 00 be 03 00 00 00 e8 18 3a 66 fc e8 e3 44 86 fc 89 d8 48  
-83 c4 18 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 cd 44 86 fc <0f> 0b e9 72 fe  
-ff ff e8 21 5a c5 fc e9 1b ff ff ff bb ea ff ff ff
-RSP: 0018:ffff8801d2a6f5a8 EFLAGS: 00010093
-RAX: ffff8801d2a52300 RBX: 0000000000000001 RCX: ffffffff84f64792
-RDX: 0000000000000000 RSI: ffffffff84f64923 RDI: 0000000000000006
-RBP: ffff8801d2a6f5e8 R08: ffff8801d2a52300 R09: ffffed003607acc1
-R10: ffffed003607acc1 R11: ffff8801b03d660b R12: ffff8801ce2479c0
-R13: 0000000000001001 R14: 0000000000000001 R15: ffff8801b03d65c0
-  snd_rawmidi_transmit_ack+0x51/0x80 sound/core/rawmidi.c:1201
-  snd_vmidi_output_work+0x3f4/0x4e0 sound/core/seq/seq_virmidi.c:153
-  process_one_work+0xc73/0x1aa0 kernel/workqueue.c:2153
-  worker_thread+0x189/0x13c0 kernel/workqueue.c:2296
-  kthread+0x35a/0x420 kernel/kthread.c:246
-  ret_from_fork+0x3a/0x50 arch/x86/entry/entry_64.S:415
-Shutting down cpus with NMI
-Dumping ftrace buffer:
-    (ftrace buffer empty)
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From fb504caae7ef85be159743bd4b08ecde269ba55f Mon Sep 17 00:00:00 2001
+From: "Dmitry V. Levin" <ldv@altlinux.org>
+Date: Mon, 13 Aug 2018 18:50:02 +0300
+Subject: [PATCH] ASoC: uapi: fix sound/skl-tplg-interface.h userspace
+ compilation errors
+
+Include <linux/types.h> and consistently use types it provides
+to fix the following sound/skl-tplg-interface.h userspace compilation errors:
+
+/usr/include/sound/skl-tplg-interface.h:146:2: error: unknown type name 'u32'
+  u32 set_params:2;
+/usr/include/sound/skl-tplg-interface.h:147:2: error: unknown type name 'u32'
+  u32 rsvd:30;
+/usr/include/sound/skl-tplg-interface.h:148:2: error: unknown type name 'u32'
+  u32 param_id;
+/usr/include/sound/skl-tplg-interface.h:149:2: error: unknown type name 'u32'
+  u32 max;
+/usr/include/sound/skl-tplg-interface.h:166:2: error: unknown type name 'u16'
+  u16 module_id;
+/usr/include/sound/skl-tplg-interface.h:167:2: error: unknown type name 'u16'
+  u16 instance_id;
+/usr/include/sound/skl-tplg-interface.h:171:2: error: unknown type name 'u32'
+  u32 channels;
+/usr/include/sound/skl-tplg-interface.h:172:2: error: unknown type name 'u32'
+  u32 freq;
+/usr/include/sound/skl-tplg-interface.h:173:2: error: unknown type name 'u32'
+  u32 bit_depth;
+/usr/include/sound/skl-tplg-interface.h:174:2: error: unknown type name 'u32'
+  u32 valid_bit_depth;
+/usr/include/sound/skl-tplg-interface.h:175:2: error: unknown type name 'u32'
+  u32 ch_cfg;
+/usr/include/sound/skl-tplg-interface.h:176:2: error: unknown type name 'u32'
+  u32 interleaving_style;
+/usr/include/sound/skl-tplg-interface.h:177:2: error: unknown type name 'u32'
+  u32 sample_type;
+/usr/include/sound/skl-tplg-interface.h:178:2: error: unknown type name 'u32'
+  u32 ch_map;
+/usr/include/sound/skl-tplg-interface.h:182:2: error: unknown type name 'u32'
+  u32 set_params:2;
+/usr/include/sound/skl-tplg-interface.h:183:2: error: unknown type name 'u32'
+  u32 rsvd:30;
+/usr/include/sound/skl-tplg-interface.h:184:2: error: unknown type name 'u32'
+  u32 param_id;
+/usr/include/sound/skl-tplg-interface.h:185:2: error: unknown type name 'u32'
+  u32 caps_size;
+/usr/include/sound/skl-tplg-interface.h:186:2: error: unknown type name 'u32'
+  u32 caps[HDA_SST_CFG_MAX];
+/usr/include/sound/skl-tplg-interface.h:190:2: error: unknown type name 'u8'
+  u8 pipe_id;
+/usr/include/sound/skl-tplg-interface.h:191:2: error: unknown type name 'u8'
+  u8 pipe_priority;
+/usr/include/sound/skl-tplg-interface.h:192:2: error: unknown type name 'u16'
+  u16 conn_type:4;
+/usr/include/sound/skl-tplg-interface.h:193:2: error: unknown type name 'u16'
+  u16 rsvd:4;
+/usr/include/sound/skl-tplg-interface.h:194:2: error: unknown type name 'u16'
+  u16 memory_pages:8;
+/usr/include/sound/skl-tplg-interface.h:200:2: error: unknown type name 'u16'
+  u16 module_id;
+/usr/include/sound/skl-tplg-interface.h:201:2: error: unknown type name 'u16'
+  u16 instance_id;
+/usr/include/sound/skl-tplg-interface.h:202:2: error: unknown type name 'u32'
+  u32 max_mcps;
+/usr/include/sound/skl-tplg-interface.h:203:2: error: unknown type name 'u32'
+  u32 mem_pages;
+/usr/include/sound/skl-tplg-interface.h:204:2: error: unknown type name 'u32'
+  u32 obs;
+/usr/include/sound/skl-tplg-interface.h:205:2: error: unknown type name 'u32'
+  u32 ibs;
+/usr/include/sound/skl-tplg-interface.h:206:2: error: unknown type name 'u32'
+  u32 vbus_id;
+/usr/include/sound/skl-tplg-interface.h:208:2: error: unknown type name 'u32'
+  u32 max_in_queue:8;
+/usr/include/sound/skl-tplg-interface.h:209:2: error: unknown type name 'u32'
+  u32 max_out_queue:8;
+/usr/include/sound/skl-tplg-interface.h:210:2: error: unknown type name 'u32'
+  u32 time_slot:8;
+/usr/include/sound/skl-tplg-interface.h:211:2: error: unknown type name 'u32'
+  u32 core_id:4;
+/usr/include/sound/skl-tplg-interface.h:212:2: error: unknown type name 'u32'
+  u32 rsvd1:4;
+/usr/include/sound/skl-tplg-interface.h:214:2: error: unknown type name 'u32'
+  u32 module_type:8;
+/usr/include/sound/skl-tplg-interface.h:215:2: error: unknown type name 'u32'
+  u32 conn_type:4;
+/usr/include/sound/skl-tplg-interface.h:216:2: error: unknown type name 'u32'
+  u32 dev_type:4;
+/usr/include/sound/skl-tplg-interface.h:217:2: error: unknown type name 'u32'
+  u32 hw_conn_type:4;
+/usr/include/sound/skl-tplg-interface.h:218:2: error: unknown type name 'u32'
+  u32 rsvd2:12;
+/usr/include/sound/skl-tplg-interface.h:220:2: error: unknown type name 'u32'
+  u32 params_fixup:8;
+/usr/include/sound/skl-tplg-interface.h:221:2: error: unknown type name 'u32'
+  u32 converter:8;
+/usr/include/sound/skl-tplg-interface.h:222:2: error: unknown type name 'u32'
+  u32 input_pin_type:1;
+/usr/include/sound/skl-tplg-interface.h:223:2: error: unknown type name 'u32'
+  u32 output_pin_type:1;
+/usr/include/sound/skl-tplg-interface.h:224:2: error: unknown type name 'u32'
+  u32 is_dynamic_in_pin:1;
+/usr/include/sound/skl-tplg-interface.h:225:2: error: unknown type name 'u32'
+  u32 is_dynamic_out_pin:1;
+/usr/include/sound/skl-tplg-interface.h:226:2: error: unknown type name 'u32'
+  u32 is_loadable:1;
+/usr/include/sound/skl-tplg-interface.h:227:2: error: unknown type name 'u32'
+  u32 rsvd3:11;
+
+Fixes: 0c24fdc00244 ("ASoC: topology: Move skl-tplg-interface.h to uapi")
+Signed-off-by: Dmitry V. Levin <ldv@altlinux.org>
+Reviewed-by: Guenter Roeck <groeck@chromium.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: <stable@vger.kernel.org> # v4.18
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ include/uapi/sound/skl-tplg-interface.h | 106 ++++++++++++------------
+ 1 file changed, 54 insertions(+), 52 deletions(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#bug-status-tracking for how to communicate with  
-syzbot.
-syzbot can test patches for this bug, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+diff --git a/include/uapi/sound/skl-tplg-interface.h b/include/uapi/sound/skl-tplg-interface.h
+index f58cafa42f18..f39352cef382 100644
+--- a/include/uapi/sound/skl-tplg-interface.h
++++ b/include/uapi/sound/skl-tplg-interface.h
+@@ -10,6 +10,8 @@
+ #ifndef __HDA_TPLG_INTERFACE_H__
+ #define __HDA_TPLG_INTERFACE_H__
+ 
++#include <linux/types.h>
++
+ /*
+  * Default types range from 0~12. type can range from 0 to 0xff
+  * SST types start at higher to avoid any overlapping in future
+@@ -143,10 +145,10 @@ enum skl_module_param_type {
+ };
+ 
+ struct skl_dfw_algo_data {
+-	u32 set_params:2;
+-	u32 rsvd:30;
+-	u32 param_id;
+-	u32 max;
++	__u32 set_params:2;
++	__u32 rsvd:30;
++	__u32 param_id;
++	__u32 max;
+ 	char params[0];
+ } __packed;
+ 
+@@ -163,68 +165,68 @@ enum skl_tuple_type {
+ /* v4 configuration data */
+ 
+ struct skl_dfw_v4_module_pin {
+-	u16 module_id;
+-	u16 instance_id;
++	__u16 module_id;
++	__u16 instance_id;
+ } __packed;
+ 
+ struct skl_dfw_v4_module_fmt {
+-	u32 channels;
+-	u32 freq;
+-	u32 bit_depth;
+-	u32 valid_bit_depth;
+-	u32 ch_cfg;
+-	u32 interleaving_style;
+-	u32 sample_type;
+-	u32 ch_map;
++	__u32 channels;
++	__u32 freq;
++	__u32 bit_depth;
++	__u32 valid_bit_depth;
++	__u32 ch_cfg;
++	__u32 interleaving_style;
++	__u32 sample_type;
++	__u32 ch_map;
+ } __packed;
+ 
+ struct skl_dfw_v4_module_caps {
+-	u32 set_params:2;
+-	u32 rsvd:30;
+-	u32 param_id;
+-	u32 caps_size;
+-	u32 caps[HDA_SST_CFG_MAX];
++	__u32 set_params:2;
++	__u32 rsvd:30;
++	__u32 param_id;
++	__u32 caps_size;
++	__u32 caps[HDA_SST_CFG_MAX];
+ } __packed;
+ 
+ struct skl_dfw_v4_pipe {
+-	u8 pipe_id;
+-	u8 pipe_priority;
+-	u16 conn_type:4;
+-	u16 rsvd:4;
+-	u16 memory_pages:8;
++	__u8 pipe_id;
++	__u8 pipe_priority;
++	__u16 conn_type:4;
++	__u16 rsvd:4;
++	__u16 memory_pages:8;
+ } __packed;
+ 
+ struct skl_dfw_v4_module {
+ 	char uuid[SKL_UUID_STR_SZ];
+ 
+-	u16 module_id;
+-	u16 instance_id;
+-	u32 max_mcps;
+-	u32 mem_pages;
+-	u32 obs;
+-	u32 ibs;
+-	u32 vbus_id;
+-
+-	u32 max_in_queue:8;
+-	u32 max_out_queue:8;
+-	u32 time_slot:8;
+-	u32 core_id:4;
+-	u32 rsvd1:4;
+-
+-	u32 module_type:8;
+-	u32 conn_type:4;
+-	u32 dev_type:4;
+-	u32 hw_conn_type:4;
+-	u32 rsvd2:12;
+-
+-	u32 params_fixup:8;
+-	u32 converter:8;
+-	u32 input_pin_type:1;
+-	u32 output_pin_type:1;
+-	u32 is_dynamic_in_pin:1;
+-	u32 is_dynamic_out_pin:1;
+-	u32 is_loadable:1;
+-	u32 rsvd3:11;
++	__u16 module_id;
++	__u16 instance_id;
++	__u32 max_mcps;
++	__u32 mem_pages;
++	__u32 obs;
++	__u32 ibs;
++	__u32 vbus_id;
++
++	__u32 max_in_queue:8;
++	__u32 max_out_queue:8;
++	__u32 time_slot:8;
++	__u32 core_id:4;
++	__u32 rsvd1:4;
++
++	__u32 module_type:8;
++	__u32 conn_type:4;
++	__u32 dev_type:4;
++	__u32 hw_conn_type:4;
++	__u32 rsvd2:12;
++
++	__u32 params_fixup:8;
++	__u32 converter:8;
++	__u32 input_pin_type:1;
++	__u32 output_pin_type:1;
++	__u32 is_dynamic_in_pin:1;
++	__u32 is_dynamic_out_pin:1;
++	__u32 is_loadable:1;
++	__u32 rsvd3:11;
+ 
+ 	struct skl_dfw_v4_pipe pipe;
+ 	struct skl_dfw_v4_module_fmt in_fmt[MAX_IN_QUEUE];
+-- 
+2.18.0
