@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9712: fix replace codec to component"
-	to the asoc tree
-Date: Tue, 14 Aug 2018 15:25:19 +0100 (BST)
-Message-ID: <20180814142519.BB8D41124449@debutante.sirena.org.uk>
-References: <20180813223556.16262-1-marcel@ziswiler.com>
+Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirks for 2
+	more devices" to the asoc tree
+Date: Tue, 14 Aug 2018 15:25:29 +0100 (BST)
+Message-ID: <20180814142530.01D851124449@debutante.sirena.org.uk>
+References: <20180812114206.10826-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id EE832267812
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 16:25:23 +0200 (CEST)
-In-Reply-To: <20180813223556.16262-1-marcel@ziswiler.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E23B826782D
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 16:25:32 +0200 (CEST)
+In-Reply-To: <20180812114206.10826-1-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, patches@opensource.cirrus.com, Liam Girdwood <lgirdwood@gmail.com>, stable@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Fabio Estevam <fabio.estevam@nxp.com>, Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm9712: fix replace codec to component
+   ASoC: Intel: bytcr_rt5640: Add quirks for 2 more devices
 
 has been applied to the asoc tree at
 
@@ -53,57 +53,66 @@ to this mail.
 Thanks,
 Mark
 
->From 5e4cfadaf5b73a0801b2fa7fb007f98400ebfe6e Mon Sep 17 00:00:00 2001
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Date: Tue, 14 Aug 2018 00:35:56 +0200
-Subject: [PATCH] ASoC: wm9712: fix replace codec to component
+>From 260c48b7ec26dfaf70d9230c3639f420e304e781 Mon Sep 17 00:00:00 2001
+From: Hans de Goede <hdegoede@redhat.com>
+Date: Sun, 12 Aug 2018 13:42:06 +0200
+Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for 2 more devices
 
-Since commit 143b44845d87 ("ASoC: wm9712: replace codec to component")
-"wm9712-codec" got renamed to "wm9712-component", however, this change
-never got propagated down to the actual board/platform drivers. E.g. on
-Colibri T20 this lead to the following spew upon boot with sound/touch
-being broken:
+Add quirks to select the right input-map, jack-detect pin, etc. for:
 
-[    2.214121] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
-[    2.222137] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
-...
-[    2.344384] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
-[    2.351885] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
-...
-[    2.668339] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
-[    2.675811] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
-...
-[    3.208408] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
-[    3.216312] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
-...
-[    3.235397] tegra-snd-wm9712 sound: ASoC: CODEC DAI wm9712-hifi not registered
-[    3.248938] tegra-snd-wm9712 sound: snd_soc_register_card failed (-517)
-...
-[   14.970443] ALSA device list:
-[   14.996628]   No soundcards found.
+Linx Linx7 tablet
+Onda V975w tablet
 
-This commit finally fixes this again.
-
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/codecs/wm9712.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/intel/boards/bytcr_rt5640.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index 953d94d50586..ade34c26ad2f 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -719,7 +719,7 @@ static int wm9712_probe(struct platform_device *pdev)
- 
- static struct platform_driver wm9712_component_driver = {
- 	.driver = {
--		.name = "wm9712-component",
-+		.name = "wm9712-codec",
+diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
+index d32844f94d74..b6dc524830b2 100644
+--- a/sound/soc/intel/boards/bytcr_rt5640.c
++++ b/sound/soc/intel/boards/bytcr_rt5640.c
+@@ -575,6 +575,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_MONO_SPEAKER |
+ 					BYT_RT5640_MCLK_EN),
  	},
- 
- 	.probe = wm9712_probe,
++	{	/* Linx Linx7 tablet */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LINX"),
++			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "LINX7"),
++		},
++		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
++					BYT_RT5640_MONO_SPEAKER |
++					BYT_RT5640_JD_NOT_INV |
++					BYT_RT5640_SSP0_AIF1 |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{	/* MSI S100 tablet */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
+@@ -602,6 +613,21 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
+ 					BYT_RT5640_SSP0_AIF1 |
+ 					BYT_RT5640_MCLK_EN),
+ 	},
++	{	/* Onda v975w */
++		.matches = {
++			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
++			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Aptio CRB"),
++			/* The above are too generic, also match BIOS info */
++			DMI_EXACT_MATCH(DMI_BIOS_VERSION, "5.6.5"),
++			DMI_EXACT_MATCH(DMI_BIOS_DATE, "07/25/2014"),
++		},
++		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
++					BYT_RT5640_JD_SRC_JD2_IN4N |
++					BYT_RT5640_OVCD_TH_2000UA |
++					BYT_RT5640_OVCD_SF_0P75 |
++					BYT_RT5640_DIFF_MIC |
++					BYT_RT5640_MCLK_EN),
++	},
+ 	{	/* Pipo W4 */
+ 		.matches = {
+ 			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
 -- 
 2.18.0
