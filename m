@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: bytcr_rt5640: Add quirks for 2
-	more devices" to the asoc tree
-Date: Tue, 14 Aug 2018 15:25:29 +0100 (BST)
-Message-ID: <20180814142530.01D851124449@debutante.sirena.org.uk>
-References: <20180812114206.10826-1-hdegoede@redhat.com>
+Subject: Applied "ASoC: adau17x1: Unused exported functions
+	changed to internal" to the asoc tree
+Date: Tue, 14 Aug 2018 15:25:39 +0100 (BST)
+Message-ID: <20180814142539.DADB41124449@debutante.sirena.org.uk>
+References: <20180813073359.3374-1-robertr@axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E23B826782D
- for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 16:25:32 +0200 (CEST)
-In-Reply-To: <20180812114206.10826-1-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C8E6126781F
+ for <alsa-devel@alsa-project.org>; Tue, 14 Aug 2018 16:25:40 +0200 (CEST)
+In-Reply-To: <20180813073359.3374-1-robertr@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
+To: Robert Rosengren <robert.rosengren@axis.com>
+Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Robert Rosengren <robertr@axis.com>, Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: bytcr_rt5640: Add quirks for 2 more devices
+   ASoC: adau17x1: Unused exported functions changed to internal
 
 has been applied to the asoc tree at
 
@@ -53,66 +53,85 @@ to this mail.
 Thanks,
 Mark
 
->From 260c48b7ec26dfaf70d9230c3639f420e304e781 Mon Sep 17 00:00:00 2001
-From: Hans de Goede <hdegoede@redhat.com>
-Date: Sun, 12 Aug 2018 13:42:06 +0200
-Subject: [PATCH] ASoC: Intel: bytcr_rt5640: Add quirks for 2 more devices
+>From 164c0f6454186d1b0e22c27dfe3d3d59fc80f979 Mon Sep 17 00:00:00 2001
+From: Robert Rosengren <robert.rosengren@axis.com>
+Date: Mon, 13 Aug 2018 09:33:58 +0200
+Subject: [PATCH] ASoC: adau17x1: Unused exported functions changed to internal
 
-Add quirks to select the right input-map, jack-detect pin, etc. for:
+adau17x1_setup_firmware and adau17x1_has_dsp is only used internally, so
+making them static instead of exported.
 
-Linx Linx7 tablet
-Onda V975w tablet
-
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Change-Id: I4882513ab457966b0371ac2c1024550ca6edbe0c
+Signed-off-by: Robert Rosengren <robertr@axis.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/bytcr_rt5640.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ sound/soc/codecs/adau17x1.c | 9 +++++----
+ sound/soc/codecs/adau17x1.h | 4 ----
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/intel/boards/bytcr_rt5640.c b/sound/soc/intel/boards/bytcr_rt5640.c
-index d32844f94d74..b6dc524830b2 100644
---- a/sound/soc/intel/boards/bytcr_rt5640.c
-+++ b/sound/soc/intel/boards/bytcr_rt5640.c
-@@ -575,6 +575,17 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_MONO_SPEAKER |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{	/* Linx Linx7 tablet */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "LINX"),
-+			DMI_EXACT_MATCH(DMI_PRODUCT_NAME, "LINX7"),
-+		},
-+		.driver_data = (void *)(BYTCR_INPUT_DEFAULTS |
-+					BYT_RT5640_MONO_SPEAKER |
-+					BYT_RT5640_JD_NOT_INV |
-+					BYT_RT5640_SSP0_AIF1 |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{	/* MSI S100 tablet */
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_SYS_VENDOR, "Micro-Star International Co., Ltd."),
-@@ -602,6 +613,21 @@ static const struct dmi_system_id byt_rt5640_quirk_table[] = {
- 					BYT_RT5640_SSP0_AIF1 |
- 					BYT_RT5640_MCLK_EN),
- 	},
-+	{	/* Onda v975w */
-+		.matches = {
-+			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
-+			DMI_EXACT_MATCH(DMI_BOARD_NAME, "Aptio CRB"),
-+			/* The above are too generic, also match BIOS info */
-+			DMI_EXACT_MATCH(DMI_BIOS_VERSION, "5.6.5"),
-+			DMI_EXACT_MATCH(DMI_BIOS_DATE, "07/25/2014"),
-+		},
-+		.driver_data = (void *)(BYT_RT5640_IN1_MAP |
-+					BYT_RT5640_JD_SRC_JD2_IN4N |
-+					BYT_RT5640_OVCD_TH_2000UA |
-+					BYT_RT5640_OVCD_SF_0P75 |
-+					BYT_RT5640_DIFF_MIC |
-+					BYT_RT5640_MCLK_EN),
-+	},
- 	{	/* Pipo W4 */
- 		.matches = {
- 			DMI_EXACT_MATCH(DMI_BOARD_VENDOR, "AMI Corporation"),
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 57169b8ff14e..2f2afb4c0c88 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -60,6 +60,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
+ 	SOC_ENUM("Mic Bias Mode", adau17x1_mic_bias_mode_enum),
+ };
+ 
++static int adau17x1_setup_firmware(struct snd_soc_component *component,
++	unsigned int rate);
++
+ static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -313,7 +316,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
+ 	{ "Capture", NULL, "Right Decimator" },
+ };
+ 
+-bool adau17x1_has_dsp(struct adau *adau)
++static bool adau17x1_has_dsp(struct adau *adau)
+ {
+ 	switch (adau->type) {
+ 	case ADAU1761:
+@@ -324,7 +327,6 @@ bool adau17x1_has_dsp(struct adau *adau)
+ 		return false;
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
+ 
+ static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
+ 	int source, unsigned int freq_in, unsigned int freq_out)
+@@ -836,7 +838,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
+ 
+-int adau17x1_setup_firmware(struct snd_soc_component *component,
++static int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 	unsigned int rate)
+ {
+ 	int ret;
+@@ -880,7 +882,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
+ 
+ int adau17x1_add_widgets(struct snd_soc_component *component)
+ {
+diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
+index e6fe87beec07..98a3b6f5bc96 100644
+--- a/sound/soc/codecs/adau17x1.h
++++ b/sound/soc/codecs/adau17x1.h
+@@ -68,10 +68,6 @@ int adau17x1_resume(struct snd_soc_component *component);
+ 
+ extern const struct snd_soc_dai_ops adau17x1_dai_ops;
+ 
+-int adau17x1_setup_firmware(struct snd_soc_component *component,
+-	unsigned int rate);
+-bool adau17x1_has_dsp(struct adau *adau);
+-
+ #define ADAU17X1_CLOCK_CONTROL			0x4000
+ #define ADAU17X1_PLL_CONTROL			0x4002
+ #define ADAU17X1_REC_POWER_MGMT			0x4009
 -- 
 2.18.0
