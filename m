@@ -1,19 +1,16 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: Applied "ASoC: dt-bindings: add dt bindings for
- wcd9335 audio codec" to the asoc tree
-Date: Wed, 15 Aug 2018 11:52:39 +0100
-Message-ID: <20180815105239.GV2414@sirena.org.uk>
-References: <20180727121806.18209-2-srinivas.kandagatla@linaro.org>
- <20180801112020.93C4A1124241@debutante.sirena.org.uk>
- <20180814162405.GA450@rob-hp-laptop>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: [PATCH] ASoC: dapm: Fix NULL pointer deference on
+	CODEC to CODEC DAIs
+Date: Wed, 15 Aug 2018 13:11:35 +0100
+Message-ID: <20180815121135.2543-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7386055971227199057=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 852432675DA
- for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 12:52:43 +0200 (CEST)
-In-Reply-To: <20180814162405.GA450@rob-hp-laptop>
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 61FFF2675DA
+ for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 14:11:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,61 +20,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, lee.jones@linaro.org
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
+Commit a655de808cbde ("ASoC: core: Allow topology to override
+machine driver FE DAI link config.") caused soc_dai_hw_params to
+be come dependent on the substream private_data being set with
+a pointer to the snd_soc_pcm_runtime. Currently, CODEC to CODEC
+links don't set this, which causes a NULL pointer dereference:
 
---===============7386055971227199057==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xku3GkZTJumTa1rO"
-Content-Disposition: inline
+[<4069de54>] (soc_dai_hw_params) from
+[<40694b68>] (snd_soc_dai_link_event+0x1a0/0x380)
 
+Since the ASoC core in general assumes that the substream
+private_data will be set to a pointer to the snd_soc_pcm_runtime,
+update the CODEC to CODEC links to respect this.
 
---xku3GkZTJumTa1rO
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+---
+ include/sound/soc-dapm.h | 1 +
+ sound/soc/soc-core.c     | 4 ++--
+ sound/soc/soc-dapm.c     | 4 ++++
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
-On Tue, Aug 14, 2018 at 10:24:05AM -0600, Rob Herring wrote:
-> On Wed, Aug 01, 2018 at 12:20:20PM +0100, Mark Brown wrote:
-> > The patch
-> >=20
-> >    ASoC: dt-bindings: add dt bindings for wcd9335 audio codec
-> >=20
-> > has been applied to the asoc tree at
-> >=20
-> >    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git=20
-
-> Why is this applied when I had requested changes?
-
-Usually when this happens it's becasue I applied it before you requested
-changes, there's some lag between applying and pushing things out and if
-I'm working on my laptop also some extra lag before mail reaches me as
-well.
-
---xku3GkZTJumTa1rO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlt0BfIACgkQJNaLcl1U
-h9AbHgf/YwUj5W487kUnXYDmUInV5C1CzGSnoXIJmiJNKT9YnbdaDas1UWtc4Ea8
-02Jq0DckZ4+P81OBVBfCWPzaU4hXlp3/+6MOYzgyi0PBVBJK5gIOdSFAZ77/uzJv
-iN93JMFeI/ui/O+0jKck2Zwov4/IC5klHwR9y1l9gV/cvAGKUlkPBZcBByaoHQfc
-y1bFUsW0xqTb1u3RKKFksQzkTL0FLmW2c2B+M/Xs5Gi1pTMHvZ3sEB/qMiLImf8P
-dXsmzaFbXe+VSPe1QOHwXGMyIMDFkVsgdlX95K8V3gzY/ktdTOtEIG5fDiycbBSF
-dWU0Z5VXmD1XmUxbJW+JfE7Y62PG+w==
-=k4Ar
------END PGP SIGNATURE-----
-
---xku3GkZTJumTa1rO--
-
---===============7386055971227199057==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7386055971227199057==--
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index af9ef16cc34d..fdaaafdc7a00 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -407,6 +407,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
+ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
++			 struct snd_soc_pcm_runtime *rtd,
+ 			 const struct snd_soc_pcm_stream *params,
+ 			 unsigned int num_params,
+ 			 struct snd_soc_dapm_widget *source,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 9cfe10d8040c..473eefe8658e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1447,7 +1447,7 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 	sink = codec_dai->playback_widget;
+ 	source = cpu_dai->capture_widget;
+ 	if (sink && source) {
+-		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
++		ret = snd_soc_dapm_new_pcm(card, rtd, dai_link->params,
+ 					   dai_link->num_params,
+ 					   source, sink);
+ 		if (ret != 0) {
+@@ -1460,7 +1460,7 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 	sink = cpu_dai->playback_widget;
+ 	source = codec_dai->capture_widget;
+ 	if (sink && source) {
+-		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
++		ret = snd_soc_dapm_new_pcm(card, rtd, dai_link->params,
+ 					   dai_link->num_params,
+ 					   source, sink);
+ 		if (ret != 0) {
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7e96793050c9..461d951917c0 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3652,6 +3652,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ {
+ 	struct snd_soc_dapm_path *source_p, *sink_p;
+ 	struct snd_soc_dai *source, *sink;
++	struct snd_soc_pcm_runtime *rtd = w->priv;
+ 	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
+ 	struct snd_pcm_substream substream;
+ 	struct snd_pcm_hw_params *params = NULL;
+@@ -3711,6 +3712,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		goto out;
+ 	}
+ 	substream.runtime = runtime;
++	substream.private_data = rtd;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+@@ -3895,6 +3897,7 @@ snd_soc_dapm_alloc_kcontrol(struct snd_soc_card *card,
+ }
+ 
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
++			 struct snd_soc_pcm_runtime *rtd,
+ 			 const struct snd_soc_pcm_stream *params,
+ 			 unsigned int num_params,
+ 			 struct snd_soc_dapm_widget *source,
+@@ -3963,6 +3966,7 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ 
+ 	w->params = params;
+ 	w->num_params = num_params;
++	w->priv = rtd;
+ 
+ 	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
+ 	if (ret)
+-- 
+2.11.0
