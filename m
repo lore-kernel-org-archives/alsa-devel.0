@@ -1,16 +1,15 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: dapm: Fix NULL pointer deference on
-	CODEC to CODEC DAIs
-Date: Wed, 15 Aug 2018 13:11:35 +0100
-Message-ID: <20180815121135.2543-1-ckeepax@opensource.cirrus.com>
+From: ylhuajnu@163.com
+Subject: [PATCH] ALSA: ac97: fix device initialization in the
+	compat layer
+Date: Wed, 15 Aug 2018 20:59:46 +0800
+Message-ID: <20180815125946.15451-1-ylhuajnu@163.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 61FFF2675DA
- for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 14:11:40 +0200 (CEST)
+Received: from m12-11.163.com (m12-11.163.com [220.181.12.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA3832675DA
+ for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 15:00:34 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,99 +19,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: tiwai@suse.com
+Cc: Lihua Yao <ylhuajnu@163.com>, alsa-devel@alsa-project.org, robert.jarzmik@free.fr
 List-Id: alsa-devel@alsa-project.org
 
-Commit a655de808cbde ("ASoC: core: Allow topology to override
-machine driver FE DAI link config.") caused soc_dai_hw_params to
-be come dependent on the substream private_data being set with
-a pointer to the snd_soc_pcm_runtime. Currently, CODEC to CODEC
-links don't set this, which causes a NULL pointer dereference:
+From: Lihua Yao <ylhuajnu@163.com>
 
-[<4069de54>] (soc_dai_hw_params) from
-[<40694b68>] (snd_soc_dai_link_event+0x1a0/0x380)
+ac97->dev is an object of 'struct device' type. It should be initialized
+via device_initialize() or device_register().
 
-Since the ASoC core in general assumes that the substream
-private_data will be set to a pointer to the snd_soc_pcm_runtime,
-update the CODEC to CODEC links to respect this.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Fixes: 74426fbff66e ("ALSA: ac97: add an ac97 bus")
+Signed-off-by: Lihua Yao <ylhuajnu@163.com>
 ---
- include/sound/soc-dapm.h | 1 +
- sound/soc/soc-core.c     | 4 ++--
- sound/soc/soc-dapm.c     | 4 ++++
- 3 files changed, 7 insertions(+), 2 deletions(-)
+ sound/ac97/snd_ac97_compat.c | 19 +++++++++++++++++--
+ 1 file changed, 17 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index af9ef16cc34d..fdaaafdc7a00 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -407,6 +407,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
- void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
- int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
-+			 struct snd_soc_pcm_runtime *rtd,
- 			 const struct snd_soc_pcm_stream *params,
- 			 unsigned int num_params,
- 			 struct snd_soc_dapm_widget *source,
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 9cfe10d8040c..473eefe8658e 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1447,7 +1447,7 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
- 	sink = codec_dai->playback_widget;
- 	source = cpu_dai->capture_widget;
- 	if (sink && source) {
--		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
-+		ret = snd_soc_dapm_new_pcm(card, rtd, dai_link->params,
- 					   dai_link->num_params,
- 					   source, sink);
- 		if (ret != 0) {
-@@ -1460,7 +1460,7 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
- 	sink = cpu_dai->playback_widget;
- 	source = codec_dai->capture_widget;
- 	if (sink && source) {
--		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
-+		ret = snd_soc_dapm_new_pcm(card, rtd, dai_link->params,
- 					   dai_link->num_params,
- 					   source, sink);
- 		if (ret != 0) {
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 7e96793050c9..461d951917c0 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3652,6 +3652,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+diff --git a/sound/ac97/snd_ac97_compat.c b/sound/ac97/snd_ac97_compat.c
+index 61544e0d8de4..8bab44f74bb8 100644
+--- a/sound/ac97/snd_ac97_compat.c
++++ b/sound/ac97/snd_ac97_compat.c
+@@ -15,6 +15,11 @@
+ 
+ #include "ac97_core.h"
+ 
++static void compat_ac97_release(struct device *dev)
++{
++	kfree(to_ac97_t(dev));
++}
++
+ static void compat_ac97_reset(struct snd_ac97 *ac97)
  {
- 	struct snd_soc_dapm_path *source_p, *sink_p;
- 	struct snd_soc_dai *source, *sink;
-+	struct snd_soc_pcm_runtime *rtd = w->priv;
- 	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
- 	struct snd_pcm_substream substream;
- 	struct snd_pcm_hw_params *params = NULL;
-@@ -3711,6 +3712,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		goto out;
- 	}
- 	substream.runtime = runtime;
-+	substream.private_data = rtd;
+ 	struct ac97_codec_device *adev = to_ac97_device(ac97->private_data);
+@@ -65,21 +70,31 @@ static struct snd_ac97_bus compat_soc_ac97_bus = {
+ struct snd_ac97 *snd_ac97_compat_alloc(struct ac97_codec_device *adev)
+ {
+ 	struct snd_ac97 *ac97;
++	int ret;
  
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
-@@ -3895,6 +3897,7 @@ snd_soc_dapm_alloc_kcontrol(struct snd_soc_card *card,
+ 	ac97 = kzalloc(sizeof(struct snd_ac97), GFP_KERNEL);
+ 	if (ac97 == NULL)
+ 		return ERR_PTR(-ENOMEM);
+ 
+-	ac97->dev = adev->dev;
+ 	ac97->private_data = adev;
+ 	ac97->bus = &compat_soc_ac97_bus;
++
++	ac97->dev.parent = &adev->dev;
++	ac97->dev.release = compat_ac97_release;
++	dev_set_name(&ac97->dev, "%s-compat", dev_name(&adev->dev));
++	ret = device_register(&ac97->dev);
++	if (ret) {
++		put_device(&ac97->dev);
++		return ERR_PTR(ret);
++	}
++
+ 	return ac97;
  }
+ EXPORT_SYMBOL_GPL(snd_ac97_compat_alloc);
  
- int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
-+			 struct snd_soc_pcm_runtime *rtd,
- 			 const struct snd_soc_pcm_stream *params,
- 			 unsigned int num_params,
- 			 struct snd_soc_dapm_widget *source,
-@@ -3963,6 +3966,7 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
+ void snd_ac97_compat_release(struct snd_ac97 *ac97)
+ {
+-	kfree(ac97);
++	device_unregister(&ac97->dev);
+ }
+ EXPORT_SYMBOL_GPL(snd_ac97_compat_release);
  
- 	w->params = params;
- 	w->num_params = num_params;
-+	w->priv = rtd;
- 
- 	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
- 	if (ret)
 -- 
-2.11.0
+2.17.1
