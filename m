@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Unused exported functions
-	changed to internal" to the asoc tree
-Date: Wed, 15 Aug 2018 15:45:47 +0100 (BST)
-Message-ID: <20180815144547.CC92A1124437@debutante.sirena.org.uk>
+Subject: Applied "ASoC: dapm: Fix NULL pointer deference on
+	CODEC to CODEC DAIs" to the asoc tree
+Date: Wed, 15 Aug 2018 15:52:42 +0100 (BST)
+Message-ID: <20180815145242.AC38C1124437@debutante.sirena.org.uk>
+References: <20180815121135.2543-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BE87B26782A
- for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 16:45:50 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 7066F26782A
+ for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 16:52:46 +0200 (CEST)
+In-Reply-To: <20180815121135.2543-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Rosengren <robert.rosengren@axis.com>
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Robert Rosengren <robertr@axis.com>, alsa-devel@alsa-project.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: adau17x1: Unused exported functions changed to internal
+   ASoC: dapm: Fix NULL pointer deference on CODEC to CODEC DAIs
 
 has been applied to the asoc tree at
 
@@ -52,85 +53,101 @@ to this mail.
 Thanks,
 Mark
 
->From 164c0f6454186d1b0e22c27dfe3d3d59fc80f979 Mon Sep 17 00:00:00 2001
-From: Robert Rosengren <robert.rosengren@axis.com>
-Date: Mon, 13 Aug 2018 09:33:58 +0200
-Subject: [PATCH] ASoC: adau17x1: Unused exported functions changed to internal
+>From 249dc49576fc953a7378b916c6a6d47ea81e4da2 Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Wed, 15 Aug 2018 13:11:35 +0100
+Subject: [PATCH] ASoC: dapm: Fix NULL pointer deference on CODEC to CODEC DAIs
 
-adau17x1_setup_firmware and adau17x1_has_dsp is only used internally, so
-making them static instead of exported.
+Commit a655de808cbde ("ASoC: core: Allow topology to override
+machine driver FE DAI link config.") caused soc_dai_hw_params to
+be come dependent on the substream private_data being set with
+a pointer to the snd_soc_pcm_runtime. Currently, CODEC to CODEC
+links don't set this, which causes a NULL pointer dereference:
 
-Change-Id: I4882513ab457966b0371ac2c1024550ca6edbe0c
-Signed-off-by: Robert Rosengren <robertr@axis.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+[<4069de54>] (soc_dai_hw_params) from
+[<40694b68>] (snd_soc_dai_link_event+0x1a0/0x380)
+
+Since the ASoC core in general assumes that the substream
+private_data will be set to a pointer to the snd_soc_pcm_runtime,
+update the CODEC to CODEC links to respect this.
+
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau17x1.c | 9 +++++----
- sound/soc/codecs/adau17x1.h | 4 ----
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ include/sound/soc-dapm.h | 1 +
+ sound/soc/soc-core.c     | 4 ++--
+ sound/soc/soc-dapm.c     | 4 ++++
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 57169b8ff14e..2f2afb4c0c88 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -60,6 +60,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
- 	SOC_ENUM("Mic Bias Mode", adau17x1_mic_bias_mode_enum),
- };
- 
-+static int adau17x1_setup_firmware(struct snd_soc_component *component,
-+	unsigned int rate);
-+
- static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
+diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
+index af9ef16cc34d..fdaaafdc7a00 100644
+--- a/include/sound/soc-dapm.h
++++ b/include/sound/soc-dapm.h
+@@ -407,6 +407,7 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
+ int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
+ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
++			 struct snd_soc_pcm_runtime *rtd,
+ 			 const struct snd_soc_pcm_stream *params,
+ 			 unsigned int num_params,
+ 			 struct snd_soc_dapm_widget *source,
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 9cfe10d8040c..473eefe8658e 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1447,7 +1447,7 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 	sink = codec_dai->playback_widget;
+ 	source = cpu_dai->capture_widget;
+ 	if (sink && source) {
+-		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
++		ret = snd_soc_dapm_new_pcm(card, rtd, dai_link->params,
+ 					   dai_link->num_params,
+ 					   source, sink);
+ 		if (ret != 0) {
+@@ -1460,7 +1460,7 @@ static int soc_link_dai_widgets(struct snd_soc_card *card,
+ 	sink = cpu_dai->playback_widget;
+ 	source = codec_dai->capture_widget;
+ 	if (sink && source) {
+-		ret = snd_soc_dapm_new_pcm(card, dai_link->params,
++		ret = snd_soc_dapm_new_pcm(card, rtd, dai_link->params,
+ 					   dai_link->num_params,
+ 					   source, sink);
+ 		if (ret != 0) {
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7e96793050c9..461d951917c0 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3652,6 +3652,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
  {
-@@ -313,7 +316,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
- 	{ "Capture", NULL, "Right Decimator" },
- };
- 
--bool adau17x1_has_dsp(struct adau *adau)
-+static bool adau17x1_has_dsp(struct adau *adau)
- {
- 	switch (adau->type) {
- 	case ADAU1761:
-@@ -324,7 +327,6 @@ bool adau17x1_has_dsp(struct adau *adau)
- 		return false;
+ 	struct snd_soc_dapm_path *source_p, *sink_p;
+ 	struct snd_soc_dai *source, *sink;
++	struct snd_soc_pcm_runtime *rtd = w->priv;
+ 	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
+ 	struct snd_pcm_substream substream;
+ 	struct snd_pcm_hw_params *params = NULL;
+@@ -3711,6 +3712,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 		goto out;
  	}
+ 	substream.runtime = runtime;
++	substream.private_data = rtd;
+ 
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+@@ -3895,6 +3897,7 @@ snd_soc_dapm_alloc_kcontrol(struct snd_soc_card *card,
  }
--EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
  
- static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
- 	int source, unsigned int freq_in, unsigned int freq_out)
-@@ -836,7 +838,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
- }
- EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
+ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
++			 struct snd_soc_pcm_runtime *rtd,
+ 			 const struct snd_soc_pcm_stream *params,
+ 			 unsigned int num_params,
+ 			 struct snd_soc_dapm_widget *source,
+@@ -3963,6 +3966,7 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
  
--int adau17x1_setup_firmware(struct snd_soc_component *component,
-+static int adau17x1_setup_firmware(struct snd_soc_component *component,
- 	unsigned int rate)
- {
- 	int ret;
-@@ -880,7 +882,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 	w->params = params;
+ 	w->num_params = num_params;
++	w->priv = rtd;
  
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
- 
- int adau17x1_add_widgets(struct snd_soc_component *component)
- {
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index e6fe87beec07..98a3b6f5bc96 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -68,10 +68,6 @@ int adau17x1_resume(struct snd_soc_component *component);
- 
- extern const struct snd_soc_dai_ops adau17x1_dai_ops;
- 
--int adau17x1_setup_firmware(struct snd_soc_component *component,
--	unsigned int rate);
--bool adau17x1_has_dsp(struct adau *adau);
--
- #define ADAU17X1_CLOCK_CONTROL			0x4000
- #define ADAU17X1_PLL_CONTROL			0x4002
- #define ADAU17X1_REC_POWER_MGMT			0x4009
+ 	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
+ 	if (ret)
 -- 
 2.18.0
