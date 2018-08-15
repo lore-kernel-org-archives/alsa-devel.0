@@ -1,17 +1,15 @@
 From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 2/2] ASoC: rt5663: Remove the boost volume in
-	the beginning of playback
-Date: Wed, 15 Aug 2018 14:47:50 +0800
-Message-ID: <1534315670-22389-2-git-send-email-oder_chiou@realtek.com>
-References: <1534315670-22389-1-git-send-email-oder_chiou@realtek.com>
+Subject: [PATCH 1/2] ASoC: rt5514: Fix the issue of the delay
+	volume applied again
+Date: Wed, 15 Aug 2018 14:47:49 +0800
+Message-ID: <1534315670-22389-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 7DABE2675DA
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EEC42677A8
  for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 08:48:01 +0200 (CEST)
-In-Reply-To: <1534315670-22389-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,52 +23,41 @@ To: broonie@kernel.org, lgirdwood@gmail.com
 Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch removes the boost volume in the beginning of playback while the
-DAC volume set to lower.
+After our evaluation, we need to modify the default values to make sure
+the volume applied immediately.
 
 Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
 ---
- sound/soc/codecs/rt5663.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5514.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5663.c b/sound/soc/codecs/rt5663.c
-index 9bd24ad..2444fad 100644
---- a/sound/soc/codecs/rt5663.c
-+++ b/sound/soc/codecs/rt5663.c
-@@ -72,6 +72,7 @@ struct rt5663_priv {
- static const struct reg_sequence rt5663_patch_list[] = {
- 	{ 0x002a, 0x8020 },
- 	{ 0x0086, 0x0028 },
-+	{ 0x0100, 0xa020 },
- 	{ 0x0117, 0x0f28 },
- 	{ 0x02fb, 0x8089 },
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index dca82dd..32fe76c 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -64,8 +64,8 @@ static const struct reg_sequence rt5514_patch[] = {
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_ADCFED,	0x00000800},
+ 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+-	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
+-	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
++	{RT5514_DOWNFILTER0_CTRL3,	0x10000342},
++	{RT5514_DOWNFILTER1_CTRL3,	0x10000342},
  };
-@@ -580,7 +581,7 @@ static const struct reg_default rt5663_reg[] = {
- 	{ 0x00fd, 0x0001 },
- 	{ 0x00fe, 0x10ec },
- 	{ 0x00ff, 0x6406 },
--	{ 0x0100, 0xa0a0 },
-+	{ 0x0100, 0xa020 },
- 	{ 0x0108, 0x4444 },
- 	{ 0x0109, 0x4444 },
- 	{ 0x010a, 0xaaaa },
-@@ -2337,6 +2338,8 @@ static int rt5663_hp_event(struct snd_soc_dapm_widget *w,
- 				0x8000);
- 			snd_soc_component_update_bits(component, RT5663_DEPOP_1, 0x3000,
- 				0x3000);
-+			snd_soc_component_update_bits(component,
-+				RT5663_DIG_VOL_ZCD, 0x00c0, 0x0080);
- 		}
- 		break;
  
-@@ -2351,6 +2354,8 @@ static int rt5663_hp_event(struct snd_soc_dapm_widget *w,
- 				RT5663_OVCD_HP_MASK, RT5663_OVCD_HP_EN);
- 			snd_soc_component_update_bits(component,
- 				RT5663_DACREF_LDO, 0x3e0e, 0);
-+			snd_soc_component_update_bits(component,
-+				RT5663_DIG_VOL_ZCD, 0x00c0, 0);
- 		}
- 		break;
- 
+ static const struct reg_default rt5514_reg[] = {
+@@ -92,10 +92,10 @@ static const struct reg_default rt5514_reg[] = {
+ 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+ 	{RT5514_DOWNFILTER0_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER0_CTRL2,	0x00020c2f},
+-	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
++	{RT5514_DOWNFILTER0_CTRL3,	0x10000342},
+ 	{RT5514_DOWNFILTER1_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER1_CTRL2,	0x00020c2f},
+-	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
++	{RT5514_DOWNFILTER1_CTRL3,	0x10000342},
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_LDO18_16,	0x02000345},
+ 	{RT5514_ANA_CTRL_ADC12,		0x0000a2a8},
 -- 
 2.7.4
