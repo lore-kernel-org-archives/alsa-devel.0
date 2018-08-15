@@ -1,84 +1,35 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v2] ASoC: tegra: probe deferral error reporting
-Date: Wed, 15 Aug 2018 17:02:39 +0100
-Message-ID: <930b05df-c502-192e-3cb9-9e1874701cce@nvidia.com>
-References: <20180814140145.12212-1-marcel@ziswiler.com>
+From: Gene Cristan <gene@gcci.ca>
+Subject: Trying to create a developer account, but need a token
+Date: Wed, 15 Aug 2018 13:33:20 -0400
+Message-ID: <9f1307d82d3a99c59d18e8e0435f763a@gcci.ca>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180814140145.12212-1-marcel@ziswiler.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marcel Ziswiler <marcel@ziswiler.com>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org
-Cc: Stefan Agner <stefan@agner.ch>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Thierry Reding <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from genecristan.com (unknown [207.45.187.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F5832677ED
+ for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 19:33:21 +0200 (CEST)
+Received: from [::1] (port=47468 helo=newiron.acenet.us)
+ by newiron.acenet.us with esmtpa (Exim 4.91)
+ (envelope-from <gene@gcci.ca>) id 1fpzfc-001FiX-BR
+ for alsa-devel@alsa-project.org; Wed, 15 Aug 2018 13:33:20 -0400
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+To help protect against automated account creation, please answer the
+question that appears below (more info [1]): 
 
-On 14/08/18 15:01, Marcel Ziswiler wrote:
-> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> 
-> Actually report the error codes from of_get_named_gpio() resp.
-> devm_gpio_request_one() upon trying to get the codec reset resp. sync
-> GPIOs unless it is just a probe deferral.
-> 
-> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> 
-> ---
-> 
-> Changes in v2:
-> - Silence probe deferral as suggested by Stefan.
-> - Fix line over 80 characters as reported by checkpatch.
-> 
->  sound/soc/tegra/tegra20_ac97.c | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
-> index 682ef33afb5f..2ac6b2d73980 100644
-> --- a/sound/soc/tegra/tegra20_ac97.c
-> +++ b/sound/soc/tegra/tegra20_ac97.c
-> @@ -351,18 +351,31 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
->  		ret = devm_gpio_request_one(&pdev->dev, ac97->reset_gpio,
->  					    GPIOF_OUT_INIT_HIGH, "codec-reset");
->  		if (ret) {
-> -			dev_err(&pdev->dev, "could not get codec-reset GPIO\n");
-> +			if (ret != -EPROBE_DEFER)
-> +				dev_err(&pdev->dev,
-> +					"could not get codec-reset GPIO: %d\n",
-> +					ret);
-> +
->  			goto err_clk_put;
->  		}
->  	} else {
-> -		dev_err(&pdev->dev, "no codec-reset GPIO supplied\n");
-> +		ret = ac97->reset_gpio;
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(&pdev->dev,
-> +				"no codec-reset GPIO supplied: %d\n",
-> +				ret);
-> +
->  		goto err_clk_put;
->  	}
->  
->  	ac97->sync_gpio = of_get_named_gpio(pdev->dev.of_node,
->  					    "nvidia,codec-sync-gpio", 0);
->  	if (!gpio_is_valid(ac97->sync_gpio)) {
-> -		dev_err(&pdev->dev, "no codec-sync GPIO supplied\n");
-> +		ret = ac97->sync_gpio;
-> +		if (ret != -EPROBE_DEFER)
-> +			dev_err(&pdev->dev, "no codec-sync GPIO supplied: %d\n",
-> +				ret);
-> +
->  		goto err_clk_put;
->  	}
+Token to prevent spam? Please, ask on mailing lists...  
 
-Thanks, looks good to me. However, I wonder why we don't request the
-'sync_gpio' in the probe like we do for the reset? Otherwise ...
-
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
-
-Cheers
-Jon
-
--- 
-nvpublic
+Links:
+------
+[1] http://www.alsa-project.org/main/index.php/Special:Captcha/help
