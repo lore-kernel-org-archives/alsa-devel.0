@@ -1,15 +1,18 @@
-From: Oder Chiou <oder_chiou@realtek.com>
-Subject: [PATCH 1/2] ASoC: rt5514: Fix the issue of the delay
-	volume applied again
-Date: Wed, 15 Aug 2018 14:47:49 +0800
-Message-ID: <1534315670-22389-1-git-send-email-oder_chiou@realtek.com>
+From: Hsin-Yu Chao <hychao@chromium.org>
+Subject: [PATCH] control_hw: Fix issue when applying seccomp
+	policy
+Date: Wed, 15 Aug 2018 16:17:50 +0800
+Message-ID: <20180815081750.70746-1-hychao@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EEC42677A8
- for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 08:48:01 +0200 (CEST)
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id B4B722675DA
+ for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 10:18:05 +0200 (CEST)
+Received: by mail-pg1-f195.google.com with SMTP id y4-v6so229640pgp.9
+ for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 01:18:05 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,45 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: Oder Chiou <oder_chiou@realtek.com>, jack.yu@realtek.com, alsa-devel@alsa-project.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
+To: alsa-devel@alsa-project.org
+Cc: vinod.koul@intel.com, dgreid@chromium.org, Hsin-Yu Chao <hychao@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-After our evaluation, we need to modify the default values to make sure
-the volume applied immediately.
+When seccomp policy is applied to filter ioctl syscall with
+SNDRV_CTL_IOCTL_TLV_COMMAND, SNDRV_CTL_IOCTL_TLV_READ and
+SNDRV_CTL_IOCTL_TLV_WRITE in whiltelist, alsa-lib still breaks
+in at snd_ctl_hw_elem_tlv().
+Fix the problem by passing unsigned int to ioctl.
 
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Hsin-Yu Chao <hychao@chromium.org>
 ---
- sound/soc/codecs/rt5514.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ src/control/control_hw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index dca82dd..32fe76c 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -64,8 +64,8 @@ static const struct reg_sequence rt5514_patch[] = {
- 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
- 	{RT5514_ANA_CTRL_ADCFED,	0x00000800},
- 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
--	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
--	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
-+	{RT5514_DOWNFILTER0_CTRL3,	0x10000342},
-+	{RT5514_DOWNFILTER1_CTRL3,	0x10000342},
- };
- 
- static const struct reg_default rt5514_reg[] = {
-@@ -92,10 +92,10 @@ static const struct reg_default rt5514_reg[] = {
- 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
- 	{RT5514_DOWNFILTER0_CTRL1,	0x00020c2f},
- 	{RT5514_DOWNFILTER0_CTRL2,	0x00020c2f},
--	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
-+	{RT5514_DOWNFILTER0_CTRL3,	0x10000342},
- 	{RT5514_DOWNFILTER1_CTRL1,	0x00020c2f},
- 	{RT5514_DOWNFILTER1_CTRL2,	0x00020c2f},
--	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
-+	{RT5514_DOWNFILTER1_CTRL3,	0x10000342},
- 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
- 	{RT5514_ANA_CTRL_LDO18_16,	0x02000345},
- 	{RT5514_ANA_CTRL_ADC12,		0x0000a2a8},
+diff --git a/src/control/control_hw.c b/src/control/control_hw.c
+index 68eca522..b54d65f2 100644
+--- a/src/control/control_hw.c
++++ b/src/control/control_hw.c
+@@ -215,7 +215,7 @@ static int snd_ctl_hw_elem_tlv(snd_ctl_t *handle, int op_flag,
+ 			       unsigned int numid,
+ 			       unsigned int *tlv, unsigned int tlv_size)
+ {
+-	int inum;
++	unsigned int inum;
+ 	snd_ctl_hw_t *hw = handle->private_data;
+ 	struct snd_ctl_tlv *xtlv;
+ 	
 -- 
-2.7.4
+2.18.0.865.gffc8e1a3cd6-goog
