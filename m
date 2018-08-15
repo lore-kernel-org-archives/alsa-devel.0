@@ -1,15 +1,22 @@
-From: ylhuajnu@163.com
-Subject: [PATCH] ALSA: ac97: fix device initialization in the
-	compat layer
-Date: Wed, 15 Aug 2018 20:59:46 +0800
-Message-ID: <20180815125946.15451-1-ylhuajnu@163.com>
+From: Petr Cvek <petrcvekcz@gmail.com>
+Subject: Re: ASoC: pxa: possible regressions
+Date: Wed, 15 Aug 2018 16:29:10 +0200
+Message-ID: <41991989-8f9f-9ca5-94fb-8c0a09c51ada@gmail.com>
+References: <5be00a36-d54b-e8ab-2d5f-4c1870f14aac@gmail.com>
+ <58f65d89-c342-026f-6e24-a67fcd625a26@zonque.org>
+ <3ff3c732-b598-f2c3-9a0a-cc92f234326b@gmail.com>
+ <d803b938-3212-6485-8786-43dff6e46e6a@zonque.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from m12-11.163.com (m12-11.163.com [220.181.12.11])
- by alsa0.perex.cz (Postfix) with ESMTP id EA3832675DA
- for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 15:00:34 +0200 (CEST)
+Received: from mail-wm0-f68.google.com (mail-wm0-f68.google.com [74.125.82.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id BDEC826782A
+ for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 16:28:16 +0200 (CEST)
+Received: by mail-wm0-f68.google.com with SMTP id y2-v6so1574581wma.1
+ for <alsa-devel@alsa-project.org>; Wed, 15 Aug 2018 07:28:16 -0700 (PDT)
+In-Reply-To: <d803b938-3212-6485-8786-43dff6e46e6a@zonque.org>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,70 +26,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.com
-Cc: Lihua Yao <ylhuajnu@163.com>, alsa-devel@alsa-project.org, robert.jarzmik@free.fr
+To: Daniel Mack <daniel@zonque.org>
+Cc: alsa-devel@alsa-project.org, lgirdwood@gmail.com, haojian.zhuang@gmail.com, broonie@kernel.org, philipp.zabel@gmail.com, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Lihua Yao <ylhuajnu@163.com>
+Dne 13.8.2018 v 07:54 Daniel Mack napsal(a):
+> Hi Petr,
+> 
+> On Wednesday, August 08, 2018 11:07 AM, Petr Cvek wrote:
+>> Dne 8.8.2018 v 07:38 Daniel Mack napsal(a):
+> 
+>> I was planning to send patches before I've found regressions in the
+>> current -next.
+>>
+>> I think I've had the first working version somewhere around 3.13, but I
+>> was updating versions only sporadically and fixing audio had low
+>> priority (higher priority got iwmmxt compiler, platform init source
+>> code, charger, USB, MMC and IrDA). Some versions until now worked, some
+>> didn't.
+>>
+>> The last version I've used and where the sound worked was
+>> 4.14.0-rc7-next from somewhere around 3rd November 2017. The patch for
+>> sound subsystem should be the same as the current one.
+> 
+> That's strange, because as I said, the SSP rework went in in 4.0, so
+> without my regression fix (737e370a57e4e8 "ASoC: pxa-ssp: allow more
+> flexible setup order"), I doubt SSP had worked for you.
+> 
 
-ac97->dev is an object of 'struct device' type. It should be initialized
-via device_initialize() or device_register().
+OK I found the problem I've had compiled and load (on both v4.14 and
+v4.18) snd-soc-pxa2xx driver (from linux/sound/arm/pxa2xx-pcm.c). This
+component calls pxa2xx_soc_pcm_new() which is already called by
+snd_soc_pxa_ssp (pxa-ssp-dai.0) or snd_soc_pxa2xx_i2s (pxa2xx-i2s). In
+the function the dma gets registered twice, which is a wrong behavior
+(kernel oops on DMA stopping). Without snd-soc-pxa2xx driver loaded the
+playback works (after the rest of my patches) so it seems in the old
+version DMA wasn't registered twice.
 
-Fixes: 74426fbff66e ("ALSA: ac97: add an ac97 bus")
-Signed-off-by: Lihua Yao <ylhuajnu@163.com>
----
- sound/ac97/snd_ac97_compat.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+So the easy solution for snd_soc_pxa_ssp OR snd_soc_pxa2xx_i2s would be
+a mutual exclusivity with snd_soc_pxa_ssp. I don't know about other
+users, but I can add a condition to magician Kconfig entry.
 
-diff --git a/sound/ac97/snd_ac97_compat.c b/sound/ac97/snd_ac97_compat.c
-index 61544e0d8de4..8bab44f74bb8 100644
---- a/sound/ac97/snd_ac97_compat.c
-+++ b/sound/ac97/snd_ac97_compat.c
-@@ -15,6 +15,11 @@
- 
- #include "ac97_core.h"
- 
-+static void compat_ac97_release(struct device *dev)
-+{
-+	kfree(to_ac97_t(dev));
-+}
-+
- static void compat_ac97_reset(struct snd_ac97 *ac97)
- {
- 	struct ac97_codec_device *adev = to_ac97_device(ac97->private_data);
-@@ -65,21 +70,31 @@ static struct snd_ac97_bus compat_soc_ac97_bus = {
- struct snd_ac97 *snd_ac97_compat_alloc(struct ac97_codec_device *adev)
- {
- 	struct snd_ac97 *ac97;
-+	int ret;
- 
- 	ac97 = kzalloc(sizeof(struct snd_ac97), GFP_KERNEL);
- 	if (ac97 == NULL)
- 		return ERR_PTR(-ENOMEM);
- 
--	ac97->dev = adev->dev;
- 	ac97->private_data = adev;
- 	ac97->bus = &compat_soc_ac97_bus;
-+
-+	ac97->dev.parent = &adev->dev;
-+	ac97->dev.release = compat_ac97_release;
-+	dev_set_name(&ac97->dev, "%s-compat", dev_name(&adev->dev));
-+	ret = device_register(&ac97->dev);
-+	if (ret) {
-+		put_device(&ac97->dev);
-+		return ERR_PTR(ret);
-+	}
-+
- 	return ac97;
- }
- EXPORT_SYMBOL_GPL(snd_ac97_compat_alloc);
- 
- void snd_ac97_compat_release(struct snd_ac97 *ac97)
- {
--	kfree(ac97);
-+	device_unregister(&ac97->dev);
- }
- EXPORT_SYMBOL_GPL(snd_ac97_compat_release);
- 
--- 
-2.17.1
+Best regards,
+Petr
