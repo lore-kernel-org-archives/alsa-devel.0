@@ -1,40 +1,84 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH - hwmixvolume 4/9] hwmixvolume: use a with
- context to open files
-Date: Thu, 16 Aug 2018 00:36:06 +0900
-Message-ID: <0dfa0f94-371f-a587-eadd-9c0a7457b2cc@sakamocchi.jp>
-References: <20180808155637.5592-1-linkmauve@jabberfr.org>
- <20180808155637.5592-5-linkmauve@jabberfr.org>
- <f72c8a97-542f-85e6-de3d-3ee121f4aa72@sakamocchi.jp>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH v2] ASoC: tegra: probe deferral error reporting
+Date: Wed, 15 Aug 2018 17:02:39 +0100
+Message-ID: <930b05df-c502-192e-3cb9-9e1874701cce@nvidia.com>
+References: <20180814140145.12212-1-marcel@ziswiler.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <f72c8a97-542f-85e6-de3d-3ee121f4aa72@sakamocchi.jp>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180814140145.12212-1-marcel@ziswiler.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>, patch@alsa-project.org
-Cc: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>, alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marcel Ziswiler <marcel@ziswiler.com>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org
+Cc: Stefan Agner <stefan@agner.ch>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Thierry Reding <thierry.reding@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gQXVnIDE0IDIwMTggMTI6NTksIFRha2FzaGkgU2FrYW1vdG8gd3JvdGU6Cj4gSWYgeW91IHVz
-ZSBQeXRob24gMi41IG9yIGxhdGVyLCB5b3UgY2FuIHVzZSAnZmlsZSgpJyBpbnN0ZWFkIG9mIAo+
-ICdvcGVuKCknLiBGdXJ0aGVybW9yZSwgRklMRSBvYmplY3QgcmV0dXJuZWQgYnkgJ2ZpbGUoKScg
-KG9yICdvcGVuKCknKSAKPiBzdXBwb3J0cyAnaXRlcmF0b3InIGFuZCB5b3UgaGF2ZSBubyBuZWVk
-IHRvIGNhbGwgJy5yZWFkbGluZXMoKScgYW55bW9yZSwKPiB0aHVzOgo+IAo+IGBgYAo+ICA+ICvC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHdpdGggZmlsZShmaWxlbmFtZSwgInIiKSBhcyBmOgo+ICA+
-ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZm9yIGxpbmUgaW4gZjoKPiAuLi4KPiBg
-YGAKCk9vcHMuIFRoZSAnZmlsZSgpJyBpcyByZW1vdmVkIGF0IFB5dGhvbiAzLjBbMV0uLi4KClsx
-XSBodHRwczovL2RvY3MucHl0aG9uLm9yZy9yZWxlYXNlLzMuMC93aGF0c25ldy8zLjAuaHRtbCNi
-dWlsdGlucwoKClJlZ2FyZHMKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1k
-ZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFp
-bG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+
+On 14/08/18 15:01, Marcel Ziswiler wrote:
+> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> 
+> Actually report the error codes from of_get_named_gpio() resp.
+> devm_gpio_request_one() upon trying to get the codec reset resp. sync
+> GPIOs unless it is just a probe deferral.
+> 
+> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> 
+> ---
+> 
+> Changes in v2:
+> - Silence probe deferral as suggested by Stefan.
+> - Fix line over 80 characters as reported by checkpatch.
+> 
+>  sound/soc/tegra/tegra20_ac97.c | 19 ++++++++++++++++---
+>  1 file changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/sound/soc/tegra/tegra20_ac97.c b/sound/soc/tegra/tegra20_ac97.c
+> index 682ef33afb5f..2ac6b2d73980 100644
+> --- a/sound/soc/tegra/tegra20_ac97.c
+> +++ b/sound/soc/tegra/tegra20_ac97.c
+> @@ -351,18 +351,31 @@ static int tegra20_ac97_platform_probe(struct platform_device *pdev)
+>  		ret = devm_gpio_request_one(&pdev->dev, ac97->reset_gpio,
+>  					    GPIOF_OUT_INIT_HIGH, "codec-reset");
+>  		if (ret) {
+> -			dev_err(&pdev->dev, "could not get codec-reset GPIO\n");
+> +			if (ret != -EPROBE_DEFER)
+> +				dev_err(&pdev->dev,
+> +					"could not get codec-reset GPIO: %d\n",
+> +					ret);
+> +
+>  			goto err_clk_put;
+>  		}
+>  	} else {
+> -		dev_err(&pdev->dev, "no codec-reset GPIO supplied\n");
+> +		ret = ac97->reset_gpio;
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev,
+> +				"no codec-reset GPIO supplied: %d\n",
+> +				ret);
+> +
+>  		goto err_clk_put;
+>  	}
+>  
+>  	ac97->sync_gpio = of_get_named_gpio(pdev->dev.of_node,
+>  					    "nvidia,codec-sync-gpio", 0);
+>  	if (!gpio_is_valid(ac97->sync_gpio)) {
+> -		dev_err(&pdev->dev, "no codec-sync GPIO supplied\n");
+> +		ret = ac97->sync_gpio;
+> +		if (ret != -EPROBE_DEFER)
+> +			dev_err(&pdev->dev, "no codec-sync GPIO supplied: %d\n",
+> +				ret);
+> +
+>  		goto err_clk_put;
+>  	}
+
+Thanks, looks good to me. However, I wonder why we don't request the
+'sync_gpio' in the probe like we do for the reset? Otherwise ...
+
+Acked-by: Jon Hunter <jonathanh@nvidia.com>
+
+Cheers
+Jon
+
+-- 
+nvpublic
