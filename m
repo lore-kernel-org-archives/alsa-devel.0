@@ -1,16 +1,15 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [ANNOUNCE] 2018 Linux Audio miniconference
-Date: Thu, 16 Aug 2018 17:02:33 +0100
-Message-ID: <20180816160233.GA5656@sirena.org.uk>
-References: <20180810110656.GE20971@sirena.org.uk>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: =?utf-8?q?=5BPATCH_v6_0/7=5D_Enable_HDA_Codec_suppor?=
+	=?utf-8?q?t_on_Intel_Platforms=E2=80=8B?=
+Date: Thu, 16 Aug 2018 16:46:46 -0500
+Message-ID: <20180816214653.11797-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0937278270742190974=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2E45C2677E7
- for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2018 18:02:35 +0200 (CEST)
-In-Reply-To: <20180810110656.GE20971@sirena.org.uk>
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id B1C05267800
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2018 23:47:08 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +20,99 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
+Many Intel platforms (SKL, KBL) etc. in the market supports enhanced
+audio capabilities which also includes DSP processing. The default
+HDaudio legacy driver does not allow for the use of the DSP, this
+patch set makes it possible while reusing existing code for HDAudio
+codecs and without significant changes to the legacy driver.
 
---===============0937278270742190974==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
-Content-Disposition: inline
+This v6 is based on Marks' for-next branch - the merge of
+topic/drm_audio_component is not included here.
 
+Tests were run successfully on multiple platforms (Dell XPS13, KBL
+NUC, APL NUC and LeafHill reference board). Both the HDaudio and HDMI
+outputs were tested.
 
---AhhlLboLdkugWU4S
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Credits: all the initial code was written by Rakesh Ughreja, the
+rebase to broonie/for-next, cleanups and additional tests were done by
+Pierre Bossart.
 
-On Fri, Aug 10, 2018 at 12:06:56PM +0100, Mark Brown wrote:
+TODO in future update:
+1. fix the HDMI jack detection which only works after the mixer values
+are set, which isn't practical for headless devices always connected
+(this is a problem in the hdac_hdmi codec that was present before this
+series was submitted)
+2. when the screen goes blank, HDMI playback stops. This isn't related
+to this patchset since we rely on the existing hdac_hdmi codec, but
+will need additional investigations.
 
-> As in previous years we're trying to organize an audio miniconference so
-> we can get together and talk through issues, especially design decisons,
-> face to face.  This year's event will be held on Sunday October 21st in
-> Edinburgh, the day before ELC Europe starts there.  We're still
-> finalizing the venue (we expect to be able to confirm next week) but
-> it'll be outside the ELC venue so there will be no need to purchase an
-> ELC ticket to attend.=20
+Changes v6 (comments from Mark and Takashi)
+- simplify Kconfig options, remove FORCE for now and make code simpler
+- change SPDIX style to C++ for C files
+- add log message if invalid configuration reached
+- remove static int counter, added private counter in context instead
+- fixed a couple of indendation issues to make checkpatch.pl --strict happy
 
-I am pleased to be able to confirm that Cirrus Logic have generously
-offered to host this at their offices in Edinburgh:
+Changes v5 (comments from Vinod)
+- fix SPDIF style across patches
+- patch 1: update commit message to remove reference to "fix"
+- patch 3: remove platform name assignment and Xmas tree style
+- patch 7: simplify error handling, add missing _put() on errors,
+  	   remove tests on ops, add switch statement, fix alignment
+- patch 8: fix indentation issues, use bool instead of tristate
 
-	7B Nightingale Way
-	Quartermile
-	Edinburgh
-	EH3 9EG
+Changes v4:
+- rebase/update on Takashi's topic/drm_audio_component branch
+- changes in the HDaudio detection to avoid adding a fake ACPI ID
+- new Kconfigs to control HDaudio detection
 
-(this is very central, quite near the ELC/Open Source Summit venue.)
+Changes v3:
+- port to component model
+- additional tests on ApolloLake and KabyLake NUC devices
+- cleanups (alignment, typos, etc)
 
-> As with previous years let's pull together an agenda through a mailing
-> list discussion - if people could reply to this mail with any topics
-> they'd like to discuss we can take it from there.  Of course if we can
-> sort things out more quickly via the mailing list that's even better!
+Changes v2:
+- Resolved review comments and rebased to latest kernel.
+- added module load support for codec drivers.
 
-Not much discussion yet - one topic I think there's some useful
-discussion to be had about is DSPs, we've got the recent Intel work with
-Sound Open Firmware opening things up there and potentially being able
-to offload work from the userspace sound servers.
+Pierre-Louis Bossart (2):
+  ASoC: Intel: common: add table for HDA-based platforms
+  ASoC: Intel: Skylake: add option to control HDAudio + DSP usage
 
-> If you're planning to attend please fill out the form here:
->=20
->   https://docs.google.com/spreadsheets/d/11p2pSNxS7sJysg1JwErWi0T2Dq7XKRt=
-AGngBHAn_w2g/edit?usp=3Dsharing
+Rakesh Ughreja (5):
+  ASoC: Intel: Boards: Machine driver for SKL+ w/ HDAudio codecs
+  ASoC: Intel: Skylake: use HDAudio if ACPI enumeration fails
+  ASoC: Intel: Skylake: add HDA BE DAIs
+  ASoC: Intel: Skylake: use hda_bus instead of hdac_bus
+  ASoC: hdac_hda: add asoc extension for legacy HDA codec drivers
 
---AhhlLboLdkugWU4S
-Content-Type: application/pgp-signature; name="signature.asc"
+ include/sound/soc-acpi-intel-match.h          |   6 +
+ sound/pci/hda/hda_bind.c                      |  12 +
+ sound/soc/codecs/Kconfig                      |   5 +
+ sound/soc/codecs/Makefile                     |   2 +
+ sound/soc/codecs/hdac_hda.c                   | 485 ++++++++++++++++++
+ sound/soc/codecs/hdac_hda.h                   |  24 +
+ sound/soc/intel/Kconfig                       |   9 +
+ sound/soc/intel/boards/Kconfig                |   9 +
+ sound/soc/intel/boards/Makefile               |   2 +
+ sound/soc/intel/boards/skl_hda_dsp_common.c   | 127 +++++
+ sound/soc/intel/boards/skl_hda_dsp_common.h   |  38 ++
+ sound/soc/intel/boards/skl_hda_dsp_generic.c  | 181 +++++++
+ sound/soc/intel/common/Makefile               |   3 +-
+ .../intel/common/soc-acpi-intel-hda-match.c   |  40 ++
+ sound/soc/intel/skylake/skl-pcm.c             |  70 ++-
+ sound/soc/intel/skylake/skl.c                 | 104 +++-
+ sound/soc/intel/skylake/skl.h                 |  12 +-
+ 17 files changed, 1102 insertions(+), 27 deletions(-)
+ create mode 100644 sound/soc/codecs/hdac_hda.c
+ create mode 100644 sound/soc/codecs/hdac_hda.h
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.c
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.h
+ create mode 100644 sound/soc/intel/boards/skl_hda_dsp_generic.c
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-hda-match.c
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlt1oBgACgkQJNaLcl1U
-h9B73gf/ZoIoRvcSuit7+BD0+93NVbNl7yS6jRyujrBQqywCXvkoNVGFZktE2dGa
-EPFZkeYanV6LWD6Q0AJ52zd2oC0euPLG22X3OCauEHXBLBbc84GlTGZEbLQmLHkQ
-gw7UW0RuMYPvOhIz3CJ1eFt1yRnXXM/Vq+zLmewgqSxxEsTIQkRbhkEwzRLYRnRE
-jQKjeBzv5AX6GwDQ9stYF6mtoo2w7lejH9gPgoldbmh18Il+n4FRJXFcr8CM0SzJ
-+1VB8zKh5HU8tujh2qM/nrBWKWt8phZXoiqG897yaue8wOtboDfunSsjIUlcxQ1a
-9QoIj8A1Yqp2ZljbPD5sYSpjbqG6fw==
-=Ed8o
------END PGP SIGNATURE-----
-
---AhhlLboLdkugWU4S--
-
---===============0937278270742190974==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0937278270742190974==--
+-- 
+2.17.1
