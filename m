@@ -1,21 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [RFC PATCH] ASoC: core: Optimise suspend/resume of
-	DAPM widgets
-Date: Thu, 16 Aug 2018 11:51:35 +0100
-Message-ID: <20180816105135.GZ2414@sirena.org.uk>
-References: <1533301025-19980-1-git-send-email-jonathanh@nvidia.com>
- <20180803163605.GD6591@sirena.org.uk>
- <7ba86328-5bb6-5280-df6f-9937173fb2ab@nvidia.com>
- <20180814144004.GD5810@sirena.org.uk>
- <e1bc40ec-de7e-2b77-d7f6-ec6b3066aeec@nvidia.com>
+Subject: Applied "ASoC: rt5514: Fix the issue of the delay
+	volume applied again" to the asoc tree
+Date: Thu, 16 Aug 2018 12:14:11 +0100 (BST)
+Message-ID: <20180816111411.5EFB0440078@finisterre.ee.mobilebroadband>
+References: <1534315670-22389-1-git-send-email-oder_chiou@realtek.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4204369498219723469=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C1FD2675DA
- for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2018 12:51:38 +0200 (CEST)
-In-Reply-To: <e1bc40ec-de7e-2b77-d7f6-ec6b3066aeec@nvidia.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5BFF92677BB
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2018 13:14:13 +0200 (CEST)
+In-Reply-To: <1534315670-22389-1-git-send-email-oder_chiou@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,56 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, linux-tegra@vger.kernel.org
+To: Oder Chiou <oder_chiou@realtek.com>
+Cc: jack.yu@realtek.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com, broonie@kernel.org, shumingf@realtek.com, bardliao@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4204369498219723469==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0786ZyFfTSxuegBe"
-Content-Disposition: inline
+   ASoC: rt5514: Fix the issue of the delay volume applied again
 
+has been applied to the asoc tree at
 
---0786ZyFfTSxuegBe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Aug 15, 2018 at 07:48:47PM +0100, Jon Hunter wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> So then I made the following change to avoid scheduling the function
-> calls unnecessarily (which I think should be fine) ...
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Please note that I am just using ktime_get() to log the time on entry
-> and exit from dapm_power_widgets() and so yes the time may not be
-> purely the time take to execute this function if we are preempted,
-> but I am measuring in the same way in both cases and so it does seem
-> to show some improvement.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-That seems like a simple and useful optimization, will you send a patch?
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---0786ZyFfTSxuegBe
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 6f0a256253f48095ba2e5bcdfbed41f21643c105 Mon Sep 17 00:00:00 2001
+From: Oder Chiou <oder_chiou@realtek.com>
+Date: Wed, 15 Aug 2018 14:47:49 +0800
+Subject: [PATCH] ASoC: rt5514: Fix the issue of the delay volume applied again
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlt1VzQACgkQJNaLcl1U
-h9C++wf/QB19v9pWanJUtK3uJI3vVk9Y6HQxYhrr0b9X6aZ9IPlhxWlBssaSEY0O
-1zygbrumfW9K8OLLANmo8Xb0oMb8YcXwG5UO2aIieuIwxvQo+hwUUI9QwH020JB7
-+3bRvRumioLOfR+NeZTg7M5oGuuGK34o0j/pyCT0Ej3v2YKZUlai0ynwxGkfbuav
-RiPia8eACF76DkDRBcWMQYy45+kZIXdkBOJvZcnzWGUfhlNEugWo92oYQxSshySV
-TsUG1H3HGN1/JvAogds/wVAOXSA8dt8fc1KddCdPEtaCPAoGa8NooKZDlrJFHn1L
-FQhmW9eQB1nzC8venmJohqs7SiPvNA==
-=OMjY
------END PGP SIGNATURE-----
+After our evaluation, we need to modify the default values to make sure
+the volume applied immediately.
 
---0786ZyFfTSxuegBe--
+Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5514.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---===============4204369498219723469==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============4204369498219723469==--
+diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
+index dca82dd6e3bf..32fe76c3134a 100644
+--- a/sound/soc/codecs/rt5514.c
++++ b/sound/soc/codecs/rt5514.c
+@@ -64,8 +64,8 @@ static const struct reg_sequence rt5514_patch[] = {
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_ADCFED,	0x00000800},
+ 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+-	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
+-	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
++	{RT5514_DOWNFILTER0_CTRL3,	0x10000342},
++	{RT5514_DOWNFILTER1_CTRL3,	0x10000342},
+ };
+ 
+ static const struct reg_default rt5514_reg[] = {
+@@ -92,10 +92,10 @@ static const struct reg_default rt5514_reg[] = {
+ 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
+ 	{RT5514_DOWNFILTER0_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER0_CTRL2,	0x00020c2f},
+-	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
++	{RT5514_DOWNFILTER0_CTRL3,	0x10000342},
+ 	{RT5514_DOWNFILTER1_CTRL1,	0x00020c2f},
+ 	{RT5514_DOWNFILTER1_CTRL2,	0x00020c2f},
+-	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
++	{RT5514_DOWNFILTER1_CTRL3,	0x10000342},
+ 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
+ 	{RT5514_ANA_CTRL_LDO18_16,	0x02000345},
+ 	{RT5514_ANA_CTRL_ADC12,		0x0000a2a8},
+-- 
+2.18.0
