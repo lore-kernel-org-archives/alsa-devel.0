@@ -1,53 +1,32 @@
-From: Erick Reyes <erickreyes@google.com>
-Subject: [PATCH] ALSA: info: Check for integer overflow in snd_info_entry_write()
-Date: Wed, 15 Aug 2018 17:55:48 -0700
-Message-ID: <20180816005548.151269-1-erickreyes@google.com>
+From: Ryan Lee <ryans.lee@maximintegrated.com>
+Subject: [PATCH] ASoC: max98373: Added speaker FS gain cotnrol register to volatile.
+Date: Wed, 15 Aug 2018 18:53:38 -0700
+Message-ID: <20180816015338.3734-1-ryans.lee@maximintegrated.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: stable@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, kernel-team@android.com, Vinod Koul <vkoul@kernel.org>, Joe Perches <joe@perches.com>, Al Viro <viro@zeniv.linux.org.uk>, alsa-devel@alsa-project.org, Erick Reyes <erickreyes@google.com>, Siqi Lin <siqilin@google.com>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: ryan.lee.maxim@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Commit 4adb7bcbcb69 ("ALSA: core: Use seq_file for text proc file
-reads") heavily refactored ALSA procfs and fixed the overflow as
-a side-effect, so this fix only applies to kernels < 4.2 and
-there is no upstream equivalent
-
-snd_info_entry_write() resizes the buffer with an unsigned long
-size argument that gets truncated because resize_info_buffer()
-takes the size parameter as an unsigned int. On 64-bit kernels,
-this causes the following copy_to_user() to write out-of-bounds
-if (pos + count) can't be represented by an unsigned int.
-
-Signed-off-by: Siqi Lin <siqilin@google.com>
-Signed-off-by: Erick Reyes <erickreyes@google.com>
+Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
 ---
- sound/core/info.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Changes : Added Speaker FS gain maximum control(0x203E) register to volatile.
+ sound/soc/codecs/max98373.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/core/info.c b/sound/core/info.c
-index 9f404e965ea2..08832c973a53 100644
---- a/sound/core/info.c
-+++ b/sound/core/info.c
-@@ -253,6 +253,7 @@ static ssize_t snd_info_entry_write(struct file *file, const char __user *buffer
- 	struct snd_info_buffer *buf;
- 	ssize_t size = 0;
- 	loff_t pos;
-+	unsigned long realloc_size;
- 
- 	data = file->private_data;
- 	if (snd_BUG_ON(!data))
-@@ -261,7 +262,8 @@ static ssize_t snd_info_entry_write(struct file *file, const char __user *buffer
- 	pos = *offset;
- 	if (pos < 0 || (long) pos != pos || (ssize_t) count < 0)
- 		return -EIO;
--	if ((unsigned long) pos + (unsigned long) count < (unsigned long) pos)
-+	realloc_size = (unsigned long) pos + (unsigned long) count;
-+	if (realloc_size < (unsigned long) pos || realloc_size > UINT_MAX)
- 		return -EIO;
- 	switch (entry->content) {
- 	case SNDRV_INFO_CONTENT_TEXT:
+diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
+index 92b7125..2764fae 100644
+--- a/sound/soc/codecs/max98373.c
++++ b/sound/soc/codecs/max98373.c
+@@ -520,6 +520,7 @@ static bool max98373_volatile_reg(struct device *dev, unsigned int reg)
+ {
+ 	switch (reg) {
+ 	case MAX98373_R2000_SW_RESET ... MAX98373_R2009_INT_FLAG3:
++	case MAX98373_R203E_AMP_PATH_GAIN:
+ 	case MAX98373_R2054_MEAS_ADC_PVDD_CH_READBACK:
+ 	case MAX98373_R2055_MEAS_ADC_THERM_CH_READBACK:
+ 	case MAX98373_R20B6_BDE_CUR_STATE_READBACK:
 -- 
-2.18.0.865.gffc8e1a3cd6-goog
+2.7.4
