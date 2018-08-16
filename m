@@ -1,43 +1,98 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [RFC PATCH] ASoC: core: Optimise suspend/resume of DAPM widgets
-Date: Thu, 16 Aug 2018 16:25:19 +0100
-Message-ID: <b263b31d-6fcb-2ea6-f548-3db2b00846ab@nvidia.com>
-References: <1533301025-19980-1-git-send-email-jonathanh@nvidia.com>
- <20180803163605.GD6591@sirena.org.uk>
- <7ba86328-5bb6-5280-df6f-9937173fb2ab@nvidia.com>
- <20180814144004.GD5810@sirena.org.uk>
- <e1bc40ec-de7e-2b77-d7f6-ec6b3066aeec@nvidia.com>
- <20180816105135.GZ2414@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [ANNOUNCE] 2018 Linux Audio miniconference
+Date: Thu, 16 Aug 2018 17:02:33 +0100
+Message-ID: <20180816160233.GA5656@sirena.org.uk>
+References: <20180810110656.GE20971@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180816105135.GZ2414@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============0937278270742190974=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2E45C2677E7
+ for <alsa-devel@alsa-project.org>; Thu, 16 Aug 2018 18:02:35 +0200 (CEST)
+In-Reply-To: <20180810110656.GE20971@sirena.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 
-On 16/08/18 11:51, Mark Brown wrote:
-> On Wed, Aug 15, 2018 at 07:48:47PM +0100, Jon Hunter wrote:
-> 
->> So then I made the following change to avoid scheduling the function
->> calls unnecessarily (which I think should be fine) ...
-> 
->> Please note that I am just using ktime_get() to log the time on entry
->> and exit from dapm_power_widgets() and so yes the time may not be
->> purely the time take to execute this function if we are preempted,
->> but I am measuring in the same way in both cases and so it does seem
->> to show some improvement.
-> 
-> That seems like a simple and useful optimization, will you send a patch?
+--===============0937278270742190974==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="AhhlLboLdkugWU4S"
+Content-Disposition: inline
 
-Yes I will send a patch for this.
 
-Cheers
-Jon
+--AhhlLboLdkugWU4S
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-nvpublic
+On Fri, Aug 10, 2018 at 12:06:56PM +0100, Mark Brown wrote:
+
+> As in previous years we're trying to organize an audio miniconference so
+> we can get together and talk through issues, especially design decisons,
+> face to face.  This year's event will be held on Sunday October 21st in
+> Edinburgh, the day before ELC Europe starts there.  We're still
+> finalizing the venue (we expect to be able to confirm next week) but
+> it'll be outside the ELC venue so there will be no need to purchase an
+> ELC ticket to attend.=20
+
+I am pleased to be able to confirm that Cirrus Logic have generously
+offered to host this at their offices in Edinburgh:
+
+	7B Nightingale Way
+	Quartermile
+	Edinburgh
+	EH3 9EG
+
+(this is very central, quite near the ELC/Open Source Summit venue.)
+
+> As with previous years let's pull together an agenda through a mailing
+> list discussion - if people could reply to this mail with any topics
+> they'd like to discuss we can take it from there.  Of course if we can
+> sort things out more quickly via the mailing list that's even better!
+
+Not much discussion yet - one topic I think there's some useful
+discussion to be had about is DSPs, we've got the recent Intel work with
+Sound Open Firmware opening things up there and potentially being able
+to offload work from the userspace sound servers.
+
+> If you're planning to attend please fill out the form here:
+>=20
+>   https://docs.google.com/spreadsheets/d/11p2pSNxS7sJysg1JwErWi0T2Dq7XKRt=
+AGngBHAn_w2g/edit?usp=3Dsharing
+
+--AhhlLboLdkugWU4S
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlt1oBgACgkQJNaLcl1U
+h9B73gf/ZoIoRvcSuit7+BD0+93NVbNl7yS6jRyujrBQqywCXvkoNVGFZktE2dGa
+EPFZkeYanV6LWD6Q0AJ52zd2oC0euPLG22X3OCauEHXBLBbc84GlTGZEbLQmLHkQ
+gw7UW0RuMYPvOhIz3CJ1eFt1yRnXXM/Vq+zLmewgqSxxEsTIQkRbhkEwzRLYRnRE
+jQKjeBzv5AX6GwDQ9stYF6mtoo2w7lejH9gPgoldbmh18Il+n4FRJXFcr8CM0SzJ
++1VB8zKh5HU8tujh2qM/nrBWKWt8phZXoiqG897yaue8wOtboDfunSsjIUlcxQ1a
+9QoIj8A1Yqp2ZljbPD5sYSpjbqG6fw==
+=Ed8o
+-----END PGP SIGNATURE-----
+
+--AhhlLboLdkugWU4S--
+
+--===============0937278270742190974==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============0937278270742190974==--
