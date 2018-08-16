@@ -1,41 +1,43 @@
-From: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Subject: [ANN] Linux Media Summit 2018 together with ELC-EU
-Date: Thu, 16 Aug 2018 10:39:11 -0300
-Message-ID: <20180816103911.17425593@coco.lan>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [RFC PATCH] ASoC: core: Optimise suspend/resume of DAPM widgets
+Date: Thu, 16 Aug 2018 16:25:19 +0100
+Message-ID: <b263b31d-6fcb-2ea6-f548-3db2b00846ab@nvidia.com>
+References: <1533301025-19980-1-git-send-email-jonathanh@nvidia.com>
+ <20180803163605.GD6591@sirena.org.uk>
+ <7ba86328-5bb6-5280-df6f-9937173fb2ab@nvidia.com>
+ <20180814144004.GD5810@sirena.org.uk>
+ <e1bc40ec-de7e-2b77-d7f6-ec6b3066aeec@nvidia.com>
+ <20180816105135.GZ2414@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180816105135.GZ2414@sirena.org.uk>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mark Brown <broonie@kernel.org>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsLAoKV2UncmUgb3JnYW5pemluZyB0aGlzIHllYXIncyBtZWRpYSBzdW1taXQgdG8gaGFw
-cGVuIHRvZ2V0aGVyIHdpdGggdGhlCkVtYmVkZGVkIExpbnV4IENvbmZlcmVuY2UgLSBFdXJvcGUs
-IG9uIFRodXJzZGF5LCBPY3RvYmVyIDI1IDIwMTg6CgoJaHR0cHM6Ly9ldmVudHMubGludXhmb3Vu
-ZGF0aW9uLm9yZy9ldmVudHMvZWxjLW9wZW5pb3QtZXVyb3BlLTIwMTgvCgpNZWRpYSBTdW1taXQg
-aXMgdGhlIHByZW1pZXIgZm9ydW0gdG8gZGlzY3VzcyB0aGUgTGludXggbXVsdGltZWRpYQpkZXZl
-bG9wbWVudCBmb3IgY2FtZXJhcywgYXVkaW8gYW5kIHZpZGVvIHN0cmVhbWluZyBkZXZpY2VzLAph
-bmFsb2cvZGlnaXRhbCBUViBzdXBwb3J0LCByZW1vdGUgY29udHJvbGxlciBhbmQgSERNSSBDb25z
-dW1lcgpFbGVjdHJvbmljcyBDb250cm9sIChDRUMpIGF0IHRoZSBMaW51eCBLZXJuZWwgYW5kIGl0
-cyByZWxhdGVkIAp1c2Vyc3BhY2UgQVBJcy4KClRoZSBvbmVzIGludGVyZXN0ZWQgb24gcGFydGlj
-aXBhdGluZyBvbiBpdCBzaG91bGQgYmUgcmVnaXN0ZXJlZAphdCBFTEMgb3IgT1NTIEV1cm9wZSwg
-YW5kIGluZGljYXRlIHRoZSBwYXJ0aWNpcGF0aW9uIGF0IHRoZSBtZWRpYQpzdW1taXQgdmlhIExp
-bnV4IEZvdW5kYXRpb24ncyByZWdpc3RlciBzaXRlOgoKCWh0dHBzOi8vZXZlbnRzLmxpbnV4Zm91
-bmRhdGlvbi5vcmcvZXZlbnRzL2VsYy1vcGVuaW90LWV1cm9wZS0yMDE4L3JlZ2lzdGVyLwoKV2Un
-cmUgYWxzbyBhc2tpbmcgZm9yIHRoZSB0aGVtZXMgdG8gYmUgZGlzY3Vzc2VkIHRoZXJlLiBQbGVh
-c2UKc2VuZCB5b3VyIHByb3Bvc2FscyB0byB0aGUgbGludXgtbWVkaWFAdmdlci5rZXJuZWwub3Jn
-IG1haWxpbmcKbGlzdC4gSW4gb3JkZXIgdG8gbWFrZSBlYXNpZXIgZm9yIHVzIHRvIHRyYWNrLCBw
-bGVhc2UgYWRkIGEKW1JGUF0gYXQgdGhlIGJlZ2lubmluZyBvZiB0aGUgZW1haWwncyBzdWJqZWN0
-LgoKSG9waW5nIHRvIHNlZSB5b3UgdGhlcmUsCgpSZWdhcmRzLApNYXVybwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0
-CmRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3Rv
-cC5vcmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+On 16/08/18 11:51, Mark Brown wrote:
+> On Wed, Aug 15, 2018 at 07:48:47PM +0100, Jon Hunter wrote:
+> 
+>> So then I made the following change to avoid scheduling the function
+>> calls unnecessarily (which I think should be fine) ...
+> 
+>> Please note that I am just using ktime_get() to log the time on entry
+>> and exit from dapm_power_widgets() and so yes the time may not be
+>> purely the time take to execute this function if we are preempted,
+>> but I am measuring in the same way in both cases and so it does seem
+>> to show some improvement.
+> 
+> That seems like a simple and useful optimization, will you send a patch?
+
+Yes I will send a patch for this.
+
+Cheers
+Jon
+
+-- 
+nvpublic
