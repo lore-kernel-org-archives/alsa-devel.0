@@ -1,17 +1,20 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5514: Fix the issue of the delay
-	volume applied again" to the asoc tree
-Date: Mon, 20 Aug 2018 14:31:03 +0100 (BST)
-Message-ID: <20180820133103.A3EFD1124507@debutante.sirena.org.uk>
+From: Danny Smith <danny.smith@axis.com>
+Subject: Re: [PATCH v2 2/2] ASoC: adau17x1: Implemented
+ safeload support
+Date: Fri, 17 Aug 2018 10:06:22 +0200
+Message-ID: <fa69e5ac-22f2-cbf0-44bb-05d07b157fc3@axis.com>
+References: <20180813073359.3374-1-robertr@axis.com>
+ <20180813073359.3374-2-robertr@axis.com>
+ <92897f5f-7bc6-305e-522b-b966b3659b78@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A607267741
- for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2018 15:31:05 +0200 (CEST)
-In-Reply-To: 
+Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 655922676E3
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 10:06:24 +0200 (CEST)
+In-Reply-To: <92897f5f-7bc6-305e-522b-b966b3659b78@metafoo.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,78 +24,80 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Oder Chiou <oder_chiou@realtek.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Lars-Peter Clausen <lars@metafoo.de>, Robert Rosengren <robertr@axis.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: rt5514: Fix the issue of the delay volume applied again
 
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 6f0a256253f48095ba2e5bcdfbed41f21643c105 Mon Sep 17 00:00:00 2001
-From: Oder Chiou <oder_chiou@realtek.com>
-Date: Wed, 15 Aug 2018 14:47:49 +0800
-Subject: [PATCH] ASoC: rt5514: Fix the issue of the delay volume applied again
-
-After our evaluation, we need to modify the default values to make sure
-the volume applied immediately.
-
-Signed-off-by: Oder Chiou <oder_chiou@realtek.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5514.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5514.c b/sound/soc/codecs/rt5514.c
-index dca82dd6e3bf..32fe76c3134a 100644
---- a/sound/soc/codecs/rt5514.c
-+++ b/sound/soc/codecs/rt5514.c
-@@ -64,8 +64,8 @@ static const struct reg_sequence rt5514_patch[] = {
- 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
- 	{RT5514_ANA_CTRL_ADCFED,	0x00000800},
- 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
--	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
--	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
-+	{RT5514_DOWNFILTER0_CTRL3,	0x10000342},
-+	{RT5514_DOWNFILTER1_CTRL3,	0x10000342},
- };
- 
- static const struct reg_default rt5514_reg[] = {
-@@ -92,10 +92,10 @@ static const struct reg_default rt5514_reg[] = {
- 	{RT5514_ASRC_IN_CTRL1,		0x00000003},
- 	{RT5514_DOWNFILTER0_CTRL1,	0x00020c2f},
- 	{RT5514_DOWNFILTER0_CTRL2,	0x00020c2f},
--	{RT5514_DOWNFILTER0_CTRL3,	0x10000352},
-+	{RT5514_DOWNFILTER0_CTRL3,	0x10000342},
- 	{RT5514_DOWNFILTER1_CTRL1,	0x00020c2f},
- 	{RT5514_DOWNFILTER1_CTRL2,	0x00020c2f},
--	{RT5514_DOWNFILTER1_CTRL3,	0x10000352},
-+	{RT5514_DOWNFILTER1_CTRL3,	0x10000342},
- 	{RT5514_ANA_CTRL_LDO10,		0x00028604},
- 	{RT5514_ANA_CTRL_LDO18_16,	0x02000345},
- 	{RT5514_ANA_CTRL_ADC12,		0x0000a2a8},
--- 
-2.18.0
+On 08/13/2018 12:44 PM, Lars-Peter Clausen wrote:
+> On 08/13/2018 09:33 AM, Robert Rosengren wrote:
+>> From: Danny Smith <dannys@axis.com>
+>>
+>> Safeload support has been implemented which is used
+>> when updating for instance filter parameters using
+>> alsa controls. Without safeload support audio can
+>> become distorted during update.
+>>
+>> Signed-off-by: Danny Smith <dannys@axis.com>
+>> Signed-off-by: Robert Rosengren <robertr@axis.com>
+> Hi,
+>
+> Thanks for implementing this. Some comments inline.
+>
+> [...]
+>> +static int adau17x1_safeload(struct sigmadsp *sigmadsp, unsigned int addr,
+>> +	const uint8_t bytes[], size_t len)
+>> +{
+>> +	uint8_t buf[4];
+>> +	unsigned int i;
+>> +	int ret;
+>> +
+>> +	/* target address is offset by 1 */
+>> +	unsigned int addr_offset = addr - 1;
+>> +
+>> +	/* write safeload addresses */
+>> +	for (i = 0; i < len / 4; i++) {
+>> +		memcpy(buf, bytes + i * 4, 4);
+> Is this memcpy really required or could we just write bytes directly in a
+> single regmap_raw_write()? I believe the adau17x1 will auto increment the
+> register addresses.
+>
+> And I suppose we also need to handle the case when len is not a multiple of 4.
+A single regmap_raw_write should work, forgot about the addresses auto 
+incrementing.
+What would be the proper way of handling the case where len is not a 
+multiple of 4?
+>
+>> +		ret = regmap_raw_write(sigmadsp->control_data,
+>> +			ADAU17X1_SAFELOAD_DATA(i), buf, 4);
+>> +		if (ret < 0)
+>> +			return ret;
+>> +	}
+>> +
+>> +	/* write target address */
+>> +	buf[0] = (addr_offset >> 24) & 0xff;
+>> +	buf[1] = (addr_offset >> 16) & 0xff;
+>> +	buf[2] = (addr_offset >> 8) & 0xff;
+>> +	buf[3] = (addr_offset) & 0xff;
+> This could be slightly simplified using
+>
+> 	put_unaligend_be32(addr_offset, buf);
+>
+>> +	ret = regmap_raw_write(sigmadsp->control_data,
+>> +		ADAU17X1_SAFELOAD_TARGET_ADDRESS, buf, 4);
+>> +	if (ret < 0)
+>> +		return ret;
+>> +
+>> +	/* write nbr of words to trigger address */
+>> +	buf[0] = 0x00;
+>> +	buf[1] = 0x00;
+>> +	buf[2] = 0x00;
+>> +	buf[3] = i & 0xff;
+> Same here I guess
+>
+>> +	ret = regmap_raw_write(sigmadsp->control_data,
+>> +		ADAU17X1_SAFELOAD_TRIGGER, buf, 4);
+>> +
+>> +	return ret;
+>> +}
