@@ -1,37 +1,69 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH] ASoC: rsnd: Add device tree binding for
-	r8a77990
-Date: Fri, 17 Aug 2018 12:05:18 +0200
-Message-ID: <20180817100517.m6eoeip55heuonru@verge.net.au>
-References: <1534492435-17859-1-git-send-email-ykaneko0929@gmail.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: [PATCH] ASoC: core: Don't schedule DAPM work if already in target state
+Date: Fri, 17 Aug 2018 16:35:43 +0100
+Message-ID: <1534520143-29266-1-git-send-email-jonathanh@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from kirsty.vergenet.net (kirsty.vergenet.net [202.4.237.240])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DF1F2676CA
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 12:05:23 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1534492435-17859-1-git-send-email-ykaneko0929@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Yoshihiro Kaneko <ykaneko0929@gmail.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org, Jon Hunter <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 17, 2018 at 04:53:55PM +0900, Yoshihiro Kaneko wrote:
-> From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-> 
-> This patch adds the device tree binding of the r8a77990 SoC.
-> 
-> Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-> Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
+When dapm_power_widgets() is called, the dapm_pre_sequence_async() and
+dapm_post_sequence_async() functions are scheduled for all DAPM contexts
+(apart from the card DAPM context) regardless of whether the DAPM
+context is already in the desired state. The overhead of this is not
+insignificant and the more DAPM contexts there are the more overhead
+there is.
 
-Reviewed-by: Simon Horman <horms+renesas@verge.net.au>
+For example, on the Tegra124 Jetson TK1, when profiling the time taken
+to execute the dapm_power_widgets() the following times were observed.
+
+  Times for function dapm_power_widgets() are (us):
+     Min 23, Ave 190, Max 434, Count 39
+
+Here 'Count' is the number of times that dapm_power_widgets() has been
+called. Please note that the above time were measured using ktime_get()
+to log the time on entry and exit from dapm_power_widgets(). So it
+should be noted that these times may not be purely the time take to
+execute this function if it is preempted. However, after applying this
+patch and measuring the time taken to execute dapm_power_widgets() again
+a significant improvement is seen as shown below.
+
+  Times for function dapm_power_widgets() are (us):
+     Min 4, Ave 16, Max 82, Count 39
+
+Therefore, optimise the dapm_power_widgets() function by only scheduling
+the dapm_pre/post_sequence_async() work if the DAPM context is not in
+the desired state.
+
+Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
+---
+ sound/soc/soc-dapm.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 461d951917c0..2e9231aeabb9 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -1953,7 +1953,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 	dapm_pre_sequence_async(&card->dapm, 0);
+ 	/* Run other bias changes in parallel */
+ 	list_for_each_entry(d, &card->dapm_list, list) {
+-		if (d != &card->dapm)
++		if (d != &card->dapm && d->bias_level != d->target_bias_level)
+ 			async_schedule_domain(dapm_pre_sequence_async, d,
+ 						&async_domain);
+ 	}
+@@ -1977,7 +1977,7 @@ static int dapm_power_widgets(struct snd_soc_card *card, int event)
+ 
+ 	/* Run all the bias changes in parallel */
+ 	list_for_each_entry(d, &card->dapm_list, list) {
+-		if (d != &card->dapm)
++		if (d != &card->dapm && d->bias_level != d->target_bias_level)
+ 			async_schedule_domain(dapm_post_sequence_async, d,
+ 						&async_domain);
+ 	}
+-- 
+2.7.4
