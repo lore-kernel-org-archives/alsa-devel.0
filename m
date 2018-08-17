@@ -1,15 +1,17 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: =?utf-8?q?=5BPATCH_v7_0/7=5D_Enable_HDA_Codec_suppor?=
-	=?utf-8?q?t_on_Intel_Platforms=E2=80=8B?=
-Date: Fri, 17 Aug 2018 15:37:16 -0500
-Message-ID: <20180817203723.32305-1-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v7 1/7] ASoC: Intel: common: add table for
+	HDA-based platforms
+Date: Fri, 17 Aug 2018 15:37:17 -0500
+Message-ID: <20180817203723.32305-2-pierre-louis.bossart@linux.intel.com>
+References: <20180817203723.32305-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id BF1BA2676D8
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 22:37:28 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7A99626779C
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 22:37:29 +0200 (CEST)
+In-Reply-To: <20180817203723.32305-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,100 +25,101 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Many Intel platforms (SKL, KBL) etc. in the market supports enhanced
-audio capabilities which also includes DSP processing. The default
-HDaudio legacy driver does not allow for the use of the DSP, this
-patch set makes it possible while reusing existing code for HDAudio
-codecs and without significant changes to the legacy driver.
+Expose a table containing machine driver information for HDAudio-based
+platforms handled by ASoC on Intel hardware.
 
-This v7 is based on Marks' for-next branch - the merge of
-topic/drm_audio_component is not included here.
+We only set constant values that are valid across multiple
+platforms. The firmware name used by the DSP will be set dynamically
+for each platform.
 
-Tests were run successfully on multiple platforms (Dell XPS13, KBL
-NUC, APL NUC and LeafHill reference board). Both the HDaudio and HDMI
-outputs were tested.
+The table is made of a single entry for now, if we need more
+complicated set-up where HDAudio is mixed with ACPI-enumerated devices
+(I2C, SoundWire) then we'd expect the differentiation to be handled
+through information provided by the BIOS (as done for KBL
+Chromebooks).
 
-Credits: all the initial code was written by Rakesh Ughreja, the
-rebase to broonie/for-next, cleanups and additional tests were done by
-Pierre Bossart.
-
-TODO in future update:
-1. fix the HDMI jack detection which only works after the mixer values
-are set, which isn't practical for headless devices always connected
-(this is a problem in the hdac_hdmi codec that was present before this
-series was submitted)
-2. when the screen goes blank, HDMI playback stops. This isn't related
-to this patchset since we rely on the existing hdac_hdmi codec, but
-will need additional investigations.
-
-Changes v7
-- fix route count for headless boards such as Up2 to enable all 3 iDisp
-routes (only iDisp3 was set-up due to a bad macro).
-
-Changes v6 (comments from Mark and Takashi)
-- simplify Kconfig options, remove FORCE for now and make code simpler
-- change SPDIX style to C++ for C files
-- add log message if invalid configuration reached
-- remove static int counter, added private counter in context instead
-- fixed a couple of indendation issues to make checkpatch.pl --strict happy
-
-Changes v5 (comments from Vinod)
-- fix SPDIF style across patches
-- patch 1: update commit message to remove reference to "fix"
-- patch 3: remove platform name assignment and Xmas tree style
-- patch 7: simplify error handling, add missing _put() on errors,
-  	   remove tests on ops, add switch statement, fix alignment
-- patch 8: fix indentation issues, use bool instead of tristate
-
-Changes v4:
-- rebase/update on Takashi's topic/drm_audio_component branch
-- changes in the HDaudio detection to avoid adding a fake ACPI ID
-- new Kconfigs to control HDaudio detection
-
-Changes v3:
-- port to component model
-- additional tests on ApolloLake and KabyLake NUC devices
-- cleanups (alignment, typos, etc)
-
-Changes v2:
-- Resolved review comments and rebased to latest kernel.
-- added module load support for codec drivers.
-
-Pierre-Louis Bossart (2):
-  ASoC: Intel: common: add table for HDA-based platforms
-  ASoC: Intel: Skylake: add option to control HDAudio + DSP usage
-
-Rakesh Ughreja (5):
-  ASoC: Intel: Boards: Machine driver for SKL+ w/ HDAudio codecs
-  ASoC: Intel: Skylake: use HDAudio if ACPI enumeration fails
-  ASoC: Intel: Skylake: add HDA BE DAIs
-  ASoC: Intel: Skylake: use hda_bus instead of hdac_bus
-  ASoC: hdac_hda: add asoc extension for legacy HDA codec drivers
-
- include/sound/soc-acpi-intel-match.h          |   6 +
- sound/pci/hda/hda_bind.c                      |  12 +
- sound/soc/codecs/Kconfig                      |   5 +
- sound/soc/codecs/Makefile                     |   2 +
- sound/soc/codecs/hdac_hda.c                   | 485 ++++++++++++++++++
- sound/soc/codecs/hdac_hda.h                   |  24 +
- sound/soc/intel/Kconfig                       |   9 +
- sound/soc/intel/boards/Kconfig                |   9 +
- sound/soc/intel/boards/Makefile               |   2 +
- sound/soc/intel/boards/skl_hda_dsp_common.c   | 127 +++++
- sound/soc/intel/boards/skl_hda_dsp_common.h   |  38 ++
- sound/soc/intel/boards/skl_hda_dsp_generic.c  | 182 +++++++
- sound/soc/intel/common/Makefile               |   3 +-
- .../intel/common/soc-acpi-intel-hda-match.c   |  40 ++
- sound/soc/intel/skylake/skl-pcm.c             |  70 ++-
- sound/soc/intel/skylake/skl.c                 | 104 +++-
- sound/soc/intel/skylake/skl.h                 |  12 +-
- 17 files changed, 1103 insertions(+), 27 deletions(-)
- create mode 100644 sound/soc/codecs/hdac_hda.c
- create mode 100644 sound/soc/codecs/hdac_hda.h
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.c
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.h
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_generic.c
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/soc-acpi-intel-match.h          |  6 +++
+ sound/soc/intel/common/Makefile               |  3 +-
+ .../intel/common/soc-acpi-intel-hda-match.c   | 40 +++++++++++++++++++
+ 3 files changed, 48 insertions(+), 1 deletion(-)
  create mode 100644 sound/soc/intel/common/soc-acpi-intel-hda-match.c
 
+diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
+index bb1d24b703fb..f48f59e5b7b0 100644
+--- a/include/sound/soc-acpi-intel-match.h
++++ b/include/sound/soc-acpi-intel-match.h
+@@ -25,4 +25,10 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
+ 
++/*
++ * generic table used for HDA codec-based platforms, possibly with
++ * additional ACPI-enumerated codecs
++ */
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[];
++
+ #endif
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index 915a34cdc8ac..c1f50a079d34 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -7,7 +7,8 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
+ 	soc-acpi-intel-hsw-bdw-match.o \
+ 	soc-acpi-intel-skl-match.o soc-acpi-intel-kbl-match.o \
+ 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
+-	soc-acpi-intel-cnl-match.o
++	soc-acpi-intel-cnl-match.o \
++	soc-acpi-intel-hda-match.o
+ 
+ obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+ obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+new file mode 100644
+index 000000000000..533c1064f84b
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2018, Intel Corporation.
++
++/*
++ * soc-apci-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
++ *
++ */
++
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include "../skylake/skl.h"
++
++static struct skl_machine_pdata hda_pdata = {
++	.use_tplg_pcm = true,
++};
++
++struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
++	{
++		/* .id is not used in this file */
++		.drv_name = "skl_hda_dsp_generic",
++
++		/* .fw_filename is dynamically set in skylake driver */
++
++		/* .sof_fw_filename is dynamically set in sof/intel driver */
++
++		.sof_tplg_filename = "intel/sof-hda-generic.tplg",
++
++		/*
++		 * .machine_quirk and .quirk_data are not used here but
++		 * can be used if we need a more complicated machine driver
++		 * combining HDA+other device (e.g. DMIC).
++		 */
++		.pdata = &hda_pdata,
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_hda_machines);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
 -- 
 2.17.1
