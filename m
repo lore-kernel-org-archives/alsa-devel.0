@@ -1,16 +1,16 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH v7 3/7] ASoC: Intel: Skylake: use HDAudio if
-	ACPI enumeration fails
-Date: Fri, 17 Aug 2018 15:37:19 -0500
-Message-ID: <20180817203723.32305-4-pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH v7 5/7] ASoC: Intel: Skylake: use hda_bus
+	instead of hdac_bus
+Date: Fri, 17 Aug 2018 15:37:21 -0500
+Message-ID: <20180817203723.32305-6-pierre-louis.bossart@linux.intel.com>
 References: <20180817203723.32305-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 317F226779C
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 22:37:30 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C2F1B2676D8
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 22:37:32 +0200 (CEST)
 In-Reply-To: <20180817203723.32305-1-pierre-louis.bossart@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,89 +27,100 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 
-When no I2S based codec entries are found in the BIOS, check if there are
-any HDA codecs detected on the bus. Based on the number of codecs found
-take appropriate action in machine driver. If there are two HDA codecs
-i.e. iDisp + HDA found on the bus, register DAIs and DAI links for both.
-If only one codec i.e. iDisp is found then load only iDisp machine driver.
+Use hda_bus instead of hdac_bus in the SKL ASoC platform driver to enable
+reuse of legacy HDA codec drivers.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 ---
- sound/soc/intel/skylake/skl.c | 38 ++++++++++++++++++++++++++++++-----
- 1 file changed, 33 insertions(+), 5 deletions(-)
+ sound/soc/intel/skylake/skl.c | 11 +++++++++--
+ sound/soc/intel/skylake/skl.h | 10 +++++++---
+ 2 files changed, 16 insertions(+), 5 deletions(-)
 
 diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index dce649485649..c83194de4aed 100644
+index c83194de4aed..3b070988e6c2 100644
 --- a/sound/soc/intel/skylake/skl.c
 +++ b/sound/soc/intel/skylake/skl.c
-@@ -472,6 +472,25 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
- 						{.name = "ssp5_sclkfs"},
+@@ -36,6 +36,7 @@
+ #include "skl.h"
+ #include "skl-sst-dsp.h"
+ #include "skl-sst-ipc.h"
++#include "../../../pci/hda/hda_codec.h"
+ 
+ /*
+  * initialize the PCI registers
+@@ -673,7 +674,7 @@ static int probe_codec(struct hdac_bus *bus, int addr)
+ 	mutex_unlock(&bus->cmd_mutex);
+ 	if (res == -1)
+ 		return -EIO;
+-	dev_dbg(bus->dev, "codec #%d probed OK\n", addr);
++	dev_dbg(bus->dev, "codec #%d probed OK: %x\n", addr, res);
+ 
+ 	hdev = devm_kzalloc(&skl->pci->dev, sizeof(*hdev), GFP_KERNEL);
+ 	if (!hdev)
+@@ -816,7 +817,7 @@ static int skl_create(struct pci_dev *pci,
+ {
+ 	struct skl *skl;
+ 	struct hdac_bus *bus;
+-
++	struct hda_bus *hbus;
+ 	int err;
+ 
+ 	*rskl = NULL;
+@@ -831,6 +832,7 @@ static int skl_create(struct pci_dev *pci,
+ 		return -ENOMEM;
+ 	}
+ 
++	hbus = skl_to_hbus(skl);
+ 	bus = skl_to_bus(skl);
+ 	snd_hdac_ext_bus_init(bus, &pci->dev, &bus_core_ops, io_ops, NULL);
+ 	bus->use_posbuf = 1;
+@@ -838,6 +840,11 @@ static int skl_create(struct pci_dev *pci,
+ 	INIT_WORK(&skl->probe_work, skl_probe_work);
+ 	bus->bdl_pos_adj = 0;
+ 
++	mutex_init(&hbus->prepare_mutex);
++	hbus->pci = pci;
++	hbus->mixer_assigned = -1;
++	hbus->modelname = "sklbus";
++
+ 	*rskl = skl;
+ 
+ 	return 0;
+diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
+index 4105a9371b64..803cce47ffb2 100644
+--- a/sound/soc/intel/skylake/skl.h
++++ b/sound/soc/intel/skylake/skl.h
+@@ -26,6 +26,7 @@
+ #include <sound/soc.h>
+ #include "skl-nhlt.h"
+ #include "skl-ssp-clk.h"
++#include "../../../pci/hda/hda_codec.h"
+ 
+ #define SKL_SUSPEND_DELAY 2000
+ 
+@@ -71,7 +72,7 @@ struct skl_fw_config {
  };
  
-+static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
-+					struct snd_soc_acpi_mach *machines)
-+{
-+	struct hdac_bus *bus = skl_to_bus(skl);
-+	struct snd_soc_acpi_mach *mach;
+ struct skl {
+-	struct hdac_bus hbus;
++	struct hda_bus hbus;
+ 	struct pci_dev *pci;
+ 
+ 	unsigned int init_done:1; /* delayed init status */
+@@ -105,8 +106,11 @@ struct skl {
+ 	struct snd_soc_acpi_mach *mach;
+ };
+ 
+-#define skl_to_bus(s)  (&(s)->hbus)
+-#define bus_to_skl(bus) container_of(bus, struct skl, hbus)
++#define skl_to_bus(s)  (&(s)->hbus.core)
++#define bus_to_skl(bus) container_of(bus, struct skl, hbus.core)
 +
-+	/* check if we have any codecs detected on bus */
-+	if (bus->codec_mask == 0)
-+		return NULL;
-+
-+	/* point to common table */
-+	mach = snd_soc_acpi_intel_hda_machines;
-+
-+	/* all entries in the machine table use the same firmware */
-+	mach->fw_filename = machines->fw_filename;
-+
-+	return mach;
-+}
-+
- static int skl_find_machine(struct skl *skl, void *driver_data)
- {
- 	struct hdac_bus *bus = skl_to_bus(skl);
-@@ -479,9 +498,13 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
- 	struct skl_machine_pdata *pdata;
++#define skl_to_hbus(s) (&(s)->hbus)
++#define hbus_to_skl(hbus) container_of((hbus), struct skl, (hbus))
  
- 	mach = snd_soc_acpi_find_machine(mach);
--	if (mach == NULL) {
--		dev_err(bus->dev, "No matching machine driver found\n");
--		return -ENODEV;
-+	if (!mach) {
-+		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
-+		mach = skl_find_hda_machine(skl, driver_data);
-+		if (!mach) {
-+			dev_err(bus->dev, "No matching machine driver found\n");
-+			return -ENODEV;
-+		}
- 	}
- 
- 	skl->mach = mach;
-@@ -498,8 +521,9 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
- 
- static int skl_machine_device_register(struct skl *skl)
- {
--	struct hdac_bus *bus = skl_to_bus(skl);
- 	struct snd_soc_acpi_mach *mach = skl->mach;
-+	struct hdac_bus *bus = skl_to_bus(skl);
-+	struct skl_machine_pdata *pdata;
- 	struct platform_device *pdev;
- 	int ret;
- 
-@@ -516,8 +540,12 @@ static int skl_machine_device_register(struct skl *skl)
- 		return -EIO;
- 	}
- 
--	if (mach->pdata)
-+	if (mach->pdata) {
-+		pdata = (struct skl_machine_pdata *)mach->pdata;
-+		pdata->platform = dev_name(bus->dev);
-+		pdata->codec_mask = bus->codec_mask;
- 		dev_set_drvdata(&pdev->dev, mach->pdata);
-+	}
- 
- 	skl->i2s_dev = pdev;
- 
+ /* to pass dai dma data */
+ struct skl_dma_params {
 -- 
 2.17.1
