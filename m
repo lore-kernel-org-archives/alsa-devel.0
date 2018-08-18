@@ -1,18 +1,19 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: hinawa-utils v0.1.0 and libhinawa v1.0.0 release
-Date: Sat, 18 Aug 2018 13:36:03 +0900
-Message-ID: <03f60c0d-86c8-1b8a-3c9f-de30953ac068@sakamocchi.jp>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: ASoC: pxa: remove pxa2xx-pcm driver,
+	which caused regression
+Date: Sat, 18 Aug 2018 11:42:45 +0200
+Message-ID: <87r2iwau3u.fsf@belgarion.home>
+References: <f12148b7c9102c67d92a0467f1d653e37c6548ee.1534534854.git.petrcvekcz@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f53.google.com (mail-pl0-f53.google.com
- [209.85.160.53])
- by alsa0.perex.cz (Postfix) with ESMTP id 5EA712676C7
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2018 06:36:08 +0200 (CEST)
-Received: by mail-pl0-f53.google.com with SMTP id g1-v6so4589417plo.2
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 21:36:07 -0700 (PDT)
-Content-Language: en-US
+Received: from smtp.smtpout.orange.fr (smtp11.smtpout.orange.fr
+ [80.12.242.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 053A526779C
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2018 11:42:52 +0200 (CEST)
+In-Reply-To: <f12148b7c9102c67d92a0467f1d653e37c6548ee.1534534854.git.petrcvekcz@gmail.com>
+ (petrcvekcz@gmail.com's message of "Fri, 17 Aug 2018 21:48:11 +0200")
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,97 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Clemens Ladisch <clemens@ladisch.de>, Stefan Richter <stefanr@s5r6.in-berlin.de>, Kentaro Hayashi <hayashi@clear-code.com>, Jonathan Woithe <jwoithe@just42.net>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, linux1394-devel@lists.sourceforge.net, "ffado-user@lists.sourceforge.net" <FFADO-user@lists.sourceforge.net>
+To: petrcvekcz@gmail.com, daniel@zonque.org
+Cc: alsa-devel@alsa-project.org, spyro@f2s.com, dbaryshkov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, dirk@opfer-online.de, marek.vasut@gmail.com, broonie@kernel.org, philipp.zabel@gmail.com, lost.distance@yahoo.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpUb2RheSBJIHJlbGVhc2VkIGhpbmF3YS11dGlscyB2MC4xLjBbMV0uIFRoaXMgcGFja2Fn
-ZSBjb25zaXN0cyBvZgpQeXRob24gMyBtb2R1bGVzIGFuZCBzY3JpcHRzIHRvIGNvbnRyb2wgZWxl
-bWVudHMgc3VjaCBhcyBvdXRwdXQgdm9sdW1lCmluIEF1ZGlvIGFuZCBNdXNpYyB1bml0cyBvbiBJ
-RUVFIDEzOTQgYnVzLCBoYW5kbGVkIGJ5IEFMU0EgZmlyZXdpcmUKc3RhY2suCgpBdCBwcmVzZW50
-LCBhbGwgb2YgdGhlIHNjcmlwdHMgYXJlIGRlc2lnbmVkIHRvIHdvcmsgYXMgQ1VJLCB3aXRob3V0
-IGFueQpzZXJ2ZXIgYXBwbGljYXRpb25zLiBUaGV5J3JlIGxpc3RlZCBiZWxvdzoKCiAgKiBoaW5h
-d2EtYWxlc2lzLWlvLWN1aQogICAgICogQ1VJIHRvb2wgZm9yIEFsZXNpcyBpT3wxNCBhbmQgaU98
-MjYKICAqIGhpbmF3YS1iZWJvYi1wYXJzZXIKICAgICAqIFBsdWcgc3RydWN0dXJlIHBhcnNlciBm
-b3IgQmVCb0IgZmlybXdhcmUKICAqIGhpbmF3YS1jb25maWctcm9tLXByaW50ZXIKICAgICAqIEEg
-bGV4ZXIvcGFyc2VyIG9mIGNvbmZpZ3VyYXRpb24gUk9NIG9uIElFRUUgMTM5NCBidXMKICAqIGhp
-bmF3YS1kZzAweC1jdWkKICAgICAqIENVSSB0b29sIGZvciBEaWdpZGVzaWduIERpZ2kgMDB4IGZh
-bWlseQogICogaGluYXdhLWRpY2UtY29tbW9uLWN1aQogICAgICogQ1VJIHRvb2wgZm9yIERpY2Ug
-Y29tbW9uIGZ1bmN0aW9uYWxpdGllcwogICogaGluYXdhLWRpY2UtZXh0ZW5zaW9uLWN1aQogICAg
-ICogQ1VJIHRvb2wgZm9yIERpY2UgZXh0ZW5kZWQgZnVuY3Rpb25hbGl0aWVzIGEuay5hIEVBUAog
-ICogaGluYXdhLWZpcmV3b3Jrcy1jdWkKICAgICAqIENVSSB0b29sIGZvciBFY2hvIEF1ZGlvIEZp
-cmV3b3JrcyBtb2R1bGUKICAqIGhpbmF3YS1mb2N1c3JpdGUtc2FmZmlyZXByby1pby1jdWkKICAg
-ICAqIENVSSB0b29sIGZvciBGb2N1c3JpdGUgU2FmZmlyZVBybyBJTyBzZXJpZXMKICAqIGhpbmF3
-YS1ncmlmZmluLWZpcmV3YXZlLWN1aQogICAgICogQ1VJIHRvb2wgZm9yIEdyaWZmaW4gRmlyZXdh
-dmUKICAqIGhpbmF3YS1sYWNpZS1zcGVha2Vycy1jdWkKICAgICAqIENVSSB0b29sIGZvciBMYWNp
-ZSBGaXJlV2lyZSBzcGVha2VycwogICogaGluYXdhLW1vdHUtY29tbW9uLWN1aQogICAgICogQ1VJ
-IHRvb2wgZm9yIGNvbW1vbiBmdW5jdGlvbmFsaXRpZXMgb2YgTU9UVSBGaXJlV2lyZSBzZXJpZXMK
-ICAqIGhpbmF3YS1tYXVkaW8tYmVib2ItY3VpCiAgICAgKiBDVUkgdG9vbCBmb3IgTS1BdWRpbyBG
-aXJlV2lyZSBzZXJpZXMgYmFzZWQgb24gQmVCb0IgcGxhdGZvcm0KICAqIGhpbmF3YS1veGZ3LWdl
-bmVyaWMtY3VpCiAgICAgKiBDVUkgdG9vbCBmb3IgT1hGVyBnZW5lcmljIGZ1bmN0aW9uYWxpdGll
-cwogICogaGluYXdhLXRhc2NhbS1maXJlb25lLWN1aQogICAgICogQ1VJIHRvb2wgZm9yIFRhc2Nh
-bSBGaXJlT25lCiAgKiBoaW5hd2EtdGFzY2FtLWZ3LXJhY2stY3VpCiAgICAgKiBDVUkgdG9vbCBm
-b3IgcmFjayBtb2RlbHMgb2YgVGFzY2FtIEZpcmVXaXJlIHNlcmllcyAoRlcxODA0KQogICogaGlu
-YXdhLXRhc2NhbS1mdy1jb25zb2xlLWN1aQogICAgICogQ1VJIHRvb2wgZm9yIGNvbnNvbGUgbW9k
-ZWxzIG9mIFRhc2NhbSBGaXJlV2lyZSBzZXJpZXMKICAgICAgIChGVzEwODIvMTg4NCkKICAqIGhp
-bmF3YS15YW1haGEtdGVycmF0ZWMtY3VpCiAgICAgKiBDVUkgdG9vbCBmb3IgWWFtYWhhIEdPIHNl
-cmllcyBhbmQgVGVycmF0ZWMgUEhBU0Ugc2VyaWVzCgpUaGV5J3JlIHdyaXR0ZW4gYnkgUHl0aG9u
-IDMgbGFuZ3VhZ2UsIHdpdGggYSBoZWxwIG9mIFB5R09iamVjdFsyXSBmb3IKZ29iamVjdC1pbnRy
-b3NwZWN0aW9uWzNdIHRvIGxpYmhpbmF3YSBBUEkuCgpBdCB0aGUgc2FtZSB0aW1lLCBJIHJlbGVh
-c2VkIGxpYmhpbmF3YSB2MS4wLjBbNF0uIFRoaXMgSS9PIGxpYnJhcnkgaXMKZGVzaWduZWQgZm9y
-IGFzeW5jaHJvbm91cyB0cmFuc2FjdGlvbnMgb24gSUVFRSAxMzk0IGJ1cyB2aWEgaW9jdGwKY29t
-bWFuZHMgZGVmaW5lZCBieSBMaW51eCBGaXJlV2lyZSBzdWJzeXN0ZW0uIEFkZGl0aW9uYWxseSwg
-dGhpcyBsaWJyYXJ5CmlzIGFsc28gYW4gYXBwbGljYXRpb24gb2YgQUxTQSBId0RlcCBpbnRlcmZh
-Y2Ugc3VwcG9ydGVkIGJ5IEFMU0EKZmlyZXdpcmUgc3RhY2suIEFuIG92ZXJ2aWV3IG9mIGl0cyBk
-ZXNpZ24gaXMgaWxsdXN0cmF0ZWRbNV0uCgpJIGZpcnN0bHkgaW50cm9kdWNlZCB0aGlzIGxpYnJh
-cnkgdGhyZWUgeWVhcnMgYWdvWzZdLiBUaGlzIHYxLjAuMApyZWxlYXNlIGxvc2VzIGJhY2t3YXJk
-IGNvbXBhdGliaWxpdHkgdG8gYSBwYXJ0IG9mIHB1YmxpYyBBUElzIGFnYWluc3QgdjAKcmVsZWFz
-ZXMgaW4gdGhlc2UgdGhyZWUgeWVhcnMsIGFuZCBub3cgYmVjb21lcyBzdGFibGUgd2l0aCB1cGRh
-dGVkIG1ham9yCnZlcnNpb24uIFB5dGhvbiAzIG1vZHVsZXMgYW5kIHNjcmlwdHMgaW4gaGluYXdh
-LXV0aWxzIHdvcmsgd2l0aApsaWJoaW5hd2EgdjEgQVBJcy4gSWYgeW91J2QgbGlrZSB0byB1c2Ug
-dGhlbSwgcGxlYXNlIGluc3RhbGwgbGliaGluYXdhCnYxIHJlbGVhc2UgaW5zdGVhZCBvZiB2MCBy
-ZWxlYXNlcy4gSSBub3RlIHRoYXQgbW9kdWxlcyBpbiBoaW5hd2EtdXRpbHMKYXJlIG5vdCBzdGFi
-bGUgeWV0LCBhcyBpdHMgdmVyc2lvbiBtZWFucy4KClRoaXMgbGlicmFyeSBoYXMgYWxyZWFkeSBi
-ZWVuIHBhY2thZ2VkIHRvIERlYmlhbiBkaXN0cmlidXRpb25bN10gYW5kCmF2YWlsYWJsZSBpbiBp
-dCBhbmQgaXRzIGRlcml2YXRpdmVzIHN1Y2ggYXMgVWJ1bnR1LiBUaGUgdjEuMC4wIHJlbGVhc2UK
-aXMgYWxyZWFkeSBhdmFpbGFibGUgaW4gdGhlaXIgcmVwb3NpdG9yaWVzWzhdWzldLiBGb3IgaGlu
-YXdhLXV0aWxzLCBJCmFscmVhZHkgc3RhcnQgcGFja2FnaW5nIHRvIERlYmlhbiBkaXN0cmlidXRp
-b24gYW5kIGdldCBhIGhlbHAgb2YgRGViaWFuCmNvbnRyaWJ1dGVyLCBLZW50YXJvIEhheWFzaGks
-IGFnYWluLiBXZSBhbHJlYWR5IHJlZ2lzdGVyZWQgSVRQWzEwXSBhbmQKUkZTWzExXSBhbmQgd2Fp
-dCBmb3Igc3BvbnNvcnMgb2YgZGViaWFuIGRldmVsb3BlcnMgdG8gcHVibGlzaC4KCklmIHlvdSBm
-aW5kIGJ1Z3MsIG9yIGhhdmUgd2lzaGVzLCBJIHN1Z2dlc3QgdG8gZmlsZSB0aGVtIGFzIGlzc3Vl
-cyBpbgplYWNoIHByb2plY3Qgb24gZ2l0aHViLmNvbS4gT2YgY291cnNlLCBJIHdlbGNvbWUgeW91
-ciBQdWxsIFJlcXVlc3RzLiBJCm5vdGUgdGhhdCB0aGVzZSBwcm9qZWN0cyBhcmUgaGVhdmlseSBi
-YXNlZCBvbiB2ZW5kb3ItZGVwZW5kZW50CmZ1bmN0aW9uYWxpdGllcywgdGh1cyBhbGwgb2YgZmls
-ZWQgaXNzdWVzIGNhbiBub3QgYmUgc29sdmVkIGJlY2F1c2Ugd2hhdApJIGNhbiBkbyBpcyBmb3Ig
-ZGV2aWNlcyBJIG93bi4KCiMgT2ZmIHRoZSBzdWJqZWN0LCBLZW50YXJvIGlzIGN1cnJlbnRseSBv
-biBhIHByb2Nlc3MgdG8gYmUgRGViaWFuCiMgTWFpbnRhaW5lcihETSlbMTJdLiBJIGdyZWF0bHkg
-YXBwcmVjaWF0ZSBoaXMgY2FyZSBhbmQgY29udHJpYnV0aW9uIHRvCiMgbGliaGluYXdhL2hpbmF3
-YS11dGlscy4gSSBob3BlIGhlIHdpbGwgZ2V0IGdvb2QgZXhwZXJpZW5jZXMgZnJvbSBoaXMKIyBu
-ZXh0IGdyZWF0IGpvdXJuZXkgYXMgRE0uCgpbMV0gUmVsZWFzZSB2ZXJzaW9uIDAuMS4wIHJlbGVh
-c2UgwrcgdGFrYXN3aWUvaGluYXdhLXV0aWxzCmh0dHBzOi8vZ2l0aHViLmNvbS90YWthc3dpZS9o
-aW5hd2EtdXRpbHMvcmVsZWFzZXMvdGFnL3YwLjEuMApbMl0gT3ZlcnZpZXcg4oCUIFB5R09iamVj
-dApodHRwczovL3B5Z29iamVjdC5yZWFkdGhlZG9jcy5pby9lbi9sYXRlc3QvClszXSBPdmVydmll
-dyDigJQgR09iamVjdCBJbnRyb3NwZWN0aW9uCmh0dHBzOi8vZ2kucmVhZHRoZWRvY3MuaW8vZW4v
-bGF0ZXN0LwpbNF0gUmVsZWFzZSB2ZXJzaW9uIDEuMC4wIHJlbGVhc2UgwrcgdGFrYXN3aWUvbGli
-aGluYXdhCmh0dHBzOi8vZ2l0aHViLmNvbS90YWthc3dpZS9saWJoaW5hd2EvcmVsZWFzZXMvdGFn
-LzEuMC4wCls1XSBsaWJoaW5hd2EvZG9jL292ZXJ2aWV3LnBuZwpodHRwczovL2dpdGh1Yi5jb20v
-dGFrYXN3aWUvbGliaGluYXdhL2Jsb2IvbWFzdGVyL2RvYy9vdmVydmlldy5wbmcKWzZdIFthbHNh
-LWRldmVsXSBbUkZDXVtQQVRDSCAwMC8xM10gYWxzYS10b29sczogbGliaGluYXdhIGZvciBjb250
-cm9sIAphcHBsaWNhdGlvbnMgb2YgRmlyZVdpcmUgZGV2aWNlcwpodHRwOi8vbWFpbG1hbi5hbHNh
-LXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTUtSmFudWFyeS8wODY5NjkuaHRt
-bApbN10gW2Fsc2EtZGV2ZWxdIEFib3V0IHBsYW5uaW5nIG9mIGxpYmhpbmF3YSBJVFAgdG8gZGVi
-aWFuIHByb2plY3QKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxz
-YS1kZXZlbC8yMDE2LUphbnVhcnkvMTAzNjkzLmh0bWwKWzhdIERlYmlhbiBQYWNrYWdlIFRyYWNr
-ZXIgLSBsaWJoaW5hd2EKaHR0cHM6Ly90cmFja2VyLmRlYmlhbi5vcmcvcGtnL2xpYmhpbmF3YQpb
-OV0gbGliaGluYXdhIHBhY2thZ2UgOiBVYnVudHUKaHR0cHM6Ly9sYXVuY2hwYWQubmV0L3VidW50
-dS8rc291cmNlL2xpYmhpbmF3YQpbMTBdICM5MDU4NDAgLSBJVFA6IGhpbmF3YS11dGlscyAtIFV0
-aWxpdHkgdG9vbHMgZm9yIGxpYmhpbmF3YSAtIERlYmlhbiAKQnVnIHJlcG9ydCBsb2dzCmh0dHBz
-Oi8vYnVncy5kZWJpYW4ub3JnL2NnaS1iaW4vYnVncmVwb3J0LmNnaT9idWc9OTA1ODQwClsxMV0g
-IzkwNTkwNiAtIFJGUzogaGluYXdhLXV0aWxzLzAuMC45OS0xIFtJVFBdIC0gRGViaWFuIEJ1ZyBy
-ZXBvcnQgbG9ncwpodHRwczovL2J1Z3MuZGViaWFuLm9yZy9jZ2ktYmluL2J1Z3JlcG9ydC5jZ2k/
-YnVnPTkwNTkwNgpbMTJdIERlYmlhbiBOZXcgTWVtYmVyIFByb2Nlc3MKaHR0cHM6Ly9ubS5kZWJp
-YW4ub3JnL3Byb2Nlc3MvNTMxCgoKUmVnYXJkcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcg
-bGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+petrcvekcz@gmail.com writes:
+
+> From: Petr Cvek <petrcvekcz@gmail.com>
+>
+> The switch of PXA to dmaengine caused a regression for devices which are
+> using SSP/I2S and probably AC97. The problem is in multiple allocation
+> of DMA by function pxa2xx_soc_pcm_new() called by pxa-pcm-audio and
+> (SSP/I2S/AC97). The regression was found on HTC Magician and after playback
+> kernel generates an oops:
+With AC97, this is still continuously tested and works fine, and the pcm part is
+what makes aplay happy for playing music. This is used both in a devicetree and
+non devicetree build, which makes me thing the AC97 part is fine, and the
+SSP/I2S needs some love.
+
+With your patch, a compilation of mioa701 fails with [1].
+
+Therefore, I'll NAK this patch, as removing SND_PAX2XX_SOC config is a bad idea.
+
+As a way forward, please submit a patch for magician only, which makes it work
+again (by work I mean you can play and hear a song with aplay or equivalent).
+
+Then hopefully Daniel can interpolate to all the SSP/I2S platforms. And maybe
+Daniel can test on his platform too so that we're safe on both pxa2xx and pxa3xx
+side.
+
+Cheers.
+
+--
+Robert
+
+[1] Fail message
+sound/soc/pxa/pxa2xx-ac97.o: In function `pxa2xx_ac97_dev_resume':
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:275: undefined reference to `pxa2xx_ac97_hw_resume'
+sound/soc/pxa/pxa2xx-ac97.o: In function `pxa2xx_ac97_dev_suspend':
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:270: undefined reference to `pxa2xx_ac97_hw_suspend'
+sound/soc/pxa/pxa2xx-ac97.o: In function `pxa2xx_ac97_dev_remove':
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:263: undefined reference to `pxa2xx_ac97_hw_remove'
+sound/soc/pxa/pxa2xx-ac97.o: In function `pxa2xx_ac97_read_actrl':
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:48: undefined reference to `pxa2xx_ac97_read'
+sound/soc/pxa/pxa2xx-ac97.o: In function `pxa2xx_ac97_write_actrl':
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:54: undefined reference to `pxa2xx_ac97_write'
+sound/soc/pxa/pxa2xx-ac97.o: In function `pxa2xx_ac97_warm_reset':
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:33: undefined reference to `pxa2xx_ac97_try_warm_reset'
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:35: undefined reference to `pxa2xx_ac97_finish_reset'
+sound/soc/pxa/pxa2xx-ac97.o: In function `pxa2xx_ac97_cold_reset':
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:40: undefined reference to `pxa2xx_ac97_try_cold_reset'
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:42: undefined reference to `pxa2xx_ac97_finish_reset'
+sound/soc/pxa/pxa2xx-ac97.o: In function `pxa2xx_ac97_dev_probe':
+/home/rj/mio_linux/kernel/sound/soc/pxa/pxa2xx-ac97.c:235: undefined reference to `pxa2xx_ac97_hw_probe'
+Makefile:1015: recipe for target 'vmlinux' failed
