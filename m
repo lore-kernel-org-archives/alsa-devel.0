@@ -1,20 +1,23 @@
-From: Danny Smith <danny.smith@axis.com>
-Subject: Re: [PATCH v2 2/2] ASoC: adau17x1: Implemented
- safeload support
-Date: Fri, 17 Aug 2018 10:06:22 +0200
-Message-ID: <fa69e5ac-22f2-cbf0-44bb-05d07b157fc3@axis.com>
-References: <20180813073359.3374-1-robertr@axis.com>
- <20180813073359.3374-2-robertr@axis.com>
- <92897f5f-7bc6-305e-522b-b966b3659b78@metafoo.de>
+From: Jiecheng Wu <jasonwood2031@gmail.com>
+Subject: [PATCH] sound/core.c: fix wrong return code of
+	rsnd_probe() when devm_kzalloc() fails
+Date: Sat, 18 Aug 2018 10:33:06 +0800
+Message-ID: <20180818023306.6824-1-jasonwood2031@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bastet.se.axis.com (bastet.se.axis.com [195.60.68.11])
- by alsa0.perex.cz (Postfix) with ESMTP id 655922676E3
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 10:06:24 +0200 (CEST)
-In-Reply-To: <92897f5f-7bc6-305e-522b-b966b3659b78@metafoo.de>
-Content-Language: en-US
+Received: from mail-pl0-f67.google.com (mail-pl0-f67.google.com
+ [209.85.160.67])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1FF602676C9
+ for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2018 04:33:17 +0200 (CEST)
+Received: by mail-pl0-f67.google.com with SMTP id p4-v6so934593pll.8
+ for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 19:33:17 -0700 (PDT)
+Received: from localhost.localdomain ([2402:f000:1:1501:200:5efe:a66f:53fa])
+ by smtp.gmail.com with ESMTPSA id c88-v6sm4513787pfe.132.2018.08.17.19.33.14
+ for <alsa-devel@alsa-project.org>
+ (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+ Fri, 17 Aug 2018 19:33:15 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,80 +27,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Lars-Peter Clausen <lars@metafoo.de>, Robert Rosengren <robertr@axis.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+Function rsnd_probe() defined in sound/soc/sh/rcar/core.c calls devm_kzalloc(). As devm_kzalloc() may return NULL when OOM happens, the caller should return -ENOMEM when devm_kzalloc() fails.
+---
+ sound/soc/sh/rcar/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-On 08/13/2018 12:44 PM, Lars-Peter Clausen wrote:
-> On 08/13/2018 09:33 AM, Robert Rosengren wrote:
->> From: Danny Smith <dannys@axis.com>
->>
->> Safeload support has been implemented which is used
->> when updating for instance filter parameters using
->> alsa controls. Without safeload support audio can
->> become distorted during update.
->>
->> Signed-off-by: Danny Smith <dannys@axis.com>
->> Signed-off-by: Robert Rosengren <robertr@axis.com>
-> Hi,
->
-> Thanks for implementing this. Some comments inline.
->
-> [...]
->> +static int adau17x1_safeload(struct sigmadsp *sigmadsp, unsigned int addr,
->> +	const uint8_t bytes[], size_t len)
->> +{
->> +	uint8_t buf[4];
->> +	unsigned int i;
->> +	int ret;
->> +
->> +	/* target address is offset by 1 */
->> +	unsigned int addr_offset = addr - 1;
->> +
->> +	/* write safeload addresses */
->> +	for (i = 0; i < len / 4; i++) {
->> +		memcpy(buf, bytes + i * 4, 4);
-> Is this memcpy really required or could we just write bytes directly in a
-> single regmap_raw_write()? I believe the adau17x1 will auto increment the
-> register addresses.
->
-> And I suppose we also need to handle the case when len is not a multiple of 4.
-A single regmap_raw_write should work, forgot about the addresses auto 
-incrementing.
-What would be the proper way of handling the case where len is not a 
-multiple of 4?
->
->> +		ret = regmap_raw_write(sigmadsp->control_data,
->> +			ADAU17X1_SAFELOAD_DATA(i), buf, 4);
->> +		if (ret < 0)
->> +			return ret;
->> +	}
->> +
->> +	/* write target address */
->> +	buf[0] = (addr_offset >> 24) & 0xff;
->> +	buf[1] = (addr_offset >> 16) & 0xff;
->> +	buf[2] = (addr_offset >> 8) & 0xff;
->> +	buf[3] = (addr_offset) & 0xff;
-> This could be slightly simplified using
->
-> 	put_unaligend_be32(addr_offset, buf);
->
->> +	ret = regmap_raw_write(sigmadsp->control_data,
->> +		ADAU17X1_SAFELOAD_TARGET_ADDRESS, buf, 4);
->> +	if (ret < 0)
->> +		return ret;
->> +
->> +	/* write nbr of words to trigger address */
->> +	buf[0] = 0x00;
->> +	buf[1] = 0x00;
->> +	buf[2] = 0x00;
->> +	buf[3] = i & 0xff;
-> Same here I guess
->
->> +	ret = regmap_raw_write(sigmadsp->control_data,
->> +		ADAU17X1_SAFELOAD_TRIGGER, buf, 4);
->> +
->> +	return ret;
->> +}
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index f8425d8..fd92906 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -1502,7 +1502,7 @@ static int rsnd_probe(struct platform_device *pdev)
+ 	 */
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+ 	if (!priv)
+-		return -ENODEV;
++		return -ENOMEM;
+ 
+ 	priv->pdev	= pdev;
+ 	priv->flags	= (unsigned long)of_device_get_match_data(dev);
+-- 
+2.6.4
