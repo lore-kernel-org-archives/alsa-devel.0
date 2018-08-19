@@ -1,68 +1,49 @@
-From: Petr Cvek <petrcvekcz@gmail.com>
-Subject: Re: ASoC: pxa: remove pxa2xx-pcm driver,
-	which caused regression
-Date: Sat, 18 Aug 2018 22:59:27 +0200
-Message-ID: <16bb94b6-089d-f78e-1bb7-2550414be2fb@gmail.com>
-References: <f12148b7c9102c67d92a0467f1d653e37c6548ee.1534534854.git.petrcvekcz@gmail.com>
- <87r2iwau3u.fsf@belgarion.home>
- <4deb5304-8efc-3093-7f8e-0dfe50781790@gmail.com>
- <87mutjbidr.fsf@belgarion.home>
+From: Greg KH <gregkh@linuxfoundation.org>
+Subject: Re: Fwd: [PATCH 1/2] ALSA: hda - Turn CX8200 into D3 as well upon
+ reboot
+Date: Sun, 19 Aug 2018 08:09:52 +0200
+Message-ID: <20180819060952.GC2895@kroah.com>
+References: <CAD14+f30SuF=MJsXWcLg3RFrJOO32wdvDKPnb2mNfnqtGWqhDw@mail.gmail.com>
+ <s5hzhy6mdxn.wl-tiwai@suse.de>
+ <CAD14+f1VoGpOUHT6Jn_D_Svsg6MZ6e1X1gDTNoYX9_CbaVQg6w@mail.gmail.com>
+ <s5hwotamdo7.wl-tiwai@suse.de>
+ <CAD14+f3qrhVNT0hq77fE7ADhXbzSLm1R5r_mv6rLyuhJHPXs=w@mail.gmail.com>
+ <s5hy3d4itgj.wl-tiwai@suse.de>
+ <CAD14+f1Yf-RpaLENsUC73AF9T=a_aOXzP9GaKt2ZVw58WXuBBQ@mail.gmail.com>
+ <20180818143800.GA670@kroah.com>
+ <CAD14+f1K=s5bk0SQJ3s4rhg=jGhdpp_MR9XyZ-T7=jmthzot4Q@mail.gmail.com>
+ <CAD14+f1Mog5dy93rxdGnjadv0CO2JFwZTsfjRKDekvzmRfjDMQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f50.google.com (mail-wm0-f50.google.com [74.125.82.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 96C44267692
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2018 22:58:24 +0200 (CEST)
-Received: by mail-wm0-f50.google.com with SMTP id c14-v6so10637921wmb.4
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2018 13:58:24 -0700 (PDT)
-In-Reply-To: <87mutjbidr.fsf@belgarion.home>
-Content-Language: cs
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, dbaryshkov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, dirk@opfer-online.de, marek.vasut@gmail.com, broonie@kernel.org, linux-arm-kernel@lists.infradead.org, philipp.zabel@gmail.com, lost.distance@yahoo.com, daniel@zonque.org
+Content-Type: text/plain; charset=us-ascii
+Return-path: <stable-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAD14+f1Mog5dy93rxdGnjadv0CO2JFwZTsfjRKDekvzmRfjDMQ@mail.gmail.com>
+Sender: stable-owner@vger.kernel.org
+To: Ju Hyung Park <qkrwngud825@gmail.com>
+Cc: stable@vger.kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
-
-Dne 18.8.2018 v 21:10 Robert Jarzmik napsal(a):
-> Petr Cvek <petrcvekcz@gmail.com> writes:
+On Sun, Aug 19, 2018 at 01:56:22AM +0900, Ju Hyung Park wrote:
+> Hi,
 > 
->> My bad I've forgot to add "select SND_PXA2XX_LIB" from removed
->> SND_PXA2XX_SOC, now it should compile, can you test it if it works now?
->> fixed patch in [1].
-> Still NAK.
+> It's commit d77a4b4a5b0b2ebcbc9840995d91311ef28302ab
+> and f59cf9a0551dd954ad8b752461cf19d9789f4b1d,
+> both which are already merged in Linus's tree.
 > 
-> You must realise that as long as you will delete sound/soc/pxa/pxa2xx-pcm.c,
-> I'll block the patch, as it is being used for music playback on several pxa
-> platforms, at least the AC97 based ones.
-> 
-I know I will send the magician only patch. I've just wanted to know how
-it is working with AC97 ;-) (+ it is still a good test for possible
-future changes).
+> I can't think of a reason why you would have missed this
+> other than the fact that I've used "Cc: <stable@vger.kernel.org>"
+> instead of "Cc: stable@vger.kernel.org".
 
->> BTW can you try insmod-aplay-stop-rmmod with the current -next on your
->> board?
-> Insmod/rmmod which module exactly ?
-> 	regmap-ac97.ko
-> 	ac97.ko
-> 	snd-pcm-dmaengine.ko
-> 	snd-pxa2xx-lib.ko
-> 	snd-soc-wm9713.ko
-> 	snd-soc-pxa2xx.ko
-> 	snd-soc-pxa2xx-ac97.ko
-> 	snd-soc-mioa701.ko
-> 
-This one: snd-soc-pxa2xx-ac97.ko, but the kernel makes oops right after
-you terminate aplay.
+No, I have not missed these.  I normally wait until a patch shows up in
+a release from Linus before adding them to the stable tree, and as these
+patches just hit Linus's tree a few days ago, that has not happened yet.
+It also is in the middle of over 200 other stable patches that have been
+asked to be merged, so you are in good company, and it will take me a
+while to get through them all.
 
-best regards,
-Petr
+I will go add these to the top of the pile, as you have asked about
+them, which is fine to do.
+
+thanks,
+
+greg k-h
