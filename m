@@ -1,90 +1,90 @@
-From: Joseph Spencer <joespenceris@gmail.com>
-Subject: Re: snd_usb_usx2y holding onto a lock?
-Date: Sun, 19 Aug 2018 13:27:19 -0700
-Message-ID: <CAMvaF72rLr85Tui_DAbemRB2LhV+5=h420f=OVLYX5L9bFQ9BQ@mail.gmail.com>
-References: <CAMvaF70On5Jz3wMDUj1QU5hD+L=JTxGGuKtg9ZzL2hz=_XoU4g@mail.gmail.com>
- <s5hh8jqixrw.wl-tiwai@suse.de>
+From: Ricardo Biehl Pasquali <pasqualirb-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Subject: [LAD] revisiting system timer sound application wake up
+Date: Sun, 19 Aug 2018 19:01:52 -0300
+Message-ID: <20180819220152.GA29159@localhost.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf1-f65.google.com (mail-lf1-f65.google.com
- [209.85.167.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 73D1726766E
- for <alsa-devel@alsa-project.org>; Sun, 19 Aug 2018 22:27:31 +0200 (CEST)
-Received: by mail-lf1-f65.google.com with SMTP id r4-v6so2350458lff.12
- for <alsa-devel@alsa-project.org>; Sun, 19 Aug 2018 13:27:31 -0700 (PDT)
-In-Reply-To: <s5hh8jqixrw.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+Content-Disposition: inline
+List-Unsubscribe: <https://lists.linuxaudio.org/options/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=unsubscribe>
+List-Archive: <https://lists.linuxaudio.org/archives/linux-audio-dev>
+List-Post: <mailto:linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+List-Help: <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxaudio.org/listinfo/linux-audio-dev>,
+ <mailto:linux-audio-dev-request-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org?subject=subscribe>
+Errors-To: linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
+Sender: "Linux-audio-dev" <linux-audio-dev-bounces-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org>
+To: Lennart Poettering <mzjro-uLTowLwuiw7k1uMJSBkQmQ@public.gmane.org>, Dario Faggioli <dfaggioli-IBi9RG/b67k@public.gmane.org>, Alessio Balsini <alessio.balsini-5rdYK369eBLQB0XuIGIEkQ@public.gmane.org>
+Cc: alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org, linux-audio-dev-cunTk1MwBs/CEJeg2xFRV2D2FQJk+8+b@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the reply!  I've been pouring over the source.  Looks like it
-really hasn't been actively maintained since around 2005, mostly minor
-refactoring since then.
-
-If I have questions that the docs available online can't answer, would this
-be a good place to ask?
-
-I appreciate all the work you guys do!
-Joe Spencer
-602.777.2307
-
-
-On Sun, Aug 19, 2018 at 1:08 AM Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Fri, 17 Aug 2018 09:23:35 +0200,
-> Joseph Spencer wrote:
-> >
-> > When plugging an audio interface in with nomodeset I see the following in
-> > the logs:
-> >
-> > Aug 08 23:19:23 localhost.localdomain kernel: INFO: task pulseaudio:1750
-> > blocked for more than 120 seconds.
-> > Aug 08 23:19:23 localhost.localdomain kernel:       Tainted: G
-> >  OE     4.17.11-200.fc28.x86_64+debug #1
-> > Aug 08 23:19:23 localhost.localdomain kernel: "echo 0 >
-> > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-> > Aug 08 23:19:23 localhost.localdomain kernel: pulseaudio      D12408
-> 1750
-> >  1268 0x00000000
-> > Aug 08 23:19:23 localhost.localdomain kernel: Call Trace:
-> >
-> > Aug 08 23:19:23 localhost.localdomain kernel:  ? __schedule+0x2ba/0xaf0
-> >
-> > Aug 08 23:19:23 localhost.localdomain kernel:  ?
-> > prepare_to_wait_event+0xd2/0x180
-> > Aug 08 23:19:23 localhost.localdomain kernel:  schedule+0x2f/0x90
-> >
-> > Aug 08 23:19:23 localhost.localdomain kernel:
-> usX2Y_urbs_start+0x208/0x470
-> > [snd_usb_usx2y]
-> > Aug 08 23:19:23 localhost.localdomain kernel:  ? finish_wait+0x80/0x80
-> (snip)
->
-> So this is waiting for the event to be triggered by the urb
-> completion, but it didn't happen by some reason on your machine.
->
-> > The audio interface doesn't work and without nomodeset X freezes.
-> >
-> > Any help pointing me in the right direction would be greatly appreciated.
-> > It looks like an issue with the snd_usb_usx2y driver to me, but I'm not
-> > sure.
->
-> Unfortunately the driver is very special and does somewhat magical way
-> only the author knows of well.
-> You need to follow the code, and at least check whether the urb
-> submission at the playback start worked properly as expected.
->
->
-> Takashi
->
+MDgvMDgvMjAxOCAoaWdub3JlIHRoaXMgZGF0ZSkKClB1bHNlQXVkaW8gdHNjaGVkCj09PT09PT09
+PT09PT09PT09CgpBcm91bmQgRGVjZW1iZXIgMjAwNyB0byBGZWJydWFyeSAyMDA5IExlbm5hcnQg
+UG9ldHRlcmluZwpoYXMgYXNrZWQgc29tZSBxdWVzdGlvbnMgaW4gYWxzYS1kZXZlbCBtYWlsaW5n
+IGxpc3QgaW4Kb3JkZXIgdG8gaW1wbGVtZW50IHRoZSB0aW1lciBiYXNlZCBhdWRpbyBzY2hlZHVs
+aW5nIGZvcgpQdWxzZUF1ZGlvLgoKSW4gMjAwOCBoZSB3cm90ZSBhbiBhcnRpY2xlIG5hbWVkICJX
+aGF0J3MgQ29va2luZyBpbgpQdWxzZUF1ZGlvJ3MgZ2xpdGNoLWZyZWUgQnJhbmNoIi4KCkkgaGF2
+ZSBub3QgZm91bmQgZGV0YWlsZWQgZG9jdW1lbnRhdGlvbiBhYm91dCBQdWxzZUF1ZGlvCnRpbWVy
+IHdha2UgdXAgYW5kIEknbSBub3Qgc3VyZSBhYm91dCBzb21lIGltcGxlbWVudGF0aW9uCmRldGFp
+bHMuIEJ5IHVzaW5nIHRoZSBlbWFpbHMgZnJvbSBMZW5uYXJ0IGFuZCBoaXMgYXJ0aWNsZQphIERv
+Y3VtZW50YXRpb24gY2FuIHN0YXJ0IHRvIGdyb3cuCgpEbyBQdWxzZUF1ZGlvIHN5bmNocm9uaXpl
+IHRvIHNvdW5kIGRldmljZSBieSBhZGp1c3RpbmcgdGhlCnRpbWVyIG9yIHRoZSBhbW91bnQgY29t
+bWl0dGVkIChhcHBsaWNhdGlvbiBwb2ludGVyKT8KClRoZSBuaWNlIHRoaW5nIGFib3V0IHRoZSBz
+ZWNvbmQgY2FzZSBpcyB0aGF0IHRoZSBwZXJpb2QKdGltZSAoaW4gYXBwbGljYXRpb24ncyB2aWV3
+KSBpcyBib25kZWQgdG8gc3lzdGVtIGNsb2NrCmluc3RlYWQgb2Ygc291bmQgZGV2aWNlJ3MuCgpX
+aGF0IHRpbWVyIGludGVyZmFjZSBkb2VzIFB1bHNlQXVkaW8gdXNlPyB0aW1lcmZkPwpQT1NJWCB0
+aW1lcnM/CgpIYXJkd2FyZSBpc3N1ZXMKPT09PT09PT09PT09PT09CgpIb3cgdGhlIGRldmlhdGlv
+biBvZiBzeXN0ZW0gYW5kIHNvdW5kIGRldmljZSBjbG9jayBpcwp0b2RheT8gUGVyaGFwcyBzb21l
+b25lIHRoYXQgd29ya3Mgd2l0aCBzb3VuZCBjYXJkcyBvciBTb0NzCmNhbiBhbnN3ZXIgdGhpcy4g
+RG8gdGhlIG1vc3Qgb2YgdG9kYXkncyBoYXJkd2FyZSBoYXMgdGhlCnNhbWUgY2xvY2sgZm9yIHNv
+dW5kIGRldmljZSBhbmQgc3lzdGVtPwoKSG93IHNvdW5kIGRldmljZXMgZGVhbCB3aXRoIHJhbmRv
+bSBhY2Nlc3NlcyB0byB0aGVpciByaW5nCmJ1ZmZlci4gRG8gbW9zdCBvZiB0aGVtIGFsbG93IHdy
+aXRpbmcvcmVhZGluZyBhbnl3aGVyZSBhbmQKYW55dGltZT8KCkhvdyBpcyB0aGUgYWN1cnJhY3kg
+YW5kIHByZWNpc2lvbiBvZiB0aGUgaGFyZHdhcmUgcG9pbnRlcgpyZXR1cm5lZCBieSBzb3VuZCBk
+ZXZpY2VzPwoKRG9lcyBTTkRSVl9QQ01fSU5GT19CQVRDSCBmbGFnIHJldmVhbHMgc29tZXRoaW5n
+IGFib3V0IHRoZQphYm92ZSBvbmU/CgpBcyBQdWxzZUF1ZGlvIHJ1bnMgaW4gbWFueSBMaW51eCBk
+aXN0cmlidXRpb25zIHRvZGF5LCBpdApzZWVtcyBhbiBpbnRlcmVzdGluZyBpZGVhIHRvIGltcGxl
+bWVudCBhbiB1dGlsaXR5IHRvCmNvbGxlY3Qgc29tZSBpbmZvcm1hdGlvbiByZWdhcmRpbmcgdGhl
+IGFib3ZlIGlzc3Vlcy4gVGhlbgptYWtlIGl0IGF2YWlsYWJsZSB0byB0aGUgcHVibGljLiBFLmcu
+IGl0IHdvdWxkIGJlIHBvc3NpYmxlCnRvIGtub3cgdGhlIHBvaW50ZXIgYWN1cnJhY3kgZm9yIHNw
+ZWNpZmljIGRldmljZXMuCgpTQ0hFRF9ERUFETElORSBhbmQgdGltZXJmZAo9PT09PT09PT09PT09
+PT09PT09PT09PT09PQoKVGhlcmUgYXJlIGEgZmV3IHdvcmtzIG92ZXIgdGhlcmUgYWJvdXQgU0NI
+RURfREVBRExJTkUgYW5kCmF1ZGlvOgoKLSBUaGlzIHBhcGVyIHByZXNlbnRlZCBpbiBMaW51eCBB
+dWRpbyBDb25mZXJlbmNlIDIwMTE6CiAgICBCQUdOT0xJLCBHaWFjb21vOyBDVUNJTk9UVEEsIFRv
+bW1hc287IEZBR0dJT0xJLCBEYXJpby4KICAgIDIwMTEuIExvdy1MYXRlbmN5IEF1ZGlvIG9uIExp
+bnV4IGJ5IE1lYW5zIG9mIFJlYWwtVGltZQogICAgU2NoZWR1bGluZy4KICBEYXJpbyBGYWdnaW9s
+aSBpcyBvbmUgb2YgdGhlIGF1dGhvcnMgb2YgU0NIRURfREVBRExJTkUuCgotIFRoaXMgcHJlc2Vu
+dGF0aW9uIG9mIEFsZXNzaW8gQmFsc2luaTogIkV4cGVyaW1lbnRpbmcKICB3aXRoIHRoZSBBbmRy
+b2lkIEF1ZGlvIFBpcGVsaW5lIGFuZCBTQ0hFRF9ERUFETElORSIuCiAgT1NQTSAyMDE4LiBIZXJl
+IGlzIGFuIG92ZXJ2aWV3OgogIDxodHRwczovL2x3bi5uZXQvQXJ0aWNsZXMvNzU0OTIzLz4uCgpJ
+biBTQ0hFRF9ERUFETElORSBJIGFzc3VtZSB0aGVyZSBpcyBubyB3YXkgdG8gYWNjdXJhdGVseQph
+ZGp1c3QgdGhlIHRpbWVyLiBBcyB3ZWxsIGFzIHRoZXJlIGlzIG5vIHdheSB0byBhZGp1c3QKd2hl
+biB0aGUgZmlyc3QgZXhwaXJhdGlvbiB3aWxsIGJlLiBJIHRoaW5rIHRoaXMgaXMgYmVjYXVzZQpv
+ZiBDb25zdGFudCBCYW5kd2lkdGggU2VydmVyIGFsZ29yaXRobS4gTXVzdCBhc2sgdG8gc29tZQpk
+ZXZlbG9wZXIgb2YgdGhpcy4KCkhhdmluZyB0aGlzIGluIG1pbmQsIHRoZSBvbmx5IHdheSB0byBz
+eW5jaHJvbml6ZSB0byBzb3VuZApkZXZpY2UgaXMgYnkgYWRqdXN0aW5nIHRoZSBhbW91bnQgcmVh
+ZC93cml0dGVuCihhcHBsaWNhdGlvbiBwb2ludGVyKS4KClRpbWVyZmQgb24gdGhlIG90aGVyIGhh
+bmQgaXMgZnVsbHkgYWRqdXN0YWJsZS4gSG93ZXZlciwgaXQKY2FuIGJlIHByZWVtcHRlZCBieSBh
+IGhpZ2ggcHJpb3JpdHkgdGFzay4gQW55d2F5IEkgZG9uJ3QKc2VlIHRoYXQgYXMgYSBwcm9ibGVt
+IGFzIGl0IHNob3VsZCByYWxlbHkgaGFwcGVuLgoKUGVyaGFwcyBTQ0hFRF9ERUFETElORSBpcyBz
+dWl0YWJsZSBmb3IgcHJvZmVzc2lvbmFsCmVudmlyb25tZW50IChhaW1pbmcgYWxtb3N0LXplcm8g
+Z2xpdGNoZXMpLgoKVGhvdWdodHMgb24gdGhpcz8gSXMgdGhlcmUgc29tZW9uZSBwbGFubmluZyB0
+byBpbXBsZW1lbnQKU0NIRURfREVBRExJTkUgaW4gUHVsc2VBdWRpbz8KCkknbSBjdXJyZW50bHkg
+d29ya2luZyBvbiBib3RoIGltcGxlbWVudGF0aW9ucyAobm90IGZvcgpQdWxzZUF1ZGlvKS4gU2Vl
+CjxodHRwczovL2dpdGh1Yi5jb20vcmljYXJkb2JpZWhsL3NpbXBsZXNvdW5kPi4KVGFrZSBhIGxv
+b2sgYXQgJ0RvY3VtZW50YXRpb24vdGltZXJfd2FrZXVwLnJzdCcsCid0b29scy90aW1lcl93YWtl
+dXAuYycgYW5kICd0b29scy9kZWFkbGluZV93YWtldXAuYycuCid0b29scy93YXZlcGxheS5jJyBw
+bGF5IC53YXYgZmlsZXMgdXNpbmcgdGhlIGFwcGxpY2F0aW9uCndha2V1cCBtZXRob2Qgc3BlY2lm
+aWVkIGluICd0b29scy9NYWtlZmlsZScuCgpEb2N1bWVudGF0aW9uCj09PT09PT09PT09PT0KCk1h
+bnkgb2YgdGhlIHBvaW50cyBJJ3ZlIG1lbnRpb25lZCBzaG91bGQgZ2V0IHdlbGwgY292ZXJlZApi
+eSBzb21lIGRvY3VtZW50YXRpb24gKGUuZy4gQUxTQSwgUHVsc2VBdWRpbykuIEFsc28sIEkKdGhp
+bmsgQUxTQSdzIGludGVybmFsIChrZXJuZWwtbGV2ZWwpIGRvY3VtZW50YXRpb24gbmVlZHMKdG8g
+Z3Jvdy4KCkknbSBhY3R1YWxseSB3b3JraW5nIG9uIHRoYXQsIGRvY3VtZW50aW5nIHNvbWUgc3R1
+ZmYgYXMgSSdtCmRldmVsb3BpbmcgYSBzbWFsbCBzb3VuZCBsaWJyYXJ5IHRoYXQgaW50ZXJhY3Rz
+IGRpcmVjdGx5CnRvIEFMU0EgaW4ga2VybmVsLCBhbmQgdGhlIGFwcGxpY2F0aW9uIHdha2V1cCB1
+c2luZwp0aW1lcmZkIGFuZCBTQ0hFRF9ERUFETElORS4KCkNoZWVycyEKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KTGludXgtYXVkaW8tZGV2IG1haWxpbmcg
+bGlzdApMaW51eC1hdWRpby1kZXZAbGlzdHMubGludXhhdWRpby5vcmcKaHR0cHM6Ly9saXN0cy5s
+aW51eGF1ZGlvLm9yZy9saXN0aW5mby9saW51eC1hdWRpby1kZXYK
