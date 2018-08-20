@@ -1,23 +1,22 @@
-From: Jiecheng Wu <jasonwood2031@gmail.com>
-Subject: [PATCH] sound/core.c: fix wrong return code of
-	rsnd_probe() when devm_kzalloc() fails
-Date: Sat, 18 Aug 2018 10:33:06 +0800
-Message-ID: <20180818023306.6824-1-jasonwood2031@gmail.com>
+From: Yao Lihua <ylhuajnu@outlook.com>
+Subject: Re: [PATCH] ALSA: ac97: fix device initialization in
+ the compat layer
+Date: Mon, 20 Aug 2018 13:37:35 +0000
+Message-ID: <MWHPR0601MB3707B79DFF0442CCBCB470FEC4320@MWHPR0601MB3707.namprd06.prod.outlook.com>
+References: <20180815125946.15451-1-ylhuajnu@163.com>
+ <s5hd0ueixo8.wl-tiwai@suse.de> <87in46bton.fsf@belgarion.home>
+ <s5hy3d2gvjw.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl0-f67.google.com (mail-pl0-f67.google.com
- [209.85.160.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 1FF602676C9
- for <alsa-devel@alsa-project.org>; Sat, 18 Aug 2018 04:33:17 +0200 (CEST)
-Received: by mail-pl0-f67.google.com with SMTP id p4-v6so934593pll.8
- for <alsa-devel@alsa-project.org>; Fri, 17 Aug 2018 19:33:17 -0700 (PDT)
-Received: from localhost.localdomain ([2402:f000:1:1501:200:5efe:a66f:53fa])
- by smtp.gmail.com with ESMTPSA id c88-v6sm4513787pfe.132.2018.08.17.19.33.14
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
- Fri, 17 Aug 2018 19:33:15 -0700 (PDT)
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com
+ (mail-oln040092006055.outbound.protection.outlook.com [40.92.6.55])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8051C26766C
+ for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2018 15:37:39 +0200 (CEST)
+In-Reply-To: <s5hy3d2gvjw.wl-tiwai@suse.de>
+Content-Language: en-US
+Content-ID: <0D4E56EA4E60114AA67AE19888C6EC91@namprd06.prod.outlook.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,26 +26,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Function rsnd_probe() defined in sound/soc/sh/rcar/core.c calls devm_kzalloc(). As devm_kzalloc() may return NULL when OOM happens, the caller should return -ENOMEM when devm_kzalloc() fails.
----
- sound/soc/sh/rcar/core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Monday, August 20, 2018 12:39 AM, Takashi Iwai wrote:
+> On Sun, 19 Aug 2018 11:18:48 +0200,
+> Robert Jarzmik wrote:
+>> Takashi Iwai <tiwai@suse.de> writes:
+>>
+>>> On Wed, 15 Aug 2018 14:59:46 +0200,
+>>> Looks good though a quick glance, but I'd like to get an ack from
+>>> Robert.  Robert?  Also check two other patches and runtime PM.
+>> Mmmh of course, but ... I don't have these patches in my mailbox ...
+>>
+>> Yao Lihua, would you be so kind as to resend them to me so that I can review and
+>> test them please ?
+> I forward the patch and Robert gave ack, so applied now.
+Hi Takashi, Robert;
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index f8425d8..fd92906 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -1502,7 +1502,7 @@ static int rsnd_probe(struct platform_device *pdev)
- 	 */
- 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
--		return -ENODEV;
-+		return -ENOMEM;
- 
- 	priv->pdev	= pdev;
- 	priv->flags	= (unsigned long)of_device_get_match_data(dev);
--- 
-2.6.4
+Thanks for review and sorry for inconvenience.
+
+I checked my email client and found that this email and the other two were delivered to
+alsa-devel only but rejected by both tiwai@suse.de and robert.jarzmik@free.fr.
+
+I also have trouble while replying using thunderbird email client.
+
+>
+>
+> thanks,
+>
+> Takashi
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>
