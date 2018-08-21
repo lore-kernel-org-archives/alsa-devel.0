@@ -1,18 +1,18 @@
 From: "Guedes, Andre" <andre.guedes@intel.com>
 Subject: Re: [RFC - AAF PCM plugin 3/5] aaf: Implement Playback
- mode support
-Date: Tue, 21 Aug 2018 21:58:05 +0000
-Message-ID: <1534888610.4547.104.camel@intel.com>
+	mode support
+Date: Tue, 21 Aug 2018 22:40:55 +0000
+Message-ID: <1534891254.4547.123.camel@intel.com>
 References: <20180821010653.15838-1-andre.guedes@intel.com>
  <20180821010653.15838-4-andre.guedes@intel.com>
- <294236b7-ace1-af42-508a-635fe9709f0e@linux.intel.com>
+ <80240cb0-4443-b75e-876f-edc0c5e1327d@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1211843805537660548=="
+Content-Type: multipart/mixed; boundary="===============8211488964619238826=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 21121267657
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 00:00:19 +0200 (CEST)
-In-Reply-To: <294236b7-ace1-af42-508a-635fe9709f0e@linux.intel.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id DDAC9267657
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 00:41:27 +0200 (CEST)
+In-Reply-To: <80240cb0-4443-b75e-876f-edc0c5e1327d@sakamocchi.jp>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,196 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: "o-takashi@sakamocchi.jp" <o-takashi@sakamocchi.jp>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 Cc: "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============1211843805537660548==
+--===============8211488964619238826==
 Content-Language: en-US
 Content-Type: multipart/signed; micalg=sha-1;
-	protocol="application/x-pkcs7-signature"; boundary="=-/26lye75wbpFbbBPtVf7"
+	protocol="application/x-pkcs7-signature"; boundary="=-aim8rxOxmhXOkVn8BPFD"
 
---=-/26lye75wbpFbbBPtVf7
+--=-aim8rxOxmhXOkVn8BPFD
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Pierre,
+Hi Takashi,
 
-On Mon, 2018-08-20 at 22:37 -0500, Pierre-Louis Bossart wrote:
-> > +#define CLOCK_REF		CLOCK_REALTIME
->=20
-> You should probably comment on why you use CLOCK_REALTIME for
-> something=20
-> that is driven by a media clock that's completely unrelated to=20
-> CLOCK_REALTIME?
+On Tue, 2018-08-21 at 13:31 +0900, Takashi Sakamoto wrote:
+> In a design of ALSA external plugin SDK[1], you can apply constrains
+> to=20
+> available hw_params/sw_params by a call of=20
+> 'snd_pcm_ioplug_set_param_minmax()' and=20
+> 'snd_pcm_ioplug_set_param_list()' at entry point. If you program
+> error=20
+> path at .hw_params callback for unexpected parameters, it's better
+> to=20
+> apply constants in advance.
 
-Sure, I'll add a comment here explaining why.
+Understood.
 
-Just anticipating, the AAF plugin implements a media clock itself. To
-achieve that it relies on a periodic timer, which requires a clock id.
-CLOCK_REALTIME was chosen because we can synchronize it against the PTP
- clock (see instructions on doc/aaf.txt) and use it to get PTP time.
-PTP time is the time reference in an AVTP system e.g. time reference
-utilized to set presentation time.
+> Do you have any reason not to do it? Is it difficult to retrieve=20
+> capabilities of target AVTP end station in the entry point?
 
-> > +static unsigned int alsa_to_avtp_format(snd_pcm_format_t format)
-> > +{
-> > +	switch (format) {
-> > +	case SND_PCM_FORMAT_S16_BE:
->=20
-> we usually use S16_LE? I can't recall when I last used S16_BE...
-
-AVTP specifies that the byte order of the samples is network order
-(i.e. big-endian). So, for simplicity, the plugin accepts only BE
-samples (see aaf_hw_params) at the moment.
-
-Later on, we can extend the plugin to convert LE to BE, or rely on
-another plugin (e.g. linear) to do the conversion.
-
-> > +		return AVTP_AAF_FORMAT_INT_16BIT;
-> > +	case SND_PCM_FORMAT_S24_3BE:
->=20
-> this means 3 bytes without padding to 32-bit word, is this your=20
-> definition as well?
-
-Yes, that's AVTP definition.
-
-> > +static unsigned int alsa_to_avtp_rate(unsigned int rate)
-> > +{
-> > +	switch (rate) {
-> > +	case 8000:
-> > +		return AVTP_AAF_PCM_NSR_8KHZ;
-> > +	case 16000:
-> > +		return AVTP_AAF_PCM_NSR_16KHZ;
-> > +	case 24000:
-> > +		return AVTP_AAF_PCM_NSR_24KHZ;
-> > +	case 32000:
-> > +		return AVTP_AAF_PCM_NSR_32KHZ;
-> > +	case 44100:
-> > +		return AVTP_AAF_PCM_NSR_44_1KHZ;
-> > +	case 48000:
-> > +		return AVTP_AAF_PCM_NSR_48KHZ;
-> > +	case 88200:
-> > +		return AVTP_AAF_PCM_NSR_88_2KHZ;
-> > +	case 96000:
-> > +		return AVTP_AAF_PCM_NSR_96KHZ;
-> > +	case 176400:
-> > +		return AVTP_AAF_PCM_NSR_176_4KHZ;
-> > +	case 192000:
-> > +		return AVTP_AAF_PCM_NSR_192KHZ;
->=20
-> You should align avtp_aaf definitions with ALSA, you are missing
-> quite a=20
-> few frequencies. e.g. 11.025, 64, 384kHz. If this is intentional add
-> a=20
-> comment to explain the restrictions.
-
-This is intentional. AVTP doesn't support all frequencies. I'll add a
-comment as requested.
-
-> > +static int aaf_init_areas(snd_pcm_aaf_t *aaf)
-> > +{
-> > +	snd_pcm_channel_area_t *audiobuf_areas, *payload_areas;
-> > +	ssize_t sample_size, frame_size;
-> > +	snd_pcm_ioplug_t *io =3D &aaf->io;
-> > +
-> > +	sample_size =3D snd_pcm_format_size(io->format, 1);
-> > +	if (sample_size < 0)
-> > +		return sample_size;
-> > +
-> > +	frame_size =3D sample_size * io->channels;
-> > +
-> > +	audiobuf_areas =3D calloc(io->channels,
-> > sizeof(snd_pcm_channel_area_t));
-> > +	if (!audiobuf_areas)
-> > +		return -ENOMEM;
-> > +
-> > +	payload_areas =3D calloc(io->channels,
-> > sizeof(snd_pcm_channel_area_t));
-> > +	if (!payload_areas) {
-> > +		free(audiobuf_areas);
-> > +		return -ENOMEM;
-> > +	}
-> > +
-> > +	for (unsigned int i =3D 0; i < io->channels; i++) {
-> > +		audiobuf_areas[i].addr =3D aaf->audiobuf;
-> > +		audiobuf_areas[i].first =3D i * sample_size * 8;
-> > +		audiobuf_areas[i].step =3D frame_size * 8;
-> > +
-> > +		payload_areas[i].addr =3D aaf->pdu->avtp_payload;
-> > +		payload_areas[i].first =3D i * sample_size * 8;
-> > +		payload_areas[i].step =3D frame_size * 8;
->=20
-> not sure what 8 represents here?
-
-Number of bits per byte.
-
-'sample_size' and 'frame_size' are in bytes. 'first' and 'step' fields
-from 'snd_pcm_channel_area_t' are in bits.
-
-> > +static int aaf_mclk_start_playback(snd_pcm_aaf_t *aaf)
-> > +{
-> > +	int res;
-> > +	struct timespec now;
-> > +	struct itimerspec itspec;
-> > +	snd_pcm_ioplug_t *io =3D &aaf->io;
-> > +
-> > +	res =3D clock_gettime(CLOCK_REF, &now);
-> > +	if (res < 0) {
-> > +		SNDERR("Failed to get time from clock");
-> > +		return -errno;
-> > +	}
-> > +
-> > +	aaf->mclk_period =3D (NSEC_PER_SEC * aaf->frames_per_pkt) /
-> > io->rate;
->=20
-> is this always an integer? If not, don't you have a systematic=20
-> arithmetic error?
-
-NSEC_PER_SEC is 64-bit so I don't see an arithmetic error during
-calculation (e.g. integer overflow). Not sure this was your concern,
-though. Let me know otherwise.
-
-> > +static int aaf_poll_revents(snd_pcm_ioplug_t *io, struct pollfd
-> > *pfd,
-> > +			    unsigned int nfds, unsigned short
-> > *revents)
-> > +{
-> > +	int res;
-> > +	snd_pcm_aaf_t *aaf =3D io->private_data;
-> > +
-> > +	if (nfds !=3D FD_COUNT_PLAYBACK)
-> > +		return -EINVAL;
-> > +
-> > +	if (pfd[0].revents & POLLIN) {
-> > +		res =3D aaf_mclk_timeout_playback(aaf);
-> > +		if (res < 0)
-> > +			return res;
-> > +
-> > +		*revents =3D POLLIN;
-> > +	}
->=20
-> I couldn't figure out how you use playback events and your timer.=20
-
-Every time aaf->timer_fd expires, the audio buffer is consumed by the
-plugin, making some room available on the buffer. So here a POLLIN
-event is returned so alsa-lib layer can copy more data into the audio
-buffer.
-
-> When there are two audio clock sources or timers that's usually where
-> the fun begins.
-
-Regarding scenarios with two audio clock sources or timers, the plugin
-doesn't support them at the moment. This is something we should work on
-once the basic functionality is pushed upstream.
+No reason, I was just not aware of it. I'll change the code to take
+advantage of this.
 
 Thank you for your feedback.
 
-Regards,
+- Andre
 
-Andre
-
---=-/26lye75wbpFbbBPtVf7
+--=-aim8rxOxmhXOkVn8BPFD
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -268,22 +117,22 @@ GEFQBOIaWrkyVuOpxEYrdZyiBtCLaaHr4PSG1aLfPy/3qUqes2sxggIXMIICEwIBATCBkDB5MQsw
 CQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFDASBgNVBAcTC1NhbnRhIENsYXJhMRowGAYDVQQKExFJ
 bnRlbCBDb3Jwb3JhdGlvbjErMCkGA1UEAxMiSW50ZWwgRXh0ZXJuYWwgQmFzaWMgSXNzdWluZyBD
 QSA0QgITMwAAVOqTIPExTt7mGQAAAABU6jAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqG
-SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgwODIxMjE1NjUwWjAjBgkqhkiG9w0BCQQxFgQULz7b
-WTZf/C9bYIFDyF4ZwbXNllUwDQYJKoZIhvcNAQEBBQAEggEABpMyBweH1q8Gn6Eucwx4BD4nagy1
-g7OfOd7YU5FUx9tTl8H/fUUC0sWPT7WsB7l9Oxu6i+28cHlad9++4ytgSFG5v8oX5H4XzXP5sv2O
-n86Rz8lKkk3rNFNJfEXj4H3DtWpfN4tR1w+xMSdUZLqvnC0MqqU4XOpaqENPuVwtDk1tf54Ed46j
-aNB8GKckONcm5R0H80ABncQG4DLpnUjf4kqxK8e2sSSgjrQEEUj5OFqZn7tOVKRqC5Ib3RGfyrDP
-L+dv8Sr3XTLiMjuboAh/4VJS50V6y8OgTzeWz2+0aTDhxqQBYT1oaAbr/C/bt2Q7z2q/1Cw2tYul
-TVqdqzn47gAAAAAAAA==
+SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgwODIxMjI0MDU0WjAjBgkqhkiG9w0BCQQxFgQUtTkA
+bzyTRJwYuc6pCovQ83IMlz4wDQYJKoZIhvcNAQEBBQAEggEAY+BgVzhp24q5vpCZ+S4T4rdZaRKu
+ijHGAoqWAXa0CsEecmuw05FKHN9BYx+3PucO42tJnSWcPyrmiWdIpEQeksYxWM81HTcPUAXhTNA4
+kZYw83x3v54/mFoxPqRFR2fSY9c6D50c3zR+ZEIcLAM2xuo2TCDq+KCqvPBW6rOwJDJZKX1RSNDQ
+EQKrU0oke75Cvvuc8m8SHVC3XFguCC3dydwMPHG+sn+uutaunE2ZrHfJU0u7pEJGw/iwNDUnWSU7
+WlMk9QMatju4AiBbn23Dy0q9iXWuY9zj8x2WHW4Xf+xAEWgaH8eG2Fn5ezVP5THH1noyPvp+WXRA
+3JMEEONQKwAAAAAAAA==
 
 
---=-/26lye75wbpFbbBPtVf7--
+--=-aim8rxOxmhXOkVn8BPFD--
 
---===============1211843805537660548==
+--===============8211488964619238826==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1211843805537660548==--
+--===============8211488964619238826==--
