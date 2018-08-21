@@ -1,21 +1,21 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [RFC - AAF PCM plugin 3/5] aaf: Implement Playback
-	mode support
-Date: Tue, 21 Aug 2018 13:31:43 +0900
-Message-ID: <80240cb0-4443-b75e-876f-edc0c5e1327d@sakamocchi.jp>
+Subject: Re: [RFC - AAF PCM plugin 5/5] aaf: Implement Capture
+ mode support
+Date: Tue, 21 Aug 2018 14:17:48 +0900
+Message-ID: <4cf623b4-ccf1-e67a-7d77-e440d4ae97c3@sakamocchi.jp>
 References: <20180821010653.15838-1-andre.guedes@intel.com>
- <20180821010653.15838-4-andre.guedes@intel.com>
+ <20180821010653.15838-6-andre.guedes@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pl0-f66.google.com (mail-pl0-f66.google.com
  [209.85.160.66])
- by alsa0.perex.cz (Postfix) with ESMTP id E375B2676C7
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 06:31:47 +0200 (CEST)
-Received: by mail-pl0-f66.google.com with SMTP id p4-v6so4605811pll.8
- for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2018 21:31:47 -0700 (PDT)
-In-Reply-To: <20180821010653.15838-4-andre.guedes@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 48DEF2676C7
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 07:17:53 +0200 (CEST)
+Received: by mail-pl0-f66.google.com with SMTP id f6-v6so8230062plo.1
+ for <alsa-devel@alsa-project.org>; Mon, 20 Aug 2018 22:17:52 -0700 (PDT)
+In-Reply-To: <20180821010653.15838-6-andre.guedes@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -33,150 +33,86 @@ List-Id: alsa-devel@alsa-project.org
 Hi,
 
 On Aug 21 2018 10:06, Andre Guedes wrote:
-> This patch implements the playback mode support from the AAF plugin.
-> Simply put, this mode works as follows: PCM samples provided by alsa-lib
-> layer are encapsulated into AVTP packets and transmitted through the
-> network. In summary, the playback mode implements a typical AVTP Talker.
+> This patch implements the capture mode support from the AAF plugin.
+> Simply put, this mode works as follows: AVTP packets are received from
+> the network, the PCM samples are retrieved and presented to the alsa-lib
+> layer at the presentation time. In summary, the capture mode implements
+> a typical AVTP Listener.
 > 
-> When the AAF device is put in running state, its media clock is started.
-> At every tick from the media clock, audio frames are consumed from the
-> audio buffer, encapsulated into an AVTP packet, and transmitted to the
-> network. The presentation time from each AVTP packet is calculated
-> taking in consideration the maximum transit time and time uncertainty
-> values configured by the user.
+> Once the AAF device is put in running state, packet reception is
+> started. Every time an AVTP packet is received the plugin checks if it
+> is valid (according to the stream configuration provided by the user)
+> and copies the PCM samples to the audio buffer. Note that at this
+> moment, the samples are not presented to the alsa-lib layer (i.e.
+> hw_ptr is not updated).
 > 
-> Below follows some discussion about implementation details:
-> 
-> Even though only one file descriptor is used to implement the playback
-> mode, this patch doesn't leverage ioplug->poll_fd but defines poll
-> callbacks instead. The reason is these callbacks will be required to
-> support capture mode (to be implemented by upcoming patch).
-> 
-> The TSN data plane interface is the AF_PACKET socket family so the
-> plugin uses an AF_PACKET socket to send/receive AVTP packets. Linux
-> requires CAP_NET_RAW capability in order to open an AF_PACKET socket so
-> the application that instantiates the plugin must have it. For further
-> info about AF_PACKET socket family see packet(7).
+> When the first AVTP packet is received, the media clock is set to start
+> at the presentation time from that packet. At every tick from the media
+> clock, PCM samples are presented to the alsa-lib layer.
 > 
 > Signed-off-by: Andre Guedes <andre.guedes@intel.com>
 > ---
->   aaf/pcm_aaf.c | 611 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
->   doc/aaf.txt   |  40 ++++
->   2 files changed, 651 insertions(+)
+>   aaf/pcm_aaf.c | 358 ++++++++++++++++++++++++++++++++++++++++++++++++++++++----
+>   1 file changed, 338 insertions(+), 20 deletions(-)
 > 
 > diff --git a/aaf/pcm_aaf.c b/aaf/pcm_aaf.c
-> index 4c6f031..72f6652 100644
+> index e098247..b5bee57 100644
 > --- a/aaf/pcm_aaf.c
 > +++ b/aaf/pcm_aaf.c
 > ...
-> +static int aaf_hw_params(snd_pcm_ioplug_t *io,
-> +			 snd_pcm_hw_params_t *params ATTRIBUTE_UNUSED)
+> @@ -561,6 +819,42 @@ static int aaf_mclk_timeout_playback(snd_pcm_aaf_t *aaf)
+>   	return 0;
+>   }
+>   
+> +static int aaf_mclk_timeout_capture(snd_pcm_aaf_t *aaf)
 > +{
-> +	int res;
-> +	snd_pcm_aaf_t *aaf = io->private_data;
+> +	ssize_t n;
+> +	uint64_t expirations;
 > +
-> +	if (io->access != SND_PCM_ACCESS_RW_INTERLEAVED)
-> +		return -ENOTSUP;
-> +
-> +	if (io->buffer_size > LONG_MAX)
-> +		return -EINVAL;
-> +
-> +	/* XXX: We might want to support Little Endian format in future. To
-> +	 * achieve that, we need to convert LE samples to BE before
-> +	 * transmitting them.
-> +	 */
-> +	switch (io->format) {
-> +	case SND_PCM_FORMAT_S16_BE:
-> +	case SND_PCM_FORMAT_S24_3BE:
-> +	case SND_PCM_FORMAT_S32_BE:
-> +	case SND_PCM_FORMAT_FLOAT_BE:
-> +		break;
-> +	default:
-> +		return -ENOTSUP;
+> +	n = read(aaf->timer_fd, &expirations, sizeof(uint64_t));
+> +	if (n < 0) {
+> +		SNDERR("Failed to read() timer");
+> +		return -errno;
 > +	}
 > +
-> +	switch (io->rate) {
-> +	case 8000:
-> +	case 16000:
-> +	case 24000:
-> +	case 32000:
-> +	case 44100:
-> +	case 48000:
-> +	case 88200:
-> +	case 96000:
-> +	case 176400:
-> +	case 192000:
-> +		break;
-> +	default:
-> +		return -ENOTSUP;
+> +	if (expirations != 1)
+> +		pr_debug("Missed %llu presentation time(s) ", expirations - 1);
+> +
+> +	while (expirations--) {
+> +		snd_pcm_sframes_t len;
+> +
+> +		aaf_inc_ptr(&aaf->hw_ptr, aaf->frames_per_pkt, aaf->boundary);
+> +
+> +		len = aaf->hw_virt_ptr - aaf->hw_ptr;
+> +		if (len < 0)
+> +			len += aaf->boundary;
+> +		if (len > aaf->buffer_size) {
+> +			/* If the distance between hw virtual pointer and hw
+> +			 * pointer is greater than the buffer size, it means we
+> +			 * had an overrun error so -EPIPE is returned.
+> +			 */
+> +			return -EPIPE;
+> +		}
+> +
+> +		aaf->mclk_ticks++;
 > +	}
-> +
-> +	aaf->buffer_size = io->buffer_size;
-> +
-> +	res = aaf_init_pdu(aaf);
-> +	if (res < 0)
-> +		return res;
-> +
-> +	res = aaf_init_audio_buffer(aaf);
-> +	if (res < 0)
-> +		goto err_free_pdu;
-> +
-> +	res = aaf_init_areas(aaf);
-> +	if (res < 0)
-> +		goto err_free_audiobuf;
 > +
 > +	return 0;
-> +
-> +err_free_audiobuf:
-> +	free(aaf->audiobuf);
-> +err_free_pdu:
-> +	free(aaf->pdu);
-> +	return res;
 > +}
-> ...
->   SND_PCM_PLUGIN_DEFINE_FUNC(aaf)
-> @@ -186,12 +787,21 @@ SND_PCM_PLUGIN_DEFINE_FUNC(aaf)
->   	snd_pcm_aaf_t *aaf;
->   	int res;
->   
-> +	/* For now the plugin only supports Playback mode i.e. AAF Talker
-> +	 * functionality.
-> +	 */
-> +	if (stream != SND_PCM_STREAM_PLAYBACK)
-> +		return -EINVAL;
-> +
->   	aaf = calloc(1, sizeof(*aaf));
->   	if (!aaf) {
->   		SNDERR("Failed to allocate memory");
->   		return -ENOMEM;
->   	}
->   
-> +	aaf->sk_fd = -1;
-> +	aaf->timer_fd = -1;
-> +
->   	res = aaf_load_config(aaf, conf);
->   	if (res < 0)
->   		goto err;
-> @@ -200,6 +810,7 @@ SND_PCM_PLUGIN_DEFINE_FUNC(aaf)
->   	aaf->io.name = "AVTP Audio Format (AAF) Plugin";
->   	aaf->io.callback = &aaf_callback;
->   	aaf->io.private_data = aaf;
-> +	aaf->io.flags = SND_PCM_IOPLUG_FLAG_BOUNDARY_WA;
->   	res = snd_pcm_ioplug_create(&aaf->io, name, stream, mode);
->   	if (res < 0) {
->   		SNDERR("Failed to create ioplug instance");
 
-In a design of ALSA external plugin SDK[1], you can apply constrains to 
-available hw_params/sw_params by a call of 
-'snd_pcm_ioplug_set_param_minmax()' and 
-'snd_pcm_ioplug_set_param_list()' at entry point. If you program error 
-path at .hw_params callback for unexpected parameters, it's better to 
-apply constants in advance.
+In your code, -EPIPE can be returned in a call of 
+'snd_pcm_poll_revents()'. In this case, typical applications follow 
+recovery process below:
 
-Do you have any reason not to do it? Is it difficult to retrieve 
-capabilities of target AVTP end station in the entry point?
+->snd_pcm_poll_revents()
+->snd_pcm_prepare()
+->snd_pcm_start()
 
-[1] http://www.alsa-project.org/alsa-doc/alsa-lib/pcm_external_plugins.html
+In this case, status of corresponding PCM substream is reset (see 
+'snd_pcm_ioplug_prepare()'). In my opinion, in this case, backend is 
+expected to stop data streaming, then initialize hardware and restart 
+data streaming. In your driver, timer_fd/sk_fd is leaked. It's better to
+release them by checking status of PCM substream in .prepare callback.
 
 
 Regards
