@@ -1,17 +1,15 @@
 From: Hans de Goede <hdegoede@redhat.com>
-Subject: [PATCH v2 2/3] ASoC: Intel: common: Add quirk for
-	Thinkpad 8 tablet
-Date: Tue, 21 Aug 2018 13:43:36 +0200
-Message-ID: <20180821114337.11361-2-hdegoede@redhat.com>
-References: <20180821114337.11361-1-hdegoede@redhat.com>
+Subject: [PATCH v2 1/3] ASoC: rt5670: Add quirk for Thinkpad 8
+	tablet
+Date: Tue, 21 Aug 2018 13:43:35 +0200
+Message-ID: <20180821114337.11361-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
- by alsa0.perex.cz (Postfix) with ESMTP id E7DB226766E
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 13:43:42 +0200 (CEST)
-In-Reply-To: <20180821114337.11361-1-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3BBCC26766C
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 13:43:41 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,31 +23,36 @@ To: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.
 Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Thinkpad 8 tablet uses 10EC5640 as ACPI HID, but it has a rt5670 codec
-add a quirk for this.
+The Thinkpad 8 needs a quirk for jack-detect and the internal mic to
+work correctly.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 ---
- sound/soc/intel/common/soc-acpi-intel-byt-match.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/rt5670.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-index 4daa8a4f0c0c..097dc06377ba 100644
---- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-+++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
-@@ -30,6 +30,13 @@ static int byt_thinkpad10_quirk_cb(const struct dmi_system_id *id)
- 
- 
- static const struct dmi_system_id byt_table[] = {
+diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
+index 732ef928b25d..455fe7cff700 100644
+--- a/sound/soc/codecs/rt5670.c
++++ b/sound/soc/codecs/rt5670.c
+@@ -2875,6 +2875,18 @@ static const struct dmi_system_id dmi_platform_intel_quirks[] = {
+ 						 RT5670_DEV_GPIO |
+ 						 RT5670_JD_MODE1),
+ 	},
 +	{
-+		.callback = byt_thinkpad10_quirk_cb,
++		.callback = rt5670_quirk_cb,
++		.ident = "Lenovo Thinkpad Tablet 8",
 +		.matches = {
 +			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
 +			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad 8"),
 +		},
++		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
++						 RT5670_DMIC2_INR |
++						 RT5670_DEV_GPIO |
++						 RT5670_JD_MODE1),
 +	},
  	{
- 		.callback = byt_thinkpad10_quirk_cb,
- 		.matches = {
+ 		.callback = rt5670_quirk_cb,
+ 		.ident = "Lenovo Thinkpad Tablet 10",
 -- 
 2.18.0
