@@ -1,18 +1,18 @@
 From: "Guedes, Andre" <andre.guedes@intel.com>
-Subject: Re: [RFC - AAF PCM plugin 2/5] aaf: Load configuration
- parameters
-Date: Tue, 21 Aug 2018 21:57:55 +0000
-Message-ID: <1534888673.4547.105.camel@intel.com>
+Subject: Re: [RFC - AAF PCM plugin 3/5] aaf: Implement Playback
+ mode support
+Date: Tue, 21 Aug 2018 21:58:05 +0000
+Message-ID: <1534888610.4547.104.camel@intel.com>
 References: <20180821010653.15838-1-andre.guedes@intel.com>
- <20180821010653.15838-3-andre.guedes@intel.com>
- <5e5c3cc7-194c-0cde-2bbb-8fcb455e4e2b@linux.intel.com>
+ <20180821010653.15838-4-andre.guedes@intel.com>
+ <294236b7-ace1-af42-508a-635fe9709f0e@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2324600285131614125=="
+Content-Type: multipart/mixed; boundary="===============1211843805537660548=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
- by alsa0.perex.cz (Postfix) with ESMTP id 92A01267657
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 23:58:06 +0200 (CEST)
-In-Reply-To: <5e5c3cc7-194c-0cde-2bbb-8fcb455e4e2b@linux.intel.com>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 21121267657
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 00:00:19 +0200 (CEST)
+In-Reply-To: <294236b7-ace1-af42-508a-635fe9709f0e@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,150 +27,192 @@ To: "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com
 Cc: "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============2324600285131614125==
+--===============1211843805537660548==
 Content-Language: en-US
 Content-Type: multipart/signed; micalg=sha-1;
-	protocol="application/x-pkcs7-signature"; boundary="=-ajCiqwwWVbUO2VvOmJ/8"
+	protocol="application/x-pkcs7-signature"; boundary="=-/26lye75wbpFbbBPtVf7"
 
---=-ajCiqwwWVbUO2VvOmJ/8
+--=-/26lye75wbpFbbBPtVf7
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 Hi Pierre,
 
-On Mon, 2018-08-20 at 22:16 -0500, Pierre-Louis Bossart wrote:
-> > +Plugin Configuration
-> > +--------------------
-> > +
-> > +The plugin parameters are passed via ALSA configuration file. They
-> > are defined
-> > +as follows:
-> > +
-> > +	* ifname: Network interface used to transmit/receive AVTP
-> > packets.
-> > +
-> > +	* addr: Stream destination MAC address.
+On Mon, 2018-08-20 at 22:37 -0500, Pierre-Louis Bossart wrote:
+> > +#define CLOCK_REF		CLOCK_REALTIME
 >=20
-> including multi-cast address?
+> You should probably comment on why you use CLOCK_REALTIME for
+> something=20
+> that is driven by a media clock that's completely unrelated to=20
+> CLOCK_REALTIME?
 
-Correct.
+Sure, I'll add a comment here explaining why.
 
-> > +
-> > +	* prio: Priority used by the plugin to transmit AVTP
-> > traffic. This
-> > +	  option is relevant only when operating in playback mode.
-> > +
-> > +	* streamid: Stream ID associated with the AAF stream
-> > transmitted or
-> > +	  received by the plugin.
+Just anticipating, the AAF plugin implements a media clock itself. To
+achieve that it relies on a periodic timer, which requires a clock id.
+CLOCK_REALTIME was chosen because we can synchronize it against the PTP
+ clock (see instructions on doc/aaf.txt) and use it to get PTP time.
+PTP time is the time reference in an AVTP system e.g. time reference
+utilized to set presentation time.
+
+> > +static unsigned int alsa_to_avtp_format(snd_pcm_format_t format)
+> > +{
+> > +	switch (format) {
+> > +	case SND_PCM_FORMAT_S16_BE:
 >=20
-> So the streamid has to be statically configured, right?
+> we usually use S16_LE? I can't recall when I last used S16_BE...
 
-Correct.
+AVTP specifies that the byte order of the samples is network order
+(i.e. big-endian). So, for simplicity, the plugin accepts only BE
+samples (see aaf_hw_params) at the moment.
 
-> If there an assumption that all streams exposed in this
-> configuration=20
-> file can all be used concurrently? Or put differently that the
-> streams=20
-> are only exposed if they can be used independently at any time?
+Later on, we can extend the plugin to convert LE to BE, or rely on
+another plugin (e.g. linear) to do the conversion.
 
-Yes, the plugin is expected to handle multiple streams concurrently. I
-have tested with two, mimicking one Class A and one Class B streams.
+> > +		return AVTP_AAF_FORMAT_INT_16BIT;
+> > +	case SND_PCM_FORMAT_S24_3BE:
+>=20
+> this means 3 bytes without padding to 32-bit word, is this your=20
+> definition as well?
 
-> > +	pcm.aaf {
-> > +		type aaf
-> > +		ifname eth0
-> > +		addr AA:AA:AA:AA:AA:AA
-> > +		prio 3
-> > +		streamid BB:BB:BB:BB:BB:BB:0001
-> > +		mtt 2000
-> > +		time_uncertainty 125
-> > +		frames_per_pkt 6
+Yes, that's AVTP definition.
+
+> > +static unsigned int alsa_to_avtp_rate(unsigned int rate)
+> > +{
+> > +	switch (rate) {
+> > +	case 8000:
+> > +		return AVTP_AAF_PCM_NSR_8KHZ;
+> > +	case 16000:
+> > +		return AVTP_AAF_PCM_NSR_16KHZ;
+> > +	case 24000:
+> > +		return AVTP_AAF_PCM_NSR_24KHZ;
+> > +	case 32000:
+> > +		return AVTP_AAF_PCM_NSR_32KHZ;
+> > +	case 44100:
+> > +		return AVTP_AAF_PCM_NSR_44_1KHZ;
+> > +	case 48000:
+> > +		return AVTP_AAF_PCM_NSR_48KHZ;
+> > +	case 88200:
+> > +		return AVTP_AAF_PCM_NSR_88_2KHZ;
+> > +	case 96000:
+> > +		return AVTP_AAF_PCM_NSR_96KHZ;
+> > +	case 176400:
+> > +		return AVTP_AAF_PCM_NSR_176_4KHZ;
+> > +	case 192000:
+> > +		return AVTP_AAF_PCM_NSR_192KHZ;
+>=20
+> You should align avtp_aaf definitions with ALSA, you are missing
+> quite a=20
+> few frequencies. e.g. 11.025, 64, 384kHz. If this is intentional add
+> a=20
+> comment to explain the restrictions.
+
+This is intentional. AVTP doesn't support all frequencies. I'll add a
+comment as requested.
+
+> > +static int aaf_init_areas(snd_pcm_aaf_t *aaf)
+> > +{
+> > +	snd_pcm_channel_area_t *audiobuf_areas, *payload_areas;
+> > +	ssize_t sample_size, frame_size;
+> > +	snd_pcm_ioplug_t *io =3D &aaf->io;
+> > +
+> > +	sample_size =3D snd_pcm_format_size(io->format, 1);
+> > +	if (sample_size < 0)
+> > +		return sample_size;
+> > +
+> > +	frame_size =3D sample_size * io->channels;
+> > +
+> > +	audiobuf_areas =3D calloc(io->channels,
+> > sizeof(snd_pcm_channel_area_t));
+> > +	if (!audiobuf_areas)
+> > +		return -ENOMEM;
+> > +
+> > +	payload_areas =3D calloc(io->channels,
+> > sizeof(snd_pcm_channel_area_t));
+> > +	if (!payload_areas) {
+> > +		free(audiobuf_areas);
+> > +		return -ENOMEM;
 > > +	}
 > > +
-> > +Put the above to ~/.asoundrc (or /etc/asound.conf), and use the
-> > AAF PCM virtual
-> > +device with your ALSA apps. For example, to stream the content
-> > from a wav file
-> > +through the network, run:
+> > +	for (unsigned int i =3D 0; i < io->channels; i++) {
+> > +		audiobuf_areas[i].addr =3D aaf->audiobuf;
+> > +		audiobuf_areas[i].first =3D i * sample_size * 8;
+> > +		audiobuf_areas[i].step =3D frame_size * 8;
 > > +
-> > +	$ aplay -Daaf foo.wav
+> > +		payload_areas[i].addr =3D aaf->pdu->avtp_payload;
+> > +		payload_areas[i].first =3D i * sample_size * 8;
+> > +		payload_areas[i].step =3D frame_size * 8;
 >=20
-> How do you deal with multiple streams then? -Daaf:<stream_number> ?
+> not sure what 8 represents here?
 
-Two ways:
+Number of bits per byte.
 
-1) Define multiple AAF devices in asoundrc (e.g. aaf0, aaf1, aaf2,
-etc.) and select them using the -D option e.g.:
+'sample_size' and 'frame_size' are in bytes. 'first' and 'step' fields
+from 'snd_pcm_channel_area_t' are in bits.
 
-$ aplay -D aaf0 foo.wav
-$ aplay -D aaf1 bar.wav
-
-2) Leverage ALSA config runtime arguments e.g. define the aaf device
-as:
-
-pcm.aaf {
-        @args [ IFNAME ADDR PRIO STREAMID MTT UNCERTAINTY FRAMES ]
-        @args.IFNAME {
-                type string
-        }
-        @args.ADDR {
-                type string
-        }
-        @args.PRIO {
-                type integer
-        }
-        @args.STREAMID {
-                type string
-        }
-        @args.MTT {
-                type integer
-        }
-        @args.UNCERTAINTY {
-                type integer
-        }
-        @args.FRAMES {
-                type integer
-        }
-
-        type aaf
-        ifname $IFNAME
-        addr $ADDR
-        prio $PRIO
-        streamid $STREAMID
-        mtt $MTT
-        time_uncertainty $UNCERTAINTY
-        frames_per_pkt $FRAMES
-}
-
-And pass the device parameters via -D option like this:
-
-$ aplay -D
-aaf:eth0.1,01:AA:AA:AA:AA:AA,3,AA:BB:CC:DD:EE:FF:0001,2000,125,6
-foo.wav
-
-$ aplay -D
-aaf:eth0.2,01:BB:BB:BB:BB:BB,3,AA:BB:CC:DD:EE:FF:0002,50000,1000,12
-bar.wav
-
-Particularly, I'm using 2) since it is more practical for testing
-purposes.
-
+> > +static int aaf_mclk_start_playback(snd_pcm_aaf_t *aaf)
+> > +{
+> > +	int res;
+> > +	struct timespec now;
+> > +	struct itimerspec itspec;
+> > +	snd_pcm_ioplug_t *io =3D &aaf->io;
 > > +
-> > +To receive the AAF stream generated by the previous command, run:
+> > +	res =3D clock_gettime(CLOCK_REF, &now);
+> > +	if (res < 0) {
+> > +		SNDERR("Failed to get time from clock");
+> > +		return -errno;
+> > +	}
 > > +
-> > +	$ arecord -Daaf
+> > +	aaf->mclk_period =3D (NSEC_PER_SEC * aaf->frames_per_pkt) /
+> > io->rate;
 >=20
-> Did you mean on a different machine or are there any loopback
-> capabilities?
+> is this always an integer? If not, don't you have a systematic=20
+> arithmetic error?
 
-Yep, on a different machine. I'll add that info here.
+NSEC_PER_SEC is 64-bit so I don't see an arithmetic error during
+calculation (e.g. integer overflow). Not sure this was your concern,
+though. Let me know otherwise.
+
+> > +static int aaf_poll_revents(snd_pcm_ioplug_t *io, struct pollfd
+> > *pfd,
+> > +			    unsigned int nfds, unsigned short
+> > *revents)
+> > +{
+> > +	int res;
+> > +	snd_pcm_aaf_t *aaf =3D io->private_data;
+> > +
+> > +	if (nfds !=3D FD_COUNT_PLAYBACK)
+> > +		return -EINVAL;
+> > +
+> > +	if (pfd[0].revents & POLLIN) {
+> > +		res =3D aaf_mclk_timeout_playback(aaf);
+> > +		if (res < 0)
+> > +			return res;
+> > +
+> > +		*revents =3D POLLIN;
+> > +	}
+>=20
+> I couldn't figure out how you use playback events and your timer.=20
+
+Every time aaf->timer_fd expires, the audio buffer is consumed by the
+plugin, making some room available on the buffer. So here a POLLIN
+event is returned so alsa-lib layer can copy more data into the audio
+buffer.
+
+> When there are two audio clock sources or timers that's usually where
+> the fun begins.
+
+Regarding scenarios with two audio clock sources or timers, the plugin
+doesn't support them at the moment. This is something we should work on
+once the basic functionality is pushed upstream.
+
+Thank you for your feedback.
 
 Regards,
 
 Andre
 
---=-ajCiqwwWVbUO2VvOmJ/8
+--=-/26lye75wbpFbbBPtVf7
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -226,22 +268,22 @@ GEFQBOIaWrkyVuOpxEYrdZyiBtCLaaHr4PSG1aLfPy/3qUqes2sxggIXMIICEwIBATCBkDB5MQsw
 CQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFDASBgNVBAcTC1NhbnRhIENsYXJhMRowGAYDVQQKExFJ
 bnRlbCBDb3Jwb3JhdGlvbjErMCkGA1UEAxMiSW50ZWwgRXh0ZXJuYWwgQmFzaWMgSXNzdWluZyBD
 QSA0QgITMwAAVOqTIPExTt7mGQAAAABU6jAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqG
-SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgwODIxMjE1NzUzWjAjBgkqhkiG9w0BCQQxFgQU3LFJ
-lwYxXzPqACtnVMKhl2QIEQMwDQYJKoZIhvcNAQEBBQAEggEAG13Lbg12wGNNfBSBiKXCasNiKWUu
-aVl4XHVRA4iwAvgPZCuqn1ZSVhoAPNJ4msYqxUuH76fgPEq13SWJ+sIBcmbM0AMvcpkrRG4QRkiG
-W1m1f1q6dh2mPWXKOFWmvCKlKxPiSVt0XzpDs74DIYfjbZAI+iX1GN7gAIhaPufTM8917vky/aSy
-OS2j8heshnTU7RLdp6VD3anXcn//ggUgwkbsLZi199WPmIivsTieMeW7HCHgoR4QZcEax50UYqfj
-TN7ZnjA0+AlDSqnDCMf04/Q0JDTdIr3b/Itb5VFISQt+dizsMW/wZ47LwxElu7aTj8Hx5B2dHtqw
-q/fCLrnPpgAAAAAAAA==
+SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgwODIxMjE1NjUwWjAjBgkqhkiG9w0BCQQxFgQULz7b
+WTZf/C9bYIFDyF4ZwbXNllUwDQYJKoZIhvcNAQEBBQAEggEABpMyBweH1q8Gn6Eucwx4BD4nagy1
+g7OfOd7YU5FUx9tTl8H/fUUC0sWPT7WsB7l9Oxu6i+28cHlad9++4ytgSFG5v8oX5H4XzXP5sv2O
+n86Rz8lKkk3rNFNJfEXj4H3DtWpfN4tR1w+xMSdUZLqvnC0MqqU4XOpaqENPuVwtDk1tf54Ed46j
+aNB8GKckONcm5R0H80ABncQG4DLpnUjf4kqxK8e2sSSgjrQEEUj5OFqZn7tOVKRqC5Ib3RGfyrDP
+L+dv8Sr3XTLiMjuboAh/4VJS50V6y8OgTzeWz2+0aTDhxqQBYT1oaAbr/C/bt2Q7z2q/1Cw2tYul
+TVqdqzn47gAAAAAAAA==
 
 
---=-ajCiqwwWVbUO2VvOmJ/8--
+--=-/26lye75wbpFbbBPtVf7--
 
---===============2324600285131614125==
+--===============1211843805537660548==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2324600285131614125==--
+--===============1211843805537660548==--
