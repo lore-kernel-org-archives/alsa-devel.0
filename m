@@ -1,17 +1,19 @@
-From: Prashant Malani <pmalani@chromium.org>
-Subject: Suspected heap overflow in snd_midi_event_encode_byte()
-Date: Tue, 21 Aug 2018 14:24:14 -0700
-Message-ID: <CACeCKacfLn8FEVU1VK8vBXM11membOOPe_4GAHeX6CAAXzD8Rg@mail.gmail.com>
+From: "Guedes, Andre" <andre.guedes@intel.com>
+Subject: Re: [RFC - AAF PCM plugin 2/5] aaf: Load configuration
+ parameters
+Date: Tue, 21 Aug 2018 21:57:55 +0000
+Message-ID: <1534888673.4547.105.camel@intel.com>
+References: <20180821010653.15838-1-andre.guedes@intel.com>
+ <20180821010653.15838-3-andre.guedes@intel.com>
+ <5e5c3cc7-194c-0cde-2bbb-8fcb455e4e2b@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============2324600285131614125=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f179.google.com (mail-qt0-f179.google.com
- [209.85.216.179])
- by alsa0.perex.cz (Postfix) with ESMTP id BE510267657
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 23:24:17 +0200 (CEST)
-Received: by mail-qt0-f179.google.com with SMTP id o15-v6so16025746qtk.6
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 14:24:17 -0700 (PDT)
+Received: from mga11.intel.com (mga11.intel.com [192.55.52.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 92A01267657
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 23:58:06 +0200 (CEST)
+In-Reply-To: <5e5c3cc7-194c-0cde-2bbb-8fcb455e4e2b@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,49 +23,225 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Dylan Reid <dgreid@chromium.org>
+To: "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+--===============2324600285131614125==
+Content-Language: en-US
+Content-Type: multipart/signed; micalg=sha-1;
+	protocol="application/x-pkcs7-signature"; boundary="=-ajCiqwwWVbUO2VvOmJ/8"
 
-The Chromium fuzzers detected a potential heap overflow in
-snd_midi_event_encode_byte() when attempting to encode an invalid data
-sequence. The potential bug was observed in alsa-lib-1.1.5 (the source
-seems similar to alsa-lib-1.1.6 so it is likely present there too).
+--=-ajCiqwwWVbUO2VvOmJ/8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Code to reproduce (condensed to fit in an email):
+Hi Pierre,
 
-std::array<int, 4> arr{ {0x0A, 0x0B, 0x0C, 0x0D} };
-snd_midi_event_t* encoder;
-snd_midi_event_new(arr.size(), &encoder);
-for (int i = 0; i < arr.size(); i++) {
-  snd_seq_event_t event;
-  int result = snd_midi_event_encode_byte(encoder, arr[i], &event);
-  if (result < 0) {
-    // Log error and return....
-  }
-  if ( result == 1) {
-    // Send the completed message and return.
-  }
+On Mon, 2018-08-20 at 22:16 -0500, Pierre-Louis Bossart wrote:
+> > +Plugin Configuration
+> > +--------------------
+> > +
+> > +The plugin parameters are passed via ALSA configuration file. They
+> > are defined
+> > +as follows:
+> > +
+> > +	* ifname: Network interface used to transmit/receive AVTP
+> > packets.
+> > +
+> > +	* addr: Stream destination MAC address.
+>=20
+> including multi-cast address?
+
+Correct.
+
+> > +
+> > +	* prio: Priority used by the plugin to transmit AVTP
+> > traffic. This
+> > +	  option is relevant only when operating in playback mode.
+> > +
+> > +	* streamid: Stream ID associated with the AAF stream
+> > transmitted or
+> > +	  received by the plugin.
+>=20
+> So the streamid has to be statically configured, right?
+
+Correct.
+
+> If there an assumption that all streams exposed in this
+> configuration=20
+> file can all be used concurrently? Or put differently that the
+> streams=20
+> are only exposed if they can be used independently at any time?
+
+Yes, the plugin is expected to handle multiple streams concurrently. I
+have tested with two, mimicking one Class A and one Class B streams.
+
+> > +	pcm.aaf {
+> > +		type aaf
+> > +		ifname eth0
+> > +		addr AA:AA:AA:AA:AA:AA
+> > +		prio 3
+> > +		streamid BB:BB:BB:BB:BB:BB:0001
+> > +		mtt 2000
+> > +		time_uncertainty 125
+> > +		frames_per_pkt 6
+> > +	}
+> > +
+> > +Put the above to ~/.asoundrc (or /etc/asound.conf), and use the
+> > AAF PCM virtual
+> > +device with your ALSA apps. For example, to stream the content
+> > from a wav file
+> > +through the network, run:
+> > +
+> > +	$ aplay -Daaf foo.wav
+>=20
+> How do you deal with multiple streams then? -Daaf:<stream_number> ?
+
+Two ways:
+
+1) Define multiple AAF devices in asoundrc (e.g. aaf0, aaf1, aaf2,
+etc.) and select them using the -D option e.g.:
+
+$ aplay -D aaf0 foo.wav
+$ aplay -D aaf1 bar.wav
+
+2) Leverage ALSA config runtime arguments e.g. define the aaf device
+as:
+
+pcm.aaf {
+        @args [ IFNAME ADDR PRIO STREAMID MTT UNCERTAINTY FRAMES ]
+        @args.IFNAME {
+                type string
+        }
+        @args.ADDR {
+                type string
+        }
+        @args.PRIO {
+                type integer
+        }
+        @args.STREAMID {
+                type string
+        }
+        @args.MTT {
+                type integer
+        }
+        @args.UNCERTAINTY {
+                type integer
+        }
+        @args.FRAMES {
+                type integer
+        }
+
+        type aaf
+        ifname $IFNAME
+        addr $ADDR
+        prio $PRIO
+        streamid $STREAMID
+        mtt $MTT
+        time_uncertainty $UNCERTAINTY
+        frames_per_pkt $FRAMES
 }
-....
 
-The first call to snd_midi_event_encode_byte() using byte 0x0A causes the
-|encoder->qlen| to underflow and become a large unsigned value, and
-|encoder->read| to become 2.  Subsequent bytes processed will get written
-to the |encoder->buf| buffer, with |dev->read| getting incremented after
-every byte. As a result, by the time we get to byte 0x0D, |encoder->read|
-is already 4, and this results in a heap overflow (relevant line in
-alsa-lib is src/seq/seq_midi_event.c:425)
+And pass the device parameters via -D option like this:
 
-I'm not sure if the above input array is a valid input to
-snd_midi_event_encode_byte(), but I'm guessing we should be doing some
-error checking to make sure we're not processing
-incorrect/unexpected/invalid bytes.
+$ aplay -D
+aaf:eth0.1,01:AA:AA:AA:AA:AA,3,AA:BB:CC:DD:EE:FF:0001,2000,125,6
+foo.wav
 
-Any suggestions about how one can submit a fix for this?
+$ aplay -D
+aaf:eth0.2,01:BB:BB:BB:BB:BB,3,AA:BB:CC:DD:EE:FF:0002,50000,1000,12
+bar.wav
 
-Best regards,
+Particularly, I'm using 2) since it is more practical for testing
+purposes.
 
-Prashant
+> > +
+> > +To receive the AAF stream generated by the previous command, run:
+> > +
+> > +	$ arecord -Daaf
+>=20
+> Did you mean on a different machine or are there any loopback
+> capabilities?
+
+Yep, on a different machine. I'll add that info here.
+
+Regards,
+
+Andre
+
+--=-ajCiqwwWVbUO2VvOmJ/8
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+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
+52x2a8T3uObIGnrivyxT9nr1uQVMzTOK5T+T/P26lM2Ssu8ejh9BzdJXoCesZRxFlQIDAQABo4IC
+LzCCAiswHQYDVR0OBBYEFKllszC+h3dLSC4MwCuy47Ms+wOxMB8GA1UdIwQYMBaAFNpBI5xaj3Gv
+V4M+INPjZdsMywvbMGUGA1UdHwReMFwwWqBYoFaGVGh0dHA6Ly93d3cuaW50ZWwuY29tL3JlcG9z
+aXRvcnkvQ1JML0ludGVsJTIwRXh0ZXJuYWwlMjBCYXNpYyUyMElzc3VpbmclMjBDQSUyMDRCLmNy
+bDCBnwYIKwYBBQUHAQEEgZIwgY8wIgYIKwYBBQUHMAGGFmh0dHA6Ly9vY3NwLmludGVsLmNvbS8w
+aQYIKwYBBQUHMAKGXWh0dHA6Ly93d3cuaW50ZWwuY29tL3JlcG9zaXRvcnkvY2VydGlmaWNhdGVz
+L0ludGVsJTIwRXh0ZXJuYWwlMjBCYXNpYyUyMElzc3VpbmclMjBDQSUyMDRCLmNydDALBgNVHQ8E
+BAMCB4AwPAYJKwYBBAGCNxUHBC8wLQYlKwYBBAGCNxUIhsOMdYSZ5VGD/YEohY6fU4KRwAlngd69
+OZXwQwIBZAIBCTAfBgNVHSUEGDAWBggrBgEFBQcDBAYKKwYBBAGCNwoDDDApBgkrBgEEAYI3FQoE
+HDAaMAoGCCsGAQUFBwMEMAwGCisGAQQBgjcKAwwwSQYDVR0RBEIwQKAmBgorBgEEAYI3FAIDoBgM
+FmFuZHJlLmd1ZWRlc0BpbnRlbC5jb22BFmFuZHJlLmd1ZWRlc0BpbnRlbC5jb20wDQYJKoZIhvcN
+AQEFBQADggEBAFdibWbC47oT6BkRNfhu1ggBf8uW7sF8GtUrPBd3UiAslPZBA7qxaiPR37BVMCFu
+BXGygMxhI1CUB6bnP58CMaSrSpUl2DrXC7FUCkXhtrfC1AbvrzLJ6fYsVPCZGKLEsDPMf4ptJsRC
+SpkJ+94xWURt+/wjYTpUSi0k42+WGmenTr9+Dnbaapeui8Gvhst2HXB0oe364KkWFP1e7pP9CPw4
+6yi6SveqavNkU9Zr9qk3cfC2+VUAwVJNdQM9IZ36fzauQ85v4oTW5T1/cMurIw+KAcKArtIk4rUV
+GEFQBOIaWrkyVuOpxEYrdZyiBtCLaaHr4PSG1aLfPy/3qUqes2sxggIXMIICEwIBATCBkDB5MQsw
+CQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFDASBgNVBAcTC1NhbnRhIENsYXJhMRowGAYDVQQKExFJ
+bnRlbCBDb3Jwb3JhdGlvbjErMCkGA1UEAxMiSW50ZWwgRXh0ZXJuYWwgQmFzaWMgSXNzdWluZyBD
+QSA0QgITMwAAVOqTIPExTt7mGQAAAABU6jAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqG
+SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgwODIxMjE1NzUzWjAjBgkqhkiG9w0BCQQxFgQU3LFJ
+lwYxXzPqACtnVMKhl2QIEQMwDQYJKoZIhvcNAQEBBQAEggEAG13Lbg12wGNNfBSBiKXCasNiKWUu
+aVl4XHVRA4iwAvgPZCuqn1ZSVhoAPNJ4msYqxUuH76fgPEq13SWJ+sIBcmbM0AMvcpkrRG4QRkiG
+W1m1f1q6dh2mPWXKOFWmvCKlKxPiSVt0XzpDs74DIYfjbZAI+iX1GN7gAIhaPufTM8917vky/aSy
+OS2j8heshnTU7RLdp6VD3anXcn//ggUgwkbsLZi199WPmIivsTieMeW7HCHgoR4QZcEax50UYqfj
+TN7ZnjA0+AlDSqnDCMf04/Q0JDTdIr3b/Itb5VFISQt+dizsMW/wZ47LwxElu7aTj8Hx5B2dHtqw
+q/fCLrnPpgAAAAAAAA==
+
+
+--=-ajCiqwwWVbUO2VvOmJ/8--
+
+--===============2324600285131614125==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2324600285131614125==--
