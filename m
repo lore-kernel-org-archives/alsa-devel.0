@@ -1,24 +1,17 @@
-From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
-Subject: [PATCH] ALSA: pcm: Return 0 when size <
-	start_threshold in capture
-Date: Tue, 21 Aug 2018 16:46:43 -0300
-Message-ID: <20180821194643.GA10347@localhost.localdomain>
+From: Prashant Malani <pmalani@chromium.org>
+Subject: Suspected heap overflow in snd_midi_event_encode_byte()
+Date: Tue, 21 Aug 2018 14:24:14 -0700
+Message-ID: <CACeCKacfLn8FEVU1VK8vBXM11membOOPe_4GAHeX6CAAXzD8Rg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f177.google.com (mail-qt0-f177.google.com
- [209.85.216.177])
- by alsa0.perex.cz (Postfix) with ESMTP id 30F81267657
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 21:46:51 +0200 (CEST)
-Received: by mail-qt0-f177.google.com with SMTP id f18-v6so21679049qtp.10
- for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 12:46:51 -0700 (PDT)
-Received: from localhost.localdomain ([201.37.66.59])
- by smtp.gmail.com with ESMTPSA id d138-v6sm4720544qke.18.2018.08.21.12.46.48
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
- Tue, 21 Aug 2018 12:46:49 -0700 (PDT)
-Content-Disposition: inline
+Received: from mail-qt0-f179.google.com (mail-qt0-f179.google.com
+ [209.85.216.179])
+ by alsa0.perex.cz (Postfix) with ESMTP id BE510267657
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 23:24:17 +0200 (CEST)
+Received: by mail-qt0-f179.google.com with SMTP id o15-v6so16025746qtk.6
+ for <alsa-devel@alsa-project.org>; Tue, 21 Aug 2018 14:24:17 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,46 +22,48 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: Dylan Reid <dgreid@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
-In __snd_pcm_lib_xfer(), when capture, if state is
-PREPARED and size is less than start_threshold nothing
-can be done. As there is no error, 0 is returned.
+Hi,
 
-Am I missing something?
+The Chromium fuzzers detected a potential heap overflow in
+snd_midi_event_encode_byte() when attempting to encode an invalid data
+sequence. The potential bug was observed in alsa-lib-1.1.5 (the source
+seems similar to alsa-lib-1.1.6 so it is likely present there too).
 
-Cheers!
+Code to reproduce (condensed to fit in an email):
 
-	pasquali
+std::array<int, 4> arr{ {0x0A, 0x0B, 0x0C, 0x0D} };
+snd_midi_event_t* encoder;
+snd_midi_event_new(arr.size(), &encoder);
+for (int i = 0; i < arr.size(); i++) {
+  snd_seq_event_t event;
+  int result = snd_midi_event_encode_byte(encoder, arr[i], &event);
+  if (result < 0) {
+    // Log error and return....
+  }
+  if ( result == 1) {
+    // Send the completed message and return.
+  }
+}
+....
 
---- pcm_lib.c.orig	2018-08-21 15:31:54.457405053 -0300
-+++ pcm_lib.c	2018-08-21 15:56:01.264549084 -0300
-@@ -2125,7 +2125,7 @@
- 	pcm_transfer_f transfer;
- 	bool nonblock;
- 	bool is_playback;
--	int err;
-+	int err = 0;
- 
- 	err = pcm_sanity_check(substream);
- 	if (err < 0)
-@@ -2173,11 +2173,15 @@
- 		goto _end_unlock;
- 
- 	if (!is_playback &&
--	    runtime->status->state == SNDRV_PCM_STATE_PREPARED &&
--	    size >= runtime->start_threshold) {
--		err = snd_pcm_start(substream);
--		if (err < 0)
-+	    runtime->status->state == SNDRV_PCM_STATE_PREPARED) {
-+		if (size >= runtime->start_threshold) {
-+			err = snd_pcm_start(substream);
-+			if (err < 0)
-+				goto _end_unlock;
-+		} else {
-+			/* nothing to do */
- 			goto _end_unlock;
-+		}
- 	}
- 
- 	runtime->twake = runtime->control->avail_min ? : 1;
+The first call to snd_midi_event_encode_byte() using byte 0x0A causes the
+|encoder->qlen| to underflow and become a large unsigned value, and
+|encoder->read| to become 2.  Subsequent bytes processed will get written
+to the |encoder->buf| buffer, with |dev->read| getting incremented after
+every byte. As a result, by the time we get to byte 0x0D, |encoder->read|
+is already 4, and this results in a heap overflow (relevant line in
+alsa-lib is src/seq/seq_midi_event.c:425)
+
+I'm not sure if the above input array is a valid input to
+snd_midi_event_encode_byte(), but I'm guessing we should be doing some
+error checking to make sure we're not processing
+incorrect/unexpected/invalid bytes.
+
+Any suggestions about how one can submit a fix for this?
+
+Best regards,
+
+Prashant
