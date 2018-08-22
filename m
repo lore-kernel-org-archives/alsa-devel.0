@@ -1,18 +1,17 @@
-From: Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] ASoC: sigmadsp: safeload should be used
-	from 4 bytes
-Date: Wed, 22 Aug 2018 08:34:23 +0200
-Message-ID: <ef680c4a-3b28-e28c-0164-085330ec2dee@metafoo.de>
-References: <20180822061131.13191-1-robertr@axis.com>
+From: Riccardo Casagrande <riccardo.casagrande@multiconn.it>
+Subject: ASOC driver I2C communication
+Date: Wed, 22 Aug 2018 09:36:27 +0200
+Message-ID: <8a068097af618615d2daeed0c5070cbf@multiconn.it>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
- by alsa0.perex.cz (Postfix) with ESMTP id 5A916267657
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 08:34:25 +0200 (CEST)
-In-Reply-To: <20180822061131.13191-1-robertr@axis.com>
-Content-Language: en-US
+Received: from mail.mmit.com.mt (mail.mmit.com.mt [176.56.128.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F72126766C
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 09:36:28 +0200 (CEST)
+Received: from multiconn.it [10.101.1.251] ([127.0.0.1])
+ by mail.mmit.com.mt (MM IT Mail Server v3.0) with ASMTP id MPF14447
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 09:35:47 +0200
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,48 +21,15 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Rosengren <robert.rosengren@axis.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Danny Smith <dannys@axis.com>
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 08/22/2018 08:11 AM, Robert Rosengren wrote:
-> From: Danny Smith <dannys@axis.com>
-> 
-> Fixed range in safeload conditional to allow safeload to be used from
-> 4 bytes.
 
-Hi,
+Hello all,
 
-Thanks for the patch. The reason why 4 bytes is excluded is that up to 4
-bytes can be updated atomically with a single register write. But I could
-see that if the firmware reads the same parameter multiple times during the
-same run you could get inconsistent results.
 
-Can you explain a bit more why you need this?
+I've developed a driver+codec for a custom sound card. The problem is: the driver take control of the device  (The device is marked UU in i2cdetect command) and do not allow to communicate in the userspace with it via I2C. The device results to be always busy. I need to send some commands to the audio chip. Is there a way to use I2C in the userspace?
 
-If we want to allow safeload for 4 byte parameters the same reasoning
-applies for parameters with less than 4 bytes as well and so the check
-should be removed completely.
 
-- Lars
-
-> 
-> Signed-off-by: Danny Smith <dannys@axis.com>
-> ---
->  sound/soc/codecs/sigmadsp.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
-> index d53680ac78e4..d63d58350cd8 100644
-> --- a/sound/soc/codecs/sigmadsp.c
-> +++ b/sound/soc/codecs/sigmadsp.c
-> @@ -117,7 +117,7 @@ static int sigmadsp_ctrl_write(struct sigmadsp *sigmadsp,
->  	struct sigmadsp_control *ctrl, void *data)
->  {
->  	/* safeload loads up to 20 bytes in a atomic operation */
-> -	if (ctrl->num_bytes > 4 && ctrl->num_bytes <= 20 && sigmadsp->ops &&
-> +	if (ctrl->num_bytes >= 4 && ctrl->num_bytes <= 20 && sigmadsp->ops &&
->  	    sigmadsp->ops->safeload)
->  		return sigmadsp->ops->safeload(sigmadsp, ctrl->addr, data,
->  			ctrl->num_bytes);
-> 
+Thanks in advance.
+Riccardo
