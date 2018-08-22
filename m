@@ -1,22 +1,20 @@
-From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
-Subject: Re: [PATCH v2] ALSA: pcm: Return 0 when size <
- start_threshold in capture
-Date: Wed, 22 Aug 2018 12:25:24 -0300
-Message-ID: <20180822152524.GA13037@localhost.localdomain>
-References: <20180822150359.GA12976@localhost.localdomain>
- <s5hy3cye8wu.wl-tiwai@suse.de>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v7 7/7] ASoC: Intel: Skylake: add option to
+ control HDAudio + DSP usage
+Date: Wed, 22 Aug 2018 10:36:44 -0500
+Message-ID: <2916ad16-9168-584e-56f5-16403cee0b2f@linux.intel.com>
+References: <20180817203723.32305-1-pierre-louis.bossart@linux.intel.com>
+ <20180817203723.32305-8-pierre-louis.bossart@linux.intel.com>
+ <s5h7ekiesl4.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f180.google.com (mail-qt0-f180.google.com
- [209.85.216.180])
- by alsa0.perex.cz (Postfix) with ESMTP id E9118267663
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 17:25:32 +0200 (CEST)
-Received: by mail-qt0-f180.google.com with SMTP id r37-v6so2559009qtc.0
- for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 08:25:32 -0700 (PDT)
-Content-Disposition: inline
-In-Reply-To: <s5hy3cye8wu.wl-tiwai@suse.de>
+Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E3D2267663
+ for <alsa-devel@alsa-project.org>; Wed, 22 Aug 2018 17:36:53 +0200 (CEST)
+In-Reply-To: <s5h7ekiesl4.wl-tiwai@suse.de>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,24 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+Cc: liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Takashi wrote:
-> Almost good, but still not perfect, unfortunately :)
-> The patch should be applicable onto the kernel tree as is with -p1
-> option, i.e. the diff should be like
->   --- a/sound/core/pcm_lib.c
->   +++ b/sound/core/pcm_lib.c
->
-> But never mind, I'll apply this manually at this time, just keep the
-> above in mind for the next time.
+On 8/22/18 3:03 AM, Takashi Iwai wrote:
+> On Fri, 17 Aug 2018 22:37:23 +0200,
+> Pierre-Louis Bossart wrote:
+>>
+>> Add option to explicitly enable HDAudio + DSP usage.
+>>
+>> Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+>> ---
+>>   sound/soc/intel/Kconfig       | 9 +++++++++
+>>   sound/soc/intel/skylake/skl.c | 8 ++++++++
+>>   2 files changed, 17 insertions(+)
+>>
+>> diff --git a/sound/soc/intel/Kconfig b/sound/soc/intel/Kconfig
+>> index 0caa1f4eb94d..3ee6a407eb08 100644
+>> --- a/sound/soc/intel/Kconfig
+>> +++ b/sound/soc/intel/Kconfig
+>> @@ -117,6 +117,15 @@ config SND_SOC_INTEL_SKYLAKE
+>>   	  GeminiLake or CannonLake platform with the DSP enabled in the BIOS
+>>   	  then enable this option by saying Y or m.
+>>   
+>> +config SND_SOC_INTEL_SKYLAKE_HDA_DSP
+>> +	bool "Enable HDAudio Codec + DSP support"
+>> +	depends on SND_SOC_INTEL_SKYLAKE
+>> +	help
+>> +	  If you have a Intel Skylake+ platform with the DSP enabled in
+>> +	  the BIOS and an HDAudio codec, then enable this option by saying Y
+>> +	  This option will only have an effect if there are no ACPI-enumerated
+>> +	  audio devices (I2C, SoundWire).
+> 
+> As mentioned in the previous patchset, this kind of control should be
+> better provided as a module option.  If this influences on the module
+> dependency, it'd make sense to do as Kconfig.  But this doesn't look
+> so, and it's rather a sort of runtime control to match with the
+> deployed hardware configuration.
 
-Ok, thank you!
-
-The .orig thing is ok if I had used the full pathname?
-
-diff does not generate a/ and b/ (at least with '-up'
-options). By the way, 'diff -up' is what
-submitting-patches document recommends when no git tree
-is available.
+In the previous patch set, there were two Kconfigs. One of them was for 
+debug, but I removed it since it wasn't such a good idea. This one is 
+more static and can be enabled by default by a distro. It's not intended 
+to be changed at runtime. I just wanted to leave it out for now to make 
+sure there is no change to existing platforms. I can remove it if you 
+feel it's unnecessary.
