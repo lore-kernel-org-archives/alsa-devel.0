@@ -1,18 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: max98373: Added 10ms delay after amp
-	software reset
-Date: Thu, 23 Aug 2018 10:51:07 +0100
-Message-ID: <20180823095107.GA5207@sirena.org.uk>
-References: <20180823001519.20056-1-ryans.lee@maximintegrated.com>
- <CAKdAkRT-71tL7U1t_WMenh5kquppsZpiL=0bEyL4RLjj622zqw@mail.gmail.com>
+From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Subject: Re: [ANNOUNCE] 2018 Linux Audio miniconference
+Date: Thu, 23 Aug 2018 12:18:06 +0100
+Message-ID: <ee7acc7f7754dd76b730874bae413a7f3c9804cc.camel@linux.intel.com>
+References: <20180810110656.GE20971@sirena.org.uk>
+ <20180816160233.GA5656@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7338840042996712031=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C5D352676D8
- for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2018 11:51:11 +0200 (CEST)
-In-Reply-To: <CAKdAkRT-71tL7U1t_WMenh5kquppsZpiL=0bEyL4RLjj622zqw@mail.gmail.com>
+Received: from mga17.intel.com (mga17.intel.com [192.55.52.151])
+ by alsa0.perex.cz (Postfix) with ESMTP id B03272676D8
+ for <alsa-devel@alsa-project.org>; Thu, 23 Aug 2018 13:18:10 +0200 (CEST)
+In-Reply-To: <20180816160233.GA5656@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,53 +21,30 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, lkml <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
+On Thu, 2018-08-16 at 17:02 +0100, Mark Brown wrote:
+> On Fri, Aug 10, 2018 at 12:06:56PM +0100, Mark Brown wrote:
+> 
+> 
+> > As with previous years let's pull together an agenda through a mailing
+> > list discussion - if people could reply to this mail with any topics
+> > they'd like to discuss we can take it from there.  Of course if we can
+> > sort things out more quickly via the mailing list that's even better!
+> 
+> Not much discussion yet - one topic I think there's some useful
+> discussion to be had about is DSPs, we've got the recent Intel work with
+> Sound Open Firmware opening things up there and potentially being able
+> to offload work from the userspace sound servers.
+> 
 
---===============7338840042996712031==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
-Content-Disposition: inline
+I'm also thinking soundwire, AVB (audio over ethernet) and audio virtualisation
+as other topics too. 
 
+Fwiw, we should be able to virtualise SOF soon so it would be probably good to
+discuss audio virtualisation in general and the pain points for virtualising
+audio around latency and reducing buffer copies.
 
---PNTmBPCT7hxwcZjr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Wed, Aug 22, 2018 at 05:31:04PM -0700, Dmitry Torokhov wrote:
-> On Wed, Aug 22, 2018 at 5:21 PM Ryan Lee <ryans.lee@maximintegrated.com> wrote:
-> > +       mdelay(10);
-
-> Is it really necessary for the CPU to spin for 10msec here?
-> usleep_range() would be better solution.
-
-Or msleep() for that matter, it's not going ot be the end of the world
-if we delay a bit too long.
-
---PNTmBPCT7hxwcZjr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlt+g4oACgkQJNaLcl1U
-h9BrhQf/Zim+9StJ1iLMas05ZDR6IOmI8Vk166JzDc5Cl04crEzXRGtkjTjIPszh
-nO5s0JhVanRN0I2RXQvD1nXHDeXIAOt88susgnBH86u7HFLGO471NnvZW/R7W8JD
-hMUNwL3RfbRAMbkGA11dlvU/pQ/Q7nAE4NPmMIBS5Z3W3ZIb3yIXeEAO7osAtAbU
-5ggStp5ly2w8A2kPEsDVuaYTDKPloD2DP+9QWl8b3c1N9PD5+kAFjGEgNR+7o3A8
-cCw9zFfpkQekbYQHqsVw8iV2tWJClPqNvtwl2qbq35/MeMbfnaePaFVWDe/jBE93
-LiB34dB+w7sqy1wv9Ahq+zUra29Lfg==
-=Jim1
------END PGP SIGNATURE-----
-
---PNTmBPCT7hxwcZjr--
-
---===============7338840042996712031==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7338840042996712031==--
+Liam
