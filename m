@@ -1,165 +1,62 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: [PATCH v9] ASoC: pxa: switch to new ac97 bus support
-Date: Sat, 25 Aug 2018 10:46:18 +0200
-Message-ID: <20180825084618.13641-1-robert.jarzmik@free.fr>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Daniel Mack <daniel@zonque.org>, Haojian Zhuang <haojian.zhuang@gmail.com>, Robert Jarzmik <robert.jarzmik@free.fr>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
+Subject: [PATCH v3] ALSA: pcm: Return 0 when size <
+	start_threshold in capture
+Date: Sat, 25 Aug 2018 16:53:23 -0300
+Message-ID: <20180825195322.GA4521@localhost.localdomain>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-qt0-f177.google.com (mail-qt0-f177.google.com
+ [209.85.216.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D82426773F
+ for <alsa-devel@alsa-project.org>; Sat, 25 Aug 2018 21:53:31 +0200 (CEST)
+Received: by mail-qt0-f177.google.com with SMTP id r37-v6so13927684qtc.0
+ for <alsa-devel@alsa-project.org>; Sat, 25 Aug 2018 12:53:31 -0700 (PDT)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Switch to the new ac97 bus support in sound/ac97 instead of the legacy
-snd_ac97 one.
+In __snd_pcm_lib_xfer(), when capture, if state is PREPARED
+and size is less than start_threshold nothing can be done.
+As there is no error, 0 is returned.
 
-Signed-off-by: Robert Jarzmik <robert.jarzmik@free.fr>
+Signed-off-by: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
 ---
-Since v8: fixed the trivial compilation error
-          v7 was in https://patchwork.kernel.org/patch/9951919/
----
- sound/arm/Kconfig           |  1 -
- sound/soc/pxa/Kconfig       |  5 ++---
- sound/soc/pxa/pxa2xx-ac97.c | 48 +++++++++++++++++++++++----------------------
- 3 files changed, 27 insertions(+), 27 deletions(-)
 
-diff --git a/sound/arm/Kconfig b/sound/arm/Kconfig
-index 5fbd47a9177e..28867732a318 100644
---- a/sound/arm/Kconfig
-+++ b/sound/arm/Kconfig
-@@ -31,7 +31,6 @@ endif	# SND_ARM
+version 3:
+Set 'err' variable inside 'else' block.
+
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2173,11 +2173,16 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(str
+ 		goto _end_unlock;
  
- config SND_PXA2XX_LIB
- 	tristate
--	select SND_AC97_CODEC if SND_PXA2XX_LIB_AC97
- 	select SND_DMAENGINE_PCM
- 
- config SND_PXA2XX_LIB_AC97
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 776e148b0aa2..29f577e6dfc0 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -19,14 +19,13 @@ config SND_MMP_SOC
- 
- config SND_PXA2XX_AC97
- 	tristate
--	select SND_AC97_CODEC
- 
- config SND_PXA2XX_SOC_AC97
- 	tristate
--	select AC97_BUS
-+	select AC97_BUS_NEW
- 	select SND_PXA2XX_LIB
- 	select SND_PXA2XX_LIB_AC97
--	select SND_SOC_AC97_BUS
-+	select SND_SOC_AC97_BUS_NEW
- 
- config SND_PXA2XX_SOC_I2S
- 	select SND_PXA2XX_LIB
-diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
-index 9f779657bc86..f8a3aa6c6d4e 100644
---- a/sound/soc/pxa/pxa2xx-ac97.c
-+++ b/sound/soc/pxa/pxa2xx-ac97.c
-@@ -17,6 +17,7 @@
- #include <linux/dmaengine.h>
- #include <linux/dma/pxa-dma.h>
- 
-+#include <sound/ac97/controller.h>
- #include <sound/core.h>
- #include <sound/ac97_codec.h>
- #include <sound/soc.h>
-@@ -27,43 +28,35 @@
- #include <mach/regs-ac97.h>
- #include <mach/audio.h>
- 
--static void pxa2xx_ac97_warm_reset(struct snd_ac97 *ac97)
-+static void pxa2xx_ac97_warm_reset(struct ac97_controller *adrv)
- {
- 	pxa2xx_ac97_try_warm_reset();
- 
- 	pxa2xx_ac97_finish_reset();
- }
- 
--static void pxa2xx_ac97_cold_reset(struct snd_ac97 *ac97)
-+static void pxa2xx_ac97_cold_reset(struct ac97_controller *adrv)
- {
- 	pxa2xx_ac97_try_cold_reset();
- 
- 	pxa2xx_ac97_finish_reset();
- }
- 
--static unsigned short pxa2xx_ac97_legacy_read(struct snd_ac97 *ac97,
--					      unsigned short reg)
-+static int pxa2xx_ac97_read_actrl(struct ac97_controller *adrv, int slot,
-+				  unsigned short reg)
- {
--	int ret;
--
--	ret = pxa2xx_ac97_read(ac97->num, reg);
--	if (ret < 0)
--		return 0;
--	else
--		return (unsigned short)(ret & 0xffff);
-+	return pxa2xx_ac97_read(slot, reg);
- }
- 
--static void pxa2xx_ac97_legacy_write(struct snd_ac97 *ac97,
--				     unsigned short reg, unsigned short val)
-+static int pxa2xx_ac97_write_actrl(struct ac97_controller *adrv, int slot,
-+				   unsigned short reg, unsigned short val)
- {
--	int ret;
--
--	ret = pxa2xx_ac97_write(ac97->num, reg, val);
-+	return pxa2xx_ac97_write(slot, reg, val);
- }
- 
--static struct snd_ac97_bus_ops pxa2xx_ac97_ops = {
--	.read	= pxa2xx_ac97_legacy_read,
--	.write	= pxa2xx_ac97_legacy_write,
-+static struct ac97_controller_ops pxa2xx_ac97_ops = {
-+	.read	= pxa2xx_ac97_read_actrl,
-+	.write	= pxa2xx_ac97_write_actrl,
- 	.warm_reset	= pxa2xx_ac97_warm_reset,
- 	.reset	= pxa2xx_ac97_cold_reset,
- };
-@@ -233,6 +226,9 @@ MODULE_DEVICE_TABLE(of, pxa2xx_ac97_dt_ids);
- static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- {
- 	int ret;
-+	struct ac97_controller *ctrl;
-+	pxa2xx_audio_ops_t *pdata = pdev->dev.platform_data;
-+	void **codecs_pdata;
- 
- 	if (pdev->id != -1) {
- 		dev_err(&pdev->dev, "PXA2xx has only one AC97 port.\n");
-@@ -245,10 +241,14 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- 		return ret;
+ 	if (!is_playback &&
+-	    runtime->status->state == SNDRV_PCM_STATE_PREPARED &&
+-	    size >= runtime->start_threshold) {
+-		err = snd_pcm_start(substream);
+-		if (err < 0)
++	    runtime->status->state == SNDRV_PCM_STATE_PREPARED) {
++		if (size >= runtime->start_threshold) {
++			err = snd_pcm_start(substream);
++			if (err < 0)
++				goto _end_unlock;
++		} else {
++			/* nothing to do */
++			err = 0;
+ 			goto _end_unlock;
++		}
  	}
  
--	ret = snd_soc_set_ac97_ops(&pxa2xx_ac97_ops);
--	if (ret != 0)
--		return ret;
-+	codecs_pdata = pdata ? pdata->codec_pdata : NULL;
-+	ctrl = snd_ac97_controller_register(&pxa2xx_ac97_ops, &pdev->dev,
-+					    AC97_SLOTS_AVAILABLE_ALL,
-+					    codecs_pdata);
-+	if (IS_ERR(ctrl))
-+		return PTR_ERR(ctrl);
- 
-+	platform_set_drvdata(pdev, ctrl);
- 	/* Punt most of the init to the SoC probe; we may need the machine
- 	 * driver to do interesting things with the clocking to get us up
- 	 * and running.
-@@ -259,8 +259,10 @@ static int pxa2xx_ac97_dev_probe(struct platform_device *pdev)
- 
- static int pxa2xx_ac97_dev_remove(struct platform_device *pdev)
- {
-+	struct ac97_controller *ctrl = platform_get_drvdata(pdev);
-+
- 	snd_soc_unregister_component(&pdev->dev);
--	snd_soc_set_ac97_ops(NULL);
-+	snd_ac97_controller_unregister(ctrl);
- 	pxa2xx_ac97_hw_remove(pdev);
- 	return 0;
- }
--- 
-2.11.0
+ 	runtime->twake = runtime->control->avail_min ? : 1;
