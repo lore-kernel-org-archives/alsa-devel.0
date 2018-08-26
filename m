@@ -1,15 +1,17 @@
 From: Matt Flax <flatmax@flatmax.com>
-Subject: [PATCH 1/3] ASoC: cs4265: SOC_SINGLE register value
-	error fix
-Date: Mon, 27 Aug 2018 08:55:09 +1000
-Message-ID: <20180826225511.13619-1-flatmax@flatmax.com>
+Subject: [PATCH 2/3] ASoC: cs4265: Add native 32bit I2S
+	transport
+Date: Mon, 27 Aug 2018 08:55:10 +1000
+Message-ID: <20180826225511.13619-2-flatmax@flatmax.com>
+References: <20180826225511.13619-1-flatmax@flatmax.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
- by alsa0.perex.cz (Postfix) with ESMTP id 146DA2676C6
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 00:55:28 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 685F826777F
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 00:55:32 +0200 (CEST)
+In-Reply-To: <20180826225511.13619-1-flatmax@flatmax.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,31 +27,27 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Matt Flax <flatmax@flatmax.org>
 
-The cs4265 driver declares the "MMTLR Data Switch" register setting with
-a 0 register value rather then the 0x12 register (CS4265_SPDIF_CTL2).
-This incorrect value causes alsamixer to fault with the output :
-cannot load mixer controls: Input/output error
-
-This patch corrects the register value. alsamixer now runs.
+The cs4265 uses 32 bit transport on the I2S bus. This patch enables native
+32 bit mode for machine drivers which use this sound card driver.
 
 Signed-off-by: Matt Flax <flatmax@flatmax.org>
 ---
- sound/soc/codecs/cs4265.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/codecs/cs4265.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
 diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index 275677de..15b4ae04 100644
+index 15b4ae04..17d7e6f0 100644
 --- a/sound/soc/codecs/cs4265.c
 +++ b/sound/soc/codecs/cs4265.c
-@@ -157,8 +157,7 @@ static const struct snd_kcontrol_new cs4265_snd_controls[] = {
- 	SOC_SINGLE("Validity Bit Control Switch", CS4265_SPDIF_CTL2,
- 				3, 1, 0),
- 	SOC_ENUM("SPDIF Mono/Stereo", spdif_mono_stereo_enum),
--	SOC_SINGLE("MMTLR Data Switch", 0,
--				1, 1, 0),
-+	SOC_SINGLE("MMTLR Data Switch", CS4265_SPDIF_CTL2, 0, 1, 0),
- 	SOC_ENUM("Mono Channel Select", spdif_mono_select_enum),
- 	SND_SOC_BYTES("C Data Buffer", CS4265_C_DATA_BUFF, 24),
- };
+@@ -495,7 +495,8 @@ static int cs4265_set_bias_level(struct snd_soc_component *component,
+ 			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000)
+ 
+ #define CS4265_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U16_LE | \
+-			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_U24_LE)
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_U24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_U32_LE)
+ 
+ static const struct snd_soc_dai_ops cs4265_ops = {
+ 	.hw_params	= cs4265_pcm_hw_params,
 -- 
 2.17.1
