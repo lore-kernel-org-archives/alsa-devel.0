@@ -1,37 +1,55 @@
-From: Luca Ceresoli <luca@lucaceresoli.net>
-Subject: Re: [PATCH 0/1] Fix ADI axi-i2s + Xilinx AXI-DMA capture
-Date: Wed, 29 Aug 2018 09:16:12 +0200
-Message-ID: <f11d102e-7a72-30f3-e308-394ad20b9bc0@lucaceresoli.net>
-References: <20180824160430.10222-1-luca@lucaceresoli.net>
- <20180828185829.GL2414@sirena.org.uk>
+From: Matt Flax <flatmax@flatmax.com>
+Subject: [PATCH 1/3] ASoC: cs4265: SOC_SINGLE register value
+	error fix
+Date: Mon, 27 Aug 2018 08:55:09 +1000
+Message-ID: <20180826225511.13619-1-flatmax@flatmax.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=windows-1252
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180828185829.GL2414@sirena.org.uk>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Lars-Peter Clausen <lars@metafoo.de>, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
+ by alsa0.perex.cz (Postfix) with ESMTP id 146DA2676C6
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 00:55:28 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, ckeepax@opensource.cirrus.com
+Cc: Matt Flax <flatmax@flatmax.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+From: Matt Flax <flatmax@flatmax.org>
 
-On 28/08/2018 20:58, Mark Brown wrote:
-> On Fri, Aug 24, 2018 at 06:04:29PM +0200, Luca Ceresoli wrote:
->> Hi,
->>
->> here is a fix for a nasty audio capture problem when the axi-i2s
->> output stream is fed to a Xilinx AXI-DMA.
-> 
-> Please don't send cover letters for single patches, if there is anything
-> that needs saying put it in the changelog of the patch or after the ---
-> if it's administrative stuff.  This reduces mail volume and ensures that 
-> any important information is recorded in the changelog rather than being
-> lost. 
+The cs4265 driver declares the "MMTLR Data Switch" register setting with
+a 0 register value rather then the 0x12 register (CS4265_SPDIF_CTL2).
+This incorrect value causes alsamixer to fault with the output :
+cannot load mixer controls: Input/output error
 
-OK, will do. Actually I usually do as you suggest, but in this case I
-thought it deserved a little extra visibility. Sorry about that.
+This patch corrects the register value. alsamixer now runs.
 
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
+---
+ sound/soc/codecs/cs4265.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+index 275677de..15b4ae04 100644
+--- a/sound/soc/codecs/cs4265.c
++++ b/sound/soc/codecs/cs4265.c
+@@ -157,8 +157,7 @@ static const struct snd_kcontrol_new cs4265_snd_controls[] = {
+ 	SOC_SINGLE("Validity Bit Control Switch", CS4265_SPDIF_CTL2,
+ 				3, 1, 0),
+ 	SOC_ENUM("SPDIF Mono/Stereo", spdif_mono_stereo_enum),
+-	SOC_SINGLE("MMTLR Data Switch", 0,
+-				1, 1, 0),
++	SOC_SINGLE("MMTLR Data Switch", CS4265_SPDIF_CTL2, 0, 1, 0),
+ 	SOC_ENUM("Mono Channel Select", spdif_mono_select_enum),
+ 	SND_SOC_BYTES("C Data Buffer", CS4265_C_DATA_BUFF, 24),
+ };
 -- 
-Luca
+2.17.1
