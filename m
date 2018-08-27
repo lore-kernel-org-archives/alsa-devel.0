@@ -1,62 +1,99 @@
-From: Paul Handrigan <paul.handrigan@cirrus.com>
-Subject: Re: [EXTERNAL] [PATCH 1/3] ASoC: cs4265: SOC_SINGLE
- register value error fix
-Date: Mon, 27 Aug 2018 17:37:38 -0500
-Message-ID: <f3a22388-fba4-4ab9-a336-88cd74aa5b3c@EX4.ad.cirrus.com>
-References: <20180826225511.13619-1-flatmax@flatmax.com>
+From: Daniel Kurtz <djkurtz@chromium.org>
+Subject: Re: [PATCH] ASoC: AMD: Set constraints for DMIC and MAX98357a codec
+Date: Mon, 27 Aug 2018 17:01:01 -0600
+Message-ID: <CAGS+omDCWFjLKNOfRHQzWNUG4efpC+9Tk=RXDDUDtza7skZ2dA@mail.gmail.com>
+References: <1534834520-18397-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C296826787A
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 00:37:54 +0200 (CEST)
-In-Reply-To: <20180826225511.13619-1-flatmax@flatmax.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.com>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Matt Flax <flatmax@flatmax.org>, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1534834520-18397-1-git-send-email-akshu.agrawal@amd.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Akshu Agrawal <akshu.agrawal@amd.com>
+Cc: Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, perex@perex.cz, tiwai@suse.com, Vijendar.Mukunda@amd.com, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, weiyongjun1@huawei.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
+On Tue, Aug 21, 2018 at 12:55 AM Akshu Agrawal <akshu.agrawal@amd.com> wrote:
+>
+> We support dual channel, 48Khz. This constraint was set only for
+> da7219. It is being extended to DMIC and MAX98357a.
+>
+> Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
 
+Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 
-On Sun, 26 Aug 2018, Matt Flax wrote:
-
-> From: Matt Flax <flatmax@flatmax.org>
-> 
-> The cs4265 driver declares the "MMTLR Data Switch" register setting with
-> a 0 register value rather then the 0x12 register (CS4265_SPDIF_CTL2).
-> This incorrect value causes alsamixer to fault with the output :
-> cannot load mixer controls: Input/output error
-> 
-> This patch corrects the register value. alsamixer now runs.
-> 
-> Signed-off-by: Matt Flax <flatmax@flatmax.org>
 > ---
->  sound/soc/codecs/cs4265.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-> index 275677de..15b4ae04 100644
-> --- a/sound/soc/codecs/cs4265.c
-> +++ b/sound/soc/codecs/cs4265.c
-> @@ -157,8 +157,7 @@ static const struct snd_kcontrol_new cs4265_snd_controls[] = {
->  	SOC_SINGLE("Validity Bit Control Switch", CS4265_SPDIF_CTL2,
->  				3, 1, 0),
->  	SOC_ENUM("SPDIF Mono/Stereo", spdif_mono_stereo_enum),
-> -	SOC_SINGLE("MMTLR Data Switch", 0,
-> -				1, 1, 0),
-> +	SOC_SINGLE("MMTLR Data Switch", CS4265_SPDIF_CTL2, 0, 1, 0),
->  	SOC_ENUM("Mono Channel Select", spdif_mono_select_enum),
->  	SND_SOC_BYTES("C Data Buffer", CS4265_C_DATA_BUFF, 24),
->  };
-
-Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com> 
+>  sound/soc/amd/acp-da7219-max98357a.c | 33 +++++++++++++++++++++++++++++++++
+>  1 file changed, 33 insertions(+)
+>
+> diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+> index 066d5489..cf2f648 100644
+> --- a/sound/soc/amd/acp-da7219-max98357a.c
+> +++ b/sound/soc/amd/acp-da7219-max98357a.c
+> @@ -162,10 +162,21 @@ static void cz_da7219_shutdown(struct snd_pcm_substream *substream)
+>
+>  static int cz_max_startup(struct snd_pcm_substream *substream)
+>  {
+> +       struct snd_pcm_runtime *runtime = substream->runtime;
+>         struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>         struct snd_soc_card *card = rtd->card;
+>         struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
+>
+> +       /*
+> +        * On this platform for PCM device we support stereo
+> +        */
+> +
+> +       runtime->hw.channels_max = DUAL_CHANNEL;
+> +       snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+> +                                  &constraints_channels);
+> +       snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+> +                                  &constraints_rates);
+> +
+>         machine->i2s_instance = I2S_BT_INSTANCE;
+>         return da7219_clk_enable(substream);
+>  }
+> @@ -177,20 +188,42 @@ static void cz_max_shutdown(struct snd_pcm_substream *substream)
+>
+>  static int cz_dmic0_startup(struct snd_pcm_substream *substream)
+>  {
+> +       struct snd_pcm_runtime *runtime = substream->runtime;
+>         struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>         struct snd_soc_card *card = rtd->card;
+>         struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
+>
+> +       /*
+> +        * On this platform for PCM device we support stereo
+> +        */
+> +
+> +       runtime->hw.channels_max = DUAL_CHANNEL;
+> +       snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+> +                                  &constraints_channels);
+> +       snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+> +                                  &constraints_rates);
+> +
+>         machine->i2s_instance = I2S_BT_INSTANCE;
+>         return da7219_clk_enable(substream);
+>  }
+>
+>  static int cz_dmic1_startup(struct snd_pcm_substream *substream)
+>  {
+> +       struct snd_pcm_runtime *runtime = substream->runtime;
+>         struct snd_soc_pcm_runtime *rtd = substream->private_data;
+>         struct snd_soc_card *card = rtd->card;
+>         struct acp_platform_info *machine = snd_soc_card_get_drvdata(card);
+>
+> +       /*
+> +        * On this platform for PCM device we support stereo
+> +        */
+> +
+> +       runtime->hw.channels_max = DUAL_CHANNEL;
+> +       snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_CHANNELS,
+> +                                  &constraints_channels);
+> +       snd_pcm_hw_constraint_list(runtime, 0, SNDRV_PCM_HW_PARAM_RATE,
+> +                                  &constraints_rates);
+> +
+>         machine->i2s_instance = I2S_SP_INSTANCE;
+>         machine->capture_channel = CAP_CHANNEL0;
+>         return da7219_clk_enable(substream);
+> --
+> 1.9.1
+>
