@@ -1,15 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 6/8] ALSA: hda: Remove substream
-	allocation/free ops
-Date: Mon, 27 Aug 2018 10:59:51 +0200
-Message-ID: <20180827085953.10614-7-tiwai@suse.de>
+Subject: [PATCH 7/8] ALSA: intel8x0: Use the new non-cached
+	allocation for 440MX workaround
+Date: Mon, 27 Aug 2018 10:59:52 +0200
+Message-ID: <20180827085953.10614-8-tiwai@suse.de>
 References: <20180827085953.10614-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 187DA26786A
+ by alsa0.perex.cz (Postfix) with ESMTP id 178D2267861
  for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 11:00:03 +0200 (CEST)
 In-Reply-To: <20180827085953.10614-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,138 +25,214 @@ To: alsa-devel@alsa-project.org
 Cc: Hans Hu <HansHu@zhaoxin.com>
 List-Id: alsa-devel@alsa-project.org
 
-Since we dropped the memory page fiddling in the own allocators in
-hda_intel.c, the substream allocation and free ops in both hda_intel.c
-and hda_tegra.c became nothing but the simple calls of the standard
-snd_pcm_lib helpers.  As both are identical, there is no longer need
-for indirect calls via ops; it's a good opportunity for removing ops
-and simplifying the codes.
+intel8x0 driver requires the non-cached pages for 440MX workaround,
+and this can be implemented more easily with the new memalloc type,
+SNDRV_DMA_TYPE_DEV_UC.  This allows us to reduce lots of code.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/pci/hda/hda_controller.c |  8 ++++----
- sound/pci/hda/hda_controller.h |  5 -----
- sound/pci/hda/hda_intel.c      | 15 ---------------
- sound/pci/hda/hda_tegra.c      | 18 +-----------------
- 4 files changed, 5 insertions(+), 41 deletions(-)
+ sound/pci/intel8x0.c | 89 ++++++--------------------------------------
+ 1 file changed, 12 insertions(+), 77 deletions(-)
 
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 8bc46676c278..53bdf76fcbba 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -130,8 +130,9 @@ static int azx_pcm_hw_params(struct snd_pcm_substream *substream,
- 	azx_dev->core.bufsize = 0;
- 	azx_dev->core.period_bytes = 0;
- 	azx_dev->core.format_val = 0;
--	ret = chip->ops->substream_alloc_pages(chip, substream,
--					  params_buffer_bytes(hw_params));
-+	ret = snd_pcm_lib_malloc_pages(substream,
-+				       params_buffer_bytes(hw_params));
-+
- unlock:
- 	dsp_unlock(azx_dev);
- 	return ret;
-@@ -141,7 +142,6 @@ static int azx_pcm_hw_free(struct snd_pcm_substream *substream)
- {
- 	struct azx_pcm *apcm = snd_pcm_substream_chip(substream);
- 	struct azx_dev *azx_dev = get_azx_dev(substream);
--	struct azx *chip = apcm->chip;
- 	struct hda_pcm_stream *hinfo = to_hda_pcm_stream(substream);
- 	int err;
+diff --git a/sound/pci/intel8x0.c b/sound/pci/intel8x0.c
+index 5ee468d1aefe..9517f9b8f1d4 100644
+--- a/sound/pci/intel8x0.c
++++ b/sound/pci/intel8x0.c
+@@ -38,11 +38,6 @@
+ #include <sound/ac97_codec.h>
+ #include <sound/info.h>
+ #include <sound/initval.h>
+-/* for 440MX workaround */
+-#include <asm/pgtable.h>
+-#ifdef CONFIG_X86
+-#include <asm/set_memory.h>
+-#endif
  
-@@ -152,7 +152,7 @@ static int azx_pcm_hw_free(struct snd_pcm_substream *substream)
- 
- 	snd_hda_codec_cleanup(apcm->codec, hinfo, substream);
- 
--	err = chip->ops->substream_free_pages(chip, substream);
-+	err = snd_pcm_lib_free_pages(substream);
- 	azx_stream(azx_dev)->prepared = 0;
- 	dsp_unlock(azx_dev);
- 	return err;
-diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index c4b3de6c42b8..3c9a2f81cfbf 100644
---- a/sound/pci/hda/hda_controller.h
-+++ b/sound/pci/hda/hda_controller.h
-@@ -87,11 +87,6 @@ struct azx;
- struct hda_controller_ops {
- 	/* Disable msi if supported, PCI only */
- 	int (*disable_msi_reset_irq)(struct azx *);
--	int (*substream_alloc_pages)(struct azx *chip,
--				     struct snd_pcm_substream *substream,
--				     size_t size);
--	int (*substream_free_pages)(struct azx *chip,
--				    struct snd_pcm_substream *substream);
- 	void (*pcm_mmap_prepare)(struct snd_pcm_substream *substream,
- 				 struct vm_area_struct *area);
- 	/* Check if current position is acceptable */
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 03ddd1abb44d..0a3ce9c60f50 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -2010,19 +2010,6 @@ static void dma_free_pages(struct hdac_bus *bus, struct snd_dma_buffer *buf)
- 	snd_dma_free_pages(buf);
- }
- 
--static int substream_alloc_pages(struct azx *chip,
--				 struct snd_pcm_substream *substream,
--				 size_t size)
--{
--	return snd_pcm_lib_malloc_pages(substream, size);
--}
--
--static int substream_free_pages(struct azx *chip,
--				struct snd_pcm_substream *substream)
--{
--	return snd_pcm_lib_free_pages(substream);
--}
--
- static void pcm_mmap_prepare(struct snd_pcm_substream *substream,
- 			     struct vm_area_struct *area)
- {
-@@ -2047,8 +2034,6 @@ static const struct hdac_io_ops pci_hda_io_ops = {
- 
- static const struct hda_controller_ops pci_hda_ops = {
- 	.disable_msi_reset_irq = disable_msi_reset_irq,
--	.substream_alloc_pages = substream_alloc_pages,
--	.substream_free_pages = substream_free_pages,
- 	.pcm_mmap_prepare = pcm_mmap_prepare,
- 	.position_check = azx_position_check,
- 	.link_power = azx_intel_link_power,
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 0621920f7617..8fd20e4dca17 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -99,19 +99,6 @@ static void dma_free_pages(struct hdac_bus *bus, struct snd_dma_buffer *buf)
- 	snd_dma_free_pages(buf);
- }
- 
--static int substream_alloc_pages(struct azx *chip,
--				 struct snd_pcm_substream *substream,
--				 size_t size)
--{
--	return snd_pcm_lib_malloc_pages(substream, size);
--}
--
--static int substream_free_pages(struct azx *chip,
--				struct snd_pcm_substream *substream)
--{
--	return snd_pcm_lib_free_pages(substream);
--}
--
- /*
-  * Register access ops. Tegra HDA register access is DWORD only.
-  */
-@@ -180,10 +167,7 @@ static const struct hdac_io_ops hda_tegra_io_ops = {
- 	.dma_free_pages = dma_free_pages,
+ MODULE_AUTHOR("Jaroslav Kysela <perex@perex.cz>");
+ MODULE_DESCRIPTION("Intel 82801AA,82901AB,i810,i820,i830,i840,i845,MX440; SiS 7012; Ali 5455");
+@@ -374,7 +369,6 @@ struct ichdev {
+ 	unsigned int ali_slot;			/* ALI DMA slot */
+ 	struct ac97_pcm *pcm;
+ 	int pcm_open_flag;
+-	unsigned int page_attr_changed: 1;
+ 	unsigned int suspended: 1;
  };
  
--static const struct hda_controller_ops hda_tegra_ops = {
--	.substream_alloc_pages = substream_alloc_pages,
--	.substream_free_pages = substream_free_pages,
--};
-+static const struct hda_controller_ops hda_tegra_ops; /* nothing special */
+@@ -724,25 +718,6 @@ static void snd_intel8x0_setup_periods(struct intel8x0 *chip, struct ichdev *ich
+ 	iputbyte(chip, port + ichdev->roff_sr, ICH_FIFOE | ICH_BCIS | ICH_LVBCI);
+ }
  
- static void hda_tegra_init(struct hda_tegra *hda)
+-#ifdef __i386__
+-/*
+- * Intel 82443MX running a 100MHz processor system bus has a hardware bug,
+- * which aborts PCI busmaster for audio transfer.  A workaround is to set
+- * the pages as non-cached.  For details, see the errata in
+- *	http://download.intel.com/design/chipsets/specupdt/24505108.pdf
+- */
+-static void fill_nocache(void *buf, int size, int nocache)
+-{
+-	size = (size + PAGE_SIZE - 1) >> PAGE_SHIFT;
+-	if (nocache)
+-		set_pages_uc(virt_to_page(buf), size);
+-	else
+-		set_pages_wb(virt_to_page(buf), size);
+-}
+-#else
+-#define fill_nocache(buf, size, nocache) do { ; } while (0)
+-#endif
+-
+ /*
+  *  Interrupt handler
+  */
+@@ -938,23 +913,12 @@ static int snd_intel8x0_hw_params(struct snd_pcm_substream *substream,
  {
+ 	struct intel8x0 *chip = snd_pcm_substream_chip(substream);
+ 	struct ichdev *ichdev = get_ichdev(substream);
+-	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	int dbl = params_rate(hw_params) > 48000;
+ 	int err;
+ 
+-	if (chip->fix_nocache && ichdev->page_attr_changed) {
+-		fill_nocache(runtime->dma_area, runtime->dma_bytes, 0); /* clear */
+-		ichdev->page_attr_changed = 0;
+-	}
+ 	err = snd_pcm_lib_malloc_pages(substream, params_buffer_bytes(hw_params));
+ 	if (err < 0)
+ 		return err;
+-	if (chip->fix_nocache) {
+-		if (runtime->dma_area && ! ichdev->page_attr_changed) {
+-			fill_nocache(runtime->dma_area, runtime->dma_bytes, 1);
+-			ichdev->page_attr_changed = 1;
+-		}
+-	}
+ 	if (ichdev->pcm_open_flag) {
+ 		snd_ac97_pcm_close(ichdev->pcm);
+ 		ichdev->pcm_open_flag = 0;
+@@ -974,17 +938,12 @@ static int snd_intel8x0_hw_params(struct snd_pcm_substream *substream,
+ 
+ static int snd_intel8x0_hw_free(struct snd_pcm_substream *substream)
+ {
+-	struct intel8x0 *chip = snd_pcm_substream_chip(substream);
+ 	struct ichdev *ichdev = get_ichdev(substream);
+ 
+ 	if (ichdev->pcm_open_flag) {
+ 		snd_ac97_pcm_close(ichdev->pcm);
+ 		ichdev->pcm_open_flag = 0;
+ 	}
+-	if (chip->fix_nocache && ichdev->page_attr_changed) {
+-		fill_nocache(substream->runtime->dma_area, substream->runtime->dma_bytes, 0);
+-		ichdev->page_attr_changed = 0;
+-	}
+ 	return snd_pcm_lib_free_pages(substream);
+ }
+ 
+@@ -1510,6 +1469,9 @@ struct ich_pcm_table {
+ 	int ac97_idx;
+ };
+ 
++#define intel8x0_dma_type(chip) \
++	((chip)->fix_nocache ? SNDRV_DMA_TYPE_DEV_UC : SNDRV_DMA_TYPE_DEV)
++
+ static int snd_intel8x0_pcm1(struct intel8x0 *chip, int device,
+ 			     struct ich_pcm_table *rec)
+ {
+@@ -1540,7 +1502,7 @@ static int snd_intel8x0_pcm1(struct intel8x0 *chip, int device,
+ 		strcpy(pcm->name, chip->card->shortname);
+ 	chip->pcm[device] = pcm;
+ 
+-	snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,
++	snd_pcm_lib_preallocate_pages_for_all(pcm, intel8x0_dma_type(chip),
+ 					      snd_dma_pci_data(chip->pci),
+ 					      rec->prealloc_size, rec->prealloc_max_size);
+ 
+@@ -2629,11 +2591,8 @@ static int snd_intel8x0_free(struct intel8x0 *chip)
+       __hw_end:
+ 	if (chip->irq >= 0)
+ 		free_irq(chip->irq, chip);
+-	if (chip->bdbars.area) {
+-		if (chip->fix_nocache)
+-			fill_nocache(chip->bdbars.area, chip->bdbars.bytes, 0);
++	if (chip->bdbars.area)
+ 		snd_dma_free_pages(&chip->bdbars);
+-	}
+ 	if (chip->addr)
+ 		pci_iounmap(chip->pci, chip->addr);
+ 	if (chip->bmaddr)
+@@ -2657,17 +2616,6 @@ static int intel8x0_suspend(struct device *dev)
+ 	snd_power_change_state(card, SNDRV_CTL_POWER_D3hot);
+ 	for (i = 0; i < chip->pcm_devs; i++)
+ 		snd_pcm_suspend_all(chip->pcm[i]);
+-	/* clear nocache */
+-	if (chip->fix_nocache) {
+-		for (i = 0; i < chip->bdbars_count; i++) {
+-			struct ichdev *ichdev = &chip->ichd[i];
+-			if (ichdev->substream && ichdev->page_attr_changed) {
+-				struct snd_pcm_runtime *runtime = ichdev->substream->runtime;
+-				if (runtime->dma_area)
+-					fill_nocache(runtime->dma_area, runtime->dma_bytes, 0);
+-			}
+-		}
+-	}
+ 	for (i = 0; i < chip->ncodecs; i++)
+ 		snd_ac97_suspend(chip->ac97[i]);
+ 	if (chip->device_type == DEVICE_INTEL_ICH4)
+@@ -2708,25 +2656,9 @@ static int intel8x0_resume(struct device *dev)
+ 			  ICH_PCM_SPDIF_1011);
+ 	}
+ 
+-	/* refill nocache */
+-	if (chip->fix_nocache)
+-		fill_nocache(chip->bdbars.area, chip->bdbars.bytes, 1);
+-
+ 	for (i = 0; i < chip->ncodecs; i++)
+ 		snd_ac97_resume(chip->ac97[i]);
+ 
+-	/* refill nocache */
+-	if (chip->fix_nocache) {
+-		for (i = 0; i < chip->bdbars_count; i++) {
+-			struct ichdev *ichdev = &chip->ichd[i];
+-			if (ichdev->substream && ichdev->page_attr_changed) {
+-				struct snd_pcm_runtime *runtime = ichdev->substream->runtime;
+-				if (runtime->dma_area)
+-					fill_nocache(runtime->dma_area, runtime->dma_bytes, 1);
+-			}
+-		}
+-	}
+-
+ 	/* resume status */
+ 	for (i = 0; i < chip->bdbars_count; i++) {
+ 		struct ichdev *ichdev = &chip->ichd[i];
+@@ -3057,6 +2989,12 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 
+ 	chip->inside_vm = snd_intel8x0_inside_vm(pci);
+ 
++	/*
++	 * Intel 82443MX running a 100MHz processor system bus has a hardware
++	 * bug, which aborts PCI busmaster for audio transfer.  A workaround
++	 * is to set the pages as non-cached.  For details, see the errata in
++	 *     http://download.intel.com/design/chipsets/specupdt/24505108.pdf
++	 */
+ 	if (pci->vendor == PCI_VENDOR_ID_INTEL &&
+ 	    pci->device == PCI_DEVICE_ID_INTEL_440MX)
+ 		chip->fix_nocache = 1; /* enable workaround */
+@@ -3128,7 +3066,7 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 
+ 	/* allocate buffer descriptor lists */
+ 	/* the start of each lists must be aligned to 8 bytes */
+-	if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, snd_dma_pci_data(pci),
++	if (snd_dma_alloc_pages(intel8x0_dma_type(chip), snd_dma_pci_data(pci),
+ 				chip->bdbars_count * sizeof(u32) * ICH_MAX_FRAGS * 2,
+ 				&chip->bdbars) < 0) {
+ 		snd_intel8x0_free(chip);
+@@ -3137,9 +3075,6 @@ static int snd_intel8x0_create(struct snd_card *card,
+ 	}
+ 	/* tables must be aligned to 8 bytes here, but the kernel pages
+ 	   are much bigger, so we don't care (on i386) */
+-	/* workaround for 440MX */
+-	if (chip->fix_nocache)
+-		fill_nocache(chip->bdbars.area, chip->bdbars.bytes, 1);
+ 	int_sta_masks = 0;
+ 	for (i = 0; i < chip->bdbars_count; i++) {
+ 		ichdev = &chip->ichd[i];
 -- 
 2.18.0
