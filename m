@@ -1,56 +1,65 @@
-From: George Anchev <studio@anchev.net>
-Subject: Re: alsa-sink.c: ALSA woke us up to write new data to
- the device, but there was actually nothing to write
-Date: Mon, 27 Aug 2018 17:23:43 +0300
-Message-ID: <20180827172343.287914fb@localhost>
-References: <20180827014812.268229b3@localhost> <s5hbm9o7zy3.wl-tiwai@suse.de>
- <20180827170902.18ca83f5@localhost> <s5ho9dn7v16.wl-tiwai@suse.de>
+From: Luca Ceresoli <luca@lucaceresoli.net>
+Subject: Re: [PATCH 1/1] axi-i2s: set period size register
+Date: Mon, 27 Aug 2018 18:22:37 +0200
+Message-ID: <263e42b4-75a3-183c-894b-e485e387eccf@lucaceresoli.net>
+References: <20180824160430.10222-1-luca@lucaceresoli.net>
+ <20180824160430.10222-2-luca@lucaceresoli.net>
+ <b87937b6-da7c-76d7-5dd2-24909e648671@metafoo.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.kolabnow.com (mx.kolabnow.com [95.128.36.42])
- by alsa0.perex.cz (Postfix) with ESMTP id 0E224267849
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 16:23:47 +0200 (CEST)
-Received: from localhost (unknown [127.0.0.1])
- by ext-mx-out002.mykolab.com (Postfix) with ESMTP id A7F52218
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 16:23:47 +0200 (CEST)
-Received: from mx.kolabnow.com ([127.0.0.1])
- by localhost (ext-mx-out002.mykolab.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id w1b3phGbYF0i for <alsa-devel@alsa-project.org>;
- Mon, 27 Aug 2018 16:23:46 +0200 (CEST)
-Received: from int-mx002.mykolab.com (unknown [10.9.13.2])
- by ext-mx-out002.mykolab.com (Postfix) with ESMTPS id 1A0BB1AC
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 16:23:46 +0200 (CEST)
-Received: from ext-subm001.mykolab.com (unknown [10.9.6.1])
- by int-mx002.mykolab.com (Postfix) with ESMTPS id F25422400
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 16:23:45 +0200 (CEST)
-In-Reply-To: <s5ho9dn7v16.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <b87937b6-da7c-76d7-5dd2-24909e648671@metafoo.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Michal Simek <michal.simek@xilinx.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, 27 Aug 2018 16:18:13 +0200 Takashi Iwai wrote:
+Hi,
 
-> Not too serious in most cases.
+thanks for your feedback.
 
-OK. Thanks for the feedback. I leave it up to you to
-prioritize it.
+[Adding Michal Simek (Xilinx maintainer) in Cc]
 
-I will unsubscribe from this list as I am getting too
-much other mail I am not really interested in. If you
-need any additional feedback from me this is also
-filed in:
+On 27/08/2018 14:27, Lars-Peter Clausen wrote:
+> On 08/24/2018 06:04 PM, Luca Ceresoli wrote:
+>> The default value of the PERIOD_LEN register is 0 and results in
+>> axi-i2s keeping TLAST always asserted in its AXI Stream output.
+>>
+>> When the AXI Stream is sent to a Xilinx AXI-DMA, this results in the
+>> DMA generating an interrupt flood and ALSA produce a corrupted
+>> recording. This is because AXI-DMA raises an interrupt whenever TLAST
+>> is active.
+>>
+>> Fix by setting the PERIOD_LEN register as soon as the period is
+>> known. This way TLAST is emitted once per period, and the DMA raises
+>> interrupts correctly.
+> 
+> The patch looks OK. But I'd prefer not to merge it if possible.
+> 
+> We've done some early experiments with the Xilinx AXI-DMA, but it turned out
+> to be to unreliable and we've abandoned support for it. One of the more
+> critical issues was that you can't abort a DMA transfer. That means when
+> audio capture is stopped the DMA will halt, but not complete the current
+> transfer. Then when the next audio capture start the DMA will continue with
+> the previous transfer. The observed effect of this was that the system would
+> just crash randomly (Presumably due to memory corruption).
 
-https://bugzilla.opensuse.org/show_bug.cgi?id=1106068
+Strange. I have done many capture experiments with arecord and didn't
+run into such bad issues. I only have a much less serious problem
+(garbage or old samples in the first few buffers), but no crashes.
 
---
-George
+Michal, are you aware of these problems?
+
+> Have you considered using the ADI AXI-DMAC? That should work just fine.
+
+Not until today, because AXI-DMA is working here.
+
+I'd like to better understand what's going on before changing an IP that
+is working. Do you have additional details about your setup? How do you
+run your tests?
+
+Regards,
+-- 
+Luca
