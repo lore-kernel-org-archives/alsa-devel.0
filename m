@@ -1,100 +1,56 @@
-From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH] ASoC: meson: axg-tdm: restrict formats depending on slot width
-Date: Mon, 27 Aug 2018 16:21:07 +0200
-Message-ID: <20180827142107.8153-1-jbrunet@baylibre.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin Hilman <khilman@baylibre.com>, Carlo Caione <carlo@caione.org>
-Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+From: George Anchev <studio@anchev.net>
+Subject: Re: alsa-sink.c: ALSA woke us up to write new data to
+ the device, but there was actually nothing to write
+Date: Mon, 27 Aug 2018 17:23:43 +0300
+Message-ID: <20180827172343.287914fb@localhost>
+References: <20180827014812.268229b3@localhost> <s5hbm9o7zy3.wl-tiwai@suse.de>
+ <20180827170902.18ca83f5@localhost> <s5ho9dn7v16.wl-tiwai@suse.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx.kolabnow.com (mx.kolabnow.com [95.128.36.42])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E224267849
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 16:23:47 +0200 (CEST)
+Received: from localhost (unknown [127.0.0.1])
+ by ext-mx-out002.mykolab.com (Postfix) with ESMTP id A7F52218
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 16:23:47 +0200 (CEST)
+Received: from mx.kolabnow.com ([127.0.0.1])
+ by localhost (ext-mx-out002.mykolab.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id w1b3phGbYF0i for <alsa-devel@alsa-project.org>;
+ Mon, 27 Aug 2018 16:23:46 +0200 (CEST)
+Received: from int-mx002.mykolab.com (unknown [10.9.13.2])
+ by ext-mx-out002.mykolab.com (Postfix) with ESMTPS id 1A0BB1AC
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 16:23:46 +0200 (CEST)
+Received: from ext-subm001.mykolab.com (unknown [10.9.6.1])
+ by int-mx002.mykolab.com (Postfix) with ESMTPS id F25422400
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 16:23:45 +0200 (CEST)
+In-Reply-To: <s5ho9dn7v16.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Restrict the formats possible on the TDM interface depending on the width
-of the TDM slot and let dpcm merging do the rest.
+On Mon, 27 Aug 2018 16:18:13 +0200 Takashi Iwai wrote:
 
-Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
----
- sound/soc/meson/axg-tdm-interface.c | 50 +++++++++++++++++------------
- 1 file changed, 29 insertions(+), 21 deletions(-)
+> Not too serious in most cases.
 
-diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
-index 7b8baf46d968..585ce030b79b 100644
---- a/sound/soc/meson/axg-tdm-interface.c
-+++ b/sound/soc/meson/axg-tdm-interface.c
-@@ -42,6 +42,7 @@ int axg_tdm_set_tdm_slots(struct snd_soc_dai *dai, u32 *tx_mask,
- 	struct axg_tdm_stream *rx = (struct axg_tdm_stream *)
- 		dai->capture_dma_data;
- 	unsigned int tx_slots, rx_slots;
-+	unsigned int fmt = 0;
- 
- 	tx_slots = axg_tdm_slots_total(tx_mask);
- 	rx_slots = axg_tdm_slots_total(rx_mask);
-@@ -52,38 +53,45 @@ int axg_tdm_set_tdm_slots(struct snd_soc_dai *dai, u32 *tx_mask,
- 		return -EINVAL;
- 	}
- 
--	/*
--	 * Amend the dai driver channel number and let dpcm channel merge do
--	 * its job
--	 */
--	if (tx) {
--		tx->mask = tx_mask;
--		dai->driver->playback.channels_max = tx_slots;
--	}
--
--	if (rx) {
--		rx->mask = rx_mask;
--		dai->driver->capture.channels_max = rx_slots;
--	}
--
- 	iface->slots = slots;
- 
- 	switch (slot_width) {
- 	case 0:
--		/* defaults width to 32 if not provided */
--		iface->slot_width = 32;
--		break;
--	case 8:
--	case 16:
--	case 24:
-+		slot_width = 32;
-+		/* Fall-through */
- 	case 32:
--		iface->slot_width = slot_width;
-+		fmt |= SNDRV_PCM_FMTBIT_S32_LE;
-+		/* Fall-through */
-+	case 24:
-+		fmt |= SNDRV_PCM_FMTBIT_S24_LE;
-+		fmt |= SNDRV_PCM_FMTBIT_S20_LE;
-+		/* Fall-through */
-+	case 16:
-+		fmt |= SNDRV_PCM_FMTBIT_S16_LE;
-+		/* Fall-through */
-+	case 8:
-+		fmt |= SNDRV_PCM_FMTBIT_S8;
- 		break;
- 	default:
- 		dev_err(dai->dev, "unsupported slot width: %d\n", slot_width);
- 		return -EINVAL;
- 	}
- 
-+	iface->slot_width = slot_width;
-+
-+	/* Amend the dai driver and let dpcm merge do its job */
-+	if (tx) {
-+		tx->mask = tx_mask;
-+		dai->driver->playback.channels_max = tx_slots;
-+		dai->driver->playback.formats = fmt;
-+	}
-+
-+	if (rx) {
-+		rx->mask = rx_mask;
-+		dai->driver->capture.channels_max = rx_slots;
-+		dai->driver->capture.formats = fmt;
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(axg_tdm_set_tdm_slots);
--- 
-2.17.1
+OK. Thanks for the feedback. I leave it up to you to
+prioritize it.
+
+I will unsubscribe from this list as I am getting too
+much other mail I am not really interested in. If you
+need any additional feedback from me this is also
+filed in:
+
+https://bugzilla.opensuse.org/show_bug.cgi?id=1106068
+
+--
+George
