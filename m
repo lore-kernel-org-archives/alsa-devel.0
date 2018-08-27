@@ -1,19 +1,19 @@
-From: Mark Farrugia <mark.farrugia@fiberdyne.com.au>
-Subject: Re: Possibility of routing at the kernel level
-Date: Mon, 27 Aug 2018 15:57:00 +1000
-Message-ID: <CAPWhKM=qtg9knqFBdG9167GJg3Q=kpzudzk95pLCTX9nYpPTFg@mail.gmail.com>
-References: <CAPWhKMn_4SukFcaLEMGTa8R70c3q0VjufvnFzFeMg=Gpn+T9AA@mail.gmail.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 3/3] ASoC: cs4265: Add a SPDIF enable actl
+Date: Mon, 27 Aug 2018 09:24:23 +0100
+Message-ID: <20180827082423.GT32322@imbe.wolfsonmicro.main>
+References: <20180826225844.13754-1-flatmax@flatmax.org>
+ <20180826225844.13754-3-flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
- [209.85.214.68])
- by alsa0.perex.cz (Postfix) with ESMTP id BB58726777B
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 07:57:09 +0200 (CEST)
-Received: by mail-it0-f68.google.com with SMTP id u13-v6so936478iti.1
- for <alsa-devel@alsa-project.org>; Sun, 26 Aug 2018 22:57:09 -0700 (PDT)
-In-Reply-To: <CAPWhKMn_4SukFcaLEMGTa8R70c3q0VjufvnFzFeMg=Gpn+T9AA@mail.gmail.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 477EA267846
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 10:24:26 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180826225844.13754-3-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,54 +23,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Fulup Ar Foll <fulup.arfoll@iot.bzh>, James O'Shannessy <James.OShannessy@fiberdyne.com.au>, Tharindu De Silva <Tharindu.DeSilva@fiberdyne.com.au>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+On Mon, Aug 27, 2018 at 08:58:44AM +1000, Matt Flax wrote:
+> This patch adds a SPDIF enable/disable toggle switch to the
+> sound controls.
+> 
+> Signed-off-by: Matt Flax <flatmax@flatmax.org>
+> ---
+>  sound/soc/codecs/cs4265.c | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+> index 17d7e6f0..cdfcca9c 100644
+> --- a/sound/soc/codecs/cs4265.c
+> +++ b/sound/soc/codecs/cs4265.c
+> @@ -112,6 +112,13 @@ static const char * const cam_mono_stereo_text[] = {
+>  static SOC_ENUM_SINGLE_DECL(spdif_mono_stereo_enum, CS4265_SPDIF_CTL2, 2,
+>  		cam_mono_stereo_text);
+>  
+> +static const char * const spdif_enable_text[] = {
+> +	"Enabled", "Disabled"
+> +};
 
-Following my initial proposition on Friday for kernel-space audio
-routing, we at Fiberdyne Systems have since published our initial
-source for such a solution, which we are calling ALSA Virtual Driver,
-or simply AVIRT.
+If the values are just on/off would not a SOC_SINGLE be more
+appropriate?
 
-Please find the source here for your perusal:
-https://github.com/fiberdyne/avirt
+> +
+> +static SOC_ENUM_SINGLE_DECL(spdif_enable_enum, CS4265_SPDIF_CTL2, 5,
+> +		spdif_enable_text);
+> +
+>  static const char * const mono_select_text[] = {
+>  	"Channel A", "Channel B"
+>  };
+> @@ -151,6 +158,7 @@ static const struct snd_kcontrol_new cs4265_snd_controls[] = {
+>  				1, 1),
+>  	SOC_SINGLE("ADC Soft Ramp Switch", CS4265_ADC_CTL2, 7,
+>  				1, 0),
+> +	SOC_ENUM("SPDIF Enable", spdif_enable_enum),
 
-Currently we use module parameters for the kernel module, however, we
-will be porting configuration to another system, such as
-configfs/sysfs.
+Although you would want to then call this something like "SPDIF
+Switch".
 
-We are completely open to suggestions and constructive criticism.
+>  	SOC_SINGLE("E to F Buffer Disable Switch", CS4265_SPDIF_CTL1,
+>  				6, 1, 0),
+>  	SOC_ENUM("C Data Access", cam_mode_enum),
+> -- 
+> 2.17.1
 
-Regards,
-Mark
-
-On Fri, Aug 24, 2018 at 4:27 PM Mark Farrugia
-<mark.farrugia@fiberdyne.com.au> wrote:
->
-> Hi all,
->
-> I am currently using the ALSA loopback driver to create a "virtual"
-> sound card to abstract underlying real sound cards.  I capture from
-> the loopback in user-space, and then subsequently playback to a real
-> sound card.
->
-> The issue with this is that there is a significant latency introduced
-> (~100ms) due to the number of transitions of the stream from user to
-> kernel space. I am seeking a way to avoid this.
->
-> My question is this: is there any way of routing PCM substreams at the
-> kernel level, so that we can avoid the need to pipe audio back up to
-> user-space with the loopback capturer?  If there is no current
-> solution that would achieve this, I would proposition to design and
-> implement a system that uses a top-level ALSA driver, which then
-> routes dynamically to one or many subscribed lower-level "audio path"
-> drivers.  The system would also have the option to loopback upon
-> itself.
->
-> Does anyone see any reason that I couldn't (or shouldn't) attempt such
-> a solution? All feedback is welcome.
->
-> Regards,
-> Mark
+Thanks,
+Charles
