@@ -1,16 +1,14 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/8] ALSA: memalloc: Add non-cached buffer type
-Date: Mon, 27 Aug 2018 10:59:48 +0200
-Message-ID: <20180827085953.10614-4-tiwai@suse.de>
-References: <20180827085953.10614-1-tiwai@suse.de>
+Subject: [PATCH 0/8] ALSA: non-cached memalloc helper
+Date: Mon, 27 Aug 2018 10:59:45 +0200
+Message-ID: <20180827085953.10614-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id CDC8C267846
+ by alsa0.perex.cz (Postfix) with ESMTP id CF231267849
  for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 11:00:00 +0200 (CEST)
-In-Reply-To: <20180827085953.10614-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,168 +22,38 @@ To: alsa-devel@alsa-project.org
 Cc: Hans Hu <HansHu@zhaoxin.com>
 List-Id: alsa-devel@alsa-project.org
 
-In some cases (mainly for x86), we need the DMA coherent buffer with
-non-cached pages.  Although this has been done in each driver side
-like HD-audio and intel8x0, it can be done cleaner in the core memory
-allocator.
+Hi,
 
-This patch adds the new types, SNDRV_DMA_TYPE_DEV_UC and
-SNDRV_DMA_TYPE_DEV_UC_SG, for allocating such non-cached buffer
-pages.  On non-x86 architectures, they work as same as the standard
-SNDRV_DMA_TYPE_DEV and *_SG.
+this is a patchset to add the non-cached page handling in the memory
+allocation helpers, which have been implemented individually in
+several driver codes.  This also fixes a long-time bug of HD-audio
+non-mmap behavior in the non-snoop mode, which was reported recently.
 
-One additional change by this move is that we can assure to pass the
-non-cached pgprot to the vmapped buffer, too.  It eventually fixes the
-case like non-snoop mode without mmap access on HD-audio.
 
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- include/sound/memalloc.h |  3 +++
- sound/core/memalloc.c    | 17 +++++++++++++++++
- sound/core/sgbuf.c       | 15 +++++++++++++--
- 3 files changed, 33 insertions(+), 2 deletions(-)
+Takashi
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index 67561b997915..af3fa577fa06 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -47,10 +47,13 @@ struct snd_dma_device {
- #define SNDRV_DMA_TYPE_UNKNOWN		0	/* not defined */
- #define SNDRV_DMA_TYPE_CONTINUOUS	1	/* continuous no-DMA memory */
- #define SNDRV_DMA_TYPE_DEV		2	/* generic device continuous */
-+#define SNDRV_DMA_TYPE_DEV_UC		5	/* continuous non-cahced */
- #ifdef CONFIG_SND_DMA_SGBUF
- #define SNDRV_DMA_TYPE_DEV_SG		3	/* generic device SG-buffer */
-+#define SNDRV_DMA_TYPE_DEV_UC_SG	6	/* SG non-cached */
- #else
- #define SNDRV_DMA_TYPE_DEV_SG	SNDRV_DMA_TYPE_DEV /* no SG-buf support */
-+#define SNDRV_DMA_TYPE_DEV_UC_SG	SNDRV_DMA_TYPE_DEV_UC
- #endif
- #ifdef CONFIG_GENERIC_ALLOCATOR
- #define SNDRV_DMA_TYPE_DEV_IRAM		4	/* generic device iram-buffer */
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index cc051bfe2f6f..aa266907ec9b 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -25,6 +25,9 @@
- #include <linux/mm.h>
- #include <linux/dma-mapping.h>
- #include <linux/genalloc.h>
-+#ifdef CONFIG_X86
-+#include <asm/set_memory.h>
-+#endif
- #include <sound/memalloc.h>
- 
- /*
-@@ -92,11 +95,21 @@ static void snd_malloc_dev_pages(struct snd_dma_buffer *dmab, size_t size)
- 		| __GFP_NOWARN; /* no stack trace print - this call is non-critical */
- 	dmab->area = dma_alloc_coherent(dmab->dev.dev, size, &dmab->addr,
- 					gfp_flags);
-+#ifdef CONFIG_X86
-+	if (dmab->area && dmab->dev.type == SNDRV_DMA_TYPE_DEV_UC)
-+		set_memory_wc((unsigned long)dmab->area,
-+			      PAGE_ALIGN(size) >> PAGE_SHIFT);
-+#endif
- }
- 
- /* free the coherent DMA pages */
- static void snd_free_dev_pages(struct snd_dma_buffer *dmab)
- {
-+#ifdef CONFIG_X86
-+	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_UC)
-+		set_memory_wb((unsigned long)dmab->area,
-+			      PAGE_ALIGN(dmab->bytes) >> PAGE_SHIFT);
-+#endif
- 	dma_free_coherent(dmab->dev.dev, dmab->bytes, dmab->area, dmab->addr);
- }
- 
-@@ -191,11 +204,13 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 		dmab->dev.type = SNDRV_DMA_TYPE_DEV;
- #endif /* CONFIG_GENERIC_ALLOCATOR */
- 	case SNDRV_DMA_TYPE_DEV:
-+	case SNDRV_DMA_TYPE_DEV_UC:
- 		snd_malloc_dev_pages(dmab, size);
- 		break;
- #endif
- #ifdef CONFIG_SND_DMA_SGBUF
- 	case SNDRV_DMA_TYPE_DEV_SG:
-+	case SNDRV_DMA_TYPE_DEV_UC_SG:
- 		snd_malloc_sgbuf_pages(device, size, dmab, NULL);
- 		break;
- #endif
-@@ -266,11 +281,13 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
- 		break;
- #endif /* CONFIG_GENERIC_ALLOCATOR */
- 	case SNDRV_DMA_TYPE_DEV:
-+	case SNDRV_DMA_TYPE_DEV_UC:
- 		snd_free_dev_pages(dmab);
- 		break;
- #endif
- #ifdef CONFIG_SND_DMA_SGBUF
- 	case SNDRV_DMA_TYPE_DEV_SG:
-+	case SNDRV_DMA_TYPE_DEV_UC_SG:
- 		snd_free_sgbuf_pages(dmab);
- 		break;
- #endif
-diff --git a/sound/core/sgbuf.c b/sound/core/sgbuf.c
-index 84fffabdd129..c1cfaa01a5cb 100644
---- a/sound/core/sgbuf.c
-+++ b/sound/core/sgbuf.c
-@@ -23,6 +23,7 @@
- #include <linux/mm.h>
- #include <linux/vmalloc.h>
- #include <linux/export.h>
-+#include <asm/pgtable.h>
- #include <sound/memalloc.h>
- 
- 
-@@ -43,6 +44,8 @@ int snd_free_sgbuf_pages(struct snd_dma_buffer *dmab)
- 	dmab->area = NULL;
- 
- 	tmpb.dev.type = SNDRV_DMA_TYPE_DEV;
-+	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_UC_SG)
-+		tmpb.dev.type = SNDRV_DMA_TYPE_DEV_UC;
- 	tmpb.dev.dev = sgbuf->dev;
- 	for (i = 0; i < sgbuf->pages; i++) {
- 		if (!(sgbuf->table[i].addr & ~PAGE_MASK))
-@@ -72,12 +75,20 @@ void *snd_malloc_sgbuf_pages(struct device *device,
- 	struct snd_dma_buffer tmpb;
- 	struct snd_sg_page *table;
- 	struct page **pgtable;
-+	int type = SNDRV_DMA_TYPE_DEV;
-+	pgprot_t prot = PAGE_KERNEL;
- 
- 	dmab->area = NULL;
- 	dmab->addr = 0;
- 	dmab->private_data = sgbuf = kzalloc(sizeof(*sgbuf), GFP_KERNEL);
- 	if (! sgbuf)
- 		return NULL;
-+	if (dmab->dev.type == SNDRV_DMA_TYPE_DEV_UC_SG) {
-+		type = SNDRV_DMA_TYPE_DEV_UC;
-+#ifdef pgprot_noncached
-+		prot = pgprot_noncached(PAGE_KERNEL);
-+#endif
-+	}
- 	sgbuf->dev = device;
- 	pages = snd_sgbuf_aligned_pages(size);
- 	sgbuf->tblsize = sgbuf_align_table(pages);
-@@ -98,7 +109,7 @@ void *snd_malloc_sgbuf_pages(struct device *device,
- 		if (chunk > maxpages)
- 			chunk = maxpages;
- 		chunk <<= PAGE_SHIFT;
--		if (snd_dma_alloc_pages_fallback(SNDRV_DMA_TYPE_DEV, device,
-+		if (snd_dma_alloc_pages_fallback(type, device,
- 						 chunk, &tmpb) < 0) {
- 			if (!sgbuf->pages)
- 				goto _failed;
-@@ -125,7 +136,7 @@ void *snd_malloc_sgbuf_pages(struct device *device,
- 	}
- 
- 	sgbuf->size = size;
--	dmab->area = vmap(sgbuf->page_table, sgbuf->pages, VM_MAP, PAGE_KERNEL);
-+	dmab->area = vmap(sgbuf->page_table, sgbuf->pages, VM_MAP, prot);
- 	if (! dmab->area)
- 		goto _failed;
- 	if (res_size)
+===
+
+Takashi Iwai (8):
+  ALSA: memalloc: Don't align the size to power-of-two
+  ALSA: memalloc: Simplify snd_malloc_dev_pages() calls
+  ALSA: memalloc: Add non-cached buffer type
+  ALSA: hda: Check the non-cached stream buffers more explicitly
+  ALSA: hda: Use new non-cached allocation for non-snoop mode
+  ALSA: hda: Remove substream allocation/free ops
+  ALSA: intel8x0: Use the new non-cached allocation for 440MX workaround
+  ALSA: intel_hdmi: Use the new non-cached allocation
+
+ include/sound/memalloc.h       |   3 +
+ sound/core/memalloc.c          |  40 ++++++++-----
+ sound/core/sgbuf.c             |  15 ++++-
+ sound/pci/hda/hda_controller.c |  13 +++--
+ sound/pci/hda/hda_controller.h |   7 +--
+ sound/pci/hda/hda_intel.c      | 103 ++++-----------------------------
+ sound/pci/hda/hda_tegra.c      |  18 +-----
+ sound/pci/intel8x0.c           |  89 ++++------------------------
+ sound/x86/intel_hdmi_audio.c   |  29 +---------
+ 9 files changed, 75 insertions(+), 242 deletions(-)
+
 -- 
 2.18.0
