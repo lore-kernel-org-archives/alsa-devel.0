@@ -1,18 +1,17 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: Re: [PATCH 3/3] ASoC: cs4265: Add a SPDIF enable actl
-Date: Mon, 27 Aug 2018 19:52:48 +1000
-Message-ID: <b68face7-87f0-9a9e-135c-7ff0acf72eb7@flatmax.org>
-References: <20180826225844.13754-1-flatmax@flatmax.org>
- <20180826225844.13754-3-flatmax@flatmax.org>
- <20180827082423.GT32322@imbe.wolfsonmicro.main>
+From: Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH 1/1] axi-i2s: set period size register
+Date: Mon, 27 Aug 2018 14:27:45 +0200
+Message-ID: <b87937b6-da7c-76d7-5dd2-24909e648671@metafoo.de>
+References: <20180824160430.10222-1-luca@lucaceresoli.net>
+ <20180824160430.10222-2-luca@lucaceresoli.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
- by alsa0.perex.cz (Postfix) with ESMTP id 83675267849
- for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 11:52:55 +0200 (CEST)
-In-Reply-To: <20180827082423.GT32322@imbe.wolfsonmicro.main>
+Received: from www381.your-server.de (www381.your-server.de [78.46.137.84])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B64B2676BF
+ for <alsa-devel@alsa-project.org>; Mon, 27 Aug 2018 14:27:48 +0200 (CEST)
+In-Reply-To: <20180824160430.10222-2-luca@lucaceresoli.net>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,66 +22,86 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: Luca Ceresoli <luca@lucaceresoli.net>, alsa-devel@alsa-project.org
+Cc: linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+On 08/24/2018 06:04 PM, Luca Ceresoli wrote:
+> The default value of the PERIOD_LEN register is 0 and results in
+> axi-i2s keeping TLAST always asserted in its AXI Stream output.
+> 
+> When the AXI Stream is sent to a Xilinx AXI-DMA, this results in the
+> DMA generating an interrupt flood and ALSA produce a corrupted
+> recording. This is because AXI-DMA raises an interrupt whenever TLAST
+> is active.
+> 
+> Fix by setting the PERIOD_LEN register as soon as the period is
+> known. This way TLAST is emitted once per period, and the DMA raises
+> interrupts correctly.
 
+The patch looks OK. But I'd prefer not to merge it if possible.
 
-On 27/08/18 18:24, Charles Keepax wrote:
-> On Mon, Aug 27, 2018 at 08:58:44AM +1000, Matt Flax wrote:
->> This patch adds a SPDIF enable/disable toggle switch to the
->> sound controls.
->>
->> Signed-off-by: Matt Flax <flatmax@flatmax.org>
->> ---
->>   sound/soc/codecs/cs4265.c | 8 ++++++++
->>   1 file changed, 8 insertions(+)
->>
->> diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
->> index 17d7e6f0..cdfcca9c 100644
->> --- a/sound/soc/codecs/cs4265.c
->> +++ b/sound/soc/codecs/cs4265.c
->> @@ -112,6 +112,13 @@ static const char * const cam_mono_stereo_text[] = {
->>   static SOC_ENUM_SINGLE_DECL(spdif_mono_stereo_enum, CS4265_SPDIF_CTL2, 2,
->>   		cam_mono_stereo_text);
->>   
->> +static const char * const spdif_enable_text[] = {
->> +	"Enabled", "Disabled"
->> +};
-> If the values are just on/off would not a SOC_SINGLE be more
-> appropriate?
+We've done some early experiments with the Xilinx AXI-DMA, but it turned out
+to be to unreliable and we've abandoned support for it. One of the more
+critical issues was that you can't abort a DMA transfer. That means when
+audio capture is stopped the DMA will halt, but not complete the current
+transfer. Then when the next audio capture start the DMA will continue with
+the previous transfer. The observed effect of this was that the system would
+just crash randomly (Presumably due to memory corruption).
 
-OK that sounds like a better idea, I will implement a SOC_SINGLE. Thanks 
-for the guidance.
+Have you considered using the ADI AXI-DMAC? That should work just fine.
 
->
->> +
->> +static SOC_ENUM_SINGLE_DECL(spdif_enable_enum, CS4265_SPDIF_CTL2, 5,
->> +		spdif_enable_text);
->> +
->>   static const char * const mono_select_text[] = {
->>   	"Channel A", "Channel B"
->>   };
->> @@ -151,6 +158,7 @@ static const struct snd_kcontrol_new cs4265_snd_controls[] = {
->>   				1, 1),
->>   	SOC_SINGLE("ADC Soft Ramp Switch", CS4265_ADC_CTL2, 7,
->>   				1, 0),
->> +	SOC_ENUM("SPDIF Enable", spdif_enable_enum),
-> Although you would want to then call this something like "SPDIF
-> Switch".
-
-Yes, sounds good.
-
->
->>   	SOC_SINGLE("E to F Buffer Disable Switch", CS4265_SPDIF_CTL1,
->>   				6, 1, 0),
->>   	SOC_ENUM("C Data Access", cam_mode_enum),
->> -- 
->> 2.17.1
-> Thanks,
-> Charles
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> 
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> ---
+>  sound/soc/adi/axi-i2s.c | 15 ++++++++++++++-
+>  1 file changed, 14 insertions(+), 1 deletion(-)
+> 
+> diff --git a/sound/soc/adi/axi-i2s.c b/sound/soc/adi/axi-i2s.c
+> index 4c23381727a1..af581a313a40 100644
+> --- a/sound/soc/adi/axi-i2s.c
+> +++ b/sound/soc/adi/axi-i2s.c
+> @@ -24,6 +24,7 @@
+>  #define AXI_I2S_REG_CTRL	0x04
+>  #define AXI_I2S_REG_CLK_CTRL	0x08
+>  #define AXI_I2S_REG_STATUS	0x10
+> +#define AXI_I2S_REG_PERIOD_LEN	0x18
+>  
+>  #define AXI_I2S_REG_RX_FIFO	0x28
+>  #define AXI_I2S_REG_TX_FIFO	0x2C
+> @@ -101,6 +102,17 @@ static int axi_i2s_hw_params(struct snd_pcm_substream *substream,
+>  	return 0;
+>  }
+>  
+> +static int axi_i2s_prepare(struct snd_pcm_substream *substream,
+> +			   struct snd_soc_dai *dai)
+> +{
+> +	struct axi_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> +	unsigned int period_bytes = snd_pcm_lib_period_bytes(substream);
+> +
+> +	/* adi_i2s counts 32-bit words, thus divide bytes by 4 */
+> +	return regmap_write(i2s->regmap, AXI_I2S_REG_PERIOD_LEN,
+> +			    (period_bytes / 4) - 1);
+> +}
+> +
+>  static int axi_i2s_startup(struct snd_pcm_substream *substream,
+>  	struct snd_soc_dai *dai)
+>  {
+> @@ -147,6 +159,7 @@ static const struct snd_soc_dai_ops axi_i2s_dai_ops = {
+>  	.shutdown = axi_i2s_shutdown,
+>  	.trigger = axi_i2s_trigger,
+>  	.hw_params = axi_i2s_hw_params,
+> +	.prepare = axi_i2s_prepare,
+>  };
+>  
+>  static struct snd_soc_dai_driver axi_i2s_dai = {
+> @@ -175,7 +188,7 @@ static const struct regmap_config axi_i2s_regmap_config = {
+>  	.reg_bits = 32,
+>  	.reg_stride = 4,
+>  	.val_bits = 32,
+> -	.max_register = AXI_I2S_REG_STATUS,
+> +	.max_register = AXI_I2S_REG_PERIOD_LEN,
+>  };
+>  
+>  static int axi_i2s_probe(struct platform_device *pdev)
+> 
