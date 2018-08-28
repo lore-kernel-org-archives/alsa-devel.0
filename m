@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/1] ASoC: pcm3060: Add codec driver
-Date: Tue, 28 Aug 2018 20:40:45 +0100
-Message-ID: <20180828194045.GQ2414@sirena.org.uk>
-References: <20180821165246.9479-1-kmarinushkin@birdec.tech>
- <20180821165246.9479-2-kmarinushkin@birdec.tech>
+Subject: Re: [PATCH] ASoC: rsnd: Add device tree binding for
+	r8a77990
+Date: Tue, 28 Aug 2018 21:21:39 +0100
+Message-ID: <20180828202139.GS2414@sirena.org.uk>
+References: <1534492435-17859-1-git-send-email-ykaneko0929@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3751043826322153721=="
+Content-Type: multipart/mixed; boundary="===============6324912897554397080=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BD02126777B
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 21:58:23 +0200 (CEST)
-In-Reply-To: <20180821165246.9479-2-kmarinushkin@birdec.tech>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9AF8626779D
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:21:46 +0200 (CEST)
+In-Reply-To: <1534492435-17859-1-git-send-email-ykaneko0929@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, M R Swami Reddy <mr.swami.reddy@ti.com>, Kevin Cernekee <cernekee@chromium.org>
+To: Yoshihiro Kaneko <ykaneko0929@gmail.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon Horman <horms@verge.net.au>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============3751043826322153721==
+--===============6324912897554397080==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ZXg5XZblsOcYBG3r"
+	protocol="application/pgp-signature"; boundary="oyi3v9V9xafcEDI/"
 Content-Disposition: inline
 
 
---ZXg5XZblsOcYBG3r
+--oyi3v9V9xafcEDI/
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Aug 21, 2018 at 06:52:46PM +0200, Kirill Marinushkin wrote:
+On Fri, Aug 17, 2018 at 04:53:55PM +0900, Yoshihiro Kaneko wrote:
+> From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+>=20
+> This patch adds the device tree binding of the r8a77990 SoC.
 
-This looks good apart from a few small stylistic things so I'll apply,
-please send followup patches fixing these:
+This doesn't apply against current code, please check and resend.
 
-> +++ b/sound/soc/codecs/pcm3060-i2c.c
-> @@ -0,0 +1,61 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * PCM3060 I2C driver
-
-Please make the entire comment a C++ one, it makes this look more
-intentional.
-
-> +	reg = (dai->id == PCM3060_DAI_ID_DAC ? PCM3060_REG67 : PCM3060_REG72);
-
-Please rewrite this as a normal if statement to improve legibility,
-there's some other ternery operator abuse in here.
-
---ZXg5XZblsOcYBG3r
+--oyi3v9V9xafcEDI/
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluFpTwACgkQJNaLcl1U
-h9Bqrwf/VVAlTVTQQ9LMt6IWYuumhMu4EROxafwtcf2gyFjOQ1jK3la4FgIHTfIB
-XiEJxv0Mc5rA4vot9saBSK/WgFT8iswPV5lm4nDOOnXwPmU+JVUsL/S0fnEFCA8X
-xvUm0vBkNPcLrqvJs2HknKDnuf6BPCCbeovFOulsO/mO+/2t5lDgwiXuYs6aBOwT
-yTv+uOfBI5XkIoPpyh+AA2m2/i59QWcJn+0JR45L+2o9ndMF82kqCsPmyY24lQM3
-1J9Yd83MXisiVU7MJ+c74yr2b71SdkHZpLV6zBsTaiXgNMqhc4gan9omaVrqMShD
-sPSS2p6SBk+fpq8fDMzA8Vlw0iOD+A==
-=PyJX
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluFrtIACgkQJNaLcl1U
+h9ClfAf+O2o/7L+w1QvcY+uoOe/dwe7BR8AmMXdZ5Sbni6eE/qPA/hyE0Hk/1mR2
+c0H3ntx431LSJy5damd7YqVEXpewKWDFNGbfjzdBf2G2Y8hwGKxcJyG3oxZMJhr0
+aANN8KVEYA2M5GwH2jTLpaGnQLIU8pea8mLwn7D4VemEzHJ3WrOaTpil4mPM4fEo
+iZqNiWlErd2yckJ8xmi3XZeDuFl0S1Tj52MGvFWI+UDwIAmhoGIRrCjpz3KaeKwt
+NpjQaWgw+y0NRElCSDKSRlIe/zojocN9WUnUxDE5P35HC2Oqwf2zH2KsfVdrizFr
+ho9bXRwjBSRlRh/DdVLmE/2SYlQIBQ==
+=mqMU
 -----END PGP SIGNATURE-----
 
---ZXg5XZblsOcYBG3r--
+--oyi3v9V9xafcEDI/--
 
---===============3751043826322153721==
+--===============6324912897554397080==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3751043826322153721==--
+--===============6324912897554397080==--
