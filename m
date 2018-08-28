@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Boards: Machine driver for SKL+
-	w/ HDAudio codecs" to the asoc tree
-Date: Tue, 28 Aug 2018 21:37:31 +0100 (BST)
-Message-ID: <20180828203732.00DA6440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ALSA: hda: move hda_codec.h to include/sound"
+	to the asoc tree
+Date: Tue, 28 Aug 2018 21:41:36 +0100 (BST)
+Message-ID: <20180828204136.3C86F44007A@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C82BE26779D
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:37:58 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 8412C26781A
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:42:20 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: tiwai@suse.de, liam.r.girdwood@linux.intel.com, alsa-devel@alsa-project.org, broonie@kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Boards: Machine driver for SKL+ w/ HDAudio codecs
+   ALSA: hda: move hda_codec.h to include/sound
 
 has been applied to the asoc tree at
 
@@ -52,385 +52,360 @@ to this mail.
 Thanks,
 Mark
 
->From 7c33b5f16915a7bc3d3b81a9a041bdc562f71dfb Mon Sep 17 00:00:00 2001
-From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Date: Wed, 22 Aug 2018 15:24:59 -0500
-Subject: [PATCH] ASoC: Intel: Boards: Machine driver for SKL+ w/ HDAudio
- codecs
+>From b4af16d617add4f6380d6651473b8efba13ca8ca Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Wed, 22 Aug 2018 15:24:57 -0500
+Subject: [PATCH] ALSA: hda: move hda_codec.h to include/sound
 
-Add machine driver for Intel platforms (SKL/KBL/BXT/APL) with
-HDA and iDisp codecs. This patch adds support for only iDisp (HDMI/DP)
-codec. In the following patches support for HDA codecs will be added.
+As suggested by Takashi, move this header file to make it easier
+to include from e.g. the Intel Skylake driver in follow-up patches
 
-This should work for other Intel platforms as well e.g. GLK,CNL
-however this series is not tested on all the platforms.
-
-Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/Kconfig               |   8 ++
- sound/soc/intel/boards/Makefile              |   2 +
- sound/soc/intel/boards/skl_hda_dsp_common.c  | 103 +++++++++++++
- sound/soc/intel/boards/skl_hda_dsp_common.h  |  38 +++++
- sound/soc/intel/boards/skl_hda_dsp_generic.c | 144 +++++++++++++++++++
- sound/soc/intel/skylake/skl.h                |   2 +
- 6 files changed, 297 insertions(+)
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.c
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_common.h
- create mode 100644 sound/soc/intel/boards/skl_hda_dsp_generic.c
+ {sound/pci/hda => include/sound}/hda_codec.h | 0
+ sound/pci/hda/hda_auto_parser.c              | 2 +-
+ sound/pci/hda/hda_beep.h                     | 2 +-
+ sound/pci/hda/hda_bind.c                     | 2 +-
+ sound/pci/hda/hda_codec.c                    | 2 +-
+ sound/pci/hda/hda_controller.h               | 2 +-
+ sound/pci/hda/hda_eld.c                      | 2 +-
+ sound/pci/hda/hda_generic.c                  | 2 +-
+ sound/pci/hda/hda_hwdep.c                    | 2 +-
+ sound/pci/hda/hda_intel.c                    | 2 +-
+ sound/pci/hda/hda_jack.c                     | 2 +-
+ sound/pci/hda/hda_proc.c                     | 2 +-
+ sound/pci/hda/hda_sysfs.c                    | 2 +-
+ sound/pci/hda/hda_tegra.c                    | 2 +-
+ sound/pci/hda/patch_analog.c                 | 2 +-
+ sound/pci/hda/patch_ca0110.c                 | 2 +-
+ sound/pci/hda/patch_ca0132.c                 | 2 +-
+ sound/pci/hda/patch_cirrus.c                 | 2 +-
+ sound/pci/hda/patch_cmedia.c                 | 2 +-
+ sound/pci/hda/patch_conexant.c               | 2 +-
+ sound/pci/hda/patch_hdmi.c                   | 2 +-
+ sound/pci/hda/patch_realtek.c                | 2 +-
+ sound/pci/hda/patch_si3054.c                 | 2 +-
+ sound/pci/hda/patch_sigmatel.c               | 2 +-
+ sound/pci/hda/patch_via.c                    | 2 +-
+ 25 files changed, 24 insertions(+), 24 deletions(-)
+ rename {sound/pci/hda => include/sound}/hda_codec.h (100%)
 
-diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
-index cccda87f4b34..0f0d57859555 100644
---- a/sound/soc/intel/boards/Kconfig
-+++ b/sound/soc/intel/boards/Kconfig
-@@ -279,6 +279,14 @@ config SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH
- 	  This adds support for ASoC Onboard Codec I2S machine driver. This will
- 	  create an alsa sound card for DA7219 + MAX98357A I2S audio codec.
- 	  Say Y if you have such a device.
-+
-+config SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH
-+	tristate "SKL/KBL/BXT/APL with HDA Codecs"
-+	select SND_SOC_HDAC_HDMI
-+	help
-+	  This adds support for ASoC machine driver for Intel platforms
-+	  SKL/KBL/BXT/APL with iDisp, HDA audio codecs.
-+          Say Y or m if you have such a device. This is a recommended option.
- 	  If unsure select "N".
+diff --git a/sound/pci/hda/hda_codec.h b/include/sound/hda_codec.h
+similarity index 100%
+rename from sound/pci/hda/hda_codec.h
+rename to include/sound/hda_codec.h
+diff --git a/sound/pci/hda/hda_auto_parser.c b/sound/pci/hda/hda_auto_parser.c
+index b9a6b66aeb0e..df0d636145f8 100644
+--- a/sound/pci/hda/hda_auto_parser.c
++++ b/sound/pci/hda/hda_auto_parser.c
+@@ -13,7 +13,7 @@
+ #include <linux/export.h>
+ #include <linux/sort.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
  
- config SND_SOC_INTEL_GLK_RT5682_MAX98357A_MACH
-diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
-index 87ef8b4058e5..6e88373cbe35 100644
---- a/sound/soc/intel/boards/Makefile
-+++ b/sound/soc/intel/boards/Makefile
-@@ -20,6 +20,7 @@ snd-soc-kbl_da7219_max98357a-objs := kbl_da7219_max98357a.o
- snd-soc-kbl_rt5663_max98927-objs := kbl_rt5663_max98927.o
- snd-soc-kbl_rt5663_rt5514_max98927-objs := kbl_rt5663_rt5514_max98927.o
- snd-soc-skl_rt286-objs := skl_rt286.o
-+snd-soc-skl_hda_dsp-objs := skl_hda_dsp_generic.o skl_hda_dsp_common.o
- snd-skl_nau88l25_max98357a-objs := skl_nau88l25_max98357a.o
- snd-soc-skl_nau88l25_ssm4567-objs := skl_nau88l25_ssm4567.o
+diff --git a/sound/pci/hda/hda_beep.h b/sound/pci/hda/hda_beep.h
+index d1a6a9c1329a..f1457c6b3969 100644
+--- a/sound/pci/hda/hda_beep.h
++++ b/sound/pci/hda/hda_beep.h
+@@ -9,7 +9,7 @@
+ #ifndef __SOUND_HDA_BEEP_H
+ #define __SOUND_HDA_BEEP_H
  
-@@ -46,3 +47,4 @@ obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_RT5514_MAX98927_MACH) += snd-soc-kbl_rt566
- obj-$(CONFIG_SND_SOC_INTEL_SKL_RT286_MACH) += snd-soc-skl_rt286.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_MAX98357A_MACH) += snd-skl_nau88l25_max98357a.o
- obj-$(CONFIG_SND_SOC_INTEL_SKL_NAU88L25_SSM4567_MACH) += snd-soc-skl_nau88l25_ssm4567.o
-+obj-$(CONFIG_SND_SOC_INTEL_SKL_HDA_DSP_GENERIC_MACH) += snd-soc-skl_hda_dsp.o
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.c b/sound/soc/intel/boards/skl_hda_dsp_common.c
-new file mode 100644
-index 000000000000..f9917e0f2ba8
---- /dev/null
-+++ b/sound/soc/intel/boards/skl_hda_dsp_common.c
-@@ -0,0 +1,103 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2015-18 Intel Corporation.
-+
-+/*
-+ * Common functions used in different Intel machine drivers
-+ */
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include "../../codecs/hdac_hdmi.h"
-+#include "../skylake/skl.h"
-+#include "skl_hda_dsp_common.h"
-+
-+#define NAME_SIZE	32
-+
-+int skl_hda_hdmi_add_pcm(struct snd_soc_card *card, int device)
-+{
-+	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct skl_hda_hdmi_pcm *pcm;
-+	char dai_name[NAME_SIZE];
-+
-+	pcm = devm_kzalloc(card->dev, sizeof(*pcm), GFP_KERNEL);
-+	if (!pcm)
-+		return -ENOMEM;
-+
-+	snprintf(dai_name, sizeof(dai_name), "intel-hdmi-hifi%d",
-+		 ctx->dai_index);
-+	pcm->codec_dai = snd_soc_card_get_codec_dai(card, dai_name);
-+	if (!pcm->codec_dai)
-+		return -EINVAL;
-+
-+	pcm->device = device;
-+	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
-+
-+	return 0;
-+}
-+
-+/* skl_hda_digital audio interface glue - connects codec <--> CPU */
-+struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS] = {
-+	/* Back End DAI links */
-+	{
-+		.name = "iDisp1",
-+		.id = 1,
-+		.cpu_dai_name = "iDisp1 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi1",
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+	},
-+	{
-+		.name = "iDisp2",
-+		.id = 2,
-+		.cpu_dai_name = "iDisp2 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi2",
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+	},
-+	{
-+		.name = "iDisp3",
-+		.id = 3,
-+		.cpu_dai_name = "iDisp3 Pin",
-+		.codec_name = "ehdaudio0D2",
-+		.codec_dai_name = "intel-hdmi-hifi3",
-+		.dpcm_playback = 1,
-+		.no_pcm = 1,
-+	},
-+};
-+
-+int skl_hda_hdmi_jack_init(struct snd_soc_card *card)
-+{
-+	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
-+	struct snd_soc_component *component = NULL;
-+	struct skl_hda_hdmi_pcm *pcm;
-+	char jack_name[NAME_SIZE];
-+	int err;
-+
-+	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
-+		component = pcm->codec_dai->component;
-+		snprintf(jack_name, sizeof(jack_name),
-+			 "HDMI/DP, pcm=%d Jack", pcm->device);
-+		err = snd_soc_card_jack_new(card, jack_name,
-+					    SND_JACK_AVOUT, &pcm->hdmi_jack,
-+					    NULL, 0);
-+
-+		if (err)
-+			return err;
-+
-+		err = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
-+					  &pcm->hdmi_jack);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	if (!component)
-+		return -EINVAL;
-+
-+	return hdac_hdmi_jack_port_init(component, &card->dapm);
-+}
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_common.h b/sound/soc/intel/boards/skl_hda_dsp_common.h
-new file mode 100644
-index 000000000000..b6c79696bfba
---- /dev/null
-+++ b/sound/soc/intel/boards/skl_hda_dsp_common.h
-@@ -0,0 +1,38 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+/*
-+ * Copyright(c) 2015-18 Intel Corporation.
-+ */
-+
-+/*
-+ * This file defines data structures used in Machine Driver for Intel
-+ * platforms with HDA Codecs.
-+ */
-+
-+#ifndef __SOUND_SOC_HDA_DSP_COMMON_H
-+#define __SOUND_SOC_HDA_DSP_COMMON_H
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+
-+#define HDA_DSP_MAX_BE_DAI_LINKS 3
-+
-+struct skl_hda_hdmi_pcm {
-+	struct list_head head;
-+	struct snd_soc_dai *codec_dai;
-+	struct snd_soc_jack hdmi_jack;
-+	int device;
-+};
-+
-+struct skl_hda_private {
-+	struct list_head hdmi_pcm_list;
-+	int pcm_count;
-+	int dai_index;
-+	const char *platform_name;
-+};
-+
-+extern struct snd_soc_dai_link skl_hda_be_dai_links[HDA_DSP_MAX_BE_DAI_LINKS];
-+int skl_hda_hdmi_jack_init(struct snd_soc_card *card);
-+int skl_hda_hdmi_add_pcm(struct snd_soc_card *card, int device);
-+
-+#endif /* __SOUND_SOC_HDA_DSP_COMMON_H */
-diff --git a/sound/soc/intel/boards/skl_hda_dsp_generic.c b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-new file mode 100644
-index 000000000000..920bc2ce22aa
---- /dev/null
-+++ b/sound/soc/intel/boards/skl_hda_dsp_generic.c
-@@ -0,0 +1,144 @@
-+// SPDX-License-Identifier: GPL-2.0
-+// Copyright(c) 2015-18 Intel Corporation.
-+
-+/*
-+ * Machine Driver for SKL+ platforms with DSP and iDisp, HDA Codecs
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <sound/core.h>
-+#include <sound/jack.h>
-+#include <sound/pcm.h>
-+#include <sound/pcm_params.h>
-+#include <sound/soc.h>
-+#include "../../codecs/hdac_hdmi.h"
-+#include "../skylake/skl.h"
-+#include "skl_hda_dsp_common.h"
-+
-+static const struct snd_soc_dapm_route skl_hda_map[] = {
-+	{ "hifi3", NULL, "iDisp3 Tx"},
-+	{ "iDisp3 Tx", NULL, "iDisp3_out"},
-+	{ "hifi2", NULL, "iDisp2 Tx"},
-+	{ "iDisp2 Tx", NULL, "iDisp2_out"},
-+	{ "hifi1", NULL, "iDisp1 Tx"},
-+	{ "iDisp1 Tx", NULL, "iDisp1_out"},
-+};
-+
-+static int skl_hda_card_late_probe(struct snd_soc_card *card)
-+{
-+	return skl_hda_hdmi_jack_init(card);
-+}
-+
-+static int
-+skl_hda_add_dai_link(struct snd_soc_card *card, struct snd_soc_dai_link *link)
-+{
-+	struct skl_hda_private *ctx = snd_soc_card_get_drvdata(card);
-+	int ret = 0;
-+
-+	dev_dbg(card->dev, "%s: dai link name - %s\n", __func__, link->name);
-+	link->platform_name = ctx->platform_name;
-+	link->nonatomic = 1;
-+
-+	if (strstr(link->name, "HDMI")) {
-+		ret = skl_hda_hdmi_add_pcm(card, ctx->pcm_count);
-+
-+		if (ret < 0)
-+			return ret;
-+
-+		ctx->dai_index++;
-+	}
-+
-+	ctx->pcm_count++;
-+	return ret;
-+}
-+
-+static struct snd_soc_card hda_soc_card = {
-+	.name = "skl_hda_card",
-+	.owner = THIS_MODULE,
-+	.dai_link = skl_hda_be_dai_links,
-+	.dapm_routes = skl_hda_map,
-+	.add_dai_link = skl_hda_add_dai_link,
-+	.fully_routed = true,
-+	.late_probe = skl_hda_card_late_probe,
-+};
-+
-+#define IDISP_DAI_COUNT		3
-+/* there are two routes per iDisp output */
-+#define IDISP_ROUTE_COUNT	(IDISP_DAI_COUNT * 2)
-+#define IDISP_CODEC_MASK	0x4
-+
-+static int skl_hda_fill_card_info(struct skl_machine_pdata *pdata)
-+{
-+	struct snd_soc_card *card = &hda_soc_card;
-+	u32 codec_count, codec_mask;
-+	int i, num_links, num_route;
-+
-+	codec_mask = pdata->codec_mask;
-+	codec_count = hweight_long(codec_mask);
-+
-+	if (codec_count == 1 && pdata->codec_mask & IDISP_CODEC_MASK) {
-+		num_links = IDISP_DAI_COUNT;
-+		num_route = IDISP_ROUTE_COUNT;
-+	} else {
-+		return -EINVAL;
-+	}
-+
-+	card->num_links = num_links;
-+	card->num_dapm_routes = num_route;
-+
-+	for (i = 0; i < num_links; i++)
-+		skl_hda_be_dai_links[i].platform_name = pdata->platform;
-+
-+	return 0;
-+}
-+
-+static int skl_hda_audio_probe(struct platform_device *pdev)
-+{
-+	struct skl_machine_pdata *pdata;
-+	struct skl_hda_private *ctx;
-+	int ret;
-+
-+	dev_dbg(&pdev->dev, "%s: entry\n", __func__);
-+
-+	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
-+	if (!ctx)
-+		return -ENOMEM;
-+
-+	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
-+
-+	pdata = dev_get_drvdata(&pdev->dev);
-+	if (!pdata)
-+		return -EINVAL;
-+
-+	ret = skl_hda_fill_card_info(pdata);
-+	if (ret < 0) {
-+		dev_err(&pdev->dev, "Unsupported HDAudio/iDisp configuration found\n");
-+		return ret;
-+	}
-+
-+	ctx->pcm_count = hda_soc_card.num_links;
-+	ctx->dai_index = 1; /* hdmi codec dai name starts from index 1 */
-+	ctx->platform_name = pdata->platform;
-+
-+	hda_soc_card.dev = &pdev->dev;
-+	snd_soc_card_set_drvdata(&hda_soc_card, ctx);
-+
-+	return devm_snd_soc_register_card(&pdev->dev, &hda_soc_card);
-+}
-+
-+static struct platform_driver skl_hda_audio = {
-+	.probe = skl_hda_audio_probe,
-+	.driver = {
-+		.name = "skl_hda_dsp_generic",
-+		.pm = &snd_soc_pm_ops,
-+	},
-+};
-+
-+module_platform_driver(skl_hda_audio)
-+
-+/* Module information */
-+MODULE_DESCRIPTION("SKL/KBL/BXT/APL HDA Generic Machine driver");
-+MODULE_AUTHOR("Rakesh Ughreja <rakesh.a.ughreja@intel.com>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_ALIAS("platform:skl_hda_dsp_generic");
-diff --git a/sound/soc/intel/skylake/skl.h b/sound/soc/intel/skylake/skl.h
-index 78aa8bdcb619..4105a9371b64 100644
---- a/sound/soc/intel/skylake/skl.h
-+++ b/sound/soc/intel/skylake/skl.h
-@@ -117,6 +117,8 @@ struct skl_dma_params {
- struct skl_machine_pdata {
- 	u32 dmic_num;
- 	bool use_tplg_pcm; /* use dais and dai links from topology */
-+	const char *platform;
-+	u32 codec_mask;
- };
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
  
- struct skl_dsp_ops {
+ #define HDA_BEEP_MODE_OFF	0
+ #define HDA_BEEP_MODE_ON	1
+diff --git a/sound/pci/hda/hda_bind.c b/sound/pci/hda/hda_bind.c
+index d361bb77ca00..2222b47d4ec4 100644
+--- a/sound/pci/hda/hda_bind.c
++++ b/sound/pci/hda/hda_bind.c
+@@ -11,7 +11,7 @@
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ 
+ /*
+diff --git a/sound/pci/hda/hda_codec.c b/sound/pci/hda/hda_codec.c
+index 0a5085537034..ccbb0d12b8cc 100644
+--- a/sound/pci/hda/hda_codec.c
++++ b/sound/pci/hda/hda_codec.c
+@@ -27,7 +27,7 @@
+ #include <linux/pm.h>
+ #include <linux/pm_runtime.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include <sound/asoundef.h>
+ #include <sound/tlv.h>
+ #include <sound/initval.h>
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index a68e75b00ea3..55760e5231e6 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -20,7 +20,7 @@
+ #include <sound/core.h>
+ #include <sound/pcm.h>
+ #include <sound/initval.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include <sound/hda_register.h>
+ 
+ #define AZX_MAX_CODECS		HDA_MAX_CODECS
+diff --git a/sound/pci/hda/hda_eld.c b/sound/pci/hda/hda_eld.c
+index ba7fe9b6655c..806b12ed44a2 100644
+--- a/sound/pci/hda/hda_eld.c
++++ b/sound/pci/hda/hda_eld.c
+@@ -27,7 +27,7 @@
+ #include <sound/core.h>
+ #include <asm/unaligned.h>
+ #include <sound/hda_chmap.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ 
+ enum eld_versions {
+diff --git a/sound/pci/hda/hda_generic.c b/sound/pci/hda/hda_generic.c
+index 579984ecdec3..276150f29cda 100644
+--- a/sound/pci/hda/hda_generic.c
++++ b/sound/pci/hda/hda_generic.c
+@@ -32,7 +32,7 @@
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ #include <sound/tlv.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
+diff --git a/sound/pci/hda/hda_hwdep.c b/sound/pci/hda/hda_hwdep.c
+index cc009a4a3d1d..268bba6ec985 100644
+--- a/sound/pci/hda/hda_hwdep.c
++++ b/sound/pci/hda/hda_hwdep.c
+@@ -23,7 +23,7 @@
+ #include <linux/compat.h>
+ #include <linux/nospec.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include <sound/hda_hwdep.h>
+ #include <sound/minors.h>
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 1b2ce304152a..c8fde95e2393 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -63,7 +63,7 @@
+ #include <linux/vgaarb.h>
+ #include <linux/vga_switcheroo.h>
+ #include <linux/firmware.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_controller.h"
+ #include "hda_intel.h"
+ 
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index a33234e04d4f..c499727920e6 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -15,7 +15,7 @@
+ #include <sound/core.h>
+ #include <sound/control.h>
+ #include <sound/jack.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
+diff --git a/sound/pci/hda/hda_proc.c b/sound/pci/hda/hda_proc.c
+index c6b778b2580c..a65740419650 100644
+--- a/sound/pci/hda/hda_proc.c
++++ b/sound/pci/hda/hda_proc.c
+@@ -25,7 +25,7 @@
+ #include <linux/slab.h>
+ #include <sound/core.h>
+ #include <linux/module.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ 
+ static int dump_coef = -1;
+diff --git a/sound/pci/hda/hda_sysfs.c b/sound/pci/hda/hda_sysfs.c
+index 6ec79c58d48d..c154b19a0c45 100644
+--- a/sound/pci/hda/hda_sysfs.c
++++ b/sound/pci/hda/hda_sysfs.c
+@@ -14,7 +14,7 @@
+ #include <linux/string.h>
+ #include <linux/export.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include <sound/hda_hwdep.h>
+ #include <sound/minors.h>
+diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+index 0621920f7617..4bc5232eac1c 100644
+--- a/sound/pci/hda/hda_tegra.c
++++ b/sound/pci/hda/hda_tegra.c
+@@ -35,7 +35,7 @@
+ #include <sound/core.h>
+ #include <sound/initval.h>
+ 
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_controller.h"
+ 
+ /* Defines for Nvidia Tegra HDA support */
+diff --git a/sound/pci/hda/patch_analog.c b/sound/pci/hda/patch_analog.c
+index fd476fb40e1b..ebfd0be885b3 100644
+--- a/sound/pci/hda/patch_analog.c
++++ b/sound/pci/hda/patch_analog.c
+@@ -24,7 +24,7 @@
+ #include <linux/module.h>
+ 
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_beep.h"
+diff --git a/sound/pci/hda/patch_ca0110.c b/sound/pci/hda/patch_ca0110.c
+index c2d9ee9cfdc0..21d0f0610913 100644
+--- a/sound/pci/hda/patch_ca0110.c
++++ b/sound/pci/hda/patch_ca0110.c
+@@ -22,7 +22,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 0166a3d7cd55..a585d0ec6d77 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -32,7 +32,7 @@
+ #include <linux/io.h>
+ #include <linux/pci.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
+diff --git a/sound/pci/hda/patch_cirrus.c b/sound/pci/hda/patch_cirrus.c
+index a7f91be45194..64fa5a82bb9f 100644
+--- a/sound/pci/hda/patch_cirrus.c
++++ b/sound/pci/hda/patch_cirrus.c
+@@ -23,7 +23,7 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/tlv.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
+diff --git a/sound/pci/hda/patch_cmedia.c b/sound/pci/hda/patch_cmedia.c
+index 1b2195dd2b26..52642ba3e2c0 100644
+--- a/sound/pci/hda/patch_cmedia.c
++++ b/sound/pci/hda/patch_cmedia.c
+@@ -25,7 +25,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index cfd4e4f97f8f..5592557fe50e 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -27,7 +27,7 @@
+ #include <sound/core.h>
+ #include <sound/jack.h>
+ 
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_beep.h"
+diff --git a/sound/pci/hda/patch_hdmi.c b/sound/pci/hda/patch_hdmi.c
+index cb587dce67a9..67099cbb6be2 100644
+--- a/sound/pci/hda/patch_hdmi.c
++++ b/sound/pci/hda/patch_hdmi.c
+@@ -41,7 +41,7 @@
+ #include <sound/hdaudio.h>
+ #include <sound/hda_i915.h>
+ #include <sound/hda_chmap.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_jack.h"
+ 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 1d117f00d04d..6f3c8e888c2a 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -32,7 +32,7 @@
+ #include <linux/input.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
+diff --git a/sound/pci/hda/patch_si3054.c b/sound/pci/hda/patch_si3054.c
+index f63acb1b965c..c49d25bcd7f2 100644
+--- a/sound/pci/hda/patch_si3054.c
++++ b/sound/pci/hda/patch_si3054.c
+@@ -27,7 +27,7 @@
+ #include <linux/slab.h>
+ #include <linux/module.h>
+ #include <sound/core.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ 
+ /* si3054 verbs */
+diff --git a/sound/pci/hda/patch_sigmatel.c b/sound/pci/hda/patch_sigmatel.c
+index 046705b4691a..d16a25a395c9 100644
+--- a/sound/pci/hda/patch_sigmatel.c
++++ b/sound/pci/hda/patch_sigmatel.c
+@@ -32,7 +32,7 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/jack.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_beep.h"
+diff --git a/sound/pci/hda/patch_via.c b/sound/pci/hda/patch_via.c
+index 6b9617aee0e6..9f6f13e25145 100644
+--- a/sound/pci/hda/patch_via.c
++++ b/sound/pci/hda/patch_via.c
+@@ -52,7 +52,7 @@
+ #include <linux/module.h>
+ #include <sound/core.h>
+ #include <sound/asoundef.h>
+-#include "hda_codec.h"
++#include <sound/hda_codec.h>
+ #include "hda_local.h"
+ #include "hda_auto_parser.h"
+ #include "hda_jack.h"
 -- 
 2.18.0
