@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: cht-bsw-rt5672: Add key-mappings
-	for the headset buttons" to the asoc tree
-Date: Tue, 28 Aug 2018 21:29:11 +0100 (BST)
-Message-ID: <20180828202912.0AF75440078@finisterre.ee.mobilebroadband>
-References: <20180821114337.11361-3-hdegoede@redhat.com>
+Subject: Applied "ASoC: Intel: common: Add quirk for Thinkpad 8
+	tablet" to the asoc tree
+Date: Tue, 28 Aug 2018 21:29:27 +0100 (BST)
+Message-ID: <20180828202928.028F1440078@finisterre.ee.mobilebroadband>
+References: <20180821114337.11361-2-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BD03426779D
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:29:16 +0200 (CEST)
-In-Reply-To: <20180821114337.11361-3-hdegoede@redhat.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 596492678D0
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:29:34 +0200 (CEST)
+In-Reply-To: <20180821114337.11361-2-hdegoede@redhat.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: cht-bsw-rt5672: Add key-mappings for the headset buttons
+   ASoC: Intel: common: Add quirk for Thinkpad 8 tablet
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From f8fc397e13107f925186ee742e9e8dfbfe9a3d03 Mon Sep 17 00:00:00 2001
+>From 2ca426a24dd75e775ece1466ae45e019f0035b8d Mon Sep 17 00:00:00 2001
 From: Hans de Goede <hdegoede@redhat.com>
-Date: Tue, 21 Aug 2018 13:43:37 +0200
-Subject: [PATCH] ASoC: Intel: cht-bsw-rt5672: Add key-mappings for the headset
- buttons
+Date: Tue, 21 Aug 2018 13:43:36 +0200
+Subject: [PATCH] ASoC: Intel: common: Add quirk for Thinkpad 8 tablet
 
-Having the headset buttons send BTN_0, BTN_1 and BTN_2 events is not
-really useful. Add mappings to PLAYPAUSE VOLUME_UP and VOLUME_DOWN like
-we do in other Intel machine drivers.
+The Thinkpad 8 tablet uses 10EC5640 as ACPI HID, but it has a rt5670 codec
+add a quirk for this.
 
 Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/boards/cht_bsw_rt5672.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ sound/soc/intel/common/soc-acpi-intel-byt-match.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/sound/soc/intel/boards/cht_bsw_rt5672.c b/sound/soc/intel/boards/cht_bsw_rt5672.c
-index e5aa13058dd7..e054318185ea 100644
---- a/sound/soc/intel/boards/cht_bsw_rt5672.c
-+++ b/sound/soc/intel/boards/cht_bsw_rt5672.c
-@@ -16,6 +16,7 @@
-  *  General Public License for more details.
-  */
+diff --git a/sound/soc/intel/common/soc-acpi-intel-byt-match.c b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+index 4daa8a4f0c0c..097dc06377ba 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-byt-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-byt-match.c
+@@ -30,6 +30,13 @@ static int byt_thinkpad10_quirk_cb(const struct dmi_system_id *id)
  
-+#include <linux/input.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
- #include <linux/slab.h>
-@@ -212,6 +213,10 @@ static int cht_codec_init(struct snd_soc_pcm_runtime *runtime)
-         if (ret)
-                 return ret;
  
-+	snd_jack_set_key(ctx->headset.jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+	snd_jack_set_key(ctx->headset.jack, SND_JACK_BTN_1, KEY_VOLUMEUP);
-+	snd_jack_set_key(ctx->headset.jack, SND_JACK_BTN_2, KEY_VOLUMEDOWN);
-+
- 	rt5670_set_jack_detect(component, &ctx->headset);
- 	if (ctx->mclk) {
- 		/*
+ static const struct dmi_system_id byt_table[] = {
++	{
++		.callback = byt_thinkpad10_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "LENOVO"),
++			DMI_MATCH(DMI_PRODUCT_VERSION, "ThinkPad 8"),
++		},
++	},
+ 	{
+ 		.callback = byt_thinkpad10_quirk_cb,
+ 		.matches = {
 -- 
 2.18.0
