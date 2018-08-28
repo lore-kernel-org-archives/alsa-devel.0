@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Don't fail creating new DAPM
-	control on NULL pinctrl" to the asoc tree
-Date: Tue, 28 Aug 2018 21:48:43 +0100 (BST)
-Message-ID: <20180828204843.C81A944007A@finisterre.ee.mobilebroadband>
-References: <20180828133508.13012-2-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: dapm: Remove clock framework ifdefs" to
+	the asoc tree
+Date: Tue, 28 Aug 2018 21:49:11 +0100 (BST)
+Message-ID: <20180828204911.0C81F44007A@finisterre.ee.mobilebroadband>
+References: <20180828133508.13012-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7983B26781A
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:48:59 +0200 (CEST)
-In-Reply-To: <20180828133508.13012-2-ckeepax@opensource.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 337E826781A
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:49:15 +0200 (CEST)
+In-Reply-To: <20180828133508.13012-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Don't fail creating new DAPM control on NULL pinctrl
+   ASoC: dapm: Remove clock framework ifdefs
 
 has been applied to the asoc tree at
 
@@ -53,37 +53,57 @@ to this mail.
 Thanks,
 Mark
 
->From a5cd7e9cf587f51a84b86c828b4e1c7b392f448e Mon Sep 17 00:00:00 2001
+>From d78b1e43e2182640b33d1c39245965d9231f0130 Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Tue, 28 Aug 2018 14:35:03 +0100
-Subject: [PATCH] ASoC: dapm: Don't fail creating new DAPM control on NULL
- pinctrl
+Date: Tue, 28 Aug 2018 14:35:02 +0100
+Subject: [PATCH] ASoC: dapm: Remove clock framework ifdefs
 
-devm_pinctrl_get will only return NULL in the case that pinctrl
-is not built into the kernel and all the pinctrl functions used
-by the DAPM core are appropriately stubbed for that case. There
-is no need to error out of snd_soc_dapm_new_control_unlocked
-if pinctrl isn't built into the kernel, so change the
-IS_ERR_OR_NULL to just an IS_ERR.
+The clock code now has stub functions defined in its header files so
+the ifdefs around clocking code should no longer be necessary.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-dapm.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 78ab6965af55..d7be3981f026 100644
+index 461d951917c0..78ab6965af55 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -3487,7 +3487,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+@@ -1320,14 +1320,13 @@ int dapm_clock_event(struct snd_soc_dapm_widget *w,
+ 
+ 	soc_dapm_async_complete(w->dapm);
+ 
+-#ifdef CONFIG_HAVE_CLK
+ 	if (SND_SOC_DAPM_EVENT_ON(event)) {
+ 		return clk_prepare_enable(w->clk);
+ 	} else {
+ 		clk_disable_unprepare(w->clk);
+ 		return 0;
+ 	}
+-#endif
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(dapm_clock_event);
+@@ -3498,7 +3497,6 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 		}
  		break;
- 	case snd_soc_dapm_pinctrl:
- 		w->pinctrl = devm_pinctrl_get(dapm->dev);
--		if (IS_ERR_OR_NULL(w->pinctrl)) {
-+		if (IS_ERR(w->pinctrl)) {
- 			ret = PTR_ERR(w->pinctrl);
- 			if (ret == -EPROBE_DEFER)
- 				return ERR_PTR(ret);
+ 	case snd_soc_dapm_clock_supply:
+-#ifdef CONFIG_CLKDEV_LOOKUP
+ 		w->clk = devm_clk_get(dapm->dev, w->name);
+ 		if (IS_ERR(w->clk)) {
+ 			ret = PTR_ERR(w->clk);
+@@ -3508,9 +3506,6 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 				w->name, ret);
+ 			return NULL;
+ 		}
+-#else
+-		return NULL;
+-#endif
+ 		break;
+ 	default:
+ 		break;
 -- 
 2.18.0
