@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Intel: Skylake: add HDA BE DAIs" to the
-	asoc tree
-Date: Tue, 28 Aug 2018 21:32:44 +0100 (BST)
-Message-ID: <20180828203244.2EDCF440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: Intel: Skylake: use HDAudio if ACPI
+	enumeration fails" to the asoc tree
+Date: Tue, 28 Aug 2018 21:34:59 +0100 (BST)
+Message-ID: <20180828203459.85C9D440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0FC4426779D
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:32:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9E2B626779D
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:35:02 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Intel: Skylake: add HDA BE DAIs
+   ASoC: Intel: Skylake: use HDAudio if ACPI enumeration fails
 
 has been applied to the asoc tree at
 
@@ -52,118 +52,95 @@ to this mail.
 Thanks,
 Mark
 
->From 3d17871349d5cec0a37ce9407ba72fdbf8572cfd Mon Sep 17 00:00:00 2001
+>From 9cdae4352cba3f66d39a4ef78bb726940ae1e513 Mon Sep 17 00:00:00 2001
 From: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
-Date: Wed, 22 Aug 2018 15:25:01 -0500
-Subject: [PATCH] ASoC: Intel: Skylake: add HDA BE DAIs
+Date: Wed, 22 Aug 2018 15:25:00 -0500
+Subject: [PATCH] ASoC: Intel: Skylake: use HDAudio if ACPI enumeration fails
 
-Add support for HDA BE DAIs in SKL platform driver.
+When no I2S based codec entries are found in the BIOS, check if there are
+any HDA codecs detected on the bus. Based on the number of codecs found
+take appropriate action in machine driver. If there are two HDA codecs
+i.e. iDisp + HDA found on the bus, register DAIs and DAI links for both.
+If only one codec i.e. iDisp is found then load only iDisp machine driver.
 
 Signed-off-by: Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 70 +++++++++++++++++++++++++------
- 1 file changed, 58 insertions(+), 12 deletions(-)
+ sound/soc/intel/skylake/skl.c | 38 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 33 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 823e39103edd..00b7a91b18c9 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -32,6 +32,7 @@
- #define HDA_MONO 1
- #define HDA_STEREO 2
- #define HDA_QUAD 4
-+#define HDA_MAX 8
- 
- static const struct snd_pcm_hardware azx_pcm_hw = {
- 	.info =			(SNDRV_PCM_INFO_MMAP |
-@@ -569,7 +570,10 @@ static int skl_link_hw_params(struct snd_pcm_substream *substream,
- 	stream_tag = hdac_stream(link_dev)->stream_tag;
- 
- 	/* set the stream tag in the codec dai dma params  */
--	snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		snd_soc_dai_set_tdm_slot(codec_dai, stream_tag, 0, 0, 0);
-+	else
-+		snd_soc_dai_set_tdm_slot(codec_dai, 0, stream_tag, 0, 0);
- 
- 	p_params.s_fmt = snd_pcm_format_width(params_format(params));
- 	p_params.ch = params_channels(params);
-@@ -995,21 +999,63 @@ static struct snd_soc_dai_driver skl_platform_dai[] = {
- 	},
- },
- {
--	.name = "HD-Codec Pin",
-+	.name = "Analog CPU DAI",
- 	.ops = &skl_link_dai_ops,
- 	.playback = {
--		.stream_name = "HD-Codec Tx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.stream_name = "Analog CPU Playback",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
- 	},
- 	.capture = {
--		.stream_name = "HD-Codec Rx",
--		.channels_min = HDA_STEREO,
--		.channels_max = HDA_STEREO,
--		.rates = SNDRV_PCM_RATE_48000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.stream_name = "Analog CPU Capture",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+},
-+{
-+	.name = "Alt Analog CPU DAI",
-+	.ops = &skl_link_dai_ops,
-+	.playback = {
-+		.stream_name = "Alt Analog CPU Playback",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Alt Analog CPU Capture",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+},
-+{
-+	.name = "Digital CPU DAI",
-+	.ops = &skl_link_dai_ops,
-+	.playback = {
-+		.stream_name = "Digital CPU Playback",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
-+	},
-+	.capture = {
-+		.stream_name = "Digital CPU Capture",
-+		.channels_min = HDA_MONO,
-+		.channels_max = HDA_MAX,
-+		.rates = SNDRV_PCM_RATE_8000_192000,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE |
-+			SNDRV_PCM_FMTBIT_S32_LE,
- 	},
- },
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index cf09721ca13e..3b836125d1de 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -472,6 +472,25 @@ static struct skl_ssp_clk skl_ssp_clks[] = {
+ 						{.name = "ssp5_sclkfs"},
  };
+ 
++static struct snd_soc_acpi_mach *skl_find_hda_machine(struct skl *skl,
++					struct snd_soc_acpi_mach *machines)
++{
++	struct hdac_bus *bus = skl_to_bus(skl);
++	struct snd_soc_acpi_mach *mach;
++
++	/* check if we have any codecs detected on bus */
++	if (bus->codec_mask == 0)
++		return NULL;
++
++	/* point to common table */
++	mach = snd_soc_acpi_intel_hda_machines;
++
++	/* all entries in the machine table use the same firmware */
++	mach->fw_filename = machines->fw_filename;
++
++	return mach;
++}
++
+ static int skl_find_machine(struct skl *skl, void *driver_data)
+ {
+ 	struct hdac_bus *bus = skl_to_bus(skl);
+@@ -479,9 +498,13 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+ 	struct skl_machine_pdata *pdata;
+ 
+ 	mach = snd_soc_acpi_find_machine(mach);
+-	if (mach == NULL) {
+-		dev_err(bus->dev, "No matching machine driver found\n");
+-		return -ENODEV;
++	if (!mach) {
++		dev_dbg(bus->dev, "No matching I2S machine driver found\n");
++		mach = skl_find_hda_machine(skl, driver_data);
++		if (!mach) {
++			dev_err(bus->dev, "No matching machine driver found\n");
++			return -ENODEV;
++		}
+ 	}
+ 
+ 	skl->mach = mach;
+@@ -498,8 +521,9 @@ static int skl_find_machine(struct skl *skl, void *driver_data)
+ 
+ static int skl_machine_device_register(struct skl *skl)
+ {
+-	struct hdac_bus *bus = skl_to_bus(skl);
+ 	struct snd_soc_acpi_mach *mach = skl->mach;
++	struct hdac_bus *bus = skl_to_bus(skl);
++	struct skl_machine_pdata *pdata;
+ 	struct platform_device *pdev;
+ 	int ret;
+ 
+@@ -516,8 +540,12 @@ static int skl_machine_device_register(struct skl *skl)
+ 		return -EIO;
+ 	}
+ 
+-	if (mach->pdata)
++	if (mach->pdata) {
++		pdata = (struct skl_machine_pdata *)mach->pdata;
++		pdata->platform = dev_name(bus->dev);
++		pdata->codec_mask = bus->codec_mask;
+ 		dev_set_drvdata(&pdev->dev, mach->pdata);
++	}
+ 
+ 	skl->i2s_dev = pdev;
+ 
 -- 
 2.18.0
