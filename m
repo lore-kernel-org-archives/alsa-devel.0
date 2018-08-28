@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2] ASoC: Convert to using %pOFn instead of
- device_node.name
-Date: Tue, 28 Aug 2018 19:03:35 +0100
-Message-ID: <20180828180335.GG2414@sirena.org.uk>
-References: <20180828154433.5693-1-robh@kernel.org>
- <20180828154433.5693-2-robh@kernel.org>
+Subject: Re: [PATCH 3/7] ASoC: dapm: Move error handling to
+ snd_soc_dapm_new_control_unlocked
+Date: Tue, 28 Aug 2018 19:28:26 +0100
+Message-ID: <20180828182826.GH2414@sirena.org.uk>
+References: <20180828133508.13012-1-ckeepax@opensource.cirrus.com>
+ <20180828133508.13012-3-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5785909535817611445=="
+Content-Type: multipart/mixed; boundary="===============7950494670619578052=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 41189267741
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 20:03:49 +0200 (CEST)
-In-Reply-To: <20180828154433.5693-2-robh@kernel.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id A92F8267741
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 20:28:36 +0200 (CEST)
+In-Reply-To: <20180828133508.13012-3-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,50 +22,85 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
-Cc: alsa-devel@alsa-project.org, Olivier Moysan <olivier.moysan@st.com>, Alexandre Torgue <alexandre.torgue@st.com>, Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>, Kevin Hilman <khilman@baylibre.com>, Takashi Iwai <tiwai@suse.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Nicolin Chen <nicoleotsuka@gmail.com>, Carlo Caione <carlo@caione.org>, Andy Shevchenko <andy.shevchenko@gmail.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, linux-amlogic@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5785909535817611445==
+--===============7950494670619578052==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="8TMLq6GPUuN4DysL"
+	protocol="application/pgp-signature"; boundary="4B4+7MsODflw+h2f"
 Content-Disposition: inline
 
 
---8TMLq6GPUuN4DysL
+--4B4+7MsODflw+h2f
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Aug 28, 2018 at 10:44:28AM -0500, Rob Herring wrote:
-> In preparation to remove the node name pointer from struct device_node,
-> convert printf users to use the %pOFn format specifier.
+On Tue, Aug 28, 2018 at 02:35:04PM +0100, Charles Keepax wrote:
+> Currently DAPM has almost identical code to handle errors from
+> snd_soc_dapm_new_control_unlocked in many places. Centralise
+> this handling within snd_soc_dapm_new_control_unlocked and
+> remove the duplicated error reporting. This also has the fringe
+> benefit of removing a lot of error messages that would have
+> been printed on the -ENOMEM paths.
 
-Please don't send new patches in reply to existing threads, it makes it
-harder to follow what the current versions of things are.
+This changelog doesn't entirely match up with the change:
 
---8TMLq6GPUuN4DysL
+>  			}
+> -			if (!data->widget) {
+> -				ret = -ENOMEM;
+> -				goto err_data;
+> -			}
+>  		}
+
+and
+
+>  	w = snd_soc_dapm_new_control_unlocked(dapm, widget);
+> -	/* Do not nag about probe deferrals */
+> -	if (IS_ERR(w)) {
+> -		int ret = PTR_ERR(w);
+> -
+> -		if (ret != -EPROBE_DEFER)
+> -			dev_err(dapm->dev,
+> -				"ASoC: Failed to create DAPM control %s (%d)\n",
+> -				widget->name, ret);
+> -		goto out_unlock;
+> -	}
+> -	if (!w)
+> -		dev_err(dapm->dev,
+> -			"ASoC: Failed to create DAPM control %s\n",
+> -			widget->name);
+> -
+> -out_unlock:
+>  	mutex_unlock(&dapm->card->dapm_mutex);
+> +
+>  	return w;
+
+are not obviously identical.
+
+--4B4+7MsODflw+h2f
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluFjnMACgkQJNaLcl1U
-h9BnyQf/cdl8XKMk/yZXqmTYdTxNvRvHBV00zFsFCpmSB2fxFPQl9u0BC/JZSMSb
-QJ2GfCxUgp1/j2S8iDUSWGCZG6bq/turgrP2m+ZYZeTvA7wsVduGMBYEVqwurAxX
-6XNPCGC2ZrvUV89j1fYc4jxXjTC0vPYWnK6M3sZCKqJKP4CTeRxFDyFdBtGlmHdZ
-taXllc0H3Kpp8xU5P3zmlwBW4kErt8XwBb/yj3cN0pbJbXqwrOOUTIFXTf3XFg+x
-xM3pTAUEZjyhDNQHg+C6yYv8rpf8oqAeu/v7WLj9q4UsQ0y7x3vfxYmlQe7Qt+5Z
-BvxDzb2t7uzOrvhRrEhcRSRs5j+EIg==
-=Bsjk
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluFlEoACgkQJNaLcl1U
+h9C28Qf/W9ezgjNpUOwvrC2knsK9maYvxC9B80D3bmJOubm3JgITN3PGPvuX5JoE
+lb/6elJAb8l2qVoKhS5QhL9Urhj15Y4ECxU4bwk4zYyYrBMElQqIaDlU2NPIdG4u
+z+nNYtJgZTXU9Xf4X4ROPd7LZ284AQGDvWoTjpo0PnwA/e1yDakEbOChN0FuVPaD
+4c21BAqmNvlUkOTm0Uu7WHDGyI1DMdYEfFPb3GKbZE/FL0n64vuJ8y1p/WQTrMZk
+FOx/+l/L0lIck9QEXkwsS7ETwJA2a0JWDcMQwNTIL92j+JW7bQ6WhSNJEffX90s4
+K5BivHlhPVO0lyIAvQbjFyXSi8gi3Q==
+=N8Z9
 -----END PGP SIGNATURE-----
 
---8TMLq6GPUuN4DysL--
+--4B4+7MsODflw+h2f--
 
---===============5785909535817611445==
+--===============7950494670619578052==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5785909535817611445==--
+--===============7950494670619578052==--
