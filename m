@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: meson: imply clock and reset
-	controllers" to the asoc tree
-Date: Tue, 28 Aug 2018 21:48:19 +0100 (BST)
-Message-ID: <20180828204820.015EB44007A@finisterre.ee.mobilebroadband>
-References: <20180828121721.26488-1-jbrunet@baylibre.com>
+Subject: Applied "ASoC: dpcm: Properly initialise hw->rate_max"
+	to the asoc tree
+Date: Tue, 28 Aug 2018 21:48:32 +0100 (BST)
+Message-ID: <20180828204832.3B4C644007A@finisterre.ee.mobilebroadband>
+References: <20180827132647.25862-1-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B55CD26781A
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:48:21 +0200 (CEST)
-In-Reply-To: <20180828121721.26488-1-jbrunet@baylibre.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4579926781A
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:48:35 +0200 (CEST)
+In-Reply-To: <20180827132647.25862-1-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: meson: imply clock and reset controllers
+   ASoC: dpcm: Properly initialise hw->rate_max
 
 has been applied to the asoc tree at
 
@@ -53,48 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From ac16df938e5107a1e08cf0f52818fa6a5f7bba94 Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Tue, 28 Aug 2018 14:17:21 +0200
-Subject: [PATCH] ASoC: meson: imply clock and reset controllers
+>From e33ffbd9cd39da09831ce62c11025d830bf78d9e Mon Sep 17 00:00:00 2001
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Date: Mon, 27 Aug 2018 14:26:47 +0100
+Subject: [PATCH] ASoC: dpcm: Properly initialise hw->rate_max
 
-Add audio clock controller and ARB reset controller module
-implication for the device using them
+If the CPU DAI does not initialise rate_max, say if using
+using KNOT or CONTINUOUS, then the rate_max field will be
+initialised to 0. A value of zero in the rate_max field of
+the hardware runtime will cause the sound card to support no
+sample rates at all. Obviously this is not desired, just a
+different mechanism is being used to apply the constraints. As
+such update the setting of rate_max in dpcm_init_runtime_hw
+to be consistent with the non-DPCM cases and set rate_max to
+UINT_MAX if nothing is defined on the CPU DAI.
 
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/meson/Kconfig | 4 ++++
- 1 file changed, 4 insertions(+)
+ sound/soc/soc-pcm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/meson/Kconfig b/sound/soc/meson/Kconfig
-index 8af8bc358a90..2ccbadc387de 100644
---- a/sound/soc/meson/Kconfig
-+++ b/sound/soc/meson/Kconfig
-@@ -4,6 +4,8 @@ menu "ASoC support for Amlogic platforms"
- config SND_MESON_AXG_FIFO
- 	tristate
- 	select REGMAP_MMIO
-+	imply COMMON_CLK_AXG_AUDIO
-+	imply RESET_MESON_AUDIO_ARB
- 
- config SND_MESON_AXG_FRDDR
- 	tristate "Amlogic AXG Playback FIFO support"
-@@ -22,6 +24,7 @@ config SND_MESON_AXG_TODDR
- config SND_MESON_AXG_TDM_FORMATTER
- 	tristate
- 	select REGMAP_MMIO
-+	imply COMMON_CLK_AXG_AUDIO
- 
- config SND_MESON_AXG_TDM_INTERFACE
- 	tristate
-@@ -58,6 +61,7 @@ config SND_MESON_AXG_SPDIFOUT
- 	tristate "Amlogic AXG SPDIF Output Support"
- 	select SND_PCM_IEC958
- 	imply SND_SOC_SPDIF
-+	imply COMMON_CLK_AXG_AUDIO
- 	help
- 	  Select Y or M to add support for SPDIF output serializer embedded
- 	  in the Amlogic AXG SoC family
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index e8b98bfd4cf1..eb6f4f1b65a9 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -1680,7 +1680,7 @@ static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
+ 				 struct snd_soc_pcm_stream *stream)
+ {
+ 	runtime->hw.rate_min = stream->rate_min;
+-	runtime->hw.rate_max = stream->rate_max;
++	runtime->hw.rate_max = min_not_zero(stream->rate_max, UINT_MAX);
+ 	runtime->hw.channels_min = stream->channels_min;
+ 	runtime->hw.channels_max = stream->channels_max;
+ 	if (runtime->hw.formats)
 -- 
 2.18.0
