@@ -1,17 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] ASoC: cs4265: SOC_SINGLE register
-	value error fix
-Date: Tue, 28 Aug 2018 19:57:56 +0100
-Message-ID: <20180828185756.GK2414@sirena.org.uk>
-References: <20180826225844.13754-1-flatmax@flatmax.org>
+Subject: Re: [PATCH 0/1] Fix ADI axi-i2s + Xilinx AXI-DMA
+	capture
+Date: Tue, 28 Aug 2018 19:58:29 +0100
+Message-ID: <20180828185829.GL2414@sirena.org.uk>
+References: <20180824160430.10222-1-luca@lucaceresoli.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9144498737258441870=="
+Content-Type: multipart/mixed; boundary="===============3764963769411457365=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BB04F26779D
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 20:58:03 +0200 (CEST)
-In-Reply-To: <20180826225844.13754-1-flatmax@flatmax.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id C291D26779D
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 20:58:34 +0200 (CEST)
+In-Reply-To: <20180824160430.10222-1-luca@lucaceresoli.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,52 +21,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, ckeepax@opensource.cirrus.com, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+To: Luca Ceresoli <luca@lucaceresoli.net>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9144498737258441870==
+--===============3764963769411457365==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="o9mtL5OVI48+DSkO"
+	protocol="application/pgp-signature"; boundary="4xmAKYnxoHNXa3WQ"
 Content-Disposition: inline
 
 
---o9mtL5OVI48+DSkO
+--4xmAKYnxoHNXa3WQ
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Aug 27, 2018 at 08:58:42AM +1000, Matt Flax wrote:
-> The cs4265 driver declares the "MMTLR Data Switch" register setting with
-> a 0 register value rather then the 0x12 register (CS4265_SPDIF_CTL2).
-> This incorrect value causes alsamixer to fault with the output :
-> cannot load mixer controls: Input/output error
+On Fri, Aug 24, 2018 at 06:04:29PM +0200, Luca Ceresoli wrote:
+> Hi,
+>=20
+> here is a fix for a nasty audio capture problem when the axi-i2s
+> output stream is fed to a Xilinx AXI-DMA.
 
-How is this patch series different to the apparently identical three
-patch series you sent a few minutes earlier?
+Please don't send cover letters for single patches, if there is anything
+that needs saying put it in the changelog of the patch or after the ---
+if it's administrative stuff.  This reduces mail volume and ensures that=20
+any important information is recorded in the changelog rather than being
+lost.=20
 
---o9mtL5OVI48+DSkO
+--4xmAKYnxoHNXa3WQ
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluFmzMACgkQJNaLcl1U
-h9CoiQf/Xzdk9aGulMQj10vCF67/4k8mKivD3932A5fZxgVMNjWDNZt8b4HAIlnZ
-Pcmt4A8R4s2XlytzVh3/j55SzX3XEo7tKxQ9FHsDeied9YcuByAyxjsRh4mne1Fe
-jwAAMwli2wQ9AU+p6mSNff9Uke7JR1IfZVfay2p0IqN7piRafNVQyARhcT9ylyh8
-kaSt325OZPmy1kBKbj5pk3cPyZLPSr8eJncINFAEg+woPwBukQuUXLvT5PxETPjP
-nhMxBrq6yQWWHvEMcCSKvZvzXsacIdpM3f1Wq2nB7yIYKSd1yxfjVeodSUuK+AiR
-F3jeSHbNQK5QgMbdmDvu00Zb7vC5Tw==
-=b3Rg
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluFm1QACgkQJNaLcl1U
+h9CD8Af6A3HHOBqGWXwdQhtR3ULS82h6fZeHIB/KL6AqTMQWIzcVqD6Fob0r3ES3
+uTouAuKZX0rRfyu2SBC79q1HYowiezgLal8IAJkVkO0sqyY7QdiT2hJk98kq0k++
+8iXapgy693LTv78mVdJ7XYen70ppGCFNP6uODFH6krwC1QqsfthCW/fcb+l4ApKe
+YpFD5GNU5b5h4YWkpYBxjfIkA1tJ7WzX0NZADunoHxgoFcOrxgi8r2Gb8Jd/nb3X
+qOJzsADS1zA3YxEqjHu9/HdaGZgM/t+2zOAfwAMdAvfZmUz7Tau+a11u473pBiFv
+y4PP2CsC6h21DF7/bGtn7Jezbh+nTQ==
+=IdRZ
 -----END PGP SIGNATURE-----
 
---o9mtL5OVI48+DSkO--
+--4xmAKYnxoHNXa3WQ--
 
---===============9144498737258441870==
+--===============3764963769411457365==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9144498737258441870==--
+--===============3764963769411457365==--
