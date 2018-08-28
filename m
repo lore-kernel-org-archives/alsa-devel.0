@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm8804: Add ACPI support" to the asoc
-	tree
-Date: Tue, 28 Aug 2018 21:42:45 +0100 (BST)
-Message-ID: <20180828204245.969E844007A@finisterre.ee.mobilebroadband>
-References: <20180823034936.21696-1-pierre-louis.bossart@linux.intel.com>
+Subject: Applied "ASoC: rt5682: Update calibration function" to
+	the asoc tree
+Date: Tue, 28 Aug 2018 21:44:08 +0100 (BST)
+Message-ID: <20180828204408.51B7744007A@finisterre.ee.mobilebroadband>
+References: <1535079111-9933-1-git-send-email-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AECBB2678C9
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:43:17 +0200 (CEST)
-In-Reply-To: <20180823034936.21696-1-pierre-louis.bossart@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A956626781A
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:44:49 +0200 (CEST)
+In-Reply-To: <1535079111-9933-1-git-send-email-shumingf@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, tiwai@suse.de, patches@opensource.cirrus.com, Keyon Jie <yang.jie@linux.intel.com>, liam.r.girdwood@linux.intel.com, vkoul@kernel.org, broonie@kernel.org
+To: Shuming Fan <shumingf@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, koonc@google.com, albertchen@realtek.com, broonie@kernel.org, alexlee@realtek.com, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm8804: Add ACPI support
+   ASoC: rt5682: Update calibration function
 
 has been applied to the asoc tree at
 
@@ -53,67 +53,64 @@ to this mail.
 Thanks,
 Mark
 
->From 960cdd50ca9fdfeb82c2757107bcb7f93c8d7d41 Mon Sep 17 00:00:00 2001
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Date: Wed, 22 Aug 2018 22:49:36 -0500
-Subject: [PATCH] ASoC: wm8804: Add ACPI support
+>From 513792c2554bdece11d82568ea25501a555abd34 Mon Sep 17 00:00:00 2001
+From: Shuming Fan <shumingf@realtek.com>
+Date: Fri, 24 Aug 2018 10:51:51 +0800
+Subject: [PATCH] ASoC: rt5682: Update calibration function
 
-HID made of either Wolfson/CirrusLogic PCI ID + 8804 identifier.
+New calibration sequence allows rt5682 do calibration without
+MCLK.
 
-This helps enumerate the HifiBerry Digi+ HAT boards on the Up2 platform.
-
-The scripts at https://github.com/thesofproject/acpi-scripts can be
-used to add the ACPI initrd overlays.
-
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm8804-i2c.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5682.c | 22 +++++-----------------
+ 1 file changed, 5 insertions(+), 17 deletions(-)
 
-diff --git a/sound/soc/codecs/wm8804-i2c.c b/sound/soc/codecs/wm8804-i2c.c
-index f27464c2c5ba..79541960f45d 100644
---- a/sound/soc/codecs/wm8804-i2c.c
-+++ b/sound/soc/codecs/wm8804-i2c.c
-@@ -13,6 +13,7 @@
- #include <linux/init.h>
- #include <linux/module.h>
- #include <linux/i2c.h>
-+#include <linux/acpi.h>
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 640d400ca013..0ea2759e5885 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2454,27 +2454,15 @@ static void rt5682_calibrate(struct rt5682_priv *rt5682)
+ 	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xa2bf);
+ 	usleep_range(15000, 20000);
+ 	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xf2bf);
+-	regmap_write(rt5682->regmap, RT5682_MICBIAS_2, 0x0380);
+-	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x8001);
+-	regmap_write(rt5682->regmap, RT5682_TEST_MODE_CTRL_1, 0x0000);
+-	regmap_write(rt5682->regmap, RT5682_STO1_DAC_MIXER, 0x2080);
+-	regmap_write(rt5682->regmap, RT5682_STO1_ADC_MIXER, 0x4040);
+-	regmap_write(rt5682->regmap, RT5682_DEPOP_1, 0x0069);
++	regmap_write(rt5682->regmap, RT5682_MICBIAS_2, 0x0300);
++	regmap_write(rt5682->regmap, RT5682_GLB_CLK, 0x8000);
++	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x0100);
+ 	regmap_write(rt5682->regmap, RT5682_CHOP_DAC, 0x3000);
+-	regmap_write(rt5682->regmap, RT5682_HP_CTRL_2, 0x6000);
+-	regmap_write(rt5682->regmap, RT5682_HP_CHARGE_PUMP_1, 0x0f26);
+-	regmap_write(rt5682->regmap, RT5682_CALIB_ADC_CTRL, 0x7f05);
+-	regmap_write(rt5682->regmap, RT5682_STO1_ADC_MIXER, 0x686c);
+-	regmap_write(rt5682->regmap, RT5682_CAL_REC, 0x0d0d);
+-	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_9, 0x000f);
+-	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x8d01);
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_2, 0x0321);
+ 	regmap_write(rt5682->regmap, RT5682_HP_LOGIC_CTRL_2, 0x0004);
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0x7c00);
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_3, 0x06a1);
+-	regmap_write(rt5682->regmap, RT5682_A_DAC1_MUX, 0x0311);
+-	regmap_write(rt5682->regmap, RT5682_RESET_HPF_CTRL, 0x0000);
+-	regmap_write(rt5682->regmap, RT5682_ADC_STO1_HP_CTRL_1, 0x3320);
++	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0x7c00);
  
- #include "wm8804.h"
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0xfc00);
  
-@@ -40,17 +41,29 @@ static const struct i2c_device_id wm8804_i2c_id[] = {
- };
- MODULE_DEVICE_TABLE(i2c, wm8804_i2c_id);
+@@ -2490,7 +2478,7 @@ static void rt5682_calibrate(struct rt5682_priv *rt5682)
+ 		pr_err("HP Calibration Failure\n");
  
-+#if defined(CONFIG_OF)
- static const struct of_device_id wm8804_of_match[] = {
- 	{ .compatible = "wlf,wm8804", },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, wm8804_of_match);
-+#endif
-+
-+#ifdef CONFIG_ACPI
-+static const struct acpi_device_id wm8804_acpi_match[] = {
-+	{ "1AEC8804", 0 }, /* Wolfson PCI ID + part ID */
-+	{ "10138804", 0 }, /* Cirrus Logic PCI ID + part ID */
-+	{ },
-+};
-+MODULE_DEVICE_TABLE(acpi, wm8804_acpi_match);
-+#endif
+ 	/* restore settings */
+-	regmap_write(rt5682->regmap, RT5682_STO1_ADC_MIXER, 0xc0c4);
++	regmap_write(rt5682->regmap, RT5682_GLB_CLK, 0x0000);
+ 	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x0000);
  
- static struct i2c_driver wm8804_i2c_driver = {
- 	.driver = {
- 		.name = "wm8804",
- 		.pm = &wm8804_pm,
--		.of_match_table = wm8804_of_match,
-+		.of_match_table = of_match_ptr(wm8804_of_match),
-+		.acpi_match_table = ACPI_PTR(wm8804_acpi_match),
- 	},
- 	.probe = wm8804_i2c_probe,
- 	.remove = wm8804_i2c_remove,
+ 	mutex_unlock(&rt5682->calibrate_mutex);
 -- 
 2.18.0
