@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel: tse850: switch to SPDX license
-	identifier" to the asoc tree
-Date: Tue, 28 Aug 2018 21:26:55 +0100 (BST)
-Message-ID: <20180828202655.4010A440078@finisterre.ee.mobilebroadband>
-References: <20180820101409.23328-1-peda@axentia.se>
+Subject: Applied "ASoC: AMD: Change MCLK to 48Mhz" to the asoc
+	tree
+Date: Tue, 28 Aug 2018 21:27:06 +0100 (BST)
+Message-ID: <20180828202706.D37BE440078@finisterre.ee.mobilebroadband>
+References: <1534834795-18494-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E61A26779D
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:27:03 +0200 (CEST)
-In-Reply-To: <20180820101409.23328-1-peda@axentia.se>
+ by alsa0.perex.cz (Postfix) with ESMTP id E0D902678CC
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:27:13 +0200 (CEST)
+In-Reply-To: <1534834795-18494-1-git-send-email-akshu.agrawal@amd.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Rosin <peda@axentia.se>
-Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>, alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>, open list <linux-kernel@vger.kernel.org>, djkurtz@chromium.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com, akshu.agrawal@amd.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel: tse850: switch to SPDX license identifier
+   ASoC: AMD: Change MCLK to 48Mhz
 
 has been applied to the asoc tree at
 
@@ -53,109 +52,35 @@ to this mail.
 Thanks,
 Mark
 
->From 1b3b7981524af2b6dcdf78cfa6dca89522c13ade Mon Sep 17 00:00:00 2001
-From: Peter Rosin <peda@axentia.se>
-Date: Mon, 20 Aug 2018 12:14:09 +0200
-Subject: [PATCH] ASoC: atmel: tse850: switch to SPDX license identifier
+>From a1b1e9880f0c2754a5ac416a546d9f295f72eabc Mon Sep 17 00:00:00 2001
+From: Akshu Agrawal <akshu.agrawal@amd.com>
+Date: Tue, 21 Aug 2018 12:29:43 +0530
+Subject: [PATCH] ASoC: AMD: Change MCLK to 48Mhz
 
-Convert to // comments in the leading comment, drop the boilerplate
-license text and use the correct MODULE_LICENSE.
+25Mhz MCLK which was earlier used was of spread type.
+Thus, we were not getting accurate rate. The 48Mhz system
+clk is of non-spread type and we are changing to it to get
+accurate rate.
 
-Signed-off-by: Peter Rosin <peda@axentia.se>
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Reviewed-by: Daniel Kurtz <djkurtz@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/tse850-pcm5142.c | 78 +++++++++++++++-----------------
- 1 file changed, 36 insertions(+), 42 deletions(-)
+ sound/soc/amd/acp-da7219-max98357a.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/tse850-pcm5142.c b/sound/soc/atmel/tse850-pcm5142.c
-index 3a1393283156..214adcad5419 100644
---- a/sound/soc/atmel/tse850-pcm5142.c
-+++ b/sound/soc/atmel/tse850-pcm5142.c
-@@ -1,44 +1,38 @@
--/*
-- * TSE-850 audio - ASoC driver for the Axentia TSE-850 with a PCM5142 codec
-- *
-- * Copyright (C) 2016 Axentia Technologies AB
-- *
-- * Author: Peter Rosin <peda@axentia.se>
-- *
-- * This program is free software; you can redistribute it and/or modify
-- * it under the terms of the GNU General Public License version 2 as
-- * published by the Free Software Foundation.
-- */
--
--/*
-- *               loop1 relays
-- *   IN1 +---o  +------------+  o---+ OUT1
-- *            \                /
-- *             +              +
-- *             |   /          |
-- *             +--o  +--.     |
-- *             |  add   |     |
-- *             |        V     |
-- *             |      .---.   |
-- *   DAC +----------->|Sum|---+
-- *             |      '---'   |
-- *             |              |
-- *             +              +
-- *
-- *   IN2 +---o--+------------+--o---+ OUT2
-- *               loop2 relays
-- *
-- * The 'loop1' gpio pin controlls two relays, which are either in loop
-- * position, meaning that input and output are directly connected, or
-- * they are in mixer position, meaning that the signal is passed through
-- * the 'Sum' mixer. Similarly for 'loop2'.
-- *
-- * In the above, the 'loop1' relays are inactive, thus feeding IN1 to the
-- * mixer (if 'add' is active) and feeding the mixer output to OUT1. The
-- * 'loop2' relays are active, short-cutting the TSE-850 from channel 2.
-- * IN1, IN2, OUT1 and OUT2 are TSE-850 connectors and DAC is the PCB name
-- * of the (filtered) output from the PCM5142 codec.
-- */
-+// SPDX-License-Identifier: GPL-2.0
-+//
-+// TSE-850 audio - ASoC driver for the Axentia TSE-850 with a PCM5142 codec
-+//
-+// Copyright (C) 2016 Axentia Technologies AB
-+//
-+// Author: Peter Rosin <peda@axentia.se>
-+//
-+//               loop1 relays
-+//   IN1 +---o  +------------+  o---+ OUT1
-+//            \                /
-+//             +              +
-+//             |   /          |
-+//             +--o  +--.     |
-+//             |  add   |     |
-+//             |        V     |
-+//             |      .---.   |
-+//   DAC +----------->|Sum|---+
-+//             |      '---'   |
-+//             |              |
-+//             +              +
-+//
-+//   IN2 +---o--+------------+--o---+ OUT2
-+//               loop2 relays
-+//
-+// The 'loop1' gpio pin controlls two relays, which are either in loop
-+// position, meaning that input and output are directly connected, or
-+// they are in mixer position, meaning that the signal is passed through
-+// the 'Sum' mixer. Similarly for 'loop2'.
-+//
-+// In the above, the 'loop1' relays are inactive, thus feeding IN1 to the
-+// mixer (if 'add' is active) and feeding the mixer output to OUT1. The
-+// 'loop2' relays are active, short-cutting the TSE-850 from channel 2.
-+// IN1, IN2, OUT1 and OUT2 are TSE-850 connectors and DAC is the PCB name
-+// of the (filtered) output from the PCM5142 codec.
+diff --git a/sound/soc/amd/acp-da7219-max98357a.c b/sound/soc/amd/acp-da7219-max98357a.c
+index 95c5701e2a30..3879cccbd2c0 100644
+--- a/sound/soc/amd/acp-da7219-max98357a.c
++++ b/sound/soc/amd/acp-da7219-max98357a.c
+@@ -42,7 +42,7 @@
+ #include "../codecs/da7219.h"
+ #include "../codecs/da7219-aad.h"
  
- #include <linux/clk.h>
- #include <linux/gpio.h>
-@@ -452,4 +446,4 @@ module_platform_driver(tse850_driver);
- /* Module information */
- MODULE_AUTHOR("Peter Rosin <peda@axentia.se>");
- MODULE_DESCRIPTION("ALSA SoC driver for TSE-850 with PCM5142 codec");
--MODULE_LICENSE("GPL");
-+MODULE_LICENSE("GPL v2");
+-#define CZ_PLAT_CLK 25000000
++#define CZ_PLAT_CLK 48000000
+ #define DUAL_CHANNEL		2
+ 
+ static struct snd_soc_jack cz_jack;
 -- 
 2.18.0
