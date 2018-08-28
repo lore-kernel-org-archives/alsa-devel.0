@@ -1,211 +1,126 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH 6/7] ASoC: dapm: Add support for multi-CODEC
-	CODEC to CODEC links
-Date: Tue, 28 Aug 2018 14:35:07 +0100
-Message-ID: <20180828133508.13012-6-ckeepax@opensource.cirrus.com>
-References: <20180828133508.13012-1-ckeepax@opensource.cirrus.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id B9C1F2678C4
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 15:35:13 +0200 (CEST)
-In-Reply-To: <20180828133508.13012-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+From: Rob Herring <robh@kernel.org>
+Subject: [PATCH v2] ASoC: Convert to using %pOFn instead of device_node.name
+Date: Tue, 28 Aug 2018 10:44:28 -0500
+Message-ID: <20180828154433.5693-2-robh@kernel.org>
+References: <20180828154433.5693-1-robh@kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180828154433.5693-1-robh@kernel.org>
+In-Reply-To: <20180828015252.28511-51-robh@kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>, Timur Tabi <timur@kernel.org>, Nicolin Chen <nicoleotsuka@gmail.com>, Xiubo Li <Xiubo.Lee@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Carlo Caione <carlo@caione.org>, Kevin Hilman <khilman@baylibre.com>, Olivier Moysan <olivier.moysan@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Currently multi-CODEC is not supported on CODEC to CODEC links.
-There are common applications where this would be useful, such
-as connecting two mono amplifiers to an audio CODEC. Adding
-support simply requires an update of snd_soc_dai_link_event
-to loop over the attached CODEC DAIs.
+In preparation to remove the node name pointer from struct device_node,
+convert printf users to use the %pOFn format specifier.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Nicolin Chen <nicoleotsuka@gmail.com>
+Cc: Xiubo Li <Xiubo.Lee@gmail.com>
+Cc: Fabio Estevam <fabio.estevam@nxp.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
+Cc: Carlo Caione <carlo@caione.org>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: Olivier Moysan <olivier.moysan@st.com>
+Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Alexandre Torgue <alexandre.torgue@st.com>
+Cc: alsa-devel@alsa-project.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-amlogic@lists.infradead.org
+Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- sound/soc/soc-dapm.c | 123 +++++++++++++++++++++++++++++----------------------
- 1 file changed, 70 insertions(+), 53 deletions(-)
+v2:
+- stm32_sai_sub: Unwrap now shorter line
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index b3ed5c870baf..bf648e27e2cf 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3613,7 +3613,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_new_controls);
- static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 				  struct snd_kcontrol *kcontrol, int event)
- {
--	struct snd_soc_dapm_path *source_p, *sink_p;
-+	struct snd_soc_dapm_path *path;
- 	struct snd_soc_dai *source, *sink;
- 	struct snd_soc_pcm_runtime *rtd = w->priv;
- 	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
-@@ -3628,17 +3628,6 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 		    list_empty(&w->edges[SND_SOC_DAPM_DIR_IN])))
- 		return -EINVAL;
- 
--	/* We only support a single source and sink, pick the first */
--	source_p = list_first_entry(&w->edges[SND_SOC_DAPM_DIR_OUT],
--				    struct snd_soc_dapm_path,
--				    list_node[SND_SOC_DAPM_DIR_OUT]);
--	sink_p = list_first_entry(&w->edges[SND_SOC_DAPM_DIR_IN],
--				    struct snd_soc_dapm_path,
--				    list_node[SND_SOC_DAPM_DIR_IN]);
--
--	source = source_p->source->priv;
--	sink = sink_p->sink->priv;
--
- 	/* Be a little careful as we don't want to overflow the mask array */
- 	if (config->formats) {
- 		fmt = ffs(config->formats) - 1;
-@@ -3680,59 +3669,90 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	switch (event) {
- 	case SND_SOC_DAPM_PRE_PMU:
- 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
--		if (source->driver->ops->startup) {
--			ret = source->driver->ops->startup(&substream, source);
--			if (ret < 0) {
--				dev_err(source->dev,
--					"ASoC: startup() failed: %d\n", ret);
--				goto out;
-+		snd_soc_dapm_widget_for_each_source_path(w, path) {
-+			source = path->source->priv;
-+
-+			if (source->driver->ops->startup) {
-+				ret = source->driver->ops->startup(&substream,
-+								   source);
-+				if (ret < 0) {
-+					dev_err(source->dev,
-+						"ASoC: startup() failed: %d\n",
-+						ret);
-+					goto out;
-+				}
-+				source->active++;
- 			}
--			source->active++;
-+			ret = soc_dai_hw_params(&substream, params, source);
-+			if (ret < 0)
-+				goto out;
+ sound/soc/fsl/fsl_esai.c      | 2 +-
+ sound/soc/fsl/fsl_utils.c     | 4 ++--
+ sound/soc/meson/axg-card.c    | 2 +-
+ sound/soc/stm/stm32_sai.c     | 2 +-
+ sound/soc/stm/stm32_sai_sub.c | 7 +++----
+ 5 files changed, 8 insertions(+), 9 deletions(-)
+
+diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
+index c1d1d06783e5..57b484768a58 100644
+--- a/sound/soc/fsl/fsl_esai.c
++++ b/sound/soc/fsl/fsl_esai.c
+@@ -807,7 +807,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
+ 		return -ENOMEM;
+
+ 	esai_priv->pdev = pdev;
+-	strncpy(esai_priv->name, np->name, sizeof(esai_priv->name) - 1);
++	snprintf(esai_priv->name, sizeof(esai_priv->name), "%pOFn", np);
+
+ 	/* Get the addresses and IRQ */
+ 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
+index 7f0fa4b52223..9981668ab590 100644
+--- a/sound/soc/fsl/fsl_utils.c
++++ b/sound/soc/fsl/fsl_utils.c
+@@ -57,8 +57,8 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
+ 		of_node_put(dma_channel_np);
+ 		return ret;
+ 	}
+-	snprintf((char *)dai->platform_name, DAI_NAME_SIZE, "%llx.%s",
+-		 (unsigned long long) res.start, dma_channel_np->name);
++	snprintf((char *)dai->platform_name, DAI_NAME_SIZE, "%llx.%pOFn",
++		 (unsigned long long) res.start, dma_channel_np);
+
+ 	iprop = of_get_property(dma_channel_np, "cell-index", NULL);
+ 	if (!iprop) {
+diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
+index 2914ba0d965b..b76a5f4f1785 100644
+--- a/sound/soc/meson/axg-card.c
++++ b/sound/soc/meson/axg-card.c
+@@ -478,7 +478,7 @@ static int axg_card_set_be_link(struct snd_soc_card *card,
+
+ 	ret = axg_card_set_link_name(card, link, "be");
+ 	if (ret)
+-		dev_err(card->dev, "error setting %s link name\n", np->name);
++		dev_err(card->dev, "error setting %pOFn link name\n", np);
+
+ 	return ret;
+ }
+diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
+index f22654253c43..d597eba61992 100644
+--- a/sound/soc/stm/stm32_sai.c
++++ b/sound/soc/stm/stm32_sai.c
+@@ -104,7 +104,7 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
+
+ 	if (!pdev) {
+ 		dev_err(&sai_client->pdev->dev,
+-			"Device not found for node %s\n", np_provider->name);
++			"Device not found for node %pOFn\n", np_provider);
+ 		return -ENODEV;
+ 	}
+
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 06fba9650ac4..56a227e0bd71 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -1124,16 +1124,15 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
+ 	sai->sync = SAI_SYNC_NONE;
+ 	if (args.np) {
+ 		if (args.np == np) {
+-			dev_err(&pdev->dev, "%s sync own reference\n",
+-				np->name);
++			dev_err(&pdev->dev, "%pOFn sync own reference\n", np);
+ 			of_node_put(args.np);
+ 			return -EINVAL;
  		}
--		ret = soc_dai_hw_params(&substream, params, source);
--		if (ret < 0)
--			goto out;
- 
- 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
--		if (sink->driver->ops->startup) {
--			ret = sink->driver->ops->startup(&substream, sink);
--			if (ret < 0) {
--				dev_err(sink->dev,
--					"ASoC: startup() failed: %d\n", ret);
--				goto out;
-+		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-+			sink = path->sink->priv;
-+
-+			if (sink->driver->ops->startup) {
-+				ret = sink->driver->ops->startup(&substream,
-+								 sink);
-+				if (ret < 0) {
-+					dev_err(sink->dev,
-+						"ASoC: startup() failed: %d\n",
-+						ret);
-+					goto out;
-+				}
-+				sink->active++;
- 			}
--			sink->active++;
-+			ret = soc_dai_hw_params(&substream, params, sink);
-+			if (ret < 0)
-+				goto out;
+
+ 		sai->np_sync_provider  = of_get_parent(args.np);
+ 		if (!sai->np_sync_provider) {
+-			dev_err(&pdev->dev, "%s parent node not found\n",
+-				np->name);
++			dev_err(&pdev->dev, "%pOFn parent node not found\n",
++				np);
+ 			of_node_put(args.np);
+ 			return -ENODEV;
  		}
--		ret = soc_dai_hw_params(&substream, params, sink);
--		if (ret < 0)
--			goto out;
- 		break;
- 
- 	case SND_SOC_DAPM_POST_PMU:
--		ret = snd_soc_dai_digital_mute(sink, 0,
--					       SNDRV_PCM_STREAM_PLAYBACK);
--		if (ret != 0 && ret != -ENOTSUPP)
--			dev_warn(sink->dev, "ASoC: Failed to unmute: %d\n", ret);
--		ret = 0;
-+		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-+			sink = path->sink->priv;
-+
-+			ret = snd_soc_dai_digital_mute(sink, 0,
-+						       SNDRV_PCM_STREAM_PLAYBACK);
-+			if (ret != 0 && ret != -ENOTSUPP)
-+				dev_warn(sink->dev,
-+					 "ASoC: Failed to unmute: %d\n", ret);
-+			ret = 0;
-+		}
- 		break;
- 
- 	case SND_SOC_DAPM_PRE_PMD:
--		ret = snd_soc_dai_digital_mute(sink, 1,
--					       SNDRV_PCM_STREAM_PLAYBACK);
--		if (ret != 0 && ret != -ENOTSUPP)
--			dev_warn(sink->dev, "ASoC: Failed to mute: %d\n", ret);
--		ret = 0;
-+		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-+			sink = path->sink->priv;
-+
-+			ret = snd_soc_dai_digital_mute(sink, 1,
-+						       SNDRV_PCM_STREAM_PLAYBACK);
-+			if (ret != 0 && ret != -ENOTSUPP)
-+				dev_warn(sink->dev,
-+					 "ASoC: Failed to mute: %d\n", ret);
-+			ret = 0;
-+		}
-+
-+		snd_soc_dapm_widget_for_each_source_path(w, path) {
-+			source = path->source->priv;
- 
--		source->active--;
--		if (source->driver->ops->shutdown) {
--			substream.stream = SNDRV_PCM_STREAM_CAPTURE;
--			source->driver->ops->shutdown(&substream, source);
-+			source->active--;
-+			if (source->driver->ops->shutdown) {
-+				substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+				source->driver->ops->shutdown(&substream,
-+							      source);
-+			}
- 		}
- 
--		sink->active--;
--		if (sink->driver->ops->shutdown) {
--			substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
--			sink->driver->ops->shutdown(&substream, sink);
-+		snd_soc_dapm_widget_for_each_sink_path(w, path) {
-+			sink = path->sink->priv;
-+
-+			sink->active--;
-+			if (sink->driver->ops->shutdown) {
-+				substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+				sink->driver->ops->shutdown(&substream, sink);
-+			}
- 		}
- 		break;
- 
-@@ -4041,9 +4061,6 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
- 	int i;
- 
- 	if (rtd->dai_link->params) {
--		if (rtd->num_codecs > 1)
--			dev_warn(card->dev, "ASoC: Multiple codecs not supported yet\n");
--
- 		playback_cpu = cpu_dai->capture_widget;
- 		capture_cpu = cpu_dai->playback_widget;
- 	} else {
--- 
-2.11.0
+--
+2.17.1
