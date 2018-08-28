@@ -1,94 +1,78 @@
-From: Rob Herring <robh@kernel.org>
-Subject: [PATCH v2] sound: Convert to using %pOFn instead of
-	device_node.name
-Date: Tue, 28 Aug 2018 10:44:31 -0500
-Message-ID: <20180828154433.5693-5-robh@kernel.org>
-References: <20180828154433.5693-1-robh@kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f47.google.com (mail-oi0-f47.google.com
- [209.85.218.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 7264526777B
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 17:44:41 +0200 (CEST)
-Received: by mail-oi0-f47.google.com with SMTP id c190-v6so3665596oig.6
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 08:44:41 -0700 (PDT)
-In-Reply-To: <20180828154433.5693-1-robh@kernel.org>
-In-Reply-To: <20180828015252.28511-50-robh@kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: linux-kernel@vger.kernel.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Johannes Berg <johannes@sipsolutions.net>, linuxppc-dev@lists.ozlabs.org
+From: Anshuman Gupta <anshuman.gupta@intel.com>
+Subject: Re: [PATCH v2 1/1] hdac-codec runtime suspended at PM:Suspend.
+Date: Tue, 28 Aug 2018 22:04:15 +0530
+Message-ID: <1535474055-11763-1-git-send-email-anshuman.gupta@intel.com>
+References: <1534615923-8541-2-git-send-email-anshuman.gupta@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1534615923-8541-2-git-send-email-anshuman.gupta@intel.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: puneethx.prabhu@intel.com, lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, rafael@kernel.org
+Cc: alsa-devel@alsa-project.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, anshuman.gupta@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-In preparation to remove the node name pointer from struct device_node,
-convert printf users to use the %pOFn format specifier.
+Is this patch not in consideration, there are no review comment for it. 
+this patch fixes an issue with hdac hdmi codec driver.
 
-Cc: Johannes Berg <johannes@sipsolutions.net>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: linuxppc-dev@lists.ozlabs.org
-Cc: alsa-devel@alsa-project.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
-v2:
-- Fix error in strncmp
+On one of our platform HD audio controller takes arounf 300ms.
+Below are the snippet of dmesg log.
 
- sound/aoa/soundbus/i2sbus/core.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+[ 3778.461888] calling  0000:00:0e.0+ @ 3667, parent: pci0000:00, cb: pci_pm_resume
+[ 3778.775273] call 0000:00:0e.0+ returned 0 after 306016 usecs
 
-diff --git a/sound/aoa/soundbus/i2sbus/core.c b/sound/aoa/soundbus/i2sbus/core.c
-index 000b58522106..bd7c5029fc59 100644
---- a/sound/aoa/soundbus/i2sbus/core.c
-+++ b/sound/aoa/soundbus/i2sbus/core.c
-@@ -157,18 +157,19 @@ static int i2sbus_add_dev(struct macio_dev *macio,
- 	struct device_node *child = NULL, *sound = NULL;
- 	struct resource *r;
- 	int i, layout = 0, rlen, ok = force;
--	static const char *rnames[] = { "i2sbus: %s (control)",
--					"i2sbus: %s (tx)",
--					"i2sbus: %s (rx)" };
-+	char node_name[6];
-+	static const char *rnames[] = { "i2sbus: %pOFn (control)",
-+					"i2sbus: %pOFn (tx)",
-+					"i2sbus: %pOFn (rx)" };
- 	static irq_handler_t ints[] = {
- 		i2sbus_bus_intr,
- 		i2sbus_tx_intr,
- 		i2sbus_rx_intr
- 	};
+When HD audio controller is in runtime suspend state, 
+with direct complete, we can improve overall system wide resume latency.
+ 
+On Sat, Aug 18, 2018 at 11:42:03PM +0530, Anshuman Gupta wrote:
+> Keep hdac hdmi codec to be in runtime suspended while entering to
+> system wide suspend. Currently hdac hdmi codec driver using its
+> suspend and resume operation in prepare and complete PM callbacks,
+> and it resumes the hd audio controller (parent of self) from runtime
+> suspend and blocks the direct complete for hd audio controller.
+>
+> If hdac-codec is already in runtime suspend state skip its power down
+> sequence in prepare, power up sequence in complete phase. It enables
+> direct complete path for hdac-codec and hd audio controller
+> PCI device.
+>
+> Signed-off-by: Anshuman Gupta <anshuman.gupta@intel.com>
+> ---
+> Changes in v2
+> - Changed the commit message.
+> - Using pm_runtime_suspended instead of pm_runtime_status_suspended
+>   in order to handle any race condition.
+>
+> sound/soc/codecs/hdac_hdmi.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+> index 84f7a7a..e965338 100644
+> --- a/sound/soc/codecs/hdac_hdmi.c
+> +++ b/sound/soc/codecs/hdac_hdmi.c
+> @@ -1859,6 +1859,9 @@ static int hdmi_codec_prepare(struct device *dev)
+>       struct hdac_ext_device *edev = to_hda_ext_device(dev);
+>       struct hdac_device *hdev = &edev->hdev;
+>
+> +     if (pm_runtime_suspended(dev))
+> +             return 1;
+> +
+>       pm_runtime_get_sync(&edev->hdev.dev);
+>
+>       /*
+> @@ -1880,6 +1883,9 @@ static void hdmi_codec_complete(struct device *dev)
+>       struct hdac_hdmi_priv *hdmi = hdev_to_hdmi_priv(&edev->hdev);
+>       struct hdac_device *hdev = &edev->hdev;
+>
+> +     if (pm_runtime_suspended(dev))
+> +             return;
+> +
+>       /* Power up afg */
+>       snd_hdac_codec_read(hdev, hdev->afg, 0, AC_VERB_SET_POWER_STATE,
+>                                                       AC_PWRST_D0);
+> --
+> 2.7.4
+>
 
--	if (strlen(np->name) != 5)
-+	if (snprintf(node_name, sizeof(node_name), "%pOFn", np) != 5)
- 		return 0;
--	if (strncmp(np->name, "i2s-", 4))
-+	if (strncmp(node_name, "i2s-", 4))
- 		return 0;
-
- 	dev = kzalloc(sizeof(struct i2sbus_dev), GFP_KERNEL);
-@@ -228,13 +229,13 @@ static int i2sbus_add_dev(struct macio_dev *macio,
- 	dev->sound.pcmid = -1;
- 	dev->macio = macio;
- 	dev->control = control;
--	dev->bus_number = np->name[4] - 'a';
-+	dev->bus_number = node_name[4] - 'a';
- 	INIT_LIST_HEAD(&dev->sound.codec_list);
-
- 	for (i = aoa_resource_i2smmio; i <= aoa_resource_rxdbdma; i++) {
- 		dev->interrupts[i] = -1;
- 		snprintf(dev->rnames[i], sizeof(dev->rnames[i]),
--			 rnames[i], np->name);
-+			 rnames[i], np);
- 	}
- 	for (i = aoa_resource_i2smmio; i <= aoa_resource_rxdbdma; i++) {
- 		int irq = irq_of_parse_and_map(np, i);
 --
-2.17.1
+Thanks,
+Anshuman.
+ 
