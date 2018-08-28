@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Implemented safeload support"
-	to the asoc tree
-Date: Tue, 28 Aug 2018 21:29:57 +0100 (BST)
-Message-ID: <20180828202957.87E71440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: sigmadsp: safeload should not have
+	lower byte limit" to the asoc tree
+Date: Tue, 28 Aug 2018 21:30:07 +0100 (BST)
+Message-ID: <20180828203007.BD129440078@finisterre.ee.mobilebroadband>
+References: <20180823082620.21129-1-dannys@axis.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C33592678E5
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:29:59 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id BD48C2678D2
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:30:09 +0200 (CEST)
+In-Reply-To: <20180823082620.21129-1-dannys@axis.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Danny Smith <dannys@axis.com>
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Robert Rosengren <robertr@axis.com>, alsa-devel@alsa-project.org
+To: Danny Smith <danny.smith@axis.com>
+Cc: alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Danny Smith <dannys@axis.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Robert Rosengren <robertr@axis.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: adau17x1: Implemented safeload support
+   ASoC: sigmadsp: safeload should not have lower byte limit
 
 has been applied to the asoc tree at
 
@@ -52,137 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From b0f2d651299f0743818bdadcbe6a67d7869e0da1 Mon Sep 17 00:00:00 2001
-From: Danny Smith <dannys@axis.com>
-Date: Tue, 21 Aug 2018 13:07:49 +0200
-Subject: [PATCH] ASoC: adau17x1: Implemented safeload support
+>From 5ea752c6efdf5aa8a57aed816d453a8f479f1b0a Mon Sep 17 00:00:00 2001
+From: Danny Smith <danny.smith@axis.com>
+Date: Thu, 23 Aug 2018 10:26:20 +0200
+Subject: [PATCH] ASoC: sigmadsp: safeload should not have lower byte limit
 
-Safeload support has been implemented which is used
-when updating for instance filter parameters using
-alsa controls. Without safeload support audio can
-become distorted during update.
+Fixed range in safeload conditional to allow safeload to up to 20 bytes,
+without a lower limit.
 
 Signed-off-by: Danny Smith <dannys@axis.com>
-Signed-off-by: Robert Rosengren <robertr@axis.com>
 Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau17x1.c | 77 ++++++++++++++++++++++++++++++++++++-
- 1 file changed, 75 insertions(+), 2 deletions(-)
+ sound/soc/codecs/sigmadsp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 57169b8ff14e..c0bc429249fa 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -21,11 +21,18 @@
- #include <linux/i2c.h>
- #include <linux/spi/spi.h>
- #include <linux/regmap.h>
-+#include <asm/unaligned.h>
- 
- #include "sigmadsp.h"
- #include "adau17x1.h"
- #include "adau-utils.h"
- 
-+#define ADAU17X1_SAFELOAD_TARGET_ADDRESS 0x0006
-+#define ADAU17X1_SAFELOAD_TRIGGER 0x0007
-+#define ADAU17X1_SAFELOAD_DATA 0x0001
-+#define ADAU17X1_SAFELOAD_DATA_SIZE 20
-+#define ADAU17X1_WORD_SIZE 4
-+
- static const char * const adau17x1_capture_mixer_boost_text[] = {
- 	"Normal operation", "Boost Level 1", "Boost Level 2", "Boost Level 3",
- };
-@@ -326,6 +333,17 @@ bool adau17x1_has_dsp(struct adau *adau)
- }
- EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
- 
-+static bool adau17x1_has_safeload(struct adau *adau)
-+{
-+	switch (adau->type) {
-+	case ADAU1761:
-+	case ADAU1781:
-+		return true;
-+	default:
-+		return false;
-+	}
-+}
-+
- static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
- 	int source, unsigned int freq_in, unsigned int freq_out)
+diff --git a/sound/soc/codecs/sigmadsp.c b/sound/soc/codecs/sigmadsp.c
+index d53680ac78e4..6df158669420 100644
+--- a/sound/soc/codecs/sigmadsp.c
++++ b/sound/soc/codecs/sigmadsp.c
+@@ -117,8 +117,7 @@ static int sigmadsp_ctrl_write(struct sigmadsp *sigmadsp,
+ 	struct sigmadsp_control *ctrl, void *data)
  {
-@@ -957,6 +975,56 @@ int adau17x1_resume(struct snd_soc_component *component)
- }
- EXPORT_SYMBOL_GPL(adau17x1_resume);
- 
-+static int adau17x1_safeload(struct sigmadsp *sigmadsp, unsigned int addr,
-+	const uint8_t bytes[], size_t len)
-+{
-+	uint8_t buf[ADAU17X1_WORD_SIZE];
-+	uint8_t data[ADAU17X1_SAFELOAD_DATA_SIZE];
-+	unsigned int addr_offset;
-+	unsigned int nbr_words;
-+	int ret;
-+
-+	/* write data to safeload addresses. Check if len is not a multiple of
-+	 * 4 bytes, if so we need to zero pad.
-+	 */
-+	nbr_words = len / ADAU17X1_WORD_SIZE;
-+	if ((len - nbr_words * ADAU17X1_WORD_SIZE) == 0) {
-+		ret = regmap_raw_write(sigmadsp->control_data,
-+			ADAU17X1_SAFELOAD_DATA, bytes, len);
-+	} else {
-+		nbr_words++;
-+		memset(data, 0, ADAU17X1_SAFELOAD_DATA_SIZE);
-+		memcpy(data, bytes, len);
-+		ret = regmap_raw_write(sigmadsp->control_data,
-+			ADAU17X1_SAFELOAD_DATA, data,
-+			nbr_words * ADAU17X1_WORD_SIZE);
-+	}
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Write target address, target address is offset by 1 */
-+	addr_offset = addr - 1;
-+	put_unaligned_be32(addr_offset, buf);
-+	ret = regmap_raw_write(sigmadsp->control_data,
-+		ADAU17X1_SAFELOAD_TARGET_ADDRESS, buf, ADAU17X1_WORD_SIZE);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* write nbr of words to trigger address */
-+	put_unaligned_be32(nbr_words, buf);
-+	ret = regmap_raw_write(sigmadsp->control_data,
-+		ADAU17X1_SAFELOAD_TRIGGER, buf, ADAU17X1_WORD_SIZE);
-+	if (ret < 0)
-+		return ret;
-+
-+	return 0;
-+}
-+
-+static const struct sigmadsp_ops adau17x1_sigmadsp_ops = {
-+	.safeload = adau17x1_safeload,
-+};
-+
- int adau17x1_probe(struct device *dev, struct regmap *regmap,
- 	enum adau17x1_type type, void (*switch_mode)(struct device *dev),
- 	const char *firmware_name)
-@@ -1002,8 +1070,13 @@ int adau17x1_probe(struct device *dev, struct regmap *regmap,
- 	dev_set_drvdata(dev, adau);
- 
- 	if (firmware_name) {
--		adau->sigmadsp = devm_sigmadsp_init_regmap(dev, regmap, NULL,
--			firmware_name);
-+		if (adau17x1_has_safeload(adau)) {
-+			adau->sigmadsp = devm_sigmadsp_init_regmap(dev, regmap,
-+				&adau17x1_sigmadsp_ops, firmware_name);
-+		} else {
-+			adau->sigmadsp = devm_sigmadsp_init_regmap(dev, regmap,
-+				NULL, firmware_name);
-+		}
- 		if (IS_ERR(adau->sigmadsp)) {
- 			dev_warn(dev, "Could not find firmware file: %ld\n",
- 				PTR_ERR(adau->sigmadsp));
+ 	/* safeload loads up to 20 bytes in a atomic operation */
+-	if (ctrl->num_bytes > 4 && ctrl->num_bytes <= 20 && sigmadsp->ops &&
+-	    sigmadsp->ops->safeload)
++	if (ctrl->num_bytes <= 20 && sigmadsp->ops && sigmadsp->ops->safeload)
+ 		return sigmadsp->ops->safeload(sigmadsp, ctrl->addr, data,
+ 			ctrl->num_bytes);
+ 	else
 -- 
 2.18.0
