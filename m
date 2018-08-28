@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Convert to using %pOFn instead of
-	device_node.name" to the asoc tree
-Date: Tue, 28 Aug 2018 21:49:23 +0100 (BST)
-Message-ID: <20180828204923.9289244007A@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: Intel: common: add table for HDA-based
+	platforms" to the asoc tree
+Date: Tue, 28 Aug 2018 21:40:31 +0100 (BST)
+Message-ID: <20180828204031.C3C80440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 57F9F26781A
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:49:37 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 43A1226781A
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:49:51 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rob Herring <robh@kernel.org>
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Convert to using %pOFn instead of device_node.name
+   ASoC: Intel: common: add table for HDA-based platforms
 
 has been applied to the asoc tree at
 
@@ -52,101 +52,107 @@ to this mail.
 Thanks,
 Mark
 
->From 5d585e1e756838d91144c3173323b96f5aa12874 Mon Sep 17 00:00:00 2001
-From: Rob Herring <robh@kernel.org>
-Date: Tue, 28 Aug 2018 10:44:28 -0500
-Subject: [PATCH] ASoC: Convert to using %pOFn instead of device_node.name
+>From 8dce1d026da4588382ed8c03e791c7c9b37b22e8 Mon Sep 17 00:00:00 2001
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Date: Wed, 22 Aug 2018 15:24:58 -0500
+Subject: [PATCH] ASoC: Intel: common: add table for HDA-based platforms
 
-In preparation to remove the node name pointer from struct device_node,
-convert printf users to use the %pOFn format specifier.
+Expose a table containing machine driver information for HDAudio-based
+platforms handled by ASoC on Intel hardware.
 
-Signed-off-by: Rob Herring <robh@kernel.org>
+We only set constant values that are valid across multiple
+platforms. The firmware name used by the DSP will be set dynamically
+for each platform.
+
+The table is made of a single entry for now, if we need more
+complicated set-up where HDAudio is mixed with ACPI-enumerated devices
+(I2C, SoundWire) then we'd expect the differentiation to be handled
+through information provided by the BIOS (as done for KBL
+Chromebooks).
+
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/fsl/fsl_esai.c      | 2 +-
- sound/soc/fsl/fsl_utils.c     | 4 ++--
- sound/soc/meson/axg-card.c    | 2 +-
- sound/soc/stm/stm32_sai.c     | 2 +-
- sound/soc/stm/stm32_sai_sub.c | 7 +++----
- 5 files changed, 8 insertions(+), 9 deletions(-)
+ include/sound/soc-acpi-intel-match.h          |  6 +++
+ sound/soc/intel/common/Makefile               |  3 +-
+ .../intel/common/soc-acpi-intel-hda-match.c   | 40 +++++++++++++++++++
+ 3 files changed, 48 insertions(+), 1 deletion(-)
+ create mode 100644 sound/soc/intel/common/soc-acpi-intel-hda-match.c
 
-diff --git a/sound/soc/fsl/fsl_esai.c b/sound/soc/fsl/fsl_esai.c
-index c1d1d06783e5..57b484768a58 100644
---- a/sound/soc/fsl/fsl_esai.c
-+++ b/sound/soc/fsl/fsl_esai.c
-@@ -807,7 +807,7 @@ static int fsl_esai_probe(struct platform_device *pdev)
- 		return -ENOMEM;
+diff --git a/include/sound/soc-acpi-intel-match.h b/include/sound/soc-acpi-intel-match.h
+index bb1d24b703fb..f48f59e5b7b0 100644
+--- a/include/sound/soc-acpi-intel-match.h
++++ b/include/sound/soc-acpi-intel-match.h
+@@ -25,4 +25,10 @@ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_bxt_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_glk_machines[];
+ extern struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[];
  
- 	esai_priv->pdev = pdev;
--	strncpy(esai_priv->name, np->name, sizeof(esai_priv->name) - 1);
-+	snprintf(esai_priv->name, sizeof(esai_priv->name), "%pOFn", np);
++/*
++ * generic table used for HDA codec-based platforms, possibly with
++ * additional ACPI-enumerated codecs
++ */
++extern struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[];
++
+ #endif
+diff --git a/sound/soc/intel/common/Makefile b/sound/soc/intel/common/Makefile
+index 915a34cdc8ac..c1f50a079d34 100644
+--- a/sound/soc/intel/common/Makefile
++++ b/sound/soc/intel/common/Makefile
+@@ -7,7 +7,8 @@ snd-soc-acpi-intel-match-objs := soc-acpi-intel-byt-match.o soc-acpi-intel-cht-m
+ 	soc-acpi-intel-hsw-bdw-match.o \
+ 	soc-acpi-intel-skl-match.o soc-acpi-intel-kbl-match.o \
+ 	soc-acpi-intel-bxt-match.o soc-acpi-intel-glk-match.o \
+-	soc-acpi-intel-cnl-match.o
++	soc-acpi-intel-cnl-match.o \
++	soc-acpi-intel-hda-match.o
  
- 	/* Get the addresses and IRQ */
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-diff --git a/sound/soc/fsl/fsl_utils.c b/sound/soc/fsl/fsl_utils.c
-index 7f0fa4b52223..9981668ab590 100644
---- a/sound/soc/fsl/fsl_utils.c
-+++ b/sound/soc/fsl/fsl_utils.c
-@@ -57,8 +57,8 @@ int fsl_asoc_get_dma_channel(struct device_node *ssi_np,
- 		of_node_put(dma_channel_np);
- 		return ret;
- 	}
--	snprintf((char *)dai->platform_name, DAI_NAME_SIZE, "%llx.%s",
--		 (unsigned long long) res.start, dma_channel_np->name);
-+	snprintf((char *)dai->platform_name, DAI_NAME_SIZE, "%llx.%pOFn",
-+		 (unsigned long long) res.start, dma_channel_np);
- 
- 	iprop = of_get_property(dma_channel_np, "cell-index", NULL);
- 	if (!iprop) {
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index 2914ba0d965b..b76a5f4f1785 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -478,7 +478,7 @@ static int axg_card_set_be_link(struct snd_soc_card *card,
- 
- 	ret = axg_card_set_link_name(card, link, "be");
- 	if (ret)
--		dev_err(card->dev, "error setting %s link name\n", np->name);
-+		dev_err(card->dev, "error setting %pOFn link name\n", np);
- 
- 	return ret;
- }
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index f22654253c43..d597eba61992 100644
---- a/sound/soc/stm/stm32_sai.c
-+++ b/sound/soc/stm/stm32_sai.c
-@@ -104,7 +104,7 @@ static int stm32_sai_set_sync(struct stm32_sai_data *sai_client,
- 
- 	if (!pdev) {
- 		dev_err(&sai_client->pdev->dev,
--			"Device not found for node %s\n", np_provider->name);
-+			"Device not found for node %pOFn\n", np_provider);
- 		return -ENODEV;
- 	}
- 
-diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
-index 06fba9650ac4..56a227e0bd71 100644
---- a/sound/soc/stm/stm32_sai_sub.c
-+++ b/sound/soc/stm/stm32_sai_sub.c
-@@ -1124,16 +1124,15 @@ static int stm32_sai_sub_parse_of(struct platform_device *pdev,
- 	sai->sync = SAI_SYNC_NONE;
- 	if (args.np) {
- 		if (args.np == np) {
--			dev_err(&pdev->dev, "%s sync own reference\n",
--				np->name);
-+			dev_err(&pdev->dev, "%pOFn sync own reference\n", np);
- 			of_node_put(args.np);
- 			return -EINVAL;
- 		}
- 
- 		sai->np_sync_provider  = of_get_parent(args.np);
- 		if (!sai->np_sync_provider) {
--			dev_err(&pdev->dev, "%s parent node not found\n",
--				np->name);
-+			dev_err(&pdev->dev, "%pOFn parent node not found\n",
-+				np);
- 			of_node_put(args.np);
- 			return -ENODEV;
- 		}
+ obj-$(CONFIG_SND_SOC_INTEL_SST) += snd-soc-sst-dsp.o snd-soc-sst-ipc.o
+ obj-$(CONFIG_SND_SOC_INTEL_SST_ACPI) += snd-soc-sst-acpi.o
+diff --git a/sound/soc/intel/common/soc-acpi-intel-hda-match.c b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+new file mode 100644
+index 000000000000..533c1064f84b
+--- /dev/null
++++ b/sound/soc/intel/common/soc-acpi-intel-hda-match.c
+@@ -0,0 +1,40 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2018, Intel Corporation.
++
++/*
++ * soc-apci-intel-hda-match.c - tables and support for HDA+ACPI enumeration.
++ *
++ */
++
++#include <sound/soc-acpi.h>
++#include <sound/soc-acpi-intel-match.h>
++#include "../skylake/skl.h"
++
++static struct skl_machine_pdata hda_pdata = {
++	.use_tplg_pcm = true,
++};
++
++struct snd_soc_acpi_mach snd_soc_acpi_intel_hda_machines[] = {
++	{
++		/* .id is not used in this file */
++		.drv_name = "skl_hda_dsp_generic",
++
++		/* .fw_filename is dynamically set in skylake driver */
++
++		/* .sof_fw_filename is dynamically set in sof/intel driver */
++
++		.sof_tplg_filename = "intel/sof-hda-generic.tplg",
++
++		/*
++		 * .machine_quirk and .quirk_data are not used here but
++		 * can be used if we need a more complicated machine driver
++		 * combining HDA+other device (e.g. DMIC).
++		 */
++		.pdata = &hda_pdata,
++	},
++	{},
++};
++EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_hda_machines);
++
++MODULE_LICENSE("GPL v2");
++MODULE_DESCRIPTION("Intel Common ACPI Match module");
 -- 
 2.18.0
