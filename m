@@ -1,19 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: core: Don't schedule DAPM work if
- already in target state
-Date: Tue, 28 Aug 2018 11:39:11 +0100
-Message-ID: <20180828103911.GX32322@imbe.wolfsonmicro.main>
-References: <1534520143-29266-1-git-send-email-jonathanh@nvidia.com>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: seq: Do error checks at creating system
+	ports
+Date: Tue, 28 Aug 2018 12:52:32 +0200
+Message-ID: <20180828105232.9106-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D7112676BF
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 12:39:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <1534520143-29266-1-git-send-email-jonathanh@nvidia.com>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5FD972676BF
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 12:52:33 +0200 (CEST)
+Received: from relay2.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 55290B063
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 10:52:33 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,48 +22,67 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jon Hunter <jonathanh@nvidia.com>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Aug 17, 2018 at 04:35:43PM +0100, Jon Hunter wrote:
-> When dapm_power_widgets() is called, the dapm_pre_sequence_async() and
-> dapm_post_sequence_async() functions are scheduled for all DAPM contexts
-> (apart from the card DAPM context) regardless of whether the DAPM
-> context is already in the desired state. The overhead of this is not
-> insignificant and the more DAPM contexts there are the more overhead
-> there is.
-> 
-> For example, on the Tegra124 Jetson TK1, when profiling the time taken
-> to execute the dapm_power_widgets() the following times were observed.
-> 
->   Times for function dapm_power_widgets() are (us):
->      Min 23, Ave 190, Max 434, Count 39
-> 
-> Here 'Count' is the number of times that dapm_power_widgets() has been
-> called. Please note that the above time were measured using ktime_get()
-> to log the time on entry and exit from dapm_power_widgets(). So it
-> should be noted that these times may not be purely the time take to
-> execute this function if it is preempted. However, after applying this
-> patch and measuring the time taken to execute dapm_power_widgets() again
-> a significant improvement is seen as shown below.
-> 
->   Times for function dapm_power_widgets() are (us):
->      Min 4, Ave 16, Max 82, Count 39
-> 
-> Therefore, optimise the dapm_power_widgets() function by only scheduling
-> the dapm_pre/post_sequence_async() work if the DAPM context is not in
-> the desired state.
-> 
-> Signed-off-by: Jon Hunter <jonathanh@nvidia.com>
-> ---
+snd_seq_system_client_init() doesn't check the errors returned from
+its port creations.  Let's do it properly and handle the error paths.
 
-Looks ok to me:
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ sound/core/seq/seq_system.c | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Although that said the performance increase is pretty hard to
-measure on my systems.
-
-Thanks,
-Charles
+diff --git a/sound/core/seq/seq_system.c b/sound/core/seq/seq_system.c
+index 3b89b0adad6a..0dc5d5a45ecc 100644
+--- a/sound/core/seq/seq_system.c
++++ b/sound/core/seq/seq_system.c
+@@ -123,6 +123,7 @@ int __init snd_seq_system_client_init(void)
+ {
+ 	struct snd_seq_port_callback pcallbacks;
+ 	struct snd_seq_port_info *port;
++	int err;
+ 
+ 	port = kzalloc(sizeof(*port), GFP_KERNEL);
+ 	if (!port)
+@@ -148,7 +149,10 @@ int __init snd_seq_system_client_init(void)
+ 	port->flags = SNDRV_SEQ_PORT_FLG_GIVEN_PORT;
+ 	port->addr.client = sysclient;
+ 	port->addr.port = SNDRV_SEQ_PORT_SYSTEM_TIMER;
+-	snd_seq_kernel_client_ctl(sysclient, SNDRV_SEQ_IOCTL_CREATE_PORT, port);
++	err = snd_seq_kernel_client_ctl(sysclient, SNDRV_SEQ_IOCTL_CREATE_PORT,
++					port);
++	if (err < 0)
++		goto error_port;
+ 
+ 	/* register announcement port */
+ 	strcpy(port->name, "Announce");
+@@ -158,16 +162,24 @@ int __init snd_seq_system_client_init(void)
+ 	port->flags = SNDRV_SEQ_PORT_FLG_GIVEN_PORT;
+ 	port->addr.client = sysclient;
+ 	port->addr.port = SNDRV_SEQ_PORT_SYSTEM_ANNOUNCE;
+-	snd_seq_kernel_client_ctl(sysclient, SNDRV_SEQ_IOCTL_CREATE_PORT, port);
++	err = snd_seq_kernel_client_ctl(sysclient, SNDRV_SEQ_IOCTL_CREATE_PORT,
++					port);
++	if (err < 0)
++		goto error_port;
+ 	announce_port = port->addr.port;
+ 
+ 	kfree(port);
+ 	return 0;
++
++ error_port:
++	snd_seq_system_client_done();
++	kfree(port);
++	return err;
+ }
+ 
+ 
+ /* unregister our internal client */
+-void __exit snd_seq_system_client_done(void)
++void snd_seq_system_client_done(void)
+ {
+ 	int oldsysclient = sysclient;
+ 
+-- 
+2.18.0
