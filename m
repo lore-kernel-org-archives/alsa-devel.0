@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dpcm: Properly initialise hw->rate_max"
-	to the asoc tree
-Date: Tue, 28 Aug 2018 21:48:32 +0100 (BST)
-Message-ID: <20180828204832.3B4C644007A@finisterre.ee.mobilebroadband>
-References: <20180827132647.25862-1-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: dapm: Don't fail creating new DAPM
+	control on NULL pinctrl" to the asoc tree
+Date: Tue, 28 Aug 2018 21:48:43 +0100 (BST)
+Message-ID: <20180828204843.C81A944007A@finisterre.ee.mobilebroadband>
+References: <20180828133508.13012-2-ckeepax@opensource.cirrus.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4579926781A
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:48:35 +0200 (CEST)
-In-Reply-To: <20180827132647.25862-1-ckeepax@opensource.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7983B26781A
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:48:59 +0200 (CEST)
+In-Reply-To: <20180828133508.13012-2-ckeepax@opensource.cirrus.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dpcm: Properly initialise hw->rate_max
+   ASoC: dapm: Don't fail creating new DAPM control on NULL pinctrl
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,37 @@ to this mail.
 Thanks,
 Mark
 
->From e33ffbd9cd39da09831ce62c11025d830bf78d9e Mon Sep 17 00:00:00 2001
+>From a5cd7e9cf587f51a84b86c828b4e1c7b392f448e Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Mon, 27 Aug 2018 14:26:47 +0100
-Subject: [PATCH] ASoC: dpcm: Properly initialise hw->rate_max
+Date: Tue, 28 Aug 2018 14:35:03 +0100
+Subject: [PATCH] ASoC: dapm: Don't fail creating new DAPM control on NULL
+ pinctrl
 
-If the CPU DAI does not initialise rate_max, say if using
-using KNOT or CONTINUOUS, then the rate_max field will be
-initialised to 0. A value of zero in the rate_max field of
-the hardware runtime will cause the sound card to support no
-sample rates at all. Obviously this is not desired, just a
-different mechanism is being used to apply the constraints. As
-such update the setting of rate_max in dpcm_init_runtime_hw
-to be consistent with the non-DPCM cases and set rate_max to
-UINT_MAX if nothing is defined on the CPU DAI.
+devm_pinctrl_get will only return NULL in the case that pinctrl
+is not built into the kernel and all the pinctrl functions used
+by the DAPM core are appropriately stubbed for that case. There
+is no need to error out of snd_soc_dapm_new_control_unlocked
+if pinctrl isn't built into the kernel, so change the
+IS_ERR_OR_NULL to just an IS_ERR.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-pcm.c | 2 +-
+ sound/soc/soc-dapm.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index e8b98bfd4cf1..eb6f4f1b65a9 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1680,7 +1680,7 @@ static void dpcm_init_runtime_hw(struct snd_pcm_runtime *runtime,
- 				 struct snd_soc_pcm_stream *stream)
- {
- 	runtime->hw.rate_min = stream->rate_min;
--	runtime->hw.rate_max = stream->rate_max;
-+	runtime->hw.rate_max = min_not_zero(stream->rate_max, UINT_MAX);
- 	runtime->hw.channels_min = stream->channels_min;
- 	runtime->hw.channels_max = stream->channels_max;
- 	if (runtime->hw.formats)
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 78ab6965af55..d7be3981f026 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3487,7 +3487,7 @@ snd_soc_dapm_new_control_unlocked(struct snd_soc_dapm_context *dapm,
+ 		break;
+ 	case snd_soc_dapm_pinctrl:
+ 		w->pinctrl = devm_pinctrl_get(dapm->dev);
+-		if (IS_ERR_OR_NULL(w->pinctrl)) {
++		if (IS_ERR(w->pinctrl)) {
+ 			ret = PTR_ERR(w->pinctrl);
+ 			if (ret == -EPROBE_DEFER)
+ 				return ERR_PTR(ret);
 -- 
 2.18.0
