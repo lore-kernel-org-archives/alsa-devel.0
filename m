@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98373: Added 10ms sleep after amp
-	software reset" to the asoc tree
-Date: Tue, 28 Aug 2018 21:46:00 +0100 (BST)
-Message-ID: <20180828204600.DFE2744007A@finisterre.ee.mobilebroadband>
-References: <20180824013708.23737-1-ryans.lee@maximintegrated.com>
+Subject: Applied "ASoC: meson: axg-tdm: restrict formats
+	depending on slot width" to the asoc tree
+Date: Tue, 28 Aug 2018 21:47:03 +0100 (BST)
+Message-ID: <20180828204703.F3EC244007A@finisterre.ee.mobilebroadband>
+References: <20180827142107.8153-1-jbrunet@baylibre.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 478C726781A
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:46:39 +0200 (CEST)
-In-Reply-To: <20180824013708.23737-1-ryans.lee@maximintegrated.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 82E0E26781A
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:47:28 +0200 (CEST)
+In-Reply-To: <20180827142107.8153-1-jbrunet@baylibre.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, ryan.lee.maxim@gmail.com, ryans.lee@maximintegrated.com, kuninori.morimoto.gx@renesas.com, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
+To: Jerome Brunet <jbrunet@baylibre.com>
+Cc: alsa-devel@alsa-project.org, Kevin Hilman <khilman@baylibre.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Carlo Caione <carlo@caione.org>, linux-amlogic@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98373: Added 10ms sleep after amp software reset
+   ASoC: meson: axg-tdm: restrict formats depending on slot width
 
 has been applied to the asoc tree at
 
@@ -52,36 +53,100 @@ to this mail.
 Thanks,
 Mark
 
->From ca917f9fe1a0fab3dde41bba4bbd173c5a3c5805 Mon Sep 17 00:00:00 2001
-From: Ryan Lee <ryans.lee@maximintegrated.com>
-Date: Thu, 23 Aug 2018 18:37:08 -0700
-Subject: [PATCH] ASoC: max98373: Added 10ms sleep after amp software reset
+>From 302df2694b97e6a56f7956c1105630809b141ea0 Mon Sep 17 00:00:00 2001
+From: Jerome Brunet <jbrunet@baylibre.com>
+Date: Mon, 27 Aug 2018 16:21:07 +0200
+Subject: [PATCH] ASoC: meson: axg-tdm: restrict formats depending on slot
+ width
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
+Restrict the formats possible on the TDM interface depending on the width
+of the TDM slot and let dpcm merging do the rest.
+
+Fixes: d60e4f1e4be5 ("ASoC: meson: add tdm interface driver")
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98373.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/meson/axg-tdm-interface.c | 50 +++++++++++++++++------------
+ 1 file changed, 29 insertions(+), 21 deletions(-)
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index 2764fae69333..1093f766d0d2 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -730,6 +730,7 @@ static int max98373_probe(struct snd_soc_component *component)
- 	/* Software Reset */
- 	regmap_write(max98373->regmap,
- 		MAX98373_R2000_SW_RESET, MAX98373_SOFT_RESET);
-+	usleep_range(10000, 11000);
+diff --git a/sound/soc/meson/axg-tdm-interface.c b/sound/soc/meson/axg-tdm-interface.c
+index 7b8baf46d968..585ce030b79b 100644
+--- a/sound/soc/meson/axg-tdm-interface.c
++++ b/sound/soc/meson/axg-tdm-interface.c
+@@ -42,6 +42,7 @@ int axg_tdm_set_tdm_slots(struct snd_soc_dai *dai, u32 *tx_mask,
+ 	struct axg_tdm_stream *rx = (struct axg_tdm_stream *)
+ 		dai->capture_dma_data;
+ 	unsigned int tx_slots, rx_slots;
++	unsigned int fmt = 0;
  
- 	/* IV default slot configuration */
- 	regmap_write(max98373->regmap,
-@@ -818,6 +819,7 @@ static int max98373_resume(struct device *dev)
+ 	tx_slots = axg_tdm_slots_total(tx_mask);
+ 	rx_slots = axg_tdm_slots_total(rx_mask);
+@@ -52,38 +53,45 @@ int axg_tdm_set_tdm_slots(struct snd_soc_dai *dai, u32 *tx_mask,
+ 		return -EINVAL;
+ 	}
  
- 	regmap_write(max98373->regmap,
- 		MAX98373_R2000_SW_RESET, MAX98373_SOFT_RESET);
-+	usleep_range(10000, 11000);
- 	regcache_cache_only(max98373->regmap, false);
- 	regcache_sync(max98373->regmap);
+-	/*
+-	 * Amend the dai driver channel number and let dpcm channel merge do
+-	 * its job
+-	 */
+-	if (tx) {
+-		tx->mask = tx_mask;
+-		dai->driver->playback.channels_max = tx_slots;
+-	}
+-
+-	if (rx) {
+-		rx->mask = rx_mask;
+-		dai->driver->capture.channels_max = rx_slots;
+-	}
+-
+ 	iface->slots = slots;
+ 
+ 	switch (slot_width) {
+ 	case 0:
+-		/* defaults width to 32 if not provided */
+-		iface->slot_width = 32;
+-		break;
+-	case 8:
+-	case 16:
+-	case 24:
++		slot_width = 32;
++		/* Fall-through */
+ 	case 32:
+-		iface->slot_width = slot_width;
++		fmt |= SNDRV_PCM_FMTBIT_S32_LE;
++		/* Fall-through */
++	case 24:
++		fmt |= SNDRV_PCM_FMTBIT_S24_LE;
++		fmt |= SNDRV_PCM_FMTBIT_S20_LE;
++		/* Fall-through */
++	case 16:
++		fmt |= SNDRV_PCM_FMTBIT_S16_LE;
++		/* Fall-through */
++	case 8:
++		fmt |= SNDRV_PCM_FMTBIT_S8;
+ 		break;
+ 	default:
+ 		dev_err(dai->dev, "unsupported slot width: %d\n", slot_width);
+ 		return -EINVAL;
+ 	}
+ 
++	iface->slot_width = slot_width;
++
++	/* Amend the dai driver and let dpcm merge do its job */
++	if (tx) {
++		tx->mask = tx_mask;
++		dai->driver->playback.channels_max = tx_slots;
++		dai->driver->playback.formats = fmt;
++	}
++
++	if (rx) {
++		rx->mask = rx_mask;
++		dai->driver->capture.channels_max = rx_slots;
++		dai->driver->capture.formats = fmt;
++	}
++
  	return 0;
+ }
+ EXPORT_SYMBOL_GPL(axg_tdm_set_tdm_slots);
 -- 
 2.18.0
