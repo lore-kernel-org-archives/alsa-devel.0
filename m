@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: adau17x1: Unused exported functions
 	changed to internal" to the asoc tree
-Date: Wed, 29 Aug 2018 12:32:34 +0100 (BST)
-Message-ID: <20180829113234.0CFAB1124859@debutante.sirena.org.uk>
+Date: Wed, 29 Aug 2018 12:39:37 +0100 (BST)
+Message-ID: <20180829113937.91D7C1124859@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 29FF526784A
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:32:36 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DA5EB26766C
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:39:38 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -52,7 +52,7 @@ to this mail.
 Thanks,
 Mark
 
->From 164c0f6454186d1b0e22c27dfe3d3d59fc80f979 Mon Sep 17 00:00:00 2001
+>From dba508b5ab1d138bd7543a3f503492f1a173aa32 Mon Sep 17 00:00:00 2001
 From: Robert Rosengren <robert.rosengren@axis.com>
 Date: Mon, 13 Aug 2018 09:33:58 +0200
 Subject: [PATCH] ASoC: adau17x1: Unused exported functions changed to internal
@@ -60,7 +60,6 @@ Subject: [PATCH] ASoC: adau17x1: Unused exported functions changed to internal
 adau17x1_setup_firmware and adau17x1_has_dsp is only used internally, so
 making them static instead of exported.
 
-Change-Id: I4882513ab457966b0371ac2c1024550ca6edbe0c
 Signed-off-by: Robert Rosengren <robertr@axis.com>
 Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
@@ -70,10 +69,10 @@ Signed-off-by: Mark Brown <broonie@kernel.org>
  2 files changed, 5 insertions(+), 8 deletions(-)
 
 diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 57169b8ff14e..2f2afb4c0c88 100644
+index c0bc429249fa..3959e6ad113d 100644
 --- a/sound/soc/codecs/adau17x1.c
 +++ b/sound/soc/codecs/adau17x1.c
-@@ -60,6 +60,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
+@@ -67,6 +67,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
  	SOC_ENUM("Mic Bias Mode", adau17x1_mic_bias_mode_enum),
  };
  
@@ -83,7 +82,7 @@ index 57169b8ff14e..2f2afb4c0c88 100644
  static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
  	struct snd_kcontrol *kcontrol, int event)
  {
-@@ -313,7 +316,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
+@@ -320,7 +323,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
  	{ "Capture", NULL, "Right Decimator" },
  };
  
@@ -92,15 +91,15 @@ index 57169b8ff14e..2f2afb4c0c88 100644
  {
  	switch (adau->type) {
  	case ADAU1761:
-@@ -324,7 +327,6 @@ bool adau17x1_has_dsp(struct adau *adau)
+@@ -331,7 +334,6 @@ bool adau17x1_has_dsp(struct adau *adau)
  		return false;
  	}
  }
 -EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
  
- static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
- 	int source, unsigned int freq_in, unsigned int freq_out)
-@@ -836,7 +838,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
+ static bool adau17x1_has_safeload(struct adau *adau)
+ {
+@@ -854,7 +856,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
  }
  EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
  
@@ -109,7 +108,7 @@ index 57169b8ff14e..2f2afb4c0c88 100644
  	unsigned int rate)
  {
  	int ret;
-@@ -880,7 +882,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
+@@ -898,7 +900,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
  
  	return ret;
  }
