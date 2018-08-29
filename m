@@ -1,26 +1,25 @@
-From: Petr Cvek <petrcvekcz@gmail.com>
-Subject: Re: ASoC: pxa: remove pxa2xx-pcm driver,
-	which caused regression
-Date: Wed, 29 Aug 2018 03:32:26 +0200
-Message-ID: <1e1c5084-840d-a378-7c57-def6d6c0a096@gmail.com>
-References: <f12148b7c9102c67d92a0467f1d653e37c6548ee.1534534854.git.petrcvekcz@gmail.com>
- <87r2iwau3u.fsf@belgarion.home>
- <4deb5304-8efc-3093-7f8e-0dfe50781790@gmail.com>
- <87mutjbidr.fsf@belgarion.home>
- <16bb94b6-089d-f78e-1bb7-2550414be2fb@gmail.com>
- <878t4u96wq.fsf@belgarion.home>
+From: Prashant Malani <pmalani@chromium.org>
+Subject: Re: Suspected heap overflow in
+	snd_midi_event_encode_byte()
+Date: Tue, 28 Aug 2018 21:57:10 -0700
+Message-ID: <CACeCKafHtdRePYeqiwjosLSuvuZx=0=BQVquEZvhZPmUHKJZLA@mail.gmail.com>
+References: <CACeCKacfLn8FEVU1VK8vBXM11membOOPe_4GAHeX6CAAXzD8Rg@mail.gmail.com>
+ <s5hbm9uet3q.wl-tiwai@suse.de>
+ <CACeCKaeHqkzm1e5dqrLeohUCsze-4kijqNPKwcReef7KU_s0gg@mail.gmail.com>
+ <s5hbm9td1h4.wl-tiwai@suse.de>
+ <CACeCKacyN7R3hq-8=p_QkZiX0WUWTTdQJkW3XbvS-o-x1ZLvJg@mail.gmail.com>
+ <s5ha7p87zvd.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com
- [209.85.221.67])
- by alsa0.perex.cz (Postfix) with ESMTP id 16D0526781F
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 03:30:51 +0200 (CEST)
-Received: by mail-wr1-f67.google.com with SMTP id w11-v6so3190863wrc.5
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 18:30:51 -0700 (PDT)
-In-Reply-To: <878t4u96wq.fsf@belgarion.home>
-Content-Language: en-US
+Received: from mail-qk0-f182.google.com (mail-qk0-f182.google.com
+ [209.85.220.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3629926781F
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 06:57:12 +0200 (CEST)
+Received: by mail-qk0-f182.google.com with SMTP id c126-v6so2570412qkd.7
+ for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 21:57:12 -0700 (PDT)
+In-Reply-To: <s5ha7p87zvd.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,87 +29,100 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>, daniel@zonque.org
-Cc: alsa-devel@alsa-project.org, dbaryshkov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, dirk@opfer-online.de, marek.vasut@gmail.com, broonie@kernel.org, philipp.zabel@gmail.com, lost.distance@yahoo.com, linux-arm-kernel@lists.infradead.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Dylan Reid <dgreid@chromium.org>, Mike Frysinger <vapier@chromium.org>, Manoj Gupta <manojgupta@chromium.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 25.8.2018 v 10:39 Robert Jarzmik napsal(a):
-> Petr Cvek <petrcvekcz@gmail.com> writes:
-> 
->> Dne 18.8.2018 v 21:10 Robert Jarzmik napsal(a):
->>> Petr Cvek <petrcvekcz@gmail.com> writes:
->>>
->>>> My bad I've forgot to add "select SND_PXA2XX_LIB" from removed
->>>> SND_PXA2XX_SOC, now it should compile, can you test it if it works now?
->>>> fixed patch in [1].
->>> Still NAK.
->>>
->>> You must realise that as long as you will delete sound/soc/pxa/pxa2xx-pcm.c,
->>> I'll block the patch, as it is being used for music playback on several pxa
->>> platforms, at least the AC97 based ones.
->>>
->> I know I will send the magician only patch. I've just wanted to know how
->> it is working with AC97 ;-) (+ it is still a good test for possible
->> future changes).
->>
->>>> BTW can you try insmod-aplay-stop-rmmod with the current -next on your
->>>> board?
-> 
-> Ok, I just did that.
-> I based my work on linux-next, plus one extra patch which
-> was lost in my last submissions :
-> https://groups.google.com/forum/#!topic/linux.kernel/0iw-VDxIyZk
-> 
-> I insmoded the modules, called aplay, heard the music, rmmoded all the modules,
-> then insmoded again, called aplay, and rmmoded again. Everything worked
-> smoothly.
+Got it. Thanks!
 
-Hi guys,
+On Mon, Aug 27, 2018 at 5:33 AM, Takashi Iwai <tiwai@suse.de> wrote:
 
-...the continuation of a sound fix for (not only) HTC magician
-
-I think I got it now. It seems mioa701_wm9713 calls snd_pcm_new() twice
-(once in pxa2xx-ac97.c and once in mioa701_wm9713.c by
-devm_snd_soc_register_card() . This doesn't cause a double DMA
-allocation (as both will be for the different "card"). Still you should
-have allocated unused DMA resources somewhere on mioa by
-pxa2xx_soc_pcm_new() from pxa2xx-pcm.c (= dead code).
-
-Problem on non AC97 boards is as follows:
-
-As defined in machine's struct snd_soc_dai_link the individual
-components' .pcm_new() gets called. The first will be the component
-.cpu_dai_name="pxa-ssp-dai.0" and by definition in pxa-ssp.c this calls
-pxa2xx_soc_pcm_new() which allocates DMA.
-
-The problem is when the second component's .pcm_new() is called by the
-definition .platform_name = "pxa-pcm-audio" which calls again
-pxa2xx_soc_pcm_new() which allocates the DMA for the second time.
-
-This problem should be same for the most of the PXA boards, which are
-using SSP.
-
-A trivial comment-out of .platform_name works sometimes works, as
-drivers without .platform_name record gets supplied by snd-soc-dummy.
-And this solution has yet another problem.
-
-The PXA27x DMA controller doesn't support a full 8192 bytes per
-transmission (limited by .period_bytes_max), but only up to 8191 bytes
-(o_O), so any DMA buffer request must be in multiples of like 8160 bytes
-(or less, 8160 itself must be in the multiples of 32). This hw
-constraint gets set by calling pxa2xx_pcm_open(). The problem is
-snd-soc-dummy registers its own dummy_dma_open() and indeed it gets
-called after pxa2xx_pcm_open() and rewrites the values by its own dummy
-data. (Un)luckily the value gets overwritten to 8192 bytes and DMA
-allocation fails.
-
-Can somebody give me suggestions how to fix this? Changing the
-.period_bytes_max value in snd-soc-dummy works, deleting
-dummy_dma_open() works, changing pxa2xx_soc_platform_probe() to just
-return works too (that's why I've decided pxa2xx-pcm.c could be
-removed). But all these changes are ugly and not usable.
-
-Thanks for help.
-
-best regards,
-Petr
+> On Thu, 23 Aug 2018 22:41:15 +0200,
+> Prashant Malani wrote:
+> >
+> > Thanks.
+> >
+> > Curious to know: Whats the URL for alsa-lib git tree? I'd love to be able
+> > to check it out.
+>
+> You can get it from git.alsa-project.org
+>
+>
+> Takashi
+>
+> >
+> > On Wed, Aug 22, 2018 at 11:46 PM, Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > > On Wed, 22 Aug 2018 23:32:35 +0200,
+> > > Prashant Malani wrote:
+> > > >
+> > > > Thanks Takashi,
+> > > >
+> > > > I can confirm that this patch fixes the heap overflow issue.
+> > > > Could you kindly submit this patch into the alsa-lib tree?
+> > >
+> > > Now applied the following patch to git tree.
+> > >
+> > >
+> > > thanks,
+> > >
+> > > Takashi
+> > >
+> > > -- 8< --
+> > > From: Takashi Iwai <tiwai@suse.de>
+> > > Subject: [PATCH] seq: Fix signedness in MIDI encoder/decoder
+> > >
+> > > The qlen field of struct snd_midi_event was declared as size_t while
+> > > status_events[] assigns the qlen to -1 indicating to skip.  This leads
+> > > to the misinterpretation since size_t is unsigned, hence it passes the
+> > > check "dev.qlen > 0" incorrectly in snd_midi_event_encode_byte(),
+> > > which eventually results in a memory corruption.
+> > >
+> > > Also, snd_midi_event_decode() doesn't consider about a negative qlen
+> > > value and tries to copy the size as is.
+> > >
+> > > This patch fixes these issues: the first one is addressed by simply
+> > > replacing size_t with ssize_t in snd_midi_event struct.  For the
+> > > latter, a check "qlen <= 0" is added to bail out; this is also good as
+> > > a slight optimization.
+> > >
+> > > Reported-by: Prashant Malani <pmalani@chromium.org>
+> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> > > ---
+> > >  src/seq/seq_midi_event.c | 4 +++-
+> > >  1 file changed, 3 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/src/seq/seq_midi_event.c b/src/seq/seq_midi_event.c
+> > > index 2e7d1035442a..5a12a18ce781 100644
+> > > --- a/src/seq/seq_midi_event.c
+> > > +++ b/src/seq/seq_midi_event.c
+> > > @@ -35,7 +35,7 @@
+> > >
+> > >  /* midi status */
+> > >  struct snd_midi_event {
+> > > -       size_t qlen;    /* queue length */
+> > > +       ssize_t qlen;   /* queue length */
+> > >         size_t read;    /* chars read */
+> > >         int type;       /* current event type */
+> > >         unsigned char lastcmd;
+> > > @@ -606,6 +606,8 @@ long snd_midi_event_decode(snd_midi_event_t *dev,
+> > > unsigned char *buf, long count
+> > >                                 status_event[type].decode(ev, xbuf +
+> 0);
+> > >                         qlen = status_event[type].qlen;
+> > >                 }
+> > > +               if (qlen <= 0)
+> > > +                       return 0;
+> > >                 if (count < qlen)
+> > >                         return -ENOMEM;
+> > >                 memcpy(buf, xbuf, qlen);
+> > > --
+> > > 2.18.0
+> > >
+> > >
+> > _______________________________________________
+> > Alsa-devel mailing list
+> > Alsa-devel@alsa-project.org
+> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+> >
+>
