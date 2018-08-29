@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: adau17x1: Unused exported functions
-	changed to internal" to the asoc tree
-Date: Wed, 29 Aug 2018 12:02:21 +0100 (BST)
-Message-ID: <20180829110221.E4C7D1124859@debutante.sirena.org.uk>
+Subject: Applied "ASoC: pcm3060: Improve legibility of
+	if-statements" to the asoc tree
+Date: Wed, 29 Aug 2018 12:31:27 +0100 (BST)
+Message-ID: <20180829113127.6CD381124859@debutante.sirena.org.uk>
+References: <20180828214231.10164-2-kmarinushkin@birdec.tech>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 84ADC2676BD
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:02:22 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 184B526766C
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:31:29 +0200 (CEST)
+In-Reply-To: <20180828214231.10164-2-kmarinushkin@birdec.tech>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Rosengren <robert.rosengren@axis.com>
-Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Robert Rosengren <robertr@axis.com>, alsa-devel@alsa-project.org
+To: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, Mark Brown <broonie@kernel.org>, M R Swami Reddy <mr.swami.reddy@ti.com>, Kevin Cernekee <cernekee@chromium.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: adau17x1: Unused exported functions changed to internal
+   ASoC: pcm3060: Improve legibility of if-statements
 
 has been applied to the asoc tree at
 
@@ -52,85 +53,46 @@ to this mail.
 Thanks,
 Mark
 
->From 164c0f6454186d1b0e22c27dfe3d3d59fc80f979 Mon Sep 17 00:00:00 2001
-From: Robert Rosengren <robert.rosengren@axis.com>
-Date: Mon, 13 Aug 2018 09:33:58 +0200
-Subject: [PATCH] ASoC: adau17x1: Unused exported functions changed to internal
+>From 080aaf10892eec4b359126473e582f62ebb09496 Mon Sep 17 00:00:00 2001
+From: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Date: Tue, 28 Aug 2018 23:42:31 +0200
+Subject: [PATCH] ASoC: pcm3060: Improve legibility of if-statements
 
-adau17x1_setup_firmware and adau17x1_has_dsp is only used internally, so
-making them static instead of exported.
+Modified some if-statements to make them more clear
 
-Change-Id: I4882513ab457966b0371ac2c1024550ca6edbe0c
-Signed-off-by: Robert Rosengren <robertr@axis.com>
-Acked-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/adau17x1.c | 9 +++++----
- sound/soc/codecs/adau17x1.h | 4 ----
- 2 files changed, 5 insertions(+), 8 deletions(-)
+ sound/soc/codecs/pcm3060.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
-index 57169b8ff14e..2f2afb4c0c88 100644
---- a/sound/soc/codecs/adau17x1.c
-+++ b/sound/soc/codecs/adau17x1.c
-@@ -60,6 +60,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
- 	SOC_ENUM("Mic Bias Mode", adau17x1_mic_bias_mode_enum),
- };
- 
-+static int adau17x1_setup_firmware(struct snd_soc_component *component,
-+	unsigned int rate);
-+
- static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
- 	struct snd_kcontrol *kcontrol, int event)
- {
-@@ -313,7 +316,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
- 	{ "Capture", NULL, "Right Decimator" },
- };
- 
--bool adau17x1_has_dsp(struct adau *adau)
-+static bool adau17x1_has_dsp(struct adau *adau)
- {
- 	switch (adau->type) {
- 	case ADAU1761:
-@@ -324,7 +327,6 @@ bool adau17x1_has_dsp(struct adau *adau)
- 		return false;
+diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
+index 5b9718fa766d..494d9d662be8 100644
+--- a/sound/soc/codecs/pcm3060.c
++++ b/sound/soc/codecs/pcm3060.c
+@@ -68,7 +68,10 @@ static int pcm3060_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		return -EINVAL;
  	}
- }
--EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
  
- static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
- 	int source, unsigned int freq_in, unsigned int freq_out)
-@@ -836,7 +838,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
- }
- EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
+-	reg = (dai->id == PCM3060_DAI_ID_DAC ? PCM3060_REG67 : PCM3060_REG72);
++	if (dai->id == PCM3060_DAI_ID_DAC)
++		reg = PCM3060_REG67;
++	else
++		reg = PCM3060_REG72;
  
--int adau17x1_setup_firmware(struct snd_soc_component *component,
-+static int adau17x1_setup_firmware(struct snd_soc_component *component,
- 	unsigned int rate)
- {
- 	int ret;
-@@ -880,7 +882,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 	regmap_update_bits(priv->regmap, reg, PCM3060_REG_MASK_FMT, val);
  
- 	return ret;
- }
--EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
+@@ -124,7 +127,10 @@ static int pcm3060_hw_params(struct snd_pcm_substream *substream,
+ 	}
  
- int adau17x1_add_widgets(struct snd_soc_component *component)
- {
-diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
-index e6fe87beec07..98a3b6f5bc96 100644
---- a/sound/soc/codecs/adau17x1.h
-+++ b/sound/soc/codecs/adau17x1.h
-@@ -68,10 +68,6 @@ int adau17x1_resume(struct snd_soc_component *component);
+ val_ready:
+-	reg = (dai->id == PCM3060_DAI_ID_DAC ? PCM3060_REG67 : PCM3060_REG72);
++	if (dai->id == PCM3060_DAI_ID_DAC)
++		reg = PCM3060_REG67;
++	else
++		reg = PCM3060_REG72;
  
- extern const struct snd_soc_dai_ops adau17x1_dai_ops;
+ 	regmap_update_bits(priv->regmap, reg, PCM3060_REG_MASK_MS, val);
  
--int adau17x1_setup_firmware(struct snd_soc_component *component,
--	unsigned int rate);
--bool adau17x1_has_dsp(struct adau *adau);
--
- #define ADAU17X1_CLOCK_CONTROL			0x4000
- #define ADAU17X1_PLL_CONTROL			0x4002
- #define ADAU17X1_REC_POWER_MGMT			0x4009
 -- 
 2.18.0
