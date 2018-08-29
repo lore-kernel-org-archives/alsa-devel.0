@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3060: Improve stylistics of file
-	comments" to the asoc tree
-Date: Wed, 29 Aug 2018 12:31:35 +0100 (BST)
-Message-ID: <20180829113135.471B61124859@debutante.sirena.org.uk>
-References: <20180828214231.10164-1-kmarinushkin@birdec.tech>
+Subject: Applied "ASoC: adau17x1: Unused exported functions
+	changed to internal" to the asoc tree
+Date: Wed, 29 Aug 2018 12:32:34 +0100 (BST)
+Message-ID: <20180829113234.0CFAB1124859@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DE4426784A
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:31:36 +0200 (CEST)
-In-Reply-To: <20180828214231.10164-1-kmarinushkin@birdec.tech>
+ by alsa0.perex.cz (Postfix) with ESMTP id 29FF526784A
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:32:36 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Peter Ujfalusi <peter.ujfalusi@ti.com>, Vishwas A Deshpande <vishwas.a.deshpande@ti.com>, Mark Brown <broonie@kernel.org>, M R Swami Reddy <mr.swami.reddy@ti.com>, Kevin Cernekee <cernekee@chromium.org>
+To: Robert Rosengren <robert.rosengren@axis.com>
+Cc: Mark Brown <broonie@kernel.org>, Lars-Peter Clausen <lars@metafoo.de>, Robert Rosengren <robertr@axis.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3060: Improve stylistics of file comments
+   ASoC: adau17x1: Unused exported functions changed to internal
 
 has been applied to the asoc tree at
 
@@ -53,75 +52,85 @@ to this mail.
 Thanks,
 Mark
 
->From aec785f6a0dcd68c3d2ad4a7d5b48d5fc94d75e8 Mon Sep 17 00:00:00 2001
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Date: Tue, 28 Aug 2018 23:42:30 +0200
-Subject: [PATCH] ASoC: pcm3060: Improve stylistics of file comments
+>From 164c0f6454186d1b0e22c27dfe3d3d59fc80f979 Mon Sep 17 00:00:00 2001
+From: Robert Rosengren <robert.rosengren@axis.com>
+Date: Mon, 13 Aug 2018 09:33:58 +0200
+Subject: [PATCH] ASoC: adau17x1: Unused exported functions changed to internal
 
-Modified the complete file comments in C++ style, to make them look more
-intentional
+adau17x1_setup_firmware and adau17x1_has_dsp is only used internally, so
+making them static instead of exported.
 
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Change-Id: I4882513ab457966b0371ac2c1024550ca6edbe0c
+Signed-off-by: Robert Rosengren <robertr@axis.com>
+Acked-by: Lars-Peter Clausen <lars@metafoo.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3060-i2c.c | 9 ++++-----
- sound/soc/codecs/pcm3060-spi.c | 9 ++++-----
- sound/soc/codecs/pcm3060.c     | 9 ++++-----
- 3 files changed, 12 insertions(+), 15 deletions(-)
+ sound/soc/codecs/adau17x1.c | 9 +++++----
+ sound/soc/codecs/adau17x1.h | 4 ----
+ 2 files changed, 5 insertions(+), 8 deletions(-)
 
-diff --git a/sound/soc/codecs/pcm3060-i2c.c b/sound/soc/codecs/pcm3060-i2c.c
-index 03d2b4323626..cdc8314882bc 100644
---- a/sound/soc/codecs/pcm3060-i2c.c
-+++ b/sound/soc/codecs/pcm3060-i2c.c
-@@ -1,9 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
--/*
-- * PCM3060 I2C driver
-- *
-- * Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
-- */
-+//
-+// PCM3060 I2C driver
-+//
-+// Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
+diff --git a/sound/soc/codecs/adau17x1.c b/sound/soc/codecs/adau17x1.c
+index 57169b8ff14e..2f2afb4c0c88 100644
+--- a/sound/soc/codecs/adau17x1.c
++++ b/sound/soc/codecs/adau17x1.c
+@@ -60,6 +60,9 @@ static const struct snd_kcontrol_new adau17x1_controls[] = {
+ 	SOC_ENUM("Mic Bias Mode", adau17x1_mic_bias_mode_enum),
+ };
  
- #include <linux/i2c.h>
- #include <linux/module.h>
-diff --git a/sound/soc/codecs/pcm3060-spi.c b/sound/soc/codecs/pcm3060-spi.c
-index 8961e095ae73..f6f19fa80932 100644
---- a/sound/soc/codecs/pcm3060-spi.c
-+++ b/sound/soc/codecs/pcm3060-spi.c
-@@ -1,9 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
--/*
-- * PCM3060 SPI driver
-- *
-- * Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
-- */
-+//
-+// PCM3060 SPI driver
-+//
-+// Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
++static int adau17x1_setup_firmware(struct snd_soc_component *component,
++	unsigned int rate);
++
+ static int adau17x1_pll_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_kcontrol *kcontrol, int event)
+ {
+@@ -313,7 +316,7 @@ static const struct snd_soc_dapm_route adau17x1_no_dsp_dapm_routes[] = {
+ 	{ "Capture", NULL, "Right Decimator" },
+ };
  
- #include <linux/module.h>
- #include <linux/spi/spi.h>
-diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index ef7c627c9ac5..5b9718fa766d 100644
---- a/sound/soc/codecs/pcm3060.c
-+++ b/sound/soc/codecs/pcm3060.c
-@@ -1,9 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
--/*
-- * PCM3060 codec driver
-- *
-- * Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
-- */
-+//
-+// PCM3060 codec driver
-+//
-+// Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
+-bool adau17x1_has_dsp(struct adau *adau)
++static bool adau17x1_has_dsp(struct adau *adau)
+ {
+ 	switch (adau->type) {
+ 	case ADAU1761:
+@@ -324,7 +327,6 @@ bool adau17x1_has_dsp(struct adau *adau)
+ 		return false;
+ 	}
+ }
+-EXPORT_SYMBOL_GPL(adau17x1_has_dsp);
  
- #include <linux/module.h>
- #include <sound/pcm_params.h>
+ static int adau17x1_set_dai_pll(struct snd_soc_dai *dai, int pll_id,
+ 	int source, unsigned int freq_in, unsigned int freq_out)
+@@ -836,7 +838,7 @@ bool adau17x1_volatile_register(struct device *dev, unsigned int reg)
+ }
+ EXPORT_SYMBOL_GPL(adau17x1_volatile_register);
+ 
+-int adau17x1_setup_firmware(struct snd_soc_component *component,
++static int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 	unsigned int rate)
+ {
+ 	int ret;
+@@ -880,7 +882,6 @@ int adau17x1_setup_firmware(struct snd_soc_component *component,
+ 
+ 	return ret;
+ }
+-EXPORT_SYMBOL_GPL(adau17x1_setup_firmware);
+ 
+ int adau17x1_add_widgets(struct snd_soc_component *component)
+ {
+diff --git a/sound/soc/codecs/adau17x1.h b/sound/soc/codecs/adau17x1.h
+index e6fe87beec07..98a3b6f5bc96 100644
+--- a/sound/soc/codecs/adau17x1.h
++++ b/sound/soc/codecs/adau17x1.h
+@@ -68,10 +68,6 @@ int adau17x1_resume(struct snd_soc_component *component);
+ 
+ extern const struct snd_soc_dai_ops adau17x1_dai_ops;
+ 
+-int adau17x1_setup_firmware(struct snd_soc_component *component,
+-	unsigned int rate);
+-bool adau17x1_has_dsp(struct adau *adau);
+-
+ #define ADAU17X1_CLOCK_CONTROL			0x4000
+ #define ADAU17X1_PLL_CONTROL			0x4002
+ #define ADAU17X1_REC_POWER_MGMT			0x4009
 -- 
 2.18.0
