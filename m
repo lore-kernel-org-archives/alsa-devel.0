@@ -1,17 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dmic: add Kconfig prompt for the
-	generic dmic codec." to the asoc tree
-Date: Wed, 29 Aug 2018 16:08:58 +0100 (BST)
-Message-ID: <20180829150858.F37C8112486B@debutante.sirena.org.uk>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: Re: [PATCH 1/2] ASoC: Add driver for PROTO Audio CODEC
+ (with a WM8731)
+Date: Wed, 29 Aug 2018 18:20:59 +0300
+Message-ID: <8f1ecff2-aab7-2a1d-a8d3-8d0062a8a9e0@microchip.com>
+References: <20180829144727.13757-1-codrin.ciubotariu@microchip.com>
+ <20180829144727.13757-2-codrin.ciubotariu@microchip.com>
+ <20180829145355.GD27808@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A296526792D
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 17:08:59 +0200 (CEST)
-In-Reply-To: 
+Received: from esa1.microchip.iphmx.com (esa1.microchip.iphmx.com
+ [68.232.147.91])
+ by alsa0.perex.cz (Postfix) with ESMTP id A958726766C
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 17:21:02 +0200 (CEST)
+In-Reply-To: <20180829145355.GD27808@sirena.org.uk>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,67 +25,47 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jerome Brunet <jbrunet@baylibre.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Mark Brown <broonie@kernel.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, florian.meier@koalo.de, cristian.birsan@microchip.com, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On 29.08.2018 17:53, Mark Brown wrote:
+> On Wed, Aug 29, 2018 at 05:47:26PM +0300, Codrin Ciubotariu wrote:
+> 
+>> +static const unsigned int wm8731_rates_12288000[] = {
+>> +	8000, 32000, 48000, 96000,
+>> +};
+>> +
+>> +static struct snd_pcm_hw_constraint_list wm8731_constraints_12288000 = {
+>> +	.list = wm8731_rates_12288000,
+>> +	.count = ARRAY_SIZE(wm8731_rates_12288000),
+>> +};
+>> +
+>> +static int snd_proto_startup(struct snd_pcm_substream *substream)
+>> +{
+>> +	/* Setup constraints, because there is a 12.288 MHz XTAL on the board */
+>> +	snd_pcm_hw_constraint_list(substream->runtime, 0,
+>> +				   SNDRV_PCM_HW_PARAM_RATE,
+>> +				   &wm8731_constraints_12288000);
+>> +	return 0;
+>> +}
+> 
+> This bit is better added to the CODEC driver since it'll apply to any
+> system where there's this clock rate (someone else could come in and add
+> other rates, no need to do that yourself though it'd be nice of course).
 
-   ASoC: dmic: add Kconfig prompt for the generic dmic codec.
+I could do it.
 
-has been applied to the asoc tree at
+> 
+> That also has the nice bonus that with that I think you'd be able to use
+> the graph card rather than a custom driver?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+The main reason for adding a custom driver and not using graph/simple 
+card is the snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL, 
+                              XTAL_RATE, SND_SOC_CLOCK_IN) call. This 
+enables the oscillator found in the wm8731 codec. Since 
+WM8731_SYSCLK_XTAL is not 0, we can't use system-clock-frequency DT 
+property to set it.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 26bcf1c368d9460987d597fb0476d60e51a1bf82 Mon Sep 17 00:00:00 2001
-From: Jerome Brunet <jbrunet@baylibre.com>
-Date: Wed, 29 Aug 2018 17:00:48 +0200
-Subject: [PATCH] ASoC: dmic: add Kconfig prompt for the generic dmic codec.
-
-Add Kconfig prompt for the generic digital mic to make it configurable
-through menuconfig
-
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/Kconfig | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index adaf26e1989c..9989d35e0fc6 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -578,7 +578,11 @@ config SND_SOC_DA9055
- 	tristate
- 
- config SND_SOC_DMIC
--	tristate
-+	tristate "Generic Digital Microphone CODEC"
-+	depends on GPIOLIB
-+	help
-+	  Enable support for the Generic Digital Microphone CODEC.
-+	  Select this if your sound card has DMICs.
- 
- config SND_SOC_HDMI_CODEC
- 	tristate
--- 
-2.18.0
+Best regards,
+Codrin
