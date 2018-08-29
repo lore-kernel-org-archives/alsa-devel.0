@@ -1,55 +1,62 @@
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH 1/2] ASoC: Add driver for PROTO Audio CODEC (with a
- WM8731)
-Date: Wed, 29 Aug 2018 18:33:19 +0300
-Message-ID: <54d79485-81ef-763a-c896-c6ab3e33b5d1@microchip.com>
-References: <20180829144727.13757-1-codrin.ciubotariu@microchip.com>
- <20180829144727.13757-2-codrin.ciubotariu@microchip.com>
- <20180829145355.GD27808@sirena.org.uk>
- <8f1ecff2-aab7-2a1d-a8d3-8d0062a8a9e0@microchip.com>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Adding DC offset to one channel in alsa config
+Date: Wed, 29 Aug 2018 22:15:15 +0200
+Message-ID: <fc7e6fe3-0421-76e0-2c84-c3bac338231a@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8f1ecff2-aab7-2a1d-a8d3-8d0062a8a9e0@microchip.com>
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id DB53E2676BD
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 22:15:26 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by cable.insite.cz (Postfix) with ESMTP id 8E9BBA1A40B05
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 22:15:25 +0200 (CEST)
+Received: from cable.insite.cz ([84.242.75.189])
+ by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id niQsQUU5r9TB for <alsa-devel@alsa-project.org>;
+ Wed, 29 Aug 2018 22:15:20 +0200 (CEST)
+Received: from [192.168.105.12] (ip28.insite.cz [81.0.237.28])
+ (Authenticated sender: pavel)
+ by cable.insite.cz (Postfix) with ESMTPSA id 0B9A9A1A40B01
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 22:15:20 +0200 (CEST)
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, robh+dt@kernel.org, alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, florian.meier@koalo.de, cristian.birsan@microchip.com
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On 29.08.2018 18:20, Codrin Ciubotariu wrote:
-> On 29.08.2018 17:53, Mark Brown wrote:
->> On Wed, Aug 29, 2018 at 05:47:26PM +0300, Codrin Ciubotariu wrote:
->>
->>> +static const unsigned int wm8731_rates_12288000[] = {
->>> +    8000, 32000, 48000, 96000,
->>> +};
->>> +
->>> +static struct snd_pcm_hw_constraint_list wm8731_constraints_12288000 
->>> = {
->>> +    .list = wm8731_rates_12288000,
->>> +    .count = ARRAY_SIZE(wm8731_rates_12288000),
->>> +};
->>> +
->>> +static int snd_proto_startup(struct snd_pcm_substream *substream)
->>> +{
->>> +    /* Setup constraints, because there is a 12.288 MHz XTAL on the 
->>> board */
->>> +    snd_pcm_hw_constraint_list(substream->runtime, 0,
->>> +                   SNDRV_PCM_HW_PARAM_RATE,
->>> +                   &wm8731_constraints_12288000);
->>> +    return 0;
->>> +}
->>
->> This bit is better added to the CODEC driver since it'll apply to any
->> system where there's this clock rate (someone else could come in and add
->> other rates, no need to do that yourself though it'd be nice of course).
-> 
-> I could do it.
+Hi,
 
-It looks like these constraints are already in the wm8731 driver. I will 
-wait for more comments and then I will send a v2 without this part.
+Please is there a way to add a fixed DC offset to one channel stream in 
+alsa config (.asoundrc)?
 
-Thanks and best regards,
-Codrin
+We are playing with single-ended -> virtual balanced setup  ( 
+http://www.diyaudio.com/forums/pc-based/326747-virtual-balanced-regular-soundcard-linux-results.html 
+) using the route plugin. The setup works surprisingly nice.
+
+Unless one of the input channel AD convertors has a DC offset which 
+ruins the subtracted signal. It is easy to measure the offset.
+
+Such as e.g.
+
+type route
+ttable {
+		 0.0= 0.49 + 0.001
+		 0.1= -0.49
+	}
+
+
+Thanks a lot for any suggestions.
+
+
+Best regards,
+
+Pavel.
