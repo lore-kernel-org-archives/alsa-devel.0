@@ -1,25 +1,23 @@
-From: Mike Frysinger <vapier@chromium.org>
-Subject: Re: Suspected heap overflow in
-	snd_midi_event_encode_byte()
-Date: Tue, 28 Aug 2018 16:08:53 -0400
-Message-ID: <CAAbOScmHNMfhGMX-NsgWUiOfN2HnWPsDAxLBWMXcWixSiH3mJQ@mail.gmail.com>
-References: <CACeCKacfLn8FEVU1VK8vBXM11membOOPe_4GAHeX6CAAXzD8Rg@mail.gmail.com>
- <s5hbm9uet3q.wl-tiwai@suse.de>
- <CACeCKaeHqkzm1e5dqrLeohUCsze-4kijqNPKwcReef7KU_s0gg@mail.gmail.com>
- <s5hbm9td1h4.wl-tiwai@suse.de>
- <CACeCKacyN7R3hq-8=p_QkZiX0WUWTTdQJkW3XbvS-o-x1ZLvJg@mail.gmail.com>
- <s5ha7p87zvd.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 2/3] ASoC: cs4265: Add native 32bit I2S
+ transport
+Date: Wed, 29 Aug 2018 09:22:18 +0100
+Message-ID: <20180829082218.GY32322@imbe.wolfsonmicro.main>
+References: <20180826225844.13754-1-flatmax@flatmax.org>
+ <20180826225844.13754-2-flatmax@flatmax.org>
+ <20180827082843.GU32322@imbe.wolfsonmicro.main>
+ <20180828185652.GJ2414@sirena.org.uk>
+ <cbf11383-f9f5-22a3-6fa0-e097462716f2@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com
- [209.85.222.46])
- by alsa0.perex.cz (Postfix) with ESMTP id D826026777B
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 22:09:31 +0200 (CEST)
-Received: by mail-ua1-f46.google.com with SMTP id c12-v6so1823874uan.3
- for <alsa-devel@alsa-project.org>; Tue, 28 Aug 2018 13:09:31 -0700 (PDT)
-In-Reply-To: <s5ha7p87zvd.wl-tiwai@suse.de>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54834267657
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 10:22:21 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <cbf11383-f9f5-22a3-6fa0-e097462716f2@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,111 +27,34 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, Manoj Gupta <manojgupta@chromium.org>, pmalani@chromium.org, Dylan Reid <dgreid@chromium.org>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-the preferred flow looks something like:
-- we put together the fix
-- send fix to upstream (alsa) project
-- upstream reviews/merges
-- if we get a new release, update to that
-- if new release is going to be a while, backport the patch to latest
-ebuild and send a PR to Gentoo's GH (github.com/gentoo/gentoo)
-- once Gentoo merges the PR, roll the fix into portage-stable
+On Wed, Aug 29, 2018 at 09:31:31AM +1000, Matt Flax wrote:
+> 
+> 
+> On 29/08/18 04:56, Mark Brown wrote:
+> >On Mon, Aug 27, 2018 at 09:28:43AM +0100, Charles Keepax wrote:
+> >
+> >>Are you sure this is correct? The datasheet for the part only
+> >>says it supports up to 24-bit audio and I thought the defines
+> >>SNDRV_PCM_FMTBIT_S24_LE and U24 are expected to have 32-bits
+> >>in the slot whilst on the bus.
+> >No, they're not.  They're expected to be 32 bit in memory and 24 bit on
+> >the bus.
+> >
+> 
+> If this is the case, then I would assume that 32bit formats are
+> forced through ALSA plughw.
+> 
+> If operation is forced through plughw, then this patch is necessary
+> to allow native 32 operation on the bus. The codec drops the 8 LSBs
+> during operation as it reads/writes the 24 MSBs.
+> 
 
-otherwise if things are up for debate along the way, we have
-chromiumos-overlay to hold our own forked packages.
--mike
+Yeah apologies for the confusion I imagine this patch is then
+fine.
 
-On Mon, Aug 27, 2018 at 8:33 AM Takashi Iwai <tiwai@suse.de> wrote:
-
-> On Thu, 23 Aug 2018 22:41:15 +0200,
-> Prashant Malani wrote:
-> >
-> > Thanks.
-> >
-> > Curious to know: Whats the URL for alsa-lib git tree? I'd love to be able
-> > to check it out.
->
-> You can get it from git.alsa-project.org
->
->
-> Takashi
->
-> >
-> > On Wed, Aug 22, 2018 at 11:46 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> >
-> > > On Wed, 22 Aug 2018 23:32:35 +0200,
-> > > Prashant Malani wrote:
-> > > >
-> > > > Thanks Takashi,
-> > > >
-> > > > I can confirm that this patch fixes the heap overflow issue.
-> > > > Could you kindly submit this patch into the alsa-lib tree?
-> > >
-> > > Now applied the following patch to git tree.
-> > >
-> > >
-> > > thanks,
-> > >
-> > > Takashi
-> > >
-> > > -- 8< --
-> > > From: Takashi Iwai <tiwai@suse.de>
-> > > Subject: [PATCH] seq: Fix signedness in MIDI encoder/decoder
-> > >
-> > > The qlen field of struct snd_midi_event was declared as size_t while
-> > > status_events[] assigns the qlen to -1 indicating to skip.  This leads
-> > > to the misinterpretation since size_t is unsigned, hence it passes the
-> > > check "dev.qlen > 0" incorrectly in snd_midi_event_encode_byte(),
-> > > which eventually results in a memory corruption.
-> > >
-> > > Also, snd_midi_event_decode() doesn't consider about a negative qlen
-> > > value and tries to copy the size as is.
-> > >
-> > > This patch fixes these issues: the first one is addressed by simply
-> > > replacing size_t with ssize_t in snd_midi_event struct.  For the
-> > > latter, a check "qlen <= 0" is added to bail out; this is also good as
-> > > a slight optimization.
-> > >
-> > > Reported-by: Prashant Malani <pmalani@chromium.org>
-> > > Signed-off-by: Takashi Iwai <tiwai@suse.de>
-> > > ---
-> > >  src/seq/seq_midi_event.c | 4 +++-
-> > >  1 file changed, 3 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/src/seq/seq_midi_event.c b/src/seq/seq_midi_event.c
-> > > index 2e7d1035442a..5a12a18ce781 100644
-> > > --- a/src/seq/seq_midi_event.c
-> > > +++ b/src/seq/seq_midi_event.c
-> > > @@ -35,7 +35,7 @@
-> > >
-> > >  /* midi status */
-> > >  struct snd_midi_event {
-> > > -       size_t qlen;    /* queue length */
-> > > +       ssize_t qlen;   /* queue length */
-> > >         size_t read;    /* chars read */
-> > >         int type;       /* current event type */
-> > >         unsigned char lastcmd;
-> > > @@ -606,6 +606,8 @@ long snd_midi_event_decode(snd_midi_event_t *dev,
-> > > unsigned char *buf, long count
-> > >                                 status_event[type].decode(ev, xbuf +
-> 0);
-> > >                         qlen = status_event[type].qlen;
-> > >                 }
-> > > +               if (qlen <= 0)
-> > > +                       return 0;
-> > >                 if (count < qlen)
-> > >                         return -ENOMEM;
-> > >                 memcpy(buf, xbuf, qlen);
-> > > --
-> > > 2.18.0
-> > >
-> > >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> >
->
+Thanks,
+Charles
