@@ -1,98 +1,35 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: ASoC: pxa: remove pxa2xx-pcm driver,
-	which caused regression
-Date: Wed, 29 Aug 2018 16:11:13 +0200
-Message-ID: <87y3cp6z5q.fsf@belgarion.home>
-References: <f12148b7c9102c67d92a0467f1d653e37c6548ee.1534534854.git.petrcvekcz@gmail.com>
- <87r2iwau3u.fsf@belgarion.home>
- <4deb5304-8efc-3093-7f8e-0dfe50781790@gmail.com>
- <87mutjbidr.fsf@belgarion.home>
- <16bb94b6-089d-f78e-1bb7-2550414be2fb@gmail.com>
- <878t4u96wq.fsf@belgarion.home>
- <1e1c5084-840d-a378-7c57-def6d6c0a096@gmail.com>
+From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Subject: [PATCH 0/2] ASoC: Add support for MikroElektronika PROTO codec
+Date: Wed, 29 Aug 2018 17:47:25 +0300
+Message-ID: <20180829144727.13757-1-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp12.smtpout.orange.fr
- [80.12.242.134])
- by alsa0.perex.cz (Postfix) with ESMTP id A6D7726766C
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 16:11:18 +0200 (CEST)
-In-Reply-To: <1e1c5084-840d-a378-7c57-def6d6c0a096@gmail.com> (Petr Cvek's
- message of "Wed, 29 Aug 2018 03:32:26 +0200")
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Petr Cvek <petrcvekcz@gmail.com>, daniel@zonque.org
-Cc: alsa-devel@alsa-project.org, dbaryshkov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, dirk@opfer-online.de, marek.vasut@gmail.com, broonie@kernel.org, philipp.zabel@gmail.com, lost.distance@yahoo.com, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel@alsa-project.org, devicetree@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org, alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, florian.meier@koalo.de, cristian.birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-Petr Cvek <petrcvekcz@gmail.com> writes:
-> Hi guys,
->
-> ...the continuation of a sound fix for (not only) HTC magician
->
-> I think I got it now. It seems mioa701_wm9713 calls snd_pcm_new() twice
-> (once in pxa2xx-ac97.c and once in mioa701_wm9713.c by
-> devm_snd_soc_register_card() .
-Mmh no, at least no if you're speaking of sound/soc/pxa/pxa2xx-ac97.c.
+This patchset is based on Florian's initial PROTO driver:
+https://lkml.org/lkml/2013/5/22/342
 
-I placed a printk in snd_pcm_new(), and it is called 2 times from
-mioa701_wm9713.c, to register the wm9713-hifi and wm9713-aux devices.
+My changes made the driver more generic, so that we could connect other
+I2S CPU DAIs, by using device-tree.
 
-Now if you speak of sound/arm/pxa2xx-ac97.c, it should never be selected in an
-"soc" variant, whenre sound/soc/pxa/pxa2xx-ac97.c should be used.
+Tested with sama5d2 I2S driver.
 
-> Problem on non AC97 boards is as follows:
->
-> As defined in machine's struct snd_soc_dai_link the individual
-> components' .pcm_new() gets called. The first will be the component
-> .cpu_dai_name="pxa-ssp-dai.0" and by definition in pxa-ssp.c this calls
-> pxa2xx_soc_pcm_new() which allocates DMA.
->
-> The problem is when the second component's .pcm_new() is called by the
-> definition .platform_name = "pxa-pcm-audio" which calls again
-> pxa2xx_soc_pcm_new() which allocates the DMA for the second time.
->
-> This problem should be same for the most of the PXA boards, which are
-> using SSP.
-Ok, I suppose you have checked this with a printk, WARN_ON() be sure, right ?
-And could you send me you .config, just to be sure we're on the same page on the
-drivers you're using.
+Codrin Ciubotariu (2):
+  ASoC: Add driver for PROTO Audio CODEC (with a WM8731)
+  ASoC: mikroe-proto: dt-bindings: add DT bindings for PROTO board
 
-If that's the case, Daniel would you have a look into it please ?
-
-> The PXA27x DMA controller doesn't support a full 8192 bytes per
-> transmission (limited by .period_bytes_max), but only up to 8191 bytes
-> (o_O), so any DMA buffer request must be in multiples of like 8160 bytes
-> (or less, 8160 itself must be in the multiples of 32). This hw
-> constraint gets set by calling pxa2xx_pcm_open(). The problem is
-> snd-soc-dummy registers its own dummy_dma_open() and indeed it gets
-> called after pxa2xx_pcm_open() and rewrites the values by its own dummy
-> data. (Un)luckily the value gets overwritten to 8192 bytes and DMA
-> allocation fails.
-Very true. I hope you're using CONFIG_PXA_DMA=1 and not CONFIG_MMP_PDMA, this
-will enable us to debug when things will get out of control.
-
-> Can somebody give me suggestions how to fix this? Changing the
-> .period_bytes_max value in snd-soc-dummy works, deleting
-> dummy_dma_open() works, changing pxa2xx_soc_platform_probe() to just
-> return works too (that's why I've decided pxa2xx-pcm.c could be
-> removed). But all these changes are ugly and not usable.
-At least we must find a way to have :
- - pxa2xx_pcm_open() called only once
- - pxa-pcm-audio shoud be used for SSP based PXA boards
-
-I'll wait for Daniel to comment on that, he's more advanced in the sound
-framework understanding than I am.
-
-Cheers.
+ .../bindings/sound/mikroe,mikroe-proto.txt    |  23 +++
+ .../devicetree/bindings/vendor-prefixes.txt   |   1 +
+ sound/soc/atmel/Kconfig                       |   7 +
+ sound/soc/atmel/Makefile                      |   2 +
+ sound/soc/atmel/mikroe-proto.c                | 189 ++++++++++++++++++
+ 5 files changed, 222 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/mikroe,mikroe-proto.txt
+ create mode 100644 sound/soc/atmel/mikroe-proto.c
 
 -- 
-Robert
+2.17.1
