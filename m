@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3060: Improve legibility of
-	if-statements" to the asoc tree
-Date: Wed, 29 Aug 2018 12:31:27 +0100 (BST)
-Message-ID: <20180829113127.6CD381124859@debutante.sirena.org.uk>
-References: <20180828214231.10164-2-kmarinushkin@birdec.tech>
+Subject: Applied "ASoC: pcm3060: Improve stylistics of file
+	comments" to the asoc tree
+Date: Wed, 29 Aug 2018 12:31:35 +0100 (BST)
+Message-ID: <20180829113135.471B61124859@debutante.sirena.org.uk>
+References: <20180828214231.10164-1-kmarinushkin@birdec.tech>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 184B526766C
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:31:29 +0200 (CEST)
-In-Reply-To: <20180828214231.10164-2-kmarinushkin@birdec.tech>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2DE4426784A
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:31:36 +0200 (CEST)
+In-Reply-To: <20180828214231.10164-1-kmarinushkin@birdec.tech>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3060: Improve legibility of if-statements
+   ASoC: pcm3060: Improve stylistics of file comments
 
 has been applied to the asoc tree at
 
@@ -53,46 +53,75 @@ to this mail.
 Thanks,
 Mark
 
->From 080aaf10892eec4b359126473e582f62ebb09496 Mon Sep 17 00:00:00 2001
+>From aec785f6a0dcd68c3d2ad4a7d5b48d5fc94d75e8 Mon Sep 17 00:00:00 2001
 From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Date: Tue, 28 Aug 2018 23:42:31 +0200
-Subject: [PATCH] ASoC: pcm3060: Improve legibility of if-statements
+Date: Tue, 28 Aug 2018 23:42:30 +0200
+Subject: [PATCH] ASoC: pcm3060: Improve stylistics of file comments
 
-Modified some if-statements to make them more clear
+Modified the complete file comments in C++ style, to make them look more
+intentional
 
 Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3060.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
+ sound/soc/codecs/pcm3060-i2c.c | 9 ++++-----
+ sound/soc/codecs/pcm3060-spi.c | 9 ++++-----
+ sound/soc/codecs/pcm3060.c     | 9 ++++-----
+ 3 files changed, 12 insertions(+), 15 deletions(-)
 
+diff --git a/sound/soc/codecs/pcm3060-i2c.c b/sound/soc/codecs/pcm3060-i2c.c
+index 03d2b4323626..cdc8314882bc 100644
+--- a/sound/soc/codecs/pcm3060-i2c.c
++++ b/sound/soc/codecs/pcm3060-i2c.c
+@@ -1,9 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/*
+- * PCM3060 I2C driver
+- *
+- * Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
+- */
++//
++// PCM3060 I2C driver
++//
++// Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
+ 
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+diff --git a/sound/soc/codecs/pcm3060-spi.c b/sound/soc/codecs/pcm3060-spi.c
+index 8961e095ae73..f6f19fa80932 100644
+--- a/sound/soc/codecs/pcm3060-spi.c
++++ b/sound/soc/codecs/pcm3060-spi.c
+@@ -1,9 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/*
+- * PCM3060 SPI driver
+- *
+- * Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
+- */
++//
++// PCM3060 SPI driver
++//
++// Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
+ 
+ #include <linux/module.h>
+ #include <linux/spi/spi.h>
 diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index 5b9718fa766d..494d9d662be8 100644
+index ef7c627c9ac5..5b9718fa766d 100644
 --- a/sound/soc/codecs/pcm3060.c
 +++ b/sound/soc/codecs/pcm3060.c
-@@ -68,7 +68,10 @@ static int pcm3060_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
- 		return -EINVAL;
- 	}
+@@ -1,9 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+-/*
+- * PCM3060 codec driver
+- *
+- * Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
+- */
++//
++// PCM3060 codec driver
++//
++// Copyright (C) 2018 Kirill Marinushkin <kmarinushkin@birdec.tech>
  
--	reg = (dai->id == PCM3060_DAI_ID_DAC ? PCM3060_REG67 : PCM3060_REG72);
-+	if (dai->id == PCM3060_DAI_ID_DAC)
-+		reg = PCM3060_REG67;
-+	else
-+		reg = PCM3060_REG72;
- 
- 	regmap_update_bits(priv->regmap, reg, PCM3060_REG_MASK_FMT, val);
- 
-@@ -124,7 +127,10 @@ static int pcm3060_hw_params(struct snd_pcm_substream *substream,
- 	}
- 
- val_ready:
--	reg = (dai->id == PCM3060_DAI_ID_DAC ? PCM3060_REG67 : PCM3060_REG72);
-+	if (dai->id == PCM3060_DAI_ID_DAC)
-+		reg = PCM3060_REG67;
-+	else
-+		reg = PCM3060_REG72;
- 
- 	regmap_update_bits(priv->regmap, reg, PCM3060_REG_MASK_MS, val);
- 
+ #include <linux/module.h>
+ #include <sound/pcm_params.h>
 -- 
 2.18.0
