@@ -1,7 +1,7 @@
 From: Jerome Brunet <jbrunet@baylibre.com>
-Subject: [PATCH 1/4] ASoC: dmic: add Kconfig prompt for the generic dmic codec.
-Date: Wed, 29 Aug 2018 17:00:48 +0200
-Message-ID: <20180829150051.18190-2-jbrunet@baylibre.com>
+Subject: [PATCH 3/4] ASoC: meson: add axg pdm input DT binding documentation
+Date: Wed, 29 Aug 2018 17:00:50 +0200
+Message-ID: <20180829150051.18190-4-jbrunet@baylibre.com>
 References: <20180829150051.18190-1-jbrunet@baylibre.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180829150051.18190-1-jbrunet@baylibre.com>
@@ -10,30 +10,43 @@ To: Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Kevin 
 Cc: Jerome Brunet <jbrunet@baylibre.com>, alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Add Kconfig prompt for the generic digital mic to make it configurable
-through menuconfig
+Add the DT binding documentation for axg's PDM input
 
 Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
 ---
- sound/soc/codecs/Kconfig | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ .../bindings/sound/amlogic,axg-pdm.txt        | 24 +++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index adaf26e1989c..9989d35e0fc6 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -578,7 +578,11 @@ config SND_SOC_DA9055
- 	tristate
- 
- config SND_SOC_DMIC
--	tristate
-+	tristate "Generic Digital Microphone CODEC"
-+	depends on GPIOLIB
-+	help
-+	  Enable support for the Generic Digital Microphone CODEC.
-+	  Select this if your sound card has DMICs.
- 
- config SND_SOC_HDMI_CODEC
- 	tristate
+diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
+new file mode 100644
+index 000000000000..5672d0bc5b16
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.txt
+@@ -0,0 +1,24 @@
++* Amlogic Audio PDM input
++
++Required properties:
++- compatible: 'amlogic,axg-pdm'
++- reg: physical base address of the controller and length of memory
++       mapped region.
++- clocks: list of clock phandle, one for each entry clock-names.
++- clock-names: should contain the following:
++  * "pclk"   : peripheral clock.
++  * "dclk"   : pdm digital clock
++  * "sysclk" : dsp system clock
++- #sound-dai-cells: must be 0.
++
++Example of PDM on the A113 SoC:
++
++pdm: audio-controller@ff632000 {
++	compatible = "amlogic,axg-pdm";
++	reg = <0x0 0xff632000 0x0 0x34>;
++	#sound-dai-cells = <0>;
++	clocks = <&clkc_audio AUD_CLKID_PDM>,
++		 <&clkc_audio AUD_CLKID_PDM_DCLK>,
++		 <&clkc_audio AUD_CLKID_PDM_SYSCLK>;
++	clock-names = "pclk", "dclk", "sysclk";
++};
 -- 
 2.17.1
