@@ -1,26 +1,17 @@
-From: Pavel Hofman <pavel.hofman@ivitera.com>
-Subject: Adding DC offset to one channel in alsa config
-Date: Wed, 29 Aug 2018 22:15:15 +0200
-Message-ID: <fc7e6fe3-0421-76e0-2c84-c3bac338231a@ivitera.com>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: [PATCH v2 2/3] ASoC: cs4265: Add native 32bit I2S
+	transport
+Date: Thu, 30 Aug 2018 09:38:01 +1000
+Message-ID: <20180829233802.22032-2-flatmax@flatmax.org>
+References: <20180829233802.22032-1-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
- by alsa0.perex.cz (Postfix) with ESMTP id DB53E2676BD
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 22:15:26 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
- by cable.insite.cz (Postfix) with ESMTP id 8E9BBA1A40B05
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 22:15:25 +0200 (CEST)
-Received: from cable.insite.cz ([84.242.75.189])
- by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id niQsQUU5r9TB for <alsa-devel@alsa-project.org>;
- Wed, 29 Aug 2018 22:15:20 +0200 (CEST)
-Received: from [192.168.105.12] (ip28.insite.cz [81.0.237.28])
- (Authenticated sender: pavel)
- by cable.insite.cz (Postfix) with ESMTPSA id 0B9A9A1A40B01
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 22:15:20 +0200 (CEST)
-Content-Language: en-US
+Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0E385267830
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 01:39:31 +0200 (CEST)
+In-Reply-To: <20180829233802.22032-1-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,33 +21,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, ckeepax@opensource.cirrus.com
+Cc: Matt Flax <flatmax@flatmax.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The cs4265 uses 32 bit transport on the I2S bus. This patch enables native
+32 bit mode for machine drivers which use this sound card driver.
 
-Please is there a way to add a fixed DC offset to one channel stream in 
-alsa config (.asoundrc)?
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
+---
 
-We are playing with single-ended -> virtual balanced setup  ( 
-http://www.diyaudio.com/forums/pc-based/326747-virtual-balanced-regular-soundcard-linux-results.html 
-) using the route plugin. The setup works surprisingly nice.
+No changes from v1, however have tested the intended functionality and
+list discussion had firmed up its purpose.
+---
+ sound/soc/codecs/cs4265.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Unless one of the input channel AD convertors has a DC offset which 
-ruins the subtracted signal. It is easy to measure the offset.
-
-Such as e.g.
-
-type route
-ttable {
-		 0.0= 0.49 + 0.001
-		 0.1= -0.49
-	}
-
-
-Thanks a lot for any suggestions.
-
-
-Best regards,
-
-Pavel.
+diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+index 15b4ae04..17d7e6f0 100644
+--- a/sound/soc/codecs/cs4265.c
++++ b/sound/soc/codecs/cs4265.c
+@@ -495,7 +495,8 @@ static int cs4265_set_bias_level(struct snd_soc_component *component,
+ 			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000)
+ 
+ #define CS4265_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U16_LE | \
+-			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_U24_LE)
++			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_U24_LE | \
++			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_U32_LE)
+ 
+ static const struct snd_soc_dai_ops cs4265_ops = {
+ 	.hw_params	= cs4265_pcm_hw_params,
+-- 
+2.17.1
