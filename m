@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
 Subject: Applied "ASoC: adau17x1: Unused exported functions
 	changed to internal" to the asoc tree
-Date: Wed, 29 Aug 2018 12:00:09 +0100 (BST)
-Message-ID: <20180829110009.16F2D1124859@debutante.sirena.org.uk>
+Date: Wed, 29 Aug 2018 12:02:21 +0100 (BST)
+Message-ID: <20180829110221.E4C7D1124859@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 713C926766C
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:00:11 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 84ADC2676BD
+ for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 13:02:22 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
