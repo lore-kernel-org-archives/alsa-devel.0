@@ -1,40 +1,37 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2 3/3] ASoC: cs4265: Add a SPDIF enable
-	switch
-Date: Thu, 30 Aug 2018 10:11:57 +0100
-Message-ID: <20180830091157.GE32322@imbe.wolfsonmicro.main>
-References: <20180829233802.22032-1-flatmax@flatmax.org>
- <20180829233802.22032-3-flatmax@flatmax.org>
+From: kbuild test robot <lkp@intel.com>
+Subject: Re: [PATCH 1/2] ASoC: Add driver for PROTO Audio CODEC (with a
+ WM8731)
+Date: Thu, 30 Aug 2018 18:12:59 +0800
+Message-ID: <201808301856.vMNJerSs%fengguang.wu@intel.com>
+References: <20180829144727.13757-2-codrin.ciubotariu@microchip.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id C301926781F
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 11:11:59 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20180829233802.22032-3-flatmax@flatmax.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Matt Flax <flatmax@flatmax.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
+In-Reply-To: <20180829144727.13757-2-codrin.ciubotariu@microchip.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Cc: kbuild-all@01.org, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, broonie@kernel.org, robh+dt@kernel.org, alexandre.belloni@bootlin.com, nicolas.ferre@microchip.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, florian.meier@koalo.de, cristian.birsan@microchip.com
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 30, 2018 at 09:38:02AM +1000, Matt Flax wrote:
-> This patch adds a SPDIF enable switch as a SOC_SINGLE.
-> 
-> Signed-off-by: Matt Flax <flatmax@flatmax.org>
-> ---
+Hi Codrin,
 
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Thank you for the patch! Perhaps something to improve:
 
-Thanks,
-Charles
+[auto build test WARNING on at91/at91-next]
+[also build test WARNING on v4.19-rc1 next-20180830]
+[if your patch is applied to the wrong git tree, please drop us a note to help improve the system]
+
+url:    https://github.com/0day-ci/linux/commits/Codrin-Ciubotariu/ASoC-Add-driver-for-PROTO-Audio-CODEC-with-a-WM8731/20180830-060610
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/nferre/linux-at91.git at91-next
+
+
+coccinelle warnings: (new ones prefixed by >>)
+
+>> sound/soc/atmel/mikroe-proto.c:178:3-8: No need to set .owner here. The core will do it.
+
+Please review and possibly fold the followup patch.
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
