@@ -1,18 +1,19 @@
-From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: hda - Clean up jackpoll_ms option
-	handling
-Date: Thu, 30 Aug 2018 08:08:33 +0200
-Message-ID: <20180830060833.3208-1-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2 1/3] ASoC: cs4265: SOC_SINGLE register
+	value error fix
+Date: Thu, 30 Aug 2018 10:11:42 +0100
+Message-ID: <20180830091142.GD32322@imbe.wolfsonmicro.main>
+References: <20180829233802.22032-1-flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 8FA4C267837
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 08:08:35 +0200 (CEST)
-Received: from relay2.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id B4823AEAA
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 06:08:34 +0000 (UTC)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6776F26781F
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 11:11:46 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180829233802.22032-1-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,95 +23,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>
 List-Id: alsa-devel@alsa-project.org
 
-Currently the jackpoll_ms option value is passed indirectly by
-referring to an array in chip->jackpoll_ms although each card needs to
-see only the assigned value.  Also, the sanity check is done at each
-time in get_jackpoll_interval() although basically jackpoll_ms option
-is a read-only, hence we need to evaluate only once at probe time.
+On Thu, Aug 30, 2018 at 09:38:00AM +1000, Matt Flax wrote:
+> The cs4265 driver declares the "MMTLR Data Switch" register setting with
+> a 0 register value rather then the 0x12 register (CS4265_SPDIF_CTL2).
+> This incorrect value causes alsamixer to fault with the output :
+> cannot load mixer controls: Input/output error
+> 
+> This patch corrects the register value. alsamixer now runs.
+> 
+> Signed-off-by: Matt Flax <flatmax@flatmax.org>
+> ---
+> 
+> Acked-by: Paul Handrigan <Paul.Handrigan@cirrus.com>
+> Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-This patch is the code simplification about the above points: the jack
-polling interval is directly set to chip->jackpoll_interval so that it
-can be simply copied to each codec.
+These wanted to be above the --- so they are added into the
+commit message when the maintainer applies the commit. Probably
+not worth resending for it, but keep in mind for future.
 
-No functional change but only code reduction.
-
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
----
- sound/pci/hda/hda_controller.c | 23 +----------------------
- sound/pci/hda/hda_controller.h |  2 +-
- sound/pci/hda/hda_intel.c      |  3 ++-
- 3 files changed, 4 insertions(+), 24 deletions(-)
-
-diff --git a/sound/pci/hda/hda_controller.c b/sound/pci/hda/hda_controller.c
-index 53bdf76fcbba..fe2506672a72 100644
---- a/sound/pci/hda/hda_controller.c
-+++ b/sound/pci/hda/hda_controller.c
-@@ -1223,27 +1223,6 @@ void snd_hda_bus_reset(struct hda_bus *bus)
- 	bus->in_reset = 0;
- }
- 
--static int get_jackpoll_interval(struct azx *chip)
--{
--	int i;
--	unsigned int j;
--
--	if (!chip->jackpoll_ms)
--		return 0;
--
--	i = chip->jackpoll_ms[chip->dev_index];
--	if (i == 0)
--		return 0;
--	if (i < 50 || i > 60000)
--		j = 0;
--	else
--		j = msecs_to_jiffies(i);
--	if (j == 0)
--		dev_warn(chip->card->dev,
--			 "jackpoll_ms value out of range: %d\n", i);
--	return j;
--}
--
- /* HD-audio bus initialization */
- int azx_bus_init(struct azx *chip, const char *model,
- 		 const struct hdac_io_ops *io_ops)
-@@ -1326,7 +1305,7 @@ int azx_probe_codecs(struct azx *chip, unsigned int max_slots)
- 			err = snd_hda_codec_new(&chip->bus, chip->card, c, &codec);
- 			if (err < 0)
- 				continue;
--			codec->jackpoll_interval = get_jackpoll_interval(chip);
-+			codec->jackpoll_interval = chip->jackpoll_interval;
- 			codec->beep_mode = chip->beep_mode;
- 			codecs++;
- 		}
-diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
-index 3c9a2f81cfbf..33b99839753d 100644
---- a/sound/pci/hda/hda_controller.h
-+++ b/sound/pci/hda/hda_controller.h
-@@ -121,7 +121,7 @@ struct azx {
- 	int capture_streams;
- 	int capture_index_offset;
- 	int num_streams;
--	const int *jackpoll_ms; /* per-card jack poll interval */
-+	int jackpoll_interval; /* jack poll interval in jiffies */
- 
- 	/* Register interaction. */
- 	const struct hda_controller_ops *ops;
-diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
-index 0a3ce9c60f50..12647de19381 100644
---- a/sound/pci/hda/hda_intel.c
-+++ b/sound/pci/hda/hda_intel.c
-@@ -1676,7 +1676,8 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
- 	chip->driver_type = driver_caps & 0xff;
- 	check_msi(chip);
- 	chip->dev_index = dev;
--	chip->jackpoll_ms = jackpoll_ms;
-+	if (jackpoll_ms[dev] >= 50 && jackpoll_ms[dev] <= 60000)
-+		chip->jackpoll_interval = msecs_to_jiffies(jackpoll_ms[dev]);
- 	INIT_LIST_HEAD(&chip->pcm_list);
- 	INIT_WORK(&hda->irq_pending_work, azx_irq_pending_work);
- 	INIT_LIST_HEAD(&hda->list);
--- 
-2.18.0
+Thanks,
+Charles
