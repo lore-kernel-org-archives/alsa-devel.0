@@ -1,21 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2 2/3] ASoC: cs4265: Add native 32bit I2S
- transport [UNSCANNED]
-Date: Thu, 30 Aug 2018 17:43:12 +0100
-Message-ID: <20180830164312.GF32322@imbe.wolfsonmicro.main>
-References: <20180829233802.22032-1-flatmax@flatmax.org>
- <20180829233802.22032-2-flatmax@flatmax.org>
- <20180830154140.GG7301@sirena.org.uk>
+From: news@aboehler.at
+Subject: [RFC] ALSA: Add a static keep_iface quirk for two
+	known devices
+Date: Thu, 30 Aug 2018 21:57:17 +0200
+Message-ID: <20180830195717.29474-1-news@aboehler.at>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
- [67.231.149.25])
- by alsa0.perex.cz (Postfix) with ESMTP id 40CA0267668
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 18:43:16 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180830154140.GG7301@sirena.org.uk>
+Received: from mail.aboehler.at (mail.aboehler.at [176.9.113.11])
+ by alsa0.perex.cz (Postfix) with ESMTP id 34D83267668
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 21:57:56 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by mail.aboehler.at (Postfix) with ESMTP id D324C6180211
+ for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 21:57:53 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,33 +22,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Brian Austin <brian.austin@cirrus.com>, Paul Handrigan <Paul.Handrigan@cirrus.com>, Matt Flax <flatmax@flatmax.org>
+To: alsa-devel@alsa-project.org
+Cc: =?UTF-8?q?Andreas=20B=C3=B6hler?= <dev@aboehler.at>, =?UTF-8?q?Andreas=20B=C3=B6hler?= <news@aboehler.at>
 List-Id: alsa-devel@alsa-project.org
 
-On Thu, Aug 30, 2018 at 04:41:40PM +0100, Mark Brown wrote:
-> On Thu, Aug 30, 2018 at 09:38:01AM +1000, Matt Flax wrote:
-> > The cs4265 uses 32 bit transport on the I2S bus. This patch enables native
-> > 32 bit mode for machine drivers which use this sound card driver.
-> > 
-> > Signed-off-by: Matt Flax <flatmax@flatmax.org>
-> > ---
-> > 
-> > No changes from v1, however have tested the intended functionality and
-> > list discussion had firmed up its purpose.
-> > ---
-> 
-> Charles?
-
-I think this one looks fine to me:
-
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-
-Only slightly doubt I had was that the CODEC doesn't actually
-support 32bit only 24bit. It will however happily accept the
-32-bit from the bus you just loose some precision whilst playing
-it, so feels like that is basically the same as supporting it to
-me. Unless I have missed something again :-)
-
-Thanks,
-Charles
+RnJvbTogQW5kcmVhcyBCw7ZobGVyIDxuZXdzQGFib2VobGVyLmF0PgoKSGksCgpJIG93biBhIFBo
+b25pYyBIZWxpeCBCb2FyZCAxMiBVbml2ZXJzYWwgVVNCIHNvdW5kIG1peGVyIHRoYXQgSSBjb3Vs
+ZG4ndCAKZ2V0IHRvIHdvcmsgcHJvcGVybHkgb24gbXkgYm94LiBBZnRlciBzb21lIGRlYnVnZ2lu
+ZywgaXQgdHVybmVkIG91dCB0aGF0IAp0aGUgcGxheWJhY2sgc3RyZWFtIGlzIG11dGVkIHdoZW4g
+dGhlIGNhcHR1cmUgaW50ZXJmYWNlIGlzIGJyb3VnaHQgZG93bi4KClNpbmNlIEkgd2FzIG9uIDQu
+MTQsIEkgaW1wbGVtZW50ZWQgYSBxdWlyayB0aGVyZSBhbmQgd2FudGVkIHRvIHBvcnQgaXQgCnRv
+IDQuMTggYmVmb3JlIHN1Ym1pdHRpbmcgaXQgLSBqdXN0IHRvIGZpbmQgb3V0IHRoYXQgdGhlIGtl
+ZXBfaWZhY2UgCmNvbnRyb2wgaXMgdmVyeSBtdWNoIHRoZSBzYW1lIGFwcHJvYWNoLgoKVGhpcyBw
+YXRjaCBhZGRzIGEgbWl4ZXIgcXVpcmsgZm9yIGtub3duIGRldmljZXMgc3VjaCBhcyB0aGUgUGhv
+bmljIEhlbGl4IApCb2FyZCAxMiBVbml2ZXJzYWwgYW5kIHRoZSBCZWhyaW5nZXIgRkNBNjEwICh0
+ZXN0ZWQgYW5kIHJlcG9ydGVkIGJ5IApUYWthc2hpIFNha2Ftb3RvKS4gRm9yIHRoZXNlIGRldmlj
+ZXMsIHRoZSBjb250cm9sIGlzIG5vdCBjcmVhdGVkIGFuZCAKa2VlcF9pZmFjZSBpcyBzaW1wbHkg
+c2V0IHRvIHRydWUuCgpTaWduZWQtb2ZmLWJ5OiBBbmRyZWFzIELDtmhsZXIgPGRldkBhYm9laGxl
+ci5hdD4KCmRpZmYgLS1naXQgYS9zb3VuZC91c2IvbWl4ZXIuYyBiL3NvdW5kL3VzYi9taXhlci5j
+CmluZGV4IGM2M2M4NGI1NDk2OS4uZjExMjA4ZmI0ZTU4IDEwMDY0NAotLS0gYS9zb3VuZC91c2Iv
+bWl4ZXIuYworKysgYi9zb3VuZC91c2IvbWl4ZXIuYwpAQCAtMzQ3NCw5ICszNDc0LDE1IEBAIGlu
+dCBzbmRfdXNiX2NyZWF0ZV9taXhlcihzdHJ1Y3Qgc25kX3VzYl9hdWRpbyAqY2hpcCwgaW50IGN0
+cmxpZiwKIAlpZiAoZXJyIDwgMCkKIAkJZ290byBfZXJyb3I7CiAKLQllcnIgPSBjcmVhdGVfa2Vl
+cF9pZmFjZV9jdGwobWl4ZXIpOwotCWlmIChlcnIgPCAwKQotCQlnb3RvIF9lcnJvcjsKKwkvKiBG
+b3Iga25vd24gY2FyZHMsIG1ha2UgdGhlIGtlZXBfaWZhY2UgcXVpcmsgc3RhdGljCisJICogb3Ro
+ZXJ3aWVzZSwgYWRkIGEgbWl4ZXIgY29udHJvbCAqLworCWlmKHNuZF91c2JfbWl4ZXJfa2VlcF9p
+ZmFjZV9zdGF0aWNfcXVpcmsobWl4ZXIpKSB7CisJCW1peGVyLT5jaGlwLT5rZWVwX2lmYWNlID0g
+dHJ1ZTsKKwl9IGVsc2UgeworCQllcnIgPSBjcmVhdGVfa2VlcF9pZmFjZV9jdGwobWl4ZXIpOwor
+CQlpZiAoZXJyIDwgMCkKKwkJCWdvdG8gX2Vycm9yOworCX0KIAogCXNuZF91c2JfbWl4ZXJfYXBw
+bHlfY3JlYXRlX3F1aXJrKG1peGVyKTsKIApkaWZmIC0tZ2l0IGEvc291bmQvdXNiL21peGVyX3F1
+aXJrcy5jIGIvc291bmQvdXNiL21peGVyX3F1aXJrcy5jCmluZGV4IGNiZmI0OGJkZWE1MS4uNDE0
+YWExZjNhMTcwIDEwMDY0NAotLS0gYS9zb3VuZC91c2IvbWl4ZXJfcXVpcmtzLmMKKysrIGIvc291
+bmQvdXNiL21peGVyX3F1aXJrcy5jCkBAIC0yMDAwLDMgKzIwMDAsMTMgQEAgdm9pZCBzbmRfdXNi
+X21peGVyX2Z1X2FwcGx5X3F1aXJrKHN0cnVjdCB1c2JfbWl4ZXJfaW50ZXJmYWNlICptaXhlciwK
+IAl9CiB9CiAKK2Jvb2wgc25kX3VzYl9taXhlcl9rZWVwX2lmYWNlX3N0YXRpY19xdWlyayhzdHJ1
+Y3QgdXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXIpCit7CisJc3dpdGNoIChtaXhlci0+Y2hpcC0+
+dXNiX2lkKSB7CisJY2FzZSBVU0JfSUQoMHgxNzBiLCAweDAwMTUpOiAvKiBQaG9uaWMgSGVsaXgg
+Qm9hcmQgMTIgVW5pdmVyc2FsICovCisJY2FzZSBVU0JfSUQoMHgxMzk3LCAweDAwMDMpOiAvKiBC
+ZWhyaW5nZXIgRkNBIDYxMCAqLworCQlyZXR1cm4gdHJ1ZTsKKwl9CisKKwlyZXR1cm4gZmFsc2U7
+Cit9CmRpZmYgLS1naXQgYS9zb3VuZC91c2IvbWl4ZXJfcXVpcmtzLmggYi9zb3VuZC91c2IvbWl4
+ZXJfcXVpcmtzLmgKaW5kZXggNTJiZTI2ZGI1NThmLi41ODUzZTg2YWRmZmQgMTAwNjQ0Ci0tLSBh
+L3NvdW5kL3VzYi9taXhlcl9xdWlya3MuaAorKysgYi9zb3VuZC91c2IvbWl4ZXJfcXVpcmtzLmgK
+QEAgLTE0LDYgKzE0LDggQEAgdm9pZCBzbmRfdXNiX21peGVyX2Z1X2FwcGx5X3F1aXJrKHN0cnVj
+dCB1c2JfbWl4ZXJfaW50ZXJmYWNlICptaXhlciwKIAkJCQkgIHN0cnVjdCB1c2JfbWl4ZXJfZWxl
+bV9pbmZvICpjdmFsLCBpbnQgdW5pdGlkLAogCQkJCSAgc3RydWN0IHNuZF9rY29udHJvbCAqa2N0
+bCk7CiAKK2Jvb2wgc25kX3VzYl9taXhlcl9rZWVwX2lmYWNlX3N0YXRpY19xdWlyayhzdHJ1Y3Qg
+dXNiX21peGVyX2ludGVyZmFjZSAqbWl4ZXIpOworCiAjaWZkZWYgQ09ORklHX1BNCiB2b2lkIHNu
+ZF91c2JfbWl4ZXJfcmVzdW1lX3F1aXJrKHN0cnVjdCB1c2JfbWl4ZXJfaW50ZXJmYWNlICptaXhl
+cik7CiAjZW5kaWYKLS0gCjIuMTguMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
+b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
+by9hbHNhLWRldmVsCg==
