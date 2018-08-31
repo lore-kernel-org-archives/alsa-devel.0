@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tas6424: Print full register name in
-	error message" to the asoc tree
-Date: Fri, 31 Aug 2018 16:24:26 +0100 (BST)
-Message-ID: <20180831152426.932A511226FE@debutante.sirena.org.uk>
+Subject: Applied "ASoC: simple-card-util: remove dai_link
+	compatible code for platform" to the asoc tree
+Date: Fri, 31 Aug 2018 16:26:27 +0100 (BST)
+Message-ID: <20180831152627.B4B4C11226FE@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 274A2267965
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:24:26 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 41287267964
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:26:29 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Andrew F. Davis" <afd@ti.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tas6424: Print full register name in error message
+   ASoC: simple-card-util: remove dai_link compatible code for platform
 
 has been applied to the asoc tree at
 
@@ -52,55 +52,41 @@ to this mail.
 Thanks,
 Mark
 
->From 919869214b8e0b24926a278e121879f60df485bb Mon Sep 17 00:00:00 2001
-From: "Andrew F. Davis" <afd@ti.com>
-Date: Fri, 31 Aug 2018 10:14:06 -0500
-Subject: [PATCH] ASoC: tas6424: Print full register name in error message
+>From c2f0898b86486a459fa8c91d194f3b699498c0c1 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 31 Aug 2018 03:11:25 +0000
+Subject: [PATCH] ASoC: simple-card-util: remove dai_link compatible code for
+ platform
 
-The current short version of the register name may be
-ambiguous when another fault register detection is added.
-Use the full name.
+Now no simple/audio cards are using legacy dai_link style for platform.
+Let's remove compatible code.
 
-While here fix comment about clearing faults, the CLEAR_FAULT
-register actually only clears sticky bits, which are only
-warnings, fault bits can only cleared by resolving the fault.
-
-Signed-off-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas6424.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/generic/simple-card-utils.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
-index 14999b999fd3..3315ce8a15e6 100644
---- a/sound/soc/codecs/tas6424.c
-+++ b/sound/soc/codecs/tas6424.c
-@@ -408,7 +408,7 @@ static void tas6424_fault_check_work(struct work_struct *work)
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index 644cd62ba027..b400dbf1f834 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -376,13 +376,9 @@ EXPORT_SYMBOL_GPL(asoc_simple_card_init_dai);
+ int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link)
+ {
+ 	/* Assumes platform == cpu */
+-	if (dai_link->platform) {
+-		if (!dai_link->platform->of_node)
+-			dai_link->platform->of_node = dai_link->cpu_of_node;
+-	} else {
+-		if (!dai_link->platform_of_node)
+-			dai_link->platform_of_node = dai_link->cpu_of_node;
+-	}
++	if (!dai_link->platform->of_node)
++		dai_link->platform->of_node = dai_link->cpu_of_node;
++
+ 	return 0;
  
- 	ret = regmap_read(tas6424->regmap, TAS6424_GLOB_FAULT1, &reg);
- 	if (ret < 0) {
--		dev_err(dev, "failed to read FAULT1 register: %d\n", ret);
-+		dev_err(dev, "failed to read GLOB_FAULT1 register: %d\n", ret);
- 		goto out;
- 	}
- 
-@@ -451,7 +451,7 @@ static void tas6424_fault_check_work(struct work_struct *work)
- check_global_fault2_reg:
- 	ret = regmap_read(tas6424->regmap, TAS6424_GLOB_FAULT2, &reg);
- 	if (ret < 0) {
--		dev_err(dev, "failed to read FAULT2 register: %d\n", ret);
-+		dev_err(dev, "failed to read GLOB_FAULT2 register: %d\n", ret);
- 		goto out;
- 	}
- 
-@@ -524,7 +524,7 @@ static void tas6424_fault_check_work(struct work_struct *work)
- 	/* Store current warn value so we can detect any changes next time */
- 	tas6424->last_warn = reg;
- 
--	/* Clear any faults by toggling the CLEAR_FAULT control bit */
-+	/* Clear any warnings by toggling the CLEAR_FAULT control bit */
- 	ret = regmap_write_bits(tas6424->regmap, TAS6424_MISC_CTRL3,
- 				TAS6424_CLEAR_FAULT, TAS6424_CLEAR_FAULT);
- 	if (ret < 0)
+ }
 -- 
 2.19.0.rc1
