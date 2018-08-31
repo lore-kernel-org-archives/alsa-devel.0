@@ -1,65 +1,66 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH v2 2/2] ASoC: codecs: tas5720: add TAS5722 TDM slot width setting support
-Date: Fri, 31 Aug 2018 09:47:14 -0500
-Message-ID: <20180831144714.16499-2-afd@ti.com>
-References: <20180831144714.16499-1-afd@ti.com>
+Subject: [PATCH 1/3] ASoC: tas6424: Save last fault register even when clear
+Date: Fri, 31 Aug 2018 10:14:05 -0500
+Message-ID: <20180831151407.18864-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180831144714.16499-1-afd@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Andreas Dannenberg <dannenberg@ti.com>
+When there is no fault bit set in a fault register we skip the fault
+reporting section for that register. This also skips over saving that
+registers value. We save the value so we will not double report an
+error, but if an error clears then returns we will also not report it
+as we did not save the all cleared register value. Fix this by saving
+the fault register value in the all clear path.
 
-Unlike the TAS5720, the TAS5722 can be configured to utilize 16-bit wide
-slots in TDM mode. This can help easing audio clocking/frequency
-requirements.
-
-Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
+ sound/soc/codecs/tas6424.c | 12 +++++++++---
+ 1 file changed, 9 insertions(+), 3 deletions(-)
 
-Changes from v1:
- - Use switch over if
-
- sound/soc/codecs/tas5720.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
-index 3c469112477a..6bd0e5d5347f 100644
---- a/sound/soc/codecs/tas5720.c
-+++ b/sound/soc/codecs/tas5720.c
-@@ -152,6 +152,7 @@ static int tas5720_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 				    int slots, int slot_width)
- {
- 	struct snd_soc_component *component = dai->component;
-+	struct tas5720_data *tas5720 = snd_soc_component_get_drvdata(component);
- 	unsigned int first_slot;
- 	int ret;
+diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
+index 14999b999fd3..0d6145549a98 100644
+--- a/sound/soc/codecs/tas6424.c
++++ b/sound/soc/codecs/tas6424.c
+@@ -424,8 +424,10 @@ static void tas6424_fault_check_work(struct work_struct *work)
+ 	       TAS6424_FAULT_PVDD_UV |
+ 	       TAS6424_FAULT_VBAT_UV;
  
-@@ -185,6 +186,20 @@ static int tas5720_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	if (ret < 0)
- 		goto error_snd_soc_component_update_bits;
- 
-+	/* Configure TDM slot width. This is only applicable to TAS5722. */
-+	switch (tas5720->devtype) {
-+	case TAS5722:
-+		ret = snd_soc_component_update_bits(component, TAS5722_DIGITAL_CTRL2_REG,
-+						    TAS5722_TDM_SLOT_16B,
-+						    slot_width == 16 ?
-+						    TAS5722_TDM_SLOT_16B : 0);
-+		if (ret < 0)
-+			goto error_snd_soc_component_update_bits;
-+		break;
-+	default:
-+		break;
+-	if (reg)
++	if (!reg) {
++		tas6424->last_fault1 = reg;
+ 		goto check_global_fault2_reg;
 +	}
-+
- 	return 0;
  
- error_snd_soc_component_update_bits:
+ 	/*
+ 	 * Only flag errors once for a given occurrence. This is needed as
+@@ -461,8 +463,10 @@ static void tas6424_fault_check_work(struct work_struct *work)
+ 	       TAS6424_FAULT_OTSD_CH3 |
+ 	       TAS6424_FAULT_OTSD_CH4;
+ 
+-	if (!reg)
++	if (!reg) {
++		tas6424->last_fault2 = reg;
+ 		goto check_warn_reg;
++	}
+ 
+ 	if ((reg & TAS6424_FAULT_OTSD) && !(tas6424->last_fault2 & TAS6424_FAULT_OTSD))
+ 		dev_crit(dev, "experienced a global overtemp shutdown\n");
+@@ -497,8 +501,10 @@ static void tas6424_fault_check_work(struct work_struct *work)
+ 	       TAS6424_WARN_VDD_OTW_CH3 |
+ 	       TAS6424_WARN_VDD_OTW_CH4;
+ 
+-	if (!reg)
++	if (!reg) {
++		tas6424->last_warn = reg;
+ 		goto out;
++	}
+ 
+ 	if ((reg & TAS6424_WARN_VDD_UV) && !(tas6424->last_warn & TAS6424_WARN_VDD_UV))
+ 		dev_warn(dev, "experienced a VDD under voltage condition\n");
 -- 
 2.18.0
