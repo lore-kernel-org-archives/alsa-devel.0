@@ -1,20 +1,17 @@
-From: Jonathan Fether <jonf@mds.com>
-Subject: [PATCH] ASoC: sun4i-i2s: Add 24-bit sample width
-	support
-Date: Wed, 29 Aug 2018 17:32:50 -0700
-Message-ID: <20180830003250.14076-2-jonf@mds.com>
-References: <20180830003250.14076-1-jonf@mds.com>
+From: Xiao Yang <YangX92@hotmail.com>
+Subject: [PATCH] ALSA: control: Make sure that id->index does
+ not overflow in function snd_ctl_replace
+Date: Fri, 31 Aug 2018 11:00:02 +0000
+Message-ID: <HK0PR01MB2163F85F844A29460C46A6F7AD0F0@HK0PR01MB2163.apcprd01.prod.exchangelabs.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com
- [209.85.214.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 5E9F7267837
- for <alsa-devel@alsa-project.org>; Thu, 30 Aug 2018 02:33:07 +0200 (CEST)
-Received: by mail-pl1-f195.google.com with SMTP id j8-v6so3013132pll.12
- for <alsa-devel@alsa-project.org>; Wed, 29 Aug 2018 17:33:06 -0700 (PDT)
-In-Reply-To: <20180830003250.14076-1-jonf@mds.com>
+Received: from APC01-PU1-obe.outbound.protection.outlook.com
+ (mail-oln040092254076.outbound.protection.outlook.com [40.92.254.76])
+ by alsa0.perex.cz (Postfix) with ESMTP id 71E8C26781F
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 13:00:15 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,89 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Jonathan Fether <jonf@mds.com>
+To: "tiwai@suse.com" <tiwai@suse.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "92siuyang@gmail.com" <92siuyang@gmail.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "rf@opensource.cirrus.com" <rf@opensource.cirrus.com>, "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>, Xiao Yang <YangX92@hotmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add additional clock divider ratios for BCLK and MCLK, per the A20 datasheet.
-Add support for 32-bit physical sample width.
-Add support for 24-bit actual sample width.
-Change third parameter of call to sun4i_i2s_set_clk_rate() from sun4i_i2s_hw_params() to use physical sample width, which is appropriate here.
+From: Young_X <YangX92@hotmail.com>
 
-Signed-off-by: Jonathan Fether <jonf@mds.com>
+    The ALSA control code expects that the range of assigned indices to a 
+    control is continuous and does not overflow. Currently there are no 
+    checks to enforce this.
+    If a control with a overflowing index range is created that control 
+    becomes effectively inaccessible and unremovable since 
+    snd_ctl_find_id() will not be able to find it. This patch adds a check 
+    that makes sure that controls with a overflowing index range can not 
+    be created.
+    (same issue as CVE-2014-4656)
+
+Signed-off-by: Young_X <YangX92@hotmail.com>
 ---
- sound/soc/sunxi/sun4i-i2s.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ sound/core/control.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index a4aa931..ba1cfae 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -207,6 +207,8 @@ struct sun4i_i2s_clk_div {
- 	{ .div = 8, .val = 3 },
- 	{ .div = 12, .val = 4 },
- 	{ .div = 16, .val = 5 },
-+	{ .div = 32, .val = 6 },
-+	{ .div = 64, .val = 7 },
- 	/* TODO - extend divide ratio supported by newer SoCs */
- };
- 
-@@ -219,6 +221,9 @@ struct sun4i_i2s_clk_div {
- 	{ .div = 12, .val = 5 },
- 	{ .div = 16, .val = 6 },
- 	{ .div = 24, .val = 7 },
-+	{ .div = 32, .val = 8 },
-+	{ .div = 48, .val = 9 },
-+	{ .div = 64, .val = 10 },
- 	/* TODO - extend divide ratio supported by newer SoCs */
- };
- 
-@@ -393,6 +398,9 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 	case 16:
- 		width = DMA_SLAVE_BUSWIDTH_2_BYTES;
- 		break;
-+	case 32:
-+		width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+		break;
- 	default:
- 		dev_err(dai->dev, "Unsupported physical sample width: %d\n",
- 			params_physical_width(params));
-@@ -405,6 +413,10 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 		sr = 0;
- 		wss = 0;
- 		break;
-+	case 24:
-+		sr = 2;
-+		wss = 3;
-+		break;
- 
- 	default:
- 		dev_err(dai->dev, "Unsupported sample width: %d\n",
-@@ -418,7 +430,7 @@ static int sun4i_i2s_hw_params(struct snd_pcm_substream *substream,
- 			   sr + i2s->variant->fmt_offset);
- 
- 	return sun4i_i2s_set_clk_rate(dai, params_rate(params),
--				      params_width(params));
-+				      params_physical_width(params));
- }
- 
- static int sun4i_i2s_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
-@@ -720,14 +732,14 @@ static int sun4i_i2s_dai_probe(struct snd_soc_dai *dai)
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
- 	},
- 	.playback = {
- 		.stream_name = "Playback",
- 		.channels_min = 2,
- 		.channels_max = 2,
- 		.rates = SNDRV_PCM_RATE_8000_192000,
--		.formats = SNDRV_PCM_FMTBIT_S16_LE,
-+		.formats = SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE,
- 	},
- 	.ops = &sun4i_i2s_dai_ops,
- 	.symmetric_rates = 1,
+diff --git a/sound/core/control.c b/sound/core/control.c
+index 9aa15bf..6435772 100644
+--- a/sound/core/control.c
++++ b/sound/core/control.c
+@@ -441,6 +441,11 @@ int snd_ctl_replace(struct snd_card *card, struct snd_kcontrol *kcontrol,
+ 		goto error;
+ 	}
+ 	id = kcontrol->id;
++	if (id.index > UINT_MAX - kcontrol->count) {
++		ret = -EINVAL;
++		goto error;
++	}
++
+ 	down_write(&card->controls_rwsem);
+ 	old = snd_ctl_find_id(card, &id);
+ 	if (!old) {
 -- 
-1.9.1
+2.7.4
