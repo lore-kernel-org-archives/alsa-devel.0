@@ -1,53 +1,49 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH 1/4] ASoC: tlv320aic31xx: Add short circuit detection support
-Date: Fri, 31 Aug 2018 13:24:31 -0500
-Message-ID: <20180831182434.14499-1-afd@ti.com>
+Subject: [PATCH 2/4] ASoC: tlv320aic31xx: Add overflow detection support
+Date: Fri, 31 Aug 2018 13:24:32 -0500
+Message-ID: <20180831182434.14499-2-afd@ti.com>
+References: <20180831182434.14499-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180831182434.14499-1-afd@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-These devices support detecting and reporting short circuits across
-the output stages. Add support for reporting these issue. Do this
-by registering an interrupt if available and enabling this error
-to trigger that interrupt in the device.
+Similar to short circuit detection, when the ADC/DAC is saturated and
+overflows poor audio quality can result and should be reported to the
+user. This device support Automatic Dynamic Range Compression (DRC)
+to reduce this but it is not enabled currently in this driver.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 55 ++++++++++++++++++++++++++++++++
- sound/soc/codecs/tlv320aic31xx.h | 16 ++++++++++
- 2 files changed, 71 insertions(+)
+ sound/soc/codecs/tlv320aic31xx.c | 34 ++++++++++++++++++++++++++++++--
+ sound/soc/codecs/tlv320aic31xx.h |  7 +++++++
+ 2 files changed, 39 insertions(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index f8d0f3ebed9c..d8783af7d31c 100644
+index d8783af7d31c..c49f6796b086 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -161,6 +161,7 @@ struct aic31xx_priv {
- 	u8 p_div;
- 	int rate_div_line;
- 	bool master_dapm_route_applied;
-+	int irq;
- };
+@@ -1356,7 +1356,7 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 	if (value)
+ 		handled = true;
+ 	else
+-		goto exit;
++		goto read_overflow;
  
- struct aic31xx_rate_divs {
-@@ -1338,6 +1339,40 @@ static const struct acpi_device_id aic31xx_acpi_match[] = {
- MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
- #endif
+ 	if (value & AIC31XX_HPLSCDETECT)
+ 		dev_err(dev, "Short circuit on Left output is detected\n");
+@@ -1366,6 +1366,35 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 		      AIC31XX_HPRSCDETECT))
+ 		dev_err(dev, "Unknown DAC interrupt flags: 0x%08x\n", value);
  
-+static irqreturn_t aic31xx_irq(int irq, void *data)
-+{
-+	struct aic31xx_priv *aic31xx = data;
-+	struct device *dev = aic31xx->dev;
-+	unsigned int value;
-+	bool handled = false;
-+	int ret;
-+
-+	ret = regmap_read(aic31xx->regmap, AIC31XX_INTRDACFLAG, &value);
++read_overflow:
++	ret = regmap_read(aic31xx->regmap, AIC31XX_OFFLAG, &value);
 +	if (ret) {
-+		dev_err(dev, "Failed to read interrupt mask: %d\n", ret);
++		dev_err(dev, "Failed to read overflow flag: %d\n", ret);
 +		goto exit;
 +	}
 +
@@ -56,84 +52,53 @@ index f8d0f3ebed9c..d8783af7d31c 100644
 +	else
 +		goto exit;
 +
-+	if (value & AIC31XX_HPLSCDETECT)
-+		dev_err(dev, "Short circuit on Left output is detected\n");
-+	if (value & AIC31XX_HPRSCDETECT)
-+		dev_err(dev, "Short circuit on Right output is detected\n");
-+	if (value & ~(AIC31XX_HPLSCDETECT |
-+		      AIC31XX_HPRSCDETECT))
-+		dev_err(dev, "Unknown DAC interrupt flags: 0x%08x\n", value);
++	if (value & AIC31XX_DAC_OF_LEFT)
++		dev_err(dev, "Left-channel DAC overflow has occurred\n");
++	if (value & AIC31XX_DAC_OF_RIGHT)
++		dev_err(dev, "Right-channel DAC overflow has occurred\n");
++	if (value & AIC31XX_DAC_OF_SHIFTER)
++		dev_err(dev, "DAC barrel shifter overflow has occurred\n");
++	if (value & AIC31XX_ADC_OF)
++		dev_err(dev, "ADC overflow has occurred\n");
++	if (value & AIC31XX_ADC_OF_SHIFTER)
++		dev_err(dev, "ADC barrel shifter overflow has occurred\n");
++	if (value & ~(AIC31XX_DAC_OF_LEFT |
++		      AIC31XX_DAC_OF_RIGHT |
++		      AIC31XX_DAC_OF_SHIFTER |
++		      AIC31XX_ADC_OF |
++		      AIC31XX_ADC_OF_SHIFTER))
++		dev_err(dev, "Unknown overflow interrupt flags: 0x%08x\n", value);
 +
-+exit:
-+	if (handled)
-+		return IRQ_HANDLED;
-+	else
-+		return IRQ_NONE;
-+}
-+
- static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 			     const struct i2c_device_id *id)
- {
-@@ -1360,6 +1395,7 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 	aic31xx->dev = &i2c->dev;
-+	aic31xx->irq = i2c->irq;
+ exit:
+ 	if (handled)
+ 		return IRQ_HANDLED;
+@@ -1447,7 +1476,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 				   AIC31XX_GPIO1_FUNC_SHIFT);
  
- 	aic31xx->codec_type = id->driver_data;
+ 		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
+-			     AIC31XX_SC);
++			     AIC31XX_SC |
++			     AIC31XX_ENGINE);
  
-@@ -1404,6 +1440,25 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 		return ret;
- 	}
- 
-+	if (aic31xx->irq > 0) {
-+		regmap_update_bits(aic31xx->regmap, AIC31XX_GPIO1,
-+				   AIC31XX_GPIO1_FUNC_MASK,
-+				   AIC31XX_GPIO1_INT1 <<
-+				   AIC31XX_GPIO1_FUNC_SHIFT);
-+
-+		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
-+			     AIC31XX_SC);
-+
-+		ret = devm_request_threaded_irq(aic31xx->dev, aic31xx->irq,
-+						NULL, aic31xx_irq,
-+						IRQF_ONESHOT, "aic31xx-irq",
-+						aic31xx);
-+		if (ret) {
-+			dev_err(aic31xx->dev, "Unable to request IRQ\n");
-+			return ret;
-+		}
-+	}
-+
- 	if (aic31xx->codec_type & DAC31XX_BIT)
- 		return devm_snd_soc_register_component(&i2c->dev,
- 				&soc_codec_driver_aic31xx,
+ 		ret = devm_request_threaded_irq(aic31xx->dev, aic31xx->irq,
+ 						NULL, aic31xx_irq,
 diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index 0b587585b38b..52e171988906 100644
+index 52e171988906..2636f2c6bc79 100644
 --- a/sound/soc/codecs/tlv320aic31xx.h
 +++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -191,6 +191,22 @@ struct aic31xx_pdata {
- #define AIC31XX_SC			BIT(3)
- #define AIC31XX_ENGINE			BIT(2)
+@@ -173,6 +173,13 @@ struct aic31xx_pdata {
+ #define AIC31XX_HPRDRVPWRSTATUS_MASK	BIT(1)
+ #define AIC31XX_SPRDRVPWRSTATUS_MASK	BIT(0)
  
-+/* AIC31XX_GPIO1 */
-+#define AIC31XX_GPIO1_FUNC_MASK		GENMASK(5, 2)
-+#define AIC31XX_GPIO1_FUNC_SHIFT	2
-+#define AIC31XX_GPIO1_DISABLED		0x00
-+#define AIC31XX_GPIO1_INPUT		0x01
-+#define AIC31XX_GPIO1_GPI		0x02
-+#define AIC31XX_GPIO1_GPO		0x03
-+#define AIC31XX_GPIO1_CLKOUT		0x04
-+#define AIC31XX_GPIO1_INT1		0x05
-+#define AIC31XX_GPIO1_INT2		0x06
-+#define AIC31XX_GPIO1_ADC_WCLK		0x07
-+#define AIC31XX_GPIO1_SBCLK		0x08
-+#define AIC31XX_GPIO1_SWCLK		0x09
-+#define AIC31XX_GPIO1_ADC_MOD_CLK	0x10
-+#define AIC31XX_GPIO1_SDOUT		0x11
++/* AIC31XX_OFFLAG */
++#define AIC31XX_DAC_OF_LEFT		BIT(7)
++#define AIC31XX_DAC_OF_RIGHT		BIT(6)
++#define AIC31XX_DAC_OF_SHIFTER		BIT(5)
++#define AIC31XX_ADC_OF			BIT(3)
++#define AIC31XX_ADC_OF_SHIFTER		BIT(1)
 +
- /* AIC31XX_DACSETUP */
- #define AIC31XX_SOFTSTEP_MASK		GENMASK(1, 0)
- 
+ /* AIC31XX_INTRDACFLAG */
+ #define AIC31XX_HPLSCDETECT		BIT(7)
+ #define AIC31XX_HPRSCDETECT		BIT(6)
 -- 
 2.18.0
