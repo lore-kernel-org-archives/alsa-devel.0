@@ -1,14 +1,14 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 03/12] ASoC: SOF: Add driver debug support.
-Date: Fri, 31 Aug 2018 16:19:01 +0100
-Message-ID: <20180831151910.16122-4-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v2 11/12] ASoC: SOF: Add userspace ABI support
+Date: Fri, 31 Aug 2018 16:19:09 +0100
+Message-ID: <20180831151910.16122-12-liam.r.girdwood@linux.intel.com>
 References: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EDAA267964
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D4EF267951
  for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:19:50 +0200 (CEST)
 In-Reply-To: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -24,177 +24,270 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Add debugFS files that can be used to expose DSP memories and
-and peripherals to userspace to assist with firmware debugging.
+Add userspace ABI for audio userspace application IO outside of regular
+ALSA PCM and kcontrols. This is intended to be used to format
+coefficients and data for custom processing components.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/sof/debug.c | 157 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 157 insertions(+)
- create mode 100644 sound/soc/sof/debug.c
+ include/uapi/sound/sof-abi.h  |  29 ++++++++++
+ include/uapi/sound/sof-eq.h   | 102 ++++++++++++++++++++++++++++++++++
+ include/uapi/sound/sof-fw.h   |  67 ++++++++++++++++++++++
+ include/uapi/sound/sof-tone.h |  27 +++++++++
+ 4 files changed, 225 insertions(+)
+ create mode 100644 include/uapi/sound/sof-abi.h
+ create mode 100644 include/uapi/sound/sof-eq.h
+ create mode 100644 include/uapi/sound/sof-fw.h
+ create mode 100644 include/uapi/sound/sof-tone.h
 
-diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+diff --git a/include/uapi/sound/sof-abi.h b/include/uapi/sound/sof-abi.h
 new file mode 100644
-index 000000000000..67c195573d79
+index 000000000000..ff208d2f7573
 --- /dev/null
-+++ b/sound/soc/sof/debug.c
-@@ -0,0 +1,157 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
++++ b/include/uapi/sound/sof-abi.h
+@@ -0,0 +1,29 @@
++// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note)) OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
 +// redistributing this file, you may do so under either license.
 +//
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
-+// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-+//         Yan Wang <yan.wan@linux.intel.com>
++
++#ifndef __INCLUDE_UAPI_ABI_H__
++#define __INCLUDE_UAPI_ABI_H__
++
++#define SOF_ABI_VERSION		1
++#define SOF_ABI_MAGIC		0x00464F53	/* "SOF\0" */
++
++/*
++ * Header for all non IPC ABI data. Identifies data type, size and ABI.
++ * Used by any bespoke component data structures or binary blobs.
++ */
++
++struct sof_abi_hdr {
++	uint32_t magic;		/* 'S', 'O', 'F', '\0' */
++	uint32_t type;		/* component specific type */
++	uint32_t size;		/* size in bytes of data excluding this struct */
++	uint32_t abi;		/* SOF ABI version */
++	uint32_t comp_abi;	/* component specific ABI version */
++	char data[0];
++}  __attribute__((packed));
++
++#endif
+diff --git a/include/uapi/sound/sof-eq.h b/include/uapi/sound/sof-eq.h
+new file mode 100644
+index 000000000000..02607a89c492
+--- /dev/null
++++ b/include/uapi/sound/sof-eq.h
+@@ -0,0 +1,102 @@
++// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note)) OR BSD-3-Clause)
 +//
-+// Generic debug routines used to export DSP MMIO and memories to userspace
-+// for firmware debugging.
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++// Author: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
 +//
 +
-+#include <linux/delay.h>
-+#include <linux/fs.h>
-+#include <linux/slab.h>
-+#include <linux/device.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm.h>
-+#include <linux/pm_runtime.h>
-+#include <linux/debugfs.h>
-+#include <linux/uaccess.h>
-+#include <uapi/sound/sof-ipc.h>
-+#include "sof-priv.h"
-+#include "ops.h"
++#ifndef EQ_H
++#define EQ_H
 +
-+static int sof_dfsentry_open(struct inode *inode, struct file *file)
-+{
-+	file->private_data = inode->i_private;
++/* FIR EQ type */
 +
-+	return 0;
-+}
++/* Component will reject non-matching configuration. The version number need
++ * to be incremented with any ABI changes in function fir_cmd().
++ */
++#define SOF_EQ_FIR_ABI_VERSION  1
 +
-+static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
-+				 size_t count, loff_t *ppos)
-+{
-+	struct snd_sof_dfsentry_io *dfse = file->private_data;
-+	struct snd_sof_dev *sdev = dfse->sdev;
-+	int size, err;
-+	u32 *buf;
-+	loff_t pos = *ppos;
-+	size_t ret;
++#define SOF_EQ_FIR_IDX_SWITCH	0
 +
-+	size = dfse->size;
++#define SOF_EQ_FIR_MAX_SIZE 4096 /* Max size allowed for coef data in bytes */
 +
-+	/* validate position & count */
-+	if (pos < 0)
-+		return -EINVAL;
-+	if (pos >= size || !count)
-+		return 0;
-+	if (count > size - pos)
-+		count = size - pos;
++/*
++ * eq_fir_configuration data structure contains this information
++ *     uint16_t channels_in_config
++ *         This describes the number of channels in this EQ config data. It
++ *         can be different from PLATFORM_MAX_CHANNELS.
++ *     uint16_t number_of_responses
++ *         0=no responses, 1=one response defined, 2=two responses defined, etc.
++ *     int16_t data[]
++ *         assign_response[STREAM_MAX_CHANNELS]
++ *             -1 = not defined, 0 = use first response, 1 = use 2nd response, etc.
++ *             E.g. {0, 0, 0, 0, -1, -1, -1, -1} would apply to channels 0-3 the
++ *	       same first defined response and leave channels 4-7 unequalized.
++ *         coef_data[]
++ *             Repeated data { filter_length, input_shift, output_shift, h[] }
++ *	       for every EQ response defined where vector h has filter_length
++ *             number of coefficients. Coefficients in h[] are in Q1.15 format.
++ *             E.g. 16384 (Q1.15) = 0.5. The shifts are number of right shifts.
++ */
 +
-+	/* intermediate buffer size must be u32 multiple */
-+	size = (count + 3) & ~3;
-+	buf = kzalloc(size, GFP_KERNEL);
-+	if (!buf)
-+		return -ENOMEM;
++struct sof_eq_fir_config {
++	uint16_t channels_in_config;
++	uint16_t number_of_responses;
++	int16_t data[];
++} __attribute__((packed));
 +
-+	/* copy from DSP MMIO */
-+	err = pm_runtime_get_sync(sdev->dev);
-+	if (err < 0) {
-+		dev_err(sdev->dev, "error: debugFS failed to resume %d\n",
-+			err);
-+		return err;
-+	}
++/* IIR EQ type */
 +
-+	memcpy_fromio(buf,  dfse->buf + pos, size);
++/* Component will reject non-matching configuration. The version number need
++ * to be incremented with any ABI changes in function fir_cmd().
++ */
++#define SOF_EQ_FIR_ABI_VERSION  1
 +
-+	ret = pm_runtime_put(sdev->dev);
-+	if (ret < 0)
-+		dev_err(sdev->dev, "error: debugFS failed to idle %zd\n",
-+			ret);
++#define SOF_EQ_IIR_IDX_SWITCH   0
 +
-+	/* copy to userspace */
-+	ret = copy_to_user(buffer, buf, count);
-+	kfree(buf);
++#define SOF_EQ_IIR_MAX_SIZE 1024 /* Max size allowed for coef data in bytes */
 +
-+	/* update count & position if copy succeeded */
-+	if (ret == count)
-+		return -EFAULT;
-+	count -= ret;
-+	*ppos = pos + count;
++/* eq_iir_configuration
++ *     uint32_t channels_in_config
++ *         This describes the number of channels in this EQ config data. It
++ *         can be different from PLATFORM_MAX_CHANNELS.
++ *     uint32_t number_of_responses_defined
++ *         0=no responses, 1=one response defined, 2=two responses defined, etc.
++ *     int32_t data[]
++ *         Data consist of two parts. First is the response assign vector that
++ *	   has length of channels_in_config. The latter part is coefficient
++ *         data.
++ *         uint32_t assign_response[channels_in_config]
++ *             -1 = not defined, 0 = use first response, 1 = use 2nd, etc.
++ *             E.g. {0, 0, 0, 0, -1, -1, -1, -1} would apply to channels 0-3 the
++ *             same first defined response and leave channels 4-7 unequalized.
++ *         coefficient_data[]
++ *             <1st EQ>
++ *             uint32_t num_biquads
++ *             uint32_t num_biquads_in_series
++ *             <1st biquad>
++ *             int32_t coef_a2       Q2.30 format
++ *             int32_t coef_a1       Q2.30 format
++ *             int32_t coef_b2       Q2.30 format
++ *             int32_t coef_b1       Q2.30 format
++ *             int32_t coef_b0       Q2.30 format
++ *             int32_t output_shift  number of shifts right, shift left is negative
++ *             int32_t output_gain   Q2.14 format
++ *             <2nd biquad>
++ *             ...
++ *             <2nd EQ>
++ *
++ *         Note: A flat response biquad can be made with a section set to
++ *         b0 = 1.0, gain = 1.0, and other parameters set to 0
++ *         {0, 0, 0, 0, 1073741824, 0, 16484}
++ */
 +
-+	return count;
-+}
++struct sof_eq_iir_config {
++	uint32_t channels_in_config;
++	uint32_t number_of_responses;
++	int32_t data[];
++} __attribute__((packed));
 +
-+static const struct file_operations sof_dfs_fops = {
-+	.open = sof_dfsentry_open,
-+	.read = sof_dfsentry_read,
-+	.llseek = default_llseek,
++#endif /* EQ_H */
+diff --git a/include/uapi/sound/sof-fw.h b/include/uapi/sound/sof-fw.h
+new file mode 100644
+index 000000000000..3bf86ce00f93
+--- /dev/null
++++ b/include/uapi/sound/sof-fw.h
+@@ -0,0 +1,67 @@
++// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note)) OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++//
++
++/*
++ * Firmware file format .
++ */
++
++#ifndef __INCLUDE_UAPI_SOF_FW_H__
++#define __INCLUDE_UAPI_SOF_FW_H__
++
++#define SND_SOF_FW_SIG_SIZE	4
++#define SND_SOF_FW_ABI		1
++#define SND_SOF_FW_SIG		"Reef"
++
++/*
++ * Firmware module is made up of 1 . N blocks of different types. The
++ * Block header is used to determine where and how block is to be copied in the
++ * DSP/host memory space.
++ */
++enum snd_sof_fw_blk_type {
++	SOF_BLK_IMAGE	= 0,	/* whole image - parsed by ROMs */
++	SOF_BLK_TEXT	= 1,
++	SOF_BLK_DATA	= 2,
++	SOF_BLK_CACHE	= 3,
++	SOF_BLK_REGS	= 4,
++	SOF_BLK_SIG	= 5,
++	SOF_BLK_ROM	= 6,
++	/* add new block types here */
 +};
 +
-+int snd_sof_debugfs_create_item(struct snd_sof_dev *sdev,
-+				void __iomem *base, size_t size,
-+				const char *name)
-+{
-+	struct snd_sof_dfsentry_io *dfse;
++struct snd_sof_blk_hdr {
++	enum snd_sof_fw_blk_type type;
++	uint32_t size;		/* bytes minus this header */
++	uint32_t offset;	/* offset from base */
++} __attribute__((packed));
 +
-+	if (!sdev)
-+		return -EINVAL;
++/*
++ * Firmware file is made up of 1 .. N different modules types. The module
++ * type is used to determine how to load and parse the module.
++ */
++enum snd_sof_fw_mod_type {
++	SOF_FW_BASE	= 0,	/* base firmware image */
++	SOF_FW_MODULE	= 1,	/* firmware module */
++};
 +
-+	dfse = kzalloc(sizeof(*dfse), GFP_KERNEL);
-+	if (!dfse)
-+		return -ENOMEM;
++struct snd_sof_mod_hdr {
++	enum snd_sof_fw_mod_type type;
++	uint32_t size;		/* bytes minus this header */
++	uint32_t num_blocks;	/* number of blocks */
++} __attribute__((packed));
 +
-+	dfse->buf = base;
-+	dfse->size = size;
-+	dfse->sdev = sdev;
++/*
++ * Firmware file header.
++ */
++struct snd_sof_fw_header {
++	unsigned char sig[SND_SOF_FW_SIG_SIZE]; /* "Reef" */
++	uint32_t file_size;	/* size of file minus this header */
++	uint32_t num_modules;	/* number of modules */
++	uint32_t abi;		/* version of header format */
++} __attribute__((packed));
 +
-+	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
-+					     dfse, &sof_dfs_fops);
-+	if (!dfse->dfsentry) {
-+		dev_err(sdev->dev, "cannot create debugfs entry.\n");
-+		kfree(dfse);
-+		return -ENODEV;
-+	}
++#endif
+diff --git a/include/uapi/sound/sof-tone.h b/include/uapi/sound/sof-tone.h
+new file mode 100644
+index 000000000000..81f7bc1eca8e
+--- /dev/null
++++ b/include/uapi/sound/sof-tone.h
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: ((GPL-2.0 WITH Linux-syscall-note)) OR BSD-3-Clause)
++//
++// This file is provided under a dual BSD/GPLv2 license.  When using or
++// redistributing this file, you may do so under either license.
++//
++// Copyright(c) 2018 Intel Corporation. All rights reserved.
++// Author: Seppo Ingalsuo <seppo.ingalsuo@linux.intel.com>
++//
 +
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_sof_debugfs_create_item);
++#ifndef TONE_H
++#define TONE_H
 +
-+int snd_sof_dbg_init(struct snd_sof_dev *sdev)
-+{
-+	const struct snd_sof_dsp_ops *ops = sdev->ops;
-+	const struct snd_sof_debugfs_map *map;
-+	int err = 0, i;
++/* Component will reject non-matching configuration. The version number need
++ * to be incremented with any ABI changes in function fir_cmd().
++ */
++#define SOF_TONE_ABI_VERSION		1
 +
-+	/* use "sof" as top level debugFS dir */
-+	sdev->debugfs_root = debugfs_create_dir("sof", NULL);
-+	if (IS_ERR_OR_NULL(sdev->debugfs_root)) {
-+		dev_err(sdev->dev, "error: failed to create debugfs directory\n");
-+		return -EINVAL;
-+	}
++#define SOF_TONE_IDX_FREQUENCY		0
++#define SOF_TONE_IDX_AMPLITUDE		1
++#define SOF_TONE_IDX_FREQ_MULT		2
++#define SOF_TONE_IDX_AMPL_MULT		3
++#define SOF_TONE_IDX_LENGTH		4
++#define SOF_TONE_IDX_PERIOD		5
++#define SOF_TONE_IDX_REPEATS		6
++#define SOF_TONE_IDX_LIN_RAMP_STEP	7
 +
-+	/* create debugFS files for platform specific MMIO/DSP memories */
-+	for (i = 0; i < ops->debug_map_count; i++) {
-+		map = &ops->debug_map[i];
-+
-+		err = snd_sof_debugfs_create_item(sdev, sdev->bar[map->bar] +
-+						  map->offset, map->size,
-+						  map->name);
-+		if (err < 0)
-+			dev_err(sdev->dev, "cannot create debugfs for %s\n",
-+				map->name);
-+	}
-+
-+	return err;
-+}
-+EXPORT_SYMBOL(snd_sof_dbg_init);
-+
-+void snd_sof_free_debug(struct snd_sof_dev *sdev)
-+{
-+	debugfs_remove_recursive(sdev->debugfs_root);
-+}
-+EXPORT_SYMBOL(snd_sof_free_debug);
++#endif /* TONE_ABI_H */
 -- 
 2.17.1
