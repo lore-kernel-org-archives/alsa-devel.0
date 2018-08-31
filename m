@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: cs4265: Add native 32bit I2S transport"
-	to the asoc tree
-Date: Fri, 31 Aug 2018 16:39:40 +0100 (BST)
-Message-ID: <20180831153940.BC45C11226FE@debutante.sirena.org.uk>
+Subject: Applied "ASoC: cs4265: SOC_SINGLE register value error
+	fix" to the asoc tree
+Date: Fri, 31 Aug 2018 16:40:38 +0100 (BST)
+Message-ID: <20180831154038.31D1A11226FE@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0831C267964
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:39:41 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 2FF6E267964
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:40:38 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: cs4265: Add native 32bit I2S transport
+   ASoC: cs4265: SOC_SINGLE register value error fix
 
 has been applied to the asoc tree at
 
@@ -52,34 +52,37 @@ to this mail.
 Thanks,
 Mark
 
->From be47e75eb1419ffc1d9c26230963fd5fa3055097 Mon Sep 17 00:00:00 2001
+>From 6f18bcdaa24bae39c746b57b95af19ff3c41b17f Mon Sep 17 00:00:00 2001
 From: Matt Flax <flatmax@flatmax.org>
-Date: Thu, 30 Aug 2018 09:38:01 +1000
-Subject: [PATCH] ASoC: cs4265: Add native 32bit I2S transport
+Date: Thu, 30 Aug 2018 09:38:00 +1000
+Subject: [PATCH] ASoC: cs4265: SOC_SINGLE register value error fix
 
-The cs4265 uses 32 bit transport on the I2S bus. This patch enables native
-32 bit mode for machine drivers which use this sound card driver.
+The cs4265 driver declares the "MMTLR Data Switch" register setting with
+a 0 register value rather then the 0x12 register (CS4265_SPDIF_CTL2).
+This incorrect value causes alsamixer to fault with the output :
+cannot load mixer controls: Input/output error
+
+This patch corrects the register value. alsamixer now runs.
 
 Signed-off-by: Matt Flax <flatmax@flatmax.org>
-Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/cs4265.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/codecs/cs4265.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
 diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index 15b4ae04870f..17d7e6f0dcdb 100644
+index 275677de669f..15b4ae04870f 100644
 --- a/sound/soc/codecs/cs4265.c
 +++ b/sound/soc/codecs/cs4265.c
-@@ -495,7 +495,8 @@ static int cs4265_set_bias_level(struct snd_soc_component *component,
- 			SNDRV_PCM_RATE_176400 | SNDRV_PCM_RATE_192000)
- 
- #define CS4265_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_U16_LE | \
--			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_U24_LE)
-+			SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_U24_LE | \
-+			SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_U32_LE)
- 
- static const struct snd_soc_dai_ops cs4265_ops = {
- 	.hw_params	= cs4265_pcm_hw_params,
+@@ -157,8 +157,7 @@ static const struct snd_kcontrol_new cs4265_snd_controls[] = {
+ 	SOC_SINGLE("Validity Bit Control Switch", CS4265_SPDIF_CTL2,
+ 				3, 1, 0),
+ 	SOC_ENUM("SPDIF Mono/Stereo", spdif_mono_stereo_enum),
+-	SOC_SINGLE("MMTLR Data Switch", 0,
+-				1, 1, 0),
++	SOC_SINGLE("MMTLR Data Switch", CS4265_SPDIF_CTL2, 0, 1, 0),
+ 	SOC_ENUM("Mono Channel Select", spdif_mono_select_enum),
+ 	SND_SOC_BYTES("C Data Buffer", CS4265_C_DATA_BUFF, 24),
+ };
 -- 
 2.19.0.rc1
