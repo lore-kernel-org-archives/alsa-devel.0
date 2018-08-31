@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: simple-card: support
+Subject: Applied "ASoC: simple-card-util: support
 	snd_soc_dai_link_component style for platform" to the asoc tree
-Date: Fri, 31 Aug 2018 16:31:57 +0100 (BST)
-Message-ID: <20180831153157.4BE3E11226FE@debutante.sirena.org.uk>
-References: <87o9djkzjg.wl-kuninori.morimoto.gx@renesas.com>
+Date: Fri, 31 Aug 2018 16:32:04 +0100 (BST)
+Message-ID: <20180831153205.048DD11226FE@debutante.sirena.org.uk>
+References: <87pnxzkzjt.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id ED55A267964
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:31:57 +0200 (CEST)
-In-Reply-To: <87o9djkzjg.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CFC22679BC
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:32:05 +0200 (CEST)
+In-Reply-To: <87pnxzkzjt.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: simple-card: support snd_soc_dai_link_component style for platform
+   ASoC: simple-card-util: support snd_soc_dai_link_component style for platform
 
 has been applied to the asoc tree at
 
@@ -53,11 +53,11 @@ to this mail.
 Thanks,
 Mark
 
->From e58f41e41185c6906bd11c73c4e76aa5fc3ea685 Mon Sep 17 00:00:00 2001
+>From 868cdb4690699b04ca4d09b1e0178dfc680dbd8e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 31 Aug 2018 03:10:33 +0000
-Subject: [PATCH] ASoC: simple-card: support snd_soc_dai_link_component style
- for platform
+Date: Fri, 31 Aug 2018 03:10:20 +0000
+Subject: [PATCH] ASoC: simple-card-util: support snd_soc_dai_link_component
+ style for platform
 
 Current ASoC is supporting snd_soc_dai_link_component for binding,
 it is more useful than current legacy style.
@@ -68,7 +68,7 @@ We want to have it on Platform too in the future.
 If all Codec/CPU/Platform are replaced into snd_soc_dai_link_component
 style, we can remove legacy complex style.
 This patch supports snd_soc_dai_link_component style
-for simple-card for platform.
+for simple-card-util for platform.
 
 [current]
 struct snd_soc_dai_link {
@@ -104,50 +104,45 @@ struct snd_soc_dai_link {
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/simple-card.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ include/sound/simple_card_utils.h     |  2 +-
+ sound/soc/generic/simple-card-utils.c | 11 ++++++++---
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/sound/soc/generic/simple-card.c b/sound/soc/generic/simple-card.c
-index 67a56f32f983..5a3f59aa4ba5 100644
---- a/sound/soc/generic/simple-card.c
-+++ b/sound/soc/generic/simple-card.c
-@@ -21,6 +21,7 @@ struct simple_card_data {
- 		struct asoc_simple_dai cpu_dai;
- 		struct asoc_simple_dai codec_dai;
- 		struct snd_soc_dai_link_component codecs; /* single codec */
-+		struct snd_soc_dai_link_component platform;
- 		unsigned int mclk_fs;
- 	} *dai_props;
- 	unsigned int mclk_fs;
-@@ -391,6 +392,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	for (i = 0; i < num; i++) {
- 		dai_link[i].codecs	= &dai_props[i].codecs;
- 		dai_link[i].num_codecs	= 1;
-+		dai_link[i].platform	= &dai_props[i].platform;
- 	}
- 
- 	priv->dai_props			= dai_props;
-@@ -416,6 +418,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 	} else {
- 		struct asoc_simple_card_info *cinfo;
- 		struct snd_soc_dai_link_component *codecs;
-+		struct snd_soc_dai_link_component *platform;
- 
- 		cinfo = dev->platform_data;
- 		if (!cinfo) {
-@@ -436,10 +439,12 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
- 		codecs->name		= cinfo->codec;
- 		codecs->dai_name	= cinfo->codec_dai.name;
- 
-+		platform		= dai_link->platform;
-+		platform->name		= cinfo->platform;
+diff --git a/include/sound/simple_card_utils.h b/include/sound/simple_card_utils.h
+index 3b5bd6e76f88..fb0318f9b10f 100644
+--- a/include/sound/simple_card_utils.h
++++ b/include/sound/simple_card_utils.h
+@@ -75,7 +75,7 @@ void asoc_simple_card_clk_disable(struct asoc_simple_dai *dai);
+ 				   &dai_link->codec_dai_name,			\
+ 				   list_name, cells_name, NULL)
+ #define asoc_simple_card_parse_platform(node, dai_link, list_name, cells_name)	\
+-	asoc_simple_card_parse_dai(node, NULL,					\
++	asoc_simple_card_parse_dai(node, dai_link->platform,					\
+ 		&dai_link->platform_of_node,					\
+ 		NULL, list_name, cells_name, NULL)
+ int asoc_simple_card_parse_dai(struct device_node *node,
+diff --git a/sound/soc/generic/simple-card-utils.c b/sound/soc/generic/simple-card-utils.c
+index e7057be957e1..644cd62ba027 100644
+--- a/sound/soc/generic/simple-card-utils.c
++++ b/sound/soc/generic/simple-card-utils.c
+@@ -376,10 +376,15 @@ EXPORT_SYMBOL_GPL(asoc_simple_card_init_dai);
+ int asoc_simple_card_canonicalize_dailink(struct snd_soc_dai_link *dai_link)
+ {
+ 	/* Assumes platform == cpu */
+-	if (!dai_link->platform_of_node)
+-		dai_link->platform_of_node = dai_link->cpu_of_node;
+-
++	if (dai_link->platform) {
++		if (!dai_link->platform->of_node)
++			dai_link->platform->of_node = dai_link->cpu_of_node;
++	} else {
++		if (!dai_link->platform_of_node)
++			dai_link->platform_of_node = dai_link->cpu_of_node;
++	}
+ 	return 0;
 +
- 		card->name		= (cinfo->card) ? cinfo->card : cinfo->name;
- 		dai_link->name		= cinfo->name;
- 		dai_link->stream_name	= cinfo->name;
--		dai_link->platform_name	= cinfo->platform;
- 		dai_link->cpu_dai_name	= cinfo->cpu_dai.name;
- 		dai_link->dai_fmt	= cinfo->daifmt;
- 		dai_link->init		= asoc_simple_card_dai_init;
+ }
+ EXPORT_SYMBOL_GPL(asoc_simple_card_canonicalize_dailink);
+ 
 -- 
 2.19.0.rc1
