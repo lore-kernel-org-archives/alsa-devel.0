@@ -1,16 +1,15 @@
 From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: [PATCH v2 02/12] ASoC: SOF: Add Sound Open Firmware
-	KControl support
-Date: Fri, 31 Aug 2018 16:19:00 +0100
-Message-ID: <20180831151910.16122-3-liam.r.girdwood@linux.intel.com>
+Subject: [PATCH v2 03/12] ASoC: SOF: Add driver debug support.
+Date: Fri, 31 Aug 2018 16:19:01 +0100
+Message-ID: <20180831151910.16122-4-liam.r.girdwood@linux.intel.com>
 References: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga07.intel.com (mga07.intel.com [134.134.136.100])
- by alsa0.perex.cz (Postfix) with ESMTP id C0A36267963
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:19:49 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6EDAA267964
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:19:50 +0200 (CEST)
 In-Reply-To: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,21 +24,21 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SOF exposes regular ALSA Kcontrols that are defined by topology. This
-patch converts the Kcontrol IO to DSP IPC.
+Add debugFS files that can be used to expose DSP memories and
+and peripherals to userspace to assist with firmware debugging.
 
 Signed-off-by: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 ---
- sound/soc/sof/control.c | 270 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 270 insertions(+)
- create mode 100644 sound/soc/sof/control.c
+ sound/soc/sof/debug.c | 157 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 157 insertions(+)
+ create mode 100644 sound/soc/sof/debug.c
 
-diff --git a/sound/soc/sof/control.c b/sound/soc/sof/control.c
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
 new file mode 100644
-index 000000000000..03c1a980f141
+index 000000000000..67c195573d79
 --- /dev/null
-+++ b/sound/soc/sof/control.c
-@@ -0,0 +1,270 @@
++++ b/sound/soc/sof/debug.c
+@@ -0,0 +1,157 @@
 +// SPDX-License-Identifier: (GPL-2.0 OR BSD-3-Clause)
 +//
 +// This file is provided under a dual BSD/GPLv2 license.  When using or
@@ -48,267 +47,154 @@ index 000000000000..03c1a980f141
 +// Copyright(c) 2018 Intel Corporation. All rights reserved.
 +//
 +// Author: Liam Girdwood <liam.r.girdwood@linux.intel.com>
++//         Yan Wang <yan.wan@linux.intel.com>
++//
++// Generic debug routines used to export DSP MMIO and memories to userspace
++// for firmware debugging.
 +//
 +
-+/* Mixer Controls */
-+
++#include <linux/delay.h>
++#include <linux/fs.h>
 +#include <linux/slab.h>
 +#include <linux/device.h>
-+#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/pm.h>
 +#include <linux/pm_runtime.h>
-+#include <sound/soc-topology.h>
-+#include <sound/soc.h>
-+#include <sound/control.h>
++#include <linux/debugfs.h>
++#include <linux/uaccess.h>
 +#include <uapi/sound/sof-ipc.h>
 +#include "sof-priv.h"
++#include "ops.h"
 +
-+static inline u32 mixer_to_ipc(unsigned int value, u32 *volume_map, int size)
++static int sof_dfsentry_open(struct inode *inode, struct file *file)
 +{
-+	if (value >= size)
-+		return volume_map[size - 1];
-+	else
-+		return volume_map[value];
-+}
++	file->private_data = inode->i_private;
 +
-+static inline u32 ipc_to_mixer(u32 value, u32 *volume_map, int size)
-+{
-+	int i;
-+
-+	for (i = 0; i < size; i++) {
-+		if (volume_map[i] >= value)
-+			return i;
-+	}
-+
-+	return i - 1;
-+}
-+
-+int snd_sof_volume_get(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_mixer_control *sm =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = sm->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int err, ret;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: volume get failed to resume %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	/* get all the mixer data from DSP */
-+	snd_sof_ipc_get_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_GET_VALUE,
-+				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				  SOF_CTRL_CMD_VOLUME);
-+
-+	/* read back each channel */
-+	for (i = 0; i < channels; i++)
-+		ucontrol->value.integer.value[i] =
-+			ipc_to_mixer(cdata->chanv[i].value,
-+				     scontrol->volume_table, sm->max + 1);
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err(sdev->dev, "error: volume get failed to idle %d\n",
-+			err);
 +	return 0;
 +}
 +
-+int snd_sof_volume_put(struct snd_kcontrol *kcontrol,
-+		       struct snd_ctl_elem_value *ucontrol)
++static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
++				 size_t count, loff_t *ppos)
 +{
-+	struct soc_mixer_control *sm =
-+		(struct soc_mixer_control *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = sm->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int ret, err;
++	struct snd_sof_dfsentry_io *dfse = file->private_data;
++	struct snd_sof_dev *sdev = dfse->sdev;
++	int size, err;
++	u32 *buf;
++	loff_t pos = *ppos;
++	size_t ret;
 +
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: volume put failed to resume %d\n",
-+			ret);
-+		return ret;
-+	}
++	size = dfse->size;
 +
-+	/* update each channel */
-+	for (i = 0; i < channels; i++) {
-+		cdata->chanv[i].value =
-+			mixer_to_ipc(ucontrol->value.integer.value[i],
-+				     scontrol->volume_table, sm->max + 1);
-+		cdata->chanv[i].channel = i;
-+	}
++	/* validate position & count */
++	if (pos < 0)
++		return -EINVAL;
++	if (pos >= size || !count)
++		return 0;
++	if (count > size - pos)
++		count = size - pos;
 +
-+	/* notify DSP of mixer updates */
-+	snd_sof_ipc_set_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_SET_VALUE,
-+				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				  SOF_CTRL_CMD_VOLUME);
++	/* intermediate buffer size must be u32 multiple */
++	size = (count + 3) & ~3;
++	buf = kzalloc(size, GFP_KERNEL);
++	if (!buf)
++		return -ENOMEM;
 +
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err(sdev->dev, "error: volume put failed to idle %d\n",
++	/* copy from DSP MMIO */
++	err = pm_runtime_get_sync(sdev->dev);
++	if (err < 0) {
++		dev_err(sdev->dev, "error: debugFS failed to resume %d\n",
 +			err);
++		return err;
++	}
++
++	memcpy_fromio(buf,  dfse->buf + pos, size);
++
++	ret = pm_runtime_put(sdev->dev);
++	if (ret < 0)
++		dev_err(sdev->dev, "error: debugFS failed to idle %zd\n",
++			ret);
++
++	/* copy to userspace */
++	ret = copy_to_user(buffer, buf, count);
++	kfree(buf);
++
++	/* update count & position if copy succeeded */
++	if (ret == count)
++		return -EFAULT;
++	count -= ret;
++	*ppos = pos + count;
++
++	return count;
++}
++
++static const struct file_operations sof_dfs_fops = {
++	.open = sof_dfsentry_open,
++	.read = sof_dfsentry_read,
++	.llseek = default_llseek,
++};
++
++int snd_sof_debugfs_create_item(struct snd_sof_dev *sdev,
++				void __iomem *base, size_t size,
++				const char *name)
++{
++	struct snd_sof_dfsentry_io *dfse;
++
++	if (!sdev)
++		return -EINVAL;
++
++	dfse = kzalloc(sizeof(*dfse), GFP_KERNEL);
++	if (!dfse)
++		return -ENOMEM;
++
++	dfse->buf = base;
++	dfse->size = size;
++	dfse->sdev = sdev;
++
++	dfse->dfsentry = debugfs_create_file(name, 0444, sdev->debugfs_root,
++					     dfse, &sof_dfs_fops);
++	if (!dfse->dfsentry) {
++		dev_err(sdev->dev, "cannot create debugfs entry.\n");
++		kfree(dfse);
++		return -ENODEV;
++	}
++
 +	return 0;
 +}
++EXPORT_SYMBOL(snd_sof_debugfs_create_item);
 +
-+int snd_sof_enum_get(struct snd_kcontrol *kcontrol,
-+		     struct snd_ctl_elem_value *ucontrol)
++int snd_sof_dbg_init(struct snd_sof_dev *sdev)
 +{
-+	struct soc_enum *se =
-+		(struct soc_enum *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = se->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int err, ret;
++	const struct snd_sof_dsp_ops *ops = sdev->ops;
++	const struct snd_sof_debugfs_map *map;
++	int err = 0, i;
 +
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: enum get failed to resume %d\n",
-+			ret);
-+		return ret;
++	/* use "sof" as top level debugFS dir */
++	sdev->debugfs_root = debugfs_create_dir("sof", NULL);
++	if (IS_ERR_OR_NULL(sdev->debugfs_root)) {
++		dev_err(sdev->dev, "error: failed to create debugfs directory\n");
++		return -EINVAL;
 +	}
 +
-+	/* get all the mixer data from DSP */
-+	snd_sof_ipc_get_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_GET_VALUE,
-+				  SOF_CTRL_TYPE_VALUE_CHAN_GET,
-+				  SOF_CTRL_CMD_ENUM);
++	/* create debugFS files for platform specific MMIO/DSP memories */
++	for (i = 0; i < ops->debug_map_count; i++) {
++		map = &ops->debug_map[i];
 +
-+	/* read back each channel */
-+	for (i = 0; i < channels; i++)
-+		ucontrol->value.integer.value[i] = cdata->chanv[i].value;
++		err = snd_sof_debugfs_create_item(sdev, sdev->bar[map->bar] +
++						  map->offset, map->size,
++						  map->name);
++		if (err < 0)
++			dev_err(sdev->dev, "cannot create debugfs for %s\n",
++				map->name);
++	}
 +
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err(sdev->dev, "error: enum get failed to idle %d\n",
-+			ret);
-+	return 0;
++	return err;
 +}
++EXPORT_SYMBOL(snd_sof_dbg_init);
 +
-+int snd_sof_enum_put(struct snd_kcontrol *kcontrol,
-+		     struct snd_ctl_elem_value *ucontrol)
++void snd_sof_free_debug(struct snd_sof_dev *sdev)
 +{
-+	struct soc_enum *se =
-+		(struct soc_enum *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = se->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	unsigned int i, channels = scontrol->num_channels;
-+	int ret, err;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: enum put failed to resume %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	/* update each channel */
-+	for (i = 0; i < channels; i++)
-+		cdata->chanv[i].value = ucontrol->value.integer.value[i];
-+
-+	/* notify DSP of mixer updates */
-+	snd_sof_ipc_set_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_SET_VALUE,
-+				  SOF_CTRL_TYPE_VALUE_CHAN_SET,
-+				  SOF_CTRL_CMD_ENUM);
-+
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err(sdev->dev, "error: enum put failed to idle %d\n",
-+			err);
-+	return 0;
++	debugfs_remove_recursive(sdev->debugfs_root);
 +}
-+
-+int snd_sof_bytes_get(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_bytes_ext *be =
-+		(struct soc_bytes_ext *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = be->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	struct sof_abi_hdr *data = cdata->data;
-+	size_t size;
-+	int ret, err;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: bytes get failed to resume %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	/* get all the mixer data from DSP */
-+	snd_sof_ipc_get_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_GET_DATA,
-+				  SOF_CTRL_TYPE_DATA_GET, scontrol->cmd);
-+	size = data->size + sizeof(*data);
-+	if (size > be->max) {
-+		dev_err(sdev->dev, "error: DSP sent %zu bytes max is %d\n",
-+			size, be->max);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	/* copy back to kcontrol */
-+	memcpy(ucontrol->value.bytes.data, data, size);
-+
-+out:
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err(sdev->dev, "error: bytes get failed to idle %d\n",
-+			err);
-+	return ret;
-+}
-+
-+int snd_sof_bytes_put(struct snd_kcontrol *kcontrol,
-+		      struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct soc_bytes_ext *be =
-+		(struct soc_bytes_ext *)kcontrol->private_value;
-+	struct snd_sof_control *scontrol = be->dobj.private;
-+	struct snd_sof_dev *sdev = scontrol->sdev;
-+	struct sof_ipc_ctrl_data *cdata = scontrol->control_data;
-+	struct sof_abi_hdr *data = cdata->data;
-+	int ret, err;
-+
-+	ret = pm_runtime_get_sync(sdev->dev);
-+	if (ret < 0) {
-+		dev_err(sdev->dev, "error: bytes put failed to resume %d\n",
-+			ret);
-+		return ret;
-+	}
-+
-+	if (data->size > be->max) {
-+		dev_err(sdev->dev, "error: size too big %d bytes max is %d\n",
-+			data->size, be->max);
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	/* copy from kcontrol */
-+	memcpy(data, ucontrol->value.bytes.data, data->size);
-+
-+	/* notify DSP of mixer updates */
-+	snd_sof_ipc_set_comp_data(sdev->ipc, scontrol, SOF_IPC_COMP_SET_DATA,
-+				  SOF_CTRL_TYPE_DATA_SET, scontrol->cmd);
-+
-+out:
-+	pm_runtime_mark_last_busy(sdev->dev);
-+	err = pm_runtime_put_autosuspend(sdev->dev);
-+	if (err < 0)
-+		dev_err(sdev->dev, "error: volume get failed to idle %d\n",
-+			err);
-+	return ret;
-+}
++EXPORT_SYMBOL(snd_sof_free_debug);
 -- 
 2.17.1
