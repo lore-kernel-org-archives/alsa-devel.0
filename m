@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: support
+Subject: Applied "ASoC: simple-scu-card: support
 	snd_soc_dai_link_component style for platform" to the asoc tree
-Date: Fri, 31 Aug 2018 16:29:43 +0100 (BST)
-Message-ID: <20180831152943.F006711226FE@debutante.sirena.org.uk>
+Date: Fri, 31 Aug 2018 16:31:50 +0100 (BST)
+Message-ID: <20180831153150.54DE411226FE@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9103F267964
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:29:44 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id BE4DF267964
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:31:50 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: support snd_soc_dai_link_component style for platform
+   ASoC: simple-scu-card: support snd_soc_dai_link_component style for platform
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 46c73187f2986e40b427485bb8f4401aa9143ed0 Mon Sep 17 00:00:00 2001
+>From 24f3bead9b72cbd91956be28ab6a74d51bdd4c6b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 31 Aug 2018 03:10:58 +0000
-Subject: [PATCH] ASoC: audio-graph-card: support snd_soc_dai_link_component
+Date: Fri, 31 Aug 2018 03:10:46 +0000
+Subject: [PATCH] ASoC: simple-scu-card: support snd_soc_dai_link_component
  style for platform
 
 Current ASoC is supporting snd_soc_dai_link_component for binding,
@@ -67,7 +67,7 @@ We want to have it on Platform too in the future.
 If all Codec/CPU/Platform are replaced into snd_soc_dai_link_component
 style, we can remove legacy complex style.
 This patch supports snd_soc_dai_link_component style
-for audio-graph-card for platform.
+for simple-scu-card for platform.
 
 [current]
 struct snd_soc_dai_link {
@@ -103,28 +103,28 @@ struct snd_soc_dai_link {
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 2 ++
+ sound/soc/generic/simple-scu-card.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 5b2ecf8c2652..fb6635f8d5d7 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -26,6 +26,7 @@ struct graph_card_data {
- 		struct asoc_simple_dai cpu_dai;
- 		struct asoc_simple_dai codec_dai;
- 		struct snd_soc_dai_link_component codecs; /* single codec */
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index 91efc8653746..85b46f0eae0f 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -25,6 +25,7 @@ struct simple_card_data {
+ 	struct simple_dai_props {
+ 		struct asoc_simple_dai dai;
+ 		struct snd_soc_dai_link_component codecs;
 +		struct snd_soc_dai_link_component platform;
- 		unsigned int mclk_fs;
  	} *dai_props;
- 	unsigned int mclk_fs;
-@@ -325,6 +326,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct asoc_simple_card_data adata;
+@@ -262,6 +263,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	for (i = 0; i < num; i++) {
  		dai_link[i].codecs	= &dai_props[i].codecs;
  		dai_link[i].num_codecs	= 1;
 +		dai_link[i].platform	= &dai_props[i].platform;
  	}
  
- 	priv->pa_gpio = devm_gpiod_get_optional(dev, "pa", GPIOD_OUT_LOW);
+ 	priv->dai_props				= dai_props;
 -- 
 2.19.0.rc1
