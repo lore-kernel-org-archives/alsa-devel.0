@@ -1,66 +1,123 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH 1/3] ASoC: tas6424: Save last fault register even when clear
-Date: Fri, 31 Aug 2018 10:14:05 -0500
-Message-ID: <20180831151407.18864-1-afd@ti.com>
+Subject: [PATCH 3/3] ASoC: tas6424: Add channel fault reporting
+Date: Fri, 31 Aug 2018 10:14:07 -0500
+Message-ID: <20180831151407.18864-3-afd@ti.com>
+References: <20180831151407.18864-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180831151407.18864-1-afd@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-When there is no fault bit set in a fault register we skip the fault
-reporting section for that register. This also skips over saving that
-registers value. We save the value so we will not double report an
-error, but if an error clears then returns we will also not report it
-as we did not save the all cleared register value. Fix this by saving
-the fault register value in the all clear path.
+The TAS6426 has a register that reports channel faults such as
+overcurrent and continuous DC output. Add reporting of this here.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tas6424.c | 12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ sound/soc/codecs/tas6424.c | 52 +++++++++++++++++++++++++++++++++-----
+ sound/soc/codecs/tas6424.h | 10 ++++++++
+ 2 files changed, 56 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
-index 14999b999fd3..0d6145549a98 100644
+index aac559fffc1a..36aebdb8f55c 100644
 --- a/sound/soc/codecs/tas6424.c
 +++ b/sound/soc/codecs/tas6424.c
-@@ -424,8 +424,10 @@ static void tas6424_fault_check_work(struct work_struct *work)
- 	       TAS6424_FAULT_PVDD_UV |
- 	       TAS6424_FAULT_VBAT_UV;
+@@ -41,6 +41,7 @@ struct tas6424_data {
+ 	struct regmap *regmap;
+ 	struct regulator_bulk_data supplies[TAS6424_NUM_SUPPLIES];
+ 	struct delayed_work fault_check_work;
++	unsigned int last_cfault;
+ 	unsigned int last_fault1;
+ 	unsigned int last_fault2;
+ 	unsigned int last_warn;
+@@ -406,6 +407,51 @@ static void tas6424_fault_check_work(struct work_struct *work)
+ 	unsigned int reg;
+ 	int ret;
  
--	if (reg)
++	ret = regmap_read(tas6424->regmap, TAS6424_CHANNEL_FAULT, &reg);
++	if (ret < 0) {
++		dev_err(dev, "failed to read CHANNEL_FAULT register: %d\n", ret);
++		goto out;
++	}
++
 +	if (!reg) {
-+		tas6424->last_fault1 = reg;
++		tas6424->last_cfault = reg;
++		goto check_global_fault1_reg;
++	}
++
++	/*
++	 * Only flag errors once for a given occurrence. This is needed as
++	 * the TAS6424 will take time clearing the fault condition internally
++	 * during which we don't want to bombard the system with the same
++	 * error message over and over.
++	 */
++	if ((reg & TAS6424_FAULT_OC_CH1) && !(tas6424->last_cfault & TAS6424_FAULT_OC_CH1))
++		dev_crit(dev, "experienced a channel 1 overcurrent fault\n");
++
++	if ((reg & TAS6424_FAULT_OC_CH2) && !(tas6424->last_cfault & TAS6424_FAULT_OC_CH2))
++		dev_crit(dev, "experienced a channel 2 overcurrent fault\n");
++
++	if ((reg & TAS6424_FAULT_OC_CH3) && !(tas6424->last_cfault & TAS6424_FAULT_OC_CH3))
++		dev_crit(dev, "experienced a channel 3 overcurrent fault\n");
++
++	if ((reg & TAS6424_FAULT_OC_CH4) && !(tas6424->last_cfault & TAS6424_FAULT_OC_CH4))
++		dev_crit(dev, "experienced a channel 4 overcurrent fault\n");
++
++	if ((reg & TAS6424_FAULT_DC_CH1) && !(tas6424->last_cfault & TAS6424_FAULT_DC_CH1))
++		dev_crit(dev, "experienced a channel 1 DC fault\n");
++
++	if ((reg & TAS6424_FAULT_DC_CH2) && !(tas6424->last_cfault & TAS6424_FAULT_DC_CH2))
++		dev_crit(dev, "experienced a channel 2 DC fault\n");
++
++	if ((reg & TAS6424_FAULT_DC_CH3) && !(tas6424->last_cfault & TAS6424_FAULT_DC_CH3))
++		dev_crit(dev, "experienced a channel 3 DC fault\n");
++
++	if ((reg & TAS6424_FAULT_DC_CH4) && !(tas6424->last_cfault & TAS6424_FAULT_DC_CH4))
++		dev_crit(dev, "experienced a channel 4 DC fault\n");
++
++	/* Store current fault1 value so we can detect any changes next time */
++	tas6424->last_cfault = reg;
++
++check_global_fault1_reg:
+ 	ret = regmap_read(tas6424->regmap, TAS6424_GLOB_FAULT1, &reg);
+ 	if (ret < 0) {
+ 		dev_err(dev, "failed to read GLOB_FAULT1 register: %d\n", ret);
+@@ -429,12 +475,6 @@ static void tas6424_fault_check_work(struct work_struct *work)
  		goto check_global_fault2_reg;
-+	}
+ 	}
  
- 	/*
- 	 * Only flag errors once for a given occurrence. This is needed as
-@@ -461,8 +463,10 @@ static void tas6424_fault_check_work(struct work_struct *work)
- 	       TAS6424_FAULT_OTSD_CH3 |
- 	       TAS6424_FAULT_OTSD_CH4;
+-	/*
+-	 * Only flag errors once for a given occurrence. This is needed as
+-	 * the TAS6424 will take time clearing the fault condition internally
+-	 * during which we don't want to bombard the system with the same
+-	 * error message over and over.
+-	 */
+ 	if ((reg & TAS6424_FAULT_PVDD_OV) && !(tas6424->last_fault1 & TAS6424_FAULT_PVDD_OV))
+ 		dev_crit(dev, "experienced a PVDD overvoltage fault\n");
  
--	if (!reg)
-+	if (!reg) {
-+		tas6424->last_fault2 = reg;
- 		goto check_warn_reg;
-+	}
+diff --git a/sound/soc/codecs/tas6424.h b/sound/soc/codecs/tas6424.h
+index b5958c45ed0e..c67a7835ca66 100644
+--- a/sound/soc/codecs/tas6424.h
++++ b/sound/soc/codecs/tas6424.h
+@@ -115,6 +115,16 @@
+ #define TAS6424_LDGBYPASS_SHIFT		0
+ #define TAS6424_LDGBYPASS_MASK		BIT(TAS6424_LDGBYPASS_SHIFT)
  
- 	if ((reg & TAS6424_FAULT_OTSD) && !(tas6424->last_fault2 & TAS6424_FAULT_OTSD))
- 		dev_crit(dev, "experienced a global overtemp shutdown\n");
-@@ -497,8 +501,10 @@ static void tas6424_fault_check_work(struct work_struct *work)
- 	       TAS6424_WARN_VDD_OTW_CH3 |
- 	       TAS6424_WARN_VDD_OTW_CH4;
- 
--	if (!reg)
-+	if (!reg) {
-+		tas6424->last_warn = reg;
- 		goto out;
-+	}
- 
- 	if ((reg & TAS6424_WARN_VDD_UV) && !(tas6424->last_warn & TAS6424_WARN_VDD_UV))
- 		dev_warn(dev, "experienced a VDD under voltage condition\n");
++/* TAS6424_GLOB_FAULT1_REG */
++#define TAS6424_FAULT_OC_CH1		BIT(7)
++#define TAS6424_FAULT_OC_CH2		BIT(6)
++#define TAS6424_FAULT_OC_CH3		BIT(5)
++#define TAS6424_FAULT_OC_CH4		BIT(4)
++#define TAS6424_FAULT_DC_CH1		BIT(3)
++#define TAS6424_FAULT_DC_CH2		BIT(2)
++#define TAS6424_FAULT_DC_CH3		BIT(1)
++#define TAS6424_FAULT_DC_CH4		BIT(0)
++
+ /* TAS6424_GLOB_FAULT1_REG */
+ #define TAS6424_FAULT_CLOCK		BIT(4)
+ #define TAS6424_FAULT_PVDD_OV		BIT(3)
 -- 
 2.18.0
