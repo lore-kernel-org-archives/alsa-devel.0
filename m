@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: support
+Subject: Applied "ASoC: simple-scu-card: support
 	snd_soc_dai_link_component style for codec" to the asoc tree
-Date: Fri, 31 Aug 2018 16:37:19 +0100 (BST)
-Message-ID: <20180831153719.DDBC011226FE@debutante.sirena.org.uk>
+Date: Fri, 31 Aug 2018 16:37:25 +0100 (BST)
+Message-ID: <20180831153725.0AFBA11226FE@debutante.sirena.org.uk>
+References: <87y3cnkzmb.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 48C48267964
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:37:20 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id A43C12679D8
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:37:25 +0200 (CEST)
+In-Reply-To: <87y3cnkzmb.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: support snd_soc_dai_link_component style for codec
+   ASoC: simple-scu-card: support snd_soc_dai_link_component style for codec
 
 has been applied to the asoc tree at
 
@@ -52,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 8e6746db2e66c30e59a49ac15eb0c54d51acfb4b Mon Sep 17 00:00:00 2001
+>From 2289cc1c78574653d30b80696327646ba340babf Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 31 Aug 2018 03:09:05 +0000
-Subject: [PATCH] ASoC: audio-graph-card: support snd_soc_dai_link_component
+Date: Fri, 31 Aug 2018 03:08:51 +0000
+Subject: [PATCH] ASoC: simple-scu-card: support snd_soc_dai_link_component
  style for codec
 
 Current ASoC is supporting snd_soc_dai_link_component for binding,
@@ -67,7 +68,7 @@ We want to have it on Platform too in the future.
 If all Codec/CPU/Platform are replaced into snd_soc_dai_link_component
 style, we can remove legacy complex style.
 This patch supports snd_soc_dai_link_component style
-for audio-graph-card for codec.
+for simple-scu-card for codec.
 
 [current]
 struct snd_soc_dai_link {
@@ -103,40 +104,64 @@ struct snd_soc_dai_link {
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+ sound/soc/generic/simple-scu-card.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index 2094d2c8919f..5b2ecf8c2652 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -25,6 +25,7 @@ struct graph_card_data {
- 	struct graph_dai_props {
- 		struct asoc_simple_dai cpu_dai;
- 		struct asoc_simple_dai codec_dai;
-+		struct snd_soc_dai_link_component codecs; /* single codec */
- 		unsigned int mclk_fs;
+diff --git a/sound/soc/generic/simple-scu-card.c b/sound/soc/generic/simple-scu-card.c
+index 09be02e7416f..91efc8653746 100644
+--- a/sound/soc/generic/simple-scu-card.c
++++ b/sound/soc/generic/simple-scu-card.c
+@@ -24,6 +24,7 @@ struct simple_card_data {
+ 	struct snd_soc_codec_conf codec_conf;
+ 	struct simple_dai_props {
+ 		struct asoc_simple_dai dai;
++		struct snd_soc_dai_link_component codecs;
  	} *dai_props;
- 	unsigned int mclk_fs;
-@@ -213,7 +214,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
- 	ret = asoc_simple_card_set_dailink_name(dev, dai_link,
- 						"%s-%s",
- 						dai_link->cpu_dai_name,
--						dai_link->codec_dai_name);
-+						dai_link->codecs->dai_name);
- 	if (ret < 0)
- 		goto dai_link_of_err;
+ 	struct snd_soc_dai_link *dai_link;
+ 	struct asoc_simple_card_data adata;
+@@ -103,11 +104,13 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
  
-@@ -299,7 +300,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
- 	struct graph_dai_props *dai_props;
- 	struct device *dev = &pdev->dev;
+ 	if (is_fe) {
+ 		int is_single_links = 0;
++		struct snd_soc_dai_link_component *codecs;
+ 
+ 		/* BE is dummy */
+-		dai_link->codec_of_node		= NULL;
+-		dai_link->codec_dai_name	= "snd-soc-dummy-dai";
+-		dai_link->codec_name		= "snd-soc-dummy";
++		codecs			= dai_link->codecs;
++		codecs->of_node		= NULL;
++		codecs->dai_name	= "snd-soc-dummy-dai";
++		codecs->name		= "snd-soc-dummy";
+ 
+ 		/* FE settings */
+ 		dai_link->dynamic		= 1;
+@@ -149,13 +152,13 @@ static int asoc_simple_card_dai_link_of(struct device_node *np,
+ 
+ 		ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 							"be.%s",
+-							dai_link->codec_dai_name);
++							dai_link->codecs->dai_name);
+ 		if (ret < 0)
+ 			return ret;
+ 
+ 		snd_soc_of_parse_audio_prefix(card,
+ 					      &priv->codec_conf,
+-					      dai_link->codec_of_node,
++					      dai_link->codecs->of_node,
+ 					      PREFIX "prefix");
+ 	}
+ 
+@@ -236,7 +239,7 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	struct snd_soc_card *card;
+ 	struct device *dev = &pdev->dev;
+ 	struct device_node *np = dev->of_node;
 -	int num, ret;
 +	int num, ret, i;
  
- 	/* Allocate the private data and the DAI link array */
+ 	/* Allocate the private data */
  	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-@@ -315,6 +316,17 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+@@ -250,6 +253,17 @@ static int asoc_simple_card_probe(struct platform_device *pdev)
  	if (!dai_props || !dai_link)
  		return -ENOMEM;
  
@@ -151,8 +176,8 @@ index 2094d2c8919f..5b2ecf8c2652 100644
 +		dai_link[i].num_codecs	= 1;
 +	}
 +
- 	priv->pa_gpio = devm_gpiod_get_optional(dev, "pa", GPIOD_OUT_LOW);
- 	if (IS_ERR(priv->pa_gpio)) {
- 		ret = PTR_ERR(priv->pa_gpio);
+ 	priv->dai_props				= dai_props;
+ 	priv->dai_link				= dai_link;
+ 
 -- 
 2.19.0.rc1
