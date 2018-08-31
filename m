@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: use
-	simple_dai_props" to the asoc tree
-Date: Fri, 31 Aug 2018 16:36:13 +0100 (BST)
-Message-ID: <20180831153613.CBB1711226FE@debutante.sirena.org.uk>
+Subject: Applied "ASoC: audio-graph-card: support
+	snd_soc_dai_link_component style for codec" to the asoc tree
+Date: Fri, 31 Aug 2018 16:37:19 +0100 (BST)
+Message-ID: <20180831153719.DDBC011226FE@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6DDC4267964
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:36:14 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 48C48267964
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:37:20 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: use simple_dai_props
+   ASoC: audio-graph-card: support snd_soc_dai_link_component style for codec
 
 has been applied to the asoc tree at
 
@@ -52,142 +52,107 @@ to this mail.
 Thanks,
 Mark
 
->From 1340739d4de4d9d99f1134180f95b42cc4eda438 Mon Sep 17 00:00:00 2001
+>From 8e6746db2e66c30e59a49ac15eb0c54d51acfb4b Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 31 Aug 2018 03:09:20 +0000
-Subject: [PATCH] ASoC: audio-graph-scu-card: use simple_dai_props
+Date: Fri, 31 Aug 2018 03:09:05 +0000
+Subject: [PATCH] ASoC: audio-graph-card: support snd_soc_dai_link_component
+ style for codec
 
-audi-graph-card and audio-graph-scu-card are very similar driver,
-but using different feature. Thus we are keeping synchronization
-on these 2 drivers style, because it is easy to confirm / check.
+Current ASoC is supporting snd_soc_dai_link_component for binding,
+it is more useful than current legacy style.
+Currently only codec is supporting it as multicodec (= codecs).
+CPU will support multi style in the future.
+We want to have it on Platform too in the future.
 
-Current big difference between these 2 drivers are "dai_props" on
-graph_card_data (= priv).
-It will be difficult to keep synchronize if we will add new feature
-on audio-graph-scu-card. Thus, this patch synchronize it.
+If all Codec/CPU/Platform are replaced into snd_soc_dai_link_component
+style, we can remove legacy complex style.
+This patch supports snd_soc_dai_link_component style
+for audio-graph-card for codec.
 
-[audio-graph]
-struct graph_card_data {
+[current]
+struct snd_soc_dai_link {
 	...
-	struct graph_dai_props {
-		...
-	} *dai_props;
-	...
-};
+	*cpu_name;
+	*cpu_of_node;
+	*cpu_dai_name;
 
-[audio-graph-scu]
-struct graph_card_data {
+	*codec_name;
+	*codec_of_node;
+	*codec_dai_name;
+	*codecs;
+	num_codecs;
+
+	*platform_name;
+	*platform_of_node;
 	...
-	struct asoc_simple_dai *dai_props;
+}
+
+[in the future]
+struct snd_soc_dai_link {
 	...
-};
+	*cpus
+	num_cpus;
+
+	*codecs;
+	num_codecs;
+
+	*platform;
+	...
+}
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-scu-card.c | 26 +++++++++++++-----------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+ sound/soc/generic/audio-graph-card.c | 16 ++++++++++++++--
+ 1 file changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
-index 92882e392d6c..043938fece42 100644
---- a/sound/soc/generic/audio-graph-scu-card.c
-+++ b/sound/soc/generic/audio-graph-scu-card.c
-@@ -25,7 +25,9 @@
- struct graph_card_data {
- 	struct snd_soc_card snd_card;
- 	struct snd_soc_codec_conf codec_conf;
--	struct asoc_simple_dai *dai_props;
-+	struct graph_dai_props {
-+		struct asoc_simple_dai dai;
-+	} *dai_props;
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_card_data adata;
- };
-@@ -39,18 +41,18 @@ static int asoc_graph_card_startup(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct graph_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
--	struct asoc_simple_dai *dai_props = graph_priv_to_props(priv, rtd->num);
-+	struct graph_dai_props *dai_props = graph_priv_to_props(priv, rtd->num);
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 2094d2c8919f..5b2ecf8c2652 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -25,6 +25,7 @@ struct graph_card_data {
+ 	struct graph_dai_props {
+ 		struct asoc_simple_dai cpu_dai;
+ 		struct asoc_simple_dai codec_dai;
++		struct snd_soc_dai_link_component codecs; /* single codec */
+ 		unsigned int mclk_fs;
+ 	} *dai_props;
+ 	unsigned int mclk_fs;
+@@ -213,7 +214,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
+ 	ret = asoc_simple_card_set_dailink_name(dev, dai_link,
+ 						"%s-%s",
+ 						dai_link->cpu_dai_name,
+-						dai_link->codec_dai_name);
++						dai_link->codecs->dai_name);
+ 	if (ret < 0)
+ 		goto dai_link_of_err;
  
--	return asoc_simple_card_clk_enable(dai_props);
-+	return asoc_simple_card_clk_enable(&dai_props->dai);
- }
- 
- static void asoc_graph_card_shutdown(struct snd_pcm_substream *substream)
- {
- 	struct snd_soc_pcm_runtime *rtd = substream->private_data;
- 	struct graph_card_data *priv = snd_soc_card_get_drvdata(rtd->card);
--	struct asoc_simple_dai *dai_props = graph_priv_to_props(priv, rtd->num);
-+	struct graph_dai_props *dai_props = graph_priv_to_props(priv, rtd->num);
- 
--	asoc_simple_card_clk_disable(dai_props);
-+	asoc_simple_card_clk_disable(&dai_props->dai);
- }
- 
- static const struct snd_soc_ops asoc_graph_card_ops = {
-@@ -63,7 +65,7 @@ static int asoc_graph_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 	struct graph_card_data *priv =	snd_soc_card_get_drvdata(rtd->card);
- 	struct snd_soc_dai *dai;
- 	struct snd_soc_dai_link *dai_link;
--	struct asoc_simple_dai *dai_props;
-+	struct graph_dai_props *dai_props;
- 	int num = rtd->num;
- 
- 	dai_link	= graph_priv_to_link(priv, num);
-@@ -72,7 +74,7 @@ static int asoc_graph_card_dai_init(struct snd_soc_pcm_runtime *rtd)
- 				rtd->cpu_dai :
- 				rtd->codec_dai;
- 
--	return asoc_simple_card_init_dai(dai, dai_props);
-+	return asoc_simple_card_init_dai(dai, &dai_props->dai);
- }
- 
- static int asoc_graph_card_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-@@ -92,7 +94,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *ep,
- {
- 	struct device *dev = graph_priv_to_dev(priv);
- 	struct snd_soc_dai_link *dai_link = graph_priv_to_link(priv, idx);
--	struct asoc_simple_dai *dai_props = graph_priv_to_props(priv, idx);
-+	struct graph_dai_props *dai_props = graph_priv_to_props(priv, idx);
- 	struct snd_soc_card *card = graph_priv_to_card(priv);
- 	int ret;
- 
-@@ -110,7 +112,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *ep,
- 		if (ret)
- 			return ret;
- 
--		ret = asoc_simple_card_parse_clk_cpu(dev, ep, dai_link, dai_props);
-+		ret = asoc_simple_card_parse_clk_cpu(dev, ep, dai_link, &dai_props->dai);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -137,7 +139,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *ep,
- 		if (ret < 0)
- 			return ret;
- 
--		ret = asoc_simple_card_parse_clk_codec(dev, ep, dai_link, dai_props);
-+		ret = asoc_simple_card_parse_clk_codec(dev, ep, dai_link, &dai_props->dai);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -153,7 +155,7 @@ static int asoc_graph_card_dai_link_of(struct device_node *ep,
- 					      "prefix");
- 	}
- 
--	ret = asoc_simple_card_of_parse_tdm(ep, dai_props);
-+	ret = asoc_simple_card_of_parse_tdm(ep, &dai_props->dai);
- 	if (ret)
- 		return ret;
- 
-@@ -331,7 +333,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
- {
- 	struct graph_card_data *priv;
- 	struct snd_soc_dai_link *dai_link;
--	struct asoc_simple_dai *dai_props;
-+	struct graph_dai_props *dai_props;
+@@ -299,7 +300,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+ 	struct graph_dai_props *dai_props;
  	struct device *dev = &pdev->dev;
  	struct snd_soc_card *card;
- 	int num, ret;
+-	int num, ret;
++	int num, ret, i;
+ 
+ 	/* Allocate the private data and the DAI link array */
+ 	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
+@@ -315,6 +316,17 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+ 	if (!dai_props || !dai_link)
+ 		return -ENOMEM;
+ 
++	/*
++	 * Use snd_soc_dai_link_component instead of legacy style
++	 * It is codec only. but cpu/platform will be supported in the future.
++	 * see
++	 *	soc-core.c :: snd_soc_init_multicodec()
++	 */
++	for (i = 0; i < num; i++) {
++		dai_link[i].codecs	= &dai_props[i].codecs;
++		dai_link[i].num_codecs	= 1;
++	}
++
+ 	priv->pa_gpio = devm_gpiod_get_optional(dev, "pa", GPIOD_OUT_LOW);
+ 	if (IS_ERR(priv->pa_gpio)) {
+ 		ret = PTR_ERR(priv->pa_gpio);
 -- 
 2.19.0.rc1
