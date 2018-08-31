@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-scu-card: support
+Subject: Applied "ASoC: audio-graph-card: support
 	snd_soc_dai_link_component style for platform" to the asoc tree
-Date: Fri, 31 Aug 2018 16:27:49 +0100 (BST)
-Message-ID: <20180831152749.C575211226FE@debutante.sirena.org.uk>
+Date: Fri, 31 Aug 2018 16:29:43 +0100 (BST)
+Message-ID: <20180831152943.F006711226FE@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4FD80267964
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:27:50 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 9103F267964
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:29:44 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-scu-card: support snd_soc_dai_link_component style for platform
+   ASoC: audio-graph-card: support snd_soc_dai_link_component style for platform
 
 has been applied to the asoc tree at
 
@@ -52,11 +52,11 @@ to this mail.
 Thanks,
 Mark
 
->From 77b9b84132f0b9ca0802a25277eb7be49713661f Mon Sep 17 00:00:00 2001
+>From 46c73187f2986e40b427485bb8f4401aa9143ed0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 31 Aug 2018 03:11:12 +0000
-Subject: [PATCH] ASoC: audio-graph-scu-card: support
- snd_soc_dai_link_component style for platform
+Date: Fri, 31 Aug 2018 03:10:58 +0000
+Subject: [PATCH] ASoC: audio-graph-card: support snd_soc_dai_link_component
+ style for platform
 
 Current ASoC is supporting snd_soc_dai_link_component for binding,
 it is more useful than current legacy style.
@@ -67,7 +67,7 @@ We want to have it on Platform too in the future.
 If all Codec/CPU/Platform are replaced into snd_soc_dai_link_component
 style, we can remove legacy complex style.
 This patch supports snd_soc_dai_link_component style
-for audio-graph-scu-card for platform.
+for audio-graph-card for platform.
 
 [current]
 struct snd_soc_dai_link {
@@ -103,28 +103,28 @@ struct snd_soc_dai_link {
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-scu-card.c | 2 ++
+ sound/soc/generic/audio-graph-card.c | 2 ++
  1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/generic/audio-graph-scu-card.c b/sound/soc/generic/audio-graph-scu-card.c
-index eeb3c1975fe3..b83bb31021a9 100644
---- a/sound/soc/generic/audio-graph-scu-card.c
-+++ b/sound/soc/generic/audio-graph-scu-card.c
-@@ -28,6 +28,7 @@ struct graph_card_data {
- 	struct graph_dai_props {
- 		struct asoc_simple_dai dai;
- 		struct snd_soc_dai_link_component codecs;
+diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
+index 5b2ecf8c2652..fb6635f8d5d7 100644
+--- a/sound/soc/generic/audio-graph-card.c
++++ b/sound/soc/generic/audio-graph-card.c
+@@ -26,6 +26,7 @@ struct graph_card_data {
+ 		struct asoc_simple_dai cpu_dai;
+ 		struct asoc_simple_dai codec_dai;
+ 		struct snd_soc_dai_link_component codecs; /* single codec */
 +		struct snd_soc_dai_link_component platform;
+ 		unsigned int mclk_fs;
  	} *dai_props;
- 	struct snd_soc_dai_link *dai_link;
- 	struct asoc_simple_card_data adata;
-@@ -365,6 +366,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
+ 	unsigned int mclk_fs;
+@@ -325,6 +326,7 @@ static int asoc_graph_card_probe(struct platform_device *pdev)
  	for (i = 0; i < num; i++) {
  		dai_link[i].codecs	= &dai_props[i].codecs;
  		dai_link[i].num_codecs	= 1;
 +		dai_link[i].platform	= &dai_props[i].platform;
  	}
  
- 	priv->dai_props			= dai_props;
+ 	priv->pa_gpio = devm_gpiod_get_optional(dev, "pa", GPIOD_OUT_LOW);
 -- 
 2.19.0.rc1
