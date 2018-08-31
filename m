@@ -1,14 +1,15 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH] ASoC: tlv320aic31xx: Add MICBIAS off setting
-Date: Fri, 31 Aug 2018 13:05:07 -0500
-Message-ID: <20180831180507.28867-1-afd@ti.com>
+Subject: [PATCH] ASoC: tlv320aic31xx: Remove regulator
+	notification handling
+Date: Fri, 31 Aug 2018 13:17:37 -0500
+Message-ID: <20180831181737.29516-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
- by alsa0.perex.cz (Postfix) with ESMTP id 1533D26766C
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 20:05:10 +0200 (CEST)
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+ by alsa0.perex.cz (Postfix) with ESMTP id 013F826766C
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 20:17:40 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,59 +19,120 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F .
+ Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Leaving microphone bias off is a valid setting and even used in the DT
-binding document example. Add this setting here and document the same.
-Although it may not make much sense to enable a microphone here without
-any bias, it is a valid setting that can be chosen by DT and may be
-needed for some boards.
+The notification handler sets the reset line but never re-enables it
+as no one is listening for an enable event, this is certainly broken
+and was most likely just copied from other CODECs, remove this code.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/tlv320aic31xx.txt | 1 +
- include/dt-bindings/sound/tlv320aic31xx-micbias.h         | 1 +
- sound/soc/codecs/tlv320aic31xx.c                          | 1 +
- 3 files changed, 3 insertions(+)
+ sound/soc/codecs/tlv320aic31xx.c | 55 +-------------------------------
+ 1 file changed, 1 insertion(+), 54 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-index 5b3c33bb99e5..411cc46a2c58 100644
---- a/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-+++ b/Documentation/devicetree/bindings/sound/tlv320aic31xx.txt
-@@ -24,6 +24,7 @@ Optional properties:
- 
- - reset-gpios - GPIO specification for the active low RESET input.
- - ai31xx-micbias-vg - MicBias Voltage setting
-+        0 or MICBIAS_OFF - MICBIAS output is powered off
-         1 or MICBIAS_2_0V - MICBIAS output is powered to 2.0V
-         2 or MICBIAS_2_5V - MICBIAS output is powered to 2.5V
-         3 or MICBIAS_AVDD - MICBIAS output is connected to AVDD
-diff --git a/include/dt-bindings/sound/tlv320aic31xx-micbias.h b/include/dt-bindings/sound/tlv320aic31xx-micbias.h
-index c6895a18a455..069484070fcf 100644
---- a/include/dt-bindings/sound/tlv320aic31xx-micbias.h
-+++ b/include/dt-bindings/sound/tlv320aic31xx-micbias.h
-@@ -2,6 +2,7 @@
- #ifndef __DT_TLV320AIC31XX_MICBIAS_H
- #define __DT_TLV320AIC31XX_MICBIAS_H
- 
-+#define MICBIAS_OFF		0
- #define MICBIAS_2_0V		1
- #define MICBIAS_2_5V		2
- #define MICBIAS_AVDDV		3
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index bf92d36b8f8a..7d87df518fed 100644
+index 7d87df518fed..f8d0f3ebed9c 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1421,6 +1421,7 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 	fwnode_property_read_u32(aic31xx->dev->fwnode, "ai31xx-micbias-vg",
- 				 &micbias_value);
- 	switch (micbias_value) {
-+	case MICBIAS_OFF:
- 	case MICBIAS_2_0V:
- 	case MICBIAS_2_5V:
- 	case MICBIAS_AVDDV:
+@@ -147,11 +147,6 @@ static const char * const aic31xx_supply_names[] = {
+ 
+ #define AIC31XX_NUM_SUPPLIES ARRAY_SIZE(aic31xx_supply_names)
+ 
+-struct aic31xx_disable_nb {
+-	struct notifier_block nb;
+-	struct aic31xx_priv *aic31xx;
+-};
+-
+ struct aic31xx_priv {
+ 	struct snd_soc_component *component;
+ 	u8 i2c_regs_status;
+@@ -162,7 +157,6 @@ struct aic31xx_priv {
+ 	int micbias_vg;
+ 	struct aic31xx_pdata pdata;
+ 	struct regulator_bulk_data supplies[AIC31XX_NUM_SUPPLIES];
+-	struct aic31xx_disable_nb disable_nb[AIC31XX_NUM_SUPPLIES];
+ 	unsigned int sysclk;
+ 	u8 p_div;
+ 	int rate_div_line;
+@@ -1116,28 +1110,6 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
+ 	return 0;
+ }
+ 
+-static int aic31xx_regulator_event(struct notifier_block *nb,
+-				   unsigned long event, void *data)
+-{
+-	struct aic31xx_disable_nb *disable_nb =
+-		container_of(nb, struct aic31xx_disable_nb, nb);
+-	struct aic31xx_priv *aic31xx = disable_nb->aic31xx;
+-
+-	if (event & REGULATOR_EVENT_DISABLE) {
+-		/*
+-		 * Put codec to reset and as at least one of the
+-		 * supplies was disabled.
+-		 */
+-		if (aic31xx->gpio_reset)
+-			gpiod_set_value(aic31xx->gpio_reset, 1);
+-
+-		regcache_mark_dirty(aic31xx->regmap);
+-		dev_dbg(aic31xx->dev, "## %s: DISABLE received\n", __func__);
+-	}
+-
+-	return 0;
+-}
+-
+ static int aic31xx_reset(struct aic31xx_priv *aic31xx)
+ {
+ 	int ret = 0;
+@@ -1263,26 +1235,12 @@ static int aic31xx_set_bias_level(struct snd_soc_component *component,
+ static int aic31xx_codec_probe(struct snd_soc_component *component)
+ {
+ 	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+-	int i, ret;
++	int ret;
+ 
+ 	dev_dbg(aic31xx->dev, "## %s\n", __func__);
+ 
+ 	aic31xx->component = component;
+ 
+-	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++) {
+-		aic31xx->disable_nb[i].nb.notifier_call =
+-			aic31xx_regulator_event;
+-		aic31xx->disable_nb[i].aic31xx = aic31xx;
+-		ret = regulator_register_notifier(aic31xx->supplies[i].consumer,
+-						  &aic31xx->disable_nb[i].nb);
+-		if (ret) {
+-			dev_err(component->dev,
+-				"Failed to request regulator notifier: %d\n",
+-				ret);
+-			return ret;
+-		}
+-	}
+-
+ 	regcache_cache_only(aic31xx->regmap, true);
+ 	regcache_mark_dirty(aic31xx->regmap);
+ 
+@@ -1297,19 +1255,8 @@ static int aic31xx_codec_probe(struct snd_soc_component *component)
+ 	return 0;
+ }
+ 
+-static void aic31xx_codec_remove(struct snd_soc_component *component)
+-{
+-	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++)
+-		regulator_unregister_notifier(aic31xx->supplies[i].consumer,
+-					      &aic31xx->disable_nb[i].nb);
+-}
+-
+ static const struct snd_soc_component_driver soc_codec_driver_aic31xx = {
+ 	.probe			= aic31xx_codec_probe,
+-	.remove			= aic31xx_codec_remove,
+ 	.set_bias_level		= aic31xx_set_bias_level,
+ 	.controls		= common31xx_snd_controls,
+ 	.num_controls		= ARRAY_SIZE(common31xx_snd_controls),
 -- 
 2.18.0
