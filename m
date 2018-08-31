@@ -1,138 +1,139 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH] ASoC: tlv320aic31xx: Remove regulator
-	notification handling
-Date: Fri, 31 Aug 2018 13:17:37 -0500
-Message-ID: <20180831181737.29516-1-afd@ti.com>
+Subject: [PATCH 1/4] ASoC: tlv320aic31xx: Add short circuit detection support
+Date: Fri, 31 Aug 2018 13:24:31 -0500
+Message-ID: <20180831182434.14499-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
- by alsa0.perex.cz (Postfix) with ESMTP id 013F826766C
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 20:17:40 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F .
- Davis" <afd@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The notification handler sets the reset line but never re-enables it
-as no one is listening for an enable event, this is certainly broken
-and was most likely just copied from other CODECs, remove this code.
+These devices support detecting and reporting short circuits across
+the output stages. Add support for reporting these issue. Do this
+by registering an interrupt if available and enabling this error
+to trigger that interrupt in the device.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tlv320aic31xx.c | 55 +-------------------------------
- 1 file changed, 1 insertion(+), 54 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 55 ++++++++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic31xx.h | 16 ++++++++++
+ 2 files changed, 71 insertions(+)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index 7d87df518fed..f8d0f3ebed9c 100644
+index f8d0f3ebed9c..d8783af7d31c 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -147,11 +147,6 @@ static const char * const aic31xx_supply_names[] = {
- 
- #define AIC31XX_NUM_SUPPLIES ARRAY_SIZE(aic31xx_supply_names)
- 
--struct aic31xx_disable_nb {
--	struct notifier_block nb;
--	struct aic31xx_priv *aic31xx;
--};
--
- struct aic31xx_priv {
- 	struct snd_soc_component *component;
- 	u8 i2c_regs_status;
-@@ -162,7 +157,6 @@ struct aic31xx_priv {
- 	int micbias_vg;
- 	struct aic31xx_pdata pdata;
- 	struct regulator_bulk_data supplies[AIC31XX_NUM_SUPPLIES];
--	struct aic31xx_disable_nb disable_nb[AIC31XX_NUM_SUPPLIES];
- 	unsigned int sysclk;
+@@ -161,6 +161,7 @@ struct aic31xx_priv {
  	u8 p_div;
  	int rate_div_line;
-@@ -1116,28 +1110,6 @@ static int aic31xx_set_dai_sysclk(struct snd_soc_dai *codec_dai,
- 	return 0;
- }
+ 	bool master_dapm_route_applied;
++	int irq;
+ };
  
--static int aic31xx_regulator_event(struct notifier_block *nb,
--				   unsigned long event, void *data)
--{
--	struct aic31xx_disable_nb *disable_nb =
--		container_of(nb, struct aic31xx_disable_nb, nb);
--	struct aic31xx_priv *aic31xx = disable_nb->aic31xx;
--
--	if (event & REGULATOR_EVENT_DISABLE) {
--		/*
--		 * Put codec to reset and as at least one of the
--		 * supplies was disabled.
--		 */
--		if (aic31xx->gpio_reset)
--			gpiod_set_value(aic31xx->gpio_reset, 1);
--
--		regcache_mark_dirty(aic31xx->regmap);
--		dev_dbg(aic31xx->dev, "## %s: DISABLE received\n", __func__);
--	}
--
--	return 0;
--}
--
- static int aic31xx_reset(struct aic31xx_priv *aic31xx)
- {
- 	int ret = 0;
-@@ -1263,26 +1235,12 @@ static int aic31xx_set_bias_level(struct snd_soc_component *component,
- static int aic31xx_codec_probe(struct snd_soc_component *component)
- {
- 	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
--	int i, ret;
+ struct aic31xx_rate_divs {
+@@ -1338,6 +1339,40 @@ static const struct acpi_device_id aic31xx_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
+ #endif
+ 
++static irqreturn_t aic31xx_irq(int irq, void *data)
++{
++	struct aic31xx_priv *aic31xx = data;
++	struct device *dev = aic31xx->dev;
++	unsigned int value;
++	bool handled = false;
 +	int ret;
++
++	ret = regmap_read(aic31xx->regmap, AIC31XX_INTRDACFLAG, &value);
++	if (ret) {
++		dev_err(dev, "Failed to read interrupt mask: %d\n", ret);
++		goto exit;
++	}
++
++	if (value)
++		handled = true;
++	else
++		goto exit;
++
++	if (value & AIC31XX_HPLSCDETECT)
++		dev_err(dev, "Short circuit on Left output is detected\n");
++	if (value & AIC31XX_HPRSCDETECT)
++		dev_err(dev, "Short circuit on Right output is detected\n");
++	if (value & ~(AIC31XX_HPLSCDETECT |
++		      AIC31XX_HPRSCDETECT))
++		dev_err(dev, "Unknown DAC interrupt flags: 0x%08x\n", value);
++
++exit:
++	if (handled)
++		return IRQ_HANDLED;
++	else
++		return IRQ_NONE;
++}
++
+ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 			     const struct i2c_device_id *id)
+ {
+@@ -1360,6 +1395,7 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 	aic31xx->dev = &i2c->dev;
++	aic31xx->irq = i2c->irq;
  
- 	dev_dbg(aic31xx->dev, "## %s\n", __func__);
+ 	aic31xx->codec_type = id->driver_data;
  
- 	aic31xx->component = component;
+@@ -1404,6 +1440,25 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
  
--	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++) {
--		aic31xx->disable_nb[i].nb.notifier_call =
--			aic31xx_regulator_event;
--		aic31xx->disable_nb[i].aic31xx = aic31xx;
--		ret = regulator_register_notifier(aic31xx->supplies[i].consumer,
--						  &aic31xx->disable_nb[i].nb);
--		if (ret) {
--			dev_err(component->dev,
--				"Failed to request regulator notifier: %d\n",
--				ret);
--			return ret;
--		}
--	}
--
- 	regcache_cache_only(aic31xx->regmap, true);
- 	regcache_mark_dirty(aic31xx->regmap);
++	if (aic31xx->irq > 0) {
++		regmap_update_bits(aic31xx->regmap, AIC31XX_GPIO1,
++				   AIC31XX_GPIO1_FUNC_MASK,
++				   AIC31XX_GPIO1_INT1 <<
++				   AIC31XX_GPIO1_FUNC_SHIFT);
++
++		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
++			     AIC31XX_SC);
++
++		ret = devm_request_threaded_irq(aic31xx->dev, aic31xx->irq,
++						NULL, aic31xx_irq,
++						IRQF_ONESHOT, "aic31xx-irq",
++						aic31xx);
++		if (ret) {
++			dev_err(aic31xx->dev, "Unable to request IRQ\n");
++			return ret;
++		}
++	}
++
+ 	if (aic31xx->codec_type & DAC31XX_BIT)
+ 		return devm_snd_soc_register_component(&i2c->dev,
+ 				&soc_codec_driver_aic31xx,
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 0b587585b38b..52e171988906 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -191,6 +191,22 @@ struct aic31xx_pdata {
+ #define AIC31XX_SC			BIT(3)
+ #define AIC31XX_ENGINE			BIT(2)
  
-@@ -1297,19 +1255,8 @@ static int aic31xx_codec_probe(struct snd_soc_component *component)
- 	return 0;
- }
++/* AIC31XX_GPIO1 */
++#define AIC31XX_GPIO1_FUNC_MASK		GENMASK(5, 2)
++#define AIC31XX_GPIO1_FUNC_SHIFT	2
++#define AIC31XX_GPIO1_DISABLED		0x00
++#define AIC31XX_GPIO1_INPUT		0x01
++#define AIC31XX_GPIO1_GPI		0x02
++#define AIC31XX_GPIO1_GPO		0x03
++#define AIC31XX_GPIO1_CLKOUT		0x04
++#define AIC31XX_GPIO1_INT1		0x05
++#define AIC31XX_GPIO1_INT2		0x06
++#define AIC31XX_GPIO1_ADC_WCLK		0x07
++#define AIC31XX_GPIO1_SBCLK		0x08
++#define AIC31XX_GPIO1_SWCLK		0x09
++#define AIC31XX_GPIO1_ADC_MOD_CLK	0x10
++#define AIC31XX_GPIO1_SDOUT		0x11
++
+ /* AIC31XX_DACSETUP */
+ #define AIC31XX_SOFTSTEP_MASK		GENMASK(1, 0)
  
--static void aic31xx_codec_remove(struct snd_soc_component *component)
--{
--	struct aic31xx_priv *aic31xx = snd_soc_component_get_drvdata(component);
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(aic31xx->supplies); i++)
--		regulator_unregister_notifier(aic31xx->supplies[i].consumer,
--					      &aic31xx->disable_nb[i].nb);
--}
--
- static const struct snd_soc_component_driver soc_codec_driver_aic31xx = {
- 	.probe			= aic31xx_codec_probe,
--	.remove			= aic31xx_codec_remove,
- 	.set_bias_level		= aic31xx_set_bias_level,
- 	.controls		= common31xx_snd_controls,
- 	.num_controls		= ARRAY_SIZE(common31xx_snd_controls),
 -- 
 2.18.0
