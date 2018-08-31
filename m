@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: codecs: tas5720: add TAS5722 specific
-	volume control" to the asoc tree
-Date: Fri, 31 Aug 2018 16:40:53 +0100 (BST)
-Message-ID: <20180831154053.2E8EF11226FE@debutante.sirena.org.uk>
-References: <20180831144714.16499-1-afd@ti.com>
+Subject: Applied "ASoC: davinci-mcasp: Add support for FIFO
+	usage caused delay reporting" to the asoc tree
+Date: Fri, 31 Aug 2018 16:41:00 +0100 (BST)
+Message-ID: <20180831154100.7E66011226FE@debutante.sirena.org.uk>
+References: <20180831082456.5091-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 94A9C2679FD
- for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:40:53 +0200 (CEST)
-In-Reply-To: <20180831144714.16499-1-afd@ti.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 18376267964
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:41:01 +0200 (CEST)
+In-Reply-To: <20180831082456.5091-1-peter.ujfalusi@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Andreas Dannenberg <dannenberg@ti.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, "Andrew F ., Davis" <afd@ti.com>
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: codecs: tas5720: add TAS5722 specific volume control
+   ASoC: davinci-mcasp: Add support for FIFO usage caused delay reporting
 
 has been applied to the asoc tree at
 
@@ -53,141 +53,77 @@ to this mail.
 Thanks,
 Mark
 
->From ec94c177bf3700ce44c53c375a3fb4c347f2b08f Mon Sep 17 00:00:00 2001
-From: Andreas Dannenberg <dannenberg@ti.com>
-Date: Fri, 31 Aug 2018 09:47:13 -0500
-Subject: [PATCH] ASoC: codecs: tas5720: add TAS5722 specific volume control
+>From 5fcb457ac2fdc62c5ff6d3962c958b1301bc5ea1 Mon Sep 17 00:00:00 2001
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Date: Fri, 31 Aug 2018 11:24:56 +0300
+Subject: [PATCH] ASoC: davinci-mcasp: Add support for FIFO usage caused delay
+ reporting
 
-The TAS5722 supports modifying volume in 0.25dB steps (as opposed to
-0.5dB steps on the TAS5720). Introduce a custom mixer control that
-allows taking advantage of this finer output volume granularity.
+McASP have write and read FIFO, each 64 words deep.
 
-Also add custom getters/setters for access as the TAS5722 digital volume
-controls are split over two registers.
+>From the WFIFOS/RFIFOS registers we can read the amount of data currently
+in the FIFO which can be directly reported as delay.
 
-Signed-off-by: Andreas Dannenberg <dannenberg@ti.com>
-Signed-off-by: Andrew F. Davis <afd@ti.com>
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tas5720.c | 88 ++++++++++++++++++++++++++++++++++----
- 1 file changed, 80 insertions(+), 8 deletions(-)
+ sound/soc/davinci/davinci-mcasp.c | 37 +++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-diff --git a/sound/soc/codecs/tas5720.c b/sound/soc/codecs/tas5720.c
-index ae3d032ac35a..3c469112477a 100644
---- a/sound/soc/codecs/tas5720.c
-+++ b/sound/soc/codecs/tas5720.c
-@@ -485,15 +485,56 @@ static const DECLARE_TLV_DB_RANGE(dac_analog_tlv,
- );
+diff --git a/sound/soc/davinci/davinci-mcasp.c b/sound/soc/davinci/davinci-mcasp.c
+index f70db8412c7c..267aee776b2d 100644
+--- a/sound/soc/davinci/davinci-mcasp.c
++++ b/sound/soc/davinci/davinci-mcasp.c
+@@ -1041,6 +1041,42 @@ static int davinci_mcasp_calc_clk_div(struct davinci_mcasp *mcasp,
+ 	return error_ppm;
+ }
  
- /*
-- * DAC digital volumes. From -103.5 to 24 dB in 0.5 dB steps. Note that
-- * setting the gain below -100 dB (register value <0x7) is effectively a MUTE
-- * as per device datasheet.
-+ * DAC digital volumes. From -103.5 to 24 dB in 0.5 dB or 0.25 dB steps
-+ * depending on the device. Note that setting the gain below -100 dB
-+ * (register value <0x7) is effectively a MUTE as per device datasheet.
-+ *
-+ * Note that for the TAS5722 the digital volume controls are actually split
-+ * over two registers, so we need custom getters/setters for access.
-  */
--static DECLARE_TLV_DB_SCALE(dac_tlv, -10350, 50, 0);
-+static DECLARE_TLV_DB_SCALE(tas5720_dac_tlv, -10350, 50, 0);
-+static DECLARE_TLV_DB_SCALE(tas5722_dac_tlv, -10350, 25, 0);
-+
-+static int tas5722_volume_get(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
++static inline u32 davinci_mcasp_tx_delay(struct davinci_mcasp *mcasp)
 +{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	unsigned int val;
++	if (!mcasp->txnumevt)
++		return 0;
 +
-+	snd_soc_component_read(component, TAS5720_VOLUME_CTRL_REG, &val);
-+	ucontrol->value.integer.value[0] = val << 1;
-+
-+	snd_soc_component_read(component, TAS5722_DIGITAL_CTRL2_REG, &val);
-+	ucontrol->value.integer.value[0] |= val & TAS5722_VOL_CONTROL_LSB;
-+
-+	return 0;
++	return mcasp_get_reg(mcasp, mcasp->fifo_base + MCASP_WFIFOSTS_OFFSET);
 +}
 +
-+static int tas5722_volume_set(struct snd_kcontrol *kcontrol,
-+			      struct snd_ctl_elem_value *ucontrol)
++static inline u32 davinci_mcasp_rx_delay(struct davinci_mcasp *mcasp)
 +{
-+	struct snd_soc_component *component = snd_soc_kcontrol_component(kcontrol);
-+	unsigned int sel = ucontrol->value.integer.value[0];
++	if (!mcasp->rxnumevt)
++		return 0;
 +
-+	snd_soc_component_write(component, TAS5720_VOLUME_CTRL_REG, sel >> 1);
-+	snd_soc_component_update_bits(component, TAS5722_DIGITAL_CTRL2_REG,
-+				      TAS5722_VOL_CONTROL_LSB, sel);
-+
-+	return 0;
++	return mcasp_get_reg(mcasp, mcasp->fifo_base + MCASP_RFIFOSTS_OFFSET);
 +}
- 
- static const struct snd_kcontrol_new tas5720_snd_controls[] = {
- 	SOC_SINGLE_TLV("Speaker Driver Playback Volume",
--		       TAS5720_VOLUME_CTRL_REG, 0, 0xff, 0, dac_tlv),
-+		       TAS5720_VOLUME_CTRL_REG, 0, 0xff, 0, tas5720_dac_tlv),
-+	SOC_SINGLE_TLV("Speaker Driver Analog Gain", TAS5720_ANALOG_CTRL_REG,
-+		       TAS5720_ANALOG_GAIN_SHIFT, 3, 0, dac_analog_tlv),
-+};
 +
-+static const struct snd_kcontrol_new tas5722_snd_controls[] = {
-+	SOC_SINGLE_EXT_TLV("Speaker Driver Playback Volume",
-+			   0, 0, 511, 0,
-+			   tas5722_volume_get, tas5722_volume_set,
-+			   tas5722_dac_tlv),
- 	SOC_SINGLE_TLV("Speaker Driver Analog Gain", TAS5720_ANALOG_CTRL_REG,
- 		       TAS5720_ANALOG_GAIN_SHIFT, 3, 0, dac_analog_tlv),
- };
-@@ -527,6 +568,23 @@ static const struct snd_soc_component_driver soc_component_dev_tas5720 = {
- 	.non_legacy_dai_naming	= 1,
- };
- 
-+static const struct snd_soc_component_driver soc_component_dev_tas5722 = {
-+	.probe = tas5720_codec_probe,
-+	.remove = tas5720_codec_remove,
-+	.suspend = tas5720_suspend,
-+	.resume = tas5720_resume,
-+	.controls = tas5722_snd_controls,
-+	.num_controls = ARRAY_SIZE(tas5722_snd_controls),
-+	.dapm_widgets = tas5720_dapm_widgets,
-+	.num_dapm_widgets = ARRAY_SIZE(tas5720_dapm_widgets),
-+	.dapm_routes = tas5720_audio_map,
-+	.num_dapm_routes = ARRAY_SIZE(tas5720_audio_map),
-+	.idle_bias_on		= 1,
-+	.use_pmdown_time	= 1,
-+	.endianness		= 1,
-+	.non_legacy_dai_naming	= 1,
-+};
++static snd_pcm_sframes_t davinci_mcasp_delay(
++			struct snd_pcm_substream *substream,
++			struct snd_soc_dai *cpu_dai)
++{
++	struct davinci_mcasp *mcasp = snd_soc_dai_get_drvdata(cpu_dai);
++	u32 fifo_use;
 +
- /* PCM rates supported by the TAS5720 driver */
- #define TAS5720_RATES	(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_48000 |\
- 			 SNDRV_PCM_RATE_88200 | SNDRV_PCM_RATE_96000)
-@@ -613,9 +671,23 @@ static int tas5720_probe(struct i2c_client *client,
- 
- 	dev_set_drvdata(dev, data);
- 
--	ret = devm_snd_soc_register_component(&client->dev,
--				     &soc_component_dev_tas5720,
--				     tas5720_dai, ARRAY_SIZE(tas5720_dai));
-+	switch (id->driver_data) {
-+	case TAS5720:
-+		ret = devm_snd_soc_register_component(&client->dev,
-+					&soc_component_dev_tas5720,
-+					tas5720_dai,
-+					ARRAY_SIZE(tas5720_dai));
-+		break;
-+	case TAS5722:
-+		ret = devm_snd_soc_register_component(&client->dev,
-+					&soc_component_dev_tas5722,
-+					tas5720_dai,
-+					ARRAY_SIZE(tas5720_dai));
-+		break;
-+	default:
-+		dev_err(dev, "unexpected private driver data\n");
-+		return -EINVAL;
-+	}
- 	if (ret < 0) {
- 		dev_err(dev, "failed to register component: %d\n", ret);
- 		return ret;
++	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
++		fifo_use = davinci_mcasp_tx_delay(mcasp);
++	else
++		fifo_use = davinci_mcasp_rx_delay(mcasp);
++
++	/*
++	 * Divide the used locations with the channel count to get the
++	 * FIFO usage in samples (don't care about partial samples in the
++	 * buffer).
++	 */
++	return fifo_use / substream->runtime->channels;
++}
++
+ static int davinci_mcasp_hw_params(struct snd_pcm_substream *substream,
+ 					struct snd_pcm_hw_params *params,
+ 					struct snd_soc_dai *cpu_dai)
+@@ -1365,6 +1401,7 @@ static const struct snd_soc_dai_ops davinci_mcasp_dai_ops = {
+ 	.startup	= davinci_mcasp_startup,
+ 	.shutdown	= davinci_mcasp_shutdown,
+ 	.trigger	= davinci_mcasp_trigger,
++	.delay		= davinci_mcasp_delay,
+ 	.hw_params	= davinci_mcasp_hw_params,
+ 	.set_fmt	= davinci_mcasp_set_dai_fmt,
+ 	.set_clkdiv	= davinci_mcasp_set_clkdiv,
 -- 
 2.19.0.rc1
