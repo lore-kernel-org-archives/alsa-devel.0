@@ -1,123 +1,74 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH 3/3] ASoC: tas6424: Add channel fault reporting
-Date: Fri, 31 Aug 2018 10:14:07 -0500
-Message-ID: <20180831151407.18864-3-afd@ti.com>
+Subject: [PATCH 2/3] ASoC: tas6424: Print full register name in
+	error message
+Date: Fri, 31 Aug 2018 10:14:06 -0500
+Message-ID: <20180831151407.18864-2-afd@ti.com>
 References: <20180831151407.18864-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+ by alsa0.perex.cz (Postfix) with ESMTP id B0E2026793E
+ for <alsa-devel@alsa-project.org>; Fri, 31 Aug 2018 17:14:11 +0200 (CEST)
 In-Reply-To: <20180831151407.18864-1-afd@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F .
+ Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-The TAS6426 has a register that reports channel faults such as
-overcurrent and continuous DC output. Add reporting of this here.
+The current short version of the register name may be
+ambiguous when another fault register detection is added.
+Use the full name.
+
+While here fix comment about clearing faults, the CLEAR_FAULT
+register actually only clears sticky bits, which are only
+warnings, fault bits can only cleared by resolving the fault.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
- sound/soc/codecs/tas6424.c | 52 +++++++++++++++++++++++++++++++++-----
- sound/soc/codecs/tas6424.h | 10 ++++++++
- 2 files changed, 56 insertions(+), 6 deletions(-)
+ sound/soc/codecs/tas6424.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/tas6424.c b/sound/soc/codecs/tas6424.c
-index aac559fffc1a..36aebdb8f55c 100644
+index 0d6145549a98..aac559fffc1a 100644
 --- a/sound/soc/codecs/tas6424.c
 +++ b/sound/soc/codecs/tas6424.c
-@@ -41,6 +41,7 @@ struct tas6424_data {
- 	struct regmap *regmap;
- 	struct regulator_bulk_data supplies[TAS6424_NUM_SUPPLIES];
- 	struct delayed_work fault_check_work;
-+	unsigned int last_cfault;
- 	unsigned int last_fault1;
- 	unsigned int last_fault2;
- 	unsigned int last_warn;
-@@ -406,6 +407,51 @@ static void tas6424_fault_check_work(struct work_struct *work)
- 	unsigned int reg;
- 	int ret;
+@@ -408,7 +408,7 @@ static void tas6424_fault_check_work(struct work_struct *work)
  
-+	ret = regmap_read(tas6424->regmap, TAS6424_CHANNEL_FAULT, &reg);
-+	if (ret < 0) {
-+		dev_err(dev, "failed to read CHANNEL_FAULT register: %d\n", ret);
-+		goto out;
-+	}
-+
-+	if (!reg) {
-+		tas6424->last_cfault = reg;
-+		goto check_global_fault1_reg;
-+	}
-+
-+	/*
-+	 * Only flag errors once for a given occurrence. This is needed as
-+	 * the TAS6424 will take time clearing the fault condition internally
-+	 * during which we don't want to bombard the system with the same
-+	 * error message over and over.
-+	 */
-+	if ((reg & TAS6424_FAULT_OC_CH1) && !(tas6424->last_cfault & TAS6424_FAULT_OC_CH1))
-+		dev_crit(dev, "experienced a channel 1 overcurrent fault\n");
-+
-+	if ((reg & TAS6424_FAULT_OC_CH2) && !(tas6424->last_cfault & TAS6424_FAULT_OC_CH2))
-+		dev_crit(dev, "experienced a channel 2 overcurrent fault\n");
-+
-+	if ((reg & TAS6424_FAULT_OC_CH3) && !(tas6424->last_cfault & TAS6424_FAULT_OC_CH3))
-+		dev_crit(dev, "experienced a channel 3 overcurrent fault\n");
-+
-+	if ((reg & TAS6424_FAULT_OC_CH4) && !(tas6424->last_cfault & TAS6424_FAULT_OC_CH4))
-+		dev_crit(dev, "experienced a channel 4 overcurrent fault\n");
-+
-+	if ((reg & TAS6424_FAULT_DC_CH1) && !(tas6424->last_cfault & TAS6424_FAULT_DC_CH1))
-+		dev_crit(dev, "experienced a channel 1 DC fault\n");
-+
-+	if ((reg & TAS6424_FAULT_DC_CH2) && !(tas6424->last_cfault & TAS6424_FAULT_DC_CH2))
-+		dev_crit(dev, "experienced a channel 2 DC fault\n");
-+
-+	if ((reg & TAS6424_FAULT_DC_CH3) && !(tas6424->last_cfault & TAS6424_FAULT_DC_CH3))
-+		dev_crit(dev, "experienced a channel 3 DC fault\n");
-+
-+	if ((reg & TAS6424_FAULT_DC_CH4) && !(tas6424->last_cfault & TAS6424_FAULT_DC_CH4))
-+		dev_crit(dev, "experienced a channel 4 DC fault\n");
-+
-+	/* Store current fault1 value so we can detect any changes next time */
-+	tas6424->last_cfault = reg;
-+
-+check_global_fault1_reg:
  	ret = regmap_read(tas6424->regmap, TAS6424_GLOB_FAULT1, &reg);
  	if (ret < 0) {
- 		dev_err(dev, "failed to read GLOB_FAULT1 register: %d\n", ret);
-@@ -429,12 +475,6 @@ static void tas6424_fault_check_work(struct work_struct *work)
- 		goto check_global_fault2_reg;
+-		dev_err(dev, "failed to read FAULT1 register: %d\n", ret);
++		dev_err(dev, "failed to read GLOB_FAULT1 register: %d\n", ret);
+ 		goto out;
  	}
  
--	/*
--	 * Only flag errors once for a given occurrence. This is needed as
--	 * the TAS6424 will take time clearing the fault condition internally
--	 * during which we don't want to bombard the system with the same
--	 * error message over and over.
--	 */
- 	if ((reg & TAS6424_FAULT_PVDD_OV) && !(tas6424->last_fault1 & TAS6424_FAULT_PVDD_OV))
- 		dev_crit(dev, "experienced a PVDD overvoltage fault\n");
+@@ -453,7 +453,7 @@ static void tas6424_fault_check_work(struct work_struct *work)
+ check_global_fault2_reg:
+ 	ret = regmap_read(tas6424->regmap, TAS6424_GLOB_FAULT2, &reg);
+ 	if (ret < 0) {
+-		dev_err(dev, "failed to read FAULT2 register: %d\n", ret);
++		dev_err(dev, "failed to read GLOB_FAULT2 register: %d\n", ret);
+ 		goto out;
+ 	}
  
-diff --git a/sound/soc/codecs/tas6424.h b/sound/soc/codecs/tas6424.h
-index b5958c45ed0e..c67a7835ca66 100644
---- a/sound/soc/codecs/tas6424.h
-+++ b/sound/soc/codecs/tas6424.h
-@@ -115,6 +115,16 @@
- #define TAS6424_LDGBYPASS_SHIFT		0
- #define TAS6424_LDGBYPASS_MASK		BIT(TAS6424_LDGBYPASS_SHIFT)
+@@ -530,7 +530,7 @@ static void tas6424_fault_check_work(struct work_struct *work)
+ 	/* Store current warn value so we can detect any changes next time */
+ 	tas6424->last_warn = reg;
  
-+/* TAS6424_GLOB_FAULT1_REG */
-+#define TAS6424_FAULT_OC_CH1		BIT(7)
-+#define TAS6424_FAULT_OC_CH2		BIT(6)
-+#define TAS6424_FAULT_OC_CH3		BIT(5)
-+#define TAS6424_FAULT_OC_CH4		BIT(4)
-+#define TAS6424_FAULT_DC_CH1		BIT(3)
-+#define TAS6424_FAULT_DC_CH2		BIT(2)
-+#define TAS6424_FAULT_DC_CH3		BIT(1)
-+#define TAS6424_FAULT_DC_CH4		BIT(0)
-+
- /* TAS6424_GLOB_FAULT1_REG */
- #define TAS6424_FAULT_CLOCK		BIT(4)
- #define TAS6424_FAULT_PVDD_OV		BIT(3)
+-	/* Clear any faults by toggling the CLEAR_FAULT control bit */
++	/* Clear any warnings by toggling the CLEAR_FAULT control bit */
+ 	ret = regmap_write_bits(tas6424->regmap, TAS6424_MISC_CTRL3,
+ 				TAS6424_CLEAR_FAULT, TAS6424_CLEAR_FAULT);
+ 	if (ret < 0)
 -- 
 2.18.0
