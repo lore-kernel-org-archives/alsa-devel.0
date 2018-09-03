@@ -1,41 +1,35 @@
-From: Greg KH <greg-U8xfFu+wG4EAvxtiuMwx3w@public.gmane.org>
-Subject: Re: [RFC] UAPI: Check headers by compiling all together as C++
-Date: Wed, 5 Sep 2018 18:55:52 +0200
-Message-ID: <20180905165552.GB25206@kroah.com>
-References: <153616286704.23468.584491117180383924.stgit@warthog.procyon.org.uk>
+From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
+Subject: Microphone detected,
+	but no output for all ASUS G751xx with ALC668 chipset
+Date: Mon, 3 Sep 2018 18:26:36 +0200
+Message-ID: <CANweNF5raPXRs9A_i+fkeZcTxUP8xNHM0Qm22j7nDtmoa6c5qQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <153616286704.23468.584491117180383924.stgit-S6HVgzuS8uM4Awkfq6JHfwNdhmdF6hFW@public.gmane.org>
-List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
-List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
-Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
-Sender: "Linux-nvdimm" <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-To: David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Cc: moderated for non-subscribers <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Michael S. Tsirkin" <mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Jason Wang <jasowang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Mat Martineau <mathew.j.martineau-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, virtualization-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, Masahiro Yamada <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>, keyrings-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Ryusuke Konishi <konishi.ryusuke-Zyj7fXuS5i5L9jVzuh4AOg@public.gmane.org>, linux-nilfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, codalist-/uMB558Y47wP4a1z8dhFYw@public.gmane.org, coda-ETDLCGt7PQU3uPMLIKxrzw@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, Kent Overstreet <kent.overstreet-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-kbuild-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Coly Li <colyli-l3A5Bk7waGM@public.gmane.org>, linux-bcache-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Jan Harkes <jaharkes-ETDLCGt7PQU3uPMLIKxrzw@public.gmane.org>, Michal Marek <michal.lkml-yyZNWGI4GtDR7s880joybQ@public.gmane.org>, linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, linux-kernel@
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com
+ [209.85.219.177])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1129267657
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 18:26:48 +0200 (CEST)
+Received: by mail-yb1-f177.google.com with SMTP id l16-v6so340738ybk.11
+ for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2018 09:26:48 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Sep 05, 2018 at 04:54:27PM +0100, David Howells wrote:
-> 
-> Here's a set of patches that inserts a step into the build process to make
-> sure that the UAPI headers can all be built together with C++ (if the
-> compiler being used supports C++).  All but the final patch perform fixups,
-> including:
-
-Wait, why do we care?  What has recently changed to start to directly
-import kernel uapi files into C++ code?
-
-And if userspace wants to do this, can't they do the C namespace trick
-themselves when they do the import?  That must be how they are doing it
-today, right?
-
-thanks,
-
-greg k-h
+SGF2ZSB0cmllZCBlbmFibGluZyBhbGwgR1BJTyBzZXR0aW5ncyBhcyB3ZWxsIGFzIHRyaWVkIGV2
+ZXJ5IHBvc3NpYmxlIHBpbgpjb21iaW5hdGlvbiBJIGNvdWxkIHRoaW5rIG9mLiBUaGlzIHByb2Js
+ZW0gaGFzIHBlcnNpc3RlZCBmb3IgYWxtb3N0IDQteWVhcnMKd2l0aCBubyBmaXggb3IgcGF0Y2gg
+dG8gc3BlYWsgb2YuIFdvdWxkIGJlIGdyZWF0IGlmIHNvbWVvbmUgZmluYWxseSBoYWQgYQpsb29r
+IGF0IGl0IQoKLUjDpXZhcmQKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qu
+b3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNh
+LWRldmVsCg==
