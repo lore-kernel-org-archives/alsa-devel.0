@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: fix soc-core.c kernel-doc warning" to
-	the asoc tree
-Date: Mon,  3 Sep 2018 14:47:08 +0100 (BST)
-Message-ID: <20180903134708.724C411227AE@debutante.sirena.org.uk>
-References: <a75f4b8b-4e1c-bc73-1033-c49f4b30e4e5@infradead.org>
+Subject: Applied "ASoC: q6routing: initialize data correctly"
+	to the asoc tree
+Date: Mon,  3 Sep 2018 14:47:16 +0100 (BST)
+Message-ID: <20180903134716.BC3FF11227AE@debutante.sirena.org.uk>
+References: <20180903110747.10745-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A400A26789B
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:47:09 +0200 (CEST)
-In-Reply-To: <a75f4b8b-4e1c-bc73-1033-c49f4b30e4e5@infradead.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D4462678B0
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:47:17 +0200 (CEST)
+In-Reply-To: <20180903110747.10745-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, LKML <linux-kernel@vger.kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: bgoswami@codeaurora.org, alsa-devel@alsa-project.org, broonie@kernel.org, rohitkr@codeaurora.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: fix soc-core.c kernel-doc warning
+   ASoC: q6routing: initialize data correctly
 
 has been applied to the asoc tree at
 
@@ -53,33 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 63a886f38dd96868e33488eccee8ed427144d397 Mon Sep 17 00:00:00 2001
-From: Randy Dunlap <rdunlap@infradead.org>
-Date: Sun, 2 Sep 2018 19:38:10 -0700
-Subject: [PATCH] ASoC: fix soc-core.c kernel-doc warning
+>From 7aa09ff24301535491cd4de1b93107ee91449a12 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Mon, 3 Sep 2018 12:07:47 +0100
+Subject: [PATCH] ASoC: q6routing: initialize data correctly
 
-Fix kernel-doc warning:
+Some of the router data fields are left as default zeros which are
+valid dai ids, so initialize these to invalid value of -1.
 
-../sound/soc/soc-core.c:2918: warning: Excess function parameter 'legacy_dai_naming' description in 'snd_soc_register_dais'
+Without intializing these correctly get_session_from_id() can return
+incorrect session resulting in not closing the opened copp and messing
+up with the copp ref count.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 2 --
- 1 file changed, 2 deletions(-)
+ sound/soc/qcom/qdsp6/q6routing.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 2a73630d0680..e9c2304afaf1 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2944,8 +2944,6 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
-  * @component: The component the DAIs are registered for
-  * @dai_drv: DAI driver to use for the DAIs
-  * @count: Number of DAIs
-- * @legacy_dai_naming: Use the legacy naming scheme and let the DAI inherit the
-- *                     parent's name.
-  */
- static int snd_soc_register_dais(struct snd_soc_component *component,
- 				 struct snd_soc_dai_driver *dai_drv, size_t count)
+diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
+index dc94c5c53788..c6b51571be94 100644
+--- a/sound/soc/qcom/qdsp6/q6routing.c
++++ b/sound/soc/qcom/qdsp6/q6routing.c
+@@ -960,8 +960,10 @@ static int msm_routing_probe(struct snd_soc_component *c)
+ {
+ 	int i;
+ 
+-	for (i = 0; i < MAX_SESSIONS; i++)
++	for (i = 0; i < MAX_SESSIONS; i++) {
+ 		routing_data->sessions[i].port_id = -1;
++		routing_data->sessions[i].fedai_id = -1;
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.19.0.rc1
