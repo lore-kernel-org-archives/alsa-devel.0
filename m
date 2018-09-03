@@ -1,31 +1,18 @@
-From: Dmitry Vyukov <dvyukov@google.com>
-Subject: Re: KMSAN: uninit-value in snd_midi_event_encode_byte
-Date: Mon, 3 Sep 2018 19:25:39 +0200
-Message-ID: <CACT4Y+aZo9oJbmESUBgRe43WuW6uTiAJ21PPWrybFWbS4hg=3A@mail.gmail.com>
-References: <s5ha7oyhg0v.wl-tiwai@suse.de>
- <000000000000a25ae50574f76ff0@google.com>
- <s5h7ek2hfp6.wl-tiwai@suse.de>
- <CACT4Y+bJM4dfx_2_qwPLOYdU_snGv7Zhhu3g_sHuzUM3sjnZQQ@mail.gmail.com>
- <s5h4lf6hfcq.wl-tiwai@suse.de>
- <CACT4Y+ZjXmdTb552cEOYdhz4PVOHdS39q7ynW_3uz=STvVmr5w@mail.gmail.com>
- <s5h1saahe2p.wl-tiwai@suse.de>
- <CACT4Y+Z9Aji1vENUc_8YbMx5dh=uXfm09DewDZZvwXbKn5O_vA@mail.gmail.com>
- <s5hwos2fybs.wl-tiwai@suse.de>
- <CACT4Y+a1erpZnCVAU44wF+Sve5He4gjK4+7nGHi6RWbogfs3Ag@mail.gmail.com>
- <s5ho9defwxf.wl-tiwai@suse.de>
- <CACT4Y+YMetgDkFtqOuPJzfniKBfnq4-RAYE_AJkvMVTLAUx5-Q@mail.gmail.com>
- <s5hlg8ifw3v.wl-tiwai@suse.de>
+From: petrcvekcz@gmail.com
+Subject: [PATCH] ASoC: pxa: remove duplicated
+	snd_soc_component_driver ops
+Date: Mon,  3 Sep 2018 22:25:01 +0200
+Message-ID: <5110d62c9a1d266da0675cd11f196adad4b12cec.1536006242.git.petrcvekcz@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
- [209.85.215.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B3BFB267668
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 19:26:02 +0200 (CEST)
-Received: by mail-pg1-f193.google.com with SMTP id s7-v6so456175pgc.0
- for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2018 10:26:02 -0700 (PDT)
-In-Reply-To: <s5hlg8ifw3v.wl-tiwai@suse.de>
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com
+ [209.85.221.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 13F7E2673F4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 22:25:22 +0200 (CEST)
+Received: by mail-wr1-f65.google.com with SMTP id k5-v6so1720963wre.10
+ for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2018 13:25:22 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,85 +22,104 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, syzbot <syzbot+194dffdb8b22fc5d207a@syzkaller.appspotmail.com>, syzkaller-bugs <syzkaller-bugs@googlegroups.com>, LKML <linux-kernel@vger.kernel.org>, alsa-devel-bounces@alsa-project.org
+To: daniel@zonque.org, haojian.zhuang@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, marek.vasut@gmail.com
+Cc: alsa-devel@alsa-project.org, dbaryshkov@gmail.com, Petr Cvek <petrcvekcz@gmail.com>, dirk@opfer-online.de, zhouqiao@marvell.com, philipp.zabel@gmail.com, lost.distance@yahoo.com, robert.jarzmik@free.fr
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Sep 3, 2018 at 5:18 PM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Mon, 03 Sep 2018 17:06:05 +0200,
-> Dmitry Vyukov wrote:
->>
->> On Mon, Sep 3, 2018 at 5:00 PM, Takashi Iwai <tiwai@suse.de> wrote:
->> > On Mon, 03 Sep 2018 16:54:23 +0200,
->> > Dmitry Vyukov wrote:
->> >>
->> >> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#kmsan-bugs
->> >> is meant to be a complement to the previous generic descriptions of
->> >> patch testing process, which is:
->> >> https://github.com/google/syzkaller/blob/master/docs/syzbot.md#testing-patches
->> >>
->> >> So, you always reply to the syzbot+HASH email address so that syzbot
->> >> understands which bug we are talking about.
->> >> Then you do either (omitting # so that syzbot won't consider that as
->> >> actual test requests):
->> >>
->> >> syz test: git://repo/address.git branch
->> >>
->> >> or:
->> >>
->> >> syz test: git://repo/address.git commit-hash
->> >>
->> >> And then you can either attach a patch that needs to be applied on
->> >> top, or not attach it (if it's already in the tree, or you just want
->> >> to get another crash report).
->> >
->> > OK, so far, so good, it's what I knew and have done a few times.
->> >
->> >
->> >> For KMSAN you need to issue test request against
->> >> "https//github.com/google/kmsan.git master" (that's the only tree that
->> >> has KMSAN tool in it) and you need to attach/inline the patch (because
->> >> your patch is obviously not there yet).
->> >>
->> >> Does this make things more clear?
->> >
->> > Sorry, the part "issue test request against https..." still isn't
->> > clear.
->> >
->> > Do you mean to open an issue entry on github, and attach the patch
->> > there?
->>
->> By "issue test request" I mean sending email with "syz test" command.
->> So overall you send "syz test https//github.com/google/kmsan.git
->> master" and attach the patch.
->> The workflow is all the same, and no github involved. It's just that
->> you can't ask to test it against
->> git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git because
->> it does not have KMSAN tool and so no KMSAN bugs will be detected
->> there.
->
-> Thanks, this finally made me understanding the whole picture!
->
->> Since I did all of this, it's hard for me to write clear docs for others. Sorry.
->> If you can suggest some improved wording, it would be great.
->
-> Well, how about like below?
->
->
-> KMSAN is not upstream yet, though, we want to upstream it later. For
-> now, it lives in github.com/google/kmsan and is based on a reasonably
-> fresh upstream tree. As the result, any patch testing requests for
-> KMSAN bugs need to go to KMSAN tree
-> (https://github.com/google/kmsan.git repo, master branch).
-> A standard way for triggering the test with KMSAN tree is to send an
-> email to syzbot+HASH address containing the following line:
->
->   #syz test: https://github.com/google/kmsan.git master
->
-> and attach/inline your test patch in the same mail.
+From: Petr Cvek <petrcvekcz@gmail.com>
 
+The sound soc drivers which are using a platform driver pxa-pcm-audio and
+cpu dai drivers from the pxa tree have defined pxa2xx_soc_pcm_new() twice.
+The function will get called in soc_new_pcm() for two components (platform
+and cpu dai) which causes a double allocation of DMA resources and later
+during a close of the playback/capture a kernel warning:
 
-Done:
-https://github.com/google/syzkaller/commit/3ea6c028b154d2faea45142bfb15b02f3243800c#diff-5b3b5ff5f03b01e1d31ec93aafd2f3d5
+ WARNING: CPU: 0 PID: 892 at drivers/dma/dmaengine.c:788 dma_release_channel+0x44/0xa0
+ chan reference count 0 != 1
+ Modules linked in: snd_soc_magician snd_soc_pxa2xx snd_pxa2xx_lib ...
+ CPU: 0 PID: 892 Comm: aplay Tainted: G C 4.18.0-rc6-next-20180726-magician+ #16
+ Hardware name: HTC Magician
+ [<c0107d90>] (unwind_backtrace) from [<c010594c>] (show_stack+0x10/0x14)
+ [<c010594c>] (show_stack) from [<c0111680>] (__warn+0xd4/0xec)
+ [<c0111680>] (__warn) from [<c01112d0>] (warn_slowpath_fmt+0x44/0x6c)
+ [<c01112d0>] (warn_slowpath_fmt) from [<c034908c>] (dma_release_channel+0x44/0xa0)
+ [<c034908c>] (dma_release_channel) from [<bf330528>] (snd_dmaengine_pcm_close_release_chan+0x44/0xb1c [snd_pcm_dmaengine])
+ [<bf330528>] (snd_dmaengine_pcm_close_release_chan [snd_pcm_dmaengine]) from [<bf26c29c>] (soc_pcm_components_close+0x8c/0xac [snd_soc_core])
+ [<bf26c29c>] (soc_pcm_components_close [snd_soc_core]) from [<bf26c3a0>] (soc_pcm_close+0xe4/0xd44 [snd_soc_core])
+ [<bf26c3a0>] (soc_pcm_close [snd_soc_core]) from [<bf167254>] (snd_pcm_release_substream+0x88/0x108 [snd_pcm])
+ [<bf167254>] (snd_pcm_release_substream [snd_pcm]) from [<bf167330>] (snd_pcm_release+0x5c/0xd2c [snd_pcm])
+ [<bf167330>] (snd_pcm_release [snd_pcm]) from [<c01c39e4>] (__fput+0xdc/0x1e8)
+ [<c01c39e4>] (__fput) from [<c0129e7c>] (task_work_run+0xc4/0xd4)
+ [<c0129e7c>] (task_work_run) from [<c01053ac>] (do_work_pending+0xc0/0xc8)
+ [<c01053ac>] (do_work_pending) from [<c0101068>] (slow_work_pending+0xc/0x20)
+ Exception stack(0xc2fdffb0 to 0xc2fdfff8)
+ ffa0:                                     00000000 0154d1a0 01542a3c 00000000
+ ffc0: 0154d150 00000000 0009283c 00000006 000003f0 0154d4c8 00000000 0154d4c8
+ ffe0: b6ee7d70 bef13960 b6e547b8 b6cfe018 60000010 00000004
 
-Thanks
+The problem was found for cpu dai drivers: pxa-i2s and pxa-ssp and by
+a calltrace sent from Robert Jarzmik on pxa-ac97 (although there was no
+observed kernel warning). The git grep shows these 3 cpu dai drivers are
+the only one which assign the .pcm_new to pxa2xx_soc_pcm_new() and almost
+every machine which is using one of these cpu dai drivers is using the
+platform driver pxa-pcm-audio too. The only exception is TTC_DKB board
+which is using a platform driver mmp-pcm-audio. A quick look in the code
+of mmp-pcm-audio shows it allocates the DMA in the similar way as PXA.
+
+The solution is to remove one of pxa2xx_soc_pcm_new() assignments and the
+patch does it for 3 cpu dai drivers (SSP/I2S/AC97).
+
+The result was tested on HTC Magician board (SSP for playback, I2S for
+capture) and the DMA buffers are correctly allocated.
+
+Signed-off-by: Petr Cvek <petrcvekcz@gmail.com>
+---
+ sound/soc/pxa/pxa-ssp.c     | 3 ---
+ sound/soc/pxa/pxa2xx-ac97.c | 3 ---
+ sound/soc/pxa/pxa2xx-i2s.c  | 3 ---
+ 3 files changed, 9 deletions(-)
+
+diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
+index 69033e1a84e6..9689a1552d53 100644
+--- a/sound/soc/pxa/pxa-ssp.c
++++ b/sound/soc/pxa/pxa-ssp.c
+@@ -867,9 +867,6 @@ static struct snd_soc_dai_driver pxa_ssp_dai = {
+ 
+ static const struct snd_soc_component_driver pxa_ssp_component = {
+ 	.name		= "pxa-ssp",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
+ };
+ 
+ #ifdef CONFIG_OF
+diff --git a/sound/soc/pxa/pxa2xx-ac97.c b/sound/soc/pxa/pxa2xx-ac97.c
+index 9f779657bc86..c52b33802bf2 100644
+--- a/sound/soc/pxa/pxa2xx-ac97.c
++++ b/sound/soc/pxa/pxa2xx-ac97.c
+@@ -214,9 +214,6 @@ static struct snd_soc_dai_driver pxa_ac97_dai_driver[] = {
+ 
+ static const struct snd_soc_component_driver pxa_ac97_component = {
+ 	.name		= "pxa-ac97",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
+ };
+ 
+ #ifdef CONFIG_OF
+diff --git a/sound/soc/pxa/pxa2xx-i2s.c b/sound/soc/pxa/pxa2xx-i2s.c
+index 42820121e5b9..e7184de0de04 100644
+--- a/sound/soc/pxa/pxa2xx-i2s.c
++++ b/sound/soc/pxa/pxa2xx-i2s.c
+@@ -364,9 +364,6 @@ static struct snd_soc_dai_driver pxa_i2s_dai = {
+ 
+ static const struct snd_soc_component_driver pxa_i2s_component = {
+ 	.name		= "pxa-i2s",
+-	.ops		= &pxa2xx_pcm_ops,
+-	.pcm_new	= pxa2xx_soc_pcm_new,
+-	.pcm_free	= pxa2xx_pcm_free_dma_buffers,
+ };
+ 
+ static int pxa2xx_i2s_drv_probe(struct platform_device *pdev)
+-- 
+2.18.0
