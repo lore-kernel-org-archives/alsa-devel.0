@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: ssiu: Support to init different
-	BUSIF instance" to the asoc tree
-Date: Mon,  3 Sep 2018 14:45:07 +0100 (BST)
-Message-ID: <20180903134507.3787311227AE@debutante.sirena.org.uk>
-References: <87wos3dpye.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: ssiu: Support BUSIF other than
+	BUSIF0" to the asoc tree
+Date: Mon,  3 Sep 2018 14:45:18 +0100 (BST)
+Message-ID: <20180903134518.3904A11227AE@debutante.sirena.org.uk>
+References: <87y3cjdpyv.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BF6082678AF
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:45:07 +0200 (CEST)
-In-Reply-To: <87wos3dpye.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DB9F62676C6
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:45:18 +0200 (CEST)
+In-Reply-To: <87y3cjdpyv.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: ssiu: Support to init different BUSIF instance
+   ASoC: rsnd: ssiu: Support BUSIF other than BUSIF0
 
 has been applied to the asoc tree at
 
@@ -53,21 +53,19 @@ to this mail.
 Thanks,
 Mark
 
->From 2e66d523cd055ac3fa920f7e630c4bfa80d24c24 Mon Sep 17 00:00:00 2001
+>From 8c9d750333408420a1e4816b1820f10be2a84af6 Mon Sep 17 00:00:00 2001
 From: Jiada Wang <jiada_wang@mentor.com>
-Date: Mon, 3 Sep 2018 07:08:37 +0000
-Subject: [PATCH] ASoC: rsnd: ssiu: Support to init different BUSIF instance
+Date: Mon, 3 Sep 2018 07:08:20 +0000
+Subject: [PATCH] ASoC: rsnd: ssiu: Support BUSIF other than BUSIF0
 
-Currently ssiu's .init is only called once during audio stream.
-But SSIU with different BUSIF, shall be initialized each time,
-even they are used in the same audio stream.
+Currently only BUSIF0 is supported by SSIU, all register setting
+is done only for BUSIF.
 
-This patch introduces ssiu_status for BUSIF0 to BUSIF7 in rsnd_ssiu,
-to make sure same .init for different BUSIF can always be executed.
+Since BUSIF1 ~ BUSIF7 has been supported, so also support
+these BUSIF from SSIU.
 
-To avoid the first stopped stream to stop the whole SSIU,
-which may still has other BUSIF instance running, use usrcnt to count
-the usage of SSIU, only the last user of SSIU can stop the whole SSIU.
+One note is that we can't support SSI9-4/5/6/7 so far,
+because its address is out of calculation rule.
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
@@ -76,86 +74,187 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssiu.c | 22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/gen.c  | 27 ++++++++++++++--
+ sound/soc/sh/rcar/rsnd.h | 27 ++++++++++++++--
+ sound/soc/sh/rcar/ssiu.c | 70 +++++++++++++++++++++++++++++++++-------
+ 3 files changed, 107 insertions(+), 17 deletions(-)
 
+diff --git a/sound/soc/sh/rcar/gen.c b/sound/soc/sh/rcar/gen.c
+index 0230301fe078..3032869a7f26 100644
+--- a/sound/soc/sh/rcar/gen.c
++++ b/sound/soc/sh/rcar/gen.c
+@@ -219,9 +219,30 @@ static int rsnd_gen2_probe(struct rsnd_priv *priv)
+ 		RSND_GEN_S_REG(HDMI1_SEL,	0x9e4),
+ 
+ 		/* FIXME: it needs SSI_MODE2/3 in the future */
+-		RSND_GEN_M_REG(SSI_BUSIF_MODE,	0x0,	0x80),
+-		RSND_GEN_M_REG(SSI_BUSIF_ADINR,	0x4,	0x80),
+-		RSND_GEN_M_REG(SSI_BUSIF_DALIGN,0x8,	0x80),
++		RSND_GEN_M_REG(SSI_BUSIF0_MODE,		0x0,	0x80),
++		RSND_GEN_M_REG(SSI_BUSIF0_ADINR,	0x4,	0x80),
++		RSND_GEN_M_REG(SSI_BUSIF0_DALIGN,	0x8,	0x80),
++		RSND_GEN_M_REG(SSI_BUSIF1_MODE,         0x20,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF1_ADINR,        0x24,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF1_DALIGN,       0x28,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF2_MODE,         0x40,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF2_ADINR,        0x44,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF2_DALIGN,       0x48,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF3_MODE,         0x60,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF3_ADINR,        0x64,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF3_DALIGN,       0x68,   0x80),
++		RSND_GEN_M_REG(SSI_BUSIF4_MODE,         0x500,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF4_ADINR,        0x504,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF4_DALIGN,       0x508,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF5_MODE,         0x520,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF5_ADINR,        0x524,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF5_DALIGN,       0x528,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF6_MODE,         0x540,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF6_ADINR,        0x544,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF6_DALIGN,       0x548,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF7_MODE,         0x560,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF7_ADINR,        0x564,  0x80),
++		RSND_GEN_M_REG(SSI_BUSIF7_DALIGN,       0x568,  0x80),
+ 		RSND_GEN_M_REG(SSI_MODE,	0xc,	0x80),
+ 		RSND_GEN_M_REG(SSI_CTRL,	0x10,	0x80),
+ 		RSND_GEN_M_REG(SSI_INT_ENABLE,	0x18,	0x80),
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index cb27a679dc65..7ff58b0e8002 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -156,9 +156,30 @@ enum rsnd_reg {
+ 	RSND_REG_SSI_MODE2,
+ 	RSND_REG_SSI_CONTROL,
+ 	RSND_REG_SSI_CTRL,
+-	RSND_REG_SSI_BUSIF_MODE,
+-	RSND_REG_SSI_BUSIF_ADINR,
+-	RSND_REG_SSI_BUSIF_DALIGN,
++	RSND_REG_SSI_BUSIF0_MODE,
++	RSND_REG_SSI_BUSIF0_ADINR,
++	RSND_REG_SSI_BUSIF0_DALIGN,
++	RSND_REG_SSI_BUSIF1_MODE,
++	RSND_REG_SSI_BUSIF1_ADINR,
++	RSND_REG_SSI_BUSIF1_DALIGN,
++	RSND_REG_SSI_BUSIF2_MODE,
++	RSND_REG_SSI_BUSIF2_ADINR,
++	RSND_REG_SSI_BUSIF2_DALIGN,
++	RSND_REG_SSI_BUSIF3_MODE,
++	RSND_REG_SSI_BUSIF3_ADINR,
++	RSND_REG_SSI_BUSIF3_DALIGN,
++	RSND_REG_SSI_BUSIF4_MODE,
++	RSND_REG_SSI_BUSIF4_ADINR,
++	RSND_REG_SSI_BUSIF4_DALIGN,
++	RSND_REG_SSI_BUSIF5_MODE,
++	RSND_REG_SSI_BUSIF5_ADINR,
++	RSND_REG_SSI_BUSIF5_DALIGN,
++	RSND_REG_SSI_BUSIF6_MODE,
++	RSND_REG_SSI_BUSIF6_ADINR,
++	RSND_REG_SSI_BUSIF6_DALIGN,
++	RSND_REG_SSI_BUSIF7_MODE,
++	RSND_REG_SSI_BUSIF7_ADINR,
++	RSND_REG_SSI_BUSIF7_DALIGN,
+ 	RSND_REG_SSI_INT_ENABLE,
+ 	RSND_REG_SSI_SYS_STATUS0,
+ 	RSND_REG_SSI_SYS_STATUS1,
 diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
-index a9605a0163f2..39b67643b5dc 100644
+index 016fbf5ac242..a9605a0163f2 100644
 --- a/sound/soc/sh/rcar/ssiu.c
 +++ b/sound/soc/sh/rcar/ssiu.c
-@@ -10,9 +10,12 @@
+@@ -140,15 +140,59 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 	rsnd_mod_write(mod, SSI_MODE, mode);
  
- struct rsnd_ssiu {
- 	struct rsnd_mod mod;
-+	u32 busif_status[8]; /* for BUSIF0 - BUSIF7 */
-+	unsigned int usrcnt;
- };
- 
- #define rsnd_ssiu_nr(priv) ((priv)->ssiu_nr)
-+#define rsnd_mod_to_ssiu(_mod) container_of((_mod), struct rsnd_ssiu, mod)
- #define for_each_rsnd_ssiu(pos, priv, i)				\
- 	for (i = 0;							\
- 	     (i < rsnd_ssiu_nr(priv)) &&				\
-@@ -120,6 +123,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 			       struct rsnd_dai_stream *io,
- 			       struct rsnd_priv *priv)
- {
-+	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
- 	int hdmi = rsnd_ssi_hdmi_port(io);
- 	int ret;
- 	u32 mode = 0;
-@@ -128,6 +132,8 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
- 	if (ret < 0)
- 		return ret;
- 
-+	ssiu->usrcnt++;
+ 	if (rsnd_ssi_use_busif(io)) {
+-		rsnd_mod_write(mod, SSI_BUSIF_ADINR,
+-			       rsnd_get_adinr_bit(mod, io) |
+-			       (rsnd_io_is_play(io) ?
+-				rsnd_runtime_channel_after_ctu(io) :
+-				rsnd_runtime_channel_original(io)));
+-		rsnd_mod_write(mod, SSI_BUSIF_MODE,
+-			       rsnd_get_busif_shift(io, mod) | 1);
+-		rsnd_mod_write(mod, SSI_BUSIF_DALIGN,
+-			       rsnd_get_dalign(mod, io));
++		int id = rsnd_mod_id(mod);
++		int busif = rsnd_ssi_get_busif(io);
 +
- 	if (rsnd_runtime_is_ssi_tdm(io)) {
- 		/*
- 		 * TDM Extend Mode
-@@ -255,6 +261,7 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
- 			       struct rsnd_dai_stream *io,
- 			       struct rsnd_priv *priv)
- {
-+	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
- 	int busif = rsnd_ssi_get_busif(io);
- 
- 	if (!rsnd_ssi_use_busif(io))
-@@ -262,6 +269,9 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
- 
- 	rsnd_mod_bset(mod, SSI_CTRL, 1 << (busif * 4), 0);
- 
-+	if (--ssiu->usrcnt)
-+		return 0;
++		/*
++		 * FIXME
++		 *
++		 * We can't support SSI9-4/5/6/7, because its address is
++		 * out of calculation rule
++		 */
++		if ((id == 9) && (busif >= 4)) {
++			struct device *dev = rsnd_priv_to_dev(priv);
 +
- 	if (rsnd_ssi_multi_slaves_runtime(io))
- 		rsnd_mod_write(mod, SSI_CONTROL, 0);
++			dev_err(dev, "This driver doesn't support SSI%d-%d, so far",
++				id, busif);
++		}
++
++#define RSND_WRITE_BUSIF(i)						\
++		rsnd_mod_write(mod, SSI_BUSIF##i##_ADINR,		\
++			       rsnd_get_adinr_bit(mod, io) |		\
++			       (rsnd_io_is_play(io) ?			\
++				rsnd_runtime_channel_after_ctu(io) :	\
++				rsnd_runtime_channel_original(io)));	\
++		rsnd_mod_write(mod, SSI_BUSIF##i##_MODE,		\
++			       rsnd_get_busif_shift(io, mod) | 1);	\
++		rsnd_mod_write(mod, SSI_BUSIF##i##_DALIGN,		\
++			       rsnd_get_dalign(mod, io))
++
++		switch (busif) {
++		case 0:
++			RSND_WRITE_BUSIF(0);
++			break;
++		case 1:
++			RSND_WRITE_BUSIF(1);
++			break;
++		case 2:
++			RSND_WRITE_BUSIF(2);
++			break;
++		case 3:
++			RSND_WRITE_BUSIF(3);
++			break;
++		case 4:
++			RSND_WRITE_BUSIF(4);
++			break;
++		case 5:
++			RSND_WRITE_BUSIF(5);
++			break;
++		case 6:
++			RSND_WRITE_BUSIF(6);
++			break;
++		case 7:
++			RSND_WRITE_BUSIF(7);
++			break;
++		}
+ 	}
  
-@@ -294,6 +304,16 @@ int rsnd_ssiu_attach(struct rsnd_dai_stream *io,
- 	return rsnd_dai_connect(mod, io, mod->type);
- }
- 
-+static u32 *rsnd_ssiu_get_status(struct rsnd_dai_stream *io,
-+				 struct rsnd_mod *mod,
-+				 enum rsnd_mod_type type)
-+{
-+	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
+ 	if (hdmi) {
+@@ -194,10 +238,12 @@ static int rsnd_ssiu_start_gen2(struct rsnd_mod *mod,
+ 				struct rsnd_dai_stream *io,
+ 				struct rsnd_priv *priv)
+ {
 +	int busif = rsnd_ssi_get_busif(io);
 +
-+	return &ssiu->busif_status[busif];
-+}
-+
- int rsnd_ssiu_probe(struct rsnd_priv *priv)
- {
- 	struct device *dev = rsnd_priv_to_dev(priv);
-@@ -317,7 +337,7 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
+ 	if (!rsnd_ssi_use_busif(io))
+ 		return 0;
  
- 	for_each_rsnd_ssiu(ssiu, priv, i) {
- 		ret = rsnd_mod_init(priv, rsnd_mod_get(ssiu),
--				    ops, NULL, rsnd_mod_get_status,
-+				    ops, NULL, rsnd_ssiu_get_status,
- 				    RSND_MOD_SSIU, i);
- 		if (ret)
- 			return ret;
+-	rsnd_mod_write(mod, SSI_CTRL, 0x1);
++	rsnd_mod_bset(mod, SSI_CTRL, 1 << (busif * 4), 1 << (busif * 4));
+ 
+ 	if (rsnd_ssi_multi_slaves_runtime(io))
+ 		rsnd_mod_write(mod, SSI_CONTROL, 0x1);
+@@ -209,10 +255,12 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
+ 			       struct rsnd_dai_stream *io,
+ 			       struct rsnd_priv *priv)
+ {
++	int busif = rsnd_ssi_get_busif(io);
++
+ 	if (!rsnd_ssi_use_busif(io))
+ 		return 0;
+ 
+-	rsnd_mod_write(mod, SSI_CTRL, 0);
++	rsnd_mod_bset(mod, SSI_CTRL, 1 << (busif * 4), 0);
+ 
+ 	if (rsnd_ssi_multi_slaves_runtime(io))
+ 		rsnd_mod_write(mod, SSI_CONTROL, 0);
 -- 
 2.19.0.rc1
