@@ -1,95 +1,96 @@
-From: syzbot <syzbot+194dffdb8b22fc5d207a@syzkaller.appspotmail.com>
-Subject: KMSAN: uninit-value in snd_midi_event_encode_byte
-Date: Sun, 02 Sep 2018 12:29:03 -0700
-Message-ID: <000000000000feece60574e86f8d@google.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [RFC - AAF PCM plugin 3/5] aaf: Implement Playback
+	mode support
+Date: Mon, 3 Sep 2018 10:24:58 +0900
+Message-ID: <163823ec-3f37-afa8-91c3-dabbe9fe31f2@sakamocchi.jp>
+References: <20180821010653.15838-1-andre.guedes@intel.com>
+ <20180821010653.15838-4-andre.guedes@intel.com>
+ <294236b7-ace1-af42-508a-635fe9709f0e@linux.intel.com>
+ <1534888610.4547.104.camel@intel.com>
+ <8211a507-da5e-8504-a048-2ec86dbfbf4b@linux.intel.com>
+ <1534985162.3235.50.camel@intel.com>
+ <73a0095c-b58c-366b-424b-c2c518fd6f70@linux.intel.com>
+ <1535049162.3323.5.camel@intel.com>
+ <d553d212-d3ce-ec5f-86f3-062cd51d50ec@sakamocchi.jp>
+ <1535504395.3198.7.camel@intel.com>
+ <0b596f65-d71d-0999-c817-3fb76f055e95@sakamocchi.jp>
+ <1535757482.23424.19.camel@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com
+ [209.85.214.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2BC6E267657
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 03:25:02 +0200 (CEST)
+Received: by mail-pl1-f195.google.com with SMTP id ba4-v6so7843043plb.11
+ for <alsa-devel@alsa-project.org>; Sun, 02 Sep 2018 18:25:02 -0700 (PDT)
+In-Reply-To: <1535757482.23424.19.camel@intel.com>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Guedes, Andre" <andre.guedes@intel.com>, "pierre-louis.bossart@linux.intel.com" <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: "Girdwood, Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+Hi,
 
-syzbot found the following crash on:
+On Sep 1 2018 08:18, Guedes, Andre wrote:
+>> I have another concern of buffering in a perspectives of delay of
+>> task
+>> scheduling.
+>>
+>> The interval of task scheduling for this plugin is decided mainly by
+>> the value of 'frames_per_pkt', given by users. In your documentation,
+>> the value is 6[1]. Of cource this is an example but in this case the
+>> interval is calculated as 125us at 48.0kHz. In my opinion, task
+>> scheduling in Linux kernel brings deadline misses for the interval,
+>> in most cases such as major Linux distribution on usual personal
+>> computers. When considering about the fact that recent motherboards
+>> implements Intel I210/220 series, it's better to care for the low-
+>> level
+>> realtime systems, in my opinion.
+> 
+> Agreed.
+> 
+> To mitigate this scheduling issue, a follow-up patchset will extend the
+> plugin to leverage the ETF qdisc [1] which will be available on next
+> kernel release. The idea is: instead of sending one AVTP packet at
+> every interval, the plugin will send several AVTP packets at once,
+> configuring their Tx time accordingly, so it can "sleep" for longer
+> periods of time. The goal is to ease on task scheduling by
+> offloading  packet transmissions to the NIC.
 
-HEAD commit:    2dca2cbde67a kmsan: fix build warnings with CONFIG_KMSAN=n
-git tree:       https://github.com/google/kmsan.git/master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1660ef6a400000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=820d6393634b55e3
-dashboard link: https://syzkaller.appspot.com/bug?extid=194dffdb8b22fc5d207a
-compiler:       clang version 8.0.0 (trunk 339414)
+A feature to queue packets with a transmission timing is mandatory for
+applications to implement this kind of time-awareness packet
+transmission protocol on general purpose operating system which has less
+guarantees of its real-time capability.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+In a case of IEC 61882-1/6 on IEEE 1394 bus, controllers of 1394 OHCI[1]
+allows applications to queue several packets to corresponding
+isochronous cycle. As a result, the controller can transfer each packet
+at each isochronous cycle.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+194dffdb8b22fc5d207a@syzkaller.appspotmail.com
+ From my curiousity, would I ask you to explain about usage of the
+ETF 'qdisk' for this kind of applications? How relevant hardware
+guarantees timing of transmission for queued packets? Or network stack
+on Linux kernel govern the transmission timing in the proposed
+patchset?[2].
 
-==================================================================
-BUG: KMSAN: uninit-value in snd_midi_event_encode_byte+0x569/0xff0  
-sound/core/seq/seq_midi_event.c:195
-CPU: 0 PID: 1623 Comm: kworker/0:1H Not tainted 4.19.0-rc1+ #36
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Workqueue: events_highpri snd_vmidi_output_work
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x14b/0x190 lib/dump_stack.c:113
-  kmsan_report+0x183/0x2b0 mm/kmsan/kmsan.c:956
-  __msan_warning+0x70/0xc0 mm/kmsan/kmsan_instr.c:645
-  snd_midi_event_encode_byte+0x569/0xff0 sound/core/seq/seq_midi_event.c:195
-  snd_vmidi_output_work+0x34e/0x5b0 sound/core/seq/seq_virmidi.c:161
-  process_one_work+0x1605/0x1f40 kernel/workqueue.c:2153
-  worker_thread+0x11a2/0x2590 kernel/workqueue.c:2296
-  kthread+0x465/0x4a0 kernel/kthread.c:247
-  ret_from_fork+0x35/0x40 arch/x86/entry/entry_64.S:416
-
-Uninit was stored to memory at:
-  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:256 [inline]
-  kmsan_save_stack mm/kmsan/kmsan.c:271 [inline]
-  kmsan_internal_chain_origin+0x128/0x210 mm/kmsan/kmsan.c:573
-  __msan_chain_origin+0x69/0xc0 mm/kmsan/kmsan_instr.c:482
-  __snd_rawmidi_transmit_peek sound/core/rawmidi.c:1103 [inline]
-  snd_rawmidi_transmit+0xa75/0xbf0 sound/core/rawmidi.c:1228
-  snd_vmidi_output_work+0x2ac/0x5b0 sound/core/seq/seq_virmidi.c:159
-  process_one_work+0x1605/0x1f40 kernel/workqueue.c:2153
-  worker_thread+0x11a2/0x2590 kernel/workqueue.c:2296
-  kthread+0x465/0x4a0 kernel/kthread.c:247
-  ret_from_fork+0x35/0x40 arch/x86/entry/entry_64.S:416
-
-Uninit was created at:
-  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:256 [inline]
-  kmsan_internal_poison_shadow+0xb8/0x1b0 mm/kmsan/kmsan.c:181
-  kmsan_kmalloc+0x98/0x100 mm/kmsan/kmsan_hooks.c:91
-  __kmalloc_node+0x7bf/0x11c0 mm/slub.c:3828
-  kmalloc_node include/linux/slab.h:555 [inline]
-  kvmalloc_node+0x19d/0x3e0 mm/util.c:423
-  kvmalloc include/linux/mm.h:577 [inline]
-  snd_rawmidi_runtime_create sound/core/rawmidi.c:132 [inline]
-  open_substream+0x3c8/0xaa0 sound/core/rawmidi.c:276
-  rawmidi_open_priv+0x347/0x1000 sound/core/rawmidi.c:327
-  snd_rawmidi_open+0x7d4/0x1120 sound/core/rawmidi.c:424
-  soundcore_open+0x9be/0xa60 sound/sound_core.c:597
-  chrdev_open+0xc26/0xdb0 fs/char_dev.c:417
-  do_dentry_open+0xc9d/0x1660 fs/open.c:771
-  vfs_open+0xaf/0xe0 fs/open.c:880
-  do_last fs/namei.c:3418 [inline]
-  path_openat+0x17a6/0x67c0 fs/namei.c:3534
-  do_filp_open+0x259/0x610 fs/namei.c:3564
-  do_sys_open+0x630/0x940 fs/open.c:1063
-  __do_sys_open fs/open.c:1081 [inline]
-  __se_sys_open fs/open.c:1076 [inline]
-  __x64_sys_open+0xf2/0x130 fs/open.c:1076
-  do_syscall_64+0x15b/0x220 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x63/0xe7
-==================================================================
+[1] 1394 Open Host Controller Interface Specification Release 1.1 (2000, 
+Promoters of the 1394 Open HCI)
+http://download.microsoft.com/download/1/6/1/161ba512-40e2-4cc9-843a-923143f3456c/ohci_11.pdf
+[2] [PATCH v2 net-next 00/14] Scheduled packet Transmission: ETF
+https://marc.info/?l=linux-netdev&m=153065819412748
 
 
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#bug-status-tracking for how to communicate with  
-syzbot.
+Takashi Sakamoto
