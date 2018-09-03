@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 06/12] ASoC: SOF: Add support for
-	loading topologies
-Date: Mon, 3 Sep 2018 17:19:11 +0100
-Message-ID: <20180903161911.GR10302@sirena.org.uk>
+Subject: Re: [PATCH v2 07/12] ASoC: SOF: Add DSP firmware trace
+	event support
+Date: Mon, 3 Sep 2018 17:25:03 +0100
+Message-ID: <20180903162503.GS10302@sirena.org.uk>
 References: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
- <20180831151910.16122-7-liam.r.girdwood@linux.intel.com>
+ <20180831151910.16122-8-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5527103719484329348=="
+Content-Type: multipart/mixed; boundary="===============7945517365601788516=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id CC7F52673F4
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 18:19:12 +0200 (CEST)
-In-Reply-To: <20180831151910.16122-7-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 505B82673F4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 18:25:04 +0200 (CEST)
+In-Reply-To: <20180831151910.16122-8-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,66 +27,48 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5527103719484329348==
+--===============7945517365601788516==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="eyYj78xbwv+yMvU1"
+	protocol="application/pgp-signature"; boundary="mln0rGgUGuXEqmuI"
 Content-Disposition: inline
 
 
---eyYj78xbwv+yMvU1
+--mln0rGgUGuXEqmuI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 31, 2018 at 04:19:04PM +0100, Liam Girdwood wrote:
+On Fri, Aug 31, 2018 at 04:19:05PM +0100, Liam Girdwood wrote:
 
-> +static int sof_widget_load(struct snd_soc_component *scomp, int index,
-> +			   struct snd_soc_dapm_widget *w,
-> +			   struct snd_soc_tplg_dapm_widget *tw)
-> +{
-> +	/* nothing todo atm */
-> +	return 0;
-> +}
+> Add a trace event buffer that can be used by userspace to read DSP runtime
+> trace events alongside bespoke trace data in realtime for firmware debug.
 
-> +static int sof_link_unload(struct snd_soc_component *scomp,
-> +			   struct snd_soc_dobj *dobj)
-> +{
-> +	return 0;
-> +}
+Should this be integrated into the Linux trace event mechanism rather
+than open coded?  It would at least be nice to not call this a trace
+event buffer - when I initially read this I was expecting it to be for
+the standard Linux stuff which obviously it isn't.
 
-Missing implementation here as well?  If these functions can sensibly be
-optional shouldn't the framework support that?
-
-> +static int sof_route_unload(struct snd_soc_component *scomp,
-> +			    struct snd_soc_dobj *dobj)
-> +{
-> +	/* TODO: unload routes when topology is changed */
-> +	return 0;
-> +}
-
-This seems like it should at least return an error.
-
---eyYj78xbwv+yMvU1
+--mln0rGgUGuXEqmuI
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluNXv4ACgkQJNaLcl1U
-h9DKyggAgo3j03d5mrmcabSnmhz5EsEI16V5OW+ooOkX20j9sslcwcWNWA4QY1d7
-M+eCph6g2BLjQzI6DD+VnwhPxLdcpng1KDFT/t3bGYvyYUn/PewBYnicHgrxKOCv
-PzIaBK1aY6umImYgK44hj+a9C2UslgrnbNmTEQePuV/Sp2Tkb3xgTge8HwOOuaxn
-mpdwroxfOXMQ/FTuA8GGcVe8/sMFtyc1DagmP2bdJfNDm7Bjk3taSQ2E9KdMbhN5
-fmJ7otyQ5ktCnJ6GlOQF9AfDqUIyXFNXc0xVdtjHQQgOghExZW29NHpOkkkZm5An
-6TIK4kg9KscylUDew7JNSbQIZnJL+w==
-=6hyV
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluNYF4ACgkQJNaLcl1U
+h9BHZwf+LyUo2xQK3HGovkTIg8xequr1VESaYsog79rUCvuhsiyg1Hvrs/oFXNvY
+wi+fc29NRAIHNCzeHZvSh5Z8Kb/7IfkoHt1UmtBmlpy+c8KbN3M8/o8Jep+GZBa+
+JFv6AHVF/qroIkQIFNHTH7eh+IycD9K0U5WioYKq81Tbk6iJXaIi9ImqXRqPoaQI
+ks/88WVjq6FEVibGlM9xr+BfSK2/sweLYu+2gzQClKG7Jj3bzZUmaTi1zaR2ibcd
+Odv8D5L7hzRGi0kotZfDVl1bi3cV1tlEsLe3sHThMzbgL1mFPe/n3pOP+eoHHVKL
+FISR83SgE/yKbwxWsj2xsDDSfnyxhQ==
+=MCVe
 -----END PGP SIGNATURE-----
 
---eyYj78xbwv+yMvU1--
+--mln0rGgUGuXEqmuI--
 
---===============5527103719484329348==
+--===============7945517365601788516==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5527103719484329348==--
+--===============7945517365601788516==--
