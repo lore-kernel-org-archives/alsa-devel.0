@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add support for 8 bit S8 format"
-	to the asoc tree
-Date: Mon,  3 Sep 2018 14:46:14 +0100 (BST)
-Message-ID: <20180903134614.9960411227AE@debutante.sirena.org.uk>
-References: <877ek3f4md.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: add support for the DSP_A/DSP_B
+	formats" to the asoc tree
+Date: Mon,  3 Sep 2018 14:46:23 +0100 (BST)
+Message-ID: <20180903134623.4989411227AE@debutante.sirena.org.uk>
+References: <878t4jf4n6.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 44DFC2678CD
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:46:15 +0200 (CEST)
-In-Reply-To: <877ek3f4md.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id D3F9D2678D3
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:46:23 +0200 (CEST)
+In-Reply-To: <878t4jf4n6.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add support for 8 bit S8 format
+   ASoC: rsnd: add support for the DSP_A/DSP_B formats
 
 has been applied to the asoc tree at
 
@@ -53,12 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From ba5d553b7bd71e63d639863e2cb09e0c9543b8b7 Mon Sep 17 00:00:00 2001
+>From 3791b3ee4bb13c381868da89e9e6deb11de660ad Mon Sep 17 00:00:00 2001
 From: Dragos Tarcatu <dragos_tarcatu@mentor.com>
-Date: Mon, 3 Sep 2018 07:06:29 +0000
-Subject: [PATCH] ASoC: rsnd: add support for 8 bit S8 format
-
-This patch adds support for SNDRV_PCM_FMTBIT_S8 format.
+Date: Mon, 3 Sep 2018 07:06:01 +0000
+Subject: [PATCH] ASoC: rsnd: add support for the DSP_A/DSP_B formats
 
 Signed-off-by: Dragos Tarcatu <dragos_tarcatu@mentor.com>
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
@@ -68,65 +66,32 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 10 +++++++---
- sound/soc/sh/rcar/ssi.c  |  3 +++
- 2 files changed, 10 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/core.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 8a417768b7ef..cd0ff1eef463 100644
+index ce0a3a61c441..8a417768b7ef 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -102,7 +102,9 @@
- #include "rsnd.h"
- 
- #define RSND_RATES SNDRV_PCM_RATE_8000_192000
--#define RSND_FMTS (SNDRV_PCM_FMTBIT_S24_LE | SNDRV_PCM_FMTBIT_S16_LE)
-+#define RSND_FMTS (SNDRV_PCM_FMTBIT_S8 |\
-+		   SNDRV_PCM_FMTBIT_S16_LE |\
-+		   SNDRV_PCM_FMTBIT_S24_LE)
- 
- static const struct of_device_id rsnd_of_match[] = {
- 	{ .compatible = "renesas,rcar_sound-gen1", .data = (void *)RSND_GEN1 },
-@@ -280,6 +282,8 @@ u32 rsnd_get_adinr_bit(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 
- 	switch (snd_pcm_format_width(runtime->format)) {
-+	case 8:
-+		return 16 << 16;
- 	case 16:
- 		return 8 << 16;
- 	case 24:
-@@ -331,7 +335,7 @@ u32 rsnd_get_dalign(struct rsnd_mod *mod, struct rsnd_dai_stream *io)
- 		target = cmd ? cmd : ssiu;
+@@ -689,6 +689,7 @@ static int rsnd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		rdai->frm_clk_inv = 0;
+ 		break;
+ 	case SND_SOC_DAIFMT_LEFT_J:
++	case SND_SOC_DAIFMT_DSP_B:
+ 		rdai->sys_delay = 1;
+ 		rdai->data_alignment = 0;
+ 		rdai->frm_clk_inv = 1;
+@@ -698,6 +699,11 @@ static int rsnd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ 		rdai->data_alignment = 1;
+ 		rdai->frm_clk_inv = 1;
+ 		break;
++	case SND_SOC_DAIFMT_DSP_A:
++		rdai->sys_delay = 0;
++		rdai->data_alignment = 0;
++		rdai->frm_clk_inv = 1;
++		break;
  	}
  
--	/* Non target mod or 24bit data needs normal DALIGN */
-+	/* Non target mod or non 16bit needs normal DALIGN */
- 	if ((snd_pcm_format_width(runtime->format) != 16) ||
- 	    (mod != target))
- 		return 0x76543210;
-@@ -367,7 +371,7 @@ u32 rsnd_get_busif_shift(struct rsnd_dai_stream *io, struct rsnd_mod *mod)
- 	 * HW    24bit data is located as 0x******00
- 	 *
- 	 */
--	if (snd_pcm_format_width(runtime->format) == 16)
-+	if (snd_pcm_format_width(runtime->format) != 24)
- 		return 0;
- 
- 	for (i = 0; i < ARRAY_SIZE(playback_mods); i++) {
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index f707f53748bd..765ecc06c7c9 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -400,6 +400,9 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
- 
- 	cr_own &= ~DWL_MASK;
- 	switch (snd_pcm_format_width(runtime->format)) {
-+	case 8:
-+		cr_own |= DWL_8;
-+		break;
- 	case 16:
- 		cr_own |= DWL_16;
- 		break;
+ 	/* set clock inversion */
 -- 
 2.19.0.rc1
