@@ -1,46 +1,72 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic31xx: Remove regulator notification
- handling
-Date: Mon, 3 Sep 2018 12:30:38 +0100
-Message-ID: <20180903113038.GG10302@sirena.org.uk>
-References: <20180831181737.29516-1-afd@ti.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="UKNXkkdQCYZ6W5l3"
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH 1/3] ASoC: q6asm-dai: dt-bindings: Add support to compress dais
+Date: Mon,  3 Sep 2018 13:34:53 +0100
+Message-ID: <20180903123455.9290-2-srinivas.kandagatla@linaro.org>
+References: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180831181737.29516-1-afd@ti.com>
+In-Reply-To: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
+Cc: linux-kernel@vger.kernel.org, vkoul@kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, mark.rutland@arm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
+This patch adds board specific bindings required for dais, In particular
+for compressed dais and dai direction.
 
---UKNXkkdQCYZ6W5l3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Board specific setup involves setting up some of dais as compressed dais
+and also specify direction of any dai. Some of the dais might only
+support capture/playback depending on the board level wiring.
 
-On Fri, Aug 31, 2018 at 01:17:37PM -0500, Andrew F. Davis wrote:
-> The notification handler sets the reset line but never re-enables it
-> as no one is listening for an enable event, this is certainly broken
-> and was most likely just copied from other CODECs, remove this code.
+These two new dt properties will allow such flexibilty at board level dts.
 
-Why not fix it?  The usual pattern would be to take the CODEC out of
-reset when bringing the bias back to standby.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ .../devicetree/bindings/sound/qcom,q6asm.txt  | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
---UKNXkkdQCYZ6W5l3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluNG10ACgkQJNaLcl1U
-h9CxQAf/eZmq7ergT3Yp4xEktCTGm+7YASMCJsBlRbOdZSU1p3GJZnc4Okd5l5uI
-KQHpzPS5HxdRYSwgHyA40fsMKw52xn7hDfIdzDU5cAw1VNabtMvb7y0eNcYlRRlI
-MAY8trQ99JS5Ztho+D3sV3I+ciu+DNP0nZIQligedUDYVmHrSh/2flGHQRGZOAZL
-NLr3Vwa5eIsmqBA6YzuZhlhiBrSIHDWpYyoovON6b4OYBgEW3+KeJP9HUwHOXbqt
-BKxxD/5+k5oLi2yW9nSocxMQt105P70GTqYDC2ZayRckVTB/85erZi5xfSY6OlBJ
-pnzgTxZU3OV2qf/hEUdOm2g37A+zMg==
-=fMUk
------END PGP SIGNATURE-----
-
---UKNXkkdQCYZ6W5l3--
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+index f9c7bd8c1bc0..9f5378c51686 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+@@ -27,6 +27,28 @@ used by the apr service device.
+ 	Value type: <u32>
+ 	Definition: Must be 1
+ 
++== ASM DAI is subnode of "dais" and represent a dai, it includes board specific
++configuration of each dai. Must contain the following properties.
++
++- reg
++	Usage: required
++	Value type: <u32>
++	Definition: Must be dai id
++
++- direction:
++	Usage: Required for Compress offload dais
++	Value type: <u32>
++	Definition: Specifies the direction of the dai stream
++			0 for both tx and rx
++			1 for only tx (Capture/Encode)
++			2 for only rx (Playback/Decode)
++
++- is-compress-dai:
++	Usage: Required for Compress offload dais
++	Value type: <boolean>
++	Definition: present for Compress offload dais
++
++
+ = EXAMPLE
+ 
+ q6asm@7 {
+@@ -35,5 +57,10 @@ q6asm@7 {
+ 	q6asmdai: dais {
+ 		compatible = "qcom,q6asm-dais";
+ 		#sound-dai-cells = <1>;
++		mm@0 {
++			reg = <0>;
++			direction = <2>;
++			is-compress-dai;
++		};
+ 	};
+ };
+-- 
+2.18.0
