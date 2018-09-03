@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: add warning message to
-	rsnd_kctrl_accept_runtime()" to the asoc tree
-Date: Mon,  3 Sep 2018 14:46:40 +0100 (BST)
-Message-ID: <20180903134640.22D9411227AE@debutante.sirena.org.uk>
-References: <87bm9ff4oj.wl-kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 840C62678CE
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:46:40 +0200 (CEST)
-In-Reply-To: <87bm9ff4oj.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: Applied "ASoC: rsnd: fixup not to call clk_get/set under non-atomic" to the asoc tree
+Date: Mon,  3 Sep 2018 14:46:50 +0100 (BST)
+Message-ID: <20180903134650.4F1AF11227AE@debutante.sirena.org.uk>
+References: <87va7ndpxu.wl-kuninori.morimoto.gx@renesas.com>
+Return-path: <stable-owner@vger.kernel.org>
+In-Reply-To: <87va7ndpxu.wl-kuninori.morimoto.gx@renesas.com>
+Sender: stable-owner@vger.kernel.org
 To: Jiada Wang <jiada_wang@mentor.com>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Cc: Timo Wischer <twischer@de.adit-jv.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgMark Brown <broonie@kernel.org>Timo Wischer <twischer@de.adit-jv.com>, Linux-ALSA <alsa-devel@alsa-project.org>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Dragos Tarcatu <dragos_tarcatu@mentor.com>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: add warning message to rsnd_kctrl_accept_runtime()
+   ASoC: rsnd: fixup not to call clk_get/set under non-atomic
 
 has been applied to the asoc tree at
 
@@ -53,46 +37,203 @@ to this mail.
 Thanks,
 Mark
 
->From b5c088689847372794500f83b65673aaa8ca4d8d Mon Sep 17 00:00:00 2001
+>From 4d230d12710646788af581ba0155d83ab48b955c Mon Sep 17 00:00:00 2001
 From: Jiada Wang <jiada_wang@mentor.com>
-Date: Mon, 3 Sep 2018 07:05:11 +0000
-Subject: [PATCH] ASoC: rsnd: add warning message to
- rsnd_kctrl_accept_runtime()
+Date: Mon, 3 Sep 2018 07:08:58 +0000
+Subject: [PATCH] ASoC: rsnd: fixup not to call clk_get/set under non-atomic
 
-Add warning message to rsnd_kctrl_accept_runtime(), when kctrl
-update is rejected due to corresponding dai-link is idle.
-So that user can notice the reason of kctrl update failure.
+Clocking operations clk_get/set_rate, are non-atomic,
+they shouldn't be called in soc_pcm_trigger() which is atomic.
 
+Following issue was found due to execution of clk_get_rate() causes
+sleep in soc_pcm_trigger(), which shouldn't be blocked.
+
+We can reproduce this issue by following
+	> enable CONFIG_DEBUG_ATOMIC_SLEEP=y
+	> compile, and boot
+	> mount -t debugfs none /sys/kernel/debug
+	> while true; do cat /sys/kernel/debug/clk/clk_summary > /dev/null; done &
+	> while true; do aplay xxx; done
+
+This patch adds support to .prepare callback, and moves non-atomic
+clocking operations to it. As .prepare is non-atomic, it is always
+called before trigger_start/trigger_stop.
+
+	BUG: sleeping function called from invalid context at kernel/locking/mutex.c:620
+	in_atomic(): 1, irqs_disabled(): 128, pid: 2242, name: aplay
+	INFO: lockdep is turned off.
+	irq event stamp: 5964
+	hardirqs last enabled at (5963): [<ffff200008e59e40>] mutex_lock_nested+0x6e8/0x6f0
+	hardirqs last disabled at (5964): [<ffff200008e623f0>] _raw_spin_lock_irqsave+0x24/0x68
+	softirqs last enabled at (5502): [<ffff200008081838>] __do_softirq+0x560/0x10c0
+	softirqs last disabled at (5495): [<ffff2000080c2e78>] irq_exit+0x160/0x25c
+	Preemption disabled at:[ 62.904063] [<ffff200008be4d48>] snd_pcm_stream_lock+0xb4/0xc0
+	CPU: 2 PID: 2242 Comm: aplay Tainted: G B C 4.9.54+ #186
+	Hardware name: Renesas Salvator-X board based on r8a7795 (DT)
+	Call trace:
+	[<ffff20000808fe48>] dump_backtrace+0x0/0x37c
+	[<ffff2000080901d8>] show_stack+0x14/0x1c
+	[<ffff2000086f4458>] dump_stack+0xfc/0x154
+	[<ffff2000081134a0>] ___might_sleep+0x57c/0x58c
+	[<ffff2000081136b8>] __might_sleep+0x208/0x21c
+	[<ffff200008e5980c>] mutex_lock_nested+0xb4/0x6f0
+	[<ffff2000087cac74>] clk_prepare_lock+0xb0/0x184
+	[<ffff2000087cb094>] clk_core_get_rate+0x14/0x54
+	[<ffff2000087cb0f4>] clk_get_rate+0x20/0x34
+	[<ffff20000113aa00>] rsnd_adg_ssi_clk_try_start+0x158/0x4f8 [snd_soc_rcar]
+	[<ffff20000113da00>] rsnd_ssi_init+0x668/0x7a0 [snd_soc_rcar]
+	[<ffff200001133ff4>] rsnd_soc_dai_trigger+0x4bc/0xcf8 [snd_soc_rcar]
+	[<ffff200008c1af24>] soc_pcm_trigger+0x2a4/0x2d4
+
+Fixes: e7d850dd10f4 ("ASoC: rsnd: use mod base common method on SSI-parent")
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-[kuninori: adjust to upstream]
+[Kuninori: tidyup for upstream]
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
+Cc: stable@vger.kernel.org
 ---
- sound/soc/sh/rcar/core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 11 +++++++++++
+ sound/soc/sh/rcar/rsnd.h |  7 +++++++
+ sound/soc/sh/rcar/ssi.c  | 16 ++++++++++------
+ 3 files changed, 28 insertions(+), 6 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index f8425d8b44d2..ab7e317bbed8 100644
+index f8425d8b44d2..b35f5509cfe2 100644
 --- a/sound/soc/sh/rcar/core.c
 +++ b/sound/soc/sh/rcar/core.c
-@@ -1263,8 +1263,15 @@ int rsnd_kctrl_accept_anytime(struct rsnd_dai_stream *io)
- int rsnd_kctrl_accept_runtime(struct rsnd_dai_stream *io)
- {
- 	struct snd_pcm_runtime *runtime = rsnd_io_to_runtime(io);
-+	struct rsnd_priv *priv = rsnd_io_to_priv(io);
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+
-+	if (!runtime) {
-+		dev_warn(dev, "Can't update kctrl when idle\n");
-+		return 0;
-+	}
- 
--	return !!runtime;
-+	return 1;
+@@ -958,12 +958,23 @@ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
+ 	rsnd_dai_stream_quit(io);
  }
  
- struct rsnd_kctrl_cfg *rsnd_kctrl_init_m(struct rsnd_kctrl_cfg_m *cfg)
++static int rsnd_soc_dai_prepare(struct snd_pcm_substream *substream,
++				struct snd_soc_dai *dai)
++{
++	struct rsnd_priv *priv = rsnd_dai_to_priv(dai);
++	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
++	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
++
++	return rsnd_dai_call(prepare, io, priv);
++}
++
+ static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
+ 	.startup	= rsnd_soc_dai_startup,
+ 	.shutdown	= rsnd_soc_dai_shutdown,
+ 	.trigger	= rsnd_soc_dai_trigger,
+ 	.set_fmt	= rsnd_soc_dai_set_fmt,
+ 	.set_tdm_slot	= rsnd_soc_set_dai_tdm_slot,
++	.prepare	= rsnd_soc_dai_prepare,
+ };
+ 
+ void rsnd_parse_connect_common(struct rsnd_dai *rdai,
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 96d93330b1e1..8f7a0abfa751 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -280,6 +280,9 @@ struct rsnd_mod_ops {
+ 	int (*nolock_stop)(struct rsnd_mod *mod,
+ 		    struct rsnd_dai_stream *io,
+ 		    struct rsnd_priv *priv);
++	int (*prepare)(struct rsnd_mod *mod,
++		       struct rsnd_dai_stream *io,
++		       struct rsnd_priv *priv);
+ };
+ 
+ struct rsnd_dai_stream;
+@@ -309,6 +312,7 @@ struct rsnd_mod {
+  * H	0: fallback
+  * H	0: hw_params
+  * H	0: pointer
++ * H	0: prepare
+  */
+ #define __rsnd_mod_shift_nolock_start	0
+ #define __rsnd_mod_shift_nolock_stop	0
+@@ -323,6 +327,7 @@ struct rsnd_mod {
+ #define __rsnd_mod_shift_fallback	28 /* always called */
+ #define __rsnd_mod_shift_hw_params	28 /* always called */
+ #define __rsnd_mod_shift_pointer	28 /* always called */
++#define __rsnd_mod_shift_prepare	28 /* always called */
+ 
+ #define __rsnd_mod_add_probe		0
+ #define __rsnd_mod_add_remove		0
+@@ -337,6 +342,7 @@ struct rsnd_mod {
+ #define __rsnd_mod_add_fallback		0
+ #define __rsnd_mod_add_hw_params	0
+ #define __rsnd_mod_add_pointer		0
++#define __rsnd_mod_add_prepare		0
+ 
+ #define __rsnd_mod_call_probe		0
+ #define __rsnd_mod_call_remove		0
+@@ -351,6 +357,7 @@ struct rsnd_mod {
+ #define __rsnd_mod_call_pointer		0
+ #define __rsnd_mod_call_nolock_start	0
+ #define __rsnd_mod_call_nolock_stop	1
++#define __rsnd_mod_call_prepare		0
+ 
+ #define rsnd_mod_to_priv(mod)	((mod)->priv)
+ #define rsnd_mod_name(mod)	((mod)->ops->name)
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 8304e4ec9242..3f880ec66459 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -283,7 +283,7 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
+ 	if (rsnd_ssi_is_multi_slave(mod, io))
+ 		return 0;
+ 
+-	if (ssi->usrcnt > 1) {
++	if (ssi->rate) {
+ 		if (ssi->rate != rate) {
+ 			dev_err(dev, "SSI parent/child should use same rate\n");
+ 			return -EINVAL;
+@@ -434,7 +434,6 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 			 struct rsnd_priv *priv)
+ {
+ 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
+-	int ret;
+ 
+ 	if (!rsnd_ssi_is_run_mods(mod, io))
+ 		return 0;
+@@ -443,10 +442,6 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 
+ 	rsnd_mod_power_on(mod);
+ 
+-	ret = rsnd_ssi_master_clk_start(mod, io);
+-	if (ret < 0)
+-		return ret;
+-
+ 	rsnd_ssi_config_init(mod, io);
+ 
+ 	rsnd_ssi_register_setup(mod);
+@@ -852,6 +847,13 @@ static int rsnd_ssi_pio_pointer(struct rsnd_mod *mod,
+ 	return 0;
+ }
+ 
++static int rsnd_ssi_prepare(struct rsnd_mod *mod,
++			    struct rsnd_dai_stream *io,
++			    struct rsnd_priv *priv)
++{
++	return rsnd_ssi_master_clk_start(mod, io);
++}
++
+ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
+ 	.name	= SSI_NAME,
+ 	.probe	= rsnd_ssi_common_probe,
+@@ -864,6 +866,7 @@ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
+ 	.pointer = rsnd_ssi_pio_pointer,
+ 	.pcm_new = rsnd_ssi_pcm_new,
+ 	.hw_params = rsnd_ssi_hw_params,
++	.prepare = rsnd_ssi_prepare,
+ };
+ 
+ static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
+@@ -940,6 +943,7 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
+ 	.pcm_new = rsnd_ssi_pcm_new,
+ 	.fallback = rsnd_ssi_fallback,
+ 	.hw_params = rsnd_ssi_hw_params,
++	.prepare = rsnd_ssi_prepare,
+ };
+ 
+ int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod)
 -- 
 2.19.0.rc1
