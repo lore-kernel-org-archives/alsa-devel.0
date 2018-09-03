@@ -1,18 +1,33 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup not to call clk_get/set under non-atomic" to the asoc tree
-Date: Mon,  3 Sep 2018 14:46:50 +0100 (BST)
-Message-ID: <20180903134650.4F1AF11227AE@debutante.sirena.org.uk>
-References: <87va7ndpxu.wl-kuninori.morimoto.gx@renesas.com>
-Return-path: <stable-owner@vger.kernel.org>
-In-Reply-To: <87va7ndpxu.wl-kuninori.morimoto.gx@renesas.com>
-Sender: stable-owner@vger.kernel.org
-To: Jiada Wang <jiada_wang@mentor.com>
-Cc: Timo Wischer <twischer@de.adit-jv.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Mark Brown <broonie@kernel.org>, stable@vger.kernel.orgMark Brown <broonie@kernel.org>Timo Wischer <twischer@de.adit-jv.com>, Linux-ALSA <alsa-devel@alsa-project.org>Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Dragos Tarcatu <dragos_tarcatu@mentor.com>alsa-devel@alsa-project.org
+Subject: Applied "ASoC: tlv320aic31xx: Add short circuit
+	detection support" to the asoc tree
+Date: Mon,  3 Sep 2018 14:46:59 +0100 (BST)
+Message-ID: <20180903134659.5F72D11227AE@debutante.sirena.org.uk>
+References: <20180831182434.14499-1-afd@ti.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 726C22678DD
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:47:00 +0200 (CEST)
+In-Reply-To: <20180831182434.14499-1-afd@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: "Andrew F ., Davis" <afd@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup not to call clk_get/set under non-atomic
+   ASoC: tlv320aic31xx: Add short circuit detection support
 
 has been applied to the asoc tree at
 
@@ -37,203 +52,136 @@ to this mail.
 Thanks,
 Mark
 
->From 4d230d12710646788af581ba0155d83ab48b955c Mon Sep 17 00:00:00 2001
-From: Jiada Wang <jiada_wang@mentor.com>
-Date: Mon, 3 Sep 2018 07:08:58 +0000
-Subject: [PATCH] ASoC: rsnd: fixup not to call clk_get/set under non-atomic
+>From 80863ee222d37b1797cea74d2257ad6d68444d30 Mon Sep 17 00:00:00 2001
+From: "Andrew F. Davis" <afd@ti.com>
+Date: Fri, 31 Aug 2018 13:24:31 -0500
+Subject: [PATCH] ASoC: tlv320aic31xx: Add short circuit detection support
 
-Clocking operations clk_get/set_rate, are non-atomic,
-they shouldn't be called in soc_pcm_trigger() which is atomic.
+These devices support detecting and reporting short circuits across
+the output stages. Add support for reporting these issue. Do this
+by registering an interrupt if available and enabling this error
+to trigger that interrupt in the device.
 
-Following issue was found due to execution of clk_get_rate() causes
-sleep in soc_pcm_trigger(), which shouldn't be blocked.
-
-We can reproduce this issue by following
-	> enable CONFIG_DEBUG_ATOMIC_SLEEP=y
-	> compile, and boot
-	> mount -t debugfs none /sys/kernel/debug
-	> while true; do cat /sys/kernel/debug/clk/clk_summary > /dev/null; done &
-	> while true; do aplay xxx; done
-
-This patch adds support to .prepare callback, and moves non-atomic
-clocking operations to it. As .prepare is non-atomic, it is always
-called before trigger_start/trigger_stop.
-
-	BUG: sleeping function called from invalid context at kernel/locking/mutex.c:620
-	in_atomic(): 1, irqs_disabled(): 128, pid: 2242, name: aplay
-	INFO: lockdep is turned off.
-	irq event stamp: 5964
-	hardirqs last enabled at (5963): [<ffff200008e59e40>] mutex_lock_nested+0x6e8/0x6f0
-	hardirqs last disabled at (5964): [<ffff200008e623f0>] _raw_spin_lock_irqsave+0x24/0x68
-	softirqs last enabled at (5502): [<ffff200008081838>] __do_softirq+0x560/0x10c0
-	softirqs last disabled at (5495): [<ffff2000080c2e78>] irq_exit+0x160/0x25c
-	Preemption disabled at:[ 62.904063] [<ffff200008be4d48>] snd_pcm_stream_lock+0xb4/0xc0
-	CPU: 2 PID: 2242 Comm: aplay Tainted: G B C 4.9.54+ #186
-	Hardware name: Renesas Salvator-X board based on r8a7795 (DT)
-	Call trace:
-	[<ffff20000808fe48>] dump_backtrace+0x0/0x37c
-	[<ffff2000080901d8>] show_stack+0x14/0x1c
-	[<ffff2000086f4458>] dump_stack+0xfc/0x154
-	[<ffff2000081134a0>] ___might_sleep+0x57c/0x58c
-	[<ffff2000081136b8>] __might_sleep+0x208/0x21c
-	[<ffff200008e5980c>] mutex_lock_nested+0xb4/0x6f0
-	[<ffff2000087cac74>] clk_prepare_lock+0xb0/0x184
-	[<ffff2000087cb094>] clk_core_get_rate+0x14/0x54
-	[<ffff2000087cb0f4>] clk_get_rate+0x20/0x34
-	[<ffff20000113aa00>] rsnd_adg_ssi_clk_try_start+0x158/0x4f8 [snd_soc_rcar]
-	[<ffff20000113da00>] rsnd_ssi_init+0x668/0x7a0 [snd_soc_rcar]
-	[<ffff200001133ff4>] rsnd_soc_dai_trigger+0x4bc/0xcf8 [snd_soc_rcar]
-	[<ffff200008c1af24>] soc_pcm_trigger+0x2a4/0x2d4
-
-Fixes: e7d850dd10f4 ("ASoC: rsnd: use mod base common method on SSI-parent")
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-[Kuninori: tidyup for upstream]
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
 ---
- sound/soc/sh/rcar/core.c | 11 +++++++++++
- sound/soc/sh/rcar/rsnd.h |  7 +++++++
- sound/soc/sh/rcar/ssi.c  | 16 ++++++++++------
- 3 files changed, 28 insertions(+), 6 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 55 ++++++++++++++++++++++++++++++++
+ sound/soc/codecs/tlv320aic31xx.h | 16 ++++++++++
+ 2 files changed, 71 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index f8425d8b44d2..b35f5509cfe2 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -958,12 +958,23 @@ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
- 	rsnd_dai_stream_quit(io);
- }
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index bf92d36b8f8a..2abe51d9f879 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -167,6 +167,7 @@ struct aic31xx_priv {
+ 	u8 p_div;
+ 	int rate_div_line;
+ 	bool master_dapm_route_applied;
++	int irq;
+ };
  
-+static int rsnd_soc_dai_prepare(struct snd_pcm_substream *substream,
-+				struct snd_soc_dai *dai)
+ struct aic31xx_rate_divs {
+@@ -1391,6 +1392,40 @@ static const struct acpi_device_id aic31xx_acpi_match[] = {
+ MODULE_DEVICE_TABLE(acpi, aic31xx_acpi_match);
+ #endif
+ 
++static irqreturn_t aic31xx_irq(int irq, void *data)
 +{
-+	struct rsnd_priv *priv = rsnd_dai_to_priv(dai);
-+	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
-+	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
++	struct aic31xx_priv *aic31xx = data;
++	struct device *dev = aic31xx->dev;
++	unsigned int value;
++	bool handled = false;
++	int ret;
 +
-+	return rsnd_dai_call(prepare, io, priv);
++	ret = regmap_read(aic31xx->regmap, AIC31XX_INTRDACFLAG, &value);
++	if (ret) {
++		dev_err(dev, "Failed to read interrupt mask: %d\n", ret);
++		goto exit;
++	}
++
++	if (value)
++		handled = true;
++	else
++		goto exit;
++
++	if (value & AIC31XX_HPLSCDETECT)
++		dev_err(dev, "Short circuit on Left output is detected\n");
++	if (value & AIC31XX_HPRSCDETECT)
++		dev_err(dev, "Short circuit on Right output is detected\n");
++	if (value & ~(AIC31XX_HPLSCDETECT |
++		      AIC31XX_HPRSCDETECT))
++		dev_err(dev, "Unknown DAC interrupt flags: 0x%08x\n", value);
++
++exit:
++	if (handled)
++		return IRQ_HANDLED;
++	else
++		return IRQ_NONE;
 +}
 +
- static const struct snd_soc_dai_ops rsnd_soc_dai_ops = {
- 	.startup	= rsnd_soc_dai_startup,
- 	.shutdown	= rsnd_soc_dai_shutdown,
- 	.trigger	= rsnd_soc_dai_trigger,
- 	.set_fmt	= rsnd_soc_dai_set_fmt,
- 	.set_tdm_slot	= rsnd_soc_set_dai_tdm_slot,
-+	.prepare	= rsnd_soc_dai_prepare,
- };
- 
- void rsnd_parse_connect_common(struct rsnd_dai *rdai,
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 96d93330b1e1..8f7a0abfa751 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -280,6 +280,9 @@ struct rsnd_mod_ops {
- 	int (*nolock_stop)(struct rsnd_mod *mod,
- 		    struct rsnd_dai_stream *io,
- 		    struct rsnd_priv *priv);
-+	int (*prepare)(struct rsnd_mod *mod,
-+		       struct rsnd_dai_stream *io,
-+		       struct rsnd_priv *priv);
- };
- 
- struct rsnd_dai_stream;
-@@ -309,6 +312,7 @@ struct rsnd_mod {
-  * H	0: fallback
-  * H	0: hw_params
-  * H	0: pointer
-+ * H	0: prepare
-  */
- #define __rsnd_mod_shift_nolock_start	0
- #define __rsnd_mod_shift_nolock_stop	0
-@@ -323,6 +327,7 @@ struct rsnd_mod {
- #define __rsnd_mod_shift_fallback	28 /* always called */
- #define __rsnd_mod_shift_hw_params	28 /* always called */
- #define __rsnd_mod_shift_pointer	28 /* always called */
-+#define __rsnd_mod_shift_prepare	28 /* always called */
- 
- #define __rsnd_mod_add_probe		0
- #define __rsnd_mod_add_remove		0
-@@ -337,6 +342,7 @@ struct rsnd_mod {
- #define __rsnd_mod_add_fallback		0
- #define __rsnd_mod_add_hw_params	0
- #define __rsnd_mod_add_pointer		0
-+#define __rsnd_mod_add_prepare		0
- 
- #define __rsnd_mod_call_probe		0
- #define __rsnd_mod_call_remove		0
-@@ -351,6 +357,7 @@ struct rsnd_mod {
- #define __rsnd_mod_call_pointer		0
- #define __rsnd_mod_call_nolock_start	0
- #define __rsnd_mod_call_nolock_stop	1
-+#define __rsnd_mod_call_prepare		0
- 
- #define rsnd_mod_to_priv(mod)	((mod)->priv)
- #define rsnd_mod_name(mod)	((mod)->ops->name)
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 8304e4ec9242..3f880ec66459 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -283,7 +283,7 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 	if (rsnd_ssi_is_multi_slave(mod, io))
- 		return 0;
- 
--	if (ssi->usrcnt > 1) {
-+	if (ssi->rate) {
- 		if (ssi->rate != rate) {
- 			dev_err(dev, "SSI parent/child should use same rate\n");
- 			return -EINVAL;
-@@ -434,7 +434,6 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
- 			 struct rsnd_priv *priv)
+ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 			     const struct i2c_device_id *id)
  {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
--	int ret;
+@@ -1413,6 +1448,7 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
+ 	aic31xx->dev = &i2c->dev;
++	aic31xx->irq = i2c->irq;
  
- 	if (!rsnd_ssi_is_run_mods(mod, io))
- 		return 0;
-@@ -443,10 +442,6 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
+ 	aic31xx->codec_type = id->driver_data;
  
- 	rsnd_mod_power_on(mod);
+@@ -1456,6 +1492,25 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 		return ret;
+ 	}
  
--	ret = rsnd_ssi_master_clk_start(mod, io);
--	if (ret < 0)
--		return ret;
--
- 	rsnd_ssi_config_init(mod, io);
- 
- 	rsnd_ssi_register_setup(mod);
-@@ -852,6 +847,13 @@ static int rsnd_ssi_pio_pointer(struct rsnd_mod *mod,
- 	return 0;
- }
- 
-+static int rsnd_ssi_prepare(struct rsnd_mod *mod,
-+			    struct rsnd_dai_stream *io,
-+			    struct rsnd_priv *priv)
-+{
-+	return rsnd_ssi_master_clk_start(mod, io);
-+}
++	if (aic31xx->irq > 0) {
++		regmap_update_bits(aic31xx->regmap, AIC31XX_GPIO1,
++				   AIC31XX_GPIO1_FUNC_MASK,
++				   AIC31XX_GPIO1_INT1 <<
++				   AIC31XX_GPIO1_FUNC_SHIFT);
 +
- static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.name	= SSI_NAME,
- 	.probe	= rsnd_ssi_common_probe,
-@@ -864,6 +866,7 @@ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.pointer = rsnd_ssi_pio_pointer,
- 	.pcm_new = rsnd_ssi_pcm_new,
- 	.hw_params = rsnd_ssi_hw_params,
-+	.prepare = rsnd_ssi_prepare,
- };
++		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
++			     AIC31XX_SC);
++
++		ret = devm_request_threaded_irq(aic31xx->dev, aic31xx->irq,
++						NULL, aic31xx_irq,
++						IRQF_ONESHOT, "aic31xx-irq",
++						aic31xx);
++		if (ret) {
++			dev_err(aic31xx->dev, "Unable to request IRQ\n");
++			return ret;
++		}
++	}
++
+ 	if (aic31xx->codec_type & DAC31XX_BIT)
+ 		return devm_snd_soc_register_component(&i2c->dev,
+ 				&soc_codec_driver_aic31xx,
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 0b587585b38b..52e171988906 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -191,6 +191,22 @@ struct aic31xx_pdata {
+ #define AIC31XX_SC			BIT(3)
+ #define AIC31XX_ENGINE			BIT(2)
  
- static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
-@@ -940,6 +943,7 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
- 	.pcm_new = rsnd_ssi_pcm_new,
- 	.fallback = rsnd_ssi_fallback,
- 	.hw_params = rsnd_ssi_hw_params,
-+	.prepare = rsnd_ssi_prepare,
- };
++/* AIC31XX_GPIO1 */
++#define AIC31XX_GPIO1_FUNC_MASK		GENMASK(5, 2)
++#define AIC31XX_GPIO1_FUNC_SHIFT	2
++#define AIC31XX_GPIO1_DISABLED		0x00
++#define AIC31XX_GPIO1_INPUT		0x01
++#define AIC31XX_GPIO1_GPI		0x02
++#define AIC31XX_GPIO1_GPO		0x03
++#define AIC31XX_GPIO1_CLKOUT		0x04
++#define AIC31XX_GPIO1_INT1		0x05
++#define AIC31XX_GPIO1_INT2		0x06
++#define AIC31XX_GPIO1_ADC_WCLK		0x07
++#define AIC31XX_GPIO1_SBCLK		0x08
++#define AIC31XX_GPIO1_SWCLK		0x09
++#define AIC31XX_GPIO1_ADC_MOD_CLK	0x10
++#define AIC31XX_GPIO1_SDOUT		0x11
++
+ /* AIC31XX_DACSETUP */
+ #define AIC31XX_SOFTSTEP_MASK		GENMASK(1, 0)
  
- int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod)
 -- 
 2.19.0.rc1
