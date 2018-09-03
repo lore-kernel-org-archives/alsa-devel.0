@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: Add driver for PROTO Audio CODEC (with
-	a WM8731)" to the asoc tree
-Date: Mon,  3 Sep 2018 14:44:45 +0100 (BST)
-Message-ID: <20180903134445.CE64311227AE@debutante.sirena.org.uk>
-References: <20180831171436.13360-2-codrin.ciubotariu@microchip.com>
+Subject: Applied "ASoC: rsnd: merge .nolock_start and .prepare"
+	to the asoc tree
+Date: Mon,  3 Sep 2018 14:44:56 +0100 (BST)
+Message-ID: <20180903134456.78BD011227AE@debutante.sirena.org.uk>
+References: <87tvn7dpx8.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 876DE2678A7
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:44:46 +0200 (CEST)
-In-Reply-To: <20180831171436.13360-2-codrin.ciubotariu@microchip.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0BC462678B3
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:44:56 +0200 (CEST)
+In-Reply-To: <87tvn7dpx8.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, alexandre.belloni@bootlin.com, robh+dt@kernel.org, nicolas.ferre@microchip.com, broonie@kernel.org, florian.meier@koalo.de, linux-arm-kernel@lists.infradead.org, cristian.birsan@microchip.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org, Jiada Wang <jiada_wang@mentor.com>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: Add driver for PROTO Audio CODEC (with a WM8731)
+   ASoC: rsnd: merge .nolock_start and .prepare
 
 has been applied to the asoc tree at
 
@@ -53,233 +53,214 @@ to this mail.
 Thanks,
 Mark
 
->From a45f8853a5f95e3760dfbd7ba09d3d597d247040 Mon Sep 17 00:00:00 2001
-From: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
-Date: Fri, 31 Aug 2018 20:14:35 +0300
-Subject: [PATCH] ASoC: Add driver for PROTO Audio CODEC (with a WM8731)
+>From 6ab6a2474e0dce02f71e92adb9778a168a8931f4 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Mon, 3 Sep 2018 07:09:17 +0000
+Subject: [PATCH] ASoC: rsnd: merge .nolock_start and .prepare
 
-Add support for the MikroElektronika PROTO audio codec board.
+Main purpose of .nolock_start is we need to call
+some function without spinlock.
+OTOH we have .prepare which main purpose is
+called under atomic context.
+Then, it is called without spinlock.
 
-URL to the audio chip:
-http://www.mikroe.com/add-on-boards/audio-voice/audio-codec-proto/
+In summary, our main callback init/quit, and start/stop
+are called under "atomic context and with spinlock".
+And some function need to be called under
+"non-atomic context or without spinlock".
+Let's merge .nolock_start and prepare to be more clear code.
+Then, let's rename nolock_stop to cleanup
 
-Signed-off-by: Florian Meier <florian.meier@koalo.de>
-Signed-off-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/Kconfig        |  11 +++
- sound/soc/atmel/Makefile       |   2 +
- sound/soc/atmel/mikroe-proto.c | 165 +++++++++++++++++++++++++++++++++
- 3 files changed, 178 insertions(+)
- create mode 100644 sound/soc/atmel/mikroe-proto.c
+ sound/soc/sh/rcar/core.c | 13 ++-----------
+ sound/soc/sh/rcar/dma.c  | 20 ++++++++++----------
+ sound/soc/sh/rcar/rsnd.h | 26 ++++++++++----------------
+ 3 files changed, 22 insertions(+), 37 deletions(-)
 
-diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
-index 64b784e96f84..81a0712d4f14 100644
---- a/sound/soc/atmel/Kconfig
-+++ b/sound/soc/atmel/Kconfig
-@@ -97,4 +97,15 @@ config SND_ATMEL_SOC_I2S
- 	help
- 	  Say Y or M if you want to add support for Atmel ASoc driver for boards
- 	  using I2S.
-+
-+config SND_SOC_MIKROE_PROTO
-+	tristate "Support for Mikroe-PROTO board"
-+	depends on OF
-+	select SND_SOC_WM8731
-+	help
-+	  Say Y or M if you want to add support for MikroElektronika PROTO Audio
-+	  Board. This board contains the WM8731 codec, which can be configured
-+	  using I2C over SDA (MPU Data Input) and SCL (MPU Clock Input) pins.
-+	  Both playback and capture are supported.
-+
- endif
-diff --git a/sound/soc/atmel/Makefile b/sound/soc/atmel/Makefile
-index cd87cb4bcff5..9f41bfa0fea3 100644
---- a/sound/soc/atmel/Makefile
-+++ b/sound/soc/atmel/Makefile
-@@ -17,6 +17,7 @@ snd-soc-sam9x5-wm8731-objs := sam9x5_wm8731.o
- snd-atmel-soc-classd-objs := atmel-classd.o
- snd-atmel-soc-pdmic-objs := atmel-pdmic.o
- snd-atmel-soc-tse850-pcm5142-objs := tse850-pcm5142.o
-+snd-soc-mikroe-proto-objs := mikroe-proto.o
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 299fb457573d..e46415c807a0 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -881,12 +881,10 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
+ 				struct snd_soc_dai *dai)
+ {
+ 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
+-	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
+ 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
+ 	struct snd_pcm_hw_constraint_list *constraint = &rdai->constraint;
+ 	struct snd_pcm_runtime *runtime = substream->runtime;
+ 	unsigned int max_channels = rsnd_rdai_channels_get(rdai);
+-	int ret;
+ 	int i;
  
- obj-$(CONFIG_SND_AT91_SOC_SAM9G20_WM8731) += snd-soc-sam9g20-wm8731.o
- obj-$(CONFIG_SND_ATMEL_SOC_WM8904) += snd-atmel-soc-wm8904.o
-@@ -24,3 +25,4 @@ obj-$(CONFIG_SND_AT91_SOC_SAM9X5_WM8731) += snd-soc-sam9x5-wm8731.o
- obj-$(CONFIG_SND_ATMEL_SOC_CLASSD) += snd-atmel-soc-classd.o
- obj-$(CONFIG_SND_ATMEL_SOC_PDMIC) += snd-atmel-soc-pdmic.o
- obj-$(CONFIG_SND_ATMEL_SOC_TSE850_PCM5142) += snd-atmel-soc-tse850-pcm5142.o
-+obj-$(CONFIG_SND_SOC_MIKROE_PROTO) += snd-soc-mikroe-proto.o
-diff --git a/sound/soc/atmel/mikroe-proto.c b/sound/soc/atmel/mikroe-proto.c
-new file mode 100644
-index 000000000000..d47aaa5bf75a
---- /dev/null
-+++ b/sound/soc/atmel/mikroe-proto.c
-@@ -0,0 +1,165 @@
-+/*
-+ * ASoC driver for PROTO AudioCODEC (with a WM8731)
-+ *
-+ * Author:      Florian Meier, <koalo@koalo.de>
-+ *	      Copyright 2013
-+ *
-+ * This program is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU General Public License version 2 as
-+ * published by the Free Software Foundation.
-+ */
-+
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+
-+#include <sound/core.h>
-+#include <sound/pcm.h>
-+#include <sound/soc.h>
-+#include <sound/jack.h>
-+
-+#include "../codecs/wm8731.h"
-+
-+#define XTAL_RATE 12288000	/* This is fixed on this board */
-+
-+static int snd_proto_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_card *card = rtd->card;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	/* Set proto sysclk */
-+	int ret = snd_soc_dai_set_sysclk(codec_dai, WM8731_SYSCLK_XTAL,
-+					 XTAL_RATE, SND_SOC_CLOCK_IN);
-+	if (ret < 0) {
-+		dev_err(card->dev, "Failed to set WM8731 SYSCLK: %d\n",
-+			ret);
-+		return ret;
-+	}
-+
+ 	rsnd_dai_stream_init(io, substream);
+@@ -930,14 +928,7 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
+ 				    SNDRV_PCM_HW_PARAM_RATE, -1);
+ 	}
+ 
+-	/*
+-	 * call rsnd_dai_call without spinlock
+-	 */
+-	ret = rsnd_dai_call(nolock_start, io, priv);
+-	if (ret < 0)
+-		rsnd_dai_call(nolock_stop, io, priv);
+-
+-	return ret;
 +	return 0;
-+}
-+
-+static const struct snd_soc_dapm_widget snd_proto_widget[] = {
-+	SND_SOC_DAPM_MIC("Microphone Jack", NULL),
-+	SND_SOC_DAPM_HP("Headphone Jack", NULL),
-+};
-+
-+static const struct snd_soc_dapm_route snd_proto_route[] = {
-+	/* speaker connected to LHPOUT/RHPOUT */
-+	{"Headphone Jack", NULL, "LHPOUT"},
-+	{"Headphone Jack", NULL, "RHPOUT"},
-+
-+	/* mic is connected to Mic Jack, with WM8731 Mic Bias */
-+	{"MICIN", NULL, "Mic Bias"},
-+	{"Mic Bias", NULL, "Microphone Jack"},
-+};
-+
-+/* audio machine driver */
-+static struct snd_soc_card snd_proto = {
-+	.name		= "snd_mikroe_proto",
-+	.owner		= THIS_MODULE,
-+	.dapm_widgets	= snd_proto_widget,
-+	.num_dapm_widgets = ARRAY_SIZE(snd_proto_widget),
-+	.dapm_routes	= snd_proto_route,
-+	.num_dapm_routes = ARRAY_SIZE(snd_proto_route),
-+};
-+
-+static int snd_proto_probe(struct platform_device *pdev)
-+{
-+	struct snd_soc_dai_link *dai;
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *codec_np, *cpu_np;
-+	struct device_node *bitclkmaster = NULL;
-+	struct device_node *framemaster = NULL;
-+	unsigned int dai_fmt;
-+	int ret = 0;
-+
-+	if (!np) {
-+		dev_err(&pdev->dev, "No device node supplied\n");
-+		return -EINVAL;
-+	}
-+
-+	snd_proto.dev = &pdev->dev;
-+	ret = snd_soc_of_parse_card_name(&snd_proto, "model");
-+	if (ret)
-+		return ret;
-+
-+	dai = devm_kzalloc(&pdev->dev, sizeof(*dai), GFP_KERNEL);
-+	if (!dai)
-+		return -ENOMEM;
-+
-+	snd_proto.dai_link = dai;
-+	snd_proto.num_links = 1;
-+
-+	dai->name = "WM8731";
-+	dai->stream_name = "WM8731 HiFi";
-+	dai->codec_dai_name = "wm8731-hifi";
-+	dai->init = &snd_proto_init;
-+
-+	codec_np = of_parse_phandle(np, "audio-codec", 0);
-+	if (!codec_np) {
-+		dev_err(&pdev->dev, "audio-codec node missing\n");
-+		return -EINVAL;
-+	}
-+	dai->codec_of_node = codec_np;
-+
-+	cpu_np = of_parse_phandle(np, "i2s-controller", 0);
-+	if (!cpu_np) {
-+		dev_err(&pdev->dev, "i2s-controller missing\n");
-+		return -EINVAL;
-+	}
-+	dai->cpu_of_node = cpu_np;
-+	dai->platform_of_node = cpu_np;
-+
-+	dai_fmt = snd_soc_of_parse_daifmt(np, NULL,
-+					  &bitclkmaster, &framemaster);
-+	if (bitclkmaster != framemaster) {
-+		dev_err(&pdev->dev, "Must be the same bitclock and frame master\n");
-+		return -EINVAL;
-+	}
-+	if (bitclkmaster) {
-+		dai_fmt &= ~SND_SOC_DAIFMT_MASTER_MASK;
-+		if (codec_np == bitclkmaster)
-+			dai_fmt |= SND_SOC_DAIFMT_CBM_CFM;
-+		else
-+			dai_fmt |= SND_SOC_DAIFMT_CBS_CFS;
-+	}
-+	of_node_put(bitclkmaster);
-+	of_node_put(framemaster);
-+	dai->dai_fmt = dai_fmt;
-+
-+	of_node_put(codec_np);
-+	of_node_put(cpu_np);
-+
-+	ret = snd_soc_register_card(&snd_proto);
-+	if (ret && ret != -EPROBE_DEFER)
-+		dev_err(&pdev->dev,
-+			"snd_soc_register_card() failed: %d\n", ret);
-+
-+	return ret;
-+}
-+
-+static int snd_proto_remove(struct platform_device *pdev)
-+{
-+	return snd_soc_unregister_card(&snd_proto);
-+}
-+
-+static const struct of_device_id snd_proto_of_match[] = {
-+	{ .compatible = "mikroe,mikroe-proto", },
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, snd_proto_of_match);
-+
-+static struct platform_driver snd_proto_driver = {
-+	.driver = {
-+		.name   = "snd-mikroe-proto",
-+		.of_match_table = snd_proto_of_match,
-+	},
-+	.probe	  = snd_proto_probe,
-+	.remove	 = snd_proto_remove,
-+};
-+
-+module_platform_driver(snd_proto_driver);
-+
-+MODULE_AUTHOR("Florian Meier");
-+MODULE_DESCRIPTION("ASoC Driver for PROTO board (WM8731)");
-+MODULE_LICENSE("GPL");
+ }
+ 
+ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
+@@ -950,7 +941,7 @@ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
+ 	/*
+ 	 * call rsnd_dai_call without spinlock
+ 	 */
+-	rsnd_dai_call(nolock_stop, io, priv);
++	rsnd_dai_call(cleanup, io, priv);
+ 
+ 	rsnd_dai_stream_quit(io);
+ }
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index d3b1a4ae876a..f99c1ab3b0bd 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -106,9 +106,9 @@ static int rsnd_dmaen_stop(struct rsnd_mod *mod,
+ 	return 0;
+ }
+ 
+-static int rsnd_dmaen_nolock_stop(struct rsnd_mod *mod,
+-				   struct rsnd_dai_stream *io,
+-				   struct rsnd_priv *priv)
++static int rsnd_dmaen_cleanup(struct rsnd_mod *mod,
++			      struct rsnd_dai_stream *io,
++			      struct rsnd_priv *priv)
+ {
+ 	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
+ 	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
+@@ -116,7 +116,7 @@ static int rsnd_dmaen_nolock_stop(struct rsnd_mod *mod,
+ 	/*
+ 	 * DMAEngine release uses mutex lock.
+ 	 * Thus, it shouldn't be called under spinlock.
+-	 * Let's call it under nolock_start
++	 * Let's call it under prepare
+ 	 */
+ 	if (dmaen->chan)
+ 		dma_release_channel(dmaen->chan);
+@@ -126,9 +126,9 @@ static int rsnd_dmaen_nolock_stop(struct rsnd_mod *mod,
+ 	return 0;
+ }
+ 
+-static int rsnd_dmaen_nolock_start(struct rsnd_mod *mod,
+-			    struct rsnd_dai_stream *io,
+-			    struct rsnd_priv *priv)
++static int rsnd_dmaen_prepare(struct rsnd_mod *mod,
++			      struct rsnd_dai_stream *io,
++			      struct rsnd_priv *priv)
+ {
+ 	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
+ 	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
+@@ -142,7 +142,7 @@ static int rsnd_dmaen_nolock_start(struct rsnd_mod *mod,
+ 	/*
+ 	 * DMAEngine request uses mutex lock.
+ 	 * Thus, it shouldn't be called under spinlock.
+-	 * Let's call it under nolock_start
++	 * Let's call it under prepare
+ 	 */
+ 	dmaen->chan = rsnd_dmaen_request_channel(io,
+ 						 dma->mod_from,
+@@ -287,8 +287,8 @@ static int rsnd_dmaen_pointer(struct rsnd_mod *mod,
+ 
+ static struct rsnd_mod_ops rsnd_dmaen_ops = {
+ 	.name	= "audmac",
+-	.nolock_start = rsnd_dmaen_nolock_start,
+-	.nolock_stop  = rsnd_dmaen_nolock_stop,
++	.prepare = rsnd_dmaen_prepare,
++	.cleanup = rsnd_dmaen_cleanup,
+ 	.start	= rsnd_dmaen_start,
+ 	.stop	= rsnd_dmaen_stop,
+ 	.pointer= rsnd_dmaen_pointer,
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 7a04b19e405c..e857311ee5c1 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -295,15 +295,12 @@ struct rsnd_mod_ops {
+ 	int (*fallback)(struct rsnd_mod *mod,
+ 			struct rsnd_dai_stream *io,
+ 			struct rsnd_priv *priv);
+-	int (*nolock_start)(struct rsnd_mod *mod,
+-		    struct rsnd_dai_stream *io,
+-		    struct rsnd_priv *priv);
+-	int (*nolock_stop)(struct rsnd_mod *mod,
+-		    struct rsnd_dai_stream *io,
+-		    struct rsnd_priv *priv);
+ 	int (*prepare)(struct rsnd_mod *mod,
+ 		       struct rsnd_dai_stream *io,
+ 		       struct rsnd_priv *priv);
++	int (*cleanup)(struct rsnd_mod *mod,
++		       struct rsnd_dai_stream *io,
++		       struct rsnd_priv *priv);
+ };
+ 
+ struct rsnd_dai_stream;
+@@ -323,7 +320,7 @@ struct rsnd_mod {
+  *
+  * 0xH0000CBA
+  *
+- * A	0: nolock_start	1: nolock_stop
++ * A	0: prepare	1: cleanup
+  * B	0: init		1: quit
+  * C	0: start	1: stop
+  *
+@@ -335,8 +332,8 @@ struct rsnd_mod {
+  * H	0: pointer
+  * H	0: prepare
+  */
+-#define __rsnd_mod_shift_nolock_start	0
+-#define __rsnd_mod_shift_nolock_stop	0
++#define __rsnd_mod_shift_prepare	0
++#define __rsnd_mod_shift_cleanup	0
+ #define __rsnd_mod_shift_init		4
+ #define __rsnd_mod_shift_quit		4
+ #define __rsnd_mod_shift_start		8
+@@ -348,12 +345,11 @@ struct rsnd_mod {
+ #define __rsnd_mod_shift_fallback	28 /* always called */
+ #define __rsnd_mod_shift_hw_params	28 /* always called */
+ #define __rsnd_mod_shift_pointer	28 /* always called */
+-#define __rsnd_mod_shift_prepare	28 /* always called */
+ 
+ #define __rsnd_mod_add_probe		0
+ #define __rsnd_mod_add_remove		0
+-#define __rsnd_mod_add_nolock_start	 1
+-#define __rsnd_mod_add_nolock_stop	-1
++#define __rsnd_mod_add_prepare		 1
++#define __rsnd_mod_add_cleanup		-1
+ #define __rsnd_mod_add_init		 1
+ #define __rsnd_mod_add_quit		-1
+ #define __rsnd_mod_add_start		 1
+@@ -363,10 +359,11 @@ struct rsnd_mod {
+ #define __rsnd_mod_add_fallback		0
+ #define __rsnd_mod_add_hw_params	0
+ #define __rsnd_mod_add_pointer		0
+-#define __rsnd_mod_add_prepare		0
+ 
+ #define __rsnd_mod_call_probe		0
+ #define __rsnd_mod_call_remove		0
++#define __rsnd_mod_call_prepare		0
++#define __rsnd_mod_call_cleanup		1
+ #define __rsnd_mod_call_init		0
+ #define __rsnd_mod_call_quit		1
+ #define __rsnd_mod_call_start		0
+@@ -376,9 +373,6 @@ struct rsnd_mod {
+ #define __rsnd_mod_call_fallback	0
+ #define __rsnd_mod_call_hw_params	0
+ #define __rsnd_mod_call_pointer		0
+-#define __rsnd_mod_call_nolock_start	0
+-#define __rsnd_mod_call_nolock_stop	1
+-#define __rsnd_mod_call_prepare		0
+ 
+ #define rsnd_mod_to_priv(mod)	((mod)->priv)
+ #define rsnd_mod_name(mod)	((mod)->ops->name)
 -- 
 2.19.0.rc1
