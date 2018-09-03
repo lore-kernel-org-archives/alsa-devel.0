@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoc: rsnd: dma: Calculate PDMACHCRE with
+Subject: Applied "ASoc: rsnd: dma: Calculate dma address with
 	consider of BUSIF" to the asoc tree
-Date: Mon,  3 Sep 2018 14:45:26 +0100 (BST)
-Message-ID: <20180903134526.B158B11227AE@debutante.sirena.org.uk>
-References: <87zhwzdpze.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon,  3 Sep 2018 14:45:35 +0100 (BST)
+Message-ID: <20180903134535.3B92B11227AE@debutante.sirena.org.uk>
+References: <871sabf4kb.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 54E6F2678B0
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:45:27 +0200 (CEST)
-In-Reply-To: <87zhwzdpze.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 950692678BC
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:45:35 +0200 (CEST)
+In-Reply-To: <871sabf4kb.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoc: rsnd: dma: Calculate PDMACHCRE with consider of BUSIF
+   ASoc: rsnd: dma: Calculate dma address with consider of BUSIF
 
 has been applied to the asoc tree at
 
@@ -53,16 +53,19 @@ to this mail.
 Thanks,
 Mark
 
->From 92c7d384ff7282738c70720f8670c9b65c90c7df Mon Sep 17 00:00:00 2001
+>From 5e45a6fab3b90ca300e13191fc68baaa8e37d1d4 Mon Sep 17 00:00:00 2001
 From: Jiada Wang <jiada_wang@mentor.com>
-Date: Mon, 3 Sep 2018 07:08:00 +0000
-Subject: [PATCH] ASoc: rsnd: dma: Calculate PDMACHCRE with consider of BUSIF
+Date: Mon, 3 Sep 2018 07:07:43 +0000
+Subject: [PATCH] ASoc: rsnd: dma: Calculate dma address with consider of BUSIF
 
-PDMACHCR setting for SSI only considers BUSIF0 so far.
+DMA address calculated by rsnd_dma_addr() only considers BUSIF0 so far.
 But BUSIF1 ~ BUSIF7 also maybe used, in the future.
 
-This patch updates table gen2_id_table_ssiu, to also consider
+This patch updates DMA address calculations, to also consider
 BUSIF number used by SSI.
+
+One note is that we can't support SSI9-4/5/6/7 so far,
+because its address is out of calculation rule.
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
@@ -71,74 +74,114 @@ Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c | 37 ++++++++++++++++++++++++++-----------
- 1 file changed, 26 insertions(+), 11 deletions(-)
+ sound/soc/sh/rcar/dma.c  | 43 +++++++++++++++++++++++++---------------
+ sound/soc/sh/rcar/rsnd.h |  1 +
+ sound/soc/sh/rcar/ssi.c  |  5 +++++
+ 3 files changed, 33 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 73f743ea3d08..d3b1a4ae876a 100644
+index fe63ef8600d0..73f743ea3d08 100644
 --- a/sound/soc/sh/rcar/dma.c
 +++ b/sound/soc/sh/rcar/dma.c
-@@ -298,16 +298,26 @@ static struct rsnd_mod_ops rsnd_dmaen_ops = {
-  *		Audio DMAC peri peri
-  */
- static const u8 gen2_id_table_ssiu[] = {
--	0x00, /* SSI00 */
--	0x04, /* SSI10 */
--	0x08, /* SSI20 */
--	0x0c, /* SSI3  */
--	0x0d, /* SSI4  */
--	0x0e, /* SSI5  */
--	0x0f, /* SSI6  */
--	0x10, /* SSI7  */
--	0x11, /* SSI8  */
--	0x12, /* SSI90 */
-+	/* SSI00 ~ SSI07 */
-+	0x00, 0x01, 0x02, 0x03, 0x39, 0x3a, 0x3b, 0x3c,
-+	/* SSI10 ~ SSI17 */
-+	0x04, 0x05, 0x06, 0x07, 0x3d, 0x3e, 0x3f, 0x40,
-+	/* SSI20 ~ SSI27 */
-+	0x08, 0x09, 0x0a, 0x0b, 0x41, 0x42, 0x43, 0x44,
-+	/* SSI30 ~ SSI37 */
-+	0x0c, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a, 0x4b,
-+	/* SSI40 ~ SSI47 */
-+	0x0d, 0x4c, 0x4d, 0x4e, 0x4f, 0x50, 0x51, 0x52,
-+	/* SSI5 */
-+	0x0e, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	/* SSI6 */
-+	0x0f, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	/* SSI7 */
-+	0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	/* SSI8 */
-+	0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-+	/* SSI90 ~ SSI97 */
-+	0x12, 0x13, 0x14, 0x15, 0x53, 0x54, 0x55, 0x56,
- };
- static const u8 gen2_id_table_scu[] = {
- 	0x2d, /* SCU_SRCI0 */
-@@ -333,18 +343,23 @@ static u32 rsnd_dmapp_get_id(struct rsnd_dai_stream *io,
- 	struct rsnd_mod *src = rsnd_io_to_mod_src(io);
- 	struct rsnd_mod *dvc = rsnd_io_to_mod_dvc(io);
- 	const u8 *entry = NULL;
--	int id = rsnd_mod_id(mod);
-+	int id = 255;
- 	int size = 0;
+@@ -487,11 +487,11 @@ static struct rsnd_mod_ops rsnd_dmapp_ops = {
+ #define RDMA_SSI_I_N(addr, i)	(addr ##_reg - 0x00300000 + (0x40 * i) + 0x8)
+ #define RDMA_SSI_O_N(addr, i)	(addr ##_reg - 0x00300000 + (0x40 * i) + 0xc)
  
- 	if (mod == ssi) {
-+		int busif = rsnd_ssi_get_busif(io);
+-#define RDMA_SSIU_I_N(addr, i)	(addr ##_reg - 0x00441000 + (0x1000 * i))
+-#define RDMA_SSIU_O_N(addr, i)	(addr ##_reg - 0x00441000 + (0x1000 * i))
++#define RDMA_SSIU_I_N(addr, i, j) (addr ##_reg - 0x00441000 + (0x1000 * (i)) + (((j) / 4) * 0xA000) + (((j) % 4) * 0x400))
++#define RDMA_SSIU_O_N(addr, i, j) RDMA_SSIU_I_N(addr, i, j)
+ 
+-#define RDMA_SSIU_I_P(addr, i)	(addr ##_reg - 0x00141000 + (0x1000 * i))
+-#define RDMA_SSIU_O_P(addr, i)	(addr ##_reg - 0x00141000 + (0x1000 * i))
++#define RDMA_SSIU_I_P(addr, i, j) (addr ##_reg - 0x00141000 + (0x1000 * (i)) + (((j) / 4) * 0xA000) + (((j) % 4) * 0x400))
++#define RDMA_SSIU_O_P(addr, i, j) RDMA_SSIU_I_P(addr, i, j)
+ 
+ #define RDMA_SRC_I_N(addr, i)	(addr ##_reg - 0x00500000 + (0x400 * i))
+ #define RDMA_SRC_O_N(addr, i)	(addr ##_reg - 0x004fc000 + (0x400 * i))
+@@ -517,6 +517,7 @@ rsnd_gen2_dma_addr(struct rsnd_dai_stream *io,
+ 		      !!rsnd_io_to_mod_mix(io) ||
+ 		      !!rsnd_io_to_mod_ctu(io);
+ 	int id = rsnd_mod_id(mod);
++	int busif = rsnd_ssi_get_busif(io);
+ 	struct dma_addr {
+ 		dma_addr_t out_addr;
+ 		dma_addr_t in_addr;
+@@ -533,25 +534,35 @@ rsnd_gen2_dma_addr(struct rsnd_dai_stream *io,
+ 		},
+ 		/* SSI */
+ 		/* Capture */
+-		{{{ RDMA_SSI_O_N(ssi, id),	0 },
+-		  { RDMA_SSIU_O_P(ssi, id),	0 },
+-		  { RDMA_SSIU_O_P(ssi, id),	0 } },
++		{{{ RDMA_SSI_O_N(ssi, id),		0 },
++		  { RDMA_SSIU_O_P(ssi, id, busif),	0 },
++		  { RDMA_SSIU_O_P(ssi, id, busif),	0 } },
+ 		 /* Playback */
+-		 {{ 0,				RDMA_SSI_I_N(ssi, id) },
+-		  { 0,				RDMA_SSIU_I_P(ssi, id) },
+-		  { 0,				RDMA_SSIU_I_P(ssi, id) } }
++		 {{ 0,			RDMA_SSI_I_N(ssi, id) },
++		  { 0,			RDMA_SSIU_I_P(ssi, id, busif) },
++		  { 0,			RDMA_SSIU_I_P(ssi, id, busif) } }
+ 		},
+ 		/* SSIU */
+ 		/* Capture */
+-		{{{ RDMA_SSIU_O_N(ssi, id),	0 },
+-		  { RDMA_SSIU_O_P(ssi, id),	0 },
+-		  { RDMA_SSIU_O_P(ssi, id),	0 } },
++		{{{ RDMA_SSIU_O_N(ssi, id, busif),	0 },
++		  { RDMA_SSIU_O_P(ssi, id, busif),	0 },
++		  { RDMA_SSIU_O_P(ssi, id, busif),	0 } },
+ 		 /* Playback */
+-		 {{ 0,				RDMA_SSIU_I_N(ssi, id) },
+-		  { 0,				RDMA_SSIU_I_P(ssi, id) },
+-		  { 0,				RDMA_SSIU_I_P(ssi, id) } } },
++		 {{ 0,			RDMA_SSIU_I_N(ssi, id, busif) },
++		  { 0,			RDMA_SSIU_I_P(ssi, id, busif) },
++		  { 0,			RDMA_SSIU_I_P(ssi, id, busif) } } },
+ 	};
+ 
++	/*
++	 * FIXME
++	 *
++	 * We can't support SSI9-4/5/6/7, because its address is
++	 * out of calculation rule
++	 */
++	if ((id == 9) && (busif >= 4))
++		dev_err(dev, "This driver doesn't support SSI%d-%d, so far",
++			id, busif);
 +
- 		entry = gen2_id_table_ssiu;
- 		size = ARRAY_SIZE(gen2_id_table_ssiu);
-+		id = (rsnd_mod_id(mod) * 8) + busif;
- 	} else if (mod == src) {
- 		entry = gen2_id_table_scu;
- 		size = ARRAY_SIZE(gen2_id_table_scu);
-+		id = rsnd_mod_id(mod);
- 	} else if (mod == dvc) {
- 		entry = gen2_id_table_cmd;
- 		size = ARRAY_SIZE(gen2_id_table_cmd);
-+		id = rsnd_mod_id(mod);
- 	}
+ 	/* it shouldn't happen */
+ 	if (use_cmd && !use_src)
+ 		dev_err(dev, "DVC is selected without SRC\n");
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 20e6a2ebebed..cb27a679dc65 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -692,6 +692,7 @@ void rsnd_ssi_remove(struct rsnd_priv *priv);
+ struct rsnd_mod *rsnd_ssi_mod_get(struct rsnd_priv *priv, int id);
+ int rsnd_ssi_is_dma_mode(struct rsnd_mod *mod);
+ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io);
++int rsnd_ssi_get_busif(struct rsnd_dai_stream *io);
+ u32 rsnd_ssi_multi_slaves_runtime(struct rsnd_dai_stream *io);
  
- 	if ((!entry) || (size <= id)) {
+ #define RSND_SSI_HDMI_PORT0	0xf0
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 3f6dd9f07bc6..85da4fc82011 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -150,6 +150,11 @@ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
+ 	return use_busif;
+ }
+ 
++int rsnd_ssi_get_busif(struct rsnd_dai_stream *io)
++{
++	return 0; /* BUSIF0 only for now */
++}
++
+ static void rsnd_ssi_status_clear(struct rsnd_mod *mod)
+ {
+ 	rsnd_mod_write(mod, SSISR, 0);
 -- 
 2.19.0.rc1
