@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: ssi: Check runtime channel number
-	rather than hw_params" to the asoc tree
-Date: Mon,  3 Sep 2018 14:45:45 +0100 (BST)
-Message-ID: <20180903134545.354BF11227AE@debutante.sirena.org.uk>
-References: <8736urf4ks.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: ssi: Fix issue in dma data
+	address assignment" to the asoc tree
+Date: Mon,  3 Sep 2018 14:45:56 +0100 (BST)
+Message-ID: <20180903134556.7C5D911227AE@debutante.sirena.org.uk>
+References: <874lf7f4lc.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 92BA32678CB
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:45:45 +0200 (CEST)
-In-Reply-To: <8736urf4ks.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E87932678BC
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:45:56 +0200 (CEST)
+In-Reply-To: <874lf7f4lc.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: ssi: Check runtime channel number rather than hw_params
+   ASoC: rsnd: ssi: Fix issue in dma data address assignment
 
 has been applied to the asoc tree at
 
@@ -53,96 +53,68 @@ to this mail.
 Thanks,
 Mark
 
->From 599da084e041b877ef89211dcbb4c7bd8380049d Mon Sep 17 00:00:00 2001
+>From 0e289012b47a2de1f029a6b61c75998e2f159dd9 Mon Sep 17 00:00:00 2001
 From: Jiada Wang <jiada_wang@mentor.com>
-Date: Mon, 3 Sep 2018 07:07:26 +0000
-Subject: [PATCH] ASoC: rsnd: ssi: Check runtime channel number rather than
- hw_params
+Date: Mon, 3 Sep 2018 07:07:07 +0000
+Subject: [PATCH] ASoC: rsnd: ssi: Fix issue in dma data address assignment
 
-The number of channel handled by SSI maybe differs from the one set
-in hw_params, currently SSI checks hw_params's channel number,
-and constrains to use same channel number, when it is being
-used by multiple clients.
-
-This patch corrects to check runtime channel number rather
-than channel number set in hw_params.
+Same SSI device may be used in different dai links,
+by only having one dma struct in rsnd_ssi, after the first
+instance's dma config be initilized, the following instances
+can no longer configure dma, this causes issue, when their
+dma data address are different from the first instance.
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
-[kuninori: adjust to upstreaming]
+[Kuninori: tidyup for upstream]
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 27 +++++++--------------------
- 1 file changed, 7 insertions(+), 20 deletions(-)
+ sound/soc/sh/rcar/rsnd.h | 1 +
+ sound/soc/sh/rcar/ssi.c  | 4 +---
+ 2 files changed, 2 insertions(+), 3 deletions(-)
 
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 698b08155b06..20e6a2ebebed 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -431,6 +431,7 @@ struct rsnd_dai_stream {
+ 	char name[RSND_DAI_NAME_SIZE];
+ 	struct snd_pcm_substream *substream;
+ 	struct rsnd_mod *mod[RSND_MOD_MAX];
++	struct rsnd_mod *dma;
+ 	struct rsnd_dai *rdai;
+ 	struct device *dmac_dev; /* for IPMMU */
+ 	u32 parent_ssi_status;
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 89cc433e2fc9..3f6dd9f07bc6 100644
+index 765ecc06c7c9..89cc433e2fc9 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -307,6 +307,11 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 			return -EINVAL;
- 		}
+@@ -78,7 +78,6 @@
  
-+		if (ssi->chan != chan) {
-+			dev_err(dev, "SSI parent/child should use same chan\n");
-+			return -EINVAL;
-+		}
-+
- 		return 0;
- 	}
+ struct rsnd_ssi {
+ 	struct rsnd_mod mod;
+-	struct rsnd_mod *dma;
  
-@@ -334,6 +339,7 @@ static int rsnd_ssi_master_clk_start(struct rsnd_mod *mod,
- 			SCKD | SWSD | CKDV(idx);
- 	ssi->wsr = CONT;
- 	ssi->rate = rate;
-+	ssi->chan = chan;
- 
- 	dev_dbg(dev, "%s[%d] outputs %u Hz\n",
- 		rsnd_mod_name(mod),
-@@ -359,6 +365,7 @@ static void rsnd_ssi_master_clk_stop(struct rsnd_mod *mod,
- 
- 	ssi->cr_clk	= 0;
- 	ssi->rate	= 0;
-+	ssi->chan	= 0;
- 
- 	rsnd_adg_ssi_clk_stop(mod);
- }
-@@ -511,9 +518,7 @@ static int rsnd_ssi_hw_params(struct rsnd_mod *mod,
- 			      struct snd_pcm_substream *substream,
- 			      struct snd_pcm_hw_params *params)
+ 	u32 flags;
+ 	u32 cr_own;
+@@ -899,7 +898,6 @@ static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
+ 			      struct rsnd_dai_stream *io,
+ 			      struct rsnd_priv *priv)
  {
 -	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
- 	struct rsnd_dai *rdai = rsnd_io_to_rdai(io);
--	int chan = params_channels(params);
- 	unsigned int fmt_width = snd_pcm_format_width(params_format(params));
+ 	int ret;
  
- 	if (fmt_width > rdai->chan_width) {
-@@ -524,24 +529,6 @@ static int rsnd_ssi_hw_params(struct rsnd_mod *mod,
- 		return -EINVAL;
- 	}
+ 	/*
+@@ -914,7 +912,7 @@ static int rsnd_ssi_dma_probe(struct rsnd_mod *mod,
+ 		return ret;
  
--	/*
--	 * snd_pcm_ops::hw_params will be called *before*
--	 * snd_soc_dai_ops::trigger. Thus, ssi->usrcnt is 0
--	 * in 1st call.
--	 */
--	if (ssi->usrcnt) {
--		/*
--		 * Already working.
--		 * It will happen if SSI has parent/child connection.
--		 * it is error if child <-> parent SSI uses
--		 * different channels.
--		 */
--		if (ssi->chan != chan)
--			return -EIO;
--	}
--
--	ssi->chan = chan;
--
- 	return 0;
+ 	/* SSI probe might be called many times in MUX multi path */
+-	ret = rsnd_dma_attach(io, mod, &ssi->dma);
++	ret = rsnd_dma_attach(io, mod, &io->dma);
+ 
+ 	return ret;
  }
- 
 -- 
 2.19.0.rc1
