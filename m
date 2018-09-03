@@ -1,53 +1,49 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 0/3] ASoC: qdsp6: add compress offload support
-Date: Mon,  3 Sep 2018 13:34:52 +0100
-Message-ID: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
- [209.85.221.66])
- by alsa0.perex.cz (Postfix) with ESMTP id 586BC2673F4
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 14:37:32 +0200 (CEST)
-Received: by mail-wr1-f66.google.com with SMTP id u12-v6so520819wrr.4
- for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2018 05:37:32 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Subject: [PATCH 2/3] ASoC: qdsp6: q6asm: add support to MP3 format
+Date: Mon,  3 Sep 2018 13:34:54 +0100
+Message-ID: <20180903123455.9290-3-srinivas.kandagatla@linaro.org>
+References: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
 To: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, linux-kernel@vger.kernel.org, vkoul@kernel.org, rohitkr@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: linux-kernel@vger.kernel.org, vkoul@kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, mark.rutland@arm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patchset adds support to very basic MP3 playback compress offload
-support via QDSP ASM module.
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+---
+ sound/soc/qcom/qdsp6/q6asm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Tested this patchset on DB410c with APQ8016 and DB820c with APQ8096 using
-tinycompress library.
-
-Adding other codec support should be trivial w.r.t qdsp6 side, however
-there are other dependencies like compress UAPI header changes and
-FastRPC which are being worked in parallel. Once ready will post them!
-
-thanks,
-srini
-
-Srinivas Kandagatla (3):
-  ASoC: q6asm-dai: dt-bindings: Add support to compress dais
-  ASoC: qdsp6: q6asm: add support to MP3 format
-  ASoC: qdsp6: q6asm-dai: Add support to compress offload
-
- .../devicetree/bindings/sound/qcom,q6asm.txt  |  27 ++
- sound/soc/qcom/Kconfig                        |   1 +
- sound/soc/qcom/qdsp6/q6asm-dai.c              | 418 +++++++++++++++++-
- sound/soc/qcom/qdsp6/q6asm.c                  |   5 +
- 4 files changed, 450 insertions(+), 1 deletion(-)
-
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index 2b2c7233bb5f..e98aee1baadd 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -13,6 +13,7 @@
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <uapi/sound/asound.h>
++#include <uapi/sound/compress_params.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/mm.h>
+@@ -37,6 +38,7 @@
+ #define ASM_PARAM_ID_ENCDEC_ENC_CFG_BLK_V2	0x00010DA3
+ #define ASM_SESSION_CMD_RUN_V2			0x00010DAA
+ #define ASM_MEDIA_FMT_MULTI_CHANNEL_PCM_V2	0x00010DA5
++#define ASM_MEDIA_FMT_MP3			0x00010BE9
+ #define ASM_DATA_CMD_WRITE_V2			0x00010DAB
+ #define ASM_DATA_CMD_READ_V2			0x00010DAC
+ #define ASM_SESSION_CMD_SUSPEND			0x00010DEC
+@@ -869,6 +871,9 @@ int q6asm_open_write(struct audio_client *ac, uint32_t format,
+ 	open->postprocopo_id = ASM_NULL_POPP_TOPOLOGY;
+ 
+ 	switch (format) {
++	case SND_AUDIOCODEC_MP3:
++		open->dec_fmt_id = ASM_MEDIA_FMT_MP3;
++		break;
+ 	case FORMAT_LINEAR_PCM:
+ 		open->dec_fmt_id = ASM_MEDIA_FMT_MULTI_CHANNEL_PCM_V2;
+ 		break;
 -- 
 2.18.0
