@@ -1,72 +1,53 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH 1/3] ASoC: q6asm-dai: dt-bindings: Add support to compress dais
-Date: Mon,  3 Sep 2018 13:34:53 +0100
-Message-ID: <20180903123455.9290-2-srinivas.kandagatla@linaro.org>
-References: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Subject: [PATCH 0/3] ASoC: qdsp6: add compress offload support
+Date: Mon,  3 Sep 2018 13:34:52 +0100
+Message-ID: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f66.google.com (mail-wr1-f66.google.com
+ [209.85.221.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 586BC2673F4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 14:37:32 +0200 (CEST)
+Received: by mail-wr1-f66.google.com with SMTP id u12-v6so520819wrr.4
+ for <alsa-devel@alsa-project.org>; Mon, 03 Sep 2018 05:37:32 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
-Cc: linux-kernel@vger.kernel.org, vkoul@kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, mark.rutland@arm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, linux-kernel@vger.kernel.org, vkoul@kernel.org, rohitkr@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds board specific bindings required for dais, In particular
-for compressed dais and dai direction.
+This patchset adds support to very basic MP3 playback compress offload
+support via QDSP ASM module.
 
-Board specific setup involves setting up some of dais as compressed dais
-and also specify direction of any dai. Some of the dais might only
-support capture/playback depending on the board level wiring.
+Tested this patchset on DB410c with APQ8016 and DB820c with APQ8096 using
+tinycompress library.
 
-These two new dt properties will allow such flexibilty at board level dts.
+Adding other codec support should be trivial w.r.t qdsp6 side, however
+there are other dependencies like compress UAPI header changes and
+FastRPC which are being worked in parallel. Once ready will post them!
 
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
----
- .../devicetree/bindings/sound/qcom,q6asm.txt  | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+thanks,
+srini
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-index f9c7bd8c1bc0..9f5378c51686 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-@@ -27,6 +27,28 @@ used by the apr service device.
- 	Value type: <u32>
- 	Definition: Must be 1
- 
-+== ASM DAI is subnode of "dais" and represent a dai, it includes board specific
-+configuration of each dai. Must contain the following properties.
-+
-+- reg
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Must be dai id
-+
-+- direction:
-+	Usage: Required for Compress offload dais
-+	Value type: <u32>
-+	Definition: Specifies the direction of the dai stream
-+			0 for both tx and rx
-+			1 for only tx (Capture/Encode)
-+			2 for only rx (Playback/Decode)
-+
-+- is-compress-dai:
-+	Usage: Required for Compress offload dais
-+	Value type: <boolean>
-+	Definition: present for Compress offload dais
-+
-+
- = EXAMPLE
- 
- q6asm@7 {
-@@ -35,5 +57,10 @@ q6asm@7 {
- 	q6asmdai: dais {
- 		compatible = "qcom,q6asm-dais";
- 		#sound-dai-cells = <1>;
-+		mm@0 {
-+			reg = <0>;
-+			direction = <2>;
-+			is-compress-dai;
-+		};
- 	};
- };
+Srinivas Kandagatla (3):
+  ASoC: q6asm-dai: dt-bindings: Add support to compress dais
+  ASoC: qdsp6: q6asm: add support to MP3 format
+  ASoC: qdsp6: q6asm-dai: Add support to compress offload
+
+ .../devicetree/bindings/sound/qcom,q6asm.txt  |  27 ++
+ sound/soc/qcom/Kconfig                        |   1 +
+ sound/soc/qcom/qdsp6/q6asm-dai.c              | 418 +++++++++++++++++-
+ sound/soc/qcom/qdsp6/q6asm.c                  |   5 +
+ 4 files changed, 450 insertions(+), 1 deletion(-)
+
 -- 
 2.18.0
