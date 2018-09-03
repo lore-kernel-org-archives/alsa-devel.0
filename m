@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: merge .nolock_start and .prepare"
-	to the asoc tree
-Date: Mon,  3 Sep 2018 14:44:56 +0100 (BST)
-Message-ID: <20180903134456.78BD011227AE@debutante.sirena.org.uk>
-References: <87tvn7dpx8.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: ssiu: Support to init different
+	BUSIF instance" to the asoc tree
+Date: Mon,  3 Sep 2018 14:45:07 +0100 (BST)
+Message-ID: <20180903134507.3787311227AE@debutante.sirena.org.uk>
+References: <87wos3dpye.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0BC462678B3
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:44:56 +0200 (CEST)
-In-Reply-To: <87tvn7dpx8.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BF6082678AF
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:45:07 +0200 (CEST)
+In-Reply-To: <87wos3dpye.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org, Jiada Wang <jiada_wang@mentor.com>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+To: Jiada Wang <jiada_wang@mentor.com>
+Cc: Dragos Tarcatu <dragos_tarcatu@mentor.com>, Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: merge .nolock_start and .prepare
+   ASoC: rsnd: ssiu: Support to init different BUSIF instance
 
 has been applied to the asoc tree at
 
@@ -53,214 +53,109 @@ to this mail.
 Thanks,
 Mark
 
->From 6ab6a2474e0dce02f71e92adb9778a168a8931f4 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 3 Sep 2018 07:09:17 +0000
-Subject: [PATCH] ASoC: rsnd: merge .nolock_start and .prepare
+>From 2e66d523cd055ac3fa920f7e630c4bfa80d24c24 Mon Sep 17 00:00:00 2001
+From: Jiada Wang <jiada_wang@mentor.com>
+Date: Mon, 3 Sep 2018 07:08:37 +0000
+Subject: [PATCH] ASoC: rsnd: ssiu: Support to init different BUSIF instance
 
-Main purpose of .nolock_start is we need to call
-some function without spinlock.
-OTOH we have .prepare which main purpose is
-called under atomic context.
-Then, it is called without spinlock.
+Currently ssiu's .init is only called once during audio stream.
+But SSIU with different BUSIF, shall be initialized each time,
+even they are used in the same audio stream.
 
-In summary, our main callback init/quit, and start/stop
-are called under "atomic context and with spinlock".
-And some function need to be called under
-"non-atomic context or without spinlock".
-Let's merge .nolock_start and prepare to be more clear code.
-Then, let's rename nolock_stop to cleanup
+This patch introduces ssiu_status for BUSIF0 to BUSIF7 in rsnd_ssiu,
+to make sure same .init for different BUSIF can always be executed.
 
+To avoid the first stopped stream to stop the whole SSIU,
+which may still has other BUSIF instance running, use usrcnt to count
+the usage of SSIU, only the last user of SSIU can stop the whole SSIU.
+
+Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
+[Kuninori: tidyup for upstream]
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 13 ++-----------
- sound/soc/sh/rcar/dma.c  | 20 ++++++++++----------
- sound/soc/sh/rcar/rsnd.h | 26 ++++++++++----------------
- 3 files changed, 22 insertions(+), 37 deletions(-)
+ sound/soc/sh/rcar/ssiu.c | 22 +++++++++++++++++++++-
+ 1 file changed, 21 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 299fb457573d..e46415c807a0 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -881,12 +881,10 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
- 				struct snd_soc_dai *dai)
- {
- 	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
--	struct rsnd_priv *priv = rsnd_rdai_to_priv(rdai);
- 	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
- 	struct snd_pcm_hw_constraint_list *constraint = &rdai->constraint;
- 	struct snd_pcm_runtime *runtime = substream->runtime;
- 	unsigned int max_channels = rsnd_rdai_channels_get(rdai);
--	int ret;
- 	int i;
+diff --git a/sound/soc/sh/rcar/ssiu.c b/sound/soc/sh/rcar/ssiu.c
+index a9605a0163f2..39b67643b5dc 100644
+--- a/sound/soc/sh/rcar/ssiu.c
++++ b/sound/soc/sh/rcar/ssiu.c
+@@ -10,9 +10,12 @@
  
- 	rsnd_dai_stream_init(io, substream);
-@@ -930,14 +928,7 @@ static int rsnd_soc_dai_startup(struct snd_pcm_substream *substream,
- 				    SNDRV_PCM_HW_PARAM_RATE, -1);
- 	}
- 
--	/*
--	 * call rsnd_dai_call without spinlock
--	 */
--	ret = rsnd_dai_call(nolock_start, io, priv);
--	if (ret < 0)
--		rsnd_dai_call(nolock_stop, io, priv);
--
--	return ret;
-+	return 0;
- }
- 
- static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
-@@ -950,7 +941,7 @@ static void rsnd_soc_dai_shutdown(struct snd_pcm_substream *substream,
- 	/*
- 	 * call rsnd_dai_call without spinlock
- 	 */
--	rsnd_dai_call(nolock_stop, io, priv);
-+	rsnd_dai_call(cleanup, io, priv);
- 
- 	rsnd_dai_stream_quit(io);
- }
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index d3b1a4ae876a..f99c1ab3b0bd 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -106,9 +106,9 @@ static int rsnd_dmaen_stop(struct rsnd_mod *mod,
- 	return 0;
- }
- 
--static int rsnd_dmaen_nolock_stop(struct rsnd_mod *mod,
--				   struct rsnd_dai_stream *io,
--				   struct rsnd_priv *priv)
-+static int rsnd_dmaen_cleanup(struct rsnd_mod *mod,
-+			      struct rsnd_dai_stream *io,
-+			      struct rsnd_priv *priv)
- {
- 	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
- 	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
-@@ -116,7 +116,7 @@ static int rsnd_dmaen_nolock_stop(struct rsnd_mod *mod,
- 	/*
- 	 * DMAEngine release uses mutex lock.
- 	 * Thus, it shouldn't be called under spinlock.
--	 * Let's call it under nolock_start
-+	 * Let's call it under prepare
- 	 */
- 	if (dmaen->chan)
- 		dma_release_channel(dmaen->chan);
-@@ -126,9 +126,9 @@ static int rsnd_dmaen_nolock_stop(struct rsnd_mod *mod,
- 	return 0;
- }
- 
--static int rsnd_dmaen_nolock_start(struct rsnd_mod *mod,
--			    struct rsnd_dai_stream *io,
--			    struct rsnd_priv *priv)
-+static int rsnd_dmaen_prepare(struct rsnd_mod *mod,
-+			      struct rsnd_dai_stream *io,
-+			      struct rsnd_priv *priv)
- {
- 	struct rsnd_dma *dma = rsnd_mod_to_dma(mod);
- 	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
-@@ -142,7 +142,7 @@ static int rsnd_dmaen_nolock_start(struct rsnd_mod *mod,
- 	/*
- 	 * DMAEngine request uses mutex lock.
- 	 * Thus, it shouldn't be called under spinlock.
--	 * Let's call it under nolock_start
-+	 * Let's call it under prepare
- 	 */
- 	dmaen->chan = rsnd_dmaen_request_channel(io,
- 						 dma->mod_from,
-@@ -287,8 +287,8 @@ static int rsnd_dmaen_pointer(struct rsnd_mod *mod,
- 
- static struct rsnd_mod_ops rsnd_dmaen_ops = {
- 	.name	= "audmac",
--	.nolock_start = rsnd_dmaen_nolock_start,
--	.nolock_stop  = rsnd_dmaen_nolock_stop,
-+	.prepare = rsnd_dmaen_prepare,
-+	.cleanup = rsnd_dmaen_cleanup,
- 	.start	= rsnd_dmaen_start,
- 	.stop	= rsnd_dmaen_stop,
- 	.pointer= rsnd_dmaen_pointer,
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 7a04b19e405c..e857311ee5c1 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -295,15 +295,12 @@ struct rsnd_mod_ops {
- 	int (*fallback)(struct rsnd_mod *mod,
- 			struct rsnd_dai_stream *io,
- 			struct rsnd_priv *priv);
--	int (*nolock_start)(struct rsnd_mod *mod,
--		    struct rsnd_dai_stream *io,
--		    struct rsnd_priv *priv);
--	int (*nolock_stop)(struct rsnd_mod *mod,
--		    struct rsnd_dai_stream *io,
--		    struct rsnd_priv *priv);
- 	int (*prepare)(struct rsnd_mod *mod,
- 		       struct rsnd_dai_stream *io,
- 		       struct rsnd_priv *priv);
-+	int (*cleanup)(struct rsnd_mod *mod,
-+		       struct rsnd_dai_stream *io,
-+		       struct rsnd_priv *priv);
+ struct rsnd_ssiu {
+ 	struct rsnd_mod mod;
++	u32 busif_status[8]; /* for BUSIF0 - BUSIF7 */
++	unsigned int usrcnt;
  };
  
- struct rsnd_dai_stream;
-@@ -323,7 +320,7 @@ struct rsnd_mod {
-  *
-  * 0xH0000CBA
-  *
-- * A	0: nolock_start	1: nolock_stop
-+ * A	0: prepare	1: cleanup
-  * B	0: init		1: quit
-  * C	0: start	1: stop
-  *
-@@ -335,8 +332,8 @@ struct rsnd_mod {
-  * H	0: pointer
-  * H	0: prepare
-  */
--#define __rsnd_mod_shift_nolock_start	0
--#define __rsnd_mod_shift_nolock_stop	0
-+#define __rsnd_mod_shift_prepare	0
-+#define __rsnd_mod_shift_cleanup	0
- #define __rsnd_mod_shift_init		4
- #define __rsnd_mod_shift_quit		4
- #define __rsnd_mod_shift_start		8
-@@ -348,12 +345,11 @@ struct rsnd_mod {
- #define __rsnd_mod_shift_fallback	28 /* always called */
- #define __rsnd_mod_shift_hw_params	28 /* always called */
- #define __rsnd_mod_shift_pointer	28 /* always called */
--#define __rsnd_mod_shift_prepare	28 /* always called */
+ #define rsnd_ssiu_nr(priv) ((priv)->ssiu_nr)
++#define rsnd_mod_to_ssiu(_mod) container_of((_mod), struct rsnd_ssiu, mod)
+ #define for_each_rsnd_ssiu(pos, priv, i)				\
+ 	for (i = 0;							\
+ 	     (i < rsnd_ssiu_nr(priv)) &&				\
+@@ -120,6 +123,7 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 			       struct rsnd_dai_stream *io,
+ 			       struct rsnd_priv *priv)
+ {
++	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
+ 	int hdmi = rsnd_ssi_hdmi_port(io);
+ 	int ret;
+ 	u32 mode = 0;
+@@ -128,6 +132,8 @@ static int rsnd_ssiu_init_gen2(struct rsnd_mod *mod,
+ 	if (ret < 0)
+ 		return ret;
  
- #define __rsnd_mod_add_probe		0
- #define __rsnd_mod_add_remove		0
--#define __rsnd_mod_add_nolock_start	 1
--#define __rsnd_mod_add_nolock_stop	-1
-+#define __rsnd_mod_add_prepare		 1
-+#define __rsnd_mod_add_cleanup		-1
- #define __rsnd_mod_add_init		 1
- #define __rsnd_mod_add_quit		-1
- #define __rsnd_mod_add_start		 1
-@@ -363,10 +359,11 @@ struct rsnd_mod {
- #define __rsnd_mod_add_fallback		0
- #define __rsnd_mod_add_hw_params	0
- #define __rsnd_mod_add_pointer		0
--#define __rsnd_mod_add_prepare		0
++	ssiu->usrcnt++;
++
+ 	if (rsnd_runtime_is_ssi_tdm(io)) {
+ 		/*
+ 		 * TDM Extend Mode
+@@ -255,6 +261,7 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
+ 			       struct rsnd_dai_stream *io,
+ 			       struct rsnd_priv *priv)
+ {
++	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
+ 	int busif = rsnd_ssi_get_busif(io);
  
- #define __rsnd_mod_call_probe		0
- #define __rsnd_mod_call_remove		0
-+#define __rsnd_mod_call_prepare		0
-+#define __rsnd_mod_call_cleanup		1
- #define __rsnd_mod_call_init		0
- #define __rsnd_mod_call_quit		1
- #define __rsnd_mod_call_start		0
-@@ -376,9 +373,6 @@ struct rsnd_mod {
- #define __rsnd_mod_call_fallback	0
- #define __rsnd_mod_call_hw_params	0
- #define __rsnd_mod_call_pointer		0
--#define __rsnd_mod_call_nolock_start	0
--#define __rsnd_mod_call_nolock_stop	1
--#define __rsnd_mod_call_prepare		0
+ 	if (!rsnd_ssi_use_busif(io))
+@@ -262,6 +269,9 @@ static int rsnd_ssiu_stop_gen2(struct rsnd_mod *mod,
  
- #define rsnd_mod_to_priv(mod)	((mod)->priv)
- #define rsnd_mod_name(mod)	((mod)->ops->name)
+ 	rsnd_mod_bset(mod, SSI_CTRL, 1 << (busif * 4), 0);
+ 
++	if (--ssiu->usrcnt)
++		return 0;
++
+ 	if (rsnd_ssi_multi_slaves_runtime(io))
+ 		rsnd_mod_write(mod, SSI_CONTROL, 0);
+ 
+@@ -294,6 +304,16 @@ int rsnd_ssiu_attach(struct rsnd_dai_stream *io,
+ 	return rsnd_dai_connect(mod, io, mod->type);
+ }
+ 
++static u32 *rsnd_ssiu_get_status(struct rsnd_dai_stream *io,
++				 struct rsnd_mod *mod,
++				 enum rsnd_mod_type type)
++{
++	struct rsnd_ssiu *ssiu = rsnd_mod_to_ssiu(mod);
++	int busif = rsnd_ssi_get_busif(io);
++
++	return &ssiu->busif_status[busif];
++}
++
+ int rsnd_ssiu_probe(struct rsnd_priv *priv)
+ {
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+@@ -317,7 +337,7 @@ int rsnd_ssiu_probe(struct rsnd_priv *priv)
+ 
+ 	for_each_rsnd_ssiu(ssiu, priv, i) {
+ 		ret = rsnd_mod_init(priv, rsnd_mod_get(ssiu),
+-				    ops, NULL, rsnd_mod_get_status,
++				    ops, NULL, rsnd_ssiu_get_status,
+ 				    RSND_MOD_SSIU, i);
+ 		if (ret)
+ 			return ret;
 -- 
 2.19.0.rc1
