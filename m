@@ -1,18 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: q6routing: initialize data correctly"
-	to the asoc tree
-Date: Mon,  3 Sep 2018 14:47:16 +0100 (BST)
-Message-ID: <20180903134716.BC3FF11227AE@debutante.sirena.org.uk>
-References: <20180903110747.10745-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH 0/2][RFC] ASoC: add for_each_xxx_codec macro
+Date: Mon, 3 Sep 2018 14:49:09 +0100
+Message-ID: <20180903134909.GL10302@sirena.org.uk>
+References: <87lg8jfi94.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3647600251535359351=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4D4462678B0
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:47:17 +0200 (CEST)
-In-Reply-To: <20180903110747.10745-1-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3CB44267891
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 15:49:10 +0200 (CEST)
+In-Reply-To: <87lg8jfi94.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,71 +20,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: bgoswami@codeaurora.org, alsa-devel@alsa-project.org, broonie@kernel.org, rohitkr@codeaurora.org, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
 
-   ASoC: q6routing: initialize data correctly
+--===============3647600251535359351==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="XRwESHC7KXlqFpSs"
+Content-Disposition: inline
 
-has been applied to the asoc tree at
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+--XRwESHC7KXlqFpSs
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+On Mon, Sep 03, 2018 at 02:12:05AM +0000, Kuninori Morimoto wrote:
+>=20
+> Hi Mark
+>=20
+> These are not so important patches.
+> But current code is using for loop for dai_link codecs
+> and rtd codec_dai, but I think using for_each_xxx
+> macro for these can be more readable.
+> These patches do it.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+These seem like sensible additions - any strong reason for the RFC tag?
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+--XRwESHC7KXlqFpSs
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+-----BEGIN PGP SIGNATURE-----
 
-Thanks,
-Mark
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluNO9UACgkQJNaLcl1U
+h9DUEgf/fy9UdmkXmT0JEaKdyYyG5W/6dUxetz5L5bb4SlbMTFh2yhYYWIz2rCu2
+bVcKaS1fsemN4VfoVVNlwz995gL9Np045Ijayt6ytkUrfKqe7t+gVZJ1FoPUEPZ6
+IoOCOuBK2zf/Ip9ITxPZ+i+5+pwQyGGkF9VU3yNkmkyY6xmX0MKXMZYeLfnou8b0
+Tt31a1C9XDRSKmWQwWbwKAShTJu10VqDktw7RMWLP+hGiuJTA/oyieom+Meqx3zv
+sbYg+a6yJPkpmkT/AvC3pkZ7H2aC/QvDuHQGjxWrssCVWdc3ddk1n7mv9i6H2BlG
+0BGqBbQpkfFwab7jWV3+vhfsuCzUog==
+=hdYb
+-----END PGP SIGNATURE-----
 
->From 7aa09ff24301535491cd4de1b93107ee91449a12 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Mon, 3 Sep 2018 12:07:47 +0100
-Subject: [PATCH] ASoC: q6routing: initialize data correctly
+--XRwESHC7KXlqFpSs--
 
-Some of the router data fields are left as default zeros which are
-valid dai ids, so initialize these to invalid value of -1.
+--===============3647600251535359351==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-Without intializing these correctly get_session_from_id() can return
-incorrect session resulting in not closing the opened copp and messing
-up with the copp ref count.
 
-Fixes: e3a33673e845 ("ASoC: qdsp6: q6routing: Add q6routing driver")
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/qcom/qdsp6/q6routing.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/qcom/qdsp6/q6routing.c b/sound/soc/qcom/qdsp6/q6routing.c
-index dc94c5c53788..c6b51571be94 100644
---- a/sound/soc/qcom/qdsp6/q6routing.c
-+++ b/sound/soc/qcom/qdsp6/q6routing.c
-@@ -960,8 +960,10 @@ static int msm_routing_probe(struct snd_soc_component *c)
- {
- 	int i;
- 
--	for (i = 0; i < MAX_SESSIONS; i++)
-+	for (i = 0; i < MAX_SESSIONS; i++) {
- 		routing_data->sessions[i].port_id = -1;
-+		routing_data->sessions[i].fedai_id = -1;
-+	}
- 
- 	return 0;
- }
--- 
-2.19.0.rc1
+--===============3647600251535359351==--
