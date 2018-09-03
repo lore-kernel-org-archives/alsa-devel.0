@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 04/12] ASoC: SOF: Add support for IPC IO
- between DSP and Host
-Date: Mon, 3 Sep 2018 16:53:00 +0100
-Message-ID: <20180903155300.GQ10302@sirena.org.uk>
+Subject: Re: [PATCH v2 06/12] ASoC: SOF: Add support for
+	loading topologies
+Date: Mon, 3 Sep 2018 17:19:11 +0100
+Message-ID: <20180903161911.GR10302@sirena.org.uk>
 References: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
- <20180831151910.16122-5-liam.r.girdwood@linux.intel.com>
+ <20180831151910.16122-7-liam.r.girdwood@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8905773413583443906=="
+Content-Type: multipart/mixed; boundary="===============5527103719484329348=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DE79267668
- for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 17:53:01 +0200 (CEST)
-In-Reply-To: <20180831151910.16122-5-liam.r.girdwood@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id CC7F52673F4
+ for <alsa-devel@alsa-project.org>; Mon,  3 Sep 2018 18:19:12 +0200 (CEST)
+In-Reply-To: <20180831151910.16122-7-liam.r.girdwood@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,71 +27,66 @@ Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8905773413583443906==
+--===============5527103719484329348==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="glwmnIOgU1tcuP7N"
+	protocol="application/pgp-signature"; boundary="eyYj78xbwv+yMvU1"
 Content-Disposition: inline
 
 
---glwmnIOgU1tcuP7N
+--eyYj78xbwv+yMvU1
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Fri, Aug 31, 2018 at 04:19:02PM +0100, Liam Girdwood wrote:
+On Fri, Aug 31, 2018 at 04:19:04PM +0100, Liam Girdwood wrote:
 
-> +/* SSP Configuration Request - SOF_IPC_DAI_SSP_CONFIG */
-> +struct sof_ipc_dai_ssp_params {
+> +static int sof_widget_load(struct snd_soc_component *scomp, int index,
+> +			   struct snd_soc_dapm_widget *w,
+> +			   struct snd_soc_tplg_dapm_widget *tw)
+> +{
+> +	/* nothing todo atm */
+> +	return 0;
+> +}
 
-> +	/* MCLK */
-> +	uint32_t mclk_direction;
-> +	uint32_t mclk_keep_active;
-> +	uint32_t bclk_keep_active;
-> +	uint32_t fs_keep_active;
+> +static int sof_link_unload(struct snd_soc_component *scomp,
+> +			   struct snd_soc_dobj *dobj)
+> +{
+> +	return 0;
+> +}
 
-Is this assuming a 1:1 relationship between the serial port and the
-MCLK?  That's not going to be true for all systems.  This definition
-does feel a bit specific to the SSP (or I guess just general serial
-ports used for audio as opposed to fixed function I2S/PCM controllers).
-I don't know if it's worth splitting up though.
+Missing implementation here as well?  If these functions can sensibly be
+optional shouldn't the framework support that?
 
-> +	uint16_t frame_pulse_width;
-> +	uint32_t quirks; // FIXME: is 32 bits enough ?
+> +static int sof_route_unload(struct snd_soc_component *scomp,
+> +			    struct snd_soc_dobj *dobj)
+> +{
+> +	/* TODO: unload routes when topology is changed */
+> +	return 0;
+> +}
 
-Better go for 640K to be sure :) ...
+This seems like it should at least return an error.
 
-> +/* HDA Configuration Request - SOF_IPC_DAI_HDA_CONFIG */
-> +struct sof_ipc_dai_hda_params {
-> +	struct sof_ipc_hdr hdr;
-> +	/* TODO */
-> +} __attribute__((packed));
-
-...more seriously I do notice a bunch of these FIXME and TODO comments
-in here, given that it's an ABI it seems like those all need sorting
-before things are merged.  In this case perhaps just delete the HDA
-stuff until someone works out what to do?
-
---glwmnIOgU1tcuP7N
+--eyYj78xbwv+yMvU1
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluNWNsACgkQJNaLcl1U
-h9Bhwwf6A/5DEuQDlKtZB1AD6hXDeMWY0owQ2/xePZuE3qN9EIMMI/GCc8wJCsQF
-17COq7Ou4VyeJXAct/dNgnUfDTACsv7D1QnGeQfS2oo4k7cUbaroo4PMSQYc7i9G
-H4GNYkcZB1PCTwXFSZxNCi6ObVEKqbW3lnUflUcvkCKPwMr+TPKeOMjAdpVprHrd
-tfGTIQEWtazT1LWCT4cUsC/6CnTlEPDpt5qWKSBvhGAhjARCrcErpr8t6fQ3mUcz
-YjqWAf4VVGbEAjACOPIUKtPrGGz1NYxmaCUIpnAc2olYetb4+4495SUZaR8GPY36
-+iD5dyuzaEPhVLyIzJKkGfLDlnBlUA==
-=TSpQ
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluNXv4ACgkQJNaLcl1U
+h9DKyggAgo3j03d5mrmcabSnmhz5EsEI16V5OW+ooOkX20j9sslcwcWNWA4QY1d7
+M+eCph6g2BLjQzI6DD+VnwhPxLdcpng1KDFT/t3bGYvyYUn/PewBYnicHgrxKOCv
+PzIaBK1aY6umImYgK44hj+a9C2UslgrnbNmTEQePuV/Sp2Tkb3xgTge8HwOOuaxn
+mpdwroxfOXMQ/FTuA8GGcVe8/sMFtyc1DagmP2bdJfNDm7Bjk3taSQ2E9KdMbhN5
+fmJ7otyQ5ktCnJ6GlOQF9AfDqUIyXFNXc0xVdtjHQQgOghExZW29NHpOkkkZm5An
+6TIK4kg9KscylUDew7JNSbQIZnJL+w==
+=6hyV
 -----END PGP SIGNATURE-----
 
---glwmnIOgU1tcuP7N--
+--eyYj78xbwv+yMvU1--
 
---===============8905773413583443906==
+--===============5527103719484329348==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8905773413583443906==--
+--===============5527103719484329348==--
