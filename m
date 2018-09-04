@@ -1,59 +1,82 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: tlv320aic31xx: Remove regulator notification
- handling
-Date: Tue, 4 Sep 2018 15:57:40 +0100
-Message-ID: <20180904145740.GE12993@sirena.org.uk>
-References: <20180831181737.29516-1-afd@ti.com>
- <20180903113038.GG10302@sirena.org.uk>
- <b35860d4-70ec-a23f-41d4-7edc87869ccb@ti.com>
+Subject: Re: [PATCH v2 07/12] ASoC: SOF: Add DSP firmware trace
+	event support
+Date: Tue, 4 Sep 2018 16:03:33 +0100
+Message-ID: <20180904150333.GF12993@sirena.org.uk>
+References: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
+ <20180831151910.16122-8-liam.r.girdwood@linux.intel.com>
+ <20180903162503.GS10302@sirena.org.uk>
+ <579fc5f7d26a8cba21fe36eb4ff6bb4a1a0d8496.camel@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="0H629O+sVkh21xTi"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <b35860d4-70ec-a23f-41d4-7edc87869ccb@ti.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "Andrew F. Davis" <afd@ti.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: multipart/mixed; boundary="===============6833731270034447732=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 654362678DD
+ for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2018 17:03:35 +0200 (CEST)
+In-Reply-To: <579fc5f7d26a8cba21fe36eb4ff6bb4a1a0d8496.camel@linux.intel.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---0H629O+sVkh21xTi
+--===============6833731270034447732==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Y/WcH0a6A93yCHGr"
+Content-Disposition: inline
+
+
+--Y/WcH0a6A93yCHGr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Sep 04, 2018 at 09:50:50AM -0500, Andrew F. Davis wrote:
-> On 09/03/2018 06:30 AM, Mark Brown wrote:
-> > On Fri, Aug 31, 2018 at 01:17:37PM -0500, Andrew F. Davis wrote:
-> >> The notification handler sets the reset line but never re-enables it
-> >> as no one is listening for an enable event, this is certainly broken
-> >> and was most likely just copied from other CODECs, remove this code.
+On Tue, Sep 04, 2018 at 02:21:20PM +0100, Liam Girdwood wrote:
+> On Mon, 2018-09-03 at 17:25 +0100, Mark Brown wrote:
 
-> > Why not fix it?  The usual pattern would be to take the CODEC out of
-> > reset when bringing the bias back to standby.
+> > Should this be integrated into the Linux trace event mechanism rather
+> > than open coded?  It would at least be nice to not call this a trace
+> > event buffer - when I initially read this I was expecting it to be for
+> > the standard Linux stuff which obviously it isn't.
 
-> The only time this code gets called outside of the normal power on/off
-> path is regulator_force_disable(). And the enable event is only called
-> inside regulator_enable() which would already be part of the normal
-> power up path.
+> Your right, I'll rename. The eventual aim is to make it more like Linux trace
+> but we are constrained somewhat as some DSPs only 96kB or instruction RAM, hence
+> it's a simple and raw trace infrastructure.
 
-It's there to save us having to rewrite the register cache if we asked
-for the device to be powered down but that didn't actually happen due to
-other constraints, we know all the registers are still as we left them.
+I was thinking the code could read it like it's doing now and then just
+have a trace event to dump it into the core trace infrastructure as it
+reads things in.
 
---0H629O+sVkh21xTi
+--Y/WcH0a6A93yCHGr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluOnWMACgkQJNaLcl1U
-h9CJvAf/bjkIWA0GP2khzx/2gN/0oXMbKFzuMWCbIC8CtijpKjUAROWtKKFYYsGb
-5b12ecQ2UNcViwxYImfHsZYsV2yewBPOHZoysbSCBv1KytI4BqJwz4+dBNiuKQuu
-znw1/8n5bu9PP2oa2xx7BCjKpIJs9LFkQUBlnLDf8IkKMhAJvvIOUUemtXz1TeyL
-EP3F1vSCw3gqNxiDJx9ZuZyeYHcToFTm49VBCaiei3W6DZrWbLH53yVHJQv8Jd7G
-/PU0jubJ6/1+gnzJzhfrRQN0GMaV6K7iPuYu/iSctvgpGb/BK79uUiy/DdkZnTot
-iKQstDW6IVcD6J1PwycZwn4QE55Jnw==
-=Cu00
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluOnsUACgkQJNaLcl1U
+h9CoSQf9GvGwJy5pTu928XOftfsf3uRZHlkVKC37aFLERvvp5THdTKEKHhIGY9F3
+qtTo1jH3v0DI1V2FxI2plrLzGRJ7AF2XZUpKOIZ0SbWnTPDPIYVPsVhoJEAgcLin
+2kO4G0T7FWAOsvjTdWhwsW/ZpAo6e1YOISQPfHFsNMVxJU63yMwXydf0Nqewbfa1
+ptMjJ2DUdO8L5DeOXxshKLg2KCpk9fhkouLFbipzEYaq7RKBXnDL+qNMt8i7/jdB
+fe9lP+zFUFjf5oBWp4SyINM4WtlYdb4Q0NivK97qjVKlZKJPTclRetWdyZX/wUfD
+3Yc0Bzacd2n1HzDRFIPWJ/n5cj2SaQ==
+=acwc
 -----END PGP SIGNATURE-----
 
---0H629O+sVkh21xTi--
+--Y/WcH0a6A93yCHGr--
+
+--===============6833731270034447732==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============6833731270034447732==--
