@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add for_each_link_codecs() macro" to
-	the asoc tree
-Date: Tue,  4 Sep 2018 17:22:22 +0100 (BST)
-Message-ID: <20180904162222.9AD1711227D8@debutante.sirena.org.uk>
-References: <87k1o3fi84.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: tlv320aic31xx: Add overflow detection
+	support" to the asoc tree
+Date: Tue,  4 Sep 2018 17:22:30 +0100 (BST)
+Message-ID: <20180904162230.7F50E11227D8@debutante.sirena.org.uk>
+References: <20180904153619.2199-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 30B8026789B
- for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2018 18:22:23 +0200 (CEST)
-In-Reply-To: <87k1o3fi84.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E3FF72676C6
+ for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2018 18:22:30 +0200 (CEST)
+In-Reply-To: <20180904153619.2199-1-afd@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: "Andrew F ., Davis" <afd@ti.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add for_each_link_codecs() macro
+   ASoC: tlv320aic31xx: Add overflow detection support
 
 has been applied to the asoc tree at
 
@@ -53,120 +52,99 @@ to this mail.
 Thanks,
 Mark
 
->From 3db769f17714ae65f2faf44ff2bae9d52f4bd46b Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Mon, 3 Sep 2018 02:12:40 +0000
-Subject: [PATCH] ASoC: add for_each_link_codecs() macro
+>From 18d545bb2599d6e5b0747351eaeebb0160d261f9 Mon Sep 17 00:00:00 2001
+From: "Andrew F. Davis" <afd@ti.com>
+Date: Tue, 4 Sep 2018 10:36:17 -0500
+Subject: [PATCH] ASoC: tlv320aic31xx: Add overflow detection support
 
-ALSA SoC snd_soc_dai_link has snd_soc_dai_link_component array
-for codecs.
-To be more readable code, this patch adds
-new for_each_link_codecs() macro, and replace existing code to it.
+Similar to short circuit detection, when the ADC/DAC is saturated and
+overflows poor audio quality can result and should be reported to the
+user. This device support Automatic Dynamic Range Compression (DRC)
+to reduce this but it is not enabled currently in this driver.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Andrew F. Davis <afd@ti.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h        |  4 ++++
- sound/soc/meson/axg-card.c |  5 +++--
- sound/soc/soc-core.c       | 17 ++++++++---------
- 3 files changed, 15 insertions(+), 11 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 34 ++++++++++++++++++++++++++++++--
+ sound/soc/codecs/tlv320aic31xx.h |  7 +++++++
+ 2 files changed, 39 insertions(+), 2 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 96c19aabf21b..ce42c578fe82 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -978,6 +978,10 @@ struct snd_soc_dai_link {
- 	struct list_head list; /* DAI link list of the soc card */
- 	struct snd_soc_dobj dobj; /* For topology */
- };
-+#define for_each_link_codecs(link, i, codec)				\
-+	for ((i) = 0;							\
-+	     ((i) < link->num_codecs) && ((codec) = &link->codecs[i]);	\
-+	     (i)++)
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index 2abe51d9f879..608ad49ad978 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1409,7 +1409,7 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 	if (value)
+ 		handled = true;
+ 	else
+-		goto exit;
++		goto read_overflow;
  
- struct snd_soc_codec_conf {
- 	/*
-diff --git a/sound/soc/meson/axg-card.c b/sound/soc/meson/axg-card.c
-index b76a5f4f1785..3e68f1aa68ff 100644
---- a/sound/soc/meson/axg-card.c
-+++ b/sound/soc/meson/axg-card.c
-@@ -97,14 +97,15 @@ static void axg_card_clean_references(struct axg_card *priv)
- {
- 	struct snd_soc_card *card = &priv->card;
- 	struct snd_soc_dai_link *link;
-+	struct snd_soc_dai_link_component *codec;
- 	int i, j;
+ 	if (value & AIC31XX_HPLSCDETECT)
+ 		dev_err(dev, "Short circuit on Left output is detected\n");
+@@ -1419,6 +1419,35 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 		      AIC31XX_HPRSCDETECT))
+ 		dev_err(dev, "Unknown DAC interrupt flags: 0x%08x\n", value);
  
- 	if (card->dai_link) {
- 		for (i = 0; i < card->num_links; i++) {
- 			link = &card->dai_link[i];
- 			of_node_put(link->cpu_of_node);
--			for (j = 0; j < link->num_codecs; j++)
--				of_node_put(link->codecs[j].of_node);
-+			for_each_link_codecs(link, j, codec)
-+				of_node_put(codec->of_node);
- 		}
- 	}
++read_overflow:
++	ret = regmap_read(aic31xx->regmap, AIC31XX_OFFLAG, &value);
++	if (ret) {
++		dev_err(dev, "Failed to read overflow flag: %d\n", ret);
++		goto exit;
++	}
++
++	if (value)
++		handled = true;
++	else
++		goto exit;
++
++	if (value & AIC31XX_DAC_OF_LEFT)
++		dev_warn(dev, "Left-channel DAC overflow has occurred\n");
++	if (value & AIC31XX_DAC_OF_RIGHT)
++		dev_warn(dev, "Right-channel DAC overflow has occurred\n");
++	if (value & AIC31XX_DAC_OF_SHIFTER)
++		dev_warn(dev, "DAC barrel shifter overflow has occurred\n");
++	if (value & AIC31XX_ADC_OF)
++		dev_warn(dev, "ADC overflow has occurred\n");
++	if (value & AIC31XX_ADC_OF_SHIFTER)
++		dev_warn(dev, "ADC barrel shifter overflow has occurred\n");
++	if (value & ~(AIC31XX_DAC_OF_LEFT |
++		      AIC31XX_DAC_OF_RIGHT |
++		      AIC31XX_DAC_OF_SHIFTER |
++		      AIC31XX_ADC_OF |
++		      AIC31XX_ADC_OF_SHIFTER))
++		dev_warn(dev, "Unknown overflow interrupt flags: 0x%08x\n", value);
++
+ exit:
+ 	if (handled)
+ 		return IRQ_HANDLED;
+@@ -1499,7 +1528,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 				   AIC31XX_GPIO1_FUNC_SHIFT);
  
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index e9c2304afaf1..eeab492e954f 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1071,6 +1071,7 @@ static int soc_init_dai_link(struct snd_soc_card *card,
- 				   struct snd_soc_dai_link *link)
- {
- 	int i, ret;
-+	struct snd_soc_dai_link_component *codec;
+ 		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
+-			     AIC31XX_SC);
++			     AIC31XX_SC |
++			     AIC31XX_ENGINE);
  
- 	ret = snd_soc_init_platform(card, link);
- 	if (ret) {
-@@ -1084,19 +1085,19 @@ static int soc_init_dai_link(struct snd_soc_card *card,
- 		return ret;
- 	}
+ 		ret = devm_request_threaded_irq(aic31xx->dev, aic31xx->irq,
+ 						NULL, aic31xx_irq,
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 52e171988906..2636f2c6bc79 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -173,6 +173,13 @@ struct aic31xx_pdata {
+ #define AIC31XX_HPRDRVPWRSTATUS_MASK	BIT(1)
+ #define AIC31XX_SPRDRVPWRSTATUS_MASK	BIT(0)
  
--	for (i = 0; i < link->num_codecs; i++) {
-+	for_each_link_codecs(link, i, codec) {
- 		/*
- 		 * Codec must be specified by 1 of name or OF node,
- 		 * not both or neither.
- 		 */
--		if (!!link->codecs[i].name ==
--		    !!link->codecs[i].of_node) {
-+		if (!!codec->name ==
-+		    !!codec->of_node) {
- 			dev_err(card->dev, "ASoC: Neither/both codec name/of_node are set for %s\n",
- 				link->name);
- 			return -EINVAL;
- 		}
- 		/* Codec DAI name must be specified */
--		if (!link->codecs[i].dai_name) {
-+		if (!codec->dai_name) {
- 			dev_err(card->dev, "ASoC: codec_dai_name not set for %s\n",
- 				link->name);
- 			return -EINVAL;
-@@ -3796,10 +3797,10 @@ EXPORT_SYMBOL_GPL(snd_soc_of_get_dai_name);
-  */
- void snd_soc_of_put_dai_link_codecs(struct snd_soc_dai_link *dai_link)
- {
--	struct snd_soc_dai_link_component *component = dai_link->codecs;
-+	struct snd_soc_dai_link_component *component;
- 	int index;
- 
--	for (index = 0; index < dai_link->num_codecs; index++, component++) {
-+	for_each_link_codecs(dai_link, index, component) {
- 		if (!component->of_node)
- 			break;
- 		of_node_put(component->of_node);
-@@ -3851,9 +3852,7 @@ int snd_soc_of_get_dai_link_codecs(struct device *dev,
- 	dai_link->num_codecs = num_codecs;
- 
- 	/* Parse the list */
--	for (index = 0, component = dai_link->codecs;
--	     index < dai_link->num_codecs;
--	     index++, component++) {
-+	for_each_link_codecs(dai_link, index, component) {
- 		ret = of_parse_phandle_with_args(of_node, name,
- 						 "#sound-dai-cells",
- 						  index, &args);
++/* AIC31XX_OFFLAG */
++#define AIC31XX_DAC_OF_LEFT		BIT(7)
++#define AIC31XX_DAC_OF_RIGHT		BIT(6)
++#define AIC31XX_DAC_OF_SHIFTER		BIT(5)
++#define AIC31XX_ADC_OF			BIT(3)
++#define AIC31XX_ADC_OF_SHIFTER		BIT(1)
++
+ /* AIC31XX_INTRDACFLAG */
+ #define AIC31XX_HPLSCDETECT		BIT(7)
+ #define AIC31XX_HPRSCDETECT		BIT(6)
 -- 
 2.19.0.rc1
