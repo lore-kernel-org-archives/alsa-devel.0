@@ -1,22 +1,21 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 07/12] ASoC: SOF: Add DSP firmware trace
-	event support
-Date: Tue, 4 Sep 2018 16:46:39 +0100
-Message-ID: <20180904154639.GG12993@sirena.org.uk>
-References: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
- <20180831151910.16122-8-liam.r.girdwood@linux.intel.com>
- <20180903162503.GS10302@sirena.org.uk>
- <579fc5f7d26a8cba21fe36eb4ff6bb4a1a0d8496.camel@linux.intel.com>
- <20180904150333.GF12993@sirena.org.uk>
- <fe9e199c8e9c3f688cc84393b85e1a390ace3c7b.camel@linux.intel.com>
+Subject: Re: [PATCH] ASoC: tlv320aic31xx: Remove regulator
+ notification handling
+Date: Tue, 4 Sep 2018 16:49:05 +0100
+Message-ID: <20180904154905.GH12993@sirena.org.uk>
+References: <20180831181737.29516-1-afd@ti.com>
+ <20180903113038.GG10302@sirena.org.uk>
+ <b35860d4-70ec-a23f-41d4-7edc87869ccb@ti.com>
+ <20180904145740.GE12993@sirena.org.uk>
+ <f6c7df62-a98f-009a-2169-0e5564f4b675@ti.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0950907455898306157=="
+Content-Type: multipart/mixed; boundary="===============3978913476965130789=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 61A8B2676C6
- for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2018 17:46:41 +0200 (CEST)
-In-Reply-To: <fe9e199c8e9c3f688cc84393b85e1a390ace3c7b.camel@linux.intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 78D7F2676C6
+ for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2018 17:49:06 +0200 (CEST)
+In-Reply-To: <f6c7df62-a98f-009a-2169-0e5564f4b675@ti.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,66 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Cc: alsa-devel@alsa-project.org
+To: "Andrew F. Davis" <afd@ti.com>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============0950907455898306157==
+--===============3978913476965130789==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4ndw/alBWmZEhfcZ"
+	protocol="application/pgp-signature"; boundary="aF3LVLvitz/VQU3c"
 Content-Disposition: inline
 
 
---4ndw/alBWmZEhfcZ
+--aF3LVLvitz/VQU3c
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Sep 04, 2018 at 04:28:49PM +0100, Liam Girdwood wrote:
-> On Tue, 2018-09-04 at 16:03 +0100, Mark Brown wrote:
+On Tue, Sep 04, 2018 at 10:03:40AM -0500, Andrew F. Davis wrote:
+> On 09/04/2018 09:57 AM, Mark Brown wrote:
 
-> > I was thinking the code could read it like it's doing now and then just
-> > have a trace event to dump it into the core trace infrastructure as it
-> > reads things in.
+> > It's there to save us having to rewrite the register cache if we asked
+> > for the device to be powered down but that didn't actually happen due to
+> > other constraints, we know all the registers are still as we left them.
 
-> Most of the data is binary atm, so we were decoding in userspace. Any objection
-> to decoding in the kernel as different trace events ?
+> I don't see that happening for any other user of this, we will still
+> have to re-write the cache when the device goes from OFF->STANDBY, and
 
-I wouldn't think so.
+You will?  All the power_off() code seems to do is mark the regmap as
+cache only and turn off the regulators.
 
-The way the trace stuff works is that the writer dumps blocks of data
-into the trace buffer in raw binary form in a structured block tagged
-with the event type and then later on when something reads out the
-buffer they can be formatted as desired, including things like hex dumps
-(IIRC there's facilities to just get the raw buffer entries too, I've
-only ever used the human readable interface myself, writing software is
-hard).  This gives very fast writes which is really nice for anything
-performance sensitive and means you can leave trace on a lot more than
-you would otherwise.  I'd guess if you were decoding it'd just be
-splitting the buffer up into per message chunks.
+> if it stays in standby and never went off, then we are still broken as
+> we switched to using the register cache only, but never turned on real
+> writes again.
 
---4ndw/alBWmZEhfcZ
+regmap can remember which registers were written to while in cache only
+mode and only sync the ones that are actually dirty, or you can
+invalidate the entire cache.
+
+--aF3LVLvitz/VQU3c
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluOqN4ACgkQJNaLcl1U
-h9BzEwgAgB6DKcDcEZXfbP8dFl5nmrpL0LlgeByrdwnkGfHZ5idXcNA3B/vK9oqt
-/UyMbxzI8t4gJoH1g0sCch8MJ2tUKNdeBziil/3IBMudBbAymRa6lsHo4BoMscJT
-IBZXpHf/CbvPO8wzO0Q1K7VXEU6JGfIq2khZ+9VyCC9dZ5qyD4yJSx8dOLcFnYwM
-qVQrcmyjvaRWJ9AY4BYQdi3K38oDzAhOHSaUujGJzK2Y/e9Q5bzZbtCGFYIiCO1h
-dr51kOY1w4LQuY6mi7Z1kTaN29L2p7yvEz9DLoG9QrOsTXptMGEqggI3pTSa5M0A
-y/Ihz0nVk0U2ihj9bG/WDmiLlOL7Fw==
-=2LGw
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluOqXAACgkQJNaLcl1U
+h9C86Qf/VEcpg19JspKkljuF1/FCg29JFROV6OQUtf/6HaeuG7hewgbSgCKqHH7r
+1h50yfxMwwkXqRBNVr4cSY6ArCYRSCPowM+DL9pOON8dc5B3UVSf+cMa38cm6byJ
+4gmOhyqsvnBhz9eNSHV8OZCryegnTr9+05JEQu0i3vuDnHSYcmDkynMLgtzv6Ugi
+UsDgX/q49B4Giu+qgDU8erqhFEawnKFiz5sIes5V2gVXJf8KfSYaA13rXks2b2qh
+b8iMTRCqki1nq6eRguNcO4tCskBk1IAF+2uSpqPx214HnCCoC18M1JhVZHp0tpgs
+upvSuKVMnGskkgkp+E5BsWUMEDSEUQ==
+=fEj5
 -----END PGP SIGNATURE-----
 
---4ndw/alBWmZEhfcZ--
+--aF3LVLvitz/VQU3c--
 
---===============0950907455898306157==
+--===============3978913476965130789==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============0950907455898306157==--
+--===============3978913476965130789==--
