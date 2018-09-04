@@ -1,46 +1,84 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320aic31xx: Remove regulator notification
- handling
-Date: Tue, 4 Sep 2018 10:03:40 -0500
-Message-ID: <f6c7df62-a98f-009a-2169-0e5564f4b675@ti.com>
-References: <20180831181737.29516-1-afd@ti.com>
- <20180903113038.GG10302@sirena.org.uk>
- <b35860d4-70ec-a23f-41d4-7edc87869ccb@ti.com>
- <20180904145740.GE12993@sirena.org.uk>
+Subject: Re: [PATCH] ASoC: tlv320aic31xx: Add MICBIAS off
+	setting
+Date: Tue, 4 Sep 2018 10:10:24 -0500
+Message-ID: <85973bf4-1acb-1731-d93e-29c8141a3c53@ti.com>
+References: <20180831180507.28867-1-afd@ti.com>
+ <20180903112656.GF10302@sirena.org.uk>
+ <701a066c-33e1-4476-7403-fdb9a3c366d8@ti.com>
+ <20180904144159.GC12993@sirena.org.uk>
+ <7163381a-ae09-ad3b-064d-990c98f13ccb@ti.com>
+ <20180904145503.GD12993@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180904145740.GE12993@sirena.org.uk>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
+ by alsa0.perex.cz (Postfix) with ESMTP id 395162678DD
+ for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2018 17:10:26 +0200 (CEST)
+In-Reply-To: <20180904145503.GD12993@sirena.org.uk>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/04/2018 09:57 AM, Mark Brown wrote:
-> On Tue, Sep 04, 2018 at 09:50:50AM -0500, Andrew F. Davis wrote:
->> On 09/03/2018 06:30 AM, Mark Brown wrote:
->>> On Fri, Aug 31, 2018 at 01:17:37PM -0500, Andrew F. Davis wrote:
->>>> The notification handler sets the reset line but never re-enables it
->>>> as no one is listening for an enable event, this is certainly broken
->>>> and was most likely just copied from other CODECs, remove this code.
+On 09/04/2018 09:55 AM, Mark Brown wrote:
+> On Tue, Sep 04, 2018 at 09:43:03AM -0500, Andrew F. Davis wrote:
+>> On 09/04/2018 09:41 AM, Mark Brown wrote:
 > 
->>> Why not fix it?  The usual pattern would be to take the CODEC out of
->>> reset when bringing the bias back to standby.
+>>>>> If we really want to pay attention to something setting this up we'd
+>>>>> need to completely remove the widget - what the code is doing at the
+>>>>> minute is setting the voltage that the bias will go to when enabled,
+>>>>> there's still a widget for turning it on and off.  There's some chance
+>>>>> that this will break existing boards.
 > 
->> The only time this code gets called outside of the normal power on/off
->> path is regulator_force_disable(). And the enable event is only called
->> inside regulator_enable() which would already be part of the normal
->> power up path.
+>>>> Turning on bias is controlled separately, automatically in user-space in
+>>>> many cases, not based on the board. The DT needs to have a way to state
+>>>> that 0v is the needed bias on this board, without this you can not set
+>>>> 0v bias and 2v is chosen by default (which is IMHO should be 0v but that
+>>>> would change existing behavior so I won't touch that).
 > 
-> It's there to save us having to rewrite the register cache if we asked
-> for the device to be powered down but that didn't actually happen due to
-> other constraints, we know all the registers are still as we left them.
+>>> Surely turning on MICBIAS at 0V is equivalent to leaving the bias off?
+> 
+>> It is, but DT doesn't control when or why MICBIAS is turned on or off,
+>> only what voltage on should be.
+> 
+> The DT controls this in so far as it will arrange for the bias to be
+> connected to something, if it's not connected to anything then it will
+> only be turned on if the machine driver explicitly forces it on which is
+> a potential source of problems but seems comfortably in "you broke it,
+> you get to keep the pieces" territory.  If we really want to have a way
+> of explicitly specifying that some widgets should never be turned on
+> then it feels like rather than have something device and widget specific
+> like this we should instead have a higher level way of doing that which
+> can be applied to any widget, that is something that could be useful
+> especially with things like speaker drivers where there's real potential
+> for physical damage to the system.
 > 
 
-I don't see that happening for any other user of this, we will still
-have to re-write the cache when the device goes from OFF->STANDBY, and
-if it stays in standby and never went off, then we are still broken as
-we switched to using the register cache only, but never turned on real
-writes again.
+
+Not sure how that could even look, it would need to be in DT as only
+that layer knows the connections, but then the it would also have to
+have internal knowledge of the widgets used in the driver..
+
+
+> Like I said in my original reply I'm also worried that this will break
+> existing boards by causing them to change to a voltage of 0 when they
+> had managed to end up with the default of 2V which happened to work for
+> them.
+> 
+
+Then only time this could happen is if they specified MICBIAS_OFF in DT
+but got the default 2v instead. In which case, yes, the behavior would
+change, but it would also be changing to the correct behavior. We can't
+avoid fixing code on the off chance someone depended on the broken
+behavior, no progress could ever be made.
