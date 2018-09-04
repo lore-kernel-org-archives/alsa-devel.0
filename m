@@ -1,49 +1,164 @@
-From: "Andrew F. Davis" <afd@ti.com>
-Subject: Re: [PATCH] ASoC: tlv320aic31xx: Add MICBIAS off
-	setting
-Date: Tue, 4 Sep 2018 08:55:06 -0500
-Message-ID: <701a066c-33e1-4476-7403-fdb9a3c366d8@ti.com>
-References: <20180831180507.28867-1-afd@ti.com>
- <20180903112656.GF10302@sirena.org.uk>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH 3/3] ASoC: qdsp6: q6asm-dai: Add support to compress
+ offload
+Date: Tue, 4 Sep 2018 19:25:26 +0530
+Message-ID: <20180904135526.GK2322@vkoul-mobl>
+References: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
+ <20180903123455.9290-4-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
- by alsa0.perex.cz (Postfix) with ESMTP id 796482678DD
- for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2018 15:55:09 +0200 (CEST)
-In-Reply-To: <20180903112656.GF10302@sirena.org.uk>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180903123455.9290-4-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, perex@perex.cz, devicetree@vger.kernel.org, mark.rutland@arm.com
 List-Id: alsa-devel@alsa-project.org
 
-On 09/03/2018 06:26 AM, Mark Brown wrote:
-> On Fri, Aug 31, 2018 at 01:05:07PM -0500, Andrew F. Davis wrote:
->> Leaving microphone bias off is a valid setting and even used in the DT
->> binding document example. Add this setting here and document the same.
->> Although it may not make much sense to enable a microphone here without
->> any bias, it is a valid setting that can be chosen by DT and may be
->> needed for some boards.
-> 
-> If we really want to pay attention to something setting this up we'd
-> need to completely remove the widget - what the code is doing at the
-> minute is setting the voltage that the bias will go to when enabled,
-> there's still a widget for turning it on and off.  There's some chance
-> that this will break existing boards.
-> 
+On 03-09-18, 13:34, Srinivas Kandagatla wrote:
 
-Turning on bias is controlled separately, automatically in user-space in
-many cases, not based on the board. The DT needs to have a way to state
-that 0v is the needed bias on this board, without this you can not set
-0v bias and 2v is chosen by default (which is IMHO should be 0v but that
-would change existing behavior so I won't touch that).
+> +static void compress_event_handler(uint32_t opcode, uint32_t token,
+> +				   uint32_t *payload, void *priv)
+> +{
+> +	struct q6asm_dai_rtd *prtd = priv;
+> +	struct snd_compr_stream *substream = prtd->cstream;
+> +	unsigned long flags;
+> +	uint64_t avail;
+> +
+> +	switch (opcode) {
+> +	case ASM_CLIENT_EVENT_CMD_RUN_DONE:
+> +		spin_lock_irqsave(&prtd->lock, flags);
+> +		avail = prtd->bytes_received - prtd->bytes_sent;
+> +		if (!prtd->bytes_sent) {
+> +			if (avail < substream->runtime->fragment_size) {
+> +				prtd->xrun = 1;
+
+so you are trying to detect xrun :) So in compress core we added support
+for .ack callback which tells driver how much data is valid in ring
+buffer and we can send this to DSP, so DSP "knows" valid data and should
+not overrun, ofcourse DSP needs support for it
+
+> +			} else {
+> +				q6asm_write_async(prtd->audio_client,
+> +						  prtd->pcm_count,
+> +						  0, 0, NO_TIMESTAMP);
+> +				prtd->bytes_sent += prtd->pcm_count;
+> +			}
+> +		}
+> +
+> +		spin_unlock_irqrestore(&prtd->lock, flags);
+> +		break;
+
+empty line after break helps readability
+
+> +	case ASM_CLIENT_EVENT_CMD_EOS_DONE:
+> +		prtd->state = Q6ASM_STREAM_STOPPED;
+> +		break;
+> +	case ASM_CLIENT_EVENT_DATA_WRITE_DONE:
+> +		spin_lock_irqsave(&prtd->lock, flags);
+> +		prtd->byte_offset += prtd->pcm_count;
+> +		prtd->copied_total += prtd->pcm_count;
+
+so should you need two counters, copied_total should give you byte_offset
+as well, we know the ring buffer size
+
+> +
+> +		if (prtd->byte_offset >= prtd->pcm_size)
+> +			prtd->byte_offset -= prtd->pcm_size;
+
+:)
+
+> +
+> +		snd_compr_fragment_elapsed(substream);
+
+so will ASM_CLIENT_EVENT_DATA_WRITE_DONE be invoked on fragment bytes
+consumed?
+
+> +static int q6asm_dai_compr_set_params(struct snd_compr_stream *stream,
+> +				      struct snd_compr_params *params)
+> +{
+> +
+
+redundant empty line
+
+> +static int q6asm_dai_compr_trigger(struct snd_compr_stream *stream, int cmd)
+> +{
+> +	struct snd_compr_runtime *runtime = stream->runtime;
+> +	struct q6asm_dai_rtd *prtd = runtime->private_data;
+> +	int ret = 0;
+> +
+> +	switch (cmd) {
+> +	case SNDRV_PCM_TRIGGER_START:
+> +	case SNDRV_PCM_TRIGGER_RESUME:
+> +	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+> +		ret = q6asm_run_nowait(prtd->audio_client, 0, 0, 0);
+
+the triggers are not in atomic context, do we have q6asm_run()
+
+> +static int q6asm_dai_compr_copy(struct snd_compr_stream *stream,
+> +				char __user *buf, size_t count)
+> +{
+> +	struct snd_compr_runtime *runtime = stream->runtime;
+> +	struct q6asm_dai_rtd *prtd = runtime->private_data;
+> +	uint64_t avail = 0;
+> +	unsigned long flags;
+> +	size_t copy;
+> +	void *dstn;
+> +
+> +	dstn = prtd->buffer + prtd->copy_pointer;
+> +	if (count < prtd->pcm_size - prtd->copy_pointer) {
+> +		if (copy_from_user(dstn, buf, count))
+> +			return -EFAULT;
+> +
+> +		prtd->copy_pointer += count;
+> +	} else {
+> +		copy = prtd->pcm_size - prtd->copy_pointer;
+> +		if (copy_from_user(dstn, buf, copy))
+> +			return -EFAULT;
+> +
+> +		if (copy_from_user(prtd->buffer, buf + copy, count - copy))
+> +			return -EFAULT;
+> +		prtd->copy_pointer = count - copy;
+> +	}
+> +
+> +	spin_lock_irqsave(&prtd->lock, flags);
+> +	prtd->bytes_received += count;
+
+why not use core copy method and...
+> +
+> +	if (prtd->state == Q6ASM_STREAM_RUNNING && prtd->xrun) {
+> +		avail = prtd->bytes_received - prtd->copied_total;
+> +		if (avail >= runtime->fragment_size) {
+> +			prtd->xrun = 0;
+> +			q6asm_write_async(prtd->audio_client,
+> +				   prtd->pcm_count, 0, 0, NO_TIMESTAMP);
+> +			prtd->bytes_sent += prtd->pcm_count;
+> +		}
+> +	}
+
+move this to .ack
+
+> +static int q6asm_dai_compr_get_codec_caps(struct snd_compr_stream *stream,
+> +					  struct snd_compr_codec_caps *codec)
+> +{
+> +	switch (codec->codec) {
+> +	case SND_AUDIOCODEC_MP3:
+> +		codec->num_descriptors = 2;
+> +		codec->descriptor[0].max_ch = 2;
+> +		memcpy(codec->descriptor[0].sample_rates,
+> +		       supported_sample_rates,
+> +		       sizeof(supported_sample_rates));
+> +		codec->descriptor[0].num_sample_rates =
+> +			sizeof(supported_sample_rates)/sizeof(unsigned int);
+> +		codec->descriptor[0].bit_rate[0] = 320; /* 320kbps */
+> +		codec->descriptor[0].bit_rate[1] = 128;
+> +		codec->descriptor[0].num_bitrates = 2;
+> +		codec->descriptor[0].profiles = 0;
+> +		codec->descriptor[0].modes = SND_AUDIOCHANMODE_MP3_STEREO;
+> +		codec->descriptor[0].formats = 0;
+
+since we are static here, how about using a table based approach and
+use that here
+
+-- 
+~Vinod
