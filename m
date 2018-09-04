@@ -1,107 +1,84 @@
 From: "Andrew F. Davis" <afd@ti.com>
-Subject: [PATCH v2 1/3] ASoC: tlv320aic31xx: Add overflow detection support
-Date: Tue, 4 Sep 2018 10:36:17 -0500
-Message-ID: <20180904153619.2199-1-afd@ti.com>
+Subject: [PATCH v2 3/3] ASoC: tlv320aic31xx: Add button press detection
+Date: Tue, 4 Sep 2018 10:36:19 -0500
+Message-ID: <20180904153619.2199-3-afd@ti.com>
+References: <20180904153619.2199-1-afd@ti.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180904153619.2199-1-afd@ti.com>
 Sender: linux-kernel-owner@vger.kernel.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-Similar to short circuit detection, when the ADC/DAC is saturated and
-overflows poor audio quality can result and should be reported to the
-user. This device support Automatic Dynamic Range Compression (DRC)
-to reduce this but it is not enabled currently in this driver.
+This device can optionally detect headset or microphone button presses.
+Add support for this by passing this event to the jack layer.
 
 Signed-off-by: Andrew F. Davis <afd@ti.com>
 ---
-
-Changes from v1:
- - Change errors to warning for non-fatal events
- - Rebased on broonie/sound.git for-next
-
- sound/soc/codecs/tlv320aic31xx.c | 34 ++++++++++++++++++++++++++++++--
- sound/soc/codecs/tlv320aic31xx.h |  7 +++++++
- 2 files changed, 39 insertions(+), 2 deletions(-)
+ sound/soc/codecs/tlv320aic31xx.c | 17 +++++++++++++++--
+ sound/soc/codecs/tlv320aic31xx.h |  3 ++-
+ 2 files changed, 17 insertions(+), 3 deletions(-)
 
 diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
-index d8783af7d31c..6e8f79ec9629 100644
+index ccbd601c746d..102654761f25 100644
 --- a/sound/soc/codecs/tlv320aic31xx.c
 +++ b/sound/soc/codecs/tlv320aic31xx.c
-@@ -1356,7 +1356,7 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
- 	if (value)
- 		handled = true;
- 	else
--		goto exit;
-+		goto read_overflow;
- 
- 	if (value & AIC31XX_HPLSCDETECT)
+@@ -1380,10 +1380,21 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
  		dev_err(dev, "Short circuit on Left output is detected\n");
-@@ -1366,6 +1366,35 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
- 		      AIC31XX_HPRSCDETECT))
+ 	if (value & AIC31XX_HPRSCDETECT)
+ 		dev_err(dev, "Short circuit on Right output is detected\n");
+-	if (value & AIC31XX_HSPLUG) {
++	if (value & (AIC31XX_HSPLUG | AIC31XX_BUTTONPRESS)) {
+ 		unsigned int val;
+ 		int status = 0;
+ 
++		ret = regmap_read(aic31xx->regmap, AIC31XX_INTRDACFLAG2,
++				  &val);
++		if (ret) {
++			dev_err(dev, "Failed to read interrupt mask: %d\n",
++				ret);
++			goto exit;
++		}
++
++		if (val & AIC31XX_BUTTONPRESS)
++			status |= SND_JACK_BTN_0;
++
+ 		ret = regmap_read(aic31xx->regmap, AIC31XX_HSDETECT, &val);
+ 		if (ret) {
+ 			dev_err(dev, "Failed to read headset type: %d\n", ret);
+@@ -1408,7 +1419,8 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 	}
+ 	if (value & ~(AIC31XX_HPLSCDETECT |
+ 		      AIC31XX_HPRSCDETECT |
+-		      AIC31XX_HSPLUG))
++		      AIC31XX_HSPLUG |
++		      AIC31XX_BUTTONPRESS))
  		dev_err(dev, "Unknown DAC interrupt flags: 0x%08x\n", value);
  
-+read_overflow:
-+	ret = regmap_read(aic31xx->regmap, AIC31XX_OFFLAG, &value);
-+	if (ret) {
-+		dev_err(dev, "Failed to read overflow flag: %d\n", ret);
-+		goto exit;
-+	}
-+
-+	if (value)
-+		handled = true;
-+	else
-+		goto exit;
-+
-+	if (value & AIC31XX_DAC_OF_LEFT)
-+		dev_warn(dev, "Left-channel DAC overflow has occurred\n");
-+	if (value & AIC31XX_DAC_OF_RIGHT)
-+		dev_warn(dev, "Right-channel DAC overflow has occurred\n");
-+	if (value & AIC31XX_DAC_OF_SHIFTER)
-+		dev_warn(dev, "DAC barrel shifter overflow has occurred\n");
-+	if (value & AIC31XX_ADC_OF)
-+		dev_warn(dev, "ADC overflow has occurred\n");
-+	if (value & AIC31XX_ADC_OF_SHIFTER)
-+		dev_warn(dev, "ADC barrel shifter overflow has occurred\n");
-+	if (value & ~(AIC31XX_DAC_OF_LEFT |
-+		      AIC31XX_DAC_OF_RIGHT |
-+		      AIC31XX_DAC_OF_SHIFTER |
-+		      AIC31XX_ADC_OF |
-+		      AIC31XX_ADC_OF_SHIFTER))
-+		dev_warn(dev, "Unknown overflow interrupt flags: 0x%08x\n", value);
-+
- exit:
- 	if (handled)
- 		return IRQ_HANDLED;
-@@ -1447,7 +1476,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
- 				   AIC31XX_GPIO1_FUNC_SHIFT);
+ read_overflow:
+@@ -1522,6 +1534,7 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
  
  		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
--			     AIC31XX_SC);
-+			     AIC31XX_SC |
-+			     AIC31XX_ENGINE);
+ 			     AIC31XX_HSPLUGDET |
++			     AIC31XX_BUTTONPRESSDET |
+ 			     AIC31XX_SC |
+ 			     AIC31XX_ENGINE);
  
- 		ret = devm_request_threaded_irq(aic31xx->dev, aic31xx->irq,
- 						NULL, aic31xx_irq,
 diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
-index 52e171988906..2636f2c6bc79 100644
+index 9985ceed97ae..cb024955c978 100644
 --- a/sound/soc/codecs/tlv320aic31xx.h
 +++ b/sound/soc/codecs/tlv320aic31xx.h
-@@ -173,6 +173,13 @@ struct aic31xx_pdata {
- #define AIC31XX_HPRDRVPWRSTATUS_MASK	BIT(1)
- #define AIC31XX_SPRDRVPWRSTATUS_MASK	BIT(0)
+@@ -21,7 +21,8 @@
+ #define DAC31XX_BIT			BIT(3)
  
-+/* AIC31XX_OFFLAG */
-+#define AIC31XX_DAC_OF_LEFT		BIT(7)
-+#define AIC31XX_DAC_OF_RIGHT		BIT(6)
-+#define AIC31XX_DAC_OF_SHIFTER		BIT(5)
-+#define AIC31XX_ADC_OF			BIT(3)
-+#define AIC31XX_ADC_OF_SHIFTER		BIT(1)
-+
- /* AIC31XX_INTRDACFLAG */
- #define AIC31XX_HPLSCDETECT		BIT(7)
- #define AIC31XX_HPRSCDETECT		BIT(6)
+ #define AIC31XX_JACK_MASK (SND_JACK_HEADPHONE | \
+-			   SND_JACK_HEADSET)
++			   SND_JACK_HEADSET | \
++			   SND_JACK_BTN_0)
+ 
+ enum aic31xx_type {
+ 	AIC3100	= 0,
 -- 
 2.18.0
