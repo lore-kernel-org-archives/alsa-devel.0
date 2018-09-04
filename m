@@ -1,54 +1,107 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 07/12] ASoC: SOF: Add DSP firmware trace
-	event support
-Date: Tue, 04 Sep 2018 16:28:49 +0100
-Message-ID: <fe9e199c8e9c3f688cc84393b85e1a390ace3c7b.camel@linux.intel.com>
-References: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
- <20180831151910.16122-8-liam.r.girdwood@linux.intel.com>
- <20180903162503.GS10302@sirena.org.uk>
- <579fc5f7d26a8cba21fe36eb4ff6bb4a1a0d8496.camel@linux.intel.com>
- <20180904150333.GF12993@sirena.org.uk>
+From: "Andrew F. Davis" <afd@ti.com>
+Subject: [PATCH v2 1/3] ASoC: tlv320aic31xx: Add overflow detection support
+Date: Tue, 4 Sep 2018 10:36:17 -0500
+Message-ID: <20180904153619.2199-1-afd@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A04B2676C6
- for <alsa-devel@alsa-project.org>; Tue,  4 Sep 2018 17:28:53 +0200 (CEST)
-In-Reply-To: <20180904150333.GF12993@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, "Andrew F . Davis" <afd@ti.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-09-04 at 16:03 +0100, Mark Brown wrote:
-> On Tue, Sep 04, 2018 at 02:21:20PM +0100, Liam Girdwood wrote:
-> > On Mon, 2018-09-03 at 17:25 +0100, Mark Brown wrote:
-> > > Should this be integrated into the Linux trace event mechanism rather
-> > > than open coded?  It would at least be nice to not call this a trace
-> > > event buffer - when I initially read this I was expecting it to be for
-> > > the standard Linux stuff which obviously it isn't.
-> > Your right, I'll rename. The eventual aim is to make it more like Linux
-> > trace
-> > but we are constrained somewhat as some DSPs only 96kB or instruction RAM,
-> > hence
-> > it's a simple and raw trace infrastructure.
-> 
-> I was thinking the code could read it like it's doing now and then just
-> have a trace event to dump it into the core trace infrastructure as it
-> reads things in.
+Similar to short circuit detection, when the ADC/DAC is saturated and
+overflows poor audio quality can result and should be reported to the
+user. This device support Automatic Dynamic Range Compression (DRC)
+to reduce this but it is not enabled currently in this driver.
 
-Most of the data is binary atm, so we were decoding in userspace. Any objection
-to decoding in the kernel as different trace events ?
+Signed-off-by: Andrew F. Davis <afd@ti.com>
+---
 
-Thanks
+Changes from v1:
+ - Change errors to warning for non-fatal events
+ - Rebased on broonie/sound.git for-next
 
-Liam
+ sound/soc/codecs/tlv320aic31xx.c | 34 ++++++++++++++++++++++++++++++--
+ sound/soc/codecs/tlv320aic31xx.h |  7 +++++++
+ 2 files changed, 39 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/codecs/tlv320aic31xx.c b/sound/soc/codecs/tlv320aic31xx.c
+index d8783af7d31c..6e8f79ec9629 100644
+--- a/sound/soc/codecs/tlv320aic31xx.c
++++ b/sound/soc/codecs/tlv320aic31xx.c
+@@ -1356,7 +1356,7 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 	if (value)
+ 		handled = true;
+ 	else
+-		goto exit;
++		goto read_overflow;
+ 
+ 	if (value & AIC31XX_HPLSCDETECT)
+ 		dev_err(dev, "Short circuit on Left output is detected\n");
+@@ -1366,6 +1366,35 @@ static irqreturn_t aic31xx_irq(int irq, void *data)
+ 		      AIC31XX_HPRSCDETECT))
+ 		dev_err(dev, "Unknown DAC interrupt flags: 0x%08x\n", value);
+ 
++read_overflow:
++	ret = regmap_read(aic31xx->regmap, AIC31XX_OFFLAG, &value);
++	if (ret) {
++		dev_err(dev, "Failed to read overflow flag: %d\n", ret);
++		goto exit;
++	}
++
++	if (value)
++		handled = true;
++	else
++		goto exit;
++
++	if (value & AIC31XX_DAC_OF_LEFT)
++		dev_warn(dev, "Left-channel DAC overflow has occurred\n");
++	if (value & AIC31XX_DAC_OF_RIGHT)
++		dev_warn(dev, "Right-channel DAC overflow has occurred\n");
++	if (value & AIC31XX_DAC_OF_SHIFTER)
++		dev_warn(dev, "DAC barrel shifter overflow has occurred\n");
++	if (value & AIC31XX_ADC_OF)
++		dev_warn(dev, "ADC overflow has occurred\n");
++	if (value & AIC31XX_ADC_OF_SHIFTER)
++		dev_warn(dev, "ADC barrel shifter overflow has occurred\n");
++	if (value & ~(AIC31XX_DAC_OF_LEFT |
++		      AIC31XX_DAC_OF_RIGHT |
++		      AIC31XX_DAC_OF_SHIFTER |
++		      AIC31XX_ADC_OF |
++		      AIC31XX_ADC_OF_SHIFTER))
++		dev_warn(dev, "Unknown overflow interrupt flags: 0x%08x\n", value);
++
+ exit:
+ 	if (handled)
+ 		return IRQ_HANDLED;
+@@ -1447,7 +1476,8 @@ static int aic31xx_i2c_probe(struct i2c_client *i2c,
+ 				   AIC31XX_GPIO1_FUNC_SHIFT);
+ 
+ 		regmap_write(aic31xx->regmap, AIC31XX_INT1CTRL,
+-			     AIC31XX_SC);
++			     AIC31XX_SC |
++			     AIC31XX_ENGINE);
+ 
+ 		ret = devm_request_threaded_irq(aic31xx->dev, aic31xx->irq,
+ 						NULL, aic31xx_irq,
+diff --git a/sound/soc/codecs/tlv320aic31xx.h b/sound/soc/codecs/tlv320aic31xx.h
+index 52e171988906..2636f2c6bc79 100644
+--- a/sound/soc/codecs/tlv320aic31xx.h
++++ b/sound/soc/codecs/tlv320aic31xx.h
+@@ -173,6 +173,13 @@ struct aic31xx_pdata {
+ #define AIC31XX_HPRDRVPWRSTATUS_MASK	BIT(1)
+ #define AIC31XX_SPRDRVPWRSTATUS_MASK	BIT(0)
+ 
++/* AIC31XX_OFFLAG */
++#define AIC31XX_DAC_OF_LEFT		BIT(7)
++#define AIC31XX_DAC_OF_RIGHT		BIT(6)
++#define AIC31XX_DAC_OF_SHIFTER		BIT(5)
++#define AIC31XX_ADC_OF			BIT(3)
++#define AIC31XX_ADC_OF_SHIFTER		BIT(1)
++
+ /* AIC31XX_INTRDACFLAG */
+ #define AIC31XX_HPLSCDETECT		BIT(7)
+ #define AIC31XX_HPRSCDETECT		BIT(6)
+-- 
+2.18.0
