@@ -1,307 +1,89 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH v2 3/5] ASoC: dapm: Move connection of CODEC to
-	CODEC DAIs
-Date: Wed, 5 Sep 2018 15:21:00 +0100
-Message-ID: <20180905142102.29070-3-ckeepax@opensource.cirrus.com>
-References: <20180905142102.29070-1-ckeepax@opensource.cirrus.com>
+From: David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Subject: [RFC] UAPI: Check headers by compiling all together as C++
+Date: Wed, 05 Sep 2018 16:54:27 +0100
+Message-ID: <153616286704.23468.584491117180383924.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id A37D3267819
- for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2018 16:21:13 +0200 (CEST)
-In-Reply-To: <20180905142102.29070-1-ckeepax@opensource.cirrus.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
+List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
+ <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
+Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
+Sender: "Linux-nvdimm" <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
+To: linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kbuild-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: moderated for non-subscribers <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Michael S. Tsirkin" <mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Jason Wang <jasowang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Mat Martineau <mathew.j.martineau-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, virtualization-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, Masahiro Yamada <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>, keyrings-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Ryusuke Konishi <konishi.ryusuke-Zyj7fXuS5i5L9jVzuh4AOg@public.gmane.org>, linux-nilfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, codalist-/uMB558Y47wP4a1z8dhFYw@public.gmane.org, coda-ETDLCGt7PQU3uPMLIKxrzw@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, Kent Overstreet <kent.overstreet-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Coly Li <colyli-l3A5Bk7waGM@public.gmane.org>, linux-bcache-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Jan Harkes <jaharkes-ETDLCGt7PQU3uPMLIKxrzw@public.gmane.org>, Michal Marek <michal.lkml-yyZNWGI4GtDR7s880joybQ@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Clark <robdclar>
 List-Id: alsa-devel@alsa-project.org
 
-Currently, snd_soc_dapm_connect_dai_link_widgets connects up the routes
-representing normal DAIs, however CODEC to CODEC links are hooked up
-through separate infrastructure in soc_link_dai_widgets. Improve the
-consistency of the code by using snd_soc_dapm_connect_dai_link for both
-types of DAIs.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
+Here's a set of patches that inserts a step into the build process to make
+sure that the UAPI headers can all be built together with C++ (if the
+compiler being used supports C++).  All but the final patch perform fixups,
+including:
 
-No changes since v1, although rebased on top of Morimoto-san's
-adding of the for_each_rtd_codec_dai macro.
+ (1) Fix member names that conflict with C++ reserved words by providing
+     alternates that can be used anywhere.  An anonymous union is used so
+     that that the conflicting name is still available outside of C++.
+
+ (2) Fix the use of flexible arrays in structs that get embedded (which is
+     illegal in C++).
+
+ (3) Remove the use of internal kernel structs in UAPI structures.
+
+ (4) Fix symbol collisions.
+
+ (5) Replace usage of u32 and co. with __u32 and co.
+
+ (6) Fix use of sparsely initialised arrays (which g++ doesn't implement).
+
+ (7) Remove some use of PAGE_SIZE since this isn't valid outside of the
+     kernel.
+
+And lastly:
+
+ (8) Compile all of the UAPI headers (with a few exceptions) together as
+     C++ to catch new errors occurring as part of the regular build
+     process.
+
+The patches can also be found here:
+
+	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=uapi-check
 
 Thanks,
-Charles
+David
+---
+David Howells (11):
+      UAPI: drm: Fix use of C++ keywords as structural members
+      UAPI: keys: Fix use of C++ keywords as structural members
+      UAPI: virtio_net: Fix use of C++ keywords as structural members
+      UAPI: bcache: Fix use of embedded flexible array
+      UAPI: coda: Don't use internal kernel structs in UAPI
+      UAPI: netfilter: Fix symbol collision issues
+      UAPI: nilfs2: Fix use of undefined byteswapping functions
+      UAPI: sound: Fix use of u32 and co. in UAPI headers
+      UAPI: ndctl: Fix g++-unsupported initialisation in headers
+      UAPI: ndctl: Remove use of PAGE_SIZE
+      UAPI: Check headers build for C++
 
- include/sound/soc-dapm.h |   6 ---
- sound/soc/soc-core.c     |  47 ---------------------
- sound/soc/soc-dapm.c     | 103 ++++++++++++++++++++++++++++++-----------------
- 3 files changed, 66 insertions(+), 90 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index fdaaafdc7a00..cb177fa21ce7 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -406,12 +406,6 @@ int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
- 				 struct snd_soc_dai *dai);
- int snd_soc_dapm_link_dai_widgets(struct snd_soc_card *card);
- void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card);
--int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
--			 struct snd_soc_pcm_runtime *rtd,
--			 const struct snd_soc_pcm_stream *params,
--			 unsigned int num_params,
--			 struct snd_soc_dapm_widget *source,
--			 struct snd_soc_dapm_widget *sink);
- 
- /* dapm path setup */
- int snd_soc_dapm_new_widgets(struct snd_soc_card *card);
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 390da15c4a8b..4e9367aacc0c 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -1463,48 +1463,6 @@ static int soc_link_dai_pcm_new(struct snd_soc_dai **dais, int num_dais,
- 	return 0;
- }
- 
--static int soc_link_dai_widgets(struct snd_soc_card *card,
--				struct snd_soc_dai_link *dai_link,
--				struct snd_soc_pcm_runtime *rtd)
--{
--	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--	struct snd_soc_dai *codec_dai = rtd->codec_dai;
--	struct snd_soc_dapm_widget *sink, *source;
--	int ret;
--
--	if (rtd->num_codecs > 1)
--		dev_warn(card->dev, "ASoC: Multiple codecs not supported yet\n");
--
--	/* link the DAI widgets */
--	sink = codec_dai->playback_widget;
--	source = cpu_dai->capture_widget;
--	if (sink && source) {
--		ret = snd_soc_dapm_new_pcm(card, rtd, dai_link->params,
--					   dai_link->num_params,
--					   source, sink);
--		if (ret != 0) {
--			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
--				sink->name, source->name, ret);
--			return ret;
--		}
--	}
--
--	sink = cpu_dai->playback_widget;
--	source = codec_dai->capture_widget;
--	if (sink && source) {
--		ret = snd_soc_dapm_new_pcm(card, rtd, dai_link->params,
--					   dai_link->num_params,
--					   source, sink);
--		if (ret != 0) {
--			dev_err(card->dev, "ASoC: Can't link %s to %s: %d\n",
--				sink->name, source->name, ret);
--			return ret;
--		}
--	}
--
--	return 0;
--}
--
- static int soc_probe_link_dais(struct snd_soc_card *card,
- 		struct snd_soc_pcm_runtime *rtd, int order)
- {
-@@ -1606,11 +1564,6 @@ static int soc_probe_link_dais(struct snd_soc_card *card,
- 		} else {
- 			INIT_DELAYED_WORK(&rtd->delayed_work,
- 						codec2codec_close_delayed_work);
--
--			/* link the DAI widgets */
--			ret = soc_link_dai_widgets(card, dai_link, rtd);
--			if (ret)
--				return ret;
- 		}
- 	}
- 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index c111e69b9a09..bbfcb7fc05cc 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3860,12 +3860,10 @@ snd_soc_dapm_alloc_kcontrol(struct snd_soc_card *card,
- 	return NULL;
- }
- 
--int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
--			 struct snd_soc_pcm_runtime *rtd,
--			 const struct snd_soc_pcm_stream *params,
--			 unsigned int num_params,
--			 struct snd_soc_dapm_widget *source,
--			 struct snd_soc_dapm_widget *sink)
-+static struct snd_soc_dapm_widget *
-+snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
-+		     struct snd_soc_dapm_widget *source,
-+		     struct snd_soc_dapm_widget *sink)
- {
- 	struct snd_soc_dapm_widget template;
- 	struct snd_soc_dapm_widget *w;
-@@ -3877,7 +3875,7 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 	link_name = devm_kasprintf(card->dev, GFP_KERNEL, "%s-%s",
- 				   source->name, sink->name);
- 	if (!link_name)
--		return -ENOMEM;
-+		return ERR_PTR(-ENOMEM);
- 
- 	memset(&template, 0, sizeof(template));
- 	template.reg = SND_SOC_NOPM;
-@@ -3889,9 +3887,10 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 	template.kcontrol_news = NULL;
- 
- 	/* allocate memory for control, only in case of multiple configs */
--	if (num_params > 1) {
--		w_param_text = devm_kcalloc(card->dev, num_params,
--					sizeof(char *), GFP_KERNEL);
-+	if (rtd->dai_link->num_params > 1) {
-+		w_param_text = devm_kcalloc(card->dev,
-+					    rtd->dai_link->num_params,
-+					    sizeof(char *), GFP_KERNEL);
- 		if (!w_param_text) {
- 			ret = -ENOMEM;
- 			goto param_fail;
-@@ -3900,7 +3899,9 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 		template.num_kcontrols = 1;
- 		template.kcontrol_news =
- 					snd_soc_dapm_alloc_kcontrol(card,
--						link_name, params, num_params,
-+						link_name,
-+						rtd->dai_link->params,
-+						rtd->dai_link->num_params,
- 						w_param_text, &private_value);
- 		if (!template.kcontrol_news) {
- 			ret = -ENOMEM;
-@@ -3915,23 +3916,19 @@ int snd_soc_dapm_new_pcm(struct snd_soc_card *card,
- 	if (IS_ERR(w))
- 		goto outfree_kcontrol_news;
- 
--	w->params = params;
--	w->num_params = num_params;
-+	w->params = rtd->dai_link->params;
-+	w->num_params = rtd->dai_link->num_params;
- 	w->priv = rtd;
- 
--	ret = snd_soc_dapm_add_path(&card->dapm, source, w, NULL, NULL);
--	if (ret)
--		goto outfree_w;
--	return snd_soc_dapm_add_path(&card->dapm, w, sink, NULL, NULL);
-+	return w;
- 
--outfree_w:
--	devm_kfree(card->dev, w);
- outfree_kcontrol_news:
- 	devm_kfree(card->dev, (void *)template.kcontrol_news);
--	snd_soc_dapm_free_kcontrol(card, &private_value, num_params, w_param_text);
-+	snd_soc_dapm_free_kcontrol(card, &private_value,
-+				   rtd->dai_link->num_params, w_param_text);
- param_fail:
- 	devm_kfree(card->dev, link_name);
--	return ret;
-+	return ERR_PTR(ret);
- }
- 
- int snd_soc_dapm_new_dai_widgets(struct snd_soc_dapm_context *dapm,
-@@ -4041,33 +4038,65 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
- {
- 	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
- 	struct snd_soc_dai *codec_dai;
--	struct snd_soc_dapm_widget *sink, *source;
-+	struct snd_soc_dapm_widget *playback = NULL, *capture = NULL;
-+	struct snd_soc_dapm_widget *codec, *playback_cpu, *capture_cpu;
- 	int i;
- 
-+	if (rtd->dai_link->params) {
-+		if (rtd->num_codecs > 1)
-+			dev_warn(card->dev, "ASoC: Multiple codecs not supported yet\n");
-+
-+		playback_cpu = cpu_dai->capture_widget;
-+		capture_cpu = cpu_dai->playback_widget;
-+	} else {
-+		playback = cpu_dai->playback_widget;
-+		capture = cpu_dai->capture_widget;
-+		playback_cpu = playback;
-+		capture_cpu = capture;
-+	}
-+
- 	for_each_rtd_codec_dai(rtd, i, codec_dai) {
- 
- 		/* connect BE DAI playback if widgets are valid */
--		if (codec_dai->playback_widget && cpu_dai->playback_widget) {
--			source = cpu_dai->playback_widget;
--			sink = codec_dai->playback_widget;
-+		codec = codec_dai->playback_widget;
-+
-+		if (playback_cpu && codec) {
-+			if (!playback) {
-+				playback = snd_soc_dapm_new_dai(card, rtd,
-+								playback_cpu,
-+								codec);
-+
-+				snd_soc_dapm_add_path(&card->dapm, playback_cpu,
-+						      playback, NULL, NULL);
-+			}
-+
- 			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
--				cpu_dai->component->name, source->name,
--				codec_dai->component->name, sink->name);
-+				cpu_dai->component->name, playback_cpu->name,
-+				codec_dai->component->name, codec->name);
- 
--			snd_soc_dapm_add_path(&card->dapm, source, sink,
--				NULL, NULL);
-+			snd_soc_dapm_add_path(&card->dapm, playback, codec,
-+					      NULL, NULL);
- 		}
- 
- 		/* connect BE DAI capture if widgets are valid */
--		if (codec_dai->capture_widget && cpu_dai->capture_widget) {
--			source = codec_dai->capture_widget;
--			sink = cpu_dai->capture_widget;
-+		codec = codec_dai->capture_widget;
-+
-+		if (codec && capture_cpu) {
-+			if (!capture) {
-+				capture = snd_soc_dapm_new_dai(card, rtd,
-+							       codec,
-+							       capture_cpu);
-+
-+				snd_soc_dapm_add_path(&card->dapm, capture,
-+						      capture_cpu, NULL, NULL);
-+			}
-+
- 			dev_dbg(rtd->dev, "connected DAI link %s:%s -> %s:%s\n",
--				codec_dai->component->name, source->name,
--				cpu_dai->component->name, sink->name);
-+				codec_dai->component->name, codec->name,
-+				cpu_dai->component->name, capture_cpu->name);
- 
--			snd_soc_dapm_add_path(&card->dapm, source, sink,
--				NULL, NULL);
-+			snd_soc_dapm_add_path(&card->dapm, codec, capture,
-+					      NULL, NULL);
- 		}
- 	}
- }
-@@ -4122,7 +4151,7 @@ void snd_soc_dapm_connect_dai_link_widgets(struct snd_soc_card *card)
- 		 * dynamic FE links have no fixed DAI mapping.
- 		 * CODEC<->CODEC links have no direct connection.
- 		 */
--		if (rtd->dai_link->dynamic || rtd->dai_link->params)
-+		if (rtd->dai_link->dynamic)
- 			continue;
- 
- 		dapm_connect_dai_link_widgets(card, rtd);
--- 
-2.11.0
+ Makefile                                          |    1 
+ include/linux/ndctl.h                             |   22 ++++
+ include/uapi/drm/i810_drm.h                       |    7 +
+ include/uapi/drm/msm_drm.h                        |    7 +
+ include/uapi/linux/bcache.h                       |    2 
+ include/uapi/linux/coda_psdev.h                   |    4 +
+ include/uapi/linux/keyctl.h                       |    7 +
+ include/uapi/linux/ndctl.h                        |   20 ++-
+ include/uapi/linux/netfilter/nfnetlink_cthelper.h |    2 
+ include/uapi/linux/netfilter_ipv4/ipt_ECN.h       |    9 --
+ include/uapi/linux/nilfs2_ondisk.h                |   21 ++--
+ include/uapi/linux/virtio_net.h                   |    7 +
+ include/uapi/sound/skl-tplg-interface.h           |  106 +++++++++---------
+ scripts/headers-c++.sh                            |  124 +++++++++++++++++++++
+ 14 files changed, 255 insertions(+), 84 deletions(-)
+ create mode 100644 include/linux/ndctl.h
+ create mode 100755 scripts/headers-c++.sh
