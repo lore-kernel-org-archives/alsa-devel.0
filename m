@@ -1,69 +1,71 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: uniphier: change status to orphan
-Date: Wed, 5 Sep 2018 12:45:11 +0100
-Message-ID: <20180905114511.GL9781@sirena.org.uk>
+Subject: Applied "ASoC: uniphier: change status to orphan" to the asoc tree
+Date: Wed,  5 Sep 2018 12:45:50 +0100 (BST)
+Message-ID: <20180905114550.7DF3411229D0@debutante.sirena.org.uk>
 References: <20180905083137.23153-1-suzuki.katsuhiro@socionext.com>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2068213876261346308=="
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 44A1F267741
- for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2018 13:45:13 +0200 (CEST)
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180905083137.23153-1-suzuki.katsuhiro@socionext.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
 To: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
-Cc: Jassi Brar <jaswinder.singh@linaro.org>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.org
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org, Jassi Brar <jaswinder.singh@linaro.org>, linux-arm-kernel@lists.infradead.org, Masami Hiramatsu <masami.hiramatsu@linaro.org>, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============2068213876261346308==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rwbb4r/vLufKlfJs"
-Content-Disposition: inline
+   ASoC: uniphier: change status to orphan
 
+has been applied to the asoc tree at
 
---rwbb4r/vLufKlfJs
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Sep 05, 2018 at 05:31:37PM +0900, Katsuhiro Suzuki wrote:
-> Since I'm leaving from Socionext, I'll unable to access specification
-> documents of this hardware (these are not public). So change the
-> state to orphan until someone will maintain this driver.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I'm sorry to hear that, best of luck in your next venture!
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---rwbb4r/vLufKlfJs
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluPwcYACgkQJNaLcl1U
-h9DojQf/W5uPo3TadqlvFPX890ObpeSx4cwJqndiVlaOgqId3UWQHmsCiHP+ahnD
-ajfF2xbrJY1gtkuP4W95ZNtlaRquMSMf/MTWuDOYv/tZWxVWa73WgVP8mJEIDvM5
-GFTQkqh6FfXX1AiWMOR1V9utzq8clY4AJ+9rrCB8yrIrkf8iJDoASsjxxsVPt1AH
-tu4vV5mrMuivgkTjNtnlriu0eQ4DsCGMRxA5yZBo593zTsxJ/A31R8NwOaRAZrpU
-CcCAhYUqlK28iU/IsOC1ESNdKwfj1zsO/ld043e9nvr2ZOFfjbjVlSwE+I6MrphI
-D8JcCFZctdOzgDNaPYotJSPrgZWgNA==
-=dfx1
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---rwbb4r/vLufKlfJs--
+>From ae45893f74c72e632cbad882509f12558db2e4f3 Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Date: Wed, 5 Sep 2018 17:31:37 +0900
+Subject: [PATCH] ASoC: uniphier: change status to orphan
 
---===============2068213876261346308==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Since I'm leaving from Socionext, I'll unable to access specification
+documents of this hardware (these are not public). So change the
+state to orphan until someone will maintain this driver.
 
+Signed-off-by: Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ MAINTAINERS | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
---===============2068213876261346308==--
+diff --git a/MAINTAINERS b/MAINTAINERS
+index fc711d23dc83..5ee6b45248e5 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13159,9 +13159,8 @@ F:	drivers/i2c/busses/i2c-synquacer.c
+ F:	Documentation/devicetree/bindings/i2c/i2c-synquacer.txt
+ 
+ SOCIONEXT UNIPHIER SOUND DRIVER
+-M:	Katsuhiro Suzuki <suzuki.katsuhiro@socionext.com>
+ L:	alsa-devel@alsa-project.org (moderated for non-subscribers)
+-S:	Maintained
++S:	Orphan
+ F:	sound/soc/uniphier/
+ 
+ SOEKRIS NET48XX LED SUPPORT
+-- 
+2.19.0.rc1
