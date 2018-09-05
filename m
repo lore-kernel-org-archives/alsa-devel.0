@@ -1,89 +1,184 @@
-From: David Howells <dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-Subject: [RFC] UAPI: Check headers by compiling all together as C++
-Date: Wed, 05 Sep 2018 16:54:27 +0100
-Message-ID: <153616286704.23468.584491117180383924.stgit@warthog.procyon.org.uk>
+From: David Howells <dhowells@redhat.com>
+Subject: [PATCH 08/11] UAPI: sound: Fix use of u32 and co. in
+	UAPI headers
+Date: Wed, 05 Sep 2018 16:55:30 +0100
+Message-ID: <153616293089.23468.13515059526628668970.stgit@warthog.procyon.org.uk>
+References: <153616286704.23468.584491117180383924.stgit@warthog.procyon.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Unsubscribe: <https://lists.01.org/mailman/options/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.01.org/pipermail/linux-nvdimm/>
-List-Post: <mailto:linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-List-Help: <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.01.org/mailman/listinfo/linux-nvdimm>,
- <mailto:linux-nvdimm-request-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org?subject=subscribe>
-Errors-To: linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org
-Sender: "Linux-nvdimm" <linux-nvdimm-bounces-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org>
-To: linux-api-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kbuild-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: moderated for non-subscribers <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, "Michael S. Tsirkin" <mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, David Airlie <airlied-cv59FeDIM0c@public.gmane.org>, Jason Wang <jasowang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Mat Martineau <mathew.j.martineau-VuQAYsv1563Yd54FQh9/CA@public.gmane.org>, dri-devel-PD4FTy7X32lNgt0PjOBp9y5qC8QIuHrW@public.gmane.org, virtualization-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, dhowells-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, Masahiro Yamada <yamada.masahiro-uWyLwvC0a2jby3iVrkZq2A@public.gmane.org>, keyrings-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Ryusuke Konishi <konishi.ryusuke-Zyj7fXuS5i5L9jVzuh4AOg@public.gmane.org>, linux-nilfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-nvdimm-hn68Rpc1hR1g9hUCZPvPmw@public.gmane.org, codalist-/uMB558Y47wP4a1z8dhFYw@public.gmane.org, coda-ETDLCGt7PQU3uPMLIKxrzw@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, Kent Overstreet <kent.overstreet-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, linux-arm-msm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Coly Li <colyli-l3A5Bk7waGM@public.gmane.org>, linux-bcache-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jaroslav Kysela <perex-/Fr2/VpizcU@public.gmane.org>, Jan Harkes <jaharkes-ETDLCGt7PQU3uPMLIKxrzw@public.gmane.org>, Michal Marek <michal.lkml-yyZNWGI4GtDR7s880joybQ@public.gmane.org>, Takashi Iwai <tiwai-IBi9RG/b67k@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Rob Clark <robdclar>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.redhat.com (mx3-rdu2.redhat.com [66.187.233.73])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36BA32677BB
+ for <alsa-devel@alsa-project.org>; Wed,  5 Sep 2018 17:55:33 +0200 (CEST)
+In-Reply-To: <153616286704.23468.584491117180383924.stgit@warthog.procyon.org.uk>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: linux-api@vger.kernel.org, linux-kbuild@vger.kernel.org
+Cc: dhowells@redhat.com, linux-kernel@vger.kernel.org, moderated for non-subscribers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
+Fix the use of u32 and co. in UAPI headers as these are not defined.  Switch
+to using the __u32-style equivalents instead.
 
-Here's a set of patches that inserts a step into the build process to make
-sure that the UAPI headers can all be built together with C++ (if the
-compiler being used supports C++).  All but the final patch perform fixups,
-including:
-
- (1) Fix member names that conflict with C++ reserved words by providing
-     alternates that can be used anywhere.  An anonymous union is used so
-     that that the conflicting name is still available outside of C++.
-
- (2) Fix the use of flexible arrays in structs that get embedded (which is
-     illegal in C++).
-
- (3) Remove the use of internal kernel structs in UAPI structures.
-
- (4) Fix symbol collisions.
-
- (5) Replace usage of u32 and co. with __u32 and co.
-
- (6) Fix use of sparsely initialised arrays (which g++ doesn't implement).
-
- (7) Remove some use of PAGE_SIZE since this isn't valid outside of the
-     kernel.
-
-And lastly:
-
- (8) Compile all of the UAPI headers (with a few exceptions) together as
-     C++ to catch new errors occurring as part of the regular build
-     process.
-
-The patches can also be found here:
-
-	http://git.kernel.org/cgit/linux/kernel/git/dhowells/linux-fs.git/log/?h=uapi-check
-
-Thanks,
-David
+Signed-off-by: David Howells <dhowells@redhat.com>
+cc: Jaroslav Kysela <perex@perex.cz>
+cc: Takashi Iwai <tiwai@suse.com>
+cc: alsa-devel@alsa-project.org (moderated for non-subscribers)
 ---
-David Howells (11):
-      UAPI: drm: Fix use of C++ keywords as structural members
-      UAPI: keys: Fix use of C++ keywords as structural members
-      UAPI: virtio_net: Fix use of C++ keywords as structural members
-      UAPI: bcache: Fix use of embedded flexible array
-      UAPI: coda: Don't use internal kernel structs in UAPI
-      UAPI: netfilter: Fix symbol collision issues
-      UAPI: nilfs2: Fix use of undefined byteswapping functions
-      UAPI: sound: Fix use of u32 and co. in UAPI headers
-      UAPI: ndctl: Fix g++-unsupported initialisation in headers
-      UAPI: ndctl: Remove use of PAGE_SIZE
-      UAPI: Check headers build for C++
 
+ include/uapi/sound/skl-tplg-interface.h |  106 ++++++++++++++++---------------
+ 1 file changed, 54 insertions(+), 52 deletions(-)
 
- Makefile                                          |    1 
- include/linux/ndctl.h                             |   22 ++++
- include/uapi/drm/i810_drm.h                       |    7 +
- include/uapi/drm/msm_drm.h                        |    7 +
- include/uapi/linux/bcache.h                       |    2 
- include/uapi/linux/coda_psdev.h                   |    4 +
- include/uapi/linux/keyctl.h                       |    7 +
- include/uapi/linux/ndctl.h                        |   20 ++-
- include/uapi/linux/netfilter/nfnetlink_cthelper.h |    2 
- include/uapi/linux/netfilter_ipv4/ipt_ECN.h       |    9 --
- include/uapi/linux/nilfs2_ondisk.h                |   21 ++--
- include/uapi/linux/virtio_net.h                   |    7 +
- include/uapi/sound/skl-tplg-interface.h           |  106 +++++++++---------
- scripts/headers-c++.sh                            |  124 +++++++++++++++++++++
- 14 files changed, 255 insertions(+), 84 deletions(-)
- create mode 100644 include/linux/ndctl.h
- create mode 100755 scripts/headers-c++.sh
+diff --git a/include/uapi/sound/skl-tplg-interface.h b/include/uapi/sound/skl-tplg-interface.h
+index f58cafa42f18..f39352cef382 100644
+--- a/include/uapi/sound/skl-tplg-interface.h
++++ b/include/uapi/sound/skl-tplg-interface.h
+@@ -10,6 +10,8 @@
+ #ifndef __HDA_TPLG_INTERFACE_H__
+ #define __HDA_TPLG_INTERFACE_H__
+ 
++#include <linux/types.h>
++
+ /*
+  * Default types range from 0~12. type can range from 0 to 0xff
+  * SST types start at higher to avoid any overlapping in future
+@@ -143,10 +145,10 @@ enum skl_module_param_type {
+ };
+ 
+ struct skl_dfw_algo_data {
+-	u32 set_params:2;
+-	u32 rsvd:30;
+-	u32 param_id;
+-	u32 max;
++	__u32 set_params:2;
++	__u32 rsvd:30;
++	__u32 param_id;
++	__u32 max;
+ 	char params[0];
+ } __packed;
+ 
+@@ -163,68 +165,68 @@ enum skl_tuple_type {
+ /* v4 configuration data */
+ 
+ struct skl_dfw_v4_module_pin {
+-	u16 module_id;
+-	u16 instance_id;
++	__u16 module_id;
++	__u16 instance_id;
+ } __packed;
+ 
+ struct skl_dfw_v4_module_fmt {
+-	u32 channels;
+-	u32 freq;
+-	u32 bit_depth;
+-	u32 valid_bit_depth;
+-	u32 ch_cfg;
+-	u32 interleaving_style;
+-	u32 sample_type;
+-	u32 ch_map;
++	__u32 channels;
++	__u32 freq;
++	__u32 bit_depth;
++	__u32 valid_bit_depth;
++	__u32 ch_cfg;
++	__u32 interleaving_style;
++	__u32 sample_type;
++	__u32 ch_map;
+ } __packed;
+ 
+ struct skl_dfw_v4_module_caps {
+-	u32 set_params:2;
+-	u32 rsvd:30;
+-	u32 param_id;
+-	u32 caps_size;
+-	u32 caps[HDA_SST_CFG_MAX];
++	__u32 set_params:2;
++	__u32 rsvd:30;
++	__u32 param_id;
++	__u32 caps_size;
++	__u32 caps[HDA_SST_CFG_MAX];
+ } __packed;
+ 
+ struct skl_dfw_v4_pipe {
+-	u8 pipe_id;
+-	u8 pipe_priority;
+-	u16 conn_type:4;
+-	u16 rsvd:4;
+-	u16 memory_pages:8;
++	__u8 pipe_id;
++	__u8 pipe_priority;
++	__u16 conn_type:4;
++	__u16 rsvd:4;
++	__u16 memory_pages:8;
+ } __packed;
+ 
+ struct skl_dfw_v4_module {
+ 	char uuid[SKL_UUID_STR_SZ];
+ 
+-	u16 module_id;
+-	u16 instance_id;
+-	u32 max_mcps;
+-	u32 mem_pages;
+-	u32 obs;
+-	u32 ibs;
+-	u32 vbus_id;
+-
+-	u32 max_in_queue:8;
+-	u32 max_out_queue:8;
+-	u32 time_slot:8;
+-	u32 core_id:4;
+-	u32 rsvd1:4;
+-
+-	u32 module_type:8;
+-	u32 conn_type:4;
+-	u32 dev_type:4;
+-	u32 hw_conn_type:4;
+-	u32 rsvd2:12;
+-
+-	u32 params_fixup:8;
+-	u32 converter:8;
+-	u32 input_pin_type:1;
+-	u32 output_pin_type:1;
+-	u32 is_dynamic_in_pin:1;
+-	u32 is_dynamic_out_pin:1;
+-	u32 is_loadable:1;
+-	u32 rsvd3:11;
++	__u16 module_id;
++	__u16 instance_id;
++	__u32 max_mcps;
++	__u32 mem_pages;
++	__u32 obs;
++	__u32 ibs;
++	__u32 vbus_id;
++
++	__u32 max_in_queue:8;
++	__u32 max_out_queue:8;
++	__u32 time_slot:8;
++	__u32 core_id:4;
++	__u32 rsvd1:4;
++
++	__u32 module_type:8;
++	__u32 conn_type:4;
++	__u32 dev_type:4;
++	__u32 hw_conn_type:4;
++	__u32 rsvd2:12;
++
++	__u32 params_fixup:8;
++	__u32 converter:8;
++	__u32 input_pin_type:1;
++	__u32 output_pin_type:1;
++	__u32 is_dynamic_in_pin:1;
++	__u32 is_dynamic_out_pin:1;
++	__u32 is_loadable:1;
++	__u32 rsvd3:11;
+ 
+ 	struct skl_dfw_v4_pipe pipe;
+ 	struct skl_dfw_v4_module_fmt in_fmt[MAX_IN_QUEUE];
