@@ -1,64 +1,52 @@
-From: Michal Simek <michal.simek@xilinx.com>
-Subject: Re: [PATCH 1/1] axi-i2s: set period size register
-Date: Thu, 6 Sep 2018 10:43:36 +0200
-Message-ID: <da2fd8d4-3439-8c8e-5933-f387af9fb097@xilinx.com>
-References: <20180824160430.10222-1-luca@lucaceresoli.net>
- <20180824160430.10222-2-luca@lucaceresoli.net>
- <b87937b6-da7c-76d7-5dd2-24909e648671@metafoo.de>
- <263e42b4-75a3-183c-894b-e485e387eccf@lucaceresoli.net>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ASoC: hdac_hdmi: remove redundant check for
+	!port condition
+Date: Thu,  6 Sep 2018 10:39:01 +0100
+Message-ID: <20180906093901.16682-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <263e42b4-75a3-183c-894b-e485e387eccf@lucaceresoli.net>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Luca Ceresoli <luca@lucaceresoli.net>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Michal Simek <michal.simek@xilinx.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id B5BFA267795
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 11:39:08 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On 27.8.2018 18:22, Luca Ceresoli wrote:
-> Hi,
-> 
-> thanks for your feedback.
-> 
-> [Adding Michal Simek (Xilinx maintainer) in Cc]
-> 
-> On 27/08/2018 14:27, Lars-Peter Clausen wrote:
->> On 08/24/2018 06:04 PM, Luca Ceresoli wrote:
->>> The default value of the PERIOD_LEN register is 0 and results in
->>> axi-i2s keeping TLAST always asserted in its AXI Stream output.
->>>
->>> When the AXI Stream is sent to a Xilinx AXI-DMA, this results in the
->>> DMA generating an interrupt flood and ALSA produce a corrupted
->>> recording. This is because AXI-DMA raises an interrupt whenever TLAST
->>> is active.
->>>
->>> Fix by setting the PERIOD_LEN register as soon as the period is
->>> known. This way TLAST is emitted once per period, and the DMA raises
->>> interrupts correctly.
->>
->> The patch looks OK. But I'd prefer not to merge it if possible.
->>
->> We've done some early experiments with the Xilinx AXI-DMA, but it turned out
->> to be to unreliable and we've abandoned support for it. One of the more
->> critical issues was that you can't abort a DMA transfer. That means when
->> audio capture is stopped the DMA will halt, but not complete the current
->> transfer. Then when the next audio capture start the DMA will continue with
->> the previous transfer. The observed effect of this was that the system would
->> just crash randomly (Presumably due to memory corruption).
-> 
-> Strange. I have done many capture experiments with arecord and didn't
-> run into such bad issues. I only have a much less serious problem
-> (garbage or old samples in the first few buffers), but no crashes.
-> 
-> Michal, are you aware of these problems?
+From: Colin Ian King <colin.king@canonical.com>
 
-I have never played with i2c and axi dma. We wanted to use this solution
-for ultra96 but we didn't finish it.
-Also there is new i2s IP which is going to xilinx tree and it is more
-recent but also I didn't test it but at least IP team/sw guys can look
-at issues with it.
+The !port check is redundant as it being performed in the following
+check. Remove it.
 
-Thanks,
-Michal
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
+---
+ sound/soc/codecs/hdac_hdmi.c | 3 ---
+ 1 file changed, 3 deletions(-)
+
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index 7b8533abf637..dc6a0dfea050 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1961,9 +1961,6 @@ static int hdac_hdmi_get_spk_alloc(struct hdac_device *hdev, int pcm_idx)
+ 
+ 	port = list_first_entry(&pcm->port_list, struct hdac_hdmi_port, head);
+ 
+-	if (!port)
+-		return 0;
+-
+ 	if (!port || !port->eld.eld_valid)
+ 		return 0;
+ 
+-- 
+2.17.1
