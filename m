@@ -1,25 +1,64 @@
-From: David Howells <dhowells@redhat.com>
-Subject: Re: [PATCH 08/11] UAPI: sound: Fix use of u32 and co. in UAPI headers
-Date: Thu, 06 Sep 2018 09:17:33 +0100
-Message-ID: <21302.1536221853@warthog.procyon.org.uk>
-References: <ce6ac597-751c-8881-160d-28d62a898a3e@sakamocchi.jp> <153616286704.23468.584491117180383924.stgit@warthog.procyon.org.uk> <153616293089.23468.13515059526628668970.stgit@warthog.procyon.org.uk>
+From: Michal Simek <michal.simek@xilinx.com>
+Subject: Re: [PATCH 1/1] axi-i2s: set period size register
+Date: Thu, 6 Sep 2018 10:43:36 +0200
+Message-ID: <da2fd8d4-3439-8c8e-5933-f387af9fb097@xilinx.com>
+References: <20180824160430.10222-1-luca@lucaceresoli.net>
+ <20180824160430.10222-2-luca@lucaceresoli.net>
+ <b87937b6-da7c-76d7-5dd2-24909e648671@metafoo.de>
+ <263e42b4-75a3-183c-894b-e485e387eccf@lucaceresoli.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <ce6ac597-751c-8881-160d-28d62a898a3e@sakamocchi.jp>
-Content-ID: <21301.1536221853.1@warthog.procyon.org.uk>
+In-Reply-To: <263e42b4-75a3-183c-894b-e485e387eccf@lucaceresoli.net>
+Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: dhowells@redhat.com, linux-api@vger.kernel.org, linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org, moderated for non-subscribers <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>
+To: Luca Ceresoli <luca@lucaceresoli.net>, Lars-Peter Clausen <lars@metafoo.de>, alsa-devel@alsa-project.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-kernel@vger.kernel.org, Michal Simek <michal.simek@xilinx.com>
 List-Id: alsa-devel@alsa-project.org
 
-Takashi Sakamoto <o-takashi@sakamocchi.jp> wrote:
+On 27.8.2018 18:22, Luca Ceresoli wrote:
+> Hi,
+> 
+> thanks for your feedback.
+> 
+> [Adding Michal Simek (Xilinx maintainer) in Cc]
+> 
+> On 27/08/2018 14:27, Lars-Peter Clausen wrote:
+>> On 08/24/2018 06:04 PM, Luca Ceresoli wrote:
+>>> The default value of the PERIOD_LEN register is 0 and results in
+>>> axi-i2s keeping TLAST always asserted in its AXI Stream output.
+>>>
+>>> When the AXI Stream is sent to a Xilinx AXI-DMA, this results in the
+>>> DMA generating an interrupt flood and ALSA produce a corrupted
+>>> recording. This is because AXI-DMA raises an interrupt whenever TLAST
+>>> is active.
+>>>
+>>> Fix by setting the PERIOD_LEN register as soon as the period is
+>>> known. This way TLAST is emitted once per period, and the DMA raises
+>>> interrupts correctly.
+>>
+>> The patch looks OK. But I'd prefer not to merge it if possible.
+>>
+>> We've done some early experiments with the Xilinx AXI-DMA, but it turned out
+>> to be to unreliable and we've abandoned support for it. One of the more
+>> critical issues was that you can't abort a DMA transfer. That means when
+>> audio capture is stopped the DMA will halt, but not complete the current
+>> transfer. Then when the next audio capture start the DMA will continue with
+>> the previous transfer. The observed effect of this was that the system would
+>> just crash randomly (Presumably due to memory corruption).
+> 
+> Strange. I have done many capture experiments with arecord and didn't
+> run into such bad issues. I only have a much less serious problem
+> (garbage or old samples in the first few buffers), but no crashes.
+> 
+> Michal, are you aware of these problems?
 
-> A similar patch was already proposed[1] and has been applied by Mark to
-> his tree[2]. Your issue (3) is going to be solved soon for v4.19
-> kernel.
+I have never played with i2c and axi dma. We wanted to use this solution
+for ultra96 but we didn't finish it.
+Also there is new i2s IP which is going to xilinx tree and it is more
+recent but also I didn't test it but at least IP team/sw guys can look
+at issues with it.
 
-Thanks, I've pulled the branch leading up to that commit into the base of
-mine.  It seems the changes were identical:-)
-
-David
+Thanks,
+Michal
