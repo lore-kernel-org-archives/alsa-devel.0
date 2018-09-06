@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: don't use %p for dev_dbg()" to
-	the asoc tree
-Date: Thu,  6 Sep 2018 11:44:14 +0100 (BST)
-Message-ID: <20180906104414.E64D21122A1F@debutante.sirena.org.uk>
-References: <87worz9v0o.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: don't fallback to PIO mode when
+	-EPROBE_DEFER" to the asoc tree
+Date: Thu,  6 Sep 2018 11:44:24 +0100 (BST)
+Message-ID: <20180906104424.2F39D1122A1F@debutante.sirena.org.uk>
+References: <87y3cf9v11.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0A98D26779A
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 12:44:15 +0200 (CEST)
-In-Reply-To: <87worz9v0o.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BE44226781A
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 12:44:24 +0200 (CEST)
+In-Reply-To: <87y3cf9v11.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: don't use %p for dev_dbg()
+   ASoC: rsnd: don't fallback to PIO mode when -EPROBE_DEFER
 
 has been applied to the asoc tree at
 
@@ -53,57 +53,76 @@ to this mail.
 Thanks,
 Mark
 
->From dabdbe3ae0cb9a67872fa4ac80ffdef61391f645 Mon Sep 17 00:00:00 2001
+>From 6c92d5a2744e27619a8fcc9d74b91ee9f1cdebd1 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Thu, 6 Sep 2018 03:22:01 +0000
-Subject: [PATCH] ASoC: rsnd: don't use %p for dev_dbg()
+Date: Thu, 6 Sep 2018 03:21:47 +0000
+Subject: [PATCH] ASoC: rsnd: don't fallback to PIO mode when -EPROBE_DEFER
 
-rsnd driver sometimes want to know which address is used when debugging.
-But it will indicate "(____ptrval____)" if it used "%p" on dev_dbg().
-Let's use "%pa" or "%px" for it.
+Current rsnd driver will fallback to PIO mode if it can't get DMA
+handler. But, DMA might return -EPROBE_DEFER when probe timing.
+This driver always fallback to PIO mode especially from
+commit ac6bbf0cdf4206c ("iommu: Remove IOMMU_OF_DECLARE") because
+of this reason.
+
+The DMA driver will be probed later, but sound driver might be
+probed as PIO mode in such case. This patch fixup this issue.
+Then, -EPROBE_DEFER is not error. Thus, let's don't indicate error
+message in such case.
+And it needs to call rsnd_adg_remove() individually if probe failed,
+because it registers clk which should be unregister.
+
+Maybe PIO fallback feature itself is not needed,
+but let's keep it so far.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/adg.c | 4 ++--
- sound/soc/sh/rcar/dma.c | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
+ sound/soc/sh/rcar/core.c | 10 +++++++++-
+ sound/soc/sh/rcar/dma.c  |  4 ++++
+ 2 files changed, 13 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
-index 3a3064dda57f..b100c44ec3a3 100644
---- a/sound/soc/sh/rcar/adg.c
-+++ b/sound/soc/sh/rcar/adg.c
-@@ -577,7 +577,7 @@ static void rsnd_adg_clk_dbg_info(struct rsnd_priv *priv, struct rsnd_adg *adg)
- 	int i;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index b35f5509cfe2..d23c2bbff0cf 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -478,7 +478,7 @@ static int rsnd_status_update(u32 *status,
+ 			(func_call && (mod)->ops->fn) ? #fn : "");	\
+ 		if (func_call && (mod)->ops->fn)			\
+ 			tmp = (mod)->ops->fn(mod, io, param);		\
+-		if (tmp)						\
++		if (tmp && (tmp != -EPROBE_DEFER))			\
+ 			dev_err(dev, "%s[%d] : %s error %d\n",		\
+ 				rsnd_mod_name(mod), rsnd_mod_id(mod),	\
+ 						     #fn, tmp);		\
+@@ -1561,6 +1561,14 @@ static int rsnd_probe(struct platform_device *pdev)
+ 		rsnd_dai_call(remove, &rdai->capture, priv);
+ 	}
  
- 	for_each_rsnd_clk(clk, adg, i)
--		dev_dbg(dev, "%s    : %p : %ld\n",
-+		dev_dbg(dev, "%s    : %pa : %ld\n",
- 			clk_name[i], clk, clk_get_rate(clk));
- 
- 	dev_dbg(dev, "BRGCKR = 0x%08x, BRRA/BRRB = 0x%x/0x%x\n",
-@@ -590,7 +590,7 @@ static void rsnd_adg_clk_dbg_info(struct rsnd_priv *priv, struct rsnd_adg *adg)
- 	 * by BRGCKR::BRGCKR_31
- 	 */
- 	for_each_rsnd_clkout(clk, adg, i)
--		dev_dbg(dev, "clkout %d : %p : %ld\n", i,
-+		dev_dbg(dev, "clkout %d : %pa : %ld\n", i,
- 			clk, clk_get_rate(clk));
++	/*
++	 * adg is very special mod which can't use rsnd_dai_call(remove),
++	 * and it registers ADG clock on probe.
++	 * It should be unregister if probe failed.
++	 * Mainly it is assuming -EPROBE_DEFER case
++	 */
++	rsnd_adg_remove(priv);
++
+ 	return ret;
  }
- #else
+ 
 diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index f99c1ab3b0bd..c19342d18998 100644
+index fe63ef8600d0..d65ea7bc4dac 100644
 --- a/sound/soc/sh/rcar/dma.c
 +++ b/sound/soc/sh/rcar/dma.c
-@@ -393,7 +393,7 @@ static void rsnd_dmapp_write(struct rsnd_dma *dma, u32 data, u32 reg)
- 	struct rsnd_dma_ctrl *dmac = rsnd_priv_to_dmac(priv);
- 	struct device *dev = rsnd_priv_to_dev(priv);
- 
--	dev_dbg(dev, "w %p : %08x\n", rsnd_dmapp_addr(dmac, dma, reg), data);
-+	dev_dbg(dev, "w 0x%px : %08x\n", rsnd_dmapp_addr(dmac, dma, reg), data);
- 
- 	iowrite32(data, rsnd_dmapp_addr(dmac, dma, reg));
- }
+@@ -241,6 +241,10 @@ static int rsnd_dmaen_attach(struct rsnd_dai_stream *io,
+ 	/* try to get DMAEngine channel */
+ 	chan = rsnd_dmaen_request_channel(io, mod_from, mod_to);
+ 	if (IS_ERR_OR_NULL(chan)) {
++		/* Let's follow when -EPROBE_DEFER case */
++		if (PTR_ERR(chan) == -EPROBE_DEFER)
++			return PTR_ERR(chan);
++
+ 		/*
+ 		 * DMA failed. try to PIO mode
+ 		 * see
 -- 
 2.19.0.rc1
