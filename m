@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Move CODEC to CODEC params from
-	the widget to the runtime" to the asoc tree
-Date: Thu,  6 Sep 2018 11:46:50 +0100 (BST)
-Message-ID: <20180906104650.7AE651122A1F@debutante.sirena.org.uk>
+Subject: Applied "ASoC: dapm: Add support for multi-CODEC CODEC
+	to CODEC links" to the asoc tree
+Date: Thu,  6 Sep 2018 11:48:51 +0100 (BST)
+Message-ID: <20180906104851.0A8751122A1F@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E715126779A
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 12:46:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id ACB0C26779A
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 12:48:52 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Move CODEC to CODEC params from the widget to the runtime
+   ASoC: dapm: Add support for multi-CODEC CODEC to CODEC links
 
 has been applied to the asoc tree at
 
@@ -52,127 +52,192 @@ to this mail.
 Thanks,
 Mark
 
->From 243bcfafcd9a23a20867fd488dc3a35264918d87 Mon Sep 17 00:00:00 2001
+>From 4a75aae17b2a802a7267206414050408392c374c Mon Sep 17 00:00:00 2001
 From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Wed, 5 Sep 2018 15:21:02 +0100
-Subject: [PATCH] ASoC: dapm: Move CODEC to CODEC params from the widget to the
- runtime
+Date: Wed, 5 Sep 2018 15:21:01 +0100
+Subject: [PATCH] ASoC: dapm: Add support for multi-CODEC CODEC to CODEC links
 
-Larger CODECs may contain many several hundred widgets and which set of
-parameters is selected only needs to be recorded on a per DAI basis. As
-such move the selected CODEC to CODEC link params to be stored in the
-runtime rather than the DAPM widget, to save some memory.
+Currently multi-CODEC is not supported on CODEC to CODEC links.
+There are common applications where this would be useful, such
+as connecting two mono amplifiers to an audio CODEC. Adding
+support simply requires an update of snd_soc_dai_link_event
+to loop over the attached CODEC DAIs.
 
 Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dapm.h |  3 ---
- include/sound/soc.h      |  2 ++
- sound/soc/soc-dapm.c     | 19 +++++++++++--------
- 3 files changed, 13 insertions(+), 11 deletions(-)
+ sound/soc/soc-dapm.c | 123 ++++++++++++++++++++++++-------------------
+ 1 file changed, 70 insertions(+), 53 deletions(-)
 
-diff --git a/include/sound/soc-dapm.h b/include/sound/soc-dapm.h
-index cb177fa21ce7..bd8163f151cb 100644
---- a/include/sound/soc-dapm.h
-+++ b/include/sound/soc-dapm.h
-@@ -584,9 +584,6 @@ struct snd_soc_dapm_widget {
- 	void *priv;				/* widget specific data */
- 	struct regulator *regulator;		/* attached regulator */
- 	struct pinctrl *pinctrl;		/* attached pinctrl */
--	const struct snd_soc_pcm_stream *params; /* params for dai links */
--	unsigned int num_params; /* number of params for dai links */
--	unsigned int params_select; /* currently selected param for dai link */
- 
- 	/* dapm control */
- 	int reg;				/* negative reg = no direct dapm */
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 6b68b31e3140..821bf99992b8 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1130,6 +1130,8 @@ struct snd_soc_pcm_runtime {
- 	enum snd_soc_pcm_subclass pcm_subclass;
- 	struct snd_pcm_ops ops;
- 
-+	unsigned int params_select; /* currently selected param for dai link */
-+
- 	/* Dynamic PCM BE runtime data */
- 	struct snd_soc_dpcm_runtime dpcm[2];
- 	int fe_compr;
 diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 40f27c95da61..9f4edcd19e02 100644
+index bbfcb7fc05cc..40f27c95da61 100644
 --- a/sound/soc/soc-dapm.c
 +++ b/sound/soc/soc-dapm.c
-@@ -1018,9 +1018,10 @@ static int dapm_new_dai_link(struct snd_soc_dapm_widget *w)
- 	struct snd_kcontrol *kcontrol;
- 	struct snd_soc_dapm_context *dapm = w->dapm;
- 	struct snd_card *card = dapm->card->snd_card;
-+	struct snd_soc_pcm_runtime *rtd = w->priv;
- 
- 	/* create control for links with > 1 config */
--	if (w->num_params <= 1)
-+	if (rtd->dai_link->num_params <= 1)
- 		return 0;
- 
- 	/* add kcontrol */
-@@ -3617,13 +3618,15 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	struct snd_soc_dapm_path *path;
+@@ -3614,7 +3614,7 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_new_controls);
+ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 				  struct snd_kcontrol *kcontrol, int event)
+ {
+-	struct snd_soc_dapm_path *source_p, *sink_p;
++	struct snd_soc_dapm_path *path;
  	struct snd_soc_dai *source, *sink;
  	struct snd_soc_pcm_runtime *rtd = w->priv;
--	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
-+	const struct snd_soc_pcm_stream *config;
- 	struct snd_pcm_substream substream;
- 	struct snd_pcm_hw_params *params = NULL;
- 	struct snd_pcm_runtime *runtime = NULL;
- 	unsigned int fmt;
- 	int ret;
- 
-+	config = rtd->dai_link->params + rtd->params_select;
-+
- 	if (WARN_ON(!config) ||
- 	    WARN_ON(list_empty(&w->edges[SND_SOC_DAPM_DIR_OUT]) ||
+ 	const struct snd_soc_pcm_stream *config = w->params + w->params_select;
+@@ -3629,17 +3629,6 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
  		    list_empty(&w->edges[SND_SOC_DAPM_DIR_IN])))
-@@ -3772,8 +3775,9 @@ static int snd_soc_dapm_dai_link_get(struct snd_kcontrol *kcontrol,
- 			  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_pcm_runtime *rtd = w->priv;
- 
--	ucontrol->value.enumerated.item[0] = w->params_select;
-+	ucontrol->value.enumerated.item[0] = rtd->params_select;
- 
- 	return 0;
- }
-@@ -3782,18 +3786,19 @@ static int snd_soc_dapm_dai_link_put(struct snd_kcontrol *kcontrol,
- 			  struct snd_ctl_elem_value *ucontrol)
- {
- 	struct snd_soc_dapm_widget *w = snd_kcontrol_chip(kcontrol);
-+	struct snd_soc_pcm_runtime *rtd = w->priv;
- 
- 	/* Can't change the config when widget is already powered */
- 	if (w->power)
- 		return -EBUSY;
- 
--	if (ucontrol->value.enumerated.item[0] == w->params_select)
-+	if (ucontrol->value.enumerated.item[0] == rtd->params_select)
- 		return 0;
- 
--	if (ucontrol->value.enumerated.item[0] >= w->num_params)
-+	if (ucontrol->value.enumerated.item[0] >= rtd->dai_link->num_params)
  		return -EINVAL;
  
--	w->params_select = ucontrol->value.enumerated.item[0];
-+	rtd->params_select = ucontrol->value.enumerated.item[0];
+-	/* We only support a single source and sink, pick the first */
+-	source_p = list_first_entry(&w->edges[SND_SOC_DAPM_DIR_OUT],
+-				    struct snd_soc_dapm_path,
+-				    list_node[SND_SOC_DAPM_DIR_OUT]);
+-	sink_p = list_first_entry(&w->edges[SND_SOC_DAPM_DIR_IN],
+-				    struct snd_soc_dapm_path,
+-				    list_node[SND_SOC_DAPM_DIR_IN]);
+-
+-	source = source_p->source->priv;
+-	sink = sink_p->sink->priv;
+-
+ 	/* Be a little careful as we don't want to overflow the mask array */
+ 	if (config->formats) {
+ 		fmt = ffs(config->formats) - 1;
+@@ -3681,59 +3670,90 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 	switch (event) {
+ 	case SND_SOC_DAPM_PRE_PMU:
+ 		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
+-		if (source->driver->ops->startup) {
+-			ret = source->driver->ops->startup(&substream, source);
+-			if (ret < 0) {
+-				dev_err(source->dev,
+-					"ASoC: startup() failed: %d\n", ret);
+-				goto out;
++		snd_soc_dapm_widget_for_each_source_path(w, path) {
++			source = path->source->priv;
++
++			if (source->driver->ops->startup) {
++				ret = source->driver->ops->startup(&substream,
++								   source);
++				if (ret < 0) {
++					dev_err(source->dev,
++						"ASoC: startup() failed: %d\n",
++						ret);
++					goto out;
++				}
++				source->active++;
+ 			}
+-			source->active++;
++			ret = soc_dai_hw_params(&substream, params, source);
++			if (ret < 0)
++				goto out;
+ 		}
+-		ret = soc_dai_hw_params(&substream, params, source);
+-		if (ret < 0)
+-			goto out;
  
- 	return 0;
- }
-@@ -3936,8 +3941,6 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
- 	if (IS_ERR(w))
- 		goto outfree_kcontrol_news;
+ 		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
+-		if (sink->driver->ops->startup) {
+-			ret = sink->driver->ops->startup(&substream, sink);
+-			if (ret < 0) {
+-				dev_err(sink->dev,
+-					"ASoC: startup() failed: %d\n", ret);
+-				goto out;
++		snd_soc_dapm_widget_for_each_sink_path(w, path) {
++			sink = path->sink->priv;
++
++			if (sink->driver->ops->startup) {
++				ret = sink->driver->ops->startup(&substream,
++								 sink);
++				if (ret < 0) {
++					dev_err(sink->dev,
++						"ASoC: startup() failed: %d\n",
++						ret);
++					goto out;
++				}
++				sink->active++;
+ 			}
+-			sink->active++;
++			ret = soc_dai_hw_params(&substream, params, sink);
++			if (ret < 0)
++				goto out;
+ 		}
+-		ret = soc_dai_hw_params(&substream, params, sink);
+-		if (ret < 0)
+-			goto out;
+ 		break;
  
--	w->params = rtd->dai_link->params;
--	w->num_params = rtd->dai_link->num_params;
- 	w->priv = rtd;
+ 	case SND_SOC_DAPM_POST_PMU:
+-		ret = snd_soc_dai_digital_mute(sink, 0,
+-					       SNDRV_PCM_STREAM_PLAYBACK);
+-		if (ret != 0 && ret != -ENOTSUPP)
+-			dev_warn(sink->dev, "ASoC: Failed to unmute: %d\n", ret);
+-		ret = 0;
++		snd_soc_dapm_widget_for_each_sink_path(w, path) {
++			sink = path->sink->priv;
++
++			ret = snd_soc_dai_digital_mute(sink, 0,
++						       SNDRV_PCM_STREAM_PLAYBACK);
++			if (ret != 0 && ret != -ENOTSUPP)
++				dev_warn(sink->dev,
++					 "ASoC: Failed to unmute: %d\n", ret);
++			ret = 0;
++		}
+ 		break;
  
- 	return w;
+ 	case SND_SOC_DAPM_PRE_PMD:
+-		ret = snd_soc_dai_digital_mute(sink, 1,
+-					       SNDRV_PCM_STREAM_PLAYBACK);
+-		if (ret != 0 && ret != -ENOTSUPP)
+-			dev_warn(sink->dev, "ASoC: Failed to mute: %d\n", ret);
+-		ret = 0;
++		snd_soc_dapm_widget_for_each_sink_path(w, path) {
++			sink = path->sink->priv;
++
++			ret = snd_soc_dai_digital_mute(sink, 1,
++						       SNDRV_PCM_STREAM_PLAYBACK);
++			if (ret != 0 && ret != -ENOTSUPP)
++				dev_warn(sink->dev,
++					 "ASoC: Failed to mute: %d\n", ret);
++			ret = 0;
++		}
++
++		snd_soc_dapm_widget_for_each_source_path(w, path) {
++			source = path->source->priv;
+ 
+-		source->active--;
+-		if (source->driver->ops->shutdown) {
+-			substream.stream = SNDRV_PCM_STREAM_CAPTURE;
+-			source->driver->ops->shutdown(&substream, source);
++			source->active--;
++			if (source->driver->ops->shutdown) {
++				substream.stream = SNDRV_PCM_STREAM_CAPTURE;
++				source->driver->ops->shutdown(&substream,
++							      source);
++			}
+ 		}
+ 
+-		sink->active--;
+-		if (sink->driver->ops->shutdown) {
+-			substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
+-			sink->driver->ops->shutdown(&substream, sink);
++		snd_soc_dapm_widget_for_each_sink_path(w, path) {
++			sink = path->sink->priv;
++
++			sink->active--;
++			if (sink->driver->ops->shutdown) {
++				substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
++				sink->driver->ops->shutdown(&substream, sink);
++			}
+ 		}
+ 		break;
+ 
+@@ -4043,9 +4063,6 @@ static void dapm_connect_dai_link_widgets(struct snd_soc_card *card,
+ 	int i;
+ 
+ 	if (rtd->dai_link->params) {
+-		if (rtd->num_codecs > 1)
+-			dev_warn(card->dev, "ASoC: Multiple codecs not supported yet\n");
+-
+ 		playback_cpu = cpu_dai->capture_widget;
+ 		capture_cpu = cpu_dai->playback_widget;
+ 	} else {
 -- 
 2.19.0.rc1
