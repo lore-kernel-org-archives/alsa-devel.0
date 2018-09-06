@@ -1,16 +1,18 @@
-From: Colin King <colin.king@canonical.com>
-Subject: [PATCH] ASoC: sgtl5000: avoid division by zero if
-	lo_vag is zero
-Date: Thu,  6 Sep 2018 11:41:52 +0100
-Message-ID: <20180906104152.17977-1-colin.king@canonical.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rsnd: don't use %p for dev_dbg()" to
+	the asoc tree
+Date: Thu,  6 Sep 2018 11:44:14 +0100 (BST)
+Message-ID: <20180906104414.E64D21122A1F@debutante.sirena.org.uk>
+References: <87worz9v0o.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from youngberry.canonical.com (youngberry.canonical.com
- [91.189.89.112])
- by alsa0.perex.cz (Postfix) with ESMTP id 6EC1D26779A
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 12:41:59 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0A98D26779A
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 12:44:15 +0200 (CEST)
+In-Reply-To: <87worz9v0o.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,35 +22,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Fabio Estevam <fabio.estevam@nxp.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Colin Ian King <colin.king@canonical.com>
+The patch
 
-In the case where lo_vag <= SGTL5000_LINE_OUT_GND_BASE, lo_vag
-is set to zero and later vol_quot is computed by dividing by
-lo_vag causing a division by zero error.  Fix this by avoiding
-a zero division and set vol_quot to zero in this specific case
-so that the lowest setting for i is correctly set.
+   ASoC: rsnd: don't use %p for dev_dbg()
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From dabdbe3ae0cb9a67872fa4ac80ffdef61391f645 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Thu, 6 Sep 2018 03:22:01 +0000
+Subject: [PATCH] ASoC: rsnd: don't use %p for dev_dbg()
+
+rsnd driver sometimes want to know which address is used when debugging.
+But it will indicate "(____ptrval____)" if it used "%p" on dev_dbg().
+Let's use "%pa" or "%px" for it.
+
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/sgtl5000.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/adg.c | 4 ++--
+ sound/soc/sh/rcar/dma.c | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/sgtl5000.c b/sound/soc/codecs/sgtl5000.c
-index 60764f6201b1..add18d6d77da 100644
---- a/sound/soc/codecs/sgtl5000.c
-+++ b/sound/soc/codecs/sgtl5000.c
-@@ -1218,7 +1218,7 @@ static int sgtl5000_set_power_regs(struct snd_soc_component *component)
- 	 * Searching for a suitable index solving this formula:
- 	 * idx = 40 * log10(vag_val / lo_cagcntrl) + 15
+diff --git a/sound/soc/sh/rcar/adg.c b/sound/soc/sh/rcar/adg.c
+index 3a3064dda57f..b100c44ec3a3 100644
+--- a/sound/soc/sh/rcar/adg.c
++++ b/sound/soc/sh/rcar/adg.c
+@@ -577,7 +577,7 @@ static void rsnd_adg_clk_dbg_info(struct rsnd_priv *priv, struct rsnd_adg *adg)
+ 	int i;
+ 
+ 	for_each_rsnd_clk(clk, adg, i)
+-		dev_dbg(dev, "%s    : %p : %ld\n",
++		dev_dbg(dev, "%s    : %pa : %ld\n",
+ 			clk_name[i], clk, clk_get_rate(clk));
+ 
+ 	dev_dbg(dev, "BRGCKR = 0x%08x, BRRA/BRRB = 0x%x/0x%x\n",
+@@ -590,7 +590,7 @@ static void rsnd_adg_clk_dbg_info(struct rsnd_priv *priv, struct rsnd_adg *adg)
+ 	 * by BRGCKR::BRGCKR_31
  	 */
--	vol_quot = (vag * 100) / lo_vag;
-+	vol_quot = lo_vag ? (vag * 100) / lo_vag : 0;
- 	lo_vol = 0;
- 	for (i = 0; i < ARRAY_SIZE(vol_quot_table); i++) {
- 		if (vol_quot >= vol_quot_table[i])
+ 	for_each_rsnd_clkout(clk, adg, i)
+-		dev_dbg(dev, "clkout %d : %p : %ld\n", i,
++		dev_dbg(dev, "clkout %d : %pa : %ld\n", i,
+ 			clk, clk_get_rate(clk));
+ }
+ #else
+diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
+index f99c1ab3b0bd..c19342d18998 100644
+--- a/sound/soc/sh/rcar/dma.c
++++ b/sound/soc/sh/rcar/dma.c
+@@ -393,7 +393,7 @@ static void rsnd_dmapp_write(struct rsnd_dma *dma, u32 data, u32 reg)
+ 	struct rsnd_dma_ctrl *dmac = rsnd_priv_to_dmac(priv);
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 
+-	dev_dbg(dev, "w %p : %08x\n", rsnd_dmapp_addr(dmac, dma, reg), data);
++	dev_dbg(dev, "w 0x%px : %08x\n", rsnd_dmapp_addr(dmac, dma, reg), data);
+ 
+ 	iowrite32(data, rsnd_dmapp_addr(dmac, dma, reg));
+ }
 -- 
-2.17.1
+2.19.0.rc1
