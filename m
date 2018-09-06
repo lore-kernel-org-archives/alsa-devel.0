@@ -1,16 +1,18 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: [PATCH] ASoC: dapm: Avoid uninitialised variable
-	warning
-Date: Thu, 6 Sep 2018 17:41:55 +0100
-Message-ID: <20180906164155.22876-1-ckeepax@opensource.cirrus.com>
+From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
+Subject: Re: Microphone detected,
+ but no output for all ASUS G751xx with ALC668 chipset
+Date: Thu, 6 Sep 2018 20:44:30 +0200
+Message-ID: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 000212673F4
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 18:41:59 +0200 (CEST)
+Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com
+ [209.85.219.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 36A5F26777B
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 20:44:42 +0200 (CEST)
+Received: by mail-yb1-f182.google.com with SMTP id e18-v6so4523474ybq.5
+ for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2018 11:44:42 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,36 +22,24 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Commit 4a75aae17b2a ("ASoC: dapm: Add support for multi-CODEC
-CODEC to CODEC links") adds loops that iterate over multiple
-CODECs in snd_soc_dai_link_event. This also introduced a compiler
-warning for a potentially uninitialised variable in the case
-no CODECs are present. This should never be the case as the
-DAI link must by definition contain at least 1 CODEC however
-probably best to avoid the compiler warning by initialising ret
-to zero.
-
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
----
- sound/soc/soc-dapm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 9f4edcd19e022..e496bc642c990 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3623,7 +3623,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	struct snd_pcm_hw_params *params = NULL;
- 	struct snd_pcm_runtime *runtime = NULL;
- 	unsigned int fmt;
--	int ret;
-+	int ret = 0;
- 
- 	config = rtd->dai_link->params + rtd->params_select;
- 
--- 
-2.11.0
+QWRkaXRpb25hbCByZWxldmFudCBpbmZvOgoKQSBzaW1pbGFyIGlzc3VlIHdhcyBhbHNvIGRpc2N1
+c3NlZCB0aHJlZSB5ZWFycyBhZ28gb24gU3VuIEp1biAxNzoxNTo1NCBDRVNUCjIwMTUgYW5kIHdh
+cyBhYm91dCBoaXMgc3Vycm91bmQgc291bmQgc2V0dXAsIGJ1dCBkaWQgbm90IHRvdWNoIG9uIHRo
+ZQpleHRlcm5hbCBtaWNyb3Bob25lIHByb2JsZW06Cmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVj
+dC5vcmcvcGlwZXJtYWlsL2Fsc2EtZGV2ZWwvMjAxNS1KdW5lLzA5MzMxNy5odG1sCgphbHNhLWlu
+Zm8uc2g6Cmh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj0xZDg2MTZiYTU5NzczMDhl
+MDNkYjZjM2E4NmUzNmU5ZTliMzhkNmYwCgpHcmFwaCBvZiBBTEM2NjggY2hpcHNldCBmcm9tIGhk
+YWFuYWx5emVyOgpodHRwOi8vaS5pbWd1ci5jb20vYzA4RE5KVy5wbmcKCnNldHRpbmcgYWxzYS1t
+b2RlWzEtOF0gZG9lcyBub3RoaW5nIHRvIGhlbHAgdGhlIGlzc3VlLgoKVGhlcmUgYXJlIHNldmVy
+YWwgb2Ygc2ltaWxhciBidWcgcmVwb3J0cyBhcm91bmQgdGhlIHdlYiBleHBlcmllbmNpbmcKc2lt
+aWxhciBpc3N1ZXMsIGFuZCBvbiBkaWZmZXJlbnQgZGlzdHJvcy4KCk1pY3JvcGhvbmUgd29ya3Mg
+cGVyZmVjdGx5IGluIHdpbmRvd3MKCkkgaGF2ZSBhIEFTVVMgUk9HIEc3NTFKVCwgYnV0IHRoaXMg
+cHJvYmxlbSBzZWVtcyB0byBoYXBwZW4gd2l0aCBhbGwgbGFwdG9wcwp1bmRlciB0aGUgRzc1MSBu
+YW1lLgoKVGhlc2UgYXJlIG15IGtlcm5lbCBjb25maWdzOgpodHRwczovL3Bhc3RlLnBvdW5kLXB5
+dGhvbi5vcmcvc2hvdy9HUms0VDZ4TnZtZHA4VzdLOXNsSi8KClRoYW5rIHlvdSEKLUjDpXZhcmQK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
