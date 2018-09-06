@@ -1,18 +1,20 @@
-From: Yoshihiro Kaneko <ykaneko0929@gmail.com>
-Subject: [PATCH v2] ASoC: rsnd: Add device tree binding for
-	r8a77990
-Date: Thu,  6 Sep 2018 22:28:33 +0900
-Message-ID: <1536240513-22172-1-git-send-email-ykaneko0929@gmail.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [asoc:for-4.20 399/404]
+ sound/soc/soc-dapm.c:3768:9: warning: 'ret' may be used uninitialized in
+ this function
+Date: Thu, 6 Sep 2018 16:10:32 +0100
+Message-ID: <20180906151032.GE1653@imbe.wolfsonmicro.main>
+References: <201809061931.yYLg0BtW%fengguang.wu@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com
- [209.85.210.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 38C4B2673F4
- for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 15:28:48 +0200 (CEST)
-Received: by mail-pf1-f195.google.com with SMTP id i26-v6so5282337pfo.12
- for <alsa-devel@alsa-project.org>; Thu, 06 Sep 2018 06:28:48 -0700 (PDT)
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id 544672673F4
+ for <alsa-devel@alsa-project.org>; Thu,  6 Sep 2018 17:10:41 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <201809061931.yYLg0BtW%fengguang.wu@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,37 +24,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Simon Horman <horms@verge.net.au>
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+On Thu, Sep 06, 2018 at 07:46:38PM +0800, kbuild test robot wrote:
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-4.20
+> head:   9ab708aef61f5620113269a9d1bdb1543d1207d0
+> commit: 4a75aae17b2a802a7267206414050408392c374c [399/404] ASoC: dapm: Add support for multi-CODEC CODEC to CODEC links
+> config: x86_64-randconfig-x006-201835 (attached as .config)
+> compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
+> reproduce:
+>         git checkout 4a75aae17b2a802a7267206414050408392c374c
+>         # save the attached .config to linux build tree
+>         make ARCH=x86_64 
+> 
+>    sound/soc/soc-dapm.c: In function 'snd_soc_dai_link_event':
+> >> sound/soc/soc-dapm.c:3768:9: warning: 'ret' may be used uninitialized in this function [-Wmaybe-uninitialized]
+>      return ret;
+>             ^~~
 
-This patch adds the device tree binding of the r8a77990 SoC.
+Odd didn't show up on my system, guess I need to update my GCC.
+Apologies will get a fixup patch out shortly.
 
-Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
----
-
-This patch is based on the devel branch of Simon Horman's renesas tree.
-
-v2 [Yoshihiro Kaneko]
-- Rebased
-
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index 9e764270..58971a6 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -353,6 +353,7 @@ Required properties:
- 				    - "renesas,rcar_sound-r8a7795" (R-Car H3)
- 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
- 				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
-+				    - "renesas,rcar_sound-r8a77990" (R-Car E3)
- - reg				: Should contain the register physical address.
- 				  required register is
- 				   SRU/ADG/SSI      if generation1
--- 
-1.9.1
+Thanks,
+Charles
