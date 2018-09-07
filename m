@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Avoid uninitialised variable
-	warning" to the asoc tree
-Date: Fri,  7 Sep 2018 12:03:20 +0100 (BST)
-Message-ID: <20180907110320.A0CD31122A6D@debutante.sirena.org.uk>
-References: <20180906164155.22876-1-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: rsnd: Add device tree binding for
+	r8a77990" to the asoc tree
+Date: Fri,  7 Sep 2018 12:03:29 +0100 (BST)
+Message-ID: <20180907110329.173DA1122A6D@debutante.sirena.org.uk>
+References: <1536240513-22172-1-git-send-email-ykaneko0929@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B2F3B26777B
- for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2018 13:03:25 +0200 (CEST)
-In-Reply-To: <20180906164155.22876-1-ckeepax@opensource.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id A49A6267827
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2018 13:03:31 +0200 (CEST)
+In-Reply-To: <1536240513-22172-1-git-send-email-ykaneko0929@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Yoshihiro Kaneko <ykaneko0929@gmail.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Simon Horman <horms@verge.net.au>, Magnus Damm <magnus.damm@gmail.com>, Liam Girdwood <lgirdwood@gmail.com>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Avoid uninitialised variable warning
+   ASoC: rsnd: Add device tree binding for r8a77990
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,31 @@ to this mail.
 Thanks,
 Mark
 
->From fc269c0396448cabe1afd648c0b335669aa347b7 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Thu, 6 Sep 2018 17:41:55 +0100
-Subject: [PATCH] ASoC: dapm: Avoid uninitialised variable warning
+>From e058a4033240d30192124d6bf32b78e9a1f8975c Mon Sep 17 00:00:00 2001
+From: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Date: Thu, 6 Sep 2018 22:28:33 +0900
+Subject: [PATCH] ASoC: rsnd: Add device tree binding for r8a77990
 
-Commit 4a75aae17b2a ("ASoC: dapm: Add support for multi-CODEC
-CODEC to CODEC links") adds loops that iterate over multiple
-CODECs in snd_soc_dai_link_event. This also introduced a compiler
-warning for a potentially uninitialised variable in the case
-no CODECs are present. This should never be the case as the
-DAI link must by definition contain at least 1 CODEC however
-probably best to avoid the compiler warning by initialising ret
-to zero.
+This patch adds the device tree binding of the r8a77990 SoC.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
+Signed-off-by: Yoshihiro Kaneko <ykaneko0929@gmail.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 9f4edcd19e02..e496bc642c99 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3623,7 +3623,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	struct snd_pcm_hw_params *params = NULL;
- 	struct snd_pcm_runtime *runtime = NULL;
- 	unsigned int fmt;
--	int ret;
-+	int ret = 0;
- 
- 	config = rtd->dai_link->params + rtd->params_select;
- 
+diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+index 8083f0d8f263..f4688c508be6 100644
+--- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
++++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
+@@ -354,6 +354,7 @@ Required properties:
+ 				    - "renesas,rcar_sound-r8a7795" (R-Car H3)
+ 				    - "renesas,rcar_sound-r8a7796" (R-Car M3-W)
+ 				    - "renesas,rcar_sound-r8a77965" (R-Car M3-N)
++				    - "renesas,rcar_sound-r8a77990" (R-Car E3)
+ - reg				: Should contain the register physical address.
+ 				  required register is
+ 				   SRU/ADG/SSI      if generation1
 -- 
 2.19.0.rc1
