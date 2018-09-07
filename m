@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98373: usleep_range() needs
-	include/delay.h" to the asoc tree
-Date: Fri,  7 Sep 2018 17:08:41 +0100 (BST)
-Message-ID: <20180907160841.E234B1122A6D@debutante.sirena.org.uk>
+Subject: Applied "ASoC: Intel: hdac_hdmi: Limit sampling rates
+	at dai creation" to the asoc tree
+Date: Fri,  7 Sep 2018 17:08:46 +0100 (BST)
+Message-ID: <20180907160846.D47601122A6D@debutante.sirena.org.uk>
+References: <1533662356-6452-1-git-send-email-yong.zhi@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 42AE626777B
- for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2018 18:08:42 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id EA2A4267835
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2018 18:08:51 +0200 (CEST)
+In-Reply-To: <1533662356-6452-1-git-send-email-yong.zhi@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Grant Grundler <grundler@chromium.org>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Yong Zhi <yong.zhi@intel.com>
+Cc: alsa-devel@alsa-project.org, tiwai@suse.de, pierre-louis.bossart@linux.intel.com, harshapriya.n@intel.com, vkoul@kernel.org, broonie@kernel.org, naveen.m@intel.com, sanyog.r.kale@intel.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98373: usleep_range() needs include/delay.h
+   ASoC: Intel: hdac_hdmi: Limit sampling rates at dai creation
 
 has been applied to the asoc tree at
 
@@ -52,39 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 3004136b90bedc9e254ff659adb7a60299e9495e Mon Sep 17 00:00:00 2001
-From: Grant Grundler <grundler@chromium.org>
-Date: Thu, 6 Sep 2018 17:27:28 -0700
-Subject: [PATCH] ASoC: max98373: usleep_range() needs include/delay.h
+>From 3b857472f34faa7d11001afa5e158833812c98d7 Mon Sep 17 00:00:00 2001
+From: Yong Zhi <yong.zhi@intel.com>
+Date: Tue, 7 Aug 2018 12:19:16 -0500
+Subject: [PATCH] ASoC: Intel: hdac_hdmi: Limit sampling rates at dai creation
 
-Commit ca917f9fe1a0fab added use of usleep_range() but not
-the corresponding "include <linux/delay.h>". The result is
-with Chrome OS won't build because warnings are forced
-to be errors:
-mnt/host/source/src/third_party/kernel/v4.4/sound/soc/codecs/max98373.c:734:2: error: implicit declaration of function 'usleep_range' [-Werror,-Wimplicit-function-declaration]
-        usleep_range(10000, 11000);
-        ^
+Playback of 44.1Khz contents with HDMI plugged returns
+"Invalid pipe config" because HDMI paths in the FW
+topology are configured to operate at 48Khz.
 
-Including delay.h "fixes" this.
+This patch filters out sampling rates not supported
+at hdac_hdmi_create_dais() to let user space SRC
+to do the converting.
 
-Signed-off-by: Grant Grundler <grundler@chromium.org>
-Reviewed-by: Benson Leung <bleung@chromium.org>
+Signed-off-by: Yong Zhi <yong.zhi@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/max98373.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/hdac_hdmi.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index 1093f766d0d2..d6868c9a9ce6 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -2,6 +2,7 @@
- // Copyright (c) 2017, Maxim Integrated
+diff --git a/sound/soc/codecs/hdac_hdmi.c b/sound/soc/codecs/hdac_hdmi.c
+index dc6a0dfea050..41d90dc6ebf7 100644
+--- a/sound/soc/codecs/hdac_hdmi.c
++++ b/sound/soc/codecs/hdac_hdmi.c
+@@ -1410,6 +1410,12 @@ static int hdac_hdmi_create_dais(struct hdac_device *hdev,
+ 		if (ret)
+ 			return ret;
  
- #include <linux/acpi.h>
-+#include <linux/delay.h>
- #include <linux/i2c.h>
- #include <linux/module.h>
- #include <linux/regmap.h>
++		/* Filter out 44.1, 88.2 and 176.4Khz */
++		rates &= ~(SNDRV_PCM_RATE_44100 | SNDRV_PCM_RATE_88200 |
++			   SNDRV_PCM_RATE_176400);
++		if (!rates)
++			return -EINVAL;
++
+ 		sprintf(dai_name, "intel-hdmi-hifi%d", i+1);
+ 		hdmi_dais[i].name = devm_kstrdup(&hdev->dev,
+ 					dai_name, GFP_KERNEL);
 -- 
 2.19.0.rc1
