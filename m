@@ -1,34 +1,61 @@
-From: Grant Grundler <grundler@chromium.org>
-Subject: Re: [PATCH] ASoC: max98373: usleep_range() needs include/delay.h
-Date: Fri, 7 Sep 2018 12:28:28 -0700
-Message-ID: <CANEJEGteyDV2pWjC=z_btexMOcYnRER8ScqVTYqxZQO6DOsNTQ@mail.gmail.com>
-References: <20180907002728.112770-1-grundler@chromium.org>
- <20180907121128.GH17459@sirena.org.uk> <CANEJEGv0A8LO1znHToYOkddzr_JmHpogvYewVrMpK+ZB6SJX5w@mail.gmail.com>
- <20180907175620.GL17459@sirena.org.uk>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: dapm: Fix a couple uninitialized ret
+	variables
+Date: Fri, 7 Sep 2018 22:40:33 +0300
+Message-ID: <20180907194033.cmt4rdiwwznaeudq@kili.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180907175620.GL17459@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: broonie@kernel.org
-Cc: Grant Grundler <grundler@chromium.org>, ryans.lee@maximintegrated.com, lgirdwood@gmail.com, kuninori.morimoto.gx@renesas.com, alsa-devel@alsa-project.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C12826781E
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2018 21:40:46 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Sep 7, 2018 at 10:56 AM Mark Brown <broonie@kernel.org> wrote:
->
-> On Fri, Sep 07, 2018 at 10:52:24AM -0700, Grant Grundler wrote:
-> > On Fri, Sep 7, 2018 at 5:11 AM Mark Brown <broonie@kernel.org> wrote:
->
-> > > Note that this isn't causing a warning upstream, presumably due to an
-> > > implicit inclusion that isn't present in the v4.4 kernel that you appear
-> > > to be using, or gets missed due to config differences.
->
-> > Ok. Is this just an observation or are these reasons to not accept the
-> > change?
->
-> An observation, you should already have a mail about it being applied.
+Smatch complains that these variables could be uninitialized.  The first
+one in snd_soc_dai_link_event() is probably a false positive, because
+probably we know the lists are not empty.  I would normally ignore the
+warning, but GCC complains here as well so I just silenced the warning.
+The "ret" in snd_soc_dapm_new_dai() does need to be initialized or it
+leads to a bogus dereference in the caller.
 
-Ah ok! Thanks for pointing that out (and for reviewing/accepting the patch).
+Fixes: 3bbf5d34fd4a ("ASoC: dapm: Move error handling to snd_soc_dapm_new_control_unlocked")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-cheers,
-grant
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 9f4edcd19e02..0dcdcc23dcfd 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3623,7 +3623,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+ 	struct snd_pcm_hw_params *params = NULL;
+ 	struct snd_pcm_runtime *runtime = NULL;
+ 	unsigned int fmt;
+-	int ret;
++	int ret = 0;
+ 
+ 	config = rtd->dai_link->params + rtd->params_select;
+ 
+@@ -3938,8 +3938,10 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+ 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+ 
+ 	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
+-	if (IS_ERR(w))
++	if (IS_ERR(w)) {
++		ret = PTR_ERR(w);
+ 		goto outfree_kcontrol_news;
++	}
+ 
+ 	w->priv = rtd;
+ 
