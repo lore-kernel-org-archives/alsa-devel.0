@@ -1,15 +1,18 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ASoC: dapm: Fix a couple uninitialized ret
-	variables
-Date: Fri, 7 Sep 2018 22:40:33 +0300
-Message-ID: <20180907194033.cmt4rdiwwznaeudq@kili.mountain>
+From: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
+Subject: [PATCH] ALSA: pcm: Update hardware pointer before
+	start capture
+Date: Fri, 7 Sep 2018 16:58:54 -0300
+Message-ID: <20180907195854.GA17424@localhost.localdomain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp2130.oracle.com (userp2130.oracle.com [156.151.31.86])
- by alsa0.perex.cz (Postfix) with ESMTP id 4C12826781E
- for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2018 21:40:46 +0200 (CEST)
+Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
+ [209.85.216.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E0FE26781E
+ for <alsa-devel@alsa-project.org>; Fri,  7 Sep 2018 21:59:05 +0200 (CEST)
+Received: by mail-qt0-f193.google.com with SMTP id t39-v6so17484305qtc.8
+ for <alsa-devel@alsa-project.org>; Fri, 07 Sep 2018 12:59:04 -0700 (PDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,42 +23,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de
 List-Id: alsa-devel@alsa-project.org
 
-Smatch complains that these variables could be uninitialized.  The first
-one in snd_soc_dai_link_event() is probably a false positive, because
-probably we know the lists are not empty.  I would normally ignore the
-warning, but GCC complains here as well so I just silenced the warning.
-The "ret" in snd_soc_dapm_new_dai() does need to be initialized or it
-leads to a bogus dereference in the caller.
+This ensures the transfer loop won't waste a run to read
+the few frames (if any) between start and hw_ptr update.
+It will wait for the next interrupt with wait_for_avail().
 
-Fixes: 3bbf5d34fd4a ("ASoC: dapm: Move error handling to snd_soc_dapm_new_control_unlocked")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Signed-off-by: Ricardo Biehl Pasquali <pasqualirb@gmail.com>
+---
+ sound/core/pcm_lib.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 9f4edcd19e02..0dcdcc23dcfd 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3623,7 +3623,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 	struct snd_pcm_hw_params *params = NULL;
- 	struct snd_pcm_runtime *runtime = NULL;
- 	unsigned int fmt;
--	int ret;
-+	int ret = 0;
+diff --git a/sound/core/pcm_lib.c b/sound/core/pcm_lib.c
+index 7f71c2449..40013b26f 100644
+--- a/sound/core/pcm_lib.c
++++ b/sound/core/pcm_lib.c
+@@ -2172,6 +2172,10 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 	if (err < 0)
+ 		goto _end_unlock;
  
- 	config = rtd->dai_link->params + rtd->params_select;
++	runtime->twake = runtime->control->avail_min ? : 1;
++	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
++		snd_pcm_update_hw_ptr(substream);
++
+ 	if (!is_playback &&
+ 	    runtime->status->state == SNDRV_PCM_STATE_PREPARED) {
+ 		if (size >= runtime->start_threshold) {
+@@ -2185,10 +2189,8 @@ snd_pcm_sframes_t __snd_pcm_lib_xfer(struct snd_pcm_substream *substream,
+ 		}
+ 	}
  
-@@ -3938,8 +3938,10 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
- 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
- 
- 	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
--	if (IS_ERR(w))
-+	if (IS_ERR(w)) {
-+		ret = PTR_ERR(w);
- 		goto outfree_kcontrol_news;
-+	}
- 
- 	w->priv = rtd;
- 
+-	runtime->twake = runtime->control->avail_min ? : 1;
+-	if (runtime->status->state == SNDRV_PCM_STATE_RUNNING)
+-		snd_pcm_update_hw_ptr(substream);
+ 	avail = snd_pcm_avail(substream);
++
+ 	while (size > 0) {
+ 		snd_pcm_uframes_t frames, appl_ptr, appl_ofs;
+ 		snd_pcm_uframes_t cont;
+-- 
+2.17.1
