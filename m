@@ -1,7 +1,7 @@
 From: zhong jiang <zhongjiang@huawei.com>
-Subject: [PATCH 1/2] sound: q6core: Use kmemdup to replace kzalloc + memcpy
-Date: Sat, 8 Sep 2018 16:36:19 +0800
-Message-ID: <1536395780-18725-2-git-send-email-zhongjiang@huawei.com>
+Subject: [PATCH 2/2] sound: skl-topology: Use kmemdup to replace kzalloc + memcpy
+Date: Sat, 8 Sep 2018 16:36:20 +0800
+Message-ID: <1536395780-18725-3-git-send-email-zhongjiang@huawei.com>
 References: <1536395780-18725-1-git-send-email-zhongjiang@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -13,44 +13,29 @@ Cc: lgirdwood@gmail.com, bgoswami@codeaurora.org, plai@codeaurora.org, alsa-deve
 List-Id: alsa-devel@alsa-project.org
 
 kmemdup has implemented the function that kzalloc() + memcpy() will
-do. and we prefer to use the kmemdup rather than the open coded implementation.
+do. and we prefer to kmemdup rather than the open coded implementation.
 
 Signed-off-by: zhong jiang <zhongjiang@huawei.com>
 ---
- sound/soc/qcom/qdsp6/q6core.c | 8 ++------
- 1 file changed, 2 insertions(+), 6 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
-index 06f03a5..ca1be73 100644
---- a/sound/soc/qcom/qdsp6/q6core.c
-+++ b/sound/soc/qcom/qdsp6/q6core.c
-@@ -105,12 +105,10 @@ static int q6core_callback(struct apr_device *adev, struct apr_resp_pkt *data)
- 		bytes = sizeof(*fwk) + fwk->num_services *
- 				sizeof(fwk->svc_api_info[0]);
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 2620d77..52a9915 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -898,11 +898,10 @@ static int skl_tplg_set_module_bind_params(struct snd_soc_dapm_widget *w,
+ 			bc = (struct skl_algo_data *)sb->dobj.private;
  
--		core->fwk_version = kzalloc(bytes, GFP_ATOMIC);
-+		core->fwk_version = kmemdup(data->payload, bytes, GFP_ATOMIC);
- 		if (!core->fwk_version)
- 			return -ENOMEM;
+ 			if (bc->set_params == SKL_PARAM_BIND) {
+-				params = kzalloc(bc->max, GFP_KERNEL);
++				params = kmemdup(bc->params, bc->max, GFP_KERNEL);
+ 				if (!params)
+ 					return -ENOMEM;
  
--		memcpy(core->fwk_version, data->payload, bytes);
--
- 		core->fwk_version_supported = true;
- 		core->resp_received = true;
- 
-@@ -124,12 +122,10 @@ static int q6core_callback(struct apr_device *adev, struct apr_resp_pkt *data)
- 
- 		len = sizeof(*v) + v->num_services * sizeof(v->svc_api_info[0]);
- 
--		core->svc_version = kzalloc(len, GFP_ATOMIC);
-+		core->svc_version = kmemdup(data->payload, len, GFP_ATOMIC);
- 		if (!core->svc_version)
- 			return -ENOMEM;
- 
--		memcpy(core->svc_version, data->payload, len);
--
- 		core->get_version_supported = true;
- 		core->resp_received = true;
+-				memcpy(params, bc->params, bc->max);
+ 				skl_fill_sink_instance_id(ctx, params, bc->max,
+ 								mconfig);
  
 -- 
 1.7.12.4
