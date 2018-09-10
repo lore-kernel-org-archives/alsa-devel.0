@@ -1,19 +1,19 @@
-From: Robert Jarzmik <robert.jarzmik@free.fr>
-Subject: Re: [PATCH] ASoC: pxa: remove duplicated
-	snd_soc_component_driver ops
-Date: Mon, 10 Sep 2018 20:55:06 +0200
-Message-ID: <87bm955gj9.fsf@belgarion.home>
-References: <5110d62c9a1d266da0675cd11f196adad4b12cec.1536006242.git.petrcvekcz@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+From: Andy Davison <andy@dvsn.net>
+Subject: Re: Fixing EAPD for STAC9202 on an embedded platform.
+Date: Mon, 10 Sep 2018 21:01:28 +0100
+Message-ID: <00C65088-E8BE-447B-A6A2-88B1BABC41D0@dvsn.net>
+References: <BCFAA68D-E8B6-4D2F-85DB-73A3B2F82C1A@dvsn.net>
+ <s5hva7d1i8y.wl-tiwai@suse.de>
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.smtpout.orange.fr (smtp06.smtpout.orange.fr
- [80.12.242.128])
- by alsa0.perex.cz (Postfix) with ESMTP id 17AB82676EB
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 20:55:10 +0200 (CEST)
-In-Reply-To: <5110d62c9a1d266da0675cd11f196adad4b12cec.1536006242.git.petrcvekcz@gmail.com>
- (petrcvekcz@gmail.com's message of "Mon, 3 Sep 2018 22:25:01 +0200")
+Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id D50022676EB
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 22:01:31 +0200 (CEST)
+Received: by mail-wm0-f66.google.com with SMTP id s12-v6so22810247wmc.0
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 13:01:31 -0700 (PDT)
+In-Reply-To: <s5hva7d1i8y.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,63 +23,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: petrcvekcz@gmail.com
-Cc: alsa-devel@alsa-project.org, dbaryshkov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, dirk@opfer-online.de, marek.vasut@gmail.com, zhouqiao@marvell.com, broonie@kernel.org, philipp.zabel@gmail.com, lost.distance@yahoo.com, daniel@zonque.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-petrcvekcz@gmail.com writes:
-
-> From: Petr Cvek <petrcvekcz@gmail.com>
->
-> The sound soc drivers which are using a platform driver pxa-pcm-audio and
-> cpu dai drivers from the pxa tree have defined pxa2xx_soc_pcm_new() twice.
-> The function will get called in soc_new_pcm() for two components (platform
-> and cpu dai) which causes a double allocation of DMA resources and later
-> during a close of the playback/capture a kernel warning:
->
->  WARNING: CPU: 0 PID: 892 at drivers/dma/dmaengine.c:788 dma_release_channel+0x44/0xa0
->  chan reference count 0 != 1
->  Modules linked in: snd_soc_magician snd_soc_pxa2xx snd_pxa2xx_lib ...
->  CPU: 0 PID: 892 Comm: aplay Tainted: G C 4.18.0-rc6-next-20180726-magician+ #16
->  Hardware name: HTC Magician
->  [<c0107d90>] (unwind_backtrace) from [<c010594c>] (show_stack+0x10/0x14)
->  [<c010594c>] (show_stack) from [<c0111680>] (__warn+0xd4/0xec)
->  [<c0111680>] (__warn) from [<c01112d0>] (warn_slowpath_fmt+0x44/0x6c)
->  [<c01112d0>] (warn_slowpath_fmt) from [<c034908c>] (dma_release_channel+0x44/0xa0)
->  [<c034908c>] (dma_release_channel) from [<bf330528>] (snd_dmaengine_pcm_close_release_chan+0x44/0xb1c [snd_pcm_dmaengine])
->  [<bf330528>] (snd_dmaengine_pcm_close_release_chan [snd_pcm_dmaengine]) from [<bf26c29c>] (soc_pcm_components_close+0x8c/0xac [snd_soc_core])
->  [<bf26c29c>] (soc_pcm_components_close [snd_soc_core]) from [<bf26c3a0>] (soc_pcm_close+0xe4/0xd44 [snd_soc_core])
->  [<bf26c3a0>] (soc_pcm_close [snd_soc_core]) from [<bf167254>] (snd_pcm_release_substream+0x88/0x108 [snd_pcm])
->  [<bf167254>] (snd_pcm_release_substream [snd_pcm]) from [<bf167330>] (snd_pcm_release+0x5c/0xd2c [snd_pcm])
->  [<bf167330>] (snd_pcm_release [snd_pcm]) from [<c01c39e4>] (__fput+0xdc/0x1e8)
->  [<c01c39e4>] (__fput) from [<c0129e7c>] (task_work_run+0xc4/0xd4)
->  [<c0129e7c>] (task_work_run) from [<c01053ac>] (do_work_pending+0xc0/0xc8)
->  [<c01053ac>] (do_work_pending) from [<c0101068>] (slow_work_pending+0xc/0x20)
->  Exception stack(0xc2fdffb0 to 0xc2fdfff8)
->  ffa0:                                     00000000 0154d1a0 01542a3c 00000000
->  ffc0: 0154d150 00000000 0009283c 00000006 000003f0 0154d4c8 00000000 0154d4c8
->  ffe0: b6ee7d70 bef13960 b6e547b8 b6cfe018 60000010 00000004
->
-> The problem was found for cpu dai drivers: pxa-i2s and pxa-ssp and by
-> a calltrace sent from Robert Jarzmik on pxa-ac97 (although there was no
-> observed kernel warning). The git grep shows these 3 cpu dai drivers are
-> the only one which assign the .pcm_new to pxa2xx_soc_pcm_new() and almost
-> every machine which is using one of these cpu dai drivers is using the
-> platform driver pxa-pcm-audio too. The only exception is TTC_DKB board
-> which is using a platform driver mmp-pcm-audio. A quick look in the code
-> of mmp-pcm-audio shows it allocates the DMA in the similar way as PXA.
->
-> The solution is to remove one of pxa2xx_soc_pcm_new() assignments and the
-> patch does it for 3 cpu dai drivers (SSP/I2S/AC97).
->
-> The result was tested on HTC Magician board (SSP for playback, I2S for
-> capture) and the DMA buffers are correctly allocated.
->
-> Signed-off-by: Petr Cvek <petrcvekcz@gmail.com>
-Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
-Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
-
-Cheers.
-
--- 
-Robert
+Cj4gT24gMTAgU2VwIDIwMTgsIGF0IDE2OjMxLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gCj4gT24g
+TW9uLCAxMCBTZXAgMjAxOCAxMTo1MTo1MiArMDIwMCwKPiBBbmR5IERhdmlzb24gd3JvdGU6Cj4+
+IAo+PiBIaSBldmVyeW9uZSwKPj4gCj4+IEnigJltIGhvcGluZyB0aGF0IHNvbWVib2R5IGhlcmUg
+bWlnaHQgYmUgYWJsZSB0byBzcG90IHdoZXJlIEnigJltIGdvaW5nIHdyb25nOyBJJ20gd29ya2lu
+ZyB3aXRoIGEgcGljdHVyZS1mcmFtZS1saWtlIGRldmljZSBtYW51ZmFjdHVyZWQgYnkgdGhlIGxh
+dGUgT3BlblBlYWsgSW5jLiBrbm93biBhcyB0aGUgT3BlbkZyYW1lIChvciBPMiBKb2dnbGVyIGlu
+IHRoZSBVSykuIEl0IGhhcyBhbiBpbnRlcm5hbCBzcGVha2VyIGFuZCBhIDMuNW1tIGxpbmUgb3V0
+IHNvY2tldDsgbm9uZSBvZiB0aGUgb3RoZXIgY29ubmVjdGlvbnMgdG8gaXRzIFNUQUM5MjAyIGNv
+ZGVjIGNoaXAgYXJlIGV4cG9zZWQgdG8gdGhlIGVuZCB1c2VyLiBJJ3ZlIGJlZW4gcG9ydGluZyBV
+YnVudHUgQmlvbmljIHRvIHRoZSBkZXZpY2UgYW5kIGV2ZXJ5dGhpbmcgaXMgZG9uZSwgZXhjZXB0
+IGZvciB0aGUgYXVkaW8gZHJpdmVyLgo+PiAKPj4gQmFjayBpbiBrZXJuZWwgMy4xOCBpdCB3YXMg
+cG9zc2libGUgdG8gdXNlIHRoZSBmb2xsb3dpbmcga2VybmVsIHBhdGNoIGFuZCB1c2VybGFuZCBB
+TFNBIHBhdGNoIHRvIGhhdmUgdGhlc2UgdHdvIG91dHB1dHMgd29yayBjb3JyZWN0bHksIHdpdGgg
+dGhlIGluc2VydGlvbiBvZiBhIHBsdWcgaW50byB0aGUgbGluZSBvdXQgcHJvcGVybHkgbXV0aW5n
+IHRoZSBpbnRlcm5hbCBzcGVha2VyLgo+PiAKPj4gaHR0cHM6Ly9naXRodWIuY29tL2FuZHlkdnNu
+L09wZW5GcmFtZS1LZXJuZWwvYmxvYi9tYXN0ZXIvcGF0Y2hlcy8wMy1zdGFjOTIwMi1hdWRpby1w
+aW4tdHdlYWsucGF0Y2gKPj4gaHR0cHM6Ly9naXRodWIuY29tL2FuZHlkdnNuL09wZW5GcmFtZS1V
+YnVudHUvYmxvYi9tYXN0ZXIvb3ZlcmxheS10cnVzdHkvbGliL2Zpcm13YXJlL29mMS1zdGFjOTIw
+Mi5wYXRjaAo+PiAKPj4gSW4ga2VybmVsIDQuMTQgdGhlIHNhbWUgdHJpY2sgbm8gbG9uZ2VyIHdv
+cmtzLCBzbyBJJ3ZlIHJld3JpdHRlbiB0aGUgcGF0Y2ggdG8gbW9yZSBwcm9wZXJseSBhZGQgc3Vw
+cG9ydCBmb3IgdGhpcyB2YXJpYW50IG9mIFNUQUM5MjAyIHRvIEFMU0EuIEl0IG5vdyBsb29rcyBs
+aWtlIHRoaXM6Cj4+IAo+PiBodHRwczovL2dpc3QuZ2l0aHViLmNvbS9hbmR5ZHZzbi83YmZmYThk
+ZTBlZDY5MWIxNDUwODQ4NWQ3NTUwMWZmYwo+PiAKPj4gVGhpcyBzZWVtcyB0byBsaW5lIHVwIHRo
+ZSBwaW4gY29uZmlndXJhdGlvbnMgYXBwcm9wcmlhdGVseSwgYnV0IHdoZW4gYSBwbHVnIGlzIGlu
+c2VydGVkIHRvIHRoZSBsaW5lIG91dCwgYWx0aG91Z2ggdGhlIGF1ZGlvIHRvIHRoZSBpbnRlcm5h
+bCBzcGVha2VyIGlzIG11dGVkLCB0aGUgc3BlYWtlciBlbWl0cyBhIGNyYWNrbGluZyBzb3VuZCB3
+aGVuZXZlciB0aGUgZGV2aWNlIGlzIHByb2Nlc3NpbmcuIEl0IHNlZW1zIHRoYXQgaXQgaXMgbm90
+IGJlaW5nIHByb3Blcmx5IHBvd2VyZWQgZG93biBhbmQgaXMgYW1wbGlmeWluZyBnZW5lcmFsIGNp
+cmN1aXQgbm9pc2UuIERpc2Nvbm5lY3RpbmcgdGhlIHBsdWcgcmV0dXJucyBzb3VuZCB0byB0aGUg
+aW50ZXJuYWwgc3BlYWtlciBhbmQgdGhlIGNyYWNrbGluZyBjZWFzZXMuIFRoaXMgaXMgcmVsaWFi
+bGUgYWNyb3NzIG11bHRpcGxlIGRldmljZXMuCj4gCj4gVGhlIHBhdGNoIGxvb2tzIGNoYW5naW5n
+IHRvbyBtdWNoIHRoYW4gbmVlZGVkLgo+IAo+IFdoYXQgZXhhY3RseSBkbyB5b3UgbmVlZCB0byBt
+YWtlIHRoaW5ncyB3b3JraW5nIGF0IGZpcnN0Pwo+IHBhdGNoX3N0YWM5MjV4KCkgc2V0cyBvd25f
+ZWFwZF9jdGwsIGJ1dCBvbmx5IGZyb20gc29tZSBoaXN0b3JpY2FsCj4gcmVhc29uLiAgWW91IGNh
+biB1bnNldCB0aGlzIGZsYWcgaW4gdGhlIHF1aXJrIGFzIHdlbGwuCgpUaGFuayB5b3UgZm9yIGdl
+dHRpbmcgYmFjayB0byBtZS4gSSBoYXZlIHJlY29tcGlsZWQgNC4xNC42OSB3aXRoIG5vIGF1ZGlv
+IHBhdGNoZXMgYW5kIHRoZSByZXN1bHQgaXMgYXMgZm9sbG93czoKCgotIFN3aXRjaGluZzogUHJl
+c2VuY2Ugb3IgYWJzZW5jZSBvZiBsaW5lIG91dCAvIGhlYWRwaG9uZXMgaXMgaWdub3JlZC4KCi0g
+QXV0by1NdXRlIEVuYWJsZWQgKERlZmF1bHQpOiBDcmFja2xpbmcgaXMgcHJlc2VudCBvbiB0aGUg
+cmlnaHQgY2hhbm5lbCBvbmx5IG9mIGxpbmUgb3V0IC8gaGVhZHBob25lcy4gTm8gYXVkaW8gb24g
+bGluZSBvdXQgLyBoZWFkcGhvbmVzLiBTcGVha2VyIHBsYXlzIGF1ZGlvLgoKLSBBdXRvLU11dGUg
+RGlzYWJsZWQ6IEF1ZGlvIHBsYXlzIHByb3Blcmx5LCBidXQgZnJvbSBib3RoIHRoZSBzcGVha2Vy
+IGFuZCBsaW5lIG91dCAvIGhlYWRwaG9uZXMgc2ltdWx0YW5lb3VzbHkuCgoKU28gaXQgd291bGQg
+c2VlbSB0aGUgYWN0aW9uIG9mIEVBUEQgaXMgcmV2ZXJzZWQsIG11dGluZyB0aGUgbGluZSBvdXQg
+LyBoZWFkcGhvbmVzIHdoZW4gdGhleeKAmXJlIGF0dGFjaGVkIGFuZCBub3QgdGhlIGludGVybmFs
+IHNwZWFrZXIuIFRoZSBjcmFja2xpbmcgcmVtYWlucywgYnV0IHN0cmFuZ2VseSBqdXN0IGluIHRo
+YXQgcmlnaHQgY2hhbm5lbCBvZiBsaW5lIG91dCAvIGhlYWRwaG9uZXMuCgoKVGhlIGFsc2EtaW5m
+byBvdXRwdXQgaXM6CgpodHRwczovL2dpc3QuZ2l0aHViLmNvbS9hbmR5ZHZzbi9jY2Y1NWU2Zjc5
+NjFkZDQwNWZjMzlkNDFhNmNlOWVmNiNmaWxlLTQtMTQtNjlvcDEtbm9wYXRjaGVzCgoKSSB0aGVu
+IHRyaWVkIHNpbXBseSBzZXR0aW5nIG93bl9lYXBkX2N0bCA9IDAuIEl0IG1hZGUgbm8gZnVuY3Rp
+b25hbCBkaWZmZXJlbmNlIHRoYXQgSSBjb3VsZCB0ZWxsLCBidXQgYWxzYS1pbmZvIGJlY2FtZSB0
+aGlzOgoKaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYW5keWR2c24vY2NmNTVlNmY3OTYxZGQ0MDVm
+YzM5ZDQxYTZjZTllZjYjZmlsZS00LTE0LTY5b3AxLW93bl9lYXBkX2N0bDAKCgpBcyB5b3UgY2Fu
+IHByb2JhYmx5IHRlbGwsIEnigJltIGluIHRoZSBkYXJrIHdpdGggd2hhdCB0byBkbyBuZXh0LiBJ
+IHdvdWxkIGdyZWF0bHkgYXBwcmVjaWF0ZSBzdWdnZXN0aW9ucy4KCgo+IAo+PiBIZXJlIGlzIHRo
+ZSBhbHNhLWluZm8gb3V0cHV0IGZyb20gYm90aCB0aGUgY3JhY2tsaW5nIGtlcm5lbCA0LjE0IGFu
+ZCB0aGUgd29ya2luZy1qdXN0LWZpbmUga2VybmVsIDMuMTguCj4+IAo+PiBodHRwczovL2dpc3Qu
+Z2l0aHViLmNvbS9hbmR5ZHZzbi9jY2Y1NWU2Zjc5NjFkZDQwNWZjMzlkNDFhNmNlOWVmNgo+PiAK
+Pj4gSSBkb24ndCBoYXZlIHN1ZmZpY2llbnQga25vd2xlZGdlIG9mIEFMU0EgZHJpdmVycyBhbmQg
+cGF0Y2hlcyBhbmQgaGF2ZSBiZWVuIHdvcmtpbmcgcHVyZWx5IGZyb20gdGhlIGNvbmZpZ3VyYXRp
+b25zIHVzZWQgYnkgb3RoZXJzIG92ZXIgdGhlIHllYXJzLCBzbyBJIHdvdWxkIHJlYWxseSBhcHBy
+ZWNpYXRlIHNvbWVib2R5IGxvb2tpbmcgYXQgdGhlIGFsc2EtaW5mbyBvdXRwdXQgYW5kIHRoZSBu
+ZXcgcGF0Y2ggdG8gZGV0ZXJtaW5lIHdoZXJlIEkgc2hvdWxkIGdvIGZyb20gaGVyZS4gSSBiZWxp
+ZXZlIHRoaXMgaXMgYWxsIHRvIGRvIHdpdGggRUFQRCBjb250cm9sLCBidXQgd2hhdCBvcHRpb25z
+IEkgaGF2ZSBmb3IgY29udHJvbGxpbmcgdGhhdCBhcmVuJ3Qga25vd24gdG8gbWUgcmlnaHQgbm93
+Lgo+PiAKPj4gSWRlYWxseSwgSSB3YW50IHRvIGVuZCB1cCB3aXRoIHRoZSBhdWRpbyBtdXRpbmcg
+YW5kIHN3aXRjaGluZyBjb3JyZWN0bHkgd2hlbiB0aGUgamFjayBpcyBpbnNlcnRlZC4gQSBib251
+cyB3b3VsZCBiZSB0byBsb3NlIHRoZSB1bnVzZWQgKG9yIGF0IGxlYXN0IGluYWNjZXNzaWJsZSkg
+YXVkaW8gaW5wdXQgYW5kIG91dHB1dCBvcHRpb25zIGluIGFsc2FtaXhlciBhbmQgZ2FpbiBpbmRp
+dmlkdWFsIGNvbnRyb2wgb2YgdGhlIGludGVybmFsIHNwZWFrZXIgYW5kIGxpbmUgb3V0IGxldmVs
+cyAod2hpY2ggYXBwZWFyIHRvIGJlIHBhaXJlZCB0b2dldGhlciBhdCB0aGUgbW9tZW50KS4KPj4g
+CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
+bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
