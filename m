@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5668: use
+Subject: Applied "ASoC: hdac_hda: use
 	devm_snd_soc_register_component()" to the asoc tree
-Date: Mon, 10 Sep 2018 15:22:00 +0100 (BST)
-Message-ID: <20180910142200.77C031122D51@debutante.sirena.org.uk>
-References: <87k1nyrut2.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 10 Sep 2018 15:22:09 +0100 (BST)
+Message-ID: <20180910142209.209BF1122D51@debutante.sirena.org.uk>
+References: <87lg8erutg.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E295C267889
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:22:00 +0200 (CEST)
-In-Reply-To: <87k1nyrut2.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 87DD22678B3
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:22:09 +0200 (CEST)
+In-Reply-To: <87lg8erutg.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5668: use devm_snd_soc_register_component()
+   ASoC: hdac_hda: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 4fe1984ebc086ee39dd57983a7fee84c96c954a7 Mon Sep 17 00:00:00 2001
+>From 10ccaa39d7628470a3de4aae9d2346a55cbee46e Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:01:34 +0000
-Subject: [PATCH] ASoC: rt5668: use devm_snd_soc_register_component()
+Date: Fri, 7 Sep 2018 01:01:19 +0000
+Subject: [PATCH] ASoC: hdac_hda: use devm_snd_soc_register_component()
 
 Now we have devm_snd_soc_register_component().
 Let's use it instead of snd_soc_register_component().
@@ -64,26 +64,27 @@ Let's use it instead of snd_soc_register_component().
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5668.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/codecs/hdac_hda.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
-index 3c19d03f2446..4412cd2910cd 100644
---- a/sound/soc/codecs/rt5668.c
-+++ b/sound/soc/codecs/rt5668.c
-@@ -2587,14 +2587,12 @@ static int rt5668_i2c_probe(struct i2c_client *i2c,
+diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
+index 8c25a1332fa7..2aaa83028e55 100644
+--- a/sound/soc/codecs/hdac_hda.c
++++ b/sound/soc/codecs/hdac_hda.c
+@@ -448,7 +448,7 @@ static int hdac_hda_dev_probe(struct hdac_device *hdev)
+ 		return -ENOMEM;
  
- 	}
+ 	/* ASoC specific initialization */
+-	ret = snd_soc_register_component(&hdev->dev,
++	ret = devm_snd_soc_register_component(&hdev->dev,
+ 					 &hdac_hda_codec, hdac_hda_dais,
+ 					 ARRAY_SIZE(hdac_hda_dais));
+ 	if (ret < 0) {
+@@ -464,7 +464,6 @@ static int hdac_hda_dev_probe(struct hdac_device *hdev)
  
--	return snd_soc_register_component(&i2c->dev, &soc_component_dev_rt5668,
-+	return devm_snd_soc_register_component(&i2c->dev, &soc_component_dev_rt5668,
- 			rt5668_dai, ARRAY_SIZE(rt5668_dai));
- }
- 
- static int rt5668_i2c_remove(struct i2c_client *i2c)
+ static int hdac_hda_dev_remove(struct hdac_device *hdev)
  {
--	snd_soc_unregister_component(&i2c->dev);
--
+-	snd_soc_unregister_component(&hdev->dev);
  	return 0;
  }
  
