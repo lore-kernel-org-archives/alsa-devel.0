@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 04/16] ASoC: cirrus: use
+Subject: Re: [PATCH 06/16] ASoC: rt5668: use
 	devm_snd_soc_register_component()
-Date: Mon, 10 Sep 2018 15:06:58 +0100
-Message-ID: <20180910140658.GG5856@sirena.org.uk>
+Date: Mon, 10 Sep 2018 15:08:16 +0100
+Message-ID: <20180910140816.GH5856@sirena.org.uk>
 References: <87sh2mruw6.wl-kuninori.morimoto.gx@renesas.com>
- <87musurutv.wl-kuninori.morimoto.gx@renesas.com>
+ <87k1nyrut2.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5035995672530878734=="
+Content-Type: multipart/mixed; boundary="===============0249519492588963456=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 0C21A2676ED
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:06:59 +0200 (CEST)
-In-Reply-To: <87musurutv.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C803E2676ED
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:08:16 +0200 (CEST)
+In-Reply-To: <87k1nyrut2.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,56 +27,50 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============5035995672530878734==
+--===============0249519492588963456==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Z0mFw3+mXTC5ycVe"
+	protocol="application/pgp-signature"; boundary="7SAgGoIHugoKhRwh"
 Content-Disposition: inline
 
 
---Z0mFw3+mXTC5ycVe
+--7SAgGoIHugoKhRwh
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 07, 2018 at 01:01:05AM +0000, Kuninori Morimoto wrote:
+On Fri, Sep 07, 2018 at 01:01:34AM +0000, Kuninori Morimoto wrote:
 
-> @@ -422,8 +420,6 @@ static int ep93xx_ac97_remove(struct platform_device =
-*pdev)
+>  static int rt5668_i2c_remove(struct i2c_client *i2c)
 >  {
->  	struct ep93xx_ac97_info	*info =3D platform_get_drvdata(pdev);
-> =20
-> -	snd_soc_unregister_component(&pdev->dev);
+> -	snd_soc_unregister_component(&i2c->dev);
 > -
->  	/* disable the AC97 controller */
->  	ep93xx_ac97_write_reg(info, AC97GCR, 0);
-> =20
+>  	return 0;
+>  }
 
-Similar ordering thing here - it's generally fine to convert to devm_ if
-the unregister is the last thing in the remove function but otherwise
-you need to be careful.
+This one is fine but the function is now empty so should be removed
+entirely.
 
---Z0mFw3+mXTC5ycVe
+--7SAgGoIHugoKhRwh
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluWeoIACgkQJNaLcl1U
-h9Ch5wgAho3Xj4M3aT3hSA4RShKU//X/PcGPPUQovRDFN+fPHx4Wx2Yb3pp9fRCf
-tCnc5JEwbRGgBaKi5UjTJGZvnLEuHgKBeDFb9YVrtVCVwg9R/WGB0t7PiXVnRckS
-H6ZgTiPYfAU1jCUvSquydLD8pWHw17oOYah8cxmLCFw+xybgwSu91ZU+++op7kPK
-bRDGmuXINrO2QNKGWYccC18F3AzsQVHTVWSEFa8KVKmCfVLTSwakgq0Lz7YpVg8m
-b87FHCGmwKtPVmoQAyQwzeWC7VCUXX6GRiSNrUn0VUslM8pDjHOR5uH12BkMMF/S
-iqneBVwnN5UJrqbdexv//ah/3/Fl1Q==
-=g7vd
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluWes8ACgkQJNaLcl1U
+h9AK7Qf/Y02/lhJTD8VCS0Y5v/hWp4alPHrU8s4c/ocQpQRDQOrnKNbGpGytHR8H
+OAadatrRyY3IO/xwCB6zu0wBDiELxQPbeHs5VDx5cvkQ56wHSQLHhg1o0Dxrehay
+R7UEoG1DYizimS3Bmyk0k20dNQEQTZkdB7ZODPRpRPcPdqPg04vhHPtPE/Rrykyx
+IKQspgg/tjYeNXBo6fyVOmFBJgZ5N7RQXQb75420sP4hqx/nIi6IjpVv8SjZCXKN
+ufS2YD7tKmAx7zwPlbWsUg71Fcd9ta/bnrC5+oB77fenmXOMMmdmN7PNo3MAWqXj
+3ty1J8ccLlNJtq77MXArGFe4XJaOUA==
+=4OdH
 -----END PGP SIGNATURE-----
 
---Z0mFw3+mXTC5ycVe--
+--7SAgGoIHugoKhRwh--
 
---===============5035995672530878734==
+--===============0249519492588963456==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5035995672530878734==--
+--===============0249519492588963456==--
