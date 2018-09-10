@@ -1,103 +1,25 @@
-From: Andy Davison <andy@dvsn.net>
-Subject: Re: Fixing EAPD for STAC9202 on an embedded platform.
-Date: Mon, 10 Sep 2018 21:01:28 +0100
-Message-ID: <00C65088-E8BE-447B-A6A2-88B1BABC41D0@dvsn.net>
-References: <BCFAA68D-E8B6-4D2F-85DB-73A3B2F82C1A@dvsn.net>
- <s5hva7d1i8y.wl-tiwai@suse.de>
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm0-f66.google.com (mail-wm0-f66.google.com [74.125.82.66])
- by alsa0.perex.cz (Postfix) with ESMTP id D50022676EB
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 22:01:31 +0200 (CEST)
-Received: by mail-wm0-f66.google.com with SMTP id s12-v6so22810247wmc.0
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 13:01:31 -0700 (PDT)
-In-Reply-To: <s5hva7d1i8y.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v3 01/13] ASoC: dt-bindings: update wcd9335 bindings.
+Date: Mon, 10 Sep 2018 15:02:08 -0500
+Message-ID: <20180910200208.GA20640@bogus>
+References: <20180904102500.30318-1-srinivas.kandagatla@linaro.org>
+ <20180904102500.30318-2-srinivas.kandagatla@linaro.org>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180904102500.30318-2-srinivas.kandagatla@linaro.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Cj4gT24gMTAgU2VwIDIwMTgsIGF0IDE2OjMxLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gCj4gT24g
-TW9uLCAxMCBTZXAgMjAxOCAxMTo1MTo1MiArMDIwMCwKPiBBbmR5IERhdmlzb24gd3JvdGU6Cj4+
-IAo+PiBIaSBldmVyeW9uZSwKPj4gCj4+IEnigJltIGhvcGluZyB0aGF0IHNvbWVib2R5IGhlcmUg
-bWlnaHQgYmUgYWJsZSB0byBzcG90IHdoZXJlIEnigJltIGdvaW5nIHdyb25nOyBJJ20gd29ya2lu
-ZyB3aXRoIGEgcGljdHVyZS1mcmFtZS1saWtlIGRldmljZSBtYW51ZmFjdHVyZWQgYnkgdGhlIGxh
-dGUgT3BlblBlYWsgSW5jLiBrbm93biBhcyB0aGUgT3BlbkZyYW1lIChvciBPMiBKb2dnbGVyIGlu
-IHRoZSBVSykuIEl0IGhhcyBhbiBpbnRlcm5hbCBzcGVha2VyIGFuZCBhIDMuNW1tIGxpbmUgb3V0
-IHNvY2tldDsgbm9uZSBvZiB0aGUgb3RoZXIgY29ubmVjdGlvbnMgdG8gaXRzIFNUQUM5MjAyIGNv
-ZGVjIGNoaXAgYXJlIGV4cG9zZWQgdG8gdGhlIGVuZCB1c2VyLiBJJ3ZlIGJlZW4gcG9ydGluZyBV
-YnVudHUgQmlvbmljIHRvIHRoZSBkZXZpY2UgYW5kIGV2ZXJ5dGhpbmcgaXMgZG9uZSwgZXhjZXB0
-IGZvciB0aGUgYXVkaW8gZHJpdmVyLgo+PiAKPj4gQmFjayBpbiBrZXJuZWwgMy4xOCBpdCB3YXMg
-cG9zc2libGUgdG8gdXNlIHRoZSBmb2xsb3dpbmcga2VybmVsIHBhdGNoIGFuZCB1c2VybGFuZCBB
-TFNBIHBhdGNoIHRvIGhhdmUgdGhlc2UgdHdvIG91dHB1dHMgd29yayBjb3JyZWN0bHksIHdpdGgg
-dGhlIGluc2VydGlvbiBvZiBhIHBsdWcgaW50byB0aGUgbGluZSBvdXQgcHJvcGVybHkgbXV0aW5n
-IHRoZSBpbnRlcm5hbCBzcGVha2VyLgo+PiAKPj4gaHR0cHM6Ly9naXRodWIuY29tL2FuZHlkdnNu
-L09wZW5GcmFtZS1LZXJuZWwvYmxvYi9tYXN0ZXIvcGF0Y2hlcy8wMy1zdGFjOTIwMi1hdWRpby1w
-aW4tdHdlYWsucGF0Y2gKPj4gaHR0cHM6Ly9naXRodWIuY29tL2FuZHlkdnNuL09wZW5GcmFtZS1V
-YnVudHUvYmxvYi9tYXN0ZXIvb3ZlcmxheS10cnVzdHkvbGliL2Zpcm13YXJlL29mMS1zdGFjOTIw
-Mi5wYXRjaAo+PiAKPj4gSW4ga2VybmVsIDQuMTQgdGhlIHNhbWUgdHJpY2sgbm8gbG9uZ2VyIHdv
-cmtzLCBzbyBJJ3ZlIHJld3JpdHRlbiB0aGUgcGF0Y2ggdG8gbW9yZSBwcm9wZXJseSBhZGQgc3Vw
-cG9ydCBmb3IgdGhpcyB2YXJpYW50IG9mIFNUQUM5MjAyIHRvIEFMU0EuIEl0IG5vdyBsb29rcyBs
-aWtlIHRoaXM6Cj4+IAo+PiBodHRwczovL2dpc3QuZ2l0aHViLmNvbS9hbmR5ZHZzbi83YmZmYThk
-ZTBlZDY5MWIxNDUwODQ4NWQ3NTUwMWZmYwo+PiAKPj4gVGhpcyBzZWVtcyB0byBsaW5lIHVwIHRo
-ZSBwaW4gY29uZmlndXJhdGlvbnMgYXBwcm9wcmlhdGVseSwgYnV0IHdoZW4gYSBwbHVnIGlzIGlu
-c2VydGVkIHRvIHRoZSBsaW5lIG91dCwgYWx0aG91Z2ggdGhlIGF1ZGlvIHRvIHRoZSBpbnRlcm5h
-bCBzcGVha2VyIGlzIG11dGVkLCB0aGUgc3BlYWtlciBlbWl0cyBhIGNyYWNrbGluZyBzb3VuZCB3
-aGVuZXZlciB0aGUgZGV2aWNlIGlzIHByb2Nlc3NpbmcuIEl0IHNlZW1zIHRoYXQgaXQgaXMgbm90
-IGJlaW5nIHByb3Blcmx5IHBvd2VyZWQgZG93biBhbmQgaXMgYW1wbGlmeWluZyBnZW5lcmFsIGNp
-cmN1aXQgbm9pc2UuIERpc2Nvbm5lY3RpbmcgdGhlIHBsdWcgcmV0dXJucyBzb3VuZCB0byB0aGUg
-aW50ZXJuYWwgc3BlYWtlciBhbmQgdGhlIGNyYWNrbGluZyBjZWFzZXMuIFRoaXMgaXMgcmVsaWFi
-bGUgYWNyb3NzIG11bHRpcGxlIGRldmljZXMuCj4gCj4gVGhlIHBhdGNoIGxvb2tzIGNoYW5naW5n
-IHRvbyBtdWNoIHRoYW4gbmVlZGVkLgo+IAo+IFdoYXQgZXhhY3RseSBkbyB5b3UgbmVlZCB0byBt
-YWtlIHRoaW5ncyB3b3JraW5nIGF0IGZpcnN0Pwo+IHBhdGNoX3N0YWM5MjV4KCkgc2V0cyBvd25f
-ZWFwZF9jdGwsIGJ1dCBvbmx5IGZyb20gc29tZSBoaXN0b3JpY2FsCj4gcmVhc29uLiAgWW91IGNh
-biB1bnNldCB0aGlzIGZsYWcgaW4gdGhlIHF1aXJrIGFzIHdlbGwuCgpUaGFuayB5b3UgZm9yIGdl
-dHRpbmcgYmFjayB0byBtZS4gSSBoYXZlIHJlY29tcGlsZWQgNC4xNC42OSB3aXRoIG5vIGF1ZGlv
-IHBhdGNoZXMgYW5kIHRoZSByZXN1bHQgaXMgYXMgZm9sbG93czoKCgotIFN3aXRjaGluZzogUHJl
-c2VuY2Ugb3IgYWJzZW5jZSBvZiBsaW5lIG91dCAvIGhlYWRwaG9uZXMgaXMgaWdub3JlZC4KCi0g
-QXV0by1NdXRlIEVuYWJsZWQgKERlZmF1bHQpOiBDcmFja2xpbmcgaXMgcHJlc2VudCBvbiB0aGUg
-cmlnaHQgY2hhbm5lbCBvbmx5IG9mIGxpbmUgb3V0IC8gaGVhZHBob25lcy4gTm8gYXVkaW8gb24g
-bGluZSBvdXQgLyBoZWFkcGhvbmVzLiBTcGVha2VyIHBsYXlzIGF1ZGlvLgoKLSBBdXRvLU11dGUg
-RGlzYWJsZWQ6IEF1ZGlvIHBsYXlzIHByb3Blcmx5LCBidXQgZnJvbSBib3RoIHRoZSBzcGVha2Vy
-IGFuZCBsaW5lIG91dCAvIGhlYWRwaG9uZXMgc2ltdWx0YW5lb3VzbHkuCgoKU28gaXQgd291bGQg
-c2VlbSB0aGUgYWN0aW9uIG9mIEVBUEQgaXMgcmV2ZXJzZWQsIG11dGluZyB0aGUgbGluZSBvdXQg
-LyBoZWFkcGhvbmVzIHdoZW4gdGhleeKAmXJlIGF0dGFjaGVkIGFuZCBub3QgdGhlIGludGVybmFs
-IHNwZWFrZXIuIFRoZSBjcmFja2xpbmcgcmVtYWlucywgYnV0IHN0cmFuZ2VseSBqdXN0IGluIHRo
-YXQgcmlnaHQgY2hhbm5lbCBvZiBsaW5lIG91dCAvIGhlYWRwaG9uZXMuCgoKVGhlIGFsc2EtaW5m
-byBvdXRwdXQgaXM6CgpodHRwczovL2dpc3QuZ2l0aHViLmNvbS9hbmR5ZHZzbi9jY2Y1NWU2Zjc5
-NjFkZDQwNWZjMzlkNDFhNmNlOWVmNiNmaWxlLTQtMTQtNjlvcDEtbm9wYXRjaGVzCgoKSSB0aGVu
-IHRyaWVkIHNpbXBseSBzZXR0aW5nIG93bl9lYXBkX2N0bCA9IDAuIEl0IG1hZGUgbm8gZnVuY3Rp
-b25hbCBkaWZmZXJlbmNlIHRoYXQgSSBjb3VsZCB0ZWxsLCBidXQgYWxzYS1pbmZvIGJlY2FtZSB0
-aGlzOgoKaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYW5keWR2c24vY2NmNTVlNmY3OTYxZGQ0MDVm
-YzM5ZDQxYTZjZTllZjYjZmlsZS00LTE0LTY5b3AxLW93bl9lYXBkX2N0bDAKCgpBcyB5b3UgY2Fu
-IHByb2JhYmx5IHRlbGwsIEnigJltIGluIHRoZSBkYXJrIHdpdGggd2hhdCB0byBkbyBuZXh0LiBJ
-IHdvdWxkIGdyZWF0bHkgYXBwcmVjaWF0ZSBzdWdnZXN0aW9ucy4KCgo+IAo+PiBIZXJlIGlzIHRo
-ZSBhbHNhLWluZm8gb3V0cHV0IGZyb20gYm90aCB0aGUgY3JhY2tsaW5nIGtlcm5lbCA0LjE0IGFu
-ZCB0aGUgd29ya2luZy1qdXN0LWZpbmUga2VybmVsIDMuMTguCj4+IAo+PiBodHRwczovL2dpc3Qu
-Z2l0aHViLmNvbS9hbmR5ZHZzbi9jY2Y1NWU2Zjc5NjFkZDQwNWZjMzlkNDFhNmNlOWVmNgo+PiAK
-Pj4gSSBkb24ndCBoYXZlIHN1ZmZpY2llbnQga25vd2xlZGdlIG9mIEFMU0EgZHJpdmVycyBhbmQg
-cGF0Y2hlcyBhbmQgaGF2ZSBiZWVuIHdvcmtpbmcgcHVyZWx5IGZyb20gdGhlIGNvbmZpZ3VyYXRp
-b25zIHVzZWQgYnkgb3RoZXJzIG92ZXIgdGhlIHllYXJzLCBzbyBJIHdvdWxkIHJlYWxseSBhcHBy
-ZWNpYXRlIHNvbWVib2R5IGxvb2tpbmcgYXQgdGhlIGFsc2EtaW5mbyBvdXRwdXQgYW5kIHRoZSBu
-ZXcgcGF0Y2ggdG8gZGV0ZXJtaW5lIHdoZXJlIEkgc2hvdWxkIGdvIGZyb20gaGVyZS4gSSBiZWxp
-ZXZlIHRoaXMgaXMgYWxsIHRvIGRvIHdpdGggRUFQRCBjb250cm9sLCBidXQgd2hhdCBvcHRpb25z
-IEkgaGF2ZSBmb3IgY29udHJvbGxpbmcgdGhhdCBhcmVuJ3Qga25vd24gdG8gbWUgcmlnaHQgbm93
-Lgo+PiAKPj4gSWRlYWxseSwgSSB3YW50IHRvIGVuZCB1cCB3aXRoIHRoZSBhdWRpbyBtdXRpbmcg
-YW5kIHN3aXRjaGluZyBjb3JyZWN0bHkgd2hlbiB0aGUgamFjayBpcyBpbnNlcnRlZC4gQSBib251
-cyB3b3VsZCBiZSB0byBsb3NlIHRoZSB1bnVzZWQgKG9yIGF0IGxlYXN0IGluYWNjZXNzaWJsZSkg
-YXVkaW8gaW5wdXQgYW5kIG91dHB1dCBvcHRpb25zIGluIGFsc2FtaXhlciBhbmQgZ2FpbiBpbmRp
-dmlkdWFsIGNvbnRyb2wgb2YgdGhlIGludGVybmFsIHNwZWFrZXIgYW5kIGxpbmUgb3V0IGxldmVs
-cyAod2hpY2ggYXBwZWFyIHRvIGJlIHBhaXJlZCB0b2dldGhlciBhdCB0aGUgbW9tZW50KS4KPj4g
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On Tue,  4 Sep 2018 11:24:48 +0100, Srinivas Kandagatla wrote:
+> This patch updates wcd9335 bindings with recommended properties.
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  .../devicetree/bindings/sound/qcom,wcd9335.txt         | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+
+Reviewed-by: Rob Herring <robh@kernel.org>
