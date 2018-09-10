@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 02/16] ASoC: au1x: ac97c: use
- devm_snd_soc_register_component()
-Date: Mon, 10 Sep 2018 14:59:43 +0100
-Message-ID: <20180910135943.GF5856@sirena.org.uk>
+Subject: Re: [PATCH 04/16] ASoC: cirrus: use
+	devm_snd_soc_register_component()
+Date: Mon, 10 Sep 2018 15:06:58 +0100
+Message-ID: <20180910140658.GG5856@sirena.org.uk>
 References: <87sh2mruw6.wl-kuninori.morimoto.gx@renesas.com>
- <87pnxqruut.wl-kuninori.morimoto.gx@renesas.com>
+ <87musurutv.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============8677608934218961462=="
+Content-Type: multipart/mixed; boundary="===============5035995672530878734=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 565ED2676ED
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 15:59:45 +0200 (CEST)
-In-Reply-To: <87pnxqruut.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C21A2676ED
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:06:59 +0200 (CEST)
+In-Reply-To: <87musurutv.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,59 +27,56 @@ Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============8677608934218961462==
+--===============5035995672530878734==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5Mfx4RzfBqgnTE/w"
+	protocol="application/pgp-signature"; boundary="Z0mFw3+mXTC5ycVe"
 Content-Disposition: inline
 
 
---5Mfx4RzfBqgnTE/w
+--Z0mFw3+mXTC5ycVe
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Sep 07, 2018 at 01:00:32AM +0000, Kuninori Morimoto wrote:
+On Fri, Sep 07, 2018 at 01:01:05AM +0000, Kuninori Morimoto wrote:
 
-> @@ -288,8 +288,6 @@ static int au1xac97c_drvremove(struct platform_device=
- *pdev)
+> @@ -422,8 +420,6 @@ static int ep93xx_ac97_remove(struct platform_device =
+*pdev)
 >  {
->  	struct au1xpsc_audio_data *ctx =3D platform_get_drvdata(pdev);
+>  	struct ep93xx_ac97_info	*info =3D platform_get_drvdata(pdev);
 > =20
 > -	snd_soc_unregister_component(&pdev->dev);
 > -
->  	WR(ctx, AC97_ENABLE, EN_D);	/* clock off, disable */
+>  	/* disable the AC97 controller */
+>  	ep93xx_ac97_write_reg(info, AC97GCR, 0);
 > =20
->  	ac97c_workdata =3D NULL;	/* MDEV */
 
-This will mean that instead of unregistering the component so nothing
-can use the hardware then disabling the hardware we'll do things the
-other way around so there's a race where we may break anything that
-tries to use the driver just as we're unregistring, possibly causing the
-system to hang or something depending on what happens if you try to
-access the disabled IPs.
+Similar ordering thing here - it's generally fine to convert to devm_ if
+the unregister is the last thing in the remove function but otherwise
+you need to be careful.
 
---5Mfx4RzfBqgnTE/w
+--Z0mFw3+mXTC5ycVe
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluWeM4ACgkQJNaLcl1U
-h9BywQf/Z+PEea5L427dMxXYTObggiH7ka1U55bVDWFof9L5x+DjM67qPv+4KEFX
-cDmokqFBL8Bprhs7Hw945ANOGBOmRDtb5abJXzIEwOM3DPUzJHGW1GztqXj8cbso
-y58dVviLw+Gi5ouiotVXnF8130+hwViCSQpqHRYO4VtyQxZXbCRWEs6LeNfypnlQ
-IKmcSE1uBhbpI797uytzOzCiEcBQWAVG2JZLPhppSzzBpodzeTLDkgZiaczqFlFT
-TQAqMSl4XPi8+MUY0PvI5TklwnXk0MC+w3FqCedHsYpSH+LJFHyMIq0J1b32iBfh
-mWEBY/XNwWV/2AxSfKM5Ip+SRrvILw==
-=pO84
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluWeoIACgkQJNaLcl1U
+h9Ch5wgAho3Xj4M3aT3hSA4RShKU//X/PcGPPUQovRDFN+fPHx4Wx2Yb3pp9fRCf
+tCnc5JEwbRGgBaKi5UjTJGZvnLEuHgKBeDFb9YVrtVCVwg9R/WGB0t7PiXVnRckS
+H6ZgTiPYfAU1jCUvSquydLD8pWHw17oOYah8cxmLCFw+xybgwSu91ZU+++op7kPK
+bRDGmuXINrO2QNKGWYccC18F3AzsQVHTVWSEFa8KVKmCfVLTSwakgq0Lz7YpVg8m
+b87FHCGmwKtPVmoQAyQwzeWC7VCUXX6GRiSNrUn0VUslM8pDjHOR5uH12BkMMF/S
+iqneBVwnN5UJrqbdexv//ah/3/Fl1Q==
+=g7vd
 -----END PGP SIGNATURE-----
 
---5Mfx4RzfBqgnTE/w--
+--Z0mFw3+mXTC5ycVe--
 
---===============8677608934218961462==
+--===============5035995672530878734==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============8677608934218961462==--
+--===============5035995672530878734==--
