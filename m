@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: nuc900: use
+Subject: Applied "ASoC: tscs454: use
 	devm_snd_soc_register_component()" to the asoc tree
-Date: Mon, 10 Sep 2018 15:21:42 +0100 (BST)
-Message-ID: <20180910142142.2675D1122D51@debutante.sirena.org.uk>
-References: <87efe6rur9.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 10 Sep 2018 15:21:51 +0100 (BST)
+Message-ID: <20180910142151.87F7B1122D51@debutante.sirena.org.uk>
+References: <87in3irusn.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C5EEC267803
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:21:42 +0200 (CEST)
-In-Reply-To: <87efe6rur9.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 14B8E267803
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:21:51 +0200 (CEST)
+In-Reply-To: <87in3irusn.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: nuc900: use devm_snd_soc_register_component()
+   ASoC: tscs454: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From bfacaa8c8956dd6076641043b7be848267a708eb Mon Sep 17 00:00:00 2001
+>From 007ac42db9ff4c36e91d192353421c6209058e06 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:02:38 +0000
-Subject: [PATCH] ASoC: nuc900: use devm_snd_soc_register_component()
+Date: Fri, 7 Sep 2018 01:01:50 +0000
+Subject: [PATCH] ASoC: tscs454: use devm_snd_soc_register_component()
 
 Now we have devm_snd_soc_register_component().
 Let's use it instead of snd_soc_register_component().
@@ -64,30 +64,21 @@ Let's use it instead of snd_soc_register_component().
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/nuc900/nuc900-ac97.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ sound/soc/codecs/tscs454.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
-index 81b09d740ed9..6384bb6dacfd 100644
---- a/sound/soc/nuc900/nuc900-ac97.c
-+++ b/sound/soc/nuc900/nuc900-ac97.c
-@@ -356,7 +356,7 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
- 	if (ret)
- 		goto out;
+diff --git a/sound/soc/codecs/tscs454.c b/sound/soc/codecs/tscs454.c
+index ff85a0bf6170..93d84e5ae2d5 100644
+--- a/sound/soc/codecs/tscs454.c
++++ b/sound/soc/codecs/tscs454.c
+@@ -3459,7 +3459,7 @@ static int tscs454_i2c_probe(struct i2c_client *i2c,
+ 	/* Sync pg sel reg with cache */
+ 	regmap_write(tscs454->regmap, R_PAGESEL, 0x00);
  
--	ret = snd_soc_register_component(&pdev->dev, &nuc900_ac97_component,
-+	ret = devm_snd_soc_register_component(&pdev->dev, &nuc900_ac97_component,
- 					 &nuc900_ac97_dai, 1);
- 	if (ret)
- 		goto out;
-@@ -373,8 +373,6 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
- 
- static int nuc900_ac97_drvremove(struct platform_device *pdev)
- {
--	snd_soc_unregister_component(&pdev->dev);
--
- 	nuc900_ac97_data = NULL;
- 	snd_soc_set_ac97_ops(NULL);
- 
+-	ret = snd_soc_register_component(&i2c->dev, &soc_component_dev_tscs454,
++	ret = devm_snd_soc_register_component(&i2c->dev, &soc_component_dev_tscs454,
+ 			tscs454_dais, ARRAY_SIZE(tscs454_dais));
+ 	if (ret) {
+ 		dev_err(&i2c->dev, "Failed to register component (%d)\n", ret);
 -- 
 2.19.0.rc1
