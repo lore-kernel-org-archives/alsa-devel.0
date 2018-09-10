@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: AMD: Fix simultaneous playback
- and capture on different channel
-Date: Mon, 10 Sep 2018 12:38:20 +0100
-Message-ID: <20180910113820.GD5856@sirena.org.uk>
-References: <1536566815-3271-1-git-send-email-akshu.agrawal@amd.com>
+Subject: Re: [PATCH 02/16] ASoC: au1x: ac97c: use
+ devm_snd_soc_register_component()
+Date: Mon, 10 Sep 2018 14:59:43 +0100
+Message-ID: <20180910135943.GF5856@sirena.org.uk>
+References: <87sh2mruw6.wl-kuninori.morimoto.gx@renesas.com>
+ <87pnxqruut.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6928417734714745501=="
+Content-Type: multipart/mixed; boundary="===============8677608934218961462=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id AE5372676ED
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 13:38:24 +0200 (CEST)
-In-Reply-To: <1536566815-3271-1-git-send-email-akshu.agrawal@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 565ED2676ED
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 15:59:45 +0200 (CEST)
+In-Reply-To: <87pnxqruut.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,65 +22,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Akshu Agrawal <akshu.agrawal@amd.com>
-Cc: "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, open list <linux-kernel@vger.kernel.org>, Takashi Iwai <tiwai@suse.com>, djkurtz@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Wei Yongjun <weiyongjun1@huawei.com>, "Mukunda,
- Vijendar" <Vijendar.Mukunda@amd.com>, Alexander.Deucher@amd.com
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6928417734714745501==
+--===============8677608934218961462==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="GpGaEY17fSl8rd50"
+	protocol="application/pgp-signature"; boundary="5Mfx4RzfBqgnTE/w"
 Content-Disposition: inline
 
 
---GpGaEY17fSl8rd50
+--5Mfx4RzfBqgnTE/w
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Sep 10, 2018 at 01:36:29PM +0530, Akshu Agrawal wrote:
-> If capture and playback are started on different channel (I2S/BT)
-> there is a possibilty that channel information passed from machine driver
-> is overwritten before the configuration is done in dma driver.
-> Example:
-> 113.597588: cz_max_startup: ---playback sets BT channel
-> 113.597694: cz_dmic1_startup: ---capture sets I2S channel
-> 113.597979: acp_dma_hw_params: ---configures capture for I2S channel
-> 113.598114: acp_dma_hw_params: ---configures playback for I2S channel
->=20
-> This is fixed by having lock between startup and prepare. This ensures
-> no other codec startup gets called between a codec's startup(where channel
-> info is set) and hw_params(where channel info is read).
+On Fri, Sep 07, 2018 at 01:00:32AM +0000, Kuninori Morimoto wrote:
 
-This isn't viable - the driver will deadlock if the application hits an
-error and never gets to startup, or if the application tries to
-simultaneously configure two channels (ie, do all the prepares and then
-all the parameter configuration and then startup).  The DMA driver needs
-to remember the configurations for the different channels separately.
+> @@ -288,8 +288,6 @@ static int au1xac97c_drvremove(struct platform_device=
+ *pdev)
+>  {
+>  	struct au1xpsc_audio_data *ctx =3D platform_get_drvdata(pdev);
+> =20
+> -	snd_soc_unregister_component(&pdev->dev);
+> -
+>  	WR(ctx, AC97_ENABLE, EN_D);	/* clock off, disable */
+> =20
+>  	ac97c_workdata =3D NULL;	/* MDEV */
 
---GpGaEY17fSl8rd50
+This will mean that instead of unregistering the component so nothing
+can use the hardware then disabling the hardware we'll do things the
+other way around so there's a race where we may break anything that
+tries to use the driver just as we're unregistring, possibly causing the
+system to hang or something depending on what happens if you try to
+access the disabled IPs.
+
+--5Mfx4RzfBqgnTE/w
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluWV6wACgkQJNaLcl1U
-h9CujQf/dW83AWCa4lWvkfHryxAKuYFIxv1USSFz30+0uzXDmLTxOt3ZRu4D8gVW
-i1Is4Fk5sY2zj0HXU0DH4PPA+NSnpoUg7IHa3aI8hzmkIiKtKP2ZH3Q6EVjZChgS
-bf/isOGQ01RJl/QNFZ2u393l9C4ZX5i7EgYQI2PwCdt9DzgbyFGgvYIcs4Ac2eLF
-tgeEHq8N0qvl4W3Q2NT6s+fBaxIYqHzNHZIE/jvMgTccM38J7YhK+OvPdjmsnwtW
-ukPoZxjEfMYvhA574ApIpwONMmRwsB9YfmAK7vXE0S3nLSTWZC9ftDXOtRG5HwZC
-b96+fJx6o07IHeQ1Mwu4lRv5drDXEA==
-=sbh/
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluWeM4ACgkQJNaLcl1U
+h9BywQf/Z+PEea5L427dMxXYTObggiH7ka1U55bVDWFof9L5x+DjM67qPv+4KEFX
+cDmokqFBL8Bprhs7Hw945ANOGBOmRDtb5abJXzIEwOM3DPUzJHGW1GztqXj8cbso
+y58dVviLw+Gi5ouiotVXnF8130+hwViCSQpqHRYO4VtyQxZXbCRWEs6LeNfypnlQ
+IKmcSE1uBhbpI797uytzOzCiEcBQWAVG2JZLPhppSzzBpodzeTLDkgZiaczqFlFT
+TQAqMSl4XPi8+MUY0PvI5TklwnXk0MC+w3FqCedHsYpSH+LJFHyMIq0J1b32iBfh
+mWEBY/XNwWV/2AxSfKM5Ip+SRrvILw==
+=pO84
 -----END PGP SIGNATURE-----
 
---GpGaEY17fSl8rd50--
+--5Mfx4RzfBqgnTE/w--
 
---===============6928417734714745501==
+--===============8677608934218961462==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6928417734714745501==--
+--===============8677608934218961462==--
