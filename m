@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hdac_hda: use
+Subject: Applied "ASoC: bcm: use
 	devm_snd_soc_register_component()" to the asoc tree
-Date: Mon, 10 Sep 2018 15:22:09 +0100 (BST)
-Message-ID: <20180910142209.209BF1122D51@debutante.sirena.org.uk>
-References: <87lg8erutg.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 10 Sep 2018 15:22:17 +0100 (BST)
+Message-ID: <20180910142217.CD0D51122D51@debutante.sirena.org.uk>
+References: <87o9daruub.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 87DD22678B3
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:22:09 +0200 (CEST)
-In-Reply-To: <87lg8erutg.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 391EA2678B3
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:22:18 +0200 (CEST)
+In-Reply-To: <87o9daruub.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hdac_hda: use devm_snd_soc_register_component()
+   ASoC: bcm: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 10ccaa39d7628470a3de4aae9d2346a55cbee46e Mon Sep 17 00:00:00 2001
+>From 570f75b93551a6d70ecbd0a7b6d962b4ca4722f0 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:01:19 +0000
-Subject: [PATCH] ASoC: hdac_hda: use devm_snd_soc_register_component()
+Date: Fri, 7 Sep 2018 01:00:49 +0000
+Subject: [PATCH] ASoC: bcm: use devm_snd_soc_register_component()
 
 Now we have devm_snd_soc_register_component().
 Let's use it instead of snd_soc_register_component().
@@ -64,29 +64,57 @@ Let's use it instead of snd_soc_register_component().
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/hdac_hda.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/bcm/cygnus-ssp.c | 13 ++++---------
+ 1 file changed, 4 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/codecs/hdac_hda.c b/sound/soc/codecs/hdac_hda.c
-index 8c25a1332fa7..2aaa83028e55 100644
---- a/sound/soc/codecs/hdac_hda.c
-+++ b/sound/soc/codecs/hdac_hda.c
-@@ -448,7 +448,7 @@ static int hdac_hda_dev_probe(struct hdac_device *hdev)
- 		return -ENOMEM;
+diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
+index b733f1446353..b7c358b48d8d 100644
+--- a/sound/soc/bcm/cygnus-ssp.c
++++ b/sound/soc/bcm/cygnus-ssp.c
+@@ -1334,7 +1334,7 @@ static int cygnus_ssp_probe(struct platform_device *pdev)
+ 	cygaud->active_ports = 0;
  
- 	/* ASoC specific initialization */
--	ret = snd_soc_register_component(&hdev->dev,
-+	ret = devm_snd_soc_register_component(&hdev->dev,
- 					 &hdac_hda_codec, hdac_hda_dais,
- 					 ARRAY_SIZE(hdac_hda_dais));
- 	if (ret < 0) {
-@@ -464,7 +464,6 @@ static int hdac_hda_dev_probe(struct hdac_device *hdev)
+ 	dev_dbg(dev, "Registering %d DAIs\n", active_port_count);
+-	err = snd_soc_register_component(dev, &cygnus_ssp_component,
++	err = devm_snd_soc_register_component(dev, &cygnus_ssp_component,
+ 				cygnus_ssp_dai, active_port_count);
+ 	if (err) {
+ 		dev_err(dev, "snd_soc_register_dai failed\n");
+@@ -1345,32 +1345,27 @@ static int cygnus_ssp_probe(struct platform_device *pdev)
+ 	if (cygaud->irq_num <= 0) {
+ 		dev_err(dev, "platform_get_irq failed\n");
+ 		err = cygaud->irq_num;
+-		goto err_irq;
++		return err;
+ 	}
  
- static int hdac_hda_dev_remove(struct hdac_device *hdev)
- {
--	snd_soc_unregister_component(&hdev->dev);
+ 	err = audio_clk_init(pdev, cygaud);
+ 	if (err) {
+ 		dev_err(dev, "audio clock initialization failed\n");
+-		goto err_irq;
++		return err;
+ 	}
+ 
+ 	err = cygnus_soc_platform_register(dev, cygaud);
+ 	if (err) {
+ 		dev_err(dev, "platform reg error %d\n", err);
+-		goto err_irq;
++		return err;
+ 	}
+ 
  	return 0;
+-
+-err_irq:
+-	snd_soc_unregister_component(dev);
+-	return err;
  }
  
+ static int cygnus_ssp_remove(struct platform_device *pdev)
+ {
+ 	cygnus_soc_platform_unregister(&pdev->dev);
+-	snd_soc_unregister_component(&pdev->dev);
+ 
+ 	return 0;
+ }
 -- 
 2.19.0.rc1
