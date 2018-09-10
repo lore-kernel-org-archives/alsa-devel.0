@@ -1,18 +1,19 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_ssc_dai: use
-	devm_snd_soc_register_component()" to the asoc tree
-Date: Mon, 10 Sep 2018 15:22:27 +0100 (BST)
-Message-ID: <20180910142227.CECC71122D51@debutante.sirena.org.uk>
-References: <87r2i6ruv9.wl-kuninori.morimoto.gx@renesas.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: dapm: Fix a couple uninitialized ret
+	variables
+Date: Mon, 10 Sep 2018 15:22:24 +0100
+Message-ID: <20180910142224.GJ1653@imbe.wolfsonmicro.main>
+References: <20180907194033.cmt4rdiwwznaeudq@kili.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 744722678BD
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:22:28 +0200 (CEST)
-In-Reply-To: <87r2i6ruv9.wl-kuninori.morimoto.gx@renesas.com>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 716602678BC
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:22:27 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180907194033.cmt4rdiwwznaeudq@kili.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,94 +23,54 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Fri, Sep 07, 2018 at 10:40:33PM +0300, Dan Carpenter wrote:
+> Smatch complains that these variables could be uninitialized.  The first
+> one in snd_soc_dai_link_event() is probably a false positive, because
+> probably we know the lists are not empty.  I would normally ignore the
+> warning, but GCC complains here as well so I just silenced the warning.
+> The "ret" in snd_soc_dapm_new_dai() does need to be initialized or it
+> leads to a bogus dereference in the caller.
+> 
+> Fixes: 3bbf5d34fd4a ("ASoC: dapm: Move error handling to snd_soc_dapm_new_control_unlocked")
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+> 
+> diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+> index 9f4edcd19e02..0dcdcc23dcfd 100644
+> --- a/sound/soc/soc-dapm.c
+> +++ b/sound/soc/soc-dapm.c
+> @@ -3623,7 +3623,7 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
+>  	struct snd_pcm_hw_params *params = NULL;
+>  	struct snd_pcm_runtime *runtime = NULL;
+>  	unsigned int fmt;
+> -	int ret;
+> +	int ret = 0;
 
-   ASoC: atmel_ssc_dai: use devm_snd_soc_register_component()
+This one got fixed the other day in fc269c039644 ("ASoC: dapm:
+Avoid uninitialised variable warning").
+>  
+>  	config = rtd->dai_link->params + rtd->params_select;
+>  
+> @@ -3938,8 +3938,10 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+>  	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
+>  
+>  	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
+> -	if (IS_ERR(w))
+> +	if (IS_ERR(w)) {
+> +		ret = PTR_ERR(w);
+>  		goto outfree_kcontrol_news;
+> +	}
 
-has been applied to the asoc tree at
+Thanks for spotting this, looks good to me.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+>  
+>  	w->priv = rtd;
+>  
 
 Thanks,
-Mark
-
->From e14614dc5153ad41f7d1e5b125e4cd155ca79aa2 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:00:15 +0000
-Subject: [PATCH] ASoC: atmel_ssc_dai: use devm_snd_soc_register_component()
-
-Now we have devm_snd_soc_register_component().
-Let's use it instead of snd_soc_register_component().
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/atmel/atmel_ssc_dai.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
-
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index d3b69682d9c2..6291ec7f9dd6 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -1005,11 +1005,11 @@ static int asoc_ssc_init(struct device *dev)
- 	struct ssc_device *ssc = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = snd_soc_register_component(dev, &atmel_ssc_component,
-+	ret = devm_snd_soc_register_component(dev, &atmel_ssc_component,
- 					 &atmel_ssc_dai, 1);
- 	if (ret) {
- 		dev_err(dev, "Could not register DAI: %d\n", ret);
--		goto err;
-+		return ret;
- 	}
- 
- 	if (ssc->pdata->use_dma)
-@@ -1019,15 +1019,10 @@ static int asoc_ssc_init(struct device *dev)
- 
- 	if (ret) {
- 		dev_err(dev, "Could not register PCM: %d\n", ret);
--		goto err_unregister_dai;
-+		return ret;
- 	}
- 
- 	return 0;
--
--err_unregister_dai:
--	snd_soc_unregister_component(dev);
--err:
--	return ret;
- }
- 
- static void asoc_ssc_exit(struct device *dev)
-@@ -1038,8 +1033,6 @@ static void asoc_ssc_exit(struct device *dev)
- 		atmel_pcm_dma_platform_unregister(dev);
- 	else
- 		atmel_pcm_pdc_platform_unregister(dev);
--
--	snd_soc_unregister_component(dev);
- }
- 
- /**
--- 
-2.19.0.rc1
+Charles
