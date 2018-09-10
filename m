@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tscs454: use
+Subject: Applied "ASoC: rt5668: use
 	devm_snd_soc_register_component()" to the asoc tree
-Date: Mon, 10 Sep 2018 15:21:51 +0100 (BST)
-Message-ID: <20180910142151.87F7B1122D51@debutante.sirena.org.uk>
-References: <87in3irusn.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 10 Sep 2018 15:22:00 +0100 (BST)
+Message-ID: <20180910142200.77C031122D51@debutante.sirena.org.uk>
+References: <87k1nyrut2.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 14B8E267803
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:21:51 +0200 (CEST)
-In-Reply-To: <87in3irusn.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E295C267889
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:22:00 +0200 (CEST)
+In-Reply-To: <87k1nyrut2.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tscs454: use devm_snd_soc_register_component()
+   ASoC: rt5668: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 007ac42db9ff4c36e91d192353421c6209058e06 Mon Sep 17 00:00:00 2001
+>From 4fe1984ebc086ee39dd57983a7fee84c96c954a7 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:01:50 +0000
-Subject: [PATCH] ASoC: tscs454: use devm_snd_soc_register_component()
+Date: Fri, 7 Sep 2018 01:01:34 +0000
+Subject: [PATCH] ASoC: rt5668: use devm_snd_soc_register_component()
 
 Now we have devm_snd_soc_register_component().
 Let's use it instead of snd_soc_register_component().
@@ -64,21 +64,28 @@ Let's use it instead of snd_soc_register_component().
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/tscs454.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/codecs/rt5668.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/codecs/tscs454.c b/sound/soc/codecs/tscs454.c
-index ff85a0bf6170..93d84e5ae2d5 100644
---- a/sound/soc/codecs/tscs454.c
-+++ b/sound/soc/codecs/tscs454.c
-@@ -3459,7 +3459,7 @@ static int tscs454_i2c_probe(struct i2c_client *i2c,
- 	/* Sync pg sel reg with cache */
- 	regmap_write(tscs454->regmap, R_PAGESEL, 0x00);
+diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
+index 3c19d03f2446..4412cd2910cd 100644
+--- a/sound/soc/codecs/rt5668.c
++++ b/sound/soc/codecs/rt5668.c
+@@ -2587,14 +2587,12 @@ static int rt5668_i2c_probe(struct i2c_client *i2c,
  
--	ret = snd_soc_register_component(&i2c->dev, &soc_component_dev_tscs454,
-+	ret = devm_snd_soc_register_component(&i2c->dev, &soc_component_dev_tscs454,
- 			tscs454_dais, ARRAY_SIZE(tscs454_dais));
- 	if (ret) {
- 		dev_err(&i2c->dev, "Failed to register component (%d)\n", ret);
+ 	}
+ 
+-	return snd_soc_register_component(&i2c->dev, &soc_component_dev_rt5668,
++	return devm_snd_soc_register_component(&i2c->dev, &soc_component_dev_rt5668,
+ 			rt5668_dai, ARRAY_SIZE(rt5668_dai));
+ }
+ 
+ static int rt5668_i2c_remove(struct i2c_client *i2c)
+ {
+-	snd_soc_unregister_component(&i2c->dev);
+-
+ 	return 0;
+ }
+ 
 -- 
 2.19.0.rc1
