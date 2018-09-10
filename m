@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sh: use
+Subject: Applied "ASoC: omap: use
 	devm_snd_soc_register_component()" to the asoc tree
-Date: Mon, 10 Sep 2018 15:21:22 +0100 (BST)
-Message-ID: <20180910142122.A76E51122D51@debutante.sirena.org.uk>
-References: <87a7ourupy.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 10 Sep 2018 15:21:31 +0100 (BST)
+Message-ID: <20180910142131.E0EAC1122D51@debutante.sirena.org.uk>
+References: <87d0tqruqu.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4456E26788B
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:21:23 +0200 (CEST)
-In-Reply-To: <87a7ourupy.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 5AD90267803
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:21:32 +0200 (CEST)
+In-Reply-To: <87d0tqruqu.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sh: use devm_snd_soc_register_component()
+   ASoC: omap: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From afa88ee37b1383490df003ea005d1d9bc8afa8a8 Mon Sep 17 00:00:00 2001
+>From 642a722d3116fbd22e59ac027f81b5ecd285f17c Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:03:25 +0000
-Subject: [PATCH] ASoC: sh: use devm_snd_soc_register_component()
+Date: Fri, 7 Sep 2018 01:02:54 +0000
+Subject: [PATCH] ASoC: omap: use devm_snd_soc_register_component()
 
 Now we have devm_snd_soc_register_component().
 Let's use it instead of snd_soc_register_component().
@@ -64,27 +64,37 @@ Let's use it instead of snd_soc_register_component().
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/hac.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ sound/soc/omap/omap-hdmi-audio.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/sh/hac.c b/sound/soc/sh/hac.c
-index c2b496398e6b..17622ceb98c0 100644
---- a/sound/soc/sh/hac.c
-+++ b/sound/soc/sh/hac.c
-@@ -319,13 +319,12 @@ static int hac_soc_platform_probe(struct platform_device *pdev)
- 	if (ret != 0)
+diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
+index 8a99a8837dc9..673a9eb153b2 100644
+--- a/sound/soc/omap/omap-hdmi-audio.c
++++ b/sound/soc/omap/omap-hdmi-audio.c
+@@ -348,7 +348,7 @@ static int omap_hdmi_audio_probe(struct platform_device *pdev)
+ 	default:
+ 		return -EINVAL;
+ 	}
+-	ret = snd_soc_register_component(ad->dssdev, &omap_hdmi_component,
++	ret = devm_snd_soc_register_component(ad->dssdev, &omap_hdmi_component,
+ 					 dai_drv, 1);
+ 	if (ret)
  		return ret;
+@@ -383,7 +383,6 @@ static int omap_hdmi_audio_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_card(card);
+ 	if (ret) {
+ 		dev_err(dev, "snd_soc_register_card failed (%d)\n", ret);
+-		snd_soc_unregister_component(ad->dssdev);
+ 		return ret;
+ 	}
  
--	return snd_soc_register_component(&pdev->dev, &sh4_hac_component,
-+	return devm_snd_soc_register_component(&pdev->dev, &sh4_hac_component,
- 					  sh4_hac_dai, ARRAY_SIZE(sh4_hac_dai));
- }
+@@ -400,7 +399,6 @@ static int omap_hdmi_audio_remove(struct platform_device *pdev)
+ 	struct hdmi_audio_data *ad = platform_get_drvdata(pdev);
  
- static int hac_soc_platform_remove(struct platform_device *pdev)
- {
--	snd_soc_unregister_component(&pdev->dev);
- 	snd_soc_set_ac97_ops(NULL);
+ 	snd_soc_unregister_card(ad->card);
+-	snd_soc_unregister_component(ad->dssdev);
  	return 0;
  }
+ 
 -- 
 2.19.0.rc1
