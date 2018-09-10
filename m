@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: omap: use
+Subject: Applied "ASoC: nuc900: use
 	devm_snd_soc_register_component()" to the asoc tree
-Date: Mon, 10 Sep 2018 15:21:31 +0100 (BST)
-Message-ID: <20180910142131.E0EAC1122D51@debutante.sirena.org.uk>
-References: <87d0tqruqu.wl-kuninori.morimoto.gx@renesas.com>
+Date: Mon, 10 Sep 2018 15:21:42 +0100 (BST)
+Message-ID: <20180910142142.2675D1122D51@debutante.sirena.org.uk>
+References: <87efe6rur9.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5AD90267803
- for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:21:32 +0200 (CEST)
-In-Reply-To: <87d0tqruqu.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C5EEC267803
+ for <alsa-devel@alsa-project.org>; Mon, 10 Sep 2018 16:21:42 +0200 (CEST)
+In-Reply-To: <87efe6rur9.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: omap: use devm_snd_soc_register_component()
+   ASoC: nuc900: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -53,10 +53,10 @@ to this mail.
 Thanks,
 Mark
 
->From 642a722d3116fbd22e59ac027f81b5ecd285f17c Mon Sep 17 00:00:00 2001
+>From bfacaa8c8956dd6076641043b7be848267a708eb Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:02:54 +0000
-Subject: [PATCH] ASoC: omap: use devm_snd_soc_register_component()
+Date: Fri, 7 Sep 2018 01:02:38 +0000
+Subject: [PATCH] ASoC: nuc900: use devm_snd_soc_register_component()
 
 Now we have devm_snd_soc_register_component().
 Let's use it instead of snd_soc_register_component().
@@ -64,37 +64,30 @@ Let's use it instead of snd_soc_register_component().
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/omap/omap-hdmi-audio.c | 4 +---
+ sound/soc/nuc900/nuc900-ac97.c | 4 +---
  1 file changed, 1 insertion(+), 3 deletions(-)
 
-diff --git a/sound/soc/omap/omap-hdmi-audio.c b/sound/soc/omap/omap-hdmi-audio.c
-index 8a99a8837dc9..673a9eb153b2 100644
---- a/sound/soc/omap/omap-hdmi-audio.c
-+++ b/sound/soc/omap/omap-hdmi-audio.c
-@@ -348,7 +348,7 @@ static int omap_hdmi_audio_probe(struct platform_device *pdev)
- 	default:
- 		return -EINVAL;
- 	}
--	ret = snd_soc_register_component(ad->dssdev, &omap_hdmi_component,
-+	ret = devm_snd_soc_register_component(ad->dssdev, &omap_hdmi_component,
- 					 dai_drv, 1);
+diff --git a/sound/soc/nuc900/nuc900-ac97.c b/sound/soc/nuc900/nuc900-ac97.c
+index 81b09d740ed9..6384bb6dacfd 100644
+--- a/sound/soc/nuc900/nuc900-ac97.c
++++ b/sound/soc/nuc900/nuc900-ac97.c
+@@ -356,7 +356,7 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
  	if (ret)
- 		return ret;
-@@ -383,7 +383,6 @@ static int omap_hdmi_audio_probe(struct platform_device *pdev)
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
- 		dev_err(dev, "snd_soc_register_card failed (%d)\n", ret);
--		snd_soc_unregister_component(ad->dssdev);
- 		return ret;
- 	}
+ 		goto out;
  
-@@ -400,7 +399,6 @@ static int omap_hdmi_audio_remove(struct platform_device *pdev)
- 	struct hdmi_audio_data *ad = platform_get_drvdata(pdev);
+-	ret = snd_soc_register_component(&pdev->dev, &nuc900_ac97_component,
++	ret = devm_snd_soc_register_component(&pdev->dev, &nuc900_ac97_component,
+ 					 &nuc900_ac97_dai, 1);
+ 	if (ret)
+ 		goto out;
+@@ -373,8 +373,6 @@ static int nuc900_ac97_drvprobe(struct platform_device *pdev)
  
- 	snd_soc_unregister_card(ad->card);
--	snd_soc_unregister_component(ad->dssdev);
- 	return 0;
- }
+ static int nuc900_ac97_drvremove(struct platform_device *pdev)
+ {
+-	snd_soc_unregister_component(&pdev->dev);
+-
+ 	nuc900_ac97_data = NULL;
+ 	snd_soc_set_ac97_ops(NULL);
  
 -- 
 2.19.0.rc1
