@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: avoid nested code on
-	soc_remove_dai()" to the asoc tree
-Date: Tue, 11 Sep 2018 19:22:14 +0100 (BST)
-Message-ID: <20180911182214.D4B3A1121B1F@debutante.sirena.org.uk>
-References: <87y3c84jka.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rt5668: remove empty
+	rt5668_i2c_remove()" to the asoc tree
+Date: Tue, 11 Sep 2018 19:22:24 +0100 (BST)
+Message-ID: <20180911182224.6BDB51121B1F@debutante.sirena.org.uk>
+References: <87tvmw4j7i.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 3EFEC26787A
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:22:15 +0200 (CEST)
-In-Reply-To: <87y3c84jka.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 15D8926784A
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:22:24 +0200 (CEST)
+In-Reply-To: <87tvmw4j7i.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: avoid nested code on soc_remove_dai()
+   ASoC: rt5668: remove empty rt5668_i2c_remove()
 
 has been applied to the asoc tree at
 
@@ -53,52 +53,43 @@ to this mail.
 Thanks,
 Mark
 
->From 2eda3cb108b699a6ff78a87e25143c153bc88e41 Mon Sep 17 00:00:00 2001
+>From a6ebf4c9770e918e601aa9bf4bc3cf4001dd3d4d Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 11 Sep 2018 06:54:26 +0000
-Subject: [PATCH] ASoC: soc-core: avoid nested code on soc_remove_dai()
+Date: Tue, 11 Sep 2018 07:02:04 +0000
+Subject: [PATCH] ASoC: rt5668: remove empty rt5668_i2c_remove()
 
-Nested code is not readable.
-This patch avoid it on soc_remove_dai().
+rt5668_i2c_remove() is empty, and no longer needed.
+Let's remove it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 21 +++++++++++----------
- 1 file changed, 11 insertions(+), 10 deletions(-)
+ sound/soc/codecs/rt5668.c | 6 ------
+ 1 file changed, 6 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 4e9367aacc0c..dde9b70b58b5 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -942,17 +942,18 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
- {
- 	int err;
- 
--	if (dai && dai->probed &&
--			dai->driver->remove_order == order) {
--		if (dai->driver->remove) {
--			err = dai->driver->remove(dai);
--			if (err < 0)
--				dev_err(dai->dev,
--					"ASoC: failed to remove %s: %d\n",
--					dai->name, err);
--		}
--		dai->probed = 0;
-+	if (!dai || !dai->probed ||
-+	    dai->driver->remove_order != order)
-+		return;
-+
-+	if (dai->driver->remove) {
-+		err = dai->driver->remove(dai);
-+		if (err < 0)
-+			dev_err(dai->dev,
-+				"ASoC: failed to remove %s: %d\n",
-+				dai->name, err);
- 	}
-+	dai->probed = 0;
+diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
+index 4412cd2910cd..85ba04d6e7ae 100644
+--- a/sound/soc/codecs/rt5668.c
++++ b/sound/soc/codecs/rt5668.c
+@@ -2591,11 +2591,6 @@ static int rt5668_i2c_probe(struct i2c_client *i2c,
+ 			rt5668_dai, ARRAY_SIZE(rt5668_dai));
  }
  
- static void soc_remove_link_dais(struct snd_soc_card *card,
+-static int rt5668_i2c_remove(struct i2c_client *i2c)
+-{
+-	return 0;
+-}
+-
+ static void rt5668_i2c_shutdown(struct i2c_client *client)
+ {
+ 	struct rt5668_priv *rt5668 = i2c_get_clientdata(client);
+@@ -2626,7 +2621,6 @@ static struct i2c_driver rt5668_i2c_driver = {
+ 		.acpi_match_table = ACPI_PTR(rt5668_acpi_match),
+ 	},
+ 	.probe = rt5668_i2c_probe,
+-	.remove = rt5668_i2c_remove,
+ 	.shutdown = rt5668_i2c_shutdown,
+ 	.id_table = rt5668_i2c_id,
+ };
 -- 
 2.19.0.rc2
