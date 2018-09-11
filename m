@@ -1,26 +1,18 @@
-From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
-Subject: Re: Microphone detected,
- but no output for all ASUS G751xx with ALC668 chipset
-Date: Tue, 11 Sep 2018 20:15:52 +0200
-Message-ID: <CANweNF7d8Z7qFw2cMkUH4F4r6P=Ms-=WVbFYrMX+O+uZkV4cwg@mail.gmail.com>
-References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
- <s5hin3d2ik0.wl-tiwai@suse.de>
- <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
- <s5hbm94ou29.wl-tiwai@suse.de>
- <CANweNF5PpzufjnRQk2gpqw1+kU8TK86RAj-topURG-FAHeYxcA@mail.gmail.com>
- <s5h7ejrq5dd.wl-tiwai@suse.de>
- <CANweNF5kcSDAxPXDqnyAEvh9bwYg61_F4XhaLjGrpEXZnvvNew@mail.gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: rockchip: add missing INTERLEAVED PCM
+	attribute" to the asoc tree
+Date: Tue, 11 Sep 2018 19:21:56 +0100 (BST)
+Message-ID: <20180911182156.DD1611121B1F@debutante.sirena.org.uk>
+References: <20180910163932.13722-1-katsuhiro@katsuster.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com
- [209.85.219.170])
- by alsa0.perex.cz (Postfix) with ESMTP id A9B82267812
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:16:04 +0200 (CEST)
-Received: by mail-yb1-f170.google.com with SMTP id e18-v6so9700531ybq.5
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 11:16:04 -0700 (PDT)
-In-Reply-To: <CANweNF5kcSDAxPXDqnyAEvh9bwYg61_F4XhaLjGrpEXZnvvNew@mail.gmail.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79393267812
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:21:59 +0200 (CEST)
+In-Reply-To: <20180910163932.13722-1-katsuhiro@katsuster.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -30,82 +22,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-U29ycnksIG15IGdtYWlsIGRpZG4ndCB1cGRhdGUgc28gSSB3cm90ZSBteSByZXNwb25zZSBiZWZv
-cmUgSSByZWFkIHlvdXIKbGFzdCBvbmUuCgpJdCBpcyBhIHNlcGFyYXRlIG1pYyBwb3J0IGFzIHRo
-ZSBHNzUxSlQgZG9lc24ndCBoYXZlIGFueSBoZWFkc2V0IG11bHRpamFja3MuCgpJJ2xsIHRyeSBh
-bmQgZGlnIGFyb3VuZCBpbiB0aGUga2VybmVsISBUaGFua3MgZm9yIHRoZSB0aXAhCgotSMOldmFy
-ZAoKRGVuIHRpci4gMTEuIHNlcC4gMjAxOCBrbC4gMjA6MDkgc2tyZXYgSMOldmFyZCA8aG92YXJk
-c2xpbGxAZ21haWwuY29tPjoKCj4gVGhhbmsgeW91IGZvciB0YWtpbmcgeW91ciB0aW1lIGFuZCB0
-cnlpbmcgdG8gaGVscCEgOikKPgo+IERvIHlvdSBrbm93IHdoZXJlIEkgY2FuIGFzayBhcm91bmQg
-Zm9yIG1vcmUgaGVscCBvbiB0aGUgaXNzdWU/IEkgZG9uJ3QKPiB3YW50IHRvIGdpdmUgdXAgeWV0
-Lgo+Cj4gLUjDpXZhcmQKPgo+IERlbiB0aXIuIDExLiBzZXAuIDIwMTgga2wuIDIwOjAyIHNrcmV2
-IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4KPj4gT24gVHVlLCAxMSBTZXAgMjAxOCAx
-OToxNDozNyArMDIwMCwKPj4gSMOldmFyZCB3cm90ZToKPj4gPgo+PiA+IFllcywgbWljcm9waG9u
-ZSBnZXRzIGRldGVjdGVkIGluc3RhbnRseSBhbmQgaXQgYXV0b21hdGljYWxseSBjaGFuZ2VzIHRv
-Cj4+IGl0Cj4+ID4gaW4gcGF2dWNvbnRyb2wuCj4+Cj4+IFRoZW4gaXQgbGlrZWx5IHJlcXVpcmVz
-IHNvbWUgYWRkaXRpb25hbCBpbml0aWFsaXphdGlvbiBvdXRzaWRlCj4+IEhELWF1ZGlvLiAgSXQn
-cyBoYXJkIHRvIGtub3csIGFzIGl0J3MgcHJldHR5IG11Y2ggdmVuZG9yLXNwZWNpZmljLgo+PiBZ
-b3UgY2FuIGRpZyBkb3duIHRoZSBXaW5kb3dzLCBidXQgSSBoYXZlIG5vIGlkZWEgYWJvdXQgV2lu
-ZG93cwo+PiBpbXBsZW1lbnRhdGlvbiwgc28gY2FuJ3QgZ2l2ZSBhbnkgaGludHMsIHVuZm9ydHVu
-YXRlbHkuCj4+Cj4+Cj4+IFRha2FzaGkKPj4KPj4gPgo+PiA+IERlbiB0aXIuIDExLiBzZXAuIDIw
-MTgga2wuIDE4OjUyIHNrcmV2IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4+ID4KPj4g
-PiA+IE9uIFR1ZSwgMTEgU2VwIDIwMTggMTg6NDA6MjMgKzAyMDAsCj4+ID4gPiBIw6V2YXJkIHdy
-b3RlOgo+PiA+ID4gPgo+PiA+ID4gPiBUaGFuayB5b3UgZm9yIHJlcGx5aW5nIQo+PiA+ID4gPgo+
-PiA+ID4gPiBFbmFibGluZyBsb29wYmFjayBpbiBhbHNhbWl4ZXI6Cj4+ID4gPiA+IGh0dHA6Ly9p
-LmltZ3VyLmNvbS9sTm82ZTdULnBuZwo+PiA+ID4gPgo+PiA+ID4gPiBBbmQgdW5tdXRpbmcgbW9y
-ZSBhbmQgbW9yZSB0aGluZ3MgaW4gIk1pYyBQbGF5YmFjayBWb2x1bWUiIGluCj4+ID4gPiBoZGFh
-bmFseXplcjoKPj4gPiA+ID4gaHR0cDovL2kuaW1ndXIuY29tL0gwSGlPaHkucG5nCj4+ID4gPiA+
-IG1hZGUgd2hpdGUgbm9pc2UgY29tZSBmcm9tIHRoZSBoZWFkc2V0LiBIb3dldmVyIGl0IGRpZCBu
-b3QgY2hhbmdlIG9yCj4+ID4gPiByZWFjdAo+PiA+ID4gPiBhdCBhbGwgd2hlbiBJIHRhbGtlZCBv
-ciBldmVuIG11dGVkIHRoZSBtaWNyb3Bob25lIHBoeXNpY2FsbHkuCj4+ID4gPiA+Cj4+ID4gPiA+
-IEkgY291bGRuJ3QgZmluZCAiTWljIFBsYXliYWNrIFN3aXRjaCIgYW55d2hlcmUgaW4gZWl0aGVy
-IGFsc2FtaXhlcgo+PiBvcgo+PiA+ID4gPiBoZGFhbmFseXplci4KPj4gPiA+Cj4+ID4gPiBJdCdz
-IGEgbWl4ZXIgbXV0ZSBzd2l0Y2guCj4+ID4gPgo+PiA+ID4gPiBUaGUgbWljcm9waG9uZSB3b3Jr
-cyBwZXJmZWN0bHkgZmluZSB1bmRlciBXaW5kb3dzLCBzbyBJIGRvbid0IHRoaW5rCj4+IGl0IGlz
-Cj4+ID4gPiA+IHRoZSBtaWMgcGluLgo+PiA+ID4KPj4gPiA+IEJ1dCB0aGUgZmFjdCBhYm92ZSBp
-bmRpY2F0ZXMgdGhlIHBvc3NpYmlsaXR5IG9mIHRoZSB3cm9uZyBwaW4sIHRvby4KPj4gPiA+Cj4+
-ID4gPiBEb2VzIHRoZSBqYWNrIGRldGVjdGlvbiBvZiB0aGUgZXh0IG1pYyBwaW4gd29yaz8KPj4g
-PiA+Cj4+ID4gPgo+PiA+ID4gVGFrYXNoaQo+PiA+ID4KPj4gPiA+ID4KPj4gPiA+ID4gLUjDpXZh
-cmQKPj4gPiA+ID4KPj4gPiA+ID4gRGVuIG1hbi4gMTAuIHNlcC4gMjAxOCBrbC4gMjI6Mzkgc2ty
-ZXYgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlCj4+ID46Cj4+ID4gPiA+Cj4+ID4gPiA+ID4g
-T24gVGh1LCAwNiBTZXAgMjAxOCAyMDo0NDozMCArMDIwMCwKPj4gPiA+ID4gPiBIw6V2YXJkIHdy
-b3RlOgo+PiA+ID4gPiA+ID4KPj4gPiA+ID4gPiA+IEFkZGl0aW9uYWwgcmVsZXZhbnQgaW5mbzoK
-Pj4gPiA+ID4gPiA+Cj4+ID4gPiA+ID4gPiBBIHNpbWlsYXIgaXNzdWUgd2FzIGFsc28gZGlzY3Vz
-c2VkIHRocmVlIHllYXJzIGFnbyBvbiBTdW4gSnVuCj4+ID4gPiAxNzoxNTo1NAo+PiA+ID4gPiA+
-IENFU1QKPj4gPiA+ID4gPiA+IDIwMTUgYW5kIHdhcyBhYm91dCBoaXMgc3Vycm91bmQgc291bmQg
-c2V0dXAsIGJ1dCBkaWQgbm90IHRvdWNoCj4+IG9uIHRoZQo+PiA+ID4gPiA+ID4gZXh0ZXJuYWwg
-bWljcm9waG9uZSBwcm9ibGVtOgo+PiA+ID4gPiA+ID4KPj4gPiA+ID4gPgo+PiA+ID4KPj4gaHR0
-cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZlbC8yMDE1LUp1
-bmUvMDkzMzE3Lmh0bWwKPj4gPiA+ID4gPiA+Cj4+ID4gPiA+ID4gPiBhbHNhLWluZm8uc2g6Cj4+
-ID4gPiA+ID4gPgo+PiA+ID4gPiA+Cj4+ID4gPgo+PiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5v
-cmcvZGIvP2Y9MWQ4NjE2YmE1OTc3MzA4ZTAzZGI2YzNhODZlMzZlOWU5YjM4ZDZmMAo+PiA+ID4g
-PiA+ID4KPj4gPiA+ID4gPiA+IEdyYXBoIG9mIEFMQzY2OCBjaGlwc2V0IGZyb20gaGRhYW5hbHl6
-ZXI6Cj4+ID4gPiA+ID4gPiBodHRwOi8vaS5pbWd1ci5jb20vYzA4RE5KVy5wbmcKPj4gPiA+ID4g
-PiA+Cj4+ID4gPiA+ID4gPiBzZXR0aW5nIGFsc2EtbW9kZVsxLThdIGRvZXMgbm90aGluZyB0byBo
-ZWxwIHRoZSBpc3N1ZS4KPj4gPiA+ID4gPiA+Cj4+ID4gPiA+ID4gPiBUaGVyZSBhcmUgc2V2ZXJh
-bCBvZiBzaW1pbGFyIGJ1ZyByZXBvcnRzIGFyb3VuZCB0aGUgd2ViCj4+IGV4cGVyaWVuY2luZwo+
-PiA+ID4gPiA+ID4gc2ltaWxhciBpc3N1ZXMsIGFuZCBvbiBkaWZmZXJlbnQgZGlzdHJvcy4KPj4g
-PiA+ID4gPiA+Cj4+ID4gPiA+ID4gPiBNaWNyb3Bob25lIHdvcmtzIHBlcmZlY3RseSBpbiB3aW5k
-b3dzCj4+ID4gPiA+ID4gPgo+PiA+ID4gPiA+ID4gSSBoYXZlIGEgQVNVUyBST0cgRzc1MUpULCBi
-dXQgdGhpcyBwcm9ibGVtIHNlZW1zIHRvIGhhcHBlbiB3aXRoCj4+IGFsbAo+PiA+ID4gPiA+IGxh
-cHRvcHMKPj4gPiA+ID4gPiA+IHVuZGVyIHRoZSBHNzUxIG5hbWUuCj4+ID4gPiA+ID4KPj4gPiA+
-ID4gPiBXaGVuIHlvdSBlbmFibGUgdGhlIGxvb3BiYWNrIHZvbHVtZSBhbmQgc3dpdGNoLCBhbmQg
-dW5tdXRlL2FkanVzdAo+PiAiTWljCj4+ID4gPiA+ID4gUGxheWJhY2sgVm9sdW1lIiwgYW5kICJN
-aWMgUGxheWJhY2sgU3dpdGNoIiwgZG8geW91IGhlYXIgdGhlIGlucHV0Cj4+ID4gPiA+ID4gZnJv
-bSB0aGUgZXh0IG1pYz8gIEl0J3MgYSByb3V0ZSBkaXJlY3RseSBmcm9tIE5JRCAweDE4IHRvIHRo
-ZQo+PiBtaXhlcgo+PiA+ID4gPiA+IE5JRCAweDBiLCB0aGVuIG91dHB1dCBtaXhlciBOSUQgMHgw
-YywgdGhlbiBvdXRwdXRzLiAgU28gdGhpcyBjYW4KPj4gYmUKPj4gPiA+ID4gPiB1c2VkIHRvIHZl
-cmlmeSB0aGUgaGFyZHdhcmUgcm91dGluZy4KPj4gPiA+ID4gPgo+PiA+ID4gPiA+IElmIHlvdSBk
-b24ndCBoZWFyIHZpYSB0aGlzIHJvdXRlLCBpdCBtZWFucyB0aGF0IHRoZSBpbnB1dCBmcm9tCj4+
-IHRoZSBleHQKPj4gPiA+ID4gPiBtaWMgcGluIGl0c2VsZiBpcyBicm9rZW4sIGFuZCBpdCBpbXBs
-aWVzIHRoYXQgc29tZXRoaW5nIG91dHNpZGUKPj4gPiA+ID4gPiBIRC1hdWRpbyBjb2RlYy4KPj4g
-PiA+ID4gPgo+PiA+ID4gPiA+Cj4+ID4gPiA+ID4gVGFrYXNoaQo+PiA+ID4gPiA+Cj4+ID4gPiA+
-IFsyICA8dGV4dC9odG1sOyBVVEYtOCAocXVvdGVkLXByaW50YWJsZSk+XQo+PiA+ID4gPgo+PiA+
-ID4KPj4gPiBbMiAgPHRleHQvaHRtbDsgVVRGLTggKHF1b3RlZC1wcmludGFibGUpPl0KPj4gPgo+
-Pgo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
-ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+The patch
+
+   ASoC: rockchip: add missing INTERLEAVED PCM attribute
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 24d6638302b48328a58c13439276d4531af4ca7d Mon Sep 17 00:00:00 2001
+From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Date: Tue, 11 Sep 2018 01:39:32 +0900
+Subject: [PATCH] ASoC: rockchip: add missing INTERLEAVED PCM attribute
+
+This patch adds SNDRV_PCM_INFO_INTERLEAVED into PCM hardware info.
+
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/rockchip/rockchip_pcm.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockchip_pcm.c
+index f77538319221..9e7b5fa4cf59 100644
+--- a/sound/soc/rockchip/rockchip_pcm.c
++++ b/sound/soc/rockchip/rockchip_pcm.c
+@@ -21,7 +21,8 @@ static const struct snd_pcm_hardware snd_rockchip_hardware = {
+ 	.info			= SNDRV_PCM_INFO_MMAP |
+ 				  SNDRV_PCM_INFO_MMAP_VALID |
+ 				  SNDRV_PCM_INFO_PAUSE |
+-				  SNDRV_PCM_INFO_RESUME,
++				  SNDRV_PCM_INFO_RESUME |
++				  SNDRV_PCM_INFO_INTERLEAVED,
+ 	.period_bytes_min	= 32,
+ 	.period_bytes_max	= 8192,
+ 	.periods_min		= 1,
+-- 
+2.19.0.rc2
