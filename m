@@ -1,16 +1,30 @@
-From: Scott Bahling <sbahling@suse.com>
-Subject: Re: Controlling the Tascam FW-1884
-Date: Sat, 08 Sep 2018 13:21:36 +0200
-Message-ID: <985b1f6dc5b0af2aae049e0b6fcf976ab400d34d.camel@suse.com>
-References: <9cec059e1ff1a558f21a3f0729c5a69a3d506573.camel@suse.com>
- <0e469670-0520-5953-230b-8d2da5e4c357@sakamocchi.jp>
+From: Timo Wischer <twischer@de.adit-jv.com>
+Subject: Re: [PATCH - DMA engine v2 1/1] ALSA: SOC: DMA:
+ increment buffer pointer atomically
+Date: Tue, 11 Sep 2018 11:05:22 +0200
+Message-ID: <232f58ff-0bbd-e03d-119b-8634435f633a@de.adit-jv.com>
+References: <1531996140-19880-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9041587535866738461=="
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id E3585267818
- for <alsa-devel@alsa-project.org>; Sat,  8 Sep 2018 13:21:46 +0200 (CEST)
-In-Reply-To: <0e469670-0520-5953-230b-8d2da5e4c357@sakamocchi.jp>
+Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C7462676E6
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 11:05:35 +0200 (CEST)
+Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
+ by smtp1.de.adit-jv.com (Postfix) with ESMTP id 2BDC03C09AE
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 11:05:34 +0200 (CEST)
+Received: from smtp1.de.adit-jv.com ([127.0.0.1])
+ by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 7xCBbDR2hXhb for <alsa-devel@alsa-project.org>;
+ Tue, 11 Sep 2018 11:05:23 +0200 (CEST)
+Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+ (No client certificate requested)
+ by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 51AB43C0012
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 11:05:23 +0200 (CEST)
+In-Reply-To: <1531996140-19880-1-git-send-email-twischer@de.adit-jv.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,134 +34,63 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============9041587535866738461==
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-PDuM4zpOA5GOue5C/+cy"
-
-
---=-PDuM4zpOA5GOue5C/+cy
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Sat, 2018-09-08 at 11:53 +0900, Takashi Sakamoto wrote:
-> Hi Scott,
-> (C.Ced to alsa-devel, ffado-devel)
->=20
-<snip>
-
->=20
-> When enabling multiplexing messages to isochronous packet,
-> demultiplexer should be implemented to ALSA firewire-tascam driver,
-> but not yet. You can see my initial RFC in alsa-devel[1]. This patch
-> enables userspace applications to perform the demultiplexing, however
-> this idea easily brings cache-coherency problems due to page mapping
-> between kernel/userspace and impossible to be applied. We need to
-> investigate another idea to achieve the demultiplexing in kernel
-> land.
-
-Thanks for the information! I read the RFC and your initial code. Why
-did you remove the virtual MIDI port code that was part of the RFC code
-(I don't see it upstream)? Did it not work? What I have discovered is
-that in "computer control" mode the unit sends MIDI messages via the
-virtual midi port (control port). The Tascam Native protocol as well as
-the other emulations like Mackie are routed via that virtual midi port
-and never touch the physical midi ports.
-
-So the secret might be enabling the virtual midi ports - but it's still
-not clear to me if those ports are created/mapped within the FW-1884,
-or need to be created on the host OS based on the isochronous packet
-data. The latter would be more work.
-
-> As another option, according to page 26 in 'TASCAM FW-1884 Owner's
-> Manual', when programming Keys to port 1-4, system could receive MIDI
-> messages from control surface of FW-1884. However, I've not
-> investigated
-> it.
-
-I tested this using a supported OS to program the FW-1884 controls to
-midi. It works, and the settings are nonvolatile. With this, all
-controls can be assigned, but it's one way control from the FW-1884
-outward. There appears to be no way to control the motorized faders or
-panel indicators from the application towards the FW-1884 in this mode.
-
-<snip>
-
-> User manuals are documents to which we can refer. The most vendors
-> licenses their drivers/software with EULA and in most cases it can't
-> allow users to binary-based reverse engineering.
->=20
-> All of my work are done with external protocol analyzer unit on
-> IEEE 1394 bus. When working to implement drivers, I
-> read/classified/parsed content of many packets sniffed by the analyzer.
-> An initial idea of libhinawa/hinawa-utils is to assist this my work.
-
-Right. That's what I meant by reverse engineering - analyzing the
-traffic and device behavior to understand the protocols.
-
-> I heard FFADO developers uses some ways for this type of work:
->   - Usage of host controller of TI PCILynx and driver module
-> (nosy.ko)
->   - Windows application; bushound[2]
-
-Yep. Read about all that already ;) It sounds like I could take your
-RFC code, build a custom kernel, and start analyzing the status and
-control messages to get a better understanding of what is happening at
-that layer.
-
-> However, this type of work takes you long time, so I don't necessarily
-> recommend you. It's 2018 and I think you can find alternative control
-> surfaces on USB. If you take long time to make devices available on
-> GNU/Linux, it's better to select devices on 'live' buses instead of
-> 'legacy' buses such as IEEE 1394 bus, IMO. In a case of USB, wireshark
-> with usbcap is the easiest way for us to sniff packets on Windows.
-
-Understood, but hacking is part of the fun, and this is looking like a
-really nice piece of equipment (better than modern control surfaces I
-have looked at in my price range). Legacy buses don't scare me. I'm
-still running my main audio capture card on legacy PCI bus.
-
-Thanks for the ground work you have already done!
-
-Regards,
-
-Scott
-
-
---=-PDuM4zpOA5GOue5C/+cy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEQjvzoZ9RLbHiUT/sAst8aI6UpxIFAluTsMAACgkQAst8aI6U
-pxKj3g//VeRErB2WEbjp2om78ChxhhPy9RoiALh4Q3Z3Mot0StmwjVA2AhLJwcO7
-Smr5NQSeYrPESkb2HjFjAs9nk0Vmp49qj6DL1xHhMxS5faRk9mfX57JPREJjTP8k
-y+AJkFOl3c6zvg8MfCPyHveBnG27RAw98egBX8OS+aez+3MNEhwPUr4rfjEE/C6M
-AmxFTF8xGDlkMr9oYItimA7483JPDES7j+tHE0tLNjCGH0zeeiI2asSLjtiKwhKS
-YcH5rpQTCb55/Wj+nixpj6yhe31zLReNpNT+ajz+U5gJ5RC1rZcpxHIZkXmcH1+3
-9mtrqZmh+SPC9d/7X01i4wx3SAzLadob7HciQE5oWQPhMSrZDK4pJIfrQv/8Qkf0
-CZFZd3c2d5tMNfElKx0omgRhBXMEDjJZVmkmDgkqnHaiLxxNXpVEVT6NaKmcy1F3
-nES8hSwx/2/CGKZYNvgilr+8fMZL51m4NjQ06nax8eX1Vwwg+o0KE1/YB10rZFCu
-ORf9l4N8Fgf6bBUYXhs5wzzLQqJq292EQUsgI7AoC8KslGW5ZfQMNK+Mqdcu14Tn
-xSy0Oi9yFtx7vXkQ7fU3XYkXi+3yS1LnViQdLbK9lm80Lvc5Z2rCcww+dhvtmU+W
-YfIeIw/Yy8f6SbYBzsBvh3lIaxh50aZRq0x7n4J9160wY5TSTmg=
-=zkFR
------END PGP SIGNATURE-----
-
---=-PDuM4zpOA5GOue5C/+cy--
-
-
---===============9041587535866738461==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============9041587535866738461==--
+SGkgYWxsLAoKQW55IGNvbW1lbnRzIHRvIHRoZSBwYXRjaCBpbiBbMV0/CgpTaG91bGQgSSBjaGFu
+Z2UgYW55dGhpbmc/CgpbMV0gCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJt
+YWlsL2Fsc2EtZGV2ZWwvMjAxOC1KdWx5LzEzODMxOS5odG1sCgpCZXN0IHJlZ2FyZHMKCipUaW1v
+IFdpc2NoZXIqCgoqQSpkdmFuY2VkICpEKnJpdmVyICpJKm5mb3JtYXRpb24gKlQqZWNobm9sb2d5
+IEdtYkgKRW5naW5lZXJpbmcgU29mdHdhcmUgQmFzZSAoQURJVEcvRVNCKQpSb2JlcnQtQm9zY2gt
+U3RyLiAyMDAKMzExMzkgSGlsZGVzaGVpbQpHZXJtYW55CgpUZWwuICs0OSA1MTIxIDQ5IDY5MzgK
+RmF4ICs0OSA1MTIxIDQ5IDY5OTkKdHdpc2NoZXJAZGUuYWRpdC1qdi5jb20KCkFESVQgaXMgYSBq
+b2ludCB2ZW50dXJlIGNvbXBhbnkgb2YgUm9iZXJ0IEJvc2NoIEdtYkgvUm9iZXJ0IEJvc2NoIENh
+ciAKTXVsdGltZWRpYSBHbWJIIGFuZCBERU5TTyBDb3Jwb3JhdGlvbgpTaXR6OiBIaWxkZXNoZWlt
+LCBSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0gSFJCIDM0MzgKR2VzY2jD
+pGZ0c2bDvGhydW5nOiBXaWxoZWxtIEdyYWJvdywgS2VuIFlhZ3VjaGkKCgpPbiAwNy8xOS8yMDE4
+IDEyOjI5IFBNLCB0d2lzY2hlckBkZS5hZGl0LWp2LmNvbSB3cm90ZToKPiBGcm9tOiBBbmRyZWFz
+IFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29tPgo+Cj4gU2V0dGluZyBwb2ludGVyIGFuZCBhZnRl
+cndhcmRzIGNoZWNrIGZvciB3cmFwIGFyb3VuZCBsZWFkcwo+IHRvIHRoZSBwb3NzaWJpbGl0eSBv
+ZiByZXR1cm5pbmcgdGhlIGluY29uc2lzdGVudCBwb2ludGVyIHBvc2l0aW9uLgo+IFRoaXMgcGF0
+Y2ggaW5jcmVtZW50cyBidWZmZXIgcG9pbnRlciBhdG9taWNhbGx5IHRvIGF2b2lkIHRoaXMgaXNz
+dWUuCj4KPiBTaWduZWQtb2ZmLWJ5OiBBbmRyZWFzIFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29t
+Pgo+Cj4gU2luY2UgY29tbWl0OiBiN2FlNmYzIGRtYWVuZ2luZSBpbXBsZW1lbnRhdGlvbiBoYXMg
+YmVlbiBtb3ZlZAo+IGZyb20gQVNvQyB0byBBTFNBIGNvcmUuIFNvIGNoYW5nZSBnb2VzIHRvIHNv
+dW5kL3NvYy9zb2MtZG1hZW5naW5lLXBjbS5jLAo+IGFwcGx5IHRvIHNvdW5kL2NvcmUvcGNtX2Rt
+YWVuZ2luZS5jIG5vdwo+Cj4gY2hlcnJ5IHBpY2tlZCBmcm9tIEFESVQgdjMuMTQgZTJmODAzZigi
+QUxTQTogU09DOiBETUE6IGluY3JlbWVudCBidWZmZXIgcG9pbnRlciBhdG9taWNhbGx5IikKPiBT
+aWduZWQtb2ZmLWJ5OiBWZWVyYWl5YW4gQ2hpZGFtYmFyYW0gPHZlZXJhaXlhbi5jaGlkYW1iYXJh
+bUBpbi5ib3NjaC5jb20+Cj4gKGNoZXJyeSBwaWNrZWQgZnJvbSBBRElUIHY0LjEgY29tbWl0IDll
+N2VmZjEwYTM4MTU3ZGI3NWYxMmUwMzJmYzM3OGQzMTA0YTI4MTIpCj4gU2lnbmVkLW9mZi1ieTog
+VGFrYXNoaSBTYWthbW90byA8dGFrYXNoaS5zYWthbW90b0BtaXJhY2xlbGludXguY29tPgo+IChj
+aGVycnkgcGlja2VkIGZyb20gQURJVCB2NC45IGNvbW1pdCA2NmMwMGFhMWU3Y2QzYjA3N2ZjMmU1
+YTQ1YTQ1OTRiODYyNDZjZjc4KQo+IFNpZ25lZC1vZmYtYnk6IEppYWRhIFdhbmcgPGppYWRhX3dh
+bmdAbWVudG9yLmNvbT4KPgo+IFNpZ25lZC1vZmYtYnk6IFRpbW8gV2lzY2hlciA8dHdpc2NoZXJA
+ZGUuYWRpdC1qdi5jb20+Cj4gLS0tCj4KPiB2MSBjYW4gYmUgZm91bmQgaW4KPiBodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTYtTm92ZW1iZXIv
+MTE1Mjc3Lmh0bWwKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9jb3JlL3BjbV9kbWFlbmdpbmUuYyBi
+L3NvdW5kL2NvcmUvcGNtX2RtYWVuZ2luZS5jCj4gaW5kZXggOGViNThjNy4uMGE3ZWQ4NSAxMDA2
+NDQKPiAtLS0gYS9zb3VuZC9jb3JlL3BjbV9kbWFlbmdpbmUuYwo+ICsrKyBiL3NvdW5kL2NvcmUv
+cGNtX2RtYWVuZ2luZS5jCj4gQEAgLTEzOSwxMiArMTM5LDE0IEBAIEVYUE9SVF9TWU1CT0xfR1BM
+KHNuZF9kbWFlbmdpbmVfcGNtX3NldF9jb25maWdfZnJvbV9kYWlfZGF0YSk7Cj4gICAKPiAgIHN0
+YXRpYyB2b2lkIGRtYWVuZ2luZV9wY21fZG1hX2NvbXBsZXRlKHZvaWQgKmFyZykKPiAgIHsKPiAr
+CXVuc2lnbmVkIGludCBuZXdfcG9zOwo+ICAgCXN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vi
+c3RyZWFtID0gYXJnOwo+ICAgCXN0cnVjdCBkbWFlbmdpbmVfcGNtX3J1bnRpbWVfZGF0YSAqcHJ0
+ZCA9IHN1YnN0cmVhbV90b19wcnRkKHN1YnN0cmVhbSk7Cj4gICAKPiAtCXBydGQtPnBvcyArPSBz
+bmRfcGNtX2xpYl9wZXJpb2RfYnl0ZXMoc3Vic3RyZWFtKTsKPiAtCWlmIChwcnRkLT5wb3MgPj0g
+c25kX3BjbV9saWJfYnVmZmVyX2J5dGVzKHN1YnN0cmVhbSkpCj4gLQkJcHJ0ZC0+cG9zID0gMDsK
+PiArCW5ld19wb3MgPSBSRUFEX09OQ0UocHJ0ZC0+cG9zKSArIHNuZF9wY21fbGliX3BlcmlvZF9i
+eXRlcyhzdWJzdHJlYW0pOwo+ICsJaWYgKG5ld19wb3MgPj0gc25kX3BjbV9saWJfYnVmZmVyX2J5
+dGVzKHN1YnN0cmVhbSkpCj4gKwkJbmV3X3BvcyA9IDA7Cj4gKwlXUklURV9PTkNFKHBydGQtPnBv
+cywgbmV3X3Bvcyk7Cj4gICAKPiAgIAlzbmRfcGNtX3BlcmlvZF9lbGFwc2VkKHN1YnN0cmVhbSk7
+Cj4gICB9Cj4gQEAgLTIzNSw3ICsyMzcsNyBAQCBFWFBPUlRfU1lNQk9MX0dQTChzbmRfZG1hZW5n
+aW5lX3BjbV90cmlnZ2VyKTsKPiAgIHNuZF9wY21fdWZyYW1lc190IHNuZF9kbWFlbmdpbmVfcGNt
+X3BvaW50ZXJfbm9fcmVzaWR1ZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkK
+PiAgIHsKPiAgIAlzdHJ1Y3QgZG1hZW5naW5lX3BjbV9ydW50aW1lX2RhdGEgKnBydGQgPSBzdWJz
+dHJlYW1fdG9fcHJ0ZChzdWJzdHJlYW0pOwo+IC0JcmV0dXJuIGJ5dGVzX3RvX2ZyYW1lcyhzdWJz
+dHJlYW0tPnJ1bnRpbWUsIHBydGQtPnBvcyk7Cj4gKwlyZXR1cm4gYnl0ZXNfdG9fZnJhbWVzKHN1
+YnN0cmVhbS0+cnVudGltZSwgUkVBRF9PTkNFKHBydGQtPnBvcykpOwo+ICAgfQo+ICAgRVhQT1JU
+X1NZTUJPTF9HUEwoc25kX2RtYWVuZ2luZV9wY21fcG9pbnRlcl9ub19yZXNpZHVlKTsKPiAgIAoK
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
+bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
+LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
