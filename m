@@ -1,132 +1,108 @@
-From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: of_dma_request_slave_channel() failed ?
-Date: Tue, 11 Sep 2018 11:43:47 +0200
-Message-ID: <CAMuHMdVkQ8vio3O7VWyoWnVrY8Y8_YRWxQeXDwJ48iTxzujWdA@mail.gmail.com>
-References: <87efe9ls4n.wl-kuninori.morimoto.gx@renesas.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: Fix UBSAN warning at
+	snd_soc_get/put_volsw_sx()" to the asoc tree
+Date: Tue, 11 Sep 2018 12:05:40 +0100 (BST)
+Message-ID: <20180911110540.56AC11121AF8@debutante.sirena.org.uk>
+References: <1536658161-31656-1-git-send-email-rohitkr@codeaurora.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <87efe9ls4n.wl-kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux IOMMU <iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id E8CE12676EB
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 13:05:42 +0200 (CEST)
+In-Reply-To: <1536658161-31656-1-git-send-email-rohitkr@codeaurora.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Rohit kumar <rohitkr@codeaurora.org>
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, plai@codeaurora.org, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
+The patch
 
-CC asoc, dma, iommu
+   ASoC: Fix UBSAN warning at snd_soc_get/put_volsw_sx()
 
-On Tue, Sep 4, 2018 at 8:06 AM Kuninori Morimoto
-<kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
-> Hi Renesas ML
-> Cc Rob
->
-> I noticed that Sound driver is using PIO mode
-> on latest kernel.
->
->         ...
->         rcar_sound ec500000.sound: src[0] : probe error -11
->         rcar_sound ec500000.sound: ssi[0] fallback to PIO mode
->         rcar_sound ec500000.sound: src[1] : probe error -11
->         rcar_sound ec500000.sound: ssi[1] fallback to PIO mode
->         rcar_sound ec500000.sound: ssi[2] : probe error -11
->         rcar_sound ec500000.sound: ssi[2] fallback to PIO mode
->         rcar_sound ec500000.sound: ssi[3] : probe error -11
->         rcar_sound ec500000.sound: ssi[3] fallback to PIO mode
->         rcar_sound ec500000.sound: probed
->         ...
->
-> Sound can use DMA mode and PIO mode.
-> It automatically fallbacks to PIO mode if it can't use DMA.
->
-> I bisected this issue, and found the 1st bad commit
->
-> -----------------------------------------------------
-> commit ac6bbf0cdf4206c517ac9789814c23e372ebce4d
-> Author: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> Date:   Mon Jul 9 09:41:52 2018 -0600
->
->     iommu: Remove IOMMU_OF_DECLARE
->
->     Now that we use the driver core to stop deferred probe for missing
->     drivers, IOMMU_OF_DECLARE can be removed.
->
->     This is slightly less optimal than having a list of built-in drivers in
->     that we'll now defer probe twice before giving up. This shouldn't have a
->     significant impact on boot times as past discussions about deferred
->     probe have given no evidence of deferred probe having a substantial
->     impact.
->         ...
-> -----------------------------------------------------
->
-> In more detail, it seems it can't find DMA controller,
-> and of_dma_request_slave_channel() returns
-> -EPROBE_DEFER from this commit.
->
-> struct dma_chan *of_dma_request_slave_channel(struct device_node *np,
->                                               const char *name)
-> {
->         ...
->                 ofdma = of_dma_find_controller(&dma_spec);
->
->                 if (ofdma) {
->                         chan = ofdma->of_dma_xlate(&dma_spec, ofdma);
->                 } else {
-> =>                      ret_no_channel = -EPROBE_DEFER;
->                         chan = NULL;
->                 }
->         ...
-> =>      return ERR_PTR(ret_no_channel);
-> }
->
-> Is this known issue ?
-> Or sound shouldn't fallbacks to PIO mode ?
+has been applied to the asoc tree at
 
-I assume you wrote commit 6c92d5a2744e2761 ("ASoC: rsnd: don't fallback
-to PIO mode when -EPROBE_DEFER") to work around this?
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-While this got rid of the error messages, and postpones sound initialization
-until the audio DMAC is available, it does mean that the driver will _never_
-fall back to PIO.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-I.e. if CONFIG_RCAR_DMAC=n, audio will fail to probe instead of falling
-back to PIO.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-With CONFIG_RCAR_DMAC=y:
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-    rcar-dmac e6700000.dma-controller: ignoring dependency for device,
-assuming no driver
-    rcar-dmac e7300000.dma-controller: ignoring dependency for device,
-assuming no driver
-    rcar-dmac e7310000.dma-controller: ignoring dependency for device,
-assuming no driver
-    rcar-dmac ec700000.dma-controller: ignoring dependency for device,
-assuming no driver
-    rcar-dmac ec720000.dma-controller: ignoring dependency for device,
-assuming no driver
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-So it seems the audio DMAC is deferred a second time, before the iommu driver
-probed.
+Thanks,
+Mark
 
-    subsys_initcall(ipmmu_init); calls platform_driver_register
-    module_platform_driver(rcar_dmac_driver);
+>From ae7d1247d8673ebfd686b17e759d4be391165368 Mon Sep 17 00:00:00 2001
+From: Rohit kumar <rohitkr@codeaurora.org>
+Date: Tue, 11 Sep 2018 14:59:21 +0530
+Subject: [PATCH] ASoC: Fix UBSAN warning at snd_soc_get/put_volsw_sx()
 
-Gr{oetje,eeting}s,
+In functions snd_soc_get_volsw_sx() or snd_soc_put_volsw_sx(),
+if the result of (min + max) is negative, then fls() returns
+signed integer with value as 32. This leads to signed integer
+overflow as complete operation is considered as signed integer.
 
-                        Geert
+UBSAN: Undefined behaviour in sound/soc/soc-ops.c:382:50
+signed integer overflow:
+-2147483648 - 1 cannot be represented in type 'int'
+Call trace:
+[<ffffff852f746fe4>] __dump_stack lib/dump_stack.c:15 [inline]
+[<ffffff852f746fe4>] dump_stack+0xec/0x158 lib/dump_stack.c:51
+[<ffffff852f7b5f3c>] ubsan_epilogue+0x18/0x50 lib/ubsan.c:164
+[<ffffff852f7b6840>] handle_overflow+0xf8/0x130 lib/ubsan.c:195
+[<ffffff852f7b68f0>] __ubsan_handle_sub_overflow+0x34/0x44 lib/ubsan.c:211
+[<ffffff85307971a0>] snd_soc_get_volsw_sx+0x1a8/0x1f8 sound/soc/soc-ops.c:382
 
+Typecast the operation to unsigned int to fix the issue.
+
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/soc-ops.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+index 592efb370c44..f4dc3d445aae 100644
+--- a/sound/soc/soc-ops.c
++++ b/sound/soc/soc-ops.c
+@@ -373,7 +373,7 @@ int snd_soc_get_volsw_sx(struct snd_kcontrol *kcontrol,
+ 	unsigned int rshift = mc->rshift;
+ 	int max = mc->max;
+ 	int min = mc->min;
+-	unsigned int mask = (1 << (fls(min + max) - 1)) - 1;
++	unsigned int mask = (1U << (fls(min + max) - 1)) - 1;
+ 	unsigned int val;
+ 	int ret;
+ 
+@@ -418,7 +418,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+ 	unsigned int rshift = mc->rshift;
+ 	int max = mc->max;
+ 	int min = mc->min;
+-	unsigned int mask = (1 << (fls(min + max) - 1)) - 1;
++	unsigned int mask = (1U << (fls(min + max) - 1)) - 1;
+ 	int err = 0;
+ 	unsigned int val, val_mask, val2 = 0;
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+2.19.0.rc2
