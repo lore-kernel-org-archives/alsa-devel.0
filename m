@@ -1,18 +1,21 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/3] Revert "ASoC: Intel: Skylake: Acquire
- irq after RIRB allocation"
-Date: Tue, 11 Sep 2018 17:36:36 +0100
-Message-ID: <20180911163636.GC10123@sirena.org.uk>
-References: <20180910211718.200802-1-yuzhao@google.com>
- <s5hd0tk3712.wl-tiwai@suse.de>
+From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
+Subject: Re: Microphone detected,
+ but no output for all ASUS G751xx with ALC668 chipset
+Date: Tue, 11 Sep 2018 18:40:23 +0200
+Message-ID: <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
+References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
+ <s5hin3d2ik0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3209507457198309034=="
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B9E92676EB
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 18:36:42 +0200 (CEST)
-In-Reply-To: <s5hd0tk3712.wl-tiwai@suse.de>
+Received: from mail-yw1-f53.google.com (mail-yw1-f53.google.com
+ [209.85.161.53])
+ by alsa0.perex.cz (Postfix) with ESMTP id CE30E2677BB
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 18:40:35 +0200 (CEST)
+Received: by mail-yw1-f53.google.com with SMTP id z143-v6so9457097ywa.7
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 09:40:35 -0700 (PDT)
+In-Reply-To: <s5hin3d2ik0.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,63 +25,45 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Yu Zhao <yuzhao@google.com>, Jie Yang <yang.jie@linux.intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Guneshwor Singh <guneshwor.o.singh@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Naveen Manohar <naveen.m@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, linux-kernel@vger.kernel.org
+To: tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-
---===============3209507457198309034==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="7gGkHNMELEOhSGF6"
-Content-Disposition: inline
-
-
---7gGkHNMELEOhSGF6
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Tue, Sep 11, 2018 at 08:03:21AM +0200, Takashi Iwai wrote:
-> Yu Zhao wrote:
-
-> > Will fix the problems in the following patches. Also attaching the
-> > crash for future reference.
-
-> > [   16.950887] RIP: 0010:snd_hdac_bus_update_rirb+0x19b/0x4cf [snd_hda_core]
-> > [   16.950889] RSP: 0000:ffff88015c807c08 EFLAGS: 00010003
-> > [   16.950891] RAX: 0000000000000101 RBX: 000000000000080c RCX: 1ffff10026822185
-
-> Please try to rip off uninteresting hex values and other stuff there.
-
-Right:
-
-Please think hard before including complete backtraces in upstream
-reports, they are very large and contain almost no useful information
-relative to their size so often obscure the relevant content in your
-message. If part of the backtrace is usefully illustrative then it's
-usually better to pull out the relevant sections.
-
---7gGkHNMELEOhSGF6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluX7xQACgkQJNaLcl1U
-h9ARRAf/Q5qEa3zePsa30sANzk+V1KkvPnxJE4fHJbtvPY8Reia43ia3WGb9ijyZ
-Yn94Cie18uVetrVdmROu/TbAZvorguH6U89hG5kv83p3coTa2HS7lmEqyUP9vW8W
-ZcI7XaFij3hJPsgwwHUyPLmfpnn5HZjEAcmuEEFF1u3447UQlgppO91huIHmGXJl
-yp2sCvku/XVi88MBys8UEMNS50iVKggON7bnWWJRTiaYCODiXUBzenQoz2DoiCs1
-83JVhaT6LlxYbD0F4lrlyTzu8Ih3yfKkEhydRsCJcOEHaa7QCmGhSksZcF+IR4jZ
-qC2IFpnXIsuOKBMsReG/z/ckyVAqCg==
-=sKQD
------END PGP SIGNATURE-----
-
---7gGkHNMELEOhSGF6--
-
---===============3209507457198309034==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============3209507457198309034==--
+VGhhbmsgeW91IGZvciByZXBseWluZyEKCkVuYWJsaW5nIGxvb3BiYWNrIGluIGFsc2FtaXhlcjoK
+aHR0cDovL2kuaW1ndXIuY29tL2xObzZlN1QucG5nCgpBbmQgdW5tdXRpbmcgbW9yZSBhbmQgbW9y
+ZSB0aGluZ3MgaW4gIk1pYyBQbGF5YmFjayBWb2x1bWUiIGluIGhkYWFuYWx5emVyOgpodHRwOi8v
+aS5pbWd1ci5jb20vSDBIaU9oeS5wbmcKbWFkZSB3aGl0ZSBub2lzZSBjb21lIGZyb20gdGhlIGhl
+YWRzZXQuIEhvd2V2ZXIgaXQgZGlkIG5vdCBjaGFuZ2Ugb3IgcmVhY3QKYXQgYWxsIHdoZW4gSSB0
+YWxrZWQgb3IgZXZlbiBtdXRlZCB0aGUgbWljcm9waG9uZSBwaHlzaWNhbGx5LgoKSSBjb3VsZG4n
+dCBmaW5kICJNaWMgUGxheWJhY2sgU3dpdGNoIiBhbnl3aGVyZSBpbiBlaXRoZXIgYWxzYW1peGVy
+IG9yCmhkYWFuYWx5emVyLgoKVGhlIG1pY3JvcGhvbmUgd29ya3MgcGVyZmVjdGx5IGZpbmUgdW5k
+ZXIgV2luZG93cywgc28gSSBkb24ndCB0aGluayBpdCBpcwp0aGUgbWljIHBpbi4KCi1Iw6V2YXJk
+CgpEZW4gbWFuLiAxMC4gc2VwLiAyMDE4IGtsLiAyMjozOSBza3JldiBUYWthc2hpIEl3YWkgPHRp
+d2FpQHN1c2UuZGU+OgoKPiBPbiBUaHUsIDA2IFNlcCAyMDE4IDIwOjQ0OjMwICswMjAwLAo+IEjD
+pXZhcmQgd3JvdGU6Cj4gPgo+ID4gQWRkaXRpb25hbCByZWxldmFudCBpbmZvOgo+ID4KPiA+IEEg
+c2ltaWxhciBpc3N1ZSB3YXMgYWxzbyBkaXNjdXNzZWQgdGhyZWUgeWVhcnMgYWdvIG9uIFN1biBK
+dW4gMTc6MTU6NTQKPiBDRVNUCj4gPiAyMDE1IGFuZCB3YXMgYWJvdXQgaGlzIHN1cnJvdW5kIHNv
+dW5kIHNldHVwLCBidXQgZGlkIG5vdCB0b3VjaCBvbiB0aGUKPiA+IGV4dGVybmFsIG1pY3JvcGhv
+bmUgcHJvYmxlbToKPiA+Cj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1h
+aWwvYWxzYS1kZXZlbC8yMDE1LUp1bmUvMDkzMzE3Lmh0bWwKPiA+Cj4gPiBhbHNhLWluZm8uc2g6
+Cj4gPgo+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj0xZDg2MTZiYTU5NzczMDhl
+MDNkYjZjM2E4NmUzNmU5ZTliMzhkNmYwCj4gPgo+ID4gR3JhcGggb2YgQUxDNjY4IGNoaXBzZXQg
+ZnJvbSBoZGFhbmFseXplcjoKPiA+IGh0dHA6Ly9pLmltZ3VyLmNvbS9jMDhETkpXLnBuZwo+ID4K
+PiA+IHNldHRpbmcgYWxzYS1tb2RlWzEtOF0gZG9lcyBub3RoaW5nIHRvIGhlbHAgdGhlIGlzc3Vl
+Lgo+ID4KPiA+IFRoZXJlIGFyZSBzZXZlcmFsIG9mIHNpbWlsYXIgYnVnIHJlcG9ydHMgYXJvdW5k
+IHRoZSB3ZWIgZXhwZXJpZW5jaW5nCj4gPiBzaW1pbGFyIGlzc3VlcywgYW5kIG9uIGRpZmZlcmVu
+dCBkaXN0cm9zLgo+ID4KPiA+IE1pY3JvcGhvbmUgd29ya3MgcGVyZmVjdGx5IGluIHdpbmRvd3MK
+PiA+Cj4gPiBJIGhhdmUgYSBBU1VTIFJPRyBHNzUxSlQsIGJ1dCB0aGlzIHByb2JsZW0gc2VlbXMg
+dG8gaGFwcGVuIHdpdGggYWxsCj4gbGFwdG9wcwo+ID4gdW5kZXIgdGhlIEc3NTEgbmFtZS4KPgo+
+IFdoZW4geW91IGVuYWJsZSB0aGUgbG9vcGJhY2sgdm9sdW1lIGFuZCBzd2l0Y2gsIGFuZCB1bm11
+dGUvYWRqdXN0ICJNaWMKPiBQbGF5YmFjayBWb2x1bWUiLCBhbmQgIk1pYyBQbGF5YmFjayBTd2l0
+Y2giLCBkbyB5b3UgaGVhciB0aGUgaW5wdXQKPiBmcm9tIHRoZSBleHQgbWljPyAgSXQncyBhIHJv
+dXRlIGRpcmVjdGx5IGZyb20gTklEIDB4MTggdG8gdGhlIG1peGVyCj4gTklEIDB4MGIsIHRoZW4g
+b3V0cHV0IG1peGVyIE5JRCAweDBjLCB0aGVuIG91dHB1dHMuICBTbyB0aGlzIGNhbiBiZQo+IHVz
+ZWQgdG8gdmVyaWZ5IHRoZSBoYXJkd2FyZSByb3V0aW5nLgo+Cj4gSWYgeW91IGRvbid0IGhlYXIg
+dmlhIHRoaXMgcm91dGUsIGl0IG1lYW5zIHRoYXQgdGhlIGlucHV0IGZyb20gdGhlIGV4dAo+IG1p
+YyBwaW4gaXRzZWxmIGlzIGJyb2tlbiwgYW5kIGl0IGltcGxpZXMgdGhhdCBzb21ldGhpbmcgb3V0
+c2lkZQo+IEhELWF1ZGlvIGNvZGVjLgo+Cj4KPiBUYWthc2hpCj4KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxz
+YS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcv
+bWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
