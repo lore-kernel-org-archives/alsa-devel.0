@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: atmel_ssc_dai: use
-	devm_snd_soc_register_component()" to the asoc tree
-Date: Tue, 11 Sep 2018 12:27:59 +0100 (BST)
-Message-ID: <20180911112800.01C8C1121AF8@debutante.sirena.org.uk>
+Subject: Applied "ASoC: qdsp6: q6asm-dai: clean up a return" to
+	the asoc tree
+Date: Tue, 11 Sep 2018 12:30:06 +0100 (BST)
+Message-ID: <20180911113006.B50A61121AF8@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A4AA72676EB
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 13:28:00 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DC7EF2676EB
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 13:30:10 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: atmel_ssc_dai: use devm_snd_soc_register_component()
+   ASoC: qdsp6: q6asm-dai: clean up a return
 
 has been applied to the asoc tree at
 
@@ -52,63 +52,34 @@ to this mail.
 Thanks,
 Mark
 
->From e14614dc5153ad41f7d1e5b125e4cd155ca79aa2 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:00:15 +0000
-Subject: [PATCH] ASoC: atmel_ssc_dai: use devm_snd_soc_register_component()
+>From 0712e0288b7602efbde95d95bca4c651ccad01b8 Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Mon, 10 Sep 2018 11:40:48 +0300
+Subject: [PATCH] ASoC: qdsp6: q6asm-dai: clean up a return
 
-Now we have devm_snd_soc_register_component().
-Let's use it instead of snd_soc_register_component().
+Smatch complains that if both "psubstream" and "csubstream" are NULL
+then "ret" is uninitialized.  That probably can't happen, but it's
+cleaner to just return zero anyway so let's do that.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/atmel/atmel_ssc_dai.c | 13 +++----------
- 1 file changed, 3 insertions(+), 10 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
-index d3b69682d9c2..6291ec7f9dd6 100644
---- a/sound/soc/atmel/atmel_ssc_dai.c
-+++ b/sound/soc/atmel/atmel_ssc_dai.c
-@@ -1005,11 +1005,11 @@ static int asoc_ssc_init(struct device *dev)
- 	struct ssc_device *ssc = dev_get_drvdata(dev);
- 	int ret;
- 
--	ret = snd_soc_register_component(dev, &atmel_ssc_component,
-+	ret = devm_snd_soc_register_component(dev, &atmel_ssc_component,
- 					 &atmel_ssc_dai, 1);
- 	if (ret) {
- 		dev_err(dev, "Could not register DAI: %d\n", ret);
--		goto err;
-+		return ret;
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index 9db9a2944ef2..c75fab38905d 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -493,7 +493,7 @@ static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
+ 		}
  	}
  
- 	if (ssc->pdata->use_dma)
-@@ -1019,15 +1019,10 @@ static int asoc_ssc_init(struct device *dev)
- 
- 	if (ret) {
- 		dev_err(dev, "Could not register PCM: %d\n", ret);
--		goto err_unregister_dai;
-+		return ret;
- 	}
- 
- 	return 0;
--
--err_unregister_dai:
--	snd_soc_unregister_component(dev);
--err:
 -	return ret;
++	return 0;
  }
  
- static void asoc_ssc_exit(struct device *dev)
-@@ -1038,8 +1033,6 @@ static void asoc_ssc_exit(struct device *dev)
- 		atmel_pcm_dma_platform_unregister(dev);
- 	else
- 		atmel_pcm_pdc_platform_unregister(dev);
--
--	snd_soc_unregister_component(dev);
- }
- 
- /**
+ static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
 -- 
 2.19.0.rc2
