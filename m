@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: bcm: use
+Subject: Applied "ASoC: atmel_ssc_dai: use
 	devm_snd_soc_register_component()" to the asoc tree
-Date: Tue, 11 Sep 2018 12:27:01 +0100 (BST)
-Message-ID: <20180911112701.5A9CC1121AF8@debutante.sirena.org.uk>
+Date: Tue, 11 Sep 2018 12:27:59 +0100 (BST)
+Message-ID: <20180911112800.01C8C1121AF8@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C60222676EB
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 13:27:01 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id A4AA72676EB
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 13:28:00 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: bcm: use devm_snd_soc_register_component()
+   ASoC: atmel_ssc_dai: use devm_snd_soc_register_component()
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 570f75b93551a6d70ecbd0a7b6d962b4ca4722f0 Mon Sep 17 00:00:00 2001
+>From e14614dc5153ad41f7d1e5b125e4cd155ca79aa2 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Fri, 7 Sep 2018 01:00:49 +0000
-Subject: [PATCH] ASoC: bcm: use devm_snd_soc_register_component()
+Date: Fri, 7 Sep 2018 01:00:15 +0000
+Subject: [PATCH] ASoC: atmel_ssc_dai: use devm_snd_soc_register_component()
 
 Now we have devm_snd_soc_register_component().
 Let's use it instead of snd_soc_register_component().
@@ -63,57 +63,52 @@ Let's use it instead of snd_soc_register_component().
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/bcm/cygnus-ssp.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ sound/soc/atmel/atmel_ssc_dai.c | 13 +++----------
+ 1 file changed, 3 insertions(+), 10 deletions(-)
 
-diff --git a/sound/soc/bcm/cygnus-ssp.c b/sound/soc/bcm/cygnus-ssp.c
-index b733f1446353..b7c358b48d8d 100644
---- a/sound/soc/bcm/cygnus-ssp.c
-+++ b/sound/soc/bcm/cygnus-ssp.c
-@@ -1334,7 +1334,7 @@ static int cygnus_ssp_probe(struct platform_device *pdev)
- 	cygaud->active_ports = 0;
+diff --git a/sound/soc/atmel/atmel_ssc_dai.c b/sound/soc/atmel/atmel_ssc_dai.c
+index d3b69682d9c2..6291ec7f9dd6 100644
+--- a/sound/soc/atmel/atmel_ssc_dai.c
++++ b/sound/soc/atmel/atmel_ssc_dai.c
+@@ -1005,11 +1005,11 @@ static int asoc_ssc_init(struct device *dev)
+ 	struct ssc_device *ssc = dev_get_drvdata(dev);
+ 	int ret;
  
- 	dev_dbg(dev, "Registering %d DAIs\n", active_port_count);
--	err = snd_soc_register_component(dev, &cygnus_ssp_component,
-+	err = devm_snd_soc_register_component(dev, &cygnus_ssp_component,
- 				cygnus_ssp_dai, active_port_count);
- 	if (err) {
- 		dev_err(dev, "snd_soc_register_dai failed\n");
-@@ -1345,32 +1345,27 @@ static int cygnus_ssp_probe(struct platform_device *pdev)
- 	if (cygaud->irq_num <= 0) {
- 		dev_err(dev, "platform_get_irq failed\n");
- 		err = cygaud->irq_num;
--		goto err_irq;
-+		return err;
+-	ret = snd_soc_register_component(dev, &atmel_ssc_component,
++	ret = devm_snd_soc_register_component(dev, &atmel_ssc_component,
+ 					 &atmel_ssc_dai, 1);
+ 	if (ret) {
+ 		dev_err(dev, "Could not register DAI: %d\n", ret);
+-		goto err;
++		return ret;
  	}
  
- 	err = audio_clk_init(pdev, cygaud);
- 	if (err) {
- 		dev_err(dev, "audio clock initialization failed\n");
--		goto err_irq;
-+		return err;
- 	}
+ 	if (ssc->pdata->use_dma)
+@@ -1019,15 +1019,10 @@ static int asoc_ssc_init(struct device *dev)
  
- 	err = cygnus_soc_platform_register(dev, cygaud);
- 	if (err) {
- 		dev_err(dev, "platform reg error %d\n", err);
--		goto err_irq;
-+		return err;
+ 	if (ret) {
+ 		dev_err(dev, "Could not register PCM: %d\n", ret);
+-		goto err_unregister_dai;
++		return ret;
  	}
  
  	return 0;
 -
--err_irq:
+-err_unregister_dai:
 -	snd_soc_unregister_component(dev);
--	return err;
+-err:
+-	return ret;
  }
  
- static int cygnus_ssp_remove(struct platform_device *pdev)
- {
- 	cygnus_soc_platform_unregister(&pdev->dev);
--	snd_soc_unregister_component(&pdev->dev);
- 
- 	return 0;
+ static void asoc_ssc_exit(struct device *dev)
+@@ -1038,8 +1033,6 @@ static void asoc_ssc_exit(struct device *dev)
+ 		atmel_pcm_dma_platform_unregister(dev);
+ 	else
+ 		atmel_pcm_pdc_platform_unregister(dev);
+-
+-	snd_soc_unregister_component(dev);
  }
+ 
+ /**
 -- 
 2.19.0.rc2
