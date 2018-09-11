@@ -1,40 +1,92 @@
-From: Yu Zhao <yuzhao@google.com>
-Subject: Re: [PATCH 1/3] Revert "ASoC: Intel: Skylake: Acquire irq after RIRB
- allocation"
-Date: Tue, 11 Sep 2018 14:44:56 -0600
-Message-ID: <20180911204456.GA18086@google.com>
-References: <20180910211718.200802-1-yuzhao@google.com>
- <s5hd0tk3712.wl-tiwai@suse.de>
- <20180911163636.GC10123@sirena.org.uk>
+From: Robert Jarzmik <robert.jarzmik@free.fr>
+Subject: Re: [PATCH] ASoC: pxa: remove duplicated
+	snd_soc_component_driver ops
+Date: Tue, 11 Sep 2018 22:57:27 +0200
+Message-ID: <877ejr69c8.fsf@belgarion.home>
+References: <5110d62c9a1d266da0675cd11f196adad4b12cec.1536006242.git.petrcvekcz@gmail.com>
+ <87bm955gj9.fsf@belgarion.home>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180911163636.GC10123@sirena.org.uk>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Guneshwor Singh <guneshwor.o.singh@intel.com>, Naveen Manohar <naveen.m@intel.com>, Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Sriram Periyasamy <sriramx.periyasamy@intel.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Jie Yang <yang.jie@linux.intel.com>, Jaroslav Kysela <perex@perex.cz>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from smtp.smtpout.orange.fr (smtp11.smtpout.orange.fr
+ [80.12.242.133])
+ by alsa0.perex.cz (Postfix) with ESMTP id 95EC12676B0
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 22:57:31 +0200 (CEST)
+In-Reply-To: <87bm955gj9.fsf@belgarion.home> (Robert Jarzmik's message of
+ "Mon, 10 Sep 2018 20:55:06 +0200")
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: petrcvekcz@gmail.com
+Cc: alsa-devel@alsa-project.org, dbaryshkov@gmail.com, lgirdwood@gmail.com, haojian.zhuang@gmail.com, dirk@opfer-online.de, marek.vasut@gmail.com, zhouqiao@marvell.com, broonie@kernel.org, philipp.zabel@gmail.com, lost.distance@yahoo.com, daniel@zonque.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 11, 2018 at 05:36:36PM +0100, Mark Brown wrote:
-> On Tue, Sep 11, 2018 at 08:03:21AM +0200, Takashi Iwai wrote:
-> > Yu Zhao wrote:
-> 
-> > > Will fix the problems in the following patches. Also attaching the
-> > > crash for future reference.
-> 
-> > > [   16.950887] RIP: 0010:snd_hdac_bus_update_rirb+0x19b/0x4cf [snd_hda_core]
-> > > [   16.950889] RSP: 0000:ffff88015c807c08 EFLAGS: 00010003
-> > > [   16.950891] RAX: 0000000000000101 RBX: 000000000000080c RCX: 1ffff10026822185
-> 
-> > Please try to rip off uninteresting hex values and other stuff there.
-> 
-> Right:
-> 
-> Please think hard before including complete backtraces in upstream
-> reports, they are very large and contain almost no useful information
-> relative to their size so often obscure the relevant content in your
-> message. If part of the backtrace is usefully illustrative then it's
-> usually better to pull out the relevant sections.
+Robert Jarzmik <robert.jarzmik@free.fr> writes:
 
-Thanks, will do in v2.
+> Acked-by: Robert Jarzmik <robert.jarzmik@free.fr>
+> Tested-by: Robert Jarzmik <robert.jarzmik@free.fr>
+
+Mmh actually no, there is still a potential issue :
+ - the ac97 aplay works in my platform_data mioa701 board
+ - but it doesn't work anymore with the devicetree version ... until I revert
+   this patch where it works again.
+
+The error I get is :
+	root@mioa701:~# aplay mp3/Avril\ Lavigne\ Joie.wav 
+	aplay: main:722: audio open error: Invalid argument
+
+The relevant devicetree extract is :
+	sound {
+		compatible = "simple-audio-card";
+		simple-audio-card,name = "MioA701";
+		simple-audio-card,widgets =
+		"Speaker", "Front Speaker",
+		"Speaker", "Rear Speaker",
+		"Microphone", "Headset",
+		"Microphone", "GSM Line Out",
+		"Line", "GSM Line In",
+		"Microphone", "Headset Mic",
+		"Microphone", "Front Mic";
+		simple-audio-card,routing =
+			/* Call Mic */
+			"Mic Bias", "Front Mic",
+			"MIC1", "Mic Bias",
+			/* Headset Mic */
+			"LINEL", "Headset Mic",
+			"LINER", "Headset Mic",
+			/* GSM Module */
+			"MONOIN", "GSM Line Out",
+			"PCBEEP", "GSM Line Out",
+			"GSM Line In", "MONO",
+			/* headphone connected to HPL, HPR */
+			"Headset", "HPL",
+			"Headset", "HPR",
+			/* front speaker connected to HPL, OUT3 */
+			"Front Speaker", "HPL",
+			"Front Speaker", "OUT3",
+			/* rear speaker connected to SPKL, SPKR */
+			"Rear Speaker", "SPKL",
+			"Rear Speaker", "SPKR";
+
+		simple-audio-card,cpu {
+			sound-dai = <&ac97>;
+		};
+		simple-audio-card,codec {
+			sound-dai = <&wm9713>;
+		};
+		simple-audio-card,plat {
+			sound-dai = <&pxa_pcm_audio>;
+		};
+	};
+
+Cheers.
+
+-- 
+Robert
