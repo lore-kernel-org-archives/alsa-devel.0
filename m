@@ -1,163 +1,77 @@
-From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
-Subject: Re: Microphone detected,
- but no output for all ASUS G751xx with ALC668 chipset
-Date: Tue, 11 Sep 2018 21:27:45 +0200
-Message-ID: <CANweNF50zpunkO4XOeZh_SWsceeQ5SRWdYAXQ21c69oGfFGzhA@mail.gmail.com>
-References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
- <s5hin3d2ik0.wl-tiwai@suse.de>
- <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
- <s5hbm94ou29.wl-tiwai@suse.de>
- <CANweNF5PpzufjnRQk2gpqw1+kU8TK86RAj-topURG-FAHeYxcA@mail.gmail.com>
- <s5h7ejrq5dd.wl-tiwai@suse.de>
- <CANweNF5kcSDAxPXDqnyAEvh9bwYg61_F4XhaLjGrpEXZnvvNew@mail.gmail.com>
- <CANweNF7d8Z7qFw2cMkUH4F4r6P=Ms-=WVbFYrMX+O+uZkV4cwg@mail.gmail.com>
- <CAM8Agx2QibKCdPg5FLDqgcP-O7PwPN1L4iNT=6Ae53T5=d=+uw@mail.gmail.com>
- <CANweNF5fjLyfEyE+gCYugpfW_+LP2HYFMPfuWi_O0nxizFLdXg@mail.gmail.com>
- <CAM8Agx0Y+7c_ZQrwzX6R0yRNHTeHoMPAt6zLtU9VKqHAo42TeQ@mail.gmail.com>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: Re: [PATCH 03/11] compat_ioctl: remove translation for sound ioctls
+Date: Tue, 11 Sep 2018 21:35:48 +0200
+Message-ID: <CAK8P3a2ZPDtFax50joj402H5m-kZG0etu10HqNRjSmo2xU5R5w@mail.gmail.com>
+References: <20180908142837.2819693-1-arnd@arndb.de> <20180908142837.2819693-3-arnd@arndb.de>
+ <20180909041632.GE19965@ZenIV.linux.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com
- [209.85.219.180])
- by alsa0.perex.cz (Postfix) with ESMTP id AA4E22676EB
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 21:27:57 +0200 (CEST)
-Received: by mail-yb1-f180.google.com with SMTP id k5-v6so9777965ybo.10
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 12:27:57 -0700 (PDT)
-In-Reply-To: <CAM8Agx0Y+7c_ZQrwzX6R0yRNHTeHoMPAt6zLtU9VKqHAo42TeQ@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: conmanx360@gmail.com
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180909041632.GE19965@ZenIV.linux.org.uk>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Jeff Dike <jdike@addtoit.com>, Richard Weinberger <richard@nod.at>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, linux-um@lists.infradead.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-U29ycnkgYWJvdXQgdGhhdCwgSSBmb3Jnb3QgdG8gZW5hYmxlIGEga2VybmVsIGNvbmZpZy4uLgoK
-LUjDpXZhcmQKCkRlbiB0aXIuIDExLiBzZXAuIDIwMTgga2wuIDIxOjIwIHNrcmV2IENvbm5vciBN
-Y0FkYW1zIDxjb25tYW54MzYwQGdtYWlsLmNvbQo+OgoKPiBXaGVuIGl0J3MgYm91bmQgYXMgYSBz
-dHViLCBpdCBzaG91bGRuJ3Qgc2hvdyB1cCBpbiBhbHNhbWl4ZXIgY29udHJvbHMuCj4gWW91IGNh
-biBjaGVjayB3aGF0IG1vZHVsZSBpcyBsb2FkZWQgYnkgZG9pbmcgbHNwY2kgLXYgLiBJdCBzaG91
-bGQgc2F5Cj4ga2VybmVsIGRyaXZlciBpbiB1c2U6IHBjaS1zdHViLiBBbHNvLCBkaWQgeW91IHJ1
-biB0aGUgdmZpby1iaW5kIHNjcmlwdAo+IGJlZm9yZSB0cnlpbmcgaXQ/Cj4KPiBPbiBUdWUsIFNl
-cCAxMSwgMjAxOCBhdCAzOjE4IFBNLCBIw6V2YXJkIDxob3ZhcmRzbGlsbEBnbWFpbC5jb20+IHdy
-b3RlOgo+ID4gVGhhbmsgeW91IGZvciB0aGUgb2ZmZXIhCj4gPgo+ID4gSSBydW4gZ2VudG9vLCBi
-dXQgeW91ciBnaXRodWIgZ3VpZGUgaXMgdmVyeSB1c2VmdWwuIEkgY2FuJ3Qgc2VlbSB0byBiaW5k
-Cj4gbXkKPiA+IGF1ZGlvIGRyaXZlciB0byBhIHBjaS1zdHVkLiBJcyB0aGUgU291bmQgY2FyZCBz
-dGlsbCBzdXBwb3NlZCB0byBmdW5jdGlvbgo+IGFzCj4gPiBub3JtYWwgd2hlbiBJICh0aGluayBJ
-KSBoYXZlIGJvdW5kIGl0IHRvIGEgc3R1ZC4KPiA+Cj4gPiAtSMOldmFyZAo+ID4KPiA+IERlbiB0
-aXIuIDExLiBzZXAuIDIwMTgga2wuIDIwOjI2IHNrcmV2IENvbm5vciBNY0FkYW1zCj4gPiA8Y29u
-bWFueDM2MEBnbWFpbC5jb20+Ogo+ID4+Cj4gPj4gT25lIHRoaW5nIHlvdSBjb3VsZCB0cnksIGlz
-IHVzaW5nIHRoZSBwcm9ncmFtIEkgdXNlZCB0byByZXZlcnNlCj4gPj4gZW5naW5lZXIgdGhlIFNv
-dW5kIEJsYXN0ZXIgWiBzZXJpZXMgb2YgY2FyZHMsIFFlbXVIREFEdW1wLiBJZiB5b3VyCj4gPj4g
-cHJvY2Vzc29yIHN1cHBvcnRzIHBjaS1wYXNzdGhyb3VnaCB3aXRoIGEgdmlydHVhbCBtYWNoaW5l
-LCB5b3UgY291bGQKPiA+PiBydW4gYSBXaW5kb3dzIHZpcnR1YWwgbWFjaGluZSB3aXRoIHRoZSBz
-b3VuZCBjYXJkIGluIGl0IGFuZCBjYXB0dXJlCj4gPj4gdGhlIGNvbW1hbmRzLiBJJ2QgYmUgd2ls
-bGluZyB0byBsb29rIHRocm91Z2ggdGhlIGR1bXBzIHRvIHNlZSBpZiB0aGVyZQo+ID4+IGFyZSBh
-bnkgc3BlY2lhbCB2ZXJicyBvciBhbnl0aGluZy4KPiA+Pgo+ID4+IFlvdSBjYW4gZmluZCB0aGUg
-cHJvZ3JhbSBoZXJlOgo+IGh0dHBzOi8vZ2l0aHViLmNvbS9Db25tYW54MzYwL1FlbXVIREFEdW1w
-Cj4gPj4KPiA+PiBMZXQgbWUga25vdy4KPiA+Pgo+ID4+IE9uIFR1ZSwgU2VwIDExLCAyMDE4IGF0
-IDI6MTUgUE0sIEjDpXZhcmQgPGhvdmFyZHNsaWxsQGdtYWlsLmNvbT4gd3JvdGU6Cj4gPj4gPiBT
-b3JyeSwgbXkgZ21haWwgZGlkbid0IHVwZGF0ZSBzbyBJIHdyb3RlIG15IHJlc3BvbnNlIGJlZm9y
-ZSBJIHJlYWQKPiB5b3VyCj4gPj4gPiBsYXN0IG9uZS4KPiA+PiA+Cj4gPj4gPiBJdCBpcyBhIHNl
-cGFyYXRlIG1pYyBwb3J0IGFzIHRoZSBHNzUxSlQgZG9lc24ndCBoYXZlIGFueSBoZWFkc2V0Cj4g
-Pj4gPiBtdWx0aWphY2tzLgo+ID4+ID4KPiA+PiA+IEknbGwgdHJ5IGFuZCBkaWcgYXJvdW5kIGlu
-IHRoZSBrZXJuZWwhIFRoYW5rcyBmb3IgdGhlIHRpcCEKPiA+PiA+Cj4gPj4gPiAtSMOldmFyZAo+
-ID4+ID4KPiA+PiA+IERlbiB0aXIuIDExLiBzZXAuIDIwMTgga2wuIDIwOjA5IHNrcmV2IEjDpXZh
-cmQgPGhvdmFyZHNsaWxsQGdtYWlsLmNvbQo+ID46Cj4gPj4gPgo+ID4+ID4+IFRoYW5rIHlvdSBm
-b3IgdGFraW5nIHlvdXIgdGltZSBhbmQgdHJ5aW5nIHRvIGhlbHAhIDopCj4gPj4gPj4KPiA+PiA+
-PiBEbyB5b3Uga25vdyB3aGVyZSBJIGNhbiBhc2sgYXJvdW5kIGZvciBtb3JlIGhlbHAgb24gdGhl
-IGlzc3VlPyBJCj4gZG9uJ3QKPiA+PiA+PiB3YW50IHRvIGdpdmUgdXAgeWV0Lgo+ID4+ID4+Cj4g
-Pj4gPj4gLUjDpXZhcmQKPiA+PiA+Pgo+ID4+ID4+IERlbiB0aXIuIDExLiBzZXAuIDIwMTgga2wu
-IDIwOjAyIHNrcmV2IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4gPj4gPj4KPiA+PiA+
-Pj4gT24gVHVlLCAxMSBTZXAgMjAxOCAxOToxNDozNyArMDIwMCwKPiA+PiA+Pj4gSMOldmFyZCB3
-cm90ZToKPiA+PiA+Pj4gPgo+ID4+ID4+PiA+IFllcywgbWljcm9waG9uZSBnZXRzIGRldGVjdGVk
-IGluc3RhbnRseSBhbmQgaXQgYXV0b21hdGljYWxseQo+IGNoYW5nZXMKPiA+PiA+Pj4gPiB0bwo+
-ID4+ID4+PiBpdAo+ID4+ID4+PiA+IGluIHBhdnVjb250cm9sLgo+ID4+ID4+Pgo+ID4+ID4+PiBU
-aGVuIGl0IGxpa2VseSByZXF1aXJlcyBzb21lIGFkZGl0aW9uYWwgaW5pdGlhbGl6YXRpb24gb3V0
-c2lkZQo+ID4+ID4+PiBIRC1hdWRpby4gIEl0J3MgaGFyZCB0byBrbm93LCBhcyBpdCdzIHByZXR0
-eSBtdWNoIHZlbmRvci1zcGVjaWZpYy4KPiA+PiA+Pj4gWW91IGNhbiBkaWcgZG93biB0aGUgV2lu
-ZG93cywgYnV0IEkgaGF2ZSBubyBpZGVhIGFib3V0IFdpbmRvd3MKPiA+PiA+Pj4gaW1wbGVtZW50
-YXRpb24sIHNvIGNhbid0IGdpdmUgYW55IGhpbnRzLCB1bmZvcnR1bmF0ZWx5Lgo+ID4+ID4+Pgo+
-ID4+ID4+Pgo+ID4+ID4+PiBUYWthc2hpCj4gPj4gPj4+Cj4gPj4gPj4+ID4KPiA+PiA+Pj4gPiBE
-ZW4gdGlyLiAxMS4gc2VwLiAyMDE4IGtsLiAxODo1MiBza3JldiBUYWthc2hpIEl3YWkgPAo+IHRp
-d2FpQHN1c2UuZGU+Ogo+ID4+ID4+PiA+Cj4gPj4gPj4+ID4gPiBPbiBUdWUsIDExIFNlcCAyMDE4
-IDE4OjQwOjIzICswMjAwLAo+ID4+ID4+PiA+ID4gSMOldmFyZCB3cm90ZToKPiA+PiA+Pj4gPiA+
-ID4KPiA+PiA+Pj4gPiA+ID4gVGhhbmsgeW91IGZvciByZXBseWluZyEKPiA+PiA+Pj4gPiA+ID4K
-PiA+PiA+Pj4gPiA+ID4gRW5hYmxpbmcgbG9vcGJhY2sgaW4gYWxzYW1peGVyOgo+ID4+ID4+PiA+
-ID4gPiBodHRwOi8vaS5pbWd1ci5jb20vbE5vNmU3VC5wbmcKPiA+PiA+Pj4gPiA+ID4KPiA+PiA+
-Pj4gPiA+ID4gQW5kIHVubXV0aW5nIG1vcmUgYW5kIG1vcmUgdGhpbmdzIGluICJNaWMgUGxheWJh
-Y2sgVm9sdW1lIiBpbgo+ID4+ID4+PiA+ID4gaGRhYW5hbHl6ZXI6Cj4gPj4gPj4+ID4gPiA+IGh0
-dHA6Ly9pLmltZ3VyLmNvbS9IMEhpT2h5LnBuZwo+ID4+ID4+PiA+ID4gPiBtYWRlIHdoaXRlIG5v
-aXNlIGNvbWUgZnJvbSB0aGUgaGVhZHNldC4gSG93ZXZlciBpdCBkaWQgbm90Cj4gPj4gPj4+ID4g
-PiA+IGNoYW5nZSBvcgo+ID4+ID4+PiA+ID4gcmVhY3QKPiA+PiA+Pj4gPiA+ID4gYXQgYWxsIHdo
-ZW4gSSB0YWxrZWQgb3IgZXZlbiBtdXRlZCB0aGUgbWljcm9waG9uZSBwaHlzaWNhbGx5Lgo+ID4+
-ID4+PiA+ID4gPgo+ID4+ID4+PiA+ID4gPiBJIGNvdWxkbid0IGZpbmQgIk1pYyBQbGF5YmFjayBT
-d2l0Y2giIGFueXdoZXJlIGluIGVpdGhlcgo+ID4+ID4+PiA+ID4gPiBhbHNhbWl4ZXIKPiA+PiA+
-Pj4gb3IKPiA+PiA+Pj4gPiA+ID4gaGRhYW5hbHl6ZXIuCj4gPj4gPj4+ID4gPgo+ID4+ID4+PiA+
-ID4gSXQncyBhIG1peGVyIG11dGUgc3dpdGNoLgo+ID4+ID4+PiA+ID4KPiA+PiA+Pj4gPiA+ID4g
-VGhlIG1pY3JvcGhvbmUgd29ya3MgcGVyZmVjdGx5IGZpbmUgdW5kZXIgV2luZG93cywgc28gSSBk
-b24ndAo+ID4+ID4+PiA+ID4gPiB0aGluawo+ID4+ID4+PiBpdCBpcwo+ID4+ID4+PiA+ID4gPiB0
-aGUgbWljIHBpbi4KPiA+PiA+Pj4gPiA+Cj4gPj4gPj4+ID4gPiBCdXQgdGhlIGZhY3QgYWJvdmUg
-aW5kaWNhdGVzIHRoZSBwb3NzaWJpbGl0eSBvZiB0aGUgd3JvbmcgcGluLAo+ID4+ID4+PiA+ID4g
-dG9vLgo+ID4+ID4+PiA+ID4KPiA+PiA+Pj4gPiA+IERvZXMgdGhlIGphY2sgZGV0ZWN0aW9uIG9m
-IHRoZSBleHQgbWljIHBpbiB3b3JrPwo+ID4+ID4+PiA+ID4KPiA+PiA+Pj4gPiA+Cj4gPj4gPj4+
-ID4gPiBUYWthc2hpCj4gPj4gPj4+ID4gPgo+ID4+ID4+PiA+ID4gPgo+ID4+ID4+PiA+ID4gPiAt
-SMOldmFyZAo+ID4+ID4+PiA+ID4gPgo+ID4+ID4+PiA+ID4gPiBEZW4gbWFuLiAxMC4gc2VwLiAy
-MDE4IGtsLiAyMjozOSBza3JldiBUYWthc2hpIEl3YWkKPiA+PiA+Pj4gPiA+ID4gPHRpd2FpQHN1
-c2UuZGUKPiA+PiA+Pj4gPjoKPiA+PiA+Pj4gPiA+ID4KPiA+PiA+Pj4gPiA+ID4gPiBPbiBUaHUs
-IDA2IFNlcCAyMDE4IDIwOjQ0OjMwICswMjAwLAo+ID4+ID4+PiA+ID4gPiA+IEjDpXZhcmQgd3Jv
-dGU6Cj4gPj4gPj4+ID4gPiA+ID4gPgo+ID4+ID4+PiA+ID4gPiA+ID4gQWRkaXRpb25hbCByZWxl
-dmFudCBpbmZvOgo+ID4+ID4+PiA+ID4gPiA+ID4KPiA+PiA+Pj4gPiA+ID4gPiA+IEEgc2ltaWxh
-ciBpc3N1ZSB3YXMgYWxzbyBkaXNjdXNzZWQgdGhyZWUgeWVhcnMgYWdvIG9uIFN1bgo+ID4+ID4+
-PiA+ID4gPiA+ID4gSnVuCj4gPj4gPj4+ID4gPiAxNzoxNTo1NAo+ID4+ID4+PiA+ID4gPiA+IENF
-U1QKPiA+PiA+Pj4gPiA+ID4gPiA+IDIwMTUgYW5kIHdhcyBhYm91dCBoaXMgc3Vycm91bmQgc291
-bmQgc2V0dXAsIGJ1dCBkaWQgbm90Cj4gPj4gPj4+ID4gPiA+ID4gPiB0b3VjaAo+ID4+ID4+PiBv
-biB0aGUKPiA+PiA+Pj4gPiA+ID4gPiA+IGV4dGVybmFsIG1pY3JvcGhvbmUgcHJvYmxlbToKPiA+
-PiA+Pj4gPiA+ID4gPiA+Cj4gPj4gPj4+ID4gPiA+ID4KPiA+PiA+Pj4gPiA+Cj4gPj4gPj4+Cj4g
-Pj4gPj4+Cj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1k
-ZXZlbC8yMDE1LUp1bmUvMDkzMzE3Lmh0bWwKPiA+PiA+Pj4gPiA+ID4gPiA+Cj4gPj4gPj4+ID4g
-PiA+ID4gPiBhbHNhLWluZm8uc2g6Cj4gPj4gPj4+ID4gPiA+ID4gPgo+ID4+ID4+PiA+ID4gPiA+
-Cj4gPj4gPj4+ID4gPgo+ID4+ID4+Pgo+ID4+ID4+Pgo+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0
-Lm9yZy9kYi8/Zj0xZDg2MTZiYTU5NzczMDhlMDNkYjZjM2E4NmUzNmU5ZTliMzhkNmYwCj4gPj4g
-Pj4+ID4gPiA+ID4gPgo+ID4+ID4+PiA+ID4gPiA+ID4gR3JhcGggb2YgQUxDNjY4IGNoaXBzZXQg
-ZnJvbSBoZGFhbmFseXplcjoKPiA+PiA+Pj4gPiA+ID4gPiA+IGh0dHA6Ly9pLmltZ3VyLmNvbS9j
-MDhETkpXLnBuZwo+ID4+ID4+PiA+ID4gPiA+ID4KPiA+PiA+Pj4gPiA+ID4gPiA+IHNldHRpbmcg
-YWxzYS1tb2RlWzEtOF0gZG9lcyBub3RoaW5nIHRvIGhlbHAgdGhlIGlzc3VlLgo+ID4+ID4+PiA+
-ID4gPiA+ID4KPiA+PiA+Pj4gPiA+ID4gPiA+IFRoZXJlIGFyZSBzZXZlcmFsIG9mIHNpbWlsYXIg
-YnVnIHJlcG9ydHMgYXJvdW5kIHRoZSB3ZWIKPiA+PiA+Pj4gZXhwZXJpZW5jaW5nCj4gPj4gPj4+
-ID4gPiA+ID4gPiBzaW1pbGFyIGlzc3VlcywgYW5kIG9uIGRpZmZlcmVudCBkaXN0cm9zLgo+ID4+
-ID4+PiA+ID4gPiA+ID4KPiA+PiA+Pj4gPiA+ID4gPiA+IE1pY3JvcGhvbmUgd29ya3MgcGVyZmVj
-dGx5IGluIHdpbmRvd3MKPiA+PiA+Pj4gPiA+ID4gPiA+Cj4gPj4gPj4+ID4gPiA+ID4gPiBJIGhh
-dmUgYSBBU1VTIFJPRyBHNzUxSlQsIGJ1dCB0aGlzIHByb2JsZW0gc2VlbXMgdG8gaGFwcGVuCj4g
-Pj4gPj4+ID4gPiA+ID4gPiB3aXRoCj4gPj4gPj4+IGFsbAo+ID4+ID4+PiA+ID4gPiA+IGxhcHRv
-cHMKPiA+PiA+Pj4gPiA+ID4gPiA+IHVuZGVyIHRoZSBHNzUxIG5hbWUuCj4gPj4gPj4+ID4gPiA+
-ID4KPiA+PiA+Pj4gPiA+ID4gPiBXaGVuIHlvdSBlbmFibGUgdGhlIGxvb3BiYWNrIHZvbHVtZSBh
-bmQgc3dpdGNoLCBhbmQKPiA+PiA+Pj4gPiA+ID4gPiB1bm11dGUvYWRqdXN0Cj4gPj4gPj4+ICJN
-aWMKPiA+PiA+Pj4gPiA+ID4gPiBQbGF5YmFjayBWb2x1bWUiLCBhbmQgIk1pYyBQbGF5YmFjayBT
-d2l0Y2giLCBkbyB5b3UgaGVhciB0aGUKPiA+PiA+Pj4gPiA+ID4gPiBpbnB1dAo+ID4+ID4+PiA+
-ID4gPiA+IGZyb20gdGhlIGV4dCBtaWM/ICBJdCdzIGEgcm91dGUgZGlyZWN0bHkgZnJvbSBOSUQg
-MHgxOCB0bwo+IHRoZQo+ID4+ID4+PiBtaXhlcgo+ID4+ID4+PiA+ID4gPiA+IE5JRCAweDBiLCB0
-aGVuIG91dHB1dCBtaXhlciBOSUQgMHgwYywgdGhlbiBvdXRwdXRzLiAgU28gdGhpcwo+ID4+ID4+
-PiA+ID4gPiA+IGNhbgo+ID4+ID4+PiBiZQo+ID4+ID4+PiA+ID4gPiA+IHVzZWQgdG8gdmVyaWZ5
-IHRoZSBoYXJkd2FyZSByb3V0aW5nLgo+ID4+ID4+PiA+ID4gPiA+Cj4gPj4gPj4+ID4gPiA+ID4g
-SWYgeW91IGRvbid0IGhlYXIgdmlhIHRoaXMgcm91dGUsIGl0IG1lYW5zIHRoYXQgdGhlIGlucHV0
-Cj4gZnJvbQo+ID4+ID4+PiB0aGUgZXh0Cj4gPj4gPj4+ID4gPiA+ID4gbWljIHBpbiBpdHNlbGYg
-aXMgYnJva2VuLCBhbmQgaXQgaW1wbGllcyB0aGF0IHNvbWV0aGluZwo+ID4+ID4+PiA+ID4gPiA+
-IG91dHNpZGUKPiA+PiA+Pj4gPiA+ID4gPiBIRC1hdWRpbyBjb2RlYy4KPiA+PiA+Pj4gPiA+ID4g
-Pgo+ID4+ID4+PiA+ID4gPiA+Cj4gPj4gPj4+ID4gPiA+ID4gVGFrYXNoaQo+ID4+ID4+PiA+ID4g
-PiA+Cj4gPj4gPj4+ID4gPiA+IFsyICA8dGV4dC9odG1sOyBVVEYtOCAocXVvdGVkLXByaW50YWJs
-ZSk+XQo+ID4+ID4+PiA+ID4gPgo+ID4+ID4+PiA+ID4KPiA+PiA+Pj4gPiBbMiAgPHRleHQvaHRt
-bDsgVVRGLTggKHF1b3RlZC1wcmludGFibGUpPl0KPiA+PiA+Pj4gPgo+ID4+ID4+Pgo+ID4+ID4+
-Cj4gPj4gPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+
-ID4+ID4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiA+PiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9q
-ZWN0Lm9yZwo+ID4+ID4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwKPgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fs
-c2EtZGV2ZWwK
+On Sun, Sep 9, 2018 at 6:17 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Sat, Sep 08, 2018 at 04:28:09PM +0200, Arnd Bergmann wrote:
+> > The SNDCTL_* and SOUND_* commands are the old OSS user interface.
+> >
+> > I checked all the sound ioctl commands listed in fs/compat_ioctl.c
+> > to see if we still need the translation handlers. Here is what I
+> > found:
+> >
+> > - sound/oss/ is (almost) gone from the kernel, this is what actually
+> >   needed all the translations
+> > - The ALSA emulation for OSS correctly handles all compat_ioctl
+> >   commands already.
+> > - sound/oss/dmasound/ is the last holdout of the original OSS code,
+> >   this is only used on arch/m68k, which has no 64-bit mode and
+> >   hence needs no compat handlers
+> > - arch/um/drivers/hostaudio_kern.c may run in 64-bit mode with
+> >   32-bit x86 user space underneath it. This rare corner case is
+> >   the only one that still needs the compat handlers.
+> >
+> > By adding a simple redirect of .compat_ioctl to .unlocked_ioctl in the
+> > UML driver, we can remove all the COMPATIBLE_IOCTL() annotations without
+> > a change in functionality. For completeness, I'm adding the same thing
+> > to the dmasound file, knowing that it makes no difference.
+>
+> > diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
+> > index 7f9dbdbc4eb7..0278a642a622 100644
+> > --- a/arch/um/drivers/hostaudio_kern.c
+> > +++ b/arch/um/drivers/hostaudio_kern.c
+> > @@ -298,6 +298,7 @@ static const struct file_operations hostaudio_fops = {
+> >       .write          = hostaudio_write,
+> >       .poll           = hostaudio_poll,
+> >       .unlocked_ioctl = hostaudio_ioctl,
+> > +     .compat_ioctl   = hostaudio_ioctl,
+>
+> Umm...  OK, seeing that it's not going to be used on s390...  It's still
+> not quite right, though, and I'm afraid that places where we have the
+> same ->unlocked_ioctl and ->compat_ioctl need an audit - there probably
+> had been other folks who'd stepped into the same.
+
+It turns out that it's actually much more common to have the same
+pointer for ioctl handlers that thake pointer arguments than to have
+the wrapper. I found 16 instances of trivial wrappers to do compat_ptr()
+for file_operations, 4 instances that have a wrapper but skip the
+compat_ptr() and around 40 (depending on how you count) that use
+the same pointer for both when they only use pointers and should
+go through compat_ptr(). This includes a couple that don't use
+the argument at all, so they are fine either way.
+
+I've created patches to change all of the above to a new
+generic_compat_ioctl_ptrarg() helper I added.
+
+loop_control_ioctl(), kcov_ioctl(), proc_bus_pci_ioctl(), and nbd_ioctl() seem
+to be ones that are correct because,  the argument is always an integer.
+fs3270_ioctl() has a is_compat_task() check to deal with the problem.
+
+inotify_ioctl(),  vsoc_ioctl(), and usblp_ioctl() are somethat uses both integer
+and pointer arguments and may need special handling for s390.
+
+I did not touch those so far.
+
+       Arnd
