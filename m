@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove unused num_dai_links"
-	to the asoc tree
-Date: Tue, 11 Sep 2018 19:22:05 +0100 (BST)
-Message-ID: <20180911182205.EFE581121B1F@debutante.sirena.org.uk>
-References: <87va7c4jcm.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: soc-core: avoid nested code on
+	soc_remove_dai()" to the asoc tree
+Date: Tue, 11 Sep 2018 19:22:14 +0100 (BST)
+Message-ID: <20180911182214.D4B3A1121B1F@debutante.sirena.org.uk>
+References: <87y3c84jka.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F117267846
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:22:07 +0200 (CEST)
-In-Reply-To: <87va7c4jcm.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EFEC26787A
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:22:15 +0200 (CEST)
+In-Reply-To: <87y3c84jka.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove unused num_dai_links
+   ASoC: soc-core: avoid nested code on soc_remove_dai()
 
 has been applied to the asoc tree at
 
@@ -53,69 +53,52 @@ to this mail.
 Thanks,
 Mark
 
->From 4f1b327e65a9516a46ea491ce72a5161be176af8 Mon Sep 17 00:00:00 2001
+>From 2eda3cb108b699a6ff78a87e25143c153bc88e41 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 11 Sep 2018 06:59:01 +0000
-Subject: [PATCH] ASoC: soc-core: remove unused num_dai_links
+Date: Tue, 11 Sep 2018 06:54:26 +0000
+Subject: [PATCH] ASoC: soc-core: avoid nested code on soc_remove_dai()
 
-ALSA SoC is counting card->dai_link_list user,
-but no-one is using it.
-Let's remove it.
+Nested code is not readable.
+This patch avoid it on soc_remove_dai().
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  | 1 -
- sound/soc/soc-core.c | 4 ----
- 2 files changed, 5 deletions(-)
+ sound/soc/soc-core.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index 821bf99992b8..e17a7ae9a155 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1060,7 +1060,6 @@ struct snd_soc_card {
- 	struct snd_soc_dai_link *dai_link;  /* predefined links only */
- 	int num_links;  /* predefined links only */
- 	struct list_head dai_link_list; /* all links */
--	int num_dai_links;
- 
- 	struct list_head rtd_list;
- 	int num_rtd;
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index dde9b70b58b5..7e18937c2214 100644
+index 4e9367aacc0c..dde9b70b58b5 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -1013,7 +1013,6 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
- 				link->name);
+@@ -942,17 +942,18 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
+ {
+ 	int err;
  
- 		list_del(&link->list);
--		card->num_dai_links--;
+-	if (dai && dai->probed &&
+-			dai->driver->remove_order == order) {
+-		if (dai->driver->remove) {
+-			err = dai->driver->remove(dai);
+-			if (err < 0)
+-				dev_err(dai->dev,
+-					"ASoC: failed to remove %s: %d\n",
+-					dai->name, err);
+-		}
+-		dai->probed = 0;
++	if (!dai || !dai->probed ||
++	    dai->driver->remove_order != order)
++		return;
++
++	if (dai->driver->remove) {
++		err = dai->driver->remove(dai);
++		if (err < 0)
++			dev_err(dai->dev,
++				"ASoC: failed to remove %s: %d\n",
++				dai->name, err);
  	}
++	dai->probed = 0;
  }
  
-@@ -1182,7 +1181,6 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
- 		card->add_dai_link(card, dai_link);
- 
- 	list_add_tail(&dai_link->list, &card->dai_link_list);
--	card->num_dai_links++;
- 
- 	return 0;
- }
-@@ -1220,7 +1218,6 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
- 	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
- 		if (link == dai_link) {
- 			list_del(&link->list);
--			card->num_dai_links--;
- 			return;
- 		}
- 	}
-@@ -2712,7 +2709,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	snd_soc_initialize_card_lists(card);
- 
- 	INIT_LIST_HEAD(&card->dai_link_list);
--	card->num_dai_links = 0;
- 
- 	INIT_LIST_HEAD(&card->rtd_list);
- 	card->num_rtd = 0;
+ static void soc_remove_link_dais(struct snd_soc_card *card,
 -- 
 2.19.0.rc2
