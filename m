@@ -1,92 +1,71 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Fix a couple uninitialized ret
-	variables" to the asoc tree
-Date: Tue, 11 Sep 2018 12:30:13 +0100 (BST)
-Message-ID: <20180911113013.9C5661121AF8@debutante.sirena.org.uk>
-References: <20180910113518.430D71122D51@debutante.sirena.org.uk>
+From: Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: [PATCH] ALSA: hda: fix unused variable warning
+Date: Tue, 11 Sep 2018 16:18:03 +0200
+Message-ID: <CADYN=9JqdmfVfWWWB3VtDcdVDPD6bBfKOnemaKFLd4SRrKi33g@mail.gmail.com>
+References: <20180911082559.24214-1-anders.roxell@linaro.org> <s5hbm941law.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 14B412676EB
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 13:30:14 +0200 (CEST)
-In-Reply-To: <20180910113518.430D71122D51@debutante.sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hbm941law.wl-tiwai@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: tiwai@suse.de
+Cc: perex@perex.cz, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+On Tue, 11 Sep 2018 at 10:38, Takashi Iwai <tiwai@suse.de> wrote:
+>
+> On Tue, 11 Sep 2018 10:25:59 +0200,
+> Anders Roxell wrote:
+> >
+> > When CONFIG_X86=3Dn function azx_snoop doesn't use the variable chip it
+> > only returns true.
+> >
+> > sound/pci/hda/hda_intel.c: In function =E2=80=98dma_alloc_pages=E2=80=
+=99:
+> > sound/pci/hda/hda_intel.c:2002:14: warning: unused variable =E2=80=98ch=
+ip=E2=80=99 [-Wunused-variable]
+> >   struct azx *chip =3D bus_to_azx(bus);
+> >               ^~~~
+> >
+> > Create a inline function of azx_snoop.
+> >
+> > Fixes: a41d122449be ("ALSA: hda - Embed bus into controller object")
+> > Signed-off-by: Anders Roxell <anders.roxell@linaro.org>
+> > ---
+> >  sound/pci/hda/hda_controller.h | 9 ++++-----
+> >  1 file changed, 4 insertions(+), 5 deletions(-)
+> >
+> > diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_control=
+ler.h
+> > index 0053b704ddc4..aa20048742d0 100644
+> > --- a/sound/pci/hda/hda_controller.h
+> > +++ b/sound/pci/hda/hda_controller.h
+> > @@ -170,11 +170,10 @@ struct azx {
+> >  #define azx_bus(chip)        (&(chip)->bus.core)
+> >  #define bus_to_azx(_bus)     container_of(_bus, struct azx, bus.core)
+> >
+> > -#ifdef CONFIG_X86
+> > -#define azx_snoop(chip)              ((chip)->snoop)
+> > -#else
+> > -#define azx_snoop(chip)              true
+> > -#endif
+> > +static inline bool azx_snoop(struct azx *chip)
+> > +{
+> > +     return IS_ENABLED(CONFIG_X86) || (chip->snoop);
+> > +}
+>
+> The idea is good, but the patch is obviously wrong; it should be
+> !IS_ENABLED() :)
 
-   ASoC: dapm: Fix a couple uninitialized ret variables
+oops, right.
 
-has been applied to the asoc tree at
+>
+> Also, please remove the parentheses around chip->snoop.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+OK.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Sending v2 shortly.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 2e558a8127de7b2ed3302f9adcf332ba3feeadb2 Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Fri, 7 Sep 2018 22:40:33 +0300
-Subject: [PATCH] ASoC: dapm: Fix a couple uninitialized ret variables
-
-Smatch complains that these variables could be uninitialized.  The first
-one in snd_soc_dai_link_event() is probably a false positive, because
-probably we know the lists are not empty.  I would normally ignore the
-warning, but GCC complains here as well so I just silenced the warning.
-The "ret" in snd_soc_dapm_new_dai() does need to be initialized or it
-leads to a bogus dereference in the caller.
-
-Fixes: 3bbf5d34fd4a ("ASoC: dapm: Move error handling to snd_soc_dapm_new_control_unlocked")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/soc-dapm.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index e496bc642c99..0dcdcc23dcfd 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3938,8 +3938,10 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
- 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
- 
- 	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
--	if (IS_ERR(w))
-+	if (IS_ERR(w)) {
-+		ret = PTR_ERR(w);
- 		goto outfree_kcontrol_news;
-+	}
- 
- 	w->priv = rtd;
- 
--- 
-2.19.0.rc2
+Cheers,
+Anders
