@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6asm-dai: clean up a return" to
-	the asoc tree
-Date: Tue, 11 Sep 2018 12:30:06 +0100 (BST)
-Message-ID: <20180911113006.B50A61121AF8@debutante.sirena.org.uk>
+Subject: Applied "ASoC: dapm: Fix a couple uninitialized ret
+	variables" to the asoc tree
+Date: Tue, 11 Sep 2018 12:30:13 +0100 (BST)
+Message-ID: <20180911113013.9C5661121AF8@debutante.sirena.org.uk>
+References: <20180910113518.430D71122D51@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id DC7EF2676EB
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 13:30:10 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 14B412676EB
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 13:30:14 +0200 (CEST)
+In-Reply-To: <20180910113518.430D71122D51@debutante.sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6asm-dai: clean up a return
+   ASoC: dapm: Fix a couple uninitialized ret variables
 
 has been applied to the asoc tree at
 
@@ -52,34 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 0712e0288b7602efbde95d95bca4c651ccad01b8 Mon Sep 17 00:00:00 2001
+>From 2e558a8127de7b2ed3302f9adcf332ba3feeadb2 Mon Sep 17 00:00:00 2001
 From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Mon, 10 Sep 2018 11:40:48 +0300
-Subject: [PATCH] ASoC: qdsp6: q6asm-dai: clean up a return
+Date: Fri, 7 Sep 2018 22:40:33 +0300
+Subject: [PATCH] ASoC: dapm: Fix a couple uninitialized ret variables
 
-Smatch complains that if both "psubstream" and "csubstream" are NULL
-then "ret" is uninitialized.  That probably can't happen, but it's
-cleaner to just return zero anyway so let's do that.
+Smatch complains that these variables could be uninitialized.  The first
+one in snd_soc_dai_link_event() is probably a false positive, because
+probably we know the lists are not empty.  I would normally ignore the
+warning, but GCC complains here as well so I just silenced the warning.
+The "ret" in snd_soc_dapm_new_dai() does need to be initialized or it
+leads to a bogus dereference in the caller.
 
+Fixes: 3bbf5d34fd4a ("ASoC: dapm: Move error handling to snd_soc_dapm_new_control_unlocked")
 Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/soc-dapm.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index 9db9a2944ef2..c75fab38905d 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -493,7 +493,7 @@ static int q6asm_dai_pcm_new(struct snd_soc_pcm_runtime *rtd)
- 		}
- 	}
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index e496bc642c99..0dcdcc23dcfd 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -3938,8 +3938,10 @@ snd_soc_dapm_new_dai(struct snd_soc_card *card, struct snd_soc_pcm_runtime *rtd,
+ 	dev_dbg(card->dev, "ASoC: adding %s widget\n", link_name);
  
--	return ret;
-+	return 0;
- }
+ 	w = snd_soc_dapm_new_control_unlocked(&card->dapm, &template);
+-	if (IS_ERR(w))
++	if (IS_ERR(w)) {
++		ret = PTR_ERR(w);
+ 		goto outfree_kcontrol_news;
++	}
  
- static void q6asm_dai_pcm_free(struct snd_pcm *pcm)
+ 	w->priv = rtd;
+ 
 -- 
 2.19.0.rc2
