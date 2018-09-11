@@ -1,18 +1,27 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5668: remove empty
-	rt5668_i2c_remove()" to the asoc tree
-Date: Tue, 11 Sep 2018 19:22:24 +0100 (BST)
-Message-ID: <20180911182224.6BDB51121B1F@debutante.sirena.org.uk>
-References: <87tvmw4j7i.wl-kuninori.morimoto.gx@renesas.com>
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: Re: Microphone detected,
+ but no output for all ASUS G751xx with ALC668 chipset
+Date: Tue, 11 Sep 2018 14:26:27 -0400
+Message-ID: <CAM8Agx2QibKCdPg5FLDqgcP-O7PwPN1L4iNT=6Ae53T5=d=+uw@mail.gmail.com>
+References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
+ <s5hin3d2ik0.wl-tiwai@suse.de>
+ <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
+ <s5hbm94ou29.wl-tiwai@suse.de>
+ <CANweNF5PpzufjnRQk2gpqw1+kU8TK86RAj-topURG-FAHeYxcA@mail.gmail.com>
+ <s5h7ejrq5dd.wl-tiwai@suse.de>
+ <CANweNF5kcSDAxPXDqnyAEvh9bwYg61_F4XhaLjGrpEXZnvvNew@mail.gmail.com>
+ <CANweNF7d8Z7qFw2cMkUH4F4r6P=Ms-=WVbFYrMX+O+uZkV4cwg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 15D8926784A
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:22:24 +0200 (CEST)
-In-Reply-To: <87tvmw4j7i.wl-kuninori.morimoto.gx@renesas.com>
+Received: from mail-oi0-f47.google.com (mail-oi0-f47.google.com
+ [209.85.218.47])
+ by alsa0.perex.cz (Postfix) with ESMTP id A863F267812
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:26:29 +0200 (CEST)
+Received: by mail-oi0-f47.google.com with SMTP id k12-v6so49078803oiw.8
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 11:26:29 -0700 (PDT)
+In-Reply-To: <CANweNF7d8Z7qFw2cMkUH4F4r6P=Ms-=WVbFYrMX+O+uZkV4cwg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,74 +31,97 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
-
-   ASoC: rt5668: remove empty rt5668_i2c_remove()
-
-has been applied to the asoc tree at
-
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From a6ebf4c9770e918e601aa9bf4bc3cf4001dd3d4d Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 11 Sep 2018 07:02:04 +0000
-Subject: [PATCH] ASoC: rt5668: remove empty rt5668_i2c_remove()
-
-rt5668_i2c_remove() is empty, and no longer needed.
-Let's remove it.
-
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5668.c | 6 ------
- 1 file changed, 6 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5668.c b/sound/soc/codecs/rt5668.c
-index 4412cd2910cd..85ba04d6e7ae 100644
---- a/sound/soc/codecs/rt5668.c
-+++ b/sound/soc/codecs/rt5668.c
-@@ -2591,11 +2591,6 @@ static int rt5668_i2c_probe(struct i2c_client *i2c,
- 			rt5668_dai, ARRAY_SIZE(rt5668_dai));
- }
- 
--static int rt5668_i2c_remove(struct i2c_client *i2c)
--{
--	return 0;
--}
--
- static void rt5668_i2c_shutdown(struct i2c_client *client)
- {
- 	struct rt5668_priv *rt5668 = i2c_get_clientdata(client);
-@@ -2626,7 +2621,6 @@ static struct i2c_driver rt5668_i2c_driver = {
- 		.acpi_match_table = ACPI_PTR(rt5668_acpi_match),
- 	},
- 	.probe = rt5668_i2c_probe,
--	.remove = rt5668_i2c_remove,
- 	.shutdown = rt5668_i2c_shutdown,
- 	.id_table = rt5668_i2c_id,
- };
--- 
-2.19.0.rc2
+T25lIHRoaW5nIHlvdSBjb3VsZCB0cnksIGlzIHVzaW5nIHRoZSBwcm9ncmFtIEkgdXNlZCB0byBy
+ZXZlcnNlCmVuZ2luZWVyIHRoZSBTb3VuZCBCbGFzdGVyIFogc2VyaWVzIG9mIGNhcmRzLCBRZW11
+SERBRHVtcC4gSWYgeW91cgpwcm9jZXNzb3Igc3VwcG9ydHMgcGNpLXBhc3N0aHJvdWdoIHdpdGgg
+YSB2aXJ0dWFsIG1hY2hpbmUsIHlvdSBjb3VsZApydW4gYSBXaW5kb3dzIHZpcnR1YWwgbWFjaGlu
+ZSB3aXRoIHRoZSBzb3VuZCBjYXJkIGluIGl0IGFuZCBjYXB0dXJlCnRoZSBjb21tYW5kcy4gSSdk
+IGJlIHdpbGxpbmcgdG8gbG9vayB0aHJvdWdoIHRoZSBkdW1wcyB0byBzZWUgaWYgdGhlcmUKYXJl
+IGFueSBzcGVjaWFsIHZlcmJzIG9yIGFueXRoaW5nLgoKWW91IGNhbiBmaW5kIHRoZSBwcm9ncmFt
+IGhlcmU6IGh0dHBzOi8vZ2l0aHViLmNvbS9Db25tYW54MzYwL1FlbXVIREFEdW1wCgpMZXQgbWUg
+a25vdy4KCk9uIFR1ZSwgU2VwIDExLCAyMDE4IGF0IDI6MTUgUE0sIEjDpXZhcmQgPGhvdmFyZHNs
+aWxsQGdtYWlsLmNvbT4gd3JvdGU6Cj4gU29ycnksIG15IGdtYWlsIGRpZG4ndCB1cGRhdGUgc28g
+SSB3cm90ZSBteSByZXNwb25zZSBiZWZvcmUgSSByZWFkIHlvdXIKPiBsYXN0IG9uZS4KPgo+IEl0
+IGlzIGEgc2VwYXJhdGUgbWljIHBvcnQgYXMgdGhlIEc3NTFKVCBkb2Vzbid0IGhhdmUgYW55IGhl
+YWRzZXQgbXVsdGlqYWNrcy4KPgo+IEknbGwgdHJ5IGFuZCBkaWcgYXJvdW5kIGluIHRoZSBrZXJu
+ZWwhIFRoYW5rcyBmb3IgdGhlIHRpcCEKPgo+IC1Iw6V2YXJkCj4KPiBEZW4gdGlyLiAxMS4gc2Vw
+LiAyMDE4IGtsLiAyMDowOSBza3JldiBIw6V2YXJkIDxob3ZhcmRzbGlsbEBnbWFpbC5jb20+Ogo+
+Cj4+IFRoYW5rIHlvdSBmb3IgdGFraW5nIHlvdXIgdGltZSBhbmQgdHJ5aW5nIHRvIGhlbHAhIDop
+Cj4+Cj4+IERvIHlvdSBrbm93IHdoZXJlIEkgY2FuIGFzayBhcm91bmQgZm9yIG1vcmUgaGVscCBv
+biB0aGUgaXNzdWU/IEkgZG9uJ3QKPj4gd2FudCB0byBnaXZlIHVwIHlldC4KPj4KPj4gLUjDpXZh
+cmQKPj4KPj4gRGVuIHRpci4gMTEuIHNlcC4gMjAxOCBrbC4gMjA6MDIgc2tyZXYgVGFrYXNoaSBJ
+d2FpIDx0aXdhaUBzdXNlLmRlPjoKPj4KPj4+IE9uIFR1ZSwgMTEgU2VwIDIwMTggMTk6MTQ6Mzcg
+KzAyMDAsCj4+PiBIw6V2YXJkIHdyb3RlOgo+Pj4gPgo+Pj4gPiBZZXMsIG1pY3JvcGhvbmUgZ2V0
+cyBkZXRlY3RlZCBpbnN0YW50bHkgYW5kIGl0IGF1dG9tYXRpY2FsbHkgY2hhbmdlcyB0bwo+Pj4g
+aXQKPj4+ID4gaW4gcGF2dWNvbnRyb2wuCj4+Pgo+Pj4gVGhlbiBpdCBsaWtlbHkgcmVxdWlyZXMg
+c29tZSBhZGRpdGlvbmFsIGluaXRpYWxpemF0aW9uIG91dHNpZGUKPj4+IEhELWF1ZGlvLiAgSXQn
+cyBoYXJkIHRvIGtub3csIGFzIGl0J3MgcHJldHR5IG11Y2ggdmVuZG9yLXNwZWNpZmljLgo+Pj4g
+WW91IGNhbiBkaWcgZG93biB0aGUgV2luZG93cywgYnV0IEkgaGF2ZSBubyBpZGVhIGFib3V0IFdp
+bmRvd3MKPj4+IGltcGxlbWVudGF0aW9uLCBzbyBjYW4ndCBnaXZlIGFueSBoaW50cywgdW5mb3J0
+dW5hdGVseS4KPj4+Cj4+Pgo+Pj4gVGFrYXNoaQo+Pj4KPj4+ID4KPj4+ID4gRGVuIHRpci4gMTEu
+IHNlcC4gMjAxOCBrbC4gMTg6NTIgc2tyZXYgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPjoK
+Pj4+ID4KPj4+ID4gPiBPbiBUdWUsIDExIFNlcCAyMDE4IDE4OjQwOjIzICswMjAwLAo+Pj4gPiA+
+IEjDpXZhcmQgd3JvdGU6Cj4+PiA+ID4gPgo+Pj4gPiA+ID4gVGhhbmsgeW91IGZvciByZXBseWlu
+ZyEKPj4+ID4gPiA+Cj4+PiA+ID4gPiBFbmFibGluZyBsb29wYmFjayBpbiBhbHNhbWl4ZXI6Cj4+
+PiA+ID4gPiBodHRwOi8vaS5pbWd1ci5jb20vbE5vNmU3VC5wbmcKPj4+ID4gPiA+Cj4+PiA+ID4g
+PiBBbmQgdW5tdXRpbmcgbW9yZSBhbmQgbW9yZSB0aGluZ3MgaW4gIk1pYyBQbGF5YmFjayBWb2x1
+bWUiIGluCj4+PiA+ID4gaGRhYW5hbHl6ZXI6Cj4+PiA+ID4gPiBodHRwOi8vaS5pbWd1ci5jb20v
+SDBIaU9oeS5wbmcKPj4+ID4gPiA+IG1hZGUgd2hpdGUgbm9pc2UgY29tZSBmcm9tIHRoZSBoZWFk
+c2V0LiBIb3dldmVyIGl0IGRpZCBub3QgY2hhbmdlIG9yCj4+PiA+ID4gcmVhY3QKPj4+ID4gPiA+
+IGF0IGFsbCB3aGVuIEkgdGFsa2VkIG9yIGV2ZW4gbXV0ZWQgdGhlIG1pY3JvcGhvbmUgcGh5c2lj
+YWxseS4KPj4+ID4gPiA+Cj4+PiA+ID4gPiBJIGNvdWxkbid0IGZpbmQgIk1pYyBQbGF5YmFjayBT
+d2l0Y2giIGFueXdoZXJlIGluIGVpdGhlciBhbHNhbWl4ZXIKPj4+IG9yCj4+PiA+ID4gPiBoZGFh
+bmFseXplci4KPj4+ID4gPgo+Pj4gPiA+IEl0J3MgYSBtaXhlciBtdXRlIHN3aXRjaC4KPj4+ID4g
+Pgo+Pj4gPiA+ID4gVGhlIG1pY3JvcGhvbmUgd29ya3MgcGVyZmVjdGx5IGZpbmUgdW5kZXIgV2lu
+ZG93cywgc28gSSBkb24ndCB0aGluawo+Pj4gaXQgaXMKPj4+ID4gPiA+IHRoZSBtaWMgcGluLgo+
+Pj4gPiA+Cj4+PiA+ID4gQnV0IHRoZSBmYWN0IGFib3ZlIGluZGljYXRlcyB0aGUgcG9zc2liaWxp
+dHkgb2YgdGhlIHdyb25nIHBpbiwgdG9vLgo+Pj4gPiA+Cj4+PiA+ID4gRG9lcyB0aGUgamFjayBk
+ZXRlY3Rpb24gb2YgdGhlIGV4dCBtaWMgcGluIHdvcms/Cj4+PiA+ID4KPj4+ID4gPgo+Pj4gPiA+
+IFRha2FzaGkKPj4+ID4gPgo+Pj4gPiA+ID4KPj4+ID4gPiA+IC1Iw6V2YXJkCj4+PiA+ID4gPgo+
+Pj4gPiA+ID4gRGVuIG1hbi4gMTAuIHNlcC4gMjAxOCBrbC4gMjI6Mzkgc2tyZXYgVGFrYXNoaSBJ
+d2FpIDx0aXdhaUBzdXNlLmRlCj4+PiA+Ogo+Pj4gPiA+ID4KPj4+ID4gPiA+ID4gT24gVGh1LCAw
+NiBTZXAgMjAxOCAyMDo0NDozMCArMDIwMCwKPj4+ID4gPiA+ID4gSMOldmFyZCB3cm90ZToKPj4+
+ID4gPiA+ID4gPgo+Pj4gPiA+ID4gPiA+IEFkZGl0aW9uYWwgcmVsZXZhbnQgaW5mbzoKPj4+ID4g
+PiA+ID4gPgo+Pj4gPiA+ID4gPiA+IEEgc2ltaWxhciBpc3N1ZSB3YXMgYWxzbyBkaXNjdXNzZWQg
+dGhyZWUgeWVhcnMgYWdvIG9uIFN1biBKdW4KPj4+ID4gPiAxNzoxNTo1NAo+Pj4gPiA+ID4gPiBD
+RVNUCj4+PiA+ID4gPiA+ID4gMjAxNSBhbmQgd2FzIGFib3V0IGhpcyBzdXJyb3VuZCBzb3VuZCBz
+ZXR1cCwgYnV0IGRpZCBub3QgdG91Y2gKPj4+IG9uIHRoZQo+Pj4gPiA+ID4gPiA+IGV4dGVybmFs
+IG1pY3JvcGhvbmUgcHJvYmxlbToKPj4+ID4gPiA+ID4gPgo+Pj4gPiA+ID4gPgo+Pj4gPiA+Cj4+
+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIw
+MTUtSnVuZS8wOTMzMTcuaHRtbAo+Pj4gPiA+ID4gPiA+Cj4+PiA+ID4gPiA+ID4gYWxzYS1pbmZv
+LnNoOgo+Pj4gPiA+ID4gPiA+Cj4+PiA+ID4gPiA+Cj4+PiA+ID4KPj4+IGh0dHA6Ly93d3cuYWxz
+YS1wcm9qZWN0Lm9yZy9kYi8/Zj0xZDg2MTZiYTU5NzczMDhlMDNkYjZjM2E4NmUzNmU5ZTliMzhk
+NmYwCj4+PiA+ID4gPiA+ID4KPj4+ID4gPiA+ID4gPiBHcmFwaCBvZiBBTEM2NjggY2hpcHNldCBm
+cm9tIGhkYWFuYWx5emVyOgo+Pj4gPiA+ID4gPiA+IGh0dHA6Ly9pLmltZ3VyLmNvbS9jMDhETkpX
+LnBuZwo+Pj4gPiA+ID4gPiA+Cj4+PiA+ID4gPiA+ID4gc2V0dGluZyBhbHNhLW1vZGVbMS04XSBk
+b2VzIG5vdGhpbmcgdG8gaGVscCB0aGUgaXNzdWUuCj4+PiA+ID4gPiA+ID4KPj4+ID4gPiA+ID4g
+PiBUaGVyZSBhcmUgc2V2ZXJhbCBvZiBzaW1pbGFyIGJ1ZyByZXBvcnRzIGFyb3VuZCB0aGUgd2Vi
+Cj4+PiBleHBlcmllbmNpbmcKPj4+ID4gPiA+ID4gPiBzaW1pbGFyIGlzc3VlcywgYW5kIG9uIGRp
+ZmZlcmVudCBkaXN0cm9zLgo+Pj4gPiA+ID4gPiA+Cj4+PiA+ID4gPiA+ID4gTWljcm9waG9uZSB3
+b3JrcyBwZXJmZWN0bHkgaW4gd2luZG93cwo+Pj4gPiA+ID4gPiA+Cj4+PiA+ID4gPiA+ID4gSSBo
+YXZlIGEgQVNVUyBST0cgRzc1MUpULCBidXQgdGhpcyBwcm9ibGVtIHNlZW1zIHRvIGhhcHBlbiB3
+aXRoCj4+PiBhbGwKPj4+ID4gPiA+ID4gbGFwdG9wcwo+Pj4gPiA+ID4gPiA+IHVuZGVyIHRoZSBH
+NzUxIG5hbWUuCj4+PiA+ID4gPiA+Cj4+PiA+ID4gPiA+IFdoZW4geW91IGVuYWJsZSB0aGUgbG9v
+cGJhY2sgdm9sdW1lIGFuZCBzd2l0Y2gsIGFuZCB1bm11dGUvYWRqdXN0Cj4+PiAiTWljCj4+PiA+
+ID4gPiA+IFBsYXliYWNrIFZvbHVtZSIsIGFuZCAiTWljIFBsYXliYWNrIFN3aXRjaCIsIGRvIHlv
+dSBoZWFyIHRoZSBpbnB1dAo+Pj4gPiA+ID4gPiBmcm9tIHRoZSBleHQgbWljPyAgSXQncyBhIHJv
+dXRlIGRpcmVjdGx5IGZyb20gTklEIDB4MTggdG8gdGhlCj4+PiBtaXhlcgo+Pj4gPiA+ID4gPiBO
+SUQgMHgwYiwgdGhlbiBvdXRwdXQgbWl4ZXIgTklEIDB4MGMsIHRoZW4gb3V0cHV0cy4gIFNvIHRo
+aXMgY2FuCj4+PiBiZQo+Pj4gPiA+ID4gPiB1c2VkIHRvIHZlcmlmeSB0aGUgaGFyZHdhcmUgcm91
+dGluZy4KPj4+ID4gPiA+ID4KPj4+ID4gPiA+ID4gSWYgeW91IGRvbid0IGhlYXIgdmlhIHRoaXMg
+cm91dGUsIGl0IG1lYW5zIHRoYXQgdGhlIGlucHV0IGZyb20KPj4+IHRoZSBleHQKPj4+ID4gPiA+
+ID4gbWljIHBpbiBpdHNlbGYgaXMgYnJva2VuLCBhbmQgaXQgaW1wbGllcyB0aGF0IHNvbWV0aGlu
+ZyBvdXRzaWRlCj4+PiA+ID4gPiA+IEhELWF1ZGlvIGNvZGVjLgo+Pj4gPiA+ID4gPgo+Pj4gPiA+
+ID4gPgo+Pj4gPiA+ID4gPiBUYWthc2hpCj4+PiA+ID4gPiA+Cj4+PiA+ID4gPiBbMiAgPHRleHQv
+aHRtbDsgVVRGLTggKHF1b3RlZC1wcmludGFibGUpPl0KPj4+ID4gPiA+Cj4+PiA+ID4KPj4+ID4g
+WzIgIDx0ZXh0L2h0bWw7IFVURi04IChxdW90ZWQtcHJpbnRhYmxlKT5dCj4+PiA+Cj4+Pgo+Pgo+
+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4gQWxzYS1k
+ZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPiBodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbApfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1h
+aWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
