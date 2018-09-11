@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rockchip: add missing INTERLEAVED PCM
-	attribute" to the asoc tree
-Date: Tue, 11 Sep 2018 19:21:56 +0100 (BST)
-Message-ID: <20180911182156.DD1611121B1F@debutante.sirena.org.uk>
-References: <20180910163932.13722-1-katsuhiro@katsuster.net>
+Subject: Applied "ASoC: soc-core: remove unused num_dai_links"
+	to the asoc tree
+Date: Tue, 11 Sep 2018 19:22:05 +0100 (BST)
+Message-ID: <20180911182205.EFE581121B1F@debutante.sirena.org.uk>
+References: <87va7c4jcm.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 79393267812
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:21:59 +0200 (CEST)
-In-Reply-To: <20180910163932.13722-1-katsuhiro@katsuster.net>
+ by alsa0.perex.cz (Postfix) with ESMTP id 6F117267846
+ for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 20:22:07 +0200 (CEST)
+In-Reply-To: <87va7c4jcm.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc: alsa-devel@alsa-project.org, Heiko Stuebner <heiko@sntech.de>, linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rockchip: add missing INTERLEAVED PCM attribute
+   ASoC: soc-core: remove unused num_dai_links
 
 has been applied to the asoc tree at
 
@@ -53,32 +53,69 @@ to this mail.
 Thanks,
 Mark
 
->From 24d6638302b48328a58c13439276d4531af4ca7d Mon Sep 17 00:00:00 2001
-From: Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Date: Tue, 11 Sep 2018 01:39:32 +0900
-Subject: [PATCH] ASoC: rockchip: add missing INTERLEAVED PCM attribute
+>From 4f1b327e65a9516a46ea491ce72a5161be176af8 Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 11 Sep 2018 06:59:01 +0000
+Subject: [PATCH] ASoC: soc-core: remove unused num_dai_links
 
-This patch adds SNDRV_PCM_INFO_INTERLEAVED into PCM hardware info.
+ALSA SoC is counting card->dai_link_list user,
+but no-one is using it.
+Let's remove it.
 
-Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/rockchip/rockchip_pcm.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ include/sound/soc.h  | 1 -
+ sound/soc/soc-core.c | 4 ----
+ 2 files changed, 5 deletions(-)
 
-diff --git a/sound/soc/rockchip/rockchip_pcm.c b/sound/soc/rockchip/rockchip_pcm.c
-index f77538319221..9e7b5fa4cf59 100644
---- a/sound/soc/rockchip/rockchip_pcm.c
-+++ b/sound/soc/rockchip/rockchip_pcm.c
-@@ -21,7 +21,8 @@ static const struct snd_pcm_hardware snd_rockchip_hardware = {
- 	.info			= SNDRV_PCM_INFO_MMAP |
- 				  SNDRV_PCM_INFO_MMAP_VALID |
- 				  SNDRV_PCM_INFO_PAUSE |
--				  SNDRV_PCM_INFO_RESUME,
-+				  SNDRV_PCM_INFO_RESUME |
-+				  SNDRV_PCM_INFO_INTERLEAVED,
- 	.period_bytes_min	= 32,
- 	.period_bytes_max	= 8192,
- 	.periods_min		= 1,
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 821bf99992b8..e17a7ae9a155 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1060,7 +1060,6 @@ struct snd_soc_card {
+ 	struct snd_soc_dai_link *dai_link;  /* predefined links only */
+ 	int num_links;  /* predefined links only */
+ 	struct list_head dai_link_list; /* all links */
+-	int num_dai_links;
+ 
+ 	struct list_head rtd_list;
+ 	int num_rtd;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index dde9b70b58b5..7e18937c2214 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -1013,7 +1013,6 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
+ 				link->name);
+ 
+ 		list_del(&link->list);
+-		card->num_dai_links--;
+ 	}
+ }
+ 
+@@ -1182,7 +1181,6 @@ int snd_soc_add_dai_link(struct snd_soc_card *card,
+ 		card->add_dai_link(card, dai_link);
+ 
+ 	list_add_tail(&dai_link->list, &card->dai_link_list);
+-	card->num_dai_links++;
+ 
+ 	return 0;
+ }
+@@ -1220,7 +1218,6 @@ void snd_soc_remove_dai_link(struct snd_soc_card *card,
+ 	list_for_each_entry_safe(link, _link, &card->dai_link_list, list) {
+ 		if (link == dai_link) {
+ 			list_del(&link->list);
+-			card->num_dai_links--;
+ 			return;
+ 		}
+ 	}
+@@ -2712,7 +2709,6 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	snd_soc_initialize_card_lists(card);
+ 
+ 	INIT_LIST_HEAD(&card->dai_link_list);
+-	card->num_dai_links = 0;
+ 
+ 	INIT_LIST_HEAD(&card->rtd_list);
+ 	card->num_rtd = 0;
 -- 
 2.19.0.rc2
