@@ -1,96 +1,89 @@
-From: Timo Wischer <twischer@de.adit-jv.com>
-Subject: Re: [PATCH - DMA engine v2 1/1] ALSA: SOC: DMA:
- increment buffer pointer atomically
-Date: Tue, 11 Sep 2018 11:05:22 +0200
-Message-ID: <232f58ff-0bbd-e03d-119b-8634435f633a@de.adit-jv.com>
-References: <1531996140-19880-1-git-send-email-twischer@de.adit-jv.com>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [alsa-devel] [PATCH] ASoC: Fix UBSAN warning at
+ snd_soc_get/put_volsw_sx()
+Date: Tue, 11 Sep 2018 14:56:32 +0530
+Message-ID: <3ac92f3a-059f-3513-4942-23eb41222490@codeaurora.org>
+References: <1536600836-12153-1-git-send-email-rohitkr@codeaurora.org>
+ <s5hzhwp2oqd.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp1.de.adit-jv.com (smtp1.de.adit-jv.com [62.225.105.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C7462676E6
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 11:05:35 +0200 (CEST)
-Received: from localhost (smtp1.de.adit-jv.com [127.0.0.1])
- by smtp1.de.adit-jv.com (Postfix) with ESMTP id 2BDC03C09AE
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 11:05:34 +0200 (CEST)
-Received: from smtp1.de.adit-jv.com ([127.0.0.1])
- by localhost (smtp1.de.adit-jv.com [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id 7xCBbDR2hXhb for <alsa-devel@alsa-project.org>;
- Tue, 11 Sep 2018 11:05:23 +0200 (CEST)
-Received: from HI2EXCH01.adit-jv.com (hi2exch01.adit-jv.com [10.72.92.24])
- (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
- (No client certificate requested)
- by smtp1.de.adit-jv.com (Postfix) with ESMTPS id 51AB43C0012
- for <alsa-devel@alsa-project.org>; Tue, 11 Sep 2018 11:05:23 +0200 (CEST)
-In-Reply-To: <1531996140-19880-1-git-send-email-twischer@de.adit-jv.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hzhwp2oqd.wl-tiwai@suse.de>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: rohkumar@qti.qualcomm.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, lgirdwood@gmail.com, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsLAoKQW55IGNvbW1lbnRzIHRvIHRoZSBwYXRjaCBpbiBbMV0/CgpTaG91bGQgSSBjaGFu
-Z2UgYW55dGhpbmc/CgpbMV0gCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvcGlwZXJt
-YWlsL2Fsc2EtZGV2ZWwvMjAxOC1KdWx5LzEzODMxOS5odG1sCgpCZXN0IHJlZ2FyZHMKCipUaW1v
-IFdpc2NoZXIqCgoqQSpkdmFuY2VkICpEKnJpdmVyICpJKm5mb3JtYXRpb24gKlQqZWNobm9sb2d5
-IEdtYkgKRW5naW5lZXJpbmcgU29mdHdhcmUgQmFzZSAoQURJVEcvRVNCKQpSb2JlcnQtQm9zY2gt
-U3RyLiAyMDAKMzExMzkgSGlsZGVzaGVpbQpHZXJtYW55CgpUZWwuICs0OSA1MTIxIDQ5IDY5MzgK
-RmF4ICs0OSA1MTIxIDQ5IDY5OTkKdHdpc2NoZXJAZGUuYWRpdC1qdi5jb20KCkFESVQgaXMgYSBq
-b2ludCB2ZW50dXJlIGNvbXBhbnkgb2YgUm9iZXJ0IEJvc2NoIEdtYkgvUm9iZXJ0IEJvc2NoIENh
-ciAKTXVsdGltZWRpYSBHbWJIIGFuZCBERU5TTyBDb3Jwb3JhdGlvbgpTaXR6OiBIaWxkZXNoZWlt
-LCBSZWdpc3RlcmdlcmljaHQ6IEFtdHNnZXJpY2h0IEhpbGRlc2hlaW0gSFJCIDM0MzgKR2VzY2jD
-pGZ0c2bDvGhydW5nOiBXaWxoZWxtIEdyYWJvdywgS2VuIFlhZ3VjaGkKCgpPbiAwNy8xOS8yMDE4
-IDEyOjI5IFBNLCB0d2lzY2hlckBkZS5hZGl0LWp2LmNvbSB3cm90ZToKPiBGcm9tOiBBbmRyZWFz
-IFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29tPgo+Cj4gU2V0dGluZyBwb2ludGVyIGFuZCBhZnRl
-cndhcmRzIGNoZWNrIGZvciB3cmFwIGFyb3VuZCBsZWFkcwo+IHRvIHRoZSBwb3NzaWJpbGl0eSBv
-ZiByZXR1cm5pbmcgdGhlIGluY29uc2lzdGVudCBwb2ludGVyIHBvc2l0aW9uLgo+IFRoaXMgcGF0
-Y2ggaW5jcmVtZW50cyBidWZmZXIgcG9pbnRlciBhdG9taWNhbGx5IHRvIGF2b2lkIHRoaXMgaXNz
-dWUuCj4KPiBTaWduZWQtb2ZmLWJ5OiBBbmRyZWFzIFBhcGUgPGFwYXBlQGRlLmFkaXQtanYuY29t
-Pgo+Cj4gU2luY2UgY29tbWl0OiBiN2FlNmYzIGRtYWVuZ2luZSBpbXBsZW1lbnRhdGlvbiBoYXMg
-YmVlbiBtb3ZlZAo+IGZyb20gQVNvQyB0byBBTFNBIGNvcmUuIFNvIGNoYW5nZSBnb2VzIHRvIHNv
-dW5kL3NvYy9zb2MtZG1hZW5naW5lLXBjbS5jLAo+IGFwcGx5IHRvIHNvdW5kL2NvcmUvcGNtX2Rt
-YWVuZ2luZS5jIG5vdwo+Cj4gY2hlcnJ5IHBpY2tlZCBmcm9tIEFESVQgdjMuMTQgZTJmODAzZigi
-QUxTQTogU09DOiBETUE6IGluY3JlbWVudCBidWZmZXIgcG9pbnRlciBhdG9taWNhbGx5IikKPiBT
-aWduZWQtb2ZmLWJ5OiBWZWVyYWl5YW4gQ2hpZGFtYmFyYW0gPHZlZXJhaXlhbi5jaGlkYW1iYXJh
-bUBpbi5ib3NjaC5jb20+Cj4gKGNoZXJyeSBwaWNrZWQgZnJvbSBBRElUIHY0LjEgY29tbWl0IDll
-N2VmZjEwYTM4MTU3ZGI3NWYxMmUwMzJmYzM3OGQzMTA0YTI4MTIpCj4gU2lnbmVkLW9mZi1ieTog
-VGFrYXNoaSBTYWthbW90byA8dGFrYXNoaS5zYWthbW90b0BtaXJhY2xlbGludXguY29tPgo+IChj
-aGVycnkgcGlja2VkIGZyb20gQURJVCB2NC45IGNvbW1pdCA2NmMwMGFhMWU3Y2QzYjA3N2ZjMmU1
-YTQ1YTQ1OTRiODYyNDZjZjc4KQo+IFNpZ25lZC1vZmYtYnk6IEppYWRhIFdhbmcgPGppYWRhX3dh
-bmdAbWVudG9yLmNvbT4KPgo+IFNpZ25lZC1vZmYtYnk6IFRpbW8gV2lzY2hlciA8dHdpc2NoZXJA
-ZGUuYWRpdC1qdi5jb20+Cj4gLS0tCj4KPiB2MSBjYW4gYmUgZm91bmQgaW4KPiBodHRwOi8vbWFp
-bG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVybWFpbC9hbHNhLWRldmVsLzIwMTYtTm92ZW1iZXIv
-MTE1Mjc3Lmh0bWwKPgo+IGRpZmYgLS1naXQgYS9zb3VuZC9jb3JlL3BjbV9kbWFlbmdpbmUuYyBi
-L3NvdW5kL2NvcmUvcGNtX2RtYWVuZ2luZS5jCj4gaW5kZXggOGViNThjNy4uMGE3ZWQ4NSAxMDA2
-NDQKPiAtLS0gYS9zb3VuZC9jb3JlL3BjbV9kbWFlbmdpbmUuYwo+ICsrKyBiL3NvdW5kL2NvcmUv
-cGNtX2RtYWVuZ2luZS5jCj4gQEAgLTEzOSwxMiArMTM5LDE0IEBAIEVYUE9SVF9TWU1CT0xfR1BM
-KHNuZF9kbWFlbmdpbmVfcGNtX3NldF9jb25maWdfZnJvbV9kYWlfZGF0YSk7Cj4gICAKPiAgIHN0
-YXRpYyB2b2lkIGRtYWVuZ2luZV9wY21fZG1hX2NvbXBsZXRlKHZvaWQgKmFyZykKPiAgIHsKPiAr
-CXVuc2lnbmVkIGludCBuZXdfcG9zOwo+ICAgCXN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAqc3Vi
-c3RyZWFtID0gYXJnOwo+ICAgCXN0cnVjdCBkbWFlbmdpbmVfcGNtX3J1bnRpbWVfZGF0YSAqcHJ0
-ZCA9IHN1YnN0cmVhbV90b19wcnRkKHN1YnN0cmVhbSk7Cj4gICAKPiAtCXBydGQtPnBvcyArPSBz
-bmRfcGNtX2xpYl9wZXJpb2RfYnl0ZXMoc3Vic3RyZWFtKTsKPiAtCWlmIChwcnRkLT5wb3MgPj0g
-c25kX3BjbV9saWJfYnVmZmVyX2J5dGVzKHN1YnN0cmVhbSkpCj4gLQkJcHJ0ZC0+cG9zID0gMDsK
-PiArCW5ld19wb3MgPSBSRUFEX09OQ0UocHJ0ZC0+cG9zKSArIHNuZF9wY21fbGliX3BlcmlvZF9i
-eXRlcyhzdWJzdHJlYW0pOwo+ICsJaWYgKG5ld19wb3MgPj0gc25kX3BjbV9saWJfYnVmZmVyX2J5
-dGVzKHN1YnN0cmVhbSkpCj4gKwkJbmV3X3BvcyA9IDA7Cj4gKwlXUklURV9PTkNFKHBydGQtPnBv
-cywgbmV3X3Bvcyk7Cj4gICAKPiAgIAlzbmRfcGNtX3BlcmlvZF9lbGFwc2VkKHN1YnN0cmVhbSk7
-Cj4gICB9Cj4gQEAgLTIzNSw3ICsyMzcsNyBAQCBFWFBPUlRfU1lNQk9MX0dQTChzbmRfZG1hZW5n
-aW5lX3BjbV90cmlnZ2VyKTsKPiAgIHNuZF9wY21fdWZyYW1lc190IHNuZF9kbWFlbmdpbmVfcGNt
-X3BvaW50ZXJfbm9fcmVzaWR1ZShzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkK
-PiAgIHsKPiAgIAlzdHJ1Y3QgZG1hZW5naW5lX3BjbV9ydW50aW1lX2RhdGEgKnBydGQgPSBzdWJz
-dHJlYW1fdG9fcHJ0ZChzdWJzdHJlYW0pOwo+IC0JcmV0dXJuIGJ5dGVzX3RvX2ZyYW1lcyhzdWJz
-dHJlYW0tPnJ1bnRpbWUsIHBydGQtPnBvcyk7Cj4gKwlyZXR1cm4gYnl0ZXNfdG9fZnJhbWVzKHN1
-YnN0cmVhbS0+cnVudGltZSwgUkVBRF9PTkNFKHBydGQtPnBvcykpOwo+ICAgfQo+ICAgRVhQT1JU
-X1NZTUJPTF9HUEwoc25kX2RtYWVuZ2luZV9wY21fcG9pbnRlcl9ub19yZXNpZHVlKTsKPiAgIAoK
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Thanks Takashi for reviewing.
+
+
+On 9/10/2018 11:56 PM, Takashi Iwai wrote:
+> On Mon, 10 Sep 2018 19:33:56 +0200,
+> Rohit kumar wrote:
+>> In functions snd_soc_get_volsw_sx() or snd_soc_put_volsw_sx(),
+>> if the result of (min + max) is negative, then fls() returns
+>> signed integer with value as 32. This leads to signed integer
+>> overflow as complete operation is considered as signed integer.
+>>
+>> UBSAN: Undefined behaviour in sound/soc/soc-ops.c:382:50
+>> signed integer overflow:
+>> -2147483648 - 1 cannot be represented in type 'int'
+>> Call trace:
+>> [<ffffff852f746fe4>] __dump_stack lib/dump_stack.c:15 [inline]
+>> [<ffffff852f746fe4>] dump_stack+0xec/0x158 lib/dump_stack.c:51
+>> [<ffffff852f7b5f3c>] ubsan_epilogue+0x18/0x50 lib/ubsan.c:164
+>> [<ffffff852f7b6840>] handle_overflow+0xf8/0x130 lib/ubsan.c:195
+>> [<ffffff852f7b68f0>] __ubsan_handle_sub_overflow+0x34/0x44 lib/ubsan.c:211
+>> [<ffffff85307971a0>] snd_soc_get_volsw_sx+0x1a8/0x1f8 sound/soc/soc-ops.c:382
+>>
+>> Typecast the operation to unsigned int to fix the issue.
+>>
+>> Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+>> ---
+>>   sound/soc/soc-ops.c | 4 ++--
+>>   1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/sound/soc/soc-ops.c b/sound/soc/soc-ops.c
+>> index 592efb3..f8e3190 100644
+>> --- a/sound/soc/soc-ops.c
+>> +++ b/sound/soc/soc-ops.c
+>> @@ -373,7 +373,7 @@ int snd_soc_get_volsw_sx(struct snd_kcontrol *kcontrol,
+>>   	unsigned int rshift = mc->rshift;
+>>   	int max = mc->max;
+>>   	int min = mc->min;
+>> -	unsigned int mask = (1 << (fls(min + max) - 1)) - 1;
+>> +	unsigned int mask = ((unsigned int)(1 << (fls(min + max) - 1)) - 1);
+> Cat it be simpler like below instead?
+> 	unsigned int mask = (1U << (fls(min + max) - 1)) - 1;
+
+Yes, let me just update it.
+>
+> thanks,
+>
+> Takashi
+>
+>>   	unsigned int val;
+>>   	int ret;
+>>   
+>> @@ -418,7 +418,7 @@ int snd_soc_put_volsw_sx(struct snd_kcontrol *kcontrol,
+>>   	unsigned int rshift = mc->rshift;
+>>   	int max = mc->max;
+>>   	int min = mc->min;
+>> -	unsigned int mask = (1 << (fls(min + max) - 1)) - 1;
+>> +	unsigned int mask = ((unsigned int)(1 << (fls(min + max) - 1)) - 1);
+>>   	int err = 0;
+>>   	unsigned int val, val_mask, val2 = 0;
+>>   
+>> -- 
+>> Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+>> is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+>>
+>>
+> _______________________________________________
+> Alsa-devel mailing list
+> Alsa-devel@alsa-project.org
+> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Thanks,
+Rohit
