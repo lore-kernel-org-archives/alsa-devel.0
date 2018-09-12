@@ -1,20 +1,17 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/2][RFC] ALSA: firewire-lib: cancel processing
-	packets in struct snd_pcm_ops.pointer() call
-Date: Thu, 13 Sep 2018 00:04:50 +0900
-Message-ID: <20180912150450.16334-3-o-takashi@sakamocchi.jp>
-References: <20180912150450.16334-1-o-takashi@sakamocchi.jp>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v2 10/17] compat_ioctl: remove translation for
+	sound ioctls
+Date: Wed, 12 Sep 2018 17:13:02 +0200
+Message-ID: <20180912151422.571531-1-arnd@arndb.de>
+References: <20180912150142.157913-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
- [209.85.214.196])
- by alsa0.perex.cz (Postfix) with ESMTP id CE0932673F4
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 17:05:08 +0200 (CEST)
-Received: by mail-pl1-f196.google.com with SMTP id j8-v6so1101543pll.12
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 08:05:08 -0700 (PDT)
-In-Reply-To: <20180912150450.16334-1-o-takashi@sakamocchi.jp>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.187])
+ by alsa0.perex.cz (Postfix) with ESMTP id D6BE0267795
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 17:14:38 +0200 (CEST)
+In-Reply-To: <20180912150142.157913-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,144 +21,266 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: clemens@ladisch.de, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
+To: viro@zeniv.linux.org.uk
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, Richard Weinberger <richard@nod.at>, Jeff Dike <jdike@addtoit.com>, linux-um@lists.infradead.org, Takashi Iwai <tiwai@suse.com>, Mauro Carvalho Chehab <mchehab+samsung@kernel.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-In current implementation of IEC 61883-1/6 engine in ALSA firewire
-stack, there's two chances to handle isochronous packets in process
-contexts. One is a callback of struct snd_pcm_ops.pointer() and another
-is the one of .ack(). When alsa-lib applications queue/dequeue PCM frames
-according to mmap scenario, the isochronous packets are handled in below
-call graph.
+The SNDCTL_* and SOUND_* commands are the old OSS user interface.
 
-while ()
-  ->poll()
-  ->snd_pcm_hwsync()
-    ->ioctl(HWSYNC)
-      ->struct snd_pcm_ops.pointer()
-      = amdtp_stream_pcm_pointer()
-          ->fw_iso_context_flush_completions()
-  ->snd_pcm_mmap_begin()
-  (queue/dequeue PCM frames here.)
-  ->snd_pcm_mmap_commit()
-    ->ioctl(SYNC_PTR)
-      ->struct snd_pcm_ops.ack()
-      = amdtp_stream_pcm_ack()
-        ->fw_iso_context_flush_completions()
+I checked all the sound ioctl commands listed in fs/compat_ioctl.c
+to see if we still need the translation handlers. Here is what I
+found:
 
-In an above iteration, two calls of fw_iso_context_flush_completions()
-are executed with quite small interval, thus few packets can be handled
-in a call of .ack(). This is inefficient.
+- sound/oss/ is (almost) gone from the kernel, this is what actually
+  needed all the translations
+- The ALSA emulation for OSS correctly handles all compat_ioctl
+  commands already.
+- sound/oss/dmasound/ is the last holdout of the original OSS code,
+  this is only used on arch/m68k, which has no 64-bit mode and
+  hence needs no compat handlers
+- arch/um/drivers/hostaudio_kern.c may run in 64-bit mode with
+  32-bit x86 user space underneath it. This rare corner case is
+  the only one that still needs the compat handlers.
 
-Although .ack() ensures to be called in process contexts, .pointer() is
-called in interrupt contexts as well as process context. Especially,
-this engine is designed to call snd_pcm_period_elapsed() in software IRQ
-context of tasklet, scheduled in both of process context and interrupt
-context of 1394 OHCI IR/IT context. To reduce closest two call of
-.pointer(), a condition to judge running context is used in .pointer.
-An idea to flush packets in a callback of .pointer() requires the above
-extra care.
+By adding a simple redirect of .compat_ioctl to .unlocked_ioctl in the
+UML driver, we can remove all the COMPATIBLE_IOCTL() annotations without
+a change in functionality. For completeness, I'm adding the same thing
+to the dmasound file, knowing that it makes no difference.
 
-On the other hand, a callback of .ack() has no care like that, except
-for being called within acquired lock. Therefore it's reasonable to
-cancel .pointer() side.
+The compat_ioctl list contains one comment about SNDCTL_DSP_MAPINBUF and
+SNDCTL_DSP_MAPOUTBUF, which actually would need a translation handler
+if implemented. However, the native implementation just returns -EINVAL,
+so we don't care.
 
-This commit cancels flushing packets in a callback of .pointer(). The
-callback of .pointer just returns the number of PCM frames in
-intermediate PCM buffer or SNDRV_PCM_POS_XRUN. As a result:
-
-while ()
-  ->poll()
-  ->snd_pcm_hwsync()
-    ->ioctl(HWSYNC)
-      ->struct snd_pcm_ops.pointer()
-      = amdtp_stream_pcm_pointer()
-  ->snd_pcm_mmap_begin()
-  (queue/dequeue PCM frames here.)
-  ->snd_pcm_mmap_commit()
-    ->ioctl(SYNC_PTR)
-      ->struct snd_pcm_ops.ack()
-      = amdtp_stream_pcm_ack()
-        ->fw_iso_context_flush_completions()
-
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/firewire/amdtp-stream.c | 31 -------------------------------
- sound/firewire/amdtp-stream.h | 12 +++++++++++-
- 2 files changed, 11 insertions(+), 32 deletions(-)
+ arch/um/drivers/hostaudio_kern.c   |   1 +
+ fs/compat_ioctl.c                  | 157 -----------------------------
+ sound/core/oss/pcm_oss.c           |   4 +
+ sound/oss/dmasound/dmasound_core.c |   2 +
+ 4 files changed, 7 insertions(+), 157 deletions(-)
 
-diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
-index 3520dc2bec61..48f17264fc35 100644
---- a/sound/firewire/amdtp-stream.c
-+++ b/sound/firewire/amdtp-stream.c
-@@ -922,37 +922,6 @@ int amdtp_stream_start(struct amdtp_stream *s, int channel, int speed)
+diff --git a/arch/um/drivers/hostaudio_kern.c b/arch/um/drivers/hostaudio_kern.c
+index 7f9dbdbc4eb7..9dfd209ed316 100644
+--- a/arch/um/drivers/hostaudio_kern.c
++++ b/arch/um/drivers/hostaudio_kern.c
+@@ -298,6 +298,7 @@ static const struct file_operations hostaudio_fops = {
+ 	.write          = hostaudio_write,
+ 	.poll           = hostaudio_poll,
+ 	.unlocked_ioctl	= hostaudio_ioctl,
++	.compat_ioctl	= generic_compat_ioctl_ptrarg,
+ 	.mmap           = NULL,
+ 	.open           = hostaudio_open,
+ 	.release        = hostaudio_release,
+diff --git a/fs/compat_ioctl.c b/fs/compat_ioctl.c
+index 001c9fd89d30..c28fd9f6b1e8 100644
+--- a/fs/compat_ioctl.c
++++ b/fs/compat_ioctl.c
+@@ -77,7 +77,6 @@
+ #include <linux/if_bonding.h>
+ #include <linux/watchdog.h>
+ 
+-#include <linux/soundcard.h>
+ #include <linux/lp.h>
+ #include <linux/ppdev.h>
+ 
+@@ -775,162 +774,6 @@ COMPATIBLE_IOCTL(PPPIOCGL2TPSTATS)
+ /* PPPOX */
+ COMPATIBLE_IOCTL(PPPOEIOCSFWD)
+ COMPATIBLE_IOCTL(PPPOEIOCDFWD)
+-/* Big A */
+-/* sparc only */
+-/* Big Q for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_SYNC)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_INFO)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_CTRLRATE)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETOUTCOUNT)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETINCOUNT)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_PERCMODE)
+-COMPATIBLE_IOCTL(SNDCTL_FM_LOAD_INSTR)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_TESTMIDI)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_RESETSAMPLES)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_NRSYNTHS)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_NRMIDIS)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_INFO)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_THRESHOLD)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_MEMAVL)
+-COMPATIBLE_IOCTL(SNDCTL_FM_4OP_ENABLE)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_PANIC)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_OUTOFBAND)
+-COMPATIBLE_IOCTL(SNDCTL_SEQ_GETTIME)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_ID)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_CONTROL)
+-COMPATIBLE_IOCTL(SNDCTL_SYNTH_REMOVESAMPLE)
+-/* Big T for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_TMR_TIMEBASE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_START)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_STOP)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_CONTINUE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_TEMPO)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_SOURCE)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_METRONOME)
+-COMPATIBLE_IOCTL(SNDCTL_TMR_SELECT)
+-/* Little m for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_PRETIME)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_MPUMODE)
+-COMPATIBLE_IOCTL(SNDCTL_MIDI_MPUCMD)
+-/* Big P for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_DSP_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SYNC)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SPEED)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_STEREO)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETBLKSIZE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_CHANNELS)
+-COMPATIBLE_IOCTL(SOUND_PCM_WRITE_FILTER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_POST)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SUBDIVIDE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETFRAGMENT)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETFMTS)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETFMT)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETOSPACE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETISPACE)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_NONBLOCK)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETCAPS)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETTRIGGER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETTRIGGER)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETIPTR)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETOPTR)
+-/* SNDCTL_DSP_MAPINBUF,  XXX needs translation */
+-/* SNDCTL_DSP_MAPOUTBUF,  XXX needs translation */
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETSYNCRO)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_SETDUPLEX)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_GETODELAY)
+-COMPATIBLE_IOCTL(SNDCTL_DSP_PROFILE)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_RATE)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_CHANNELS)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_BITS)
+-COMPATIBLE_IOCTL(SOUND_PCM_READ_FILTER)
+-/* Big C for sound/OSS */
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RESET)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_LOAD)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RDATA)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RCODE)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_WDATA)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_WCODE)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RUN)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_HALT)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_SENDMSG)
+-COMPATIBLE_IOCTL(SNDCTL_COPR_RCVMSG)
+-/* Big M for sound/OSS */
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_VOLUME)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_BASS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_TREBLE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_SYNTH)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_PCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_SPEAKER)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_MIC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_CD)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_IMIX)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_ALTPCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECLEV)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_IGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_OGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_LINE3)
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL1))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL2))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_DIGITAL3))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_PHONEIN))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_PHONEOUT))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_VIDEO))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_RADIO))
+-COMPATIBLE_IOCTL(MIXER_READ(SOUND_MIXER_MONITOR))
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_MUTE)
+-/* SOUND_MIXER_READ_ENHANCE,  same value as READ_MUTE */
+-/* SOUND_MIXER_READ_LOUD,  same value as READ_MUTE */
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECSRC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_DEVMASK)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_RECMASK)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_STEREODEVS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_READ_CAPS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_VOLUME)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_BASS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_TREBLE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_SYNTH)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_PCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_SPEAKER)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_MIC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_CD)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_IMIX)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_ALTPCM)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_RECLEV)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_IGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_OGAIN)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_LINE3)
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL1))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL2))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_DIGITAL3))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_PHONEIN))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_PHONEOUT))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_VIDEO))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_RADIO))
+-COMPATIBLE_IOCTL(MIXER_WRITE(SOUND_MIXER_MONITOR))
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_MUTE)
+-/* SOUND_MIXER_WRITE_ENHANCE,  same value as WRITE_MUTE */
+-/* SOUND_MIXER_WRITE_LOUD,  same value as WRITE_MUTE */
+-COMPATIBLE_IOCTL(SOUND_MIXER_WRITE_RECSRC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_INFO)
+-COMPATIBLE_IOCTL(SOUND_OLD_MIXER_INFO)
+-COMPATIBLE_IOCTL(SOUND_MIXER_ACCESS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_AGC)
+-COMPATIBLE_IOCTL(SOUND_MIXER_3DSE)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE1)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE2)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE3)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE4)
+-COMPATIBLE_IOCTL(SOUND_MIXER_PRIVATE5)
+-COMPATIBLE_IOCTL(SOUND_MIXER_GETLEVELS)
+-COMPATIBLE_IOCTL(SOUND_MIXER_SETLEVELS)
+-COMPATIBLE_IOCTL(OSS_GETVERSION)
+ /* Raw devices */
+ COMPATIBLE_IOCTL(RAW_SETBIND)
+ COMPATIBLE_IOCTL(RAW_GETBIND)
+diff --git a/sound/core/oss/pcm_oss.c b/sound/core/oss/pcm_oss.c
+index f8d4a419f3af..3f25c9d7b7df 100644
+--- a/sound/core/oss/pcm_oss.c
++++ b/sound/core/oss/pcm_oss.c
+@@ -2732,6 +2732,10 @@ static long snd_pcm_oss_ioctl(struct file *file, unsigned int cmd, unsigned long
+ static long snd_pcm_oss_ioctl_compat(struct file *file, unsigned int cmd,
+ 				     unsigned long arg)
+ {
++	/*
++	 * Everything is compatbile except SNDCTL_DSP_MAPINBUF/SNDCTL_DSP_MAPOUTBUF,
++	 * which are not implemented for the native case either
++	 */
+ 	return snd_pcm_oss_ioctl(file, cmd, (unsigned long)compat_ptr(arg));
  }
- EXPORT_SYMBOL(amdtp_stream_start);
- 
--/**
-- * amdtp_stream_pcm_pointer - get the PCM buffer position
-- * @s: the AMDTP stream that transports the PCM data
-- *
-- * Returns the current buffer position, in frames.
-- */
--unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
--{
--	/*
--	 * This function is called in software IRQ context of period_tasklet or
--	 * process context.
--	 *
--	 * When the software IRQ context was scheduled by software IRQ context
--	 * of IR/IT contexts, queued packets were already handled. Therefore,
--	 * no need to flush the queue in buffer anymore.
--	 *
--	 * When the process context reach here, some packets will be already
--	 * queued in the buffer. These packets should be handled immediately
--	 * to keep better granularity of PCM pointer.
--	 *
--	 * Later, the process context will sometimes schedules software IRQ
--	 * context of the period_tasklet. Then, no need to flush the queue by
--	 * the same reason as described for IR/IT contexts.
--	 */
--	if (!in_interrupt() && amdtp_stream_running(s))
--		fw_iso_context_flush_completions(s->context);
--
--	return READ_ONCE(s->pcm_buffer_pointer);
--}
--EXPORT_SYMBOL(amdtp_stream_pcm_pointer);
--
- /**
-  * amdtp_stream_pcm_ack - acknowledge queued PCM frames
-  * @s: the AMDTP stream that transfers the PCM frames
-diff --git a/sound/firewire/amdtp-stream.h b/sound/firewire/amdtp-stream.h
-index e45de3eecfe3..8a96419c462b 100644
---- a/sound/firewire/amdtp-stream.h
-+++ b/sound/firewire/amdtp-stream.h
-@@ -168,7 +168,6 @@ int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
- 					struct snd_pcm_runtime *runtime);
- 
- void amdtp_stream_pcm_prepare(struct amdtp_stream *s);
--unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s);
- int amdtp_stream_pcm_ack(struct amdtp_stream *s);
- void amdtp_stream_pcm_abort(struct amdtp_stream *s);
- 
-@@ -229,6 +228,17 @@ static inline bool cip_sfc_is_base_44100(enum cip_sfc sfc)
- 	return sfc & 1;
- }
- 
-+/**
-+ * amdtp_stream_pcm_pointer - get the PCM buffer position
-+ * @s: the AMDTP stream that transports the PCM data
-+ *
-+ * Returns the current buffer position, in frames.
-+ */
-+static inline unsigned long amdtp_stream_pcm_pointer(struct amdtp_stream *s)
-+{
-+	return READ_ONCE(s->pcm_buffer_pointer);
-+}
-+
- /**
-  * amdtp_stream_wait_callback - sleep till callbacked or timeout
-  * @s: the AMDTP stream
+ #else
+diff --git a/sound/oss/dmasound/dmasound_core.c b/sound/oss/dmasound/dmasound_core.c
+index fc9bcd47d6a4..cda6bbfedd22 100644
+--- a/sound/oss/dmasound/dmasound_core.c
++++ b/sound/oss/dmasound/dmasound_core.c
+@@ -384,6 +384,7 @@ static const struct file_operations mixer_fops =
+ 	.owner		= THIS_MODULE,
+ 	.llseek		= no_llseek,
+ 	.unlocked_ioctl	= mixer_unlocked_ioctl,
++	.compat_ioctl	= generic_compat_ioctl_ptrarg,
+ 	.open		= mixer_open,
+ 	.release	= mixer_release,
+ };
+@@ -1167,6 +1168,7 @@ static const struct file_operations sq_fops =
+ 	.write		= sq_write,
+ 	.poll		= sq_poll,
+ 	.unlocked_ioctl	= sq_unlocked_ioctl,
++	.compat_ioctl	= generic_compat_ioctl_ptrarg,
+ 	.open		= sq_open,
+ 	.release	= sq_release,
+ };
 -- 
-2.17.1
+2.18.0
