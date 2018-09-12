@@ -1,45 +1,143 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] ASoC: max9892x: Add documentation for reset-gpio
- support
-Date: Wed, 12 Sep 2018 13:28:18 +0100
-Message-ID: <20180912122818.GH6062@sirena.org.uk>
-References: <20180912121955.33048-1-cychiang@chromium.org>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/2][RFC] ALSA: firewire-lib: change packet
+	processing timing in process context
+Date: Thu, 13 Sep 2018 00:04:48 +0900
+Message-ID: <20180912150450.16334-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="G44BJl3Aq1QbV/QL"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180912121955.33048-1-cychiang@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: linux-kernel@vger.kernel.org, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, dgreid@chromium.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com
+ [209.85.215.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 524FF2673F4
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 17:05:04 +0200 (CEST)
+Received: by mail-pg1-f196.google.com with SMTP id t84-v6so1211746pgb.5
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 08:05:04 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
+In IEC 61883-1/6 engine in ALSA firewire stack, a work to process packet
+is done in three places:
+1. bottom-half of handler for interrupts scheduled on 1394OHCI controller
+2. a callback of struct 'snd_pcm_ops.pointer()'
+3. a callback of struct 'snd_pcm_ops.ack()'
 
---G44BJl3Aq1QbV/QL
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+This patchset adds optimization for 3., and remove 2. for efficiency.
 
-On Wed, Sep 12, 2018 at 08:19:54PM +0800, Cheng-Yi Chiang wrote:
-> max98927 codec driver will support reset-gpio binding so it can toggle
-> reset line in its probe function.
 
-All GPIO properties are supposed to end -gpios even if there can only
-ever be a single GPIO.
+In Linux kernel v2.6.39, 1. and 2. was committed in initial implementation
+of this engine at a commit 31ef9134eb52('ALSA: add LaCie FireWire
+Speakers/Griffin FireWave Surround driver'). This engine schedules hardware
+interrupts 16 packets (=INTERRUPT_INTERVAL) thus 1. appears in software IRQ
+context every 2 msec (= 16packets * 1sec / 8,000cycle).
 
---G44BJl3Aq1QbV/QL
-Content-Type: application/pgp-signature; name="signature.asc"
+In Linux kernel v3.5, an idea of 2. was introduced at a commit
+e9148dddc3c7('ALSA: firewire-lib: flush completed packets when reading
+PCM position') to reduce timing gap between queueing/dequeueing PCM
+frames and scheduling packet transmission. Additionally, it has an
+effect to reduce load of the software IRQ context. It's done in a call
+of ioctl(2) with SNDRV_PCM_IOCTL_HWSYNC. As a result, in mmap programming
+scenario, a call of snd_pcm_hwsync() can process packets for recent
+isochronous cycle.
 
------BEGIN PGP SIGNATURE-----
+while (1):
+  snd_pcm_hwsync()
+    ->ioctl(HWSYNC)
+      ->struct snd_pcm_ops.pointer()
+      = amdtp_stream_pcm_pointer()
+        ->fw_iso_context_flush_completions()
+  snd_pcm_mmap_begin()
+  (queue/dequeue PCM frames here.)
+  snd_pcm_mmap_commit()
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluZBmIACgkQJNaLcl1U
-h9BtAwf/W569laNPEtSJDjZPojzO9JM3hTP+83xOgBSvB5xBu81+4NxbNDxHbmVY
-nQhGwx926DP+P6Lq2a93i88OPzuqL4av6Ox5TqRQnSQ6eIKagvo0g1pVicxO2Oiz
-7sP/xY35CM5EvAwsZ7EJliSp+T3yGg9RSDldwsoJ1a/jrUBSASGZgnVuxFHYupve
-BDIL1uXgmlDvAsGhsxUk+esoegPr2mssGLbvzYySIigjH6ABPIUVM7Hq5QshiGAW
-0FztykdUG/NGBNFPK+JRudbFzolHQk6DCM7wpruculdc2e5VjVc2x+mmny8yUXvt
-CozQJW7RZVUBE688gFrM0tET6DFtug==
-=Ld/T
------END PGP SIGNATURE-----
+In Linux kernel v4.13, ALSA PCM core was improved in an aspect of
+updating appl_ptr at a commit 9027c4639ef1('ALSA: pcm: Call ack()
+whenever appl_ptr is updated'). This commit ensures callback of
+'struct snd_pcm_ops.ack()' when updating appl_ptr. This callback
+can be done in below ioctl(2) requests:
+ - SNDRV_PCM_IOCTL_REWIND
+ - SNDRV_PCM_IOCTL_FORWARD
+ - SNDRV_PCM_IOCTL_SYNC_PTR
+ - SNDRV_PCM_IOCTL_READ[I|N]_FRAMES
+ - SNDRV_PCM_IOCTL_WRITE[I|N]_FRAMES
 
---G44BJl3Aq1QbV/QL--
+As I notes in a commit 875becf8412c('ALSA: firewire: process packets
+in 'struct snd_pcm_ops.ack' callback'), 3. works less efficiently because
+in usual PCM operation the above ioctl(2) requests are not used in event
+loop.
+
+At the same time of the appl_ptr improvement, a new flag of PCM
+hardware definition was added at a commit 42f945970af9('ALSA: pcm: Add
+the explicit appl_ptr sync support'), and relevant changes were added
+to ALSA PCM core and alsa-lib v1.1.5. This flag expects userspace to
+call ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR request per iteration of PCM
+frame queueing/dequeueing in mmap programming scenario below:
+
+while (1):
+  snd_pcm_hwsync()
+    ->ioctl(HWSYNC)
+      ->struct snd_pcm_ops.pointer()
+      = amdtp_stream_pcm_pointer()
+        ->fw_iso_context_flush_completions()
+  snd_pcm_mmap_begin()
+  (queue/dequeue PCM frames here.)
+  snd_pcm_mmap_commit()
+    ->ioctl(SYNC_PTR)
+
+This patchset aims to support the new flag, SNDRV_PCM_INFO_SYNC_APPLPTR,
+to tell userspace to call ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR after
+queueing/dequeueing PCM frames in each iteration of event dispatcher. As
+a result:
+
+while (1):
+  snd_pcm_hwsync()
+    ->ioctl(HWSYNC)
+      ->struct snd_pcm_ops.pointer()
+      = amdtp_stream_pcm_pointer()
+        ->fw_iso_context_flush_completions()
+  snd_pcm_mmap_begin()
+  (queue/dequeue PCM frames here.)
+  snd_pcm_mmap_commit()
+    ->ioctl(SYNC_PTR)
+      ->struct snd_pcm_ops.ack()
+      = amdtp_stream_pcm_ack()
+        ->fw_iso_context_flush_completions()
+
+This patchset also adds optimization for timing to process packets in
+process context. As the above call graph shows, support of the flag brings
+closest two calls to process packet against intervals of isochronous cycle
+and it is not enough efficient. This patchset also cancel packet processing
+in .pointer() callback. As a result:
+
+while (1):
+  snd_pcm_hwsync()
+  snd_pcm_mmap_begin()
+  (queue/dequeue PCM frames here.)
+  snd_pcm_mmap_commit()
+    ->ioctl(SYNC_PTR)
+      ->struct snd_pcm_ops.ack()
+      = amdtp_stream_pcm_ack()
+        ->fw_iso_context_flush_completions()
+
+Takashi Sakamoto (2):
+  ALSA: firewire-lib: adopt SYNC_APPLPTR flag to flush packets after
+    queueing/dequeueing PCM frames
+  ALSA: firewire-lib: cancel processing packets in struct
+    snd_pcm_ops.pointer() call
+
+ sound/firewire/amdtp-stream.c | 34 ++--------------------------------
+ sound/firewire/amdtp-stream.h | 12 +++++++++++-
+ 2 files changed, 13 insertions(+), 33 deletions(-)
+
+-- 
+2.17.1
