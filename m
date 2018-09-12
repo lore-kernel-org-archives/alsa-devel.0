@@ -1,111 +1,130 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 02/13] mfd: wcd9335: add support to wcd9335 core
-Date: Wed, 12 Sep 2018 10:32:50 +0100
-Message-ID: <b4ddfd10-360c-a844-8542-1f81a1cc9c6b@linaro.org>
-References: <20180904102500.30318-1-srinivas.kandagatla@linaro.org>
- <20180904102500.30318-3-srinivas.kandagatla@linaro.org>
- <20180911153340.GY4185@dell>
- <94c68436-b618-40fc-46d6-165799312289@linaro.org>
- <20180912085848.GP4185@dell>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH] ALSA: hda - Enable runtime PM on AMD/ATI GPU
+	only for discrete GPU
+Date: Wed, 12 Sep 2018 11:48:33 +0200
+Message-ID: <20180912094833.12427-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180912085848.GP4185@dell>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 532332676B0
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 11:48:41 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: jian-hong@endlessm.com, Lukas Wunner <lukas@wunner.de>
 List-Id: alsa-devel@alsa-project.org
 
+The recent change of vga_switcheroo allowed the runtime PM for
+HD-audio on AMD GPU, but this also resulted in a regression.  When the
+HD-audio controller driver gets runtime-suspended, HD-audio link is
+turned off, and the hotplug notification is ignored.  This leads to
+the inconsistent audio state (the connection isn't notified and ELD is
+ignored).
 
+The best fix would be to implement the proper ELD notification via the
+audio component, but it's still not ready.  As a quick workaround,
+this patch adds the check of runtime_idle and allows the runtime
+suspend only when the vga_switcheroo is bound with discrete GPU.
+That is, a system with a single GPU would be again without runtime PM
+(of the controller), as well as the APU that needs to keep the
+HD-audio link for the hotplug notification and ELD read out.
 
-On 12/09/18 09:58, Lee Jones wrote:
->>>> +static const struct mfd_cell wcd9335_devices[] = {
->>>> +	{ .name = "wcd9335-codec", },
->>>> +};
->>> Are there more devices to come?
->>>
->> Yes, that is the plan, we are kind of limited in hardware setup to test few
->> things like soundwire controller. We are exploring other ways to test these.
-> I normally don't accept MFDs with just one device enabled.  Since it's
-> not really an MFD (M == Multi) until it has more than one function.
-> 
+For identifying the audio client connection type, a new API is added
+to vga_switcheroo.  Other than that, the patch does a pretty simple
+job.
 
-WCD9335 Codec hw itself has multiple hw blocks.
+Note that this patch won't influence on the HD-audio *codec* runtime
+PM.  When a codec is unused and the system goes to S3/S4 and resumed,
+the codec won't be resumed immediately because it's unused.  This
+likely keeps the hotplug notification broken, but this is basically
+the expected behavior, a cost needed for the power-saving.  The
+hotplug state will be activated once when you access to the device (or
+triggering the power up via reading a codec#* proc file or such).
 
-If the issue is about adding more entries to mfd cells then we should be 
-able to add below entry:
+Again, this issue will be solved by the proper audio component
+notification, but it's still not ready.  Until then, user would need
+to disable the power-saving explicitly if the ELD hotplug notification
+is required.
 
-	{ .name = "wcd9335-soundwire-controller", },
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=200945
+Fixes: 07f4f97d7b4b ("vga_switcheroo: Use device link for HDA controller")
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ drivers/gpu/vga/vga_switcheroo.c | 20 ++++++++++++++++++++
+ include/linux/vga_switcheroo.h   |  1 +
+ sound/pci/hda/hda_intel.c        |  8 ++++++++
+ 3 files changed, 29 insertions(+)
 
-Actual driver for soundwire controller is not something We can test with 
-regular dragon boards, it needs special hw for smart speakers. Once we 
-have that we can test and post the drivers for that.
-
-Otherwise
-
-Are you suggesting that I move everything to  sound/soc/codecs and then 
-back to mfd once soundwire controller driver is added?
-
-
-
-> [...]
-> 
->>>> +	struct device_node *ifc_dev_np;
->>> ifc isn't very forthcoming.  Any way you can improve the name?
->> ifc was suggested in dt bindings by Rob,  I can proably rename to
->> interface_node.
-> ifc is a horrible variable name - just sayin'.
-> 
-> [...]
-> 
->>>> +	ret = wcd9335_bring_up(wcd);
->>> So the device_status call-back brings up the hardware?
->>>
->> device status reports the device status at runtime. We can not communicate
->> with the device until it is up, enumerated by slimbus and a logical address
->> is assigned to it. So the best place to initialize it is in status callback
->> where all the above are expected to be done.
-> Right, I understand what's happening.  I just think the semantics are
-> wrong.  The Subsystem (I'm assuming it's a Subsystem) requests for
-> status and it ends up initiating a start-up sequence.  Just from a
-> purist's point of view (I understand that it "works"), it's not good
-> practice.
-> 
->> Probe is expected to setup the external configurations like regulators/pins
->> and so on which gets the device out of reset and ready to be enumerated by
->> the slimbus controller.
-> I suggest fully starting the device in probe() is a better approach.
-> 
-Its catch-22 situation, without device being powered up and reset 
-correctly there is no way to enumerate it.
-
-
-> [...]
-> 
->>>> +struct wcd9335 {
->>>> +	int version;
->>>> +	int intr1;
->>> What's this?  If I have to ask, it's probably not a good name.
->>>
->> This is a hardware pin name for interrupt line 1.
-> I don't see how this is used, so it's difficult for me to advise
-> fully, but I find this confusing.  Pin name/number?  Shouldn't this be
-> handed by Pinctrl?
-> 
-This is represented as proper irq line in dt via  pintrl irq controller.
-
-
-> intr1 could be quite ambiguous.  Especually as the '1' could easily be
-> read as an 'l'.  Suggest that 'irq1' or 'irq_1' or 'irq_one'.
-
-I can change this to something more readable in next version or may be I 
-can even remove it may be just use a local variable.
-
-
-thanks,
-srini
-> 
-> -- Lee Jones [李琼斯] Linaro Services Technical Lead Linaro.org │ Open 
-> source software for ARM SoCs Follow Linaro: Facebook | Twitter | Blog
+diff --git a/drivers/gpu/vga/vga_switcheroo.c b/drivers/gpu/vga/vga_switcheroo.c
+index a96bf46bc483..89598adbf6be 100644
+--- a/drivers/gpu/vga/vga_switcheroo.c
++++ b/drivers/gpu/vga/vga_switcheroo.c
+@@ -485,6 +485,26 @@ enum vga_switcheroo_state vga_switcheroo_get_client_state(struct pci_dev *pdev)
+ }
+ EXPORT_SYMBOL(vga_switcheroo_get_client_state);
+ 
++/**
++ * vga_switcheroo_get_client_id() - obtain client id of a given client
++ * @pdev: client pci device
++ */
++enum vga_switcheroo_client_id vga_switcheroo_get_client_id(struct pci_dev *pdev)
++{
++	struct vga_switcheroo_client *client;
++	enum vga_switcheroo_client_id ret;
++
++	mutex_lock(&vgasr_mutex);
++	client = find_client_from_pci(&vgasr_priv.clients, pdev);
++	if (!client)
++		ret = VGA_SWITCHEROO_UNKNOWN_ID;
++	else
++		ret = client_id(client);
++	mutex_unlock(&vgasr_mutex);
++	return ret;
++}
++EXPORT_SYMBOL(vga_switcheroo_get_client_id);
++
+ /**
+  * vga_switcheroo_unregister_client() - unregister client
+  * @pdev: client pci device
+diff --git a/include/linux/vga_switcheroo.h b/include/linux/vga_switcheroo.h
+index a34539b7f750..e52fcd7b68f3 100644
+--- a/include/linux/vga_switcheroo.h
++++ b/include/linux/vga_switcheroo.h
+@@ -167,6 +167,7 @@ int vga_switcheroo_process_delayed_switch(void);
+ 
+ bool vga_switcheroo_client_probe_defer(struct pci_dev *pdev);
+ enum vga_switcheroo_state vga_switcheroo_get_client_state(struct pci_dev *dev);
++enum vga_switcheroo_client_id vga_switcheroo_get_client_id(struct pci_dev *dev);
+ 
+ int vga_switcheroo_init_domain_pm_ops(struct device *dev, struct dev_pm_domain *domain);
+ void vga_switcheroo_fini_domain_pm_ops(struct device *dev);
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 1b2ce304152a..48ab090648a7 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1201,6 +1201,14 @@ static int azx_runtime_idle(struct device *dev)
+ 	    azx_bus(chip)->codec_powered || !chip->running)
+ 		return -EBUSY;
+ 
++#ifdef SUPPORT_VGA_SWITCHEROO
++	/* ELD notification gets broken on AMD GPUs when HD-audio bus is off */
++	if ((chip->pci->vendor == PCI_VENDOR_ID_ATI ||
++	     chip->pci->vendor == PCI_VENDOR_ID_AMD) &&
++	    vga_switcheroo_get_client_id(chip->pci) != VGA_SWITCHEROO_DIS)
++		return -EBUSY;
++#endif
++
+ 	return 0;
+ }
+ 
+-- 
+2.18.0
