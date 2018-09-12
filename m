@@ -1,235 +1,161 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: Microphone detected,
- but no output for all ASUS G751xx with ALC668 chipset
-Date: Wed, 12 Sep 2018 12:43:24 -0400
-Message-ID: <CAM8Agx2HAApKVa-ZE3qJ58_h=VX4jX2zTvSqd4HEd6Zd-g1XHg@mail.gmail.com>
-References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
- <s5hin3d2ik0.wl-tiwai@suse.de>
- <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
- <s5hbm94ou29.wl-tiwai@suse.de>
- <CANweNF5PpzufjnRQk2gpqw1+kU8TK86RAj-topURG-FAHeYxcA@mail.gmail.com>
- <s5h7ejrq5dd.wl-tiwai@suse.de>
- <CANweNF5kcSDAxPXDqnyAEvh9bwYg61_F4XhaLjGrpEXZnvvNew@mail.gmail.com>
- <CANweNF7d8Z7qFw2cMkUH4F4r6P=Ms-=WVbFYrMX+O+uZkV4cwg@mail.gmail.com>
- <CAM8Agx2QibKCdPg5FLDqgcP-O7PwPN1L4iNT=6Ae53T5=d=+uw@mail.gmail.com>
- <CANweNF5fjLyfEyE+gCYugpfW_+LP2HYFMPfuWi_O0nxizFLdXg@mail.gmail.com>
- <CAM8Agx0Y+7c_ZQrwzX6R0yRNHTeHoMPAt6zLtU9VKqHAo42TeQ@mail.gmail.com>
- <CANweNF50zpunkO4XOeZh_SWsceeQ5SRWdYAXQ21c69oGfFGzhA@mail.gmail.com>
- <CANweNF718RNadfxV9+Du0VZ4Cx-ufG0ehN1pzP09z41aXUA0Vw@mail.gmail.com>
- <CAM8Agx0H=WdExmbPmtpvYD7hgzNS_jQVfyQy_g8W+yXzqu_rSQ@mail.gmail.com>
- <CANweNF4dxH_abm=sFNEyx-V_05Wo_ZYdMZ_juDMq2imBbBGUhg@mail.gmail.com>
- <CANweNF5izh93N_RS04wO2eihYnx2-_iBjtFw-_1O60027H9M6g@mail.gmail.com>
- <CAM8Agx1Z2KjeSx1otGM8Y=MC=r=HzwNiZzwhuNpKa2EVHkKS=g@mail.gmail.com>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [alsa-devel] [PATCH 2/2] ASoC: max98927: Add reset-gpio support
+Date: Wed, 12 Sep 2018 22:17:24 +0530
+Message-ID: <7aa3c049-5ba0-1db3-08c8-510da1cf779d@codeaurora.org>
+References: <20180912121955.33048-1-cychiang@chromium.org>
+ <20180912121955.33048-2-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-oi0-f52.google.com (mail-oi0-f52.google.com
- [209.85.218.52])
- by alsa0.perex.cz (Postfix) with ESMTP id EF62E2673F4
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 18:43:25 +0200 (CEST)
-Received: by mail-oi0-f52.google.com with SMTP id l82-v6so5003004oih.11
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 09:43:25 -0700 (PDT)
-In-Reply-To: <CAM8Agx1Z2KjeSx1otGM8Y=MC=r=HzwNiZzwhuNpKa2EVHkKS=g@mail.gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
-Cc: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180912121955.33048-2-cychiang@chromium.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, dgreid@chromium.org, ryans.lee@maximintegrated.com
 List-Id: alsa-devel@alsa-project.org
 
-UmVhc29uIGJlaW5nLCBpdCBtYXkgbm90IGhhdmUgaWRlbnRpZmllZCB0aGUgQ09SQiBidWZmZXIg
-cHJvcGVybHkgb3IKc29tZXRoaW5nLiBUaGF0J3MgdmVyeSBvZGQgdG8gaGF2ZSBubyBkYXRhLiBO
-ZXZlciBzZWVuIHRoYXQgYmVmb3JlLgoKT24gV2VkLCBTZXAgMTIsIDIwMTggYXQgMTI6NDIgUE0s
-IENvbm5vciBNY0FkYW1zIDxjb25tYW54MzYwQGdtYWlsLmNvbT4gd3JvdGU6Cj4gQ291bGQgeW91
-IHRyeSBhZ2FpbiBhbmQgbWFrZSBhIGNvcHkgb2YgeW91ciB0ZXJtaW5hbCBvdXRwdXQ/Cj4KPiBP
-biBXZWQsIFNlcCAxMiwgMjAxOCBhdCAxMjo0MSBQTSwgSMOldmFyZCA8aG92YXJkc2xpbGxAZ21h
-aWwuY29tPiB3cm90ZToKPj4gSGkgYWdhaW4uCj4+IFNvcnJ5IGZvciBub3Qgbm90aWNpbmcgYWxs
-IGZpbGVzIHdlcmUgZW1wdHksIGRpZCBpdCBub3QgcnVuIGZvciBsb25nIGVub3VnaD8KPj4KPj4g
-LUjDpXZhcmQKPj4KPj4gRGVuIG9ucy4gMTIuIHNlcC4gMjAxOCBrbC4gMTg6Mzkgc2tyZXYgSMOl
-dmFyZCA8aG92YXJkc2xpbGxAZ21haWwuY29tPjoKPj4+Cj4+PiBTb3JyeSBteSBiYWQgYWdhaW4g
-aXQgd2FzIHdvcmtpbmcgcGVyZmVjdGx5LCBqdXN0IG1pc3NlZCBhIHN0ZXAuCj4+Pgo+Pj4gSSds
-bCBhZGQgdGhlIGR1bXBzIGFzIGFuIGF0dGF0Y2htZW50LiBJIGhhZCBib3RoIGV4dGVybmFsIGhl
-YWRzZXQgYW5kCj4+PiBtaWNyb3Bob25lIHBsdWdnZWQgaW4gYW5kIGxldCB0aGUgVk0gcnVuIGlu
-IHRoZSBiYWNrZ3JvdW5kIGZvciB+MzBtaW4gd2hpbGUKPj4+IGRvaW5nIG90aGVyIHN0dWZmLiBJ
-IGRpZCBub3QgcGxheSBtdXNpYyBvciB0ZXN0IG15IG1pY3JvcGhvbmUgaW4gdGhlIFZNCj4+PiBl
-aXRoZXIsIElmIGkgZGlkIGFueXRoaW5nIHdyb25nLCBwbGVhc2UgdGVsbCBtZSEKPj4+Cj4+PiBJ
-dCBzdG9wcGVkIGF0IDB4MTA0ZjQKPj4+Cj4+PiAtSMOldmFyZAo+Pj4KPj4+IERlbiBvbnMuIDEy
-LiBzZXAuIDIwMTgga2wuIDAwOjMxIHNrcmV2IENvbm5vciBNY0FkYW1zCj4+PiA8Y29ubWFueDM2
-MEBnbWFpbC5jb20+Ogo+Pj4+Cj4+Pj4gSG0uLi4uIHRoYXQncyBvZGQuIFRoZXkgc2hvdWxkIHNo
-b3cgdXAgaW4gdGhlIGZvbGRlciB5b3UgcmFuIHRoZQo+Pj4+IGNvbW1hbmQgZnJvbS4gRG9lcyB5
-b3VyIGNvbnNvbGUgc2hvdyBhbnkgIkR1bXBNZW0gZW50ZXJlZC4uLiIgb3IKPj4+PiBzb21ldGhp
-bmcgbGlrZSB0aGF0PyBZb3UgbWF5IGhhdmUgYSBwZXJtaXNzaW9ucyBlcnJvci4gSSd2ZSBoYWQg
-c29tZQo+Pj4+IHBlb3BsZSByZXBvcnQgdGhhdCBhcyBhbiBpc3N1ZSBiZWZvcmUuCj4+Pj4KPj4+
-PiBPbiBUdWUsIFNlcCAxMSwgMjAxOCBhdCA1OjA4IFBNLCBIw6V2YXJkIDxob3ZhcmRzbGlsbEBn
-bWFpbC5jb20+IHdyb3RlOgo+Pj4+ID4gSGkhCj4+Pj4gPgo+Pj4+ID4gVG9vayBhIHdoaWxlLCBi
-dXQgSSB0aGluayBJIGdvdCBpdCB3b3JraW5nLiBEaWQgbm90IHNlZSBhbnkgImZyYW1lW3h4XSIK
-Pj4+PiA+IGZpbGVzIHRob3VnaC4gV2hhdCBkdW1wcyBkbyB5b3Ugd2FudD8KPj4+PiA+Cj4+Pj4g
-PiAtSMOldmFyZAo+Pj4+ID4KPj4+PiA+IERlbiB0aXIuIDExLiBzZXAuIDIwMTgga2wuIDIxOjI3
-IHNrcmV2IEjDpXZhcmQgPGhvdmFyZHNsaWxsQGdtYWlsLmNvbT46Cj4+Pj4gPj4KPj4+PiA+PiBT
-b3JyeSBhYm91dCB0aGF0LCBJIGZvcmdvdCB0byBlbmFibGUgYSBrZXJuZWwgY29uZmlnLi4uCj4+
-Pj4gPj4KPj4+PiA+PiAtSMOldmFyZAo+Pj4+ID4+Cj4+Pj4gPj4gRGVuIHRpci4gMTEuIHNlcC4g
-MjAxOCBrbC4gMjE6MjAgc2tyZXYgQ29ubm9yIE1jQWRhbXMKPj4+PiA+PiA8Y29ubWFueDM2MEBn
-bWFpbC5jb20+Ogo+Pj4+ID4+Pgo+Pj4+ID4+PiBXaGVuIGl0J3MgYm91bmQgYXMgYSBzdHViLCBp
-dCBzaG91bGRuJ3Qgc2hvdyB1cCBpbiBhbHNhbWl4ZXIKPj4+PiA+Pj4gY29udHJvbHMuCj4+Pj4g
-Pj4+IFlvdSBjYW4gY2hlY2sgd2hhdCBtb2R1bGUgaXMgbG9hZGVkIGJ5IGRvaW5nIGxzcGNpIC12
-IC4gSXQgc2hvdWxkIHNheQo+Pj4+ID4+PiBrZXJuZWwgZHJpdmVyIGluIHVzZTogcGNpLXN0dWIu
-IEFsc28sIGRpZCB5b3UgcnVuIHRoZSB2ZmlvLWJpbmQKPj4+PiA+Pj4gc2NyaXB0Cj4+Pj4gPj4+
-IGJlZm9yZSB0cnlpbmcgaXQ/Cj4+Pj4gPj4+Cj4+Pj4gPj4+IE9uIFR1ZSwgU2VwIDExLCAyMDE4
-IGF0IDM6MTggUE0sIEjDpXZhcmQgPGhvdmFyZHNsaWxsQGdtYWlsLmNvbT4KPj4+PiA+Pj4gd3Jv
-dGU6Cj4+Pj4gPj4+ID4gVGhhbmsgeW91IGZvciB0aGUgb2ZmZXIhCj4+Pj4gPj4+ID4KPj4+PiA+
-Pj4gPiBJIHJ1biBnZW50b28sIGJ1dCB5b3VyIGdpdGh1YiBndWlkZSBpcyB2ZXJ5IHVzZWZ1bC4g
-SSBjYW4ndCBzZWVtIHRvCj4+Pj4gPj4+ID4gYmluZCBteQo+Pj4+ID4+PiA+IGF1ZGlvIGRyaXZl
-ciB0byBhIHBjaS1zdHVkLiBJcyB0aGUgU291bmQgY2FyZCBzdGlsbCBzdXBwb3NlZCB0bwo+Pj4+
-ID4+PiA+IGZ1bmN0aW9uIGFzCj4+Pj4gPj4+ID4gbm9ybWFsIHdoZW4gSSAodGhpbmsgSSkgaGF2
-ZSBib3VuZCBpdCB0byBhIHN0dWQuCj4+Pj4gPj4+ID4KPj4+PiA+Pj4gPiAtSMOldmFyZAo+Pj4+
-ID4+PiA+Cj4+Pj4gPj4+ID4gRGVuIHRpci4gMTEuIHNlcC4gMjAxOCBrbC4gMjA6MjYgc2tyZXYg
-Q29ubm9yIE1jQWRhbXMKPj4+PiA+Pj4gPiA8Y29ubWFueDM2MEBnbWFpbC5jb20+Ogo+Pj4+ID4+
-PiA+Pgo+Pj4+ID4+PiA+PiBPbmUgdGhpbmcgeW91IGNvdWxkIHRyeSwgaXMgdXNpbmcgdGhlIHBy
-b2dyYW0gSSB1c2VkIHRvIHJldmVyc2UKPj4+PiA+Pj4gPj4gZW5naW5lZXIgdGhlIFNvdW5kIEJs
-YXN0ZXIgWiBzZXJpZXMgb2YgY2FyZHMsIFFlbXVIREFEdW1wLiBJZiB5b3VyCj4+Pj4gPj4+ID4+
-IHByb2Nlc3NvciBzdXBwb3J0cyBwY2ktcGFzc3Rocm91Z2ggd2l0aCBhIHZpcnR1YWwgbWFjaGlu
-ZSwgeW91Cj4+Pj4gPj4+ID4+IGNvdWxkCj4+Pj4gPj4+ID4+IHJ1biBhIFdpbmRvd3MgdmlydHVh
-bCBtYWNoaW5lIHdpdGggdGhlIHNvdW5kIGNhcmQgaW4gaXQgYW5kCj4+Pj4gPj4+ID4+IGNhcHR1
-cmUKPj4+PiA+Pj4gPj4gdGhlIGNvbW1hbmRzLiBJJ2QgYmUgd2lsbGluZyB0byBsb29rIHRocm91
-Z2ggdGhlIGR1bXBzIHRvIHNlZSBpZgo+Pj4+ID4+PiA+PiB0aGVyZQo+Pj4+ID4+PiA+PiBhcmUg
-YW55IHNwZWNpYWwgdmVyYnMgb3IgYW55dGhpbmcuCj4+Pj4gPj4+ID4+Cj4+Pj4gPj4+ID4+IFlv
-dSBjYW4gZmluZCB0aGUgcHJvZ3JhbSBoZXJlOgo+Pj4+ID4+PiA+PiBodHRwczovL2dpdGh1Yi5j
-b20vQ29ubWFueDM2MC9RZW11SERBRHVtcAo+Pj4+ID4+PiA+Pgo+Pj4+ID4+PiA+PiBMZXQgbWUg
-a25vdy4KPj4+PiA+Pj4gPj4KPj4+PiA+Pj4gPj4gT24gVHVlLCBTZXAgMTEsIDIwMTggYXQgMjox
-NSBQTSwgSMOldmFyZCA8aG92YXJkc2xpbGxAZ21haWwuY29tPgo+Pj4+ID4+PiA+PiB3cm90ZToK
-Pj4+PiA+Pj4gPj4gPiBTb3JyeSwgbXkgZ21haWwgZGlkbid0IHVwZGF0ZSBzbyBJIHdyb3RlIG15
-IHJlc3BvbnNlIGJlZm9yZSBJCj4+Pj4gPj4+ID4+ID4gcmVhZAo+Pj4+ID4+PiA+PiA+IHlvdXIK
-Pj4+PiA+Pj4gPj4gPiBsYXN0IG9uZS4KPj4+PiA+Pj4gPj4gPgo+Pj4+ID4+PiA+PiA+IEl0IGlz
-IGEgc2VwYXJhdGUgbWljIHBvcnQgYXMgdGhlIEc3NTFKVCBkb2Vzbid0IGhhdmUgYW55IGhlYWRz
-ZXQKPj4+PiA+Pj4gPj4gPiBtdWx0aWphY2tzLgo+Pj4+ID4+PiA+PiA+Cj4+Pj4gPj4+ID4+ID4g
-SSdsbCB0cnkgYW5kIGRpZyBhcm91bmQgaW4gdGhlIGtlcm5lbCEgVGhhbmtzIGZvciB0aGUgdGlw
-IQo+Pj4+ID4+PiA+PiA+Cj4+Pj4gPj4+ID4+ID4gLUjDpXZhcmQKPj4+PiA+Pj4gPj4gPgo+Pj4+
-ID4+PiA+PiA+IERlbiB0aXIuIDExLiBzZXAuIDIwMTgga2wuIDIwOjA5IHNrcmV2IEjDpXZhcmQK
-Pj4+PiA+Pj4gPj4gPiA8aG92YXJkc2xpbGxAZ21haWwuY29tPjoKPj4+PiA+Pj4gPj4gPgo+Pj4+
-ID4+PiA+PiA+PiBUaGFuayB5b3UgZm9yIHRha2luZyB5b3VyIHRpbWUgYW5kIHRyeWluZyB0byBo
-ZWxwISA6KQo+Pj4+ID4+PiA+PiA+Pgo+Pj4+ID4+PiA+PiA+PiBEbyB5b3Uga25vdyB3aGVyZSBJ
-IGNhbiBhc2sgYXJvdW5kIGZvciBtb3JlIGhlbHAgb24gdGhlIGlzc3VlPwo+Pj4+ID4+PiA+PiA+
-PiBJCj4+Pj4gPj4+ID4+ID4+IGRvbid0Cj4+Pj4gPj4+ID4+ID4+IHdhbnQgdG8gZ2l2ZSB1cCB5
-ZXQuCj4+Pj4gPj4+ID4+ID4+Cj4+Pj4gPj4+ID4+ID4+IC1Iw6V2YXJkCj4+Pj4gPj4+ID4+ID4+
-Cj4+Pj4gPj4+ID4+ID4+IERlbiB0aXIuIDExLiBzZXAuIDIwMTgga2wuIDIwOjAyIHNrcmV2IFRh
-a2FzaGkgSXdhaQo+Pj4+ID4+PiA+PiA+PiA8dGl3YWlAc3VzZS5kZT46Cj4+Pj4gPj4+ID4+ID4+
-Cj4+Pj4gPj4+ID4+ID4+PiBPbiBUdWUsIDExIFNlcCAyMDE4IDE5OjE0OjM3ICswMjAwLAo+Pj4+
-ID4+PiA+PiA+Pj4gSMOldmFyZCB3cm90ZToKPj4+PiA+Pj4gPj4gPj4+ID4KPj4+PiA+Pj4gPj4g
-Pj4+ID4gWWVzLCBtaWNyb3Bob25lIGdldHMgZGV0ZWN0ZWQgaW5zdGFudGx5IGFuZCBpdCBhdXRv
-bWF0aWNhbGx5Cj4+Pj4gPj4+ID4+ID4+PiA+IGNoYW5nZXMKPj4+PiA+Pj4gPj4gPj4+ID4gdG8K
-Pj4+PiA+Pj4gPj4gPj4+IGl0Cj4+Pj4gPj4+ID4+ID4+PiA+IGluIHBhdnVjb250cm9sLgo+Pj4+
-ID4+PiA+PiA+Pj4KPj4+PiA+Pj4gPj4gPj4+IFRoZW4gaXQgbGlrZWx5IHJlcXVpcmVzIHNvbWUg
-YWRkaXRpb25hbCBpbml0aWFsaXphdGlvbiBvdXRzaWRlCj4+Pj4gPj4+ID4+ID4+PiBIRC1hdWRp
-by4gIEl0J3MgaGFyZCB0byBrbm93LCBhcyBpdCdzIHByZXR0eSBtdWNoCj4+Pj4gPj4+ID4+ID4+
-PiB2ZW5kb3Itc3BlY2lmaWMuCj4+Pj4gPj4+ID4+ID4+PiBZb3UgY2FuIGRpZyBkb3duIHRoZSBX
-aW5kb3dzLCBidXQgSSBoYXZlIG5vIGlkZWEgYWJvdXQgV2luZG93cwo+Pj4+ID4+PiA+PiA+Pj4g
-aW1wbGVtZW50YXRpb24sIHNvIGNhbid0IGdpdmUgYW55IGhpbnRzLCB1bmZvcnR1bmF0ZWx5Lgo+
-Pj4+ID4+PiA+PiA+Pj4KPj4+PiA+Pj4gPj4gPj4+Cj4+Pj4gPj4+ID4+ID4+PiBUYWthc2hpCj4+
-Pj4gPj4+ID4+ID4+Pgo+Pj4+ID4+PiA+PiA+Pj4gPgo+Pj4+ID4+PiA+PiA+Pj4gPiBEZW4gdGly
-LiAxMS4gc2VwLiAyMDE4IGtsLiAxODo1MiBza3JldiBUYWthc2hpIEl3YWkKPj4+PiA+Pj4gPj4g
-Pj4+ID4gPHRpd2FpQHN1c2UuZGU+Ogo+Pj4+ID4+PiA+PiA+Pj4gPgo+Pj4+ID4+PiA+PiA+Pj4g
-PiA+IE9uIFR1ZSwgMTEgU2VwIDIwMTggMTg6NDA6MjMgKzAyMDAsCj4+Pj4gPj4+ID4+ID4+PiA+
-ID4gSMOldmFyZCB3cm90ZToKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+Cj4+Pj4gPj4+ID4+ID4+PiA+
-ID4gPiBUaGFuayB5b3UgZm9yIHJlcGx5aW5nIQo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4KPj4+PiA+
-Pj4gPj4gPj4+ID4gPiA+IEVuYWJsaW5nIGxvb3BiYWNrIGluIGFsc2FtaXhlcjoKPj4+PiA+Pj4g
-Pj4gPj4+ID4gPiA+IGh0dHA6Ly9pLmltZ3VyLmNvbS9sTm82ZTdULnBuZwo+Pj4+ID4+PiA+PiA+
-Pj4gPiA+ID4KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+IEFuZCB1bm11dGluZyBtb3JlIGFuZCBtb3Jl
-IHRoaW5ncyBpbiAiTWljIFBsYXliYWNrCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiBWb2x1bWUiCj4+
-Pj4gPj4+ID4+ID4+PiA+ID4gPiBpbgo+Pj4+ID4+PiA+PiA+Pj4gPiA+IGhkYWFuYWx5emVyOgo+
-Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gaHR0cDovL2kuaW1ndXIuY29tL0gwSGlPaHkucG5nCj4+Pj4g
-Pj4+ID4+ID4+PiA+ID4gPiBtYWRlIHdoaXRlIG5vaXNlIGNvbWUgZnJvbSB0aGUgaGVhZHNldC4g
-SG93ZXZlciBpdCBkaWQKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+IG5vdAo+Pj4+ID4+PiA+PiA+Pj4g
-PiA+ID4gY2hhbmdlIG9yCj4+Pj4gPj4+ID4+ID4+PiA+ID4gcmVhY3QKPj4+PiA+Pj4gPj4gPj4+
-ID4gPiA+IGF0IGFsbCB3aGVuIEkgdGFsa2VkIG9yIGV2ZW4gbXV0ZWQgdGhlIG1pY3JvcGhvbmUK
-Pj4+PiA+Pj4gPj4gPj4+ID4gPiA+IHBoeXNpY2FsbHkuCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPgo+
-Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gSSBjb3VsZG4ndCBmaW5kICJNaWMgUGxheWJhY2sgU3dpdGNo
-IiBhbnl3aGVyZSBpbiBlaXRoZXIKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+IGFsc2FtaXhlcgo+Pj4+
-ID4+PiA+PiA+Pj4gb3IKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+IGhkYWFuYWx5emVyLgo+Pj4+ID4+
-PiA+PiA+Pj4gPiA+Cj4+Pj4gPj4+ID4+ID4+PiA+ID4gSXQncyBhIG1peGVyIG11dGUgc3dpdGNo
-Lgo+Pj4+ID4+PiA+PiA+Pj4gPiA+Cj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiBUaGUgbWljcm9waG9u
-ZSB3b3JrcyBwZXJmZWN0bHkgZmluZSB1bmRlciBXaW5kb3dzLCBzbyBJCj4+Pj4gPj4+ID4+ID4+
-PiA+ID4gPiBkb24ndAo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gdGhpbmsKPj4+PiA+Pj4gPj4gPj4+
-IGl0IGlzCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiB0aGUgbWljIHBpbi4KPj4+PiA+Pj4gPj4gPj4+
-ID4gPgo+Pj4+ID4+PiA+PiA+Pj4gPiA+IEJ1dCB0aGUgZmFjdCBhYm92ZSBpbmRpY2F0ZXMgdGhl
-IHBvc3NpYmlsaXR5IG9mIHRoZSB3cm9uZwo+Pj4+ID4+PiA+PiA+Pj4gPiA+IHBpbiwKPj4+PiA+
-Pj4gPj4gPj4+ID4gPiB0b28uCj4+Pj4gPj4+ID4+ID4+PiA+ID4KPj4+PiA+Pj4gPj4gPj4+ID4g
-PiBEb2VzIHRoZSBqYWNrIGRldGVjdGlvbiBvZiB0aGUgZXh0IG1pYyBwaW4gd29yaz8KPj4+PiA+
-Pj4gPj4gPj4+ID4gPgo+Pj4+ID4+PiA+PiA+Pj4gPiA+Cj4+Pj4gPj4+ID4+ID4+PiA+ID4gVGFr
-YXNoaQo+Pj4+ID4+PiA+PiA+Pj4gPiA+Cj4+Pj4gPj4+ID4+ID4+PiA+ID4gPgo+Pj4+ID4+PiA+
-PiA+Pj4gPiA+ID4gLUjDpXZhcmQKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+Cj4+Pj4gPj4+ID4+ID4+
-PiA+ID4gPiBEZW4gbWFuLiAxMC4gc2VwLiAyMDE4IGtsLiAyMjozOSBza3JldiBUYWthc2hpIEl3
-YWkKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+IDx0aXdhaUBzdXNlLmRlCj4+Pj4gPj4+ID4+ID4+PiA+
-Ogo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gT24gVGh1LCAw
-NiBTZXAgMjAxOCAyMDo0NDozMCArMDIwMCwKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gSMOldmFy
-ZCB3cm90ZToKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPgo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4g
-PiA+IEFkZGl0aW9uYWwgcmVsZXZhbnQgaW5mbzoKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPgo+
-Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+IEEgc2ltaWxhciBpc3N1ZSB3YXMgYWxzbyBkaXNjdXNz
-ZWQgdGhyZWUgeWVhcnMgYWdvCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4gb24KPj4+PiA+Pj4g
-Pj4gPj4+ID4gPiA+ID4gPiBTdW4KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiBKdW4KPj4+PiA+
-Pj4gPj4gPj4+ID4gPiAxNzoxNTo1NAo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiBDRVNUCj4+Pj4g
-Pj4+ID4+ID4+PiA+ID4gPiA+ID4gMjAxNSBhbmQgd2FzIGFib3V0IGhpcyBzdXJyb3VuZCBzb3Vu
-ZCBzZXR1cCwgYnV0IGRpZAo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+IG5vdAo+Pj4+ID4+PiA+
-PiA+Pj4gPiA+ID4gPiA+IHRvdWNoCj4+Pj4gPj4+ID4+ID4+PiBvbiB0aGUKPj4+PiA+Pj4gPj4g
-Pj4+ID4gPiA+ID4gPiBleHRlcm5hbCBtaWNyb3Bob25lIHByb2JsZW06Cj4+Pj4gPj4+ID4+ID4+
-PiA+ID4gPiA+ID4KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4KPj4+PiA+Pj4gPj4gPj4+ID4gPgo+
-Pj4+ID4+PiA+PiA+Pj4KPj4+PiA+Pj4gPj4gPj4+Cj4+Pj4gPj4+ID4+ID4+Pgo+Pj4+ID4+PiA+
-PiA+Pj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9waXBlcm1haWwvYWxzYS1kZXZl
-bC8yMDE1LUp1bmUvMDkzMzE3Lmh0bWwKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPgo+Pj4+ID4+
-PiA+PiA+Pj4gPiA+ID4gPiA+IGFsc2EtaW5mby5zaDoKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4g
-Pgo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPgo+Pj4+ID4+PiA+PiA+Pj4gPiA+Cj4+Pj4gPj4+ID4+
-ID4+Pgo+Pj4+ID4+PiA+PiA+Pj4KPj4+PiA+Pj4gPj4gPj4+Cj4+Pj4gPj4+ID4+ID4+PiBodHRw
-Oi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9MWQ4NjE2YmE1OTc3MzA4ZTAzZGI2YzNhODZl
-MzZlOWU5YjM4ZDZmMAo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+Cj4+Pj4gPj4+ID4+ID4+PiA+
-ID4gPiA+ID4gR3JhcGggb2YgQUxDNjY4IGNoaXBzZXQgZnJvbSBoZGFhbmFseXplcjoKPj4+PiA+
-Pj4gPj4gPj4+ID4gPiA+ID4gPiBodHRwOi8vaS5pbWd1ci5jb20vYzA4RE5KVy5wbmcKPj4+PiA+
-Pj4gPj4gPj4+ID4gPiA+ID4gPgo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+IHNldHRpbmcgYWxz
-YS1tb2RlWzEtOF0gZG9lcyBub3RoaW5nIHRvIGhlbHAgdGhlCj4+Pj4gPj4+ID4+ID4+PiA+ID4g
-PiA+ID4gaXNzdWUuCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4KPj4+PiA+Pj4gPj4gPj4+ID4g
-PiA+ID4gPiBUaGVyZSBhcmUgc2V2ZXJhbCBvZiBzaW1pbGFyIGJ1ZyByZXBvcnRzIGFyb3VuZCB0
-aGUKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiB3ZWIKPj4+PiA+Pj4gPj4gPj4+IGV4cGVyaWVu
-Y2luZwo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+IHNpbWlsYXIgaXNzdWVzLCBhbmQgb24gZGlm
-ZmVyZW50IGRpc3Ryb3MuCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4KPj4+PiA+Pj4gPj4gPj4+
-ID4gPiA+ID4gPiBNaWNyb3Bob25lIHdvcmtzIHBlcmZlY3RseSBpbiB3aW5kb3dzCj4+Pj4gPj4+
-ID4+ID4+PiA+ID4gPiA+ID4KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiBJIGhhdmUgYSBBU1VT
-IFJPRyBHNzUxSlQsIGJ1dCB0aGlzIHByb2JsZW0gc2VlbXMgdG8KPj4+PiA+Pj4gPj4gPj4+ID4g
-PiA+ID4gPiBoYXBwZW4KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiB3aXRoCj4+Pj4gPj4+ID4+
-ID4+PiBhbGwKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gbGFwdG9wcwo+Pj4+ID4+PiA+PiA+Pj4g
-PiA+ID4gPiA+IHVuZGVyIHRoZSBHNzUxIG5hbWUuCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+Cj4+
-Pj4gPj4+ID4+ID4+PiA+ID4gPiA+IFdoZW4geW91IGVuYWJsZSB0aGUgbG9vcGJhY2sgdm9sdW1l
-IGFuZCBzd2l0Y2gsIGFuZAo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiB1bm11dGUvYWRqdXN0Cj4+
-Pj4gPj4+ID4+ID4+PiAiTWljCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+IFBsYXliYWNrIFZvbHVt
-ZSIsIGFuZCAiTWljIFBsYXliYWNrIFN3aXRjaCIsIGRvIHlvdQo+Pj4+ID4+PiA+PiA+Pj4gPiA+
-ID4gPiBoZWFyCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+IHRoZQo+Pj4+ID4+PiA+PiA+Pj4gPiA+
-ID4gPiBpbnB1dAo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiBmcm9tIHRoZSBleHQgbWljPyAgSXQn
-cyBhIHJvdXRlIGRpcmVjdGx5IGZyb20gTklEIDB4MTgKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4g
-dG8KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gdGhlCj4+Pj4gPj4+ID4+ID4+PiBtaXhlcgo+Pj4+
-ID4+PiA+PiA+Pj4gPiA+ID4gPiBOSUQgMHgwYiwgdGhlbiBvdXRwdXQgbWl4ZXIgTklEIDB4MGMs
-IHRoZW4gb3V0cHV0cy4KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gU28KPj4+PiA+Pj4gPj4gPj4+
-ID4gPiA+ID4gdGhpcwo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiBjYW4KPj4+PiA+Pj4gPj4gPj4+
-IGJlCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+IHVzZWQgdG8gdmVyaWZ5IHRoZSBoYXJkd2FyZSBy
-b3V0aW5nLgo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPgo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiBJ
-ZiB5b3UgZG9uJ3QgaGVhciB2aWEgdGhpcyByb3V0ZSwgaXQgbWVhbnMgdGhhdCB0aGUKPj4+PiA+
-Pj4gPj4gPj4+ID4gPiA+ID4gaW5wdXQKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gZnJvbQo+Pj4+
-ID4+PiA+PiA+Pj4gdGhlIGV4dAo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiBtaWMgcGluIGl0c2Vs
-ZiBpcyBicm9rZW4sIGFuZCBpdCBpbXBsaWVzIHRoYXQKPj4+PiA+Pj4gPj4gPj4+ID4gPiA+ID4g
-c29tZXRoaW5nCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+IG91dHNpZGUKPj4+PiA+Pj4gPj4gPj4+
-ID4gPiA+ID4gSEQtYXVkaW8gY29kZWMuCj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+Cj4+Pj4gPj4+
-ID4+ID4+PiA+ID4gPiA+Cj4+Pj4gPj4+ID4+ID4+PiA+ID4gPiA+IFRha2FzaGkKPj4+PiA+Pj4g
-Pj4gPj4+ID4gPiA+ID4KPj4+PiA+Pj4gPj4gPj4+ID4gPiA+IFsyICA8dGV4dC9odG1sOyBVVEYt
-OCAocXVvdGVkLXByaW50YWJsZSk+XQo+Pj4+ID4+PiA+PiA+Pj4gPiA+ID4KPj4+PiA+Pj4gPj4g
-Pj4+ID4gPgo+Pj4+ID4+PiA+PiA+Pj4gPiBbMiAgPHRleHQvaHRtbDsgVVRGLTggKHF1b3RlZC1w
-cmludGFibGUpPl0KPj4+PiA+Pj4gPj4gPj4+ID4KPj4+PiA+Pj4gPj4gPj4+Cj4+Pj4gPj4+ID4+
-ID4+Cj4+Pj4gPj4+ID4+ID4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPj4+PiA+Pj4gPj4gPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+Pj4+ID4+PiA+
-PiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+Pj4+ID4+PiA+PiA+IGh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+
+
+On 9/12/2018 5:49 PM, Cheng-Yi Chiang wrote:
+> Toggle reset line in max98927_i2c_probe.
+> Use a list to store max98927 instances so we do not toggle reset line
+> again if more than one instances share the same reset line.
+>
+> Signed-off-by: Cheng-Yi Chiang <cychiang@chromium.org>
+Reviewed-and-tested-by: Rohit kumar <rohitkr@codeaurora.org>
+
+> ---
+>   sound/soc/codecs/max98927.c | 78 +++++++++++++++++++++++++++++++++++++++++++++
+>   sound/soc/codecs/max98927.h |  2 ++
+>   2 files changed, 80 insertions(+)
+>
+> diff --git a/sound/soc/codecs/max98927.c b/sound/soc/codecs/max98927.c
+> index 941712058a8f5..789b27cdfd9e0 100644
+> --- a/sound/soc/codecs/max98927.c
+> +++ b/sound/soc/codecs/max98927.c
+> @@ -11,6 +11,7 @@
+>    */
+>   
+>   #include <linux/acpi.h>
+> +#include <linux/delay.h>
+>   #include <linux/i2c.h>
+>   #include <linux/module.h>
+>   #include <linux/regmap.h>
+> @@ -24,6 +25,11 @@
+>   #include <sound/tlv.h>
+>   #include "max98927.h"
+>   
+> +#define MAX98927_MIN_RESET_US 1
+> +#define MAX98927_RELEASE_RESET_DELAY_US 500
+> +
+> +static LIST_HEAD(reset_list);
+> +
+>   static struct reg_default max98927_reg[] = {
+>   	{MAX98927_R0001_INT_RAW1,  0x00},
+>   	{MAX98927_R0002_INT_RAW2,  0x00},
+> @@ -877,6 +883,54 @@ static void max98927_slot_config(struct i2c_client *i2c,
+>   		max98927->i_l_slot = 1;
+>   }
+>   
+> +static int max98927_i2c_toggle_reset(struct device *dev,
+> +				     struct max98927_priv *max98927)
+> +{
+> +	/*
+> +	 * If we do not have reset gpio, assume platform firmware
+> +	 * controls the regulator and toggles it for us.
+> +	 */
+> +	if (!max98927->reset_gpio)
+> +		return 0;
+> +
+> +	gpiod_set_value_cansleep(max98927->reset_gpio, 1);
+> +
+> +	/*
+> +	 * We need to wait a bit before we are allowed to release reset GPIO.
+> +	 */
+> +	usleep_range(MAX98927_MIN_RESET_US, MAX98927_MIN_RESET_US + 5);
+> +
+> +	gpiod_set_value_cansleep(max98927->reset_gpio, 0);
+> +
+> +	/*
+> +	 * We need to wait a bit before I2C communication is available.
+> +	 */
+> +	usleep_range(MAX98927_RELEASE_RESET_DELAY_US,
+> +		     MAX98927_RELEASE_RESET_DELAY_US + 5);
+> +
+> +	/*
+> +	 * Release reset GPIO because we are not going to use it.
+> +	 */
+> +	devm_gpiod_put(dev, max98927->reset_gpio);
+> +
+> +	return 0;
+> +}
+> +
+> +static bool max98927_is_first_to_reset(struct max98927_priv *max98927)
+> +{
+> +	struct max98927_priv *p;
+> +
+> +	if (!max98927->reset_gpio)
+> +		return false;
+> +
+> +	list_for_each_entry(p, &reset_list, list) {
+> +		if (max98927->reset_gpio == p->reset_gpio)
+> +			return false;
+> +	}
+> +
+> +	return true;
+> +}
+> +
+>   static int max98927_i2c_probe(struct i2c_client *i2c,
+>   	const struct i2c_device_id *id)
+>   {
+> @@ -904,6 +958,28 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
+>   	} else
+>   		max98927->interleave_mode = 0;
+>   
+> +	/* Gets optional GPIO for reset line. */
+> +	max98927->reset_gpio = devm_gpiod_get_optional(
+> +			&i2c->dev, "reset", GPIOD_OUT_LOW);
+> +	if (IS_ERR(max98927->reset_gpio)) {
+> +		ret = PTR_ERR(max98927->reset_gpio);
+> +		dev_err(&i2c->dev, "error getting reset gpio: %d\n", ret);
+> +		return ret;
+> +	}
+> +
+> +	/*
+> +	 * Only toggle reset line for the first instance when the
+> +	 * reset line is shared among instances. For example,
+> +	 * left and right amplifier share the same reset line, and
+> +	 * we should only toggle the reset line once.
+> +	 */
+> +	if (max98927_is_first_to_reset(max98927)) {
+> +		dev_info(&i2c->dev, "%s: toggle reset line\n", __func__);
+> +		ret = max98927_i2c_toggle_reset(&i2c->dev, max98927);
+> +		if (ret)
+> +			return ret;
+> +	}
+> +
+>   	/* regmap initialization */
+>   	max98927->regmap
+>   		= devm_regmap_init_i2c(i2c, &max98927_regmap);
+> @@ -934,6 +1010,8 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
+>   	if (ret < 0)
+>   		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
+>   
+> +	list_add(&max98927->list, &reset_list);
+> +
+>   	return ret;
+>   }
+>   
+> diff --git a/sound/soc/codecs/max98927.h b/sound/soc/codecs/max98927.h
+> index 538992a238b28..d48f61f6c3ba5 100644
+> --- a/sound/soc/codecs/max98927.h
+> +++ b/sound/soc/codecs/max98927.h
+> @@ -275,5 +275,7 @@ struct max98927_priv {
+>   	unsigned int master;
+>   	unsigned int digital_gain;
+>   	bool tdm_mode;
+> +	struct gpio_desc *reset_gpio;
+> +	struct list_head list;
+>   };
+>   #endif
