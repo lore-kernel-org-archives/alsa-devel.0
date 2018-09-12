@@ -1,108 +1,77 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 02/13] mfd: wcd9335: add support to wcd9335 core
-Date: Wed, 12 Sep 2018 12:11:36 +0100
-Message-ID: <11f213e5-8c93-f75f-1b74-517f00cd9a96@linaro.org>
-References: <20180904102500.30318-1-srinivas.kandagatla@linaro.org>
- <20180904102500.30318-3-srinivas.kandagatla@linaro.org>
- <20180911153340.GY4185@dell>
- <94c68436-b618-40fc-46d6-165799312289@linaro.org>
- <20180912085848.GP4185@dell>
- <b4ddfd10-360c-a844-8542-1f81a1cc9c6b@linaro.org>
- <20180912105941.GS4185@dell>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [asoc:for-4.20 333/424]
+ sound/pci/hda/patch_ca0132.c:7650:20: error: implicit declaration of
+ function 'pci_iomap'; did you mean 'pcim_iomap'?
+Date: Wed, 12 Sep 2018 12:31:28 +0100
+Message-ID: <20180912113128.GF6062@sirena.org.uk>
+References: <201809111307.iuux6Toj%fengguang.wu@intel.com>
+ <s5h4lew34fv.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180912105941.GS4185@dell>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
+Content-Type: multipart/mixed; boundary="===============2521092019730626614=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A24C42673F4
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 13:31:33 +0200 (CEST)
+In-Reply-To: <s5h4lew34fv.wl-tiwai@suse.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, alsa-devel@alsa-project.org, Rakesh Ughreja <rakesh.a.ughreja@intel.com>, kbuild test robot <lkp@intel.com>, kbuild-all@01.org
 List-Id: alsa-devel@alsa-project.org
 
 
-
-On 12/09/18 11:59, Lee Jones wrote:
->> On 12/09/18 09:58, Lee Jones wrote:
->>>>>> +static const struct mfd_cell wcd9335_devices[] = {
->>>>>> +	{ .name = "wcd9335-codec", },
->>>>>> +};
->>>>> Are there more devices to come?
->>>>>
->>>> Yes, that is the plan, we are kind of limited in hardware setup to test few
->>>> things like soundwire controller. We are exploring other ways to test these.
->>> I normally don't accept MFDs with just one device enabled.  Since it's
->>> not really an MFD (M == Multi) until it has more than one function.
->>>
->> WCD9335 Codec hw itself has multiple hw blocks.
->>
->> If the issue is about adding more entries to mfd cells then we should be
->> able to add below entry:
->>
->> 	{ .name = "wcd9335-soundwire-controller", },
->>
->> Actual driver for soundwire controller is not something We can test with
->> regular dragon boards, it needs special hw for smart speakers. Once we have
->> that we can test and post the drivers for that.
->>
->> Otherwise
->>
->> Are you suggesting that I move everything to  sound/soc/codecs and then back
->> to mfd once soundwire controller driver is added?
-> My preference would be for you to add at least one other (tested)
-> device.  However, in your case I know where you live, so I can throw
-> tomatoes at your house if you don't upstream more device support
-> promptly!;)
-> 
-> When will you be enabling more devices?  If the answer is 'never',
-> then creating an MFD is a waste of time.
-
-Vinod Koul is exploring this and ATM we are trying to sort out the hw 
-setup. Hopefully we should be sorted with Qcom help!
+--===============2521092019730626614==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ExXT7PjY8AI4Hyfa"
+Content-Disposition: inline
 
 
-> 
->>> [...]
->>>
->>>>>> +	struct device_node *ifc_dev_np;
->>>>> ifc isn't very forthcoming.  Any way you can improve the name?
->>>> ifc was suggested in dt bindings by Rob,  I can proably rename to
->>>> interface_node.
->>> ifc is a horrible variable name - just sayin'.
->>>
->>> [...]
->>>
->>>>>> +	ret = wcd9335_bring_up(wcd);
->>>>> So the device_status call-back brings up the hardware?
->>>>>
->>>> device status reports the device status at runtime. We can not communicate
->>>> with the device until it is up, enumerated by slimbus and a logical address
->>>> is assigned to it. So the best place to initialize it is in status callback
->>>> where all the above are expected to be done.
->>> Right, I understand what's happening.  I just think the semantics are
->>> wrong.  The Subsystem (I'm assuming it's a Subsystem) requests for
->>> status and it ends up initiating a start-up sequence.  Just from a
->>> purist's point of view (I understand that it "works"), it's not good
->>> practice.
->>>
->>>> Probe is expected to setup the external configurations like regulators/pins
->>>> and so on which gets the device out of reset and ready to be enumerated by
->>>> the slimbus controller.
->>> I suggest fully starting the device in probe() is a better approach.
->>>
->> Its catch-22 situation, without device being powered up and reset correctly
->> there is no way to enumerate it.
-> Isn't power-up and reset also done in probe()?
-> 
-> What am I missing?
+--ExXT7PjY8AI4Hyfa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-There are two parts for device to be ready to talk at bus level:
-1> power up and reset,
-2> enumerate and assign a logical address by the slimbus controller.
+On Tue, Sep 11, 2018 at 08:59:16AM +0200, Takashi Iwai wrote:
 
-First part as you said is already done in probe.
-When second part happens when status callback is invoked, that is when 
-the slimdevice is ready for any kind of communication at bus level.
+> Hrm, the header file inclusion of pci_iomap() looks fairly
+> inconsistent over architectures.  SH doesn't include asm/pci_iomap.h
+> from asm/io.h.  And x86 includes it from linux/io-mapping.h.
 
---srini
-> 
+> As a quick fix, we can just include <asm/pci_iomap.h> from
+> patch_ca0132.c, I suppose.
+
+Not on x86 we can't, it's not there - asm/io.h seems safest AFAICT,
+everyone has it and both SH and x86 include the pci_iomap.h.
+
+--ExXT7PjY8AI4Hyfa
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluY+Q8ACgkQJNaLcl1U
+h9DCxwf+M/hx33LFftulIOc/wTXKURZmyFCZBtl+T/5vLqRWyjVQ8Uy+3zYYo3VR
+M3j11Ya22CBetEqVwbd2DdaCp18XS1H8lzPDBGn357x0WZDC1anLzSxAGRakLQcs
+yrMLSIwSM4JhDptIdI5IQgZahyEBkiWbB9xamlEJOvf3UEm+RfCtDF97t+G32oHd
+bhoJkAOSVoUc6FsTtc18dkjbhSx5QMUQ+PzVNPDb8RPNVD5zlxfWfvOthhOA1i8m
+hQ3u1esp0DqCfv0ODt3i7jwZAw6+lnpgngXuNK6A9y95A9G1yWoPP3rljc1JWq1K
+k6DQd/Vfs1qLfpj10DLqtM1gYqMxKQ==
+=+XjM
+-----END PGP SIGNATURE-----
+
+--ExXT7PjY8AI4Hyfa--
+
+--===============2521092019730626614==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============2521092019730626614==--
