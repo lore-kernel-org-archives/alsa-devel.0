@@ -1,8 +1,8 @@
 From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
 Subject: Re: Microphone detected,
  but no output for all ASUS G751xx with ALC668 chipset
-Date: Wed, 12 Sep 2018 18:39:13 +0200
-Message-ID: <CANweNF4dxH_abm=sFNEyx-V_05Wo_ZYdMZ_juDMq2imBbBGUhg@mail.gmail.com>
+Date: Wed, 12 Sep 2018 18:41:19 +0200
+Message-ID: <CANweNF5izh93N_RS04wO2eihYnx2-_iBjtFw-_1O60027H9M6g@mail.gmail.com>
 References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
  <s5hin3d2ik0.wl-tiwai@suse.de>
  <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
@@ -17,16 +17,18 @@ References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
  <CANweNF50zpunkO4XOeZh_SWsceeQ5SRWdYAXQ21c69oGfFGzhA@mail.gmail.com>
  <CANweNF718RNadfxV9+Du0VZ4Cx-ufG0ehN1pzP09z41aXUA0Vw@mail.gmail.com>
  <CAM8Agx0H=WdExmbPmtpvYD7hgzNS_jQVfyQy_g8W+yXzqu_rSQ@mail.gmail.com>
+ <CANweNF4dxH_abm=sFNEyx-V_05Wo_ZYdMZ_juDMq2imBbBGUhg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="000000000000c7ef1a0575af3b4f"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com
- [209.85.219.182])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B7782673F4
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 18:39:27 +0200 (CEST)
-Received: by mail-yb1-f182.google.com with SMTP id j8-v6so1941007ybg.9
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 09:39:27 -0700 (PDT)
-In-Reply-To: <CAM8Agx0H=WdExmbPmtpvYD7hgzNS_jQVfyQy_g8W+yXzqu_rSQ@mail.gmail.com>
+Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com
+ [209.85.219.174])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3AF2F2673F4
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 18:41:31 +0200 (CEST)
+Received: by mail-yb1-f174.google.com with SMTP id y20-v6so1931475ybi.13
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 09:41:31 -0700 (PDT)
+In-Reply-To: <CANweNF4dxH_abm=sFNEyx-V_05Wo_ZYdMZ_juDMq2imBbBGUhg@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -40,321 +42,170 @@ To: Connor McAdams <conmanx360@gmail.com>
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
---000000000000c7ef1a0575af3b4f
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Sorry my bad again it was working perfectly, just missed a step.
-
-I'll add the dumps as an attatchment. I had both external headset and
-microphone plugged in and let the VM run in the background for ~30min while
-doing other stuff. I did not play music or test my microphone in the VM
-either, If i did anything wrong, please tell me!
-
-It stopped at 0x104f4
-
--H=C3=A5vard
-
-Den ons. 12. sep. 2018 kl. 00:31 skrev Connor McAdams <conmanx360@gmail.com
->:
-
-> Hm.... that's odd. They should show up in the folder you ran the
-> command from. Does your console show any "DumpMem entered..." or
-> something like that? You may have a permissions error. I've had some
-> people report that as an issue before.
->
-> On Tue, Sep 11, 2018 at 5:08 PM, H=C3=A5vard <hovardslill@gmail.com> wrot=
-e:
-> > Hi!
-> >
-> > Took a while, but I think I got it working. Did not see any "frame[xx]"
-> > files though. What dumps do you want?
-> >
-> > -H=C3=A5vard
-> >
-> > Den tir. 11. sep. 2018 kl. 21:27 skrev H=C3=A5vard <hovardslill@gmail.c=
-om>:
-> >>
-> >> Sorry about that, I forgot to enable a kernel config...
-> >>
-> >> -H=C3=A5vard
-> >>
-> >> Den tir. 11. sep. 2018 kl. 21:20 skrev Connor McAdams
-> >> <conmanx360@gmail.com>:
-> >>>
-> >>> When it's bound as a stub, it shouldn't show up in alsamixer controls=
-.
-> >>> You can check what module is loaded by doing lspci -v . It should say
-> >>> kernel driver in use: pci-stub. Also, did you run the vfio-bind scrip=
-t
-> >>> before trying it?
-> >>>
-> >>> On Tue, Sep 11, 2018 at 3:18 PM, H=C3=A5vard <hovardslill@gmail.com> =
-wrote:
-> >>> > Thank you for the offer!
-> >>> >
-> >>> > I run gentoo, but your github guide is very useful. I can't seem to
-> >>> > bind my
-> >>> > audio driver to a pci-stud. Is the Sound card still supposed to
-> >>> > function as
-> >>> > normal when I (think I) have bound it to a stud.
-> >>> >
-> >>> > -H=C3=A5vard
-> >>> >
-> >>> > Den tir. 11. sep. 2018 kl. 20:26 skrev Connor McAdams
-> >>> > <conmanx360@gmail.com>:
-> >>> >>
-> >>> >> One thing you could try, is using the program I used to reverse
-> >>> >> engineer the Sound Blaster Z series of cards, QemuHDADump. If your
-> >>> >> processor supports pci-passthrough with a virtual machine, you cou=
-ld
-> >>> >> run a Windows virtual machine with the sound card in it and captur=
-e
-> >>> >> the commands. I'd be willing to look through the dumps to see if
-> there
-> >>> >> are any special verbs or anything.
-> >>> >>
-> >>> >> You can find the program here:
-> >>> >> https://github.com/Conmanx360/QemuHDADump
-> >>> >>
-> >>> >> Let me know.
-> >>> >>
-> >>> >> On Tue, Sep 11, 2018 at 2:15 PM, H=C3=A5vard <hovardslill@gmail.co=
-m>
-> wrote:
-> >>> >> > Sorry, my gmail didn't update so I wrote my response before I re=
-ad
-> >>> >> > your
-> >>> >> > last one.
-> >>> >> >
-> >>> >> > It is a separate mic port as the G751JT doesn't have any headset
-> >>> >> > multijacks.
-> >>> >> >
-> >>> >> > I'll try and dig around in the kernel! Thanks for the tip!
-> >>> >> >
-> >>> >> > -H=C3=A5vard
-> >>> >> >
-> >>> >> > Den tir. 11. sep. 2018 kl. 20:09 skrev H=C3=A5vard
-> >>> >> > <hovardslill@gmail.com>:
-> >>> >> >
-> >>> >> >> Thank you for taking your time and trying to help! :)
-> >>> >> >>
-> >>> >> >> Do you know where I can ask around for more help on the issue? =
-I
-> >>> >> >> don't
-> >>> >> >> want to give up yet.
-> >>> >> >>
-> >>> >> >> -H=C3=A5vard
-> >>> >> >>
-> >>> >> >> Den tir. 11. sep. 2018 kl. 20:02 skrev Takashi Iwai
-> >>> >> >> <tiwai@suse.de>:
-> >>> >> >>
-> >>> >> >>> On Tue, 11 Sep 2018 19:14:37 +0200,
-> >>> >> >>> H=C3=A5vard wrote:
-> >>> >> >>> >
-> >>> >> >>> > Yes, microphone gets detected instantly and it automatically
-> >>> >> >>> > changes
-> >>> >> >>> > to
-> >>> >> >>> it
-> >>> >> >>> > in pavucontrol.
-> >>> >> >>>
-> >>> >> >>> Then it likely requires some additional initialization outside
-> >>> >> >>> HD-audio.  It's hard to know, as it's pretty much
-> vendor-specific.
-> >>> >> >>> You can dig down the Windows, but I have no idea about Windows
-> >>> >> >>> implementation, so can't give any hints, unfortunately.
-> >>> >> >>>
-> >>> >> >>>
-> >>> >> >>> Takashi
-> >>> >> >>>
-> >>> >> >>> >
-> >>> >> >>> > Den tir. 11. sep. 2018 kl. 18:52 skrev Takashi Iwai
-> >>> >> >>> > <tiwai@suse.de>:
-> >>> >> >>> >
-> >>> >> >>> > > On Tue, 11 Sep 2018 18:40:23 +0200,
-> >>> >> >>> > > H=C3=A5vard wrote:
-> >>> >> >>> > > >
-> >>> >> >>> > > > Thank you for replying!
-> >>> >> >>> > > >
-> >>> >> >>> > > > Enabling loopback in alsamixer:
-> >>> >> >>> > > > http://i.imgur.com/lNo6e7T.png
-> >>> >> >>> > > >
-> >>> >> >>> > > > And unmuting more and more things in "Mic Playback Volum=
-e"
-> >>> >> >>> > > > in
-> >>> >> >>> > > hdaanalyzer:
-> >>> >> >>> > > > http://i.imgur.com/H0HiOhy.png
-> >>> >> >>> > > > made white noise come from the headset. However it did n=
-ot
-> >>> >> >>> > > > change or
-> >>> >> >>> > > react
-> >>> >> >>> > > > at all when I talked or even muted the microphone
-> >>> >> >>> > > > physically.
-> >>> >> >>> > > >
-> >>> >> >>> > > > I couldn't find "Mic Playback Switch" anywhere in either
-> >>> >> >>> > > > alsamixer
-> >>> >> >>> or
-> >>> >> >>> > > > hdaanalyzer.
-> >>> >> >>> > >
-> >>> >> >>> > > It's a mixer mute switch.
-> >>> >> >>> > >
-> >>> >> >>> > > > The microphone works perfectly fine under Windows, so I
-> >>> >> >>> > > > don't
-> >>> >> >>> > > > think
-> >>> >> >>> it is
-> >>> >> >>> > > > the mic pin.
-> >>> >> >>> > >
-> >>> >> >>> > > But the fact above indicates the possibility of the wrong
-> pin,
-> >>> >> >>> > > too.
-> >>> >> >>> > >
-> >>> >> >>> > > Does the jack detection of the ext mic pin work?
-> >>> >> >>> > >
-> >>> >> >>> > >
-> >>> >> >>> > > Takashi
-> >>> >> >>> > >
-> >>> >> >>> > > >
-> >>> >> >>> > > > -H=C3=A5vard
-> >>> >> >>> > > >
-> >>> >> >>> > > > Den man. 10. sep. 2018 kl. 22:39 skrev Takashi Iwai
-> >>> >> >>> > > > <tiwai@suse.de
-> >>> >> >>> >:
-> >>> >> >>> > > >
-> >>> >> >>> > > > > On Thu, 06 Sep 2018 20:44:30 +0200,
-> >>> >> >>> > > > > H=C3=A5vard wrote:
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > > > Additional relevant info:
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > > > A similar issue was also discussed three years ago o=
-n
-> >>> >> >>> > > > > > Sun
-> >>> >> >>> > > > > > Jun
-> >>> >> >>> > > 17:15:54
-> >>> >> >>> > > > > CEST
-> >>> >> >>> > > > > > 2015 and was about his surround sound setup, but did
-> not
-> >>> >> >>> > > > > > touch
-> >>> >> >>> on the
-> >>> >> >>> > > > > > external microphone problem:
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > >
-> >>> >> >>> > >
-> >>> >> >>>
-> >>> >> >>>
-> >>> >> >>>
-> http://mailman.alsa-project.org/pipermail/alsa-devel/2015-June/093317.htm=
-l
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > > > alsa-info.sh:
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > >
-> >>> >> >>> > >
-> >>> >> >>>
-> >>> >> >>>
-> >>> >> >>>
-> http://www.alsa-project.org/db/?f=3D1d8616ba5977308e03db6c3a86e36e9e9b38d=
-6f0
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > > > Graph of ALC668 chipset from hdaanalyzer:
-> >>> >> >>> > > > > > http://i.imgur.com/c08DNJW.png
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > > > setting alsa-mode[1-8] does nothing to help the issu=
-e.
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > > > There are several of similar bug reports around the
-> web
-> >>> >> >>> experiencing
-> >>> >> >>> > > > > > similar issues, and on different distros.
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > > > Microphone works perfectly in windows
-> >>> >> >>> > > > > >
-> >>> >> >>> > > > > > I have a ASUS ROG G751JT, but this problem seems to
-> >>> >> >>> > > > > > happen
-> >>> >> >>> > > > > > with
-> >>> >> >>> all
-> >>> >> >>> > > > > laptops
-> >>> >> >>> > > > > > under the G751 name.
-> >>> >> >>> > > > >
-> >>> >> >>> > > > > When you enable the loopback volume and switch, and
-> >>> >> >>> > > > > unmute/adjust
-> >>> >> >>> "Mic
-> >>> >> >>> > > > > Playback Volume", and "Mic Playback Switch", do you he=
-ar
-> >>> >> >>> > > > > the
-> >>> >> >>> > > > > input
-> >>> >> >>> > > > > from the ext mic?  It's a route directly from NID 0x18
-> to
-> >>> >> >>> > > > > the
-> >>> >> >>> mixer
-> >>> >> >>> > > > > NID 0x0b, then output mixer NID 0x0c, then outputs.  S=
-o
-> >>> >> >>> > > > > this
-> >>> >> >>> > > > > can
-> >>> >> >>> be
-> >>> >> >>> > > > > used to verify the hardware routing.
-> >>> >> >>> > > > >
-> >>> >> >>> > > > > If you don't hear via this route, it means that the
-> input
-> >>> >> >>> > > > > from
-> >>> >> >>> the ext
-> >>> >> >>> > > > > mic pin itself is broken, and it implies that somethin=
-g
-> >>> >> >>> > > > > outside
-> >>> >> >>> > > > > HD-audio codec.
-> >>> >> >>> > > > >
-> >>> >> >>> > > > >
-> >>> >> >>> > > > > Takashi
-> >>> >> >>> > > > >
-> >>> >> >>> > > > [2  <text/html; UTF-8 (quoted-printable)>]
-> >>> >> >>> > > >
-> >>> >> >>> > >
-> >>> >> >>> > [2  <text/html; UTF-8 (quoted-printable)>]
-> >>> >> >>> >
-> >>> >> >>>
-> >>> >> >>
-> >>> >> > _______________________________________________
-> >>> >> > Alsa-devel mailing list
-> >>> >> > Alsa-devel@alsa-project.org
-> >>> >> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->
-
---000000000000c7ef1a0575af3b4f
-Content-Type: application/gzip; name="ALC668dump.tar.gz"
-Content-Disposition: attachment; filename="ALC668dump.tar.gz"
-Content-Transfer-Encoding: base64
-Content-ID: <f_jlzddymr0>
-X-Attachment-Id: f_jlzddymr0
-
-H4sIAO9AmVsAA+3d22odRxAFUH2K/iDT0zf50eTVP2FI8mYcFPv/I2nOKGaaXNqUaJKsBUKWbSjB
-edtU73r/4cfWHn76+unXH+7eyvak1/ry/cn1+8ufU86l7WXLab/bUspbvruvb/YbfePrb18+Pt7f
-3z1+/vzlr/7f3/37v9T7Pz7/Xx4/fvo59fgZzx9wK+VPPv/0zeefy773p89/L63f3W/xv8rof/75
-AwAAAP991/yn5vgZE/lPP/Ofvst/AAAAACJc85/tXfyMifwn15SP/Z8q/wEAAACIMOQ/D/EzZvKf
-UrYj/8nyHwAAAIAI1/xnX/v+6+nr9v5rk/8AAAAARBj6n0v8jJn8Zzv7n/X/AAAAAIQY8p8WP2Mm
-/0nPd+Ke858m/wEAAACIcM1/ytr9n1bO91/6fwAAAABCXPOfvPb+V0vb7v4XAAAAQKAh/1nb/1zr
-mf/o/wEAAAAIMbz/Wrz/04/+n7oV+Q8AAABAhCH/eYifMZX/3PZ/9P8AAAAAxLjmP9seP2Mi/8kp
-Hfe/qv0fAAAAgBDX/Kf2+BkT+U8/+3+6/h8AAACAENf8p71B6DKT/5zvv1qT/wAAAABEGPp/1t7/
-avnof7b/AwAAABDkmv/sa/ufa5L/AAAAAIS65j9p7fuvXNuR/zT9zwAAAAAhhvtfi/Of1/tf9n8A
-AAAAQgz9z0v7f8rTT0f/c63yHwAAAIAIw/33Ej9j5v5XPu9/yX8AAAAAQgz9P3v8jJn3Xz3lI/9J
-8h8AAACACMP9r7X9P6Xs/ch/svwHAAAAIMKQ/6x9/1X6+f5L/gMAAAAQYrj/leJnfNf9L/kPAAAA
-QIhr/pN7/IyJ/Kf2+pL/1Ke/kv8AAAAABBj2f2r8jJn9n71sx/5Pk/8AAAAARBjuv7f4GTP338/+
-597lPwAAAAARrvlPWfv+q7Uj//H+CwAAACDIcP9r7fuvcuv/Kb3IfwAAAAAiDPnPHj9jJv+pt/yn
-ef8FAAAAEGLo/3mInzHT/1PP+1/uvwMAAACEGPKfte+/ej7ff7n/BQAAABDimv/ktfs/bTvvf+3y
-HwAAAIAIw/2vFD9jJv/Zb/lPs/8DAAAAEGLY/ynxMybyn3r2P3f9PwAAAAAhhvxnbf9Pbef7L/ff
-AQAAAEIM/c9r77/3dO7/JPkPAAAAQIRr/tOW5j9lO/ufm/5nAAAAgBDX/Cet7X/OrWwv+U/t8h8A
-AACACMP7r3fxM2bef936f+qm/wcAAAAgxPD+a+3+T+9n/4/9HwAAAIAQ1/xnX7v/U/fz/pf77wAA
-AAAhhvvva/d/ar7t/7Qm/wEAAACIcM1/SoufMZH/tOr9FwAAAECoYf9n6f33XMt5/13+AwAAABDi
-mv9sa/d/ck75yH82+Q8AAABAhKH/eW3+U7dz/0f/DwAAAECIYf+nx8+Y2v9pt/4f+z8AAAAAIa75
-T1p7/72c97/cfwcAAACIMez/5PgZM/s/aS8v+U+t8h8AAACACEP/T4qfMbP/U7f9yH/0/wAAAACE
-uOY/dW3+09Mt/3H/CwAAACDGsP+ztv+5vuY/Sf4DAAAAEGHY/3mD0GVm/+f1/rv+HwAAAIAQw/2v
-xf3Pvbbj/pf9HwAAAIAQ1/ynlfgZ/zz/KVu63X9v+p8BAAAAQlzzn7LHz5jY/2lZ/w8AAABAqGv+
-k1v8jJn+537mP13+AwAAABBh2P9Z2//cXt9/6X8GAAAACHHNf95ixkz/z57Kc/6T0yb/AQAAAIgw
-7P/U+Bkz+z/1fP+l/xkAAAAgxDX/2Zbe/8o5tdv7ryz/AQAAAIhwzX/SQ/yMifynvN7/2uU/AAAA
-ABGG/Gft+6+SbvlP1f8MAAAAEGK4/772/lfN8h8AAAAAAAD4br8Dta4EEACwBAA=
---000000000000c7ef1a0575af3b4f
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---000000000000c7ef1a0575af3b4f--
+SGkgYWdhaW4uClNvcnJ5IGZvciBub3Qgbm90aWNpbmcgYWxsIGZpbGVzIHdlcmUgZW1wdHksIGRp
+ZCBpdCBub3QgcnVuIGZvciBsb25nIGVub3VnaD8KCi1Iw6V2YXJkCgpEZW4gb25zLiAxMi4gc2Vw
+LiAyMDE4IGtsLiAxODozOSBza3JldiBIw6V2YXJkIDxob3ZhcmRzbGlsbEBnbWFpbC5jb20+OgoK
+PiBTb3JyeSBteSBiYWQgYWdhaW4gaXQgd2FzIHdvcmtpbmcgcGVyZmVjdGx5LCBqdXN0IG1pc3Nl
+ZCBhIHN0ZXAuCj4KPiBJJ2xsIGFkZCB0aGUgZHVtcHMgYXMgYW4gYXR0YXRjaG1lbnQuIEkgaGFk
+IGJvdGggZXh0ZXJuYWwgaGVhZHNldCBhbmQKPiBtaWNyb3Bob25lIHBsdWdnZWQgaW4gYW5kIGxl
+dCB0aGUgVk0gcnVuIGluIHRoZSBiYWNrZ3JvdW5kIGZvciB+MzBtaW4gd2hpbGUKPiBkb2luZyBv
+dGhlciBzdHVmZi4gSSBkaWQgbm90IHBsYXkgbXVzaWMgb3IgdGVzdCBteSBtaWNyb3Bob25lIGlu
+IHRoZSBWTQo+IGVpdGhlciwgSWYgaSBkaWQgYW55dGhpbmcgd3JvbmcsIHBsZWFzZSB0ZWxsIG1l
+IQo+Cj4gSXQgc3RvcHBlZCBhdCAweDEwNGY0Cj4KPiAtSMOldmFyZAo+Cj4gRGVuIG9ucy4gMTIu
+IHNlcC4gMjAxOCBrbC4gMDA6MzEgc2tyZXYgQ29ubm9yIE1jQWRhbXMgPAo+IGNvbm1hbngzNjBA
+Z21haWwuY29tPjoKPgo+PiBIbS4uLi4gdGhhdCdzIG9kZC4gVGhleSBzaG91bGQgc2hvdyB1cCBp
+biB0aGUgZm9sZGVyIHlvdSByYW4gdGhlCj4+IGNvbW1hbmQgZnJvbS4gRG9lcyB5b3VyIGNvbnNv
+bGUgc2hvdyBhbnkgIkR1bXBNZW0gZW50ZXJlZC4uLiIgb3IKPj4gc29tZXRoaW5nIGxpa2UgdGhh
+dD8gWW91IG1heSBoYXZlIGEgcGVybWlzc2lvbnMgZXJyb3IuIEkndmUgaGFkIHNvbWUKPj4gcGVv
+cGxlIHJlcG9ydCB0aGF0IGFzIGFuIGlzc3VlIGJlZm9yZS4KPj4KPj4gT24gVHVlLCBTZXAgMTEs
+IDIwMTggYXQgNTowOCBQTSwgSMOldmFyZCA8aG92YXJkc2xpbGxAZ21haWwuY29tPiB3cm90ZToK
+Pj4gPiBIaSEKPj4gPgo+PiA+IFRvb2sgYSB3aGlsZSwgYnV0IEkgdGhpbmsgSSBnb3QgaXQgd29y
+a2luZy4gRGlkIG5vdCBzZWUgYW55ICJmcmFtZVt4eF0iCj4+ID4gZmlsZXMgdGhvdWdoLiBXaGF0
+IGR1bXBzIGRvIHlvdSB3YW50Pwo+PiA+Cj4+ID4gLUjDpXZhcmQKPj4gPgo+PiA+IERlbiB0aXIu
+IDExLiBzZXAuIDIwMTgga2wuIDIxOjI3IHNrcmV2IEjDpXZhcmQgPGhvdmFyZHNsaWxsQGdtYWls
+LmNvbT46Cj4+ID4+Cj4+ID4+IFNvcnJ5IGFib3V0IHRoYXQsIEkgZm9yZ290IHRvIGVuYWJsZSBh
+IGtlcm5lbCBjb25maWcuLi4KPj4gPj4KPj4gPj4gLUjDpXZhcmQKPj4gPj4KPj4gPj4gRGVuIHRp
+ci4gMTEuIHNlcC4gMjAxOCBrbC4gMjE6MjAgc2tyZXYgQ29ubm9yIE1jQWRhbXMKPj4gPj4gPGNv
+bm1hbngzNjBAZ21haWwuY29tPjoKPj4gPj4+Cj4+ID4+PiBXaGVuIGl0J3MgYm91bmQgYXMgYSBz
+dHViLCBpdCBzaG91bGRuJ3Qgc2hvdyB1cCBpbiBhbHNhbWl4ZXIgY29udHJvbHMuCj4+ID4+PiBZ
+b3UgY2FuIGNoZWNrIHdoYXQgbW9kdWxlIGlzIGxvYWRlZCBieSBkb2luZyBsc3BjaSAtdiAuIEl0
+IHNob3VsZCBzYXkKPj4gPj4+IGtlcm5lbCBkcml2ZXIgaW4gdXNlOiBwY2ktc3R1Yi4gQWxzbywg
+ZGlkIHlvdSBydW4gdGhlIHZmaW8tYmluZCBzY3JpcHQKPj4gPj4+IGJlZm9yZSB0cnlpbmcgaXQ/
+Cj4+ID4+Pgo+PiA+Pj4gT24gVHVlLCBTZXAgMTEsIDIwMTggYXQgMzoxOCBQTSwgSMOldmFyZCA8
+aG92YXJkc2xpbGxAZ21haWwuY29tPgo+PiB3cm90ZToKPj4gPj4+ID4gVGhhbmsgeW91IGZvciB0
+aGUgb2ZmZXIhCj4+ID4+PiA+Cj4+ID4+PiA+IEkgcnVuIGdlbnRvbywgYnV0IHlvdXIgZ2l0aHVi
+IGd1aWRlIGlzIHZlcnkgdXNlZnVsLiBJIGNhbid0IHNlZW0gdG8KPj4gPj4+ID4gYmluZCBteQo+
+PiA+Pj4gPiBhdWRpbyBkcml2ZXIgdG8gYSBwY2ktc3R1ZC4gSXMgdGhlIFNvdW5kIGNhcmQgc3Rp
+bGwgc3VwcG9zZWQgdG8KPj4gPj4+ID4gZnVuY3Rpb24gYXMKPj4gPj4+ID4gbm9ybWFsIHdoZW4g
+SSAodGhpbmsgSSkgaGF2ZSBib3VuZCBpdCB0byBhIHN0dWQuCj4+ID4+PiA+Cj4+ID4+PiA+IC1I
+w6V2YXJkCj4+ID4+PiA+Cj4+ID4+PiA+IERlbiB0aXIuIDExLiBzZXAuIDIwMTgga2wuIDIwOjI2
+IHNrcmV2IENvbm5vciBNY0FkYW1zCj4+ID4+PiA+IDxjb25tYW54MzYwQGdtYWlsLmNvbT46Cj4+
+ID4+PiA+Pgo+PiA+Pj4gPj4gT25lIHRoaW5nIHlvdSBjb3VsZCB0cnksIGlzIHVzaW5nIHRoZSBw
+cm9ncmFtIEkgdXNlZCB0byByZXZlcnNlCj4+ID4+PiA+PiBlbmdpbmVlciB0aGUgU291bmQgQmxh
+c3RlciBaIHNlcmllcyBvZiBjYXJkcywgUWVtdUhEQUR1bXAuIElmIHlvdXIKPj4gPj4+ID4+IHBy
+b2Nlc3NvciBzdXBwb3J0cyBwY2ktcGFzc3Rocm91Z2ggd2l0aCBhIHZpcnR1YWwgbWFjaGluZSwg
+eW91Cj4+IGNvdWxkCj4+ID4+PiA+PiBydW4gYSBXaW5kb3dzIHZpcnR1YWwgbWFjaGluZSB3aXRo
+IHRoZSBzb3VuZCBjYXJkIGluIGl0IGFuZCBjYXB0dXJlCj4+ID4+PiA+PiB0aGUgY29tbWFuZHMu
+IEknZCBiZSB3aWxsaW5nIHRvIGxvb2sgdGhyb3VnaCB0aGUgZHVtcHMgdG8gc2VlIGlmCj4+IHRo
+ZXJlCj4+ID4+PiA+PiBhcmUgYW55IHNwZWNpYWwgdmVyYnMgb3IgYW55dGhpbmcuCj4+ID4+PiA+
+Pgo+PiA+Pj4gPj4gWW91IGNhbiBmaW5kIHRoZSBwcm9ncmFtIGhlcmU6Cj4+ID4+PiA+PiBodHRw
+czovL2dpdGh1Yi5jb20vQ29ubWFueDM2MC9RZW11SERBRHVtcAo+PiA+Pj4gPj4KPj4gPj4+ID4+
+IExldCBtZSBrbm93Lgo+PiA+Pj4gPj4KPj4gPj4+ID4+IE9uIFR1ZSwgU2VwIDExLCAyMDE4IGF0
+IDI6MTUgUE0sIEjDpXZhcmQgPGhvdmFyZHNsaWxsQGdtYWlsLmNvbT4KPj4gd3JvdGU6Cj4+ID4+
+PiA+PiA+IFNvcnJ5LCBteSBnbWFpbCBkaWRuJ3QgdXBkYXRlIHNvIEkgd3JvdGUgbXkgcmVzcG9u
+c2UgYmVmb3JlIEkKPj4gcmVhZAo+PiA+Pj4gPj4gPiB5b3VyCj4+ID4+PiA+PiA+IGxhc3Qgb25l
+Lgo+PiA+Pj4gPj4gPgo+PiA+Pj4gPj4gPiBJdCBpcyBhIHNlcGFyYXRlIG1pYyBwb3J0IGFzIHRo
+ZSBHNzUxSlQgZG9lc24ndCBoYXZlIGFueSBoZWFkc2V0Cj4+ID4+PiA+PiA+IG11bHRpamFja3Mu
+Cj4+ID4+PiA+PiA+Cj4+ID4+PiA+PiA+IEknbGwgdHJ5IGFuZCBkaWcgYXJvdW5kIGluIHRoZSBr
+ZXJuZWwhIFRoYW5rcyBmb3IgdGhlIHRpcCEKPj4gPj4+ID4+ID4KPj4gPj4+ID4+ID4gLUjDpXZh
+cmQKPj4gPj4+ID4+ID4KPj4gPj4+ID4+ID4gRGVuIHRpci4gMTEuIHNlcC4gMjAxOCBrbC4gMjA6
+MDkgc2tyZXYgSMOldmFyZAo+PiA+Pj4gPj4gPiA8aG92YXJkc2xpbGxAZ21haWwuY29tPjoKPj4g
+Pj4+ID4+ID4KPj4gPj4+ID4+ID4+IFRoYW5rIHlvdSBmb3IgdGFraW5nIHlvdXIgdGltZSBhbmQg
+dHJ5aW5nIHRvIGhlbHAhIDopCj4+ID4+PiA+PiA+Pgo+PiA+Pj4gPj4gPj4gRG8geW91IGtub3cg
+d2hlcmUgSSBjYW4gYXNrIGFyb3VuZCBmb3IgbW9yZSBoZWxwIG9uIHRoZSBpc3N1ZT8gSQo+PiA+
+Pj4gPj4gPj4gZG9uJ3QKPj4gPj4+ID4+ID4+IHdhbnQgdG8gZ2l2ZSB1cCB5ZXQuCj4+ID4+PiA+
+PiA+Pgo+PiA+Pj4gPj4gPj4gLUjDpXZhcmQKPj4gPj4+ID4+ID4+Cj4+ID4+PiA+PiA+PiBEZW4g
+dGlyLiAxMS4gc2VwLiAyMDE4IGtsLiAyMDowMiBza3JldiBUYWthc2hpIEl3YWkKPj4gPj4+ID4+
+ID4+IDx0aXdhaUBzdXNlLmRlPjoKPj4gPj4+ID4+ID4+Cj4+ID4+PiA+PiA+Pj4gT24gVHVlLCAx
+MSBTZXAgMjAxOCAxOToxNDozNyArMDIwMCwKPj4gPj4+ID4+ID4+PiBIw6V2YXJkIHdyb3RlOgo+
+PiA+Pj4gPj4gPj4+ID4KPj4gPj4+ID4+ID4+PiA+IFllcywgbWljcm9waG9uZSBnZXRzIGRldGVj
+dGVkIGluc3RhbnRseSBhbmQgaXQgYXV0b21hdGljYWxseQo+PiA+Pj4gPj4gPj4+ID4gY2hhbmdl
+cwo+PiA+Pj4gPj4gPj4+ID4gdG8KPj4gPj4+ID4+ID4+PiBpdAo+PiA+Pj4gPj4gPj4+ID4gaW4g
+cGF2dWNvbnRyb2wuCj4+ID4+PiA+PiA+Pj4KPj4gPj4+ID4+ID4+PiBUaGVuIGl0IGxpa2VseSBy
+ZXF1aXJlcyBzb21lIGFkZGl0aW9uYWwgaW5pdGlhbGl6YXRpb24gb3V0c2lkZQo+PiA+Pj4gPj4g
+Pj4+IEhELWF1ZGlvLiAgSXQncyBoYXJkIHRvIGtub3csIGFzIGl0J3MgcHJldHR5IG11Y2gKPj4g
+dmVuZG9yLXNwZWNpZmljLgo+PiA+Pj4gPj4gPj4+IFlvdSBjYW4gZGlnIGRvd24gdGhlIFdpbmRv
+d3MsIGJ1dCBJIGhhdmUgbm8gaWRlYSBhYm91dCBXaW5kb3dzCj4+ID4+PiA+PiA+Pj4gaW1wbGVt
+ZW50YXRpb24sIHNvIGNhbid0IGdpdmUgYW55IGhpbnRzLCB1bmZvcnR1bmF0ZWx5Lgo+PiA+Pj4g
+Pj4gPj4+Cj4+ID4+PiA+PiA+Pj4KPj4gPj4+ID4+ID4+PiBUYWthc2hpCj4+ID4+PiA+PiA+Pj4K
+Pj4gPj4+ID4+ID4+PiA+Cj4+ID4+PiA+PiA+Pj4gPiBEZW4gdGlyLiAxMS4gc2VwLiAyMDE4IGts
+LiAxODo1MiBza3JldiBUYWthc2hpIEl3YWkKPj4gPj4+ID4+ID4+PiA+IDx0aXdhaUBzdXNlLmRl
+PjoKPj4gPj4+ID4+ID4+PiA+Cj4+ID4+PiA+PiA+Pj4gPiA+IE9uIFR1ZSwgMTEgU2VwIDIwMTgg
+MTg6NDA6MjMgKzAyMDAsCj4+ID4+PiA+PiA+Pj4gPiA+IEjDpXZhcmQgd3JvdGU6Cj4+ID4+PiA+
+PiA+Pj4gPiA+ID4KPj4gPj4+ID4+ID4+PiA+ID4gPiBUaGFuayB5b3UgZm9yIHJlcGx5aW5nIQo+
+PiA+Pj4gPj4gPj4+ID4gPiA+Cj4+ID4+PiA+PiA+Pj4gPiA+ID4gRW5hYmxpbmcgbG9vcGJhY2sg
+aW4gYWxzYW1peGVyOgo+PiA+Pj4gPj4gPj4+ID4gPiA+IGh0dHA6Ly9pLmltZ3VyLmNvbS9sTm82
+ZTdULnBuZwo+PiA+Pj4gPj4gPj4+ID4gPiA+Cj4+ID4+PiA+PiA+Pj4gPiA+ID4gQW5kIHVubXV0
+aW5nIG1vcmUgYW5kIG1vcmUgdGhpbmdzIGluICJNaWMgUGxheWJhY2sKPj4gVm9sdW1lIgo+PiA+
+Pj4gPj4gPj4+ID4gPiA+IGluCj4+ID4+PiA+PiA+Pj4gPiA+IGhkYWFuYWx5emVyOgo+PiA+Pj4g
+Pj4gPj4+ID4gPiA+IGh0dHA6Ly9pLmltZ3VyLmNvbS9IMEhpT2h5LnBuZwo+PiA+Pj4gPj4gPj4+
+ID4gPiA+IG1hZGUgd2hpdGUgbm9pc2UgY29tZSBmcm9tIHRoZSBoZWFkc2V0LiBIb3dldmVyIGl0
+IGRpZAo+PiBub3QKPj4gPj4+ID4+ID4+PiA+ID4gPiBjaGFuZ2Ugb3IKPj4gPj4+ID4+ID4+PiA+
+ID4gcmVhY3QKPj4gPj4+ID4+ID4+PiA+ID4gPiBhdCBhbGwgd2hlbiBJIHRhbGtlZCBvciBldmVu
+IG11dGVkIHRoZSBtaWNyb3Bob25lCj4+ID4+PiA+PiA+Pj4gPiA+ID4gcGh5c2ljYWxseS4KPj4g
+Pj4+ID4+ID4+PiA+ID4gPgo+PiA+Pj4gPj4gPj4+ID4gPiA+IEkgY291bGRuJ3QgZmluZCAiTWlj
+IFBsYXliYWNrIFN3aXRjaCIgYW55d2hlcmUgaW4gZWl0aGVyCj4+ID4+PiA+PiA+Pj4gPiA+ID4g
+YWxzYW1peGVyCj4+ID4+PiA+PiA+Pj4gb3IKPj4gPj4+ID4+ID4+PiA+ID4gPiBoZGFhbmFseXpl
+ci4KPj4gPj4+ID4+ID4+PiA+ID4KPj4gPj4+ID4+ID4+PiA+ID4gSXQncyBhIG1peGVyIG11dGUg
+c3dpdGNoLgo+PiA+Pj4gPj4gPj4+ID4gPgo+PiA+Pj4gPj4gPj4+ID4gPiA+IFRoZSBtaWNyb3Bo
+b25lIHdvcmtzIHBlcmZlY3RseSBmaW5lIHVuZGVyIFdpbmRvd3MsIHNvIEkKPj4gPj4+ID4+ID4+
+PiA+ID4gPiBkb24ndAo+PiA+Pj4gPj4gPj4+ID4gPiA+IHRoaW5rCj4+ID4+PiA+PiA+Pj4gaXQg
+aXMKPj4gPj4+ID4+ID4+PiA+ID4gPiB0aGUgbWljIHBpbi4KPj4gPj4+ID4+ID4+PiA+ID4KPj4g
+Pj4+ID4+ID4+PiA+ID4gQnV0IHRoZSBmYWN0IGFib3ZlIGluZGljYXRlcyB0aGUgcG9zc2liaWxp
+dHkgb2YgdGhlIHdyb25nCj4+IHBpbiwKPj4gPj4+ID4+ID4+PiA+ID4gdG9vLgo+PiA+Pj4gPj4g
+Pj4+ID4gPgo+PiA+Pj4gPj4gPj4+ID4gPiBEb2VzIHRoZSBqYWNrIGRldGVjdGlvbiBvZiB0aGUg
+ZXh0IG1pYyBwaW4gd29yaz8KPj4gPj4+ID4+ID4+PiA+ID4KPj4gPj4+ID4+ID4+PiA+ID4KPj4g
+Pj4+ID4+ID4+PiA+ID4gVGFrYXNoaQo+PiA+Pj4gPj4gPj4+ID4gPgo+PiA+Pj4gPj4gPj4+ID4g
+PiA+Cj4+ID4+PiA+PiA+Pj4gPiA+ID4gLUjDpXZhcmQKPj4gPj4+ID4+ID4+PiA+ID4gPgo+PiA+
+Pj4gPj4gPj4+ID4gPiA+IERlbiBtYW4uIDEwLiBzZXAuIDIwMTgga2wuIDIyOjM5IHNrcmV2IFRh
+a2FzaGkgSXdhaQo+PiA+Pj4gPj4gPj4+ID4gPiA+IDx0aXdhaUBzdXNlLmRlCj4+ID4+PiA+PiA+
+Pj4gPjoKPj4gPj4+ID4+ID4+PiA+ID4gPgo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gT24gVGh1LCAw
+NiBTZXAgMjAxOCAyMDo0NDozMCArMDIwMCwKPj4gPj4+ID4+ID4+PiA+ID4gPiA+IEjDpXZhcmQg
+d3JvdGU6Cj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+Cj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+IEFk
+ZGl0aW9uYWwgcmVsZXZhbnQgaW5mbzoKPj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4KPj4gPj4+ID4+
+ID4+PiA+ID4gPiA+ID4gQSBzaW1pbGFyIGlzc3VlIHdhcyBhbHNvIGRpc2N1c3NlZCB0aHJlZSB5
+ZWFycyBhZ28gb24KPj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4gU3VuCj4+ID4+PiA+PiA+Pj4gPiA+
+ID4gPiA+IEp1bgo+PiA+Pj4gPj4gPj4+ID4gPiAxNzoxNTo1NAo+PiA+Pj4gPj4gPj4+ID4gPiA+
+ID4gQ0VTVAo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiAyMDE1IGFuZCB3YXMgYWJvdXQgaGlzIHN1
+cnJvdW5kIHNvdW5kIHNldHVwLCBidXQgZGlkCj4+IG5vdAo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4g
+PiB0b3VjaAo+PiA+Pj4gPj4gPj4+IG9uIHRoZQo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiBleHRl
+cm5hbCBtaWNyb3Bob25lIHByb2JsZW06Cj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+Cj4+ID4+PiA+
+PiA+Pj4gPiA+ID4gPgo+PiA+Pj4gPj4gPj4+ID4gPgo+PiA+Pj4gPj4gPj4+Cj4+ID4+PiA+PiA+
+Pj4KPj4gPj4+ID4+ID4+Pgo+PiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL3BpcGVy
+bWFpbC9hbHNhLWRldmVsLzIwMTUtSnVuZS8wOTMzMTcuaHRtbAo+PiA+Pj4gPj4gPj4+ID4gPiA+
+ID4gPgo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiBhbHNhLWluZm8uc2g6Cj4+ID4+PiA+PiA+Pj4g
+PiA+ID4gPiA+Cj4+ID4+PiA+PiA+Pj4gPiA+ID4gPgo+PiA+Pj4gPj4gPj4+ID4gPgo+PiA+Pj4g
+Pj4gPj4+Cj4+ID4+PiA+PiA+Pj4KPj4gPj4+ID4+ID4+Pgo+PiBodHRwOi8vd3d3LmFsc2EtcHJv
+amVjdC5vcmcvZGIvP2Y9MWQ4NjE2YmE1OTc3MzA4ZTAzZGI2YzNhODZlMzZlOWU5YjM4ZDZmMAo+
+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPgo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiBHcmFwaCBvZiBB
+TEM2NjggY2hpcHNldCBmcm9tIGhkYWFuYWx5emVyOgo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPiBo
+dHRwOi8vaS5pbWd1ci5jb20vYzA4RE5KVy5wbmcKPj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4KPj4g
+Pj4+ID4+ID4+PiA+ID4gPiA+ID4gc2V0dGluZyBhbHNhLW1vZGVbMS04XSBkb2VzIG5vdGhpbmcg
+dG8gaGVscCB0aGUKPj4gaXNzdWUuCj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiA+Cj4+ID4+PiA+PiA+
+Pj4gPiA+ID4gPiA+IFRoZXJlIGFyZSBzZXZlcmFsIG9mIHNpbWlsYXIgYnVnIHJlcG9ydHMgYXJv
+dW5kIHRoZQo+PiB3ZWIKPj4gPj4+ID4+ID4+PiBleHBlcmllbmNpbmcKPj4gPj4+ID4+ID4+PiA+
+ID4gPiA+ID4gc2ltaWxhciBpc3N1ZXMsIGFuZCBvbiBkaWZmZXJlbnQgZGlzdHJvcy4KPj4gPj4+
+ID4+ID4+PiA+ID4gPiA+ID4KPj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4gTWljcm9waG9uZSB3b3Jr
+cyBwZXJmZWN0bHkgaW4gd2luZG93cwo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gPgo+PiA+Pj4gPj4g
+Pj4+ID4gPiA+ID4gPiBJIGhhdmUgYSBBU1VTIFJPRyBHNzUxSlQsIGJ1dCB0aGlzIHByb2JsZW0g
+c2VlbXMgdG8KPj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4gaGFwcGVuCj4+ID4+PiA+PiA+Pj4gPiA+
+ID4gPiA+IHdpdGgKPj4gPj4+ID4+ID4+PiBhbGwKPj4gPj4+ID4+ID4+PiA+ID4gPiA+IGxhcHRv
+cHMKPj4gPj4+ID4+ID4+PiA+ID4gPiA+ID4gdW5kZXIgdGhlIEc3NTEgbmFtZS4KPj4gPj4+ID4+
+ID4+PiA+ID4gPiA+Cj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiBXaGVuIHlvdSBlbmFibGUgdGhlIGxv
+b3BiYWNrIHZvbHVtZSBhbmQgc3dpdGNoLCBhbmQKPj4gPj4+ID4+ID4+PiA+ID4gPiA+IHVubXV0
+ZS9hZGp1c3QKPj4gPj4+ID4+ID4+PiAiTWljCj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiBQbGF5YmFj
+ayBWb2x1bWUiLCBhbmQgIk1pYyBQbGF5YmFjayBTd2l0Y2giLCBkbyB5b3UKPj4gaGVhcgo+PiA+
+Pj4gPj4gPj4+ID4gPiA+ID4gdGhlCj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiBpbnB1dAo+PiA+Pj4g
+Pj4gPj4+ID4gPiA+ID4gZnJvbSB0aGUgZXh0IG1pYz8gIEl0J3MgYSByb3V0ZSBkaXJlY3RseSBm
+cm9tIE5JRCAweDE4Cj4+IHRvCj4+ID4+PiA+PiA+Pj4gPiA+ID4gPiB0aGUKPj4gPj4+ID4+ID4+
+PiBtaXhlcgo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gTklEIDB4MGIsIHRoZW4gb3V0cHV0IG1peGVy
+IE5JRCAweDBjLCB0aGVuIG91dHB1dHMuICBTbwo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gdGhpcwo+
+PiA+Pj4gPj4gPj4+ID4gPiA+ID4gY2FuCj4+ID4+PiA+PiA+Pj4gYmUKPj4gPj4+ID4+ID4+PiA+
+ID4gPiA+IHVzZWQgdG8gdmVyaWZ5IHRoZSBoYXJkd2FyZSByb3V0aW5nLgo+PiA+Pj4gPj4gPj4+
+ID4gPiA+ID4KPj4gPj4+ID4+ID4+PiA+ID4gPiA+IElmIHlvdSBkb24ndCBoZWFyIHZpYSB0aGlz
+IHJvdXRlLCBpdCBtZWFucyB0aGF0IHRoZQo+PiBpbnB1dAo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4g
+ZnJvbQo+PiA+Pj4gPj4gPj4+IHRoZSBleHQKPj4gPj4+ID4+ID4+PiA+ID4gPiA+IG1pYyBwaW4g
+aXRzZWxmIGlzIGJyb2tlbiwgYW5kIGl0IGltcGxpZXMgdGhhdCBzb21ldGhpbmcKPj4gPj4+ID4+
+ID4+PiA+ID4gPiA+IG91dHNpZGUKPj4gPj4+ID4+ID4+PiA+ID4gPiA+IEhELWF1ZGlvIGNvZGVj
+Lgo+PiA+Pj4gPj4gPj4+ID4gPiA+ID4KPj4gPj4+ID4+ID4+PiA+ID4gPiA+Cj4+ID4+PiA+PiA+
+Pj4gPiA+ID4gPiBUYWthc2hpCj4+ID4+PiA+PiA+Pj4gPiA+ID4gPgo+PiA+Pj4gPj4gPj4+ID4g
+PiA+IFsyICA8dGV4dC9odG1sOyBVVEYtOCAocXVvdGVkLXByaW50YWJsZSk+XQo+PiA+Pj4gPj4g
+Pj4+ID4gPiA+Cj4+ID4+PiA+PiA+Pj4gPiA+Cj4+ID4+PiA+PiA+Pj4gPiBbMiAgPHRleHQvaHRt
+bDsgVVRGLTggKHF1b3RlZC1wcmludGFibGUpPl0KPj4gPj4+ID4+ID4+PiA+Cj4+ID4+PiA+PiA+
+Pj4KPj4gPj4+ID4+ID4+Cj4+ID4+PiA+PiA+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fCj4+ID4+PiA+PiA+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+
+ID4+PiA+PiA+IEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiA+Pj4gPj4gPiBodHRwOi8v
+bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo+Pgo+
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
