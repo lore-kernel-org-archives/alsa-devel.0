@@ -1,104 +1,47 @@
-From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: of_dma_request_slave_channel() failed ?
-Date: Thu, 13 Sep 2018 10:38:03 +0200
-Message-ID: <CAMuHMdWQ4=A6jptiGT4jsyR1H0+Z4sPBdJwOAwGc7GVPw4xAAQ@mail.gmail.com>
-References: <87efe9ls4n.wl-kuninori.morimoto.gx@renesas.com>
-	<CAMuHMdVkQ8vio3O7VWyoWnVrY8Y8_YRWxQeXDwJ48iTxzujWdA@mail.gmail.com>
-	<87in3at0mv.wl-kuninori.morimoto.gx@renesas.com>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v3 02/13] mfd: wcd9335: add support to wcd9335 core
+Date: Wed, 12 Sep 2018 13:43:42 +0100
+Message-ID: <ffcf1b3a-b66c-6e0e-3e7a-da092e9d1894@linaro.org>
+References: <20180904102500.30318-1-srinivas.kandagatla@linaro.org>
+ <20180904102500.30318-3-srinivas.kandagatla@linaro.org>
+ <20180911153340.GY4185@dell>
+ <94c68436-b618-40fc-46d6-165799312289@linaro.org>
+ <20180912085848.GP4185@dell>
+ <b4ddfd10-360c-a844-8542-1f81a1cc9c6b@linaro.org>
+ <20180912105941.GS4185@dell>
+ <11f213e5-8c93-f75f-1b74-517f00cd9a96@linaro.org>
+ <20180912114633.GU4185@dell>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <87in3at0mv.wl-kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux IOMMU <iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180912114633.GU4185@dell>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Lee Jones <lee.jones@linaro.org>
+Cc: robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san,
 
-On Thu, Sep 13, 2018 at 7:48 AM Kuninori Morimoto
-<kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
-> > > -----------------------------------------------------
-> > > commit ac6bbf0cdf4206c517ac9789814c23e372ebce4d
-> > > Author: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-> > > Date:   Mon Jul 9 09:41:52 2018 -0600
-> > >
-> > >     iommu: Remove IOMMU_OF_DECLARE
-> > >
-> > >     Now that we use the driver core to stop deferred probe for missing
-> > >     drivers, IOMMU_OF_DECLARE can be removed.
-> > >
-> > >     This is slightly less optimal than having a list of built-in drivers in
-> > >     that we'll now defer probe twice before giving up. This shouldn't have a
-> > >     significant impact on boot times as past discussions about deferred
-> > >     probe have given no evidence of deferred probe having a substantial
-> > >     impact.
-> > >         ...
-> > > -----------------------------------------------------
-> (snip)
-> > I assume you wrote commit 6c92d5a2744e2761 ("ASoC: rsnd: don't fallback
-> > to PIO mode when -EPROBE_DEFER") to work around this?
->
-> Yes, it is work around for it.
->
-> > While this got rid of the error messages, and postpones sound initialization
-> > until the audio DMAC is available, it does mean that the driver will _never_
-> > fall back to PIO.
-> >
-> > I.e. if CONFIG_RCAR_DMAC=n, audio will fail to probe instead of falling
-> > back to PIO.
->
-> If I focus only for sound here, the purpose of PIO mode is
-> checking basic HW connection, clock settings, etc.
-> Without DMAC support, it can't use many sound features.
-> And PIO mode is supporting "SSI" only.
->
-> If DT has SRC/CTU/DVC settings for sound,
-> it needs DMA support anyway.
->
-> &rcar_sound {
->         ...
->         ports {
->                 rsnd_port0: port@0 {
->                         rsnd_endpoint0: endpoint {
->                                 ...
-> =>                              playback = <&ssi0 &src0 &dvc0>;
->                         };
->                 };
->         };
-> };
->
-> Before 6c92d5a2744e2761 patch, driver will forcibly ignore
-> non-SSI modules, and try to use PIO mode.
-> I'm not sure it is "kindly support" or "overkill support".
->
-> After this patch, it needs DMA, otherwise, probe will be failed.
-> DT shouldn't have non-SSI modules if you want to use PIO mode.
->
->         + /* use PIO mode */
->         - playback = <&ssi0 &src0 &dvc0>;
->         + playback = <&ssi0>;
->
+>>
+>> There are two parts for device to be ready to talk at bus level:
+>> 1> power up and reset,
+>> 2> enumerate and assign a logical address by the slimbus controller.
+>>
+>> First part as you said is already done in probe.
+>> When second part happens when status callback is invoked, that is when the
+>> slimdevice is ready for any kind of communication at bus level.
+> 
+> I see.  I still think it's hacky to conduct start-up procedures when
+> all the SS requested was status.  Perhaps it needs a new API call
+> init()?
 
-OK, so falling back to PIO was really a "best effort" fallback, and the user
-should really enable DMA?
+When we added these callbacks the purpose of this was to allow drivers 
+to do specific setup/teardown.
 
-Gr{oetje,eeting}s,
+AFIAU, even-though if we add init(), SLIMbus would still call it just 
+before or after status which to me is redundant ATM.
+Its up to slim driver what it exactly whats to do with status, in some 
+cases this can involve setting up the device.
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+> 
