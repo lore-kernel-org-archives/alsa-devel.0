@@ -1,18 +1,21 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 0/2][RFC] ALSA: firewire-lib: change packet
-	processing timing in process context
-Date: Thu, 13 Sep 2018 00:04:48 +0900
-Message-ID: <20180912150450.16334-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH 1/2][RFC] ALSA: firewire-lib: adopt
+	SYNC_APPLPTR flag to flush packets after queueing/dequeueing
+	PCM frames
+Date: Thu, 13 Sep 2018 00:04:49 +0900
+Message-ID: <20180912150450.16334-2-o-takashi@sakamocchi.jp>
+References: <20180912150450.16334-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com
- [209.85.215.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 524FF2673F4
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 17:05:04 +0200 (CEST)
-Received: by mail-pg1-f196.google.com with SMTP id t84-v6so1211746pgb.5
- for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 08:05:04 -0700 (PDT)
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C7FE267795
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 17:05:07 +0200 (CEST)
+Received: by mail-pg1-f193.google.com with SMTP id r1-v6so1197959pgp.11
+ for <alsa-devel@alsa-project.org>; Wed, 12 Sep 2018 08:05:06 -0700 (PDT)
+In-Reply-To: <20180912150450.16334-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,118 +29,82 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org, ffado-devel@lists.sourceforge.net
 List-Id: alsa-devel@alsa-project.org
 
-In IEC 61883-1/6 engine in ALSA firewire stack, a work to process packet
-is done in three places:
-1. bottom-half of handler for interrupts scheduled on 1394OHCI controller
-2. a callback of struct 'snd_pcm_ops.pointer()'
-3. a callback of struct 'snd_pcm_ops.ack()'
-
-This patchset adds optimization for 3., and remove 2. for efficiency.
-
-
-In Linux kernel v2.6.39, 1. and 2. was committed in initial implementation
-of this engine at a commit 31ef9134eb52('ALSA: add LaCie FireWire
-Speakers/Griffin FireWave Surround driver'). This engine schedules hardware
-interrupts 16 packets (=INTERRUPT_INTERVAL) thus 1. appears in software IRQ
-context every 2 msec (= 16packets * 1sec / 8,000cycle).
-
-In Linux kernel v3.5, an idea of 2. was introduced at a commit
-e9148dddc3c7('ALSA: firewire-lib: flush completed packets when reading
-PCM position') to reduce timing gap between queueing/dequeueing PCM
-frames and scheduling packet transmission. Additionally, it has an
-effect to reduce load of the software IRQ context. It's done in a call
-of ioctl(2) with SNDRV_PCM_IOCTL_HWSYNC. As a result, in mmap programming
-scenario, a call of snd_pcm_hwsync() can process packets for recent
-isochronous cycle.
-
-while (1):
-  snd_pcm_hwsync()
-    ->ioctl(HWSYNC)
-      ->struct snd_pcm_ops.pointer()
-      = amdtp_stream_pcm_pointer()
-        ->fw_iso_context_flush_completions()
-  snd_pcm_mmap_begin()
-  (queue/dequeue PCM frames here.)
-  snd_pcm_mmap_commit()
-
 In Linux kernel v4.13, ALSA PCM core was improved in an aspect of
 updating appl_ptr at a commit 9027c4639ef1('ALSA: pcm: Call ack()
-whenever appl_ptr is updated'). This commit ensures callback of
-'struct snd_pcm_ops.ack()' when updating appl_ptr. This callback
-can be done in below ioctl(2) requests:
+whenever appl_ptr is updated'). This commit ensures a callback of
+'struct snd_pcm_ops.ack()' when updating appl_ptr in process context.
+This callback can be done in below ioctl(2) requests:
  - SNDRV_PCM_IOCTL_REWIND
  - SNDRV_PCM_IOCTL_FORWARD
  - SNDRV_PCM_IOCTL_SYNC_PTR
  - SNDRV_PCM_IOCTL_READ[I|N]_FRAMES
  - SNDRV_PCM_IOCTL_WRITE[I|N]_FRAMES
 
-As I notes in a commit 875becf8412c('ALSA: firewire: process packets
-in 'struct snd_pcm_ops.ack' callback'), 3. works less efficiently because
-in usual PCM operation the above ioctl(2) requests are not used in event
-loop.
+In a commit 875becf8412c('ALSA: firewire: process packets in
+'struct snd_pcm_ops.ack' callback'), I committed implementation
+of .ack() callback to reduce timing gap between queueing/dequeueing
+PCM frames and processing packets. However, in usual mmap
+programming scenario of ALSA PCM applications, the above operations
+are not always used in event dispatcher and the commit is not
+necessarily effective to this engine.
 
 At the same time of the appl_ptr improvement, a new flag of PCM
-hardware definition was added at a commit 42f945970af9('ALSA: pcm: Add
-the explicit appl_ptr sync support'), and relevant changes were added
-to ALSA PCM core and alsa-lib v1.1.5. This flag expects userspace to
-call ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR request per iteration of PCM
-frame queueing/dequeueing in mmap programming scenario below:
+hardware definition was introduced at a commit 42f945970af9('ALSA:
+pcm: Add the explicit appl_ptr sync support'), and relevant changes
+were added to ALSA PCM core and alsa-lib v1.1.5. This flag expects
+userspace to call ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR request per
+iteration of PCM frame handling in mmap programming scenario below:
 
 while (1):
-  snd_pcm_hwsync()
+  ->poll()
+  ->snd_pcm_hwsync()
     ->ioctl(HWSYNC)
-      ->struct snd_pcm_ops.pointer()
-      = amdtp_stream_pcm_pointer()
-        ->fw_iso_context_flush_completions()
-  snd_pcm_mmap_begin()
-  (queue/dequeue PCM frames here.)
-  snd_pcm_mmap_commit()
+  ->snd_pcm_mmap_begin()
+  (queue/dequeue PCM frames here)
+  ->snd_pcm_mmap_commit()
     ->ioctl(SYNC_PTR)
 
-This patchset aims to support the new flag, SNDRV_PCM_INFO_SYNC_APPLPTR,
-to tell userspace to call ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR after
-queueing/dequeueing PCM frames in each iteration of event dispatcher. As
-a result:
+Although adoption of this flag to this engine increases the number
+of system calls in an iteration, it's useful in an aspect of packet
+processing.
+
+This commit adopts the flag. As a result, this engine has two
+chances to process packets in process context at one iteration of
+the above calls.
 
 while (1):
-  snd_pcm_hwsync()
+  ->poll()
+  ->snd_pcm_hwsync()
     ->ioctl(HWSYNC)
       ->struct snd_pcm_ops.pointer()
       = amdtp_stream_pcm_pointer()
         ->fw_iso_context_flush_completions()
-  snd_pcm_mmap_begin()
-  (queue/dequeue PCM frames here.)
-  snd_pcm_mmap_commit()
+  ->snd_pcm_mmap_begin()
+  (queue/dequeue PCM frames here)
+  ->snd_pcm_mmap_commit()
     ->ioctl(SYNC_PTR)
       ->struct snd_pcm_ops.ack()
       = amdtp_stream_pcm_ack()
         ->fw_iso_context_flush_completions()
 
-This patchset also adds optimization for timing to process packets in
-process context. As the above call graph shows, support of the flag brings
-closest two calls to process packet against intervals of isochronous cycle
-and it is not enough efficient. This patchset also cancel packet processing
-in .pointer() callback. As a result:
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/amdtp-stream.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-while (1):
-  snd_pcm_hwsync()
-  snd_pcm_mmap_begin()
-  (queue/dequeue PCM frames here.)
-  snd_pcm_mmap_commit()
-    ->ioctl(SYNC_PTR)
-      ->struct snd_pcm_ops.ack()
-      = amdtp_stream_pcm_ack()
-        ->fw_iso_context_flush_completions()
-
-Takashi Sakamoto (2):
-  ALSA: firewire-lib: adopt SYNC_APPLPTR flag to flush packets after
-    queueing/dequeueing PCM frames
-  ALSA: firewire-lib: cancel processing packets in struct
-    snd_pcm_ops.pointer() call
-
- sound/firewire/amdtp-stream.c | 34 ++--------------------------------
- sound/firewire/amdtp-stream.h | 12 +++++++++++-
- 2 files changed, 13 insertions(+), 33 deletions(-)
-
+diff --git a/sound/firewire/amdtp-stream.c b/sound/firewire/amdtp-stream.c
+index cb9acfe60f6a..3520dc2bec61 100644
+--- a/sound/firewire/amdtp-stream.c
++++ b/sound/firewire/amdtp-stream.c
+@@ -156,7 +156,8 @@ int amdtp_stream_add_pcm_hw_constraints(struct amdtp_stream *s,
+ 		   SNDRV_PCM_INFO_INTERLEAVED |
+ 		   SNDRV_PCM_INFO_JOINT_DUPLEX |
+ 		   SNDRV_PCM_INFO_MMAP |
+-		   SNDRV_PCM_INFO_MMAP_VALID;
++		   SNDRV_PCM_INFO_MMAP_VALID |
++		   SNDRV_PCM_INFO_SYNC_APPLPTR;
+ 
+ 	/* SNDRV_PCM_INFO_BATCH */
+ 	hw->periods_min = 2;
 -- 
 2.17.1
