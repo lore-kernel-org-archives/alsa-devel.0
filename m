@@ -1,47 +1,109 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v3 02/13] mfd: wcd9335: add support to wcd9335 core
-Date: Wed, 12 Sep 2018 13:43:42 +0100
-Message-ID: <ffcf1b3a-b66c-6e0e-3e7a-da092e9d1894@linaro.org>
-References: <20180904102500.30318-1-srinivas.kandagatla@linaro.org>
- <20180904102500.30318-3-srinivas.kandagatla@linaro.org>
- <20180911153340.GY4185@dell>
- <94c68436-b618-40fc-46d6-165799312289@linaro.org>
- <20180912085848.GP4185@dell>
- <b4ddfd10-360c-a844-8542-1f81a1cc9c6b@linaro.org>
- <20180912105941.GS4185@dell>
- <11f213e5-8c93-f75f-1b74-517f00cd9a96@linaro.org>
- <20180912114633.GU4185@dell>
+From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Subject: Re: of_dma_request_slave_channel() failed ?
+Date: Thu, 13 Sep 2018 11:00:31 +0200
+Message-ID: <CAMuHMdVnoLTYEvtJ3AY0hFxGqtw-kVE0vWtA74ewJkxkirogYA@mail.gmail.com>
+References: <87efe9ls4n.wl-kuninori.morimoto.gx@renesas.com>
+	<CAMuHMdVkQ8vio3O7VWyoWnVrY8Y8_YRWxQeXDwJ48iTxzujWdA@mail.gmail.com>
+	<20180912155057.GJ6062@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180912114633.GU4185@dell>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Lee Jones <lee.jones@linaro.org>
-Cc: robh+dt@kernel.org, broonie@kernel.org, mark.rutland@arm.com, lgirdwood@gmail.com, bgoswami@codeaurora.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, vkoul@kernel.org, alsa-devel@alsa-project.org
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <20180912155057.GJ6062-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Vinod <vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux IOMMU <iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Mark,
 
->>
->> There are two parts for device to be ready to talk at bus level:
->> 1> power up and reset,
->> 2> enumerate and assign a logical address by the slimbus controller.
->>
->> First part as you said is already done in probe.
->> When second part happens when status callback is invoked, that is when the
->> slimdevice is ready for any kind of communication at bus level.
-> 
-> I see.  I still think it's hacky to conduct start-up procedures when
-> all the SS requested was status.  Perhaps it needs a new API call
-> init()?
+On Wed, Sep 12, 2018 at 5:51 PM Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
+> On Tue, Sep 11, 2018 at 11:43:47AM +0200, Geert Uytterhoeven wrote:
+> > So it seems the audio DMAC is deferred a second time, before the iommu driver
+> > probed.
+>
+> Shouldn't there be at least one more round of deferred probe triggers
+> after the IOMMU probes?
 
-When we added these callbacks the purpose of this was to allow drivers 
-to do specific setup/teardown.
+My statement above was incorrect. Adding more debug info allowed to gain
+more insight:
 
-AFIAU, even-though if we add init(), SLIMbus would still call it just 
-before or after status which to me is redundant ATM.
-Its up to slim driver what it exactly whats to do with status, in some 
-cases this can involve setting up the device.
+A. If CONFIG_IPMMU_VMSA=y, everything is fine:
 
-> 
+  1. ipmmu probes,
+  2. audio-dmac probes,
+  3. audio probes, using DMA
+
+B. If CONFIG_IPMMU_VMSA=n, the sound driver falls back to PIO, which
+   Morimoto-san worked around by commit 6c92d5a2744e2761 ("ASoC: rsnd:
+   don't fallback to PIO mode when -EPROBE_DEFER")[1]
+
+  1. ipmmu is not probed: driver not enabled => OK
+  2. audio-dmac is not probed: iommu not found
+  3. audio fails to probe (3 times, hence just ignoring the first one is
+     not sufficient):
+        "of_dma_find_controller: can't find DMA controller
+         /soc/dma-controller@ec700000"
+        => fell back to PIO before [1]
+        => -EPROBE_DEFER since [1]
+  4. audio-dmac probes
+      of_iommu_xlate() calls driver_deferred_probe_check_state(), leading
+      to ("ignoring dependency for device, assuming no driver")
+
+  If step 3 returned -EPROBE_DEFER, there's one additional step:
+  5. audio reprobes successfully, using DMA.
+
+While step 2 (DMA-capable device not probed because iommu not found)
+is correct for devices with a builtin dmac, it causes issues with external
+dmacs, as the dmac probe may be postponed after the DMA slave driver
+probe.
+
+C. Before commit ac6bbf0cdf4206c5 ("iommu: Remove IOMMU_OF_DECLARE"),
+with CONFIG_IPMMU_VMSA=n:
+
+  1. ipmmu is not probed: driver not enabled => OK
+  2. audio-dmac probes => OK
+      Missing IOMMU ignored, as per
+          !ops && !of_iommu_driver_present(iommu_spec->np)
+      in of_iommu_xlate(), which is really
+          !ops && !of_match_node(&__iommu_of_table, np))
+  3. audio probes, using DMA
+      Note: if of_dma_find_controller() would have failed (e.g. missing
+      dmac driver), the audio driver fell back to PIO here.
+
+As per Morimoto-san's recent reply, audio really needs DMA, so the current
+behavior of B.5. is OK. However, this may not be true for other devices
+(e.g. SPI, i2c, serial, ...), where the dmac is optional.
+
+The main issue is that if of_dma_find_controller() fails, a DMA slave driver
+cannot distinguish between dmac not yet probed successfully, and dmac
+driver not present.
+
+However, as we rely more and more on probe deferral, this will cause more
+issues in the future.
+
+I guess the proper solution is to take into account dependencies described
+in DT before probing devices, i.e. devices with phandles should always be
+probed after the targets of these phandles?
+Complication:
+  - Circular dependencies,
+  - Optional phandle targets (dmacs, oops).
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
