@@ -1,19 +1,19 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC 1/5] ALSA: core: Add device-managed page
-	allocator helper
-Date: Thu, 13 Sep 2018 08:05:23 +0200
-Message-ID: <20180913060527.24694-2-tiwai@suse.de>
+Subject: [PATCH RFC 5/5] ALSA: hda: Allocate resources with
+	device-managed APIs
+Date: Thu, 13 Sep 2018 08:05:27 +0200
+Message-ID: <20180913060527.24694-6-tiwai@suse.de>
 References: <20180913060527.24694-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 001EB26779A
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 08:05:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 26BA426779A
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 08:05:33 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id D7B88AFE4
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 06:05:30 +0000 (UTC)
+ by mx1.suse.de (Postfix) with ESMTP id 515DAB02F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 06:05:31 +0000 (UTC)
 In-Reply-To: <20180913060527.24694-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,151 +27,158 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This is a preparation for managing the whole resource via devres.
-As a first step, add a new allocator function, snd_devm_alloc_pages()
-to manage the allocated pages via devres, so that the pages will be
-automagically released as device unbinding.
-
-Unlike the old snd_dma_alloc_pages(), the new function returns
-directly the snd_dma_buffer pointer.  The caller needs to check the
-error via IS_ERR().
+This patch is an attempt to slightly simplify the resource management
+in HD-audio code, by using some device-managed APIs.  A few resources
+like PCI enablement, PCI resources and the card object are managed via
+devres now.  But most of codes dealing with HD-audio core stuff
+couldn't be changed so much, hence the changes in this patch are
+pretty small in the end.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/memalloc.h |  4 ++
- sound/core/memalloc.c    | 88 ++++++++++++++++++++++++++++++++--------
- 2 files changed, 74 insertions(+), 18 deletions(-)
+ sound/pci/hda/hda_controller.h |  1 -
+ sound/pci/hda/hda_intel.c      | 43 ++++++++--------------------------
+ 2 files changed, 10 insertions(+), 34 deletions(-)
 
-diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
-index af3fa577fa06..3a1d9fb44fcf 100644
---- a/include/sound/memalloc.h
-+++ b/include/sound/memalloc.h
-@@ -156,5 +156,9 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab);
- void *snd_malloc_pages(size_t size, gfp_t gfp_flags);
- void snd_free_pages(void *ptr, size_t size);
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index c95097bb5a0c..16f2285847b3 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -156,7 +156,6 @@ struct azx {
+ 	unsigned int snoop:1;
+ 	unsigned int uc_buffer:1; /* non-cached pages for stream buffers */
+ 	unsigned int align_buffer_size:1;
+-	unsigned int region_requested:1;
+ 	unsigned int disabled:1; /* disabled by vga_switcheroo */
  
-+/* device-managed memory allocator */
-+struct snd_dma_buffer *snd_devm_alloc_pages(struct device *dev, int type,
-+					    size_t size);
-+
- #endif /* __SOUND_MEMALLOC_H */
+ 	/* GTS present */
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 4e64595b381b..7a697db7a6a0 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1318,18 +1318,11 @@ static int azx_free(struct azx *chip)
  
-diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
-index aa266907ec9b..a54d7aacec43 100644
---- a/sound/core/memalloc.c
-+++ b/sound/core/memalloc.c
-@@ -161,22 +161,8 @@ static void snd_free_dev_iram(struct snd_dma_buffer *dmab)
-  *
-  */
+ 	if (bus->irq >= 0)
+ 		free_irq(bus->irq, (void*)chip);
+-	if (chip->msi)
+-		pci_disable_msi(chip->pci);
+-	iounmap(bus->remap_addr);
  
+ 	azx_free_stream_pages(chip);
+ 	azx_free_streams(chip);
+ 	snd_hdac_bus_exit(bus);
+ 
+-	if (chip->region_requested)
+-		pci_release_regions(chip->pci);
 -
--/**
-- * snd_dma_alloc_pages - allocate the buffer area according to the given type
-- * @type: the DMA buffer type
-- * @device: the device pointer
-- * @size: the buffer size to allocate
-- * @dmab: buffer allocation record to store the allocated data
-- *
-- * Calls the memory-allocator function for the corresponding
-- * buffer type.
-- *
-- * Return: Zero if the buffer with the given size is allocated successfully,
-- * otherwise a negative value on error.
-- */
--int snd_dma_alloc_pages(int type, struct device *device, size_t size,
--			struct snd_dma_buffer *dmab)
-+static int __snd_dma_alloc_pages(struct device *device, int type, size_t size,
-+				 gfp_t gfp_flags, struct snd_dma_buffer *dmab)
- {
- 	if (WARN_ON(!size))
- 		return -ENXIO;
-@@ -188,8 +174,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 	dmab->bytes = 0;
- 	switch (type) {
- 	case SNDRV_DMA_TYPE_CONTINUOUS:
--		dmab->area = snd_malloc_pages(size,
--					(__force gfp_t)(unsigned long)device);
-+		dmab->area = snd_malloc_pages(size, gfp_flags);
- 		dmab->addr = 0;
- 		break;
- #ifdef CONFIG_HAS_DMA
-@@ -225,6 +210,30 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
- 	dmab->bytes = size;
- 	return 0;
- }
-+
-+/**
-+ * snd_dma_alloc_pages - allocate the buffer area according to the given type
-+ * @type: the DMA buffer type
-+ * @device: the device pointer
-+ * @size: the buffer size to allocate
-+ * @dmab: buffer allocation record to store the allocated data
-+ *
-+ * Calls the memory-allocator function for the corresponding
-+ * buffer type.
-+ *
-+ * Return: Zero if the buffer with the given size is allocated successfully,
-+ * otherwise a negative value on error.
-+ */
-+int snd_dma_alloc_pages(int type, struct device *device, size_t size,
-+			struct snd_dma_buffer *dmab)
-+{
-+	gfp_t gfp_flags = 0;
-+
-+	if (type == SNDRV_DMA_TYPE_CONTINUOUS)
-+		gfp_flags = (__force gfp_t)(unsigned long)device;
-+
-+	return __snd_dma_alloc_pages(device, type, size, gfp_flags, dmab);
-+}
- EXPORT_SYMBOL(snd_dma_alloc_pages);
+-	pci_disable_device(chip->pci);
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ 	release_firmware(chip->fw);
+ #endif
+@@ -1657,15 +1650,13 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
  
- /**
-@@ -296,3 +305,46 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
+ 	*rchip = NULL;
+ 
+-	err = pci_enable_device(pci);
++	err = pcim_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	hda = kzalloc(sizeof(*hda), GFP_KERNEL);
+-	if (!hda) {
+-		pci_disable_device(pci);
++	if (!hda)
+ 		return -ENOMEM;
+-	}
+ 
+ 	chip = &hda->chip;
+ 	mutex_init(&chip->open_mutex);
+@@ -1707,7 +1698,6 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	err = azx_bus_init(chip, model[dev], &pci_hda_io_ops);
+ 	if (err < 0) {
+ 		kfree(hda);
+-		pci_disable_device(pci);
+ 		return err;
+ 	}
+ 
+@@ -1751,17 +1741,12 @@ static int azx_first_init(struct azx *chip)
+ 	}
+ #endif
+ 
+-	err = pci_request_regions(pci, "ICH HD audio");
++	err = pcim_iomap_regions(pci, 1 << 0, "ICH HD audio");
+ 	if (err < 0)
+ 		return err;
+-	chip->region_requested = 1;
+ 
+ 	bus->addr = pci_resource_start(pci, 0);
+-	bus->remap_addr = pci_ioremap_bar(pci, 0);
+-	if (bus->remap_addr == NULL) {
+-		dev_err(card->dev, "ioremap error\n");
+-		return -ENXIO;
+-	}
++	bus->remap_addr = pcim_iomap_table(pci)[0];
+ 
+ 	if (chip->driver_type == AZX_DRIVER_SKL)
+ 		snd_hdac_bus_parse_capabilities(bus);
+@@ -2057,16 +2042,14 @@ static int azx_probe(struct pci_dev *pci,
+ 		return -ENOENT;
+ 	}
+ 
+-	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
+-			   0, &card);
+-	if (err < 0) {
+-		dev_err(&pci->dev, "Error creating card!\n");
++	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE, 0,
++				&card);
++	if (err < 0)
+ 		return err;
+-	}
+ 
+ 	err = azx_create(card, pci, dev, pci_id->driver_data, &chip);
+ 	if (err < 0)
+-		goto out_free;
++		return err;
+ 	card->private_data = chip;
+ 	hda = container_of(chip, struct hda_intel, chip);
+ 
+@@ -2075,7 +2058,7 @@ static int azx_probe(struct pci_dev *pci,
+ 	err = register_vga_switcheroo(chip);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "Error registering vga_switcheroo client\n");
+-		goto out_free;
++		return err;
+ 	}
+ 
+ 	if (check_hdmi_disabled(pci)) {
+@@ -2094,7 +2077,7 @@ static int azx_probe(struct pci_dev *pci,
+ 					      &pci->dev, GFP_KERNEL, card,
+ 					      azx_firmware_cb);
+ 		if (err < 0)
+-			goto out_free;
++			return err;
+ 		schedule_probe = false; /* continued in azx_firmware_cb() */
+ 	}
+ #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+@@ -2111,10 +2094,6 @@ static int azx_probe(struct pci_dev *pci,
+ 	if (chip->disabled)
+ 		complete_all(&hda->probe_wait);
+ 	return 0;
+-
+-out_free:
+-	snd_card_free(card);
+-	return err;
+ }
+ 
+ #ifdef CONFIG_PM
+@@ -2304,8 +2283,6 @@ static void azx_remove(struct pci_dev *pci)
+ 		device_unlock(&pci->dev);
+ 		cancel_work_sync(&hda->probe_work);
+ 		device_lock(&pci->dev);
+-
+-		snd_card_free(card);
  	}
  }
- EXPORT_SYMBOL(snd_dma_free_pages);
-+
-+/* called by devres */
-+static void __snd_release_pages(struct device *dev, void *res)
-+{
-+	snd_dma_free_pages(res);
-+}
-+
-+/**
-+ * snd_devm_alloc_pages - allocate the buffer and manage with devres
-+ * @dev: the device pointer
-+ * @type: the DMA buffer type
-+ * @size: the buffer size to allocate
-+ *
-+ * Allocate buffer pages depending on the given type and manage using devres.
-+ * The pages will be released automatically at the device removal.
-+ *
-+ * The function cannot handle GFP flags for SNDRV_DMA_TYPE_CONTINUOUS type,
-+ * only GFP_KERNEL is assumed.
-+ *
-+ * The function returns the snd_dma_buffer object at success or the encoded
-+ * error pointer via ERR_PTR().  The caller needs to check the error via
-+ * IS_ERR() and PTR_ERR().
-+ */
-+struct snd_dma_buffer *
-+snd_devm_alloc_pages(struct device *dev, int type, size_t size)
-+{
-+	struct snd_dma_buffer *dmab;
-+	int err;
-+
-+	dmab = devres_alloc(__snd_release_pages, sizeof(*dmab), GFP_KERNEL);
-+	if (!dmab)
-+		return ERR_PTR(-ENOMEM);
-+
-+	err = __snd_dma_alloc_pages(dev, type, size, GFP_KERNEL, dmab);
-+	if (err < 0) {
-+		devres_free(dmab);
-+		return ERR_PTR(err);
-+	}
-+
-+	devres_add(dev, dmab);
-+	return dmab;
-+}
-+EXPORT_SYMBOL_GPL(snd_devm_alloc_pages);
+ 
 -- 
 2.18.0
