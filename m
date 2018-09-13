@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "sound: enable interrupt after dma buffer
-	initialization" to the asoc tree
-Date: Thu, 13 Sep 2018 12:36:52 +0100 (BST)
-Message-ID: <20180913113653.032791121CA5@debutante.sirena.org.uk>
+Subject: Applied "Revert "ASoC: Intel: Skylake: Acquire irq
+	after RIRB allocation"" to the asoc tree
+Date: Thu, 13 Sep 2018 12:39:17 +0100 (BST)
+Message-ID: <20180913113917.D06B01121CA5@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B1582677BB
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:36:53 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 847D72677BB
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:39:18 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   sound: enable interrupt after dma buffer initialization
+   Revert "ASoC: Intel: Skylake: Acquire irq after RIRB allocation"
 
 has been applied to the asoc tree at
 
@@ -52,57 +52,88 @@ to this mail.
 Thanks,
 Mark
 
->From b61749a89f826eb61fc59794d9e4697bd246eb61 Mon Sep 17 00:00:00 2001
+>From 542cedec53c9e8b73f3f05bf8468823598c50489 Mon Sep 17 00:00:00 2001
 From: Yu Zhao <yuzhao@google.com>
-Date: Tue, 11 Sep 2018 15:14:04 -0600
-Subject: [PATCH] sound: enable interrupt after dma buffer initialization
+Date: Tue, 11 Sep 2018 15:12:46 -0600
+Subject: [PATCH] Revert "ASoC: Intel: Skylake: Acquire irq after RIRB
+ allocation"
 
-In snd_hdac_bus_init_chip(), we enable interrupt before
-snd_hdac_bus_init_cmd_io() initializing dma buffers. If irq has
-been acquired and irq handler uses the dma buffer, kernel may crash
-when interrupt comes in.
+This reverts commit 12eeeb4f4733bbc4481d01df35933fc15beb8b19.
 
-Fix the problem by postponing enabling irq after dma buffer
-initialization. And warn once on null dma buffer pointer during the
-initialization.
+The patch doesn't fix accessing memory with null pointer in
+skl_interrupt().
 
-Reviewed-by: Takashi Iwai <tiwai@suse.de>
+There are two problems: 1) skl_init_chip() is called twice, before
+and after dma buffer is allocate. The first call sets bus->chip_init
+which prevents the second from initializing bus->corb.buf and
+rirb.buf from bus->rb.area. 2) snd_hdac_bus_init_chip() enables
+interrupt before snd_hdac_bus_init_cmd_io() initializing dma buffers.
+There is a small window which skl_interrupt() can be called if irq
+has been acquired. If so, it crashes when using null dma buffer
+pointers.
+
+Will fix the problems in the following patches. Also attaching the
+crash for future reference.
+
+[   16.949148] general protection fault: 0000 [#1] PREEMPT SMP KASAN PTI
+<snipped>
+[   16.950903] Call Trace:
+[   16.950906]  <IRQ>
+[   16.950918]  skl_interrupt+0x19e/0x2d6 [snd_soc_skl]
+[   16.950926]  ? dma_supported+0xb5/0xb5 [snd_soc_skl]
+[   16.950933]  __handle_irq_event_percpu+0x27a/0x6c8
+[   16.950937]  ? __irq_wake_thread+0x1d1/0x1d1
+[   16.950942]  ? __do_softirq+0x57a/0x69e
+[   16.950944]  handle_irq_event_percpu+0x95/0x1ba
+[   16.950948]  ? _raw_spin_unlock+0x65/0xdc
+[   16.950951]  ? __handle_irq_event_percpu+0x6c8/0x6c8
+[   16.950953]  ? _raw_spin_unlock+0x65/0xdc
+[   16.950957]  ? time_cpufreq_notifier+0x483/0x483
+[   16.950959]  handle_irq_event+0x89/0x123
+[   16.950962]  handle_fasteoi_irq+0x16f/0x425
+[   16.950965]  handle_irq+0x1fe/0x28e
+[   16.950969]  do_IRQ+0x6e/0x12e
+[   16.950972]  common_interrupt+0x7a/0x7a
+[   16.950974]  </IRQ>
+<snipped>
+[   16.951031] RIP: snd_hdac_bus_update_rirb+0x19b/0x4cf [snd_hda_core] RSP: ffff88015c807c08
+[   16.951036] ---[ end trace 58bf9ece1775bc92 ]---
+
+Fixes: 2eeeb4f4733b ("ASoC: Intel: Skylake: Acquire irq after RIRB allocation")
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/hda/hdac_controller.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
 
-diff --git a/sound/hda/hdac_controller.c b/sound/hda/hdac_controller.c
-index 560ec0986e1a..11057d9f84ec 100644
---- a/sound/hda/hdac_controller.c
-+++ b/sound/hda/hdac_controller.c
-@@ -40,6 +40,8 @@ static void azx_clear_corbrp(struct hdac_bus *bus)
-  */
- void snd_hdac_bus_init_cmd_io(struct hdac_bus *bus)
- {
-+	WARN_ON_ONCE(!bus->rb.area);
+diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
+index cf09721ca13e..dce649485649 100644
+--- a/sound/soc/intel/skylake/skl.c
++++ b/sound/soc/intel/skylake/skl.c
+@@ -838,7 +838,11 @@ static int skl_first_init(struct hdac_bus *bus)
+ 
+ 	snd_hdac_bus_parse_capabilities(bus);
+ 
++	if (skl_acquire_irq(bus, 0) < 0)
++		return -EBUSY;
 +
- 	spin_lock_irq(&bus->reg_lock);
- 	/* CORB set up */
- 	bus->corb.addr = bus->rb.addr;
-@@ -479,13 +481,15 @@ bool snd_hdac_bus_init_chip(struct hdac_bus *bus, bool full_reset)
- 	/* reset controller */
- 	azx_reset(bus, full_reset);
+ 	pci_set_master(pci);
++	synchronize_irq(bus->irq);
  
--	/* initialize interrupts */
-+	/* clear interrupts */
- 	azx_int_clear(bus);
--	azx_int_enable(bus);
+ 	gcap = snd_hdac_chip_readw(bus, GCAP);
+ 	dev_dbg(bus->dev, "chipset global capabilities = 0x%x\n", gcap);
+@@ -871,12 +875,6 @@ static int skl_first_init(struct hdac_bus *bus)
+ 	if (err < 0)
+ 		return err;
  
- 	/* initialize the codec command I/O */
- 	snd_hdac_bus_init_cmd_io(bus);
+-	err = skl_acquire_irq(bus, 0);
+-	if (err < 0)
+-		return err;
+-
+-	synchronize_irq(bus->irq);
+-
+ 	/* initialize chip */
+ 	skl_init_pci(skl);
  
-+	/* enable interrupts after CORB/RIRB buffers are initialized above */
-+	azx_int_enable(bus);
-+
- 	/* program the position buffer */
- 	if (bus->use_posbuf && bus->posbuf.addr) {
- 		snd_hdac_chip_writel(bus, DPLBASE, (u32)bus->posbuf.addr);
 -- 
 2.19.0.rc2
