@@ -1,18 +1,19 @@
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] ASoC: es8328: Fix fall-through annotations
-Date: Thu, 13 Sep 2018 14:08:15 -0500
-Message-ID: <20180913190815.GA10487@embeddedor.com>
+Subject: [PATCH] ASoC: hisilicon: fix fall-through annotations
+Date: Thu, 13 Sep 2018 14:11:07 -0500
+Message-ID: <20180913191107.GA11390@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from gateway21.websitewelcome.com (gateway21.websitewelcome.com
- [192.185.45.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 739882673F4
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 21:08:49 +0200 (CEST)
+Received: from gateway33.websitewelcome.com (gateway33.websitewelcome.com
+ [192.185.146.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7801D2677BB
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 21:11:37 +0200 (CEST)
 Received: from cm11.websitewelcome.com (cm11.websitewelcome.com [100.42.49.5])
- by gateway21.websitewelcome.com (Postfix) with ESMTP id 3480E4010D6A5
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 14:08:48 -0500 (CDT)
+ by gateway33.websitewelcome.com (Postfix) with ESMTP id 6B016145036
+ for <alsa-devel@alsa-project.org>;
+ Thu, 13 Sep 2018 14:11:35 -0500 (CDT)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -34,29 +35,28 @@ This fix is part of the ongoing efforts to enabling
 
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 ---
- sound/soc/codecs/es8328.c | 4 ++--
+ sound/soc/hisilicon/hi6210-i2s.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
-index 4b5827d..04a3aa7 100644
---- a/sound/soc/codecs/es8328.c
-+++ b/sound/soc/codecs/es8328.c
-@@ -566,14 +566,14 @@ static int es8328_set_sysclk(struct snd_soc_dai *codec_dai,
- 		break;
- 	case 22579200:
- 		mclkdiv2 = 1;
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index 53344a3..a69e5b11 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -269,13 +269,13 @@ static int hi6210_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_U16_LE:
+ 		signed_data = HII2S_I2S_CFG__S2_CODEC_DATA_FORMAT;
 -		/* fallthru */
 +		/* fall through */
- 	case 11289600:
- 		es8328->sysclk_constraints = &constraints_11289;
- 		es8328->mclk_ratios = ratios_11289;
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+ 		bits = HII2S_BITS_16;
  		break;
- 	case 24576000:
- 		mclkdiv2 = 1;
+ 	case SNDRV_PCM_FORMAT_U24_LE:
+ 		signed_data = HII2S_I2S_CFG__S2_CODEC_DATA_FORMAT;
 -		/* fallthru */
 +		/* fall through */
- 	case 12288000:
- 		es8328->sysclk_constraints = &constraints_12288;
- 		es8328->mclk_ratios = ratios_12288;
+ 	case SNDRV_PCM_FORMAT_S24_LE:
+ 		bits = HII2S_BITS_24;
+ 		break;
 -- 
 2.7.4
