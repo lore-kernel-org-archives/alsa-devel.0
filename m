@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: remove dai->driver NULL
-	check" to the asoc tree
-Date: Thu, 13 Sep 2018 12:39:23 +0100 (BST)
-Message-ID: <20180913113923.395B41121CA5@debutante.sirena.org.uk>
-References: <87wors4jf0.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: core: add support to card rebind" to
+	the asoc tree
+Date: Thu, 13 Sep 2018 12:39:32 +0100 (BST)
+Message-ID: <20180913113932.A00211121CA5@debutante.sirena.org.uk>
+References: <20180912091500.21126-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D346726788E
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:39:24 +0200 (CEST)
-In-Reply-To: <87wors4jf0.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id B78402677BB
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:39:33 +0200 (CEST)
+In-Reply-To: <20180912091500.21126-1-srinivas.kandagatla@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org, rohitkr@codeaurora.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: remove dai->driver NULL check
+   ASoC: core: add support to card rebind
 
 has been applied to the asoc tree at
 
@@ -53,45 +53,199 @@ to this mail.
 Thanks,
 Mark
 
->From a7c439d6128de2cbc087ae7524b47f613ff8bc6c Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 11 Sep 2018 15:50:27 +0900
-Subject: [PATCH] ASoC: soc-core: remove dai->driver NULL check
+>From e894efef9ac7c10b7727798dcc711cccf07569f9 Mon Sep 17 00:00:00 2001
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Date: Wed, 12 Sep 2018 10:15:00 +0100
+Subject: [PATCH] ASoC: core: add support to card rebind
 
-It is strange if it has "dai" but doesn't have "dai->driver".
-And more over "dai->driver->xxx" is used everywhere without
-"dai->driver" pointer NULL checking.
-It got Oops already if "dai->driver" was NULL.
-Let's remove un-needed "dai->driver" NULL check.
+Current behaviour of ASoC core w.r.t to component removal is that it
+unregisters dependent sound card totally. There is no support to
+rebind the card if the component comes back.
+Typical use case is DSP restart or kernel modules itself.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+With this patch, core now maintains list of cards that are unbind due to
+any of its depended components are removed and card not unregistered yet.
+This list is cleared when the card is rebind successfully or when the
+card is unregistered from machine driver.
+
+This list of unbind cards are tried to bind once again after every new
+component is successfully added, giving a fair chance for card bind
+to be successful.
+
+Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 5 -----
- 1 file changed, 5 deletions(-)
+ include/sound/soc.h  |  2 ++
+ sound/soc/soc-core.c | 85 ++++++++++++++++++++++++++++++--------------
+ 2 files changed, 60 insertions(+), 27 deletions(-)
 
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index e17a7ae9a155..1e093b399bc0 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1097,6 +1097,7 @@ struct snd_soc_card {
+ 
+ 	/* lists of probed devices belonging to this card */
+ 	struct list_head component_dev_list;
++	struct list_head list;
+ 
+ 	struct list_head widgets;
+ 	struct list_head paths;
+@@ -1373,6 +1374,7 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
+ 	INIT_LIST_HEAD(&card->dapm_list);
+ 	INIT_LIST_HEAD(&card->aux_comp_list);
+ 	INIT_LIST_HEAD(&card->component_dev_list);
++	INIT_LIST_HEAD(&card->list);
+ }
+ 
+ static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
 diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 807f112fad80..325dc1964850 100644
+index 7e18937c2214..807f112fad80 100644
 --- a/sound/soc/soc-core.c
 +++ b/sound/soc/soc-core.c
-@@ -2519,8 +2519,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
-  */
- int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+@@ -52,6 +52,7 @@ EXPORT_SYMBOL_GPL(snd_soc_debugfs_root);
+ 
+ static DEFINE_MUTEX(client_mutex);
+ static LIST_HEAD(component_list);
++static LIST_HEAD(unbind_card_list);
+ 
+ /*
+  * This is a timeout to do a DAPM powerdown after a stream is closed().
+@@ -2679,6 +2680,33 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+ 
++static int snd_soc_bind_card(struct snd_soc_card *card)
++{
++	struct snd_soc_pcm_runtime *rtd;
++	int ret;
++
++	ret = snd_soc_instantiate_card(card);
++	if (ret != 0)
++		return ret;
++
++	/* deactivate pins to sleep state */
++	list_for_each_entry(rtd, &card->rtd_list, list)  {
++		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
++		struct snd_soc_dai *codec_dai;
++		int j;
++
++		for_each_rtd_codec_dai(rtd, j, codec_dai) {
++			if (!codec_dai->active)
++				pinctrl_pm_select_sleep_state(codec_dai->dev);
++		}
++
++		if (!cpu_dai->active)
++			pinctrl_pm_select_sleep_state(cpu_dai->dev);
++	}
++
++	return ret;
++}
++
+ /**
+  * snd_soc_register_card - Register a card with the ASoC core
+  *
+@@ -2688,7 +2716,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
+ int snd_soc_register_card(struct snd_soc_card *card)
  {
--	if (dai->driver == NULL)
--		return -EINVAL;
- 	if (dai->driver->ops->set_fmt == NULL)
- 		return -ENOTSUPP;
- 	return dai->driver->ops->set_fmt(dai, fmt);
-@@ -2667,9 +2665,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_tristate);
- int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
- 			     int direction)
- {
--	if (!dai->driver)
--		return -ENOTSUPP;
+ 	int i, ret;
+-	struct snd_soc_pcm_runtime *rtd;
+ 
+ 	if (!card->name || !card->dev)
+ 		return -EINVAL;
+@@ -2719,28 +2746,23 @@ int snd_soc_register_card(struct snd_soc_card *card)
+ 	mutex_init(&card->mutex);
+ 	mutex_init(&card->dapm_mutex);
+ 
+-	ret = snd_soc_instantiate_card(card);
+-	if (ret != 0)
+-		return ret;
 -
- 	if (dai->driver->ops->mute_stream)
- 		return dai->driver->ops->mute_stream(dai, mute, direction);
- 	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
+-	/* deactivate pins to sleep state */
+-	list_for_each_entry(rtd, &card->rtd_list, list)  {
+-		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
+-		struct snd_soc_dai *codec_dai;
+-		int j;
+-
+-		for_each_rtd_codec_dai(rtd, j, codec_dai) {
+-			if (!codec_dai->active)
+-				pinctrl_pm_select_sleep_state(codec_dai->dev);
+-		}
++	return snd_soc_bind_card(card);
++}
++EXPORT_SYMBOL_GPL(snd_soc_register_card);
+ 
+-		if (!cpu_dai->active)
+-			pinctrl_pm_select_sleep_state(cpu_dai->dev);
++static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
++{
++	if (card->instantiated) {
++		card->instantiated = false;
++		snd_soc_dapm_shutdown(card);
++		soc_cleanup_card_resources(card);
++		if (!unregister)
++			list_add(&card->list, &unbind_card_list);
++	} else {
++		if (unregister)
++			list_del(&card->list);
+ 	}
+-
+-	return ret;
+ }
+-EXPORT_SYMBOL_GPL(snd_soc_register_card);
+ 
+ /**
+  * snd_soc_unregister_card - Unregister a card with the ASoC core
+@@ -2750,12 +2772,8 @@ EXPORT_SYMBOL_GPL(snd_soc_register_card);
+  */
+ int snd_soc_unregister_card(struct snd_soc_card *card)
+ {
+-	if (card->instantiated) {
+-		card->instantiated = false;
+-		snd_soc_dapm_shutdown(card);
+-		soc_cleanup_card_resources(card);
+-		dev_dbg(card->dev, "ASoC: Unregistered card '%s'\n", card->name);
+-	}
++	snd_soc_unbind_card(card, true);
++	dev_dbg(card->dev, "ASoC: Unregistered card '%s'\n", card->name);
+ 
+ 	return 0;
+ }
+@@ -3099,7 +3117,7 @@ static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
+ 	struct snd_soc_card *card = component->card;
+ 
+ 	if (card)
+-		snd_soc_unregister_card(card);
++		snd_soc_unbind_card(card, false);
+ 
+ 	list_del(&component->list);
+ }
+@@ -3139,6 +3157,18 @@ static void convert_endianness_formats(struct snd_soc_pcm_stream *stream)
+ 			stream->formats |= endianness_format_map[i];
+ }
+ 
++static void snd_soc_try_rebind_card(void)
++{
++	struct snd_soc_card *card, *c;
++
++	if (!list_empty(&unbind_card_list)) {
++		list_for_each_entry_safe(card, c, &unbind_card_list, list) {
++			if (!snd_soc_bind_card(card))
++				list_del(&card->list);
++		}
++	}
++}
++
+ int snd_soc_add_component(struct device *dev,
+ 			struct snd_soc_component *component,
+ 			const struct snd_soc_component_driver *component_driver,
+@@ -3166,6 +3196,7 @@ int snd_soc_add_component(struct device *dev,
+ 	}
+ 
+ 	snd_soc_component_add(component);
++	snd_soc_try_rebind_card();
+ 
+ 	return 0;
+ 
 -- 
 2.19.0.rc2
