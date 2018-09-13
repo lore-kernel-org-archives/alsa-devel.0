@@ -1,61 +1,76 @@
-From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: of_dma_request_slave_channel() failed ?
-Date: Thu, 13 Sep 2018 13:04:41 +0200
-Message-ID: <CAMuHMdUygpJTcumhsZPbrssX8TN2HqkdvEgVSv2b9XUU6o315A@mail.gmail.com>
-References: <87efe9ls4n.wl-kuninori.morimoto.gx@renesas.com>
-	<CAMuHMdVkQ8vio3O7VWyoWnVrY8Y8_YRWxQeXDwJ48iTxzujWdA@mail.gmail.com>
-	<20180912155057.GJ6062@sirena.org.uk>
-	<CAMuHMdVnoLTYEvtJ3AY0hFxGqtw-kVE0vWtA74ewJkxkirogYA@mail.gmail.com>
-	<2b5e7838-5c5f-b993-1a9c-38208c2b4d24@arm.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH v3 2/3] ASoC: enable interrupt after dma
+ buffer initialization
+Date: Thu, 13 Sep 2018 12:31:26 +0100
+Message-ID: <20180913113126.GB8411@sirena.org.uk>
+References: <20180912194343.200443-1-yuzhao@google.com>
+ <20180912194441.200564-1-yuzhao@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <2b5e7838-5c5f-b993-1a9c-38208c2b4d24-5wv7dgnIgG8@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Robin Murphy <robin.murphy-5wv7dgnIgG8@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux IOMMU <iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>, Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Vinod <vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: multipart/mixed; boundary="===============8618730674659626534=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 50E7C267782
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:31:31 +0200 (CEST)
+In-Reply-To: <20180912194441.200564-1-yuzhao@google.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Yu Zhao <yuzhao@google.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Vinod Koul <vkoul@kernel.org>, Rakesh Ughreja <rakesh.a.ughreja@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Robin,
 
-On Thu, Sep 13, 2018 at 12:12 PM Robin Murphy <robin.murphy-5wv7dgnIgG8@public.gmane.org> wrote:
-> On 13/09/18 10:00, Geert Uytterhoeven wrote:
-> [...]
-> > The main issue is that if of_dma_find_controller() fails, a DMA slave driver
-> > cannot distinguish between dmac not yet probed successfully, and dmac
-> > driver not present.
->
-> ...which is in fact the exact same problem that the IOMMU code has -
-> might it make sense to give of_dma_request_slave_channel() similar
-> (optional?) driver_deferred_probe_check_state() logic, i.e. "if my DMAC
-> driver's not shown up by this point, assume it's not built-in and go on
-> without it". Of course it is somewhat easier for IOMMU drivers as
-> there's zero chance of those popping up as modules later on.
+--===============8618730674659626534==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="+pHx0qQiF2pBVqBT"
+Content-Disposition: inline
 
-It may solve the issue in some cases.  But only if the dmac is reprobed
-before the DMA slave driver, which is not guaranteed.
 
-BTW, it seems e.g. i2c and serial suffer from the same problem, and fall
-back to PIO. However, these drivers try to obtain the DMA channel when
-used, not during probe, so they start using DMA after the dmac has been
-probed successfully.
+--+pHx0qQiF2pBVqBT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Gr{oetje,eeting}s,
+On Wed, Sep 12, 2018 at 01:44:41PM -0600, Yu Zhao wrote:
+> In snd_hdac_bus_init_chip(), we enable interrupt before
+> snd_hdac_bus_init_cmd_io() initializing dma buffers. If irq has
+> been acquired and irq handler uses the dma buffer, kernel may crash
+> when interrupt comes in.
 
-                        Geert
+> ---
+>  sound/hda/hdac_controller.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+This is an ALSA commit, not an ASoC one.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+--+pHx0qQiF2pBVqBT
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluaSo0ACgkQJNaLcl1U
+h9DiHAf/TwY1CWZUMP1guYdB+OBLHuODaXob0bzkSWIjav3iHqj4lIkMkZvp46Wd
+pTmjdhVOTrhlgFIy1u4tslv6tAwZsc1G0zviFhmT4mNF4J43rb9a6fWnI4lofqrp
+fIL/eT5W1F7CBxVAQF9OQTbfutFLC7sQRhqmsKbVVRkmccrZdM91S94AtdKScMTp
+4dVXuuLRqasOsRwrX6Io4zRAGeklul3itl4bOYMz3NtJ20eHvwIW35tFElHxaDI2
+XgqO875C34FkRx2+fco1vteJzhnwiWaWLH4yOD93focPaXiL9GSZqoGpexq0QRop
+2Q8TW8yyYXno+my+k9K2HaMXJg467Q==
+=+Pxa
+-----END PGP SIGNATURE-----
+
+--+pHx0qQiF2pBVqBT--
+
+--===============8618730674659626534==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8618730674659626534==--
