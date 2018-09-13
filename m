@@ -1,17 +1,20 @@
-From: Bruno =?UTF-8?B?UHLDqW1vbnQ=?= <bonbons@sysophe.eu>
-Subject: Re: i915, HDMI/DP audio with multiple monitors
-Date: Thu, 13 Sep 2018 09:25:37 +0200
-Message-ID: <20180913092537.4c7b8042@pluto.restena.lu>
-References: <20180911153320.6a4e3789@pluto.restena.lu>
- <20180912174658.GF5565@intel.com> <s5h5zza6158.wl-tiwai@suse.de>
+From: Jian-Hong Pan <jian-hong@endlessm.com>
+Subject: Re: [PATCH v2] ALSA: hda - Enable runtime PM only for
+	discrete GPU
+Date: Thu, 13 Sep 2018 21:27:16 +0800
+Message-ID: <CAPpJ_edx4susnrpC3dLLqhXfX5Ddr4gtGfmdhB-yzxuUcLCV4g@mail.gmail.com>
+References: <20180913065659.30526-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from hygieia.sysophe.eu (hygieia.sysophe.eu [138.201.91.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 289082673F4
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 09:25:39 +0200 (CEST)
-In-Reply-To: <s5h5zza6158.wl-tiwai@suse.de>
+Received: from mail-it0-f66.google.com (mail-it0-f66.google.com
+ [209.85.214.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54E67267782
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 15:27:58 +0200 (CEST)
+Received: by mail-it0-f66.google.com with SMTP id p129-v6so7700014ite.3
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 06:27:58 -0700 (PDT)
+In-Reply-To: <20180913065659.30526-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,88 +25,268 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: Libin Yang <libin.yang@intel.com>, intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Lukas Wunner <lukas@wunner.de>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAxMiBTZXAgMjAxOCAyMDowNjo0MyArMDIwMCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4g
-T24gV2VkLCAxMiBTZXAgMjAxOCAxOTo0Njo1OCArMDIwMCwKPiBWaWxsZSBTeXJqw6Rsw6Qgd3Jv
-dGU6Cj4gPiAKPiA+IE9uIFR1ZSwgU2VwIDExLCAyMDE4IGF0IDAzOjUwOjEzUE0gKzAyMDAsIEJy
-dW5vIFByw6ltb250IHdyb3RlOiAgCj4gPiA+IEhpLAo+ID4gPiAKPiA+ID4gSSBoYXZlIGEgc3lz
-dGVtIHdpdGggbXVsdGlwbGUgbW9uaXRvcnMgYW5kIHdvdWxkIGxpa2UgdG8gc2VuZAo+ID4gPiBu
-b3RpZmljYXRpb24gc291bmRzIHRvIHRoZSBtb25pdG9yIG9uIHdoaWNoIGNvcnJlc3BvbmRpbmcK
-PiA+ID4gd2luZG93IGlzIHZpc2libGUuCj4gPiA+IAo+ID4gPiBGb3IgYSB3b3Jrc3RhdGlvbiBh
-bmQgYSB0aW55IGNvbXB1dGVyIHRoaW5ncyBsb29rIGRpZmZlcmVudDoKPiA+ID4gLSB3b3Jrc3Rh
-dGlvbiAoSW50ZWwoUikgQ29yZShUTSkgaTctNDc3MCBDUFUgQCAzLjQwR0h6KToKPiA+ID4gIDAw
-OjAyLjAgVkdBIGNvbXBhdGlibGUgY29udHJvbGxlciBbMDMwMF06IEludGVsIENvcnBvcmF0aW9u
-IFhlb24gRTMtMTIwMCB2My80dGggR2VuIENvcmUgUHJvY2Vzc29yIEludGVncmF0ZWQgR3JhcGhp
-Y3MgQ29udHJvbGxlciBbODA4NjowNDEyXSAocmV2IDA2KQo+ID4gPiAgMDA6MDMuMCBBdWRpbyBk
-ZXZpY2UgWzA0MDNdOiBJbnRlbCBDb3Jwb3JhdGlvbiBYZW9uIEUzLTEyMDAgdjMvNHRoIEdlbiBD
-b3JlIFByb2Nlc3NvciBIRCBBdWRpbyBDb250cm9sbGVyIFs4MDg2OjBjMGNdIChyZXYgMDYpCj4g
-PiA+ICAwMDoxYi4wIEF1ZGlvIGRldmljZSBbMDQwM106IEludGVsIENvcnBvcmF0aW9uIDggU2Vy
-aWVzL0MyMjAgU2VyaWVzIENoaXBzZXQgSGlnaCBEZWZpbml0aW9uIEF1ZGlvIENvbnRyb2xsZXIg
-WzgwODY6OGMyMF0gKHJldiAwNCkKPiA+ID4gCj4gPiA+ICBIZXJlIGFsc2Egc2hvdyBtZSB0d28g
-Y2FyZHM6Cj4gPiA+ICAtIEhEQSBJbnRlbCBQQ0ggKFJlYWx0ZWsgQUxDNjcxKQo+ID4gPiAgLSBI
-REEgSW50ZWwgSERNSSAoSW50ZWwgR2VuZXJpYykKPiA+ID4gCj4gPiA+ICAqKioqIExpc3Qgb2Yg
-UExBWUJBQ0sgSGFyZHdhcmUgRGV2aWNlcyAqKioqCj4gPiA+ICBjYXJkIDA6IEhETUkgW0hEQSBJ
-bnRlbCBIRE1JXSwgZGV2aWNlIDM6IEdlbmVyaWMgRGlnaXRhbCBbR2VuZXJpYyBEaWdpdGFsXQo+
-ID4gPiAgICBTdWJkZXZpY2VzOiAxLzEKPiA+ID4gICAgU3ViZGV2aWNlICMwOiBzdWJkZXZpY2Ug
-IzAgIAo+IAo+IElzIGEgcHJvcGVyIGtlcm5lbCBjb25maWcgKENPTkZJR19TTkRfSERBX0NPREVD
-X0hETUkpIGVuYWJsZWQ/CgpJdCB3YXMgbWlzc2luZyBhbmQgYWRkaW5nIGl0IGhlbHBzIGEgbG90
-LgpXb3VsZCB0aGVyZSBiZSBhIHdheSB0byBhdXRvLXNlbGVjdCBpdCB3aGVuIGNvcnJlc3BvbmRp
-bmcgRFJNIGRyaXZlciBpcwpzZWxlY3RlZD8KCktpbmQgb2YKICBzZWxlY3QgU05EX0hEQV9DT0RF
-Q19IRE1JIGlmIFNORF9IREEKb3IgYXQgbGVhc3QgbWVudGlvbiBpdCBpbiBkZXNjcmlwdGlvbiwg
-bWF5YmUgYXMgY29uZGl0aW9uYWwgY29tbWVudCBpcwpkb25lIGZvciBIREEgY29kZWNzLgoKPiBU
-aGUgZGV2aWNlIG5hbWUgbG9va3Mgc3RyYW5nZSBhcyBpZiBpdCdzIG5vdCBwcm9wZXJseSBib3Vu
-ZCB3aXRoIHRoZQo+IEhETUkgY29kZWMgZHJpdmVyLgoKV2l0aCBTTkRfSERBX0NPREVDX0hETUkg
-ZW5hYmxlZCBJIGdldCBiZXR0ZXIgcmVzdWx0cyBvbiB0aGUgdGlueQpjb21wdXRlciAobm90IGNo
-ZWNrZWQgb24gd29ya3N0YXRpb24geWV0KToKCioqKiogTGlzdCBvZiBQTEFZQkFDSyBIYXJkd2Fy
-ZSBEZXZpY2VzICoqKioKY2FyZCAwOiBQQ0ggW0hEQSBJbnRlbCBQQ0hdLCBkZXZpY2UgMDogQUxD
-NjcxIEFuYWxvZyBbQUxDNjcxIEFuYWxvZ10KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2Ug
-IzA6IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSAzOiBI
-RE1JIDAgW0hETUkgMF0KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmlj
-ZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSA3OiBIRE1JIDEgW0hETUkg
-MV0KICBTdWJkZXZpY2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6
-IFBDSCBbSERBIEludGVsIFBDSF0sIGRldmljZSA4OiBIRE1JIDIgW0hETUkgMl0KICBTdWJkZXZp
-Y2VzOiAxLzEKICBTdWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIElu
-dGVsIFBDSF0sIGRldmljZSA5OiBIRE1JIDMgW0hETUkgM10KICBTdWJkZXZpY2VzOiAxLzEKICBT
-dWJkZXZpY2UgIzA6IHN1YmRldmljZSAjMApjYXJkIDA6IFBDSCBbSERBIEludGVsIFBDSF0sIGRl
-dmljZSAxMDogSERNSSA0IFtIRE1JIDRdCiAgU3ViZGV2aWNlczogMS8xCiAgU3ViZGV2aWNlICMw
-OiBzdWJkZXZpY2UgIzAKCgpTaG93biBieSBhcGxheSAtTCBhczoKLi4uCmhkbWk6Q0FSRD1QQ0gs
-REVWPTAKICAgIEhEQSBJbnRlbCBQQ0gsIEhETUkgMAogICAgSERNSSBBdWRpbyBPdXRwdXQKaGRt
-aTpDQVJEPVBDSCxERVY9MQogICAgSERBIEludGVsIFBDSCwgSERNSSAxCiAgICBIRE1JIEF1ZGlv
-IE91dHB1dApoZG1pOkNBUkQ9UENILERFVj0yCiAgICBIREEgSW50ZWwgUENILCBIRE1JIDIKICAg
-IEhETUkgQXVkaW8gT3V0cHV0CmhkbWk6Q0FSRD1QQ0gsREVWPTMKICAgIEhEQSBJbnRlbCBQQ0gs
-IEhETUkgMwogICAgSERNSSBBdWRpbyBPdXRwdXQKaGRtaTpDQVJEPVBDSCxERVY9NAogICAgSERB
-IEludGVsIFBDSCwgSERNSSA0CiAgICBIRE1JIEF1ZGlvIE91dHB1dAoKQWxzYW1peGVyIHNob3dz
-IG1lIDUgUy9QRElGcyAoUy9QRElGLCBTL1BESUYgMSwgLi4uLCBTL1BESUYgNCkgd2hpY2ggaXMK
-bm90IHRoYXQgaGVscGZ1bC4gV2h5IGRvbid0IGFsc2FtaXhlciBhbmQgYXBsYXkgLUwgYXQgbGVh
-c3QgdXNlIHRoZSBzYW1lCm5hbWluZyBzY2hlbWU/IElmIHRoZSBuYW1pbmcgdGhlcmUgd291bGQg
-bWF0Y2ggb3V0cHV0IG5hbWluZyBhcyBzaG93IGJ5CnhyYW5kciAob3IgL3N5cy9jbGFzcy9kcm0v
-Li4uIGl0IHdvdWxkIGJlIGV2ZW4gYmV0dGVyIQoKeHJhbmRyOgpIRE1JLTEgZGlzY29ubmVjdGVk
-IChub3JtYWwgbGVmdCBpbnZlcnRlZCByaWdodCB4IGF4aXMgeSBheGlzKQpEUC0xIGNvbm5lY3Rl
-ZCBwcmltYXJ5IDM4NDB4MjE2MCswKzAgKG5vcm1hbCBsZWZ0IGludmVydGVkIHJpZ2h0IHggYXhp
-cyB5IGF4aXMpIDE0MzltbSB4IDgwOW1tCkhETUktMiBkaXNjb25uZWN0ZWQgKG5vcm1hbCBsZWZ0
-IGludmVydGVkIHJpZ2h0IHggYXhpcyB5IGF4aXMpCkRQLTIgZGlzY29ubmVjdGVkIChub3JtYWwg
-bGVmdCBpbnZlcnRlZCByaWdodCB4IGF4aXMgeSBheGlzKQpIRE1JLTMgY29ubmVjdGVkIDM4NDB4
-MjE2MCszODQwKzAgKG5vcm1hbCBsZWZ0IGludmVydGVkIHJpZ2h0IHggYXhpcyB5IGF4aXMpIDE4
-NzJtbSB4IDEwNTNtbQpEUC0zIGRpc2Nvbm5lY3RlZCAobm9ybWFsIGxlZnQgaW52ZXJ0ZWQgcmln
-aHQgeCBheGlzIHkgYXhpcykKCi9zeXMvY2xhc3MvZHJtLzoKIGNhcmQwLURQLTEgLT4gLi4vLi4v
-ZGV2aWNlcy9wY2kwMDAwOjAwLzAwMDA6MDA6MDIuMC9kcm0vY2FyZDAvY2FyZDAtRFAtMQogY2Fy
-ZDAtRFAtMiAtPiAuLi8uLi9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowMi4wL2RybS9jYXJk
-MC9jYXJkMC1EUC0yCiBjYXJkMC1EUC0zIC0+IC4uLy4uL2RldmljZXMvcGNpMDAwMDowMC8wMDAw
-OjAwOjAyLjAvZHJtL2NhcmQwL2NhcmQwLURQLTMKIGNhcmQwLUhETUktQS0xIC0+IC4uLy4uL2Rl
-dmljZXMvcGNpMDAwMDowMC8wMDAwOjAwOjAyLjAvZHJtL2NhcmQwL2NhcmQwLUhETUktQS0xCiBj
-YXJkMC1IRE1JLUEtMiAtPiAuLi8uLi9kZXZpY2VzL3BjaTAwMDA6MDAvMDAwMDowMDowMi4wL2Ry
-bS9jYXJkMC9jYXJkMC1IRE1JLUEtMgogY2FyZDAtSERNSS1BLTMgLT4gLi4vLi4vZGV2aWNlcy9w
-Y2kwMDAwOjAwLzAwMDA6MDA6MDIuMC9kcm0vY2FyZDAvY2FyZDAtSERNSS1BLTMKCgpUZXN0aW5n
-IGVhY2ggb3V0cHV0IHdpdGggYXBsYXkgSSBjb3VsZCBkZXRlcm1pbmUgdGhhdCBodzowLDcgKGN1
-cnJlbnRseSkgbWF0Y2hlcwpEUC0xIChhcyByZXBvcnRlZCBieSB4cmFuZHIpIGFuZCBodzowLDgg
-bWF0Y2hlcyBIRE1JLTMgKGFzIHJlcG9ydGVkIGJ5CnhyYW5kcikuCgpUaG91Z2ggd2hpbGUgdGVz
-dGluZyBvZnRlbiB0aGUgZmlyc3Qgc291bmQgcGxheWVkIG5ldmVyIHJlYWNoZXMgdGhlCm1vbml0
-b3IncyBzcGVha2Vycywgb25seSBhIHNlY29uZCBydW4gc2hvcnRseSBhZnRlciB0aGUgZmlyc3Qg
-cmVhY2hlcwpzcGVha2Vycy4KKHBsYXllZCBzb3VuZCBpcyByYXRoZXIgc2hvcnQ6CiAgIGFwbGF5
-IC1EIGh3OjAsNyAvdXNyL3NoYXJlL3NvdW5kcy9wdXJwbGUvcmVjZWl2ZS53YXYKIHNhbWUgd2l0
-aCBzbGlnaHRseSBsb25nZXIgbG9naW4ud2F2KQoKQ2hlZXJzLApCcnVubwpfX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlz
-dApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0
-Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+2018-09-13 14:56 GMT+08:00 Takashi Iwai <tiwai@suse.de>:
+> The recent change of vga_switcheroo allowed the runtime PM for
+> HD-audio on AMD GPUs, but this also resulted in a regression.  When
+> the HD-audio controller driver gets runtime-suspended, HD-audio link
+> is turned off, and the hotplug notification is ignored.  This leads to
+> the inconsistent audio state (the connection isn't notified and ELD is
+> ignored).
+>
+> The best fix would be to implement the proper ELD notification via the
+> audio component, but it's still not ready.  As a quick workaround,
+> this patch adds the check of runtime_idle and allows the runtime
+> suspend only when the vga_switcheroo is bound with discrete GPU.
+> That is, a system with a single GPU and APU would be again without
+> runtime PM to keep the HD-audio link for the hotplug notification and
+> ELD read out.
+>
+> Also, the codec->auto_runtime_pm flag is set only for the discrete GPU
+> at the time GPU gets bound via vga_switcheroo (i.e. only dGPU is
+> forcibly runtime-PM enabled), so that APU can still get the ELD
+> notification.
+>
+> For identifying which GPU is bound, a new vga_switcheroo client
+> callback, gpu_bound, is implemented.  The vga_switcheroo simply calls
+> this when GPU is bound, and tells whether it's dGPU or APU.
+
+Tested-by: Jian-Hong Pan <jian-hong@endlessm.com>
+
+> Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=200945
+> Fixes: 07f4f97d7b4b ("vga_switcheroo: Use device link for HDA controller")
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>  drivers/gpu/vga/vga_switcheroo.c |  2 +
+>  include/linux/vga_switcheroo.h   |  3 ++
+>  sound/pci/hda/hda_intel.c        | 86 +++++++++++++++++++++++---------
+>  sound/pci/hda/hda_intel.h        |  1 +
+>  4 files changed, 69 insertions(+), 23 deletions(-)
+>
+> diff --git a/drivers/gpu/vga/vga_switcheroo.c b/drivers/gpu/vga/vga_switcheroo.c
+> index a96bf46bc483..cf2a18571d48 100644
+> --- a/drivers/gpu/vga/vga_switcheroo.c
+> +++ b/drivers/gpu/vga/vga_switcheroo.c
+> @@ -215,6 +215,8 @@ static void vga_switcheroo_enable(void)
+>                         return;
+>
+>                 client->id = ret | ID_BIT_AUDIO;
+> +               if (client->ops->gpu_bound)
+> +                       client->ops->gpu_bound(client->pdev, ret);
+>         }
+>
+>         vga_switcheroo_debugfs_init(&vgasr_priv);
+> diff --git a/include/linux/vga_switcheroo.h b/include/linux/vga_switcheroo.h
+> index a34539b7f750..7e6ac0114d55 100644
+> --- a/include/linux/vga_switcheroo.h
+> +++ b/include/linux/vga_switcheroo.h
+> @@ -133,15 +133,18 @@ struct vga_switcheroo_handler {
+>   * @can_switch: check if the device is in a position to switch now.
+>   *     Mandatory. The client should return false if a user space process
+>   *     has one of its device files open
+> + * @gpu_bound: notify the client id to audio client when the GPU is bound.
+>   *
+>   * Client callbacks. A client can be either a GPU or an audio device on a GPU.
+>   * The @set_gpu_state and @can_switch methods are mandatory, @reprobe may be
+>   * set to NULL. For audio clients, the @reprobe member is bogus.
+> + * OTOH, @gpu_bound is only for audio clients, and not used for GPU clients.
+>   */
+>  struct vga_switcheroo_client_ops {
+>         void (*set_gpu_state)(struct pci_dev *dev, enum vga_switcheroo_state);
+>         void (*reprobe)(struct pci_dev *dev);
+>         bool (*can_switch)(struct pci_dev *dev);
+> +       void (*gpu_bound)(struct pci_dev *dev, enum vga_switcheroo_client_id);
+>  };
+>
+>  #if defined(CONFIG_VGA_SWITCHEROO)
+> diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+> index 1b2ce304152a..aa4c672dbaf7 100644
+> --- a/sound/pci/hda/hda_intel.c
+> +++ b/sound/pci/hda/hda_intel.c
+> @@ -365,8 +365,10 @@ enum {
+>   */
+>  #ifdef SUPPORT_VGA_SWITCHEROO
+>  #define use_vga_switcheroo(chip)       ((chip)->use_vga_switcheroo)
+> +#define needs_eld_notify_link(chip)    ((chip)->need_eld_notify_link)
+>  #else
+>  #define use_vga_switcheroo(chip)       0
+> +#define needs_eld_notify_link(chip)    false
+>  #endif
+>
+>  #define CONTROLLER_IN_GPU(pci) (((pci)->device == 0x0a0c) || \
+> @@ -453,6 +455,7 @@ static inline void mark_runtime_wc(struct azx *chip, struct azx_dev *azx_dev,
+>  #endif
+>
+>  static int azx_acquire_irq(struct azx *chip, int do_disconnect);
+> +static void set_default_power_save(struct azx *chip);
+>
+>  /*
+>   * initialize the PCI registers
+> @@ -1201,6 +1204,10 @@ static int azx_runtime_idle(struct device *dev)
+>             azx_bus(chip)->codec_powered || !chip->running)
+>                 return -EBUSY;
+>
+> +       /* ELD notification gets broken when HD-audio bus is off */
+> +       if (needs_eld_notify_link(hda))
+> +               return -EBUSY;
+> +
+>         return 0;
+>  }
+>
+> @@ -1298,6 +1305,36 @@ static bool azx_vs_can_switch(struct pci_dev *pci)
+>         return true;
+>  }
+>
+> +/*
+> + * The discrete GPU cannot power down unless the HDA controller runtime
+> + * suspends, so activate runtime PM on codecs even if power_save == 0.
+> + */
+> +static void setup_vga_switcheroo_runtime_pm(struct azx *chip)
+> +{
+> +       struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+> +       struct hda_codec *codec;
+> +
+> +       if (hda->use_vga_switcheroo && !hda->need_eld_notify_link) {
+> +               list_for_each_codec(codec, &chip->bus)
+> +                       codec->auto_runtime_pm = 1;
+> +               /* reset the power save setup */
+> +               if (chip->running)
+> +                       set_default_power_save(chip);
+> +       }
+> +}
+> +
+> +static void azx_vs_gpu_bound(struct pci_dev *pci,
+> +                            enum vga_switcheroo_client_id client_id)
+> +{
+> +       struct snd_card *card = pci_get_drvdata(pci);
+> +       struct azx *chip = card->private_data;
+> +       struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+> +
+> +       if (client_id == VGA_SWITCHEROO_DIS)
+> +               hda->need_eld_notify_link = 0;
+> +       setup_vga_switcheroo_runtime_pm(chip);
+> +}
+> +
+>  static void init_vga_switcheroo(struct azx *chip)
+>  {
+>         struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+> @@ -1306,6 +1343,7 @@ static void init_vga_switcheroo(struct azx *chip)
+>                 dev_info(chip->card->dev,
+>                          "Handle vga_switcheroo audio client\n");
+>                 hda->use_vga_switcheroo = 1;
+> +               hda->need_eld_notify_link = 1; /* cleared in gpu_bound op */
+>                 chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
+>                 pci_dev_put(p);
+>         }
+> @@ -1314,6 +1352,7 @@ static void init_vga_switcheroo(struct azx *chip)
+>  static const struct vga_switcheroo_client_ops azx_vs_ops = {
+>         .set_gpu_state = azx_vs_set_state,
+>         .can_switch = azx_vs_can_switch,
+> +       .gpu_bound = azx_vs_gpu_bound,
+>  };
+>
+>  static int register_vga_switcheroo(struct azx *chip)
+> @@ -1339,6 +1378,7 @@ static int register_vga_switcheroo(struct azx *chip)
+>  #define init_vga_switcheroo(chip)              /* NOP */
+>  #define register_vga_switcheroo(chip)          0
+>  #define check_hdmi_disabled(pci)       false
+> +#define setup_vga_switcheroo_runtime_pm(chip)  /* NOP */
+>  #endif /* SUPPORT_VGA_SWITCHER */
+>
+>  /*
+> @@ -1352,6 +1392,7 @@ static int azx_free(struct azx *chip)
+>
+>         if (azx_has_pm_runtime(chip) && chip->running)
+>                 pm_runtime_get_noresume(&pci->dev);
+> +       chip->running = 0;
+>
+>         azx_del_card_list(chip);
+>
+> @@ -2230,6 +2271,25 @@ static struct snd_pci_quirk power_save_blacklist[] = {
+>  };
+>  #endif /* CONFIG_PM */
+>
+> +static void set_default_power_save(struct azx *chip)
+> +{
+> +       int val = power_save;
+> +
+> +#ifdef CONFIG_PM
+> +       if (pm_blacklist) {
+> +               const struct snd_pci_quirk *q;
+> +
+> +               q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
+> +               if (q && val) {
+> +                       dev_info(chip->card->dev, "device %04x:%04x is on the power_save blacklist, forcing power_save to 0\n",
+> +                                q->subvendor, q->subdevice);
+> +                       val = 0;
+> +               }
+> +       }
+> +#endif /* CONFIG_PM */
+> +       snd_hda_set_power_save(&chip->bus, val * 1000);
+> +}
+> +
+>  /* number of codec slots for each chipset: 0 = default slots (i.e. 4) */
+>  static unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
+>         [AZX_DRIVER_NVIDIA] = 8,
+> @@ -2241,9 +2301,7 @@ static int azx_probe_continue(struct azx *chip)
+>         struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+>         struct hdac_bus *bus = azx_bus(chip);
+>         struct pci_dev *pci = chip->pci;
+> -       struct hda_codec *codec;
+>         int dev = chip->dev_index;
+> -       int val;
+>         int err;
+>
+>         hda->probe_continued = 1;
+> @@ -2322,31 +2380,13 @@ static int azx_probe_continue(struct azx *chip)
+>         if (err < 0)
+>                 goto out_free;
+>
+> +       setup_vga_switcheroo_runtime_pm(chip);
+> +
+>         chip->running = 1;
+>         azx_add_card_list(chip);
+>
+> -       val = power_save;
+> -#ifdef CONFIG_PM
+> -       if (pm_blacklist) {
+> -               const struct snd_pci_quirk *q;
+> -
+> -               q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
+> -               if (q && val) {
+> -                       dev_info(chip->card->dev, "device %04x:%04x is on the power_save blacklist, forcing power_save to 0\n",
+> -                                q->subvendor, q->subdevice);
+> -                       val = 0;
+> -               }
+> -       }
+> -#endif /* CONFIG_PM */
+> -       /*
+> -        * The discrete GPU cannot power down unless the HDA controller runtime
+> -        * suspends, so activate runtime PM on codecs even if power_save == 0.
+> -        */
+> -       if (use_vga_switcheroo(hda))
+> -               list_for_each_codec(codec, &chip->bus)
+> -                       codec->auto_runtime_pm = 1;
+> +       set_default_power_save(chip);
+>
+> -       snd_hda_set_power_save(&chip->bus, val * 1000);
+>         if (azx_has_pm_runtime(chip))
+>                 pm_runtime_put_autosuspend(&pci->dev);
+>
+> diff --git a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h
+> index e3a3d318d2e5..f59719e06b91 100644
+> --- a/sound/pci/hda/hda_intel.h
+> +++ b/sound/pci/hda/hda_intel.h
+> @@ -37,6 +37,7 @@ struct hda_intel {
+>
+>         /* vga_switcheroo setup */
+>         unsigned int use_vga_switcheroo:1;
+> +       unsigned int need_eld_notify_link:1;
+>         unsigned int vga_switcheroo_registered:1;
+>         unsigned int init_failed:1; /* delayed init failed */
+>
+> --
+> 2.18.0
+>
