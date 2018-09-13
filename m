@@ -1,109 +1,170 @@
-From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
-Subject: Re: of_dma_request_slave_channel() failed ?
-Date: Thu, 13 Sep 2018 11:00:31 +0200
-Message-ID: <CAMuHMdVnoLTYEvtJ3AY0hFxGqtw-kVE0vWtA74ewJkxkirogYA@mail.gmail.com>
-References: <87efe9ls4n.wl-kuninori.morimoto.gx@renesas.com>
-	<CAMuHMdVkQ8vio3O7VWyoWnVrY8Y8_YRWxQeXDwJ48iTxzujWdA@mail.gmail.com>
-	<20180912155057.GJ6062@sirena.org.uk>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 0/2][RFC] ALSA: firewire-lib: change packet
+ processing timing in process context
+Date: Thu, 13 Sep 2018 18:31:34 +0900
+Message-ID: <8409a8cb-29a8-d390-3206-ef77f76d527d@sakamocchi.jp>
+References: <20180912150450.16334-1-o-takashi@sakamocchi.jp>
+ <s5hk1nq4dkp.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <20180912155057.GJ6062-GFdadSzt00ze9xe1eoZjHA@public.gmane.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
-List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
-	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
-Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>, Vinod <vkoul-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux IOMMU <iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com
+ [209.85.214.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1C8692676EB
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 11:31:38 +0200 (CEST)
+Received: by mail-pl1-f194.google.com with SMTP id g2-v6so2353937plo.2
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 02:31:38 -0700 (PDT)
+In-Reply-To: <s5hk1nq4dkp.wl-tiwai@suse.de>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: ffado-devel@lists.sourceforge.net, alsa-devel@alsa-project.org, clemens@ladisch.de
 List-Id: alsa-devel@alsa-project.org
 
-Hi Mark,
+Hi,
 
-On Wed, Sep 12, 2018 at 5:51 PM Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org> wrote:
-> On Tue, Sep 11, 2018 at 11:43:47AM +0200, Geert Uytterhoeven wrote:
-> > So it seems the audio DMAC is deferred a second time, before the iommu driver
-> > probed.
->
-> Shouldn't there be at least one more round of deferred probe triggers
-> after the IOMMU probes?
+On Sep 13 2018 06:21, Takashi Iwai wrote:
+> On Wed, 12 Sep 2018 17:04:48 +0200,
+> Takashi Sakamoto wrote:
+>>
+>> In IEC 61883-1/6 engine in ALSA firewire stack, a work to process packet
+>> is done in three places:
+>> 1. bottom-half of handler for interrupts scheduled on 1394OHCI controller
+>> 2. a callback of struct 'snd_pcm_ops.pointer()'
+>> 3. a callback of struct 'snd_pcm_ops.ack()'
+>>
+>> This patchset adds optimization for 3., and remove 2. for efficiency.
+>>
+>>
+>> In Linux kernel v2.6.39, 1. and 2. was committed in initial implementation
+>> of this engine at a commit 31ef9134eb52('ALSA: add LaCie FireWire
+>> Speakers/Griffin FireWave Surround driver'). This engine schedules hardware
+>> interrupts 16 packets (=INTERRUPT_INTERVAL) thus 1. appears in software IRQ
+>> context every 2 msec (= 16packets * 1sec / 8,000cycle).
+>>
+>> In Linux kernel v3.5, an idea of 2. was introduced at a commit
+>> e9148dddc3c7('ALSA: firewire-lib: flush completed packets when reading
+>> PCM position') to reduce timing gap between queueing/dequeueing PCM
+>> frames and scheduling packet transmission. Additionally, it has an
+>> effect to reduce load of the software IRQ context. It's done in a call
+>> of ioctl(2) with SNDRV_PCM_IOCTL_HWSYNC. As a result, in mmap programming
+>> scenario, a call of snd_pcm_hwsync() can process packets for recent
+>> isochronous cycle.
+>>
+>> while (1):
+>>    snd_pcm_hwsync()
+>>      ->ioctl(HWSYNC)
+>>        ->struct snd_pcm_ops.pointer()
+>>        = amdtp_stream_pcm_pointer()
+>>          ->fw_iso_context_flush_completions()
+>>    snd_pcm_mmap_begin()
+>>    (queue/dequeue PCM frames here.)
+>>    snd_pcm_mmap_commit()
+>>
+>> In Linux kernel v4.13, ALSA PCM core was improved in an aspect of
+>> updating appl_ptr at a commit 9027c4639ef1('ALSA: pcm: Call ack()
+>> whenever appl_ptr is updated'). This commit ensures callback of
+>> 'struct snd_pcm_ops.ack()' when updating appl_ptr. This callback
+>> can be done in below ioctl(2) requests:
+>>   - SNDRV_PCM_IOCTL_REWIND
+>>   - SNDRV_PCM_IOCTL_FORWARD
+>>   - SNDRV_PCM_IOCTL_SYNC_PTR
+>>   - SNDRV_PCM_IOCTL_READ[I|N]_FRAMES
+>>   - SNDRV_PCM_IOCTL_WRITE[I|N]_FRAMES
+>>
+>> As I notes in a commit 875becf8412c('ALSA: firewire: process packets
+>> in 'struct snd_pcm_ops.ack' callback'), 3. works less efficiently because
+>> in usual PCM operation the above ioctl(2) requests are not used in event
+>> loop.
+>>
+>> At the same time of the appl_ptr improvement, a new flag of PCM
+>> hardware definition was added at a commit 42f945970af9('ALSA: pcm: Add
+>> the explicit appl_ptr sync support'), and relevant changes were added
+>> to ALSA PCM core and alsa-lib v1.1.5. This flag expects userspace to
+>> call ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR request per iteration of PCM
+>> frame queueing/dequeueing in mmap programming scenario below:
+>>
+>> while (1):
+>>    snd_pcm_hwsync()
+>>      ->ioctl(HWSYNC)
+>>        ->struct snd_pcm_ops.pointer()
+>>        = amdtp_stream_pcm_pointer()
+>>          ->fw_iso_context_flush_completions()
+>>    snd_pcm_mmap_begin()
+>>    (queue/dequeue PCM frames here.)
+>>    snd_pcm_mmap_commit()
+>>      ->ioctl(SYNC_PTR)
+>>
+>> This patchset aims to support the new flag, SNDRV_PCM_INFO_SYNC_APPLPTR,
+>> to tell userspace to call ioctl(2) with SNDRV_PCM_IOCTL_SYNC_PTR after
+>> queueing/dequeueing PCM frames in each iteration of event dispatcher. As
+>> a result:
+>>
+>> while (1):
+>>    snd_pcm_hwsync()
+>>      ->ioctl(HWSYNC)
+>>        ->struct snd_pcm_ops.pointer()
+>>        = amdtp_stream_pcm_pointer()
+>>          ->fw_iso_context_flush_completions()
+>>    snd_pcm_mmap_begin()
+>>    (queue/dequeue PCM frames here.)
+>>    snd_pcm_mmap_commit()
+>>      ->ioctl(SYNC_PTR)
+>>        ->struct snd_pcm_ops.ack()
+>>        = amdtp_stream_pcm_ack()
+>>          ->fw_iso_context_flush_completions()
+>>
+>> This patchset also adds optimization for timing to process packets in
+>> process context. As the above call graph shows, support of the flag brings
+>> closest two calls to process packet against intervals of isochronous cycle
+>> and it is not enough efficient. This patchset also cancel packet processing
+>> in .pointer() callback. As a result:
+>>
+>> while (1):
+>>    snd_pcm_hwsync()
+>>    snd_pcm_mmap_begin()
+>>    (queue/dequeue PCM frames here.)
+>>    snd_pcm_mmap_commit()
+>>      ->ioctl(SYNC_PTR)
+>>        ->struct snd_pcm_ops.ack()
+>>        = amdtp_stream_pcm_ack()
+>>          ->fw_iso_context_flush_completions()
+>>
+>> Takashi Sakamoto (2):
+>>    ALSA: firewire-lib: adopt SYNC_APPLPTR flag to flush packets after
+>>      queueing/dequeueing PCM frames
+>>    ALSA: firewire-lib: cancel processing packets in struct
+>>      snd_pcm_ops.pointer() call
+> 
+> Both look like a good improvement.  Looking forward to seeing the
+> official patches once after tests by others pass.
 
-My statement above was incorrect. Adding more debug info allowed to gain
-more insight:
+Thanks for your positive feedback.
 
-A. If CONFIG_IPMMU_VMSA=y, everything is fine:
+To ease the others to test this patchset, I prepare for a remote branch
+in github.com.
+https://github.com/takaswie/snd-firewire-improve/tree/topic/applptr
 
-  1. ipmmu probes,
-  2. audio-dmac probes,
-  3. audio probes, using DMA
+ From the branch, whole codes relevant to ALSA firewire stack can be
+backported to Linux kernel v4.17 or later.
 
-B. If CONFIG_IPMMU_VMSA=n, the sound driver falls back to PIO, which
-   Morimoto-san worked around by commit 6c92d5a2744e2761 ("ASoC: rsnd:
-   don't fallback to PIO mode when -EPROBE_DEFER")[1]
+This patchset allows userspace applications to queue isochronous packet
+with PCM frames without waiting for software IRQ of 1394 OHCI
+controller. In this development cycle I have a plan to allow
+applications to have a smaller PCM intermediate buffer than current one
+(=period-time greater than 5msec). Users look it as 'improvement in a
+point of latency', if things go well.
 
-  1. ipmmu is not probed: driver not enabled => OK
-  2. audio-dmac is not probed: iommu not found
-  3. audio fails to probe (3 times, hence just ignoring the first one is
-     not sufficient):
-        "of_dma_find_controller: can't find DMA controller
-         /soc/dma-controller@ec700000"
-        => fell back to PIO before [1]
-        => -EPROBE_DEFER since [1]
-  4. audio-dmac probes
-      of_iommu_xlate() calls driver_deferred_probe_check_state(), leading
-      to ("ignoring dependency for device, assuming no driver")
 
-  If step 3 returned -EPROBE_DEFER, there's one additional step:
-  5. audio reprobes successfully, using DMA.
+Thanks
 
-While step 2 (DMA-capable device not probed because iommu not found)
-is correct for devices with a builtin dmac, it causes issues with external
-dmacs, as the dmac probe may be postponed after the DMA slave driver
-probe.
-
-C. Before commit ac6bbf0cdf4206c5 ("iommu: Remove IOMMU_OF_DECLARE"),
-with CONFIG_IPMMU_VMSA=n:
-
-  1. ipmmu is not probed: driver not enabled => OK
-  2. audio-dmac probes => OK
-      Missing IOMMU ignored, as per
-          !ops && !of_iommu_driver_present(iommu_spec->np)
-      in of_iommu_xlate(), which is really
-          !ops && !of_match_node(&__iommu_of_table, np))
-  3. audio probes, using DMA
-      Note: if of_dma_find_controller() would have failed (e.g. missing
-      dmac driver), the audio driver fell back to PIO here.
-
-As per Morimoto-san's recent reply, audio really needs DMA, so the current
-behavior of B.5. is OK. However, this may not be true for other devices
-(e.g. SPI, i2c, serial, ...), where the dmac is optional.
-
-The main issue is that if of_dma_find_controller() fails, a DMA slave driver
-cannot distinguish between dmac not yet probed successfully, and dmac
-driver not present.
-
-However, as we rely more and more on probe deferral, this will cause more
-issues in the future.
-
-I guess the proper solution is to take into account dependencies described
-in DT before probing devices, i.e. devices with phandles should always be
-probed after the targets of these phandles?
-Complication:
-  - Circular dependencies,
-  - Optional phandle targets (dmacs, oops).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Takashi Sakamoto
