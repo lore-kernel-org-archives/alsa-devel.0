@@ -1,18 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH] ALSA: rawmidi: A lightweight function to
-	discard pending bytes
-Date: Thu, 13 Sep 2018 08:25:37 +0200
-Message-ID: <20180913062537.27361-1-tiwai@suse.de>
+Subject: [PATCH v2] ALSA: hda - Enable runtime PM only for
+	discrete GPU
+Date: Thu, 13 Sep 2018 08:56:59 +0200
+Message-ID: <20180913065659.30526-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id C30A62676EB
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 08:25:39 +0200 (CEST)
-Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id E6CBFAC8A
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 06:25:38 +0000 (UTC)
+ by alsa0.perex.cz (Postfix) with ESMTP id DF4CA2676EB
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 08:57:06 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,95 +20,264 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
+Cc: jian-hong@endlessm.com, Lukas Wunner <lukas@wunner.de>
 List-Id: alsa-devel@alsa-project.org
 
-For discarding the pending bytes on rawmidi, we process with a loop of
-snd_rawmidi_transmit() which is just a waste of CPU power.
-Implement a lightweight API function to discard the pending bytes and
-the proceed the ring buffer instantly, and use it instead of open
-codes.
+The recent change of vga_switcheroo allowed the runtime PM for
+HD-audio on AMD GPUs, but this also resulted in a regression.  When
+the HD-audio controller driver gets runtime-suspended, HD-audio link
+is turned off, and the hotplug notification is ignored.  This leads to
+the inconsistent audio state (the connection isn't notified and ELD is
+ignored).
 
+The best fix would be to implement the proper ELD notification via the
+audio component, but it's still not ready.  As a quick workaround,
+this patch adds the check of runtime_idle and allows the runtime
+suspend only when the vga_switcheroo is bound with discrete GPU.
+That is, a system with a single GPU and APU would be again without
+runtime PM to keep the HD-audio link for the hotplug notification and
+ELD read out.
+
+Also, the codec->auto_runtime_pm flag is set only for the discrete GPU
+at the time GPU gets bound via vga_switcheroo (i.e. only dGPU is
+forcibly runtime-PM enabled), so that APU can still get the ELD
+notification.
+
+For identifying which GPU is bound, a new vga_switcheroo client
+callback, gpu_bound, is implemented.  The vga_switcheroo simply calls
+this when GPU is bound, and tells whether it's dGPU or APU.
+
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=200945
+Fixes: 07f4f97d7b4b ("vga_switcheroo: Use device link for HDA controller")
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/rawmidi.h      |  1 +
- sound/core/rawmidi.c         | 22 ++++++++++++++++++++++
- sound/core/seq/seq_virmidi.c |  4 +---
- sound/usb/midi.c             |  3 +--
- 4 files changed, 25 insertions(+), 5 deletions(-)
+ drivers/gpu/vga/vga_switcheroo.c |  2 +
+ include/linux/vga_switcheroo.h   |  3 ++
+ sound/pci/hda/hda_intel.c        | 86 +++++++++++++++++++++++---------
+ sound/pci/hda/hda_intel.h        |  1 +
+ 4 files changed, 69 insertions(+), 23 deletions(-)
 
-diff --git a/include/sound/rawmidi.h b/include/sound/rawmidi.h
-index 6665cb29e1a2..3b5a061132b6 100644
---- a/include/sound/rawmidi.h
-+++ b/include/sound/rawmidi.h
-@@ -171,6 +171,7 @@ int __snd_rawmidi_transmit_peek(struct snd_rawmidi_substream *substream,
- 			      unsigned char *buffer, int count);
- int __snd_rawmidi_transmit_ack(struct snd_rawmidi_substream *substream,
- 			       int count);
-+int snd_rawmidi_proceed(struct snd_rawmidi_substream *substream);
+diff --git a/drivers/gpu/vga/vga_switcheroo.c b/drivers/gpu/vga/vga_switcheroo.c
+index a96bf46bc483..cf2a18571d48 100644
+--- a/drivers/gpu/vga/vga_switcheroo.c
++++ b/drivers/gpu/vga/vga_switcheroo.c
+@@ -215,6 +215,8 @@ static void vga_switcheroo_enable(void)
+ 			return;
  
- /* main midi functions */
- 
-diff --git a/sound/core/rawmidi.c b/sound/core/rawmidi.c
-index 08d5662039e3..ee601d7f0926 100644
---- a/sound/core/rawmidi.c
-+++ b/sound/core/rawmidi.c
-@@ -1236,6 +1236,28 @@ int snd_rawmidi_transmit(struct snd_rawmidi_substream *substream,
- }
- EXPORT_SYMBOL(snd_rawmidi_transmit);
- 
-+/**
-+ * snd_rawmidi_proceed - Discard the all pending bytes and proceed
-+ * @substream: rawmidi substream
-+ *
-+ * Return: the number of discarded bytes
-+ */
-+int snd_rawmidi_proceed(struct snd_rawmidi_substream *substream)
-+{
-+	struct snd_rawmidi_runtime *runtime = substream->runtime;
-+	unsigned long flags;
-+	int count = 0;
-+
-+	spin_lock_irqsave(&runtime->lock, flags);
-+	if (runtime->avail < runtime->buffer_size) {
-+		count = runtime->buffer_size - runtime->avail;
-+		__snd_rawmidi_transmit_ack(substream, count);
-+	}
-+	spin_unlock_irqrestore(&runtime->lock, flags);
-+	return count;
-+}
-+EXPORT_SYMBOL(snd_rawmidi_proceed);
-+
- static long snd_rawmidi_kernel_write1(struct snd_rawmidi_substream *substream,
- 				      const unsigned char __user *userbuf,
- 				      const unsigned char *kernelbuf,
-diff --git a/sound/core/seq/seq_virmidi.c b/sound/core/seq/seq_virmidi.c
-index cb988efd1ed0..e5a40795914a 100644
---- a/sound/core/seq/seq_virmidi.c
-+++ b/sound/core/seq/seq_virmidi.c
-@@ -149,9 +149,7 @@ static void snd_vmidi_output_work(struct work_struct *work)
- 	/* discard the outputs in dispatch mode unless subscribed */
- 	if (vmidi->seq_mode == SNDRV_VIRMIDI_SEQ_DISPATCH &&
- 	    !(vmidi->rdev->flags & SNDRV_VIRMIDI_SUBSCRIBE)) {
--		char buf[32];
--		while (snd_rawmidi_transmit(substream, buf, sizeof(buf)) > 0)
--			; /* ignored */
-+		snd_rawmidi_proceed(substream);
- 		return;
+ 		client->id = ret | ID_BIT_AUDIO;
++		if (client->ops->gpu_bound)
++			client->ops->gpu_bound(client->pdev, ret);
  	}
  
-diff --git a/sound/usb/midi.c b/sound/usb/midi.c
-index dcfc546d81b9..b737f0ec77d0 100644
---- a/sound/usb/midi.c
-+++ b/sound/usb/midi.c
-@@ -1175,8 +1175,7 @@ static void snd_usbmidi_output_trigger(struct snd_rawmidi_substream *substream,
- 		if (port->ep->umidi->disconnected) {
- 			/* gobble up remaining bytes to prevent wait in
- 			 * snd_rawmidi_drain_output */
--			while (!snd_rawmidi_transmit_empty(substream))
--				snd_rawmidi_transmit_ack(substream, 1);
-+			snd_rawmidi_proceed(substream);
- 			return;
- 		}
- 		tasklet_schedule(&port->ep->tasklet);
+ 	vga_switcheroo_debugfs_init(&vgasr_priv);
+diff --git a/include/linux/vga_switcheroo.h b/include/linux/vga_switcheroo.h
+index a34539b7f750..7e6ac0114d55 100644
+--- a/include/linux/vga_switcheroo.h
++++ b/include/linux/vga_switcheroo.h
+@@ -133,15 +133,18 @@ struct vga_switcheroo_handler {
+  * @can_switch: check if the device is in a position to switch now.
+  * 	Mandatory. The client should return false if a user space process
+  * 	has one of its device files open
++ * @gpu_bound: notify the client id to audio client when the GPU is bound.
+  *
+  * Client callbacks. A client can be either a GPU or an audio device on a GPU.
+  * The @set_gpu_state and @can_switch methods are mandatory, @reprobe may be
+  * set to NULL. For audio clients, the @reprobe member is bogus.
++ * OTOH, @gpu_bound is only for audio clients, and not used for GPU clients.
+  */
+ struct vga_switcheroo_client_ops {
+ 	void (*set_gpu_state)(struct pci_dev *dev, enum vga_switcheroo_state);
+ 	void (*reprobe)(struct pci_dev *dev);
+ 	bool (*can_switch)(struct pci_dev *dev);
++	void (*gpu_bound)(struct pci_dev *dev, enum vga_switcheroo_client_id);
+ };
+ 
+ #if defined(CONFIG_VGA_SWITCHEROO)
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 1b2ce304152a..aa4c672dbaf7 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -365,8 +365,10 @@ enum {
+  */
+ #ifdef SUPPORT_VGA_SWITCHEROO
+ #define use_vga_switcheroo(chip)	((chip)->use_vga_switcheroo)
++#define needs_eld_notify_link(chip)	((chip)->need_eld_notify_link)
+ #else
+ #define use_vga_switcheroo(chip)	0
++#define needs_eld_notify_link(chip)	false
+ #endif
+ 
+ #define CONTROLLER_IN_GPU(pci) (((pci)->device == 0x0a0c) || \
+@@ -453,6 +455,7 @@ static inline void mark_runtime_wc(struct azx *chip, struct azx_dev *azx_dev,
+ #endif
+ 
+ static int azx_acquire_irq(struct azx *chip, int do_disconnect);
++static void set_default_power_save(struct azx *chip);
+ 
+ /*
+  * initialize the PCI registers
+@@ -1201,6 +1204,10 @@ static int azx_runtime_idle(struct device *dev)
+ 	    azx_bus(chip)->codec_powered || !chip->running)
+ 		return -EBUSY;
+ 
++	/* ELD notification gets broken when HD-audio bus is off */
++	if (needs_eld_notify_link(hda))
++		return -EBUSY;
++
+ 	return 0;
+ }
+ 
+@@ -1298,6 +1305,36 @@ static bool azx_vs_can_switch(struct pci_dev *pci)
+ 	return true;
+ }
+ 
++/*
++ * The discrete GPU cannot power down unless the HDA controller runtime
++ * suspends, so activate runtime PM on codecs even if power_save == 0.
++ */
++static void setup_vga_switcheroo_runtime_pm(struct azx *chip)
++{
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++	struct hda_codec *codec;
++
++	if (hda->use_vga_switcheroo && !hda->need_eld_notify_link) {
++		list_for_each_codec(codec, &chip->bus)
++			codec->auto_runtime_pm = 1;
++		/* reset the power save setup */
++		if (chip->running)
++			set_default_power_save(chip);
++	}
++}
++
++static void azx_vs_gpu_bound(struct pci_dev *pci,
++			     enum vga_switcheroo_client_id client_id)
++{
++	struct snd_card *card = pci_get_drvdata(pci);
++	struct azx *chip = card->private_data;
++	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
++
++	if (client_id == VGA_SWITCHEROO_DIS)
++		hda->need_eld_notify_link = 0;
++	setup_vga_switcheroo_runtime_pm(chip);
++}
++
+ static void init_vga_switcheroo(struct azx *chip)
+ {
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+@@ -1306,6 +1343,7 @@ static void init_vga_switcheroo(struct azx *chip)
+ 		dev_info(chip->card->dev,
+ 			 "Handle vga_switcheroo audio client\n");
+ 		hda->use_vga_switcheroo = 1;
++		hda->need_eld_notify_link = 1; /* cleared in gpu_bound op */
+ 		chip->driver_caps |= AZX_DCAPS_PM_RUNTIME;
+ 		pci_dev_put(p);
+ 	}
+@@ -1314,6 +1352,7 @@ static void init_vga_switcheroo(struct azx *chip)
+ static const struct vga_switcheroo_client_ops azx_vs_ops = {
+ 	.set_gpu_state = azx_vs_set_state,
+ 	.can_switch = azx_vs_can_switch,
++	.gpu_bound = azx_vs_gpu_bound,
+ };
+ 
+ static int register_vga_switcheroo(struct azx *chip)
+@@ -1339,6 +1378,7 @@ static int register_vga_switcheroo(struct azx *chip)
+ #define init_vga_switcheroo(chip)		/* NOP */
+ #define register_vga_switcheroo(chip)		0
+ #define check_hdmi_disabled(pci)	false
++#define setup_vga_switcheroo_runtime_pm(chip)	/* NOP */
+ #endif /* SUPPORT_VGA_SWITCHER */
+ 
+ /*
+@@ -1352,6 +1392,7 @@ static int azx_free(struct azx *chip)
+ 
+ 	if (azx_has_pm_runtime(chip) && chip->running)
+ 		pm_runtime_get_noresume(&pci->dev);
++	chip->running = 0;
+ 
+ 	azx_del_card_list(chip);
+ 
+@@ -2230,6 +2271,25 @@ static struct snd_pci_quirk power_save_blacklist[] = {
+ };
+ #endif /* CONFIG_PM */
+ 
++static void set_default_power_save(struct azx *chip)
++{
++	int val = power_save;
++
++#ifdef CONFIG_PM
++	if (pm_blacklist) {
++		const struct snd_pci_quirk *q;
++
++		q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
++		if (q && val) {
++			dev_info(chip->card->dev, "device %04x:%04x is on the power_save blacklist, forcing power_save to 0\n",
++				 q->subvendor, q->subdevice);
++			val = 0;
++		}
++	}
++#endif /* CONFIG_PM */
++	snd_hda_set_power_save(&chip->bus, val * 1000);
++}
++
+ /* number of codec slots for each chipset: 0 = default slots (i.e. 4) */
+ static unsigned int azx_max_codecs[AZX_NUM_DRIVERS] = {
+ 	[AZX_DRIVER_NVIDIA] = 8,
+@@ -2241,9 +2301,7 @@ static int azx_probe_continue(struct azx *chip)
+ 	struct hda_intel *hda = container_of(chip, struct hda_intel, chip);
+ 	struct hdac_bus *bus = azx_bus(chip);
+ 	struct pci_dev *pci = chip->pci;
+-	struct hda_codec *codec;
+ 	int dev = chip->dev_index;
+-	int val;
+ 	int err;
+ 
+ 	hda->probe_continued = 1;
+@@ -2322,31 +2380,13 @@ static int azx_probe_continue(struct azx *chip)
+ 	if (err < 0)
+ 		goto out_free;
+ 
++	setup_vga_switcheroo_runtime_pm(chip);
++
+ 	chip->running = 1;
+ 	azx_add_card_list(chip);
+ 
+-	val = power_save;
+-#ifdef CONFIG_PM
+-	if (pm_blacklist) {
+-		const struct snd_pci_quirk *q;
+-
+-		q = snd_pci_quirk_lookup(chip->pci, power_save_blacklist);
+-		if (q && val) {
+-			dev_info(chip->card->dev, "device %04x:%04x is on the power_save blacklist, forcing power_save to 0\n",
+-				 q->subvendor, q->subdevice);
+-			val = 0;
+-		}
+-	}
+-#endif /* CONFIG_PM */
+-	/*
+-	 * The discrete GPU cannot power down unless the HDA controller runtime
+-	 * suspends, so activate runtime PM on codecs even if power_save == 0.
+-	 */
+-	if (use_vga_switcheroo(hda))
+-		list_for_each_codec(codec, &chip->bus)
+-			codec->auto_runtime_pm = 1;
++	set_default_power_save(chip);
+ 
+-	snd_hda_set_power_save(&chip->bus, val * 1000);
+ 	if (azx_has_pm_runtime(chip))
+ 		pm_runtime_put_autosuspend(&pci->dev);
+ 
+diff --git a/sound/pci/hda/hda_intel.h b/sound/pci/hda/hda_intel.h
+index e3a3d318d2e5..f59719e06b91 100644
+--- a/sound/pci/hda/hda_intel.h
++++ b/sound/pci/hda/hda_intel.h
+@@ -37,6 +37,7 @@ struct hda_intel {
+ 
+ 	/* vga_switcheroo setup */
+ 	unsigned int use_vga_switcheroo:1;
++	unsigned int need_eld_notify_link:1;
+ 	unsigned int vga_switcheroo_registered:1;
+ 	unsigned int init_failed:1; /* delayed init failed */
+ 
 -- 
 2.18.0
