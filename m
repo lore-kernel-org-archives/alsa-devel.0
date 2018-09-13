@@ -1,42 +1,104 @@
-From: Clemens Ladisch <clemens@ladisch.de>
-Subject: Re: What causes a STOP in the trigger?
-Date: Thu, 13 Sep 2018 09:29:51 +0200
-Message-ID: <03d6f461-2354-7a2a-8d70-340321213c97@ladisch.de>
-References: <CALAeOVNOMzpvRtRoCrJP7fz3CKJppybFzkLMM=N4fQo4wYTgQw@mail.gmail.com>
+From: Geert Uytterhoeven <geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org>
+Subject: Re: of_dma_request_slave_channel() failed ?
+Date: Thu, 13 Sep 2018 10:38:03 +0200
+Message-ID: <CAMuHMdWQ4=A6jptiGT4jsyR1H0+Z4sPBdJwOAwGc7GVPw4xAAQ@mail.gmail.com>
+References: <87efe9ls4n.wl-kuninori.morimoto.gx@renesas.com>
+	<CAMuHMdVkQ8vio3O7VWyoWnVrY8Y8_YRWxQeXDwJ48iTxzujWdA@mail.gmail.com>
+	<87in3at0mv.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from webclient5.webclient5.de (webclient5.webclient5.de
- [136.243.32.184])
- by alsa0.perex.cz (Postfix) with ESMTP id C74572676EB
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 09:29:53 +0200 (CEST)
-Received: from [10.1.2.4] (unknown [94.101.37.79])
- by webclient5.webclient5.de (Postfix) with ESMTPSA id A01D355836C0
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 09:29:52 +0200 (CEST)
-In-Reply-To: <CALAeOVNOMzpvRtRoCrJP7fz3CKJppybFzkLMM=N4fQo4wYTgQw@mail.gmail.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Return-path: <iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <87in3at0mv.wl-kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/iommu/>
+List-Post: <mailto:iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/iommu>,
+	<mailto:iommu-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: iommu-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: Kuninori Morimoto <kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org>
+Cc: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, ALSA Development Mailing List <alsa-devel-K7yf7f+aM1XWsZ/bQMPhNw@public.gmane.org>, Vinod Koul <vinod.koul-ral2JQCrhuEAvxtiuMwx3w@public.gmane.org>, Magnus Damm <magnus.damm-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Liam Girdwood <lgirdwood-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, Linux-Renesas <linux-renesas-soc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Linux IOMMU <iommu-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>, Mark Brown <broonie-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>, dmaengine-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-Id: alsa-devel@alsa-project.org
 
-Rob wrote:
-> I'm seeing a weird issue where ALSA doesn't ever hit the pointer function,
-> and we go straight from START to STOP. Debugging the DMA, we get IRQs, I
-> call the period_elapsed.
+Hi Morimoto-san,
 
-The pointer is called from that.
+On Thu, Sep 13, 2018 at 7:48 AM Kuninori Morimoto
+<kuninori.morimoto.gx-zM6kxYcvzFBBDgjK7y7TUQ@public.gmane.org> wrote:
+> > > -----------------------------------------------------
+> > > commit ac6bbf0cdf4206c517ac9789814c23e372ebce4d
+> > > Author: Rob Herring <robh-DgEjT+Ai2ygdnm+yROfE0A@public.gmane.org>
+> > > Date:   Mon Jul 9 09:41:52 2018 -0600
+> > >
+> > >     iommu: Remove IOMMU_OF_DECLARE
+> > >
+> > >     Now that we use the driver core to stop deferred probe for missing
+> > >     drivers, IOMMU_OF_DECLARE can be removed.
+> > >
+> > >     This is slightly less optimal than having a list of built-in drivers in
+> > >     that we'll now defer probe twice before giving up. This shouldn't have a
+> > >     significant impact on boot times as past discussions about deferred
+> > >     probe have given no evidence of deferred probe having a substantial
+> > >     impact.
+> > >         ...
+> > > -----------------------------------------------------
+> (snip)
+> > I assume you wrote commit 6c92d5a2744e2761 ("ASoC: rsnd: don't fallback
+> > to PIO mode when -EPROBE_DEFER") to work around this?
+>
+> Yes, it is work around for it.
+>
+> > While this got rid of the error messages, and postpones sound initialization
+> > until the audio DMAC is available, it does mean that the driver will _never_
+> > fall back to PIO.
+> >
+> > I.e. if CONFIG_RCAR_DMAC=n, audio will fail to probe instead of falling
+> > back to PIO.
+>
+> If I focus only for sound here, the purpose of PIO mode is
+> checking basic HW connection, clock settings, etc.
+> Without DMAC support, it can't use many sound features.
+> And PIO mode is supporting "SSI" only.
+>
+> If DT has SRC/CTU/DVC settings for sound,
+> it needs DMA support anyway.
+>
+> &rcar_sound {
+>         ...
+>         ports {
+>                 rsnd_port0: port@0 {
+>                         rsnd_endpoint0: endpoint {
+>                                 ...
+> =>                              playback = <&ssi0 &src0 &dvc0>;
+>                         };
+>                 };
+>         };
+> };
+>
+> Before 6c92d5a2744e2761 patch, driver will forcibly ignore
+> non-SSI modules, and try to use PIO mode.
+> I'm not sure it is "kindly support" or "overkill support".
+>
+> After this patch, it needs DMA, otherwise, probe will be failed.
+> DT shouldn't have non-SSI modules if you want to use PIO mode.
+>
+>         + /* use PIO mode */
+>         - playback = <&ssi0 &src0 &dvc0>;
+>         + playback = <&ssi0>;
+>
 
-Sounds like a bug somewhere.
+OK, so falling back to PIO was really a "best effort" fallback, and the user
+should really enable DMA?
 
+Gr{oetje,eeting}s,
 
-Regards,
-Clemens
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert-Td1EMuHUCqxL1ZNQvxDV9g@public.gmane.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
