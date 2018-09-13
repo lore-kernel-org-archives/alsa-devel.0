@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC 2/5] ALSA: core: Add managed card creation
-Date: Thu, 13 Sep 2018 08:05:24 +0200
-Message-ID: <20180913060527.24694-3-tiwai@suse.de>
+Subject: [PATCH RFC 4/5] ALSA: atiixp: Allocate resources with
+	device-managed APIs
+Date: Thu, 13 Sep 2018 08:05:26 +0200
+Message-ID: <20180913060527.24694-5-tiwai@suse.de>
 References: <20180913060527.24694-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 0190A2677BB
+ by alsa0.perex.cz (Postfix) with ESMTP id 02F14267815
  for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 08:05:31 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 255E9AFF1
+ by mx1.suse.de (Postfix) with ESMTP id 432AEB004
  for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 06:05:31 +0000 (UTC)
 In-Reply-To: <20180913060527.24694-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,229 +27,366 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Per popular demands, this patch adds a new ALSA core API function,
-snd_devm_card_new(), to create a snd_card object in a managed way via
-devres.  When a card object is created by this new function, it's
-released automatically at the device release.  It includes also the
-call of snd_card_free().
+Like the previous patch, this patch converts the resource allocations
+with device-managed API calls, so that we can reduce resource-free
+calls.
 
-However, the story isn't that simple.  A caveat is that We have to
-call snd_card_new(), more specifically, the disconnection part, at
-very first of the whole resource release procedure.  This assures that
-the exposed devices are deleted and sync with the all accessing
-processes getting closed.
+The atiixp drivers are simpler than intel8x0, and even the irq can be
+allocated with devres.
 
-For achieving it, snd_card_register() adds a new devres action to
-trigger snd_card_free() automatically when the given card object is a
-"managed" one.  Since usually snd_card_register() is the last step of
-the initialization, this should work in most cases.
-
-With all these tricks, some drivers can get rid of the whole the
-driver remove callback.
-
-About a bit of implementation details: the patch adds two new flags to
-snd_card object, managed and releasing.  The former indicates that the
-object was created via snd_devm_card_new(), and the latter is used for
-avoiding the double-free of snd_card_free() calls.  Both flags are
-fairly internal and likely uninteresting to normal users.
+The end result is a good amount of code reduction.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h |  5 +++
- sound/core/init.c    | 95 ++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 96 insertions(+), 4 deletions(-)
+ sound/pci/atiixp.c       | 104 +++++++++++----------------------------
+ sound/pci/atiixp_modem.c | 104 +++++++++++----------------------------
+ 2 files changed, 60 insertions(+), 148 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 36a5934cf4b1..6ff75f92ec7d 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -133,6 +133,8 @@ struct snd_card {
- 	struct device card_dev;		/* cardX object for sysfs */
- 	const struct attribute_group *dev_groups[4]; /* assigned sysfs attr */
- 	bool registered;		/* card_dev is registered? */
-+	bool managed;			/* managed via devres */
-+	bool releasing;			/* during card free process */
- 	wait_queue_head_t remove_sleep;
+diff --git a/sound/pci/atiixp.c b/sound/pci/atiixp.c
+index a1e4944dcfe8..3764f14d1bec 100644
+--- a/sound/pci/atiixp.c
++++ b/sound/pci/atiixp.c
+@@ -1557,84 +1557,44 @@ static void snd_atiixp_proc_init(struct atiixp *chip)
+  * destructor
+  */
  
- #ifdef CONFIG_PM
-@@ -239,6 +241,9 @@ extern int (*snd_mixer_oss_notify_callback)(struct snd_card *card, int cmd);
- int snd_card_new(struct device *parent, int idx, const char *xid,
- 		 struct module *module, int extra_size,
- 		 struct snd_card **card_ret);
-+int snd_devm_card_new(struct device *parent, int idx, const char *xid,
-+		      struct module *module, int extra_size,
-+		      struct snd_card **card_ret);
- 
- int snd_card_disconnect(struct snd_card *card);
- void snd_card_disconnect_sync(struct snd_card *card);
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 4849c611c0fe..2eade57db4b4 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -173,6 +173,9 @@ void snd_device_initialize(struct device *dev, struct snd_card *card)
- }
- EXPORT_SYMBOL_GPL(snd_device_initialize);
- 
-+static int snd_card_init(struct snd_card *card, struct device *parent,
-+			 int idx, const char *xid, struct module *module,
-+			 int extra_size);
- static int snd_card_do_free(struct snd_card *card);
- static const struct attribute_group card_dev_attr_group;
- 
-@@ -214,6 +217,73 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	card = kzalloc(sizeof(*card) + extra_size, GFP_KERNEL);
- 	if (!card)
- 		return -ENOMEM;
-+
-+	err = snd_card_init(card, parent, idx, xid, module, extra_size);
-+	if (err < 0) {
-+		kfree(card);
-+		return err;
-+	}
-+
-+	*card_ret = card;
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_card_new);
-+
-+static void __snd_card_release(struct device *dev, void *data)
-+{
-+	snd_card_free(data);
-+}
-+
-+/**
-+ * snd_devm_card_new - managed snd_card object creation
-+ * @parent: the parent device object
-+ * @idx: card index (address) [0 ... (SNDRV_CARDS-1)]
-+ * @xid: card identification (ASCII string)
-+ * @module: top level module for locking
-+ * @extra_size: allocate this extra size after the main soundcard structure
-+ * @card_ret: the pointer to store the created card instance
-+ *
-+ * This function works like snd_card_new() but manages the allocated resource
-+ * via devres, i.e. you don't need to free explicitly.
-+ *
-+ * When a snd_card object is created with this function and registered via
-+ * snd_card_register(), the very first devres action to call snd_card_free()
-+ * is added automatically.  In that way, the resource disconnection is assured
-+ * at first, then released in the expected order.
-+ */
-+int snd_devm_card_new(struct device *parent, int idx, const char *xid,
-+		      struct module *module, int extra_size,
-+		      struct snd_card **card_ret)
-+{
-+	struct snd_card *card;
-+	int err;
-+
-+	*card_ret = NULL;
-+	if (extra_size < 0)
-+		extra_size = 0;
-+	card = devres_alloc(__snd_card_release, sizeof(*card) + extra_size,
-+			    GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+	card->managed = true;
-+	err = snd_card_init(card, parent, idx, xid, module, extra_size);
-+	if (err < 0) {
-+		devres_free(card);
-+		return err;
-+	}
-+
-+	devres_add(parent, card);
-+	*card_ret = card;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_devm_card_new);
-+
-+static int snd_card_init(struct snd_card *card, struct device *parent,
-+			 int idx, const char *xid, struct module *module,
-+			 int extra_size)
-+{
-+	int err;
-+
- 	if (extra_size > 0)
- 		card->private_data = (char *)card + sizeof(struct snd_card);
- 	if (xid)
-@@ -235,7 +305,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 		mutex_unlock(&snd_card_mutex);
- 		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
- 			 idx, snd_ecards_limit - 1, err);
--		kfree(card);
- 		return err;
- 	}
- 	set_bit(idx, snd_cards_lock);		/* lock it */
-@@ -282,7 +351,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 		dev_err(parent, "unable to create card info\n");
- 		goto __error_ctl;
- 	}
--	*card_ret = card;
-+
- 	return 0;
- 
-       __error_ctl:
-@@ -291,7 +360,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	put_device(&card->card_dev);
-   	return err;
- }
--EXPORT_SYMBOL(snd_card_new);
- 
- /* return non-zero if a card is already locked */
- int snd_card_locked(int card)
-@@ -484,6 +552,7 @@ EXPORT_SYMBOL_GPL(snd_card_disconnect_sync);
- 
- static int snd_card_do_free(struct snd_card *card)
+-static int snd_atiixp_free(struct atiixp *chip)
++static void snd_atiixp_free(struct snd_card *card)
  {
-+	card->releasing = true;
- #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
- 	if (snd_mixer_oss_notify_callback)
- 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
-@@ -498,7 +567,8 @@ static int snd_card_do_free(struct snd_card *card)
+-	if (chip->irq < 0)
+-		goto __hw_end;
+-	snd_atiixp_chip_stop(chip);
+-
+-      __hw_end:
+-	if (chip->irq >= 0)
+-		free_irq(chip->irq, chip);
+-	iounmap(chip->remap_addr);
+-	pci_release_regions(chip->pci);
+-	pci_disable_device(chip->pci);
+-	kfree(chip);
+-	return 0;
+-}
+-
+-static int snd_atiixp_dev_free(struct snd_device *device)
+-{
+-	struct atiixp *chip = device->device_data;
+-	return snd_atiixp_free(chip);
++	snd_atiixp_chip_stop(card->private_data);
+ }
+ 
+ /*
+  * constructor for chip instance
+  */
+-static int snd_atiixp_create(struct snd_card *card,
+-			     struct pci_dev *pci,
+-			     struct atiixp **r_chip)
++static int snd_atiixp_init(struct snd_card *card, struct pci_dev *pci)
+ {
+-	static struct snd_device_ops ops = {
+-		.dev_free =	snd_atiixp_dev_free,
+-	};
+-	struct atiixp *chip;
++	struct atiixp *chip = card->private_data;
+ 	int err;
+ 
+-	if ((err = pci_enable_device(pci)) < 0)
++	err = pcim_enable_device(pci);
++	if (err < 0)
+ 		return err;
+ 
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (chip == NULL) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
+-	}
+-
+ 	spin_lock_init(&chip->reg_lock);
+ 	mutex_init(&chip->open_mutex);
+ 	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+-	if ((err = pci_request_regions(pci, "ATI IXP AC97")) < 0) {
+-		pci_disable_device(pci);
+-		kfree(chip);
++	err = pcim_iomap_regions(pci, 1 << 0, "ATI IXP AC97");
++	if (err < 0)
+ 		return err;
+-	}
+ 	chip->addr = pci_resource_start(pci, 0);
+-	chip->remap_addr = pci_ioremap_bar(pci, 0);
+-	if (chip->remap_addr == NULL) {
+-		dev_err(card->dev, "AC'97 space ioremap problem\n");
+-		snd_atiixp_free(chip);
+-		return -EIO;
+-	}
++	chip->remap_addr = pcim_iomap_table(pci)[0];
+ 
+-	if (request_irq(pci->irq, snd_atiixp_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, chip)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_atiixp_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		snd_atiixp_free(chip);
+ 		return -EBUSY;
  	}
- 	if (card->release_completion)
- 		complete(card->release_completion);
--	kfree(card);
-+	if (!card->managed)
-+		kfree(card);
+ 	chip->irq = pci->irq;
++	card->private_free = snd_atiixp_free;
+ 	pci_set_master(pci);
+ 	synchronize_irq(chip->irq);
+ 
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+-		snd_atiixp_free(chip);
+-		return err;
+-	}
+-
+-	*r_chip = chip;
  	return 0;
  }
  
-@@ -539,6 +609,9 @@ int snd_card_free(struct snd_card *card)
- 	struct completion released;
- 	int ret;
+@@ -1646,26 +1606,31 @@ static int snd_atiixp_probe(struct pci_dev *pci,
+ 	struct atiixp *chip;
+ 	int err;
  
-+	if (card->releasing)
-+		return 0;
-+
- 	init_completion(&released);
- 	card->release_completion = &released;
- 	ret = snd_card_free_when_closed(card);
-@@ -748,6 +821,11 @@ int snd_card_add_dev_attr(struct snd_card *card,
+-	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
++	err = snd_devm_card_new(&pci->dev, index, id, THIS_MODULE,
++				sizeof(*chip), &card);
+ 	if (err < 0)
+ 		return err;
++	chip = card->private_data;
+ 
+ 	strcpy(card->driver, spdif_aclink ? "ATIIXP" : "ATIIXP-SPDMA");
+ 	strcpy(card->shortname, "ATI IXP");
+-	if ((err = snd_atiixp_create(card, pci, &chip)) < 0)
+-		goto __error;
+-	card->private_data = chip;
++	err = snd_atiixp_init(card, pci);
++	if (err < 0)
++		return err;
+ 
+-	if ((err = snd_atiixp_aclink_reset(chip)) < 0)
+-		goto __error;
++	err = snd_atiixp_aclink_reset(chip);
++	if (err < 0)
++		return err;
+ 
+ 	chip->spdif_over_aclink = spdif_aclink;
+ 
+-	if ((err = snd_atiixp_mixer_new(chip, ac97_clock, ac97_quirk)) < 0)
+-		goto __error;
++	err = snd_atiixp_mixer_new(chip, ac97_clock, ac97_quirk);
++	if (err < 0)
++		return err;
+ 
+-	if ((err = snd_atiixp_pcm_new(chip)) < 0)
+-		goto __error;
++	err = snd_atiixp_pcm_new(chip);
++	if (err < 0)
++		return err;
+ 	
+ 	snd_atiixp_proc_init(chip);
+ 
+@@ -1677,27 +1642,18 @@ static int snd_atiixp_probe(struct pci_dev *pci,
+ 		 chip->ac97[0] ? snd_ac97_get_short_name(chip->ac97[0]) : "?",
+ 		 chip->addr, chip->irq);
+ 
+-	if ((err = snd_card_register(card)) < 0)
+-		goto __error;
++	err = snd_card_register(card);
++	if (err < 0)
++		return err;
+ 
+ 	pci_set_drvdata(pci, card);
+ 	return 0;
+-
+- __error:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static void snd_atiixp_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
  }
- EXPORT_SYMBOL_GPL(snd_card_add_dev_attr);
  
-+static void trigger_card_free(void *data)
-+{
-+	snd_card_free(data);
-+}
-+
- /**
-  *  snd_card_register - register the soundcard
-  *  @card: soundcard structure
-@@ -771,6 +849,15 @@ int snd_card_register(struct snd_card *card)
- 		if (err < 0)
- 			return err;
- 		card->registered = true;
-+	} else {
-+		if (card->managed)
-+			devm_remove_action(card->dev, trigger_card_free, card);
-+	}
-+
-+	if (card->managed) {
-+		err = devm_add_action(card->dev, trigger_card_free, card);
-+		if (err < 0)
-+			return err;
+ static struct pci_driver atiixp_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_atiixp_ids,
+ 	.probe = snd_atiixp_probe,
+-	.remove = snd_atiixp_remove,
+ 	.driver = {
+ 		.pm = SND_ATIIXP_PM_OPS,
+ 	},
+diff --git a/sound/pci/atiixp_modem.c b/sound/pci/atiixp_modem.c
+index dc1de860cedf..207f2be1d73e 100644
+--- a/sound/pci/atiixp_modem.c
++++ b/sound/pci/atiixp_modem.c
+@@ -1183,84 +1183,44 @@ static void snd_atiixp_proc_init(struct atiixp_modem *chip)
+  * destructor
+  */
+ 
+-static int snd_atiixp_free(struct atiixp_modem *chip)
++static void snd_atiixp_free(struct snd_card *card)
+ {
+-	if (chip->irq < 0)
+-		goto __hw_end;
+-	snd_atiixp_chip_stop(chip);
+-
+-      __hw_end:
+-	if (chip->irq >= 0)
+-		free_irq(chip->irq, chip);
+-	iounmap(chip->remap_addr);
+-	pci_release_regions(chip->pci);
+-	pci_disable_device(chip->pci);
+-	kfree(chip);
+-	return 0;
+-}
+-
+-static int snd_atiixp_dev_free(struct snd_device *device)
+-{
+-	struct atiixp_modem *chip = device->device_data;
+-	return snd_atiixp_free(chip);
++	snd_atiixp_chip_stop(card->private_data);
+ }
+ 
+ /*
+  * constructor for chip instance
+  */
+-static int snd_atiixp_create(struct snd_card *card,
+-			     struct pci_dev *pci,
+-			     struct atiixp_modem **r_chip)
++static int snd_atiixp_init(struct snd_card *card, struct pci_dev *pci)
+ {
+-	static struct snd_device_ops ops = {
+-		.dev_free =	snd_atiixp_dev_free,
+-	};
+-	struct atiixp_modem *chip;
++	struct atiixp_modem *chip = card->private_data;
+ 	int err;
+ 
+-	if ((err = pci_enable_device(pci)) < 0)
++	err = pcim_enable_device(pci);
++	if (err < 0)
+ 		return err;
+ 
+-	chip = kzalloc(sizeof(*chip), GFP_KERNEL);
+-	if (chip == NULL) {
+-		pci_disable_device(pci);
+-		return -ENOMEM;
+-	}
+-
+ 	spin_lock_init(&chip->reg_lock);
+ 	mutex_init(&chip->open_mutex);
+ 	chip->card = card;
+ 	chip->pci = pci;
+ 	chip->irq = -1;
+-	if ((err = pci_request_regions(pci, "ATI IXP MC97")) < 0) {
+-		kfree(chip);
+-		pci_disable_device(pci);
++	err = pcim_iomap_regions(pci, 1 << 0, "ATI IXP MC97");
++	if (err < 0)
+ 		return err;
+-	}
+ 	chip->addr = pci_resource_start(pci, 0);
+-	chip->remap_addr = pci_ioremap_bar(pci, 0);
+-	if (chip->remap_addr == NULL) {
+-		dev_err(card->dev, "AC'97 space ioremap problem\n");
+-		snd_atiixp_free(chip);
+-		return -EIO;
+-	}
++	chip->remap_addr = pcim_iomap_table(pci)[0];
+ 
+-	if (request_irq(pci->irq, snd_atiixp_interrupt, IRQF_SHARED,
+-			KBUILD_MODNAME, chip)) {
++	if (devm_request_irq(&pci->dev, pci->irq, snd_atiixp_interrupt,
++			     IRQF_SHARED, KBUILD_MODNAME, chip)) {
+ 		dev_err(card->dev, "unable to grab IRQ %d\n", pci->irq);
+-		snd_atiixp_free(chip);
+ 		return -EBUSY;
  	}
+ 	chip->irq = pci->irq;
++	card->private_free = snd_atiixp_free;
+ 	pci_set_master(pci);
+ 	synchronize_irq(chip->irq);
  
- 	if ((err = snd_device_register_all(card)) < 0)
+-	if ((err = snd_device_new(card, SNDRV_DEV_LOWLEVEL, chip, &ops)) < 0) {
+-		snd_atiixp_free(chip);
+-		return err;
+-	}
+-
+-	*r_chip = chip;
+ 	return 0;
+ }
+ 
+@@ -1272,24 +1232,29 @@ static int snd_atiixp_probe(struct pci_dev *pci,
+ 	struct atiixp_modem *chip;
+ 	int err;
+ 
+-	err = snd_card_new(&pci->dev, index, id, THIS_MODULE, 0, &card);
++	err = snd_devm_card_new(&pci->dev, index, id, THIS_MODULE,
++				sizeof(*chip), &card);
+ 	if (err < 0)
+ 		return err;
++	chip = card->private_data;
+ 
+ 	strcpy(card->driver, "ATIIXP-MODEM");
+ 	strcpy(card->shortname, "ATI IXP Modem");
+-	if ((err = snd_atiixp_create(card, pci, &chip)) < 0)
+-		goto __error;
+-	card->private_data = chip;
++	err = snd_atiixp_init(card, pci);
++	if (err < 0)
++		return err;
+ 
+-	if ((err = snd_atiixp_aclink_reset(chip)) < 0)
+-		goto __error;
++	err = snd_atiixp_aclink_reset(chip);
++	if (err < 0)
++		return err;
+ 
+-	if ((err = snd_atiixp_mixer_new(chip, ac97_clock)) < 0)
+-		goto __error;
++	err = snd_atiixp_mixer_new(chip, ac97_clock);
++	if (err < 0)
++		return err;
+ 
+-	if ((err = snd_atiixp_pcm_new(chip)) < 0)
+-		goto __error;
++	err = snd_atiixp_pcm_new(chip);
++	if (err < 0)
++		return err;
+ 	
+ 	snd_atiixp_proc_init(chip);
+ 
+@@ -1298,27 +1263,18 @@ static int snd_atiixp_probe(struct pci_dev *pci,
+ 	sprintf(card->longname, "%s rev %x at 0x%lx, irq %i",
+ 		card->shortname, pci->revision, chip->addr, chip->irq);
+ 
+-	if ((err = snd_card_register(card)) < 0)
+-		goto __error;
++	err = snd_card_register(card);
++	if (err < 0)
++		return err;
+ 
+ 	pci_set_drvdata(pci, card);
+ 	return 0;
+-
+- __error:
+-	snd_card_free(card);
+-	return err;
+-}
+-
+-static void snd_atiixp_remove(struct pci_dev *pci)
+-{
+-	snd_card_free(pci_get_drvdata(pci));
+ }
+ 
+ static struct pci_driver atiixp_modem_driver = {
+ 	.name = KBUILD_MODNAME,
+ 	.id_table = snd_atiixp_ids,
+ 	.probe = snd_atiixp_probe,
+-	.remove = snd_atiixp_remove,
+ 	.driver = {
+ 		.pm = SND_ATIIXP_PM_OPS,
+ 	},
 -- 
 2.18.0
