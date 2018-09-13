@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "Revert "ASoC: Intel: Skylake: Acquire irq
-	after RIRB allocation"" to the asoc tree
-Date: Thu, 13 Sep 2018 12:39:17 +0100 (BST)
-Message-ID: <20180913113917.D06B01121CA5@debutante.sirena.org.uk>
+Subject: Applied "ASoC: soc-core: remove dai->driver NULL
+	check" to the asoc tree
+Date: Thu, 13 Sep 2018 12:39:23 +0100 (BST)
+Message-ID: <20180913113923.395B41121CA5@debutante.sirena.org.uk>
+References: <87wors4jf0.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 847D72677BB
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:39:18 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id D346726788E
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:39:24 +0200 (CEST)
+In-Reply-To: <87wors4jf0.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Yu Zhao <yuzhao@google.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   Revert "ASoC: Intel: Skylake: Acquire irq after RIRB allocation"
+   ASoC: soc-core: remove dai->driver NULL check
 
 has been applied to the asoc tree at
 
@@ -52,88 +53,45 @@ to this mail.
 Thanks,
 Mark
 
->From 542cedec53c9e8b73f3f05bf8468823598c50489 Mon Sep 17 00:00:00 2001
-From: Yu Zhao <yuzhao@google.com>
-Date: Tue, 11 Sep 2018 15:12:46 -0600
-Subject: [PATCH] Revert "ASoC: Intel: Skylake: Acquire irq after RIRB
- allocation"
+>From a7c439d6128de2cbc087ae7524b47f613ff8bc6c Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Tue, 11 Sep 2018 15:50:27 +0900
+Subject: [PATCH] ASoC: soc-core: remove dai->driver NULL check
 
-This reverts commit 12eeeb4f4733bbc4481d01df35933fc15beb8b19.
+It is strange if it has "dai" but doesn't have "dai->driver".
+And more over "dai->driver->xxx" is used everywhere without
+"dai->driver" pointer NULL checking.
+It got Oops already if "dai->driver" was NULL.
+Let's remove un-needed "dai->driver" NULL check.
 
-The patch doesn't fix accessing memory with null pointer in
-skl_interrupt().
-
-There are two problems: 1) skl_init_chip() is called twice, before
-and after dma buffer is allocate. The first call sets bus->chip_init
-which prevents the second from initializing bus->corb.buf and
-rirb.buf from bus->rb.area. 2) snd_hdac_bus_init_chip() enables
-interrupt before snd_hdac_bus_init_cmd_io() initializing dma buffers.
-There is a small window which skl_interrupt() can be called if irq
-has been acquired. If so, it crashes when using null dma buffer
-pointers.
-
-Will fix the problems in the following patches. Also attaching the
-crash for future reference.
-
-[   16.949148] general protection fault: 0000 [#1] PREEMPT SMP KASAN PTI
-<snipped>
-[   16.950903] Call Trace:
-[   16.950906]  <IRQ>
-[   16.950918]  skl_interrupt+0x19e/0x2d6 [snd_soc_skl]
-[   16.950926]  ? dma_supported+0xb5/0xb5 [snd_soc_skl]
-[   16.950933]  __handle_irq_event_percpu+0x27a/0x6c8
-[   16.950937]  ? __irq_wake_thread+0x1d1/0x1d1
-[   16.950942]  ? __do_softirq+0x57a/0x69e
-[   16.950944]  handle_irq_event_percpu+0x95/0x1ba
-[   16.950948]  ? _raw_spin_unlock+0x65/0xdc
-[   16.950951]  ? __handle_irq_event_percpu+0x6c8/0x6c8
-[   16.950953]  ? _raw_spin_unlock+0x65/0xdc
-[   16.950957]  ? time_cpufreq_notifier+0x483/0x483
-[   16.950959]  handle_irq_event+0x89/0x123
-[   16.950962]  handle_fasteoi_irq+0x16f/0x425
-[   16.950965]  handle_irq+0x1fe/0x28e
-[   16.950969]  do_IRQ+0x6e/0x12e
-[   16.950972]  common_interrupt+0x7a/0x7a
-[   16.950974]  </IRQ>
-<snipped>
-[   16.951031] RIP: snd_hdac_bus_update_rirb+0x19b/0x4cf [snd_hda_core] RSP: ffff88015c807c08
-[   16.951036] ---[ end trace 58bf9ece1775bc92 ]---
-
-Fixes: 2eeeb4f4733b ("ASoC: Intel: Skylake: Acquire irq after RIRB allocation")
-Signed-off-by: Yu Zhao <yuzhao@google.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ sound/soc/soc-core.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
-diff --git a/sound/soc/intel/skylake/skl.c b/sound/soc/intel/skylake/skl.c
-index cf09721ca13e..dce649485649 100644
---- a/sound/soc/intel/skylake/skl.c
-+++ b/sound/soc/intel/skylake/skl.c
-@@ -838,7 +838,11 @@ static int skl_first_init(struct hdac_bus *bus)
- 
- 	snd_hdac_bus_parse_capabilities(bus);
- 
-+	if (skl_acquire_irq(bus, 0) < 0)
-+		return -EBUSY;
-+
- 	pci_set_master(pci);
-+	synchronize_irq(bus->irq);
- 
- 	gcap = snd_hdac_chip_readw(bus, GCAP);
- 	dev_dbg(bus->dev, "chipset global capabilities = 0x%x\n", gcap);
-@@ -871,12 +875,6 @@ static int skl_first_init(struct hdac_bus *bus)
- 	if (err < 0)
- 		return err;
- 
--	err = skl_acquire_irq(bus, 0);
--	if (err < 0)
--		return err;
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 807f112fad80..325dc1964850 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -2519,8 +2519,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_bclk_ratio);
+  */
+ int snd_soc_dai_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ {
+-	if (dai->driver == NULL)
+-		return -EINVAL;
+ 	if (dai->driver->ops->set_fmt == NULL)
+ 		return -ENOTSUPP;
+ 	return dai->driver->ops->set_fmt(dai, fmt);
+@@ -2667,9 +2665,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_set_tristate);
+ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
+ 			     int direction)
+ {
+-	if (!dai->driver)
+-		return -ENOTSUPP;
 -
--	synchronize_irq(bus->irq);
--
- 	/* initialize chip */
- 	skl_init_pci(skl);
- 
+ 	if (dai->driver->ops->mute_stream)
+ 		return dai->driver->ops->mute_stream(dai, mute, direction);
+ 	else if (direction == SNDRV_PCM_STREAM_PLAYBACK &&
 -- 
 2.19.0.rc2
