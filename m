@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: core: add support to card rebind" to
-	the asoc tree
-Date: Thu, 13 Sep 2018 12:39:32 +0100 (BST)
-Message-ID: <20180913113932.A00211121CA5@debutante.sirena.org.uk>
-References: <20180912091500.21126-1-srinivas.kandagatla@linaro.org>
+Subject: Applied "ASoC: remove unneeded static set .owner field
+	in platform_driver" to the asoc tree
+Date: Thu, 13 Sep 2018 12:39:42 +0100 (BST)
+Message-ID: <20180913113942.273AF1121CA5@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B78402677BB
- for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:39:33 +0200 (CEST)
-In-Reply-To: <20180912091500.21126-1-srinivas.kandagatla@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9587E26789F
+ for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 13:39:44 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc: alsa-devel@alsa-project.org, bgoswami@codeaurora.org, linux-kernel@vger.kernel.org, tiwai@suse.com, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org, rohitkr@codeaurora.org
+To: zhong jiang <zhongjiang@huawei.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: core: add support to card rebind
+   ASoC: remove unneeded static set .owner field in platform_driver
 
 has been applied to the asoc tree at
 
@@ -53,199 +52,60 @@ to this mail.
 Thanks,
 Mark
 
->From e894efef9ac7c10b7727798dcc711cccf07569f9 Mon Sep 17 00:00:00 2001
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Date: Wed, 12 Sep 2018 10:15:00 +0100
-Subject: [PATCH] ASoC: core: add support to card rebind
+>From e1e38ea14ea3294546e6350d05a1376197a73589 Mon Sep 17 00:00:00 2001
+From: zhong jiang <zhongjiang@huawei.com>
+Date: Wed, 12 Sep 2018 11:41:49 +0800
+Subject: [PATCH] ASoC: remove unneeded static set .owner field in
+ platform_driver
 
-Current behaviour of ASoC core w.r.t to component removal is that it
-unregisters dependent sound card totally. There is no support to
-rebind the card if the component comes back.
-Typical use case is DSP restart or kernel modules itself.
+platform_driver_register will set the .owner field. So it is safe
+to remove the redundant assignment.
 
-With this patch, core now maintains list of cards that are unbind due to
-any of its depended components are removed and card not unregistered yet.
-This list is cleared when the card is rebind successfully or when the
-card is unregistered from machine driver.
+The issue is detected with the help of Coccinelle.
 
-This list of unbind cards are tried to bind once again after every new
-component is successfully added, giving a fair chance for card bind
-to be successful.
-
-Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Signed-off-by: zhong jiang <zhongjiang@huawei.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc.h  |  2 ++
- sound/soc/soc-core.c | 85 ++++++++++++++++++++++++++++++--------------
- 2 files changed, 60 insertions(+), 27 deletions(-)
+ sound/soc/mediatek/mt2701/mt2701-wm8960.c | 1 -
+ sound/soc/mediatek/mt6797/mt6797-mt6351.c | 1 -
+ sound/soc/rockchip/rk3288_hdmi_analog.c   | 1 -
+ 3 files changed, 3 deletions(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index e17a7ae9a155..1e093b399bc0 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1097,6 +1097,7 @@ struct snd_soc_card {
- 
- 	/* lists of probed devices belonging to this card */
- 	struct list_head component_dev_list;
-+	struct list_head list;
- 
- 	struct list_head widgets;
- 	struct list_head paths;
-@@ -1373,6 +1374,7 @@ static inline void snd_soc_initialize_card_lists(struct snd_soc_card *card)
- 	INIT_LIST_HEAD(&card->dapm_list);
- 	INIT_LIST_HEAD(&card->aux_comp_list);
- 	INIT_LIST_HEAD(&card->component_dev_list);
-+	INIT_LIST_HEAD(&card->list);
- }
- 
- static inline bool snd_soc_volsw_is_stereo(struct soc_mixer_control *mc)
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 7e18937c2214..807f112fad80 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -52,6 +52,7 @@ EXPORT_SYMBOL_GPL(snd_soc_debugfs_root);
- 
- static DEFINE_MUTEX(client_mutex);
- static LIST_HEAD(component_list);
-+static LIST_HEAD(unbind_card_list);
- 
- /*
-  * This is a timeout to do a DAPM powerdown after a stream is closed().
-@@ -2679,6 +2680,33 @@ int snd_soc_dai_digital_mute(struct snd_soc_dai *dai, int mute,
- }
- EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
- 
-+static int snd_soc_bind_card(struct snd_soc_card *card)
-+{
-+	struct snd_soc_pcm_runtime *rtd;
-+	int ret;
-+
-+	ret = snd_soc_instantiate_card(card);
-+	if (ret != 0)
-+		return ret;
-+
-+	/* deactivate pins to sleep state */
-+	list_for_each_entry(rtd, &card->rtd_list, list)  {
-+		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+		struct snd_soc_dai *codec_dai;
-+		int j;
-+
-+		for_each_rtd_codec_dai(rtd, j, codec_dai) {
-+			if (!codec_dai->active)
-+				pinctrl_pm_select_sleep_state(codec_dai->dev);
-+		}
-+
-+		if (!cpu_dai->active)
-+			pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+	}
-+
-+	return ret;
-+}
-+
- /**
-  * snd_soc_register_card - Register a card with the ASoC core
-  *
-@@ -2688,7 +2716,6 @@ EXPORT_SYMBOL_GPL(snd_soc_dai_digital_mute);
- int snd_soc_register_card(struct snd_soc_card *card)
- {
- 	int i, ret;
--	struct snd_soc_pcm_runtime *rtd;
- 
- 	if (!card->name || !card->dev)
- 		return -EINVAL;
-@@ -2719,28 +2746,23 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	mutex_init(&card->mutex);
- 	mutex_init(&card->dapm_mutex);
- 
--	ret = snd_soc_instantiate_card(card);
--	if (ret != 0)
--		return ret;
--
--	/* deactivate pins to sleep state */
--	list_for_each_entry(rtd, &card->rtd_list, list)  {
--		struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
--		struct snd_soc_dai *codec_dai;
--		int j;
--
--		for_each_rtd_codec_dai(rtd, j, codec_dai) {
--			if (!codec_dai->active)
--				pinctrl_pm_select_sleep_state(codec_dai->dev);
--		}
-+	return snd_soc_bind_card(card);
-+}
-+EXPORT_SYMBOL_GPL(snd_soc_register_card);
- 
--		if (!cpu_dai->active)
--			pinctrl_pm_select_sleep_state(cpu_dai->dev);
-+static void snd_soc_unbind_card(struct snd_soc_card *card, bool unregister)
-+{
-+	if (card->instantiated) {
-+		card->instantiated = false;
-+		snd_soc_dapm_shutdown(card);
-+		soc_cleanup_card_resources(card);
-+		if (!unregister)
-+			list_add(&card->list, &unbind_card_list);
-+	} else {
-+		if (unregister)
-+			list_del(&card->list);
- 	}
--
--	return ret;
- }
--EXPORT_SYMBOL_GPL(snd_soc_register_card);
- 
- /**
-  * snd_soc_unregister_card - Unregister a card with the ASoC core
-@@ -2750,12 +2772,8 @@ EXPORT_SYMBOL_GPL(snd_soc_register_card);
-  */
- int snd_soc_unregister_card(struct snd_soc_card *card)
- {
--	if (card->instantiated) {
--		card->instantiated = false;
--		snd_soc_dapm_shutdown(card);
--		soc_cleanup_card_resources(card);
--		dev_dbg(card->dev, "ASoC: Unregistered card '%s'\n", card->name);
--	}
-+	snd_soc_unbind_card(card, true);
-+	dev_dbg(card->dev, "ASoC: Unregistered card '%s'\n", card->name);
- 
- 	return 0;
- }
-@@ -3099,7 +3117,7 @@ static void snd_soc_component_del_unlocked(struct snd_soc_component *component)
- 	struct snd_soc_card *card = component->card;
- 
- 	if (card)
--		snd_soc_unregister_card(card);
-+		snd_soc_unbind_card(card, false);
- 
- 	list_del(&component->list);
- }
-@@ -3139,6 +3157,18 @@ static void convert_endianness_formats(struct snd_soc_pcm_stream *stream)
- 			stream->formats |= endianness_format_map[i];
- }
- 
-+static void snd_soc_try_rebind_card(void)
-+{
-+	struct snd_soc_card *card, *c;
-+
-+	if (!list_empty(&unbind_card_list)) {
-+		list_for_each_entry_safe(card, c, &unbind_card_list, list) {
-+			if (!snd_soc_bind_card(card))
-+				list_del(&card->list);
-+		}
-+	}
-+}
-+
- int snd_soc_add_component(struct device *dev,
- 			struct snd_soc_component *component,
- 			const struct snd_soc_component_driver *component_driver,
-@@ -3166,6 +3196,7 @@ int snd_soc_add_component(struct device *dev,
- 	}
- 
- 	snd_soc_component_add(component);
-+	snd_soc_try_rebind_card();
- 
- 	return 0;
- 
+diff --git a/sound/soc/mediatek/mt2701/mt2701-wm8960.c b/sound/soc/mediatek/mt2701/mt2701-wm8960.c
+index 89f34efd9747..e5d49e6e2f99 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-wm8960.c
++++ b/sound/soc/mediatek/mt2701/mt2701-wm8960.c
+@@ -150,7 +150,6 @@ static const struct of_device_id mt2701_wm8960_machine_dt_match[] = {
+ static struct platform_driver mt2701_wm8960_machine = {
+ 	.driver = {
+ 		.name = "mt2701-wm8960",
+-		.owner = THIS_MODULE,
+ #ifdef CONFIG_OF
+ 		.of_match_table = mt2701_wm8960_machine_dt_match,
+ #endif
+diff --git a/sound/soc/mediatek/mt6797/mt6797-mt6351.c b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
+index b1558c57b9ca..6e578e830e42 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-mt6351.c
++++ b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
+@@ -205,7 +205,6 @@ static const struct of_device_id mt6797_mt6351_dt_match[] = {
+ static struct platform_driver mt6797_mt6351_driver = {
+ 	.driver = {
+ 		.name = "mt6797-mt6351",
+-		.owner = THIS_MODULE,
+ #ifdef CONFIG_OF
+ 		.of_match_table = mt6797_mt6351_dt_match,
+ #endif
+diff --git a/sound/soc/rockchip/rk3288_hdmi_analog.c b/sound/soc/rockchip/rk3288_hdmi_analog.c
+index 929b3fe289b0..a472d5eb2950 100644
+--- a/sound/soc/rockchip/rk3288_hdmi_analog.c
++++ b/sound/soc/rockchip/rk3288_hdmi_analog.c
+@@ -286,7 +286,6 @@ static struct platform_driver rockchip_sound_driver = {
+ 	.probe = snd_rk_mc_probe,
+ 	.driver = {
+ 		.name = DRV_NAME,
+-		.owner = THIS_MODULE,
+ 		.pm = &snd_soc_pm_ops,
+ 		.of_match_table = rockchip_sound_of_match,
+ 	},
 -- 
 2.19.0.rc2
