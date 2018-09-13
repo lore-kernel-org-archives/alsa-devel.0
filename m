@@ -1,17 +1,20 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH RFC 0/5] Add devres support to card resources
-Date: Thu, 13 Sep 2018 08:05:22 +0200
-Message-ID: <20180913060527.24694-1-tiwai@suse.de>
+Subject: [PATCH RFC 1/5] ALSA: core: Add device-managed page
+	allocator helper
+Date: Thu, 13 Sep 2018 08:05:23 +0200
+Message-ID: <20180913060527.24694-2-tiwai@suse.de>
+References: <20180913060527.24694-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id F2C292676EB
+ by alsa0.perex.cz (Postfix) with ESMTP id 001EB26779A
  for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 08:05:31 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id D7A2DAFE2
+ by mx1.suse.de (Postfix) with ESMTP id D7B88AFE4
  for <alsa-devel@alsa-project.org>; Thu, 13 Sep 2018 06:05:30 +0000 (UTC)
+In-Reply-To: <20180913060527.24694-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,49 +27,151 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+This is a preparation for managing the whole resource via devres.
+As a first step, add a new allocator function, snd_devm_alloc_pages()
+to manage the allocated pages via devres, so that the pages will be
+automagically released as device unbinding.
 
-the devres or device-managed resource allocation is a popular method
-among many drivers but we didn't have such a mechanism for the core
-sound card objects.  Here is an attempt to implement that.
+Unlike the old snd_dma_alloc_pages(), the new function returns
+directly the snd_dma_buffer pointer.  The caller needs to check the
+error via IS_ERR().
 
-The first patch gives the devm-version of page allocator helper, and
-the second patch provides the devm-version of snd_card_new().
-The rest patches are examples of the new API usages.
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/memalloc.h |  4 ++
+ sound/core/memalloc.c    | 88 ++++++++++++++++++++++++++++++++--------
+ 2 files changed, 74 insertions(+), 18 deletions(-)
 
-As of now, this patch series is still an RFC.  The usefulness of this
-is still unclear, but I believe this can be used in all legacy ALSA
-drivers pretty well.  For ASoC, this would help very little,
-supposedly, though.
-
-The latest patches are found in topic/devres branch of my sound.git
-tree, too.
-
-
-thanks,
-
-Takashi
-
-===
-
-Takashi Iwai (5):
-  ALSA: core: Add device-managed page allocator helper
-  ALSA: core: Add managed card creation
-  ALSA: intel8x0: Allocate resources with device-managed APIs
-  ALSA: atiixp: Allocate resources with device-managed APIs
-  ALSA: hda: Allocate resources with device-managed APIs
-
- include/sound/core.h           |   5 ++
- include/sound/memalloc.h       |   4 +
- sound/core/init.c              |  95 +++++++++++++++++++++-
- sound/core/memalloc.c          |  88 +++++++++++++++-----
- sound/pci/atiixp.c             | 104 +++++++-----------------
- sound/pci/atiixp_modem.c       | 104 +++++++-----------------
- sound/pci/hda/hda_controller.h |   1 -
- sound/pci/hda/hda_intel.c      |  43 +++-------
- sound/pci/intel8x0.c           | 143 +++++++++++----------------------
- sound/pci/intel8x0m.c          | 143 +++++++++++----------------------
- 10 files changed, 332 insertions(+), 398 deletions(-)
-
+diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
+index af3fa577fa06..3a1d9fb44fcf 100644
+--- a/include/sound/memalloc.h
++++ b/include/sound/memalloc.h
+@@ -156,5 +156,9 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab);
+ void *snd_malloc_pages(size_t size, gfp_t gfp_flags);
+ void snd_free_pages(void *ptr, size_t size);
+ 
++/* device-managed memory allocator */
++struct snd_dma_buffer *snd_devm_alloc_pages(struct device *dev, int type,
++					    size_t size);
++
+ #endif /* __SOUND_MEMALLOC_H */
+ 
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index aa266907ec9b..a54d7aacec43 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -161,22 +161,8 @@ static void snd_free_dev_iram(struct snd_dma_buffer *dmab)
+  *
+  */
+ 
+-
+-/**
+- * snd_dma_alloc_pages - allocate the buffer area according to the given type
+- * @type: the DMA buffer type
+- * @device: the device pointer
+- * @size: the buffer size to allocate
+- * @dmab: buffer allocation record to store the allocated data
+- *
+- * Calls the memory-allocator function for the corresponding
+- * buffer type.
+- *
+- * Return: Zero if the buffer with the given size is allocated successfully,
+- * otherwise a negative value on error.
+- */
+-int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+-			struct snd_dma_buffer *dmab)
++static int __snd_dma_alloc_pages(struct device *device, int type, size_t size,
++				 gfp_t gfp_flags, struct snd_dma_buffer *dmab)
+ {
+ 	if (WARN_ON(!size))
+ 		return -ENXIO;
+@@ -188,8 +174,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+ 	dmab->bytes = 0;
+ 	switch (type) {
+ 	case SNDRV_DMA_TYPE_CONTINUOUS:
+-		dmab->area = snd_malloc_pages(size,
+-					(__force gfp_t)(unsigned long)device);
++		dmab->area = snd_malloc_pages(size, gfp_flags);
+ 		dmab->addr = 0;
+ 		break;
+ #ifdef CONFIG_HAS_DMA
+@@ -225,6 +210,30 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+ 	dmab->bytes = size;
+ 	return 0;
+ }
++
++/**
++ * snd_dma_alloc_pages - allocate the buffer area according to the given type
++ * @type: the DMA buffer type
++ * @device: the device pointer
++ * @size: the buffer size to allocate
++ * @dmab: buffer allocation record to store the allocated data
++ *
++ * Calls the memory-allocator function for the corresponding
++ * buffer type.
++ *
++ * Return: Zero if the buffer with the given size is allocated successfully,
++ * otherwise a negative value on error.
++ */
++int snd_dma_alloc_pages(int type, struct device *device, size_t size,
++			struct snd_dma_buffer *dmab)
++{
++	gfp_t gfp_flags = 0;
++
++	if (type == SNDRV_DMA_TYPE_CONTINUOUS)
++		gfp_flags = (__force gfp_t)(unsigned long)device;
++
++	return __snd_dma_alloc_pages(device, type, size, gfp_flags, dmab);
++}
+ EXPORT_SYMBOL(snd_dma_alloc_pages);
+ 
+ /**
+@@ -296,3 +305,46 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
+ 	}
+ }
+ EXPORT_SYMBOL(snd_dma_free_pages);
++
++/* called by devres */
++static void __snd_release_pages(struct device *dev, void *res)
++{
++	snd_dma_free_pages(res);
++}
++
++/**
++ * snd_devm_alloc_pages - allocate the buffer and manage with devres
++ * @dev: the device pointer
++ * @type: the DMA buffer type
++ * @size: the buffer size to allocate
++ *
++ * Allocate buffer pages depending on the given type and manage using devres.
++ * The pages will be released automatically at the device removal.
++ *
++ * The function cannot handle GFP flags for SNDRV_DMA_TYPE_CONTINUOUS type,
++ * only GFP_KERNEL is assumed.
++ *
++ * The function returns the snd_dma_buffer object at success or the encoded
++ * error pointer via ERR_PTR().  The caller needs to check the error via
++ * IS_ERR() and PTR_ERR().
++ */
++struct snd_dma_buffer *
++snd_devm_alloc_pages(struct device *dev, int type, size_t size)
++{
++	struct snd_dma_buffer *dmab;
++	int err;
++
++	dmab = devres_alloc(__snd_release_pages, sizeof(*dmab), GFP_KERNEL);
++	if (!dmab)
++		return ERR_PTR(-ENOMEM);
++
++	err = __snd_dma_alloc_pages(dev, type, size, GFP_KERNEL, dmab);
++	if (err < 0) {
++		devres_free(dmab);
++		return ERR_PTR(err);
++	}
++
++	devres_add(dev, dmab);
++	return dmab;
++}
++EXPORT_SYMBOL_GPL(snd_devm_alloc_pages);
 -- 
 2.18.0
