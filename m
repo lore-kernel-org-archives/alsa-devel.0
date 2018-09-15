@@ -1,15 +1,17 @@
 From: Andre Guedes <andre.guedes@intel.com>
-Subject: [RFC v2 - AAF PCM plugin 0/5] Introduce AVTP Audio
-	Format (AAF) plugin
-Date: Fri, 14 Sep 2018 18:17:13 -0700
-Message-ID: <20180915011718.19444-1-andre.guedes@intel.com>
+Subject: [RFC v2 - AAF PCM plugin 1/5] aaf: Introduce plugin
+	skeleton
+Date: Fri, 14 Sep 2018 18:17:14 -0700
+Message-ID: <20180915011718.19444-2-andre.guedes@intel.com>
+References: <20180915011718.19444-1-andre.guedes@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
- by alsa0.perex.cz (Postfix) with ESMTP id 24F56267782
- for <alsa-devel@alsa-project.org>; Sat, 15 Sep 2018 03:17:26 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id DC575267819
+ for <alsa-devel@alsa-project.org>; Sat, 15 Sep 2018 03:17:28 +0200 (CEST)
+In-Reply-To: <20180915011718.19444-1-andre.guedes@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,57 +24,201 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
+The patch introduces the skeleton code from the AAF plugin as well as
+the buildsystem bits in order to get the plugin built. Following the
+approach from other plugins, the AAF plugin is only built if its
+dependency (libavtp) is detected by configure.
 
-Hi all,
+Follow-up patches implement support for both playback and capture modes.
 
-This is the version 2 of AAF plugin RFC series. For general context information
-about the AAF plugin, please refer to the cover letter from version 1 [1] and
-the documentation in doc/aaf.txt.
-
-Code-wise, the main changes in this new version are:
-
-    1) The media clock was generating timestamps in UTC coordinate. However,
-    AVTP timestamps are in TAI coordinate system so the media clock was fixed
-    to use TAI instead.
-
-    2) All plugin resources (e.g. buffers, fds) are now allocated/freed in
-    hw_params/hw_free ioplug callbacks.
-
-    3) The plugin constraints are applied at entry point instead of hw_params
-    callback.
-
-Also, in this new version, the commit message from patch "aaf: Implement
-Playback mode support" was improved so it discusses the AVTP protocol
-restrictions in terms of formats and rates as well as why the plugin uses the
-system clock to implement a media clock.
-
-For further information about what has been discussed in the previous version,
-please refer to the RFC v1 patch series which starts in [1]. All versions of
-this series can be also found in my alsa-plugins tree in github [2].
-
-Best regards,
-
-Andre
-
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-August/139494.Even
-[2] https://github.com/aguedes/alsa-plugins
-
-Andre Guedes (5):
-  aaf: Introduce plugin skeleton
-  aaf: Load configuration parameters
-  aaf: Implement Playback mode support
-  aaf: Prepare for Capture mode support
-  aaf: Implement Capture mode support
-
- Makefile.am     |    3 +
- aaf/Makefile.am |    9 +
- aaf/pcm_aaf.c   | 1214 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
- configure.ac    |    9 +
- doc/aaf.txt     |  142 +++++++
- 5 files changed, 1377 insertions(+)
+Signed-off-by: Andre Guedes <andre.guedes@intel.com>
+---
+ Makefile.am     |  3 ++
+ aaf/Makefile.am |  9 ++++++
+ aaf/pcm_aaf.c   | 91 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac    |  9 ++++++
+ doc/aaf.txt     | 18 ++++++++++++
+ 5 files changed, 130 insertions(+)
  create mode 100644 aaf/Makefile.am
  create mode 100644 aaf/pcm_aaf.c
  create mode 100644 doc/aaf.txt
 
+diff --git a/Makefile.am b/Makefile.am
+index 27f61a4..af0e9c4 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -35,6 +35,9 @@ endif
+ if HAVE_SPEEXDSP
+ SUBDIRS += speex
+ endif
++if HAVE_AAF
++SUBDIRS += aaf
++endif
+ 
+ EXTRA_DIST = gitcompile version COPYING.GPL m4/attributes.m4
+ AUTOMAKE_OPTIONS = foreign
+diff --git a/aaf/Makefile.am b/aaf/Makefile.am
+new file mode 100644
+index 0000000..492b883
+--- /dev/null
++++ b/aaf/Makefile.am
+@@ -0,0 +1,9 @@
++asound_module_pcm_aaf_LTLIBRARIES = libasound_module_pcm_aaf.la
++
++asound_module_pcm_aafdir = @ALSA_PLUGIN_DIR@
++
++AM_CFLAGS = @ALSA_CFLAGS@ @AVTP_CFLAGS@
++AM_LDFLAGS = -module -avoid-version -export-dynamic -no-undefined $(LDFLAGS_NOUNDEFINED)
++
++libasound_module_pcm_aaf_la_SOURCES = pcm_aaf.c
++libasound_module_pcm_aaf_la_LIBADD = @ALSA_LIBS@ @AVTP_LIBS@
+diff --git a/aaf/pcm_aaf.c b/aaf/pcm_aaf.c
+new file mode 100644
+index 0000000..7890e10
+--- /dev/null
++++ b/aaf/pcm_aaf.c
+@@ -0,0 +1,91 @@
++/*
++ * AVTP Audio Format (AAF) PCM Plugin
++ *
++ * Copyright (c) 2018, Intel Corporation
++ *
++ * This library is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as
++ * published by the Free Software Foundation; either version 2.1 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
++ */
++
++#include <alsa/asoundlib.h>
++#include <alsa/pcm_external.h>
++
++typedef struct {
++	snd_pcm_ioplug_t io;
++} snd_pcm_aaf_t;
++
++static int aaf_close(snd_pcm_ioplug_t *io)
++{
++	snd_pcm_aaf_t *aaf = io->private_data;
++
++	if (!aaf)
++		return -EBADFD;
++
++	free(aaf);
++	aaf = NULL;
++	return 0;
++}
++
++static snd_pcm_sframes_t aaf_pointer(snd_pcm_ioplug_t *io)
++{
++	return 0;
++}
++
++static int aaf_start(snd_pcm_ioplug_t *io)
++{
++	return 0;
++}
++
++static int aaf_stop(snd_pcm_ioplug_t *io)
++{
++	return 0;
++}
++
++static const snd_pcm_ioplug_callback_t aaf_callback = {
++	.close = aaf_close,
++	.pointer = aaf_pointer,
++	.start = aaf_start,
++	.stop = aaf_stop,
++};
++
++SND_PCM_PLUGIN_DEFINE_FUNC(aaf)
++{
++	snd_pcm_aaf_t *aaf;
++	int res;
++
++	aaf = calloc(1, sizeof(*aaf));
++	if (!aaf) {
++		SNDERR("Failed to allocate memory");
++		return -ENOMEM;
++	}
++
++	aaf->io.version = SND_PCM_IOPLUG_VERSION;
++	aaf->io.name = "AVTP Audio Format (AAF) Plugin";
++	aaf->io.callback = &aaf_callback;
++	aaf->io.private_data = aaf;
++	res = snd_pcm_ioplug_create(&aaf->io, name, stream, mode);
++	if (res < 0) {
++		SNDERR("Failed to create ioplug instance");
++		goto err;
++	}
++
++	*pcmp = aaf->io.pcm;
++	return 0;
++
++err:
++	free(aaf);
++	return res;
++}
++
++SND_PCM_PLUGIN_SYMBOL(aaf);
+diff --git a/configure.ac b/configure.ac
+index 3e2d233..1524cba 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -176,6 +176,14 @@ fi
+ test "x$prefix" = xNONE && prefix=$ac_default_prefix
+ test "x$exec_prefix" = xNONE && exec_prefix=$prefix
+ 
++AC_ARG_ENABLE([aaf],
++      AS_HELP_STRING([--disable-aaf], [Disable building of AAF plugin]))
++
++if test "x$enable_aaf" != "xno"; then
++  PKG_CHECK_MODULES(AVTP, avtp >= 0.1, [HAVE_AAF=yes], [HAVE_AAF=no])
++fi
++AM_CONDITIONAL(HAVE_AAF, test x$HAVE_AAF = xyes)
++
+ dnl ALSA plugin directory
+ AC_ARG_WITH(plugindir,
+     AS_HELP_STRING([--with-plugindir=dir],
+@@ -251,6 +259,7 @@ AC_OUTPUT([
+ 	usb_stream/Makefile
+ 	speex/Makefile
+ 	arcam-av/Makefile
++	aaf/Makefile
+ ])
+ 
+ dnl Show the build conditions
+diff --git a/doc/aaf.txt b/doc/aaf.txt
+new file mode 100644
+index 0000000..b260a26
+--- /dev/null
++++ b/doc/aaf.txt
+@@ -0,0 +1,18 @@
++AVTP Audio Format (AAF) Plugin
++==============================
++
++Overview
++--------
++
++The AAF plugin is a PCM plugin that uses Audio Video Transport Protocol (AVTP)
++to transmit/receive audio samples through a Time-Sensitive Network (TSN)
++capable network. The plugin enables media applications to easily implement AVTP
++Talker and Listener functionalities.
++
++Plugin Dependencies
++-------------------
++
++The AAF plugin uses libavtp to handle AVTP packetization. Libavtp source code
++can be found in https://github.com/AVnu/libavtp as well as instructions to
++build and install it. If libavtp isn't detected by configure, the plugin isn't
++built.
 -- 
 2.14.4
