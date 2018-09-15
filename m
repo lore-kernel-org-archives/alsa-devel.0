@@ -1,17 +1,15 @@
-From: KillerRex <killerrex@gmail.com>
-Subject: Wrong UCM profile for Dell TB16 / WD15
-Date: Fri, 14 Sep 2018 19:28:20 +0200
-Message-ID: <CAE3rXveor5uEB_-p6v+QZJkiLMQKJdkug_QnBoTLo0dWmuR9ww@mail.gmail.com>
+From: Andre Guedes <andre.guedes@intel.com>
+Subject: [RFC v2 - AAF PCM plugin 0/5] Introduce AVTP Audio
+	Format (AAF) plugin
+Date: Fri, 14 Sep 2018 18:17:13 -0700
+Message-ID: <20180915011718.19444-1-andre.guedes@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com
- [209.85.128.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 7E20A267782
- for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2018 19:28:33 +0200 (CEST)
-Received: by mail-wm1-f50.google.com with SMTP id q8-v6so2761041wmq.4
- for <alsa-devel@alsa-project.org>; Fri, 14 Sep 2018 10:28:33 -0700 (PDT)
+Received: from mga12.intel.com (mga12.intel.com [192.55.52.136])
+ by alsa0.perex.cz (Postfix) with ESMTP id 24F56267782
+ for <alsa-devel@alsa-project.org>; Sat, 15 Sep 2018 03:17:26 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,78 +22,57 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
 
-I have a Dell TB16 (same sound hardware as the WD15) and since the update
-to kernel 4.18 pulseaudio does not recognise any more the audio ports in
-the dock.
+Hi all,
 
-After some work tracking the problem I have found that pulseaudio reports a
-failure when using the UCM profile from Dell-WD15-Dock:
-...
-(   0.027|   0.000) I: [pulseaudio] module-alsa-card.c: Found UCM profiles
-(   0.027|   0.000) D: [pulseaudio] alsa-ucm.c: UCM mapping: Mapping HiFi:
-hw:WD15Dock,0: source dev Mic
-(   0.027|   0.000) D: [pulseaudio] alsa-ucm.c: UCM mapping: Mapping HiFi:
-hw:WD15Dock,1: sink dev LineOut
-(   0.027|   0.000) D: [pulseaudio] alsa-ucm.c: UCM mapping: Mapping HiFi:
-hw:WD15Dock,0: sink dev Headphone
-(   0.027|   0.000) D: [pulseaudio] alsa-mixer.c: Profile HiFi (Default),
-input=(null), output=(null) priority=8000, supported=yes
-n_input_mappings=1, n_output_mappings=2
-(   0.027|   0.000) D: [pulseaudio] alsa-mixer.c: Input HiFi:
-hw:WD15Dock,0: source
-(   0.027|   0.000) D: [pulseaudio] alsa-mixer.c: Output HiFi:
-hw:WD15Dock,1: sink
-(   0.027|   0.000) D: [pulseaudio] alsa-mixer.c: Output HiFi:
-hw:WD15Dock,0: sink
-(   0.027|   0.000) I: [pulseaudio] alsa-ucm.c: Set ucm verb to HiFi
-(   0.027|   0.000) D: [pulseaudio] alsa-util.c: Trying hw:WD15Dock,1 with
-SND_PCM_NO_AUTO_FORMAT ...
-(   0.028|   0.000) I: [pulseaudio] (alsa-lib)pcm_hw.c: Invalid value for
-card
-(   0.028|   0.000) I: [pulseaudio] alsa-util.c: Error opening PCM device
-hw:WD15Dock,1: No such device
-...
+This is the version 2 of AAF plugin RFC series. For general context information
+about the AAF plugin, please refer to the cover letter from version 1 [1] and
+the documentation in doc/aaf.txt.
 
-The problem is that the device is called "Dock" and not "WD15Dock" so
-changing the file "alsa/ucm/Dell-WD15-Dock/HiFi.conf" with the right device
-name corrects the problem:
---- alsa/ucm/Dell-WD15-Dock/HiFi.conf_ori 2018-09-14 17:54:35.022035850
-+0200
-+++ alsa/ucm/Dell-WD15-Dock/HiFi.conf 2018-09-14 17:54:55.722248500 +0200
-@@ -3,7 +3,7 @@
+Code-wise, the main changes in this new version are:
 
-  Value {
-  PlaybackChannels "2"
-- PlaybackPCM "hw:WD15Dock,0"
-+ PlaybackPCM "hw:Dock,0"
-  }
- }
+    1) The media clock was generating timestamps in UTC coordinate. However,
+    AVTP timestamps are in TAI coordinate system so the media clock was fixed
+    to use TAI instead.
 
-@@ -12,7 +12,7 @@
+    2) All plugin resources (e.g. buffers, fds) are now allocated/freed in
+    hw_params/hw_free ioplug callbacks.
 
-  Value {
-  PlaybackChannels "2"
-- PlaybackPCM "hw:WD15Dock,1"
-+ PlaybackPCM "hw:Dock,1"
-  }
- }
+    3) The plugin constraints are applied at entry point instead of hw_params
+    callback.
 
-@@ -21,6 +21,6 @@
+Also, in this new version, the commit message from patch "aaf: Implement
+Playback mode support" was improved so it discusses the AVTP protocol
+restrictions in terms of formats and rates as well as why the plugin uses the
+system clock to implement a media clock.
 
-  Value {
-  CaptureChannels "2"
-- CapturePCM "hw:WD15Dock,0"
-+ CapturePCM "hw:Dock,0"
-  }
- }
+For further information about what has been discussed in the previous version,
+please refer to the RFC v1 patch series which starts in [1]. All versions of
+this series can be also found in my alsa-plugins tree in github [2].
 
-Is this the right change or the real problem is that the device name is
-"Dock" instead "WD15Dock"?
-Removing the "WD15" from the name is better, in that way it is also valid
-for the TB16.
+Best regards,
 
-Thanks
+Andre
 
-Andres Ayala
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-August/139494.Even
+[2] https://github.com/aguedes/alsa-plugins
+
+Andre Guedes (5):
+  aaf: Introduce plugin skeleton
+  aaf: Load configuration parameters
+  aaf: Implement Playback mode support
+  aaf: Prepare for Capture mode support
+  aaf: Implement Capture mode support
+
+ Makefile.am     |    3 +
+ aaf/Makefile.am |    9 +
+ aaf/pcm_aaf.c   | 1214 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac    |    9 +
+ doc/aaf.txt     |  142 +++++++
+ 5 files changed, 1377 insertions(+)
+ create mode 100644 aaf/Makefile.am
+ create mode 100644 aaf/pcm_aaf.c
+ create mode 100644 doc/aaf.txt
+
+-- 
+2.14.4
