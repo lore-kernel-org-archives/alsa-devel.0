@@ -1,52 +1,48 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH] Documentation: soundwire: fix stream.rst markup warnings
-Date: Mon, 17 Sep 2018 12:41:41 +0900
-Message-ID: <b14e406b-0988-22d3-4d1f-6809c4d77610@sakamocchi.jp>
-References: <8e1ec734-06b8-ba8a-fdca-3221ac134ea0@infradead.org>
+From: Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH 1/3] ASoC: q6asm-dai: dt-bindings: Add
+ support to compress dais
+Date: Sun, 16 Sep 2018 17:32:44 -0500
+Message-ID: <5b9f3f56.1c69fb81.d6be8.278d@mx.google.com>
+References: <20180903123455.9290-1-srinivas.kandagatla@linaro.org>
+ <20180903123455.9290-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <8e1ec734-06b8-ba8a-fdca-3221ac134ea0@infradead.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Randy Dunlap <rdunlap@infradead.org>, moderated for non-subscribers <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f68.google.com (mail-it0-f68.google.com
+ [209.85.214.68])
+ by alsa0.perex.cz (Postfix) with ESMTP id 14EB32676AA
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 07:44:55 +0200 (CEST)
+Received: by mail-it0-f68.google.com with SMTP id d10-v6so9564155itj.5
+ for <alsa-devel@alsa-project.org>; Sun, 16 Sep 2018 22:44:55 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <20180903123455.9290-2-srinivas.kandagatla@linaro.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, tiwai@suse.com, linux-kernel@vger.kernel.org, robh+dt@kernel.org, lgirdwood@gmail.com, vkoul@kernel.org, broonie@kernel.org, rohitkr@codeaurora.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-On Sep 17 2018 09:34, Randy Dunlap wrote:
-> From: Randy Dunlap <rdunlap@infradead.org>
+On Mon,  3 Sep 2018 13:34:53 +0100, Srinivas Kandagatla wrote:
+> This patch adds board specific bindings required for dais, In particular
+> for compressed dais and dai direction.
 > 
-> Fix kernel-doc markup warnings in soundwire/stream.rst:
+> Board specific setup involves setting up some of dais as compressed dais
+> and also specify direction of any dai. Some of the dais might only
+> support capture/playback depending on the board level wiring.
 > 
-> rc4/Documentation/driver-api/soundwire/stream.rst:177: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-> rc4/Documentation/driver-api/soundwire/stream.rst:203: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-> rc4/Documentation/driver-api/soundwire/stream.rst:248: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-> rc4/Documentation/driver-api/soundwire/stream.rst:277: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-> rc4/Documentation/driver-api/soundwire/stream.rst:304: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-> rc4/Documentation/driver-api/soundwire/stream.rst:328: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-> rc4/Documentation/driver-api/soundwire/stream.rst:352: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-> rc4/Documentation/driver-api/soundwire/stream.rst:364: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+> These two new dt properties will allow such flexibilty at board level dts.
 > 
-> Fixes: 89634f99a83e ("Documentation: soundwire: Add more documentation")
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-> Cc: Sanyog Kale <sanyog.r.kale@intel.com>
-> Cc: Shreyas NC <shreyas.nc@intel.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: alsa-devel@alsa-project.org
-> Cc: linux-doc@vger.kernel.org
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->   Documentation/driver-api/soundwire/stream.rst |    8 ++++++++
->   1 file changed, 8 insertions(+)
+>  .../devicetree/bindings/sound/qcom,q6asm.txt  | 27 +++++++++++++++++++
+>  1 file changed, 27 insertions(+)
+> 
 
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Tested-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-
-Thanks
-
-Takashi Sakamoto
+Reviewed-by: Rob Herring <robh@kernel.org>
