@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH 7/7] slimbus: ngd: register ngd driver only once.
-Date: Sun, 16 Sep 2018 16:45:46 -0700
-Message-ID: <20180916234546.29661-8-srinivas.kandagatla@linaro.org>
+Subject: [PATCH 4/7] slimbus: ngd: validate logical address assigned by remote
+Date: Sun, 16 Sep 2018 16:45:43 -0700
+Message-ID: <20180916234546.29661-5-srinivas.kandagatla@linaro.org>
 References: <20180916234546.29661-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180916234546.29661-1-srinivas.kandagatla@linaro.org>
@@ -12,32 +12,35 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Move ngd platform driver out of loop so that it registers only once.
+Validate logical address assigned by remote, in failure cases this value
+is all zeors.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- drivers/slimbus/qcom-ngd-ctrl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/slimbus/qcom-ngd-ctrl.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/drivers/slimbus/qcom-ngd-ctrl.c b/drivers/slimbus/qcom-ngd-ctrl.c
-index f48a06e..f7490d7 100644
+index 8be4d67..b9f2e3f 100644
 --- a/drivers/slimbus/qcom-ngd-ctrl.c
 +++ b/drivers/slimbus/qcom-ngd-ctrl.c
-@@ -1355,7 +1355,6 @@ static int of_qcom_slim_ngd_register(struct device *parent,
- 		ngd->base = ctrl->base + ngd->id * data->offset +
- 					(ngd->id - 1) * data->size;
- 		ctrl->ngd = ngd;
--		platform_driver_register(&qcom_slim_ngd_driver);
- 
- 		return 0;
+@@ -1004,6 +1004,7 @@ static int qcom_slim_ngd_get_laddr(struct slim_controller *ctrl,
+ 				   struct slim_eaddr *ea, u8 *laddr)
+ {
+ 	struct slim_val_inf msg =  {0};
++	u8 failed_ea[6] = {0, 0, 0, 0, 0, 0};
+ 	struct slim_msg_txn txn;
+ 	u8 wbuf[10] = {0};
+ 	u8 rbuf[10] = {0};
+@@ -1034,6 +1035,9 @@ static int qcom_slim_ngd_get_laddr(struct slim_controller *ctrl,
+ 		return ret;
  	}
-@@ -1447,6 +1446,7 @@ static int qcom_slim_ngd_ctrl_probe(struct platform_device *pdev)
- 	init_completion(&ctrl->reconf);
- 	init_completion(&ctrl->qmi.qmi_comp);
  
-+	platform_driver_register(&qcom_slim_ngd_driver);
- 	return of_qcom_slim_ngd_register(dev, ctrl);
- }
++	if (!memcmp(rbuf, failed_ea, 6))
++		return -ENXIO;
++
+ 	*laddr = rbuf[6];
  
+ 	return ret;
 -- 
 2.9.3
