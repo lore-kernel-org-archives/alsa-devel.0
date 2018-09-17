@@ -1,49 +1,33 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH] ASoC: AMD: Fix capture unstable in beginning for some runs
-Date: Mon, 17 Sep 2018 21:10:34 +0530
-Message-ID: <1537198839-15985-1-git-send-email-akshu.agrawal@amd.com>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH] Documentation: soundwire: fix stream.rst markup warnings
+Date: Mon, 17 Sep 2018 09:13:19 -0700
+Message-ID: <20180917161319.GB2613@vkoul-mobl>
+References: <8e1ec734-06b8-ba8a-fdca-3221ac134ea0@infradead.org>
 Mime-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <8e1ec734-06b8-ba8a-fdca-3221ac134ea0@infradead.org>
 Sender: linux-kernel-owner@vger.kernel.org
-Cc: akshu.agrawal@amd.com, djkurtz@chromium.org, Alexander.Deucher@amd.com, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC
-        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: moderated for non-subscribers <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>, "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-alsa_conformance_test -C hw:0,4 -p 1024 --debug
-would sometime show:
-TIME_DIFF(s)    HW_LEVEL       READ              RATE
-0.000095970         1024       1024    10670001.041992
-0.042609555         1024       2048       24032.168372
-0.021330364         1024       3072       48006.681930
-0.021339559         1024       4096       47985.996337
-The issue is that in dma pointer function we can have stale value
-of the register for current descriptor of channel.
-The register retains the number of the last descriptor that
-was transferred.
+On 16-09-18, 17:34, Randy Dunlap wrote:
+> From: Randy Dunlap <rdunlap@infradead.org>
+> 
+> Fix kernel-doc markup warnings in soundwire/stream.rst:
+> 
+> rc4/Documentation/driver-api/soundwire/stream.rst:177: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+> rc4/Documentation/driver-api/soundwire/stream.rst:203: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+> rc4/Documentation/driver-api/soundwire/stream.rst:248: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+> rc4/Documentation/driver-api/soundwire/stream.rst:277: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+> rc4/Documentation/driver-api/soundwire/stream.rst:304: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+> rc4/Documentation/driver-api/soundwire/stream.rst:328: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+> rc4/Documentation/driver-api/soundwire/stream.rst:352: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+> rc4/Documentation/driver-api/soundwire/stream.rst:364: WARNING: Explicit markup ends without a blank line; unexpected unindent.
 
-Fix ensures that we report position, 0, till the one period worth of
-data is transferred.  After one period of data, in handler of period
-completion interrupt we update the config and correct value of descriptor
-starts reflecting.
+Applied, thanks
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
----
- sound/soc/amd/acp-pcm-dma.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index c7e972b..f27e20c 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1050,6 +1050,8 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
- 			bytescount -= rtd->bytescount;
- 		delay = do_div(bytescount, period_bytes);
- 		runtime->delay = bytes_to_frames(runtime, delay);
-+		if (bytescount < period_bytes)
-+			pos = 0;
- 	} else {
- 		buffersize = frames_to_bytes(runtime, runtime->buffer_size);
- 		bytescount = acp_get_byte_count(rtd);
 -- 
-1.9.1
+~Vinod
