@@ -1,18 +1,18 @@
-From: Elimar Riesebieter <riesebie@lxtec.de>
-Subject: Bug#908938: alsa-utils: amixer does not unmute
-	pulseaudio
-Date: Mon, 17 Sep 2018 09:37:32 +0200
-Message-ID: <20180917073732.jcdgihgwi7bvtvj3@toy.home.lxtec.de>
-References: <87lg8194nz.fsf%steelman@post.pl>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH] ALSA: bebob: fix memory leak for M-Audio
+	FW1814 and ProjectMix I/O at error path
+Date: Mon, 17 Sep 2018 17:25:24 +0900
+Message-ID: <20180917082524.11308-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mailout3.hostsharing.net (mailout3.hostsharing.net
- [176.9.242.54]) by alsa0.perex.cz (Postfix) with ESMTP id 943BE26761D
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 09:37:34 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <87lg8194nz.fsf%steelman@post.pl>
+Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com
+ [209.85.214.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id C2C5826761D
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 10:25:43 +0200 (CEST)
+Received: by mail-pl1-f194.google.com with SMTP id b12-v6so7060826plr.8
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 01:25:43 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,24 +22,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: 908938@bugs.debian.org, =?utf-8?Q?=C5=81ukasz?= Stelmach <steelman@post.pl>
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Q29udHJvbDogZm9yd2FyZGVkIC0xIGFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwoKSGkgYWxz
-YSBkZXZzLAoKcGxlYXNlIG5vdGljZSBEZWJpYW4gQnVnCgpodHRwczovL2J1Z3MuZGViaWFuLm9y
-Zy9jZ2ktYmluL2J1Z3JlcG9ydC5jZ2k/YnVnPTkwODkzOAoKYW5kIGxldCB1cyBrbm93IHdoZXRo
-ZXIgYSBmaXggaXMgcG9zc2libGUuCgpUaGFua3MgaW4gYWR2YW5jZQoKLS0gCiAgIEVsaW1hcgoK
-CiogxYF1a2FzeiBTdGVsbWFjaCA8c3RlZWxtYW5AcG9zdC5wbD4gWzIwMTgtMDktMTYgMTE6MjMg
-KzAyMDBdOgoKPiBQYWNrYWdlOiBhbHNhLXV0aWxzCj4gVmVyc2lvbjogMS4xLjMtMQo+IFNldmVy
-aXR5OiBub3JtYWwKPiAKPiBEZWFyIE1haW50YWluZXIsCj4gCj4gSSd2ZSBnb3QgUHVsc2VBdWRp
-byBydW5uaW5nLCBzbyBhbWl4ZXIgKGFuZCBhbHNhbWl4ZXIpIGNvbnRyb2xzIHRoZQo+IGRlZmF1
-bHQgUEEgb3V0cHV0LiBJIHVzZSB0aGUgZm9sbG93aW5nIGNvbW1hbmQgdG8gY29udHJvbCBtdXRp
-bmcgb2YKPiBhdWRpby4KPiAKPiAgICAgYW1peGVyIC1xIC1jIDAgc3NldCBNYXN0ZXIgdG9nZ2xl
-Cj4gCj4gSXQgbXV0ZXMgdGhlIGF1ZGlvIGJ1dCBjYW4ndCB1bm11dGUuIE5laXRoZXIgY2FuCj4g
-Cj4gICAgIGFtaXhlciAtcSAtYyAwIHNzZXQgTWFzdGVyIHVubXV0ZQo+IAo+IE9ubHkgYWxzYW1p
-eGVyIGFuZCBwYXZ1Y29udHJvbCBjYW4gdW5tdXRlLgoKCi0tIAogIERvIHlvdSBzbWVsbCBzb21l
-dGhpbmcgYnVybmluZyBvciBpcyBpdCBtZT8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+After allocating model-dependent data for M-Audio FW1814 and ProjectMix
+I/O, ALSA bebob driver has memory leak at error path.
+
+This commit releases the allocated data at the error path.
+
+Fixes: 04a2c73c97eb('ALSA: bebob: delayed registration of sound card')
+Cc: <stable@vger.kernel.org> # v4.7+
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ sound/firewire/bebob/bebob.c        | 2 ++
+ sound/firewire/bebob/bebob_maudio.c | 4 ----
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
+index 730ea91d9be8..93676354f87f 100644
+--- a/sound/firewire/bebob/bebob.c
++++ b/sound/firewire/bebob/bebob.c
+@@ -263,6 +263,8 @@ do_registration(struct work_struct *work)
+ error:
+ 	mutex_unlock(&devices_mutex);
+ 	snd_bebob_stream_destroy_duplex(bebob);
++	kfree(bebob->maudio_special_quirk);
++	bebob->maudio_special_quirk = NULL;
+ 	snd_card_free(bebob->card);
+ 	dev_info(&bebob->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
+diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
+index bd55620c6a47..164f2126a676 100644
+--- a/sound/firewire/bebob/bebob_maudio.c
++++ b/sound/firewire/bebob/bebob_maudio.c
+@@ -290,10 +290,6 @@ snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814)
+ 		bebob->midi_output_ports = 2;
+ 	}
+ end:
+-	if (err < 0) {
+-		kfree(params);
+-		bebob->maudio_special_quirk = NULL;
+-	}
+ 	mutex_unlock(&bebob->mutex);
+ 	return err;
+ }
+-- 
+2.17.1
