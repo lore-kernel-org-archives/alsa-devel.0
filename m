@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6asm-dai: remove duplicated
-	include from q6asm-dai.c" to the asoc tree
-Date: Mon, 17 Sep 2018 22:21:19 +0100 (BST)
-Message-ID: <20180917212119.3F8DB440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: hisilicon: fix fall-through
+	annotations" to the asoc tree
+Date: Mon, 17 Sep 2018 22:21:22 +0100 (BST)
+Message-ID: <20180917212122.AD80B440078@finisterre.ee.mobilebroadband>
+References: <20180913191107.GA11390@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7ED6B267889
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 23:21:23 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id B60FE2678A9
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 23:21:26 +0200 (CEST)
+In-Reply-To: <20180913191107.GA11390@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: YueHaibing <yuehaibing@huawei.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, "Gustavo A. R. Silva" <gustavo@embeddedor.com>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6asm-dai: remove duplicated include from q6asm-dai.c
+   ASoC: hisilicon: fix fall-through annotations
 
 has been applied to the asoc tree at
 
@@ -52,32 +52,41 @@ to this mail.
 Thanks,
 Mark
 
->From 24b7a0aa1abec41b62c9a29a75e511d29f95033b Mon Sep 17 00:00:00 2001
-From: YueHaibing <yuehaibing@huawei.com>
-Date: Fri, 14 Sep 2018 01:36:04 +0000
-Subject: [PATCH] ASoC: qdsp6: q6asm-dai: remove duplicated include from
- q6asm-dai.c
+>From 982e386379f01aa6254e3313cff1edcb04c66685 Mon Sep 17 00:00:00 2001
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Date: Thu, 13 Sep 2018 14:11:07 -0500
+Subject: [PATCH] ASoC: hisilicon: fix fall-through annotations
 
-Remove duplicated include.
+Replace "fallthru" with a proper "fall through" annotation.
 
-Signed-off-by: YueHaibing <yuehaibing@huawei.com>
-Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+This fix is part of the ongoing efforts to enabling
+-Wimplicit-fallthrough
+
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 1 -
- 1 file changed, 1 deletion(-)
+ sound/soc/hisilicon/hi6210-i2s.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index c75fab38905d..c3806d7037fc 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -8,7 +8,6 @@
- #include <linux/platform_device.h>
- #include <linux/slab.h>
- #include <sound/soc.h>
--#include <sound/soc.h>
- #include <sound/soc-dapm.h>
- #include <sound/pcm.h>
- #include <asm/dma.h>
+diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
+index 53344a3b7a60..a69e5b11b3da 100644
+--- a/sound/soc/hisilicon/hi6210-i2s.c
++++ b/sound/soc/hisilicon/hi6210-i2s.c
+@@ -269,13 +269,13 @@ static int hi6210_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	switch (params_format(params)) {
+ 	case SNDRV_PCM_FORMAT_U16_LE:
+ 		signed_data = HII2S_I2S_CFG__S2_CODEC_DATA_FORMAT;
+-		/* fallthru */
++		/* fall through */
+ 	case SNDRV_PCM_FORMAT_S16_LE:
+ 		bits = HII2S_BITS_16;
+ 		break;
+ 	case SNDRV_PCM_FORMAT_U24_LE:
+ 		signed_data = HII2S_I2S_CFG__S2_CODEC_DATA_FORMAT;
+-		/* fallthru */
++		/* fall through */
+ 	case SNDRV_PCM_FORMAT_S24_LE:
+ 		bits = HII2S_BITS_24;
+ 		break;
 -- 
 2.19.0
