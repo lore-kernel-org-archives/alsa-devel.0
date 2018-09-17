@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: soc-core: manage platform name under
-	snd_soc_init_platform()" to the asoc tree
-Date: Mon, 17 Sep 2018 22:21:09 +0100 (BST)
-Message-ID: <20180917212109.F2FDC440078@finisterre.ee.mobilebroadband>
-References: <871sa05ya3.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: qdsp6: q6asm-dai: remove duplicated
+	include from q6asm-dai.c" to the asoc tree
+Date: Mon, 17 Sep 2018 22:21:19 +0100 (BST)
+Message-ID: <20180917212119.3F8DB440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 569752678A6
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 23:21:12 +0200 (CEST)
-In-Reply-To: <871sa05ya3.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7ED6B267889
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 23:21:23 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: soc-core: manage platform name under snd_soc_init_platform()
+   ASoC: qdsp6: q6asm-dai: remove duplicated include from q6asm-dai.c
 
 has been applied to the asoc tree at
 
@@ -53,96 +52,32 @@ to this mail.
 Thanks,
 Mark
 
->From 4a9ed39477bd1635cf23b49e10f9e364329bbe46 Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 11 Sep 2018 06:51:14 +0000
-Subject: [PATCH] ASoC: soc-core: manage platform name under
- snd_soc_init_platform()
+>From 24b7a0aa1abec41b62c9a29a75e511d29f95033b Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Fri, 14 Sep 2018 01:36:04 +0000
+Subject: [PATCH] ASoC: qdsp6: q6asm-dai: remove duplicated include from
+ q6asm-dai.c
 
-Now "platform" is controlled by snd_soc_dai_link_component,
-thus its "name" can be initialized in snd_soc_init_platform(),
-instead of soc_bind_dai_link() local.
-This patch do it.
+Remove duplicated include.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Acked-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c | 33 +++++++++++++++++----------------
- 1 file changed, 17 insertions(+), 16 deletions(-)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 325dc1964850..d856b08f5f99 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -845,7 +845,6 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	struct snd_soc_component *component;
- 	struct snd_soc_dai **codec_dais;
- 	struct device_node *platform_of_node;
--	const char *platform_name;
- 	int i;
- 
- 	if (dai_link->ignore)
-@@ -892,11 +891,6 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 	/* Single codec links expect codec and codec_dai in runtime data */
- 	rtd->codec_dai = codec_dais[0];
- 
--	/* if there's no platform we match on the empty platform */
--	platform_name = dai_link->platform->name;
--	if (!platform_name && !dai_link->platform->of_node)
--		platform_name = "snd-soc-dummy";
--
- 	/* find one from the set of registered platforms */
- 	list_for_each_entry(component, &component_list, list) {
- 		platform_of_node = component->dev->of_node;
-@@ -907,7 +901,7 @@ static int soc_bind_dai_link(struct snd_soc_card *card,
- 			if (platform_of_node != dai_link->platform->of_node)
- 				continue;
- 		} else {
--			if (strcmp(component->name, platform_name))
-+			if (strcmp(component->name, dai_link->platform->name))
- 				continue;
- 		}
- 
-@@ -1020,24 +1014,31 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
- static int snd_soc_init_platform(struct snd_soc_card *card,
- 				 struct snd_soc_dai_link *dai_link)
- {
-+	struct snd_soc_dai_link_component *platform = dai_link->platform;
-+
- 	/*
- 	 * FIXME
- 	 *
- 	 * this function should be removed in the future
- 	 */
- 	/* convert Legacy platform link */
--	if (dai_link->platform)
--		return 0;
--
--	dai_link->platform = devm_kzalloc(card->dev,
-+	if (!platform) {
-+		platform = devm_kzalloc(card->dev,
- 				sizeof(struct snd_soc_dai_link_component),
- 				GFP_KERNEL);
--	if (!dai_link->platform)
--		return -ENOMEM;
-+		if (!platform)
-+			return -ENOMEM;
- 
--	dai_link->platform->name	= dai_link->platform_name;
--	dai_link->platform->of_node	= dai_link->platform_of_node;
--	dai_link->platform->dai_name	= NULL;
-+		dai_link->platform	= platform;
-+		platform->name		= dai_link->platform_name;
-+		platform->of_node	= dai_link->platform_of_node;
-+		platform->dai_name	= NULL;
-+	}
-+
-+	/* if there's no platform we match on the empty platform */
-+	if (!platform->name &&
-+	    !platform->of_node)
-+		platform->name = "snd-soc-dummy";
- 
- 	return 0;
- }
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index c75fab38905d..c3806d7037fc 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -8,7 +8,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ #include <sound/soc.h>
+-#include <sound/soc.h>
+ #include <sound/soc-dapm.h>
+ #include <sound/pcm.h>
+ #include <asm/dma.h>
 -- 
 2.19.0
