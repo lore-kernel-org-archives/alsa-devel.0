@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v4 13/14] ASoC: apq8096: add headset JACK support
-Date: Sun, 16 Sep 2018 17:57:26 -0700
-Message-ID: <20180917005727.32728-14-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 14/14] ASoC: qcom: common: move be_hw_fixup to common
+Date: Sun, 16 Sep 2018 17:57:27 -0700
+Message-ID: <20180917005727.32728-15-srinivas.kandagatla@linaro.org>
 References: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
@@ -12,136 +12,132 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
+be_hw_fixup for qdsp is common across mutiple qcom machine drivers,
+so move it to common file and remove the redundant code.
+
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/apq8096.c | 53 ++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 53 insertions(+)
+ sound/soc/qcom/apq8096.c | 15 ---------------
+ sound/soc/qcom/common.c  | 17 +++++++++++++++++
+ sound/soc/qcom/sdm845.c  | 22 ++--------------------
+ 3 files changed, 19 insertions(+), 35 deletions(-)
 
 diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 66a28c2..daad43f 100644
+index daad43f..9cb26aee 100644
 --- a/sound/soc/qcom/apq8096.c
 +++ b/sound/soc/qcom/apq8096.c
-@@ -5,14 +5,21 @@
- #include <linux/platform_device.h>
- #include <linux/of_device.h>
- #include <sound/soc.h>
-+#include <sound/jack.h>
- #include <sound/soc-dapm.h>
- #include <sound/pcm.h>
-+#include <uapi/linux/input-event-codes.h>
+@@ -20,20 +20,6 @@ struct apq8096_card_data {
+ 	bool jack_setup;
+ };
+ 
+-static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+-				      struct snd_pcm_hw_params *params)
+-{
+-	struct snd_interval *rate = hw_param_interval(params,
+-					SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels = hw_param_interval(params,
+-					SNDRV_PCM_HW_PARAM_CHANNELS);
+-
+-	rate->min = rate->max = 48000;
+-	channels->min = channels->max = 2;
+-
+-	return 0;
+-}
+-
+ static int msm_snd_hw_params(struct snd_pcm_substream *substream,
+ 			     struct snd_pcm_hw_params *params)
+ {
+@@ -139,7 +125,6 @@ static void apq8096_add_be_ops(struct snd_soc_card *card)
+ 
+ 	for (i = 0; i < num_links; i++) {
+ 		if (link->no_pcm == 1) {
+-			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
+ 			link->init = apq8096_init;
+ 			link->ops = &apq8096_ops;
+ 		}
+diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+index eb1b9da..ce8e759 100644
+--- a/sound/soc/qcom/common.c
++++ b/sound/soc/qcom/common.c
+@@ -3,8 +3,24 @@
+ // Copyright (c) 2018, The Linux Foundation. All rights reserved.
+ 
+ #include <linux/module.h>
++#include <sound/pcm_params.h>
  #include "common.h"
  
- #define SLIM_MAX_TX_PORTS 16
- #define SLIM_MAX_RX_PORTS 16
- #define WCD9335_DEFAULT_MCLK_RATE	9600000
- 
-+struct apq8096_card_data {
-+	struct snd_soc_jack jack;
-+	bool jack_setup;
-+};
++static int qcom_snd_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++				       struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_CHANNELS);
 +
- static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 				      struct snd_pcm_hw_params *params)
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
++	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
++
++	return 0;
++}
++
+ int qcom_snd_parse_of(struct snd_soc_card *card)
  {
-@@ -68,6 +75,7 @@ static struct snd_soc_ops apq8096_ops = {
- static int apq8096_init(struct snd_soc_pcm_runtime *rtd)
+ 	struct device_node *np;
+@@ -79,6 +95,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+ 			}
+ 			link->no_pcm = 1;
+ 			link->ignore_pmdown_time = 1;
++			link->be_hw_params_fixup = qcom_snd_be_hw_params_fixup;
+ 		} else {
+ 			link->platform_of_node = link->cpu_of_node;
+ 			link->codec_dai_name = "snd-soc-dummy-dai";
+diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+index 2a781d8..87e150c 100644
+--- a/sound/soc/qcom/sdm845.c
++++ b/sound/soc/qcom/sdm845.c
+@@ -11,7 +11,6 @@
+ #include "common.h"
+ #include "qdsp6/q6afe.h"
+ 
+-#define DEFAULT_SAMPLE_RATE_48K		48000
+ #define DEFAULT_MCLK_RATE		24576000
+ #define DEFAULT_BCLK_RATE		12288000
+ 
+@@ -177,32 +176,15 @@ static struct snd_soc_ops sdm845_be_ops = {
+ 	.shutdown = sdm845_snd_shutdown,
+ };
+ 
+-static int sdm845_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+-				struct snd_pcm_hw_params *params)
+-{
+-	struct snd_interval *rate = hw_param_interval(params,
+-					SNDRV_PCM_HW_PARAM_RATE);
+-	struct snd_interval *channels = hw_param_interval(params,
+-					SNDRV_PCM_HW_PARAM_CHANNELS);
+-	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+-
+-	rate->min = rate->max = DEFAULT_SAMPLE_RATE_48K;
+-	channels->min = channels->max = 2;
+-	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+-
+-	return 0;
+-}
+-
+ static void sdm845_add_be_ops(struct snd_soc_card *card)
  {
- 	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct apq8096_card_data *data = snd_soc_card_get_drvdata(rtd->card);
+ 	struct snd_soc_dai_link *link = card->dai_link;
+ 	int i, num_links = card->num_links;
  
- 	/*
- 	 * Codec SLIMBUS configuration
-@@ -80,6 +88,8 @@ static int apq8096_init(struct snd_soc_pcm_runtime *rtd)
- 	unsigned int tx_ch[SLIM_MAX_TX_PORTS] = {128, 129, 130, 131, 132, 133,
- 					    134, 135, 136, 137, 138, 139,
- 					    140, 141, 142, 143};
-+	struct snd_soc_card *card = rtd->card;
-+	int rval;
- 
- 	snd_soc_dai_set_channel_map(codec_dai, ARRAY_SIZE(tx_ch),
- 					tx_ch, ARRAY_SIZE(rx_ch), rx_ch);
-@@ -87,6 +97,38 @@ static int apq8096_init(struct snd_soc_pcm_runtime *rtd)
- 	snd_soc_dai_set_sysclk(codec_dai, 0, WCD9335_DEFAULT_MCLK_RATE,
- 				SNDRV_PCM_STREAM_PLAYBACK);
- 
-+	if (!data->jack_setup) {
-+		struct snd_jack *jack;
+ 	for (i = 0; i < num_links; i++) {
+-		if (link->no_pcm == 1) {
++		if (link->no_pcm == 1)
+ 			link->ops = &sdm845_be_ops;
+-			link->be_hw_params_fixup = sdm845_be_hw_params_fixup;
+-		}
 +
-+		rval = snd_soc_card_jack_new(card, "Headset Jack",
-+					     SND_JACK_HEADSET |
-+					     SND_JACK_HEADPHONE |
-+					     SND_JACK_BTN_0 | SND_JACK_BTN_1 |
-+					     SND_JACK_BTN_2 | SND_JACK_BTN_3 |
-+					     SND_JACK_BTN_4,
-+					     &data->jack, NULL, 0);
-+
-+		if (rval < 0) {
-+			dev_err(card->dev, "Unable to add Headphone Jack\n");
-+			return rval;
-+		}
-+
-+		jack = data->jack.jack;
-+
-+		snd_jack_set_key(jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
-+		snd_jack_set_key(jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
-+		snd_jack_set_key(jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
-+		snd_jack_set_key(jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
-+		data->jack_setup = true;
-+	}
-+
-+	rval = snd_soc_component_set_jack(codec_dai->component,
-+					 &data->jack, NULL);
-+	if (rval != 0 && rval != -ENOTSUPP) {
-+		dev_warn(card->dev, "Failed to set jack: %d\n", rval);
-+		return rval;
-+	}
-+
- 	return 0;
- }
- 
-@@ -107,6 +149,7 @@ static void apq8096_add_be_ops(struct snd_soc_card *card)
- 
- static int apq8096_platform_probe(struct platform_device *pdev)
- {
-+	struct apq8096_card_data *data;
- 	struct snd_soc_card *card;
- 	struct device *dev = &pdev->dev;
- 	int ret;
-@@ -115,8 +158,15 @@ static int apq8096_platform_probe(struct platform_device *pdev)
- 	if (!card)
- 		return -ENOMEM;
- 
-+	data = kzalloc(sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		kfree(card);
-+		return -ENOMEM;
-+	}
-+
- 	card->dev = dev;
- 	dev_set_drvdata(dev, card);
-+	snd_soc_card_set_drvdata(card, data);
- 	ret = qcom_snd_parse_of(card);
- 	if (ret) {
- 		dev_err(dev, "Error parsing OF data\n");
-@@ -134,16 +184,19 @@ static int apq8096_platform_probe(struct platform_device *pdev)
- 	kfree(card->dai_link);
- err:
- 	kfree(card);
-+	kfree(data);
- 	return ret;
- }
- 
- static int apq8096_platform_remove(struct platform_device *pdev)
- {
- 	struct snd_soc_card *card = dev_get_drvdata(&pdev->dev);
-+	struct apq8096_card_data *data = snd_soc_card_get_drvdata(card);
- 
- 	snd_soc_unregister_card(card);
- 	kfree(card->dai_link);
- 	kfree(card);
-+	kfree(data);
- 
- 	return 0;
+ 		link++;
+ 	}
  }
 -- 
 2.9.3
