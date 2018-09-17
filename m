@@ -1,106 +1,108 @@
-From: Randy Dunlap <rdunlap@infradead.org>
-Subject: [PATCH] Documentation: soundwire: fix stream.rst markup warnings
-Date: Sun, 16 Sep 2018 17:34:49 -0700
-Message-ID: <8e1ec734-06b8-ba8a-fdca-3221ac134ea0@infradead.org>
+From: srinivas.kandagatla@linaro.org
+Subject: [PATCH v4 00/14] ASoC: Add support to WCD9335 Audio
+	Codec
+Date: Sun, 16 Sep 2018 17:57:13 -0700
+Message-ID: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: moderated for non-subscribers <alsa-devel@alsa-project.org>, LKML <linux-kernel@vger.kernel.org>
-Cc: "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Sanyog Kale <sanyog.r.kale@intel.com>, Shreyas NC <shreyas.nc@intel.com>, Vinod Koul <vkoul@kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it0-f65.google.com (mail-it0-f65.google.com
+ [209.85.214.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7BEBA2676AA
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 02:57:58 +0200 (CEST)
+Received: by mail-it0-f65.google.com with SMTP id h23-v6so8894195ita.5
+ for <alsa-devel@alsa-project.org>; Sun, 16 Sep 2018 17:57:58 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-From: Randy Dunlap <rdunlap@infradead.org>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
-Fix kernel-doc markup warnings in soundwire/stream.rst:
+Thankyou for reviewing v3 patchset, here is v4 addressing comments from v3.
 
-rc4/Documentation/driver-api/soundwire/stream.rst:177: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-rc4/Documentation/driver-api/soundwire/stream.rst:203: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-rc4/Documentation/driver-api/soundwire/stream.rst:248: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-rc4/Documentation/driver-api/soundwire/stream.rst:277: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-rc4/Documentation/driver-api/soundwire/stream.rst:304: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-rc4/Documentation/driver-api/soundwire/stream.rst:328: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-rc4/Documentation/driver-api/soundwire/stream.rst:352: WARNING: Explicit markup ends without a blank line; unexpected unindent.
-rc4/Documentation/driver-api/soundwire/stream.rst:364: WARNING: Explicit markup ends without a blank line; unexpected unindent.
+Qualcomm WCD9335 Codec is a standalone Hi-Fi audio codec IC.
+It is integrated in multiple Qualcomm SoCs like: MSM8996, MSM8976,
+and MSM8956 chipsets.
 
-Fixes: 89634f99a83e ("Documentation: soundwire: Add more documentation")
+WCD9335 had multiple functional blocks, like: Soundwire controller,
+interrupt mux, pin controller, Audio codec, MBHC, MAD(Mic activity Detection),
+Ultrasonic proximity and pen detection, Battery-voltage monitoring and
+Codec processing engine.
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: Sanyog Kale <sanyog.r.kale@intel.com>
-Cc: Shreyas NC <shreyas.nc@intel.com>
-Cc: Vinod Koul <vkoul@kernel.org>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-doc@vger.kernel.org
----
- Documentation/driver-api/soundwire/stream.rst |    8 ++++++++
- 1 file changed, 8 insertions(+)
+Currently this patchset has been only tested with SLIMbus interface due
+to hardware avaiablity, but it can be easily made to work with both SLIMbus
+and I2C/I2S.    
 
---- lnx-419-rc4.orig/Documentation/driver-api/soundwire/stream.rst
-+++ lnx-419-rc4/Documentation/driver-api/soundwire/stream.rst
-@@ -174,6 +174,7 @@ per stream. From ASoC DPCM framework, th
- .startup() operation.
- 
-   .. code-block:: c
-+
-   int sdw_alloc_stream(char * stream_name);
- 
- 
-@@ -200,6 +201,7 @@ only be invoked once by respective Maste
- framework, this stream state is linked to .hw_params() operation.
- 
-   .. code-block:: c
-+
-   int sdw_stream_add_master(struct sdw_bus * bus,
- 		struct sdw_stream_config * stream_config,
- 		struct sdw_ports_config * ports_config,
-@@ -245,6 +247,7 @@ stream. From ASoC DPCM framework, this s
- .prepare() operation.
- 
-   .. code-block:: c
-+
-   int sdw_prepare_stream(struct sdw_stream_runtime * stream);
- 
- 
-@@ -274,6 +277,7 @@ stream. From ASoC DPCM framework, this s
- .trigger() start operation.
- 
-   .. code-block:: c
-+
-   int sdw_enable_stream(struct sdw_stream_runtime * stream);
- 
- SDW_STREAM_DISABLED
-@@ -301,6 +305,7 @@ per stream. From ASoC DPCM framework, th
- .trigger() stop operation.
- 
-   .. code-block:: c
-+
-   int sdw_disable_stream(struct sdw_stream_runtime * stream);
- 
- 
-@@ -325,6 +330,7 @@ per stream. From ASoC DPCM framework, th
- .trigger() stop operation.
- 
-   .. code-block:: c
-+
-   int sdw_deprepare_stream(struct sdw_stream_runtime * stream);
- 
- 
-@@ -349,6 +355,7 @@ all the Master(s) and Slave(s) associate
- framework, this stream state is linked to .hw_free() operation.
- 
-   .. code-block:: c
-+
-   int sdw_stream_remove_master(struct sdw_bus * bus,
- 		struct sdw_stream_runtime * stream);
-   int sdw_stream_remove_slave(struct sdw_slave * slave,
-@@ -361,6 +368,7 @@ stream assigned as part of ALLOCATED sta
- In .shutdown() the data structure maintaining stream state are freed up.
- 
-   .. code-block:: c
-+
-   void sdw_release_stream(struct sdw_stream_runtime * stream);
- 
- Not Supported
+This patchset adds very basic playback and capture support witout much
+fancy features. New features will be added once the basic support is in.
+This patchset is tested on top of linux-next on DB820c for both playback
+, capture paths and MBHC.
+
+Some parts of the code has been inherited from Qualcomm andriod kernel,
+so credits to various authors.
+
+WCD9335 can be interfaced via I2S/I2C or SLIMbus. 
+
+Here is my test branch incase someone want to try this out:
+https://git.linaro.org/people/srinivas.kandagatla/linux.git/log/?h=wcd9335
+
+Thanks,
+Srini
+
+Changes since v3 (https://lkml.org/lkml/2018/9/4/318/)
+ - Updated mbhc dt bindings according to Robs Comments.
+ - Added a cleanup patch to common up fixups.
+ - Addressed various comments on mfd driver by Lee Jones.
+ - Added acks on bindings and irq support.
+ - fixed module loading
+
+Srinivas Kandagatla (14):
+  ASoC: dt-bindings: update wcd9335 bindings.
+  mfd: wcd9335: add support to wcd9335 core
+  mfd: wcd9335: add wcd irq support
+  ASoC: wcd9335: add support to wcd9335 codec
+  ASoC: wcd9335: add CLASS-H Controller support
+  ASoC: wcd9335: add basic controls
+  ASoC: wcd9335: add playback dapm widgets
+  ASoC: wcd9335: add capture dapm widgets
+  ASoC: wcd9335: add audio routings
+  ASoC: dt-bindings: Add WCD9335 MBHC specific properties
+  ASoC: wcd9335: add mbhc support
+  ASoC: apq8096: add slim support
+  ASoC: apq8096: add headset JACK support
+  ASoC: qcom: common: move be_hw_fixup to common
+
+ .../devicetree/bindings/sound/qcom,wcd9335.txt     |   30 +-
+ drivers/mfd/Kconfig                                |   13 +
+ drivers/mfd/Makefile                               |    4 +
+ drivers/mfd/wcd9335-core.c                         |  394 ++
+ include/linux/mfd/wcd9335/registers.h              |  640 +++
+ include/linux/mfd/wcd9335/wcd9335.h                |   81 +
+ sound/soc/codecs/Kconfig                           |    5 +
+ sound/soc/codecs/Makefile                          |    2 +
+ sound/soc/codecs/wcd-clsh-v2.c                     |  577 +++
+ sound/soc/codecs/wcd-clsh-v2.h                     |   49 +
+ sound/soc/codecs/wcd9335.c                         | 5241 ++++++++++++++++++++
+ sound/soc/qcom/apq8096.c                           |  128 +-
+ sound/soc/qcom/common.c                            |   17 +
+ sound/soc/qcom/sdm845.c                            |   22 +-
+ 14 files changed, 7168 insertions(+), 35 deletions(-)
+ create mode 100644 drivers/mfd/wcd9335-core.c
+ create mode 100644 include/linux/mfd/wcd9335/registers.h
+ create mode 100644 include/linux/mfd/wcd9335/wcd9335.h
+ create mode 100644 sound/soc/codecs/wcd-clsh-v2.c
+ create mode 100644 sound/soc/codecs/wcd-clsh-v2.h
+ create mode 100644 sound/soc/codecs/wcd9335.c
+
+-- 
+2.9.3
