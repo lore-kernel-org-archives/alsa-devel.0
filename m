@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: hisilicon: fix fall-through
-	annotations" to the asoc tree
-Date: Mon, 17 Sep 2018 22:21:22 +0100 (BST)
-Message-ID: <20180917212122.AD80B440078@finisterre.ee.mobilebroadband>
-References: <20180913191107.GA11390@embeddedor.com>
+Subject: Applied "ASoC: es8328: Fix fall-through annotations"
+	to the asoc tree
+Date: Mon, 17 Sep 2018 22:21:30 +0100 (BST)
+Message-ID: <20180917212130.B57F2440078@finisterre.ee.mobilebroadband>
+References: <20180913190815.GA10487@embeddedor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B60FE2678A9
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 23:21:26 +0200 (CEST)
-In-Reply-To: <20180913191107.GA11390@embeddedor.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 620DB2678BB
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 23:21:33 +0200 (CEST)
+In-Reply-To: <20180913190815.GA10487@embeddedor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: hisilicon: fix fall-through annotations
+   ASoC: es8328: Fix fall-through annotations
 
 has been applied to the asoc tree at
 
@@ -52,10 +52,10 @@ to this mail.
 Thanks,
 Mark
 
->From 982e386379f01aa6254e3313cff1edcb04c66685 Mon Sep 17 00:00:00 2001
+>From 597d18325acdb48eb516ca9ef33d5148e79ca3bb Mon Sep 17 00:00:00 2001
 From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Date: Thu, 13 Sep 2018 14:11:07 -0500
-Subject: [PATCH] ASoC: hisilicon: fix fall-through annotations
+Date: Thu, 13 Sep 2018 14:08:15 -0500
+Subject: [PATCH] ASoC: es8328: Fix fall-through annotations
 
 Replace "fallthru" with a proper "fall through" annotation.
 
@@ -65,28 +65,29 @@ This fix is part of the ongoing efforts to enabling
 Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/hisilicon/hi6210-i2s.c | 4 ++--
+ sound/soc/codecs/es8328.c | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/hisilicon/hi6210-i2s.c b/sound/soc/hisilicon/hi6210-i2s.c
-index 53344a3b7a60..a69e5b11b3da 100644
---- a/sound/soc/hisilicon/hi6210-i2s.c
-+++ b/sound/soc/hisilicon/hi6210-i2s.c
-@@ -269,13 +269,13 @@ static int hi6210_i2s_hw_params(struct snd_pcm_substream *substream,
- 	switch (params_format(params)) {
- 	case SNDRV_PCM_FORMAT_U16_LE:
- 		signed_data = HII2S_I2S_CFG__S2_CODEC_DATA_FORMAT;
+diff --git a/sound/soc/codecs/es8328.c b/sound/soc/codecs/es8328.c
+index e9fc2fd97d2f..3aedd609626c 100644
+--- a/sound/soc/codecs/es8328.c
++++ b/sound/soc/codecs/es8328.c
+@@ -566,14 +566,14 @@ static int es8328_set_sysclk(struct snd_soc_dai *codec_dai,
+ 		break;
+ 	case 22579200:
+ 		mclkdiv2 = 1;
 -		/* fallthru */
 +		/* fall through */
- 	case SNDRV_PCM_FORMAT_S16_LE:
- 		bits = HII2S_BITS_16;
+ 	case 11289600:
+ 		es8328->sysclk_constraints = &constraints_11289;
+ 		es8328->mclk_ratios = ratios_11289;
  		break;
- 	case SNDRV_PCM_FORMAT_U24_LE:
- 		signed_data = HII2S_I2S_CFG__S2_CODEC_DATA_FORMAT;
+ 	case 24576000:
+ 		mclkdiv2 = 1;
 -		/* fallthru */
 +		/* fall through */
- 	case SNDRV_PCM_FORMAT_S24_LE:
- 		bits = HII2S_BITS_24;
- 		break;
+ 	case 12288000:
+ 		es8328->sysclk_constraints = &constraints_12288;
+ 		es8328->mclk_ratios = ratios_12288;
 -- 
 2.19.0
