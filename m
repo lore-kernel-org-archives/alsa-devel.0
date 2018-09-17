@@ -1,7 +1,7 @@
 From: srinivas.kandagatla@linaro.org
-Subject: [PATCH v4 12/14] ASoC: apq8096: add slim support
-Date: Sun, 16 Sep 2018 17:57:25 -0700
-Message-ID: <20180917005727.32728-13-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v4 10/14] ASoC: dt-bindings: Add WCD9335 MBHC specific properties
+Date: Sun, 16 Sep 2018 17:57:23 -0700
+Message-ID: <20180917005727.32728-11-srinivas.kandagatla@linaro.org>
 References: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
@@ -12,107 +12,48 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 
+This patch add new bindings required to support MBHC
+(Multi Button Headset Control) block in the codec.
+This block is used for jack insert/removal detection,
+headset type detection and 8 button press/release events.
+
+All these properties are very much specific to board.
+
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- sound/soc/qcom/apq8096.c | 72 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 71 insertions(+), 1 deletion(-)
+ .../devicetree/bindings/sound/qcom,wcd9335.txt       | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
 
-diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-index 1543e85..66a28c2 100644
---- a/sound/soc/qcom/apq8096.c
-+++ b/sound/soc/qcom/apq8096.c
-@@ -9,6 +9,10 @@
- #include <sound/pcm.h>
- #include "common.h"
+diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
+index 5d6ea66..a95a8b4 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
+@@ -55,6 +55,26 @@ Required properties with SLIMbus Interface:
+ 	Value type: <string>
+ 	Definition: Must contain "mclk", "mclk2" and "slimbus" strings.
  
-+#define SLIM_MAX_TX_PORTS 16
-+#define SLIM_MAX_RX_PORTS 16
-+#define WCD9335_DEFAULT_MCLK_RATE	9600000
++- qcom,mbhc-vthreshold-millivolt:
++	Usage: Optional, only required if headset button support required.
++	Value type: <u32 array>
++	Definition: Must contain an array of 8 threshold voltages in mV for
++		 8 buttons detection on headset.
 +
- static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 				      struct snd_pcm_hw_params *params)
- {
-@@ -23,14 +27,80 @@ static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
- 	return 0;
- }
- 
-+static int msm_snd_hw_params(struct snd_pcm_substream *substream,
-+			     struct snd_pcm_hw_params *params)
-+{
-+	struct snd_soc_pcm_runtime *rtd = substream->private_data;
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+	struct snd_soc_dai *cpu_dai = rtd->cpu_dai;
-+	struct snd_soc_card *card = rtd->card;
-+	u32 rx_ch[SLIM_MAX_RX_PORTS], tx_ch[SLIM_MAX_TX_PORTS];
-+	u32 rx_ch_cnt = 0, tx_ch_cnt = 0;
-+	int ret = 0;
++- qcom,hphl-jack-type-normally-open:
++	Usage: Optional, only required if headset button support required.
++	Value type: <boolean>
++	Definition: present if hphl pin on jack is a NO (Normally Open).
++		If not specified, then its assumed that hphl pin on jack
++		is NC (Normally Closed).
 +
-+	ret = snd_soc_dai_get_channel_map(codec_dai,
-+				&tx_ch_cnt, tx_ch, &rx_ch_cnt, rx_ch);
-+	if (ret != 0 && ret != -ENOTSUPP) {
-+		dev_err(card->dev, "failed to get codec chan map : %d\n", ret);
-+		goto end;
-+	} else if (ret == -ENOTSUPP) {
-+		return 0;
-+	}
++- qcom,gnd-jack-type-normally-open:
++	Usage: Optional, only required if headset button support required.
++	Value type: <boolean>
++	Definition: present if gnd pin on jack is NO (Normally Open).
++		 If not specified, then its assumed that gnd pin on
++		 jack is NC  (Normally Closed).
 +
-+	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
-+		ret = snd_soc_dai_set_channel_map(cpu_dai, 0, NULL,
-+						  rx_ch_cnt, rx_ch);
-+	else
-+		ret = snd_soc_dai_set_channel_map(cpu_dai, tx_ch_cnt, tx_ch,
-+						  0, NULL);
-+	if (ret != 0 && ret != -ENOTSUPP)
-+		dev_err(card->dev, "Failed to set cpu chan map : %d\n", ret);
-+	else if (ret == -ENOTSUPP)
-+		ret = 0;
-+end:
-+	return ret;
-+}
-+
-+static struct snd_soc_ops apq8096_ops = {
-+	.hw_params = msm_snd_hw_params,
-+};
-+
-+static int apq8096_init(struct snd_soc_pcm_runtime *rtd)
-+{
-+	struct snd_soc_dai *codec_dai = rtd->codec_dai;
-+
-+	/*
-+	 * Codec SLIMBUS configuration
-+	 * RX1, RX2, RX3, RX4, RX5, RX6, RX7, RX8, RX9, RX10, RX11, RX12, RX13
-+	 * TX1, TX2, TX3, TX4, TX5, TX6, TX7, TX8, TX9, TX10, TX11, TX12, TX13
-+	 * TX14, TX15, TX16
-+	 */
-+	unsigned int rx_ch[SLIM_MAX_RX_PORTS] = {144, 145, 146, 147, 148, 149,
-+					150, 151, 152, 153, 154, 155, 156};
-+	unsigned int tx_ch[SLIM_MAX_TX_PORTS] = {128, 129, 130, 131, 132, 133,
-+					    134, 135, 136, 137, 138, 139,
-+					    140, 141, 142, 143};
-+
-+	snd_soc_dai_set_channel_map(codec_dai, ARRAY_SIZE(tx_ch),
-+					tx_ch, ARRAY_SIZE(rx_ch), rx_ch);
-+
-+	snd_soc_dai_set_sysclk(codec_dai, 0, WCD9335_DEFAULT_MCLK_RATE,
-+				SNDRV_PCM_STREAM_PLAYBACK);
-+
-+	return 0;
-+}
-+
- static void apq8096_add_be_ops(struct snd_soc_card *card)
- {
- 	struct snd_soc_dai_link *link = card->dai_link;
- 	int i, num_links = card->num_links;
- 
- 	for (i = 0; i < num_links; i++) {
--		if (link->no_pcm == 1)
-+		if (link->no_pcm == 1) {
- 			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
-+			link->init = apq8096_init;
-+			link->ops = &apq8096_ops;
-+		}
- 		link++;
- 	}
- }
+ - vdd-buck-supply:
+ 	Usage: required
+ 	Value type: <phandle>
 -- 
 2.9.3
