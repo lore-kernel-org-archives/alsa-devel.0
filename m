@@ -1,14 +1,19 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: [GIT PULL] ASoC fixes for v4.19
-Date: Mon, 17 Sep 2018 17:38:30 +0100
-Message-ID: <20180917163830.GB2471@sirena.org.uk>
+Subject: Re: [PATCH 2/2] ASoC: max98927: Add reset-gpio support
+Date: Mon, 17 Sep 2018 10:47:14 -0700
+Message-ID: <20180917174713.GD2471@sirena.org.uk>
+References: <20180912121955.33048-1-cychiang@chromium.org>
+ <20180912121955.33048-2-cychiang@chromium.org>
+ <7aa3c049-5ba0-1db3-08c8-510da1cf779d@codeaurora.org>
+ <CAFv8Nw+mVHroA599ofmK6pwtPQXgP823B2_FG4G0bm5EkNhdWw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1507677190933914148=="
+Content-Type: multipart/mixed; boundary="===============8052486222904104368=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 25B6E267819
- for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 18:38:34 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id E095B267819
+ for <alsa-devel@alsa-project.org>; Mon, 17 Sep 2018 19:47:19 +0200 (CEST)
+In-Reply-To: <CAFv8Nw+mVHroA599ofmK6pwtPQXgP823B2_FG4G0bm5EkNhdWw@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,153 +23,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Cheng-yi Chiang <cychiang@chromium.org>
+Cc: alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, rohitkr@codeaurora.org, linux-kernel@vger.kernel.org, Ryan Lee <ryans.lee@maximintegrated.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1507677190933914148==
+--===============8052486222904104368==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0eh6TmSyL6TZE2Uz"
+	protocol="application/pgp-signature"; boundary="MAH+hnPXVZWQ5cD/"
 Content-Disposition: inline
 
 
---0eh6TmSyL6TZE2Uz
-Content-Type: text/plain; charset=iso-8859-1
+--MAH+hnPXVZWQ5cD/
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-The following changes since commit f2cf0ef7c0ce141bb38f315c34c56e6ef5667a27:
+On Mon, Sep 17, 2018 at 05:00:28PM +0800, Cheng-yi Chiang wrote:
+> Hi Mark,
+> Do you have any concern about this patch ?
 
-  ASoC: adav80x: mark expected switch fall-through (2018-08-09 14:41:50 +01=
-00)
+Please don't send content free pings and please allow a reasonable time
+for review.  People get busy, go on holiday, attend conferences and so=20
+on so unless there is some reason for urgency (like critical bug fixes)
+please allow at least a couple of weeks for review.  If there have been
+review comments then people may be waiting for those to be addressed.
+Sending content free pings just adds to the mail volume (if they are
+seen at all) and if something has gone wrong you'll have to resend the
+patches anyway.
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git tags/as=
-oc-v4.19-rc4
-
-for you to fetch changes up to 75383f8d39d4c0fb96083dd460b7b139fbdac492:
-
-  sound: don't call skl_init_chip() to reset intel skl soc (2018-09-12 11:2=
-2:09 +0100)
-
-----------------------------------------------------------------
-ASoC: Fixes for v4.19
-
-This is the usual set of small fixes scatterd around various drivers,
-plus one fix for DAPM and a UAPI build fix.  There's not a huge amount
-that stands out here relative to anything else.
-
-----------------------------------------------------------------
-Akshu Agrawal (1):
-      ASoC: AMD: Ensure reset bit is cleared before configuring
-
-Andrew F. Davis (1):
-      ASoC: tas6424: Save last fault register even when clear
-
-Charles Keepax (1):
-      ASoC: dapm: Fix NULL pointer deference on CODEC to CODEC DAIs
-
-Danny Smith (1):
-      ASoC: sigmadsp: safeload should not have lower byte limit
-
-Dmitry V. Levin (1):
-      ASoC: uapi: fix sound/skl-tplg-interface.h userspace compilation erro=
-rs
-
-Hans de Goede (1):
-      ASoC: Intel: bytcr_rt5640: Add quirks for 2 more devices
-
-Jiada Wang (1):
-      ASoC: rsnd: fixup not to call clk_get/set under non-atomic
-
-Katsuhiro Suzuki (1):
-      ASoC: uniphier: change status to orphan
-
-Kuninori Morimoto (2):
-      ASoC: rsnd: adg: care clock-frequency size
-      ASoC: rsnd: don't fallback to PIO mode when -EPROBE_DEFER
-
-Marcel Ziswiler (1):
-      ASoC: wm9712: fix replace codec to component
-
-Oder Chiou (1):
-      ASoC: rt5514: Fix the issue of the delay volume applied again
-
-Pierre-Louis Bossart (1):
-      ASoC: wm8804: Add ACPI support
-
-Ryan Lee (2):
-      ASoC: max98373: Added speaker FS gain cotnrol register to volatile.
-      ASoC: max98373: Added 10ms sleep after amp software reset
-
-Shuming Fan (1):
-      ASoC: rt5682: Change DAC/ADC volume scale
-
-Srinivas Kandagatla (1):
-      ASoC: q6routing: initialize data correctly
-
-S=E9bastien Szymanski (1):
-      ASoC: cs4265: fix MMTLR Data switch control
-
-Yong Zhi (1):
-      ASoC: Intel: Skylake: Acquire irq after RIRB allocation
-
-Yu Zhao (3):
-      Revert "ASoC: Intel: Skylake: Acquire irq after RIRB allocation"
-      sound: enable interrupt after dma buffer initialization
-      sound: don't call skl_init_chip() to reset intel skl soc
-
- MAINTAINERS                             |   3 +-
- include/sound/hdaudio.h                 |   1 +
- include/sound/soc-dapm.h                |   1 +
- include/uapi/sound/skl-tplg-interface.h | 106 ++++++++++++++++------------=
-----
- sound/hda/hdac_controller.c             |  15 +++--
- sound/soc/amd/acp-pcm-dma.c             |  21 +++++++
- sound/soc/codecs/cs4265.c               |   4 +-
- sound/soc/codecs/max98373.c             |   3 +
- sound/soc/codecs/rt5514.c               |   8 +--
- sound/soc/codecs/rt5682.c               |   8 +--
- sound/soc/codecs/sigmadsp.c             |   3 +-
- sound/soc/codecs/tas6424.c              |  12 +++-
- sound/soc/codecs/wm8804-i2c.c           |  15 ++++-
- sound/soc/codecs/wm9712.c               |   2 +-
- sound/soc/intel/boards/bytcr_rt5640.c   |  26 ++++++++
- sound/soc/intel/skylake/skl.c           |   2 +-
- sound/soc/qcom/qdsp6/q6routing.c        |   4 +-
- sound/soc/sh/rcar/adg.c                 |   5 ++
- sound/soc/sh/rcar/core.c                |  21 ++++++-
- sound/soc/sh/rcar/dma.c                 |   4 ++
- sound/soc/sh/rcar/rsnd.h                |   7 +++
- sound/soc/sh/rcar/ssi.c                 |  16 +++--
- sound/soc/soc-core.c                    |   4 +-
- sound/soc/soc-dapm.c                    |   4 ++
- 24 files changed, 208 insertions(+), 87 deletions(-)
-
---0eh6TmSyL6TZE2Uz
+--MAH+hnPXVZWQ5cD/
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluf2IUACgkQJNaLcl1U
-h9BzCwf/Uu2a/g95F/s1ic7N0nARtrn2wXSIfnQaAG5wQUX9ofGzB4YWlvTM9DbO
-KkZeawwfjXe87ncZ7WmMVMy088nL1L/urTF+HeDVJ6JEm+p44e4646NkFu1QogPS
-K/hD+LV1n23pEfHb8mu8tqVyu+B7R2RYdEr7BnHSfWJxl8bp4i/WCyHBrL6pS9qx
-Jj7VljlG6XKLzLzibuSosJF0mCLKMm/JK7mqwJteErjUx/aiRfAEP85oSMEDhkW5
-uafz7NvhFz8aXuGScVKzikCNM9trYdyLbDEbzQ91l46q6M7GP1sxqPSXDGCvBgB/
-EtW4EOpyFAPLTvFJs8TnTq0fsnP9LA==
-=W6+D
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluf6KEACgkQJNaLcl1U
+h9CS1wf/d6GVXQlfL4Lgdd5viNWFNrQ1PXcoLgxhQ/pdMXgR3VWtjl5dZptkLUDr
+JiQht+aZgduo8AcfI842uzQJOpjJQEMc79mzHyR472iKMJMi3Q4bqaz+jcLLx9sA
+pPNoGVP5S4D68KJEEzwulTDXVdUTOkn9vfh8ygcpF+Q+33uQ0jHItwVwjAX9bjpp
+9x457ke+W8XSQ1eE4EZX5UVFT+SDU54gy64sau3hsrQcz2HieBjRyu/4g7xl7k9x
+wJjrdmGHIVXKo1mzr2yrjdzyWRPWOctaEeRC45jULEzQoWsQOc/abXmQgw0bAmZe
+lNohr/AuSX8sWHkzThY9kZm65Tf4tQ==
+=GbVP
 -----END PGP SIGNATURE-----
 
---0eh6TmSyL6TZE2Uz--
+--MAH+hnPXVZWQ5cD/--
 
---===============1507677190933914148==
+--===============8052486222904104368==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1507677190933914148==--
+--===============8052486222904104368==--
