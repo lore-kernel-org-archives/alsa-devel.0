@@ -1,7 +1,7 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 06/15] ALSA: hda/ca0132 - Add AE-5 pre-init and ca0113 functions
-Date: Tue, 18 Sep 2018 14:33:34 -0400
-Message-ID: <1537295625-8082-7-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 08/15] ALSA: hda/ca0132 - Change firmware name and usage
+Date: Tue, 18 Sep 2018 14:33:36 -0400
+Message-ID: <1537295625-8082-9-git-send-email-conmanx360@gmail.com>
 References: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
@@ -9,289 +9,51 @@ Sender: linux-kernel-owner@vger.kernel.org
 Cc: conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds AE-5 pre-init functions that happen before the main
-ca0132_alt_init, and gives functions related to the ca0113 a ca0113
-prefix instead of ca0132. It also adds functions to write to the 8051's
-SFRs, and to write the special ca0113 commands for the AE-5.
+The Recon3D, AE-5, Z and ZxR all share the same firmware file. Rename
+this from the specific "ctefx-sbz.bin" to "ctefx-desktop.bin" and set
+the AE-5 and Recon3D to use it as well.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 157 ++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 134 insertions(+), 23 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 51af3dc..4b95dc0 100644
+index 163d2ac..ea67b9c 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -1483,6 +1483,20 @@ static void chipio_set_conn_rate(struct hda_codec *codec,
- }
+@@ -81,12 +81,12 @@
+ #define SCP_GET    1
  
- /*
-+ * Writes to the 8051's internal address space directly instead of indirectly,
-+ * giving access to the special function registers located at addresses
-+ * 0x80-0xFF.
-+ */
-+static void chipio_8051_write_direct(struct hda_codec *codec,
-+		unsigned int addr, unsigned int data)
-+{
-+	unsigned int verb;
-+
-+	verb = VENDOR_CHIPIO_8051_WRITE_DIRECT | data;
-+	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0, verb, addr);
-+}
-+
-+/*
-  * Enable clocks.
-  */
- static void chipio_enable_clocks(struct hda_codec *codec)
-@@ -3117,7 +3131,9 @@ static bool dspload_wait_loaded(struct hda_codec *codec)
- }
+ #define EFX_FILE   "ctefx.bin"
+-#define SBZ_EFX_FILE   "ctefx-sbz.bin"
++#define DESKTOP_EFX_FILE   "ctefx-desktop.bin"
+ #define R3DI_EFX_FILE  "ctefx-r3di.bin"
  
- /*
-- * Setup GPIO for the other variants of Core3D.
-+ * ca0113 related functions. The ca0113 acts as the HDA bus for the pci-e
-+ * based cards, and has a second mmio region, region2, that's used for special
-+ * commands.
-  */
+ #ifdef CONFIG_SND_HDA_CODEC_CA0132_DSP
+ MODULE_FIRMWARE(EFX_FILE);
+-MODULE_FIRMWARE(SBZ_EFX_FILE);
++MODULE_FIRMWARE(DESKTOP_EFX_FILE);
+ MODULE_FIRMWARE(R3DI_EFX_FILE);
+ #endif
  
- /*
-@@ -3125,8 +3141,11 @@ static bool dspload_wait_loaded(struct hda_codec *codec)
-  * the mmio address 0x320 is used to set GPIO pins. The format for the data
-  * The first eight bits are just the number of the pin. So far, I've only seen
-  * this number go to 7.
-+ * AE-5 note: The AE-5 seems to use pins 2 and 3 to somehow set the color value
-+ * of the on-card LED. It seems to use pin 2 for data, then toggles 3 to on and
-+ * then off to send that bit.
-  */
--static void ca0132_mmio_gpio_set(struct hda_codec *codec, unsigned int gpio_pin,
-+static void ca0113_mmio_gpio_set(struct hda_codec *codec, unsigned int gpio_pin,
- 		bool enable)
- {
- 	struct ca0132_spec *spec = codec->spec;
-@@ -3139,6 +3158,54 @@ static void ca0132_mmio_gpio_set(struct hda_codec *codec, unsigned int gpio_pin,
- }
- 
- /*
-+ * Special pci region2 commands that are only used by the AE-5. They follow
-+ * a set format, and require reads at certain points to seemingly 'clear'
-+ * the response data. My first tests didn't do these reads, and would cause
-+ * the card to get locked up until the memory was read. These commands
-+ * seem to work with three distinct values that I've taken to calling group,
-+ * target-id, and value.
-+ */
-+static void ca0113_mmio_command_set(struct hda_codec *codec, unsigned int group,
-+		unsigned int target, unsigned int value)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+	unsigned int write_val;
-+
-+	writel(0x0000007e, spec->mem_base + 0x210);
-+	readl(spec->mem_base + 0x210);
-+	writel(0x0000005a, spec->mem_base + 0x210);
-+	readl(spec->mem_base + 0x210);
-+	readl(spec->mem_base + 0x210);
-+
-+	writel(0x00800005, spec->mem_base + 0x20c);
-+	writel(group, spec->mem_base + 0x804);
-+
-+	writel(0x00800005, spec->mem_base + 0x20c);
-+	write_val = (target & 0xff);
-+	write_val |= (value << 8);
-+
-+
-+	writel(write_val, spec->mem_base + 0x204);
-+	/*
-+	 * Need delay here or else it goes too fast and works inconsistently.
-+	 */
-+	msleep(20);
-+
-+	readl(spec->mem_base + 0x860);
-+	readl(spec->mem_base + 0x854);
-+	readl(spec->mem_base + 0x840);
-+
-+	writel(0x00800004, spec->mem_base + 0x20c);
-+	writel(0x00000000, spec->mem_base + 0x210);
-+	readl(spec->mem_base + 0x210);
-+	readl(spec->mem_base + 0x210);
-+}
-+
-+/*
-+ * Setup GPIO for the other variants of Core3D.
-+ */
-+
-+/*
-  * Sets up the GPIO pins so that they are discoverable. If this isn't done,
-  * the card shows as having no GPIO pins.
-  */
-@@ -4013,9 +4080,9 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
- 		/*speaker out config*/
- 		switch (spec->quirk) {
- 		case QUIRK_SBZ:
--			ca0132_mmio_gpio_set(codec, 7, false);
--			ca0132_mmio_gpio_set(codec, 4, true);
--			ca0132_mmio_gpio_set(codec, 1, true);
-+			ca0113_mmio_gpio_set(codec, 7, false);
-+			ca0113_mmio_gpio_set(codec, 4, true);
-+			ca0113_mmio_gpio_set(codec, 1, true);
- 			chipio_set_control_param(codec, 0x0D, 0x18);
- 			break;
- 		case QUIRK_R3DI:
-@@ -4024,7 +4091,7 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
- 			break;
- 		case QUIRK_R3D:
- 			chipio_set_control_param(codec, 0x0D, 0x24);
--			ca0132_mmio_gpio_set(codec, 1, true);
-+			ca0113_mmio_gpio_set(codec, 1, true);
- 			break;
+@@ -6770,12 +6770,14 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ 	 */
+ 	switch (spec->quirk) {
+ 	case QUIRK_SBZ:
+-		if (request_firmware(&fw_entry, SBZ_EFX_FILE,
++	case QUIRK_R3D:
++	case QUIRK_AE5:
++		if (request_firmware(&fw_entry, DESKTOP_EFX_FILE,
+ 					codec->card->dev) != 0) {
+-			codec_dbg(codec, "SBZ alt firmware not detected. ");
++			codec_dbg(codec, "Desktop firmware not found. ");
+ 			spec->alt_firmware_present = false;
+ 		} else {
+-			codec_dbg(codec, "Sound Blaster Z firmware selected.");
++			codec_dbg(codec, "Desktop firmware selected.");
+ 			spec->alt_firmware_present = true;
  		}
- 
-@@ -4053,9 +4120,9 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
- 		/* Headphone out config*/
- 		switch (spec->quirk) {
- 		case QUIRK_SBZ:
--			ca0132_mmio_gpio_set(codec, 7, true);
--			ca0132_mmio_gpio_set(codec, 4, true);
--			ca0132_mmio_gpio_set(codec, 1, false);
-+			ca0113_mmio_gpio_set(codec, 7, true);
-+			ca0113_mmio_gpio_set(codec, 4, true);
-+			ca0113_mmio_gpio_set(codec, 1, false);
- 			chipio_set_control_param(codec, 0x0D, 0x12);
- 			break;
- 		case QUIRK_R3DI:
-@@ -4064,7 +4131,7 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
- 			break;
- 		case QUIRK_R3D:
- 			chipio_set_control_param(codec, 0x0D, 0x21);
--			ca0132_mmio_gpio_set(codec, 0x1, false);
-+			ca0113_mmio_gpio_set(codec, 0x1, false);
- 			break;
- 		}
- 
-@@ -4099,9 +4166,9 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
- 		/* Surround out config*/
- 		switch (spec->quirk) {
- 		case QUIRK_SBZ:
--			ca0132_mmio_gpio_set(codec, 7, false);
--			ca0132_mmio_gpio_set(codec, 4, true);
--			ca0132_mmio_gpio_set(codec, 1, true);
-+			ca0113_mmio_gpio_set(codec, 7, false);
-+			ca0113_mmio_gpio_set(codec, 4, true);
-+			ca0113_mmio_gpio_set(codec, 1, true);
- 			chipio_set_control_param(codec, 0x0D, 0x18);
- 			break;
- 		case QUIRK_R3DI:
-@@ -4109,7 +4176,7 @@ static int ca0132_alt_select_out(struct hda_codec *codec)
- 			r3di_gpio_out_set(codec, R3DI_LINE_OUT);
- 			break;
- 		case QUIRK_R3D:
--			ca0132_mmio_gpio_set(codec, 1, true);
-+			ca0113_mmio_gpio_set(codec, 1, true);
- 			chipio_set_control_param(codec, 0x0D, 0x24);
- 			break;
- 		}
-@@ -4370,7 +4437,7 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
- 		switch (spec->quirk) {
- 		case QUIRK_SBZ:
- 		case QUIRK_R3D:
--			ca0132_mmio_gpio_set(codec, 0, false);
-+			ca0113_mmio_gpio_set(codec, 0, false);
- 			tmp = FLOAT_THREE;
- 			break;
- 		case QUIRK_R3DI:
-@@ -4403,7 +4470,7 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
- 		switch (spec->quirk) {
- 		case QUIRK_SBZ:
- 		case QUIRK_R3D:
--			ca0132_mmio_gpio_set(codec, 0, false);
-+			ca0113_mmio_gpio_set(codec, 0, false);
- 			break;
- 		case QUIRK_R3DI:
- 			r3di_gpio_mic_set(codec, R3DI_REAR_MIC);
-@@ -4430,8 +4497,8 @@ static int ca0132_alt_select_in(struct hda_codec *codec)
- 		switch (spec->quirk) {
- 		case QUIRK_SBZ:
- 		case QUIRK_R3D:
--			ca0132_mmio_gpio_set(codec, 0, true);
--			ca0132_mmio_gpio_set(codec, 5, false);
-+			ca0113_mmio_gpio_set(codec, 0, true);
-+			ca0113_mmio_gpio_set(codec, 5, false);
- 			tmp = FLOAT_THREE;
- 			break;
- 		case QUIRK_R3DI:
-@@ -6977,11 +7044,11 @@ static void sbz_region2_exit(struct hda_codec *codec)
- 	for (i = 0; i < 8; i++)
- 		writeb(0xb3, spec->mem_base + 0x304);
- 
--	ca0132_mmio_gpio_set(codec, 0, false);
--	ca0132_mmio_gpio_set(codec, 1, false);
--	ca0132_mmio_gpio_set(codec, 4, true);
--	ca0132_mmio_gpio_set(codec, 5, false);
--	ca0132_mmio_gpio_set(codec, 7, false);
-+	ca0113_mmio_gpio_set(codec, 0, false);
-+	ca0113_mmio_gpio_set(codec, 1, false);
-+	ca0113_mmio_gpio_set(codec, 4, true);
-+	ca0113_mmio_gpio_set(codec, 5, false);
-+	ca0113_mmio_gpio_set(codec, 7, false);
- }
- 
- static void sbz_set_pin_ctl_default(struct hda_codec *codec)
-@@ -7292,6 +7359,47 @@ static void ca0132_mmio_init(struct hda_codec *codec)
- }
- 
- /*
-+ * This function writes to some SFR's, does some region2 writes, and then
-+ * eventually resets the codec with the 0x7ff verb. Not quite sure why it does
-+ * what it does.
-+ */
-+static void ae5_register_set(struct hda_codec *codec)
-+{
-+	struct ca0132_spec *spec = codec->spec;
-+
-+	chipio_8051_write_direct(codec, 0x93, 0x10);
-+	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
-+			    VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x44);
-+	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
-+			    VENDOR_CHIPIO_PLL_PMU_WRITE, 0xc2);
-+
-+	writeb(0x0f, spec->mem_base + 0x304);
-+	writeb(0x0f, spec->mem_base + 0x304);
-+	writeb(0x0f, spec->mem_base + 0x304);
-+	writeb(0x0f, spec->mem_base + 0x304);
-+	writeb(0x0e, spec->mem_base + 0x100);
-+	writeb(0x1f, spec->mem_base + 0x304);
-+	writeb(0x0c, spec->mem_base + 0x100);
-+	writeb(0x3f, spec->mem_base + 0x304);
-+	writeb(0x08, spec->mem_base + 0x100);
-+	writeb(0x7f, spec->mem_base + 0x304);
-+	writeb(0x00, spec->mem_base + 0x100);
-+	writeb(0xff, spec->mem_base + 0x304);
-+
-+	ca0113_mmio_command_set(codec, 0x30, 0x2d, 0x3f);
-+
-+	chipio_8051_write_direct(codec, 0x90, 0x00);
-+	chipio_8051_write_direct(codec, 0x90, 0x10);
-+
-+	ca0113_mmio_command_set(codec, 0x48, 0x07, 0x83);
-+
-+	chipio_write(codec, 0x18b0a4, 0x000000c2);
-+
-+	snd_hda_codec_write(codec, 0x01, 0, 0x7ff, 0x00);
-+	snd_hda_codec_write(codec, 0x01, 0, 0x7ff, 0x00);
-+}
-+
-+/*
-  * Extra init functions for alternative ca0132 codecs. Done
-  * here so they don't clutter up the main ca0132_init function
-  * anymore than they have to.
-@@ -7365,6 +7473,9 @@ static int ca0132_init(struct hda_codec *codec)
- 
- 	snd_hda_power_up_pm(codec);
- 
-+	if (spec->quirk == QUIRK_AE5)
-+		ae5_register_set(codec);
-+
- 	ca0132_init_unsol(codec);
- 	ca0132_init_params(codec);
- 	ca0132_init_flags(codec);
+ 		break;
 -- 
 2.7.4
