@@ -1,7 +1,7 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 08/15] ALSA: hda/ca0132 - Change firmware name and usage
-Date: Tue, 18 Sep 2018 14:33:36 -0400
-Message-ID: <1537295625-8082-9-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 09/15] ALSA: hda/ca0132 - Merge post-dsp functions + cleanup
+Date: Tue, 18 Sep 2018 14:33:37 -0400
+Message-ID: <1537295625-8082-10-git-send-email-conmanx360@gmail.com>
 References: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
@@ -9,51 +9,287 @@ Sender: linux-kernel-owner@vger.kernel.org
 Cc: conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The Recon3D, AE-5, Z and ZxR all share the same firmware file. Rename
-this from the specific "ctefx-sbz.bin" to "ctefx-desktop.bin" and set
-the AE-5 and Recon3D to use it as well.
+This patch cleans up some of the formatting of the post-dsp load setup
+functions, and also merges some of the sub functions into individual
+ones.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 171 +++++++++++++++++++------------------------
+ 1 file changed, 75 insertions(+), 96 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 163d2ac..ea67b9c 100644
+index ea67b9c..66c1150 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -81,12 +81,12 @@
- #define SCP_GET    1
+@@ -6335,69 +6335,48 @@ static void ca0132_refresh_widget_caps(struct hda_codec *codec)
+ }
  
- #define EFX_FILE   "ctefx.bin"
--#define SBZ_EFX_FILE   "ctefx-sbz.bin"
-+#define DESKTOP_EFX_FILE   "ctefx-desktop.bin"
- #define R3DI_EFX_FILE  "ctefx-r3di.bin"
+ /*
+- * Recon3D r3d_setup_defaults sub functions.
++ * Creates a dummy stream to bind the output to. This seems to have to be done
++ * after changing the main outputs source and destination streams.
+  */
+-
+-static void r3d_dsp_scp_startup(struct hda_codec *codec)
++static void ca0132_alt_create_dummy_stream(struct hda_codec *codec)
+ {
+-	unsigned int tmp;
+-
+-	tmp = 0x00000000;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
+-
+-	tmp = 0x00000001;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
+-
+-	tmp = 0x00000004;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-
+-	tmp = 0x00000005;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-
+-	tmp = 0x00000000;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-
+-}
++	struct ca0132_spec *spec = codec->spec;
++	unsigned int stream_format;
  
- #ifdef CONFIG_SND_HDA_CODEC_CA0132_DSP
- MODULE_FIRMWARE(EFX_FILE);
--MODULE_FIRMWARE(SBZ_EFX_FILE);
-+MODULE_FIRMWARE(DESKTOP_EFX_FILE);
- MODULE_FIRMWARE(R3DI_EFX_FILE);
- #endif
+-static void r3d_dsp_initial_mic_setup(struct hda_codec *codec)
+-{
+-	unsigned int tmp;
++	stream_format = snd_hdac_calc_stream_format(48000, 2,
++			SNDRV_PCM_FORMAT_S32_LE, 32, 0);
  
-@@ -6770,12 +6770,14 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
- 	 */
- 	switch (spec->quirk) {
- 	case QUIRK_SBZ:
--		if (request_firmware(&fw_entry, SBZ_EFX_FILE,
-+	case QUIRK_R3D:
+-	/* Mic 1 Setup */
+-	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_96_000);
+-	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_96_000);
+-	/* This ConnPointID is unique to Recon3Di. Haven't seen it elsewhere */
+-	chipio_set_conn_rate(codec, 0x0F, SR_96_000);
+-	tmp = FLOAT_ONE;
+-	dspio_set_uint_param(codec, 0x80, 0x00, tmp);
++	snd_hda_codec_setup_stream(codec, spec->dacs[0], spec->dsp_stream_id,
++					0, stream_format);
+ 
+-	/* Mic 2 Setup, even though it isn't connected on SBZ */
+-	chipio_set_conn_rate(codec, MEM_CONNID_MICIN2, SR_96_000);
+-	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2, SR_96_000);
+-	chipio_set_conn_rate(codec, 0x0F, SR_96_000);
+-	tmp = FLOAT_ZERO;
+-	dspio_set_uint_param(codec, 0x80, 0x01, tmp);
++	snd_hda_codec_cleanup_stream(codec, spec->dacs[0]);
+ }
+ 
+ /*
+- * Initialize Sound Blaster Z analog microphones.
++ * Initialize mic for non-chromebook ca0132 implementations.
+  */
+-static void sbz_init_analog_mics(struct hda_codec *codec)
++static void ca0132_alt_init_analog_mics(struct hda_codec *codec)
+ {
++	struct ca0132_spec *spec = codec->spec;
+ 	unsigned int tmp;
+ 
+ 	/* Mic 1 Setup */
+ 	chipio_set_conn_rate(codec, MEM_CONNID_MICIN1, SR_96_000);
+ 	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT1, SR_96_000);
+-	tmp = FLOAT_THREE;
++	if (spec->quirk == QUIRK_R3DI) {
++		chipio_set_conn_rate(codec, 0x0F, SR_96_000);
++		tmp = FLOAT_ONE;
++	} else
++		tmp = FLOAT_THREE;
+ 	dspio_set_uint_param(codec, 0x80, 0x00, tmp);
+ 
+-	/* Mic 2 Setup, even though it isn't connected on SBZ */
++	/* Mic 2 setup (not present on desktop cards) */
+ 	chipio_set_conn_rate(codec, MEM_CONNID_MICIN2, SR_96_000);
+ 	chipio_set_conn_rate(codec, MEM_CONNID_MICOUT2, SR_96_000);
++	if (spec->quirk == QUIRK_R3DI)
++		chipio_set_conn_rate(codec, 0x0F, SR_96_000);
+ 	tmp = FLOAT_ZERO;
+ 	dspio_set_uint_param(codec, 0x80, 0x01, tmp);
+-
+ }
+ 
+ /*
+@@ -6430,7 +6409,6 @@ static void sbz_connect_streams(struct hda_codec *codec)
+ 	codec_dbg(codec, "Connect Streams exited, mutex released.\n");
+ 
+ 	mutex_unlock(&spec->chipio_mutex);
+-
+ }
+ 
+ /*
+@@ -6477,35 +6455,49 @@ static void sbz_chipio_startup_data(struct hda_codec *codec)
+ }
+ 
+ /*
+- * Sound Blaster Z uses these after DSP is loaded. Weird SCP commands
+- * without a 0x20 source like normal.
++ * Custom DSP SCP commands where the src value is 0x00 instead of 0x20. This is
++ * done after the DSP is loaded.
+  */
+-static void sbz_dsp_scp_startup(struct hda_codec *codec)
++static void ca0132_alt_dsp_scp_startup(struct hda_codec *codec)
+ {
++	struct ca0132_spec *spec = codec->spec;
+ 	unsigned int tmp;
+ 
+-	tmp = 0x00000003;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-
+-	tmp = 0x00000000;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
+-
+-	tmp = 0x00000001;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
+-
+-	tmp = 0x00000004;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-
+-	tmp = 0x00000005;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-
+-	tmp = 0x00000000;
+-	dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
+-
++	switch (spec->quirk) {
++	case QUIRK_SBZ:
 +	case QUIRK_AE5:
-+		if (request_firmware(&fw_entry, DESKTOP_EFX_FILE,
++		tmp = 0x00000003;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		tmp = 0x00000000;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
++		tmp = 0x00000001;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
++		tmp = 0x00000004;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		tmp = 0x00000005;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		tmp = 0x00000000;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		break;
++	case QUIRK_R3D:
++	case QUIRK_R3DI:
++		tmp = 0x00000000;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
++		tmp = 0x00000001;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
++		tmp = 0x00000004;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		tmp = 0x00000005;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		tmp = 0x00000000;
++		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
++		break;
++	}
+ }
+ 
+-static void sbz_dsp_initial_mic_setup(struct hda_codec *codec)
++static void ca0132_alt_dsp_initial_mic_setup(struct hda_codec *codec)
+ {
++	struct ca0132_spec *spec = codec->spec;
+ 	unsigned int tmp;
+ 
+ 	chipio_set_stream_control(codec, 0x03, 0);
+@@ -6520,8 +6512,16 @@ static void sbz_dsp_initial_mic_setup(struct hda_codec *codec)
+ 	chipio_set_stream_control(codec, 0x03, 1);
+ 	chipio_set_stream_control(codec, 0x04, 1);
+ 
+-	chipio_write(codec, 0x18b098, 0x0000000c);
+-	chipio_write(codec, 0x18b09C, 0x0000000c);
++	switch (spec->quirk) {
++	case QUIRK_SBZ:
++		chipio_write(codec, 0x18b098, 0x0000000c);
++		chipio_write(codec, 0x18b09C, 0x0000000c);
++		break;
++	case QUIRK_AE5:
++		chipio_write(codec, 0x18b098, 0x0000000c);
++		chipio_write(codec, 0x18b09c, 0x0000004c);
++		break;
++	}
+ }
+ 
+ /*
+@@ -6582,9 +6582,8 @@ static void r3d_setup_defaults(struct hda_codec *codec)
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
+ 
+-	r3d_dsp_scp_startup(codec);
+-
+-	r3d_dsp_initial_mic_setup(codec);
++	ca0132_alt_dsp_scp_startup(codec);
++	ca0132_alt_init_analog_mics(codec);
+ 
+ 	/*remove DSP headroom*/
+ 	tmp = FLOAT_ZERO;
+@@ -6620,19 +6619,16 @@ static void r3d_setup_defaults(struct hda_codec *codec)
+ static void sbz_setup_defaults(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+-	unsigned int tmp, stream_format;
++	unsigned int tmp;
+ 	int num_fx;
+ 	int idx, i;
+ 
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
+ 
+-	sbz_dsp_scp_startup(codec);
+-
+-	sbz_init_analog_mics(codec);
+-
++	ca0132_alt_dsp_scp_startup(codec);
++	ca0132_alt_init_analog_mics(codec);
+ 	sbz_connect_streams(codec);
+-
+ 	sbz_chipio_startup_data(codec);
+ 
+ 	chipio_set_stream_control(codec, 0x03, 1);
+@@ -6658,8 +6654,7 @@ static void sbz_setup_defaults(struct hda_codec *codec)
+ 	/* Set speaker source? */
+ 	dspio_set_uint_param(codec, 0x32, 0x00, tmp);
+ 
+-	sbz_dsp_initial_mic_setup(codec);
+-
++	ca0132_alt_dsp_initial_mic_setup(codec);
+ 
+ 	/* out, in effects + voicefx */
+ 	num_fx = OUT_EFFECTS_COUNT + IN_EFFECTS_COUNT + 1;
+@@ -6672,23 +6667,7 @@ static void sbz_setup_defaults(struct hda_codec *codec)
+ 		}
+ 	}
+ 
+-	/*
+-	 * Have to make a stream to bind the sound output to, otherwise
+-	 * you'll get dead audio. Before I did this, it would bind to an
+-	 * audio input, and would never work
+-	 */
+-	stream_format = snd_hdac_calc_stream_format(48000, 2,
+-			SNDRV_PCM_FORMAT_S32_LE, 32, 0);
+-
+-	snd_hda_codec_setup_stream(codec, spec->dacs[0], spec->dsp_stream_id,
+-					0, stream_format);
+-
+-	snd_hda_codec_cleanup_stream(codec, spec->dacs[0]);
+-
+-	snd_hda_codec_setup_stream(codec, spec->dacs[0], spec->dsp_stream_id,
+-					0, stream_format);
+-
+-	snd_hda_codec_cleanup_stream(codec, spec->dacs[0]);
++	ca0132_alt_create_dummy_stream(codec);
+ }
+ 
+ /*
+@@ -6774,7 +6753,7 @@ static bool ca0132_download_dsp_images(struct hda_codec *codec)
+ 	case QUIRK_AE5:
+ 		if (request_firmware(&fw_entry, DESKTOP_EFX_FILE,
  					codec->card->dev) != 0) {
--			codec_dbg(codec, "SBZ alt firmware not detected. ");
-+			codec_dbg(codec, "Desktop firmware not found. ");
+-			codec_dbg(codec, "Desktop firmware not found. ");
++			codec_dbg(codec, "Desktop firmware not found.");
  			spec->alt_firmware_present = false;
  		} else {
--			codec_dbg(codec, "Sound Blaster Z firmware selected.");
-+			codec_dbg(codec, "Desktop firmware selected.");
- 			spec->alt_firmware_present = true;
- 		}
- 		break;
+ 			codec_dbg(codec, "Desktop firmware selected.");
 -- 
 2.7.4
