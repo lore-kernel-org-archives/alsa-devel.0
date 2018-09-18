@@ -1,20 +1,18 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 07/15] ALSA: hda/ca0132 - Add AE-5 regular init
-	setup
-Date: Tue, 18 Sep 2018 14:33:35 -0400
-Message-ID: <1537295625-8082-8-git-send-email-conmanx360@gmail.com>
-References: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
+From: Linus Walleij <linus.walleij@linaro.org>
+Subject: [PATCH] sound: soc: rt5677-spi: Drop unused GPIO
+	include
+Date: Tue, 18 Sep 2018 12:11:57 -0700
+Message-ID: <20180918191157.16996-1-linus.walleij@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f193.google.com (mail-qt0-f193.google.com
- [209.85.216.193])
- by alsa0.perex.cz (Postfix) with ESMTP id A839F2678BF
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 20:34:41 +0200 (CEST)
-Received: by mail-qt0-f193.google.com with SMTP id t5-v6so2687822qtn.3
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 11:34:41 -0700 (PDT)
-In-Reply-To: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C3D926788E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 21:12:03 +0200 (CEST)
+Received: by mail-pg1-f193.google.com with SMTP id r1-v6so1483910pgp.11
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 12:12:03 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,45 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, Takashi Iwai <tiwai@suse.com>, conmanx360@gmail.com
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds AE-5 specific stuff to the ca0132_alt_init function.
+This SPI driver does not use the legacy GPIO header so
+just delete it.
 
-Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 ---
- sound/pci/hda/patch_ca0132.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ sound/soc/codecs/rt5677-spi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 4b95dc0..163d2ac 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -3215,6 +3215,7 @@ static void ca0132_gpio_init(struct hda_codec *codec)
- 
- 	switch (spec->quirk) {
- 	case QUIRK_SBZ:
-+	case QUIRK_AE5:
- 		snd_hda_codec_write(codec, 0x01, 0, 0x793, 0x00);
- 		snd_hda_codec_write(codec, 0x01, 0, 0x794, 0x53);
- 		snd_hda_codec_write(codec, 0x01, 0, 0x790, 0x23);
-@@ -7432,6 +7433,17 @@ static void ca0132_alt_init(struct hda_codec *codec)
- 		snd_hda_sequence_write(codec, spec->chip_init_verbs);
- 		snd_hda_sequence_write(codec, spec->desktop_init_verbs);
- 		break;
-+	case QUIRK_AE5:
-+		ca0132_gpio_init(codec);
-+		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
-+				VENDOR_CHIPIO_8051_ADDRESS_LOW, 0x49);
-+		snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
-+				VENDOR_CHIPIO_PLL_PMU_WRITE, 0x88);
-+		chipio_write(codec, 0x18b030, 0x00000020);
-+		snd_hda_sequence_write(codec, spec->chip_init_verbs);
-+		snd_hda_sequence_write(codec, spec->desktop_init_verbs);
-+		ca0113_mmio_command_set(codec, 0x30, 0x32, 0x3f);
-+		break;
- 	}
- }
- 
+diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+index bd51f3655ee3..84501c2020c7 100644
+--- a/sound/soc/codecs/rt5677-spi.c
++++ b/sound/soc/codecs/rt5677-spi.c
+@@ -18,7 +18,6 @@
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/slab.h>
+-#include <linux/gpio.h>
+ #include <linux/sched.h>
+ #include <linux/uaccess.h>
+ #include <linux/regulator/consumer.h>
 -- 
-2.7.4
+2.17.1
