@@ -1,12 +1,12 @@
 From: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>
-Subject: [PATCH - hwmixvolume v2 1/7] hwmixvolume: use four
-	spaces instead of one tab for indent
-Date: Tue, 18 Sep 2018 15:42:31 +0200
-Message-ID: <20180918134237.8489-2-linkmauve@jabberfr.org>
+Subject: [PATCH - hwmixvolume v2 2/7] hwmixvolume: replace
+	PyGTK with gobject-introspection
+Date: Tue, 18 Sep 2018 15:42:32 +0200
+Message-ID: <20180918134237.8489-3-linkmauve@jabberfr.org>
 References: <20180918134237.8489-1-linkmauve@jabberfr.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 In-Reply-To: <20180918134237.8489-1-linkmauve@jabberfr.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -22,579 +22,115 @@ To: patch@alsa-project.org
 Cc: linkmauve@linkmauve.fr, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-
-This is the recommended coding style for all Python programs, as
-specified in PEP-0008[1].
-
-[1] https://www.python.org/dev/peps/pep-0008/
-
-Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-
-diff --git a/hwmixvolume/hwmixvolume b/hwmixvolume/hwmixvolume
-index ef80bc8..038bcb3 100755
---- a/hwmixvolume/hwmixvolume
-+++ b/hwmixvolume/hwmixvolume
-@@ -26,285 +26,285 @@ EVENT_INFO = alsahcontrol.event_mask['INFO']
- EVENT_REMOVE = alsahcontrol.event_mask_remove
- 
- class Stream:
--	def __init__(self, element, parent):
--		self.element = element
--		self.element.set_callback(self)
--		self.parent = parent
--		self.label = None
--		self.scales = []
--		self.adjustments = []
--		self.callback(self.element, EVENT_INFO)
--
--	def destroy(self):
--		self.deactivate()
--
--	def callback(self, e, mask):
--		if mask == EVENT_REMOVE:
--			self.deactivate()
--		elif (mask & EVENT_INFO) != 0:
--			info = alsahcontrol.Info(self.element)
--			if info.is_inactive:
--				self.deactivate()
--			else:
--				self.activate()
--		elif (mask & EVENT_VALUE) != 0:
--			self.update_scales_from_ctl()
--
--	def activate(self):
--		if self.label:
--			return
--		info = alsahcontrol.Info(self.element)
--		value = alsahcontrol.Value(self.element)
--		value.read()
--		values = value.get_tuple(TYPE_INTEGER, info.count)
--		self.label = gtk.Label(self.get_label(info))
--		self.label.set_single_line_mode(True)
--		self.parent.scales_vbox.pack_start(self.label, expand=False)
--		for i in range(info.count):
--			adj = gtk.Adjustment(value=values[i],
--					lower=info.min, upper=info.max,
--					step_incr=1,
--					page_incr=(info.max-info.min+1)/8)
--			adj.connect('value-changed', self.update_ctl_from_scale, i)
--			scale = gtk.HScale(adj)
--			scale.set_draw_value(False)
--			self.parent.scales_vbox.pack_start(scale, expand=False)
--			self.scales.append(scale)
--			self.adjustments.append(adj)
--		self.parent.scales_vbox.show_all()
--		self.parent.update_msg_label()
--
--	def deactivate(self):
--		if not self.label:
--			return
--		self.label.destroy()
--		for s in self.scales:
--			s.destroy()
--		self.label = None
--		self.scales = []
--		self.adjustments = []
--		self.parent.update_msg_label()
--
--	def update_scales_from_ctl(self):
--		if not self.label:
--			return
--		count = len(self.adjustments)
--		value = alsahcontrol.Value(self.element)
--		value.read()
--		values = value.get_tuple(TYPE_INTEGER, count)
--		for i in range(count):
--			self.adjustments[i].set_value(values[i])
--
--	def update_ctl_from_scale(self, adj, index):
--		scale_value = adj.get_value()
--		value_to_set = int(round(adj.get_value()))
--		count = len(self.adjustments)
--		value = alsahcontrol.Value(self.element)
--		if self.parent.lock_check.get_active():
--			values = [value_to_set  for i in range(count)]
--		else:
--			value.read()
--			values = value.get_array(TYPE_INTEGER, count)
--			values[index] = value_to_set
--		value.set_array(TYPE_INTEGER, values)
--		value.write()
--		if value_to_set != scale_value:
--			adj.set_value(value_to_set)
--
--	def get_label(self, info):
--		pid = self.get_pid(info)
--		if pid:
--			cmdline = self.get_pid_cmdline(pid)
--			if cmdline:
--				return cmdline
--			else:
--				return "PID %d" % pid
--		else:
--			name = info.name
--			if name[-7:] == " Volume":
--				name = name[:-7]
--			if name[-9:] == " Playback":
--				name = name[:-9]
--			return name
--
--	def get_pid(self, info):
--		card = self.parent.current_card
--		device = info.device
--		subdevice = info.subdevice
--		if subdevice == 0:
--			subdevice = info.index
--		filename = "/proc/asound/card%d/pcm%dp/sub%d/status" % (card, device, subdevice)
--		try:
--			f = open(filename, "r")
--		except IOError:
--			return None
--		try:
--			for line in f.readlines():
--				if line[:9] == "owner_pid":
--					return int(line.split(':')[1].strip())
--		finally:
--			f.close()
--		return None
--
--	def get_pid_cmdline(self, pid):
--		try:
--			f = open("/proc/%d/cmdline" % pid, "r")
--		except IOError:
--			return None
--		try:
--			cmdline = f.read()
--		finally:
--			f.close()
--		return cmdline.replace('\x00', ' ').strip()
-+    def __init__(self, element, parent):
-+        self.element = element
-+        self.element.set_callback(self)
-+        self.parent = parent
-+        self.label = None
-+        self.scales = []
-+        self.adjustments = []
-+        self.callback(self.element, EVENT_INFO)
-+
-+    def destroy(self):
-+        self.deactivate()
-+
-+    def callback(self, e, mask):
-+        if mask == EVENT_REMOVE:
-+            self.deactivate()
-+        elif (mask & EVENT_INFO) != 0:
-+            info = alsahcontrol.Info(self.element)
-+            if info.is_inactive:
-+                self.deactivate()
-+            else:
-+                self.activate()
-+        elif (mask & EVENT_VALUE) != 0:
-+            self.update_scales_from_ctl()
-+
-+    def activate(self):
-+        if self.label:
-+            return
-+        info = alsahcontrol.Info(self.element)
-+        value = alsahcontrol.Value(self.element)
-+        value.read()
-+        values = value.get_tuple(TYPE_INTEGER, info.count)
-+        self.label = gtk.Label(self.get_label(info))
-+        self.label.set_single_line_mode(True)
-+        self.parent.scales_vbox.pack_start(self.label, expand=False)
-+        for i in range(info.count):
-+            adj = gtk.Adjustment(value=values[i],
-+                    lower=info.min, upper=info.max,
-+                    step_incr=1,
-+                    page_incr=(info.max-info.min+1)/8)
-+            adj.connect('value-changed', self.update_ctl_from_scale, i)
-+            scale = gtk.HScale(adj)
-+            scale.set_draw_value(False)
-+            self.parent.scales_vbox.pack_start(scale, expand=False)
-+            self.scales.append(scale)
-+            self.adjustments.append(adj)
-+        self.parent.scales_vbox.show_all()
-+        self.parent.update_msg_label()
-+
-+    def deactivate(self):
-+        if not self.label:
-+            return
-+        self.label.destroy()
-+        for s in self.scales:
-+            s.destroy()
-+        self.label = None
-+        self.scales = []
-+        self.adjustments = []
-+        self.parent.update_msg_label()
-+
-+    def update_scales_from_ctl(self):
-+        if not self.label:
-+            return
-+        count = len(self.adjustments)
-+        value = alsahcontrol.Value(self.element)
-+        value.read()
-+        values = value.get_tuple(TYPE_INTEGER, count)
-+        for i in range(count):
-+            self.adjustments[i].set_value(values[i])
-+
-+    def update_ctl_from_scale(self, adj, index):
-+        scale_value = adj.get_value()
-+        value_to_set = int(round(adj.get_value()))
-+        count = len(self.adjustments)
-+        value = alsahcontrol.Value(self.element)
-+        if self.parent.lock_check.get_active():
-+            values = [value_to_set  for i in range(count)]
-+        else:
-+            value.read()
-+            values = value.get_array(TYPE_INTEGER, count)
-+            values[index] = value_to_set
-+        value.set_array(TYPE_INTEGER, values)
-+        value.write()
-+        if value_to_set != scale_value:
-+            adj.set_value(value_to_set)
-+
-+    def get_label(self, info):
-+        pid = self.get_pid(info)
-+        if pid:
-+            cmdline = self.get_pid_cmdline(pid)
-+            if cmdline:
-+                return cmdline
-+            else:
-+                return "PID %d" % pid
-+        else:
-+            name = info.name
-+            if name[-7:] == " Volume":
-+                name = name[:-7]
-+            if name[-9:] == " Playback":
-+                name = name[:-9]
-+            return name
-+
-+    def get_pid(self, info):
-+        card = self.parent.current_card
-+        device = info.device
-+        subdevice = info.subdevice
-+        if subdevice == 0:
-+            subdevice = info.index
-+        filename = "/proc/asound/card%d/pcm%dp/sub%d/status" % (card, device, subdevice)
-+        try:
-+            f = open(filename, "r")
-+        except IOError:
-+            return None
-+        try:
-+            for line in f.readlines():
-+                if line[:9] == "owner_pid":
-+                    return int(line.split(':')[1].strip())
-+        finally:
-+            f.close()
-+        return None
-+
-+    def get_pid_cmdline(self, pid):
-+        try:
-+            f = open("/proc/%d/cmdline" % pid, "r")
-+        except IOError:
-+            return None
-+        try:
-+            cmdline = f.read()
-+        finally:
-+            f.close()
-+        return cmdline.replace('\x00', ' ').strip()
- 
- class MixerWindow(gtk.Window):
--	card_numbers = alsacard.card_list()
--	current_card = -1
--	hcontrol = None
--	scales_vbox = None
--	msg_label = None
--	streams = []
--	hctl_sources = []
--
--	def __init__(self):
--		gtk.Window.__init__(self)
--		self.connect('destroy', lambda w: gtk.main_quit())
--		self.set_title("Hardware Mixer Volumes")
--
--		vbox = gtk.VBox()
--		self.add(vbox)
--
--		hbox = gtk.HBox()
--		vbox.pack_start(hbox, expand=False)
--
--		label = gtk.Label("_Sound Card: ")
--		label.set_use_underline(True)
--		hbox.pack_start(label, expand=False)
--
--		combo = gtk.combo_box_new_text()
--		for i in self.card_numbers:
--			str = "%d: %s" % (i, alsacard.card_get_name(i))
--			combo.append_text(str)
--		if len(self.card_numbers) > 0:
--			combo.set_active(0)
--		combo.connect('changed', lambda c: self.change_card(self.card_numbers[combo.get_active()]))
--		hbox.pack_start(combo)
--		label.set_mnemonic_widget(combo)
--
--		self.lock_check = gtk.CheckButton(label="_Lock Channels")
--		self.lock_check.set_active(True)
--		vbox.pack_start(self.lock_check, expand=False)
--
--		scrollwin = gtk.ScrolledWindow()
--		scrollwin.set_policy(hscrollbar_policy=gtk.POLICY_NEVER, vscrollbar_policy=gtk.POLICY_AUTOMATIC)
--		scrollwin.set_shadow_type(gtk.SHADOW_NONE)
--		vbox.pack_start(scrollwin)
--
--		self.scales_vbox = gtk.VBox()
--		scrollwin.add_with_viewport(self.scales_vbox)
--
--		label = gtk.Label()
--		label.set_single_line_mode(True)
--		line_height = label.size_request()[1]
--		label.destroy()
--		scale = gtk.HScale()
--		scale.set_draw_value(False)
--		line_height += scale.size_request()[1]
--		scale.destroy()
--		# always have space for at least four sliders
--		scrollwin.set_size_request(width=-1, height=line_height*4+4)
--
--		# TODO: select the default card or the first card with stream controls
--		if len(self.card_numbers) > 0:
--			self.change_card(self.card_numbers[0])
--		self.update_msg_label()
--
--		self.show_all()
--
--	def change_card(self, cardnum):
--		for s in self.hctl_sources:
--			gobject.source_remove(s)
--		self.hctl_sources = []
--
--		self.hcontrol = self.open_hcontrol_for_card(cardnum)
--
--		for s in self.streams:
--			s.destroy()
--		self.streams = []
--
--		self.current_card = cardnum
--
--		if not self.hcontrol:
--			self.update_msg_label()
--			return
--
--		for id in self.hcontrol.list():
--			if not self.is_stream_elem(id):
--				continue
--			elem = alsahcontrol.Element(self.hcontrol, id[0])
--			info = alsahcontrol.Info(elem)
--			if not self.is_stream_info(info):
--				continue
--			stream = Stream(elem, self)
--			self.streams.append(stream)
--
--		for fd,condition in self.hcontrol.poll_fds:
--			self.hctl_sources.append(gobject.io_add_watch(fd, condition, self.hctl_io_callback))
--
--		self.update_msg_label()
--
--		self.scales_vbox.show_all()
--
--	def update_msg_label(self):
--		needs_msg = len(self.scales_vbox.get_children()) < 2
--		has_msg = self.msg_label
--		if has_msg and not needs_msg:
--			self.msg_label.destroy()
--			self.msg_label = None
--		elif needs_msg:
--			if len(self.streams) > 0:
--				msg = "There are no open streams."
--			else:
--				msg = "This card does not have stream controls."
--			if not has_msg:
--				self.msg_label = gtk.Label(msg)
--				self.scales_vbox.pack_start(self.msg_label)
--				self.scales_vbox.show_all()
--			elif self.msg_label.get_text() != msg:
--				self.msg_label.set_text(msg)
--
--	def open_hcontrol_for_card(self, cardnum):
--		devname = "hw:CARD=" + str(cardnum)
--		try:
--			hc = alsahcontrol.HControl(name=devname,
--					mode=alsahcontrol.open_mode['NONBLOCK'])
--		except:
--			# TODO: alsa error msg
--			dlg = gtk.MessageDialog(self,
--					gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
--					gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
--					"Cannot open sound card control device.")
--			dlg.run()
--			dlg.destroy()
--			return None
--		return hc
--
--	def is_stream_elem(self, id):
--		return ((id[1] == INTF_PCM and
--			 id[4] in ("PCM Playback Volume", "EMU10K1 PCM Volume")) or
--			(id[1] == INTF_MIXER and
--			 id[4] == "VIA DXS Playback Volume"))
--
--	def is_stream_info(self, info):
--		return info.is_readable and info.is_writable and info.type == TYPE_INTEGER
--
--	def hctl_io_callback(self, source, condition):
--		self.hcontrol.handle_events()
--		return True
-+    card_numbers = alsacard.card_list()
-+    current_card = -1
-+    hcontrol = None
-+    scales_vbox = None
-+    msg_label = None
-+    streams = []
-+    hctl_sources = []
-+
-+    def __init__(self):
-+        gtk.Window.__init__(self)
-+        self.connect('destroy', lambda w: gtk.main_quit())
-+        self.set_title("Hardware Mixer Volumes")
-+
-+        vbox = gtk.VBox()
-+        self.add(vbox)
-+
-+        hbox = gtk.HBox()
-+        vbox.pack_start(hbox, expand=False)
-+
-+        label = gtk.Label("_Sound Card: ")
-+        label.set_use_underline(True)
-+        hbox.pack_start(label, expand=False)
-+
-+        combo = gtk.combo_box_new_text()
-+        for i in self.card_numbers:
-+            str = "%d: %s" % (i, alsacard.card_get_name(i))
-+            combo.append_text(str)
-+        if len(self.card_numbers) > 0:
-+            combo.set_active(0)
-+        combo.connect('changed', lambda c: self.change_card(self.card_numbers[combo.get_active()]))
-+        hbox.pack_start(combo)
-+        label.set_mnemonic_widget(combo)
-+
-+        self.lock_check = gtk.CheckButton(label="_Lock Channels")
-+        self.lock_check.set_active(True)
-+        vbox.pack_start(self.lock_check, expand=False)
-+
-+        scrollwin = gtk.ScrolledWindow()
-+        scrollwin.set_policy(hscrollbar_policy=gtk.POLICY_NEVER, vscrollbar_policy=gtk.POLICY_AUTOMATIC)
-+        scrollwin.set_shadow_type(gtk.SHADOW_NONE)
-+        vbox.pack_start(scrollwin)
-+
-+        self.scales_vbox = gtk.VBox()
-+        scrollwin.add_with_viewport(self.scales_vbox)
-+
-+        label = gtk.Label()
-+        label.set_single_line_mode(True)
-+        line_height = label.size_request()[1]
-+        label.destroy()
-+        scale = gtk.HScale()
-+        scale.set_draw_value(False)
-+        line_height += scale.size_request()[1]
-+        scale.destroy()
-+        # always have space for at least four sliders
-+        scrollwin.set_size_request(width=-1, height=line_height*4+4)
-+
-+        # TODO: select the default card or the first card with stream controls
-+        if len(self.card_numbers) > 0:
-+            self.change_card(self.card_numbers[0])
-+        self.update_msg_label()
-+
-+        self.show_all()
-+
-+    def change_card(self, cardnum):
-+        for s in self.hctl_sources:
-+            gobject.source_remove(s)
-+        self.hctl_sources = []
-+
-+        self.hcontrol = self.open_hcontrol_for_card(cardnum)
-+
-+        for s in self.streams:
-+            s.destroy()
-+        self.streams = []
-+
-+        self.current_card = cardnum
-+
-+        if not self.hcontrol:
-+            self.update_msg_label()
-+            return
-+
-+        for id in self.hcontrol.list():
-+            if not self.is_stream_elem(id):
-+                continue
-+            elem = alsahcontrol.Element(self.hcontrol, id[0])
-+            info = alsahcontrol.Info(elem)
-+            if not self.is_stream_info(info):
-+                continue
-+            stream = Stream(elem, self)
-+            self.streams.append(stream)
-+
-+        for fd,condition in self.hcontrol.poll_fds:
-+            self.hctl_sources.append(gobject.io_add_watch(fd, condition, self.hctl_io_callback))
-+
-+        self.update_msg_label()
-+
-+        self.scales_vbox.show_all()
-+
-+    def update_msg_label(self):
-+        needs_msg = len(self.scales_vbox.get_children()) < 2
-+        has_msg = self.msg_label
-+        if has_msg and not needs_msg:
-+            self.msg_label.destroy()
-+            self.msg_label = None
-+        elif needs_msg:
-+            if len(self.streams) > 0:
-+                msg = "There are no open streams."
-+            else:
-+                msg = "This card does not have stream controls."
-+            if not has_msg:
-+                self.msg_label = gtk.Label(msg)
-+                self.scales_vbox.pack_start(self.msg_label)
-+                self.scales_vbox.show_all()
-+            elif self.msg_label.get_text() != msg:
-+                self.msg_label.set_text(msg)
-+
-+    def open_hcontrol_for_card(self, cardnum):
-+        devname = "hw:CARD=" + str(cardnum)
-+        try:
-+            hc = alsahcontrol.HControl(name=devname,
-+                    mode=alsahcontrol.open_mode['NONBLOCK'])
-+        except:
-+            # TODO: alsa error msg
-+            dlg = gtk.MessageDialog(self,
-+                    gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-+                    gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
-+                    "Cannot open sound card control device.")
-+            dlg.run()
-+            dlg.destroy()
-+            return None
-+        return hc
-+
-+    def is_stream_elem(self, id):
-+        return ((id[1] == INTF_PCM and
-+             id[4] in ("PCM Playback Volume", "EMU10K1 PCM Volume")) or
-+            (id[1] == INTF_MIXER and
-+             id[4] == "VIA DXS Playback Volume"))
-+
-+    def is_stream_info(self, info):
-+        return info.is_readable and info.is_writable and info.type == TYPE_INTEGER
-+
-+    def hctl_io_callback(self, source, condition):
-+        self.hcontrol.handle_events()
-+        return True
- 
- def main():
--	MixerWindow()
--	gtk.main()
-+    MixerWindow()
-+    gtk.main()
- 
- main()
- 
--- 
-2.19.0
+RnJvbTogRW1tYW51ZWwgR2lsIFBleXJvdCA8bGlua21hdXZlQGxpbmttYXV2ZS5mcj4KClRoaXMg
+ZG9lc27igJl0IHdvcmsgeWV0LCB3ZSByZXF1aXJlIEd0a8KgMy4wIHJhdGhlciB0aGFuIDIuMCBh
+bmQgdGhlIEFQSQpjaGFuZ2VkIHF1aXRlIGEgbG90LCBzbyB0aGlzIGlzIGJ1dCBhIHByZXBhcmF0
+b3J5IHBhdGNoLgoKVGhpcyBpcyBkb25lIHNvIHRoYXQgd2UgY2FuIGdldCByaWQgb2YgR1RLK8Kg
+MiB3aGljaCBoYXMgYmVlbiBFT0wgZm9yCm1hbnkgeWVhcnMgYWxyZWFkeSwgYW5kIHRvIGFkZCBQ
+eXRob27CoDMgc3VwcG9ydCBiZWNhdXNlIFB5dGhvbsKgMiB3aWxsCnZlcnkgc29vbiBiZSBFT0wg
+YXMgd2VsbC4KClNpZ25lZC1vZmYtYnk6IEVtbWFudWVsIEdpbCBQZXlyb3QgPGxpbmttYXV2ZUBs
+aW5rbWF1dmUuZnI+CgpkaWZmIC0tZ2l0IGEvaHdtaXh2b2x1bWUvaHdtaXh2b2x1bWUgYi9od21p
+eHZvbHVtZS9od21peHZvbHVtZQppbmRleCAwMzhiY2IzLi42NGQyMzJjIDEwMDc1NQotLS0gYS9o
+d21peHZvbHVtZS9od21peHZvbHVtZQorKysgYi9od21peHZvbHVtZS9od21peHZvbHVtZQpAQCAt
+MTUsNyArMTUsMTAgQEAKICMgT1RIRVIgVE9SVElPVVMgQUNUSU9OLCBBUklTSU5HIE9VVCBPRiBP
+UiBJTiBDT05ORUNUSU9OIFdJVEggVEhFIFVTRSBPUgogIyBQRVJGT1JNQU5DRSBPRiBUSElTIFNP
+RlRXQVJFLgogCi1pbXBvcnQgZ29iamVjdCwgZ3RrCitpbXBvcnQgZ2kKK2dpLnJlcXVpcmVfdmVy
+c2lvbignR0xpYicsICcyLjAnKQorZ2kucmVxdWlyZV92ZXJzaW9uKCdHdGsnLCAnMy4wJykKK2Zy
+b20gZ2kucmVwb3NpdG9yeSBpbXBvcnQgR0xpYiwgR3RrCiBmcm9tIHB5YWxzYSBpbXBvcnQgYWxz
+YWNhcmQsIGFsc2FoY29udHJvbAogCiBJTlRGX1BDTSA9IGFsc2FoY29udHJvbC5pbnRlcmZhY2Vf
+aWRbJ1BDTSddCkBAIC01NywxNiArNjAsMTYgQEAgY2xhc3MgU3RyZWFtOgogICAgICAgICB2YWx1
+ZSA9IGFsc2FoY29udHJvbC5WYWx1ZShzZWxmLmVsZW1lbnQpCiAgICAgICAgIHZhbHVlLnJlYWQo
+KQogICAgICAgICB2YWx1ZXMgPSB2YWx1ZS5nZXRfdHVwbGUoVFlQRV9JTlRFR0VSLCBpbmZvLmNv
+dW50KQotICAgICAgICBzZWxmLmxhYmVsID0gZ3RrLkxhYmVsKHNlbGYuZ2V0X2xhYmVsKGluZm8p
+KQorICAgICAgICBzZWxmLmxhYmVsID0gR3RrLkxhYmVsKHNlbGYuZ2V0X2xhYmVsKGluZm8pKQog
+ICAgICAgICBzZWxmLmxhYmVsLnNldF9zaW5nbGVfbGluZV9tb2RlKFRydWUpCiAgICAgICAgIHNl
+bGYucGFyZW50LnNjYWxlc192Ym94LnBhY2tfc3RhcnQoc2VsZi5sYWJlbCwgZXhwYW5kPUZhbHNl
+KQogICAgICAgICBmb3IgaSBpbiByYW5nZShpbmZvLmNvdW50KToKLSAgICAgICAgICAgIGFkaiA9
+IGd0ay5BZGp1c3RtZW50KHZhbHVlPXZhbHVlc1tpXSwKKyAgICAgICAgICAgIGFkaiA9IEd0ay5B
+ZGp1c3RtZW50KHZhbHVlPXZhbHVlc1tpXSwKICAgICAgICAgICAgICAgICAgICAgbG93ZXI9aW5m
+by5taW4sIHVwcGVyPWluZm8ubWF4LAogICAgICAgICAgICAgICAgICAgICBzdGVwX2luY3I9MSwK
+ICAgICAgICAgICAgICAgICAgICAgcGFnZV9pbmNyPShpbmZvLm1heC1pbmZvLm1pbisxKS84KQog
+ICAgICAgICAgICAgYWRqLmNvbm5lY3QoJ3ZhbHVlLWNoYW5nZWQnLCBzZWxmLnVwZGF0ZV9jdGxf
+ZnJvbV9zY2FsZSwgaSkKLSAgICAgICAgICAgIHNjYWxlID0gZ3RrLkhTY2FsZShhZGopCisgICAg
+ICAgICAgICBzY2FsZSA9IEd0ay5IU2NhbGUoYWRqKQogICAgICAgICAgICAgc2NhbGUuc2V0X2Ry
+YXdfdmFsdWUoRmFsc2UpCiAgICAgICAgICAgICBzZWxmLnBhcmVudC5zY2FsZXNfdmJveC5wYWNr
+X3N0YXJ0KHNjYWxlLCBleHBhbmQ9RmFsc2UpCiAgICAgICAgICAgICBzZWxmLnNjYWxlcy5hcHBl
+bmQoc2NhbGUpCkBAIC0xNTcsNyArMTYwLDcgQEAgY2xhc3MgU3RyZWFtOgogICAgICAgICAgICAg
+Zi5jbG9zZSgpCiAgICAgICAgIHJldHVybiBjbWRsaW5lLnJlcGxhY2UoJ1x4MDAnLCAnICcpLnN0
+cmlwKCkKIAotY2xhc3MgTWl4ZXJXaW5kb3coZ3RrLldpbmRvdyk6CitjbGFzcyBNaXhlcldpbmRv
+dyhHdGsuV2luZG93KToKICAgICBjYXJkX251bWJlcnMgPSBhbHNhY2FyZC5jYXJkX2xpc3QoKQog
+ICAgIGN1cnJlbnRfY2FyZCA9IC0xCiAgICAgaGNvbnRyb2wgPSBOb25lCkBAIC0xNjcsMjEgKzE3
+MCwyMSBAQCBjbGFzcyBNaXhlcldpbmRvdyhndGsuV2luZG93KToKICAgICBoY3RsX3NvdXJjZXMg
+PSBbXQogCiAgICAgZGVmIF9faW5pdF9fKHNlbGYpOgotICAgICAgICBndGsuV2luZG93Ll9faW5p
+dF9fKHNlbGYpCi0gICAgICAgIHNlbGYuY29ubmVjdCgnZGVzdHJveScsIGxhbWJkYSB3OiBndGsu
+bWFpbl9xdWl0KCkpCisgICAgICAgIEd0ay5XaW5kb3cuX19pbml0X18oc2VsZikKKyAgICAgICAg
+c2VsZi5jb25uZWN0KCdkZXN0cm95JywgbGFtYmRhIHc6IEd0ay5tYWluX3F1aXQoKSkKICAgICAg
+ICAgc2VsZi5zZXRfdGl0bGUoIkhhcmR3YXJlIE1peGVyIFZvbHVtZXMiKQogCi0gICAgICAgIHZi
+b3ggPSBndGsuVkJveCgpCisgICAgICAgIHZib3ggPSBHdGsuVkJveCgpCiAgICAgICAgIHNlbGYu
+YWRkKHZib3gpCiAKLSAgICAgICAgaGJveCA9IGd0ay5IQm94KCkKKyAgICAgICAgaGJveCA9IEd0
+ay5IQm94KCkKICAgICAgICAgdmJveC5wYWNrX3N0YXJ0KGhib3gsIGV4cGFuZD1GYWxzZSkKIAot
+ICAgICAgICBsYWJlbCA9IGd0ay5MYWJlbCgiX1NvdW5kIENhcmQ6ICIpCisgICAgICAgIGxhYmVs
+ID0gR3RrLkxhYmVsKCJfU291bmQgQ2FyZDogIikKICAgICAgICAgbGFiZWwuc2V0X3VzZV91bmRl
+cmxpbmUoVHJ1ZSkKICAgICAgICAgaGJveC5wYWNrX3N0YXJ0KGxhYmVsLCBleHBhbmQ9RmFsc2Up
+CiAKLSAgICAgICAgY29tYm8gPSBndGsuY29tYm9fYm94X25ld190ZXh0KCkKKyAgICAgICAgY29t
+Ym8gPSBHdGsuY29tYm9fYm94X25ld190ZXh0KCkKICAgICAgICAgZm9yIGkgaW4gc2VsZi5jYXJk
+X251bWJlcnM6CiAgICAgICAgICAgICBzdHIgPSAiJWQ6ICVzIiAlIChpLCBhbHNhY2FyZC5jYXJk
+X2dldF9uYW1lKGkpKQogICAgICAgICAgICAgY29tYm8uYXBwZW5kX3RleHQoc3RyKQpAQCAtMTkx
+LDIzICsxOTQsMjMgQEAgY2xhc3MgTWl4ZXJXaW5kb3coZ3RrLldpbmRvdyk6CiAgICAgICAgIGhi
+b3gucGFja19zdGFydChjb21ibykKICAgICAgICAgbGFiZWwuc2V0X21uZW1vbmljX3dpZGdldChj
+b21ibykKIAotICAgICAgICBzZWxmLmxvY2tfY2hlY2sgPSBndGsuQ2hlY2tCdXR0b24obGFiZWw9
+Il9Mb2NrIENoYW5uZWxzIikKKyAgICAgICAgc2VsZi5sb2NrX2NoZWNrID0gR3RrLkNoZWNrQnV0
+dG9uKGxhYmVsPSJfTG9jayBDaGFubmVscyIpCiAgICAgICAgIHNlbGYubG9ja19jaGVjay5zZXRf
+YWN0aXZlKFRydWUpCiAgICAgICAgIHZib3gucGFja19zdGFydChzZWxmLmxvY2tfY2hlY2ssIGV4
+cGFuZD1GYWxzZSkKIAotICAgICAgICBzY3JvbGx3aW4gPSBndGsuU2Nyb2xsZWRXaW5kb3coKQot
+ICAgICAgICBzY3JvbGx3aW4uc2V0X3BvbGljeShoc2Nyb2xsYmFyX3BvbGljeT1ndGsuUE9MSUNZ
+X05FVkVSLCB2c2Nyb2xsYmFyX3BvbGljeT1ndGsuUE9MSUNZX0FVVE9NQVRJQykKLSAgICAgICAg
+c2Nyb2xsd2luLnNldF9zaGFkb3dfdHlwZShndGsuU0hBRE9XX05PTkUpCisgICAgICAgIHNjcm9s
+bHdpbiA9IEd0ay5TY3JvbGxlZFdpbmRvdygpCisgICAgICAgIHNjcm9sbHdpbi5zZXRfcG9saWN5
+KGhzY3JvbGxiYXJfcG9saWN5PUd0ay5QT0xJQ1lfTkVWRVIsIHZzY3JvbGxiYXJfcG9saWN5PUd0
+ay5QT0xJQ1lfQVVUT01BVElDKQorICAgICAgICBzY3JvbGx3aW4uc2V0X3NoYWRvd190eXBlKEd0
+ay5TSEFET1dfTk9ORSkKICAgICAgICAgdmJveC5wYWNrX3N0YXJ0KHNjcm9sbHdpbikKIAotICAg
+ICAgICBzZWxmLnNjYWxlc192Ym94ID0gZ3RrLlZCb3goKQorICAgICAgICBzZWxmLnNjYWxlc192
+Ym94ID0gR3RrLlZCb3goKQogICAgICAgICBzY3JvbGx3aW4uYWRkX3dpdGhfdmlld3BvcnQoc2Vs
+Zi5zY2FsZXNfdmJveCkKIAotICAgICAgICBsYWJlbCA9IGd0ay5MYWJlbCgpCisgICAgICAgIGxh
+YmVsID0gR3RrLkxhYmVsKCkKICAgICAgICAgbGFiZWwuc2V0X3NpbmdsZV9saW5lX21vZGUoVHJ1
+ZSkKICAgICAgICAgbGluZV9oZWlnaHQgPSBsYWJlbC5zaXplX3JlcXVlc3QoKVsxXQogICAgICAg
+ICBsYWJlbC5kZXN0cm95KCkKLSAgICAgICAgc2NhbGUgPSBndGsuSFNjYWxlKCkKKyAgICAgICAg
+c2NhbGUgPSBHdGsuSFNjYWxlKCkKICAgICAgICAgc2NhbGUuc2V0X2RyYXdfdmFsdWUoRmFsc2Up
+CiAgICAgICAgIGxpbmVfaGVpZ2h0ICs9IHNjYWxlLnNpemVfcmVxdWVzdCgpWzFdCiAgICAgICAg
+IHNjYWxlLmRlc3Ryb3koKQpAQCAtMjIzLDcgKzIyNiw3IEBAIGNsYXNzIE1peGVyV2luZG93KGd0
+ay5XaW5kb3cpOgogCiAgICAgZGVmIGNoYW5nZV9jYXJkKHNlbGYsIGNhcmRudW0pOgogICAgICAg
+ICBmb3IgcyBpbiBzZWxmLmhjdGxfc291cmNlczoKLSAgICAgICAgICAgIGdvYmplY3Quc291cmNl
+X3JlbW92ZShzKQorICAgICAgICAgICAgR0xpYi5zb3VyY2VfcmVtb3ZlKHMpCiAgICAgICAgIHNl
+bGYuaGN0bF9zb3VyY2VzID0gW10KIAogICAgICAgICBzZWxmLmhjb250cm9sID0gc2VsZi5vcGVu
+X2hjb250cm9sX2Zvcl9jYXJkKGNhcmRudW0pCkBAIC0yNDksNyArMjUyLDcgQEAgY2xhc3MgTWl4
+ZXJXaW5kb3coZ3RrLldpbmRvdyk6CiAgICAgICAgICAgICBzZWxmLnN0cmVhbXMuYXBwZW5kKHN0
+cmVhbSkKIAogICAgICAgICBmb3IgZmQsY29uZGl0aW9uIGluIHNlbGYuaGNvbnRyb2wucG9sbF9m
+ZHM6Ci0gICAgICAgICAgICBzZWxmLmhjdGxfc291cmNlcy5hcHBlbmQoZ29iamVjdC5pb19hZGRf
+d2F0Y2goZmQsIGNvbmRpdGlvbiwgc2VsZi5oY3RsX2lvX2NhbGxiYWNrKSkKKyAgICAgICAgICAg
+IHNlbGYuaGN0bF9zb3VyY2VzLmFwcGVuZChHTGliLmlvX2FkZF93YXRjaChmZCwgY29uZGl0aW9u
+LCBzZWxmLmhjdGxfaW9fY2FsbGJhY2spKQogCiAgICAgICAgIHNlbGYudXBkYXRlX21zZ19sYWJl
+bCgpCiAKQEAgLTI2Nyw3ICsyNzAsNyBAQCBjbGFzcyBNaXhlcldpbmRvdyhndGsuV2luZG93KToK
+ICAgICAgICAgICAgIGVsc2U6CiAgICAgICAgICAgICAgICAgbXNnID0gIlRoaXMgY2FyZCBkb2Vz
+IG5vdCBoYXZlIHN0cmVhbSBjb250cm9scy4iCiAgICAgICAgICAgICBpZiBub3QgaGFzX21zZzoK
+LSAgICAgICAgICAgICAgICBzZWxmLm1zZ19sYWJlbCA9IGd0ay5MYWJlbChtc2cpCisgICAgICAg
+ICAgICAgICAgc2VsZi5tc2dfbGFiZWwgPSBHdGsuTGFiZWwobXNnKQogICAgICAgICAgICAgICAg
+IHNlbGYuc2NhbGVzX3Zib3gucGFja19zdGFydChzZWxmLm1zZ19sYWJlbCkKICAgICAgICAgICAg
+ICAgICBzZWxmLnNjYWxlc192Ym94LnNob3dfYWxsKCkKICAgICAgICAgICAgIGVsaWYgc2VsZi5t
+c2dfbGFiZWwuZ2V0X3RleHQoKSAhPSBtc2c6CkBAIC0yODAsOSArMjgzLDkgQEAgY2xhc3MgTWl4
+ZXJXaW5kb3coZ3RrLldpbmRvdyk6CiAgICAgICAgICAgICAgICAgICAgIG1vZGU9YWxzYWhjb250
+cm9sLm9wZW5fbW9kZVsnTk9OQkxPQ0snXSkKICAgICAgICAgZXhjZXB0OgogICAgICAgICAgICAg
+IyBUT0RPOiBhbHNhIGVycm9yIG1zZwotICAgICAgICAgICAgZGxnID0gZ3RrLk1lc3NhZ2VEaWFs
+b2coc2VsZiwKLSAgICAgICAgICAgICAgICAgICAgZ3RrLkRJQUxPR19NT0RBTCB8IGd0ay5ESUFM
+T0dfREVTVFJPWV9XSVRIX1BBUkVOVCwKLSAgICAgICAgICAgICAgICAgICAgZ3RrLk1FU1NBR0Vf
+RVJST1IsIGd0ay5CVVRUT05TX09LLAorICAgICAgICAgICAgZGxnID0gR3RrLk1lc3NhZ2VEaWFs
+b2coc2VsZiwKKyAgICAgICAgICAgICAgICAgICAgR3RrLkRJQUxPR19NT0RBTCB8IEd0ay5ESUFM
+T0dfREVTVFJPWV9XSVRIX1BBUkVOVCwKKyAgICAgICAgICAgICAgICAgICAgR3RrLk1FU1NBR0Vf
+RVJST1IsIEd0ay5CVVRUT05TX09LLAogICAgICAgICAgICAgICAgICAgICAiQ2Fubm90IG9wZW4g
+c291bmQgY2FyZCBjb250cm9sIGRldmljZS4iKQogICAgICAgICAgICAgZGxnLnJ1bigpCiAgICAg
+ICAgICAgICBkbGcuZGVzdHJveSgpCkBAIC0zMDQsNyArMzA3LDcgQEAgY2xhc3MgTWl4ZXJXaW5k
+b3coZ3RrLldpbmRvdyk6CiAKIGRlZiBtYWluKCk6CiAgICAgTWl4ZXJXaW5kb3coKQotICAgIGd0
+ay5tYWluKCkKKyAgICBHdGsubWFpbigpCiAKIG1haW4oKQogCi0tIAoyLjE5LjAKCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
+b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
