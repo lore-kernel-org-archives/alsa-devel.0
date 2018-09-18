@@ -1,14 +1,14 @@
-From: <shumingf@realtek.com>
-Subject: [PATCH 5/5] ASoC: rt5682: Minor code modification
-Date: Tue, 18 Sep 2018 19:51:53 +0800
-Message-ID: <1537271513-5737-1-git-send-email-shumingf@realtek.com>
+From: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>
+Subject: [PATCH - hwmixvolume v2 1/7] hwmixvolume: use four
+	spaces instead of one tab for indent
+Date: Tue, 18 Sep 2018 15:42:31 +0200
+Message-ID: <20180918134237.8489-2-linkmauve@jabberfr.org>
+References: <20180918134237.8489-1-linkmauve@jabberfr.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
- by alsa0.perex.cz (Postfix) with ESMTP id 1D4CD267887
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 13:51:59 +0200 (CEST)
+In-Reply-To: <20180918134237.8489-1-linkmauve@jabberfr.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,71 +18,583 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com
-Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, albertchen@realtek.com, Shuming Fan <shumingf@realtek.com>, flove@realtek.com
+To: patch@alsa-project.org
+Cc: linkmauve@linkmauve.fr, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Shuming Fan <shumingf@realtek.com>
+From: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
 
-Minor code changes are:
- - improve the readability in patch list
- - add i2c remove function
- - regmap_register_patch changes to regmap_multi_reg_write
+This is the recommended coding style for all Python programs, as
+specified in PEP-0008[1].
 
-Signed-off-by: Shuming Fan <shumingf@realtek.com>
----
- sound/soc/codecs/rt5682.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+[1] https://www.python.org/dev/peps/pep-0008/
 
-diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 1809966..340f904 100644
---- a/sound/soc/codecs/rt5682.c
-+++ b/sound/soc/codecs/rt5682.c
-@@ -67,7 +67,7 @@ struct rt5682_priv {
- };
+Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+
+diff --git a/hwmixvolume/hwmixvolume b/hwmixvolume/hwmixvolume
+index ef80bc8..038bcb3 100755
+--- a/hwmixvolume/hwmixvolume
++++ b/hwmixvolume/hwmixvolume
+@@ -26,285 +26,285 @@ EVENT_INFO = alsahcontrol.event_mask['INFO']
+ EVENT_REMOVE = alsahcontrol.event_mask_remove
  
- static const struct reg_sequence patch_list[] = {
--	{0x01c1, 0x1000},
-+	{RT5682_HP_IMP_SENS_CTRL_19, 0x1000},
- 	{RT5682_DAC_ADC_DIG_VOL1, 0xa020},
- };
- 
-@@ -2584,7 +2584,7 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 
- 	rt5682_calibrate(rt5682);
- 
--	ret = regmap_register_patch(rt5682->regmap, patch_list,
-+	ret = regmap_multi_reg_write(rt5682->regmap, patch_list,
- 				    ARRAY_SIZE(patch_list));
- 	if (ret != 0)
- 		dev_warn(&i2c->dev, "Failed to apply regmap patch: %d\n", ret);
-@@ -2659,11 +2659,17 @@ static int rt5682_i2c_probe(struct i2c_client *i2c,
- 
- 	}
- 
--	return devm_snd_soc_register_component(&i2c->dev,
--			&soc_component_dev_rt5682,
-+	return snd_soc_register_component(&i2c->dev, &soc_component_dev_rt5682,
- 			rt5682_dai, ARRAY_SIZE(rt5682_dai));
- }
- 
-+static int rt5682_i2c_remove(struct i2c_client *i2c)
-+{
-+	snd_soc_unregister_component(&i2c->dev);
+ class Stream:
+-	def __init__(self, element, parent):
+-		self.element = element
+-		self.element.set_callback(self)
+-		self.parent = parent
+-		self.label = None
+-		self.scales = []
+-		self.adjustments = []
+-		self.callback(self.element, EVENT_INFO)
+-
+-	def destroy(self):
+-		self.deactivate()
+-
+-	def callback(self, e, mask):
+-		if mask == EVENT_REMOVE:
+-			self.deactivate()
+-		elif (mask & EVENT_INFO) != 0:
+-			info = alsahcontrol.Info(self.element)
+-			if info.is_inactive:
+-				self.deactivate()
+-			else:
+-				self.activate()
+-		elif (mask & EVENT_VALUE) != 0:
+-			self.update_scales_from_ctl()
+-
+-	def activate(self):
+-		if self.label:
+-			return
+-		info = alsahcontrol.Info(self.element)
+-		value = alsahcontrol.Value(self.element)
+-		value.read()
+-		values = value.get_tuple(TYPE_INTEGER, info.count)
+-		self.label = gtk.Label(self.get_label(info))
+-		self.label.set_single_line_mode(True)
+-		self.parent.scales_vbox.pack_start(self.label, expand=False)
+-		for i in range(info.count):
+-			adj = gtk.Adjustment(value=values[i],
+-					lower=info.min, upper=info.max,
+-					step_incr=1,
+-					page_incr=(info.max-info.min+1)/8)
+-			adj.connect('value-changed', self.update_ctl_from_scale, i)
+-			scale = gtk.HScale(adj)
+-			scale.set_draw_value(False)
+-			self.parent.scales_vbox.pack_start(scale, expand=False)
+-			self.scales.append(scale)
+-			self.adjustments.append(adj)
+-		self.parent.scales_vbox.show_all()
+-		self.parent.update_msg_label()
+-
+-	def deactivate(self):
+-		if not self.label:
+-			return
+-		self.label.destroy()
+-		for s in self.scales:
+-			s.destroy()
+-		self.label = None
+-		self.scales = []
+-		self.adjustments = []
+-		self.parent.update_msg_label()
+-
+-	def update_scales_from_ctl(self):
+-		if not self.label:
+-			return
+-		count = len(self.adjustments)
+-		value = alsahcontrol.Value(self.element)
+-		value.read()
+-		values = value.get_tuple(TYPE_INTEGER, count)
+-		for i in range(count):
+-			self.adjustments[i].set_value(values[i])
+-
+-	def update_ctl_from_scale(self, adj, index):
+-		scale_value = adj.get_value()
+-		value_to_set = int(round(adj.get_value()))
+-		count = len(self.adjustments)
+-		value = alsahcontrol.Value(self.element)
+-		if self.parent.lock_check.get_active():
+-			values = [value_to_set  for i in range(count)]
+-		else:
+-			value.read()
+-			values = value.get_array(TYPE_INTEGER, count)
+-			values[index] = value_to_set
+-		value.set_array(TYPE_INTEGER, values)
+-		value.write()
+-		if value_to_set != scale_value:
+-			adj.set_value(value_to_set)
+-
+-	def get_label(self, info):
+-		pid = self.get_pid(info)
+-		if pid:
+-			cmdline = self.get_pid_cmdline(pid)
+-			if cmdline:
+-				return cmdline
+-			else:
+-				return "PID %d" % pid
+-		else:
+-			name = info.name
+-			if name[-7:] == " Volume":
+-				name = name[:-7]
+-			if name[-9:] == " Playback":
+-				name = name[:-9]
+-			return name
+-
+-	def get_pid(self, info):
+-		card = self.parent.current_card
+-		device = info.device
+-		subdevice = info.subdevice
+-		if subdevice == 0:
+-			subdevice = info.index
+-		filename = "/proc/asound/card%d/pcm%dp/sub%d/status" % (card, device, subdevice)
+-		try:
+-			f = open(filename, "r")
+-		except IOError:
+-			return None
+-		try:
+-			for line in f.readlines():
+-				if line[:9] == "owner_pid":
+-					return int(line.split(':')[1].strip())
+-		finally:
+-			f.close()
+-		return None
+-
+-	def get_pid_cmdline(self, pid):
+-		try:
+-			f = open("/proc/%d/cmdline" % pid, "r")
+-		except IOError:
+-			return None
+-		try:
+-			cmdline = f.read()
+-		finally:
+-			f.close()
+-		return cmdline.replace('\x00', ' ').strip()
++    def __init__(self, element, parent):
++        self.element = element
++        self.element.set_callback(self)
++        self.parent = parent
++        self.label = None
++        self.scales = []
++        self.adjustments = []
++        self.callback(self.element, EVENT_INFO)
 +
-+	return 0;
-+}
++    def destroy(self):
++        self.deactivate()
 +
- static void rt5682_i2c_shutdown(struct i2c_client *client)
- {
- 	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
-@@ -2694,6 +2700,7 @@ static struct i2c_driver rt5682_i2c_driver = {
- 		.acpi_match_table = ACPI_PTR(rt5682_acpi_match),
- 	},
- 	.probe = rt5682_i2c_probe,
-+	.remove = rt5682_i2c_remove,
- 	.shutdown = rt5682_i2c_shutdown,
- 	.id_table = rt5682_i2c_id,
- };
++    def callback(self, e, mask):
++        if mask == EVENT_REMOVE:
++            self.deactivate()
++        elif (mask & EVENT_INFO) != 0:
++            info = alsahcontrol.Info(self.element)
++            if info.is_inactive:
++                self.deactivate()
++            else:
++                self.activate()
++        elif (mask & EVENT_VALUE) != 0:
++            self.update_scales_from_ctl()
++
++    def activate(self):
++        if self.label:
++            return
++        info = alsahcontrol.Info(self.element)
++        value = alsahcontrol.Value(self.element)
++        value.read()
++        values = value.get_tuple(TYPE_INTEGER, info.count)
++        self.label = gtk.Label(self.get_label(info))
++        self.label.set_single_line_mode(True)
++        self.parent.scales_vbox.pack_start(self.label, expand=False)
++        for i in range(info.count):
++            adj = gtk.Adjustment(value=values[i],
++                    lower=info.min, upper=info.max,
++                    step_incr=1,
++                    page_incr=(info.max-info.min+1)/8)
++            adj.connect('value-changed', self.update_ctl_from_scale, i)
++            scale = gtk.HScale(adj)
++            scale.set_draw_value(False)
++            self.parent.scales_vbox.pack_start(scale, expand=False)
++            self.scales.append(scale)
++            self.adjustments.append(adj)
++        self.parent.scales_vbox.show_all()
++        self.parent.update_msg_label()
++
++    def deactivate(self):
++        if not self.label:
++            return
++        self.label.destroy()
++        for s in self.scales:
++            s.destroy()
++        self.label = None
++        self.scales = []
++        self.adjustments = []
++        self.parent.update_msg_label()
++
++    def update_scales_from_ctl(self):
++        if not self.label:
++            return
++        count = len(self.adjustments)
++        value = alsahcontrol.Value(self.element)
++        value.read()
++        values = value.get_tuple(TYPE_INTEGER, count)
++        for i in range(count):
++            self.adjustments[i].set_value(values[i])
++
++    def update_ctl_from_scale(self, adj, index):
++        scale_value = adj.get_value()
++        value_to_set = int(round(adj.get_value()))
++        count = len(self.adjustments)
++        value = alsahcontrol.Value(self.element)
++        if self.parent.lock_check.get_active():
++            values = [value_to_set  for i in range(count)]
++        else:
++            value.read()
++            values = value.get_array(TYPE_INTEGER, count)
++            values[index] = value_to_set
++        value.set_array(TYPE_INTEGER, values)
++        value.write()
++        if value_to_set != scale_value:
++            adj.set_value(value_to_set)
++
++    def get_label(self, info):
++        pid = self.get_pid(info)
++        if pid:
++            cmdline = self.get_pid_cmdline(pid)
++            if cmdline:
++                return cmdline
++            else:
++                return "PID %d" % pid
++        else:
++            name = info.name
++            if name[-7:] == " Volume":
++                name = name[:-7]
++            if name[-9:] == " Playback":
++                name = name[:-9]
++            return name
++
++    def get_pid(self, info):
++        card = self.parent.current_card
++        device = info.device
++        subdevice = info.subdevice
++        if subdevice == 0:
++            subdevice = info.index
++        filename = "/proc/asound/card%d/pcm%dp/sub%d/status" % (card, device, subdevice)
++        try:
++            f = open(filename, "r")
++        except IOError:
++            return None
++        try:
++            for line in f.readlines():
++                if line[:9] == "owner_pid":
++                    return int(line.split(':')[1].strip())
++        finally:
++            f.close()
++        return None
++
++    def get_pid_cmdline(self, pid):
++        try:
++            f = open("/proc/%d/cmdline" % pid, "r")
++        except IOError:
++            return None
++        try:
++            cmdline = f.read()
++        finally:
++            f.close()
++        return cmdline.replace('\x00', ' ').strip()
+ 
+ class MixerWindow(gtk.Window):
+-	card_numbers = alsacard.card_list()
+-	current_card = -1
+-	hcontrol = None
+-	scales_vbox = None
+-	msg_label = None
+-	streams = []
+-	hctl_sources = []
+-
+-	def __init__(self):
+-		gtk.Window.__init__(self)
+-		self.connect('destroy', lambda w: gtk.main_quit())
+-		self.set_title("Hardware Mixer Volumes")
+-
+-		vbox = gtk.VBox()
+-		self.add(vbox)
+-
+-		hbox = gtk.HBox()
+-		vbox.pack_start(hbox, expand=False)
+-
+-		label = gtk.Label("_Sound Card: ")
+-		label.set_use_underline(True)
+-		hbox.pack_start(label, expand=False)
+-
+-		combo = gtk.combo_box_new_text()
+-		for i in self.card_numbers:
+-			str = "%d: %s" % (i, alsacard.card_get_name(i))
+-			combo.append_text(str)
+-		if len(self.card_numbers) > 0:
+-			combo.set_active(0)
+-		combo.connect('changed', lambda c: self.change_card(self.card_numbers[combo.get_active()]))
+-		hbox.pack_start(combo)
+-		label.set_mnemonic_widget(combo)
+-
+-		self.lock_check = gtk.CheckButton(label="_Lock Channels")
+-		self.lock_check.set_active(True)
+-		vbox.pack_start(self.lock_check, expand=False)
+-
+-		scrollwin = gtk.ScrolledWindow()
+-		scrollwin.set_policy(hscrollbar_policy=gtk.POLICY_NEVER, vscrollbar_policy=gtk.POLICY_AUTOMATIC)
+-		scrollwin.set_shadow_type(gtk.SHADOW_NONE)
+-		vbox.pack_start(scrollwin)
+-
+-		self.scales_vbox = gtk.VBox()
+-		scrollwin.add_with_viewport(self.scales_vbox)
+-
+-		label = gtk.Label()
+-		label.set_single_line_mode(True)
+-		line_height = label.size_request()[1]
+-		label.destroy()
+-		scale = gtk.HScale()
+-		scale.set_draw_value(False)
+-		line_height += scale.size_request()[1]
+-		scale.destroy()
+-		# always have space for at least four sliders
+-		scrollwin.set_size_request(width=-1, height=line_height*4+4)
+-
+-		# TODO: select the default card or the first card with stream controls
+-		if len(self.card_numbers) > 0:
+-			self.change_card(self.card_numbers[0])
+-		self.update_msg_label()
+-
+-		self.show_all()
+-
+-	def change_card(self, cardnum):
+-		for s in self.hctl_sources:
+-			gobject.source_remove(s)
+-		self.hctl_sources = []
+-
+-		self.hcontrol = self.open_hcontrol_for_card(cardnum)
+-
+-		for s in self.streams:
+-			s.destroy()
+-		self.streams = []
+-
+-		self.current_card = cardnum
+-
+-		if not self.hcontrol:
+-			self.update_msg_label()
+-			return
+-
+-		for id in self.hcontrol.list():
+-			if not self.is_stream_elem(id):
+-				continue
+-			elem = alsahcontrol.Element(self.hcontrol, id[0])
+-			info = alsahcontrol.Info(elem)
+-			if not self.is_stream_info(info):
+-				continue
+-			stream = Stream(elem, self)
+-			self.streams.append(stream)
+-
+-		for fd,condition in self.hcontrol.poll_fds:
+-			self.hctl_sources.append(gobject.io_add_watch(fd, condition, self.hctl_io_callback))
+-
+-		self.update_msg_label()
+-
+-		self.scales_vbox.show_all()
+-
+-	def update_msg_label(self):
+-		needs_msg = len(self.scales_vbox.get_children()) < 2
+-		has_msg = self.msg_label
+-		if has_msg and not needs_msg:
+-			self.msg_label.destroy()
+-			self.msg_label = None
+-		elif needs_msg:
+-			if len(self.streams) > 0:
+-				msg = "There are no open streams."
+-			else:
+-				msg = "This card does not have stream controls."
+-			if not has_msg:
+-				self.msg_label = gtk.Label(msg)
+-				self.scales_vbox.pack_start(self.msg_label)
+-				self.scales_vbox.show_all()
+-			elif self.msg_label.get_text() != msg:
+-				self.msg_label.set_text(msg)
+-
+-	def open_hcontrol_for_card(self, cardnum):
+-		devname = "hw:CARD=" + str(cardnum)
+-		try:
+-			hc = alsahcontrol.HControl(name=devname,
+-					mode=alsahcontrol.open_mode['NONBLOCK'])
+-		except:
+-			# TODO: alsa error msg
+-			dlg = gtk.MessageDialog(self,
+-					gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+-					gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
+-					"Cannot open sound card control device.")
+-			dlg.run()
+-			dlg.destroy()
+-			return None
+-		return hc
+-
+-	def is_stream_elem(self, id):
+-		return ((id[1] == INTF_PCM and
+-			 id[4] in ("PCM Playback Volume", "EMU10K1 PCM Volume")) or
+-			(id[1] == INTF_MIXER and
+-			 id[4] == "VIA DXS Playback Volume"))
+-
+-	def is_stream_info(self, info):
+-		return info.is_readable and info.is_writable and info.type == TYPE_INTEGER
+-
+-	def hctl_io_callback(self, source, condition):
+-		self.hcontrol.handle_events()
+-		return True
++    card_numbers = alsacard.card_list()
++    current_card = -1
++    hcontrol = None
++    scales_vbox = None
++    msg_label = None
++    streams = []
++    hctl_sources = []
++
++    def __init__(self):
++        gtk.Window.__init__(self)
++        self.connect('destroy', lambda w: gtk.main_quit())
++        self.set_title("Hardware Mixer Volumes")
++
++        vbox = gtk.VBox()
++        self.add(vbox)
++
++        hbox = gtk.HBox()
++        vbox.pack_start(hbox, expand=False)
++
++        label = gtk.Label("_Sound Card: ")
++        label.set_use_underline(True)
++        hbox.pack_start(label, expand=False)
++
++        combo = gtk.combo_box_new_text()
++        for i in self.card_numbers:
++            str = "%d: %s" % (i, alsacard.card_get_name(i))
++            combo.append_text(str)
++        if len(self.card_numbers) > 0:
++            combo.set_active(0)
++        combo.connect('changed', lambda c: self.change_card(self.card_numbers[combo.get_active()]))
++        hbox.pack_start(combo)
++        label.set_mnemonic_widget(combo)
++
++        self.lock_check = gtk.CheckButton(label="_Lock Channels")
++        self.lock_check.set_active(True)
++        vbox.pack_start(self.lock_check, expand=False)
++
++        scrollwin = gtk.ScrolledWindow()
++        scrollwin.set_policy(hscrollbar_policy=gtk.POLICY_NEVER, vscrollbar_policy=gtk.POLICY_AUTOMATIC)
++        scrollwin.set_shadow_type(gtk.SHADOW_NONE)
++        vbox.pack_start(scrollwin)
++
++        self.scales_vbox = gtk.VBox()
++        scrollwin.add_with_viewport(self.scales_vbox)
++
++        label = gtk.Label()
++        label.set_single_line_mode(True)
++        line_height = label.size_request()[1]
++        label.destroy()
++        scale = gtk.HScale()
++        scale.set_draw_value(False)
++        line_height += scale.size_request()[1]
++        scale.destroy()
++        # always have space for at least four sliders
++        scrollwin.set_size_request(width=-1, height=line_height*4+4)
++
++        # TODO: select the default card or the first card with stream controls
++        if len(self.card_numbers) > 0:
++            self.change_card(self.card_numbers[0])
++        self.update_msg_label()
++
++        self.show_all()
++
++    def change_card(self, cardnum):
++        for s in self.hctl_sources:
++            gobject.source_remove(s)
++        self.hctl_sources = []
++
++        self.hcontrol = self.open_hcontrol_for_card(cardnum)
++
++        for s in self.streams:
++            s.destroy()
++        self.streams = []
++
++        self.current_card = cardnum
++
++        if not self.hcontrol:
++            self.update_msg_label()
++            return
++
++        for id in self.hcontrol.list():
++            if not self.is_stream_elem(id):
++                continue
++            elem = alsahcontrol.Element(self.hcontrol, id[0])
++            info = alsahcontrol.Info(elem)
++            if not self.is_stream_info(info):
++                continue
++            stream = Stream(elem, self)
++            self.streams.append(stream)
++
++        for fd,condition in self.hcontrol.poll_fds:
++            self.hctl_sources.append(gobject.io_add_watch(fd, condition, self.hctl_io_callback))
++
++        self.update_msg_label()
++
++        self.scales_vbox.show_all()
++
++    def update_msg_label(self):
++        needs_msg = len(self.scales_vbox.get_children()) < 2
++        has_msg = self.msg_label
++        if has_msg and not needs_msg:
++            self.msg_label.destroy()
++            self.msg_label = None
++        elif needs_msg:
++            if len(self.streams) > 0:
++                msg = "There are no open streams."
++            else:
++                msg = "This card does not have stream controls."
++            if not has_msg:
++                self.msg_label = gtk.Label(msg)
++                self.scales_vbox.pack_start(self.msg_label)
++                self.scales_vbox.show_all()
++            elif self.msg_label.get_text() != msg:
++                self.msg_label.set_text(msg)
++
++    def open_hcontrol_for_card(self, cardnum):
++        devname = "hw:CARD=" + str(cardnum)
++        try:
++            hc = alsahcontrol.HControl(name=devname,
++                    mode=alsahcontrol.open_mode['NONBLOCK'])
++        except:
++            # TODO: alsa error msg
++            dlg = gtk.MessageDialog(self,
++                    gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
++                    gtk.MESSAGE_ERROR, gtk.BUTTONS_OK,
++                    "Cannot open sound card control device.")
++            dlg.run()
++            dlg.destroy()
++            return None
++        return hc
++
++    def is_stream_elem(self, id):
++        return ((id[1] == INTF_PCM and
++             id[4] in ("PCM Playback Volume", "EMU10K1 PCM Volume")) or
++            (id[1] == INTF_MIXER and
++             id[4] == "VIA DXS Playback Volume"))
++
++    def is_stream_info(self, info):
++        return info.is_readable and info.is_writable and info.type == TYPE_INTEGER
++
++    def hctl_io_callback(self, source, condition):
++        self.hcontrol.handle_events()
++        return True
+ 
+ def main():
+-	MixerWindow()
+-	gtk.main()
++    MixerWindow()
++    gtk.main()
+ 
+ main()
+ 
 -- 
-2.7.4
+2.19.0
