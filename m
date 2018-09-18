@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: AMD: Fix capture unstable in beginning
-	for some runs" to the asoc tree
-Date: Tue, 18 Sep 2018 18:45:01 +0100 (BST)
-Message-ID: <20180918174501.56D92440078@finisterre.ee.mobilebroadband>
-References: <1537255398-25166-1-git-send-email-akshu.agrawal@amd.com>
+Subject: Applied "ASoC: rt5682: Fix the boost volume at the
+	begining of playback" to the asoc tree
+Date: Tue, 18 Sep 2018 18:45:10 +0100 (BST)
+Message-ID: <20180918174510.C3CDD440078@finisterre.ee.mobilebroadband>
+References: <1537271498-5688-1-git-send-email-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A472926788C
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 19:45:06 +0200 (CEST)
-In-Reply-To: <1537255398-25166-1-git-send-email-akshu.agrawal@amd.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9FB5C2678AA
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 19:45:13 +0200 (CEST)
+In-Reply-To: <1537271498-5688-1-git-send-email-shumingf@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, djkurtz@chromium.org, open list <linux-kernel@vger.kernel.org>, Mark Brown <broonie@kernel.org>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, akshu.agrawal@amd.com, cychiang@chromium.org
+To: Shuming Fan <shumingf@realtek.com>
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, lgirdwood@gmail.com, albertchen@realtek.com, broonie@kernel.org, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: AMD: Fix capture unstable in beginning for some runs
+   ASoC: rt5682: Fix the boost volume at the begining of playback
 
 has been applied to the asoc tree at
 
@@ -52,68 +53,50 @@ to this mail.
 Thanks,
 Mark
 
->From c50535ed6a10fcae1b64ae83c0f6b1eeb5535afc Mon Sep 17 00:00:00 2001
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Date: Tue, 18 Sep 2018 12:53:13 +0530
-Subject: [PATCH] ASoC: AMD: Fix capture unstable in beginning for some runs
+>From 28b20dde5e1c943ab899549a655ac4935cffccbb Mon Sep 17 00:00:00 2001
+From: Shuming Fan <shumingf@realtek.com>
+Date: Tue, 18 Sep 2018 19:51:38 +0800
+Subject: [PATCH] ASoC: rt5682: Fix the boost volume at the begining of
+ playback
 
-alsa_conformance_test -C hw:0,4 -p 1024 --debug
-would sometime show:
-TIME_DIFF(s)    HW_LEVEL       READ              RATE
-0.000095970         1024       1024    10670001.041992
-0.042609555         1024       2048       24032.168372
-0.021330364         1024       3072       48006.681930
-0.021339559         1024       4096       47985.996337
-The issue is that in dma pointer function we can have stale value
-of the register for current descriptor of channel.
-The register retains the number of the last descriptor that
-was transferred.
+This patch fixed the boost volume at the begining of playback
+while DAC volume set to lower level.
 
-Fix ensures that we report position, 0, till the one period worth of
-data is transferred.  After one period of data, in handler of period
-completion interrupt we update the config and correct value of descriptor
-starts reflecting.
-
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/amd/acp-pcm-dma.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ sound/soc/codecs/rt5682.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 77b265bd0505..3135e9eafd18 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1036,16 +1036,22 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 2725eb72fb1b..18099668e960 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -68,6 +68,7 @@ struct rt5682_priv {
  
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		period_bytes = frames_to_bytes(runtime, runtime->period_size);
--		dscr = acp_reg_read(rtd->acp_mmio, rtd->dma_curr_dscr);
--		if (dscr == rtd->dma_dscr_idx_1)
--			pos = period_bytes;
--		else
--			pos = 0;
- 		bytescount = acp_get_byte_count(rtd);
--		if (bytescount > rtd->bytescount)
-+		if (bytescount >= rtd->bytescount)
- 			bytescount -= rtd->bytescount;
--		delay = do_div(bytescount, period_bytes);
--		runtime->delay = bytes_to_frames(runtime, delay);
-+		if (bytescount < period_bytes) {
-+			pos = 0;
-+		} else {
-+			dscr = acp_reg_read(rtd->acp_mmio, rtd->dma_curr_dscr);
-+			if (dscr == rtd->dma_dscr_idx_1)
-+				pos = period_bytes;
-+			else
-+				pos = 0;
-+		}
-+		if (bytescount > 0) {
-+			delay = do_div(bytescount, period_bytes);
-+			runtime->delay = bytes_to_frames(runtime, delay);
-+		}
- 	} else {
- 		buffersize = frames_to_bytes(runtime, runtime->buffer_size);
- 		bytescount = acp_get_byte_count(rtd);
+ static const struct reg_sequence patch_list[] = {
+ 	{0x01c1, 0x1000},
++	{RT5682_DAC_ADC_DIG_VOL1, 0xa020},
+ };
+ 
+ static const struct reg_default rt5682_reg[] = {
+@@ -1468,6 +1469,8 @@ static int rt5682_hp_event(struct snd_soc_dapm_widget *w,
+ 			RT5682_HP_CTRL_2, 0x6000);
+ 		snd_soc_component_update_bits(component,
+ 			RT5682_DEPOP_1, 0x60, 0x60);
++		snd_soc_component_update_bits(component,
++			RT5682_DAC_ADC_DIG_VOL1, 0x00c0, 0x0080);
+ 		break;
+ 
+ 	case SND_SOC_DAPM_POST_PMD:
+@@ -1475,6 +1478,8 @@ static int rt5682_hp_event(struct snd_soc_dapm_widget *w,
+ 			RT5682_DEPOP_1, 0x60, 0x0);
+ 		snd_soc_component_write(component,
+ 			RT5682_HP_CTRL_2, 0x0000);
++		snd_soc_component_update_bits(component,
++			RT5682_DAC_ADC_DIG_VOL1, 0x00c0, 0x0000);
+ 		break;
+ 
+ 	default:
 -- 
 2.19.0
