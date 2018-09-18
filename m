@@ -1,17 +1,17 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: remove redundant include" to the asoc
-	tree
-Date: Tue, 18 Sep 2018 18:45:43 +0100 (BST)
-Message-ID: <20180918174543.A3884440078@finisterre.ee.mobilebroadband>
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: [PATCH 00/15] Add support for Sound BlasterX AE-5
+Date: Tue, 18 Sep 2018 14:33:28 -0400
+Message-ID: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 491812678B0
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 19:45:49 +0200 (CEST)
-In-Reply-To: 
+Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
+ [209.85.216.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1133626788E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 20:34:26 +0200 (CEST)
+Received: by mail-qt0-f196.google.com with SMTP id r37-v6so2700951qtc.0
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 11:34:26 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,104 +21,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: zhong jiang <zhongjiang@huawei.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Charles Keepax <ckeepax@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, Takashi Iwai <tiwai@suse.com>, conmanx360@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+This patch series adds support for the Sound BlasterX AE-5. I have
+personally tested it, and had others test it as well. All outputs work,
+front headphone, rear headphone, rear line-out, surround, digital. The
+only issue currently is that the microphone suffers from inconsistency
+like the Sound Blaster Z does, and Creative may be willing to help fix
+that, but if they're not, I have a few ideas.
 
-   ASoC: remove redundant include
+I also have the ZxR working currently. That will require some more
+complicated changes of the driver, so I have left it out and just
+focused on the AE-5.
 
-has been applied to the asoc tree at
+Connor McAdams (15):
+  ALSA: hda/ca0132 - Define new verbs and control params
+  ALSA: hda/ca0132 - Add quirk for Sound BlasterX AE-5
+  ALSA: hda/ca0132 - Add pincfg for AE-5
+  ALSA: hda/ca0132 - Set AE-5 bools and select mixer
+  ALSA: hda/ca0132 - Change ca0132_mmio_init for AE-5
+  ALSA: hda/ca0132 - Add AE-5 pre-init and ca0113 functions
+  ALSA: hda/ca0132 - Add AE-5 regular init setup
+  ALSA: hda/ca0132 - Change firmware name and usage
+  ALSA: hda/ca0132 - Merge post-dsp functions + cleanup
+  ALSA: hda/ca0132 - Add DSP setup functions for AE-5
+  ALSA: hda/ca0132 - Clean up ca0132_alt_out_select
+  ALSA: hda/ca0132 - Add output set commands for AE-5
+  ALSA: hda/ca0132 - Add input selection commands for AE-5
+  ALSA: hda/ca0132 - Add AE-5 specific controls
+  ALSA: hda/ca0132 - Add AE-5 exit function
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+ sound/pci/hda/patch_ca0132.c | 1283 ++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 1038 insertions(+), 245 deletions(-)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
->From 29ca7d32d7f10737e8d165fcf40fe31d44b06bee Mon Sep 17 00:00:00 2001
-From: zhong jiang <zhongjiang@huawei.com>
-Date: Tue, 18 Sep 2018 16:16:24 +0800
-Subject: [PATCH] ASoC: remove redundant include
-
-module.h already contained moduleparam.h,  so it is safe to remove
-the redundant include.
-
-The issue is detected with the help of Coccinelle.
-
-Signed-off-by: zhong jiang <zhongjiang@huawei.com>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- sound/soc/codecs/rt5651.c | 1 -
- sound/soc/codecs/wm8904.c | 1 -
- sound/soc/codecs/wm8974.c | 1 -
- sound/soc/soc-dapm.c      | 1 -
- 4 files changed, 4 deletions(-)
-
-diff --git a/sound/soc/codecs/rt5651.c b/sound/soc/codecs/rt5651.c
-index 985852fd9723..b613103d801b 100644
---- a/sound/soc/codecs/rt5651.c
-+++ b/sound/soc/codecs/rt5651.c
-@@ -10,7 +10,6 @@
-  */
- 
- #include <linux/module.h>
--#include <linux/moduleparam.h>
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
-diff --git a/sound/soc/codecs/wm8904.c b/sound/soc/codecs/wm8904.c
-index 1965635ec07c..2a3e5fbd04e4 100644
---- a/sound/soc/codecs/wm8904.c
-+++ b/sound/soc/codecs/wm8904.c
-@@ -13,7 +13,6 @@
- 
- #include <linux/clk.h>
- #include <linux/module.h>
--#include <linux/moduleparam.h>
- #include <linux/init.h>
- #include <linux/delay.h>
- #include <linux/pm.h>
-diff --git a/sound/soc/codecs/wm8974.c b/sound/soc/codecs/wm8974.c
-index 43edaf8cd276..593a11960888 100644
---- a/sound/soc/codecs/wm8974.c
-+++ b/sound/soc/codecs/wm8974.c
-@@ -11,7 +11,6 @@
-  */
- 
- #include <linux/module.h>
--#include <linux/moduleparam.h>
- #include <linux/kernel.h>
- #include <linux/init.h>
- #include <linux/delay.h>
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 43983c69f6aa..ee6b9758ec15 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -18,7 +18,6 @@
- //      device reopen.
- 
- #include <linux/module.h>
--#include <linux/moduleparam.h>
- #include <linux/init.h>
- #include <linux/async.h>
- #include <linux/delay.h>
 -- 
-2.19.0
+2.7.4
