@@ -1,17 +1,17 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: [PATCH 2/2] sound: soc: wm8903: Cut gpio_base data
-Date: Tue, 18 Sep 2018 12:12:33 -0700
-Message-ID: <20180918191233.17178-1-linus.walleij@linaro.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] sound: soc: rt5677-spi: Drop unused GPIO
+	include
+Date: Tue, 18 Sep 2018 12:49:50 -0700
+Message-ID: <20180918194950.GV2471@sirena.org.uk>
+References: <20180918191157.16996-1-linus.walleij@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5280651767284503631=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
- [209.85.210.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 374602678AD
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 21:12:39 +0200 (CEST)
-Received: by mail-pf1-f196.google.com with SMTP id k21-v6so1455959pff.11
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 12:12:39 -0700 (PDT)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id BFAA426788E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 21:49:53 +0200 (CEST)
+In-Reply-To: <20180918191157.16996-1-linus.walleij@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,48 +21,50 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Linus Walleij <linus.walleij@linaro.org>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This variable is only used inside the file, and we should
-never hard-code the GPIO base, so delete this.
 
-Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
----
- sound/soc/codecs/wm8903.c | 8 +-------
- 1 file changed, 1 insertion(+), 7 deletions(-)
+--===============5280651767284503631==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="FZIkiClxIZ9JeWSb"
+Content-Disposition: inline
 
-diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-index 23e43ff40ded..545512dc4c45 100644
---- a/sound/soc/codecs/wm8903.c
-+++ b/sound/soc/codecs/wm8903.c
-@@ -144,7 +144,6 @@ struct wm8903_platform_data {
- 
- 	int micdet_delay;      /* Delay after microphone detection (ms) */
- 
--	int gpio_base;
- 	u32 gpio_cfg[WM8903_NUM_GPIO]; /* Default register values for GPIO pin mux */
- };
- 
-@@ -1876,17 +1875,12 @@ static const struct gpio_chip wm8903_template_chip = {
- 
- static void wm8903_init_gpio(struct wm8903_priv *wm8903)
- {
--	struct wm8903_platform_data *pdata = wm8903->pdata;
- 	int ret;
- 
- 	wm8903->gpio_chip = wm8903_template_chip;
- 	wm8903->gpio_chip.ngpio = WM8903_NUM_GPIO;
- 	wm8903->gpio_chip.parent = wm8903->dev;
--
--	if (pdata->gpio_base)
--		wm8903->gpio_chip.base = pdata->gpio_base;
--	else
--		wm8903->gpio_chip.base = -1;
-+	wm8903->gpio_chip.base = -1;
- 
- 	ret = gpiochip_add_data(&wm8903->gpio_chip, wm8903);
- 	if (ret != 0)
--- 
-2.17.1
+
+--FZIkiClxIZ9JeWSb
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Sep 18, 2018 at 12:11:57PM -0700, Linus Walleij wrote:
+> This SPI driver does not use the legacy GPIO header so
+> just delete it.
+
+Please use subject lines matching the style for the subsystem.  This
+makes it easier for people to identify relevant patches.
+
+--FZIkiClxIZ9JeWSb
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluhVt0ACgkQJNaLcl1U
+h9BZTAf+L0cCQuih2hwfY/L6JHmbTvXWRC5TZf6CjeNM4C8AvtEwMwVCgaPJXoce
+W0qfh/MEM/hO5JFflv1PJ0p+qIgHCARrfSM21ZcXGE7/bQ5oCdEgtaMwqsulXQ0G
+2sSTLLRWwlqCXwI6vPiQ6Oyudhg5Mgv6Ez/yz3GKe2VYaaj+p5PNCLHJmjMcCiBy
+uEYAF3Q/veo7K2z5Y6UpUGTpkyftpcxxh7tiLtFoG93YLRe9CBXj3POqVC56xgQz
+WyznC0wTgvHYaH+nBr6fUg+KiS0GeyIrujQvM7NrkRVmHk9j2vMjdcRPSAyTJYas
+FcyxKWgpZBhFkDL5tkCHlNVC9odWVg==
+=EiD0
+-----END PGP SIGNATURE-----
+
+--FZIkiClxIZ9JeWSb--
+
+--===============5280651767284503631==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5280651767284503631==--
