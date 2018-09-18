@@ -1,16 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] sound: soc: wm8903: Cut gpio_base data
-Date: Tue, 18 Sep 2018 12:52:20 -0700
-Message-ID: <20180918195220.GX2471@sirena.org.uk>
-References: <20180918191233.17178-1-linus.walleij@linaro.org>
+Subject: Applied "ASoC: rt5677-spi: Drop unused GPIO include"
+	to the asoc tree
+Date: Tue, 18 Sep 2018 20:53:53 +0100 (BST)
+Message-ID: <20180918195353.43210440078@finisterre.ee.mobilebroadband>
+References: <20180918191157.16996-1-linus.walleij@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1388204362779040168=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id D05A426788E
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 21:52:23 +0200 (CEST)
-In-Reply-To: <20180918191233.17178-1-linus.walleij@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8800C26788E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 21:53:55 +0200 (CEST)
+In-Reply-To: <20180918191157.16996-1-linus.walleij@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,94 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Linus Walleij <linus.walleij@linaro.org>, patches@opensource.cirrus.com
-Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
+To: Linus Walleij <linus.walleij@linaro.org>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============1388204362779040168==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="QQ0dNM4HnH4+xgqD"
-Content-Disposition: inline
+   ASoC: rt5677-spi: Drop unused GPIO include
 
+has been applied to the asoc tree at
 
---QQ0dNM4HnH4+xgqD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Sep 18, 2018 at 12:12:33PM -0700, Linus Walleij wrote:
-> This variable is only used inside the file, and we should
-> never hard-code the GPIO base, so delete this.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Adding the Cirrus people again...  hard coding the GPIO base is needed
-for board file based systems if they're using GPIO numbers isn't it?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
->=20
-> Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
-> ---
->  sound/soc/codecs/wm8903.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
->=20
-> diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-> index 23e43ff40ded..545512dc4c45 100644
-> --- a/sound/soc/codecs/wm8903.c
-> +++ b/sound/soc/codecs/wm8903.c
-> @@ -144,7 +144,6 @@ struct wm8903_platform_data {
-> =20
->  	int micdet_delay;      /* Delay after microphone detection (ms) */
-> =20
-> -	int gpio_base;
->  	u32 gpio_cfg[WM8903_NUM_GPIO]; /* Default register values for GPIO pin =
-mux */
->  };
-> =20
-> @@ -1876,17 +1875,12 @@ static const struct gpio_chip wm8903_template_chi=
-p =3D {
-> =20
->  static void wm8903_init_gpio(struct wm8903_priv *wm8903)
->  {
-> -	struct wm8903_platform_data *pdata =3D wm8903->pdata;
->  	int ret;
-> =20
->  	wm8903->gpio_chip =3D wm8903_template_chip;
->  	wm8903->gpio_chip.ngpio =3D WM8903_NUM_GPIO;
->  	wm8903->gpio_chip.parent =3D wm8903->dev;
-> -
-> -	if (pdata->gpio_base)
-> -		wm8903->gpio_chip.base =3D pdata->gpio_base;
-> -	else
-> -		wm8903->gpio_chip.base =3D -1;
-> +	wm8903->gpio_chip.base =3D -1;
-> =20
->  	ret =3D gpiochip_add_data(&wm8903->gpio_chip, wm8903);
->  	if (ret !=3D 0)
-> --=20
-> 2.17.1
->=20
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---QQ0dNM4HnH4+xgqD
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluhV3MACgkQJNaLcl1U
-h9CqIQgAhAfBQSZLbxsZbsZfxNthtJ54EdNpuKIwaUa6du5KC72l2Mykx1iPq+dX
-TmQncERIKWrXpCLT6lL4kFVJkxhIaVzOBczXerTBXbFRm/I8E4BIbcso6PzG+ung
-ggjHGrN69mC5KBZH91KfiTxIJp3LRSl8UccANkOwZBM8CjGZ/4caqGj/6bVMSDAr
-27dylaKm/Qufj7bfCYsnoAaJ2dvjV6/YrXUv9L+9lth7aq3OPxyMYIydAq/0Wfkh
-PNXpMgpy3zuXNJeJDFeS94ijgWg8uQ0ur60+A5jpf9jI+I9UMupgx6jIsUAMCS+J
-PeSQAVqL0U1JAVU0abdorDV6IjLoNg==
-=fBEJ
------END PGP SIGNATURE-----
+>From 65ba4dd5200a537eae0f6b29e120f3971eac5a4d Mon Sep 17 00:00:00 2001
+From: Linus Walleij <linus.walleij@linaro.org>
+Date: Tue, 18 Sep 2018 12:11:57 -0700
+Subject: [PATCH] ASoC: rt5677-spi: Drop unused GPIO include
 
---QQ0dNM4HnH4+xgqD--
+This SPI driver does not use the legacy GPIO header so
+just delete it.
 
---===============1388204362779040168==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/rt5677-spi.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-
---===============1388204362779040168==--
+diff --git a/sound/soc/codecs/rt5677-spi.c b/sound/soc/codecs/rt5677-spi.c
+index bd51f3655ee3..84501c2020c7 100644
+--- a/sound/soc/codecs/rt5677-spi.c
++++ b/sound/soc/codecs/rt5677-spi.c
+@@ -18,7 +18,6 @@
+ #include <linux/interrupt.h>
+ #include <linux/irq.h>
+ #include <linux/slab.h>
+-#include <linux/gpio.h>
+ #include <linux/sched.h>
+ #include <linux/uaccess.h>
+ #include <linux/regulator/consumer.h>
+-- 
+2.19.0
