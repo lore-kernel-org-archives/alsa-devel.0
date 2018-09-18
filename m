@@ -1,17 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 1/2] sound: soc: wm8903: Pull in platform
-	data
-Date: Tue, 18 Sep 2018 12:51:17 -0700
-Message-ID: <20180918195117.GW2471@sirena.org.uk>
-References: <20180918191226.17104-1-linus.walleij@linaro.org>
+Subject: Re: [PATCH 2/2] sound: soc: wm8903: Cut gpio_base data
+Date: Tue, 18 Sep 2018 12:52:20 -0700
+Message-ID: <20180918195220.GX2471@sirena.org.uk>
+References: <20180918191233.17178-1-linus.walleij@linaro.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============9138024152262347393=="
+Content-Type: multipart/mixed; boundary="===============1388204362779040168=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 48ACB26788E
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 21:51:21 +0200 (CEST)
-In-Reply-To: <20180918191226.17104-1-linus.walleij@linaro.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id D05A426788E
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 21:52:23 +0200 (CEST)
+In-Reply-To: <20180918191233.17178-1-linus.walleij@linaro.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,140 +25,89 @@ Cc: alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============9138024152262347393==
+--===============1388204362779040168==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="1Wg5Vd7si6EhrIHA"
+	protocol="application/pgp-signature"; boundary="QQ0dNM4HnH4+xgqD"
 Content-Disposition: inline
 
 
---1Wg5Vd7si6EhrIHA
+--QQ0dNM4HnH4+xgqD
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Sep 18, 2018 at 12:12:26PM -0700, Linus Walleij wrote:
-> No platform in the kernel is using platform data to
-> populate the WM8903 so pull it into the source file.
-> This is done to handle further simplifications.
+On Tue, Sep 18, 2018 at 12:12:33PM -0700, Linus Walleij wrote:
+> This variable is only used inside the file, and we should
+> never hard-code the GPIO base, so delete this.
 
-Please always copy maintainers on patches, adding the Cirrus people.
-
-Please use subject lines matching the style for the subsystem.  This
-makes it easier for people to identify relevant patches.
+Adding the Cirrus people again...  hard coding the GPIO base is needed
+for board file based systems if they're using GPIO numbers isn't it?
 
 >=20
 > Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
 > ---
->  include/sound/wm8903.h    | 24 ------------------------
->  sound/soc/codecs/wm8903.c | 24 ++++++++++++++++++++++++
->  2 files changed, 24 insertions(+), 24 deletions(-)
+>  sound/soc/codecs/wm8903.c | 8 +-------
+>  1 file changed, 1 insertion(+), 7 deletions(-)
 >=20
-> diff --git a/include/sound/wm8903.h b/include/sound/wm8903.h
-> index b310c5a3a958..b2ef76d5d00d 100644
-> --- a/include/sound/wm8903.h
-> +++ b/include/sound/wm8903.h
-> @@ -11,12 +11,6 @@
->  #ifndef __LINUX_SND_WM8903_H
->  #define __LINUX_SND_WM8903_H
-> =20
-> -/*
-> - * Used to enable configuration of a GPIO to all zeros; a gpio_cfg value=
- of
-> - * zero in platform data means "don't touch this pin".
-> - */
-> -#define WM8903_GPIO_CONFIG_ZERO 0x8000
-> -
->  /*
->   * R6 (0x06) - Mic Bias Control 0
->   */
-> @@ -245,22 +239,4 @@
->  #define WM8903_GP5_DB_SHIFT                          0  /* GP5_DB */
->  #define WM8903_GP5_DB_WIDTH                          1  /* GP5_DB */
-> =20
-> -#define WM8903_NUM_GPIO 5
-> -
-> -struct wm8903_platform_data {
-> -	bool irq_active_low;   /* Set if IRQ active low, default high */
-> -
-> -        /* Default register value for R6 (Mic bias), used to configure
-> -	 * microphone detection.  In conjunction with gpio_cfg this
-> -	 * can be used to route the microphone status signals out onto
-> -	 * the GPIOs for use with snd_soc_jack_add_gpios().
-> -	 */
-> -	u16 micdet_cfg;
-> -
-> -	int micdet_delay;      /* Delay after microphone detection (ms) */
-> -
-> -	int gpio_base;
-> -	u32 gpio_cfg[WM8903_NUM_GPIO]; /* Default register values for GPIO pin =
-mux */
-> -};
-> -
->  #endif
 > diff --git a/sound/soc/codecs/wm8903.c b/sound/soc/codecs/wm8903.c
-> index 6cb3c153ba19..23e43ff40ded 100644
+> index 23e43ff40ded..545512dc4c45 100644
 > --- a/sound/soc/codecs/wm8903.c
 > +++ b/sound/soc/codecs/wm8903.c
-> @@ -124,6 +124,30 @@ static const char *wm8903_supply_names[WM8903_NUM_SU=
-PPLIES] =3D {
->  	"DCVDD",
+> @@ -144,7 +144,6 @@ struct wm8903_platform_data {
+> =20
+>  	int micdet_delay;      /* Delay after microphone detection (ms) */
+> =20
+> -	int gpio_base;
+>  	u32 gpio_cfg[WM8903_NUM_GPIO]; /* Default register values for GPIO pin =
+mux */
 >  };
 > =20
-> +/*
-> + * Used to enable configuration of a GPIO to all zeros; a gpio_cfg value=
- of
-> + * zero in platform data means "don't touch this pin".
-> + */
-> +#define WM8903_GPIO_CONFIG_ZERO 0x8000
-> +
-> +#define WM8903_NUM_GPIO 5
-> +
-> +struct wm8903_platform_data {
-> +	bool irq_active_low;   /* Set if IRQ active low, default high */
-> +
-> +        /* Default register value for R6 (Mic bias), used to configure
-> +	 * microphone detection.  In conjunction with gpio_cfg this
-> +	 * can be used to route the microphone status signals out onto
-> +	 * the GPIOs for use with snd_soc_jack_add_gpios().
-> +	 */
-> +	u16 micdet_cfg;
-> +
-> +	int micdet_delay;      /* Delay after microphone detection (ms) */
-> +
-> +	int gpio_base;
-> +	u32 gpio_cfg[WM8903_NUM_GPIO]; /* Default register values for GPIO pin =
-mux */
-> +};
-> +
->  struct wm8903_priv {
->  	struct wm8903_platform_data *pdata;
->  	struct device *dev;
+> @@ -1876,17 +1875,12 @@ static const struct gpio_chip wm8903_template_chi=
+p =3D {
+> =20
+>  static void wm8903_init_gpio(struct wm8903_priv *wm8903)
+>  {
+> -	struct wm8903_platform_data *pdata =3D wm8903->pdata;
+>  	int ret;
+> =20
+>  	wm8903->gpio_chip =3D wm8903_template_chip;
+>  	wm8903->gpio_chip.ngpio =3D WM8903_NUM_GPIO;
+>  	wm8903->gpio_chip.parent =3D wm8903->dev;
+> -
+> -	if (pdata->gpio_base)
+> -		wm8903->gpio_chip.base =3D pdata->gpio_base;
+> -	else
+> -		wm8903->gpio_chip.base =3D -1;
+> +	wm8903->gpio_chip.base =3D -1;
+> =20
+>  	ret =3D gpiochip_add_data(&wm8903->gpio_chip, wm8903);
+>  	if (ret !=3D 0)
 > --=20
 > 2.17.1
 >=20
 
---1Wg5Vd7si6EhrIHA
+--QQ0dNM4HnH4+xgqD
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluhVzUACgkQJNaLcl1U
-h9CWBwf+Ldo6qwqy3ziacyiR73qDOVXW0ixjUuW7PoD1Jop+5PzmpRZy39oiONcP
-vqdotox3ObLl9GxjEy58swN4C0QqT7bf9dNMu4hiIPgAKSOqpbvKI3GBE6Psozvx
-FyiR6HEA8K9bu8agYYx+7uCheacTjjwGqPNFe3rz/wve/NdVHWMfyQdqDTgsibTl
-Kd6n1NV7BYpvOZ7JiD7eGiVvg4v50ft8Ov6FTDZVLcDEkhcyp7DKgEOpyJfr8M/p
-JbyvNjluQAnmxGMv2DpkGX86tfmtZQ2bcLoyPlfVM4V/8sJzS+y7dmQqkq4neBeL
-0Z6R5ZjqW43H7+HN8fNS6cKBfZwBAA==
-=h5p3
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluhV3MACgkQJNaLcl1U
+h9CqIQgAhAfBQSZLbxsZbsZfxNthtJ54EdNpuKIwaUa6du5KC72l2Mykx1iPq+dX
+TmQncERIKWrXpCLT6lL4kFVJkxhIaVzOBczXerTBXbFRm/I8E4BIbcso6PzG+ung
+ggjHGrN69mC5KBZH91KfiTxIJp3LRSl8UccANkOwZBM8CjGZ/4caqGj/6bVMSDAr
+27dylaKm/Qufj7bfCYsnoAaJ2dvjV6/YrXUv9L+9lth7aq3OPxyMYIydAq/0Wfkh
+PNXpMgpy3zuXNJeJDFeS94ijgWg8uQ0ur60+A5jpf9jI+I9UMupgx6jIsUAMCS+J
+PeSQAVqL0U1JAVU0abdorDV6IjLoNg==
+=fBEJ
 -----END PGP SIGNATURE-----
 
---1Wg5Vd7si6EhrIHA--
+--QQ0dNM4HnH4+xgqD--
 
---===============9138024152262347393==
+--===============1388204362779040168==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============9138024152262347393==--
+--===============1388204362779040168==--
