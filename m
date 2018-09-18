@@ -1,59 +1,85 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 00/15] Add support for Sound BlasterX AE-5
-Date: Tue, 18 Sep 2018 14:33:28 -0400
-Message-ID: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qt0-f196.google.com (mail-qt0-f196.google.com
- [209.85.216.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 1133626788E
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 20:34:26 +0200 (CEST)
-Received: by mail-qt0-f196.google.com with SMTP id r37-v6so2700951qtc.0
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 11:34:26 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, Takashi Iwai <tiwai@suse.com>, conmanx360@gmail.com
+Subject: [PATCH 01/15] ALSA: hda/ca0132 - Define new verbs and control params
+Date: Tue, 18 Sep 2018 14:33:29 -0400
+Message-ID: <1537295625-8082-2-git-send-email-conmanx360@gmail.com>
+References: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1537295625-8082-1-git-send-email-conmanx360@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch series adds support for the Sound BlasterX AE-5. I have
-personally tested it, and had others test it as well. All outputs work,
-front headphone, rear headphone, rear line-out, surround, digital. The
-only issue currently is that the microphone suffers from inconsistency
-like the Sound Blaster Z does, and Creative may be willing to help fix
-that, but if they're not, I have a few ideas.
+This patch defines some new verbs found from reverse engineering of the
+onboard 8051 CPU, and a control param found there as well. This clears
+up usage of these verbs in other parts of the driver, and removes their
+usage where they're now known to be unnecessary.
 
-I also have the ZxR working currently. That will require some more
-complicated changes of the driver, so I have left it out and just
-focused on the AE-5.
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+---
+ sound/pci/hda/patch_ca0132.c | 23 ++++++++++++-----------
+ 1 file changed, 12 insertions(+), 11 deletions(-)
 
-Connor McAdams (15):
-  ALSA: hda/ca0132 - Define new verbs and control params
-  ALSA: hda/ca0132 - Add quirk for Sound BlasterX AE-5
-  ALSA: hda/ca0132 - Add pincfg for AE-5
-  ALSA: hda/ca0132 - Set AE-5 bools and select mixer
-  ALSA: hda/ca0132 - Change ca0132_mmio_init for AE-5
-  ALSA: hda/ca0132 - Add AE-5 pre-init and ca0113 functions
-  ALSA: hda/ca0132 - Add AE-5 regular init setup
-  ALSA: hda/ca0132 - Change firmware name and usage
-  ALSA: hda/ca0132 - Merge post-dsp functions + cleanup
-  ALSA: hda/ca0132 - Add DSP setup functions for AE-5
-  ALSA: hda/ca0132 - Clean up ca0132_alt_out_select
-  ALSA: hda/ca0132 - Add output set commands for AE-5
-  ALSA: hda/ca0132 - Add input selection commands for AE-5
-  ALSA: hda/ca0132 - Add AE-5 specific controls
-  ALSA: hda/ca0132 - Add AE-5 exit function
-
- sound/pci/hda/patch_ca0132.c | 1283 ++++++++++++++++++++++++++++++++++--------
- 1 file changed, 1038 insertions(+), 245 deletions(-)
-
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 0166a3d..cd93c86 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -685,6 +685,9 @@ enum hda_cmd_vendor_io {
+ 	VENDOR_CHIPIO_DATA_LOW               = 0x300,
+ 	VENDOR_CHIPIO_DATA_HIGH              = 0x400,
+ 
++	VENDOR_CHIPIO_8051_WRITE_DIRECT      = 0x500,
++	VENDOR_CHIPIO_8051_READ_DIRECT       = 0xD00,
++
+ 	VENDOR_CHIPIO_GET_PARAMETER          = 0xF00,
+ 	VENDOR_CHIPIO_STATUS                 = 0xF01,
+ 	VENDOR_CHIPIO_HIC_POST_READ          = 0x702,
+@@ -692,6 +695,9 @@ enum hda_cmd_vendor_io {
+ 
+ 	VENDOR_CHIPIO_8051_DATA_WRITE        = 0x707,
+ 	VENDOR_CHIPIO_8051_DATA_READ         = 0xF07,
++	VENDOR_CHIPIO_8051_PMEM_READ         = 0xF08,
++	VENDOR_CHIPIO_8051_IRAM_WRITE        = 0x709,
++	VENDOR_CHIPIO_8051_IRAM_READ         = 0xF09,
+ 
+ 	VENDOR_CHIPIO_CT_EXTENSIONS_ENABLE   = 0x70A,
+ 	VENDOR_CHIPIO_CT_EXTENSIONS_GET      = 0xF0A,
+@@ -798,6 +804,12 @@ enum control_param_id {
+ 	 * impedance is selected*/
+ 	CONTROL_PARAM_PORTD_160OHM_GAIN        = 10,
+ 
++	/*
++	 * This control param name was found in the 8051 memory, and makes
++	 * sense given the fact the AE-5 uses it and has the ASI flag set.
++	 */
++	CONTROL_PARAM_ASI                      = 23,
++
+ 	/* Stream Control */
+ 
+ 	/* Select stream with the given ID */
+@@ -7140,11 +7152,6 @@ static void sbz_pre_dsp_setup(struct hda_codec *codec)
+ 	writel(0x00820680, spec->mem_base + 0x01C);
+ 	writel(0x00820680, spec->mem_base + 0x01C);
+ 
+-	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfc);
+-	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfd);
+-	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfe);
+-	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xff);
+-
+ 	chipio_write(codec, 0x18b0a4, 0x000000c2);
+ 
+ 	snd_hda_codec_write(codec, 0x11, 0,
+@@ -7153,12 +7160,6 @@ static void sbz_pre_dsp_setup(struct hda_codec *codec)
+ 
+ static void r3d_pre_dsp_setup(struct hda_codec *codec)
+ {
+-
+-	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfc);
+-	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfd);
+-	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xfe);
+-	snd_hda_codec_write(codec, 0x15, 0, 0xd00, 0xff);
+-
+ 	chipio_write(codec, 0x18b0a4, 0x000000c2);
+ 
+ 	snd_hda_codec_write(codec, WIDGET_CHIP_CTRL, 0,
 -- 
 2.7.4
