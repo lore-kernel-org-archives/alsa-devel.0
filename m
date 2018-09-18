@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt5682: Update calibration function" to
+Subject: Applied "ASoC: rt5682: Remove HP volume control" to
 	the asoc tree
-Date: Tue, 18 Sep 2018 18:45:18 +0100 (BST)
-Message-ID: <20180918174518.80EA4440078@finisterre.ee.mobilebroadband>
-References: <1537271438-5540-1-git-send-email-shumingf@realtek.com>
+Date: Tue, 18 Sep 2018 18:45:26 +0100 (BST)
+Message-ID: <20180918174526.DA6D5440078@finisterre.ee.mobilebroadband>
+References: <1537271484-5638-1-git-send-email-shumingf@realtek.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1A6EC2678AC
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 19:45:21 +0200 (CEST)
-In-Reply-To: <1537271438-5540-1-git-send-email-shumingf@realtek.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id E063C2678AD
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 19:45:29 +0200 (CEST)
+In-Reply-To: <1537271484-5638-1-git-send-email-shumingf@realtek.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt5682: Update calibration function
+   ASoC: rt5682: Remove HP volume control
 
 has been applied to the asoc tree at
 
@@ -53,60 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From afd603e4ded0fad9e3102d514020af8494da1604 Mon Sep 17 00:00:00 2001
+>From 3f24f37adbc9a1059420a9c8f857e3490a4bce5e Mon Sep 17 00:00:00 2001
 From: Shuming Fan <shumingf@realtek.com>
-Date: Tue, 18 Sep 2018 19:50:38 +0800
-Subject: [PATCH] ASoC: rt5682: Update calibration function
+Date: Tue, 18 Sep 2018 19:51:24 +0800
+Subject: [PATCH] ASoC: rt5682: Remove HP volume control
 
-The ADC/DAC path should open while calibration process.
+This patch removed Headphone Playback Volume control.
+Due to codec settings, we don't want the user to change HP analog gain.
+The user could use DAC1 Playback Volume control to
+change playback volume.
 
 Signed-off-by: Shuming Fan <shumingf@realtek.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt5682.c | 13 +++++++++++--
- 1 file changed, 11 insertions(+), 2 deletions(-)
+ sound/soc/codecs/rt5682.c | 5 -----
+ 1 file changed, 5 deletions(-)
 
 diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
-index 7213b1cfb18a..2725eb72fb1b 100644
+index afe7d5b19313..fad0bed82d79 100644
 --- a/sound/soc/codecs/rt5682.c
 +++ b/sound/soc/codecs/rt5682.c
-@@ -2468,17 +2468,22 @@ static void rt5682_calibrate(struct rt5682_priv *rt5682)
- 	mutex_lock(&rt5682->calibrate_mutex);
+@@ -749,7 +749,6 @@ static bool rt5682_readable_register(struct device *dev, unsigned int reg)
+ 	}
+ }
  
- 	rt5682_reset(rt5682->regmap);
--	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xa2bf);
-+	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xa2af);
- 	usleep_range(15000, 20000);
--	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xf2bf);
-+	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xf2af);
- 	regmap_write(rt5682->regmap, RT5682_MICBIAS_2, 0x0300);
- 	regmap_write(rt5682->regmap, RT5682_GLB_CLK, 0x8000);
- 	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x0100);
-+	regmap_write(rt5682->regmap, RT5682_HP_IMP_SENS_CTRL_19, 0x3800);
- 	regmap_write(rt5682->regmap, RT5682_CHOP_DAC, 0x3000);
-+	regmap_write(rt5682->regmap, RT5682_CALIB_ADC_CTRL, 0x7005);
-+	regmap_write(rt5682->regmap, RT5682_STO1_ADC_MIXER, 0x686c);
-+	regmap_write(rt5682->regmap, RT5682_CAL_REC, 0x0d0d);
- 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_2, 0x0321);
- 	regmap_write(rt5682->regmap, RT5682_HP_LOGIC_CTRL_2, 0x0004);
- 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0x7c00);
- 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_3, 0x06a1);
-+	regmap_write(rt5682->regmap, RT5682_A_DAC1_MUX, 0x0311);
- 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0x7c00);
+-static const DECLARE_TLV_DB_SCALE(hp_vol_tlv, -2250, 150, 0);
+ static const DECLARE_TLV_DB_SCALE(dac_vol_tlv, -6525, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_vol_tlv, -1725, 75, 0);
+ static const DECLARE_TLV_DB_SCALE(adc_bst_tlv, 0, 1200, 0);
+@@ -1108,10 +1107,6 @@ static void rt5682_jack_detect_handler(struct work_struct *work)
+ }
  
- 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0xfc00);
-@@ -2495,8 +2500,12 @@ static void rt5682_calibrate(struct rt5682_priv *rt5682)
- 		pr_err("HP Calibration Failure\n");
- 
- 	/* restore settings */
-+	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0x02af);
-+	regmap_write(rt5682->regmap, RT5682_MICBIAS_2, 0x0080);
- 	regmap_write(rt5682->regmap, RT5682_GLB_CLK, 0x0000);
- 	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x0000);
-+	regmap_write(rt5682->regmap, RT5682_CHOP_DAC, 0x2000);
-+	regmap_write(rt5682->regmap, RT5682_CALIB_ADC_CTRL, 0x2005);
- 
- 	mutex_unlock(&rt5682->calibrate_mutex);
- 
+ static const struct snd_kcontrol_new rt5682_snd_controls[] = {
+-	/* Headphone Output Volume */
+-	SOC_DOUBLE_R_TLV("Headphone Playback Volume", RT5682_HPL_GAIN,
+-		RT5682_HPR_GAIN, RT5682_G_HP_SFT, 15, 1, hp_vol_tlv),
+-
+ 	/* DAC Digital Volume */
+ 	SOC_DOUBLE_TLV("DAC1 Playback Volume", RT5682_DAC1_DIG_VOL,
+ 		RT5682_L_VOL_SFT + 1, RT5682_R_VOL_SFT + 1, 86, 0, dac_vol_tlv),
 -- 
 2.19.0
