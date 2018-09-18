@@ -1,73 +1,77 @@
-From: Akshu Agrawal <akshu.agrawal@amd.com>
-Subject: [PATCH v2] ASoC: AMD: Fix capture unstable in beginning for some runs
-Date: Tue, 18 Sep 2018 12:53:13 +0530
-Message-ID: <1537255398-25166-1-git-send-email-akshu.agrawal@amd.com>
+From: <shumingf@realtek.com>
+Subject: [PATCH 1/5] ASoC: rt5682: Update calibration function
+Date: Tue, 18 Sep 2018 19:50:38 +0800
+Message-ID: <1537271438-5540-1-git-send-email-shumingf@realtek.com>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: akshu.agrawal@amd.com, djkurtz@chromium.org, Alexander.Deucher@amd.com, cychiang@chromium.org, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>, Alex Deucher <alexander.deucher@amd.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC
-        AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 19209267819
+ for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 13:50:54 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org, lgirdwood@gmail.com
+Cc: oder_chiou@realtek.com, jack.yu@realtek.com, alsa-devel@alsa-project.org, lars@metafoo.de, albertchen@realtek.com, Shuming Fan <shumingf@realtek.com>, flove@realtek.com
 List-Id: alsa-devel@alsa-project.org
 
-alsa_conformance_test -C hw:0,4 -p 1024 --debug
-would sometime show:
-TIME_DIFF(s)    HW_LEVEL       READ              RATE
-0.000095970         1024       1024    10670001.041992
-0.042609555         1024       2048       24032.168372
-0.021330364         1024       3072       48006.681930
-0.021339559         1024       4096       47985.996337
-The issue is that in dma pointer function we can have stale value
-of the register for current descriptor of channel.
-The register retains the number of the last descriptor that
-was transferred.
+From: Shuming Fan <shumingf@realtek.com>
 
-Fix ensures that we report position, 0, till the one period worth of
-data is transferred.  After one period of data, in handler of period
-completion interrupt we update the config and correct value of descriptor
-starts reflecting.
+The ADC/DAC path should open while calibration process.
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
-
+Signed-off-by: Shuming Fan <shumingf@realtek.com>
 ---
-v2: fix overrun issue and missed case where bytescount = rtd->bytescount
- sound/soc/amd/acp-pcm-dma.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+ sound/soc/codecs/rt5682.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index b0e245c..0ac4b5b 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -1035,16 +1035,22 @@ static snd_pcm_uframes_t acp_dma_pointer(struct snd_pcm_substream *substream)
+diff --git a/sound/soc/codecs/rt5682.c b/sound/soc/codecs/rt5682.c
+index 731c6a8..31ec7c0 100644
+--- a/sound/soc/codecs/rt5682.c
++++ b/sound/soc/codecs/rt5682.c
+@@ -2451,17 +2451,22 @@ static void rt5682_calibrate(struct rt5682_priv *rt5682)
+ 	mutex_lock(&rt5682->calibrate_mutex);
  
- 	if (substream->stream == SNDRV_PCM_STREAM_CAPTURE) {
- 		period_bytes = frames_to_bytes(runtime, runtime->period_size);
--		dscr = acp_reg_read(rtd->acp_mmio, rtd->dma_curr_dscr);
--		if (dscr == rtd->dma_dscr_idx_1)
--			pos = period_bytes;
--		else
--			pos = 0;
- 		bytescount = acp_get_byte_count(rtd);
--		if (bytescount > rtd->bytescount)
-+		if (bytescount >= rtd->bytescount)
- 			bytescount -= rtd->bytescount;
--		delay = do_div(bytescount, period_bytes);
--		runtime->delay = bytes_to_frames(runtime, delay);
-+		if (bytescount < period_bytes) {
-+			pos = 0;
-+		} else {
-+			dscr = acp_reg_read(rtd->acp_mmio, rtd->dma_curr_dscr);
-+			if (dscr == rtd->dma_dscr_idx_1)
-+				pos = period_bytes;
-+			else
-+				pos = 0;
-+		}
-+		if (bytescount > 0) {
-+			delay = do_div(bytescount, period_bytes);
-+			runtime->delay = bytes_to_frames(runtime, delay);
-+		}
- 	} else {
- 		buffersize = frames_to_bytes(runtime, runtime->buffer_size);
- 		bytescount = acp_get_byte_count(rtd);
+ 	rt5682_reset(rt5682->regmap);
+-	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xa2bf);
++	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xa2af);
+ 	usleep_range(15000, 20000);
+-	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xf2bf);
++	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0xf2af);
+ 	regmap_write(rt5682->regmap, RT5682_MICBIAS_2, 0x0300);
+ 	regmap_write(rt5682->regmap, RT5682_GLB_CLK, 0x8000);
+ 	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x0100);
++	regmap_write(rt5682->regmap, RT5682_HP_IMP_SENS_CTRL_19, 0x3800);
+ 	regmap_write(rt5682->regmap, RT5682_CHOP_DAC, 0x3000);
++	regmap_write(rt5682->regmap, RT5682_CALIB_ADC_CTRL, 0x7005);
++	regmap_write(rt5682->regmap, RT5682_STO1_ADC_MIXER, 0x686c);
++	regmap_write(rt5682->regmap, RT5682_CAL_REC, 0x0d0d);
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_2, 0x0321);
+ 	regmap_write(rt5682->regmap, RT5682_HP_LOGIC_CTRL_2, 0x0004);
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0x7c00);
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_3, 0x06a1);
++	regmap_write(rt5682->regmap, RT5682_A_DAC1_MUX, 0x0311);
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0x7c00);
+ 
+ 	regmap_write(rt5682->regmap, RT5682_HP_CALIB_CTRL_1, 0xfc00);
+@@ -2478,8 +2483,12 @@ static void rt5682_calibrate(struct rt5682_priv *rt5682)
+ 		pr_err("HP Calibration Failure\n");
+ 
+ 	/* restore settings */
++	regmap_write(rt5682->regmap, RT5682_PWR_ANLG_1, 0x02af);
++	regmap_write(rt5682->regmap, RT5682_MICBIAS_2, 0x0080);
+ 	regmap_write(rt5682->regmap, RT5682_GLB_CLK, 0x0000);
+ 	regmap_write(rt5682->regmap, RT5682_PWR_DIG_1, 0x0000);
++	regmap_write(rt5682->regmap, RT5682_CHOP_DAC, 0x2000);
++	regmap_write(rt5682->regmap, RT5682_CALIB_ADC_CTRL, 0x2005);
+ 
+ 	mutex_unlock(&rt5682->calibrate_mutex);
+ 
 -- 
-1.9.1
+2.7.4
