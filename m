@@ -1,162 +1,87 @@
-From: Rohit Kumar <rohitkr@codeaurora.org>
-Subject: Re: [alsa-devel] [PATCH v4 14/14] ASoC: qcom: common: move
- be_hw_fixup to common
-Date: Wed, 19 Sep 2018 11:19:38 +0530
-Message-ID: <500df2e4-6593-5537-ca08-b20a9b601c47@codeaurora.org>
-References: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
- <20180917005727.32728-15-srinivas.kandagatla@linaro.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Rohit kumar <rohitkr@codeaurora.org>
+Subject: [PATCH] ASoC: q6afe: dt-bindings: Update input range for qcom,sd-lines
+Date: Wed, 19 Sep 2018 11:41:21 +0530
+Message-ID: <1537337481-2123-1-git-send-email-rohitkr@codeaurora.org>
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180917005727.32728-15-srinivas.kandagatla@linaro.org>
-Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: srinivas.kandagatla@linaro.org, lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org
+To: plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org
+Cc: Rohit kumar <rohitkr@codeaurora.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hello Srinivas,
+Input to qcom,sd-lines should be between 0 and 3 instead of
+1 to 4 as 0 corresponds to BIT(0) which is MI2S_SD0 line.
+Bit 1 to 3 corresponds to SD1 to SD3 lines respectively.
+Updated documentation for the same.
 
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+---
+ Documentation/devicetree/bindings/sound/qcom,q6afe.txt | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-We will add support for vi feedback usecase in sdm845 machine driver 
-where we have to support 4 channel tx data for a particular backend. We 
-should probably keep be_hw_params_fixup in respective machine driver for 
-now to support such requirement.
-
-
-Thanks,
-
-Rohit
-
-
-On 9/17/2018 6:27 AM, srinivas.kandagatla@linaro.org wrote:
-> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->
-> be_hw_fixup for qdsp is common across mutiple qcom machine drivers,
-> so move it to common file and remove the redundant code.
->
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->   sound/soc/qcom/apq8096.c | 15 ---------------
->   sound/soc/qcom/common.c  | 17 +++++++++++++++++
->   sound/soc/qcom/sdm845.c  | 22 ++--------------------
->   3 files changed, 19 insertions(+), 35 deletions(-)
->
-> diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
-> index daad43f..9cb26aee 100644
-> --- a/sound/soc/qcom/apq8096.c
-> +++ b/sound/soc/qcom/apq8096.c
-> @@ -20,20 +20,6 @@ struct apq8096_card_data {
->   	bool jack_setup;
->   };
->   
-> -static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-> -				      struct snd_pcm_hw_params *params)
-> -{
-> -	struct snd_interval *rate = hw_param_interval(params,
-> -					SNDRV_PCM_HW_PARAM_RATE);
-> -	struct snd_interval *channels = hw_param_interval(params,
-> -					SNDRV_PCM_HW_PARAM_CHANNELS);
-> -
-> -	rate->min = rate->max = 48000;
-> -	channels->min = channels->max = 2;
-> -
-> -	return 0;
-> -}
-> -
->   static int msm_snd_hw_params(struct snd_pcm_substream *substream,
->   			     struct snd_pcm_hw_params *params)
->   {
-> @@ -139,7 +125,6 @@ static void apq8096_add_be_ops(struct snd_soc_card *card)
->   
->   	for (i = 0; i < num_links; i++) {
->   		if (link->no_pcm == 1) {
-> -			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
->   			link->init = apq8096_init;
->   			link->ops = &apq8096_ops;
->   		}
-> diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
-> index eb1b9da..ce8e759 100644
-> --- a/sound/soc/qcom/common.c
-> +++ b/sound/soc/qcom/common.c
-> @@ -3,8 +3,24 @@
->   // Copyright (c) 2018, The Linux Foundation. All rights reserved.
->   
->   #include <linux/module.h>
-> +#include <sound/pcm_params.h>
->   #include "common.h"
->   
-> +static int qcom_snd_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-> +				       struct snd_pcm_hw_params *params)
-> +{
-> +	struct snd_interval *rate = hw_param_interval(params,
-> +					SNDRV_PCM_HW_PARAM_RATE);
-> +	struct snd_interval *channels = hw_param_interval(params,
-> +					SNDRV_PCM_HW_PARAM_CHANNELS);
-> +
-> +	rate->min = rate->max = 48000;
-> +	channels->min = channels->max = 2;
-> +	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
-> +
-> +	return 0;
-> +}
-> +
->   int qcom_snd_parse_of(struct snd_soc_card *card)
->   {
->   	struct device_node *np;
-> @@ -79,6 +95,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
->   			}
->   			link->no_pcm = 1;
->   			link->ignore_pmdown_time = 1;
-> +			link->be_hw_params_fixup = qcom_snd_be_hw_params_fixup;
->   		} else {
->   			link->platform_of_node = link->cpu_of_node;
->   			link->codec_dai_name = "snd-soc-dummy-dai";
-> diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
-> index 2a781d8..87e150c 100644
-> --- a/sound/soc/qcom/sdm845.c
-> +++ b/sound/soc/qcom/sdm845.c
-> @@ -11,7 +11,6 @@
->   #include "common.h"
->   #include "qdsp6/q6afe.h"
->   
-> -#define DEFAULT_SAMPLE_RATE_48K		48000
->   #define DEFAULT_MCLK_RATE		24576000
->   #define DEFAULT_BCLK_RATE		12288000
->   
-> @@ -177,32 +176,15 @@ static struct snd_soc_ops sdm845_be_ops = {
->   	.shutdown = sdm845_snd_shutdown,
->   };
->   
-> -static int sdm845_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
-> -				struct snd_pcm_hw_params *params)
-> -{
-> -	struct snd_interval *rate = hw_param_interval(params,
-> -					SNDRV_PCM_HW_PARAM_RATE);
-> -	struct snd_interval *channels = hw_param_interval(params,
-> -					SNDRV_PCM_HW_PARAM_CHANNELS);
-> -	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
-> -
-> -	rate->min = rate->max = DEFAULT_SAMPLE_RATE_48K;
-> -	channels->min = channels->max = 2;
-> -	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
-> -
-> -	return 0;
-> -}
-> -
->   static void sdm845_add_be_ops(struct snd_soc_card *card)
->   {
->   	struct snd_soc_dai_link *link = card->dai_link;
->   	int i, num_links = card->num_links;
->   
->   	for (i = 0; i < num_links; i++) {
-> -		if (link->no_pcm == 1) {
-> +		if (link->no_pcm == 1)
->   			link->ops = &sdm845_be_ops;
-> -			link->be_hw_params_fixup = sdm845_be_hw_params_fixup;
-> -		}
-> +
->   		link++;
->   	}
->   }
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+index a817940..d74888b 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -49,7 +49,7 @@ configuration of each dai. Must contain the following properties.
+ 	Usage: required for mi2s interface
+ 	Value type: <prop-encoded-array>
+ 	Definition: Must be list of serial data lines used by this dai.
+-	should be one or more of the 1-4 sd lines.
++	should be one or more of the 0-3 sd lines.
+ 
+  - qcom,tdm-sync-mode:
+ 	Usage: required for tdm interface
+@@ -137,42 +137,42 @@ q6afe@4 {
+ 
+ 		prim-mi2s-rx@16 {
+ 			reg = <16>;
+-			qcom,sd-lines = <1 3>;
++			qcom,sd-lines = <0 2>;
+ 		};
+ 
+ 		prim-mi2s-tx@17 {
+ 			reg = <17>;
+-			qcom,sd-lines = <2>;
++			qcom,sd-lines = <1>;
+ 		};
+ 
+ 		sec-mi2s-rx@18 {
+ 			reg = <18>;
+-			qcom,sd-lines = <1 4>;
++			qcom,sd-lines = <0 3>;
+ 		};
+ 
+ 		sec-mi2s-tx@19 {
+ 			reg = <19>;
+-			qcom,sd-lines = <2>;
++			qcom,sd-lines = <1>;
+ 		};
+ 
+ 		tert-mi2s-rx@20 {
+ 			reg = <20>;
+-			qcom,sd-lines = <2 4>;
++			qcom,sd-lines = <1 3>;
+ 		};
+ 
+ 		tert-mi2s-tx@21 {
+ 			reg = <21>;
+-			qcom,sd-lines = <1>;
++			qcom,sd-lines = <0>;
+ 		};
+ 
+ 		quat-mi2s-rx@22 {
+ 			reg = <22>;
+-			qcom,sd-lines = <1>;
++			qcom,sd-lines = <0>;
+ 		};
+ 
+ 		quat-mi2s-tx@23 {
+ 			reg = <23>;
+-			qcom,sd-lines = <2>;
++			qcom,sd-lines = <1>;
+ 		};
+ 	};
+ };
+-- 
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
