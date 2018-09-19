@@ -1,59 +1,122 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re:
- =?utf-8?q?=5BPATCH_-_hwmixvolume_v2_0/7=5D_Migrate_t?=
- =?utf-8?q?o_GTK+=C2=A03=2E0_and_allow_python3?=
-Date: Wed, 19 Sep 2018 23:15:21 +0900
-Message-ID: <e62c6eb4-c664-01fb-6d2a-034d8255c325@sakamocchi.jp>
-References: <20180918134237.8489-1-linkmauve@jabberfr.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-In-Reply-To: <20180918134237.8489-1-linkmauve@jabberfr.org>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Emmanuel Gil Peyrot <linkmauve@jabberfr.org>, patch@alsa-project.org
-Cc: linkmauve@linkmauve.fr, alsa-devel@alsa-project.org
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: q6afe: dt-bindings: Update input range for qcom,sd-lines" to the asoc tree
+Date: Wed, 19 Sep 2018 18:53:07 +0100 (BST)
+Message-ID: <20180919175307.277CC440078@finisterre.ee.mobilebroadband>
+References: <1537337481-2123-1-git-send-email-rohitkr@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1537337481-2123-1-git-send-email-rohitkr@codeaurora.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rohit kumar <rohitkr@codeaurora.org>
+Cc: Mark Brown <broonie@kernel.org>, plai@codeaurora.org, bgoswami@codeaurora.org, lgirdwood@gmail.combroonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBTZXAgMTggMjAxOCAyMjo0MiwgRW1tYW51ZWwgR2lsIFBleXJvdCB3cm90ZToKPiBG
-cm9tOiBFbW1hbnVlbCBHaWwgUGV5cm90IDxsaW5rbWF1dmVAbGlua21hdXZlLmZyPgo+IAo+IGh3
-bWl4dm9sdW1lIHdhcyBvbmUgb2YgdGhlIGxhc3QgZmV3IHByb2dyYW1zIG9uIG15IHN5c3RlbSB0
-byBkZXBlbmQgb24KPiBQeUdUSy4gIFRoaXMgc2VyaWVzIHBvcnRzIGl0IHRvIEdUSyvCoDMueCB1
-c2luZyBnb2JqZWN0LWludHJvc3BlY3Rpb24sCj4gd2hpY2ggYWxsb3dzIGl0IHRvIHJ1biBvbiBQ
-eXRob27CoDMueCB0b28uCj4gCj4gTXkgYXVkaW8gY2FyZCBkb2VzIG5vdCBoYXZlIHN0cmVhbSBj
-b250cm9scyBzbyBJ4oCZdmUgYmVlbiB1bmFibGUgdG8gdGVzdAo+IHdoZXRoZXIgdGhlIGZ1bmN0
-aW9uYWxpdHkgaXMgd29ya2luZyBwcm9wZXJseSwgYnV0IGZyb20gbXkgcmVhZGluZyBvZgo+IHRo
-ZSBkb2N1bWVudGF0aW9uIGl0IHNob3VsZCBiZSBmaW5lLgo+IAo+IENoYW5nZXMgc2luY2UgdjE6
-Cj4gLSBSZW9yZGVyZWQgdGFi4oaSc3BhY2UgcGF0Y2ggYmVmb3JlIGV2ZXJ5dGhpbmcgZWxzZSwg
-dG8gbWFrZSBpdCBwb3NzaWJsZQo+ICAgIHRvIG1lcmdlIGl0IGFzIGlzIHdpdGhvdXQgYW55IG90
-aGVyIGNoYW5nZS4KPiAtIE1lcmdlZCBmaXh1cCBjb21taXRzIGludG8gdGhlIG1haW4gc3dpdGNo
-IHBhdGNoLCBhcyB0aGV5IGhhZCBubyByZWFzb24KPiAgICB0byBzdGFuZCBieSB0aGVtc2VsdmVz
-Lgo+IC0gUmVwbGFjZWQgaXRlcmF0aW9uIG9uIGZpbGUucmVhZGxpbmVzKCkgd2l0aCBmaWxlLl9f
-aXRlcl9fKCkgZGlyZWN0bHkKPiAgICAodGhhbmtzIFNha2Ftb3RvLXNhbikuCj4gLSBGaXggYSB0
-eXBvIGluIHRoZSBSRUFETUUgKHRoYW5rcyBTYWthbW90by1zYW4pLgo+IC0gRXhwbGljaXQgbW9y
-ZSB0aGUgcmVhc29uIGZvciBlYWNoIHBhdGNoICh0aGFua3MgSXdhaS1zYW4pLCBleGNlcHQgZm9y
-Cj4gICAgdHJpdmlhbCBvbmVzLgo+IAo+IEVtbWFudWVsIEdpbCBQZXlyb3QgKDcpOgo+ICAgIGh3
-bWl4dm9sdW1lOiB1c2UgZm91ciBzcGFjZXMgaW5zdGVhZCBvZiBvbmUgdGFiIGZvciBpbmRlbnQK
-PiAgICBod21peHZvbHVtZTogcmVwbGFjZSBQeUdUSyB3aXRoIGdvYmplY3QtaW50cm9zcGVjdGlv
-bgo+ICAgIGh3bWl4dm9sdW1lOiBzd2l0Y2ggdG8gR1RLK8KgMy4wIGFuZCBHTGliwqAyLjAKPiAg
-ICBod21peHZvbHVtZTogdXNlIGEgd2l0aCBjb250ZXh0IHRvIG9wZW4gZmlsZXMKPiAgICBod21p
-eHZvbHVtZTogc3dpdGNoIHRoZSBzaGViYW5nIHRvIHB5dGhvbgo+ICAgIGh3bWl4dm9sdW1lOiBh
-ZGQgbXkgY29weXJpZ2h0Cj4gICAgaHdtaXh2b2x1bWU6IG1lbnRpb24gdGhlIG5ldyBkZXBlbmRl
-bmNpZXMgaW4gdGhlIFJFQURNRQo+IAo+ICAgaHdtaXh2b2x1bWUvUkVBRE1FICAgICAgfCAgIDMg
-Ky0KPiAgIGh3bWl4dm9sdW1lL2h3bWl4dm9sdW1lIHwgNTYwICsrKysrKysrKysrKysrKysrKysr
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAgIDIgZmlsZXMgY2hhbmdlZCwgMjgzIGluc2VydGlvbnMo
-KyksIDI4MCBkZWxldGlvbnMoLSkKCkkgcmV2aWV3ZWQgYWxsIG9mIHRoZSBhYm92ZSBwYXRjaGVz
-LgoKUmV2aWV3ZWQtYnk6IFRha2FzaGkgU2FrYW1vdG8gPG8tdGFrYXNoaUBzYWthbW9jY2hpLmpw
-PgoKClRoYW5rcwoKVGFrYXNoaSBTYWthbW90bwpfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xp
-c3RpbmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: q6afe: dt-bindings: Update input range for qcom,sd-lines
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 3a6818c771671c34b090244c92ab5aea6176d6da Mon Sep 17 00:00:00 2001
+From: Rohit kumar <rohitkr@codeaurora.org>
+Date: Wed, 19 Sep 2018 11:41:21 +0530
+Subject: [PATCH] ASoC: q6afe: dt-bindings: Update input range for
+ qcom,sd-lines
+
+Input to qcom,sd-lines should be between 0 and 3 instead of
+1 to 4 as 0 corresponds to BIT(0) which is MI2S_SD0 line.
+Bit 1 to 3 corresponds to SD1 to SD3 lines respectively.
+Updated documentation for the same.
+
+Signed-off-by: Rohit kumar <rohitkr@codeaurora.org>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ .../devicetree/bindings/sound/qcom,q6afe.txt   | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+index a8179409c194..d74888b9f1bb 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6afe.txt
+@@ -49,7 +49,7 @@ configuration of each dai. Must contain the following properties.
+ 	Usage: required for mi2s interface
+ 	Value type: <prop-encoded-array>
+ 	Definition: Must be list of serial data lines used by this dai.
+-	should be one or more of the 1-4 sd lines.
++	should be one or more of the 0-3 sd lines.
+ 
+  - qcom,tdm-sync-mode:
+ 	Usage: required for tdm interface
+@@ -137,42 +137,42 @@ q6afe@4 {
+ 
+ 		prim-mi2s-rx@16 {
+ 			reg = <16>;
+-			qcom,sd-lines = <1 3>;
++			qcom,sd-lines = <0 2>;
+ 		};
+ 
+ 		prim-mi2s-tx@17 {
+ 			reg = <17>;
+-			qcom,sd-lines = <2>;
++			qcom,sd-lines = <1>;
+ 		};
+ 
+ 		sec-mi2s-rx@18 {
+ 			reg = <18>;
+-			qcom,sd-lines = <1 4>;
++			qcom,sd-lines = <0 3>;
+ 		};
+ 
+ 		sec-mi2s-tx@19 {
+ 			reg = <19>;
+-			qcom,sd-lines = <2>;
++			qcom,sd-lines = <1>;
+ 		};
+ 
+ 		tert-mi2s-rx@20 {
+ 			reg = <20>;
+-			qcom,sd-lines = <2 4>;
++			qcom,sd-lines = <1 3>;
+ 		};
+ 
+ 		tert-mi2s-tx@21 {
+ 			reg = <21>;
+-			qcom,sd-lines = <1>;
++			qcom,sd-lines = <0>;
+ 		};
+ 
+ 		quat-mi2s-rx@22 {
+ 			reg = <22>;
+-			qcom,sd-lines = <1>;
++			qcom,sd-lines = <0>;
+ 		};
+ 
+ 		quat-mi2s-tx@23 {
+ 			reg = <23>;
+-			qcom,sd-lines = <2>;
++			qcom,sd-lines = <1>;
+ 		};
+ 	};
+ };
+-- 
+2.19.0
