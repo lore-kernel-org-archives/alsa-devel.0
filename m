@@ -1,53 +1,162 @@
-From: Linus Walleij <linus.walleij@linaro.org>
-Subject: Re: [PATCH 2/2] sound: soc: wm8903: Cut gpio_base data
-Date: Tue, 18 Sep 2018 19:07:54 -0700
-Message-ID: <CACRpkdZziWXhTpL_MUcsFJ7ZzR6Patq5mhfcxnj5BRu506erQQ@mail.gmail.com>
-References: <20180918191233.17178-1-linus.walleij@linaro.org>
- <20180918195220.GX2471@sirena.org.uk>
- <CACRpkdazTEdc2u1u_Z0f_uVUiufzdkz1jYpSziVTPXKhCXxovg@mail.gmail.com>
- <20180919000950.GA2471@sirena.org.uk>
+From: Rohit Kumar <rohitkr@codeaurora.org>
+Subject: Re: [alsa-devel] [PATCH v4 14/14] ASoC: qcom: common: move
+ be_hw_fixup to common
+Date: Wed, 19 Sep 2018 11:19:38 +0530
+Message-ID: <500df2e4-6593-5537-ca08-b20a9b601c47@codeaurora.org>
+References: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
+ <20180917005727.32728-15-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-io1-f65.google.com (mail-io1-f65.google.com
- [209.85.166.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 0D0F726761D
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2018 04:08:08 +0200 (CEST)
-Received: by mail-io1-f65.google.com with SMTP id q4-v6so3221755iob.8
- for <alsa-devel@alsa-project.org>; Tue, 18 Sep 2018 19:08:08 -0700 (PDT)
-In-Reply-To: <20180919000950.GA2471@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: patches@opensource.cirrus.com, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180917005727.32728-15-srinivas.kandagatla@linaro.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: srinivas.kandagatla@linaro.org, lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, Sep 18, 2018 at 5:09 PM Mark Brown <broonie@kernel.org> wrote:
-> On Tue, Sep 18, 2018 at 04:51:23PM -0700, Linus Walleij wrote:
->
-> > Since there are no boards defining platform data (hence patch 1)
-> > I assume all users are using device tree and thus dynamic
-> > GPIO number assignment, so this can go.
->
-> > Even if new board files are added they should use machine
-> > descriptor tables for referencing the individual GPIO chip and
-> > offset. In this case by the label "wm8903" and local offset.
->
-> I tend to worry about breaking out of tree users unless there's an
-> active reason to do it, is there something coming along - this looked
-> more like just a cleanup?
+Hello Srinivas,
 
-This is to get rid of the global GPIO numberspace, little by little.
-As long as we hardcode the base of the GPIO chip anywhere,
-that numberspace prevails.
 
-Yours,
-Linus Walleij
+We will add support for vi feedback usecase in sdm845 machine driver 
+where we have to support 4 channel tx data for a particular backend. We 
+should probably keep be_hw_params_fixup in respective machine driver for 
+now to support such requirement.
+
+
+Thanks,
+
+Rohit
+
+
+On 9/17/2018 6:27 AM, srinivas.kandagatla@linaro.org wrote:
+> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>
+> be_hw_fixup for qdsp is common across mutiple qcom machine drivers,
+> so move it to common file and remove the redundant code.
+>
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>   sound/soc/qcom/apq8096.c | 15 ---------------
+>   sound/soc/qcom/common.c  | 17 +++++++++++++++++
+>   sound/soc/qcom/sdm845.c  | 22 ++--------------------
+>   3 files changed, 19 insertions(+), 35 deletions(-)
+>
+> diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
+> index daad43f..9cb26aee 100644
+> --- a/sound/soc/qcom/apq8096.c
+> +++ b/sound/soc/qcom/apq8096.c
+> @@ -20,20 +20,6 @@ struct apq8096_card_data {
+>   	bool jack_setup;
+>   };
+>   
+> -static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+> -				      struct snd_pcm_hw_params *params)
+> -{
+> -	struct snd_interval *rate = hw_param_interval(params,
+> -					SNDRV_PCM_HW_PARAM_RATE);
+> -	struct snd_interval *channels = hw_param_interval(params,
+> -					SNDRV_PCM_HW_PARAM_CHANNELS);
+> -
+> -	rate->min = rate->max = 48000;
+> -	channels->min = channels->max = 2;
+> -
+> -	return 0;
+> -}
+> -
+>   static int msm_snd_hw_params(struct snd_pcm_substream *substream,
+>   			     struct snd_pcm_hw_params *params)
+>   {
+> @@ -139,7 +125,6 @@ static void apq8096_add_be_ops(struct snd_soc_card *card)
+>   
+>   	for (i = 0; i < num_links; i++) {
+>   		if (link->no_pcm == 1) {
+> -			link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
+>   			link->init = apq8096_init;
+>   			link->ops = &apq8096_ops;
+>   		}
+> diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+> index eb1b9da..ce8e759 100644
+> --- a/sound/soc/qcom/common.c
+> +++ b/sound/soc/qcom/common.c
+> @@ -3,8 +3,24 @@
+>   // Copyright (c) 2018, The Linux Foundation. All rights reserved.
+>   
+>   #include <linux/module.h>
+> +#include <sound/pcm_params.h>
+>   #include "common.h"
+>   
+> +static int qcom_snd_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+> +				       struct snd_pcm_hw_params *params)
+> +{
+> +	struct snd_interval *rate = hw_param_interval(params,
+> +					SNDRV_PCM_HW_PARAM_RATE);
+> +	struct snd_interval *channels = hw_param_interval(params,
+> +					SNDRV_PCM_HW_PARAM_CHANNELS);
+> +
+> +	rate->min = rate->max = 48000;
+> +	channels->min = channels->max = 2;
+> +	params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
+> +
+> +	return 0;
+> +}
+> +
+>   int qcom_snd_parse_of(struct snd_soc_card *card)
+>   {
+>   	struct device_node *np;
+> @@ -79,6 +95,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+>   			}
+>   			link->no_pcm = 1;
+>   			link->ignore_pmdown_time = 1;
+> +			link->be_hw_params_fixup = qcom_snd_be_hw_params_fixup;
+>   		} else {
+>   			link->platform_of_node = link->cpu_of_node;
+>   			link->codec_dai_name = "snd-soc-dummy-dai";
+> diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+> index 2a781d8..87e150c 100644
+> --- a/sound/soc/qcom/sdm845.c
+> +++ b/sound/soc/qcom/sdm845.c
+> @@ -11,7 +11,6 @@
+>   #include "common.h"
+>   #include "qdsp6/q6afe.h"
+>   
+> -#define DEFAULT_SAMPLE_RATE_48K		48000
+>   #define DEFAULT_MCLK_RATE		24576000
+>   #define DEFAULT_BCLK_RATE		12288000
+>   
+> @@ -177,32 +176,15 @@ static struct snd_soc_ops sdm845_be_ops = {
+>   	.shutdown = sdm845_snd_shutdown,
+>   };
+>   
+> -static int sdm845_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+> -				struct snd_pcm_hw_params *params)
+> -{
+> -	struct snd_interval *rate = hw_param_interval(params,
+> -					SNDRV_PCM_HW_PARAM_RATE);
+> -	struct snd_interval *channels = hw_param_interval(params,
+> -					SNDRV_PCM_HW_PARAM_CHANNELS);
+> -	struct snd_mask *fmt = hw_param_mask(params, SNDRV_PCM_HW_PARAM_FORMAT);
+> -
+> -	rate->min = rate->max = DEFAULT_SAMPLE_RATE_48K;
+> -	channels->min = channels->max = 2;
+> -	snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+> -
+> -	return 0;
+> -}
+> -
+>   static void sdm845_add_be_ops(struct snd_soc_card *card)
+>   {
+>   	struct snd_soc_dai_link *link = card->dai_link;
+>   	int i, num_links = card->num_links;
+>   
+>   	for (i = 0; i < num_links; i++) {
+> -		if (link->no_pcm == 1) {
+> +		if (link->no_pcm == 1)
+>   			link->ops = &sdm845_be_ops;
+> -			link->be_hw_params_fixup = sdm845_be_hw_params_fixup;
+> -		}
+> +
+>   		link++;
+>   	}
+>   }
