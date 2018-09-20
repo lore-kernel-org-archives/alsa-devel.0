@@ -1,17 +1,17 @@
-From: Riccardo Casagrande <riccardo.casagrande@multiconn.it>
-Subject: SoftVol in user space
-Date: Thu, 20 Sep 2018 17:24:57 +0200
-Message-ID: <f83284d2d7df965aa9c80d7b1f85d146@multiconn.it>
+From: Takashi Iwai <tiwai@suse.de>
+Subject: [PATCH 0/7] Add devres support to card resources
+Date: Thu, 20 Sep 2018 17:54:55 +0200
+Message-ID: <20180920155502.7534-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.mmit.com.mt (mail.mmit.com.mt [176.56.128.31])
- by alsa0.perex.cz (Postfix) with ESMTP id 804972677BB
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:25:45 +0200 (CEST)
-Received: from multiconn.it [10.101.1.251] ([127.0.0.1])
- by mail.mmit.com.mt (MM IT Mail Server v3.0) with ESMTP id KYS00658
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:24:58 +0200
+Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
+ by alsa0.perex.cz (Postfix) with ESMTP id 360CC26787F
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:55:05 +0200 (CEST)
+Received: from relay1.suse.de (unknown [195.135.220.254])
+ by mx1.suse.de (Postfix) with ESMTP id 2414FACE3
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 15:55:05 +0000 (UTC)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,65 +24,39 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CkhlbGxvIGRldnMsCgoKSSBoYXZlIHRvIGFkZCBhIHZvbHVtZSBjb250cm9sIHRvIG15IGN1c3Rv
-bSBjYXJkIChJdCBoYXMgYW4gaS5NWDYgY2hpcCBhbmQgMyBGREEyMTAwIGZyb20gVEkgYXMgYXVk
-aW8gY2hpcCkgYmVjYXVzZSB0aGUgRkRBcyBoYXZlIG5vIHZvbHVtZSBjb250cm9sbGVyLgoKClRo
-aXMgYmVsb3cgaXMgdGhlIC5hc291bmRyYyBmaWxlIEkgbWFkZS4gSXQgd29ya3MgZ3JlYXQgaWYg
-SSBtYW51YWxseSBtYWRlIGEgc3BlYWtlci10ZXN0IG9mIG9uZSBvZiBkZXZpY2VmZGFYIHNvdW5k
-IGNhcmQuIFRoZW4gSSBjYW4gc2VlIG9uIGFsc2FtaXhlciB0aGUgdm9sdW1lIGNvbnRyb2wsIGJ1
-dCBteSBuZWVkIGlzIHRvIGFjY2VzcyBhbmQgY29udHJvbCBzb2Z0dm9sIGZyb20gdXNlciBzcGFj
-ZS4gCgoKCnBjbS5zb2Z0dm9sZmRhMCB7CsKgwqDCoMKgwqDCoMKgwqAgdHlwZSBzb2Z0dm9swqDC
-oMKgwqAgCsKgwqDCoMKgwqDCoMKgwqDCoCBzbGF2ZSB7wqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKg
-wqDCoMKgwqDCoCDCoMKgwqDCoMKgwqDCoMKgIHBjbSAiaHc6MCwwIsKgwqDCoMKgIArCoMKgwqDC
-oMKgwqDCoMKgIH3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKg
-wqAgY29udHJvbCB7wqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgwqDCoMKgwqDCoMKg
-wqDCoCBuYW1lICJ2b2x1bWUwIsKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgwqDCoMKgwqDCoMKgwqDC
-oCBjYXJkIDDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCDCoMKgwqDCoMKg
-wqDCoMKgIGRldmljZSAwwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCB9wqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIAp9wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKcGNtLnNvZnR2b2xmZGExIHsKwqDC
-oMKgwqDCoMKgwqDCoCB0eXBlIHNvZnR2b2zCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCBzbGF2
-ZSB7wqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgIMKgwqDCoMKgwqDCoMKgwqAg
-cGNtICJodzowLDEiwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgfcKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCBjb250cm9sIHvCoMKgwqDCoMKgwqDCoCAK
-wqDCoMKgwqDCoMKgwqDCoCDCoMKgwqDCoMKgwqDCoMKgIG5hbWUgInZvbHVtZTEiwqDCoCAKwqDC
-oMKgwqDCoMKgwqDCoCDCoMKgwqDCoMKgwqDCoMKgIGNhcmQgMMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IArCoMKgwqDCoMKgwqDCoMKgIMKgwqDCoMKgwqDCoMKgwqAgZGV2aWNlIDHCoMKgwqDCoMKgwqDC
-oMKgIArCoMKgwqDCoMKgwqDCoMKgIH3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgCn3C
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIApwY20uc29mdHZvbGZkYTIgewrCoMKgwqDCoMKgwqDCoMKgIHR5cGUgc29mdHZvbMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgIHNsYXZlIHvCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgwqDCoMKgwqDCoMKgwqDCoCBwY20g
-Imh3OjAsMiLCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCB9wqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgIGNvbnRy
-b2wge8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgIMKgwqDCoMKg
-wqDCoMKgwqAgbmFtZSAidm9sdW1lMiLCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKg
-IMKgwqDCoMKgwqDCoMKgwqAgY2FyZCAwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-CsKgwqDCoMKgwqDCoMKgwqAgwqDCoMKgwqDCoMKgwqDCoCBkZXZpY2UgMsKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgfSDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIAp9wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKcGNt
-LmRldmljZWZkYTAge8KgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCB0eXBlIHBsdWfCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCBzbGF2ZS5wY20gInNvZnR2
-b2xmZGEwIgp9wqDCoMKgwqDCoCAKCgoKcGNtLmRldmljZWZkYTEge8KgwqDCoMKgwqDCoCAKwqDC
-oMKgwqDCoMKgwqDCoCB0eXBlIHBsdWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKg
-wqDCoMKgwqDCoCBzbGF2ZS5wY20gInNvZnR2b2xmZGExIgp9wqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCAKcGNtLmRldmljZWZkYTIge8KgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDC
-oCB0eXBlIHBsdWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCBz
-bGF2ZS5wY20gInNvZnR2b2xmZGEyIgp9wqDCoMKgIAoKCgoKCkkgc2F3IHRoYXQgb24gYWxzYWxp
-YiB0aGVyZSBpcyB0aGlzIGNvbW1hbmQgCgoKCmludCBzbmRfcGNtX3NvZnR2b2xfb3BlbiAoc25k
-X3BjbV90ICoqwqAgwqDCoMKgIHBjbXAsCsKgwqDCoCDCoMKgwqAgY29uc3QgY2hhciAqwqAgwqDC
-oMKgIG5hbWUsCsKgwqDCoCDCoMKgwqAgc25kX3BjbV9mb3JtYXRfdMKgIMKgwqDCoCBzZm9ybWF0
-LArCoMKgwqAgwqDCoMKgIGludMKgIMKgwqDCoCBjdGxfY2FyZCwKwqDCoMKgIMKgwqDCoCBzbmRf
-Y3RsX2VsZW1faWRfdCAqwqAgwqDCoMKgIGN0bF9pZCwKwqDCoMKgIMKgwqDCoCBpbnTCoCDCoMKg
-wqAgY2NoYW5uZWxzLArCoMKgwqAgwqDCoMKgIGRvdWJsZcKgIMKgwqDCoCBtaW5fZEIsCsKgwqDC
-oCDCoMKgwqAgZG91YmxlwqAgwqDCoMKgIG1heF9kQiwKwqDCoMKgIMKgwqDCoCBpbnTCoCDCoMKg
-wqAgcmVzb2x1dGlvbiwKwqDCoMKgIMKgwqDCoCBzbmRfcGNtX3QgKsKgIMKgwqDCoCBzbGF2ZSwK
-wqDCoMKgIMKgwqDCoCBpbnTCoCDCoMKgwqAgY2xvc2Vfc2xhdmUgCsKgwqDCoCApIAoKCgpidXQg
-SSBjYW4ndCBmaW5kIGFueSBleGFtcGxlIG9mIHVzYWdlLlRoaXMgaXMgdGhlIGxvZyBvZiB0aGUg
-ZXJyb3I6CgoKbXAgJiYgc2xhdmUnIGZhaWxlZC4KQWJvcnRlZAoKCkFueSBzdWdnZXN0aW9uIGlz
-IHdlbGNvbWUKCgpSaWNjYXJkbyBDYXNhZ3JhbmRlCgoKCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi,
+
+here is the patchset containing the changes to support a
+device-managed resource management for ALSA card and memory pages.
+The actual code changes are identical with the previous RFC series,
+but a few documentation updates are included in this official set.
+
+
+Takashi
+
+===
+
+Takashi Iwai (7):
+  ALSA: core: Add device-managed page allocator helper
+  ALSA: core: Add managed card creation
+  ALSA: intel8x0: Allocate resources with device-managed APIs
+  ALSA: atiixp: Allocate resources with device-managed APIs
+  ALSA: hda: Allocate resources with device-managed APIs
+  ALSA: doc: Brush up the old writing-an-alsa-driver
+  ALSA: doc: Add device-managed resource section
+
+ .../kernel-api/writing-an-alsa-driver.rst     | 340 ++++++++++--------
+ include/sound/core.h                          |   5 +
+ include/sound/memalloc.h                      |   4 +
+ sound/core/init.c                             |  95 ++++-
+ sound/core/memalloc.c                         |  88 ++++-
+ sound/pci/atiixp.c                            | 104 ++----
+ sound/pci/atiixp_modem.c                      | 104 ++----
+ sound/pci/hda/hda_controller.h                |   1 -
+ sound/pci/hda/hda_intel.c                     |  43 +--
+ sound/pci/intel8x0.c                          | 143 +++-----
+ sound/pci/intel8x0m.c                         | 143 +++-----
+ 11 files changed, 514 insertions(+), 556 deletions(-)
+
+-- 
+2.18.0
