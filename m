@@ -1,69 +1,78 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 2/2] ASoC: max98927: Add reset-gpio support
-Date: Thu, 20 Sep 2018 09:19:05 -0700
-Message-ID: <20180920161905.GM2471@sirena.org.uk>
-References: <20180912121955.33048-1-cychiang@chromium.org>
- <20180912121955.33048-2-cychiang@chromium.org>
+Subject: Re: [PATCH 07/11] ASoC: add for_each_component_all()
+	macro
+Date: Thu, 20 Sep 2018 10:32:55 -0700
+Message-ID: <20180920173255.GA20825@sirena.org.uk>
+References: <874lenr4a3.wl-kuninori.morimoto.gx@renesas.com>
+ <87r2hrppjo.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VSJGZE3ajDCqFLUt"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180912121955.33048-2-cychiang@chromium.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Cheng-Yi Chiang <cychiang@chromium.org>
-Cc: linux-kernel@vger.kernel.org, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, dgreid@chromium.org
+Content-Type: multipart/mixed; boundary="===============4109423196126647094=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAA912677BB
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 19:32:59 +0200 (CEST)
+In-Reply-To: <87r2hrppjo.wl-kuninori.morimoto.gx@renesas.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
 
---VSJGZE3ajDCqFLUt
+--===============4109423196126647094==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="PNTmBPCT7hxwcZjr"
+Content-Disposition: inline
+
+
+--PNTmBPCT7hxwcZjr
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Sep 12, 2018 at 08:19:55PM +0800, Cheng-Yi Chiang wrote:
+On Tue, Sep 18, 2018 at 01:30:10AM +0000, Kuninori Morimoto wrote:
+>=20
+> From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+>=20
+> To be more readable code, this patch adds
+> new for_each_component_all() macro, and replace existing code to it.
 
-> +	/*
-> +	 * Release reset GPIO because we are not going to use it.
-> +	 */
-> +	devm_gpiod_put(dev, max98927->reset_gpio);
+I think this one might be better named as just for_each_component() - I
+don't think there's much risk of confusion with the more specific
+iterators for specific types of components and it sounds less awkward.
+I'll skip this and one subsequent patch that depended on it then apply
+the rest, they all look good.
 
-There is no need to do this, it's still potentially useful information
-for userspace and it's also going to surprise anyone who tries to modify
-the code to use this function at some other time (eg, when coming out of
-suspend sometimes it's useful to reset the device).
-
-> @@ -934,6 +1010,8 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
->  	if (ret < 0)
->  		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
-> =20
-> +	list_add(&max98927->list, &reset_list);
-> +
-
-I'm not seeing any locking of this list.  This also feels like something
-that shouldn't be in this driver but should be pushed up a level - it's
-only going to do the right thing if the reset line is only shared with
-other devices using this driver, if someone does something like put the
-CODEC and an external speaker amp on the same reset pin then it won't
-work.  I'm not sure where the best place to do that is; drivers/reset
-isn't really for this use case but feels right perhaps?
-
-Can you perhaps split the basic reset handling out from this list
-handling as a separate patch?
-
---VSJGZE3ajDCqFLUt
+--PNTmBPCT7hxwcZjr
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlujyHkACgkQJNaLcl1U
-h9BuFQf/Q5y6HzLzXxcbLIk/wGLLN6BWn65TTUXkpZyWSPWDu5ZTISi6mKO3ahpT
-xlqQXIWuY9T8DPL1tKUch40051dJExbQbd3y6JWUbQN0y0nqpKaCBhiqEYfG0Svj
-CT90BvsEfhHsBvx+gWw6DXWuRLjik9AKjgPBqkNtU3wSB06xWZoDXQpJC/5nCdns
-CmN/Y7UpGa5e5JAYGyYSeDu9Hna1Opb2nG+pDLqbgbmHpiTTo5Slc5etpavVl4rJ
-+ivSqktKhd882USl//O6LCP3A32VW+b8eG9LbCAe0PwQxfMaUIwVMm985PzvV5ld
-qtwLIvOYlMpZAZ2VBU4xrTxij2ab2Q==
-=80Zv
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluj2cYACgkQJNaLcl1U
+h9DcIQf/WD2WGW9O+Xkzx87l3TTB+/baP5ii/H21BHT42CpqSBxm8X6p7JiYKJh6
+r5TRH2KseF1OE3j16MPOyHPSivYU2lKc98bMnUetXFCT6rWSNhi/AVL2YIf4MslI
+27utgBvL3LRe6VMLnGuE8xOBl5WMWCTV7dOkYQZztxRABc65vECK686PJI6zJoma
+ogeW5JUCsBXNzTKt08HFm5Qao/KWL7fmiELDmSBupBVthS7E3TwEsS/JcaFLncjL
+X2Q8A6z47FloBqs15FjKGlJmRR23L21SJy9u69WAl+uwAPDjRih70heajmaVrw4i
+aUBME52pUmgjSs8UuLAGmfR2AWFWRQ==
+=KBIY
 -----END PGP SIGNATURE-----
 
---VSJGZE3ajDCqFLUt--
+--PNTmBPCT7hxwcZjr--
+
+--===============4109423196126647094==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============4109423196126647094==--
