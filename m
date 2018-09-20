@@ -1,81 +1,69 @@
-From: Liam Girdwood <liam.r.girdwood@linux.intel.com>
-Subject: Re: [PATCH v2 07/12] ASoC: SOF: Add DSP firmware trace
- event support
-Date: Thu, 20 Sep 2018 17:02:42 +0100
-Message-ID: <20f3315373b30624dd9ab83f3c909cbc9afe0b0c.camel@linux.intel.com>
-References: <20180831151910.16122-1-liam.r.girdwood@linux.intel.com>
- <20180831151910.16122-8-liam.r.girdwood@linux.intel.com>
- <20180903162503.GS10302@sirena.org.uk>
- <579fc5f7d26a8cba21fe36eb4ff6bb4a1a0d8496.camel@linux.intel.com>
- <20180904150333.GF12993@sirena.org.uk>
- <fe9e199c8e9c3f688cc84393b85e1a390ace3c7b.camel@linux.intel.com>
- <20180904154639.GG12993@sirena.org.uk>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 2/2] ASoC: max98927: Add reset-gpio support
+Date: Thu, 20 Sep 2018 09:19:05 -0700
+Message-ID: <20180920161905.GM2471@sirena.org.uk>
+References: <20180912121955.33048-1-cychiang@chromium.org>
+ <20180912121955.33048-2-cychiang@chromium.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id F204726787F
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 18:02:47 +0200 (CEST)
-In-Reply-To: <20180904154639.GG12993@sirena.org.uk>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VSJGZE3ajDCqFLUt"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20180912121955.33048-2-cychiang@chromium.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Cheng-Yi Chiang <cychiang@chromium.org>
+Cc: linux-kernel@vger.kernel.org, ryans.lee@maximintegrated.com, alsa-devel@alsa-project.org, dgreid@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Tue, 2018-09-04 at 16:46 +0100, Mark Brown wrote:
-> On Tue, Sep 04, 2018 at 04:28:49PM +0100, Liam Girdwood wrote:
-> > On Tue, 2018-09-04 at 16:03 +0100, Mark Brown wrote:
-> > > I was thinking the code could read it like it's doing now and then just
-> > > have a trace event to dump it into the core trace infrastructure as it
-> > > reads things in.
-> > Most of the data is binary atm, so we were decoding in userspace. Any
-> > objection
-> > to decoding in the kernel as different trace events ?
-> 
-> I wouldn't think so.
-> 
 
-I was initially thinking about a partial decode. The FW has many subsystems for
-trace that can be individually switched on/off via IPC. e.g. driver would read
-the trace packet class and then call the appropriate trace event for that class
-(note that class is not decoded any further). But I'm not so sure now as these
-classes can change at runtime based on topologies. 
+--VSJGZE3ajDCqFLUt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> The way the trace stuff works is that the writer dumps blocks of data
-> into the trace buffer in raw binary form in a structured block tagged
-> with the event type and then later on when something reads out the
-> buffer they can be formatted as desired, including things like hex dumps
-> (IIRC there's facilities to just get the raw buffer entries too, I've
-> only ever used the human readable interface myself, writing software is
-> hard). 
+On Wed, Sep 12, 2018 at 08:19:55PM +0800, Cheng-Yi Chiang wrote:
 
-Yeah, I'm just reading up on this now, human readable is easy.
+> +	/*
+> +	 * Release reset GPIO because we are not going to use it.
+> +	 */
+> +	devm_gpiod_put(dev, max98927->reset_gpio);
 
->  This gives very fast writes which is really nice for anything
-> performance sensitive and means you can leave trace on a lot more than
-> you would otherwise.  I'd guess if you were decoding it'd just be
-> splitting the buffer up into per message chunks.
+There is no need to do this, it's still potentially useful information
+for userspace and it's also going to surprise anyone who tries to modify
+the code to use this function at some other time (eg, when coming out of
+suspend sometimes it's useful to reset the device).
 
-So I think now we will trace the driver side (easy) and then trace event
-firmware trace packets as ASCII text (which userspace would decode).
+> @@ -934,6 +1010,8 @@ static int max98927_i2c_probe(struct i2c_client *i2c,
+>  	if (ret < 0)
+>  		dev_err(&i2c->dev, "Failed to register component: %d\n", ret);
+> =20
+> +	list_add(&max98927->list, &reset_list);
+> +
 
-I will delay upstreaming the trace part so v4 will be sent minus trace.
+I'm not seeing any locking of this list.  This also feels like something
+that shouldn't be in this driver but should be pushed up a level - it's
+only going to do the right thing if the reset line is only shared with
+other devices using this driver, if someone does something like put the
+CODEC and an external speaker amp on the same reset pin then it won't
+work.  I'm not sure where the best place to do that is; drivers/reset
+isn't really for this use case but feels right perhaps?
 
-I will probably have some debugFS interface that would export dynamic firmware
-trace tuning controls.
+Can you perhaps split the basic reset handling out from this list
+handling as a separate patch?
 
-Liam
+--VSJGZE3ajDCqFLUt
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlujyHkACgkQJNaLcl1U
+h9BuFQf/Q5y6HzLzXxcbLIk/wGLLN6BWn65TTUXkpZyWSPWDu5ZTISi6mKO3ahpT
+xlqQXIWuY9T8DPL1tKUch40051dJExbQbd3y6JWUbQN0y0nqpKaCBhiqEYfG0Svj
+CT90BvsEfhHsBvx+gWw6DXWuRLjik9AKjgPBqkNtU3wSB06xWZoDXQpJC/5nCdns
+CmN/Y7UpGa5e5JAYGyYSeDu9Hna1Opb2nG+pDLqbgbmHpiTTo5Slc5etpavVl4rJ
++ivSqktKhd882USl//O6LCP3A32VW+b8eG9LbCAe0PwQxfMaUIwVMm985PzvV5ld
+qtwLIvOYlMpZAZ2VBU4xrTxij2ab2Q==
+=80Zv
+-----END PGP SIGNATURE-----
+
+--VSJGZE3ajDCqFLUt--
