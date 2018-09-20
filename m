@@ -1,17 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 2/7] ALSA: core: Add managed card creation
-Date: Thu, 20 Sep 2018 17:54:57 +0200
-Message-ID: <20180920155502.7534-3-tiwai@suse.de>
+Subject: [PATCH 5/7] ALSA: hda: Allocate resources with
+	device-managed APIs
+Date: Thu, 20 Sep 2018 17:55:00 +0200
+Message-ID: <20180920155502.7534-6-tiwai@suse.de>
 References: <20180920155502.7534-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 3851D26788C
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:55:05 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 6C089267891
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:55:07 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 3B6ADAF57
+ by mx1.suse.de (Postfix) with ESMTP id 642A3B003
  for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 15:55:05 +0000 (UTC)
 In-Reply-To: <20180920155502.7534-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -26,229 +27,158 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Per popular demands, this patch adds a new ALSA core API function,
-snd_devm_card_new(), to create a snd_card object in a managed way via
-devres.  When a card object is created by this new function, it's
-released automatically at the device release.  It includes also the
-call of snd_card_free().
-
-However, the story isn't that simple.  A caveat is that We have to
-call snd_card_new(), more specifically, the disconnection part, at
-very first of the whole resource release procedure.  This assures that
-the exposed devices are deleted and sync with the all accessing
-processes getting closed.
-
-For achieving it, snd_card_register() adds a new devres action to
-trigger snd_card_free() automatically when the given card object is a
-"managed" one.  Since usually snd_card_register() is the last step of
-the initialization, this should work in most cases.
-
-With all these tricks, some drivers can get rid of the whole the
-driver remove callback.
-
-About a bit of implementation details: the patch adds two new flags to
-snd_card object, managed and releasing.  The former indicates that the
-object was created via snd_devm_card_new(), and the latter is used for
-avoiding the double-free of snd_card_free() calls.  Both flags are
-fairly internal and likely uninteresting to normal users.
+This patch is an attempt to slightly simplify the resource management
+in HD-audio code, by using some device-managed APIs.  A few resources
+like PCI enablement, PCI resources and the card object are managed via
+devres now.  But most of codes dealing with HD-audio core stuff
+couldn't be changed so much, hence the changes in this patch are
+pretty small in the end.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- include/sound/core.h |  5 +++
- sound/core/init.c    | 95 ++++++++++++++++++++++++++++++++++++++++++--
- 2 files changed, 96 insertions(+), 4 deletions(-)
+ sound/pci/hda/hda_controller.h |  1 -
+ sound/pci/hda/hda_intel.c      | 43 ++++++++--------------------------
+ 2 files changed, 10 insertions(+), 34 deletions(-)
 
-diff --git a/include/sound/core.h b/include/sound/core.h
-index 36a5934cf4b1..6ff75f92ec7d 100644
---- a/include/sound/core.h
-+++ b/include/sound/core.h
-@@ -133,6 +133,8 @@ struct snd_card {
- 	struct device card_dev;		/* cardX object for sysfs */
- 	const struct attribute_group *dev_groups[4]; /* assigned sysfs attr */
- 	bool registered;		/* card_dev is registered? */
-+	bool managed;			/* managed via devres */
-+	bool releasing;			/* during card free process */
- 	wait_queue_head_t remove_sleep;
+diff --git a/sound/pci/hda/hda_controller.h b/sound/pci/hda/hda_controller.h
+index c95097bb5a0c..16f2285847b3 100644
+--- a/sound/pci/hda/hda_controller.h
++++ b/sound/pci/hda/hda_controller.h
+@@ -156,7 +156,6 @@ struct azx {
+ 	unsigned int snoop:1;
+ 	unsigned int uc_buffer:1; /* non-cached pages for stream buffers */
+ 	unsigned int align_buffer_size:1;
+-	unsigned int region_requested:1;
+ 	unsigned int disabled:1; /* disabled by vga_switcheroo */
  
- #ifdef CONFIG_PM
-@@ -239,6 +241,9 @@ extern int (*snd_mixer_oss_notify_callback)(struct snd_card *card, int cmd);
- int snd_card_new(struct device *parent, int idx, const char *xid,
- 		 struct module *module, int extra_size,
- 		 struct snd_card **card_ret);
-+int snd_devm_card_new(struct device *parent, int idx, const char *xid,
-+		      struct module *module, int extra_size,
-+		      struct snd_card **card_ret);
+ 	/* GTS present */
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index 4e64595b381b..7a697db7a6a0 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -1318,18 +1318,11 @@ static int azx_free(struct azx *chip)
  
- int snd_card_disconnect(struct snd_card *card);
- void snd_card_disconnect_sync(struct snd_card *card);
-diff --git a/sound/core/init.c b/sound/core/init.c
-index 4849c611c0fe..2eade57db4b4 100644
---- a/sound/core/init.c
-+++ b/sound/core/init.c
-@@ -173,6 +173,9 @@ void snd_device_initialize(struct device *dev, struct snd_card *card)
- }
- EXPORT_SYMBOL_GPL(snd_device_initialize);
+ 	if (bus->irq >= 0)
+ 		free_irq(bus->irq, (void*)chip);
+-	if (chip->msi)
+-		pci_disable_msi(chip->pci);
+-	iounmap(bus->remap_addr);
  
-+static int snd_card_init(struct snd_card *card, struct device *parent,
-+			 int idx, const char *xid, struct module *module,
-+			 int extra_size);
- static int snd_card_do_free(struct snd_card *card);
- static const struct attribute_group card_dev_attr_group;
+ 	azx_free_stream_pages(chip);
+ 	azx_free_streams(chip);
+ 	snd_hdac_bus_exit(bus);
  
-@@ -214,6 +217,73 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	card = kzalloc(sizeof(*card) + extra_size, GFP_KERNEL);
- 	if (!card)
+-	if (chip->region_requested)
+-		pci_release_regions(chip->pci);
+-
+-	pci_disable_device(chip->pci);
+ #ifdef CONFIG_SND_HDA_PATCH_LOADER
+ 	release_firmware(chip->fw);
+ #endif
+@@ -1657,15 +1650,13 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 
+ 	*rchip = NULL;
+ 
+-	err = pci_enable_device(pci);
++	err = pcim_enable_device(pci);
+ 	if (err < 0)
+ 		return err;
+ 
+ 	hda = kzalloc(sizeof(*hda), GFP_KERNEL);
+-	if (!hda) {
+-		pci_disable_device(pci);
++	if (!hda)
  		return -ENOMEM;
-+
-+	err = snd_card_init(card, parent, idx, xid, module, extra_size);
-+	if (err < 0) {
-+		kfree(card);
-+		return err;
-+	}
-+
-+	*card_ret = card;
-+	return 0;
-+}
-+EXPORT_SYMBOL(snd_card_new);
-+
-+static void __snd_card_release(struct device *dev, void *data)
-+{
-+	snd_card_free(data);
-+}
-+
-+/**
-+ * snd_devm_card_new - managed snd_card object creation
-+ * @parent: the parent device object
-+ * @idx: card index (address) [0 ... (SNDRV_CARDS-1)]
-+ * @xid: card identification (ASCII string)
-+ * @module: top level module for locking
-+ * @extra_size: allocate this extra size after the main soundcard structure
-+ * @card_ret: the pointer to store the created card instance
-+ *
-+ * This function works like snd_card_new() but manages the allocated resource
-+ * via devres, i.e. you don't need to free explicitly.
-+ *
-+ * When a snd_card object is created with this function and registered via
-+ * snd_card_register(), the very first devres action to call snd_card_free()
-+ * is added automatically.  In that way, the resource disconnection is assured
-+ * at first, then released in the expected order.
-+ */
-+int snd_devm_card_new(struct device *parent, int idx, const char *xid,
-+		      struct module *module, int extra_size,
-+		      struct snd_card **card_ret)
-+{
-+	struct snd_card *card;
-+	int err;
-+
-+	*card_ret = NULL;
-+	if (extra_size < 0)
-+		extra_size = 0;
-+	card = devres_alloc(__snd_card_release, sizeof(*card) + extra_size,
-+			    GFP_KERNEL);
-+	if (!card)
-+		return -ENOMEM;
-+	card->managed = true;
-+	err = snd_card_init(card, parent, idx, xid, module, extra_size);
-+	if (err < 0) {
-+		devres_free(card);
-+		return err;
-+	}
-+
-+	devres_add(parent, card);
-+	*card_ret = card;
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(snd_devm_card_new);
-+
-+static int snd_card_init(struct snd_card *card, struct device *parent,
-+			 int idx, const char *xid, struct module *module,
-+			 int extra_size)
-+{
-+	int err;
-+
- 	if (extra_size > 0)
- 		card->private_data = (char *)card + sizeof(struct snd_card);
- 	if (xid)
-@@ -235,7 +305,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 		mutex_unlock(&snd_card_mutex);
- 		dev_err(parent, "cannot find the slot for index %d (range 0-%i), error: %d\n",
- 			 idx, snd_ecards_limit - 1, err);
--		kfree(card);
+-	}
+ 
+ 	chip = &hda->chip;
+ 	mutex_init(&chip->open_mutex);
+@@ -1707,7 +1698,6 @@ static int azx_create(struct snd_card *card, struct pci_dev *pci,
+ 	err = azx_bus_init(chip, model[dev], &pci_hda_io_ops);
+ 	if (err < 0) {
+ 		kfree(hda);
+-		pci_disable_device(pci);
  		return err;
  	}
- 	set_bit(idx, snd_cards_lock);		/* lock it */
-@@ -282,7 +351,7 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 		dev_err(parent, "unable to create card info\n");
- 		goto __error_ctl;
+ 
+@@ -1751,17 +1741,12 @@ static int azx_first_init(struct azx *chip)
  	}
--	*card_ret = card;
-+
- 	return 0;
+ #endif
  
-       __error_ctl:
-@@ -291,7 +360,6 @@ int snd_card_new(struct device *parent, int idx, const char *xid,
- 	put_device(&card->card_dev);
-   	return err;
- }
--EXPORT_SYMBOL(snd_card_new);
+-	err = pci_request_regions(pci, "ICH HD audio");
++	err = pcim_iomap_regions(pci, 1 << 0, "ICH HD audio");
+ 	if (err < 0)
+ 		return err;
+-	chip->region_requested = 1;
  
- /* return non-zero if a card is already locked */
- int snd_card_locked(int card)
-@@ -484,6 +552,7 @@ EXPORT_SYMBOL_GPL(snd_card_disconnect_sync);
+ 	bus->addr = pci_resource_start(pci, 0);
+-	bus->remap_addr = pci_ioremap_bar(pci, 0);
+-	if (bus->remap_addr == NULL) {
+-		dev_err(card->dev, "ioremap error\n");
+-		return -ENXIO;
+-	}
++	bus->remap_addr = pcim_iomap_table(pci)[0];
  
- static int snd_card_do_free(struct snd_card *card)
- {
-+	card->releasing = true;
- #if IS_ENABLED(CONFIG_SND_MIXER_OSS)
- 	if (snd_mixer_oss_notify_callback)
- 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_FREE);
-@@ -498,7 +567,8 @@ static int snd_card_do_free(struct snd_card *card)
+ 	if (chip->driver_type == AZX_DRIVER_SKL)
+ 		snd_hdac_bus_parse_capabilities(bus);
+@@ -2057,16 +2042,14 @@ static int azx_probe(struct pci_dev *pci,
+ 		return -ENOENT;
  	}
- 	if (card->release_completion)
- 		complete(card->release_completion);
--	kfree(card);
-+	if (!card->managed)
-+		kfree(card);
- 	return 0;
- }
  
-@@ -539,6 +609,9 @@ int snd_card_free(struct snd_card *card)
- 	struct completion released;
- 	int ret;
+-	err = snd_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE,
+-			   0, &card);
+-	if (err < 0) {
+-		dev_err(&pci->dev, "Error creating card!\n");
++	err = snd_devm_card_new(&pci->dev, index[dev], id[dev], THIS_MODULE, 0,
++				&card);
++	if (err < 0)
+ 		return err;
+-	}
  
-+	if (card->releasing)
-+		return 0;
-+
- 	init_completion(&released);
- 	card->release_completion = &released;
- 	ret = snd_card_free_when_closed(card);
-@@ -748,6 +821,11 @@ int snd_card_add_dev_attr(struct snd_card *card,
- }
- EXPORT_SYMBOL_GPL(snd_card_add_dev_attr);
+ 	err = azx_create(card, pci, dev, pci_id->driver_data, &chip);
+ 	if (err < 0)
+-		goto out_free;
++		return err;
+ 	card->private_data = chip;
+ 	hda = container_of(chip, struct hda_intel, chip);
  
-+static void trigger_card_free(void *data)
-+{
-+	snd_card_free(data);
-+}
-+
- /**
-  *  snd_card_register - register the soundcard
-  *  @card: soundcard structure
-@@ -771,6 +849,15 @@ int snd_card_register(struct snd_card *card)
+@@ -2075,7 +2058,7 @@ static int azx_probe(struct pci_dev *pci,
+ 	err = register_vga_switcheroo(chip);
+ 	if (err < 0) {
+ 		dev_err(card->dev, "Error registering vga_switcheroo client\n");
+-		goto out_free;
++		return err;
+ 	}
+ 
+ 	if (check_hdmi_disabled(pci)) {
+@@ -2094,7 +2077,7 @@ static int azx_probe(struct pci_dev *pci,
+ 					      &pci->dev, GFP_KERNEL, card,
+ 					      azx_firmware_cb);
  		if (err < 0)
- 			return err;
- 		card->registered = true;
-+	} else {
-+		if (card->managed)
-+			devm_remove_action(card->dev, trigger_card_free, card);
-+	}
-+
-+	if (card->managed) {
-+		err = devm_add_action(card->dev, trigger_card_free, card);
-+		if (err < 0)
+-			goto out_free;
 +			return err;
+ 		schedule_probe = false; /* continued in azx_firmware_cb() */
  	}
+ #endif /* CONFIG_SND_HDA_PATCH_LOADER */
+@@ -2111,10 +2094,6 @@ static int azx_probe(struct pci_dev *pci,
+ 	if (chip->disabled)
+ 		complete_all(&hda->probe_wait);
+ 	return 0;
+-
+-out_free:
+-	snd_card_free(card);
+-	return err;
+ }
  
- 	if ((err = snd_device_register_all(card)) < 0)
+ #ifdef CONFIG_PM
+@@ -2304,8 +2283,6 @@ static void azx_remove(struct pci_dev *pci)
+ 		device_unlock(&pci->dev);
+ 		cancel_work_sync(&hda->probe_work);
+ 		device_lock(&pci->dev);
+-
+-		snd_card_free(card);
+ 	}
+ }
+ 
 -- 
 2.18.0
