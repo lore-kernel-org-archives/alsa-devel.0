@@ -1,60 +1,88 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH 00/15] Add support for Sound BlasterX AE-5
-Date: Thu, 20 Sep 2018 10:15:39 -0400
-Message-ID: <CAM8Agx2VAfDv5TD4W_VSo-Ln5g=3wecBicyS4Xr7SiKAwQU-Bg@mail.gmail.com>
-References: <1537295625-8082-1-git-send-email-conmanx360@gmail.com> <s5hbm8sskco.wl-tiwai@suse.de>
+From: Riccardo Casagrande <riccardo.casagrande@multiconn.it>
+Subject: SoftVol in user space
+Date: Thu, 20 Sep 2018 17:24:57 +0200
+Message-ID: <f83284d2d7df965aa9c80d7b1f85d146@multiconn.it>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hbm8sskco.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.mmit.com.mt (mail.mmit.com.mt [176.56.128.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id 804972677BB
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:25:45 +0200 (CEST)
+Received: from multiconn.it [10.101.1.251] ([127.0.0.1])
+ by mail.mmit.com.mt (MM IT Mail Server v3.0) with ESMTP id KYS00658
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:24:58 +0200
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Thank you for fixing that. I was doing that previously, but this time
-I was only doing it every few commits. Will make sure to go back to
-the way I was doing it before. Sorry about that.
-
-On Thu, Sep 20, 2018 at 3:23 AM, Takashi Iwai <tiwai@suse.de> wrote:
-> On Tue, 18 Sep 2018 20:33:28 +0200,
-> Connor McAdams wrote:
->>
->> This patch series adds support for the Sound BlasterX AE-5. I have
->> personally tested it, and had others test it as well. All outputs work,
->> front headphone, rear headphone, rear line-out, surround, digital. The
->> only issue currently is that the microphone suffers from inconsistency
->> like the Sound Blaster Z does, and Creative may be willing to help fix
->> that, but if they're not, I have a few ideas.
->>
->> I also have the ZxR working currently. That will require some more
->> complicated changes of the driver, so I have left it out and just
->> focused on the AE-5.
->>
->> Connor McAdams (15):
->>   ALSA: hda/ca0132 - Define new verbs and control params
->>   ALSA: hda/ca0132 - Add quirk for Sound BlasterX AE-5
->>   ALSA: hda/ca0132 - Add pincfg for AE-5
->>   ALSA: hda/ca0132 - Set AE-5 bools and select mixer
->>   ALSA: hda/ca0132 - Change ca0132_mmio_init for AE-5
->>   ALSA: hda/ca0132 - Add AE-5 pre-init and ca0113 functions
->>   ALSA: hda/ca0132 - Add AE-5 regular init setup
->>   ALSA: hda/ca0132 - Change firmware name and usage
->>   ALSA: hda/ca0132 - Merge post-dsp functions + cleanup
->>   ALSA: hda/ca0132 - Add DSP setup functions for AE-5
->>   ALSA: hda/ca0132 - Clean up ca0132_alt_out_select
->>   ALSA: hda/ca0132 - Add output set commands for AE-5
->>   ALSA: hda/ca0132 - Add input selection commands for AE-5
->>   ALSA: hda/ca0132 - Add AE-5 specific controls
->>   ALSA: hda/ca0132 - Add AE-5 exit function
->
-> Thanks, applied now all 15 patches.
->
-> One patch caused a compile warning in the middle of series due to an
-> unused variable which is used in a later patch.  Since it's a trivial
-> issue, I addressed it by myself locally.  But at the next time, it'd
-> be helpful if you do a compile test for each commit in the series
-> before submission.
->
->
-> Takashi
+CkhlbGxvIGRldnMsCgoKSSBoYXZlIHRvIGFkZCBhIHZvbHVtZSBjb250cm9sIHRvIG15IGN1c3Rv
+bSBjYXJkIChJdCBoYXMgYW4gaS5NWDYgY2hpcCBhbmQgMyBGREEyMTAwIGZyb20gVEkgYXMgYXVk
+aW8gY2hpcCkgYmVjYXVzZSB0aGUgRkRBcyBoYXZlIG5vIHZvbHVtZSBjb250cm9sbGVyLgoKClRo
+aXMgYmVsb3cgaXMgdGhlIC5hc291bmRyYyBmaWxlIEkgbWFkZS4gSXQgd29ya3MgZ3JlYXQgaWYg
+SSBtYW51YWxseSBtYWRlIGEgc3BlYWtlci10ZXN0IG9mIG9uZSBvZiBkZXZpY2VmZGFYIHNvdW5k
+IGNhcmQuIFRoZW4gSSBjYW4gc2VlIG9uIGFsc2FtaXhlciB0aGUgdm9sdW1lIGNvbnRyb2wsIGJ1
+dCBteSBuZWVkIGlzIHRvIGFjY2VzcyBhbmQgY29udHJvbCBzb2Z0dm9sIGZyb20gdXNlciBzcGFj
+ZS4gCgoKCnBjbS5zb2Z0dm9sZmRhMCB7CsKgwqDCoMKgwqDCoMKgwqAgdHlwZSBzb2Z0dm9swqDC
+oMKgwqAgCsKgwqDCoMKgwqDCoMKgwqDCoCBzbGF2ZSB7wqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKg
+wqDCoMKgwqDCoCDCoMKgwqDCoMKgwqDCoMKgIHBjbSAiaHc6MCwwIsKgwqDCoMKgIArCoMKgwqDC
+oMKgwqDCoMKgIH3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKg
+wqAgY29udHJvbCB7wqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgwqDCoMKgwqDCoMKg
+wqDCoCBuYW1lICJ2b2x1bWUwIsKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgwqDCoMKgwqDCoMKgwqDC
+oCBjYXJkIDDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCDCoMKgwqDCoMKg
+wqDCoMKgIGRldmljZSAwwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCB9wqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIAp9wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKcGNtLnNvZnR2b2xmZGExIHsKwqDC
+oMKgwqDCoMKgwqDCoCB0eXBlIHNvZnR2b2zCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCBzbGF2
+ZSB7wqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgIMKgwqDCoMKgwqDCoMKgwqAg
+cGNtICJodzowLDEiwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgfcKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCBjb250cm9sIHvCoMKgwqDCoMKgwqDCoCAK
+wqDCoMKgwqDCoMKgwqDCoCDCoMKgwqDCoMKgwqDCoMKgIG5hbWUgInZvbHVtZTEiwqDCoCAKwqDC
+oMKgwqDCoMKgwqDCoCDCoMKgwqDCoMKgwqDCoMKgIGNhcmQgMMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IArCoMKgwqDCoMKgwqDCoMKgIMKgwqDCoMKgwqDCoMKgwqAgZGV2aWNlIDHCoMKgwqDCoMKgwqDC
+oMKgIArCoMKgwqDCoMKgwqDCoMKgIH3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgCn3C
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIApwY20uc29mdHZvbGZkYTIgewrCoMKgwqDCoMKgwqDCoMKgIHR5cGUgc29mdHZvbMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgIHNsYXZlIHvCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgwqDCoMKgwqDCoMKgwqDCoCBwY20g
+Imh3OjAsMiLCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCB9wqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgIGNvbnRy
+b2wge8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgIMKgwqDCoMKg
+wqDCoMKgwqAgbmFtZSAidm9sdW1lMiLCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKg
+IMKgwqDCoMKgwqDCoMKgwqAgY2FyZCAwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+CsKgwqDCoMKgwqDCoMKgwqAgwqDCoMKgwqDCoMKgwqDCoCBkZXZpY2UgMsKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgCsKgwqDCoMKgwqDCoMKgwqAgfSDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIAp9wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKcGNt
+LmRldmljZWZkYTAge8KgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCB0eXBlIHBsdWfCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCBzbGF2ZS5wY20gInNvZnR2
+b2xmZGEwIgp9wqDCoMKgwqDCoCAKCgoKcGNtLmRldmljZWZkYTEge8KgwqDCoMKgwqDCoCAKwqDC
+oMKgwqDCoMKgwqDCoCB0eXBlIHBsdWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKg
+wqDCoMKgwqDCoCBzbGF2ZS5wY20gInNvZnR2b2xmZGExIgp9wqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIArCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCAKcGNtLmRldmljZWZkYTIge8KgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDC
+oCB0eXBlIHBsdWfCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAKwqDCoMKgwqDCoMKgwqDCoCBz
+bGF2ZS5wY20gInNvZnR2b2xmZGEyIgp9wqDCoMKgIAoKCgoKCkkgc2F3IHRoYXQgb24gYWxzYWxp
+YiB0aGVyZSBpcyB0aGlzIGNvbW1hbmQgCgoKCmludCBzbmRfcGNtX3NvZnR2b2xfb3BlbiAoc25k
+X3BjbV90ICoqwqAgwqDCoMKgIHBjbXAsCsKgwqDCoCDCoMKgwqAgY29uc3QgY2hhciAqwqAgwqDC
+oMKgIG5hbWUsCsKgwqDCoCDCoMKgwqAgc25kX3BjbV9mb3JtYXRfdMKgIMKgwqDCoCBzZm9ybWF0
+LArCoMKgwqAgwqDCoMKgIGludMKgIMKgwqDCoCBjdGxfY2FyZCwKwqDCoMKgIMKgwqDCoCBzbmRf
+Y3RsX2VsZW1faWRfdCAqwqAgwqDCoMKgIGN0bF9pZCwKwqDCoMKgIMKgwqDCoCBpbnTCoCDCoMKg
+wqAgY2NoYW5uZWxzLArCoMKgwqAgwqDCoMKgIGRvdWJsZcKgIMKgwqDCoCBtaW5fZEIsCsKgwqDC
+oCDCoMKgwqAgZG91YmxlwqAgwqDCoMKgIG1heF9kQiwKwqDCoMKgIMKgwqDCoCBpbnTCoCDCoMKg
+wqAgcmVzb2x1dGlvbiwKwqDCoMKgIMKgwqDCoCBzbmRfcGNtX3QgKsKgIMKgwqDCoCBzbGF2ZSwK
+wqDCoMKgIMKgwqDCoCBpbnTCoCDCoMKgwqAgY2xvc2Vfc2xhdmUgCsKgwqDCoCApIAoKCgpidXQg
+SSBjYW4ndCBmaW5kIGFueSBleGFtcGxlIG9mIHVzYWdlLlRoaXMgaXMgdGhlIGxvZyBvZiB0aGUg
+ZXJyb3I6CgoKbXAgJiYgc2xhdmUnIGZhaWxlZC4KQWJvcnRlZAoKCkFueSBzdWdnZXN0aW9uIGlz
+IHdlbGNvbWUKCgpSaWNjYXJkbyBDYXNhZ3JhbmRlCgoKCgpfX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
+dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
+bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
