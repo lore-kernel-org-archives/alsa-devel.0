@@ -1,18 +1,18 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 7/7] ALSA: doc: Add device-managed resource
-	section
-Date: Thu, 20 Sep 2018 17:55:02 +0200
-Message-ID: <20180920155502.7534-8-tiwai@suse.de>
+Subject: [PATCH 1/7] ALSA: core: Add device-managed page
+	allocator helper
+Date: Thu, 20 Sep 2018 17:54:56 +0200
+Message-ID: <20180920155502.7534-2-tiwai@suse.de>
 References: <20180920155502.7534-1-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 6C93C267893
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:55:07 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 34C712677BB
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 17:55:05 +0200 (CEST)
 Received: from relay1.suse.de (unknown [195.135.220.254])
- by mx1.suse.de (Postfix) with ESMTP id 81175B008
+ by mx1.suse.de (Postfix) with ESMTP id 2BA55AF08
  for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 15:55:05 +0000 (UTC)
 In-Reply-To: <20180920155502.7534-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -27,47 +27,151 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-R2l2ZSBicmllZiBleHBsYW5hdGlvbnMgYWJvdXQgdGhlIGRldmljZS1tYW5hZ2VkIHJlc291cmNl
-cyBhbmQgdGhlCm5ld2x5IGludHJvZHVjZWQgc25kX2Rldm1fY2FyZF9uZXcoKSBoZWxwZXIuCgpT
-aWduZWQtb2ZmLWJ5OiBUYWthc2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+Ci0tLQogLi4uL2tlcm5l
-bC1hcGkvd3JpdGluZy1hbi1hbHNhLWRyaXZlci5yc3QgICAgIHwgMzMgKysrKysrKysrKysrKysr
-KysrKwogMSBmaWxlIGNoYW5nZWQsIDMzIGluc2VydGlvbnMoKykKCmRpZmYgLS1naXQgYS9Eb2N1
-bWVudGF0aW9uL3NvdW5kL2tlcm5lbC1hcGkvd3JpdGluZy1hbi1hbHNhLWRyaXZlci5yc3QgYi9E
-b2N1bWVudGF0aW9uL3NvdW5kL2tlcm5lbC1hcGkvd3JpdGluZy1hbi1hbHNhLWRyaXZlci5yc3QK
-aW5kZXggYjYwYTI2ODA3NDIwLi5iMGNhMDFmM2RlODEgMTAwNjQ0Ci0tLSBhL0RvY3VtZW50YXRp
-b24vc291bmQva2VybmVsLWFwaS93cml0aW5nLWFuLWFsc2EtZHJpdmVyLnJzdAorKysgYi9Eb2N1
-bWVudGF0aW9uL3NvdW5kL2tlcm5lbC1hcGkvd3JpdGluZy1hbi1hbHNhLWRyaXZlci5yc3QKQEAg
-LTQxMTIsNiArNDExMiwzOSBAQCBtb2R1bGUgbGljZW5zZSBhcyBHUEwsIGV0Yy4sIG90aGVyd2lz
-ZSB0aGUgc3lzdGVtIGlzIHNob3duIGFzIOKAnHRhaW50ZWTigJ0uCiAgIE1PRFVMRV9MSUNFTlNF
-KCJHUEwiKTsKIAogCitEZXZpY2UtTWFuYWdlZCBSZXNvdXJjZXMKKz09PT09PT09PT09PT09PT09
-PT09PT09PQorCitJbiB0aGUgZXhhbXBsZXMgYWJvdmUsIGFsbCByZXNvdXJjZXMgYXJlIGFsbG9j
-YXRlZCBhbmQgcmVsZWFzZWQKK21hbnVhbGx5LiAgQnV0IGh1bWFuIGJlaW5ncyBhcmUgbGF6eSBp
-biBuYXR1cmUsIGVzcGVjaWFsbHkgZGV2ZWxvcGVycworYXJlIGxhemllci4gIFNvIHRoZXJlIGFy
-ZSBzb21lIHdheXMgdG8gYXV0b21hdGUgdGhlIHJlbGVhc2UgcGFydDsgaXQncwordGhlIChkZXZp
-Y2UtKW1hbmFnZWQgcmVzb3VyY2VzIGFrYSBkZXZyZXMgb3IgZGV2bSBmYW1pbHkuICBGb3IKK2V4
-YW1wbGUsIGFuIG9iamVjdCBhbGxvY2F0ZWQgdmlhIDpjOmZ1bmM6YGRldm1fa21hbGxvYygpYCB3
-aWxsIGJlCitmcmVlZCBhdXRvbWF0aWNhbGx5IGF0IHVuYmluZGluZyB0aGUgZGV2aWNlLgorCitB
-TFNBIGNvcmUgcHJvdmlkZXMgYWxzbyB0aGUgZGV2aWNlLW1hbmFnZWQgaGVscGVyLCBuYW1lbHks
-Cis6YzpmdW5jOmBzbmRfZGV2bV9jYXJkX25ldygpYCBmb3IgY3JlYXRpbmcgYSBjYXJkIG9iamVj
-dC4KK0NhbGwgdGhpcyBmdW5jdGlvbnMgaW5zdGVhZCBvZiB0aGUgbm9ybWFsIDpjOmZ1bmM6YHNu
-ZF9jYXJkX25ldygpYCwKK2FuZCB5b3UgY2FuIGZvcmdldCB0aGUgZXhwbGljaXQgOmM6ZnVuYzpg
-c25kX2NhcmRfZnJlZSgpYCBjYWxsLCBhcworaXQncyBjYWxsZWQgYXV0b21hZ2ljYWxseSBhdCBl
-cnJvciBhbmQgcmVtb3ZhbCBwYXRocy4KKworT25lIGNhdmVhdCBpcyB0aGF0IHRoZSBjYWxsIG9m
-IDpjOmZ1bmM6YHNuZF9jYXJkX2ZyZWUoKWAgd291bGQgYmUgcHV0CithdCB0aGUgYmVnaW5uaW5n
-IG9mIHRoZSBjYWxsIGNoYWluIG9ubHkgYWZ0ZXIgeW91IGNhbGwKKzpjOmZ1bmM6YHNuZF9jYXJk
-X3JlZ2lzdGVyKClgLgorCitBbHNvLCB0aGUgYGBwcml2YXRlX2ZyZWVgYCBjYWxsYmFjayBpcyBh
-bHdheXMgY2FsbGVkIGF0IHRoZSBjYXJkIGZyZWUsCitzbyBiZSBjYXJlZnVsIHRvIHB1dCB0aGUg
-aGFyZHdhcmUgY2xlYW4tdXAgcHJvY2VkdXJlIGluCitgYHByaXZhdGVfZnJlZWBgIGNhbGxiYWNr
-LiAgSXQgbWlnaHQgYmUgY2FsbGVkIGV2ZW4gYmVmb3JlIHlvdQorYWN0dWFsbHkgc2V0IHVwIGF0
-IGFuIGVhcmxpZXIgZXJyb3IgcGF0aC4gIEZvciBhdm9pZGluZyBzdWNoIGFuCitpbnZhbGlkIGlu
-aXRpYWxpemF0aW9uLCB5b3UgY2FuIHNldCBgYHByaXZhdGVfZnJlZWBgIGNhbGxiYWNrIGFmdGVy
-Cis6YzpmdW5jOmBzbmRfY2FyZF9yZWdpc3RlcigpYCBjYWxsIHN1Y2NlZWRzLgorCitBbm90aGVy
-IHRoaW5nIHRvIGJlIHJlbWFya2VkIGlzIHRoYXQgeW91IHNob3VsZCB1c2UgZGV2aWNlLW1hbmFn
-ZWQKK2hlbHBlcnMgZm9yIGVhY2ggY29tcG9uZW50IGFzIG11Y2ggYXMgcG9zc2libGUgb25jZSB3
-aGVuIHlvdSBtYW5hZ2UKK3RoZSBjYXJkIGluIHRoYXQgd2F5LiAgTWl4aW5nIHVwIHdpdGggdGhl
-IG5vcm1hbCBhbmQgdGhlIG1hbmFnZWQKK3Jlc291cmNlcyBtYXkgc2NyZXcgdXAgdGhlIHJlbGVh
-c2Ugb3JkZXIuCisKKwogSG93IFRvIFB1dCBZb3VyIERyaXZlciBJbnRvIEFMU0EgVHJlZQogPT09
-PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQogCi0tIAoyLjE4LjAKCl9fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXBy
-b2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+This is a preparation for managing the whole resource via devres.
+As a first step, add a new allocator function, snd_devm_alloc_pages()
+to manage the allocated pages via devres, so that the pages will be
+automagically released as device unbinding.
+
+Unlike the old snd_dma_alloc_pages(), the new function returns
+directly the snd_dma_buffer pointer.  The caller needs to check the
+error via IS_ERR().
+
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
+---
+ include/sound/memalloc.h |  4 ++
+ sound/core/memalloc.c    | 88 ++++++++++++++++++++++++++++++++--------
+ 2 files changed, 74 insertions(+), 18 deletions(-)
+
+diff --git a/include/sound/memalloc.h b/include/sound/memalloc.h
+index af3fa577fa06..3a1d9fb44fcf 100644
+--- a/include/sound/memalloc.h
++++ b/include/sound/memalloc.h
+@@ -156,5 +156,9 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab);
+ void *snd_malloc_pages(size_t size, gfp_t gfp_flags);
+ void snd_free_pages(void *ptr, size_t size);
+ 
++/* device-managed memory allocator */
++struct snd_dma_buffer *snd_devm_alloc_pages(struct device *dev, int type,
++					    size_t size);
++
+ #endif /* __SOUND_MEMALLOC_H */
+ 
+diff --git a/sound/core/memalloc.c b/sound/core/memalloc.c
+index aa266907ec9b..a54d7aacec43 100644
+--- a/sound/core/memalloc.c
++++ b/sound/core/memalloc.c
+@@ -161,22 +161,8 @@ static void snd_free_dev_iram(struct snd_dma_buffer *dmab)
+  *
+  */
+ 
+-
+-/**
+- * snd_dma_alloc_pages - allocate the buffer area according to the given type
+- * @type: the DMA buffer type
+- * @device: the device pointer
+- * @size: the buffer size to allocate
+- * @dmab: buffer allocation record to store the allocated data
+- *
+- * Calls the memory-allocator function for the corresponding
+- * buffer type.
+- *
+- * Return: Zero if the buffer with the given size is allocated successfully,
+- * otherwise a negative value on error.
+- */
+-int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+-			struct snd_dma_buffer *dmab)
++static int __snd_dma_alloc_pages(struct device *device, int type, size_t size,
++				 gfp_t gfp_flags, struct snd_dma_buffer *dmab)
+ {
+ 	if (WARN_ON(!size))
+ 		return -ENXIO;
+@@ -188,8 +174,7 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+ 	dmab->bytes = 0;
+ 	switch (type) {
+ 	case SNDRV_DMA_TYPE_CONTINUOUS:
+-		dmab->area = snd_malloc_pages(size,
+-					(__force gfp_t)(unsigned long)device);
++		dmab->area = snd_malloc_pages(size, gfp_flags);
+ 		dmab->addr = 0;
+ 		break;
+ #ifdef CONFIG_HAS_DMA
+@@ -225,6 +210,30 @@ int snd_dma_alloc_pages(int type, struct device *device, size_t size,
+ 	dmab->bytes = size;
+ 	return 0;
+ }
++
++/**
++ * snd_dma_alloc_pages - allocate the buffer area according to the given type
++ * @type: the DMA buffer type
++ * @device: the device pointer
++ * @size: the buffer size to allocate
++ * @dmab: buffer allocation record to store the allocated data
++ *
++ * Calls the memory-allocator function for the corresponding
++ * buffer type.
++ *
++ * Return: Zero if the buffer with the given size is allocated successfully,
++ * otherwise a negative value on error.
++ */
++int snd_dma_alloc_pages(int type, struct device *device, size_t size,
++			struct snd_dma_buffer *dmab)
++{
++	gfp_t gfp_flags = 0;
++
++	if (type == SNDRV_DMA_TYPE_CONTINUOUS)
++		gfp_flags = (__force gfp_t)(unsigned long)device;
++
++	return __snd_dma_alloc_pages(device, type, size, gfp_flags, dmab);
++}
+ EXPORT_SYMBOL(snd_dma_alloc_pages);
+ 
+ /**
+@@ -296,3 +305,46 @@ void snd_dma_free_pages(struct snd_dma_buffer *dmab)
+ 	}
+ }
+ EXPORT_SYMBOL(snd_dma_free_pages);
++
++/* called by devres */
++static void __snd_release_pages(struct device *dev, void *res)
++{
++	snd_dma_free_pages(res);
++}
++
++/**
++ * snd_devm_alloc_pages - allocate the buffer and manage with devres
++ * @dev: the device pointer
++ * @type: the DMA buffer type
++ * @size: the buffer size to allocate
++ *
++ * Allocate buffer pages depending on the given type and manage using devres.
++ * The pages will be released automatically at the device removal.
++ *
++ * The function cannot handle GFP flags for SNDRV_DMA_TYPE_CONTINUOUS type,
++ * only GFP_KERNEL is assumed.
++ *
++ * The function returns the snd_dma_buffer object at success or the encoded
++ * error pointer via ERR_PTR().  The caller needs to check the error via
++ * IS_ERR() and PTR_ERR().
++ */
++struct snd_dma_buffer *
++snd_devm_alloc_pages(struct device *dev, int type, size_t size)
++{
++	struct snd_dma_buffer *dmab;
++	int err;
++
++	dmab = devres_alloc(__snd_release_pages, sizeof(*dmab), GFP_KERNEL);
++	if (!dmab)
++		return ERR_PTR(-ENOMEM);
++
++	err = __snd_dma_alloc_pages(dev, type, size, GFP_KERNEL, dmab);
++	if (err < 0) {
++		devres_free(dmab);
++		return ERR_PTR(err);
++	}
++
++	devres_add(dev, dmab);
++	return dmab;
++}
++EXPORT_SYMBOL_GPL(snd_devm_alloc_pages);
+-- 
+2.18.0
