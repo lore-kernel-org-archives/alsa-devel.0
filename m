@@ -1,151 +1,88 @@
-From: Andy Davison <andy@dvsn.net>
-Subject: Re: Fixing EAPD for STAC9202 on an embedded platform.
-Date: Thu, 20 Sep 2018 02:31:00 +0100
-Message-ID: <3C3DAB5C-7CF4-445C-9C83-45C1C6B8A167@dvsn.net>
-References: <BCFAA68D-E8B6-4D2F-85DB-73A3B2F82C1A@dvsn.net>
- <s5hva7d1i8y.wl-tiwai@suse.de>
- <00C65088-E8BE-447B-A6A2-88B1BABC41D0@dvsn.net>
- <s5hlg892j0a.wl-tiwai@suse.de>
- <5127F8D0-09C1-4840-939E-FBAED6474675@dvsn.net>
- <s5hefe037gv.wl-tiwai@suse.de>
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com
- [209.85.128.47])
- by alsa0.perex.cz (Postfix) with ESMTP id 871562676A7
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 03:31:03 +0200 (CEST)
-Received: by mail-wm1-f47.google.com with SMTP id r1-v6so186208wmh.0
- for <alsa-devel@alsa-project.org>; Wed, 19 Sep 2018 18:31:03 -0700 (PDT)
-In-Reply-To: <s5hefe037gv.wl-tiwai@suse.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Oleksandr Andrushchenko <Oleksandr_Andrushchenko@epam.com>
+Subject: Re: [PATCH] ALSA: xen-front: Refine indentations and constify
+ snd_pcm_ops
+Date: Thu, 20 Sep 2018 08:18:02 +0300
+Message-ID: <33d4fea3-70ff-e488-cd10-3abeb274fe3b@epam.com>
+References: <20180919214710.GA6907@nick>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20180919214710.GA6907@nick>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Nick Simonov <nicksimonovv@gmail.com>
+Cc: tiwai@suse.com, xen-devel@lists.xenproject.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Cj4gT24gMTEgU2VwIDIwMTgsIGF0IDA2OjUzLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4gCj4gT24g
-VHVlLCAxMSBTZXAgMjAxOCAwMjoyNDoxMSArMDIwMCwKPiBBbmR5IERhdmlzb24gd3JvdGU6Cj4+
-IAo+PiAKPj4+IE9uIDEwIFNlcCAyMDE4LCBhdCAyMToyOSwgVGFrYXNoaSBJd2FpIHdyb3RlOgo+
-Pj4gCj4+PiBPbiBNb24sIDEwIFNlcCAyMDE4IDIyOjAxOjI4ICswMjAwLAo+Pj4gQW5keSBEYXZp
-c29uIHdyb3RlOgo+Pj4+IAo+Pj4+IAo+Pj4+PiBPbiAxMCBTZXAgMjAxOCwgYXQgMTY6MzEsIFRh
-a2FzaGkgSXdhaSB3cm90ZToKPj4+Pj4gCj4+Pj4+IE9uIE1vbiwgMTAgU2VwIDIwMTggMTE6NTE6
-NTIgKzAyMDAsCj4+Pj4+IEFuZHkgRGF2aXNvbiB3cm90ZToKPj4+Pj4+IAo+Pj4+Pj4gSGkgZXZl
-cnlvbmUsCj4+Pj4+PiAKPj4+Pj4+IEnigJltIGhvcGluZyB0aGF0IHNvbWVib2R5IGhlcmUgbWln
-aHQgYmUgYWJsZSB0byBzcG90IHdoZXJlIEnigJltIGdvaW5nIHdyb25nOyBJJ20gd29ya2luZyB3
-aXRoIGEgcGljdHVyZS1mcmFtZS1saWtlIGRldmljZSBtYW51ZmFjdHVyZWQgYnkgdGhlIGxhdGUg
-T3BlblBlYWsgSW5jLiBrbm93biBhcyB0aGUgT3BlbkZyYW1lIChvciBPMiBKb2dnbGVyIGluIHRo
-ZSBVSykuIEl0IGhhcyBhbiBpbnRlcm5hbCBzcGVha2VyIGFuZCBhIDMuNW1tIGxpbmUgb3V0IHNv
-Y2tldDsgbm9uZSBvZiB0aGUgb3RoZXIgY29ubmVjdGlvbnMgdG8gaXRzIFNUQUM5MjAyIGNvZGVj
-IGNoaXAgYXJlIGV4cG9zZWQgdG8gdGhlIGVuZCB1c2VyLiBJJ3ZlIGJlZW4gcG9ydGluZyBVYnVu
-dHUgQmlvbmljIHRvIHRoZSBkZXZpY2UgYW5kIGV2ZXJ5dGhpbmcgaXMgZG9uZSwgZXhjZXB0IGZv
-ciB0aGUgYXVkaW8gZHJpdmVyLgo+Pj4+Pj4gCj4+Pj4+PiBCYWNrIGluIGtlcm5lbCAzLjE4IGl0
-IHdhcyBwb3NzaWJsZSB0byB1c2UgdGhlIGZvbGxvd2luZyBrZXJuZWwgcGF0Y2ggYW5kIHVzZXJs
-YW5kIEFMU0EgcGF0Y2ggdG8gaGF2ZSB0aGVzZSB0d28gb3V0cHV0cyB3b3JrIGNvcnJlY3RseSwg
-d2l0aCB0aGUgaW5zZXJ0aW9uIG9mIGEgcGx1ZyBpbnRvIHRoZSBsaW5lIG91dCBwcm9wZXJseSBt
-dXRpbmcgdGhlIGludGVybmFsIHNwZWFrZXIuCj4+Pj4+PiAKPj4+Pj4+IGh0dHBzOi8vZ2l0aHVi
-LmNvbS9hbmR5ZHZzbi9PcGVuRnJhbWUtS2VybmVsL2Jsb2IvbWFzdGVyL3BhdGNoZXMvMDMtc3Rh
-YzkyMDItYXVkaW8tcGluLXR3ZWFrLnBhdGNoCj4+Pj4+PiBodHRwczovL2dpdGh1Yi5jb20vYW5k
-eWR2c24vT3BlbkZyYW1lLVVidW50dS9ibG9iL21hc3Rlci9vdmVybGF5LXRydXN0eS9saWIvZmly
-bXdhcmUvb2YxLXN0YWM5MjAyLnBhdGNoCj4+Pj4+PiAKPj4+Pj4+IEluIGtlcm5lbCA0LjE0IHRo
-ZSBzYW1lIHRyaWNrIG5vIGxvbmdlciB3b3Jrcywgc28gSSd2ZSByZXdyaXR0ZW4gdGhlIHBhdGNo
-IHRvIG1vcmUgcHJvcGVybHkgYWRkIHN1cHBvcnQgZm9yIHRoaXMgdmFyaWFudCBvZiBTVEFDOTIw
-MiB0byBBTFNBLiBJdCBub3cgbG9va3MgbGlrZSB0aGlzOgo+Pj4+Pj4gCj4+Pj4+PiBodHRwczov
-L2dpc3QuZ2l0aHViLmNvbS9hbmR5ZHZzbi83YmZmYThkZTBlZDY5MWIxNDUwODQ4NWQ3NTUwMWZm
-Ywo+Pj4+Pj4gCj4+Pj4+PiBUaGlzIHNlZW1zIHRvIGxpbmUgdXAgdGhlIHBpbiBjb25maWd1cmF0
-aW9ucyBhcHByb3ByaWF0ZWx5LCBidXQgd2hlbiBhIHBsdWcgaXMgaW5zZXJ0ZWQgdG8gdGhlIGxp
-bmUgb3V0LCBhbHRob3VnaCB0aGUgYXVkaW8gdG8gdGhlIGludGVybmFsIHNwZWFrZXIgaXMgbXV0
-ZWQsIHRoZSBzcGVha2VyIGVtaXRzIGEgY3JhY2tsaW5nIHNvdW5kIHdoZW5ldmVyIHRoZSBkZXZp
-Y2UgaXMgcHJvY2Vzc2luZy4gSXQgc2VlbXMgdGhhdCBpdCBpcyBub3QgYmVpbmcgcHJvcGVybHkg
-cG93ZXJlZCBkb3duIGFuZCBpcyBhbXBsaWZ5aW5nIGdlbmVyYWwgY2lyY3VpdCBub2lzZS4gRGlz
-Y29ubmVjdGluZyB0aGUgcGx1ZyByZXR1cm5zIHNvdW5kIHRvIHRoZSBpbnRlcm5hbCBzcGVha2Vy
-IGFuZCB0aGUgY3JhY2tsaW5nIGNlYXNlcy4gVGhpcyBpcyByZWxpYWJsZSBhY3Jvc3MgbXVsdGlw
-bGUgZGV2aWNlcy4KPj4+Pj4gCj4+Pj4+IFRoZSBwYXRjaCBsb29rcyBjaGFuZ2luZyB0b28gbXVj
-aCB0aGFuIG5lZWRlZC4KPj4+Pj4gCj4+Pj4+IFdoYXQgZXhhY3RseSBkbyB5b3UgbmVlZCB0byBt
-YWtlIHRoaW5ncyB3b3JraW5nIGF0IGZpcnN0Pwo+Pj4+PiBwYXRjaF9zdGFjOTI1eCgpIHNldHMg
-b3duX2VhcGRfY3RsLCBidXQgb25seSBmcm9tIHNvbWUgaGlzdG9yaWNhbAo+Pj4+PiByZWFzb24u
-ICBZb3UgY2FuIHVuc2V0IHRoaXMgZmxhZyBpbiB0aGUgcXVpcmsgYXMgd2VsbC4KPj4+PiAKPj4+
-PiBUaGFuayB5b3UgZm9yIGdldHRpbmcgYmFjayB0byBtZS4gSSBoYXZlIHJlY29tcGlsZWQgNC4x
-NC42OSB3aXRoIG5vIGF1ZGlvIHBhdGNoZXMgYW5kIHRoZSByZXN1bHQgaXMgYXMgZm9sbG93czoK
-Pj4+PiAKPj4+PiAKPj4+PiAtIFN3aXRjaGluZzogUHJlc2VuY2Ugb3IgYWJzZW5jZSBvZiBsaW5l
-IG91dCAvIGhlYWRwaG9uZXMgaXMgaWdub3JlZC4KPj4+PiAKPj4+PiAtIEF1dG8tTXV0ZSBFbmFi
-bGVkIChEZWZhdWx0KTogQ3JhY2tsaW5nIGlzIHByZXNlbnQgb24gdGhlIHJpZ2h0IGNoYW5uZWwg
-b25seSBvZiBsaW5lIG91dCAvIGhlYWRwaG9uZXMuIE5vIGF1ZGlvIG9uIGxpbmUgb3V0IC8gaGVh
-ZHBob25lcy4gU3BlYWtlciBwbGF5cyBhdWRpby4KPj4+PiAKPj4+PiAtIEF1dG8tTXV0ZSBEaXNh
-YmxlZDogQXVkaW8gcGxheXMgcHJvcGVybHksIGJ1dCBmcm9tIGJvdGggdGhlIHNwZWFrZXIgYW5k
-IGxpbmUgb3V0IC8gaGVhZHBob25lcyBzaW11bHRhbmVvdXNseS4KPj4+PiAKPj4+PiAKPj4+PiBT
-byBpdCB3b3VsZCBzZWVtIHRoZSBhY3Rpb24gb2YgRUFQRCBpcyByZXZlcnNlZCwgbXV0aW5nIHRo
-ZSBsaW5lIG91dCAvIGhlYWRwaG9uZXMgd2hlbiB0aGV54oCZcmUgYXR0YWNoZWQgYW5kIG5vdCB0
-aGUgaW50ZXJuYWwgc3BlYWtlci4gVGhlIGNyYWNrbGluZyByZW1haW5zLCBidXQgc3RyYW5nZWx5
-IGp1c3QgaW4gdGhhdCByaWdodCBjaGFubmVsIG9mIGxpbmUgb3V0IC8gaGVhZHBob25lcy4KPj4+
-IAo+Pj4gSXMgaXQgcmVhbGx5IGFib3V0IEVBUEQsIG9yIGlzIGl0IGFib3V0IHRoZSBqYWNrIGRl
-dGVjdGlvbiBsb2dpYyBvcgo+Pj4gdGhlIGluY29ycmVjdCBwaW4gY29uZmlnPwo+PiAKPj4gVGhh
-dOKAmXMgYSBnb29kIHF1ZXN0aW9uLgo+PiAKPj4gCj4+PiBUaGUgZmlyc3QgaXRlbSwgdGhlIG1p
-c3NpbmcgTE8gLyBIUCBkZXRlY3Rpb24gcmF0aGVyIGluZGljYXRlcyB0aGUgcGluCj4+PiBjb25m
-aWcgaXNzdWUuICBXaGF0IGlzIHRoZSBsaW5lIG91dCBwaW4gYW5kIHdoYXQgaXMgdGhlIGhlYWRw
-aG9uZSBwaW4/Cj4+IAo+PiBJ4oCZdmUgbWFuYWdlZCB0byBncmFiIHRoZSBjb2RlYyBpbmZvcm1h
-dGlvbiBmcm9tIHRoZSBvcmlnaW5hbCwgdmVyeSBjdXQtZG93biwgb3BlcmF0aW5nIHN5c3RlbToK
-Pj4gCj4+IGh0dHBzOi8vZ2lzdC5naXRodWIuY29tL2FuZHlkdnNuLzQ3NjQwNzM5ZDkxMWFiYzIz
-Y2M2ZmM4MzhhNTlhNDA0I2ZpbGUtY29kZWMtMAo+IAo+IEkgc2VlIG5vIHBhdGNoIGZpbGUuICBE
-aWQgeW91IGZpZ3VyZSBvdXQgd2hpY2ggcGluIE5JRCBpcyBmb3IgdGhlIGxpbmUKPiBvdXQsIHdo
-aWNoIHBpbiBOSUQgZm9yIGhlYWRwaG9uZSwgYW5kIHdoaWNoIGZvciBpbnQgYW5kIGV4dCBtaWNz
-PwoKRm9yIG91dHB1dCwgZnJvbSB0aGUgYm9hcmQgaXQgbG9va3MgYXMgdGhvdWdoIDB4MGEgKFBP
-UlRBX0wgJiBQT1JUQV9SKSBhbmQgMHgwZCAoUE9SVERfTCAmIFBPUlREX1IpIGFyZSB0aGUgb25s
-eSBvdXRwdXQgY29ubmVjdGlvbnMuIE5JRCAweDBkIGxvb2tzIGFzIHRob3VnaCBpdCBmZWVkcyB0
-aGUgaW50ZXJuYWwgYW1wbGlmaWVyOyBJIGNhbuKAmXQgZW50aXJlbHkgYXNjZXJ0YWluIHRoZSBw
-dXJwb3NlIG9mIDB4MGEuIElmIEkgbWFyayAweDBhIGFzIG5vdCBjb25uZWN0ZWQgaW4gaGRhamFj
-a3JldGFzaywgaW50ZXJuYWwgc3BlYWtlciBtdXRpbmcgc3RvcHMgd29ya2luZywgdGhvdWdoIGl0
-IGFwcGVhcnMgdG8gbGVhZCB0byBhbiB1bnBvcHVsYXRlZCBhcmVhIG9mIHRoZSBib2FyZC4KCkhl
-cmUgaXMgdGhlIHBpbm91dCBhcyBiZXN0IEkgY2FuIG1ha2Ugb3V0OiBodHRwczovL2kuaW1ndXIu
-Y29tL2xPOGhxYzgucG5nCgpUaGlzIGlzIHRoZSBtYWluIGJvYXJkIChmcm9udCk6IGh0dHBzOi8v
-aS5pbWd1ci5jb20vQ3ZZa003Ry5qcGcKClRoaXMgaXMgdGhlIG1haW4gYm9hcmQgKHJlYXIpOiBo
-dHRwczovL2kuaW1ndXIuY29tL2ZZSm9yOXMuanBnCgoKPiBZb3UgY2FuIHVzZSBoZGFqYWNrcmV0
-YXNrIHByb2dyYW0gdG8gaWRlbnRpZnkgYW5kIHJlcHJvZ3JhbSB0aGUgcGluCj4gY29uZmlncy4g
-IEF0IGxlYXN0LCB0aGUgcGlucyBmb3IgSS9PIHdpdGggdGhlIGFjdHVhbCBqYWNrcyBjYW4gYmUK
-PiBpZGVudGlmaWVkIHdpdGggYSBqYWNrIGRldGVjdGlvbiAocGx1Z2dpbmcgLyB1bnBsdWdnaW5n
-KS4KClRoaXMgcGF0Y2ggbWFrZXMgc2Vuc2UgZnJvbSBhIGxhYmVsbGluZyBwZXJzcGVjdGl2ZSwg
-YnV0IEnigJltIHN1c3BpY2lvdXMgdGhhdCBzZXBhcmF0ZSBIUC9MTyBhbmQgaW50ZXJuYWwgc3Bl
-YWtlciB2b2x1bWVzIG1heSBub3QgYmUgcG9zc2libGUsIGFzIGlmIDB4MGQgZmVlZHMgdGhlIGlu
-dGVybmFsIGFtcGxpZmllciwgSSBhc3N1bWUgdGhlcmUgaXMgbm8gaW5kaXZpZHVhbCBsZXZlbCBj
-b250cm9sLgoKaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYW5keWR2c24vMTZiZjc3NGQyMzZmZGVh
-YTVkZTIyYWIwMzc4NjQzYzMKCkFzIGRlc2NyaWJlZCBpbiB0aGUgcGF0Y2gsIHRoaXMgZG9lc27i
-gJl0IGZpeCB0aGUgdW5kZXJseWluZyBpc3N1ZSBvZiBhbXBsaWZpZWQgY2lyY3VpdCBub2lzZSB0
-aHJvdWdoIHRoZSBtdXRlZCBpbnRlcm5hbCBzcGVha2Vycy4gSWYgdGhhdCBjb3VsZCBiZSBzb2x2
-ZWQsIGV2ZXJ5dGhpbmcgd291bGQgYmUgd29ya2luZyBjb3JyZWN0bHkuIFRoZSBrZXJuZWwgMy4x
-OCBwYXRjaCBhcHBlYXJzIHRvIGhhdmUgcmVsaWVkIHVwb24gMHgwNyBmb3IgdGhpcyBzd2l0Y2hp
-bmcsIGJ1dCBJ4oCZdmUgaGFkIG5vIGx1Y2sgY29uZmlndXJpbmcgdGhpcyBzbyBmYXIuCgoKPj4g
-SG9wZWZ1bGx5IHRoYXQgb3V0cHV0IG1ha2VzIHNlbnNlIGFzIHRvIHdoYXQgYXJlIHRoZSBpbnRl
-cm5hbCBzcGVha2VycyBhbmQgd2hpY2ggaXMgdGhlIExPIC8gSFAgamFjayBzb2NrZXQuCj4+IAo+
-PiAKPj4+IERvZXMgdGhlIHN0YW5kYXJkIGphY2sgZGV0ZWN0aW9uIG1lY2hhbmlzbSB3b3JrIGZv
-ciB0aGVtIGluZGl2aWR1YWxseT8KPj4+IAo+Pj4gTGV0J3Mgc3RhcnQgZnJvbSB0aGF0Lgo+PiAK
-Pj4gSeKAmW0gbm90IHN1cmUgaG93IEkgd291bGQgZ28gYWJvdXQgdGVzdGluZyB0aGF0OyB3aXRo
-IG5vIHBhdGNoZXMsIGluc2VydGluZyBhbnl0aGluZyBpbnRvIHRoZSAzLjVtbSBqYWNrIHNvY2tl
-dCBkb2VzbuKAmXQgYXBwZWFyIHRvIGFmZmVjdCB0aGUgc3lzdGVtIGF0IGFsbC4KPj4gCj4+IAo+
-Pj4gVGhlIGZhY3QgdGhhdCB0aGUgcGF0Y2hfc3RhYzkyNXgoKSBzZXRzIG93bl9lYXBkX2N0cmwg
-ZmxhZyBtZWFucyB0aGF0Cj4+PiB0aGVyZSBpcyAqbm8qIGR5bmFtaWMgRUFQRCBiaXQgZmxpcCBh
-cyBkb25lIGluIHRoZSBnZW5lcmljIGRyaXZlci4KPj4+IFRoYXQgaXMsIGl0J3MganVzdCBrZXB0
-IGFzIHNldCBpbiB0aGUgaW5pdGlhbGl6ZWQgc3RhdGUuICBJZiBFQVBEIGlzIGEKPj4+IG11c3Qg
-Zm9yIHNvbWUgb3V0cHV0cywgaXQgaGFzIHRvIGJlIHNldCBlaXRoZXIgc3RhdGljYWxseSBvcgo+
-Pj4gZHluYW1pY2FsbHkuICBCdXQgeW91IGNhbiBoZWFyIHNvbWV0aGluZyBpZiB0aGUgYXV0by1t
-dXRlIGlzIG9mZiwgYW5kCj4+PiBpdCBpbXBsaWVzIHRoYXQgRUFQRCBkb2Vzbid0IG1hdHRlciwg
-YWN0dWFsbHkuCj4+IAo+PiBBaCwgb2theS4gVGhhdOKAmXMgaW50ZXJlc3RpbmcgLSB5ZXMsIHdp
-dGggYXV0by1tdXRlIGRpc2FibGVkIHRoZSBhdWRpbyBjb21lcyB0aHJvdWdoIHRoZSBMTyAvIEhQ
-IHNvY2tldCBqdXN0IGZpbmUuIEl04oCZcyBvbmx5IHdoZW4gdGhlIGF1dG8tbXV0ZSBpcyBhY3Rp
-dmUgdGhhdCB0aGVyZeKAmXMgdGhlIGlzc3VlIHdpdGggY3JhY2tsaW5nLgo+IAo+IFRoZSBjcmFj
-a2xpbmcgaXMgb2Z0ZW4gYmVjYXVzZSBvZiBzb21lIGJhZCByb3V0aW5nIGZyb20gYW5hbG9nCj4g
-bG9vcGJhY2suICBTZWUgd2hldGhlciB0aGUgbG9vcGJhY2sgaXMgZW5hYmxlZCB1bm5lY2Vzc2Fy
-aWx5LgoKVGhlcmUgZG9lc27igJl0IGFwcGVhciB0byBiZSBhIGxvb3BiYWNrIGVudHJ5IGluIGFs
-c2FtaXhlciBvciBhbWl4ZXIsIHNvIEnigJltIHVuY2VydGFpbiBvbiBob3cgdG8gY2hlY2sgZm9y
-IHRoaXMuCgpUaGFuayB5b3UgZm9yIHlvdXIgaGVscCwgSSByZWFsbHkgd2FudCB0byBnZXQgdG8g
-dGhlIGJvdHRvbSBvZiB0aGlzIQoKQWxsIHRoZSBiZXN0LAoKICAgIEEuCgoKCgoKX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5n
-IGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJv
-amVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+On 09/20/2018 12:47 AM, Nick Simonov wrote:
+> snd_pcm_ops are not supposed to change. So mark the
+> non-const structs as const. Also, refine indentation
+> to ncrease readability.
+>
+> Signed-off-by: Nick Simonov <nicksimonovv@gmail.com>
+> ---
+>   sound/xen/xen_snd_front_alsa.c | 46 +++++++++++++++++++++---------------------
+>   1 file changed, 23 insertions(+), 23 deletions(-)
+>
+> diff --git a/sound/xen/xen_snd_front_alsa.c b/sound/xen/xen_snd_front_alsa.c
+> index 129180e..2cbd967 100644
+> --- a/sound/xen/xen_snd_front_alsa.c
+> +++ b/sound/xen/xen_snd_front_alsa.c
+> @@ -637,31 +637,31 @@ static int alsa_pb_fill_silence(struct snd_pcm_substream *substream,
+>    * to know when the buffer can be transferred to the backend.
+>    */
+>   
+> -static struct snd_pcm_ops snd_drv_alsa_playback_ops = {
+> -	.open = alsa_open,
+> -	.close = alsa_close,
+> -	.ioctl = snd_pcm_lib_ioctl,
+> -	.hw_params = alsa_hw_params,
+> -	.hw_free = alsa_hw_free,
+> -	.prepare = alsa_prepare,
+> -	.trigger = alsa_trigger,
+> -	.pointer = alsa_pointer,
+> -	.copy_user = alsa_pb_copy_user,
+> -	.copy_kernel = alsa_pb_copy_kernel,
+> -	.fill_silence = alsa_pb_fill_silence,
+> +static const struct snd_pcm_ops snd_drv_alsa_playback_ops = {
+> +	.open		= alsa_open,
+> +	.close		= alsa_close,
+> +	.ioctl		= snd_pcm_lib_ioctl,
+> +	.hw_params	= alsa_hw_params,
+> +	.hw_free	= alsa_hw_free,
+> +	.prepare	= alsa_prepare,
+> +	.trigger	= alsa_trigger,
+> +	.pointer	= alsa_pointer,
+> +	.copy_user	= alsa_pb_copy_user,
+> +	.copy_kernel	= alsa_pb_copy_kernel,
+> +	.fill_silence	= alsa_pb_fill_silence,
+>   };
+>   
+> -static struct snd_pcm_ops snd_drv_alsa_capture_ops = {
+> -	.open = alsa_open,
+> -	.close = alsa_close,
+> -	.ioctl = snd_pcm_lib_ioctl,
+> -	.hw_params = alsa_hw_params,
+> -	.hw_free = alsa_hw_free,
+> -	.prepare = alsa_prepare,
+> -	.trigger = alsa_trigger,
+> -	.pointer = alsa_pointer,
+> -	.copy_user = alsa_cap_copy_user,
+> -	.copy_kernel = alsa_cap_copy_kernel,
+> +static const struct snd_pcm_ops snd_drv_alsa_capture_ops = {
+> +	.open		= alsa_open,
+> +	.close		= alsa_close,
+> +	.ioctl		= snd_pcm_lib_ioctl,
+> +	.hw_params	= alsa_hw_params,
+> +	.hw_free	= alsa_hw_free,
+> +	.prepare	= alsa_prepare,
+> +	.trigger	= alsa_trigger,
+> +	.pointer	= alsa_pointer,
+> +	.copy_user	= alsa_cap_copy_user,
+> +	.copy_kernel	= alsa_cap_copy_kernel,
+>   };
+>   
+>   static int new_pcm_instance(struct xen_snd_front_card_info *card_info,
+Thank you for the patch,
+Reviewed-by: Oleksandr Andrushchenko <oleksandr_andrushchenko@epam.com>
