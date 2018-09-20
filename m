@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: add for_each_dpcm_fe() macro" to the
+Subject: Applied "ASoC: add for_each_comp_order() macro" to the
 	asoc tree
-Date: Thu, 20 Sep 2018 18:35:23 +0100 (BST)
-Message-ID: <20180920173523.EEC41440078@finisterre.ee.mobilebroadband>
-References: <87musfppig.wl-kuninori.morimoto.gx@renesas.com>
+Date: Thu, 20 Sep 2018 18:35:30 +0100 (BST)
+Message-ID: <20180920173530.86236440078@finisterre.ee.mobilebroadband>
+References: <87o9cvppiu.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 7875726789F
- for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 19:35:26 +0200 (CEST)
-In-Reply-To: <87musfppig.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 07A572678BE
+ for <alsa-devel@alsa-project.org>; Thu, 20 Sep 2018 19:35:32 +0200 (CEST)
+In-Reply-To: <87o9cvppiu.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: add for_each_dpcm_fe() macro
+   ASoC: add for_each_comp_order() macro
 
 has been applied to the asoc tree at
 
@@ -53,65 +53,97 @@ to this mail.
 Thanks,
 Mark
 
->From d2e24d64652bf9d272e5496ae8a562bc64facff3 Mon Sep 17 00:00:00 2001
+>From 1a1035a9854fd893d487a84edccc1d5804e1d716 Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Tue, 18 Sep 2018 01:30:54 +0000
-Subject: [PATCH] ASoC: add for_each_dpcm_fe() macro
+Date: Tue, 18 Sep 2018 01:30:41 +0000
+Subject: [PATCH] ASoC: add for_each_comp_order() macro
 
 To be more readable code, this patch adds
-new for_each_dpcm_fe() macro, and replace existing code to it.
+new for_each_comp_order() macro, and replace existing code to it.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- include/sound/soc-dpcm.h | 3 +++
- sound/soc/soc-pcm.c      | 6 +++---
- 2 files changed, 6 insertions(+), 3 deletions(-)
+ include/sound/soc.h  |  5 +++++
+ sound/soc/soc-core.c | 18 ++++++------------
+ 2 files changed, 11 insertions(+), 12 deletions(-)
 
-diff --git a/include/sound/soc-dpcm.h b/include/sound/soc-dpcm.h
-index 9bb92f187af8..f130de6cfe8e 100644
---- a/include/sound/soc-dpcm.h
-+++ b/include/sound/soc-dpcm.h
-@@ -103,6 +103,9 @@ struct snd_soc_dpcm_runtime {
- 	int trigger_pending; /* trigger cmd + 1 if pending, 0 if not */
- };
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 34efab6baff6..93aa894a57ef 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -372,6 +372,11 @@
+ #define SND_SOC_COMP_ORDER_LATE		1
+ #define SND_SOC_COMP_ORDER_LAST		2
  
-+#define for_each_dpcm_fe(be, stream, dpcm)				\
-+	list_for_each_entry(dpcm, &(be)->dpcm[stream].fe_clients, list_fe)
++#define for_each_comp_order(order)		\
++	for (order  = SND_SOC_COMP_ORDER_FIRST;	\
++	     order <= SND_SOC_COMP_ORDER_LAST;	\
++	     order++)
 +
- /* can this BE stop and free */
- int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
- 		struct snd_soc_pcm_runtime *be, int stream);
-diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
-index 09d0f668c78e..e7916630e6fa 100644
---- a/sound/soc/soc-pcm.c
-+++ b/sound/soc/soc-pcm.c
-@@ -1252,7 +1252,7 @@ static void dpcm_be_reparent(struct snd_soc_pcm_runtime *fe,
+ /*
+  * Bias levels
+  *
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 673a694ede3e..d8625ac2b201 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -992,14 +992,12 @@ static void soc_remove_dai_links(struct snd_soc_card *card)
+ 	struct snd_soc_pcm_runtime *rtd;
+ 	struct snd_soc_dai_link *link, *_link;
  
- 	be_substream = snd_soc_dpcm_get_substream(be, stream);
+-	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+-			order++) {
++	for_each_comp_order(order) {
+ 		for_each_card_rtds(card, rtd)
+ 			soc_remove_link_dais(card, rtd, order);
+ 	}
  
--	list_for_each_entry(dpcm, &be->dpcm[stream].fe_clients, list_fe) {
-+	for_each_dpcm_fe(be, stream, dpcm) {
- 		if (dpcm->fe == fe)
- 			continue;
+-	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+-			order++) {
++	for_each_comp_order(order) {
+ 		for_each_card_rtds(card, rtd)
+ 			soc_remove_link_components(card, rtd, order);
+ 	}
+@@ -1617,8 +1615,7 @@ static int soc_probe_aux_devices(struct snd_soc_card *card)
+ 	int order;
+ 	int ret;
  
-@@ -3219,7 +3219,7 @@ int snd_soc_dpcm_can_be_free_stop(struct snd_soc_pcm_runtime *fe,
- 	struct snd_soc_dpcm *dpcm;
- 	int state;
+-	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+-		order++) {
++	for_each_comp_order(order) {
+ 		list_for_each_entry(comp, &card->aux_comp_list, card_aux_list) {
+ 			if (comp->driver->probe_order == order) {
+ 				ret = soc_probe_component(card,	comp);
+@@ -1640,8 +1637,7 @@ static void soc_remove_aux_devices(struct snd_soc_card *card)
+ 	struct snd_soc_component *comp, *_comp;
+ 	int order;
  
--	list_for_each_entry(dpcm, &be->dpcm[stream].fe_clients, list_fe) {
-+	for_each_dpcm_fe(be, stream, dpcm) {
+-	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+-		order++) {
++	for_each_comp_order(order) {
+ 		list_for_each_entry_safe(comp, _comp,
+ 			&card->aux_comp_list, card_aux_list) {
  
- 		if (dpcm->fe == fe)
- 			continue;
-@@ -3246,7 +3246,7 @@ int snd_soc_dpcm_can_be_params(struct snd_soc_pcm_runtime *fe,
- 	struct snd_soc_dpcm *dpcm;
- 	int state;
+@@ -2013,8 +2009,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	}
  
--	list_for_each_entry(dpcm, &be->dpcm[stream].fe_clients, list_fe) {
-+	for_each_dpcm_fe(be, stream, dpcm) {
+ 	/* probe all components used by DAI links on this card */
+-	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+-			order++) {
++	for_each_comp_order(order) {
+ 		for_each_card_rtds(card, rtd) {
+ 			ret = soc_probe_link_components(card, rtd, order);
+ 			if (ret < 0) {
+@@ -2047,8 +2042,7 @@ static int snd_soc_instantiate_card(struct snd_soc_card *card)
+ 	}
  
- 		if (dpcm->fe == fe)
- 			continue;
+ 	/* probe all DAI links on this card */
+-	for (order = SND_SOC_COMP_ORDER_FIRST; order <= SND_SOC_COMP_ORDER_LAST;
+-			order++) {
++	for_each_comp_order(order) {
+ 		for_each_card_rtds(card, rtd) {
+ 			ret = soc_probe_link_dais(card, rtd, order);
+ 			if (ret < 0) {
 -- 
 2.19.0
