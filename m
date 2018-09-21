@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: fixup SSI clock during
-	suspend/resume modes" to the asoc tree
-Date: Fri, 21 Sep 2018 18:05:38 +0100 (BST)
-Message-ID: <20180921170538.65F7B440078@finisterre.ee.mobilebroadband>
-References: <87fty3310u.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: add for_each_component_dais() macro" to
+	the asoc tree
+Date: Fri, 21 Sep 2018 18:14:01 +0100 (BST)
+Message-ID: <20180921171401.B2A0B440078@finisterre.ee.mobilebroadband>
+References: <87bm8r2zy0.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9B2152676A7
- for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 19:05:41 +0200 (CEST)
-In-Reply-To: <87fty3310u.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 8C6F32676A7
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 19:14:04 +0200 (CEST)
+In-Reply-To: <87bm8r2zy0.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dmytro Prokopchuk <dmytro.prokopchuk@globallogic.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: fixup SSI clock during suspend/resume modes
+   ASoC: add for_each_component_dais() macro
 
 has been applied to the asoc tree at
 
@@ -53,100 +53,93 @@ to this mail.
 Thanks,
 Mark
 
->From 624d1a7cd8991e33dad96ab4629a52c412540e65 Mon Sep 17 00:00:00 2001
-From: Dmytro Prokopchuk <dmytro.prokopchuk@globallogic.com>
-Date: Fri, 21 Sep 2018 04:59:59 +0000
-Subject: [PATCH] ASoC: rsnd: fixup SSI clock during suspend/resume modes
+>From 15a0c64572463eddf59e80aa643d3a87809a7d9b Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 21 Sep 2018 05:23:17 +0000
+Subject: [PATCH] ASoC: add for_each_component_dais() macro
 
-Prepare <-> Cleanup functions pair has balanced calls.
-But in case of suspend mode no call to rsnd_soc_dai_shutdown()
-function, so cleanup isn't called. OTOH during resume mode
-function rsnd_soc_dai_prepare() is called, but calling
-rsnd_ssi_prepare() is skipped (rsnd_status_update() returns zero,
-bacause was not cleanup before).
-We need to call rsnd_ssi_prepare(), because it enables SSI clocks
-by calling rsnd_ssi_master_clk_start().
+To be more readable code, this patch adds
+new for_each_component_dais() macro, and replace existing code to it.
 
-This patch allows to call prepare/cleanup functions always.
-
-Signed-off-by: Dmytro Prokopchuk <dmytro.prokopchuk@globallogic.com>
-Tested-by: Hiroyuki Yokoyama <hiroyuki.yokoyama.vx@renesas.com>
-[kuninori: adjusted to upstream]
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/dma.c  |  7 +++----
- sound/soc/sh/rcar/rsnd.h | 14 +++++++-------
- 2 files changed, 10 insertions(+), 11 deletions(-)
+ include/sound/soc.h  |  5 +++++
+ sound/soc/soc-core.c | 11 ++++++-----
+ 2 files changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 0bbc4b0ea2c6..6d1947515dc8 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -134,10 +134,9 @@ static int rsnd_dmaen_prepare(struct rsnd_mod *mod,
- 	struct rsnd_dmaen *dmaen = rsnd_dma_to_dmaen(dma);
- 	struct device *dev = rsnd_priv_to_dev(priv);
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index 93aa894a57ef..f1dab1f4b194 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -864,6 +864,11 @@ struct snd_soc_component {
+ #endif
+ };
  
--	if (dmaen->chan) {
--		dev_err(dev, "it already has dma channel\n");
--		return -EIO;
--	}
-+	/* maybe suspended */
-+	if (dmaen->chan)
-+		return 0;
++#define for_each_component_dais(component, dai)\
++	list_for_each_entry(dai, &(component)->dai_list, list)
++#define for_each_component_dais_safe(component, dai, _dai)\
++	list_for_each_entry_safe(dai, _dai, &(component)->dai_list, list)
++
+ struct snd_soc_rtdcom_list {
+ 	struct snd_soc_component *component;
+ 	struct list_head list; /* rtd::component_list */
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index b9b33c8cac2e..62e8e36062df 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -180,7 +180,7 @@ static int dai_list_show(struct seq_file *m, void *v)
+ 	mutex_lock(&client_mutex);
  
- 	/*
- 	 * DMAEngine request uses mutex lock.
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index e857311ee5c1..4464d1d0a042 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -318,9 +318,8 @@ struct rsnd_mod {
- /*
-  * status
-  *
-- * 0xH0000CBA
-+ * 0xH0000CB0
-  *
-- * A	0: prepare	1: cleanup
-  * B	0: init		1: quit
-  * C	0: start	1: stop
-  *
-@@ -331,9 +330,8 @@ struct rsnd_mod {
-  * H	0: hw_params
-  * H	0: pointer
-  * H	0: prepare
-+ * H	0: cleanup
-  */
--#define __rsnd_mod_shift_prepare	0
--#define __rsnd_mod_shift_cleanup	0
- #define __rsnd_mod_shift_init		4
- #define __rsnd_mod_shift_quit		4
- #define __rsnd_mod_shift_start		8
-@@ -345,11 +343,13 @@ struct rsnd_mod {
- #define __rsnd_mod_shift_fallback	28 /* always called */
- #define __rsnd_mod_shift_hw_params	28 /* always called */
- #define __rsnd_mod_shift_pointer	28 /* always called */
-+#define __rsnd_mod_shift_prepare	28 /* always called */
-+#define __rsnd_mod_shift_cleanup	28 /* always called */
+ 	for_each_component(component)
+-		list_for_each_entry(dai, &component->dai_list, list)
++		for_each_component_dais(component, dai)
+ 			seq_printf(m, "%s\n", dai->name);
  
- #define __rsnd_mod_add_probe		0
- #define __rsnd_mod_add_remove		0
--#define __rsnd_mod_add_prepare		 1
--#define __rsnd_mod_add_cleanup		-1
-+#define __rsnd_mod_add_prepare		0
-+#define __rsnd_mod_add_cleanup		0
- #define __rsnd_mod_add_init		 1
- #define __rsnd_mod_add_quit		-1
- #define __rsnd_mod_add_start		 1
-@@ -363,7 +363,7 @@ struct rsnd_mod {
- #define __rsnd_mod_call_probe		0
- #define __rsnd_mod_call_remove		0
- #define __rsnd_mod_call_prepare		0
--#define __rsnd_mod_call_cleanup		1
-+#define __rsnd_mod_call_cleanup		0
- #define __rsnd_mod_call_init		0
- #define __rsnd_mod_call_quit		1
- #define __rsnd_mod_call_start		0
+ 	mutex_unlock(&client_mutex);
+@@ -781,7 +781,7 @@ struct snd_soc_dai *snd_soc_find_dai(
+ 	for_each_component(component) {
+ 		if (!snd_soc_is_matching_component(dlc, component))
+ 			continue;
+-		list_for_each_entry(dai, &component->dai_list, list) {
++		for_each_component_dais(component, dai) {
+ 			if (dlc->dai_name && strcmp(dai->name, dlc->dai_name)
+ 			    && (!dai->driver->name
+ 				|| strcmp(dai->driver->name, dlc->dai_name)))
+@@ -1312,7 +1312,7 @@ static int soc_probe_component(struct snd_soc_card *card,
+ 		}
+ 	}
+ 
+-	list_for_each_entry(dai, &component->dai_list, list) {
++	for_each_component_dais(component, dai) {
+ 		ret = snd_soc_dapm_new_dai_widgets(dapm, dai);
+ 		if (ret != 0) {
+ 			dev_err(component->dev,
+@@ -2842,7 +2842,7 @@ static void snd_soc_unregister_dais(struct snd_soc_component *component)
+ {
+ 	struct snd_soc_dai *dai, *_dai;
+ 
+-	list_for_each_entry_safe(dai, _dai, &component->dai_list, list) {
++	for_each_component_dais_safe(component, dai, _dai) {
+ 		dev_dbg(component->dev, "ASoC: Unregistered DAI '%s'\n",
+ 			dai->name);
+ 		list_del(&dai->list);
+@@ -2894,6 +2894,7 @@ static struct snd_soc_dai *soc_add_dai(struct snd_soc_component *component,
+ 	if (!dai->driver->ops)
+ 		dai->driver->ops = &null_dai_ops;
+ 
++	/* see for_each_component_dais */
+ 	list_add_tail(&dai->list, &component->dai_list);
+ 	component->num_dai++;
+ 
+@@ -3728,7 +3729,7 @@ int snd_soc_get_dai_name(struct of_phandle_args *args,
+ 			ret = 0;
+ 
+ 			/* find target DAI */
+-			list_for_each_entry(dai, &pos->dai_list, list) {
++			for_each_component_dais(pos, dai) {
+ 				if (id == 0)
+ 					break;
+ 				id--;
 -- 
 2.19.0
