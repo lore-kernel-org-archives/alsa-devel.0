@@ -1,23 +1,16 @@
-From: Jussi Laako <jussi@sonarnerd.net>
-Subject: Re: [RFC] ALSA: usb-audio: Add custom mixer status
- quirks for RME CC devices
-Date: Fri, 21 Sep 2018 16:26:43 +0300
-Message-ID: <02061084-ce07-2681-ddbf-f15d93b24ee4@sonarnerd.net>
-References: <1537481240-4999-1-git-send-email-jussi@sonarnerd.net>
- <s5h7ejfuyex.wl-tiwai@suse.de>
- <76bd64a6-6d83-912d-e2e3-ec2c4c191dd2@sonarnerd.net>
- <s5h36u344wd.wl-tiwai@suse.de>
- <991e0673-32b7-c9e4-ae3d-1dc15601f3f1@sonarnerd.net>
- <s5h5zyz2e58.wl-tiwai@suse.de>
+From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Subject: [PATCH] ASoC:topology:bug fix:check return value avoid
+	oops.
+Date: Fri, 21 Sep 2018 16:57:37 +0200
+Message-ID: <20180921145737.GC28693@kadasd710.ka.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F1532676A7
- for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 15:26:44 +0200 (CEST)
-In-Reply-To: <s5h5zyz2e58.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
+ by alsa0.perex.cz (Postfix) with ESMTP id AD8612676A7
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 16:57:44 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,91 +20,194 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 21.09.2018 16:06, Takashi Iwai wrote:
-> On Fri, 21 Sep 2018 14:53:20 +0200,
-> Jussi Laako wrote:
->>
->> On 21.09.2018 11:43, Takashi Iwai wrote:
->>> On Fri, 21 Sep 2018 10:35:49 +0200,
->>> Jussi Laako wrote:
->>>>
->>>>> The caching is currently enabled for all elements, but changing it
->>>>> should be trivial.  The patch below adds is_volatile flag to the
->>>>> element, and you can set it to true in the quirk somehow for uncached
->>>>> controls.
->>>>
->>>> This patch looks good and what I need! When trying to figure out where
->>>> it is safe to set the volatile flag I thought that I could set it
->>>> transparently in add_single_ctl_with_resume() in mixer_quirks.c based
->>>> on the SNDRV_CTL_ELEM_ACCESS_VOLATILE flag in provided
->>>> snd_kcontrol_new access-member. However, add_single_ctl_with_resume()
->>>> is allocating just size of usb_mixer_elem_list unlike
->>>> snd_create_std_mono_ctl_offset() which in turn is allocating full
->>>> usb_mixer_elem_info size. However, the mixer code seems to be assuming
->>>> that the item is always usb_mixer_elem_info instead of just list
->>>> header item. Is this allocation behavior correct and is the item
->>>> turned into usb_mixer_elem_info somewhere, or is this some kind of
->>>> bug? So can I safely turn the allocation in
->>>> add_single_ctl_with_resume() into zero initialized usb_mixer_elem_info
->>>> instead and set the flag there while keeping correct behavior, or am I
->>>> missing something?
->>>
->>> We can check SNDRV_CTL_ELEM_ACCESS_VOLATILE instead of introducing a
->>> new flag like my patch, yes.  It's just a matter of easiness.
->>> Since there is no link from usb_mixer_elem_info to the assigned
->>> snd_kcontorl, we'd need to add an extra argument in the call path to
->>> inform about the volatileness, and it may become messy.  We'll find
->>> the simplest way.
->>>
->>> And, IMO, it'd be better to check the cache behavior at setting, since
->>> the cache may be accessed via multiple paths (at reading each element
->>> and at resuming the whole system).  But it's no requirement, either.
->>
->> I have tried with attached patch, on top of your patch, but I'm still
->> getting cached values from libasound2. It didn't break anything
->> either... However, I don't see a link between this cache behavior and
->> specific user space mixer descriptor. Because polling the mixer
->> element with snd_mixer_selem_get_capture_volume() keeps always
->> returning the same value. While in parallel checking the value by
->> running "amixer" from command line gives updated correct value... So
->> is there a second layer of cache somewhere in libasound2 to explain
->> this discrepancy? Because one process sees updated value while other
->> one doesn't. Difference being that the ALSA descriptors are closed and
->> reopened every time "amixer" is run...
-> 
-> Erm, I should have looked your *actual* patch before replying.
-> Basically all your newly created elements are independent from the
-> other USB standard things, and they are all read-only.  That is, you
-> don't need to use add_single_ctl_with_resume(), but just create each
-> element via snd_ctl_new1() and add it via snd_ctl_add().
-> (Also you can pass the mixer object directly in private_value.)
-> 
-> If it still doesn't work as expected, it's rather something wrong in
-> the alsa-lib side, or ACCESS_VOLATILE flag isn't passed / set
-> properly.
+From: Wu Zhigang <zhigang.wu@linux.intel.com>
 
-By the way is the add_single_ctl_with_resume() correct in allocating 
-just snd_mixer_elem_list instead of snd_mixer_elem_info? I got 
-suspicious about this when reading the sources. Because the code is 
-similar to snd_create_std_mono_ctl_offset() but they allocate different 
-size which they go on to pass to the same functions. And in quite many 
-places functions cast the snd_mixer_elem_list pointer to 
-snd_mixer_elem_info pointer to access the entire structure which would 
-of course be wrong if it's just snd_mixer_elem_list size item. The patch 
-I posted in my previous mail that changes add_single_ctl_with_resume() 
-to allocate snd_mixer_elem_info instead at least didn't seem to break 
-things...
+check the return value to free the kcontrols instance
+to avoid oops caused by the pointer dereference.
 
-OK, I already started going through the alsa-lib code, I suspect 
-something is going wrong there because different processes give 
-different values depending on process lifetime and at the driver level 
-there's no process descriptor context yet...
+Signed-off-by: Wu Zhigang <zhigang.wu@linux.intel.com>
+[guennadi.liakhovetski@linux.intel.com add handling of .autodisable=1 cases]
+Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+---
+ sound/soc/soc-dapm.c | 99 ++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 90 insertions(+), 9 deletions(-)
 
-
-Thanks,
-
-	- Jussi
+diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
+index 7e96793050c9..8dc31a7a42fd 100644
+--- a/sound/soc/soc-dapm.c
++++ b/sound/soc/soc-dapm.c
+@@ -2402,12 +2402,11 @@ static void dapm_free_path(struct snd_soc_dapm_path *path)
+ 	kfree(path);
+ }
+ 
+-void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
++static void snd_soc_dapm_free_widget_data(struct snd_soc_dapm_widget *w)
+ {
+ 	struct snd_soc_dapm_path *p, *next_p;
+ 	enum snd_soc_dapm_direction dir;
+ 
+-	list_del(&w->list);
+ 	/*
+ 	 * remove source and sink paths associated to this widget.
+ 	 * While removing the path, remove reference to it from both
+@@ -2420,6 +2419,12 @@ void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
+ 
+ 	kfree(w->kcontrols);
+ 	kfree_const(w->name);
++}
++
++void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
++{
++	list_del(&w->list);
++	snd_soc_dapm_free_widget_data(w);
+ 	kfree(w);
+ }
+ 
+@@ -3038,11 +3043,16 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_weak_routes);
+  */
+ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+ {
+-	struct snd_soc_dapm_widget *w;
++	struct snd_soc_dapm_widget *w, *last;
+ 	unsigned int val;
++	int ret = 0;
+ 
+ 	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
+ 
++	/*
++	 * widgets with the snd_soc_dapm_kcontrol ID and .num_controls = 0 can
++	 * be appended to the list while scanning it, this is safe.
++	 */
+ 	list_for_each_entry(w, &card->widgets, list)
+ 	{
+ 		if (w->new)
+@@ -3053,8 +3063,8 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+ 						sizeof(struct snd_kcontrol *),
+ 						GFP_KERNEL);
+ 			if (!w->kcontrols) {
+-				mutex_unlock(&card->dapm_mutex);
+-				return -ENOMEM;
++				ret = -ENOMEM;
++				goto out_free;
+ 			}
+ 		}
+ 
+@@ -3062,23 +3072,29 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+ 		case snd_soc_dapm_switch:
+ 		case snd_soc_dapm_mixer:
+ 		case snd_soc_dapm_mixer_named_ctl:
+-			dapm_new_mixer(w);
++			ret = dapm_new_mixer(w);
+ 			break;
+ 		case snd_soc_dapm_mux:
+ 		case snd_soc_dapm_demux:
+-			dapm_new_mux(w);
++			ret = dapm_new_mux(w);
+ 			break;
+ 		case snd_soc_dapm_pga:
+ 		case snd_soc_dapm_out_drv:
+-			dapm_new_pga(w);
++			ret = dapm_new_pga(w);
+ 			break;
+ 		case snd_soc_dapm_dai_link:
+-			dapm_new_dai_link(w);
++			ret = dapm_new_dai_link(w);
+ 			break;
+ 		default:
+ 			break;
+ 		}
+ 
++		if (ret < 0) {
++			kfree(w->kcontrols);
++			w->kcontrols = NULL;
++			goto out_free;
++		}
++
+ 		/* Read the initial power state from the device */
+ 		if (w->reg >= 0) {
+ 			soc_dapm_read(w->dapm, w->reg, &val);
+@@ -3087,6 +3103,11 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+ 			if (val == w->on_val)
+ 				w->power = 1;
+ 		}
++	}
++
++	list_for_each_entry(w, &card->widgets, list) {
++		if (w->new)
++			continue;
+ 
+ 		w->new = 1;
+ 
+@@ -3097,6 +3118,66 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+ 	dapm_power_widgets(card, SND_SOC_DAPM_STREAM_NOP);
+ 	mutex_unlock(&card->dapm_mutex);
+ 	return 0;
++
++out_free:
++	last = w;
++
++	/*
++	 * If any new widgets have been created above for .autodisable = 1
++	 * controls, they are also on this list, but at its very end. We're
++	 * processing an error case, so the loop above was interrupted before
++	 * reaching dynamically added widgets, since the latter cannot fail -
++	 * their .num_controls = 0, so allocation cannot fail, and their type is
++	 * snd_soc_dapm_kcontrol, those cannot fail either. Therefore "last"
++	 * points to a widget before the first dynamic one.
++	 */
++	list_for_each_entry(w, &card->widgets, list) {
++		unsigned int i;
++
++		if (w->new)
++			continue;
++
++		if (w == last)
++			break;
++
++		switch (w->id) {
++		case snd_soc_dapm_switch:
++		case snd_soc_dapm_mixer:
++		case snd_soc_dapm_mixer_named_ctl:
++			for (i = 0; i < w->num_kcontrols; i++) {
++				struct snd_kcontrol *kcontrol = w->kcontrols[i];
++				struct dapm_kcontrol_data *data =
++					kcontrol->private_data;
++				struct soc_mixer_control *mc =
++					(struct soc_mixer_control *)
++					kcontrol->private_value;
++
++				if (mc->autodisable)
++					snd_soc_dapm_free_widget(data->widget);
++			}
++			break;
++		case snd_soc_dapm_demux:
++		case snd_soc_dapm_mux:
++			for (i = 0; i < w->num_kcontrols; i++) {
++				struct snd_kcontrol *kcontrol = w->kcontrols[i];
++				struct dapm_kcontrol_data *data =
++					kcontrol->private_data;
++				struct soc_enum *e = (struct soc_enum *)
++					kcontrol->private_value;
++
++				if (e->autodisable)
++					snd_soc_dapm_free_widget(data->widget);
++			}
++			break;
++		default:
++			break;
++		}
++
++		snd_soc_dapm_free_widget_data(w);
++	}
++
++	mutex_unlock(&card->dapm_mutex);
++	return ret;
+ }
+ EXPORT_SYMBOL_GPL(snd_soc_dapm_new_widgets);
+ 
+-- 
+2.17.1
