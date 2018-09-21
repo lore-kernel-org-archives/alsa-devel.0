@@ -1,15 +1,14 @@
 From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Subject: [PATCH] ASoC:topology:bug fix:check return value avoid
-	oops.
-Date: Fri, 21 Sep 2018 16:57:37 +0200
-Message-ID: <20180921145737.GC28693@kadasd710.ka.intel.com>
+Subject: [PATCH] ASoC: fix a use after free case
+Date: Fri, 21 Sep 2018 16:59:35 +0200
+Message-ID: <20180921145934.GD28693@kadasd710.ka.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga06.intel.com (mga06.intel.com [134.134.136.31])
- by alsa0.perex.cz (Postfix) with ESMTP id AD8612676A7
- for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 16:57:44 +0200 (CEST)
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 650D12676A7
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 16:59:37 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,190 +23,55 @@ To: alsa-devel@alsa-project.org
 Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Wu Zhigang <zhigang.wu@linux.intel.com>
+Unloading ASoC modules as used by the SOF driver leads to an object
+being used after it's been freed. Fix this be clearing a reference to
+it and making sure to check for its presence. This fixes issue #144.
 
-check the return value to free the kcontrols instance
-to avoid oops caused by the pointer dereference.
-
-Signed-off-by: Wu Zhigang <zhigang.wu@linux.intel.com>
-[guennadi.liakhovetski@linux.intel.com add handling of .autodisable=1 cases]
 Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
 ---
- sound/soc/soc-dapm.c | 99 ++++++++++++++++++++++++++++++++++++++++----
- 1 file changed, 90 insertions(+), 9 deletions(-)
+ sound/soc/soc-core.c     | 6 +++---
+ sound/soc/soc-topology.c | 5 +++++
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 7e96793050c9..8dc31a7a42fd 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -2402,12 +2402,11 @@ static void dapm_free_path(struct snd_soc_dapm_path *path)
- 	kfree(path);
- }
- 
--void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
-+static void snd_soc_dapm_free_widget_data(struct snd_soc_dapm_widget *w)
+diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
+index 9cfe10d8040c..dce9d53ff283 100644
+--- a/sound/soc/soc-core.c
++++ b/sound/soc/soc-core.c
+@@ -942,9 +942,9 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
  {
- 	struct snd_soc_dapm_path *p, *next_p;
- 	enum snd_soc_dapm_direction dir;
+ 	int err;
  
--	list_del(&w->list);
- 	/*
- 	 * remove source and sink paths associated to this widget.
- 	 * While removing the path, remove reference to it from both
-@@ -2420,6 +2419,12 @@ void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
- 
- 	kfree(w->kcontrols);
- 	kfree_const(w->name);
-+}
-+
-+void snd_soc_dapm_free_widget(struct snd_soc_dapm_widget *w)
-+{
-+	list_del(&w->list);
-+	snd_soc_dapm_free_widget_data(w);
- 	kfree(w);
- }
- 
-@@ -3038,11 +3043,16 @@ EXPORT_SYMBOL_GPL(snd_soc_dapm_weak_routes);
-  */
- int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
+-	if (dai && dai->probed &&
+-			dai->driver->remove_order == order) {
+-		if (dai->driver->remove) {
++	if (dai && dai->probed) {
++		if (dai->driver && dai->driver->remove_order == order &&
++		    dai->driver->remove) {
+ 			err = dai->driver->remove(dai);
+ 			if (err < 0)
+ 				dev_err(dai->dev,
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 66e77e020745..6d438ec8c0ec 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -502,6 +502,7 @@ static void remove_dai(struct snd_soc_component *comp,
  {
--	struct snd_soc_dapm_widget *w;
-+	struct snd_soc_dapm_widget *w, *last;
- 	unsigned int val;
-+	int ret = 0;
+ 	struct snd_soc_dai_driver *dai_drv =
+ 		container_of(dobj, struct snd_soc_dai_driver, dobj);
++	struct snd_soc_dai *dai;
  
- 	mutex_lock_nested(&card->dapm_mutex, SND_SOC_DAPM_CLASS_INIT);
+ 	if (pass != SOC_TPLG_PASS_PCM_DAI)
+ 		return;
+@@ -509,6 +510,10 @@ static void remove_dai(struct snd_soc_component *comp,
+ 	if (dobj->ops && dobj->ops->dai_unload)
+ 		dobj->ops->dai_unload(comp, dobj);
  
-+	/*
-+	 * widgets with the snd_soc_dapm_kcontrol ID and .num_controls = 0 can
-+	 * be appended to the list while scanning it, this is safe.
-+	 */
- 	list_for_each_entry(w, &card->widgets, list)
- 	{
- 		if (w->new)
-@@ -3053,8 +3063,8 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
- 						sizeof(struct snd_kcontrol *),
- 						GFP_KERNEL);
- 			if (!w->kcontrols) {
--				mutex_unlock(&card->dapm_mutex);
--				return -ENOMEM;
-+				ret = -ENOMEM;
-+				goto out_free;
- 			}
- 		}
- 
-@@ -3062,23 +3072,29 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
- 		case snd_soc_dapm_switch:
- 		case snd_soc_dapm_mixer:
- 		case snd_soc_dapm_mixer_named_ctl:
--			dapm_new_mixer(w);
-+			ret = dapm_new_mixer(w);
- 			break;
- 		case snd_soc_dapm_mux:
- 		case snd_soc_dapm_demux:
--			dapm_new_mux(w);
-+			ret = dapm_new_mux(w);
- 			break;
- 		case snd_soc_dapm_pga:
- 		case snd_soc_dapm_out_drv:
--			dapm_new_pga(w);
-+			ret = dapm_new_pga(w);
- 			break;
- 		case snd_soc_dapm_dai_link:
--			dapm_new_dai_link(w);
-+			ret = dapm_new_dai_link(w);
- 			break;
- 		default:
- 			break;
- 		}
- 
-+		if (ret < 0) {
-+			kfree(w->kcontrols);
-+			w->kcontrols = NULL;
-+			goto out_free;
-+		}
++	list_for_each_entry(dai, &comp->dai_list, list)
++		if (dai->driver == dai_drv)
++			dai->driver = NULL;
 +
- 		/* Read the initial power state from the device */
- 		if (w->reg >= 0) {
- 			soc_dapm_read(w->dapm, w->reg, &val);
-@@ -3087,6 +3103,11 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
- 			if (val == w->on_val)
- 				w->power = 1;
- 		}
-+	}
-+
-+	list_for_each_entry(w, &card->widgets, list) {
-+		if (w->new)
-+			continue;
- 
- 		w->new = 1;
- 
-@@ -3097,6 +3118,66 @@ int snd_soc_dapm_new_widgets(struct snd_soc_card *card)
- 	dapm_power_widgets(card, SND_SOC_DAPM_STREAM_NOP);
- 	mutex_unlock(&card->dapm_mutex);
- 	return 0;
-+
-+out_free:
-+	last = w;
-+
-+	/*
-+	 * If any new widgets have been created above for .autodisable = 1
-+	 * controls, they are also on this list, but at its very end. We're
-+	 * processing an error case, so the loop above was interrupted before
-+	 * reaching dynamically added widgets, since the latter cannot fail -
-+	 * their .num_controls = 0, so allocation cannot fail, and their type is
-+	 * snd_soc_dapm_kcontrol, those cannot fail either. Therefore "last"
-+	 * points to a widget before the first dynamic one.
-+	 */
-+	list_for_each_entry(w, &card->widgets, list) {
-+		unsigned int i;
-+
-+		if (w->new)
-+			continue;
-+
-+		if (w == last)
-+			break;
-+
-+		switch (w->id) {
-+		case snd_soc_dapm_switch:
-+		case snd_soc_dapm_mixer:
-+		case snd_soc_dapm_mixer_named_ctl:
-+			for (i = 0; i < w->num_kcontrols; i++) {
-+				struct snd_kcontrol *kcontrol = w->kcontrols[i];
-+				struct dapm_kcontrol_data *data =
-+					kcontrol->private_data;
-+				struct soc_mixer_control *mc =
-+					(struct soc_mixer_control *)
-+					kcontrol->private_value;
-+
-+				if (mc->autodisable)
-+					snd_soc_dapm_free_widget(data->widget);
-+			}
-+			break;
-+		case snd_soc_dapm_demux:
-+		case snd_soc_dapm_mux:
-+			for (i = 0; i < w->num_kcontrols; i++) {
-+				struct snd_kcontrol *kcontrol = w->kcontrols[i];
-+				struct dapm_kcontrol_data *data =
-+					kcontrol->private_data;
-+				struct soc_enum *e = (struct soc_enum *)
-+					kcontrol->private_value;
-+
-+				if (e->autodisable)
-+					snd_soc_dapm_free_widget(data->widget);
-+			}
-+			break;
-+		default:
-+			break;
-+		}
-+
-+		snd_soc_dapm_free_widget_data(w);
-+	}
-+
-+	mutex_unlock(&card->dapm_mutex);
-+	return ret;
- }
- EXPORT_SYMBOL_GPL(snd_soc_dapm_new_widgets);
- 
+ 	kfree(dai_drv->name);
+ 	list_del(&dobj->list);
+ 	kfree(dai_drv);
 -- 
 2.17.1
