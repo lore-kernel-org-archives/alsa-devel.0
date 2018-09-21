@@ -1,15 +1,17 @@
-From: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
-Subject: [PATCH] ASoC: fix a use after free case
-Date: Fri, 21 Sep 2018 16:59:35 +0200
-Message-ID: <20180921145934.GD28693@kadasd710.ka.intel.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: qcom: qdsp6: remove duplicated include
+	from q6adm.c" to the asoc tree
+Date: Fri, 21 Sep 2018 17:24:04 +0100 (BST)
+Message-ID: <20180921162404.9AF74440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 650D12676A7
- for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 16:59:37 +0200 (CEST)
-Content-Disposition: inline
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id B6C9F2676A7
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 18:24:08 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,59 +21,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Liam Girdwood <liam.r.girdwood@linux.intel.com>
+To: zhong jiang <zhongjiang@huawei.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-Unloading ASoC modules as used by the SOF driver leads to an object
-being used after it's been freed. Fix this be clearing a reference to
-it and making sure to check for its presence. This fixes issue #144.
+The patch
 
-Signed-off-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+   ASoC: qcom: qdsp6: remove duplicated include from q6adm.c
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From c78d42c7fbd6f2a27a665bcd1ab60c9df617f7c9 Mon Sep 17 00:00:00 2001
+From: zhong jiang <zhongjiang@huawei.com>
+Date: Fri, 21 Sep 2018 18:24:58 +0800
+Subject: [PATCH] ASoC: qcom: qdsp6: remove duplicated include from q6adm.c
+
+We include wait.h twice in q6adm.c. it is unnecessary. hence remove
+it.  Further, order the include files as alphabet.
+
+Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-core.c     | 6 +++---
- sound/soc/soc-topology.c | 5 +++++
- 2 files changed, 8 insertions(+), 3 deletions(-)
+ sound/soc/qcom/qdsp6/q6adm.c | 17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 9cfe10d8040c..dce9d53ff283 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -942,9 +942,9 @@ static void soc_remove_dai(struct snd_soc_dai *dai, int order)
- {
- 	int err;
+diff --git a/sound/soc/qcom/qdsp6/q6adm.c b/sound/soc/qcom/qdsp6/q6adm.c
+index 932c3ebfd252..da242515e146 100644
+--- a/sound/soc/qcom/qdsp6/q6adm.c
++++ b/sound/soc/qcom/qdsp6/q6adm.c
+@@ -2,25 +2,24 @@
+ // Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
+ // Copyright (c) 2018, Linaro Limited
  
--	if (dai && dai->probed &&
--			dai->driver->remove_order == order) {
--		if (dai->driver->remove) {
-+	if (dai && dai->probed) {
-+		if (dai->driver && dai->driver->remove_order == order &&
-+		    dai->driver->remove) {
- 			err = dai->driver->remove(dai);
- 			if (err < 0)
- 				dev_err(dai->dev,
-diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
-index 66e77e020745..6d438ec8c0ec 100644
---- a/sound/soc/soc-topology.c
-+++ b/sound/soc/soc-topology.c
-@@ -502,6 +502,7 @@ static void remove_dai(struct snd_soc_component *comp,
- {
- 	struct snd_soc_dai_driver *dai_drv =
- 		container_of(dobj, struct snd_soc_dai_driver, dobj);
-+	struct snd_soc_dai *dai;
+-#include <linux/slab.h>
+-#include <linux/wait.h>
+-#include <linux/kernel.h>
+ #include <linux/device.h>
+-#include <linux/module.h>
+-#include <linux/sched.h>
+ #include <linux/jiffies.h>
++#include <linux/kernel.h>
++#include <linux/kref.h>
++#include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+-#include <linux/kref.h>
+-#include <linux/wait.h>
+-#include <linux/soc/qcom/apr.h>
+ #include <linux/platform_device.h>
++#include <linux/sched.h>
++#include <linux/slab.h>
++#include <linux/soc/qcom/apr.h>
++#include <linux/wait.h>
+ #include <sound/asound.h>
+ #include "q6adm.h"
+ #include "q6afe.h"
+ #include "q6core.h"
+-#include "q6dsp-errno.h"
+ #include "q6dsp-common.h"
++#include "q6dsp-errno.h"
  
- 	if (pass != SOC_TPLG_PASS_PCM_DAI)
- 		return;
-@@ -509,6 +510,10 @@ static void remove_dai(struct snd_soc_component *comp,
- 	if (dobj->ops && dobj->ops->dai_unload)
- 		dobj->ops->dai_unload(comp, dobj);
- 
-+	list_for_each_entry(dai, &comp->dai_list, list)
-+		if (dai->driver == dai_drv)
-+			dai->driver = NULL;
-+
- 	kfree(dai_drv->name);
- 	list_del(&dobj->list);
- 	kfree(dai_drv);
+ #define ADM_CMD_DEVICE_OPEN_V5		0x00010326
+ #define ADM_CMDRSP_DEVICE_OPEN_V5	0x00010329
 -- 
-2.17.1
+2.19.0
