@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qcom: qdsp6: remove duplicated include
-	from q6adm.c" to the asoc tree
-Date: Fri, 21 Sep 2018 17:24:04 +0100 (BST)
-Message-ID: <20180921162404.9AF74440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: tidyup for_each_card_prelinks()
+	dai_link" to the asoc tree
+Date: Fri, 21 Sep 2018 17:24:09 +0100 (BST)
+Message-ID: <20180921162409.863CB440078@finisterre.ee.mobilebroadband>
+References: <87a7ob2tbf.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id B6C9F2676A7
- for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 18:24:08 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id D50C7267891
+ for <alsa-devel@alsa-project.org>; Fri, 21 Sep 2018 18:24:12 +0200 (CEST)
+In-Reply-To: <87a7ob2tbf.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: zhong jiang <zhongjiang@huawei.com>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qcom: qdsp6: remove duplicated include from q6adm.c
+   ASoC: tidyup for_each_card_prelinks() dai_link
 
 has been applied to the asoc tree at
 
@@ -52,57 +53,103 @@ to this mail.
 Thanks,
 Mark
 
->From c78d42c7fbd6f2a27a665bcd1ab60c9df617f7c9 Mon Sep 17 00:00:00 2001
-From: zhong jiang <zhongjiang@huawei.com>
-Date: Fri, 21 Sep 2018 18:24:58 +0800
-Subject: [PATCH] ASoC: qcom: qdsp6: remove duplicated include from q6adm.c
+>From 0310820c2738e92003d9dd8cabee77ff958a16dc Mon Sep 17 00:00:00 2001
+From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Date: Fri, 21 Sep 2018 07:46:28 +0000
+Subject: [PATCH] ASoC: tidyup for_each_card_prelinks() dai_link
 
-We include wait.h twice in q6adm.c. it is unnecessary. hence remove
-it.  Further, order the include files as alphabet.
+commit 7fe072b4df5d0 ("ASoC: add for_each_card_prelinks() macro")
+added new for_each_card_prelinks() macro, but it had typo.
+This patch fixup it
 
-Signed-off-by: zhong jiang <zhongjiang@huawei.com>
+Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6adm.c | 17 ++++++++---------
- 1 file changed, 8 insertions(+), 9 deletions(-)
+ sound/soc/mediatek/mt2701/mt2701-cs42448.c | 8 ++++----
+ sound/soc/mediatek/mt2701/mt2701-wm8960.c  | 8 ++++----
+ sound/soc/mediatek/mt6797/mt6797-mt6351.c  | 6 +++---
+ 3 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/qcom/qdsp6/q6adm.c b/sound/soc/qcom/qdsp6/q6adm.c
-index 932c3ebfd252..da242515e146 100644
---- a/sound/soc/qcom/qdsp6/q6adm.c
-+++ b/sound/soc/qcom/qdsp6/q6adm.c
-@@ -2,25 +2,24 @@
- // Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
- // Copyright (c) 2018, Linaro Limited
+diff --git a/sound/soc/mediatek/mt2701/mt2701-cs42448.c b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
+index 875f84691535..97f9f38ce6b3 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-cs42448.c
++++ b/sound/soc/mediatek/mt2701/mt2701-cs42448.c
+@@ -311,9 +311,9 @@ static int mt2701_cs42448_machine_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 	for_each_card_prelinks(card, i, dai_link) {
+-		if (dai_links->platform_name)
++		if (dai_link->platform_name)
+ 			continue;
+-		dai_links->platform_of_node = platform_node;
++		dai_link->platform_of_node = platform_node;
+ 	}
  
--#include <linux/slab.h>
--#include <linux/wait.h>
--#include <linux/kernel.h>
- #include <linux/device.h>
--#include <linux/module.h>
--#include <linux/sched.h>
- #include <linux/jiffies.h>
-+#include <linux/kernel.h>
-+#include <linux/kref.h>
-+#include <linux/module.h>
- #include <linux/of.h>
- #include <linux/of_platform.h>
--#include <linux/kref.h>
--#include <linux/wait.h>
--#include <linux/soc/qcom/apr.h>
- #include <linux/platform_device.h>
-+#include <linux/sched.h>
-+#include <linux/slab.h>
-+#include <linux/soc/qcom/apr.h>
-+#include <linux/wait.h>
- #include <sound/asound.h>
- #include "q6adm.h"
- #include "q6afe.h"
- #include "q6core.h"
--#include "q6dsp-errno.h"
- #include "q6dsp-common.h"
-+#include "q6dsp-errno.h"
+ 	card->dev = dev;
+@@ -326,9 +326,9 @@ static int mt2701_cs42448_machine_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 	for_each_card_prelinks(card, i, dai_link) {
+-		if (dai_links->codec_name)
++		if (dai_link->codec_name)
+ 			continue;
+-		dai_links->codec_of_node = codec_node;
++		dai_link->codec_of_node = codec_node;
+ 	}
  
- #define ADM_CMD_DEVICE_OPEN_V5		0x00010326
- #define ADM_CMDRSP_DEVICE_OPEN_V5	0x00010329
+ 	codec_node_bt_mrg = of_parse_phandle(pdev->dev.of_node,
+diff --git a/sound/soc/mediatek/mt2701/mt2701-wm8960.c b/sound/soc/mediatek/mt2701/mt2701-wm8960.c
+index c67f62935e53..6bc1d3d58e64 100644
+--- a/sound/soc/mediatek/mt2701/mt2701-wm8960.c
++++ b/sound/soc/mediatek/mt2701/mt2701-wm8960.c
+@@ -107,9 +107,9 @@ static int mt2701_wm8960_machine_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 	for_each_card_prelinks(card, i, dai_link) {
+-		if (dai_links->platform_name)
++		if (dai_link->platform_name)
+ 			continue;
+-		dai_links->platform_of_node = platform_node;
++		dai_link->platform_of_node = platform_node;
+ 	}
+ 
+ 	card->dev = &pdev->dev;
+@@ -122,9 +122,9 @@ static int mt2701_wm8960_machine_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 	for_each_card_prelinks(card, i, dai_link) {
+-		if (dai_links->codec_name)
++		if (dai_link->codec_name)
+ 			continue;
+-		dai_links->codec_of_node = codec_node;
++		dai_link->codec_of_node = codec_node;
+ 	}
+ 
+ 	ret = snd_soc_of_parse_audio_routing(card, "audio-routing");
+diff --git a/sound/soc/mediatek/mt6797/mt6797-mt6351.c b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
+index ff2e0ca4384e..cc41eb531653 100644
+--- a/sound/soc/mediatek/mt6797/mt6797-mt6351.c
++++ b/sound/soc/mediatek/mt6797/mt6797-mt6351.c
+@@ -172,7 +172,7 @@ static int mt6797_mt6351_dev_probe(struct platform_device *pdev)
+ 	for_each_card_prelinks(card, i, dai_link) {
+ 		if (dai_link->platform_name)
+ 			continue;
+-		dai_links->platform_of_node = platform_node;
++		dai_link->platform_of_node = platform_node;
+ 	}
+ 
+ 	codec_node = of_parse_phandle(pdev->dev.of_node,
+@@ -183,9 +183,9 @@ static int mt6797_mt6351_dev_probe(struct platform_device *pdev)
+ 		return -EINVAL;
+ 	}
+ 	for_each_card_prelinks(card, i, dai_link) {
+-		if (dai_links->codec_name)
++		if (dai_link->codec_name)
+ 			continue;
+-		dai_links->codec_of_node = codec_node;
++		dai_link->codec_of_node = codec_node;
+ 	}
+ 
+ 	ret = devm_snd_soc_register_card(&pdev->dev, card);
 -- 
 2.19.0
