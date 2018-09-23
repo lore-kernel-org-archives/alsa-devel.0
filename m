@@ -1,23 +1,24 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 2/7] ALSA: core: Add managed card creation
-Date: Sun, 23 Sep 2018 17:08:14 +0900
-Message-ID: <e42b6193-a0ac-dad8-b9fd-4920a6e157c5@sakamocchi.jp>
-References: <20180920155502.7534-1-tiwai@suse.de>
- <20180920155502.7534-3-tiwai@suse.de>
- <3e095236-3b06-c8b3-220b-6af99bc65c9e@sakamocchi.jp>
- <s5hd0t7uzqr.wl-tiwai@suse.de>
+From: Mark Hills <mark@xwax.org>
+Subject: Pinpoint audio audio corruption (Layla3G)
+Date: Sun, 23 Sep 2018 14:24:31 +0100 (BST)
+Message-ID: <1809231313590.18573@stax.localdomain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com
- [209.85.214.194])
- by alsa0.perex.cz (Postfix) with ESMTP id CDE722676A7
- for <alsa-devel@alsa-project.org>; Sun, 23 Sep 2018 10:08:19 +0200 (CEST)
-Received: by mail-pl1-f194.google.com with SMTP id b97-v6so7804130plb.0
- for <alsa-devel@alsa-project.org>; Sun, 23 Sep 2018 01:08:19 -0700 (PDT)
-In-Reply-To: <s5hd0t7uzqr.wl-tiwai@suse.de>
-Content-Language: en-US
+Received: from jazz.pogo.org.uk (jazz.pogo.org.uk [213.138.114.167])
+ by alsa0.perex.cz (Postfix) with ESMTP id 55D4F267736
+ for <alsa-devel@alsa-project.org>; Sun, 23 Sep 2018 15:24:32 +0200 (CEST)
+Received: from cpc1-hari17-2-0-cust102.20-2.cable.virginm.net ([86.18.4.103]
+ helo=stax.localdomain)
+ by jazz.pogo.org.uk with esmtps (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
+ (Exim 4.91 (FreeBSD)) (envelope-from <mark@xwax.org>)
+ id 1g44ND-000Fkx-CL
+ for alsa-devel@alsa-project.org; Sun, 23 Sep 2018 14:24:31 +0100
+Received: from mark (helo=localhost)
+ by stax.localdomain with local-esmtp (Exim 4.84)
+ (envelope-from <mark@xwax.org>) id 1g44ND-0007lB-3O
+ for alsa-devel@alsa-project.org; Sun, 23 Sep 2018 14:24:31 +0100
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,123 +28,311 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+I have a bug in ALSA somewhere; playback is corrupted. Nothing is 
+pro-actively telling me of a problem (eg. underrun)
 
-On Sep 21 2018 15:32, Takashi Iwai wrote:
-> On Fri, 21 Sep 2018 05:01:31 +0200,
-> Takashi Sakamoto wrote:
->>
->> Hi,
->>
->> On Sep 21 2018 00:54, Takashi Iwai wrote:
->>> Per popular demands, this patch adds a new ALSA core API function,
->>> snd_devm_card_new(), to create a snd_card object in a managed way via
->>> devres.  When a card object is created by this new function, it's
->>> released automatically at the device release.  It includes also the
->>> call of snd_card_free().
->>>
->>> However, the story isn't that simple.  A caveat is that We have to
->>> call snd_card_new(), more specifically, the disconnection part, at
->>> very first of the whole resource release procedure.  This assures that
->>> the exposed devices are deleted and sync with the all accessing
->>> processes getting closed.
->>>
->>> For achieving it, snd_card_register() adds a new devres action to
->>> trigger snd_card_free() automatically when the given card object is a
->>> "managed" one.  Since usually snd_card_register() is the last step of
->>> the initialization, this should work in most cases.
->>>
->>> With all these tricks, some drivers can get rid of the whole the
->>> driver remove callback.
->>>
->>> About a bit of implementation details: the patch adds two new flags to
->>> snd_card object, managed and releasing.  The former indicates that the
->>> object was created via snd_devm_card_new(), and the latter is used for
->>> avoiding the double-free of snd_card_free() calls.  Both flags are
->>> fairly internal and likely uninteresting to normal users.
->>>
->>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>> ---
->>>    include/sound/core.h |  5 +++
->>>    sound/core/init.c    | 95 ++++++++++++++++++++++++++++++++++++++++++--
->>>    2 files changed, 96 insertions(+), 4 deletions(-)
->>
->> In my opinion, the new 'snd_devm_card_new()' is not good in hot-plug
->> scenario. It brings kernel oops for processes to touch released device
->> data relevant to target devices.
->>
->> For example, for devices connected to each buses, some helper
->> functions are available to up/down reference count of 'struct device':
->>   - PCIe: pci_dev_get()/pci_dev_put()
->>   - USB: usb_get_intf()/usb_put_intf()
->>   - IEEE 1394: fw_unit_get()/fw_unit_put()
->>
->> In hot-plug scenario, drivers need to increment the reference counter in
->> .probe() callback. In .remove/.disconnect callback, the reference
->> counter should be kept but just set disconnect state to sound
->> card/device instances. When .private_free callback of sound card device,
->> the reference is decremented. This is required to enable userspace
->> applications to handle disconnect processes and avoid kernel oops by
->> touching released device data related to the connected bus.
->>
->> As a quick glance, existent drivers for devices on PCIe/USB are not
->> programmed with enough care of this point. It's prior to fix them for
->> your 'caveat'.
->>
->> ...but it's likely for me to get wrong understanding design of whole
->> existent driver in sound subsystem. I'm happy to receive your
->> indications against my misunderstanding.
-> 
-> It should work as long as the whole remove procedure is performed
-> after snd_card_free().  With the use of devres, typically you can drop
-> the whole remove() callback, and that's it.
-> 
-> Basically a device hot-unplug is nothing but the driver unbinding from
-> the device.  Under the normal situation, the driver core calls its
-> remove() callback, then releases the rest via devres in the reverse
-> order.  When remove() is empty, it'll just perform the devres release.
-> So, when snd_card_free() is performed at the beginning of devres
-> release, the call order is as if you were calling snd_card_free() at
-> remove() callback.
+I could use some assistance getting to the bottom of this.
 
-I'm OK to discuss for a case of unbinding as more-popular cases.
+Listen to [1] for what it sounds like -- analogue recording from the 
+output.
 
-> The snd_card_free() syncs with the release of the all active files,
-> i.e. it waits until all accesses get released, then proceed to the
-> further procedures to free resources, including the call of
-> private_free.  Hence this call itself should be safe, as long as it's
-> called at first.
+Look at the waveform [2] in Baudlien and it seems both L+R channels geting 
+zero'd for some buffer period of 2.5 or 5 milliseconds.
 
-I overlooked that snd_card_free() calls 'wait_for_completion()'. Thanks
-for your indication. As you said, no worries.
+This is Layla3G, snd-echo3g.
 
-Here I have another concern about timing for processes to return from
-unbinding operation. For example:
+This problem has been rare, but persisted for many years. I've finally got 
+something reproducable to investigate.
 
-echo '0000:0a:00.1' > /sys/bus/pci/drivers/snd_hda_intel/unbind
+It began ~10 years ago where very occasionally recordings or playback 
+would do this. This was a simple self-contained application in production 
+use; written by me, using plughw:Layla3G,0,0 (no desktops, browsers, dmix 
+etc.)
 
-This process returns when the other processes close all of ALSA
-character devices related to the sound card because wait for completion
-is executed in context of the process. Well-programmed userspace
-applications are expected to release the character devices when
-received -ENODEV from ioctl(2) or EPOLLERR/EPOLLNVAL from poll(2) to
-the character devices.
+Problems were frequent enough to be annoying, but infrequent enough that I 
+just had to put it down to 'cosmic rays', with no useful bug report.
 
-I don't know exactly that it's acceptable to block a process which
-performs unbinding, depending on behaviours of the other processes.
-In a point of safe ABI, it's worth for us to consider or decide a
-policy for the point.
+These days I am on a desktop using dmix; and more recently with Google 
+Chrome and found I can reliably 'trigger' it.
 
-> The rest of resource free is left to devres, and devres guarantees the
-> resource free in the reverse order.  That's the reason that it'd be
-> best to use devres for the whole resources.  Mixing up both devres and
-> normal resources needs a careful handling of the release order.
+To reset, I must close all applications using /dev/snd, and re-open.
+
+It seems to be:
+
+* whether or not Google Chrome is first to open the device
+
+* about 10-60 minutes after Chrome has opened the device
+
+* more prone to happening if other applications are using the dmix
+
+* not related to buffer sizes; I use larger sizes in the asoundrc it 
+  doesn't affect the likelihood, or the 'sound' when it does happen
+
+* I've seen two Layla's affected
+
+* I've had many kernels and PCs over the years
+
+There's a bug somewhere, and with nothing printed to dmesg, console etc., 
+I'm at a loss here, imagining my problem could be anywhere between dmix, 
+alsa-lib, snd-echo3g or even the firmware itself.
+
+Whatever the case, I've finally got some combination I can do in userland 
+as a trigger.
+
+Below is:
+
+- .asoundrc describing today's setup (previously I used stereo with no 
+  route, still with problems)
+
+- output of the 'aplay' that produced the recording above; and
+
+- some other stats.
+
+[1] http://www.pogo.org.uk/~mark/tmp/layla-glitch.flac
+[2] http://www.pogo.org.uk/~mark/tmp/layla-glitch.png
+
+Many thanks
+
+-- 
+Mark
 
 
-Thanks
+pcm.!default {
+        type plug
+        slave.pcm layla_multi
+}
 
-Takashi Sakamoto
+
+pcm.layla_multi {
+        type route
+
+        slave.pcm {
+                type dmix
+                ipc_key 1742
+                slave {
+                        pcm "hw:Layla3G,0,0"
+                        period_size 992
+                        buffer_size 10912
+                        channels 5
+                        rate 48000
+                        format S16_LE
+                }
+        }
+
+        ttable {
+                # Headphones
+
+                0.0 1
+                1.1 1
+
+                # Speakers
+
+                0.2 1
+                1.3 1
+
+                # Subwoofer; mono mix
+
+                0.4 0.5
+                1.4 0.5
+        }
+}
+
+
+$ uname -a
+Linux stax 4.18.5 #113 SMP PREEMPT Mon Sep 3 23:14:59 BST 2018 x86_64 Intel(R) Core(TM) i5-6500 CPU @ 3.20GHz GenuineIntel GNU/Linux
+
+
+$ head -99l /proc/asound/Layla3G/pcm0p/sub0/*
+==> /proc/asound/Layla3G/pcm0p/sub0/hw_params <==
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 6
+rate: 48000 (48000/1)
+period_size: 992
+buffer_size: 10912
+
+==> /proc/asound/Layla3G/pcm0p/sub0/info <==
+card: 0
+device: 0
+subdevice: 0
+stream: PLAYBACK
+id: Analog PCM
+name: Layla3G
+subname: subdevice #0
+class: 0
+subclass: 0
+subdevices_count: 8
+subdevices_avail: 7
+
+==> /proc/asound/Layla3G/pcm0p/sub0/prealloc <==
+128
+
+==> /proc/asound/Layla3G/pcm0p/sub0/prealloc_max <==
+256
+
+==> /proc/asound/Layla3G/pcm0p/sub0/status <==
+state: RUNNING
+owner_pid   : 9250
+trigger_time: 663739.627559736
+tstamp      : 680208.555428028
+delay       : -790500256
+avail       : 790511168
+avail_max   : 790511168
+-----
+hw_ptr      : 790500256
+appl_ptr    : 0
+
+==> /proc/asound/Layla3G/pcm0p/sub0/sw_params <==
+tstamp_mode: ENABLE
+period_step: 1
+avail_min: 1
+start_threshold: 1
+stop_threshold: 6142909891733356544
+silence_threshold: 0
+silence_size: 6142909891733356544
+boundary: 6142909891733356544
+
+
+
+
+
+$ aplay -vv all48000.wav 
+Playing WAVE 'all48000.wav' : Float 32 bit Little Endian, Rate 48000 Hz, 
+Stereo
+Plug PCM: Linear Integer <-> Linear Float conversion PCM (S16_LE)
+Its setup is:
+  stream       : PLAYBACK
+  access       : RW_INTERLEAVED
+  format       : FLOAT_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 32
+  buffer_size  : 10912
+  period_size  : 992
+  period_time  : 20666
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 992
+  period_event : 0
+  start_threshold  : 10912
+  stop_threshold   : 10912
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6142909891733356544
+Slave: Route conversion PCM (sformat=S16_LE)
+  Transformation table:
+    0 <- 0
+    1 <- 1
+    2 <- none
+    3 <- none
+    4 <- none
+    5 <- none
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 2
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 10912
+  period_size  : 992
+  period_time  : 20666
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 992
+  period_event : 0
+  start_threshold  : 10912
+  stop_threshold   : 10912
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6142909891733356544
+Slave: Route conversion PCM
+  Transformation table:
+    0 <- 0
+    1 <- 1
+    2 <- 0
+    3 <- 1
+    4 <- 0*0.5 + 1*0.5
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 6
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 10912
+  period_size  : 992
+  period_time  : 20666
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 992
+  period_event : 0
+  start_threshold  : 10912
+  stop_threshold   : 10912
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6142909891733356544
+Slave: Direct Stream Mixing PCM
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 6
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 10912
+  period_size  : 992
+  period_time  : 20666
+  tstamp_mode  : NONE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 992
+  period_event : 0
+  start_threshold  : 10912
+  stop_threshold   : 10912
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6142909891733356544
+Hardware PCM card 0 'Layla3G' device 0 subdevice 0
+Its setup is:
+  stream       : PLAYBACK
+  access       : MMAP_INTERLEAVED
+  format       : S16_LE
+  subformat    : STD
+  channels     : 6
+  rate         : 48000
+  exact rate   : 48000 (48000/1)
+  msbits       : 16
+  buffer_size  : 10912
+  period_size  : 992
+  period_time  : 20666
+  tstamp_mode  : ENABLE
+  tstamp_type  : MONOTONIC
+  period_step  : 1
+  avail_min    : 992
+  period_event : 0
+  start_threshold  : 1
+  stop_threshold   : 0
+  silence_threshold: 0
+  silence_size : 0
+  boundary     : 6142909891733356544
+  appl_ptr     : 0
+  hw_ptr       : 807111136
+############################ +                     | 56%^C
+Aborted by signal Interrupt...
+aplay: pcm_write:2004: write error: Interrupted system call
