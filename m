@@ -1,19 +1,14 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
-Subject: Re: [PATCH 3/3] ARM: OMAP2PLUS: Remove references to
- AM3517-EVM since it's in DT
-Date: Sun, 23 Sep 2018 19:23:58 +0300
-Message-ID: <adbc42d6-efae-20cf-64a2-994ccdffcd87@bitmer.com>
-References: <20180923153718.15095-1-aford173@gmail.com>
- <20180923153718.15095-3-aford173@gmail.com>
+From: Matt Flax <flatmax@flatmax.org>
+Subject: [PATCH] ASoC: cs4265: Add a MIC pre. route
+Date: Mon, 24 Sep 2018 09:08:35 +1000
+Message-ID: <20180923230835.18483-1-flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (50-87-157-213.static.tentacle.fi [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 80B05267736
- for <alsa-devel@alsa-project.org>; Sun, 23 Sep 2018 18:24:09 +0200 (CEST)
-In-Reply-To: <20180923153718.15095-3-aford173@gmail.com>
-Content-Language: en_US
+Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89206267736
+ for <alsa-devel@alsa-project.org>; Mon, 24 Sep 2018 01:08:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,18 +18,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Adam Ford <aford173@gmail.com>, linux-omap@vger.kernel.org
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Tony Lindgren <tony@atomide.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Russell King <linux@armlinux.org.uk>, Liam Girdwood <lgirdwood@gmail.com>, Peter Ujfalusi <peter.ujfalusi@ti.com>, Rob Herring <robh+dt@kernel.org>, =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: brian.austin@cirrus.com, broonie@kernel.org, ckeepax@opensource.cirrus.com, paul.handrigan@cirrus.com, Matt Flax <flatmax@flatmax.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 09/23/18 18:37, Adam Ford wrote:
-> Since the audio codecs used on the AM3517-EVM are now available
-> in device tree, and the audio driver wasn't really being used
-> anyway, this patch removes the remaining AM3517 legacy board
-> options and sound soc drivers.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> 
-For sound/soc/omap/ changes:
+The cs4265 driver is missing a microphone preamp enable.
+This patch enables/disables the microphone preamp when mic
+selection is made using the kcontrol.
 
-Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
+---
+ sound/soc/codecs/cs4265.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+index 275677de..332d714a 100644
+--- a/sound/soc/codecs/cs4265.c
++++ b/sound/soc/codecs/cs4265.c
+@@ -230,6 +230,10 @@ static const struct snd_soc_dapm_route cs4265_audio_map[] = {
+ 	{"DAI1 Capture", NULL, "DOUT"},
+ 	{"DAI2 Capture", NULL, "DOUT"},
+ 
++	{ "Pre-amp MIC", NULL, "MICL" },
++	{ "Pre-amp MIC", NULL, "MICR" },
++	{ "ADC Mux", "MIC", "Pre-amp MIC" },
++
+ 	/* Loopback */
+ 	{"Loopback", "Switch", "ADC"},
+ 	{"DAC", NULL, "Loopback"},
+-- 
+2.17.1
