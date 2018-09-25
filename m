@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH 4/5] ASoC: max98088: Add master clock
-	handling
-Date: Tue, 25 Sep 2018 10:17:42 -0700
-Message-ID: <20180925171742.GR20825@sirena.org.uk>
-References: <20180925142352.24106-1-m.felsch@pengutronix.de>
- <20180925142352.24106-5-m.felsch@pengutronix.de>
+Subject: Applied "ASoC: cs4265: Add a MIC pre. route" to the
+	asoc tree
+Date: Tue, 25 Sep 2018 18:27:54 +0100 (BST)
+Message-ID: <20180925172754.E3AD8440078@finisterre.ee.mobilebroadband>
+References: <20180925064018.5484-1-flatmax@flatmax.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============7561775081676585360=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 52AB1267892
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2018 19:17:44 +0200 (CEST)
-In-Reply-To: <20180925142352.24106-5-m.felsch@pengutronix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E3D58267892
+ for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2018 19:27:57 +0200 (CEST)
+In-Reply-To: <20180925064018.5484-1-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,73 +22,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, robh+dt@kernel.org, kernel@pengutronix.de, Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>, Tushar Behera <tushar.behera@linaro.org>
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, ckeepax@opensource.cirrus.com, brian.austin@cirrus.com, paul.handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============7561775081676585360==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4ECF1u7dKBoUGhe3"
-Content-Disposition: inline
+   ASoC: cs4265: Add a MIC pre. route
 
+has been applied to the asoc tree at
 
---4ECF1u7dKBoUGhe3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Sep 25, 2018 at 04:23:51PM +0200, Marco Felsch wrote:
-> From: Andreas F=E4rber <afaerber@suse.de>
->=20
-> If master clock is provided through device tree, then update
-> the master clock frequency during set_sysclk.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-This changelog suggests that the clock is optional...
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> +	if (!IS_ERR(max98088->mclk)) {
-> +		freq =3D clk_round_rate(max98088->mclk, freq);
-> +		clk_set_rate(max98088->mclk, freq);
-> +	}
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-=2E..as does much of the code (note BTw that this ignores errors setting
-the clock)...
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-> +	max98088->mclk =3D devm_clk_get(&i2c->dev, "mclk");
-> +	if (IS_ERR(max98088->mclk)) {
-> +		if (PTR_ERR(max98088->mclk) =3D=3D -EPROBE_DEFER)
-> +			return -EPROBE_DEFER;
-> +		dev_err(&i2c->dev, "Invalid MCLK\n");
-> +		return -EINVAL;
-> +	}
-> +
+Thanks,
+Mark
 
-=2E..but the probe function makes it mandatory (and also throws away the
-error code from clk_get() if it's not -EPROBE_DEFER).  Is this the best
-choice?  It seems inconsistent anyway.
+>From b0ef5011b981ece1fde8063243a56d3038b87adb Mon Sep 17 00:00:00 2001
+From: Matt Flax <flatmax@flatmax.org>
+Date: Tue, 25 Sep 2018 16:40:18 +1000
+Subject: [PATCH] ASoC: cs4265: Add a MIC pre. route
 
---4ECF1u7dKBoUGhe3
-Content-Type: application/pgp-signature; name="signature.asc"
+The cs4265 driver is missing a microphone preamp enable.
+This patch enables/disables the microphone preamp when mic
+selection is made using the kcontrol.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Matt Flax <flatmax@flatmax.org>
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/codecs/cs4265.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAluqbbIACgkQJNaLcl1U
-h9A7Cgf9HkpNDssCKNN1+YTvbfJBBBD8AJ4uBE75FPYe2WlviwNiXbyWpwejClYf
-8ofteB7IwaG/lm6nHRKDHX+jvtSPkrecaqZk+Hx7Um+PXRtGGumePva+LQ3UPtda
-+O6z/x4Xp/UV3ZYRY0SqZiCT6BXtq4LW2dt2v4LD0J1NY7cDZhIFoz8DQf3OQUzP
-CEZy5JCnBi51tZvO9XOJC9R3ONv5W7masBOO2E2Dm2Z4RBevaweS6gqkfCOh+1lD
-ye/mhT7F7uxvrupVxUwyzJwCpN20hB6VxgFLsZzkbHLB6KoUDgaC1193mlK2yIGy
-4vhnqrMLIW0aUyhv7tZTiRYcPmnHaA==
-=1tlo
------END PGP SIGNATURE-----
-
---4ECF1u7dKBoUGhe3--
-
---===============7561775081676585360==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============7561775081676585360==--
+diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
+index d9eebf6af7a8..ab27d2b94d02 100644
+--- a/sound/soc/codecs/cs4265.c
++++ b/sound/soc/codecs/cs4265.c
+@@ -221,10 +221,11 @@ static const struct snd_soc_dapm_route cs4265_audio_map[] = {
+ 	{"LINEOUTR", NULL, "DAC"},
+ 	{"SPDIFOUT", NULL, "SPDIF"},
+ 
++	{"Pre-amp MIC", NULL, "MICL"},
++	{"Pre-amp MIC", NULL, "MICR"},
++	{"ADC Mux", "MIC", "Pre-amp MIC"},
+ 	{"ADC Mux", "LINEIN", "LINEINL"},
+ 	{"ADC Mux", "LINEIN", "LINEINR"},
+-	{"ADC Mux", "MIC", "MICL"},
+-	{"ADC Mux", "MIC", "MICR"},
+ 	{"ADC", NULL, "ADC Mux"},
+ 	{"DOUT", NULL, "ADC"},
+ 	{"DAI1 Capture", NULL, "DOUT"},
+-- 
+2.19.0
