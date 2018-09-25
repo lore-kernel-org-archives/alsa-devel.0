@@ -1,16 +1,16 @@
 From: Marco Felsch <m.felsch@pengutronix.de>
-Subject: [PATCH 4/5] ASoC: max98088: Add master clock handling
-Date: Tue, 25 Sep 2018 16:23:51 +0200
-Message-ID: <20180925142352.24106-5-m.felsch@pengutronix.de>
+Subject: [PATCH 5/5] ASoC: max98988: make it selectable
+Date: Tue, 25 Sep 2018 16:23:52 +0200
+Message-ID: <20180925142352.24106-6-m.felsch@pengutronix.de>
 References: <20180925142352.24106-1-m.felsch@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [85.220.165.71])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B9962678BC
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2018 16:24:31 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id D6A942678AC
+ for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2018 16:24:34 +0200 (CEST)
 In-Reply-To: <20180925142352.24106-1-m.felsch@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,61 +22,26 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>, kernel@pengutronix.de, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Tushar Behera <tushar.behera@linaro.org>
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQW5kcmVhcyBGw6RyYmVyIDxhZmFlcmJlckBzdXNlLmRlPgoKSWYgbWFzdGVyIGNsb2Nr
-IGlzIHByb3ZpZGVkIHRocm91Z2ggZGV2aWNlIHRyZWUsIHRoZW4gdXBkYXRlCnRoZSBtYXN0ZXIg
-Y2xvY2sgZnJlcXVlbmN5IGR1cmluZyBzZXRfc3lzY2xrLgoKQ2M6IFR1c2hhciBCZWhlcmEgPHR1
-c2hhci5iZWhlcmFAbGluYXJvLm9yZz4KQ2M6IEphdmllciBNYXJ0aW5leiBDYW5pbGxhcyA8amF2
-aWVyLm1hcnRpbmV6QGNvbGxhYm9yYS5jby51az4KU2lnbmVkLW9mZi1ieTogQW5kcmVhcyBGw6Ry
-YmVyIDxhZmFlcmJlckBzdXNlLmRlPgpBY2tlZC1ieTogVHVzaGFyIEJlaGVyYSA8dHJibGludXhA
-Z21haWwuY29tPgpSZXZpZXdlZC1ieTogSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzIDxqYXZpZXIu
-bWFydGluZXpAY29sbGFib3JhLmNvLnVrPgpbbS5mZWxzY2hAcGVuZ3V0cm9uaXguZGU6IG1vdmUg
-bWNsayByZXF1ZXN0IHRvIGkyY19wcm9iZV0KW20uZmVsc2NoQHBlbmd1dHJvbml4LmRlOiBtYWtl
-IHVzZSBvZiBzbmRfc29jX2NvbXBvbmVudF9nZXRfYmlhc19sZXZlbCgpXQpTaWduZWQtb2ZmLWJ5
-OiBNYXJjbyBGZWxzY2ggPG0uZmVsc2NoQHBlbmd1dHJvbml4LmRlPgotLS0KIHNvdW5kL3NvYy9j
-b2RlY3MvbWF4OTgwODguYyB8IDI5ICsrKysrKysrKysrKysrKysrKysrKysrKysrKysrCiAxIGZp
-bGUgY2hhbmdlZCwgMjkgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2Rl
-Y3MvbWF4OTgwODguYyBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguYwppbmRleCA5NDUwZDVk
-OWM0OTIuLjAxZjFlYTBhZjljMSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9tYXg5ODA4
-OC5jCisrKyBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguYwpAQCAtMTYsNiArMTYsNyBAQAog
-I2luY2x1ZGUgPGxpbnV4L3BtLmg+CiAjaW5jbHVkZSA8bGludXgvaTJjLmg+CiAjaW5jbHVkZSA8
-bGludXgvcmVnbWFwLmg+CisjaW5jbHVkZSA8bGludXgvY2xrLmg+CiAjaW5jbHVkZSA8c291bmQv
-Y29yZS5oPgogI2luY2x1ZGUgPHNvdW5kL3BjbS5oPgogI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJh
-bXMuaD4KQEAgLTQyLDYgKzQzLDcgQEAgc3RydWN0IG1heDk4MDg4X3ByaXYgewogCXN0cnVjdCBy
-ZWdtYXAgKnJlZ21hcDsKIAllbnVtIG1heDk4MDg4X3R5cGUgZGV2dHlwZTsKIAlzdHJ1Y3QgbWF4
-OTgwODhfcGRhdGEgKnBkYXRhOworCXN0cnVjdCBjbGsgKm1jbGs7CiAJdW5zaWduZWQgaW50IHN5
-c2NsazsKIAlzdHJ1Y3QgbWF4OTgwODhfY2RhdGEgZGFpWzJdOwogCWludCBlcV90ZXh0Y250OwpA
-QCAtMTEwMyw2ICsxMTA1LDExIEBAIHN0YXRpYyBpbnQgbWF4OTgwODhfZGFpX3NldF9zeXNjbGso
-c3RydWN0IHNuZF9zb2NfZGFpICpkYWksCiAgICAgICAgaWYgKGZyZXEgPT0gbWF4OTgwODgtPnN5
-c2NsaykKICAgICAgICAgICAgICAgIHJldHVybiAwOwogCisJaWYgKCFJU19FUlIobWF4OTgwODgt
-Pm1jbGspKSB7CisJCWZyZXEgPSBjbGtfcm91bmRfcmF0ZShtYXg5ODA4OC0+bWNsaywgZnJlcSk7
-CisJCWNsa19zZXRfcmF0ZShtYXg5ODA4OC0+bWNsaywgZnJlcSk7CisJfQorCiAgICAgICAgLyog
-U2V0dXAgY2xvY2tzIGZvciBzbGF2ZSBtb2RlLCBhbmQgdXNpbmcgdGhlIFBMTAogICAgICAgICAq
-IFBTQ0xLID0gMHgwMSAod2hlbiBtYXN0ZXIgY2xrIGlzIDEwTUh6IHRvIDIwTUh6KQogICAgICAg
-ICAqICAgICAgICAgMHgwMiAod2hlbiBtYXN0ZXIgY2xrIGlzIDIwTUh6IHRvIDMwTUh6KS4uCkBA
-IC0xMzEwLDYgKzEzMTcsMjAgQEAgc3RhdGljIGludCBtYXg5ODA4OF9zZXRfYmlhc19sZXZlbChz
-dHJ1Y3Qgc25kX3NvY19jb21wb25lbnQgKmNvbXBvbmVudCwKIAkJYnJlYWs7CiAKIAljYXNlIFNO
-RF9TT0NfQklBU19QUkVQQVJFOgorCQkvKgorCQkgKiBTTkRfU09DX0JJQVNfUFJFUEFSRSBpcyBj
-YWxsZWQgd2hpbGUgcHJlcGFyaW5nIGZvciBhCisJCSAqIHRyYW5zaXRpb24gdG8gT04gb3IgYXdh
-eSBmcm9tIE9OLiBJZiBjdXJyZW50IGJpYXNfbGV2ZWwKKwkJICogaXMgU05EX1NPQ19CSUFTX09O
-LCB0aGVuIGl0IGlzIHByZXBhcmluZyBmb3IgYSB0cmFuc2l0aW9uCisJCSAqIGF3YXkgZnJvbSBP
-Ti4gRGlzYWJsZSB0aGUgY2xvY2sgaW4gdGhhdCBjYXNlLCBvdGhlcndpc2UKKwkJICogZW5hYmxl
-IGl0LgorCQkgKi8KKwkJaWYgKCFJU19FUlIobWF4OTgwODgtPm1jbGspKSB7CisJCQlpZiAoc25k
-X3NvY19jb21wb25lbnRfZ2V0X2JpYXNfbGV2ZWwoY29tcG9uZW50KSA9PQorCQkJICAgIFNORF9T
-T0NfQklBU19PTikKKwkJCQljbGtfZGlzYWJsZV91bnByZXBhcmUobWF4OTgwODgtPm1jbGspOwor
-CQkJZWxzZQorCQkJCWNsa19wcmVwYXJlX2VuYWJsZShtYXg5ODA4OC0+bWNsayk7CisJCX0KIAkJ
-YnJlYWs7CiAKIAljYXNlIFNORF9TT0NfQklBU19TVEFOREJZOgpAQCAtMTcyNSw2ICsxNzQ2LDE0
-IEBAIHN0YXRpYyBpbnQgbWF4OTgwODhfaTJjX3Byb2JlKHN0cnVjdCBpMmNfY2xpZW50ICppMmMs
-CiAgICAgICAgaWYgKElTX0VSUihtYXg5ODA4OC0+cmVnbWFwKSkKIAkgICAgICAgcmV0dXJuIFBU
-Ul9FUlIobWF4OTgwODgtPnJlZ21hcCk7CiAKKwltYXg5ODA4OC0+bWNsayA9IGRldm1fY2xrX2dl
-dCgmaTJjLT5kZXYsICJtY2xrIik7CisJaWYgKElTX0VSUihtYXg5ODA4OC0+bWNsaykpIHsKKwkJ
-aWYgKFBUUl9FUlIobWF4OTgwODgtPm1jbGspID09IC1FUFJPQkVfREVGRVIpCisJCQlyZXR1cm4g
-LUVQUk9CRV9ERUZFUjsKKwkJZGV2X2VycigmaTJjLT5kZXYsICJJbnZhbGlkIE1DTEtcbiIpOwor
-CQlyZXR1cm4gLUVJTlZBTDsKKwl9CisKICAgICAgICBtYXg5ODA4OC0+ZGV2dHlwZSA9IGlkLT5k
-cml2ZXJfZGF0YTsKIAogICAgICAgIGkyY19zZXRfY2xpZW50ZGF0YShpMmMsIG1heDk4MDg4KTsK
-LS0gCjIuMTkuMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0
-dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVs
-Cg==
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+---
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index efb095dbcd71..b43f85b38e72 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -629,7 +629,7 @@ config SND_SOC_LM49453
+ 	tristate
+ 
+ config SND_SOC_MAX98088
+-       tristate
++	tristate "Maxim MAX98088/9 Low-Power, Stereo Audio Codec"
+ 
+ config SND_SOC_MAX98090
+        tristate
+-- 
+2.19.0
