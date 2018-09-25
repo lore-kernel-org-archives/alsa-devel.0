@@ -1,14 +1,18 @@
-From: Matt Flax <flatmax@flatmax.org>
-Subject: [PATCH v2] ASoC: cs4265: Add a MIC pre. route
-Date: Tue, 25 Sep 2018 16:40:18 +1000
-Message-ID: <20180925064018.5484-1-flatmax@flatmax.org>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH - Fix typo in configure.ac 1/1] PATCH - Fix
+ typo in configure.ac
+Date: Tue, 25 Sep 2018 10:00:31 +0200
+Message-ID: <8a6c56eb-cfb5-efac-f2ca-215d2b1d8fd2@perex.cz>
+References: <5ba9c647.1c69fb81.1df8f.531b@mx.google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx.flatmax.org (mx.flatmax.org [13.55.16.222])
- by alsa0.perex.cz (Postfix) with ESMTP id 1B22E2677FE
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2018 08:40:24 +0200 (CEST)
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 52BC1267892
+ for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2018 10:00:34 +0200 (CEST)
+In-Reply-To: <5ba9c647.1c69fb81.1df8f.531b@mx.google.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,39 +22,33 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: brian.austin@cirrus.com, broonie@kernel.org, ckeepax@opensource.cirrus.com, paul.handrigan@cirrus.com, Matt Flax <flatmax@flatmax.org>
+To: plevine457@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The cs4265 driver is missing a microphone preamp enable.
-This patch enables/disables the microphone preamp when mic
-selection is made using the kcontrol.
+Applied. Thanks.
 
-Signed-off-by: Matt Flax <flatmax@flatmax.org>
+Dne 25.9.2018 v 07:22 plevine457@gmail.com napsal(a):
+> From: Peter Levine <plevine457@gmail.com>
+> 
+> Signed-off-by: Peter Levine <plevine457@gmail.com>
+> 
+> diff --git a/configure.ac b/configure.ac
+> index 3e2d233..cc3740b 100644
+> --- a/configure.ac
+> +++ b/configure.ac
+> @@ -90,7 +90,7 @@ if test "$use_maemo_rm" = "yes"; then
+>  fi
+>  
+>  AC_ARG_ENABLE([libav],
+> -      AS_HELP_STRING([--disable-avlib], [Do not build plugins depending on libav/ffmpeg (a52,lavrate...)]))
+> +      AS_HELP_STRING([--disable-libav], [Do not build plugins depending on libav/ffmpeg (a52,lavrate...)]))
+>  
+>  if test "x$enable_libav" != "xno"; then
+>    PKG_CHECK_MODULES(LIBAV, [libavcodec libavutil libavresample], [HAVE_LIBAV=yes], [HAVE_LIBAV=no])
+> 
 
----
-v2: Removed duplicate MIC lines.
----
- sound/soc/codecs/cs4265.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/codecs/cs4265.c b/sound/soc/codecs/cs4265.c
-index 275677de..4e55ac46 100644
---- a/sound/soc/codecs/cs4265.c
-+++ b/sound/soc/codecs/cs4265.c
-@@ -221,10 +221,11 @@ static const struct snd_soc_dapm_route cs4265_audio_map[] = {
- 	{"LINEOUTR", NULL, "DAC"},
- 	{"SPDIFOUT", NULL, "SPDIF"},
- 
-+	{"Pre-amp MIC", NULL, "MICL"},
-+	{"Pre-amp MIC", NULL, "MICR"},
-+	{"ADC Mux", "MIC", "Pre-amp MIC"},
- 	{"ADC Mux", "LINEIN", "LINEINL"},
- 	{"ADC Mux", "LINEIN", "LINEINR"},
--	{"ADC Mux", "MIC", "MICL"},
--	{"ADC Mux", "MIC", "MICR"},
- 	{"ADC", NULL, "ADC Mux"},
- 	{"DOUT", NULL, "ADC"},
- 	{"DAI1 Capture", NULL, "DOUT"},
 -- 
-2.17.1
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
