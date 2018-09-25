@@ -1,18 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH - Fix typo in configure.ac 1/1] PATCH - Fix
- typo in configure.ac
-Date: Tue, 25 Sep 2018 10:00:31 +0200
-Message-ID: <8a6c56eb-cfb5-efac-f2ca-215d2b1d8fd2@perex.cz>
-References: <5ba9c647.1c69fb81.1df8f.531b@mx.google.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH v2] ASoC: cs4265: Add a MIC pre. route
+Date: Tue, 25 Sep 2018 09:07:56 +0100
+Message-ID: <20180925080756.GO1653@imbe.wolfsonmicro.main>
+References: <20180925064018.5484-1-flatmax@flatmax.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 52BC1267892
- for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2018 10:00:34 +0200 (CEST)
-In-Reply-To: <5ba9c647.1c69fb81.1df8f.531b@mx.google.com>
-Content-Language: en-US
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4A746267736
+ for <alsa-devel@alsa-project.org>; Tue, 25 Sep 2018 10:07:59 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180925064018.5484-1-flatmax@flatmax.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,33 +22,20 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: plevine457@gmail.com
-Cc: alsa-devel@alsa-project.org
+To: Matt Flax <flatmax@flatmax.org>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, brian.austin@cirrus.com, paul.handrigan@cirrus.com
 List-Id: alsa-devel@alsa-project.org
 
-Applied. Thanks.
-
-Dne 25.9.2018 v 07:22 plevine457@gmail.com napsal(a):
-> From: Peter Levine <plevine457@gmail.com>
+On Tue, Sep 25, 2018 at 04:40:18PM +1000, Matt Flax wrote:
+> The cs4265 driver is missing a microphone preamp enable.
+> This patch enables/disables the microphone preamp when mic
+> selection is made using the kcontrol.
 > 
-> Signed-off-by: Peter Levine <plevine457@gmail.com>
+> Signed-off-by: Matt Flax <flatmax@flatmax.org>
 > 
-> diff --git a/configure.ac b/configure.ac
-> index 3e2d233..cc3740b 100644
-> --- a/configure.ac
-> +++ b/configure.ac
-> @@ -90,7 +90,7 @@ if test "$use_maemo_rm" = "yes"; then
->  fi
->  
->  AC_ARG_ENABLE([libav],
-> -      AS_HELP_STRING([--disable-avlib], [Do not build plugins depending on libav/ffmpeg (a52,lavrate...)]))
-> +      AS_HELP_STRING([--disable-libav], [Do not build plugins depending on libav/ffmpeg (a52,lavrate...)]))
->  
->  if test "x$enable_libav" != "xno"; then
->    PKG_CHECK_MODULES(LIBAV, [libavcodec libavutil libavresample], [HAVE_LIBAV=yes], [HAVE_LIBAV=no])
-> 
+> ---
 
+Reviewed-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+Thanks,
+Charles
