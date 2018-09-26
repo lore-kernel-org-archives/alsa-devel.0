@@ -1,15 +1,14 @@
 From: Banajit Goswami <bgoswami@codeaurora.org>
-Subject: Re: [PATCH v4 10/14] ASoC: dt-bindings: Add WCD9335 MBHC specific
- properties
-Date: Wed, 26 Sep 2018 02:27:29 -0700
-Message-ID: <9802022e-2a1b-66ea-e0c8-8cf28ed9b9ce@codeaurora.org>
+Subject: Re: [PATCH v4 11/14] ASoC: wcd9335: add mbhc support
+Date: Wed, 26 Sep 2018 02:31:59 -0700
+Message-ID: <8582abce-b1c8-24fc-7db2-b7101a6e1362@codeaurora.org>
 References: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
- <20180917005727.32728-11-srinivas.kandagatla@linaro.org>
+ <20180917005727.32728-12-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180917005727.32728-11-srinivas.kandagatla@linaro.org>
+In-Reply-To: <20180917005727.32728-12-srinivas.kandagatla@linaro.org>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: srinivas.kandagatla@linaro.org, lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
@@ -21,48 +20,43 @@ List-Id: alsa-devel@alsa-project.org
 On 9/16/2018 5:57 PM, srinivas.kandagatla@linaro.org wrote:
 > From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 >
-> This patch add new bindings required to support MBHC
-> (Multi Button Headset Control) block in the codec.
-> This block is used for jack insert/removal detection,
-> headset type detection and 8 button press/release events.
->
-> All these properties are very much specific to board.
->
 > Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 > ---
->   .../devicetree/bindings/sound/qcom,wcd9335.txt       | 20 ++++++++++++++++++++
->   1 file changed, 20 insertions(+)
+>   sound/soc/codecs/wcd9335.c | 268 ++++++++++++++++++++++++++++++++++++++++++++-
+>   1 file changed, 266 insertions(+), 2 deletions(-)
 >
-> diff --git a/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
-> index 5d6ea66..a95a8b4 100644
-> --- a/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
-> +++ b/Documentation/devicetree/bindings/sound/qcom,wcd9335.txt
-> @@ -55,6 +55,26 @@ Required properties with SLIMbus Interface:
+> diff --git a/sound/soc/codecs/wcd9335.c b/sound/soc/codecs/wcd9335.c
+> index efbb698..6c95cff 100644
+> --- a/sound/soc/codecs/wcd9335.c
+> +++ b/sound/soc/codecs/wcd9335.c
 
-> +- qcom,hphl-jack-type-normally-open:
-> +	Usage: Optional, only required if headset button support required.
-...only required if headset insertion/removal support required
-
-> +	Value type: <boolean>
-> +	Definition: present if hphl pin on jack is a NO (Normally Open).
-> +		If not specified, then its assumed that hphl pin on jack
-> +		is NC (Normally Closed).
-> +
-> +- qcom,gnd-jack-type-normally-open:
-> +	Usage: Optional, only required if headset button support required.
-...only required if headset insertion/removal support required.
-
-> +	Value type: <boolean>
-> +	Definition: present if gnd pin on jack is NO (Normally Open).
-> +		 If not specified, then its assumed that gnd pin on
-> +		 jack is NC  (Normally Closed).
-Ground pin  may not be present on most of the headset jacks. So we 
-cannot assume the type is NC if not specified in the device tree.
+> @@ -89,12 +90,18 @@
+>   #define  CF_MIN_3DB_75HZ		0x1
+>   #define  CF_MIN_3DB_150HZ		0x2
+>   
+> +#define WCD9335_MBHC_MAX_BUTTONS	(8)
+Though MBHC HW supports button detection up to 8, we are only supporting 
+4 buttons in SW, right ?
 
 > +
->   - vdd-buck-supply:
->   	Usage: required
->   	Value type: <phandle>
+>   #define WCD9335_SLIM_RX_CH(p) \
+>   	{.port = p + WCD9335_RX_START, .shift = p,}
+>   
+>   #define WCD9335_SLIM_TX_CH(p) \
+>   	{.port = p, .shift = p,}
+
+> @@ -3988,6 +4003,131 @@ static int wcd9335_codec_enable_ear_pa(struct snd_soc_dapm_widget *w,
+>   	return ret;
+>   }
+>   
+> +static irqreturn_t wcd9335_mbhc_sw_irq(int irq, void *data)
+Are we supporting only headset and headphone detection for now ? 
+Extension cable and electrical detection will be supported later ?
+And how about cases for slow insertion scenarios ?
+
+> +{
+> +	struct wcd9335_codec *wcd = data;
+>
 
 -- 
 The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
