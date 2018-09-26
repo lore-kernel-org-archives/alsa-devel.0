@@ -1,14 +1,14 @@
 From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: pxa: avoid AC97_BUS build warning
-Date: Wed, 26 Sep 2018 14:46:35 +0200
-Message-ID: <20180926124645.1841850-1-arnd@arndb.de>
+Subject: [PATCH] ASoC: atmel: add SND_SOC_I2C_AND_SPI dependency
+Date: Wed, 26 Sep 2018 14:59:40 +0200
+Message-ID: <20180926125957.2256982-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
- by alsa0.perex.cz (Postfix) with ESMTP id 7D18F2678BA
- for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2018 14:47:25 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id C69212678BA
+ for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2018 15:00:09 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -18,95 +18,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Robert Jarzmik <robert.jarzmik@free.fr>
-Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Daniel Mack <daniel@zonque.org>
+To: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Mark Brown <broonie@kernel.org>
+Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, Arnd Bergmann <arnd@arndb.de>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org, Nicolas Ferre <nicolas.ferre@microchip.com>, Takashi Iwai <tiwai@suse.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Florian Meier <florian.meier@koalo.de>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Selecting AC97_BUS_NEW from SND_PXA2XX_SOC_AC97 leads to a Kconfig
-warning if any other driver selects AC97_BUS:
+Selecting SND_SOC_WM8731 is only allowed when all its dependencies
+are already there:
 
-WARNING: unmet direct dependencies detected for AC97_BUS_COMPAT
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && AC97_BUS_NEW [=y] && !AC97_BUS [=y]
+WARNING: unmet direct dependencies detected for SND_SOC_WM8731
+  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_I2C_AND_SPI [=m]
   Selected by [y]:
-  - SND_SOC_WM9713 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && AC97_BUS_NEW [=y]
+  - SND_SOC_MIKROE_PROTO [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_ATMEL_SOC [=y] && OF [=y]
+  Selected by [m]:
+  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_ATMEL_SOC [=y] && (ARCH_AT91 [=y] || COMPILE_TEST [=y]) && ATMEL_SSC [=y] && SND_SOC_I2C_AND_SPI [=m]
+  - SND_SOC_ALL_CODECS [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && COMPILE_TEST [=y] && SND_SOC_I2C_AND_SPI [=m]
 
-I don't know if that combination is supposed to work.
-Assuming it is not, this adds a dependency on all users
-for PXA to avoids the combination.
-
-Fixes: 1c8bc7b3de5e ("ASoC: pxa: switch to new ac97 bus support")
+Fixes: a45f8853a5f9 ("ASoC: Add driver for PROTO Audio CODEC (with a WM8731)")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- sound/soc/pxa/Kconfig | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/atmel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 29f577e6dfc0..943b44de1464 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -79,6 +79,7 @@ config SND_PXA2XX_SOC_TOSA
- 	tristate "SoC AC97 Audio support for Tosa"
- 	depends on SND_PXA2XX_SOC && MACH_TOSA
- 	depends on MFD_TC6393XB
-+	depends on !AC97_BUS
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 81a0712d4f14..64f86f0b87e5 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -101,6 +101,7 @@ config SND_ATMEL_SOC_I2S
+ config SND_SOC_MIKROE_PROTO
+ 	tristate "Support for Mikroe-PROTO board"
+ 	depends on OF
++	depends on SND_SOC_I2C_AND_SPI
+ 	select SND_SOC_WM8731
  	help
-@@ -88,6 +89,7 @@ config SND_PXA2XX_SOC_TOSA
- config SND_PXA2XX_SOC_E740
- 	tristate "SoC AC97 Audio support for e740"
- 	depends on SND_PXA2XX_SOC && MACH_E740
-+	depends on !AC97_BUS
- 	select SND_SOC_WM9705
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -97,6 +99,7 @@ config SND_PXA2XX_SOC_E740
- config SND_PXA2XX_SOC_E750
- 	tristate "SoC AC97 Audio support for e750"
- 	depends on SND_PXA2XX_SOC && MACH_E750
-+	depends on !AC97_BUS
- 	select SND_SOC_WM9705
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -106,6 +109,7 @@ config SND_PXA2XX_SOC_E750
- config SND_PXA2XX_SOC_E800
- 	tristate "SoC AC97 Audio support for e800"
- 	depends on SND_PXA2XX_SOC && MACH_E800
-+	depends on !AC97_BUS
- 	select SND_SOC_WM9712
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -116,6 +120,7 @@ config SND_PXA2XX_SOC_EM_X270
- 	tristate "SoC Audio support for CompuLab EM-x270, eXeda and CM-X300"
- 	depends on SND_PXA2XX_SOC && (MACH_EM_X270 || MACH_EXEDA || \
- 			MACH_CM_X300)
-+	depends on !AC97_BUS
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
- 	help
-@@ -126,6 +131,7 @@ config SND_PXA2XX_SOC_PALM27X
- 	bool "SoC Audio support for Palm T|X, T5, E2 and LifeDrive"
- 	depends on SND_PXA2XX_SOC && (MACH_PALMLD || MACH_PALMTX || \
- 			MACH_PALMT5 || MACH_PALMTE2)
-+	depends on !AC97_BUS
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
- 	help
-@@ -155,6 +161,7 @@ config SND_SOC_TTC_DKB
- config SND_SOC_ZYLONITE
- 	tristate "SoC Audio support for Marvell Zylonite"
- 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
-+	depends on !AC97_BUS
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_PXA_SOC_SSP
- 	select SND_SOC_WM9713
-@@ -194,6 +201,7 @@ config SND_PXA2XX_SOC_MAGICIAN
- config SND_PXA2XX_SOC_MIOA701
-         tristate "SoC Audio support for MIO A701"
-         depends on SND_PXA2XX_SOC && MACH_MIOA701
-+	depends on !AC97_BUS
-         select SND_PXA2XX_SOC_AC97
-         select SND_SOC_WM9713
-         help
+ 	  Say Y or M if you want to add support for MikroElektronika PROTO Audio
 -- 
 2.18.0
