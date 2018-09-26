@@ -1,23 +1,14 @@
-From: Marco Felsch <m.felsch@pengutronix.de>
-Subject: Re: [PATCH 4/5] ASoC: max98088: Add master clock
-	handling
-Date: Wed, 26 Sep 2018 14:30:09 +0200
-Message-ID: <20180926123009.yvwiupg56eu4llbb@pengutronix.de>
-References: <20180925142352.24106-1-m.felsch@pengutronix.de>
- <20180925142352.24106-5-m.felsch@pengutronix.de>
- <20180925171742.GR20825@sirena.org.uk>
- <20180926100030.tzn6hx6qqbjseopw@pengutronix.de>
- <20180926122249.GV20825@sirena.org.uk>
+From: Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH] ASoC: pxa: avoid AC97_BUS build warning
+Date: Wed, 26 Sep 2018 14:46:35 +0200
+Message-ID: <20180926124645.1841850-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [85.220.165.71])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AC732678BA
- for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2018 14:30:13 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20180926122249.GV20825@sirena.org.uk>
+Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.10])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D18F2678BA
+ for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2018 14:47:25 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,18 +18,95 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>, robh+dt@kernel.org, kernel@pengutronix.de, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, Tushar Behera <tushar.behera@linaro.org>
+To: Robert Jarzmik <robert.jarzmik@free.fr>
+Cc: alsa-devel@alsa-project.org, Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, linux-arm-kernel@lists.infradead.org, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 18-09-26 13:22, Mark Brown wrote:
-> On Wed, Sep 26, 2018 at 12:00:30PM +0200, Marco Felsch wrote:
-> 
-> > One question, should it optional or not? If not I will fix it to return
-> > the clk_get error else I will drop it. It shouldn't be optional In my
-> > point of view, since it is needed by the chip.
-> 
-> Optional seems safer, requiring the clock isn't going to work so well on
-> ACPI systems.
+Selecting AC97_BUS_NEW from SND_PXA2XX_SOC_AC97 leads to a Kconfig
+warning if any other driver selects AC97_BUS:
 
-Okay, I will integrate it in my v2.
+WARNING: unmet direct dependencies detected for AC97_BUS_COMPAT
+  Depends on [n]: SOUND [=y] && !UML && SND [=y] && AC97_BUS_NEW [=y] && !AC97_BUS [=y]
+  Selected by [y]:
+  - SND_SOC_WM9713 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && AC97_BUS_NEW [=y]
+
+I don't know if that combination is supposed to work.
+Assuming it is not, this adds a dependency on all users
+for PXA to avoids the combination.
+
+Fixes: 1c8bc7b3de5e ("ASoC: pxa: switch to new ac97 bus support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ sound/soc/pxa/Kconfig | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
+index 29f577e6dfc0..943b44de1464 100644
+--- a/sound/soc/pxa/Kconfig
++++ b/sound/soc/pxa/Kconfig
+@@ -79,6 +79,7 @@ config SND_PXA2XX_SOC_TOSA
+ 	tristate "SoC AC97 Audio support for Tosa"
+ 	depends on SND_PXA2XX_SOC && MACH_TOSA
+ 	depends on MFD_TC6393XB
++	depends on !AC97_BUS
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -88,6 +89,7 @@ config SND_PXA2XX_SOC_TOSA
+ config SND_PXA2XX_SOC_E740
+ 	tristate "SoC AC97 Audio support for e740"
+ 	depends on SND_PXA2XX_SOC && MACH_E740
++	depends on !AC97_BUS
+ 	select SND_SOC_WM9705
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -97,6 +99,7 @@ config SND_PXA2XX_SOC_E740
+ config SND_PXA2XX_SOC_E750
+ 	tristate "SoC AC97 Audio support for e750"
+ 	depends on SND_PXA2XX_SOC && MACH_E750
++	depends on !AC97_BUS
+ 	select SND_SOC_WM9705
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -106,6 +109,7 @@ config SND_PXA2XX_SOC_E750
+ config SND_PXA2XX_SOC_E800
+ 	tristate "SoC AC97 Audio support for e800"
+ 	depends on SND_PXA2XX_SOC && MACH_E800
++	depends on !AC97_BUS
+ 	select SND_SOC_WM9712
+ 	select SND_PXA2XX_SOC_AC97
+ 	help
+@@ -116,6 +120,7 @@ config SND_PXA2XX_SOC_EM_X270
+ 	tristate "SoC Audio support for CompuLab EM-x270, eXeda and CM-X300"
+ 	depends on SND_PXA2XX_SOC && (MACH_EM_X270 || MACH_EXEDA || \
+ 			MACH_CM_X300)
++	depends on !AC97_BUS
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -126,6 +131,7 @@ config SND_PXA2XX_SOC_PALM27X
+ 	bool "SoC Audio support for Palm T|X, T5, E2 and LifeDrive"
+ 	depends on SND_PXA2XX_SOC && (MACH_PALMLD || MACH_PALMTX || \
+ 			MACH_PALMT5 || MACH_PALMTE2)
++	depends on !AC97_BUS
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_SOC_WM9712
+ 	help
+@@ -155,6 +161,7 @@ config SND_SOC_TTC_DKB
+ config SND_SOC_ZYLONITE
+ 	tristate "SoC Audio support for Marvell Zylonite"
+ 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
++	depends on !AC97_BUS
+ 	select SND_PXA2XX_SOC_AC97
+ 	select SND_PXA_SOC_SSP
+ 	select SND_SOC_WM9713
+@@ -194,6 +201,7 @@ config SND_PXA2XX_SOC_MAGICIAN
+ config SND_PXA2XX_SOC_MIOA701
+         tristate "SoC Audio support for MIO A701"
+         depends on SND_PXA2XX_SOC && MACH_MIOA701
++	depends on !AC97_BUS
+         select SND_PXA2XX_SOC_AC97
+         select SND_SOC_WM9713
+         help
+-- 
+2.18.0
