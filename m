@@ -1,46 +1,165 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH v4 11/14] ASoC: wcd9335: add mbhc support
-Date: Wed, 26 Sep 2018 11:56:01 +0100
-Message-ID: <ec360aa8-d32d-b391-ce50-abddf2705e3e@linaro.org>
+Subject: Re: [alsa-devel] [PATCH v4 14/14] ASoC: qcom: common: move
+ be_hw_fixup to common
+Date: Wed, 26 Sep 2018 11:56:25 +0100
+Message-ID: <1f89b5e9-a123-02f4-b8e8-ebcc89bbc99c@linaro.org>
 References: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
- <20180917005727.32728-12-srinivas.kandagatla@linaro.org>
- <8582abce-b1c8-24fc-7db2-b7101a6e1362@codeaurora.org>
+ <20180917005727.32728-15-srinivas.kandagatla@linaro.org>
+ <500df2e4-6593-5537-ca08-b20a9b601c47@codeaurora.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com
- [209.85.128.65])
- by alsa0.perex.cz (Postfix) with ESMTP id B680F267730
- for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2018 12:56:03 +0200 (CEST)
-Received: by mail-wm1-f65.google.com with SMTP id z16-v6so1811973wmi.3
- for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2018 03:56:03 -0700 (PDT)
-In-Reply-To: <8582abce-b1c8-24fc-7db2-b7101a6e1362@codeaurora.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <500df2e4-6593-5537-ca08-b20a9b601c47@codeaurora.org>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Banajit Goswami <bgoswami@codeaurora.org>, lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Rohit Kumar <rohitkr@codeaurora.org>, lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 
 
-On 26/09/18 10:31, Banajit Goswami wrote:
->> +static irqreturn_t wcd9335_mbhc_sw_irq(int irq, void *data)
-> Are we supporting only headset and headphone detection for now ? 
-> Extension cable and electrical detection will be supported later ?
-> And how about cases for slow insertion scenarios ?
+On 19/09/18 06:49, Rohit Kumar wrote:
+> Hello Srinivas,
 > 
-I can not test extension cable and Other features like electrical 
-detection will be added in future if we need it!
+> 
+> We will add support for vi feedback usecase in sdm845 machine driver 
+> where we have to support 4 channel tx data for a particular backend. We 
+> should probably keep be_hw_params_fixup in respective machine driver for 
+> now to support such requirement.
+> 
+I agree, we can drop this patch!
 
---srini
+thanks,
+srini
+> 
+> Thanks,
+> 
+> Rohit
+> 
+> 
+> On 9/17/2018 6:27 AM, srinivas.kandagatla@linaro.org wrote:
+>> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>>
+>> be_hw_fixup for qdsp is common across mutiple qcom machine drivers,
+>> so move it to common file and remove the redundant code.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   sound/soc/qcom/apq8096.c | 15 ---------------
+>>   sound/soc/qcom/common.c  | 17 +++++++++++++++++
+>>   sound/soc/qcom/sdm845.c  | 22 ++--------------------
+>>   3 files changed, 19 insertions(+), 35 deletions(-)
+>>
+>> diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
+>> index daad43f..9cb26aee 100644
+>> --- a/sound/soc/qcom/apq8096.c
+>> +++ b/sound/soc/qcom/apq8096.c
+>> @@ -20,20 +20,6 @@ struct apq8096_card_data {
+>>       bool jack_setup;
+>>   };
+>> -static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+>> -                      struct snd_pcm_hw_params *params)
+>> -{
+>> -    struct snd_interval *rate = hw_param_interval(params,
+>> -                    SNDRV_PCM_HW_PARAM_RATE);
+>> -    struct snd_interval *channels = hw_param_interval(params,
+>> -                    SNDRV_PCM_HW_PARAM_CHANNELS);
+>> -
+>> -    rate->min = rate->max = 48000;
+>> -    channels->min = channels->max = 2;
+>> -
+>> -    return 0;
+>> -}
+>> -
+>>   static int msm_snd_hw_params(struct snd_pcm_substream *substream,
+>>                    struct snd_pcm_hw_params *params)
+>>   {
+>> @@ -139,7 +125,6 @@ static void apq8096_add_be_ops(struct snd_soc_card 
+>> *card)
+>>       for (i = 0; i < num_links; i++) {
+>>           if (link->no_pcm == 1) {
+>> -            link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
+>>               link->init = apq8096_init;
+>>               link->ops = &apq8096_ops;
+>>           }
+>> diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
+>> index eb1b9da..ce8e759 100644
+>> --- a/sound/soc/qcom/common.c
+>> +++ b/sound/soc/qcom/common.c
+>> @@ -3,8 +3,24 @@
+>>   // Copyright (c) 2018, The Linux Foundation. All rights reserved.
+>>   #include <linux/module.h>
+>> +#include <sound/pcm_params.h>
+>>   #include "common.h"
+>> +static int qcom_snd_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+>> +                       struct snd_pcm_hw_params *params)
 >> +{
->> +    struct wcd9335_codec *wcd = data;
+>> +    struct snd_interval *rate = hw_param_interval(params,
+>> +                    SNDRV_PCM_HW_PARAM_RATE);
+>> +    struct snd_interval *channels = hw_param_interval(params,
+>> +                    SNDRV_PCM_HW_PARAM_CHANNELS);
+>> +
+>> +    rate->min = rate->max = 48000;
+>> +    channels->min = channels->max = 2;
+>> +    params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
+>> +
+>> +    return 0;
+>> +}
+>> +
+>>   int qcom_snd_parse_of(struct snd_soc_card *card)
+>>   {
+>>       struct device_node *np;
+>> @@ -79,6 +95,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
+>>               }
+>>               link->no_pcm = 1;
+>>               link->ignore_pmdown_time = 1;
+>> +            link->be_hw_params_fixup = qcom_snd_be_hw_params_fixup;
+>>           } else {
+>>               link->platform_of_node = link->cpu_of_node;
+>>               link->codec_dai_name = "snd-soc-dummy-dai";
+>> diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
+>> index 2a781d8..87e150c 100644
+>> --- a/sound/soc/qcom/sdm845.c
+>> +++ b/sound/soc/qcom/sdm845.c
+>> @@ -11,7 +11,6 @@
+>>   #include "common.h"
+>>   #include "qdsp6/q6afe.h"
+>> -#define DEFAULT_SAMPLE_RATE_48K        48000
+>>   #define DEFAULT_MCLK_RATE        24576000
+>>   #define DEFAULT_BCLK_RATE        12288000
+>> @@ -177,32 +176,15 @@ static struct snd_soc_ops sdm845_be_ops = {
+>>       .shutdown = sdm845_snd_shutdown,
+>>   };
+>> -static int sdm845_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
+>> -                struct snd_pcm_hw_params *params)
+>> -{
+>> -    struct snd_interval *rate = hw_param_interval(params,
+>> -                    SNDRV_PCM_HW_PARAM_RATE);
+>> -    struct snd_interval *channels = hw_param_interval(params,
+>> -                    SNDRV_PCM_HW_PARAM_CHANNELS);
+>> -    struct snd_mask *fmt = hw_param_mask(params, 
+>> SNDRV_PCM_HW_PARAM_FORMAT);
+>> -
+>> -    rate->min = rate->max = DEFAULT_SAMPLE_RATE_48K;
+>> -    channels->min = channels->max = 2;
+>> -    snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
+>> -
+>> -    return 0;
+>> -}
+>> -
+>>   static void sdm845_add_be_ops(struct snd_soc_card *card)
+>>   {
+>>       struct snd_soc_dai_link *link = card->dai_link;
+>>       int i, num_links = card->num_links;
+>>       for (i = 0; i < num_links; i++) {
+>> -        if (link->no_pcm == 1) {
+>> +        if (link->no_pcm == 1)
+>>               link->ops = &sdm845_be_ops;
+>> -            link->be_hw_params_fixup = sdm845_be_hw_params_fixup;
+>> -        }
+>> +
+>>           link++;
+>>       }
+>>   }
+> 
