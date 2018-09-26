@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 3/5] ASoC: q6asm-dai: dt-bindings: Add support to compress dais
-Date: Wed, 26 Sep 2018 11:23:47 +0100
-Message-ID: <20180926102349.23481-4-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 4/5] ASoC: qdsp6: q6asm: add support to MP3 format
+Date: Wed, 26 Sep 2018 11:23:48 +0100
+Message-ID: <20180926102349.23481-5-srinivas.kandagatla@linaro.org>
 References: <20180926102349.23481-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,65 +12,40 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
 Cc: linux-kernel@vger.kernel.org, vkoul@kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, devicetree@vger.kernel.org, mark.rutland@arm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds board specific bindings required for dais, In particular
-for compressed dais and dai direction.
-
-Board specific setup involves setting up some of dais as compressed dais
-and also specify direction of any dai. Some of the dais might only
-support capture/playback depending on the board level wiring.
-
-These two new dt properties will allow such flexibilty at board level dts.
-
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Reviewed-by: Vinod Koul <vkoul@kernel.org>
-Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/sound/qcom,q6asm.txt  | 27 +++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ sound/soc/qcom/qdsp6/q6asm.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-index f9c7bd8c1bc0..9f5378c51686 100644
---- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-+++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
-@@ -27,6 +27,28 @@ used by the apr service device.
- 	Value type: <u32>
- 	Definition: Must be 1
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index 2b2c7233bb5f..e98aee1baadd 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -13,6 +13,7 @@
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <uapi/sound/asound.h>
++#include <uapi/sound/compress_params.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/mm.h>
+@@ -37,6 +38,7 @@
+ #define ASM_PARAM_ID_ENCDEC_ENC_CFG_BLK_V2	0x00010DA3
+ #define ASM_SESSION_CMD_RUN_V2			0x00010DAA
+ #define ASM_MEDIA_FMT_MULTI_CHANNEL_PCM_V2	0x00010DA5
++#define ASM_MEDIA_FMT_MP3			0x00010BE9
+ #define ASM_DATA_CMD_WRITE_V2			0x00010DAB
+ #define ASM_DATA_CMD_READ_V2			0x00010DAC
+ #define ASM_SESSION_CMD_SUSPEND			0x00010DEC
+@@ -869,6 +871,9 @@ int q6asm_open_write(struct audio_client *ac, uint32_t format,
+ 	open->postprocopo_id = ASM_NULL_POPP_TOPOLOGY;
  
-+== ASM DAI is subnode of "dais" and represent a dai, it includes board specific
-+configuration of each dai. Must contain the following properties.
-+
-+- reg
-+	Usage: required
-+	Value type: <u32>
-+	Definition: Must be dai id
-+
-+- direction:
-+	Usage: Required for Compress offload dais
-+	Value type: <u32>
-+	Definition: Specifies the direction of the dai stream
-+			0 for both tx and rx
-+			1 for only tx (Capture/Encode)
-+			2 for only rx (Playback/Decode)
-+
-+- is-compress-dai:
-+	Usage: Required for Compress offload dais
-+	Value type: <boolean>
-+	Definition: present for Compress offload dais
-+
-+
- = EXAMPLE
- 
- q6asm@7 {
-@@ -35,5 +57,10 @@ q6asm@7 {
- 	q6asmdai: dais {
- 		compatible = "qcom,q6asm-dais";
- 		#sound-dai-cells = <1>;
-+		mm@0 {
-+			reg = <0>;
-+			direction = <2>;
-+			is-compress-dai;
-+		};
- 	};
- };
+ 	switch (format) {
++	case SND_AUDIOCODEC_MP3:
++		open->dec_fmt_id = ASM_MEDIA_FMT_MP3;
++		break;
+ 	case FORMAT_LINEAR_PCM:
+ 		open->dec_fmt_id = ASM_MEDIA_FMT_MULTI_CHANNEL_PCM_V2;
+ 		break;
 -- 
 2.19.0
