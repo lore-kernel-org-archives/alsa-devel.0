@@ -1,7 +1,7 @@
 From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v2 1/5] ALSA: soc-compress: add support to snd_compr_set_runtime_buffer()
-Date: Wed, 26 Sep 2018 11:23:45 +0100
-Message-ID: <20180926102349.23481-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v2 3/5] ASoC: q6asm-dai: dt-bindings: Add support to compress dais
+Date: Wed, 26 Sep 2018 11:23:47 +0100
+Message-ID: <20180926102349.23481-4-srinivas.kandagatla@linaro.org>
 References: <20180926102349.23481-1-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -12,56 +12,65 @@ To: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org
 Cc: linux-kernel@vger.kernel.org, vkoul@kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, devicetree@vger.kernel.org, mark.rutland@arm.com, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds support to set runtime dma buffer on compressed stream.
+This patch adds board specific bindings required for dais, In particular
+for compressed dais and dai direction.
+
+Board specific setup involves setting up some of dais as compressed dais
+and also specify direction of any dai. Some of the dais might only
+support capture/playback depending on the board level wiring.
+
+These two new dt properties will allow such flexibilty at board level dts.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
+Reviewed-by: Rob Herring <robh@kernel.org>
 ---
- include/sound/compress_driver.h | 19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+ .../devicetree/bindings/sound/qcom,q6asm.txt  | 27 +++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
-index ea8c93bbb0e0..0cdc3999ecfa 100644
---- a/include/sound/compress_driver.h
-+++ b/include/sound/compress_driver.h
-@@ -23,6 +23,7 @@ struct snd_compr_ops;
-  * struct snd_compr_runtime: runtime stream description
-  * @state: stream state
-  * @ops: pointer to DSP callbacks
-+ * @dma_buffer_p: runtime dma buffer pointer
-  * @buffer: pointer to kernel buffer, valid only when not in mmap mode or
-  *	DSP doesn't implement copy
-  * @buffer_size: size of the above buffer
-@@ -37,6 +38,7 @@ struct snd_compr_ops;
- struct snd_compr_runtime {
- 	snd_pcm_state_t state;
- 	struct snd_compr_ops *ops;
-+	struct snd_dma_buffer *dma_buffer_p;
- 	void *buffer;
- 	u64 buffer_size;
- 	u32 fragment_size;
-@@ -175,6 +177,23 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
- 	wake_up(&stream->runtime->sleep);
- }
+diff --git a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+index f9c7bd8c1bc0..9f5378c51686 100644
+--- a/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
++++ b/Documentation/devicetree/bindings/sound/qcom,q6asm.txt
+@@ -27,6 +27,28 @@ used by the apr service device.
+ 	Value type: <u32>
+ 	Definition: Must be 1
  
-+/**
-+ * snd_compr_set_runtime_buffer - Set the Compress runtime buffer
-+ * @substream: compress substream to set
-+ * @bufp: the buffer information, NULL to clear
-+ *
-+ * Copy the buffer information to runtime buffer when @bufp is non-NULL.
-+ * Otherwise it clears the current buffer information.
-+ */
-+static inline void snd_compr_set_runtime_buffer(
-+					struct snd_compr_stream *substream,
-+					struct snd_dma_buffer *bufp)
-+{
-+	struct snd_compr_runtime *runtime = substream->runtime;
++== ASM DAI is subnode of "dais" and represent a dai, it includes board specific
++configuration of each dai. Must contain the following properties.
 +
-+	runtime->dma_buffer_p = bufp;
-+}
++- reg
++	Usage: required
++	Value type: <u32>
++	Definition: Must be dai id
 +
- int snd_compr_stop_error(struct snd_compr_stream *stream,
- 			 snd_pcm_state_t state);
++- direction:
++	Usage: Required for Compress offload dais
++	Value type: <u32>
++	Definition: Specifies the direction of the dai stream
++			0 for both tx and rx
++			1 for only tx (Capture/Encode)
++			2 for only rx (Playback/Decode)
++
++- is-compress-dai:
++	Usage: Required for Compress offload dais
++	Value type: <boolean>
++	Definition: present for Compress offload dais
++
++
+ = EXAMPLE
  
+ q6asm@7 {
+@@ -35,5 +57,10 @@ q6asm@7 {
+ 	q6asmdai: dais {
+ 		compatible = "qcom,q6asm-dais";
+ 		#sound-dai-cells = <1>;
++		mm@0 {
++			reg = <0>;
++			direction = <2>;
++			is-compress-dai;
++		};
+ 	};
+ };
 -- 
 2.19.0
