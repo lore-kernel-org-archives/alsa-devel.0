@@ -1,165 +1,75 @@
-From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: Re: [alsa-devel] [PATCH v4 14/14] ASoC: qcom: common: move
- be_hw_fixup to common
-Date: Wed, 26 Sep 2018 11:56:25 +0100
-Message-ID: <1f89b5e9-a123-02f4-b8e8-ebcc89bbc99c@linaro.org>
-References: <20180917005727.32728-1-srinivas.kandagatla@linaro.org>
- <20180917005727.32728-15-srinivas.kandagatla@linaro.org>
- <500df2e4-6593-5537-ca08-b20a9b601c47@codeaurora.org>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 4/5] ASoC: max98088: Add master clock
+	handling
+Date: Wed, 26 Sep 2018 13:22:49 +0100
+Message-ID: <20180926122249.GV20825@sirena.org.uk>
+References: <20180925142352.24106-1-m.felsch@pengutronix.de>
+ <20180925142352.24106-5-m.felsch@pengutronix.de>
+ <20180925171742.GR20825@sirena.org.uk>
+ <20180926100030.tzn6hx6qqbjseopw@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <500df2e4-6593-5537-ca08-b20a9b601c47@codeaurora.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Rohit Kumar <rohitkr@codeaurora.org>, lee.jones@linaro.org, robh+dt@kernel.org, broonie@kernel.org
-Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, bgoswami@codeaurora.org, lgirdwood@gmail.com, linux-kernel@vger.kernel.org, vkoul@kernel.org
+Content-Type: multipart/mixed; boundary="===============3303434797260848695=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 832BD2678BA
+ for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2018 14:22:56 +0200 (CEST)
+In-Reply-To: <20180926100030.tzn6hx6qqbjseopw@pengutronix.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Marco Felsch <m.felsch@pengutronix.de>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, Javier Martinez Canillas <javier.martinez@collabora.co.uk>, robh+dt@kernel.org, kernel@pengutronix.de, Andreas =?iso-8859-1?Q?F=E4rber?= <afaerber@suse.de>, Tushar Behera <tushar.behera@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 
+--===============3303434797260848695==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="1J4USyVh4Jt5OGCL"
+Content-Disposition: inline
 
-On 19/09/18 06:49, Rohit Kumar wrote:
-> Hello Srinivas,
-> 
-> 
-> We will add support for vi feedback usecase in sdm845 machine driver 
-> where we have to support 4 channel tx data for a particular backend. We 
-> should probably keep be_hw_params_fixup in respective machine driver for 
-> now to support such requirement.
-> 
-I agree, we can drop this patch!
 
-thanks,
-srini
-> 
-> Thanks,
-> 
-> Rohit
-> 
-> 
-> On 9/17/2018 6:27 AM, srinivas.kandagatla@linaro.org wrote:
->> From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->>
->> be_hw_fixup for qdsp is common across mutiple qcom machine drivers,
->> so move it to common file and remove the redundant code.
->>
->> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
->> ---
->>   sound/soc/qcom/apq8096.c | 15 ---------------
->>   sound/soc/qcom/common.c  | 17 +++++++++++++++++
->>   sound/soc/qcom/sdm845.c  | 22 ++--------------------
->>   3 files changed, 19 insertions(+), 35 deletions(-)
->>
->> diff --git a/sound/soc/qcom/apq8096.c b/sound/soc/qcom/apq8096.c
->> index daad43f..9cb26aee 100644
->> --- a/sound/soc/qcom/apq8096.c
->> +++ b/sound/soc/qcom/apq8096.c
->> @@ -20,20 +20,6 @@ struct apq8096_card_data {
->>       bool jack_setup;
->>   };
->> -static int apq8096_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
->> -                      struct snd_pcm_hw_params *params)
->> -{
->> -    struct snd_interval *rate = hw_param_interval(params,
->> -                    SNDRV_PCM_HW_PARAM_RATE);
->> -    struct snd_interval *channels = hw_param_interval(params,
->> -                    SNDRV_PCM_HW_PARAM_CHANNELS);
->> -
->> -    rate->min = rate->max = 48000;
->> -    channels->min = channels->max = 2;
->> -
->> -    return 0;
->> -}
->> -
->>   static int msm_snd_hw_params(struct snd_pcm_substream *substream,
->>                    struct snd_pcm_hw_params *params)
->>   {
->> @@ -139,7 +125,6 @@ static void apq8096_add_be_ops(struct snd_soc_card 
->> *card)
->>       for (i = 0; i < num_links; i++) {
->>           if (link->no_pcm == 1) {
->> -            link->be_hw_params_fixup = apq8096_be_hw_params_fixup;
->>               link->init = apq8096_init;
->>               link->ops = &apq8096_ops;
->>           }
->> diff --git a/sound/soc/qcom/common.c b/sound/soc/qcom/common.c
->> index eb1b9da..ce8e759 100644
->> --- a/sound/soc/qcom/common.c
->> +++ b/sound/soc/qcom/common.c
->> @@ -3,8 +3,24 @@
->>   // Copyright (c) 2018, The Linux Foundation. All rights reserved.
->>   #include <linux/module.h>
->> +#include <sound/pcm_params.h>
->>   #include "common.h"
->> +static int qcom_snd_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
->> +                       struct snd_pcm_hw_params *params)
->> +{
->> +    struct snd_interval *rate = hw_param_interval(params,
->> +                    SNDRV_PCM_HW_PARAM_RATE);
->> +    struct snd_interval *channels = hw_param_interval(params,
->> +                    SNDRV_PCM_HW_PARAM_CHANNELS);
->> +
->> +    rate->min = rate->max = 48000;
->> +    channels->min = channels->max = 2;
->> +    params_set_format(params, SNDRV_PCM_FORMAT_S16_LE);
->> +
->> +    return 0;
->> +}
->> +
->>   int qcom_snd_parse_of(struct snd_soc_card *card)
->>   {
->>       struct device_node *np;
->> @@ -79,6 +95,7 @@ int qcom_snd_parse_of(struct snd_soc_card *card)
->>               }
->>               link->no_pcm = 1;
->>               link->ignore_pmdown_time = 1;
->> +            link->be_hw_params_fixup = qcom_snd_be_hw_params_fixup;
->>           } else {
->>               link->platform_of_node = link->cpu_of_node;
->>               link->codec_dai_name = "snd-soc-dummy-dai";
->> diff --git a/sound/soc/qcom/sdm845.c b/sound/soc/qcom/sdm845.c
->> index 2a781d8..87e150c 100644
->> --- a/sound/soc/qcom/sdm845.c
->> +++ b/sound/soc/qcom/sdm845.c
->> @@ -11,7 +11,6 @@
->>   #include "common.h"
->>   #include "qdsp6/q6afe.h"
->> -#define DEFAULT_SAMPLE_RATE_48K        48000
->>   #define DEFAULT_MCLK_RATE        24576000
->>   #define DEFAULT_BCLK_RATE        12288000
->> @@ -177,32 +176,15 @@ static struct snd_soc_ops sdm845_be_ops = {
->>       .shutdown = sdm845_snd_shutdown,
->>   };
->> -static int sdm845_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
->> -                struct snd_pcm_hw_params *params)
->> -{
->> -    struct snd_interval *rate = hw_param_interval(params,
->> -                    SNDRV_PCM_HW_PARAM_RATE);
->> -    struct snd_interval *channels = hw_param_interval(params,
->> -                    SNDRV_PCM_HW_PARAM_CHANNELS);
->> -    struct snd_mask *fmt = hw_param_mask(params, 
->> SNDRV_PCM_HW_PARAM_FORMAT);
->> -
->> -    rate->min = rate->max = DEFAULT_SAMPLE_RATE_48K;
->> -    channels->min = channels->max = 2;
->> -    snd_mask_set_format(fmt, SNDRV_PCM_FORMAT_S16_LE);
->> -
->> -    return 0;
->> -}
->> -
->>   static void sdm845_add_be_ops(struct snd_soc_card *card)
->>   {
->>       struct snd_soc_dai_link *link = card->dai_link;
->>       int i, num_links = card->num_links;
->>       for (i = 0; i < num_links; i++) {
->> -        if (link->no_pcm == 1) {
->> +        if (link->no_pcm == 1)
->>               link->ops = &sdm845_be_ops;
->> -            link->be_hw_params_fixup = sdm845_be_hw_params_fixup;
->> -        }
->> +
->>           link++;
->>       }
->>   }
-> 
+--1J4USyVh4Jt5OGCL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Wed, Sep 26, 2018 at 12:00:30PM +0200, Marco Felsch wrote:
+
+> One question, should it optional or not? If not I will fix it to return
+> the clk_get error else I will drop it. It shouldn't be optional In my
+> point of view, since it is needed by the chip.
+
+Optional seems safer, requiring the clock isn't going to work so well on
+ACPI systems.
+
+--1J4USyVh4Jt5OGCL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlurehgACgkQJNaLcl1U
+h9CKLwf9EU8PsDpFMELxyTDZQ0wqN9oXm+nJSNyrslCrgH50cCr9WkxwxhR0vPQY
+Fp1Zvb8A5drNmvj9LCzGu9Cf9mOCItKlHpmCGRQC1q3Jx+r8cBkC08Z8rSRjD93b
+VvpsAd+noQCPLxXllsPoNMP5N9VYRibbqWzRZDHcI6CjWkSU7aY0CFOwdQJm/iul
+6ZkWKbkfh+6RYdsEmtDLKEkga5oLekekeLE2KrhZHFt27HAMRvuZCt3osKCFwWdc
+pFwdjRc5SdsFybxJJ105dPqnF138vuv5TIU9HnuDE/jJD2v9naftzIW1YClNvp3G
+lJlr+IXKSx503p8vqG13fx9ErZWmDA==
+=2dX2
+-----END PGP SIGNATURE-----
+
+--1J4USyVh4Jt5OGCL--
+
+--===============3303434797260848695==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3303434797260848695==--
