@@ -1,16 +1,16 @@
 From: <jiada_wang@mentor.com>
-Subject: [PATCH linux-next 02/10] arm64: r8a7795: add dma
+Subject: [PATCH linux-next 04/10] arm64: r8a774a1: add dma
 	request number for busif1 ~ busif7
-Date: Thu, 27 Sep 2018 14:03:59 +0900
-Message-ID: <20180927050407.17765-3-jiada_wang@mentor.com>
+Date: Thu, 27 Sep 2018 14:04:01 +0900
+Message-ID: <20180927050407.17765-5-jiada_wang@mentor.com>
 References: <20180927050407.17765-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from relay1.mentorg.com (relay1.mentorg.com [192.94.38.131])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DDCE2678BE
- for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2018 07:04:09 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 7EE022678C5
+ for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2018 07:04:16 +0200 (CEST)
 In-Reply-To: <20180927050407.17765-1-jiada_wang@mentor.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -31,14 +31,14 @@ This patch adds dma request number for busif1 ~ busif7
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- arch/arm64/boot/dts/renesas/r8a7795.dtsi | 130 ++++++++++++++++++++---
- 1 file changed, 113 insertions(+), 17 deletions(-)
+ arch/arm64/boot/dts/renesas/r8a774a1.dtsi | 137 ++++++++++++++++++----
+ 1 file changed, 117 insertions(+), 20 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a7795.dtsi b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-index b5f2273caca4..0a66bda7124f 100644
---- a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-@@ -1923,53 +1923,149 @@
+diff --git a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+index 012cbb64246e..c9aad3e3b1b0 100644
+--- a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
+@@ -1247,55 +1247,152 @@
  			rcar_sound,ssi {
  				ssi0: ssi-0 {
  					interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
@@ -64,10 +64,9 @@ index b5f2273caca4..0a66bda7124f 100644
 +						    "rxu7", "txu7";
  				};
  				ssi1: ssi-1 {
--					 interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
 -					dmas = <&audma0 0x03>, <&audma1 0x04>, <&audma0 0x49>, <&audma1 0x4a>;
 -					dma-names = "rx", "tx", "rxu", "txu";
-+					interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
 +					dmas = <&audma0 0x03>, <&audma1 0x04>,
 +					       <&audma0 0x49>, <&audma1 0x4a>,
 +					       <&audma0 0x4b>, <&audma1 0x4c>,
@@ -156,25 +155,29 @@ index b5f2273caca4..0a66bda7124f 100644
 +						    "rxu6", "txu6",
 +						    "rxu7", "txu7";
  				};
- 				ssi5: ssi-5 {
+-				ssi5: ssi-5 {
++				ssi5: ssi@5 {
  					interrupts = <GIC_SPI 375 IRQ_TYPE_LEVEL_HIGH>;
  					dmas = <&audma0 0x0b>, <&audma1 0x0c>, <&audma0 0x73>, <&audma1 0x74>;
 -					dma-names = "rx", "tx", "rxu", "txu";
 +					dma-names = "rx", "tx", "rxu0", "txu0";
  				};
- 				ssi6: ssi-6 {
+-				ssi6: ssi-6 {
++				ssi6: ssi@6 {
  					interrupts = <GIC_SPI 376 IRQ_TYPE_LEVEL_HIGH>;
  					dmas = <&audma0 0x0d>, <&audma1 0x0e>, <&audma0 0x75>, <&audma1 0x76>;
 -					dma-names = "rx", "tx", "rxu", "txu";
 +					dma-names = "rx", "tx", "rxu0", "txu0";
  				};
- 				ssi7: ssi-7 {
+-				ssi7: ssi-7 {
++				ssi7: ssi@7 {
  					interrupts = <GIC_SPI 377 IRQ_TYPE_LEVEL_HIGH>;
  					dmas = <&audma0 0x0f>, <&audma1 0x10>, <&audma0 0x79>, <&audma1 0x7a>;
 -					dma-names = "rx", "tx", "rxu", "txu";
 +					dma-names = "rx", "tx", "rxu0", "txu0";
  				};
- 				ssi8: ssi-8 {
+-				ssi8: ssi-8 {
++				ssi8: ssi@8 {
  					interrupts = <GIC_SPI 378 IRQ_TYPE_LEVEL_HIGH>;
  					dmas = <&audma0 0x11>, <&audma1 0x12>, <&audma0 0x7b>, <&audma1 0x7c>;
 -					dma-names = "rx", "tx", "rxu", "txu";
@@ -204,6 +207,9 @@ index b5f2273caca4..0a66bda7124f 100644
 +						    "rxu7", "txu7";
  				};
  			};
++		};
  
+ 			ports {
+ 				#address-cells = <1>;
 -- 
 2.17.0
