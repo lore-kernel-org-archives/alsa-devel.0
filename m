@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa: avoid AC97_BUS build warning" to
-	the asoc tree
-Date: Thu, 27 Sep 2018 23:39:48 +0100 (BST)
-Message-ID: <20180927223948.526C8440078@finisterre.ee.mobilebroadband>
-References: <20180926124645.1841850-1-arnd@arndb.de>
+Subject: Applied "ASoC: soc-utils: Rename dummy_dma_ops to
+	snd_dummy_dma_ops" to the asoc tree
+Date: Thu, 27 Sep 2018 23:39:58 +0100 (BST)
+Message-ID: <20180927223958.E7816440078@finisterre.ee.mobilebroadband>
+References: <20180925180914.193244-1-mka@chromium.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 959522678CD
- for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 00:39:50 +0200 (CEST)
-In-Reply-To: <20180926124645.1841850-1-arnd@arndb.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id E53722678CD
+ for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 00:39:59 +0200 (CEST)
+In-Reply-To: <20180925180914.193244-1-mka@chromium.org>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Haojian Zhuang <haojian.zhuang@gmail.com>, linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>, Geert Uytterhoeven <geert@linux-m68k.org>, Daniel Mack <daniel@zonque.org>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-arm-kernel@lists.infradead.org
+To: Matthias Kaehlcke <mka@chromium.org>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Andy Shevchenko <andy.shevchenko@gmail.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa: avoid AC97_BUS build warning
+   ASoC: soc-utils: Rename dummy_dma_ops to snd_dummy_dma_ops
 
 has been applied to the asoc tree at
 
@@ -53,97 +53,51 @@ to this mail.
 Thanks,
 Mark
 
->From bec5ecdf41d404691980c9c82ba867113cc8dee5 Mon Sep 17 00:00:00 2001
-From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 26 Sep 2018 14:46:35 +0200
-Subject: [PATCH] ASoC: pxa: avoid AC97_BUS build warning
+>From 42cfb412e24ffbb46d6de9590293bc44f921a0fb Mon Sep 17 00:00:00 2001
+From: Matthias Kaehlcke <mka@chromium.org>
+Date: Tue, 25 Sep 2018 11:09:14 -0700
+Subject: [PATCH] ASoC: soc-utils: Rename dummy_dma_ops to snd_dummy_dma_ops
 
-Selecting AC97_BUS_NEW from SND_PXA2XX_SOC_AC97 leads to a Kconfig
-warning if any other driver selects AC97_BUS:
+The symbols 'dummy_dma_ops' is declared with different data types by
+sound/soc/soc-utils.c and arch/arm64/include/asm/dma-mapping.h. This
+leads to conflicts when soc-utils.c (indirectly) includes dma-mapping.h:
 
-WARNING: unmet direct dependencies detected for AC97_BUS_COMPAT
-  Depends on [n]: SOUND [=y] && !UML && SND [=y] && AC97_BUS_NEW [=y] && !AC97_BUS [=y]
-  Selected by [y]:
-  - SND_SOC_WM9713 [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && AC97_BUS_NEW [=y]
+sound/soc/soc-utils.c:282:33: error: conflicting types for 'dummy_dma_ops'
+  static const struct snd_pcm_ops dummy_dma_ops = {
+                                  ^
+...
+arch/arm64/include/asm/dma-mapping.h:27:33: note: previous declaration of 'dummy_dma_ops' was here
+  extern const struct dma_map_ops dummy_dma_ops;
+                                  ^
 
-I don't know if that combination is supposed to work.
-Assuming it is not, this adds a dependency on all users
-for PXA to avoids the combination.
+Rename the symbol in soc-utils.c to 'snd_dummy_dma_ops' to avoid the
+conflict.
 
-Fixes: 1c8bc7b3de5e ("ASoC: pxa: switch to new ac97 bus support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/Kconfig | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ sound/soc/soc-utils.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/pxa/Kconfig b/sound/soc/pxa/Kconfig
-index 29f577e6dfc0..943b44de1464 100644
---- a/sound/soc/pxa/Kconfig
-+++ b/sound/soc/pxa/Kconfig
-@@ -79,6 +79,7 @@ config SND_PXA2XX_SOC_TOSA
- 	tristate "SoC AC97 Audio support for Tosa"
- 	depends on SND_PXA2XX_SOC && MACH_TOSA
- 	depends on MFD_TC6393XB
-+	depends on !AC97_BUS
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
- 	help
-@@ -88,6 +89,7 @@ config SND_PXA2XX_SOC_TOSA
- config SND_PXA2XX_SOC_E740
- 	tristate "SoC AC97 Audio support for e740"
- 	depends on SND_PXA2XX_SOC && MACH_E740
-+	depends on !AC97_BUS
- 	select SND_SOC_WM9705
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -97,6 +99,7 @@ config SND_PXA2XX_SOC_E740
- config SND_PXA2XX_SOC_E750
- 	tristate "SoC AC97 Audio support for e750"
- 	depends on SND_PXA2XX_SOC && MACH_E750
-+	depends on !AC97_BUS
- 	select SND_SOC_WM9705
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -106,6 +109,7 @@ config SND_PXA2XX_SOC_E750
- config SND_PXA2XX_SOC_E800
- 	tristate "SoC AC97 Audio support for e800"
- 	depends on SND_PXA2XX_SOC && MACH_E800
-+	depends on !AC97_BUS
- 	select SND_SOC_WM9712
- 	select SND_PXA2XX_SOC_AC97
- 	help
-@@ -116,6 +120,7 @@ config SND_PXA2XX_SOC_EM_X270
- 	tristate "SoC Audio support for CompuLab EM-x270, eXeda and CM-X300"
- 	depends on SND_PXA2XX_SOC && (MACH_EM_X270 || MACH_EXEDA || \
- 			MACH_CM_X300)
-+	depends on !AC97_BUS
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
- 	help
-@@ -126,6 +131,7 @@ config SND_PXA2XX_SOC_PALM27X
- 	bool "SoC Audio support for Palm T|X, T5, E2 and LifeDrive"
- 	depends on SND_PXA2XX_SOC && (MACH_PALMLD || MACH_PALMTX || \
- 			MACH_PALMT5 || MACH_PALMTE2)
-+	depends on !AC97_BUS
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_SOC_WM9712
- 	help
-@@ -155,6 +161,7 @@ config SND_SOC_TTC_DKB
- config SND_SOC_ZYLONITE
- 	tristate "SoC Audio support for Marvell Zylonite"
- 	depends on SND_PXA2XX_SOC && MACH_ZYLONITE
-+	depends on !AC97_BUS
- 	select SND_PXA2XX_SOC_AC97
- 	select SND_PXA_SOC_SSP
- 	select SND_SOC_WM9713
-@@ -194,6 +201,7 @@ config SND_PXA2XX_SOC_MAGICIAN
- config SND_PXA2XX_SOC_MIOA701
-         tristate "SoC Audio support for MIO A701"
-         depends on SND_PXA2XX_SOC && MACH_MIOA701
-+	depends on !AC97_BUS
-         select SND_PXA2XX_SOC_AC97
-         select SND_SOC_WM9713
-         help
+diff --git a/sound/soc/soc-utils.c b/sound/soc/soc-utils.c
+index e0c93496c0cd..e3b9dd634c6d 100644
+--- a/sound/soc/soc-utils.c
++++ b/sound/soc/soc-utils.c
+@@ -273,13 +273,13 @@ static int dummy_dma_open(struct snd_pcm_substream *substream)
+ 	return 0;
+ }
+ 
+-static const struct snd_pcm_ops dummy_dma_ops = {
++static const struct snd_pcm_ops snd_dummy_dma_ops = {
+ 	.open		= dummy_dma_open,
+ 	.ioctl		= snd_pcm_lib_ioctl,
+ };
+ 
+ static const struct snd_soc_component_driver dummy_platform = {
+-	.ops = &dummy_dma_ops,
++	.ops = &snd_dummy_dma_ops,
+ };
+ 
+ static const struct snd_soc_component_driver dummy_codec = {
 -- 
 2.19.0
