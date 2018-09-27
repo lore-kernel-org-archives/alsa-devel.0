@@ -1,21 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: nau8822: new codec driver
-Date: Thu, 27 Sep 2018 22:22:21 +0100
-Message-ID: <20180927212221.GY20825@sirena.org.uk>
-References: <20180720110412.19125-1-CTLIN0@nuvoton.com>
- <5BA06283.9000801@nuvoton.com>
- <4c0cc49b-2426-2f5e-028c-f161f2e6553e@nuvoton.com>
- <20180925165613.GO20825@sirena.org.uk>
- <20180925175247.GA18430@sirena.org.uk>
- <26ac5971-f05b-77e7-c3a5-4fd799fcd64b@nuvoton.com>
+Subject: Applied "ASoC: qcom: qdsp6: remove duplicated include"
+	to the asoc tree
+Date: Thu, 27 Sep 2018 23:39:11 +0100 (BST)
+Message-ID: <20180927223911.6AD74440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5767644223044868024=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id E374A2678C3
- for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2018 23:22:25 +0200 (CEST)
-In-Reply-To: <26ac5971-f05b-77e7-c3a5-4fd799fcd64b@nuvoton.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DAAF22678C3
+ for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 00:39:14 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,57 +21,75 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: AC30 CTLin0 <ctlin0@nuvoton.com>
-Cc: YHCHuang@nuvoton.com, alsa-devel@alsa-project.org, John Hsu <KCHSU0@nuvoton.com>, lgirdwood@gmail.com
+To: YueHaibing <yuehaibing@huawei.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============5767644223044868024==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rd/3IrB17klb+Ksj"
-Content-Disposition: inline
+   ASoC: qcom: qdsp6: remove duplicated include
 
+has been applied to the asoc tree at
 
---rd/3IrB17klb+Ksj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Thu, Sep 27, 2018 at 06:44:45PM +0800, AC30 CTLin0 wrote:
-> OK, I will resend a new patch.
->=20
-> However, from my last patch file, I can see DT file where is located at
-> "Documentation/devicetree/bindings/sound/nau8822.txt".
->=20
-> And don't you see any DT file?
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-Ah, that's weird - I'd not expect the binding to have been applied for a
-new driver without the code.  In that case everything is fine and no
-need to send them again, perhaps just add a note saying that the binding
-is already there in case I forget.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
---rd/3IrB17klb+Ksj
-Content-Type: application/pgp-signature; name="signature.asc"
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
------BEGIN PGP SIGNATURE-----
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlutSgwACgkQJNaLcl1U
-h9AA9Af9GP9MK0iYRB6aq2O5IN5DoVJvlk2ZpB4pmdeei10bfXO7gGp3SIdoX57t
-P35XxvvUuMTHdSuUb0JinstZ8NENPl/L9fWPZ6rd9znpTo88UF76KyCkmV0ZFMoi
-7PGzaqwXhTdzbT88RGKkevwNnClMw0GelouIc5sOvjmVnpIWom/ipjDo0RfsxH2n
-M5GTv3392N8d3u2TK12wBAx6OGbe07+2u0RUwaso70C7QrCMbkaHimI3z0+ThQVt
-ulOVofnElOLONXxHI9MAISDKqzNZn7EXNcwg/WuBq+eKuIj2zf2D1+XiuBQ6gqpE
-LuGYe7ZjofDYokwK8rRIxGxOgGX5HQ==
-=amEX
------END PGP SIGNATURE-----
+Thanks,
+Mark
 
---rd/3IrB17klb+Ksj--
+>From 06da26e5ce157bf2af09ef4a9f5dc30af4599fa0 Mon Sep 17 00:00:00 2001
+From: YueHaibing <yuehaibing@huawei.com>
+Date: Wed, 26 Sep 2018 15:33:03 +0800
+Subject: [PATCH] ASoC: qcom: qdsp6: remove duplicated include
 
---===============5767644223044868024==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Remove duplicated includes linux/of_platform.h
+and linux/wait.h
 
+Signed-off-by: YueHaibing <yuehaibing@huawei.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/qcom/qdsp6/q6asm.c  | 1 -
+ sound/soc/qcom/qdsp6/q6core.c | 1 -
+ 2 files changed, 2 deletions(-)
 
---===============5767644223044868024==--
+diff --git a/sound/soc/qcom/qdsp6/q6asm.c b/sound/soc/qcom/qdsp6/q6asm.c
+index 2b2c7233bb5f..e1cfa846a1dc 100644
+--- a/sound/soc/qcom/qdsp6/q6asm.c
++++ b/sound/soc/qcom/qdsp6/q6asm.c
+@@ -11,7 +11,6 @@
+ #include <linux/spinlock.h>
+ #include <linux/kref.h>
+ #include <linux/of.h>
+-#include <linux/of_platform.h>
+ #include <uapi/sound/asound.h>
+ #include <linux/delay.h>
+ #include <linux/slab.h>
+diff --git a/sound/soc/qcom/qdsp6/q6core.c b/sound/soc/qcom/qdsp6/q6core.c
+index ca1be7305524..cdfc8ab6cfc0 100644
+--- a/sound/soc/qcom/qdsp6/q6core.c
++++ b/sound/soc/qcom/qdsp6/q6core.c
+@@ -10,7 +10,6 @@
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/jiffies.h>
+-#include <linux/wait.h>
+ #include <linux/soc/qcom/apr.h>
+ #include "q6core.h"
+ #include "q6dsp-errno.h"
+-- 
+2.19.0
