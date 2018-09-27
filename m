@@ -1,7 +1,7 @@
 From: <jiada_wang@mentor.com>
-Subject: [PATCH linux-next 01/10] ASoC: rsnd: ssi: Request dedicated dma channels for busif1 to 7
-Date: Thu, 27 Sep 2018 14:03:58 +0900
-Message-ID: <20180927050407.17765-2-jiada_wang@mentor.com>
+Subject: [PATCH linux-next 03/10] arm64: r8a7796: add dma request number for busif1 ~ busif7
+Date: Thu, 27 Sep 2018 14:04:00 +0900
+Message-ID: <20180927050407.17765-4-jiada_wang@mentor.com>
 References: <20180927050407.17765-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -14,55 +14,186 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jiada Wang <jiada_wang@mentor.com>
 
-Currently ssi driver only request dma channel for SSI_0,
-which is used to transfer data to/from busif0.
-
-But since busif1 to busif7 also maybe used, dedicated dma channels
-are request for data transfer between these busif.
+This patch adds dma request number for busif1 ~ busif7
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- sound/soc/sh/rcar/ssi.c | 20 +++++++++++++++-----
- 1 file changed, 15 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/renesas/r8a7796.dtsi | 136 +++++++++++++++++++----
+ 1 file changed, 116 insertions(+), 20 deletions(-)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 3adcc4f778f7..75a3d15084c2 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -76,6 +76,8 @@
+diff --git a/arch/arm64/boot/dts/renesas/r8a7796.dtsi b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+index 1ec6aaa520c1..e9b05d997c4e 100644
+--- a/arch/arm64/boot/dts/renesas/r8a7796.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+@@ -1797,53 +1797,149 @@
+ 			rcar_sound,ssi {
+ 				ssi0: ssi-0 {
+ 					interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
+-					dmas = <&audma0 0x01>, <&audma1 0x02>, <&audma0 0x15>, <&audma1 0x16>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dmas = <&audma0 0x01>, <&audma1 0x02>,
++					       <&audma0 0x15>, <&audma1 0x16>,
++					       <&audma0 0x35>, <&audma1 0x36>,
++					       <&audma0 0x37>, <&audma1 0x38>,
++					       <&audma0 0x47>, <&audma1 0x48>,
++					       <&audma0 0x3f>, <&audma1 0x40>,
++					       <&audma0 0x43>, <&audma1 0x44>,
++					       <&audma0 0x4f>, <&audma1 0x50>,
++					       <&audma0 0x53>, <&audma1 0x54>;
++					dma-names = "rx", "tx",
++						    "rxu0", "txu0",
++						    "rxu1", "txu1",
++						    "rxu2", "txu2",
++						    "rxu3", "txu3",
++						    "rxu4", "txu4",
++						    "rxu5", "txu5",
++						    "rxu6", "txu6",
++						    "rxu7", "txu7";
+ 				};
+ 				ssi1: ssi-1 {
+ 					interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
+-					dmas = <&audma0 0x03>, <&audma1 0x04>, <&audma0 0x49>, <&audma1 0x4a>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dmas = <&audma0 0x03>, <&audma1 0x04>,
++					       <&audma0 0x49>, <&audma1 0x4a>,
++					       <&audma0 0x4b>, <&audma1 0x4c>,
++					       <&audma0 0x57>, <&audma1 0x58>,
++					       <&audma0 0x59>, <&audma1 0x5a>,
++					       <&audma0 0x5f>, <&audma1 0x60>,
++					       <&audma0 0xc3>, <&audma1 0xc4>,
++					       <&audma0 0xc7>, <&audma1 0xc8>,
++					       <&audma0 0xcb>, <&audma1 0xcc>;
++					dma-names = "rx", "tx",
++						    "rxu0", "txu0",
++						    "rxu1", "txu1",
++						    "rxu2", "txu2",
++						    "rxu3", "txu3",
++						    "rxu4", "txu4",
++						    "rxu5", "txu5",
++						    "rxu6", "txu6",
++						    "rxu7", "txu7";
+ 				};
+ 				ssi2: ssi-2 {
+ 					interrupts = <GIC_SPI 372 IRQ_TYPE_LEVEL_HIGH>;
+-					dmas = <&audma0 0x05>, <&audma1 0x06>, <&audma0 0x63>, <&audma1 0x64>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dmas = <&audma0 0x05>, <&audma1 0x06>,
++					       <&audma0 0x63>, <&audma1 0x64>,
++					       <&audma0 0x67>, <&audma1 0x68>,
++					       <&audma0 0x6b>, <&audma1 0x6c>,
++					       <&audma0 0x6d>, <&audma1 0x6e>,
++					       <&audma0 0xcf>, <&audma1 0xce>,
++					       <&audma0 0xeb>, <&audma1 0xec>,
++					       <&audma0 0xed>, <&audma1 0xee>,
++					       <&audma0 0xef>, <&audma1 0xf0>;
++					dma-names = "rx", "tx",
++						    "rxu0", "txu0",
++						    "rxu1", "txu1",
++						    "rxu2", "txu2",
++						    "rxu3", "txu3",
++						    "rxu4", "txu4",
++						    "rxu5", "txu5",
++						    "rxu6", "txu6",
++						    "rxu7", "txu7";
+ 				};
+ 				ssi3: ssi-3 {
+ 					interrupts = <GIC_SPI 373 IRQ_TYPE_LEVEL_HIGH>;
+-					dmas = <&audma0 0x07>, <&audma1 0x08>, <&audma0 0x6f>, <&audma1 0x70>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dmas = <&audma0 0x07>, <&audma1 0x08>,
++					       <&audma0 0x6f>, <&audma1 0x70>,
++					       <&audma0 0x21>, <&audma1 0x22>,
++					       <&audma0 0x23>, <&audma1 0x24>,
++					       <&audma0 0x25>, <&audma1 0x26>,
++					       <&audma0 0x27>, <&audma1 0x28>,
++					       <&audma0 0x29>, <&audma1 0x2a>,
++					       <&audma0 0x2b>, <&audma1 0x2c>,
++					       <&audma0 0x2d>, <&audma1 0x2e>;
++					dma-names = "rx", "tx",
++						    "rxu0", "txu0",
++						    "rxu1", "txu1",
++						    "rxu2", "txu2",
++						    "rxu3", "txu3",
++						    "rxu4", "txu4",
++						    "rxu5", "txu5",
++						    "rxu6", "txu6",
++						    "rxu7", "txu7";
+ 				};
+ 				ssi4: ssi-4 {
+ 					interrupts = <GIC_SPI 374 IRQ_TYPE_LEVEL_HIGH>;
+-					dmas = <&audma0 0x09>, <&audma1 0x0a>, <&audma0 0x71>, <&audma1 0x72>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dmas = <&audma0 0x09>, <&audma1 0x0a>,
++					       <&audma0 0x71>, <&audma1 0x72>,
++					       <&audma0 0x17>, <&audma1 0x18>,
++					       <&audma0 0x19>, <&audma1 0x1a>,
++					       <&audma0 0x1b>, <&audma1 0x1c>,
++					       <&audma0 0x1d>, <&audma1 0x1e>,
++					       <&audma0 0x1f>, <&audma1 0x20>,
++					       <&audma0 0x31>, <&audma1 0x32>,
++					       <&audma0 0x33>, <&audma1 0x34>;
++					dma-names = "rx", "tx",
++						    "rxu0", "txu0",
++						    "rxu1", "txu1",
++						    "rxu2", "txu2",
++						    "rxu3", "txu3",
++						    "rxu4", "txu4",
++						    "rxu5", "txu5",
++						    "rxu6", "txu6",
++						    "rxu7", "txu7";
+ 				};
+-				ssi5: ssi-5 {
++				ssi5: ssi@5 {
+ 					interrupts = <GIC_SPI 375 IRQ_TYPE_LEVEL_HIGH>;
+ 					dmas = <&audma0 0x0b>, <&audma1 0x0c>, <&audma0 0x73>, <&audma1 0x74>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dma-names = "rx", "tx", "rxu0", "txu0";
+ 				};
+-				ssi6: ssi-6 {
++				ssi6: ssi@6 {
+ 					interrupts = <GIC_SPI 376 IRQ_TYPE_LEVEL_HIGH>;
+ 					dmas = <&audma0 0x0d>, <&audma1 0x0e>, <&audma0 0x75>, <&audma1 0x76>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dma-names = "rx", "tx", "rxu0", "txu0";
+ 				};
+-				ssi7: ssi-7 {
++				ssi7: ssi@7 {
+ 					interrupts = <GIC_SPI 377 IRQ_TYPE_LEVEL_HIGH>;
+ 					dmas = <&audma0 0x0f>, <&audma1 0x10>, <&audma0 0x79>, <&audma1 0x7a>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dma-names = "rx", "tx", "rxu0", "txu0";
+ 				};
+-				ssi8: ssi-8 {
++				ssi8: ssi@8 {
+ 					interrupts = <GIC_SPI 378 IRQ_TYPE_LEVEL_HIGH>;
+ 					dmas = <&audma0 0x11>, <&audma1 0x12>, <&audma0 0x7b>, <&audma1 0x7c>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dma-names = "rx", "tx", "rxu0", "txu0";
+ 				};
+ 				ssi9: ssi-9 {
+ 					interrupts = <GIC_SPI 379 IRQ_TYPE_LEVEL_HIGH>;
+-					dmas = <&audma0 0x13>, <&audma1 0x14>, <&audma0 0x7d>, <&audma1 0x7e>;
+-					dma-names = "rx", "tx", "rxu", "txu";
++					dmas = <&audma0 0x13>, <&audma1 0x14>,
++					       <&audma0 0x7d>, <&audma1 0x7e>,
++					       <&audma0 0x7f>, <&audma1 0x80>,
++					       <&audma0 0x81>, <&audma1 0x82>,
++					       <&audma0 0x83>, <&audma1 0x84>,
++					       <&audma0 0xa3>, <&audma1 0xa4>,
++					       <&audma0 0xa5>, <&audma1 0xa6>,
++					       <&audma0 0xa7>, <&audma1 0xa8>,
++					       <&audma0 0xa9>, <&audma1 0xaa>;
++					dma-names = "rx", "tx",
++						    "rxu0", "txu0",
++						    "rxu1", "txu1",
++						    "rxu2", "txu2",
++						    "rxu3", "txu3",
++						    "rxu4", "txu4",
++						    "rxu5", "txu5",
++						    "rxu6", "txu6",
++						    "rxu7", "txu7";
+ 				};
+ 			};
  
- #define SSI_NAME "ssi"
- 
-+#define SSI_DMA_NAME_SIZE	10
-+
- struct rsnd_ssi {
- 	struct rsnd_mod mod;
- 
-@@ -938,12 +940,20 @@ static struct dma_chan *rsnd_ssi_dma_req(struct rsnd_dai_stream *io,
- {
- 	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
- 	int is_play = rsnd_io_is_play(io);
--	char *name;
-+	int busif = rsnd_ssi_get_busif(io);
-+	char name[SSI_DMA_NAME_SIZE];
- 
--	if (rsnd_ssi_use_busif(io))
--		name = is_play ? "rxu" : "txu";
--	else
--		name = is_play ? "rx" : "tx";
-+	if (rsnd_ssi_use_busif(io)) {
-+		if (is_play)
-+			snprintf(name, SSI_DMA_NAME_SIZE, "rxu%d", busif);
-+		else
-+			snprintf(name, SSI_DMA_NAME_SIZE, "txu%d", busif);
-+	} else {
-+		if (is_play)
-+			snprintf(name, SSI_DMA_NAME_SIZE, "rx");
-+		else
-+			snprintf(name, SSI_DMA_NAME_SIZE, "tx");
-+	}
- 
- 	return rsnd_dma_request_channel(rsnd_ssi_of_node(priv),
- 					mod, name);
 -- 
 2.17.0
