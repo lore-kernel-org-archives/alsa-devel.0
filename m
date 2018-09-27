@@ -1,7 +1,7 @@
 From: <jiada_wang@mentor.com>
-Subject: [PATCH linux-next 08/10] arm64: r8a77965: change to use extended audio dmac register
-Date: Thu, 27 Sep 2018 14:11:58 +0900
-Message-ID: <20180927051158.17983-1-jiada_wang@mentor.com>
+Subject: [PATCH linux-next 09/10] ASoC: rsnd: add busif property to dai stream
+Date: Thu, 27 Sep 2018 14:12:12 +0900
+Message-ID: <20180927051212.18032-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
@@ -12,27 +12,106 @@ List-Id: alsa-devel@alsa-project.org
 
 From: Jiada Wang <jiada_wang@mentor.com>
 
-Basic audio dmac register only supports busif from 0 to 3,
-in order to use busif4 ~ busif7, extended audio dmac register
-need to be used.
+SSI may use different busif for data transfer, this patch
+adds busif property to each dai stream, to indicate the
+busif used by playback/capture stream.
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- arch/arm64/boot/dts/renesas/r8a77965.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 16 +++++++++++++++-
+ sound/soc/sh/rcar/rsnd.h |  3 +++
+ sound/soc/sh/rcar/ssi.c  |  5 ++++-
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a77965.dtsi b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-index fd00010a5ed7..6c0d5053a81c 100644
---- a/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
-@@ -1405,7 +1405,7 @@
- 				<0 0xec5a0000 0 0x100>,  /* ADG */
- 				<0 0xec540000 0 0x1000>, /* SSIU */
- 				<0 0xec541000 0 0x280>,  /* SSI */
--				<0 0xec740000 0 0x200>;  /* Audio DMAC peri peri*/
-+				<0 0xec760000 0 0x200>;  /* Audio DMAC peri peri*/
- 			/* placeholder */
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 40d7dc4f7839..aee3132c72b9 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -560,6 +560,14 @@ struct rsnd_dai *rsnd_rdai_get(struct rsnd_priv *priv, int id)
+ 	return priv->rdai + id;
+ }
  
- 			rcar_sound,dvc {
++struct rsnd_kctrl_cfg_s *rsnd_busif_get(struct rsnd_priv *priv, int id)
++{
++	if ((id < 0) || (id >= 2 * rsnd_rdai_nr(priv)))
++		return NULL;
++
++	return priv->busif + id;
++}
++
+ static struct snd_soc_dai_driver
+ *rsnd_daidrv_get(struct rsnd_priv *priv, int id)
+ {
+@@ -1045,6 +1053,9 @@ static void __rsnd_dai_probe(struct rsnd_priv *priv,
+ 	io_playback	= &rdai->playback;
+ 	io_capture	= &rdai->capture;
+ 
++	io_playback->busif = rsnd_busif_get(priv, dai_i);
++	io_capture->busif  = rsnd_busif_get(priv, rsnd_rdai_nr(priv) + dai_i);
++
+ 	snprintf(rdai->name, RSND_DAI_NAME_SIZE, "rsnd-dai.%d", dai_i);
+ 
+ 	rdai->priv	= priv;
+@@ -1108,6 +1119,7 @@ static int rsnd_dai_probe(struct rsnd_priv *priv)
+ 	struct snd_soc_dai_driver *rdrv;
+ 	struct device *dev = rsnd_priv_to_dev(priv);
+ 	struct rsnd_dai *rdai;
++	struct rsnd_kctrl_cfg_s *busif;
+ 	int nr;
+ 	int is_graph;
+ 	int dai_i;
+@@ -1123,12 +1135,14 @@ static int rsnd_dai_probe(struct rsnd_priv *priv)
+ 
+ 	rdrv = devm_kcalloc(dev, nr, sizeof(*rdrv), GFP_KERNEL);
+ 	rdai = devm_kcalloc(dev, nr, sizeof(*rdai), GFP_KERNEL);
+-	if (!rdrv || !rdai)
++	busif = devm_kcalloc(dev, 2 * nr, sizeof(*busif), GFP_KERNEL);
++	if (!rdrv || !rdai || !busif)
+ 		return -ENOMEM;
+ 
+ 	priv->rdai_nr	= nr;
+ 	priv->daidrv	= rdrv;
+ 	priv->rdai	= rdai;
++	priv->busif	= busif;
+ 
+ 	/*
+ 	 * parse all dai
+diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
+index 4464d1d0a042..59b6d89d8edc 100644
+--- a/sound/soc/sh/rcar/rsnd.h
++++ b/sound/soc/sh/rcar/rsnd.h
+@@ -456,6 +456,7 @@ struct rsnd_dai_stream {
+ 	struct rsnd_mod *dma;
+ 	struct rsnd_dai *rdai;
+ 	struct device *dmac_dev; /* for IPMMU */
++	struct rsnd_kctrl_cfg_s *busif;
+ 	u32 parent_ssi_status;
+ };
+ #define rsnd_io_to_mod(io, i)	((i) < RSND_MOD_MAX ? (io)->mod[(i)] : NULL)
+@@ -629,6 +630,8 @@ struct rsnd_priv {
+ 	 */
+ 	struct snd_soc_dai_driver *daidrv;
+ 	struct rsnd_dai *rdai;
++	struct rsnd_kctrl_cfg_s *busif;
++
+ 	int rdai_nr;
+ };
+ 
+diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
+index 75a3d15084c2..4ac4b5b75ae2 100644
+--- a/sound/soc/sh/rcar/ssi.c
++++ b/sound/soc/sh/rcar/ssi.c
+@@ -154,7 +154,10 @@ int rsnd_ssi_use_busif(struct rsnd_dai_stream *io)
+ 
+ int rsnd_ssi_get_busif(struct rsnd_dai_stream *io)
+ {
+-	return 0; /* BUSIF0 only for now */
++	if (!rsnd_ssi_use_busif(io))
++		return 0;
++
++	return io->busif->val;
+ }
+ 
+ static void rsnd_ssi_status_clear(struct rsnd_mod *mod)
 -- 
 2.17.0
