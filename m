@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm9712: fix unused variable warning" to
-	the asoc tree
-Date: Thu, 27 Sep 2018 23:39:28 +0100 (BST)
-Message-ID: <20180927223928.154F7440078@finisterre.ee.mobilebroadband>
-References: <20180926193750.2468414-1-arnd@arndb.de>
+Subject: Applied "ASoC: atmel: add SND_SOC_I2C_AND_SPI
+	dependency" to the asoc tree
+Date: Thu, 27 Sep 2018 23:39:38 +0100 (BST)
+Message-ID: <20180927223938.753FF440078@finisterre.ee.mobilebroadband>
+References: <20180926125957.2256982-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 2B56E2678C3
- for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 00:39:33 +0200 (CEST)
-In-Reply-To: <20180926193750.2468414-1-arnd@arndb.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id C476E2678C3
+ for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 00:39:42 +0200 (CEST)
+In-Reply-To: <20180926125957.2256982-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, Alexandre Belloni <alexandre.belloni@bootlin.com>, Nicolas Ferre <nicolas.ferre@microchip.com>, linux-kernel@vger.kernel.org, Liam Girdwood <lgirdwood@gmail.com>, Ludovic Desroches <ludovic.desroches@microchip.com>, Mark Brown <broonie@kernel.org>, Florian Meier <florian.meier@koalo.de>, Takashi Iwai <tiwai@suse.com>, Codrin Ciubotariu <codrin.ciubotariu@microchip.com>, Cyrille Pitchen <cyrille.pitchen@atmel.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm9712: fix unused variable warning
+   ASoC: atmel: add SND_SOC_I2C_AND_SPI dependency
 
 has been applied to the asoc tree at
 
@@ -53,44 +53,41 @@ to this mail.
 Thanks,
 Mark
 
->From 18380dcc52cc8965e5144ce33fdfad7e168679a5 Mon Sep 17 00:00:00 2001
+>From 53c156ab9d8aae2083d3c895365a3e39b864a5a7 Mon Sep 17 00:00:00 2001
 From: Arnd Bergmann <arnd@arndb.de>
-Date: Wed, 26 Sep 2018 21:37:40 +0200
-Subject: [PATCH] ASoC: wm9712: fix unused variable warning
+Date: Wed, 26 Sep 2018 14:59:40 +0200
+Subject: [PATCH] ASoC: atmel: add SND_SOC_I2C_AND_SPI dependency
 
-The 'ret' variable is now only used in an #ifdef, and causes a
-warning if it is declared outside of that block:
+Selecting SND_SOC_WM8731 is only allowed when all its dependencies
+are already there:
 
-sound/soc/codecs/wm9712.c: In function 'wm9712_soc_probe':
-sound/soc/codecs/wm9712.c:641:6: error: unused variable 'ret' [-Werror=unused-variable]
+WARNING: unmet direct dependencies detected for SND_SOC_WM8731
+  Depends on [m]: SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_SOC_I2C_AND_SPI [=m]
+  Selected by [y]:
+  - SND_SOC_MIKROE_PROTO [=y] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_ATMEL_SOC [=y] && OF [=y]
+  Selected by [m]:
+  - SND_AT91_SOC_SAM9X5_WM8731 [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && SND_ATMEL_SOC [=y] && (ARCH_AT91 [=y] || COMPILE_TEST [=y]) && ATMEL_SSC [=y] && SND_SOC_I2C_AND_SPI [=m]
+  - SND_SOC_ALL_CODECS [=m] && SOUND [=y] && !UML && SND [=y] && SND_SOC [=y] && COMPILE_TEST [=y] && SND_SOC_I2C_AND_SPI [=m]
 
-Fixes: 2ed1a8e0ce8d ("ASoC: wm9712: add ac97 new bus support")
+Fixes: a45f8853a5f9 ("ASoC: Add driver for PROTO Audio CODEC (with a WM8731)")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Reviewed-by: Codrin Ciubotariu <codrin.ciubotariu@microchip.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm9712.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/atmel/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index ade34c26ad2f..e873baa9e778 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -638,13 +638,14 @@ static int wm9712_soc_probe(struct snd_soc_component *component)
- {
- 	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
- 	struct regmap *regmap;
--	int ret;
- 
- 	if (wm9712->mfd_pdata) {
- 		wm9712->ac97 = wm9712->mfd_pdata->ac97;
- 		regmap = wm9712->mfd_pdata->regmap;
- 	} else {
- #ifdef CONFIG_SND_SOC_AC97_BUS
-+		int ret;
-+
- 		wm9712->ac97 = snd_soc_new_ac97_component(component, WM9712_VENDOR_ID,
- 						      WM9712_VENDOR_ID_MASK);
- 		if (IS_ERR(wm9712->ac97)) {
+diff --git a/sound/soc/atmel/Kconfig b/sound/soc/atmel/Kconfig
+index 81a0712d4f14..64f86f0b87e5 100644
+--- a/sound/soc/atmel/Kconfig
++++ b/sound/soc/atmel/Kconfig
+@@ -101,6 +101,7 @@ config SND_ATMEL_SOC_I2S
+ config SND_SOC_MIKROE_PROTO
+ 	tristate "Support for Mikroe-PROTO board"
+ 	depends on OF
++	depends on SND_SOC_I2C_AND_SPI
+ 	select SND_SOC_WM8731
+ 	help
+ 	  Say Y or M if you want to add support for MikroElektronika PROTO Audio
 -- 
 2.19.0
