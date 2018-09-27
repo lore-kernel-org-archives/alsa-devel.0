@@ -1,58 +1,47 @@
-From: Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH] ASoC: wm9712: fix unused variable warning
-Date: Wed, 26 Sep 2018 21:37:40 +0200
-Message-ID: <20180926193750.2468414-1-arnd@arndb.de>
+From: <jiada_wang@mentor.com>
+Subject: [PATCH linux-next 00/10] ASoC: rsnd: support to set different busif
+Date: Thu, 27 Sep 2018 14:03:57 +0900
+Message-ID: <20180927050407.17765-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.126.133])
- by alsa0.perex.cz (Postfix) with ESMTP id 32D402678BA
- for <alsa-devel@alsa-project.org>; Wed, 26 Sep 2018 21:38:15 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Arnd Bergmann <arnd@arndb.de>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Fabio Estevam <fabio.estevam@nxp.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
+Content-Type: text/plain
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
+Cc: jiada_wang@mentor.com, twischer@de.adit-jv.com, dragos_tarcatu@mentor.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The 'ret' variable is now only used in an #ifdef, and causes a
-warning if it is declared outside of that block:
+From: Jiada Wang <jiada_wang@mentor.com>
 
-sound/soc/codecs/wm9712.c: In function 'wm9712_soc_probe':
-sound/soc/codecs/wm9712.c:641:6: error: unused variable 'ret' [-Werror=unused-variable]
+Rcar audio DMA/SSIU already support to use different BUSIF
+to transfer data, but busif is fixed at 0.
 
-Fixes: 2ed1a8e0ce8d ("ASoC: wm9712: add ac97 new bus support")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- sound/soc/codecs/wm9712.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This patch set adds kctrl interface "SSI Out/In BUSIF", which enables
+to configure busif for each dai-stream used in transfer.
 
-diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
-index ade34c26ad2f..e873baa9e778 100644
---- a/sound/soc/codecs/wm9712.c
-+++ b/sound/soc/codecs/wm9712.c
-@@ -638,13 +638,14 @@ static int wm9712_soc_probe(struct snd_soc_component *component)
- {
- 	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
- 	struct regmap *regmap;
--	int ret;
- 
- 	if (wm9712->mfd_pdata) {
- 		wm9712->ac97 = wm9712->mfd_pdata->ac97;
- 		regmap = wm9712->mfd_pdata->regmap;
- 	} else {
- #ifdef CONFIG_SND_SOC_AC97_BUS
-+		int ret;
-+
- 		wm9712->ac97 = snd_soc_new_ac97_component(component, WM9712_VENDOR_ID,
- 						      WM9712_VENDOR_ID_MASK);
- 		if (IS_ERR(wm9712->ac97)) {
+device tree files are updated to use extended audio dmac register,
+and add dma request number for busif1 ~ busif7 
+
+Jiada Wang (10):
+  ASoC: rsnd: ssi: Request dedicated dma channels for busif1 to 7
+  arm64: r8a7795: add dma request number for busif1 ~ busif7
+  arm64: r8a7796: add dma request number for busif1 ~ busif7
+  arm64: r8a774a1: add dma request number for busif1 ~ busif7
+  arm64: r8a7795: change to use extended audio dmac register
+  arm64: r8a7796: change to use extended audio dmac register
+  arm64: r8a774a1: change to use extended audio dmac register
+  arm64: r8a77965: change to use extended audio dmac register
+  ASoC: rsnd: add busif property to dai stream
+  ASoC: rsnd: Add kctrl to configure dai's busif
+
+ arch/arm64/boot/dts/renesas/r8a774a1.dtsi | 139 ++++++++++++++++++----
+ arch/arm64/boot/dts/renesas/r8a7795.dtsi  | 132 +++++++++++++++++---
+ arch/arm64/boot/dts/renesas/r8a7796.dtsi  | 138 +++++++++++++++++----
+ arch/arm64/boot/dts/renesas/r8a77965.dtsi |   2 +-
+ sound/soc/sh/rcar/core.c                  |  16 ++-
+ sound/soc/sh/rcar/dma.c                   |  32 +++++
+ sound/soc/sh/rcar/rsnd.h                  |   5 +
+ sound/soc/sh/rcar/ssi.c                   |  56 +++++++--
+ 8 files changed, 451 insertions(+), 69 deletions(-)
+
 -- 
-2.18.0
+2.17.0
