@@ -1,146 +1,43 @@
-From: <jiada_wang@mentor.com>
-Subject: [PATCH linux-next 10/10] ASoC: rsnd: Add kctrl to configure dai's busif
-Date: Thu, 27 Sep 2018 14:12:29 +0900
-Message-ID: <20180927051229.18080-1-jiada_wang@mentor.com>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH] ASoC: wm9712: fix unused variable warning
+Date: Thu, 27 Sep 2018 10:12:52 +0100
+Message-ID: <20180927091252.GP1653@imbe.wolfsonmicro.main>
+References: <20180926193750.2468414-1-arnd@arndb.de>
 Mime-Version: 1.0
-Content-Type: text/plain
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
-Cc: jiada_wang@mentor.com, twischer@de.adit-jv.com, dragos_tarcatu@mentor.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 859F42677FE
+ for <alsa-devel@alsa-project.org>; Thu, 27 Sep 2018 11:16:39 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20180926193750.2468414-1-arnd@arndb.de>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Jiada Wang <jiada_wang@mentor.com>
+On Wed, Sep 26, 2018 at 09:37:40PM +0200, Arnd Bergmann wrote:
+> The 'ret' variable is now only used in an #ifdef, and causes a
+> warning if it is declared outside of that block:
+> 
+> sound/soc/codecs/wm9712.c: In function 'wm9712_soc_probe':
+> sound/soc/codecs/wm9712.c:641:6: error: unused variable 'ret' [-Werror=unused-variable]
+> 
+> Fixes: 2ed1a8e0ce8d ("ASoC: wm9712: add ac97 new bus support")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
 
-ssi0, ssi1, ssi2, ssi3, ssi4 and ssi9 have busif0 to busif7,
-currently only busif0 is used by all ssi.
-But tdm split and tdm ex-split mode, which require busif1 to
-busif7.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
-This patch adds kctrl in ssi for dai-link, to make it possible
-to configure the busif used by each dai-link.
-Also adds rsnd_dma_addr_update() interface to make it possible
-to update dma data address when there is change in condition
-of dai connection.
-
-Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
----
- sound/soc/sh/rcar/dma.c  | 32 ++++++++++++++++++++++++++++++++
- sound/soc/sh/rcar/rsnd.h |  2 ++
- sound/soc/sh/rcar/ssi.c  | 31 ++++++++++++++++++++++++++++++-
- 3 files changed, 64 insertions(+), 1 deletion(-)
-
-diff --git a/sound/soc/sh/rcar/dma.c b/sound/soc/sh/rcar/dma.c
-index 6d1947515dc8..8c284fd73fc1 100644
---- a/sound/soc/sh/rcar/dma.c
-+++ b/sound/soc/sh/rcar/dma.c
-@@ -792,6 +792,38 @@ int rsnd_dma_attach(struct rsnd_dai_stream *io, struct rsnd_mod *mod,
- 	return rsnd_dai_connect(*dma_mod, io, (*dma_mod)->type);
- }
- 
-+void rsnd_dma_addr_update(struct rsnd_dai_stream *io,
-+			  struct rsnd_mod *mod,
-+			  struct rsnd_mod *dma_mod)
-+{
-+	struct rsnd_mod *mod_from = NULL;
-+	struct rsnd_mod *mod_to = NULL;
-+	struct rsnd_priv *priv = rsnd_io_to_priv(io);
-+	struct rsnd_dma_ctrl *dmac = rsnd_priv_to_dmac(priv);
-+	struct device *dev = rsnd_priv_to_dev(priv);
-+	int is_play = rsnd_io_is_play(io);
-+	struct rsnd_dma *dma = rsnd_mod_to_dma(dma_mod);
-+
-+	if (!dmac)
-+		return;
-+
-+	rsnd_dma_of_path(mod, io, is_play, &mod_from, &mod_to);
-+
-+	dma->src_addr = rsnd_dma_addr(io, mod_from, is_play, 1);
-+	dma->dst_addr = rsnd_dma_addr(io, mod_to,   is_play, 0);
-+
-+	if (mod_from && mod_to) {
-+		struct rsnd_dmapp *dmapp = rsnd_dma_to_dmapp(dma);
-+
-+		dmapp->chcr = rsnd_dmapp_get_chcr(io, mod_from, mod_to) |
-+						  PDMACHCR_DE;
-+	}
-+
-+	dev_dbg(dev, "%s[%d] %pad -> %pad\n",
-+		rsnd_mod_name(mod), rsnd_mod_id(mod),
-+		&dma->src_addr, &dma->dst_addr);
-+}
-+
- int rsnd_dma_probe(struct rsnd_priv *priv)
- {
- 	struct platform_device *pdev = rsnd_priv_to_pdev(priv);
-diff --git a/sound/soc/sh/rcar/rsnd.h b/sound/soc/sh/rcar/rsnd.h
-index 59b6d89d8edc..6c16d8403f7a 100644
---- a/sound/soc/sh/rcar/rsnd.h
-+++ b/sound/soc/sh/rcar/rsnd.h
-@@ -233,6 +233,8 @@ u32 rsnd_get_busif_shift(struct rsnd_dai_stream *io, struct rsnd_mod *mod);
-  */
- int rsnd_dma_attach(struct rsnd_dai_stream *io,
- 		    struct rsnd_mod *mod, struct rsnd_mod **dma_mod);
-+void rsnd_dma_addr_update(struct rsnd_dai_stream *io,
-+			  struct rsnd_mod *mod, struct rsnd_mod *dma_mod);
- int rsnd_dma_probe(struct rsnd_priv *priv);
- struct dma_chan *rsnd_dma_request_channel(struct device_node *of_node,
- 					  struct rsnd_mod *mod, char *name);
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index 4ac4b5b75ae2..b469db238697 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -160,6 +160,15 @@ int rsnd_ssi_get_busif(struct rsnd_dai_stream *io)
- 	return io->busif->val;
- }
- 
-+static void rsnd_ssi_set_busif(struct rsnd_dai_stream *io,
-+			       struct rsnd_mod *mod)
-+{
-+	if (!rsnd_ssi_use_busif(io))
-+		return;
-+
-+	rsnd_dma_addr_update(io, mod, io->dma);
-+}
-+
- static void rsnd_ssi_status_clear(struct rsnd_mod *mod)
- {
- 	rsnd_mod_write(mod, SSISR, 0);
-@@ -718,6 +727,10 @@ static int rsnd_ssi_pcm_new(struct rsnd_mod *mod,
- 			    struct rsnd_dai_stream *io,
- 			    struct snd_soc_pcm_runtime *rtd)
- {
-+	int is_play = rsnd_io_is_play(io);
-+	int id = rsnd_mod_id(mod);
-+	int ret = 0;
-+
- 	/*
- 	 * rsnd_rdai_is_clk_master() will be enabled after set_fmt,
- 	 * and, pcm_new will be called after it.
-@@ -725,7 +738,23 @@ static int rsnd_ssi_pcm_new(struct rsnd_mod *mod,
- 	 */
- 	rsnd_ssi_parent_attach(mod, io);
- 
--	return 0;
-+	if (!rsnd_ssi_use_busif(io))
-+		return 0;
-+
-+	if (rsnd_ssi_is_multi_slave(mod, io))
-+		return 0;
-+
-+	/* SSI5 to SSI8 only have one BUSIF */
-+	if (id <= 4 || id == 9)
-+		ret = rsnd_kctrl_new_s(mod, io, rtd,
-+				       is_play ?
-+				       "SSI Out BUSIF" :
-+				       "SSI In BUSIF",
-+				       rsnd_kctrl_accept_anytime,
-+				       rsnd_ssi_set_busif,
-+				       io->busif, 7);
-+
-+	return ret;
- }
- 
- static int rsnd_ssi_common_probe(struct rsnd_mod *mod,
--- 
-2.17.0
+Thanks,
+Charles
