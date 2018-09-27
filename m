@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: Add r8a7744 support" to the asoc
-	tree
-Date: Thu, 27 Sep 2018 23:39:18 +0100 (BST)
-Message-ID: <20180927223918.83F5F440078@finisterre.ee.mobilebroadband>
-References: <1538056285-18621-1-git-send-email-biju.das@bp.renesas.com>
+Subject: Applied "ASoC: wm9712: fix unused variable warning" to
+	the asoc tree
+Date: Thu, 27 Sep 2018 23:39:28 +0100 (BST)
+Message-ID: <20180927223928.154F7440078@finisterre.ee.mobilebroadband>
+References: <20180926193750.2468414-1-arnd@arndb.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9FF602678CD
- for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 00:39:21 +0200 (CEST)
-In-Reply-To: <1538056285-18621-1-git-send-email-biju.das@bp.renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 2B56E2678C3
+ for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 00:39:33 +0200 (CEST)
+In-Reply-To: <20180926193750.2468414-1-arnd@arndb.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Biju Das <biju.das@bp.renesas.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, Fabrizio Castro <fabrizio.castro@bp.renesas.com>, alsa-devel@alsa-project.org, Geert Uytterhoeven <geert+renesas@glider.be>, devicetree@vger.kernel.org, Simon Horman <horms@verge.net.au>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, linux-renesas-soc@vger.kernel.org, Mark Brown <broonie@kernel.org>, Chris Paterson <Chris.Paterson2@renesas.com>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: alsa-devel@alsa-project.org, Charles Keepax <ckeepax@opensource.cirrus.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, patches@opensource.cirrus.com, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Fabio Estevam <fabio.estevam@nxp.com>, Robert Jarzmik <robert.jarzmik@free.fr>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: Add r8a7744 support
+   ASoC: wm9712: fix unused variable warning
 
 has been applied to the asoc tree at
 
@@ -53,31 +53,44 @@ to this mail.
 Thanks,
 Mark
 
->From 765f50d464457c6a397506b3f3dc58dacc227c6d Mon Sep 17 00:00:00 2001
-From: Biju Das <biju.das@bp.renesas.com>
-Date: Thu, 27 Sep 2018 14:51:25 +0100
-Subject: [PATCH] ASoC: rsnd: Add r8a7744 support
+>From 18380dcc52cc8965e5144ce33fdfad7e168679a5 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 26 Sep 2018 21:37:40 +0200
+Subject: [PATCH] ASoC: wm9712: fix unused variable warning
 
-Document RZ/G1N (R8A7744) SoC bindings.
+The 'ret' variable is now only used in an #ifdef, and causes a
+warning if it is declared outside of that block:
 
-Signed-off-by: Biju Das <biju.das@bp.renesas.com>
-Reviewed-by: Chris Paterson <Chris.Paterson2@renesas.com>
+sound/soc/codecs/wm9712.c: In function 'wm9712_soc_probe':
+sound/soc/codecs/wm9712.c:641:6: error: unused variable 'ret' [-Werror=unused-variable]
+
+Fixes: 2ed1a8e0ce8d ("ASoC: wm9712: add ac97 new bus support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- Documentation/devicetree/bindings/sound/renesas,rsnd.txt | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/wm9712.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-index f4688c508be6..d92b705e7917 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-+++ b/Documentation/devicetree/bindings/sound/renesas,rsnd.txt
-@@ -343,6 +343,7 @@ Required properties:
- 				  "renesas,rcar_sound-gen3" if generation3 (or RZ/G2)
- 				  Examples with soctypes are:
- 				    - "renesas,rcar_sound-r8a7743" (RZ/G1M)
-+				    - "renesas,rcar_sound-r8a7744" (RZ/G1N)
- 				    - "renesas,rcar_sound-r8a7745" (RZ/G1E)
- 				    - "renesas,rcar_sound-r8a774a1" (RZ/G2M)
- 				    - "renesas,rcar_sound-r8a7778" (R-Car M1A)
+diff --git a/sound/soc/codecs/wm9712.c b/sound/soc/codecs/wm9712.c
+index ade34c26ad2f..e873baa9e778 100644
+--- a/sound/soc/codecs/wm9712.c
++++ b/sound/soc/codecs/wm9712.c
+@@ -638,13 +638,14 @@ static int wm9712_soc_probe(struct snd_soc_component *component)
+ {
+ 	struct wm9712_priv *wm9712 = snd_soc_component_get_drvdata(component);
+ 	struct regmap *regmap;
+-	int ret;
+ 
+ 	if (wm9712->mfd_pdata) {
+ 		wm9712->ac97 = wm9712->mfd_pdata->ac97;
+ 		regmap = wm9712->mfd_pdata->regmap;
+ 	} else {
+ #ifdef CONFIG_SND_SOC_AC97_BUS
++		int ret;
++
+ 		wm9712->ac97 = snd_soc_new_ac97_component(component, WM9712_VENDOR_ID,
+ 						      WM9712_VENDOR_ID_MASK);
+ 		if (IS_ERR(wm9712->ac97)) {
 -- 
 2.19.0
