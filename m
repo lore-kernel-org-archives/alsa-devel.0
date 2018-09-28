@@ -1,22 +1,15 @@
-From: Nicolas Herochao <nicolas@herochao.de>
-Subject: Problem and Patch for B&W PX Bluetooth Headphones
-Date: Fri, 28 Sep 2018 20:03:25 +0200
-Message-ID: <15bbb1ee-e6a5-14b7-7dfb-ee95d78670eb@herochao.de>
+From: Andre Guedes <andre.guedes@intel.com>
+Subject: [PATCH - Multiple plugins 0/4] Fix leaks on multiple
+	plugins
+Date: Fri, 28 Sep 2018 14:27:23 -0700
+Message-ID: <20180928212727.15151-1-andre.guedes@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.huaman.de (mail.huaman.de [88.99.34.23])
- by alsa0.perex.cz (Postfix) with ESMTP id ABE78267738
- for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 20:03:50 +0200 (CEST)
-Received: from [192.168.0.8] (ip5f5acd94.dynamic.kabel-deutschland.de
- [95.90.205.148])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested)
- (Authenticated sender: nicolas@herochao.de)
- by mail.huaman.de (Postfix) with ESMTPSA id C1CE419B9BD
- for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 20:03:43 +0200 (CEST)
-Content-Language: en-US-large
+Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47004267737
+ for <alsa-devel@alsa-project.org>; Fri, 28 Sep 2018 23:27:54 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,76 +22,29 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8sCgpJJ20gd3JpdGluZyB0aGlzIG1haWwgYmVjYXVzZSBvZiBhIENyYXNoIHdoZW4gY29u
-bmVjdGluZyB0aGUgQiZXIFBYIApoZWFkcGhvbmVzIHZpYSB1c2IuIEhhbGYgYSB5ZWFyIGFnbyB0
-aGlzIHVzZWQgdG8gd29yayB3aXRoIExpbnV4IGFmdGVyIApzZXR0aW5nIHRoZSBkZWZhdWx0IHNh
-bXBsZSByYXRlIG9mIHB1bHNlYXVkaW8gdG8gNDgwMDBrLgoKQSBMYXVuY2hwYWQgQnVnIHNlZW1z
-IHRvIGRlc2NyaWJlIHRoaXMgZXhhY3QgaXNzdWUgKGRldGFpbGVkIGRlc2NyaXB0aW9uIApiZWxv
-dyk6IGh0dHBzOi8vYnVncy5sYXVuY2hwYWQubmV0L3VidW50dS8rc291cmNlL2Fsc2EtZHJpdmVy
-LytidWcvMTc3MzY5Ny4KSXQgcG9pbnRlZCBtZSB0byB0aGUgcmlnaHQgZGlyZWN0aW9uLCBhbmQg
-dG9kYXkgSSBoYXZlIHN1Y2Nlc3NmdWxseSAKY29tcGlsZWQgYW5kIHRlc3RlZCBhIHNtYWxsIHBh
-dGNoIHRoYXQgZml4ZXMgdGhlIGVycm9ycyB3aGlsZSBhbHNvIApzZXR0aW5nIHRoZSBzYW1wbGUg
-cmF0ZSB0byA0ODAwMGssIG1ha2luZyB0aGVzZSBoZWFkcGhvbmVzIHBsdWcmcGxheSBvbiAKYW55
-IG5ld2VyIGZpcm13YXJlLiBUaGV5IHNvdW5kIGF3ZXNvbWUgdmlhIFVTQiEKCkkgd291bGQgbGlr
-ZSB0byBzdWJtaXQgdGhpcyBwYXRjaCwgYnV0IGl0IHdvdWxkIGJlIG15IGZpcnN0IGNvbnRyaWJ1
-dGlvbiAKYW5kIGl0IGNvdWxkIHBvdGVudGlhbGx5IGJyZWFrIHRoZSBCJlcgUFggb24gb2xkZXIg
-ZmlybXdhcmUuIEkgY2FuJ3QgCnRlc3QgaXQgc2luY2UgSSBzZWUgbm8gb2J2aW91cyB3YXlzIHRv
-IGRvd25ncmFkZSB0aGUgZmlybXdhcmUuIFRoZSAKYXV0b21hdGljIGRldGVjdGlvbiBvZiB0aGVz
-ZSBoZWFkcGhvbmVzIGFsd2F5cyB3b3JrZWQgZXhjZXB0IGZvciB0aGUgCnNhbXBsZS1yYXRlIGFu
-ZCBwZXJoYXBzIHRoZSB3b3JzdCByZXN1bHQgaXMgdGhhdCBvbGQgZmlybXdhcmUgd2lsbCBzaG93
-IAphIG5vbi1mdW5jdGlvbmFsIG1pY3JvcGhvbmUsIGxpa2Ugb24gV2luZG93cy4KClNvIEkgZGVj
-aWRlZCB0byBmaXJzdCBwcmVzZW50IHRoZSBwYXRjaCBvbiB0aGlzIG1haWxpbmcgbGlzdCBhbmQg
-YXNrIGZvciAKZmVlZGJhY2sgYW5kIGhlbHAuIElmIGFueW9uZSB3YW50cyB0byBwaWNrIHRoZSBw
-YXRjaCB1cCwgSSdkIGFwcHJlY2lhdGUgCnRoYXQgYXMgd2VsbC4KCk15IHF1ZXN0aW9uczoKCiog
-Q2FuIGEgcXVpcmsgc29tZWhvdyBoYW5kbGUgbXVsdGlwbGUgZmlybXdhcmUgdmVyc2lvbnMgb2Yg
-YSB1c2IgZGV2aWNlPwoKKiBJZiBub3Q6IFdpbGwgdGhpcyBxdWlyayBhbGxvdyBvbGQgZmlybXdh
-cmUgdG8gd29yayBvdXQgb2YgdGhlIGJveCBidXQgCnNob3cgYSBub24tZnVuY3Rpb25hbCBtaWNy
-b3Bob25lPyAoQW5kIGlzIHRoYXQgb2theT8pCgpUaGFua3MgZm9yIHlvdXIgdGltZSBhbmQgYW55
-IGZlZWRiYWNrIHlvdSBjYW4gcHJvdmlkZSEKU2luY2VyZWx5LAoKTmljb2xhcwoKUFM6IG1vcmUg
-ZGV0YWlsIG9uIHRoZSBjYXVzZSBvZiB0aGUgaXNzdWU6Ci0tLS0tLQoKQSBxdWlyayBpbiBzbmQt
-dXNiLWF1ZGlvIHdhcyBhZGRlZCB0byBhdXRvbWF0ZSBzZXR0aW5nIHNhbXBsZSByYXRlIHRvIAo0
-ODAwayBhbmQgcmVtb3ZlIHRoZSBwcmV2aW91c2x5IGV4cG9zZWQgbm9uZnVuY3Rpb25hbCBtaWNy
-b3Bob25lOgpjb21taXQgMjQwYThhZjkyOWM3YzU3ZGNkZTI4NjgyNzI1YjI5Y2Y4NDc0ZThlNQpo
-dHRwczovL2xvcmUua2VybmVsLm9yZy9wYXRjaHdvcmsvcGF0Y2gvOTE5Njg5LwoKSG93ZXZlciB0
-aGUgaGVhZHBob25lcyB3aGVyZSB1cGRhdGVkIHNob3J0bHkgYWZ0ZXIgdGhhdCB0byByZW1vdmUg
-dGhlIAp1bmludGVudGlvbmFsIG1pY3JvcGhvbmUgZnVuY3Rpb25hbGl0eS4gSSBndWVzcyBiZWNh
-dXNlIG9mIHRoaXMgdGhlIApoZWFkcGhvbmVzIG5vdyBjcmFzaCB3aGVuIGNvbm5lY3RpbmcgdGhl
-bSB2aWEgVVNCIHdoaWxlIHRoZSBxdWlyayBpcyAKYWN0aXZlIHdpdGggdGhlIGZvbGxvd2luZyBk
-bWVzZyBlcnJvcnM6CgpzbmQtdXNiLWF1ZGlvOiBwcm9iZSBvZiAyLTM6MS4wIGZhaWxlZCB3aXRo
-IGVycm9yIC0yMgp1c2IgMi0zOiAyOjE6IGNhbm5vdCBnZXQgbWluL21heCB2YWx1ZXMgZm9yIGNv
-bnRyb2wgMiAoaWQgMikKCi0tLS0tLS0tLS0tLS0tLQpGaW5hbGx5LCBoZXJlIGlzIHRoZSBwYXRj
-aCAoYmFzZWQgb24gdGhlIGN1cnJlbnQgbWFpbmxpbmUga2VybmVsIGFuZCAKZ2VuZXJhdGVkIGFj
-Y29yZGluZyB0byBhbGwgR3VpZGVsaW5lcyBJIGNvdWxkIGZpbmQpIHdoaWNoIGZpeGVzIHRoZSAK
-cXVpcmsgYnkgcmVtb3ZpbmcgdGhlIG1pY3JvcGhvbmUgcGFydDoKLS0tLS0tLS0tLS0tLS0tLQoK
-IEZyb20gNzQ4NTg3MjgzZGI4NWUyMTk5MDJhYmY0YWMwMTI4NjQwMDU5NDNjOCBNb24gU2VwIDE3
-IDAwOjAwOjAwIDIwMDEKRnJvbTogTmljb2xhcyBIdWFtYW4gPG5pY29sYXNAaGVyb2NoYW8uZGU+
-CkRhdGU6IEZyaSwgMjggU2VwIDIwMTggMTg6MDU6MTUgKzAyMDAKU3ViamVjdDogW1BBVENIIDEv
-MV0gU09VTkQ6IHVwZGF0ZSBxdWlyayBmb3IgQiZXIFBYIHRvIHJlbW92ZSBtaWNyb3Bob25lCgpT
-aWduZWQtb2ZmLWJ5OiBOaWNvbGFzIEh1YW1hbiA8bmljb2xhc0BoZXJvY2hhby5kZT4KLS0tCiDC
-oHNvdW5kL3VzYi9xdWlya3MtdGFibGUuaCB8IDkgKystLS0tLS0tCiDCoDEgZmlsZSBjaGFuZ2Vk
-LCAyIGluc2VydGlvbnMoKyksIDcgZGVsZXRpb25zKC0pCgpkaWZmIC0tZ2l0IGEvc291bmQvdXNi
-L3F1aXJrcy10YWJsZS5oIGIvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCmluZGV4IDA4YWE3ODAw
-NzAyMC4uODQ5OTUzZTU3NzVjIDEwMDY0NAotLS0gYS9zb3VuZC91c2IvcXVpcmtzLXRhYmxlLmgK
-KysrIGIvc291bmQvdXNiL3F1aXJrcy10YWJsZS5oCkBAIC0zMzQ2LDE5ICszMzQ2LDE0IEBAIEFV
-MDgyOF9ERVZJQ0UoMHgyMDQwLCAweDcyNzAsICJIYXVwcGF1Z2UiLCAKIkhWUi05NTBRIiksCiDC
-oMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCAuaWZudW0gPSAwLAogwqDCoMKgwqAgwqDCoMKg
-IMKgwqDCoCDCoMKgwqAgLnR5cGUgPSBRVUlSS19BVURJT19TVEFOREFSRF9NSVhFUiwKIMKgwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgfSwKLcKgwqDCoCDCoMKgwqAgwqDCoMKgIC8qIENhcHR1cmUgKi8K
-LcKgwqDCoCDCoMKgwqAgwqDCoMKgIHsKLcKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCAuaWZu
-dW0gPSAxLAotwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKgIC50eXBlID0gUVVJUktfSUdOT1JF
-X0lOVEVSRkFDRSwKLcKgwqDCoCDCoMKgwqAgwqDCoMKgIH0sCiDCoMKgwqDCoCDCoMKgwqAgwqDC
-oMKgIC8qIFBsYXliYWNrICovCiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIHsKLcKgwqDCoCDCoMKg
-wqAgwqDCoMKgIMKgwqDCoCAuaWZudW0gPSAyLAorwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDCoMKg
-IC5pZm51bSA9IDEsCiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCAudHlwZSA9IFFVSVJL
-X0FVRElPX0ZJWEVEX0VORFBPSU5ULAogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgLmRh
-dGEgPSAmKGNvbnN0IHN0cnVjdCBhdWRpb2Zvcm1hdCkgewogwqDCoMKgwqAgwqDCoMKgIMKgwqDC
-oCDCoMKgwqAgwqDCoMKgIC5mb3JtYXRzID0gU05EUlZfUENNX0ZNVEJJVF9TMTZfTEUsCiDCoMKg
-wqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgLmNoYW5uZWxzID0gMiwKLcKgwqDCoCDC
-oMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgLmlmYWNlID0gMiwKK8KgwqDCoCDCoMKgwqAgwqDC
-oMKgIMKgwqDCoCDCoMKgwqAgLmlmYWNlID0gMSwKIMKgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqDC
-oMKgIMKgwqDCoCAuYWx0c2V0dGluZyA9IDEsCiDCoMKgwqDCoCDCoMKgwqAgwqDCoMKgIMKgwqDC
-oCDCoMKgwqAgLmFsdHNldF9pZHggPSAxLAogwqDCoMKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIC5hdHRyaWJ1dGVzID0gVUFDX0VQX0NTX0FUVFJfRklMTF9NQVggfAotLSAKMi4xOS4w
-CgoKCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFs
-c2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8v
-bWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
+Hi all,
+
+While I was working on AAF plugin RFC v2 series [1], I spotted several leaks in
+some plugins when handling *_hw_constraint() error cases. This series fixes
+these issues.
+
+Regards,
+
+Andre
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-September/140290.html
+
+Andre Guedes (4):
+  a52: Fix leaks when a52_set_hw_constraint() fails
+  jack: Fix leaks when jack_set_hw_constraint() fails
+  oss: Fix leaks when oss_hw_constraint() fails
+  usb_stream: Fix leaks when us_set_hw_constraint() fails
+
+ a52/pcm_a52.c               | 2 +-
+ jack/pcm_jack.c             | 1 +
+ oss/pcm_oss.c               | 2 +-
+ usb_stream/pcm_usb_stream.c | 1 +
+ 4 files changed, 4 insertions(+), 2 deletions(-)
+
+-- 
+2.14.4
