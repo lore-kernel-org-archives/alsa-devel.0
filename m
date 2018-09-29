@@ -1,18 +1,18 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH] ALSA: timer: fix wrong comment to refer to
+Subject: [PATCH][alsa-lib] timer: fix wrong comment to refer to
 	'SNDRV_TIMER_PSFLG_*'
-Date: Sat, 29 Sep 2018 23:20:51 +0900
-Message-ID: <20180929142051.25570-1-o-takashi@sakamocchi.jp>
+Date: Sat, 29 Sep 2018 23:21:43 +0900
+Message-ID: <20180929142143.25694-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
- [209.85.215.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 39D2B2678CE
- for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2018 16:20:59 +0200 (CEST)
-Received: by mail-pg1-f195.google.com with SMTP id z3-v6so6441055pgv.8
- for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2018 07:20:59 -0700 (PDT)
+Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
+ [209.85.215.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7FED72678CE
+ for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2018 16:21:50 +0200 (CEST)
+Received: by mail-pg1-f194.google.com with SMTP id q19-v6so6439220pgn.10
+ for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2018 07:21:50 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -35,14 +35,14 @@ This commit fixes the comment.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- include/uapi/sound/asound.h | 2 +-
+ include/sound/asound.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/uapi/sound/asound.h b/include/uapi/sound/asound.h
-index ed0a120d4f08..404d4b9ffe76 100644
---- a/include/uapi/sound/asound.h
-+++ b/include/uapi/sound/asound.h
-@@ -752,7 +752,7 @@ struct snd_timer_info {
+diff --git a/include/sound/asound.h b/include/sound/asound.h
+index 6041cab2..4d35c84d 100644
+--- a/include/sound/asound.h
++++ b/include/sound/asound.h
+@@ -750,7 +750,7 @@ struct snd_timer_info {
  #define SNDRV_TIMER_PSFLG_EARLY_EVENT	(1<<2)	/* write early event to the poll queue */
  
  struct snd_timer_params {
