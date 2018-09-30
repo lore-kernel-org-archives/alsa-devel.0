@@ -1,55 +1,34 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH][alsa-lib] timer: fix wrong comment to refer to
-	'SNDRV_TIMER_PSFLG_*'
-Date: Sat, 29 Sep 2018 23:21:43 +0900
-Message-ID: <20180929142143.25694-1-o-takashi@sakamocchi.jp>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
- [209.85.215.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 7FED72678CE
- for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2018 16:21:50 +0200 (CEST)
-Received: by mail-pg1-f194.google.com with SMTP id q19-v6so6439220pgn.10
- for <alsa-devel@alsa-project.org>; Sat, 29 Sep 2018 07:21:50 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, perex@perex.cz
-Cc: alsa-devel@alsa-project.org
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: [PATCH 00/11] Add ZxR support + bugfixes
+Date: Sat, 29 Sep 2018 23:03:15 -0400
+Message-ID: <1538276607-30234-1-git-send-email-conmanx360@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA timer core has a comment referring to 'SNDRV_MIXER_PSFLG_*' in
-a definition of 'struct snd_timer_params' of UAPI header. I can see
-this in initial state of ALSA timer core, at least in
-'alsa-driver-0.4.0.tar.gz'.
+This patch series adds support for the Sound Blaster ZxR, as well as a
+few bug fixes. This should be the last ca0132 based Creative card that
+needed support to be added.
 
-This commit fixes the comment.
+Also, I did check to make sure each patch compiles properly this time,
+but you can check yourself just to be sure. :)
 
-Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
----
- include/sound/asound.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Connor McAdams (11):
+  ALSA: hda/ca0132 - Fix AE-5 control type
+  ALSA: hda/ca0132 - Fix surround sound with output effects
+  ALSA: hda/ca0132 - Add ZxR quirks + new quirk check function
+  ALSA: hda/ca0132 - Add ZxR pincfg
+  ALSA: hda/ca0132 - Add DBpro hda_codec_ops
+  ALSA: hda/ca0132 - Add ZxR init commands
+  ALSA: hda/ca0132 - Add ZxR DSP post-download commands
+  ALSA: hda/ca0132 - Add ZxR input/output select commands
+  ALSA: hda/ca0132 - Remove input select enum for ZxR
+  ALSA: hda/ca0132 - Add ZxR 600 ohm gain control
+  ALSA: hda/ca0132 - Add ZxR exit commands
 
-diff --git a/include/sound/asound.h b/include/sound/asound.h
-index 6041cab2..4d35c84d 100644
---- a/include/sound/asound.h
-+++ b/include/sound/asound.h
-@@ -750,7 +750,7 @@ struct snd_timer_info {
- #define SNDRV_TIMER_PSFLG_EARLY_EVENT	(1<<2)	/* write early event to the poll queue */
- 
- struct snd_timer_params {
--	unsigned int flags;		/* flags - SNDRV_MIXER_PSFLG_* */
-+	unsigned int flags;		/* flags - SNDRV_TIMER_PSFLG_* */
- 	unsigned int ticks;		/* requested resolution in ticks */
- 	unsigned int queue_size;	/* total size of queue (32-1024) */
- 	unsigned int reserved0;		/* reserved, was: failure locations */
+ sound/pci/hda/patch_ca0132.c | 369 ++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 345 insertions(+), 24 deletions(-)
+
 -- 
-2.17.1
+2.7.4
