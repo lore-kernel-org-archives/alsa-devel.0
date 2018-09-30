@@ -1,7 +1,7 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 06/11] ALSA: hda/ca0132 - Add ZxR init commands
-Date: Sat, 29 Sep 2018 23:03:21 -0400
-Message-ID: <1538276607-30234-7-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 05/11] ALSA: hda/ca0132 - Add DBpro hda_codec_ops
+Date: Sat, 29 Sep 2018 23:03:20 -0400
+Message-ID: <1538276607-30234-6-git-send-email-conmanx360@gmail.com>
 References: <1538276607-30234-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1538276607-30234-1-git-send-email-conmanx360@gmail.com>
@@ -9,58 +9,167 @@ Sender: linux-kernel-owner@vger.kernel.org
 Cc: conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds init commands for the main Sound Blaster ZxR card.
+This patch adds separate hda_codec_ops for the DBPro daughter board, as
+it behaves more like a generic HDA codec than the other ca0132 cards,
+despite having a ca0132 on board.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ sound/pci/hda/patch_ca0132.c | 100 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 100 insertions(+)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index a543b23..6e48c3d 100644
+index 4d23eb9..a543b23 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -7953,7 +7953,10 @@ static void ca0132_mmio_init(struct hda_codec *codec)
- 	else
- 		writel(0x00000000, spec->mem_base + 0x40C);
- 
--	writel(0x00880680, spec->mem_base + 0x01C);
-+	if (spec->quirk == QUIRK_ZXR)
-+		writel(0x00880640, spec->mem_base + 0x01C);
-+	else
-+		writel(0x00880680, spec->mem_base + 0x01C);
- 
- 	if (spec->quirk == QUIRK_AE5)
- 		writel(0x00000080, spec->mem_base + 0xC0C);
-@@ -8091,6 +8094,10 @@ static void ca0132_alt_init(struct hda_codec *codec)
- 		snd_hda_sequence_write(codec, spec->desktop_init_verbs);
- 		ca0113_mmio_command_set(codec, 0x30, 0x32, 0x3f);
- 		break;
-+	case QUIRK_ZXR:
-+		snd_hda_sequence_write(codec, spec->chip_init_verbs);
-+		snd_hda_sequence_write(codec, spec->desktop_init_verbs);
-+		break;
- 	}
+@@ -6416,6 +6416,27 @@ static int ca0132_build_controls(struct hda_codec *codec)
+ 	return 0;
  }
  
-@@ -8585,6 +8592,10 @@ static int patch_ca0132(struct hda_codec *codec)
++static int dbpro_build_controls(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++	int err = 0;
++
++	if (spec->dig_out) {
++		err = snd_hda_create_spdif_out_ctls(codec, spec->dig_out,
++				spec->dig_out);
++		if (err < 0)
++			return err;
++	}
++
++	if (spec->dig_in) {
++		err = snd_hda_create_spdif_in_ctls(codec, spec->dig_in);
++		if (err < 0)
++			return err;
++	}
++
++	return 0;
++}
++
+ /*
+  * PCM
+  */
+@@ -6519,6 +6540,40 @@ static int ca0132_build_pcms(struct hda_codec *codec)
+ 	return 0;
+ }
+ 
++static int dbpro_build_pcms(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++	struct hda_pcm *info;
++
++	info = snd_hda_codec_pcm_new(codec, "CA0132 Alt Analog");
++	if (!info)
++		return -ENOMEM;
++	info->stream[SNDRV_PCM_STREAM_CAPTURE] = ca0132_pcm_analog_capture;
++	info->stream[SNDRV_PCM_STREAM_CAPTURE].substreams = 1;
++	info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->adcs[0];
++
++
++	if (!spec->dig_out && !spec->dig_in)
++		return 0;
++
++	info = snd_hda_codec_pcm_new(codec, "CA0132 Digital");
++	if (!info)
++		return -ENOMEM;
++	info->pcm_type = HDA_PCM_TYPE_SPDIF;
++	if (spec->dig_out) {
++		info->stream[SNDRV_PCM_STREAM_PLAYBACK] =
++			ca0132_pcm_digital_playback;
++		info->stream[SNDRV_PCM_STREAM_PLAYBACK].nid = spec->dig_out;
++	}
++	if (spec->dig_in) {
++		info->stream[SNDRV_PCM_STREAM_CAPTURE] =
++			ca0132_pcm_digital_capture;
++		info->stream[SNDRV_PCM_STREAM_CAPTURE].nid = spec->dig_in;
++	}
++
++	return 0;
++}
++
+ static void init_output(struct hda_codec *codec, hda_nid_t pin, hda_nid_t dac)
+ {
+ 	if (pin) {
+@@ -7649,6 +7704,16 @@ static void sbz_gpio_shutdown_commands(struct hda_codec *codec, int dir,
+ 				AC_VERB_SET_GPIO_DATA, data);
+ }
+ 
++static void zxr_dbpro_power_state_shutdown(struct hda_codec *codec)
++{
++	hda_nid_t pins[7] = {0x05, 0x0c, 0x09, 0x0e, 0x08, 0x11, 0x01};
++	unsigned int i;
++
++	for (i = 0; i < 7; i++)
++		snd_hda_codec_write(codec, pins[i], 0,
++				AC_VERB_SET_POWER_STATE, 0x03);
++}
++
+ static void sbz_exit_chip(struct hda_codec *codec)
+ {
+ 	chipio_set_stream_control(codec, 0x03, 0);
+@@ -8147,6 +8212,21 @@ static int ca0132_init(struct hda_codec *codec)
+ 	return 0;
+ }
+ 
++static int dbpro_init(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++	struct auto_pin_cfg *cfg = &spec->autocfg;
++	unsigned int i;
++
++	init_output(codec, cfg->dig_out_pins[0], spec->dig_out);
++	init_input(codec, cfg->dig_in_pin, spec->dig_in);
++
++	for (i = 0; i < spec->num_inputs; i++)
++		init_input(codec, spec->input_pins[i], spec->adcs[i]);
++
++	return 0;
++}
++
+ static void ca0132_free(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+@@ -8178,6 +8258,16 @@ static void ca0132_free(struct hda_codec *codec)
+ 	kfree(codec->spec);
+ }
+ 
++static void dbpro_free(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	zxr_dbpro_power_state_shutdown(codec);
++
++	kfree(spec->spec_init_verbs);
++	kfree(codec->spec);
++}
++
+ static void ca0132_reboot_notify(struct hda_codec *codec)
+ {
+ 	codec->patch_ops.free(codec);
+@@ -8192,6 +8282,13 @@ static const struct hda_codec_ops ca0132_patch_ops = {
+ 	.reboot_notify = ca0132_reboot_notify,
+ };
+ 
++static const struct hda_codec_ops dbpro_patch_ops = {
++	.build_controls = dbpro_build_controls,
++	.build_pcms = dbpro_build_pcms,
++	.init = dbpro_init,
++	.free = dbpro_free,
++};
++
+ static void ca0132_config(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+@@ -8488,6 +8585,9 @@ static int patch_ca0132(struct hda_codec *codec)
  		spec->mixers[0] = desktop_mixer;
  		snd_hda_codec_set_name(codec, "Sound Blaster Z");
  		break;
-+	case QUIRK_ZXR:
-+		spec->mixers[0] = desktop_mixer;
-+		snd_hda_codec_set_name(codec, "Sound Blaster ZxR");
++	case QUIRK_ZXR_DBPRO:
++		codec->patch_ops = dbpro_patch_ops;
 +		break;
- 	case QUIRK_ZXR_DBPRO:
- 		codec->patch_ops = dbpro_patch_ops;
- 		break;
-@@ -8610,6 +8621,7 @@ static int patch_ca0132(struct hda_codec *codec)
- 	case QUIRK_SBZ:
  	case QUIRK_R3D:
- 	case QUIRK_AE5:
-+	case QUIRK_ZXR:
- 		spec->use_alt_controls = true;
- 		spec->use_alt_functions = true;
- 		spec->use_pci_mmio = true;
+ 		spec->mixers[0] = desktop_mixer;
+ 		snd_hda_codec_set_name(codec, "Recon3D");
 -- 
 2.7.4
