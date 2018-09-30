@@ -1,19 +1,27 @@
-From: =?UTF-8?B?VGhvbWFzIEdsw6TDn2xl?= <thomas@coldfix.de>
-Subject: alsactl monitor spins at 100% cpu after unplugging USB
-	headphones
-Date: Sun, 30 Sep 2018 16:32:31 +0200
-Message-ID: <b240e23c-6be9-fd53-e62a-8ef65e5a9070@coldfix.de>
+From: Pavel Hofman <pavel.hofman@ivitera.com>
+Subject: Re-reading alsa-lib configuration when opening sound
+	device
+Date: Sun, 30 Sep 2018 18:28:13 +0200
+Message-ID: <ccfa9b8a-9aae-1dda-d127-d8c7d3efcc94@ivitera.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from coldfix.de (coldfix.de [37.120.171.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 4BC8F2676A7
- for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2018 16:32:32 +0200 (CEST)
-Received: from [192.168.0.66] (aftr-95-222-25-66.unity-media.net
- [95.222.25.66]) by coldfix.de (Postfix) with ESMTPSA id DB8885F733
- for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2018 16:31:32 +0200 (CEST)
-Content-Language: en-US-large
+Received: from cable.insite.cz (cable.insite.cz [84.242.75.189])
+ by alsa0.perex.cz (Postfix) with ESMTP id 872CD267772
+ for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2018 18:28:24 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+ by cable.insite.cz (Postfix) with ESMTP id D4F76A1A40B02
+ for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2018 18:28:23 +0200 (CEST)
+Received: from cable.insite.cz ([84.242.75.189])
+ by localhost (server.insite.cz [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id gBaT_rnnqWGd for <alsa-devel@alsa-project.org>;
+ Sun, 30 Sep 2018 18:28:18 +0200 (CEST)
+Received: from [192.168.105.12] (ip28.insite.cz [81.0.237.28])
+ (Authenticated sender: pavel)
+ by cable.insite.cz (Postfix) with ESMTPSA id 50847A1A40B01
+ for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2018 18:28:18 +0200 (CEST)
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,37 +36,38 @@ List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-on both my desktop and laptop (archlinux), `alsactl monitor` beginns
-spinning at 100% cpu when I unplug my USB headset. This happens every
-time and can be reproduced as follows:
+I am playing with virtual balanced inputs 
+https://www.diyaudio.com/forums/pc-based/326747-virtual-balanced-regular-soundcard-linux-results.html 
+. For proper functionality it needs a regular recalibration of the 
+ttable multiplication coefficients of route plugin in .asoundrc.
 
-- plug in USB headphones
-- start `alsactl monitor`
-- unplug headphones
+The audio stack is alsa -> wine -> Arta measurement software. When I 
+stop measuring in arta (without exiting the software), the soundcard 
+gets closed - confirmed in /proc/asound/.../hw_params. Now I change the 
+ttable coeffs. After re-opening the device (continuing with measurement 
+in the running arta instance) the changes in .asoundrc are ignored. I 
+have to restart the arta application for the changes to take effect.
 
-It happens only if the headphones are already plugged in when starting
-alsactl.
+When I run e.g. aplay inbetween, it accepts the changes right away. Upon 
+continuing in arta, the original ttable coeffs are still loaded for this 
+instance.
 
-The increased activity does not lead to spamming stdout or similar,
-alsactl continues to perform seemingly correct, i.e. reports when I
-change volume levels etc, but nothing apart from the ordinary.
+I understand it is the way wine handles the device somewhere in 
+https://github.com/wine-mirror/wine/blob/master/dlls/winealsa.drv/mmdevdrv.c 
+.
 
-I'm sorry if this is not the right place to report this issue or if the
-problem is already, I couldn't find anything about it.
+Please when is the alsa-lib config loaded by the library/application? Is 
+there any way to force a config reload from outside?
 
+Would e.g. calling snd_config_update before snd_pcm_open on line 
+https://github.com/wine-mirror/wine/blob/master/dlls/winealsa.drv/mmdevdrv.c#L827 
+  help? If so, what overhead does it impose? Perhaps I could ask the 
+wine guys to consider such change if it worked and required minimum 
+overhead.
 
-Below is the output from alsa-info.sh:
-
-with headphones:
-
-http://www.alsa-project.org/db/?f=0dfc632e3adafb8bc78a182e0a225bcb13bea9fa
-
-after unplugging:
-
-http://www.alsa-project.org/db/?f=41dbf0735fdd7cd2416a6b4a602505715d25b44f
-
-Please let me know if you need further info.
-
+I very much appreciate any help.
 
 Best regards,
-Thomas
+
+
+Pavel.
