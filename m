@@ -1,7 +1,7 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 01/11] ALSA: hda/ca0132 - Fix AE-5 control type
-Date: Sat, 29 Sep 2018 23:03:16 -0400
-Message-ID: <1538276607-30234-2-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 03/11] ALSA: hda/ca0132 - Add ZxR quirks + new quirk check function
+Date: Sat, 29 Sep 2018 23:03:18 -0400
+Message-ID: <1538276607-30234-4-git-send-email-conmanx360@gmail.com>
 References: <1538276607-30234-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1538276607-30234-1-git-send-email-conmanx360@gmail.com>
@@ -9,35 +9,67 @@ Sender: linux-kernel-owner@vger.kernel.org
 Cc: conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch corrects the control type of the additional AE-5 controls
-added in a previous patch from HDA_INPUT to HDA_OUTPUT.
+This patch adds quirk ID's for the ZxR and it's daughter board, the
+DBPro. It also adds a function for determining the quirk for each board
+through HDA subsytem ID's instead of PCI subsystem ID's.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 225aa05..aebc592 100644
+index 5a3fb56..08dd85d 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -6109,7 +6109,7 @@ static int ae5_add_headphone_gain_enum(struct hda_codec *codec)
+@@ -1071,6 +1071,8 @@ enum {
+ 	QUIRK_ALIENWARE,
+ 	QUIRK_ALIENWARE_M17XR4,
+ 	QUIRK_SBZ,
++	QUIRK_ZXR,
++	QUIRK_ZXR_DBPRO,
+ 	QUIRK_R3DI,
+ 	QUIRK_R3D,
+ 	QUIRK_AE5,
+@@ -8376,6 +8378,29 @@ static int ca0132_prepare_verbs(struct hda_codec *codec)
+ 	return 0;
+ }
+ 
++/*
++ * The Sound Blaster ZxR shares the same PCI subsystem ID as some regular
++ * Sound Blaster Z cards. However, they have different HDA codec subsystem
++ * ID's. So, we check for the ZxR's subsystem ID, as well as the DBPro
++ * daughter boards ID.
++ */
++static void sbz_detect_quirk(struct hda_codec *codec)
++{
++	struct ca0132_spec *spec = codec->spec;
++
++	switch (codec->core.subsystem_id) {
++	case 0x11020033:
++		spec->quirk = QUIRK_ZXR;
++		break;
++	case 0x1102003f:
++		spec->quirk = QUIRK_ZXR_DBPRO;
++		break;
++	default:
++		spec->quirk = QUIRK_SBZ;
++		break;
++	}
++}
++
+ static int patch_ca0132(struct hda_codec *codec)
  {
- 	struct snd_kcontrol_new knew =
- 		HDA_CODEC_MUTE_MONO("AE-5: Headphone Gain",
--				    AE5_HEADPHONE_GAIN_ENUM, 1, 0, HDA_INPUT);
-+				    AE5_HEADPHONE_GAIN_ENUM, 1, 0, HDA_OUTPUT);
- 	knew.info = ae5_headphone_gain_info;
- 	knew.get = ae5_headphone_gain_get;
- 	knew.put = ae5_headphone_gain_put;
-@@ -6126,7 +6126,7 @@ static int ae5_add_sound_filter_enum(struct hda_codec *codec)
- {
- 	struct snd_kcontrol_new knew =
- 		HDA_CODEC_MUTE_MONO("AE-5: Sound Filter",
--				    AE5_SOUND_FILTER_ENUM, 1, 0, HDA_INPUT);
-+				    AE5_SOUND_FILTER_ENUM, 1, 0, HDA_OUTPUT);
- 	knew.info = ae5_sound_filter_info;
- 	knew.get = ae5_sound_filter_get;
- 	knew.put = ae5_sound_filter_put;
+ 	struct ca0132_spec *spec;
+@@ -8401,6 +8426,9 @@ static int patch_ca0132(struct hda_codec *codec)
+ 	else
+ 		spec->quirk = QUIRK_NONE;
+ 
++	if (spec->quirk == QUIRK_SBZ)
++		sbz_detect_quirk(codec);
++
+ 	spec->dsp_state = DSP_DOWNLOAD_INIT;
+ 	spec->num_mixers = 1;
+ 
 -- 
 2.7.4
