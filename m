@@ -1,54 +1,50 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH 00/11] Add ZxR support + bugfixes
-Date: Mon, 1 Oct 2018 23:03:28 +0900
-Message-ID: <f6aa819a-3db4-e457-8856-ad2debc85947@sakamocchi.jp>
-References: <1538276607-30234-1-git-send-email-conmanx360@gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: qdsp6: q6asm-dai: checking NULL vs
+	IS_ERR()
+Date: Mon, 1 Oct 2018 19:44:30 +0300
+Message-ID: <20181001164430.GA29197@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1538276607-30234-1-git-send-email-conmanx360@gmail.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Connor McAdams <conmanx360@gmail.com>
-Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 776ED2678BA
+ for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2018 18:44:50 +0200 (CEST)
+Content-Disposition: inline
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Patrick Lai <plai@codeaurora.org>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The q6asm_audio_client_alloc() doesn't return NULL, it returns error
+pointers.
 
-On Sep 30 2018 12:03, Connor McAdams wrote:
-> This patch series adds support for the Sound Blaster ZxR, as well as a
-> few bug fixes. This should be the last ca0132 based Creative card that
-> needed support to be added.
-> 
-> Also, I did check to make sure each patch compiles properly this time,
-> but you can check yourself just to be sure. :)
-> 
-> Connor McAdams (11):
->    ALSA: hda/ca0132 - Fix AE-5 control type
->    ALSA: hda/ca0132 - Fix surround sound with output effects
->    ALSA: hda/ca0132 - Add ZxR quirks + new quirk check function
->    ALSA: hda/ca0132 - Add ZxR pincfg
->    ALSA: hda/ca0132 - Add DBpro hda_codec_ops
->    ALSA: hda/ca0132 - Add ZxR init commands
->    ALSA: hda/ca0132 - Add ZxR DSP post-download commands
->    ALSA: hda/ca0132 - Add ZxR input/output select commands
->    ALSA: hda/ca0132 - Remove input select enum for ZxR
->    ALSA: hda/ca0132 - Add ZxR 600 ohm gain control
->    ALSA: hda/ca0132 - Add ZxR exit commands
-> 
->   sound/pci/hda/patch_ca0132.c | 369 ++++++++++++++++++++++++++++++++++++++++---
->   1 file changed, 345 insertions(+), 24 deletions(-)
+Fixes: 2a9e92d371db ("ASoC: qdsp6: q6asm: Add q6asm dai driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-I reviewed the above patches and they looks good to be merged to
-upstream.
-
-Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-
-I've already point some nitpickings but they can be solved
-after merging them till next merge window.
-
-
-Thanks
-
-Takashi Sakamoto
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index c3806d7037fc..a16c71c03058 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -318,10 +318,11 @@ static int q6asm_dai_open(struct snd_pcm_substream *substream)
+ 	prtd->audio_client = q6asm_audio_client_alloc(dev,
+ 				(q6asm_cb)event_handler, prtd, stream_id,
+ 				LEGACY_PCM_MODE);
+-	if (!prtd->audio_client) {
++	if (IS_ERR(prtd->audio_client)) {
+ 		pr_info("%s: Could not allocate memory\n", __func__);
++		ret = PTR_ERR(prtd->audio_client);
+ 		kfree(prtd);
+-		return -ENOMEM;
++		return ret;
+ 	}
+ 
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
