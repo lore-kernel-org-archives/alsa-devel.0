@@ -1,109 +1,75 @@
-From: Andy Davison <andy@dvsn.net>
-Subject: Re: Fixing EAPD for STAC9202 on an embedded platform.
-Date: Mon, 1 Oct 2018 01:15:56 +0100
-Message-ID: <9C6C4A8F-E456-4CBF-A782-7DEF992668B5@dvsn.net>
-References: <BCFAA68D-E8B6-4D2F-85DB-73A3B2F82C1A@dvsn.net>
- <s5hva7d1i8y.wl-tiwai@suse.de>
- <00C65088-E8BE-447B-A6A2-88B1BABC41D0@dvsn.net>
- <s5hlg892j0a.wl-tiwai@suse.de>
- <5127F8D0-09C1-4840-939E-FBAED6474675@dvsn.net>
- <s5hefe037gv.wl-tiwai@suse.de>
- <3C3DAB5C-7CF4-445C-9C83-45C1C6B8A167@dvsn.net>
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com
- [209.85.221.47])
- by alsa0.perex.cz (Postfix) with ESMTP id A90AD267842
- for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2018 02:15:58 +0200 (CEST)
-Received: by mail-wr1-f47.google.com with SMTP id z4-v6so10486300wrb.1
- for <alsa-devel@alsa-project.org>; Sun, 30 Sep 2018 17:15:58 -0700 (PDT)
-In-Reply-To: <3C3DAB5C-7CF4-445C-9C83-45C1C6B8A167@dvsn.net>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 05/11] ALSA: hda/ca0132 - Add DBpro hda_codec_ops
+Date: Mon, 1 Oct 2018 11:10:35 +0900
+Message-ID: <77622218-5fb8-384b-8e1a-bf55f74ea9ba@sakamocchi.jp>
+References: <1538276607-30234-1-git-send-email-conmanx360@gmail.com>
+ <1538276607-30234-6-git-send-email-conmanx360@gmail.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1538276607-30234-6-git-send-email-conmanx360@gmail.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Connor McAdams <conmanx360@gmail.com>
+Cc: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgYWxsLAoKPiBPbiAyMCBTZXAgMjAxOCwgYXQgMDI6MzEsIEFuZHkgRGF2aXNvbiA8YW5keUBk
-dnNuLm5ldD4gd3JvdGU6Cgpbc25pcF0KCj4+Pj4gSXMgaXQgcmVhbGx5IGFib3V0IEVBUEQsIG9y
-IGlzIGl0IGFib3V0IHRoZSBqYWNrIGRldGVjdGlvbiBsb2dpYyBvcgo+Pj4+IHRoZSBpbmNvcnJl
-Y3QgcGluIGNvbmZpZz8KPj4+IAo+Pj4gVGhhdOKAmXMgYSBnb29kIHF1ZXN0aW9uLgo+Pj4gCj4+
-PiAKPj4+PiBUaGUgZmlyc3QgaXRlbSwgdGhlIG1pc3NpbmcgTE8gLyBIUCBkZXRlY3Rpb24gcmF0
-aGVyIGluZGljYXRlcyB0aGUgcGluCj4+Pj4gY29uZmlnIGlzc3VlLiAgV2hhdCBpcyB0aGUgbGlu
-ZSBvdXQgcGluIGFuZCB3aGF0IGlzIHRoZSBoZWFkcGhvbmUgcGluPwo+Pj4gCj4+PiBJ4oCZdmUg
-bWFuYWdlZCB0byBncmFiIHRoZSBjb2RlYyBpbmZvcm1hdGlvbiBmcm9tIHRoZSBvcmlnaW5hbCwg
-dmVyeSBjdXQtZG93biwgb3BlcmF0aW5nIHN5c3RlbToKPj4+IAo+Pj4gaHR0cHM6Ly9naXN0Lmdp
-dGh1Yi5jb20vYW5keWR2c24vNDc2NDA3MzlkOTExYWJjMjNjYzZmYzgzOGE1OWE0MDQjZmlsZS1j
-b2RlYy0wCj4+IAo+PiBJIHNlZSBubyBwYXRjaCBmaWxlLiAgRGlkIHlvdSBmaWd1cmUgb3V0IHdo
-aWNoIHBpbiBOSUQgaXMgZm9yIHRoZSBsaW5lCj4+IG91dCwgd2hpY2ggcGluIE5JRCBmb3IgaGVh
-ZHBob25lLCBhbmQgd2hpY2ggZm9yIGludCBhbmQgZXh0IG1pY3M/Cj4gCj4gRm9yIG91dHB1dCwg
-ZnJvbSB0aGUgYm9hcmQgaXQgbG9va3MgYXMgdGhvdWdoIDB4MGEgKFBPUlRBX0wgJiBQT1JUQV9S
-KSBhbmQgMHgwZCAoUE9SVERfTCAmIFBPUlREX1IpIGFyZSB0aGUgb25seSBvdXRwdXQgY29ubmVj
-dGlvbnMuIE5JRCAweDBkIGxvb2tzIGFzIHRob3VnaCBpdCBmZWVkcyB0aGUgaW50ZXJuYWwgYW1w
-bGlmaWVyOyBJIGNhbuKAmXQgZW50aXJlbHkgYXNjZXJ0YWluIHRoZSBwdXJwb3NlIG9mIDB4MGEu
-IElmIEkgbWFyayAweDBhIGFzIG5vdCBjb25uZWN0ZWQgaW4gaGRhamFja3JldGFzaywgaW50ZXJu
-YWwgc3BlYWtlciBtdXRpbmcgc3RvcHMgd29ya2luZywgdGhvdWdoIGl0IGFwcGVhcnMgdG8gbGVh
-ZCB0byBhbiB1bnBvcHVsYXRlZCBhcmVhIG9mIHRoZSBib2FyZC4KPiAKPiBIZXJlIGlzIHRoZSBw
-aW5vdXQgYXMgYmVzdCBJIGNhbiBtYWtlIG91dDogaHR0cHM6Ly9pLmltZ3VyLmNvbS9sTzhocWM4
-LnBuZwo+IAo+IFRoaXMgaXMgdGhlIG1haW4gYm9hcmQgKGZyb250KTogaHR0cHM6Ly9pLmltZ3Vy
-LmNvbS9DdllrTTdHLmpwZwo+IAo+IFRoaXMgaXMgdGhlIG1haW4gYm9hcmQgKHJlYXIpOiBodHRw
-czovL2kuaW1ndXIuY29tL2ZZSm9yOXMuanBnCj4gCj4gCj4+IFlvdSBjYW4gdXNlIGhkYWphY2ty
-ZXRhc2sgcHJvZ3JhbSB0byBpZGVudGlmeSBhbmQgcmVwcm9ncmFtIHRoZSBwaW4KPj4gY29uZmln
-cy4gIEF0IGxlYXN0LCB0aGUgcGlucyBmb3IgSS9PIHdpdGggdGhlIGFjdHVhbCBqYWNrcyBjYW4g
-YmUKPj4gaWRlbnRpZmllZCB3aXRoIGEgamFjayBkZXRlY3Rpb24gKHBsdWdnaW5nIC8gdW5wbHVn
-Z2luZykuCj4gCj4gVGhpcyBwYXRjaCBtYWtlcyBzZW5zZSBmcm9tIGEgbGFiZWxsaW5nIHBlcnNw
-ZWN0aXZlLCBidXQgSeKAmW0gc3VzcGljaW91cyB0aGF0IHNlcGFyYXRlIEhQL0xPIGFuZCBpbnRl
-cm5hbCBzcGVha2VyIHZvbHVtZXMgbWF5IG5vdCBiZSBwb3NzaWJsZSwgYXMgaWYgMHgwZCBmZWVk
-cyB0aGUgaW50ZXJuYWwgYW1wbGlmaWVyLCBJIGFzc3VtZSB0aGVyZSBpcyBubyBpbmRpdmlkdWFs
-IGxldmVsIGNvbnRyb2wuCj4gCj4gaHR0cHM6Ly9naXN0LmdpdGh1Yi5jb20vYW5keWR2c24vMTZi
-Zjc3NGQyMzZmZGVhYTVkZTIyYWIwMzc4NjQzYzMKPiAKPiBBcyBkZXNjcmliZWQgaW4gdGhlIHBh
-dGNoLCB0aGlzIGRvZXNu4oCZdCBmaXggdGhlIHVuZGVybHlpbmcgaXNzdWUgb2YgYW1wbGlmaWVk
-IGNpcmN1aXQgbm9pc2UgdGhyb3VnaCB0aGUgbXV0ZWQgaW50ZXJuYWwgc3BlYWtlcnMuIElmIHRo
-YXQgY291bGQgYmUgc29sdmVkLCBldmVyeXRoaW5nIHdvdWxkIGJlIHdvcmtpbmcgY29ycmVjdGx5
-LiBUaGUga2VybmVsIDMuMTggcGF0Y2ggYXBwZWFycyB0byBoYXZlIHJlbGllZCB1cG9uIDB4MDcg
-Zm9yIHRoaXMgc3dpdGNoaW5nLCBidXQgSeKAmXZlIGhhZCBubyBsdWNrIGNvbmZpZ3VyaW5nIHRo
-aXMgc28gZmFyLgo+IAo+IAo+Pj4gSG9wZWZ1bGx5IHRoYXQgb3V0cHV0IG1ha2VzIHNlbnNlIGFz
-IHRvIHdoYXQgYXJlIHRoZSBpbnRlcm5hbCBzcGVha2VycyBhbmQgd2hpY2ggaXMgdGhlIExPIC8g
-SFAgamFjayBzb2NrZXQuCj4+PiAKPj4+IAo+Pj4+IERvZXMgdGhlIHN0YW5kYXJkIGphY2sgZGV0
-ZWN0aW9uIG1lY2hhbmlzbSB3b3JrIGZvciB0aGVtIGluZGl2aWR1YWxseT8KPj4+PiAKPj4+PiBM
-ZXQncyBzdGFydCBmcm9tIHRoYXQuCj4+PiAKPj4+IEnigJltIG5vdCBzdXJlIGhvdyBJIHdvdWxk
-IGdvIGFib3V0IHRlc3RpbmcgdGhhdDsgd2l0aCBubyBwYXRjaGVzLCBpbnNlcnRpbmcgYW55dGhp
-bmcgaW50byB0aGUgMy41bW0gamFjayBzb2NrZXQgZG9lc27igJl0IGFwcGVhciB0byBhZmZlY3Qg
-dGhlIHN5c3RlbSBhdCBhbGwuCj4+PiAKPj4+IAo+Pj4+IFRoZSBmYWN0IHRoYXQgdGhlIHBhdGNo
-X3N0YWM5MjV4KCkgc2V0cyBvd25fZWFwZF9jdHJsIGZsYWcgbWVhbnMgdGhhdAo+Pj4+IHRoZXJl
-IGlzICpubyogZHluYW1pYyBFQVBEIGJpdCBmbGlwIGFzIGRvbmUgaW4gdGhlIGdlbmVyaWMgZHJp
-dmVyLgo+Pj4+IFRoYXQgaXMsIGl0J3MganVzdCBrZXB0IGFzIHNldCBpbiB0aGUgaW5pdGlhbGl6
-ZWQgc3RhdGUuICBJZiBFQVBEIGlzIGEKPj4+PiBtdXN0IGZvciBzb21lIG91dHB1dHMsIGl0IGhh
-cyB0byBiZSBzZXQgZWl0aGVyIHN0YXRpY2FsbHkgb3IKPj4+PiBkeW5hbWljYWxseS4gIEJ1dCB5
-b3UgY2FuIGhlYXIgc29tZXRoaW5nIGlmIHRoZSBhdXRvLW11dGUgaXMgb2ZmLCBhbmQKPj4+PiBp
-dCBpbXBsaWVzIHRoYXQgRUFQRCBkb2Vzbid0IG1hdHRlciwgYWN0dWFsbHkuCj4+PiAKPj4+IEFo
-LCBva2F5LiBUaGF04oCZcyBpbnRlcmVzdGluZyAtIHllcywgd2l0aCBhdXRvLW11dGUgZGlzYWJs
-ZWQgdGhlIGF1ZGlvIGNvbWVzIHRocm91Z2ggdGhlIExPIC8gSFAgc29ja2V0IGp1c3QgZmluZS4g
-SXTigJlzIG9ubHkgd2hlbiB0aGUgYXV0by1tdXRlIGlzIGFjdGl2ZSB0aGF0IHRoZXJl4oCZcyB0
-aGUgaXNzdWUgd2l0aCBjcmFja2xpbmcuCj4+IAo+PiBUaGUgY3JhY2tsaW5nIGlzIG9mdGVuIGJl
-Y2F1c2Ugb2Ygc29tZSBiYWQgcm91dGluZyBmcm9tIGFuYWxvZwo+PiBsb29wYmFjay4gIFNlZSB3
-aGV0aGVyIHRoZSBsb29wYmFjayBpcyBlbmFibGVkIHVubmVjZXNzYXJpbHkuCj4gCj4gVGhlcmUg
-ZG9lc27igJl0IGFwcGVhciB0byBiZSBhIGxvb3BiYWNrIGVudHJ5IGluIGFsc2FtaXhlciBvciBh
-bWl4ZXIsIHNvIEnigJltIHVuY2VydGFpbiBvbiBob3cgdG8gY2hlY2sgZm9yIHRoaXMuCj4gCj4g
-VGhhbmsgeW91IGZvciB5b3VyIGhlbHAsIEkgcmVhbGx5IHdhbnQgdG8gZ2V0IHRvIHRoZSBib3R0
-b20gb2YgdGhpcyEKCklzIHRoZXJlIGFueSBtb3JlIGluZm9ybWF0aW9uIEkgY2FuIGJlIHByb3Zp
-ZGluZyB0aGF0IG1pZ2h0IGhlbHAgb3V0IHdpdGggcmVzb2x2aW5nIHRoaXMgaXNzdWU/IEnigJl2
-ZSBzdGlsbCBoYWQgbm8gbHVjayBpbiBjb21wbGV0ZWx5IHNodXR0aW5nIGRvd24gdGhlIG91dHB1
-dCB0byB0aGUgaW50ZXJuYWwgc3BlYWtlcnMgb24gdGhpcyBkZXZpY2Ugd2hlbiBhIGxpbmUgb3V0
-IGlzIGNvbm5lY3RlZCwgdGhvdWdoIHBpbiBkZXRlY3Rpb24gZm9yIG11dGluZyBpcyB3b3JraW5n
-IGZpbmUuIFRoZSBhdWRpbyBzaWduYWwgZ2V0cyBtdXRlZCBidXQgdGhlIGNpcmN1aXQgbm9pc2Ug
-Y3JhY2tsZSBhcHBlYXJzIGV2ZXJ5IHRpbWUuCgpGcm9tIHRoZSBvcmlnaW5hbCBwYXRjaCAweDA3
-IHdvdWxkIHNlZW0gdG8gYmUgaW52b2x2ZWQgaW4gdGhpcyBzd2l0Y2hpbmcsIHRob3VnaCBob3cg
-SSBnZXQgdGhpcyB3b3JraW5nIGlzIGJleW9uZCBtZS4KClRoYW5rcyBhZ2FpbiwKCiAgICAgQS4K
-CgoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1k
-ZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+On Sep 30 2018 12:03, Connor McAdams wrote:
+> This patch adds separate hda_codec_ops for the DBPro daughter board, as
+> it behaves more like a generic HDA codec than the other ca0132 cards,
+> despite having a ca0132 on board.
+> 
+> Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+> ---
+>   sound/pci/hda/patch_ca0132.c | 100 +++++++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 100 insertions(+)
+> 
+> diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+> index 4d23eb9..a543b23 100644
+> --- a/sound/pci/hda/patch_ca0132.c
+> +++ b/sound/pci/hda/patch_ca0132.c
+> ...
+> @@ -8192,6 +8282,13 @@ static const struct hda_codec_ops ca0132_patch_ops = {
+> ...
+> +
+>   static void ca0132_config(struct hda_codec *codec)
+>   {
+>   	struct ca0132_spec *spec = codec->spec;
+> @@ -8488,6 +8585,9 @@ static int patch_ca0132(struct hda_codec *codec)
+>   		spec->mixers[0] = desktop_mixer;
+>   		snd_hda_codec_set_name(codec, "Sound Blaster Z");
+>   		break;
+> +	case QUIRK_ZXR_DBPRO:
+> +		codec->patch_ops = dbpro_patch_ops;
+> +		break;
+
+This patch looks good to me, but in a view of prevention from
+errors in future work (you will do), it's not better to assign to
+'struct hda_codec.patch_ops' in different lines which have larger
+distance.
+
+8551 static int patch_ca0132(struct hda_codec *codec)
+8552 {
+...
+8565         codec->patch_ops = ca0132_patch_ops;
+...
+8588         case QUIRK_ZXR_DBPRO:
+8589                 codec->patch_ops = dbpro_patch_ops;
+...
+
+This is not a strong request but I recommend you to reorder procedures 
+done in 'patch_ca0132()' so that:
+
+patch_ca0132()
+->kzalloc(sizeof(struct ca0132_spec))
+->snd_pci_quirk_lookup() and sbz_detect_quirk()
+->'codec' preparation (assignment to members in hda_codec, etc.)
+->'spec' preparation (assignment to members in ca0132_spec, etc.)
+
+
+Regards
+
+Takashi Sakamoto
