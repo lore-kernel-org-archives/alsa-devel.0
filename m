@@ -1,82 +1,73 @@
-From: Rob Herring <robh@kernel.org>
-Subject: [PATCH] ASoC: Convert a few more users to using %pOFn instead of device_node.name
-Date: Mon,  1 Oct 2018 16:43:48 -0500
-Message-ID: <20181001214351.13230-1-robh@kernel.org>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: linux-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Olivier Moysan <olivier.moysan@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre Torgue <alexandre.torgue@st.com>, alsa-devel@alsa-project.org, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: snd_pcm_poll_descriptors() error return
+Date: Tue, 2 Oct 2018 08:32:10 +0900
+Message-ID: <c078e4c7-68a0-62d8-5df4-2d687efafbc8@sakamocchi.jp>
+References: <201810012223.09054.gineera@aspect135.co.uk>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com
+ [209.85.215.173])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3EBAB2676A7
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2018 01:32:14 +0200 (CEST)
+Received: by mail-pg1-f173.google.com with SMTP id c10-v6so71294pgq.4
+ for <alsa-devel@alsa-project.org>; Mon, 01 Oct 2018 16:32:14 -0700 (PDT)
+In-Reply-To: <201810012223.09054.gineera@aspect135.co.uk>
+Content-Language: en-US
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Alan Horstmann <gineera@aspect135.co.uk>, alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-In preparation to remove the node name pointer from struct device_node,
-convert printf users to use the %pOFn format specifier.
+Hi,
 
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Olivier Moysan <olivier.moysan@st.com>
-Cc: Arnaud Pouliquen <arnaud.pouliquen@st.com>
-Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
-Cc: Alexandre Torgue <alexandre.torgue@st.com>
-Cc: alsa-devel@alsa-project.org
-Cc: linux-stm32@st-md-mailman.stormreply.com
-Cc: linux-arm-kernel@lists.infradead.org
-Signed-off-by: Rob Herring <robh@kernel.org>
----
- sound/soc/mediatek/mt6797/mt6797-afe-pcm.c | 2 +-
- sound/soc/mediatek/mt8173/mt8173-afe-pcm.c | 2 +-
- sound/soc/stm/stm32_sai.c                  | 8 ++++----
- 3 files changed, 6 insertions(+), 6 deletions(-)
+On Oct 02 2018 06:23, Alan Horstmann wrote:
+> A user of the Portaudio library is reporting that from Alsa version 1.1.4 the
+> function snd_pcm_poll_descriptors() can return -32 (Broken Pipe), and this
+> fails an assert within Portaudio.  Earlier 1.1.3 does not seem to  show this
+> issue.  For more details, see
+> https://app.assembla.com/spaces/portaudio/support/tickets/268.
+> 
+> The Alsa docs don't mention any possible negative error code from this
+> function - has the behaviour changed, or is it likely something else is
+> triggering the difference?
 
-diff --git a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-index 192f4d7b37b6..bff7d71d0742 100644
---- a/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-+++ b/sound/soc/mediatek/mt6797/mt6797-afe-pcm.c
-@@ -828,7 +828,7 @@ static int mt6797_afe_pcm_dev_probe(struct platform_device *pdev)
- 	/* request irq */
- 	irq_id = platform_get_irq(pdev, 0);
- 	if (!irq_id) {
--		dev_err(dev, "%s no irq found\n", dev->of_node->name);
-+		dev_err(dev, "%pOFn no irq found\n", dev->of_node);
- 		return -ENXIO;
- 	}
- 	ret = devm_request_irq(dev, irq_id, mt6797_afe_irq_handler,
-diff --git a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-index c0b6697503fd..166aed28330d 100644
---- a/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-+++ b/sound/soc/mediatek/mt8173/mt8173-afe-pcm.c
-@@ -1092,7 +1092,7 @@ static int mt8173_afe_pcm_dev_probe(struct platform_device *pdev)
- 
- 	irq_id = platform_get_irq(pdev, 0);
- 	if (irq_id <= 0) {
--		dev_err(afe->dev, "np %s no irq\n", afe->dev->of_node->name);
-+		dev_err(afe->dev, "np %pOFn no irq\n", afe->dev->of_node);
- 		return irq_id < 0 ? irq_id : -ENXIO;
- 	}
- 	ret = devm_request_irq(afe->dev, irq_id, mt8173_afe_irq_handler,
-diff --git a/sound/soc/stm/stm32_sai.c b/sound/soc/stm/stm32_sai.c
-index d597eba61992..bcb35cae2a2c 100644
---- a/sound/soc/stm/stm32_sai.c
-+++ b/sound/soc/stm/stm32_sai.c
-@@ -74,14 +74,14 @@ static int stm32_sai_sync_conf_provider(struct stm32_sai_data *sai, int synco)
- 		return ret;
- 	}
- 
--	dev_dbg(&sai->pdev->dev, "Set %s%s as synchro provider\n",
--		sai->pdev->dev.of_node->name,
-+	dev_dbg(&sai->pdev->dev, "Set %pOFn%s as synchro provider\n",
-+		sai->pdev->dev.of_node,
- 		synco == STM_SAI_SYNC_OUT_A ? "A" : "B");
- 
- 	prev_synco = FIELD_GET(SAI_GCR_SYNCOUT_MASK, readl_relaxed(sai->base));
- 	if (prev_synco != STM_SAI_SYNC_OUT_NONE && synco != prev_synco) {
--		dev_err(&sai->pdev->dev, "%s%s already set as sync provider\n",
--			sai->pdev->dev.of_node->name,
-+		dev_err(&sai->pdev->dev, "%pOFn%s already set as sync provider\n",
-+			sai->pdev->dev.of_node,
- 			prev_synco == STM_SAI_SYNC_OUT_A ? "A" : "B");
- 		clk_disable_unprepare(sai->pclk);
- 		return -EINVAL;
--- 
-2.17.1
+Return values from a call of 'snd_pcm_poll_descriptors()' varies
+depending on implementation of PCM plugins for used PCM node. Therefore
+it's impossible to cover all of the values in documentation.
+
+In a design of alsa-lib, 'snd_pcm_poll_descriptors()' is a thin wrapper
+of '.poll_descriptors' callback of internal/external structure of PCM
+plugins, therefore its behaviour is dynamically different depending on
+each implementation.
+
+For example, when using 'hw' PCM node directly, a call of this function
+can returns '-ENOMEM' or '2':
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_hw.c;h=59a242009e9f5f1098759305499eaa27bef6c1ab;hb=HEAD#l227
+
+When using 'dmix' PCM node, '-EIO', '0', '-EPIPE' and '1':
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_direct.c;h=2b07eff90ff6e12200e27a0d40378f29a7bf0d24;hb=HEAD#l668
+
+When using PCM node with external PCM plugins such as 'pulse',
+'snd_pcm_ioplug_create()' is called to instantiate plugin structure,
+and a call of 'snd_pcm_poll_descriptors()' can return '-EIO', '0', '1',
+and value depending on plugin implementation.
+http://git.alsa-project.org/?p=alsa-lib.git;a=blob;f=src/pcm/pcm_ioplug.c;h=881a1a85adaf09b4732375e2161b0a1ebb53900f;hb=HEAD#l772
+
+When having good discussion to investigate cause, discover solution for
+this kind of issues, you need to identify which PCM node triggers the
+issue, at least.
+
+
+Regards
+
+Takashi Sakamoto
