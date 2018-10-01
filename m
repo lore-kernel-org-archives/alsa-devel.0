@@ -1,15 +1,14 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [PATCH] ASoC: qdsp6: q6asm-dai: checking NULL vs
-	IS_ERR()
-Date: Mon, 1 Oct 2018 19:44:30 +0300
-Message-ID: <20181001164430.GA29197@mwanda>
+From: Alan Horstmann <gineera@aspect135.co.uk>
+Subject: snd_pcm_poll_descriptors() error return
+Date: Mon, 1 Oct 2018 22:23:08 +0100
+Message-ID: <201810012223.09054.gineera@aspect135.co.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
- by alsa0.perex.cz (Postfix) with ESMTP id 776ED2678BA
- for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2018 18:44:50 +0200 (CEST)
+Received: from smtp-out-6.talktalk.net (smtp-out-6.talktalk.net [62.24.135.70])
+ by alsa0.perex.cz (Postfix) with ESMTP id 618622676A7
+ for <alsa-devel@alsa-project.org>; Mon,  1 Oct 2018 23:21:55 +0200 (CEST)
 Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -20,31 +19,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Patrick Lai <plai@codeaurora.org>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-The q6asm_audio_client_alloc() doesn't return NULL, it returns error
-pointers.
+Hi,
 
-Fixes: 2a9e92d371db ("ASoC: qdsp6: q6asm: Add q6asm dai driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+A user of the Portaudio library is reporting that from Alsa version 1.1.4 the 
+function snd_pcm_poll_descriptors() can return -32 (Broken Pipe), and this 
+fails an assert within Portaudio.  Earlier 1.1.3 does not seem to  show this 
+issue.  For more details, see 
+https://app.assembla.com/spaces/portaudio/support/tickets/268.
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index c3806d7037fc..a16c71c03058 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -318,10 +318,11 @@ static int q6asm_dai_open(struct snd_pcm_substream *substream)
- 	prtd->audio_client = q6asm_audio_client_alloc(dev,
- 				(q6asm_cb)event_handler, prtd, stream_id,
- 				LEGACY_PCM_MODE);
--	if (!prtd->audio_client) {
-+	if (IS_ERR(prtd->audio_client)) {
- 		pr_info("%s: Could not allocate memory\n", __func__);
-+		ret = PTR_ERR(prtd->audio_client);
- 		kfree(prtd);
--		return -ENOMEM;
-+		return ret;
- 	}
- 
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+The Alsa docs don't mention any possible negative error code from this 
+function - has the behaviour changed, or is it likely something else is 
+triggering the difference?
+
+Regards
+
+Alan
