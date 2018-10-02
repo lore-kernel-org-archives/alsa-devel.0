@@ -1,48 +1,37 @@
-From: Bjorn Andersson <bjorn.andersson@linaro.org>
-Subject: Re: [PATCH] slimbus: ngd: QCOM_QMI_HELPERS has to be selected
-Date: Mon, 1 Oct 2018 20:57:40 -0700
-Message-ID: <20181002035740.GD5008@tuxbook-pro>
-References: <20181001101116.27281-1-niklas.cassel@linaro.org>
+From: Jenny TC <jenny.tc@intel.com>
+Subject: [PATCH 0/2] Introduce dmic mode switch delay parameter
+Date: Tue,  2 Oct 2018 11:27:29 +0530
+Message-ID: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20181001101116.27281-1-niklas.cassel@linaro.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Niklas Cassel <niklas.cassel@linaro.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>, elder@linaro.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id B384C26783D
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2018 08:04:13 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Mon 01 Oct 03:11 PDT 2018, Niklas Cassel wrote:
+Some DMICs need clock to be running for a specified duration as per the
+DMIC spec to complete the mode transition like sleep to mormal, off to normal
+etc.
 
-> QCOM_QMI_HELPERS is a hidden kconfig, so the proper usage is
-> to select it, not depend upon it.
-> 
-> Signed-off-by: Niklas Cassel <niklas.cassel@linaro.org>
+Jenny TC (2):
+  ASoC: dmic: Enable ACPI device entry
+  ASoC: dmic: Introduce mode switch delay
 
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+ sound/soc/codecs/dmic.c | 38 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-Regards,
-Bjorn
-
-> ---
->  drivers/slimbus/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/slimbus/Kconfig b/drivers/slimbus/Kconfig
-> index 9d73ad806698..9cca2c3559f2 100644
-> --- a/drivers/slimbus/Kconfig
-> +++ b/drivers/slimbus/Kconfig
-> @@ -22,8 +22,8 @@ config SLIM_QCOM_CTRL
->  
->  config SLIM_QCOM_NGD_CTRL
->  	tristate "Qualcomm SLIMbus Satellite Non-Generic Device Component"
-> -	depends on QCOM_QMI_HELPERS
->  	depends on HAS_IOMEM && DMA_ENGINE
-> +	select QCOM_QMI_HELPERS
->  	help
->  	  Select driver if Qualcomm's SLIMbus Satellite Non-Generic Device
->  	  Component is programmed using Linux kernel.
-> -- 
-> 2.17.1
-> 
+-- 
+1.9.1
