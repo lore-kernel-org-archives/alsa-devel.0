@@ -1,53 +1,71 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH linux-next 10/10] ASoC: rsnd: Add kctrl to configure dai's
- busif
-Date: Tue, 2 Oct 2018 17:19:55 +0900
-Message-ID: <abc5762e-8128-3a58-46e4-ca0f0072e7c0@mentor.com>
-References: <20180927051229.18080-1-jiada_wang@mentor.com>
- <87h8iatqrn.wl-kuninori.morimoto.gx@renesas.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: alsactl monitor spins at 100% cpu after unplugging
+ USB headphones
+Date: Tue, 2 Oct 2018 18:01:15 +0900
+Message-ID: <fbc30e1a-87b2-b22a-c3c6-dd7a424d2b75@sakamocchi.jp>
+References: <b240e23c-6be9-fd53-e62a-8ef65e5a9070@coldfix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87h8iatqrn.wl-kuninori.morimoto.gx@renesas.com>
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
+ [209.85.214.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9C086267819
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2018 11:01:20 +0200 (CEST)
+Received: by mail-pl1-f196.google.com with SMTP id p5-v6so661955plk.3
+ for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2018 02:01:20 -0700 (PDT)
+In-Reply-To: <b240e23c-6be9-fd53-e62a-8ef65e5a9070@coldfix.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, twischer@de.adit-jv.com, dragos_tarcatu@mentor.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: =?UTF-8?B?VGhvbWFzIEdsw6TDn2xl?= <thomas@coldfix.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san
-
-
-On 2018/09/28 9:29, Kuninori Morimoto wrote:
-> Hi Jiada
->
-> Thank you for your patch
->
->> ssi0, ssi1, ssi2, ssi3, ssi4 and ssi9 have busif0 to busif7,
->> currently only busif0 is used by all ssi.
->> But tdm split and tdm ex-split mode, which require busif1 to
->> busif7.
->>
->> This patch adds kctrl in ssi for dai-link, to make it possible
->> to configure the busif used by each dai-link.
->> Also adds rsnd_dma_addr_update() interface to make it possible
->> to update dma data address when there is change in condition
->> of dai connection.
->>
->> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->> ---
-> Do we really need to select BUSIF number by kctrl ??
-> In other words, does *all* user need to know detail of SSI BUSIF connection ?
-> I think it should be selected automatically somehow.
-after some reconsideration, I think selection of BUSIF can be done 
-automatically.
-
-BUSIF other than 0 is only necessary when SSI works in TDM 
-Split/Ex-Split mode.
-but currently rcar audio doesn't support these modes,
-I am planning in v2 update, add a dummy BUSIF selection function,
-which only selects busif0 for now
-
-Thanks,
-Jiada
+SGksCgpPbiBTZXAgMzAgMjAxOCAyMzozMiwgVGhvbWFzIEdsw6TDn2xlIHdyb3RlOgo+IG9uIGJv
+dGggbXkgZGVza3RvcCBhbmQgbGFwdG9wIChhcmNobGludXgpLCBgYWxzYWN0bCBtb25pdG9yYCBi
+ZWdpbm5zCj4gc3Bpbm5pbmcgYXQgMTAwJSBjcHUgd2hlbiBJIHVucGx1ZyBteSBVU0IgaGVhZHNl
+dC4gVGhpcyBoYXBwZW5zIGV2ZXJ5Cj4gdGltZSBhbmQgY2FuIGJlIHJlcHJvZHVjZWQgYXMgZm9s
+bG93czoKPiAKPiAtIHBsdWcgaW4gVVNCIGhlYWRwaG9uZXMKPiAtIHN0YXJ0IGBhbHNhY3RsIG1v
+bml0b3JgCj4gLSB1bnBsdWcgaGVhZHBob25lcwo+IAo+IEl0IGhhcHBlbnMgb25seSBpZiB0aGUg
+aGVhZHBob25lcyBhcmUgYWxyZWFkeSBwbHVnZ2VkIGluIHdoZW4gc3RhcnRpbmcKPiBhbHNhY3Rs
+Lgo+IAo+IFRoZSBpbmNyZWFzZWQgYWN0aXZpdHkgZG9lcyBub3QgbGVhZCB0byBzcGFtbWluZyBz
+dGRvdXQgb3Igc2ltaWxhciwKPiBhbHNhY3RsIGNvbnRpbnVlcyB0byBwZXJmb3JtIHNlZW1pbmds
+eSBjb3JyZWN0LCBpLmUuIHJlcG9ydHMgd2hlbiBJCj4gY2hhbmdlIHZvbHVtZSBsZXZlbHMgZXRj
+LCBidXQgbm90aGluZyBhcGFydCBmcm9tIHRoZSBvcmRpbmFyeS4KClRoYW5rIHlvdSBmb3IgdGhp
+cyByZXBvcnQgYW5kIEkgY2FuIHJlZ2VuZXJhdGUgdGhpcyBwcm9ibGVtLgoKJCBzdHJhY2UgYWxz
+YWN0bCBtb25pdG9yCi4uLgooZGlzY29ubmVjdCBteSBzb3VuZCBkZXZpY2UpCnBvbGwoW3tmZD0z
+LCBldmVudHM9UE9MTElOfFBPTExFUlJ8UE9MTE5WQUx9LCB7ZmQ9NCwgCmV2ZW50cz1QT0xMSU58
+UE9MTEVSUnxQT0xMTlZBTH0sIHtmZD01LCAKZXZlbnRzPVBPTExJTnxQT0xMRVJSfFBPTExOVkFM
+fV0sIDMsIC0xKSA9IDEgKFt7ZmQ9NSwgCnJldmVudHM9UE9MTEVSUnxQT0xMTlZBTH1dKQpwb2xs
+KFt7ZmQ9MywgZXZlbnRzPVBPTExJTnxQT0xMRVJSfFBPTExOVkFMfSwge2ZkPTQsIApldmVudHM9
+UE9MTElOfFBPTExFUlJ8UE9MTE5WQUx9LCB7ZmQ9NSwgCmV2ZW50cz1QT0xMSU58UE9MTEVSUnxQ
+T0xMTlZBTH1dLCAzLCAtMSkgPSAxIChbe2ZkPTUsIApyZXZlbnRzPVBPTExFUlJ8UE9MTE5WQUx9
+XSkKLi4uCgpUaGlzIGlzIGEgYnVnIG9mIGFsc2FjdGwgZHVlIHRvIGhhbmRsaW5nIHJldHVybiBj
+b2RlIG9mIHBvbGwoMikgc3lzdGVtCmNhbGxbMV0uCgpJbiBhbiBvcGVyYXRpb24gdG8gQUxTQSBj
+b250cm9sIGNoYXJhY3RlciBkZXZpY2VzLCB3aGVuIGhhbmRsZWQgZGV2aWNlCmlzIGRpc2Nvbm5l
+Y3RlZCwgYSBjYWxsIG9mIHBvbGwoMikgcmV0dXJucyBwb3NpdGl2ZSB2YWx1ZSB0byBub3RpZnkK
+ZXZlbnRzIHdpdGggJ0VQT0xMRVJSIHwgRVBPTExOVkFMJ1syXS4KClNvb24gSSdsbCBwb3N0IGEg
+cGF0Y2ggdG8gaW1wcm92ZSB0aGlzIGJlaGF2aW91ciBvZiBhbHNhY3RsLgoKPiBJJ20gc29ycnkg
+aWYgdGhpcyBpcyBub3QgdGhlIHJpZ2h0IHBsYWNlIHRvIHJlcG9ydCB0aGlzIGlzc3VlIG9yIGlm
+IHRoZQo+IHByb2JsZW0gaXMgYWxyZWFkeSwgSSBjb3VsZG4ndCBmaW5kIGFueXRoaW5nIGFib3V0
+IGl0Lgo+IAo+IAo+IEJlbG93IGlzIHRoZSBvdXRwdXQgZnJvbSBhbHNhLWluZm8uc2g6Cj4gCj4g
+d2l0aCBoZWFkcGhvbmVzOgo+IAo+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj0w
+ZGZjNjMyZTNhZGFmYjhiYzc4YTE4MmUwYTIyNWJjYjEzYmVhOWZhCj4gCj4gYWZ0ZXIgdW5wbHVn
+Z2luZzoKPiAKPiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9NDFkYmYwNzM1ZmRk
+N2NkMjQxNmE2YjRhNjAyNTA1NzE1ZDI1YjQ0Zgo+IAo+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB5
+b3UgbmVlZCBmdXJ0aGVyIGluZm8uCgpZb3UgZGlkIGVub3VnaCBnb29kLiBUaGFuayB5b3UgYW5k
+IHdhaXQgZm9yIGEgd2hpbGUgdGlsbCBJJ2xsIGZpeCBpdC4KClsxXSAKaHR0cDovL2dpdC5hbHNh
+LXByb2plY3Qub3JnLz9wPWFsc2EtdXRpbHMuZ2l0O2E9YmxvYjtmPWFsc2FjdGwvbW9uaXRvci5j
+O2hiPUhFQUQjbDEyMApbMl0gCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9r
+ZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC90cmVlL3NvdW5kL2NvcmUvaW5pdC5jP2g9Zm9yLW5l
+eHQjbjM0NwoKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
+LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
+aW5mby9hbHNhLWRldmVsCg==
