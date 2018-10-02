@@ -1,20 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: alsactl monitor spins at 100% cpu after unplugging
- USB headphones
-Date: Tue, 2 Oct 2018 18:01:15 +0900
-Message-ID: <fbc30e1a-87b2-b22a-c3c6-dd7a424d2b75@sakamocchi.jp>
-References: <b240e23c-6be9-fd53-e62a-8ef65e5a9070@coldfix.de>
+Subject: Re: [PATCH - Multiple plugins 0/4] Fix leaks on
+	multiple plugins
+Date: Tue, 2 Oct 2018 18:18:31 +0900
+Message-ID: <0d8938c1-2e86-c228-44bf-44abe5411ef7@sakamocchi.jp>
+References: <20180928212727.15151-1-andre.guedes@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
  [209.85.214.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 9C086267819
- for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2018 11:01:20 +0200 (CEST)
-Received: by mail-pl1-f196.google.com with SMTP id p5-v6so661955plk.3
- for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2018 02:01:20 -0700 (PDT)
-In-Reply-To: <b240e23c-6be9-fd53-e62a-8ef65e5a9070@coldfix.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 48431267819
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2018 11:18:36 +0200 (CEST)
+Received: by mail-pl1-f196.google.com with SMTP id s4-v6so720929plp.0
+ for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2018 02:18:35 -0700 (PDT)
+In-Reply-To: <20180928212727.15151-1-andre.guedes@intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,47 +25,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: =?UTF-8?B?VGhvbWFzIEdsw6TDn2xl?= <thomas@coldfix.de>, alsa-devel@alsa-project.org
+To: Andre Guedes <andre.guedes@intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGksCgpPbiBTZXAgMzAgMjAxOCAyMzozMiwgVGhvbWFzIEdsw6TDn2xlIHdyb3RlOgo+IG9uIGJv
-dGggbXkgZGVza3RvcCBhbmQgbGFwdG9wIChhcmNobGludXgpLCBgYWxzYWN0bCBtb25pdG9yYCBi
-ZWdpbm5zCj4gc3Bpbm5pbmcgYXQgMTAwJSBjcHUgd2hlbiBJIHVucGx1ZyBteSBVU0IgaGVhZHNl
-dC4gVGhpcyBoYXBwZW5zIGV2ZXJ5Cj4gdGltZSBhbmQgY2FuIGJlIHJlcHJvZHVjZWQgYXMgZm9s
-bG93czoKPiAKPiAtIHBsdWcgaW4gVVNCIGhlYWRwaG9uZXMKPiAtIHN0YXJ0IGBhbHNhY3RsIG1v
-bml0b3JgCj4gLSB1bnBsdWcgaGVhZHBob25lcwo+IAo+IEl0IGhhcHBlbnMgb25seSBpZiB0aGUg
-aGVhZHBob25lcyBhcmUgYWxyZWFkeSBwbHVnZ2VkIGluIHdoZW4gc3RhcnRpbmcKPiBhbHNhY3Rs
-Lgo+IAo+IFRoZSBpbmNyZWFzZWQgYWN0aXZpdHkgZG9lcyBub3QgbGVhZCB0byBzcGFtbWluZyBz
-dGRvdXQgb3Igc2ltaWxhciwKPiBhbHNhY3RsIGNvbnRpbnVlcyB0byBwZXJmb3JtIHNlZW1pbmds
-eSBjb3JyZWN0LCBpLmUuIHJlcG9ydHMgd2hlbiBJCj4gY2hhbmdlIHZvbHVtZSBsZXZlbHMgZXRj
-LCBidXQgbm90aGluZyBhcGFydCBmcm9tIHRoZSBvcmRpbmFyeS4KClRoYW5rIHlvdSBmb3IgdGhp
-cyByZXBvcnQgYW5kIEkgY2FuIHJlZ2VuZXJhdGUgdGhpcyBwcm9ibGVtLgoKJCBzdHJhY2UgYWxz
-YWN0bCBtb25pdG9yCi4uLgooZGlzY29ubmVjdCBteSBzb3VuZCBkZXZpY2UpCnBvbGwoW3tmZD0z
-LCBldmVudHM9UE9MTElOfFBPTExFUlJ8UE9MTE5WQUx9LCB7ZmQ9NCwgCmV2ZW50cz1QT0xMSU58
-UE9MTEVSUnxQT0xMTlZBTH0sIHtmZD01LCAKZXZlbnRzPVBPTExJTnxQT0xMRVJSfFBPTExOVkFM
-fV0sIDMsIC0xKSA9IDEgKFt7ZmQ9NSwgCnJldmVudHM9UE9MTEVSUnxQT0xMTlZBTH1dKQpwb2xs
-KFt7ZmQ9MywgZXZlbnRzPVBPTExJTnxQT0xMRVJSfFBPTExOVkFMfSwge2ZkPTQsIApldmVudHM9
-UE9MTElOfFBPTExFUlJ8UE9MTE5WQUx9LCB7ZmQ9NSwgCmV2ZW50cz1QT0xMSU58UE9MTEVSUnxQ
-T0xMTlZBTH1dLCAzLCAtMSkgPSAxIChbe2ZkPTUsIApyZXZlbnRzPVBPTExFUlJ8UE9MTE5WQUx9
-XSkKLi4uCgpUaGlzIGlzIGEgYnVnIG9mIGFsc2FjdGwgZHVlIHRvIGhhbmRsaW5nIHJldHVybiBj
-b2RlIG9mIHBvbGwoMikgc3lzdGVtCmNhbGxbMV0uCgpJbiBhbiBvcGVyYXRpb24gdG8gQUxTQSBj
-b250cm9sIGNoYXJhY3RlciBkZXZpY2VzLCB3aGVuIGhhbmRsZWQgZGV2aWNlCmlzIGRpc2Nvbm5l
-Y3RlZCwgYSBjYWxsIG9mIHBvbGwoMikgcmV0dXJucyBwb3NpdGl2ZSB2YWx1ZSB0byBub3RpZnkK
-ZXZlbnRzIHdpdGggJ0VQT0xMRVJSIHwgRVBPTExOVkFMJ1syXS4KClNvb24gSSdsbCBwb3N0IGEg
-cGF0Y2ggdG8gaW1wcm92ZSB0aGlzIGJlaGF2aW91ciBvZiBhbHNhY3RsLgoKPiBJJ20gc29ycnkg
-aWYgdGhpcyBpcyBub3QgdGhlIHJpZ2h0IHBsYWNlIHRvIHJlcG9ydCB0aGlzIGlzc3VlIG9yIGlm
-IHRoZQo+IHByb2JsZW0gaXMgYWxyZWFkeSwgSSBjb3VsZG4ndCBmaW5kIGFueXRoaW5nIGFib3V0
-IGl0Lgo+IAo+IAo+IEJlbG93IGlzIHRoZSBvdXRwdXQgZnJvbSBhbHNhLWluZm8uc2g6Cj4gCj4g
-d2l0aCBoZWFkcGhvbmVzOgo+IAo+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj0w
-ZGZjNjMyZTNhZGFmYjhiYzc4YTE4MmUwYTIyNWJjYjEzYmVhOWZhCj4gCj4gYWZ0ZXIgdW5wbHVn
-Z2luZzoKPiAKPiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9NDFkYmYwNzM1ZmRk
-N2NkMjQxNmE2YjRhNjAyNTA1NzE1ZDI1YjQ0Zgo+IAo+IFBsZWFzZSBsZXQgbWUga25vdyBpZiB5
-b3UgbmVlZCBmdXJ0aGVyIGluZm8uCgpZb3UgZGlkIGVub3VnaCBnb29kLiBUaGFuayB5b3UgYW5k
-IHdhaXQgZm9yIGEgd2hpbGUgdGlsbCBJJ2xsIGZpeCBpdC4KClsxXSAKaHR0cDovL2dpdC5hbHNh
-LXByb2plY3Qub3JnLz9wPWFsc2EtdXRpbHMuZ2l0O2E9YmxvYjtmPWFsc2FjdGwvbW9uaXRvci5j
-O2hiPUhFQUQjbDEyMApbMl0gCmh0dHBzOi8vZ2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9r
-ZXJuZWwvZ2l0L3Rpd2FpL3NvdW5kLmdpdC90cmVlL3NvdW5kL2NvcmUvaW5pdC5jP2g9Zm9yLW5l
-eHQjbjM0NwoKClRha2FzaGkgU2FrYW1vdG8KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNh
-LXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0
-aW5mby9hbHNhLWRldmVsCg==
+Hi,
+
+On Sep 29 2018 06:27, Andre Guedes wrote:
+> While I was working on AAF plugin RFC v2 series [1], I spotted several leaks in
+> some plugins when handling *_hw_constraint() error cases. This series fixes
+> these issues.
+> 
+> Regards,
+> 
+> Andre
+> 
+> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-September/140290.html
+> 
+> Andre Guedes (4):
+>    a52: Fix leaks when a52_set_hw_constraint() fails
+>    jack: Fix leaks when jack_set_hw_constraint() fails
+>    oss: Fix leaks when oss_hw_constraint() fails
+>    usb_stream: Fix leaks when us_set_hw_constraint() fails
+> 
+>   a52/pcm_a52.c               | 2 +-
+>   jack/pcm_jack.c             | 1 +
+>   oss/pcm_oss.c               | 2 +-
+>   usb_stream/pcm_usb_stream.c | 1 +
+>   4 files changed, 4 insertions(+), 2 deletions(-)
+
+I've reviewed all of the above patches.
+
+Reviewed-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+
+I think it better for the plugins to use goto statement to
+aggregate error paths for releasing allocated objects but this is
+just for code cleanups.
+
+
+Regards
+
+Takashi Sakamoto
