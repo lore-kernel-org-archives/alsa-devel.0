@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 2/5] ALSA: bebob: use managed-resource to
-	maintain data specific to M-Audio FW-1814/ProjectMix I/O
-Date: Wed,  3 Oct 2018 08:21:51 +0900
-Message-ID: <20181002232154.29225-3-o-takashi@sakamocchi.jp>
+Subject: [PATCH 3/5] ALSA: fireworks: use managed-resource to
+	maintain response buffer
+Date: Wed,  3 Oct 2018 08:21:52 +0900
+Message-ID: <20181002232154.29225-4-o-takashi@sakamocchi.jp>
 References: <20181002232154.29225-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
- [209.85.210.196])
- by alsa0.perex.cz (Postfix) with ESMTP id E02212678AC
- for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2018 01:22:10 +0200 (CEST)
-Received: by mail-pf1-f196.google.com with SMTP id x17-v6so710310pfh.5
- for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2018 16:22:10 -0700 (PDT)
+Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com
+ [209.85.214.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1D1932678B0
+ for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2018 01:22:12 +0200 (CEST)
+Received: by mail-pl1-f194.google.com with SMTP id c8-v6so2475481plo.9
+ for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2018 16:22:12 -0700 (PDT)
 In-Reply-To: <20181002232154.29225-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,58 +28,52 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-ALSA bebob driver allocates memory object for data specific to M-Audio
-FW-1884/ProjectMix I/O. The object is to maintain format of isochronous
-packet payload for packet streaming by components for ALSA rawMIDI/PCM
-interfaces. The object can be released as managed-resource of
-'struct snd_card.card_dev'.
+ALSA fireworks driver allocates memory object to handle response from
+target unit. The object is used to initiate transaction unique to
+Fireworks board module. This can be released as managed-resource
+of 'struct snd_card.card_dev'.
 
 This commit uses managed-resource of the sound card device for this
 purpose.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.c        | 4 ----
- sound/firewire/bebob/bebob_maudio.c | 5 +++--
- 2 files changed, 3 insertions(+), 6 deletions(-)
+ sound/firewire/fireworks/fireworks.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index fb05f2c1b60b..72b04214a3b5 100644
---- a/sound/firewire/bebob/bebob.c
-+++ b/sound/firewire/bebob/bebob.c
-@@ -130,8 +130,6 @@ static void bebob_free(struct snd_bebob *bebob)
- {
- 	snd_bebob_stream_destroy_duplex(bebob);
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index 2ff7b9cff9b0..f680e2f27806 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -189,8 +189,6 @@ static void efw_free(struct snd_efw *efw)
+ 	snd_efw_stream_destroy_duplex(efw);
+ 	snd_efw_transaction_remove_instance(efw);
  
--	kfree(bebob->maudio_special_quirk);
+-	kfree(efw->resp_buf);
 -
- 	mutex_destroy(&bebob->mutex);
- 	fw_unit_put(bebob->unit);
+ 	mutex_destroy(&efw->mutex);
+ 	fw_unit_put(efw->unit);
  }
-@@ -262,8 +260,6 @@ do_registration(struct work_struct *work)
- error:
- 	mutex_unlock(&devices_mutex);
- 	snd_bebob_stream_destroy_duplex(bebob);
--	kfree(bebob->maudio_special_quirk);
--	bebob->maudio_special_quirk = NULL;
- 	snd_card_free(bebob->card);
- 	dev_info(&bebob->unit->device,
+@@ -247,8 +245,9 @@ do_registration(struct work_struct *work)
+ 	/* prepare response buffer */
+ 	snd_efw_resp_buf_size = clamp(snd_efw_resp_buf_size,
+ 				      SND_EFW_RESPONSE_MAXIMUM_BYTES, 4096U);
+-	efw->resp_buf = kzalloc(snd_efw_resp_buf_size, GFP_KERNEL);
+-	if (efw->resp_buf == NULL) {
++	efw->resp_buf = devm_kzalloc(&efw->card->card_dev,
++				     snd_efw_resp_buf_size, GFP_KERNEL);
++	if (!efw->resp_buf) {
+ 		err = -ENOMEM;
+ 		goto error;
+ 	}
+@@ -300,8 +299,6 @@ do_registration(struct work_struct *work)
+ 	snd_efw_transaction_remove_instance(efw);
+ 	snd_efw_stream_destroy_duplex(efw);
+ 	snd_card_free(efw->card);
+-	kfree(efw->resp_buf);
+-	efw->resp_buf = NULL;
+ 	dev_info(&efw->unit->device,
  		 "Sound card registration failed: %d\n", err);
-diff --git a/sound/firewire/bebob/bebob_maudio.c b/sound/firewire/bebob/bebob_maudio.c
-index c266997ad299..51152ca4af57 100644
---- a/sound/firewire/bebob/bebob_maudio.c
-+++ b/sound/firewire/bebob/bebob_maudio.c
-@@ -261,8 +261,9 @@ snd_bebob_maudio_special_discover(struct snd_bebob *bebob, bool is1814)
- 	struct special_params *params;
- 	int err;
- 
--	params = kzalloc(sizeof(struct special_params), GFP_KERNEL);
--	if (params == NULL)
-+	params = devm_kzalloc(&bebob->card->card_dev,
-+			      sizeof(struct special_params), GFP_KERNEL);
-+	if (!params)
- 		return -ENOMEM;
- 
- 	mutex_lock(&bebob->mutex);
+ }
 -- 
 2.17.1
