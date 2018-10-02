@@ -1,18 +1,21 @@
-From: Rob Duncan <rduncan@tesla.com>
-Subject: Re: Thread spinning in kernel
-	snd_pcm_link()/snd_pcm_unlink()
-Date: Tue, 2 Oct 2018 09:55:34 -0700
-Message-ID: <dw77emh8i45lvd.fsf@tesla.com>
-References: <dw77emy3bl4mmb.fsf@tesla.com> <s5h5zyks7m9.wl-tiwai@suse.de>
+From: Matthias Kaehlcke <mka@chromium.org>
+Subject: Re: [PATCH 1/2] ASoC: dmic: Enable ACPI device entry
+Date: Tue, 2 Oct 2018 10:12:44 -0700
+Message-ID: <20181002171244.GI22824@google.com>
+References: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
+ <1538459851-17066-2-git-send-email-jenny.tc@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0a-0019bd01.pphosted.com (mx0a-0019bd01.pphosted.com
- [148.163.151.57])
- by alsa0.perex.cz (Postfix) with ESMTP id CF47D2676A7
- for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2018 18:55:38 +0200 (CEST)
-In-Reply-To: <s5h5zyks7m9.wl-tiwai@suse.de>
+Received: from mail-pl1-f194.google.com (mail-pl1-f194.google.com
+ [209.85.214.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id EA1502676A7
+ for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2018 19:12:46 +0200 (CEST)
+Received: by mail-pl1-f194.google.com with SMTP id y15-v6so2061818plr.12
+ for <alsa-devel@alsa-project.org>; Tue, 02 Oct 2018 10:12:46 -0700 (PDT)
+Content-Disposition: inline
+In-Reply-To: <1538459851-17066-2-git-send-email-jenny.tc@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,81 +25,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+To: Jenny TC <jenny.tc@intel.com>
+Cc: alsa-devel@alsa-project.org, Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harsha Priya <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi Jenny,
 
-Thanks for taking a look at this.
+On Tue, Oct 02, 2018 at 11:27:30AM +0530, Jenny TC wrote:
+> Enable ACPI device probing for dmic so that DMIC parameters can be passed
+> from ACPI.
+> 
+> Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
+> Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
+> Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
+> ---
+>  sound/soc/codecs/dmic.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
+> index 8c4926d..ab1aa01 100644
+> --- a/sound/soc/codecs/dmic.c
+> +++ b/sound/soc/codecs/dmic.c
+> @@ -19,6 +19,7 @@
+>   *
+>   */
+>  
+> +#include <linux/acpi.h>
+>  #include <linux/delay.h>
+>  #include <linux/gpio.h>
+>  #include <linux/gpio/consumer.h>
+> @@ -144,15 +145,26 @@ static int dmic_dev_probe(struct platform_device *pdev)
+>  
+>  MODULE_ALIAS("platform:dmic-codec");
+>  
+> +#ifdef CONFIG_OF
+>  static const struct of_device_id dmic_dev_match[] = {
+>  	{.compatible = "dmic-codec"},
+>  	{}
+>  };
+> +#endif
+> +
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id dmic_acpi_match[] = {
+> +	{ "DMIC", 0 },
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(acpi, dmic_acpi_match);
+> +#endif
+>  
+>  static struct platform_driver dmic_driver = {
+>  	.driver = {
+>  		.name = "dmic-codec",
+>  		.of_match_table = dmic_dev_match,
 
-> I'm not sure whether that's the case.  Do you mean that one thread
-> gets stuck at pcm_release_private() which calls snd_pcm_unlink()?
-> Or do you really use the PCM linkage?
-
-We're not explicitly using the link/unlink APIs, so I think it must be
-pcm_release_private().
-
-I'll try out your suggestion over the next couple of days.  In the
-meantime we've avoided the issue by arranging for the realtime threads
-to have the same priority (which I think they should have anyway).
-
-Rob.
-
-At 08:14 on Tue, Oct 02 2018, Takashi wrote:
-> On Fri, 28 Sep 2018 18:23:24 +0200,
-> Rob Duncan wrote:
->>
->> I'm trying to address a bug where we end up with a thread spinning and
->> consuming an entire cpu.  The issue seems to be this code in
->> sound/core/pcm_native.c:
->>
->>     /* Writer in rwsem may block readers even during its waiting in queue,
->>      * and this may lead to a deadlock when the code path takes read sem
->>      * twice (e.g. one in snd_pcm_action_nonatomic() and another in
->>      * snd_pcm_stream_lock()).  As a (suboptimal) workaround, let writer to
->>      * spin until it gets the lock.
->>      */
->>     static inline void down_write_nonblock(struct rw_semaphore *lock)
->>     {
->>             while (!down_write_trylock(lock))
->>                     cond_resched();
->>     }
->>
->> The original commit for this is 67ec1072b053c15564e6090ab30127895dc77a89
->>
->> What we're suspecting is that a normal thread (SCHED_OTHER) has a reader
->> lock and a real-time thread using SCHED_RR or SCHED_FIFO is trying to
->> take the writer lock.  If both threads are pinned to the same CPU for
->> some reason then the reader thread will never get scheduled (because the
->> real-time writer thread is still runnable), and we will never make
->> progress.
->>
->> Does this sound right?  What can we do to fix this?
->
-> I'm not sure whether that's the case.  Do you mean that one thread
-> gets stuck at pcm_release_private() which calls snd_pcm_unlink()?
-> Or do you really use the PCM linkage?
->
-> In the former case, we may loosen it by optimizing like the patch
-> below (totally untested).  I guess it won't be a problem about racy
-> access, but need double-checks afterward.
->
->
-> thanks,
->
-> Takashi
->
->
-> --- a/sound/core/pcm_native.c
-> +++ b/sound/core/pcm_native.c
-> @@ -2369,7 +2369,8 @@ int snd_pcm_hw_constraints_complete(struct snd_pcm_substream *substream)
->
->  static void pcm_release_private(struct snd_pcm_substream *substream)
->  {
-> -	snd_pcm_unlink(substream);
-> +	if (snd_pcm_stream_linked(substream))
-> +		snd_pcm_unlink(substream);
->  }
->
->  void snd_pcm_release_substream(struct snd_pcm_substream *substream)
+Above you make the definition of dmic_dev_match depend on CONFIG_OF,
+you'll want to change the initialization here to
+'of_match_ptr(dmic_dev_match)'
