@@ -1,91 +1,77 @@
-From: Jenny TC <jenny.tc@intel.com>
-Subject: [PATCH 2/2] ASoC: dmic: Introduce mode switch delay
-Date: Tue,  2 Oct 2018 11:27:31 +0530
-Message-ID: <1538459851-17066-3-git-send-email-jenny.tc@intel.com>
-References: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH linux-next 01/10] ASoC: rsnd: ssi: Request dedicated dma
+ channels for busif1 to 7
+Date: Tue, 2 Oct 2018 16:52:24 +0900
+Message-ID: <01535cc6-bd85-aec1-b0ce-7ea9e60533d0@mentor.com>
+References: <20180927050407.17765-1-jiada_wang@mentor.com>
+ <20180927050407.17765-2-jiada_wang@mentor.com>
+ <87k1n6trsf.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 13A5926783D
- for <alsa-devel@alsa-project.org>; Tue,  2 Oct 2018 08:05:10 +0200 (CEST)
-In-Reply-To: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: Jairaj Arava <jairaj.arava@intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harsha Priya <harshapriya.n@intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87k1n6trsf.wl-kuninori.morimoto.gx@renesas.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: Mark Brown <broonie@kernel.org>, Linux-Renesas <linux-renesas-soc@vger.kernel.org>, Linux-Kernel <linux-kernel@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Liam Girdwood <lgirdwood@gmail.com>, dragos_tarcatu@mentor.com, twischer@de.adit-jv.com, tiwai@suse.com, perex@perex.cz
 List-Id: alsa-devel@alsa-project.org
 
-Some DMICs require delay before stream capture to complete the mode
-switching. Different modes can be power off, sleep etc. The DMIC clock
-for a specified duration is needed for the DMIC to complete the mode
-switching and ready for stream capture.
+Hi Morimoto-san
 
-Signed-off-by: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Signed-off-by: Jairaj Arava <jairaj.arava@intel.com>
-Signed-off-by: Harsha Priya <harshapriya.n@intel.com>
----
- sound/soc/codecs/dmic.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
 
-diff --git a/sound/soc/codecs/dmic.c b/sound/soc/codecs/dmic.c
-index ab1aa01..38d41a2 100644
---- a/sound/soc/codecs/dmic.c
-+++ b/sound/soc/codecs/dmic.c
-@@ -34,6 +34,29 @@
- struct dmic {
- 	struct gpio_desc *gpio_en;
- 	int wakeup_delay;
-+	/* Delay after DMIC mode switch */
-+	int modeswitch_delay_ms;
-+};
-+
-+int dmic_daiops_trigger(struct snd_pcm_substream *substream,
-+		int cmd, struct snd_soc_dai *dai)
-+{
-+	struct snd_soc_component *component = dai->component;
-+	struct dmic *dmic = snd_soc_component_get_drvdata(component);
-+
-+	switch (cmd) {
-+	case SNDRV_PCM_TRIGGER_STOP:
-+		if (dmic->modeswitch_delay_ms)
-+			mdelay(dmic->modeswitch_delay_ms);
-+
-+		break;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct snd_soc_dai_ops dmic_dai_ops = {
-+	.trigger	= dmic_daiops_trigger,
- };
- 
- static int dmic_aif_event(struct snd_soc_dapm_widget *w,
-@@ -69,6 +92,7 @@ static int dmic_aif_event(struct snd_soc_dapm_widget *w,
- 			| SNDRV_PCM_FMTBIT_S24_LE
- 			| SNDRV_PCM_FMTBIT_S16_LE,
- 	},
-+	.ops    = &dmic_dai_ops,
- };
- 
- static int dmic_component_probe(struct snd_soc_component *component)
-@@ -86,6 +110,8 @@ static int dmic_component_probe(struct snd_soc_component *component)
- 
- 	device_property_read_u32(component->dev, "wakeup-delay-ms",
- 				 &dmic->wakeup_delay);
-+	device_property_read_u32(component->dev, "modeswitch_delay_ms",
-+				 &dmic->modeswitch_delay_ms);
- 
- 	snd_soc_component_set_drvdata(component, dmic);
- 
--- 
-1.9.1
+On 2018/09/28 9:08, Kuninori Morimoto wrote:
+> Hi Jiada
+> Cc: linux-renesas-soc ML
+>
+> Thank you for your patch
+>
+>> From: Jiada Wang <jiada_wang@mentor.com>
+>>
+>> Currently ssi driver only request dma channel for SSI_0,
+>> which is used to transfer data to/from busif0.
+>>
+>> But since busif1 to busif7 also maybe used, dedicated dma channels
+>> are request for data transfer between these busif.
+>>
+>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+>> ---
+> (snip)
+>> @@ -938,12 +940,20 @@ static struct dma_chan *rsnd_ssi_dma_req(struct rsnd_dai_stream *io,
+>>   {
+>>   	struct rsnd_priv *priv = rsnd_mod_to_priv(mod);
+>>   	int is_play = rsnd_io_is_play(io);
+>> -	char *name;
+>> +	int busif = rsnd_ssi_get_busif(io);
+>> +	char name[SSI_DMA_NAME_SIZE];
+>>   
+>> -	if (rsnd_ssi_use_busif(io))
+>> -		name = is_play ? "rxu" : "txu";
+>> -	else
+>> -		name = is_play ? "rx" : "tx";
+>> +	if (rsnd_ssi_use_busif(io)) {
+>> +		if (is_play)
+>> +			snprintf(name, SSI_DMA_NAME_SIZE, "rxu%d", busif);
+>> +		else
+>> +			snprintf(name, SSI_DMA_NAME_SIZE, "txu%d", busif);
+>> +	} else {
+>> +		if (is_play)
+>> +			snprintf(name, SSI_DMA_NAME_SIZE, "rx");
+>> +		else
+>> +			snprintf(name, SSI_DMA_NAME_SIZE, "tx");
+>> +	}
+> Unfortunately, this patch breaks "git bisect", and Gen2 platforms.
+> We need to keep existing "rxu/txu" more. Please consider compatibility.
+> # we can remove it 2 or 3 version later ?
+>
+> If the commit which has this patch, but doesn't have [02/xx] or later,
+> it can't use BUSIF.
+>
+> And your patch doesn't care Gen2 series.
+> DT compatibility is very sensitive...
+Thanks for your review comments, I will send out v2 patch set to take 
+care of GEN2 series,
+and move this patch after other DT related patches
+
+Thanks,
+Jiada
