@@ -1,13 +1,13 @@
 From: <jiada_wang@mentor.com>
-Subject: [PATCH linux-next v2 6/9] arm64: r8a774a1: change to use extended audio dmac register
-Date: Wed, 3 Oct 2018 18:00:34 +0900
-Message-ID: <20181003090034.4411-1-jiada_wang@mentor.com>
+Subject: [PATCH linux-next v2 7/9] arm64: r8a77965: change to use extended audio dmac register
+Date: Wed, 3 Oct 2018 18:01:03 +0900
+Message-ID: <20181003090103.4460-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain
 Return-path: <linux-kernel-owner@vger.kernel.org>
 Sender: linux-kernel-owner@vger.kernel.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, kuninori.morimoto.gx@renesas.com
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, jiada_wang@mentor.com
 List-Id: alsa-devel@alsa-project.org
 
 From: Jiada Wang <jiada_wang@mentor.com>
@@ -18,21 +18,21 @@ need to be used.
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- arch/arm64/boot/dts/renesas/r8a774a1.dtsi | 2 +-
+ arch/arm64/boot/dts/renesas/r8a77965.dtsi | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-index ad2c9c0148ae..c04ca03f2987 100644
---- a/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a774a1.dtsi
-@@ -1120,7 +1120,7 @@
+diff --git a/arch/arm64/boot/dts/renesas/r8a77965.dtsi b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
+index fd00010a5ed7..6c0d5053a81c 100644
+--- a/arch/arm64/boot/dts/renesas/r8a77965.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a77965.dtsi
+@@ -1405,7 +1405,7 @@
  				<0 0xec5a0000 0 0x100>,  /* ADG */
  				<0 0xec540000 0 0x1000>, /* SSIU */
  				<0 0xec541000 0 0x280>,  /* SSI */
 -				<0 0xec740000 0 0x200>;  /* Audio DMAC peri peri*/
 +				<0 0xec760000 0 0x200>;  /* Audio DMAC peri peri*/
- 			reg-names = "scu", "adg", "ssiu", "ssi", "audmapp";
+ 			/* placeholder */
  
- 			clocks = <&cpg CPG_MOD 1005>,
+ 			rcar_sound,dvc {
 -- 
 2.17.0
