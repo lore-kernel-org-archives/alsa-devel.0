@@ -1,21 +1,17 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [PATCH 2/7] ALSA: core: Add managed card creation
-Date: Wed, 3 Oct 2018 13:05:33 +0900
-Message-ID: <ccae39c3-87ec-2ca8-15fe-5abdb314925e@sakamocchi.jp>
+Date: Wed, 3 Oct 2018 17:12:34 +0900
+Message-ID: <de2961bf-ff7d-8d96-7d31-d2f74fef8021@sakamocchi.jp>
 References: <20180920155502.7534-1-tiwai@suse.de>
  <20180920155502.7534-3-tiwai@suse.de>
- <3e095236-3b06-c8b3-220b-6af99bc65c9e@sakamocchi.jp>
- <s5hd0t7uzqr.wl-tiwai@suse.de>
- <e42b6193-a0ac-dad8-b9fd-4920a6e157c5@sakamocchi.jp>
- <s5hh8i4qpkd.wl-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 1311D2676A7
- for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2018 06:05:41 +0200 (CEST)
-In-Reply-To: <s5hh8i4qpkd.wl-tiwai@suse.de>
+Received: from smtp-proxy002.phy.lolipop.jp (smtp-proxy002.phy.lolipop.jp
+ [157.7.104.43]) by alsa0.perex.cz (Postfix) with ESMTP id 06C6B2676A7
+ for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2018 10:12:37 +0200 (CEST)
+In-Reply-To: <20180920155502.7534-3-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -26,80 +22,59 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-Thanks for you to be involved in this issue.
-
-On Oct 3 2018 01:30, Takashi Iwai wrote:
->>> The snd_card_free() syncs with the release of the all active files,
->>> i.e. it waits until all accesses get released, then proceed to the
->>> further procedures to free resources, including the call of
->>> private_free.  Hence this call itself should be safe, as long as it's
->>> called at first.
->>
->> I overlooked that snd_card_free() calls 'wait_for_completion()'. Thanks
->> for your indication. As you said, no worries.
->>
->> Here I have another concern about timing for processes to return from
->> unbinding operation. For example:
->>
->> echo '0000:0a:00.1' > /sys/bus/pci/drivers/snd_hda_intel/unbind
->>
->> This process returns when the other processes close all of ALSA
->> character devices related to the sound card because wait for completion
->> is executed in context of the process. Well-programmed userspace
->> applications are expected to release the character devices when
->> received -ENODEV from ioctl(2) or EPOLLERR/EPOLLNVAL from poll(2) to
->> the character devices.
->>
->> I don't know exactly that it's acceptable to block a process which
->> performs unbinding, depending on behaviours of the other processes.
->> In a point of safe ABI, it's worth for us to consider or decide a
->> policy for the point.
+On Sep 21 2018 00:54, Takashi Iwai wrote:
+> Per popular demands, this patch adds a new ALSA core API function,
+> snd_devm_card_new(), to create a snd_card object in a managed way via
+> devres.  When a card object is created by this new function, it's
+> released automatically at the device release.  It includes also the
+> call of snd_card_free().
 > 
-> Right, the behavior of unbind is currently sub-optimal.  But basically
-> it's above this devres patch series; the unbind behavior itself
-> doesn't change no matter whether the resource is released via devres
-> or not.  So we can keep discussing about this, but maybe in another
-> thread.
+> However, the story isn't that simple.  A caveat is that We have to
+> call snd_card_new(), more specifically, the disconnection part, at
+> very first of the whole resource release procedure.  This assures that
+> the exposed devices are deleted and sync with the all accessing
+> processes getting closed.
+> 
+> For achieving it, snd_card_register() adds a new devres action to
+> trigger snd_card_free() automatically when the given card object is a
+> "managed" one.  Since usually snd_card_register() is the last step of
+> the initialization, this should work in most cases.
+> 
+> With all these tricks, some drivers can get rid of the whole the
+> driver remove callback.
+> 
+> About a bit of implementation details: the patch adds two new flags to
+> snd_card object, managed and releasing.  The former indicates that the
+> object was created via snd_devm_card_new(), and the latter is used for
+> avoiding the double-free of snd_card_free() calls.  Both flags are
+> fairly internal and likely uninteresting to normal users.
+> 
+> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+> ---
+>   include/sound/core.h |  5 +++
+>   sound/core/init.c    | 95 ++++++++++++++++++++++++++++++++++++++++++--
+>   2 files changed, 96 insertions(+), 4 deletions(-)
 
-Indeed.
+I've investigated to use the new function, 'snd_devm_card_new()', and
+have a concern about timing to release memory object for sound card
+instance (and tailing private data) in error path between calls of the 
+function and 'snd_card_register()'.
 
-For this patch, I have another concern and will post it soon (for a
-helper function to release memory object immediately).
+In the error path, 'snd_card_free()' is called to release instances
+associated to the sound card instance as expected, however memory object
+for the sound card instance is not released yet because in usual cases
+associated device structure does not lost its reference count in this
+timing. It's released when the associated device is removed. This means
+that the memory object remains against its practicality during lifetime
+of the device.
 
-> When we see unbind as a sort of hot-unplug action, it's understandable
-> that unbind never returns an error.  And that's the current situation,
-> and it implies that every driver needs to take care of all pending
-> resources by itself.  Hence, you have only two choices: block and sync
-> with the pending resources, or make everything in async.
->
-> As of now, the most of drivers take the former approach -- at least
-> for sound stuff -- just because of simplicity.  Admittedly, the latter
-> approach would look better from the user-space POV.  However, it'll be
-> far complicated in the actual implementation.
-
-I note that all drivers in ALSA firewire stack are implemented according
-to the 'async' scenario. Usage of reference counting of struct device
-for units on IEEE 1394 bus is used to achieve it.
-
-> Maybe another consideration would be to allow unbind action actually
-> returning -EBUSY error.  This option would require the driver base
-> code change, and above all, the consensus from other parties.
-
-At present, 'unbind_store()' in 'drivers/base/bus.c'[1] can return
--ENODEV if error, or the length of given string if success. It's
-possible for us to change this function to return -EBUSY when the target
-device is still referred after a call of 'device_release_driver()'. But
-this is wider issue in Linux DD and should be discussed in a right
-place.
-
-[1] 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/base/bus.c?h=v4.19-rc6#n177
+This is not a bug itself, so I have no opposition to this patchset. But
+it's reasonable for us to have a bit time to consider about it, IMO.
 
 
 Thanks
