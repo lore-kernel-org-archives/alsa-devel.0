@@ -1,7 +1,7 @@
 From: <jiada_wang@mentor.com>
-Subject: [PATCH linux-next v2 1/9] arm64: r8a7795: add dma request number for busif0 ~ busif7
-Date: Wed, 3 Oct 2018 17:58:47 +0900
-Message-ID: <20181003085855.4305-2-jiada_wang@mentor.com>
+Subject: [PATCH linux-next v2 2/9] arm64: r8a7796: add dma request number for busif0 ~ busif7
+Date: Wed, 3 Oct 2018 17:58:48 +0900
+Message-ID: <20181003085855.4305-3-jiada_wang@mentor.com>
 References: <20181003085855.4305-1-jiada_wang@mentor.com>
 Mime-Version: 1.0
 Content-Type: text/plain
@@ -20,14 +20,14 @@ for busif data transfer.
 
 Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 ---
- arch/arm64/boot/dts/renesas/r8a7795.dtsi | 164 ++++++++++++++++++++---
+ arch/arm64/boot/dts/renesas/r8a7796.dtsi | 164 ++++++++++++++++++++---
  1 file changed, 144 insertions(+), 20 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/renesas/r8a7795.dtsi b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-index b5f2273caca4..fc6100eddfed 100644
---- a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-+++ b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
-@@ -1923,53 +1923,177 @@
+diff --git a/arch/arm64/boot/dts/renesas/r8a7796.dtsi b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+index 1ec6aaa520c1..53b361c5b16d 100644
+--- a/arch/arm64/boot/dts/renesas/r8a7796.dtsi
++++ b/arch/arm64/boot/dts/renesas/r8a7796.dtsi
+@@ -1797,53 +1797,177 @@
  			rcar_sound,ssi {
  				ssi0: ssi-0 {
  					interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
@@ -55,7 +55,7 @@ index b5f2273caca4..fc6100eddfed 100644
 +						    "rxu7", "txu7";
  				};
  				ssi1: ssi-1 {
- 					 interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
+ 					interrupts = <GIC_SPI 371 IRQ_TYPE_LEVEL_HIGH>;
 -					dmas = <&audma0 0x03>, <&audma1 0x04>, <&audma0 0x49>, <&audma1 0x4a>;
 -					dma-names = "rx", "tx", "rxu", "txu";
 +					dmas = <&audma0 0x03>, <&audma1 0x04>,
