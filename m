@@ -1,16 +1,16 @@
 From: Andre Guedes <andre.guedes@intel.com>
-Subject: [PATCH - AAF PCM plugin 1/7] aaf: Introduce plugin
-	skeleton
-Date: Wed,  3 Oct 2018 16:45:41 -0700
-Message-ID: <20181003234547.16839-2-andre.guedes@intel.com>
+Subject: [PATCH - AAF PCM plugin 4/7] aaf: Prepare for Capture
+	mode support
+Date: Wed,  3 Oct 2018 16:45:44 -0700
+Message-ID: <20181003234547.16839-5-andre.guedes@intel.com>
 References: <20181003234547.16839-1-andre.guedes@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
- by alsa0.perex.cz (Postfix) with ESMTP id 9D25826783D
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 01:46:51 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D706267845
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 01:46:52 +0200 (CEST)
 In-Reply-To: <20181003234547.16839-1-andre.guedes@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,201 +25,251 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-The patch introduces the skeleton code from the AAF plugin as well as
-the buildsystem bits in order to get the plugin built. Following the
-approach from other plugins, the AAF plugin is only built if its
-dependency (libavtp) is detected by configure.
-
-Follow-up patches implement support for both playback and capture modes.
+The plugin code assumes only Playback mode is supported. This patch
+prepares the code to support both Playback and Capture mode. Capture
+mode support is implemented by a follow-up patch.
 
 Signed-off-by: Andre Guedes <andre.guedes@intel.com>
 ---
- Makefile.am     |  3 ++
- aaf/Makefile.am |  9 ++++++
- aaf/pcm_aaf.c   | 91 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- configure.ac    |  9 ++++++
- doc/aaf.txt     | 18 ++++++++++++
- 5 files changed, 130 insertions(+)
- create mode 100644 aaf/Makefile.am
- create mode 100644 aaf/pcm_aaf.c
- create mode 100644 doc/aaf.txt
+ aaf/pcm_aaf.c | 159 ++++++++++++++++++++++++++++++++++------------------------
+ 1 file changed, 94 insertions(+), 65 deletions(-)
 
-diff --git a/Makefile.am b/Makefile.am
-index 27f61a4..af0e9c4 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -35,6 +35,9 @@ endif
- if HAVE_SPEEXDSP
- SUBDIRS += speex
- endif
-+if HAVE_AAF
-+SUBDIRS += aaf
-+endif
- 
- EXTRA_DIST = gitcompile version COPYING.GPL m4/attributes.m4
- AUTOMAKE_OPTIONS = foreign
-diff --git a/aaf/Makefile.am b/aaf/Makefile.am
-new file mode 100644
-index 0000000..492b883
---- /dev/null
-+++ b/aaf/Makefile.am
-@@ -0,0 +1,9 @@
-+asound_module_pcm_aaf_LTLIBRARIES = libasound_module_pcm_aaf.la
-+
-+asound_module_pcm_aafdir = @ALSA_PLUGIN_DIR@
-+
-+AM_CFLAGS = @ALSA_CFLAGS@ @AVTP_CFLAGS@
-+AM_LDFLAGS = -module -avoid-version -export-dynamic -no-undefined $(LDFLAGS_NOUNDEFINED)
-+
-+libasound_module_pcm_aaf_la_SOURCES = pcm_aaf.c
-+libasound_module_pcm_aaf_la_LIBADD = @ALSA_LIBS@ @AVTP_LIBS@
 diff --git a/aaf/pcm_aaf.c b/aaf/pcm_aaf.c
-new file mode 100644
-index 0000000..7890e10
---- /dev/null
+index 8f8bcfd..74cda97 100644
+--- a/aaf/pcm_aaf.c
 +++ b/aaf/pcm_aaf.c
-@@ -0,0 +1,91 @@
-+/*
-+ * AVTP Audio Format (AAF) PCM Plugin
-+ *
-+ * Copyright (c) 2018, Intel Corporation
-+ *
-+ * This library is free software; you can redistribute it and/or modify
-+ * it under the terms of the GNU Lesser General Public License as
-+ * published by the Free Software Foundation; either version 2.1 of
-+ * the License, or (at your option) any later version.
-+ *
-+ * This program is distributed in the hope that it will be useful,
-+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ * GNU Lesser General Public License for more details.
-+ *
-+ * You should have received a copy of the GNU Lesser General Public
-+ * License along with this library; if not, write to the Free Software
-+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-+ */
-+
-+#include <alsa/asoundlib.h>
-+#include <alsa/pcm_external.h>
-+
-+typedef struct {
-+	snd_pcm_ioplug_t io;
-+} snd_pcm_aaf_t;
-+
-+static int aaf_close(snd_pcm_ioplug_t *io)
-+{
-+	snd_pcm_aaf_t *aaf = io->private_data;
-+
-+	if (!aaf)
-+		return -EBADFD;
-+
-+	free(aaf);
-+	aaf = NULL;
-+	return 0;
-+}
-+
-+static snd_pcm_sframes_t aaf_pointer(snd_pcm_ioplug_t *io)
-+{
-+	return 0;
-+}
-+
-+static int aaf_start(snd_pcm_ioplug_t *io)
-+{
-+	return 0;
-+}
-+
-+static int aaf_stop(snd_pcm_ioplug_t *io)
-+{
-+	return 0;
-+}
-+
-+static const snd_pcm_ioplug_callback_t aaf_callback = {
-+	.close = aaf_close,
-+	.pointer = aaf_pointer,
-+	.start = aaf_start,
-+	.stop = aaf_stop,
-+};
-+
-+SND_PCM_PLUGIN_DEFINE_FUNC(aaf)
-+{
-+	snd_pcm_aaf_t *aaf;
-+	int res;
-+
-+	aaf = calloc(1, sizeof(*aaf));
-+	if (!aaf) {
-+		SNDERR("Failed to allocate memory");
-+		return -ENOMEM;
-+	}
-+
-+	aaf->io.version = SND_PCM_IOPLUG_VERSION;
-+	aaf->io.name = "AVTP Audio Format (AAF) Plugin";
-+	aaf->io.callback = &aaf_callback;
-+	aaf->io.private_data = aaf;
-+	res = snd_pcm_ioplug_create(&aaf->io, name, stream, mode);
-+	if (res < 0) {
-+		SNDERR("Failed to create ioplug instance");
-+		goto err;
-+	}
-+
-+	*pcmp = aaf->io.pcm;
-+	return 0;
-+
-+err:
-+	free(aaf);
-+	return res;
-+}
-+
-+SND_PCM_PLUGIN_SYMBOL(aaf);
-diff --git a/configure.ac b/configure.ac
-index cc3740b..6d0e14b 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -176,6 +176,14 @@ fi
- test "x$prefix" = xNONE && prefix=$ac_default_prefix
- test "x$exec_prefix" = xNONE && exec_prefix=$prefix
+@@ -239,6 +239,7 @@ static int aaf_init_socket(snd_pcm_aaf_t *aaf)
+ {
+ 	int fd, res;
+ 	struct ifreq req;
++	snd_pcm_ioplug_t *io = &aaf->io;
  
-+AC_ARG_ENABLE([aaf],
-+      AS_HELP_STRING([--disable-aaf], [Disable building of AAF plugin]))
-+
-+if test "x$enable_aaf" != "xno"; then
-+  PKG_CHECK_MODULES(AVTP, avtp >= 0.1, [HAVE_AAF=yes], [HAVE_AAF=no])
-+fi
-+AM_CONDITIONAL(HAVE_AAF, test x$HAVE_AAF = xyes)
-+
- dnl ALSA plugin directory
- AC_ARG_WITH(plugindir,
-     AS_HELP_STRING([--with-plugindir=dir],
-@@ -251,6 +259,7 @@ AC_OUTPUT([
- 	usb_stream/Makefile
- 	speex/Makefile
- 	arcam-av/Makefile
-+	aaf/Makefile
- ])
+ 	fd = socket(AF_PACKET, SOCK_DGRAM|SOCK_NONBLOCK, htons(ETH_P_TSN));
+ 	if (fd < 0) {
+@@ -260,12 +261,17 @@ static int aaf_init_socket(snd_pcm_aaf_t *aaf)
+ 	aaf->sk_addr.sll_ifindex = req.ifr_ifindex;
+ 	memcpy(&aaf->sk_addr.sll_addr, aaf->addr, ETH_ALEN);
  
- dnl Show the build conditions
-diff --git a/doc/aaf.txt b/doc/aaf.txt
-new file mode 100644
-index 0000000..b260a26
---- /dev/null
-+++ b/doc/aaf.txt
-@@ -0,0 +1,18 @@
-+AVTP Audio Format (AAF) Plugin
-+==============================
+-	res = setsockopt(fd, SOL_SOCKET, SO_PRIORITY, &aaf->prio,
+-			 sizeof(aaf->prio));
+-	if (res < 0) {
+-		SNDERR("Failed to set socket priority");
+-		res = -errno;
+-		goto err;
++	if (io->stream == SND_PCM_STREAM_PLAYBACK) {
++		res = setsockopt(fd, SOL_SOCKET, SO_PRIORITY, &aaf->prio,
++				 sizeof(aaf->prio));
++		if (res < 0) {
++			SNDERR("Failed to set socket priority");
++			res = -errno;
++			goto err;
++		}
++	} else {
++		/* TODO: Implement Capture mode support. */
++		return -ENOTSUP;
+ 	}
+ 
+ 	aaf->sk_fd = fd;
+@@ -305,46 +311,50 @@ static int aaf_init_pdu(snd_pcm_aaf_t *aaf)
+ 	if (!pdu)
+ 		return -ENOMEM;
+ 
+-	res = avtp_aaf_pdu_init(pdu);
+-	if (res < 0)
+-		goto err;
++	if (io->stream == SND_PCM_STREAM_PLAYBACK) {
++		res = avtp_aaf_pdu_init(pdu);
++		if (res < 0)
++			goto err;
+ 
+-	res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_TV, 1);
+-	if (res < 0)
+-		goto err;
++		res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_TV, 1);
++		if (res < 0)
++			goto err;
+ 
+-	res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_STREAM_ID, aaf->streamid);
+-	if (res < 0)
+-		goto err;
++		res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_STREAM_ID,
++				       aaf->streamid);
++		if (res < 0)
++			goto err;
+ 
+-	res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_FORMAT,
+-			       alsa_to_avtp_format(io->format));
+-	if (res < 0)
+-		goto err;
++		res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_FORMAT,
++				       alsa_to_avtp_format(io->format));
++		if (res < 0)
++			goto err;
+ 
+-	res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_NSR,
+-			       alsa_to_avtp_rate(io->rate));
+-	if (res < 0)
+-		goto err;
++		res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_NSR,
++				       alsa_to_avtp_rate(io->rate));
++		if (res < 0)
++			goto err;
+ 
+-	res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_CHAN_PER_FRAME,
+-			       io->channels);
+-	if (res < 0)
+-		goto err;
++		res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_CHAN_PER_FRAME,
++				       io->channels);
++		if (res < 0)
++			goto err;
+ 
+-	res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_BIT_DEPTH,
+-			       snd_pcm_format_width(io->format));
+-	if (res < 0)
+-		goto err;
++		res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_BIT_DEPTH,
++				       snd_pcm_format_width(io->format));
++		if (res < 0)
++			goto err;
+ 
+-	res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_STREAM_DATA_LEN,
+-			       payload_size);
+-	if (res < 0)
+-		goto err;
++		res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_STREAM_DATA_LEN,
++				       payload_size);
++		if (res < 0)
++			goto err;
+ 
+-	res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_SP, AVTP_AAF_PCM_SP_NORMAL);
+-	if (res < 0)
+-		goto err;
++		res = avtp_aaf_pdu_set(pdu, AVTP_AAF_FIELD_SP,
++				       AVTP_AAF_PCM_SP_NORMAL);
++		if (res < 0)
++			goto err;
++	}
+ 
+ 	aaf->pdu = pdu;
+ 	aaf->pdu_size = pdu_size;
+@@ -707,7 +717,10 @@ static snd_pcm_sframes_t aaf_pointer(snd_pcm_ioplug_t *io)
+ 
+ static int aaf_poll_descriptors_count(snd_pcm_ioplug_t *io ATTRIBUTE_UNUSED)
+ {
+-	return FD_COUNT_PLAYBACK;
++	if (io->stream == SND_PCM_STREAM_PLAYBACK)
++		return FD_COUNT_PLAYBACK;
++	else
++		return -ENOTSUP;
+ }
+ 
+ static int aaf_poll_descriptors(snd_pcm_ioplug_t *io, struct pollfd *pfd,
+@@ -715,11 +728,17 @@ static int aaf_poll_descriptors(snd_pcm_ioplug_t *io, struct pollfd *pfd,
+ {
+ 	snd_pcm_aaf_t *aaf = io->private_data;
+ 
+-	if (space != FD_COUNT_PLAYBACK)
+-		return -EINVAL;
++	if (io->stream == SND_PCM_STREAM_PLAYBACK) {
++		if (space != FD_COUNT_PLAYBACK)
++			return -EINVAL;
 +
-+Overview
-+--------
-+
-+The AAF plugin is a PCM plugin that uses Audio Video Transport Protocol (AVTP)
-+to transmit/receive audio samples through a Time-Sensitive Network (TSN)
-+capable network. The plugin enables media applications to easily implement AVTP
-+Talker and Listener functionalities.
-+
-+Plugin Dependencies
-+-------------------
-+
-+The AAF plugin uses libavtp to handle AVTP packetization. Libavtp source code
-+can be found in https://github.com/AVnu/libavtp as well as instructions to
-+build and install it. If libavtp isn't detected by configure, the plugin isn't
-+built.
++		pfd[0].fd = aaf->timer_fd;
++		pfd[0].events = POLLIN;
++	} else {
++		/* TODO: Implement Capture mode support. */
++		return -ENOTSUP;
++	}
+ 
+-	pfd[0].fd = aaf->timer_fd;
+-	pfd[0].events = POLLIN;
+ 	return space;
+ }
+ 
+@@ -729,15 +748,20 @@ static int aaf_poll_revents(snd_pcm_ioplug_t *io, struct pollfd *pfd,
+ 	int res;
+ 	snd_pcm_aaf_t *aaf = io->private_data;
+ 
+-	if (nfds != FD_COUNT_PLAYBACK)
+-		return -EINVAL;
++	if (io->stream == SND_PCM_STREAM_PLAYBACK) {
++		if (nfds != FD_COUNT_PLAYBACK)
++			return -EINVAL;
+ 
+-	if (pfd[0].revents & POLLIN) {
+-		res = aaf_mclk_timeout_playback(aaf);
+-		if (res < 0)
+-			return res;
++		if (pfd[0].revents & POLLIN) {
++			res = aaf_mclk_timeout_playback(aaf);
++			if (res < 0)
++				return res;
+ 
+-		*revents = POLLIN;
++			*revents = POLLIN;
++		}
++	} else {
++		/* TODO: Implement Capture mode support. */
++		return -ENOTSUP;
+ 	}
+ 
+ 	return 0;
+@@ -763,9 +787,14 @@ static int aaf_start(snd_pcm_ioplug_t *io)
+ 	int res;
+ 	snd_pcm_aaf_t *aaf = io->private_data;
+ 
+-	res = aaf_mclk_start_playback(aaf);
+-	if (res < 0)
+-		return res;
++	if (io->stream == SND_PCM_STREAM_PLAYBACK) {
++		res = aaf_mclk_start_playback(aaf);
++		if (res < 0)
++			return res;
++	} else {
++		/* TODO: Implement Capture mode support. */
++		return -ENOTSUP;
++	}
+ 
+ 	return 0;
+ }
+@@ -790,12 +819,18 @@ static snd_pcm_sframes_t aaf_transfer(snd_pcm_ioplug_t *io,
+ 	int res;
+ 	snd_pcm_aaf_t *aaf = io->private_data;
+ 
+-	res = snd_pcm_areas_copy_wrap(aaf->audiobuf_areas,
+-				      (io->appl_ptr % io->buffer_size),
+-				      io->buffer_size, areas, offset, size,
+-				      io->channels, size, io->format);
+-	if (res < 0)
+-		return res;
++	if (io->stream == SND_PCM_STREAM_PLAYBACK) {
++		res = snd_pcm_areas_copy_wrap(aaf->audiobuf_areas,
++					      (io->appl_ptr % io->buffer_size),
++					      io->buffer_size, areas, offset,
++					      size, io->channels, size,
++					      io->format);
++		if (res < 0)
++			return res;
++	} else {
++		/* TODO: Implement Capture mode support. */
++		return -ENOTSUP;
++	}
+ 
+ 	return size;
+ }
+@@ -820,12 +855,6 @@ SND_PCM_PLUGIN_DEFINE_FUNC(aaf)
+ 	snd_pcm_aaf_t *aaf;
+ 	int res;
+ 
+-	/* For now the plugin only supports Playback mode i.e. AAF Talker
+-	 * functionality.
+-	 */
+-	if (stream != SND_PCM_STREAM_PLAYBACK)
+-		return -EINVAL;
+-
+ 	aaf = calloc(1, sizeof(*aaf));
+ 	if (!aaf) {
+ 		SNDERR("Failed to allocate memory");
 -- 
 2.14.4
