@@ -1,30 +1,112 @@
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: [BUG] sound: pci: trident: a possible data race
-Date: Wed, 3 Oct 2018 20:50:25 +0800
-Message-ID: <864e211c-8be5-6a34-902a-a71f176111db@gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH 2/7] ALSA: core: Add managed card creation
+Date: Wed, 3 Oct 2018 22:14:50 +0900
+Message-ID: <e8c33cc9-2ed1-0aaa-b89d-5fc20244ff97@sakamocchi.jp>
+References: <20180920155502.7534-1-tiwai@suse.de>
+ <20180920155502.7534-3-tiwai@suse.de>
+ <de2961bf-ff7d-8d96-7d31-d2f74fef8021@sakamocchi.jp>
+ <s5hva6jpbj0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
+ [209.85.215.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0DC2D267730
+ for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2018 15:14:54 +0200 (CEST)
+Received: by mail-pg1-f194.google.com with SMTP id f18-v6so1576028pgv.3
+ for <alsa-devel@alsa-project.org>; Wed, 03 Oct 2018 06:14:54 -0700 (PDT)
+In-Reply-To: <s5hva6jpbj0.wl-tiwai@suse.de>
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: perex@perex.cz, tiwai@suse.com, keescook@chromium.org
-Cc: alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-CPU0:
-snd_trident_hw_free
-     snd_trident_free_voice
-             line 3870: spin_lock_irqsave()
-             line 3881: voice->substream = NULL; [WRITE]
-CPU1:
-snd_trident_interrupt
-     line 3798: snd_pcm_period_elapsed(voice->substream);  [READ]
+Hi,
 
-As for voice->substream, the WRITE operation in CPU0 is performed
-with holding a spinlock, but the READ operation in CPU1 is performed
-without holding this spinlock, so there may exist a data race.
+On Oct 3 2018 19:30, Takashi Iwai wrote:
+> On Wed, 03 Oct 2018 10:12:34 +0200,
+>> On Sep 21 2018 00:54, Takashi Iwai wrote:
+>>> Per popular demands, this patch adds a new ALSA core API function,
+>>> snd_devm_card_new(), to create a snd_card object in a managed way via
+>>> devres.  When a card object is created by this new function, it's
+>>> released automatically at the device release.  It includes also the
+>>> call of snd_card_free().
+>>>
+>>> However, the story isn't that simple.  A caveat is that We have to
+>>> call snd_card_new(), more specifically, the disconnection part, at
+>>> very first of the whole resource release procedure.  This assures that
+>>> the exposed devices are deleted and sync with the all accessing
+>>> processes getting closed.
+>>>
+>>> For achieving it, snd_card_register() adds a new devres action to
+>>> trigger snd_card_free() automatically when the given card object is a
+>>> "managed" one.  Since usually snd_card_register() is the last step of
+>>> the initialization, this should work in most cases.
+>>>
+>>> With all these tricks, some drivers can get rid of the whole the
+>>> driver remove callback.
+>>>
+>>> About a bit of implementation details: the patch adds two new flags to
+>>> snd_card object, managed and releasing.  The former indicates that the
+>>> object was created via snd_devm_card_new(), and the latter is used for
+>>> avoiding the double-free of snd_card_free() calls.  Both flags are
+>>> fairly internal and likely uninteresting to normal users.
+>>>
+>>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
+>>> ---
+>>>    include/sound/core.h |  5 +++
+>>>    sound/core/init.c    | 95 ++++++++++++++++++++++++++++++++++++++++++--
+>>>    2 files changed, 96 insertions(+), 4 deletions(-)
+>>
+>> I've investigated to use the new function, 'snd_devm_card_new()', and
+>> have a concern about timing to release memory object for sound card
+>> instance (and tailing private data) in error path between calls of the
+>> function and 'snd_card_register()'.
+>>
+>> In the error path, 'snd_card_free()' is called to release instances
+>> associated to the sound card instance as expected, however memory object
+>> for the sound card instance is not released yet because in usual cases
+>> associated device structure does not lost its reference count in this
+>> timing. It's released when the associated device is removed. This means
+>> that the memory object remains against its practicality during lifetime
+>> of the device.
+>>
+>> This is not a bug itself, so I have no opposition to this patchset. But
+>> it's reasonable for us to have a bit time to consider about it, IMO.
+> 
+> Well, it's exactly same as the usual devm_kzalloc() & co, which have
+> been already deployed at various places (even you posted a new patch
+> series for using them :)  The card memory is tied with the device, and
+> it's natural to align with the lifetime of the device.
+
+I have this concern against the usage of devres for a long time.
+
+A device can be referred by several handlers; e.g. character device
+driver and kernel driver. An example is USB devices. Userspace
+applications can transfer message to the device via character device.
+At the same time, iface driver in kernel land can do the same work.
+
+The lifetime of device is apparently different from each of the handler.
+Even if kernel driver returns negative value in its .probe callback, the
+other handlers can refer to and use it.
+
+If the kernel driver leave the devm-allocated memory in error path, it
+remains till all of the handler release its reference to the device.
+Even it the memory objects are maintained by devres, several small parts
+of kernel logical space is unavailable. This is similar to memory leak,
+in my view.
 
 
-Best wishes,
-Jia-Ju Bai
+Regards
+
+Takashi Sakamoto
