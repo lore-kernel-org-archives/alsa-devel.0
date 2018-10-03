@@ -1,23 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: [PATCH 2/7] ALSA: core: Add managed card creation
-Date: Wed, 3 Oct 2018 22:14:50 +0900
-Message-ID: <e8c33cc9-2ed1-0aaa-b89d-5fc20244ff97@sakamocchi.jp>
-References: <20180920155502.7534-1-tiwai@suse.de>
- <20180920155502.7534-3-tiwai@suse.de>
- <de2961bf-ff7d-8d96-7d31-d2f74fef8021@sakamocchi.jp>
- <s5hva6jpbj0.wl-tiwai@suse.de>
+Date: Thu,  4 Oct 2018 00:02:59 +0900
+Message-ID: <20181003150259.14159-1-o-takashi@sakamocchi.jp>
+References: <e8c33cc9-2ed1-0aaa-b89d-5fc20244ff97@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
  [209.85.215.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 0DC2D267730
- for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2018 15:14:54 +0200 (CEST)
-Received: by mail-pg1-f194.google.com with SMTP id f18-v6so1576028pgv.3
- for <alsa-devel@alsa-project.org>; Wed, 03 Oct 2018 06:14:54 -0700 (PDT)
-In-Reply-To: <s5hva6jpbj0.wl-tiwai@suse.de>
-Content-Language: en-US
+ by alsa0.perex.cz (Postfix) with ESMTP id 5542C267772
+ for <alsa-devel@alsa-project.org>; Wed,  3 Oct 2018 17:03:07 +0200 (CEST)
+Received: by mail-pg1-f194.google.com with SMTP id i4-v6so1691482pgq.9
+ for <alsa-devel@alsa-project.org>; Wed, 03 Oct 2018 08:03:07 -0700 (PDT)
+In-Reply-To: <e8c33cc9-2ed1-0aaa-b89d-5fc20244ff97@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,86 +23,135 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
+To: tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 Hi,
 
-On Oct 3 2018 19:30, Takashi Iwai wrote:
-> On Wed, 03 Oct 2018 10:12:34 +0200,
->> On Sep 21 2018 00:54, Takashi Iwai wrote:
->>> Per popular demands, this patch adds a new ALSA core API function,
->>> snd_devm_card_new(), to create a snd_card object in a managed way via
->>> devres.  When a card object is created by this new function, it's
->>> released automatically at the device release.  It includes also the
->>> call of snd_card_free().
+On Oct 3 2018 22:14, Takashi Sakamoto wrote:
+> On Oct 3 2018 19:30, Takashi Iwai wrote:
+>> On Wed, 03 Oct 2018 10:12:34 +0200,
+>>> I've investigated to use the new function, 'snd_devm_card_new()', and
+>>> have a concern about timing to release memory object for sound card
+>>> instance (and tailing private data) in error path between calls of the
+>>> function and 'snd_card_register()'.
 >>>
->>> However, the story isn't that simple.  A caveat is that We have to
->>> call snd_card_new(), more specifically, the disconnection part, at
->>> very first of the whole resource release procedure.  This assures that
->>> the exposed devices are deleted and sync with the all accessing
->>> processes getting closed.
+>>> In the error path, 'snd_card_free()' is called to release instances
+>>> associated to the sound card instance as expected, however memory object
+>>> for the sound card instance is not released yet because in usual cases
+>>> associated device structure does not lost its reference count in this
+>>> timing. It's released when the associated device is removed. This means
+>>> that the memory object remains against its practicality during lifetime
+>>> of the device.
 >>>
->>> For achieving it, snd_card_register() adds a new devres action to
->>> trigger snd_card_free() automatically when the given card object is a
->>> "managed" one.  Since usually snd_card_register() is the last step of
->>> the initialization, this should work in most cases.
->>>
->>> With all these tricks, some drivers can get rid of the whole the
->>> driver remove callback.
->>>
->>> About a bit of implementation details: the patch adds two new flags to
->>> snd_card object, managed and releasing.  The former indicates that the
->>> object was created via snd_devm_card_new(), and the latter is used for
->>> avoiding the double-free of snd_card_free() calls.  Both flags are
->>> fairly internal and likely uninteresting to normal users.
->>>
->>> Signed-off-by: Takashi Iwai <tiwai@suse.de>
->>> ---
->>>    include/sound/core.h |  5 +++
->>>    sound/core/init.c    | 95 ++++++++++++++++++++++++++++++++++++++++++--
->>>    2 files changed, 96 insertions(+), 4 deletions(-)
+>>> This is not a bug itself, so I have no opposition to this patchset. But
+>>> it's reasonable for us to have a bit time to consider about it, IMO.
 >>
->> I've investigated to use the new function, 'snd_devm_card_new()', and
->> have a concern about timing to release memory object for sound card
->> instance (and tailing private data) in error path between calls of the
->> function and 'snd_card_register()'.
->>
->> In the error path, 'snd_card_free()' is called to release instances
->> associated to the sound card instance as expected, however memory object
->> for the sound card instance is not released yet because in usual cases
->> associated device structure does not lost its reference count in this
->> timing. It's released when the associated device is removed. This means
->> that the memory object remains against its practicality during lifetime
->> of the device.
->>
->> This is not a bug itself, so I have no opposition to this patchset. But
->> it's reasonable for us to have a bit time to consider about it, IMO.
+>> Well, it's exactly same as the usual devm_kzalloc() & co, which have
+>> been already deployed at various places (even you posted a new patch
+>> series for using them :)  The card memory is tied with the device, and
+>> it's natural to align with the lifetime of the device.
 > 
-> Well, it's exactly same as the usual devm_kzalloc() & co, which have
-> been already deployed at various places (even you posted a new patch
-> series for using them :)  The card memory is tied with the device, and
-> it's natural to align with the lifetime of the device.
+> I have this concern against the usage of devres for a long time.
+> 
+> A device can be referred by several handlers; e.g. character device
+> driver and kernel driver. An example is USB devices. Userspace
+> applications can transfer message to the device via character device.
+> At the same time, iface driver in kernel land can do the same work.
+> 
+> The lifetime of device is apparently different from each of the handler.
+> Even if kernel driver returns negative value in its .probe callback, the
+> other handlers can refer to and use it.
+> 
+> If the kernel driver leave the devm-allocated memory in error path, it
+> remains till all of the handler release its reference to the device.
+> Even it the memory objects are maintained by devres, several small parts
+> of kernel logical space is unavailable. This is similar to memory leak,
+> in my view.
 
-I have this concern against the usage of devres for a long time.
+I wrote a patch to e06afb87065c (HEAD of 'topic/devres' branch) for this
+purpose. I've not tested thoroughly but expect it solves the above issue.
 
-A device can be referred by several handlers; e.g. character device
-driver and kernel driver. An example is USB devices. Userspace
-applications can transfer message to the device via character device.
-At the same time, iface driver in kernel land can do the same work.
+======== 8< --------
 
-The lifetime of device is apparently different from each of the handler.
-Even if kernel driver returns negative value in its .probe callback, the
-other handlers can refer to and use it.
+>From 2ef56174ea3c07eb5d6c2adb60573321c04a02af Mon Sep 17 00:00:00 2001
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Date: Wed, 3 Oct 2018 23:44:43 +0900
+Subject: [PATCH] ALSA: core: release memory object for sound card immediately
+ in error path for a case of devm usage
 
-If the kernel driver leave the devm-allocated memory in error path, it
-remains till all of the handler release its reference to the device.
-Even it the memory objects are maintained by devres, several small parts
-of kernel logical space is unavailable. This is similar to memory leak,
-in my view.
+Drivers can snd_card_free() in error path between calls of
+snd_devm_card_new() and snd_card_register(), In this case,
+memory object for sound card structure is not deallocated
+immediately because it's associated to target device by
+devres framework. The memory object remains till the target
+device is released. This looks like memory leak.
+
+This commit postpones association of the memory object to
+target device till a call of snd_card_register(). In error
+path, a call of snd_card_free() releases the memory object
+in the last part of snd_card_do_free().
+---
+ sound/core/init.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/sound/core/init.c b/sound/core/init.c
+index 2eade57db4b4..49cb22a735c1 100644
+--- a/sound/core/init.c
++++ b/sound/core/init.c
+@@ -272,7 +272,6 @@ int snd_devm_card_new(struct device *parent, int idx, const char *xid,
+ 		return err;
+ 	}
+ 
+-	devres_add(parent, card);
+ 	*card_ret = card;
+ 	return 0;
+ }
+@@ -569,6 +568,8 @@ static int snd_card_do_free(struct snd_card *card)
+ 		complete(card->release_completion);
+ 	if (!card->managed)
+ 		kfree(card);
++	else if (!devres_find(card->dev, __snd_card_release, NULL, NULL))
++		devres_free(card);
+ 	return 0;
+ }
+ 
+@@ -849,15 +850,6 @@ int snd_card_register(struct snd_card *card)
+ 		if (err < 0)
+ 			return err;
+ 		card->registered = true;
+-	} else {
+-		if (card->managed)
+-			devm_remove_action(card->dev, trigger_card_free, card);
+-	}
+-
+-	if (card->managed) {
+-		err = devm_add_action(card->dev, trigger_card_free, card);
+-		if (err < 0)
+-			return err;
+ 	}
+ 
+ 	if ((err = snd_device_register_all(card)) < 0)
+@@ -887,6 +879,14 @@ int snd_card_register(struct snd_card *card)
+ 	if (snd_mixer_oss_notify_callback)
+ 		snd_mixer_oss_notify_callback(card, SND_MIXER_OSS_NOTIFY_REGISTER);
+ #endif
++	if (card->managed &&
++	    !devres_find(card->dev, __snd_card_release, NULL, NULL)) {
++		err = devm_add_action(card->dev, trigger_card_free, card);
++		if (err < 0)
++			return err;
++		devres_add(card->dev, card);
++	}
++
+ 	return 0;
+ }
+ EXPORT_SYMBOL(snd_card_register);
+-- 
+2.17.1
 
 
-Regards
+Thanks
 
 Takashi Sakamoto
