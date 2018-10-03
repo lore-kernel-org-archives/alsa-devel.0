@@ -1,16 +1,16 @@
 From: Andre Guedes <andre.guedes@intel.com>
-Subject: [PATCH - AAF PCM plugin 2/7] aaf: Load configuration
-	parameters
-Date: Wed,  3 Oct 2018 16:45:42 -0700
-Message-ID: <20181003234547.16839-3-andre.guedes@intel.com>
+Subject: [PATCH - AAF PCM plugin 1/7] aaf: Introduce plugin
+	skeleton
+Date: Wed,  3 Oct 2018 16:45:41 -0700
+Message-ID: <20181003234547.16839-2-andre.guedes@intel.com>
 References: <20181003234547.16839-1-andre.guedes@intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
- by alsa0.perex.cz (Postfix) with ESMTP id 2DF64267844
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 01:46:52 +0200 (CEST)
+Received: from mga02.intel.com (mga02.intel.com [134.134.136.20])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9D25826783D
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 01:46:51 +0200 (CEST)
 In-Reply-To: <20181003234547.16839-1-andre.guedes@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,232 +25,201 @@ To: alsa-devel@alsa-project.org
 Cc: tiwai@suse.de, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch implements the infrastructure to load the plugin
-configuration from ALSA configuration file. The configuration
-is loaded in open() callback.
+The patch introduces the skeleton code from the AAF plugin as well as
+the buildsystem bits in order to get the plugin built. Following the
+approach from other plugins, the AAF plugin is only built if its
+dependency (libavtp) is detected by configure.
 
-All configuration parameters are described in details in doc/aaf.txt
-file.
+Follow-up patches implement support for both playback and capture modes.
 
 Signed-off-by: Andre Guedes <andre.guedes@intel.com>
 ---
- aaf/pcm_aaf.c | 131 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- doc/aaf.txt   |  52 +++++++++++++++++++++++
- 2 files changed, 183 insertions(+)
+ Makefile.am     |  3 ++
+ aaf/Makefile.am |  9 ++++++
+ aaf/pcm_aaf.c   | 91 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac    |  9 ++++++
+ doc/aaf.txt     | 18 ++++++++++++
+ 5 files changed, 130 insertions(+)
+ create mode 100644 aaf/Makefile.am
+ create mode 100644 aaf/pcm_aaf.c
+ create mode 100644 doc/aaf.txt
 
+diff --git a/Makefile.am b/Makefile.am
+index 27f61a4..af0e9c4 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -35,6 +35,9 @@ endif
+ if HAVE_SPEEXDSP
+ SUBDIRS += speex
+ endif
++if HAVE_AAF
++SUBDIRS += aaf
++endif
+ 
+ EXTRA_DIST = gitcompile version COPYING.GPL m4/attributes.m4
+ AUTOMAKE_OPTIONS = foreign
+diff --git a/aaf/Makefile.am b/aaf/Makefile.am
+new file mode 100644
+index 0000000..492b883
+--- /dev/null
++++ b/aaf/Makefile.am
+@@ -0,0 +1,9 @@
++asound_module_pcm_aaf_LTLIBRARIES = libasound_module_pcm_aaf.la
++
++asound_module_pcm_aafdir = @ALSA_PLUGIN_DIR@
++
++AM_CFLAGS = @ALSA_CFLAGS@ @AVTP_CFLAGS@
++AM_LDFLAGS = -module -avoid-version -export-dynamic -no-undefined $(LDFLAGS_NOUNDEFINED)
++
++libasound_module_pcm_aaf_la_SOURCES = pcm_aaf.c
++libasound_module_pcm_aaf_la_LIBADD = @ALSA_LIBS@ @AVTP_LIBS@
 diff --git a/aaf/pcm_aaf.c b/aaf/pcm_aaf.c
-index 7890e10..32db15e 100644
---- a/aaf/pcm_aaf.c
+new file mode 100644
+index 0000000..7890e10
+--- /dev/null
 +++ b/aaf/pcm_aaf.c
-@@ -20,11 +20,138 @@
- 
- #include <alsa/asoundlib.h>
- #include <alsa/pcm_external.h>
-+#include <linux/if.h>
-+#include <linux/if_ether.h>
-+#include <string.h>
-+#include <stdint.h>
+@@ -0,0 +1,91 @@
++/*
++ * AVTP Audio Format (AAF) PCM Plugin
++ *
++ * Copyright (c) 2018, Intel Corporation
++ *
++ * This library is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU Lesser General Public License as
++ * published by the Free Software Foundation; either version 2.1 of
++ * the License, or (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU Lesser General Public License for more details.
++ *
++ * You should have received a copy of the GNU Lesser General Public
++ * License along with this library; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
++ */
 +
-+#define NSEC_PER_USEC 1000
- 
- typedef struct {
- 	snd_pcm_ioplug_t io;
++#include <alsa/asoundlib.h>
++#include <alsa/pcm_external.h>
 +
-+	char ifname[IFNAMSIZ];
-+	unsigned char addr[ETH_ALEN];
-+	int prio;
-+	uint64_t streamid;
-+	int mtt;
-+	int t_uncertainty;
-+	snd_pcm_uframes_t frames_per_pdu;
- } snd_pcm_aaf_t;
- 
-+static int aaf_load_config(snd_pcm_aaf_t *aaf, snd_config_t *conf)
++typedef struct {
++	snd_pcm_ioplug_t io;
++} snd_pcm_aaf_t;
++
++static int aaf_close(snd_pcm_ioplug_t *io)
 +{
-+	snd_config_iterator_t cur, next;
++	snd_pcm_aaf_t *aaf = io->private_data;
 +
-+	snd_config_for_each(cur, next, conf) {
-+		snd_config_t *entry = snd_config_iterator_entry(cur);
-+		const char *id;
++	if (!aaf)
++		return -EBADFD;
 +
-+		if (snd_config_get_id(entry, &id) < 0)
-+			goto err;
++	free(aaf);
++	aaf = NULL;
++	return 0;
++}
 +
-+		if (strcmp(id, "comment") == 0 ||
-+		    strcmp(id, "type") == 0 ||
-+		    strcmp(id, "hint") == 0)
-+			continue;
++static snd_pcm_sframes_t aaf_pointer(snd_pcm_ioplug_t *io)
++{
++	return 0;
++}
 +
-+		if (strcmp(id, "ifname") == 0) {
-+			const char *ifname;
++static int aaf_start(snd_pcm_ioplug_t *io)
++{
++	return 0;
++}
 +
-+			if (snd_config_get_string(entry, &ifname) < 0)
-+				goto err;
++static int aaf_stop(snd_pcm_ioplug_t *io)
++{
++	return 0;
++}
 +
-+			snprintf(aaf->ifname, sizeof(aaf->ifname), "%s",
-+				 ifname);
-+		} else if (strcmp(id, "addr") == 0) {
-+			const char *addr;
-+			int n;
++static const snd_pcm_ioplug_callback_t aaf_callback = {
++	.close = aaf_close,
++	.pointer = aaf_pointer,
++	.start = aaf_start,
++	.stop = aaf_stop,
++};
 +
-+			if (snd_config_get_string(entry, &addr) < 0)
-+				goto err;
++SND_PCM_PLUGIN_DEFINE_FUNC(aaf)
++{
++	snd_pcm_aaf_t *aaf;
++	int res;
 +
-+			n = sscanf(addr, "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx",
-+				   &aaf->addr[0], &aaf->addr[1],
-+				   &aaf->addr[2], &aaf->addr[3],
-+				   &aaf->addr[4], &aaf->addr[5]);
-+			if (n != 6)
-+				goto err;
-+		} else if (strcmp(id, "prio") == 0) {
-+			long prio;
-+
-+			if (snd_config_get_integer(entry, &prio) < 0)
-+				goto err;
-+
-+			if (prio < 0)
-+				goto err;
-+
-+			aaf->prio = prio;
-+		} else if (strcmp(id, "streamid") == 0) {
-+			const char *streamid;
-+			unsigned char addr[6];
-+			unsigned short unique_id;
-+			int n;
-+
-+			if (snd_config_get_string(entry, &streamid) < 0)
-+				goto err;
-+
-+			n = sscanf(streamid,
-+				   "%hhx:%hhx:%hhx:%hhx:%hhx:%hhx:%hx",
-+				   &addr[0], &addr[1], &addr[2], &addr[3],
-+				   &addr[4], &addr[5], &unique_id);
-+			if (n != 7)
-+				goto err;
-+
-+			aaf->streamid = (uint64_t) addr[0] << 56 |
-+					(uint64_t) addr[1] << 48 |
-+					(uint64_t) addr[2] << 40 |
-+					(uint64_t) addr[3] << 32 |
-+					(uint64_t) addr[4] << 24 |
-+					(uint64_t) addr[5] << 16 |
-+					unique_id;
-+		} else if (strcmp(id, "mtt") == 0) {
-+			long mtt;
-+
-+			if (snd_config_get_integer(entry, &mtt) < 0)
-+				goto err;
-+
-+			if (mtt < 0)
-+				goto err;
-+
-+			aaf->mtt = mtt * NSEC_PER_USEC;
-+		} else if (strcmp(id, "time_uncertainty") == 0) {
-+			long t_uncertainty;
-+
-+			if (snd_config_get_integer(entry, &t_uncertainty) < 0)
-+				goto err;
-+
-+			if (t_uncertainty < 0)
-+				goto err;
-+
-+			aaf->t_uncertainty = t_uncertainty * NSEC_PER_USEC;
-+		} else if (strcmp(id, "frames_per_pdu") == 0) {
-+			long frames_per_pdu;
-+
-+			if (snd_config_get_integer(entry, &frames_per_pdu) < 0)
-+				goto err;
-+
-+			if (frames_per_pdu < 0)
-+				goto err;
-+
-+			aaf->frames_per_pdu = frames_per_pdu;
-+		} else {
-+			SNDERR("Invalid configuration: %s", id);
-+			goto err;
-+		}
++	aaf = calloc(1, sizeof(*aaf));
++	if (!aaf) {
++		SNDERR("Failed to allocate memory");
++		return -ENOMEM;
 +	}
 +
++	aaf->io.version = SND_PCM_IOPLUG_VERSION;
++	aaf->io.name = "AVTP Audio Format (AAF) Plugin";
++	aaf->io.callback = &aaf_callback;
++	aaf->io.private_data = aaf;
++	res = snd_pcm_ioplug_create(&aaf->io, name, stream, mode);
++	if (res < 0) {
++		SNDERR("Failed to create ioplug instance");
++		goto err;
++	}
++
++	*pcmp = aaf->io.pcm;
 +	return 0;
 +
 +err:
-+	SNDERR("Error loading device configuration");
-+	return -EINVAL;
++	free(aaf);
++	return res;
 +}
 +
- static int aaf_close(snd_pcm_ioplug_t *io)
- {
- 	snd_pcm_aaf_t *aaf = io->private_data;
-@@ -70,6 +197,10 @@ SND_PCM_PLUGIN_DEFINE_FUNC(aaf)
- 		return -ENOMEM;
- 	}
++SND_PCM_PLUGIN_SYMBOL(aaf);
+diff --git a/configure.ac b/configure.ac
+index cc3740b..6d0e14b 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -176,6 +176,14 @@ fi
+ test "x$prefix" = xNONE && prefix=$ac_default_prefix
+ test "x$exec_prefix" = xNONE && exec_prefix=$prefix
  
-+	res = aaf_load_config(aaf, conf);
-+	if (res < 0)
-+		goto err;
++AC_ARG_ENABLE([aaf],
++      AS_HELP_STRING([--disable-aaf], [Disable building of AAF plugin]))
 +
- 	aaf->io.version = SND_PCM_IOPLUG_VERSION;
- 	aaf->io.name = "AVTP Audio Format (AAF) Plugin";
- 	aaf->io.callback = &aaf_callback;
++if test "x$enable_aaf" != "xno"; then
++  PKG_CHECK_MODULES(AVTP, avtp >= 0.1, [HAVE_AAF=yes], [HAVE_AAF=no])
++fi
++AM_CONDITIONAL(HAVE_AAF, test x$HAVE_AAF = xyes)
++
+ dnl ALSA plugin directory
+ AC_ARG_WITH(plugindir,
+     AS_HELP_STRING([--with-plugindir=dir],
+@@ -251,6 +259,7 @@ AC_OUTPUT([
+ 	usb_stream/Makefile
+ 	speex/Makefile
+ 	arcam-av/Makefile
++	aaf/Makefile
+ ])
+ 
+ dnl Show the build conditions
 diff --git a/doc/aaf.txt b/doc/aaf.txt
-index b260a26..d817249 100644
---- a/doc/aaf.txt
+new file mode 100644
+index 0000000..b260a26
+--- /dev/null
 +++ b/doc/aaf.txt
-@@ -16,3 +16,55 @@ The AAF plugin uses libavtp to handle AVTP packetization. Libavtp source code
- can be found in https://github.com/AVnu/libavtp as well as instructions to
- build and install it. If libavtp isn't detected by configure, the plugin isn't
- built.
+@@ -0,0 +1,18 @@
++AVTP Audio Format (AAF) Plugin
++==============================
 +
-+Plugin Configuration and Usage
-+------------------------------
++Overview
++--------
 +
-+The plugin parameters are passed via ALSA configuration file. They are defined
-+as follows:
++The AAF plugin is a PCM plugin that uses Audio Video Transport Protocol (AVTP)
++to transmit/receive audio samples through a Time-Sensitive Network (TSN)
++capable network. The plugin enables media applications to easily implement AVTP
++Talker and Listener functionalities.
 +
-+	* ifname: Network interface used to transmit/receive AVTP packets.
++Plugin Dependencies
++-------------------
 +
-+	* addr: Stream destination MAC address.
-+
-+	* prio: Priority used by the plugin to transmit AVTP traffic. This
-+	  option is relevant only when operating in playback mode.
-+
-+	* streamid: Stream ID associated with the AAF stream transmitted or
-+	  received by the plugin.
-+
-+	* mtt: Maximum Transit Time (in microseconds) as defined in AVTP spec
-+	  section 4.3.3. This option is relevant only when operating in
-+	  playback mode.
-+
-+	* time_uncertainty: Maximum Time Uncertainty (in microseconds) as
-+	  defined by AVTP spec section 4.3.3. This option is relevant only when
-+	  operating in playback mode.
-+
-+	* frames_per_pdu: Number of audio frames transmitted in one AVTPDU.
-+
-+The plugin provides the PCM type "aaf". Configure an AAF PCM virtual device
-+according to the AAF stream you want to transmit or receive. A hypothetical
-+configuration file is shown below:
-+
-+	pcm.aaf {
-+		type aaf
-+		ifname eth0
-+		addr AA:AA:AA:AA:AA:AA
-+		prio 3
-+		streamid BB:BB:BB:BB:BB:BB:0001
-+		mtt 2000
-+		time_uncertainty 125
-+		frames_per_pdu 6
-+	}
-+
-+Put the above to ~/.asoundrc (or /etc/asound.conf), and use the AAF PCM virtual
-+device with your ALSA apps. For example, to stream the content from a wav file
-+through the network, run:
-+
-+	$ aplay -Daaf foo.wav
-+
-+To receive the AAF stream generated by the previous command, run the following
-+command in another host:
-+
-+	$ arecord -Daaf
++The AAF plugin uses libavtp to handle AVTP packetization. Libavtp source code
++can be found in https://github.com/AVnu/libavtp as well as instructions to
++build and install it. If libavtp isn't detected by configure, the plugin isn't
++built.
 -- 
 2.14.4
