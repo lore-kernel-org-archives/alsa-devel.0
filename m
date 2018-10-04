@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pxa-ssp: enable and disable extclk if
-	given" to the asoc tree
-Date: Thu,  4 Oct 2018 11:42:27 +0100 (BST)
-Message-ID: <20181004104227.2C85E1121BA8@debutante.sirena.org.uk>
-References: <20181003193627.5423-1-daniel@zonque.org>
+Subject: Applied "ASoC: qdsp6: q6asm-dai: checking NULL vs
+	IS_ERR()" to the asoc tree
+Date: Thu,  4 Oct 2018 11:42:38 +0100 (BST)
+Message-ID: <20181004104238.04D1E1121BA8@debutante.sirena.org.uk>
+References: <20181001164430.GA29197@mwanda>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id C34582676A7
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 12:42:27 +0200 (CEST)
-In-Reply-To: <20181003193627.5423-1-daniel@zonque.org>
+ by alsa0.perex.cz (Postfix) with ESMTP id BA5D52678C3
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 12:42:39 +0200 (CEST)
+In-Reply-To: <20181001164430.GA29197@mwanda>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, robert.jarzmik@free.fr, lars@metafoo.de
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pxa-ssp: enable and disable extclk if given
+   ASoC: qdsp6: q6asm-dai: checking NULL vs IS_ERR()
 
 has been applied to the asoc tree at
 
@@ -53,42 +53,38 @@ to this mail.
 Thanks,
 Mark
 
->From cfe9ee5f2b7808ceec21df83a45e38afcc647153 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Wed, 3 Oct 2018 21:36:27 +0200
-Subject: [PATCH] ASoC: pxa-ssp: enable and disable extclk if given
+>From 8e9f7265eda9f3a662ca1ca47a69042a7840735b Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Mon, 1 Oct 2018 19:44:30 +0300
+Subject: [PATCH] ASoC: qdsp6: q6asm-dai: checking NULL vs IS_ERR()
 
-If a "extclk" clock is given, enable and disable it when appropriate.
+The q6asm_audio_client_alloc() doesn't return NULL, it returns error
+pointers.
 
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+Fixes: 2a9e92d371db ("ASoC: qdsp6: q6asm: Add q6asm dai driver")
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/pxa/pxa-ssp.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ sound/soc/qcom/qdsp6/q6asm-dai.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/pxa/pxa-ssp.c b/sound/soc/pxa/pxa-ssp.c
-index 69033e1a84e6..adcf8ba9d287 100644
---- a/sound/soc/pxa/pxa-ssp.c
-+++ b/sound/soc/pxa/pxa-ssp.c
-@@ -103,6 +103,9 @@ static int pxa_ssp_startup(struct snd_pcm_substream *substream,
- 		pxa_ssp_disable(ssp);
+diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
+index c3806d7037fc..a16c71c03058 100644
+--- a/sound/soc/qcom/qdsp6/q6asm-dai.c
++++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
+@@ -318,10 +318,11 @@ static int q6asm_dai_open(struct snd_pcm_substream *substream)
+ 	prtd->audio_client = q6asm_audio_client_alloc(dev,
+ 				(q6asm_cb)event_handler, prtd, stream_id,
+ 				LEGACY_PCM_MODE);
+-	if (!prtd->audio_client) {
++	if (IS_ERR(prtd->audio_client)) {
+ 		pr_info("%s: Could not allocate memory\n", __func__);
++		ret = PTR_ERR(prtd->audio_client);
+ 		kfree(prtd);
+-		return -ENOMEM;
++		return ret;
  	}
  
-+	if (priv->extclk)
-+		clk_prepare_enable(priv->extclk);
-+
- 	dma = kzalloc(sizeof(struct snd_dmaengine_dai_dma_data), GFP_KERNEL);
- 	if (!dma)
- 		return -ENOMEM;
-@@ -125,6 +128,9 @@ static void pxa_ssp_shutdown(struct snd_pcm_substream *substream,
- 		clk_disable_unprepare(ssp->clk);
- 	}
- 
-+	if (priv->extclk)
-+		clk_disable_unprepare(priv->extclk);
-+
- 	kfree(snd_soc_dai_get_dma_data(cpu_dai, substream));
- 	snd_soc_dai_set_dma_data(cpu_dai, substream, NULL);
- }
+ 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
 -- 
 2.19.0.rc2
