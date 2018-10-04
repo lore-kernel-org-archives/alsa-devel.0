@@ -1,15 +1,18 @@
-From: Nicolas Huaman <nicolas@herochao.de>
-Subject: [PATCH] ALSA: usb-audio: update quirk for B&W PX to
-	remove microphone
-Date: Thu,  4 Oct 2018 16:42:05 +0200
-Message-ID: <20181004144205.18153-1-nicolas@herochao.de>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: ts3a227e: fix a typo in documentation"
+	to the asoc tree
+Date: Thu,  4 Oct 2018 15:50:50 +0100 (BST)
+Message-ID: <20181004145050.487FE1121C82@debutante.sirena.org.uk>
+References: <20181004104301.48121-1-tzungbi@google.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.huaman.de (mail.huaman.de [88.99.34.23])
- by alsa0.perex.cz (Postfix) with ESMTP id CB3F0267736
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 16:42:41 +0200 (CEST)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 86452267737
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 16:50:51 +0200 (CEST)
+In-Reply-To: <20181004104301.48121-1-tzungbi@google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,58 +22,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: Nicolas Huaman <nicolas@herochao.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc: tzungbi@google.com, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, dgreid@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
-A quirk in snd-usb-audio was added to automate setting sample rate to
-4800k and remove the previously exposed nonfunctional microphone for 
-the Bowers & Wilkins PX:
-commit 240a8af929c7c57dcde28682725b29cf8474e8e5
-https://lore.kernel.org/patchwork/patch/919689/
+The patch
 
-However the headphones where updated shortly after that to remove the
-unintentional microphone functionality. I guess because of this the
-headphones now crash when connecting them via USB while the quirk is
-active. Dmesg:
+   ASoC: ts3a227e: fix a typo in documentation
 
-snd-usb-audio: probe of 2-3:1.0 failed with error -22
-usb 2-3: 2:1: cannot get min/max values for control 2 (id 2)
+has been applied to the asoc tree at
 
-This patch removes the microfone and allows the headphones to connect 
-and work out of the box. It is based on the current mainline kernel 
- and successfully applied an tested on my machine (4.18.10.arch1-1).
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-Signed-off-by: Nicolas Huaman <nicolas@herochao.de>
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 757b1aa00259a44f94bd120b9637720b9aaf36eb Mon Sep 17 00:00:00 2001
+From: Tzung-Bi Shih <tzungbi@google.com>
+Date: Thu, 4 Oct 2018 18:43:01 +0800
+Subject: [PATCH] ASoC: ts3a227e: fix a typo in documentation
+
+There is no "MACBIAS".  It should be "MICBIAS".
+
+Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/usb/quirks-table.h | 9 ++-------
- 1 file changed, 2 insertions(+), 7 deletions(-)
+ Documentation/devicetree/bindings/sound/ts3a227e.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 08aa78007020..849953e5775c 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -3346,19 +3346,14 @@ AU0828_DEVICE(0x2040, 0x7270, "Hauppauge", "HVR-950Q"),
- 				.ifnum = 0,
- 				.type = QUIRK_AUDIO_STANDARD_MIXER,
- 			},
--			/* Capture */
--			{
--				.ifnum = 1,
--				.type = QUIRK_IGNORE_INTERFACE,
--			},
- 			/* Playback */
- 			{
--				.ifnum = 2,
-+				.ifnum = 1,
- 				.type = QUIRK_AUDIO_FIXED_ENDPOINT,
- 				.data = &(const struct audioformat) {
- 					.formats = SNDRV_PCM_FMTBIT_S16_LE,
- 					.channels = 2,
--					.iface = 2,
-+					.iface = 1,
- 					.altsetting = 1,
- 					.altset_idx = 1,
- 					.attributes = UAC_EP_CS_ATTR_FILL_MAX |
+diff --git a/Documentation/devicetree/bindings/sound/ts3a227e.txt b/Documentation/devicetree/bindings/sound/ts3a227e.txt
+index 3ed8359144d3..21ab45bc7e8f 100644
+--- a/Documentation/devicetree/bindings/sound/ts3a227e.txt
++++ b/Documentation/devicetree/bindings/sound/ts3a227e.txt
+@@ -14,7 +14,7 @@ Required properties:
+ 
+ Optional properies:
+  - ti,micbias:   Intended MICBIAS voltage (datasheet section 9.6.7).
+-      Select 0/1/2/3/4/5/6/7 to specify MACBIAS voltage
++      Select 0/1/2/3/4/5/6/7 to specify MICBIAS voltage
+       2.1V/2.2V/2.3V/2.4V/2.5V/2.6V/2.7V/2.8V
+       Default value is "1" (2.2V).
+ 
 -- 
-2.19.0
+2.19.0.rc2
