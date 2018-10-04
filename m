@@ -1,17 +1,16 @@
-From: Tzung-Bi Shih <tzungbi@google.com>
-Subject: [PATCH] ASoC: ts3a227e: fix a typo in documentation
-Date: Thu,  4 Oct 2018 18:43:01 +0800
-Message-ID: <20181004104301.48121-1-tzungbi@google.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: ts3a227e: fix a typo in documentation
+Date: Thu, 4 Oct 2018 15:03:50 +0100
+Message-ID: <20181004140350.GF6412@sirena.org.uk>
+References: <20181004104301.48121-1-tzungbi@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============3077108175468684052=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-vk1-f201.google.com (mail-vk1-f201.google.com
- [209.85.221.201])
- by alsa0.perex.cz (Postfix) with ESMTP id C747A2676A7
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 12:43:31 +0200 (CEST)
-Received: by mail-vk1-f201.google.com with SMTP id y83-v6so1799350vky.6
- for <alsa-devel@alsa-project.org>; Thu, 04 Oct 2018 03:43:31 -0700 (PDT)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D11C2676A7
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 16:03:50 +0200 (CEST)
+In-Reply-To: <20181004104301.48121-1-tzungbi@google.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,29 +20,55 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tzungbi@google.com, dgreid@google.com, cychiang@google.com
+To: Tzung-Bi Shih <tzungbi@google.com>
+Cc: alsa-devel@alsa-project.org, dgreid@google.com, cychiang@google.com
 List-Id: alsa-devel@alsa-project.org
 
-There is no "MACBIAS".  It should be "MICBIAS".
 
-Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
----
- Documentation/devicetree/bindings/sound/ts3a227e.txt | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--===============3077108175468684052==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="MZf7D3rAEoQgPanC"
+Content-Disposition: inline
 
-diff --git a/Documentation/devicetree/bindings/sound/ts3a227e.txt b/Documentation/devicetree/bindings/sound/ts3a227e.txt
-index 3ed8359144d3..21ab45bc7e8f 100644
---- a/Documentation/devicetree/bindings/sound/ts3a227e.txt
-+++ b/Documentation/devicetree/bindings/sound/ts3a227e.txt
-@@ -14,7 +14,7 @@ Required properties:
- 
- Optional properies:
-  - ti,micbias:   Intended MICBIAS voltage (datasheet section 9.6.7).
--      Select 0/1/2/3/4/5/6/7 to specify MACBIAS voltage
-+      Select 0/1/2/3/4/5/6/7 to specify MICBIAS voltage
-       2.1V/2.2V/2.3V/2.4V/2.5V/2.6V/2.7V/2.8V
-       Default value is "1" (2.2V).
- 
--- 
-2.19.0.605.g01d371f741-goog
+
+--MZf7D3rAEoQgPanC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Oct 04, 2018 at 06:43:01PM +0800, Tzung-Bi Shih wrote:
+> There is no "MACBIAS".  It should be "MICBIAS".
+>=20
+> Signed-off-by: Tzung-Bi Shih <tzungbi@google.com>
+
+As documented in SubmittingPatches please send patches to the=20
+maintainers for the code you would like to change.  The normal kernel
+workflow is that people apply patches from their inboxes, if they aren't
+copied they are likely to not see the patch at all and it is much more
+difficult to apply patches.
+
+--MZf7D3rAEoQgPanC
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlu2HcUACgkQJNaLcl1U
+h9BttAf9FVfGwRA+4M956tqre3O6chjucAvWawzHQIquodCnsJVhz0aVulz4qVyS
+6Yp0NM9HEBG3+2Sx8JMFW6FBvm0kD9BNuo3MQynvlpIZFN4f859H/h8Fy5c5X1Sn
+Jx+BXtfT+d9iBmfK2pEn1NKtn1sHVVNbpUZEoBWU8V9h7Kiuklfx1INQfgGBWSzJ
+AK+/Ue8s/QPIUL7Nok1QMd3+YcdiSOHG2rfyRWG12A/By21ZKn3FlKjmsy6yPIVP
+eJfHjXe1rpevEP5NcHQDa+jooHQENw0SYYfIP0tQzFtbQoyFuHnmWxxiRix+jnz0
+p2E4AeqzsjTX88Ri+tQ1Mu0Jw0B86w==
+=6hbc
+-----END PGP SIGNATURE-----
+
+--MZf7D3rAEoQgPanC--
+
+--===============3077108175468684052==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============3077108175468684052==--
