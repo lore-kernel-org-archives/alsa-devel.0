@@ -1,54 +1,77 @@
-From: Jia-Ju Bai <baijiaju1990@gmail.com>
-Subject: Re: [BUG] sound: pci: trident: a possible data race
-Date: Thu, 4 Oct 2018 11:08:45 +0800
-Message-ID: <e334c065-5768-7710-bd70-059f7316157b@gmail.com>
-References: <864e211c-8be5-6a34-902a-a71f176111db@gmail.com>
- <s5hk1mzowkd.wl-tiwai@suse.de>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [PATCH linux-next v2 1/9] arm64: r8a7795: add dma request number
+ for busif0 ~ busif7
+Date: Thu, 4 Oct 2018 12:15:43 +0900
+Message-ID: <bd6eb187-8064-97f5-fe87-fc68f0cc1190@mentor.com>
+References: <20181003085855.4305-1-jiada_wang@mentor.com>
+ <20181003085855.4305-2-jiada_wang@mentor.com>
+ <87y3bepmgb.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hk1mzowkd.wl-tiwai@suse.de>
+In-Reply-To: <87y3bepmgb.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: keescook@chromium.org, perex@perex.cz, alsa-devel@alsa-project.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Thanks for the reply :)
+Hi Morimoto-san
 
 
-On 2018/10/3 23:54, Takashi Iwai wrote:
-> On Wed, 03 Oct 2018 14:50:25 +0200,
-> Jia-Ju Bai wrote:
->> CPU0:
->> snd_trident_hw_free
->>      snd_trident_free_voice
->>              line 3870: spin_lock_irqsave()
->>              line 3881: voice->substream = NULL; [WRITE]
->> CPU1:
->> snd_trident_interrupt
->>      line 3798: snd_pcm_period_elapsed(voice->substream);  [READ]
->>
->> As for voice->substream, the WRITE operation in CPU0 is performed
->> with holding a spinlock, but the READ operation in CPU1 is performed
->> without holding this spinlock, so there may exist a data race.
-> Thanks for the report.
+On 2018/10/04 9:55, Kuninori Morimoto wrote:
+> Hi Jiada
 >
-> The actual crash must be very unlikely, almost 0%, though.
-> snd_trident_hw_free() is called always after the PCM stream gets
-> stopped via trigger callback, i.e. at the moment, there is no
-> corresponding interrupt is generated for that voice entry.
+> Thank you for your patch
+>
+>> From: Jiada Wang <jiada_wang@mentor.com>
+>>
+>> This patch adds dma request number for busif0 ~ busif7
+>> to be used by GEN3 series. GEN2 continues to use rxu/txu
+>> for busif data transfer.
+>>
+>> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
+>> ---
+>>   arch/arm64/boot/dts/renesas/r8a7795.dtsi | 164 ++++++++++++++++++++---
+>>   1 file changed, 144 insertions(+), 20 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/renesas/r8a7795.dtsi b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+>> index b5f2273caca4..fc6100eddfed 100644
+>> --- a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+>> +++ b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
+>> @@ -1923,53 +1923,177 @@
+>>   			rcar_sound,ssi {
+>>   				ssi0: ssi-0 {
+>>   					interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
+>> -					dmas = <&audma0 0x01>, <&audma1 0x02>, <&audma0 0x15>, <&audma1 0x16>;
+>> -					dma-names = "rx", "tx", "rxu", "txu";
+>> +					dmas = <&audma0 0x01>, <&audma1 0x02>,
+>> +					       <&audma0 0x15>, <&audma1 0x16>,
+>> +					       <&audma0 0x15>, <&audma1 0x16>,
+>> +					       <&audma0 0x35>, <&audma1 0x36>,
+>> +					       <&audma0 0x37>, <&audma1 0x38>,
+>> +					       <&audma0 0x47>, <&audma1 0x48>,
+>> +					       <&audma0 0x3f>, <&audma1 0x40>,
+>> +					       <&audma0 0x43>, <&audma1 0x44>,
+>> +					       <&audma0 0x4f>, <&audma1 0x50>,
+>> +					       <&audma0 0x53>, <&audma1 0x54>;
+>> +					dma-names = "rx", "tx",
+>> +						    "rxu", "txu",
+>> +						    "rxu0", "txu0",
+>> +						    "rxu1", "txu1",
+>> +						    "rxu2", "txu2",
+>> +						    "rxu3", "txu3",
+>> +						    "rxu4", "txu4",
+>> +						    "rxu5", "txu5",
+>> +						    "rxu6", "txu6",
+>> +						    "rxu7", "txu7";
+> In theory, I think DT side patch should be posted/applied
+> if driver side patch was accepted.
+> And, Gen3 side DT doesn't need "rxu/txu" I think.
+OK, I will separate DT and driver side change,
+will remove DT change in next version.
 
-How about the case that playback and capture are performed concurrently?
-Namely, snd_trident_hw_free() is called for playback, and the interrupt 
-is generated for capture.
 
-> And the hardware is very old, I bet only a handful people still using
-> in the whole world :)
-
-I have this hardware, so I am the one of these handful people ;)
-
-
-Best wishes,
-Jia-Ju Bai
+Thanks,
+Jiada
