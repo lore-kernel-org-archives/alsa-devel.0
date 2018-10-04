@@ -1,15 +1,15 @@
 From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [alsa-devel] [PATCH linux-next v2 9/9] ASoC: rsnd: add busif
- property to dai stream
-Date: Thu, 4 Oct 2018 11:43:18 +0900
-Message-ID: <557e63d1-dbb7-4232-b53e-4a5499024180@mentor.com>
-References: <20181003090136.4556-1-jiada_wang@mentor.com>
- <87va6ipkaz.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: [PATCH linux-next v2 8/9] ASoC: rsnd: ssi: Request dedicated dma
+ channels for busif0 to 7
+Date: Thu, 4 Oct 2018 12:00:29 +0900
+Message-ID: <7d213396-a56e-e83d-7d0b-7edf49911b41@mentor.com>
+References: <20181003090122.4508-1-jiada_wang@mentor.com>
+ <87woqyplnr.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87va6ipkaz.wl-kuninori.morimoto.gx@renesas.com>
+In-Reply-To: <87woqyplnr.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
 Sender: linux-kernel-owner@vger.kernel.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
@@ -19,54 +19,53 @@ List-Id: alsa-devel@alsa-project.org
 Hi Morimoto-san
 
 
-On 2018/10/04 10:41, Kuninori Morimoto wrote:
+On 2018/10/04 10:12, Kuninori Morimoto wrote:
 > Hi Jiada
 >
 > Thank you for your patch
 >
->> in GEN3 SSI may use different BUSIF for data transfer,
->> this patch adds busif property to each dai stream,
->> to indicate the BUSIF used by playback/capture stream.
+>> Currently ssi driver only request dma channel for SSI_0,
+>> which is used to transfer data to/from busif0.
 >>
->> Also adds rsnd_ssi_select_busif() to automatically select
->> BUSIF (currently only BUSIF0 is selected)
+>> But in GEN3 busif1 to busif7 also maybe used, dedicated dma channels
+>> are requested for data transfer through these busif.
 >>
 >> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
 >> ---
->>   sound/soc/sh/rcar/core.c |  3 +++
->>   sound/soc/sh/rcar/dma.c  | 31 +++++++++++++++++++++++++++++++
->>   sound/soc/sh/rcar/rsnd.h |  3 +++
->>   sound/soc/sh/rcar/ssi.c  | 30 +++++++++++++++++++++++++++++-
->>   4 files changed, 66 insertions(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
->> index 40d7dc4f7839..5e3e6e65bcdf 100644
->> --- a/sound/soc/sh/rcar/core.c
->> +++ b/sound/soc/sh/rcar/core.c
->> @@ -1158,6 +1158,9 @@ static int rsnd_hw_params(struct snd_pcm_substream *substream,
->>   	struct rsnd_dai *rdai = rsnd_dai_to_rdai(dai);
->>   	struct rsnd_dai_stream *io = rsnd_rdai_to_io(rdai, substream);
->>   	int ret;
->> +	int chan = rsnd_runtime_channel_for_ssi_with_params(io, hw_params);
+> (snip)
+>> +	if (rsnd_ssi_use_busif(io)) {
+>> +		if (is_play)
+>> +			snprintf(name, SSI_DMA_NAME_SIZE, "rxu");
+>> +		else
+>> +			snprintf(name, SSI_DMA_NAME_SIZE, "txu");
 >> +
->> +	rsnd_ssi_select_busif(io, chan);
-> If my understanding was correct, the chance to use BUSIFx is when TDM split mode.
-Yes, only when SSI works in Split/Ex-Split mode, BUSIFx other than 0 is 
-necessary
-> And this patch selects it on runtime (= hw_param) ?
-Because, in order to automatically determine BUSIF number,
-information like SSI mode (non-Split/Split/Ex-Split), runtime channel, 
-are required
-(in our internal implementation, SSI mode is selected by kctrl)
-because of this, in this patch, BUSIF is selected on runtime
+>> +		if (rsnd_is_gen3(priv)) {
+>> +			/*
+>> +			 * Gen3 supports to use all available BUSIF
+>> +			 */
+>> +			int busif = rsnd_ssi_get_busif(io);
+>> +
+>> +			snprintf(name, SSI_DMA_NAME_SIZE, "%s%d", name, busif);
+>> +		}
+> I think unspecified GenX is better idea.
+> For example, we might want to have same setting on Gen2 in the future.
+> (and this is not Gen3 HW specific feature
+>   But yes, we have SW side reason)
+>
+> How about like this ?
+> We can keep compatibility, and both Gen2/Gen3 can use it.
+>
+> 	if (rsnd_ssi_use_busif(io)) {
+> 		/*
+> 		 * 1) try to find txu%d/rxu%d first
+> 		 * 2) If can't find it, try to find old txu/rxu
+> 		 */
+> 	}
+I think this is a good idea, by doing so,
+in case GEN2 DT also starts to support different BUSIF,
+then no driver side change is required.
 
-> But, I think we can/should select it on probe timing from DT connection.
-> Am I misunderstanding ?
-with the above reasoning, BUSIF is selected on runtime.
-what do you think?
+I will update accordingly in next version
 
 Thanks,
 Jiada
-> I'm not sure how to select, but adding new ssiuX0 - ssiuX7
-> is realistic idea (parse sound card is not realistic...) ?
-> If so, your rxu/txu DMA can be more simple ?
