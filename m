@@ -1,14 +1,15 @@
 From: Takashi Iwai <tiwai@suse.de>
-Subject: [PATCH 3/5] ASoC: rt274: Add fall-through annotations
-Date: Thu,  4 Oct 2018 20:30:04 +0200
-Message-ID: <20181004183006.23983-4-tiwai@suse.de>
+Subject: [PATCH 4/5] ASoC: intel: skylake: Add fall-through
+	annotation
+Date: Thu,  4 Oct 2018 20:30:05 +0200
+Message-ID: <20181004183006.23983-5-tiwai@suse.de>
 References: <20181004183006.23983-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id A9AF22678AB
+ by alsa0.perex.cz (Postfix) with ESMTP id AAC932678AC
  for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 20:30:09 +0200 (CEST)
 In-Reply-To: <20181004183006.23983-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -25,32 +26,25 @@ Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter
 List-Id: alsa-devel@alsa-project.org
 
 As a preparatory patch for the upcoming -Wimplicit-fallthrough
-compiler checks, add the "fall through" annotations in rt274 driver.
+compiler checks, add the "fall through" annotation in Intel SST
+skylake driver.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 ---
- sound/soc/codecs/rt274.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/intel/skylake/skl-pcm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index d88e67341083..0ef966d56bac 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -755,6 +755,7 @@ static int rt274_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 		break;
- 	default:
- 		dev_warn(component->dev, "invalid pll source, use BCLK\n");
+diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
+index 823e39103edd..62d6f2f190d1 100644
+--- a/sound/soc/intel/skylake/skl-pcm.c
++++ b/sound/soc/intel/skylake/skl-pcm.c
+@@ -494,6 +494,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
+ 							stream->lpib);
+ 			snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
+ 		}
 +		/* fall through */
- 	case RT274_PLL2_S_BCLK:
- 		snd_soc_component_update_bits(component, RT274_PLL2_CTRL,
- 				RT274_PLL2_SRC_MASK, RT274_PLL2_SRC_BCLK);
-@@ -782,6 +783,7 @@ static int rt274_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 			break;
- 		default:
- 			dev_warn(component->dev, "invalid freq_in, assume 4.8M\n");
-+			/* fall through */
- 		case 100:
- 			snd_soc_component_write(component, 0x7a, 0xaab6);
- 			snd_soc_component_write(component, 0x7b, 0x0301);
+ 
+ 	case SNDRV_PCM_TRIGGER_START:
+ 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
 -- 
 2.18.0
