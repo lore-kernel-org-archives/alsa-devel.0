@@ -1,77 +1,52 @@
-From: Jiada Wang <jiada_wang@mentor.com>
-Subject: Re: [PATCH linux-next v2 1/9] arm64: r8a7795: add dma request number
- for busif0 ~ busif7
-Date: Thu, 4 Oct 2018 12:15:43 +0900
-Message-ID: <bd6eb187-8064-97f5-fe87-fc68f0cc1190@mentor.com>
-References: <20181003085855.4305-1-jiada_wang@mentor.com>
- <20181003085855.4305-2-jiada_wang@mentor.com>
- <87y3bepmgb.wl-kuninori.morimoto.gx@renesas.com>
+From: Kai-Heng Feng <kai.heng.feng@canonical.com>
+Subject: [PATCH] ALSA: hda/realtek - Cannot adjust speaker's
+	volume on Dell XPS 27 7760
+Date: Thu,  4 Oct 2018 11:39:42 +0800
+Message-ID: <20181004033942.30100-1-kai.heng.feng@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <87y3bepmgb.wl-kuninori.morimoto.gx@renesas.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from youngberry.canonical.com (youngberry.canonical.com
+ [91.189.89.112])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3D3DA2677F0
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 05:39:51 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: tiwai@suse.com
+Cc: alsa-devel@alsa-project.org, Kai-Heng Feng <kai.heng.feng@canonical.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Morimoto-san
+The issue is the same as commit dd9aa335c880 ("ALSA: hda/realtek - Can't
+adjust speaker's volume on a Dell AIO"), the output requires to connect
+to a node with Amp-out capability.
 
+Applying the same fixup ALC298_FIXUP_SPK_VOLUME can fix the issue.
 
-On 2018/10/04 9:55, Kuninori Morimoto wrote:
-> Hi Jiada
->
-> Thank you for your patch
->
->> From: Jiada Wang <jiada_wang@mentor.com>
->>
->> This patch adds dma request number for busif0 ~ busif7
->> to be used by GEN3 series. GEN2 continues to use rxu/txu
->> for busif data transfer.
->>
->> Signed-off-by: Jiada Wang <jiada_wang@mentor.com>
->> ---
->>   arch/arm64/boot/dts/renesas/r8a7795.dtsi | 164 ++++++++++++++++++++---
->>   1 file changed, 144 insertions(+), 20 deletions(-)
->>
->> diff --git a/arch/arm64/boot/dts/renesas/r8a7795.dtsi b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
->> index b5f2273caca4..fc6100eddfed 100644
->> --- a/arch/arm64/boot/dts/renesas/r8a7795.dtsi
->> +++ b/arch/arm64/boot/dts/renesas/r8a7795.dtsi
->> @@ -1923,53 +1923,177 @@
->>   			rcar_sound,ssi {
->>   				ssi0: ssi-0 {
->>   					interrupts = <GIC_SPI 370 IRQ_TYPE_LEVEL_HIGH>;
->> -					dmas = <&audma0 0x01>, <&audma1 0x02>, <&audma0 0x15>, <&audma1 0x16>;
->> -					dma-names = "rx", "tx", "rxu", "txu";
->> +					dmas = <&audma0 0x01>, <&audma1 0x02>,
->> +					       <&audma0 0x15>, <&audma1 0x16>,
->> +					       <&audma0 0x15>, <&audma1 0x16>,
->> +					       <&audma0 0x35>, <&audma1 0x36>,
->> +					       <&audma0 0x37>, <&audma1 0x38>,
->> +					       <&audma0 0x47>, <&audma1 0x48>,
->> +					       <&audma0 0x3f>, <&audma1 0x40>,
->> +					       <&audma0 0x43>, <&audma1 0x44>,
->> +					       <&audma0 0x4f>, <&audma1 0x50>,
->> +					       <&audma0 0x53>, <&audma1 0x54>;
->> +					dma-names = "rx", "tx",
->> +						    "rxu", "txu",
->> +						    "rxu0", "txu0",
->> +						    "rxu1", "txu1",
->> +						    "rxu2", "txu2",
->> +						    "rxu3", "txu3",
->> +						    "rxu4", "txu4",
->> +						    "rxu5", "txu5",
->> +						    "rxu6", "txu6",
->> +						    "rxu7", "txu7";
-> In theory, I think DT side patch should be posted/applied
-> if driver side patch was accepted.
-> And, Gen3 side DT doesn't need "rxu/txu" I think.
-OK, I will separate DT and driver side change,
-will remove DT change in next version.
+BugLink: https://bugs.launchpad.net/bugs/1775068
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-
-Thanks,
-Jiada
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index 6f3c8e888c2a..69283633ae91 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -6409,6 +6409,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1028, 0x0706, "Dell Inspiron 7559", ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER),
+ 	SND_PCI_QUIRK(0x1028, 0x0725, "Dell Inspiron 3162", ALC255_FIXUP_DELL_SPK_NOISE),
+ 	SND_PCI_QUIRK(0x1028, 0x075b, "Dell XPS 13 9360", ALC256_FIXUP_DELL_XPS_13_HEADPHONE_NOISE),
++	SND_PCI_QUIRK(0x1028, 0x075c, "Dell XPS 27 7760", ALC298_FIXUP_SPK_VOLUME),
+ 	SND_PCI_QUIRK(0x1028, 0x075d, "Dell AIO", ALC298_FIXUP_SPK_VOLUME),
+ 	SND_PCI_QUIRK(0x1028, 0x07b0, "Dell Precision 7520", ALC295_FIXUP_DISABLE_DAC3),
+ 	SND_PCI_QUIRK(0x1028, 0x0798, "Dell Inspiron 17 7000 Gaming", ALC256_FIXUP_DELL_INSPIRON_7559_SUBWOOFER),
+-- 
+2.17.1
