@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: qdsp6: q6asm-dai: checking NULL vs
-	IS_ERR()" to the asoc tree
-Date: Thu,  4 Oct 2018 11:42:38 +0100 (BST)
-Message-ID: <20181004104238.04D1E1121BA8@debutante.sirena.org.uk>
-References: <20181001164430.GA29197@mwanda>
+Subject: Applied "ASoC: intel: skylake: Add missing break in
+	skl_tplg_get_token()" to the asoc tree
+Date: Thu,  4 Oct 2018 11:42:48 +0100 (BST)
+Message-ID: <20181004104248.3D2EA1121BA8@debutante.sirena.org.uk>
+References: <20181003173144.5132-1-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BA5D52678C3
- for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 12:42:39 +0200 (CEST)
-In-Reply-To: <20181001164430.GA29197@mwanda>
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B3792678E4
+ for <alsa-devel@alsa-project.org>; Thu,  4 Oct 2018 12:42:49 +0200 (CEST)
+In-Reply-To: <20181003173144.5132-1-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: alsa-devel@alsa-project.org, Banajit Goswami <bgoswami@codeaurora.org>, Patrick Lai <plai@codeaurora.org>, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Jie Yang <yang.jie@linux.intel.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, stable@vger.kernel.org, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: qdsp6: q6asm-dai: checking NULL vs IS_ERR()
+   ASoC: intel: skylake: Add missing break in skl_tplg_get_token()
 
 has been applied to the asoc tree at
 
@@ -53,38 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 8e9f7265eda9f3a662ca1ca47a69042a7840735b Mon Sep 17 00:00:00 2001
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Date: Mon, 1 Oct 2018 19:44:30 +0300
-Subject: [PATCH] ASoC: qdsp6: q6asm-dai: checking NULL vs IS_ERR()
+>From 9c80c5a8831471e0a3e139aad1b0d4c0fdc50b2f Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Wed, 3 Oct 2018 19:31:44 +0200
+Subject: [PATCH] ASoC: intel: skylake: Add missing break in
+ skl_tplg_get_token()
 
-The q6asm_audio_client_alloc() doesn't return NULL, it returns error
-pointers.
+skl_tplg_get_token() misses a break in the big switch() block for
+SKL_TKN_U8_CORE_ID entry.
+Spotted nicely by -Wimplicit-fallthrough compiler option.
 
-Fixes: 2a9e92d371db ("ASoC: qdsp6: q6asm: Add q6asm dai driver")
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+Fixes: 6277e83292a2 ("ASoC: Intel: Skylake: Parse vendor tokens to build module data")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/qcom/qdsp6/q6asm-dai.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ sound/soc/intel/skylake/skl-topology.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/qcom/qdsp6/q6asm-dai.c b/sound/soc/qcom/qdsp6/q6asm-dai.c
-index c3806d7037fc..a16c71c03058 100644
---- a/sound/soc/qcom/qdsp6/q6asm-dai.c
-+++ b/sound/soc/qcom/qdsp6/q6asm-dai.c
-@@ -318,10 +318,11 @@ static int q6asm_dai_open(struct snd_pcm_substream *substream)
- 	prtd->audio_client = q6asm_audio_client_alloc(dev,
- 				(q6asm_cb)event_handler, prtd, stream_id,
- 				LEGACY_PCM_MODE);
--	if (!prtd->audio_client) {
-+	if (IS_ERR(prtd->audio_client)) {
- 		pr_info("%s: Could not allocate memory\n", __func__);
-+		ret = PTR_ERR(prtd->audio_client);
- 		kfree(prtd);
--		return -ENOMEM;
-+		return ret;
- 	}
+diff --git a/sound/soc/intel/skylake/skl-topology.c b/sound/soc/intel/skylake/skl-topology.c
+index 52a9915da0f5..cf8848b779dc 100644
+--- a/sound/soc/intel/skylake/skl-topology.c
++++ b/sound/soc/intel/skylake/skl-topology.c
+@@ -2460,6 +2460,7 @@ static int skl_tplg_get_token(struct device *dev,
  
- 	if (substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+ 	case SKL_TKN_U8_CORE_ID:
+ 		mconfig->core_id = tkn_elem->value;
++		break;
+ 
+ 	case SKL_TKN_U8_MOD_TYPE:
+ 		mconfig->m_type = tkn_elem->value;
 -- 
 2.19.0.rc2
