@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: intel: skylake: Add fall-through
-	annotation" to the asoc tree
-Date: Fri,  5 Oct 2018 14:26:07 +0100 (BST)
-Message-ID: <20181005132607.82DDC112229A@debutante.sirena.org.uk>
+Subject: Applied "ASoC: rt274: Add fall-through annotations" to
+	the asoc tree
+Date: Fri,  5 Oct 2018 14:26:17 +0100 (BST)
+Message-ID: <20181005132617.DCD7D112229A@debutante.sirena.org.uk>
+References: <20181004183006.23983-4-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 6F3B8267924
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 15:26:08 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id BF52E26793A
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 15:26:18 +0200 (CEST)
+In-Reply-To: <20181004183006.23983-4-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: intel: skylake: Add fall-through annotation
+   ASoC: rt274: Add fall-through annotations
 
 has been applied to the asoc tree at
 
@@ -52,32 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From e4bfd61571f5db5c69a7a49de401543cc7d6c87c Mon Sep 17 00:00:00 2001
+>From 0beeb4baf56bd9deb920712a4034541fb33bbbe0 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Thu, 4 Oct 2018 20:30:05 +0200
-Subject: [PATCH] ASoC: intel: skylake: Add fall-through annotation
+Date: Thu, 4 Oct 2018 20:30:04 +0200
+Subject: [PATCH] ASoC: rt274: Add fall-through annotations
 
 As a preparatory patch for the upcoming -Wimplicit-fallthrough
-compiler checks, add the "fall through" annotation in Intel SST
-skylake driver.
+compiler checks, add the "fall through" annotations in rt274 driver.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/intel/skylake/skl-pcm.c | 1 +
- 1 file changed, 1 insertion(+)
+ sound/soc/codecs/rt274.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/sound/soc/intel/skylake/skl-pcm.c b/sound/soc/intel/skylake/skl-pcm.c
-index 00b7a91b18c9..557f80c0bfe5 100644
---- a/sound/soc/intel/skylake/skl-pcm.c
-+++ b/sound/soc/intel/skylake/skl-pcm.c
-@@ -495,6 +495,7 @@ static int skl_pcm_trigger(struct snd_pcm_substream *substream, int cmd,
- 							stream->lpib);
- 			snd_hdac_ext_stream_set_lpib(stream, stream->lpib);
- 		}
+diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
+index d88e67341083..0ef966d56bac 100644
+--- a/sound/soc/codecs/rt274.c
++++ b/sound/soc/codecs/rt274.c
+@@ -755,6 +755,7 @@ static int rt274_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 		break;
+ 	default:
+ 		dev_warn(component->dev, "invalid pll source, use BCLK\n");
 +		/* fall through */
- 
- 	case SNDRV_PCM_TRIGGER_START:
- 	case SNDRV_PCM_TRIGGER_PAUSE_RELEASE:
+ 	case RT274_PLL2_S_BCLK:
+ 		snd_soc_component_update_bits(component, RT274_PLL2_CTRL,
+ 				RT274_PLL2_SRC_MASK, RT274_PLL2_SRC_BCLK);
+@@ -782,6 +783,7 @@ static int rt274_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+ 			break;
+ 		default:
+ 			dev_warn(component->dev, "invalid freq_in, assume 4.8M\n");
++			/* fall through */
+ 		case 100:
+ 			snd_soc_component_write(component, 0x7a, 0xaab6);
+ 			snd_soc_component_write(component, 0x7b, 0x0301);
 -- 
 2.19.0.rc2
