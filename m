@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH][RFC][alsa-utils 5/9] alsactl: use link list to
-	maintain source of events
-Date: Fri,  5 Oct 2018 23:47:25 +0900
-Message-ID: <20181005144729.21388-6-o-takashi@sakamocchi.jp>
+Subject: [PATCH][RFC][alsa-utils 6/9] alsactl: use a list of
+	source for event dispatcher instead of an array of source
+Date: Fri,  5 Oct 2018 23:47:26 +0900
+Message-ID: <20181005144729.21388-7-o-takashi@sakamocchi.jp>
 References: <20181005144729.21388-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
- [209.85.215.193])
- by alsa0.perex.cz (Postfix) with ESMTP id 4168826794F
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 16:47:47 +0200 (CEST)
-Received: by mail-pg1-f193.google.com with SMTP id 80-v6so4837394pgh.10
- for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2018 07:47:47 -0700 (PDT)
+Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
+ [209.85.214.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B224267944
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 16:47:49 +0200 (CEST)
+Received: by mail-pl1-f196.google.com with SMTP id az3-v6so6960419plb.4
+ for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2018 07:47:49 -0700 (PDT)
 In-Reply-To: <20181005144729.21388-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,146 +28,201 @@ To: tiwai@suse.de, thomas@coldfix.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-At present, handlers for control nodes are maintained by one-dimensional
-array. This is not necessarily useful to maintain handlers with
-associated information.
+In a previous commit, handlers of control nodes are maintained by link
+list.
 
-This commit adds link-list for the maintenance.
+This commit uses the list to register/unregister event sources to
+dispatcher.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- alsactl/monitor.c | 84 +++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 84 insertions(+)
+ alsactl/monitor.c | 76 +++++++++++++++++++----------------------------
+ 1 file changed, 30 insertions(+), 46 deletions(-)
 
 diff --git a/alsactl/monitor.c b/alsactl/monitor.c
-index cf5c50a..8b16307 100644
+index 8b16307..506f504 100644
 --- a/alsactl/monitor.c
 +++ b/alsactl/monitor.c
-@@ -29,6 +29,16 @@
- static int signal_type;
- static bool interrupted;
- 
-+struct src_entry {
-+	snd_ctl_t *handle;
-+	char *name;
-+	unsigned int pfd_count;
-+	struct {
-+		struct src_entry *prev;
-+		struct src_entry *next;
-+	} list;
-+};
-+
- #define MAX_CARDS	256
- 
- struct snd_card_iterator {
-@@ -59,6 +69,72 @@ static const char *snd_card_iterator_next(struct snd_card_iterator *iter)
-         return (const char *)iter->name;
+@@ -155,7 +155,7 @@ static int open_ctl(const char *name, snd_ctl_t **ctlp)
+ 	return 0;
  }
  
-+static inline void remove_source_entry(struct src_entry *src)
-+{
-+	struct src_entry *prev = src->list.prev;
-+	struct src_entry *next = src->list.next;
-+
-+	if (prev)
-+		prev->list.next = src->list.next;
-+	if (next)
-+		next->list.prev = src->list.prev;
-+	free(src->name);
-+	free(src);
-+}
-+
-+static void clear_source_list(struct src_entry **srcs)
-+{
-+	while (*srcs) {
-+		struct src_entry *src = *srcs;
-+		*srcs = src->list.next;
-+
-+		remove_source_entry(src);
-+	}
-+}
-+
-+static int insert_source_entry(struct src_entry **head, snd_ctl_t *handle,
-+			       const char *name)
-+{
-+	struct src_entry *src;
-+	int count;
-+	int err;
-+
-+	src = calloc(1, sizeof(*src));
-+	if (!src)
-+		return -ENOMEM;
-+	src->handle = handle;
-+
-+	src->name = strdup(name);
-+	if (!src->name) {
-+		err = -ENOMEM;
-+		goto error;
-+	}
-+
-+	count = snd_ctl_poll_descriptors_count(handle);
-+	if (count < 0) {
-+		err = count;
-+		goto error;
-+	}
-+	if (count == 0) {
-+		err = -ENXIO;
-+		goto error;
-+	}
-+	src->pfd_count = count;
-+
-+	if (*head) {
-+		src->list.next = (*head)->list.next;
-+		src->list.prev = *head;
-+		(*head)->list.next = src;
-+	} else {
-+		*head = src;
-+	}
-+
-+	return 0;
-+error:
-+	free(src);
-+	return err;
-+}
-+
- static int open_ctl(const char *name, snd_ctl_t **ctlp)
+-static int print_event(int card, snd_ctl_t *ctl)
++static int print_event(snd_ctl_t *ctl, const char *name)
  {
- 	snd_ctl_t *ctl;
-@@ -259,6 +335,7 @@ static int prepare_signal_handler(void)
+ 	snd_ctl_event_t *event;
+ 	unsigned int mask;
+@@ -169,9 +169,8 @@ static int print_event(int card, snd_ctl_t *ctl)
+ 	if (snd_ctl_event_get_type(event) != SND_CTL_EVENT_ELEM)
+ 		return 0;
  
- int monitor(const char *name)
+-	if (card >= 0)
+-		printf("card %d, ", card);
+-	printf("#%d (%i,%i,%i,%s,%i)",
++	printf("node %s, #%d (%i,%i,%i,%s,%i)",
++	       name,
+ 	       snd_ctl_event_elem_get_numid(event),
+ 	       snd_ctl_event_elem_get_interface(event),
+ 	       snd_ctl_event_elem_get_device(event),
+@@ -198,36 +197,28 @@ static int print_event(int card, snd_ctl_t *ctl)
+ }
+ 
+ static int operate_dispatcher(int epfd, uint32_t op, struct epoll_event *epev,
+-			      snd_ctl_t *ctl)
++			      struct src_entry *src)
  {
-+	struct src_entry *srcs = NULL;
+ 	struct pollfd *pfds;
+ 	int count;
+-	unsigned int pfd_count;
+ 	int i;
+-	int err;
+-
+-	count = snd_ctl_poll_descriptors_count(ctl);
+-	if (count < 0)
+-		return count;
+-	if (count == 0)
+-		return -ENXIO;
+-	pfd_count = count;
++	int err = 0;
+ 
+-	pfds = calloc(pfd_count, sizeof(*pfds));
++	pfds = calloc(src->pfd_count, sizeof(*pfds));
+ 	if (!pfds)
+ 		return -ENOMEM;
+ 
+-	count = snd_ctl_poll_descriptors(ctl, pfds, pfd_count);
++	count = snd_ctl_poll_descriptors(src->handle, pfds, src->pfd_count);
+ 	if (count < 0) {
+ 		err = count;
+ 		goto end;
+ 	}
+-	if (count != pfd_count) {
++	if (count != src->pfd_count) {
+ 		err = -EIO;
+ 		goto end;
+ 	}
+ 
+-	for (i = 0; i < pfd_count; ++i) {
++	for (i = 0; i < src->pfd_count; ++i) {
+ 		err = epoll_ctl(epfd, op, pfds[i].fd, epev);
+ 		if (err < 0)
+ 			break;
+@@ -237,18 +228,17 @@ end:
+ 	return err;
+ }
+ 
+-static int prepare_dispatcher(int epfd, snd_ctl_t **ctls, int ncards)
++static int prepare_dispatcher(int epfd, struct src_entry *srcs)
+ {
+-	int i;
++	struct src_entry *src;
+ 	int err = 0;
+ 
+-	for (i = 0; i < ncards; ++i) {
+-		snd_ctl_t *ctl = ctls[i];
++	for (src = srcs; src; src = src->list.next) {
+ 		struct epoll_event ev = {
+ 			.events = EPOLLIN,
+-			.data.ptr = (void *)ctl,
++			.data.ptr = (void *)src,
+ 		};
+-		err = operate_dispatcher(epfd, EPOLL_CTL_ADD, &ev, ctl);
++		err = operate_dispatcher(epfd, EPOLL_CTL_ADD, &ev, src);
+ 		if (err < 0)
+ 			break;
+ 	}
+@@ -256,11 +246,17 @@ static int prepare_dispatcher(int epfd, snd_ctl_t **ctls, int ncards)
+ 	return err;
+ }
+ 
+-static int run_dispatcher(int epfd, unsigned int max_ev_count, int show_cards)
++static int run_dispatcher(int epfd, struct src_entry *srcs)
+ {
++	struct src_entry *src;
++	unsigned int max_ev_count;
+ 	struct epoll_event *epev;
+ 	int err = 0;
+ 
++	max_ev_count = 0;
++	for (src = srcs; src; src = src->list.next)
++		max_ev_count += src->pfd_count;
++
+ 	epev = calloc(max_ev_count, sizeof(*epev));
+ 	if (!epev)
+ 		return -ENOMEM;
+@@ -287,10 +283,9 @@ static int run_dispatcher(int epfd, unsigned int max_ev_count, int show_cards)
+ 
+ 		for (i = 0; i < count; ++i) {
+ 			struct epoll_event *ev = epev + i;
+-			snd_ctl_t *handle = (snd_ctl_t *)ev->data.ptr;
+-
++			struct src_entry *src = (struct src_entry *)ev->data.ptr;
+ 			if (ev->events & EPOLLIN)
+-				print_event(show_cards ? i : -1, handle);
++				print_event(src->handle, src->name);
+ 		}
+ 	}
+ 
+@@ -299,14 +294,12 @@ static int run_dispatcher(int epfd, unsigned int max_ev_count, int show_cards)
+ 	return err;
+ }
+ 
+-static void clear_dispatcher(int epfd, snd_ctl_t **ctls, int ncards)
++static void clear_dispatcher(int epfd, struct src_entry *srcs)
+ {
+-	int i;
++	struct src_entry *src;
+ 
+-	for (i = 0; i < ncards; ++i) {
+-		snd_ctl_t *ctl = ctls[i];
+-		operate_dispatcher(epfd, EPOLL_CTL_DEL, NULL, ctl);
+-	}
++	for (src = srcs; src; src = src->list.next)
++		operate_dispatcher(epfd, EPOLL_CTL_DEL, NULL, src);
+ }
+ 
+ static void handle_unix_signal_for_finish(int sig)
+@@ -338,9 +331,7 @@ int monitor(const char *name)
+ 	struct src_entry *srcs = NULL;
  	snd_ctl_t *ctls[MAX_CARDS] = {0};
  	int ncards = 0;
- 	int show_cards;
-@@ -281,6 +358,9 @@ int monitor(const char *name)
- 		snd_card_iterator_init(&iter);
- 		while ((cardname = snd_card_iterator_next(&iter))) {
- 			err = open_ctl(cardname, &ctls[ncards]);
-+			if (err < 0)
-+				goto error;
-+			err = insert_source_entry(&srcs, ctls[ncards], cardname);
- 			if (err < 0)
+-	int show_cards;
+ 	int epfd;
+-	int i;
+ 	int err = 0;
+ 
+ 	err = prepare_signal_handler();
+@@ -365,7 +356,6 @@ int monitor(const char *name)
  				goto error;
  			++ncards;
-@@ -288,6 +368,9 @@ int monitor(const char *name)
- 		show_cards = 1;
+ 		}
+-		show_cards = 1;
  	} else {
  		err = open_ctl(name, &ctls[0]);
-+		if (err < 0)
-+			goto error;
-+		err = insert_source_entry(&srcs, ctls[ncards], name);
+ 		if (err < 0)
+@@ -374,20 +364,14 @@ int monitor(const char *name)
  		if (err < 0)
  			goto error;
  		ncards++;
-@@ -300,6 +383,7 @@ int monitor(const char *name)
- 	clear_dispatcher(epfd, ctls, ncards);
+-		show_cards = 0;
+ 	}
  
+-	err = prepare_dispatcher(epfd, ctls, ncards);
++	err = prepare_dispatcher(epfd, srcs);
+ 	if (err >= 0)
+-		err = run_dispatcher(epfd, ncards, show_cards);
+-	clear_dispatcher(epfd, ctls, ncards);
+-
++		err = run_dispatcher(epfd, srcs);
++	clear_dispatcher(epfd, srcs);
  error:
-+	clear_source_list(&srcs);
- 	for (i = 0; i < ncards; i++) {
- 		if (ctls[i])
- 			snd_ctl_close(ctls[i]);
+ 	clear_source_list(&srcs);
+-	for (i = 0; i < ncards; i++) {
+-		if (ctls[i])
+-			snd_ctl_close(ctls[i]);
+-	}
+ 
+ 	close(epfd);
+ 
 -- 
 2.19.0
