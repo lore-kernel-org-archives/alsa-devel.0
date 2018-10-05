@@ -1,8 +1,8 @@
 From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
 Subject: Re: Microphone detected,
  but no output for all ASUS G751xx with ALC668 chipset
-Date: Fri, 5 Oct 2018 12:10:52 +0200
-Message-ID: <CANweNF6BD3LtXLMU77JLjJc6ucZqNL=9kYL38s2gRZvDgtDqjQ@mail.gmail.com>
+Date: Fri, 5 Oct 2018 12:14:48 +0200
+Message-ID: <CANweNF5cw=5gwbackaxtLoVxwGNa3CGTq2jB4EUAMkyLzxnF4g@mail.gmail.com>
 References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
  <s5hin3d2ik0.wl-tiwai@suse.de>
  <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
@@ -35,17 +35,18 @@ References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
  <CANweNF4++BufWg1mZ3mk6LSY85dO3dWOhsqsz+ZgahbK1RP-=g@mail.gmail.com>
  <CANweNF5zYXPQZi01Mh6BNSz65pnOukwOqdEN4MuVSgiOQ+L=kA@mail.gmail.com>
  <s5hy3bc677n.wl-tiwai@suse.de>
+ <CANweNF6BD3LtXLMU77JLjJc6ucZqNL=9kYL38s2gRZvDgtDqjQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw1-f54.google.com (mail-yw1-f54.google.com
- [209.85.161.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 27099267819
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 12:11:04 +0200 (CEST)
-Received: by mail-yw1-f54.google.com with SMTP id y76-v6so5016769ywd.2
- for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2018 03:11:04 -0700 (PDT)
-In-Reply-To: <s5hy3bc677n.wl-tiwai@suse.de>
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com
+ [209.85.219.170])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1B8B82678D6
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 12:15:00 +0200 (CEST)
+Received: by mail-yb1-f170.google.com with SMTP id p74-v6so5182879ybc.9
+ for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2018 03:15:00 -0700 (PDT)
+In-Reply-To: <CANweNF6BD3LtXLMU77JLjJc6ucZqNL=9kYL38s2gRZvDgtDqjQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -59,26 +60,32 @@ To: tiwai@suse.de
 Cc: Connor McAdams <conmanx360@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SSdsbCB0cnkgdG8gYW5zd2VyIHlvdXIgcHJldmlvdXMgZW1haWwgZmlyc3QuCgpFdmVyeXRoaW5n
-IHNlZW1zIGlkZW50aWNhbCB0byBob3cgaXQgd2FzIGluIHRoZSA0LjE4LWdlbnRvbyBrZXJuZWwg
-d2hlbiBub3QKc2V0dGluZyB0aGUgbW9kZWw9YWxjNjY4LWhlYWRzZXQgb3B0aW9uCgpBbmQgdXNp
-bmcgdGhlIHRyaWNrIHdlIGZvdW5kOgoKLi9oZGEtdmVyYiAvZGV2L3NuZC9od0MwRDAgMHgyMCAw
-eDUwMCAweGMzCi4vaGRhLXZlcmIgL2Rldi9zbmQvaHdDMEQwIDB4MjAgMHg0NDAgMHgwMAoKTWFk
-ZSBpdCBzbyBsb29wYmFjayB3b3JrZWQgcGVyZmVjdGx5IGZpbmUgZm9yIGJvdGggZWFycGllY2Vz
-LgoKT25lIGN1cmlvc2l0eSBob3dldmVyICh0aGlzIGlzIGp1c3QgYSBzbWFsbCB0aGluZykgaXMg
-dGhhdCB0aGUgImJhc2UiIG1pYwpsZXZlbCBpcyBmYXIgbG93ZXIgdGhhbiB3aGVuIHRoZSAiTWlj
-IiBvcHRpb24gaW4gYWxzYW1peGVyIGlzIHNldCB0byAxMDAuIEkKZG9uJ3Qga25vdyBpZiBpdCB3
-YXMgdGhpcyB3YXkgaW4gNC4xOC1nZW50b28sIGJ1dCB0aGF0J3MgdGhlIG9ubHkgdGhpbmcKdGhh
-dCBkb2VzbnQgc2VlbSBjb3JyZWN0LgpIZXJlIGlzIGEgc2NyZWVuc2hvdCBleHBsYWluaW5nIGl0
-OgpodHRwOi8vaS5pbWd1ci5jb20vZEtQRUxYNi5wbmcKCi1Iw6V2YXJkCgpEZW4gZnJlLiA1LiBv
-a3QuIDIwMTgga2wuIDEyOjAzIHNrcmV2IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cgo+
-IE9uIEZyaSwgMDUgT2N0IDIwMTggMTI6MDA6MzAgKzAyMDAsCj4gSMOldmFyZCB3cm90ZToKPiA+
-Cj4gPiBBbmQgY3VyaW91c2x5LCB0dXJuaW5nIG9uIGxvb3BiYWNrIG9ubHkgbWFkZSBpdCBzbyB0
-aGUgcmlnaHQgZWFyIGNvdWxkCj4gaGVhcgo+ID4gdGhlIG91dHB1dCwgd2hpbGUgcGxhaW4gbm9p
-c2UgY2FtZSBmcm9tIHRoZSBsZWZ0IGVhcnBpZWNlLgo+Cj4gTWF5YmUgaXQncyBhIG1vbm8gbWlj
-LWluLgo+Cj4gV2hlbiB5b3UgcmVjb3JkIGZyb20gdGhlIG1pYy1pbiwgZG8geW91IGdldCB0aGUg
-c2lnbmFscyBmcm9tIGJvdGggbGVmdAo+IGFuZCByaWdodCBjaGFubmVscz8gIE9yIGl0J3MgYWxz
-byByaWdodC1vbmx5Pwo+Cj4KPiBUYWthc2hpCj4KX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBh
-bHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCg==
+SXQgc2VlbXMgKGFzIHlvdSBtZW50aW9uZWQgYmVmb3JlKSB0aGF0IHRoZSBtaWMgdm9sdW1lIGlz
+IG5vdCBkZWNpZGVkIGJ5CnRoZSAiTWljIiBiYXIgKGl0J3Mgb25seSBmb3IgbG9vcGJhY2sgc291
+bmQpLCBidXQgYXMgeW91IGNhbiBzZWUgaW4gdGhlCnBpY3R1cmUsIGV2ZW4gd2hlbiB0aGUgIk1p
+YyBib29zdCIgaXMgc2V0IHRvIHplcm8gdGhlICJiYXNlIiBpcyBzdGlsbCB3YXkKb2ZmLgoKRGVu
+IGZyZS4gNS4gb2t0LiAyMDE4IGtsLiAxMjoxMCBza3JldiBIw6V2YXJkIDxob3ZhcmRzbGlsbEBn
+bWFpbC5jb20+OgoKPgo+IEknbGwgdHJ5IHRvIGFuc3dlciB5b3VyIHByZXZpb3VzIGVtYWlsIGZp
+cnN0Lgo+Cj4gRXZlcnl0aGluZyBzZWVtcyBpZGVudGljYWwgdG8gaG93IGl0IHdhcyBpbiB0aGUg
+NC4xOC1nZW50b28ga2VybmVsIHdoZW4KPiBub3Qgc2V0dGluZyB0aGUgbW9kZWw9YWxjNjY4LWhl
+YWRzZXQgb3B0aW9uCj4KPiBBbmQgdXNpbmcgdGhlIHRyaWNrIHdlIGZvdW5kOgo+Cj4gLi9oZGEt
+dmVyYiAvZGV2L3NuZC9od0MwRDAgMHgyMCAweDUwMCAweGMzCj4gLi9oZGEtdmVyYiAvZGV2L3Nu
+ZC9od0MwRDAgMHgyMCAweDQ0MCAweDAwCj4KPiBNYWRlIGl0IHNvIGxvb3BiYWNrIHdvcmtlZCBw
+ZXJmZWN0bHkgZmluZSBmb3IgYm90aCBlYXJwaWVjZXMuCj4KPiBPbmUgY3VyaW9zaXR5IGhvd2V2
+ZXIgKHRoaXMgaXMganVzdCBhIHNtYWxsIHRoaW5nKSBpcyB0aGF0IHRoZSAiYmFzZSIgbWljCj4g
+bGV2ZWwgaXMgZmFyIGxvd2VyIHRoYW4gd2hlbiB0aGUgIk1pYyIgb3B0aW9uIGluIGFsc2FtaXhl
+ciBpcyBzZXQgdG8gMTAwLiBJCj4gZG9uJ3Qga25vdyBpZiBpdCB3YXMgdGhpcyB3YXkgaW4gNC4x
+OC1nZW50b28sIGJ1dCB0aGF0J3MgdGhlIG9ubHkgdGhpbmcKPiB0aGF0IGRvZXNudCBzZWVtIGNv
+cnJlY3QuCj4gSGVyZSBpcyBhIHNjcmVlbnNob3QgZXhwbGFpbmluZyBpdDoKPiBodHRwOi8vaS5p
+bWd1ci5jb20vZEtQRUxYNi5wbmcKPgo+IC1Iw6V2YXJkCj4KPiBEZW4gZnJlLiA1LiBva3QuIDIw
+MTgga2wuIDEyOjAzIHNrcmV2IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4KPj4gT24g
+RnJpLCAwNSBPY3QgMjAxOCAxMjowMDozMCArMDIwMCwKPj4gSMOldmFyZCB3cm90ZToKPj4gPgo+
+PiA+IEFuZCBjdXJpb3VzbHksIHR1cm5pbmcgb24gbG9vcGJhY2sgb25seSBtYWRlIGl0IHNvIHRo
+ZSByaWdodCBlYXIgY291bGQKPj4gaGVhcgo+PiA+IHRoZSBvdXRwdXQsIHdoaWxlIHBsYWluIG5v
+aXNlIGNhbWUgZnJvbSB0aGUgbGVmdCBlYXJwaWVjZS4KPj4KPj4gTWF5YmUgaXQncyBhIG1vbm8g
+bWljLWluLgo+Pgo+PiBXaGVuIHlvdSByZWNvcmQgZnJvbSB0aGUgbWljLWluLCBkbyB5b3UgZ2V0
+IHRoZSBzaWduYWxzIGZyb20gYm90aCBsZWZ0Cj4+IGFuZCByaWdodCBjaGFubmVscz8gIE9yIGl0
+J3MgYWxzbyByaWdodC1vbmx5Pwo+Pgo+Pgo+PiBUYWthc2hpCj4+Cj4KX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
