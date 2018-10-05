@@ -1,447 +1,62 @@
-From: Jussi Laako <jussi@sonarnerd.net>
-Subject: [PATCH v5] ALSA: usb-audio: Add custom mixer status
-	quirks for RME CC devices
-Date: Fri,  5 Oct 2018 11:00:04 +0300
-Message-ID: <20181005080004.11588-1-jussi@sonarnerd.net>
+From: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH v2 5/5] ASoC: qdsp6: q6asm-dai: Add support to compress
+ offload
+Date: Fri, 5 Oct 2018 09:15:30 +0100
+Message-ID: <dd8fe500-ce7c-4a50-48a4-ef4b5c53dccc@linaro.org>
+References: <20180926102349.23481-1-srinivas.kandagatla@linaro.org>
+ <20180926102349.23481-6-srinivas.kandagatla@linaro.org>
+ <20181005003919.GH2372@vkoul-mobl>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.sonarnerd.net (rankki.sonarnerd.net [194.142.149.154])
- by alsa0.perex.cz (Postfix) with ESMTP id 6B30326791A
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 10:00:05 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de, alsa-devel@alsa-project.org
-Cc: Jussi Laako <jussi@sonarnerd.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181005003919.GH2372@vkoul-mobl>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Vinod <vkoul@kernel.org>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, devicetree@vger.kernel.org, mark.rutland@arm.com
 List-Id: alsa-devel@alsa-project.org
 
-Adds several vendor specific mixer quirks for RME's Class Compliant
-USB devices. These provide extra status information from the device
-otherwise not available.
+Thanks Vinod for the Review!
 
-These include AES/SPDIF rate and status information, current system
-sampling rate and measured frequency. This information is especially
-useful in cases where device's clock is slaved to external clock
-source.
+On 05/10/18 01:39, Vinod wrote:
+> On 26-09-18, 11:23, Srinivas Kandagatla wrote:
+>> This patch adds MP3 playback support in q6asm dais, adding other codec
+>> support should be pretty trivial.
+>>
+>> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+>> ---
+>>   sound/soc/qcom/Kconfig           |   1 +
+>>   sound/soc/qcom/qdsp6/q6asm-dai.c | 377 ++++++++++++++++++++++++++++++-
+>>   2 files changed, 377 insertions(+), 1 deletion(-)
+>>
+...
+>> +#define Q6ASM_DAI_RX	2
+>> +
+>> +
+> 
+> Unnecessary double space
+> 
 
-Signed-off-by: Jussi Laako <jussi@sonarnerd.net>
----
- sound/usb/mixer_quirks.c | 381 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 381 insertions(+)
+I did notice this just after I sent the patch!
+>>   enum stream_state {
+>>   	Q6ASM_STREAM_IDLE = 0,
+>>   	Q6ASM_STREAM_STOPPED,
+>> @@ -39,11 +51,22 @@ enum stream_state {
+>>   
+>>   struct q6asm_dai_rtd {
+>>   	struct snd_pcm_substream *substream;
+>> +	struct snd_compr_stream *cstream;
+>> +	struct snd_compr_params codec_param;
+>> +	struct snd_dma_buffer dma_buffer;
+>> +
+>>   	phys_addr_t phys;
+>> +	spinlock_t lock;
+> 
+> why would we need a lock for compress case?
+bytes_received counter is updated as part of Ack and referenced in the 
+irq context in the event_handler callback from dsp, this lock is to 
+protect it !
 
-diff --git a/sound/usb/mixer_quirks.c b/sound/usb/mixer_quirks.c
-index cbfb48bdea51..85ae0ff2382a 100644
---- a/sound/usb/mixer_quirks.c
-+++ b/sound/usb/mixer_quirks.c
-@@ -29,6 +29,7 @@
- 
- #include <linux/hid.h>
- #include <linux/init.h>
-+#include <linux/math64.h>
- #include <linux/slab.h>
- #include <linux/usb.h>
- #include <linux/usb/audio.h>
-@@ -1817,6 +1818,380 @@ static int dell_dock_mixer_init(struct usb_mixer_interface *mixer)
- 	return 0;
- }
- 
-+/* RME Class Compliant device quirks */
-+
-+#define SND_RME_GET_STATUS1			23
-+#define SND_RME_GET_CURRENT_FREQ		17
-+#define SND_RME_CLK_SYSTEM_SHIFT		16
-+#define SND_RME_CLK_SYSTEM_MASK			0x1f
-+#define SND_RME_CLK_AES_SHIFT			8
-+#define SND_RME_CLK_SPDIF_SHIFT			12
-+#define SND_RME_CLK_AES_SPDIF_MASK		0xf
-+#define SND_RME_CLK_SYNC_SHIFT			6
-+#define SND_RME_CLK_SYNC_MASK			0x3
-+#define SND_RME_CLK_FREQMUL_SHIFT		18
-+#define SND_RME_CLK_FREQMUL_MASK		0x7
-+#define SND_RME_CLK_SYSTEM(x) \
-+	((x >> SND_RME_CLK_SYSTEM_SHIFT) & SND_RME_CLK_SYSTEM_MASK)
-+#define SND_RME_CLK_AES(x) \
-+	((x >> SND_RME_CLK_AES_SHIFT) & SND_RME_CLK_AES_SPDIF_MASK)
-+#define SND_RME_CLK_SPDIF(x) \
-+	((x >> SND_RME_CLK_SPDIF_SHIFT) & SND_RME_CLK_AES_SPDIF_MASK)
-+#define SND_RME_CLK_SYNC(x) \
-+	((x >> SND_RME_CLK_SYNC_SHIFT) & SND_RME_CLK_SYNC_MASK)
-+#define SND_RME_CLK_FREQMUL(x) \
-+	((x >> SND_RME_CLK_FREQMUL_SHIFT) & SND_RME_CLK_FREQMUL_MASK)
-+#define SND_RME_CLK_AES_LOCK			0x1
-+#define SND_RME_CLK_AES_SYNC			0x4
-+#define SND_RME_CLK_SPDIF_LOCK			0x2
-+#define SND_RME_CLK_SPDIF_SYNC			0x8
-+#define SND_RME_SPDIF_IF_SHIFT			4
-+#define SND_RME_SPDIF_FORMAT_SHIFT		5
-+#define SND_RME_BINARY_MASK			0x1
-+#define SND_RME_SPDIF_IF(x) \
-+	((x >> SND_RME_SPDIF_IF_SHIFT) & SND_RME_BINARY_MASK)
-+#define SND_RME_SPDIF_FORMAT(x) \
-+	((x >> SND_RME_SPDIF_FORMAT_SHIFT) & SND_RME_BINARY_MASK)
-+
-+static const u32 snd_rme_rate_table[] = {
-+	32000, 44100, 48000, 50000,
-+	64000, 88200, 96000, 100000,
-+	128000, 176400, 192000, 200000,
-+	256000,	352800, 384000, 400000,
-+	512000, 705600, 768000, 800000
-+};
-+/* maximum number of items for AES and S/PDIF rates for above table */
-+#define SND_RME_RATE_IDX_AES_SPDIF_NUM		12
-+
-+enum snd_rme_domain {
-+	SND_RME_DOMAIN_SYSTEM,
-+	SND_RME_DOMAIN_AES,
-+	SND_RME_DOMAIN_SPDIF
-+};
-+
-+enum snd_rme_clock_status {
-+	SND_RME_CLOCK_NOLOCK,
-+	SND_RME_CLOCK_LOCK,
-+	SND_RME_CLOCK_SYNC
-+};
-+
-+static int snd_rme_read_value(struct snd_usb_audio *chip,
-+			      unsigned int item,
-+			      u32 *value)
-+{
-+	struct usb_device *dev = chip->dev;
-+	int err;
-+
-+	err = snd_usb_ctl_msg(dev, usb_rcvctrlpipe(dev, 0),
-+			      item,
-+			      USB_DIR_IN | USB_TYPE_VENDOR | USB_RECIP_DEVICE,
-+			      0, 0,
-+			      value, sizeof(*value));
-+	if (err < 0)
-+		dev_err(&dev->dev,
-+			"unable to issue vendor read request %d (ret = %d)",
-+			item, err);
-+	return err;
-+}
-+
-+static int snd_rme_get_status1(struct snd_kcontrol *kcontrol,
-+			       u32 *status1)
-+{
-+	struct usb_mixer_elem_list *list = snd_kcontrol_chip(kcontrol);
-+	struct snd_usb_audio *chip = list->mixer->chip;
-+	int err;
-+
-+	err = snd_usb_lock_shutdown(chip);
-+	if (err < 0)
-+		return err;
-+	err = snd_rme_read_value(chip, SND_RME_GET_STATUS1, status1);
-+	snd_usb_unlock_shutdown(chip);
-+	return err;
-+}
-+
-+static int snd_rme_rate_get(struct snd_kcontrol *kcontrol,
-+			    struct snd_ctl_elem_value *ucontrol)
-+{
-+	u32 status1;
-+	u32 rate = 0;
-+	int idx;
-+	int err;
-+
-+	err = snd_rme_get_status1(kcontrol, &status1);
-+	if (err < 0)
-+		return err;
-+	switch (kcontrol->private_value) {
-+	case SND_RME_DOMAIN_SYSTEM:
-+		idx = SND_RME_CLK_SYSTEM(status1);
-+		if (idx < ARRAY_SIZE(snd_rme_rate_table))
-+			rate = snd_rme_rate_table[idx];
-+		break;
-+	case SND_RME_DOMAIN_AES:
-+		idx = SND_RME_CLK_AES(status1);
-+		if (idx < SND_RME_RATE_IDX_AES_SPDIF_NUM)
-+			rate = snd_rme_rate_table[idx];
-+		break;
-+	case SND_RME_DOMAIN_SPDIF:
-+		idx = SND_RME_CLK_SPDIF(status1);
-+		if (idx < SND_RME_RATE_IDX_AES_SPDIF_NUM)
-+			rate = snd_rme_rate_table[idx];
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	ucontrol->value.integer.value[0] = rate;
-+	return 0;
-+}
-+
-+static int snd_rme_sync_state_get(struct snd_kcontrol *kcontrol,
-+				  struct snd_ctl_elem_value *ucontrol)
-+{
-+	u32 status1;
-+	int idx = SND_RME_CLOCK_NOLOCK;
-+	int err;
-+
-+	err = snd_rme_get_status1(kcontrol, &status1);
-+	if (err < 0)
-+		return err;
-+	switch (kcontrol->private_value) {
-+	case SND_RME_DOMAIN_AES:  /* AES */
-+		if (status1 & SND_RME_CLK_AES_SYNC)
-+			idx = SND_RME_CLOCK_SYNC;
-+		else if (status1 & SND_RME_CLK_AES_LOCK)
-+			idx = SND_RME_CLOCK_LOCK;
-+		break;
-+	case SND_RME_DOMAIN_SPDIF:  /* SPDIF */
-+		if (status1 & SND_RME_CLK_SPDIF_SYNC)
-+			idx = SND_RME_CLOCK_SYNC;
-+		else if (status1 & SND_RME_CLK_SPDIF_LOCK)
-+			idx = SND_RME_CLOCK_LOCK;
-+		break;
-+	default:
-+		return -EINVAL;
-+	}
-+	ucontrol->value.enumerated.item[0] = idx;
-+	return 0;
-+}
-+
-+static int snd_rme_spdif_if_get(struct snd_kcontrol *kcontrol,
-+				struct snd_ctl_elem_value *ucontrol)
-+{
-+	u32 status1;
-+	int err;
-+
-+	err = snd_rme_get_status1(kcontrol, &status1);
-+	if (err < 0)
-+		return err;
-+	ucontrol->value.enumerated.item[0] = SND_RME_SPDIF_IF(status1);
-+	return 0;
-+}
-+
-+static int snd_rme_spdif_format_get(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *ucontrol)
-+{
-+	u32 status1;
-+	int err;
-+
-+	err = snd_rme_get_status1(kcontrol, &status1);
-+	if (err < 0)
-+		return err;
-+	ucontrol->value.enumerated.item[0] = SND_RME_SPDIF_FORMAT(status1);
-+	return 0;
-+}
-+
-+static int snd_rme_sync_source_get(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_value *ucontrol)
-+{
-+	u32 status1;
-+	int err;
-+
-+	err = snd_rme_get_status1(kcontrol, &status1);
-+	if (err < 0)
-+		return err;
-+	ucontrol->value.enumerated.item[0] = SND_RME_CLK_SYNC(status1);
-+	return 0;
-+}
-+
-+static int snd_rme_current_freq_get(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_value *ucontrol)
-+{
-+	struct usb_mixer_elem_list *list = snd_kcontrol_chip(kcontrol);
-+	struct snd_usb_audio *chip = list->mixer->chip;
-+	u32 status1;
-+	const u64 num = 104857600000000ULL;
-+	u32 den;
-+	unsigned int freq;
-+	int err;
-+
-+	err = snd_usb_lock_shutdown(chip);
-+	if (err < 0)
-+		return err;
-+	err = snd_rme_read_value(chip, SND_RME_GET_STATUS1, &status1);
-+	if (err < 0)
-+		goto end;
-+	err = snd_rme_read_value(chip, SND_RME_GET_CURRENT_FREQ, &den);
-+	if (err < 0)
-+		goto end;
-+	freq = (den == 0) ? 0 : div64_u64(num, den);
-+	freq <<= SND_RME_CLK_FREQMUL(status1);
-+	ucontrol->value.integer.value[0] = freq;
-+
-+end:
-+	snd_usb_unlock_shutdown(chip);
-+	return err;
-+}
-+
-+static int snd_rme_rate_info(struct snd_kcontrol *kcontrol,
-+			     struct snd_ctl_elem_info *uinfo)
-+{
-+	uinfo->type = SNDRV_CTL_ELEM_TYPE_INTEGER;
-+	uinfo->count = 1;
-+	switch (kcontrol->private_value) {
-+	case SND_RME_DOMAIN_SYSTEM:
-+		uinfo->value.integer.min = 32000;
-+		uinfo->value.integer.max = 800000;
-+		break;
-+	case SND_RME_DOMAIN_AES:
-+	case SND_RME_DOMAIN_SPDIF:
-+	default:
-+		uinfo->value.integer.min = 0;
-+		uinfo->value.integer.max = 200000;
-+	}
-+	uinfo->value.integer.step = 0;
-+	return 0;
-+}
-+
-+static int snd_rme_sync_state_info(struct snd_kcontrol *kcontrol,
-+				   struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *const sync_states[] = {
-+		"No Lock", "Lock", "Sync"
-+	};
-+
-+	return snd_ctl_enum_info(uinfo, 1,
-+				 ARRAY_SIZE(sync_states), sync_states);
-+}
-+
-+static int snd_rme_spdif_if_info(struct snd_kcontrol *kcontrol,
-+				 struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *const spdif_if[] = {
-+		"Coaxial", "Optical"
-+	};
-+
-+	return snd_ctl_enum_info(uinfo, 1,
-+				 ARRAY_SIZE(spdif_if), spdif_if);
-+}
-+
-+static int snd_rme_spdif_format_info(struct snd_kcontrol *kcontrol,
-+				     struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *const optical_type[] = {
-+		"Consumer", "Professional"
-+	};
-+
-+	return snd_ctl_enum_info(uinfo, 1,
-+				 ARRAY_SIZE(optical_type), optical_type);
-+}
-+
-+static int snd_rme_sync_source_info(struct snd_kcontrol *kcontrol,
-+				    struct snd_ctl_elem_info *uinfo)
-+{
-+	static const char *const sync_sources[] = {
-+		"Internal", "AES", "SPDIF", "Internal"
-+	};
-+
-+	return snd_ctl_enum_info(uinfo, 1,
-+				 ARRAY_SIZE(sync_sources), sync_sources);
-+}
-+
-+static struct snd_kcontrol_new snd_rme_controls[] = {
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "AES Rate",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_rate_info,
-+		.get = snd_rme_rate_get,
-+		.private_value = SND_RME_DOMAIN_AES
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "AES Sync",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_sync_state_info,
-+		.get = snd_rme_sync_state_get,
-+		.private_value = SND_RME_DOMAIN_AES
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "SPDIF Rate",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_rate_info,
-+		.get = snd_rme_rate_get,
-+		.private_value = SND_RME_DOMAIN_SPDIF
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "SPDIF Sync",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_sync_state_info,
-+		.get = snd_rme_sync_state_get,
-+		.private_value = SND_RME_DOMAIN_SPDIF
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "SPDIF Interface",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_spdif_if_info,
-+		.get = snd_rme_spdif_if_get,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "SPDIF Format",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_spdif_format_info,
-+		.get = snd_rme_spdif_format_get,
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Sync Source",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_sync_source_info,
-+		.get = snd_rme_sync_source_get
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "System Rate",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_rate_info,
-+		.get = snd_rme_rate_get,
-+		.private_value = SND_RME_DOMAIN_SYSTEM
-+	},
-+	{
-+		.iface = SNDRV_CTL_ELEM_IFACE_MIXER,
-+		.name = "Current Frequency",
-+		.access = SNDRV_CTL_ELEM_ACCESS_READ | SNDRV_CTL_ELEM_ACCESS_VOLATILE,
-+		.info = snd_rme_rate_info,
-+		.get = snd_rme_current_freq_get
-+	}
-+};
-+
-+static int snd_rme_controls_create(struct usb_mixer_interface *mixer)
-+{
-+	int err, i;
-+
-+	for (i = 0; i < ARRAY_SIZE(snd_rme_controls); ++i) {
-+		err = add_single_ctl_with_resume(mixer, 0,
-+						 NULL,
-+						 &snd_rme_controls[i],
-+						 NULL);
-+		if (err < 0)
-+			return err;
-+	}
-+
-+	return 0;
-+}
-+
- int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- {
- 	int err = 0;
-@@ -1904,6 +2279,12 @@ int snd_usb_mixer_apply_create_quirk(struct usb_mixer_interface *mixer)
- 	case USB_ID(0x0bda, 0x4014): /* Dell WD15 dock */
- 		err = dell_dock_mixer_init(mixer);
- 		break;
-+
-+	case USB_ID(0x2a39, 0x3fd2): /* RME ADI-2 Pro */
-+	case USB_ID(0x2a39, 0x3fd3): /* RME ADI-2 DAC */
-+	case USB_ID(0x2a39, 0x3fd4): /* RME */
-+		err = snd_rme_controls_create(mixer);
-+		break;
- 	}
- 
- 	return err;
--- 
-2.17.1
+--srini
+> 
