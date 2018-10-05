@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dt-bindings: add dt bindings for
-	adau1977 audio codec" to the asoc tree
-Date: Fri,  5 Oct 2018 14:25:00 +0100 (BST)
-Message-ID: <20181005132500.A26F3112229A@debutante.sirena.org.uk>
-References: <20181002120630.17799-1-alexandru.ardelean@analog.com>
+Subject: Applied "ASoC: topology: Use the standard fall-through
+	annotations" to the asoc tree
+Date: Fri,  5 Oct 2018 14:25:09 +0100 (BST)
+Message-ID: <20181005132509.16428112229A@debutante.sirena.org.uk>
+References: <20181004183006.23983-6-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9F17426783D
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 15:25:01 +0200 (CEST)
-In-Reply-To: <20181002120630.17799-1-alexandru.ardelean@analog.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C56C26783D
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 15:25:11 +0200 (CEST)
+In-Reply-To: <20181004183006.23983-6-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, robh+dt@kernel.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Lars-Peter Clausen <lars@metafoo.de>, Jie Yang <yang.jie@linux.intel.com>, Liam Girdwood <lgirdwood@gmail.com>, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mark Brown <broonie@kernel.org>, Bard Liao <bardliao@realtek.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dt-bindings: add dt bindings for adau1977 audio codec
+   ASoC: topology: Use the standard fall-through annotations
 
 has been applied to the asoc tree at
 
@@ -53,83 +53,42 @@ to this mail.
 Thanks,
 Mark
 
->From d5a5dcd3f815c82e719fd6563f027673160f88e1 Mon Sep 17 00:00:00 2001
-From: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Date: Tue, 2 Oct 2018 15:06:30 +0300
-Subject: [PATCH] ASoC: dt-bindings: add dt bindings for adau1977 audio codec
+>From 9c6c4d961e634413add345ee030e108e6d19cea2 Mon Sep 17 00:00:00 2001
+From: Takashi Iwai <tiwai@suse.de>
+Date: Thu, 4 Oct 2018 20:30:06 +0200
+Subject: [PATCH] ASoC: topology: Use the standard fall-through annotations
 
-Add device-tree bindings documentation file for ADAU1977 audio codec.
-This describes device-tree fields that are already supported by the driver.
+As a preparatory patch for the upcoming -Wimplicit-fallthrough
+compiler checks, replace with the standard "fall through" annotation.
+gcc can't understand the mixed texts, unfortunately.
 
-The driver supports both I2C AND and SPI, and this doc covers both aspects
-of the DT configuration.
-
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../bindings/sound/adi,adau1977.txt           | 54 +++++++++++++++++++
- 1 file changed, 54 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/adi,adau1977.txt
+ sound/soc/soc-topology.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/adi,adau1977.txt b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
-new file mode 100644
-index 000000000000..e79aeef73f28
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/adi,adau1977.txt
-@@ -0,0 +1,54 @@
-+Analog Devices ADAU1977/ADAU1978/ADAU1979
-+
-+Datasheets:
-+http://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1977.pdf
-+http://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1978.pdf
-+http://www.analog.com/media/en/technical-documentation/data-sheets/ADAU1979.pdf
-+
-+This driver supports both the I2C and SPI bus.
-+
-+Required properties:
-+ - compatible: Should contain one of the following:
-+               "adi,adau1977"
-+               "adi,adau1978"
-+               "adi,adau1979"
-+
-+ - AVDD-supply: analog power supply for the device, please consult
-+                Documentation/devicetree/bindings/regulator/regulator.txt
-+
-+Optional properties:
-+ - reset-gpio:  the reset pin for the chip, for more details consult
-+                Documentation/devicetree/bindings/gpio/gpio.txt
-+
-+ - DVDD-supply: supply voltage for the digital core, please consult
-+                Documentation/devicetree/bindings/regulator/regulator.txt
-+
-+For required properties on SPI, please consult
-+Documentation/devicetree/bindings/spi/spi-bus.txt
-+
-+Required properties on I2C:
-+
-+ - reg:         The i2c address. Value depends on the state of ADDR0
-+                and ADDR1, as wired in hardware.
-+
-+Examples:
-+
-+	adau1977_spi: adau1977@0 {
-+		compatible = "adi,adau1977";
-+		spi-max-frequency = <600000>;
-+
-+		AVDD-supply = <&regulator>;
-+		DVDD-supply = <&regulator_digital>;
-+
-+		reset_gpio = <&gpio 10 GPIO_ACTIVE_LOW>;
-+	};
-+
-+	adau1977_i2c: adau1977@11 {
-+		compatible = "adi,adau1977";
-+		reg = <0x11>;
-+
-+		AVDD-supply = <&regulator>;
-+		DVDD-supply = <&regulator_digital>;
-+
-+		reset_gpio = <&gpio 10 GPIO_ACTIVE_LOW>;
-+	};
+diff --git a/sound/soc/soc-topology.c b/sound/soc/soc-topology.c
+index 17f81b9a5754..045ef136903d 100644
+--- a/sound/soc/soc-topology.c
++++ b/sound/soc/soc-topology.c
+@@ -993,7 +993,7 @@ static int soc_tplg_denum_create(struct soc_tplg *tplg, unsigned int count,
+ 				kfree(se);
+ 				continue;
+ 			}
+-			/* fall through and create texts */
++			/* fall through */
+ 		case SND_SOC_TPLG_CTL_ENUM:
+ 		case SND_SOC_TPLG_DAPM_CTL_ENUM_DOUBLE:
+ 		case SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT:
+@@ -1310,7 +1310,7 @@ static struct snd_kcontrol_new *soc_tplg_dapm_widget_denum_create(
+ 					ec->hdr.name);
+ 				goto err_se;
+ 			}
+-			/* fall through to create texts */
++			/* fall through */
+ 		case SND_SOC_TPLG_CTL_ENUM:
+ 		case SND_SOC_TPLG_DAPM_CTL_ENUM_DOUBLE:
+ 		case SND_SOC_TPLG_DAPM_CTL_ENUM_VIRT:
 -- 
 2.19.0.rc2
