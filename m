@@ -1,17 +1,16 @@
 From: Marco Felsch <m.felsch@pengutronix.de>
-Subject: [PATCH v2 1/5] ASoC: dt-bindings: add max98088 audio
-	codec
-Date: Fri,  5 Oct 2018 09:58:08 +0200
-Message-ID: <20181005075812.13986-2-m.felsch@pengutronix.de>
+Subject: [PATCH v2 5/5] ASoC: max98988: make it selectable
+Date: Fri,  5 Oct 2018 09:58:12 +0200
+Message-ID: <20181005075812.13986-6-m.felsch@pengutronix.de>
 References: <20181005075812.13986-1-m.felsch@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [85.220.165.71])
- by alsa0.perex.cz (Postfix) with ESMTP id B98ED26790B
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 09:58:27 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id 39EBA267903
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 09:58:25 +0200 (CEST)
 In-Reply-To: <20181005075812.13986-1-m.felsch@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -23,28 +22,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>, kernel@pengutronix.de
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
-RnJvbTogQW5kcmVhcyBGw6RyYmVyIDxhZmFlcmJlckBzdXNlLmRlPgoKVGhpcyBwYXRjaCBhZGRz
-IHRoZSBiaW5kaW5ncyBmb3IgbWF4aW0gbWF4OTgwODgvOSBhdWRpbyBjb2RlYy4KClNpZ25lZC1v
-ZmYtYnk6IEFuZHJlYXMgRsOkcmJlciA8YWZhZXJiZXJAc3VzZS5kZT4KW20uZmVsc2NoQHBlbmd1
-dHJvbml4LmRlOiBhZGFwdCBjb21taXQgbWVzc2FnZV0KW20uZmVsc2NoQHBlbmd1dHJvbml4LmRl
-OiBhZGFwdCBmb3JtYXR0aW5nXQpTaWduZWQtb2ZmLWJ5OiBNYXJjbyBGZWxzY2ggPG0uZmVsc2No
-QHBlbmd1dHJvbml4LmRlPgotLS0KIC4uLi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL21heGlt
-LG1heDk4MDg4LnR4dCAgfCAxNSArKysrKysrKysrKysrKysKIDEgZmlsZSBjaGFuZ2VkLCAxNSBp
-bnNlcnRpb25zKCspCiBjcmVhdGUgbW9kZSAxMDA2NDQgRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL3NvdW5kL21heGltLG1heDk4MDg4LnR4dAoKZGlmZiAtLWdpdCBhL0RvY3VtZW50
-YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9zb3VuZC9tYXhpbSxtYXg5ODA4OC50eHQgYi9Eb2N1
-bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3Mvc291bmQvbWF4aW0sbWF4OTgwODgudHh0Cm5l
-dyBmaWxlIG1vZGUgMTAwNjQ0CmluZGV4IDAwMDAwMDAwMDAwMC4uYTc5YWQ1YzdhZjg4Ci0tLSAv
-ZGV2L251bGwKKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL3NvdW5kL21h
-eGltLG1heDk4MDg4LnR4dApAQCAtMCwwICsxLDE1IEBACitNQVg5ODA4OCBhdWRpbyBDT0RFQwor
-CitUaGlzIGRldmljZSBzdXBwb3J0cyBJMkMgb25seS4KKworUmVxdWlyZWQgcHJvcGVydGllczoK
-KworLSBjb21wYXRpYmxlOiAibWF4aW0sbWF4OTgwODgiIG9yICJtYXhpbSxtYXg5ODA4OSIuCist
-IHJlZzogVGhlIEkyQyBhZGRyZXNzIG9mIHRoZSBkZXZpY2UuCisKK0V4YW1wbGU6CisKK21heDk4
-MDg5OiBjb2RlY0AxMCB7CisJY29tcGF0aWJsZSA9ICJtYXhpbSxtYXg5ODA4OSI7CisJcmVnID0g
-PDB4MTA+OworfTsKLS0gCjIuMTkuMAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXBy
-b2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5m
-by9hbHNhLWRldmVsCg==
+Currently the driver will build only if SND_SOC_ALL_CODECS is set.
+Adding a Kconfig menu description to build the driver standalone.
+
+Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
+---
+ sound/soc/codecs/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index efb095dbcd71..b43f85b38e72 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -629,7 +629,7 @@ config SND_SOC_LM49453
+ 	tristate
+ 
+ config SND_SOC_MAX98088
+-       tristate
++	tristate "Maxim MAX98088/9 Low-Power, Stereo Audio Codec"
+ 
+ config SND_SOC_MAX98090
+        tristate
+-- 
+2.19.0
