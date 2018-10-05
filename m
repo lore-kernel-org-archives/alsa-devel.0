@@ -1,18 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH][RFC][alsa-utils 0/9] alsactl: monitor mode
-	friendly for
-Date: Fri,  5 Oct 2018 23:47:20 +0900
-Message-ID: <20181005144729.21388-1-o-takashi@sakamocchi.jp>
+Subject: [PATCH][RFC][alsa-utils 1/9] alsactl: install signal
+	handler
+Date: Fri,  5 Oct 2018 23:47:21 +0900
+Message-ID: <20181005144729.21388-2-o-takashi@sakamocchi.jp>
+References: <20181005144729.21388-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
- [209.85.214.196])
- by alsa0.perex.cz (Postfix) with ESMTP id B4039267924
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 16:47:38 +0200 (CEST)
-Received: by mail-pl1-f196.google.com with SMTP id 30-v6so6968952plb.10
- for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2018 07:47:38 -0700 (PDT)
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9769726792B
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 16:47:40 +0200 (CEST)
+Received: by mail-pg1-f193.google.com with SMTP id n31-v6so4843665pgm.7
+ for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2018 07:47:40 -0700 (PDT)
+In-Reply-To: <20181005144729.21388-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,51 +28,105 @@ To: tiwai@suse.de, thomas@coldfix.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In a mode of 'monitor, event loop runs to dispatch asynchronous event
+emitted by control node. In this case, installation of signal handler
+is good for safe cancellation.
 
-A command of 'alsactl' has 'monitor' mode to print events emitted by
-observed control nodes. This mode is not friendly for plug-and-play
-devices.
+This commit install signal handler to allow some operation to clear
+event loop.
 
-A bug is reported that the mode consumes 100% of CPU time when
-detecting disconnection of observed sound card[1]. A process of
-alsactl doesn't release ALSA control character device at disconnection.
-This is quite bad in a view of system.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ alsactl/monitor.c | 46 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 46 insertions(+)
 
-Furthermore, this mode cannot handle control nodes for newly-detected
-sound card.
-
-This patchset is my attempt to improve the mode to handle
-disconnection of observed sound card and new detection of sound card.
-
-A rough summary of this patchset:
- - maintains observed control nodes by link-list
- - uses epoll(7) instead of poll(2) to avoid following the list every time
-   of poll loop, 
- - control node for disconnected sound card is not observed anymore and
-   dropped from the list.
- - the list is rescan and observation is updated when detecting new
-   sound card. Linux-specific inotify(7) is used for this purpose.
-
-I'm happy if receiving test reports and indication of new bugs.
-
-[1] [alsa-devel] alsactl monitor spins at 100% cpu after unplugging USB headphones
-http://mailman.alsa-project.org/pipermail/alsa-devel/2018-September/140580.html
-
-Takashi Sakamoto (9):
-  alsactl: install signal handler
-  alsactl: split event loop code to a function
-  alsactl: add an iterator of registered instances of sound card
-  alsactl: use epoll(7) instead of poll(2)
-  alsactl: use link list to maintain source of events
-  alsactl: use a list of source for event dispatcher instead of an array
-    of source
-  alsactl: obsolete array for maintenance of handlers
-  alsactl: handle disconnection of sound card
-  alsactl: handle detection of new sound card
-
- alsactl/monitor.c | 403 ++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 356 insertions(+), 47 deletions(-)
-
+diff --git a/alsactl/monitor.c b/alsactl/monitor.c
+index 8351a79..a2abacb 100644
+--- a/alsactl/monitor.c
++++ b/alsactl/monitor.c
+@@ -20,8 +20,14 @@
+ #include "aconfig.h"
+ #include "version.h"
+ #include <stdio.h>
++#include <stdbool.h>
++#include <string.h>
++#include <signal.h>
+ #include <alsa/asoundlib.h>
+ 
++static int signal_type;
++static bool interrupted;
++
+ static int open_ctl(const char *name, snd_ctl_t **ctlp)
+ {
+ 	snd_ctl_t *ctl;
+@@ -84,6 +90,30 @@ static int print_event(int card, snd_ctl_t *ctl)
+ 	return 0;
+ }
+ 
++static void handle_unix_signal_for_finish(int sig)
++{
++	signal_type = sig;
++	interrupted = true;
++}
++
++static int prepare_signal_handler(void)
++{
++	struct sigaction sa = {0};
++
++	sigemptyset(&sa.sa_mask);
++	sa.sa_flags = 0;
++	sa.sa_handler = handle_unix_signal_for_finish;
++
++	if (sigaction(SIGABRT, &sa, NULL) < 0)
++		return -errno;
++	if (sigaction(SIGINT, &sa, NULL) < 0)
++		return -errno;
++	if (sigaction(SIGTERM, &sa, NULL) < 0)
++		return -errno;
++
++	return 0;
++}
++
+ #define MAX_CARDS	256
+ 
+ int monitor(const char *name)
+@@ -93,6 +123,10 @@ int monitor(const char *name)
+ 	int show_cards;
+ 	int i, err = 0;
+ 
++	err = prepare_signal_handler();
++	if (err < 0)
++		return err;
++
+ 	if (!name) {
+ 		int card = -1;
+ 		while (snd_card_next(&card) >= 0 && card >= 0) {
+@@ -117,14 +151,26 @@ int monitor(const char *name)
+ 		show_cards = 0;
+ 	}
+ 
++	interrupted = false;
+ 	for (;ncards > 0;) {
+ 		struct pollfd fds[ncards];
+ 
++		if (interrupted) {
++			printf("interrupted: %s\n", strsignal(signal_type));
++			break;
++		}
++
+ 		for (i = 0; i < ncards; i++)
+ 			snd_ctl_poll_descriptors(ctls[i], &fds[i], 1);
+ 
+ 		err = poll(fds, ncards, -1);
+ 		if (err <= 0) {
++			// Catch this case by an above condition statement to
++			// check value set by signal handler. I note that
++			// poll(2) returns EINTR even if configured with
++			// SA_RESTART.
++			if (errno == EINTR)
++				continue;
+ 			err = 0;
+ 			break;
+ 		}
 -- 
 2.19.0
