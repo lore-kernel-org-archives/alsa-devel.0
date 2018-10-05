@@ -1,78 +1,79 @@
-From: Nicolas Herochao <nicolas@herochao.de>
-Subject: Re: [PATCH] ALSA: usb-audio: update quirk for B&W PX to remove
- microphone
-Date: Fri, 5 Oct 2018 00:31:47 +0200
-Message-ID: <f1db1306-7156-7d0e-7b71-b8b1b43e840f@herochao.de>
-References: <20181004144205.18153-1-nicolas@herochao.de>
- <s5h7eixl9d9.wl-tiwai@suse.de>
+From: Vinod <vkoul@kernel.org>
+Subject: Re: [PATCH v2 1/5] ALSA: soc-compress: add support to
+ snd_compr_set_runtime_buffer()
+Date: Fri, 5 Oct 2018 06:01:12 +0530
+Message-ID: <20181005003112.GG2372@vkoul-mobl>
+References: <20180926102349.23481-1-srinivas.kandagatla@linaro.org>
+ <20180926102349.23481-2-srinivas.kandagatla@linaro.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h7eixl9d9.wl-tiwai@suse.de>
-Content-Language: en-US-large
+Content-Disposition: inline
+In-Reply-To: <20180926102349.23481-2-srinivas.kandagatla@linaro.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+To: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc: broonie@kernel.org, alsa-devel@alsa-project.org, robh+dt@kernel.org, linux-kernel@vger.kernel.org, bgoswami@codeaurora.org, rohitkr@codeaurora.org, lgirdwood@gmail.com, tiwai@suse.com, devicetree@vger.kernel.org, mark.rutland@arm.com
 List-Id: alsa-devel@alsa-project.org
 
-Hey, Thanks for the quick response
+On 26-09-18, 11:23, Srinivas Kandagatla wrote:
+> This patch adds support to set runtime dma buffer on compressed stream.
 
-Am 04.10.18 um 22:55 CEST schrieb Takashi Iwai:
+The change is fine as is, but I feel we need to document the motivation
+in the changelog. The core changes need a bit more explanation on why we
+should add this..
 
-> On Thu, 04 Oct 2018 16:42:05 +0200,
-> Nicolas Huaman wrote:
->> A quirk in snd-usb-audio was added to automate setting sample rate to
->> 4800k and remove the previously exposed nonfunctional microphone for
->> the Bowers & Wilkins PX:
->> commit 240a8af929c7c57dcde28682725b29cf8474e8e5
->> https://lore.kernel.org/patchwork/patch/919689/
->>
->> However the headphones where updated shortly after that to remove the
->> unintentional microphone functionality. I guess because of this the
->> headphones now crash when connecting them via USB while the quirk is
->> active. Dmesg:
->>
->> snd-usb-audio: probe of 2-3:1.0 failed with error -22
->> usb 2-3: 2:1: cannot get min/max values for control 2 (id 2)
->>
->> This patch removes the microfone and allows the headphones to connect
->> and work out of the box. It is based on the current mainline kernel
->>   and successfully applied an tested on my machine (4.18.10.arch1-1).
->>
->> Signed-off-by: Nicolas Huaman <nicolas@herochao.de>
-> Thanks, that looks much better now, and I can apply it.
->
-> But just to be sure: is any quirk required after the firmware update
-> on this device at all?  What happens if you remove the whole quirk?
+> 
+> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+> ---
+>  include/sound/compress_driver.h | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/include/sound/compress_driver.h b/include/sound/compress_driver.h
+> index ea8c93bbb0e0..0cdc3999ecfa 100644
+> --- a/include/sound/compress_driver.h
+> +++ b/include/sound/compress_driver.h
+> @@ -23,6 +23,7 @@ struct snd_compr_ops;
+>   * struct snd_compr_runtime: runtime stream description
+>   * @state: stream state
+>   * @ops: pointer to DSP callbacks
+> + * @dma_buffer_p: runtime dma buffer pointer
+>   * @buffer: pointer to kernel buffer, valid only when not in mmap mode or
+>   *	DSP doesn't implement copy
+>   * @buffer_size: size of the above buffer
+> @@ -37,6 +38,7 @@ struct snd_compr_ops;
+>  struct snd_compr_runtime {
+>  	snd_pcm_state_t state;
+>  	struct snd_compr_ops *ops;
+> +	struct snd_dma_buffer *dma_buffer_p;
+>  	void *buffer;
+>  	u64 buffer_size;
+>  	u32 fragment_size;
+> @@ -175,6 +177,23 @@ static inline void snd_compr_drain_notify(struct snd_compr_stream *stream)
+>  	wake_up(&stream->runtime->sleep);
+>  }
+>  
+> +/**
+> + * snd_compr_set_runtime_buffer - Set the Compress runtime buffer
+> + * @substream: compress substream to set
+> + * @bufp: the buffer information, NULL to clear
+> + *
+> + * Copy the buffer information to runtime buffer when @bufp is non-NULL.
+> + * Otherwise it clears the current buffer information.
+> + */
+> +static inline void snd_compr_set_runtime_buffer(
+> +					struct snd_compr_stream *substream,
+> +					struct snd_dma_buffer *bufp)
+> +{
+> +	struct snd_compr_runtime *runtime = substream->runtime;
+> +
+> +	runtime->dma_buffer_p = bufp;
+> +}
+> +
+>  int snd_compr_stop_error(struct snd_compr_stream *stream,
+>  			 snd_pcm_state_t state);
+>  
+> -- 
+> 2.19.0
 
-Yes, the sample-rate problem is still present. I initially tried 
-disabling the quirk, but then I needed to set the default sample rate of 
-pulse to 48k again for the headphones to play sound, which is why I 
-wanted to find out how to fix it completely.
-
-This problem doesn't appear on windows (I think windows defaults to 
-48k?). Perhaps that's the reason why it wasn't patched in a firmware 
-update up until now.
-
-> If this modified quirk is still mandatory, I'll happily apply the
-> patch.
->
->
-> thanks,
->
-> Takashi
-
-The headphones I got already had the fixed firmware version, but even 
-older headphones can be updated using Android, IOS or Windows.
-
-My Fix corrects detection for headphones with all Firmware after 
-February 2018, so I think this quirk probably presents the best solution 
-for now, especially since the nonfunctional microphone of older Firmware 
-appeared on all platforms.
-
-Thank you for your time, the help and feedback!
-
-Best Regards,
-
-Nicolas
+-- 
+~Vinod
