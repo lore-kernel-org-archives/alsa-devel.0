@@ -1,16 +1,16 @@
 From: Marco Felsch <m.felsch@pengutronix.de>
-Subject: [PATCH v2 3/5] ASoC: dt-bindings: max98088: add
-	external clock binding
-Date: Fri,  5 Oct 2018 09:58:10 +0200
-Message-ID: <20181005075812.13986-4-m.felsch@pengutronix.de>
+Subject: [PATCH v2 4/5] ASoC: max98088: Add master clock
+	handling
+Date: Fri,  5 Oct 2018 09:58:11 +0200
+Message-ID: <20181005075812.13986-5-m.felsch@pengutronix.de>
 References: <20181005075812.13986-1-m.felsch@pengutronix.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
  [85.220.165.71])
- by alsa0.perex.cz (Postfix) with ESMTP id 3A110267905
+ by alsa0.perex.cz (Postfix) with ESMTP id 50BD5267907
  for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 09:58:26 +0200 (CEST)
 In-Reply-To: <20181005075812.13986-1-m.felsch@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
@@ -23,37 +23,58 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: lgirdwood@gmail.com, broonie@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com
-Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, kernel@pengutronix.de
+Cc: devicetree@vger.kernel.org, alsa-devel@alsa-project.org, =?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>, kernel@pengutronix.de, Tushar Behera <tushar.behera@linaro.org>
 List-Id: alsa-devel@alsa-project.org
 
-Allow setting the clock provider for the external clock called "mclk".
-
-Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
----
- .../devicetree/bindings/sound/maxim,max98088.txt          | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/sound/maxim,max98088.txt b/Documentation/devicetree/bindings/sound/maxim,max98088.txt
-index a79ad5c7af88..da764d913319 100644
---- a/Documentation/devicetree/bindings/sound/maxim,max98088.txt
-+++ b/Documentation/devicetree/bindings/sound/maxim,max98088.txt
-@@ -7,9 +7,17 @@ Required properties:
- - compatible: "maxim,max98088" or "maxim,max98089".
- - reg: The I2C address of the device.
- 
-+Optional properties:
-+
-+- clocks: the clock provider of MCLK, see ../clock/clock-bindings.txt section
-+  "consumer" for more information.
-+- clock-names: must be set to "mclk"
-+
- Example:
- 
- max98089: codec@10 {
- 	compatible = "maxim,max98089";
- 	reg = <0x10>;
-+	clocks = <&clks IMX6QDL_CLK_CKO2>;
-+	clock-names = "mclk";
- };
--- 
-2.19.0
+RnJvbTogQW5kcmVhcyBGw6RyYmVyIDxhZmFlcmJlckBzdXNlLmRlPgoKSWYgbWFzdGVyIGNsb2Nr
+IGlzIHByb3ZpZGVkIHRocm91Z2ggZGV2aWNlIHRyZWUsIHRoZW4gdXBkYXRlCnRoZSBtYXN0ZXIg
+Y2xvY2sgZnJlcXVlbmN5IGR1cmluZyBzZXRfc3lzY2xrLgoKQ2M6IFR1c2hhciBCZWhlcmEgPHR1
+c2hhci5iZWhlcmFAbGluYXJvLm9yZz4KU2lnbmVkLW9mZi1ieTogQW5kcmVhcyBGw6RyYmVyIDxh
+ZmFlcmJlckBzdXNlLmRlPgpBY2tlZC1ieTogVHVzaGFyIEJlaGVyYSA8dHJibGludXhAZ21haWwu
+Y29tPgpSZXZpZXdlZC1ieTogSmF2aWVyIE1hcnRpbmV6IENhbmlsbGFzIDxqYXZpZXIubWFydGlu
+ZXpAY29sbGFib3JhLmNvLnVrPgpbbS5mZWxzY2hAcGVuZ3V0cm9uaXguZGU6IG1vdmUgbWNsayBy
+ZXF1ZXN0IHRvIGkyY19wcm9iZV0KW20uZmVsc2NoQHBlbmd1dHJvbml4LmRlOiBtYWtlIHVzZSBv
+ZiBzbmRfc29jX2NvbXBvbmVudF9nZXRfYmlhc19sZXZlbCgpXQpTaWduZWQtb2ZmLWJ5OiBNYXJj
+byBGZWxzY2ggPG0uZmVsc2NoQHBlbmd1dHJvbml4LmRlPgotLS0KIHNvdW5kL3NvYy9jb2RlY3Mv
+bWF4OTgwODguYyB8IDI2ICsrKysrKysrKysrKysrKysrKysrKysrKysrCiAxIGZpbGUgY2hhbmdl
+ZCwgMjYgaW5zZXJ0aW9ucygrKQoKZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgw
+ODguYyBiL3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguYwppbmRleCA5NDUwZDVkOWM0OTIuLmNh
+MTcyYTRiNjg0OSAxMDA2NDQKLS0tIGEvc291bmQvc29jL2NvZGVjcy9tYXg5ODA4OC5jCisrKyBi
+L3NvdW5kL3NvYy9jb2RlY3MvbWF4OTgwODguYwpAQCAtMTYsNiArMTYsNyBAQAogI2luY2x1ZGUg
+PGxpbnV4L3BtLmg+CiAjaW5jbHVkZSA8bGludXgvaTJjLmg+CiAjaW5jbHVkZSA8bGludXgvcmVn
+bWFwLmg+CisjaW5jbHVkZSA8bGludXgvY2xrLmg+CiAjaW5jbHVkZSA8c291bmQvY29yZS5oPgog
+I2luY2x1ZGUgPHNvdW5kL3BjbS5oPgogI2luY2x1ZGUgPHNvdW5kL3BjbV9wYXJhbXMuaD4KQEAg
+LTQyLDYgKzQzLDcgQEAgc3RydWN0IG1heDk4MDg4X3ByaXYgewogCXN0cnVjdCByZWdtYXAgKnJl
+Z21hcDsKIAllbnVtIG1heDk4MDg4X3R5cGUgZGV2dHlwZTsKIAlzdHJ1Y3QgbWF4OTgwODhfcGRh
+dGEgKnBkYXRhOworCXN0cnVjdCBjbGsgKm1jbGs7CiAJdW5zaWduZWQgaW50IHN5c2NsazsKIAlz
+dHJ1Y3QgbWF4OTgwODhfY2RhdGEgZGFpWzJdOwogCWludCBlcV90ZXh0Y250OwpAQCAtMTEwMyw2
+ICsxMTA1LDExIEBAIHN0YXRpYyBpbnQgbWF4OTgwODhfZGFpX3NldF9zeXNjbGsoc3RydWN0IHNu
+ZF9zb2NfZGFpICpkYWksCiAgICAgICAgaWYgKGZyZXEgPT0gbWF4OTgwODgtPnN5c2NsaykKICAg
+ICAgICAgICAgICAgIHJldHVybiAwOwogCisJaWYgKCFJU19FUlIobWF4OTgwODgtPm1jbGspKSB7
+CisJCWZyZXEgPSBjbGtfcm91bmRfcmF0ZShtYXg5ODA4OC0+bWNsaywgZnJlcSk7CisJCWNsa19z
+ZXRfcmF0ZShtYXg5ODA4OC0+bWNsaywgZnJlcSk7CisJfQorCiAgICAgICAgLyogU2V0dXAgY2xv
+Y2tzIGZvciBzbGF2ZSBtb2RlLCBhbmQgdXNpbmcgdGhlIFBMTAogICAgICAgICAqIFBTQ0xLID0g
+MHgwMSAod2hlbiBtYXN0ZXIgY2xrIGlzIDEwTUh6IHRvIDIwTUh6KQogICAgICAgICAqICAgICAg
+ICAgMHgwMiAod2hlbiBtYXN0ZXIgY2xrIGlzIDIwTUh6IHRvIDMwTUh6KS4uCkBAIC0xMzEwLDYg
+KzEzMTcsMjAgQEAgc3RhdGljIGludCBtYXg5ODA4OF9zZXRfYmlhc19sZXZlbChzdHJ1Y3Qgc25k
+X3NvY19jb21wb25lbnQgKmNvbXBvbmVudCwKIAkJYnJlYWs7CiAKIAljYXNlIFNORF9TT0NfQklB
+U19QUkVQQVJFOgorCQkvKgorCQkgKiBTTkRfU09DX0JJQVNfUFJFUEFSRSBpcyBjYWxsZWQgd2hp
+bGUgcHJlcGFyaW5nIGZvciBhCisJCSAqIHRyYW5zaXRpb24gdG8gT04gb3IgYXdheSBmcm9tIE9O
+LiBJZiBjdXJyZW50IGJpYXNfbGV2ZWwKKwkJICogaXMgU05EX1NPQ19CSUFTX09OLCB0aGVuIGl0
+IGlzIHByZXBhcmluZyBmb3IgYSB0cmFuc2l0aW9uCisJCSAqIGF3YXkgZnJvbSBPTi4gRGlzYWJs
+ZSB0aGUgY2xvY2sgaW4gdGhhdCBjYXNlLCBvdGhlcndpc2UKKwkJICogZW5hYmxlIGl0LgorCQkg
+Ki8KKwkJaWYgKCFJU19FUlIobWF4OTgwODgtPm1jbGspKSB7CisJCQlpZiAoc25kX3NvY19jb21w
+b25lbnRfZ2V0X2JpYXNfbGV2ZWwoY29tcG9uZW50KSA9PQorCQkJICAgIFNORF9TT0NfQklBU19P
+TikKKwkJCQljbGtfZGlzYWJsZV91bnByZXBhcmUobWF4OTgwODgtPm1jbGspOworCQkJZWxzZQor
+CQkJCWNsa19wcmVwYXJlX2VuYWJsZShtYXg5ODA4OC0+bWNsayk7CisJCX0KIAkJYnJlYWs7CiAK
+IAljYXNlIFNORF9TT0NfQklBU19TVEFOREJZOgpAQCAtMTcyNSw2ICsxNzQ2LDExIEBAIHN0YXRp
+YyBpbnQgbWF4OTgwODhfaTJjX3Byb2JlKHN0cnVjdCBpMmNfY2xpZW50ICppMmMsCiAgICAgICAg
+aWYgKElTX0VSUihtYXg5ODA4OC0+cmVnbWFwKSkKIAkgICAgICAgcmV0dXJuIFBUUl9FUlIobWF4
+OTgwODgtPnJlZ21hcCk7CiAKKwltYXg5ODA4OC0+bWNsayA9IGRldm1fY2xrX2dldCgmaTJjLT5k
+ZXYsICJtY2xrIik7CisJaWYgKElTX0VSUihtYXg5ODA4OC0+bWNsaykpCisJCWlmIChQVFJfRVJS
+KG1heDk4MDg4LT5tY2xrKSA9PSAtRVBST0JFX0RFRkVSKQorCQkJcmV0dXJuIFBUUl9FUlIobWF4
+OTgwODgtPm1jbGspOworCiAgICAgICAgbWF4OTgwODgtPmRldnR5cGUgPSBpZC0+ZHJpdmVyX2Rh
+dGE7CiAKICAgICAgICBpMmNfc2V0X2NsaWVudGRhdGEoaTJjLCBtYXg5ODA4OCk7Ci0tIAoyLjE5
+LjAKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2Et
+ZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFp
+bG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
