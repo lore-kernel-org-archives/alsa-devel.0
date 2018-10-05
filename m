@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rt274: Add fall-through annotations" to
-	the asoc tree
-Date: Fri,  5 Oct 2018 14:26:17 +0100 (BST)
-Message-ID: <20181005132617.DCD7D112229A@debutante.sirena.org.uk>
-References: <20181004183006.23983-4-tiwai@suse.de>
+Subject: Applied "ASoC: pcm186x: Use the standard fall-through
+	annotation" to the asoc tree
+Date: Fri,  5 Oct 2018 14:26:28 +0100 (BST)
+Message-ID: <20181005132628.90268112229A@debutante.sirena.org.uk>
+References: <20181004183006.23983-3-tiwai@suse.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BF52E26793A
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 15:26:18 +0200 (CEST)
-In-Reply-To: <20181004183006.23983-4-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 4C2AA267942
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 15:26:29 +0200 (CEST)
+In-Reply-To: <20181004183006.23983-3-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +28,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rt274: Add fall-through annotations
+   ASoC: pcm186x: Use the standard fall-through annotation
 
 has been applied to the asoc tree at
 
@@ -53,39 +53,34 @@ to this mail.
 Thanks,
 Mark
 
->From 0beeb4baf56bd9deb920712a4034541fb33bbbe0 Mon Sep 17 00:00:00 2001
+>From 641f7f2195735b4fe93b541ea3a792fe4fee2415 Mon Sep 17 00:00:00 2001
 From: Takashi Iwai <tiwai@suse.de>
-Date: Thu, 4 Oct 2018 20:30:04 +0200
-Subject: [PATCH] ASoC: rt274: Add fall-through annotations
+Date: Thu, 4 Oct 2018 20:30:03 +0200
+Subject: [PATCH] ASoC: pcm186x: Use the standard fall-through annotation
 
 As a preparatory patch for the upcoming -Wimplicit-fallthrough
-compiler checks, add the "fall through" annotations in rt274 driver.
+compiler checks, replace with the standard "fall through" annotation.
+Unfortunately gcc doesn't understand the mixed comment lines.
 
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/rt274.c | 2 ++
- 1 file changed, 2 insertions(+)
+ sound/soc/codecs/pcm186x.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/sound/soc/codecs/rt274.c b/sound/soc/codecs/rt274.c
-index d88e67341083..0ef966d56bac 100644
---- a/sound/soc/codecs/rt274.c
-+++ b/sound/soc/codecs/rt274.c
-@@ -755,6 +755,7 @@ static int rt274_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
+diff --git a/sound/soc/codecs/pcm186x.c b/sound/soc/codecs/pcm186x.c
+index 690c26e7389e..809b7e9f03ca 100644
+--- a/sound/soc/codecs/pcm186x.c
++++ b/sound/soc/codecs/pcm186x.c
+@@ -401,7 +401,8 @@ static int pcm186x_set_fmt(struct snd_soc_dai *dai, unsigned int format)
  		break;
- 	default:
- 		dev_warn(component->dev, "invalid pll source, use BCLK\n");
+ 	case SND_SOC_DAIFMT_DSP_A:
+ 		priv->tdm_offset += 1;
+-		/* Fall through... DSP_A uses the same basic config as DSP_B
 +		/* fall through */
- 	case RT274_PLL2_S_BCLK:
- 		snd_soc_component_update_bits(component, RT274_PLL2_CTRL,
- 				RT274_PLL2_SRC_MASK, RT274_PLL2_SRC_BCLK);
-@@ -782,6 +783,7 @@ static int rt274_set_dai_pll(struct snd_soc_dai *dai, int pll_id, int source,
- 			break;
- 		default:
- 			dev_warn(component->dev, "invalid freq_in, assume 4.8M\n");
-+			/* fall through */
- 		case 100:
- 			snd_soc_component_write(component, 0x7a, 0xaab6);
- 			snd_soc_component_write(component, 0x7b, 0x0301);
++		/* DSP_A uses the same basic config as DSP_B
+ 		 * except we need to shift the TDM output by one BCK cycle
+ 		 */
+ 	case SND_SOC_DAIFMT_DSP_B:
 -- 
 2.19.0.rc2
