@@ -1,8 +1,8 @@
 From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
 Subject: Re: Microphone detected,
  but no output for all ASUS G751xx with ALC668 chipset
-Date: Fri, 5 Oct 2018 11:56:06 +0200
-Message-ID: <CANweNF4++BufWg1mZ3mk6LSY85dO3dWOhsqsz+ZgahbK1RP-=g@mail.gmail.com>
+Date: Fri, 5 Oct 2018 12:00:30 +0200
+Message-ID: <CANweNF5zYXPQZi01Mh6BNSz65pnOukwOqdEN4MuVSgiOQ+L=kA@mail.gmail.com>
 References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
  <s5hin3d2ik0.wl-tiwai@suse.de>
  <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
@@ -32,17 +32,18 @@ References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
  <CANweNF4k8e2LWHeroDtw8ODT=5rT17KPfxkmvtTQ2xQPTG2VYQ@mail.gmail.com>
  <CANweNF7JwXT-Ob9Dq5p8o_LLb+xO3i+Mir-r4nuN_MP+OOwLkQ@mail.gmail.com>
  <s5h1s95l7y1.wl-tiwai@suse.de>
+ <CANweNF4++BufWg1mZ3mk6LSY85dO3dWOhsqsz+ZgahbK1RP-=g@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-yw1-f49.google.com (mail-yw1-f49.google.com
  [209.85.161.49])
- by alsa0.perex.cz (Postfix) with ESMTP id 11AB12677F0
- for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 11:56:18 +0200 (CEST)
-Received: by mail-yw1-f49.google.com with SMTP id m127-v6so5009927ywb.0
- for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2018 02:56:18 -0700 (PDT)
-In-Reply-To: <s5h1s95l7y1.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 36BF72678D6
+ for <alsa-devel@alsa-project.org>; Fri,  5 Oct 2018 12:00:43 +0200 (CEST)
+Received: by mail-yw1-f49.google.com with SMTP id m127-v6so5013858ywb.0
+ for <alsa-devel@alsa-project.org>; Fri, 05 Oct 2018 03:00:42 -0700 (PDT)
+In-Reply-To: <CANweNF4++BufWg1mZ3mk6LSY85dO3dWOhsqsz+ZgahbK1RP-=g@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -53,24 +54,28 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: tiwai@suse.de
-Cc: conmanx360@gmail.com, alsa-devel@alsa-project.org
+Cc: Connor McAdams <conmanx360@gmail.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkhCgpTb3JyeSBpdCdzIG15IGZhdWx0IGZvciBub3QgcmVzcG9uZGluZyBhcyBJIHNob3VsZCBo
-YXZlLgoKSSBvcmlnaW5hbGx5IGhhZCBzb21lIHByb2JsZW1zIGdldHRpbmcgdGhlIDQuMTktcmMg
-a2VybmVsIHRvIHdvcmsgd2l0aApudmlkaWEgZHJpdmVycywgYnV0IHRoYW5rcyB0byB5b3VyIGVt
-YWlsIEkgZ290IGl0IHdvcmtpbmcuCgpTbyBoZXJlIGlzIHdoYXQgSSBmb3VuZDoKCk5vdCBzZXR0
-aW5nIG1vZGVsPWFsYzY2OC1oZWFkc2V0IGNoYW5nZWQgbm90aGluZwoKU2V0dGluZyBtb2RlbD1h
-bGM2NjgtaGVhZHNldCBTdGlsbCBkaWRuJ3Qgd29yaywgYnV0IG1hZGUgaXQgc28gbXkgIkludGVy
-bmFsCm1pY3JvcGhvbmUiIGluIHBhdnVjb250cm9sIHdhcyBwbHVnZ2VkIGluLCBldmVuIHRob3Vn
-aCBteSBoZWFkc2V0IGlzCnBsdWdnZWQgaW4uIE5vcm1hbGx5IChhbmQgd2l0aG91dCBzZXR0aW5n
-IG1vZGVsPWFsYzY2OC1oZWFkc2V0KSBpdCB3b3VsZApzYXkgIih1bnBsdWdnZWQpIiB3aGVuIEkg
-aGFkIG15IG1pY3JvcGhvbmUgcGx1Z2dlZCBpbi4gQW5kIG1pZ2h0IGJlCmlycmVsZXZhbnQsIGJ1
-dCB0aGUgbWljcm9waG9uZSBuYW1lIHdlbnQgZnJvbSAiTWljcm9waG9uZSIgdG8gIkhlYWRzZXQK
-bWljcm9waG9uZSIuCgpDb3VsZCB0aGlzIGJlIHJlbGF0ZWQgdG8gdGhhdCBteSBsYXB0b3AgaGFz
-IG5vIGNvbWJvIGhlYWRzZXQgcG9ydD8gSSBoYXZlCnNlcGFyYXRlIGlucHV0cy9vdXRwdXRzIGZv
-ciBtaWMgYW5kIHNvdW5kLCBub3QgYWxsIGluIG9uZSBwb3J0LgoKSSBob3BlIHdlIGNhbiBnZXQg
-YSBmaXggb3V0IHNvb24hCgotSMOldmFyZApfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+QW5kIGN1cmlvdXNseSwgdHVybmluZyBvbiBsb29wYmFjayBvbmx5IG1hZGUgaXQgc28gdGhlIHJp
+Z2h0IGVhciBjb3VsZCBoZWFyCnRoZSBvdXRwdXQsIHdoaWxlIHBsYWluIG5vaXNlIGNhbWUgZnJv
+bSB0aGUgbGVmdCBlYXJwaWVjZS4KCi1Iw6V2YXJkCgpEZW4gZnJlLiA1LiBva3QuIDIwMTgga2wu
+IDExOjU2IHNrcmV2IEjDpXZhcmQgPGhvdmFyZHNsaWxsQGdtYWlsLmNvbT46Cgo+IEhpIQo+Cj4g
+U29ycnkgaXQncyBteSBmYXVsdCBmb3Igbm90IHJlc3BvbmRpbmcgYXMgSSBzaG91bGQgaGF2ZS4K
+Pgo+IEkgb3JpZ2luYWxseSBoYWQgc29tZSBwcm9ibGVtcyBnZXR0aW5nIHRoZSA0LjE5LXJjIGtl
+cm5lbCB0byB3b3JrIHdpdGgKPiBudmlkaWEgZHJpdmVycywgYnV0IHRoYW5rcyB0byB5b3VyIGVt
+YWlsIEkgZ290IGl0IHdvcmtpbmcuCj4KPiBTbyBoZXJlIGlzIHdoYXQgSSBmb3VuZDoKPgo+IE5v
+dCBzZXR0aW5nIG1vZGVsPWFsYzY2OC1oZWFkc2V0IGNoYW5nZWQgbm90aGluZwo+Cj4gU2V0dGlu
+ZyBtb2RlbD1hbGM2NjgtaGVhZHNldCBTdGlsbCBkaWRuJ3Qgd29yaywgYnV0IG1hZGUgaXQgc28g
+bXkKPiAiSW50ZXJuYWwgbWljcm9waG9uZSIgaW4gcGF2dWNvbnRyb2wgd2FzIHBsdWdnZWQgaW4s
+IGV2ZW4gdGhvdWdoIG15IGhlYWRzZXQKPiBpcyBwbHVnZ2VkIGluLiBOb3JtYWxseSAoYW5kIHdp
+dGhvdXQgc2V0dGluZyBtb2RlbD1hbGM2NjgtaGVhZHNldCkgaXQgd291bGQKPiBzYXkgIih1bnBs
+dWdnZWQpIiB3aGVuIEkgaGFkIG15IG1pY3JvcGhvbmUgcGx1Z2dlZCBpbi4gQW5kIG1pZ2h0IGJl
+Cj4gaXJyZWxldmFudCwgYnV0IHRoZSBtaWNyb3Bob25lIG5hbWUgd2VudCBmcm9tICJNaWNyb3Bo
+b25lIiB0byAiSGVhZHNldAo+IG1pY3JvcGhvbmUiLgo+Cj4gQ291bGQgdGhpcyBiZSByZWxhdGVk
+IHRvIHRoYXQgbXkgbGFwdG9wIGhhcyBubyBjb21ibyBoZWFkc2V0IHBvcnQ/IEkgaGF2ZQo+IHNl
+cGFyYXRlIGlucHV0cy9vdXRwdXRzIGZvciBtaWMgYW5kIHNvdW5kLCBub3QgYWxsIGluIG9uZSBw
+b3J0Lgo+Cj4gSSBob3BlIHdlIGNhbiBnZXQgYSBmaXggb3V0IHNvb24hCj4KPiAtSMOldmFyZAo+
+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2
+ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1h
+bi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
