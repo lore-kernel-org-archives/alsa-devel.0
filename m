@@ -1,239 +1,84 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: Controlling the Tascam FW-1884
-Date: Sat, 6 Oct 2018 18:07:10 +0900
-Message-ID: <bc5df36b-f9ed-f39d-381f-13fc6bc85f16@sakamocchi.jp>
-References: <9cec059e1ff1a558f21a3f0729c5a69a3d506573.camel@suse.com>
- <0e469670-0520-5953-230b-8d2da5e4c357@sakamocchi.jp>
- <985b1f6dc5b0af2aae049e0b6fcf976ab400d34d.camel@suse.com>
- <55afba82-ad24-fe70-b784-d28a38e291c9@sakamocchi.jp>
- <7a0f35eea26ce475bc3f6953db97f83205ad0a58.camel@suse.com>
- <fc278639-12da-02b8-685d-681e06b044e4@sakamocchi.jp>
- <10a99ea9c672ac6d0c9d5536e9d85a15f5a32d95.camel@suse.com>
- <47f66c7d-4337-52da-72da-cdb3f0638dc4@sakamocchi.jp>
- <d63527a1ab830c50c621664946ad9eafdb37d578.camel@suse.com>
- <f4537970-775e-6480-acc4-6b5dd050d597@sakamocchi.jp>
- <4e0b4dc88db65ddd3055f3266af509fd439472c5.camel@suse.com>
+From: syzbot <syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com>
+Subject: Re: WARNING in port_delete
+Date: Sat, 06 Oct 2018 05:58:03 -0700
+Message-ID: <0000000000003e04c305778ef053@google.com>
+References: <0000000000004f7eb00570be9f92@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com
- [209.85.214.182])
- by alsa0.perex.cz (Postfix) with ESMTP id B2D8426783D
- for <alsa-devel@alsa-project.org>; Sat,  6 Oct 2018 11:07:15 +0200 (CEST)
-Received: by mail-pl1-f182.google.com with SMTP id c8-v6so7892301plo.9
- for <alsa-devel@alsa-project.org>; Sat, 06 Oct 2018 02:07:15 -0700 (PDT)
-In-Reply-To: <4e0b4dc88db65ddd3055f3266af509fd439472c5.camel@suse.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Scott Bahling <sbahling@suse.com>
-Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <0000000000004f7eb00570be9f92@google.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: alsa-devel-bounces@alsa-project.org, alsa-devel@alsa-project.org, colin.king@canonical.com, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Scott,
+syzbot has found a reproducer for the following crash on:
 
-On Oct 4 2018 05:37, Scott Bahling wrote:
-> On Tue, 2018-10-02 at 12:16 +0900, Takashi Sakamoto wrote:
->> I have an idea to invervene them:
->>
->> 1. For control events, in kernel land, driver module detects
->> changes of set of bitflags for physical controls, then queue
->> events to tell the change to userspace applications
->> (e.g. poll(2)). The queued events include information about
->> changed bitflags (e.g. a shape of u32 data). Userspace
->> applications execute read(2) then get the bitflags, then parse
->> it and emit userspace event by ports in ALSA sequencer
->> subsystem.
->> The driver and userspace application should pay enough
->> attention to share the queue. The driver can drop the oldest
->> queued events if the queue is full.
->>
->> 2. For level meter, in kernel land, driver module caches the
->> recent value. Userspace applications execute ioctl(2) with
->> unique command (You can see this kind of commands in
->> 'include/uapi/sound/firwire.h').
->>
->> However, as long as I note[2], the purpose of some quadlets in the
->> image are not still identified:
->>
->> "Quadlet 00-15 show control messages. Quadlet 16-23 show analog input
->> level. Quadlet 24-31 shows digital ADAT input level. Quadlet 32-33
->> shows digital S/PDIF input level. Quadlet 34-35 is unknown.
-> 
-> On my FW-1884 34/35 is analog level of output 1/2. The "Monitor" level
-> pot (as well as the master fader if enabled) control the level so if
-> they are set at 0, then you will not see any signal on the 34/35.
-> 
->> Quadlet
->> 36-43 shows analog output level.
-> 
-> 36-41 = analog outputs 3-8
-> 
->> The other quadlets are unknown."
-> 
-> 52: shows the current sample rate setting
->      010101xx = 44.1k
->      020102xx = 48k
->      810181xx = 88.2k
->      820182xx = 96k
-> 
-> 52: Byte 1 shows the current clock source
->      0x01 = Internal
->      0x02 = Word Clock
->      0x03 = Digital In
->      0x04 = ADAT
-> 
-> 54-55 appears to be the level of the internal "Monitor Mix".
-> 57-58 appears to be the level of the stereo mix of the analog inputs
-> 
-> 59: Byte 1 indicates what is routed to the Monitor Mix
->      0x01 = PCM Stream from computer
->      0x02 = Analog Inputs
->      0x03 = Both
-> 
->> We need further investigation to clear the unknown fields as much as
->> possible to add more codes in ALSA kernel land.
-> 
-> Above is as far as I have gotten with the unknown fields.
-> 
-> On the asynchronous side, I have mapped out the LED codes to the LEDs
-> on the FW-1884 and discovered the registers for controlling the faders.
+HEAD commit:    091a1eaa0e30 Merge branch 'akpm'
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16623e59400000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=c0af03fe452b65fb
+dashboard link: https://syzkaller.appspot.com/bug?extid=e4c8abb920efa77bace9
+compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=102e2c91400000
 
-Thanks for your report. I have additional information from today
-investigation. In detail, please read the end of this message.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+e4c8abb920efa77bace9@syzkaller.appspotmail.com
 
-I think it reasonable to take kernel-land driver emits events for
-quadlet 05-15 to userspace applications, then let SndTscm object in
-libhinawa. (Extra care is required for the value of monitor-knob).
-Additionally, SndTscm object produces API to retrieve current value
-of fader, knob and so on.
+WARNING: CPU: 1 PID: 23693 at sound/core/seq/seq_ports.c:275  
+port_delete+0x177/0x1b0 sound/core/seq/seq_ports.c:275
+Kernel panic - not syncing: panic_on_warn set ...
 
-Anyway, initial value should be reported to userspace, mmm...
-
-======== 8< --------
-
-00: fader2 fader1
-01: fader4 fader3
-02: fader6 fader5
-03: fader8 fader7
-04: solo-knob fader9(=master)
-
-The value of fader is between 0x0000 and 0x03ff (2byte).
-The value of solo-knob (FW-1884 only) is between 0x0000 and
-0x03ff (2byte).
-
-05: op-mode+fader-sense monitor-knob
-
-op-mode is 7 bits in MSB side.
-  - 0x00: computer mode
-  - 0xfe: midi-ctl/mon-mix modes
-
-The value of fader-sense consists of bitflags in which
-a bit becomes zero during user touches corresponding fader.
-This is next 9 bits in MSB side.
-  - 0x0100: for fader 9 (=master)
-  - 0x0080: for fader 8
-    ...
-  - 0x0001: for fader 1
-
-The value of monitor-knob is between 0x0000 and 0x03ff.
-But the lowest bits becomes frequently without handy operation.
-
-06: bitflags
-07: bitflags
-08: bitflags
-09: bitflags
-
-These bitflags consists two states:
-  - During corresponding button is pressed, bit becomes zero.
-  - some sets of 2 bits represent current value of corresponding
-    knob.
-The position is largely different depending on FW-1884/FW-1082.
-
-10: unknown unknown
-11: unknown unknown
-12: unknown unknown
-13: unknown unknown
-14: unknown unknown
-
-15: dial-value unknown
-
-The value of dial is between 0x0000 and 0xffff, accumulated clockwise.
-At overflow it resets to 0x0000.
-
-16: analog-in-1
-17: analog-in-2
-18: analog-in-3
-19: analog-in-4
-20: analog-in-5
-21: analog-in-6
-22: analog-in-7
-23: analog-in-8
-24: adat-in-1
-25: adat-in-2
-26: adat-in-3
-27: adat-in-4
-28: adat-in-5
-29: adat-in-6
-30: adat-in-7
-31: adat-in-8
-32: s/pdif-in-1
-33: s/pdif-in-2
-34: analog-out-1
-35: analog-out-2
-36: analog-out-3
-37: analog-out-4
-38: analog-out-5
-39: analog-out-6
-40: analog-out-7
-41: analog-out-8
-42: adat-out-1
-43: adat-out-2
-44: adat-out-3
-45: adat-out-4
-46: adat-out-5
-47: adat-out-6
-48: adat-out-7
-49: adat-out-8
-
-The value of level is between 0x00000000 and 0x7fffff00.
-
-50: (unknown)
-51: (unknown)
-
-I expect them for spdif-out-1/2 but actually they're not.
-
-52: clock-status clock-config
-
-As Scott investigated, but configuration of clock source
-is not necessarily effective in bits of clock-status.
-
-53: (unknown)
-54: monitor-mix-1 (enabled at INPUT/BOTH modes)
-55: monitor-mix-2 (enabled at INPUT/BOTH modes)
-56: (unknown)
-57: analog-in-mix-1
-58: analog-in-mix-2
-
-59: 0:COMPUTER, 1:INPUTS, 2:BOTH
-
-At monitor mix mode, the above selections are available.
-
-60: (unknown)
-61: (unknown)
-62: (unknown)
-63: (unknown)
-
-======== 8< --------
-
-Thanks
-
-Takashi Sakamoto
+CPU: 1 PID: 23693 Comm: syz-executor0 Not tainted 4.19.0-rc6+ #47
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x1c4/0x2b4 lib/dump_stack.c:113
+  panic+0x238/0x4e7 kernel/panic.c:184
+  __warn.cold.8+0x163/0x1ba kernel/panic.c:536
+  report_bug+0x254/0x2d0 lib/bug.c:186
+  fixup_bug arch/x86/kernel/traps.c:178 [inline]
+  do_error_trap+0x1fc/0x4d0 arch/x86/kernel/traps.c:296
+kobject: 'loop1' (00000000baf940ef): kobject_uevent_env
+kobject: 'loop1' (00000000baf940ef): fill_kobj_path: path  
+= '/devices/virtual/block/loop1'
+  do_invalid_op+0x1b/0x20 arch/x86/kernel/traps.c:316
+  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:993
+RIP: 0010:port_delete+0x177/0x1b0 sound/core/seq/seq_ports.c:275
+Code: e7 99 fb 45 85 e4 75 14 e8 66 e6 99 fb 48 89 df e8 ee 29 dd fb 31 c0  
+5b 41 5c 5d c3 e8 52 e6 99 fb 0f 0b eb e3 e8 49 e6 99 fb <0f> 0b eb 9b e8  
+a0 55 dd fb eb bd e8 99 55 dd fb e9 77 ff ff ff e8
+RSP: 0018:ffff8801a7477890 EFLAGS: 00010293
+RAX: ffff8801a84e05c0 RBX: ffff8801cf0be4c0 RCX: ffffffff85e4eee1
+RDX: 0000000000000000 RSI: ffffffff85e4ef47 RDI: 0000000000000005
+RBP: ffff8801a74778a0 R08: ffff8801a84e05c0 R09: 00000000deede79a
+R10: 00000000da8ba726 R11: 0000000000000000 R12: 0000000000000001
+R13: ffff8801cf0be510 R14: 1ffff10034e8ef20 R15: ffff8801cb447b00
+  snd_seq_delete_port+0x3cb/0x4a0 sound/core/seq/seq_ports.c:303
+  snd_seq_ioctl_delete_port+0xba/0x190 sound/core/seq/seq_clientmgr.c:1324
+  snd_seq_kernel_client_ctl+0x15a/0x190 sound/core/seq/seq_clientmgr.c:2353
+  snd_seq_event_port_detach+0xfc/0x170 sound/core/seq/seq_ports.c:705
+  delete_port+0x7d/0xc0 sound/core/seq/oss/seq_oss_init.c:354
+  snd_seq_oss_release+0xf2/0x130 sound/core/seq/oss/seq_oss_init.c:433
+  odev_release+0x52/0x70 sound/core/seq/oss/seq_oss.c:153
+  __fput+0x385/0xa30 fs/file_table.c:278
+  ____fput+0x15/0x20 fs/file_table.c:309
+  task_work_run+0x1e8/0x2a0 kernel/task_work.c:113
+  tracehook_notify_resume include/linux/tracehook.h:193 [inline]
+  exit_to_usermode_loop+0x318/0x380 arch/x86/entry/common.c:166
+  prepare_exit_to_usermode arch/x86/entry/common.c:197 [inline]
+  syscall_return_slowpath arch/x86/entry/common.c:268 [inline]
+  do_syscall_64+0x6be/0x820 arch/x86/entry/common.c:293
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x457579
+Code: 1d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 eb b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f85fa204c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000003
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000457579
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000006
+RBP: 000000000072bfa0 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f85fa2056d4
+R13: 00000000004ef912 R14: 00000000004cc460 R15: 00000000ffffffff
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
