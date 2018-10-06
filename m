@@ -1,57 +1,30 @@
-From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
-Subject: Re: Microphone detected,
- but no output for all ASUS G751xx with ALC668 chipset
-Date: Sat, 6 Oct 2018 10:20:37 +0200
-Message-ID: <CANweNF5J+6cGkLd4m0dAxzb1usOs5MfUf8JQ1WQUEePEWZMKNg@mail.gmail.com>
-References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
- <s5hin3d2ik0.wl-tiwai@suse.de>
- <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
- <s5hbm94ou29.wl-tiwai@suse.de>
- <CANweNF5PpzufjnRQk2gpqw1+kU8TK86RAj-topURG-FAHeYxcA@mail.gmail.com>
- <s5h7ejrq5dd.wl-tiwai@suse.de>
- <CANweNF5kcSDAxPXDqnyAEvh9bwYg61_F4XhaLjGrpEXZnvvNew@mail.gmail.com>
- <CANweNF7d8Z7qFw2cMkUH4F4r6P=Ms-=WVbFYrMX+O+uZkV4cwg@mail.gmail.com>
- <CAM8Agx2QibKCdPg5FLDqgcP-O7PwPN1L4iNT=6Ae53T5=d=+uw@mail.gmail.com>
- <CANweNF5fjLyfEyE+gCYugpfW_+LP2HYFMPfuWi_O0nxizFLdXg@mail.gmail.com>
- <CAM8Agx0Y+7c_ZQrwzX6R0yRNHTeHoMPAt6zLtU9VKqHAo42TeQ@mail.gmail.com>
- <CANweNF50zpunkO4XOeZh_SWsceeQ5SRWdYAXQ21c69oGfFGzhA@mail.gmail.com>
- <CANweNF718RNadfxV9+Du0VZ4Cx-ufG0ehN1pzP09z41aXUA0Vw@mail.gmail.com>
- <CAM8Agx0H=WdExmbPmtpvYD7hgzNS_jQVfyQy_g8W+yXzqu_rSQ@mail.gmail.com>
- <CANweNF4dxH_abm=sFNEyx-V_05Wo_ZYdMZ_juDMq2imBbBGUhg@mail.gmail.com>
- <CANweNF5izh93N_RS04wO2eihYnx2-_iBjtFw-_1O60027H9M6g@mail.gmail.com>
- <CAM8Agx1Z2KjeSx1otGM8Y=MC=r=HzwNiZzwhuNpKa2EVHkKS=g@mail.gmail.com>
- <CAM8Agx2HAApKVa-ZE3qJ58_h=VX4jX2zTvSqd4HEd6Zd-g1XHg@mail.gmail.com>
- <CAM8Agx1X9xr0LwUcxXZ8w0i+9DGC+gT82p6ocNbQOgJwD9UOcA@mail.gmail.com>
- <CANweNF4Q9CE5-fO-WJmX9pmaZTOt8U6A7Ey6ELEEhdskrOWw9g@mail.gmail.com>
- <CANweNF5LYqC04366UZ0LMo_F8Rc4B4+p9it500eqWauzHAdwHA@mail.gmail.com>
- <CANweNF7eQ88J7+2Xm_nyUwPD5TEUD2U1HgnDtBbGaYWbKeEvBg@mail.gmail.com>
- <CAM8Agx30z8SDGvQ0L701WHQiAcV_PwEfjSnc07p-_n5CpyuGfw@mail.gmail.com>
- <CANweNF48R5AxbSQwqRo4iPObG9XtZiP6zHHT75i7S5i=nfsf9w@mail.gmail.com>
- <CANweNF79L5Y3cdc7FzeKDMObBhQ=aFMKJu6RAfUrPVu8y3YB9w@mail.gmail.com>
- <s5hmusm4drz.wl-tiwai@suse.de>
- <CANweNF4k8e2LWHeroDtw8ODT=5rT17KPfxkmvtTQ2xQPTG2VYQ@mail.gmail.com>
- <CANweNF7JwXT-Ob9Dq5p8o_LLb+xO3i+Mir-r4nuN_MP+OOwLkQ@mail.gmail.com>
- <s5h1s95l7y1.wl-tiwai@suse.de>
- <CANweNF4++BufWg1mZ3mk6LSY85dO3dWOhsqsz+ZgahbK1RP-=g@mail.gmail.com>
- <CANweNF5zYXPQZi01Mh6BNSz65pnOukwOqdEN4MuVSgiOQ+L=kA@mail.gmail.com>
- <s5hy3bc677n.wl-tiwai@suse.de>
- <CANweNF6BD3LtXLMU77JLjJc6ucZqNL=9kYL38s2gRZvDgtDqjQ@mail.gmail.com>
- <s5hva6g660d.wl-tiwai@suse.de>
- <CANweNF5goTDUXnkLaeS9D7X24u4BvU68pOB0gxUXjVggsckLVg@mail.gmail.com>
- <s5hsh1k5zo7.wl-tiwai@suse.de>
- <CANweNF6FsrfzcEFLMKPbmvTF7qdYWKAaMSgyumkF+Abv483Y9w@mail.gmail.com>
- <s5hwoqvimyh.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Controlling the Tascam FW-1884
+Date: Sat, 6 Oct 2018 18:07:10 +0900
+Message-ID: <bc5df36b-f9ed-f39d-381f-13fc6bc85f16@sakamocchi.jp>
+References: <9cec059e1ff1a558f21a3f0729c5a69a3d506573.camel@suse.com>
+ <0e469670-0520-5953-230b-8d2da5e4c357@sakamocchi.jp>
+ <985b1f6dc5b0af2aae049e0b6fcf976ab400d34d.camel@suse.com>
+ <55afba82-ad24-fe70-b784-d28a38e291c9@sakamocchi.jp>
+ <7a0f35eea26ce475bc3f6953db97f83205ad0a58.camel@suse.com>
+ <fc278639-12da-02b8-685d-681e06b044e4@sakamocchi.jp>
+ <10a99ea9c672ac6d0c9d5536e9d85a15f5a32d95.camel@suse.com>
+ <47f66c7d-4337-52da-72da-cdb3f0638dc4@sakamocchi.jp>
+ <d63527a1ab830c50c621664946ad9eafdb37d578.camel@suse.com>
+ <f4537970-775e-6480-acc4-6b5dd050d597@sakamocchi.jp>
+ <4e0b4dc88db65ddd3055f3266af509fd439472c5.camel@suse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yb1-f171.google.com (mail-yb1-f171.google.com
- [209.85.219.171])
- by alsa0.perex.cz (Postfix) with ESMTP id 3F36326783D
- for <alsa-devel@alsa-project.org>; Sat,  6 Oct 2018 10:20:50 +0200 (CEST)
-Received: by mail-yb1-f171.google.com with SMTP id w80-v6so6404313ybe.10
- for <alsa-devel@alsa-project.org>; Sat, 06 Oct 2018 01:20:50 -0700 (PDT)
-In-Reply-To: <s5hwoqvimyh.wl-tiwai@suse.de>
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com
+ [209.85.214.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id B2D8426783D
+ for <alsa-devel@alsa-project.org>; Sat,  6 Oct 2018 11:07:15 +0200 (CEST)
+Received: by mail-pl1-f182.google.com with SMTP id c8-v6so7892301plo.9
+ for <alsa-devel@alsa-project.org>; Sat, 06 Oct 2018 02:07:15 -0700 (PDT)
+In-Reply-To: <4e0b4dc88db65ddd3055f3266af509fd439472c5.camel@suse.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -61,112 +34,206 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: Connor McAdams <conmanx360@gmail.com>, alsa-devel@alsa-project.org
+To: Scott Bahling <sbahling@suse.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-T2shCgpUaGFuayB5b3UgdmVyeSBtdWNoIQoKU28gZm9yIHRoZW0gdG8gd29yaywgdGhleSBoYXZl
-IHRvIHNldCBtb2RlbD1hc3VzLWc3NTEgPwoKU29ycnkgZm9yIGFsbCB0aGVzZSBxdWVzdGlvbnMs
-IGJ1dCBJIHdhbnQgdG8gcmVzcG9uZCB0byB0aGVzZSBwZW9wbGUgYXMKZmFzdCBhcyBwb3NzaWJs
-ZSEKCi1Iw6V2YXJkCgpEZW4gbMO4ci4gNi4gb2t0LiAyMDE4IGtsLiAwODo1NSBza3JldiBUYWth
-c2hpIEl3YWkgPHRpd2FpQHN1c2UuZGU+OgoKPiBPbiBGcmksIDA1IE9jdCAyMDE4IDIxOjU2OjIw
-ICswMjAwLAo+IEjDpXZhcmQgd3JvdGU6Cj4gPgo+ID4gSSBjb3VsZG4ndCBnZXQgdGhlIHBhdGNo
-IGluc3RhbGxlZCBhdXRvbWF0aWNhbGx5LCBzbyBJIGFkZGVkIHRoZSBjaGFuZ2VkCj4gPiBjb2Rl
-IG15c2VsZi4KPiA+Cj4gPiBFdmVyeXRoaW5nIHdvcmtzIGZpbmUgYW5kIGFzIGV4cGVjdGVkIHJp
-Z2h0IGFmdGVyIHJlYm9vdCEgOikgSnVzdCBsaWtlIHdlCj4gPiB3YW50IQo+ID4KPiA+IEkgZG9u
-J3QgdW5kZXJzdGFuZC4gU28gdGhpcyB3b24ndCB3b3JrIGZvciBvdGhlciBHNzUxeHggdXNlcnM/
-IE9yIGRvIHRoZXkKPiA+IGhhdmUgdG8gc2V0IG1vZGVsPWFzdXMtZzc1MT8gSSdtIHRoaW5raW5n
-IG9mIHJlYWNoaW5nIG91dCBhbmQgc2F5aW5nIGl0Cj4gPiB3aWxsIGJlIGZpeGVkIGluIDQuMTku
-Cj4KPiBXZSBuZWVkIHRvIGtub3cgdGhlIGV4YWN0IFBDSSBTU0lEcyBmb3IgdGhlIG1hdGNoaW5n
-IG1vZGVscy4KPiBZb3VycyBpcyAxMDQzOjEyZmYsIGFuZCBvdGhlcnMgbWlnaHQgYmUgZGlmZmVy
-ZW50LiAgVGhleSBjYW4gYmUgYWRkZWQKPiBldmVudHVhbGx5IHRvIHRoZSBxdWlyayB0YWJsZSBp
-biB0aGUgc2FtZSB3YXkgb25jZSB3aGVuIHdlIGFyZQo+IGluZm9ybWVkLgo+Cj4gU2luY2UgaXQn
-cyBhbHJlYWR5IGEgdmVyeSBsYXRlIHN0YWdlIGZvciA0LjE5LCB0aGlzIGZpeCB3aWxsIGdvIGlu
-dG8KPiA0LjIwIGF0IGVhcmxpZXN0Lgo+Cj4KPiB0aGFua3MsCj4KPiBUYWthc2hpCj4KPiA+Cj4g
-PiBUaGFuayB5b3UhCj4gPgo+ID4gLUjDpXZhcmQKPiA+Cj4gPiBEZW4gZnJlLiA1LiBva3QuIDIw
-MTgga2wuIDE0OjQ2IHNrcmV2IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4gPgo+ID4g
-PiBPbiBGcmksIDA1IE9jdCAyMDE4IDEyOjMxOjM3ICswMjAwLAo+ID4gPiBIw6V2YXJkIHdyb3Rl
-Ogo+ID4gPiA+Cj4gPiA+ID4gVGhhbmsgeW91IHNvIG11Y2ghCj4gPiA+ID4KPiA+ID4gPiBXaWxs
-IHRoaXMgd29yayBmb3IgYWxsIEc3NTEgbW9kZWxzLCBhbmQgd2lsbCB0aGlzIGJlIGluIHRoZSA0
-LjE5Cj4ga2VybmVsPwo+ID4gPgo+ID4gPiBJdCdzIG9ubHkgZm9yIHlvdXJzICh0aGUgbWF0Y2hp
-bmcgUENJIFNTSUQpLiAgQW5kIGl0IHdpbGwgYmUgaW5jbHVkZWQKPiA+ID4gb25seSB3aGVuIHlv
-dSB0ZXN0IHRoZSBwYXRjaCBhbmQgY29uZmlybSBpdCB3b3JraW5nLiAgU28sIHBsZWFzZSB0ZXN0
-Cj4gPiA+IGl0IGF0IGZpcnN0LiAgVGhlbiBJJ2xsIG1lcmdlIGFmdGVyIHRoZSB0ZXN0IHJlc3Qu
-Cj4gPiA+Cj4gPiA+Cj4gPiA+IHRoYW5rcywKPiA+ID4KPiA+ID4gVGFrYXNoaQo+ID4gPgo+ID4g
-Pgo+ID4gPiA+IEkgYW0gdmVyeSB0aGFua2Z1bCBmb3IgYWxsIHlvdXIgaGFyZCB3b3JrISEKPiA+
-ID4gPgo+ID4gPiA+IC1Iw6V2YXJkCj4gPiA+ID4KPiA+ID4gPiBEZW4gZnJlLiA1LiBva3QuIDIw
-MTgga2wuIDEyOjI5IHNrcmV2IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4gPiA+ID4K
-PiA+ID4gPiA+IE9uIEZyaSwgMDUgT2N0IDIwMTggMTI6MTA6NTIgKzAyMDAsCj4gPiA+ID4gPiBI
-w6V2YXJkIHdyb3RlOgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiBJJ2xsIHRyeSB0byBhbnN3ZXIg
-eW91ciBwcmV2aW91cyBlbWFpbCBmaXJzdC4KPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gRXZlcnl0
-aGluZyBzZWVtcyBpZGVudGljYWwgdG8gaG93IGl0IHdhcyBpbiB0aGUgNC4xOC1nZW50b28KPiBr
-ZXJuZWwKPiA+ID4gd2hlbgo+ID4gPiA+ID4gbm90Cj4gPiA+ID4gPiA+IHNldHRpbmcgdGhlIG1v
-ZGVsPWFsYzY2OC1oZWFkc2V0IG9wdGlvbgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiBBbmQgdXNp
-bmcgdGhlIHRyaWNrIHdlIGZvdW5kOgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiAuL2hkYS12ZXJi
-IC9kZXYvc25kL2h3QzBEMCAweDIwIDB4NTAwIDB4YzMKPiA+ID4gPiA+ID4gLi9oZGEtdmVyYiAv
-ZGV2L3NuZC9od0MwRDAgMHgyMCAweDQ0MCAweDAwCj4gPiA+ID4gPgo+ID4gPiA+ID4gT0ssIHRo
-ZW4gdGhlIGZvbGxvd2luZyBwYXRjaCBtYXkgd29yay4gIEdpdmUgaXQgYSB0cnkuCj4gPiA+ID4g
-Pgo+ID4gPiA+ID4KPiA+ID4gPiA+ID4gTWFkZSBpdCBzbyBsb29wYmFjayB3b3JrZWQgcGVyZmVj
-dGx5IGZpbmUgZm9yIGJvdGggZWFycGllY2VzLgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiBPbmUg
-Y3VyaW9zaXR5IGhvd2V2ZXIgKHRoaXMgaXMganVzdCBhIHNtYWxsIHRoaW5nKSBpcyB0aGF0IHRo
-ZQo+ID4gPiAiYmFzZSIgbWljCj4gPiA+ID4gPiA+IGxldmVsIGlzIGZhciBsb3dlciB0aGFuIHdo
-ZW4gdGhlICJNaWMiIG9wdGlvbiBpbiBhbHNhbWl4ZXIgaXMKPiBzZXQgdG8KPiA+ID4gPiA+IDEw
-MC4gSQo+ID4gPiA+ID4gPiBkb24ndCBrbm93IGlmIGl0IHdhcyB0aGlzIHdheSBpbiA0LjE4LWdl
-bnRvbywgYnV0IHRoYXQncyB0aGUgb25seQo+ID4gPiB0aGluZwo+ID4gPiA+ID4gPiB0aGF0IGRv
-ZXNudCBzZWVtIGNvcnJlY3QuCj4gPiA+ID4gPiA+IEhlcmUgaXMgYSBzY3JlZW5zaG90IGV4cGxh
-aW5pbmcgaXQ6Cj4gPiA+ID4gPiA+IGh0dHA6Ly9pLmltZ3VyLmNvbS9kS1BFTFg2LnBuZwo+ID4g
-PiA+ID4KPiA+ID4gPiA+IFRoZSBNaWMgdm9sdW1lIGlzIG9ubHkgZm9yIGFuYWxvZyBsb29wYmFj
-aywgc28gaXQgY2FuIGJlIG5vcm1hbC4KPiA+ID4gPiA+Cj4gPiA+ID4gPgo+ID4gPiA+ID4gVGFr
-YXNoaQo+ID4gPiA+ID4KPiA+ID4gPiA+IC0tLQo+ID4gPiA+ID4gLS0tIGEvc291bmQvcGNpL2hk
-YS9wYXRjaF9yZWFsdGVrLmMKPiA+ID4gPiA+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVh
-bHRlay5jCj4gPiA+ID4gPiBAQCAtNzczOCw2ICs3NzM4LDcgQEAgZW51bSB7Cj4gPiA+ID4gPiAg
-ICAgICAgIEFMQzY2Ml9GSVhVUF9BU1VTX054NTAsCj4gPiA+ID4gPiAgICAgICAgIEFMQzY2OF9G
-SVhVUF9BU1VTX054NTFfSEVBRFNFVF9NT0RFLAo+ID4gPiA+ID4gICAgICAgICBBTEM2NjhfRklY
-VVBfQVNVU19OeDUxLAo+ID4gPiA+ID4gKyAgICAgICBBTEM2NjhfRklYVVBfQVNVU19HNzUxLAo+
-ID4gPiA+ID4gICAgICAgICBBTEM4OTFfRklYVVBfSEVBRFNFVF9NT0RFLAo+ID4gPiA+ID4gICAg
-ICAgICBBTEM4OTFfRklYVVBfREVMTF9NSUNfTk9fUFJFU0VOQ0UsCj4gPiA+ID4gPiAgICAgICAg
-IEFMQzY2Ml9GSVhVUF9BQ0VSX1ZFUklUT04sCj4gPiA+ID4gPiBAQCAtODAwNyw2ICs4MDA4LDE0
-IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwCj4gYWxjNjYyX2ZpeHVwc1tdID0KPiA+
-ID4gewo+ID4gPiA+ID4gICAgICAgICAgICAgICAgIC5jaGFpbmVkID0gdHJ1ZSwKPiA+ID4gPiA+
-ICAgICAgICAgICAgICAgICAuY2hhaW5faWQgPSBBTEM2NjhfRklYVVBfQVNVU19OeDUxX0hFQURT
-RVRfTU9ERSwKPiA+ID4gPiA+ICAgICAgICAgfSwKPiA+ID4gPiA+ICsgICAgICAgW0FMQzY2OF9G
-SVhVUF9BU1VTX0c3NTFdID0gewo+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIC50eXBlID0gSERB
-X0ZJWFVQX1ZFUkJTLAo+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIC52LnZlcmJzID0gKGNvbnN0
-IHN0cnVjdCBoZGFfdmVyYltdKSB7Cj4gPiA+ID4gPiArICAgICAgICAgICAgICAgICAgICAgICB7
-IDB4MjAsIEFDX1ZFUkJfU0VUX0NPRUZfSU5ERVgsIDB4YzMgfSwKPiA+ID4gPiA+ICsgICAgICAg
-ICAgICAgICAgICAgICAgIHsgMHgyMCwgQUNfVkVSQl9TRVRfUFJPQ19DT0VGLCAweDQwMDAgfSwK
-PiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHt9Cj4gPiA+ID4gPiArICAgICAgICAg
-ICAgICAgfSwKPiA+ID4gPiA+ICsgICAgICAgfSwKPiA+ID4gPiA+ICAgICAgICAgW0FMQzg5MV9G
-SVhVUF9IRUFEU0VUX01PREVdID0gewo+ID4gPiA+ID4gICAgICAgICAgICAgICAgIC50eXBlID0g
-SERBX0ZJWFVQX0ZVTkMsCj4gPiA+ID4gPiAgICAgICAgICAgICAgICAgLnYuZnVuYyA9IGFsY19m
-aXh1cF9oZWFkc2V0X21vZGUsCj4gPiA+ID4gPiBAQCAtODA4MCw2ICs4MDg5LDcgQEAgc3RhdGlj
-IGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1aXJrCj4gPiA+IGFsYzY2Ml9maXh1cF90YmxbXQo+ID4g
-PiA+ID4gPSB7Cj4gPiA+ID4gPiAgICAgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDExY2Qs
-ICJBc3VzIE41NTAiLAo+ID4gPiBBTEM2NjJfRklYVVBfQVNVU19OeDUwKSwKPiA+ID4gPiA+ICAg
-ICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTNkZiwgIkFzdXMgTjU1MEpYIiwKPiA+ID4g
-QUxDNjYyX0ZJWFVQX0JBU1NfMUEpLAo+ID4gPiA+ID4gICAgICAgICBTTkRfUENJX1FVSVJLKDB4
-MTA0MywgMHgxMjlkLCAiQXN1cyBONzUwIiwKPiA+ID4gQUxDNjYyX0ZJWFVQX0FTVVNfTng1MCks
-Cj4gPiA+ID4gPiArICAgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDEyZmYsICJBU1VTIEc3
-NTEiLAo+ID4gPiBBTEM2NjhfRklYVVBfQVNVU19HNzUxKSwKPiA+ID4gPiA+ICAgICAgICAgU05E
-X1BDSV9RVUlSSygweDEwNDMsIDB4MTQ3NywgIkFTVVMgTjU2VloiLAo+ID4gPiA+ID4gQUxDNjYy
-X0ZJWFVQX0JBU1NfTU9ERTRfQ0hNQVApLAo+ID4gPiA+ID4gICAgICAgICBTTkRfUENJX1FVSVJL
-KDB4MTA0MywgMHgxNWE3LCAiQVNVUyBVWDUxVlpIIiwKPiA+ID4gPiA+IEFMQzY2Ml9GSVhVUF9C
-QVNTXzE2KSwKPiA+ID4gPiA+ICAgICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTc3ZCwg
-IkFTVVMgTjU1MSIsCj4gPiA+IEFMQzY2OF9GSVhVUF9BU1VTX054NTEpLAo+ID4gPiA+ID4gQEAg
-LTgxODQsNiArODE5NCw3IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX21vZGVsX2ZpeHVwCj4g
-PiA+ID4gPiBhbGM2NjJfZml4dXBfbW9kZWxzW10gPSB7Cj4gPiA+ID4gPiAgICAgICAgIHsuaWQg
-PSBBTEM2NjhfRklYVVBfREVMTF9YUFMxMywgLm5hbWUgPSAiZGVsbC14cHMxMyJ9LAo+ID4gPiA+
-ID4gICAgICAgICB7LmlkID0gQUxDNjYyX0ZJWFVQX0FTVVNfTng1MCwgLm5hbWUgPSAiYXN1cy1u
-eDUwIn0sCj4gPiA+ID4gPiAgICAgICAgIHsuaWQgPSBBTEM2NjhfRklYVVBfQVNVU19OeDUxLCAu
-bmFtZSA9ICJhc3VzLW54NTEifSwKPiA+ID4gPiA+ICsgICAgICAgey5pZCA9IEFMQzY2OF9GSVhV
-UF9BU1VTX0c3NTEsIC5uYW1lID0gImFzdXMtZzc1MSJ9LAo+ID4gPiA+ID4gICAgICAgICB7Lmlk
-ID0gQUxDODkxX0ZJWFVQX0hFQURTRVRfTU9ERSwgLm5hbWUgPQo+ICJhbGM4OTEtaGVhZHNldCJ9
-LAo+ID4gPiA+ID4gICAgICAgICB7LmlkID0gQUxDODkxX0ZJWFVQX0RFTExfTUlDX05PX1BSRVNF
-TkNFLCAubmFtZSA9Cj4gPiA+ID4gPiAiYWxjODkxLWhlYWRzZXQtbXVsdGkifSwKPiA+ID4gPiA+
-ICAgICAgICAgey5pZCA9IEFMQzY2Ml9GSVhVUF9BQ0VSX1ZFUklUT04sIC5uYW1lID0gImFjZXIt
-dmVyaXRvbiJ9LAo+ID4gPiA+ID4KPiA+ID4gPiBbMiAgPHRleHQvaHRtbDsgVVRGLTggKHF1b3Rl
-ZC1wcmludGFibGUpPl0KPiA+ID4gPgo+ID4gPgo+ID4gWzIgIDx0ZXh0L2h0bWw7IFVURi04IChx
-dW90ZWQtcHJpbnRhYmxlKT5dCj4gPgo+Cl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+Hi Scott,
+
+On Oct 4 2018 05:37, Scott Bahling wrote:
+> On Tue, 2018-10-02 at 12:16 +0900, Takashi Sakamoto wrote:
+>> I have an idea to invervene them:
+>>
+>> 1. For control events, in kernel land, driver module detects
+>> changes of set of bitflags for physical controls, then queue
+>> events to tell the change to userspace applications
+>> (e.g. poll(2)). The queued events include information about
+>> changed bitflags (e.g. a shape of u32 data). Userspace
+>> applications execute read(2) then get the bitflags, then parse
+>> it and emit userspace event by ports in ALSA sequencer
+>> subsystem.
+>> The driver and userspace application should pay enough
+>> attention to share the queue. The driver can drop the oldest
+>> queued events if the queue is full.
+>>
+>> 2. For level meter, in kernel land, driver module caches the
+>> recent value. Userspace applications execute ioctl(2) with
+>> unique command (You can see this kind of commands in
+>> 'include/uapi/sound/firwire.h').
+>>
+>> However, as long as I note[2], the purpose of some quadlets in the
+>> image are not still identified:
+>>
+>> "Quadlet 00-15 show control messages. Quadlet 16-23 show analog input
+>> level. Quadlet 24-31 shows digital ADAT input level. Quadlet 32-33
+>> shows digital S/PDIF input level. Quadlet 34-35 is unknown.
+> 
+> On my FW-1884 34/35 is analog level of output 1/2. The "Monitor" level
+> pot (as well as the master fader if enabled) control the level so if
+> they are set at 0, then you will not see any signal on the 34/35.
+> 
+>> Quadlet
+>> 36-43 shows analog output level.
+> 
+> 36-41 = analog outputs 3-8
+> 
+>> The other quadlets are unknown."
+> 
+> 52: shows the current sample rate setting
+>      010101xx = 44.1k
+>      020102xx = 48k
+>      810181xx = 88.2k
+>      820182xx = 96k
+> 
+> 52: Byte 1 shows the current clock source
+>      0x01 = Internal
+>      0x02 = Word Clock
+>      0x03 = Digital In
+>      0x04 = ADAT
+> 
+> 54-55 appears to be the level of the internal "Monitor Mix".
+> 57-58 appears to be the level of the stereo mix of the analog inputs
+> 
+> 59: Byte 1 indicates what is routed to the Monitor Mix
+>      0x01 = PCM Stream from computer
+>      0x02 = Analog Inputs
+>      0x03 = Both
+> 
+>> We need further investigation to clear the unknown fields as much as
+>> possible to add more codes in ALSA kernel land.
+> 
+> Above is as far as I have gotten with the unknown fields.
+> 
+> On the asynchronous side, I have mapped out the LED codes to the LEDs
+> on the FW-1884 and discovered the registers for controlling the faders.
+
+Thanks for your report. I have additional information from today
+investigation. In detail, please read the end of this message.
+
+I think it reasonable to take kernel-land driver emits events for
+quadlet 05-15 to userspace applications, then let SndTscm object in
+libhinawa. (Extra care is required for the value of monitor-knob).
+Additionally, SndTscm object produces API to retrieve current value
+of fader, knob and so on.
+
+Anyway, initial value should be reported to userspace, mmm...
+
+======== 8< --------
+
+00: fader2 fader1
+01: fader4 fader3
+02: fader6 fader5
+03: fader8 fader7
+04: solo-knob fader9(=master)
+
+The value of fader is between 0x0000 and 0x03ff (2byte).
+The value of solo-knob (FW-1884 only) is between 0x0000 and
+0x03ff (2byte).
+
+05: op-mode+fader-sense monitor-knob
+
+op-mode is 7 bits in MSB side.
+  - 0x00: computer mode
+  - 0xfe: midi-ctl/mon-mix modes
+
+The value of fader-sense consists of bitflags in which
+a bit becomes zero during user touches corresponding fader.
+This is next 9 bits in MSB side.
+  - 0x0100: for fader 9 (=master)
+  - 0x0080: for fader 8
+    ...
+  - 0x0001: for fader 1
+
+The value of monitor-knob is between 0x0000 and 0x03ff.
+But the lowest bits becomes frequently without handy operation.
+
+06: bitflags
+07: bitflags
+08: bitflags
+09: bitflags
+
+These bitflags consists two states:
+  - During corresponding button is pressed, bit becomes zero.
+  - some sets of 2 bits represent current value of corresponding
+    knob.
+The position is largely different depending on FW-1884/FW-1082.
+
+10: unknown unknown
+11: unknown unknown
+12: unknown unknown
+13: unknown unknown
+14: unknown unknown
+
+15: dial-value unknown
+
+The value of dial is between 0x0000 and 0xffff, accumulated clockwise.
+At overflow it resets to 0x0000.
+
+16: analog-in-1
+17: analog-in-2
+18: analog-in-3
+19: analog-in-4
+20: analog-in-5
+21: analog-in-6
+22: analog-in-7
+23: analog-in-8
+24: adat-in-1
+25: adat-in-2
+26: adat-in-3
+27: adat-in-4
+28: adat-in-5
+29: adat-in-6
+30: adat-in-7
+31: adat-in-8
+32: s/pdif-in-1
+33: s/pdif-in-2
+34: analog-out-1
+35: analog-out-2
+36: analog-out-3
+37: analog-out-4
+38: analog-out-5
+39: analog-out-6
+40: analog-out-7
+41: analog-out-8
+42: adat-out-1
+43: adat-out-2
+44: adat-out-3
+45: adat-out-4
+46: adat-out-5
+47: adat-out-6
+48: adat-out-7
+49: adat-out-8
+
+The value of level is between 0x00000000 and 0x7fffff00.
+
+50: (unknown)
+51: (unknown)
+
+I expect them for spdif-out-1/2 but actually they're not.
+
+52: clock-status clock-config
+
+As Scott investigated, but configuration of clock source
+is not necessarily effective in bits of clock-status.
+
+53: (unknown)
+54: monitor-mix-1 (enabled at INPUT/BOTH modes)
+55: monitor-mix-2 (enabled at INPUT/BOTH modes)
+56: (unknown)
+57: analog-in-mix-1
+58: analog-in-mix-2
+
+59: 0:COMPUTER, 1:INPUTS, 2:BOTH
+
+At monitor mix mode, the above selections are available.
+
+60: (unknown)
+61: (unknown)
+62: (unknown)
+63: (unknown)
+
+======== 8< --------
+
+Thanks
+
+Takashi Sakamoto
