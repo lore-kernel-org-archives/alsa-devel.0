@@ -1,7 +1,7 @@
-From: Scott Bahling <sbahling@suse.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 Subject: Re: Controlling the Tascam FW-1884
-Date: Sun, 07 Oct 2018 13:32:54 +0200
-Message-ID: <9a365a25cc65997a4d918129ebd437787e861774.camel@suse.com>
+Date: Sun, 7 Oct 2018 23:11:11 +0900
+Message-ID: <fed5ab3a-c39a-4de9-6802-c064a33140eb@sakamocchi.jp>
 References: <9cec059e1ff1a558f21a3f0729c5a69a3d506573.camel@suse.com>
  <0e469670-0520-5953-230b-8d2da5e4c357@sakamocchi.jp>
  <985b1f6dc5b0af2aae049e0b6fcf976ab400d34d.camel@suse.com>
@@ -12,16 +12,18 @@ References: <9cec059e1ff1a558f21a3f0729c5a69a3d506573.camel@suse.com>
  <47f66c7d-4337-52da-72da-cdb3f0638dc4@sakamocchi.jp>
  <d63527a1ab830c50c621664946ad9eafdb37d578.camel@suse.com>
  <f4537970-775e-6480-acc4-6b5dd050d597@sakamocchi.jp>
- <4e0b4dc88db65ddd3055f3266af509fd439472c5.camel@suse.com>
- <bc5df36b-f9ed-f39d-381f-13fc6bc85f16@sakamocchi.jp>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx1.suse.de (mx2.suse.de [195.135.220.15])
- by alsa0.perex.cz (Postfix) with ESMTP id 81647267791
- for <alsa-devel@alsa-project.org>; Sun,  7 Oct 2018 13:32:56 +0200 (CEST)
-In-Reply-To: <bc5df36b-f9ed-f39d-381f-13fc6bc85f16@sakamocchi.jp>
+Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com
+ [209.85.215.181])
+ by alsa0.perex.cz (Postfix) with ESMTP id 54D3026783D
+ for <alsa-devel@alsa-project.org>; Sun,  7 Oct 2018 16:11:16 +0200 (CEST)
+Received: by mail-pg1-f181.google.com with SMTP id f18-v6so6694529pgv.3
+ for <alsa-devel@alsa-project.org>; Sun, 07 Oct 2018 07:11:15 -0700 (PDT)
+In-Reply-To: <f4537970-775e-6480-acc4-6b5dd050d597@sakamocchi.jp>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -31,357 +33,115 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: sbahling@suse.com
 Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-Hi Takashi,
+Hi Scott,
 
-On Sat, 2018-10-06 at 18:07 +0900, Takashi Sakamoto wrote:
-> Hi Scott,
-
+On Oct 2 2018 12:16, Takashi Sakamoto wrote:
+> I have an idea to invervene them:
 > 
-> Thanks for your report. I have additional information from today
-> investigation. In detail, please read the end of this message.
-
-Your findings match mine.
-
-> I think it reasonable to take kernel-land driver emits events for
-> quadlet 05-15 to userspace applications, then let SndTscm object in
-> libhinawa. (Extra care is required for the value of monitor-knob).
-> Additionally, SndTscm object produces API to retrieve current value
-> of fader, knob and so on.
+> 1. For control events, in kernel land, driver module detects
+> changes of set of bitflags for physical controls, then queue
+> events to tell the change to userspace applications
+> (e.g. poll(2)). The queued events include information about
+> changed bitflags (e.g. a shape of u32 data). Userspace
+> applications execute read(2) then get the bitflags, then parse
+> it and emit userspace event by ports in ALSA sequencer
+> subsystem.
+> The driver and userspace application should pay enough
+> attention to share the queue. The driver can drop the oldest
+> queued events if the queue is full.
 > 
-> Anyway, initial value should be reported to userspace, mmm...
-> 
-> ======== 8< --------
-> 
-> 00: fader2 fader1
-> 01: fader4 fader3
-> 02: fader6 fader5
-> 03: fader8 fader7
-> 04: solo-knob fader9(=master)
-> 
-> The value of fader is between 0x0000 and 0x03ff (2byte).
-> The value of solo-knob (FW-1884 only) is between 0x0000 and
-> 0x03ff (2byte).
-> 
-> 05: op-mode+fader-sense monitor-knob
-> 
-> op-mode is 7 bits in MSB side.
->   - 0x00: computer mode
->   - 0xfe: midi-ctl/mon-mix modes
-> 
-> The value of fader-sense consists of bitflags in which
-> a bit becomes zero during user touches corresponding fader.
-> This is next 9 bits in MSB side.
->   - 0x0100: for fader 9 (=master)
->   - 0x0080: for fader 8
->     ...
->   - 0x0001: for fader 1
-> 
-> The value of monitor-knob is between 0x0000 and 0x03ff.
-> But the lowest bits becomes frequently without handy operation.
+> 2. For level meter, in kernel land, driver module caches the
+> recent value. Userspace applications execute ioctl(2) with
+> unique command (You can see this kind of commands in
+> 'include/uapi/sound/firwire.h').
 
-I notice the same unstable low bits with the Solo knob as well.
+I prepare two remote branch as 'topic/tascam-userspace-take2' for kernel
+driver[1] and libhinawa[2].
 
-> 06: bitflags
-> 07: bitflags
-> 08: bitflags
-> 09: bitflags
-> 
-> These bitflags consists two states:
->   - During corresponding button is pressed, bit becomes zero.
->   - some sets of 2 bits represent current value of corresponding
->     knob.
+The patches for kernel driver adds two features below to firewire-tascam 
+module:
+  - SNDRV_FIREWIRE_IOCTL_TASCAM_STATUS ioctl command
+  - 'struct snd_firewire_event_tascam_ctl' event notification
 
-The 2 bits are actually the raw encoder bits from the knobs. This is a
-"quadrature output" [1] showing the velocity and direction of the
-encoder as it spins.  This bits can also be unstable and fluctuate when
-there is no movement depending on the position of the encoder knob. If
-used, some form of filtering would need to be done to avoid triggering
-false updates.
+The patches for libhinawa adds two features below for g-i modules:
+  - hinawa_snd_tscm_get_status() method
+  - 'control' GObject signal
 
-The FW-1884 also tracks the absolute position of the encoders as 16 bit
-values similar to the dial-value. They are tracked at quadlets 10-15.
+For example[3]:
 
-> The position is largely different depending on FW-1884/FW-1082.
+```
+$ cat test.py
+#!/usr/bin/env python3
 
-I have all the buttons of the FW-1884 mapped out to the bitflags. See
-the end of this email.
+from sys import exit
+from time import sleep
 
-> 10: unknown unknown
-> 11: unknown unknown
-> 12: unknown unknown
-> 13: unknown unknown
-> 14: unknown unknown
+import gi
+gi.require_version('Hinawa', '2.0')
+from gi.repository import Hinawa
 
-10: encoder2 encoder1
-11: encoder4 encoder3
-12: encoder6 encoder5
-13: encoder8 encoder7
-14: Freq     Gain
+unit = Hinawa.SndTscm()
+unit.open('/dev/snd/hwC2D0')
+unit.listen()
 
-> 15: dial-value unknown
+req = Hinawa.FwReq()
 
-15: dial-value Q
+def handle_control(self, index, flags):
+     print('{0:02d}: {1:08x}'.format(index, flags))
+     # data = bytearray(4)
+     # You can check the flags and bright LED with proper values
+     # in the data array.
+     # print(req.write(self, 0xffff00000404, data))
 
-> The value of dial is between 0x0000 and 0xffff, accumulated clockwise.
-> At overflow it resets to 0x0000.
-> 
-> 16: analog-in-1
-> 17: analog-in-2
-> 18: analog-in-3
-> 19: analog-in-4
-> 20: analog-in-5
-> 21: analog-in-6
-> 22: analog-in-7
-> 23: analog-in-8
-> 24: adat-in-1
-> 25: adat-in-2
-> 26: adat-in-3
-> 27: adat-in-4
-> 28: adat-in-5
-> 29: adat-in-6
-> 30: adat-in-7
-> 31: adat-in-8
-> 32: s/pdif-in-1
-> 33: s/pdif-in-2
-> 34: analog-out-1
-> 35: analog-out-2
-> 36: analog-out-3
-> 37: analog-out-4
-> 38: analog-out-5
-> 39: analog-out-6
-> 40: analog-out-7
-> 41: analog-out-8
-> 42: adat-out-1
-> 43: adat-out-2
-> 44: adat-out-3
-> 45: adat-out-4
-> 46: adat-out-5
-> 47: adat-out-6
-> 48: adat-out-7
-> 49: adat-out-8
-> 
-> The value of level is between 0x00000000 and 0x7fffff00.
-> 
-> 50: (unknown)
-> 51: (unknown)
-> 
-> I expect them for spdif-out-1/2 but actually they're not.
-> 
-> 52: clock-status clock-config
-> 
-> As Scott investigated, but configuration of clock source
-> is not necessarily effective in bits of clock-status.
-> 
-> 53: (unknown)
-> 54: monitor-mix-1 (enabled at INPUT/BOTH modes)
-> 55: monitor-mix-2 (enabled at INPUT/BOTH modes)
-> 56: (unknown)
-> 57: analog-in-mix-1
-> 58: analog-in-mix-2
-> 
-> 59: 0:COMPUTER, 1:INPUTS, 2:BOTH
-> 
-> At monitor mix mode, the above selections are available.
-> 
-> 60: (unknown)
-> 61: (unknown)
-> 62: (unknown)
-> 63: (unknown)
-> 
-> ======== 8< --------
+unit.connect('control', handle_control)
 
-Button Mapping:
+while (True):
+   msgs = unit.get_status()
+   for i in range(len(msgs) // 2):
+       left = i
+       right = i + len(msgs) // 2
+       print('{0:02d}: {1:08x}, {2:02d}: {3:08x}'.format(left, 
+msgs[left], right, msgs[right]))
+   sleep(0.1)
+```
 
-Quadlet 6
-=========
+When running any scripts with your local build of libhinawa,
+it's useful to set LD_LIBRARY_PATH/GI_TYPELIB_PATH properly.
 
-Bit Button
---- --------------
-  1 unknown
-  2 unknown 
-  3 unknown
-  4 unknown
+```
+$ export 
+LD_LIBRARY_PATH="/home/username/git/libhinawa/build/src:${LD_LIBRARY_PATH}"
+$ export 
+GI_TYPELIB_PATH="/home/username/git/libhinawa/build/src:${GI_TYPELIB_PATH}"
+$ ./sample.py
+...
+```
 
-  5 unknown
-  6 unknown
-  7 unknown
-  8 unknown
+When starting packet streaming and operating control surface, you can
+see dump with index and bitflags additionally to status dump.
 
-  9 unknown
- 10 unknown
- 11 unknown
- 12 unknown
+```
+...
+06: fffeffff
+06: ffffffff
+06: feffffff
+...
+```
 
- 13 unknown
- 14 unknown
- 15 unknown
- 16 unknown
+As I told, kernel driver emits events corresponding to quadlet 05-15.
+If there's insufficiency, please inform it to me. If all things look
+well, I'll submit patches for next merge window but .
 
- 17 Sel Channel 1
- 18 Sel Channel 2
- 19 Sel Channel 3
- 20 Sel Channel 4
-
- 21 Sel Channel 5
- 22 Sel Channel 6
- 23 Sel Channel 7
- 24 Sel Channel 8
-
- 25 Solo Channel 1
- 26 Solo Channel 2
- 27 Solo Channel 3
- 28 Solo Channel 4
-
- 29 Solo Channel 5
- 30 Solo Channel 6
- 31 Solo Channel 7
- 32 Solo Channel 8
+[1] 
+https://github.com/takaswie/snd-firewire-improve/tree/topic/tascam-userspace-take2
+[2] https://github.com/takaswie/libhinawa/tree/topic/tascam-userspace-take2
+[3] https://gist.github.com/takaswie/669fd4254c7b9fd631762fc61ac931f5
 
 
-Quadlet 7
-=========
+Thanks
 
-Bit Button
---- --------------
-  1 Mute Channel 1
-  2 Mute Channel 2
-  3 Mute Channel 3
-  4 Mute Channel 4
-
-  5 Mute Channel 5
-  6 Mute Channel 6
-  7 Mute Channel 7
-  8 Mute Channel 8
-
-  9 Aux5
- 10 Aux7
- 11 Aux6
- 12 Aux8
-
- 13 unknown
- 14 unknown
- 15 unknown
- 16 unknown
-
- 17 Flip
- 18 Aux1
- 19 Aux3
- 20 Pan
-
- 21 Aux2
- 22 Aux4
- 23 unknown 
- 24 unknown 
-
- 25 Control Panel
- 26 Save
- 27 All Save
- 28 Marker
-
- 29 Cut
- 30 Copy
- 31 Alt
- 32 Shift
-
-
-Quadlet 8
-=========
-
-Bit Button
---- --------------
-  1 Revert
-  2 Clr Solo
-  3 Loop
-  4 Del
-
-  5 Paste
-  6 Undo
-  7 Ctrl
-  8 unknown
-
-  9 Foot Switch
- 10 unknown
- 11 unknown
- 12 unknown
-
- 13 unknown
- 14 unknown
- 15 unknown
- 16 unknown
-
- 17 unknown
- 18 unknown
- 19 unknown
- 20 unknown
-
- 21 unknown
- 22 unknown
- 23 unknown
- 24 unknown 
-
- 25 unknown
- 26 unknown
- 27 unknown
- 28 unknown
-
- 29 Clock
- 30 Route
- 31 unknown
- 32 unknown
-
-
-Quadlet 9
-=========
-
-Bit Button
---- --------------
-  1 F7
-  2 F8
-  3 F9
-  4 F10
-
-  5 Read
-  6 Wrt
-  7 Tch
-  8 Latch
-
-  9 High
- 10 Hi-Mid
- 11 Hi-Low
- 12 Low
-
- 13 Up
- 14 Left
- 15 Down
- 16 Right
-
- 17 Rec
- 18 Nudge Left
- 19 Nudge Right
- 20 Bank Left
-
- 21 Bank Right
- 22 Locate Left
- 23 Locate Right
- 24 Shtl
-
- 25 Set
- 26 In
- 27 Out
- 28 REW
-
- 29 F.FWD
- 30 STOP
- 31 PLAY
- 32 REC
-
-===============
-
-
-[1] https://en.wikipedia.org/wiki/Incremental_encoder
-
--Scott
+Takashi Sakamoto
