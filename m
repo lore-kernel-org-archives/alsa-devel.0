@@ -1,59 +1,23 @@
-From: =?UTF-8?Q?H=C3=A5vard?= <hovardslill@gmail.com>
-Subject: Re: Microphone detected,
- but no output for all ASUS G751xx with ALC668 chipset
-Date: Sat, 6 Oct 2018 20:31:28 +0200
-Message-ID: <CANweNF7=KtniM9dvLfVoXC1wGZ2Zn4M1ue19=nCHjb_rko8paA@mail.gmail.com>
-References: <CANweNF44RJMWB-eDa9AkLKV87DVppqjBPVHdQf2ycJ4V=Gga3A@mail.gmail.com>
- <s5hin3d2ik0.wl-tiwai@suse.de>
- <CANweNF4c9t6KtnQMv6i9=-nJ4Sg9r4Ai10KtG_Cdxqm404QaUg@mail.gmail.com>
- <s5hbm94ou29.wl-tiwai@suse.de>
- <CANweNF5PpzufjnRQk2gpqw1+kU8TK86RAj-topURG-FAHeYxcA@mail.gmail.com>
- <s5h7ejrq5dd.wl-tiwai@suse.de>
- <CANweNF5kcSDAxPXDqnyAEvh9bwYg61_F4XhaLjGrpEXZnvvNew@mail.gmail.com>
- <CANweNF7d8Z7qFw2cMkUH4F4r6P=Ms-=WVbFYrMX+O+uZkV4cwg@mail.gmail.com>
- <CAM8Agx2QibKCdPg5FLDqgcP-O7PwPN1L4iNT=6Ae53T5=d=+uw@mail.gmail.com>
- <CANweNF5fjLyfEyE+gCYugpfW_+LP2HYFMPfuWi_O0nxizFLdXg@mail.gmail.com>
- <CAM8Agx0Y+7c_ZQrwzX6R0yRNHTeHoMPAt6zLtU9VKqHAo42TeQ@mail.gmail.com>
- <CANweNF50zpunkO4XOeZh_SWsceeQ5SRWdYAXQ21c69oGfFGzhA@mail.gmail.com>
- <CANweNF718RNadfxV9+Du0VZ4Cx-ufG0ehN1pzP09z41aXUA0Vw@mail.gmail.com>
- <CAM8Agx0H=WdExmbPmtpvYD7hgzNS_jQVfyQy_g8W+yXzqu_rSQ@mail.gmail.com>
- <CANweNF4dxH_abm=sFNEyx-V_05Wo_ZYdMZ_juDMq2imBbBGUhg@mail.gmail.com>
- <CANweNF5izh93N_RS04wO2eihYnx2-_iBjtFw-_1O60027H9M6g@mail.gmail.com>
- <CAM8Agx1Z2KjeSx1otGM8Y=MC=r=HzwNiZzwhuNpKa2EVHkKS=g@mail.gmail.com>
- <CAM8Agx2HAApKVa-ZE3qJ58_h=VX4jX2zTvSqd4HEd6Zd-g1XHg@mail.gmail.com>
- <CAM8Agx1X9xr0LwUcxXZ8w0i+9DGC+gT82p6ocNbQOgJwD9UOcA@mail.gmail.com>
- <CANweNF4Q9CE5-fO-WJmX9pmaZTOt8U6A7Ey6ELEEhdskrOWw9g@mail.gmail.com>
- <CANweNF5LYqC04366UZ0LMo_F8Rc4B4+p9it500eqWauzHAdwHA@mail.gmail.com>
- <CANweNF7eQ88J7+2Xm_nyUwPD5TEUD2U1HgnDtBbGaYWbKeEvBg@mail.gmail.com>
- <CAM8Agx30z8SDGvQ0L701WHQiAcV_PwEfjSnc07p-_n5CpyuGfw@mail.gmail.com>
- <CANweNF48R5AxbSQwqRo4iPObG9XtZiP6zHHT75i7S5i=nfsf9w@mail.gmail.com>
- <CANweNF79L5Y3cdc7FzeKDMObBhQ=aFMKJu6RAfUrPVu8y3YB9w@mail.gmail.com>
- <s5hmusm4drz.wl-tiwai@suse.de>
- <CANweNF4k8e2LWHeroDtw8ODT=5rT17KPfxkmvtTQ2xQPTG2VYQ@mail.gmail.com>
- <CANweNF7JwXT-Ob9Dq5p8o_LLb+xO3i+Mir-r4nuN_MP+OOwLkQ@mail.gmail.com>
- <s5h1s95l7y1.wl-tiwai@suse.de>
- <CANweNF4++BufWg1mZ3mk6LSY85dO3dWOhsqsz+ZgahbK1RP-=g@mail.gmail.com>
- <CANweNF5zYXPQZi01Mh6BNSz65pnOukwOqdEN4MuVSgiOQ+L=kA@mail.gmail.com>
- <s5hy3bc677n.wl-tiwai@suse.de>
- <CANweNF6BD3LtXLMU77JLjJc6ucZqNL=9kYL38s2gRZvDgtDqjQ@mail.gmail.com>
- <s5hva6g660d.wl-tiwai@suse.de>
- <CANweNF5goTDUXnkLaeS9D7X24u4BvU68pOB0gxUXjVggsckLVg@mail.gmail.com>
- <s5hsh1k5zo7.wl-tiwai@suse.de>
- <CANweNF6FsrfzcEFLMKPbmvTF7qdYWKAaMSgyumkF+Abv483Y9w@mail.gmail.com>
- <s5hwoqvimyh.wl-tiwai@suse.de>
- <CANweNF5J+6cGkLd4m0dAxzb1usOs5MfUf8JQ1WQUEePEWZMKNg@mail.gmail.com>
- <s5hsh1ji3f0.wl-tiwai@suse.de>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: [PATCH][RFC][alsa-utils 5/9] alsactl: use link
+ list to maintain source of events
+Date: Sun, 7 Oct 2018 12:04:36 +0900
+Message-ID: <c878435f-ec5c-5136-d1f0-9288aff38b33@sakamocchi.jp>
+References: <20181005144729.21388-1-o-takashi@sakamocchi.jp>
+ <20181005144729.21388-6-o-takashi@sakamocchi.jp>
+ <ebd92686-31d6-1c2b-42bc-5e9dd9679cf6@perex.cz>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-yw1-f43.google.com (mail-yw1-f43.google.com
- [209.85.161.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 07B1C2678F6
- for <alsa-devel@alsa-project.org>; Sat,  6 Oct 2018 20:31:42 +0200 (CEST)
-Received: by mail-yw1-f43.google.com with SMTP id d126-v6so6571603ywa.5
- for <alsa-devel@alsa-project.org>; Sat, 06 Oct 2018 11:31:42 -0700 (PDT)
-In-Reply-To: <s5hsh1ji3f0.wl-tiwai@suse.de>
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
+ [209.85.214.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 79384267783
+ for <alsa-devel@alsa-project.org>; Sun,  7 Oct 2018 05:04:41 +0200 (CEST)
+Received: by mail-pl1-f193.google.com with SMTP id v5-v6so8511891plz.13
+ for <alsa-devel@alsa-project.org>; Sat, 06 Oct 2018 20:04:41 -0700 (PDT)
+In-Reply-To: <ebd92686-31d6-1c2b-42bc-5e9dd9679cf6@perex.cz>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -63,132 +27,36 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: tiwai@suse.de
-Cc: Connor McAdams <conmanx360@gmail.com>, alsa-devel@alsa-project.org
+To: Jaroslav Kysela <perex@perex.cz>, tiwai@suse.de, thomas@coldfix.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-T0shCgpUaGFuayB5b3UgdmVyeSBtdWNoIGZvciBhbGwgdGhhdCB5b3UgaGF2ZSBkb25lISEKCkkg
-YW0gbG9va2luZyBmb3J3YXJkIHRvIHNlZWluZyB0aGlzIGluIChwcm9iYWJseSkgdGhlIDQuMjAg
-a2VybmVsIQoKLUjDpXZhcmQKCkRlbiBsw7hyLiA2LiBva3QuIDIwMTgga2wuIDE1OjU3IHNrcmV2
-IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cgo+IE9uIFNhdCwgMDYgT2N0IDIwMTggMTA6
-MjA6MzcgKzAyMDAsCj4gSMOldmFyZCB3cm90ZToKPiA+Cj4gPiBPayEKPiA+Cj4gPiBUaGFuayB5
-b3UgdmVyeSBtdWNoIQo+ID4KPiA+IFNvIGZvciB0aGVtIHRvIHdvcmssIHRoZXkgaGF2ZSB0byBz
-ZXQgbW9kZWw9YXN1cy1nNzUxID8KPgo+IFRoZXkgY2FuIHRlc3QgaW4gdGhhdCB3YXksIGFuZCB0
-aGV5IG5lZWQgdG8gcmVwb3J0IHRoZWlyIFBDSSBTU0lEcyBmb3IKPiBhcHBseWluZyB0aGUgcXVp
-cmsgYXMgZGVmYXVsdC4KPgo+Cj4gVGFrYXNoaQo+Cj4gPiBTb3JyeSBmb3IgYWxsIHRoZXNlIHF1
-ZXN0aW9ucywgYnV0IEkgd2FudCB0byByZXNwb25kIHRvIHRoZXNlIHBlb3BsZSBhcwo+ID4gZmFz
-dCBhcyBwb3NzaWJsZSEKPiA+Cj4gPiAtSMOldmFyZAo+ID4KPiA+IERlbiBsw7hyLiA2LiBva3Qu
-IDIwMTgga2wuIDA4OjU1IHNrcmV2IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4gPgo+
-ID4gPiBPbiBGcmksIDA1IE9jdCAyMDE4IDIxOjU2OjIwICswMjAwLAo+ID4gPiBIw6V2YXJkIHdy
-b3RlOgo+ID4gPiA+Cj4gPiA+ID4gSSBjb3VsZG4ndCBnZXQgdGhlIHBhdGNoIGluc3RhbGxlZCBh
-dXRvbWF0aWNhbGx5LCBzbyBJIGFkZGVkIHRoZQo+IGNoYW5nZWQKPiA+ID4gPiBjb2RlIG15c2Vs
-Zi4KPiA+ID4gPgo+ID4gPiA+IEV2ZXJ5dGhpbmcgd29ya3MgZmluZSBhbmQgYXMgZXhwZWN0ZWQg
-cmlnaHQgYWZ0ZXIgcmVib290ISA6KSBKdXN0Cj4gbGlrZSB3ZQo+ID4gPiA+IHdhbnQhCj4gPiA+
-ID4KPiA+ID4gPiBJIGRvbid0IHVuZGVyc3RhbmQuIFNvIHRoaXMgd29uJ3Qgd29yayBmb3Igb3Ro
-ZXIgRzc1MXh4IHVzZXJzPyBPciBkbwo+IHRoZXkKPiA+ID4gPiBoYXZlIHRvIHNldCBtb2RlbD1h
-c3VzLWc3NTE/IEknbSB0aGlua2luZyBvZiByZWFjaGluZyBvdXQgYW5kIHNheWluZwo+IGl0Cj4g
-PiA+ID4gd2lsbCBiZSBmaXhlZCBpbiA0LjE5Lgo+ID4gPgo+ID4gPiBXZSBuZWVkIHRvIGtub3cg
-dGhlIGV4YWN0IFBDSSBTU0lEcyBmb3IgdGhlIG1hdGNoaW5nIG1vZGVscy4KPiA+ID4gWW91cnMg
-aXMgMTA0MzoxMmZmLCBhbmQgb3RoZXJzIG1pZ2h0IGJlIGRpZmZlcmVudC4gIFRoZXkgY2FuIGJl
-IGFkZGVkCj4gPiA+IGV2ZW50dWFsbHkgdG8gdGhlIHF1aXJrIHRhYmxlIGluIHRoZSBzYW1lIHdh
-eSBvbmNlIHdoZW4gd2UgYXJlCj4gPiA+IGluZm9ybWVkLgo+ID4gPgo+ID4gPiBTaW5jZSBpdCdz
-IGFscmVhZHkgYSB2ZXJ5IGxhdGUgc3RhZ2UgZm9yIDQuMTksIHRoaXMgZml4IHdpbGwgZ28gaW50
-bwo+ID4gPiA0LjIwIGF0IGVhcmxpZXN0Lgo+ID4gPgo+ID4gPgo+ID4gPiB0aGFua3MsCj4gPiA+
-Cj4gPiA+IFRha2FzaGkKPiA+ID4KPiA+ID4gPgo+ID4gPiA+IFRoYW5rIHlvdSEKPiA+ID4gPgo+
-ID4gPiA+IC1Iw6V2YXJkCj4gPiA+ID4KPiA+ID4gPiBEZW4gZnJlLiA1LiBva3QuIDIwMTgga2wu
-IDE0OjQ2IHNrcmV2IFRha2FzaGkgSXdhaSA8dGl3YWlAc3VzZS5kZT46Cj4gPiA+ID4KPiA+ID4g
-PiA+IE9uIEZyaSwgMDUgT2N0IDIwMTggMTI6MzE6MzcgKzAyMDAsCj4gPiA+ID4gPiBIw6V2YXJk
-IHdyb3RlOgo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiBUaGFuayB5b3Ugc28gbXVjaCEKPiA+ID4g
-PiA+ID4KPiA+ID4gPiA+ID4gV2lsbCB0aGlzIHdvcmsgZm9yIGFsbCBHNzUxIG1vZGVscywgYW5k
-IHdpbGwgdGhpcyBiZSBpbiB0aGUgNC4xOQo+ID4gPiBrZXJuZWw/Cj4gPiA+ID4gPgo+ID4gPiA+
-ID4gSXQncyBvbmx5IGZvciB5b3VycyAodGhlIG1hdGNoaW5nIFBDSSBTU0lEKS4gIEFuZCBpdCB3
-aWxsIGJlCj4gaW5jbHVkZWQKPiA+ID4gPiA+IG9ubHkgd2hlbiB5b3UgdGVzdCB0aGUgcGF0Y2gg
-YW5kIGNvbmZpcm0gaXQgd29ya2luZy4gIFNvLCBwbGVhc2UKPiB0ZXN0Cj4gPiA+ID4gPiBpdCBh
-dCBmaXJzdC4gIFRoZW4gSSdsbCBtZXJnZSBhZnRlciB0aGUgdGVzdCByZXN0Lgo+ID4gPiA+ID4K
-PiA+ID4gPiA+Cj4gPiA+ID4gPiB0aGFua3MsCj4gPiA+ID4gPgo+ID4gPiA+ID4gVGFrYXNoaQo+
-ID4gPiA+ID4KPiA+ID4gPiA+Cj4gPiA+ID4gPiA+IEkgYW0gdmVyeSB0aGFua2Z1bCBmb3IgYWxs
-IHlvdXIgaGFyZCB3b3JrISEKPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gLUjDpXZhcmQKPiA+ID4g
-PiA+ID4KPiA+ID4gPiA+ID4gRGVuIGZyZS4gNS4gb2t0LiAyMDE4IGtsLiAxMjoyOSBza3JldiBU
-YWthc2hpIEl3YWkgPAo+IHRpd2FpQHN1c2UuZGU+Ogo+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+
-IE9uIEZyaSwgMDUgT2N0IDIwMTggMTI6MTA6NTIgKzAyMDAsCj4gPiA+ID4gPiA+ID4gSMOldmFy
-ZCB3cm90ZToKPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+ID4gPiBJJ2xsIHRyeSB0byBhbnN3
-ZXIgeW91ciBwcmV2aW91cyBlbWFpbCBmaXJzdC4KPiA+ID4gPiA+ID4gPiA+Cj4gPiA+ID4gPiA+
-ID4gPiBFdmVyeXRoaW5nIHNlZW1zIGlkZW50aWNhbCB0byBob3cgaXQgd2FzIGluIHRoZSA0LjE4
-LWdlbnRvbwo+ID4gPiBrZXJuZWwKPiA+ID4gPiA+IHdoZW4KPiA+ID4gPiA+ID4gPiBub3QKPiA+
-ID4gPiA+ID4gPiA+IHNldHRpbmcgdGhlIG1vZGVsPWFsYzY2OC1oZWFkc2V0IG9wdGlvbgo+ID4g
-PiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+IEFuZCB1c2luZyB0aGUgdHJpY2sgd2UgZm91bmQ6
-Cj4gPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+ID4gLi9oZGEtdmVyYiAvZGV2L3NuZC9od0Mw
-RDAgMHgyMCAweDUwMCAweGMzCj4gPiA+ID4gPiA+ID4gPiAuL2hkYS12ZXJiIC9kZXYvc25kL2h3
-QzBEMCAweDIwIDB4NDQwIDB4MDAKPiA+ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+IE9LLCB0aGVu
-IHRoZSBmb2xsb3dpbmcgcGF0Y2ggbWF5IHdvcmsuICBHaXZlIGl0IGEgdHJ5Lgo+ID4gPiA+ID4g
-PiA+Cj4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiA+IE1hZGUgaXQgc28gbG9vcGJhY2sgd29y
-a2VkIHBlcmZlY3RseSBmaW5lIGZvciBib3RoIGVhcnBpZWNlcy4KPiA+ID4gPiA+ID4gPiA+Cj4g
-PiA+ID4gPiA+ID4gPiBPbmUgY3VyaW9zaXR5IGhvd2V2ZXIgKHRoaXMgaXMganVzdCBhIHNtYWxs
-IHRoaW5nKSBpcyB0aGF0Cj4gdGhlCj4gPiA+ID4gPiAiYmFzZSIgbWljCj4gPiA+ID4gPiA+ID4g
-PiBsZXZlbCBpcyBmYXIgbG93ZXIgdGhhbiB3aGVuIHRoZSAiTWljIiBvcHRpb24gaW4gYWxzYW1p
-eGVyIGlzCj4gPiA+IHNldCB0bwo+ID4gPiA+ID4gPiA+IDEwMC4gSQo+ID4gPiA+ID4gPiA+ID4g
-ZG9uJ3Qga25vdyBpZiBpdCB3YXMgdGhpcyB3YXkgaW4gNC4xOC1nZW50b28sIGJ1dCB0aGF0J3Mg
-dGhlCj4gb25seQo+ID4gPiA+ID4gdGhpbmcKPiA+ID4gPiA+ID4gPiA+IHRoYXQgZG9lc250IHNl
-ZW0gY29ycmVjdC4KPiA+ID4gPiA+ID4gPiA+IEhlcmUgaXMgYSBzY3JlZW5zaG90IGV4cGxhaW5p
-bmcgaXQ6Cj4gPiA+ID4gPiA+ID4gPiBodHRwOi8vaS5pbWd1ci5jb20vZEtQRUxYNi5wbmcKPiA+
-ID4gPiA+ID4gPgo+ID4gPiA+ID4gPiA+IFRoZSBNaWMgdm9sdW1lIGlzIG9ubHkgZm9yIGFuYWxv
-ZyBsb29wYmFjaywgc28gaXQgY2FuIGJlCj4gbm9ybWFsLgo+ID4gPiA+ID4gPiA+Cj4gPiA+ID4g
-PiA+ID4KPiA+ID4gPiA+ID4gPiBUYWthc2hpCj4gPiA+ID4gPiA+ID4KPiA+ID4gPiA+ID4gPiAt
-LS0KPiA+ID4gPiA+ID4gPiAtLS0gYS9zb3VuZC9wY2kvaGRhL3BhdGNoX3JlYWx0ZWsuYwo+ID4g
-PiA+ID4gPiA+ICsrKyBiL3NvdW5kL3BjaS9oZGEvcGF0Y2hfcmVhbHRlay5jCj4gPiA+ID4gPiA+
-ID4gQEAgLTc3MzgsNiArNzczOCw3IEBAIGVudW0gewo+ID4gPiA+ID4gPiA+ICAgICAgICAgQUxD
-NjYyX0ZJWFVQX0FTVVNfTng1MCwKPiA+ID4gPiA+ID4gPiAgICAgICAgIEFMQzY2OF9GSVhVUF9B
-U1VTX054NTFfSEVBRFNFVF9NT0RFLAo+ID4gPiA+ID4gPiA+ICAgICAgICAgQUxDNjY4X0ZJWFVQ
-X0FTVVNfTng1MSwKPiA+ID4gPiA+ID4gPiArICAgICAgIEFMQzY2OF9GSVhVUF9BU1VTX0c3NTEs
-Cj4gPiA+ID4gPiA+ID4gICAgICAgICBBTEM4OTFfRklYVVBfSEVBRFNFVF9NT0RFLAo+ID4gPiA+
-ID4gPiA+ICAgICAgICAgQUxDODkxX0ZJWFVQX0RFTExfTUlDX05PX1BSRVNFTkNFLAo+ID4gPiA+
-ID4gPiA+ICAgICAgICAgQUxDNjYyX0ZJWFVQX0FDRVJfVkVSSVRPTiwKPiA+ID4gPiA+ID4gPiBA
-QCAtODAwNyw2ICs4MDA4LDE0IEBAIHN0YXRpYyBjb25zdCBzdHJ1Y3QgaGRhX2ZpeHVwCj4gPiA+
-IGFsYzY2Ml9maXh1cHNbXSA9Cj4gPiA+ID4gPiB7Cj4gPiA+ID4gPiA+ID4gICAgICAgICAgICAg
-ICAgIC5jaGFpbmVkID0gdHJ1ZSwKPiA+ID4gPiA+ID4gPiAgICAgICAgICAgICAgICAgLmNoYWlu
-X2lkID0KPiBBTEM2NjhfRklYVVBfQVNVU19OeDUxX0hFQURTRVRfTU9ERSwKPiA+ID4gPiA+ID4g
-PiAgICAgICAgIH0sCj4gPiA+ID4gPiA+ID4gKyAgICAgICBbQUxDNjY4X0ZJWFVQX0FTVVNfRzc1
-MV0gPSB7Cj4gPiA+ID4gPiA+ID4gKyAgICAgICAgICAgICAgIC50eXBlID0gSERBX0ZJWFVQX1ZF
-UkJTLAo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAudi52ZXJicyA9IChjb25zdCBzdHJ1
-Y3QgaGRhX3ZlcmJbXSkgewo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHsg
-MHgyMCwgQUNfVkVSQl9TRVRfQ09FRl9JTkRFWCwgMHhjMyB9LAo+ID4gPiA+ID4gPiA+ICsgICAg
-ICAgICAgICAgICAgICAgICAgIHsgMHgyMCwgQUNfVkVSQl9TRVRfUFJPQ19DT0VGLCAweDQwMDAK
-PiB9LAo+ID4gPiA+ID4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHt9Cj4gPiA+ID4gPiA+
-ID4gKyAgICAgICAgICAgICAgIH0sCj4gPiA+ID4gPiA+ID4gKyAgICAgICB9LAo+ID4gPiA+ID4g
-PiA+ICAgICAgICAgW0FMQzg5MV9GSVhVUF9IRUFEU0VUX01PREVdID0gewo+ID4gPiA+ID4gPiA+
-ICAgICAgICAgICAgICAgICAudHlwZSA9IEhEQV9GSVhVUF9GVU5DLAo+ID4gPiA+ID4gPiA+ICAg
-ICAgICAgICAgICAgICAudi5mdW5jID0gYWxjX2ZpeHVwX2hlYWRzZXRfbW9kZSwKPiA+ID4gPiA+
-ID4gPiBAQCAtODA4MCw2ICs4MDg5LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBzbmRfcGNpX3F1
-aXJrCj4gPiA+ID4gPiBhbGM2NjJfZml4dXBfdGJsW10KPiA+ID4gPiA+ID4gPiA9IHsKPiA+ID4g
-PiA+ID4gPiAgICAgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDExY2QsICJBc3VzIE41NTAi
-LAo+ID4gPiA+ID4gQUxDNjYyX0ZJWFVQX0FTVVNfTng1MCksCj4gPiA+ID4gPiA+ID4gICAgICAg
-ICBTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgxM2RmLCAiQXN1cyBONTUwSlgiLAo+ID4gPiA+ID4g
-QUxDNjYyX0ZJWFVQX0JBU1NfMUEpLAo+ID4gPiA+ID4gPiA+ICAgICAgICAgU05EX1BDSV9RVUlS
-SygweDEwNDMsIDB4MTI5ZCwgIkFzdXMgTjc1MCIsCj4gPiA+ID4gPiBBTEM2NjJfRklYVVBfQVNV
-U19OeDUwKSwKPiA+ID4gPiA+ID4gPiArICAgICAgIFNORF9QQ0lfUVVJUksoMHgxMDQzLCAweDEy
-ZmYsICJBU1VTIEc3NTEiLAo+ID4gPiA+ID4gQUxDNjY4X0ZJWFVQX0FTVVNfRzc1MSksCj4gPiA+
-ID4gPiA+ID4gICAgICAgICBTTkRfUENJX1FVSVJLKDB4MTA0MywgMHgxNDc3LCAiQVNVUyBONTZW
-WiIsCj4gPiA+ID4gPiA+ID4gQUxDNjYyX0ZJWFVQX0JBU1NfTU9ERTRfQ0hNQVApLAo+ID4gPiA+
-ID4gPiA+ICAgICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTVhNywgIkFTVVMgVVg1MVZa
-SCIsCj4gPiA+ID4gPiA+ID4gQUxDNjYyX0ZJWFVQX0JBU1NfMTYpLAo+ID4gPiA+ID4gPiA+ICAg
-ICAgICAgU05EX1BDSV9RVUlSSygweDEwNDMsIDB4MTc3ZCwgIkFTVVMgTjU1MSIsCj4gPiA+ID4g
-PiBBTEM2NjhfRklYVVBfQVNVU19OeDUxKSwKPiA+ID4gPiA+ID4gPiBAQCAtODE4NCw2ICs4MTk0
-LDcgQEAgc3RhdGljIGNvbnN0IHN0cnVjdCBoZGFfbW9kZWxfZml4dXAKPiA+ID4gPiA+ID4gPiBh
-bGM2NjJfZml4dXBfbW9kZWxzW10gPSB7Cj4gPiA+ID4gPiA+ID4gICAgICAgICB7LmlkID0gQUxD
-NjY4X0ZJWFVQX0RFTExfWFBTMTMsIC5uYW1lID0gImRlbGwteHBzMTMifSwKPiA+ID4gPiA+ID4g
-PiAgICAgICAgIHsuaWQgPSBBTEM2NjJfRklYVVBfQVNVU19OeDUwLCAubmFtZSA9ICJhc3VzLW54
-NTAifSwKPiA+ID4gPiA+ID4gPiAgICAgICAgIHsuaWQgPSBBTEM2NjhfRklYVVBfQVNVU19OeDUx
-LCAubmFtZSA9ICJhc3VzLW54NTEifSwKPiA+ID4gPiA+ID4gPiArICAgICAgIHsuaWQgPSBBTEM2
-NjhfRklYVVBfQVNVU19HNzUxLCAubmFtZSA9ICJhc3VzLWc3NTEifSwKPiA+ID4gPiA+ID4gPiAg
-ICAgICAgIHsuaWQgPSBBTEM4OTFfRklYVVBfSEVBRFNFVF9NT0RFLCAubmFtZSA9Cj4gPiA+ICJh
-bGM4OTEtaGVhZHNldCJ9LAo+ID4gPiA+ID4gPiA+ICAgICAgICAgey5pZCA9IEFMQzg5MV9GSVhV
-UF9ERUxMX01JQ19OT19QUkVTRU5DRSwgLm5hbWUgPQo+ID4gPiA+ID4gPiA+ICJhbGM4OTEtaGVh
-ZHNldC1tdWx0aSJ9LAo+ID4gPiA+ID4gPiA+ICAgICAgICAgey5pZCA9IEFMQzY2Ml9GSVhVUF9B
-Q0VSX1ZFUklUT04sIC5uYW1lID0KPiAiYWNlci12ZXJpdG9uIn0sCj4gPiA+ID4gPiA+ID4KPiA+
-ID4gPiA+ID4gWzIgIDx0ZXh0L2h0bWw7IFVURi04IChxdW90ZWQtcHJpbnRhYmxlKT5dCj4gPiA+
-ID4gPiA+Cj4gPiA+ID4gPgo+ID4gPiA+IFsyICA8dGV4dC9odG1sOyBVVEYtOCAocXVvdGVkLXBy
-aW50YWJsZSk+XQo+ID4gPiA+Cj4gPiA+Cj4gPiBbMiAgPHRleHQvaHRtbDsgVVRGLTggKHF1b3Rl
-ZC1wcmludGFibGUpPl0KPiA+Cj4KX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+Hi Jaroslav,
+
+On Oct 6 2018 02:14, Jaroslav Kysela wrote:
+> Dne 5.10.2018 v 16:47 Takashi Sakamoto napsal(a):
+>> At present, handlers for control nodes are maintained by one-dimensional
+>> array. This is not necessarily useful to maintain handlers with
+>> associated information.
+>>
+>> This commit adds link-list for the maintenance.
+> 
+> Thanks for the improved code.
+> 
+> Please, use macros in list.h to manage linked list which are inherited
+> from the kernel here.
+
+Let me confirm the macro about which you mention.
+
+This patchset is for alsa-utils. In a package of alsa-utils, there's no
+such header.
+
+A package of alsa-lib v1.1.6 has 'include/list.h', however this is not
+installation target.
+
+Would I ask you where the list is available?
+
+
+Thanks
+
+Takashi Sakamoto
