@@ -1,31 +1,53 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 0/4] Various cleanup + Mic Fix
-Date: Mon,  8 Oct 2018 15:39:56 -0400
-Message-ID: <1539027601-20910-1-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 1/4] ALSA: hda/ca0132 - Fix microphone inconsistency issues
+Date: Mon,  8 Oct 2018 15:39:57 -0400
+Message-ID: <1539027601-20910-2-git-send-email-conmanx360@gmail.com>
+References: <1539027601-20910-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1539027601-20910-1-git-send-email-conmanx360@gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 Cc: conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch set fixes the microphone inconsistency issue, which means
-the microphone now works all the time on all of the cards I've tested
-(ZxR, Z, AE-5), along with the input effects.
+This patch fixes microphone inconsistency issues by adding a delay to
+each setup_defaults function. Without this, the microphone only works
+intermittently.
 
-It also includes changes suggested by Takashi Sakamoto, I believe I did
-what he asked properly, but if I messed it up I'm sure you guys will
-let me know.
+Signed-off-by: Connor McAdams <conmanx360@gmail.com>
+---
+ sound/pci/hda/patch_ca0132.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-This should finish up most of the ca0132 work, with all inputs and
-outputs working on the desktop cards.
-
-Connor McAdams (4):
-  ALSA: hda/ca0132 - Fix microphone inconsistency issues
-  ALSA: hda/ca0132 - Clean up patch_ca0132()
-  ALSA: hda/ca0132 - Add error checking in ca0132_build_controls()
-  ALSA: hda/ca0132 - Fix input effect controls for desktop cards
-
- sound/pci/hda/patch_ca0132.c | 75 +++++++++++++++++++++++++++++++-------------
- 1 file changed, 54 insertions(+), 21 deletions(-)
-
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index b098504..12a3581 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -7223,6 +7223,8 @@ static void r3d_setup_defaults(struct hda_codec *codec)
+ 	int num_fx;
+ 	int idx, i;
+ 
++	msleep(100);
++
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
+ 
+@@ -7267,6 +7269,8 @@ static void sbz_setup_defaults(struct hda_codec *codec)
+ 	int num_fx;
+ 	int idx, i;
+ 
++	msleep(100);
++
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
+ 
+@@ -7324,6 +7328,8 @@ static void ae5_setup_defaults(struct hda_codec *codec)
+ 	int num_fx;
+ 	int idx, i;
+ 
++	msleep(100);
++
+ 	if (spec->dsp_state != DSP_DOWNLOADED)
+ 		return;
+ 
 -- 
 2.7.4
