@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: max98988: make it selectable" to the
-	asoc tree
-Date: Mon,  8 Oct 2018 19:54:39 +0100 (BST)
-Message-ID: <20181008185439.A81D1440078@finisterre.ee.mobilebroadband>
+Subject: Applied "ASoC: dt-bindings: max98088: add external
+	clock binding" to the asoc tree
+Date: Mon,  8 Oct 2018 19:54:52 +0100 (BST)
+Message-ID: <20181008185452.A72E3440078@finisterre.ee.mobilebroadband>
+References: <20181005075812.13986-4-m.felsch@pengutronix.de>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 38E3326778A
- for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2018 20:54:40 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id C825226778A
+ for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2018 20:54:53 +0200 (CEST)
+In-Reply-To: <20181005075812.13986-4-m.felsch@pengutronix.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Marco Felsch <m.felsch@pengutronix.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: mark.rutland@arm.com, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, lgirdwood@gmail.com, robh+dt@kernel.org, broonie@kernel.org, kernel@pengutronix.de
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: max98988: make it selectable
+   ASoC: dt-bindings: max98088: add external clock binding
 
 has been applied to the asoc tree at
 
@@ -52,32 +53,40 @@ to this mail.
 Thanks,
 Mark
 
->From 24ae67c5825004bcbce90e7c89fed63f25d96260 Mon Sep 17 00:00:00 2001
+>From d6ed11edab5dd10ddf5548c02a9a1132ec728640 Mon Sep 17 00:00:00 2001
 From: Marco Felsch <m.felsch@pengutronix.de>
-Date: Fri, 5 Oct 2018 09:58:12 +0200
-Subject: [PATCH] ASoC: max98988: make it selectable
+Date: Fri, 5 Oct 2018 09:58:10 +0200
+Subject: [PATCH] ASoC: dt-bindings: max98088: add external clock binding
 
-Currently the driver will build only if SND_SOC_ALL_CODECS is set.
-Adding a Kconfig menu description to build the driver standalone.
+Allow setting the clock provider for the external clock called "mclk".
 
 Signed-off-by: Marco Felsch <m.felsch@pengutronix.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../devicetree/bindings/sound/maxim,max98088.txt          | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-index 9989d35e0fc6..3c6bd6019b92 100644
---- a/sound/soc/codecs/Kconfig
-+++ b/sound/soc/codecs/Kconfig
-@@ -640,7 +640,7 @@ config SND_SOC_LM49453
- 	tristate
+diff --git a/Documentation/devicetree/bindings/sound/maxim,max98088.txt b/Documentation/devicetree/bindings/sound/maxim,max98088.txt
+index a79ad5c7af88..da764d913319 100644
+--- a/Documentation/devicetree/bindings/sound/maxim,max98088.txt
++++ b/Documentation/devicetree/bindings/sound/maxim,max98088.txt
+@@ -7,9 +7,17 @@ Required properties:
+ - compatible: "maxim,max98088" or "maxim,max98089".
+ - reg: The I2C address of the device.
  
- config SND_SOC_MAX98088
--       tristate
-+	tristate "Maxim MAX98088/9 Low-Power, Stereo Audio Codec"
++Optional properties:
++
++- clocks: the clock provider of MCLK, see ../clock/clock-bindings.txt section
++  "consumer" for more information.
++- clock-names: must be set to "mclk"
++
+ Example:
  
- config SND_SOC_MAX98090
-        tristate
+ max98089: codec@10 {
+ 	compatible = "maxim,max98089";
+ 	reg = <0x10>;
++	clocks = <&clks IMX6QDL_CLK_CKO2>;
++	clock-names = "mclk";
+ };
 -- 
 2.19.0
