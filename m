@@ -1,56 +1,40 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: Re: [PATCH 00/11] Add ZxR support + bugfixes
-Date: Sun, 7 Oct 2018 13:05:07 -0400
-Message-ID: <CAM8Agx0on73x9p3S54UB-9fY+5rRXFeP1m7TFr2RmQmuQPR-yQ@mail.gmail.com>
-References: <1538276607-30234-1-git-send-email-conmanx360@gmail.com> <s5h1s98s78q.wl-tiwai@suse.de>
+From: Charles Keepax <ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 1/2] ASoC: Add device tree documentation
+ file for wm8782 stereo DAC
+Date: Mon, 8 Oct 2018 10:33:09 +0100
+Message-ID: <20181008093309.GU1653@imbe.wolfsonmicro.main>
+References: <20181003193436.5281-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5h1s98s78q.wl-tiwai@suse.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
+ [67.231.152.168])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8CB5C267783
+ for <alsa-devel@alsa-project.org>; Mon,  8 Oct 2018 11:33:13 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20181003193436.5281-1-daniel@zonque.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Daniel Mack <daniel@zonque.org>
+Cc: tiwai@suse.de, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, broonie@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-I have fixed the microphone issue, and will try to get the patches
-written by the end of the week so they can be in the next kernel (at
-least I think that's what Takashi Sakamoto said, two weeks from 7 days
-ago). With the two suggestions by Takashi Sakamoto, do I need those in
-order for it to be merged? I will work on them regardless, but with
-those it may take me longer (they might be simple, I haven't dug into
-what they require yet).
+On Wed, Oct 03, 2018 at 09:34:35PM +0200, Daniel Mack wrote:
+> Add a device tree documentation file for the wm8782 stereo DAC to describe
+> the regulator handles.
+> 
+> Signed-off-by: Daniel Mack <daniel@zonque.org>
+> ---
 
-Let me know.
+Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
 
 Thanks,
-Connor.
-On Tue, Oct 2, 2018 at 11:23 AM Takashi Iwai <tiwai@suse.de> wrote:
->
-> On Sun, 30 Sep 2018 05:03:15 +0200,
-> Connor McAdams wrote:
-> >
-> > This patch series adds support for the Sound Blaster ZxR, as well as a
-> > few bug fixes. This should be the last ca0132 based Creative card that
-> > needed support to be added.
-> >
-> > Also, I did check to make sure each patch compiles properly this time,
-> > but you can check yourself just to be sure. :)
-> >
-> > Connor McAdams (11):
-> >   ALSA: hda/ca0132 - Fix AE-5 control type
-> >   ALSA: hda/ca0132 - Fix surround sound with output effects
-> >   ALSA: hda/ca0132 - Add ZxR quirks + new quirk check function
-> >   ALSA: hda/ca0132 - Add ZxR pincfg
-> >   ALSA: hda/ca0132 - Add DBpro hda_codec_ops
-> >   ALSA: hda/ca0132 - Add ZxR init commands
-> >   ALSA: hda/ca0132 - Add ZxR DSP post-download commands
-> >   ALSA: hda/ca0132 - Add ZxR input/output select commands
-> >   ALSA: hda/ca0132 - Remove input select enum for ZxR
-> >   ALSA: hda/ca0132 - Add ZxR 600 ohm gain control
-> >   ALSA: hda/ca0132 - Add ZxR exit commands
->
-> Now applied all 11 patches (with Sakamoto-san's Reviewed-by tags).
-> Thanks!
->
->
-> Takashi
+Charles
