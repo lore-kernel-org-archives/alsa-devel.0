@@ -1,7 +1,7 @@
 From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH 3/4] ALSA: hda/ca0132 - Add error checking in ca0132_build_controls()
-Date: Mon,  8 Oct 2018 15:39:59 -0400
-Message-ID: <1539027601-20910-4-git-send-email-conmanx360@gmail.com>
+Subject: [PATCH 2/4] ALSA: hda/ca0132 - Clean up patch_ca0132()
+Date: Mon,  8 Oct 2018 15:39:58 -0400
+Message-ID: <1539027601-20910-3-git-send-email-conmanx360@gmail.com>
 References: <1539027601-20910-1-git-send-email-conmanx360@gmail.com>
 Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1539027601-20910-1-git-send-email-conmanx360@gmail.com>
@@ -9,101 +9,52 @@ Sender: linux-kernel-owner@vger.kernel.org
 Cc: conmanx360@gmail.com, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Takashi Sakamoto <o-takashi@sakamocchi.jp>, Alastair Bridgewater <alastair.bridgewater@gmail.com>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch adds error checking to functions creating controls inside of
-ca0132_build_controls().
+This patch cleans up the patch_ca0132() function with suggestions from
+Takashi Sakamoto.
 
 Signed-off-by: Connor McAdams <conmanx360@gmail.com>
 ---
- sound/pci/hda/patch_ca0132.c | 47 +++++++++++++++++++++++++++++++++-----------
- 1 file changed, 35 insertions(+), 12 deletions(-)
+ sound/pci/hda/patch_ca0132.c | 14 +++++++++-----
+ 1 file changed, 9 insertions(+), 5 deletions(-)
 
 diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 07d50d6..693b063 100644
+index 12a3581..07d50d6 100644
 --- a/sound/pci/hda/patch_ca0132.c
 +++ b/sound/pci/hda/patch_ca0132.c
-@@ -6365,7 +6365,8 @@ static int ca0132_build_controls(struct hda_codec *codec)
- 					    NULL, ca0132_alt_slave_pfxs,
- 					    "Playback Switch",
- 					    true, &spec->vmaster_mute.sw_kctl);
+@@ -8697,10 +8697,6 @@ static int patch_ca0132(struct hda_codec *codec)
+ 	codec->spec = spec;
+ 	spec->codec = codec;
+ 
+-	codec->patch_ops = ca0132_patch_ops;
+-	codec->pcm_format_first = 1;
+-	codec->no_sticky_stream = 1;
 -
-+		if (err < 0)
-+			return err;
- 	}
+ 	/* Detect codec quirk */
+ 	quirk = snd_pci_quirk_lookup(codec->bus->pci, ca0132_quirks);
+ 	if (quirk)
+@@ -8711,6 +8707,15 @@ static int patch_ca0132(struct hda_codec *codec)
+ 	if (spec->quirk == QUIRK_SBZ)
+ 		sbz_detect_quirk(codec);
  
- 	/* Add in and out effects controls.
-@@ -6392,8 +6393,14 @@ static int ca0132_build_controls(struct hda_codec *codec)
- 	 * prefix, and change PlayEnhancement and CrystalVoice to match.
- 	 */
- 	if (spec->use_alt_controls) {
--		ca0132_alt_add_svm_enum(codec);
--		add_ca0132_alt_eq_presets(codec);
-+		err = ca0132_alt_add_svm_enum(codec);
-+		if (err < 0)
-+			return err;
++	if (spec->quirk == QUIRK_ZXR_DBPRO)
++		codec->patch_ops = dbpro_patch_ops;
++	else
++		codec->patch_ops = ca0132_patch_ops;
 +
-+		err = add_ca0132_alt_eq_presets(codec);
-+		if (err < 0)
-+			return err;
++	codec->pcm_format_first = 1;
++	codec->no_sticky_stream = 1;
 +
- 		err = add_fx_switch(codec, PLAY_ENHANCEMENT,
- 					"Enable OutFX", 0);
- 		if (err < 0)
-@@ -6430,7 +6437,9 @@ static int ca0132_build_controls(struct hda_codec *codec)
- 		if (err < 0)
- 			return err;
- 	}
--	add_voicefx(codec);
-+	err = add_voicefx(codec);
-+	if (err < 0)
-+		return err;
++
+ 	spec->dsp_state = DSP_DOWNLOAD_INIT;
+ 	spec->num_mixers = 1;
  
- 	/*
- 	 * If the codec uses alt_functions, you need the enumerated controls
-@@ -6438,23 +6447,37 @@ static int ca0132_build_controls(struct hda_codec *codec)
- 	 * setting control.
- 	 */
- 	if (spec->use_alt_functions) {
--		ca0132_alt_add_output_enum(codec);
--		ca0132_alt_add_mic_boost_enum(codec);
-+		err = ca0132_alt_add_output_enum(codec);
-+		if (err < 0)
-+			return err;
-+		err = ca0132_alt_add_mic_boost_enum(codec);
-+		if (err < 0)
-+			return err;
- 		/*
- 		 * ZxR only has microphone input, there is no front panel
- 		 * header on the card, and aux-in is handled by the DBPro board.
- 		 */
--		if (spec->quirk != QUIRK_ZXR)
--			ca0132_alt_add_input_enum(codec);
-+		if (spec->quirk != QUIRK_ZXR) {
-+			err = ca0132_alt_add_input_enum(codec);
-+			if (err < 0)
-+				return err;
-+		}
- 	}
- 
- 	if (spec->quirk == QUIRK_AE5) {
--		ae5_add_headphone_gain_enum(codec);
--		ae5_add_sound_filter_enum(codec);
-+		err = ae5_add_headphone_gain_enum(codec);
-+		if (err < 0)
-+			return err;
-+		err = ae5_add_sound_filter_enum(codec);
-+		if (err < 0)
-+			return err;
- 	}
- 
--	if (spec->quirk == QUIRK_ZXR)
--		zxr_add_headphone_gain_switch(codec);
-+	if (spec->quirk == QUIRK_ZXR) {
-+		err = zxr_add_headphone_gain_switch(codec);
-+		if (err < 0)
-+			return err;
-+	}
- #ifdef ENABLE_TUNING_CONTROLS
- 	add_tuning_ctls(codec);
- #endif
+@@ -8725,7 +8730,6 @@ static int patch_ca0132(struct hda_codec *codec)
+ 		snd_hda_codec_set_name(codec, "Sound Blaster ZxR");
+ 		break;
+ 	case QUIRK_ZXR_DBPRO:
+-		codec->patch_ops = dbpro_patch_ops;
+ 		break;
+ 	case QUIRK_R3D:
+ 		spec->mixers[0] = desktop_mixer;
 -- 
 2.7.4
