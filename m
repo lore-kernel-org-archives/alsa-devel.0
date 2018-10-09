@@ -1,79 +1,105 @@
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: Re: [PATCH][RFC][alsa-utils 5/9] alsactl: use link
- list to maintain source of events
-Date: Tue, 9 Oct 2018 12:15:58 +0900
-Message-ID: <507ea2a5-34c3-60ac-4bc1-4d0abf324d70@sakamocchi.jp>
-References: <20181005144729.21388-1-o-takashi@sakamocchi.jp>
- <20181005144729.21388-6-o-takashi@sakamocchi.jp>
- <ebd92686-31d6-1c2b-42bc-5e9dd9679cf6@perex.cz>
- <c878435f-ec5c-5136-d1f0-9288aff38b33@sakamocchi.jp>
- <2e7f6db4-24a4-fc4d-cd11-b14480038734@perex.cz>
+From: Jiada Wang <jiada_wang@mentor.com>
+Subject: Re: [alsa-devel] [PATCH linux-next v2 9/9] ASoC: rsnd: add busif
+ property to dai stream
+Date: Tue, 9 Oct 2018 16:09:05 +0900
+Message-ID: <ed602ba8-6dc5-005c-3267-47aa378b6c0a@mentor.com>
+References: <20181003090136.4556-1-jiada_wang@mentor.com>
+ <87va6ipkaz.wl-kuninori.morimoto.gx@renesas.com>
+ <557e63d1-dbb7-4232-b53e-4a5499024180@mentor.com>
+ <87pnwqpeni.wl-kuninori.morimoto.gx@renesas.com>
+ <a5712f6a-a61b-f6c4-4f3d-a6d4a60bcfab@mentor.com>
+ <87h8hward4.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp-proxy004.phy.lolipop.jp (smtp-proxy004.phy.lolipop.jp
- [157.7.104.45]) by alsa0.perex.cz (Postfix) with ESMTP id 8F8B7267987
- for <alsa-devel@alsa-project.org>; Tue,  9 Oct 2018 05:16:05 +0200 (CEST)
-In-Reply-To: <2e7f6db4-24a4-fc4d-cd11-b14480038734@perex.cz>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <87h8hward4.wl-kuninori.morimoto.gx@renesas.com>
 Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, tiwai@suse.de
-Cc: alsa-devel@alsa-project.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Cc: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi Jaroslav,
+Hi Morimoto-san
 
-On Oct 9 2018 00:14, Jaroslav Kysela wrote:
-> Dne 7.10.2018 v 05:04 Takashi Sakamoto napsal(a):
->> Hi Jaroslav,
->>
->> On Oct 6 2018 02:14, Jaroslav Kysela wrote:
->>> Dne 5.10.2018 v 16:47 Takashi Sakamoto napsal(a):
->>>> At present, handlers for control nodes are maintained by one-dimensional
->>>> array. This is not necessarily useful to maintain handlers with
->>>> associated information.
->>>>
->>>> This commit adds link-list for the maintenance.
->>>
->>> Thanks for the improved code.
->>>
->>> Please, use macros in list.h to manage linked list which are inherited
->>> from the kernel here.
->>
->> Let me confirm the macro about which you mention.
->>
->> This patchset is for alsa-utils. In a package of alsa-utils, there's no
->> such header.
->>
->> A package of alsa-lib v1.1.6 has 'include/list.h', however this is not
->> installation target.
->>
->> Would I ask you where the list is available?
-> 
-> [alsa-utils]$ git log alsactl/list.h
-> commit b402cf543aee5f6cd7561d964065a26f07459c8c
-> Author: Jaroslav Kysela <perex@perex.cz>
-> Date:   Thu Jul 31 15:45:08 2008 +0200
-> 
->      Initial 'alsactl init' implementation
-> 
->      See 'man 7 alsactl_init' for more details.
-> 
->      Signed-off-by: Jaroslav Kysela <perex@perex.cz>
+Thanks for your comment
 
-Ah..., exactly. I overlooked this probability. I'll use it for next
-patchset.
+On 2018/10/09 9:44, Kuninori Morimoto wrote:
+> Hi Jiada
+>
+>> SSI can work in following modes
+>> 1. Basic Mode: (channel 1, 2, 4, 6, 8, 16)
+>> 2. TDM Extended Mode: (channel 6, 8)
+>> 3. TDM Split Mode: (channel 1, 2)
+>> 4. TDM Ex-Split mode: (Channel 2, 4, 6, 8, 10)
+> (snip)
+>>> So, my opinions for BUSIFn support are
+>>> 	- SSI mode should be selected automatically
+>> can you give me your idea, how to automatically determine working mode,
+>> when user plays 2 channel stream on playback dai-link
+> If my understanding was correct, we can do like this
+> If DT indicated sound card has dai-link x N, tdm-slots = <M>,
+> 	If (N, M) = (1, 2) : Basic mode
+> 	If (N, M) = (1, >2): TDM mode
+> 	If (N, M) = (2, 4) : TDM Split mode
+> 	If (N, M) = (2, >4): TDM Ex-Split mode
+> 	If (N, M) = (>2, 8): TDM Split mode
+> 	...
+>
+> Maybe some combination was wrong, but we can do something like this ?
+The idea to consider tdm_slot when determine SSI mode makes sense to me,
+by checking runtime channel and tdm_slots combination,
+I think SSI mode can be automatically selected like following:
 
+1ch:  (tdm_slots < 4) Basic mode, (tdm_slots >= 4) TDM Split mode
+2ch: (2 <= tdm_slots < 8) Basic mode, (tdm_slots >= 8) TDM Ex-Split mode
+4ch: (4 <= tdm_slots < 8) Basic mode, (tdm_slots >= 8) TDM Ex-Split mode
+6ch: (6 <= tdm_slots < 8) Basic mode, (tdm_slots == 8) TDM Extended 
+mode, (8 < tdm_slots) TDM Ex-Split mode
+8ch: (6 <= tdm_slots < 8) TDM Extended mode, (8 <= tdm_slots < 16) Basic 
+mode, (tdm_slots == 16) TDM Ex-Split
+10ch: TDM Ex-Split mode
+16ch: Basic Mode
 
-Thanks
+>> for example user asks dai-link0 to playback 2ch audio stream,
+>> driver can't determine which mode to work, as it can be Basic mode,
+>> Split mode or Ex-Split mode.
+> Why do we need to use Basic mode if HW has TDM Split mode connection?
+> If user playbacks 2ch audio in such situation,
+> we can use TDM Split mode (= only 2ch has sound, other channel has no sound ?)
+> user might start to playback for other channels.
+> I'm not sure how it works...
+>>> 	- BUSIFn connection should be selected on DT
+>> since which BUSIFx is used during audio data transfer, is not
+>> consideration of user,
+>> I think your previous suggestion, (automatically select BUSIFx) makes
+>> more sense
+> I'm not yet sure detail, but in your idea, does it mean,
+> BUSIFx connection might be exchanged runtime ?
+no BUSIFx shouldn't be changed during runtime, my idea is BUSIFx can be 
+automatically selected
+when corresponding dai-link is not active
 
-Takashi Sakamoto
+The reason I added rsnd_ssi_select_busif(io, chan) in rsnd_hw_params() 
+in patch ASoC: rsnd: add busif property to dai stream of v2 patch-set,
+is because runtime channel is necessary information to determine which 
+BUSIFx to select,
+(which is mentioned in above)
+and at this stage (rsnd_hw_params()), all other control settings 
+(register setting, dma address calculation etc)
+haven't been done, so corresponding dai-link can be considered to be not 
+active at this timing
+but maybe you have better suggestion when to automatically select BUSIFx
+
+What is your opinion?
+
+Thanks,
+Jiada
+> I think BUSIFx connection shouldn't exchanged runtime IMO.
+> Otherwise, sound position can't be fixed, and user can't control
+> sound, I think...
+
+>
+> Best regards
+> ---
+> Kuninori Morimoto
