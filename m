@@ -1,18 +1,18 @@
 From: "Guedes, Andre" <andre.guedes@intel.com>
-Subject: Re: [PATCH - AAF PCM plugin 1/7] aaf: Introduce plugin
-	skeleton
-Date: Wed, 10 Oct 2018 21:22:43 +0000
-Message-ID: <1539206561.3120.17.camel@intel.com>
+Subject: Re: [PATCH - AAF PCM plugin 3/7] aaf: Implement
+ Playback mode support
+Date: Wed, 10 Oct 2018 21:27:29 +0000
+Message-ID: <1539206847.3120.20.camel@intel.com>
 References: <20181003234547.16839-1-andre.guedes@intel.com>
- <20181003234547.16839-2-andre.guedes@intel.com>
- <s5hd0sixfjc.wl-tiwai@suse.de>
+ <20181003234547.16839-4-andre.guedes@intel.com>
+ <s5ha7nmxf80.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============3482233126131982012=="
+Content-Type: multipart/mixed; boundary="===============6962038480898368656=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
- by alsa0.perex.cz (Postfix) with ESMTP id 929EC2678D9
- for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 23:23:57 +0200 (CEST)
-In-Reply-To: <s5hd0sixfjc.wl-tiwai@suse.de>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 39B652678D9
+ for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 23:35:14 +0200 (CEST)
+In-Reply-To: <s5ha7nmxf80.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,28 +28,53 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
  Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============3482233126131982012==
+--===============6962038480898368656==
 Content-Language: en-US
 Content-Type: multipart/signed; micalg=sha-1;
-	protocol="application/x-pkcs7-signature"; boundary="=-FxXPrv4MynVlqWBSKCXT"
+	protocol="application/x-pkcs7-signature"; boundary="=-5IiYLxaQn8njvgdvq590"
 
---=-FxXPrv4MynVlqWBSKCXT
+--=-5IiYLxaQn8njvgdvq590
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, 2018-10-10 at 12:27 +0200, Takashi Iwai wrote:
-> The function can be simplified to
+On Wed, 2018-10-10 at 12:34 +0200, Takashi Iwai wrote:
+> > +static int aaf_set_hw_constraint(snd_pcm_aaf_t *aaf)
+> > +{
+> > +     int res;
+> > +     snd_pcm_ioplug_t *io =3D &aaf->io;
+> > +     const unsigned int accesses[] =3D {
+> > +             SND_PCM_ACCESS_RW_INTERLEAVED,
+> > +     };
+> > +     const unsigned int formats[] =3D {
+> > +             SND_PCM_FORMAT_S16_BE,
+> > +             SND_PCM_FORMAT_S24_3BE,
+> > +             SND_PCM_FORMAT_S32_BE,
+> > +             SND_PCM_FORMAT_FLOAT_BE,
+> > +     };
+> > +     const unsigned int rates[] =3D {
+> > +             8000,
+> > +             16000,
+> > +             24000,
+> > +             32000,
+> > +             44100,
+> > +             48000,
+> > +             88200,
+> > +             96000,
+> > +             176400,
+> > +             192000,
+> > +     };
 >=20
-> static int aaf_close(snd_pcm_ioplug_t *io)
-> {
->         free(io->private_data);
->         return 0;
-> }
+> Use static arrays for the above.
 
-Ok, I'll implement it like that.
+It isn't clear to me what is the point in allocating these variables in
+the global scope. May I ask what is the benefit in adding the 'static'
+modifier to these local variables?
 
-- Andre
---=-FxXPrv4MynVlqWBSKCXT
+Thanks,
+
+Andre
+
+--=-5IiYLxaQn8njvgdvq590
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -105,22 +130,22 @@ GEFQBOIaWrkyVuOpxEYrdZyiBtCLaaHr4PSG1aLfPy/3qUqes2sxggIXMIICEwIBATCBkDB5MQsw
 CQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFDASBgNVBAcTC1NhbnRhIENsYXJhMRowGAYDVQQKExFJ
 bnRlbCBDb3Jwb3JhdGlvbjErMCkGA1UEAxMiSW50ZWwgRXh0ZXJuYWwgQmFzaWMgSXNzdWluZyBD
 QSA0QgITMwAAVOqTIPExTt7mGQAAAABU6jAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqG
-SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgxMDEwMjEyMjQxWjAjBgkqhkiG9w0BCQQxFgQUQYY/
-z1NeVbWuQh8FtTGMvmz4f+UwDQYJKoZIhvcNAQEBBQAEggEAP8Kn40tR/EQTCfQCGEnoN2M1HPxI
-e/4tcQTbJ+owTSZtTVlGJVydTORb30yWdM70sCuxYblTvBGm+PwrHu1QP+qRNtonEUkaPFTcHOz1
-vzdzAbUlmH5Z9AY5dBHkNrkCMGtTh8aSpIKG+fJKlnpauFvkftz6e7HB84gPit/PkpNGSfbM9tU9
-SmKjMVHL/h50OA/DthJ4t+5LELk58Wuh1onJquktIfMIN1GJ14K6C7nzq2OgxL9CCscE4343RXre
-Clo3ST+j/AFamh/2nY20O/j0g3np6Krb9fAC+q9vnIhUdq7AqQ0Qjkvztl6ZFhYKc6MdCX01VE78
-TI9Gr1EOXwAAAAAAAA==
+SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgxMDEwMjEyNzI3WjAjBgkqhkiG9w0BCQQxFgQU7i1W
+htswFdbnumb31dLfH6jlYnUwDQYJKoZIhvcNAQEBBQAEggEAqmZ1D1cD1tT99ZP6sdarJ0oou/2i
+toeNn7Zh3EQDBRoMBUvadH9syTGj9fRHYOqnITFUbm0cYFbs8DQS7HUp+PZDpzsrYQQANtghwQ//
+/v1jDcpPOg2j2pZWjxrWRMSegd/vV35HlJ0J/RmU3E6dZLm+rOXItMeU5XjYpUdEI+HzmQdSSzBn
+wq+nlM0suiKNt9KIHXhEYFRqx+kdkRLH1hNaMf6NHeLVO8hDO0gEKdCMlFq8fH0ztnvzD9b5+oSl
+WgjVgYQFoEzB/ZLr4yj+aqNmqMhdLFBZXOdWeU0ze+s51gH+6/AoiJNj5hHBXyojP+PgsPkAYPQj
+Xrz67/J4sQAAAAAAAA==
 
 
---=-FxXPrv4MynVlqWBSKCXT--
+--=-5IiYLxaQn8njvgdvq590--
 
---===============3482233126131982012==
+--===============6962038480898368656==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============3482233126131982012==--
+--===============6962038480898368656==--
