@@ -1,19 +1,19 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH v2] pinctrl: madera: Fix uninitialized
- variable bug in madera_mux_set_mux
-Date: Wed, 10 Oct 2018 17:08:01 +0100
-Message-ID: <20181010160801.GB1653@imbe.wolfsonmicro.main>
-References: <20181010151313.GA16854@embeddedor.com>
+From: Eric Laurent <elaurent@google.com>
+Subject: Re: [ANNOUNCE] 2018 Linux Audio miniconference
+Date: Wed, 10 Oct 2018 09:33:28 -0700
+Message-ID: <CAL-7xP93X0xoEbQpZ7EXOzAi9b=ghp8=fBygqHh21=OVd3ittg@mail.gmail.com>
+References: <20180810110656.GE20971@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id AB1E82678D9
- for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 18:08:06 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20181010151313.GA16854@embeddedor.com>
+Received: from mail-vs1-f52.google.com (mail-vs1-f52.google.com
+ [209.85.217.52])
+ by alsa0.perex.cz (Postfix) with ESMTP id F03382678D9
+ for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 18:34:03 +0200 (CEST)
+Received: by mail-vs1-f52.google.com with SMTP id m5so5648038vsk.6
+ for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 09:34:03 -0700 (PDT)
+In-Reply-To: <20180810110656.GE20971@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,27 +23,43 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, Linus Walleij <linus.walleij@linaro.org>, linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org, Richard Fitzgerald <rf@opensource.cirrus.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, Liam Girgwood <liam.r.girdwood@linux.intel.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Oct 10, 2018 at 05:13:13PM +0200, Gustavo A. R. Silva wrote:
-> There is a potential execution path in which variable *ret* is checked
-> in an IF statement, and then its value is used to report an error at
-> line 659 without being properly initialized previously:
-> 
-> 659 if (ret)
-> 660	dev_err(priv->dev, "Failed to write to 0x%x (%d)\n", reg, ret);
-> 
-> Fix this by initializing variable *ret* to 0 in order to
-> avoid unpredictable or unintended results.
-> 
-> Addresses-Coverity-ID: 1471969 ("Uninitialized scalar variable")
-> Fixes: 218d72a77b0b ("pinctrl: madera: Add driver for Cirrus Logic Madera codecs")
-> Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
-> ---
+Hi,
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Sorry I will not be able to attend this years.
+Keep me posted if there are questions related to Android in particular.
 
-Thanks,
-Charles
+Thanks.
+
+Eric.
+
+
+
+On Fri, Aug 10, 2018 at 4:07 AM Mark Brown <broonie@kernel.org> wrote:
+
+> Hi,
+>
+> As in previous years we're trying to organize an audio miniconference so
+> we can get together and talk through issues, especially design decisons,
+> face to face.  This year's event will be held on Sunday October 21st in
+> Edinburgh, the day before ELC Europe starts there.  We're still
+> finalizing the venue (we expect to be able to confirm next week) but
+> it'll be outside the ELC venue so there will be no need to purchase an
+> ELC ticket to attend.
+>
+> As with previous years let's pull together an agenda through a mailing
+> list discussion - if people could reply to this mail with any topics
+> they'd like to discuss we can take it from there.  Of course if we can
+> sort things out more quickly via the mailing list that's even better!
+>
+> If you're planning to attend please fill out the form here:
+>
+>
+> https://docs.google.com/spreadsheets/d/11p2pSNxS7sJysg1JwErWi0T2Dq7XKRtAGngBHAn_w2g/edit?usp=sharing
+>
+> Thanks,
+> Mark
+>
