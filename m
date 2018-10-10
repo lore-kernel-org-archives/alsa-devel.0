@@ -1,17 +1,18 @@
 From: "Guedes, Andre" <andre.guedes@intel.com>
-Subject: Re: [PATCH - AAF PCM plugin 0/7] Introduce AVTP Audio
- Format (AAF) plugin
-Date: Wed, 10 Oct 2018 21:19:25 +0000
-Message-ID: <1539206363.3120.14.camel@intel.com>
+Subject: Re: [PATCH - AAF PCM plugin 1/7] aaf: Introduce plugin
+	skeleton
+Date: Wed, 10 Oct 2018 21:22:43 +0000
+Message-ID: <1539206561.3120.17.camel@intel.com>
 References: <20181003234547.16839-1-andre.guedes@intel.com>
- <s5hefcyxfmm.wl-tiwai@suse.de>
+ <20181003234547.16839-2-andre.guedes@intel.com>
+ <s5hd0sixfjc.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5682664427577508035=="
+Content-Type: multipart/mixed; boundary="===============3482233126131982012=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 7AD1A2678D9
- for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 23:19:58 +0200 (CEST)
-In-Reply-To: <s5hefcyxfmm.wl-tiwai@suse.de>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 929EC2678D9
+ for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 23:23:57 +0200 (CEST)
+In-Reply-To: <s5hd0sixfjc.wl-tiwai@suse.de>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -27,129 +28,28 @@ Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "Girdwood,
  Liam R" <liam.r.girdwood@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
---===============5682664427577508035==
+--===============3482233126131982012==
 Content-Language: en-US
 Content-Type: multipart/signed; micalg=sha-1;
-	protocol="application/x-pkcs7-signature"; boundary="=-QbjYQMIEBPQgoD1sx9u8"
+	protocol="application/x-pkcs7-signature"; boundary="=-FxXPrv4MynVlqWBSKCXT"
 
---=-QbjYQMIEBPQgoD1sx9u8
+--=-FxXPrv4MynVlqWBSKCXT
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Takashi,
-
-On Wed, 2018-10-10 at 12:25 +0200, Takashi Iwai wrote:
-> On Thu, 04 Oct 2018 01:45:40 +0200,
-> Andre Guedes wrote:
-> >=20
-> > Hi all,
-> >=20
-> > The AAF plugin RFC series v2 has been around on alsa-devel ML for
-> > more than two
-> > weeks so I'm moving forward and sending it as PATCH series now.
-> >=20
-> > The first 5 patches from this series are pretty much the same from
-> > the previous
-> > version. The news are the top 2 patches which add more
-> > functionality to the
-> > plugin. Patch 6/7 implements the dump() callback which has been
-> > useful for
-> > debugging purposes and Patch 7/7 adds support for direct read/write
-> > transfers.
-> >=20
-> > For general context information about the AAF plugin, I'm quoting
-> > below the
-> > cover letter from the RFC series v1:
-> >=20
-> > 	"This patchset introduces the AAF plugin to the alsa-plugins
-> > project
-> > 	which enables TSN audio applications on Linux.
-> >=20
-> > 	For those not familiarized with TSN, it stands for Time-
-> > Sensitive
-> > 	Networking, and it's a set of IEEE technologies (enhancements
-> > to IEEE
-> > 	802.1Q and Ethernet protocols) that provide precise time
-> > 	synchronization, bounded latency and application
-> > interoperability to
-> > 	bridged networks. Those technologies enable time-sensitive
-> > applications
-> > 	such as audio, video and control loops to run on top of bridged
-> > 	networks, co-existing with regular applications. TSN
-> > technologies are a
-> > 	super set of Audio Video Bridging (AVB) technologies also
-> > developed by
-> > 	IEEE. AVTP is the protocol defined to transport data in a TSN
-> > system,
-> > 	and AAF is one of the formats defined by AVTP to encapsulate
-> > audio
-> > 	data. AAF is specified in Chapter 7 from the AVTP spec [1].
-> >=20
-> > 	This work is part of the effort to enable TSN technologies on
-> > upstream
-> > 	Linux ecosystem. All building-blocks required to enable TSN
-> > audio
-> > 	applications have been already developed and pushed to upstream
-> > 	projects. Time synchronization features are provided by
-> > linuxptp
-> > 	project [2], bounded latency features are provided by Linux
-> > Traffic
-> > 	Control subsystem since kernel version 4.15 [3], and AVTP
-> > packetization
-> > 	is provided by libavtp [4]. What is currently missing in the
-> > ecosystem
-> > 	to enable TSN audio applications is a piece of software that
-> > plumbs it
-> > 	all together and interfaces with Linux Audio system properly.
-> > That's
-> > 	the point of the AAF plugin introduced here.
-> >=20
-> > 	The AAF plugin is a PCM plugin that uses AVTP protocol to
-> > transmit /
-> > 	receive audio data through a TSN capable network.  When
-> > operating in
-> > 	playback mode, the plugin reads PCM samples from the audio
-> > buffer,
-> > 	encapsulates into AVTP packets and transmits to the network,
-> > mimicking
-> > 	a typical AVTP Talker. When operating in capture mode, the
-> > plugin
-> > 	receives AVTP packets from the network, retrieves the PCM
-> > samples, and
-> > 	present them to alsa-lib layer at the presentation time,
-> > mimicking a
-> > 	typical AVTP Listener."
-> >=20
-> > For further information about what has been previously discussed,
-> > please refer
-> > to RFC series v1 and v2 archives in [5] and [6]. Finally, all
-> > versions of this
-> > series can be also found in my alsa-plugins tree in github [7].
+On Wed, 2018-10-10 at 12:27 +0200, Takashi Iwai wrote:
+> The function can be simplified to
 >=20
-> The codes look mostly good.  I'll post just a new nitpicking later.
->=20
-> But I'd like to postpone the merge until Pierre back from his
-> vacation and getting some feedback from him.
+> static int aaf_close(snd_pcm_ioplug_t *io)
+> {
+>         free(io->private_data);
+>         return 0;
+> }
 
-Ok, thanks for letting me know. I'll address your comments locally and
-wait for his feedback before pushing the v2.
+Ok, I'll implement it like that.
 
-> BTW, what's the good way to test this stuff locally?
-
-The minimal setup to test the plugin requires 2 machines connected
-back-to-back. The machines should be equipped with a TSN-capable NIC
-that supports PTP and FQTSS features. I'm using Intel i210 NIC.
-
-doc/aaf.txt provides detailed instructions on how to setup the PTP and
-FQTSS features from the NIC as well as how to run the plugin. If you
-have any trouble with the instructions, please let me know and I'll fix
-it for the next series version.
-
-Thanks,
-
-Andre
-
---=-QbjYQMIEBPQgoD1sx9u8
+- Andre
+--=-FxXPrv4MynVlqWBSKCXT
 Content-Type: application/x-pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -205,22 +105,22 @@ GEFQBOIaWrkyVuOpxEYrdZyiBtCLaaHr4PSG1aLfPy/3qUqes2sxggIXMIICEwIBATCBkDB5MQsw
 CQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFDASBgNVBAcTC1NhbnRhIENsYXJhMRowGAYDVQQKExFJ
 bnRlbCBDb3Jwb3JhdGlvbjErMCkGA1UEAxMiSW50ZWwgRXh0ZXJuYWwgQmFzaWMgSXNzdWluZyBD
 QSA0QgITMwAAVOqTIPExTt7mGQAAAABU6jAJBgUrDgMCGgUAoF0wGAYJKoZIhvcNAQkDMQsGCSqG
-SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgxMDEwMjExOTIzWjAjBgkqhkiG9w0BCQQxFgQUyqkq
-q/Jab7++XLRtL/onKaNbghMwDQYJKoZIhvcNAQEBBQAEggEALCj3HUd/3HM1QXJy8tWGxnFOuhil
-UjHPcBsLqm8W3/D13hECVWX4uBW+83dyZNN7+TzmW0vjl7OR4u5hj+xiYY0b+CC+o+haSZviV7QQ
-EO0VrJ4ntKXVnuYKSIFrf9XtBRhndNoafN4o7P/Q9bZ9b7WjtqFpJ5zMHejx7aUbGFnwVbBVtXp0
-UFDvEG8YRVdDUO4GoxIbI13L/v8Fn6ox0ddg83I20KiTmqb8FD87kDkKXMkFlZtheUDsCwyrsUy4
-HhkNaEskAOH14cKP4HJUMWCGYf2fPnCip3u284doFWTGOFsr4gtmZ8KW/PZ+a12ESCJ/bzRuJUlw
-KieyOlJG0QAAAAAAAA==
+SIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTgxMDEwMjEyMjQxWjAjBgkqhkiG9w0BCQQxFgQUQYY/
+z1NeVbWuQh8FtTGMvmz4f+UwDQYJKoZIhvcNAQEBBQAEggEAP8Kn40tR/EQTCfQCGEnoN2M1HPxI
+e/4tcQTbJ+owTSZtTVlGJVydTORb30yWdM70sCuxYblTvBGm+PwrHu1QP+qRNtonEUkaPFTcHOz1
+vzdzAbUlmH5Z9AY5dBHkNrkCMGtTh8aSpIKG+fJKlnpauFvkftz6e7HB84gPit/PkpNGSfbM9tU9
+SmKjMVHL/h50OA/DthJ4t+5LELk58Wuh1onJquktIfMIN1GJ14K6C7nzq2OgxL9CCscE4343RXre
+Clo3ST+j/AFamh/2nY20O/j0g3np6Krb9fAC+q9vnIhUdq7AqQ0Qjkvztl6ZFhYKc6MdCX01VE78
+TI9Gr1EOXwAAAAAAAA==
 
 
---=-QbjYQMIEBPQgoD1sx9u8--
+--=-FxXPrv4MynVlqWBSKCXT--
 
---===============5682664427577508035==
+--===============3482233126131982012==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============5682664427577508035==--
+--===============3482233126131982012==--
