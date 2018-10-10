@@ -1,34 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: use 32bit TDM width as default"
-	to the asoc tree
-Date: Wed, 10 Oct 2018 15:37:29 +0100 (BST)
-Message-ID: <20181010143729.8BED31122395@debutante.sirena.org.uk>
-References: <87a7nm1rdx.wl-kuninori.morimoto.gx@renesas.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 33E27267901
- for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 16:37:30 +0200 (CEST)
-In-Reply-To: <87a7nm1rdx.wl-kuninori.morimoto.gx@renesas.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: max98988: add I2C dependency" to the asoc tree
+Date: Wed, 10 Oct 2018 15:40:20 +0100 (BST)
+Message-ID: <20181010144021.010401122395@debutante.sirena.org.uk>
+References: <20181010083758.2874864-1-arnd@arndb.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181010083758.2874864-1-arnd@arndb.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Mark Brown <broonie@kernel.org>Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Liam Girdwood <lgirdwood@gmail.com>, Marco Felsch <m.felsch@pengutronix.de>alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: use 32bit TDM width as default
+   ASoC: max98988: add I2C dependency
 
 has been applied to the asoc tree at
 
@@ -53,35 +37,39 @@ to this mail.
 Thanks,
 Mark
 
->From 82ab7e9a4d3fcec27f745be04063e17da1881dda Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 10 Oct 2018 02:20:42 +0000
-Subject: [PATCH] ASoC: rsnd: use 32bit TDM width as default
+>From 9641faa2db7e856f50a6d1169e1b9f01e7fcb2b0 Mon Sep 17 00:00:00 2001
+From: Arnd Bergmann <arnd@arndb.de>
+Date: Wed, 10 Oct 2018 10:37:13 +0200
+Subject: [PATCH] ASoC: max98988: add I2C dependency
 
-commit fb2815f44a9e ("ASoC: rsnd: add support for 16/24 bit slot widths")
-added TDM width check, and return error if it was not 16/24/32 bit.
-But it is too strict. This patch uses 32bit same as default.
+max98988 only builds with I2C support enabled, otherwise we get a build error:
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+sound/soc/codecs/max98088.c:1789:1: error: data definition has no type or storage class [-Werror]
+ module_i2c_driver(max98088_i2c_driver);
+ ^~~~~~~~~~~~~~~~~
+sound/soc/codecs/max98088.c:1789:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
+sound/soc/codecs/max98088.c:1789:1: error: parameter names (without types) in function declaration [-Werror]
+sound/soc/codecs/max98088.c:1780:26: error: 'max98088_i2c_driver' defined but not used [-Werror=unused-variable]
+
+Fixes: 24ae67c58250 ("ASoC: max98988: make it selectable")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/codecs/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
-index 40d7dc4f7839..f930f51b686f 100644
---- a/sound/soc/sh/rcar/core.c
-+++ b/sound/soc/sh/rcar/core.c
-@@ -744,8 +744,8 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
- 	case 32:
- 		break;
- 	default:
--		dev_err(dev, "unsupported slot width value: %d\n", slot_width);
--		return -EINVAL;
-+		/* use default */
-+		slot_width = 32;
- 	}
+diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
+index 3c6bd6019b92..774d38310875 100644
+--- a/sound/soc/codecs/Kconfig
++++ b/sound/soc/codecs/Kconfig
+@@ -641,6 +641,7 @@ config SND_SOC_LM49453
  
- 	switch (slots) {
+ config SND_SOC_MAX98088
+ 	tristate "Maxim MAX98088/9 Low-Power, Stereo Audio Codec"
++	depends on I2C
+ 
+ config SND_SOC_MAX98090
+        tristate
 -- 
 2.19.0.rc2
