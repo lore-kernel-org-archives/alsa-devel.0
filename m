@@ -1,39 +1,66 @@
-From: Hui Wang <hui.wang@canonical.com>
-Subject: [PATCH] ALSA: hda/realtek - Fix the problem of the front MIC on the Lenovo M715
-Date: Wed, 10 Oct 2018 11:57:25 +0800
-Message-ID: <20181010035725.4252-1-hui.wang@canonical.com>
-Return-path: <stable-owner@vger.kernel.org>
-Sender: stable-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, tiwai@suse.de
-Cc: stable@vger.kernel.org
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: [PATCH 0/4] ALSA: firewire: block .remove callback of
+	bus
+Date: Wed, 10 Oct 2018 15:34:58 +0900
+Message-ID: <20181010063502.4698-1-o-takashi@sakamocchi.jp>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pl1-f195.google.com (mail-pl1-f195.google.com
+ [209.85.214.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 538822678AB
+ for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 08:35:10 +0200 (CEST)
+Received: by mail-pl1-f195.google.com with SMTP id q17-v6so2019585plr.8
+ for <alsa-devel@alsa-project.org>; Tue, 09 Oct 2018 23:35:10 -0700 (PDT)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: clemens@ladisch.de, tiwai@suse.de
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The front MIC on the Lenovo M715 can't record sound, after applying
-the ALC294_FIXUP_LENOVO_MIC_LOCATION, the problem is fixed. So add
-the pin configuration of this machine to the pin quirk table.
+Hi,
 
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Hui Wang <hui.wang@canonical.com>
----
- sound/pci/hda/patch_realtek.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+In a discussion for devres support[1], I realize difference of unbind
+behaviour of drivers in ALSA firewire stack and in the others. For
+consistency behaviour inner the same subsystem for users, it's better
+to imitate the behaviour.
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index 6f3c8e888c2a..2871c54f62ab 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -6840,6 +6840,12 @@ static const struct snd_hda_pin_quirk alc269_pin_fixup_tbl[] = {
- 		{0x1a, 0x02a11040},
- 		{0x1b, 0x01014020},
- 		{0x21, 0x0221101f}),
-+	SND_HDA_PIN_QUIRK(0x10ec0235, 0x17aa, "Lenovo", ALC294_FIXUP_LENOVO_MIC_LOCATION,
-+		{0x14, 0x90170110},
-+		{0x19, 0x02a11030},
-+		{0x1a, 0x02a11040},
-+		{0x1b, 0x01011020},
-+		{0x21, 0x0221101f}),
- 	SND_HDA_PIN_QUIRK(0x10ec0235, 0x17aa, "Lenovo", ALC294_FIXUP_LENOVO_MIC_LOCATION,
- 		{0x14, 0x90170110},
- 		{0x19, 0x02a11020},
+Additionally, blocking .remove function simplifies codes to releasing
+device.
+
+This commit uses 'snd_card_free()' instead of
+'snd_card_free_when_closed()' in .remove function and performs
+refactoring for release codes.
+
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-September/140431.html
+
+Takashi Sakamoto (4):
+  ALSA: firewire: block .remove callback of bus driver till all of ALSA
+    character devices are released
+  ALSA: firewire: release reference count of firewire unit in .remove
+    callback of bus driver
+  ALSA: bebob/fireworks: simplify handling of local device entry table
+  ALSA: firewire: simplify cleanup process when failing to register
+    sound card
+
+ sound/firewire/bebob/bebob.c         | 43 ++++++---------------
+ sound/firewire/dice/dice.c           | 35 ++++-------------
+ sound/firewire/digi00x/digi00x.c     | 28 +++++---------
+ sound/firewire/fireface/ff.c         | 28 +++++---------
+ sound/firewire/fireworks/fireworks.c | 56 ++++++++--------------------
+ sound/firewire/isight.c              |  8 ++--
+ sound/firewire/motu/motu.c           | 39 +++++--------------
+ sound/firewire/oxfw/oxfw.c           | 39 +++++--------------
+ sound/firewire/tascam/tascam.c       | 32 +++++-----------
+ 9 files changed, 90 insertions(+), 218 deletions(-)
+
 -- 
-2.17.1
+2.19.0
