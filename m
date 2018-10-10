@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: audio-graph-card: enable mclk-fs on
-	codec node" to the asoc tree
-Date: Wed, 10 Oct 2018 15:35:00 +0100 (BST)
-Message-ID: <20181010143500.D28A71122395@debutante.sirena.org.uk>
-References: <878t361rb1.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: use 32bit TDM width as default"
+	to the asoc tree
+Date: Wed, 10 Oct 2018 15:37:29 +0100 (BST)
+Message-ID: <20181010143729.8BED31122395@debutante.sirena.org.uk>
+References: <87a7nm1rdx.wl-kuninori.morimoto.gx@renesas.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1E3FE2678F3
- for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 16:35:02 +0200 (CEST)
-In-Reply-To: <878t361rb1.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 33E27267901
+ for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 16:37:30 +0200 (CEST)
+In-Reply-To: <87a7nm1rdx.wl-kuninori.morimoto.gx@renesas.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,12 +23,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: Jiada Wang <jiada_wang@mentor.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: audio-graph-card: enable mclk-fs on codec node
+   ASoC: rsnd: use 32bit TDM width as default
 
 has been applied to the asoc tree at
 
@@ -53,36 +53,35 @@ to this mail.
 Thanks,
 Mark
 
->From 8036dbc490d16dc3d998246e14c9507ec8272ae2 Mon Sep 17 00:00:00 2001
+>From 82ab7e9a4d3fcec27f745be04063e17da1881dda Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 10 Oct 2018 02:22:29 +0000
-Subject: [PATCH] ASoC: audio-graph-card: enable mclk-fs on codec node
+Date: Wed, 10 Oct 2018 02:20:42 +0000
+Subject: [PATCH] ASoC: rsnd: use 32bit TDM width as default
 
-Current audio-graph-card is supporting mclk-fs on CPU node
-side only. But having Codec node also is good idea.
-It will be just ignored if not defined.
-
-"rcpu_ep" is same as "cpu_ep", This patch tidyup it, too.
+commit fb2815f44a9e ("ASoC: rsnd: add support for 16/24 bit slot widths")
+added TDM width check, and return error if it was not 16/24/32 bit.
+But it is too strict. This patch uses 32bit same as default.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/generic/audio-graph-card.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ sound/soc/sh/rcar/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/generic/audio-graph-card.c b/sound/soc/generic/audio-graph-card.c
-index fb6635f8d5d7..25c819e402e1 100644
---- a/sound/soc/generic/audio-graph-card.c
-+++ b/sound/soc/generic/audio-graph-card.c
-@@ -182,7 +182,8 @@ static int asoc_graph_card_dai_link_of(struct device_node *cpu_port,
- 	if (ret < 0)
- 		goto dai_link_of_err;
+diff --git a/sound/soc/sh/rcar/core.c b/sound/soc/sh/rcar/core.c
+index 40d7dc4f7839..f930f51b686f 100644
+--- a/sound/soc/sh/rcar/core.c
++++ b/sound/soc/sh/rcar/core.c
+@@ -744,8 +744,8 @@ static int rsnd_soc_set_dai_tdm_slot(struct snd_soc_dai *dai,
+ 	case 32:
+ 		break;
+ 	default:
+-		dev_err(dev, "unsupported slot width value: %d\n", slot_width);
+-		return -EINVAL;
++		/* use default */
++		slot_width = 32;
+ 	}
  
--	of_property_read_u32(rcpu_ep, "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(cpu_ep,   "mclk-fs", &dai_props->mclk_fs);
-+	of_property_read_u32(codec_ep, "mclk-fs", &dai_props->mclk_fs);
- 
- 	ret = asoc_simple_card_parse_graph_cpu(cpu_ep, dai_link);
- 	if (ret < 0)
+ 	switch (slots) {
 -- 
 2.19.0.rc2
