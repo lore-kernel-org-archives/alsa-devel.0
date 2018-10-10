@@ -1,45 +1,44 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: [PATCH] pinctrl: madera: Fix uninitialized variable issue in
- madera_mux_set_mux
-Date: Wed, 10 Oct 2018 16:13:53 +0200
-Message-ID: <20181010141353.GA14382@embeddedor.com>
+From: Colin King <colin.king@canonical.com>
+Subject: [PATCH] ALSA: cs4236: fix return check from call to pnp_port_start
+Date: Wed, 10 Oct 2018 15:15:42 +0100
+Message-ID: <20181010141542.16100-1-colin.king@canonical.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: linux-kernel-owner@vger.kernel.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>, Richard Fitzgerald <rf@opensource.cirrus.com>, Linus Walleij <linus.walleij@linaro.org>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-There is a potential execution path in which variable *ret* is checked
-in an IF statement, and then its value is used to report an error at
-line 659 without being properly initialized previously:
+From: Colin Ian King <colin.king@canonical.com>
 
-659 if (ret)
-660	dev_err(priv->dev, "Failed to write to 0x%x (%d)\n", reg, ret);
+Currently the return from pnp_port_start is being checked for validity
+by checking if it is greater or equal to zero, however, the return
+is unsigned and hence this check is always true.  An 0 return from
+pnp_port_start is actually an error, so fix the check by checking
+for validity when it is non-zero.
 
-Fix this by initializing variable *ret* to -1.
+Detected by CoverityScan, CID#1468334 ("Unsigned compared to 0")
 
-Addresses-Coverity-ID: 1471969 ("Uninitialized scalar variable")
-Fixes: 218d72a77b0b ("pinctrl: madera: Add driver for Cirrus Logic Madera codecs")
-Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+Fixes: a9824c868a2c ("[ALSA] Add CS4232 PnP BIOS support")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
- drivers/pinctrl/cirrus/pinctrl-madera-core.c | 2 +-
+ sound/isa/cs423x/cs4236.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/pinctrl/cirrus/pinctrl-madera-core.c b/drivers/pinctrl/cirrus/pinctrl-madera-core.c
-index 0266302..a99ace8 100644
---- a/drivers/pinctrl/cirrus/pinctrl-madera-core.c
-+++ b/drivers/pinctrl/cirrus/pinctrl-madera-core.c
-@@ -608,7 +608,7 @@ static int madera_mux_set_mux(struct pinctrl_dev *pctldev,
- 	unsigned int n_chip_groups = priv->chip->n_pin_groups;
- 	const char *func_name = madera_mux_funcs[selector].name;
- 	unsigned int reg;
--	int i, ret;
-+	int i, ret = -1;
- 
- 	dev_dbg(priv->dev, "%s selecting %u (%s) for group %u (%s)\n",
- 		__func__, selector, func_name, group,
+diff --git a/sound/isa/cs423x/cs4236.c b/sound/isa/cs423x/cs4236.c
+index 70559e59d18f..2211c39d2c18 100644
+--- a/sound/isa/cs423x/cs4236.c
++++ b/sound/isa/cs423x/cs4236.c
+@@ -292,7 +292,7 @@ static int snd_cs423x_pnp_init_mpu(int dev, struct pnp_dev *pdev)
+ 		mpu_irq[dev] = SNDRV_AUTO_IRQ;
+ 	} else {
+ 		mpu_port[dev] = pnp_port_start(pdev, 0);
+-		if (mpu_irq[dev] >= 0 &&
++		if (!mpu_irq[dev] &&
+ 		    pnp_irq_valid(pdev, 0) && pnp_irq(pdev, 0) >= 0) {
+ 			mpu_irq[dev] = pnp_irq(pdev, 0);
+ 		} else {
 -- 
-2.7.4
+2.17.1
