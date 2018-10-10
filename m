@@ -1,62 +1,83 @@
-From: Ryan Lee <RyanS.Lee@maximintegrated.com>
-Subject: [PATCH 4/4] ASoC: max98373: Sort DHT Rot Pnt Volume in reverse order
-Date: Wed, 10 Oct 2018 23:26:17 +0000
-Message-ID: <20181010232222.52340-4-ryans.lee@maximintegrated.com>
-References: <20181010232222.52340-1-ryans.lee@maximintegrated.com>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181010232222.52340-1-ryans.lee@maximintegrated.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "broonie@kernel.org" <broonie@kernel.org>, "perex@perex.cz" <perex@perex.cz>, "tiwai@suse.com" <tiwai@suse.com>, Ryan Lee <RyanS.Lee@maximintegrated.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "ryan.lee.maxim@gmail.com" <ryan.lee.maxim@gmail.com>
+From: Andy Davison <andy@dvsn.net>
+Subject: Re: Fixing EAPD for STAC9202 on an embedded platform.
+Date: Thu, 11 Oct 2018 00:42:38 +0100
+Message-ID: <74DC9094-B62F-4B8D-A1B4-EC6A325B8D9E@dvsn.net>
+References: <BCFAA68D-E8B6-4D2F-85DB-73A3B2F82C1A@dvsn.net>
+ <s5hva7d1i8y.wl-tiwai@suse.de>
+ <00C65088-E8BE-447B-A6A2-88B1BABC41D0@dvsn.net>
+ <s5hlg892j0a.wl-tiwai@suse.de>
+ <5127F8D0-09C1-4840-939E-FBAED6474675@dvsn.net>
+ <s5hefe037gv.wl-tiwai@suse.de>
+ <3C3DAB5C-7CF4-445C-9C83-45C1C6B8A167@dvsn.net>
+ <9C6C4A8F-E456-4CBF-A782-7DEF992668B5@dvsn.net>
+ <s5h4le1l8r1.wl-tiwai@suse.de>
+ <9546175A-16F2-4E0C-97CB-5EAFCBBBBF49@dvsn.net>
+ <9420949D-2352-4EFD-8E37-9F09639DD0FD@dvsn.net>
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-wr1-f43.google.com (mail-wr1-f43.google.com
+ [209.85.221.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9661B2678D9
+ for <alsa-devel@alsa-project.org>; Thu, 11 Oct 2018 01:42:41 +0200 (CEST)
+Received: by mail-wr1-f43.google.com with SMTP id x12-v6so7544684wru.8
+ for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 16:42:41 -0700 (PDT)
+In-Reply-To: <9420949D-2352-4EFD-8E37-9F09639DD0FD@dvsn.net>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Signed-off-by: Ryan Lee <ryans.lee@maximintegrated.com>
----
- Changes : Sort 'max98373_dht_spkgain_min_tlv' in reverse order.
-           Fixed wrong use case of 'TLV_DB_SCALE_ITEM' - TLV_DB_SCALE_ITEM(=
-min, step, mute)
-		   Max value was set in min field and negative value was set in step fiel=
-d before.
-
- sound/soc/codecs/max98373.c | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/sound/soc/codecs/max98373.c b/sound/soc/codecs/max98373.c
-index e9c082c..e75c212 100644
---- a/sound/soc/codecs/max98373.c
-+++ b/sound/soc/codecs/max98373.c
-@@ -470,12 +470,12 @@ static const DECLARE_TLV_DB_RANGE(max98373_dht_spkgai=
-n_min_tlv,
- 	0, 9, TLV_DB_SCALE_ITEM(800, 100, 0),
- );
- static const DECLARE_TLV_DB_RANGE(max98373_dht_rotation_point_tlv,
--	0, 1, TLV_DB_SCALE_ITEM(-50, -50, 0),
--	2, 7, TLV_DB_SCALE_ITEM(-200, -100, 0),
--	8, 9, TLV_DB_SCALE_ITEM(-1000, -200, 0),
--	10, 11, TLV_DB_SCALE_ITEM(-1500, -300, 0),
--	12, 13, TLV_DB_SCALE_ITEM(-2000, -200, 0),
--	14, 15, TLV_DB_SCALE_ITEM(-2500, -500, 0),
-+	0, 1, TLV_DB_SCALE_ITEM(-3000, 500, 0),
-+	2, 4, TLV_DB_SCALE_ITEM(-2200, 200, 0),
-+	5, 6, TLV_DB_SCALE_ITEM(-1500, 300, 0),
-+	7, 9, TLV_DB_SCALE_ITEM(-1000, 200, 0),
-+	10, 13, TLV_DB_SCALE_ITEM(-500, 100, 0),
-+	14, 15, TLV_DB_SCALE_ITEM(-100, 50, 0),
- );
- static const DECLARE_TLV_DB_RANGE(max98373_limiter_thresh_tlv,
- 	0, 15, TLV_DB_SCALE_ITEM(-1500, 100, 0),
-@@ -616,7 +616,7 @@ SOC_SINGLE("DHT Switch", MAX98373_R20D4_DHT_EN,
- SOC_SINGLE_TLV("DHT Min Volume", MAX98373_R20D1_DHT_CFG,
- 	MAX98373_DHT_SPK_GAIN_MIN_SHIFT, 9, 0, max98373_dht_spkgain_min_tlv),
- SOC_SINGLE_TLV("DHT Rot Pnt Volume", MAX98373_R20D1_DHT_CFG,
--	MAX98373_DHT_ROT_PNT_SHIFT, 15, 0, max98373_dht_rotation_point_tlv),
-+	MAX98373_DHT_ROT_PNT_SHIFT, 15, 1, max98373_dht_rotation_point_tlv),
- SOC_SINGLE_TLV("DHT Attack Step Volume", MAX98373_R20D2_DHT_ATTACK_CFG,
- 	MAX98373_DHT_ATTACK_STEP_SHIFT, 4, 0, max98373_dht_step_size_tlv),
- SOC_SINGLE_TLV("DHT Release Step Volume", MAX98373_R20D3_DHT_RELEASE_CFG,
---=20
-2.7.4
+Cj4gT24gMTAgT2N0IDIwMTgsIGF0IDEwOjI5LCBBbmR5IERhdmlzb24gd3JvdGU6Cj4gCj4+PiBU
+aGF0IHNhaWQsIHdlIG5lZWQgYSAiZ29vZC13b3JraW5nIiBleGFtcGxlIG9mIHRoZSB3aG9sZSBy
+b3V0aW5ncywKPj4+IHRoZW4gYWRqdXN0IGtub2JzIHRvIGFjaGlldmUgdGhpcyB3aXRoIHRoZSBh
+dXRvLXBhcnNlci4KPj4gCj4+IERvIHlvdSBtZWFuIHRoZSBwaHlzaWNhbCBjb25uZWN0aW9ucyBv
+ZiB0aGUgU1RBQzkyMDIgY2hpcCBvbiB0aGUgYm9hcmQ/Cj4+IAo+PiBTbyBmYXIgYXMgSSBjYW4g
+c2VlLCAweDBhIGlzIGhhbmRsaW5nIGFsbCBvZiB0aGUgYXVkaW8gb3V0cHV0IC0gSFAvTE8gYW5k
+IHRoZSBzdGVyZW8gaW50ZXJuYWwgc3BlYWtlcnMgLSBpbnRvIGFuIGFtcGxpZmllciBjaXJjdWl0
+IG9uIHRoZSBib2FyZC4gVGhlcmXigJlzIGEgY29ubmVjdGlvbiB0byB3aGF0IGFwcGVhcnMgdG8g
+YmUgYW4gdW5wb3B1bGF0ZWQgYXJlYSBmcm9tIDB4MGQgd2hpY2ggbWF5IHdlbGwgYmUgZm9yIGFu
+IERFQ1QgY2lyY3VpdCB0aGF04oCZcyBub3QgcHJlc2VudCBvbiB0aGlzIHVuaXQuIFBpbiAweDA3
+IGhhcyBzb21lIGludm9sdmVtZW50IHdpdGggdGhlIHN3aXRjaGluZyBvZmYgb2YgdGhlIGludGVy
+bmFsIHNwZWFrZXJzLCBhcyB0aGF0IGlzIHdoYXQgd2FzIGZvcmNlZCBpbiB0aGUgb3JpZ2luYWwg
+cGF0Y2ggZm9yIHRoZSAzLjEwIGtlcm5lbCAob2xkIHBhdGNoIGJlbG93KS4KPj4gCj4+IGh0dHBz
+Oi8vZ2l0aHViLmNvbS9hbmR5ZHZzbi9PcGVuRnJhbWUtS2VybmVsL2Jsb2IvbWFzdGVyL3BhdGNo
+ZXMvMDMtc3RhYzkyMDItYXVkaW8tcGluLXR3ZWFrLnBhdGNoCj4+IAo+PiBUaGUgamFjayBkZXRl
+Y3Rpb24gaXMgd29ya2luZyBqdXN0IGZpbmUsIHNvIG15IGd1ZXNzIGlzIHRoYXQgc29tZSBzb3J0
+IG9mIHRyaWdnZXIgb24gMHgwNyBpcyB3aGF04oCZcyByZXF1aXJlZCB0byBzaHV0IGRvd24gdGhl
+IHNwZWFrZXJzIGFuZCBwcmV2ZW50IHRoZSBjcmFja2xpbmcuCj4gCj4gSeKAmXZlIG5vdyBjb21w
+aWxlZCB0aGUgbGF0ZXN0IDMuMTYga2VybmVsIHdpdGggdGhlIG9yaWdpbmFsIHBhdGNoIGFuZCB0
+aGF0IHN0aWxsIHdvcmtzIHBlcmZlY3RseS4gRm9yIGNvbXBhcmlzb24sIGhlcmUgYXJlIHRoZSBh
+bHNhLWluZm8gb3V0cHV0cyBmb3IgdGhlIHZhbmlsbGEgNC4xNCBhbmQgdGhlIHBhdGNoZWQgMy4x
+Ni4KPiAKPiAKPiBUaGlzIGlzIGtlcm5lbCA0LjE0Ljc0IHdpdGggbm8gQUxTQSBwYXRjaGVzIGFw
+cGxpZWQuIEl0IGlnbm9yZXMgCgrigKZpdCBpZ25vcmVzIHRoZSBpbnNlcnRpb24gb2YgdGhlIEhQ
+L0xPIGphY2sgYW5kIGNvbnRpbnVlcyB0byBwbGF5IHRocm91Z2ggaW50ZXJuYWwgc3BlYWtlcnMu
+CgoKPiBodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9MmYxMGYwZjI1YzJlMmI2ZmY5
+YzRkMGIzMTI2NzVlMDVmN2U5ZTYzNAo+IAo+IAo+IFRoaXMgaXMga2VybmVsIDMuMTYuNTkgd29y
+a2luZyBwZXJmZWN0bHkgd2l0aCB0aGUgb2xkIGtlcm5lbCBwYXRjaCBmcm9tIEdpdEh1YiBhYm92
+ZSBhbmQgdGhlIHBpbiBzZXR0aW5ncyBhcHBsaWVkIGluIG9mMS1zdGFjOTIwMi5jb25mOgo+IAo+
+IGh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj1mYjdjZjc0MDA2OTFkNjBmMmQzYzVj
+MzBiYTgyNTUxNmQ0ZDRjZjZkCj4gCgpJbiBjYXNlIGl0IGlzIG9mIHVzZSwgSeKAmXZlIGFsc28g
+Z29uZSBiYWNrIHRvIHRoZSBlYXJsaWVzdCBzdXBwb3J0ZWQga2VybmVsIHdoZXJlIHRoZSBjcmFj
+a2xpbmcgaXNzdWUgZmlyc3QgYXBwZWFyZWQgLSBrZXJuZWwgNC40LgoKRm9sbG93aW5nIGxvYWRp
+bmcgb2YgdGhlIHBpbiBwYXRjaCBmaWxlLCBqYWNrIGRldGVjdGlvbiBzdGFydGVkIHdvcmtpbmcs
+IHRob3VnaCB3aXRoIHRoZSBjcmFja2xpbmcgcHJlc2VudCBvbiB0aGUgaW50ZXJuYWwgc3BlYWtl
+cnMuCgpodHRwOi8vd3d3LmFsc2EtcHJvamVjdC5vcmcvZGIvP2Y9ZjE1MjIxMjhkNTM4M2JlNDIx
+MzBjYTI0OTJlOTQ5NTlhNzVjNTUzZQoKVGhpcyBhbHNhLWluZm8gb3V0cHV0IGlzIHZlcnkgc2lt
+aWxhciB0byAzLjE2LCBidXQgc2hvd2luZyBzdHJlYW09MCBvbiAweDA1IGluc3RlYWQgb2Ygc3Ry
+ZWFtPTQgaW4gdGhlIHdvcmtpbmcgMy4xNiBjb25maWcuIEFsc28sIEVBUEQgMHgwIG9uIDB4MDcg
+aW4gdGhlIHdvcmtpbmcgMy4xNiBjb25maWcgaGFzIGJlY29tZSBFQVBEIDB4MjogRUFQRCBmb3Ig
+NC40LiBJ4oCZdmUgc2VhcmNoZWQsIGJ1dCBjYW7igJl0IHNlZSBob3cgdG8gYWRqdXN0IHRoZXNl
+IGluIHVzZXJsYW5kIC0gY2FuIGl0IGJlIGRvbmU/CgpUaGFua3MsCgogICAgIEFuZHkuCgoKCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
