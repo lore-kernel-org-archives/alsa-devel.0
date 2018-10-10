@@ -1,70 +1,45 @@
-From: Marco Felsch <m.felsch@pengutronix.de>
-Subject: Re: [PATCH] ASoC: max98988: add I2C dependency
-Date: Wed, 10 Oct 2018 14:05:39 +0200
-Message-ID: <20181010120539.ija2n7chqrtx2fdh@pengutronix.de>
-References: <20181010083758.2874864-1-arnd@arndb.de>
+From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Subject: [PATCH] pinctrl: madera: Fix uninitialized variable issue in
+ madera_mux_set_mux
+Date: Wed, 10 Oct 2018 16:13:53 +0200
+Message-ID: <20181010141353.GA14382@embeddedor.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de
- [85.220.165.71])
- by alsa0.perex.cz (Postfix) with ESMTP id 2F8B62678AB
- for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 14:05:40 +0200 (CEST)
+Content-Type: text/plain; charset=us-ascii
+Return-path: <linux-kernel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20181010083758.2874864-1-arnd@arndb.de>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Arnd Bergmann <arnd@arndb.de>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, linux-kernel@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, Richard Fitzgerald <rf@opensource.cirrus.com>, Linus Walleij <linus.walleij@linaro.org>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, "Gustavo A. R. Silva" <gustavo@embeddedor.com>
 List-Id: alsa-devel@alsa-project.org
 
-Hi Arnd,
+There is a potential execution path in which variable *ret* is checked
+in an IF statement, and then its value is used to report an error at
+line 659 without being properly initialized previously:
 
-On 18-10-10 10:37, Arnd Bergmann wrote:
-> max98988 only builds with I2C support enabled, otherwise we get a build error:
-> 
-> sound/soc/codecs/max98088.c:1789:1: error: data definition has no type or storage class [-Werror]
->  module_i2c_driver(max98088_i2c_driver);
->  ^~~~~~~~~~~~~~~~~
-> sound/soc/codecs/max98088.c:1789:1: error: type defaults to 'int' in declaration of 'module_i2c_driver' [-Werror=implicit-int]
-> sound/soc/codecs/max98088.c:1789:1: error: parameter names (without types) in function declaration [-Werror]
-> sound/soc/codecs/max98088.c:1780:26: error: 'max98088_i2c_driver' defined but not used [-Werror=unused-variable]
-> 
-> Fixes: 24ae67c58250 ("ASoC: max98988: make it selectable")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+659 if (ret)
+660	dev_err(priv->dev, "Failed to write to 0x%x (%d)\n", reg, ret);
 
-Thanks for covering the issue.
+Fix this by initializing variable *ret* to -1.
 
-Reviewed-by: Marco Felsch <m.felsch@pengutronix.de>
+Addresses-Coverity-ID: 1471969 ("Uninitialized scalar variable")
+Fixes: 218d72a77b0b ("pinctrl: madera: Add driver for Cirrus Logic Madera codecs")
+Signed-off-by: Gustavo A. R. Silva <gustavo@embeddedor.com>
+---
+ drivers/pinctrl/cirrus/pinctrl-madera-core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Regrads,
-Marco
-
-> ---
->  sound/soc/codecs/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/sound/soc/codecs/Kconfig b/sound/soc/codecs/Kconfig
-> index 3c6bd6019b92..774d38310875 100644
-> --- a/sound/soc/codecs/Kconfig
-> +++ b/sound/soc/codecs/Kconfig
-> @@ -641,6 +641,7 @@ config SND_SOC_LM49453
->  
->  config SND_SOC_MAX98088
->  	tristate "Maxim MAX98088/9 Low-Power, Stereo Audio Codec"
-> +	depends on I2C
->  
->  config SND_SOC_MAX98090
->         tristate
-> -- 
-> 2.18.0
-> 
-> 
+diff --git a/drivers/pinctrl/cirrus/pinctrl-madera-core.c b/drivers/pinctrl/cirrus/pinctrl-madera-core.c
+index 0266302..a99ace8 100644
+--- a/drivers/pinctrl/cirrus/pinctrl-madera-core.c
++++ b/drivers/pinctrl/cirrus/pinctrl-madera-core.c
+@@ -608,7 +608,7 @@ static int madera_mux_set_mux(struct pinctrl_dev *pctldev,
+ 	unsigned int n_chip_groups = priv->chip->n_pin_groups;
+ 	const char *func_name = madera_mux_funcs[selector].name;
+ 	unsigned int reg;
+-	int i, ret;
++	int i, ret = -1;
+ 
+ 	dev_dbg(priv->dev, "%s selecting %u (%s) for group %u (%s)\n",
+ 		__func__, selector, func_name, group,
+-- 
+2.7.4
