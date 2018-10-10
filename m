@@ -1,19 +1,19 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [PATCH 1/4] ALSA: firewire: block .remove callback of
-	bus driver till all of ALSA character devices are released
-Date: Wed, 10 Oct 2018 15:34:59 +0900
-Message-ID: <20181010063502.4698-2-o-takashi@sakamocchi.jp>
+Subject: [PATCH 4/4] ALSA: firewire: simplify cleanup process
+	when failing to register sound card
+Date: Wed, 10 Oct 2018 15:35:02 +0900
+Message-ID: <20181010063502.4698-5-o-takashi@sakamocchi.jp>
 References: <20181010063502.4698-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
- [209.85.210.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 752232678CC
- for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 08:35:13 +0200 (CEST)
-Received: by mail-pf1-f196.google.com with SMTP id j23-v6so2111464pfi.4
- for <alsa-devel@alsa-project.org>; Tue, 09 Oct 2018 23:35:13 -0700 (PDT)
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
+ [209.85.214.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id F27E52678AB
+ for <alsa-devel@alsa-project.org>; Wed, 10 Oct 2018 08:35:18 +0200 (CEST)
+Received: by mail-pl1-f193.google.com with SMTP id p25-v6so2008369pli.11
+ for <alsa-devel@alsa-project.org>; Tue, 09 Oct 2018 23:35:18 -0700 (PDT)
 In-Reply-To: <20181010063502.4698-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,149 +28,485 @@ To: clemens@ladisch.de, tiwai@suse.de
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-At present, in .remove callback of bus driver just decrease reference
-count of device for ALSA card instance. This delegates release of the
-device to a process in which the last of ALSA character device is
-released.
+In former commits, .private_free callback releases resources just for
+data transmission. This release function can be called without the
+resources are actually allocated in error paths.
 
-On the other hand, the other drivers such as for devices on PCIe are
-programmed to block .remove callback of bus driver till all of ALSA
-character devices are released.
-
-For consistency of behaviour for whole drivers, this probably confuses
-users. This commit takes drivers in ALSA firewire stack to imitate the
-above behaviour.
+This commit applies a small refactoring to clean up codes in error
+paths.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- sound/firewire/bebob/bebob.c         | 4 ++--
- sound/firewire/digi00x/digi00x.c     | 4 ++--
- sound/firewire/fireface/ff.c         | 4 ++--
- sound/firewire/fireworks/fireworks.c | 4 ++--
- sound/firewire/isight.c              | 3 ++-
- sound/firewire/motu/motu.c           | 4 ++--
- sound/firewire/oxfw/oxfw.c           | 4 ++--
- sound/firewire/tascam/tascam.c       | 4 ++--
- 8 files changed, 16 insertions(+), 15 deletions(-)
+ sound/firewire/bebob/bebob.c         | 27 +++++++--------------------
+ sound/firewire/dice/dice.c           | 26 +++++---------------------
+ sound/firewire/digi00x/digi00x.c     | 15 +++++----------
+ sound/firewire/fireface/ff.c         | 15 +++++----------
+ sound/firewire/fireworks/fireworks.c | 28 +++++++---------------------
+ sound/firewire/motu/motu.c           | 26 +++++---------------------
+ sound/firewire/oxfw/oxfw.c           | 26 +++++---------------------
+ sound/firewire/tascam/tascam.c       | 19 +++++--------------
+ 8 files changed, 44 insertions(+), 138 deletions(-)
 
 diff --git a/sound/firewire/bebob/bebob.c b/sound/firewire/bebob/bebob.c
-index 72b04214a3b5..3a5579cb3aa8 100644
+index 3bc68499974a..672d13488454 100644
 --- a/sound/firewire/bebob/bebob.c
 +++ b/sound/firewire/bebob/bebob.c
-@@ -374,8 +374,8 @@ static void bebob_remove(struct fw_unit *unit)
- 	cancel_delayed_work_sync(&bebob->dwork);
- 
- 	if (bebob->registered) {
--		/* No need to wait for releasing card object in this context. */
--		snd_card_free_when_closed(bebob->card);
-+		// Block till all of ALSA character devices are released.
-+		snd_card_free(bebob->card);
- 	} else {
- 		/* Don't forget this case. */
- 		bebob_free(bebob);
-diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
-index 654420f1c9bd..554d7ff737a2 100644
---- a/sound/firewire/digi00x/digi00x.c
-+++ b/sound/firewire/digi00x/digi00x.c
-@@ -172,8 +172,8 @@ static void snd_dg00x_remove(struct fw_unit *unit)
- 	cancel_delayed_work_sync(&dg00x->dwork);
- 
- 	if (dg00x->registered) {
--		/* No need to wait for releasing card object in this context. */
--		snd_card_free_when_closed(dg00x->card);
-+		// Block till all of ALSA character devices are released.
-+		snd_card_free(dg00x->card);
- 	} else {
- 		/* Don't forget this case. */
- 		dg00x_free(dg00x);
-diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
-index 98731bd8816f..73425dfe63bf 100644
---- a/sound/firewire/fireface/ff.c
-+++ b/sound/firewire/fireface/ff.c
-@@ -145,8 +145,8 @@ static void snd_ff_remove(struct fw_unit *unit)
- 	cancel_work_sync(&ff->dwork.work);
- 
- 	if (ff->registered) {
--		/* No need to wait for releasing card object in this context. */
--		snd_card_free_when_closed(ff->card);
-+		// Block till all of ALSA character devices are released.
-+		snd_card_free(ff->card);
- 	} else {
- 		/* Don't forget this case. */
- 		ff_free(ff);
-diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
-index f680e2f27806..5a17ead86e61 100644
---- a/sound/firewire/fireworks/fireworks.c
-+++ b/sound/firewire/fireworks/fireworks.c
-@@ -358,8 +358,8 @@ static void efw_remove(struct fw_unit *unit)
- 	cancel_delayed_work_sync(&efw->dwork);
- 
- 	if (efw->registered) {
--		/* No need to wait for releasing card object in this context. */
--		snd_card_free_when_closed(efw->card);
-+		// Block till all of ALSA character devices are released.
-+		snd_card_free(efw->card);
- 	} else {
- 		/* Don't forget this case. */
- 		efw_free(efw);
-diff --git a/sound/firewire/isight.c b/sound/firewire/isight.c
-index 30957477e005..1f591c8805ea 100644
---- a/sound/firewire/isight.c
-+++ b/sound/firewire/isight.c
-@@ -703,7 +703,8 @@ static void isight_remove(struct fw_unit *unit)
- 	isight_stop_streaming(isight);
- 	mutex_unlock(&isight->mutex);
- 
--	snd_card_free_when_closed(isight->card);
-+	// Block till all of ALSA character devices are released.
-+	snd_card_free(isight->card);
+@@ -126,8 +126,11 @@ name_device(struct snd_bebob *bebob)
+ 	return err;
  }
  
- static const struct ieee1394_device_id isight_id_table[] = {
+-static void bebob_free(struct snd_bebob *bebob)
++static void
++bebob_card_free(struct snd_card *card)
+ {
++	struct snd_bebob *bebob = card->private_data;
++
+ 	mutex_lock(&devices_mutex);
+ 	clear_bit(bebob->card_index, devices_used);
+ 	mutex_unlock(&devices_mutex);
+@@ -135,18 +138,6 @@ static void bebob_free(struct snd_bebob *bebob)
+ 	snd_bebob_stream_destroy_duplex(bebob);
+ }
+ 
+-/*
+- * This module releases the FireWire unit data after all ALSA character devices
+- * are released by applications. This is for releasing stream data or finishing
+- * transactions safely. Thus at returning from .remove(), this module still keep
+- * references for the unit.
+- */
+-static void
+-bebob_card_free(struct snd_card *card)
+-{
+-	bebob_free(card->private_data);
+-}
+-
+ static const struct snd_bebob_spec *
+ get_saffire_spec(struct fw_unit *unit)
+ {
+@@ -202,6 +193,9 @@ do_registration(struct work_struct *work)
+ 	set_bit(card_index, devices_used);
+ 	mutex_unlock(&devices_mutex);
+ 
++	bebob->card->private_free = bebob_card_free;
++	bebob->card->private_data = bebob;
++
+ 	err = name_device(bebob);
+ 	if (err < 0)
+ 		goto error;
+@@ -241,17 +235,10 @@ do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	/*
+-	 * After registered, bebob instance can be released corresponding to
+-	 * releasing the sound card instance.
+-	 */
+-	bebob->card->private_free = bebob_card_free;
+-	bebob->card->private_data = bebob;
+ 	bebob->registered = true;
+ 
+ 	return;
+ error:
+-	snd_bebob_stream_destroy_duplex(bebob);
+ 	snd_card_free(bebob->card);
+ 	dev_info(&bebob->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
+diff --git a/sound/firewire/dice/dice.c b/sound/firewire/dice/dice.c
+index c6b63e3f36a8..0f6dbcffe711 100644
+--- a/sound/firewire/dice/dice.c
++++ b/sound/firewire/dice/dice.c
+@@ -122,23 +122,14 @@ static void dice_card_strings(struct snd_dice *dice)
+ 	strcpy(card->mixername, "DICE");
+ }
+ 
+-static void dice_free(struct snd_dice *dice)
++static void dice_card_free(struct snd_card *card)
+ {
++	struct snd_dice *dice = card->private_data;
++
+ 	snd_dice_stream_destroy_duplex(dice);
+ 	snd_dice_transaction_destroy(dice);
+ }
+ 
+-/*
+- * This module releases the FireWire unit data after all ALSA character devices
+- * are released by applications. This is for releasing stream data or finishing
+- * transactions safely. Thus at returning from .remove(), this module still keep
+- * references for the unit.
+- */
+-static void dice_card_free(struct snd_card *card)
+-{
+-	dice_free(card->private_data);
+-}
+-
+ static void do_registration(struct work_struct *work)
+ {
+ 	struct snd_dice *dice = container_of(work, struct snd_dice, dwork.work);
+@@ -151,6 +142,8 @@ static void do_registration(struct work_struct *work)
+ 			   &dice->card);
+ 	if (err < 0)
+ 		return;
++	dice->card->private_free = dice_card_free;
++	dice->card->private_data = dice;
+ 
+ 	err = snd_dice_transaction_init(dice);
+ 	if (err < 0)
+@@ -188,19 +181,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	/*
+-	 * After registered, dice instance can be released corresponding to
+-	 * releasing the sound card instance.
+-	 */
+-	dice->card->private_free = dice_card_free;
+-	dice->card->private_data = dice;
+ 	dice->registered = true;
+ 
+ 	return;
+ error:
+-	snd_dice_stream_destroy_duplex(dice);
+-	snd_dice_transaction_destroy(dice);
+-	snd_dice_stream_destroy_duplex(dice);
+ 	snd_card_free(dice->card);
+ 	dev_info(&dice->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
+diff --git a/sound/firewire/digi00x/digi00x.c b/sound/firewire/digi00x/digi00x.c
+index 7a24348968b9..6c6ea149ef6b 100644
+--- a/sound/firewire/digi00x/digi00x.c
++++ b/sound/firewire/digi00x/digi00x.c
+@@ -41,17 +41,14 @@ static int name_card(struct snd_dg00x *dg00x)
+ 	return 0;
+ }
+ 
+-static void dg00x_free(struct snd_dg00x *dg00x)
++static void dg00x_card_free(struct snd_card *card)
+ {
++	struct snd_dg00x *dg00x = card->private_data;
++
+ 	snd_dg00x_stream_destroy_duplex(dg00x);
+ 	snd_dg00x_transaction_unregister(dg00x);
+ }
+ 
+-static void dg00x_card_free(struct snd_card *card)
+-{
+-	dg00x_free(card->private_data);
+-}
+-
+ static void do_registration(struct work_struct *work)
+ {
+ 	struct snd_dg00x *dg00x =
+@@ -65,6 +62,8 @@ static void do_registration(struct work_struct *work)
+ 			   &dg00x->card);
+ 	if (err < 0)
+ 		return;
++	dg00x->card->private_free = dg00x_card_free;
++	dg00x->card->private_data = dg00x;
+ 
+ 	err = name_card(dg00x);
+ 	if (err < 0)
+@@ -96,14 +95,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	dg00x->card->private_free = dg00x_card_free;
+-	dg00x->card->private_data = dg00x;
+ 	dg00x->registered = true;
+ 
+ 	return;
+ error:
+-	snd_dg00x_transaction_unregister(dg00x);
+-	snd_dg00x_stream_destroy_duplex(dg00x);
+ 	snd_card_free(dg00x->card);
+ 	dev_info(&dg00x->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
+diff --git a/sound/firewire/fireface/ff.c b/sound/firewire/fireface/ff.c
+index 37866beeb160..3f61cfeace69 100644
+--- a/sound/firewire/fireface/ff.c
++++ b/sound/firewire/fireface/ff.c
+@@ -27,17 +27,14 @@ static void name_card(struct snd_ff *ff)
+ 		 dev_name(&ff->unit->device), 100 << fw_dev->max_speed);
+ }
+ 
+-static void ff_free(struct snd_ff *ff)
++static void ff_card_free(struct snd_card *card)
+ {
++	struct snd_ff *ff = card->private_data;
++
+ 	snd_ff_stream_destroy_duplex(ff);
+ 	snd_ff_transaction_unregister(ff);
+ }
+ 
+-static void ff_card_free(struct snd_card *card)
+-{
+-	ff_free(card->private_data);
+-}
+-
+ static void do_registration(struct work_struct *work)
+ {
+ 	struct snd_ff *ff = container_of(work, struct snd_ff, dwork.work);
+@@ -50,6 +47,8 @@ static void do_registration(struct work_struct *work)
+ 			   &ff->card);
+ 	if (err < 0)
+ 		return;
++	ff->card->private_free = ff_card_free;
++	ff->card->private_data = ff;
+ 
+ 	err = snd_ff_transaction_register(ff);
+ 	if (err < 0)
+@@ -79,14 +78,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	ff->card->private_free = ff_card_free;
+-	ff->card->private_data = ff;
+ 	ff->registered = true;
+ 
+ 	return;
+ error:
+-	snd_ff_transaction_unregister(ff);
+-	snd_ff_stream_destroy_duplex(ff);
+ 	snd_card_free(ff->card);
+ 	dev_info(&ff->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
+diff --git a/sound/firewire/fireworks/fireworks.c b/sound/firewire/fireworks/fireworks.c
+index da0c31033821..faf0e001c4c5 100644
+--- a/sound/firewire/fireworks/fireworks.c
++++ b/sound/firewire/fireworks/fireworks.c
+@@ -184,8 +184,11 @@ get_hardware_info(struct snd_efw *efw)
+ 	return err;
+ }
+ 
+-static void efw_free(struct snd_efw *efw)
++static void
++efw_card_free(struct snd_card *card)
+ {
++	struct snd_efw *efw = card->private_data;
++
+ 	mutex_lock(&devices_mutex);
+ 	clear_bit(efw->card_index, devices_used);
+ 	mutex_unlock(&devices_mutex);
+@@ -194,18 +197,6 @@ static void efw_free(struct snd_efw *efw)
+ 	snd_efw_transaction_remove_instance(efw);
+ }
+ 
+-/*
+- * This module releases the FireWire unit data after all ALSA character devices
+- * are released by applications. This is for releasing stream data or finishing
+- * transactions safely. Thus at returning from .remove(), this module still keep
+- * references for the unit.
+- */
+-static void
+-efw_card_free(struct snd_card *card)
+-{
+-	efw_free(card->private_data);
+-}
+-
+ static void
+ do_registration(struct work_struct *work)
+ {
+@@ -236,6 +227,9 @@ do_registration(struct work_struct *work)
+ 	set_bit(card_index, devices_used);
+ 	mutex_unlock(&devices_mutex);
+ 
++	efw->card->private_free = efw_card_free;
++	efw->card->private_data = efw;
++
+ 	/* prepare response buffer */
+ 	snd_efw_resp_buf_size = clamp(snd_efw_resp_buf_size,
+ 				      SND_EFW_RESPONSE_MAXIMUM_BYTES, 4096U);
+@@ -276,18 +270,10 @@ do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	/*
+-	 * After registered, efw instance can be released corresponding to
+-	 * releasing the sound card instance.
+-	 */
+-	efw->card->private_free = efw_card_free;
+-	efw->card->private_data = efw;
+ 	efw->registered = true;
+ 
+ 	return;
+ error:
+-	snd_efw_transaction_remove_instance(efw);
+-	snd_efw_stream_destroy_duplex(efw);
+ 	snd_card_free(efw->card);
+ 	dev_info(&efw->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
 diff --git a/sound/firewire/motu/motu.c b/sound/firewire/motu/motu.c
-index fd5726424c7a..12680c85b37f 100644
+index 281028ee3273..220e61926ea4 100644
 --- a/sound/firewire/motu/motu.c
 +++ b/sound/firewire/motu/motu.c
-@@ -172,8 +172,8 @@ static void motu_remove(struct fw_unit *unit)
- 	cancel_delayed_work_sync(&motu->dwork);
+@@ -52,24 +52,14 @@ static void name_card(struct snd_motu *motu)
+ 		 dev_name(&motu->unit->device), 100 << fw_dev->max_speed);
+ }
  
- 	if (motu->registered) {
--		/* No need to wait for releasing card object in this context. */
--		snd_card_free_when_closed(motu->card);
-+		// Block till all of ALSA character devices are released.
-+		snd_card_free(motu->card);
- 	} else {
- 		/* Don't forget this case. */
- 		motu_free(motu);
+-static void motu_free(struct snd_motu *motu)
++static void motu_card_free(struct snd_card *card)
+ {
+-	snd_motu_transaction_unregister(motu);
++	struct snd_motu *motu = card->private_data;
+ 
++	snd_motu_transaction_unregister(motu);
+ 	snd_motu_stream_destroy_duplex(motu);
+ }
+ 
+-/*
+- * This module releases the FireWire unit data after all ALSA character devices
+- * are released by applications. This is for releasing stream data or finishing
+- * transactions safely. Thus at returning from .remove(), this module still keep
+- * references for the unit.
+- */
+-static void motu_card_free(struct snd_card *card)
+-{
+-	motu_free(card->private_data);
+-}
+-
+ static void do_registration(struct work_struct *work)
+ {
+ 	struct snd_motu *motu = container_of(work, struct snd_motu, dwork.work);
+@@ -82,6 +72,8 @@ static void do_registration(struct work_struct *work)
+ 			   &motu->card);
+ 	if (err < 0)
+ 		return;
++	motu->card->private_free = motu_card_free;
++	motu->card->private_data = motu;
+ 
+ 	name_card(motu);
+ 
+@@ -116,18 +108,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	/*
+-	 * After registered, motu instance can be released corresponding to
+-	 * releasing the sound card instance.
+-	 */
+-	motu->card->private_free = motu_card_free;
+-	motu->card->private_data = motu;
+ 	motu->registered = true;
+ 
+ 	return;
+ error:
+-	snd_motu_transaction_unregister(motu);
+-	snd_motu_stream_destroy_duplex(motu);
+ 	snd_card_free(motu->card);
+ 	dev_info(&motu->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
 diff --git a/sound/firewire/oxfw/oxfw.c b/sound/firewire/oxfw/oxfw.c
-index 6ac551786b93..36f905b371e6 100644
+index 14fe02a9ed5d..afb78d90384b 100644
 --- a/sound/firewire/oxfw/oxfw.c
 +++ b/sound/firewire/oxfw/oxfw.c
-@@ -327,8 +327,8 @@ static void oxfw_remove(struct fw_unit *unit)
- 	cancel_delayed_work_sync(&oxfw->dwork);
+@@ -113,24 +113,15 @@ static int name_card(struct snd_oxfw *oxfw)
+ 	return err;
+ }
  
- 	if (oxfw->registered) {
--		/* No need to wait for releasing card object in this context. */
--		snd_card_free_when_closed(oxfw->card);
-+		// Block till all of ALSA character devices are released.
-+		snd_card_free(oxfw->card);
- 	} else {
- 		/* Don't forget this case. */
- 		oxfw_free(oxfw);
+-static void oxfw_free(struct snd_oxfw *oxfw)
++static void oxfw_card_free(struct snd_card *card)
+ {
++	struct snd_oxfw *oxfw = card->private_data;
++
+ 	snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->rx_stream);
+ 	if (oxfw->has_output)
+ 		snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->tx_stream);
+ }
+ 
+-/*
+- * This module releases the FireWire unit data after all ALSA character devices
+- * are released by applications. This is for releasing stream data or finishing
+- * transactions safely. Thus at returning from .remove(), this module still keep
+- * references for the unit.
+- */
+-static void oxfw_card_free(struct snd_card *card)
+-{
+-	oxfw_free(card->private_data);
+-}
+-
+ static int detect_quirks(struct snd_oxfw *oxfw)
+ {
+ 	struct fw_device *fw_dev = fw_parent_device(oxfw->unit);
+@@ -204,6 +195,8 @@ static void do_registration(struct work_struct *work)
+ 			   &oxfw->card);
+ 	if (err < 0)
+ 		return;
++	oxfw->card->private_free = oxfw_card_free;
++	oxfw->card->private_data = oxfw;
+ 
+ 	err = name_card(oxfw);
+ 	if (err < 0)
+@@ -244,19 +237,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	/*
+-	 * After registered, oxfw instance can be released corresponding to
+-	 * releasing the sound card instance.
+-	 */
+-	oxfw->card->private_free = oxfw_card_free;
+-	oxfw->card->private_data = oxfw;
+ 	oxfw->registered = true;
+ 
+ 	return;
+ error:
+-	snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->rx_stream);
+-	if (oxfw->has_output)
+-		snd_oxfw_stream_destroy_simplex(oxfw, &oxfw->tx_stream);
+ 	snd_card_free(oxfw->card);
+ 	dev_info(&oxfw->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
 diff --git a/sound/firewire/tascam/tascam.c b/sound/firewire/tascam/tascam.c
-index 53f20153ba71..6f7aaa8c84aa 100644
+index f4f959128341..ef57fa4db323 100644
 --- a/sound/firewire/tascam/tascam.c
 +++ b/sound/firewire/tascam/tascam.c
-@@ -212,8 +212,8 @@ static void snd_tscm_remove(struct fw_unit *unit)
- 	cancel_delayed_work_sync(&tscm->dwork);
+@@ -85,17 +85,14 @@ static int identify_model(struct snd_tscm *tscm)
+ 	return 0;
+ }
  
- 	if (tscm->registered) {
--		/* No need to wait for releasing card object in this context. */
--		snd_card_free_when_closed(tscm->card);
-+		// Block till all of ALSA character devices are released.
-+		snd_card_free(tscm->card);
- 	} else {
- 		/* Don't forget this case. */
- 		tscm_free(tscm);
+-static void tscm_free(struct snd_tscm *tscm)
++static void tscm_card_free(struct snd_card *card)
+ {
++	struct snd_tscm *tscm = card->private_data;
++
+ 	snd_tscm_transaction_unregister(tscm);
+ 	snd_tscm_stream_destroy_duplex(tscm);
+ }
+ 
+-static void tscm_card_free(struct snd_card *card)
+-{
+-	tscm_free(card->private_data);
+-}
+-
+ static void do_registration(struct work_struct *work)
+ {
+ 	struct snd_tscm *tscm = container_of(work, struct snd_tscm, dwork.work);
+@@ -105,6 +102,8 @@ static void do_registration(struct work_struct *work)
+ 			   &tscm->card);
+ 	if (err < 0)
+ 		return;
++	tscm->card->private_free = tscm_card_free;
++	tscm->card->private_data = tscm;
+ 
+ 	err = identify_model(tscm);
+ 	if (err < 0)
+@@ -136,18 +135,10 @@ static void do_registration(struct work_struct *work)
+ 	if (err < 0)
+ 		goto error;
+ 
+-	/*
+-	 * After registered, tscm instance can be released corresponding to
+-	 * releasing the sound card instance.
+-	 */
+-	tscm->card->private_free = tscm_card_free;
+-	tscm->card->private_data = tscm;
+ 	tscm->registered = true;
+ 
+ 	return;
+ error:
+-	snd_tscm_transaction_unregister(tscm);
+-	snd_tscm_stream_destroy_duplex(tscm);
+ 	snd_card_free(tscm->card);
+ 	dev_info(&tscm->unit->device,
+ 		 "Sound card registration failed: %d\n", err);
 -- 
 2.19.0
