@@ -1,54 +1,38 @@
-From: Daniel Mack <daniel@zonque.org>
-Subject: [PATCH] ASoC: sta32x: set ->component pointer in
-	private struct
-Date: Thu, 11 Oct 2018 20:32:05 +0200
-Message-ID: <20181011183205.18671-1-daniel@zonque.org>
+From: Jeremy Cline <jcline@redhat.com>
+Subject: [PATCH] ALSA: hda - Add mic quirk for the Lenovo G50-30 (17aa:3905)
+Date: Thu, 11 Oct 2018 15:49:17 -0400
+Message-ID: <20181011194917.17484-1-jcline@redhat.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
- by alsa0.perex.cz (Postfix) with ESMTP id 54B1A2678E9
- for <alsa-devel@alsa-project.org>; Thu, 11 Oct 2018 20:32:13 +0200 (CEST)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org
-Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <stable-owner@vger.kernel.org>
+Sender: stable-owner@vger.kernel.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alexander Ploumistos <alex.ploumistos@gmail.com>, Jeremy Cline <jcline@redhat.com>, stable@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-The ESD watchdog code in sta32x_watchdog() dereferences the pointer
-which is never assigned.
+The Lenovo G50-30, like other G50 models, has a Conexant codec that
+requires a quirk for its inverted stereo dmic.
 
-This is a regression from a1be4cead9b950 ("ASoC: sta32x: Convert to direct
-regmap API usage.") which went unnoticed since nobody seems to use that ESD
-workaround.
-
-Fixes: a1be4cead9b950 ("ASoC: sta32x: Convert to direct regmap API usage.")
-Signed-off-by: Daniel Mack <daniel@zonque.org>
+Bugzilla: https://bugzilla.redhat.com/show_bug.cgi?id=1249364
+Reported-by: Alexander Ploumistos <alex.ploumistos@gmail.com>
+Tested-by: Alexander Ploumistos <alex.ploumistos@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: Jeremy Cline <jcline@redhat.com>
 ---
- sound/soc/codecs/sta32x.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/patch_conexant.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index 22de1593443c..a878c8d92e68 100644
---- a/sound/soc/codecs/sta32x.c
-+++ b/sound/soc/codecs/sta32x.c
-@@ -879,6 +879,9 @@ static int sta32x_probe(struct snd_soc_component *component)
- 	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
- 	struct sta32x_platform_data *pdata = sta32x->pdata;
- 	int i, ret = 0, thermal = 0;
-+
-+	sta32x->component = component;
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(sta32x->supplies),
- 				    sta32x->supplies);
- 	if (ret != 0) {
+diff --git a/sound/pci/hda/patch_conexant.c b/sound/pci/hda/patch_conexant.c
+index 5592557fe50e..950e02e71766 100644
+--- a/sound/pci/hda/patch_conexant.c
++++ b/sound/pci/hda/patch_conexant.c
+@@ -943,6 +943,7 @@ static const struct snd_pci_quirk cxt5066_fixups[] = {
+ 	SND_PCI_QUIRK(0x17aa, 0x21da, "Lenovo X220", CXT_PINCFG_LENOVO_TP410),
+ 	SND_PCI_QUIRK(0x17aa, 0x21db, "Lenovo X220-tablet", CXT_PINCFG_LENOVO_TP410),
+ 	SND_PCI_QUIRK(0x17aa, 0x38af, "Lenovo IdeaPad Z560", CXT_FIXUP_MUTE_LED_EAPD),
++	SND_PCI_QUIRK(0x17aa, 0x3905, "Lenovo G50-30", CXT_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x390b, "Lenovo G50-80", CXT_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3975, "Lenovo U300s", CXT_FIXUP_STEREO_DMIC),
+ 	SND_PCI_QUIRK(0x17aa, 0x3977, "Lenovo IdeaPad U310", CXT_FIXUP_STEREO_DMIC),
 -- 
-2.17.1
+2.19.1
