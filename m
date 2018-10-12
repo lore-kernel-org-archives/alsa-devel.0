@@ -1,33 +1,181 @@
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Subject: Re: [PATCH v2] pinctrl: madera: Fix uninitialized variable bug in
- madera_mux_set_mux
-Date: Fri, 12 Oct 2018 11:04:54 +0200
-Message-ID: <21341de8-c9b2-7408-9b91-74c73cb5bc13@embeddedor.com>
-References: <20181010151313.GA16854@embeddedor.com>
- <CACRpkda8Fo6ubO9XuDXC9tcLWPNp_6TMf6-g9DUxdU6JXa0Veg@mail.gmail.com>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 2/2] ASoC: max98927: Add reset-gpio support
+Date: Fri, 12 Oct 2018 12:05:16 +0200
+Message-ID: <1539338716.6204.2.camel@pengutronix.de>
+References: <20180912121955.33048-1-cychiang@chromium.org>
+         <20180912121955.33048-2-cychiang@chromium.org>
+         <20180920161905.GM2471@sirena.org.uk>
+         <CAFv8NwLpS9r=jD2wyBsVgJJofkS1xJNo6YssgYXuVHDmGDLogg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CACRpkda8Fo6ubO9XuDXC9tcLWPNp_6TMf6-g9DUxdU6JXa0Veg@mail.gmail.com>
-Content-Language: en-GB
+In-Reply-To: <CAFv8NwLpS9r=jD2wyBsVgJJofkS1xJNo6YssgYXuVHDmGDLogg@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Linus Walleij <linus.walleij@linaro.org>
-Cc: Charles Keepax <ckeepax@opensource.cirrus.com>, Richard Fitzgerald <rf@opensource.cirrus.com>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, patches@opensource.cirrus.com, "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To: Cheng-yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, Maxime Ripard <maxime.ripard@bootlin.com>, devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Ryan Lee <ryans.lee@maximintegrated.com>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
+Hi Cheng-yi,
 
+[adding Maxime, devicetree to Cc:, the old discussion about GPIO resets
+in [4] has never been resolved]
 
-On 10/11/18 10:40 AM, Linus Walleij wrote:
-
->> Changes in v2:
->>  - Initialize variable ret to 0 instead of -1. Thanks to Charles Keepax
->>    for pointing this out.
->>  - Update subject and commit log.
+On Tue, 2018-10-09 at 21:46 +0800, Cheng-yi Chiang wrote:
+> +reset controller maintainer Philipp
 > 
-> Patch applied with Charles' ACK.
+> Hi Mark,
+>   Sorry for the late reply. It took me a while to investigate reset
+> controller and its possible usage. I would like to figure out the
+> proper way of reset handling because it is common to have a shared
+> reset line for two max98927 codecs for left and right channels.
+> Without supporting this usage, a simple reset-gpios change for single
+> codec would not be useful, and perhaps will be duplicated if reset
+> controller is a better way.
 > 
+> Hi Philipp,
+>   I would like to seek your advice about whether we can use reset
+> controller to support the use case where multiple devices share the
+> same reset line.
+>
+> Let me summarize the use case:
+> There are two max98927 codecs sharing the same reset line.
+> The reset line is controlled by a GPIO.
+> The goal is to toggle reset line once and only once.
+> 
+> There was a similar scenario in tlv320aic3x codec driver [1].
+> A static list is used in the codec driver so probe function can know
+> whether it is needed to toggle reset line.
+> Mark pointed out that it is not suitable to handle the shared reset
+> line inside codec driver.
+> A point is that this only works for multiple devices using the same
+> device driver.
+> He suggested to look into reset controller so I searched through the
+> usage for common reset line.
+>
+> Here I found a shared reset line use case [2].
+> With the patch [2], reset_control_reset can support this “reset once
+> and for all” use case.
 
-Thanks, Linus.
---
-Gustavo
+This patch was applied as 7da33a37b48f. So the reset framework has
+support for shared reset controls where only the first reset request
+actually causes a reset pulse, and all others are no-ops.
+
+> However, I found that there are some missing pieces:
+> 
+> Let’s assume there are two codecs c1 and c2 sharing a reset line
+> controlled by GPIO.
+> 
+> c1’s spec:
+> Hold time: The minimum time to assert the reset line is t_a1.
+> Release time: The minimum time to access the chip after deassert of
+> the reset line is t_d1.
+> 
+> c2’s spec:
+> Hold time: The minimum time to assert the reset line is t_a2.
+> Release time: The minimum time to access the chip after deassert of
+> the reset line is t_d2.
+> 
+> For both c1 and c2 to work properly, we need a reset controller that
+> can assert the reset line for
+> T = max(t_a1, t_a2).
+> 
+> 1. We need reset controller to support GPIO.
+
+I still don't like the idea of describing a separate gpio reset
+controller "device" in DT very much, as this is really just a software
+abstraction, not actual hardware. For example:
+
+	gpio_reset: reset-controller {
+		compatible = "gpio-reset";
+		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>,
+			      <&gpio1
+16 GPIO_ACTIVE_HIGH>;
+		reset-delays-us = <10000>, <500>;
+	};
+
+	c1 {
+		resets = <&gpio_reset 0>; /* maps to <&gpio0 15 ...> */
+	};
+
+	c2 {
+		resets = <&gpio_reset 0>;
+	};
+
+What I would like better would be to let the consumers keep their reset-
+gpios bindings, but add an optional hold time override in the DT:
+
+	c1 {
+		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
+		reset-delays-us = <10000>;
+	};
+
+	c2 {
+		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
+		re
+set-delays-us = <10000>;
+	};
+
+The reset framework could create a reset_control backed by a gpio
+instead of a rcdev. I have an unfinished patch for this, but without the
+sharing requirement adding the reset framework abstraction between gpiod
+and drivers never seemed really worth it.
+
+> 2. We need to specify hold time T to reset controller in device tree
+> so it knows that it needs hold reset line for that long in its
+> implementation of reset_control_reset.
+
+Agreed. Ideally, I'd like to make this optional, and have the drivers
+continue to provide the hold time if they think they know it.
+
+> 3. Assuming we have 1 and 2 in place. In codec driver of c1, it can
+> call reset_control_reset and wait for t_a1 + t_d1. In codec driver of
+> c2, it can call reset_control_reset and wait for t_a2 + t_d2.
+
+The reset framework should wait for the configured assertion time,
+max(t_a1, t_a2). The drivers only should only have to wait for
+t_d1 / t_d2 after reset_control_reset returns.
+
+>     We need to wait for hold time + release time because
+> triggered_count is increased before reset ops is called. When the
+> second driver finds that triggered_count is 1 and skip the real reset
+> operation, reset ops might just begin doing its work a short time ago.
+
+That is a good point. Maybe the reset framework should just wait for the
+hold time even for the second reset. Another possibility would be to
+serialize them with a mutex.
+
+>     I am not sure whether we would need a flag in reset controller to
+> mark that "reset is done". When driver sees this flag is done, it can
+> just wait for release time instead of hold time + release time.
+
+Let's not complicate the drivers with this too much. I think
+reset_control_reset should guarantee that the reset line is not asserted
+anymore upon return.
+
+> And I found that you already solved 1 and mentioned the
+> possible usage of 2 in [3].
+> There were discussion about letting device driver to deal with
+> reset-gpios by itself in [4], but it seems that reset controller can
+> better deal with the shared reset line situation.
+> Maybe we could revive the patch of GPIO support for reset controller ?
+
+The discussion with Maxime in [4] hasn't really been resolved. I still
+think the reset-gpios property should be kept, and the reset framework
+could adapt to it. This is something the device tree maintainers' input
+would be welcome on.
+
+> Please let me know what direction I should look into.
+> Thanks a lot!
+> 
+> [1] http://mailman.alsa-project.org/pipermail/alsa-devel/2010-November/033246.html
+> https://patchwork.kernel.org/patch/9424123/
+> 
+> [2] https://patchwork.kernel.org/patch/9424123/
+> 
+> [3] https://lore.kernel.org/patchwork/patch/455839/
+> 
+> [4] https://patchwork.kernel.org/patch/3978121/
+
+regards
+Philipp
