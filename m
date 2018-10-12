@@ -1,161 +1,106 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH 2/2] ASoC: max98927: Add reset-gpio support
-Date: Fri, 12 Oct 2018 15:46:20 +0200
-Message-ID: <20181012134620.fhhkyvvdgoq4sxqi@flea>
-References: <20180912121955.33048-1-cychiang@chromium.org>
- <20180912121955.33048-2-cychiang@chromium.org>
- <20180920161905.GM2471@sirena.org.uk>
- <CAFv8NwLpS9r=jD2wyBsVgJJofkS1xJNo6YssgYXuVHDmGDLogg@mail.gmail.com>
- <1539338716.6204.2.camel@pengutronix.de>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [bug report] ALSA: usb: initial USB Audio Device Class
+	3.0 support
+Date: Fri, 12 Oct 2018 16:48:23 +0300
+Message-ID: <20181012134823.GA1711@mwanda>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from userp2120.oracle.com (userp2120.oracle.com [156.151.31.85])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9F1D3267845
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 15:48:32 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <1539338716.6204.2.camel@pengutronix.de>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Philipp Zabel <p.zabel@pengutronix.de>
-Cc: Cheng-yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Ryan Lee <ryans.lee@maximintegrated.com>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: ruslan.bilovol@gmail.com
+Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 12, 2018 at 12:05:16PM +0200, Philipp Zabel wrote:
-> Hi Cheng-yi,
-> 
-> [adding Maxime, devicetree to Cc:, the old discussion about GPIO resets
-> in [4] has never been resolved]
-> 
-> On Tue, 2018-10-09 at 21:46 +0800, Cheng-yi Chiang wrote:
-> > +reset controller maintainer Philipp
-> > 
-> > Hi Mark,
-> >   Sorry for the late reply. It took me a while to investigate reset
-> > controller and its possible usage. I would like to figure out the
-> > proper way of reset handling because it is common to have a shared
-> > reset line for two max98927 codecs for left and right channels.
-> > Without supporting this usage, a simple reset-gpios change for single
-> > codec would not be useful, and perhaps will be duplicated if reset
-> > controller is a better way.
-> > 
-> > Hi Philipp,
-> >   I would like to seek your advice about whether we can use reset
-> > controller to support the use case where multiple devices share the
-> > same reset line.
-> >
-> > Let me summarize the use case:
-> > There are two max98927 codecs sharing the same reset line.
-> > The reset line is controlled by a GPIO.
-> > The goal is to toggle reset line once and only once.
-> > 
-> > There was a similar scenario in tlv320aic3x codec driver [1].
-> > A static list is used in the codec driver so probe function can know
-> > whether it is needed to toggle reset line.
-> > Mark pointed out that it is not suitable to handle the shared reset
-> > line inside codec driver.
-> > A point is that this only works for multiple devices using the same
-> > device driver.
-> > He suggested to look into reset controller so I searched through the
-> > usage for common reset line.
-> >
-> > Here I found a shared reset line use case [2].
-> > With the patch [2], reset_control_reset can support this “reset once
-> > and for all” use case.
-> 
-> This patch was applied as 7da33a37b48f. So the reset framework has
-> support for shared reset controls where only the first reset request
-> actually causes a reset pulse, and all others are no-ops.
-> 
-> > However, I found that there are some missing pieces:
-> > 
-> > Let’s assume there are two codecs c1 and c2 sharing a reset line
-> > controlled by GPIO.
-> > 
-> > c1’s spec:
-> > Hold time: The minimum time to assert the reset line is t_a1.
-> > Release time: The minimum time to access the chip after deassert of
-> > the reset line is t_d1.
-> > 
-> > c2’s spec:
-> > Hold time: The minimum time to assert the reset line is t_a2.
-> > Release time: The minimum time to access the chip after deassert of
-> > the reset line is t_d2.
-> > 
-> > For both c1 and c2 to work properly, we need a reset controller that
-> > can assert the reset line for
-> > T = max(t_a1, t_a2).
-> > 
-> > 1. We need reset controller to support GPIO.
-> 
-> I still don't like the idea of describing a separate gpio reset
-> controller "device" in DT very much, as this is really just a software
-> abstraction, not actual hardware. For example:
-> 
-> 	gpio_reset: reset-controller {
-> 		compatible = "gpio-reset";
-> 		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>,
-> 			      <&gpio1
-> 16 GPIO_ACTIVE_HIGH>;
-> 		reset-delays-us = <10000>, <500>;
-> 	};
-> 
-> 	c1 {
-> 		resets = <&gpio_reset 0>; /* maps to <&gpio0 15 ...> */
-> 	};
-> 
-> 	c2 {
-> 		resets = <&gpio_reset 0>;
-> 	};
-> 
-> What I would like better would be to let the consumers keep their reset-
-> gpios bindings, but add an optional hold time override in the DT:
-> 
-> 	c1 {
-> 		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
-> 		reset-delays-us = <10000>;
-> 	};
-> 
-> 	c2 {
-> 		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
-> 		reset-delays-us = <10000>;
-> 	};
-> 
-> The reset framework could create a reset_control backed by a gpio
-> instead of a rcdev. I have an unfinished patch for this, but without the
-> sharing requirement adding the reset framework abstraction between gpiod
-> and drivers never seemed really worth it.
+Hello Ruslan Bilovol,
 
-I don't remember the exact details of our past discussion, but I
-(still) don't really think that this would work well. I see two main
-shortcomings with that approach:
+The patch 9a2fe9b801f5: "ALSA: usb: initial USB Audio Device Class
+3.0 support" from Mar 21, 2018, leads to the following static checker
+warning:
 
-  - I guess that the main reason you want to do that would be to have
-    easy DT backward compatibility. Yet, the addition of the
-    reset-delay-us would break that compatibility, since drivers that
-    would have been converted now need to have it somehow, but older
-    DTs wouldn't have it
+	sound/usb/stream.c:971 snd_usb_get_audioformat_uac3()
+	warn: potentially allocating too little.  7 vs 1
 
-  - There's so many variations of the reset-gpios property name that
-    you wouldn't be able to cover all the cases anyhow, at least
-    without breaking the compatibility (again).
+sound/usb/stream.c
+   943          /*
+   944           * Get number of channels and channel map through
+   945           * High Capability Cluster Descriptor
+   946           *
+   947           * First step: get High Capability header and
+   948           * read size of Cluster Descriptor
+   949           */
+   950          err = snd_usb_ctl_msg(chip->dev,
+   951                          usb_rcvctrlpipe(chip->dev, 0),
+   952                          UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+   953                          USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+   954                          cluster_id,
+   955                          snd_usb_ctrl_intf(chip),
+   956                          &hc_header, sizeof(hc_header));
+                                ^^^^^^^^^^
+It looks like this comes from the USB (untrusted).
 
-But I also see your point, and you're right that converting everyone
-to a gpio-reset node will not happen (even though I'd still really
-like to have that binding).
+   957          if (err < 0)
+   958                  return ERR_PTR(err);
+   959          else if (err != sizeof(hc_header)) {
+   960                  dev_err(&dev->dev,
+   961                          "%u:%d : can't get High Capability descriptor\n",
+   962                          iface_no, altno);
+   963                  return ERR_PTR(-EIO);
+   964          }
+   965  
+   966          /*
+   967           * Second step: allocate needed amount of memory
+   968           * and request Cluster Descriptor
+   969           */
+   970          wLength = le16_to_cpu(hc_header.wLength);
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+My private build of Smatch complains that all le16_to_cpu() data
+probably comes from untrusted sources.
 
-What about having a function that would be called by the consumer to
-instantiate that reset controller from a GPIO for us, instead of
-trying to do it automatically? That function could take the property
-name that holds the GPIO, which would cover the second drawback, and
-the delay, which would cover the first.
+   971          cluster = kzalloc(wLength, GFP_KERNEL);
+                ^^^^^^^
+Maybe we're not allocating enough bytes for the cluster struct (8 bytes).
 
-And in order to cover shared GPIO reset lines, we could just look at
-the one already created by other drivers, and if one has been created,
-we just give the reference to that one instead of creating it.
+   972          if (!cluster)
+   973                  return ERR_PTR(-ENOMEM);
+   974          err = snd_usb_ctl_msg(chip->dev,
+   975                          usb_rcvctrlpipe(chip->dev, 0),
+   976                          UAC3_CS_REQ_HIGH_CAPABILITY_DESCRIPTOR,
+   977                          USB_RECIP_INTERFACE | USB_TYPE_CLASS | USB_DIR_IN,
+   978                          cluster_id,
+   979                          snd_usb_ctrl_intf(chip),
+   980                          cluster, wLength);
+   981          if (err < 0) {
+   982                  kfree(cluster);
+   983                  return ERR_PTR(err);
+   984          } else if (err != wLength) {
+   985                  dev_err(&dev->dev,
+   986                          "%u:%d : can't get Cluster Descriptor\n",
+   987                          iface_no, altno);
+   988                  kfree(cluster);
+   989                  return ERR_PTR(-EIO);
+   990          }
+   991  
+   992          num_channels = cluster->bNrChannels;
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   993          chmap = convert_chmap_v3(cluster);
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+This code assumes that cluster is large enough without checking.
 
-Does that make sense?
+   994          kfree(cluster);
+   995  
 
-Maxime
-
--- 
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+regards,
+dan carpenter
