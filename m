@@ -1,18 +1,17 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH] ASoC: sun4i-i2s: don't try to start up or shut
-	down DAI if it's active
-Date: Fri, 12 Oct 2018 08:32:54 -0700
-Message-ID: <20181012153254.10844-1-anarsoul@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: sun4i-i2s: don't try to start up or
+ shut down DAI if it's active
+Date: Fri, 12 Oct 2018 18:09:05 +0200
+Message-ID: <20181012160905.GA2340@sirena.org.uk>
+References: <20181012153254.10844-1-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============8474863737700097021=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f196.google.com (mail-pl1-f196.google.com
- [209.85.214.196])
- by alsa0.perex.cz (Postfix) with ESMTP id BCBFF267845
- for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 17:33:21 +0200 (CEST)
-Received: by mail-pl1-f196.google.com with SMTP id f18-v6so6116093plr.1
- for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 08:33:21 -0700 (PDT)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7C693267845
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 18:09:11 +0200 (CEST)
+In-Reply-To: <20181012153254.10844-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,41 +21,51 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Marcus Cooper <codekipper@gmail.com>, Yong Deng <yong.deng@magewell.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: alsa-devel@alsa-project.org, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Yong Deng <yong.deng@magewell.com>, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-Otherwise we may end up with shutting down I2S if shutdown() was
-called for capture substream, but playback is still running.
 
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
----
- sound/soc/sunxi/sun4i-i2s.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+--===============8474863737700097021==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="W/nzBZO5zC0uMSeA"
+Content-Disposition: inline
 
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index a9ea329dc046..787b67c4f845 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -649,6 +649,9 @@ static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
- {
- 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 
-+	if (dai->active)
-+		return 0;
-+
- 	/* Enable the whole hardware block */
- 	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
- 			   SUN4I_I2S_CTRL_GL_EN, SUN4I_I2S_CTRL_GL_EN);
-@@ -667,6 +670,9 @@ static void sun4i_i2s_shutdown(struct snd_pcm_substream *substream,
- {
- 	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
- 
-+	if (dai->active)
-+		return;
-+
- 	clk_disable_unprepare(i2s->mod_clk);
- 
- 	/* Disable our output lines */
--- 
-2.19.0
+
+--W/nzBZO5zC0uMSeA
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Oct 12, 2018 at 08:32:54AM -0700, Vasily Khoruzhick wrote:
+> Otherwise we may end up with shutting down I2S if shutdown() was
+> called for capture substream, but playback is still running.
+
+Would it be cleaner and more robust to use runtime PM?  I'm wondering
+what happens if some of the configuration stuff turns out to also need
+some of the clocks for example.
+
+--W/nzBZO5zC0uMSeA
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvAxx4ACgkQJNaLcl1U
+h9A/zAf/di1m1GcHe+mMW1RoAmwDmFHKJhQS3vlHN4B5dZgzYiRtURIpahmC7KYE
+2chHKM2+XFqyPsKfkvi6UGWA3ABB6tYlVRcgby2ww5l3TPBbo+hCEjdLTRKPxAnx
+okGb5etRQE6u6Q366+6MNqt/Or4sAM5A88Iibt1yKm+NSuCvCmn/zId/NxmJxjx2
+RrpVEaa/t9cbyHZCJ8G+rmbFYpd7cwQk3cGW5nlKg9tKJk2vD/jdaKxHeUMmDJdM
+wP51+L+T/lILvJRWfxWg62h9FV51CBjEAq8jok0X4ZnTwwHjMEXnsjXEaw30Urmc
+0LN//hWnSvhw3BsOCVoiGNC4wplvMw==
+=Qf76
+-----END PGP SIGNATURE-----
+
+--W/nzBZO5zC0uMSeA--
+
+--===============8474863737700097021==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============8474863737700097021==--
