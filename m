@@ -1,18 +1,18 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sta32x: set ->component pointer in
-	private struct" to the asoc tree
-Date: Fri, 12 Oct 2018 19:00:56 +0200 (CEST)
-Message-ID: <20181012170056.8DE28440078@finisterre.ee.mobilebroadband>
-References: <20181011183205.18671-1-daniel@zonque.org>
+From: Brendan Shanks <brendan.shanks@teradek.com>
+Subject: pcm_dshare calculates size incorrectly on buffer
+	rollover
+Date: Fri, 12 Oct 2018 11:21:07 -0700
+Message-ID: <CAJ9in=_z117BqahX4ZPB=CpiYgJ5FijCH9u_xQXBVjB4MZ6D3Q@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 606942679B3
- for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 19:00:57 +0200 (CEST)
-In-Reply-To: <20181011183205.18671-1-daniel@zonque.org>
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com
+ [209.85.128.45])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97E2F267845
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 20:21:19 +0200 (CEST)
+Received: by mail-wm1-f45.google.com with SMTP id 143-v6so13086487wmf.1
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 11:21:19 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,70 +22,161 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Daniel Mack <daniel@zonque.org>
-Cc: alsa-devel@alsa-project.org, broonie@kernel.org, stable@vger.kernel.org
+To: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-The patch
+I'm working on an embedded system based on an Ambarella H1 SoC (32-bit ARM
+Cortex A9). Audio playback through ALSA (and GStreamer) works fine when
+playing to the raw hw device. When playing through dshare (my normal
+configuration), playback stops after exactly 7 hours 16 minutes, for about
+3 minutes. During the 3 minutes, the playback thread consumes an entire CPU
+core. After the 3 minutes, GStreamer reports an xrun, recovers from it, and
+playback goes back to normal.
 
-   ASoC: sta32x: set ->component pointer in private struct
+After some debugging, the problem seems to be in
+snd_pcm_dshare_sync_area(). When dshare->appl_ptr rolls over to 0, 'size'
+becomes huge, 3036676576. 'slave_size' is also much bigger than it should
+be, 1258291680. This is what 'size' is set to when the for loop starts, and
+I believe the for loop then spends ~3 minutes copying a huge amount of
+samples.
+This also explains the 7h16m time, it's linked to the PCM boundary which is
+1258291200. At 48 kHz, 1258291200 samples takes 7h16m54s.
 
-has been applied to the asoc tree at
+I'm not sure what the fix should be though. Is this really a bug in dshare,
+or are bad values being set somewhere else? GStreamer? Or maybe the
+period/buffer size (480/9600) is causing problems?
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+Any advice is appreciated, my modified snd_pcm_dshare_sync_area() and the
+output are below.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.  
+Brendan Shanks
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+$ more /proc/asound/card0/pcm1p/sub0/hw_params
+access: MMAP_INTERLEAVED
+format: S16_LE
+subformat: STD
+channels: 4
+rate: 48000 (48000/1)
+period_size: 480
+buffer_size: 9600
+$ more /proc/asound/card0/pcm1p/sub0/sw_params
+tstamp_mode: ENABLE
+period_step: 1
+avail_min: 480
+start_threshold: 1
+stop_threshold: 1258291200
+silence_threshold: 0
+silence_size: 1258291200
+boundary: 1258291200
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+--- output from running 'gst-launch-1.0 -e audiotestsrc ! alsasink' with
+prints included as below
+snd_pcm_dshare_sync_area size 3036676576, dshare->appl_ptr 0
+dshare->last_appl_ptr 1258290720
+slave_hw_ptr1 1258282080 slave_period_size 480
+slave_hw_ptr2 1258282080 slave_buffer_size 9600
+slave_hw_ptr3 1258291680 slave_boundary 1258291200
+slave_hw_ptr4 1258291680 slave_appl_ptr 0
+slave_size1 1258291680
+size 1258291680
+appl_ptr 9120 size 1258291680 boundary 1258291200
+last_appl_ptr 0
+slave_appl_ptr 0
+dshare->slave_appl_ptr 480
+exiting
 
-Thanks,
-Mark
+snd_pcm_dshare_sync_area size 3036676576, dshare->appl_ptr 0
+dshare->last_appl_ptr 1258290720
+slave_hw_ptr1 8965920 slave_period_size 480
+slave_hw_ptr2 8965920 slave_buffer_size 9600
+slave_hw_ptr3 8975520 slave_boundary 1258291200
+slave_hw_ptr4 8975520 slave_appl_ptr 8975040
+slave_size1 480
+size 480
+appl_ptr 9120 size 480 boundary 1258291200
+last_appl_ptr 0
+slave_appl_ptr 8640
+dshare->slave_appl_ptr 8975520
+exiting
 
->From 747df19747bc9752cd40b9cce761e17a033aa5c2 Mon Sep 17 00:00:00 2001
-From: Daniel Mack <daniel@zonque.org>
-Date: Thu, 11 Oct 2018 20:32:05 +0200
-Subject: [PATCH] ASoC: sta32x: set ->component pointer in private struct
+--- snd_pcm_dshare_sync_area() from alsa-lib-1.1.6 with prints added:
+static void snd_pcm_dshare_sync_area(snd_pcm_t *pcm)
+{
+        snd_pcm_direct_t *dshare = pcm->private_data;
+        snd_pcm_uframes_t slave_hw_ptr, slave_appl_ptr, slave_size;
+        snd_pcm_uframes_t appl_ptr, size;
+        const snd_pcm_channel_area_t *src_areas, *dst_areas;
+        int print = 0;
 
-The ESD watchdog code in sta32x_watchdog() dereferences the pointer
-which is never assigned.
+        /* calculate the size to transfer */
+        size = dshare->appl_ptr - dshare->last_appl_ptr;
+        if (! size)
+                return;
+        if (size > 9600)
+        {
+                printf("snd_pcm_dshare_sync_area size %lu, dshare->appl_ptr
+%lu dshare->last_appl_ptr %lu\n",
+                        size, dshare->appl_ptr, dshare->last_appl_ptr);
+                print = 1;
+        }
+        slave_hw_ptr = dshare->slave_hw_ptr;
+if (print) printf("slave_hw_ptr1 %lu slave_period_size %lu", slave_hw_ptr,
+dshare->slave_period_size);
+        /* don't write on the last active period - this area may be cleared
+         * by the driver during write operation...
+         */
+        slave_hw_ptr -= slave_hw_ptr % dshare->slave_period_size;
+if (print) printf("slave_hw_ptr2 %lu slave_buffer_size %lu", slave_hw_ptr,
+dshare->slave_buffer_size);
+        slave_hw_ptr += dshare->slave_buffer_size;
+if (print) printf("slave_hw_ptr3 %lu slave_boundary %lu", slave_hw_ptr,
+dshare->slave_boundary);
+        if (dshare->slave_hw_ptr > dshare->slave_boundary)
+                slave_hw_ptr -= dshare->slave_boundary;
+if (print) printf("slave_hw_ptr4 %lu slave_appl_ptr %lu", slave_hw_ptr,
+dshare->slave_appl_ptr);
+        if (slave_hw_ptr < dshare->slave_appl_ptr)
+                slave_size = slave_hw_ptr + (dshare->slave_boundary -
+dshare->slave_appl_ptr);
+        else
+                slave_size = slave_hw_ptr - dshare->slave_appl_ptr;
+if (print) printf("slave_size1 %lu", slave_size);
+        if (slave_size < size)
+                size = slave_size;
+        if (! size)
+                return;
+if (print) printf("size %lu", size);
 
-This is a regression from a1be4cead9b950 ("ASoC: sta32x: Convert to direct
-regmap API usage.") which went unnoticed since nobody seems to use that ESD
-workaround.
-
-Fixes: a1be4cead9b950 ("ASoC: sta32x: Convert to direct regmap API usage.")
-Signed-off-by: Daniel Mack <daniel@zonque.org>
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Cc: stable@vger.kernel.org
----
- sound/soc/codecs/sta32x.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
-index d5035f2f2b2b..ce508b4cc85c 100644
---- a/sound/soc/codecs/sta32x.c
-+++ b/sound/soc/codecs/sta32x.c
-@@ -879,6 +879,9 @@ static int sta32x_probe(struct snd_soc_component *component)
- 	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
- 	struct sta32x_platform_data *pdata = sta32x->pdata;
- 	int i, ret = 0, thermal = 0;
-+
-+	sta32x->component = component;
-+
- 	ret = regulator_bulk_enable(ARRAY_SIZE(sta32x->supplies),
- 				    sta32x->supplies);
- 	if (ret != 0) {
--- 
-2.19.0
+        /* add sample areas here */
+        src_areas = snd_pcm_mmap_areas(pcm);
+        dst_areas = snd_pcm_mmap_areas(dshare->spcm);
+        appl_ptr = dshare->last_appl_ptr % pcm->buffer_size;
+if (print) printf("appl_ptr %lu size %lu boundary %lu", appl_ptr, size,
+pcm->boundary);
+        dshare->last_appl_ptr += size;
+        dshare->last_appl_ptr %= pcm->boundary;
+if (print) printf("last_appl_ptr %lu", dshare->last_appl_ptr);
+        slave_appl_ptr = dshare->slave_appl_ptr % dshare->slave_buffer_size;
+if (print) printf("slave_appl_ptr %lu", slave_appl_ptr);
+        dshare->slave_appl_ptr += size;
+        dshare->slave_appl_ptr %= dshare->slave_boundary;
+if (print) printf("dshare->slave_appl_ptr %lu", dshare->slave_appl_ptr);
+        for (;;) {
+                snd_pcm_uframes_t transfer = size;
+                if (appl_ptr + transfer > pcm->buffer_size)
+                        transfer = pcm->buffer_size - appl_ptr;
+                if (slave_appl_ptr + transfer > dshare->slave_buffer_size)
+                        transfer = dshare->slave_buffer_size -
+slave_appl_ptr;
+                share_areas(dshare, src_areas, dst_areas, appl_ptr,
+slave_appl_ptr, transfer);
+                size -= transfer;
+                if (! size)
+                        break;
+                slave_appl_ptr += transfer;
+                slave_appl_ptr %= dshare->slave_buffer_size;
+                appl_ptr += transfer;
+                appl_ptr %= pcm->buffer_size;
+        }
+if (print) printf("exiting");
