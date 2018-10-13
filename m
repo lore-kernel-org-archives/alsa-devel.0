@@ -1,19 +1,19 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH 05/10] ASoC: dt-binding: Add bindings for
-	Allwinner A64 codec's analog path controls
-Date: Fri, 12 Oct 2018 20:32:25 -0700
-Message-ID: <20181013033230.6506-6-anarsoul@gmail.com>
+Subject: [PATCH 07/10] ASoC: sunxi: allow the sun8i-codec
+	driver to be built on ARM64
+Date: Fri, 12 Oct 2018 20:32:27 -0700
+Message-ID: <20181013033230.6506-8-anarsoul@gmail.com>
 References: <20181013033230.6506-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f193.google.com (mail-pf1-f193.google.com
- [209.85.210.193])
- by alsa0.perex.cz (Postfix) with ESMTP id C047926794F
- for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 05:32:50 +0200 (CEST)
-Received: by mail-pf1-f193.google.com with SMTP id c25-v6so7098944pfe.6
- for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 20:32:50 -0700 (PDT)
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com
+ [209.85.215.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 002F62679B8
+ for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 05:32:52 +0200 (CEST)
+Received: by mail-pg1-f193.google.com with SMTP id f18-v6so6700107pgv.3
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 20:32:52 -0700 (PDT)
 In-Reply-To: <20181013033230.6506-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,35 +28,26 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-The internal codec on Allwinner A64 is split into 2 parts. The
-analog path controls are routed through an embedded custom register
-bus accessed through the PRCM block just as on A23/A33/H3.
-
-Add a binding for this hardware.
+Allwinner A64 uses the same digital codec part as in A33, so we need
+to build this driver on ARM64 as well.
 
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- .../bindings/sound/sun50i-codec-analog.txt           | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
+ sound/soc/sunxi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt b/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
-new file mode 100644
-index 000000000000..4f8ad0e04d20
---- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
-@@ -0,0 +1,12 @@
-+* Allwinner A64 Codec Analog Controls
-+
-+Required properties:
-+- compatible: must be one of the following compatibles:
-+		- "allwinner,sun50i-a64-codec-analog"
-+- reg: must contain the registers location and length
-+
-+Example:
-+	codec_analog: codec-analog@1f015c0 {
-+		compatible = "allwinner,sun50i-a64-codec-analog";
-+		reg = <0x01f015c0 0x4>;
-+	};
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index da1aac68ab03..0f992bdf1a10 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -12,7 +12,7 @@ config SND_SUN4I_CODEC
+ config SND_SUN8I_CODEC
+ 	tristate "Allwinner SUN8I audio codec"
+ 	depends on OF
+-	depends on MACH_SUN8I || COMPILE_TEST
++	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+ 	select REGMAP_MMIO
+ 	help
+ 	  This option enables the digital part of the internal audio codec for
 -- 
 2.19.0
