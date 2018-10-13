@@ -1,22 +1,31 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH 01/10] ASoC: sun4i-i2s: Add compatibility
- with A64 codec I2S
-Date: Fri, 12 Oct 2018 21:36:07 -0700
-Message-ID: <CA+E=qVfLr9Qh-7Tp9AOaw8K85TLrRfb687Mzoqa6BCEbfsugGA@mail.gmail.com>
-References: <20181013033230.6506-1-anarsoul@gmail.com>
- <20181013033230.6506-2-anarsoul@gmail.com>
- <CAGb2v64jNCz2Qh74UU0NxqE_PipXePLNbpE4vwFQ9BSVQCd5tQ@mail.gmail.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Controlling the Tascam FW-1884
+Date: Sat, 13 Oct 2018 19:40:24 +0900
+Message-ID: <97e54edf-1e47-d422-e438-a2c859083fd3@sakamocchi.jp>
+References: <9cec059e1ff1a558f21a3f0729c5a69a3d506573.camel@suse.com>
+ <0e469670-0520-5953-230b-8d2da5e4c357@sakamocchi.jp>
+ <985b1f6dc5b0af2aae049e0b6fcf976ab400d34d.camel@suse.com>
+ <55afba82-ad24-fe70-b784-d28a38e291c9@sakamocchi.jp>
+ <7a0f35eea26ce475bc3f6953db97f83205ad0a58.camel@suse.com>
+ <fc278639-12da-02b8-685d-681e06b044e4@sakamocchi.jp>
+ <10a99ea9c672ac6d0c9d5536e9d85a15f5a32d95.camel@suse.com>
+ <47f66c7d-4337-52da-72da-cdb3f0638dc4@sakamocchi.jp>
+ <d63527a1ab830c50c621664946ad9eafdb37d578.camel@suse.com>
+ <f4537970-775e-6480-acc4-6b5dd050d597@sakamocchi.jp>
+ <fed5ab3a-c39a-4de9-6802-c064a33140eb@sakamocchi.jp>
+ <246b8baaa3c415a0accdb76d3b524dec5e0429f9.camel@suse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ot1-f66.google.com (mail-ot1-f66.google.com
- [209.85.210.66])
- by alsa0.perex.cz (Postfix) with ESMTP id E48382678CA
- for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 06:36:34 +0200 (CEST)
-Received: by mail-ot1-f66.google.com with SMTP id l58so14268939otd.6
- for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 21:36:34 -0700 (PDT)
-In-Reply-To: <CAGb2v64jNCz2Qh74UU0NxqE_PipXePLNbpE4vwFQ9BSVQCd5tQ@mail.gmail.com>
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com
+ [209.85.214.180])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4D303267783
+ for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 12:40:29 +0200 (CEST)
+Received: by mail-pl1-f180.google.com with SMTP id f8-v6so7097144plb.2
+ for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 03:40:28 -0700 (PDT)
+In-Reply-To: <246b8baaa3c415a0accdb76d3b524dec5e0429f9.camel@suse.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,106 +35,88 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Chen-Yu Tsai <wens@csie.org>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree <devicetree@vger.kernel.org>, Linux-ALSA <alsa-devel@alsa-project.org>, Maxime Ripard <maxime.ripard@bootlin.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, =?UTF-8?Q?Myl=C3=A8ne_Josserand?= <mylene.josserand@free-electrons.com>, arm-linux <linux-arm-kernel@lists.infradead.org>
+To: Scott Bahling <sbahling@suse.com>
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 12, 2018 at 9:32 PM Chen-Yu Tsai <wens@csie.org> wrote:
->
-> On Sat, Oct 13, 2018 at 11:33 AM Vasily Khoruzhick <anarsoul@gmail.com> wrote:
-> >
-> > From: Marcus Cooper <codekipper@gmail.com>
-> >
-> > The I2S block used for the audio codec in the A64 differs from other 3
-> > I2S modules in A64 and isn't compatible with H3. But it is very similar
-> > to what is found in A10(sun4i). However, its TX FIFO is
-> > located at a different address.
-> >
-> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > ---
-> >  .../devicetree/bindings/sound/sun4i-i2s.txt   |  2 ++
-> >  sound/soc/sunxi/sun4i-i2s.c                   | 21 +++++++++++++++++++
-> >  2 files changed, 23 insertions(+)
-> >
-> > diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> > index b9d50d6cdef3..9d81f965f666 100644
-> > --- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> > +++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-> > @@ -10,6 +10,7 @@ Required properties:
-> >     - "allwinner,sun6i-a31-i2s"
-> >     - "allwinner,sun8i-a83t-i2s"
-> >     - "allwinner,sun8i-h3-i2s"
-> > +   - "allwinner,sun50i-a64-i2s"
->
-> This compatible is already used as the SoC-specific compatible (in case we have
-> unforeseen differences between A64 and H3 I2S).
->
-> Since this is tied to the codec, I think it deserves a special
-> compatible anyway.
-> How about "allwinner,sun50i-a64-codec-i2s" ?
+Hi Scott,
 
-That's what I proposed a ~year ago and I was asked to change it to
-allwinner,sun50i-a64-i2c.
+On Oct 12 2018 17:12, Scott Bahling wrote:
+> I have tested the branches and it works well. I was able to create
+> daemon in python to interface the FW-1884 with Ardour via the OSC
+> protocol. That's working reliably.
 
->
-> The rest looks good, so once the compatible is changed,
->
-> Reviewed-by: Chen-Yu Tsai <wens@csie.org>
->
-> >  - reg: physical base address of the controller and length of memory mapped
-> >    region.
-> >  - interrupts: should contain the I2S interrupt.
-> > @@ -26,6 +27,7 @@ Required properties for the following compatibles:
-> >         - "allwinner,sun6i-a31-i2s"
-> >         - "allwinner,sun8i-a83t-i2s"
-> >         - "allwinner,sun8i-h3-i2s"
-> > +       - "allwinner,sun50i-a64-i2s"
-> >  - resets: phandle to the reset line for this codec
-> >
-> >  Example:
-> > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> > index ed30d30ac720..787b67c4f845 100644
-> > --- a/sound/soc/sunxi/sun4i-i2s.c
-> > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> > @@ -967,6 +967,23 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
-> >         .field_rxchansel        = REG_FIELD(SUN8I_I2S_RX_CHAN_SEL_REG, 0, 2),
-> >  };
-> >
-> > +static const struct sun4i_i2s_quirks sun50i_a64_i2s_quirks = {
-> > +       .has_reset              = true,
-> > +       .reg_offset_txdata      = SUN8I_I2S_FIFO_TX_REG,
-> > +       .sun4i_i2s_regmap       = &sun4i_i2s_regmap_config,
-> > +       .has_slave_select_bit   = true,
-> > +       .field_clkdiv_mclk_en   = REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-> > +       .field_fmt_wss          = REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
-> > +       .field_fmt_sr           = REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
-> > +       .field_fmt_bclk         = REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
-> > +       .field_fmt_lrclk        = REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-> > +       .field_fmt_mode         = REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-> > +       .field_txchanmap        = REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
-> > +       .field_rxchanmap        = REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
-> > +       .field_txchansel        = REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-> > +       .field_rxchansel        = REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
-> > +};
-> > +
-> >  static int sun4i_i2s_init_regmap_fields(struct device *dev,
-> >                                         struct sun4i_i2s *i2s)
-> >  {
-> > @@ -1175,6 +1192,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
-> >                 .compatible = "allwinner,sun8i-h3-i2s",
-> >                 .data = &sun8i_h3_i2s_quirks,
-> >         },
-> > +       {
-> > +               .compatible = "allwinner,sun50i-a64-i2s",
-> > +               .data = &sun50i_a64_i2s_quirks,
-> > +       },
-> >         {}
-> >  };
-> >  MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
-> > --
-> > 2.19.0
-> >
-> > _______________________________________________
-> > Alsa-devel mailing list
-> > Alsa-devel@alsa-project.org
-> > http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+Good to hear ;)
+
+> I had to enable quadlets 00-04 since they contain the fader control
+> values. I masked out the solo control values in the same way as the
+> monitor control values since they continuously fluctuate in the same
+> way.
+
+For FW-1082 these quadlets includes value of movable fader as well,
+however unlike FW-1884 they have fluctuate quirk. So I think it
+reasonable for us to program this module to ignore them.
+
+Instead, let us program applications so that they call
+'hinawa_snd_tscm_get_status()' periodically to get current value of
+these faders between touch and untouch event on quadlet 05? This
+take applications to consume CPU time more efficiently than handling
+many events.
+
+> While testing, noticed that the encoder bits on quadlet 06 do not get
+> updated reliably if the encoder knob is moved quickly. The transitions
+> on those bits happen quickly and some of the bit state changes get
+> lost. I switched to using the absolute encoder values on quadlets 10-15
+> which works reliably.
+
+Yep. We need to ignore some bits in quadlet 06 and 08 for value of the
+knobs.
+
+
+Well, as a result, ALSA firewire-tascam driver handles 'edge-trigge'
+events except for jog wheel and knobs. For this kind of event, it's
+useful to notify before/after value when emitting notification. So I'd
+like to change structure passed to UAPI so that:
+
+  struct snd_firewire_tascam_control {
+         unsigned int index;
+-       __u32 flags;
++       __u32 before;
++       __u32 after;
+  };
+
+Would I request your opinion? You can see patches here:
+  - 
+https://github.com/takaswie/snd-firewire-improve/tree/topic/tascam-userspace-take3
+  - https://github.com/takaswie/libhinawa/tree/topic/tascam-userspace-take3
+
+You can receive 'control' event of 'HinawaSndTscm' GObject with these
+two values:
+
+```
+def handle_control(self, index, before, after):
+     print('{0:02d}: {1:08x} -> {2:08x}, {3:08x}'.format(index, before, 
+after, after ^ before))
+```
+
+idx before      after     XOR
+09: ffffffff -> 7fffffff, 80000000
+09: 7fffffff -> ffffffff, 80000000
+06: ffffffff -> ff7fffff, 00800000
+06: ff7fffff -> ffffffff, 00800000
+07: ffffffff -> ffffff7f, 00000080
+07: ffffff7f -> ffffffff, 00000080
+10: 00000000 -> 00000001, 00000001 (knob)
+10: 00000001 -> 00000002, 00000003 (knob)
+15: 003f000c -> 003f000b, 00000007 (jog wheel)
+15: 003f000b -> 003f000a, 00000001 (job wheel)
+14: 00100005 -> 00110005, 00010000 (knob)
+09: ffffffff -> fffffbff, 00000400
+09: fffffbff -> ffffffff, 00000400
+05: 01ff00a6 -> 017f00a6, 00800000
+05: 017f00a6 -> 01ff00a6, 00800000
+
+
+Thanks
+
+Takashi Sakamoto
