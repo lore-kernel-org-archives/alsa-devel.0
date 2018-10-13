@@ -1,19 +1,19 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH 01/10] ASoC: sun4i-i2s: Add compatibility with
-	A64 codec I2S
-Date: Fri, 12 Oct 2018 20:32:21 -0700
-Message-ID: <20181013033230.6506-2-anarsoul@gmail.com>
+Subject: [PATCH 03/10] ASoC: sun8i-codec: add support for
+	speaker amp GPIO
+Date: Fri, 12 Oct 2018 20:32:23 -0700
+Message-ID: <20181013033230.6506-4-anarsoul@gmail.com>
 References: <20181013033230.6506-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
- [209.85.215.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 050FB2678F3
- for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 05:32:46 +0200 (CEST)
-Received: by mail-pg1-f195.google.com with SMTP id 23-v6so6682071pgc.8
- for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 20:32:46 -0700 (PDT)
+Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com
+ [209.85.210.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id F1E1F26794F
+ for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 05:32:48 +0200 (CEST)
+Received: by mail-pf1-f194.google.com with SMTP id r64-v6so7086880pfb.13
+ for <alsa-devel@alsa-project.org>; Fri, 12 Oct 2018 20:32:48 -0700 (PDT)
 In-Reply-To: <20181013033230.6506-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -25,79 +25,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcus Cooper <codekipper@gmail.com>
+Some boards may have external amplifier for speaker that is controlled
+via GPIO, add support for it in similar way as it's done in sun4i-codec
 
-The I2S block used for the audio codec in the A64 differs from other 3
-I2S modules in A64 and isn't compatible with H3. But it is very similar
-to what is found in A10(sun4i). However, its TX FIFO is
-located at a different address.
-
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- .../devicetree/bindings/sound/sun4i-i2s.txt   |  2 ++
- sound/soc/sunxi/sun4i-i2s.c                   | 21 +++++++++++++++++++
- 2 files changed, 23 insertions(+)
+ .../bindings/sound/sun8i-a33-codec.txt        |  3 +++
+ sound/soc/sunxi/sun8i-codec.c                 | 27 +++++++++++++++++++
+ 2 files changed, 30 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-index b9d50d6cdef3..9d81f965f666 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-@@ -10,6 +10,7 @@ Required properties:
-    - "allwinner,sun6i-a31-i2s"
-    - "allwinner,sun8i-a83t-i2s"
-    - "allwinner,sun8i-h3-i2s"
-+   - "allwinner,sun50i-a64-i2s"
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - interrupts: should contain the I2S interrupt.
-@@ -26,6 +27,7 @@ Required properties for the following compatibles:
- 	- "allwinner,sun6i-a31-i2s"
- 	- "allwinner,sun8i-a83t-i2s"
- 	- "allwinner,sun8i-h3-i2s"
-+	- "allwinner,sun50i-a64-i2s"
- - resets: phandle to the reset line for this codec
+diff --git a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
+index 2ca3d138528e..21ab72b29ee4 100644
+--- a/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
++++ b/Documentation/devicetree/bindings/sound/sun8i-a33-codec.txt
+@@ -25,6 +25,9 @@ Required properties:
+    - "bus": the parent APB clock for this controller
+    - "mod": the parent module clock
  
- Example:
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index ed30d30ac720..787b67c4f845 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -967,6 +967,23 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.field_rxchansel	= REG_FIELD(SUN8I_I2S_RX_CHAN_SEL_REG, 0, 2),
- };
- 
-+static const struct sun4i_i2s_quirks sun50i_a64_i2s_quirks = {
-+	.has_reset		= true,
-+	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
-+	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
-+	.has_slave_select_bit	= true,
-+	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-+	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
-+	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
-+	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
-+	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
-+	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
-+	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-+	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
-+};
++Optional properties:
++- allwinner,pa-gpios: gpio to enable external amplifier
 +
- static int sun4i_i2s_init_regmap_fields(struct device *dev,
- 					struct sun4i_i2s *i2s)
- {
-@@ -1175,6 +1192,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
- 		.compatible = "allwinner,sun8i-h3-i2s",
- 		.data = &sun8i_h3_i2s_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun50i-a64-i2s",
-+		.data = &sun50i_a64_i2s_quirks,
-+	},
- 	{}
+ Here is an example to add a sound card and the codec binding on sun8i SoCs that
+ are similar to A33 using simple-card:
+ 
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index e681e194ad4c..96879dad3425 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -24,6 +24,7 @@
+ #include <linux/io.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/gpio/consumer.h>
+ 
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -97,8 +98,22 @@ struct sun8i_codec {
+ 	struct regmap	*regmap;
+ 	struct clk	*clk_module;
+ 	struct clk	*clk_bus;
++	struct gpio_desc *gpio_pa;
  };
- MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
+ 
++static int sun8i_codec_spk_event(struct snd_soc_dapm_widget *w,
++				 struct snd_kcontrol *k, int event)
++{
++	struct snd_soc_component *component =
++		snd_soc_dapm_to_component(w->dapm);
++	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(component);
++
++	gpiod_set_value_cansleep(scodec->gpio_pa,
++				 !!SND_SOC_DAPM_EVENT_ON(event));
++
++	return 0;
++}
++
+ static int sun8i_codec_runtime_resume(struct device *dev)
+ {
+ 	struct sun8i_codec *scodec = dev_get_drvdata(dev);
+@@ -432,6 +447,9 @@ static const struct snd_soc_dapm_widget sun8i_codec_dapm_widgets[] = {
+ 	SOC_MIXER_ARRAY("Right Digital ADC Mixer", SND_SOC_NOPM, 0, 0,
+ 			sun8i_input_mixer_controls),
+ 
++	/* Speaker */
++	SND_SOC_DAPM_SPK("Speaker", sun8i_codec_spk_event),
++
+ 	/* Clocks */
+ 	SND_SOC_DAPM_SUPPLY("MODCLK AFI1", SUN8I_MOD_CLK_ENA,
+ 			    SUN8I_MOD_CLK_ENA_AIF1, 0, NULL, 0),
+@@ -570,6 +588,15 @@ static int sun8i_codec_probe(struct platform_device *pdev)
+ 		return PTR_ERR(scodec->clk_bus);
+ 	}
+ 
++	scodec->gpio_pa = devm_gpiod_get_optional(&pdev->dev, "allwinner,pa",
++						  GPIOD_OUT_LOW);
++	if (IS_ERR(scodec->gpio_pa)) {
++		ret = PTR_ERR(scodec->gpio_pa);
++		if (ret != -EPROBE_DEFER)
++			dev_err(&pdev->dev, "Failed to get pa gpio: %d\n", ret);
++		return ret;
++	}
++
+ 	res_base = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+ 	base = devm_ioremap_resource(&pdev->dev, res_base);
+ 	if (IS_ERR(base)) {
 -- 
 2.19.0
