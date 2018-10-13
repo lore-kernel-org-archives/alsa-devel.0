@@ -1,116 +1,116 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH v2 7/9] arm64: dts: allwinner: a64: add nodes necessary for
- analog sound support
-Date: Sat, 13 Oct 2018 09:53:27 -0700
-Message-ID: <20181013165329.13363-8-anarsoul@gmail.com>
+Subject: [PATCH v2 2/9] ASoC: sun8i-codec: Don't hardcode BCLK
+	/ LRCK ratio
+Date: Sat, 13 Oct 2018 09:53:22 -0700
+Message-ID: <20181013165329.13363-3-anarsoul@gmail.com>
 References: <20181013165329.13363-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
+ [209.85.210.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7D287267958
+ for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 18:54:29 +0200 (CEST)
+Received: by mail-pf1-f196.google.com with SMTP id r9-v6so7667469pff.11
+ for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 09:54:29 -0700 (PDT)
 In-Reply-To: <20181013165329.13363-1-anarsoul@gmail.com>
-List-Unsubscribe: <http://lists.infradead.org/mailman/options/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=unsubscribe>
-List-Archive: <http://lists.infradead.org/pipermail/linux-arm-kernel/>
-List-Post: <mailto:linux-arm-kernel@lists.infradead.org>
-List-Help: <mailto:linux-arm-kernel-request@lists.infradead.org?subject=help>
-List-Subscribe: <http://lists.infradead.org/mailman/listinfo/linux-arm-kernel>,
- <mailto:linux-arm-kernel-request@lists.infradead.org?subject=subscribe>
-Sender: "linux-arm-kernel" <linux-arm-kernel-bounces@lists.infradead.org>
-Errors-To: linux-arm-kernel-bounces+linux-arm-kernel=m.gmane.org@lists.infradead.org
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
 To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
 Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-Add nodes for i2s, digital and analog parts of audiocodec on A64
+BCLK / LRCK ratio should be sample size * channels, but it was
+hardcoded to 32 (0x1 is 32 as per A33 and A64 datasheets).
+
+Calculate it basing on sample size and number of channels.
 
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 ---
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi | 58 +++++++++++++++++++
- 1 file changed, 58 insertions(+)
+ sound/soc/sunxi/sun8i-codec.c | 35 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 30 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-index d3daf90a8715..d066ed59f27a 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi
-@@ -157,6 +157,34 @@
- 		compatible = "linux,spdif-dit";
- 	};
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index fb37dd927e33..e681e194ad4c 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -52,7 +52,6 @@
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV		13
+ #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
+-#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16		(1 << 6)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
+@@ -257,8 +256,8 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ }
  
-+	sound: sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "sun50i-a64-audio";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,frame-master = <&cpudai>;
-+		simple-audio-card,bitclock-master = <&cpudai>;
-+		simple-audio-card,mclk-fs = <512>;
-+		simple-audio-card,aux-devs = <&codec_analog>;
-+		simple-audio-card,routing =
-+				"Left DAC", "AIF1 Slot 0 Left",
-+				"Right DAC", "AIF1 Slot 0 Right",
-+				"AIF1 Slot 0 Left ADC", "Left ADC",
-+				"AIF1 Slot 0 Right ADC", "Right ADC",
-+				"Left ADC", "ADC",
-+				"Right ADC", "ADC",
-+				"MIC1", "Mic",
-+				"MIC2", "Headset Mic";
-+		status = "disabled";
-+
-+		cpudai: simple-audio-card,cpu {
-+			sound-dai = <&dai>;
-+		};
-+
-+		link_codec: simple-audio-card,codec {
-+			sound-dai = <&codec>;
-+		};
-+	};
-+
- 	timer {
- 		compatible = "arm,armv8-timer";
- 		interrupts = <GIC_PPI 13
-@@ -522,6 +550,30 @@
- 			status = "disabled";
- 		};
+ struct sun8i_codec_clk_div {
+-	u8	div;
+-	u8	val;
++	unsigned int	div;
++	u8		val;
+ };
  
-+		dai: dai@1c22c00 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun50i-a64-codec-i2s";
-+			reg = <0x01c22c00 0x200>;
-+			interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-+			clock-names = "apb", "mod";
-+			resets = <&ccu RST_BUS_CODEC>;
-+			reset-names = "rst";
-+			dmas = <&dma 15>, <&dma 15>;
-+			dma-names = "rx", "tx";
-+			status = "disabled";
-+		};
-+
-+		codec: codec@1c22e00 {
-+			#sound-dai-cells = <0>;
-+			compatible = "allwinner,sun8i-a33-codec";
-+			reg = <0x01c22e00 0x600>;
-+			interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
-+			clocks = <&ccu CLK_BUS_CODEC>, <&ccu CLK_AC_DIG>;
-+			clock-names = "bus", "mod";
-+			status = "disabled";
-+		};
-+
- 		uart0: serial@1c28000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x01c28000 0x400>;
-@@ -715,6 +767,12 @@
- 			#reset-cells = <1>;
- 		};
+ static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
+@@ -300,12 +299,33 @@ static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
+ 	return best_val;
+ }
  
-+		codec_analog: codec-analog@1f015c0 {
-+			compatible = "allwinner,sun50i-a64-codec-analog";
-+			reg = <0x01f015c0 0x4>;
-+			status = "disabled";
-+		};
++static const struct sun8i_codec_clk_div sun8i_codec_lrck_div[] = {
++	{ .div = 16,	.val = 0 },
++	{ .div = 32,	.val = 1 },
++	{ .div = 64,	.val = 2 },
++	{ .div = 128,	.val = 3 },
++	{ .div = 256,	.val = 4 },
++};
 +
- 		r_i2c: i2c@1f02400 {
- 			compatible = "allwinner,sun50i-a64-i2c",
- 				     "allwinner,sun6i-a31-i2c";
++static int sun8i_codec_get_lrck_div(unsigned int channels,
++				    unsigned int word_size)
++{
++	unsigned int div = word_size * channels;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(sun8i_codec_lrck_div); i++)
++		if (sun8i_codec_lrck_div[i].div == div)
++			return sun8i_codec_lrck_div[i].val;
++
++	return -EINVAL;
++}
++
+ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
+ {
+ 	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(dai->component);
+-	int sample_rate;
++	int sample_rate, lrck_div;
+ 	u8 bclk_div;
+ 
+ 	/*
+@@ -321,9 +341,14 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
+ 			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
+ 
++	lrck_div = sun8i_codec_get_lrck_div(params_channels(params),
++					    params_physical_width(params));
++	if (lrck_div < 0)
++		return lrck_div;
++
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16);
++			   lrck_div << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
+ 
+ 	sample_rate = sun8i_codec_get_hw_rate(params);
+ 	if (sample_rate < 0)
 -- 
 2.19.0
