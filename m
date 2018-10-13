@@ -1,19 +1,18 @@
-From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 4/8] sound: hpios: don't pass GFP_DMA32 to
- dma_alloc_coherent
-Date: Sat, 13 Oct 2018 18:35:40 +0200
-Message-ID: <20181013163540.GA2947@lst.de>
-References: <20181013151707.32210-1-hch@lst.de>
- <20181013151707.32210-5-hch@lst.de> <s5hpnwdn7l7.wl-tiwai@suse.de>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: [PATCH v2 0/9] Add support for audiocodec in Allwinner
+	A64
+Date: Sat, 13 Oct 2018 09:53:20 -0700
+Message-ID: <20181013165329.13363-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from newverein.lst.de (verein.lst.de [213.95.11.211])
- by alsa0.perex.cz (Postfix) with ESMTP id 74A84267783
- for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 18:35:41 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <s5hpnwdn7l7.wl-tiwai@suse.de>
+Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com
+ [209.85.210.196])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1F3AB267783
+ for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 18:54:27 +0200 (CEST)
+Received: by mail-pf1-f196.google.com with SMTP id l81-v6so7684257pfg.3
+ for <alsa-devel@alsa-project.org>; Sat, 13 Oct 2018 09:54:27 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,23 +22,62 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: linux-fbdev@vger.kernel.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org, Christoph Hellwig <hch@lst.de>, linux-media@vger.kernel.org
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Marcus Cooper <codekipper@gmail.com>, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, alsa-devel@alsa-project.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 13, 2018 at 06:18:28PM +0200, Takashi Iwai wrote:
-> On Sat, 13 Oct 2018 17:17:03 +0200,
-> Christoph Hellwig wrote:
-> > 
-> > The DMA API does its own zone decisions based on the coherent_dma_mask.
-> > 
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> Reviewed-by: Takashi Iwai <tiwai@suse.de>
-> 
-> 
-> Would you like to take this as a series, or shall I take individually
-> through sound tree?
+This series adds Allwinner A64 audiocodec support into sun4i-i2s,
+sun8i-codec drivers, introduces new sun50i-codec-analog driver and enables
+sound on Pine64, SoPine boards and Pinebook.
 
-There is nothing that depends on this, so feel free to apply the
-two sound patches to your tree.
+I2S for audiocodec in A64 is different from other 3 I2S modules but
+similar to one in A10, digital part of codec is compatible with A33 and
+analog controls part is completely different from other SoCs - it shares
+only few bits in few registers, so adding support for it into existing
+sun8i-codec-analog would mean duplicating all the widgets, controls and
+some routes and making it hard to read. Therefore it makes sense to
+introduce new driver.
+
+v2: - Use simple-amplifier for speaker amp on Pinebook
+    - Rename sun50i-a64-i2s to sun50i-a64-codec-i2s to preserve compatible
+      string for other 3 I2S modules in A64 in case if there's any
+      incompatibility with H3
+
+Marcus Cooper (1):
+  ASoC: sun4i-i2s: Add compatibility with A64 codec I2S
+
+Vasily Khoruzhick (8):
+  ASoC: sun8i-codec: Don't hardcode BCLK / LRCK ratio
+  ASoC: sun8i-codec-analog: split regmap code into separate driver
+  ASoC: dt-binding: Add bindings for Allwinner A64 codec's analog path
+    controls
+  ASoC: sunxi: Add new driver for Allwinner A64 codec's analog path
+    controls
+  ASoC: sunxi: allow the sun8i-codec driver to be built on ARM64
+  arm64: dts: allwinner: a64: add nodes necessary for analog sound
+    support
+  arm64: dts: allwinner: a64: enable sound on Pine64 and SoPine
+  arm64: dts: allwinner: a64: enable sound on Pinebook
+
+ .../devicetree/bindings/sound/sun4i-i2s.txt   |   2 +
+ .../bindings/sound/sun50i-codec-analog.txt    |  12 +
+ .../boot/dts/allwinner/sun50i-a64-pine64.dts  |  30 ++
+ .../dts/allwinner/sun50i-a64-pinebook.dts     |  42 ++
+ .../allwinner/sun50i-a64-sopine-baseboard.dts |  30 ++
+ arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  58 +++
+ sound/soc/sunxi/Kconfig                       |  17 +-
+ sound/soc/sunxi/Makefile                      |   2 +
+ sound/soc/sunxi/sun4i-i2s.c                   |  21 +
+ sound/soc/sunxi/sun50i-codec-analog.c         | 444 ++++++++++++++++++
+ sound/soc/sunxi/sun8i-codec-analog.c          |  79 +---
+ sound/soc/sunxi/sun8i-codec.c                 |  35 +-
+ sound/soc/sunxi/sunxi-adda-pr-regmap.c        | 102 ++++
+ sound/soc/sunxi/sunxi-adda-pr-regmap.h        |   7 +
+ 14 files changed, 798 insertions(+), 83 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
+ create mode 100644 sound/soc/sunxi/sun50i-codec-analog.c
+ create mode 100644 sound/soc/sunxi/sunxi-adda-pr-regmap.c
+ create mode 100644 sound/soc/sunxi/sunxi-adda-pr-regmap.h
+
+-- 
+2.19.0
