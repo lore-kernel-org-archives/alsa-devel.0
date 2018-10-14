@@ -1,8 +1,8 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-utils][PATCH 3/9] alsactl: use epoll(7) instead
-	of poll(2)
-Date: Sun, 14 Oct 2018 23:36:28 +0900
-Message-ID: <20181014143634.26066-4-o-takashi@sakamocchi.jp>
+Subject: [alsa-utils][PATCH 4/9] alsactl: use link list to
+	maintain source of events
+Date: Sun, 14 Oct 2018 23:36:29 +0900
+Message-ID: <20181014143634.26066-5-o-takashi@sakamocchi.jp>
 References: <20181014143634.26066-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -10,10 +10,10 @@ Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
  [209.85.214.193])
- by alsa0.perex.cz (Postfix) with ESMTP id DFD372677E3
- for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2018 16:36:48 +0200 (CEST)
-Received: by mail-pl1-f193.google.com with SMTP id f18-v6so8050230plr.1
- for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2018 07:36:48 -0700 (PDT)
+ by alsa0.perex.cz (Postfix) with ESMTP id DDA0A2678FE
+ for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2018 16:36:50 +0200 (CEST)
+Received: by mail-pl1-f193.google.com with SMTP id c8-v6so8032432plo.9
+ for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2018 07:36:50 -0700 (PDT)
 In-Reply-To: <20181014143634.26066-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -28,192 +28,133 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Linux kernel supports unique system call; epoll(7). This allows
-applications to make associations for descriptor-unique data in a
-easy way.
+At present, handlers for control nodes are maintained by one-dimensional
+array. This is not necessarily useful to maintain handlers with
+associated information.
 
-This commit uses epoll(7) instead of poll(2) for this point.
+This commit adds link-list for the maintenance.
 
 Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
 ---
- alsactl/monitor.c | 134 ++++++++++++++++++++++++++++++++++++++--------
- 1 file changed, 113 insertions(+), 21 deletions(-)
+ alsactl/monitor.c | 71 +++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
 diff --git a/alsactl/monitor.c b/alsactl/monitor.c
-index 008ceb3..7050eeb 100644
+index 7050eeb..7a61f9c 100644
 --- a/alsactl/monitor.c
 +++ b/alsactl/monitor.c
-@@ -20,6 +20,9 @@
- #include "aconfig.h"
- #include "version.h"
- #include <stdio.h>
-+#include <stdbool.h>
-+#include <string.h>
-+#include <sys/epoll.h>
+@@ -25,6 +25,16 @@
+ #include <sys/epoll.h>
  #include <alsa/asoundlib.h>
  
++#include <stddef.h>
++#include "list.h"
++
++struct src_entry {
++	snd_ctl_t *handle;
++	char *name;
++	unsigned int pfd_count;
++	struct list_head list;
++};
++
  #define MAX_CARDS	256
-@@ -114,41 +117,121 @@ static int print_event(int card, snd_ctl_t *ctl)
- 	return 0;
+ 
+ struct snd_card_iterator {
+@@ -55,6 +65,59 @@ static const char *snd_card_iterator_next(struct snd_card_iterator *iter)
+         return (const char *)iter->name;
  }
  
--static int run_dispatcher(snd_ctl_t **ctls, int ncards, int show_cards)
-+static int operate_dispatcher(int epfd, uint32_t op, struct epoll_event *epev,
-+			      snd_ctl_t *ctl)
- {
-+	struct pollfd *pfds;
++static void remove_source_entry(struct src_entry *entry)
++{
++	list_del(&entry->list);
++	free(entry->name);
++	free(entry);
++}
++
++static void clear_source_list(struct list_head *srcs)
++{
++	struct src_entry *entry, *tmp;
++
++	list_for_each_entry_safe(entry, tmp, srcs, list)
++		remove_source_entry(entry);
++}
++
++static int insert_source_entry(struct list_head *srcs, snd_ctl_t *handle,
++			       const char *name)
++{
++	struct src_entry *entry;
 +	int count;
-+	unsigned int pfd_count;
-+	int i;
 +	int err;
 +
-+	count = snd_ctl_poll_descriptors_count(ctl);
-+	if (count < 0)
-+		return count;
-+	if (count == 0)
-+		return -ENXIO;
-+	pfd_count = count;
-+
-+	pfds = calloc(pfd_count, sizeof(*pfds));
-+	if (!pfds)
++	entry = calloc(1, sizeof(*entry));
++	if (!entry)
 +		return -ENOMEM;
++	INIT_LIST_HEAD(&entry->list);
++	entry->handle = handle;
 +
-+	count = snd_ctl_poll_descriptors(ctl, pfds, pfd_count);
++	entry->name = strdup(name);
++	if (!entry->name) {
++		err = -ENOMEM;
++		goto error;
++	}
++
++	count = snd_ctl_poll_descriptors_count(handle);
 +	if (count < 0) {
 +		err = count;
-+		goto end;
++		goto error;
 +	}
-+	if (count != pfd_count) {
-+		err = -EIO;
-+		goto end;
++	if (count == 0) {
++		err = -ENXIO;
++		goto error;
 +	}
++	entry->pfd_count = count;
 +
-+	for (i = 0; i < pfd_count; ++i) {
-+		err = epoll_ctl(epfd, op, pfds[i].fd, epev);
-+		if (err < 0)
-+			break;
-+	}
-+end:
-+	free(pfds);
++	list_add_tail(&entry->list, srcs);
++
++	return 0;
++error:
++	remove_source_entry(entry);
 +	return err;
 +}
 +
-+static int prepare_dispatcher(int epfd, snd_ctl_t **ctls, int ncards)
-+{
-+	int i;
- 	int err = 0;
+ static int open_ctl(const char *name, snd_ctl_t **ctlp)
+ {
+ 	snd_ctl_t *ctl;
+@@ -222,6 +285,7 @@ static void clear_dispatcher(int epfd, snd_ctl_t **ctls, int ncards)
  
--	for (;ncards > 0;) {
--		struct pollfd fds[ncards];
--		int i;
-+	for (i = 0; i < ncards; ++i) {
-+		snd_ctl_t *ctl = ctls[i];
-+		struct epoll_event ev;
-+		ev.events = EPOLLIN;
-+		ev.data.ptr = (void *)ctl;
-+		err = operate_dispatcher(epfd, EPOLL_CTL_ADD, &ev, ctl);
-+		if (err < 0)
-+			break;
-+	}
- 
--		for (i = 0; i < ncards; i++)
--			snd_ctl_poll_descriptors(ctls[i], &fds[i], 1);
-+	return err;
-+}
- 
--		err = poll(fds, ncards, -1);
--		if (err <= 0) {
--			err = 0;
-+static int run_dispatcher(int epfd, unsigned int max_ev_count, int show_cards)
-+{
-+	struct epoll_event *epev;
-+	int err = 0;
-+
-+	epev = calloc(max_ev_count, sizeof(*epev));
-+	if (!epev)
-+		return -ENOMEM;
-+
-+	while (true) {
-+		int count;
-+		int i;
-+
-+		count = epoll_wait(epfd, epev, max_ev_count, 200);
-+		if (count < 0) {
-+			err = count;
- 			break;
- 		}
-+		if (count == 0)
-+			continue;
-+
-+		for (i = 0; i < count; ++i) {
-+			struct epoll_event *ev = epev + i;
-+			snd_ctl_t *handle = (snd_ctl_t *)ev->data.ptr;
- 
--		for (i = 0; i < ncards; i++) {
--			unsigned short revents;
--			snd_ctl_poll_descriptors_revents(ctls[i], &fds[i], 1,
--							 &revents);
--			if (revents & POLLIN)
--				print_event(show_cards ? i : -1, ctls[i]);
-+			if (ev->events & EPOLLIN)
-+				print_event(show_cards ? i : -1, handle);
- 		}
- 	}
- 
-+	free(epev);
-+
- 	return err;
- }
- 
-+static void clear_dispatcher(int epfd, snd_ctl_t **ctls, int ncards)
-+{
-+	int i;
-+
-+	for (i = 0; i < ncards; ++i) {
-+		snd_ctl_t *ctl = ctls[i];
-+		operate_dispatcher(epfd, EPOLL_CTL_DEL, NULL, ctl);
-+	}
-+}
-+
  int monitor(const char *name)
  {
--	snd_ctl_t *ctls[MAX_CARDS];
-+	snd_ctl_t *ctls[MAX_CARDS] = {0};
++	LIST_HEAD(srcs);
+ 	snd_ctl_t *ctls[MAX_CARDS] = {0};
  	int ncards = 0;
  	int show_cards;
--	int i, err = 0;
-+	int epfd;
-+	int i;
-+	int err = 0;
-+
-+	epfd = epoll_create(1);
-+	if (epfd < 0)
-+		return -errno;
+@@ -240,6 +304,9 @@ int monitor(const char *name)
+ 		snd_card_iterator_init(&iter);
+ 		while ((cardname = snd_card_iterator_next(&iter))) {
+ 			err = open_ctl(cardname, &ctls[ncards]);
++			if (err < 0)
++				goto error;
++			err = insert_source_entry(&srcs, ctls[ncards], cardname);
+ 			if (err < 0)
+ 				goto error;
+ 			ncards++;
+@@ -247,6 +314,9 @@ int monitor(const char *name)
+ 		show_cards = 1;
+ 	} else {
+ 		err = open_ctl(name, &ctls[0]);
++		if (err < 0)
++			goto error;
++		err = insert_source_entry(&srcs, ctls[ncards], name);
+ 		if (err < 0)
+ 			goto error;
+ 		ncards++;
+@@ -259,6 +329,7 @@ int monitor(const char *name)
+ 	clear_dispatcher(epfd, ctls, ncards);
  
- 	if (!name) {
- 		struct snd_card_iterator iter;
-@@ -170,9 +253,18 @@ int monitor(const char *name)
- 		show_cards = 0;
- 	}
- 
--	err = run_dispatcher(ctls, ncards, show_cards);
-- error:
--	for (i = 0; i < ncards; i++)
--		snd_ctl_close(ctls[i]);
-+	err = prepare_dispatcher(epfd, ctls, ncards);
-+	if (err >= 0)
-+		err = run_dispatcher(epfd, ncards, show_cards);
-+	clear_dispatcher(epfd, ctls, ncards);
-+
-+error:
-+	for (i = 0; i < ncards; i++) {
-+		if (ctls[i])
-+			snd_ctl_close(ctls[i]);
-+	}
-+
-+	close(epfd);
-+
- 	return err;
- }
+ error:
++	clear_source_list(&srcs);
+ 	for (i = 0; i < ncards; i++) {
+ 		if (ctls[i])
+ 			snd_ctl_close(ctls[i]);
 -- 
 2.19.1
