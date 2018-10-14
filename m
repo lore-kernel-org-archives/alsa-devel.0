@@ -1,18 +1,20 @@
 From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Subject: [alsa-utils][PATCH 0/9] alsactl: friendly to pluggable
-	devices
-Date: Sun, 14 Oct 2018 23:36:25 +0900
-Message-ID: <20181014143634.26066-1-o-takashi@sakamocchi.jp>
+Subject: [alsa-utils][PATCH 1/9] alsactl: split event loop code
+	to a function
+Date: Sun, 14 Oct 2018 23:36:26 +0900
+Message-ID: <20181014143634.26066-2-o-takashi@sakamocchi.jp>
+References: <20181014143634.26066-1-o-takashi@sakamocchi.jp>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com
- [209.85.215.172])
- by alsa0.perex.cz (Postfix) with ESMTP id 64D1B2677D8
- for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2018 16:36:43 +0200 (CEST)
-Received: by mail-pg1-f172.google.com with SMTP id g2-v6so7924643pgu.11
- for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2018 07:36:43 -0700 (PDT)
+Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com
+ [209.85.210.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 1ADFE2677E3
+ for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2018 16:36:44 +0200 (CEST)
+Received: by mail-pf1-f195.google.com with SMTP id l17-v6so8400407pff.2
+ for <alsa-devel@alsa-project.org>; Sun, 14 Oct 2018 07:36:44 -0700 (PDT)
+In-Reply-To: <20181014143634.26066-1-o-takashi@sakamocchi.jp>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,34 +28,84 @@ To: tiwai@suse.de, perex@perex.cz
 Cc: alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+In a mode of 'monitor', an event loop runs.
 
-A bug was reported that monitor mode of alsactl consumes much CPU time
-after disconnection of any sound card[1].
+This commit applies a small refactoring to splits the loop into a
+function for readability.
 
-This patchset improves the mode to handle connection/disconnection of
-sound card. Observed control nodes are maintained by list structure
-instead of array. Linux specific epoll(7) is used to dispatch events.
-Linux specific inotify(7) is used to detect connection of new sound
-card. Linux specific signalfd(2) is used to catch Unix signals for
-termination.
+Signed-off-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+---
+ alsactl/monitor.c | 51 ++++++++++++++++++++++++++++-------------------
+ 1 file changed, 30 insertions(+), 21 deletions(-)
 
-[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-September/140580.html
-
-Takashi Sakamoto (9):
-  alsactl: split event loop code to a function
-  alsactl: add an iterator of registered instances of sound card
-  alsactl: use epoll(7) instead of poll(2)
-  alsactl: use link list to maintain source of events
-  alsactl: use a list of source for event dispatcher instead of an array
-    of source
-  alsactl: obsolete array for maintenance of handlers
-  alsactl: handle disconnection of sound card
-  alsactl: handle detection of new sound card
-  alsactl: use signalfd to catch UNIX signal
-
- alsactl/monitor.c | 422 ++++++++++++++++++++++++++++++++++++++++------
- 1 file changed, 375 insertions(+), 47 deletions(-)
-
+diff --git a/alsactl/monitor.c b/alsactl/monitor.c
+index 8351a79..fb3fc18 100644
+--- a/alsactl/monitor.c
++++ b/alsactl/monitor.c
+@@ -84,6 +84,35 @@ static int print_event(int card, snd_ctl_t *ctl)
+ 	return 0;
+ }
+ 
++static int run_dispatcher(snd_ctl_t **ctls, int ncards, int show_cards)
++{
++	int err = 0;
++
++	for (;ncards > 0;) {
++		struct pollfd fds[ncards];
++		int i;
++
++		for (i = 0; i < ncards; i++)
++			snd_ctl_poll_descriptors(ctls[i], &fds[i], 1);
++
++		err = poll(fds, ncards, -1);
++		if (err <= 0) {
++			err = 0;
++			break;
++		}
++
++		for (i = 0; i < ncards; i++) {
++			unsigned short revents;
++			snd_ctl_poll_descriptors_revents(ctls[i], &fds[i], 1,
++							 &revents);
++			if (revents & POLLIN)
++				print_event(show_cards ? i : -1, ctls[i]);
++		}
++	}
++
++	return err;
++}
++
+ #define MAX_CARDS	256
+ 
+ int monitor(const char *name)
+@@ -117,27 +146,7 @@ int monitor(const char *name)
+ 		show_cards = 0;
+ 	}
+ 
+-	for (;ncards > 0;) {
+-		struct pollfd fds[ncards];
+-
+-		for (i = 0; i < ncards; i++)
+-			snd_ctl_poll_descriptors(ctls[i], &fds[i], 1);
+-
+-		err = poll(fds, ncards, -1);
+-		if (err <= 0) {
+-			err = 0;
+-			break;
+-		}
+-
+-		for (i = 0; i < ncards; i++) {
+-			unsigned short revents;
+-			snd_ctl_poll_descriptors_revents(ctls[i], &fds[i], 1,
+-							 &revents);
+-			if (revents & POLLIN)
+-				print_event(show_cards ? i : -1, ctls[i]);
+-		}
+-	}
+-
++	err = run_dispatcher(ctls, ncards, show_cards);
+  error:
+ 	for (i = 0; i < ncards; i++)
+ 		snd_ctl_close(ctls[i]);
 -- 
 2.19.1
