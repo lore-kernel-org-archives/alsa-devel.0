@@ -1,20 +1,17 @@
 From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH] ASoC: sun4i-i2s: don't try to start up or
- shut down DAI if it's active
-Date: Mon, 15 Oct 2018 10:11:51 +0200
-Message-ID: <20181015081151.rrn5xmso2hgckvh6@flea>
-References: <20181012153254.10844-1-anarsoul@gmail.com>
- <20181012160905.GA2340@sirena.org.uk>
- <7437935.iAfLsdZGOz@anarsoul-thinkpad>
+Subject: Re: [PATCH v2 1/9] ASoC: sun4i-i2s: Add compatibility
+ with A64 codec I2S
+Date: Mon, 15 Oct 2018 10:18:36 +0200
+Message-ID: <20181015081836.onjczcsg5qwp6rbt@flea>
+References: <20181013165329.13363-1-anarsoul@gmail.com>
+ <20181013165329.13363-2-anarsoul@gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============7013204625483334419=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id E96502677CE
- for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 10:11:52 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <7437935.iAfLsdZGOz@anarsoul-thinkpad>
+ by alsa0.perex.cz (Postfix) with ESMTP id 7311C2677CE
+ for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 10:18:37 +0200 (CEST)
+In-Reply-To: <20181013165329.13363-2-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +22,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Yong Deng <yong.deng@magewell.com>, linux-arm-kernel@lists.infradead.org
+Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 12, 2018 at 09:28:56AM -0700, Vasily Khoruzhick wrote:
-> On Friday, October 12, 2018 9:09:05 AM PDT Mark Brown wrote:
-> > On Fri, Oct 12, 2018 at 08:32:54AM -0700, Vasily Khoruzhick wrote:
-> > > Otherwise we may end up with shutting down I2S if shutdown() was
-> > > called for capture substream, but playback is still running.
-> > 
-> > Would it be cleaner and more robust to use runtime PM?  I'm wondering
-> > what happens if some of the configuration stuff turns out to also need
-> > some of the clocks for example.
-> 
-> I guess. I'm not sure why this code was put into startup and shutdown 
-> callbacks in first place.
-> 
-> Maybe Marcus or Maxime know?
 
-I can't really come up with a good explanation, so I guess there's
-none :)
+--===============7013204625483334419==
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="v77floeb2qfydaok"
+Content-Disposition: inline
 
-> As for configuration - only bus clock is necessary for configuration
-> and it's already enabled in runtime_resume() callback.
 
-Not really. Or at least, on the A64, yes, but shutting down the bus
-clock on older SoCs will reset the controller. I'd just put the enable
-bit on the runtime_pm hook.
+--v77floeb2qfydaok
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, Oct 13, 2018 at 09:53:21AM -0700, Vasily Khoruzhick wrote:
+> From: Marcus Cooper <codekipper@gmail.com>
+>=20
+> The I2S block used for the audio codec in the A64 differs from other 3
+> I2S modules in A64 and isn't compatible with H3. But it is very similar
+> to what is found in A10(sun4i). However, its TX FIFO is
+> located at a different address.
+>=20
+> Signed-off-by: Marcus Cooper <codekipper@gmail.com>
+> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+
+Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
 
 Maxime
 
--- 
+--=20
 Maxime Ripard, Bootlin
 Embedded Linux and Kernel engineering
 https://bootlin.com
+
+--v77floeb2qfydaok
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEE0VqZU19dR2zEVaqr0rTAlCFNr3QFAlvETVsACgkQ0rTAlCFN
+r3T2+g/+PD4bXTNjGO5w7Zsb+2Mr6WJMqXC+ONBknYYiAac1d/RDihcDgf1ibB9q
+XxZV0rA6K9l1UeCDPJ8JpobqZu84wFrjbqxcp7FVzKQnGYSOjDGd5jKVUlGSGQk7
+ciXg/3C2Nv7zidbr1a2LzACSO/ojrue61FGnaussIU+TcyhEvHOQLa/0sAXVw3ar
+LKljsvnLUJa4hZud4T3fQ0hNWZ1Px0FS26AaY6lwf82KkP75cgoEW/a8dk0jpt0U
+XJ8y9D1+36/Xnf/MwnGX7OTlNhIvTyaqHn1zPfWTcEE+AA9Ns6pjjjNkOXbvGLYV
+P5bgqroJmLVk7WnW3IAjU9ebKUGf4JXmCZ/qw7HhUeKVB8goCsNtViuqEudWla4Y
+ukJkdTrOxoHnXKxToDGNNVG0s8MTvALlOdz9fNIO+pZxmVl8zEVcHWzOZQCMlHnn
+E3M0J/kxl/MdgEabagCYQlgoZiBNQWSat0aDKAVzd/KB1HQyCf48NbjvMQWrkKT6
+0Isg0i4QA1Y2ojuc1+Vc4I76Wj/BpgP8JIz8actCf5m8kMgLFEtNPma+FSE9a7ey
+Y0+qr8lCmQX/wyNhSJ4hn3dWHhe0tS4cJk6NmBKPMYN4WJun1l4pFrqsVaafVjAQ
+q6WNaZLAv5W1uIHvVyhKQGQ1+NGZiZvCtWo7HStxL8QFYUX1Nfc=
+=rbvd
+-----END PGP SIGNATURE-----
+
+--v77floeb2qfydaok--
+
+--===============7013204625483334419==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============7013204625483334419==--
