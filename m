@@ -1,14 +1,17 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 0/4] ASoC: stm32: sai: add mclk clock provider
-Date: Mon, 15 Oct 2018 16:03:32 +0200
-Message-ID: <1539612216-12602-1-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 1/4] ASoC: dt-bindings: add mclk provider
+	support to stm32 sai
+Date: Mon, 15 Oct 2018 16:03:33 +0200
+Message-ID: <1539612216-12602-2-git-send-email-olivier.moysan@st.com>
+References: <1539612216-12602-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 9DD122677F0
+ [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 9FADC2677F5
  for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 16:03:43 +0200 (CEST)
+In-Reply-To: <1539612216-12602-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,46 +24,38 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-This patch set allows to use STM32 SAI interface as a master clock provider.
-The Cirrus cs42l51 codec patch gives the example of the source code required on codec side,
-to use SAI mclk provider.
+add mclk provider support to stm32 sai
 
-These patches allow to cover the following use cases:
-	- SAI is master or slave and is master clock provider
-	- SAI is master or slave and is not master clock provider (another sai provides the mclk clock)
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+---
+ Documentation/devicetree/bindings/sound/st,stm32-sai.txt | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Implementation overview:
-- mclk configuration
-	SAI is registered in clock framework:
-		- either as a mclk provider (optional in DT). SAI generates mclk when requested by DAPM
-		- or as a mclk consumer (optional in DT).
-	cs42l51 codec is configured as a mclk consumer (optional in DT)
-
-- mclk power
-	A DAPM is registered in codec to handle mclk enable/disable (DAPM route is set in soundcard node)
-
-- mclk rate:
-	mclk rate is computed at runtime from stream rate and mclk-fs ratio provided in DT
-	mclk rate is propagated through sysclk callback to the SAI which is mclk consumer.
-	The mclk rate is set exclusively to avoid concurrent rate requests on SAI master.
-
-Regards
-Olivier
-
-Olivier Moysan (4):
-  ASoC: dt-bindings: add mclk provider support to stm32 sai
-  ASoC: dt-bindings: add mclk support to cs42l51
-  ASoC: stm32: sai: set sai as mclk clock provider
-  ASoC: cs42l51: add mclk support
-
- .../devicetree/bindings/sound/cs42l51.txt          |  17 ++
- .../devicetree/bindings/sound/st,stm32-sai.txt     |   7 +
- .../devicetree/bindings/trivial-devices.txt        |   1 -
- sound/soc/codecs/cs42l51.c                         |   8 +
- sound/soc/stm/stm32_sai.h                          |   3 +
- sound/soc/stm/stm32_sai_sub.c                      | 275 ++++++++++++++++++---
- 6 files changed, 274 insertions(+), 37 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/cs42l51.txt
-
+diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+index 3a3fc506e43a..3f4467ff0aa2 100644
+--- a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
++++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
+@@ -31,7 +31,11 @@ SAI subnodes required properties:
+   - reg: Base address and size of SAI sub-block register set.
+   - clocks: Must contain one phandle and clock specifier pair
+ 	for sai_ck which feeds the internal clock generator.
++	If the SAI shares a master clock, with another SAI set as MCLK
++	clock provider, SAI provider phandle must be specified here.
+   - clock-names: Must contain "sai_ck".
++	Must also contain "MCLK", if SAI shares a master clock,
++	with a SAI set as MCLK clock provider.
+   - dmas: see Documentation/devicetree/bindings/dma/stm32-dma.txt
+   - dma-names: identifier string for each DMA request line
+ 	"tx": if sai sub-block is configured as playback DAI
+@@ -51,6 +55,9 @@ SAI subnodes Optional properties:
+ 	configured according to protocol defined in related DAI link node,
+ 	such as i2s, left justified, right justified, dsp and pdm protocols.
+ 	Note: ac97 protocol is not supported by SAI driver
++   - #clock-cells: should be 0. This property must be present if the SAI device
++	is a master clock provider, according to clocks bindings, described in
++	Documentation/devicetree/bindings/clock/clock-bindings.txt.
+ 
+ The device node should contain one 'port' child node with one child 'endpoint'
+ node, according to the bindings defined in Documentation/devicetree/bindings/
 -- 
 2.7.4
