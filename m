@@ -1,44 +1,42 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH v2 6/9] ASoC: sunxi: allow the sun8i-codec
- driver to be built on ARM64
-Date: Mon, 15 Oct 2018 09:31:19 +0200
-Message-ID: <20181015073119.fgsixra3nw3aannd@flea>
-References: <20181013165329.13363-1-anarsoul@gmail.com>
- <20181013165329.13363-7-anarsoul@gmail.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 1/8] cpufreq: tegra186: don't pass GFP_DMA32 to dma_alloc_coherent
+Date: Mon, 15 Oct 2018 09:43:04 +0200
+Message-ID: <CAJZ5v0ju2Y=yQn9uz6HpYGw5BZovxYh2YbYD7Ujq8kajJfvLSQ@mail.gmail.com>
+References: <20181013151707.32210-1-hch@lst.de> <20181013151707.32210-2-hch@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 743F026785C
- for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 09:31:20 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20181013165329.13363-7-anarsoul@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181013151707.32210-2-hch@lst.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Linux PM <linux-pm@vger.kernel.org>, linux-tegra@vger.kernel.org, dri-devel <dri-devel@lists.freedesktop.org>, linux-media@vger.kernel.org, linux-spi <linux-spi@vger.kernel.org>, "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 13, 2018 at 09:53:26AM -0700, Vasily Khoruzhick wrote:
-> Allwinner A64 uses the same digital codec part as in A33, so we need
-> to build this driver on ARM64 as well.
-> 
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+On Sat, Oct 13, 2018 at 5:17 PM Christoph Hellwig <hch@lst.de> wrote:
+>
+> The DMA API does its own zone decisions based on the coherent_dma_mask.
+>
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Thanks!
-Maxime
-
--- 
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> ---
+>  drivers/cpufreq/tegra186-cpufreq.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpufreq/tegra186-cpufreq.c b/drivers/cpufreq/tegra186-cpufreq.c
+> index 1f59966573aa..f1e09022b819 100644
+> --- a/drivers/cpufreq/tegra186-cpufreq.c
+> +++ b/drivers/cpufreq/tegra186-cpufreq.c
+> @@ -121,7 +121,7 @@ static struct cpufreq_frequency_table *init_vhint_table(
+>         void *virt;
+>
+>         virt = dma_alloc_coherent(bpmp->dev, sizeof(*data), &phys,
+> -                                 GFP_KERNEL | GFP_DMA32);
+> +                                 GFP_KERNEL);
+>         if (!virt)
+>                 return ERR_PTR(-ENOMEM);
+>
+> --
+> 2.19.1
+>
