@@ -1,16 +1,16 @@
 From: Olivier Moysan <olivier.moysan@st.com>
-Subject: [PATCH 1/4] ASoC: dt-bindings: add mclk provider
-	support to stm32 sai
-Date: Mon, 15 Oct 2018 16:03:33 +0200
-Message-ID: <1539612216-12602-2-git-send-email-olivier.moysan@st.com>
+Subject: [PATCH 4/4] ASoC: cs42l51: add mclk support
+Date: Mon, 15 Oct 2018 16:03:36 +0200
+Message-ID: <1539612216-12602-5-git-send-email-olivier.moysan@st.com>
 References: <1539612216-12602-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com
- [62.209.51.94]) by alsa0.perex.cz (Postfix) with ESMTP id 9FADC2677F5
- for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 16:03:43 +0200 (CEST)
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2CE02267737
+ for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 16:03:45 +0200 (CEST)
 In-Reply-To: <1539612216-12602-1-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -24,38 +24,39 @@ Sender: alsa-devel-bounces@alsa-project.org
 To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, robh@kernel.org, mark.rutland@arm.com, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-add mclk provider support to stm32 sai
+Add MCLK dapm to allow configuration of cirrus CS42l51
+codec as a master clock consumer.
 
 Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 ---
- Documentation/devicetree/bindings/sound/st,stm32-sai.txt | 7 +++++++
- 1 file changed, 7 insertions(+)
+ sound/soc/codecs/cs42l51.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-index 3a3fc506e43a..3f4467ff0aa2 100644
---- a/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-+++ b/Documentation/devicetree/bindings/sound/st,stm32-sai.txt
-@@ -31,7 +31,11 @@ SAI subnodes required properties:
-   - reg: Base address and size of SAI sub-block register set.
-   - clocks: Must contain one phandle and clock specifier pair
- 	for sai_ck which feeds the internal clock generator.
-+	If the SAI shares a master clock, with another SAI set as MCLK
-+	clock provider, SAI provider phandle must be specified here.
-   - clock-names: Must contain "sai_ck".
-+	Must also contain "MCLK", if SAI shares a master clock,
-+	with a SAI set as MCLK clock provider.
-   - dmas: see Documentation/devicetree/bindings/dma/stm32-dma.txt
-   - dma-names: identifier string for each DMA request line
- 	"tx": if sai sub-block is configured as playback DAI
-@@ -51,6 +55,9 @@ SAI subnodes Optional properties:
- 	configured according to protocol defined in related DAI link node,
- 	such as i2s, left justified, right justified, dsp and pdm protocols.
- 	Note: ac97 protocol is not supported by SAI driver
-+   - #clock-cells: should be 0. This property must be present if the SAI device
-+	is a master clock provider, according to clocks bindings, described in
-+	Documentation/devicetree/bindings/clock/clock-bindings.txt.
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 5080d7a3c279..eb40bff54cec 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -237,6 +237,10 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
+ 		&cs42l51_adcr_mux_controls),
+ };
  
- The device node should contain one 'port' child node with one child 'endpoint'
- node, according to the bindings defined in Documentation/devicetree/bindings/
++static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
++	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
++};
++
+ static const struct snd_soc_dapm_route cs42l51_routes[] = {
+ 	{"HPL", NULL, "Left DAC"},
+ 	{"HPR", NULL, "Right DAC"},
+@@ -487,6 +491,10 @@ static struct snd_soc_dai_driver cs42l51_dai = {
+ static int cs42l51_component_probe(struct snd_soc_component *component)
+ {
+ 	int ret, reg;
++	struct snd_soc_dapm_context *dapm;
++
++	dapm = snd_soc_component_get_dapm(component);
++	snd_soc_dapm_new_controls(dapm, cs42l51_dapm_mclk_widgets, 1);
+ 
+ 	/*
+ 	 * DAC configuration
 -- 
 2.7.4
