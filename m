@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: Intel: Boards: Add KBL Dialog Maxim
- I2S machine driver
-Date: Mon, 15 Oct 2018 12:01:09 +0100
-Message-ID: <20181015110109.GA12949@sirena.org.uk>
-References: <1539070547-14240-1-git-send-email-mac.chiang@intel.com>
+Subject: Applied "ASoC: Intel: common: Add Kabylake
+	Dialog+Maxim machine driver entry" to the asoc tree
+Date: Mon, 15 Oct 2018 12:21:36 +0100 (BST)
+Message-ID: <20181015112137.00AB411224A9@debutante.sirena.org.uk>
+References: <1539070628-14284-1-git-send-email-mac.chiang@intel.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============4801016831337130308=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 15A0C267737
- for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 13:01:12 +0200 (CEST)
-In-Reply-To: <1539070547-14240-1-git-send-email-mac.chiang@intel.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id DC338267737
+ for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 13:21:40 +0200 (CEST)
+In-Reply-To: <1539070628-14284-1-git-send-email-mac.chiang@intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,62 +22,81 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: mac.chiang@intel.com
-Cc: alsa-devel@alsa-project.org, pierre-louis.bossart@linux.intel.com
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, mac.chiang@intel.com, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============4801016831337130308==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
-Content-Disposition: inline
+   ASoC: Intel: common: Add Kabylake Dialog+Maxim machine driver entry
 
+has been applied to the asoc tree at
 
---9jxsPFA5p3P2qPhR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Tue, Oct 09, 2018 at 03:35:47PM +0800, mac.chiang@intel.com wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> @@ -0,0 +1,983 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +// Copyright(c) 2018 Intel Corporation.
-> +
-> +/*
-> + * Intel Kabylake I2S Machine Driver with MAX98927 & DA7219 Codecs
-> + *
-> + * Modified from:
-> + *   Intel Kabylake I2S Machine driver supporting MAX98927 and
-> + *   RT5663 codecs
-> + */
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Please don't mix C and C++ comment styles, just make the entire block
-C++ style so it looks more consistent.  However this looks otherwise
-good so I'll go ahead and apply - please send a followup patch fixing
-things up.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
---9jxsPFA5p3P2qPhR
-Content-Type: application/pgp-signature; name="signature.asc"
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
------BEGIN PGP SIGNATURE-----
+Thanks,
+Mark
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvEc3QACgkQJNaLcl1U
-h9BKnwf7BueQUuTiPerTD0qsMjzOaSI/ayrS/w2Vuv+UZxgqOKfS5nDRogYzXYLJ
-lr/oI8xa0ZPVUt54/TfXZmYyzfFN9aA9fNZXeHoS1DgvIMi481TxC68J9WBJvzZV
-NaXm+0S1rJzImMt/Trj6JW6O0KJJRgS/LIfvbkpRe16j2m/j4fAjzU1a9zNzBkjz
-4we2GBuK5xjerfMvYx2LvcNZYr76h4cEuK7wFdCTFijanza97fM8M/0lpgvdtPmY
-RrJusmTST8sT7kuGBG+F+vsj5NuQ2bTrAZJ7+faIB2nGFbPkvbZWmUG3rEpXcmDx
-tEvkFH3T72MdbmlZVOKmWWRjKPGL4Q==
-=bYGL
------END PGP SIGNATURE-----
+>From 6530adeaaf5018cd13437dc82adcd9349657a00e Mon Sep 17 00:00:00 2001
+From: Mac Chiang <mac.chiang@intel.com>
+Date: Tue, 9 Oct 2018 15:37:08 +0800
+Subject: [PATCH] ASoC: Intel: common: Add Kabylake Dialog+Maxim machine driver
+ entry
 
---9jxsPFA5p3P2qPhR--
+This patch adds da7219_max98927 machine driver entry into
+machine table
 
---===============4801016831337130308==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Signed-off-by: Mac Chiang <mac.chiang@intel.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/intel/common/soc-acpi-intel-kbl-match.c | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-
---===============4801016831337130308==--
+diff --git a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+index 0ee173ca437d..a317b7790fce 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-kbl-match.c
+@@ -32,6 +32,11 @@ static struct snd_soc_acpi_codecs kbl_7219_98357_codecs = {
+ 	.codecs = {"MX98357A"}
+ };
+ 
++static struct snd_soc_acpi_codecs kbl_7219_98927_codecs = {
++	.num_codecs = 1,
++	.codecs = {"MX98927"}
++};
++
+ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 	{
+ 		.id = "INT343A",
+@@ -83,6 +88,14 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_kbl_machines[] = {
+ 		.quirk_data = &kbl_7219_98357_codecs,
+ 		.pdata = &skl_dmic_data,
+ 	},
++	{
++		.id = "DLGS7219",
++		.drv_name = "kbl_da7219_max98927",
++		.fw_filename = "intel/dsp_fw_kbl.bin",
++		.machine_quirk = snd_soc_acpi_codec_list,
++		.quirk_data = &kbl_7219_98927_codecs,
++		.pdata = &skl_dmic_data
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_kbl_machines);
+-- 
+2.19.0.rc2
