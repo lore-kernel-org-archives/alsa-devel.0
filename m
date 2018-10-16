@@ -1,18 +1,20 @@
 From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH v4 0/9] Add support for audiocodec in Allwinner
-	A64
-Date: Mon, 15 Oct 2018 20:02:30 -0700
-Message-ID: <20181016030239.15449-1-anarsoul@gmail.com>
+Subject: [PATCH v4 2/9] ASoC: sun8i-codec: Don't hardcode BCLK
+	/ LRCK ratio
+Date: Mon, 15 Oct 2018 20:02:32 -0700
+Message-ID: <20181016030239.15449-3-anarsoul@gmail.com>
+References: <20181016030239.15449-1-anarsoul@gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f194.google.com (mail-pg1-f194.google.com
- [209.85.215.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 88A132677F0
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 05:02:49 +0200 (CEST)
-Received: by mail-pg1-f194.google.com with SMTP id c10-v6so10109477pgq.4
- for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 20:02:49 -0700 (PDT)
+Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
+ [209.85.214.193])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0C2A12677F0
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 05:02:50 +0200 (CEST)
+Received: by mail-pl1-f193.google.com with SMTP id 30-v6so10228488plb.10
+ for <alsa-devel@alsa-project.org>; Mon, 15 Oct 2018 20:02:50 -0700 (PDT)
+In-Reply-To: <20181016030239.15449-1-anarsoul@gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,63 +28,87 @@ To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Rob He
 Cc: Vasily Khoruzhick <anarsoul@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-This series adds Allwinner A64 audiocodec support into sun4i-i2s,
-sun8i-codec drivers, introduces new sun50i-codec-analog driver and enables
-sound on Pine64, SoPine boards and Pinebook.
+BCLK / LRCK ratio should be sample size * channels, but it was
+hardcoded to 32 (0x1 is 32 as per A33 and A64 datasheets).
 
-I2S for audiocodec in A64 is different from other 3 I2S modules but
-similar to one in A10, digital part of codec is compatible with A33 and
-analog controls part is completely different from other SoCs - it shares
-only few bits in few registers, so adding support for it into existing
-sun8i-codec-analog would mean duplicating all the widgets, controls and
-some routes and making it hard to read. Therefore it makes sense to
-introduce new driver.
+Calculate it basing on sample size and number of channels.
 
-v2: - Use simple-amplifier for speaker amp on Pinebook
-    - Rename sun50i-a64-i2s to sun50i-a64-codec-i2s to preserve compatible
-      string for other 3 I2S modules in A64 in case if there's any
-      incompatibility with H3
-v3: - renamed sunxi-adda-pr-regmap to sun8i-adda-pr-regmap
-    - use ilog2() to calculate reg value for LRCK div instead of using a
-      table
-v4: - dts: don't use 'Mic' and 'Headset Mic' widgets from sun8i-codec,
-      define our board-level widgets instead.
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+---
+ sound/soc/sunxi/sun8i-codec.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
 
-Marcus Cooper (1):
-  ASoC: sun4i-i2s: Add compatibility with A64 codec I2S
-
-Vasily Khoruzhick (8):
-  ASoC: sun8i-codec: Don't hardcode BCLK / LRCK ratio
-  ASoC: sun8i-codec-analog: split regmap code into separate driver
-  ASoC: dt-binding: Add bindings for Allwinner A64 codec's analog path
-    controls
-  ASoC: sunxi: Add new driver for Allwinner A64 codec's analog path
-    controls
-  ASoC: sunxi: allow the sun8i-codec driver to be built on ARM64
-  arm64: dts: allwinner: a64: add nodes necessary for analog sound
-    support
-  arm64: dts: allwinner: a64: enable sound on Pine64 and SoPine
-  arm64: dts: allwinner: a64: enable sound on Pinebook
-
- .../devicetree/bindings/sound/sun4i-i2s.txt   |   2 +
- .../bindings/sound/sun50i-codec-analog.txt    |  12 +
- .../boot/dts/allwinner/sun50i-a64-pine64.dts  |  29 ++
- .../dts/allwinner/sun50i-a64-pinebook.dts     |  42 ++
- .../allwinner/sun50i-a64-sopine-baseboard.dts |  29 ++
- arch/arm64/boot/dts/allwinner/sun50i-a64.dtsi |  58 +++
- sound/soc/sunxi/Kconfig                       |  17 +-
- sound/soc/sunxi/Makefile                      |   2 +
- sound/soc/sunxi/sun4i-i2s.c                   |  21 +
- sound/soc/sunxi/sun50i-codec-analog.c         | 444 ++++++++++++++++++
- sound/soc/sunxi/sun8i-adda-pr-regmap.c        | 102 ++++
- sound/soc/sunxi/sun8i-adda-pr-regmap.h        |   7 +
- sound/soc/sunxi/sun8i-codec-analog.c          |  79 +---
- sound/soc/sunxi/sun8i-codec.c                 |  26 +-
- 14 files changed, 787 insertions(+), 83 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/sound/sun50i-codec-analog.txt
- create mode 100644 sound/soc/sunxi/sun50i-codec-analog.c
- create mode 100644 sound/soc/sunxi/sun8i-adda-pr-regmap.c
- create mode 100644 sound/soc/sunxi/sun8i-adda-pr-regmap.h
-
+diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
+index fb37dd927e33..2467fab94a19 100644
+--- a/sound/soc/sunxi/sun8i-codec.c
++++ b/sound/soc/sunxi/sun8i-codec.c
+@@ -24,6 +24,7 @@
+ #include <linux/io.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/regmap.h>
++#include <linux/log2.h>
+ 
+ #include <sound/pcm_params.h>
+ #include <sound/soc.h>
+@@ -52,7 +53,6 @@
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV		13
+ #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
+ #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
+-#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16		(1 << 6)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
+ #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
+ #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
+@@ -257,8 +257,8 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai, unsigned int fmt)
+ }
+ 
+ struct sun8i_codec_clk_div {
+-	u8	div;
+-	u8	val;
++	unsigned int	div;
++	u8		val;
+ };
+ 
+ static const struct sun8i_codec_clk_div sun8i_codec_bclk_div[] = {
+@@ -300,12 +300,23 @@ static u8 sun8i_codec_get_bclk_div(struct sun8i_codec *scodec,
+ 	return best_val;
+ }
+ 
++static int sun8i_codec_get_lrck_div(unsigned int channels,
++				    unsigned int word_size)
++{
++	unsigned int div = word_size * channels;
++
++	if (div < 16 || div > 256)
++		return -EINVAL;
++
++	return ilog2(div) - 4;
++}
++
+ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 				 struct snd_pcm_hw_params *params,
+ 				 struct snd_soc_dai *dai)
+ {
+ 	struct sun8i_codec *scodec = snd_soc_component_get_drvdata(dai->component);
+-	int sample_rate;
++	int sample_rate, lrck_div;
+ 	u8 bclk_div;
+ 
+ 	/*
+@@ -321,9 +332,14 @@ static int sun8i_codec_hw_params(struct snd_pcm_substream *substream,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV_MASK,
+ 			   bclk_div << SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV);
+ 
++	lrck_div = sun8i_codec_get_lrck_div(params_channels(params),
++					    params_physical_width(params));
++	if (lrck_div < 0)
++		return lrck_div;
++
+ 	regmap_update_bits(scodec->regmap, SUN8I_AIF1CLK_CTRL,
+ 			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_MASK,
+-			   SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16);
++			   lrck_div << SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV);
+ 
+ 	sample_rate = sun8i_codec_get_hw_rate(params);
+ 	if (sample_rate < 0)
 -- 
 2.19.0
