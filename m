@@ -1,18 +1,15 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH v2] ASoC: sun4i-i2s: move code from
- startup/shutdown hooks into pm_runtime hooks
-Date: Tue, 16 Oct 2018 09:16:26 +0200
-Message-ID: <20181016071626.m6jkoiixkvxks5ob@flea>
-References: <20181016031141.16259-1-anarsoul@gmail.com>
+From: Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] ALSA: hda: Add 2 more models to the power_save
+	blacklist
+Date: Tue, 16 Oct 2018 12:18:21 +0200
+Message-ID: <20181016101821.18626-1-hdegoede@redhat.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 96A342675CD
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 09:16:37 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20181016031141.16259-1-anarsoul@gmail.com>
+Received: from mx1.redhat.com (mx1.redhat.com [209.132.183.28])
+ by alsa0.perex.cz (Postfix) with ESMTP id 97B6D267526
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 12:18:27 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,114 +19,39 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: alsa-devel@alsa-project.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Yong Deng <yong.deng@magewell.com>, linux-arm-kernel@lists.infradead.org
+To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: Hans de Goede <hdegoede@redhat.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 15, 2018 at 08:11:41PM -0700, Vasily Khoruzhick wrote:
-> startup() and shutdown() hooks are called for both substreams,
-> so stopping either substream when another is running breaks the
-> latter.
-> 
-> E.g. playback breaks if capture is stopped when playback is running.
-> 
-> Move code from startup() and shutdown() to resume() and suspend()
-> hooks respectively to fix this issue
-> 
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> ---
-> v2: - rename from "ASoC: sun4i-i2s: don't try to start up
->                  or shut down DAI if it's active"
->     - move code from startup/shutdown hooks into pm_runtime
-> 
->  sound/soc/sunxi/sun4i-i2s.c | 61 +++++++++++++++----------------------
->  1 file changed, 25 insertions(+), 36 deletions(-)
-> 
-> diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-> index a4aa931ebfae..daa6c08cffbc 100644
-> --- a/sound/soc/sunxi/sun4i-i2s.c
-> +++ b/sound/soc/sunxi/sun4i-i2s.c
-> @@ -644,40 +644,6 @@ static int sun4i_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
->  	return 0;
->  }
->  
-> -static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
-> -			     struct snd_soc_dai *dai)
-> -{
-> -	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> -
-> -	/* Enable the whole hardware block */
-> -	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> -			   SUN4I_I2S_CTRL_GL_EN, SUN4I_I2S_CTRL_GL_EN);
-> -
-> -	/* Enable the first output line */
-> -	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> -			   SUN4I_I2S_CTRL_SDO_EN_MASK,
-> -			   SUN4I_I2S_CTRL_SDO_EN(0));
-> -
-> -
-> -	return clk_prepare_enable(i2s->mod_clk);
-> -}
-> -
-> -static void sun4i_i2s_shutdown(struct snd_pcm_substream *substream,
-> -			       struct snd_soc_dai *dai)
-> -{
-> -	struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> -
-> -	clk_disable_unprepare(i2s->mod_clk);
-> -
-> -	/* Disable our output lines */
-> -	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> -			   SUN4I_I2S_CTRL_SDO_EN_MASK, 0);
-> -
-> -	/* Disable the whole hardware block */
-> -	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> -			   SUN4I_I2S_CTRL_GL_EN, 0);
-> -}
-> -
->  static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
->  				unsigned int freq, int dir)
->  {
-> @@ -695,8 +661,6 @@ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
->  	.hw_params	= sun4i_i2s_hw_params,
->  	.set_fmt	= sun4i_i2s_set_fmt,
->  	.set_sysclk	= sun4i_i2s_set_sysclk,
-> -	.shutdown	= sun4i_i2s_shutdown,
-> -	.startup	= sun4i_i2s_startup,
->  	.trigger	= sun4i_i2s_trigger,
->  };
->  
-> @@ -869,6 +833,21 @@ static int sun4i_i2s_runtime_resume(struct device *dev)
->  		goto err_disable_clk;
->  	}
->  
-> +	/* Enable the whole hardware block */
-> +	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> +			   SUN4I_I2S_CTRL_GL_EN, SUN4I_I2S_CTRL_GL_EN);
-> +
+Power-saving is causing plops on audio start/stop on Dell Precision T3600
+laptops and Intel DZ77BH boards, add these to the power_save blacklist.
 
-So this is definitely needed
+BugLink: https://bugzilla.redhat.com/show_bug.cgi?id=1525104
+Signed-off-by: Hans de Goede <hdegoede@redhat.com>
+---
+Note both these models were reported through:
+https://bugzilla.redhat.com/show_bug.cgi?id=1525104
+as usual alsa-info.sh output for both is available as attachment there.
+---
+ sound/pci/hda/hda_intel.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> +	/* Enable the first output line */
-> +	regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> +			   SUN4I_I2S_CTRL_SDO_EN_MASK,
-> +			   SUN4I_I2S_CTRL_SDO_EN(0));
-> +
-> +	ret = clk_prepare_enable(i2s->mod_clk);
-> +	if (ret) {
-> +		dev_err(dev, "Failed to enable module clock\n");
-> +		goto err_disable_clk;
-> +	}
-
-But we really don't want to enable the module clock before the
-playback / capture actually starts. And I'm guessing it would make
-more sense to keep the output enable configuration there as well,
-since it's likely that we will have support for it in the future, and
-we'll need additional information from ASoC when we'll do.
-
-Maxime
-
+diff --git a/sound/pci/hda/hda_intel.c b/sound/pci/hda/hda_intel.c
+index aa4c672dbaf7..454ef6feee3a 100644
+--- a/sound/pci/hda/hda_intel.c
++++ b/sound/pci/hda/hda_intel.c
+@@ -2257,8 +2257,12 @@ static struct snd_pci_quirk power_save_blacklist[] = {
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1581607 */
+ 	SND_PCI_QUIRK(0x1558, 0x3501, "Clevo W35xSS_370SS", 0),
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
++	SND_PCI_QUIRK(0x1028, 0x0497, "Dell Precision T3600", 0),
++	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
+ 	/* Note the P55A-UD3 and Z87-D3HP share the subsys id for the HDA dev */
+ 	SND_PCI_QUIRK(0x1458, 0xa002, "Gigabyte P55A-UD3 / Z87-D3HP", 0),
++	/* https://bugzilla.redhat.com/show_bug.cgi?id=1525104 */
++	SND_PCI_QUIRK(0x8086, 0x2040, "Intel DZ77BH-55K", 0),
+ 	/* https://bugzilla.kernel.org/show_bug.cgi?id=199607 */
+ 	SND_PCI_QUIRK(0x8086, 0x2057, "Intel NUC5i7RYB", 0),
+ 	/* https://bugzilla.redhat.com/show_bug.cgi?id=1520902 */
 -- 
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.19.0
