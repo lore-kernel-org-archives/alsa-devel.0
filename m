@@ -1,19 +1,25 @@
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Subject: Re: [PATCH] ASoC: wm8904: fix spelling mistake
- "Inveting" -> "Inverting"
-Date: Tue, 16 Oct 2018 15:51:43 +0100
-Message-ID: <20181016145143.GG1653@imbe.wolfsonmicro.main>
-References: <20181013154513.6155-1-colin.king@canonical.com>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: ALSA 1.1.7 release
+Date: Tue, 16 Oct 2018 18:49:14 +0200
+Message-ID: <142bf0f8-18eb-54a4-2292-bbf71d8a85a9@perex.cz>
+References: <38de9bc3-4cd2-b3a0-d4cb-8d0814bdafe2@perex.cz>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com
- [67.231.152.168])
- by alsa0.perex.cz (Postfix) with ESMTP id 3AD1F267545
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 16:51:48 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <20181013154513.6155-1-colin.king@canonical.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3C721267546
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 18:49:16 +0200 (CEST)
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+ by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 15F38A003F
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 18:49:16 +0200 (CEST)
+Received: from p50.perex-int.cz (unknown [192.168.100.94])
+ (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+ (No client certificate requested) (Authenticated sender: perex)
+ by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 18:49:14 +0200 (CEST)
+In-Reply-To: <38de9bc3-4cd2-b3a0-d4cb-8d0814bdafe2@perex.cz>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,19 +29,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Colin King <colin.king@canonical.com>
-Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com, kernel-janitors@vger.kernel.org, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, linux-kernel@vger.kernel.org
+To: ALSA development <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Sat, Oct 13, 2018 at 04:45:13PM +0100, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
-> 
-> Trivial fix to spelling mistake in sound control text
-> 
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
+Hello all,
 
-Acked-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+  new ALSA userspace packages were released. You may download them from
+the ALSA website http://www.alsa-project.org or directly from the FTP
+server ftp://ftp.alsa-project.org/pub .
 
-Thanks,
-Charles
+Full list of changes:
+
+  http://www.alsa-project.org/main/index.php/Changes_v1.1.6_v1.1.7
+
+				Have fun,
+					Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
