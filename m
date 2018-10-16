@@ -1,25 +1,16 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: ALSA 1.1.7 release
-Date: Tue, 16 Oct 2018 18:49:14 +0200
-Message-ID: <142bf0f8-18eb-54a4-2292-bbf71d8a85a9@perex.cz>
-References: <38de9bc3-4cd2-b3a0-d4cb-8d0814bdafe2@perex.cz>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: Audio miniconference schedule
+Date: Tue, 16 Oct 2018 22:48:52 +0200
+Message-ID: <20181016204852.GK2340@sirena.org.uk>
+References: <20181002195849.GA23818@sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed; boundary="===============5159453556672299413=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id 3C721267546
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 18:49:16 +0200 (CEST)
-Received: from mail1.perex.cz (localhost [127.0.0.1])
- by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 15F38A003F
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 18:49:16 +0200 (CEST)
-Received: from p50.perex-int.cz (unknown [192.168.100.94])
- (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
- (No client certificate requested) (Authenticated sender: perex)
- by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA
- for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 18:49:14 +0200 (CEST)
-In-Reply-To: <38de9bc3-4cd2-b3a0-d4cb-8d0814bdafe2@perex.cz>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id A6236267545
+ for <alsa-devel@alsa-project.org>; Tue, 16 Oct 2018 22:48:56 +0200 (CEST)
+In-Reply-To: <20181002195849.GA23818@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,22 +20,79 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: ALSA development <alsa-devel@alsa-project.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>
 List-Id: alsa-devel@alsa-project.org
 
-Hello all,
 
-  new ALSA userspace packages were released. You may download them from
-the ALSA website http://www.alsa-project.org or directly from the FTP
-server ftp://ftp.alsa-project.org/pub .
+--===============5159453556672299413==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="sU4rRG038CsJurvk"
+Content-Disposition: inline
 
-Full list of changes:
 
-  http://www.alsa-project.org/main/index.php/Changes_v1.1.6_v1.1.7
+--sU4rRG038CsJurvk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-				Have fun,
-					Jaroslav
+As previously announced there's an audio miniconference happening on the
+21st in Edinburgh, meeting around 9am and getting started once enough
+people have arrived (Cirrus people, please let me know if we need to
+start later, some people have said they'll be arriving late so we won't
+wait for everyone):
 
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+   https://blog.sirena.org.uk/2018/09/19/2018-linux-audio-miniconfernce
+
+(yes there is a typo in the URL).  A number of people have proposed
+topics so I just went through them and pulled them into a proposed
+agenda, this time revised following feedback last time:
+
+  - Virtualization (Liam)
+  - AVB (Liam)
+  - SoundWire (Liam)
+  - GObject introspection for language bindings (Sakamoto-san)
+  - Integrating the ALSA control core (Sakamoto-san)
+  - DSPs (Liam)
+   - Sound Open Firmware (Liam)
+   - Byte controls (Vinod/Patrick)
+   - Calibration loading (Patrick)
+   - Exposing graph at runtime (Patrick)
+   - Batching commands (Patrick)
+  - AGL (Stephane/Ronan)
+
+I've dropped Y2038 from the expliit schedule, since Arnd Bergmann (who's
+been driving a lot of the general Y2038 work) will be in Edinburgh and
+may be free to join I'm suggesting that if he's free we cover that
+either first thing or just after lunch and otherwise Takashi and I will
+try to coordinate with him during ELC-E (unless others have a great
+enthusiasm for the subject).
+
+What do people think?  Any other topics?  There's still time to sign up
+if you're interested in attending, you can sign up right up to the day
+of the event though registering early would help a lot with logistics.
+
+--sU4rRG038CsJurvk
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvGTq8ACgkQJNaLcl1U
+h9BgJAf/QE4M9O1B7l4W4cVWz6+H43fC/7y34LDIxXnXdaN105GjI2rZ78vrFCKd
+ieAzldCzT5tsuHC40BF/78S9Ke8H6YFyAaTLXXCQOpCwBtCEHf45BFHql8OtvH40
+nsQ+af++ttWz0Kgqe5zNR06RMpZt8VoqkbDgLbW1iMmwrApq7Ou306ijOEgEkgUI
+l9VI7EBL67V6FHKZaahmUzki8dl47XHDHSbpO97VcYlQCMxglkATP1PD2JijxL7t
+wDf7y7X13wHuj72sn9xZj06n4U85X3SubMYUx7ZPMcai/Bi8uBIIb/iuRbKjPvi3
+fgPW1/ZU7Wc8gbFQzHRqvaa6bHvKcQ==
+=/dk/
+-----END PGP SIGNATURE-----
+
+--sU4rRG038CsJurvk--
+
+--===============5159453556672299413==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+
+--===============5159453556672299413==--
