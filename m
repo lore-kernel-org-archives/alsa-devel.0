@@ -1,186 +1,155 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH v2] ASoC: sun4i-i2s: move code from
-	startup/shutdown hooks into pm_runtime hooks
-Date: Wed, 17 Oct 2018 08:36:26 -0700
-Message-ID: <6365837.9zzJEACKLf@anarsoul-thinkpad>
-References: <20181016031141.16259-1-anarsoul@gmail.com>
- <CA+E=qVci2FVMH7O83Xv9ic_WFvFYyxmPDjp309dFi23XiHYzzQ@mail.gmail.com>
- <20181017152523.p34t3xani5cnfk3w@flea>
+From: Philipp Zabel <p.zabel@pengutronix.de>
+Subject: Re: [PATCH 2/2] ASoC: max98927: Add reset-gpio support
+Date: Wed, 17 Oct 2018 19:02:37 +0200
+Message-ID: <1539795757.4729.15.camel@pengutronix.de>
+References: <20180912121955.33048-1-cychiang@chromium.org>
+         <20180912121955.33048-2-cychiang@chromium.org>
+         <20180920161905.GM2471@sirena.org.uk>
+         <CAFv8NwLpS9r=jD2wyBsVgJJofkS1xJNo6YssgYXuVHDmGDLogg@mail.gmail.com>
+         <1539338716.6204.2.camel@pengutronix.de>
+         <20181012134620.fhhkyvvdgoq4sxqi@flea>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com
- [209.85.210.195])
- by alsa0.perex.cz (Postfix) with ESMTP id BA3082675A4
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 17:36:29 +0200 (CEST)
-Received: by mail-pf1-f195.google.com with SMTP id g21-v6so6381923pfi.7
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 08:36:29 -0700 (PDT)
-In-Reply-To: <20181017152523.p34t3xani5cnfk3w@flea>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181012134620.fhhkyvvdgoq4sxqi@flea>
+Sender: linux-kernel-owner@vger.kernel.org
 To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Yong Deng <yong.deng@magewell.com>, arm-linux <linux-arm-kernel@lists.infradead.org>
+Cc: Cheng-yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Ryan Lee <ryans.lee@maximintegrated.com>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, October 17, 2018 8:25:23 AM PDT Maxime Ripard wrote:
-> On Wed, Oct 17, 2018 at 07:41:55AM -0700, Vasily Khoruzhick wrote:
-> > On Wed, Oct 17, 2018 at 12:45 AM Maxime Ripard
+Hi Maxime,
+
+On Fri, 2018-10-12 at 15:46 +0200, Maxime Ripard wrote:
+> On Fri, Oct 12, 2018 at 12:05:16PM +0200, Philipp Zabel wrote:
+[...]
+> > What I would like better would be to let the consumers keep their reset-
+> > gpios bindings, but add an optional hold time override in the DT:
 > > 
-> > <maxime.ripard@bootlin.com> wrote:
-> > > On Tue, Oct 16, 2018 at 08:08:41PM -0700, Vasily Khoruzhick wrote:
-> > > > On Tue, Oct 16, 2018 at 12:16 AM Maxime Ripard
-> > > > 
-> > > > <maxime.ripard@bootlin.com> wrote:
-> > > > > On Mon, Oct 15, 2018 at 08:11:41PM -0700, Vasily Khoruzhick wrote:
-> > > > > > startup() and shutdown() hooks are called for both substreams,
-> > > > > > so stopping either substream when another is running breaks the
-> > > > > > latter.
-> > > > > > 
-> > > > > > E.g. playback breaks if capture is stopped when playback is
-> > > > > > running.
-> > > > > > 
-> > > > > > Move code from startup() and shutdown() to resume() and suspend()
-> > > > > > hooks respectively to fix this issue
-> > > > > > 
-> > > > > > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> > > > > > ---
-> > > > > > v2: - rename from "ASoC: sun4i-i2s: don't try to start up
-> > > > > > 
-> > > > > >                  or shut down DAI if it's active"
-> > > > > >     
-> > > > > >     - move code from startup/shutdown hooks into pm_runtime
-> > > > > >  
-> > > > > >  sound/soc/sunxi/sun4i-i2s.c | 61
-> > > > > >  +++++++++++++++----------------------
-> > > > > >  1 file changed, 25 insertions(+), 36 deletions(-)
-> > > > > > 
-> > > > > > diff --git a/sound/soc/sunxi/sun4i-i2s.c
-> > > > > > b/sound/soc/sunxi/sun4i-i2s.c
-> > > > > > index a4aa931ebfae..daa6c08cffbc 100644
-> > > > > > --- a/sound/soc/sunxi/sun4i-i2s.c
-> > > > > > +++ b/sound/soc/sunxi/sun4i-i2s.c
-> > > > > > @@ -644,40 +644,6 @@ static int sun4i_i2s_trigger(struct
-> > > > > > snd_pcm_substream *substream, int cmd,> > > > > 
-> > > > > >       return 0;
-> > > > > >  
-> > > > > >  }
-> > > > > > 
-> > > > > > -static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
-> > > > > > -                          struct snd_soc_dai *dai)
-> > > > > > -{
-> > > > > > -     struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> > > > > > -
-> > > > > > -     /* Enable the whole hardware block */
-> > > > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> > > > > > -                        SUN4I_I2S_CTRL_GL_EN,
-> > > > > > SUN4I_I2S_CTRL_GL_EN);
-> > > > > > -
-> > > > > > -     /* Enable the first output line */
-> > > > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> > > > > > -                        SUN4I_I2S_CTRL_SDO_EN_MASK,
-> > > > > > -                        SUN4I_I2S_CTRL_SDO_EN(0));
-> > > > > > -
-> > > > > > -
-> > > > > > -     return clk_prepare_enable(i2s->mod_clk);
-> > > > > > -}
-> > > > > > -
-> > > > > > -static void sun4i_i2s_shutdown(struct snd_pcm_substream
-> > > > > > *substream,
-> > > > > > -                            struct snd_soc_dai *dai)
-> > > > > > -{
-> > > > > > -     struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
-> > > > > > -
-> > > > > > -     clk_disable_unprepare(i2s->mod_clk);
-> > > > > > -
-> > > > > > -     /* Disable our output lines */
-> > > > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> > > > > > -                        SUN4I_I2S_CTRL_SDO_EN_MASK, 0);
-> > > > > > -
-> > > > > > -     /* Disable the whole hardware block */
-> > > > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> > > > > > -                        SUN4I_I2S_CTRL_GL_EN, 0);
-> > > > > > -}
-> > > > > > -
-> > > > > > 
-> > > > > >  static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int
-> > > > > >  clk_id,
-> > > > > >  
-> > > > > >                               unsigned int freq, int dir)
-> > > > > >  
-> > > > > >  {
-> > > > > > 
-> > > > > > @@ -695,8 +661,6 @@ static const struct snd_soc_dai_ops
-> > > > > > sun4i_i2s_dai_ops = {> > > > > 
-> > > > > >       .hw_params      = sun4i_i2s_hw_params,
-> > > > > >       .set_fmt        = sun4i_i2s_set_fmt,
-> > > > > >       .set_sysclk     = sun4i_i2s_set_sysclk,
-> > > > > > 
-> > > > > > -     .shutdown       = sun4i_i2s_shutdown,
-> > > > > > -     .startup        = sun4i_i2s_startup,
-> > > > > > 
-> > > > > >       .trigger        = sun4i_i2s_trigger,
-> > > > > >  
-> > > > > >  };
-> > > > > > 
-> > > > > > @@ -869,6 +833,21 @@ static int sun4i_i2s_runtime_resume(struct
-> > > > > > device *dev)> > > > > 
-> > > > > >               goto err_disable_clk;
-> > > > > >       
-> > > > > >       }
-> > > > > > 
-> > > > > > +     /* Enable the whole hardware block */
-> > > > > > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> > > > > > +                        SUN4I_I2S_CTRL_GL_EN,
-> > > > > > SUN4I_I2S_CTRL_GL_EN);
-> > > > > > +
-> > > > > 
-> > > > > So this is definitely needed
-> > > > > 
-> > > > > > +     /* Enable the first output line */
-> > > > > > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
-> > > > > > +                        SUN4I_I2S_CTRL_SDO_EN_MASK,
-> > > > > > +                        SUN4I_I2S_CTRL_SDO_EN(0));
-> > > > > > +
-> > > > > > +     ret = clk_prepare_enable(i2s->mod_clk);
-> > > > > > +     if (ret) {
-> > > > > > +             dev_err(dev, "Failed to enable module clock\n");
-> > > > > > +             goto err_disable_clk;
-> > > > > > +     }
-> > > > > 
-> > > > > But we really don't want to enable the module clock before the
-> > > > > playback / capture actually starts. And I'm guessing it would make
-> > > > > more sense to keep the output enable configuration there as well,
-> > > > > since it's likely that we will have support for it in the future,
-> > > > > and
-> > > > > we'll need additional information from ASoC when we'll do.
-> > > > 
-> > > > Should we go with v1 version of my patch then? I see no reason to
-> > > > shuffle code around if we keep startup() and shutdown() hooks.
-> > > 
-> > > I'd go for something in between. runtime_pm already provides whether
-> > > the device is active or not, so you can just move the
-> > > SUN4I_I2S_CTRL_GL_EN write to the runtime_resume and runtime_suspend
-> > > functions, and that should fix your issue.
+> > 	c1 {
+> > 		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
+> > 		reset-delays-us = <10000>;
+> > 	};
 > > 
-> > I still need to guard enabling output line with "if (dai->active)
-> > return", so it doesn't fix the issue unfortunately.
+> > 	c2 {
+> > 		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
+> > 		reset-delays-us = <10000>;
+> > 	};
+> > 
+> > The reset framework could create a reset_control backed by a gpio
+> > instead of a rcdev. I have an unfinished patch for this, but without the
+> > sharing requirement adding the reset framework abstraction between gpiod
+> > and drivers never seemed really worth it.
 > 
-> Why? The configuration is static, so it probably doesn't change much?
+> I don't remember the exact details of our past discussion, but I
+> (still) don't really think that this would work well.
 
-startup() and shutdown() are called once for each substream, i.e. for capture 
-and playback.
+It has been a while :) Thanks for jumping back in.
 
-If we start playback and capture and the stop either we end up with calling 
-startup() twice and then shutdown() once. Since it disables I2S output it 
-breaks substream that is still working.
-
+> I see two main shortcomings with that approach:
 > 
-> Maxime
+>   - I guess that the main reason you want to do that would be to have
+>     easy DT backward compatibility.
+
+Yes, that is true. The other reason is that I'd like devices to have a
+single binding, regardless of whether somebody decided to put them onto
+a board with shared reset lines.
+
+I'd find it hard to advocate for changing the thankfully common case
+of device-exclusive reset gpios from:
+
+	some-device {
+		reset-gpios = <&gpiox y>;
+	};
+
+to:
+
+	rstc: reset-controller {
+		compatible = "gpio-reset";
+		reset-gpios <&gpiox y>;
+	};
+
+	some-device {
+		resets = <&rstc 0>;
+	};
+
+even for new bindings.
+
+If the reset framework only supports the latter, and not the former,
+drivers for devices which already have reset-gpios would have to handle
+both reset_control and gpiod functionality, which I think should not be
+necessary.
+
+Note that this is not really an argument against a "gpio-reset"
+controller driver, but an argument for reset-gpios support integrated
+into the reset framework.
+My argument against a "gpio-reset" device node in the DT is only that it
+is basically a virtual device that would only be used to work around
+missing reset-gpios support in the reset framework. Physically, this
+"device" consists of no more than a few PCB traces.
+
+>     Yet, the addition of the
+>     reset-delay-us would break that compatibility, since drivers that
+>     would have been converted now need to have it somehow, but older
+>     DTs wouldn't have it
+
+That is why such a property would have to be optional, and the drivers
+would have to keep providing the reset delay themselves, as they
+currently do when handling GPIOs directly.
+It would only serve to override the driver default in case of additional
+delay requirements due to board specifics (such as delay elements, or
+shared resets).
+
+>   - There's so many variations of the reset-gpios property name that
+>     you wouldn't be able to cover all the cases anyhow, at least
+>     without breaking the compatibility (again).
+
+This is true, and I do not have a solution for this. Especially for
+those cases that don't use gpiod yet.
+
+	of_get_named_gpio(node, "reset-gpio")
+
+is still quite common, but I'd really like on gpiolib for polarity
+support.
+
+> But I also see your point, and you're right that converting everyone
+> to a gpio-reset node will not happen (even though I'd still really
+> like to have that binding).
+
+See above. I'd be a lot less reluctant to support this binding if
+somebody could demonstrate a real gpio controlled reset controller
+device of some kind. And even then I would not want to have to use
+this device just to connect a single GPIO with a single reset input.
+
+> What about having a function that would be called by the consumer to
+> instantiate that reset controller from a GPIO for us, instead of
+> trying to do it automatically? That function could take the property
+> name that holds the GPIO, which would cover the second drawback, and
+> the delay, which would cover the first.
+
+I like this idea.
+
+I'd like to avoid having to fall back from gpiod to of_get_named_gpio if
+possible, so maybe we'd have to extend gpiolib-of.c with an
+of_find_reset_gpio function, as is done for SPI and regulators already.
+
+We probably would have to support delay ranges. I see a lot of
+usleep_range calls between reset GPIO toggles in the drivers.
+
+> And in order to cover shared GPIO reset lines, we could just look at
+> the one already created by other drivers, and if one has been created,
+> we just give the reference to that one instead of creating it.
+> 
+> Does that make sense?
+
+I'm not quite sure how to match an already requested reset control from
+the list given of_node and gpio property name at the moment - this might
+involve exporting gpiod_find from gpiolib, but API wise I think this is
+a sane proposal.
+
+I would not want to add reset controller devices for each of these GPIO
+reset controls, but rather store the gpio_desc reference in the
+reset_control instead of the rcdev reference.
+
+regards
+Philipp
