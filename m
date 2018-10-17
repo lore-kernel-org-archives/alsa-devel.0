@@ -1,22 +1,20 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH v4 2/9] ASoC: sun8i-codec: Don't hardcode
-	BCLK / LRCK ratio
-Date: Wed, 17 Oct 2018 00:17:41 -0700
-Message-ID: <2291476.RZZTV6ctdW@anarsoul-thinkpad>
-References: <20181016030239.15449-1-anarsoul@gmail.com>
- <20181016030239.15449-3-anarsoul@gmail.com>
- <20181017071248.65g7m6ih2swazjh4@flea>
+From: Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCH 5/8] sound: intel/sst: don't pass GFP_DMA32
+ to dma_alloc_coherent
+Date: Wed, 17 Oct 2018 09:19:00 +0200
+Message-ID: <20181017071900.GA23407@lst.de>
+References: <20181013151707.32210-1-hch@lst.de>
+ <20181013151707.32210-6-hch@lst.de> <s5ho9bxn7ho.wl-tiwai@suse.de>
+ <s5hefctm0m3.wl-tiwai@suse.de> <20181015095858.GA6277@sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
- [209.85.215.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 16C38267545
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 09:17:43 +0200 (CEST)
-Received: by mail-pg1-f195.google.com with SMTP id g12-v6so12087833pgs.1
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 00:17:43 -0700 (PDT)
-In-Reply-To: <20181017071248.65g7m6ih2swazjh4@flea>
+Received: from newverein.lst.de (verein.lst.de [213.95.11.211])
+ by alsa0.perex.cz (Postfix) with ESMTP id E9BF8267545
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 09:19:01 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20181015095858.GA6277@sirena.org.uk>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,70 +24,27 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+To: Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Christoph Hellwig <hch@lst.de>
 List-Id: alsa-devel@alsa-project.org
 
-On Wednesday, October 17, 2018 12:12:48 AM PDT Maxime Ripard wrote:
-> Hi!
+On Mon, Oct 15, 2018 at 10:58:58AM +0100, Mark Brown wrote:
+> On Sun, Oct 14, 2018 at 09:46:44AM +0200, Takashi Iwai wrote:
+> > Takashi Iwai wrote:
+> > > Christoph Hellwig wrote:
 > 
-> On Mon, Oct 15, 2018 at 08:02:32PM -0700, Vasily Khoruzhick wrote:
-> > BCLK / LRCK ratio should be sample size * channels, but it was
-> > hardcoded to 32 (0x1 is 32 as per A33 and A64 datasheets).
-> > 
-> > Calculate it basing on sample size and number of channels.
-> > 
-> > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-> > ---
-> > 
-> >  sound/soc/sunxi/sun8i-codec.c | 26 +++++++++++++++++++++-----
-> >  1 file changed, 21 insertions(+), 5 deletions(-)
-> > 
-> > diff --git a/sound/soc/sunxi/sun8i-codec.c b/sound/soc/sunxi/sun8i-codec.c
-> > index fb37dd927e33..2467fab94a19 100644
-> > --- a/sound/soc/sunxi/sun8i-codec.c
-> > +++ b/sound/soc/sunxi/sun8i-codec.c
-> > @@ -24,6 +24,7 @@
-> > 
-> >  #include <linux/io.h>
-> >  #include <linux/pm_runtime.h>
-> >  #include <linux/regmap.h>
-> > 
-> > +#include <linux/log2.h>
-> > 
-> >  #include <sound/pcm_params.h>
-> >  #include <sound/soc.h>
-> > 
-> > @@ -52,7 +53,6 @@
-> > 
-> >  #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_INV		13
-> >  #define SUN8I_AIF1CLK_CTRL_AIF1_BCLK_DIV		9
-> >  #define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV		6
-> > 
-> > -#define SUN8I_AIF1CLK_CTRL_AIF1_LRCK_DIV_16		(1 << 6)
-> > 
-> >  #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ		4
-> >  #define SUN8I_AIF1CLK_CTRL_AIF1_WORD_SIZ_16		(1 << 4)
-> >  #define SUN8I_AIF1CLK_CTRL_AIF1_DATA_FMT		2
-> > 
-> > @@ -257,8 +257,8 @@ static int sun8i_set_fmt(struct snd_soc_dai *dai,
-> > unsigned int fmt)> 
-> >  }
-> >  
-> >  struct sun8i_codec_clk_div {
-> > 
-> > -	u8	div;
-> > -	u8	val;
-> > +	unsigned int	div;
-> > +	u8		val;
-> > 
-> >  };
+> > > > The DMA API does its own zone decisions based on the coherent_dma_mask.
 > 
-> Do we still need that type change? It looks like you're not using it
-> anywhere in that patch.
+> > > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> 
+> > > Reviewed-by: Takashi Iwai <tiwai@suse.de>
+> 
+> > Mark, let me know whether you'd take this via your tree or may I take
+> > via mine (with a minor correction of the subject line).
+> 
+> I don't have the patch...  in fact, having found it in list archives I
+> see there's also a SPI patch I'll have to go hunting for so I guess I'll
+> apply this one when I find that :(  Christoph, please CC maintainers.
 
-We don't need it, I'll drop it for v5.
-
-> 
-> Thanks!
-> Maxime
+I tend to only add the list as there just are way too many maintainers
+for this sorts of series, and maintainers should read their list anyway.
