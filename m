@@ -1,92 +1,159 @@
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Subject: Re: [PATCH v2 9/9] ASoC: tegra_sgtl5000: fix platform name vs.
- of_node assignement
-Date: Wed, 17 Oct 2018 14:28:22 +0000
-Message-ID: <1539786500.6233.58.camel@toradex.com>
-References: <20181016104730.4598-1-marcel@ziswiler.com>
-         <20181016104730.4598-10-marcel@ziswiler.com>
-         <35848cb7-36ee-6698-ff17-7f0e73567914@nvidia.com>
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Subject: Re: [PATCH v2] ASoC: sun4i-i2s: move code from
+ startup/shutdown hooks into pm_runtime hooks
+Date: Wed, 17 Oct 2018 07:41:55 -0700
+Message-ID: <CA+E=qVci2FVMH7O83Xv9ic_WFvFYyxmPDjp309dFi23XiHYzzQ@mail.gmail.com>
+References: <20181016031141.16259-1-anarsoul@gmail.com>
+ <20181016071626.m6jkoiixkvxks5ob@flea>
+ <CA+E=qVcK7mBbZ-C8FyAxUty_wQ_aOjo1b0+iU4E5CgG=yBCj=g@mail.gmail.com>
+ <20181017074539.b6qeft5oba45dv5r@flea>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <35848cb7-36ee-6698-ff17-7f0e73567914@nvidia.com>
-Content-Language: en-US
-Content-ID: <17F2C5DC477B0146A97046FCDD769914@eurprd05.prod.outlook.com>
-Sender: linux-kernel-owner@vger.kernel.org
-To: "jonathanh@nvidia.com" <jonathanh@nvidia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Cc: "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "broonie@kernel.org" <broonie@kernel.org>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-oi1-f194.google.com (mail-oi1-f194.google.com
+ [209.85.167.194])
+ by alsa0.perex.cz (Postfix) with ESMTP id 8AEB62675AB
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 16:42:23 +0200 (CEST)
+Received: by mail-oi1-f194.google.com with SMTP id k64-v6so21240804oia.13
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 07:42:23 -0700 (PDT)
+In-Reply-To: <20181017074539.b6qeft5oba45dv5r@flea>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Maxime Ripard <maxime.ripard@bootlin.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Yong Deng <yong.deng@magewell.com>, arm-linux <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-T24gV2VkLCAyMDE4LTEwLTE3IGF0IDEzOjMyICswMTAwLCBKb24gSHVudGVyIHdyb3RlOg0KPiBP
-biAxNi8xMC8yMDE4IDExOjQ3LCBNYXJjZWwgWmlzd2lsZXIgd3JvdGU6DQo+ID4gRnJvbTogTWFy
-Y2VsIFppc3dpbGVyIDxtYXJjZWwuemlzd2lsZXJAdG9yYWRleC5jb20+DQo+ID4gDQo+ID4gVGhp
-cyBmaXhlcyB0aGUgZm9sbG93aW5nIGVycm9yIGFzIHNlZW4gcG9zdCBjb21taXQgZGFlY2Y0NmVl
-MGU1DQo+ID4gKCJBU29DOiBzb2MtY29yZTogdXNlIHNuZF9zb2NfZGFpX2xpbmtfY29tcG9uZW50
-IGZvciBwbGF0Zm9ybSIpOg0KPiA+IA0KPiA+IHRlZ3JhLXNuZC1zZ3RsNTAwMCBzb3VuZDogQVNv
-QzogQm90aCBwbGF0Zm9ybSBuYW1lL29mX25vZGUgYXJlIHNldA0KPiA+IGZvcg0KPiA+ICBzZ3Rs
-NTAwMA0KPiA+IHRlZ3JhLXNuZC1zZ3RsNTAwMCBzb3VuZDogQVNvQzogZmFpbGVkIHRvIGluaXQg
-bGluayBzZ3RsNTAwMA0KPiA+IHRlZ3JhLXNuZC1zZ3RsNTAwMCBzb3VuZDogc25kX3NvY19yZWdp
-c3Rlcl9jYXJkIGZhaWxlZCAoLTIyKQ0KPiA+IHRlZ3JhLXNuZC1zZ3RsNTAwMDogcHJvYmUgb2Yg
-c291bmQgZmFpbGVkIHdpdGggZXJyb3IgLTIyDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTWFy
-Y2VsIFppc3dpbGVyIDxtYXJjZWwuemlzd2lsZXJAdG9yYWRleC5jb20+DQo+ID4gDQo+ID4gLS0t
-DQo+ID4gDQo+ID4gQ2hhbmdlcyBpbiB2MjogTmV3IHBhdGNoDQo+ID4gDQo+ID4gIHNvdW5kL3Nv
-Yy90ZWdyYS90ZWdyYV9zZ3RsNTAwMC5jIHwgNSArKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
-NSBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy90ZWdyYS90
-ZWdyYV9zZ3RsNTAwMC5jDQo+ID4gYi9zb3VuZC9zb2MvdGVncmEvdGVncmFfc2d0bDUwMDAuYw0K
-PiA+IGluZGV4IDkwMTQ1N2RhMjVlYy4uZWI3MDI5MjVjYWMzIDEwMDY0NA0KPiA+IC0tLSBhL3Nv
-dW5kL3NvYy90ZWdyYS90ZWdyYV9zZ3RsNTAwMC5jDQo+ID4gKysrIGIvc291bmQvc29jL3RlZ3Jh
-L3RlZ3JhX3NndGw1MDAwLmMNCj4gPiBAQCAtMTY4LDYgKzE2OCwxMSBAQCBzdGF0aWMgaW50IHRl
-Z3JhX3NndGw1MDAwX2RyaXZlcl9wcm9iZShzdHJ1Y3QNCj4gPiBwbGF0Zm9ybV9kZXZpY2UgKnBk
-ZXYpDQo+ID4gIAlyZXR1cm4gMDsNCj4gPiAgDQo+ID4gIGVycl9maW5pX3V0aWxzOg0KPiA+ICsJ
-aWYgKHRlZ3JhX3NndGw1MDAwX2RhaS5wbGF0Zm9ybSkgew0KPiA+ICsJCWRldm1fa2ZyZWUoJnBk
-ZXYtPmRldiwNCj4gPiB0ZWdyYV9zZ3RsNTAwMF9kYWkucGxhdGZvcm0pOw0KPiA+ICsJCXRlZ3Jh
-X3NndGw1MDAwX2RhaS5wbGF0Zm9ybSA9IE5VTEw7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICAJdGVn
-cmFfYXNvY191dGlsc19maW5pKCZtYWNoaW5lLT51dGlsX2RhdGEpOw0KPiA+ICBlcnJfcHV0X2Nw
-dV9vZl9ub2RlOg0KPiA+ICAJb2Zfbm9kZV9wdXQodGVncmFfc2d0bDUwMDBfZGFpLmNwdV9vZl9u
-b2RlKTsNCj4gPiANCj4gDQo+IFdoZXJlIGlzIHRoZSBhYm92ZSBhbGxvY2F0ZWQ/DQoNCnNuZF9z
-b2NfaW5pdF9wbGF0Zm9ybSgpIGluIHNvdW5kL3NvYy9zb2MtY29yZS5jDQoNCj4gSSBkb24ndCBz
-ZWUgaXQgYWxsb2NhdGVkIGluIHRoaXMgZHJpdmVyDQo+IEFGQUlDVC4gSWYgaXQgaXMgbm90IHRo
-ZW4gaXQgZG9lcyBub3Qgc2VlbSByaWdodCB0byBmcmVlIHNvbWV0aGluZw0KPiB0aGF0DQo+IHdl
-IGhhdmUgbm90IGFsbG9jYXRlZCBpbiB0aGlzIGRyaXZlci4gSSB3b3VsZCBoYXZlIGFzc3VtZWQg
-aXQgd2FzDQo+IGFsbG9jYXRlZCBieSBzbmRfc29jX2luaXRfcGxhdGZvcm0oKSBpbiB3aGljaCBj
-YXNlIGl0IHNob3VsZCBub3QgYmUNCj4gbmVjZXNzYXJ5IHRvIGZyZWUgYmVjYXVzZSB0aGF0IGZ1
-bmN0aW9uIHVzZXMgZGV2bV9remFsbG9jKCkuDQoNClRoYXQgaXMga2luZCBvZiB3aGF0IEkgYXNz
-dW1lZCBhcyB3ZWxsLg0KDQo+IFdoYXQgYW0gSSBtaXNzaW5nIGhlcmU/DQoNClRoYXQgaXMgYWN0
-dWFsbHkgYSB2ZXJ5IHZlcnkgZ29vZCBxdWVzdGlvbi4gVW5mb3J0dW5hdGVseSwgc2luY2UgYWJv
-dmUNCm1lbnRpb25lZCBjb21taXQgd2hpY2ggaXMgcGFydCBvZiB0aGUgYmlnZ2VyIG11bHRpLXBs
-YXRmb3JtIChvcg0Kd2hhdGV2ZXIgb25lIG1heSBjYWxsIGl0KSByZXdvcmsgZG9uZSBieSBmb2xr
-cyBvbiBDQyB0aGluZ3Mgc3RhcnQNCmZhbGxpbmcgYXBhcnQuDQoNCkkgc2hvdWxkIG1heWJlIHJh
-dGhlciBoYXZlIHBocmFzZWQgdGhpcyBvbmUgYXMgYW4gUkZDLg0KDQpTb21lIGZhY3RzIGZyb20g
-bXkgaHVtYmxlIGludmVzdGlnYXRpb24gc28gZmFyOg0KDQotIFRoZSBpc3N1ZSBkb2VzIG5vdCBl
-eGhpYml0IGl0c2VsZiBvbiBBcGFsaXMvQ29saWJyaSBUMzAgd2hlcmUNCnByb2JhYmx5IHRoZSBv
-cmRlciBvZiB0aGluZ3MgYmVpbmcgaW5pdGlhbGlzZWQgaXMgc2xpZ2h0bHkgZGlmZmVyZW50Lg0K
-DQotIEJpc2VjdGluZyBwb2ludHMgdG8gdGhlIGFib3ZlIG1lbnRpb25lZCBjb21taXQgYmVpbmcg
-dG8gYmxhbWUuDQpIb3dldmVyIHRoZXJlIGlzIG5vIHdheSB0byBqdXN0IHJldmVydCB0aGF0IGNv
-bW1pdCBhcyBpdCBpcyBwYXJ0IG9mIHRoZQ0KYmlnZ2VyIG11bHRpLXBsYXRmb3JtIHJld29yay4N
-Cg0KLSBTb21laG93IGl0IGhhcyB0byBkbyB3aXRoIHByb2JlIGRlZmVycmFsLiBCYXNpY2FsbHks
-IHBsYXRmb3JtIGdldHMNCmFsbG9jYXRlZCBpbiBzbmRfc29jX2luaXRfcGxhdGZvcm0oKSBidXQg
-ZHVlIHRvIEdQSU8vSTJDIHdoYXRldmVyIG5vdA0KYmVpbmcgcmVhZHkgdGhlIFNHVEw1MDAwIGNv
-ZGVjIGFrYSBkYWlfbGluayBjYW4gbm90IHlldCBiZSBmb3VuZCBhbmQNCnRoZXJlZm9yZSBpdCBw
-cm9iZSBkZWZlcnMgYXMgZm9sbG93czoNCg0KWyAgICAyLjE2NjUxN10gdGVncmEzMC1pMnMgNzAz
-MDEyMDAuaTJzOiBETUEgY2hhbm5lbHMgc291cmNlZCBmcm9tDQpkZXZpY2UgNzAzMDAwMDAuYWh1
-Yg0KWyAgICAyLjE3NjA0M10gdGVncmEtc25kLXNndGw1MDAwIHNvdW5kOiBBU29DOiBDT0RFQyBE
-QUkgc2d0bDUwMDAgbm90DQpyZWdpc3RlcmVkDQpbICAgIDIuMTgzMjQxXSB0ZWdyYS1zbmQtc2d0
-bDUwMDAgc291bmQ6IHNuZF9zb2NfcmVnaXN0ZXJfY2FyZCBmYWlsZWQNCigtNTE3KQ0KDQotIFNv
-bWV3aGVyZSB0aGVyZWFmdGVyIHBsYXRmb3JtIHNlZW1zIHRvIGdldCBzdHVtcGVkIG9udG8gKGUu
-Zy4gaXRzDQpuYW1lIHJhdGhlciB0aGFuIGJlaW5nIG51bGwgbm93IGlzIGJvZ3VzLiBVbmZvcnR1
-bmF0ZWx5LCBpdCBpcyBub3QganVzdA0KdGhlIG5hbWUgYXMgY2xlYXJpbmcganVzdCB0aGF0IGRp
-ZCBub3QgcmVhbGx5IGhlbHAgKHNndGw1MDAwIGNvZGVjIGdldHMNCmluc3RhbnRpYXRlZCBidXQg
-dHJ5aW5nIHRvIHBsYXkgYXVkaW8gYWx3YXlzIHJldHVybmVkIC1FSU5WQUwpLg0KDQotIFRoZSBz
-ZWNvbmQgdGltZSBhcm91bmQgc25kX3NvY19pbml0X3BsYXRmb3JtKCkgcmUtdXNlcyBwcmV2aW91
-c2x5DQphbGxvY2F0ZWQgcGxhdGZvcm0gbm93IGNvcnJ1cHQgdHJpZ2dlcmluZyBhIGNoZWNrIGlu
-IHNvYy1jb3JlDQpjb25jZXJuaW5nIHBsYXRmb3JtIG5hbWUgYW5kIG9mX25vZGUgYm90aCBiZWlu
-ZyBzZXQgKGFzIG5vdGVkIGluIGFib3ZlDQpjb21taXQgbWVzc2FnZSkuDQoNClNvbWUgcXVlc3Rp
-b25zOg0KDQotIEhvdyBleGFjdGx5IGFyZSBkZXZtIGFsbG9jYXRpb25zIHN1cHBvc2VkIHRvIHdv
-cmsgY29uY2VybmluZyBwcm9iZQ0KZGVmZXJyYWxzPw0KDQotIERvZXMgb3Igc2hvdWxkIHRoZSBw
-bGF0Zm9ybSBnZXQgY2xlYXJlZCBkdXJpbmcgYSBwcm9iZSBkZWZlcnJhbA0KY3ljbGU/DQoNCi0g
-SWYgc28sIHdoeSBkb2VzIHRoYXQgbm90IHdvcms/DQoNCi0gT3IgaXMgc29tZSBzcGVjaWFsIGlt
-cGxpY2l0IHByb2JlIGRlZmVycmFsIGhhbmRsaW5nIG1pc3NpbmcgaW4gc29jLQ0KY29yZT8NCg0K
-SSdtIGhhcHB5IHRvIHRyeSBtb3JlIHRoaW5ncyBhbmQvb3IgcHJvdmlkZSBtb3JlIGRlYnVnZ2lu
-ZyBvdXRwdXQgaWYNCm5lZWRlZC4gSnVzdCBsZXQgbWUga25vdy4NCg0KVGhhbmtzIEpvbiENCg0K
-PiBDaGVlcnMNCj4gSm9uDQoNCkNoZWVycw0KDQpNYXJjZWw=
+On Wed, Oct 17, 2018 at 12:45 AM Maxime Ripard
+<maxime.ripard@bootlin.com> wrote:
+>
+> On Tue, Oct 16, 2018 at 08:08:41PM -0700, Vasily Khoruzhick wrote:
+> > On Tue, Oct 16, 2018 at 12:16 AM Maxime Ripard
+> > <maxime.ripard@bootlin.com> wrote:
+> > >
+> > > On Mon, Oct 15, 2018 at 08:11:41PM -0700, Vasily Khoruzhick wrote:
+> > > > startup() and shutdown() hooks are called for both substreams,
+> > > > so stopping either substream when another is running breaks the
+> > > > latter.
+> > > >
+> > > > E.g. playback breaks if capture is stopped when playback is running.
+> > > >
+> > > > Move code from startup() and shutdown() to resume() and suspend()
+> > > > hooks respectively to fix this issue
+> > > >
+> > > > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> > > > ---
+> > > > v2: - rename from "ASoC: sun4i-i2s: don't try to start up
+> > > >                  or shut down DAI if it's active"
+> > > >     - move code from startup/shutdown hooks into pm_runtime
+> > > >
+> > > >  sound/soc/sunxi/sun4i-i2s.c | 61 +++++++++++++++----------------------
+> > > >  1 file changed, 25 insertions(+), 36 deletions(-)
+> > > >
+> > > > diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
+> > > > index a4aa931ebfae..daa6c08cffbc 100644
+> > > > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > > > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> > > > @@ -644,40 +644,6 @@ static int sun4i_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
+> > > >       return 0;
+> > > >  }
+> > > >
+> > > > -static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
+> > > > -                          struct snd_soc_dai *dai)
+> > > > -{
+> > > > -     struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> > > > -
+> > > > -     /* Enable the whole hardware block */
+> > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > -                        SUN4I_I2S_CTRL_GL_EN, SUN4I_I2S_CTRL_GL_EN);
+> > > > -
+> > > > -     /* Enable the first output line */
+> > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > -                        SUN4I_I2S_CTRL_SDO_EN_MASK,
+> > > > -                        SUN4I_I2S_CTRL_SDO_EN(0));
+> > > > -
+> > > > -
+> > > > -     return clk_prepare_enable(i2s->mod_clk);
+> > > > -}
+> > > > -
+> > > > -static void sun4i_i2s_shutdown(struct snd_pcm_substream *substream,
+> > > > -                            struct snd_soc_dai *dai)
+> > > > -{
+> > > > -     struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> > > > -
+> > > > -     clk_disable_unprepare(i2s->mod_clk);
+> > > > -
+> > > > -     /* Disable our output lines */
+> > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > -                        SUN4I_I2S_CTRL_SDO_EN_MASK, 0);
+> > > > -
+> > > > -     /* Disable the whole hardware block */
+> > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > -                        SUN4I_I2S_CTRL_GL_EN, 0);
+> > > > -}
+> > > > -
+> > > >  static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int clk_id,
+> > > >                               unsigned int freq, int dir)
+> > > >  {
+> > > > @@ -695,8 +661,6 @@ static const struct snd_soc_dai_ops sun4i_i2s_dai_ops = {
+> > > >       .hw_params      = sun4i_i2s_hw_params,
+> > > >       .set_fmt        = sun4i_i2s_set_fmt,
+> > > >       .set_sysclk     = sun4i_i2s_set_sysclk,
+> > > > -     .shutdown       = sun4i_i2s_shutdown,
+> > > > -     .startup        = sun4i_i2s_startup,
+> > > >       .trigger        = sun4i_i2s_trigger,
+> > > >  };
+> > > >
+> > > > @@ -869,6 +833,21 @@ static int sun4i_i2s_runtime_resume(struct device *dev)
+> > > >               goto err_disable_clk;
+> > > >       }
+> > > >
+> > > > +     /* Enable the whole hardware block */
+> > > > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > +                        SUN4I_I2S_CTRL_GL_EN, SUN4I_I2S_CTRL_GL_EN);
+> > > > +
+> > >
+> > > So this is definitely needed
+> > >
+> > > > +     /* Enable the first output line */
+> > > > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > +                        SUN4I_I2S_CTRL_SDO_EN_MASK,
+> > > > +                        SUN4I_I2S_CTRL_SDO_EN(0));
+> > > > +
+> > > > +     ret = clk_prepare_enable(i2s->mod_clk);
+> > > > +     if (ret) {
+> > > > +             dev_err(dev, "Failed to enable module clock\n");
+> > > > +             goto err_disable_clk;
+> > > > +     }
+> > >
+> > > But we really don't want to enable the module clock before the
+> > > playback / capture actually starts. And I'm guessing it would make
+> > > more sense to keep the output enable configuration there as well,
+> > > since it's likely that we will have support for it in the future, and
+> > > we'll need additional information from ASoC when we'll do.
+> >
+> > Should we go with v1 version of my patch then? I see no reason to
+> > shuffle code around if we keep startup() and shutdown() hooks.
+>
+> I'd go for something in between. runtime_pm already provides whether
+> the device is active or not, so you can just move the
+> SUN4I_I2S_CTRL_GL_EN write to the runtime_resume and runtime_suspend
+> functions, and that should fix your issue.
+
+I still need to guard enabling output line with "if (dai->active)
+return", so it doesn't fix the issue unfortunately.
+
+>
+> Maxime
+>
+> --
+> Maxime Ripard, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
