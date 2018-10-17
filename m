@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH v2 0/9] ARM: dts: tegra: last minute fixes
-Date: Wed, 17 Oct 2018 12:44:56 +0100
-Message-ID: <20181017114456.GD24097@sirena.org.uk>
-References: <20181016104730.4598-1-marcel@ziswiler.com>
- <20181016115852.GE7449@sirena.org.uk>
- <1539773488.6233.22.camel@toradex.com>
+Subject: Applied "ASoC: sunxi: allow the sun8i-codec driver to
+	be built on ARM64" to the asoc tree
+Date: Wed, 17 Oct 2018 12:46:57 +0100 (BST)
+Message-ID: <20181017114657.DC15111224C4@debutante.sirena.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0039936423086879032=="
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 460492675AB
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 13:45:02 +0200 (CEST)
-In-Reply-To: <1539773488.6233.22.camel@toradex.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id C4C752675AB
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 13:46:58 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,58 +21,65 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Cc: "mark.rutland@arm.com" <mark.rutland@arm.com>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "robh+dt@kernel.org" <robh+dt@kernel.org>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "jonathanh@nvidia.com" <jonathanh@nvidia.com>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
+The patch
 
---===============0039936423086879032==
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3Gf/FFewwPeBMqCJ"
-Content-Disposition: inline
+   ASoC: sunxi: allow the sun8i-codec driver to be built on ARM64
 
+has been applied to the asoc tree at
 
---3Gf/FFewwPeBMqCJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
 
-On Wed, Oct 17, 2018 at 10:51:30AM +0000, Marcel Ziswiler wrote:
-> On Tue, 2018-10-16 at 12:58 +0100, Mark Brown wrote:
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
 
-> > These ASoC patches appear to have absolutely no relationship with the
-> > rest of the series.  Is that the case or is there some dependency I'm
-> > missing?
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-> Not outside of all being Tegra specific stuff, no. If you prefer I may
-> send them as a separate series.
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-It's fine this time but do try to avoid doing that please - if things
-aren't related just send them separately.  Bundling them up into a
-series creates confusion about dependencis and can result in things
-getting held up due to problems in the unrelated bits of the series.
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
---3Gf/FFewwPeBMqCJ
-Content-Type: application/pgp-signature; name="signature.asc"
+Thanks,
+Mark
 
------BEGIN PGP SIGNATURE-----
+>From 7e95aac96b554193760aaeb64e263da58127bf27 Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Wed, 17 Oct 2018 00:38:10 -0700
+Subject: [PATCH] ASoC: sunxi: allow the sun8i-codec driver to be built on
+ ARM64
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvHILgACgkQJNaLcl1U
-h9Dlnwf9Hvnm9dwWcAvUbfoH4cnxb+vYi5ve2/b/BwWLnNBVP1U/Ri4IWtMRjtdp
-j01Y22pkqYROWXj3IPlPW2D4gBZNwFCL+JqxpJhE4JjEeSplUf0LaZHOUAxJ9Wja
-co27D6T/C5Jd4bX8Bo70FaVRFic2F5Gw9PAy50MeWMVPLmH7JS37BU51FZCv4yzl
-TNhFFX/BkUOxEZCtp7s4yWJewuUQL55/2QvyD15EVvmWglYWNvF+3DkJigvZ9pqy
-Dm50cnpeKZPg2u7gAQ4bYuylmlcBAJav+0s4hJZv6pTVVxZW/NVEmODb8Dk1CE1B
-saKQisMyB9gRbUGvzWB1K95XcHgk1Q==
-=14T+
------END PGP SIGNATURE-----
+Allwinner A64 uses the same digital codec part as in A33, so we need
+to build this driver on ARM64 as well.
 
---3Gf/FFewwPeBMqCJ--
+Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/sunxi/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---===============0039936423086879032==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0039936423086879032==--
+diff --git a/sound/soc/sunxi/Kconfig b/sound/soc/sunxi/Kconfig
+index 8a055ca1819a..66aad0d3f9c7 100644
+--- a/sound/soc/sunxi/Kconfig
++++ b/sound/soc/sunxi/Kconfig
+@@ -12,7 +12,7 @@ config SND_SUN4I_CODEC
+ config SND_SUN8I_CODEC
+ 	tristate "Allwinner SUN8I audio codec"
+ 	depends on OF
+-	depends on MACH_SUN8I || COMPILE_TEST
++	depends on MACH_SUN8I || (ARM64 && ARCH_SUNXI) || COMPILE_TEST
+ 	select REGMAP_MMIO
+ 	help
+ 	  This option enables the digital part of the internal audio codec for
+-- 
+2.19.0.rc2
