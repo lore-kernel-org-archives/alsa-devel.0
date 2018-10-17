@@ -1,18 +1,20 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: Audio miniconference schedule
-Date: Wed, 17 Oct 2018 20:12:25 +0100
-Message-ID: <20181017191225.GK24097@sirena.org.uk>
-References: <20181002195849.GA23818@sirena.org.uk>
- <20181016204852.GK2340@sirena.org.uk>
- <s5hefcpk2xq.wl-tiwai@suse.de>
+Subject: Re: [PATCH v2 9/9] ASoC: tegra_sgtl5000: fix platform
+ name vs. of_node assignement
+Date: Wed, 17 Oct 2018 20:16:33 +0100
+Message-ID: <20181017191633.GL24097@sirena.org.uk>
+References: <20181016104730.4598-1-marcel@ziswiler.com>
+ <20181016104730.4598-10-marcel@ziswiler.com>
+ <35848cb7-36ee-6698-ff17-7f0e73567914@nvidia.com>
+ <1539786500.6233.58.camel@toradex.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============2921659788934872020=="
+Content-Type: multipart/mixed; boundary="===============1670522209369127453=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id BA9322675A4
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 21:12:26 +0200 (CEST)
-In-Reply-To: <s5hefcpk2xq.wl-tiwai@suse.de>
+ by alsa0.perex.cz (Postfix) with ESMTP id 895A52675A4
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 21:16:36 +0200 (CEST)
+In-Reply-To: <1539786500.6233.58.camel@toradex.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,78 +24,68 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, arnd@arndb.de
+To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Cc: "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "tiwai@suse.com" <tiwai@suse.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "jonathanh@nvidia.com" <jonathanh@nvidia.com>
 List-Id: alsa-devel@alsa-project.org
 
 
---===============2921659788934872020==
+--===============1670522209369127453==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="AYsPlKobQGgtCvjI"
+	protocol="application/pgp-signature"; boundary="t5C3/nrmPumNj5sH"
 Content-Disposition: inline
 
 
---AYsPlKobQGgtCvjI
+--t5C3/nrmPumNj5sH
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Tue, Oct 16, 2018 at 11:16:17PM +0200, Takashi Iwai wrote:
-> Mark Brown wrote:
+On Wed, Oct 17, 2018 at 02:28:22PM +0000, Marcel Ziswiler wrote:
 
-> > I've dropped Y2038 from the expliit schedule, since Arnd Bergmann (who's
-> > been driving a lot of the general Y2038 work) will be in Edinburgh and
-> > may be free to join I'm suggesting that if he's free we cover that
-> > either first thing or just after lunch and otherwise Takashi and I will
-> > try to coordinate with him during ELC-E (unless others have a great
-> > enthusiasm for the subject).
+> Some questions:
 
-> I haven't registered ELCE this year but only the audio mini-conf and
-> maintainers summit, but maybe we can catch him on Monday.
+> - How exactly are devm allocations supposed to work concerning probe
+> deferrals?
 
-All three of us will be at the maintainers summit so I think we'll be
-able to get some time to talk if we don't manage Sunday.  There were
-some TBD slots at the maintainers summit, we could see if we can get
-ALSA Y2038 ABI on the list there :)
+Probe deferrals are just normal probe errors, any devm_ allocated stuff
+gets unwound.
 
-> Sorry for the late action, here are some items that came to my mind:
+> - Does or should the platform get cleared during a probe deferral
+> cycle?
 
-All good topics, I'll add them in - Charles had some ideas for the ASoC
-refactoring already which I managed to drop off the list (sorry Charles)
-which is mostly the same thing at this point.
+> - If so, why does that not work?
 
-> - Testing:
->   My pet peeve.  I'd love to see some stuff, especially for ASoC, that
->   can run on VM, and let fuzzers whipping on it.
->   Also, USB audio can be virtualized.  What else?  (not only about VM
->   testing but also a real hardware testing.)
+Is something writing to static data when it should be writing to
+dynamically allocated data?  That's what this sounds like, we shouldn't
+be modifying any static data and any data dynamically allocated during
+probe ought to be being discarded.
 
-There's a whole testing summit on Thursday...  :/  I don't think there's
-much argument with the ASoC stuff, but I also don't think there's anyone
-with the right combination of time and enthusiasm to do the work at the
-minute.
+> - Or is some special implicit probe deferral handling missing in soc-
+> core?
 
---AYsPlKobQGgtCvjI
+Like I say a probe deferral is just a normal error.
+
+--t5C3/nrmPumNj5sH
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvHiZgACgkQJNaLcl1U
-h9C7oAf9Gro/mCW0NxA9xb6l4vTqB0rKWb217vPnVol6lXblyLrzJguJm1xPiRBZ
-V/PiTC/r3sIshQPib9e7bETco5uP3n/Ofb7I1Ir8mBjLTVqEcJh0+aLhlYaYLA4U
-TnS9im+4Rz4t6BtV3OgOSVoM3mb9RNZ4Yv7tzaUTwmjO4hgSLKDg9LujjJUoMf4g
-HKnYDJ/axrAj2UX2eEYHwjwq6KHO+689w6Ih/kxbQvtu+75Xe+dNUu/4+kW08Baf
-+RbT053X43OST6u2mUu8uxQqVQqPQtbH31e3+BR0GImY/Wy6FcDOoKJqXud3I5t8
-UNn/NRskhHbYOJlIUQAcYYqbG6F1Tw==
-=HlU/
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvHipAACgkQJNaLcl1U
+h9BkSAf/SouRZpX4VQqudTnmOiqKqZkMRbwM6NBQpPpPsCCRtMqnI+WEN+LE8snt
+yn/nMdP7g3m6uAV15M486uYS+qkFI3eQ1hYt7bWfi01kclqsZS7JUqaMgKvziM05
+Uphkd15nbTHBTyHuhznZPy3+tkRbdfb7cGzBJR9xagor/WfDCnjQdkwV9TIn3l/K
+7LhBs+XluSRL0A0Jq5MYuEIuKV1X4iPrNCdpTYO01Y4APrSend4SYL3vqY4MxzCX
+MQiaUvEO/XYxFQHhKmvwwku4cgq0cFZLm+qARMuxY9CA+XzlE/IXnQDe8pF1XtsN
+qx4q0cnhCClRQ/uXiDX0GHgpLtWGaA==
+=V209
 -----END PGP SIGNATURE-----
 
---AYsPlKobQGgtCvjI--
+--t5C3/nrmPumNj5sH--
 
---===============2921659788934872020==
+--===============1670522209369127453==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============2921659788934872020==--
+--===============1670522209369127453==--
