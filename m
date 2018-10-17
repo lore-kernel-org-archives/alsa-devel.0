@@ -1,63 +1,70 @@
-From: Mark Brown <broonie@kernel.org>
-Subject: Applied "spi: pic32-sqi: don't pass GFP_DMA32 to dma_alloc_coherent"
- to the spi tree
-Date: Wed, 17 Oct 2018 12:55:04 +0100 (BST)
-Message-ID: <20181017115504.2A15E11224C4@debutante.sirena.org.uk>
-References: <20181013151707.32210-4-hch@lst.de>
+From: Jon Hunter <jonathanh@nvidia.com>
+Subject: Re: [PATCH v2 9/9] ASoC: tegra_sgtl5000: fix platform name vs.
+ of_node assignement
+Date: Wed, 17 Oct 2018 13:32:37 +0100
+Message-ID: <35848cb7-36ee-6698-ff17-7f0e73567914@nvidia.com>
+References: <20181016104730.4598-1-marcel@ziswiler.com>
+ <20181016104730.4598-10-marcel@ziswiler.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <dri-devel-bounces@lists.freedesktop.org>
-In-Reply-To: <20181013151707.32210-4-hch@lst.de>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
-List-Post: <mailto:dri-devel@lists.freedesktop.org>
-List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
- <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: dri-devel-bounces@lists.freedesktop.org
-Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: linux-fbdev@vger.kernel.org, linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, dri-devel@lists.freedesktop.org, linux-spi@vger.kernel.org, Mark Brown <broonie@kernel.org>, linux-tegra@vger.kernel.org, linux-media@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181016104730.4598-10-marcel@ziswiler.com>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Marcel Ziswiler <marcel@ziswiler.com>, devicetree@vger.kernel.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Russell King - ARM Linux <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Thierry Reding <thierry.reding@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIHBhdGNoCgogICBzcGk6IHBpYzMyLXNxaTogZG9uJ3QgcGFzcyBHRlBfRE1BMzIgdG8gZG1h
-X2FsbG9jX2NvaGVyZW50CgpoYXMgYmVlbiBhcHBsaWVkIHRvIHRoZSBzcGkgdHJlZSBhdAoKICAg
-aHR0cHM6Ly9naXQua2VybmVsLm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvYnJvb25pZS9z
-cGkuZ2l0IAoKQWxsIGJlaW5nIHdlbGwgdGhpcyBtZWFucyB0aGF0IGl0IHdpbGwgYmUgaW50ZWdy
-YXRlZCBpbnRvIHRoZSBsaW51eC1uZXh0CnRyZWUgKHVzdWFsbHkgc29tZXRpbWUgaW4gdGhlIG5l
-eHQgMjQgaG91cnMpIGFuZCBzZW50IHRvIExpbnVzIGR1cmluZwp0aGUgbmV4dCBtZXJnZSB3aW5k
-b3cgKG9yIHNvb25lciBpZiBpdCBpcyBhIGJ1ZyBmaXgpLCBob3dldmVyIGlmCnByb2JsZW1zIGFy
-ZSBkaXNjb3ZlcmVkIHRoZW4gdGhlIHBhdGNoIG1heSBiZSBkcm9wcGVkIG9yIHJldmVydGVkLiAg
-CgpZb3UgbWF5IGdldCBmdXJ0aGVyIGUtbWFpbHMgcmVzdWx0aW5nIGZyb20gYXV0b21hdGVkIG9y
-IG1hbnVhbCB0ZXN0aW5nCmFuZCByZXZpZXcgb2YgdGhlIHRyZWUsIHBsZWFzZSBlbmdhZ2Ugd2l0
-aCBwZW9wbGUgcmVwb3J0aW5nIHByb2JsZW1zIGFuZApzZW5kIGZvbGxvd3VwIHBhdGNoZXMgYWRk
-cmVzc2luZyBhbnkgaXNzdWVzIHRoYXQgYXJlIHJlcG9ydGVkIGlmIG5lZWRlZC4KCklmIGFueSB1
-cGRhdGVzIGFyZSByZXF1aXJlZCBvciB5b3UgYXJlIHN1Ym1pdHRpbmcgZnVydGhlciBjaGFuZ2Vz
-IHRoZXkKc2hvdWxkIGJlIHNlbnQgYXMgaW5jcmVtZW50YWwgdXBkYXRlcyBhZ2FpbnN0IGN1cnJl
-bnQgZ2l0LCBleGlzdGluZwpwYXRjaGVzIHdpbGwgbm90IGJlIHJlcGxhY2VkLgoKUGxlYXNlIGFk
-ZCBhbnkgcmVsZXZhbnQgbGlzdHMgYW5kIG1haW50YWluZXJzIHRvIHRoZSBDQ3Mgd2hlbiByZXBs
-eWluZwp0byB0aGlzIG1haWwuCgpUaGFua3MsCk1hcmsKCkZyb20gZWM1MDZlOTI0NmJmNDI3OTVm
-MWZhOGE1Y2QwMDc0MGU1Njg2YmE3MyBNb24gU2VwIDE3IDAwOjAwOjAwIDIwMDEKRnJvbTogQ2hy
-aXN0b3BoIEhlbGx3aWcgPGhjaEBsc3QuZGU+CkRhdGU6IFNhdCwgMTMgT2N0IDIwMTggMTc6MTc6
-MDIgKzAyMDAKU3ViamVjdDogW1BBVENIXSBzcGk6IHBpYzMyLXNxaTogZG9uJ3QgcGFzcyBHRlBf
-RE1BMzIgdG8gZG1hX2FsbG9jX2NvaGVyZW50CgpUaGUgRE1BIEFQSSBkb2VzIGl0cyBvd24gem9u
-ZSBkZWNpc2lvbnMgYmFzZWQgb24gdGhlIGNvaGVyZW50X2RtYV9tYXNrLgoKU2lnbmVkLW9mZi1i
-eTogQ2hyaXN0b3BoIEhlbGx3aWcgPGhjaEBsc3QuZGU+ClNpZ25lZC1vZmYtYnk6IE1hcmsgQnJv
-d24gPGJyb29uaWVAa2VybmVsLm9yZz4KLS0tCiBkcml2ZXJzL3NwaS9zcGktcGljMzItc3FpLmMg
-fCAyICstCiAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24oLSkKCmRp
-ZmYgLS1naXQgYS9kcml2ZXJzL3NwaS9zcGktcGljMzItc3FpLmMgYi9kcml2ZXJzL3NwaS9zcGkt
-cGljMzItc3FpLmMKaW5kZXggNjJlNmJmMWY1MGIxLi5kN2U0ZTE4ZWMzZGYgMTAwNjQ0Ci0tLSBh
-L2RyaXZlcnMvc3BpL3NwaS1waWMzMi1zcWkuYworKysgYi9kcml2ZXJzL3NwaS9zcGktcGljMzIt
-c3FpLmMKQEAgLTQ2OCw3ICs0NjgsNyBAQCBzdGF0aWMgaW50IHJpbmdfZGVzY19yaW5nX2FsbG9j
-KHN0cnVjdCBwaWMzMl9zcWkgKnNxaSkKIAkvKiBhbGxvY2F0ZSBjb2hlcmVudCBETUFhYmxlIG1l
-bW9yeSBmb3IgaGFyZHdhcmUgYnVmZmVyIGRlc2NyaXB0b3JzLiAqLwogCXNxaS0+YmQgPSBkbWFf
-emFsbG9jX2NvaGVyZW50KCZzcWktPm1hc3Rlci0+ZGV2LAogCQkJCSAgICAgIHNpemVvZigqYmQp
-ICogUEVTUUlfQkRfQ09VTlQsCi0JCQkJICAgICAgJnNxaS0+YmRfZG1hLCBHRlBfRE1BMzIpOwor
-CQkJCSAgICAgICZzcWktPmJkX2RtYSwgR0ZQX0tFUk5FTCk7CiAJaWYgKCFzcWktPmJkKSB7CiAJ
-CWRldl9lcnIoJnNxaS0+bWFzdGVyLT5kZXYsICJmYWlsZWQgYWxsb2NhdGluZyBkbWEgYnVmZmVy
-XG4iKTsKIAkJcmV0dXJuIC1FTk9NRU07Ci0tIAoyLjE5LjAucmMyCgpfX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpkcmktZGV2ZWwgbWFpbGluZyBsaXN0CmRy
-aS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9kcmktZGV2ZWwK
+
+On 16/10/2018 11:47, Marcel Ziswiler wrote:
+> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> 
+> This fixes the following error as seen post commit daecf46ee0e5
+> ("ASoC: soc-core: use snd_soc_dai_link_component for platform"):
+> 
+> tegra-snd-sgtl5000 sound: ASoC: Both platform name/of_node are set for
+>  sgtl5000
+> tegra-snd-sgtl5000 sound: ASoC: failed to init link sgtl5000
+> tegra-snd-sgtl5000 sound: snd_soc_register_card failed (-22)
+> tegra-snd-sgtl5000: probe of sound failed with error -22
+> 
+> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+> 
+> ---
+> 
+> Changes in v2: New patch
+> 
+>  sound/soc/tegra/tegra_sgtl5000.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/sound/soc/tegra/tegra_sgtl5000.c b/sound/soc/tegra/tegra_sgtl5000.c
+> index 901457da25ec..eb702925cac3 100644
+> --- a/sound/soc/tegra/tegra_sgtl5000.c
+> +++ b/sound/soc/tegra/tegra_sgtl5000.c
+> @@ -168,6 +168,11 @@ static int tegra_sgtl5000_driver_probe(struct platform_device *pdev)
+>  	return 0;
+>  
+>  err_fini_utils:
+> +	if (tegra_sgtl5000_dai.platform) {
+> +		devm_kfree(&pdev->dev, tegra_sgtl5000_dai.platform);
+> +		tegra_sgtl5000_dai.platform = NULL;
+> +	}
+> +
+>  	tegra_asoc_utils_fini(&machine->util_data);
+>  err_put_cpu_of_node:
+>  	of_node_put(tegra_sgtl5000_dai.cpu_of_node);
+>
+
+Where is the above allocated? I don't see it allocated in this driver
+AFAICT. If it is not then it does not seem right to free something that
+we have not allocated in this driver. I would have assumed it was
+allocated by snd_soc_init_platform() in which case it should not be
+necessary to free because that function uses devm_kzalloc(). What am I
+missing here?
+
+Cheers
+Jon
+
+-- 
+nvpublic
