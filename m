@@ -1,93 +1,127 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v2 8/9] ASoC: tegra_sgtl5000: fix device_node refcounting
-Date: Wed, 17 Oct 2018 11:57:53 +0100
-Message-ID: <af707410-9954-b1a1-6d9b-5ad085604446@nvidia.com>
-References: <20181016104730.4598-1-marcel@ziswiler.com>
- <20181016104730.4598-9-marcel@ziswiler.com>
+From: Daniel Mack <daniel@zonque.org>
+Subject: [PATCH] ASoC: sta32x: Add support for XTI clock
+Date: Wed, 17 Oct 2018 13:37:03 +0200
+Message-ID: <20181017113703.23737-1-daniel@zonque.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181016104730.4598-9-marcel@ziswiler.com>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marcel Ziswiler <marcel@ziswiler.com>, devicetree@vger.kernel.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Russell King - ARM Linux <linux@armlinux.org.uk>, Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org, Thierry Reding <thierry.reding@gmail.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+ by alsa0.perex.cz (Postfix) with ESMTP id A55052675AB
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 13:37:09 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: broonie@kernel.org
+Cc: alsa-devel@alsa-project.org, Daniel Mack <daniel@zonque.org>
 List-Id: alsa-devel@alsa-project.org
 
+The STA32x chips feature an XTI clock input that needs to be stable before
+the reset signal is released. Therefore, the chip driver needs to get a
+handle to the clock. Instead of relying on other parts of the system to
+enable the clock, let the codec driver grab a handle itself.
 
+In order to keep existing boards working, clock support is made optional.
 
-On 16/10/2018 11:47, Marcel Ziswiler wrote:
-> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> 
-> Similar to the following:
-> 
-> commit 4321723648b0 ("ASoC: tegra_alc5632: fix device_node refcounting")
-> 
-> commit 7c5dfd549617 ("ASoC: tegra: fix device_node refcounting")
-> 
-> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> 
-> ---
-> 
-> Changes in v2: New patch
-> 
->  sound/soc/tegra/tegra_sgtl5000.c | 17 +++++++++++++++--
->  1 file changed, 15 insertions(+), 2 deletions(-)
-> 
-> diff --git a/sound/soc/tegra/tegra_sgtl5000.c b/sound/soc/tegra/tegra_sgtl5000.c
-> index 45a4aa9d2a47..901457da25ec 100644
-> --- a/sound/soc/tegra/tegra_sgtl5000.c
-> +++ b/sound/soc/tegra/tegra_sgtl5000.c
-> @@ -149,14 +149,14 @@ static int tegra_sgtl5000_driver_probe(struct platform_device *pdev)
->  		dev_err(&pdev->dev,
->  			"Property 'nvidia,i2s-controller' missing/invalid\n");
->  		ret = -EINVAL;
-> -		goto err;
-> +		goto err_put_codec_of_node;
->  	}
->  
->  	tegra_sgtl5000_dai.platform_of_node = tegra_sgtl5000_dai.cpu_of_node;
->  
->  	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
->  	if (ret)
-> -		goto err;
-> +		goto err_put_cpu_of_node;
->  
->  	ret = snd_soc_register_card(card);
->  	if (ret) {
-> @@ -169,6 +169,13 @@ static int tegra_sgtl5000_driver_probe(struct platform_device *pdev)
->  
->  err_fini_utils:
->  	tegra_asoc_utils_fini(&machine->util_data);
-> +err_put_cpu_of_node:
-> +	of_node_put(tegra_sgtl5000_dai.cpu_of_node);
-> +	tegra_sgtl5000_dai.cpu_of_node = NULL;
-> +	tegra_sgtl5000_dai.platform_of_node = NULL;
-> +err_put_codec_of_node:
-> +	of_node_put(tegra_sgtl5000_dai.codec_of_node);
-> +	tegra_sgtl5000_dai.codec_of_node = NULL;
->  err:
->  	return ret;
->  }
-> @@ -183,6 +190,12 @@ static int tegra_sgtl5000_driver_remove(struct platform_device *pdev)
->  
->  	tegra_asoc_utils_fini(&machine->util_data);
->  
-> +	of_node_put(tegra_sgtl5000_dai.cpu_of_node);
-> +	tegra_sgtl5000_dai.cpu_of_node = NULL;
-> +	tegra_sgtl5000_dai.platform_of_node = NULL;
-> +	of_node_put(tegra_sgtl5000_dai.codec_of_node);
-> +	tegra_sgtl5000_dai.codec_of_node = NULL;
-> +
->  	return ret;
->  }
->  
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+---
+ .../devicetree/bindings/sound/st,sta32x.txt   |  6 +++++
+ sound/soc/codecs/sta32x.c                     | 25 +++++++++++++++++++
+ 2 files changed, 31 insertions(+)
 
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
-
-Cheers
-Jon
-
+diff --git a/Documentation/devicetree/bindings/sound/st,sta32x.txt b/Documentation/devicetree/bindings/sound/st,sta32x.txt
+index ff4a685a4303..52265fb757c5 100644
+--- a/Documentation/devicetree/bindings/sound/st,sta32x.txt
++++ b/Documentation/devicetree/bindings/sound/st,sta32x.txt
+@@ -19,6 +19,10 @@ Required properties:
+ 
+ Optional properties:
+ 
++  - clocks, clock-names: Clock specifier for XTI input clock.
++	If specified, the clock will be enabled when the codec is probed,
++	and disabled when it is removed. The 'clock-names' must be set to 'xti'.
++
+   -  st,output-conf: number, Selects the output configuration:
+ 	0: 2-channel (full-bridge) power, 2-channel data-out
+ 	1: 2 (half-bridge). 1 (full-bridge) on-board power
+@@ -79,6 +83,8 @@ Example:
+ codec: sta32x@38 {
+ 	compatible = "st,sta32x";
+ 	reg = <0x1c>;
++	clocks = <&clock>;
++	clock-names = "xti";
+ 	reset-gpios = <&gpio1 19 0>;
+ 	power-down-gpios = <&gpio1 16 0>;
+ 	st,output-conf = /bits/ 8  <0x3>;	// set output to 2-channel
+diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+index a878c8d92e68..f753d2db0a5a 100644
+--- a/sound/soc/codecs/sta32x.c
++++ b/sound/soc/codecs/sta32x.c
+@@ -21,6 +21,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
++#include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+@@ -142,6 +143,7 @@ static const char *sta32x_supply_names[] = {
+ /* codec private data */
+ struct sta32x_priv {
+ 	struct regmap *regmap;
++	struct clk *xti_clk;
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(sta32x_supply_names)];
+ 	struct snd_soc_component *component;
+ 	struct sta32x_platform_data *pdata;
+@@ -882,6 +884,15 @@ static int sta32x_probe(struct snd_soc_component *component)
+ 
+ 	sta32x->component = component;
+ 
++	if (sta32x->xti_clk) {
++		ret = clk_prepare_enable(sta32x->xti_clk);
++		if (ret != 0) {
++			dev_err(component->dev,
++				"Failed to enable clock: %d\n", ret);
++			return ret;
++		}
++	}
++
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(sta32x->supplies),
+ 				    sta32x->supplies);
+ 	if (ret != 0) {
+@@ -984,6 +995,9 @@ static void sta32x_remove(struct snd_soc_component *component)
+ 
+ 	sta32x_watchdog_stop(sta32x);
+ 	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
++
++	if (sta32x->xti_clk)
++		clk_disable_unprepare(sta32x->xti_clk);
+ }
+ 
+ static const struct snd_soc_component_driver sta32x_component = {
+@@ -1100,6 +1114,17 @@ static int sta32x_i2c_probe(struct i2c_client *i2c,
+ 	}
+ #endif
+ 
++	/* Clock */
++	sta32x->xti_clk = devm_clk_get(dev, "xti");
++	if (IS_ERR(sta32x->xti_clk)) {
++		ret = PTR_ERR(sta32x->xti_clk);
++
++		if (ret == -EPROBE_DEFER)
++			return ret;
++
++		sta32x->xti_clk = NULL;
++	}
++
+ 	/* GPIOs */
+ 	sta32x->gpiod_nreset = devm_gpiod_get_optional(dev, "reset",
+ 						       GPIOD_OUT_LOW);
 -- 
-nvpublic
+2.17.2
