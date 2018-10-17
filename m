@@ -1,20 +1,20 @@
 From: Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 5/8] sound: intel/sst: don't pass GFP_DMA32
- to dma_alloc_coherent
-Date: Wed, 17 Oct 2018 09:19:00 +0200
-Message-ID: <20181017071900.GA23407@lst.de>
+Subject: Re: [PATCH 1/8] cpufreq: tegra186: don't pass
+ GFP_DMA32 to dma_alloc_coherent
+Date: Wed, 17 Oct 2018 09:19:42 +0200
+Message-ID: <20181017071942.GB23407@lst.de>
 References: <20181013151707.32210-1-hch@lst.de>
- <20181013151707.32210-6-hch@lst.de> <s5ho9bxn7ho.wl-tiwai@suse.de>
- <s5hefctm0m3.wl-tiwai@suse.de> <20181015095858.GA6277@sirena.org.uk>
+ <20181013151707.32210-2-hch@lst.de>
+ <CAJZ5v0ju2Y=yQn9uz6HpYGw5BZovxYh2YbYD7Ujq8kajJfvLSQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from newverein.lst.de (verein.lst.de [213.95.11.211])
- by alsa0.perex.cz (Postfix) with ESMTP id E9BF8267545
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 09:19:01 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B9897267545
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 09:19:42 +0200 (CEST)
 Content-Disposition: inline
-In-Reply-To: <20181015095858.GA6277@sirena.org.uk>
+In-Reply-To: <CAJZ5v0ju2Y=yQn9uz6HpYGw5BZovxYh2YbYD7Ujq8kajJfvLSQ@mail.gmail.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,27 +24,17 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Christoph Hellwig <hch@lst.de>
+To: "Rafael J. Wysocki" <rafael@kernel.org>
+Cc: "open list:FRAMEBUFFER LAYER" <linux-fbdev@vger.kernel.org>, Linux PM <linux-pm@vger.kernel.org>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, dri-devel <dri-devel@lists.freedesktop.org>, linux-spi <linux-spi@vger.kernel.org>, linux-tegra@vger.kernel.org, Christoph Hellwig <hch@lst.de>, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-On Mon, Oct 15, 2018 at 10:58:58AM +0100, Mark Brown wrote:
-> On Sun, Oct 14, 2018 at 09:46:44AM +0200, Takashi Iwai wrote:
-> > Takashi Iwai wrote:
-> > > Christoph Hellwig wrote:
+On Mon, Oct 15, 2018 at 09:43:04AM +0200, Rafael J. Wysocki wrote:
+> On Sat, Oct 13, 2018 at 5:17 PM Christoph Hellwig <hch@lst.de> wrote:
+> >
+> > The DMA API does its own zone decisions based on the coherent_dma_mask.
+> >
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
 > 
-> > > > The DMA API does its own zone decisions based on the coherent_dma_mask.
-> 
-> > > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> 
-> > > Reviewed-by: Takashi Iwai <tiwai@suse.de>
-> 
-> > Mark, let me know whether you'd take this via your tree or may I take
-> > via mine (with a minor correction of the subject line).
-> 
-> I don't have the patch...  in fact, having found it in list archives I
-> see there's also a SPI patch I'll have to go hunting for so I guess I'll
-> apply this one when I find that :(  Christoph, please CC maintainers.
+> Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-I tend to only add the list as there just are way too many maintainers
-for this sorts of series, and maintainers should read their list anyway.
+Can you pick it up through the cpufreq tree?
