@@ -1,17 +1,21 @@
-From: Maxime Ripard <maxime.ripard@bootlin.com>
-Subject: Re: [PATCH v5 2/9] ASoC: sun8i-codec: Don't hardcode
- BCLK / LRCK ratio
-Date: Wed, 17 Oct 2018 10:38:20 +0200
-Message-ID: <20181017083820.bmxu7j3ctbcmzh36@flea>
-References: <20181017073813.14127-1-anarsoul@gmail.com>
- <20181017073813.14127-3-anarsoul@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH 5/8] sound: intel/sst: don't pass GFP_DMA32
+ to dma_alloc_coherent
+Date: Wed, 17 Oct 2018 10:55:22 +0100
+Message-ID: <20181017095522.GB24097@sirena.org.uk>
+References: <20181013151707.32210-1-hch@lst.de>
+ <20181013151707.32210-6-hch@lst.de> <s5ho9bxn7ho.wl-tiwai@suse.de>
+ <s5hefctm0m3.wl-tiwai@suse.de>
+ <20181015095858.GA6277@sirena.org.uk>
+ <20181017071900.GA23407@lst.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============1513455602156464460=="
+Content-Type: multipart/mixed; boundary="===============3538955828636038566=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
- by alsa0.perex.cz (Postfix) with ESMTP id 0B7002675A4
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 10:38:20 +0200 (CEST)
-In-Reply-To: <20181017073813.14127-3-anarsoul@gmail.com>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0074D26759E
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 11:55:23 +0200 (CEST)
+In-Reply-To: <20181017071900.GA23407@lst.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,67 +25,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Vasily Khoruzhick <anarsoul@gmail.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 
---===============1513455602156464460==
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="wpot4shdyup6zeg6"
+--===============3538955828636038566==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gj572EiMnwbLXET9"
 Content-Disposition: inline
 
 
---wpot4shdyup6zeg6
+--gj572EiMnwbLXET9
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Wed, Oct 17, 2018 at 12:38:06AM -0700, Vasily Khoruzhick wrote:
-> BCLK / LRCK ratio should be sample size * channels, but it was
-> hardcoded to 32 (0x1 is 32 as per A33 and A64 datasheets).
->=20
-> Calculate it basing on sample size and number of channels.
->=20
-> Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+On Wed, Oct 17, 2018 at 09:19:00AM +0200, Christoph Hellwig wrote:
+> On Mon, Oct 15, 2018 at 10:58:58AM +0100, Mark Brown wrote:
 
-Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
+> > I don't have the patch...  in fact, having found it in list archives I
+> > see there's also a SPI patch I'll have to go hunting for so I guess I'll
+> > apply this one when I find that :(  Christoph, please CC maintainers.
 
-Thanks!
-Maxime
+> I tend to only add the list as there just are way too many maintainers
+> for this sorts of series, and maintainers should read their list anyway.
 
---=20
-Maxime Ripard, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+For several of my subsystems that list is lkml, good luck reliably
+getting anything noticed by a specific person by simply posting there!
+Even with ASoC alsa-devel is also used by the general ALSA stuff so
+there's a lot of noise, especially for things without the ASoC prefix.
+I do trawl the lists but it's at best going to be delayed, especially
+during busier periods.
 
---wpot4shdyup6zeg6
+The usual thing for things like this is to send individual patches to
+specific maintainers (git send-email does the right thing with Cc: in
+the commit body).
+
+--gj572EiMnwbLXET9
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCAAdFiEE0VqZU19dR2zEVaqr0rTAlCFNr3QFAlvG9PsACgkQ0rTAlCFN
-r3TUAw/8D6OARunzGDzkB7vFjWrGmvFUvye4ER/bBn4wI/kt44DM53GL5h4P70gO
-iHw4pV2l06mgynyZ3PFCcLn1rwqpfT7lKBpH4OXonTV0L4W2lSWqZNk81QTdPjJ3
-PFC1cz1f51XxsjZK/ATffW1c+V7daEeDLdmNhP16rS3m+BYS8UEgPJX9c08Djuti
-FpX5WNDL5GBwufICJnAtIa3VqBXmyOzCosGIZ4vUpDcsKsKvHMcP0mY9uv2GcESe
-89gdKpEsbRqozCiDkUcwzuts8NeS890tTri7pmEtJz6Ou27da5g6mEwurHs4ZVjW
-577JsvtbiANAhVMLyYHemWgqz/EY5He/dExwH/zgNMxVcrfXjz5e4scHUMbq+Swu
-skD1ZqbyQqp0iVoXISGGJVOPSXz+WIIgNZRRuokyBhzzA714Vt4/7vTnt29bbyut
-aVec+QUHC+SI+ni42oJF7CsVSkVPavUFbFtxUwrChr1HS0xl2tJN3WRMRzYG6D0K
-fDLYg8EiLjcxbtmvrPjGLN7SN7TJ+wzhEmbY9R3bStLo6ljetEdlyaSI5LS9zhn1
-+W8X5BrkK86QVorhycfyYufUSjJnATU5gMJuhDQm2U2ESGa0EiQyGI2yNq3sp/gO
-dpYKgvfQEvv/lLDxLxV4wxQ/FOEu7tQbt2mqG4e03W5audoPthU=
-=G+lj
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvHBwkACgkQJNaLcl1U
+h9AKxAf/WCxv5yUHzBNzR6Mx9msdkIXpQ58eVWjRbqfhJyhzhB4tesYIaTvS5ma8
+vFht+wOjTgNk3CKtW0b0jBk5LAFUqx0tQzZZaefSceTk3brf/kblu11czJSQwXGK
+q1lvbmdonJ58AotW/lC+kpvBlF94ZPqTpk5WsYnCuwMTLbIgB1RM0JjMwxJYSxzy
+B8OjwnNXasiDwRlielTFxm+zXgtpt4X+WaoOHpZAbYyW6vuueaarjuA2ub1rpEKK
+iNdHCv1U8t0VF2zWdAp2xpb1vfb4xQwIW8G21fWXEe/07P1q+pU9fpdpAvF5dhCX
+yuUQi4bYcxzfHJQUCtph6mXV06kOug==
+=eT6F
 -----END PGP SIGNATURE-----
 
---wpot4shdyup6zeg6--
+--gj572EiMnwbLXET9--
 
---===============1513455602156464460==
+--===============3538955828636038566==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============1513455602156464460==--
+--===============3538955828636038566==--
