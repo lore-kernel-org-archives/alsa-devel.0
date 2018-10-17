@@ -1,49 +1,44 @@
 From: Mathieu Malaterre <malat@debian.org>
-Subject: Re: [PATCH 1/3] MIPS: jz4780: Allow access to jz4740-i2s
-Date: Wed, 17 Oct 2018 22:26:22 +0200
-Message-ID: <CA+7wUsycUxKoCEk1CW+RKfJ5e9AxOumyfKoF93JYw3qmU5r=nQ@mail.gmail.com>
-References: <20180606193811.16007-1-malat@debian.org> <20180724204757.qrgjttepzcfdzxlv@pburton-laptop>
- <20180831203752.37rsceiwotcmeses@pburton-laptop> <20180831205857.nb3ij3rzhfs2fu42@pburton-laptop>
- <CA+7wUswC1SfC3G0RRH7OV4C6nQsp59R62FN_NiDSyCpxRDf__Q@mail.gmail.com>
+Subject: Re: [PATCH 2/3] MIPS: Ci20: Enable SND_JZ4740_SOC driver
+Date: Wed, 17 Oct 2018 22:28:08 +0200
+Message-ID: <CA+7wUswf1+3E12-qs0c0L7PjPWsndYo2oe_b=Gv5vXF0gd+Ttg@mail.gmail.com>
+References: <20180606193811.16007-1-malat@debian.org> <20180606193811.16007-2-malat@debian.org>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="UTF-8"
 Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CA+7wUswC1SfC3G0RRH7OV4C6nQsp59R62FN_NiDSyCpxRDf__Q@mail.gmail.com>
+In-Reply-To: <20180606193811.16007-2-malat@debian.org>
 Sender: linux-kernel-owner@vger.kernel.org
-To: Paul Burton <paul.burton@mips.com>
-Cc: James Hogan <jhogan@kernel.org>, Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+To: James Hogan <jhogan@kernel.org>
+Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Paul,
-
-On Mon, Sep 3, 2018 at 8:15 AM Mathieu Malaterre <malat@debian.org> wrote:
+On Wed, Jun 6, 2018 at 9:38 PM Mathieu Malaterre <malat@debian.org> wrote:
 >
-> On Fri, Aug 31, 2018 at 10:59 PM Paul Burton <paul.burton@mips.com> wrote:
-> >
-> > On Fri, Aug 31, 2018 at 01:37:52PM -0700, Paul Burton wrote:
-> > > Further to that, this series doesn't seem to work for me. With
-> > > v4.19-rc1, with the patch from [1] & then this series applied I see the
-> > > following when booting a ci20_defconfig kernel:
-> > >
-> > >   [    0.846684] ALSA device list:
-> > >   [    0.849642]   No soundcards found.
-> >
-> > D'oh! Apparently I haven't drunk enough coffee today - missing link can
-> > be found below:
-> >
-> > [1] https://www.spinics.net/lists/linux-gpio/msg31965.html
+> Update the Ci20's defconfig to enable the JZ4780's SND driver.
 >
-> Awesome, thanks for testing. I'll return to this series once I receive
-> replacement for my laptop hard drive.
+> Signed-off-by: Mathieu Malaterre <malat@debian.org>
+> ---
+>  arch/mips/configs/ci20_defconfig | 4 ++++
+>  1 file changed, 4 insertions(+)
+>
+> diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
+> index e1c14f6af824..0c08c7675b42 100644
+> --- a/arch/mips/configs/ci20_defconfig
+> +++ b/arch/mips/configs/ci20_defconfig
+> @@ -104,6 +104,10 @@ CONFIG_REGULATOR=y
+>  CONFIG_REGULATOR_DEBUG=y
+>  CONFIG_REGULATOR_FIXED_VOLTAGE=y
+>  # CONFIG_VGA_CONSOLE is not set
+> +CONFIG_SOUND=y
+> +CONFIG_SND=y
+> +CONFIG_SND_SOC=y
+> +CONFIG_SND_JZ4740_SOC=y
 
-I see it now :
+technically I am also missing: CONFIG_SND_JZ4740_SOC_I2S=y
 
-[    0.289701] bus: 'platform': really_probe: probing driver
-jz4740-i2s with device 10020000.i2s
-[    0.289713] jz4740-i2s 10020000.i2s: no pinctrl handle
-[    0.289782] OF: /i2s@10020000: could not find phandle
-
-I'll try to make sense of this.
-
-> thanks,
-> -M
+>  # CONFIG_HID is not set
+>  # CONFIG_USB_SUPPORT is not set
+>  CONFIG_MMC=y
+> --
+> 2.11.0
+>
