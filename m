@@ -1,33 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: sun4i-i2s: Add compatibility with A64
-	codec I2S" to the asoc tree
-Date: Wed, 17 Oct 2018 12:54:49 +0100 (BST)
-Message-ID: <20181017115449.D79C011224C4@debutante.sirena.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
- [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 5B6C62675AB
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 13:54:50 +0200 (CEST)
-In-Reply-To: 
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Marcus Cooper <codekipper@gmail.com>
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>, Maxime Ripard <maxime.ripard@bootlin.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: intel: don't pass GFP_DMA32 to dma_alloc_coherent" to the asoc tree
+Date: Wed, 17 Oct 2018 12:54:54 +0100 (BST)
+Message-ID: <20181017115454.BA5D611224C4@debutante.sirena.org.uk>
+References: <20181013151707.32210-6-hch@lst.de>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20181013151707.32210-6-hch@lst.de>
+Sender: linux-kernel-owner@vger.kernel.org
+To: Christoph Hellwig <hch@lst.de>
+Cc: Mark Brown <broonie@kernel.org>, linux-pm@vger.kernel.org, linux-tegra@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-media@vger.kernel.org, linux-spi@vger.kernel.org, linux-fbdev@vger.kernel.org, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.orgalsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: sun4i-i2s: Add compatibility with A64 codec I2S
+   ASoC: intel: don't pass GFP_DMA32 to dma_alloc_coherent
 
 has been applied to the asoc tree at
 
@@ -52,83 +37,32 @@ to this mail.
 Thanks,
 Mark
 
->From 66ecce3325383c8304063e7d5a30f4374ef5a33e Mon Sep 17 00:00:00 2001
-From: Marcus Cooper <codekipper@gmail.com>
-Date: Wed, 17 Oct 2018 00:38:05 -0700
-Subject: [PATCH] ASoC: sun4i-i2s: Add compatibility with A64 codec I2S
+>From 3b991038498bc5011b063d6a804503c577a79434 Mon Sep 17 00:00:00 2001
+From: Christoph Hellwig <hch@lst.de>
+Date: Sat, 13 Oct 2018 17:17:04 +0200
+Subject: [PATCH] ASoC: intel: don't pass GFP_DMA32 to dma_alloc_coherent
 
-The I2S block used for the audio codec in the A64 differs from other 3
-I2S modules in A64 and isn't compatible with H3. But it is very similar
-to what is found in A10(sun4i). However, its TX FIFO is
-located at a different address.
+The DMA API does its own zone decisions based on the coherent_dma_mask.
 
-Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
-Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
+Reviewed-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- .../devicetree/bindings/sound/sun4i-i2s.txt   |  2 ++
- sound/soc/sunxi/sun4i-i2s.c                   | 21 +++++++++++++++++++
- 2 files changed, 23 insertions(+)
+ sound/soc/intel/common/sst-firmware.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-index b9d50d6cdef3..61e71c1729e0 100644
---- a/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-+++ b/Documentation/devicetree/bindings/sound/sun4i-i2s.txt
-@@ -10,6 +10,7 @@ Required properties:
-    - "allwinner,sun6i-a31-i2s"
-    - "allwinner,sun8i-a83t-i2s"
-    - "allwinner,sun8i-h3-i2s"
-+   - "allwinner,sun50i-a64-codec-i2s"
- - reg: physical base address of the controller and length of memory mapped
-   region.
- - interrupts: should contain the I2S interrupt.
-@@ -26,6 +27,7 @@ Required properties for the following compatibles:
- 	- "allwinner,sun6i-a31-i2s"
- 	- "allwinner,sun8i-a83t-i2s"
- 	- "allwinner,sun8i-h3-i2s"
-+	- "allwinner,sun50i-a64-codec-i2s"
- - resets: phandle to the reset line for this codec
+diff --git a/sound/soc/intel/common/sst-firmware.c b/sound/soc/intel/common/sst-firmware.c
+index 11041aedea31..1e067504b604 100644
+--- a/sound/soc/intel/common/sst-firmware.c
++++ b/sound/soc/intel/common/sst-firmware.c
+@@ -355,7 +355,7 @@ struct sst_fw *sst_fw_new(struct sst_dsp *dsp,
  
- Example:
-diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index a4aa931ebfae..c63d226e2436 100644
---- a/sound/soc/sunxi/sun4i-i2s.c
-+++ b/sound/soc/sunxi/sun4i-i2s.c
-@@ -961,6 +961,23 @@ static const struct sun4i_i2s_quirks sun8i_h3_i2s_quirks = {
- 	.field_rxchansel	= REG_FIELD(SUN8I_I2S_RX_CHAN_SEL_REG, 0, 2),
- };
- 
-+static const struct sun4i_i2s_quirks sun50i_a64_codec_i2s_quirks = {
-+	.has_reset		= true,
-+	.reg_offset_txdata	= SUN8I_I2S_FIFO_TX_REG,
-+	.sun4i_i2s_regmap	= &sun4i_i2s_regmap_config,
-+	.has_slave_select_bit	= true,
-+	.field_clkdiv_mclk_en	= REG_FIELD(SUN4I_I2S_CLK_DIV_REG, 7, 7),
-+	.field_fmt_wss		= REG_FIELD(SUN4I_I2S_FMT0_REG, 2, 3),
-+	.field_fmt_sr		= REG_FIELD(SUN4I_I2S_FMT0_REG, 4, 5),
-+	.field_fmt_bclk		= REG_FIELD(SUN4I_I2S_FMT0_REG, 6, 6),
-+	.field_fmt_lrclk	= REG_FIELD(SUN4I_I2S_FMT0_REG, 7, 7),
-+	.field_fmt_mode		= REG_FIELD(SUN4I_I2S_FMT0_REG, 0, 1),
-+	.field_txchanmap	= REG_FIELD(SUN4I_I2S_TX_CHAN_MAP_REG, 0, 31),
-+	.field_rxchanmap	= REG_FIELD(SUN4I_I2S_RX_CHAN_MAP_REG, 0, 31),
-+	.field_txchansel	= REG_FIELD(SUN4I_I2S_TX_CHAN_SEL_REG, 0, 2),
-+	.field_rxchansel	= REG_FIELD(SUN4I_I2S_RX_CHAN_SEL_REG, 0, 2),
-+};
-+
- static int sun4i_i2s_init_regmap_fields(struct device *dev,
- 					struct sun4i_i2s *i2s)
- {
-@@ -1169,6 +1186,10 @@ static const struct of_device_id sun4i_i2s_match[] = {
- 		.compatible = "allwinner,sun8i-h3-i2s",
- 		.data = &sun8i_h3_i2s_quirks,
- 	},
-+	{
-+		.compatible = "allwinner,sun50i-a64-codec-i2s",
-+		.data = &sun50i_a64_codec_i2s_quirks,
-+	},
- 	{}
- };
- MODULE_DEVICE_TABLE(of, sun4i_i2s_match);
+ 	/* allocate DMA buffer to store FW data */
+ 	sst_fw->dma_buf = dma_alloc_coherent(dsp->dma_dev, sst_fw->size,
+-				&sst_fw->dmable_fw_paddr, GFP_DMA | GFP_KERNEL);
++				&sst_fw->dmable_fw_paddr, GFP_KERNEL);
+ 	if (!sst_fw->dma_buf) {
+ 		dev_err(dsp->dev, "error: DMA alloc failed\n");
+ 		kfree(sst_fw);
 -- 
 2.19.0.rc2
