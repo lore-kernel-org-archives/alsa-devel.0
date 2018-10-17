@@ -1,155 +1,106 @@
-From: Philipp Zabel <p.zabel@pengutronix.de>
-Subject: Re: [PATCH 2/2] ASoC: max98927: Add reset-gpio support
-Date: Wed, 17 Oct 2018 19:02:37 +0200
-Message-ID: <1539795757.4729.15.camel@pengutronix.de>
-References: <20180912121955.33048-1-cychiang@chromium.org>
-         <20180912121955.33048-2-cychiang@chromium.org>
-         <20180920161905.GM2471@sirena.org.uk>
-         <CAFv8NwLpS9r=jD2wyBsVgJJofkS1xJNo6YssgYXuVHDmGDLogg@mail.gmail.com>
-         <1539338716.6204.2.camel@pengutronix.de>
-         <20181012134620.fhhkyvvdgoq4sxqi@flea>
+From: Mark Brown <broonie@kernel.org>
+Subject: Re: [PATCH] ASoC: nau8822: new codec driver
+Date: Wed, 17 Oct 2018 19:54:23 +0100
+Message-ID: <20181017185423.GG24097@sirena.org.uk>
+References: <20180928031002.16112-1-CTLIN0@nuvoton.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181012134620.fhhkyvvdgoq4sxqi@flea>
-Sender: linux-kernel-owner@vger.kernel.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Cheng-yi Chiang <cychiang@chromium.org>, Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, Ryan Lee <ryans.lee@maximintegrated.com>, alsa-devel@alsa-project.org, Dylan Reid <dgreid@chromium.org>, tzungbi@chromium.org
+Content-Type: multipart/mixed; boundary="===============0680587312325568530=="
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41BAF2675A4
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 20:54:26 +0200 (CEST)
+In-Reply-To: <20180928031002.16112-1-CTLIN0@nuvoton.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: David Lin <CTLIN0@nuvoton.com>
+Cc: wtli@nuvoton.com, yhchuang@nuvoton.com, alsa-devel@alsa-project.org, kchsu0@nuvoton.com, lgirdwood@gmail.com
 List-Id: alsa-devel@alsa-project.org
 
-Hi Maxime,
 
-On Fri, 2018-10-12 at 15:46 +0200, Maxime Ripard wrote:
-> On Fri, Oct 12, 2018 at 12:05:16PM +0200, Philipp Zabel wrote:
-[...]
-> > What I would like better would be to let the consumers keep their reset-
-> > gpios bindings, but add an optional hold time override in the DT:
-> > 
-> > 	c1 {
-> > 		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
-> > 		reset-delays-us = <10000>;
-> > 	};
-> > 
-> > 	c2 {
-> > 		reset-gpios = <&gpio0 15 GPIO_ACTIVE_LOW>;
-> > 		reset-delays-us = <10000>;
-> > 	};
-> > 
-> > The reset framework could create a reset_control backed by a gpio
-> > instead of a rcdev. I have an unfinished patch for this, but without the
-> > sharing requirement adding the reset framework abstraction between gpiod
-> > and drivers never seemed really worth it.
-> 
-> I don't remember the exact details of our past discussion, but I
-> (still) don't really think that this would work well.
+--===============0680587312325568530==
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="KR/qxknboQ7+Tpez"
+Content-Disposition: inline
 
-It has been a while :) Thanks for jumping back in.
 
-> I see two main shortcomings with that approach:
-> 
->   - I guess that the main reason you want to do that would be to have
->     easy DT backward compatibility.
+--KR/qxknboQ7+Tpez
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Yes, that is true. The other reason is that I'd like devices to have a
-single binding, regardless of whether somebody decided to put them onto
-a board with shared reset lines.
+On Fri, Sep 28, 2018 at 11:10:04AM +0800, David Lin wrote:
 
-I'd find it hard to advocate for changing the thankfully common case
-of device-exclusive reset gpios from:
+This looks mostly good so I'm going to apply it, I do have a couple of
+comments below but they are quite small and I think they can be
+addressed with followup patches.
 
-	some-device {
-		reset-gpios = <&gpiox y>;
-	};
+> +++ b/sound/soc/codecs/nau8822.c
+> @@ -0,0 +1,1136 @@
+> +/*
+> + * nau8822.c  --  NAU8822 ALSA Soc Audio Codec driver
+> + *
+> + * Copyright 2017 Nuvoton Technology Corp.
+> + *
+> + * Author: David Lin <ctlin0@nuvoton.com>
+> + * Co-author: John Hsu <kchsu0@nuvoton.com>
+> + * Co-author: Seven Li <wtli@nuvoton.com>
+> + *
+> + * Based on WM8974.c
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
 
-to:
+This should be converted to use a SPDX license header
 
-	rstc: reset-controller {
-		compatible = "gpio-reset";
-		reset-gpios <&gpiox y>;
-	};
+	// SPDX-License-Identifier: GPL-2.0.
 
-	some-device {
-		resets = <&rstc 0>;
-	};
+> +static int nau8822_config_clkdiv(struct snd_soc_dai *dai, int div, int r=
+ate)
+> +{
+> +	struct snd_soc_component *component =3D dai->component;
+> +	struct nau8822 *nau8822 =3D snd_soc_component_get_drvdata(component);
+> +	struct nau8822_pll *pll =3D &nau8822->pll;
+> +	int i, sclk, imclk;
 
-even for new bindings.
+We're trying to get away from using set_clkdiv() as it makes it much
+harder to use generic card drivers without specific knowledge of the=20
+card.  However in this case it seems like it's mainly choosing if we
+should use the MCLK directly or the PLL and you should be able to do
+everything in the set_sysclk() operation - is there a reason not to do
+that?  If not then moving to set_sysclk() would avoid problems.
 
-If the reset framework only supports the latter, and not the former,
-drivers for devices which already have reset-gpios would have to handle
-both reset_control and gpiod functionality, which I think should not be
-necessary.
+--KR/qxknboQ7+Tpez
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Note that this is not really an argument against a "gpio-reset"
-controller driver, but an argument for reset-gpios support integrated
-into the reset framework.
-My argument against a "gpio-reset" device node in the DT is only that it
-is basically a virtual device that would only be used to work around
-missing reset-gpios support in the reset framework. Physically, this
-"device" consists of no more than a few PCB traces.
+-----BEGIN PGP SIGNATURE-----
 
->     Yet, the addition of the
->     reset-delay-us would break that compatibility, since drivers that
->     would have been converted now need to have it somehow, but older
->     DTs wouldn't have it
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvHhV4ACgkQJNaLcl1U
+h9DTbgf+N7bc8rVFMOEkLQ4CCYQnFrguK7rEJ4mukkvmpRSLzttCjz8jm6bkkMFx
+6gzUlQ7ZpodjJ1ScngetYR+AfwGxrtVYNi9I3Gju2atlWL5KNXwMdoKkQKAWOrDf
+cG06gDRSm15Now/WjvzBtjNREgv7YXkItldOoPExr/kTvgnKsNy8lcRe3CUz8BRi
+NSwTAkcYj13nGK5kYrG3dtI32L0RmQZx6PttrJrR+cSPW5C+OVqf15EEuZvsBtmR
+eLSwA+OgAXl/uprM3m+FSW/svnCm2NTrQdnWQBEQ69JT4ob/Lzh2rTPR6cDIVAyX
+eVVegD5psGSKC5EEBIBZXOAMvnTEFw==
+=6Bix
+-----END PGP SIGNATURE-----
 
-That is why such a property would have to be optional, and the drivers
-would have to keep providing the reset delay themselves, as they
-currently do when handling GPIOs directly.
-It would only serve to override the driver default in case of additional
-delay requirements due to board specifics (such as delay elements, or
-shared resets).
+--KR/qxknboQ7+Tpez--
 
->   - There's so many variations of the reset-gpios property name that
->     you wouldn't be able to cover all the cases anyhow, at least
->     without breaking the compatibility (again).
+--===============0680587312325568530==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
 
-This is true, and I do not have a solution for this. Especially for
-those cases that don't use gpiod yet.
 
-	of_get_named_gpio(node, "reset-gpio")
-
-is still quite common, but I'd really like on gpiolib for polarity
-support.
-
-> But I also see your point, and you're right that converting everyone
-> to a gpio-reset node will not happen (even though I'd still really
-> like to have that binding).
-
-See above. I'd be a lot less reluctant to support this binding if
-somebody could demonstrate a real gpio controlled reset controller
-device of some kind. And even then I would not want to have to use
-this device just to connect a single GPIO with a single reset input.
-
-> What about having a function that would be called by the consumer to
-> instantiate that reset controller from a GPIO for us, instead of
-> trying to do it automatically? That function could take the property
-> name that holds the GPIO, which would cover the second drawback, and
-> the delay, which would cover the first.
-
-I like this idea.
-
-I'd like to avoid having to fall back from gpiod to of_get_named_gpio if
-possible, so maybe we'd have to extend gpiolib-of.c with an
-of_find_reset_gpio function, as is done for SPI and regulators already.
-
-We probably would have to support delay ranges. I see a lot of
-usleep_range calls between reset GPIO toggles in the drivers.
-
-> And in order to cover shared GPIO reset lines, we could just look at
-> the one already created by other drivers, and if one has been created,
-> we just give the reference to that one instead of creating it.
-> 
-> Does that make sense?
-
-I'm not quite sure how to match an already requested reset control from
-the list given of_node and gpio property name at the moment - this might
-involve exporting gpiod_find from gpiolib, but API wise I think this is
-a sane proposal.
-
-I would not want to add reset controller devices for each of these GPIO
-reset controls, but rather store the gpio_desc reference in the
-reset_control instead of the rcdev reference.
-
-regards
-Philipp
+--===============0680587312325568530==--
