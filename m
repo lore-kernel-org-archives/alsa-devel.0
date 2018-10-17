@@ -1,128 +1,92 @@
-From: Jonathan Liu <net147@gmail.com>
-Subject: snd-usb-audio Buffer Sizes and Round Trip Latency
-Date: Wed, 17 Oct 2018 23:58:48 +1100
-Message-ID: <CANwerB32FC2eScpC+jL4=ENh9yB34axWsnWkcphMh5Qeyp=omg@mail.gmail.com>
+From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+Subject: Re: [PATCH v2 9/9] ASoC: tegra_sgtl5000: fix platform name vs.
+ of_node assignement
+Date: Wed, 17 Oct 2018 14:28:22 +0000
+Message-ID: <1539786500.6233.58.camel@toradex.com>
+References: <20181016104730.4598-1-marcel@ziswiler.com>
+         <20181016104730.4598-10-marcel@ziswiler.com>
+         <35848cb7-36ee-6698-ff17-7f0e73567914@nvidia.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lj1-f194.google.com (mail-lj1-f194.google.com
- [209.85.208.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 738732675A4
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 14:59:04 +0200 (CEST)
-Received: by mail-lj1-f194.google.com with SMTP id z21-v6so24252643ljz.0
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 05:59:04 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Alan Stern <stern@rowland.harvard.edu>, Clemens Ladisch <clemens@ladisch.de>, Takashi Iwai <tiwai@suse.de>
-Cc: ALSA development <alsa-devel@alsa-project.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <35848cb7-36ee-6698-ff17-7f0e73567914@nvidia.com>
+Content-Language: en-US
+Content-ID: <17F2C5DC477B0146A97046FCDD769914@eurprd05.prod.outlook.com>
+Sender: linux-kernel-owner@vger.kernel.org
+To: "jonathanh@nvidia.com" <jonathanh@nvidia.com>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>, "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Cc: "linux@armlinux.org.uk" <linux@armlinux.org.uk>, "broonie@kernel.org" <broonie@kernel.org>, "thierry.reding@gmail.com" <thierry.reding@gmail.com>, "kuninori.morimoto.gx@renesas.com" <kuninori.morimoto.gx@renesas.com>, "tiwai@suse.com" <tiwai@suse.com>, "lgirdwood@gmail.com" <lgirdwood@gmail.com>, "perex@perex.cz" <perex@perex.cz>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
-
-I want to start a discussion regarding round trip latency for class
-compliant USB audio interfaces on Linux. In particular, I am noticing
-with my USB 2.0 RME Babyface Pro audio interface that the round trip
-latency is considerably higher on Linux than on macOS High Sierra and
-Windows 10.
-
-I tested the round trip latency using a loopback audio cable and the
-ReaInsert plugin included with Reaper DAW (www.reaper.fm) that can be
-downloaded for Windows/macOS/Linux to calculate the additional delay.
-
-Here are the results for 48000 Hz, 24-bit on my RME Babyface Pro:
-===
-block_size/periods block_size*periods + additional_delay ~ round_trip_latency
-round_trip_latency = (block_size*periods + additional_delay) / 48000 * 1000
-
-Linux 4.17.14, Class Compliant Mode (snd-usb-audio, ALSA backend):
-16/2 32 + 80 ~ 2.333 ms
-16/3 48 + 109 ~ 3.271 ms
-32/2 64 + 129 ~ 4.021 ms
-32/3 96 + 166 ~ 5.458 ms
-64/2 128 + 205 ~ 6.938 ms
-64/3 192 + 242 ~ 9.042 ms
-128/2 256 + 352 ~ 12.667 ms
-128/3 384 + 496 ~ 18.334 ms
-256/2 512 + 650 ~ 24.208 ms
-256/3 768 + 650 ~ 29.542 ms
-512/2 1024 + 634 ~ 34.542 ms
-512/3 1536 + 634 ~ 45.208 ms
-1024/2 2048 + 650 ~ 56.208 ms
-1024/3 3072 + 650 ~ 77.542 ms
-2048/2 4096 + 633 ~ 98.521 ms
-2048/3 6144 + 633 ~ 141.188 ms
-
-macOS High Sierra, Class Compliant Mode (Apple Driver):
-16/2 32 + 205 ~ 4.938 ms
-32/2 64 + 205 ~ 5.604 ms
-64/2 128 + 205 ~ 6.938 ms
-128/2 256 + 205 ~ 9.604 ms
-256/2 512 + 205 ~ 14.938 ms
-512/2 1024 + 205 ~ 25.604 ms
-1024/2 2048 + 205 ~ 46.938 ms
-2048/2 4096 + 205 ~ 89.604 ms
-
-macOS High Sierra, PC Mode (RME Driver v3.08):
-16/2 32 + 59 ~ 1.896 ms
-32/2 64 + 59 ~ 2.563 ms
-64/2 128 + 59 ~ 3.896 ms
-128/2 256 + 59 ~ 6.563 ms
-256/2 512 + 59 ~ 11.596 ms
-512/2 1024 + 59 ~ 22.563 ms
-1024/2 2048 + 59 ~ 43.896 ms
-2048/2 4096 + 59 ~ 86.563 ms
-
-Windows 10, PC Mode (RME Driver 1.099):
-48/2 96 + 63 ~ 3.313 ms
-64/2 128 + 63 ~ 3.979 ms
-96/2 192 + 63 ~ 5.313 ms
-128/2 256 + 63 ~ 6.646 ms
-256/2 512 + 63 ~ 11.979 ms
-512/2 1024 + 63 ~ 22.646 ms
-1024/2 2048 + 63 ~ 43.979 ms
-2048/2 4096 + 63 ~ 86.646 ms
-===
-
-Some things in particular I noticed on Linux:
-- additional_delay varies a bit if I close and open the audio device again
-- additional_delay seems to increase as the block_size increases. I
-can make the additional_delay stay about the same rather than
-increasing by setting MAX_PACKS and MAX_PACKS_HS to 1 in
-sound/usb/card.h. In Linux versions before 3.13 there was a nrpacks
-parameter for snd-usb-audio to control this but it was removed with
-commit https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?h=v3.13&id=976b6c064a957445eb0573b270f2d0282630e9b9
-- additional_delay is not constant as block_size is increased like on
-macOS and Windows
-
-I made a patch to snd-usb-audio to expose the snd-usb-audio constants
-as runtime adjustable module parameters
-(/sys/module/snd_usb_audio/parameters/) for testing (takes effect when
-the device is disconnected+reconnected and logs the parameter values
-to dmesg):
-https://aur.archlinux.org/cgit/aur.git/plain/parameters.patch?h=snd-usb-audio-lowlatency-dkms
-
-The patch is used in my Arch Linux AUR package for convenience (using
-DKMS to avoid having to recompile entire kernel):
-https://aur.archlinux.org/packages/snd-usb-audio-lowlatency-dkms/
-
-Can snd-usb-audio be improved so the additional_delay is always the
-same when closing/opening/reconfiguring the audio device and does not
-increase as the block_size increases?
-
-I noticed using USB audio on Linux at lower latencies (block_size <=
-128) is more prone to audio dropouts under load compared to macOS and
-Windows, even with CPU power management disabled (writing 0 to
-/dev/cpu_dma_latency). What can be done about this?
-
-Thanks.
-
-Regards,
-Jonathan
+T24gV2VkLCAyMDE4LTEwLTE3IGF0IDEzOjMyICswMTAwLCBKb24gSHVudGVyIHdyb3RlOg0KPiBP
+biAxNi8xMC8yMDE4IDExOjQ3LCBNYXJjZWwgWmlzd2lsZXIgd3JvdGU6DQo+ID4gRnJvbTogTWFy
+Y2VsIFppc3dpbGVyIDxtYXJjZWwuemlzd2lsZXJAdG9yYWRleC5jb20+DQo+ID4gDQo+ID4gVGhp
+cyBmaXhlcyB0aGUgZm9sbG93aW5nIGVycm9yIGFzIHNlZW4gcG9zdCBjb21taXQgZGFlY2Y0NmVl
+MGU1DQo+ID4gKCJBU29DOiBzb2MtY29yZTogdXNlIHNuZF9zb2NfZGFpX2xpbmtfY29tcG9uZW50
+IGZvciBwbGF0Zm9ybSIpOg0KPiA+IA0KPiA+IHRlZ3JhLXNuZC1zZ3RsNTAwMCBzb3VuZDogQVNv
+QzogQm90aCBwbGF0Zm9ybSBuYW1lL29mX25vZGUgYXJlIHNldA0KPiA+IGZvcg0KPiA+ICBzZ3Rs
+NTAwMA0KPiA+IHRlZ3JhLXNuZC1zZ3RsNTAwMCBzb3VuZDogQVNvQzogZmFpbGVkIHRvIGluaXQg
+bGluayBzZ3RsNTAwMA0KPiA+IHRlZ3JhLXNuZC1zZ3RsNTAwMCBzb3VuZDogc25kX3NvY19yZWdp
+c3Rlcl9jYXJkIGZhaWxlZCAoLTIyKQ0KPiA+IHRlZ3JhLXNuZC1zZ3RsNTAwMDogcHJvYmUgb2Yg
+c291bmQgZmFpbGVkIHdpdGggZXJyb3IgLTIyDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogTWFy
+Y2VsIFppc3dpbGVyIDxtYXJjZWwuemlzd2lsZXJAdG9yYWRleC5jb20+DQo+ID4gDQo+ID4gLS0t
+DQo+ID4gDQo+ID4gQ2hhbmdlcyBpbiB2MjogTmV3IHBhdGNoDQo+ID4gDQo+ID4gIHNvdW5kL3Nv
+Yy90ZWdyYS90ZWdyYV9zZ3RsNTAwMC5jIHwgNSArKysrKw0KPiA+ICAxIGZpbGUgY2hhbmdlZCwg
+NSBpbnNlcnRpb25zKCspDQo+ID4gDQo+ID4gZGlmZiAtLWdpdCBhL3NvdW5kL3NvYy90ZWdyYS90
+ZWdyYV9zZ3RsNTAwMC5jDQo+ID4gYi9zb3VuZC9zb2MvdGVncmEvdGVncmFfc2d0bDUwMDAuYw0K
+PiA+IGluZGV4IDkwMTQ1N2RhMjVlYy4uZWI3MDI5MjVjYWMzIDEwMDY0NA0KPiA+IC0tLSBhL3Nv
+dW5kL3NvYy90ZWdyYS90ZWdyYV9zZ3RsNTAwMC5jDQo+ID4gKysrIGIvc291bmQvc29jL3RlZ3Jh
+L3RlZ3JhX3NndGw1MDAwLmMNCj4gPiBAQCAtMTY4LDYgKzE2OCwxMSBAQCBzdGF0aWMgaW50IHRl
+Z3JhX3NndGw1MDAwX2RyaXZlcl9wcm9iZShzdHJ1Y3QNCj4gPiBwbGF0Zm9ybV9kZXZpY2UgKnBk
+ZXYpDQo+ID4gIAlyZXR1cm4gMDsNCj4gPiAgDQo+ID4gIGVycl9maW5pX3V0aWxzOg0KPiA+ICsJ
+aWYgKHRlZ3JhX3NndGw1MDAwX2RhaS5wbGF0Zm9ybSkgew0KPiA+ICsJCWRldm1fa2ZyZWUoJnBk
+ZXYtPmRldiwNCj4gPiB0ZWdyYV9zZ3RsNTAwMF9kYWkucGxhdGZvcm0pOw0KPiA+ICsJCXRlZ3Jh
+X3NndGw1MDAwX2RhaS5wbGF0Zm9ybSA9IE5VTEw7DQo+ID4gKwl9DQo+ID4gKw0KPiA+ICAJdGVn
+cmFfYXNvY191dGlsc19maW5pKCZtYWNoaW5lLT51dGlsX2RhdGEpOw0KPiA+ICBlcnJfcHV0X2Nw
+dV9vZl9ub2RlOg0KPiA+ICAJb2Zfbm9kZV9wdXQodGVncmFfc2d0bDUwMDBfZGFpLmNwdV9vZl9u
+b2RlKTsNCj4gPiANCj4gDQo+IFdoZXJlIGlzIHRoZSBhYm92ZSBhbGxvY2F0ZWQ/DQoNCnNuZF9z
+b2NfaW5pdF9wbGF0Zm9ybSgpIGluIHNvdW5kL3NvYy9zb2MtY29yZS5jDQoNCj4gSSBkb24ndCBz
+ZWUgaXQgYWxsb2NhdGVkIGluIHRoaXMgZHJpdmVyDQo+IEFGQUlDVC4gSWYgaXQgaXMgbm90IHRo
+ZW4gaXQgZG9lcyBub3Qgc2VlbSByaWdodCB0byBmcmVlIHNvbWV0aGluZw0KPiB0aGF0DQo+IHdl
+IGhhdmUgbm90IGFsbG9jYXRlZCBpbiB0aGlzIGRyaXZlci4gSSB3b3VsZCBoYXZlIGFzc3VtZWQg
+aXQgd2FzDQo+IGFsbG9jYXRlZCBieSBzbmRfc29jX2luaXRfcGxhdGZvcm0oKSBpbiB3aGljaCBj
+YXNlIGl0IHNob3VsZCBub3QgYmUNCj4gbmVjZXNzYXJ5IHRvIGZyZWUgYmVjYXVzZSB0aGF0IGZ1
+bmN0aW9uIHVzZXMgZGV2bV9remFsbG9jKCkuDQoNClRoYXQgaXMga2luZCBvZiB3aGF0IEkgYXNz
+dW1lZCBhcyB3ZWxsLg0KDQo+IFdoYXQgYW0gSSBtaXNzaW5nIGhlcmU/DQoNClRoYXQgaXMgYWN0
+dWFsbHkgYSB2ZXJ5IHZlcnkgZ29vZCBxdWVzdGlvbi4gVW5mb3J0dW5hdGVseSwgc2luY2UgYWJv
+dmUNCm1lbnRpb25lZCBjb21taXQgd2hpY2ggaXMgcGFydCBvZiB0aGUgYmlnZ2VyIG11bHRpLXBs
+YXRmb3JtIChvcg0Kd2hhdGV2ZXIgb25lIG1heSBjYWxsIGl0KSByZXdvcmsgZG9uZSBieSBmb2xr
+cyBvbiBDQyB0aGluZ3Mgc3RhcnQNCmZhbGxpbmcgYXBhcnQuDQoNCkkgc2hvdWxkIG1heWJlIHJh
+dGhlciBoYXZlIHBocmFzZWQgdGhpcyBvbmUgYXMgYW4gUkZDLg0KDQpTb21lIGZhY3RzIGZyb20g
+bXkgaHVtYmxlIGludmVzdGlnYXRpb24gc28gZmFyOg0KDQotIFRoZSBpc3N1ZSBkb2VzIG5vdCBl
+eGhpYml0IGl0c2VsZiBvbiBBcGFsaXMvQ29saWJyaSBUMzAgd2hlcmUNCnByb2JhYmx5IHRoZSBv
+cmRlciBvZiB0aGluZ3MgYmVpbmcgaW5pdGlhbGlzZWQgaXMgc2xpZ2h0bHkgZGlmZmVyZW50Lg0K
+DQotIEJpc2VjdGluZyBwb2ludHMgdG8gdGhlIGFib3ZlIG1lbnRpb25lZCBjb21taXQgYmVpbmcg
+dG8gYmxhbWUuDQpIb3dldmVyIHRoZXJlIGlzIG5vIHdheSB0byBqdXN0IHJldmVydCB0aGF0IGNv
+bW1pdCBhcyBpdCBpcyBwYXJ0IG9mIHRoZQ0KYmlnZ2VyIG11bHRpLXBsYXRmb3JtIHJld29yay4N
+Cg0KLSBTb21laG93IGl0IGhhcyB0byBkbyB3aXRoIHByb2JlIGRlZmVycmFsLiBCYXNpY2FsbHks
+IHBsYXRmb3JtIGdldHMNCmFsbG9jYXRlZCBpbiBzbmRfc29jX2luaXRfcGxhdGZvcm0oKSBidXQg
+ZHVlIHRvIEdQSU8vSTJDIHdoYXRldmVyIG5vdA0KYmVpbmcgcmVhZHkgdGhlIFNHVEw1MDAwIGNv
+ZGVjIGFrYSBkYWlfbGluayBjYW4gbm90IHlldCBiZSBmb3VuZCBhbmQNCnRoZXJlZm9yZSBpdCBw
+cm9iZSBkZWZlcnMgYXMgZm9sbG93czoNCg0KWyAgICAyLjE2NjUxN10gdGVncmEzMC1pMnMgNzAz
+MDEyMDAuaTJzOiBETUEgY2hhbm5lbHMgc291cmNlZCBmcm9tDQpkZXZpY2UgNzAzMDAwMDAuYWh1
+Yg0KWyAgICAyLjE3NjA0M10gdGVncmEtc25kLXNndGw1MDAwIHNvdW5kOiBBU29DOiBDT0RFQyBE
+QUkgc2d0bDUwMDAgbm90DQpyZWdpc3RlcmVkDQpbICAgIDIuMTgzMjQxXSB0ZWdyYS1zbmQtc2d0
+bDUwMDAgc291bmQ6IHNuZF9zb2NfcmVnaXN0ZXJfY2FyZCBmYWlsZWQNCigtNTE3KQ0KDQotIFNv
+bWV3aGVyZSB0aGVyZWFmdGVyIHBsYXRmb3JtIHNlZW1zIHRvIGdldCBzdHVtcGVkIG9udG8gKGUu
+Zy4gaXRzDQpuYW1lIHJhdGhlciB0aGFuIGJlaW5nIG51bGwgbm93IGlzIGJvZ3VzLiBVbmZvcnR1
+bmF0ZWx5LCBpdCBpcyBub3QganVzdA0KdGhlIG5hbWUgYXMgY2xlYXJpbmcganVzdCB0aGF0IGRp
+ZCBub3QgcmVhbGx5IGhlbHAgKHNndGw1MDAwIGNvZGVjIGdldHMNCmluc3RhbnRpYXRlZCBidXQg
+dHJ5aW5nIHRvIHBsYXkgYXVkaW8gYWx3YXlzIHJldHVybmVkIC1FSU5WQUwpLg0KDQotIFRoZSBz
+ZWNvbmQgdGltZSBhcm91bmQgc25kX3NvY19pbml0X3BsYXRmb3JtKCkgcmUtdXNlcyBwcmV2aW91
+c2x5DQphbGxvY2F0ZWQgcGxhdGZvcm0gbm93IGNvcnJ1cHQgdHJpZ2dlcmluZyBhIGNoZWNrIGlu
+IHNvYy1jb3JlDQpjb25jZXJuaW5nIHBsYXRmb3JtIG5hbWUgYW5kIG9mX25vZGUgYm90aCBiZWlu
+ZyBzZXQgKGFzIG5vdGVkIGluIGFib3ZlDQpjb21taXQgbWVzc2FnZSkuDQoNClNvbWUgcXVlc3Rp
+b25zOg0KDQotIEhvdyBleGFjdGx5IGFyZSBkZXZtIGFsbG9jYXRpb25zIHN1cHBvc2VkIHRvIHdv
+cmsgY29uY2VybmluZyBwcm9iZQ0KZGVmZXJyYWxzPw0KDQotIERvZXMgb3Igc2hvdWxkIHRoZSBw
+bGF0Zm9ybSBnZXQgY2xlYXJlZCBkdXJpbmcgYSBwcm9iZSBkZWZlcnJhbA0KY3ljbGU/DQoNCi0g
+SWYgc28sIHdoeSBkb2VzIHRoYXQgbm90IHdvcms/DQoNCi0gT3IgaXMgc29tZSBzcGVjaWFsIGlt
+cGxpY2l0IHByb2JlIGRlZmVycmFsIGhhbmRsaW5nIG1pc3NpbmcgaW4gc29jLQ0KY29yZT8NCg0K
+SSdtIGhhcHB5IHRvIHRyeSBtb3JlIHRoaW5ncyBhbmQvb3IgcHJvdmlkZSBtb3JlIGRlYnVnZ2lu
+ZyBvdXRwdXQgaWYNCm5lZWRlZC4gSnVzdCBsZXQgbWUga25vdy4NCg0KVGhhbmtzIEpvbiENCg0K
+PiBDaGVlcnMNCj4gSm9uDQoNCkNoZWVycw0KDQpNYXJjZWw=
