@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Re: [PATCH] ASoC: pcm3168a: remove read-only status
- register from snd_kcontrol_new
-Date: Wed, 17 Oct 2018 20:00:53 +0100
-Message-ID: <20181017190053.GJ24097@sirena.org.uk>
-References: <87murdz6nq.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Re: Audio miniconference schedule
+Date: Wed, 17 Oct 2018 20:12:25 +0100
+Message-ID: <20181017191225.GK24097@sirena.org.uk>
+References: <20181002195849.GA23818@sirena.org.uk>
+ <20181016204852.GK2340@sirena.org.uk>
+ <s5hefcpk2xq.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============6556705808732217812=="
+Content-Type: multipart/mixed; boundary="===============2921659788934872020=="
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id F39162675A4
- for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 21:00:54 +0200 (CEST)
-In-Reply-To: <87murdz6nq.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id BA9322675A4
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 21:12:26 +0200 (CEST)
+In-Reply-To: <s5hefcpk2xq.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,57 +22,78 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Cc: Linux-ALSA <alsa-devel@alsa-project.org>
+To: Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
 
---===============6556705808732217812==
+--===============2921659788934872020==
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="x+WOirvrtTKur1pg"
+	protocol="application/pgp-signature"; boundary="AYsPlKobQGgtCvjI"
 Content-Disposition: inline
 
 
---x+WOirvrtTKur1pg
+--AYsPlKobQGgtCvjI
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Oct 17, 2018 at 01:55:01AM +0000, Kuninori Morimoto wrote:
+On Tue, Oct 16, 2018 at 11:16:17PM +0200, Takashi Iwai wrote:
+> Mark Brown wrote:
 
-> +#if 0
-> +	/* read-only status register needs clocks */
->  	SOC_DOUBLE_STS("DAC1 Zero Flag", PCM3168A_DAC_ZERO, 0, 1, 1, 0),
->  	SOC_DOUBLE_STS("DAC2 Zero Flag", PCM3168A_DAC_ZERO, 2, 3, 1, 0),
->  	SOC_DOUBLE_STS("DAC3 Zero Flag", PCM3168A_DAC_ZERO, 4, 5, 1, 0),
->  	SOC_DOUBLE_STS("DAC4 Zero Flag", PCM3168A_DAC_ZERO, 6, 7, 1, 0),
-> +#endif
+> > I've dropped Y2038 from the expliit schedule, since Arnd Bergmann (who's
+> > been driving a lot of the general Y2038 work) will be in Edinburgh and
+> > may be free to join I'm suggesting that if he's free we cover that
+> > either first thing or just after lunch and otherwise Takashi and I will
+> > try to coordinate with him during ELC-E (unless others have a great
+> > enthusiasm for the subject).
 
-If you're removing these just delete them, no need to leave the
-commented out stuff.  It would be good to understand why these break
-though...
+> I haven't registered ELCE this year but only the audio mini-conf and
+> maintainers summit, but maybe we can catch him on Monday.
 
---x+WOirvrtTKur1pg
+All three of us will be at the maintainers summit so I think we'll be
+able to get some time to talk if we don't manage Sunday.  There were
+some TBD slots at the maintainers summit, we could see if we can get
+ALSA Y2038 ABI on the list there :)
+
+> Sorry for the late action, here are some items that came to my mind:
+
+All good topics, I'll add them in - Charles had some ideas for the ASoC
+refactoring already which I managed to drop off the list (sorry Charles)
+which is mostly the same thing at this point.
+
+> - Testing:
+>   My pet peeve.  I'd love to see some stuff, especially for ASoC, that
+>   can run on VM, and let fuzzers whipping on it.
+>   Also, USB audio can be virtualized.  What else?  (not only about VM
+>   testing but also a real hardware testing.)
+
+There's a whole testing summit on Thursday...  :/  I don't think there's
+much argument with the ASoC stuff, but I also don't think there's anyone
+with the right combination of time and enthusiasm to do the work at the
+minute.
+
+--AYsPlKobQGgtCvjI
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvHhuQACgkQJNaLcl1U
-h9D7Bgf+PFneUp+Cjq/cJUMGuPfEwH/ltxzSclYe50DFghYwEV9i2OVPM0/B9jAH
-l+lq7WxQGOLXw1xEtDH9U3LiVFRgkuHlFBnoJKtBI08IPbn7Vq4BNeI1mbaWbK2p
-CHWb9TNnhZE6bynesuenaTZ83i0279a/9a3+nECHe4/b3F4ZxE/EpgcjoL2ouVzp
-oiZ+yKgERn3uLwpVDZBN/G6v04Wt+g2Rf1iqULxaV/FrCNwJoUE4JwVVEiGUVccz
-tbI1toe4mfs2v0hq9gGWaJ8nrai/kLcUWWP9+Z3CI3veF53eQDNBT/4ruBge4Uva
-fxLay+oRsXshmTgEzbuaofEb4vcipg==
-=5XsY
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAlvHiZgACgkQJNaLcl1U
+h9C7oAf9Gro/mCW0NxA9xb6l4vTqB0rKWb217vPnVol6lXblyLrzJguJm1xPiRBZ
+V/PiTC/r3sIshQPib9e7bETco5uP3n/Ofb7I1Ir8mBjLTVqEcJh0+aLhlYaYLA4U
+TnS9im+4Rz4t6BtV3OgOSVoM3mb9RNZ4Yv7tzaUTwmjO4hgSLKDg9LujjJUoMf4g
+HKnYDJ/axrAj2UX2eEYHwjwq6KHO+689w6Ih/kxbQvtu+75Xe+dNUu/4+kW08Baf
++RbT053X43OST6u2mUu8uxQqVQqPQtbH31e3+BR0GImY/Wy6FcDOoKJqXud3I5t8
+UNn/NRskhHbYOJlIUQAcYYqbG6F1Tw==
+=HlU/
 -----END PGP SIGNATURE-----
 
---x+WOirvrtTKur1pg--
+--AYsPlKobQGgtCvjI--
 
---===============6556705808732217812==
+--===============2921659788934872020==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline
 
 
---===============6556705808732217812==--
+--===============2921659788934872020==--
