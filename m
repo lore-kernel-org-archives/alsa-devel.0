@@ -1,44 +1,195 @@
-From: Mathieu Malaterre <malat@debian.org>
-Subject: Re: [PATCH 2/3] MIPS: Ci20: Enable SND_JZ4740_SOC driver
-Date: Wed, 17 Oct 2018 22:28:08 +0200
-Message-ID: <CA+7wUswf1+3E12-qs0c0L7PjPWsndYo2oe_b=Gv5vXF0gd+Ttg@mail.gmail.com>
-References: <20180606193811.16007-1-malat@debian.org> <20180606193811.16007-2-malat@debian.org>
+From: Maxime Ripard <maxime.ripard@bootlin.com>
+Subject: Re: [PATCH v2] ASoC: sun4i-i2s: move code from
+ startup/shutdown hooks into pm_runtime hooks
+Date: Wed, 17 Oct 2018 23:01:59 +0200
+Message-ID: <20181017210159.hni6ozm755orvzzg@flea>
+References: <20181016031141.16259-1-anarsoul@gmail.com>
+ <CA+E=qVci2FVMH7O83Xv9ic_WFvFYyxmPDjp309dFi23XiHYzzQ@mail.gmail.com>
+ <20181017152523.p34t3xani5cnfk3w@flea>
+ <6365837.9zzJEACKLf@anarsoul-thinkpad>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20180606193811.16007-2-malat@debian.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: James Hogan <jhogan@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>, Mark Rutland <mark.rutland@arm.com>, Ralf Baechle <ralf@linux-mips.org>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" <devicetree@vger.kernel.org>, Linux-MIPS <linux-mips@linux-mips.org>, LKML <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.bootlin.com (mail.bootlin.com [62.4.15.54])
+ by alsa0.perex.cz (Postfix) with ESMTP id EAEBF2675A4
+ for <alsa-devel@alsa-project.org>; Wed, 17 Oct 2018 23:02:10 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <6365837.9zzJEACKLf@anarsoul-thinkpad>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Linux-ALSA <alsa-devel@alsa-project.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Chen-Yu Tsai <wens@csie.org>, Mark Brown <broonie@kernel.org>, Yong Deng <yong.deng@magewell.com>, arm-linux <linux-arm-kernel@lists.infradead.org>
 List-Id: alsa-devel@alsa-project.org
 
-On Wed, Jun 6, 2018 at 9:38 PM Mathieu Malaterre <malat@debian.org> wrote:
->
-> Update the Ci20's defconfig to enable the JZ4780's SND driver.
->
-> Signed-off-by: Mathieu Malaterre <malat@debian.org>
-> ---
->  arch/mips/configs/ci20_defconfig | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/arch/mips/configs/ci20_defconfig b/arch/mips/configs/ci20_defconfig
-> index e1c14f6af824..0c08c7675b42 100644
-> --- a/arch/mips/configs/ci20_defconfig
-> +++ b/arch/mips/configs/ci20_defconfig
-> @@ -104,6 +104,10 @@ CONFIG_REGULATOR=y
->  CONFIG_REGULATOR_DEBUG=y
->  CONFIG_REGULATOR_FIXED_VOLTAGE=y
->  # CONFIG_VGA_CONSOLE is not set
-> +CONFIG_SOUND=y
-> +CONFIG_SND=y
-> +CONFIG_SND_SOC=y
-> +CONFIG_SND_JZ4740_SOC=y
+On Wed, Oct 17, 2018 at 08:36:26AM -0700, Vasily Khoruzhick wrote:
+> On Wednesday, October 17, 2018 8:25:23 AM PDT Maxime Ripard wrote:
+> > On Wed, Oct 17, 2018 at 07:41:55AM -0700, Vasily Khoruzhick wrote:
+> > > On Wed, Oct 17, 2018 at 12:45 AM Maxime Ripard
+> > > 
+> > > <maxime.ripard@bootlin.com> wrote:
+> > > > On Tue, Oct 16, 2018 at 08:08:41PM -0700, Vasily Khoruzhick wrote:
+> > > > > On Tue, Oct 16, 2018 at 12:16 AM Maxime Ripard
+> > > > > 
+> > > > > <maxime.ripard@bootlin.com> wrote:
+> > > > > > On Mon, Oct 15, 2018 at 08:11:41PM -0700, Vasily Khoruzhick wrote:
+> > > > > > > startup() and shutdown() hooks are called for both substreams,
+> > > > > > > so stopping either substream when another is running breaks the
+> > > > > > > latter.
+> > > > > > > 
+> > > > > > > E.g. playback breaks if capture is stopped when playback is
+> > > > > > > running.
+> > > > > > > 
+> > > > > > > Move code from startup() and shutdown() to resume() and suspend()
+> > > > > > > hooks respectively to fix this issue
+> > > > > > > 
+> > > > > > > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+> > > > > > > ---
+> > > > > > > v2: - rename from "ASoC: sun4i-i2s: don't try to start up
+> > > > > > > 
+> > > > > > >                  or shut down DAI if it's active"
+> > > > > > >     
+> > > > > > >     - move code from startup/shutdown hooks into pm_runtime
+> > > > > > >  
+> > > > > > >  sound/soc/sunxi/sun4i-i2s.c | 61
+> > > > > > >  +++++++++++++++----------------------
+> > > > > > >  1 file changed, 25 insertions(+), 36 deletions(-)
+> > > > > > > 
+> > > > > > > diff --git a/sound/soc/sunxi/sun4i-i2s.c
+> > > > > > > b/sound/soc/sunxi/sun4i-i2s.c
+> > > > > > > index a4aa931ebfae..daa6c08cffbc 100644
+> > > > > > > --- a/sound/soc/sunxi/sun4i-i2s.c
+> > > > > > > +++ b/sound/soc/sunxi/sun4i-i2s.c
+> > > > > > > @@ -644,40 +644,6 @@ static int sun4i_i2s_trigger(struct
+> > > > > > > snd_pcm_substream *substream, int cmd,> > > > > 
+> > > > > > >       return 0;
+> > > > > > >  
+> > > > > > >  }
+> > > > > > > 
+> > > > > > > -static int sun4i_i2s_startup(struct snd_pcm_substream *substream,
+> > > > > > > -                          struct snd_soc_dai *dai)
+> > > > > > > -{
+> > > > > > > -     struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> > > > > > > -
+> > > > > > > -     /* Enable the whole hardware block */
+> > > > > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > > > > -                        SUN4I_I2S_CTRL_GL_EN,
+> > > > > > > SUN4I_I2S_CTRL_GL_EN);
+> > > > > > > -
+> > > > > > > -     /* Enable the first output line */
+> > > > > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > > > > -                        SUN4I_I2S_CTRL_SDO_EN_MASK,
+> > > > > > > -                        SUN4I_I2S_CTRL_SDO_EN(0));
+> > > > > > > -
+> > > > > > > -
+> > > > > > > -     return clk_prepare_enable(i2s->mod_clk);
+> > > > > > > -}
+> > > > > > > -
+> > > > > > > -static void sun4i_i2s_shutdown(struct snd_pcm_substream
+> > > > > > > *substream,
+> > > > > > > -                            struct snd_soc_dai *dai)
+> > > > > > > -{
+> > > > > > > -     struct sun4i_i2s *i2s = snd_soc_dai_get_drvdata(dai);
+> > > > > > > -
+> > > > > > > -     clk_disable_unprepare(i2s->mod_clk);
+> > > > > > > -
+> > > > > > > -     /* Disable our output lines */
+> > > > > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > > > > -                        SUN4I_I2S_CTRL_SDO_EN_MASK, 0);
+> > > > > > > -
+> > > > > > > -     /* Disable the whole hardware block */
+> > > > > > > -     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > > > > -                        SUN4I_I2S_CTRL_GL_EN, 0);
+> > > > > > > -}
+> > > > > > > -
+> > > > > > > 
+> > > > > > >  static int sun4i_i2s_set_sysclk(struct snd_soc_dai *dai, int
+> > > > > > >  clk_id,
+> > > > > > >  
+> > > > > > >                               unsigned int freq, int dir)
+> > > > > > >  
+> > > > > > >  {
+> > > > > > > 
+> > > > > > > @@ -695,8 +661,6 @@ static const struct snd_soc_dai_ops
+> > > > > > > sun4i_i2s_dai_ops = {> > > > > 
+> > > > > > >       .hw_params      = sun4i_i2s_hw_params,
+> > > > > > >       .set_fmt        = sun4i_i2s_set_fmt,
+> > > > > > >       .set_sysclk     = sun4i_i2s_set_sysclk,
+> > > > > > > 
+> > > > > > > -     .shutdown       = sun4i_i2s_shutdown,
+> > > > > > > -     .startup        = sun4i_i2s_startup,
+> > > > > > > 
+> > > > > > >       .trigger        = sun4i_i2s_trigger,
+> > > > > > >  
+> > > > > > >  };
+> > > > > > > 
+> > > > > > > @@ -869,6 +833,21 @@ static int sun4i_i2s_runtime_resume(struct
+> > > > > > > device *dev)> > > > > 
+> > > > > > >               goto err_disable_clk;
+> > > > > > >       
+> > > > > > >       }
+> > > > > > > 
+> > > > > > > +     /* Enable the whole hardware block */
+> > > > > > > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > > > > +                        SUN4I_I2S_CTRL_GL_EN,
+> > > > > > > SUN4I_I2S_CTRL_GL_EN);
+> > > > > > > +
+> > > > > > 
+> > > > > > So this is definitely needed
+> > > > > > 
+> > > > > > > +     /* Enable the first output line */
+> > > > > > > +     regmap_update_bits(i2s->regmap, SUN4I_I2S_CTRL_REG,
+> > > > > > > +                        SUN4I_I2S_CTRL_SDO_EN_MASK,
+> > > > > > > +                        SUN4I_I2S_CTRL_SDO_EN(0));
+> > > > > > > +
+> > > > > > > +     ret = clk_prepare_enable(i2s->mod_clk);
+> > > > > > > +     if (ret) {
+> > > > > > > +             dev_err(dev, "Failed to enable module clock\n");
+> > > > > > > +             goto err_disable_clk;
+> > > > > > > +     }
+> > > > > > 
+> > > > > > But we really don't want to enable the module clock before the
+> > > > > > playback / capture actually starts. And I'm guessing it would make
+> > > > > > more sense to keep the output enable configuration there as well,
+> > > > > > since it's likely that we will have support for it in the future,
+> > > > > > and
+> > > > > > we'll need additional information from ASoC when we'll do.
+> > > > > 
+> > > > > Should we go with v1 version of my patch then? I see no reason to
+> > > > > shuffle code around if we keep startup() and shutdown() hooks.
+> > > > 
+> > > > I'd go for something in between. runtime_pm already provides whether
+> > > > the device is active or not, so you can just move the
+> > > > SUN4I_I2S_CTRL_GL_EN write to the runtime_resume and runtime_suspend
+> > > > functions, and that should fix your issue.
+> > > 
+> > > I still need to guard enabling output line with "if (dai->active)
+> > > return", so it doesn't fix the issue unfortunately.
+> > 
+> > Why? The configuration is static, so it probably doesn't change much?
+> 
+> startup() and shutdown() are called once for each substream, i.e. for capture 
+> and playback.
+> 
+> If we start playback and capture and the stop either we end up with calling 
+> startup() twice and then shutdown() once. Since it disables I2S output it 
+> breaks substream that is still working.
 
-technically I am also missing: CONFIG_SND_JZ4740_SOC_I2S=y
+Ah, right, I forgot that case. In this case, yeah, your patch makes sense
 
->  # CONFIG_HID is not set
->  # CONFIG_USB_SUPPORT is not set
->  CONFIG_MMC=y
-> --
-> 2.11.0
->
+Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
+
+Thanks!
+Maxime
+
+-- 
+Maxime Ripard, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
