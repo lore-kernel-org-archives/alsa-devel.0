@@ -1,20 +1,12 @@
-From: Takashi Sakamoto <mocchi.sakamoto113@gmail.com>
-Subject: Re: Audio miniconference schedule
-Date: Thu, 18 Oct 2018 19:12:35 +0900 (JST)
-Message-ID: <alpine.DEB.2.21.1810181906180.25841@laptop>
-References: <20181002195849.GA23818@sirena.org.uk>
- <20181016204852.GK2340@sirena.org.uk> <s5hefcpk2xq.wl-tiwai@suse.de>
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH - Intervals 1/1] interval: Interpret (x x+1]
+	correctly and return x+1
+Date: Thu, 18 Oct 2018 12:50:26 +0200
+Message-ID: <1539859826-17683-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pl1-f193.google.com (mail-pl1-f193.google.com
- [209.85.214.193])
- by alsa0.perex.cz (Postfix) with ESMTP id B19C526759E
- for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2018 12:12:47 +0200 (CEST)
-Received: by mail-pl1-f193.google.com with SMTP id f18-v6so14124984plr.1
- for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2018 03:12:47 -0700 (PDT)
-In-Reply-To: <s5hefcpk2xq.wl-tiwai@suse.de>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,56 +16,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org
+To: patch@alsa-project.org
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi all,
+From: Timo Wischer <twischer@de.adit-jv.com>
 
-On Tue, 16 Oct 2018, Takashi Iwai wrote:
-> On Tue, 16 Oct 2018 22:48:52 +0200,
-> Mark Brown wrote:
->>
->> As previously announced there's an audio miniconference happening on the
->> 21st in Edinburgh, meeting around 9am and getting started once enough
->> people have arrived (Cirrus people, please let me know if we need to
->> start later, some people have said they'll be arriving late so we won't
->> wait for everyone):
->>
->>    https://blog.sirena.org.uk/2018/09/19/2018-linux-audio-miniconfernce
->>
->> (yes there is a typo in the URL).  A number of people have proposed
->> topics so I just went through them and pulled them into a proposed
->> agenda, this time revised following feedback last time:
->>
->>   - Virtualization (Liam)
->>   - AVB (Liam)
->>   - SoundWire (Liam)
->>   - GObject introspection for language bindings (Sakamoto-san)
->>   - Integrating the ALSA control core (Sakamoto-san)
->>   - DSPs (Liam)
->>    - Sound Open Firmware (Liam)
->>    - Byte controls (Vinod/Patrick)
->>    - Calibration loading (Patrick)
->>    - Exposing graph at runtime (Patrick)
->>    - Batching commands (Patrick)
->>   - AGL (Stephane/Ronan)
+Without this change an interval of (x x+1] will be interpreted as an
+empty interval but the right value would be x+1.
+This leads to a failing snd_pcm_hw_params() call which returns -EINVAL.
 
-Below items are detail of topics from me:
-  * Integrating the ALSA control core
-   * Obsolete 'dimen' member in container for information to an element
-   * Remove limitation on a container for value array to an element
-   * User-defined element set left by finished process
-   * Expand restriction to the number of user-defined control element set
-     per sound card
-  * Another approach to produce language bindings by GObject Introspection.
+An example issue log is given in the following:
+snd_pcm_hw_params failed with err -22 (Invalid argument)
+ACCESS: MMAP_NONINTERLEAVED
+FORMAT: S16_LE
+SUBFORMAT: STD
+SAMPLE_BITS: 16
+FRAME_BITS: 16
+CHANNELS: 1
+RATE: 16000
+PERIOD_TIME: (15999 16000]
+PERIOD_SIZE: (255 256]
+PERIOD_BYTES: (510 512]
+PERIODS: [2 3)
+BUFFER_TIME: 32000
+BUFFER_SIZE: 512
+BUFFER_BYTES: 1024
 
-You can see the resource here (WIP):
-https://github.com/takaswie/presentations/blob/topic/20181021/20181021/contents.md
+In case of (x x+1) we have to interpret it anyway as a single value of x to
+compensate rounding issues.
+For example the period size will result in an interval of (352 353) when
+the period time is 16ms and the sample rate 22050 Hz
+(16ms * 22,05 kHz = 352,8 frames). But 352 has to be chosen to allow a
+buffer size of 705 (32ms * 22,05 kHz = 705,6 frames) which has to be >= 2x
+period size to avoid Xruns. The buffer size will not end up with an
+interval of (705 706) similar to the period size because
+snd_pcm_rate_hw_refine_cchange() calls snd_interval_floor() for the buffer
+size. Therefore this value will be interpreted as an integer interval
+instead of a real interval further on.
 
-Several hours later I leave to Edinburgh. See you later.
+This issue seems to exist since the change of 9bb985c38 ("pcm:
+snd_interval_refine_first/last: exclude value only if also excluded
+before")
 
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 
-Thanks
-
-Takashi Sakamoto
+diff --git a/src/pcm/interval_inline.h b/src/pcm/interval_inline.h
+index a68e292..5e59d72 100644
+--- a/src/pcm/interval_inline.h
++++ b/src/pcm/interval_inline.h
+@@ -51,12 +51,14 @@ INTERVAL_INLINE int snd_interval_single(const snd_interval_t *i)
+ {
+ 	assert(!snd_interval_empty(i));
+ 	return (i->min == i->max || 
+-		(i->min + 1 == i->max && i->openmax));
++		(i->min + 1 == i->max && (i->openmin || i->openmax)));
+ }
+ 
+ INTERVAL_INLINE int snd_interval_value(const snd_interval_t *i)
+ {
+ 	assert(snd_interval_single(i));
++	if (!i->openmax)
++		return i->max;
+ 	return i->min;
+ }
+ 
+-- 
+2.7.4
