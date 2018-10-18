@@ -1,19 +1,16 @@
-From: Keyon Jie <yang.jie@linux.intel.com>
-Subject: Re: Audio miniconference schedule
-Date: Thu, 18 Oct 2018 13:53:08 +0800
-Message-ID: <9ae134ef-5dbe-5d13-6035-5835296f206a@linux.intel.com>
-References: <20181002195849.GA23818@sirena.org.uk>
- <20181016204852.GK2340@sirena.org.uk> <s5hefcpk2xq.wl-tiwai@suse.de>
- <20181017191225.GK24097@sirena.org.uk>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [PATCH] ASoC: Intel: kbl_da7219_max98927: minor white
+	space clean up
+Date: Thu, 18 Oct 2018 10:34:30 +0300
+Message-ID: <20181018073430.c45sl5k62o3ebp2g@kili.mountain>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga09.intel.com (mga09.intel.com [134.134.136.24])
- by alsa0.perex.cz (Postfix) with ESMTP id 6E80E2675A4
- for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2018 07:53:13 +0200 (CEST)
-In-Reply-To: <20181017191225.GK24097@sirena.org.uk>
-Content-Language: en-US
+Received: from aserp2120.oracle.com (aserp2120.oracle.com [141.146.126.78])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6E879267546
+ for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2018 09:34:51 +0200 (CEST)
+Content-Disposition: inline
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,46 +20,32 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.de>
-Cc: alsa-devel@alsa-project.org, arnd@arndb.de
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Mac Chiang <mac.chiang@intel.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harsha Priya <harshapriya.n@intel.com>, kernel-janitors@vger.kernel.org, Jie Yang <yang.jie@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Vinod Koul <vkoul@kernel.org>, Mark Brown <broonie@kernel.org>, Naveen Manohar <naveen.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-CgpPbiAyMDE45bm0MTDmnIgxOOaXpSAwMzoxMiwgTWFyayBCcm93biB3cm90ZToKPiBPbiBUdWUs
-IE9jdCAxNiwgMjAxOCBhdCAxMToxNjoxN1BNICswMjAwLCBUYWthc2hpIEl3YWkgd3JvdGU6Cj4+
-IE1hcmsgQnJvd24gd3JvdGU6Cj4gCj4+PiBJJ3ZlIGRyb3BwZWQgWTIwMzggZnJvbSB0aGUgZXhw
-bGlpdCBzY2hlZHVsZSwgc2luY2UgQXJuZCBCZXJnbWFubiAod2hvJ3MKPj4+IGJlZW4gZHJpdmlu
-ZyBhIGxvdCBvZiB0aGUgZ2VuZXJhbCBZMjAzOCB3b3JrKSB3aWxsIGJlIGluIEVkaW5idXJnaCBh
-bmQKPj4+IG1heSBiZSBmcmVlIHRvIGpvaW4gSSdtIHN1Z2dlc3RpbmcgdGhhdCBpZiBoZSdzIGZy
-ZWUgd2UgY292ZXIgdGhhdAo+Pj4gZWl0aGVyIGZpcnN0IHRoaW5nIG9yIGp1c3QgYWZ0ZXIgbHVu
-Y2ggYW5kIG90aGVyd2lzZSBUYWthc2hpIGFuZCBJIHdpbGwKPj4+IHRyeSB0byBjb29yZGluYXRl
-IHdpdGggaGltIGR1cmluZyBFTEMtRSAodW5sZXNzIG90aGVycyBoYXZlIGEgZ3JlYXQKPj4+IGVu
-dGh1c2lhc20gZm9yIHRoZSBzdWJqZWN0KS4KPiAKPj4gSSBoYXZlbid0IHJlZ2lzdGVyZWQgRUxD
-RSB0aGlzIHllYXIgYnV0IG9ubHkgdGhlIGF1ZGlvIG1pbmktY29uZiBhbmQKPj4gbWFpbnRhaW5l
-cnMgc3VtbWl0LCBidXQgbWF5YmUgd2UgY2FuIGNhdGNoIGhpbSBvbiBNb25kYXkuCj4gCj4gQWxs
-IHRocmVlIG9mIHVzIHdpbGwgYmUgYXQgdGhlIG1haW50YWluZXJzIHN1bW1pdCBzbyBJIHRoaW5r
-IHdlJ2xsIGJlCj4gYWJsZSB0byBnZXQgc29tZSB0aW1lIHRvIHRhbGsgaWYgd2UgZG9uJ3QgbWFu
-YWdlIFN1bmRheS4gIFRoZXJlIHdlcmUKPiBzb21lIFRCRCBzbG90cyBhdCB0aGUgbWFpbnRhaW5l
-cnMgc3VtbWl0LCB3ZSBjb3VsZCBzZWUgaWYgd2UgY2FuIGdldAo+IEFMU0EgWTIwMzggQUJJIG9u
-IHRoZSBsaXN0IHRoZXJlIDopCj4gCj4+IFNvcnJ5IGZvciB0aGUgbGF0ZSBhY3Rpb24sIGhlcmUg
-YXJlIHNvbWUgaXRlbXMgdGhhdCBjYW1lIHRvIG15IG1pbmQ6Cj4gCj4gQWxsIGdvb2QgdG9waWNz
-LCBJJ2xsIGFkZCB0aGVtIGluIC0gQ2hhcmxlcyBoYWQgc29tZSBpZGVhcyBmb3IgdGhlIEFTb0MK
-PiByZWZhY3RvcmluZyBhbHJlYWR5IHdoaWNoIEkgbWFuYWdlZCB0byBkcm9wIG9mZiB0aGUgbGlz
-dCAoc29ycnkgQ2hhcmxlcykKPiB3aGljaCBpcyBtb3N0bHkgdGhlIHNhbWUgdGhpbmcgYXQgdGhp
-cyBwb2ludC4KPiAKPj4gLSBUZXN0aW5nOgo+PiAgICBNeSBwZXQgcGVldmUuICBJJ2QgbG92ZSB0
-byBzZWUgc29tZSBzdHVmZiwgZXNwZWNpYWxseSBmb3IgQVNvQywgdGhhdAo+PiAgICBjYW4gcnVu
-IG9uIFZNLCBhbmQgbGV0IGZ1enplcnMgd2hpcHBpbmcgb24gaXQuCj4+ICAgIEFsc28sIFVTQiBh
-dWRpbyBjYW4gYmUgdmlydHVhbGl6ZWQuICBXaGF0IGVsc2U/ICAobm90IG9ubHkgYWJvdXQgVk0K
-Pj4gICAgdGVzdGluZyBidXQgYWxzbyBhIHJlYWwgaGFyZHdhcmUgdGVzdGluZy4pCj4gCj4gVGhl
-cmUncyBhIHdob2xlIHRlc3Rpbmcgc3VtbWl0IG9uIFRodXJzZGF5Li4uICA6LyAgSSBkb24ndCB0
-aGluayB0aGVyZSdzCj4gbXVjaCBhcmd1bWVudCB3aXRoIHRoZSBBU29DIHN0dWZmLCBidXQgSSBh
-bHNvIGRvbid0IHRoaW5rIHRoZXJlJ3MgYW55b25lCj4gd2l0aCB0aGUgcmlnaHQgY29tYmluYXRp
-b24gb2YgdGltZSBhbmQgZW50aHVzaWFzbSB0byBkbyB0aGUgd29yayBhdCB0aGUKPiBtaW51dGUu
-Cj4gCgpIaSBNYXJrIGFuZCBhbGwsCgpJcyBpdCBwb3NzaWJsZSB0byBzZXQgdXAgbmV0d29yayBt
-ZWV0aW5nIHRoYXQgYW55IGhvYmJpZXMgY2FuIGRpYWwgaW4gCmFuZCBqb2luIGluIHJlbW90ZWx5
-PwoKVGhhbmtzLAp+S2V5b24KCj4gCj4gCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX18KPiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+IEFsc2EtZGV2ZWxA
-YWxzYS1wcm9qZWN0Lm9yZwo+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
-bi9saXN0aW5mby9hbHNhLWRldmVsCj4gCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+I just added a couple missing tabs.
+
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index 3ab96ee7bd3c..3fa1c3ca6d37 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -180,14 +180,14 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
+ 			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8, 16);
+ 			if (ret < 0) {
+ 				dev_err(runtime->dev, "DEV0 TDM slot err:%d\n", ret);
+-			return ret;
++				return ret;
+ 			}
+ 		}
+ 		if (!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
+ 			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8, 16);
+ 			if (ret < 0) {
+ 				dev_err(runtime->dev, "DEV1 TDM slot err:%d\n", ret);
+-			return ret;
++				return ret;
+ 			}
+ 		}
+ 	}
