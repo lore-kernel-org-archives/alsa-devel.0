@@ -1,99 +1,44 @@
-From: <twischer@de.adit-jv.com>
-Subject: [PATCH - Intervals v2 1/1] interval: Interpret (x x+1]
-	correctly and return x+1
-Date: Thu, 18 Oct 2018 13:33:24 +0200
-Message-ID: <1539862404-21955-1-git-send-email-twischer@de.adit-jv.com>
+From: Benjamin Gaignard <benjamin.gaignard@linaro.org>
+Subject: Re: [PATCH 6/8] drm: sti: don't pass GFP_DMA32 to dma_alloc_wc
+Date: Thu, 18 Oct 2018 13:59:27 +0200
+Message-ID: <CA+M3ks5WW9WviTNr3VLHc-ijYLu-fp8XMtAbr3p9cFe3J+n39Q@mail.gmail.com>
+References: <20181013151707.32210-1-hch@lst.de>
+ <20181013151707.32210-7-hch@lst.de>
+ <CA+M3ks66FL-F8dk+UcG-gR8Gz4N6gz7eYuT_Ht_scw7foPaP0A@mail.gmail.com>
+ <CA+M3ks6a-D4j425JGBof+ma3NX5Fo52k5fadRNRauexOBXuaaw@mail.gmail.com>
+ <20181017071958.GC23407@lst.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: patch@alsa-project.org
-Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <dri-devel-bounces@lists.freedesktop.org>
+In-Reply-To: <20181017071958.GC23407@lst.de>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/dri-devel>
+List-Post: <mailto:dri-devel@lists.freedesktop.org>
+List-Help: <mailto:dri-devel-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/dri-devel>,
+ <mailto:dri-devel-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: dri-devel-bounces@lists.freedesktop.org
+Sender: "dri-devel" <dri-devel-bounces@lists.freedesktop.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Linux Fbdev development list <linux-fbdev@vger.kernel.org>, linux-pm@vger.kernel.org, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, alsa-devel@alsa-project.org, ML dri-devel <dri-devel@lists.freedesktop.org>, linux-spi@vger.kernel.org, linux-tegra@vger.kernel.org, linux-media@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Timo Wischer <twischer@de.adit-jv.com>
-
-Without this change an interval of (x x+1] will be interpreted as an
-empty interval but the right value would be x+1.
-This leads to a failing snd_pcm_hw_params() call which returns -EINVAL.
-
-An example issue log is given in the following:
-snd_pcm_hw_params failed with err -22 (Invalid argument)
-ACCESS: MMAP_NONINTERLEAVED
-FORMAT: S16_LE
-SUBFORMAT: STD
-SAMPLE_BITS: 16
-FRAME_BITS: 16
-CHANNELS: 1
-RATE: 16000
-PERIOD_TIME: (15999 16000]
-PERIOD_SIZE: (255 256]
-PERIOD_BYTES: (510 512]
-PERIODS: [2 3)
-BUFFER_TIME: 32000
-BUFFER_SIZE: 512
-BUFFER_BYTES: 1024
-
-In case of (x x+1) we have to interpret it anyway as a single value of x to
-compensate rounding issues.
-For example the period size will result in an interval of (352 353) when
-the period time is 16ms and the sample rate 22050 Hz
-(16ms * 22,05 kHz = 352,8 frames). But 352 has to be chosen to allow a
-buffer size of 705 (32ms * 22,05 kHz = 705,6 frames) which has to be >= 2x
-period size to avoid Xruns. The buffer size will not end up with an
-interval of (705 706) simular to the period size because
-snd_pcm_rate_hw_refine_cchange() calls snd_interval_floor() for the buffer
-size. Therefore this value will be interpreted as an integer interval
-instead of a real interval further on.
-
-This issue seems to exist since the change of 9bb985c38 ("pcm:
-snd_interval_refine_first/last: exclude value only if also excluded
-before")
-
-Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
----
-> On 10/18/18 12:57, Takashi Iwai wrote:
-> This change looks risky.  The snd_interval_value() might be called
-> even if the interval isn't reduced to a single value.  Rather check
-> openmin instead.
-
-If I would do
-"if (i->openmin)"
-on an interval of (x x+1) x+1 would be returned. But this would result in
-the second issue which I have tried to describe in the commit message:
-x has to be returned otherwise it is not guaranteed that
-buffer_size >= 2x period_size. And this would result in continuously Xruns.
-Therefore I would like to prefer
-"if (i->openmin && !i->openmax)"
-
-diff --git a/src/pcm/interval_inline.h b/src/pcm/interval_inline.h
-index a68e292..d9a30b2 100644
---- a/src/pcm/interval_inline.h
-+++ b/src/pcm/interval_inline.h
-@@ -51,12 +51,14 @@ INTERVAL_INLINE int snd_interval_single(const snd_interval_t *i)
- {
- 	assert(!snd_interval_empty(i));
- 	return (i->min == i->max || 
--		(i->min + 1 == i->max && i->openmax));
-+		(i->min + 1 == i->max && (i->openmin || i->openmax)));
- }
- 
- INTERVAL_INLINE int snd_interval_value(const snd_interval_t *i)
- {
- 	assert(snd_interval_single(i));
-+	if (i->openmin && !i->openmax)
-+		return i->max;
- 	return i->min;
- }
- 
--- 
-2.7.4
+TGUgbWVyLiAxNyBvY3QuIDIwMTggw6AgMDk6MTksIENocmlzdG9waCBIZWxsd2lnIDxoY2hAbHN0
+LmRlPiBhIMOpY3JpdCA6Cj4KPiBPbiBUdWUsIE9jdCAxNiwgMjAxOCBhdCAwMjo0MToyM1BNICsw
+MjAwLCBCZW5qYW1pbiBHYWlnbmFyZCB3cm90ZToKPiA+IExlIGx1bi4gMTUgb2N0LiAyMDE4IMOg
+IDExOjEyLCBCZW5qYW1pbiBHYWlnbmFyZAo+ID4gPGJlbmphbWluLmdhaWduYXJkQGxpbmFyby5v
+cmc+IGEgw6ljcml0IDoKPiA+ID4KPiA+ID4gTGUgc2FtLiAxMyBvY3QuIDIwMTggw6AgMTc6MTcs
+IENocmlzdG9waCBIZWxsd2lnIDxoY2hAbHN0LmRlPiBhIMOpY3JpdCA6Cj4gPiA+ID4KPiA+ID4g
+PiBUaGUgRE1BIEFQSSBkb2VzIGl0cyBvd24gem9uZSBkZWNpc2lvbnMgYmFzZWQgb24gdGhlIGNv
+aGVyZW50X2RtYV9tYXNrLgo+ID4gPiA+Cj4gPiA+ID4gU2lnbmVkLW9mZi1ieTogQ2hyaXN0b3Bo
+IEhlbGx3aWcgPGhjaEBsc3QuZGU+Cj4gPiA+Cj4gPiA+IFJldmlld2VkLWJ5OiBCZW5qYW1pbiBH
+YWlnbmFyZCA8YmVuamFtaW4uZ2FpZ25hcmRAbGluYXJvLm9yZz4KPiA+Cj4gPiBDaHJpc3RvcGgg
+ZG8geW91IHBsYW4gdG8gbWVyZ2UgdGhpcyBwYXRjaCBvbiB5b3VyIG93biB0cmVlID8gb3Igd291
+bGQKPiA+IGxpa2UgSSBwdXQgaXQgZGlyZWN0bHkgaW4gZHJtLW1pc2MtbmV4dCBicmFuY2ggPwo+
+Cj4gUGxlYXNlIHB1bGwgaXQgaW4gdGhyb3VnaCBkcm0tbWlzYy1uZXh0LCB0aGFua3MhCgpBcHBs
+aWVkIG9uIGRybS1taXNjLW5leHQsClRoYW5rcywKQmVuamFtaW4KX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZHJpLWRldmVsIG1haWxpbmcgbGlzdApkcmkt
+ZGV2ZWxAbGlzdHMuZnJlZWRlc2t0b3Aub3JnCmh0dHBzOi8vbGlzdHMuZnJlZWRlc2t0b3Aub3Jn
+L21haWxtYW4vbGlzdGluZm8vZHJpLWRldmVsCg==
