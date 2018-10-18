@@ -1,17 +1,12 @@
-From: Marcel Ziswiler <marcel@ziswiler.com>
-Subject: [PATCH v1 3/3] ASoC: soc-core: fix platform name vs.
-	of_node assignement
-Date: Thu, 18 Oct 2018 13:18:29 +0200
-Message-ID: <20181018111829.27056-4-marcel@ziswiler.com>
-References: <20181018111829.27056-1-marcel@ziswiler.com>
+From: <twischer@de.adit-jv.com>
+Subject: [PATCH - Intervals v2 1/1] interval: Interpret (x x+1]
+	correctly and return x+1
+Date: Thu, 18 Oct 2018 13:33:24 +0200
+Message-ID: <1539862404-21955-1-git-send-email-twischer@de.adit-jv.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mout.perfora.net (mout.perfora.net [74.208.4.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 8ADB02675B5
- for <alsa-devel@alsa-project.org>; Thu, 18 Oct 2018 13:19:25 +0200 (CEST)
-In-Reply-To: <20181018111829.27056-1-marcel@ziswiler.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,73 +16,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Liam Girdwood <lgirdwood@gmail.com>, Takashi Iwai <tiwai@suse.com>, Mark Brown <broonie@kernel.org>
+To: patch@alsa-project.org
+Cc: Timo Wischer <twischer@de.adit-jv.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+From: Timo Wischer <twischer@de.adit-jv.com>
 
-This fixes the following error as seen post commit daecf46ee0e5
-("ASoC: soc-core: use snd_soc_dai_link_component for platform") on
-Apalis TK1 after initial probe deferral:
+Without this change an interval of (x x+1] will be interpreted as an
+empty interval but the right value would be x+1.
+This leads to a failing snd_pcm_hw_params() call which returns -EINVAL.
 
-tegra-snd-sgtl5000 sound: ASoC: Both platform name/of_node are set for
- sgtl5000
-tegra-snd-sgtl5000 sound: ASoC: failed to init link sgtl5000
-tegra-snd-sgtl5000 sound: snd_soc_register_card failed (-22)
-tegra-snd-sgtl5000: probe of sound failed with error -22
+An example issue log is given in the following:
+snd_pcm_hw_params failed with err -22 (Invalid argument)
+ACCESS: MMAP_NONINTERLEAVED
+FORMAT: S16_LE
+SUBFORMAT: STD
+SAMPLE_BITS: 16
+FRAME_BITS: 16
+CHANNELS: 1
+RATE: 16000
+PERIOD_TIME: (15999 16000]
+PERIOD_SIZE: (255 256]
+PERIOD_BYTES: (510 512]
+PERIODS: [2 3)
+BUFFER_TIME: 32000
+BUFFER_SIZE: 512
+BUFFER_BYTES: 1024
 
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
+In case of (x x+1) we have to interpret it anyway as a single value of x to
+compensate rounding issues.
+For example the period size will result in an interval of (352 353) when
+the period time is 16ms and the sample rate 22050 Hz
+(16ms * 22,05 kHz = 352,8 frames). But 352 has to be chosen to allow a
+buffer size of 705 (32ms * 22,05 kHz = 705,6 frames) which has to be >= 2x
+period size to avoid Xruns. The buffer size will not end up with an
+interval of (705 706) simular to the period size because
+snd_pcm_rate_hw_refine_cchange() calls snd_interval_floor() for the buffer
+size. Therefore this value will be interpreted as an integer interval
+instead of a real interval further on.
 
+This issue seems to exist since the change of 9bb985c38 ("pcm:
+snd_interval_refine_first/last: exclude value only if also excluded
+before")
+
+Signed-off-by: Timo Wischer <twischer@de.adit-jv.com>
 ---
+> On 10/18/18 12:57, Takashi Iwai wrote:
+> This change looks risky.  The snd_interval_value() might be called
+> even if the interval isn't reduced to a single value.  Rather check
+> openmin instead.
 
-Changes in v1:
-- Split from the Tegra series as suggested by Mark.
-- Fix issue in soc-core rather than working around it in tegra_sgtl5000.
+If I would do
+"if (i->openmin)"
+on an interval of (x x+1) x+1 would be returned. But this would result in
+the second issue which I have tried to describe in the commit message:
+x has to be returned otherwise it is not guaranteed that
+buffer_size >= 2x period_size. And this would result in continuously Xruns.
+Therefore I would like to prefer
+"if (i->openmin && !i->openmax)"
 
- sound/soc/soc-core.c | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
-
-diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-index 6ddcf12bc030..b97624005976 100644
---- a/sound/soc/soc-core.c
-+++ b/sound/soc/soc-core.c
-@@ -2733,7 +2733,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
- int snd_soc_register_card(struct snd_soc_card *card)
+diff --git a/src/pcm/interval_inline.h b/src/pcm/interval_inline.h
+index a68e292..d9a30b2 100644
+--- a/src/pcm/interval_inline.h
++++ b/src/pcm/interval_inline.h
+@@ -51,12 +51,14 @@ INTERVAL_INLINE int snd_interval_single(const snd_interval_t *i)
  {
- 	int i, ret;
--	struct snd_soc_dai_link *link;
-+	struct snd_soc_dai_link *link = NULL;
- 
- 	if (!card->name || !card->dev)
- 		return -EINVAL;
-@@ -2744,7 +2744,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 		if (ret) {
- 			dev_err(card->dev, "ASoC: failed to init link %s\n",
- 				link->name);
--			return ret;
-+			goto err;
- 		}
- 	}
- 
-@@ -2763,7 +2763,17 @@ int snd_soc_register_card(struct snd_soc_card *card)
- 	mutex_init(&card->mutex);
- 	mutex_init(&card->dapm_mutex);
- 
--	return snd_soc_bind_card(card);
-+	ret = snd_soc_bind_card(card);
-+	if (ret)
-+		goto err;
-+
-+	return 0;
-+
-+err:
-+	if (link && link->platform)
-+		link->platform = NULL;
-+
-+	return ret;
+ 	assert(!snd_interval_empty(i));
+ 	return (i->min == i->max || 
+-		(i->min + 1 == i->max && i->openmax));
++		(i->min + 1 == i->max && (i->openmin || i->openmax)));
  }
- EXPORT_SYMBOL_GPL(snd_soc_register_card);
+ 
+ INTERVAL_INLINE int snd_interval_value(const snd_interval_t *i)
+ {
+ 	assert(snd_interval_single(i));
++	if (i->openmin && !i->openmax)
++		return i->max;
+ 	return i->min;
+ }
  
 -- 
-2.14.4
+2.7.4
