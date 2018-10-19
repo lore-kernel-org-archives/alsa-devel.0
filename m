@@ -1,16 +1,16 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: tegra_sgtl5000: fix device_node
-	refcounting" to the asoc tree
-Date: Fri, 19 Oct 2018 13:29:21 +0100 (BST)
-Message-ID: <20181019122921.AF7571122548@debutante.sirena.org.uk>
+Subject: Applied "ASoC: wm_adsp: Log addresses as 8 digits in
+	wm_adsp_buffer_populate" to the asoc tree
+Date: Fri, 19 Oct 2018 13:33:40 +0100 (BST)
+Message-ID: <20181019123340.369C51122548@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id A8E66267950
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:29:22 +0200 (CEST)
+ by alsa0.perex.cz (Postfix) with ESMTP id B4589267950
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:33:41 +0200 (CEST)
 In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, Jon Hunter <jonathanh@nvidia.com>
+To: Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: tegra_sgtl5000: fix device_node refcounting
+   ASoC: wm_adsp: Log addresses as 8 digits in wm_adsp_buffer_populate
 
 has been applied to the asoc tree at
 
@@ -52,71 +52,33 @@ to this mail.
 Thanks,
 Mark
 
->From a85227da2dcc291b762c8482a505bc7d0d2d4b07 Mon Sep 17 00:00:00 2001
-From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Date: Tue, 16 Oct 2018 12:47:29 +0200
-Subject: [PATCH] ASoC: tegra_sgtl5000: fix device_node refcounting
+>From e3a360b8cdede74d25807fc405e5d8bfb025692f Mon Sep 17 00:00:00 2001
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Date: Fri, 19 Oct 2018 13:25:16 +0100
+Subject: [PATCH] ASoC: wm_adsp: Log addresses as 8 digits in
+ wm_adsp_buffer_populate
 
-Similar to the following:
+Increase the address value width in the debug log from 4 digits to
+8 digits to allow for DSP cores with larger memory address ranges.
 
-commit 4321723648b0 ("ASoC: tegra_alc5632: fix device_node refcounting")
-
-commit 7c5dfd549617 ("ASoC: tegra: fix device_node refcounting")
-
-Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/tegra/tegra_sgtl5000.c | 17 +++++++++++++++--
- 1 file changed, 15 insertions(+), 2 deletions(-)
+ sound/soc/codecs/wm_adsp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/sound/soc/tegra/tegra_sgtl5000.c b/sound/soc/tegra/tegra_sgtl5000.c
-index 45a4aa9d2a47..901457da25ec 100644
---- a/sound/soc/tegra/tegra_sgtl5000.c
-+++ b/sound/soc/tegra/tegra_sgtl5000.c
-@@ -149,14 +149,14 @@ static int tegra_sgtl5000_driver_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev,
- 			"Property 'nvidia,i2s-controller' missing/invalid\n");
- 		ret = -EINVAL;
--		goto err;
-+		goto err_put_codec_of_node;
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index 7ae10c632614..a53dc174bbf0 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -3345,7 +3345,7 @@ static int wm_adsp_buffer_populate(struct wm_adsp_compr_buf *buf)
+ 		region->cumulative_size = offset;
+ 
+ 		adsp_dbg(buf->dsp,
+-			 "region=%d type=%d base=%04x off=%04x size=%04x\n",
++			 "region=%d type=%d base=%08x off=%08x size=%08x\n",
+ 			 i, region->mem_type, region->base_addr,
+ 			 region->offset, region->cumulative_size);
  	}
- 
- 	tegra_sgtl5000_dai.platform_of_node = tegra_sgtl5000_dai.cpu_of_node;
- 
- 	ret = tegra_asoc_utils_init(&machine->util_data, &pdev->dev);
- 	if (ret)
--		goto err;
-+		goto err_put_cpu_of_node;
- 
- 	ret = snd_soc_register_card(card);
- 	if (ret) {
-@@ -169,6 +169,13 @@ static int tegra_sgtl5000_driver_probe(struct platform_device *pdev)
- 
- err_fini_utils:
- 	tegra_asoc_utils_fini(&machine->util_data);
-+err_put_cpu_of_node:
-+	of_node_put(tegra_sgtl5000_dai.cpu_of_node);
-+	tegra_sgtl5000_dai.cpu_of_node = NULL;
-+	tegra_sgtl5000_dai.platform_of_node = NULL;
-+err_put_codec_of_node:
-+	of_node_put(tegra_sgtl5000_dai.codec_of_node);
-+	tegra_sgtl5000_dai.codec_of_node = NULL;
- err:
- 	return ret;
- }
-@@ -183,6 +190,12 @@ static int tegra_sgtl5000_driver_remove(struct platform_device *pdev)
- 
- 	tegra_asoc_utils_fini(&machine->util_data);
- 
-+	of_node_put(tegra_sgtl5000_dai.cpu_of_node);
-+	tegra_sgtl5000_dai.cpu_of_node = NULL;
-+	tegra_sgtl5000_dai.platform_of_node = NULL;
-+	of_node_put(tegra_sgtl5000_dai.codec_of_node);
-+	tegra_sgtl5000_dai.codec_of_node = NULL;
-+
- 	return ret;
- }
- 
 -- 
 2.19.0.rc2
