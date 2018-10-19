@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: pcm3168a: add hw constraint for capture
-	channel" to the asoc tree
-Date: Fri, 19 Oct 2018 13:27:18 +0100 (BST)
-Message-ID: <20181019122718.E94941122548@debutante.sirena.org.uk>
-References: <87o9btz6oi.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: sta32x: Add support for XTI clock" to
+	the asoc tree
+Date: Fri, 19 Oct 2018 13:27:27 +0100 (BST)
+Message-ID: <20181019122727.5E7891122548@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 9987E2679E4
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:27:19 +0200 (CEST)
-In-Reply-To: <87o9btz6oi.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 070C32679B1
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:27:27 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +21,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Daniel Mack <daniel@zonque.org>
 Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: pcm3168a: add hw constraint for capture channel
+   ASoC: sta32x: Add support for XTI clock
 
 has been applied to the asoc tree at
 
@@ -53,54 +52,115 @@ to this mail.
 Thanks,
 Mark
 
->From 4e9e07c5675706983ed649cfb92521a4d8aa1d6d Mon Sep 17 00:00:00 2001
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 17 Oct 2018 01:54:33 +0000
-Subject: [PATCH] ASoC: pcm3168a: add hw constraint for capture channel
+>From fce9ec954a8af7e04cbf5b9daa8bec9c1df5cfe6 Mon Sep 17 00:00:00 2001
+From: Daniel Mack <daniel@zonque.org>
+Date: Wed, 17 Oct 2018 13:37:03 +0200
+Subject: [PATCH] ASoC: sta32x: Add support for XTI clock
 
-LEFT_J / I2S only can use TDM.
-commit 594680ea4a394 ("ASoC: pcm3168a: add hw constraint for channel")
-commit 3809688980205 ("ASoC: pcm3168a: add HW constraint for non
-RIGHT_J") added channel constraint for it, but, it was only for playback.
-This patch adds constraint for capture.
+The STA32x chips feature an XTI clock input that needs to be stable before
+the reset signal is released. Therefore, the chip driver needs to get a
+handle to the clock. Instead of relying on other parts of the system to
+enable the clock, let the codec driver grab a handle itself.
 
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+In order to keep existing boards working, clock support is made optional.
+
+Signed-off-by: Daniel Mack <daniel@zonque.org>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/pcm3168a.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ .../devicetree/bindings/sound/st,sta32x.txt   |  6 ++++
+ sound/soc/codecs/sta32x.c                     | 28 +++++++++++++++++++
+ 2 files changed, 34 insertions(+)
 
-diff --git a/sound/soc/codecs/pcm3168a.c b/sound/soc/codecs/pcm3168a.c
-index 63aa02592bc0..52cc950c9fd1 100644
---- a/sound/soc/codecs/pcm3168a.c
-+++ b/sound/soc/codecs/pcm3168a.c
-@@ -529,11 +529,17 @@ static int pcm3168a_startup(struct snd_pcm_substream *substream,
- 		break;
- 	case PCM3168A_FMT_LEFT_J:
- 		sample_min  = 24;
--		channel_max =  8;
-+		if (tx)
-+			channel_max = 8;
-+		else
-+			channel_max = 6;
- 		break;
- 	case PCM3168A_FMT_I2S:
- 		sample_min  = 24;
--		channel_max =  8;
-+		if (tx)
-+			channel_max = 8;
-+		else
-+			channel_max = 6;
- 		break;
- 	default:
- 		sample_min  = 24;
-@@ -559,6 +565,7 @@ static const struct snd_soc_dai_ops pcm3168a_dac_dai_ops = {
- };
+diff --git a/Documentation/devicetree/bindings/sound/st,sta32x.txt b/Documentation/devicetree/bindings/sound/st,sta32x.txt
+index ff4a685a4303..52265fb757c5 100644
+--- a/Documentation/devicetree/bindings/sound/st,sta32x.txt
++++ b/Documentation/devicetree/bindings/sound/st,sta32x.txt
+@@ -19,6 +19,10 @@ Required properties:
  
- static const struct snd_soc_dai_ops pcm3168a_adc_dai_ops = {
-+	.startup	= pcm3168a_startup,
- 	.set_fmt	= pcm3168a_set_dai_fmt_adc,
- 	.set_sysclk	= pcm3168a_set_dai_sysclk,
- 	.hw_params	= pcm3168a_hw_params
+ Optional properties:
+ 
++  - clocks, clock-names: Clock specifier for XTI input clock.
++	If specified, the clock will be enabled when the codec is probed,
++	and disabled when it is removed. The 'clock-names' must be set to 'xti'.
++
+   -  st,output-conf: number, Selects the output configuration:
+ 	0: 2-channel (full-bridge) power, 2-channel data-out
+ 	1: 2 (half-bridge). 1 (full-bridge) on-board power
+@@ -79,6 +83,8 @@ Example:
+ codec: sta32x@38 {
+ 	compatible = "st,sta32x";
+ 	reg = <0x1c>;
++	clocks = <&clock>;
++	clock-names = "xti";
+ 	reset-gpios = <&gpio1 19 0>;
+ 	power-down-gpios = <&gpio1 16 0>;
+ 	st,output-conf = /bits/ 8  <0x3>;	// set output to 2-channel
+diff --git a/sound/soc/codecs/sta32x.c b/sound/soc/codecs/sta32x.c
+index 22de1593443c..f753d2db0a5a 100644
+--- a/sound/soc/codecs/sta32x.c
++++ b/sound/soc/codecs/sta32x.c
+@@ -21,6 +21,7 @@
+ #include <linux/module.h>
+ #include <linux/moduleparam.h>
+ #include <linux/init.h>
++#include <linux/clk.h>
+ #include <linux/delay.h>
+ #include <linux/pm.h>
+ #include <linux/i2c.h>
+@@ -142,6 +143,7 @@ static const char *sta32x_supply_names[] = {
+ /* codec private data */
+ struct sta32x_priv {
+ 	struct regmap *regmap;
++	struct clk *xti_clk;
+ 	struct regulator_bulk_data supplies[ARRAY_SIZE(sta32x_supply_names)];
+ 	struct snd_soc_component *component;
+ 	struct sta32x_platform_data *pdata;
+@@ -879,6 +881,18 @@ static int sta32x_probe(struct snd_soc_component *component)
+ 	struct sta32x_priv *sta32x = snd_soc_component_get_drvdata(component);
+ 	struct sta32x_platform_data *pdata = sta32x->pdata;
+ 	int i, ret = 0, thermal = 0;
++
++	sta32x->component = component;
++
++	if (sta32x->xti_clk) {
++		ret = clk_prepare_enable(sta32x->xti_clk);
++		if (ret != 0) {
++			dev_err(component->dev,
++				"Failed to enable clock: %d\n", ret);
++			return ret;
++		}
++	}
++
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(sta32x->supplies),
+ 				    sta32x->supplies);
+ 	if (ret != 0) {
+@@ -981,6 +995,9 @@ static void sta32x_remove(struct snd_soc_component *component)
+ 
+ 	sta32x_watchdog_stop(sta32x);
+ 	regulator_bulk_disable(ARRAY_SIZE(sta32x->supplies), sta32x->supplies);
++
++	if (sta32x->xti_clk)
++		clk_disable_unprepare(sta32x->xti_clk);
+ }
+ 
+ static const struct snd_soc_component_driver sta32x_component = {
+@@ -1097,6 +1114,17 @@ static int sta32x_i2c_probe(struct i2c_client *i2c,
+ 	}
+ #endif
+ 
++	/* Clock */
++	sta32x->xti_clk = devm_clk_get(dev, "xti");
++	if (IS_ERR(sta32x->xti_clk)) {
++		ret = PTR_ERR(sta32x->xti_clk);
++
++		if (ret == -EPROBE_DEFER)
++			return ret;
++
++		sta32x->xti_clk = NULL;
++	}
++
+ 	/* GPIOs */
+ 	sta32x->gpiod_nreset = devm_gpiod_get_optional(dev, "reset",
+ 						       GPIOD_OUT_LOW);
 -- 
 2.19.0.rc2
