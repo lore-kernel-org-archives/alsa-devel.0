@@ -1,18 +1,17 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: rsnd: tidyup SSICR::SWSP for TDM" to
-	the asoc tree
-Date: Fri, 19 Oct 2018 13:27:05 +0100 (BST)
-Message-ID: <20181019122705.1660C1122548@debutante.sirena.org.uk>
-References: <87k1mhz6m6.wl-kuninori.morimoto.gx@renesas.com>
+Subject: Applied "ASoC: rsnd: enable TDM settings for SSI
+	parent" to the asoc tree
+Date: Fri, 19 Oct 2018 13:27:12 +0100 (BST)
+Message-ID: <20181019122712.F08821122548@debutante.sirena.org.uk>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 753F92679A1
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:27:05 +0200 (CEST)
-In-Reply-To: <87k1mhz6m6.wl-kuninori.morimoto.gx@renesas.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 669472679E0
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:27:13 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -28,7 +27,7 @@ List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: rsnd: tidyup SSICR::SWSP for TDM
+   ASoC: rsnd: enable TDM settings for SSI parent
 
 has been applied to the asoc tree at
 
@@ -53,36 +52,62 @@ to this mail.
 Thanks,
 Mark
 
->From 2eaa6e233091f51d8a629e423ad0bc080ffcb5d6 Mon Sep 17 00:00:00 2001
+>From 6817d7593f3e3c8a9c11e7a07cb5646c70371f0a Mon Sep 17 00:00:00 2001
 From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Date: Wed, 17 Oct 2018 01:55:57 +0000
-Subject: [PATCH] ASoC: rsnd: tidyup SSICR::SWSP for TDM
+Date: Wed, 17 Oct 2018 01:55:37 +0000
+Subject: [PATCH] ASoC: rsnd: enable TDM settings for SSI parent
 
-R-Car datasheet is indicating that WS output settings of SSICR::SWSP
-is inverted on TDM mode from non TDM mode settings.
-But, it is meaning that TDM should use 0 here.
-Without this patch, sound input/output 1ch will be 2ch, 2ch will be 3ch
-..., be jumbled on I2S + TDM settings. This patch fixup it.
-This patch is tested on R-Car H3 ulcb-kf board, SSI3/4 TDM sound.
+Some SSIs are sharing each pins (= WS/CLK pin for playback/capture).
+Then, SSI parent needs control WS/CLK setting for SSI slave.
+In such case, SSI parent needs TDM settings if SSI slave is working as
+TDM mode. But it is not cared in current driver.
+It can't capture TDM sound without this patch if SSIs were pin sharing.
+This patch is tested on R-Car H3 ulcb-kf board, SSI3/4 with TDM sound.
 
 Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ sound/soc/sh/rcar/ssi.c | 21 +++++++++++----------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
 diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index b42a0e0feab7..fcb4df23248c 100644
+index 3adcc4f778f7..b42a0e0feab7 100644
 --- a/sound/soc/sh/rcar/ssi.c
 +++ b/sound/soc/sh/rcar/ssi.c
-@@ -392,7 +392,7 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+@@ -399,6 +399,17 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 	if (rdai->sys_delay)
+ 		cr_own |= DEL;
  
- 	if (rdai->bit_clk_inv)
- 		cr_own |= SCKP;
--	if (rdai->frm_clk_inv ^ is_tdm)
-+	if (rdai->frm_clk_inv && !is_tdm)
- 		cr_own |= SWSP;
- 	if (rdai->data_alignment)
- 		cr_own |= SDTA;
++	/*
++	 * TDM Mode
++	 * see
++	 *	rsnd_ssiu_init_gen2()
++	 */
++	wsr = ssi->wsr;
++	if (is_tdm) {
++		wsr	|= WS_MODE;
++		cr_own	|= CHNL_8;
++	}
++
+ 	/*
+ 	 * We shouldn't exchange SWSP after running.
+ 	 * This means, parent needs to care it.
+@@ -429,16 +440,6 @@ static void rsnd_ssi_config_init(struct rsnd_mod *mod,
+ 		cr_mode = DIEN;		/* PIO : enable Data interrupt */
+ 	}
+ 
+-	/*
+-	 * TDM Extend Mode
+-	 * see
+-	 *	rsnd_ssiu_init_gen2()
+-	 */
+-	wsr = ssi->wsr;
+-	if (is_tdm) {
+-		wsr	|= WS_MODE;
+-		cr_own	|= CHNL_8;
+-	}
+ init_end:
+ 	ssi->cr_own	= cr_own;
+ 	ssi->cr_mode	= cr_mode;
 -- 
 2.19.0.rc2
