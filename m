@@ -1,17 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: wm_adsp: Rename memory fields in
-	wm_adsp_buffer" to the asoc tree
-Date: Fri, 19 Oct 2018 13:33:45 +0100 (BST)
-Message-ID: <20181019123345.55FCE1122548@debutante.sirena.org.uk>
+Subject: Applied "ASoC: cs42l51: add mclk support" to the asoc
+	tree
+Date: Fri, 19 Oct 2018 13:33:50 +0100 (BST)
+Message-ID: <20181019123350.D34AD1122548@debutante.sirena.org.uk>
+References: <1539612216-12602-5-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 1802A267950
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:33:47 +0200 (CEST)
-In-Reply-To: 
+ by alsa0.perex.cz (Postfix) with ESMTP id 62EDC267A61
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:33:52 +0200 (CEST)
+In-Reply-To: <1539612216-12602-5-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,13 +22,12 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Richard Fitzgerald <rf@opensource.cirrus.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+Cc: mark.rutland@arm.com, robh@kernel.org, alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: wm_adsp: Rename memory fields in wm_adsp_buffer
+   ASoC: cs42l51: add mclk support
 
 has been applied to the asoc tree at
 
@@ -52,78 +52,45 @@ to this mail.
 Thanks,
 Mark
 
->From 2a2aefa41ce48ace8e1e963cb10c3f5ff43aa994 Mon Sep 17 00:00:00 2001
-From: Richard Fitzgerald <rf@opensource.cirrus.com>
-Date: Fri, 19 Oct 2018 13:25:15 +0100
-Subject: [PATCH] ASoC: wm_adsp: Rename memory fields in wm_adsp_buffer
+>From 5e8d63a726f8f2fef089515e9a501785cc67dcdc Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 15 Oct 2018 16:03:36 +0200
+Subject: [PATCH] ASoC: cs42l51: add mclk support
 
-The wm_adsp_buffer struct is the control header of a circular
-buffer used to transfer data from the firmware over the
-control interface to an ALSA compressed stream.
+Add MCLK dapm to allow configuration of cirrus CS42l51
+codec as a master clock consumer.
 
-The original names of the fields pointing to the data buffer
-were based on ADSP2V2 memory layout where they correspond to
-{XM, XM, YM}. But this circular buffer could be used on other
-types of DSP core that have different memory region types.
-Also the names and description of the size fields were not
-very clear. The field names and descriptions have been changed
-to be generic and not imply any particular memory types.
-
-This patch updates the wm_adsp driver to the new field names.
-
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/codecs/wm_adsp.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ sound/soc/codecs/cs42l51.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
-index f61656070225..7ae10c632614 100644
---- a/sound/soc/codecs/wm_adsp.c
-+++ b/sound/soc/codecs/wm_adsp.c
-@@ -311,12 +311,12 @@ struct wm_adsp_alg_xm_struct {
+diff --git a/sound/soc/codecs/cs42l51.c b/sound/soc/codecs/cs42l51.c
+index 5080d7a3c279..eb40bff54cec 100644
+--- a/sound/soc/codecs/cs42l51.c
++++ b/sound/soc/codecs/cs42l51.c
+@@ -237,6 +237,10 @@ static const struct snd_soc_dapm_widget cs42l51_dapm_widgets[] = {
+ 		&cs42l51_adcr_mux_controls),
  };
  
- struct wm_adsp_buffer {
--	__be32 X_buf_base;		/* XM base addr of first X area */
--	__be32 X_buf_size;		/* Size of 1st X area in words */
--	__be32 X_buf_base2;		/* XM base addr of 2nd X area */
--	__be32 X_buf_brk;		/* Total X size in words */
--	__be32 Y_buf_base;		/* YM base addr of Y area */
--	__be32 wrap;			/* Total size X and Y in words */
-+	__be32 buf1_base;		/* Base addr of first buffer area */
-+	__be32 buf1_size;		/* Size of buf1 area in DSP words */
-+	__be32 buf2_base;		/* Base addr of 2nd buffer area */
-+	__be32 buf1_buf2_size;		/* Size of buf1+buf2 in DSP words */
-+	__be32 buf3_base;		/* Base addr of buf3 area */
-+	__be32 buf_total_size;		/* Size of buf1+buf2+buf3 in DSP words */
- 	__be32 high_water_mark;		/* Point at which IRQ is asserted */
- 	__be32 irq_count;		/* bits 1-31 count IRQ assertions */
- 	__be32 irq_ack;			/* acked IRQ count, bit 0 enables IRQ */
-@@ -393,18 +393,18 @@ struct wm_adsp_buffer_region_def {
- static const struct wm_adsp_buffer_region_def default_regions[] = {
- 	{
- 		.mem_type = WMFW_ADSP2_XM,
--		.base_offset = HOST_BUFFER_FIELD(X_buf_base),
--		.size_offset = HOST_BUFFER_FIELD(X_buf_size),
-+		.base_offset = HOST_BUFFER_FIELD(buf1_base),
-+		.size_offset = HOST_BUFFER_FIELD(buf1_size),
- 	},
- 	{
- 		.mem_type = WMFW_ADSP2_XM,
--		.base_offset = HOST_BUFFER_FIELD(X_buf_base2),
--		.size_offset = HOST_BUFFER_FIELD(X_buf_brk),
-+		.base_offset = HOST_BUFFER_FIELD(buf2_base),
-+		.size_offset = HOST_BUFFER_FIELD(buf1_buf2_size),
- 	},
- 	{
- 		.mem_type = WMFW_ADSP2_YM,
--		.base_offset = HOST_BUFFER_FIELD(Y_buf_base),
--		.size_offset = HOST_BUFFER_FIELD(wrap),
-+		.base_offset = HOST_BUFFER_FIELD(buf3_base),
-+		.size_offset = HOST_BUFFER_FIELD(buf_total_size),
- 	},
- };
++static const struct snd_soc_dapm_widget cs42l51_dapm_mclk_widgets[] = {
++	SND_SOC_DAPM_CLOCK_SUPPLY("MCLK")
++};
++
+ static const struct snd_soc_dapm_route cs42l51_routes[] = {
+ 	{"HPL", NULL, "Left DAC"},
+ 	{"HPR", NULL, "Right DAC"},
+@@ -487,6 +491,10 @@ static struct snd_soc_dai_driver cs42l51_dai = {
+ static int cs42l51_component_probe(struct snd_soc_component *component)
+ {
+ 	int ret, reg;
++	struct snd_soc_dapm_context *dapm;
++
++	dapm = snd_soc_component_get_dapm(component);
++	snd_soc_dapm_new_controls(dapm, cs42l51_dapm_mclk_widgets, 1);
  
+ 	/*
+ 	 * DAC configuration
 -- 
 2.19.0.rc2
