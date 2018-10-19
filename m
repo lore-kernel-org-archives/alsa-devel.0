@@ -1,22 +1,22 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: Re: [PATCH v2 1/9] ASoC: sun4i-i2s: Add compatibility
-	with A64 codec I2S
-Date: Fri, 19 Oct 2018 09:14:03 -0700
-Message-ID: <2698773.RERkv2aHyz@anarsoul-thinkpad>
-References: <20181013165329.13363-1-anarsoul@gmail.com>
- <20181013165329.13363-2-anarsoul@gmail.com>
- <20181015081836.onjczcsg5qwp6rbt@flea>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Audio miniconference schedule
+Date: Fri, 19 Oct 2018 18:14:24 +0200
+Message-ID: <0fe6bb73-9820-465d-49a2-46dcd2d7cec2@perex.cz>
+References: <20181002195849.GA23818@sirena.org.uk>
+ <20181016204852.GK2340@sirena.org.uk> <s5hefcpk2xq.wl-tiwai@suse.de>
+ <20181017191225.GK24097@sirena.org.uk>
+ <9ae134ef-5dbe-5d13-6035-5835296f206a@linux.intel.com>
+ <20181018174414.GF25340@sirena.org.uk>
+ <20181019143543.GN1653@imbe.wolfsonmicro.main>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f195.google.com (mail-pf1-f195.google.com
- [209.85.210.195])
- by alsa0.perex.cz (Postfix) with ESMTP id 9AB7426751A
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 18:14:06 +0200 (CEST)
-Received: by mail-pf1-f195.google.com with SMTP id f29-v6so16697609pff.5
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 09:14:06 -0700 (PDT)
-In-Reply-To: <20181015081836.onjczcsg5qwp6rbt@flea>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id B546426751A
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 18:14:31 +0200 (CEST)
+In-Reply-To: <20181019143543.GN1653@imbe.wolfsonmicro.main>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -26,30 +26,38 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Maxime Ripard <maxime.ripard@bootlin.com>
-Cc: Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org, alsa-devel@alsa-project.org, Mylene JOSSERAND <mylene.josserand@free-electrons.com>, Takashi Iwai <tiwai@suse.com>, Rob Herring <robh+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, Marcus Cooper <codekipper@gmail.com>, Mark Brown <broonie@kernel.org>, linux-arm-kernel@lists.infradead.org, Jerome Brunet <jbrunet@baylibre.com>
+To: Charles Keepax <ckeepax@opensource.cirrus.com>, Mark Brown <broonie@kernel.org>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Keyon Jie <yang.jie@linux.intel.com>, arnd@arndb.de
 List-Id: alsa-devel@alsa-project.org
 
-On Monday, October 15, 2018 1:18:36 AM PDT Maxime Ripard wrote:
-> On Sat, Oct 13, 2018 at 09:53:21AM -0700, Vasily Khoruzhick wrote:
-> > From: Marcus Cooper <codekipper@gmail.com>
-> > 
-> > The I2S block used for the audio codec in the A64 differs from other 3
-> > I2S modules in A64 and isn't compatible with H3. But it is very similar
-> > to what is found in A10(sun4i). However, its TX FIFO is
-> > located at a different address.
-> > 
-> > Signed-off-by: Marcus Cooper <codekipper@gmail.com>
-> > Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
+Dne 19.10.2018 v 16:35 Charles Keepax napsal(a):
+> On Thu, Oct 18, 2018 at 06:44:14PM +0100, Mark Brown wrote:
+>> On Thu, Oct 18, 2018 at 01:53:08PM +0800, Keyon Jie wrote:
+>>
+>>> Is it possible to set up network meeting that any hobbies can dial in and
+>>> join in remotely?
+>>
+>> I would assume so, I'm pretty sure it's standard technology in Cirrus,
+>> though we'll have to see how well it works in practice (these things are
+>> always a bit "fun").  We hadn't planned anything yet though.
+>>
+>> I'd guess that probably the safest thing would be if one of the Intel
+>> people has a laptop with whatever conferencing software you usually use
+>> internally they can bring that in and call you, or at least message with
+>> you about getting stuff set up if we set some other solution up.
 > 
-> Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
+> Yeah it will probably have to be Lync if we are setting it up
+> with Cirrus stuff, but should be do-able.
 
-Mark, can you pick this patch up please?
+Hi all,
 
-Thanks!
+I would recommend to use a browser like services like
+http://bluejeans.com/ or https://www.gotomeeting.com/ . Both seem to be
+really usable and there is no requirement to install a special client
+application to join.
 
-Regards,
-Vasily
+Thanks,
+	Jaroslav (who is not able to participate physically this year)
 
-> 
-> Maxime
+-- 
+Jaroslav Kysela <perex@perex.cz>
