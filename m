@@ -1,15 +1,16 @@
-From: Thierry Bultel <thierry.bultel@iot.bzh>
-Subject: AGL / Questions about the upcoming features of Alsa
-Date: Fri, 19 Oct 2018 14:08:57 +0200
-Message-ID: <1d03de2c-9064-e29d-7c1b-da255436bf22@iot.bzh>
+From: Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH 1/2] ASoC: wm_adsp: Rename memory fields in
+	wm_adsp_buffer
+Date: Fri, 19 Oct 2018 13:25:15 +0100
+Message-ID: <20181019122516.26720-1-rf@opensource.cirrus.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.iot.bzh (mail.iot.bzh [51.254.0.103])
- by alsa0.perex.cz (Postfix) with ESMTP id 5C91D267939
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:08:59 +0200 (CEST)
-Content-Language: en-US
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com
+ [67.231.149.25])
+ by alsa0.perex.cz (Postfix) with ESMTP id D44F0267945
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:25:20 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,67 +20,76 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: "Fulup [ IoT.bzh ]" <fulup@iot.bzh>, Stephane Desneux <sdx@iot.bzh>
+To: broonie@kernel.org
+Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, Richard Fitzgerald <rf@opensource.cirrus.com>, linux-kernel@vger.kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-Hi,
+The wm_adsp_buffer struct is the control header of a circular
+buffer used to transfer data from the firmware over the
+control interface to an ALSA compressed stream.
 
-My name is Thierry Bultel from Iot.bzh,
-and I am part of the responsible team for the audio framework (aka, 4A) 
-in Automotive Grade Linux.
+The original names of the fields pointing to the data buffer
+were based on ADSP2V2 memory layout where they correspond to
+{XM, XM, YM}. But this circular buffer could be used on other
+types of DSP core that have different memory region types.
+Also the names and description of the size fields were not
+very clear. The field names and descriptions have been changed
+to be generic and not imply any particular memory types.
 
-For the ones interested in the audio architecture in AGL (and the ones 
-that will read my list of questions below),
-these are useful links to follow:
+This patch updates the wm_adsp driver to the new field names.
 
-New AVIRT driver in replacement of SND_ALOOP:
-https://iot.bzh/download/public/2018/amm-dresden/ALSA_Virtual_Dynamic_Sound_Card.pdf
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/soc/codecs/wm_adsp.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
-4A framework kickstart:
-https://iot.bzh/download/public/2018/amm-dresden/4a-kickstart-Loic-IoTbzh-Dresden-2018.pdf
-
-In AGL, we have used the Alsa framework intensively. I wish I could meet 
-the Alsa team next week in Edimburg
-but unfortunately I will not be available at that date.
-
-Other colleagues of mine will be there, however.
-
-Here are some points that I would like to be addressed at this meeting:
-
-- ioplug PCMs:
-There are known issues about potential (effective !) deadlocks when 
-using ioplug PCMs.
-We have worked around this by setting LIBASOUND_THREAD_SAFE=0
-Is there any pending work to avoid doing this and fix the bug ?
-
-- capture dispatching
-According to the experts, what would be the most effective way to 
-implement a capture dispatcher ?
-The need is to have several applications listening to the same 
-microphone. Is JACK the most suitable solution (at this time) ?
-(more precisely, this could behave as a 1to1 switch or 1toN, by 
-duplicating the audio stream).
-A kernel solution based on AVIRT with routing could easily be done, too.
-
-- Documentation:
-Is there any pending rework of the documentation for having it a little 
-bit more detailed ?
-For instance, having a page explaining the roles of period_size and 
-buffer_size, would be great, since it impossible
-to perform sound playback correctly in an application, without 
-understanding those notions.
-
-- Could something like a dynamic setting of the parameters of the rate 
-converter plugin, become a reality one day ?
-
-- What is you overall mind about the AVIRT driver that we (with 
-Fiberdyne) are developing ?
-
-- Is there a release features roadmap for Alsa (kernel & library) ?
-
-- What is your feeling about PipeWire, which could eventually replace 
-PulseAudio (and seems to also invade the JACK land) ?
-
-Thanks !
-Thierry Bultel
+diff --git a/sound/soc/codecs/wm_adsp.c b/sound/soc/codecs/wm_adsp.c
+index f61656070225..7ae10c632614 100644
+--- a/sound/soc/codecs/wm_adsp.c
++++ b/sound/soc/codecs/wm_adsp.c
+@@ -311,12 +311,12 @@ struct wm_adsp_alg_xm_struct {
+ };
+ 
+ struct wm_adsp_buffer {
+-	__be32 X_buf_base;		/* XM base addr of first X area */
+-	__be32 X_buf_size;		/* Size of 1st X area in words */
+-	__be32 X_buf_base2;		/* XM base addr of 2nd X area */
+-	__be32 X_buf_brk;		/* Total X size in words */
+-	__be32 Y_buf_base;		/* YM base addr of Y area */
+-	__be32 wrap;			/* Total size X and Y in words */
++	__be32 buf1_base;		/* Base addr of first buffer area */
++	__be32 buf1_size;		/* Size of buf1 area in DSP words */
++	__be32 buf2_base;		/* Base addr of 2nd buffer area */
++	__be32 buf1_buf2_size;		/* Size of buf1+buf2 in DSP words */
++	__be32 buf3_base;		/* Base addr of buf3 area */
++	__be32 buf_total_size;		/* Size of buf1+buf2+buf3 in DSP words */
+ 	__be32 high_water_mark;		/* Point at which IRQ is asserted */
+ 	__be32 irq_count;		/* bits 1-31 count IRQ assertions */
+ 	__be32 irq_ack;			/* acked IRQ count, bit 0 enables IRQ */
+@@ -393,18 +393,18 @@ struct wm_adsp_buffer_region_def {
+ static const struct wm_adsp_buffer_region_def default_regions[] = {
+ 	{
+ 		.mem_type = WMFW_ADSP2_XM,
+-		.base_offset = HOST_BUFFER_FIELD(X_buf_base),
+-		.size_offset = HOST_BUFFER_FIELD(X_buf_size),
++		.base_offset = HOST_BUFFER_FIELD(buf1_base),
++		.size_offset = HOST_BUFFER_FIELD(buf1_size),
+ 	},
+ 	{
+ 		.mem_type = WMFW_ADSP2_XM,
+-		.base_offset = HOST_BUFFER_FIELD(X_buf_base2),
+-		.size_offset = HOST_BUFFER_FIELD(X_buf_brk),
++		.base_offset = HOST_BUFFER_FIELD(buf2_base),
++		.size_offset = HOST_BUFFER_FIELD(buf1_buf2_size),
+ 	},
+ 	{
+ 		.mem_type = WMFW_ADSP2_YM,
+-		.base_offset = HOST_BUFFER_FIELD(Y_buf_base),
+-		.size_offset = HOST_BUFFER_FIELD(wrap),
++		.base_offset = HOST_BUFFER_FIELD(buf3_base),
++		.size_offset = HOST_BUFFER_FIELD(buf_total_size),
+ 	},
+ };
+ 
+-- 
+2.11.0
