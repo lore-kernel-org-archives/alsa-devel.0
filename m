@@ -1,93 +1,85 @@
-From: Jon Hunter <jonathanh@nvidia.com>
-Subject: Re: [PATCH v1 3/3] ASoC: soc-core: fix platform name vs. of_node
- assignement
-Date: Fri, 19 Oct 2018 11:22:46 +0100
-Message-ID: <e25a7463-9ce0-d7f9-e77b-2bbaab2e0b25@nvidia.com>
-References: <20181018111829.27056-1-marcel@ziswiler.com>
- <20181018111829.27056-4-marcel@ziswiler.com>
+From: Thierry Bultel <thierry.bultel@iot.bzh>
+Subject: AGL / Questions about the upcoming features of Alsa
+Date: Fri, 19 Oct 2018 14:08:57 +0200
+Message-ID: <1d03de2c-9064-e29d-7c1b-da255436bf22@iot.bzh>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20181018111829.27056-4-marcel@ziswiler.com>
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail.iot.bzh (mail.iot.bzh [51.254.0.103])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5C91D267939
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:08:59 +0200 (CEST)
 Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Marcel Ziswiler <marcel@ziswiler.com>, alsa-devel@alsa-project.org, linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Mark Brown <broonie@kernel.org>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Marcel Ziswiler <marcel.ziswiler@toradex.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: "Fulup [ IoT.bzh ]" <fulup@iot.bzh>, Stephane Desneux <sdx@iot.bzh>
 List-Id: alsa-devel@alsa-project.org
 
+Hi,
 
-On 18/10/2018 12:18, Marcel Ziswiler wrote:
-> From: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> 
-> This fixes the following error as seen post commit daecf46ee0e5
-> ("ASoC: soc-core: use snd_soc_dai_link_component for platform") on
-> Apalis TK1 after initial probe deferral:
-> 
-> tegra-snd-sgtl5000 sound: ASoC: Both platform name/of_node are set for
->  sgtl5000
-> tegra-snd-sgtl5000 sound: ASoC: failed to init link sgtl5000
-> tegra-snd-sgtl5000 sound: snd_soc_register_card failed (-22)
-> tegra-snd-sgtl5000: probe of sound failed with error -22
-> 
-> Signed-off-by: Marcel Ziswiler <marcel.ziswiler@toradex.com>
-> 
-> ---
-> 
-> Changes in v1:
-> - Split from the Tegra series as suggested by Mark.
-> - Fix issue in soc-core rather than working around it in tegra_sgtl5000.
-> 
->  sound/soc/soc-core.c | 16 +++++++++++++---
->  1 file changed, 13 insertions(+), 3 deletions(-)
-> 
-> diff --git a/sound/soc/soc-core.c b/sound/soc/soc-core.c
-> index 6ddcf12bc030..b97624005976 100644
-> --- a/sound/soc/soc-core.c
-> +++ b/sound/soc/soc-core.c
-> @@ -2733,7 +2733,7 @@ static int snd_soc_bind_card(struct snd_soc_card *card)
->  int snd_soc_register_card(struct snd_soc_card *card)
->  {
->  	int i, ret;
-> -	struct snd_soc_dai_link *link;
-> +	struct snd_soc_dai_link *link = NULL;
->  
->  	if (!card->name || !card->dev)
->  		return -EINVAL;
-> @@ -2744,7 +2744,7 @@ int snd_soc_register_card(struct snd_soc_card *card)
->  		if (ret) {
->  			dev_err(card->dev, "ASoC: failed to init link %s\n",
->  				link->name);
-> -			return ret;
-> +			goto err;
->  		}
->  	}
->  
-> @@ -2763,7 +2763,17 @@ int snd_soc_register_card(struct snd_soc_card *card)
->  	mutex_init(&card->mutex);
->  	mutex_init(&card->dapm_mutex);
->  
-> -	return snd_soc_bind_card(card);
-> +	ret = snd_soc_bind_card(card);
-> +	if (ret)
-> +		goto err;
-> +
-> +	return 0;
-> +
-> +err:
-> +	if (link && link->platform)
-> +		link->platform = NULL;
+My name is Thierry Bultel from Iot.bzh,
+and I am part of the responsible team for the audio framework (aka, 4A) 
+in Automotive Grade Linux.
 
-Looking at snd_soc_init_platform(), it seems that the platform pointer
-can be allocated by the machine driver and so if it is not allocated by
-the core, then I don't think we should clear it here. Seems we need a
-way to determine if this was allocated by the core.
+For the ones interested in the audio architecture in AGL (and the ones 
+that will read my list of questions below),
+these are useful links to follow:
 
-Furthermore, it seems that it is possible that there is more than one
-link that might be to be cleared.
+New AVIRT driver in replacement of SND_ALOOP:
+https://iot.bzh/download/public/2018/amm-dresden/ALSA_Virtual_Dynamic_Sound_Card.pdf
 
-Cheers
-Jon
+4A framework kickstart:
+https://iot.bzh/download/public/2018/amm-dresden/4a-kickstart-Loic-IoTbzh-Dresden-2018.pdf
 
--- 
-nvpublic
+In AGL, we have used the Alsa framework intensively. I wish I could meet 
+the Alsa team next week in Edimburg
+but unfortunately I will not be available at that date.
+
+Other colleagues of mine will be there, however.
+
+Here are some points that I would like to be addressed at this meeting:
+
+- ioplug PCMs:
+There are known issues about potential (effective !) deadlocks when 
+using ioplug PCMs.
+We have worked around this by setting LIBASOUND_THREAD_SAFE=0
+Is there any pending work to avoid doing this and fix the bug ?
+
+- capture dispatching
+According to the experts, what would be the most effective way to 
+implement a capture dispatcher ?
+The need is to have several applications listening to the same 
+microphone. Is JACK the most suitable solution (at this time) ?
+(more precisely, this could behave as a 1to1 switch or 1toN, by 
+duplicating the audio stream).
+A kernel solution based on AVIRT with routing could easily be done, too.
+
+- Documentation:
+Is there any pending rework of the documentation for having it a little 
+bit more detailed ?
+For instance, having a page explaining the roles of period_size and 
+buffer_size, would be great, since it impossible
+to perform sound playback correctly in an application, without 
+understanding those notions.
+
+- Could something like a dynamic setting of the parameters of the rate 
+converter plugin, become a reality one day ?
+
+- What is you overall mind about the AVIRT driver that we (with 
+Fiberdyne) are developing ?
+
+- Is there a release features roadmap for Alsa (kernel & library) ?
+
+- What is your feeling about PipeWire, which could eventually replace 
+PulseAudio (and seems to also invade the JACK land) ?
+
+Thanks !
+Thierry Bultel
