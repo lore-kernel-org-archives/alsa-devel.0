@@ -1,18 +1,18 @@
 From: Mark Brown <broonie@kernel.org>
-Subject: Applied "ASoC: dapm: Add support for hw_free on CODEC
-	to CODEC links" to the asoc tree
-Date: Fri, 19 Oct 2018 13:26:47 +0100 (BST)
-Message-ID: <20181019122647.36F351122548@debutante.sirena.org.uk>
-References: <20181011162831.26351-2-ckeepax@opensource.cirrus.com>
+Subject: Applied "ASoC: Intel: kbl_da7219_max98927: minor white
+	space clean up" to the asoc tree
+Date: Fri, 19 Oct 2018 13:26:57 +0100 (BST)
+Message-ID: <20181019122657.949791122548@debutante.sirena.org.uk>
+References: <20181018073430.c45sl5k62o3ebp2g@kili.mountain>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
 Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
  [172.104.155.198])
- by alsa0.perex.cz (Postfix) with ESMTP id 4DF9F2679A6
- for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:26:48 +0200 (CEST)
-In-Reply-To: <20181011162831.26351-2-ckeepax@opensource.cirrus.com>
+ by alsa0.perex.cz (Postfix) with ESMTP id 61FB92679B4
+ for <alsa-devel@alsa-project.org>; Fri, 19 Oct 2018 14:27:03 +0200 (CEST)
+In-Reply-To: <20181018073430.c45sl5k62o3ebp2g@kili.mountain>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,13 +22,13 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com
+To: Dan Carpenter <dan.carpenter@oracle.com>
+Cc: Oder Chiou <oder_chiou@realtek.com>, Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Harsha Priya <harshapriya.n@intel.com>, Jie Yang <yang.jie@linux.intel.com>, kernel-janitors@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <liam.r.girdwood@linux.intel.com>, Mac Chiang <mac.chiang@intel.com>, Mark Brown <broonie@kernel.org>, Naveen Manohar <naveen.m@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
 The patch
 
-   ASoC: dapm: Add support for hw_free on CODEC to CODEC links
+   ASoC: Intel: kbl_da7219_max98927: minor white space clean up
 
 has been applied to the asoc tree at
 
@@ -53,61 +53,39 @@ to this mail.
 Thanks,
 Mark
 
->From 3c01b0e129e9486c8004e43eba3a70de7393f645 Mon Sep 17 00:00:00 2001
-From: Charles Keepax <ckeepax@opensource.cirrus.com>
-Date: Thu, 11 Oct 2018 17:28:28 +0100
-Subject: [PATCH] ASoC: dapm: Add support for hw_free on CODEC to CODEC links
+>From 9ab2a1bd81f7eaef4b496168dd93e0f23e8906fe Mon Sep 17 00:00:00 2001
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Date: Thu, 18 Oct 2018 10:34:30 +0300
+Subject: [PATCH] ASoC: Intel: kbl_da7219_max98927: minor white space clean up
 
-Currently, on power down for a CODEC to CODEC DAI link we only call
-digital_mute and shutdown. Provide a little more flexibility for drivers
-by adding a call to hw_free as well.
+I just added a couple missing tabs.
 
-Signed-off-by: Charles Keepax <ckeepax@opensource.cirrus.com>
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- sound/soc/soc-dapm.c | 17 +++++++++++------
- 1 file changed, 11 insertions(+), 6 deletions(-)
+ sound/soc/intel/boards/kbl_da7219_max98927.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/sound/soc/soc-dapm.c b/sound/soc/soc-dapm.c
-index 8c5b065c8880..a5178845065b 100644
---- a/sound/soc/soc-dapm.c
-+++ b/sound/soc/soc-dapm.c
-@@ -3737,25 +3737,30 @@ static int snd_soc_dai_link_event(struct snd_soc_dapm_widget *w,
- 			ret = 0;
+diff --git a/sound/soc/intel/boards/kbl_da7219_max98927.c b/sound/soc/intel/boards/kbl_da7219_max98927.c
+index 3ab96ee7bd3c..3fa1c3ca6d37 100644
+--- a/sound/soc/intel/boards/kbl_da7219_max98927.c
++++ b/sound/soc/intel/boards/kbl_da7219_max98927.c
+@@ -180,14 +180,14 @@ static int kabylake_ssp0_hw_params(struct snd_pcm_substream *substream,
+ 			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x30, 3, 8, 16);
+ 			if (ret < 0) {
+ 				dev_err(runtime->dev, "DEV0 TDM slot err:%d\n", ret);
+-			return ret;
++				return ret;
+ 			}
  		}
- 
-+		substream.stream = SNDRV_PCM_STREAM_CAPTURE;
- 		snd_soc_dapm_widget_for_each_source_path(w, path) {
- 			source = path->source->priv;
- 
-+			if (source->driver->ops->hw_free)
-+				source->driver->ops->hw_free(&substream,
-+							     source);
-+
- 			source->active--;
--			if (source->driver->ops->shutdown) {
--				substream.stream = SNDRV_PCM_STREAM_CAPTURE;
-+			if (source->driver->ops->shutdown)
- 				source->driver->ops->shutdown(&substream,
- 							      source);
--			}
+ 		if (!strcmp(codec_dai->component->name, MAXIM_DEV1_NAME)) {
+ 			ret = snd_soc_dai_set_tdm_slot(codec_dai, 0xC0, 3, 8, 16);
+ 			if (ret < 0) {
+ 				dev_err(runtime->dev, "DEV1 TDM slot err:%d\n", ret);
+-			return ret;
++				return ret;
+ 			}
  		}
- 
-+		substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
- 		snd_soc_dapm_widget_for_each_sink_path(w, path) {
- 			sink = path->sink->priv;
- 
-+			if (sink->driver->ops->hw_free)
-+				sink->driver->ops->hw_free(&substream, sink);
-+
- 			sink->active--;
--			if (sink->driver->ops->shutdown) {
--				substream.stream = SNDRV_PCM_STREAM_PLAYBACK;
-+			if (sink->driver->ops->shutdown)
- 				sink->driver->ops->shutdown(&substream, sink);
--			}
- 		}
- 		break;
- 
+ 	}
 -- 
 2.19.0.rc2
