@@ -1,144 +1,72 @@
-From: Connor McAdams <conmanx360@gmail.com>
-Subject: [PATCH] ALSA: hda/ca0132 - Actually fix microphone
-	issue
-Date: Sun, 21 Oct 2018 13:53:03 -0400
-Message-ID: <1540144385-27454-1-git-send-email-conmanx360@gmail.com>
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+Subject: [PATCH 0/1] slimbus: simplify getting .driver_data
+Date: Sun, 21 Oct 2018 22:00:43 +0200
+Message-ID: <20181021200045.2053-1-wsa+renesas@sang-engineering.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-qk1-f196.google.com (mail-qk1-f196.google.com
- [209.85.222.196])
- by alsa0.perex.cz (Postfix) with ESMTP id 19F242677D1
- for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2018 19:53:32 +0200 (CEST)
-Received: by mail-qk1-f196.google.com with SMTP id y8-v6so23957867qka.11
- for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2018 10:53:32 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-Cc: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, Alastair Bridgewater <alastair.bridgewater@gmail.com>, Takashi Iwai <tiwai@suse.com>, conmanx360@gmail.com
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
+To: linux-kernel@vger.kernel.org
+Cc: linux-renesas-soc@vger.kernel.org, Wolfram Sang <wsa+renesas@sang-engineering.com>, alsa-devel@alsa-project.org
 List-Id: alsa-devel@alsa-project.org
 
-This patch fixes the microphone issue for all cards. The previous fix
-worked on the ZxR, but not on the AE-5 or Z. This patch has been tested
-to work for all cards.
+I got tired of fixing this in Renesas drivers manually, so I took the big
+hammer. Remove this cumbersome code pattern which got copy-pasted too much
+already:
 
-Signed-off-by: Connor McAdams <conmanx360@gmail.com>
----
- sound/pci/hda/patch_ca0132.c | 73 ++++++++++++++++++++++----------------------
- 1 file changed, 37 insertions(+), 36 deletions(-)
+-	struct platform_device *pdev = to_platform_device(dev);
+-	struct ep93xx_keypad *keypad = platform_get_drvdata(pdev);
++	struct ep93xx_keypad *keypad = dev_get_drvdata(dev);
 
-diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
-index 1a13cea..f0ef52e 100644
---- a/sound/pci/hda/patch_ca0132.c
-+++ b/sound/pci/hda/patch_ca0132.c
-@@ -6983,37 +6983,44 @@ static void sbz_chipio_startup_data(struct hda_codec *codec)
- static void ca0132_alt_dsp_scp_startup(struct hda_codec *codec)
- {
- 	struct ca0132_spec *spec = codec->spec;
--	unsigned int tmp;
-+	unsigned int tmp, i;
- 
--	switch (spec->quirk) {
--	case QUIRK_SBZ:
--	case QUIRK_AE5:
--		tmp = 0x00000003;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
--		tmp = 0x00000000;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
--		tmp = 0x00000001;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
--		tmp = 0x00000004;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
--		tmp = 0x00000005;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
--		tmp = 0x00000000;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
--		break;
--	case QUIRK_R3D:
--	case QUIRK_R3DI:
--		tmp = 0x00000000;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
--		tmp = 0x00000001;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
--		tmp = 0x00000004;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
--		tmp = 0x00000005;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
--		tmp = 0x00000000;
--		dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
--		break;
-+	/*
-+	 * Gotta run these twice, or else mic works inconsistently. Not clear
-+	 * why this is, but multiple tests have confirmed it.
-+	 */
-+	for (i = 0; i < 2; i++) {
-+		switch (spec->quirk) {
-+		case QUIRK_SBZ:
-+		case QUIRK_AE5:
-+			tmp = 0x00000003;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+			tmp = 0x00000000;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
-+			tmp = 0x00000001;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
-+			tmp = 0x00000004;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+			tmp = 0x00000005;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+			tmp = 0x00000000;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+			break;
-+		case QUIRK_R3D:
-+		case QUIRK_R3DI:
-+			tmp = 0x00000000;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0A, tmp);
-+			tmp = 0x00000001;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0B, tmp);
-+			tmp = 0x00000004;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+			tmp = 0x00000005;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+			tmp = 0x00000000;
-+			dspio_set_uint_param_no_source(codec, 0x80, 0x0C, tmp);
-+			break;
-+		}
-+		msleep(100);
- 	}
- }
- 
-@@ -7246,8 +7253,6 @@ static void r3d_setup_defaults(struct hda_codec *codec)
- 	int num_fx;
- 	int idx, i;
- 
--	msleep(100);
--
- 	if (spec->dsp_state != DSP_DOWNLOADED)
- 		return;
- 
-@@ -7292,8 +7297,6 @@ static void sbz_setup_defaults(struct hda_codec *codec)
- 	int num_fx;
- 	int idx, i;
- 
--	msleep(100);
--
- 	if (spec->dsp_state != DSP_DOWNLOADED)
- 		return;
- 
-@@ -7351,8 +7354,6 @@ static void ae5_setup_defaults(struct hda_codec *codec)
- 	int num_fx;
- 	int idx, i;
- 
--	msleep(100);
--
- 	if (spec->dsp_state != DSP_DOWNLOADED)
- 		return;
- 
+A branch, tested by buildbot, can be found here:
+
+git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git coccinelle/get_drvdata
+
+I have been asked if it couldn't be done for dev_set_drvdata as well. I checked
+it and did not find one occasion where it could be simplified like this. Not
+much of a surprise because driver_data is usually set in probe() functions
+which access struct platform_device in many other ways.
+
+I am open for other comments, suggestions, too, of course.
+
+Here is the cocci-script I created:
+
+@@
+struct device* d;
+identifier pdev;
+expression *ptr;
+@@
+(
+-	struct platform_device *pdev = to_platform_device(d);
+|
+-	struct platform_device *pdev;
+	...
+-	pdev = to_platform_device(d);
+)
+	<... when != pdev
+-	&pdev->dev
++	d
+	...>
+
+	ptr =
+-	platform_get_drvdata(pdev)
++	dev_get_drvdata(d)
+
+	<... when != pdev
+-	&pdev->dev
++	d
+	...>
+
+Kind regards,
+
+   Wolfram
+
+
+Wolfram Sang (1):
+  slimbus: qcom-ctrl: simplify getting .driver_data
+
+ drivers/slimbus/qcom-ctrl.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
 -- 
-2.7.4
+2.19.0
