@@ -1,18 +1,17 @@
-From: Vasily Khoruzhick <anarsoul@gmail.com>
-Subject: [PATCH RESEND v2] ASoC: sun4i-i2s: move code from
-	startup/shutdown hooks into pm_runtime hooks
-Date: Sun, 21 Oct 2018 08:39:11 -0700
-Message-ID: <20181021153912.29185-1-anarsoul@gmail.com>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: sun4i-i2s: move code from
+	startup/shutdown hooks into pm_runtime hooks" to the asoc tree
+Date: Sun, 21 Oct 2018 17:58:56 +0200 (CEST)
+Message-ID: <20181021155856.B0FA1440078@finisterre.ee.mobilebroadband>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com
- [209.85.210.194])
- by alsa0.perex.cz (Postfix) with ESMTP id 8DBD22677D1
- for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2018 17:40:18 +0200 (CEST)
-Received: by mail-pf1-f194.google.com with SMTP id r9-v6so18662700pff.11
- for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2018 08:40:18 -0700 (PDT)
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 7E3D02677D1
+ for <alsa-devel@alsa-project.org>; Sun, 21 Oct 2018 17:58:58 +0200 (CEST)
+In-Reply-To: 
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,9 +21,42 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Ripard <maxime.ripard@bootlin.com>, Chen-Yu Tsai <wens@csie.org>, Marcus Cooper <codekipper@gmail.com>, Yong Deng <yong.deng@magewell.com>, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
+To: Vasily Khoruzhick <anarsoul@gmail.com>
+Cc: Maxime Ripard <maxime.ripard@bootlin.com>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
+
+The patch
+
+   ASoC: sun4i-i2s: move code from startup/shutdown hooks into pm_runtime hooks
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 7f91e2af1a4a2c34fc2e8fb046c722e1a9c85399 Mon Sep 17 00:00:00 2001
+From: Vasily Khoruzhick <anarsoul@gmail.com>
+Date: Sun, 21 Oct 2018 08:39:11 -0700
+Subject: [PATCH] ASoC: sun4i-i2s: move code from startup/shutdown hooks into
+ pm_runtime hooks
 
 startup() and shutdown() hooks are called for both substreams,
 so stopping either substream when another is running breaks the
@@ -37,16 +69,13 @@ hooks respectively to fix this issue
 
 Signed-off-by: Vasily Khoruzhick <anarsoul@gmail.com>
 Acked-by: Maxime Ripard <maxime.ripard@bootlin.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
-v2: - rename from "ASoC: sun4i-i2s: don't try to start up
-                 or shut down DAI if it's active"
-    - move code from startup/shutdown hooks into pm_runtime
-
  sound/soc/sunxi/sun4i-i2s.c | 61 +++++++++++++++----------------------
  1 file changed, 25 insertions(+), 36 deletions(-)
 
 diff --git a/sound/soc/sunxi/sun4i-i2s.c b/sound/soc/sunxi/sun4i-i2s.c
-index a4aa931ebfae..daa6c08cffbc 100644
+index c63d226e2436..d5ec1a20499d 100644
 --- a/sound/soc/sunxi/sun4i-i2s.c
 +++ b/sound/soc/sunxi/sun4i-i2s.c
 @@ -644,40 +644,6 @@ static int sun4i_i2s_trigger(struct snd_pcm_substream *substream, int cmd,
