@@ -1,19 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [PATCH 0/2] Introduce dmic mode switch delay
- parameter
-Date: Mon, 22 Oct 2018 09:31:10 -0500
-Message-ID: <108f2ff1-c000-31ba-0a36-e696a912c6e6@linux.intel.com>
-References: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
- <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
+From: Olivier Moysan <olivier.moysan@st.com>
+Subject: [PATCH 0/2] ASoC: stm32: sai: fix kbuild errors
+Date: Mon, 22 Oct 2018 17:10:44 +0200
+Message-ID: <1540221046-11812-1-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"; Format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
- by alsa0.perex.cz (Postfix) with ESMTP id C138C2677D0
- for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2018 16:31:13 +0200 (CEST)
-In-Reply-To: <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
-Content-Language: en-US
+Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com
+ [91.207.212.93])
+ by alsa0.perex.cz (Postfix) with ESMTP id 4B5972677E4
+ for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2018 17:10:50 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,70 +19,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jenny TC <jenny.tc@intel.com>, alsa-devel@alsa-project.org
-Cc: Mark Brown <broonie@kernel.org>, Matthias Kaehlcke <mka@chromium.org>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>
+To: lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz, tiwai@suse.com, mcoquelin.stm32@gmail.com, alexandre.torgue@st.com, alsa-devel@alsa-project.org, linux-arm-kernel@lists.infradead.org, linux-stm32@st-md-mailman.stormreply.com, linux-kernel@vger.kernel.org, olivier.moysan@st.com, arnaud.pouliquen@st.com, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-Ck9uIDEwLzIxLzE4IDEwOjQyIFBNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPgo+IE9u
-IDEwLzIvMTggMTI6NTcgQU0sIEplbm55IFRDIHdyb3RlOgo+PiBTb21lIERNSUNzIG5lZWQgY2xv
-Y2sgdG8gYmUgcnVubmluZyBmb3IgYSBzcGVjaWZpZWQgZHVyYXRpb24gYXMgcGVyIHRoZQo+PiBE
-TUlDIHNwZWMgdG8gY29tcGxldGUgdGhlIG1vZGUgdHJhbnNpdGlvbiBsaWtlIHNsZWVwIHRvIG1v
-cm1hbCwgb2ZmIAo+PiB0byBub3JtYWwKPj4gZXRjLgo+Pgo+PiBKZW5ueSBUQyAoMik6Cj4+IMKg
-wqAgQVNvQzogZG1pYzogRW5hYmxlIEFDUEkgZGV2aWNlIGVudHJ5Cj4+IMKgwqAgQVNvQzogZG1p
-YzogSW50cm9kdWNlIG1vZGUgc3dpdGNoIGRlbGF5Cj4+Cj4+IMKgIHNvdW5kL3NvYy9jb2RlY3Mv
-ZG1pYy5jIHwgMzggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPj4gwqAg
-MSBmaWxlIGNoYW5nZWQsIDM4IGluc2VydGlvbnMoKykKPj4KPiBTb3JyeSBmb3IgdGhlIGxhdGUg
-ZmVlZGJhY2suCj4KPiBBbGxvd2luZyBzb21lIHRpbWluZyBhZGp1c3RtZW50cyBmb3IgdGhlIGNs
-b2NrIHRyYW5zaXRpb25zIGlzIGEgZ29vZCAKPiB0aGluZy4gVGhlIHdheSBpdCdzIGRvbmUgaXMg
-cXVlc3Rpb25hYmxlIGFuZCByYWlzZXMgYSBudW1iZXIgb2YgY29uY2VybnMuCj4KPiBGaXJzdCwg
-dGhlcmUgd2FzIGFuIEludGVsIGludGVybmFsIGRpc2N1c3Npb24gYmVmb3JlIG15IGV4dGVuZGVk
-IGJyZWFrIAo+IG9uIHdoeSB0aGlzICdkbWljLWNvZGVjJyBpcyBuZWVkZWQgb24gSW50ZWwgcGxh
-dGZvcm1zLiBUbyB0aGUgYmVzdCBvZiAKPiBteSBrbm93bGVkZ2Ugd2UgZG9uJ3QgY29udHJvbCB0
-aGUgbWljcyB3aXRoIEdQSU9zLCB3aGljaCB3YXMgdGhlIAo+IGluaXRpYWwgcHVycG9zZSBvZiB0
-aGlzIGRyaXZlci4gV2UgaGF2ZSBleHBlcmltZW50YWwgZXZpZGVuY2Ugb24gCj4gQXBvbGxvTGFr
-ZSBhbmQgR2VtaW5pTGFrZSB0aGF0IHVzaW5nIHRoZSBzb2MtZHVtbXkvc29jLWR1bW15LWRhaSAK
-PiBkZWZpbml0aW9ucyBhcmUgZW5vdWdoLCBhbmQgaXQgbWF5IGJlIGEgZ29vZCB0aGluZyB0byBh
-Z3JlZSBvbiB0aGUgCj4gZGlyZWN0aW9uIGhlcmUuIElmIHlvdSB3YW50IGEgcGFyYW1ldGVyLCB5
-b3UgY2FuIHN0aWxsIHVzZSBhIG1hY2hpbmUgCj4gZHJpdmVyIERNSS1iYXNlZCBrZXJuZWwgcXVp
-cmsgYW5kL29yIHBhc3MgYSBrZXJuZWwgcGFyYW1ldGVyLCB0aGUgbmVlZCAKPiB0byBleHRlbmQg
-dGhpcyBkbWljLWNvZGVjIGlzIGZhciBmcm9tIG9idmlvdXMgdG8gbWUuCj4KPiBBc3N1bWluZyB5
-b3Ugc3RpbGwgd2FudCB0byB1c2UgdGhpcyBjb2RlYywgdGhlbiB0aGVyZSBhcmUgc3RpbGwgbWFq
-b3IgCj4gY29uY2VybnMgYWJvdXQgdGhlIEFDUEkgZGlyZWN0aW9ucy4gQXMgTWFyayBub3RlZCBp
-dCwgIkRNSUMiIGRvZXMgbm90IAo+IGZvbGxvdyBhbnkgb2YgdGhlIGd1aWRlbGluZXMgb3IgYWNj
-ZXB0ZWQgZGVmaW5pdGlvbnMgd2l0aCBhbiAKPiB1bmFtYmlndW91cyB2ZW5kb3IgYW5kIHBhcnQg
-SUQuIFdlIGtub3cgd2UgYWxyZWFkeSBoYXZlIGNvbmZsaWN0cyAKPiBiZXR3ZWVuIEludGVsLWRl
-ZmluZWQgQUNQSSBJRHMsIGUuZy4gZm9yIFJUMjk4IG9uIG11bHRpcGxlIHBsYXRmb3JtcywgCj4g
-bGV0J3MgYmUgY2FyZWZ1bCBoZXJlLCBzaGFsbCB3ZT8KPgo+IEFuZCBJIGFtIGNvbWluZyB0byBt
-eSBsYXN0IHBvaW50LiBUaGUgU2t5bGFrZSBkcml2ZXIgYWxyZWFkeSBjb250YWlucyAKPiBjb2Rl
-IHRvIGNyZWF0ZSB0aGUgZG1pYyBkZXZpY2VzIGJ5IGhhbmQgKHNlZSBiZWxvdyB0aGUgZ2l0IGdy
-ZXAgCj4gcmVzdWx0cykuIFNvIEkgd29uZGVyIHdoYXQgaGFwcGVucyBpZiB5b3UgdXNlIGJvdGgg
-QUNQSS1iYXNlZCAKPiBlbnVtZXJhdGlvbiBBTkQgbWFudWFsbHkgY3JlYXRlIHRoZSBkbWljIGRl
-dmljZSAtIEkgdmlldyB0aGVzZSAKPiBzb2x1dGlvbnMgYXMgbXV0dWFsbHkgaW5jb21wYXRpYmxl
-LiBFaXRoZXIgeW91IGhhdmUgbm90IHRlc3RlZCBhZ2FpbnN0IAo+IHRoZSB1cHN0cmVhbSBjb2Rl
-IG9yIHNvbWV0aGluZyBpcyBtaXNzaW5nIGZyb20geW91ciBwYXRjaHNldC4gV2hhdCBhbSAKPiBJ
-IG1pc3Npbmc/CgpJIGZvcmdvdCB0byBhZGQgYW5vdGhlciBvcGVuIG9uIEFDUEkgc3VwcG9ydDog
-d2hhdCB3b3VsZCBiZSB0aGUgc2NvcGUgb2YgCnRoZSAiRE1JQyIgZGV2aWNlPyBXaXRoIEFDUEkg
-d2UgdHlwaWNhbGx5IGhhdmUgYSBwYXJlbnQtY2hpbGQgCnJlbGF0aW9uc2hpcCwgZS5nLiB3ZSBw
-dXQgYXVkaW8gY29kZWMgYmVsb3cgdGhlIHJlbGV2YW50IEkyQy9TUEkgCmNvbnRyb2xsZXIgaW4g
-dGhlIERTRFQgZGVmaW5pdGlvbnMuIEluIHRoZSBhYnNlbmNlIG9mIGEgRE1JQyBidXMsIHlvdSAK
-bmVlZCB0byBiZSBjYXJlZnVsIGhvdyB0aGUgRE1JQyBkZXZpY2UgaXMgYWRkZWQgaW4gdGhlIERT
-RFQgLSBpdCdkIApsaWtlbHkgbmVlZCB0byBiZSBiZWxvdyB0aGUgc2NvcGUgb2YgdGhlIEhEYXVk
-aW8gY29udHJvbGxlci4KCj4KPiAtUGllcnJlCj4KPiBza2wuYzpzdGF0aWMgaW50IHNrbF9kbWlj
-X2RldmljZV9yZWdpc3RlcihzdHJ1Y3Qgc2tsICpza2wpCj4gc2tsLmM6wqAgLyogU0tMIGhhcyBv
-bmUgZG1pYyBwb3J0LCBzbyBhbGxvY2F0ZSBkbWljIGRldmljZSBmb3IgdGhpcyAqLwo+IHNrbC5j
-OsKgIHBkZXYgPSBwbGF0Zm9ybV9kZXZpY2VfYWxsb2MoImRtaWMtY29kZWMiLCAtMSk7Cj4gc2ts
-LmM6wqDCoMKgwqDCoMKgwqDCoMKgIGRldl9lcnIoYnVzLT5kZXYsICJmYWlsZWQgdG8gYWxsb2Nh
-dGUgZG1pYyBkZXZpY2VcbiIpOwo+IHNrbC5jOsKgwqDCoMKgwqDCoMKgwqDCoCBkZXZfZXJyKGJ1
-cy0+ZGV2LCAiZmFpbGVkIHRvIGFkZCBkbWljIGRldmljZTogJWRcbiIsIAo+IHJldCk7Cj4gc2ts
-LmM6wqAgc2tsLT5kbWljX2RldiA9IHBkZXY7Cj4gc2tsLmM6c3RhdGljIHZvaWQgc2tsX2RtaWNf
-ZGV2aWNlX3VucmVnaXN0ZXIoc3RydWN0IHNrbCAqc2tsKQo+IHNrbC5jOsKgIGlmIChza2wtPmRt
-aWNfZGV2KQo+IHNrbC5jOsKgwqDCoMKgwqDCoMKgwqDCoCBwbGF0Zm9ybV9kZXZpY2VfdW5yZWdp
-c3Rlcihza2wtPmRtaWNfZGV2KTsKPiBza2wuYzrCoCAvKiBjcmVhdGUgZGV2aWNlIGZvciBzb2Mg
-ZG1pYyAqLwo+IHNrbC5jOsKgIGVyciA9IHNrbF9kbWljX2RldmljZV9yZWdpc3Rlcihza2wpOwo+
-IHNrbC5jOsKgIHNrbF9kbWljX2RldmljZV91bnJlZ2lzdGVyKHNrbCk7Cj4KPiBfX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxz
-YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
-QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+These patches fix following compilation errors:
+- >> sound/soc/stm/stm32_sai_sub.c:260:16: error: field 'hw' has incomplete type
+- >> sound/soc/stm/stm32_sai_sub.c:412:3: 
+     warning: 'strncat' specified bound 6 equals source length [-Wstringop-overflow=]
+
+Olivier Moysan (2):
+  ASoC: stm32: add clock dependency for sai
+  ASoC: stm32: sai: fix master clock naming
+
+ sound/soc/stm/Kconfig         | 1 +
+ sound/soc/stm/stm32_sai_sub.c | 5 ++---
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+-- 
+2.7.4
