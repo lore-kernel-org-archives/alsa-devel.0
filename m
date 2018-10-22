@@ -1,17 +1,18 @@
 From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: Re: [RFC PATCH 0/4] Initial prototype of DAPM sample
- rate domains
-Date: Mon, 22 Oct 2018 09:27:13 -0500
-Message-ID: <bd222042-50e3-4626-ef7f-5d5692cba650@linux.intel.com>
-References: <20181011162831.26351-1-ckeepax@opensource.cirrus.com>
+Subject: Re: [PATCH 0/2] Introduce dmic mode switch delay
+ parameter
+Date: Mon, 22 Oct 2018 09:31:10 -0500
+Message-ID: <108f2ff1-c000-31ba-0a36-e696a912c6e6@linux.intel.com>
+References: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
+ <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; Format="flowed"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 6012F2677D0
- for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2018 16:27:15 +0200 (CEST)
-In-Reply-To: <20181011162831.26351-1-ckeepax@opensource.cirrus.com>
+Received: from mga03.intel.com (mga03.intel.com [134.134.136.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id C138C2677D0
+ for <alsa-devel@alsa-project.org>; Mon, 22 Oct 2018 16:31:13 +0200 (CEST)
+In-Reply-To: <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -22,79 +23,70 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Charles Keepax <ckeepax@opensource.cirrus.com>, broonie@kernel.org
-Cc: patches@opensource.cirrus.com, alsa-devel@alsa-project.org, lgirdwood@gmail.com
+To: Jenny TC <jenny.tc@intel.com>, alsa-devel@alsa-project.org
+Cc: Mark Brown <broonie@kernel.org>, Matthias Kaehlcke <mka@chromium.org>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-
-On 10/11/18 11:28 AM, Charles Keepax wrote:
-> Here is a first pass at adding dapm sample rate domain
-> support. Things are still pretty rough in quite a few places and
-> I expect some major refactoring before they are ready to merge,
-> but things are far enough along for people to look at the approach
-> I am taking to the problem. And should provide enough for discussion
-> at the mini-conference, although hopefully I will get some more done
-> next week as well.
-Interesting, too bad I couldn't be in Edinburgh this year.
->
-> The basic high level summary is two new concepts are added to
-> ASoC, one being a sample rate domain and the other being a domain
-> group. The domain groups represent widgets that are limited by
-> hardware restrictions to always run at the same sample rate as each
-> other. Sample rate domains represent a slot on a device for a sample
-> rate. Both of these are currently limited to be within the scope of
-> a single component.  The core will track which groups are connected
-> together, then as a group is powered up it will be allocated a domain
-> based on the other groups it is connected to. Domain groups are
-> implemented as a new type of DAPM widget and the domains themselves
-> are a new thing which devices add through their component drivers.
->
-> As we have previously discussed my intention would be that we also
-> add bridges between domains although I haven't started work on that
-> yet. The current code is limited to within a single component and
-> I think that the bridges will allow better support for propagating
-> rates between components as well as obviously for SRCs. Currently
-> the SRCs on wm5110 are just being handled as points where the
-> domain groups don't connect to another peer.  This allows them to
-> function but doesn't accurately convey things like the limitations
-> which input rates support which output rates on the ISRC.
-
-My feedback would be: why limit the domains to sample rate definition? 
-we can also have additional criteria such as number of channels, channel 
-maps and bit depth - maybe also audio/non-audio for compressed stuff. 
-It'd be interesting to start with a non-scalar descriptor from day1. To 
-some extent we'd also want something similar to .info definitions, with 
-domains defined with masks to allow for flexibility in the conversions 
-and easier bridge implementations. e.g. it'd be interesting to have a 
-domain definition supporting more than one sampling frequency (8, 16, 
-48kHz) with the bridge doing the relevant conversion to adapt to the 
-connected domain (fixed 48kHz DAI for example)
-
-Thanks for starting the discussion!
-
--Pierre
-
->
-> Thanks,
-> Charles
->
-> Charles Keepax (4):
->    ASoC: dapm: Add support for hw_free on CODEC to CODEC links
->    ASoC: dapm: Add support for a rate domain widget
->    ASoC: domain: Add sample rate domain support
->    ASoC: arizona: Add rate domain support
->
->   include/sound/soc-dapm.h   |  14 ++
->   include/sound/soc-domain.h |  98 +++++++++++
->   include/sound/soc.h        |   8 +
->   sound/soc/Makefile         |   2 +-
->   sound/soc/codecs/arizona.c | 255 ++++++++++++++++++++++------
->   sound/soc/codecs/arizona.h |  76 ++++++++-
->   sound/soc/codecs/wm5110.c  | 414 ++++++++++++++++++++++++++++++++++-----------
->   sound/soc/soc-core.c       |   8 +
->   sound/soc/soc-dapm.c       |  57 ++++++-
->   sound/soc/soc-domain.c     | 412 ++++++++++++++++++++++++++++++++++++++++++++
->   10 files changed, 1183 insertions(+), 161 deletions(-)
->   create mode 100644 include/sound/soc-domain.h
->   create mode 100644 sound/soc/soc-domain.c
->
+Ck9uIDEwLzIxLzE4IDEwOjQyIFBNLCBQaWVycmUtTG91aXMgQm9zc2FydCB3cm90ZToKPgo+IE9u
+IDEwLzIvMTggMTI6NTcgQU0sIEplbm55IFRDIHdyb3RlOgo+PiBTb21lIERNSUNzIG5lZWQgY2xv
+Y2sgdG8gYmUgcnVubmluZyBmb3IgYSBzcGVjaWZpZWQgZHVyYXRpb24gYXMgcGVyIHRoZQo+PiBE
+TUlDIHNwZWMgdG8gY29tcGxldGUgdGhlIG1vZGUgdHJhbnNpdGlvbiBsaWtlIHNsZWVwIHRvIG1v
+cm1hbCwgb2ZmIAo+PiB0byBub3JtYWwKPj4gZXRjLgo+Pgo+PiBKZW5ueSBUQyAoMik6Cj4+IMKg
+wqAgQVNvQzogZG1pYzogRW5hYmxlIEFDUEkgZGV2aWNlIGVudHJ5Cj4+IMKgwqAgQVNvQzogZG1p
+YzogSW50cm9kdWNlIG1vZGUgc3dpdGNoIGRlbGF5Cj4+Cj4+IMKgIHNvdW5kL3NvYy9jb2RlY3Mv
+ZG1pYy5jIHwgMzggKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysKPj4gwqAg
+MSBmaWxlIGNoYW5nZWQsIDM4IGluc2VydGlvbnMoKykKPj4KPiBTb3JyeSBmb3IgdGhlIGxhdGUg
+ZmVlZGJhY2suCj4KPiBBbGxvd2luZyBzb21lIHRpbWluZyBhZGp1c3RtZW50cyBmb3IgdGhlIGNs
+b2NrIHRyYW5zaXRpb25zIGlzIGEgZ29vZCAKPiB0aGluZy4gVGhlIHdheSBpdCdzIGRvbmUgaXMg
+cXVlc3Rpb25hYmxlIGFuZCByYWlzZXMgYSBudW1iZXIgb2YgY29uY2VybnMuCj4KPiBGaXJzdCwg
+dGhlcmUgd2FzIGFuIEludGVsIGludGVybmFsIGRpc2N1c3Npb24gYmVmb3JlIG15IGV4dGVuZGVk
+IGJyZWFrIAo+IG9uIHdoeSB0aGlzICdkbWljLWNvZGVjJyBpcyBuZWVkZWQgb24gSW50ZWwgcGxh
+dGZvcm1zLiBUbyB0aGUgYmVzdCBvZiAKPiBteSBrbm93bGVkZ2Ugd2UgZG9uJ3QgY29udHJvbCB0
+aGUgbWljcyB3aXRoIEdQSU9zLCB3aGljaCB3YXMgdGhlIAo+IGluaXRpYWwgcHVycG9zZSBvZiB0
+aGlzIGRyaXZlci4gV2UgaGF2ZSBleHBlcmltZW50YWwgZXZpZGVuY2Ugb24gCj4gQXBvbGxvTGFr
+ZSBhbmQgR2VtaW5pTGFrZSB0aGF0IHVzaW5nIHRoZSBzb2MtZHVtbXkvc29jLWR1bW15LWRhaSAK
+PiBkZWZpbml0aW9ucyBhcmUgZW5vdWdoLCBhbmQgaXQgbWF5IGJlIGEgZ29vZCB0aGluZyB0byBh
+Z3JlZSBvbiB0aGUgCj4gZGlyZWN0aW9uIGhlcmUuIElmIHlvdSB3YW50IGEgcGFyYW1ldGVyLCB5
+b3UgY2FuIHN0aWxsIHVzZSBhIG1hY2hpbmUgCj4gZHJpdmVyIERNSS1iYXNlZCBrZXJuZWwgcXVp
+cmsgYW5kL29yIHBhc3MgYSBrZXJuZWwgcGFyYW1ldGVyLCB0aGUgbmVlZCAKPiB0byBleHRlbmQg
+dGhpcyBkbWljLWNvZGVjIGlzIGZhciBmcm9tIG9idmlvdXMgdG8gbWUuCj4KPiBBc3N1bWluZyB5
+b3Ugc3RpbGwgd2FudCB0byB1c2UgdGhpcyBjb2RlYywgdGhlbiB0aGVyZSBhcmUgc3RpbGwgbWFq
+b3IgCj4gY29uY2VybnMgYWJvdXQgdGhlIEFDUEkgZGlyZWN0aW9ucy4gQXMgTWFyayBub3RlZCBp
+dCwgIkRNSUMiIGRvZXMgbm90IAo+IGZvbGxvdyBhbnkgb2YgdGhlIGd1aWRlbGluZXMgb3IgYWNj
+ZXB0ZWQgZGVmaW5pdGlvbnMgd2l0aCBhbiAKPiB1bmFtYmlndW91cyB2ZW5kb3IgYW5kIHBhcnQg
+SUQuIFdlIGtub3cgd2UgYWxyZWFkeSBoYXZlIGNvbmZsaWN0cyAKPiBiZXR3ZWVuIEludGVsLWRl
+ZmluZWQgQUNQSSBJRHMsIGUuZy4gZm9yIFJUMjk4IG9uIG11bHRpcGxlIHBsYXRmb3JtcywgCj4g
+bGV0J3MgYmUgY2FyZWZ1bCBoZXJlLCBzaGFsbCB3ZT8KPgo+IEFuZCBJIGFtIGNvbWluZyB0byBt
+eSBsYXN0IHBvaW50LiBUaGUgU2t5bGFrZSBkcml2ZXIgYWxyZWFkeSBjb250YWlucyAKPiBjb2Rl
+IHRvIGNyZWF0ZSB0aGUgZG1pYyBkZXZpY2VzIGJ5IGhhbmQgKHNlZSBiZWxvdyB0aGUgZ2l0IGdy
+ZXAgCj4gcmVzdWx0cykuIFNvIEkgd29uZGVyIHdoYXQgaGFwcGVucyBpZiB5b3UgdXNlIGJvdGgg
+QUNQSS1iYXNlZCAKPiBlbnVtZXJhdGlvbiBBTkQgbWFudWFsbHkgY3JlYXRlIHRoZSBkbWljIGRl
+dmljZSAtIEkgdmlldyB0aGVzZSAKPiBzb2x1dGlvbnMgYXMgbXV0dWFsbHkgaW5jb21wYXRpYmxl
+LiBFaXRoZXIgeW91IGhhdmUgbm90IHRlc3RlZCBhZ2FpbnN0IAo+IHRoZSB1cHN0cmVhbSBjb2Rl
+IG9yIHNvbWV0aGluZyBpcyBtaXNzaW5nIGZyb20geW91ciBwYXRjaHNldC4gV2hhdCBhbSAKPiBJ
+IG1pc3Npbmc/CgpJIGZvcmdvdCB0byBhZGQgYW5vdGhlciBvcGVuIG9uIEFDUEkgc3VwcG9ydDog
+d2hhdCB3b3VsZCBiZSB0aGUgc2NvcGUgb2YgCnRoZSAiRE1JQyIgZGV2aWNlPyBXaXRoIEFDUEkg
+d2UgdHlwaWNhbGx5IGhhdmUgYSBwYXJlbnQtY2hpbGQgCnJlbGF0aW9uc2hpcCwgZS5nLiB3ZSBw
+dXQgYXVkaW8gY29kZWMgYmVsb3cgdGhlIHJlbGV2YW50IEkyQy9TUEkgCmNvbnRyb2xsZXIgaW4g
+dGhlIERTRFQgZGVmaW5pdGlvbnMuIEluIHRoZSBhYnNlbmNlIG9mIGEgRE1JQyBidXMsIHlvdSAK
+bmVlZCB0byBiZSBjYXJlZnVsIGhvdyB0aGUgRE1JQyBkZXZpY2UgaXMgYWRkZWQgaW4gdGhlIERT
+RFQgLSBpdCdkIApsaWtlbHkgbmVlZCB0byBiZSBiZWxvdyB0aGUgc2NvcGUgb2YgdGhlIEhEYXVk
+aW8gY29udHJvbGxlci4KCj4KPiAtUGllcnJlCj4KPiBza2wuYzpzdGF0aWMgaW50IHNrbF9kbWlj
+X2RldmljZV9yZWdpc3RlcihzdHJ1Y3Qgc2tsICpza2wpCj4gc2tsLmM6wqAgLyogU0tMIGhhcyBv
+bmUgZG1pYyBwb3J0LCBzbyBhbGxvY2F0ZSBkbWljIGRldmljZSBmb3IgdGhpcyAqLwo+IHNrbC5j
+OsKgIHBkZXYgPSBwbGF0Zm9ybV9kZXZpY2VfYWxsb2MoImRtaWMtY29kZWMiLCAtMSk7Cj4gc2ts
+LmM6wqDCoMKgwqDCoMKgwqDCoMKgIGRldl9lcnIoYnVzLT5kZXYsICJmYWlsZWQgdG8gYWxsb2Nh
+dGUgZG1pYyBkZXZpY2VcbiIpOwo+IHNrbC5jOsKgwqDCoMKgwqDCoMKgwqDCoCBkZXZfZXJyKGJ1
+cy0+ZGV2LCAiZmFpbGVkIHRvIGFkZCBkbWljIGRldmljZTogJWRcbiIsIAo+IHJldCk7Cj4gc2ts
+LmM6wqAgc2tsLT5kbWljX2RldiA9IHBkZXY7Cj4gc2tsLmM6c3RhdGljIHZvaWQgc2tsX2RtaWNf
+ZGV2aWNlX3VucmVnaXN0ZXIoc3RydWN0IHNrbCAqc2tsKQo+IHNrbC5jOsKgIGlmIChza2wtPmRt
+aWNfZGV2KQo+IHNrbC5jOsKgwqDCoMKgwqDCoMKgwqDCoCBwbGF0Zm9ybV9kZXZpY2VfdW5yZWdp
+c3Rlcihza2wtPmRtaWNfZGV2KTsKPiBza2wuYzrCoCAvKiBjcmVhdGUgZGV2aWNlIGZvciBzb2Mg
+ZG1pYyAqLwo+IHNrbC5jOsKgIGVyciA9IHNrbF9kbWljX2RldmljZV9yZWdpc3Rlcihza2wpOwo+
+IHNrbC5jOsKgIHNrbF9kbWljX2RldmljZV91bnJlZ2lzdGVyKHNrbCk7Cj4KPiBfX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGlu
+ZyBsaXN0Cj4gQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxz
+YS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QK
+QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
+cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
