@@ -1,21 +1,20 @@
-From: "tet" <teteros@teknik.io>
-Subject: Re: [alsa-plugins-1.17] Regression in JACK plugin
-Date: Tue, 23 Oct 2018 17:04:32 +0000
-Message-ID: <4b6e162e84e9dc1b559b60ae13f47e02@teknik.io>
-References: <f69dd23e-65c1-9810-ede6-88c7d9c03560@perex.cz>
- <4372b03f-7669-092a-1646-9d270de35a16@perex.cz>
- <ffc0874e-79c9-2d65-8cd9-a93ca8fa2381@perex.cz>
- <be1e30c7b7f493d0235a135964a9a9d3@teknik.io>
- <400daefc94cf6e5267055a0b6e96f1db@teknik.io>
- <b8d385caef38ff8f27506211fe3c5f1f@teknik.io>
+From: "Tc, Jenny" <jenny.tc@intel.com>
+Subject: Re: [PATCH 0/2] Introduce dmic mode switch delay
+ parameter
+Date: Tue, 23 Oct 2018 17:11:57 +0000
+Message-ID: <20ADAB092842284E95860F279283C564568C0050@BGSMSX104.gar.corp.intel.com>
+References: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
+ <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
+ <108f2ff1-c000-31ba-0a36-e696a912c6e6@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.teknik.io (mail.teknik.io [5.79.72.163])
- by alsa0.perex.cz (Postfix) with ESMTP id 10E98267546
- for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2018 19:04:32 +0200 (CEST)
-In-Reply-To: <f69dd23e-65c1-9810-ede6-88c7d9c03560@perex.cz>
+Received: from mga14.intel.com (mga14.intel.com [192.55.52.115])
+ by alsa0.perex.cz (Postfix) with ESMTP id 47E3B267546
+ for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2018 19:12:00 +0200 (CEST)
+In-Reply-To: <108f2ff1-c000-31ba-0a36-e696a912c6e6@linux.intel.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,123 +24,57 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>, alsa-devel@alsa-project.org
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
+Cc: Mark Brown <broonie@kernel.org>, Matthias Kaehlcke <mka@chromium.org>, Takashi Iwai <tiwai@suse.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-You're right, it was the new 50-jack.conf bundled in new version.
-It just happened my local pcm was also named "jack"
-which indeed conflicts with system 50-jack.conf and had to be updated.
+> Allowing some timing adjustments for the clock transitions is a good 
+> thing. The way it's done is questionable and raises a number of concerns.
+>
+> First, there was an Intel internal discussion before my extended break 
+> on why this 'dmic-codec' is needed on Intel platforms. To the best of 
+> my knowledge we don't control the mics with GPIOs, which was the 
+> initial purpose of this driver. We have experimental evidence on 
+> ApolloLake and GeminiLake that using the soc-dummy/soc-dummy-dai 
+> definitions are enough, and it may be a good thing to agree on the 
+> direction here. If you want a parameter, you can still use a machine 
+> driver DMI-based kernel quirk and/or pass a kernel parameter, the need 
+> to extend this dmic-codec is far from obvious to me.
 
-Renaming local pcm statements to avoid conflicts with system ones solved it.
-Cheers!
+The driver already exposes another parameter (wakeup-delay-ms) using device tree. 
+Enabling ACPI device enumeration provides a way to pass existing parameter
+and also cover the new parameter(modeswitch_delay_ms) introduced in this patch set.
+Isn't it good to adopt ACPI enumeration if the driver has multiple parameters to handle?
+ 
+> Assuming you still want to use this codec, then there are still major 
+> concerns about the ACPI directions. As Mark noted it, "DMIC" does not 
+> follow any of the guidelines or accepted definitions with an 
+> unambiguous vendor and part ID. We know we already have conflicts 
+> between Intel-defined ACPI IDs, e.g. for RT298 on multiple platforms, 
+> let's be careful here, shall we?
 
-Tet.
+Agree, need to find proper ACPI ID for the device.
+ 
+>
+> And I am coming to my last point. The Skylake driver already contains 
+> code to create the dmic devices by hand (see below the git grep 
+> results). So I wonder what happens if you use both ACPI-based 
+> enumeration AND manually create the dmic device - I view these 
+> solutions as mutually incompatible. Either you have not tested against 
+> the upstream code or something is missing from your patchset. What am 
+> I missing?
 
-October 23, 2018 5:43 PM, "Jaroslav Kysela" <perex@perex.cz> wrote:
+Skl driver already registers a DMIC (dmic-codec) device and with ACPI enumeration
+one more device (DMIC:00) gets registered. The snd_soc_dai_link  structure populated
+in the machine driver decides which codec device to be used in the capture path and 
+there by handles the compatibility issue you pointed out. 
+ 
 
-> Dne 23.10.2018 v 18:30 tet napsal(a):
-> 
->> Sadly, still getting Unknown field playback_ports with f47466 reverted on alsa-plugins.git master.
-> 
-> I see it now:
-> 
-> There was added 50-jack.conf file in the newer plugins, so I think that
-> your config just override this global config (but it only overrides the
-> type, the rest is kept). Try to put only these lines to your ~/.asoundrc:
-> 
-> -----
-> pcm.!default {
-> @func getenv
-> vars [ PCM ]
-> default "plug:jack"
-> }
-> -----
-> 
-> Jaroslav
-> 
->> October 23, 2018 5:09 PM, "Jaroslav Kysela" <perex@perex.cz> wrote:
->> 
->>> Dne 23.10.2018 v 17:43 tet napsal(a):
->> 
->> alsa-lib is indeed 1.1.7 and the line number is 1286 in the err, apologies I've had the wrong lib
->> checked out when sending.
->> 
->> I've now ran git bisect and commit 24db7f5 is the earliest buildable alsa-plugins commit with the
->> regression.
->> To recap I have alsa-lib-1.17 and alsa-plugins-git v1.1.6.r4.24db7f5-1
->> 
->> $ aplay test.wav
->> ALSA lib pcm_plug.c:1286:(_snd_pcm_plug_open) Unknown field playback_ports
->> aplay: main:828: audio open error: Invalid argument
->> 
->> Sorry again for the confusion.
->>> Thanks. Could you give a short test with latest when you revert only
->>> f4746667a4a2490f17c2a82b6f421bc3c9bd6de8 ?
->>> 
->>> Jaroslav
->> 
->> October 23, 2018 3:44 PM, "Jaroslav Kysela" <perex@perex.cz> wrote:
->> 
->> Dne 23.10.2018 v 15:19 tet napsal(a):
->> 
->> Hi, after updating to alsa-plugins-1.17 ALSA throws:
->> "ALSA lib pcm_plug.c:1273:(_snd_pcm_plug_open) Unknown field playback_ports
->> The line number does not match to the latest sources:
->> 
->> https://github.com/alsa-project/alsa-lib/blob/master/src/pcm/pcm_plug.c#L1286
->> 
->> What is version of your alsa library?
->> 
->> Jaroslav
->> 
->> My ~/.asourdrc is working in 1.16 and it does not look like the syntax changed for the plugin when
->> looking at the readme.
->> 
->> pcm.jack {
->> type plug slave.pcm {
->> type jack
->> capture_ports {
->> 0 system:capture_1
->> 1 system:capture_1
->> }
->> playback_ports {
->> 0 system:playback_1
->> 1 system:playback_2
->> }
->> }
->> hint.description "JACK Audio Kit"
->> }
->> pcm.!default {
->> @func getenv
->> vars [ PCM ]
->> default jack
->> }
->> 
->> Any ideas?
->> 
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->> --
->> Jaroslav Kysela <perex@perex.cz>
->> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
->> _______________________________________________
->> Alsa-devel mailing list
->> Alsa-devel@alsa-project.org
->> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
->>> --
->>> Jaroslav Kysela <perex@perex.cz>
->>> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
->>> _______________________________________________
->>> Alsa-devel mailing list
->>> Alsa-devel@alsa-project.org
->>> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
-> 
-> --
-> Jaroslav Kysela <perex@perex.cz>
-> Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
-> _______________________________________________
-> Alsa-devel mailing list
-> Alsa-devel@alsa-project.org
-> http://mailman.alsa-project.org/mailman/listinfo/alsa-devel
+>I forgot to add another open on ACPI support: what would be the scope of the "DMIC" device? 
+>With ACPI we typically have a parent-child relationship, e.g. we put audio codec below the relevant
+>I2C/SPI controller in the DSDT definitions. In the absence of a DMIC bus, you need to be careful how
+>the DMIC device is added in the DSDT - it'd likely need to be below the scope of the HDaudio controller.
+
+In DSDT, the device is added under the Intel HDA (1f.3 for SKL/KBL) parent device.
+
+-Jenny
