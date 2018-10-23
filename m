@@ -1,20 +1,18 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: Segfault in pulseaudio since Alsa 1.1.7
-Date: Tue, 23 Oct 2018 09:37:19 +0200
-Message-ID: <f812f826-0c7e-e03f-ee62-deed88e135a0@perex.cz>
-References: <28620521540243830@myt3-4bff4d415901.qloud-c.yandex.net>
- <15488351540277031@sas1-b3ec53dbc12b.qloud-c.yandex.net>
- <6ec657d7-a382-3038-2734-2916dae10a19@perex.cz>
- <24667891540278412@sas1-0a6c2e2b59d7.qloud-c.yandex.net>
+From: Mark Brown <broonie@kernel.org>
+Subject: Applied "ASoC: stm32: sai: fix master clock naming" to
+	the asoc tree
+Date: Tue, 23 Oct 2018 11:53:55 +0200 (CEST)
+Message-ID: <20181023095356.02CB9440078@finisterre.ee.mobilebroadband>
+References: <1540221046-11812-3-git-send-email-olivier.moysan@st.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id CB97F2675B4
- for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2018 09:37:21 +0200 (CEST)
-In-Reply-To: <24667891540278412@sas1-0a6c2e2b59d7.qloud-c.yandex.net>
-Content-Language: en-US
+Received: from heliosphere.sirena.org.uk (heliosphere.sirena.org.uk
+ [172.104.155.198])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0D2862675B4
+ for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2018 11:54:00 +0200 (CEST)
+In-Reply-To: <1540221046-11812-3-git-send-email-olivier.moysan@st.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -24,113 +22,69 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Hyperion <h1p8r10n@yandex.com>, alsa-devel <alsa-devel@alsa-project.org>
+Cc: alsa-devel@alsa-project.org, olivier.moysan@st.com, alexandre.torgue@st.com, linux-kernel@vger.kernel.org, arnaud.pouliquen@st.com, tiwai@suse.com, lgirdwood@gmail.com, broonie@kernel.org, mcoquelin.stm32@gmail.com, linux-stm32@st-md-mailman.stormreply.com, linux-arm-kernel@lists.infradead.org, benjamin.gaignard@st.com
 List-Id: alsa-devel@alsa-project.org
 
-RG5lIDIzLjEwLjIwMTggdiAwOTowNiBIeXBlcmlvbiBuYXBzYWwoYSk6Cj4gU29ycnksIEkgaGF2
-ZSBubyBtb3JlIHRpbWUgdG8gc3BlbmQgZGVidWdnaW5nIDooCj4gwqAKPiBUaHVzIEkgZ3Vlc3Mg
-dGhhdCB0aGUgdHJ1ZSBhbHNhIG1haW50YWluZXJzIHdpbGwgYmUgbXVjaCBtb3JlIGVmZmljaWVu
-dAo+IHRoYW4gbWUgKEknbSBqdXN0IGRvaW5nIHF1aWNrIGFuZCBkaXJ0eSBoYWNraW5nIGhlcmUp
-Lgo+IMKgCj4gTXkgWE1PUyBVU0Igc291bmRjYXJkIG5vdyB3b3JrcyB3aXRoIHRoaXMgd29ya2Fy
-b3VuZCwgcGxlYXNlIGNvdWxkIHlvdQo+IHRha2UgYSBsb29rIGF0IHRyYWNlcyBJIHBvc3RlZCBp
-biB0aGUgZGlzY3Vzc2lvbiBvbiBMUS5vcmcgPwoKSGVyZSBpcyB0aGUgYmV0dGVyIGZpeDoKCmh0
-dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLXBsdWdpbnMuZ2l0O2E9Y29tbWl0ZGlm
-ZjtoPWE0ZTdlMTI4MmM1N2EyZjRlODNhZmU5YTQwMDgwNDJkOGI0YzViYjkKClRoZXJlIHdhcyBy
-ZWFsbHkgYSBkb3VibGUgcGNtIGZyZWUsIGJlY2F1c2U6CgogIHNuZF9wY21faW9wbHVnX2RlbGV0
-ZSAtPgogICAgc25kX3BjbV9jbG9zZSAtPgogICAgICBzbmRfcGNtX2lvcGx1Z19jbG9zZSAtPgog
-ICAgICAgIGE1Ml9jbG9zZSgpIC0+CiAgICAgICAgICBzbmRfcGNtX2Nsb3NlKHJlYy0+c2xhdmUp
-CgoJCQkJCUphcm9zbGF2Cgo+IMKgCj4gQWxsIHRoZSBiZXN0Cj4gSlAKPiDCoAo+IDIzLjEwLjIw
-MTgsIDA4OjUzLCAiSmFyb3NsYXYgS3lzZWxhIiA8cGVyZXhAcGVyZXguY3o+Ogo+Pgo+PiBEbmUg
-MjMuMTAuMjAxOCB2IDA4OjQzIEh5cGVyaW9uIG5hcHNhbChhKToKPj4KPj4gICAgIMKgwqDCoMKg
-SSBoYXZlIG5hcnJvd2VkIHRvIHRoZSBzaW1wbGVyIHBhdGNoIGJlbG93IDoKPj4gICAgIMKgwqDC
-oMKgw4IKPj4gICAgIMKgwqDCoMKgUXVvdGU6Cj4+ICAgICDCoMKgwqDCoGRpZmYgLXJOYXVkIGFs
-c2EtcGx1Z2lucy0xLjEuNy9hNTIvcGNtX2E1Mi5jCj4+ICAgICDCoMKgwqDCoGFsc2EtcGx1Z2lu
-cy0xLjEuNy1uZXcvYTUyL3BjbV9hNTIuYwo+PiAgICAgwqDCoMKgwqAtLS0gYWxzYS1wbHVnaW5z
-LTEuMS43L2E1Mi9wY21fYTUyLmMgMjAxOC0xMC0xNiAxNDowMDoyMi4wMDAwMDAwMDAKPj4gICAg
-IMKgwqDCoMKgKzAyMDAKPj4gICAgIMKgwqDCoMKgKysrIGFsc2EtcGx1Z2lucy0xLjEuNy1uZXcv
-YTUyL3BjbV9hNTIuYyAyMDE4LTEwLTIzCj4+ICAgICAwODozNToxNS42OTk4MzA5MDkKPj4gICAg
-IMKgwqDCoMKgKzAyMDAKPj4gICAgIMKgwqDCoMKgQEAgLTk3OCw3ICs5NzgsOCBAQAo+PiAgICAg
-wqDCoMKgwqBpZiAoKGVyciA9IGE1Ml9zZXRfaHdfY29uc3RyYWludChyZWMpKSA8IDApIHsKPj4g
-ICAgIMKgwqDCoMKgc25kX3BjbV9pb3BsdWdfZGVsZXRlKCZyZWMtPmlvKTsKPj4gICAgIMKgwqDC
-oMKgLSBnb3RvIGVycm9yOwo+PiAgICAgwqDCoMKgwqArIGZyZWUocmVjKTsKPj4gICAgIMKgwqDC
-oMKgKyByZXR1cm4gZXJyOwo+PiAgICAgwqDCoMKgwqB9Cj4+ICAgICDCoMKgwqDCoCpwY21wID0g
-cmVjLT5pby5wY207Cj4+ICAgICDCoMKgwqDCoMOCCj4+Cj4+Cj4+IEl0IGRvZXMgbm90IGFwcGVh
-ciBsaWtlIGEgY29ycmVjdCBjaGFuZ2UsIGJlY2F1c2UgcmVjLT5zbGF2ZSBpcwo+PiBpbml0aWFs
-aXplZCBpbiBwcmV2aW91cyBsaW5lcyAoc25kX3BjbV9vcGVuIGNhbGxzKS4gQ291bGQgeW91IGlu
-c3BlY3QKPj4gcmVjLT5zbGF2ZSBpbiBnZGIgPwo+Pgo+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqBKYXJvc2xhdgo+PiDCoAo+Pgo+PiDCoAo+Pgo+PiAgICAgwqDCoMKg
-wqDDggo+Pgo+PiAgICAgwqDCoMKgwqAyMi4xMC4yMDE4LCAyMzozMCwgIkh5cGVyaW9uIiA8aDFw
-OHIxMG5AeWFuZGV4LmNvbQo+PiAgICAgPG1haWx0bzpoMXA4cjEwbkB5YW5kZXguY29tPj46Cj4+
-Cj4+ICAgICDCoMKgwqDCoMKgwqDDgiDDgiDDgiBIaSwKPj4gICAgIMKgwqDCoMKgwqDCoMOCIMOC
-IMOCIMOD4oCaCj4+ICAgICDCoMKgwqDCoMKgwqDDgiDDgiDDgiBTaW5jZSB0aGUgdXBncmFkZSB0
-byBBbHNhIDEuMS43LCBJIGdldCBhIHNlZ2ZhdWx0IGF0Cj4+ICAgICDCoMKgwqDCoMKgwqBwdWxz
-ZWF1ZGlvCj4+ICAgICDCoMKgwqDCoMKgwqDDgiDDgiDDgiBzdGFydHVwLiBUaGlzIGhhdmUgYmVl
-biBkaXNjdXNzZWQgYW5kIGRvY3VtZW50ZWQgaGVyZSA6Cj4+ICAgICDCoMKgwqDCoMKgwqDDgiDD
-giDDggo+PiAgICAgWzFdWzFdaHR0cHM6Ly93d3cubGludXhxdWVzdGlvbnMub3JnL3F1ZXN0aW9u
-cy9zbGFja3dhcmUtMTQvY3UKPj4gICAgIMKgwqDCoMKgwqDCoHJyZW50LWZyaS1vYwo+PiAgICAg
-wqDCoMKgwqDCoMKgw4Igw4Igw4IgdC0xOS1wdXNlYXVkaW8tc2VnZmF1dHMtNDE3NTY0MDc3My8K
-Pj4gICAgIMKgwqDCoMKgwqDCoMOCIMOCIMOCIMOD4oCaCj4+ICAgICDCoMKgwqDCoMKgwqDDgiDD
-giDDgiBJdCBzZWVtcyB0aGF0IEkgZm91bmQgdGhlIG9yaWdpbiBvZiB0aGUgYnVnIDoKPj4gICAg
-IHJldmVydGluZyB0aGVzZQo+PiAgICAgwqDCoMKgwqDCoMKgMiBjb21taXRzCj4+ICAgICDCoMKg
-wqDCoMKgwqDDgiDDgiDDgiBmaXhlcyB0aGUgcHJvYmxlbSA6Cj4+ICAgICDCoMKgwqDCoMKgwqDD
-giDDgiDDggo+PiAgICAgWzJdWzJdaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9wPWFsc2Et
-Li4uNzkyZGM4MDljOTA4Y2MKPj4gICAgIMKgwqDCoMKgwqDCoMOCIMOCIMOCCj4+ICAgICBbM11b
-M11odHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS0uLi41ZGM2ZTE1OTQyOTFlNwo+
-PiAgICAgwqDCoMKgwqDCoMKgw4Igw4Igw4IgVGhlbiBubyBtb3JlIHNlZ2ZhdWx0IGluIHB1bHNl
-YXVkaW8gd2hlbiBhY2Nlc3NpbmcgdGhlIFVTQgo+PiAgICAgwqDCoMKgwqDCoMKgc291bmRjYXJk
-Lgo+PiAgICAgwqDCoMKgwqDCoMKgw4Igw4Igw4Igw4PigJoKPj4gICAgIMKgwqDCoMKgwqDCoMOC
-IMOCIMOCIFBsZWFzZSBjb3VsZCB5b3UgZml4IGl0ID8KPj4gICAgIMKgwqDCoMKgwqDCoMOCIMOC
-IMOCIMOD4oCaCj4+ICAgICDCoMKgwqDCoMKgwqDDgiDDgiDDgiBSZWdhcmRzCj4+ICAgICDCoMKg
-wqDCoMKgwqDDgiDDgiDDgiBqcAo+PiAgICAgwqDCoMKgwqDCoMKgUmVmZXJlbmNlcwo+PiAgICAg
-wqDCoMKgwqDCoMKgw4Igw4Igw4IgVmlzaWJsZSBsaW5rcwo+PiAgICAgwqDCoMKgwqDCoMKgw4Ig
-w4Igw4IgMS4KPj4gICAgIMKgwqDCoMKgwqDCoFs0XWh0dHBzOi8vd3d3LmxpbnV4cXVlc3Rpb25z
-Lm9yZy9xdWVzdGlvbnMvc2xhY2t3YXJlLTE0L2N1cnJlbnQtZnJpCj4+ICAgICDCoMKgwqDCoMKg
-wqAtb2N0LTE5LXB1c2VhdWRpby1zZWdmYXV0cy00MTc1NjQwNzczLwo+PiAgICAgwqDCoMKgwqDC
-oMKgw4Igw4Igw4IgMi4KPj4gICAgIMKgwqDCoMKgwqDCoFs1XWh0dHA6Ly9naXQuYWxzYS1wcm9q
-ZWN0Lm9yZy8/cD1hbHNhLXBsdWdpbnMuZ2l0O2E9Y29tbWl0ZGlmZjtoPWZjCj4+ICAgICDCoMKg
-wqDCoMKgwqAzZjVkNTEwNjJmZjQzODc4MGU1Njg5OTU3OTJkYzgwOWM5MDhjYwo+PiAgICAgwqDC
-oMKgwqDCoMKgw4Igw4Igw4IgMy4KPj4gICAgIMKgwqDCoMKgwqDCoFs2XWh0dHA6Ly9naXQuYWxz
-YS1wcm9qZWN0Lm9yZy8/cD1hbHNhLXBsdWdpbnMuZ2l0O2E9Y29tbWl0ZGlmZjtoPTZiCj4+ICAg
-ICDCoMKgwqDCoMKgwqA5OTY4NjUxMjZkZDU1OWVmMTg2MDAyZTQ1ZGM2ZTE1OTQyOTFlNwo+PiAg
-ICAgwqDCoMKgwqDCoMKgw4Igw4Igw4IgSGlkZGVuIGxpbmtzOgo+PiAgICAgwqDCoMKgwqDCoMKg
-w4Igw4Igw4IgNC4KPj4gICAgIMKgwqDCoMKgwqDCoFs3XWh0dHBzOi8vd3d3LmxpbnV4cXVlc3Rp
-b25zLm9yZy9xdWVzdGlvbnMvc2xhY2t3YXJlLTE0L2N1cnJlbnQtZnJpCj4+ICAgICDCoMKgwqDC
-oMKgwqAtb2N0LTE5LXB1c2VhdWRpby1zZWdmYXV0cy00MTc1NjQwNzczLwo+PiAgICAgwqDCoMKg
-wqDCoMKgX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KPj4g
-ICAgIMKgwqDCoMKgwqDCoEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+ICAgICDCoMKgwqDCoMKg
-wqBbOF1BbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKPj4gICAgIDxtYWlsdG86QWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnPgo+PiAgICAgwqDCoMKgwqDCoMKgWzldaHR0cDovL21haWxtYW4u
-YWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4KPj4gICAgIMKg
-UmVmZXJlbmNlcwo+Pgo+PiAgICAgwqDCoMKgwqAxLgo+PiAgICAgaHR0cHM6Ly93d3cubGludXhx
-dWVzdGlvbnMub3JnL3F1ZXN0aW9ucy9zbGFja3dhcmUtMTQvY3VycmVudC1mcmktb2MKPj4gICAg
-IMKgwqDCoMKgMi4gaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9wPWFsc2EtLi4uNzkyZGM4
-MDljOTA4Y2MKPj4gICAgIMKgwqDCoMKgMy4gaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9w
-PWFsc2EtLi4uNWRjNmUxNTk0MjkxZTcKPj4gICAgIMKgwqDCoMKgNC4KPj4gICAgIGh0dHBzOi8v
-d3d3LmxpbnV4cXVlc3Rpb25zLm9yZy9xdWVzdGlvbnMvc2xhY2t3YXJlLTE0L2N1cnJlbnQtZnJp
-LW9jdC0xOS1wdXNlYXVkaW8tc2VnZmF1dHMtNDE3NTY0MDc3My8KPj4gICAgIMKgwqDCoMKgNS4K
-Pj4gICAgIGh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLXBsdWdpbnMuZ2l0O2E9
-Y29tbWl0ZGlmZjtoPWZjM2Y1ZDUxMDYyZmY0Mzg3ODBlNTY4OTk1NzkyZGM4MDljOTA4Y2MKPj4g
-ICAgIMKgwqDCoMKgNi4KPj4gICAgIGh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNh
-LXBsdWdpbnMuZ2l0O2E9Y29tbWl0ZGlmZjtoPTZiOTk2ODY1MTI2ZGQ1NTllZjE4NjAwMmU0NWRj
-NmUxNTk0MjkxZTcKPj4gICAgIMKgwqDCoMKgNy4KPj4gICAgIGh0dHBzOi8vd3d3LmxpbnV4cXVl
-c3Rpb25zLm9yZy9xdWVzdGlvbnMvc2xhY2t3YXJlLTE0L2N1cnJlbnQtZnJpLW9jdC0xOS1wdXNl
-YXVkaW8tc2VnZmF1dHMtNDE3NTY0MDc3My8KPj4gICAgIMKgwqDCoMKgOC4gbWFpbHRvOkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwo+PiAgICAgPG1haWx0bzpBbHNhLWRldmVsQGFsc2EtcHJv
-amVjdC5vcmc+Cj4+ICAgICDCoMKgwqDCoDkuIGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5v
-cmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCj4+ICAgICDCoF9fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCj4+ICAgICDCoEFsc2EtZGV2ZWwgbWFpbGlu
-ZyBsaXN0Cj4+ICAgICDCoEFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZyA8bWFpbHRvOkFsc2Et
-ZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZz4KPj4gICAgIMKgaHR0cDovL21haWxtYW4uYWxzYS1wcm9q
-ZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKPj4gICAgIMKgCj4+Cj4+Cj4+IMKg
-Cj4+Cj4+IC0tCj4+IEphcm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3ogPG1haWx0bzpwZXJl
-eEBwZXJleC5jej4+Cj4+IExpbnV4IFNvdW5kIE1haW50YWluZXI7IEFMU0EgUHJvamVjdDsgUmVk
-IEhhdCwgSW5jLgo+PiBfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fXwo+PiBBbHNhLWRldmVsIG1haWxpbmcgbGlzdAo+PiBBbHNhLWRldmVsQGFsc2EtcHJvamVj
-dC5vcmcgPG1haWx0bzpBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmc+Cj4+IGh0dHA6Ly9tYWls
-bWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCgoKLS0gCkph
-cm9zbGF2IEt5c2VsYSA8cGVyZXhAcGVyZXguY3o+CkxpbnV4IFNvdW5kIE1haW50YWluZXI7IEFM
-U0EgUHJvamVjdDsgUmVkIEhhdCwgSW5jLgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3Rp
-bmZvL2Fsc2EtZGV2ZWwK
+The patch
+
+   ASoC: stm32: sai: fix master clock naming
+
+has been applied to the asoc tree at
+
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git 
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.  
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
+
+>From 6be0f96d799f487f05eb412d362d5a1747d665c2 Mon Sep 17 00:00:00 2001
+From: Olivier Moysan <olivier.moysan@st.com>
+Date: Mon, 22 Oct 2018 17:10:46 +0200
+Subject: [PATCH] ASoC: stm32: sai: fix master clock naming
+
+Fixes: 8307b2afd386 ("ASoC: stm32: sai: set sai as mclk clock provider")
+
+Fix warning issued by strncat when bound equals to source length.
+
+Signed-off-by: Olivier Moysan <olivier.moysan@st.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ sound/soc/stm/stm32_sai_sub.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
+
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index 31d22abd3204..ea05cc91aa05 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -404,12 +404,11 @@ static int stm32_sai_add_mclk_provider(struct stm32_sai_sub_data *sai)
+ 	 * String after "_" char is stripped in parent name.
+ 	 */
+ 	p = mclk_name;
+-	while (*s && *s != '_' && (i < (SAI_MCLK_NAME_LEN - 6))) {
++	while (*s && *s != '_' && (i < (SAI_MCLK_NAME_LEN - 7))) {
+ 		*p++ = *s++;
+ 		i++;
+ 	}
+-	STM_SAI_IS_SUB_A(sai) ?
+-		strncat(p, "a_mclk", 6) : strncat(p, "b_mclk", 6);
++	STM_SAI_IS_SUB_A(sai) ? strcat(p, "a_mclk") : strcat(p, "b_mclk");
+ 
+ 	mclk->hw.init = CLK_HW_INIT(mclk_name, pname, &mclk_ops, 0);
+ 	mclk->sai_data = sai;
+-- 
+2.19.0
