@@ -1,17 +1,25 @@
-From: kbuild test robot <lkp@intel.com>
-Subject: [asoc:for-4.20 519/526]
- sound/soc/stm/stm32_sai_sub.c:343 stm32_sai_mclk_set_rate() warn: unsigned
- 'div' is never less than zero.
-Date: Tue, 23 Oct 2018 06:29:32 +0800
-Message-ID: <201810230630.uKs7oSH2%fengguang.wu@intel.com>
+From: Hyperion <h1p8r10n@yandex.com>
+Subject: Re: Segfault in pulseaudio since Alsa 1.1.7
+Date: Tue, 23 Oct 2018 08:43:51 +0200
+Message-ID: <15488351540277031@sas1-b3ec53dbc12b.qloud-c.yandex.net>
+References: <28620521540243830@myt3-4bff4d415901.qloud-c.yandex.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga01.intel.com (mga01.intel.com [192.55.52.88])
- by alsa0.perex.cz (Postfix) with ESMTP id DEAFB2677D0
- for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2018 00:30:06 +0200 (CEST)
-Content-Disposition: inline
+Received: from forward102o.mail.yandex.net (forward102o.mail.yandex.net
+ [37.140.190.182])
+ by alsa0.perex.cz (Postfix) with ESMTP id 82B212675B2
+ for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2018 08:43:53 +0200 (CEST)
+Received: from forward500j.mail.yandex.net (forward500j.mail.yandex.net
+ [IPv6:2a02:6b8:0:801:2::110])
+ by forward102o.mail.yandex.net (Yandex) with ESMTP id A511C5A04E3E
+ for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2018 09:43:52 +0300 (MSK)
+Received: from mxback6j.mail.yandex.net (mxback6j.mail.yandex.net
+ [IPv6:2a02:6b8:0:1619::10f])
+ by forward500j.mail.yandex.net (Yandex) with ESMTP id A06C611C0CA3
+ for <alsa-devel@alsa-project.org>; Tue, 23 Oct 2018 09:43:52 +0300 (MSK)
+In-Reply-To: <28620521540243830@myt3-4bff4d415901.qloud-c.yandex.net>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -21,42 +29,61 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Olivier Moysan <olivier.moysan@st.com>
-Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, kbuild-all@01.org
+To: alsa-devel <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-4.20
-head:   7f91e2af1a4a2c34fc2e8fb046c722e1a9c85399
-commit: 8307b2afd386ccce369821daa2196068c47fe8cd [519/526] ASoC: stm32: sai: set sai as mclk clock provider
-
-smatch warnings:
-sound/soc/stm/stm32_sai_sub.c:343 stm32_sai_mclk_set_rate() warn: unsigned 'div' is never less than zero.
-
-vim +/div +343 sound/soc/stm/stm32_sai_sub.c
-
-   333	
-   334	static int stm32_sai_mclk_set_rate(struct clk_hw *hw, unsigned long rate,
-   335					   unsigned long parent_rate)
-   336	{
-   337		struct stm32_sai_mclk_data *mclk = to_mclk_data(hw);
-   338		struct stm32_sai_sub_data *sai = mclk->sai_data;
-   339		unsigned int div;
-   340		int ret;
-   341	
-   342		div = stm32_sai_get_clk_div(sai, parent_rate, rate);
- > 343		if (div < 0)
-   344			return div;
-   345	
-   346		ret = stm32_sai_set_clk_div(sai, div);
-   347		if (ret)
-   348			return ret;
-   349	
-   350		mclk->freq = rate;
-   351	
-   352		return 0;
-   353	}
-   354	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+ICAgSSBoYXZlIG5hcnJvd2VkIHRvIHRoZSBzaW1wbGVyIHBhdGNoIGJlbG93IDoKICAgw4IKICAg
+UXVvdGU6CiAgIGRpZmYgLXJOYXVkIGFsc2EtcGx1Z2lucy0xLjEuNy9hNTIvcGNtX2E1Mi5jCiAg
+IGFsc2EtcGx1Z2lucy0xLjEuNy1uZXcvYTUyL3BjbV9hNTIuYwogICAtLS0gYWxzYS1wbHVnaW5z
+LTEuMS43L2E1Mi9wY21fYTUyLmMgMjAxOC0xMC0xNiAxNDowMDoyMi4wMDAwMDAwMDAKICAgKzAy
+MDAKICAgKysrIGFsc2EtcGx1Z2lucy0xLjEuNy1uZXcvYTUyL3BjbV9hNTIuYyAyMDE4LTEwLTIz
+IDA4OjM1OjE1LjY5OTgzMDkwOQogICArMDIwMAogICBAQCAtOTc4LDcgKzk3OCw4IEBACiAgIGlm
+ICgoZXJyID0gYTUyX3NldF9od19jb25zdHJhaW50KHJlYykpIDwgMCkgewogICBzbmRfcGNtX2lv
+cGx1Z19kZWxldGUoJnJlYy0+aW8pOwogICAtIGdvdG8gZXJyb3I7CiAgICsgZnJlZShyZWMpOwog
+ICArIHJldHVybiBlcnI7CiAgIH0KICAgKnBjbXAgPSByZWMtPmlvLnBjbTsKICAgw4IKCiAgIMOC
+CgogICAyMi4xMC4yMDE4LCAyMzozMCwgIkh5cGVyaW9uIiA8aDFwOHIxMG5AeWFuZGV4LmNvbT46
+CgogICAgIMOCIMOCIMOCIEhpLAogICAgIMOCIMOCIMOCIMOD4oCaCiAgICAgw4Igw4Igw4IgU2lu
+Y2UgdGhlIHVwZ3JhZGUgdG8gQWxzYSAxLjEuNywgSSBnZXQgYSBzZWdmYXVsdCBhdAogICAgIHB1
+bHNlYXVkaW8KICAgICDDgiDDgiDDgiBzdGFydHVwLiBUaGlzIGhhdmUgYmVlbiBkaXNjdXNzZWQg
+YW5kIGRvY3VtZW50ZWQgaGVyZSA6CiAgICAgw4Igw4Igw4IgWzFdWzFdaHR0cHM6Ly93d3cubGlu
+dXhxdWVzdGlvbnMub3JnL3F1ZXN0aW9ucy9zbGFja3dhcmUtMTQvY3UKICAgICBycmVudC1mcmkt
+b2MKICAgICDDgiDDgiDDgiB0LTE5LXB1c2VhdWRpby1zZWdmYXV0cy00MTc1NjQwNzczLwogICAg
+IMOCIMOCIMOCIMOD4oCaCiAgICAgw4Igw4Igw4IgSXQgc2VlbXMgdGhhdCBJIGZvdW5kIHRoZSBv
+cmlnaW4gb2YgdGhlIGJ1ZyA6IHJldmVydGluZyB0aGVzZQogICAgIDIgY29tbWl0cwogICAgIMOC
+IMOCIMOCIGZpeGVzIHRoZSBwcm9ibGVtIDoKICAgICDDgiDDgiDDgiBbMl1bMl1odHRwOi8vZ2l0
+LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS0uLi43OTJkYzgwOWM5MDhjYwogICAgIMOCIMOCIMOC
+IFszXVszXWh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLS4uLjVkYzZlMTU5NDI5
+MWU3CiAgICAgw4Igw4Igw4IgVGhlbiBubyBtb3JlIHNlZ2ZhdWx0IGluIHB1bHNlYXVkaW8gd2hl
+biBhY2Nlc3NpbmcgdGhlIFVTQgogICAgIHNvdW5kY2FyZC4KICAgICDDgiDDgiDDgiDDg+KAmgog
+ICAgIMOCIMOCIMOCIFBsZWFzZSBjb3VsZCB5b3UgZml4IGl0ID8KICAgICDDgiDDgiDDgiDDg+KA
+mgogICAgIMOCIMOCIMOCIFJlZ2FyZHMKICAgICDDgiDDgiDDgiBqcAogICAgIFJlZmVyZW5jZXMK
+ICAgICDDgiDDgiDDgiBWaXNpYmxlIGxpbmtzCiAgICAgw4Igw4Igw4IgMS4KICAgICBbNF1odHRw
+czovL3d3dy5saW51eHF1ZXN0aW9ucy5vcmcvcXVlc3Rpb25zL3NsYWNrd2FyZS0xNC9jdXJyZW50
+LWZyaQogICAgIC1vY3QtMTktcHVzZWF1ZGlvLXNlZ2ZhdXRzLTQxNzU2NDA3NzMvCiAgICAgw4Ig
+w4Igw4IgMi4KICAgICBbNV1odHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxzYS1wbHVn
+aW5zLmdpdDthPWNvbW1pdGRpZmY7aD1mYwogICAgIDNmNWQ1MTA2MmZmNDM4NzgwZTU2ODk5NTc5
+MmRjODA5YzkwOGNjCiAgICAgw4Igw4Igw4IgMy4KICAgICBbNl1odHRwOi8vZ2l0LmFsc2EtcHJv
+amVjdC5vcmcvP3A9YWxzYS1wbHVnaW5zLmdpdDthPWNvbW1pdGRpZmY7aD02YgogICAgIDk5Njg2
+NTEyNmRkNTU5ZWYxODYwMDJlNDVkYzZlMTU5NDI5MWU3CiAgICAgw4Igw4Igw4IgSGlkZGVuIGxp
+bmtzOgogICAgIMOCIMOCIMOCIDQuCiAgICAgWzddaHR0cHM6Ly93d3cubGludXhxdWVzdGlvbnMu
+b3JnL3F1ZXN0aW9ucy9zbGFja3dhcmUtMTQvY3VycmVudC1mcmkKICAgICAtb2N0LTE5LXB1c2Vh
+dWRpby1zZWdmYXV0cy00MTc1NjQwNzczLwogICAgIF9fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fCiAgICAgQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKICAgICBb
+OF1BbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKICAgICBbOV1odHRwOi8vbWFpbG1hbi5hbHNh
+LXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAoKUmVmZXJlbmNlcwoKICAg
+MS4gaHR0cHM6Ly93d3cubGludXhxdWVzdGlvbnMub3JnL3F1ZXN0aW9ucy9zbGFja3dhcmUtMTQv
+Y3VycmVudC1mcmktb2MKICAgMi4gaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9wPWFsc2Et
+Li4uNzkyZGM4MDljOTA4Y2MKICAgMy4gaHR0cDovL2dpdC5hbHNhLXByb2plY3Qub3JnLz9wPWFs
+c2EtLi4uNWRjNmUxNTk0MjkxZTcKICAgNC4gaHR0cHM6Ly93d3cubGludXhxdWVzdGlvbnMub3Jn
+L3F1ZXN0aW9ucy9zbGFja3dhcmUtMTQvY3VycmVudC1mcmktb2N0LTE5LXB1c2VhdWRpby1zZWdm
+YXV0cy00MTc1NjQwNzczLwogICA1LiBodHRwOi8vZ2l0LmFsc2EtcHJvamVjdC5vcmcvP3A9YWxz
+YS1wbHVnaW5zLmdpdDthPWNvbW1pdGRpZmY7aD1mYzNmNWQ1MTA2MmZmNDM4NzgwZTU2ODk5NTc5
+MmRjODA5YzkwOGNjCiAgIDYuIGh0dHA6Ly9naXQuYWxzYS1wcm9qZWN0Lm9yZy8/cD1hbHNhLXBs
+dWdpbnMuZ2l0O2E9Y29tbWl0ZGlmZjtoPTZiOTk2ODY1MTI2ZGQ1NTllZjE4NjAwMmU0NWRjNmUx
+NTk0MjkxZTcKICAgNy4gaHR0cHM6Ly93d3cubGludXhxdWVzdGlvbnMub3JnL3F1ZXN0aW9ucy9z
+bGFja3dhcmUtMTQvY3VycmVudC1mcmktb2N0LTE5LXB1c2VhdWRpby1zZWdmYXV0cy00MTc1NjQw
+NzczLwogICA4LiBtYWlsdG86QWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCiAgIDkuIGh0dHA6
+Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCl9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwg
+bWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1wcm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5h
+bHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGluZm8vYWxzYS1kZXZlbAo=
