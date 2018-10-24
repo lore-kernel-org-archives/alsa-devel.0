@@ -1,23 +1,20 @@
-From: Mike Brady <mikebrady@eircom.net>
-Subject: Re: [PATCH v2] staging: bcm2835-audio: interpolate
- audio delay
-Date: Wed, 24 Oct 2018 09:20:09 +0100
-Message-ID: <EA85FEC9-B1C7-4548-88F5-F0E7BC12158E@eircom.net>
-References: <20181022191708.GA4659@ubuntu>
- <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 12.0 \(3445.100.39\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: Audio miniconference schedule
+Date: Wed, 24 Oct 2018 10:51:11 +0200
+Message-ID: <a31f4e12-f224-3f3c-f495-3664f4d57bd7@perex.cz>
+References: <20181002195849.GA23818@sirena.org.uk>
+ <s5hsh0vq0g9.wl-tiwai@suse.de>
+ <39943b49-5f27-0b01-8a78-f69206f8bf7f@perex.cz>
+ <s5ho9bjpzn8.wl-tiwai@suse.de> <20181024081130.GJ25374@vkoul-mobl>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe06-1.mx.upcmail.net
- (vie01a-dmta-pe06-1.mx.upcmail.net [84.116.36.14])
- by alsa0.perex.cz (Postfix) with ESMTP id 8E57A26752C
- for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2018 10:20:11 +0200 (CEST)
-Received: from [172.31.216.235] (helo=vie01a-pemc-psmtp-pe12.mail.upcmail.net)
- by vie01a-dmta-pe06.mx.upcmail.net with esmtp (Exim 4.88)
- (envelope-from <mikebrady@eircom.net>) id 1gFEOh-0000y8-64
- for alsa-devel@alsa-project.org; Wed, 24 Oct 2018 10:20:11 +0200
-In-Reply-To: <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 835E326752C
+ for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2018 10:51:16 +0200 (CEST)
+In-Reply-To: <20181024081130.GJ25374@vkoul-mobl>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -27,114 +24,92 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: stefan.wahren@i2se.com, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, eric@anholt.net, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, linux-arm-kernel@lists.infradead.org
+To: Vinod <vkoul@kernel.org>, Takashi Iwai <tiwai@suse.de>
+Cc: alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-SGkgS2lyaWxsLiBUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuCgo+IE9uIDIyIE9jdCAyMDE4LCBh
-dCAyMzoyNSwgS2lyaWxsIE1hcmludXNoa2luIDxrLm1hcmludXNoa2luQGdtYWlsLmNvbT4gd3Jv
-dGU6Cj4gCj4gQUZBSVUsIHRoaXMgcGF0Y2ggaXMgd3JvbmcuIFBsZWFzZSBjb3JyZWN0IG1lLCBt
-YXliZSBJIG1pc3VuZGVyc3RhbmQgc29tZXRoaW5nLgo+IAo+PiBUaGUgcHJvYmxlbSB0aGF0IHRo
-aXMgcGF0Y2ggc2Vla3MgdG8gcmVzb2x2ZSBpcyB0aGF0IHdoZW4gdXNlcmxhbmQgYXNrcyBmb3IK
-Pj4gdGhlIGRlbGF5Cj4gCj4gVGhlIHVzZXJzcGFjZSBhc2tzIG5vdCBmb3IgZGVsYXksIGJ1dCBm
-b3IgdGhlIHBvaW50ZXIuCgpUaGUgY2FsbCBpbiBxdWVzdGlvbiBpcyBzbmRfcGNtX2RlbGF5LiBJ
-IHByZXN1bWUgdGhpcyBkZWxheSBpcyBjYWxjdWxhdGVkIGZyb20ga25vd2xlZGdlIG9mIHRoZSBz
-dHJlYW0gcG9zaXRpb24g4oCccG9zIiwgdGhlIHBlcmlvZCAoYnVmZmVyPykgbnVtYmVyIChhbmQg
-cGVyaW9kL2J1ZmZlciBzaXplKSBhbmQgdGhlIHNuZF9wY21fcnVudGltZSBzdHJ1Y3R1cmXigJlz
-IOKAnGRlbGF5IiBmaWVsZCAo4oCccnVudGltZS0+ZGVsYXnigJ0pLgoKPiBZb3UgbW9kaWZ5IHRo
-ZSBmdW5jdGlvbiwgd2hpY2ggaXMgY2FsbGVkIGBzbmRfYmNtMjgzNV9wY21fcG9pbnRlcmAuIEhl
-cmUgeW91IGFyZQo+IHN1cHBvc2VkIHRvIGluY3JlYXNlIGBhbHNhX3N0cmVhbS0+cG9zYCB3aXRo
-IHRoZSBwcm9wZXIgb2Zmc2V0LiBJbnN0ZWFkLCB5b3UKPiBpbWl0YXRlIGEgZGVsYXksIGJ1dCBp
-biBmYWN0IHRoZSBkZWxheSBpcyBub3QgaW5jcmVhc2VkLgo+IAo+IFNvLCB0aGUgcHJvcGVyIHNv
-bHV0aW9uIHNob3VsZCBiZSB0byBmaXggdGhlIHJlcG9ydGVkIHBvaW50ZXIuCgpJIHRoaW5rIHRo
-ZXJlIGlzIGEgZGlmZmljdWx0eSB3aXRoIHRoaXMuIFRoZSDigJxwb3PigJ0gcG9pbnRlciBsb29r
-cyB0byBoYXZlIHRvIGJlIG1vZHVsbyB0aGUgYnVmZmVyIHNpemUuIFRoaXMgY2F1c2VzIGEgcHJv
-YmxlbSwgYXMgSSBzZWUgaXQsIGluIHRoYXQgaWYgdGhlIGNhbGN1bGF0ZWQgKHBvcyArIGludGVy
-cG9sYXRlZCBkZWxheSBpbiBieXRlcykgaXMgbG9uZ2VyIHRoYW4gdGhlIGJ1ZmZlciBzaXplLCBp
-dCBtdXN0IGJlIHdyYXBwZWQsIGJ1dCBBRkFJSyB3ZSBhcmUgdW5hYmxlIHRvIGluY3JlbWVudCBh
-IGJ1ZmZlciBpbmRleCB1c2VkIGluIHRoZSBzbmRfcGNtX2RlbGF5IGNhbGN1bGF0aW9uLiBIZW5j
-ZSB0aGUgY2FsY3VsYXRpb24gb2YgdGhlIGFjdHVhbCBwb3NpdGlvbiB3b3VsZCBiZSB3cm9uZy4g
-VGhpcyBpcyB3aHkgdGhlIHNuZF9wY21fcnVudGltZSBkZWxheSBmaWVsZCBpcyB1c2VkLiBPbiBy
-ZWZsZWN0aW9uLCBCVFcsIHRoZSBwYXRjaCBhc3N1bWVzIHRoYXQgdGhlIGZpZWxkJ3Mgb3JpZ2lu
-YWwgdmFsdWUgd2FzIHplcm8g4oCUIHRoYXQgY2FuIGJlIHJlY3RpZmllZC4KCj4gQXMgYSByZXN1
-bHQsCj4gdXNlcnNwYWNlIHdpbGwgcmVjaWV2ZSB0aGUgY29ycmVjdCBkZWxheSwgaW5zdGVhZCBv
-ZiB0aGVzZSBjcmF6eSAxMCBtcy4KCkp1c3QgdG8gcG9pbnQgb3V0IHRoYXQgd2l0aCB0aGUgcHJv
-cG9zZWQgcGF0Y2gsIGl0IGFwcGVhcnMgdGhhdCB0aGUgY29ycmVjdCBkZWxheSBpcyBiZWluZyBy
-ZXBvcnRlZCwgKGFwYXJ0LCBwb3NzaWJseSwgZnJvbSBhbnkgZGVsYXkgb3JpZ2luYWxseSBzZXQg
-aW4gdGhlIHNuZF9wY21fZGVsYXkgZmllbGQsIGFzIG1lbnRpb25lZCBhYm92ZSkuCgpBbGwgdGhl
-IGJlc3QsCk1pa2UKCj4gRllJLCB0aGVyZSBpcwo+PiBhIGRpc2N1c3Npb24gb2YgdGhlIGVmZmVj
-dHMgb2YgYSBkb3duc3RyZWFtIGVxdWl2YWxlbnQgb2YgdGhpcyBzdWdnZXN0ZWQgcGF0Y2gKPj4g
-YXQ6Cj4+IGh0dHBzOi8vZ2l0aHViLmNvbS9yYXNwYmVycnlwaS9maXJtd2FyZS9pc3N1ZXMvMTAy
-NiNpc3N1ZWNvbW1lbnQtNDE1NzQ2MDE2Lgo+IAo+IFRoYW5rIHlvdSBmb3IgdGhlIGxpbmssIGl0
-IGNsYXJpZmllZCBmb3IgbWUgd2hhdCB5b3UgdHJ5IHRvIGFjaGlldmUuCj4gCj4gT24gMTAvMjIv
-MTggMjE6MTcsIE1pa2UgQnJhZHkgd3JvdGU6Cj4+IFdoZW4gdGhlIEJDTTI4MzUgYXVkaW8gb3V0
-cHV0IGlzIHVzZWQsIHVzZXJzcGFjZSBzZWVzIGEgaml0dGVyIHVwIHRvIDEwbXMKPj4gaW4gdGhl
-IGF1ZGlvIHBvc2l0aW9uLCBha2EgImRlbGF5IiAtLSB0aGUgbnVtYmVyIG9mIGZyYW1lcyB0aGF0
-IG11c3QKPj4gYmUgb3V0cHV0IGJlZm9yZSBhIG5ldyBmcmFtZSB3b3VsZCBiZSBwbGF5ZWQuCj4+
-IE1ha2UgdGhpcyBhIGJpdCBuaWNlciBmb3IgdXNlcnNwYWNlIGJ5IGludGVycG9sYXRpbmcgdGhl
-IHBvc2l0aW9uCj4+IHVzaW5nIHRoZSBDUFUgY2xvY2suCj4+IFRoZSBvdmVyaGVhZCBpcyBzbWFs
-bCAtLSBhbiBleHRyYSBrdGltZV9nZXQoKSBldmVyeSB0aW1lIGEgR1BVIG1lc3NhZ2UKPj4gaXMg
-c2VudCAtLSBhbmQgYW5vdGhlciBjYWxsIGFuZCBhIGZldyBjYWxjdWxhdGlvbnMgd2hlbmV2ZXIg
-dGhlIGRlbGF5Cj4+IGlzIHNvdWdodCBmcm9tIHVzZXJsYW5kLgo+PiBBdCA0OCwwMDAgZnJhbWVz
-IHBlciBzZWNvbmQsIGkuZS4gYXBwcm94aW1hdGVseSAyMCBtaWNyb3NlY29uZHMgcGVyCj4+IGZy
-YW1lLCBpdCB3b3VsZCB0YWtlIGEgY2xvY2sgaW5hY2N1cmFjeSBvZgo+PiAyMCBtaWNyb3NlY29u
-ZHMgaW4gMTAgbWlsbGlzZWNvbmRzIC0tIDIsMDAwIHBhcnRzIHBlciBtaWxsaW9uIC0tCj4+IHRv
-IHJlc3VsdCBpbiBhbiBpbmFjY3VyYXRlIGVzdGltYXRlLCB3aGVyZWFzCj4+IGNyeXN0YWwtIG9y
-IHJlc29uYXRvci1iYXNlZCBjbG9ja3MgdHlwaWNhbGx5IGhhdmUgYW4KPj4gaW5hY2N1cmFjeSBv
-ZiAxMHMgdG8gMTAwcyBvZiBwYXJ0cyBwZXIgbWlsbGlvbi4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6
-IE1pa2UgQnJhZHkgPG1pa2VicmFkeUBlaXJjb20ubmV0Pgo+PiAtLS0KPj4gQ2hhbmdlcyBpbiB2
-MiAtLSByZW1vdmUgaW5hcHByb3ByaWF0ZSBhZGRpdGlvbiBvZiBTTkRSVl9QQ01fSU5GT19CQVRD
-SCBmbGFnCj4+IAo+PiAuLi4vdmMwNF9zZXJ2aWNlcy9iY20yODM1LWF1ZGlvL2JjbTI4MzUtcGNt
-LmMgfCAyMCArKysrKysrKysrKysrKysrKysrCj4+IC4uLi92YzA0X3NlcnZpY2VzL2JjbTI4MzUt
-YXVkaW8vYmNtMjgzNS5oICAgICB8ICAxICsKPj4gMiBmaWxlcyBjaGFuZ2VkLCAyMSBpbnNlcnRp
-b25zKCspCj4+IAo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zdGFnaW5nL3ZjMDRfc2VydmljZXMv
-YmNtMjgzNS1hdWRpby9iY20yODM1LXBjbS5jIGIvZHJpdmVycy9zdGFnaW5nL3ZjMDRfc2Vydmlj
-ZXMvYmNtMjgzNS1hdWRpby9iY20yODM1LXBjbS5jCj4+IGluZGV4IGU2NmRhMTFhZjVjZi4uOTA1
-M2I5OTZjYWRhIDEwMDY0NAo+PiAtLS0gYS9kcml2ZXJzL3N0YWdpbmcvdmMwNF9zZXJ2aWNlcy9i
-Y20yODM1LWF1ZGlvL2JjbTI4MzUtcGNtLmMKPj4gKysrIGIvZHJpdmVycy9zdGFnaW5nL3ZjMDRf
-c2VydmljZXMvYmNtMjgzNS1hdWRpby9iY20yODM1LXBjbS5jCj4+IEBAIC03NCw2ICs3NCw3IEBA
-IHZvaWQgYmNtMjgzNV9wbGF5YmFja19maWZvKHN0cnVjdCBiY20yODM1X2Fsc2Ffc3RyZWFtICph
-bHNhX3N0cmVhbSwKPj4gCWF0b21pY19zZXQoJmFsc2Ffc3RyZWFtLT5wb3MsIHBvcyk7Cj4+IAo+
-PiAJYWxzYV9zdHJlYW0tPnBlcmlvZF9vZmZzZXQgKz0gYnl0ZXM7Cj4+ICsJYWxzYV9zdHJlYW0t
-PmludGVycG9sYXRlX3N0YXJ0ID0ga3RpbWVfZ2V0KCk7Cj4+IAlpZiAoYWxzYV9zdHJlYW0tPnBl
-cmlvZF9vZmZzZXQgPj0gYWxzYV9zdHJlYW0tPnBlcmlvZF9zaXplKSB7Cj4+IAkJYWxzYV9zdHJl
-YW0tPnBlcmlvZF9vZmZzZXQgJT0gYWxzYV9zdHJlYW0tPnBlcmlvZF9zaXplOwo+PiAJCXNuZF9w
-Y21fcGVyaW9kX2VsYXBzZWQoc3Vic3RyZWFtKTsKPj4gQEAgLTI0Myw2ICsyNDQsNyBAQCBzdGF0
-aWMgaW50IHNuZF9iY20yODM1X3BjbV9wcmVwYXJlKHN0cnVjdCBzbmRfcGNtX3N1YnN0cmVhbSAq
-c3Vic3RyZWFtKQo+PiAJYXRvbWljX3NldCgmYWxzYV9zdHJlYW0tPnBvcywgMCk7Cj4+IAlhbHNh
-X3N0cmVhbS0+cGVyaW9kX29mZnNldCA9IDA7Cj4+IAlhbHNhX3N0cmVhbS0+ZHJhaW5pbmcgPSBm
-YWxzZTsKPj4gKwlhbHNhX3N0cmVhbS0+aW50ZXJwb2xhdGVfc3RhcnQgPSBrdGltZV9nZXQoKTsK
-Pj4gCj4+IAlyZXR1cm4gMDsKPj4gfQo+PiBAQCAtMjkyLDYgKzI5NCwyNCBAQCBzbmRfYmNtMjgz
-NV9wY21fcG9pbnRlcihzdHJ1Y3Qgc25kX3BjbV9zdWJzdHJlYW0gKnN1YnN0cmVhbSkKPj4gewo+
-PiAJc3RydWN0IHNuZF9wY21fcnVudGltZSAqcnVudGltZSA9IHN1YnN0cmVhbS0+cnVudGltZTsK
-Pj4gCXN0cnVjdCBiY20yODM1X2Fsc2Ffc3RyZWFtICphbHNhX3N0cmVhbSA9IHJ1bnRpbWUtPnBy
-aXZhdGVfZGF0YTsKPj4gKwlrdGltZV90IG5vdyA9IGt0aW1lX2dldCgpOwo+PiArCj4+ICsJLyog
-R2l2ZSB1c2Vyc3BhY2UgYmV0dGVyIGRlbGF5IHJlcG9ydGluZyBieSBpbnRlcnBvbGF0aW5nIGJl
-dHdlZW4gR1BVCj4+ICsJICogbm90aWZpY2F0aW9ucywgYXNzdW1pbmcgYXVkaW8gc3BlZWQgaXMg
-Y2xvc2UgZW5vdWdoIHRvIHRoZSBjbG9jawo+PiArCSAqIHVzZWQgZm9yIGt0aW1lCj4+ICsJICov
-Cj4+ICsKPj4gKwlpZiAoKGt0aW1lX3RvX25zKGFsc2Ffc3RyZWFtLT5pbnRlcnBvbGF0ZV9zdGFy
-dCkpICYmCj4+ICsJICAgIChrdGltZV9jb21wYXJlKGFsc2Ffc3RyZWFtLT5pbnRlcnBvbGF0ZV9z
-dGFydCwgbm93KSA8IDApKSB7Cj4+ICsJCXU2NCBpbnRlcnZhbCA9Cj4+ICsJCQkoa3RpbWVfdG9f
-bnMoa3RpbWVfc3ViKG5vdywKPj4gKwkJCQlhbHNhX3N0cmVhbS0+aW50ZXJwb2xhdGVfc3RhcnQp
-KSk7Cj4+ICsJCXU2NCBmcmFtZXNfb3V0cHV0X2luX2ludGVydmFsID0KPj4gKwkJCWRpdl91NjQo
-KGludGVydmFsICogcnVudGltZS0+cmF0ZSksIDEwMDAwMDAwMDApOwo+PiArCQlzbmRfcGNtX3Nm
-cmFtZXNfdCBmcmFtZXNfb3V0cHV0X2luX2ludGVydmFsX3NpemVkID0KPj4gKwkJCS1mcmFtZXNf
-b3V0cHV0X2luX2ludGVydmFsOwo+PiArCQlydW50aW1lLT5kZWxheSA9IGZyYW1lc19vdXRwdXRf
-aW5faW50ZXJ2YWxfc2l6ZWQ7Cj4+ICsJfQo+PiAKPj4gCXJldHVybiBzbmRfcGNtX2luZGlyZWN0
-X3BsYXliYWNrX3BvaW50ZXIoc3Vic3RyZWFtLAo+PiAJCSZhbHNhX3N0cmVhbS0+cGNtX2luZGly
-ZWN0LAo+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9zdGFnaW5nL3ZjMDRfc2VydmljZXMvYmNtMjgz
-NS1hdWRpby9iY20yODM1LmggYi9kcml2ZXJzL3N0YWdpbmcvdmMwNF9zZXJ2aWNlcy9iY20yODM1
-LWF1ZGlvL2JjbTI4MzUuaAo+PiBpbmRleCBlMTM0MzVkMWMyMDUuLjU5NWFkNTg0MjQzZiAxMDA2
-NDQKPj4gLS0tIGEvZHJpdmVycy9zdGFnaW5nL3ZjMDRfc2VydmljZXMvYmNtMjgzNS1hdWRpby9i
-Y20yODM1LmgKPj4gKysrIGIvZHJpdmVycy9zdGFnaW5nL3ZjMDRfc2VydmljZXMvYmNtMjgzNS1h
-dWRpby9iY20yODM1LmgKPj4gQEAgLTc4LDYgKzc4LDcgQEAgc3RydWN0IGJjbTI4MzVfYWxzYV9z
-dHJlYW0gewo+PiAJdW5zaWduZWQgaW50IHBlcmlvZF9vZmZzZXQ7Cj4+IAl1bnNpZ25lZCBpbnQg
-YnVmZmVyX3NpemU7Cj4+IAl1bnNpZ25lZCBpbnQgcGVyaW9kX3NpemU7Cj4+ICsJa3RpbWVfdCBp
-bnRlcnBvbGF0ZV9zdGFydDsKPj4gCj4+IAlzdHJ1Y3QgYmNtMjgzNV9hdWRpb19pbnN0YW5jZSAq
-aW5zdGFuY2U7Cj4+IAlpbnQgaWR4Owo+PiAKPiBfX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fXwo+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4gQWxzYS1kZXZl
-bEBhbHNhLXByb2plY3Qub3JnCj4gaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCkFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0CkFsc2EtZGV2ZWxAYWxzYS1w
-cm9qZWN0Lm9yZwpodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4vbGlzdGlu
-Zm8vYWxzYS1kZXZlbAo=
+Dne 24.10.2018 v 10:11 Vinod napsal(a):
+> On 24-10-18, 09:33, Takashi Iwai wrote:
+>> On Wed, 24 Oct 2018 09:30:00 +0200,
+>> Jaroslav Kysela wrote:
+>>>
+>>> Dne 24.10.2018 v 09:16 Takashi Iwai napsal(a):
+>>>> On Tue, 02 Oct 2018 21:58:49 +0200,
+>>>> Mark Brown wrote:
+>>>>>
+>>>>> As previously announced there's an audio miniconference happening on the
+>>>>> 21st in Edinburgh:
+>>>>>
+>>>>>    https://blog.sirena.org.uk/2018/09/19/2018-linux-audio-miniconfernce
+>>>>>
+>>>>> (yes there is a typo in the URL).  A number of people have proposed
+>>>>> topics so I just went through them and pulled them into a proposed
+>>>>> agenda:
+>>>>>
+>>>>>   - Virtualization (Liam)
+>>>>>   - SoundWire (Liam)
+>>>>>   - Byte controls (Vinod)
+>>>>>   - GObject introspection for language bindings (Sakamoto-san)
+>>>>>   - Integrating the ALSA control core (Sakamoto-san)
+>>>>>   - AGL (Stephane/Ronan)
+>>>>>   - Y2038 (broonie)
+>>>>>   - AVB (Liam)
+>>>>>   - DSPs (Liam)
+>>>>>    - Sound Open Firmware
+>>>>>
+>>>>> What do people think?  Any other topics?  There's still time to sign up
+>>>>> if you're interested in attending, you can sign up right up to the day
+>>>>> of the event.
+>>>>>
+>>>>> It also seems good to mention that there's another audio event going on
+>>>>> around ELC:
+>>>>>
+>>>>>    https://blogs.gnome.org/uraeus/2018/09/24/getting-the-team-together-to-revolutionize-linux-audio/
+>>>>>
+>>>>> which is a hackathon for a new userspace stack called PipeWire - if we
+>>>>> have someone attending who knows about that I think it'd be good to talk
+>>>>> about it too.
+>>>>
+>>>> Thanks Mark for the great organization, I enjoyed the meeting in this
+>>>> year very much (as always), and thanks Cirrus for a really nice venue!
+>>>
+>>> I would like to say big thanks too.
+>>>
+>>> Although I was silent (mostly doing a heavy ping-pong between the family
+>>> and the remote meeting session), I monitored the topics. I will post
+>>> github/CI information separately.
+>>
+>> Oh, that's a good surprise.  We wondered whether the line reached
+>> you.
+>>
+>>
+>>>> If anyone can share the notes, it'd be great.
+>>>
+>>> Mark's notes are here:
+>>>
+>>> https://docs.google.com/document/d/1JtjpSGkMMCeDK43LTc0yLrOer1QL5JwxPQMmHFAL55o
+>>
+>> Thanks, I forgot his later mail :)
+>>
+>>> If anyone has something more, please, add a link to this document.
+>>> Perhaps, I should create a copy to www.alsa-project.org.
+> 
+> That would be great to have this on www.alsa-project.org, I think
+> presentations from Sakamoto-san, Charles and Patrick should be uploaded
+> there as well..
+> 
+>> It's a good idea.  We have a copy of the notes of 2017 meeting, too.
+> 
+> Ah where, can this be uploaded to www.alsa-project.org as well please..
+
+I reformated notes to mediawiki markup and notes for both years are
+available from the main page. Here are direct links:
+
+http://www.alsa-project.org/main/index.php/Miniconf_2018
+http://www.alsa-project.org/main/index.php/Miniconf_2017
+
+						Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
