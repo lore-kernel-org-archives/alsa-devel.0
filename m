@@ -1,60 +1,95 @@
-From: Chris Wilson <chris@chris-wilson.co.uk>
-Subject: Re: [PATCH 1/2] ALSA: x86: Fix runtime PM for
- hdmi-lpe-audio
-Date: Wed, 24 Oct 2018 17:09:06 +0100
-Message-ID: <154039734636.5632.2995009584613681142@skylake-alporthouse-com>
-References: <20181024154825.18185-1-ville.syrjala@linux.intel.com>
+From: Connor McAdams <conmanx360@gmail.com>
+Subject: Re: [GIT PULL] Additional firmware files for CA0132
+	HD-audio codec
+Date: Wed, 24 Oct 2018 12:22:13 -0400
+Message-ID: <CAM8Agx38RCN5xUPwV-YP0JyMtxNj9tveou4fHCDK1zyvE0a+Tg@mail.gmail.com>
+References: <20181010174923.GA29921@connor-Z97X-Gaming-7>
+ <s5hmur3pzg2.wl-tiwai@suse.de>
+ <CA+5PVA5xQvz+NftESMLUNY=5vR+A1x76sL64eXCR-KPqi6G+gg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-In-Reply-To: <20181024154825.18185-1-ville.syrjala@linux.intel.com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Ville Syrjala <ville.syrjala@linux.intel.com>, alsa-devel@alsa-project.org
-Cc: Takashi Iwai <tiwai@suse.de>, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mail-it1-f195.google.com (mail-it1-f195.google.com
+ [209.85.166.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 51FB3267546
+ for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2018 18:22:27 +0200 (CEST)
+Received: by mail-it1-f195.google.com with SMTP id h14-v6so949585itf.1
+ for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2018 09:22:27 -0700 (PDT)
+In-Reply-To: <CA+5PVA5xQvz+NftESMLUNY=5vR+A1x76sL64eXCR-KPqi6G+gg@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: jwboyer@kernel.org
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, linux-firmware@kernel.org
 List-Id: alsa-devel@alsa-project.org
 
-UXVvdGluZyBWaWxsZSBTeXJqYWxhICgyMDE4LTEwLTI0IDE2OjQ4OjI0KQo+IEZyb206IFZpbGxl
-IFN5cmrDpGzDpCA8dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb20+Cj4gCj4gQ29tbWl0IDQ2
-ZTgzMWFiZTg2NCAoImRybS9pOTE1L2xwZTogTWFyayBMUEUgYXVkaW8gcnVudGltZSBwbSBhcwo+
-ICJubyBjYWxsYmFja3MiIikgYnJva2UgcnVudGltZSBQTSB3aXRoIGxwZSBhdWRpby4gV2UgY2Fu
-IG5vIGxvbmdlcgo+IHJ1bnRpbWUgc3VzcGVuZCB0aGUgR1BVIHNpbmNlIHRoZSBzeXNmcyAgcG93
-ZXIvY29udHJvbCBmb3IgdGhlCj4gbHBlLWF1ZGlvIGRldmljZSBubyBsb25nZXIgZXhpc3RzIGFu
-ZCB0aGUgZGV2aWNlIGlzIGNvbnNpZGVyZWQKPiBhbHdheXMgYWN0aXZlLiBXZSBjYW4gZml4IHRo
-aXMgYnkgbm90IG1hcmtpbmcgdGhlIGRldmljZSBhcwo+IGFjdGl2ZS4KClNlZW1zIGxpa2UgdGhp
-cyB1c2UgaXMgY292ZXJlZCBieSBydW50aW1lX3BtLnR4dDoKCkhvd2V2ZXIsIGlmIHRoZSBkZXZp
-Y2UgaGFzIGEgcGFyZW50IGFuZCB0aGUgcGFyZW50J3MgcnVudGltZSBQTSBpcyBlbmFibGVkLApj
-YWxsaW5nIHBtX3J1bnRpbWVfc2V0X2FjdGl2ZSgpIGZvciB0aGUgZGV2aWNlIHdpbGwgYWZmZWN0
-IHRoZSBwYXJlbnQsIHVubGVzcwp0aGUgcGFyZW50J3MgJ3Bvd2VyLmlnbm9yZV9jaGlsZHJlbicg
-ZmxhZyBpcyBzZXQuICBOYW1lbHksIGluIHRoYXQgY2FzZSB0aGUKcGFyZW50IHdvbid0IGJlIGFi
-bGUgdG8gc3VzcGVuZCBhdCBydW4gdGltZSwgdXNpbmcgdGhlIFBNIGNvcmUncyBoZWxwZXIKZnVu
-Y3Rpb25zLCBhcyBsb25nIGFzIHRoZSBjaGlsZCdzIHN0YXR1cyBpcyAnYWN0aXZlJywgZXZlbiBp
-ZiB0aGUgY2hpbGQncwpydW50aW1lIFBNIGlzIHN0aWxsIGRpc2FibGVkIChpLmUuIHBtX3J1bnRp
-bWVfZW5hYmxlKCkgaGFzbid0IGJlZW4gY2FsbGVkIGZvcgp0aGUgY2hpbGQgeWV0IG9yIHBtX3J1
-bnRpbWVfZGlzYWJsZSgpIGhhcyBiZWVuIGNhbGxlZCBmb3IgaXQpLiAgRm9yIHRoaXMgcmVhc29u
-LApvbmNlIHBtX3J1bnRpbWVfc2V0X2FjdGl2ZSgpIGhhcyBiZWVuIGNhbGxlZCBmb3IgdGhlIGRl
-dmljZSwgcG1fcnVudGltZV9lbmFibGUoKQpzaG91bGQgYmUgY2FsbGVkIGZvciBpdCB0b28gYXMg
-c29vbiBhcyByZWFzb25hYmx5IHBvc3NpYmxlIG9yIGl0cyBydW50aW1lIFBNCnN0YXR1cyBzaG91
-bGQgYmUgY2hhbmdlZCBiYWNrIHRvICdzdXNwZW5kZWQnIHdpdGggdGhlIGhlbHAgb2YKcG1fcnVu
-dGltZV9zZXRfc3VzcGVuZGVkKCkuCgo+IENjOiBDaHJpcyBXaWxzb24gPGNocmlzQGNocmlzLXdp
-bHNvbi5jby51az4KPiBDYzogVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRlPgo+IENjOiBQaWVy
-cmUtTG91aXMgQm9zc2FydCA8cGllcnJlLWxvdWlzLmJvc3NhcnRAbGludXguaW50ZWwuY29tPgo+
-IEZpeGVzOiA0NmU4MzFhYmU4NjQgKCJkcm0vaTkxNS9scGU6IE1hcmsgTFBFIGF1ZGlvIHJ1bnRp
-bWUgcG0gYXMgIm5vIGNhbGxiYWNrcyIiKQo+IFNpZ25lZC1vZmYtYnk6IFZpbGxlIFN5cmrDpGzD
-pCA8dmlsbGUuc3lyamFsYUBsaW51eC5pbnRlbC5jb20+CgpTbyBhY2NvcmRpbmcgdG8gdGhhdCB0
-aGUgYWx0ZXJuYXRpdmUgaXMgdG8gYWRkIGEgY2FsbCB0bwpwbV9ydW50aW1lX2VuYWJsZSgpLiBT
-ZWVtcyBsaWtlIHRoZSBzZW5zaWJsZSBjb3Vyc2Ugb2YgYWN0aW9uIGlzIHRvCm1lcmVseSBtYXJr
-IGl0IGFzIGJ1c3kgYW5kIG5vdCBzZXQgaXQgYXMgYWN0aXZlLgoKV2l0aCB0aGUgY2F2ZWF0IG9m
-IGNoZWNraW5nIHdpdGggQ0kgKyBTTkRfWDg2IDopClJldmlld2VkLWJ5OiBDaHJpcyBXaWxzb24g
-PGNocmlzQGNocmlzLXdpbHNvbi5jby51az4KLUNocmlzCl9fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4
-QGxpc3RzLmZyZWVkZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2ludGVsLWdmeAo=
+Understood. I will see what I can do. I already had them contact
+Takashi, but I will ask if they're willing to give a sign-off. If
+they're having trouble, is it okay to have them contact you Josh?
+
+Let me know.
+On Wed, Oct 24, 2018 at 9:44 AM Josh Boyer <jwboyer@kernel.org> wrote:
+>
+> On Wed, Oct 24, 2018 at 3:37 AM Takashi Iwai <tiwai@suse.de> wrote:
+> >
+> > On Wed, 10 Oct 2018 19:49:23 +0200,
+> > Connor McAdams wrote:
+> > >
+> > > The following changes since commit c6b6265d718d118e28e1ce8f91769aa886b54c94:
+> > >
+> > >   Merge tag 'iwlwifi-fw-2018-10-03' of git://git.kernel.org/pub/scm/linux/kernel/git/iwlwifi/linux-firmware (2018-10-08 09:23:53 -0400)
+> > >
+> > > are available in the git repository at:
+> > >
+> > >   git@github.com:Conmanx360/linux-firmware.git
+> > >
+> > > for you to fetch changes up to cd8899323352e772c5989230f35b1c494e0ab196:
+> > >
+> > >   linux-firmware: Add new firmware for Creative CA0132 HD-Audio Codec (2018-10-09 14:41:12 -0400)
+> > >
+> > > ----------------------------------------------------------------
+> > > These are additional firmware files for CA0132 based sound cards.
+> > >
+> > > Creative has given me permission through email to send these to the
+> > > linux-firmware repository under the same license as the previous ca0132
+> > > firmware. I asked my contact if they would sign-off on it, but they said
+> > > to go ahead and submit it and that if there was any issue to contact
+> > > them.
+> > >
+> > > If you need to contact them, or if there's more info needed, let me know
+> > > and I can get see what I can do.
+>
+> I'd really like to see a Sign-off from someone at Creative.  It's not
+> that I don't trust your word that they agreed to it, but we have
+> nothing to go back and verify they actually agreed to allow this to be
+> redistributable, etc.
+>
+> josh
+>
+> > > ----------------------------------------------------------------
+> > > Connor McAdams (1):
+> > >       linux-firmware: Add new firmware for Creative CA0132 HD-Audio Codec
+> > >
+> > >  WHENCE            |   2 ++
+> > >  ctefx-desktop.bin | Bin 0 -> 655856 bytes
+> > >  ctefx-r3di.bin    | Bin 0 -> 655816 bytes
+> > >  3 files changed, 2 insertions(+)
+> > >  create mode 100644 ctefx-desktop.bin
+> > >  create mode 100644 ctefx-r3di.bin
+> >
+> > Please can anyone take a look at this pull request?
+> >
+> > It's mandatory for the CA0132-based cards that are now supported
+> > better in the upstream kernel tree.
+> >
+> >
+> > Thanks!
+> >
+> > Takashi
