@@ -1,186 +1,95 @@
-From: Mike Brady <mikebrady@eircom.net>
-Subject: Re: [PATCH v2] staging: bcm2835-audio: interpolate
- audio delay
-Date: Wed, 24 Oct 2018 20:54:51 +0100
-Message-ID: <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v2] staging: bcm2835-audio: interpolate audio
+ delay
+Date: Thu, 25 Oct 2018 00:02:34 +0200
+Message-ID: <9884c4f5-2343-e3a4-8d8b-dd2db404ef27@gmail.com>
 References: <20181022191708.GA4659@ubuntu>
  <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
  <EA85FEC9-B1C7-4548-88F5-F0E7BC12158E@eircom.net>
  <046aea96-e0d3-60f4-c61a-c26bb1b5c193@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 12.0 \(3445.100.39\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe07-2.mx.upcmail.net
- (vie01a-dmta-pe07-2.mx.upcmail.net [84.116.36.18])
- by alsa0.perex.cz (Postfix) with ESMTP id C9D12267546
- for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2018 21:54:54 +0200 (CEST)
-Received: from [172.31.216.235] (helo=vie01a-pemc-psmtp-pe12.mail.upcmail.net)
- by vie01a-dmta-pe07.mx.upcmail.net with esmtp (Exim 4.88)
- (envelope-from <mikebrady@eircom.net>) id 1gFPF0-0000Bp-75
- for alsa-devel@alsa-project.org; Wed, 24 Oct 2018 21:54:54 +0200
-In-Reply-To: <046aea96-e0d3-60f4-c61a-c26bb1b5c193@gmail.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Kirill Marinushkin <k.marinushkin@gmail.com>
-Cc: stefan.wahren@i2se.com, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, julia.lawall@lip6.fr, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, eric@anholt.net, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, linux-arm-kernel@lists.infradead.org
+ <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Mike Brady <mikebrady@eircom.net>
+Cc: stefan.wahren@i2se.com, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, eric@anholt.net, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-SGkgS2lyaWxsLiBUaGFua3MgYWdhaW4gZm9yIHlvdXIgY29tbWVudHMuCgo+IE9uIDI0IE9jdCAy
-MDE4LCBhdCAxOTowNiwgS2lyaWxsIE1hcmludXNoa2luIDxrLm1hcmludXNoa2luQGdtYWlsLmNv
-bT4gd3JvdGU6Cj4gCj4gSGVsbG8gTWlrZSwKPiAKPiBPbiAxMC8yNC8xOCAxMDoyMCwgTWlrZSBC
-cmFkeSB3cm90ZToKPj4gSGkgS2lyaWxsLiBUaGFua3MgZm9yIHlvdXIgY29tbWVudHMuCj4+IAo+
-Pj4gT24gMjIgT2N0IDIwMTgsIGF0IDIzOjI1LCBLaXJpbGwgTWFyaW51c2hraW4gPGsubWFyaW51
-c2hraW5AZ21haWwuY29tPiB3cm90ZToKPj4+IAo+Pj4gQUZBSVUsIHRoaXMgcGF0Y2ggaXMgd3Jv
-bmcuIFBsZWFzZSBjb3JyZWN0IG1lLCBtYXliZSBJIG1pc3VuZGVyc3RhbmQgc29tZXRoaW5nLgo+
-Pj4gCj4+Pj4gVGhlIHByb2JsZW0gdGhhdCB0aGlzIHBhdGNoIHNlZWtzIHRvIHJlc29sdmUgaXMg
-dGhhdCB3aGVuIHVzZXJsYW5kIGFza3MgZm9yCj4+Pj4gdGhlIGRlbGF5Cj4+PiAKPj4+IFRoZSB1
-c2Vyc3BhY2UgYXNrcyBub3QgZm9yIGRlbGF5LCBidXQgZm9yIHRoZSBwb2ludGVyLgo+PiAKPj4g
-VGhlIGNhbGwgaW4gcXVlc3Rpb24gaXMgc25kX3BjbV9kZWxheS4gSSBwcmVzdW1lIHRoaXMgZGVs
-YXkgaXMgY2FsY3VsYXRlZCBmcm9tIGtub3dsZWRnZSBvZiB0aGUgc3RyZWFtIHBvc2l0aW9uIOKA
-nHBvcyIsIHRoZSBwZXJpb2QgKGJ1ZmZlcj8pIG51bWJlciAoYW5kIHBlcmlvZC9idWZmZXIgc2l6
-ZSkgYW5kIHRoZSBzbmRfcGNtX3J1bnRpbWUgc3RydWN0dXJl4oCZcyDigJxkZWxheSIgZmllbGQg
-KOKAnHJ1bnRpbWUtPmRlbGF54oCdKS4KPj4gCj4gCj4gCj4gSW4ga2VybmVsLCB0aGlzIGRlbGF5
-IGlzIGNhbGN1bGF0ZWQgaW4gYHNuZF9wY21fY2FsY19kZWxheSgpYCwgZGVmaW5lZCBhdAo+IGBz
-b3VuZC9jb3JlL3BjbV9uYXRpdmUuYzo4ODlgLiBJZiB5b3UgYW5hbHl6ZSBob3cgdGhpcyBjYWxj
-dWxhdGlvbiBpcyBkb25lLCB5b3UKPiB3aWxsIHNlZSB0aGF0IHRoZSByZXR1cm5lZCB2YWx1ZSBp
-cyBhIHN1bW1hcnkgb2YgdGhlIGZvbGxvd2luZyBmaWVsZHM6Cj4gCj4gKiBydW50aW1lLT5zdGF0
-dXMtPmh3X3B0cgo+ICogcnVudGltZS0+YnVmZmVyX3NpemUKPiAqIHJ1bnRpbWUtPmNvbnRyb2wt
-PmFwcGxfcHRyCj4gKiBydW50aW1lLT5ib3VuZGFyeQo+ICogcnVudGltZS0+ZGVsYXkKClRoYXTi
-gJlzIHZlcnkgdXNlZnVsLCB0aGFua3MuCgo+Pj4gWW91IG1vZGlmeSB0aGUgZnVuY3Rpb24sIHdo
-aWNoIGlzIGNhbGxlZCBgc25kX2JjbTI4MzVfcGNtX3BvaW50ZXJgLiBIZXJlIHlvdSBhcmUKPj4+
-IHN1cHBvc2VkIHRvIGluY3JlYXNlIGBhbHNhX3N0cmVhbS0+cG9zYCB3aXRoIHRoZSBwcm9wZXIg
-b2Zmc2V0LiBJbnN0ZWFkLCB5b3UKPj4+IGltaXRhdGUgYSBkZWxheSwgYnV0IGluIGZhY3QgdGhl
-IGRlbGF5IGlzIG5vdCBpbmNyZWFzZWQuCj4+PiAKPj4+IFNvLCB0aGUgcHJvcGVyIHNvbHV0aW9u
-IHNob3VsZCBiZSB0byBmaXggdGhlIHJlcG9ydGVkIHBvaW50ZXIuCj4+IAo+PiBJIHRoaW5rIHRo
-ZXJlIGlzIGEgZGlmZmljdWx0eSB3aXRoIHRoaXMuIFRoZSDigJxwb3PigJ0gcG9pbnRlciBsb29r
-cyB0byBoYXZlIHRvIGJlIG1vZHVsbyB0aGUgYnVmZmVyIHNpemUuIFRoaXMgY2F1c2VzIGEgcHJv
-YmxlbSwgYXMgSSBzZWUgaXQsIGluIHRoYXQgaWYgdGhlIGNhbGN1bGF0ZWQgKHBvcyArIGludGVy
-cG9sYXRlZCBkZWxheSBpbiBieXRlcykgaXMgbG9uZ2VyIHRoYW4gdGhlIGJ1ZmZlciBzaXplCj4g
-Cj4gCj4gVGhlcmUgaXMgbm8gImludGVycG9sYXRlZCBkZWxheSIuIFRoZSBjb25jZXB0IG9mICJp
-bnRlcnBvbGF0ZWQgZGVsYXkiIGlzCj4gaW5jb3JyZWN0LgoKWWVzLCBteSBsYW5ndWFnZSBoZXJl
-IGlzIHdyb25nLiBXaGF0IEkgbWVhbiBpcyB0aGUgZXN0aW1hdGVkIG51bWJlciBvZiBmcmFtZXMg
-b3V0cHV0IHNpbmNlIHRoZSBwb2ludGVyIHdhcyBsYXN0IHVwZGF0ZWQg4oCUIGxldOKAmXMgY2Fs
-bCBpdCB0aGUgYGludGVycG9sYXRlZCBmcmFtZSBjb3VudGAuCgo+IFdoZW4geW91IHBsYXkgc291
-bmQgLSB0aGUgcG9pbnRlciBpbmNyZW1lbnRzLgoKVW5mb3J0dW5hdGVseSwgd2hlbiB5b3UgcGxh
-eSBzb3VuZCwgdGhlIHBvaW50ZXIgZG9lcyBub3QgYWN0dWFsbHkgaW5jcmVtZW50LCBmb3IgdXAg
-dG8gYWJvdXQgMTAgbWlsbGlzZWNvbmRzLiBJIGtub3cgb2Ygbm8gd2F5IHRvIGFjdHVhbGx5IGFj
-Y2VzcyB0aGUgdHJ1ZSDigJxsaXZl4oCdIHBvc2l0aW9uIG9mIHRoZSBmcmFtZSB0aGF0IGlzIGJl
-aW5nIHBsYXllZCBhdCBhbnkgaW5zdGFudDsgaGVuY2UgdGhlIGRlc2lyZSB0byBlc3RpbWF0ZSBp
-dC4KCldoYXQgYWN0dWFsbHkgc2VlbXMgdG8gYmUgaGFwcGVuaW5nIGlzIHRoYXQgd2hlbiBgYmNt
-MjgzNV9wbGF5YmFja19maWZvYCBpcyBjYWxsZWQsIHRoZSBwb2ludGVyIGlzIHVwZGF0ZWQsIGJ1
-dCBhcyBmcmFtZXMgYXJlIGluZGl2aWR1YWxseSBvdXRwdXQgdG8gdGhlIERBQywgdGhpcyBwb2lu
-dGVyIGRvZXMgbm90IGluY3JlbWVudC4gSXQgaXMgbm90IHVwZGF0ZWQgdW50aWwgdGhlIG5leHQg
-dGltZSBgYmNtMjgzNV9wbGF5YmFja19maWZvYCBpcyBjYWxsZWQuCgo+IEJ1dCBpbiB0aGlzIGNv
-bW1pdCB5b3UgaW5jcmVtZW50IHRoZSBkZWxheSwgYXMgaWYgc291bmQgZG9lc24ndCBwbGF5LgoK
-SXQgaXMgdHJ1ZSB0aGF0IHRoZSBwYXRjaCBkb2VzIG1ha2UgdXNlIG9mIHRoZSAgc25kX3BjbV9y
-dW50aW1lIHN0cnVjdHVyZeKAmXMg4oCcZGVsYXkiIGZpZWxkIChha2EgInJ1bnRpbWUtPmRlbGF5
-4oCdIGhlcmUpLiBUaGF0IGZpZWxkIGlzIGRlZmluZWQgZm9yOiDigJwvKiBleHRyYSBkZWxheTsg
-dHlwaWNhbGx5IEZJRk8gc2l6ZSAqL+KAnS4gQ2xlYXJseSBpdCBpcyBub3QgYmVpbmcgdXNlZCBm
-b3IgdGhhdCBoZXJlIOKAlCBpdCBpcyBiZWluZyB1c2VkIHNpbXBseSBiZWNhdXNlIGl0IGlzIHBh
-cnQgb2YgdGhlIGNhbGN1bGF0aW9uIGRvbmUgaW4gc25kX3BjbV9jYWxjX2RlbGF5KCksIGFzIHlv
-dSBwb2ludCBvdXQuIEF0IHByZXNlbnQsIGl0IGxvb2tzIGxpa2UgdGhhdCBmaWVsZCBpc27igJl0
-IGJlaW5nIHVzZWQg4oCT4oCTIGl04oCZcyBzZXQgdG8gemVybyDigJPigJMgYW5kIG5vdCBtb2Rp
-ZmllZCBhbnl3aGVyZSBlbHNlIGluIHRoZSBkcml2ZXIsIEFGQUlDUy4gSWYgaXQgd2FzIG5lY2Vz
-c2FyeSwgaXQgd291bGQgYmUgYSBzaW1wbGUgbWF0dGVyIHRvIHByZXNlcnZlIHdoYXRldmVyIHZh
-bHVlIGl0IHdhcyBnaXZlbi4KCj4+PiBBcyBhIHJlc3VsdCwKPj4+IHVzZXJzcGFjZSB3aWxsIHJl
-Y2lldmUgdGhlIGNvcnJlY3QgZGVsYXksIGluc3RlYWQgb2YgdGhlc2UgY3JhenkgMTAgbXMuCj4+
-IAo+PiBKdXN0IHRvIHBvaW50IG91dCB0aGF0IHdpdGggdGhlIHByb3Bvc2VkIHBhdGNoLCBpdCBh
-cHBlYXJzIHRoYXQgdGhlIGNvcnJlY3QgZGVsYXkgaXMgYmVpbmcgcmVwb3J0ZWQsIChhcGFydCwg
-cG9zc2libHksIGZyb20gYW55IGRlbGF5IG9yaWdpbmFsbHkgc2V0IGluIHRoZSBzbmRfcGNtX2Rl
-bGF5IGZpZWxkLCBhcyBtZW50aW9uZWQgYWJvdmUpLgo+IAo+IAo+IFRoZW4gSSB3b3VsZCBsaWtl
-IHRvIHBvaW50IG91dCB0aGUgYWxzYS1saWIgZnVuY3Rpb24gYHNuZF9wY21fYXZhaWwoKWAgLSBp
-dCB3aWxsIHJldHVybiB0aGUgd3JvbmcgdmFsdWUuCgpJdCBpcyBhbHJlYWR5IHRoZSBjYXNlIHRo
-YXQgc25kX3BjbV9hdmFpbCgpIGRvZXMgbm90IHJldHVybiB0aGUgdHJ1ZSBkZWxheS4gVGhlIEFM
-U0EgZG9jdW1lbnRhdGlvbiBzdGF0ZXM6ICJUaGUgdmFsdWUgcmV0dXJuZWQgYnkgdGhhdCBjYWxs
-IFtpLmUuIHRoZSBzbmRfcGNtX2F2YWlsKigpIGZ1bmN0aW9uc10gaXMgbm90IGRpcmVjdGx5IHJl
-bGF0ZWQgdG8gdGhlIGRlbGF54oCm4oCdIAoKS2luZCByZWdhcmRzCk1pa2UKCj4+IAo+Pj4gRllJ
-LCB0aGVyZSBpcwo+Pj4+IGEgZGlzY3Vzc2lvbiBvZiB0aGUgZWZmZWN0cyBvZiBhIGRvd25zdHJl
-YW0gZXF1aXZhbGVudCBvZiB0aGlzIHN1Z2dlc3RlZCBwYXRjaAo+Pj4+IGF0Ogo+Pj4+IGh0dHBz
-Oi8vZ2l0aHViLmNvbS9yYXNwYmVycnlwaS9maXJtd2FyZS9pc3N1ZXMvMTAyNiNpc3N1ZWNvbW1l
-bnQtNDE1NzQ2MDE2Lgo+Pj4gCj4+PiBUaGFuayB5b3UgZm9yIHRoZSBsaW5rLCBpdCBjbGFyaWZp
-ZWQgZm9yIG1lIHdoYXQgeW91IHRyeSB0byBhY2hpZXZlLgo+Pj4gCj4+PiBPbiAxMC8yMi8xOCAy
-MToxNywgTWlrZSBCcmFkeSB3cm90ZToKPj4+PiBXaGVuIHRoZSBCQ00yODM1IGF1ZGlvIG91dHB1
-dCBpcyB1c2VkLCB1c2Vyc3BhY2Ugc2VlcyBhIGppdHRlciB1cCB0byAxMG1zCj4+Pj4gaW4gdGhl
-IGF1ZGlvIHBvc2l0aW9uLCBha2EgImRlbGF5IiAtLSB0aGUgbnVtYmVyIG9mIGZyYW1lcyB0aGF0
-IG11c3QKPj4+PiBiZSBvdXRwdXQgYmVmb3JlIGEgbmV3IGZyYW1lIHdvdWxkIGJlIHBsYXllZC4K
-Pj4+PiBNYWtlIHRoaXMgYSBiaXQgbmljZXIgZm9yIHVzZXJzcGFjZSBieSBpbnRlcnBvbGF0aW5n
-IHRoZSBwb3NpdGlvbgo+Pj4+IHVzaW5nIHRoZSBDUFUgY2xvY2suCj4+Pj4gVGhlIG92ZXJoZWFk
-IGlzIHNtYWxsIC0tIGFuIGV4dHJhIGt0aW1lX2dldCgpIGV2ZXJ5IHRpbWUgYSBHUFUgbWVzc2Fn
-ZQo+Pj4+IGlzIHNlbnQgLS0gYW5kIGFub3RoZXIgY2FsbCBhbmQgYSBmZXcgY2FsY3VsYXRpb25z
-IHdoZW5ldmVyIHRoZSBkZWxheQo+Pj4+IGlzIHNvdWdodCBmcm9tIHVzZXJsYW5kLgo+Pj4+IEF0
-IDQ4LDAwMCBmcmFtZXMgcGVyIHNlY29uZCwgaS5lLiBhcHByb3hpbWF0ZWx5IDIwIG1pY3Jvc2Vj
-b25kcyBwZXIKPj4+PiBmcmFtZSwgaXQgd291bGQgdGFrZSBhIGNsb2NrIGluYWNjdXJhY3kgb2YK
-Pj4+PiAyMCBtaWNyb3NlY29uZHMgaW4gMTAgbWlsbGlzZWNvbmRzIC0tIDIsMDAwIHBhcnRzIHBl
-ciBtaWxsaW9uIC0tCj4+Pj4gdG8gcmVzdWx0IGluIGFuIGluYWNjdXJhdGUgZXN0aW1hdGUsIHdo
-ZXJlYXMKPj4+PiBjcnlzdGFsLSBvciByZXNvbmF0b3ItYmFzZWQgY2xvY2tzIHR5cGljYWxseSBo
-YXZlIGFuCj4+Pj4gaW5hY2N1cmFjeSBvZiAxMHMgdG8gMTAwcyBvZiBwYXJ0cyBwZXIgbWlsbGlv
-bi4KPj4+PiAKPj4+PiBTaWduZWQtb2ZmLWJ5OiBNaWtlIEJyYWR5IDxtaWtlYnJhZHlAZWlyY29t
-Lm5ldD4KPj4+PiAtLS0KPj4+PiBDaGFuZ2VzIGluIHYyIC0tIHJlbW92ZSBpbmFwcHJvcHJpYXRl
-IGFkZGl0aW9uIG9mIFNORFJWX1BDTV9JTkZPX0JBVENIIGZsYWcKPj4+PiAKPj4+PiAuLi4vdmMw
-NF9zZXJ2aWNlcy9iY20yODM1LWF1ZGlvL2JjbTI4MzUtcGNtLmMgfCAyMCArKysrKysrKysrKysr
-KysrKysrCj4+Pj4gLi4uL3ZjMDRfc2VydmljZXMvYmNtMjgzNS1hdWRpby9iY20yODM1LmggICAg
-IHwgIDEgKwo+Pj4+IDIgZmlsZXMgY2hhbmdlZCwgMjEgaW5zZXJ0aW9ucygrKQo+Pj4+IAo+Pj4+
-IGRpZmYgLS1naXQgYS9kcml2ZXJzL3N0YWdpbmcvdmMwNF9zZXJ2aWNlcy9iY20yODM1LWF1ZGlv
-L2JjbTI4MzUtcGNtLmMgYi9kcml2ZXJzL3N0YWdpbmcvdmMwNF9zZXJ2aWNlcy9iY20yODM1LWF1
-ZGlvL2JjbTI4MzUtcGNtLmMKPj4+PiBpbmRleCBlNjZkYTExYWY1Y2YuLjkwNTNiOTk2Y2FkYSAx
-MDA2NDQKPj4+PiAtLS0gYS9kcml2ZXJzL3N0YWdpbmcvdmMwNF9zZXJ2aWNlcy9iY20yODM1LWF1
-ZGlvL2JjbTI4MzUtcGNtLmMKPj4+PiArKysgYi9kcml2ZXJzL3N0YWdpbmcvdmMwNF9zZXJ2aWNl
-cy9iY20yODM1LWF1ZGlvL2JjbTI4MzUtcGNtLmMKPj4+PiBAQCAtNzQsNiArNzQsNyBAQCB2b2lk
-IGJjbTI4MzVfcGxheWJhY2tfZmlmbyhzdHJ1Y3QgYmNtMjgzNV9hbHNhX3N0cmVhbSAqYWxzYV9z
-dHJlYW0sCj4+Pj4gCWF0b21pY19zZXQoJmFsc2Ffc3RyZWFtLT5wb3MsIHBvcyk7Cj4+Pj4gCj4+
-Pj4gCWFsc2Ffc3RyZWFtLT5wZXJpb2Rfb2Zmc2V0ICs9IGJ5dGVzOwo+Pj4+ICsJYWxzYV9zdHJl
-YW0tPmludGVycG9sYXRlX3N0YXJ0ID0ga3RpbWVfZ2V0KCk7Cj4+Pj4gCWlmIChhbHNhX3N0cmVh
-bS0+cGVyaW9kX29mZnNldCA+PSBhbHNhX3N0cmVhbS0+cGVyaW9kX3NpemUpIHsKPj4+PiAJCWFs
-c2Ffc3RyZWFtLT5wZXJpb2Rfb2Zmc2V0ICU9IGFsc2Ffc3RyZWFtLT5wZXJpb2Rfc2l6ZTsKPj4+
-PiAJCXNuZF9wY21fcGVyaW9kX2VsYXBzZWQoc3Vic3RyZWFtKTsKPj4+PiBAQCAtMjQzLDYgKzI0
-NCw3IEBAIHN0YXRpYyBpbnQgc25kX2JjbTI4MzVfcGNtX3ByZXBhcmUoc3RydWN0IHNuZF9wY21f
-c3Vic3RyZWFtICpzdWJzdHJlYW0pCj4+Pj4gCWF0b21pY19zZXQoJmFsc2Ffc3RyZWFtLT5wb3Ms
-IDApOwo+Pj4+IAlhbHNhX3N0cmVhbS0+cGVyaW9kX29mZnNldCA9IDA7Cj4+Pj4gCWFsc2Ffc3Ry
-ZWFtLT5kcmFpbmluZyA9IGZhbHNlOwo+Pj4+ICsJYWxzYV9zdHJlYW0tPmludGVycG9sYXRlX3N0
-YXJ0ID0ga3RpbWVfZ2V0KCk7Cj4+Pj4gCj4+Pj4gCXJldHVybiAwOwo+Pj4+IH0KPj4+PiBAQCAt
-MjkyLDYgKzI5NCwyNCBAQCBzbmRfYmNtMjgzNV9wY21fcG9pbnRlcihzdHJ1Y3Qgc25kX3BjbV9z
-dWJzdHJlYW0gKnN1YnN0cmVhbSkKPj4+PiB7Cj4+Pj4gCXN0cnVjdCBzbmRfcGNtX3J1bnRpbWUg
-KnJ1bnRpbWUgPSBzdWJzdHJlYW0tPnJ1bnRpbWU7Cj4+Pj4gCXN0cnVjdCBiY20yODM1X2Fsc2Ff
-c3RyZWFtICphbHNhX3N0cmVhbSA9IHJ1bnRpbWUtPnByaXZhdGVfZGF0YTsKPj4+PiArCWt0aW1l
-X3Qgbm93ID0ga3RpbWVfZ2V0KCk7Cj4+Pj4gKwo+Pj4+ICsJLyogR2l2ZSB1c2Vyc3BhY2UgYmV0
-dGVyIGRlbGF5IHJlcG9ydGluZyBieSBpbnRlcnBvbGF0aW5nIGJldHdlZW4gR1BVCj4+Pj4gKwkg
-KiBub3RpZmljYXRpb25zLCBhc3N1bWluZyBhdWRpbyBzcGVlZCBpcyBjbG9zZSBlbm91Z2ggdG8g
-dGhlIGNsb2NrCj4+Pj4gKwkgKiB1c2VkIGZvciBrdGltZQo+Pj4+ICsJICovCj4+Pj4gKwo+Pj4+
-ICsJaWYgKChrdGltZV90b19ucyhhbHNhX3N0cmVhbS0+aW50ZXJwb2xhdGVfc3RhcnQpKSAmJgo+
-Pj4+ICsJICAgIChrdGltZV9jb21wYXJlKGFsc2Ffc3RyZWFtLT5pbnRlcnBvbGF0ZV9zdGFydCwg
-bm93KSA8IDApKSB7Cj4+Pj4gKwkJdTY0IGludGVydmFsID0KPj4+PiArCQkJKGt0aW1lX3RvX25z
-KGt0aW1lX3N1Yihub3csCj4+Pj4gKwkJCQlhbHNhX3N0cmVhbS0+aW50ZXJwb2xhdGVfc3RhcnQp
-KSk7Cj4+Pj4gKwkJdTY0IGZyYW1lc19vdXRwdXRfaW5faW50ZXJ2YWwgPQo+Pj4+ICsJCQlkaXZf
-dTY0KChpbnRlcnZhbCAqIHJ1bnRpbWUtPnJhdGUpLCAxMDAwMDAwMDAwKTsKPj4+PiArCQlzbmRf
-cGNtX3NmcmFtZXNfdCBmcmFtZXNfb3V0cHV0X2luX2ludGVydmFsX3NpemVkID0KPj4+PiArCQkJ
-LWZyYW1lc19vdXRwdXRfaW5faW50ZXJ2YWw7Cj4+Pj4gKwkJcnVudGltZS0+ZGVsYXkgPSBmcmFt
-ZXNfb3V0cHV0X2luX2ludGVydmFsX3NpemVkOwo+Pj4+ICsJfQo+Pj4+IAo+Pj4+IAlyZXR1cm4g
-c25kX3BjbV9pbmRpcmVjdF9wbGF5YmFja19wb2ludGVyKHN1YnN0cmVhbSwKPj4+PiAJCSZhbHNh
-X3N0cmVhbS0+cGNtX2luZGlyZWN0LAo+Pj4+IGRpZmYgLS1naXQgYS9kcml2ZXJzL3N0YWdpbmcv
-dmMwNF9zZXJ2aWNlcy9iY20yODM1LWF1ZGlvL2JjbTI4MzUuaCBiL2RyaXZlcnMvc3RhZ2luZy92
-YzA0X3NlcnZpY2VzL2JjbTI4MzUtYXVkaW8vYmNtMjgzNS5oCj4+Pj4gaW5kZXggZTEzNDM1ZDFj
-MjA1Li41OTVhZDU4NDI0M2YgMTAwNjQ0Cj4+Pj4gLS0tIGEvZHJpdmVycy9zdGFnaW5nL3ZjMDRf
-c2VydmljZXMvYmNtMjgzNS1hdWRpby9iY20yODM1LmgKPj4+PiArKysgYi9kcml2ZXJzL3N0YWdp
-bmcvdmMwNF9zZXJ2aWNlcy9iY20yODM1LWF1ZGlvL2JjbTI4MzUuaAo+Pj4+IEBAIC03OCw2ICs3
-OCw3IEBAIHN0cnVjdCBiY20yODM1X2Fsc2Ffc3RyZWFtIHsKPj4+PiAJdW5zaWduZWQgaW50IHBl
-cmlvZF9vZmZzZXQ7Cj4+Pj4gCXVuc2lnbmVkIGludCBidWZmZXJfc2l6ZTsKPj4+PiAJdW5zaWdu
-ZWQgaW50IHBlcmlvZF9zaXplOwo+Pj4+ICsJa3RpbWVfdCBpbnRlcnBvbGF0ZV9zdGFydDsKPj4+
-PiAKPj4+PiAJc3RydWN0IGJjbTI4MzVfYXVkaW9faW5zdGFuY2UgKmluc3RhbmNlOwo+Pj4+IAlp
-bnQgaWR4Owo+Pj4+IAo+Pj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX18KPj4+IEFsc2EtZGV2ZWwgbWFpbGluZyBsaXN0Cj4+PiBBbHNhLWRldmVsQGFsc2Et
-cHJvamVjdC5vcmcKPj4+IGh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9hbHNhLWRldmVsCj4+IAo+IF9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fCj4gQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKPiBBbHNhLWRldmVsQGFs
-c2EtcHJvamVjdC5vcmcKPiBodHRwOi8vbWFpbG1hbi5hbHNhLXByb2plY3Qub3JnL21haWxtYW4v
-bGlzdGluZm8vYWxzYS1kZXZlbAoKX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2pl
-Y3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9h
-bHNhLWRldmVsCg==
+Hello Mike,
+
+We are not on the same page. What you hear is not what I tell you.
+Either you don't understand what happens in your commit, or I don't understand
+what happens in the driver.
+
+Hopefully somebody in the community can comment here.
+
+On 10/24/18 21:54, Mike Brady wrote:
+>>>> You modify the function, which is called `snd_bcm2835_pcm_pointer`. Here you are
+>>>> supposed to increase `alsa_stream->pos` with the proper offset. Instead, you
+>>>> imitate a delay, but in fact the delay is not increased.
+>>>>
+>>>> So, the proper solution should be to fix the reported pointer.
+>>>
+>>> I think there is a difficulty with this. The “pos” pointer looks to have to be modulo the buffer size. This causes a problem, as I see it, in that if the calculated (pos + interpolated delay in bytes) is longer than the buffer size
+>>
+>>
+>> There is no "interpolated delay". The concept of "interpolated delay" is
+>> incorrect.
+> 
+> Yes, my language here is wrong. What I mean is the estimated number of frames output since the pointer was last updated — let’s call it the `interpolated frame count`.
+> 
+
+That's not what I mean. From my perspective, the problem is not in language, but
+in the concept which you introduce here.
+
+>> When you play sound - the pointer increments.
+> 
+> Unfortunately, when you play sound, the pointer does not actually increment, for up to about 10 milliseconds. I know of no way to actually access the true “live” position of the frame that is being played at any instant; hence the desire to estimate it.
+> 
+
+Your vision of situation in the opposite from my vision. What you see as a
+symptom - I see as a root cause. As I see, you should fix the
+pointer-not-incrementing. Why do you think that it's okay that the pointer is
+not updating during sound play? Why do you insist that there is a delay? I don't
+understand why we are so stuck here.
+
+> What actually seems to be happening is that when `bcm2835_playback_fifo` is called, the pointer is updated, but as frames are individually output to the DAC, this pointer does not increment. It is not updated until the next time `bcm2835_playback_fifo` is called.
+> 
+>> But in this commit you increment the delay, as if sound doesn't play.
+> 
+> It is true that the patch does make use of the  snd_pcm_runtime structure’s “delay" field (aka "runtime->delay” here). That field is defined for: “/* extra delay; typically FIFO size */”. Clearly it is not being used for that here — it is being used simply because it is part of the calculation done in snd_pcm_calc_delay(), as you point out. At present, it looks like that field isn’t being used –– it’s set to zero –– and not modified anywhere else in the driver, AFAICS. If it was necessary, it would be a simple matter to preserve whatever value it was given.
+> 
+
+That's not what I am talking about. Somehow we don't understand each other.
+
+>>>> As a result,
+>>>> userspace will recieve the correct delay, instead of these crazy 10 ms.
+>>>
+>>> Just to point out that with the proposed patch, it appears that the correct delay is being reported, (apart, possibly, from any delay originally set in the snd_pcm_delay field, as mentioned above).
+>>
+>>
+>> Then I would like to point out the alsa-lib function `snd_pcm_avail()` - it will return the wrong value.
+> 
+> It is already the case that snd_pcm_avail() does not return the true delay. The ALSA documentation states: "The value returned by that call [i.e. the snd_pcm_avail*() functions] is not directly related to the delay…” 
+> 
+
+Do you mean, that you are submitting the patch into the upstream kernel without
+reading the code?
+
+snd_pcm_avail() is calculated based on:
+
+* hw_ptr
+* buffer_size
+* appl_ptr
+* boundary
+
+If you fix hw_ptr - it will fix both snd_pcm_delay() and snd_pcm_avail().
+Instead, you invent the "interpolated delay", which in fact only compensates the
+wrong hw_ptr instead of fixing it.
+
+Best Regards,
+Kirill
