@@ -1,21 +1,30 @@
-From: Vinod <vkoul@kernel.org>
-Subject: Re: Audio miniconference schedule
-Date: Wed, 24 Oct 2018 11:08:32 +0100
-Message-ID: <20181024100832.GK25374@vkoul-mobl>
-References: <20181002195849.GA23818@sirena.org.uk>
- <s5hsh0vq0g9.wl-tiwai@suse.de>
- <39943b49-5f27-0b01-8a78-f69206f8bf7f@perex.cz>
- <s5ho9bjpzn8.wl-tiwai@suse.de> <20181024081130.GJ25374@vkoul-mobl>
- <a31f4e12-f224-3f3c-f495-3664f4d57bd7@perex.cz>
+From: Jaroslav Kysela <perex@perex.cz>
+Subject: Re: [PATCH - Intervals v2 1/1] interval: Interpret (x
+ x+1] correctly and return x+1
+Date: Wed, 24 Oct 2018 12:15:29 +0200
+Message-ID: <003f31d0-01a5-126d-fcda-1c8ca67ad9aa@perex.cz>
+References: <1539862404-21955-1-git-send-email-twischer@de.adit-jv.com>
+ <s5hbm7rv4wf.wl-tiwai@suse.de>
+ <81531fd0-2173-c274-5279-a48fdfdf5121@de.adit-jv.com>
+ <s5hr2gntmt0.wl-tiwai@suse.de>
+ <4fb00512-47f2-4a1f-b434-ccec896355e9@de.adit-jv.com>
+ <s5h36t3ti74.wl-tiwai@suse.de>
+ <c376a304-a683-d0aa-30b9-df65f9884644@de.adit-jv.com>
+ <s5hftx3qdzf.wl-tiwai@suse.de>
+ <811d3dc0-775b-6d71-9aed-b25f53f3ab81@de.adit-jv.com>
+ <s5hva5rq0wi.wl-tiwai@suse.de>
+ <47609653-dbb6-b00b-e533-134f3e196d8f@de.adit-jv.com>
+ <s5hk1m7pyy7.wl-tiwai@suse.de>
+ <a20849a5-925b-4258-c12f-dcdc503ce2e9@de.adit-jv.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id 8B5532675B1
- for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2018 12:08:40 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <a31f4e12-f224-3f3c-f495-3664f4d57bd7@perex.cz>
+Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
+ by alsa0.perex.cz (Postfix) with ESMTP id 874992675B1
+ for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2018 12:15:33 +0200 (CEST)
+In-Reply-To: <a20849a5-925b-4258-c12f-dcdc503ce2e9@de.adit-jv.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -25,37 +34,56 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>
+To: alsa-devel@alsa-project.org
+Cc: Takashi Iwai <tiwai@suse.de>, Timo Wischer <twischer@de.adit-jv.com>
 List-Id: alsa-devel@alsa-project.org
 
-On 24-10-18, 10:51, Jaroslav Kysela wrote:
-> Dne 24.10.2018 v 10:11 Vinod napsal(a):
-
-> >>> Mark's notes are here:
-> >>>
-> >>> https://docs.google.com/document/d/1JtjpSGkMMCeDK43LTc0yLrOer1QL5JwxPQMmHFAL55o
-> >>
-> >> Thanks, I forgot his later mail :)
-> >>
-> >>> If anyone has something more, please, add a link to this document.
-> >>> Perhaps, I should create a copy to www.alsa-project.org.
-> > 
-> > That would be great to have this on www.alsa-project.org, I think
-> > presentations from Sakamoto-san, Charles and Patrick should be uploaded
-> > there as well..
-> > 
-> >> It's a good idea.  We have a copy of the notes of 2017 meeting, too.
-> > 
-> > Ah where, can this be uploaded to www.alsa-project.org as well please..
+Dne 24.10.2018 v 10:05 Timo Wischer napsal(a):
+> On 10/24/18 09:48, Takashi Iwai wrote:
+>> If it can be reproduced with the loopback driver, it makes easier to
+>> debug.  But you modified something?  Then it has to be clarified at
+>> first; i.e. let others reproduce your problem.  Otherwise we have no
+>> merit to debug it in our side :)
 > 
-> I reformated notes to mediawiki markup and notes for both years are
-> available from the main page. Here are direct links:
-> 
-> http://www.alsa-project.org/main/index.php/Miniconf_2018
-> http://www.alsa-project.org/main/index.php/Miniconf_2017
+> Okay. Sorry for the inconvenience.
 
-Great, thanks Jaroslav
+I am working on a regression which was caused with your
+9bb985c382bab8c3bf83c0d23f50195288d3cf9f change:
+
+
+http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=9bb985c382bab8c3bf83c0d23f50195288d3cf9f
+
+Regression bug: https://bugzilla.redhat.com/show_bug.cgi?id=1640602
+
+This change reordered/corrected intervals and I can confirm that
+snd_interval_single() and snd_interval_value() functions must be updated
+otherwise refining fails with some parameters.
+
+Reproducer:
+
+~/.asoundrc:
+
+  pcm.aloop44100 {
+    type rate
+    slave.pcm hw:Loopback
+    slave.rate 44100
+  }
+
+$ LD_PRELOAD=./src/.libs/libasound.so.2.0.0 aplay -Daloop44100 -c2  -r
+44100 -fS16_LE --period-time=62500 --buffer-size=11025  -v -d 1 /dev/zero
+
+This command works with 9bb985c382bab8c3bf83c0d23f50195288d3cf9f
+reverted and with your new patch applied. It does not work only with
+9bb985c382bab8c3bf83c0d23f50195288d3cf9f.
+
+I applied your patch to alsa-lib repo:
+
+http://git.alsa-project.org/?p=alsa-lib.git;a=commit;h=b420056604f06117c967b65d43d01536c5ffcbc9
+
+Thanks for your work.
+
+					Jaroslav
 
 -- 
-~Vinod
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
