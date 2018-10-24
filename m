@@ -1,167 +1,89 @@
-From: syzbot <syzbot+d5136d4d3240cbe45a2a@syzkaller.appspotmail.com>
-Subject: KASAN: use-after-free Read in snd_seq_timer_interrupt
-Date: Wed, 24 Oct 2018 07:11:02 -0700
-Message-ID: <000000000000705cf30578fa0e3c@google.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: Re: snd-usb-audio Buffer Sizes and Round Trip Latency
+Date: Wed, 24 Oct 2018 10:20:09 -0400 (EDT)
+Message-ID: <Pine.LNX.4.44L0.1810241010560.1534-100000@iolanthe.rowland.org>
+References: <CANwerB2h3MSuVWM03hpJ2pR-O4h6KYqm56DxHB8WuhW+7m5B+A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-To: alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org, perex@perex.cz, syzkaller-bugs@googlegroups.com, tiwai@suse.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from iolanthe.rowland.org (iolanthe.rowland.org [192.131.102.54])
+ by alsa0.perex.cz (Postfix) with SMTP id A1DCF2675BB
+ for <alsa-devel@alsa-project.org>; Wed, 24 Oct 2018 16:20:11 +0200 (CEST)
+In-Reply-To: <CANwerB2h3MSuVWM03hpJ2pR-O4h6KYqm56DxHB8WuhW+7m5B+A@mail.gmail.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Jonathan Liu <net147@gmail.com>
+Cc: Takashi Iwai <tiwai@suse.de>, ALSA development <alsa-devel@alsa-project.org>, Clemens Ladisch <clemens@ladisch.de>, pierre-louis.bossart@linux.intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello,
+On Wed, 24 Oct 2018, Jonathan Liu wrote:
 
-syzbot found the following crash on:
+> > Both too much information and too little.  Instead, let's see the
+> > device's entry in /sys/kernel/debug/usb/devices, copied at a time while
+> > the test is running.  That will omit a lot of irrelevant information
+> > and will indicate which of all the possible device settings is the one
+> > actually in use.
+> >
+> 
+> T:  Bus=01 Lev=01 Prnt=01 Port=04 Cnt=01 Dev#=  2 Spd=480  MxCh= 0
+> D:  Ver= 2.00 Cls=ef(misc ) Sub=02 Prot=01 MxPS=64 #Cfgs=  1
+> P:  Vendor=2a39 ProdID=3fb0 Rev= 0.01
+> S:  Manufacturer=RME
+> S:  Product=Babyface Pro (71964099)
+> S:  SerialNumber=EF72ADBCCECA4C8
+> C:* #Ifs= 4 Cfg#= 1 Atr=80 MxPwr=100mA
+> A:  FirstIf#= 0 IfCount= 4 Cls=01(audio) Sub=00 Prot=20
+> I:* If#= 0 Alt= 0 #EPs= 0 Cls=01(audio) Sub=01 Prot=20 Driver=snd-usb-audio
 
-HEAD commit:    44786880df19 Merge branch 'parisc-4.20-1' of git://git.ker..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=178c8bad400000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5071a2e3cb82c943
-dashboard link: https://syzkaller.appspot.com/bug?extid=d5136d4d3240cbe45a2a
-compiler:       gcc (GCC) 8.0.1 20180413 (experimental)
+This is the control interface; it is not directly involved.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+> I:  If#= 1 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> I:* If#= 1 Alt= 1 #EPs= 2 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> E:  Ad=03(O) Atr=05(Isoc) MxPS= 150 Ivl=125us
+> E:  Ad=83(I) Atr=11(Isoc) MxPS=   4 Ivl=1ms
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+d5136d4d3240cbe45a2a@syzkaller.appspotmail.com
+This is one of the interfaces in use; it handles playback data (i.e.,
+data sent to the device).  The maxpacket size is 150 bytes, which is 25
+frames at 3 bytes/sample and 2 channels.  The interval is 125 us,
+giving a maximum throughput of 200 frames/ms, comfortably larger than
+the bandwidth being used (48 frames/ms).
 
-==================================================================
-BUG: KASAN: use-after-free in snd_seq_timer_interrupt+0x364/0x3e0  
-sound/core/seq/seq_timer.c:145
-Read of size 8 at addr ffff8801cf71c118 by task syz-executor0/24085
+> I:  If#= 1 Alt= 2 #EPs= 2 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> E:  Ad=03(O) Atr=05(Isoc) MxPS= 900 Ivl=125us
+> E:  Ad=83(I) Atr=11(Isoc) MxPS=   4 Ivl=1ms
+> I:  If#= 2 Alt= 0 #EPs= 0 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> I:  If#= 2 Alt= 1 #EPs= 1 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> E:  Ad=84(I) Atr=05(Isoc) MxPS= 900 Ivl=125us
+> I:* If#= 2 Alt= 2 #EPs= 1 Cls=01(audio) Sub=02 Prot=20 Driver=snd-usb-audio
+> E:  Ad=84(I) Atr=05(Isoc) MxPS= 150 Ivl=125us
 
-CPU: 1 PID: 24085 Comm: syz-executor0 Not tainted 4.19.0+ #300
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  <IRQ>
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x244/0x39d lib/dump_stack.c:113
-  print_address_description.cold.7+0x9/0x1ff mm/kasan/report.c:256
-  kasan_report_error mm/kasan/report.c:354 [inline]
-  kasan_report.cold.8+0x242/0x309 mm/kasan/report.c:412
-  __asan_report_load8_noabort+0x14/0x20 mm/kasan/report.c:433
-  snd_seq_timer_interrupt+0x364/0x3e0 sound/core/seq/seq_timer.c:145
-  snd_timer_interrupt+0x9ff/0x1660 sound/core/timer.c:855
-  snd_timer_s_function+0xcd/0x130 sound/core/timer.c:1094
-  call_timer_fn+0x272/0x920 kernel/time/timer.c:1326
-  expire_timers kernel/time/timer.c:1363 [inline]
-  __run_timers+0x7e5/0xc70 kernel/time/timer.c:1682
-  run_timer_softirq+0x52/0xb0 kernel/time/timer.c:1695
-  __do_softirq+0x308/0xb7e kernel/softirq.c:292
-  invoke_softirq kernel/softirq.c:373 [inline]
-  irq_exit+0x17f/0x1c0 kernel/softirq.c:413
-  exiting_irq arch/x86/include/asm/apic.h:536 [inline]
-  smp_apic_timer_interrupt+0x1cb/0x760 arch/x86/kernel/apic/apic.c:1061
-  apic_timer_interrupt+0xf/0x20 arch/x86/entry/entry_64.S:801
-  </IRQ>
-RIP: 0010:arch_local_irq_restore arch/x86/include/asm/paravirt.h:761  
-[inline]
-RIP: 0010:__raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160  
-[inline]
-RIP: 0010:_raw_spin_unlock_irqrestore+0xaf/0xd0  
-kernel/locking/spinlock.c:184
-Code: 30 f6 31 89 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c  
-02 00 75 28 48 83 3d 28 cd 7c 01 00 74 15 48 89 df 57 9d <0f> 1f 44 00 00  
-eb ad e8 7c 52 4b f9 eb bb 0f 0b 0f 0b e8 8a 54 0e
-RSP: 0018:ffff880181eaf508 EFLAGS: 00000282 ORIG_RAX: ffffffffffffff13
-RAX: dffffc0000000000 RBX: 0000000000000282 RCX: 0000000000000000
-RDX: 1ffffffff1263ec6 RSI: 0000000000000001 RDI: 0000000000000282
-RBP: ffff880181eaf518 R08: ffff88018378a140 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: ffff8801c0b94ac0
-R13: ffff8801c0b94300 R14: ffff8801daf2cc40 R15: 0000000000000001
-  try_to_wake_up+0x10a/0x12e0 kernel/sched/core.c:2056
-  wake_up_process kernel/sched/core.c:2124 [inline]
-  wake_up_q+0xa4/0x100 kernel/sched/core.c:440
-  futex_wake+0x61f/0x760 kernel/futex.c:1556
-  do_futex+0x2e4/0x26d0 kernel/futex.c:3533
-  __do_sys_futex kernel/futex.c:3589 [inline]
-  __se_sys_futex kernel/futex.c:3557 [inline]
-  __x64_sys_futex+0x472/0x6a0 kernel/futex.c:3557
-  do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x457569
-Code: fd b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:0000000000a3fbf8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-RAX: ffffffffffffffda RBX: 000000000072bfa0 RCX: 0000000000457569
-RDX: 0000000000000000 RSI: 0000000000000081 RDI: 000000000072bfa8
-RBP: 00000000000003b7 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000a3fcb0 R11: 0000000000000246 R12: 000000000072bfac
-R13: 000000000072bfac R14: 0000000000000003 R15: 0000000000000001
+This is the other interface being used for audio data; it handles the 
+record direction.  Parameters are the same as for playback.
 
-Allocated by task 24073:
-  save_stack+0x43/0xd0 mm/kasan/kasan.c:448
-  set_track mm/kasan/kasan.c:460 [inline]
-  kasan_kmalloc+0xc7/0xe0 mm/kasan/kasan.c:553
-  kmem_cache_alloc_trace+0x152/0x750 mm/slab.c:3620
-  kmalloc include/linux/slab.h:513 [inline]
-  kzalloc include/linux/slab.h:707 [inline]
-  queue_new sound/core/seq/seq_queue.c:113 [inline]
-  snd_seq_queue_alloc+0xab/0x5b0 sound/core/seq/seq_queue.c:185
-  snd_seq_ioctl_create_queue+0xb0/0x320 sound/core/seq/seq_clientmgr.c:1522
-  snd_seq_ioctl+0x253/0x440 sound/core/seq/seq_clientmgr.c:2138
-  vfs_ioctl fs/ioctl.c:46 [inline]
-  file_ioctl fs/ioctl.c:501 [inline]
-  do_vfs_ioctl+0x1de/0x1720 fs/ioctl.c:685
-  ksys_ioctl+0xa9/0xd0 fs/ioctl.c:702
-  __do_sys_ioctl fs/ioctl.c:709 [inline]
-  __se_sys_ioctl fs/ioctl.c:707 [inline]
-  __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:707
-  do_syscall_64+0x1b9/0x820 arch/x86/entry/common.c:290
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+> I:* If#= 3 Alt= 0 #EPs= 2 Cls=01(audio) Sub=03 Prot=00 Driver=snd-usb-audio
+> E:  Ad=07(O) Atr=02(Bulk) MxPS= 512 Ivl=0ms
+> E:  Ad=86(I) Atr=02(Bulk) MxPS= 512 Ivl=0ms
 
-Freed by task 24072:
-  save_stack+0x43/0xd0 mm/kasan/kasan.c:448
-  set_track mm/kasan/kasan.c:460 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/kasan.c:521
-  kasan_slab_free+0xe/0x10 mm/kasan/kasan.c:528
-  __cache_free mm/slab.c:3498 [inline]
-  kfree+0xcf/0x230 mm/slab.c:3813
-  queue_delete+0x90/0xb0 sound/core/seq/seq_queue.c:156
-  snd_seq_queue_client_leave+0x36/0x170 sound/core/seq/seq_queue.c:584
-  seq_free_client1.part.9+0xf4/0x270 sound/core/seq/seq_clientmgr.c:263
-  seq_free_client1 sound/core/seq/seq_clientmgr.c:256 [inline]
-  seq_free_client+0x82/0x100 sound/core/seq/seq_clientmgr.c:285
-  snd_seq_release+0x51/0xe0 sound/core/seq/seq_clientmgr.c:366
-  __fput+0x385/0xa30 fs/file_table.c:278
-  ____fput+0x15/0x20 fs/file_table.c:309
-  task_work_run+0x1e8/0x2a0 kernel/task_work.c:113
-  tracehook_notify_resume include/linux/tracehook.h:193 [inline]
-  exit_to_usermode_loop+0x318/0x380 arch/x86/entry/common.c:166
-  prepare_exit_to_usermode arch/x86/entry/common.c:197 [inline]
-  syscall_return_slowpath arch/x86/entry/common.c:268 [inline]
-  do_syscall_64+0x6be/0x820 arch/x86/entry/common.c:293
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+I don't know what this interface is for.  It's probably not directly 
+relevant to the issue.
 
-The buggy address belongs to the object at ffff8801cf71c0c0
-  which belongs to the cache kmalloc-512 of size 512
-The buggy address is located 88 bytes inside of
-  512-byte region [ffff8801cf71c0c0, ffff8801cf71c2c0)
-The buggy address belongs to the page:
-page:ffffea00073dc700 count:1 mapcount:0 mapping:ffff8801da800940 index:0x0
-flags: 0x2fffc0000000100(slab)
-raw: 02fffc0000000100 ffffea00073a4fc8 ffffea000761f4c8 ffff8801da800940
-raw: 0000000000000000 ffff8801cf71c0c0 0000000100000006 0000000000000000
-kobject: 'loop5' (00000000172d3417): kobject_uevent_env
-page dumped because: kasan: bad access detected
+> > If you want to get a better idea for exactly what is happening at the
+> > USB level, you can collect a usbmon trace while running a test.  Also,
+> > it wouldn't hurt to see the values of max_packs_per_urb, urb_packs,
+> > max_packs_per_period, urbs_per_period, ep->max_urb_frames, and
+> > ep->nurbs from data_ep_set_params() in the audio driver.
+> 
+> Maybe in a few weeks. I suspect the additional latency is mainly in
+> the playback direction.
 
-Memory state around the buggy address:
-  ffff8801cf71c000: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff8801cf71c080: fc fc fc fc fc fc fc fc fb fb fb fb fb fb fb fb
-> ffff8801cf71c100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                             ^
-  ffff8801cf71c180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-  ffff8801cf71c200: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
+That seems likely, especially in the light of Takashi's comments.
 
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#bug-status-tracking for how to communicate with  
-syzbot.
+Alan Stern
