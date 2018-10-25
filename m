@@ -1,95 +1,79 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v2] staging: bcm2835-audio: interpolate audio
- delay
-Date: Thu, 25 Oct 2018 00:02:34 +0200
-Message-ID: <9884c4f5-2343-e3a4-8d8b-dd2db404ef27@gmail.com>
-References: <20181022191708.GA4659@ubuntu>
- <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
- <EA85FEC9-B1C7-4548-88F5-F0E7BC12158E@eircom.net>
- <046aea96-e0d3-60f4-c61a-c26bb1b5c193@gmail.com>
- <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
+From: Andre Guedes <andre.guedes@intel.com>
+Subject: [PATCH v2 - AAF PCM plugin 0/7] Introduce AVTP Audio
+	Format (AAF) plugin
+Date: Wed, 24 Oct 2018 18:11:09 -0700
+Message-ID: <20181025011116.12360-1-andre.guedes@intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Mike Brady <mikebrady@eircom.net>
-Cc: stefan.wahren@i2se.com, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, eric@anholt.net, tiwai@suse.de, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, linux-arm-kernel@lists.infradead.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga04.intel.com (mga04.intel.com [192.55.52.120])
+ by alsa0.perex.cz (Postfix) with ESMTP id 2A2D926795C
+ for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2018 03:11:49 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@intel.com
 List-Id: alsa-devel@alsa-project.org
 
-Hello Mike,
+Hi all,
 
-We are not on the same page. What you hear is not what I tell you.
-Either you don't understand what happens in your commit, or I don't understand
-what happens in the driver.
+This new version addresses the feedback from v1 and fixes a bug on capture
+mode. Code-wise, the changes are very trivial, no major diffs. Below follows
+the highlights:
 
-Hopefully somebody in the community can comment here.
+  * Standard headers like linux/if_ether.h are now checked by configure script.
+  * The 'static' modifier was added to array variables in aaf_hw_constraint().
+  * aaf_close() callback was simplified.
+  * aaf_rx_pdu() was modified so it doesn't return an error in case the number
+    of bytes read by recv() is different from aaf->pdu_size. This is an
+    expected situation and it means the received AVTPDU doesn't belong to the
+    AAF stream the plugin is interested in so it should simply drop that
+    AVTPDU. This fixes a bug when running multiple streams (with different
+    AVPTU sizes) concurrently.
 
-On 10/24/18 21:54, Mike Brady wrote:
->>>> You modify the function, which is called `snd_bcm2835_pcm_pointer`. Here you are
->>>> supposed to increase `alsa_stream->pos` with the proper offset. Instead, you
->>>> imitate a delay, but in fact the delay is not increased.
->>>>
->>>> So, the proper solution should be to fix the reported pointer.
->>>
->>> I think there is a difficulty with this. The “pos” pointer looks to have to be modulo the buffer size. This causes a problem, as I see it, in that if the calculated (pos + interpolated delay in bytes) is longer than the buffer size
->>
->>
->> There is no "interpolated delay". The concept of "interpolated delay" is
->> incorrect.
-> 
-> Yes, my language here is wrong. What I mean is the estimated number of frames output since the pointer was last updated — let’s call it the `interpolated frame count`.
-> 
+Additionally, this new version improves the instructions in doc/aaf.txt in
+order to make it easier to test the plugin. Anyone should be able to test it
+just by copying and pasting the instructions.
 
-That's not what I mean. From my perspective, the problem is not in language, but
-in the concept which you introduce here.
+To recap what has been discussed about the plugin so far, check the comments in
+RFC and PATCH series archive [1-3]. All versions of this series can be also
+found in my alsa-plugins tree in github [4].
 
->> When you play sound - the pointer increments.
-> 
-> Unfortunately, when you play sound, the pointer does not actually increment, for up to about 10 milliseconds. I know of no way to actually access the true “live” position of the frame that is being played at any instant; hence the desire to estimate it.
-> 
+Regards,
 
-Your vision of situation in the opposite from my vision. What you see as a
-symptom - I see as a root cause. As I see, you should fix the
-pointer-not-incrementing. Why do you think that it's okay that the pointer is
-not updating during sound play? Why do you insist that there is a delay? I don't
-understand why we are so stuck here.
+Andre
 
-> What actually seems to be happening is that when `bcm2835_playback_fifo` is called, the pointer is updated, but as frames are individually output to the DAC, this pointer does not increment. It is not updated until the next time `bcm2835_playback_fifo` is called.
-> 
->> But in this commit you increment the delay, as if sound doesn't play.
-> 
-> It is true that the patch does make use of the  snd_pcm_runtime structure’s “delay" field (aka "runtime->delay” here). That field is defined for: “/* extra delay; typically FIFO size */”. Clearly it is not being used for that here — it is being used simply because it is part of the calculation done in snd_pcm_calc_delay(), as you point out. At present, it looks like that field isn’t being used –– it’s set to zero –– and not modified anywhere else in the driver, AFAICS. If it was necessary, it would be a simple matter to preserve whatever value it was given.
-> 
+[1] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-August/139494.html
+[2] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-September/140290.html
+[3] http://mailman.alsa-project.org/pipermail/alsa-devel/2018-October/140667.html
+[4] https://github.com/aguedes/alsa-plugins
 
-That's not what I am talking about. Somehow we don't understand each other.
+Andre Guedes (7):
+  aaf: Introduce plugin skeleton
+  aaf: Load configuration parameters
+  aaf: Implement Playback mode support
+  aaf: Prepare for Capture mode support
+  aaf: Implement Capture mode support
+  aaf: Implement dump() ioplug callback
+  aaf: Add support for direct read/write transfers
 
->>>> As a result,
->>>> userspace will recieve the correct delay, instead of these crazy 10 ms.
->>>
->>> Just to point out that with the proposed patch, it appears that the correct delay is being reported, (apart, possibly, from any delay originally set in the snd_pcm_delay field, as mentioned above).
->>
->>
->> Then I would like to point out the alsa-lib function `snd_pcm_avail()` - it will return the wrong value.
-> 
-> It is already the case that snd_pcm_avail() does not return the true delay. The ALSA documentation states: "The value returned by that call [i.e. the snd_pcm_avail*() functions] is not directly related to the delay…” 
-> 
+ Makefile.am     |    3 +
+ aaf/Makefile.am |    9 +
+ aaf/pcm_aaf.c   | 1200 +++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ configure.ac    |   11 +
+ doc/aaf.txt     |  157 ++++++++
+ 5 files changed, 1380 insertions(+)
+ create mode 100644 aaf/Makefile.am
+ create mode 100644 aaf/pcm_aaf.c
+ create mode 100644 doc/aaf.txt
 
-Do you mean, that you are submitting the patch into the upstream kernel without
-reading the code?
-
-snd_pcm_avail() is calculated based on:
-
-* hw_ptr
-* buffer_size
-* appl_ptr
-* boundary
-
-If you fix hw_ptr - it will fix both snd_pcm_delay() and snd_pcm_avail().
-Instead, you invent the "interpolated delay", which in fact only compensates the
-wrong hw_ptr instead of fixing it.
-
-Best Regards,
-Kirill
+-- 
+2.14.4
