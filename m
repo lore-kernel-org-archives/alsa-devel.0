@@ -1,86 +1,43 @@
-From: Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH 0/2] Introduce dmic mode switch delay
- parameter
-Date: Thu, 25 Oct 2018 17:08:50 +0100
-Message-ID: <20181025160850.GA827@vkoul-mobl>
-References: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
- <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
+From: Kirill Marinushkin <k.marinushkin@gmail.com>
+Subject: Re: [alsa-devel] [PATCH v2] staging: bcm2835-audio: interpolate audio
+ delay
+Date: Thu, 25 Oct 2018 19:20:40 +0200
+Message-ID: <5bc8295a-1e38-99b5-d54c-72e920600f83@gmail.com>
+References: <20181022191708.GA4659@ubuntu>
+ <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
+ <EA85FEC9-B1C7-4548-88F5-F0E7BC12158E@eircom.net>
+ <046aea96-e0d3-60f4-c61a-c26bb1b5c193@gmail.com>
+ <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
+ <9884c4f5-2343-e3a4-8d8b-dd2db404ef27@gmail.com>
+ <s5hftwuo4t0.wl-tiwai@suse.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
- by alsa0.perex.cz (Postfix) with ESMTP id EC31726759E
- for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2018 18:08:55 +0200 (CEST)
-Content-Disposition: inline
-In-Reply-To: <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <s5hftwuo4t0.wl-tiwai@suse.de>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+To: Takashi Iwai <tiwai@suse.de>, Mike Brady <mikebrady@eircom.net>
+Cc: stefan.wahren@i2se.com, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, eric@anholt.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-On 21-10-18, 22:42, Pierre-Louis Bossart wrote:
-> 
-> On 10/2/18 12:57 AM, Jenny TC wrote:
-> > Some DMICs need clock to be running for a specified duration as per the
-> > DMIC spec to complete the mode transition like sleep to mormal, off to normal
-> > etc.
-> > 
-> > Jenny TC (2):
-> >    ASoC: dmic: Enable ACPI device entry
-> >    ASoC: dmic: Introduce mode switch delay
-> > 
-> >   sound/soc/codecs/dmic.c | 38 ++++++++++++++++++++++++++++++++++++++
-> >   1 file changed, 38 insertions(+)
-> > 
-> Sorry for the late feedback.
-> 
-> Allowing some timing adjustments for the clock transitions is a good thing.
-> The way it's done is questionable and raises a number of concerns.
-> 
-> First, there was an Intel internal discussion before my extended break on
-> why this 'dmic-codec' is needed on Intel platforms. To the best of my
-> knowledge we don't control the mics with GPIOs, which was the initial
-> purpose of this driver. We have experimental evidence on ApolloLake and
-> GeminiLake that using the soc-dummy/soc-dummy-dai definitions are enough,
-> and it may be a good thing to agree on the direction here. If you want a
-> parameter, you can still use a machine driver DMI-based kernel quirk and/or
-> pass a kernel parameter, the need to extend this dmic-codec is far from
-> obvious to me.
+Hello Takashi, Mike,
 
-I think in this case you can go with dummy codec. You are modelling an
-endpoint here, nothing else
+@Takashi
 
-> Assuming you still want to use this codec, then there are still major
-> concerns about the ACPI directions. As Mark noted it, "DMIC" does not follow
-> any of the guidelines or accepted definitions with an unambiguous vendor and
-> part ID. We know we already have conflicts between Intel-defined ACPI IDs,
-> e.g. for RT298 on multiple platforms, let's be careful here, shall we?
-> 
-> And I am coming to my last point. The Skylake driver already contains code
-> to create the dmic devices by hand (see below the git grep results). So I
-> wonder what happens if you use both ACPI-based enumeration AND manually
-> create the dmic device - I view these solutions as mutually incompatible.
-> Either you have not tested against the upstream code or something is missing
-> from your patchset. What am I missing?
+On 10/25/18 09:37, Takashi Iwai wrote:
+> Well, in the API POV, it's nothing wrong to keep hwptr sticking while
+> updating only delay value.  It implies that the hardware chip doesn't
+> provide the hwptr update.
 
-That is very valid point. Also DMIC clock is generated by Audio block
-and not really a system clock, so why shouldn't this be described in
-audio block.
+Thank you for the clarification. Modifying `runtime->delay` from the `pointer`
+function looked wrong for me. Now I understand the motivation and the use-case.
+I will be more careful when analyzing the code which doesn't fit my expectations.
 
-Furthermore I recall we have NHLT table and some description for DMICs.
-The driver currently parses that information to get number of dmics to
-use (see skl_get_dmic_geo). I would think that adding this delay to NHLT
-would be more sensible and pass it on to whatever entity wishes to use
-it.
+@Mike
 
--- 
-~Vinod
+I was wrong. You can ignore my comments. Please don't take them personal: it's
+all about having high-quality code in kernel.
+
+Best Regards,
+Kirill
