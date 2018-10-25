@@ -1,15 +1,19 @@
-From: Peter Ujfalusi <peter.ujfalusi@ti.com>
-Subject: [PATCH] ASoC: omap-mcbsp: On OMAP1 and OMAP2420 only
-	16bit format is supported
-Date: Thu, 25 Oct 2018 16:48:24 +0300
-Message-ID: <20181025134824.16527-1-peter.ujfalusi@ti.com>
+From: Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH 0/2] Introduce dmic mode switch delay
+ parameter
+Date: Thu, 25 Oct 2018 17:08:50 +0100
+Message-ID: <20181025160850.GA827@vkoul-mobl>
+References: <1538459851-17066-1-git-send-email-jenny.tc@intel.com>
+ <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
- by alsa0.perex.cz (Postfix) with ESMTP id 7EA3226759E
- for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2018 15:47:21 +0200 (CEST)
+Received: from mail.kernel.org (mail.kernel.org [198.145.29.99])
+ by alsa0.perex.cz (Postfix) with ESMTP id EC31726759E
+ for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2018 18:08:55 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <102a22bc-a054-b07d-23c8-95118d69450f@linux.intel.com>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,53 +23,64 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: broonie@kernel.org, lgirdwood@gmail.com, jarkko.nikula@bitmer.com
-Cc: alsa-devel@alsa-project.org, aaro.koskinen@iki.fi
+To: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Cc: alsa-devel@alsa-project.org, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>, Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>, Matthias Kaehlcke <mka@chromium.org>, Jenny TC <jenny.tc@intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-For samples sizes of 20/24/32 bit the DRR2/DXR2 registers must be used to
-receive or transmit the most significant part of the 32bit sample.
-We can not trick the system by using the DRR2/DXR2 register offset and use
-32bit element size since these (and other McBSP) registers are 16bit ones.
+On 21-10-18, 22:42, Pierre-Louis Bossart wrote:
+> 
+> On 10/2/18 12:57 AM, Jenny TC wrote:
+> > Some DMICs need clock to be running for a specified duration as per the
+> > DMIC spec to complete the mode transition like sleep to mormal, off to normal
+> > etc.
+> > 
+> > Jenny TC (2):
+> >    ASoC: dmic: Enable ACPI device entry
+> >    ASoC: dmic: Introduce mode switch delay
+> > 
+> >   sound/soc/codecs/dmic.c | 38 ++++++++++++++++++++++++++++++++++++++
+> >   1 file changed, 38 insertions(+)
+> > 
+> Sorry for the late feedback.
+> 
+> Allowing some timing adjustments for the clock transitions is a good thing.
+> The way it's done is questionable and raises a number of concerns.
+> 
+> First, there was an Intel internal discussion before my extended break on
+> why this 'dmic-codec' is needed on Intel platforms. To the best of my
+> knowledge we don't control the mics with GPIOs, which was the initial
+> purpose of this driver. We have experimental evidence on ApolloLake and
+> GeminiLake that using the soc-dummy/soc-dummy-dai definitions are enough,
+> and it may be a good thing to agree on the direction here. If you want a
+> parameter, you can still use a machine driver DMI-based kernel quirk and/or
+> pass a kernel parameter, the need to extend this dmic-codec is far from
+> obvious to me.
 
-We would need support for port_window in cyclic mode from the sDMA driver,
-but it is not straight forward as we would need to have the sDMA frame to
-cover the 32bit (DRR2+DRR1/DXR2+DXR1), but the frames must cover the ALSA
-period to be able to receive periodic interrupts.
+I think in this case you can go with dummy codec. You are modelling an
+endpoint here, nothing else
 
-Since the 32bit samples are not working (DMA timeout), just remove it in
-case we have McBSP with reg_size of 2.
+> Assuming you still want to use this codec, then there are still major
+> concerns about the ACPI directions. As Mark noted it, "DMIC" does not follow
+> any of the guidelines or accepted definitions with an unambiguous vendor and
+> part ID. We know we already have conflicts between Intel-defined ACPI IDs,
+> e.g. for RT298 on multiple platforms, let's be careful here, shall we?
+> 
+> And I am coming to my last point. The Skylake driver already contains code
+> to create the dmic devices by hand (see below the git grep results). So I
+> wonder what happens if you use both ACPI-based enumeration AND manually
+> create the dmic device - I view these solutions as mutually incompatible.
+> Either you have not tested against the upstream code or something is missing
+> from your patchset. What am I missing?
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
-Hi,
+That is very valid point. Also DMIC clock is generated by Audio block
+and not really a system clock, so why shouldn't this be described in
+audio block.
 
-I have noticed that on Nokia n810 32bit samples just don't work at all for audio
+Furthermore I recall we have NHLT table and some description for DMICs.
+The driver currently parses that information to get number of dmics to
+use (see skl_get_dmic_geo). I would think that adding this delay to NHLT
+would be more sensible and pass it on to whatever entity wishes to use
+it.
 
-Regards,
-Peter
-
- sound/soc/omap/omap-mcbsp.c | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/sound/soc/omap/omap-mcbsp.c b/sound/soc/omap/omap-mcbsp.c
-index d0ebb6b9bfac..caa24c463b3e 100644
---- a/sound/soc/omap/omap-mcbsp.c
-+++ b/sound/soc/omap/omap-mcbsp.c
-@@ -862,6 +862,11 @@ static int asoc_mcbsp_probe(struct platform_device *pdev)
- 	if (ret)
- 		return ret;
- 
-+	if (mcbsp->pdata->reg_size == 2) {
-+		omap_mcbsp_dai.playback.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+		omap_mcbsp_dai.capture.formats = SNDRV_PCM_FMTBIT_S16_LE;
-+	}
-+
- 	ret = devm_snd_soc_register_component(&pdev->dev,
- 					      &omap_mcbsp_component,
- 					      &omap_mcbsp_dai, 1);
 -- 
-Peter
-
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+~Vinod
