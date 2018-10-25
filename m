@@ -1,60 +1,52 @@
-From: Jaroslav Kysela <perex@perex.cz>
-Subject: Re: [PATCH v2 - AAF PCM plugin 0/7] Introduce AVTP
- Audio Format (AAF) plugin
-Date: Thu, 25 Oct 2018 08:41:15 +0200
-Message-ID: <8c7008ad-3489-55eb-2d66-db03f8b8c29f@perex.cz>
-References: <20181025011116.12360-1-andre.guedes@intel.com>
+From: Chris Wilson <chris@chris-wilson.co.uk>
+Subject: Re: [PATCH 1/2] ALSA: x86: Fix runtime PM for
+ hdmi-lpe-audio
+Date: Thu, 25 Oct 2018 07:50:29 +0100
+Message-ID: <154045022989.5632.11725434520493726099@skylake-alporthouse-com>
+References: <20181024154825.18185-1-ville.syrjala@linux.intel.com>
+ <154039634272.5632.2532479909216282819@skylake-alporthouse-com>
+ <20181024162845.GE9144@intel.com>
+ <154039872477.5632.293946478835350162@skylake-alporthouse-com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail1.perex.cz (mail1.perex.cz [77.48.224.245])
- by alsa0.perex.cz (Postfix) with ESMTP id E9A0B267971
- for <alsa-devel@alsa-project.org>; Thu, 25 Oct 2018 08:41:20 +0200 (CEST)
-In-Reply-To: <20181025011116.12360-1-andre.guedes@intel.com>
-Content-Language: en-US
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: Andre Guedes <andre.guedes@intel.com>, alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, pierre-louis.bossart@linux.intel.com, liam.r.girdwood@intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <intel-gfx-bounces@lists.freedesktop.org>
+In-Reply-To: <154039872477.5632.293946478835350162@skylake-alporthouse-com>
+List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
+List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
+List-Post: <mailto:intel-gfx@lists.freedesktop.org>
+List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
+List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
+ <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
+Errors-To: intel-gfx-bounces@lists.freedesktop.org
+Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
+To: =?utf-8?b?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
 List-Id: alsa-devel@alsa-project.org
 
-Dne 25.10.2018 v 03:11 Andre Guedes napsal(a):
-> Hi all,
-> 
-> This new version addresses the feedback from v1 and fixes a bug on capture
-> mode. Code-wise, the changes are very trivial, no major diffs. Below follows
-> the highlights:
-> 
->   * Standard headers like linux/if_ether.h are now checked by configure script.
->   * The 'static' modifier was added to array variables in aaf_hw_constraint().
->   * aaf_close() callback was simplified.
->   * aaf_rx_pdu() was modified so it doesn't return an error in case the number
->     of bytes read by recv() is different from aaf->pdu_size. This is an
->     expected situation and it means the received AVTPDU doesn't belong to the
->     AAF stream the plugin is interested in so it should simply drop that
->     AVTPDU. This fixes a bug when running multiple streams (with different
->     AVPTU sizes) concurrently.
-> 
-> Additionally, this new version improves the instructions in doc/aaf.txt in
-> order to make it easier to test the plugin. Anyone should be able to test it
-> just by copying and pasting the instructions.
-
-Thanks for your code. I did a quick review and a compilation test and it
-seems fine to include this improved code to alsa-plugins. I committed
-your changes.
-
-Our repos are on github now, too : https://github.com/alsa-project
-
-						Jaroslav
-
--- 
-Jaroslav Kysela <perex@perex.cz>
-Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
+UXVvdGluZyBDaHJpcyBXaWxzb24gKDIwMTgtMTAtMjQgMTc6MzI6MDQpCj4gUXVvdGluZyBWaWxs
+ZSBTeXJqw6Rsw6QgKDIwMTgtMTAtMjQgMTc6Mjg6NDUpCj4gPiBPbiBXZWQsIE9jdCAyNCwgMjAx
+OCBhdCAwNDo1MjoyMlBNICswMTAwLCBDaHJpcyBXaWxzb24gd3JvdGU6Cj4gPiA+IFF1b3Rpbmcg
+VmlsbGUgU3lyamFsYSAoMjAxOC0xMC0yNCAxNjo0ODoyNCkKPiA+ID4gPiBGcm9tOiBWaWxsZSBT
+eXJqw6Rsw6QgPHZpbGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tPgo+ID4gPiA+IAo+ID4gPiA+
+IENvbW1pdCA0NmU4MzFhYmU4NjQgKCJkcm0vaTkxNS9scGU6IE1hcmsgTFBFIGF1ZGlvIHJ1bnRp
+bWUgcG0gYXMKPiA+ID4gPiAibm8gY2FsbGJhY2tzIiIpIGJyb2tlIHJ1bnRpbWUgUE0gd2l0aCBs
+cGUgYXVkaW8uIFdlIGNhbiBubyBsb25nZXIKPiA+ID4gPiBydW50aW1lIHN1c3BlbmQgdGhlIEdQ
+VSBzaW5jZSB0aGUgc3lzZnMgIHBvd2VyL2NvbnRyb2wgZm9yIHRoZQo+ID4gPiA+IGxwZS1hdWRp
+byBkZXZpY2Ugbm8gbG9uZ2VyIGV4aXN0cyBhbmQgdGhlIGRldmljZSBpcyBjb25zaWRlcmVkCj4g
+PiA+ID4gYWx3YXlzIGFjdGl2ZS4gV2UgY2FuIGZpeCB0aGlzIGJ5IG5vdCBtYXJraW5nIHRoZSBk
+ZXZpY2UgYXMKPiA+ID4gPiBhY3RpdmUuCj4gPiA+IAo+ID4gPiBEbyB5b3UgYWxzbyB3YW50IHRv
+IHNlbmQgd2l0aCBhIEhBWCBwYXRjaCB0byBmb3JjZSBzZWxlY3Rpb24gb2YgU05EX1g4Ngo+ID4g
+PiBmb3IgQ0k/Cj4gPiAKPiA+IEhtbS4gV291bGQgaGF2ZSBiZWVuIGEgZ29vZCBpZGVhIGEgZmV3
+IG1pbnV0ZXMgYWdvLiBOb3Qgc3VyZSBJIHdhbnQKPiA+IHRvIHNwYW0gdGhlIGxpc3QgYWdhaW4u
+IERlcGVuZHMgaG93IGxvbmcgaXQnbGwgdGFrZSB0byBhZGp1c3QgdGhlIGNpCj4gPiAuY29uZmln
+IEkgc3VwcG9zZS4KPiAKPiBUcnlib3QgYW5kIGxpbmsgdG8gdGhlIHJlc3VsdHM/CgpodHRwczov
+L2ludGVsLWdmeC1jaS4wMS5vcmcvdHJlZS9kcm0tdGlwL1RyeWJvdF8zMTE4L2lzc3Vlcy5odG1s
+CgpUaGUgZmktYnl0LWNsYXBwZXIgcG0gdGVzdHMgcGFzc2VkIHdoaWNoIGlzIHRoZSBtb3N0IHNp
+Z25pZmljYW50IHJlc3VsdC4KRm9yIGVuYWJsaW5nIExQRSBhdWRpbyBpbiBDSSwgaXQgYXBwZWFy
+cyB3ZSBuZWVkIHRvIHRyaWNrCnNuZF9oZG1pX2xwZV9hdWRpby5rbyBpbnRvIHVubG9hZGluZyBv
+biBkZW1hbmQuCi1DaHJpcwpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fXwpJbnRlbC1nZnggbWFpbGluZyBsaXN0CkludGVsLWdmeEBsaXN0cy5mcmVlZGVza3Rv
+cC5vcmcKaHR0cHM6Ly9saXN0cy5mcmVlZGVza3RvcC5vcmcvbWFpbG1hbi9saXN0aW5mby9pbnRl
+bC1nZngK
