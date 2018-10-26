@@ -1,43 +1,58 @@
-From: Kirill Marinushkin <k.marinushkin@gmail.com>
-Subject: Re: [alsa-devel] [PATCH v2] staging: bcm2835-audio: interpolate audio
- delay
-Date: Thu, 25 Oct 2018 19:20:40 +0200
-Message-ID: <5bc8295a-1e38-99b5-d54c-72e920600f83@gmail.com>
-References: <20181022191708.GA4659@ubuntu>
- <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
- <EA85FEC9-B1C7-4548-88F5-F0E7BC12158E@eircom.net>
- <046aea96-e0d3-60f4-c61a-c26bb1b5c193@gmail.com>
- <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
- <9884c4f5-2343-e3a4-8d8b-dd2db404ef27@gmail.com>
- <s5hftwuo4t0.wl-tiwai@suse.de>
+From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+Subject: Re: [PATCH] ASoC: omap-mcbsp: On OMAP1 and OMAP2420
+ only 16bit format is supported
+Date: Fri, 26 Oct 2018 09:00:44 +0300
+Message-ID: <20181026060044.GA12256@bitmer.com>
+References: <20181025134824.16527-1-peter.ujfalusi@ti.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <s5hftwuo4t0.wl-tiwai@suse.de>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-To: Takashi Iwai <tiwai@suse.de>, Mike Brady <mikebrady@eircom.net>
-Cc: stefan.wahren@i2se.com, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, eric@anholt.net, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, julia.lawall@lip6.fr, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, linux-arm-kernel@lists.infradead.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from bitmer.com (50-87-157-213.static.tentacle.fi [213.157.87.50])
+ by alsa0.perex.cz (Postfix) with ESMTP id 9B2AD2679C6
+ for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2018 08:00:50 +0200 (CEST)
+Content-Disposition: inline
+In-Reply-To: <20181025134824.16527-1-peter.ujfalusi@ti.com>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, aaro.koskinen@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-Hello Takashi, Mike,
+On Thu, Oct 25, 2018 at 04:48:24PM +0300, Peter Ujfalusi wrote:
+> For samples sizes of 20/24/32 bit the DRR2/DXR2 registers must be used to
+> receive or transmit the most significant part of the 32bit sample.
+> We can not trick the system by using the DRR2/DXR2 register offset and use
+> 32bit element size since these (and other McBSP) registers are 16bit ones.
+> 
+> We would need support for port_window in cyclic mode from the sDMA driver,
+> but it is not straight forward as we would need to have the sDMA frame to
+> cover the 32bit (DRR2+DRR1/DXR2+DXR1), but the frames must cover the ALSA
+> period to be able to receive periodic interrupts.
+> 
+> Since the 32bit samples are not working (DMA timeout), just remove it in
+> case we have McBSP with reg_size of 2.
+> 
+> Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+> ---
+> Hi,
+> 
+> I have noticed that on Nokia n810 32bit samples just don't work at all for audio
+> 
+> Regards,
+> Peter
+> 
+>  sound/soc/omap/omap-mcbsp.c | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+I guess this same holds for OMAP1 too as it has 16-bit McBSP registers
+too.
 
-@Takashi
-
-On 10/25/18 09:37, Takashi Iwai wrote:
-> Well, in the API POV, it's nothing wrong to keep hwptr sticking while
-> updating only delay value.  It implies that the hardware chip doesn't
-> provide the hwptr update.
-
-Thank you for the clarification. Modifying `runtime->delay` from the `pointer`
-function looked wrong for me. Now I understand the motivation and the use-case.
-I will be more careful when analyzing the code which doesn't fit my expectations.
-
-@Mike
-
-I was wrong. You can ignore my comments. Please don't take them personal: it's
-all about having high-quality code in kernel.
-
-Best Regards,
-Kirill
+Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
