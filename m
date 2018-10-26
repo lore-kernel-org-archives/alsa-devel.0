@@ -1,59 +1,59 @@
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-Subject: Re: [PATCH 1/2] ALSA: x86: Fix runtime PM for
- hdmi-lpe-audio
-Date: Fri, 26 Oct 2018 19:56:17 +0300
-Message-ID: <20181026165617.GC9144@intel.com>
-References: <20181024154825.18185-1-ville.syrjala@linux.intel.com>
- <154039634272.5632.2532479909216282819@skylake-alporthouse-com>
- <20181024162845.GE9144@intel.com>
- <154039872477.5632.293946478835350162@skylake-alporthouse-com>
- <154045022989.5632.11725434520493726099@skylake-alporthouse-com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Subject: [PATCH] ASoC: fix oops w/
+	for_each_rtd_codec_dai_rollback() macro
+Date: Fri, 26 Oct 2018 16:54:43 -0500
+Message-ID: <20181026215443.29081-1-pierre-louis.bossart@linux.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <intel-gfx-bounces@lists.freedesktop.org>
-Content-Disposition: inline
-In-Reply-To: <154045022989.5632.11725434520493726099@skylake-alporthouse-com>
-List-Unsubscribe: <https://lists.freedesktop.org/mailman/options/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=unsubscribe>
-List-Archive: <https://lists.freedesktop.org/archives/intel-gfx>
-List-Post: <mailto:intel-gfx@lists.freedesktop.org>
-List-Help: <mailto:intel-gfx-request@lists.freedesktop.org?subject=help>
-List-Subscribe: <https://lists.freedesktop.org/mailman/listinfo/intel-gfx>,
- <mailto:intel-gfx-request@lists.freedesktop.org?subject=subscribe>
-Errors-To: intel-gfx-bounces@lists.freedesktop.org
-Sender: "Intel-gfx" <intel-gfx-bounces@lists.freedesktop.org>
-To: Chris Wilson <chris@chris-wilson.co.uk>
-Cc: Takashi Iwai <tiwai@suse.de>, alsa-devel@alsa-project.org, intel-gfx@lists.freedesktop.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
+ by alsa0.perex.cz (Postfix) with ESMTP id 829C52679C2
+ for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2018 23:55:02 +0200 (CEST)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: alsa-devel@alsa-project.org
+Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
 List-Id: alsa-devel@alsa-project.org
 
-T24gVGh1LCBPY3QgMjUsIDIwMTggYXQgMDc6NTA6MjlBTSArMDEwMCwgQ2hyaXMgV2lsc29uIHdy
-b3RlOgo+IFF1b3RpbmcgQ2hyaXMgV2lsc29uICgyMDE4LTEwLTI0IDE3OjMyOjA0KQo+ID4gUXVv
-dGluZyBWaWxsZSBTeXJqw6Rsw6QgKDIwMTgtMTAtMjQgMTc6Mjg6NDUpCj4gPiA+IE9uIFdlZCwg
-T2N0IDI0LCAyMDE4IGF0IDA0OjUyOjIyUE0gKzAxMDAsIENocmlzIFdpbHNvbiB3cm90ZToKPiA+
-ID4gPiBRdW90aW5nIFZpbGxlIFN5cmphbGEgKDIwMTgtMTAtMjQgMTY6NDg6MjQpCj4gPiA+ID4g
-PiBGcm9tOiBWaWxsZSBTeXJqw6Rsw6QgPHZpbGxlLnN5cmphbGFAbGludXguaW50ZWwuY29tPgo+
-ID4gPiA+ID4gCj4gPiA+ID4gPiBDb21taXQgNDZlODMxYWJlODY0ICgiZHJtL2k5MTUvbHBlOiBN
-YXJrIExQRSBhdWRpbyBydW50aW1lIHBtIGFzCj4gPiA+ID4gPiAibm8gY2FsbGJhY2tzIiIpIGJy
-b2tlIHJ1bnRpbWUgUE0gd2l0aCBscGUgYXVkaW8uIFdlIGNhbiBubyBsb25nZXIKPiA+ID4gPiA+
-IHJ1bnRpbWUgc3VzcGVuZCB0aGUgR1BVIHNpbmNlIHRoZSBzeXNmcyAgcG93ZXIvY29udHJvbCBm
-b3IgdGhlCj4gPiA+ID4gPiBscGUtYXVkaW8gZGV2aWNlIG5vIGxvbmdlciBleGlzdHMgYW5kIHRo
-ZSBkZXZpY2UgaXMgY29uc2lkZXJlZAo+ID4gPiA+ID4gYWx3YXlzIGFjdGl2ZS4gV2UgY2FuIGZp
-eCB0aGlzIGJ5IG5vdCBtYXJraW5nIHRoZSBkZXZpY2UgYXMKPiA+ID4gPiA+IGFjdGl2ZS4KPiA+
-ID4gPiAKPiA+ID4gPiBEbyB5b3UgYWxzbyB3YW50IHRvIHNlbmQgd2l0aCBhIEhBWCBwYXRjaCB0
-byBmb3JjZSBzZWxlY3Rpb24gb2YgU05EX1g4Ngo+ID4gPiA+IGZvciBDST8KPiA+ID4gCj4gPiA+
-IEhtbS4gV291bGQgaGF2ZSBiZWVuIGEgZ29vZCBpZGVhIGEgZmV3IG1pbnV0ZXMgYWdvLiBOb3Qg
-c3VyZSBJIHdhbnQKPiA+ID4gdG8gc3BhbSB0aGUgbGlzdCBhZ2Fpbi4gRGVwZW5kcyBob3cgbG9u
-ZyBpdCdsbCB0YWtlIHRvIGFkanVzdCB0aGUgY2kKPiA+ID4gLmNvbmZpZyBJIHN1cHBvc2UuCj4g
-PiAKPiA+IFRyeWJvdCBhbmQgbGluayB0byB0aGUgcmVzdWx0cz8KPiAKPiBodHRwczovL2ludGVs
-LWdmeC1jaS4wMS5vcmcvdHJlZS9kcm0tdGlwL1RyeWJvdF8zMTE4L2lzc3Vlcy5odG1sCj4gCj4g
-VGhlIGZpLWJ5dC1jbGFwcGVyIHBtIHRlc3RzIHBhc3NlZCB3aGljaCBpcyB0aGUgbW9zdCBzaWdu
-aWZpY2FudCByZXN1bHQuCj4gRm9yIGVuYWJsaW5nIExQRSBhdWRpbyBpbiBDSSwgaXQgYXBwZWFy
-cyB3ZSBuZWVkIHRvIHRyaWNrCj4gc25kX2hkbWlfbHBlX2F1ZGlvLmtvIGludG8gdW5sb2FkaW5n
-IG9uIGRlbWFuZC4KClJlLXJhbiB0aGUgdGVzdCBmb3IgZ29vZCBtZWFzdXJlIGFmdGVyIGZpeGlu
-ZyB0aGUgbW9kdWxlIHVubG9hZCBpbiBpZ3QuCk5vdyBhbGwgZ3JlZW4uCgpodHRwczovL2ludGVs
-LWdmeC1jaS4wMS5vcmcvdHJlZS9kcm0tdGlwL1RyeWJvdF8zMTQwL2lzc3Vlcy5odG1sCgotLSAK
-VmlsbGUgU3lyasOkbMOkCkludGVsCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fCkludGVsLWdmeCBtYWlsaW5nIGxpc3QKSW50ZWwtZ2Z4QGxpc3RzLmZyZWVk
-ZXNrdG9wLm9yZwpodHRwczovL2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9tYWlsbWFuL2xpc3RpbmZv
-L2ludGVsLWdmeAo=
+A kernel oops happens on an error case (usual missing BE mixer
+configuration required by Intel SST driver). Git bisect points to this
+macro and an operator precedence issue.
+
+	for (; ((i--) >= 0) && ((dai) = rtd->codec_dais[i]);)
+
+The initial code replaced by this macro was
+	while (--i >= 0) {
+		codec_dai = rtd->codec_dais[i];
+
+Fix the C operator precedence difference by reverting to pre-decrement
+
+Fixes: 0b7990e3897 ('ASoC: add for_each_rtd_codec_dai() macro')
+Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+---
+ include/sound/soc.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/sound/soc.h b/include/sound/soc.h
+index f1dab1f4b194..70c10a8f3e90 100644
+--- a/include/sound/soc.h
++++ b/include/sound/soc.h
+@@ -1192,7 +1192,7 @@ struct snd_soc_pcm_runtime {
+ 	     ((i) < rtd->num_codecs) && ((dai) = rtd->codec_dais[i]); \
+ 	     (i)++)
+ #define for_each_rtd_codec_dai_rollback(rtd, i, dai)		\
+-	for (; ((i--) >= 0) && ((dai) = rtd->codec_dais[i]);)
++	for (; ((--i) >= 0) && ((dai) = rtd->codec_dais[i]);)
+ 
+ 
+ /* mixer control */
+-- 
+2.17.1
