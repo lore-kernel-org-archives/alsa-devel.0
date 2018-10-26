@@ -1,19 +1,19 @@
-From: Jarkko Nikula <jarkko.nikula@bitmer.com>
+From: Peter Ujfalusi <peter.ujfalusi@ti.com>
 Subject: Re: [PATCH] ASoC: omap-mcbsp: On OMAP1 and OMAP2420
  only 16bit format is supported
-Date: Fri, 26 Oct 2018 09:06:10 +0300
-Message-ID: <20181026060610.GA12498@bitmer.com>
+Date: Fri, 26 Oct 2018 09:21:50 +0300
+Message-ID: <316c24b1-3922-2d31-ca34-9f927831b640@ti.com>
 References: <20181025134824.16527-1-peter.ujfalusi@ti.com>
  <20181026060044.GA12256@bitmer.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from bitmer.com (50-87-157-213.static.tentacle.fi [213.157.87.50])
- by alsa0.perex.cz (Postfix) with ESMTP id 59E382679C6
- for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2018 08:06:11 +0200 (CEST)
-Content-Disposition: inline
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+ by alsa0.perex.cz (Postfix) with ESMTP id 3E2CB2679C6
+ for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2018 08:20:45 +0200 (CEST)
 In-Reply-To: <20181026060044.GA12256@bitmer.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -23,29 +23,46 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Peter Ujfalusi <peter.ujfalusi@ti.com>
+To: Jarkko Nikula <jarkko.nikula@bitmer.com>
 Cc: alsa-devel@alsa-project.org, broonie@kernel.org, lgirdwood@gmail.com, aaro.koskinen@iki.fi
 List-Id: alsa-devel@alsa-project.org
 
-On Fri, Oct 26, 2018 at 09:00:44AM +0300, Jarkko Nikula wrote:
-> On Thu, Oct 25, 2018 at 04:48:24PM +0300, Peter Ujfalusi wrote:
-> > I have noticed that on Nokia n810 32bit samples just don't work at all for audio
-> > 
-> > Regards,
-> > Peter
-> > 
-> >  sound/soc/omap/omap-mcbsp.c | 5 +++++
-> >  1 file changed, 5 insertions(+)
-> > 
-> I guess this same holds for OMAP1 too as it has 16-bit McBSP registers
-> too.
->
-Never mind, I forgot the subject line which mention the OMAP1 while
-reading the patch and looking at the code. -ENOCOFFEE yet.
-
-> Acked-by: Jarkko Nikula <jarkko.nikula@bitmer.com>
-
-Above holds.
-
--- 
-Jarkko
+CgpPbiAyMDE4LTEwLTI2IDA5OjAwLCBKYXJra28gTmlrdWxhIHdyb3RlOgo+IE9uIFRodSwgT2N0
+IDI1LCAyMDE4IGF0IDA0OjQ4OjI0UE0gKzAzMDAsIFBldGVyIFVqZmFsdXNpIHdyb3RlOgo+PiBG
+b3Igc2FtcGxlcyBzaXplcyBvZiAyMC8yNC8zMiBiaXQgdGhlIERSUjIvRFhSMiByZWdpc3RlcnMg
+bXVzdCBiZSB1c2VkIHRvCj4+IHJlY2VpdmUgb3IgdHJhbnNtaXQgdGhlIG1vc3Qgc2lnbmlmaWNh
+bnQgcGFydCBvZiB0aGUgMzJiaXQgc2FtcGxlLgo+PiBXZSBjYW4gbm90IHRyaWNrIHRoZSBzeXN0
+ZW0gYnkgdXNpbmcgdGhlIERSUjIvRFhSMiByZWdpc3RlciBvZmZzZXQgYW5kIHVzZQo+PiAzMmJp
+dCBlbGVtZW50IHNpemUgc2luY2UgdGhlc2UgKGFuZCBvdGhlciBNY0JTUCkgcmVnaXN0ZXJzIGFy
+ZSAxNmJpdCBvbmVzLgo+Pgo+PiBXZSB3b3VsZCBuZWVkIHN1cHBvcnQgZm9yIHBvcnRfd2luZG93
+IGluIGN5Y2xpYyBtb2RlIGZyb20gdGhlIHNETUEgZHJpdmVyLAo+PiBidXQgaXQgaXMgbm90IHN0
+cmFpZ2h0IGZvcndhcmQgYXMgd2Ugd291bGQgbmVlZCB0byBoYXZlIHRoZSBzRE1BIGZyYW1lIHRv
+Cj4+IGNvdmVyIHRoZSAzMmJpdCAoRFJSMitEUlIxL0RYUjIrRFhSMSksIGJ1dCB0aGUgZnJhbWVz
+IG11c3QgY292ZXIgdGhlIEFMU0EKPj4gcGVyaW9kIHRvIGJlIGFibGUgdG8gcmVjZWl2ZSBwZXJp
+b2RpYyBpbnRlcnJ1cHRzLgo+Pgo+PiBTaW5jZSB0aGUgMzJiaXQgc2FtcGxlcyBhcmUgbm90IHdv
+cmtpbmcgKERNQSB0aW1lb3V0KSwganVzdCByZW1vdmUgaXQgaW4KPj4gY2FzZSB3ZSBoYXZlIE1j
+QlNQIHdpdGggcmVnX3NpemUgb2YgMi4KPj4KPj4gU2lnbmVkLW9mZi1ieTogUGV0ZXIgVWpmYWx1
+c2kgPHBldGVyLnVqZmFsdXNpQHRpLmNvbT4KPj4gLS0tCj4+IEhpLAo+Pgo+PiBJIGhhdmUgbm90
+aWNlZCB0aGF0IG9uIE5va2lhIG44MTAgMzJiaXQgc2FtcGxlcyBqdXN0IGRvbid0IHdvcmsgYXQg
+YWxsIGZvciBhdWRpbwo+Pgo+PiBSZWdhcmRzLAo+PiBQZXRlcgo+Pgo+PiAgc291bmQvc29jL29t
+YXAvb21hcC1tY2JzcC5jIHwgNSArKysrKwo+PiAgMSBmaWxlIGNoYW5nZWQsIDUgaW5zZXJ0aW9u
+cygrKQo+Pgo+IEkgZ3Vlc3MgdGhpcyBzYW1lIGhvbGRzIGZvciBPTUFQMSB0b28gYXMgaXQgaGFz
+IDE2LWJpdCBNY0JTUCByZWdpc3RlcnMKPiB0b28uCgpZZXMsIGl0IGRvZXMuIFRoYXQncyB3aHkg
+SSBjaGVjayBmb3IgdGhlIHJlZ19zaXplLgoKPiBBY2tlZC1ieTogSmFya2tvIE5pa3VsYSA8amFy
+a2tvLm5pa3VsYUBiaXRtZXIuY29tPgoKVGhhbmtzLgoKVGhlcmUgaXMgYSBzbGlnaHQgY2hhbmNl
+IHRoYXQgSSBjYW4gbWFrZSB0aGUgMzJiaXQgc2FtcGxlcyB0byB3b3JrIG9uCnRoZSBzRE1BIHNp
+ZGUsIGJ1dCBpdCBpcyBhIGxvbmcgc2hvdDoKQWRkIHN1cHBvcnQgZm9yIHBvcnRfd2luZG93IHRv
+IGN5Y2xpYwpTZXQgdGhlIGRldl93aWR0aCBmb3Igb21hcDEvb21hcDI0MjAgdG8gMTZiaXQgKGFz
+IHRoaXMgaXMgdGhlIGNhc2UpCklmIHBvcnRfd2luZG93cyBpcyBzZXQgYW5kIGl0IGlzIG11bHRp
+cGxlIG9mIGRldl93aWR0aAogdXNlIHNpbmdsZSBpbmRleGVkIGFkZHJlc3Npbmcgb24gdGhlIE1j
+QlNQIHNpZGUgaW5zdGVhZCBvZiBjb25zdGFudAogc2V0IHRoZSBjc2RwLnh4eF9wYWNrZWQKIHNl
+dCB0aGUgY3NkcC5kYXRhX3R5cGUgdG8gMzJiaXQKIHNldCB0aGUgRVMgKGVsZW1lbnQgc2l6ZSkg
+dG8gMTZiaXQKIHNldCBFSSB0byAtNAoKQWFhcmdoLCBubywgaXQgY2FuIG5vdCBiZSBkb25lLi4u
+IFRoZSBUUk0gc3RhdGVzIHRoYXQgUGFja2VkIGFjY2VzcyBvbmx5CndvcmtzIGlmIEVJPTEgaW4g
+c2luZ2xlL2RvdWJsZSBpbmRleGVkIG1vZGVzLgoKSSBkb24ndCBzZWUgaG93IHRoaXMgY2FuIGJl
+IGRvbmUgOigKCi0gUMOpdGVyCgpUZXhhcyBJbnN0cnVtZW50cyBGaW5sYW5kIE95LCBQb3Jra2Fs
+YW5rYXR1IDIyLCAwMDE4MCBIZWxzaW5raS4KWS10dW5udXMvQnVzaW5lc3MgSUQ6IDA2MTU1MjEt
+NC4gS290aXBhaWtrYS9Eb21pY2lsZTogSGVsc2lua2kKX19fX19fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZlbCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZl
+bEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFuLmFsc2EtcHJvamVjdC5vcmcvbWFpbG1h
+bi9saXN0aW5mby9hbHNhLWRldmVsCg==
