@@ -1,18 +1,15 @@
-From: Francesco Turco <fturco@fastmail.fm>
-Subject: QA issue with media-sound/alsa-utils-1.1.7 Gentoo
-	package
-Date: Sat, 27 Oct 2018 12:38:20 +0200
-Message-ID: <1540636700.596964.1556502824.234B6E27@webmail.messagingengine.com>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 0/3] constify snd_soc_dai_ops structures
+Date: Sat, 27 Oct 2018 15:34:41 +0200
+Message-ID: <1540647284-26728-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from out3-smtp.messagingengine.com (out3-smtp.messagingengine.com
- [66.111.4.27]) by alsa0.perex.cz (Postfix) with ESMTP id F30502679FD
- for <alsa-devel@alsa-project.org>; Sat, 27 Oct 2018 12:38:21 +0200 (CEST)
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
- by mailout.nyi.internal (Postfix) with ESMTP id 8FC7A21EF6
- for <alsa-devel@alsa-project.org>; Sat, 27 Oct 2018 06:38:20 -0400 (EDT)
+Received: from mail3-relais-sop.national.inria.fr
+ (mail3-relais-sop.national.inria.fr [192.134.164.104])
+ by alsa0.perex.cz (Postfix) with ESMTP id 0B67D2679FD
+ for <alsa-devel@alsa-project.org>; Sat, 27 Oct 2018 16:10:03 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -22,21 +19,22 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: linux-kernel@vger.kernel.org
+Cc: alsa-devel@alsa-project.org, kernel-janitors@vger.kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
 List-Id: alsa-devel@alsa-project.org
 
-VGhlIFBvcnRhZ2UgcGFja2FnZSBtYW5hZ2VyIHJldHVybnMgdGhlIGZvbGxvd2luZyBRQSB3YXJu
-aW5nIHdoZW4gaW5zdGFsbGluZyB0aGUgbWVkaWEtc291bmQvYWxzYS11dGlscy0xLjEuNyBHZW50
-b28gcGFja2FnZToKCiAqIFFBIE5vdGljZTogUGFja2FnZSB0cmlnZ2VycyBzZXZlcmUgd2Fybmlu
-Z3Mgd2hpY2ggaW5kaWNhdGUgdGhhdCBpdAogKiAgICAgICAgICAgIG1heSBleGhpYml0IHJhbmRv
-bSBydW50aW1lIGZhaWx1cmVzLgogKiAuLi9hbHNhbWl4ZXIvdm9sdW1lX21hcHBpbmcuYzoxMTY6
-MTU6IHdhcm5pbmc6IGluY29tcGF0aWJsZSBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBidWlsdC1p
-biBmdW5jdGlvbiDigJhleHAxMOKAmQogKiAuLi9hbHNhbWl4ZXIvdm9sdW1lX21hcHBpbmcuYzox
-NTE6MTQ6IHdhcm5pbmc6IGluY29tcGF0aWJsZSBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBidWls
-dC1pbiBmdW5jdGlvbiDigJhleHAxMOKAmQoKICogUGxlYXNlIGRvIG5vdCBmaWxlIGEgR2VudG9v
-IGJ1ZyBhbmQgaW5zdGVhZCByZXBvcnQgdGhlIGFib3ZlIFFBCiAqIGlzc3VlcyBkaXJlY3RseSB0
-byB0aGUgdXBzdHJlYW0gZGV2ZWxvcGVycyBvZiB0aGlzIHNvZnR3YXJlLgogKiBIb21lcGFnZTog
-aHR0cHM6Ly9hbHNhLXByb2plY3Qub3JnLwoKLS0gCmh0dHBzOi8vZnR1cmNvLmdpdGxhYi5pby8K
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KQWxzYS1kZXZl
-bCBtYWlsaW5nIGxpc3QKQWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnCmh0dHA6Ly9tYWlsbWFu
-LmFsc2EtcHJvamVjdC5vcmcvbWFpbG1hbi9saXN0aW5mby9hbHNhLWRldmVsCg==
+The snd_soc_dai_ops structures are only stored in the ops field of a
+snd_soc_dai_driver structure, so make the snd_soc_dai_ops structures
+const as well.
+
+Done with the help of Coccinelle.
+
+---
+
+ drivers/soundwire/intel.c        |    4 ++--
+ sound/soc/codecs/ak4458.c        |    2 +-
+ sound/soc/codecs/ak5558.c        |    2 +-
+ sound/soc/codecs/hdac_hda.c      |    2 +-
+ sound/soc/codecs/tas6424.c       |    2 +-
+ sound/soc/qcom/qdsp6/q6afe-dai.c |    8 ++++----
+ 6 files changed, 10 insertions(+), 10 deletions(-)
