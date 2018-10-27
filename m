@@ -1,15 +1,15 @@
-From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Subject: [PATCH] ASoC: fix oops w/
-	for_each_rtd_codec_dai_rollback() macro
-Date: Fri, 26 Oct 2018 16:54:43 -0500
-Message-ID: <20181026215443.29081-1-pierre-louis.bossart@linux.intel.com>
+From: Wei Yongjun <weiyongjun1@huawei.com>
+Subject: [PATCH] ASoC: stm32: sai: fix invalid use of sizeof in
+	stm32_sai_add_mclk_provider()
+Date: Sat, 27 Oct 2018 02:19:59 +0000
+Message-ID: <1540606799-164510-1-git-send-email-weiyongjun1@huawei.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mga05.intel.com (mga05.intel.com [192.55.52.43])
- by alsa0.perex.cz (Postfix) with ESMTP id 829C52679C2
- for <alsa-devel@alsa-project.org>; Fri, 26 Oct 2018 23:55:02 +0200 (CEST)
+Received: from huawei.com (szxga04-in.huawei.com [45.249.212.190])
+ by alsa0.perex.cz (Postfix) with ESMTP id 89FBC2679E0
+ for <alsa-devel@alsa-project.org>; Sat, 27 Oct 2018 04:09:45 +0200 (CEST)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -19,41 +19,29 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
-Cc: tiwai@suse.de, broonie@kernel.org, Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>, Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+To: Olivier Moysan <olivier.moysan@st.com>, Arnaud Pouliquen <arnaud.pouliquen@st.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, Maxime Coquelin <mcoquelin.stm32@gmail.com>, Alexandre
+ Torgue <alexandre.torgue@st.com>
+Cc: kernel-janitors@vger.kernel.org, alsa-devel@alsa-project.org, Wei Yongjun <weiyongjun1@huawei.com>, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
 List-Id: alsa-devel@alsa-project.org
 
-A kernel oops happens on an error case (usual missing BE mixer
-configuration required by Intel SST driver). Git bisect points to this
-macro and an operator precedence issue.
+sizeof() when applied to a pointer typed expression gives the
+size of the pointer, not that of the pointed data.
 
-	for (; ((i--) >= 0) && ((dai) = rtd->codec_dais[i]);)
-
-The initial code replaced by this macro was
-	while (--i >= 0) {
-		codec_dai = rtd->codec_dais[i];
-
-Fix the C operator precedence difference by reverting to pre-decrement
-
-Fixes: 0b7990e3897 ('ASoC: add for_each_rtd_codec_dai() macro')
-Cc: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Signed-off-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Fixes: 8307b2afd386 ("ASoC: stm32: sai: set sai as mclk clock provider")
+Signed-off-by: Wei Yongjun <weiyongjun1@huawei.com>
 ---
- include/sound/soc.h | 2 +-
+ sound/soc/stm/stm32_sai_sub.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/include/sound/soc.h b/include/sound/soc.h
-index f1dab1f4b194..70c10a8f3e90 100644
---- a/include/sound/soc.h
-+++ b/include/sound/soc.h
-@@ -1192,7 +1192,7 @@ struct snd_soc_pcm_runtime {
- 	     ((i) < rtd->num_codecs) && ((dai) = rtd->codec_dais[i]); \
- 	     (i)++)
- #define for_each_rtd_codec_dai_rollback(rtd, i, dai)		\
--	for (; ((i--) >= 0) && ((dai) = rtd->codec_dais[i]);)
-+	for (; ((--i) >= 0) && ((dai) = rtd->codec_dais[i]);)
+diff --git a/sound/soc/stm/stm32_sai_sub.c b/sound/soc/stm/stm32_sai_sub.c
+index ea05cc9..211589b 100644
+--- a/sound/soc/stm/stm32_sai_sub.c
++++ b/sound/soc/stm/stm32_sai_sub.c
+@@ -390,7 +390,7 @@ static int stm32_sai_add_mclk_provider(struct stm32_sai_sub_data *sai)
+ 	char *mclk_name, *p, *s = (char *)pname;
+ 	int ret, i = 0;
  
- 
- /* mixer control */
--- 
-2.17.1
+-	mclk = devm_kzalloc(dev, sizeof(mclk), GFP_KERNEL);
++	mclk = devm_kzalloc(dev, sizeof(*mclk), GFP_KERNEL);
+ 	if (!mclk)
+ 		return -ENOMEM;
