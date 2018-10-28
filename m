@@ -1,15 +1,19 @@
-From: Alex Stanoev <alex@astanoev.com>
-Subject: [PATCH] ALSA: ca0106: Disable IZD on SB0570 DAC to fix
-	audio pops
-Date: Sun, 28 Oct 2018 16:55:12 +0000
-Message-ID: <20181028165512.24474-1-alex@astanoev.com>
+From: Mutz Heuer <mutz.heuer@gmail.com>
+Subject: [USB-Audio - PX USB,
+ playback] snd-usb-audio: probe of 2-3:1.0 failed with error -22
+ after kernel upgrade
+Date: Sun, 28 Oct 2018 22:00:35 +0100
+Message-ID: <CAHU8kApb6us8A4r9vwzZaM+Y7BQoty0HqXARJXLpQJqjv0OMCA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from rn-nyc.alexsoft-bg.com (rn-nyc.alexsoft-bg.com [168.235.91.190])
- by alsa0.perex.cz (Postfix) with ESMTP id 5D01C2675BA
- for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2018 17:56:00 +0100 (CET)
+Received: from mail-lf1-f65.google.com (mail-lf1-f65.google.com
+ [209.85.167.65])
+ by alsa0.perex.cz (Postfix) with ESMTP id 304212675BA
+ for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2018 22:00:47 +0100 (CET)
+Received: by mail-lf1-f65.google.com with SMTP id c16so4526960lfj.8
+ for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2018 14:00:47 -0700 (PDT)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,48 +24,35 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
 To: alsa-devel@alsa-project.org
-Cc: Alex Stanoev <alex@astanoev.com>
 List-Id: alsa-devel@alsa-project.org
 
-The Creative Audigy SE (SB0570) card currently exhibits an audible pop
-whenever playback is stopped or resumed, or during silent periods of an
-audio stream. Initialise the IZD bit to the 0 to eliminate these pops.
+USB-Audio Connection on Bowers & Wilkens PX Bluetooth Headphones started
+working when upgrading kernel from 4.13 to 4.15 series. Then it suddenly
+stopped working again on newer kernels. The bug report has been generated
+on the latest working mainline kernel 4.15.7. All newer kernels have some
+usb quirks in place, which should fix the playback sample rates to 48 kHz.
+The quirk seems not to be working correctly - it seems to hinder the audio
+system to recognize the USB-device as a sound device.
 
-The Infinite Zero Detection (IZD) feature on the DAC causes the output
-to be shunted to Vcap after 2048 samples of silence. This discharges the
-AC coupling capacitor through the output and causes the aforementioned
-pop/click noise.
+The Headphones work on kernels before 4,15.7 when manually configuring
+pulseaudio to a default samplerate of 48 kHz.
 
-The behaviour of the IZD bit is described on page 15 of the WM8768GEDS
-datasheet: "With IZD=1, applying MUTE for 1024 consecutive input samples
-will cause all outputs to be connected directly to VCAP. This also
-happens if 2048 consecutive zero input samples are applied to all 6
-channels, and IZD=0. It will be removed as soon as any channel receives
-a non-zero input". I believe the second sentence might be referring to
-IZD=1 instead of IZD=0 given the observed behaviour of the card.
+PX Headphones are on the newest firmware level.
 
-This change should make the DAC initialisation consistent with
-Creative's Windows driver, as this popping persists when initialising
-the card in Linux and soft rebooting into Windows, but is not present on
-a cold boot to Windows.
+See https://patchwork.kernel.org/patch/10265345/. Dropping that patch and
+recompiling the kernel leads to a situation where alsa and pulseaudio seem
+to to be working again.
 
-Signed-off-by: Alex Stanoev <alex@astanoev.com>
----
- sound/pci/ca0106/ca0106.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Adding
 
-diff --git a/sound/pci/ca0106/ca0106.h b/sound/pci/ca0106/ca0106.h
-index 04402c14cb23..9847b669cf3c 100644
---- a/sound/pci/ca0106/ca0106.h
-+++ b/sound/pci/ca0106/ca0106.h
-@@ -582,7 +582,7 @@
- #define SPI_PL_BIT_R_R		(2<<7)	/* right channel = right */
- #define SPI_PL_BIT_R_C		(3<<7)	/* right channel = (L+R)/2 */
- #define SPI_IZD_REG		2
--#define SPI_IZD_BIT		(1<<4)	/* infinite zero detect */
-+#define SPI_IZD_BIT		(0<<4)	/* infinite zero detect */
- 
- #define SPI_FMT_REG		3
- #define SPI_FMT_BIT_RJ		(0<<0)	/* right justified mode */
--- 
-2.19.1
+      default-sample-rate = 48000
+
+to /etc/pulse/daemon.conf leads to working headphones.
+
+Maybe the patch has to be adjusted to newer firmware? A quirk seems to be
+really necessary to avoid the specific patch to daemon.conf.
+
+
+More details can be found in
+https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1773697
+What would be the best way to proceed?
