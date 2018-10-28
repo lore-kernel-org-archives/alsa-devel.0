@@ -1,28 +1,15 @@
-From: Mike Brady <mikebrady@eircom.net>
-Subject: Re: [PATCH v2] staging: bcm2835-audio: interpolate
- audio delay
-Date: Sun, 28 Oct 2018 14:26:12 +0000
-Message-ID: <126FA055-050B-4AAC-9392-CA8CCA821768@eircom.net>
-References: <20181022191708.GA4659@ubuntu>
- <a703f8a2-e85a-bc5b-750a-cc43ef252ba5@gmail.com>
- <EA85FEC9-B1C7-4548-88F5-F0E7BC12158E@eircom.net>
- <046aea96-e0d3-60f4-c61a-c26bb1b5c193@gmail.com>
- <B9A84822-3780-4E01-96AD-FD3B42C44B45@eircom.net>
- <9884c4f5-2343-e3a4-8d8b-dd2db404ef27@gmail.com>
- <s5hftwuo4t0.wl-tiwai@suse.de>
-Mime-Version: 1.0 (Mac OS X Mail 12.0 \(3445.100.39\))
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+From: Alex Stanoev <alex@astanoev.com>
+Subject: [PATCH] ALSA: ca0106: Disable IZD on SB0570 DAC to fix
+	audio pops
+Date: Sun, 28 Oct 2018 16:55:12 +0000
+Message-ID: <20181028165512.24474-1-alex@astanoev.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from vie01a-dmta-pe07-1.mx.upcmail.net
- (vie01a-dmta-pe07-1.mx.upcmail.net [84.116.36.17])
- by alsa0.perex.cz (Postfix) with ESMTP id 10A9C2677E2
- for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2018 15:26:08 +0100 (CET)
-Received: from [172.31.216.235] (helo=vie01a-pemc-psmtp-pe12.mail.upcmail.net)
- by vie01a-dmta-pe07.mx.upcmail.net with esmtp (Exim 4.88)
- (envelope-from <mikebrady@eircom.net>) id 1gGm12-0001v3-PN
- for alsa-devel@alsa-project.org; Sun, 28 Oct 2018 15:26:08 +0100
-In-Reply-To: <s5hftwuo4t0.wl-tiwai@suse.de>
+Received: from rn-nyc.alexsoft-bg.com (rn-nyc.alexsoft-bg.com [168.235.91.190])
+ by alsa0.perex.cz (Postfix) with ESMTP id 5D01C2675BA
+ for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2018 17:56:00 +0100 (CET)
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -32,55 +19,49 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Takashi Iwai <tiwai@suse.de>
-Cc: stefan.wahren@i2se.com, devel@driverdev.osuosl.org, alsa-devel@alsa-project.org, f.fainelli@gmail.com, julia.lawall@lip6.fr, gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org, eric@anholt.net, linux-rpi-kernel@lists.infradead.org, nishka.dasgupta_ug18@ashoka.edu.in, Kirill Marinushkin <k.marinushkin@gmail.com>, linux-arm-kernel@lists.infradead.org
+To: alsa-devel@alsa-project.org
+Cc: Alex Stanoev <alex@astanoev.com>
 List-Id: alsa-devel@alsa-project.org
 
-Cgo+IE9uIDI1IE9jdCAyMDE4LCBhdCAwODozNywgVGFrYXNoaSBJd2FpIDx0aXdhaUBzdXNlLmRl
-PiB3cm90ZToKPiAKPiBPbiBUaHUsIDI1IE9jdCAyMDE4IDAwOjAyOjM0ICswMjAwLAo+IEtpcmls
-bCBNYXJpbnVzaGtpbiB3cm90ZToKPj4gCj4+Pj4gV2hlbiB5b3UgcGxheSBzb3VuZCAtIHRoZSBw
-b2ludGVyIGluY3JlbWVudHMuCj4+PiAKPj4+IFVuZm9ydHVuYXRlbHksIHdoZW4geW91IHBsYXkg
-c291bmQsIHRoZSBwb2ludGVyIGRvZXMgbm90IGFjdHVhbGx5IGluY3JlbWVudCwgZm9yIHVwIHRv
-IGFib3V0IDEwIG1pbGxpc2Vjb25kcy4gSSBrbm93IG9mIG5vIHdheSB0byBhY3R1YWxseSBhY2Nl
-c3MgdGhlIHRydWUg4oCcbGl2ZeKAnSBwb3NpdGlvbiBvZiB0aGUgZnJhbWUgdGhhdCBpcyBiZWlu
-ZyBwbGF5ZWQgYXQgYW55IGluc3RhbnQ7IGhlbmNlIHRoZSBkZXNpcmUgdG8gZXN0aW1hdGUgaXQu
-Cj4+PiAKPj4gCj4+IFlvdXIgdmlzaW9uIG9mIHNpdHVhdGlvbiBpbiB0aGUgb3Bwb3NpdGUgZnJv
-bSBteSB2aXNpb24uIFdoYXQgeW91IHNlZSBhcyBhCj4+IHN5bXB0b20gLSBJIHNlZSBhcyBhIHJv
-b3QgY2F1c2UuIEFzIEkgc2VlLCB5b3Ugc2hvdWxkIGZpeCB0aGUKPj4gcG9pbnRlci1ub3QtaW5j
-cmVtZW50aW5nLiBXaHkgZG8geW91IHRoaW5rIHRoYXQgaXQncyBva2F5IHRoYXQgdGhlIHBvaW50
-ZXIgaXMKPj4gbm90IHVwZGF0aW5nIGR1cmluZyBzb3VuZCBwbGF5PyBXaHkgZG8geW91IGluc2lz
-dCB0aGF0IHRoZXJlIGlzIGEgZGVsYXk/IEkgZG9uJ3QKPj4gdW5kZXJzdGFuZCB3aHkgd2UgYXJl
-IHNvIHN0dWNrIGhlcmUuCj4gCj4gV2VsbCwgaW4gdGhlIEFQSSBQT1YsIGl0J3Mgbm90aGluZyB3
-cm9uZyB0byBrZWVwIGh3cHRyIHN0aWNraW5nIHdoaWxlCj4gdXBkYXRpbmcgb25seSBkZWxheSB2
-YWx1ZS4gIEl0IGltcGxpZXMgdGhhdCB0aGUgaGFyZHdhcmUgY2hpcCBkb2Vzbid0Cj4gcHJvdmlk
-ZSB0aGUgaHdwdHIgdXBkYXRlLgo+IAo+IFRob3VnaCwgdXN1YWxseSB0aGUgZGVsYXkgdmFsdWUg
-aXMgcHJvdmlkZWQgYWxzbyBmcm9tIHRoZSBoYXJkd2FyZSwKPiBlLmcuIHJlYWRpbmcgdGhlIGxp
-bmsgcG9zaXRpb24gb3Igc3VjaC4gIEl0J3MgYSB0eXBpY2FsIGNhc2UgbGlrZQo+IFVTQi1hdWRp
-bywgd2hlcmUgdGhlIGh3cHRyIGdldHMgdXBkYXRlZCBhbmQgdGhlIGRlbGF5IGluZGljYXRlcyB0
-aGUKPiBhY3R1YWwgcG9zaXRpb24gKmJlaGluZCogaHdwdHIuICBUaGF0IHdvcmtzIGJlY2F1c2Ug
-aHdwdHIgc2hvd3MgdGhlCj4gcG9zaXRpb24gaW4gdGhlIHJpbmcgYnVmZmVyIGF0IHdoaWNoIHlv
-dSBjYW4gYWNjZXNzIHRoZSBkYXRhLiAgQW5kIGl0Cj4gZG9lc24ndCBtZWFuIHRoYXQgaHdwdHIg
-aXMgdGhlIGFjdHVhbGx5IHBsYXlpbmcgcG9zaXRpb24sIGJ1dCBpdCBjYW4KPiBiZSBhaGVhZCBv
-ZiB0aGUgY3VycmVudCBwb3NpdGlvbiwgd2hlbiBtYW55IHNhbXBsZXMgYXJlIHF1ZXVlZCBvbgo+
-IEZJRk8uICBUaGUgZGVsYXkgaXMgcHJvdmlkZWQgdG8gY29ycmVjdCB0aGUgcG9zaXRpb24gYmFj
-ayB0byB0aGUKPiBhY3R1YWwgcG9pbnQuCj4gCj4gQnV0LCB0aGlzIGFsc28gZG9lc24ndCBtZWFu
-IHRoYXQgdGhlIGRlbGF5IHNob3VsZG4ndCBiZSB1c2VkIGZvciB0aGUKPiBwdXJwb3NlIGxpa2Ug
-dGhpcyBwYXRjaHNldCwgZWl0aGVyLiAgT1RPSCwgcHJvdmlkaW5nIGEgZmluZXIgaHdwdHIKPiB2
-YWx1ZSB3b3VsZCBiZSBsaWtlbHkgbW9yZSBhcHBzLWZyaWVuZGx5OyB0aGVyZSBtdXN0IGJlIG1h
-bnkgcHJvZ3JhbXMKPiB0aGF0IGRvbid0IGV2YWx1YXRlIHRoZSBkZWxheSB2YWx1ZSBwcm9wZXJs
-eS4KPiAKPiBTbywgSSBzdXBwb3NlIHRoYXQgaHdwdHIgdXBkYXRlIG1pZ2h0IGJlIGEgYmV0dGVy
-IG9wdGlvbiBpZiB0aGUgY29kZQo+IHdvbid0IGJlY29tZSB0b28gY29tcGxleC4gIExldCdzIHNl
-ZS4KCkluZGVlZC4gSXQgd2lsbCB0YWtlIG1lIGEgZmV3IGRheXMgdG8gbG9vayBpbnRvIHRoaXPi
-gKYKClJlZ2FyZHMKTWlrZQoKPiBPbmUgYW5vdGhlciB0aGluZyBJJ2QgbGlrZSB0byBwb2ludCBv
-dXQgaXMgdGhhdCB0aGUgdmFsdWUgZ2l2ZW4gaW4gdGhlCj4gcGF0Y2ggaXMgbm90aGluZyBidXQg
-YW4gZXN0aW1hdGVkIHBvc2l0aW9uLCBvcHRpbWlzdGljYWxseSBjYWxjdWxhdGVkCj4gdmlhIHRo
-ZSBzeXN0ZW0gdGltZXIuICBNaWtlIGFuZCBJIGhhZCBhbHJlYWR5IGRpc2N1c3Npb24gaW4gYW5v
-dGhlcgo+IHRocmVhZCwgYW5kIGFub3RoZXIgcG9zc2libGUgb3B0aW9uIHdvdWxkIGJlIHRvIHBy
-b3ZpZGUgdGhlIHByb3Blcgo+IHRpbWVzdGFtcC12cy1od3B0ciBwYWlyLCBpbnN0ZWFkIG9mIHVw
-ZGF0aW5nIHRoZSB0aW1lc3RhbXAgYWx3YXlzIGF0Cj4gdGhlIHN0YXR1cyByZWFkLgo+IAo+IE1h
-eWJlIGl0J3Mgd29ydGggdG8gaGF2ZSBhIG1vZHVsZSBvcHRpb24gdG8gc3VwcHJlc3MgdGhpcyBv
-cHRpbWlzdGljCj4gaHdwdHIgdXBkYXRlIGJlaGF2aW9yLCBpbiBjYXNlIHNvbWV0aGluZyB3ZW50
-IHdyb25nIHdpdGggY2xvY2tzPwo+IAo+IAo+IHRoYW5rcywKPiAKPiBUYWthc2hpCgpfX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxp
-bmcgbGlzdApBbHNhLWRldmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1w
-cm9qZWN0Lm9yZy9tYWlsbWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+The Creative Audigy SE (SB0570) card currently exhibits an audible pop
+whenever playback is stopped or resumed, or during silent periods of an
+audio stream. Initialise the IZD bit to the 0 to eliminate these pops.
+
+The Infinite Zero Detection (IZD) feature on the DAC causes the output
+to be shunted to Vcap after 2048 samples of silence. This discharges the
+AC coupling capacitor through the output and causes the aforementioned
+pop/click noise.
+
+The behaviour of the IZD bit is described on page 15 of the WM8768GEDS
+datasheet: "With IZD=1, applying MUTE for 1024 consecutive input samples
+will cause all outputs to be connected directly to VCAP. This also
+happens if 2048 consecutive zero input samples are applied to all 6
+channels, and IZD=0. It will be removed as soon as any channel receives
+a non-zero input". I believe the second sentence might be referring to
+IZD=1 instead of IZD=0 given the observed behaviour of the card.
+
+This change should make the DAC initialisation consistent with
+Creative's Windows driver, as this popping persists when initialising
+the card in Linux and soft rebooting into Windows, but is not present on
+a cold boot to Windows.
+
+Signed-off-by: Alex Stanoev <alex@astanoev.com>
+---
+ sound/pci/ca0106/ca0106.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/pci/ca0106/ca0106.h b/sound/pci/ca0106/ca0106.h
+index 04402c14cb23..9847b669cf3c 100644
+--- a/sound/pci/ca0106/ca0106.h
++++ b/sound/pci/ca0106/ca0106.h
+@@ -582,7 +582,7 @@
+ #define SPI_PL_BIT_R_R		(2<<7)	/* right channel = right */
+ #define SPI_PL_BIT_R_C		(3<<7)	/* right channel = (L+R)/2 */
+ #define SPI_IZD_REG		2
+-#define SPI_IZD_BIT		(1<<4)	/* infinite zero detect */
++#define SPI_IZD_BIT		(0<<4)	/* infinite zero detect */
+ 
+ #define SPI_FMT_REG		3
+ #define SPI_FMT_BIT_RJ		(0<<0)	/* right justified mode */
+-- 
+2.19.1
