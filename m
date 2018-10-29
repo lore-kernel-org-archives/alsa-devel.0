@@ -1,58 +1,169 @@
-From: Mutz Heuer <mutz.heuer@gmail.com>
-Subject: [USB-Audio - PX USB,
- playback] snd-usb-audio: probe of 2-3:1.0 failed with error -22
- after kernel upgrade
-Date: Sun, 28 Oct 2018 22:00:35 +0100
-Message-ID: <CAHU8kApb6us8A4r9vwzZaM+Y7BQoty0HqXARJXLpQJqjv0OMCA@mail.gmail.com>
+From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
+Subject: [PATCH] ASoC: AMD: Fix race condition between register access
+Date: Mon, 29 Oct 2018 07:38:58 +0000
+Message-ID: <1540798621-32627-1-git-send-email-akshu.agrawal@amd.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-lf1-f65.google.com (mail-lf1-f65.google.com
- [209.85.167.65])
- by alsa0.perex.cz (Postfix) with ESMTP id 304212675BA
- for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2018 22:00:47 +0100 (CET)
-Received: by mail-lf1-f65.google.com with SMTP id c16so4526960lfj.8
- for <alsa-devel@alsa-project.org>; Sun, 28 Oct 2018 14:00:47 -0700 (PDT)
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: linux-kernel-owner@vger.kernel.org
+Cc: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>"Deucher, Alexander" <Alexander.Deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
 List-Id: alsa-devel@alsa-project.org
 
-USB-Audio Connection on Bowers & Wilkens PX Bluetooth Headphones started
-working when upgrading kernel from 4.13 to 4.15 series. Then it suddenly
-stopped working again on newer kernels. The bug report has been generated
-on the latest working mainline kernel 4.15.7. All newer kernels have some
-usb quirks in place, which should fix the playback sample rates to 48 kHz.
-The quirk seems not to be working correctly - it seems to hinder the audio
-system to recognize the USB-device as a sound device.
+During simultaneous running of playback and capture, we
+got hit by incorrect value write on common register. This was due
+to race condition between 2 streams.
+Fixing this by locking the common register access.
 
-The Headphones work on kernels before 4,15.7 when manually configuring
-pulseaudio to a default samplerate of 48 kHz.
+Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+---
+ sound/soc/amd/acp-pcm-dma.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-PX Headphones are on the newest firmware level.
-
-See https://patchwork.kernel.org/patch/10265345/. Dropping that patch and
-recompiling the kernel leads to a situation where alsa and pulseaudio seem
-to to be working again.
-
-Adding
-
-      default-sample-rate = 48000
-
-to /etc/pulse/daemon.conf leads to working headphones.
-
-Maybe the patch has to be adjusted to newer firmware? A quirk seems to be
-really necessary to avoid the specific patch to daemon.conf.
-
-
-More details can be found in
-https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1773697
-What would be the best way to proceed?
+diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
+index 0ac4b5b..993a7db 100644
+--- a/sound/soc/amd/acp-pcm-dma.c
++++ b/sound/soc/amd/acp-pcm-dma.c
+@@ -121,6 +121,9 @@
+ 	.periods_max =3D CAPTURE_MAX_NUM_PERIODS,
+ };
+=20
++/* Lock to protect access to registers */
++static DEFINE_SPINLOCK(lock);
++
+ static u32 acp_reg_read(void __iomem *acp_mmio, u32 reg)
+ {
+ 	return readl(acp_mmio + (reg * 4));
+@@ -168,9 +171,12 @@ static void config_dma_descriptor_in_sram(void __iomem=
+ *acp_mmio,
+ 					  acp_dma_dscr_transfer_t *descr_info)
+ {
+ 	u32 sram_offset;
++	unsigned long flags;
+=20
+ 	sram_offset =3D (descr_idx * sizeof(acp_dma_dscr_transfer_t));
+=20
++	spin_lock_irqsave(&lock, flags);
++
+ 	/* program the source base address. */
+ 	acp_reg_write(sram_offset, acp_mmio, mmACP_SRBM_Targ_Idx_Addr);
+ 	acp_reg_write(descr_info->src,	acp_mmio, mmACP_SRBM_Targ_Idx_Data);
+@@ -181,6 +187,8 @@ static void config_dma_descriptor_in_sram(void __iomem =
+*acp_mmio,
+ 	/* program the number of bytes to be transferred for this descriptor. */
+ 	acp_reg_write(sram_offset + 8,	acp_mmio, mmACP_SRBM_Targ_Idx_Addr);
+ 	acp_reg_write(descr_info->xfer_val, acp_mmio, mmACP_SRBM_Targ_Idx_Data);
++
++	spin_unlock_irqrestore(&lock, flags);
+ }
+=20
+ static void pre_config_reset(void __iomem *acp_mmio, u16 ch_num)
+@@ -309,8 +317,12 @@ static void acp_pte_config(void __iomem *acp_mmio, str=
+uct page *pg,
+ 	u32 low;
+ 	u32 high;
+ 	u32 offset;
++	unsigned long flags;
+=20
+ 	offset	=3D ACP_DAGB_GRP_SRBM_SRAM_BASE_OFFSET + (pte_offset * 8);
++
++	spin_lock_irqsave(&lock, flags);
++
+ 	for (page_idx =3D 0; page_idx < (num_of_pages); page_idx++) {
+ 		/* Load the low address of page int ACP SRAM through SRBM */
+ 		acp_reg_write((offset + (page_idx * 8)),
+@@ -333,6 +345,8 @@ static void acp_pte_config(void __iomem *acp_mmio, stru=
+ct page *pg,
+ 		/* Move to next physically contiguos page */
+ 		pg++;
+ 	}
++
++	spin_unlock_irqrestore(&lock, flags);
+ }
+=20
+ static void config_acp_dma(void __iomem *acp_mmio,
+@@ -367,6 +381,7 @@ static void acp_dma_cap_channel_enable(void __iomem *ac=
+p_mmio,
+ 				       u16 cap_channel)
+ {
+ 	u32 val, ch_reg, imr_reg, res_reg;
++	unsigned long flags;
+=20
+ 	switch (cap_channel) {
+ 	case CAP_CHANNEL1:
+@@ -381,6 +396,8 @@ static void acp_dma_cap_channel_enable(void __iomem *ac=
+p_mmio,
+ 		imr_reg =3D mmACP_I2SMICSP_IMR0;
+ 		break;
+ 	}
++	spin_lock_irqsave(&lock, flags);
++
+ 	val =3D acp_reg_read(acp_mmio,
+ 			   mmACP_I2S_16BIT_RESOLUTION_EN);
+ 	if (val & ACP_I2S_MIC_16BIT_RESOLUTION_EN) {
+@@ -393,12 +410,15 @@ static void acp_dma_cap_channel_enable(void __iomem *=
+acp_mmio,
+ 	val &=3D ~ACP_I2SMICSP_IMR1__I2SMICSP_RXFOM_MASK;
+ 	acp_reg_write(val, acp_mmio, imr_reg);
+ 	acp_reg_write(0x1, acp_mmio, ch_reg);
++
++	spin_unlock_irqrestore(&lock, flags);
+ }
+=20
+ static void acp_dma_cap_channel_disable(void __iomem *acp_mmio,
+ 					u16 cap_channel)
+ {
+ 	u32 val, ch_reg, imr_reg;
++	unsigned long flags;
+=20
+ 	switch (cap_channel) {
+ 	case CAP_CHANNEL1:
+@@ -411,11 +431,15 @@ static void acp_dma_cap_channel_disable(void __iomem =
+*acp_mmio,
+ 		ch_reg =3D mmACP_I2SMICSP_RER0;
+ 		break;
+ 	}
++	spin_lock_irqsave(&lock, flags);
++
+ 	val =3D acp_reg_read(acp_mmio, imr_reg);
+ 	val |=3D ACP_I2SMICSP_IMR1__I2SMICSP_RXDAM_MASK;
+ 	val |=3D ACP_I2SMICSP_IMR1__I2SMICSP_RXFOM_MASK;
+ 	acp_reg_write(val, acp_mmio, imr_reg);
+ 	acp_reg_write(0x0, acp_mmio, ch_reg);
++
++	spin_unlock_irqrestore(&lock, flags);
+ }
+=20
+ /* Start a given DMA channel transfer */
+@@ -847,6 +871,7 @@ static int acp_dma_hw_params(struct snd_pcm_substream *=
+substream,
+ 	int status;
+ 	uint64_t size;
+ 	u32 val =3D 0;
++	unsigned long flags;
+ 	struct page *pg;
+ 	struct snd_pcm_runtime *runtime;
+ 	struct audio_substream_data *rtd;
+@@ -870,6 +895,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *=
+substream,
+ 		}
+ 	}
+ 	if (adata->asic_type =3D=3D CHIP_STONEY) {
++		spin_lock_irqsave(&lock, flags);
++
+ 		val =3D acp_reg_read(adata->acp_mmio,
+ 				   mmACP_I2S_16BIT_RESOLUTION_EN);
+ 		if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK) {
+@@ -893,6 +920,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *=
+substream,
+ 		}
+ 		acp_reg_write(val, adata->acp_mmio,
+ 			      mmACP_I2S_16BIT_RESOLUTION_EN);
++
++		spin_unlock_irqrestore(&lock, flags);
+ 	}
+=20
+ 	if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK) {
+--=20
+1.9.1
