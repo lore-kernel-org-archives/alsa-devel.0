@@ -1,169 +1,74 @@
-From: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>
-Subject: [PATCH] ASoC: AMD: Fix race condition between register access
-Date: Mon, 29 Oct 2018 07:38:58 +0000
-Message-ID: <1540798621-32627-1-git-send-email-akshu.agrawal@amd.com>
+From: Kirill Marinushkin <kmarinushkin@birdec.tech>
+Subject: [PATCH 1/2] ASoC: pcm3060: Add control for
+	differential output
+Date: Mon, 29 Oct 2018 09:59:12 +0100
+Message-ID: <20181029085913.17298-1-kmarinushkin@birdec.tech>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: linux-kernel-owner@vger.kernel.org
-Cc: "Agrawal, Akshu" <Akshu.Agrawal@amd.com>, "djkurtz@chromium.org" <djkurtz@chromium.org>, "Deucher, Alexander" <Alexander.Deucher@amd.com>, Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, "Mukunda, Vijendar" <Vijendar.Mukunda@amd.com>"Deucher, Alexander" <Alexander.Deucher@amd.com>, Guenter Roeck <linux@roeck-us.net>, "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." <alsa-devel@alsa-project.org>, open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
+ by alsa0.perex.cz (Postfix) with ESMTP id 58FA52675B8
+ for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2018 09:57:45 +0100 (CET)
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
+Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>
 List-Id: alsa-devel@alsa-project.org
 
-During simultaneous running of playback and capture, we
-got hit by incorrect value write on common register. This was due
-to race condition between 2 streams.
-Fixing this by locking the common register access.
+DAC may be switched between differential and single-ended output.
 
-Signed-off-by: Akshu Agrawal <akshu.agrawal@amd.com>
+Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
 ---
- sound/soc/amd/acp-pcm-dma.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ sound/soc/codecs/pcm3060.c | 9 +++++++++
+ sound/soc/codecs/pcm3060.h | 1 +
+ 2 files changed, 10 insertions(+)
 
-diff --git a/sound/soc/amd/acp-pcm-dma.c b/sound/soc/amd/acp-pcm-dma.c
-index 0ac4b5b..993a7db 100644
---- a/sound/soc/amd/acp-pcm-dma.c
-+++ b/sound/soc/amd/acp-pcm-dma.c
-@@ -121,6 +121,9 @@
- 	.periods_max =3D CAPTURE_MAX_NUM_PERIODS,
+diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
+index 494d9d662be8..f792ad637ae4 100644
+--- a/sound/soc/codecs/pcm3060.c
++++ b/sound/soc/codecs/pcm3060.c
+@@ -179,6 +179,13 @@ static struct snd_soc_dai_driver pcm3060_dai[] = {
+ 
+ /* dapm */
+ 
++static const char * const pcm3060_dapm_out_dif_txt[] = {
++	"Differential", "Single-Ended"
++};
++
++static SOC_ENUM_SINGLE_DECL(pcm3060_dapm_out_dif_enum, PCM3060_REG64,
++			    PCM3060_REG_SHIFT_SE, pcm3060_dapm_out_dif_txt);
++
+ static DECLARE_TLV_DB_SCALE(pcm3060_dapm_tlv, -10050, 50, 1);
+ 
+ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
+@@ -195,6 +202,8 @@ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
+ 			       0, pcm3060_dapm_tlv),
+ 	SOC_DOUBLE("Master Capture Switch", PCM3060_REG73,
+ 		   PCM3060_REG_SHIFT_MUT11, PCM3060_REG_SHIFT_MUT12, 1, 1),
++
++	SOC_ENUM("DAC Out Differential", pcm3060_dapm_out_dif_enum),
  };
-=20
-+/* Lock to protect access to registers */
-+static DEFINE_SPINLOCK(lock);
-+
- static u32 acp_reg_read(void __iomem *acp_mmio, u32 reg)
- {
- 	return readl(acp_mmio + (reg * 4));
-@@ -168,9 +171,12 @@ static void config_dma_descriptor_in_sram(void __iomem=
- *acp_mmio,
- 					  acp_dma_dscr_transfer_t *descr_info)
- {
- 	u32 sram_offset;
-+	unsigned long flags;
-=20
- 	sram_offset =3D (descr_idx * sizeof(acp_dma_dscr_transfer_t));
-=20
-+	spin_lock_irqsave(&lock, flags);
-+
- 	/* program the source base address. */
- 	acp_reg_write(sram_offset, acp_mmio, mmACP_SRBM_Targ_Idx_Addr);
- 	acp_reg_write(descr_info->src,	acp_mmio, mmACP_SRBM_Targ_Idx_Data);
-@@ -181,6 +187,8 @@ static void config_dma_descriptor_in_sram(void __iomem =
-*acp_mmio,
- 	/* program the number of bytes to be transferred for this descriptor. */
- 	acp_reg_write(sram_offset + 8,	acp_mmio, mmACP_SRBM_Targ_Idx_Addr);
- 	acp_reg_write(descr_info->xfer_val, acp_mmio, mmACP_SRBM_Targ_Idx_Data);
-+
-+	spin_unlock_irqrestore(&lock, flags);
- }
-=20
- static void pre_config_reset(void __iomem *acp_mmio, u16 ch_num)
-@@ -309,8 +317,12 @@ static void acp_pte_config(void __iomem *acp_mmio, str=
-uct page *pg,
- 	u32 low;
- 	u32 high;
- 	u32 offset;
-+	unsigned long flags;
-=20
- 	offset	=3D ACP_DAGB_GRP_SRBM_SRAM_BASE_OFFSET + (pte_offset * 8);
-+
-+	spin_lock_irqsave(&lock, flags);
-+
- 	for (page_idx =3D 0; page_idx < (num_of_pages); page_idx++) {
- 		/* Load the low address of page int ACP SRAM through SRBM */
- 		acp_reg_write((offset + (page_idx * 8)),
-@@ -333,6 +345,8 @@ static void acp_pte_config(void __iomem *acp_mmio, stru=
-ct page *pg,
- 		/* Move to next physically contiguos page */
- 		pg++;
- 	}
-+
-+	spin_unlock_irqrestore(&lock, flags);
- }
-=20
- static void config_acp_dma(void __iomem *acp_mmio,
-@@ -367,6 +381,7 @@ static void acp_dma_cap_channel_enable(void __iomem *ac=
-p_mmio,
- 				       u16 cap_channel)
- {
- 	u32 val, ch_reg, imr_reg, res_reg;
-+	unsigned long flags;
-=20
- 	switch (cap_channel) {
- 	case CAP_CHANNEL1:
-@@ -381,6 +396,8 @@ static void acp_dma_cap_channel_enable(void __iomem *ac=
-p_mmio,
- 		imr_reg =3D mmACP_I2SMICSP_IMR0;
- 		break;
- 	}
-+	spin_lock_irqsave(&lock, flags);
-+
- 	val =3D acp_reg_read(acp_mmio,
- 			   mmACP_I2S_16BIT_RESOLUTION_EN);
- 	if (val & ACP_I2S_MIC_16BIT_RESOLUTION_EN) {
-@@ -393,12 +410,15 @@ static void acp_dma_cap_channel_enable(void __iomem *=
-acp_mmio,
- 	val &=3D ~ACP_I2SMICSP_IMR1__I2SMICSP_RXFOM_MASK;
- 	acp_reg_write(val, acp_mmio, imr_reg);
- 	acp_reg_write(0x1, acp_mmio, ch_reg);
-+
-+	spin_unlock_irqrestore(&lock, flags);
- }
-=20
- static void acp_dma_cap_channel_disable(void __iomem *acp_mmio,
- 					u16 cap_channel)
- {
- 	u32 val, ch_reg, imr_reg;
-+	unsigned long flags;
-=20
- 	switch (cap_channel) {
- 	case CAP_CHANNEL1:
-@@ -411,11 +431,15 @@ static void acp_dma_cap_channel_disable(void __iomem =
-*acp_mmio,
- 		ch_reg =3D mmACP_I2SMICSP_RER0;
- 		break;
- 	}
-+	spin_lock_irqsave(&lock, flags);
-+
- 	val =3D acp_reg_read(acp_mmio, imr_reg);
- 	val |=3D ACP_I2SMICSP_IMR1__I2SMICSP_RXDAM_MASK;
- 	val |=3D ACP_I2SMICSP_IMR1__I2SMICSP_RXFOM_MASK;
- 	acp_reg_write(val, acp_mmio, imr_reg);
- 	acp_reg_write(0x0, acp_mmio, ch_reg);
-+
-+	spin_unlock_irqrestore(&lock, flags);
- }
-=20
- /* Start a given DMA channel transfer */
-@@ -847,6 +871,7 @@ static int acp_dma_hw_params(struct snd_pcm_substream *=
-substream,
- 	int status;
- 	uint64_t size;
- 	u32 val =3D 0;
-+	unsigned long flags;
- 	struct page *pg;
- 	struct snd_pcm_runtime *runtime;
- 	struct audio_substream_data *rtd;
-@@ -870,6 +895,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *=
-substream,
- 		}
- 	}
- 	if (adata->asic_type =3D=3D CHIP_STONEY) {
-+		spin_lock_irqsave(&lock, flags);
-+
- 		val =3D acp_reg_read(adata->acp_mmio,
- 				   mmACP_I2S_16BIT_RESOLUTION_EN);
- 		if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK) {
-@@ -893,6 +920,8 @@ static int acp_dma_hw_params(struct snd_pcm_substream *=
-substream,
- 		}
- 		acp_reg_write(val, adata->acp_mmio,
- 			      mmACP_I2S_16BIT_RESOLUTION_EN);
-+
-+		spin_unlock_irqrestore(&lock, flags);
- 	}
-=20
- 	if (substream->stream =3D=3D SNDRV_PCM_STREAM_PLAYBACK) {
---=20
-1.9.1
+ 
+ static const struct snd_soc_dapm_widget pcm3060_dapm_widgets[] = {
+diff --git a/sound/soc/codecs/pcm3060.h b/sound/soc/codecs/pcm3060.h
+index fd89a68aa8a7..32080ff00166 100644
+--- a/sound/soc/codecs/pcm3060.h
++++ b/sound/soc/codecs/pcm3060.h
+@@ -38,6 +38,7 @@ int pcm3060_remove(struct device *dev);
+ #define PCM3060_REG_ADPSV		0x20
+ #define PCM3060_REG_DAPSV		0x10
+ #define PCM3060_REG_SE			0x01
++#define PCM3060_REG_SHIFT_SE		0x00
+ 
+ #define PCM3060_REG65			0x41
+ #define PCM3060_REG66			0x42
+-- 
+2.13.6
