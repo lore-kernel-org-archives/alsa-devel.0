@@ -1,16 +1,20 @@
-From: Kirill Marinushkin <kmarinushkin@birdec.tech>
-Subject: [PATCH 2/2] ASoC: pcm3060: Rename output widgets
-Date: Mon, 29 Oct 2018 09:59:13 +0100
-Message-ID: <20181029085913.17298-2-kmarinushkin@birdec.tech>
-References: <20181029085913.17298-1-kmarinushkin@birdec.tech>
+From: frederik@ofb.net
+Subject: Re: alsaloop problems; ALSA streaming tutorial (resend)
+Date: Mon, 29 Oct 2018 08:22:46 -0700
+Message-ID: <20181029152246.5a5vq7n5vzh7m5jv@ofb.net>
+References: <20181024080118.hwlaato642zpagfc@ofb.net>
+ <57796bd0-5212-81bf-5053-e3585a484f46@perex.cz>
+Reply-To: frederik@ofb.net
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from host.euro-space.net (host.euro-space.net [87.117.239.2])
- by alsa0.perex.cz (Postfix) with ESMTP id 4E5B82677D1
- for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2018 09:57:54 +0100 (CET)
-In-Reply-To: <20181029085913.17298-1-kmarinushkin@birdec.tech>
+Received: from ICGRIDDB04.SEAS.upenn.edu (icgriddb04.seas.upenn.edu
+ [158.130.57.72])
+ by alsa0.perex.cz (Postfix) with ESMTP id 6248B26752C
+ for <alsa-devel@alsa-project.org>; Mon, 29 Oct 2018 16:22:56 +0100 (CET)
+Content-Disposition: inline
+In-Reply-To: <57796bd0-5212-81bf-5053-e3585a484f46@perex.cz>
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -20,70 +24,21 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org, Kirill Marinushkin <kmarinushkin@birdec.tech>, Liam Girdwood <lgirdwood@gmail.com>
+To: Jaroslav Kysela <perex@perex.cz>
+Cc: alsa-user@lists.sourceforge.net, alsa-devel@alsa-project.org, mark@xwax.org
 List-Id: alsa-devel@alsa-project.org
 
-In the initial commit [1], I added differential outputs of the codec as
-separate `+` and `-` widgets:
+(resending to list)
 
-OUTL+
-OUTR+
-OUTL-
-OUTR-
+>Could you retest with the latest? I tried to fix the avail_min issue here:
+>
+>http://git.alsa-project.org/?p=alsa-utils.git;a=commitdiff;h=8bc1bc53d0a8b3797337bddd30cd345ba1049817
 
-Later, in the commit [2], I added a control to switch the outputs between
-differential and single-ended modes. Having this control, the `+` and `-`
-separation in widgets seems for me confusing. There are no functional
-benefits in such separation, so I find reasonable to get rid of it:
+I would be pleased! But can you tell me which commands to run? I don't
+see a "clone" URL. Also, briefly, how do I install it under a PREFIX,
+how do I make sure that the installed versions of the libraries get
+used when I run the commands,..
 
-OUTL
-OUTR
+Thanks,
 
-The new naming is more friendly for sound cards, and is better aligned with
-other codec drivers in kernel.
-
-Renaming outputs now should not be a problem from the backwards-
-compatibility perspective, as the driver for PCM3060 is added into the
-mainline very recently, and did not yet appear in any releases.
-
-[1] commit 6ee47d4a8dac ("ASoC: pcm3060: Add codec driver")
-[2] commit c33260d09337 ("ASoC: pcm3060: Add control for differential
-    output")
-
-Signed-off-by: Kirill Marinushkin <kmarinushkin@birdec.tech>
----
- sound/soc/codecs/pcm3060.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/sound/soc/codecs/pcm3060.c b/sound/soc/codecs/pcm3060.c
-index f792ad637ae4..078a3b1fc064 100644
---- a/sound/soc/codecs/pcm3060.c
-+++ b/sound/soc/codecs/pcm3060.c
-@@ -207,20 +207,16 @@ static const struct snd_kcontrol_new pcm3060_dapm_controls[] = {
- };
- 
- static const struct snd_soc_dapm_widget pcm3060_dapm_widgets[] = {
--	SND_SOC_DAPM_OUTPUT("OUTL+"),
--	SND_SOC_DAPM_OUTPUT("OUTR+"),
--	SND_SOC_DAPM_OUTPUT("OUTL-"),
--	SND_SOC_DAPM_OUTPUT("OUTR-"),
-+	SND_SOC_DAPM_OUTPUT("OUTL"),
-+	SND_SOC_DAPM_OUTPUT("OUTR"),
- 
- 	SND_SOC_DAPM_INPUT("INL"),
- 	SND_SOC_DAPM_INPUT("INR"),
- };
- 
- static const struct snd_soc_dapm_route pcm3060_dapm_map[] = {
--	{ "OUTL+", NULL, "Playback" },
--	{ "OUTR+", NULL, "Playback" },
--	{ "OUTL-", NULL, "Playback" },
--	{ "OUTR-", NULL, "Playback" },
-+	{ "OUTL", NULL, "Playback" },
-+	{ "OUTR", NULL, "Playback" },
- 
- 	{ "Capture", NULL, "INL" },
- 	{ "Capture", NULL, "INR" },
--- 
-2.13.6
+Frederick
