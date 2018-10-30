@@ -1,16 +1,16 @@
-From: Patrick Lai <plai@codeaurora.org>
-Subject: Re: Bug in hdmi codec driver in DPCM
-Date: Tue, 30 Oct 2018 15:25:51 -0700
-Message-ID: <0b77361c-61a0-70a1-e9af-bb16ff3c6eb6@codeaurora.org>
-References: <52692082-70ce-9616-6a0b-4c68ed2c61c0@codeaurora.org>
+From: Robert Giaraffa <Robert.Giaraffa@silabs.com>
+Subject: Simultaneous play/record on implicit feedback device
+ causes 'endpoint in use' error
+Date: Tue, 30 Oct 2018 23:15:51 +0000
+Message-ID: <BN7PR11MB2755B1BC150703C0DFC2DA919CCC0@BN7PR11MB2755.namprd11.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from smtp.codeaurora.org (smtp.codeaurora.org [198.145.29.96])
- by alsa0.perex.cz (Postfix) with ESMTP id CCAB326770D
- for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 23:25:59 +0100 (CET)
-In-Reply-To: <52692082-70ce-9616-6a0b-4c68ed2c61c0@codeaurora.org>
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com
+ (mail-eopbgr730066.outbound.protection.outlook.com [40.107.73.66])
+ by alsa0.perex.cz (Postfix) with ESMTP id 41B5726770D
+ for <alsa-devel@alsa-project.org>; Wed, 31 Oct 2018 00:15:54 +0100 (CET)
 Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
@@ -21,61 +21,84 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: Rohit Kumar <rohitkr@codeaurora.org>, alsa-devel@alsa-project.org, Mark Brown <broonie@kernel.org>, rohkumar@qti.qualcomm.com, srinivas.kandagatla@linaro.org, bgoswami@codeaurora.org
+To: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>
 List-Id: alsa-devel@alsa-project.org
 
-On 10/30/18 7:50 AM, Rohit Kumar wrote:
-> Hi,
-> 
-> We are facing crash in hdmi codec driver when we use DPCM based 
-> dai-links. Crash is happening in hdmi_codec_eld_chmap() while accessing 
-> chmap_info struct during hdmi_codec_startup(). However, chmap_info 
-> struct is allocated in hdmi_codec_pcm_new() which is only called in 
-> non-DPCM based dai-links.
-> 
-> Below is the crash stack:
-> 
-> [61.635493] Unable to handle kernel NULL pointer dereference at virtual 
-> address 00000018
-> 
-> .....
-> 
-> [61.666696]CM = 0, WnR = 1
-> 
-> [61.669778] user pgtable: 4k pages, 39-bit VAs, pgd = ffffffc0d6633000
-> 
-> [61.676526] [0000000000000018] *pgd=0000000153fc8003, 
-> *pud=0000000153fc8003, *pmd=0000000000000000
-> 
-> [61.685793] Internal error: Oops: 96000046 [#1] PREEMPT SMP
-> 
-> [61.722955] CPU: 7 PID: 2238 Comm: aplay Not tainted 4.14.72 #21
-> 
-> ..
-> 
-> [61.740269] PC is at hdmi_codec_startup+0x124/0x164
-> 
-> [61.745308] LR is at hdmi_codec_startup+0xe4/0x164
-> 
-> ..
-> 
-> We would probably need to move the implementation on pcm_new() to some 
-> other function to make it compatible with DPCM.
-> 
-> Can you please provide suggestions in solving the issue.
-> 
-In my opinion, it is not responsibility of driver to speculate whether
-the ops it exposes would only be called under certain usage (non-DPCM in
-this case). I think ASoC framework should be updated to call pcm_new()
-of each driver even though no actual PCM device would be created for
-backend dailink.
-
-> 
-> Thanks,
-> 
-> Rohit
+My company (Silicon Labs) makes a CP2615 USB audio class 1.0 device which uses implicit feedback.  I saw these two issues when testing with aplay/arecord/alsabat/alsaloop:
 
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-  a Linux Foundation Collaborative Project
+  *   During playback-only operation, the implicit feedback (IN) endpoint was not active.
+
+
+  *   During play/record operation, the implicit feedback values were not acted on, i.e. the host always sent 192 bytes per OUT packet even if previous IN packets had been 188 or 196 bytes.
+
+This behavior was observed on these systems:
+
+RaspberryPi2:    Raspbian 9 (stretch), kernel v4.14.72
+x86-64:                 Ubuntu 18.04, kernel v4.15.0-36
+
+I was able to get implicit feedback working properly in playback mode by adding a device-specific quirk to 'pcm.c' that is similar to existing quirks for implicit-feedback devices, e.g. M-Audio Fast Track Ultra.  (Note: The following patch applies to kernel v4.14.72.  In v4.18, the set_sync_ep_implicit_fb_quirk function was changed so that there is a single call to usb_ifnum_to_if(), rather than a call for each device-dependent quirk.)
+
+$ git diff pcm.c
+diff --git a/sound/usb/pcm.c b/sound/usb/pcm.c
+index b9c9a19f..6fb5567b 100644
+--- a/sound/usb/pcm.c
++++ b/sound/usb/pcm.c
+@@ -358,6 +358,21 @@ static int set_sync_ep_implicit_fb_quirk(struct snd_usb_substream *subs,
+                alts = &iface->altsetting[1];
+                goto add_sync_ep;
+
++       case USB_ID(0x10C4, 0xEAC1):    // Silicon Labs CP2615
++               // Ensure CP2615 is configured in Async Mode
++               if (attr != USB_ENDPOINT_SYNC_ASYNC)
++                       return 0;
++
++               // In P16R16 async mode, AudioIN EP (IF:4 EP:0x83) used for implicit feedback
++               ep = 0x83;
++               iface = usb_ifnum_to_if(dev, 4);
++
++               if (!iface || iface->num_altsetting == 0)
++                       return -EINVAL;
++
++               alts = &iface->altsetting[1];
++               goto add_sync_ep;
++
+        }
+        if (attr == USB_ENDPOINT_SYNC_ASYNC &&
+            altsd->bInterfaceClass == USB_CLASS_VENDOR_SPEC &&
+
+After adding the patch, I verified that implicit feedback worked properly for playback, i.e. the OUT samples per packet tracked previous IN values.  However, when attempting to perform simultaneous play and record via alsabat, alsaloop, or separate aplay/arecord, the system reports the 'endpoint already in use' error when attempting to set the format for the IN endpoint that is already in use (note that this dmesg log has customized printk messages):
+
+    [Oct23 10:13] snd_usb_hw_params->set_format()
+    [  +0.000014] set_format(): dev:b3856c00 alts:b67e8824 ifnum: 3
+    [  +0.001654] set_format()->usb_set_interface 3:1
+    [  +0.000006] Creating new playback data endpoint 03
+    [  +0.000004] Creating new capture data endpoint 83
+
+<Begin Playback. SYNC endpoint also starts because feedback is implicit>
+
+    [  +0.000027] snd_usb_pcm_prepare->set_format()
+    [  +0.000005] set_format(): dev:b3856c00 alts:b67e8824 ifnum: 3
+    [  +0.000755] Setting params for EP 03 (type 0, 12 urbs), ret=0
+    [  +0.000017] Setting params for EP 83 (type 0, 12 urbs), ret=0
+    [  +0.000004] Starting DATA_EP 03 @b9224000
+    [  +0.000004] snd_usb_endpoint_implicit_feedback_sink (03) is TRUE
+    [  +0.001495] Starting SYNC_EP 83 @b9222000
+
+<After playing for 0.5s, start recording. Failure occurs because EP83 is already in use.>
+
+    [  +0.493035] snd_usb_hw_params->set_format()
+    [  +0.000016] set_format(): dev:b3856c00 alts:b67e88a4 ifnum: 4
+    [  +0.001549] set_format()->usb_set_interface 4:1
+    [  +0.000005] Re-using EP 83 in iface 4:1
+    [  +0.000028] snd_usb_pcm_prepare->set_format()
+    [  +0.000004] set_format(): dev:b3856c00 alts:b67e88a4 ifnum: 4
+*** [  +0.003196] *** snd_usb_endpoint_set_params(): EP #83: already in use
+    [  +0.000003] configure_endpoint->endpoint_set_params: err=FFFFFFF0
+
+I bought a used Fast Track Ultra device for comparison testing, and found that it behaved the same way as the CP2615 does with the implicit feedback quirk: in playback-only mode implicit feedback works properly, but play/record causes the 'EP already in use' error.
+
+Are there any suggestions on how I can resolve this issue?  Any help would be greatly appreciated!
+
+Thanks,
+Bob Giaraffa
