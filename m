@@ -1,25 +1,34 @@
-From: =?UTF-8?Q?Ren=c3=a9_Santing?= <rene.santing@wearespindle.com>
-Subject: Bug report - Dell-WD15-Dock not working caused by ucm
- profile in alsa-lib 1.1.7
-Date: Tue, 30 Oct 2018 10:10:07 +0100
-Message-ID: <16a7a277-0677-9ca6-6765-1e109d6dc3be@wearespindle.com>
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+Subject: Re: Controlling the Tascam FW-1884
+Date: Tue, 30 Oct 2018 18:34:21 +0900
+Message-ID: <daf2b08b-dfdf-b4a3-8820-0a5f3ab78fc4@sakamocchi.jp>
+References: <9cec059e1ff1a558f21a3f0729c5a69a3d506573.camel@suse.com>
+ <0e469670-0520-5953-230b-8d2da5e4c357@sakamocchi.jp>
+ <985b1f6dc5b0af2aae049e0b6fcf976ab400d34d.camel@suse.com>
+ <55afba82-ad24-fe70-b784-d28a38e291c9@sakamocchi.jp>
+ <7a0f35eea26ce475bc3f6953db97f83205ad0a58.camel@suse.com>
+ <fc278639-12da-02b8-685d-681e06b044e4@sakamocchi.jp>
+ <10a99ea9c672ac6d0c9d5536e9d85a15f5a32d95.camel@suse.com>
+ <47f66c7d-4337-52da-72da-cdb3f0638dc4@sakamocchi.jp>
+ <d63527a1ab830c50c621664946ad9eafdb37d578.camel@suse.com>
+ <f4537970-775e-6480-acc4-6b5dd050d597@sakamocchi.jp>
+ <fed5ab3a-c39a-4de9-6802-c064a33140eb@sakamocchi.jp>
+ <246b8baaa3c415a0accdb76d3b524dec5e0429f9.camel@suse.com>
+ <97e54edf-1e47-d422-e438-a2c859083fd3@sakamocchi.jp>
+ <58ef33b1fffec178217044e0f0d5f2b6aecfc31d.camel@suse.com>
+ <4a971bd3716ddf43662b637904209f5230ccbf02.camel@suse.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"; Format="flowed"
+Content-Transfer-Encoding: 7bit
 Return-path: <alsa-devel-bounces@alsa-project.org>
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com
- [209.85.208.48])
- by alsa0.perex.cz (Postfix) with ESMTP id AC3652675BA
- for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 10:10:09 +0100 (CET)
-Received: by mail-ed1-f48.google.com with SMTP id t10-v6so9765153eds.12
- for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 02:10:09 -0700 (PDT)
-Received: from ?IPv6:2a00:8080:298:0:9f49:c389:673a:d5ee?
- ([2a00:8080:298:0:9f49:c389:673a:d5ee])
- by smtp.gmail.com with ESMTPSA id f16-v6sm6386940edt.93.2018.10.30.02.10.07
- for <alsa-devel@alsa-project.org>
- (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
- Tue, 30 Oct 2018 02:10:08 -0700 (PDT)
-Content-Language: en-US-large
+Received: from mail-pg1-f195.google.com (mail-pg1-f195.google.com
+ [209.85.215.195])
+ by alsa0.perex.cz (Postfix) with ESMTP id 257ED2675BA
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 10:34:26 +0100 (CET)
+Received: by mail-pg1-f195.google.com with SMTP id 23-v6so5344497pgc.8
+ for <alsa-devel@alsa-project.org>; Tue, 30 Oct 2018 02:34:26 -0700 (PDT)
+In-Reply-To: <4a971bd3716ddf43662b637904209f5230ccbf02.camel@suse.com>
+Content-Language: en-US
 List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
 List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
@@ -29,29 +38,98 @@ List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>,
  <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
 Errors-To: alsa-devel-bounces@alsa-project.org
 Sender: alsa-devel-bounces@alsa-project.org
-To: alsa-devel@alsa-project.org
+To: sbahling@suse.com
+Cc: "alsa-devel@alsa-project.org" <alsa-devel@alsa-project.org>, ffado-devel@lists.sf.net
 List-Id: alsa-devel@alsa-project.org
 
-SGVsbG8gQWxzYSBkZXZlbG9wZXJzLAoKSSB3b3VsZCBsaWtlIHRvIGZpbGUgYSBidWcgcmVwb3J0
-IGFib3V0IHRoZSBEZWxsLVdEMTUtRG9jay4gVGhpcyBkb2NrCnN0b3BwZWQgd29ya2luZyBmb3Ig
-bWUgb24gYXJjaGxpbnV4L2tkZS4gVGhlIGRldmljZSB3YXMgbm90IHBpY2tlZCB1cCBhdAphbGwg
-YnkgcHVsc2UgYXVkaW8gYWZ0ZXIgc29tZSB1cGRhdGVzIEkgaW5zdGFsbGVkIGxhc3Qgd2Vlay4K
-QnkgdHJpYWwgYW5kIGVycm9yIEkgZm91bmQgb3V0IGl0IHdhcyBjYXVzZWQgYnkgdGhlIHVjbSBw
-cm9maWxlIHRoYXQgd2FzCmFkZGVkIGluIGFsc2EtbGliIDEuMS43LgpSdW5uaW5nIHRoZSBmb2xs
-b3dpbmcgcmVzdG9yZWQgZnVuY3Rpb25hbGl0eS4KCsKgc3VkbyBtdiAvdXNyL3NoYXJlL2Fsc2Ev
-dWNtL0RlbGwtV0QxNS1Eb2NrL0RlbGwtV0QxNS1Eb2NrLmNvbmYKL3Vzci9zaGFyZS9hbHNhL3Vj
-bS9EZWxsLVdEMTUtRG9jay9EZWxsLVdEMTUtRG9jay5iYWsKwqBwdWxzZWF1ZGlvIC1rCgpJIHVw
-bG9hZGVkIDMgYWxzYS1pbmZvLnNoIHByb2ZpbGVzLgoKMS4xLjYKaHR0cDovL3d3dy5hbHNhLXBy
-b2plY3Qub3JnL2RiLz9mPWE5YTRjNTNkMWU0MTdjM2QyZWYzMDRmZTA3Nzg1ODFjMzViN2E5NWUK
-KHdvcmtpbmcpCjEuMS43Cmh0dHA6Ly93d3cuYWxzYS1wcm9qZWN0Lm9yZy9kYi8/Zj1iYjQ3NGE2
-ODc2OTJlMjVmNWU1NGM0NzVmMTZmN2NlNGVmMjEwZjdhCihub3Qgd29ya2luZykKMS4xLjcKaHR0
-cDovL3d3dy5hbHNhLXByb2plY3Qub3JnL2RiLz9mPTU4NmRkMDU5YWFhMDhlODM5ZWI5ZGY1Zjdi
-NDk5OTBhNWY0YWQxYTUKKHdvcmtpbmcgYnV0IG1vdmVkIHRoZSB3ZDE1IHVjbSBwcm9maWxlKQoK
-aHR0cHM6Ly9hbHNhLXByb2plY3Qub3JnL21haW4vaW5kZXgucGhwL0J1Z19UcmFja2luZyBwb2lu
-dGVkIG1lIHRvIHRoaXMKbWFpbGluZyBsaXN0IHRvIHN1Ym1pdCB0aGlzIHJlcG9ydC4gSWYgdGhp
-cyBpcyB0aGUgd3JvbmcgcGxhY2Ugb3IgdGhlcmUKaXMgbW9yZSBpbmZvcm1hdGlvbiBuZWVkIGNv
-dWxkIHlvdSBsZXQgbWUga25vdyBzbyBJIGNhbiBzZW5kIGl0IHRvIHRoZQpwcm9wZXIgY2hhbm5l
-bHM/CgpCZXN0IHJlZ2FyZHMsCgpSZW7DqSBTYW50aW5nCgpfX19fX19fX19fX19fX19fX19fX19f
-X19fX19fX19fX19fX19fX19fX19fX19fXwpBbHNhLWRldmVsIG1haWxpbmcgbGlzdApBbHNhLWRl
-dmVsQGFsc2EtcHJvamVjdC5vcmcKaHR0cDovL21haWxtYW4uYWxzYS1wcm9qZWN0Lm9yZy9tYWls
-bWFuL2xpc3RpbmZvL2Fsc2EtZGV2ZWwK
+Hi Scott,
+
+Sorry to be late for reply, but I was a bit busy with travel for Audio
+miniconference 2018 and tests for v4.20 merge window.
+
+On 2018/10/22 20:47, Scott Bahling wrote:
+> I have tried this, but the endianness of the status bits passed via this
+> method seems to be wrong.
+> 
+> I noticed in your latest kernel code[1], that you don't convert the firewire
+> data to local CPU endian when storing in the "after" variable which ends up
+> getting pushed into the status structure as big endian:
+> 
+> 
+>      after = buffer[s->data_block_quadlets - 1];
+> ...
+> ...
+> ...
+>      tscm->status[index] = after;
+> 
+> 
+> Shouldn't that be:
+> 
+>      after = be32_to_cpu(buffer[s->data_block_quadlets - 1]);
+> 
+> which also would remove the need for later conversions in that block of
+> code?
+> 
+> I have a tested patch which I will send as a pull request once github is
+> functioning again.
+
+Ah, indeed. I completely overlooked it, sorry...
+
+At first place, I just focused on reduction of CPU usage in
+packet processing, then cache big-endianness values from packets.
+Queued events have converted host-endiannness value from the cache.
+On the other hand, data returned by SNDRV_FIREWIRE_IOCTL_TASCAM_STATUS
+ioctl is just copied from the cache, then it's still big-endiannness,
+as you found.
+
+Thanks for your PR[1] and it works well. But here I suggest that
+we can judge the frequency to call SNDRV_FIREWIRE_IOCTL_TASCAM_STATUS
+ioctl is surely less than the frequency on packet processing. If we
+attempt to keep low CPU usage in the packet processing, current
+implementation can be kept as is. Instead, a patch for handler of the
+ioctl is worth for commit.
+
+For example, This patch will fix the issue.
+
+```
+$ git diff
+diff --git a/sound/firewire/tascam/tascam-hwdep.c 
+b/sound/firewire/tascam/tascam-hwdep.c
+index ad164ad..dff7dc4 100644
+--- a/sound/firewire/tascam/tascam-hwdep.c
++++ b/sound/firewire/tascam/tascam-hwdep.c
+@@ -189,10 +189,23 @@ static int hwdep_unlock(struct snd_tscm *tscm)
+
+  static int tscm_hwdep_status(struct snd_tscm *tscm, void __user *arg)
+  {
+-       if (copy_to_user(arg, tscm->status, sizeof(tscm->status)))
+-               return -EFAULT;
++       struct snd_firewire_tascam_status *status;
++       int i;
++       int err = 0;
+
+-       return 0;
++       status = kmalloc(sizeof(*status), GFP_KERNEL);
++       if (!status)
++               return -ENOMEM;
++
++       for (i = 0; i < SNDRV_FIREWIRE_TASCAM_STATUS_COUNT; ++i)
++               status->data[i] = be32_to_cpu(tscm->status[i]);
++
++       if (copy_to_user(arg, status, sizeof(*status)))
++               err = -EFAULT;
++
++       kfree(status);
++
++       return err;
+  }
+```
+
+I'd like you to test with this patch, before granting your PR.
+
+[1] https://github.com/takaswie/snd-firewire-improve/pull/23
+
+
+Thanks
+
+Takashi Sakamoto
